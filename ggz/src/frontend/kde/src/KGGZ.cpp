@@ -226,7 +226,7 @@ void KGGZ::slotConnectedStart()
 
 void KGGZ::menuDisconnect()
 {
-	eventLeaveGame(0);
+	/*eventLeaveGame(0);
     eventLeaveRoom();
 
 	if(!kggzserver)
@@ -241,7 +241,8 @@ void KGGZ::menuDisconnect()
 	}
 
 	KGGZDEBUG("=> logout now! <=\n");
-	kggzserver->logout();
+	kggzserver->logout();*/
+	m_killserver = 1;
 }
 
 void KGGZ::menuServerLaunch()
@@ -351,6 +352,7 @@ void KGGZ::timerEvent(QTimerEvent *e)
 			KGGZDEBUG("kggzserver = NULL;\n");
 			kggzserver = NULL;
 		}
+		emit signalMenu(MENUSIG_DISCONNECT);
 		m_killserver = 0;
 	}
 	if(!kggzserver) return;
@@ -799,7 +801,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 //?
 			menuDisconnect();
 			// This is a quickhack, but for the user's sake
-			serverCollector(GGZCoreServer::loggedout, NULL);
+			/*serverCollector(GGZCoreServer::loggedout, NULL);*/
 			break;
 		case GGZCoreServer::protoerror:
 			KGGZDEBUG("protoerror\n");
@@ -1513,13 +1515,17 @@ void KGGZ::eventLeaveGame(int force)
 		m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
 	}
 	KGGZDEBUG("Leave table?\n");
-	if(kggzserver->state() == GGZ_STATE_AT_TABLE)
+	if((kggzserver) && (kggzserver->state() == GGZ_STATE_AT_TABLE))
 	{
 		KGGZDEBUG("**** Still at table (alert) -> leaving now!\n");
 		kggzroom->leaveTable(force);
 	}
-	listPlayers();
-	listTables();
+
+	if((kggzserver) && (force))
+	{
+		listPlayers();
+		listTables();
+	}
 	//emit signalMenu(MENUSIG_GAMEOVER);
 }
 
