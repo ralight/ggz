@@ -1,0 +1,22 @@
+.TH "grubby-config" "1" "0.0.6" "Das GGZ-Entwickler-Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP 
+grubby-config \- Konfigurationsskript für Grubby
+.SH "BESCHREIBUNG"
+.LP
+Um Grubby (der Chatbot der GGZ Gaming Zone) verwenden zu können, muß er
+ordentlich konfiguriert sein. Das Skript grubby-config nimmt einem diese Arbeit
+weitestgehend ab: es befragt den Nutzer zu allen möglichen Optionen, und baut
+daraus die Konfigurationsdatei.
+.LP
+Das Skript sollte deshalb als derselbe Nutzer ausgeführt werden, der später
+auch Grubby startet (ein normaler Systemnutzer, oder games).
+Bei den meisten Fragen, die es stellt, braucht man nur mit der Entertaste zu
+bestätigen. Einzig der Name und der Eigentümer sind wichtige Informationen.
+.SH "DATEIEN"
+.LP
+~/.ggz/grubby.rc - Grubbys Hauptkonfigurationsdatei
+.SH "AUTHORS"
+.LP 
+Das GGZ-Entwickler-Team
+<ggz\-dev@lists.sourceforge.net>

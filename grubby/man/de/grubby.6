@@ -1,0 +1,57 @@
+.TH "grubby" "6" "0.0.6" "Das GGZ-Entwickler-Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP
+grubby \- sehr intelligenter Chatbot
+.SH "SYNTAX"
+.B grubby
+[\fIOPTIONS\fR]
+.SH "BESCHREIBUNG"
+.LP
+Grubby ist ein modularer Chatbot, das heißt das Programm verhält sich wie ein
+Mensch. Sobald es in einen GGZ-Server eingeloggt ist, kann man ihm ein paar
+Nachrichten erzählen die es weitertragen soll, und sich von ihm im Gegenzug
+erzählen lassen was es neues gibt.
+Außerdem achtet er darauf, daß die Wortwahl im Chat angemessen ist.
+.LP
+Grubby kann auch andere Namen tragen. Oft verwendet wird Highlander und Keeper,
+aber jeder andere Name ist auch möglich.
+Mehr Funktionalität kann durch Plugins, Perlskripte, Ruby Gems und andere
+Erweiterungen erreicht werden.
+.SH "OPTIONEN"
+.TP
+\fB-h\fR, \fB--help\fR
+Stellt das Hilfe-Menü dar
+.TP
+\fB-H\fR, \fB--host\fR=hostname
+Der Rechner, zu dem sich Grubby verbinden soll
+.TP
+\fB-d\fR, \fB--datadir\fR=datadir
+Nutze dieses Verzeichnis als Datenverzeichnis
+.TP
+\fB-n\fR, \fB--name\fR=name
+Der Name, den Grubby sich zulegt
+.TP
+\fB-v\fR, \fB--version\fR
+Gibt die Versionsnummer von Grubby aus
+.LP
+.SH "BEFEHLE"
+.LP
+Grubby akzeptiert sowohl öffentliche Befehle als auch solche vom Eigentümer.
+Dazu sehe man sich die Dokumentation im ggz-docs-Paket an.
+.SH "KONFIGURATION"
+.LP
+Grubby wird über das Perlskript grubby-config konfiguriert.
+Von den ersten beiden Fragen (nach Name und Eigentümer) abgesehen können dort
+die Standardeinstellungen übernommen werden.
+.SH "DATEIEN"
+.LP
+\fI$HOME/.ggz/grubby.rc\fP - Konfigurationsdatei, welche durch grubby-config
+erzeugt worden sein kann
+.LP
+\fI$HOME/.ggz/grubby/*\fP - Individuelle Moduldateien und die Spielerdatenbank
+.LP
+\fIgrubby-config\fP - Nutzerfreundliches Konfigurationsskript
+.SH "AUTOREN"
+.LP
+Das GGZ-Entwickler-Team
+<ggz\-dev@lists.sourceforge.net>

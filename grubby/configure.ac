@@ -160,7 +160,9 @@ AC_CONFIG_FILES([Makefile
 		grubby/modules/Makefile
 		grubby/data/Makefile
 		grubby/data/grubby-config
-		man/Makefile])
+		grubby/po/Makefile
+		man/Makefile
+		man/de/Makefile])
 AC_OUTPUT
 
 dnl Status output
