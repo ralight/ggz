@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.h 2704 2001-11-09 01:44:56Z jdorje $
+ * $Id: euchre.h 2735 2001-11-13 10:19:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -38,7 +38,18 @@ enum {
 	/* The "take suit" bid means you take the bid after the up-card has
 	   been turned over.  You now get to choose the trump.  Consequently
 	   the bid's "suit" field will include the suit type. */
-	EUCHRE_TAKE_SUIT
+	EUCHRE_TAKE_SUIT,
+
+	/* Any player may choose to "go alone" and try to make/set the bid by
+	   themselves (that is, with no help from their partner).  If this
+	   happens, their partner simply does not play that round, and they
+	   get double score if they succeed. */
+	EUCHRE_GO_ALONE,
+
+	/* The opposite of "going alone" is "going team" (for lack of a
+	   better word).  In real Euchre, you just wouldn't say anything, but 
+	   here we need a name for it. */
+	EUCHRE_GO_TEAM,
 };
 
 #define EUCHRE ( *(euchre_game_t *)(game.specific) )
@@ -49,6 +60,9 @@ typedef struct euchre_game_t {
 	int alone;		/* is the dealer going alone? */
 	int suit;		/* the suit of trump (TODO: is this
 				   necessary?) */
+	int going_alone[4];	/* Is the player "going alone"? */
+	int req_alone_bid;	/* hack: have we already requested the
+				   "alone" bids? */
 
 	/* options */
 	int screw_the_dealer;

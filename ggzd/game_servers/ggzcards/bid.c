@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2734 2001-11-13 10:09:16Z jdorje $
+ * $Id: bid.c 2735 2001-11-13 10:19:24Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -80,6 +80,7 @@ int req_bid(player_t p)
 	bid_data->is_bidding = 1;
 
 	set_player_message(p);
+	set_game_state(STATE_NONE);
 
 	if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT) {
 		/* request a bid from the ai */
@@ -113,6 +114,8 @@ int request_all_bids(void)
 			game.players[p].bid_data.is_bidding = 1;
 			set_player_message(p);
 		}
+
+	set_game_state(STATE_NONE);
 
 	/* Send all human-player bid requests */
 	for (p = 0; p < game.num_players; p++)

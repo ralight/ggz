@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2734 2001-11-13 10:09:16Z jdorje $
+ * $Id: euchre.c 2735 2001-11-13 10:19:24Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -94,16 +94,19 @@ static void euchre_init_game(void)
 {
 	seat_t s;
 
-	game.specific = ggz_malloc(sizeof(euchre_game_t));
+	/* Game seat data */
 	set_num_seats(4);
 	for (s = 0; s < game.num_seats; s++)
 		assign_seat(s, s);	/* one player per seat */
 
+	/* Game-type options */
 	game.deck_type = GGZ_DECK_EUCHRE;
 	game.max_hand_length = 5;
 	game.target_score = 10;
 	game.trump = -1;
 
+	/* Game-specific data */
+	game.specific = ggz_malloc(sizeof(euchre_game_t));
 	EUCHRE.maker = -1;
 }
 
@@ -111,11 +114,26 @@ static void euchre_start_bidding(void)
 {
 	game.bid_total = 8;	/* twice around, at most */
 	game.next_bid = (game.dealer + 1) % game.num_players;
+	EUCHRE.req_alone_bid = 0;
 }
 
 static int euchre_get_bid(void)
 {
-	if (game.bid_count < 4) {
+	player_t p;
+	if (EUCHRE.maker >= 0) {
+		if (EUCHRE.req_alone_bid)	/* don't do it more than once 
+						 */
+			return 0;
+		/* If the maker has been chosen, then we need to request bids 
+		   from everyone to see if they're going alone or not. */
+		for (p = 0; p < 4; p++) {
+			game.next_bid = p;	/* hack */
+			add_sbid(0, 0, EUCHRE_GO_ALONE);
+			add_sbid(0, 0, EUCHRE_GO_TEAM);
+		}
+		EUCHRE.req_alone_bid = 1;
+		return request_all_bids();
+	} else if (game.bid_count < 4) {
 		/* Tirst four bids are either "pass" or "take".  The suit of
 		   the up-card becomes trump. */
 		add_sbid(0, 0, EUCHRE_PASS);
@@ -139,21 +157,38 @@ static int euchre_get_bid(void)
 
 static void euchre_handle_bid(player_t p, bid_t bid)
 {
-	if (bid.sbid.spec == EUCHRE_TAKE) {
+	char bid_text[4096];
+	euchre_get_bid_text(bid_text, sizeof(bid_text), bid);
+	ggzd_debug("EUCHRE: handling bid %s.", bid_text);
+	switch (bid.sbid.spec) {
+	case EUCHRE_TAKE:
 		EUCHRE.maker = p;
 		game.trump = EUCHRE.up_card.suit;
-	} else if (bid.sbid.spec == EUCHRE_TAKE_SUIT) {
+		game.bid_total = game.bid_count + 5;	/* hack: just 4 more
+							   bids after this
+							   one */
+		break;
+	case EUCHRE_TAKE_SUIT:
 		EUCHRE.maker = p;
 		game.trump = bid.sbid.suit;
+		game.bid_total = game.bid_count + 5;	/* hack: just 4 more
+							   bids after this
+							   one */
+		break;
+	case EUCHRE_GO_ALONE:
+		EUCHRE.going_alone[p] = 1;
+		break;
+	case EUCHRE_GO_TEAM:
+		EUCHRE.going_alone[p] = 0;
+		break;
 	}
-	/* bidding is ended automatically by euchre_next_bid */
 }
 
 static void euchre_next_bid(void)
 {
-	if (EUCHRE.maker >= 0)
-		game.bid_total = game.bid_count;
-	else if (game.bid_count == 8) {
+	if (EUCHRE.maker >= 0) {
+		/* taken care of by euchre_handle_bid. Ugly! */
+	} else if (game.bid_count == 8) {
 		/* This should only happen if we aren't playing "screw the
 		   dealer". */
 		set_global_message("", "s", "Everyone passed; redealing.");
@@ -206,14 +241,20 @@ static int euchre_deal_hand(void)
 
 static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid)
 {
-	if (bid.sbid.spec == EUCHRE_PASS)
+	switch (bid.sbid.spec) {
+	case EUCHRE_PASS:
 		return snprintf(buf, buf_len, "Pass");
-	if (bid.sbid.spec == EUCHRE_TAKE)
+	case EUCHRE_TAKE:
 		return snprintf(buf, buf_len, "Take");
-	if (bid.sbid.spec == EUCHRE_TAKE_SUIT)
+	case EUCHRE_TAKE_SUIT:
 		return snprintf(buf, buf_len, "Take at %s",
 				suit_names[(int) bid.sbid.suit]);
-	return snprintf(buf, buf_len, "%s", "");
+	case EUCHRE_GO_ALONE:
+		return snprintf(buf, buf_len, "Go alone");
+	case EUCHRE_GO_TEAM:
+		return snprintf(buf, buf_len, "Go team");
+	}
+	return snprintf(buf, buf_len, "<error: no bid message>");
 }
 
 static void euchre_set_player_message(player_t p)
