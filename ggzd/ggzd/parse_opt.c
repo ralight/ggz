@@ -252,6 +252,32 @@ static void parse_file(FILE *configfile)
 			continue;
 		 }
 		
+		/*** AdminName = string ***/
+		if(!strcmp(varname, "adminname")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("parse_file: malloc error");
+			strcpy(strval, varvalue);
+			opt.admin_name = strval;
+			continue;
+		 }
+		
+		/*** AdminEmail = string ***/
+		if(!strcmp(varname, "adminemail")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("parse_file: malloc error");
+			strcpy(strval, varvalue);
+			opt.admin_email = strval;
+			continue;
+		 }
+		
 		/*** INVALID VARIABLE ***/
 		PARSE_ERR("Syntax error");
 	}

@@ -99,6 +99,8 @@ typedef struct {
 	int stat_clr_time;
 	int main_port;
 	char *game_dir;		/* CLEANUP CANDIDATE - should get free()'d */
+	char *admin_name;
+	char *admin_email;
 } Options;
 
 

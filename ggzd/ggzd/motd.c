@@ -153,8 +153,14 @@ static char *motd_parse_motd_line(char *line, char *outline, int sz_outline)
 			in++;
 			/* Set a pointer to a string to replace the %? with */
 			switch(*in) {
+				case 'a':
+					p = opt.admin_name;
+					break;
 				case 'd':
 					p = motd_get_date(str, sizeof(str));
+					break;
+				case 'e':
+					p = opt.admin_email;
 					break;
 				case 'g':
 					p = motd_get_tables(0, str,sizeof(str));
