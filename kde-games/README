@@ -1,5 +1,5 @@
 ======================================================
-The GGZ Gaming Zone - KDE Game Modules - Release 0.0.6
+The GGZ Gaming Zone - KDE Game Modules - Release 0.0.7
 ======================================================
 
 We are proud to say that there are now some KDE games available
@@ -26,6 +26,9 @@ Content of GGZ-KDE-Games:
 	- Keepalive:
 		An experimental game client which implements some newer features.
 		May or may not work for you.
+	- Fyrdman:
+		Colourful client for the Hastings1066 game.
+		Works also in standalone mode.
 
 Please read 'INSTALL' if you aren't experienced with the build yet.
 The file README.GGZ does give you additional information.
