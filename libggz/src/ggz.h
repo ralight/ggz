@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 6732 2005-01-18 23:58:25Z oojah $
+ * $Id: ggz.h 6784 2005-01-21 18:38:38Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -463,7 +463,7 @@ int ggz_conf_get_keys (int handle,
  *  @param a An arbitrary element in the GGZList.
  *  @param b An arbitrary element in the GGZList.
  *  @return Negative if a < b; 0 if a == b; positive if a > b.  */
-typedef int	(*ggzEntryCompare)	(void *a, void *b);
+typedef int (*ggzEntryCompare)(const void *a, const void *b);
 
 
 /** @brief A function type for creating a copy of a data item for

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 6733 2005-01-19 00:34:26Z jdorje $
+ * $Id: msg.c 6784 2005-01-21 18:38:38Z jdorje $
  *
  * Debug and error messages
  *
@@ -105,9 +105,11 @@ GGZDebugHandlerFunc ggz_debug_set_func(GGZDebugHandlerFunc func)
 	return old_handler;
 }
 
-static int ggz_list_strcasecmp(void *a, void *b)
+static int ggz_list_strcasecmp(const void *a, const void *b)
 {
-	return strcasecmp(a, b);
+	const char *s_a = a, *s_b = b;
+
+	return strcasecmp(s_a, s_b);
 }
 
 /* FIXME: allow specifying NULL to designate enabling all? */

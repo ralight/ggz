@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 6639 2005-01-13 00:36:29Z jdorje $
+ * $Id: conf.c 6784 2005-01-21 18:38:38Z jdorje $
  *
  * Internal functions for handling configuration files
  *
@@ -87,10 +87,10 @@ typedef struct conf_entry_t {
 /* Our private functions and vars */
 static GGZList * file_parser(const char *path);
 static void parse_line(char *line, char **varname, char **varvalue);
-static int section_compare(void *a, void *b);
+static int section_compare(const void *a, const void *b);
 static void *section_create(void *data);
 static void section_destroy(void *data);
-static int entry_compare(void *a, void *b);
+static int entry_compare(const void *a, const void *b);
 static void *entry_create(void *data);
 static void entry_destroy(void *data);
 static conf_file_t * get_file_data(int handle);
@@ -880,20 +880,26 @@ static conf_file_t * get_file_data(int handle)
 
 /* The following three functions perform list comparisons  */
 /* and data creation and destruction for the section lists */
-static int section_compare(void *a, void *b)
+static int section_compare(const void *a, const void *b)
 {
-	/* Note that this function is a little odd since the 'b' passed */
-	/* is not expected to be the full struct, but just the name str */
-	conf_section_t	*s_a;
+	/* Note that this function is a little odd since the 'b' passed
+	   is not expected to be the full struct, but just the name str.
+	   This is because the whole section list is a hack and every
+	   time an insertion or lookup is done all that's passed in is the
+	   name string.  The callback functions here are expected to do
+	   the rest of the work of making the section.  See also
+	   section_destroy. */
+	const conf_section_t *s_a = a;
+	const char *s_b = b;
 
-	s_a = a;
-	return strcmp(s_a->name, b);
+	return strcmp(s_a->name, s_b);
 }
 
 static void *section_create(void *data)
 {
-	/* Note that this function is a little odd since the data passed */
-	/* is not expected to be the full struct, but just the name str  */
+	/* Note that this function is a little odd since the data passed
+	   is not expected to be the full struct, but just the name str.
+	   See the comment in section_compare. */
 	conf_section_t	*dst;
 
 	dst = ggz_malloc(sizeof(conf_section_t));
@@ -926,12 +932,9 @@ static void section_destroy(void *data)
 
 /* The following three functions perform list comparisons */
 /* and data creation and destruction for the entry lists  */
-static int entry_compare(void *a, void *b)
+static int entry_compare(const void *a, const void *b)
 {
-	conf_entry_t	*e_a, *e_b;
-
-	e_a = a;
-	e_b = b;
+	const conf_entry_t *e_a = a, *e_b = b;
 
 	return strcmp(e_a->key, e_b->key);
 }
