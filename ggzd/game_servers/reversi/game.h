@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
- * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: game.h 2804 2001-12-07 23:11:21Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -125,7 +125,7 @@
  *
  * Luckily that's all, this protocol is perfect and it shouldn't be modified anymore. Or so I hope. :) */
 
-#include "../../ggzdmod/ggz_server.h"
+#include "ggzdmod.h"
 
 // Reversi protocol
 // The numbers aren't on order, because I used the same constants from TicTacToe - simplify testing
@@ -175,6 +175,8 @@
 
 
 struct rvr_game_t {
+	/* GGZ data */
+	GGZdMod *ggz;
 	// Board
 	char board[64];
 	// Score
@@ -187,11 +189,13 @@ struct rvr_game_t {
 };
 
 // Intializes game variables
-void game_init();
+void game_init(GGZdMod *ggzdmod);
 // Handle server messages
-void game_handle_ggz(GGZdModEvent event, void *data);
+void game_handle_ggz_state(GGZdMod* ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_join(GGZdMod* ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_leave(GGZdMod* ggz, GGZdModEvent event, void *data);
 // Handle player messages
-void game_handle_player(GGZdModEvent event, void *data);
+void game_handle_player(GGZdMod* ggz, GGZdModEvent event, void *data);
 // Handle player move
 int game_handle_move(int, int *);
 

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: main loop for the server
- * $Id: main.c 2610 2001-10-24 17:53:57Z jdorje $
+ * $Id: main.c 2804 2001-12-07 23:11:21Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -30,14 +30,21 @@
 #include <unistd.h>
 
 int main(void) {
-	game_init();
+	GGZdMod *ggzdmod = ggzdmod_new(GGZDMOD_GAME);
 
-	ggzd_set_handler(GGZ_EVENT_LAUNCH, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
+	/* game_init is called at the start of _each_ game, so we must do
+	   ggz stuff here. */
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, &game_handle_ggz_state);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &game_handle_ggz_join);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_leave);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
 	
-	(void)ggzd_main_loop();
+	game_init(ggzdmod);
+	
+	(void)ggzdmod_connect(ggzdmod);
+	(void)ggzdmod_loop(ggzdmod);
+	(void)ggzdmod_disconnect(ggzdmod);
+	ggzdmod_free(ggzdmod);
 
 	return 0;
 }
