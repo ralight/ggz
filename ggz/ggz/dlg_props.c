@@ -72,6 +72,16 @@ void props_update()
 	GTK_XTEXT(tmp)->time_stamp = ggzrc_read_int("CHAT","Timestamp",FALSE);
 
 	/*User Info Tab*/
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_name");
+	ggzrc_write_string("UserInfo","Name",gtk_entry_get_text(GTK_ENTRY(tmp)));
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_city");
+	ggzrc_write_string("UserInfo","City",gtk_entry_get_text(GTK_ENTRY(tmp)));
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_state");
+	ggzrc_write_string("UserInfo","State",gtk_entry_get_text(GTK_ENTRY(tmp)));
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_country");
+	ggzrc_write_string("UserInfo","Country",gtk_entry_get_text(GTK_ENTRY(tmp)));
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_comments");
+	ggzrc_write_string("UserInfo","Comments",gtk_editable_get_chars(GTK_EDITABLE(tmp), 0, -1));
 }
 
 void props_add_button_clicked (GtkButton *button, gpointer user_data)
@@ -148,6 +158,16 @@ void dlg_props_realize (GtkWidget *widget, gpointer user_data)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","Timestamp",FALSE));
 
 	/*User Info Tab*/
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_name");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Name",""));
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_city");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","City",""));
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_state");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","State",""));
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_country");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Country",""));
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_comments");
+	gtk_text_insert (GTK_TEXT (tmp), NULL, NULL, NULL, ggzrc_read_string("UserInfo","Comments",""), -1);
 }
 
 
@@ -211,7 +231,7 @@ create_dlg_props (void)
   GtkWidget *info_state;
   GtkWidget *hbox15;
   GtkWidget *label20;
-  GtkWidget *inco_country;
+  GtkWidget *info_country;
   GtkWidget *label21;
   GtkWidget *scrolledwindow1;
   GtkWidget *info_comments;
@@ -659,12 +679,12 @@ create_dlg_props (void)
   gtk_label_set_line_wrap (GTK_LABEL (label20), TRUE);
   gtk_misc_set_padding (GTK_MISC (label20), 5, 0);
 
-  inco_country = gtk_entry_new ();
-  gtk_widget_ref (inco_country);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "inco_country", inco_country,
+  info_country = gtk_entry_new ();
+  gtk_widget_ref (info_country);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "info_country", info_country,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (inco_country);
-  gtk_box_pack_start (GTK_BOX (hbox15), inco_country, TRUE, TRUE, 5);
+  gtk_widget_show (info_country);
+  gtk_box_pack_start (GTK_BOX (hbox15), info_country, TRUE, TRUE, 5);
 
   label21 = gtk_label_new ("Comments, Hobies, Etc.");
   gtk_widget_ref (label21);
@@ -690,6 +710,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (info_comments);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), info_comments);
+  gtk_text_set_editable (GTK_TEXT (info_comments), TRUE);
 
   label3 = gtk_label_new ("User Information");
   gtk_widget_ref (label3);
