@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: bid.c 4118 2002-04-30 04:30:28Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -28,12 +28,24 @@
 #endif
 
 #include <stdlib.h>
+#include <string.h>
+
 #include <ggz.h>
 
 #include "bid.h"
 #include "common.h"
 #include "message.h"
 #include "net.h"
+
+bool is_anyone_bidding(void)
+{
+	player_t p;
+	
+	for (p = 0; p < game.num_players; p++)
+		if (game.players[p].bid_data.is_bidding)
+			return TRUE;
+	return FALSE;
+}
 
 /* clear_bids clears the list of bids */
 void clear_bids(player_t p)
@@ -116,8 +128,7 @@ void request_all_client_bids(void)
 			                     game.players[p].bid_data.bid_count,
 			                     game.players[p].bid_data.bids);
 
-	/* OK, we're done.  We return now, and continue to wait for responses
-	   from non-AI players. There's still a potential problem because as
+	/* There's still a potential problem because as
 	   soon as a player bids, that bid will generally become visible to
 	   everyone.  It might be better to "hide" players' bids until
 	   everyone has bid.  OTOH, this isn't how things work in real card
@@ -152,4 +163,79 @@ void handle_client_bid(player_t p, int bid_choice)
 	ggzdmod_log(game.ggz, "Received bid choice %d from player %d/%s",
 		    bid_choice, p, get_player_name(p));
 	handle_bid_event(p, bid);
+}
+
+/* This handles the event of someone making a bid */
+void handle_bid_event(player_t p, bid_t bid)
+{
+	net_broadcast_bid(p, bid);
+	
+	/* If we send a bid request to a player when the game is on,
+	   and then a player leaves, the game is stopped.  But we
+	   still need to handle the bid response from that player,
+	   although we don't proceed with the game until the table
+	   is full again. */
+	
+	assert(game.players[p].bid_data.is_bidding);
+	game.players[p].bid_data.is_bidding = FALSE;
+	clear_bids(p);
+
+	ggzdmod_log(game.ggz, "Handling a bid event for player %d.", p);
+
+	assert(game.state == STATE_WAIT_FOR_BID);
+
+	/* determine the bid */
+	game.players[p].bid = bid;
+
+	/* handle the bid */
+	game.players[p].bid_count++;
+	game.data->handle_bid(p, bid);
+
+	set_player_message(p);
+
+	/* add the bid to the "bid list" */
+	/* FIXME: this needs work!!! */
+	if (p <= game.prev_bid)
+		game.bid_rounds++;
+	if (game.bid_rounds >= game.max_bid_rounds) {
+		player_t p2;
+		game.max_bid_rounds += 10;
+		for (p2 = 0; p2 < game.num_players; p2++) {
+			game.players[p2].allbids =
+				ggz_realloc(game.players[p2].allbids,
+					    game.max_bid_rounds *
+					    sizeof(bid_t));
+			memset(&game.players[p2].
+			       allbids[game.max_bid_rounds - 10], 0,
+			       10 * sizeof(bid_t));
+		}
+	}
+	game.players[p].allbids[game.bid_rounds] = bid;
+	send_bid_history();
+
+	/* Increment the bid count.  It now becomes the number of
+	   bids made so far this hand. */
+	game.bid_count++;
+	
+	/* Also mark the previous bidder, so that next_bid() can
+	   safely access it. */
+	game.prev_bid = p;
+	
+	if (is_anyone_bidding()) {
+		assert(game.state == STATE_WAIT_FOR_BID);
+		return;
+	}
+	
+	/* Set the state appropriately.  Note that it may be change
+	   again below. */
+	if (game.bid_count == game.bid_total)
+		set_game_state(STATE_FIRST_TRICK);
+	else
+		set_game_state(STATE_NEXT_BID);
+	
+	/* Get the game code to handle the bid. */		
+	game.data->next_bid();
+
+	/* do next move */
+	next_move();
 }

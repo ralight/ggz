@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.h 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: bid.h 4118 2002-04-30 04:30:28Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,6 +24,8 @@
  */
 
 #include "types.h"
+
+bool is_anyone_bidding(void);
 
 /* clear_bids clears the list of possible bids. It's called by
    handle_bid_event().  Thus, after a player responds to one bid request the
@@ -47,3 +49,7 @@ void request_all_client_bids(void);
 /* Called by network code when a player bid is received.  Calls
    handle_bid_event if bid is acceptable. */
 void handle_client_bid(player_t p, int bid_choice);
+
+/* Called by anyone to report a bid.  It should only be called by
+   handle_client_bid, though. */
+void handle_bid_event(player_t p, bid_t bid);

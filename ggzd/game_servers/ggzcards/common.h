@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4105 2002-04-29 03:31:43Z jdorje $
+ * $Id: common.h 4118 2002-04-30 04:30:28Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -160,9 +160,6 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data);
 
 /* these are internal GGZCards events */
 void handle_newgame_event(player_t p);
-void handle_play_event(player_t p, card_t card);
-void handle_badplay_event(player_t p, char *msg);
-void handle_bid_event(player_t p, bid_t bid);
 void handle_trick_event(player_t winner);
 void handle_gameover_event(int winner_cnt, player_t * winners);
 void handle_neterror_event(player_t p);

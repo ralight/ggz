@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 4092 2002-04-27 21:18:12Z jdorje $
+ * $Id: ai.c 4118 2002-04-30 04:30:28Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -193,7 +193,9 @@ void handle_ai_stderr(player_t ai)
 	int res = read(game.players[ai].err_fd, buf, sizeof(buf) - 1);
 	
 	if (res < 0) {
-		/* FIXME: something's wrong with the AI */
+		/* something's wrong with the AI */
+		restart_ai(ai);
+		return;
 	}
 	buf[res] = '\0'; /* yes, this is necessary */
 		
@@ -215,12 +217,10 @@ void handle_ai_stderr(player_t ai)
 			
 void init_path(const char *exec_cmd)
 {
-	int i = strlen(exec_cmd);
+	int i;
 	
 	path = ggz_strdup(exec_cmd);
 	
-	while (path[i] != '/') {
+	for (i = strlen(exec_cmd); path[i] != '/' && i >= 0; i--)
 		path[i] = '\0';
-		i--;
-	}
 }

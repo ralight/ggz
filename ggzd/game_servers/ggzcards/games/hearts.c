@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 4072 2002-04-24 09:21:42Z jdorje $
+ * $Id: hearts.c 4118 2002-04-30 04:30:28Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -268,7 +268,7 @@ static char *hearts_verify_play(player_t p, card_t card)
 
 	if (game.next_play == game.leader) {
 		/* the low club must lead on the first trick */
-		if (game.trick_count == 0 && game.play_count == 0 &&
+		if (game.play_count == 0 && game.trick_count == 0 &&
 		    (card.suit != CLUBS
 		     || card.face != GHEARTS.lead_card_face))
 			return "You must lead the low club.";

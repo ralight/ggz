@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 4072 2002-04-24 09:21:42Z jdorje $
+ * $Id: lapocha.c 4118 2002-04-30 04:30:28Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -154,33 +154,39 @@ static void lapocha_handle_gameover(void)
 	handle_gameover_event(winner_cnt, winners);
 }
 
+static void set_trump(char suit)
+{
+	game.trump = suit;
+	set_global_message("", "Trump is %s.",
+	                   get_suit_name(game.trump));
+	lap_send_trump();
+}
+
 static void lapocha_start_bidding(void)
 {
-	/* all 4 players bid once, but the first bid determines the trump */
 	game.bid_total = 5;
+	/* all 4 players bid once, but the first bid determines the trump */
+	if (game.hand_size != 10) {
+		set_trump(deal_card(game.deck).suit);
+		game.bid_count = 1;
+		game.next_bid = (game.dealer + 1) % game.num_players;
+	}
 	LAPOCHA.bid_sum = 0;
 	lap_send_dealer();
 }
 
 static void lapocha_get_bid(void)
 {
-	if (game.bid_count == 0) {	/* determine the trump suit */
-		/* handled just like a bid */
-		if (game.hand_size != 10) {
-			bid_t bid;
-			bid.bid = 0;
-			bid.sbid.suit = deal_card(game.deck).suit;
-			bid.sbid.spec = LAPOCHA_TRUMP;
-			handle_bid_event(game.next_bid, bid); /* hack */
-		} else {
-			char suit;
-			for (suit = 0; suit < 4; suit++)
-				add_sbid(0, suit, LAPOCHA_TRUMP);
-			(void) lap_send_trump_request(game.dealer);
-			request_client_bid(game.dealer);
-		}
+	if (game.bid_count == 0) {
+		/* determine the trump suit */
+		char suit;
+		for (suit = 0; suit < 4; suit++)
+			add_sbid(0, suit, LAPOCHA_TRUMP);
+		(void) lap_send_trump_request(game.dealer);
+		request_client_bid(game.dealer);
 	} else {		/* get a player's numerical bid */
 		int i;
+		assert(game.next_bid == (game.dealer + game.bid_count) % 4);
 		for (i = 0; i <= game.hand_size; i++) {
 			/* the dealer can't make the sum of the bids equal
 			   the hand size; somebody's got to go down */
@@ -198,10 +204,7 @@ static void lapocha_handle_bid(player_t p, bid_t bid)
 {
 	assert(game.next_bid == p);
 	if (bid.sbid.spec == LAPOCHA_TRUMP) {
-		game.trump = bid.sbid.suit;
-		set_global_message("", "Trump is %s.",
-				   get_suit_name(game.trump % 4));
-		lap_send_trump();
+		set_trump(bid.sbid.suit);
 	} else {
 		LAPOCHA.bid_sum += bid.sbid.val;
 		lap_send_bid(p, bid);

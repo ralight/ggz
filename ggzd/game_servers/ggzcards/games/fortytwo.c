@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4074 2002-04-24 09:53:59Z jdorje $
+ * $Id: fortytwo.c 4118 2002-04-30 04:30:28Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -293,7 +293,7 @@ static void fortytwo_start_playing(void)
 static char* fortytwo_verify_play(player_t p, card_t card)
 {
 	/* Must lead trump to first trick. */
-	if (game.trick_count == 0 && game.play_count == 0)
+	if (game.play_count == 0 && game.trick_count == 0)
 		if (game.data->map_card(card).suit != game.trump)
 			return "You must lead trump on the first trick.";
 	

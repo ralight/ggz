@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 4096 2002-04-27 23:02:27Z jdorje $
+ * $Id: spades.c 4118 2002-04-30 04:30:28Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -832,15 +832,17 @@ card_t get_play(int play_seat, int *valid_plays)
 #endif
 
 	/* Now determine our disposition for this trick. */
-	if (IS_GOING_NIL(ME) &&
-	    (get_tricks(ME) == 0 || oppNeed <= 0 || agg < 75))
+	if (IS_GOING_NIL(ME) && get_tricks(ME) == 0)
 		chosen = PlayNil();
 
-	if (chosen < 0 && IS_GOING_NIL(PARTNER)
-	    && (agg <= 50 || get_tricks(PARTNER) == 0))
+	if (chosen < 0
+	    && IS_GOING_NIL(PARTNER)
+	    && get_tricks(PARTNER) == 0)
 		chosen = CoverNil(agg);
 
-	if (chosen < 0 && agg < 100)
+	if (chosen < 0
+	    && ((IS_GOING_NIL(L_OPP) && get_tricks(L_OPP) == 0)
+	        || (IS_GOING_NIL(R_OPP) && get_tricks(R_OPP) == 0)))
 		chosen = SetNil(agg);
 
 	if (chosen < 0)
@@ -1329,17 +1331,19 @@ static int CoverNil(int agg)
 
 static int SetNil(int agg)
 {
-
-	int i, pp, chosen = -1, r, mask, s, map, count;
+	int i, pp, chosen = -1, r, mask, map, count;
 	card_t high_card =
 		(high ==
 		 -1) ? UNKNOWN_CARD : ggzcards.players[high].table_card;
-	char suit_lead = ggzcards.players[get_leader()].table_card.suit;
+	char suit_lead = ggzcards.players[get_leader()].table_card.suit, s;
+	
+	if (agg >= 100)
+		return -1;
 
 	ggz_debug(DBG_PLAY, "Strategy: set nil");
 
 	/* If one of our opponents bid nil and either hasn't played or has
-	   played * the high card, try to get under it. */
+	   played the high card, try to get under it. */
 	for (pp = L_OPP; pp <= R_OPP && chosen < 0; pp++) {
 		if (pp == PARTNER || !IS_GOING_NIL(pp)
 		    || get_tricks(pp) != 0)
@@ -1348,6 +1352,7 @@ static int SetNil(int agg)
 			/*
 			 * If we're leading, lead something small.
 			 */
+			ggz_debug(DBG_PLAY, "Set nil: lead small.");
 			for (i = 0; i < plays; i++) {
 				for (mask = 0, r = play[i].card.face + 1;
 				     r <= ACE_HIGH; r++)
@@ -1368,6 +1373,7 @@ static int SetNil(int agg)
 			/*
 			 * Try to get under the high card.
 			 */
+			ggz_debug(DBG_PLAY, "Set nil: duck the nil.");
 			for (i = 0; i < plays; i++)
 				if (card_comp(play[i].card, high_card) <= 0
 				    && play[i].future < 40
@@ -1377,6 +1383,8 @@ static int SetNil(int agg)
 					chosen = i;
 		} else if (high >= 0
 			   && ggzcards.players[pp].table_card.suit < 0) {
+			ggz_debug(DBG_PLAY, "Set nil: follow.");
+			
 			/*
 			 * Count how many cards we have under the high.
 			 */
@@ -1384,6 +1392,7 @@ static int SetNil(int agg)
 			for (i = 0; i < plays; i++)
 				if (card_comp(play[i].card, high_card) <= 0)
 					count++;
+			ggz_debug(DBG_PLAY, "We have %d losers.", count);
 
 			/*
 			 * Try to get just over the high card under certain conditions:
@@ -1393,17 +1402,19 @@ static int SetNil(int agg)
 			 * 4. the nil bidder can't beat the high card
 			 */
 			s = high_card.suit;
-			r = high_card.face;
 			map = SuitMap(pp, suit_lead);
-			for (mask = 0, i = r + 1; i <= ACE_HIGH; i++)
-				mask |= (1 << i);	/* bitmap of ranks
+			mask = 0;
+			for (r = high_card.face + 1; r <= ACE_HIGH; r++)
+				mask |= (1 << r);	/* bitmap of ranks
 							   which beat high
 							   card */
 
 			if ((agg > 50 && high != PARTNER)
 			    || (count < 2)
-			    || (r >= 9 && high != PARTNER)
+			    || (r >= JACK && high != PARTNER)
 			    || (s != suit_lead || (map & mask) == 0)) {
+				ggz_debug(DBG_PLAY, "Set nil: cover.");
+				
 				if (s != suit_lead) {	/* high player
 							   trumped */
 					if (map == 0)
@@ -1416,7 +1427,7 @@ static int SetNil(int agg)
 								   highest
 								   trump */
 				}
-				for (r++; r <= ACE_HIGH; r++) {
+				for (r = high_card.face + 1; r <= ACE_HIGH; r++) {
 					if (!libai_is_card_played(s, r)) {
 						for (i = 0; i < plays; i++)
 							if (play[i].card.
@@ -1463,6 +1474,8 @@ static int SetNil(int agg)
 					|| (play[i].future >
 					    play[chosen].future)))
 					chosen = i;
+		} else {
+			ggz_debug(DBG_PLAY, "Set nil: nothing...");
 		}
 	}
 
