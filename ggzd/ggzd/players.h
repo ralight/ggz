@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 5073 2002-10-28 00:09:53Z jdorje $
+ * $Id: players.h 5076 2002-10-28 02:58:08Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -150,6 +150,9 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 GGZPlayerHandlerStatus player_motd(GGZPlayer* player);
 
 int player_get_room(GGZPlayer *player);
+
+/* Returns the player type of the player.  The caller should have
+   acquired any necessary locks already. */
 GGZPlayerType player_get_type(GGZPlayer *player);
 
 void player_handle_pong(GGZPlayer *player);

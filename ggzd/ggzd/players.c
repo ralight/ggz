@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5075 2002-10-28 02:02:59Z jdorje $
+ * $Id: players.c 5076 2002-10-28 02:58:08Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -266,14 +266,16 @@ GGZPlayerType player_get_type(GGZPlayer *player)
 {
 	GGZPlayerType type;
 
-	pthread_rwlock_rdlock(&player->lock);
+	/* The caller should have already acquired a read lock.  Acquiring
+	   one now wouldn't do much good anyway, since the read lock is
+	   needed to protect the pointer itself... */
+
 	if(player->login_status == GGZ_LOGIN_ANON)
 		type = GGZ_PLAYER_GUEST;
 	else if(perms_is_admin(player))
 		type = GGZ_PLAYER_ADMIN;
 	else
 		type = GGZ_PLAYER_NORMAL;
-	pthread_rwlock_unlock(&player->lock);
 
 	return type;
 }
