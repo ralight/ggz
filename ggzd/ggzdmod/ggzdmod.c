@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4442 2002-09-07 19:47:27Z jdorje $
+ * $Id: ggzdmod.c 4448 2002-09-07 21:58:22Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -595,23 +595,20 @@ static int _ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 	ggz_debug("GGZDMOD", "Spectator %d set to type 'spectator' (%s)",
 		  spectator->num, spectator->name);
 
-	/* Note, some other parts of the code assume that if
-	   ggzdmod-game changes spectator information, the data is not sent back
-	   to ggzdmod-ggz.  Specifically, the game server is allowed to change
-	   the player FD (if it is -1). */
-
 	/* If we're connected to the game, send a message */
 	if (ggzdmod->type == GGZDMOD_GGZ
 	    && ggzdmod->state != GGZDMOD_STATE_CREATED) {
-		GGZSpectator oldspectator = ggzdmod_get_spectator(ggzdmod, spectator->num);
+		GGZSpectator oldspectator =
+			ggzdmod_get_spectator(ggzdmod, spectator->num);
 		
 		/* Detect join case */
 		if (!oldspectator.name) {
-		        /* We could check the seat name for a reserved seat,
-		           but we trust ggzd to do that instead. */
-			if (_io_send_spectator_join(ggzdmod->fd, spectator) < 0)
+			if (_io_send_spectator_join(ggzdmod->fd,
+						    spectator) < 0) {
 				_ggzdmod_error(ggzdmod,
 					       "Error writing to game");
+				return -1;
+			}
 
 			/* We (GGZ) don't need the fd now */
 			spectator->fd = -1;
@@ -619,9 +616,12 @@ static int _ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 
 		/* Detect leave case */
 		else  {
-			if (_io_send_spectator_leave(ggzdmod->fd, &oldspectator) < 0)
+			if (_io_send_spectator_leave(ggzdmod->fd,
+						     &oldspectator) < 0) {
 				_ggzdmod_error(ggzdmod,
 					       "Error writing to game");
+				return -1;
+			}
 		}
 	}
 
@@ -640,18 +640,25 @@ int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 		return -2;		
 	}
 
-	/* FIXME: check for correctness, (ie. name not NULL for reserved) */
+	/* The game currently has no need to change the spectator data. */
+	if (ggzdmod->type == GGZDMOD_GAME)
+		return -2;
 
-	/* If there is already a spectator, return error */
-	oldspectator = ggzdmod_get_spectator(ggzdmod, spectator->num);
-	if (((oldspectator.name) && (spectator->name))
-	|| ((!oldspectator.name) && (!spectator->name)))
+	/* The spectator number must be valid. */
+	if (spectator->num < 0
+	    || spectator->num >= ggzdmod->max_num_spectators)
 		return -1;
 
-	if (ggzdmod->type == GGZDMOD_GAME) {
-		    if(strings_differ(spectator->name, oldspectator.name))
-			return -1;
-	}
+	/* The name must be null iff the FD is invalid. */
+	if ( (spectator->name && spectator->fd < 0)
+	     || (!spectator->name && spectator->fd >= 0))
+		return -1;
+
+	/* The new spectator must be valid iff the old one isn't. */
+	oldspectator = ggzdmod_get_spectator(ggzdmod, spectator->num);
+	if ( (oldspectator.name && spectator->name)
+	     || (!oldspectator.name && !spectator->name))
+		return -1;
 
 	return _ggzdmod_set_spectator(ggzdmod, spectator);
 }
