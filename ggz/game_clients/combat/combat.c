@@ -203,29 +203,45 @@ int combat_check_move(combat_game *_game, int from, int to) {
 		return CBT_ERROR_MOVE_NOMOVE;
 
 	// Checks if its not a diagonal move
-	if (abs(dx) > 0 && abs(dy) > 0)
+	if (abs(dx) > 0 && abs(dy) > 0 && !(_game->options & OPT_ALLOW_DIAGONAL))
 		return CBT_ERROR_MOVE_DIAGONAL;
 
 	// Checks if it has distance 1
-	if (f_u != U_SCOUT && abs(dx + dy) != 1)
+	if (f_u != U_SCOUT && f_u != U_SERGEANT && (abs(dx) > 1 || abs(dy) > 1))
 		return CBT_ERROR_MOVE_BIGMOVE;
 	else if (f_u == U_SCOUT) {
 		// Normalizes the vectors
+    dir = 0;
 		if (dx != 0)
-			dir = dx/abs(dx);
+			dir += dx/abs(dx);
 		if (dy != 0)
-			dir = dy/abs(dy) * _game->width;
+			dir += dy/abs(dy) * _game->width;
 		// Checks what exists between the FROM and the TO
 		for (a = from + dir; a != to; a += dir) {
 			if (LAST(_game->map[a].type) != T_OPEN || LAST(_game->map[a].unit) != U_EMPTY)
 				return CBT_ERROR_MOVE_SCOUT;
 		}
 		// Check if he is moving >1 and attacking at the same time
-		if (abs(dx+dy) != 1 && t_u != U_EMPTY)
+		if (abs(dx+dy) != 1 && t_u != U_EMPTY && !(_game->options & OPT_SUPER_SCOUT))
 			return CBT_ERROR_MOVE_SCOUT;
 	}
+  else if (_game->options & OPT_SF_SERGEANT && f_u == U_SERGEANT) {
+    // Ok! Very similar to the scout one, although we must have
+    // only lakes betwen from and to
+    dir = 0;
+    if (dx != 0)
+      dir += dx/abs(dx);
+    if (dy != 0)
+      dir += dy/abs(dy) * _game->width;
+    for (a = from + dir; a != to; a += dir) {
+      if (LAST(_game->map[a].type) != T_LAKE || LAST(_game->map[a].unit) != U_EMPTY)
+        return CBT_ERROR_NOTOPEN;
+    }
+    // We won't check for move + attack
+    // He is a SF guy! He should be able to do that!
+  }
 
-	// Now error until now! Then its ok!
+	// No error until now! Then its ok!
 	
 	if (t_u == U_EMPTY)
 		return CBT_CHECK_MOVE;		

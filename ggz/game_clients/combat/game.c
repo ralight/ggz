@@ -246,22 +246,22 @@ void game_start() {
       free(title);
     }
 
-    if (cbt_game.options & OPT_OPEN_MAP)
+    if (cbt_game.options & OPT_OPEN_MAP || cbt_game.options & OPT_SHOW_ENEMY_UNITS)
       cbt_info.show_enemy = TRUE;
 
     return 0;
   }
 
-  void game_init() {
-    cbt_game.map = NULL;
-    cbt_game.width = 10;
-    cbt_game.height = 10;
-    cbt_game.army = NULL;
-    cbt_game.name = NULL;
-    cbt_game.state = CBT_STATE_INIT;
-    cbt_game.turn = 0;
-    cbt_game.options = 0;
-    cbt_info.current = U_EMPTY;
+void game_init() {
+  cbt_game.map = NULL;
+  cbt_game.width = 10;
+  cbt_game.height = 10;
+  cbt_game.army = NULL;
+  cbt_game.name = NULL;
+  cbt_game.state = CBT_STATE_INIT;
+  cbt_game.turn = 0;
+  cbt_game.options = 0;
+  cbt_info.current = U_EMPTY;
   cbt_info.show_enemy = FALSE;
   cbt_info.last_unit = U_UNKNOWN;
   cbt_info.last_from = -1;
@@ -537,8 +537,12 @@ void game_update_unit_list(int seat) {
   unit_list = gtk_object_get_data(GTK_OBJECT(player_info), "unit_list");
 
   for (a = 0; a < 12; a++) {
-    sprintf(info, "%d/%d", cbt_game.army[seat][a],
-        cbt_game.army[cbt_game.number][a]);
+    if (seat == cbt_info.seat || !(cbt_game.options & OPT_HIDE_UNIT_LIST)) {
+      sprintf(info, "%d/%d", cbt_game.army[seat][a],
+          cbt_game.army[cbt_game.number][a]);
+    } else {
+      sprintf(info, "?/%d", cbt_game.army[cbt_game.number][a]);
+    }
     gtk_clist_set_text(GTK_CLIST(unit_list), a, 1, info);
   }
 }

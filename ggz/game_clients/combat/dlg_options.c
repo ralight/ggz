@@ -375,7 +375,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[4]);
   gtk_container_add (GTK_CONTAINER (eventbox5), opt_bin1[4]);
-  gtk_widget_set_sensitive (opt_bin1[4], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[4], TRUE);
 
   eventbox6 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox6, "eventbox6");
@@ -435,7 +435,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[7]);
   gtk_container_add (GTK_CONTAINER (eventbox8), opt_bin1[7]);
-  gtk_widget_set_sensitive (opt_bin1[7], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[7], TRUE);
 
   eventbox9 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox9, "eventbox9");
@@ -535,7 +535,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[12]);
   gtk_container_add (GTK_CONTAINER (eventbox13), opt_bin1[12]);
-  gtk_widget_set_sensitive (opt_bin1[12], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[12], TRUE);
 
   eventbox14 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox14, "eventbox14");
@@ -575,7 +575,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[14]);
   gtk_container_add (GTK_CONTAINER (eventbox15), opt_bin1[14]);
-  gtk_widget_set_sensitive (opt_bin1[14], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[14], TRUE);
 
   eventbox16 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox16, "eventbox16");
@@ -595,7 +595,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[15]);
   gtk_container_add (GTK_CONTAINER (eventbox16), opt_bin1[15]);
-  gtk_widget_set_sensitive (opt_bin1[15], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[15], TRUE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (opt_bin1[15]), TRUE);
 
   opt_box_open_map = gtk_event_box_new ();
@@ -1045,11 +1045,13 @@ void load_map(char *filename, GtkWidget *dialog) {
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(unit_spin), ARMY(map, a));
   }
   // Options
-  for (a = 0; a < 16; a++) {
+  for (a = 0; a < 15; a++) {
     sprintf(options_name, "opt_bin1[%d]", a);
     options_widget = lookup_widget(dialog, options_name);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(options_widget), map->options&(1<<a));
   }
+  options_widget = lookup_widget(dialog, "opt_bin1[15]");
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(options_widget), !(map->options&OPT_SHOW_ENEMY_UNITS));
   // Terrain data
   gtk_object_set_data(GTK_OBJECT(dialog), "options", map);
   draw_mini_board(dialog);
