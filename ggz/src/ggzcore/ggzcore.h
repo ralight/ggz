@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5054 2002-10-26 22:35:59Z jdorje $
+ * $Id: ggzcore.h 5062 2002-10-27 12:46:20Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -363,7 +363,12 @@ typedef enum {
 	/** A player's lag (measure of connection speed) has been updated
 	 *  @see ggzcore_player_get_lag
 	 *  @param data The name of the player whose lag has changed. */
-	GGZ_PLAYER_LAG
+	GGZ_PLAYER_LAG,
+
+	/** A player's stats have been updateed.
+	 *  @see ggzcore_player_get_record
+	 *  @param data The name of the player whose stats have changed. */
+	GGZ_PLAYER_STATS
 } GGZRoomEvent;
 
 
@@ -879,6 +884,12 @@ GGZTable*     ggzcore_player_get_table(GGZPlayer *player);
 
 /** @brief Return the player's lag class (1..5) */
 int	      ggzcore_player_get_lag(GGZPlayer *player);
+
+/** @brief Get the player's win-loss record.
+ *  A value of -1 means there is no known record.
+ */
+void ggzcore_player_get_record(GGZPlayer *player,
+			       int *wins, int *losses, int *ties);
 
 
 GGZTable* ggzcore_table_new(void);

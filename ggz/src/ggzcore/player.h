@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.h 4941 2002-10-17 23:56:16Z jdorje $
+ * $Id: player.h 5062 2002-10-27 12:46:20Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -50,6 +50,12 @@ struct _GGZPlayer {
 
 	/* Lag of the player */
 	int lag;
+
+	/* Record of the player */
+	int wins, losses, ties;
+
+	/* Rating of the player */
+	int rating;
 };
 
 
@@ -76,6 +82,8 @@ GGZPlayerType _ggzcore_player_get_type(struct _GGZPlayer *player);
 struct _GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player);
 
 int _ggzcore_player_get_lag(struct _GGZPlayer *player);
+void _ggzcore_player_get_record(GGZPlayer *player,
+				int *wins, int *losses, int *ties);
 
 /* Utility functions used by _ggzcore_list */
 int   _ggzcore_player_compare(void* p, void* q);

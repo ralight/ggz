@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 5054 2002-10-26 22:35:59Z jdorje $
+ * $Id: room.c 5062 2002-10-27 12:46:20Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -53,10 +53,7 @@ static GGZHookReturn _ggzcore_room_event(struct _GGZRoom *room,
 static char* _ggzcore_room_events[] = {
 	"GGZ_PLAYER_LIST",
 	"GGZ_TABLE_LIST",
-	"GGZ_CHAT",
-	"GGZ_ANNOUNCE",
-	"GGZ_PRVMSG",
-	"GGZ_BEEP",
+	"GGZ_CHAT_EVENT",
 	"GGZ_ROOM_ENTER",
 	"GGZ_ROOM_LEAVE",
 	"GGZ_TABLE_UPDATE",
@@ -66,7 +63,8 @@ static char* _ggzcore_room_events[] = {
 	"GGZ_TABLE_JOIN_FAIL",
 	"GGZ_TABLE_LEFT",
 	"GGZ_TABLE_LEAVE_FAIL",
-	"GGZ_PLAYER_LAG"
+	"GGZ_PLAYER_LAG",
+	"GGZ_PLAYER_STATS"
 };
 
 /* Total number of server events messages */
@@ -594,6 +592,32 @@ void _ggzcore_room_set_player_lag(struct _GGZRoom *room, char *name, int lag)
 			_ggzcore_room_event(room, GGZ_PLAYER_LAG, name);
 		}
 	}
+}
+
+
+void _ggzcore_room_set_player_stats(GGZRoom *room, GGZPlayer *pdata)
+{
+	/* FIXME: This should be sending a player "class-based" event */
+	GGZPlayer *player;
+
+	ggz_debug(GGZCORE_DBG_ROOM, "Setting stats for %s: %d-%d-%d",
+		  pdata->name, pdata->wins, pdata->losses, pdata->ties);
+
+	if (!room->players)
+		return;
+
+	player = _ggzcore_room_get_player_by_name(room, pdata->name);
+
+	/* make sure they're still in room */
+	if (!player)
+		return;
+
+	/* FIXME: should we use accessor functions? */
+	player->wins = pdata->wins;
+	player->losses = pdata->losses;
+	player->ties = pdata->ties;
+	player->rating = pdata->rating;
+	_ggzcore_room_event(room, GGZ_PLAYER_STATS, player->name);
 }
 
 
