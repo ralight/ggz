@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3084 2002-01-12 09:26:34Z jdorje $
+ * $Id: parse_opt.c 3296 2002-02-10 06:30:07Z rgade $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -67,6 +67,7 @@ static const struct LogTypes log_types[] = {
 	{ "notices",		GGZ_LOG_NOTICE },
 	{ "connections",	GGZ_LOG_CONNECTION_INFO },
 	{ "security",		GGZ_LOG_SECURITY },
+	{ "update",		GGZ_LOG_UPDATE },
 	{ "tables",		GGZ_LOG_TABLES }
 };
 static int num_log_types = sizeof(log_types) / sizeof(log_types[0]);
@@ -322,6 +323,9 @@ static void get_config_options(int ch)
 		log_info.options &= ~GGZ_LOGOPT_INC_GAMETYPE;
 	else
 		log_info.options |= GGZ_LOGOPT_INC_GAMETYPE;
+	log_info.verbose_updates = ggz_conf_read_int(ch, "Logs", "VerboseUpdates", 1);
+	intval = ggz_conf_read_int(ch, "Logs", "UpdateInterval", 600);
+	log_update_set_interval(intval);
 
 	/* Miscellaneous */
 	opt.ping_freq = ggz_conf_read_int(ch, "Miscellaneous", "LagFrequency", 10);

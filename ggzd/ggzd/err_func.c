@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 3139 2002-01-19 08:07:46Z bmh $
+ * $Id: err_func.c 3296 2002-02-10 06:30:07Z rgade $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -55,6 +55,7 @@ LogInfo log_info = { 0, 0,
 /* Update log values */
 static struct {
 	pthread_mutex_t mut;
+	int update_interval;
 	time_t start_time;
 	time_t next_update;
 	int anon_users;
@@ -313,7 +314,8 @@ void logfile_initialize(void)
 	}
 
 	pthread_mutex_init(&update_info.mut, NULL);
-	update_info.next_update = time(NULL) + LOG_UPDATE_INTERVAL;
+	update_info.update_interval = LOG_UPDATE_INTERVAL;
+	update_info.next_update = time(NULL) + update_info.update_interval;
 	update_info.start_time = time(NULL);
 	update_info.anon_users = 0;
 	update_info.regd_users = 0;
@@ -391,7 +393,7 @@ void log_generate_update(void)
 
 	/* Not in critical section (only our thread uses these) */
 	uptime = time(NULL) - update_info.start_time;
-	update_info.next_update = time(NULL) + LOG_UPDATE_INTERVAL;
+	update_info.next_update = time(NULL) + update_info.update_interval;
 
 	pthread_mutex_lock(&update_info.mut);
 
@@ -413,9 +415,14 @@ void log_generate_update(void)
 
 	pthread_mutex_unlock(&update_info.mut);
 
-	log_msg(GGZ_LOG_UPDATE, "%d %d %d %d %d", uptime,
-						  anon, regd,
-						  login, logout);
+	if(log_info.verbose_updates) {
+		log_msg(GGZ_LOG_UPDATE, "UPDATE Uptime=%d sec", uptime);
+		log_msg(GGZ_LOG_UPDATE, "UPDATE There are %d anonymous users and %d registered users online", anon, regd);
+		log_msg(GGZ_LOG_UPDATE, "UPDATE Since the last update, %d users have logged in, %d logged out", login, logout);
+		
+	} else
+		log_msg(GGZ_LOG_UPDATE, "UPDATE %d %d %d %d %d",
+			uptime, anon, regd, login, logout);
 }
 
 
@@ -451,5 +458,16 @@ void log_logout_regd(void)
 	pthread_mutex_lock(&update_info.mut);
 	update_info.regd_users--;
 	update_info.num_logouts++;
+	pthread_mutex_unlock(&update_info.mut);
+}
+
+
+void log_update_set_interval(int sec)
+{
+	/* No need to lock as this is only called before server init */
+	/* However, if this ever should change... doesn't hurt to play safe */
+
+	pthread_mutex_lock(&update_info.mut);
+	update_info.update_interval = sec;
 	pthread_mutex_unlock(&update_info.mut);
 }

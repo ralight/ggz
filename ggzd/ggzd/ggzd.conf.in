@@ -64,6 +64,9 @@
 #   Valid types:  All
 #                 Notices
 #                 Connections
+#		  Security
+#		  Update
+#		  Tables
 LogTypes = Notices Connections
 
 # Debug logfile
@@ -87,6 +90,7 @@ LogTypes = Notices Connections
 #                 Room
 #                 Lists
 #		  Game_Msg
+#		  XML
 DebugTypes = All
 
 # Syslogd facility
@@ -116,6 +120,14 @@ DebugTypes = All
 #   eg: '[NetSpades] logmsg' (1=yes, 0=no)
 #   Default is 1
 #GameTypeInLogs = 0
+
+# Update Log Config
+#   Should the update log be human readable?  (1=yes, 0=no)
+#   The update log can be either verbose (human readable) or not.  If you
+#   plan on writing/using a script to read the updates, turn off verbose.
+#VerboseUpdates = 1
+#   How often to generate an update log entry? (in seconds)
+#UpdateInterval = 600
 
 ############################################################################
 # Directory and File Options

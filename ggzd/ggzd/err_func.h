@@ -63,7 +63,7 @@
 #define GGZ_DBGOPT_USE_SYSLOG	(unsigned) 0x0020
 
 #define LOG_UPDATE_INTERVAL	600	/* Seconds between update log entries */
-
+					/* Can be adjusted in ggzd.conf */
 
 /* Logfile info */
 typedef struct {
@@ -78,6 +78,7 @@ typedef struct {
 	char *dbg_fname;			/* cleanup() */
 	FILE *dbgfile;
 	unsigned dbg_types;
+	int verbose_updates;
 #endif
 } LogInfo;
 
@@ -129,3 +130,4 @@ extern void log_login_anon(void);
 extern void log_login_regd(void);
 extern void log_logout_anon(void);
 extern void log_logout_regd(void);
+extern void log_update_set_interval(int);
