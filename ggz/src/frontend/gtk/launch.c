@@ -254,7 +254,8 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 		tmp = lookup_widget(launch_dialog, widget_name);
 		g_free(widget_name);
 		if (GTK_TOGGLE_BUTTON(tmp)->active)
-			if (ggzcore_table_add_bot(table, NULL, x) < 0)
+			if (ggzcore_table_set_seat(table, x,
+						   GGZ_SEAT_BOT, NULL) < 0)
 				assert(0);
 			
 		/* Check to see if the seat is reserved. */
@@ -268,7 +269,8 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 			g_free(widget_name);
 			name = gtk_entry_get_text(GTK_ENTRY(tmp));
 			
-			if (ggzcore_table_add_reserved(table, name, x) < 0)
+			if (ggzcore_table_set_seat(table, x,
+						   GGZ_SEAT_RESERVED, name) < 0)
 				assert(0);
 		}
 	}
