@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: motd.c 4626 2002-09-18 19:16:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -53,11 +53,12 @@ extern struct GGZState state;
 
 
 /* Local functions */
-static char *motd_get_uptime(char *, int);
-static char *motd_get_date(char *, int);
-static char *motd_get_time(char *, int);
-static char *motd_get_users(char *, int);
-static char *motd_get_tables(int, char *, int);
+static char *motd_get_uptime(char *uptime_str, size_t sz_uptime_str);
+static char *motd_get_date(char *date_str, size_t sz_date_str);
+static char *motd_get_time(char *time_str, size_t sz_time_str);
+static char *motd_get_users(char *users_str, size_t sz_users_str);
+static char *motd_get_tables(int option,
+			     char *tables_str, size_t sz_tables_str);
 
 /* Read the motd file */
 void motd_read_file(void)
@@ -251,7 +252,7 @@ char *motd_get_line(int index)
 
 
 /* Convert the curent uptime into a nice string format and return a pointer */
-char *motd_get_uptime(char *uptime_str, int sz_uptime_str)
+static char *motd_get_uptime(char *uptime_str, size_t sz_uptime_str)
 {
 	unsigned long uptime;
 	int days;
@@ -281,7 +282,7 @@ char *motd_get_uptime(char *uptime_str, int sz_uptime_str)
 
 
 /* Setup a string to send the date */
-static char *motd_get_date(char *date_str, int sz_date_str)
+static char *motd_get_date(char *date_str, size_t sz_date_str)
 {
  	time_t now;
 	struct tm localtm;
@@ -296,7 +297,7 @@ static char *motd_get_date(char *date_str, int sz_date_str)
 
 
 /* Setup a string to send the time */
-static char *motd_get_time(char *time_str, int sz_time_str)
+static char *motd_get_time(char *time_str, size_t sz_time_str)
 {
  	time_t now;
 	struct tm localtm;
@@ -311,7 +312,7 @@ static char *motd_get_time(char *time_str, int sz_time_str)
 
 
 /* Setup a string showing the number of users online */
-static char *motd_get_users(char *users_str, int sz_users_str)
+static char *motd_get_users(char *users_str, size_t sz_users_str)
 {
 	pthread_rwlock_rdlock(&state.lock);
 	snprintf(users_str, sz_users_str, "%d", state.players);
@@ -324,7 +325,7 @@ static char *motd_get_users(char *users_str, int sz_users_str)
 /* Get the number of tables based on option */
 static char *motd_get_tables(int option,
 			     char *tables_str,
-			     int sz_tables_str)
+			     size_t sz_tables_str)
 {
 	int num_tables=0;
 	/* int i; */
