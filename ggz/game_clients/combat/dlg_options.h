@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 
 GtkWidget* create_dlg_options (void);
+GtkWidget* create_dlg_save (void);
 void dlg_options_update(GtkWidget *);
 
 

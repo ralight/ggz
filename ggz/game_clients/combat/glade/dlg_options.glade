@@ -14,7 +14,6 @@
   <output_main_file>False</output_main_file>
   <output_support_files>False</output_support_files>
   <output_build_files>False</output_build_files>
-  <backup_source_files>False</backup_source_files>
 </project>
 
 <widget>

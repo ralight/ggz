@@ -12,6 +12,8 @@
 
 #include "support.h"
 #include "dlg_options.h"
+#include <stdio.h>
+#include "game.h"
 
 GdkPixmap *mini_buf;
 extern GdkColor lake_color;
@@ -51,6 +53,18 @@ create_dlg_options (void)
   GtkWidget *label4;
   GtkWidget *sorry;
   GtkWidget *label5;
+  GtkWidget *hbox5;
+  GtkWidget *scrolledwindow1;
+  GtkWidget *maps_list;
+  GtkWidget *label10;
+  GtkWidget *vbox2;
+  GtkWidget *table2;
+  GtkWidget *preview_board;
+  GtkWidget *label11;
+  GtkWidget *hbuttonbox3;
+  GtkWidget *load;
+  GtkWidget *delete;
+  GtkWidget *label9;
   GtkWidget *dialog_action_area2;
   GtkWidget *hbuttonbox2;
   GtkWidget *ok_button;
@@ -258,6 +272,117 @@ create_dlg_options (void)
   gtk_widget_show (label5);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 2), label5);
 
+  hbox5 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox5, "hbox5");
+  gtk_widget_ref (hbox5);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "hbox5", hbox5,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox5);
+  gtk_container_add (GTK_CONTAINER (notebook1), hbox5);
+
+  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_set_name (scrolledwindow1, "scrolledwindow1");
+  gtk_widget_ref (scrolledwindow1);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "scrolledwindow1", scrolledwindow1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (scrolledwindow1);
+  gtk_box_pack_start (GTK_BOX (hbox5), scrolledwindow1, TRUE, TRUE, 0);
+  gtk_widget_set_usize (scrolledwindow1, 163, -2);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  maps_list = gtk_clist_new (1);
+  gtk_widget_set_name (maps_list, "maps_list");
+  gtk_widget_ref (maps_list);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "maps_list", maps_list,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (maps_list);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow1), maps_list);
+  gtk_container_set_border_width (GTK_CONTAINER (maps_list), 2);
+  gtk_clist_set_column_width (GTK_CLIST (maps_list), 0, 80);
+  gtk_clist_column_titles_show (GTK_CLIST (maps_list));
+
+  label10 = gtk_label_new (_("Stored Maps"));
+  gtk_widget_set_name (label10, "label10");
+  gtk_widget_ref (label10);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label10", label10,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label10);
+  gtk_clist_set_column_widget (GTK_CLIST (maps_list), 0, label10);
+
+  vbox2 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_set_name (vbox2, "vbox2");
+  gtk_widget_ref (vbox2);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "vbox2", vbox2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox2);
+  gtk_box_pack_start (GTK_BOX (hbox5), vbox2, TRUE, TRUE, 0);
+
+  table2 = gtk_table_new (3, 3, FALSE);
+  gtk_widget_set_name (table2, "table2");
+  gtk_widget_ref (table2);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "table2", table2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table2);
+  gtk_box_pack_start (GTK_BOX (vbox2), table2, TRUE, TRUE, 0);
+
+  preview_board = gtk_drawing_area_new ();
+  gtk_widget_set_name (preview_board, "preview_board");
+  gtk_widget_ref (preview_board);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "preview_board", preview_board,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (preview_board);
+  gtk_table_attach (GTK_TABLE (table2), preview_board, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_widget_set_usize (preview_board, 100, 100);
+
+  label11 = gtk_label_new (_("Map Preview"));
+  gtk_widget_set_name (label11, "label11");
+  gtk_widget_ref (label11);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label11", label11,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label11);
+  gtk_table_attach (GTK_TABLE (table2), label11, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND),
+                    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
+
+  hbuttonbox3 = gtk_hbutton_box_new ();
+  gtk_widget_set_name (hbuttonbox3, "hbuttonbox3");
+  gtk_widget_ref (hbuttonbox3);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "hbuttonbox3", hbuttonbox3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbuttonbox3);
+  gtk_box_pack_start (GTK_BOX (vbox2), hbuttonbox3, FALSE, FALSE, 0);
+  gtk_button_box_set_child_size (GTK_BUTTON_BOX (hbuttonbox3), 81, 27);
+  gtk_button_box_set_child_ipadding (GTK_BUTTON_BOX (hbuttonbox3), 0, 0);
+
+  load = gtk_button_new_with_label (_("Load"));
+  gtk_widget_set_name (load, "load");
+  gtk_widget_ref (load);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "load", load,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (load);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox3), load);
+  GTK_WIDGET_SET_FLAGS (load, GTK_CAN_DEFAULT);
+
+  delete = gtk_button_new_with_label (_("Delete"));
+  gtk_widget_set_name (delete, "delete");
+  gtk_widget_ref (delete);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "delete", delete,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (delete);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox3), delete);
+  GTK_WIDGET_SET_FLAGS (delete, GTK_CAN_DEFAULT);
+
+  label9 = gtk_label_new (_("Maps"));
+  gtk_widget_set_name (label9, "label9");
+  gtk_widget_ref (label9);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label9", label9,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label9);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 3), label9);
+
+
   dialog_action_area2 = GTK_DIALOG (dlg_options)->action_area;
   gtk_widget_set_name (dialog_action_area2, "dialog_action_area2");
   gtk_object_set_data (GTK_OBJECT (dlg_options), "dialog_action_area2", dialog_action_area2);
@@ -272,7 +397,7 @@ create_dlg_options (void)
   gtk_widget_show (hbuttonbox2);
   gtk_box_pack_start (GTK_BOX (dialog_action_area2), hbuttonbox2, TRUE, TRUE, 0);
 
-  ok_button = gtk_button_new_with_label (_("OK"));
+  ok_button = gtk_button_new_with_label (_("Start Game"));
   gtk_widget_set_name (ok_button, "ok_button");
   gtk_widget_ref (ok_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_options), "ok_button", ok_button,
@@ -337,6 +462,91 @@ create_dlg_options (void)
 
   gtk_widget_grab_default (ok_button);
   return dlg_options;
+}
+
+GtkWidget*
+create_dlg_save (void)
+{
+  GtkWidget *dlg_save;
+  GtkWidget *dialog_vbox3;
+  GtkWidget *hbox6;
+  GtkWidget *label12;
+  GtkWidget *map_name;
+  GtkWidget *dialog_action_area3;
+  GtkWidget *hbuttonbox4;
+  GtkWidget *button3;
+  GtkWidget *button4;
+
+  dlg_save = gtk_dialog_new ();
+  gtk_widget_set_name (dlg_save, "dlg_save");
+  gtk_object_set_data (GTK_OBJECT (dlg_save), "dlg_save", dlg_save);
+  gtk_window_set_title (GTK_WINDOW (dlg_save), _("Save Map?"));
+  gtk_window_set_policy (GTK_WINDOW (dlg_save), TRUE, TRUE, FALSE);
+
+  dialog_vbox3 = GTK_DIALOG (dlg_save)->vbox;
+  gtk_widget_set_name (dialog_vbox3, "dialog_vbox3");
+  gtk_object_set_data (GTK_OBJECT (dlg_save), "dialog_vbox3", dialog_vbox3);
+  gtk_widget_show (dialog_vbox3);
+
+  hbox6 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox6, "hbox6");
+  gtk_widget_ref (hbox6);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "hbox6", hbox6,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox6);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox3), hbox6, TRUE, TRUE, 0);
+
+  label12 = gtk_label_new (_("Save map as:"));
+  gtk_widget_set_name (label12, "label12");
+  gtk_widget_ref (label12);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "label12", label12,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label12);
+  gtk_box_pack_start (GTK_BOX (hbox6), label12, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label12), 8, 0);
+
+  map_name = gtk_entry_new ();
+  gtk_widget_set_name (map_name, "map_name");
+  gtk_widget_ref (map_name);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "map_name", map_name,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (map_name);
+  gtk_box_pack_start (GTK_BOX (hbox6), map_name, TRUE, TRUE, 5);
+  gtk_widget_set_usize (map_name, 158, 19);
+
+  dialog_action_area3 = GTK_DIALOG (dlg_save)->action_area;
+  gtk_widget_set_name (dialog_action_area3, "dialog_action_area3");
+  gtk_object_set_data (GTK_OBJECT (dlg_save), "dialog_action_area3", dialog_action_area3);
+  gtk_widget_show (dialog_action_area3);
+  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area3), 10);
+
+  hbuttonbox4 = gtk_hbutton_box_new ();
+  gtk_widget_set_name (hbuttonbox4, "hbuttonbox4");
+  gtk_widget_ref (hbuttonbox4);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "hbuttonbox4", hbuttonbox4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbuttonbox4);
+  gtk_box_pack_start (GTK_BOX (dialog_action_area3), hbuttonbox4, TRUE, TRUE, 0);
+
+  button3 = gtk_button_new_with_label (_("Yep"));
+  gtk_widget_set_name (button3, "button3");
+  gtk_widget_ref (button3);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "button3", button3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button3);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox4), button3);
+  GTK_WIDGET_SET_FLAGS (button3, GTK_CAN_DEFAULT);
+
+  button4 = gtk_button_new_with_label (_("Nope"));
+  gtk_widget_set_name (button4, "button4");
+  gtk_widget_ref (button4);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "button4", button4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button4);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox4), button4);
+  GTK_WIDGET_SET_FLAGS (button4, GTK_CAN_DEFAULT);
+
+  return dlg_save;
 }
 
 void dlg_options_update(GtkWidget *dlg_options) {
