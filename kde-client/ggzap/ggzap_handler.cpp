@@ -24,6 +24,9 @@
 #include "GGZCore.h"
 #include "GGZCoreConfio.h"
 
+// Qt includes
+#include <qsocketnotifier.h>
+
 // System includes
 #include <cstring>
 #include <cstdlib>
@@ -46,6 +49,7 @@ GGZapHandler::GGZapHandler()
 	m_confusername = NULL;
 	m_zapuser = NULL;
 	m_killserver = 0;
+	m_activetable = -1;
 
 	core = new GGZCore();
 	core->init(GGZCore::parser | GGZCore::modules);
@@ -139,11 +143,6 @@ void GGZapHandler::process()
 		m_server = NULL;
 		m_killserver = 0;
 	}
-
-	if(!m_server) return;
-	if(m_server->dataPending()) m_server->dataRead();
-	if(!m_game) return;
-	if(m_game->dataPending()) m_game->dataRead();
 }
 
 GGZHookReturn GGZapHandler::hookServer(unsigned int id, void *event_data, void *user_data)
@@ -181,7 +180,8 @@ cout << "game " << id << endl;
 
 void GGZapHandler::hookServerActive(unsigned int id)
 {
-	int join;
+	int join, ret;
+	GGZCoreGametype *gametype;
 
 cout << "hookServerActive!" << endl;
 
@@ -189,35 +189,48 @@ cout << "hookServerActive!" << endl;
 	{
 		case GGZCoreServer::connected:
 			emit signalState(connected);
-			while(!m_server->isOnline()) m_server->dataRead();
+			//while(!m_server->isOnline()) m_server->dataRead();
+			m_sn_server = new QSocketNotifier(m_server->fd(), QSocketNotifier::Read, this);
+			connect(m_sn_server, SIGNAL(activated(int)), SLOT(slotServerData()));
 			m_server->setLogin(GGZCoreServer::guest, m_confusername, "GGZap Game");
-			m_server->login();
+			//m_server->login();
 			break;
 		case GGZCoreServer::connectfail:
 			emit signalState(connectfail);
+			break;
+		case GGZCoreServer::negotiated:
+			ret = m_server->login();
+			if(ret < 0) emit signalState(loginfail);
 			break;
 		case GGZCoreServer::negotiatefail:
 			emit signalState(negotiatefail);
 			break;
 		case GGZCoreServer::loggedin:
 			emit signalState(loggedin);
-			m_server->listRooms(-1, 0);
+			m_server->listRooms(-1, 1);
 			m_server->listGames(1);
 			break;
 		case GGZCoreServer::loginfail:
 			emit signalState(loginfail);
 			break;
 		case GGZCoreServer::roomlist:
-			break;
-		case GGZCoreServer::typelist:
 			join = -1;
 			for(int i = 0; i < m_server->countRooms(); i++)
 			{
-				if(strcmp(m_server->room(i)->gametype()->name(), m_modulename) == 0) join = i;
-				else cout << "type: " << m_server->room(i)->gametype()->name() << endl;
+				gametype = m_server->room(i)->gametype();
+				if(gametype)
+				{
+cerr << "compare 0: " << gametype << endl;
+cerr << "compare 1: " << gametype->name() << endl;
+cerr << "compare 2: " << m_modulename << endl;
+					if(strcmp(gametype->name(), m_modulename) == 0) join = i;
+					else cout << "type: " << m_server->room(i)->gametype()->name() << endl;
+				}
 			}
 			if(join == -1) emit signalState(joinroomfail);
 			else m_server->joinRoom(join);
+			break;
+		case GGZCoreServer::typelist:
 			break;
 		case GGZCoreServer::entered:
 			m_room = m_server->room();
@@ -228,6 +241,10 @@ cout << "hookServerActive!" << endl;
 			break;
 		case GGZCoreServer::enterfail:
 			emit signalState(joinroomfail);
+			break;
+		case GGZCoreServer::protoerror:
+		case GGZCoreServer::neterror:
+			emit signalState(error);
 			break;
 		default:
 			cout << "not handled: " << id << endl;
@@ -301,7 +318,8 @@ cout << "hookRoomActive!" << endl;
 				if(m_module)
 				{
 cout << "##### joinTable: " << join << endl;
-					m_room->joinTable(join);
+					//m_room->joinTable(join);
+					m_activetable = join;
 				}
 			}
 			break;
@@ -358,17 +376,27 @@ cout << "hookGameActive!" << endl;
 		/*case GGZCoreGame::data:
 			m_room->sendData((char*)data);
 			break;*/
+		case GGZCoreGame::launched:
+			m_sn_game = new QSocketNotifier(m_game->fd(), QSocketNotifier::Read, this);
+			connect(m_sn_game, SIGNAL(activated(int)), SLOT(slotGameData()));
+			break;
+		case GGZCoreGame::negotiated:
+			m_server->createChannel();
+			break;
 		case GGZCoreGame::over:
 			detachGameCallbacks();
 			delete m_game;
 			m_game = NULL;
 			emit signalState(finish);
 			break;
+		case GGZCoreGame::playing:
+			m_room->joinTable(m_activetable);
+			break;
 	}
 }
 
 ///////////////////////////////////////////////////////////////////
-// stolen from GGZapHandler
+// stolen from KGGZ
 // todo: only use hooks which are essential!
 ///////////////////////////////////////////////////////////////////
 
@@ -476,5 +504,15 @@ void GGZapHandler::detachGameCallbacks()
 	m_game->removeHook(GGZCoreGame::over, &GGZapHandler::hookGame);
 	m_game->removeHook(GGZCoreGame::ioerror, &GGZapHandler::hookGame);
 	m_game->removeHook(GGZCoreGame::protoerror, &GGZapHandler::hookGame);
+}
+
+void GGZapHandler::slotServerData()
+{
+	m_server->dataRead();
+}
+
+void GGZapHandler::slotGameData()
+{
+	m_game->dataRead();
 }
 

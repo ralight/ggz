@@ -46,7 +46,7 @@ GGZap::GGZap(QWidget *parent, const char *name)
 	connect(tray, SIGNAL(signalCancel()), SLOT(slotCancel()));
 	connect(this, SIGNAL(signalMenu(int)), tray, SLOT(slotMenu(int)));
 
-	startTimer(150);
+	startTimer(200);
 
 	m_gui->move(kapp->desktop()->width() / 2 - 125, kapp->desktop()->height() / 2 - 50);
 }
@@ -147,6 +147,11 @@ void GGZap::slotState(int state)
 			slotCancel();
 			KMessageBox::error(m_gui,
 				i18n("Could not start the game!\nPlease make sure you have it installed."), i18n("Error!"));
+			emit signalMenu(GGZapTray::menucancel);
+			break;
+		case GGZapHandler::error:
+			KMessageBox::error(m_gui,
+				i18n("An unknown error occured."), i18n("Error!"));
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::finish:

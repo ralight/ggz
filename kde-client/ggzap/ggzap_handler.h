@@ -27,6 +27,8 @@
 #include "GGZCoreGame.h"
 #include "GGZCoreModule.h"
 
+class QSocketNotifier;
+
 // Network connection manager for GGZap
 class GGZapHandler : public QObject
 {
@@ -53,7 +55,8 @@ class GGZapHandler : public QObject
 			waiting,
 			started,
 			startfail,
-			finish
+			finish,
+			error
 		};
 
 		static GGZHookReturn hookServer(unsigned int id, void *event_data, void *user_data);
@@ -63,6 +66,10 @@ class GGZapHandler : public QObject
 		void hookServerActive(unsigned int id);
 		void hookRoomActive(unsigned int id, void *data);
 		void hookGameActive(unsigned int id, void *data);
+
+	public slots:
+		void slotServerData();
+		void slotGameData();
 
 	signals:
 		void signalState(int state);
@@ -85,7 +92,8 @@ class GGZapHandler : public QObject
 		const char *m_frontendtype;
 		const char *m_confserver, *m_confusername;
 		char *m_zapuser;
-		int m_killserver;
+		int m_killserver, m_activetable;
+		QSocketNotifier *m_sn_server, *m_sn_game;
 };
 
 #endif
