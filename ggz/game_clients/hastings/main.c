@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 3394 2002-02-17 09:42:10Z jdorje $
+ * $Id: main.c 3635 2002-03-23 20:54:50Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -131,7 +131,10 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case HASTINGS_REQ_MOVE:
 			game.state = STATE_SELECT;
-			game_status(_("Your move: select a knight (you are number %d)"), game.self);
+			game_status(_("Your move: select a knight "
+			              "(you are %s on the %s team)."),
+			            _(player_colors[game.self / 2]),
+			            _(team_colors[game.self % 2]));
 			break;
 		case HASTINGS_RSP_MOVE:
 			get_move_status();

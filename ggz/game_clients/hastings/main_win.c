@@ -64,7 +64,8 @@
 #include <ggz.h>	/* libggz */
 
 /* Unit pictures */
-/* Red is 0, green is 1, blue is 2, yellow is 3 */
+/* Red is 0, blue is 1, green is 2, yellow is 3.
+   This corresponds to player_colors[] in main.c! */
 GdkPixmap* man_pix[4];
 GdkPixmap* frame_ll_pix;
 GdkPixmap* frame_lr_pix;
@@ -90,6 +91,10 @@ GtkWidget* main_win;
 
 /* Global game variables */
 extern struct game_state_t game;
+
+const char* player_colors[] = {N_("red"), N_("blue"),
+                               N_("green"), N_("yellow")};
+const char* team_colors[] = {N_("white"), N_("black")};
 
 
 /* Display the game's current status on status bar and console */
@@ -411,8 +416,10 @@ gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 			}
 			if(game.board[col][row] != game.self)
 			{
-				game_status(_("Don't cheat! That's not yours! You are number %i, this is %i."),
-					game.self, game.board[col][row]);
+				game_status(_("Don't cheat! That's not yours!"
+				              " You are %s on the %s team."),
+				            _(player_colors[game.self / 2]),
+				            _(team_colors[game.self % 2]));
 				return FALSE;
 			}
 			game.state = STATE_MOVE;

@@ -26,6 +26,9 @@
 #ifndef HASTINGS_MAIN_WIN_H
 #define HASTINGS_MAIN_WIN_H
 
+extern const char* player_colors[];
+extern const char* team_colors[];
+
 /* Create the main window */
 GtkWidget* create_main_win (void);
 

@@ -12,6 +12,8 @@
 #  define _(x) x
 #endif
 
+#define N_(x) x
+
 void ggz_intl_init(const char *modulename);
 
 #endif
