@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3431 2002-02-21 02:53:38Z jdorje $
+ * $Id: game.c 3455 2002-02-24 19:28:13Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -484,18 +484,6 @@ static void text_cardlist_message(const char *mark, int *lengths,
 	int p, i;
 	char buf[4096] = "";
 	int maxlen = 0, namewidth = 0;
-
-	/* FIXME: translations */
-	char *suit_names[4] = { "clubs", "diamonds", "hearts", "spades" };
-	char *short_suit_names[4] = { "C", "D", "H", "S" };
-	char *face_names[15] =
-		{ NULL, "ace", "two", "three", "four", "five", "six", "seven",
-		"eight", "nine", "ten", "jack", "queen", "king", "ace"
-	};
-	char *short_face_names[15] =
-		{ NULL, "A", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-		"J", "Q", "K", "A"
-	};
 
 	for (p = 0; p < ggzcards.num_players; p++) {
 		if (lengths[p] > maxlen)

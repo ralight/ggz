@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3424 2002-02-19 14:41:25Z jdorje $
+ * $Id: protocol.h 3455 2002-02-24 19:28:13Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -40,6 +40,15 @@
 #ifdef HAVE_CONFIG
 #  include <config.h>		/* Site-specific config */
 #endif
+
+
+/*
+ * Random stuff - this shouldn't go here!!
+ */
+
+#define TRUE 1
+#define FALSE 0
+typedef int bool;
 
 
 /* 
@@ -244,6 +253,11 @@ typedef struct card_t {
 } card_t;
 
 int are_cards_equal(card_t card1, card_t card2);
+
+extern char *suit_names[];
+extern char *short_suit_names[];
+extern char *face_names[];
+extern char *short_face_names[];
 
 
 /* in different games, bids may have different meanings.  we'll just use this

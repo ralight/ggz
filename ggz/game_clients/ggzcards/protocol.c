@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 3424 2002-02-19 14:41:25Z jdorje $
+ * $Id: protocol.c 3455 2002-02-24 19:28:13Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -39,6 +39,7 @@
 #endif
 
 #include <assert.h>
+#include <stdlib.h>
 
 #include <ggz.h>		/* for easysock */
 
@@ -115,6 +116,17 @@ int are_cards_equal(card_t card1, card_t card2)
 	       && card1.face == card2.face
 	       && card1.deck == card2.deck;
 }
+
+char *suit_names[4] = { "clubs", "diamonds", "hearts", "spades" };
+char *short_suit_names[4] = { "C", "D", "H", "S" };
+char *face_names[15] =
+	{ NULL, "ace", "two", "three", "four", "five", "six", "seven",
+	"eight", "nine", "ten", "jack", "queen", "king", "ace"
+};
+char *short_face_names[15] =
+	{ NULL, "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q",
+	"K", "A"
+};
 
 int read_card(int fd, card_t * card)
 {
