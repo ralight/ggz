@@ -35,6 +35,7 @@ int main(int argc, char **argv)
 		"http://ggz.sourceforge.net/games/ktictactux/",
 		"dr_maux@users.sourceforge.net");
 	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Inventor"), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
+	aboutData->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
 
 	KCmdLineArgs::init(argc, argv, aboutData);
 	KCmdLineArgs::addCmdLineOptions(op);
