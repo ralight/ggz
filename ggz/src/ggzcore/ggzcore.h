@@ -29,7 +29,7 @@
 #include <stdarg.h>
 
 #ifdef __cplusplus
-extern "C" {
+//extern "C" {
 #endif 
 
 
@@ -43,9 +43,10 @@ typedef enum {
 
 /* IDs for all GGZ events */
 typedef enum {
+	GGZ_SERVER_CONNECT,
 	GGZ_SERVER_LOGIN_OK,
 	GGZ_SERVER_LOGIN_FAIL, 
-	GGZ_USER_LOGIN_GUEST, 
+	GGZ_USER_LOGIN, 
 	GGZ_USER_CHAT,
 	GGZ_USER_LOGOUT
 } GGZEventID;
@@ -53,6 +54,37 @@ typedef enum {
 
 /* Event-callback function type */
 typedef void (*GGZEventFunc)(GGZEventID id, void* event_data, void* user_data);
+
+
+typedef enum {
+	GGZ_LOGIN,
+	GGZ_LOGIN_GUEST,
+	GGZ_LOGIN_NEW
+} GGZLoginType;
+
+
+/* The GGZProfile describes a server/login profile */
+typedef struct _GGZProfile {
+	
+	/* Name of profile */
+	char* name;
+	
+	/* Hostname of GGZ server */
+	char* host;
+
+	/* Port on which GGZ server in running */
+	unsigned int port;
+
+	/* Login type: one of GGZ_LOGIN, GGZ_LOGIN_GUEST, GGZ_LOGIN_NEW */
+	GGZLoginType type;
+
+	/* Login name on this server */
+	char* login;
+
+	/* Password for this server (optional) */
+	char* password;
+
+} GGZProfile;
 
 
 /* ggzcore_init() - Initializtion function for ggzcore lib.

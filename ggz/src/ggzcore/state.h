@@ -1,10 +1,10 @@
 /*
- * File: init.c
+ * File: state.h
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
- * Date: 9/15/00
+ * Date: 9/22/00
  *
- * Initialization code
+ * Code for handling state manipulations
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,43 +23,32 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-#include <ggzcore.h>
-#include <event.h>
-#include <user.h>
-#include <msg.h>
-#include <server.h>
+#ifndef __STATE_H__
+#define __STATE_H__
 
-
-int ggzcore_init(GGZOptionFlags options, const char* global, const char* local)
-{
-	if (options & GGZ_OPT_PARSER) {
-		ggzcore_debug("Parsing system conf file: %s", global);
-		ggzcore_debug("Parsing local conf file: %s", local);
-	}
-
-	/* Setup up debug file */
-	/* FIXME: Get filename from conf file */
-	_ggzcore_debug_file_init("/tmp/ggz.debug");
-		
-	/* Initialize event system */
-	_ggzcore_event_init();
+struct _GGZState {
 	
-	/* Register internal callbacks for events */
-	_ggzcore_user_register();
-	_ggzcore_server_register();
-	
-	return 0;
-}
+	/* Server socket */
+	int sock;
+
+	/* Current room on game server */
+	int room;
+
+	/* Room to which we are transitioning */
+	int trans_room;
+
+	/* Current table we're at */
+	int table;
+
+	/* Table to which we are transitioning */
+	int trans_table;
+
+};
 
 
-void ggzcore_destroy(void)
-{
-	/* Clean up event system */
-	_ggzcore_event_destroy();
+/* Global state variable */
+extern struct _GGZState _ggzcore_state;
 
-	_ggzcore_debug_file_cleanup();
-}
-	
+void _ggzcore_state_init(void);
 
-
+#endif /* __STATE_H__ */

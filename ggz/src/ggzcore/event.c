@@ -26,14 +26,16 @@
 #include <config.h>
 #include <ggzcore.h>
 #include <event.h>
+#include <state.h>
+#include <net.h>
 
 #include <poll.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 
-/* GGZCallback : data type for representing single event callback in a list */
-typedef struct GGZCallback {
+/* _GGZCallback : data type for representing single event callback in a list */
+struct _GGZCallback {
 
 	/* Callback ID (unique withing this event) */
 	unsigned int id;
@@ -45,13 +47,12 @@ typedef struct GGZCallback {
 	void* user_data;
 
 	/* Pointer to next GGZCallback */
-	struct GGZCallback* next;
-
-} GGZCallback;
+	struct _GGZCallback* next;
+};
 
 
 /* GGZEvent : data type for representing an event */
-typedef struct GGZEvent {
+struct _GGZEvent {
 
 	/* Unique event number */
 	GGZEventID id;
@@ -63,54 +64,55 @@ typedef struct GGZEvent {
 	int seq_id;
 
 	/* Linked list of callbacks */
-	GGZCallback* callbacks;
+	struct _GGZCallback* callbacks;
 
 	/* Pointer to event-specific data */
 	/* FIXME: do we really need to store this? */
 	void* event_data;
-} GGZEvent;
+};
 
 
 /* Array of all GGZ events */
-static GGZEvent ggz_events[] = {
+static struct _GGZEvent ggz_events[] = {
+	{GGZ_SERVER_CONNECT,    "server_connect",    1, NULL, NULL},
 	{GGZ_SERVER_LOGIN_OK,   "server_login_ok",   1, NULL, NULL},
 	{GGZ_SERVER_LOGIN_FAIL, "server_login_fail", 1, NULL, NULL},
-	{GGZ_USER_LOGIN_GUEST,  "user_login_guest",  1, NULL, NULL},
+	{GGZ_USER_LOGIN,         "user_login",        1, NULL, NULL},
 	{GGZ_USER_CHAT,         "user_chat",         1, NULL, NULL},
 	{GGZ_USER_LOGOUT,       "user_logout",       1, NULL, NULL}
 };
 
 /* Number of events */
-static unsigned int ggzcore_num_events;
+static unsigned int num_events;
 
 /* Pipe used for queueing events */
-static int ggzcore_event_pipe[2];
+static int event_pipe[2];
 
 /* Private functions */
 static void event_process(GGZEventID id);
 static void event_dump_callbacks(GGZEventID id);
 
 
-/* ggzcore_event_init() - Initialize event system
+/* _ggzcore_event_init() - Initialize event system
  *
  * Receives:
  *
  * Returns:
  */
-void ggzcore_event_init(void)
+void _ggzcore_event_init(void)
 {
 	int i;
 
 	/* Setup events */
-	ggzcore_num_events = sizeof(ggz_events)/sizeof(GGZEvent);
-	for (i = 0; i < ggzcore_num_events; i++) 
+	num_events = sizeof(ggz_events)/sizeof(struct _GGZEvent);
+	for (i = 0; i < num_events; i++) 
 		ggzcore_debug("Setting up %s event with id %d", 
 			      ggz_events[i].name, ggz_events[i].id);
 
 	/* Create fd */
 	/* FIXME: should we make it non-blocking? */
-	if (pipe(ggzcore_event_pipe) < 0)
-		ggzcore_error_sys_exit("pipe() failed in ggzcore_event_init");
+	if (pipe(event_pipe) < 0)
+		ggzcore_error_sys_exit("pipe() failed in _ggzcore_event_init");
 }
 
 
@@ -126,13 +128,13 @@ void ggzcore_event_init(void)
  */
 int ggzcore_event_connect(const GGZEventID id, const GGZEventFunc func, void* data)
 {
-	GGZCallback *callback, *cur, *next;
+	struct _GGZCallback *callback, *cur, *next;
 	
 	/* This should never happen, but....*/
-	if (id < 0 || id >= ggzcore_num_events)
+	if (id < 0 || id >= num_events)
 		return -1;
 	
-	if ( (callback = calloc(1, sizeof(GGZCallback))) == NULL)
+	if ( (callback = calloc(1, sizeof(struct _GGZCallback))) == NULL)
 		ggzcore_error_sys_exit("calloc() failed in ggzcore_event_connect");
 	
 	/* Assign unique ID */
@@ -167,7 +169,7 @@ int ggzcore_event_connect(const GGZEventID id, const GGZEventFunc func, void* da
  */
 int ggzcore_event_remove_all(const GGZEventID id)
 {
-	GGZCallback *cur, *next;
+	struct _GGZCallback *cur, *next;
 
 	ggzcore_debug("Removing all callbacks from event %s", 
 		      ggz_events[id].name);
@@ -194,7 +196,7 @@ int ggzcore_event_remove_all(const GGZEventID id)
  */
 int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id)
 {
-	GGZCallback *cur, *prev = NULL;
+	struct _GGZCallback *cur, *prev = NULL;
 
 	cur = ggz_events[id].callbacks;
 	while (cur && cur->id != id) {
@@ -234,11 +236,16 @@ int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id)
 int ggzcore_event_pending(void)
 {
 	int status;
-	struct pollfd fd[1] = {{ggzcore_event_pipe[0], POLLIN, 0}};
+	struct pollfd fd[1] = {{event_pipe[0], POLLIN, 0}};
 
+	
 	ggzcore_debug("Checking for events");	
 	if ( (status = poll(fd, 1, 0)) < 0)
 		ggzcore_error_sys_exit("poll failed in ggzcore_event_pending");
+
+	/* FIXME: This is only for non-threaded I/O */
+	if (status == 0)
+		status = _ggzcore_net_pending();
 
 	return status;
 }
@@ -253,23 +260,16 @@ int ggzcore_event_pending(void)
  */
 int ggzcore_event_process_all(void)
 {
-	unsigned int size;
 	GGZEventID id;
-
+	
+	/* FIXME: this is only for non-threaded I/O */
+	if (_ggzcore_net_pending())
+		_ggzcore_net_process();
+	
 	while (ggzcore_event_pending()) {
 		ggzcore_debug("Procesing events");
-		read(ggzcore_event_pipe[0], &id, sizeof(GGZEventID));
+		read(event_pipe[0], &id, sizeof(GGZEventID));
 		/* FIXME: do validity checking */
-		read(ggzcore_event_pipe[0], &size, sizeof(int));
-		ggzcore_debug("Received %s event (%d bytes user data)", 
-			      ggz_events[id].name, size);
-		if (size) {
-			if (!(ggz_events[id].event_data = malloc(size)))
-				ggzcore_error_sys_exit("malloc() failed in ggzcore_event_process_all");
-			read(ggzcore_event_pipe[0], ggz_events[id].event_data,
-			     size);
-		}
-		
 		event_process(id);
 	}
 		
@@ -286,16 +286,30 @@ int ggzcore_event_process_all(void)
  */
 static void event_process(GGZEventID id)
 {
-	GGZCallback *cur;
+	unsigned int size;
+	struct _GGZCallback *cur;
 
-	/*ggz_events[id].event_data = data;*/
+	read(event_pipe[0], &size, sizeof(int));
+
+	if (size) {
+		if (!(ggz_events[id].event_data = malloc(size)))
+			ggzcore_error_sys_exit("malloc() failed in ggzcore_event_process_all");
+		read(event_pipe[0], ggz_events[id].event_data, size);
+	}
+
+	ggzcore_debug("Received %s event (%d bytes user data)", 
+		      ggz_events[id].name, size);
 
 	ggzcore_debug("Invoking %s event callbacks ", ggz_events[id].name);
 	for (cur = ggz_events[id].callbacks; cur != NULL; cur = cur->next) {
 		(*cur->func)(id, ggz_events[id].event_data, cur->user_data);
 	}
 
-	/* FIXME: should we free event_data? */
+	free(ggz_events[id].event_data);
+	ggz_events[id].event_data = NULL;
+	
+	/* FIXME: should we free event_data? Perhaps using a
+           registered destroy function? */
 }
 
 
@@ -315,9 +329,9 @@ int ggzcore_event_trigger(const GGZEventID id, void* data, const unsigned int si
 		      ggz_events[id].name, size);
 	
 	/* Queue-up event in pipe */
-	write(ggzcore_event_pipe[1], &id, sizeof(id));
-	write(ggzcore_event_pipe[1], &size, sizeof(int));
-	write(ggzcore_event_pipe[1], data, size);
+	write(event_pipe[1], &id, sizeof(id));
+	write(event_pipe[1], &size, sizeof(int));
+	write(event_pipe[1], data, size);
 
 	/* FIXME: Can we alternatively do sync. events just by storing
 	   event data and calling event_process(id); ? */
@@ -329,7 +343,7 @@ int ggzcore_event_trigger(const GGZEventID id, void* data, const unsigned int si
 /* Debugging function to examine state of callback list */
 static void event_dump_callbacks(GGZEventID id)
 {
-	GGZCallback *cur;
+	struct _GGZCallback *cur;
 
 	ggzcore_debug("-- Event: %s", ggz_events[id].name);
 	for (cur = ggz_events[id].callbacks; cur != NULL; cur = cur->next)
@@ -338,18 +352,18 @@ static void event_dump_callbacks(GGZEventID id)
 }
 
 
-/* ggzcore_event_destroy() - Cleanup event system
+/* _ggzcore_event_destroy() - Cleanup event system
  *
  * Receives:
  *
  * Returns:
  */
-void ggzcore_event_destroy(void)
+void _ggzcore_event_destroy(void)
 {
 	int i;
 
-	ggzcore_num_events = sizeof(ggz_events)/sizeof(GGZEvent);
-	for (i = 0; i < ggzcore_num_events; i++) {
+	num_events = sizeof(ggz_events)/sizeof(struct _GGZEvent);
+	for (i = 0; i < num_events; i++) {
 		ggzcore_debug("Cleaning up %s event", ggz_events[i].name);
 		ggzcore_event_remove_all(ggz_events[i].id);
 	}

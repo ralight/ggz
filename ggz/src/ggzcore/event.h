@@ -27,13 +27,13 @@
 #ifndef __EVENT_H__
 #define __EVENT_H__
 
-/* ggzcore_event_init() - Initialize event system
+/* _ggzcore_event_init() - Initialize event system
  *
  * Receives:
  *
  * Returns:
  */
-void ggzcore_event_init(void);
+void _ggzcore_event_init(void);
 
 
 /* ggzcore_event_destroy() - Cleanup event system
@@ -42,7 +42,7 @@ void ggzcore_event_init(void);
  *
  * Returns:
  */
-void ggzcore_event_destroy(void);
+void _ggzcore_event_destroy(void);
 
 
 #endif /* __EVENT_H__ */

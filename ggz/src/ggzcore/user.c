@@ -27,12 +27,14 @@
 #include <config.h>
 #include <ggzcore.h>
 #include <user.h>
+#include <net.h>
+#include <state.h>
 
 #include <stdlib.h>
 
 /* Callbacks */
-static void handle_user_login(GGZEventID, void*, void*);
-static void handle_user_chat(GGZEventID, void*, void*);
+static void user_login(GGZEventID, void*, void*);
+static void user_chat(GGZEventID, void*, void*);
 
 
 /* ggzcore_user_register() - Register callbacks for UI events
@@ -41,14 +43,14 @@ static void handle_user_chat(GGZEventID, void*, void*);
  *
  * Returns:
  */
-void ggzcore_user_register(void)
+void _ggzcore_user_register(void)
 {
-	ggzcore_event_connect(GGZ_USER_LOGIN_GUEST, handle_user_login, NULL);
-	ggzcore_event_connect(GGZ_USER_CHAT, handle_user_chat, NULL);
+	ggzcore_event_connect(GGZ_USER_LOGIN, user_login, NULL);
+	ggzcore_event_connect(GGZ_USER_CHAT, user_chat, NULL);
 }
 
 
-/* handle_user_login() - Callback for user login events
+/* user_login() - Callback for user login events
  *
  * Receives:
  * GGZEventID id    : ID code of triggered event
@@ -57,13 +59,30 @@ void ggzcore_user_register(void)
  *
  * Returns:
  */
-static void handle_user_login(GGZEventID id, void* event_data, void* user_data)
+static void user_login(GGZEventID id, void* event_data, void* user_data)
 {
-	ggzcore_debug("Executing handle_user_login");
+	int sock; 
+	
+	GGZProfile* profile = (GGZProfile*)event_data;
+
+	ggzcore_debug("Executing user_login");
+	ggzcore_debug("Profile name %s", profile->name);
+	ggzcore_debug("Profile host %s", profile->host);
+	ggzcore_debug("Profile port %d", profile->port);
+	ggzcore_debug("Profile type %d", profile->type);
+	ggzcore_debug("Profile login %s", profile->login);
+	ggzcore_debug("Profile password %s", profile->password);
+
+	/* FIXME: Handle threaded I/O */
+	if ( (sock = _ggzcore_net_connect(profile->host, profile->port)) < 0)
+		ggzcore_event_trigger(GGZ_SERVER_LOGIN_FAIL, NULL, 0);
+	else 
+		/* FIXME: set a timeout for connecting */
+		_ggzcore_state.sock = sock;
 }
 
 
-/* handle_user_chat() - Callback for user chat events
+/* user_chat() - Callback for user chat events
  *
  * Receives:
  * GGZEventID id    : ID code of triggered event
@@ -72,9 +91,9 @@ static void handle_user_login(GGZEventID id, void* event_data, void* user_data)
  *
  * Returns:
  */
-static void handle_user_chat(GGZEventID id, void* event_data, void* user_data)
+static void user_chat(GGZEventID id, void* event_data, void* user_data)
 {
-	ggzcore_debug("Executing handle_user_chat");
+	ggzcore_debug("Executing user_chat");
 	if (event_data)
 		ggzcore_debug("  data is %s", (char*)event_data);
 }

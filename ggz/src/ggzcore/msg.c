@@ -99,7 +99,7 @@ void ggzcore_error_msg_exit(const char *fmt, ...)
 }
 
 
-void ggzcore_debug_file_init(const char* file)
+void _ggzcore_debug_file_init(const char* file)
 {
 	if (strcmp(file, "stderr") != 0)
 		if ( (debug_file = fopen(file, "a")) == NULL)
@@ -107,7 +107,7 @@ void ggzcore_debug_file_init(const char* file)
 }
 
 
-void ggzcore_debug_file_cleanup(void)
+void _ggzcore_debug_file_cleanup(void)
 {
 	if (debug_file)
 		fclose(debug_file);

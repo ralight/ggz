@@ -24,6 +24,6 @@
  */
 
 
-void ggzcore_debug_file_init(const char* file);
+void _ggzcore_debug_file_init(const char* file);
 
-void ggzcore_debug_file_cleanup(void);
+void _ggzcore_debug_file_cleanup(void);
