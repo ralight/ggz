@@ -57,9 +57,10 @@ typedef int seat_t; /* just to make things clearer */
 
 struct game_player_t {
 	int score;
+	int bid_count;	/* the number of times this player has bid this hand */
 	bid_t bid;
 	int tricks;
-	int seat; /* the number of the player's seat */
+	int seat;	/* the number of the player's seat */
 	int ready;
 };
 typedef int player_t; /* just to make things clearer */

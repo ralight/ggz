@@ -806,6 +806,7 @@ void next_play(void)
 
 			for (p = 0; p < game.num_players; p++) {
 				game.players[p].bid.bid = 0;
+				game.players[p].bid_count = 0;
 				set_player_message(p); /* TODO: are all these player messages really necessary? */
 			}
 			game.bid_count = 0;
@@ -1044,6 +1045,7 @@ int handle_bid_event(bid_t bid)
 
 	/* handle the bid */
 	ai_alert_bid(game.next_bid, bid);
+	game.players[p].bid_count++;
 	game.funcs->handle_bid(bid);
 
 	/* set up next move */
