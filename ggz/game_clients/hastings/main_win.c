@@ -5,6 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
+ * $Id: main_win.c 4490 2002-09-09 04:44:53Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -126,7 +127,7 @@ void game_status( const char* format, ... )
 }
 
 /* Draw a frame around a knight */
-void highlight(int col, int row, int widgetstate)
+static void highlight(int col, int row, int widgetstate)
 {
 	GtkStyle* style;
 	int offsetx, offsety;
@@ -142,7 +143,7 @@ void highlight(int col, int row, int widgetstate)
 }
 
 /* Mark own knights with shadow */
-void shadow(int col, int row, int widgetstate)
+static void shadow(int col, int row, int widgetstate)
 {
 	GtkStyle *style;
 	int offsetx, offsety;
@@ -155,7 +156,7 @@ void shadow(int col, int row, int widgetstate)
 }
 
 /* Draw a single hexagon */
-void hexagon(GtkWidget *widget, int offsetx, int offsety)
+static void hexagon(GtkWidget *widget, int offsetx, int offsety)
 {
 	const int radius = 30;
 	int radx;
@@ -246,7 +247,7 @@ void display_board(void)
 }
 
 /* Load pixmap files */
-void on_main_win_realize(GtkWidget* widget, gpointer user_data)
+static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
 	GtkStyle* style;
 	GdkBitmap* mask;
@@ -295,26 +296,27 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 }
 
 /* Quit the game */
-gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+static gboolean main_exit(GtkWidget *widget, GdkEvent *event,
+			  gpointer user_data)
 {
 	ggz_show_exit_dialog(1);
 	return TRUE;
 }
 
 /* Resyncing... */
-void game_resync(GtkMenuItem *menuitem, gpointer user_data)
+static void game_resync(GtkMenuItem *menuitem, gpointer user_data)
 {
 	request_sync();
 }
 
 /* Leave the game */
-void game_exit(GtkMenuItem *menuitem, gpointer user_data)
+static void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 {
 	ggz_show_exit_dialog(1);
 }
 
 /* Display the about dialog, crediting me all over... */
-void game_about(GtkMenuItem *menuitem, gpointer user_data)
+static void game_about(GtkMenuItem *menuitem, gpointer user_data)
 {
 	static GtkWidget *dlg_about = NULL;
 
@@ -335,8 +337,8 @@ void game_about(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 /* Draw the screen? Unsure */
-gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
-			  gpointer user_data)
+static gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
+				 gpointer user_data)
 {
 	if (hastings_buf) gdk_pixmap_unref(hastings_buf);
 	else
@@ -350,8 +352,8 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 }
 
 /* Unsure */
-gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event,
-		       gpointer user_data)
+static gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event,
+			      gpointer user_data)
 {
 	gdk_draw_pixmap(widget->window, widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
 		hastings_buf, event->area.x, event->area.y,	event->area.x, event->area.y,
@@ -361,7 +363,8 @@ gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event,
 }
 
 /* Evaluate user mouse click on the field */
-gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
+static gboolean get_move(GtkWidget *widget, GdkEventButton *event,
+			 gpointer user_data)
 {
 	int x = (int)(event->x);
 	int y = (int)(event->y);
