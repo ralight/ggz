@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 313 $</revnumber>
-	<date>$Date: 2000-03-29 11:50:48 -0800 (Wed, 29 Mar 2000) $</date>
+	<revnumber>$Revision: 316 $</revnumber>
+	<date>$Date: 2000-03-29 15:02:26 -0800 (Wed, 29 Mar 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -349,6 +349,23 @@
           str: chat string 
         RSP_CHAT
           chr: success flag (0 for success, -1 error)
+  
+	</programlisting>
+      </section>
+
+      <section id="rooms"><title>Room Facility</title>
+        <para>
+	  The server supports the ability to have separate rooms for
+	  individual game types.  Chatting in a room is only heard
+	  by members of that room.
+        </para>
+
+        <programlisting role="pseudocode">
+	  REQ_ROOM_JOIN
+	    int: room number
+	  RSP_ROOM_JOIN
+	    chr: success flag (0 for success, -1 not authorized,
+		               -2 E_BAD_OPTIONS, -3 E_ROOM_FULL)
   
 	</programlisting>
       </section>
