@@ -23,7 +23,7 @@ set -e
 case "$1" in
   start)
 	echo -n "Starting $DESC: "
-	start-stop-daemon --start \
+	start-stop-daemon --start --chuid games \
 		--exec $DAEMON 2>/dev/null &
 	echo "$NAME."
 	;;

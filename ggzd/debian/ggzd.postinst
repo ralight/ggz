@@ -6,6 +6,9 @@ case "$1" in
 	configure*)
 	#ldconfig
 	update-rc.d ggzd defaults >/dev/null
+	mkdir /var/ggzd 2>/dev/null
+	chown -R games.games /var/ggzd
+	chmod 755 /var/ggzd
 	/etc/init.d/ggzd start || true
 	;;
 	*)

@@ -14,7 +14,7 @@ build-stamp:
 
 	# Configure ggzd
 	test -f configure || NOCONFIGURE=yes ./autogen.sh
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --sysconfdir=/etc --disable-debug
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --sysconfdir=/etc --localstatedir=/var --disable-debug
 
 	# RPath workaround
 	sed < libtool > libtool-2 \
