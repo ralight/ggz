@@ -56,6 +56,7 @@ int guru_module_add(const char *modulename)
 	modulefunc *func;
 
 	printf("Loading module: %s... ", modulename);
+	fflush(NULL);
 	sprintf(modulefile, "%s/%s", MODULEDIR, modulename);
 
 	if((handle = dlopen(modulefile, RTLD_NOW)) == NULL)
@@ -79,7 +80,7 @@ int guru_module_add(const char *modulename)
 	((void*(*)(void))init)();
 
 	modulecount++;
-	modulelist = (void**)realloc(modulelist, modulecount + 1);
+	modulelist = (void**)realloc(modulelist, (modulecount + 1) * sizeof(void*));
 	functionlist = (modulefunc**)realloc(functionlist, modulecount + 1);
 	modulelist[modulecount - 1] = handle;
 	modulelist[modulecount] = NULL;
