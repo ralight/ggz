@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h>
+#include "config.h"
 #include "reversiview.h"
 #include "reversiprotocol.h"
 #include "kreversi.h"

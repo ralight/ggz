@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <stdio.h>
-#include <config.h>
+#include "config.h"
 #include <ksimpleconfig.h>
 #include <kapp.h>
 #include <kmessagebox.h>
