@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 5687 2003-11-23 17:45:25Z dr_maux $
+ * $Id: ggz-config.c 5688 2003-11-23 19:11:25Z dr_maux $
  *
  * Configuration query and module install program.
  *
@@ -51,7 +51,6 @@ static char *modname = NULL;
 static char *modversion = NULL;
 static char *modpengine = NULL;
 static char *modpversion = NULL;
-static char *modpsupport = NULL;
 static char *modexec = NULL;
 static char *modui = NULL;
 static char *modauthor = NULL;
@@ -159,8 +158,6 @@ static int load_modfile(void)
 	if(modurl == NULL)
 		fprintf(stderr, "Warning: Module homepage not specified.\n");
 
-	modpsupport = ggz_conf_read_string(from, "ModuleInfo",
-						 "SupportedGames", NULL);
 	modicon = ggz_conf_read_string(from, "ModuleInfo",
 					     "IconPath", NULL);
 	modhelp = ggz_conf_read_string(from, "ModuleInfo",
@@ -415,9 +412,6 @@ static int install_module(void)
 					    "CommandLine", modexec);
 		ggz_conf_write_string(global, engine_id,
 					    "Homepage", modurl);
-		if(modpsupport)
-			ggz_conf_write_string(global, engine_id,
-						 "SupportedGames", modpsupport);
 		if(modicon)
 			ggz_conf_write_string(global, engine_id,
 						    "IconPath", modicon);
@@ -492,11 +486,11 @@ static int check_module_file(void)
 {
 	int	global;
 	int	rc;
-	int	e_count, s_count, k_count;
-	char	**e_list, **s_list, **k_list;
-	char	*str, *str2, *str3;
+	int	e_count, s_count, k_count, g_count;
+	char	**e_list, **s_list, **k_list, **g_list;
+	char	*str, *str2;
 	int	kill, ok, alt;
-	int	i, j;
+	int	i, j, k;
 	int	*section_refd;
 	int	errs=0;
 
@@ -581,38 +575,48 @@ phase_two:
 	for(i=0; i<k_count; i++) {
 		if(!strcmp(k_list[i], "*Engines*"))
 			continue;
-		str = ggz_conf_read_string(global, "Games", k_list[i], NULL);
-		for(j=0; j<s_count; j++) {
-			if(!strcmp(str, s_list[j])) {
-				if(!section_refd[j]) {
-					section_refd[j] = i+1;
-					continue;
-				}
-				/* Check name in [p#] to see if it matches */
-				/* either of the xrefs to decide smartly */
-				str2 = ggz_conf_read_string(global, s_list[j],
-							    "Name", NULL);
-				if(str2 && !strcmp(k_list[i], str2))
-					kill = section_refd[j]-1;
-				else
-					kill = i;
-				if(str2)
-					ggz_free(str2);
-				errs++;
-				printf("ERR %s & %s XRefs [%s], deleting %s\n",
-					k_list[i], k_list[section_refd[j]-1],
-					s_list[j], k_list[kill]);
-				ggz_conf_remove_key(global, "Games",
-						    k_list[kill]);
-				for(i=0; i<k_count; i++)
-					ggz_free(k_list[i]);
-				ggz_free(k_list);
-				ggz_free(section_refd);
+		/*str = ggz_conf_read_string(global, "Games", k_list[i], NULL);*/
+		ggz_conf_read_list(global, "Games", k_list[i], &g_count, &g_list);
+		for(k = 0; k < g_count; k++)
+		{
+			str = g_list[k];
 
-				/* Restart the phase */
-				goto phase_two;
+			for(j=0; j<s_count; j++) {
+				if(!strcmp(str, s_list[j])) {
+					if(!section_refd[j]) {
+						section_refd[j] = i+1;
+						continue;
+					}
+					/* Check name in [p#] to see if it matches */
+					/* either of the xrefs to decide smartly */
+					str2 = ggz_conf_read_string(global, s_list[j],
+								    "Name", NULL);
+					if(str2 && !strcmp(k_list[i], str2))
+						kill = section_refd[j]-1;
+					else
+						kill = i;
+					if(str2)
+						ggz_free(str2);
+					errs++;
+					printf("ERR %s and %s references [%s], deleting %s reference\n",
+						k_list[i], k_list[section_refd[j]-1],
+						s_list[j], k_list[kill]);
+					ggz_conf_remove_key(global, "Games", k_list[kill]);
+					for(i=0; i<k_count; i++)
+						ggz_free(k_list[i]);
+					ggz_free(k_list);
+					for(i=k; i<g_count; i++)
+						ggz_free(g_list[i]);
+					ggz_free(g_list);
+					ggz_free(section_refd);
+
+					/* Restart the phase */
+					goto phase_two;
+				}
 			}
+			ggz_free(g_list[k]);
 		}
+		ggz_free(g_list);
 	}
 	ggz_free(section_refd);
 	for(i=0; i<s_count; i++)
@@ -623,23 +627,30 @@ phase_two:
 
 
 	/* Phase Three */
-	/* Check each game key for correct name */
+	/* Check each game key for correct engine name */
 	for(i=0; i<k_count; i++) {
 		if(!strcmp(k_list[i], "*Engines*")) {
 			ggz_free(k_list[i]);
 			continue;
 		}
 		printf("*** Checking ProtocolEngine key for engine '%s'\n", k_list[i]);
-		str = ggz_conf_read_string(global, "Games", k_list[i], NULL);
-		str2 = ggz_conf_read_string(global, str, "ProtocolEngine", NULL);
-		if(str2 && strcmp(k_list[i], str2)) {
-			errs++;
-			printf("ERR Setting ProtocolEngine key [%s] to '%s'\n",
-				str, k_list[i]);
-			ggz_conf_write_string(global, str, "ProtocolEngine", k_list[i]);
+		/*str = ggz_conf_read_string(global, "Games", k_list[i], NULL);*/
+		ggz_conf_read_list(global, "Games", k_list[i], &g_count, &g_list);
+		for(k = 0; k < g_count; k++) {
+			str = g_list[k];
+
+			str2 = ggz_conf_read_string(global, str, "ProtocolEngine", NULL);
+			if(str2 && strcmp(k_list[i], str2)) {
+				errs++;
+				printf("ERR Setting ProtocolEngine key [%s] to '%s'\n",
+					str, k_list[i]);
+				ggz_conf_write_string(global, str, "ProtocolEngine", k_list[i]);
+			}
+			/*ggz_free(str);*/
+			if(str2) ggz_free(str2);
+			ggz_free(g_list[k]);
 		}
-		ggz_free(str);
-		if(str2) ggz_free(str2);
+		ggz_free(g_list);
 		ggz_free(k_list[i]);
 	}
 	ggz_free(k_list);
@@ -658,38 +669,69 @@ phase_two:
 			continue;
 		}
 		str = ggz_conf_read_string(global, s_list[i], "ProtocolEngine", NULL);
-		str2 = ggz_conf_read_string(global, "Games", str, NULL);
-		if(str2 && strcmp(s_list[i], str2)) {
-			str3 = ggz_conf_read_string(global, str2, "ProtocolEngine", NULL);
-			if(str3) {
-				errs++;
-				printf("ERR %s & %s XRefs '%s', deleting %s\n",
-					str2, s_list[i], str, s_list[i]);
-				ggz_conf_remove_section(global, s_list[i]);
-				ggz_free(str);
-				ggz_free(str2);
-				ggz_free(str3);
-				ggz_free(s_list[i]);
-				continue;
+		ggz_conf_read_list(global, "Games", str, &g_count, &g_list);
+
+		ok = 0;
+		for(j = 0; j < g_count; j++) {
+			if(!strcmp(s_list[i], g_list[j])) {
+				ok = 1;
 			}
 		}
-		if(!str2 || strcmp(s_list[i], str2)) {
+
+		if(!ok) {
 			errs++;
 			printf("ERR Adding [Games]:%s key pointing to [%s]\n",
 				 str, s_list[i]);
-			ggz_conf_write_string(global, "Games", str, s_list[i]);
-			ggz_free(str);
-			if(str2)
-				ggz_free(str2);
-			ggz_free(s_list[i]);
-			continue;
+			g_count++;
+			g_list = ggz_realloc(g_list, g_count * sizeof(char*));
+			g_list[g_count - 1] = ggz_strdup(s_list[i]);
+			ggz_conf_write_list(global, "Games", str, g_count, g_list);
 		}
+
+		for(j = 0; j < g_count; j++) {
+			ggz_free(g_list[j]);
+		}
+		ggz_free(g_list);
+
 		ggz_free(str);
-		ggz_free(str2);
 		ggz_free(s_list[i]);
 	}
 	ggz_free(s_list);
 
+	/* Phase Four/b */
+	/* Check that each section key actually has a section*/
+	printf("*** Checking forward references\n");
+	if((rc = ggz_conf_get_keys(global, "Games", &k_count, &k_list)) <0) {
+		printf("Error getting config file [Games]:keys list\n");
+		return rc;
+	}
+
+	for(i = 0; i < k_count; i++) {
+		if(!strcmp(k_list[i], "*Engines*")) {
+			ggz_free(k_list[i]);
+			continue;
+		}
+		ggz_conf_read_list(global, "Games", k_list[i], &g_count, &g_list);
+
+		for(k = 0; k < g_count; k++) {
+			str = ggz_conf_read_string(global, g_list[k], "ProtocolEngine", NULL);
+			if(!str)
+			{
+				printf("ERR Section %s doesn't exist in %s, removed\n",
+					g_list[k], k_list[i]);
+				ggz_free(g_list[k]);
+				g_count -= 1;
+				if(k <= g_count)
+					g_list[k] = g_list[g_count];
+				ggz_conf_write_list(global, "Games", k_list[i], g_count, g_list);
+			}
+			else ggz_free(str);
+		}
+		for(k = 0; k < g_count; k++)
+			ggz_free(g_list[k]);
+		ggz_free(g_list);
+	}
+	ggz_free(k_list);
 
 	/* Phase Five */
 	/* Check that each entry in *Engines* points to something */
@@ -697,25 +739,35 @@ phase_two:
 phase_five:
 	ggz_conf_read_list(global, "Games", "*Engines*", &e_count, &e_list);
 	for(i=0; i<e_count; i++) {
-		str = ggz_conf_read_string(global, "Games", e_list[i], NULL);
-		if(!str) {
-			errs++;
-			printf("ERR Game engine '%s' invalid, removing\n",
-			       e_list[i]);
-			ggz_free(e_list[i]);
-			e_count--;
-			if(i < e_count)
-				e_list[i] = e_list[e_count];
-			ggz_conf_write_list(global, "Games","*Engines*",
-					    e_count, e_list);
-			for(i=0; i<e_count; i++)
-				ggz_free(e_list[i]);
-			ggz_free(e_list);
+		/*str = ggz_conf_read_string(global, "Games", e_list[i], NULL);*/
+		ggz_conf_read_list(global, "Games", e_list[i], &g_count, &g_list);
+		for(k = 0; k < g_count; k++) {
+			str = g_list[k];
 
-			/*** Restart the phase ***/
-			goto phase_five;
+			if(!str) {
+				errs++;
+				printf("ERR Game engine '%s' invalid, removing\n",
+				       e_list[i]);
+				ggz_free(e_list[i]);
+				e_count--;
+				if(i < e_count)
+					e_list[i] = e_list[e_count];
+				ggz_conf_write_list(global, "Games","*Engines*",
+						    e_count, e_list);
+				for(i=0; i<e_count; i++)
+					ggz_free(e_list[i]);
+				ggz_free(e_list);
+				for(i=k; i<g_count; i++)
+					ggz_free(g_list[i]);
+				ggz_free(g_list);
+
+				/*** Restart the phase ***/
+				goto phase_five;
+			}
+			/*ggz_free(str);*/
+			ggz_free(g_list[k]);
 		}
-		ggz_free(str);
+		ggz_free(g_list);
 	}
 	/* e_list is still valid and used in next phase */
 
