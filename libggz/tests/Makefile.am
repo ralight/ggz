@@ -14,3 +14,6 @@ read_line_SOURCES = read_line.c
 
 TESTS = debugmsg cfgtest misc read_line
 
+clean-local:
+	-rm -f debug.log
+
