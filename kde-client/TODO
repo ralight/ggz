@@ -1,6 +1,6 @@
 todo for 0.0.5:
 - fix KGGZ's connection dialog
-- implement lag display in KGGZ
++ implement lag display in KGGZ
 - replace current dummy player types with real ones (GGZPlayerType)
 - replace GGZap's UI with GGZap-NG
 - figure out why kio_ggzmeta won't do anything on some URI's
@@ -9,7 +9,7 @@ todo for 0.0.5:
 - support for local module.dsc files? (-> ggz-config)
 - add icons for the new games
 - make URL in game information dialog clickable
-- new splash screen :)
++ new splash screen :)
 
 todo for 0.0.6:
 - configurability: component-based architecture with custem chat window etc.

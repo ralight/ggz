@@ -1,14 +1,19 @@
 Installation of GGZ-KDE
 =======================
 
+0. Are you sure you want to compile from source?
+   There are pre-compiled binary packages available in Debian and RPM format
+   which save lots of headache ;)
+
 1. Make sure you have 2 packages installed:
-	- easysock (for low level network functionality)
-	- ggzcore (for frontend handling)
+	- libggz (for low level network functionality, and utily functions)
+	- ggz-client-libs (for frontend protocol handling and the ggz-config tool)
    You can find ggzcore in the ggz-client-libs package.
 
 2. Make sure you have the correct versions of Qt
    and KDE installed. You need at least version 2.0
    of either one.
+   Qt 3.0 and KDE 3.0 will be supported from 0.0.6 on.
 
 3. Type ./autogen.sh (or ./configure if not building from
    the CVS sources), make and make install (as root).
@@ -16,5 +21,6 @@ Installation of GGZ-KDE
 
 4. Have fun :)
 
-5. A detailed GGZ installation help can be found in the project-wide used file
-README.GGZ.
+5. A detailed GGZ installation help can be found in the project-wide used
+   file README.GGZ.
+
