@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = m4 po src pixmaps
+SUBDIRS = src pixmaps
 
-EXTRA_DIST = \
+EXTRA_DIST = config.rpath mkinstalldirs  \
 	autogen.sh \
 	GGZ.glade
 
@@ -12,4 +12,3 @@ utildir = $(prefix)/share/gnome/apps/Internet/Internet
 schema_DATA = ggz-gnome.schemas
 schemadir = $(sysconfdir)/gconf/schemas/
 
-ACLOCAL_AMFLAGS = -I m4
