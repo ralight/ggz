@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3341 2002-02-12 23:23:24Z jdorje $
+ * $Id: dlg_prefs.c 3342 2002-02-12 23:30:46Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team
  *
@@ -94,7 +94,7 @@ GtkWidget *create_dlg_prefs(void)
 	/* 
 	 * Make "animation" button
 	 */
-	button = gtk_check_button_new_with_label(_("Use Animation"));
+	button = gtk_check_button_new_with_label(_("Use animation"));
 	gtk_widget_ref(button);
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
@@ -106,8 +106,8 @@ GtkWidget *create_dlg_prefs(void)
 	/* 
 	 * Make "cardlists" button
 	 */
-	button = gtk_check_button_new_with_label(_("Show Graphical "
-		"Cardlists - may not take effect immediately"));
+	button = gtk_check_button_new_with_label(_("Show graphical "
+		"cardlists (may not take effect immediately)"));
 	gtk_widget_ref(button);
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
