@@ -2,7 +2,7 @@
 [ModuleInfo]
 Name = Reversi
 Author = Ismael Orenstein
-CommandLine = @ggzexecmoddir@/ggz.kreversi
+CommandLine = @ggzexecmoddir@/ggz.kreversi --ggz
 Frontend = kde
 Homepage = http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=7
 ProtocolEngine = Reversi

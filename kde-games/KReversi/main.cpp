@@ -18,16 +18,17 @@
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
-#include <qstring.h>
-#include <sys/un.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+//#include <qstring.h>
+//#include <sys/un.h>
+//#include <sys/types.h>
+//#include <sys/socket.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <config.h>
 #include <stdlib.h>
+#include <iostream>
 
 #include "kreversi.h"
 
@@ -40,7 +41,7 @@ static const char *description =
 	
 static KCmdLineOptions options[] =
 {
-  { "o", I18N_NOOP("This game will use GGZ"), 0 }
+  { "ggz", I18N_NOOP("This game will use GGZ"), 0 }
   // INSERT YOUR COMMANDLINE OPTIONS HERE
 };
 
@@ -54,6 +55,13 @@ int main(int argc, char *argv[])
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 
+  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+  if(!args->isSet("ggz"))
+  {
+    cout << "Sorry, this game does only work in GGZ mode so far." << endl;
+    exit(-1);
+  }
+
   KApplication a;
   KReversi *kreversi = new KReversi();
   a.setMainWidget(kreversi);
@@ -64,12 +72,12 @@ int main(int argc, char *argv[])
 }
 
 int ggz_connect(char *name) {
-  char fd_name[30];
+  /*char fd_name[30];*/
   int sock;
-  struct sockaddr_un addr;
+  /*struct sockaddr_un addr;*/
  
   /* Connect to Unix domain socket */
-  sprintf(fd_name, "/tmp/%s.%d", name, getpid());
+  /*sprintf(fd_name, "/tmp/%s.%d", name, getpid());
  
   if ( (sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
     exit(-1);
@@ -79,8 +87,9 @@ int ggz_connect(char *name) {
   strcpy(addr.sun_path, fd_name);
  
   if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-    exit(-1);
- 
+    exit(-1);*/
+
+  sock = 3;
   return sock;
 }
 
