@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: chat.c 6286 2004-11-06 08:34:37Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -164,30 +164,29 @@ void chat_init(void)
 static void chat_allocate_colors(void)
 {
 	gint i;
-        /* Allocate standared colors */
-        if (!colors[0].pixel)        /* don't do it again */
-        {
-                for (i = 0; i < 20; i++)
-                {
+        /* Allocate standared colors (just once)*/
+        if (!colors[0].pixel) {
+                for (i = 0; i < 20; i++) {
                         colors[i].pixel = (gulong) ((colors[i].red & 0xff00) * 256 +
                                         (colors[i].green & 0xff00) +
                                         (colors[i].blue & 0xff00) / 256);
-                        if (!gdk_color_alloc (gdk_colormap_get_system(),
-                            &colors[i]))
+                        if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
+						      &colors[i],
+						      FALSE, TRUE))
                                 g_error("*** GGZ: Couldn't alloc color\n");
                 }
         }
         ColorBlack.pixel = (gulong) ((ColorBlack.red & 0xff00) * 256 +
         			(ColorBlack.green & 0xff00) +
         			(ColorBlack.blue & 0xff00) / 256);
-        if (!gdk_color_alloc (gdk_colormap_get_system(),
-        	&ColorBlack))
+        if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
+				      &ColorBlack, FALSE, TRUE))
         	g_error("*** GGZ: Couldn't alloc color\n");
         ColorWhite.pixel = (gulong) ((ColorWhite.red & 0xff00) * 256 +
         			(ColorWhite.green & 0xff00) +
         			(ColorWhite.blue & 0xff00) / 256);
-        if (!gdk_color_alloc (gdk_colormap_get_system(),
-        	&ColorWhite))
+        if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
+				      &ColorWhite, FALSE, TRUE))
         	g_error("*** GGZ: Couldn't alloc color\n");
 }
 

@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 6273 2004-11-05 21:49:00Z jdorje $
+ * $Id: motd.c 6286 2004-11-06 08:34:37Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -74,7 +74,6 @@ void motd_print_line(gchar *line)
 	gint outlen=0;
         GtkWidget *temp_widget;
         GdkColormap *cmap;
-        GdkFont *fixed_font;
         gint color_index=0; /* Black */
         gint letter;
                         
@@ -83,13 +82,13 @@ void motd_print_line(gchar *line)
                 return;
                                 
         cmap = gdk_colormap_get_system();
-        if (!gdk_color_alloc(cmap, &colors[color_index])) {
+        if (!gdk_colormap_alloc_color(cmap, &colors[color_index],
+				      FALSE, TRUE)) {
                 g_error("couldn't allocate color");
         }
                                         
         temp_widget = g_object_get_data(G_OBJECT(motd_dialog), "motd_text");
 
-        fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
         while(line[lindex] != '\0')
         {
 		if(oindex % 256 == 0) {
@@ -111,7 +110,9 @@ void motd_print_line(gchar *line)
 					gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer(GTK_TEXT_VIEW(temp_widget)), out, -1);
                                         color_index=atoi(&line[lindex]);
                                         cmap = gdk_colormap_get_system();
-                                        if (!gdk_color_alloc(cmap, &colors[color_index])) {
+                                        if (!gdk_colormap_alloc_color(cmap,
+							&colors[color_index],
+							FALSE, TRUE)) {
                                                 g_error("couldn't allocate color");
                                         }
                                         oindex=0;

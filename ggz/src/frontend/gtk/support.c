@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: support.c 6286 2004-11-06 08:34:37Z jdorje $
  *
  * Support code
  *
@@ -215,8 +215,8 @@ create_dummy_pixmap                    (GtkWidget       *widget)
   if (gdkpixmap == NULL)
     g_error ("Couldn't create replacement pixmap.");
   pixmap = gtk_pixmap_new (gdkpixmap, mask);
-  gdk_pixmap_unref (gdkpixmap);
-  gdk_bitmap_unref (mask);
+  g_object_unref (gdkpixmap);
+  g_object_unref (mask);
   return pixmap;
 }
 
@@ -281,8 +281,8 @@ create_pixmap                          (GtkWidget       *widget,
     }
   g_free (found_filename);
   pixmap = gtk_pixmap_new (gdkpixmap, mask);
-  gdk_pixmap_unref (gdkpixmap);
-  gdk_bitmap_unref (mask);
+  g_object_unref (gdkpixmap);
+  g_object_unref (mask);
   return pixmap;
 }
 
