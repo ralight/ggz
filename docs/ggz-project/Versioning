@@ -8,42 +8,41 @@ Here's a list of version numbers associated to each
 GGZ release. For game versions, see the separate document
 in /docs/games/game-development.
 
-Applications | Version in 0.0.6 | Version in 0.0.7 | Version in 0.0.8
--------------+------------------+------------------+-----------------
-grubby       |              0.3 |              0.4 |              0.5
-             |                  |                  |
-cmd-client   |              --- |              --- |              ---
-ggzcomm      |              0.1 |              0.1 |              0.1
-metaserv     |              0.1 |              0.2 |              0.3
-motd-editor  |              --- |              --- |              ---
-telggz       |              0.2 |              0.3 |              0.3
-             |                  |                  |
-shadowbridge |              0.1 |              0.1 |              0.1
-modsniff     |              0.1 |              0.1 |              0.1
-keepalivectl |            0.0.6 |              0.1 |              0.1
-compcal      |              0.1 |              0.2 |              0.2
-ggzap        |              0.2 |              0.3 |              0.3
+Applications | Version in 0.0.6 | in 0.0.7 | in 0.0.8 | in 0.0.9
+-------------+------------------+----------+----------+---------
+grubby       |              0.3 |      0.4 |      0.5 |      0.6
+             |                  |          |          |
+cmd-client   |              --- |      --- |      --- |      ---
+ggzcomm      |              0.1 |      0.1 |      0.1 |      0.1
+metaserv     |              0.1 |      0.2 |      0.3 |      0.4
+motd-editor  |              --- |      --- |      --- |      ---
+telggz       |              0.2 |      0.3 |      0.3 |      0.3
+             |                  |          |          |
+shadowbridge |              0.1 |      0.1 |      0.1 |      0.1
+modsniff     |              0.1 |      0.1 |      0.1 |      0.1
+keepalivectl |            0.0.6 |      0.1 |      0.1 |      0.1
+compcal      |              0.1 |      0.2 |      0.2 |      0.2
+ggzap        |              0.2 |      0.3 |      0.3 |      0.3
 
 Unversioned applications should adopt either the
 GGZ version number, or an own one.
 
 The following table describes the library interface versions.
 They must be updated whenever an API change happens.
-If a function changes or vanishes, the major (current) version must be
-bumped.
-If functions are added, the same must be done.
+If a function changes or vanishes or is added (the interface changes),
+the major (current) version must be bumped.
 The minor (implementation) version changes whenever the interface doesn't
 change, but the source has been altered.
-The micro (age) version tells the difference between current and the first
+The difference (age) version tells the difference between current and the first
 library interface version supported by the current library.
 
-Library      | 0.0.5 iface | 0.0.6 iface | 0.0.7 iface | 0.0.8 iface
--------------+-------------+-------------+-------------+------------
-libggz       | 0.0.0       | 1.0.0       | 1.1.0       | 2.0.1
-ggzcore      | 1.0.0       | 2.0.0       | 3.0.0       | 4.0.1
-ggzmod       | 0.0.0       | 1.0.0       | 1.1.0       | 1.1.0
-ggzdmod      | 0.0.0       | 1.0.0       | 2.0.0       | 2.1.0
-ggzcore++    | 1.0.0       | 2.0.0       | (noinst)    | (noinst)
-zoneclient   | 0.0.0       | 1.0.0       | (noinst)    | (noinst)
-zoneserver   | 0.0.0       | 0.1.0       | (noinst)    | (noinst)
+Library      | 0.0.5 if | 0.0.6 if | 0.0.7 if | 0.0.8 if | 0.0.9 if
+-------------+----------+----------+----------+----------+---------
+libggz       | 0.0.0    | 1.0.0    | 1.1.0    | 2.0.1    | 2.1.1
+ggzcore      | 1.0.0    | 2.0.0    | 3.0.0    | 4.0.1    | 5.0.0
+ggzmod       | 0.0.0    | 1.0.0    | 1.1.0    | 1.1.0    | 2.0.1
+ggzdmod      | 0.0.0    | 1.0.0    | 2.0.0    | 2.1.0    | 3.0.0
+ggzcore++    | 1.0.0    | 2.0.0    | (noinst) | (noinst) | (noinst)
+zoneclient   | 0.0.0    | 1.0.0    | (noinst) | (noinst) | (noinst)
+zoneserver   | 0.0.0    | 0.1.0    | (noinst) | (noinst) | (noinst)
 
