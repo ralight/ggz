@@ -1070,7 +1070,8 @@ int handle_leave_event(player_t player)
 
 	game.players[player].age = -1;
 	game.host = determine_host();
-	set_player_message(game.host);
+	if (game.host >= 0)
+		set_player_message(game.host);
 
 	set_player_message(player);
 
