@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 5174 2002-11-03 19:37:36Z jdorje $
+ * $Id: room.c 5435 2003-02-22 06:41:41Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -716,7 +716,41 @@ int _ggzcore_room_chat(struct _GGZRoom *room,
 	struct _GGZNet *net;
 
 	net = _ggzcore_server_get_net(room->server);
-	return _ggzcore_net_send_chat(net, type, player, msg);
+
+	if (strchr(msg, '\n')) {
+		/* If the chat includes multiple lines, then we send each
+		 * line as a separate chat item.  The implementation of
+		 * this is a little inefficient, but I can't see a better way
+		 * to do it (cleanly).  Also it is possible that we should
+		 * treat \r and \r\n as breaks instead of just \n.
+		 *
+		 * Note that if you send a string like "\n\n", this code will
+		 * simply send the empty string twice...and the server will
+		 * ignore both of them.  So we might also want to check for
+		 * empty strings and just not send them.
+		 *
+		 * As far as I can tell, this implementation is functionally
+		 * equivalent to common IRC behavior.
+		 */
+		size_t len = strlen(msg);
+		char text[len + 1];
+		char *this = text, *newline;
+
+		strncpy(text, msg, len);
+		text[len] = '\0';
+
+		while ((newline = strchr(this, '\n'))) {
+			*newline = '\0';
+			if (_ggzcore_net_send_chat(net, type,
+						   player, this) < 0) {
+				return -1;
+			}
+			this = newline + 1;
+		}
+		return _ggzcore_net_send_chat(net, type, player, this);
+	} else {
+		return _ggzcore_net_send_chat(net, type, player, msg);
+	}
 }
 
 
