@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.8 - Game Development Guide
+@settitle The GGZ Gaming Zone 0.0.9 - Game Development Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -9,19 +9,19 @@
 @c nothing
 
 @ifinfo
-Copyright (C) 2002, 2003 Josef Spillner
+Copyright (C) 2002 - 2004 Josef Spillner
 @end ifinfo
 
 @c Frontpage
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.8
+@subtitle Development of games for the GGZ Gaming Zone 0.0.9
 @author GGZ Development Team
 
 @c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002, 2003 Josef Spillner
+Copyright @copyright{} 2002 - 2004 Josef Spillner
 Published under the GNU Free Documentation License.
 @end titlepage
 
@@ -33,7 +33,7 @@ Published under the GNU Free Documentation License.
 This file is the info format of the GGZ Gaming Zone Game Development Guide, which is
 also available in postscript and HTML format.
 It describes how to develop game clients and servers which run over GGZ.
-See http://www.ggzgamingzone.org/docs/ for the latest edition.
+See http://www.ggzgamingzone.org/docs/guides/gamedev/ for the latest edition.
 @end ifinfo
 
 @menu
@@ -84,7 +84,7 @@ can be made, for example, most external game have been present before they got
 a GGZ mode, and are thus more complex in design.
 In the future, some GGZ game servers and clients will most likely also provide
 a standalone mode, just like some clients already do for local games,
-namely Muehle, KTicTacTux and Geekgame.
+namely Muehle, KTicTacTux, Geekgame, Escape/SDL and Xadrez Chines.
 
 @node Game Clients, Game Servers, The GGZ System, Top
 @chapter Game Clients
@@ -128,7 +128,7 @@ static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 
 static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
 {
-	int fd = (int)data;
+	int fd = *(int*)data;
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
 	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 }
@@ -169,6 +169,7 @@ The format of this configuration file is defined as follows:
 Author = <author>
 CommandLine = <commandline>
 Frontend = <frontend>
+Environment = <environment>
 Homepage = <url>
 Name = <name of the game>
 ProtocolEngine = <engine name>
@@ -180,7 +181,8 @@ Version = <version>
 The entries don't have to have any special values, except that the combination
 of protocol engine and protocol version is used to ensure the compatibility
 with any game server of this name. The frontend should be a common abbreviation
-like kde, gtk, qt or sdl.
+like kde, gtk, qt or sdl. The environment can be xfullscreen, xwindow,
+framebuffer, console or passive. The default (if omitted) is xwindow.
 
 @section Client Toolkits
 @subsection KDE or Qt (C++)
@@ -211,8 +213,8 @@ T.E.G. is an example for a Gnome game.
 SDL is a proven toolkit for game development, with tons of games already
 available. See @url{http://www.libsdl.org} for a list of them.
 The GGZ games Geekgame and TicTacToe 3D have been written using SDL.
-The games Escape/SDL and PyKamikaze are using the Python wrapper for SDL called
-Pygame, available at @url{http://www.pygame.org}.
+The games Escape/SDL, PyKamikaze and Xadrez Chines are using the Python
+wrapper for SDL called Pygame, available at @url{http://www.pygame.org}.
 Python games also need to use a wrapper for the ggzmod and ggzdmod libraries,
 which exist as pyggzmod and pyggzdmod in the ggz-python package.
 
@@ -220,7 +222,7 @@ which exist as pyggzmod and pyggzdmod in the ggz-python package.
 
 It does really not matter which toolkit one chooses. Therefore, Mesa3D (an
 OpenGL implementation), PLib, GLUT, ClanLib and others are worth to have a look
-at.
+at. Actually TicTacToe 3D uses SDL in combination with OpenGL.
 
 @node Game Servers, Programming Details, Game Clients, Top
 @chapter Game Servers
@@ -364,8 +366,9 @@ GGZGameServer, and reimplement all of its protected event methods.
 
 @subsection Python Development
 
-There is a python wrapper for ggzdmod: pyggzdmod.
-It is available as part of the ggz-python package.
+There are python wrappers for ggzdmod, ggzmod and ggzcore: pyggzdmod,
+pyggzmod and pyggzcore.
+They are available as part of the ggz-python package.
 
 @subsection Ruby Development
 
@@ -403,6 +406,12 @@ The KDE equivalent of ggzwrap can be used to debug network connections
 visually. It displays incoming and outgoing traffic between the game and the
 game server, which is (technically) between the game client and ggzcore for
 most of our games (those without direct connections, anyway).
+
+@subsection Go client/server
+
+The GNU Go integration uses special wrappers both on the client and the
+server side, which communicate using stdin/stdout and fifos respectively.
+It should be able to use them for any similar games without problem.
 
 @section Network connections
 
