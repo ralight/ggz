@@ -89,6 +89,11 @@ void net_send(char *buffer)
 
 void net_allow(int allow)
 {
+	if(!allow)
+	{
+		printf("* Buffered input\n");
+		fflush(NULL);
+	}
 	m_allow = allow;
 }
 
@@ -215,10 +220,13 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 	printf("TelGGZ: Joined room %s.\n", ggzcore_room_get_name(room));
 	fflush(NULL);
 
-	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, net_hook_roomenter);
-	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
-	ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, net_hook_chat);
-	ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, net_hook_players);
+	if(!room)
+	{
+		ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, net_hook_roomenter);
+		ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
+		ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, net_hook_chat);
+		ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, net_hook_players);
+	}
 
 	return GGZ_HOOK_OK;
 }

@@ -31,7 +31,7 @@
 #include <stdlib.h>
 
 /* TelGGZ version number */
-#define TELGGZ_VERSION "0.2"
+#define TELGGZ_VERSION "0.3"
 
 /* Configuration */
 #include "config.h"
