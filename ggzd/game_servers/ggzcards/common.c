@@ -1045,7 +1045,7 @@ int handle_newgame_event(player_t player)
 		game.options_initted = 1;
 	}
 	for (p=0; p<game.num_players; p++)
-		if (!game.players[p].ready) {
+		if (!game.players[p].ready && ggz_seats[p].assign != GGZ_SEAT_BOT) {
 			/* TODO: should another WH_REQ_NEWGAME be sent, just as a reminder?
 			 * if we do, then the client may not be able to determine that it's a duplicate... */
 			ggz_debug("Player %d/%s is not ready.", p, ggz_seats[p].name);
