@@ -1,8 +1,0 @@
-Games using the Simple Direct Media Layer (SDL) should be placed here
-while being developed.
-They will eventually be released as ggz-sdl-games.
-
-This intersects with the idea of pygame, which is SDL for Python and should
-belong into the upcoming python package, because python is a more difficult
-dependency than SDL (IMO).
-
