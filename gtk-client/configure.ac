@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5730 2003-12-31 17:27:00Z dr_maux $
+dnl $Id: configure.ac 5739 2004-01-17 18:42:36Z dr_maux $
 
 AC_INIT([GGZ Gtk+ client], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -146,7 +146,6 @@ echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
 echo "    Dmalloc Debugging..$enable_debug_mem"
-echo "    Gettext support....$enable_gettext"
 echo "    GTK library........$enable_gtk"
 echo ""
 echo "At the prompt type \"make\" to compile the GGZ gtk client"

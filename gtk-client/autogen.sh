@@ -56,8 +56,8 @@ need_libtool=0
 
 (grep "\bAM_PROG_LIBTOOL" $srcdir/configure.ac >/dev/null) && need_libtool=1
 
-version_check "autoconf" "2.50"
-version_check "automake" "1.5"
+version_check "autoconf" "2.57"
+version_check "automake" "1.7"
 if test "x$need_libtool" = "x1"; then
 	version_check "libtool" "1.4.2"
 fi
