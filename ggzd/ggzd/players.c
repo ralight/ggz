@@ -292,8 +292,6 @@ static void player_loop(GGZPlayer* player)
  */
 static void player_remove(GGZPlayer* player)
 {
-	char lc_name[MAX_USER_NAME_LEN + 1];
-	char *src, *dest;
 	long connect_time;
 	int hours, mins, secs;
 	int anon = 0;
@@ -301,17 +299,13 @@ static void player_remove(GGZPlayer* player)
 	pthread_rwlock_rdlock(&player->lock);
 	/* There's no need to remove them if they aren't "here" */
 	if(strcmp(player->name, "<none>")) {
-		/* Take their name off the hash list */
-		/* Convert name to lowercase for comparisons */
-		for(src=player->name,dest=lc_name; *src!='\0'; src++,dest++)
-			*dest = tolower(*src);
-		*dest = '\0';
 		connect_time = (long)time(NULL) - player->login_time;
 		if(player->uid == GGZ_UID_ANON)
 			anon = 1;
 		pthread_rwlock_unlock(&player->lock);
 
-		hash_player_delete(lc_name);
+		/* Take their name off the hash list */
+		hash_player_delete(player->name);
 
 		hours = connect_time / 3600;
 		mins = (connect_time % 3600) / 60;

@@ -27,6 +27,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+
 
 #include "ggzd.h"
 #include "datatypes.h"
@@ -43,6 +45,7 @@ static char player_needs_init = 1;
 
 /* Internal functions */
 static int ggzdb_player_init(void);
+static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
 
 /* Back-end functions */
 extern int _ggzdb_init(char *datadir, int standalone);
@@ -107,6 +110,10 @@ void ggzdb_close(void)
 int ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	int rc=0;
+	char orig[MAX_USER_NAME_LEN + 1];
+	
+	/* Lowercase player's name for comparison, saving original */
+	ggzdb_player_lowercase(pe, orig);
 
 	_ggzdb_enter();
 	if(player_needs_init)
@@ -115,6 +122,9 @@ int ggzdb_player_add(ggzdbPlayerEntry *pe)
 	if(rc == 0)
 		rc = _ggzdb_player_add(pe);
 
+	/* Restore the original name */
+	strcpy(pe->handle, orig);
+	
 	_ggzdb_exit();
 	return rc;
 }
@@ -124,7 +134,13 @@ int ggzdb_player_add(ggzdbPlayerEntry *pe)
 int ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
 	int rc=0;
+	char orig[MAX_USER_NAME_LEN + 1];
 
+	/* Lowercase player's name for comparison, saving original */
+	ggzdb_player_lowercase(pe, orig);
+
+	dbg_msg(GGZ_DBG_CONNECTION, "Getting player (%s) as (%s)..", orig, pe->handle);
+	
 	_ggzdb_enter();
 	if(player_needs_init)
 		rc = ggzdb_player_init();
@@ -132,6 +148,11 @@ int ggzdb_player_get(ggzdbPlayerEntry *pe)
 	if(rc == 0)
 		rc = _ggzdb_player_get(pe);
 
+	dbg_msg(GGZ_DBG_CONNECTION, "result was %d", rc);
+
+	/* Restore the original name */
+	strcpy(pe->handle, orig);
+	
 	_ggzdb_exit();
 	return rc;
 }
@@ -141,6 +162,10 @@ int ggzdb_player_get(ggzdbPlayerEntry *pe)
 int ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
 	int rc=0;
+	char orig[MAX_USER_NAME_LEN + 1];
+
+	/* Lowercase player's name for comparison, saving original */
+	ggzdb_player_lowercase(pe, orig);
 
 	_ggzdb_enter();
 	if(player_needs_init)
@@ -149,6 +174,9 @@ int ggzdb_player_update(ggzdbPlayerEntry *pe)
 	if(rc == 0)
 		rc = _ggzdb_player_update(pe);
 
+	/* Restore the original name */
+	strcpy(pe->handle, orig);
+	
 	_ggzdb_exit();
 	return rc;
 }
@@ -171,4 +199,18 @@ static int ggzdb_player_init(void)
 		player_needs_init = 0;
 
 	return rc;
+}
+
+
+static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *buf)
+{
+	char *src, *dest;
+
+	/* Save original name in caller provided buffer */
+	strcpy(buf, pe->handle);
+	
+	/* Convert name to lowercase for comparisons */
+	for(src=buf, dest=pe->handle; *src!='\0'; src++, dest++)
+		*dest = tolower(*src);
+	*dest = '\0';
 }

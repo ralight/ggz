@@ -28,7 +28,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
 
 #include <err_func.h>
 #include <ggzdb.h>
@@ -58,9 +57,9 @@ static int  validate_username(char *);
  */
 int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *password)
 {
-	char *ip_addr, *src, *dest;
+	char *ip_addr;
 	int name_ok;
-	char lc_name[MAX_USER_NAME_LEN + 1], new_pw[17];
+	char new_pw[17];
 	ggzdbPlayerEntry db_pe;
 	char *login_type=NULL;
 	int db_status=0;
@@ -78,13 +77,8 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		return GGZ_REQ_FAIL;
 	}
 
-	/* Convert name to lowercase for comparisons */
-	for(src=name, dest=lc_name; *src!='\0'; src++, dest++)
-		*dest = tolower(*src);
-	*dest = '\0';
-	
 	/* Validate the username */
-	if(!validate_username(lc_name)) {
+	if(!validate_username(name)) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s",
 			name);
 		/* FIXME: We should have a specific error code for this */
@@ -98,14 +92,18 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	name_ok = 1;
 	
 	/* Check guest names vs. the database */
-	strcpy(db_pe.handle, lc_name);
+	strcpy(db_pe.handle, name);
 	db_status = ggzdb_player_get(&db_pe);
 	if(type == GGZ_LOGIN_GUEST && db_status != GGZDB_ERR_NOTFOUND)
 			name_ok = 0;
 	
 	/* Add the player name to the hash table */
 	if (name_ok)
-		name_ok = hash_player_add(lc_name, player);
+		name_ok = hash_player_add(name, player);
+
+
+	/* Error if the name is already in the hash table or guest
+	   name in the DB */
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful login of %s", name);
 		if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
@@ -128,14 +126,14 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 			name_ok = 0;
 		}
 		if(!name_ok) {
-			hash_player_delete(lc_name);
+			hash_player_delete(name);
 			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
 
 		/* Password is verified, update their last login */
-		strcpy(db_pe.handle, lc_name);
+		strcpy(db_pe.handle, name);
 		db_pe.last_login = time(NULL);
 		if (ggzdb_player_update(&db_pe) != 0)
 			err_msg("Player database update failed (%s)", name);
@@ -146,8 +144,8 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		/* At this point, we know the name is not currently in
                    use, so try adding it to the database*/
 		if(db_status != GGZDB_ERR_NOTFOUND
-		   || login_add_user(&db_pe, lc_name, new_pw) < 0) {
-			hash_player_delete(lc_name);
+		   || login_add_user(&db_pe, name, new_pw) < 0) {
+			hash_player_delete(name);
 			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;

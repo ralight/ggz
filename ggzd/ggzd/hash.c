@@ -47,7 +47,7 @@ static pthread_rwlock_t hash_list_lock[HASH_NUM_LISTS];
 
 /* Internal functions */
 static unsigned hash_pjw(char *);
-
+static void hash_player_lowercase(char *orig, char *buf);
 
 /* Debugging stuff */
 #ifdef DEBUG
@@ -73,11 +73,15 @@ void hash_initialize(void)
 
 
 /* Adds a player name to the appropriate hash list */
-int hash_player_add(char *name, GGZPlayer* player)
+int hash_player_add(char *orig_name, GGZPlayer* player)
 {
 	unsigned hash_num;
 	HashList *hl;
 	int not_exist=1;
+	char name[MAX_USER_NAME_LEN + 1];
+
+	/* Lowercase player names for hashing */
+	hash_player_lowercase(orig_name, name);
 
 	/* Pick a list */
 	hash_num = hash_pjw(name) % HASH_NUM_LISTS;
@@ -132,11 +136,10 @@ int hash_player_add(char *name, GGZPlayer* player)
 
 
 /* Lookup a player name in the hash and return a pointer to him */
-GGZPlayer* hash_player_lookup(char *name)
+GGZPlayer* hash_player_lookup(char *orig_name)
 {
 	unsigned hash_num;
-	char lc_name[MAX_USER_NAME_LEN + 1];
-	char *src, *dest;
+	char name[MAX_USER_NAME_LEN + 1];
 	HashList *hl;
 	GGZPlayer* player = NULL;
 
@@ -144,18 +147,16 @@ GGZPlayer* hash_player_lookup(char *name)
 		return NULL;
 
 	/* Convert name to lowercase for comparisons */
-	for(src = name, dest = lc_name; *src != '\0'; src++, dest++)
-		*dest = tolower(*src);
-	*dest = '\0';
+	hash_player_lowercase(orig_name, name);
 
 	/* Pick a list */
-	hash_num = hash_pjw(lc_name) % HASH_NUM_LISTS;
+	hash_num = hash_pjw(name) % HASH_NUM_LISTS;
 
 	/* Find the player name in this list */
 	pthread_rwlock_rdlock(&hash_list_lock[hash_num]);
 	hl = hash_list[hash_num];
 	while(hl) {
-		if(!strcmp(lc_name, hl->name)) {
+		if(!strcmp(name, hl->name)) {
 			player = hl->player;
 			break;
 		}
@@ -173,10 +174,14 @@ GGZPlayer* hash_player_lookup(char *name)
 
 
 /* Remove a player name from the hash tables */
-void hash_player_delete(char *name)
+void hash_player_delete(char *orig_name)
 {
 	unsigned hash_num;
+	char name[MAX_USER_NAME_LEN + 1];
 	HashList *hl, *hp;
+
+	/* Convert name to lowercase for comparisons */
+	hash_player_lowercase(orig_name, name);
 
 	/* Pick a list */
 	hash_num = hash_pjw(name) % HASH_NUM_LISTS;
@@ -247,6 +252,17 @@ static unsigned hash_pjw(char *name)
 	}
 
 	return h;
+}
+
+
+static void hash_player_lowercase(char *orig, char *buf)
+{
+	char *src, *dest;
+
+	/* Convert name to lowercase for comparisons */
+	for(src=orig, dest=buf; *src!='\0'; src++, dest++)
+		*dest = tolower(*src);
+	*dest = '\0';
 }
 
 
