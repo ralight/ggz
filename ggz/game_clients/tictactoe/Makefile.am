@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-GAME_DSC = module.dsc.in
+GAME_DSC = module.dsc
 
-EXTRA_DIST = $(GAME_DSC)
+EXTRA_DIST = module.dsc.in
 
 SUBDIRS = .
 
