@@ -32,6 +32,7 @@
 #include "login.h"
 #include "msgbox.h"
 #include "motd.h"
+#include "game.h"
 #include "support.h"
 #include "xtext.h"
 
@@ -55,6 +56,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_motd_loaded(GGZServerEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_table_left(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* user_data);
 
@@ -88,6 +90,7 @@ void ggz_event_init(GGZServer *Server)
 	ggzcore_server_add_event_hook(server, GGZ_LOGOUT, ggz_logout);
 	ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED, ggz_motd_loaded);
 	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, ggz_state_change);
+	ggzcore_server_add_event_hook(server, GGZ_TABLE_LEFT, ggz_table_left);
 	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, ggz_server_error);
 	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, ggz_net_error);
 }
@@ -666,3 +669,10 @@ static GGZHookReturn ggz_table_data(GGZRoomEvent id, void* event_data, void* use
         ggzcore_game_send_data(game, event_data);
         return GGZ_HOOK_OK;
 }
+
+static GGZHookReturn ggz_table_left(GGZServerEvent id, void* event_data, void* user_data)
+{
+	game_quit();
+	return GGZ_HOOK_OK;
+}
+
