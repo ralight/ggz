@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2708 2001-11-09 02:47:03Z jdorje $
+ * $Id: ggzdmod.c 2709 2001-11-09 02:57:46Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -548,7 +548,8 @@ static void game_leave(_GGZdMod * ggzdmod)
 		return;
 
 	for (seat = 0; seat < ggzdmod->num_seats; seat++)
-		if (!strcmp(name, ggzdmod->seats[seat].name))
+		if (ggzdmod->seats[seat].name &&
+		    !strcmp(name, ggzdmod->seats[seat].name))
 			break;
 
 	if (seat == ggzdmod->num_seats)	/* player not found */
