@@ -389,33 +389,33 @@ void KTicTacTux::slotNetwork()
 
 	switch(op)
 	{
-		case proto->msgseat:
+		case KTicTacTuxProto::msgseat:
 			proto->getSeat();
 			break;
-		case proto->msgplayers:
+		case KTicTacTuxProto::msgplayers:
 			proto->getPlayers();
 			proto->state = proto->statewait;
 			if((proto->num >= 0) && (proto->names[!proto->num][0]))
 				emit signalScore(i18n("Network game with %1").arg(proto->names[!proto->num]));
 			break;
-		case proto->reqmove:
+		case KTicTacTuxProto::reqmove:
 			proto->state = proto->statemove;
 			m_turn = proto->num;
 			emit signalStatus(i18n("Your move"));
 			break;
-		case proto->rspmove:
+		case KTicTacTuxProto::rspmove:
 			switch(proto->getMoveStatus())
 			{
-				case proto->errstate:
+				case KTicTacTuxProto::errstate:
 					emit signalStatus(i18n("*server*"));
 					break;
-				case proto->errturn:
+				case KTicTacTuxProto::errturn:
 					emit signalStatus(i18n("*turn*"));
 					break;
-				case proto->errbound:
+				case KTicTacTuxProto::errbound:
 					emit signalStatus(i18n("*bounds*"));
 					break;
-				case proto->errfull:
+				case KTicTacTuxProto::errfull:
 					emit signalStatus(i18n("*occupied*"));
 					break;
 				default:
@@ -423,18 +423,18 @@ void KTicTacTux::slotNetwork()
 			}
 			getNextTurn();
 			break;
-		case proto->msgmove:
+		case KTicTacTuxProto::msgmove:
 			proto->getOpponentMove();
 			if(proto->num < 0) emit signalStatus(i18n("Watching the game"));
 			break;
-		case proto->sndsync:
+		case KTicTacTuxProto::sndsync:
 			proto->getSync();
 			break;
 //		case proto->sndstats:
 //			proto->getStatistics();
 //			emit signalNetworkScore(proto->stats[0], proto->stats[1]);
 //			break;
-		case proto->msggameover:
+		case KTicTacTuxProto::msggameover:
 			proto->getGameOver();
 			proto->state = proto->statedone;
 			gameOver();
@@ -450,10 +450,10 @@ void KTicTacTux::drawBoard()
 	{
 		switch(proto->board[i % 3][i / 3])
 		{
-			case proto->player:
+			case KTicTacTuxProto::player:
 				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(m_t1));
 				break;
-			case proto->opponent:
+			case KTicTacTuxProto::opponent:
 				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(m_t2));
 				break;
 			default:

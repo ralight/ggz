@@ -67,8 +67,6 @@ void Network::slotControl()
 
 void Network::callback(GGZMod *mod, void *data)
 {
-	QSocketNotifier *sn;
-
 	m_fd = *(int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 
