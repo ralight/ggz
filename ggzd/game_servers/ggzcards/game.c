@@ -37,8 +37,10 @@
 #include "protocols.h"
 
 /* these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
-static char* suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
-static char* bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
+static char* short_suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
+static char* long_suaro_suit_names[6] = {"low", "clubs", "diamonds", "hearts", "spades", "high"};
+static char* short_bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
+static char* long_bridge_suit_names[5] = {"clibs", "diamonds", "hearts", "spades", "notrump"};
 
 /* helper functions */
 static char** alloc_string_array(int, int);
@@ -236,7 +238,6 @@ void game_init_game()
 	}
 
 	set_global_message("game", game.name);
-	send_global_message_toall("game");
 
 	/* allocate hands */
 	for (s=0; s<game.num_seats; s++) {
@@ -579,7 +580,7 @@ int game_get_bid()
 					if (bid.sbid.val < BRIDGE.contract) continue;
 					if (bid.sbid.val == BRIDGE.contract && bid.sbid.suit <= BRIDGE.contract_suit) continue;
 					snprintf(game.bid_texts[index], game.max_bid_length,
-					"%d %s", bid.sbid.val, bridge_suit_names[(int)bid.sbid.suit]);
+					"%d %s", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit]);
 					game.bid_choices[index] = bid;
 					index++;
 				}
@@ -615,7 +616,7 @@ int game_get_bid()
 					if (bid.sbid.val < SUARO.contract) continue;
 					if (bid.sbid.val == SUARO.contract && bid.sbid.suit <= SUARO.contract_suit) continue;
 					snprintf(game.bid_texts[index], game.max_bid_length,
-						"%d %s", bid.sbid.val, suaro_suit_names[(int)bid.sbid.suit]);
+						"%d %s", bid.sbid.val, short_suaro_suit_names[(int)bid.sbid.suit]);
 					game.bid_choices[index] = bid;
 					index++;
 					if (SUARO.shotgun) {
@@ -623,7 +624,7 @@ int game_get_bid()
 						bid_t kbid = bid;
 						kbid.sbid.spec = SUARO_KITTY;
 						snprintf(game.bid_texts[index], game.max_bid_length,
-							"K %d %s", kbid.sbid.val, suaro_suit_names[(int)kbid.sbid.suit]);
+							"K %d %s", kbid.sbid.val, short_suaro_suit_names[(int)kbid.sbid.suit]);
 						game.bid_choices[index] = kbid;
 						index++;
 					}
@@ -675,7 +676,7 @@ int game_handle_bid(int bid_index)
 			/* closely based on the Suaro code, below */
 			bid = game.bid_choices[bid_index];
 
-			ggz_debug("The bid chosen is %d %s %d.", bid.sbid.val, bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
+			ggz_debug("The bid chosen is %d %s %d.", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
 			
 			if (bid.sbid.spec == BRIDGE_PASS) {
 				BRIDGE.pass_count++;
@@ -688,18 +689,19 @@ int game_handle_bid(int bid_index)
 				BRIDGE.pass_count = 1;
 				BRIDGE.contract = bid.sbid.val;
 				BRIDGE.contract_suit = bid.sbid.suit;
-				ggz_debug("Setting bridge contract to %d %s.", BRIDGE.contract, bridge_suit_names[BRIDGE.contract_suit]);
+				ggz_debug("Setting bridge contract to %d %s.", BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit]);
 				if (bid.sbid.suit < BRIDGE_NOTRUMP)
 					game.trump = bid.sbid.suit;
 				else
 					game.trump = -1;
 			}
+/*
 			if (BRIDGE.contract)
 				set_global_message("", "%d %s x%d", BRIDGE.contract,
-					bridge_suit_names[(int)BRIDGE.contract_suit], BRIDGE.bonus);
+					long_bridge_suit_names[(int)BRIDGE.contract_suit], BRIDGE.bonus);
 			else
 				set_global_message("", "no contract");
-			send_global_message_toall("");
+*/
 			break;
 		case GGZ_GAME_SUARO:
 			bid = game.bid_choices[bid_index];
@@ -722,13 +724,15 @@ int game_handle_bid(int bid_index)
 				else
 					game.trump = -1;
 			}
-			if (SUARO.contract)
+/*
+			if (SUARO.contract) {
 				set_global_message("", "%s%d %s x%d",
 					SUARO.kitty ? "K " : "",
-					SUARO.contract, suaro_suit_names[(int)SUARO.contract_suit], SUARO.bonus);
-			else
+					SUARO.contract, long_suaro_suit_names[(int)SUARO.contract_suit], SUARO.bonus);
+			} else {
 				set_global_message("", "no contract");
-			send_global_message_toall("");
+			}
+*/
 			break;
 		case GGZ_GAME_SPADES:
 			break; /* no special handling necessary */
@@ -736,8 +740,7 @@ int game_handle_bid(int bid_index)
 			if (game.bid_count == 0) {
 				game.trump = bid_index;
 
-				set_global_message("", "Trump: %s.", suit_names[(int)game.trump % 4]);
-				send_global_message_toall("");
+				set_global_message("", "Trump is %s.", suit_names[(int)game.trump % 4]);
 			} else {
 				bid = game.bid_choices[bid_index];
 				LAPOCHA.bid_sum += bid.bid;
@@ -768,8 +771,7 @@ void game_next_bid()
 				/* done bidding */
 				if (BRIDGE.contract == 0) {
 					ggz_debug("Four passes; redealing hand.");
-					set_global_message("", "redeal");
-					send_global_message_toall("");
+					set_global_message("", "Everyone passed; redealing.");
 					set_game_state( WH_STATE_NEXT_HAND ); /* redeal hand */
 				} else {
 					ggz_debug("Three passes; bidding is over.");
@@ -788,8 +790,7 @@ void game_next_bid()
 				/* done bidding */
 				if (SUARO.contract == 0) {
 					ggz_debug("Two passes; redealing hand.");
-					set_global_message("", "redeal");
-					send_global_message_toall("");
+					set_global_message("", "Everyone passed; redealing.");
 					set_game_state( WH_STATE_NEXT_HAND ); /* redeal hand */
 				} else {
 					ggz_debug("A pass; bidding is over.");
@@ -827,23 +828,24 @@ void game_start_playing(void)
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:
 			game.leader = (game.dealer + 1) % game.num_players;
-			set_global_message("", "%d %s x%d", BRIDGE.contract,
-				bridge_suit_names[(int)BRIDGE.contract_suit], BRIDGE.bonus);
-			send_global_message_toall("");
 			break;
 		case GGZ_GAME_BRIDGE:
 			/* declarer is set in game_handle_bid */
+			set_global_message("", "Contract: %d %s%s.",
+				BRIDGE.contract, long_bridge_suit_names[(int)BRIDGE.contract_suit],
+				BRIDGE.bonus == 1 ? "" : BRIDGE.bonus == 2 ? ", doubled" : ", redoubled");
 			game.leader = (BRIDGE.declarer + 1) % game.num_players;
 			game.trick_total = game.hand_size;
 			game.play_total = game.num_players;
 			break;
 		case GGZ_GAME_SUARO:
 			/* declarer is set in game_handle_bid */
+			set_global_message("", "Contract: %s%d %s%s.",
+				/* ggz_seats[SUARO.declarer].name, */
+				SUARO.kitty ? "kitty " : "",
+				SUARO.contract, long_suaro_suit_names[(int)SUARO.contract_suit],
+				SUARO.bonus == 1 ? "" : SUARO.bonus == 2 ? ", doubled" : ", redoubled");
 			game.leader = 1 - SUARO.declarer;
-			set_global_message("", "%s%d %s x%d",
-				SUARO.kitty ? "K " : "",
-				SUARO.contract, suaro_suit_names[(int)SUARO.contract_suit], SUARO.bonus);
-			send_global_message_toall("");
 			if (SUARO.kitty) {
 				/* if it's a kitty bid, the declarer takes up the kitty and
 				 * lays their own hand down (face up) in its place */
@@ -1116,12 +1118,12 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 		case GGZ_GAME_SUARO:
 			if (bid.sbid.spec == SUARO_PASS) return snprintf(buf, buf_len, "Pass");
 			if (bid.sbid.spec == SUARO_DOUBLE) return snprintf(buf, buf_len, "Double"); /* TODO: differentiate redouble */
-			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%s%d %s", (bid.sbid.spec == SUARO_KITTY) ? "K " : "", bid.sbid.val, suaro_suit_names[(int)bid.sbid.suit]);
+			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%s%d %s", (bid.sbid.spec == SUARO_KITTY) ? "K " : "", bid.sbid.val, short_suaro_suit_names[(int)bid.sbid.suit]);
 			break;
 		case GGZ_GAME_BRIDGE:
 			if (bid.sbid.spec == BRIDGE_PASS) return snprintf(buf, buf_len, "Pass");
 			if (bid.sbid.spec == BRIDGE_DOUBLE) return snprintf(buf, buf_len, "Double"); /* TODO: differentiate redouble */
-			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%d %s", bid.sbid.val, bridge_suit_names[(int)bid.sbid.suit]);
+			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%d %s", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit]);
 			break;
 		case GGZ_GAME_SPADES:
 			if (bid.sbid.spec == SPADES_NIL) return snprintf(buf, buf_len, "Nil");
@@ -1177,7 +1179,9 @@ void game_set_player_message(player_t p)
 			}
 			goto normal_message;
 		case GGZ_GAME_LAPOCHA:
-			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
+			if (p == game.dealer)
+				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dealer\n");
+			if (game.state >= WH_STATE_FIRST_TRICK && game.state <= WH_STATE_WAIT_FOR_PLAY) {
 				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Contract: %d\n", (int)game.players[p].bid.bid);
 			}
 			goto normal_message;
@@ -1212,10 +1216,10 @@ bid_message_only:
 			/* TODO: not sure if this should go here for all games... */
 			if (game.state == WH_STATE_WAIT_FOR_BID &&
 			    p == game.next_bid)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Waiting for bid");
+				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing..."); /* "Waiting for play" won't fit */
 			if (game.state == WH_STATE_WAIT_FOR_PLAY &&
 			    p == game.curr_play)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Waiting for play");
+				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding..."); /* "Waiting for bid" won't fit */
 
 			break;
 	}
@@ -1428,6 +1432,7 @@ void game_end_hand(void)
 				/* if you take all 26 points you "shoot the moon" and earn -26 instead.
 				 * TODO: option of giving everyone else 26.  It could be handled as a bid... */
 				game.players[p].score += score;
+				set_global_message("", "%s shot the moon.", ggz_seats[p].name);
 			}
 			break;
 		default:

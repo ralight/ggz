@@ -35,6 +35,7 @@ static int deck_size = 0;
 static int deck_ptr = -1; /* a pointer into the deck used for dealing */
 
 char* suit_names[4] = {"clubs", "diamonds", "hearts", "spades"};
+char* short_suit_names[4] = {"C", "D", "H", "S"};
 
 /* cards_create_deck()
  *   set up the deck of the given type
