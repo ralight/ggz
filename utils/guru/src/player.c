@@ -67,6 +67,7 @@ Player *guru_player_lookup(const char *name)
 	int i;
 	Player *p;
 	int exist;
+	char path[1024];
 
 	if(!name) return NULL;
 
@@ -81,7 +82,9 @@ Player *guru_player_lookup(const char *name)
 	/* If not found, try to look him up */
 	if(handle == -1)
 	{
-		handle = ggzcore_confio_parse("/home/josef/.ggz/grubby.rc", GGZ_CONFIO_RDONLY);
+		strcpy(path, getenv("HOME"));
+		strcat(path, "/.ggz/grubby.rc");
+		handle = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
 		if(handle < 0) return NULL;
 	}
 	exist = ggzcore_confio_read_int(handle, name, "SEEN", 0);

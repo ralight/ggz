@@ -9,10 +9,30 @@
 #ifndef GURU_MODULE_H
 #define GURU_MODULE_H
 
-int guru_module_init();
+#include "gurumod.h"
+
+typedef void (*netconnectfunc)(const char *host, int port);
+typedef void (*netjoinfunc)(int room);
+typedef int (*netstatusfunc)();
+typedef Guru* (*netinputfunc)();
+typedef void (*netoutputfunc)(Guru *output);
+
+struct gurucore_t
+{
+	void *nethandle;
+	netconnectfunc net_connect;
+	netjoinfunc net_join;
+	netstatusfunc net_status;
+	netinputfunc net_input;
+	netoutputfunc net_output;
+};
+
+typedef struct gurucore_t Gurucore;
+
+Gurucore *guru_module_init();
 int guru_module_add(const char *modulename);
 int guru_module_remove(const char *modulename);
-char *guru_module_work(const char *message, int priority);
+Guru *guru_module_work(Guru *message, int priority);
 
 #endif
 

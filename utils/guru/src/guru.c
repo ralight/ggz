@@ -9,13 +9,12 @@
 #include "guru.h"
 #include "module.h"
 
-int guru_init()
+Gurucore *guru_init()
 {
-	guru_module_init();
-	return 1;
+	return guru_module_init();
 }
 
-char *guru_work(const char *message)
+Guru *guru_work(Guru *message)
 {
 	return guru_module_work(message, 0);
 }

@@ -11,55 +11,73 @@
 
 #include <dlfcn.h>
 #include <stdio.h>
-#include <dirent.h>
-#include <fnmatch.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ggzcore.h>
 
-#define MODULEDIR "/usr/local/lib"
+typedef Guru* (*modulefunc)(Guru *message);
 
-typedef Guru (*modulefunc)(Guru message);
+void **modulelist = NULL;
+modulefunc *functionlist = NULL;
+int modulecount = 0;
 
-void **modulelist;
-modulefunc **functionlist;
-int modulecount;
-
-int guru_module_init()
+Gurucore *guru_module_init()
 {
-	DIR *dp;
-	struct dirent *ep;
-	int ret;
+	int handler, ret;
+	char path[1024];
+	char **list;
+	int count, i;
+	char *module;
+	Gurucore *core;
 
-	modulecount = 0;
-	modulelist = NULL;
-	functionlist = NULL;
+	sprintf(path, "%s/.ggz/guru.rc", getenv("HOME"));
+	handler = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
+	if(handler < 0) return NULL;
 
-	dp = opendir(MODULEDIR);
-	if(dp)
+	core = (Gurucore*)malloc(sizeof(Gurucore));
+
+	module = ggzcore_confio_read_string(handler, "guru", "net", NULL);
+	printf("Loading core module NET: %s... ", module);
+	fflush(NULL);
+
+	if((!module) || ((core->nethandle = dlopen(module, RTLD_NOW)) == NULL))
 	{
-		while((ep = readdir(dp)) != NULL)
-		{
-			if(!fnmatch("*.so", ep->d_name, FNM_NOESCAPE))
-			{
-				ret = guru_module_add(ep->d_name);
-			}
-		}
-		closedir(dp);
+		printf("ERROR: Not a shared library\n");
+		exit(-1);
+	}
+	if(((core->net_connect = dlsym(core->nethandle, "net_connect")) == NULL)
+	|| ((core->net_join = dlsym(core->nethandle, "net_join")) == NULL)
+	|| ((core->net_status = dlsym(core->nethandle, "net_status")) == NULL)
+	|| ((core->net_input = dlsym(core->nethandle, "net_input")) == NULL)
+	|| ((core->net_output = dlsym(core->nethandle, "net_output")) == NULL))
+	{
+		printf("ERROR: Couldn't find net functions\n");
+		exit(-1);
+	}
+	printf("OK\n");
+
+	ret = ggzcore_confio_read_list(handler, "guru", "modules", &count, &list);
+	if(ret < 0) return NULL;
+
+	for(i = 0; i < count; i++)
+	{
+		module = ggzcore_confio_read_string(handler, "modules", list[i], NULL);
+		guru_module_add(module);
 	}
 
-	return 1;
+	return core;
 }
 
 int guru_module_add(const char *modulename)
 {
-	char modulefile[1024];
 	void *handle, *init;
-	modulefunc *func;
+	modulefunc func;
 
+	if(!modulename) return 0;
 	printf("Loading module: %s... ", modulename);
 	fflush(NULL);
-	sprintf(modulefile, "%s/%s", MODULEDIR, modulename);
 
-	if((handle = dlopen(modulefile, RTLD_NOW)) == NULL)
+	if((handle = dlopen(modulename, RTLD_NOW)) == NULL)
 	{
 		printf("ERROR: Not a shared library!\n");
 		return 0;
@@ -81,9 +99,10 @@ int guru_module_add(const char *modulename)
 
 	modulecount++;
 	modulelist = (void**)realloc(modulelist, (modulecount + 1) * sizeof(void*));
-	functionlist = (modulefunc**)realloc(functionlist, modulecount + 1);
+	functionlist = (modulefunc*)realloc(functionlist, (modulecount + 1) * sizeof(modulefunc));
 	modulelist[modulecount - 1] = handle;
 	modulelist[modulecount] = NULL;
+	functionlist[modulecount - 1] = (modulefunc)malloc(sizeof(modulefunc));
 	functionlist[modulecount - 1] = func;
 	functionlist[modulecount] = NULL;
 
@@ -96,25 +115,29 @@ int guru_module_remove(const char *modulename)
 	return 1;
 }
 
-char *guru_module_work(const char *message, int priority)
+Guru *guru_module_work(Guru *message, int priority)
 {
 	int i, j;
-	Guru g;
+	modulefunc func;
+	Guru *ret;
+	char *savemsg;
 
 	if(!modulelist) return NULL;
+	savemsg = message->message;
 	for(j = 10; j >= 0; j--)
 	{
 		i = 0;
 		while(modulelist[i])
 		{
-			g.message = (char*)message;
-			g.priority = j;
-			if(j == 10) printf("Trying module no. %i with '%s'\n", i, g.message);
-			g = ((Guru(*)(Guru))functionlist[i])(g);
-			if(g.message)
+			message->message = strdup(savemsg);
+			if(j == 10) printf("Trying module no. %i with '%s'\n", i, message->message);
+			func = functionlist[i];
+			ret = (func)(message);
+			if(ret->message)
 			{
+				printf("Debug: got %s\n", ret->message);
 				/*sleep(strlen(g.message) / 7);*/
-				return g.message;
+				return ret;
 			}
 			i++;
 		}

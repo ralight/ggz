@@ -9,10 +9,11 @@
 #ifndef GURU_H
 #define GURU_H
 
+#include "module.h"
 #include "gurumod.h"
 
-int guru_init();
-char *guru_work(const char *message);
+Gurucore *guru_init();
+Guru *guru_work(Guru *message);
 int guru_close();
 
 #endif

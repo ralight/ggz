@@ -7,35 +7,52 @@
 ********************************************************************/
 
 #include "guru.h"
-
+#include "net.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(int argc, char *argv[])
 {
-	int res;
-	char *answer;
-	char buffer[100];
+	Gurucore *core;
+	Guru *guru;
 
 	printf("Guru: initializing...\n");
-	res = guru_init();
-	if(!res)
+	core = guru_init();
+	if(!core)
 	{
 		printf("Guru initialization failed!\n");
 		exit(-1);
 	}
-	printf("Guru: ready.\n");
+	printf("Guru: connect...\n");
 
-	while(fgets(buffer, sizeof(buffer), stdin))
+	(core->net_connect)("localhost", 5688);
+	while(1)
 	{
-		buffer[strlen(buffer) - 1] = 0;
-		answer = guru_work(buffer);
-		if(answer) printf("Guru answered: %s\n", answer);
+		switch((core->net_status)())
+		{
+			case NET_ERROR:
+				printf("ERROR: Couldn't connect\n");
+				exit(-1);
+				break;
+			case NET_LOGIN:
+				printf("Logged in.\n");
+				(core->net_join)(0);
+				break;
+			case NET_GOTREADY:
+				printf("Ready.\n");
+				break;
+			case NET_INPUT:
+				guru = (core->net_input)();
+				printf("Received: %s\n", guru->message);
+				guru = guru_work(guru);
+				if(guru)
+					{printf("Answer is: %s\n", guru->message);
+					(core->net_output)(guru);
+				}
+				break;
+		}
 	}
 
 	guru_close();
-
-	return 0;
 }
-
 
