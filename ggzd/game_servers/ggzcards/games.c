@@ -126,7 +126,7 @@ int games_req_gametype()
 	if (cnt == 1) {
 		ggz_debug("Just one valid game: choosing %d.", game_types[0]);
 		game.which_game = game_types[0];
-		game_init_game();
+		init_game();
 		send_sync_all();
 		return 0;
 	}
