@@ -104,7 +104,7 @@ void GGZ::putString(const QString& msg)
 {
 	socket->writeBlock((const char*)(msg.length()), 4);
 	
-	for(int i = 0; i < msg.length(); i++)
+	for(unsigned int i = 0; i < msg.length(); i++)
 		socket->putch(msg[i]);
 }
 
