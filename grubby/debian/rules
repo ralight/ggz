@@ -11,7 +11,8 @@ export DH_COMPAT=3
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	# Add here commands to configure the package.
+
+	test -f configure || NOCONFIGURE=yes ./autogen.sh
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man
 
 	touch configure-stamp
