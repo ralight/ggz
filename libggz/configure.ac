@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5859 2004-02-09 01:38:22Z jdorje $
+dnl $Id: configure.ac 5966 2004-03-08 20:05:03Z josef $
 
 AC_INIT([GGZ common libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -255,10 +255,10 @@ echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
 echo "    Memory Debugging...$enable_debug_mem"
 echo "    Encryption support.$enable_gcrypt"
-echo "    Threading support..$enable_threading"
 if test "$enable_gcrypt" = yes; then
 	echo "      TLS library support: $TLS_TYPE"
 fi
+echo "    Threading support..$enable_threading"
 echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to compile libggz."
