@@ -1312,8 +1312,12 @@ static int player_chat(int p_index, int p_fd)
 
 	dbg_msg(GGZ_DBG_CHAT, "Handling chat for player %d", p_index);
 
-	if (es_read_string_alloc(p_fd, &msg) < 0)
+	if((msg = malloc(MAX_CHAT_LEN)+1) == NULL)
+		err_sys_exit("malloc error in player_chat()");
+	if (es_read_string(p_fd, msg, MAX_CHAT_LEN+1) < 0) {
+		free(msg);
 		return GGZ_REQ_DISCONNECT;
+	}
 
 	/* No lock needed, no one can change our room but us */
 	if (players.info[p_index].room == -1) {
