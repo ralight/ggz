@@ -120,7 +120,7 @@ create_dlg_options (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_options), "mini_board", mini_board,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mini_board);
-  gtk_box_pack_start (GTK_BOX (hbox3), mini_board, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox3), mini_board, TRUE, TRUE, 0);
   gtk_widget_set_usize (mini_board, 240, 240);
   gtk_widget_set_events (mini_board, GDK_BUTTON_PRESS_MASK);
 
@@ -130,7 +130,7 @@ create_dlg_options (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_options), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
-  gtk_box_pack_start (GTK_BOX (hbox3), vbox1, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox3), vbox1, FALSE, FALSE, 5);
 
   table1 = gtk_table_new (2, 2, FALSE);
   gtk_widget_set_name (table1, "table1");
@@ -150,7 +150,7 @@ create_dlg_options (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  width_adj = gtk_adjustment_new (10, 1, 100, 1, 10, 10);
+  width_adj = gtk_adjustment_new (10, 1, 25, 1, 10, 10);
   width = gtk_spin_button_new (GTK_ADJUSTMENT (width_adj), 1, 0);
   gtk_widget_set_name (width, "width");
   gtk_widget_ref (width);
@@ -161,7 +161,7 @@ create_dlg_options (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  height_adj = gtk_adjustment_new (10, 1, 100, 1, 10, 10);
+  height_adj = gtk_adjustment_new (10, 1, 25, 1, 10, 10);
   height = gtk_spin_button_new (GTK_ADJUSTMENT (height_adj), 1, 0);
   gtk_widget_set_name (height, "height");
   gtk_widget_ref (height);
@@ -295,7 +295,7 @@ create_dlg_options (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_options), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
-  gtk_box_pack_start (GTK_BOX (hbox5), scrolledwindow1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox5), scrolledwindow1, FALSE, FALSE, 0);
   gtk_widget_set_usize (scrolledwindow1, 163, -2);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
@@ -442,12 +442,14 @@ create_dlg_options (void)
 	unit_stats_box = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (army_hbox), unit_label_box, FALSE, FALSE, 10);
 	gtk_box_pack_start (GTK_BOX (army_hbox), unit_spin_box, TRUE, TRUE, 10);
-	gtk_box_pack_start (GTK_BOX (army_hbox), unit_stats_box, TRUE, TRUE, 20);
+	gtk_box_pack_start (GTK_BOX (army_hbox), unit_stats_box, FALSE, TRUE, 20);
 	for (i = 0; i < 12; i++) {
 		unit_label[i] = gtk_label_new (unitname[i]);
   	gtk_widget_show (unit_label[i]);
   	gtk_box_pack_start (GTK_BOX (unit_label_box), unit_label[i], FALSE, FALSE, 0);
   	unit_spin_adj[i] = gtk_adjustment_new (unitdefault[i], 0, 100, 1, 10, 10);
+    if (i == U_FLAG)
+      GTK_ADJUSTMENT(unit_spin_adj[i])->lower = 1;
   	unit_spin[i] = gtk_spin_button_new (GTK_ADJUSTMENT (unit_spin_adj[i]), 1, 0);
 		gtk_widget_set_name (unit_spin[i], spin_name[i]);
 		gtk_widget_ref(unit_spin[i]);
@@ -474,9 +476,9 @@ create_dlg_options (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_object_set_data_full (GTK_OBJECT (dlg_options), "army_player_2", army_player_2,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start(GTK_BOX(unit_stats_box), army_total, FALSE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_1, FALSE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_2, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(unit_stats_box), army_total, FALSE, FALSE, 2);
+  gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_1, FALSE, FALSE, 2);
+  gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_2, FALSE, FALSE, 2);
 
 	gtk_signal_connect(GTK_OBJECT (mini_board), "expose_event",
 										 GTK_SIGNAL_FUNC (mini_board_expose), dlg_options);
@@ -504,6 +506,8 @@ create_dlg_options (void)
 										 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
 	gtk_signal_connect_object_after(GTK_OBJECT (height), "changed",
 										 GTK_SIGNAL_FUNC (init_mini_board), GTK_OBJECT (dlg_options));
+
+  mini_buf = NULL;
 
 	dlg_options_update(dlg_options);
 
@@ -885,8 +889,7 @@ gboolean mini_board_configure            (GtkWidget       *widget, GdkEventConfi
   if (!options) {
     dlg_options_update(user_data);
   }
-	if (!options->map)
-		init_mini_board(user_data);
+  init_mini_board(user_data);
 	gtk_object_set_data(GTK_OBJECT(user_data), "options", options);
 	return 1;
 }
@@ -941,7 +944,6 @@ gboolean init_preview (GtkWidget *widget, GdkEventConfigure *event,
 	if (preview_buf)
 		gdk_pixmap_unref(preview_buf);
 	preview_buf = gdk_pixmap_new( widget->window, width, height, -1 );
-  gdk_pixmap_ref(mini_buf);
   gtk_object_set_data(GTK_OBJECT(widget), "clean", GINT_TO_POINTER(FALSE));
 
   draw_preview(GTK_WIDGET(user_data));
@@ -976,7 +978,9 @@ gboolean draw_preview (GtkWidget *dlg_options) {
   gdk_window_get_size(widget->window, &width, &height);
 
   // Draw background
-  gdk_draw_rectangle(preview_buf, dlg_options->style->white_gc, TRUE,
+  gdk_draw_rectangle(preview_buf, 
+                     dlg_options->style->bg_gc[GTK_WIDGET_STATE(dlg_options)],
+                     TRUE,
                      0, 0, width, height);
 
   // Gets the size of each square
@@ -1047,7 +1051,6 @@ void init_mini_board(GtkWidget *dlg_options) {
 	if (mini_buf)
 		gdk_pixmap_unref(mini_buf);
 	mini_buf = gdk_pixmap_new( widget->window, width, height, -1 );
-  gdk_pixmap_ref(mini_buf);
 
 	// Now init the data
   options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
@@ -1079,7 +1082,8 @@ void draw_mini_board(GtkWidget *dlg_options) {
 
 	// Draw background
 	gdk_draw_rectangle (mini_buf,
-			dlg_options->style->white_gc, TRUE, 0, 0, width, height);
+			dlg_options->style->bg_gc[GTK_WIDGET_STATE(dlg_options)],
+      TRUE, 0, 0, width, height);
 
 	// Gets the size of each square
 	pix_width = width/options->width;
@@ -1117,12 +1121,12 @@ void draw_mini_board(GtkWidget *dlg_options) {
 	// Draw lines
 	for (i = 0; i < options->width; i++) {
 		gdk_draw_line(mini_buf, widget->style->black_gc,
-				i*pix_width, 0, i*pix_width, height);
+				i*pix_width, 0, i*pix_width, options->height*pix_height);
 	}
 
 	for (i = 0; i < options->height; i++) {
 		gdk_draw_line(mini_buf, widget->style->black_gc,
-				0, i*pix_height, width, i*pix_height);
+				0, i*pix_height, options->width*pix_width, i*pix_height);
 	}
 
 	gtk_widget_draw(widget, NULL);
