@@ -10,8 +10,10 @@ ggzdroom_DATA = ggzcards.room
 
 ggzd_ggzcards_SOURCES = ggz.c ggz.h \
 		       main.c \
-		       game.c game.h \
 		       cards.c cards.h \
+		       common.c common.h \
+		       game.c game.h \
+		       games.c games.h \
 		       protocols.h
 
 

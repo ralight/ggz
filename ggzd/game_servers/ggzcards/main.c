@@ -31,20 +31,23 @@
 
 #include "ggz.h"
 #include "game.h"
+#include "games.h"
 
 /* Both of these functions are taken from FreeCiv. */
-static int is_option(const char *option_name,char *option);
+/* static int is_option(const char *option_name,char *option); */
 static char *get_option(const char *option_name, char **argv, int *i, int argc);
 
 /***************************************************************
  ...
 ***************************************************************/
+/*
 static int is_option(const char *option_name,char *option)
 {
   if (!strcmp(option_name,option) ||
       !strncmp(option_name+1,option,2)) return 1;
   return 0;
 }
+*/
 
 /**************************************************************************
   return a char * to the parameter of the option or NULL.

@@ -56,26 +56,6 @@ typedef struct hand_t {
 	card_t *cards; /* must be allocated; memory leaks will be rampant! */
 } hand_t;
 
-/* Game types.  Shouldn't really go here, but... */
-/* NOTE: because of the way options are handled, these must start at 0 and
- * count up directly.   See game_req_gametype. */
-/* They also must match with game_names, below. */
-#define GGZ_GAME_SUARO		0 /* http://suaro.dhs.org */
-	/* these others aren't supported yet... */
-#define GGZ_GAME_SPADES		1
-#define GGZ_GAME_HEARTS		2
-#define GGZ_GAME_BRIDGE		3
-#define GGZ_GAME_LAPOCHA	4
-#define GGZ_GAME_EUCHRE		5
-#define GGZ_GAME_ROOK		6
-/* ... etc. ... */
-#define GGZ_GAME_UNKNOWN	-1
-
-/* this MUST correspond to the numbers above */
-extern char* game_names[];
-
-#define GGZ_DEFAULT_GAME	0       /* the default game */
-#define GGZ_NUM_GAMES		7	/* the _number_ of valid games */
 
 /* Exported functions */
 extern void cards_create_deck(int which_game);

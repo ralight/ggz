@@ -25,6 +25,7 @@
 #include <stdlib.h>
 
 #include "cards.h"
+#include "games.h"
 #include "ggz.h"
 
 #include "game.h" /* just for alloc */
