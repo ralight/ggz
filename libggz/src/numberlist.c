@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: numberlist.c 5929 2004-02-15 02:44:04Z jdorje $
+ * $Id: numberlist.c 6760 2005-01-20 05:51:06Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -140,7 +140,7 @@ char *ggz_numberlist_write(GGZNumberList *list)
 	return ggz_strdup(str);
 }
 
-int ggz_numberlist_isset(GGZNumberList *list, int value)
+int ggz_numberlist_isset(const GGZNumberList *list, int value)
 {
 	if (value <= 0)
   		return 0;
@@ -155,7 +155,7 @@ int ggz_numberlist_isset(GGZNumberList *list, int value)
 	return !!(list->values & (1 << (value - 1)));
 }
 
-int ggz_numberlist_get_max(GGZNumberList *list)
+int ggz_numberlist_get_max(const GGZNumberList *list)
 {
 	int min = list->max, i;
 

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 6484 2004-12-15 17:51:35Z josef $
+ * $Id: ggz_common.h 6760 2005-01-20 05:51:06Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -261,10 +261,10 @@ GGZNumberList ggz_numberlist_read(const char* text);
 char *ggz_numberlist_write(GGZNumberList *list);
 
 /** @brief Check to see if the given value is set in the number list. */
-int ggz_numberlist_isset(GGZNumberList *list, int value);
+int ggz_numberlist_isset(const GGZNumberList *list, int value);
 
 /** @brief Return the largest value in the set. */
-int ggz_numberlist_get_max(GGZNumberList *list);
+int ggz_numberlist_get_max(const GGZNumberList *list);
 
 /** }@ */
 
