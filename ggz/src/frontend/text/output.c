@@ -53,6 +53,7 @@
 #define COLOR_PURPLE		"\e[0m\e[36m"
 #define COLOR_WHITE		"\e[0m\e[37m"
 
+extern GGZServer *server;
 
 static struct winsize window;
 static int tty_des;
@@ -141,9 +142,9 @@ void output_chat(ChatTypes type, char *player, char *message)
 void output_rooms(void)
 {
 	int i;
-	char** names;
+	char** names = NULL;
 
-	if (!(names = ggzcore_room_get_names())) 
+	if (!(names = ggzcore_server_get_room_names(server)))
 		return;  
 
 	for (i = 0; names[i]; i++)
@@ -170,27 +171,29 @@ void output_players(void)
 
 void output_status(void)
 {
-	int num;
+	int num, room_num = -1;
 	time_t now;		/* time */
 	char *currenttime;	/* String formatted time */
 	char displaytime[9];	/* What we display */
-	char *user = NULL, *server = NULL, *room = NULL;
+	char *user = NULL, *host = NULL, *room = NULL;
 	char *currentstatus = NULL;
 	
 	currentstatus = state_get();
-	
-	if (ggzcore_state_is_online()) {
-		user = ggzcore_state_get_profile_login();
-		server = ggzcore_state_get_profile_host();
+
+	if (ggzcore_server_is_online(server)) {
+		user = ggzcore_server_get_handle(server);
+		host = ggzcore_server_get_host(server);
 	}
-	
-	if (ggzcore_state_is_in_room())
-		room = ggzcore_room_get_name(ggzcore_state_get_room());
+
+	if (ggzcore_server_is_in_room(server)) {
+		room_num = ggzcore_server_get_cur_room(server);
+		room = ggzcore_server_get_room_name(server, room_num);
+	}
 	
 	now = time(NULL);
 
-	if(server)
-		num=num-strlen(server);
+	if(host)
+		num=num-strlen(host);
 	
 	fflush(NULL);
 	printf("\e7"); /* Save cursor */
@@ -205,11 +208,11 @@ void output_status(void)
 		printf("\e[K");
 	}
 	
-	if(server)
+	if(host)
 	{
 		output_goto(window.ws_row - 3, 28);
 		output_label("Server");
-		printf("\e[K%s", server);
+		printf("\e[K%s", host);
 	} else {
 		output_goto(window.ws_row - 3, 28);
 		output_label("Server");
@@ -220,12 +223,11 @@ void output_status(void)
 	output_label("Status");
 	printf("\e[K%s", currentstatus);
 	
-	if (ggzcore_state_is_in_room())
+	if (ggzcore_server_is_in_room(server))
 	{
 		output_goto(window.ws_row - 2, 0);
 		output_label("Room");
-		printf("\e[K %d -- %s", ggzcore_state_get_room(),
-			ggzcore_room_get_name(ggzcore_state_get_room()));
+		printf("\e[K %d -- %s", room_num, room);
 	} else {
 		output_goto(window.ws_row - 2, 0);
 		output_label("Room");

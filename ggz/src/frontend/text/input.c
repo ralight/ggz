@@ -25,11 +25,12 @@
 
 
 #include <config.h>
-#include <ggzcore.h>
+#include "ggzcore.h"
 #include "input.h"
 #include "output.h"
+#include "server.h"
+#include "loop.h"
 
-#include <poll.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -49,110 +50,106 @@ static void input_handle_exit(void);
 static char delim[] = " \n";
 static char command_prefix = '/';
 
+extern GGZServer *server;
 
-int input_command(short events)
+void input_command(void)
 {
 	char line[LINE_LENGTH];
 	char *current;
 	char *command;
 
-	if (events & POLLIN) {
-		if (!fgets(line, sizeof(line)/sizeof(char), stdin))
-			return -1;
-
-		/* Get rid of newline char*/
-		if (line[strlen(line)-1] == '\n')
-			line[strlen(line)-1] = '\0';
-
-		current = line;
-		if (line[0] == command_prefix)
-		{
-			/* Point at command (minus the prefix char) */
-			command = strsep(&current, delim);
-			command++;
-			
-#ifdef DEBUG
-			output_text("--- Command is %s", command);
-#endif
-			
-			if (strcmp(command, "connect") == 0) {
-				input_handle_connect(current);
-			}
-			else if (strcmp(command, "disconnect") == 0) {
-				ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
-			}
-			else if (strcmp(command, "list") == 0) {
-				input_handle_list(current);
-			}
-			else if (strcmp(command, "join") == 0) {
-				input_handle_join(current);
-			}
-			else if (strcmp(command, "help") == 0) {
-				output_display_help();;
-			}
-			else if (strcmp(command, "beep") == 0) {
-				input_handle_beep(current);
-			}
-			else if (strcmp(command, "msg") == 0) {
-				input_handle_msg(current);
-			}
-			else if (strcmp(command, "desc") == 0) {
-				input_handle_desc(current);
-			}
-			else if (strcmp(command, "who") == 0) {
-				input_handle_list("players");
-			}
-			else if (strcmp(command, "exit") == 0) {
-				input_handle_exit();
-			}
-			else if (strcmp(command, "version") == 0) {
-				output_text("--- Client version: %s", VERSION);
-			}
-		} else {
-			/* Its a chat */
-			input_handle_chat(current);
-		}
-		output_prompt();
+	if (!fgets(line, sizeof(line)/sizeof(char), stdin)) {
+		loop_quit();
+		return;
 	}
-	return 0;
+
+	/* Get rid of newline char*/
+	if (line[strlen(line)-1] == '\n')
+		line[strlen(line)-1] = '\0';
+
+	current = line;
+	if (line[0] == command_prefix)
+	{
+		/* Point at command (minus the prefix char) */
+		command = strsep(&current, delim);
+		command++;
+		
+#ifdef DEBUG
+		output_text("--- Command is %s", command);
+#endif
+		
+		if (strcmp(command, "connect") == 0) {
+			input_handle_connect(current);
+		}
+		else if (strcmp(command, "disconnect") == 0) {
+			server_disconnect();
+		}
+		else if (strcmp(command, "list") == 0) {
+			input_handle_list(current);
+		}
+		else if (strcmp(command, "join") == 0) {
+			input_handle_join(current);
+		}
+		else if (strcmp(command, "help") == 0) {
+			output_display_help();;
+		}
+		else if (strcmp(command, "beep") == 0) {
+			input_handle_beep(current);
+		}
+		else if (strcmp(command, "msg") == 0) {
+			input_handle_msg(current);
+		}
+		else if (strcmp(command, "desc") == 0) {
+			input_handle_desc(current);
+		}
+		else if (strcmp(command, "who") == 0) {
+			input_handle_list("players");
+		}
+		else if (strcmp(command, "exit") == 0) {
+			input_handle_exit();
+		}
+		else if (strcmp(command, "version") == 0) {
+			output_text("--- Client version: %s", VERSION);
+		}
+	} else {
+		/* Its a chat */
+		input_handle_chat(current);
+	}
+
+	output_prompt();
 }
 
 
 static void input_handle_connect(char* line)
 {
-	GGZProfile *profile;
-	char *arg, *server, *port;
-
-	if (!(profile = calloc(1, sizeof(GGZProfile))))
-		ggzcore_error_sys_exit("malloc() failed in %s", __FILE__);
+	int portnum;
+	char *arg, *host, *port, *login;
+	GGZLoginType type;
 
 	arg = strsep(&line, delim);
-	server = strsep(&arg, ":\n");
-	if (server && strcmp(server, "") != 0)
+	host = strsep(&arg, ":\n");
+	if (host && strcmp(host, "") != 0)
 	{
-		profile->host = strdup(server);
 		/* Check for port */
 		port = strsep(&arg, ":\n");
 		if (port && strcmp(port, "") != 0)
-			profile->port = atoi(port);
+			portnum = atoi(port);
 		else 
-			profile->port = 5688;
+			portnum = 5688;
 	} else {
-		profile->host = strdup("localhost");
-		profile->port = 5688;
+		host = strdup("localhost");
+		portnum = 5688;
 	}
 	
-	profile->type = GGZ_LOGIN_GUEST;
+	type = GGZ_LOGIN_GUEST;
 
 	arg = strsep(&line, delim);
 	if (arg && strcmp(arg, "") != 0)
-		profile->login = strdup(arg);
+		login = strdup(arg);
 	else
-		profile->login = strdup(getenv("LOGNAME"));
+		login = strdup(getenv("LOGNAME"));
 	
-
-	/* FIXME: provide a destroy function that frees the appropriate mem */
-	ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
+	server_init(host, portnum, type, login, NULL);
 }
 
 
@@ -170,10 +167,10 @@ static void input_handle_list(char* line)
 			ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 	}
 	else if (strcmp(line, "rooms") == 0) {
-		if (ggzcore_room_get_num() >= 1)
+		if (ggzcore_server_get_num_rooms(server) >= 1)
 			output_rooms();
 		else 
-			ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
+			ggzcore_server_list_rooms(server, -1, 1);
 	}
 }
 
@@ -183,7 +180,7 @@ static void input_handle_join(char* line)
 	int room;
 	
 	room = atoi(line);
-	ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)room, NULL);
+	ggzcore_server_join_room(server, room);
 }
 
 
@@ -193,7 +190,7 @@ static void input_handle_desc(char* line)
 	char* desc;
 	
 	room = atoi(line);
-	desc = ggzcore_room_get_desc(room);
+	desc = ggzcore_server_get_room_desc(server, room);
 	output_text(desc);
 }
 

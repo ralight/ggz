@@ -24,5 +24,4 @@
  */
 
 
-/* Returns -1 if we're exiting */
-int input_command(short events);
+void input_command(void);

@@ -1,10 +1,10 @@
 /*
- * File: server.h
+ * File: loop.h
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
  *
- * Functions for handling server events
+ * Functions for handling main IO loop
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,9 +24,12 @@
  */
 
 
-#include "ggzcore.h"
 
-void server_init(char *host, int port, GGZLoginType type, char* login, char* password);
+typedef void (*callback)(void);
 
-void server_disconnect(void);
+void loop_init(void);
+void loop_add_fd(unsigned int fd, callback read, callback destroy);
+void loop_remove_fd(unsigned int fd);
+void loop(void);
+void loop_quit(void);
 

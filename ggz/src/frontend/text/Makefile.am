@@ -7,6 +7,8 @@ bin_PROGRAMS = ggz-txt
 
 ggz_txt_SOURCES = 	input.c \
 			input.h \
+			loop.c \
+			loop.h \
 			main.c \
 			output.c \
 			output.h \
