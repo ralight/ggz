@@ -51,5 +51,6 @@
 #define E_AT_TABLE     -14
 #define E_IN_TRANSIT   -15
 #define E_NO_PERMISSION -16
+#define E_BAD_XML       -17
 
 #endif /*__PROTOCOL_H__*/

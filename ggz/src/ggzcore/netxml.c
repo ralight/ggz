@@ -826,6 +826,7 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 	char *action;
 	int code;
 	void *data;
+	char *message;
 
 	if (result) {
 		
@@ -875,7 +876,15 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 		}
 		else if (strcmp(action, "protocol") == 0) {
 			/* These are always errors */
-			_ggzcore_server_protocol_error(net->server, "Server didn't recognize one of our commands");
+			switch (code) {
+			case E_BAD_OPTIONS:
+				message = "Server didn't recognize one of our commands";
+				break;
+			case E_BAD_XML:
+				message = "Server didn't like our XML";
+			}
+
+			_ggzcore_server_protocol_error(net->server, message);
 		}
 	}
 }
