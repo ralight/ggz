@@ -1,0 +1,37 @@
+<?php include("top.inc"); ?>
+<?php include("database.php"); ?>
+<?php include("stats.php"); ?>
+
+<?php $stat->calculateGeneral(); ?>
+
+<div id="main">
+	<h1>
+		<span class="itemleader">:: </span>
+		GGZ Community-Datenbank
+		<span class="itemleader"> :: </span>
+		<a name="database"></a>
+	</h1>
+	<div class="text">
+	Die Datenbankseiten enthalten Informationen über Spieler,
+	das Angebot an Spielen, vergangene Einzelspiele und Tournaments,
+	Spielerbewertungen, Teams und andere Statistiken.
+	</div>
+	<h1>
+		<span class="itemleader">:: </span>
+		Database Overview
+		<span class="itemleader"> :: </span>
+		<a name="database"></a>
+	</h1>
+	<div class="text">
+
+	Datenbank Version <b><?php echo $stat->version() ?></b><br>
+	<b><?php echo $stat->players_number ?></b> Spieler sind auf dem Server registriert.<br>
+	<b><?php echo $stat->teams_number ?></b> Teams wurden gegründet.<br>
+	<b><?php echo $stat->rankings_number ?></b> Einträge sind in der Spielerbewertungsdatenbank enthalten.<br>
+	<b><?php echo $stat->tournaments_number ?></b> Tournaments wurden organisiert.<br>
+	<b><?php echo $stat->matches_number ?></b> Einzelspiele wurden gespielt.<br>
+	<b><?php echo $stat->games_number ?></b> verschiedene Spielarten sind in der Datenbank vertreten.<br>
+	</div>
+</div>
+
+<?php include("bottom.inc"); ?>

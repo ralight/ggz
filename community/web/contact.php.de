@@ -1,0 +1,40 @@
+<?php include("top.inc"); ?>
+
+<div id="main">
+	<h1>
+		<span class="itemleader">:: </span>
+		Über das Portal GGZ Community
+		<span class="itemleader"> :: </span>
+		<a name="about"></a>
+	</h1>
+	<div class="text">
+		<div>
+		Anläßlich des 5. Geburtstages der
+		<a href="http://www.ggzgamingzone.org/">GGZ Gaming Zone</a>
+		hat das Projekt die GGZ Community ins Leben gerufen,
+		eine Portalseite für GGZ-Spieler (und solchen die es
+		werden wollen...)
+		</div>
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Kontakt mit uns
+		<span class="itemleader"> ::</span>
+		<a name="contact"></a>
+	</h1>
+	<div class="text">
+		Sende uns einfach eine E-Mail, wenn du möchtest, solange du
+		kein Spammer bist :)
+		<br>
+		Die Adresse lautet:
+		<a href="mailto:info@ggzcommunity.org">info@ggzcommunity.org</a>
+		<br><br>
+		Für Fragen bezüglich der Entwicklung von GGZ wende dich bitte an die
+		<a href="https://mail.ggzgamingzone.org/">Mailinglisten</a>
+		des Projektes.
+	</div>
+
+</div>
+
+<?php include("bottom.inc"); ?>

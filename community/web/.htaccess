@@ -1,5 +1,4 @@
 AddDefaultCharset utf-8
 
-#php_value include_path ".:..:../common"
-php_value include_path ".:/home/student/Community/www:/home/student/Community/www/common"
+php_value include_path ".:/home/ggz/cvs-version/community/web:/home/ggz/cvs-version/community/web/common"
 
