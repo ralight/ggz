@@ -1,3 +1,5 @@
+# $Id: chess.dsc 4548 2002-09-13 16:19:50Z jdorje $
+
 [GameInfo]
 Author = Ismael Orenstein
 Description = GGZ game module for playing Chess
@@ -14,5 +16,5 @@ Version = 2
 
 [TableOptions]
 AllowLeave = 0
-BotsAllowed = 0
+#BotsAllowed = 
 PlayersAllowed = 2

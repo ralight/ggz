@@ -1,3 +1,5 @@
+# $Id: muehle.dsc 4548 2002-09-13 16:19:50Z jdorje $
+
 [GameInfo]
 Author = Josef Spillner
 Description = Muehle game for GGZ
@@ -14,8 +16,8 @@ Version = 1
 
 [TableOptions]
 AllowLeave = 1
-#BotsAllowed = 0 1
-BotsAllowed = 0
+#BotsAllowed = 1
+#BotsAllowed = 
 PlayersAllowed = 2
 AllowSpectators = 1
 

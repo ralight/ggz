@@ -1,4 +1,4 @@
-# $Id: tictactoe.dsc 4472 2002-09-08 23:26:11Z jdorje $
+# $Id: tictactoe.dsc 4548 2002-09-13 16:19:50Z jdorje $
 
 [GameInfo]
 Author = Brent Hendricks
@@ -16,6 +16,6 @@ Version = 3-pre1
 
 [TableOptions]
 AllowLeave = 1
-BotsAllowed = 0 1
+BotsAllowed = 1
 PlayersAllowed = 2
 AllowSpectators = 1
