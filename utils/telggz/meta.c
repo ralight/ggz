@@ -238,12 +238,18 @@ static char *meta_query_internal(int fd, const char *text)
 {
 	char buffer[1024];
 	char *ret;
+	int ret2;
 
 	write(fd, text, strlen(text) + 1);
-	read(fd, buffer, sizeof(buffer));
+	ret2 = read(fd, buffer, sizeof(buffer));
 	close(fd);
 
-	ret = strdup(buffer);
+	if(ret2 > 0)
+	{
+		buffer[ret2 - 1] = 0;
+		ret = strdup(buffer);
+	}
+	else ret = NULL;
 	return ret;
 }
 

@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	/* Meta server stuff */
 	meta_init();
 	meta_sync();
-	preflist = meta_query(TELGGZ_VERSION);
+	preflist = meta_query(VERSION);
 
 	/* This could be the default values. But we code in C here. */
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
