@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: room.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,11 +43,6 @@
 #include "room.h"
 #include "stats.h"
 
-
-/* Server wide data structures */
-extern Options opt;
-extern struct GGZState state;
-extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 typedef struct {
 	GGZPlayerUpdateType opcode;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: datatypes.h 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -126,5 +126,10 @@ typedef struct GameInfo {
 	char **exec_args;/* cleanup() */
 } GameInfo;
 
+
+/* Global values. */
+extern Options opt;
+extern GGZState state;
+extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 #endif

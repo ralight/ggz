@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: transit.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -46,10 +46,6 @@
 #include "protocols.h"
 #include "seats.h"
 #include "transit.h"
-
-
-/* Server wide data structures*/
-extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 
 /* Packaging for seat and spectator events */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5720 2003-12-19 17:24:38Z dr_maux $
+ * $Id: table.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -68,11 +68,6 @@ typedef struct {
 	char player[MAX_USER_NAME_LEN + 1];
 	int seat;
 } GGZTableEventData;
-
-/* Server wide data structures*/
-extern struct GameInfo game_types[MAX_GAME_TYPES];
-extern struct GGZState state;
-extern Options opt;
 
 /* Local functions for handling tables */
 static GGZTable *table_copy(GGZTable *table);

@@ -3,7 +3,7 @@
  *  Copyright (C) 1996 Thomas Koenig
  *
  *  Modified 6/24/00 by Brent Hendricks for use with the GGZ project.
- *  $Id: daemon.c 4965 2002-10-20 09:05:32Z jdorje $
+ *  $Id: daemon.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,12 +37,6 @@
 
 #include "daemon.h"
 #include "err_func.h"
-
-
-/* Server options */
-extern Options opt;
-
-static GGZReturn lock_fd(int fd);
 
 
 static GGZReturn lock_fd(int fd)

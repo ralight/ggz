@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: chat.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,10 +44,6 @@
 #include "room.h"
 #include "table.h"
 
-
-/* Server wide data structures */
-extern Options opt;
-extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 /* Local data type */
 typedef struct {

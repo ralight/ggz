@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: client.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -48,11 +48,6 @@
 #include "table.h"
 #include "util.h"
 
-
-/* Server wide data structures*/
-extern struct GameInfo game_types[MAX_GAME_TYPES];
-extern struct GGZState state;
-extern Options opt;
 
 /* Used for banned IP addresses */
 static uint32_t *banned_nets_a;

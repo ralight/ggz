@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 5020 2002-10-24 05:30:26Z jdorje $
+ * $Id: event.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -42,9 +42,6 @@
 #include "room.h"
 #include "table.h"
 
-
-/* Server wide data structures */
-extern Options opt;
 
 /* 
  * The GGZEvent structure is meant to be a node in a linked list

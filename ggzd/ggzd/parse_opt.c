@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: parse_opt.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -47,12 +47,6 @@
 #include "players.h"
 #include "room.h"
 #include "util.h"
-
-
-/* Stuff from control.c we need access to */
-extern Options opt;
-extern struct GGZState state;
-extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 
 /* Private file parsing functions */

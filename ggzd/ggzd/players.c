@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: players.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -64,11 +64,6 @@
 #include "table.h"
 #include "transit.h"
 
-
-/* Server wide data structures*/
-extern struct GameInfo game_types[MAX_GAME_TYPES];
-extern struct GGZState state;
-extern Options opt;
 
 pthread_key_t player_key;
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: login.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,8 +43,6 @@
 #include "perms.h"
 #include "client.h"
 
-
-extern Options opt;
 
 static void login_generate_password(char *);
 static GGZReturn login_add_user(ggzdbPlayerEntry *entry,

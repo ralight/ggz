@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 4846 2002-10-10 17:18:44Z jdorje $
+ * $Id: motd.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -71,11 +71,6 @@ MOTDInfo motd_info = { startup_time : 0,
 		       sysname : NULL,
 		       cputype : NULL,
 		       port : NULL};
-
-/* Server wide data structures */
-extern Options opt;
-extern struct GGZState state;
-
 
 /* Local functions */
 static char *motd_get_uptime(char *uptime_str, size_t sz_uptime_str);

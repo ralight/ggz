@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 4984 2002-10-22 04:34:51Z jdorje $
+ * $Id: seats.c 5901 2004-02-11 03:19:44Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -37,8 +37,6 @@
 #include "ggzdmod.h"
 #include "seats.h"
 #include "table.h"
-
-extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 int seats_count(GGZTable* table, GGZSeatType type)
 {
