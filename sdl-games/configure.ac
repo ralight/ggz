@@ -1,7 +1,7 @@
 dnl Configuration for GGZ-SDL-Games
 dnl ===============================
 
-AC_INIT([GGZ SDL games], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-sdl-games])
+AC_INIT([GGZ SDL games], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-sdl-games])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -86,6 +86,7 @@ dnl ================
 AC_CONFIG_FILES([Makefile
 	geekgame/Makefile
 	geekgame/module.dsc
+	geekgame/graphics/Makefile
 	ttt3d/Makefile
 	ttt3d/module.dsc])
 AC_OUTPUT
