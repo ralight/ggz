@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2625 2001-10-29 03:36:53Z jdorje $
+ * $Id: table.c 2626 2001-10-29 03:39:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -309,9 +309,11 @@ void table_set_global_cardlist_message(const char *mark, int *lengths,
 	int p, i;
 	char buf[4096] = "";
 
+	/* FIXME: this should take over the work of the server
+	   text-generating code. */
 	for (p = 0; p < game.num_players; p++) {
-		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
-			 "Player %d:", p);
+		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "%s:",
+			 game.players[p].name);
 		for (i = 0; i < lengths[p]; i++) {
 			snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
 				 " %d%c", cardlist[p][i].face,
