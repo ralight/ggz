@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5130 2002-11-01 05:15:57Z jdorje $
+ * $Id: netxml.c 5133 2002-11-01 07:02:03Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -971,6 +971,14 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *element)
 			case E_NO_PERMISSION:
 				snprintf(error.message, sizeof(error.message),
 					 "Prohibited");
+				break;
+			case E_USR_LOOKUP:
+				snprintf(error.message, sizeof(error.message),
+					 "No such player");
+				break;
+			case E_AT_TABLE:
+				snprintf(error.message, sizeof(error.message),
+					 "Can't chat at table");
 				break;
 			default:
 				snprintf(error.message, sizeof(error.message),
