@@ -8,7 +8,7 @@ INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	ggz-config --install --modname=ccheckers --fromfile=ccheckers.dsc
+	ggz-config --install --modname=ccheckers --fromfile=ccheckers.dsc --force
 
 ggzexecmod_PROGRAMS = ggz.ccheckers
 
