@@ -75,6 +75,7 @@ void output_display_help(void)
 	output_text("--- /connect [<server>[:<port>]] [<nick>]   Connect to a GGZ server");
 	output_text("--- /disconnect                             Disconnect from server");
 	output_text("--- /exit                                   Quit GNU Gaming Zone");
+	output_text("--- /desc <room>                            Get description of room <room>");
 	output_text("--- /join <room>                            Join room number <room>");
 	output_text("--- /msg <player> <msg>                     Send a msg to a player");
 	output_text("--- /version                                Display the client version");

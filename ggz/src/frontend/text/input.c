@@ -40,6 +40,7 @@
 static void input_handle_connect(char* line);
 static void input_handle_list(char* line);
 static void input_handle_join(char* line);
+static void input_handle_desc(char* line);
 static void input_handle_chat(char* line);
 static void input_handle_msg(char* line);
 static void input_handle_beep(char* line);
@@ -94,6 +95,9 @@ int input_command(short events)
 			}
 			else if (strcmp(command, "msg") == 0) {
 				input_handle_msg(current);
+			}
+			else if (strcmp(command, "desc") == 0) {
+				input_handle_desc(current);
 			}
 			else if (strcmp(command, "who") == 0) {
 				input_handle_list("players");
@@ -180,6 +184,17 @@ static void input_handle_join(char* line)
 	
 	room = atoi(line);
 	ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)room, NULL);
+}
+
+
+static void input_handle_desc(char* line)
+{
+	int room;
+	char* desc;
+	
+	room = atoi(line);
+	desc = ggzcore_room_get_desc(room);
+	output_text(desc);
 }
 
 
