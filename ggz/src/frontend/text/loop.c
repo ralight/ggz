@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: loop.c 5491 2003-04-28 06:52:33Z dr_maux $
+ * $Id: loop.c 5997 2004-05-17 14:20:01Z josef $
  *
  * Functions for handling main IO loop
  *
@@ -121,7 +121,7 @@ void loop(void)
 		if (status > 0) {
 			for (i = 0; i < num_fds; i++)
 				if (FD_ISSET(fds[i].fd, &read_fd_set))
-					fds[i].read();
+					if(fds[i].removed == 0) fds[i].read();
 		}
 		if (status == 0) {
 			/* time-out occurred */

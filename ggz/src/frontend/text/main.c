@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 5491 2003-04-28 06:52:33Z dr_maux $
+ * $Id: main.c 5997 2004-05-17 14:20:01Z josef $
  *
  * Main loop
  *
@@ -82,7 +82,7 @@ static char* string_cat(char *s1, char *s2)
 	return new;
 }
 
-#if DEBUG
+#ifdef DEBUG
 static void init_debug(void)
 {
 	char *default_file, *debug_file;
@@ -107,7 +107,7 @@ static void init_debug(void)
 
 int main(int argc, char *argv[])
 {
-	char *u_path;
+	char *u_path, *startup_path;
 	char *autouri = NULL;
 	char *host, *port, *user;
 	GGZOptions opt;
@@ -120,6 +120,8 @@ int main(int argc, char *argv[])
 	int optindex = 0;
 	int option;
 	int opt_reverse = 0;
+	FILE *startup;
+	char command[1024];
 
 	bindtextdomain("ggz-txt", PREFIX "/share/locale");
 	textdomain("ggz-txt");
@@ -133,7 +135,7 @@ int main(int argc, char *argv[])
 		{
 			case 'h':
 				printf(_("The GGZ Gaming Zone Text Client\n"));
-				printf(_("http://ggz.sourceforge.net/\n\n"));
+				printf(_("http://www.ggzgamingzone.org/clients/console/\n\n"));
 				printf(_("Call: ggz-txt [options] [uri]:\n"));
 				printf(_("-r / --reverse: Use reverse colours\n"));
 				printf(_("-h / --help: Display this help\n"));
@@ -184,7 +186,7 @@ int main(int argc, char *argv[])
 # endif
 	/*rl_callback_handler_install("\e[2K\e[1m\e[37mGGZ\e[1m\e[30m>\e[1m\e[37m ", input_commandline);*/
 	rl_callback_handler_install("GGZ>> ", input_commandline);
-	fcntl(0, F_SETFD, O_NONBLOCK);
+	fcntl(STDIN_FILENO, F_SETFD, O_NONBLOCK);
 	loop_add_fd(STDIN_FILENO, rl_callback_read_char, NULL);
 #else
 	loop_add_fd(STDIN_FILENO, input_command, NULL);
@@ -206,6 +208,21 @@ int main(int argc, char *argv[])
 			port = NULL;
 		}
 		server_init(host, (port ? atoi(port) : 5688), GGZ_LOGIN_GUEST, (user ? user : getenv("LOGNAME")), NULL);
+	}
+
+	/* Startup script? */
+	startup_path = string_cat(getenv("HOME"), "/.ggz/ggz-txt.startup");
+	startup = fopen(startup_path, "r");
+	ggz_free(startup_path);
+	if(startup) {
+		while(fgets(command, sizeof(command), startup)) {
+			command[strlen(command) - 1] = '\0';
+			if(strlen(command) > 0) {
+				output_text(_("Startup command: %s"), command);
+				input_commandhandler(command);
+			}
+		}
+		fclose(startup);
 	}
 
 	loop();

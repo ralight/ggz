@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 5973 2004-03-22 17:06:58Z josef $
+ * $Id: input.c 5997 2004-05-17 14:20:01Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #ifdef HAVE_READLINE_READLINE_H
 #include <readline/readline.h>
 #endif
@@ -71,42 +72,10 @@ void input_command()
 	input_commandline(NULL);
 }
 
-void input_commandline(char *text)
+void input_commandhandler(char *current)
 {
-#ifndef HAVE_READLINE_READLINE_H
-	char line[LINE_LENGTH];
-#else
-	char *rline;
-#endif
-	char *current;
 	char *command;
 
-#ifdef HAVE_READLINE_READLINE_H
-	if(!text) rline = readline("GGZ>> ");
-	else rline = text;
-	if(!rline) {
-		game_quit();
-		loop_quit();
-		return;
-	}
-# ifdef HAVE_READLINE_HISTORY_H
-	add_history(rline);
-# endif
-	current = rline;
-#else
-	/* EOF means user closed session */
-	if (!fgets(line, sizeof(line)/sizeof(char), stdin)) {
-		game_quit();
-		loop_quit();
-		return;
-	}
-
-	/* Get rid of newline char*/
-	if (line[strlen(line)-1] == '\n')
-		line[strlen(line)-1] = '\0';
-
-	current = line;
-#endif
 	if (input_is_command(current)) {
 		
 		/* Point at command (minus the prefix char) */
@@ -116,7 +85,7 @@ void input_commandline(char *text)
 #ifdef DEBUG
 		output_text("--- Command is %s", command);
 #endif
-		
+
 		if (strcmp(command, "connect") == 0) {
 			input_handle_connect(current);
 		}
@@ -133,7 +102,7 @@ void input_commandline(char *text)
 			input_handle_join(current);
 		}
 		else if (strcmp(command, "help") == 0) {
-			output_display_help();;
+			output_display_help();
 		}
 		else if (strcmp(command, "beep") == 0) {
 			input_handle_beep(current);
@@ -170,6 +139,45 @@ void input_commandline(char *text)
 		/* Its a chat */
 		input_handle_chat(current);
 	}
+}
+
+void input_commandline(char *text)
+{
+#ifndef HAVE_READLINE_READLINE_H
+	char line[LINE_LENGTH];
+#else
+	char *rline;
+#endif
+	char *current;
+
+#ifdef HAVE_READLINE_READLINE_H
+	if(!text) rline = readline("GGZ>> ");
+	else rline = text;
+	if(!rline) {
+		game_quit();
+		loop_quit();
+		return;
+	}
+# ifdef HAVE_READLINE_HISTORY_H
+	add_history(rline);
+# endif
+	current = rline;
+#else
+	/* EOF means user closed session */
+	if (!fgets(line, sizeof(line)/sizeof(char), stdin)) {
+		game_quit();
+		loop_quit();
+		return;
+	}
+
+	/* Get rid of newline char*/
+	if (line[strlen(line)-1] == '\n')
+		line[strlen(line)-1] = '\0';
+
+	current = line;
+#endif
+
+	input_commandhandler(current);
 
 #ifdef HAVE_READLINE_READLINE_H
 	free(rline);
@@ -190,6 +198,8 @@ static void input_handle_connect(char* line)
 	int portnum;
 	char *arg, *host, *port, *login, *pwd;
 	GGZLoginType type;
+
+	server_workinprogress(COMMAND_CONNECT, 1);
 
 	arg = strsep(&line, delim);
 	host = strsep(&arg, ":\n");
@@ -234,29 +244,41 @@ static void input_handle_list(char* line)
 	if (line && strcmp(line, "types") == 0) {
 		if (ggzcore_server_get_num_gametypes(server) > 0)
 			output_types();
-		else /* Get list from server */
+		else { /* Get list from server */
+			server_progresswait();
+			server_workinprogress(COMMAND_LIST, 1);
 			ggzcore_server_list_gametypes(server, 1);
+		}
 	}
 	else if (line && strcmp(line, "rooms") == 0) {
 		if (ggzcore_server_get_num_rooms(server) > 0)
 			output_rooms();
-		else /* Get list from server */
+		else { /* Get list from server */
+			server_progresswait();
+			server_workinprogress(COMMAND_LIST, 1);
 			ggzcore_server_list_rooms(server, -1, 1);
+		}
 	}
 	else if (line && strcmp(line, "tables") == 0) {
 		room = ggzcore_server_get_cur_room(server);
 		if (ggzcore_room_get_num_tables(room) > 0)
 			output_tables();
-		else /* Get list from server */
+		else { /* Get list from server */
+			server_progresswait();
+			server_workinprogress(COMMAND_LIST, 1);
 			ggzcore_room_list_tables(room, -1, 0);
+		}
 	}
 	else if (line && strcmp(line, "players") == 0) {
 		room = ggzcore_server_get_cur_room(server);
 		if (ggzcore_room_get_num_players(room) > 0) {
 			output_players();
 		}
-		else /* Get list from server */
+		else { /* Get list from server */
+			server_progresswait();
+			server_workinprogress(COMMAND_LIST, 1);
 			ggzcore_room_list_players(room);
+		}
 	}
 	else
 		output_text(_("List what?"));
@@ -289,6 +311,8 @@ static void input_handle_join_room(char* line)
 
 	if (line) {
 		room = atoi(line);
+		server_progresswait();
+		server_workinprogress(COMMAND_JOIN, 1);
 		ggzcore_server_join_room(server, room);
 	} else {
 		output_text(_("Join which room?"));
@@ -329,6 +353,7 @@ static void input_handle_chat(char *line)
 	{
 		if (line && strcmp(line, "") != 0) {
 			msg = ggz_strdup(line);
+			server_progresswait();
 			ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, msg);
 		}
 	}
@@ -342,6 +367,7 @@ static void input_handle_beep(char* line)
 
 	if (line && strcmp(line, "") != 0) {
 		player = ggz_strdup(line);
+		server_progresswait();
 		ggzcore_room_chat(room, GGZ_CHAT_BEEP, player, NULL);
 	}
 }
@@ -358,6 +384,7 @@ static void input_handle_msg(char* line)
 	
 	if (line && strcmp(line, "") != 0) {
 		msg = ggz_strdup(line);
+		server_progresswait();
 		ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, player, msg);
 	}
 }
@@ -372,6 +399,7 @@ static void input_handle_table(char* line)
 		return;
 	}
 
+	server_progresswait();
 	ggzcore_room_chat(room, GGZ_CHAT_TABLE, NULL, line);
 }
 
@@ -382,6 +410,7 @@ static void input_handle_wall(char* line)
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
 	msg = ggz_strdup(line);
+	server_progresswait();
 	ggzcore_room_chat(room, GGZ_CHAT_ANNOUNCE, NULL, msg);
 }
 
@@ -444,13 +473,22 @@ static void input_handle_launch(char *line)
 	GGZGameType *type;
 	GGZModule *module;
 
+	server_progresswait();
+
 	module = input_get_module();
 	if(!module) return;
 
 	room = ggzcore_server_get_cur_room(server);
 	type = ggzcore_room_get_gametype(room);
 
+	server_workinprogress(COMMAND_JOIN, 1);
 	game_init(module, type, -1);
+
+	if (ggzcore_module_get_environment(module) == GGZ_ENVIRONMENT_CONSOLE)
+	{
+		output_enable(0);
+		loop_remove_fd(STDIN_FILENO);
+	}
 }
 
 
@@ -466,6 +504,8 @@ static void input_handle_join_table(char *line)
 		return;
 	}
 
+	server_progresswait();
+
 	module = input_get_module();
 	if(!module) return;
 
@@ -479,7 +519,14 @@ static void input_handle_join_table(char *line)
 		return;
 	}
 
+	server_workinprogress(COMMAND_JOIN, 1);
 	game_init(module, type, table_index);
+
+	if (ggzcore_module_get_environment(module) == GGZ_ENVIRONMENT_CONSOLE)
+	{
+		output_enable(0);
+		loop_remove_fd(STDIN_FILENO);
+	}
 }
 
 

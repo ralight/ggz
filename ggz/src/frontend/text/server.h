@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.h 4868 2002-10-11 19:35:05Z jdorje $
+ * $Id: server.h 5997 2004-05-17 14:20:01Z josef $
  *
  * Functions for handling server events
  *
@@ -26,12 +26,19 @@
 
 #include <ggzcore.h>
 
+#define COMMAND_CONNECT 0
+#define COMMAND_LIST 1
+#define COMMAND_JOIN 2
+
 void server_init(char *host, int port, GGZLoginType type, char* login, char* password);
 
 void server_logout(void);
 void server_disconnect(void);
 
 void server_destroy(void);
+
+void server_workinprogress(int command, int progress);
+void server_progresswait(void);
 
 /* Pointer to the current server */
 extern GGZServer *server;

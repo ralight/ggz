@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 5913 2004-02-11 16:14:22Z josef $
+ * $Id: output.c 5997 2004-05-17 14:20:01Z josef $
  *
  * Functions for display text/messages
  *
@@ -68,6 +68,7 @@ static int tty_des;
 static char **chat;
 static int chat_offset = 0;
 static int reverse_display = 0;
+static int output_enabled = 1;
 
 /* Private functions */
 static void output_table_info(GGZTable *table);
@@ -83,8 +84,15 @@ void output_goto(int row, int col);	/* Goto's <r>,<c> on the screen this is	*/
 					/* position and restore it when done, 	*/
 					/* unless ABSOLUTLY sure!		*/
 
+void output_enable(int enabled)
+{
+	output_enabled = enabled;
+}
+
 void output_display_help(void)
 {
+	if(!output_enabled) return;
+
 	output_text(_("--- GGZ Gaming Zone -- Help"));
 	output_text(_("--- -----------------------"));
 	output_text(_("---"));
@@ -106,12 +114,16 @@ void output_display_help(void)
 
 void output_banner(void)
 {
+	if(!output_enabled) return;
+
 	output_text(_("Welcome to the text-only GGZ client!\n"));
 	output_text(_("--Written by Brent Hendricks & Justin Zaun  (C) 2000\n"));
 }
 
 void output_prompt(void)
 {
+	if(!output_enabled) return;
+
 	fflush(NULL);
 	output_goto(window.ws_row, 0);
 	printf("\e[2K");
@@ -132,6 +144,8 @@ void output_text(char* fmt, ...)
 {
 	char message [1024];	/* FIXME: Make me dynamic */
 	int x;
+
+	if(!output_enabled) return;
 
 	va_list ap;
 	va_start(ap, fmt);
@@ -161,6 +175,8 @@ void output_draw_text(void)
 {
 	int x;
 
+	if(!output_enabled) return;
+
 	fflush(NULL);
 	printf("\e7");
 	output_goto(0, 0);
@@ -177,6 +193,8 @@ void output_draw_text(void)
 
 void output_chat(GGZChatType type, const char *player, const char *message)
 {
+	if(!output_enabled) return;
+
 	switch(type) {
 	case GGZ_CHAT_BEEP:
 		output_text(_("--- You've been beeped by %s."), player);
@@ -205,6 +223,8 @@ void output_rooms(void)
 	GGZRoom *room;
 	GGZGameType *type;
 
+	if(!output_enabled) return;
+
 	num = ggzcore_server_get_num_rooms(server);
 
 	for (i = 0; i < num; i++) {
@@ -226,6 +246,8 @@ void output_types(void)
 	int i, num;
 	GGZGameType *type;
 
+	if(!output_enabled) return;
+
 	num = ggzcore_server_get_num_gametypes(server);
 
 	for (i = 0; i < num; i++) {
@@ -243,6 +265,8 @@ void output_players(void)
 	GGZPlayer *player;
 	GGZTable *table;
 	GGZPlayerType type;
+
+	if(!output_enabled) return;
 
 	room = ggzcore_server_get_cur_room(server);
 	num = ggzcore_room_get_num_players(room);
@@ -270,6 +294,8 @@ void output_tables(void)
 	GGZRoom *room;
 	GGZTable *table;
 
+	if(!output_enabled) return;
+
 	room = ggzcore_server_get_cur_room(server);
 	num_tables = ggzcore_room_get_num_tables(room);
 
@@ -294,6 +320,8 @@ void output_status(void)
 	const char *user = NULL, *host = NULL, *roomname = NULL;
 	char *currentstatus = NULL;
 	GGZRoom *room;
+
+	if(!output_enabled) return;
 
 	currentstatus = state_get();
 
@@ -377,11 +405,15 @@ void output_status(void)
 
 void output_goto(int row, int col)
 {
+	if(!output_enabled) return;
+
 	printf("\e[%d;%df", row, col);
 }
 
 void output_label(char *label)
 {
+	if(!output_enabled) return;
+
 	if(reverse_display)
 	{
 		printf("%s%c%s%s: %s",
@@ -400,6 +432,8 @@ void output_label(char *label)
 
 void output_init(int reverse)
 {
+	if(!output_enabled) return;
+
 	reverse_display = reverse;
 
 	fflush(NULL);
@@ -415,6 +449,8 @@ void output_init(int reverse)
 void output_resize(void)
 {
 	struct winsize window2;
+
+	if(!output_enabled) return;
 
 	fflush(NULL);
 	ioctl(tty_des, TIOCGWINSZ, &window2);
@@ -438,6 +474,8 @@ void output_shutdown(void)
 {
 	int i;
 
+	if(!output_enabled) return;
+
 	fflush(NULL);
 	printf("\e[0;%dr",window.ws_row);
 	printf("\ec\e[2J");
@@ -452,6 +490,8 @@ void output_shutdown(void)
 static void output_table_info(GGZTable *table)
 {
 	int i, num_seats;
+
+	if(!output_enabled) return;
 
 	output_text(_("Table %d : %s"), ggzcore_table_get_id(table),
 		    ggzcore_table_get_desc(table));

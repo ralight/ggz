@@ -57,4 +57,6 @@ void output_display_help(void);
 
 void output_resize(void);
 
+void output_enable(int enabled);
+
 #endif /*__OUTPUT_H__*/
