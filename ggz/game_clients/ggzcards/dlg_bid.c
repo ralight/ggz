@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 5161 2002-11-03 06:29:01Z jdorje $
+ * $Id: dlg_bid.c 5162 2002-11-03 06:31:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -91,7 +91,7 @@ void dlg_bid_display(int possible_bids,
 
 	table_box = gtk_table_new(yw + 1, xw, FALSE);
 
-	if (!preferences.bid_on_table) {
+	if (!BID_ON_TABLE) {
 		/* Create a title label within the table itself. */
 		/* We don't show this when bid_on_table because the gtk_label
 		   won't be drawn properly on top of the table graphics.  It
@@ -117,7 +117,7 @@ void dlg_bid_display(int possible_bids,
 		x = i % xw;
 		y = i / xw;
 
-		if (!preferences.bid_on_table) {
+		if (!BID_ON_TABLE) {
 			/* If we're not bid_on_table, we have an extra row at
 			   the top.  See above. */
 			y++;
@@ -135,7 +135,7 @@ void dlg_bid_display(int possible_bids,
 		}
 	}
 
-	if (preferences.bid_on_table) {
+	if (BID_ON_TABLE) {
 		int x, y, w, h;
 
 		/* Just draw the table_box right on the table. */

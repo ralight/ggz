@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 5091 2002-10-28 22:53:23Z jdorje $
+ * $Id: preferences.c 5162 2002-11-03 06:31:19Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -121,6 +121,7 @@ PrefType pref_types[] = {
 	 &preferences.cardlists,
 	 TRUE},
 
+#ifndef GTK2
 	{"bid_on_table",
 	 N_("Show bid choices right on the table"),
 	 N_("If this is selected, then (for games that use bidding) the "
@@ -130,6 +131,7 @@ PrefType pref_types[] = {
 	    "may not work for all games."),
 	 &preferences.bid_on_table,
 	 TRUE},
+#endif
 
 	{"bidding_tooltips",
 	 N_("Show tooltips for bidding"),

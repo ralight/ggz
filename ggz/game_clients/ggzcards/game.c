@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 5044 2002-10-26 04:43:47Z jdorje $
+ * $Id: game.c 5162 2002-11-03 06:31:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -361,7 +361,7 @@ void game_get_bid(int possible_bids,
 	ggz_debug(DBG_MAIN, "Handling bid request; %d choices.",
 		  possible_bids);
 
-	if (preferences.bid_on_table) {
+	if (BID_ON_TABLE) {
 		statusbar_message(_("It's your turn to bid.  Please choose "
 				    "a bid from the selection above."));
 	} else {

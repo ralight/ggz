@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 5091 2002-10-28 22:53:23Z jdorje $
+ * $Id: game.h 5162 2002-11-03 06:31:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -57,7 +57,9 @@ typedef struct {
 	bool single_click_play;
 	bool collapse_hand;
 	bool cardlists;
+#ifndef GTK2
 	bool bid_on_table;
+#endif
 	bool bidding_tooltips;
 	bool large_dominoes;
 
@@ -71,6 +73,14 @@ typedef struct {
 	bool use_ai;
 #endif
 } Preferences;
+
+#ifdef GTK2
+/* Currently bidding on the table doesn't work in GTK2.  I can't get the
+ * bid widget to properly overlay the drawing widget. */
+#  define BID_ON_TABLE (FALSE)
+#else
+#  define BID_ON_TABLE preferencees.bid_on_table
+#endif
 
 /* Our set of preferences.  See above. */
 extern Preferences preferences;
