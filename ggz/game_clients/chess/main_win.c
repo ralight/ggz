@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Chess game module
  * Desc: Chess client main window creation
- * $Id: main_win.c 4896 2002-10-12 23:06:58Z jdorje $
+ * $Id: main_win.c 4920 2002-10-14 23:01:33Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -35,6 +35,7 @@
 #include <gtk/gtk.h>
 
 #include "dlg_about.h"
+#include "dlg_players.h"
 
 #include "callbacks.h"
 #include "main_win.h"
@@ -54,10 +55,12 @@ static GtkWidget *create_menus(GtkWidget *window)
 	   need them!  But I don't know how to do this with the item
 	   factory.  --JDS */
 	GtkItemFactoryEntry items[] = {
-	  {_("/_File"), NULL, NULL, 0, "<Branch>"},
-	  {_("/File/_Sync with server"), "<ctrl>S",
+	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Table/Player _list"), "<ctrl>L",
+	   create_or_raise_dlg_players, 0, NULL},
+	  {_("/Table/_Sync with server"), "<ctrl>S",
 	   board_request_update, 0, NULL},
-	  {_("/File/_Quit"), "<ctrl>Q", on_exit_activate, 0, NULL},
+	  {_("/Table/E_xit"), "<ctrl>X", on_exit_activate, 0, NULL},
 	  {_("/_Game"), NULL, NULL, 0, "<Branch>"},
 	  {_("/Game/Request _draw"), "<ctrl>D", board_request_draw, 0, NULL},
 	  {_("/Game/_Call flag"), "<ctrl>C", board_call_flag, 0, NULL},
