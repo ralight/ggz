@@ -32,3 +32,5 @@ extern void ggzrc_write_int(const char *, const char *, const int);
 extern int ggzrc_read_int(const char *, const char *, const int);
 extern void ggzrc_write_list(const char *, const char *, const int, const char **);
 extern void ggzrc_read_list(const char *, const char *, int *, char ***);
+extern void ggzrc_remove_section(const char *);
+extern void ggzrc_remove_key(const char *, const char *);

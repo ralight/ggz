@@ -210,6 +210,30 @@ void ggzrc_read_list(const char *section, const char *key,
 	}
 }
 
+/* Remove an entire section from the configuration data */
+void ggzrc_remove_section(const char *section)
+{
+	int section_length = strlen(section);
+	GSList *iter_list = rc_list;
+
+	while(iter_list) {
+		if (strncmp(section, &((char *)iter_list->data)[1],
+		    section_length) == 0)
+			g_hash_table_remove(rc_hash, iter_list->data);
+
+		iter_list = g_slist_next(iter_list);
+	}
+}
+
+/* Remove a single key from the configuration data */
+void ggzrc_remove_key(const char *section, const char *key)
+{
+	char *hashkey = g_strdup_printf("[%s]%s", section, key);
+
+	g_hash_table_remove(rc_hash, hashkey);
+	g_free(hashkey);
+}
+
 /* Initialize and read in the configuration file(s) */
 int ggzrc_initialize(char *rc_fname)
 {
