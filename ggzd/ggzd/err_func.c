@@ -31,6 +31,7 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
 #include <ggzd.h>
 #include <datatypes.h>
@@ -38,9 +39,9 @@
 #include <err_func.h>
 
 /* Logfile info */
-LogInfo log_info = { 0, 0, 1, NULL, NULL, -1, 1 
+LogInfo log_info = { 0, 0, 1, 0, NULL, NULL, -1, 1 
 #ifdef DEBUG
-		            , NULL, NULL, -1, 1
+		               , NULL, NULL, -1, 1
 #endif
 };
 
@@ -49,15 +50,33 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 {
 
 	char buf[4096];
+	int bsize;
+	time_t now;
+	struct tm *localtm;
 
+	/* I subtract one from the buffer size since we */
+	/* always want room for a '\n' at the end       */
+	bsize = sizeof(buf) - 1;
+
+	/* Include the PID if PIDInLogs is on */
 	if(log_info.include_pid || priority == LOG_DEBUG)
-		sprintf(buf, "[%d]: ", getpid());
+		snprintf(buf, bsize-1, "[%d]: ", getpid());
 	else
 		buf[0] = '\0';
 
-	vsprintf(buf + strlen(buf), fmt, ap);
+	/* Include the timestamp if TimeInLogs is on */
+	if(log_info.include_timestamp) {
+		time(&now);
+		localtm = localtime(&now);
+		strftime(buf + strlen(buf), bsize - strlen(buf),
+			"%b %d %T ", localtm);
+	}
+
+	/* Put the actual message into the buffer */
+	vsnprintf(buf + strlen(buf), bsize - strlen(buf), fmt, ap);
 	if (flag)
-		sprintf(buf + strlen(buf), ": %s", strerror(errno));
+		snprintf(buf + strlen(buf), bsize - strlen(buf),
+			 ": %s", strerror(errno));
 	strcat(buf, "\n");
 
 	/* If logs not yet initialized, send to stderr */

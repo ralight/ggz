@@ -166,6 +166,7 @@ typedef struct {
 	int log_initialized;
 	int syslog_facility;
 	int include_pid;
+	int include_timestamp;
 	char *log_fname;			/* cleanup() */
 	FILE *logfile;
 	int log_level;

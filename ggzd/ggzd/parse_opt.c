@@ -388,6 +388,21 @@ static void parse_file(FILE *configfile)
 			continue;
 		}
 
+		/*** TIMEINLOGS = 0,1 ***/
+		if(!strcmp(varname, "timeinlogs")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 0 || intval > 1) {
+				PARSE_ERR("Invalid value for TimeInLogs");
+				continue;
+			}
+			log_info.include_timestamp = intval;
+			continue;
+		}
+
 		/*** INVALID VARIABLE ***/
 		PARSE_ERR("Syntax error");
 	}
