@@ -28,23 +28,24 @@
 #include <datatypes.h>
 
 /* Log levels for log_msg */
-#define GGZ_LOG_ALWAYS		(unsigned) 0x0000
-#define GGZ_LOG_NOTICE		(unsigned) 0x0001
-#define GGZ_LOG_CONNECTION_INFO	(unsigned) 0x0002
-#define GGZ_LOG_ALL		(unsigned) 0xFFFF
+#define GGZ_LOG_ALWAYS		(unsigned) 0x00000000
+#define GGZ_LOG_NOTICE		(unsigned) 0x00000001
+#define GGZ_LOG_CONNECTION_INFO	(unsigned) 0x00000002
+#define GGZ_LOG_ALL		(unsigned) 0xFFFFFFFF
 
 /* Debug levels for dbg_msg */
-#define GGZ_DBG_CONFIGURATION	(unsigned) 0x0001
-#define GGZ_DBG_PROCESS		(unsigned) 0x0002
-#define GGZ_DBG_CONNECTION	(unsigned) 0x0004
-#define GGZ_DBG_CHAT		(unsigned) 0x0008
-#define GGZ_DBG_TABLE		(unsigned) 0x0010
-#define GGZ_DBG_PROTOCOL	(unsigned) 0x0020
-#define GGZ_DBG_UPDATE		(unsigned) 0x0040
-#define GGZ_DBG_MISC		(unsigned) 0x0080
-#define GGZ_DBG_ROOM		(unsigned) 0x0100
-#define GGZ_DBG_LISTS		(unsigned) 0x0200
-#define GGZ_DBG_ALL		(unsigned) 0xFFFF
+#define GGZ_DBG_CONFIGURATION	(unsigned) 0x00000001
+#define GGZ_DBG_PROCESS		(unsigned) 0x00000002
+#define GGZ_DBG_CONNECTION	(unsigned) 0x00000004
+#define GGZ_DBG_CHAT		(unsigned) 0x00000008
+#define GGZ_DBG_TABLE		(unsigned) 0x00000010
+#define GGZ_DBG_PROTOCOL	(unsigned) 0x00000020
+#define GGZ_DBG_UPDATE		(unsigned) 0x00000040
+#define GGZ_DBG_MISC		(unsigned) 0x00000080
+#define GGZ_DBG_ROOM		(unsigned) 0x00000100
+#define GGZ_DBG_LISTS		(unsigned) 0x00000200
+#define GGZ_DBG_GAME_MSG	(unsigned) 0x00000400
+#define GGZ_DBG_ALL		(unsigned) 0xFFFFFFFF
 
 /* Logging options */
 #define GGZ_LOGOPT_INC_PID	(unsigned) 0x0001

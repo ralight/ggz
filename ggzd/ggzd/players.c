@@ -282,7 +282,7 @@ static void player_loop(int p_index, int p_fd)
 				game_over = 1;
 			}
 			else 
-				dbg_msg(GGZ_DBG_TABLE,
+				dbg_msg(GGZ_DBG_GAME_MSG,
 					"Game to User: %d bytes", status);
 		}
 
@@ -375,7 +375,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		if (status <= 0)
 			status = GGZ_REQ_TABLE_LEAVE;
 		else 
-			dbg_msg(GGZ_DBG_TABLE, "User to Game: %d bytes", 
+			dbg_msg(GGZ_DBG_GAME_MSG, "User to Game: %d bytes", 
 				status);
 		break;
 			

@@ -78,7 +78,8 @@ static struct LogTypes dbg_types[] = {
 	{ "update",		GGZ_DBG_UPDATE },
 	{ "misc",		GGZ_DBG_MISC },
 	{ "room",		GGZ_DBG_ROOM },
-	{ "lists",		GGZ_DBG_LISTS }
+	{ "lists",		GGZ_DBG_LISTS },
+	{ "game_msg",           GGZ_DBG_GAME_MSG}
 };
 static int num_dbg_types = sizeof(dbg_types) / sizeof(dbg_types[0]);
 

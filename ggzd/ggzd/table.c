@@ -515,14 +515,16 @@ static int table_log(int index, int fd, char debug)
 		strcpy(name, game_types.info[type].name);
 		pthread_rwlock_unlock(&game_types.lock);
 		
-		len = strlen(msg) + strlen(name) + 4;
+		len = strlen(msg) + strlen(name) + 5;
 		
 		if (debug || (log_info.options & GGZ_LOGOPT_INC_PID))
 			len += 6;
 		
 		if ( (buf = malloc(len)) == NULL)
 			err_sys_exit("malloc failed");
-		     
+
+		memset(buf, 0, len);
+
 		if (debug || (log_info.options & GGZ_LOGOPT_INC_PID))
 			snprintf(buf, (len - 1), "(%s:%d) ", name, pid);
 		else
