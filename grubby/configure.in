@@ -74,7 +74,7 @@ if test "$enable_ruby" = yes; then
 
 	incs=""
 	for i in 1.7 1.6; do
-		for j in i686 i586 i486 i386; do
+		for j in i686 i586 i486 i386 powerpc; do
 			incs="$incs /usr/local/lib/ruby/$i/$j-linux";
 			incs="$incs /usr/lib/ruby/$i/$j-linux";
 		done;
