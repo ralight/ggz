@@ -689,7 +689,7 @@ static void handle_list_tables(gint op, gint fd)
 		/* read in seat assignments */
 		for (j = 0; j < seats; j++) {
 			es_read_int(fd, &table->seats[j]);
-			if (table->seats[j] >= 0
+			if (table->seats[j] == GGZ_SEAT_PLAYER
 			    || table->seats[j] == GGZ_SEAT_RESV) {
 				es_read_string(fd, name, MAX_USER_NAME_LEN +1);
 				table->names[j] = g_strdup(name);
@@ -818,7 +818,7 @@ static void handle_update_tables(gint op, gint fd)
 		
 		for (i = 0; i < seat; i++) {
 			es_read_int(fd, &table->seats[i]);
-			if (table->seats[i] >= 0
+			if (table->seats[i] == GGZ_SEAT_PLAYER
 			    || table->seats[i] == GGZ_SEAT_RESV) {
 				es_read_string(fd, name, MAX_USER_NAME_LEN +1);
 				table->names[i] = g_strdup(name);
