@@ -111,7 +111,7 @@ void * _ggzcore_realloc(const void *ptr, const unsigned size,char *tag,int line)
 	ggzcore_debug(GGZ_DBG_MEMDETAIL,
 		      "Reallocating %d bytes at %p to %d bytes from %s/%d\n",
 		      targetmem->size, targetmem->ptr, size, tag, line);
-	new = _ggzcore_allocate(sizeof(_memptr) + size, tag, line);
+	new = _ggzcore_allocate(size, tag, line);
 
 	/* Copy the old to the new */
 	memcpy(new, targetmem->ptr, targetmem->size);
