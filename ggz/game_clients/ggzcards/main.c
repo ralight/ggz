@@ -374,6 +374,103 @@ void messagebar_message(char *msg)
 	ggz_debug("     Put up messagebar message: '%s'", msg);
 }
 
+static char* global_messages[256] = {NULL};
+static GtkWidget* windows[256] = {NULL};
+
+void
+on_mnu_messages_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	char *mark = (char*)user_data;
+	GtkWidget *dlg = windows[(int)*mark];
+
+	ggz_debug("Activating dialog for mark %s, message %s.", mark, global_messages[(int)*mark]);
+
+	if(dlg != NULL) {
+		gdk_window_show(dlg->window);
+		gdk_window_raise(dlg->window);
+	} else {
+		GtkWidget *label, *vbox, *ok_button;
+
+
+
+
+
+		dlg = gtk_dialog_new ();
+		/* gtk_object_set_data (GTK_OBJECT (dlg), "dlg_messages", dlg_about); */
+		gtk_window_set_title (GTK_WINDOW (dlg), mark);
+		GTK_WINDOW (dlg)->type = GTK_WINDOW_DIALOG;
+		gtk_window_set_policy (GTK_WINDOW (dlg), TRUE, TRUE, FALSE);
+
+		vbox = GTK_DIALOG (dlg)->vbox;
+		gtk_widget_show( vbox );
+
+		assert( global_messages[(int)*mark] );
+		label = gtk_label_new(global_messages[(int)*mark]);
+		gtk_widget_ref( label );
+		gtk_object_set_data_full (GTK_OBJECT (dlg), "label", label,
+					  (GtkDestroyNotify) gtk_widget_unref);
+		gtk_widget_show (label);
+
+		gtk_box_pack_start (GTK_BOX(vbox), label, TRUE, TRUE, 0);
+
+
+
+		ok_button = gtk_button_new_with_label ("OK");
+		gtk_widget_ref (ok_button);
+		gtk_object_set_data_full (GTK_OBJECT (dlg), "ok_button", ok_button,
+			(GtkDestroyNotify) gtk_widget_unref);
+		gtk_widget_show (ok_button);
+		gtk_box_pack_start (GTK_BOX (vbox), ok_button, FALSE, FALSE, 0);
+		gtk_widget_set_usize (ok_button, 64, -2);
+
+		gtk_signal_connect_object (GTK_OBJECT (dlg), "delete_event",
+			GTK_SIGNAL_FUNC (gtk_widget_destroy),
+			GTK_OBJECT (dlg));
+
+		gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+			GTK_SIGNAL_FUNC (gtk_widget_destroy),
+			GTK_OBJECT (dlg));
+
+		gtk_signal_connect(GTK_OBJECT(dlg),
+				   "destroy",
+				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				   &windows[(int)*mark]);
+		gtk_widget_show(dlg);
+
+		windows[(int)*mark] = dlg;
+	}
+}
+
+void menubar_message(char *mark, char *msg)
+{
+	static GtkWidget *msg_menu = NULL;
+	GtkWidget *menu_item;
+
+	if (msg_menu == NULL) {
+		msg_menu = gtk_object_get_data(GTK_OBJECT(dlg_main), "mnu_messages_menu");
+		assert(msg_menu);
+	}
+
+	menu_item = gtk_object_get_data(GTK_OBJECT(dlg_main), mark);
+	if (menu_item == NULL) {
+		menu_item = gtk_menu_item_new_with_label (mark);
+		gtk_widget_set_name (menu_item, mark);
+		gtk_widget_ref (menu_item);
+		gtk_object_set_data_full (GTK_OBJECT (dlg_main), mark, menu_item,
+			(GtkDestroyNotify) gtk_widget_unref);
+		gtk_widget_show (menu_item);
+		gtk_container_add (GTK_CONTAINER (msg_menu), menu_item);
+		gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+			GTK_SIGNAL_FUNC (on_mnu_messages_activate),
+			g_strdup(mark));
+	}
+
+	if (global_messages[(int)*mark]) g_free(global_messages[(int)*mark]);
+	global_messages[(int)*mark] = g_strdup(msg);
+	/* we need to update the window if it's present */
+}
+
 static void handle_badplay(void)
 {
 	char err_msg[100];

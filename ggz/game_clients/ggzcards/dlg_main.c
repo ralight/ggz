@@ -53,6 +53,9 @@ create_dlg_main (void)
   GtkWidget *mnu_edit_menu;
   GtkAccelGroup *mnu_edit_menu_accels;
   GtkWidget *mnu_preferences;
+  GtkWidget *mnu_messages_menu;
+  GtkWidget *mnu_messages;
+  GtkAccelGroup *mnu_messages_menu_accels;
   GtkWidget *mnu_help;
   GtkWidget *mnu_help_menu;
   GtkAccelGroup *mnu_help_menu_accels;
@@ -129,6 +132,22 @@ create_dlg_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mnu_preferences);
   gtk_container_add (GTK_CONTAINER (mnu_edit_menu), mnu_preferences);
+
+  mnu_messages = gtk_menu_item_new_with_label ("Messages");
+  gtk_widget_set_name (mnu_messages, "mnu_messages");
+  gtk_widget_ref (mnu_messages);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_messages", mnu_messages,
+				(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (mnu_messages);
+  gtk_container_add (GTK_CONTAINER (menubar1), mnu_messages);
+
+  mnu_messages_menu = gtk_menu_new ();
+  gtk_widget_set_name (mnu_messages_menu, "mnu_messages_menu");
+  gtk_widget_ref(mnu_messages_menu);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_messages_menu", mnu_messages_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (mnu_messages), mnu_messages_menu);
+  mnu_messages_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_messages_menu));
 
   mnu_help = gtk_menu_item_new_with_label ("Help");
   gtk_widget_set_name (mnu_help, "mnu_help");

@@ -276,7 +276,7 @@ void table_set_message(char* mark, char* message)
 		ggz_snprintf(title, sizeof(title), "GGZ Gaming Zone - %s", message);
 		gtk_window_set_title (GTK_WINDOW (dlg_main), title);
 	} else
-		ggz_debug("SERVER/CLIENT BUG: unknown global message mark '%s' is '%s'.", mark, message);
+		menubar_message(mark, message);
 }
 
 /* table_style_change()
