@@ -5,3 +5,4 @@ minidom
 .deps
 .libs
 *.a
+scheduler

@@ -13,7 +13,7 @@
 char *minidom_cleanstream(const char *stream)
 {
 	static char *cs = NULL;
-	int i, j;
+	unsigned int i, j;
 	int inside;
 	int spaceprotect;
 	int spacesonly;
@@ -75,7 +75,7 @@ char *minidom_cleanstream(const char *stream)
 /* Return position of c or -1 if not found */
 int strpos(const char *s, char c)
 {
-	int i;
+	unsigned int i;
 
 	if(!s) return -1;
 	for(i = 0; i < strlen(s); i++)
@@ -156,7 +156,7 @@ ELE *minidom_makechild(ELE *parent, char *tag)
 					att->value[strlen(token) - pos - 1 - 2] = 0;
 				}
 				ele->atnum++;
-				ele->at = realloc(ele->at, (ele->atnum + 1) * sizeof(ATT*));
+				ele->at = (ATT**)realloc(ele->at, (ele->atnum + 1) * sizeof(ATT*));
 				ele->at[ele->atnum - 1] = att;
 				ele->at[ele->atnum] = NULL;
 			}
@@ -176,7 +176,8 @@ DOM *minidom_parse(const char *stream)
 {
 	DOM *dom;
 	char *cs;
-	int i, mark, lastmark;
+	unsigned int i;
+	int mark, lastmark;
 	char *token;
 	int error = 0;
 	ELE *ele, *cp;							/* root node and current pointer */
@@ -210,7 +211,7 @@ DOM *minidom_parse(const char *stream)
 		{
 			if(mark == -1) mark = i + 1;
 			else error = 1;
-			if(i != lastmark)
+			if((int)i != lastmark)
 			{
 				if(token) free(token);
 				token = (char*)malloc(i - lastmark + 1);
