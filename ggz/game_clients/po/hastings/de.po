@@ -4,11 +4,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.0.9\n"
+"Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 18:38+0200\n"
-"PO-Revision-Date: 2002-04-10 17:08GMT\n"
-"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"POT-Creation-Date: 2004-12-15 01:09+0100\n"
+"PO-Revision-Date: 2004-12-15 01:09+0100\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,15 +19,15 @@ msgstr ""
 msgid "Question"
 msgstr "Frage"
 
-#: ../hastings/dlg_yesno.c:90
+#: ../hastings/dlg_yesno.c:93
 msgid "Yes"
 msgstr "Ja"
 
-#: ../hastings/dlg_yesno.c:98
+#: ../hastings/dlg_yesno.c:102
 msgid "No"
 msgstr "Nein"
 
-#: ../hastings/main.c:149
+#: ../hastings/main.c:129
 msgid ""
 "Authors:\n"
 "        Gtk+ Client:\n"
@@ -49,195 +49,196 @@ msgstr ""
 "Webseite:\n"
 "        http://www.ggzgamingzone.org/games/hastings/"
 
-#: ../hastings/main.c:160
+#: ../hastings/main.c:140
 #, c-format
 msgid ""
 "GGZ Gaming Zone\n"
 "Hastings1066 Version %s"
 msgstr ""
+"GGZ Gaming Zone\n"
+"Hastings1066 Version %s"
 
-#: ../hastings/main.c:162
+#: ../hastings/main.c:142
 msgid "About Hastings1066"
 msgstr "Über Hastings1066"
 
-#: ../hastings/main.c:192
+#: ../hastings/main.c:171
 #, c-format
 msgid "Your move: select a knight (you are %s on the %s team)."
-msgstr "Dein Zug: Wähle einen Ritter (du bist %s in Team %s)"
+msgstr "Dein Zug: Wähle einen Ritter (du bist %s in Team %s)."
 
-#: ../hastings/main.c:225
+#: ../hastings/main.c:207
 msgid "Getting seat number"
 msgstr "Hole Sitznummer"
 
-#: ../hastings/main.c:229
+#: ../hastings/main.c:212
 #, c-format
 msgid "Received seat number: %i"
 msgstr "Erhalte Sitznummer: %i"
 
-#: ../hastings/main.c:242
+#: ../hastings/main.c:225
 msgid "Getting player names"
 msgstr "Hole Spielernamen"
 
-#: ../hastings/main.c:256
+#: ../hastings/main.c:242
 #, c-format
 msgid "Player %d named: %s"
 msgstr "Spieler %d heißt: %s"
 
-#: ../hastings/main.c:261
+#: ../hastings/main.c:249
 msgid "Your turn will be soon... have a look at the map in the meantime."
 msgstr "Du bist bald an der Reihe..."
 
-#: ../hastings/main.c:269
+#: ../hastings/main.c:257
 msgid "Getting opponent's move"
 msgstr "Hole Gegner-Züge"
 
-#: ../hastings/main.c:291
+#: ../hastings/main.c:280
 msgid "Requesting synchronization"
 msgstr "Synchronisiere"
 
-#: ../hastings/main.c:304
+#: ../hastings/main.c:293
 msgid "Getting re-sync"
 msgstr "Erhalte Sync-Signal"
 
-#: ../hastings/main.c:308
+#: ../hastings/main.c:298
 #, c-format
 msgid "Player %d's turn"
 msgstr "Spieler %d ist am Zug"
 
-#: ../hastings/main.c:324
+#: ../hastings/main.c:314
 msgid "Sync completed"
 msgstr "Sync vollständig"
 
-#: ../hastings/main.c:334
+#: ../hastings/main.c:324
 msgid "Game over"
 msgstr "Spiel beendet"
 
-#: ../hastings/main.c:342
+#: ../hastings/main.c:332
 #, c-format
 msgid "Player %d won"
 msgstr "Spieler %d hat gewonnen"
 
-#: ../hastings/main.c:354
+#: ../hastings/main.c:344
 msgid "Requesting game initialization"
 msgstr "Initialisiere Spiel"
 
-#: ../hastings/main.c:362
+#: ../hastings/main.c:352
 #, c-format
 msgid "Sending my move: %d/%d to %d/%d"
 msgstr "Sende meinen Zug: %d/%d nach %d/%d"
 
-#: ../hastings/main.c:373
+#: ../hastings/main.c:364
 msgid "My status: I'm waiting (what for? AI players!)"
 msgstr "Mein Status: Ich warte (worauf? KI-Spieler!)"
 
-#: ../hastings/main.c:395
+#: ../hastings/main.c:386
 msgid "Server not ready!!"
 msgstr "Server ist nicht bereit!"
 
-#: ../hastings/main.c:398
+#: ../hastings/main.c:389
 msgid "Not my turn !!"
 msgstr "Du bist nicht an der Reihe!"
 
-#: ../hastings/main.c:401
+#: ../hastings/main.c:392
 msgid "Move out of bounds"
 msgstr "Zug außerhalb der Grenzen"
 
-#: ../hastings/main.c:404
+#: ../hastings/main.c:395
 msgid "Nothing to move (erm?)"
 msgstr "Nichts zu bewegen (nun?)"
 
-#: ../hastings/main.c:407
+#: ../hastings/main.c:398
 msgid "Space already occupied"
 msgstr "Das Feld ist schon belegt."
 
-#: ../hastings/main.c:410
+#: ../hastings/main.c:401
 msgid "Hey, that is far too far!"
 msgstr "He, das ist viel zu weit!"
 
-#: ../hastings/main.c:413
+#: ../hastings/main.c:405
 msgid "Argh! You should play 'sink the ship' for that purpose!"
 msgstr "Argh! Du solltest Schiffe Versenken spielen!"
 
-#: ../hastings/main.c:416
+#: ../hastings/main.c:408
 #, c-format
 msgid "Moved knight from %i/%i to %i/%i"
 msgstr "Bewege Ritter von %i/%i nach %i/%i"
 
-#: ../hastings/main_win.c:103
+#: ../hastings/main_win.c:84
 msgid "red"
 msgstr "rot"
 
-#: ../hastings/main_win.c:103
+#: ../hastings/main_win.c:84
 msgid "blue"
 msgstr "blau"
 
-#: ../hastings/main_win.c:104
+#: ../hastings/main_win.c:85
 msgid "green"
 msgstr "grün"
 
-#: ../hastings/main_win.c:104
+#: ../hastings/main_win.c:85
 msgid "yellow"
 msgstr "gelb"
 
-#: ../hastings/main_win.c:105
+#: ../hastings/main_win.c:87
 msgid "white"
 msgstr "weiß"
 
-#: ../hastings/main_win.c:105
+#: ../hastings/main_win.c:87
 msgid "black"
 msgstr "schwarz"
 
-#: ../hastings/main_win.c:372
+#: ../hastings/main_win.c:359
 msgid "Not my turn yet"
 msgstr "Nicht mein Zug"
 
-#: ../hastings/main_win.c:396
+#: ../hastings/main_win.c:382
 msgid "Looking for submarines? They aren't invented yet (it's 1066)."
-msgstr "Schaust du nach U-Booten? Sie sind noch nicht erfunden (im Jahr 1066)"
+msgstr "Schaust du nach U-Booten? Sie sind noch nicht erfunden (im Jahr 1066)."
 
-#: ../hastings/main_win.c:401
+#: ../hastings/main_win.c:387
 msgid "I can't see anyone here. Can you?"
 msgstr "Ich kann niemanden sehen. Du etwa?"
 
-#: ../hastings/main_win.c:406
+#: ../hastings/main_win.c:392
 #, c-format
 msgid "Don't cheat! That's not yours! You are %s on the %s team."
-msgstr ""
-"Nicht schummeln! Das ist nicht deiner! Du bist %s in Team %s."
+msgstr "Nicht schummeln! Das ist nicht deiner! Du bist %s in Team %s."
 
-#: ../hastings/main_win.c:414
+#: ../hastings/main_win.c:401
 msgid "Where shall I go?"
 msgstr "Wo soll ich hingehen?"
 
-#: ../hastings/main_win.c:432
+#: ../hastings/main_win.c:418
 msgid "/_Table"
 msgstr "/_Tisch"
 
-#: ../hastings/main_win.c:433
+#: ../hastings/main_win.c:419
 msgid "/Table/Player _list"
 msgstr "/Tisch/Spielerliste"
 
-#: ../hastings/main_win.c:435
+#: ../hastings/main_win.c:421
 msgid "/Table/_Sync with server"
 msgstr "/Tisch/_Synchronisieren"
 
-#: ../hastings/main_win.c:436
+#: ../hastings/main_win.c:423
 msgid "/Table/E_xit"
 msgstr "/Tisch/_Verlassen"
 
-#: ../hastings/main_win.c:437
+#: ../hastings/main_win.c:424
 msgid "/_Help"
 msgstr "/_Hilfe"
 
-#: ../hastings/main_win.c:438
+#: ../hastings/main_win.c:425
 msgid "/Help/_About"
 msgstr "/Hilfe/Ü_ber"
 
-#: ../hastings/main_win.c:465
+#: ../hastings/main_win.c:454
 msgid "Hastings1066"
 msgstr "Hastings1066"
 
-#: ../hastings/selector.c:71
+#: ../hastings/selector.c:69
 #, c-format
 msgid ""
 "Name: %s\n"
@@ -247,35 +248,36 @@ msgid ""
 "Height:%i\n"
 "Players: unknown\n"
 msgstr ""
+"Name: %s\n"
+"Autor:%s\n"
+"Version:%s\n"
+"Höhe:%i\n"
+"Breite:%i\n"
+"Spieler: unbekannt\n"
 
-#: ../hastings/selector.c:113
+#: ../hastings/selector.c:107
 msgid "Please select a map:"
-msgstr ""
+msgstr "Bitte eine Karte auswählen:"
 
-#: ../hastings/support.c:118
+#: ../hastings/support.c:110
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr "Konnte Pixmap nicht laden: %s"
 
-#: ../hastings/support.c:127
+#: ../hastings/support.c:119
 #, c-format
 msgid "Error loading pixmap file: %s"
 msgstr "Fehler beim Laden der Pixmap: %s"
 
-#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
-#: ../common/dlg_players.c:282
-msgid "Close"
-msgstr "Schließen"
+#: ../common/dlg_chat.c:159
+msgid "Player Chat"
+msgstr "Spielerkommunikation"
 
-#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
-msgid "Player List"
-msgstr "Spielerliste"
-
-#: ../common/dlg_exit.c:53
+#: ../common/dlg_exit.c:56
 msgid "Are you sure you want to exit?"
 msgstr "Bist du sicher, daß du beenden willst?"
 
-#: ../common/dlg_exit.c:55
+#: ../common/dlg_exit.c:58
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
@@ -283,90 +285,95 @@ msgstr ""
 "Bist du sicher, daß du beenden willst?\n"
 "Ein erneutes Teilnehmen ist nicht möglich."
 
-#: ../common/dlg_exit.c:63
+#: ../common/dlg_exit.c:62 ../common/dlg_exit.c:67
 msgid "Really Exit?"
 msgstr "Wirklich beenden?"
 
-#: ../common/dlg_exit.c:79
-msgid "Exit"
-msgstr "Beenden"
-
-#: ../common/dlg_exit.c:80
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: ../common/dlg_players.c:102
+#: ../common/dlg_players.c:120
 msgid "Occupied"
 msgstr "Besetzt"
 
-#: ../common/dlg_players.c:106
+#: ../common/dlg_players.c:124
 msgid "Empty"
 msgstr "Leer"
 
-#: ../common/dlg_players.c:110
+#: ../common/dlg_players.c:128
 msgid "Bot"
 msgstr "Bot"
 
-#: ../common/dlg_players.c:114
+#: ../common/dlg_players.c:132
 msgid "Reserved"
 msgstr "Reserviert"
 
-#: ../common/dlg_players.c:118
+#: ../common/dlg_players.c:136
 msgid "-"
 msgstr "-"
 
-#: ../common/dlg_players.c:140
+#: ../common/dlg_players.c:166
 msgid "Spectator"
 msgstr "Zuschauer"
 
-#: ../common/dlg_players.c:182
+#: ../common/dlg_players.c:203
 msgid "#"
 msgstr "#"
 
-#: ../common/dlg_players.c:190
+#: ../common/dlg_players.c:210
 msgid "Status"
 msgstr "Status"
 
-#: ../common/dlg_players.c:198
+#: ../common/dlg_players.c:219
 msgid "Name"
 msgstr "Name"
 
-#: ../common/dlg_players.c:259
-msgid "List of players:"
-msgstr "Liste der Spieler"
+#: ../common/dlg_players.c:261
+msgid "Player List"
+msgstr "Spielerliste"
 
-#: ../common/dlg_players.c:416
+#: ../common/dlg_players.c:276
+msgid "List of players:"
+msgstr "Liste der Spieler:"
+
+#: ../common/dlg_players.c:410
 msgid "Info"
 msgstr "Info"
 
-#: ../common/dlg_players.c:433
+#: ../common/dlg_players.c:428
 msgid "Boot player"
 msgstr "Spieler rauswerfen"
 
-#: ../common/dlg_players.c:452
+#: ../common/dlg_players.c:448
 msgid "Sit here"
 msgstr "Hinsetzen"
 
-#: ../common/dlg_players.c:454
+#: ../common/dlg_players.c:450
 msgid "Move here"
 msgstr "Hierher bewegen"
 
-#: ../common/dlg_players.c:471
+#: ../common/dlg_players.c:468
 msgid "Play with bot"
 msgstr "Mit Bot spielen"
 
-#: ../common/dlg_players.c:487
+#: ../common/dlg_players.c:485
 msgid "Drop reservation"
 msgstr "Reservierung aufheben"
 
-#: ../common/dlg_players.c:489
+#: ../common/dlg_players.c:487
 msgid "Remove bot"
 msgstr "Bot entfernen"
 
-#: ../common/ggzintl.c:41
+#: ../common/ggzintl.c:44
 #, c-format
 msgid "nls enabled: %s"
 msgstr "nls enabled: %s"
+
+#~ msgid "Close"
+#~ msgstr "Schließen"
+
+#~ msgid "Exit"
+#~ msgstr "Beenden"
+
+#~ msgid "Cancel"
+#~ msgstr "Abbrechen"
 
 #~ msgid "Re_sync"
 #~ msgstr "_Synchronisieren"

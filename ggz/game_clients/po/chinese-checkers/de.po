@@ -5,86 +5,91 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.0.9\n"
+"Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 18:38+0200\n"
-"PO-Revision-Date: 2004-07-13 18:12+0200\n"
-"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"POT-Creation-Date: 2004-12-15 01:09+0100\n"
+"PO-Revision-Date: 2004-12-15 01:09+0100\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../chinese-checkers/game.c:222
+#: ../chinese-checkers/game.c:197
 #, c-format
 msgid "You are playing the %s marbles"
 msgstr "Du spielst mit den %s Kugeln"
 
-#: ../chinese-checkers/game.c:236
+#: ../chinese-checkers/game.c:211
 msgid "Wait for your turn..."
 msgstr "Warte auf deinen Zug..."
 
-#: ../chinese-checkers/game.c:246
+#: ../chinese-checkers/game.c:222
 msgid "Click where you want to move the marble."
-msgstr "Klick wohin du deine Kugel bewegen möchtest"
+msgstr "Klick wohin du deine Kugel bewegen möchtest."
 
-#: ../chinese-checkers/game.c:259
+#: ../chinese-checkers/game.c:235
 msgid "Sending move to GGZ server..."
 msgstr "Sende den Zug zum GGZ-Server..."
 
-#: ../chinese-checkers/game.c:266
+#: ../chinese-checkers/game.c:242
 msgid "Bad move! Click a marble to move."
 msgstr "Falscher Zug! Klicke auf eine Kugel."
 
-#: ../chinese-checkers/game.c:509
+#: ../chinese-checkers/game.c:485
 msgid "Your move. Click a marble to move"
 msgstr "Dein Zug. Klicke auf eine Kugel zum Bewegen"
 
-#: ../chinese-checkers/main.c:117
+#: ../chinese-checkers/main.c:118
 msgid ""
 "Visit us at http://www.ggzgamingzone.org/games/chinese-checkers/\n"
 "\n"
 "Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n"
 msgstr ""
+"Besuch uns auf http://www.ggzgamingzone.org/games/chinese-checkers/\n"
+"\n"
+"Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n"
 
-#: ../chinese-checkers/main.c:122
+#: ../chinese-checkers/main.c:123
 #, c-format
 msgid ""
 "GGZ Gaming Zone\n"
 "Chinese Checkers Version %s"
 msgstr ""
+"GGZ Gaming Zone\n"
+"Halma Version %s"
 
-#: ../chinese-checkers/main.c:124
+#: ../chinese-checkers/main.c:126
 msgid "About Chinese Checkers"
 msgstr "Über Halma"
 
-#: ../chinese-checkers/main.c:205
+#: ../chinese-checkers/main.c:211
 #, c-format
 msgid "%s joined the table"
 msgstr "%s ist hinzugekommen"
 
-#: ../chinese-checkers/main.c:211
+#: ../chinese-checkers/main.c:217
 #, c-format
 msgid "%s left the table"
 msgstr "%s hat uns verlassen"
 
-#: ../chinese-checkers/main.c:215
+#: ../chinese-checkers/main.c:221
 msgid "empty"
 msgstr "leer"
 
-#: ../chinese-checkers/main.c:253
+#: ../chinese-checkers/main.c:260
 msgid "Move accepted. Waiting for opponents"
 msgstr "Zug akzeptiert. Warte auf Gegner"
 
-#: ../chinese-checkers/main.c:256
+#: ../chinese-checkers/main.c:264
 msgid "Cannot accept move until table is full"
 msgstr "Kann den Zug nicht akzeptieren bis alle mitspielen"
 
-#: ../chinese-checkers/main.c:279
+#: ../chinese-checkers/main.c:287
 msgid "Game over!  You won!"
 msgstr "Spiel vorbei! Du hast gewonnen!"
 
-#: ../chinese-checkers/main.c:281
+#: ../chinese-checkers/main.c:289
 #, c-format
 msgid "Game over!  %s won!"
 msgstr "Spiel vorbei! %s hat gewonnen!"
@@ -97,20 +102,15 @@ msgstr "/_Optionen"
 msgid "/Options/_Preferences"
 msgstr "/Optionen/_Einstellungen"
 
-#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
-#: ../common/dlg_players.c:282
-msgid "Close"
-msgstr "Schließen"
+#: ../common/dlg_chat.c:159
+msgid "Player Chat"
+msgstr "Spielerkommunikation"
 
-#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
-msgid "Player List"
-msgstr "Spielerliste"
-
-#: ../common/dlg_exit.c:53
+#: ../common/dlg_exit.c:56
 msgid "Are you sure you want to exit?"
 msgstr "Bist du sicher daß du beenden möchtest?"
 
-#: ../common/dlg_exit.c:55
+#: ../common/dlg_exit.c:58
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
@@ -118,90 +118,95 @@ msgstr ""
 "Bist du sicher daß du beenden möchtest?\n"
 "Du wirst nicht wieder teilnehmen können."
 
-#: ../common/dlg_exit.c:63
+#: ../common/dlg_exit.c:62 ../common/dlg_exit.c:67
 msgid "Really Exit?"
 msgstr "Wirklich beenden?"
 
-#: ../common/dlg_exit.c:79
-msgid "Exit"
-msgstr "Beenden"
-
-#: ../common/dlg_exit.c:80
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: ../common/dlg_players.c:102
+#: ../common/dlg_players.c:120
 msgid "Occupied"
 msgstr "Besetzt"
 
-#: ../common/dlg_players.c:106
+#: ../common/dlg_players.c:124
 msgid "Empty"
 msgstr "Leer"
 
-#: ../common/dlg_players.c:110
+#: ../common/dlg_players.c:128
 msgid "Bot"
 msgstr "Bot"
 
-#: ../common/dlg_players.c:114
+#: ../common/dlg_players.c:132
 msgid "Reserved"
 msgstr "Reserviert"
 
-#: ../common/dlg_players.c:118
+#: ../common/dlg_players.c:136
 msgid "-"
 msgstr "-"
 
-#: ../common/dlg_players.c:140
+#: ../common/dlg_players.c:166
 msgid "Spectator"
 msgstr "Zuschauer"
 
-#: ../common/dlg_players.c:182
+#: ../common/dlg_players.c:203
 msgid "#"
 msgstr "#"
 
-#: ../common/dlg_players.c:190
+#: ../common/dlg_players.c:210
 msgid "Status"
 msgstr "Status"
 
-#: ../common/dlg_players.c:198
+#: ../common/dlg_players.c:219
 msgid "Name"
 msgstr "Name"
 
-#: ../common/dlg_players.c:259
+#: ../common/dlg_players.c:261
+msgid "Player List"
+msgstr "Spielerliste"
+
+#: ../common/dlg_players.c:276
 msgid "List of players:"
 msgstr "Liste der Spieler:"
 
-#: ../common/dlg_players.c:416
+#: ../common/dlg_players.c:410
 msgid "Info"
 msgstr "Info"
 
-#: ../common/dlg_players.c:433
+#: ../common/dlg_players.c:428
 msgid "Boot player"
 msgstr "Spieler rauswerfen"
 
-#: ../common/dlg_players.c:452
+#: ../common/dlg_players.c:448
 msgid "Sit here"
 msgstr "Hinsetzen"
 
-#: ../common/dlg_players.c:454
+#: ../common/dlg_players.c:450
 msgid "Move here"
 msgstr "Hierher bewegen"
 
-#: ../common/dlg_players.c:471
+#: ../common/dlg_players.c:468
 msgid "Play with bot"
 msgstr "Mit Bot spielen"
 
-#: ../common/dlg_players.c:487
+#: ../common/dlg_players.c:485
 msgid "Drop reservation"
 msgstr "Reservierung aufheben"
 
-#: ../common/dlg_players.c:489
+#: ../common/dlg_players.c:487
 msgid "Remove bot"
 msgstr "Bot entfernen"
 
-#: ../common/ggzintl.c:41
+#: ../common/ggzintl.c:44
 #, c-format
 msgid "nls enabled: %s"
 msgstr "NLS: %s"
+
+#~ msgid "Close"
+#~ msgstr "Schließen"
+
+#~ msgid "Exit"
+#~ msgstr "Beenden"
+
+#~ msgid "Cancel"
+#~ msgstr "Abbrechen"
 
 #~ msgid ""
 #~ "\n"

@@ -4,18 +4,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.0.9\n"
+"Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 18:38+0200\n"
-"PO-Revision-Date: 2002-04-10 16:55GMT\n"
-"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"POT-Creation-Date: 2004-12-15 01:09+0100\n"
+"PO-Revision-Date: 2004-12-15 01:09+0100\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: ../chess/main.c:152
+#: ../chess/main.c:162
 #, c-format
 msgid ""
 "GGZ Gaming Zone\n"
@@ -24,11 +24,11 @@ msgstr ""
 "GGZ Gaming Zone\n"
 "Schach Version %s"
 
-#: ../chess/main.c:154
+#: ../chess/main.c:164
 msgid "About Chess"
 msgstr "Über Schach"
 
-#: ../chess/main.c:155
+#: ../chess/main.c:165
 msgid ""
 "Copyright (C) 2001 Ismael Orenstein.\n"
 "\n"
@@ -62,59 +62,55 @@ msgstr "_/Spiel"
 msgid "/Game/Request _draw"
 msgstr "/Spiel/Remis beantragen"
 
-#: ../chess/main_win.c:66
+#: ../chess/main_win.c:67
 msgid "/Game/_Call flag"
 msgstr "/Spiel/_Flagge"
 
-#: ../chess/main_win.c:67
+#: ../chess/main_win.c:69
 msgid "/_Options"
 msgstr "/_Optionen"
 
-#: ../chess/main_win.c:68
+#: ../chess/main_win.c:70
 msgid "/Options/_Auto call flag"
 msgstr "/Optionen/_Automatischer Zug"
 
-#: ../chess/main_win.c:70
+#: ../chess/main_win.c:72
 msgid "/_Help"
 msgstr "/_Hilfe"
 
-#: ../chess/main_win.c:71
+#: ../chess/main_win.c:73
 msgid "/Help/_About"
 msgstr "/Hilfe/Ü_ber"
 
-#: ../chess/main_win.c:82
+#: ../chess/main_win.c:85
 msgid "<main>/Options/Auto call flag"
 msgstr "<main>/Optionen/Automatischer Zug"
 
-#: ../chess/main_win.c:119
+#: ../chess/main_win.c:121
 msgid "GGZ Chess"
 msgstr "GGZ Schach"
 
-#: ../chess/main_win.c:188
+#: ../chess/main_win.c:192
 msgid "White -> 99:99"
 msgstr "Weiß -> 99:99"
 
-#: ../chess/main_win.c:212
+#: ../chess/main_win.c:218
 msgid "Black -> 99:99"
 msgstr "Schwarz -> 99:99"
 
-#: ../chess/main_win.c:229
+#: ../chess/main_win.c:236
 msgid "Last moves"
 msgstr "Letzte Züge"
 
-#: ../chess/main_win.c:259
+#: ../chess/main_win.c:268
 msgid "Last moves: \n"
 msgstr "Letzte Züge: \n"
 
-#: ../chess/main_win.c:263
-msgid "Last moves:\n"
-msgstr "Letzte Züge:\n"
-
-#: ../chess/popup.c:55
+#: ../chess/popup.c:56
 msgid "Do you want do draw the game ?"
 msgstr "Möchtest du das Spiel aufgeben?"
 
-#: ../chess/popup.c:62
+#: ../chess/popup.c:65
 msgid ""
 "The server wants to draw the game. That means that either one of the drawing "
 "condition has happened (like repetition of the same position, or 50 moves "
@@ -133,31 +129,31 @@ msgstr ""
 "\n"
 "Willst du das Spiel nun vorzeitig beenden?"
 
-#: ../chess/popup.c:82
+#: ../chess/popup.c:91
 msgid "Draw"
 msgstr "Beenden"
 
-#: ../chess/popup.c:90
+#: ../chess/popup.c:99
 msgid "Don't Draw"
 msgstr "Nicht beenden"
 
-#: ../chess/popup.c:145
+#: ../chess/popup.c:155
 msgid "Select your clock option"
 msgstr "Suche dir deine Uhrzeit-Optionen aus"
 
-#: ../chess/popup.c:159
+#: ../chess/popup.c:171
 msgid "No clock"
 msgstr "Keine Uhr"
 
-#: ../chess/popup.c:166
+#: ../chess/popup.c:182
 msgid "If you select this option, this game won't have a time limit"
 msgstr "Wenn du diese Option auswählst, wird das Spiel kein Zeitlimit haben"
 
-#: ../chess/popup.c:169
+#: ../chess/popup.c:188
 msgid "Server clock"
 msgstr "Server-Uhr"
 
-#: ../chess/popup.c:176
+#: ../chess/popup.c:199
 msgid ""
 "Selecting this option, the server will keep track of the time of each "
 "player. So, the time a player takes to complete a move will start the moment "
@@ -172,11 +168,11 @@ msgstr ""
 "Option sollte man jedoch nur im LAN nutzen oder wenn der Gegenspieler eine "
 "gleich gute Verbindung hat."
 
-#: ../chess/popup.c:178
+#: ../chess/popup.c:205
 msgid "Server clock with lag meter"
 msgstr "Server-Uhr mit Zeitmesser"
 
-#: ../chess/popup.c:186
+#: ../chess/popup.c:218
 msgid ""
 "This option works just like the server clock, except that it uses ggz's "
 "builtin lag meter to compensate for lagged connections. It provides a good "
@@ -187,11 +183,11 @@ msgstr ""
 "Verbindungen berücksichtigt. Diese Option bietet eine gute Balance zwischen "
 "Sicherheit und Fairness."
 
-#: ../chess/popup.c:188
+#: ../chess/popup.c:223
 msgid "Client clock"
 msgstr "Client-Uhr"
 
-#: ../chess/popup.c:195
+#: ../chess/popup.c:234
 msgid ""
 "Selecting this option, each client will keep track of its current time. This "
 "is the most fair option, as it reduces to zero the effect of lagged "
@@ -204,70 +200,55 @@ msgstr ""
 "gepatchter Client kann jedoch trotzdem schummeln, indem er sein Programm "
 "falsche Werte schicken läßt."
 
-#: ../chess/popup.c:204
+#: ../chess/popup.c:244
 msgid "Game time :"
 msgstr "Spielzeit :"
 
-#: ../chess/popup.c:227
+#: ../chess/popup.c:267
 msgid "min : "
-msgstr "min :"
+msgstr "min : "
 
-#: ../chess/popup.c:243
+#: ../chess/popup.c:283
 msgid "sec"
 msgstr "sec"
 
-#: ../chess/popup.c:262
+#: ../chess/popup.c:306
 msgid "Send option"
 msgstr "Sende Option"
 
-#: ../chess/popup.c:270 ../common/dlg_exit.c:80
+#: ../chess/popup.c:315
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: ../chess/popup.c:311 ../chess/popup.c:364
+#: ../chess/popup.c:356 ../chess/popup.c:416
 msgid "Promote"
 msgstr "Begünstige"
 
-#: ../chess/popup.c:326
+#: ../chess/popup.c:371
 msgid "Queen"
 msgstr "Königin"
 
-#: ../chess/popup.c:335
+#: ../chess/popup.c:381
 msgid "Rook"
 msgstr "Turm"
 
-#: ../chess/popup.c:343
+#: ../chess/popup.c:390
 msgid "Bishop"
 msgstr "Läufer"
 
-#: ../chess/popup.c:351
+#: ../chess/popup.c:400
 msgid "Knight"
 msgstr "Springer"
 
-#: ../chess/support.c:121
-#, c-format
-msgid "Couldn't find pixmap file: %s"
-msgstr "Konnte Pixmap nicht laden: %s"
+#: ../common/dlg_chat.c:159
+msgid "Player Chat"
+msgstr "Spielerkommunikation"
 
-#: ../chess/support.c:130
-#, c-format
-msgid "Error loading pixmap file: %s"
-msgstr "Error beim Laden der Pixmap: %s"
-
-#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
-#: ../common/dlg_players.c:282
-msgid "Close"
-msgstr "Schließen"
-
-#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
-msgid "Player List"
-msgstr "Spielerliste"
-
-#: ../common/dlg_exit.c:53
+#: ../common/dlg_exit.c:56
 msgid "Are you sure you want to exit?"
 msgstr "Bist du sicher daß du das Spiel verlassen willst?"
 
-#: ../common/dlg_exit.c:55
+#: ../common/dlg_exit.c:58
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
@@ -275,86 +256,101 @@ msgstr ""
 "Bist du sicher daß du beenden willst?\n"
 "Du wirst nicht wieder teilnehmen können."
 
-#: ../common/dlg_exit.c:63
+#: ../common/dlg_exit.c:62 ../common/dlg_exit.c:67
 msgid "Really Exit?"
 msgstr "Wirklich beenden?"
 
-#: ../common/dlg_exit.c:79
-msgid "Exit"
-msgstr "Beenden"
-
-#: ../common/dlg_players.c:102
+#: ../common/dlg_players.c:120
 msgid "Occupied"
 msgstr "Besetzt"
 
-#: ../common/dlg_players.c:106
+#: ../common/dlg_players.c:124
 msgid "Empty"
 msgstr "Leer"
 
-#: ../common/dlg_players.c:110
+#: ../common/dlg_players.c:128
 msgid "Bot"
 msgstr "Bot"
 
-#: ../common/dlg_players.c:114
+#: ../common/dlg_players.c:132
 msgid "Reserved"
 msgstr "Reserviert"
 
-#: ../common/dlg_players.c:118
+#: ../common/dlg_players.c:136
 msgid "-"
 msgstr "-"
 
-#: ../common/dlg_players.c:140
+#: ../common/dlg_players.c:166
 msgid "Spectator"
 msgstr "Zuschauer"
 
-#: ../common/dlg_players.c:182
+#: ../common/dlg_players.c:203
 msgid "#"
 msgstr "#"
 
-#: ../common/dlg_players.c:190
+#: ../common/dlg_players.c:210
 msgid "Status"
 msgstr "Status"
 
-#: ../common/dlg_players.c:198
+#: ../common/dlg_players.c:219
 msgid "Name"
 msgstr "Name"
 
-#: ../common/dlg_players.c:259
+#: ../common/dlg_players.c:261
+msgid "Player List"
+msgstr "Spielerliste"
+
+#: ../common/dlg_players.c:276
 msgid "List of players:"
 msgstr "Liste der Spieler:"
 
-#: ../common/dlg_players.c:416
+#: ../common/dlg_players.c:410
 msgid "Info"
 msgstr "Info"
 
-#: ../common/dlg_players.c:433
+#: ../common/dlg_players.c:428
 msgid "Boot player"
 msgstr "Spieler rauswerfen"
 
-#: ../common/dlg_players.c:452
+#: ../common/dlg_players.c:448
 msgid "Sit here"
 msgstr "Hinsetzen"
 
-#: ../common/dlg_players.c:454
+#: ../common/dlg_players.c:450
 msgid "Move here"
 msgstr "Hierher bewegen"
 
-#: ../common/dlg_players.c:471
+#: ../common/dlg_players.c:468
 msgid "Play with bot"
 msgstr "Mit Bot spielen"
 
-#: ../common/dlg_players.c:487
+#: ../common/dlg_players.c:485
 msgid "Drop reservation"
 msgstr "Reservierung aufheben"
 
-#: ../common/dlg_players.c:489
+#: ../common/dlg_players.c:487
 msgid "Remove bot"
 msgstr "Bot entfernen"
 
-#: ../common/ggzintl.c:41
+#: ../common/ggzintl.c:44
 #, c-format
 msgid "nls enabled: %s"
 msgstr "NLS: %s"
+
+#~ msgid "Last moves:\n"
+#~ msgstr "Letzte Züge:\n"
+
+#~ msgid "Couldn't find pixmap file: %s"
+#~ msgstr "Konnte Pixmap nicht laden: %s"
+
+#~ msgid "Error loading pixmap file: %s"
+#~ msgstr "Error beim Laden der Pixmap: %s"
+
+#~ msgid "Close"
+#~ msgstr "Schließen"
+
+#~ msgid "Exit"
+#~ msgstr "Beenden"
 
 #~ msgid "File"
 #~ msgstr "Datei"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 18:38+0200\n"
+"POT-Creation-Date: 2004-12-15 01:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,230 +16,211 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../tictactoe/main.c:81
+#: ../tictactoe/main.c:71
 msgid "Watching the game..."
 msgstr ""
 
-#: ../tictactoe/main.c:95
+#: ../tictactoe/main.c:85
 msgid ""
 "Copyright (C) 2000 by Brent Hendricks\n"
 "\n"
 "Website: http://www.ggzgamingzone.org/games/tictactoe/"
 msgstr ""
 
-#: ../tictactoe/main.c:100
+#: ../tictactoe/main.c:90
 #, c-format
 msgid ""
 "GGZ Gaming Zone\n"
 "Tic-Tac-Toe Version %s"
 msgstr ""
 
-#: ../tictactoe/main.c:102
+#: ../tictactoe/main.c:92
 msgid "About Tic-Tac-Toe"
 msgstr ""
 
-#: ../tictactoe/main.c:151
+#: ../tictactoe/main.c:126
 msgid "It's your move."
 msgstr ""
 
-#: ../tictactoe/main.c:180
+#: ../tictactoe/main.c:156
 msgid "Receiving your seat number..."
 msgstr ""
 
-#: ../tictactoe/main.c:193
+#: ../tictactoe/main.c:169
 msgid "Getting player names..."
 msgstr ""
 
-#: ../tictactoe/main.c:201
+#: ../tictactoe/main.c:178
 #, c-format
 msgid "%s is %c."
 msgstr ""
 
-#: ../tictactoe/main.c:225
+#: ../tictactoe/main.c:202
 #, c-format
 msgid "%s (%c) has moved."
 msgstr ""
 
-#: ../tictactoe/main.c:228
+#: ../tictactoe/main.c:206
 msgid "Your opponent has moved."
 msgstr ""
 
-#: ../tictactoe/main.c:242
+#: ../tictactoe/main.c:220
 msgid "Syncing with server..."
 msgstr ""
 
-#: ../tictactoe/main.c:247
+#: ../tictactoe/main.c:225
 #, c-format
 msgid "It's %s (%c)'s turn."
 msgstr ""
 
-#: ../tictactoe/main.c:257
+#: ../tictactoe/main.c:235
 msgid "Sync completed."
 msgstr ""
 
-#: ../tictactoe/main.c:266
+#: ../tictactoe/main.c:244
 msgid "Game over."
 msgstr ""
 
-#: ../tictactoe/main.c:274
+#: ../tictactoe/main.c:252
 #, c-format
 msgid "%s (%c) won"
 msgstr ""
 
-#: ../tictactoe/main.c:279
+#: ../tictactoe/main.c:257
 msgid "Tie game!"
 msgstr ""
 
-#: ../tictactoe/main.c:309
+#: ../tictactoe/main.c:286
 msgid "Sending move."
 msgstr ""
 
-#: ../tictactoe/main.c:321
+#: ../tictactoe/main.c:298
 msgid "Sending options."
 msgstr ""
 
-#: ../tictactoe/main.c:335
+#: ../tictactoe/main.c:312
 msgid "Server not ready!!"
 msgstr ""
 
-#: ../tictactoe/main.c:338
+#: ../tictactoe/main.c:315
 msgid "Not your turn!"
 msgstr ""
 
-#: ../tictactoe/main.c:341
+#: ../tictactoe/main.c:318
 msgid "Move out of bounds!"
 msgstr ""
 
-#: ../tictactoe/main.c:344
+#: ../tictactoe/main.c:321
 msgid "Space already occupied!"
 msgstr ""
 
-#: ../tictactoe/main.c:347
+#: ../tictactoe/main.c:324
 msgid "Move accepted."
 msgstr ""
 
-#: ../tictactoe/main_win.c:229
+#: ../tictactoe/main_win.c:264
 msgid "It's not your move yet."
 msgstr ""
 
-#: ../tictactoe/main_win.c:231
+#: ../tictactoe/main_win.c:266
 msgid "You're just watching."
 msgstr ""
 
-#: ../tictactoe/main_win.c:283
+#: ../tictactoe/main_win.c:317
 msgid "Tic-Tac-Toe"
 msgstr ""
 
-#: ../tictactoe/support.c:118
-#, c-format
-msgid "Couldn't find pixmap file: %s"
+#: ../common/dlg_chat.c:159
+msgid "Player Chat"
 msgstr ""
 
-#: ../tictactoe/support.c:127
-#, c-format
-msgid "Error loading pixmap file: %s"
-msgstr ""
-
-#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
-#: ../common/dlg_players.c:282
-msgid "Close"
-msgstr ""
-
-#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
-msgid "Player List"
-msgstr ""
-
-#: ../common/dlg_exit.c:53
+#: ../common/dlg_exit.c:56
 msgid "Are you sure you want to exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:55
+#: ../common/dlg_exit.c:58
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
 
-#: ../common/dlg_exit.c:63
+#: ../common/dlg_exit.c:62 ../common/dlg_exit.c:67
 msgid "Really Exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:79
-msgid "Exit"
-msgstr ""
-
-#: ../common/dlg_exit.c:80
-msgid "Cancel"
-msgstr ""
-
-#: ../common/dlg_players.c:102
+#: ../common/dlg_players.c:120
 msgid "Occupied"
 msgstr ""
 
-#: ../common/dlg_players.c:106
+#: ../common/dlg_players.c:124
 msgid "Empty"
 msgstr ""
 
-#: ../common/dlg_players.c:110
+#: ../common/dlg_players.c:128
 msgid "Bot"
 msgstr ""
 
-#: ../common/dlg_players.c:114
+#: ../common/dlg_players.c:132
 msgid "Reserved"
 msgstr ""
 
-#: ../common/dlg_players.c:118
+#: ../common/dlg_players.c:136
 msgid "-"
 msgstr ""
 
-#: ../common/dlg_players.c:140
+#: ../common/dlg_players.c:166
 msgid "Spectator"
 msgstr ""
 
-#: ../common/dlg_players.c:182
+#: ../common/dlg_players.c:203
 msgid "#"
 msgstr ""
 
-#: ../common/dlg_players.c:190
+#: ../common/dlg_players.c:210
 msgid "Status"
 msgstr ""
 
-#: ../common/dlg_players.c:198
+#: ../common/dlg_players.c:219
 msgid "Name"
 msgstr ""
 
-#: ../common/dlg_players.c:259
+#: ../common/dlg_players.c:261
+msgid "Player List"
+msgstr ""
+
+#: ../common/dlg_players.c:276
 msgid "List of players:"
 msgstr ""
 
-#: ../common/dlg_players.c:416
+#: ../common/dlg_players.c:410
 msgid "Info"
 msgstr ""
 
-#: ../common/dlg_players.c:433
+#: ../common/dlg_players.c:428
 msgid "Boot player"
 msgstr ""
 
-#: ../common/dlg_players.c:452
+#: ../common/dlg_players.c:448
 msgid "Sit here"
 msgstr ""
 
-#: ../common/dlg_players.c:454
+#: ../common/dlg_players.c:450
 msgid "Move here"
 msgstr ""
 
-#: ../common/dlg_players.c:471
+#: ../common/dlg_players.c:468
 msgid "Play with bot"
 msgstr ""
 
-#: ../common/dlg_players.c:487
+#: ../common/dlg_players.c:485
 msgid "Drop reservation"
 msgstr ""
 
-#: ../common/dlg_players.c:489
+#: ../common/dlg_players.c:487
 msgid "Remove bot"
 msgstr ""
 
-#: ../common/ggzintl.c:41
+#: ../common/ggzintl.c:44
 #, c-format
 msgid "nls enabled: %s"
 msgstr ""

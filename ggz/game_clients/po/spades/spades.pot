@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 18:38+0200\n"
+"POT-Creation-Date: 2004-12-15 01:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,34 +16,34 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../spades/client_main.c:158
+#: ../spades/client_main.c:159
 #, c-format
 msgid "GtkSpades Client Version %s\n"
 msgstr ""
 
-#: ../spades/client_main.c:159
+#: ../spades/client_main.c:160
 msgid "About GtkSpades"
 msgstr ""
 
-#: ../spades/client_main.c:160
+#: ../spades/client_main.c:161
 msgid "Copyright 1999: Brent Hendricks"
 msgstr ""
 
-#: ../spades/gtk_dlg_disconnect.c:56
+#: ../spades/gtk_dlg_disconnect.c:57
 msgid "Disconnect from Server"
 msgstr ""
 
-#: ../spades/gtk_dlg_disconnect.c:61
+#: ../spades/gtk_dlg_disconnect.c:62
 msgid "Really Disconnect?"
 msgstr ""
 
-#: ../spades/gtk_dlg_disconnect.c:66 ../spades/gtk_dlg_options.c:167
-#: ../spades/gtk_dlg_options.c:357 ../spades/gtk_dlg_stat.c:77
+#: ../spades/gtk_dlg_disconnect.c:67 ../spades/gtk_dlg_options.c:165
+#: ../spades/gtk_dlg_options.c:354 ../spades/gtk_dlg_stat.c:77
 msgid "No"
 msgstr ""
 
-#: ../spades/gtk_dlg_disconnect.c:67 ../spades/gtk_dlg_options.c:167
-#: ../spades/gtk_dlg_options.c:353 ../spades/gtk_dlg_stat.c:76
+#: ../spades/gtk_dlg_disconnect.c:68 ../spades/gtk_dlg_options.c:165
+#: ../spades/gtk_dlg_options.c:350 ../spades/gtk_dlg_stat.c:76
 msgid "Yes"
 msgstr ""
 
@@ -80,36 +80,36 @@ msgid "Game Options"
 msgstr ""
 
 #: ../spades/gtk_dlg_options.c:111 ../spades/gtk_dlg_options.c:112
-#: ../spades/gtk_dlg_options.c:113 ../spades/gtk_dlg_options.c:339
+#: ../spades/gtk_dlg_options.c:113 ../spades/gtk_dlg_options.c:336
 msgid "Human"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:141 ../spades/gtk_dlg_options.c:144
-#: ../spades/gtk_dlg_options.c:147
+#: ../spades/gtk_dlg_options.c:137 ../spades/gtk_dlg_options.c:140
+#: ../spades/gtk_dlg_options.c:143
 msgid "Click to toggle Human/Computer player"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:178
+#: ../spades/gtk_dlg_options.c:175
 msgid "Minimum Bid :"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:179
+#: ../spades/gtk_dlg_options.c:176
 msgid "Game ends at :"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:180
+#: ../spades/gtk_dlg_options.c:177
 msgid "Nil bids allowed :"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:190
+#: ../spades/gtk_dlg_options.c:187
 msgid "Start"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:191 ../common/dlg_exit.c:80
+#: ../spades/gtk_dlg_options.c:188
 msgid "Cancel"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:335
+#: ../spades/gtk_dlg_options.c:332
 msgid "Computer"
 msgstr ""
 
@@ -134,35 +134,35 @@ msgstr ""
 msgid "(No statistics yet)"
 msgstr ""
 
-#: ../spades/gtk_io.c:434
+#: ../spades/gtk_io.c:405
 #, c-format
 msgid "%s and %s"
 msgstr ""
 
-#: ../spades/gtk_io.c:439
+#: ../spades/gtk_io.c:411
 #, c-format
 msgid "Score: % 4d"
 msgstr ""
 
-#: ../spades/gtk_io.c:449
+#: ../spades/gtk_io.c:421
 #, c-format
 msgid "  Bid: n%3d "
 msgstr ""
 
-#: ../spades/gtk_io.c:456
+#: ../spades/gtk_io.c:428
 #, c-format
 msgid "  Bid:  %3d "
 msgstr ""
 
-#: ../spades/gtk_io.c:461
+#: ../spades/gtk_io.c:433
 msgid "  Bid:  "
 msgstr ""
 
-#: ../spades/gtk_io.c:487
+#: ../spades/gtk_io.c:459
 msgid "Your bid: "
 msgstr ""
 
-#: ../spades/gtk_io.c:493
+#: ../spades/gtk_io.c:465
 msgid "Please play a card"
 msgstr ""
 
@@ -210,134 +210,129 @@ msgstr ""
 msgid "/Help/_GamePlay"
 msgstr ""
 
-#: ../spades/gtk_menu.c:86
+#: ../spades/gtk_menu.c:87
 msgid "<main>/Game/End"
 msgstr ""
 
-#: ../spades/gtk_menu.c:90
+#: ../spades/gtk_menu.c:91
 msgid "<main>/Table/Sync with server"
 msgstr ""
 
-#: ../spades/gtk_play.c:209
+#: ../spades/gtk_play.c:173
 msgid "Bid"
 msgstr ""
 
-#: ../spades/gtk_play.c:226
+#: ../spades/gtk_play.c:191
 msgid "Send Bid"
 msgstr ""
 
-#: ../spades/gtk_play.c:477
+#: ../spades/gtk_play.c:443
 msgid "You already played that card"
 msgstr ""
 
-#: ../spades/gtk_play.c:481
+#: ../spades/gtk_play.c:448
 msgid "Hey, no cheating, you're not out yet"
 msgstr ""
 
-#: ../spades/gtk_play.c:522
+#: ../spades/gtk_play.c:489
 msgid "Invalid Bid"
 msgstr ""
 
-#: ../spades/gtk_play.c:526
+#: ../spades/gtk_play.c:493
 msgid "Your team must bid at least the minimum"
 msgstr ""
 
-#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
-#: ../common/dlg_players.c:282
-msgid "Close"
+#: ../common/dlg_chat.c:159
+msgid "Player Chat"
 msgstr ""
 
-#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
-msgid "Player List"
-msgstr ""
-
-#: ../common/dlg_exit.c:53
+#: ../common/dlg_exit.c:56
 msgid "Are you sure you want to exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:55
+#: ../common/dlg_exit.c:58
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
 
-#: ../common/dlg_exit.c:63
+#: ../common/dlg_exit.c:62 ../common/dlg_exit.c:67
 msgid "Really Exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:79
-msgid "Exit"
-msgstr ""
-
-#: ../common/dlg_players.c:102
+#: ../common/dlg_players.c:120
 msgid "Occupied"
 msgstr ""
 
-#: ../common/dlg_players.c:106
+#: ../common/dlg_players.c:124
 msgid "Empty"
 msgstr ""
 
-#: ../common/dlg_players.c:110
+#: ../common/dlg_players.c:128
 msgid "Bot"
 msgstr ""
 
-#: ../common/dlg_players.c:114
+#: ../common/dlg_players.c:132
 msgid "Reserved"
 msgstr ""
 
-#: ../common/dlg_players.c:118
+#: ../common/dlg_players.c:136
 msgid "-"
 msgstr ""
 
-#: ../common/dlg_players.c:140
+#: ../common/dlg_players.c:166
 msgid "Spectator"
 msgstr ""
 
-#: ../common/dlg_players.c:182
+#: ../common/dlg_players.c:203
 msgid "#"
 msgstr ""
 
-#: ../common/dlg_players.c:190
+#: ../common/dlg_players.c:210
 msgid "Status"
 msgstr ""
 
-#: ../common/dlg_players.c:198
+#: ../common/dlg_players.c:219
 msgid "Name"
 msgstr ""
 
-#: ../common/dlg_players.c:259
+#: ../common/dlg_players.c:261
+msgid "Player List"
+msgstr ""
+
+#: ../common/dlg_players.c:276
 msgid "List of players:"
 msgstr ""
 
-#: ../common/dlg_players.c:416
+#: ../common/dlg_players.c:410
 msgid "Info"
 msgstr ""
 
-#: ../common/dlg_players.c:433
+#: ../common/dlg_players.c:428
 msgid "Boot player"
 msgstr ""
 
-#: ../common/dlg_players.c:452
+#: ../common/dlg_players.c:448
 msgid "Sit here"
 msgstr ""
 
-#: ../common/dlg_players.c:454
+#: ../common/dlg_players.c:450
 msgid "Move here"
 msgstr ""
 
-#: ../common/dlg_players.c:471
+#: ../common/dlg_players.c:468
 msgid "Play with bot"
 msgstr ""
 
-#: ../common/dlg_players.c:487
+#: ../common/dlg_players.c:485
 msgid "Drop reservation"
 msgstr ""
 
-#: ../common/dlg_players.c:489
+#: ../common/dlg_players.c:487
 msgid "Remove bot"
 msgstr ""
 
-#: ../common/ggzintl.c:41
+#: ../common/ggzintl.c:44
 #, c-format
 msgid "nls enabled: %s"
 msgstr ""

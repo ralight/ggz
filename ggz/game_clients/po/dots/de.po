@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Dots 0.1\n"
+"Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 18:38+0200\n"
-"PO-Revision-Date: 2002-04-10 16:46GMT\n"
+"POT-Creation-Date: 2004-12-15 01:09+0100\n"
+"PO-Revision-Date: 2004-12-15 01:09+0100\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -15,72 +15,72 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: ../dots/dlg_main.c:51
+#: ../dots/dlg_main.c:53
 msgid "/_Table"
 msgstr "/_Tisch"
 
-#: ../dots/dlg_main.c:52
+#: ../dots/dlg_main.c:54
 msgid "/Table/Player _list"
 msgstr "/Tisch/Spielerliste"
 
-#: ../dots/dlg_main.c:54
+#: ../dots/dlg_main.c:56
 msgid "/Table/_Sync with server"
 msgstr "/Tisch/_Synchronisieren"
 
-#: ../dots/dlg_main.c:55
+#: ../dots/dlg_main.c:57
 msgid "/Table/E_xit"
 msgstr "/Tisch/_Verlassen"
 
-#: ../dots/dlg_main.c:56
+#: ../dots/dlg_main.c:59
 msgid "/_Options"
 msgstr "/_Optionen"
 
-#: ../dots/dlg_main.c:57
+#: ../dots/dlg_main.c:60
 msgid "/Options/_Preferences"
 msgstr "/Optionen/_Persönliche Einstellungen"
 
-#: ../dots/dlg_main.c:59
+#: ../dots/dlg_main.c:63
 msgid "/_Help"
 msgstr "/_Hilfe"
 
-#: ../dots/dlg_main.c:60
+#: ../dots/dlg_main.c:64
 msgid "/Help/_About"
 msgstr "/Hilfe/_Über"
 
-#: ../dots/dlg_main.c:71
+#: ../dots/dlg_main.c:77
 msgid "<main>/Table/Sync with server"
 msgstr "<main>/Tisch/Synchronisieren"
 
-#: ../dots/dlg_main.c:121
+#: ../dots/dlg_main.c:126
 msgid "_Game"
 msgstr "_Spiel"
 
-#: ../dots/dlg_main.c:139
+#: ../dots/dlg_main.c:147
 msgid "E_xit"
 msgstr "_Verlassen"
 
-#: ../dots/dlg_main.c:150
+#: ../dots/dlg_main.c:159
 msgid "_Settings"
 msgstr "_Einstellungen"
 
-#: ../dots/dlg_main.c:168
+#: ../dots/dlg_main.c:183
 msgid "_Preferences"
 msgstr "_Persönliche Einstellungen"
 
-#: ../dots/dlg_main.c:179
+#: ../dots/dlg_main.c:198
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ../dots/dlg_main.c:198
+#: ../dots/dlg_main.c:220
 msgid "_About"
 msgstr "_Über"
 
-#: ../dots/dlg_main.c:247 ../dots/dlg_main.c:277 ../dots/main.c:278
-#: ../dots/main.c:279
+#: ../dots/dlg_main.c:272 ../dots/dlg_main.c:305 ../dots/main.c:263
+#: ../dots/main.c:264
 msgid "No Score"
 msgstr "Keine Punktzahl"
 
-#: ../dots/dlg_main.c:254
+#: ../dots/dlg_main.c:280
 msgid "Opponent"
 msgstr "Gegner"
 
@@ -100,11 +100,11 @@ msgstr "SCR zu SCR"
 msgid "Play another game?"
 msgstr "Ein weiteres Spiel spielen?"
 
-#: ../dots/dlg_new.c:110
+#: ../dots/dlg_new.c:113
 msgid "     Yes     "
 msgstr "     Ja      "
 
-#: ../dots/dlg_new.c:117
+#: ../dots/dlg_new.c:121
 msgid "     No     "
 msgstr "    Nein    "
 
@@ -120,77 +120,77 @@ msgstr "Anzahl der Quadrate "
 msgid "Vertical"
 msgstr "Vertikal"
 
-#: ../dots/dlg_opt.c:118
+#: ../dots/dlg_opt.c:120
 msgid "Horizontal"
 msgstr "Horizontal"
 
-#: ../dots/dlg_pref.c:68
+#: ../dots/dlg_pref.c:70
 msgid "Dots - Color Preferences"
 msgstr "Dots - Farbeinstellungen"
 
-#: ../dots/dlg_pref.c:76
+#: ../dots/dlg_pref.c:79
 msgid "Click a colorspot to change"
 msgstr "Klick auf einen Farbpunkt um zu wechseln"
 
-#: ../dots/dlg_pref.c:93
+#: ../dots/dlg_pref.c:96
 msgid "Foreground Color"
 msgstr "Vordergrundfarbe"
 
-#: ../dots/dlg_pref.c:115
+#: ../dots/dlg_pref.c:119
 msgid "Player One Color"
 msgstr "Farbe von Spieler 1"
 
-#: ../dots/dlg_pref.c:125
+#: ../dots/dlg_pref.c:129
 msgid "Player Two Color"
 msgstr "Farbe von Spieler 2"
 
-#: ../dots/dlg_pref.c:171
+#: ../dots/dlg_pref.c:178
 msgid "Background Color"
 msgstr "Hintergrundfarbe"
 
-#: ../dots/dlg_pref.c:215
+#: ../dots/dlg_pref.c:225
 msgid "OK"
 msgstr "OK"
 
-#: ../dots/dlg_pref.c:224
+#: ../dots/dlg_pref.c:235
 msgid "Apply"
 msgstr "Anwenden"
 
-#: ../dots/dlg_pref.c:233 ../common/dlg_exit.c:80
+#: ../dots/dlg_pref.c:245
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: ../dots/game.c:189
+#: ../dots/game.c:160
 msgid "Waiting for server"
 msgstr "Warte auf den Server"
 
-#: ../dots/game.c:214
+#: ../dots/game.c:184
 msgid "Wait for your turn to move"
 msgstr "Warte auf deinen Zug"
 
-#: ../dots/game.c:254 ../dots/game.c:281
+#: ../dots/game.c:222 ../dots/game.c:247
 msgid "Lost server connection"
 msgstr "Verbindung zum Server verloren"
 
-#: ../dots/game.c:293
+#: ../dots/game.c:255
 msgid "Waiting for "
 msgstr "Warte auf "
 
-#: ../dots/game.c:300
+#: ../dots/game.c:262
 msgid "Waiting for server response"
 msgstr "Warte auf Antwort des Servers"
 
-#: ../dots/game.c:363 ../dots/game.c:366 ../dots/game.c:473 ../dots/game.c:476
-#: ../dots/main.c:408 ../dots/main.c:411
+#: ../dots/game.c:325 ../dots/game.c:328 ../dots/game.c:422 ../dots/game.c:425
+#: ../dots/main.c:399 ../dots/main.c:402
 #, c-format
 msgid "Score = %d"
 msgstr "Punktzahl = %d"
 
-#: ../dots/game.c:519
+#: ../dots/game.c:464
 msgid "Game Messages"
 msgstr "Spiel-Mitteilungen"
 
-#: ../dots/main.c:164
+#: ../dots/main.c:144
 msgid ""
 "Authors:\n"
 "        Gtk+ Client:\n"
@@ -218,82 +218,79 @@ msgstr ""
 "Webseite:\n"
 "        http://www.ggzgamingzone.org/games/dots/"
 
-#: ../dots/main.c:177
+#: ../dots/main.c:157
 #, c-format
 msgid ""
 "GGZ Gaming Zone\n"
 "Connect The Dots Version %s"
 msgstr ""
+"GGZ Gaming Zone\n"
+"Punkte Verbinden Version %s"
 
-#: ../dots/main.c:179
+#: ../dots/main.c:160
 msgid "About Connect the Dots"
-msgstr "Ueber Connect the Dots"
+msgstr "Über Punkte Verbinden"
 
-#: ../dots/main.c:334
+#: ../dots/main.c:323
 #, c-format
 msgid "%s joined the table"
 msgstr "%s ist hinzugekommen"
 
-#: ../dots/main.c:340
+#: ../dots/main.c:330
 msgid "Empty Seat"
 msgstr "Leerer Platz"
 
-#: ../dots/main.c:342
+#: ../dots/main.c:333
 #, c-format
 msgid "%s left the table"
 msgstr "%s ist gegangen"
 
-#: ../dots/main.c:373
+#: ../dots/main.c:364
 msgid "Client cheater!"
 msgstr "Client schummelt!"
 
-#: ../dots/main.c:435
+#: ../dots/main.c:426
 msgid "Game over, you beat "
 msgstr "Das Spiel ist vorbei, du besiegst "
 
-#: ../dots/main.c:439
+#: ../dots/main.c:431
 msgid "You beat "
 msgstr "Du schlägst "
 
-#: ../dots/main.c:441
+#: ../dots/main.c:434
 msgid "Game over, "
 msgstr "Spiel vorbei, "
 
-#: ../dots/main.c:442
+#: ../dots/main.c:435
 msgid " won :("
 msgstr " hat gewonnen :("
 
-#: ../dots/main.c:445
+#: ../dots/main.c:440
 msgid "You lost to "
 msgstr "Du wurdest bezwungen von "
 
-#: ../dots/main.c:448
+#: ../dots/main.c:443
 msgid "Game over, you tied with "
 msgstr "Spiel vorbei, es gibt keinen Sieger, du bist gleichauf mit "
 
-#: ../dots/main.c:452
+#: ../dots/main.c:448
 msgid "You tied with "
 msgstr "Du liegt gleichauf mit "
 
-#: ../dots/main.c:457
+#: ../dots/main.c:453
 #, c-format
 msgid "%d to %d."
 msgstr "%d zu %d."
 
-#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
-#: ../common/dlg_players.c:282
-msgid "Close"
-msgstr "Schließen"
+#: ../common/dlg_chat.c:159
+msgid "Player Chat"
+msgstr "Spielerkommunikation"
 
-#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
-msgid "Player List"
-msgstr "Spielerliste"
-
-#: ../common/dlg_exit.c:53
+#: ../common/dlg_exit.c:56
 msgid "Are you sure you want to exit?"
 msgstr "Bist du sicher daß du beenden willst?"
 
-#: ../common/dlg_exit.c:55
+#: ../common/dlg_exit.c:58
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
@@ -301,83 +298,89 @@ msgstr ""
 "Bist du sicher daß du beenden willst?\n"
 "Du wirst nicht wieder mitspielen können."
 
-#: ../common/dlg_exit.c:63
+#: ../common/dlg_exit.c:62 ../common/dlg_exit.c:67
 msgid "Really Exit?"
 msgstr "Wirklich beenden?"
 
-#: ../common/dlg_exit.c:79
-msgid "Exit"
-msgstr "Verlassen"
-
-#: ../common/dlg_players.c:102
+#: ../common/dlg_players.c:120
 msgid "Occupied"
 msgstr "Besetzt"
 
-#: ../common/dlg_players.c:106
+#: ../common/dlg_players.c:124
 msgid "Empty"
 msgstr "Leer"
 
-#: ../common/dlg_players.c:110
+#: ../common/dlg_players.c:128
 msgid "Bot"
 msgstr "Bot"
 
-#: ../common/dlg_players.c:114
+#: ../common/dlg_players.c:132
 msgid "Reserved"
 msgstr "Reserviert"
 
-#: ../common/dlg_players.c:118
+#: ../common/dlg_players.c:136
 msgid "-"
 msgstr "-"
 
-#: ../common/dlg_players.c:140
+#: ../common/dlg_players.c:166
 msgid "Spectator"
 msgstr "Zuschauer"
 
-#: ../common/dlg_players.c:182
+#: ../common/dlg_players.c:203
 msgid "#"
 msgstr "#"
 
-#: ../common/dlg_players.c:190
+#: ../common/dlg_players.c:210
 msgid "Status"
 msgstr "Status"
 
-#: ../common/dlg_players.c:198
+#: ../common/dlg_players.c:219
 msgid "Name"
 msgstr "Name"
 
-#: ../common/dlg_players.c:259
+#: ../common/dlg_players.c:261
+msgid "Player List"
+msgstr "Spielerliste"
+
+#: ../common/dlg_players.c:276
 msgid "List of players:"
 msgstr "Liste der Spieler:"
 
-#: ../common/dlg_players.c:416
+#: ../common/dlg_players.c:410
 msgid "Info"
 msgstr "Info"
 
-#: ../common/dlg_players.c:433
+#: ../common/dlg_players.c:428
 msgid "Boot player"
 msgstr "Spieler rauswerfen"
 
-#: ../common/dlg_players.c:452
+#: ../common/dlg_players.c:448
 msgid "Sit here"
 msgstr "Hinsetzen"
 
-#: ../common/dlg_players.c:454
+#: ../common/dlg_players.c:450
 msgid "Move here"
 msgstr "Hierher bewegen"
 
-#: ../common/dlg_players.c:471
+#: ../common/dlg_players.c:468
 msgid "Play with bot"
 msgstr "Mit Bot spielen"
 
-#: ../common/dlg_players.c:487
+#: ../common/dlg_players.c:485
 msgid "Drop reservation"
 msgstr "Reservierung aufheben"
 
-#: ../common/dlg_players.c:489
+#: ../common/dlg_players.c:487
 msgid "Remove bot"
 msgstr "Bot entfernen"
 
-#: ../common/ggzintl.c:41
+#: ../common/ggzintl.c:44
 #, c-format
 msgid "nls enabled: %s"
 msgstr "NLS: %s"
+
+#~ msgid "Close"
+#~ msgstr "Schließen"
+
+#~ msgid "Exit"
+#~ msgstr "Verlassen"

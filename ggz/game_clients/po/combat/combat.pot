@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 18:38+0200\n"
+"POT-Creation-Date: 2004-12-15 01:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,100 +16,114 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../combat/callbacks.c:199
+#: ../combat/callbacks.c:200
 msgid "<main>/Game/Remember enemy units"
 msgstr ""
 
-#: ../combat/dlg_options.c:119
+#: ../combat/callbacks.c:220
+msgid ""
+"You are cheating. This is really bad!\n"
+"Please take a moment to think of your opponent.\n"
+"Does he know what you are doing?\n"
+"\n"
+"\n"
+"So, are you sure you want to do it?"
+msgstr ""
+
+#: ../combat/dlg_options.c:216
+msgid "Stored Maps"
+msgstr ""
+
+#: ../combat/dlg_options.c:321
 msgid "Game options"
 msgstr ""
 
-#: ../combat/dlg_options.c:170
+#: ../combat/dlg_options.c:375
 msgid "Height: "
 msgstr ""
 
-#: ../combat/dlg_options.c:202
+#: ../combat/dlg_options.c:407
 msgid "Width: "
 msgstr ""
 
-#: ../combat/dlg_options.c:220
+#: ../combat/dlg_options.c:428
 msgid "Open"
 msgstr ""
 
-#: ../combat/dlg_options.c:231
+#: ../combat/dlg_options.c:442
 msgid "Lake"
 msgstr ""
 
-#: ../combat/dlg_options.c:241
+#: ../combat/dlg_options.c:455
 msgid "Black"
 msgstr ""
 
-#: ../combat/dlg_options.c:251
+#: ../combat/dlg_options.c:468
 msgid "Player 1"
 msgstr ""
 
-#: ../combat/dlg_options.c:261
+#: ../combat/dlg_options.c:482
 msgid "Player 2"
 msgstr ""
 
-#: ../combat/dlg_options.c:271
+#: ../combat/dlg_options.c:494
 msgid "Terrain"
 msgstr ""
 
-#: ../combat/dlg_options.c:287
+#: ../combat/dlg_options.c:514
 msgid "Army"
 msgstr ""
 
-#: ../combat/dlg_options.c:314
+#: ../combat/dlg_options.c:548
 msgid "If set, the bombs who explode will be removed from the game."
 msgstr ""
 
-#: ../combat/dlg_options.c:316
+#: ../combat/dlg_options.c:551
 msgid "One Time Bomb"
 msgstr ""
 
-#: ../combat/dlg_options.c:334
+#: ../combat/dlg_options.c:573
 msgid ""
 "If set, the spy will be able to kill any unit he attacks (except bombs), but "
 "he will die with the unit (think of it like a terrorist, with a body full of "
 "bombs)"
 msgstr ""
 
-#: ../combat/dlg_options.c:336
+#: ../combat/dlg_options.c:576
 msgid "Terrorist Spy"
 msgstr ""
 
-#: ../combat/dlg_options.c:354
+#: ../combat/dlg_options.c:598
 msgid ""
 "If set, the bombs can walk, just like regular officers. But they aren't able "
 "to attack! (think of it like a officer carrying a bomb)"
 msgstr ""
 
-#: ../combat/dlg_options.c:356
+#: ../combat/dlg_options.c:601
 msgid "Moving Bombs"
 msgstr ""
 
-#: ../combat/dlg_options.c:374
+#: ../combat/dlg_options.c:623
 msgid ""
 "If set, scouts are able to walk more then one square at a time and attack at "
 "the same turn."
 msgstr ""
 
-#: ../combat/dlg_options.c:376
+#: ../combat/dlg_options.c:626
 msgid "Super Scout"
 msgstr ""
 
-#: ../combat/dlg_options.c:394
+#: ../combat/dlg_options.c:648
 msgid ""
 "If set, the flags will be able to walk, just like a regular unit (think of "
 "it like a officer carrying a flag)"
 msgstr ""
 
-#: ../combat/dlg_options.c:396
+#: ../combat/dlg_options.c:651
 msgid "Moving Flags"
 msgstr ""
 
-#: ../combat/dlg_options.c:414
+#: ../combat/dlg_options.c:673
 msgid ""
 "If set, the outcome of attacks will be solved randomly. Spies and bombs are "
 "treated the normal way. The odds depend on the difference between the power "
@@ -118,59 +132,59 @@ msgid ""
 "35/39, 2: 41/37, 3: 49/33, 4: 56/29, 5: 64/24, 6: 71/20, 7: 77/15, 8: 84/11"
 msgstr ""
 
-#: ../combat/dlg_options.c:416
+#: ../combat/dlg_options.c:678
 msgid "Random outcome of attacks"
 msgstr ""
 
-#: ../combat/dlg_options.c:434
+#: ../combat/dlg_options.c:700
 msgid ""
 "If set, units will be able to move (and attack) diagonally. (Scouts will be "
 "able of walking how many squares as they want diagonally)"
 msgstr ""
 
-#: ../combat/dlg_options.c:436
+#: ../combat/dlg_options.c:704
 msgid "Allow diagonal moves"
 msgstr ""
 
-#: ../combat/dlg_options.c:454
+#: ../combat/dlg_options.c:726
 msgid "If set, the type of the winning unit in a attack will not be shown."
 msgstr ""
 
-#: ../combat/dlg_options.c:456
+#: ../combat/dlg_options.c:729
 msgid "Unknow Victor"
 msgstr ""
 
-#: ../combat/dlg_options.c:474
+#: ../combat/dlg_options.c:751
 msgid ""
 "If set, the defense won't have to reveal what is his type, only wheter he "
 "wins or loses to the attacking unit."
 msgstr ""
 
-#: ../combat/dlg_options.c:476
+#: ../combat/dlg_options.c:754
 msgid "Silent Defense"
 msgstr ""
 
-#: ../combat/dlg_options.c:494
+#: ../combat/dlg_options.c:776
 msgid ""
 "If set, the attacking won't have to reveal it's type, only wheter it wins or "
 "loses to the defending unit."
 msgstr ""
 
-#: ../combat/dlg_options.c:496
+#: ../combat/dlg_options.c:780
 msgid "Silent Offense"
 msgstr ""
 
-#: ../combat/dlg_options.c:514
+#: ../combat/dlg_options.c:802
 msgid ""
 "If set, the players won't be able to setup their units. It will be randomly "
 "set up by the server."
 msgstr ""
 
-#: ../combat/dlg_options.c:516
+#: ../combat/dlg_options.c:805
 msgid "Random Setup"
 msgstr ""
 
-#: ../combat/dlg_options.c:534
+#: ../combat/dlg_options.c:827
 msgid ""
 "If set, the sergeant of all the teams will have been through a higly "
 "rigorous training, and will be able to walk through lakes. It won't be able "
@@ -179,11 +193,11 @@ msgid ""
 "tiles between the source and the destination)"
 msgstr ""
 
-#: ../combat/dlg_options.c:536
+#: ../combat/dlg_options.c:831
 msgid "Special Forces Sergeant"
 msgstr ""
 
-#: ../combat/dlg_options.c:554
+#: ../combat/dlg_options.c:853
 msgid ""
 "If set, the units will be able to do a rush attack, when they walk how many "
 "tiles as they want (in a straight line, just like a scout) and then attack "
@@ -191,11 +205,11 @@ msgid ""
 "if they succeed doing it."
 msgstr ""
 
-#: ../combat/dlg_options.c:556
+#: ../combat/dlg_options.c:856
 msgid "Rush Attack"
 msgstr ""
 
-#: ../combat/dlg_options.c:574
+#: ../combat/dlg_options.c:878
 msgid ""
 "If set, the players won't be able to see the remaining units for the "
 "opponent, ie, they won't know how many units of each type their opponent has "
@@ -203,11 +217,11 @@ msgid ""
 "just use it against trusted opponents."
 msgstr ""
 
-#: ../combat/dlg_options.c:576
+#: ../combat/dlg_options.c:882
 msgid "Hide enemy's unit list"
 msgstr ""
 
-#: ../combat/dlg_options.c:594
+#: ../combat/dlg_options.c:904
 msgid ""
 "If set, the server will ask the clients to show the enemy units for just one "
 "turn (right after a attack, for instance). However, it can't be enforceable, "
@@ -215,111 +229,119 @@ msgid ""
 "(just the ones that the server tells them, like after an attack)"
 msgstr ""
 
-#: ../combat/dlg_options.c:596
+#: ../combat/dlg_options.c:908
 msgid "Forget enemy units"
 msgstr ""
 
-#: ../combat/dlg_options.c:615
+#: ../combat/dlg_options.c:932
 msgid "If set, all the units will be shown to both players"
 msgstr ""
 
-#: ../combat/dlg_options.c:617
+#: ../combat/dlg_options.c:935
 msgid "Open Map"
 msgstr ""
 
-#: ../combat/dlg_options.c:628
+#: ../combat/dlg_options.c:947
 msgid "Options"
 msgstr ""
 
-#: ../combat/dlg_options.c:665
-msgid "Stored Maps"
-msgstr ""
-
-#: ../combat/dlg_options.c:741
+#: ../combat/dlg_options.c:1056
 msgid "Map Preview"
 msgstr ""
 
-#: ../combat/dlg_options.c:760
+#: ../combat/dlg_options.c:1077
 msgid "Load"
 msgstr ""
 
-#: ../combat/dlg_options.c:769
+#: ../combat/dlg_options.c:1086
 msgid "Save"
 msgstr ""
 
-#: ../combat/dlg_options.c:778
+#: ../combat/dlg_options.c:1095
 msgid "Delete"
 msgstr ""
 
-#: ../combat/dlg_options.c:787
+#: ../combat/dlg_options.c:1104
 msgid "Maps"
 msgstr ""
 
-#: ../combat/dlg_options.c:810
+#: ../combat/dlg_options.c:1134
 msgid "Start Game"
 msgstr ""
 
-#: ../combat/dlg_options.c:819 ../common/dlg_exit.c:80
+#: ../combat/dlg_options.c:1144
 msgid "Cancel"
 msgstr ""
 
-#: ../combat/dlg_options.c:1150
+#: ../combat/dlg_options.c:1473
 msgid "Save Map?"
 msgstr ""
 
-#: ../combat/dlg_options.c:1167
+#: ../combat/dlg_options.c:1491
 msgid "Save map as:"
 msgstr ""
 
-#: ../combat/dlg_options.c:1199
+#: ../combat/dlg_options.c:1526
 msgid "Yep"
 msgstr ""
 
-#: ../combat/dlg_options.c:1208
+#: ../combat/dlg_options.c:1535
 msgid "Nope"
 msgstr ""
 
-#: ../combat/game.c:117
+#: ../combat/game.c:124
 msgid "<main>/Game/Save current map"
 msgstr ""
 
-#: ../combat/game.c:118
+#: ../combat/game.c:126
 msgid "<main>/Game/Show game options"
 msgstr ""
 
-#: ../combat/interface.c:29
+#: ../combat/gtk_player_info.c:56 ../common/dlg_players.c:219
+msgid "Name"
+msgstr ""
+
+#: ../combat/gtk_player_info.c:63
+msgid "Number"
+msgstr ""
+
+#: ../combat/gtk_player_info.c:70
+msgid "Power"
+msgstr ""
+
+#: ../combat/interface.c:48
 msgid "/_Game"
 msgstr ""
 
-#: ../combat/interface.c:30
+#: ../combat/interface.c:49
 msgid "/Game/S_ave current map"
 msgstr ""
 
-#: ../combat/interface.c:32
+#: ../combat/interface.c:51
 msgid "/Game/_Remember enemy units"
 msgstr ""
 
-#: ../combat/interface.c:34
+#: ../combat/interface.c:53
 msgid "/Game/_Show game options"
 msgstr ""
 
-#: ../combat/interface.c:78
+#: ../combat/interface.c:97
 msgid "Combat"
 msgstr ""
 
-#: ../combat/interface.c:134
+#: ../combat/interface.c:154
 msgid "_Send Setup"
 msgstr ""
 
-#: ../combat/main.c:155
+#: ../combat/main.c:138
 msgid "About Combat"
 msgstr ""
 
-#: ../combat/main.c:156
+#: ../combat/main.c:139
 msgid "Combat, a stratego (tm) game for GGZ"
 msgstr ""
 
-#: ../combat/main.c:157
+#: ../combat/main.c:140
 msgid ""
 "Author:\n"
 "Ismael Orenstein\n"
@@ -334,112 +356,103 @@ msgid ""
 "http://www.inficad.com/~ecollins/stratego/"
 msgstr ""
 
-#: ../combat/support.c:121
+#: ../combat/support.c:84
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: ../combat/support.c:130
+#: ../combat/support.c:90
 #, c-format
 msgid "Error loading pixmap file: %s"
 msgstr ""
 
-#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
-#: ../common/dlg_players.c:282
-msgid "Close"
+#: ../common/dlg_chat.c:159
+msgid "Player Chat"
 msgstr ""
 
-#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
-msgid "Player List"
-msgstr ""
-
-#: ../common/dlg_exit.c:53
+#: ../common/dlg_exit.c:56
 msgid "Are you sure you want to exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:55
+#: ../common/dlg_exit.c:58
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
 
-#: ../common/dlg_exit.c:63
+#: ../common/dlg_exit.c:62 ../common/dlg_exit.c:67
 msgid "Really Exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:79
-msgid "Exit"
-msgstr ""
-
-#: ../common/dlg_players.c:102
+#: ../common/dlg_players.c:120
 msgid "Occupied"
 msgstr ""
 
-#: ../common/dlg_players.c:106
+#: ../common/dlg_players.c:124
 msgid "Empty"
 msgstr ""
 
-#: ../common/dlg_players.c:110
+#: ../common/dlg_players.c:128
 msgid "Bot"
 msgstr ""
 
-#: ../common/dlg_players.c:114
+#: ../common/dlg_players.c:132
 msgid "Reserved"
 msgstr ""
 
-#: ../common/dlg_players.c:118
+#: ../common/dlg_players.c:136
 msgid "-"
 msgstr ""
 
-#: ../common/dlg_players.c:140
+#: ../common/dlg_players.c:166
 msgid "Spectator"
 msgstr ""
 
-#: ../common/dlg_players.c:182
+#: ../common/dlg_players.c:203
 msgid "#"
 msgstr ""
 
-#: ../common/dlg_players.c:190
+#: ../common/dlg_players.c:210
 msgid "Status"
 msgstr ""
 
-#: ../common/dlg_players.c:198
-msgid "Name"
+#: ../common/dlg_players.c:261
+msgid "Player List"
 msgstr ""
 
-#: ../common/dlg_players.c:259
+#: ../common/dlg_players.c:276
 msgid "List of players:"
 msgstr ""
 
-#: ../common/dlg_players.c:416
+#: ../common/dlg_players.c:410
 msgid "Info"
 msgstr ""
 
-#: ../common/dlg_players.c:433
+#: ../common/dlg_players.c:428
 msgid "Boot player"
 msgstr ""
 
-#: ../common/dlg_players.c:452
+#: ../common/dlg_players.c:448
 msgid "Sit here"
 msgstr ""
 
-#: ../common/dlg_players.c:454
+#: ../common/dlg_players.c:450
 msgid "Move here"
 msgstr ""
 
-#: ../common/dlg_players.c:471
+#: ../common/dlg_players.c:468
 msgid "Play with bot"
 msgstr ""
 
-#: ../common/dlg_players.c:487
+#: ../common/dlg_players.c:485
 msgid "Drop reservation"
 msgstr ""
 
-#: ../common/dlg_players.c:489
+#: ../common/dlg_players.c:487
 msgid "Remove bot"
 msgstr ""
 
-#: ../common/ggzintl.c:41
+#: ../common/ggzintl.c:44
 #, c-format
 msgid "nls enabled: %s"
 msgstr ""
