@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4465 2002-09-08 06:34:27Z jdorje $
+ * $Id: net.c 4497 2002-09-09 10:28:33Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -138,11 +138,13 @@ static int _net_send_login_normal_status(GGZNetIO *net, char status);
 static int _net_send_login_anon_status(GGZNetIO *net, char status);
 static int _net_send_login_new_status(GGZNetIO *net, char status, char *password);
 static int _net_send_table_status(GGZNetIO *net, GGZTable *table);
-static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int num);
-static int _net_send_table_spectator(GGZNetIO *net, GGZTable *table, int num);
+static int _net_send_table_seat(GGZNetIO *net, GGZTable *table,
+				GGZTableSeat *seat);
+static int _net_send_table_spectator(GGZNetIO *net, GGZTable *table,
+				     GGZTableSpectator *spectator);
 static int _net_send_table_desc(GGZNetIO *net, GGZTable *table);
-static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num);
-static int _net_send_spectator(GGZNetIO *net, GGZTable *table, int num);
+static int _net_send_seat(GGZNetIO *net, GGZTableSeat *seat);
+static int _net_send_spectator(GGZNetIO *net, GGZTableSpectator *spectator);
 static int _net_send_line(GGZNetIO *net, char *line, ...)
 			  ggz__attribute((format(printf, 2, 3)));
 
@@ -502,8 +504,14 @@ int net_send_table(GGZNetIO *net, GGZTable *table)
 
 	_net_send_line(net, "<DESC>%s</DESC>", table->desc);
 	
-	for (i = 0; i < seats_num(table); i++)
-		_net_send_seat(net, table, i);
+	for (i = 0; i < seats_num(table); i++) {
+		GGZTableSeat seat = {index: i,
+				     type:  table->seat_types[i]};
+		strncpy(seat.name, table->seat_names[i], MAX_USER_NAME_LEN+1);
+		_net_send_seat(net, &seat);
+	}
+
+	/* FIXME: send spectators? */
 	
 	_net_send_line(net, "</TABLE>");
 
@@ -623,7 +631,8 @@ int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 }
 
 
-int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode, GGZTable *table, int seat)
+int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode,
+			  GGZTable *table, void* seat_data)
 {
 	char *action = NULL;
 	int room;
@@ -677,11 +686,11 @@ int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode, GGZTable *table
 	case GGZ_UPDATE_LEAVE:
 	case GGZ_UPDATE_JOIN:
 	case GGZ_UPDATE_SEAT:
-		_net_send_table_seat(net, table, seat);
+		_net_send_table_seat(net, table, seat_data);
 		break;
 	case GGZ_UPDATE_SPECTATOR_JOIN:
 	case GGZ_UPDATE_SPECTATOR_LEAVE:
-		_net_send_table_spectator(net, table, seat);
+		_net_send_table_spectator(net, table, seat_data);
 		break;
 	case GGZ_UPDATE_STATE:
 		_net_send_table_status(net, table);
@@ -1588,22 +1597,24 @@ static char* safe_strdup(char *str)
 }
 
 
-static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int seat)
+static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, 
+				GGZTableSeat *seat)
 {
 	_net_send_line(net, "<TABLE ID='%d' SEATS='%d'>", table->index, 
 		       seats_num(table));
-	_net_send_seat(net, table, seat);
+	_net_send_seat(net, seat);
 	_net_send_line(net, "</TABLE>");
 	
 	return 0;
 }
 
 
-static int _net_send_table_spectator(GGZNetIO *net, GGZTable *table, int spectator)
+static int _net_send_table_spectator(GGZNetIO *net, GGZTable *table, 
+				     GGZTableSpectator *spectator)
 {
-	_net_send_line(net, "<TABLE ID='%d' SPECTATORS='%d'>", table->index,
-		       spectator_seats_num(table));
-	_net_send_spectator(net, table, spectator);
+	_net_send_line(net, "<TABLE ID='%d' SPECTATORS='%d'>",
+		       table->index, table->max_num_spectators);
+	_net_send_spectator(net, spectator);
 	_net_send_line(net, "</TABLE>");
 	
 	return 0;
@@ -1627,21 +1638,15 @@ static int _net_send_table_status(GGZNetIO *net, GGZTable *table)
 }
 
 
-static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
+static int _net_send_seat(GGZNetIO *net, GGZTableSeat *seat)
 {
-	GGZSeatType type = seats_type(table, num);
-	char *type_str = ggz_seattype_to_string(type);
+	char *type_str = ggz_seattype_to_string(seat->type);
 	char *name = NULL;
 
-#if 0
-	/* We should do it this way, since the ggzdmod field doesn't
-	   get correctly initialized we can crash inside it. */
-	name = ggzdmod_get_seat(table->ggzdmod, num).name;
-#else /* #if 0 */
-	switch (type) {
+	switch (seat->type) {
 	case GGZ_SEAT_RESERVED:
 	case GGZ_SEAT_PLAYER:
-		name = table->seat_names[num];
+		name = seat->name;
 		break;
 	case GGZ_SEAT_OPEN:
 	case GGZ_SEAT_BOT:
@@ -1649,26 +1654,22 @@ static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
 		name = NULL;
 		break;
 	}
-#endif /* #if 0 */
 	
 	if (name)
 		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>",
-			       num, type_str, name);
+			       seat->index, type_str, name);
 	else
 		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
-			       num, type_str);
+			       seat->index, type_str);
 
 	return 0;
 }
 
 
-static int _net_send_spectator(GGZNetIO *net, GGZTable *table, int num)
+static int _net_send_spectator(GGZNetIO *net, GGZTableSpectator *spectator)
 {
-	char *name = NULL;
-
-	name = table->spectators[num];
-	
-	_net_send_line(net, "<SPECTATOR NUM='%d'>%s</SPECTATOR>", num, name);
+	_net_send_line(net, "<SPECTATOR NUM='%d'>%s</SPECTATOR>",
+		       spectator->index, spectator->name);
 
 	return 0;
 }

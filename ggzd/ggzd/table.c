@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4476 2002-09-09 00:55:17Z jdorje $
+ * $Id: table.c 4497 2002-09-09 10:28:33Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -144,8 +144,8 @@ GGZTable* table_new(void)
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		table->seat_types[i] = GGZ_SEAT_NONE;
 
-	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		table->spectators[i][0] = 0;
+	table->max_num_spectators = 0;
+	table->spectators = NULL;
 
 	return table;
 }
@@ -878,7 +878,6 @@ static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 static void table_remove(GGZTable* table)
 {
 	int room, count, index, i;
-	int num_spectators;
 
 	/* Disconnect from the game server */
 	(void)ggzdmod_disconnect(table->ggzdmod);
@@ -908,8 +907,7 @@ static void table_remove(GGZTable* table)
 	}
 
 	/* And send them out for spectators also */
-	num_spectators = spectator_seats_num(table);
-	for (i = 0; i < num_spectators; i++) {
+	for (i = 0; i < table->max_num_spectators; i++) {
 		if (table->spectators[i][0] != '\0') {
 			table_update_event_enqueue(table,
 						   GGZ_UPDATE_SPECTATOR_LEAVE,
@@ -921,8 +919,7 @@ static void table_remove(GGZTable* table)
 	}
 
 	/* This effectively destroys the table, and so should come AFTER the
-	   players are removed (otherwise the spectator removal, in particular,
-	   will be broken. */
+	   players are removed. */
 	pthread_rwlock_wrlock(&state.lock);
 	state.tables--;
 	pthread_rwlock_unlock(&state.lock);
@@ -1119,8 +1116,7 @@ int table_find_spectator(int room, int index, char *name)
 	/* grab handle to table (along with write lock) */
 	table = table_lookup(room, index);
 	if(table != NULL) {
-		int spectators  = spectator_seats_num(table);
-		for (i = 0; i < spectators; i++)
+		for (i = 0; i < table->max_num_spectators; i++)
 			if (table->spectators[i]
 			    && strcasecmp(table->spectators[i], name) == 0) {
 				spectator = i;
@@ -1279,11 +1275,12 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
                                                void* data)
 {
 	unsigned char opcode;
-	char* name = NULL;
 	char* current;
 	GGZTable info;
-	int seat_num = -1;
 	GGZPlayer* player;
+	GGZTableSeat seat;
+	GGZTableSpectator spectator;
+	void* update_data = NULL;
 
 	player = (GGZPlayer*)target;
 
@@ -1320,35 +1317,39 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
 
 	case GGZ_UPDATE_LEAVE:
 	case GGZ_UPDATE_JOIN:
-		name = (char*)current;
-		current += (strlen(name) + 1);
-		seat_num = *(int*)current;
+		strcpy(seat.name, current);
+		current += (strlen(seat.name) + 1);
+		seat.index = *(int*)current;
 		current += sizeof(int);
-		info.seat_types[seat_num] = GGZ_SEAT_PLAYER;
-		strcpy(info.seat_names[seat_num], name);
+		seat.type = GGZ_SEAT_PLAYER;
+
+		update_data = &seat;
 
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
-			player->name, name, 
+			player->name, seat.name, 
 			(opcode == GGZ_UPDATE_JOIN ? "join" : "leave"),
-			seat_num, info.index);
+			seat.index, info.index);
 		break;
 
 	case GGZ_UPDATE_SPECTATOR_LEAVE:
 	case GGZ_UPDATE_SPECTATOR_JOIN:
-		name = (char*)current;
-		current += strlen(name) + 1;
-		seat_num = *(int*)current;
+		strcpy(spectator.name, current);
+		current += strlen(spectator.name) + 1;
+		spectator.index = *(int*)current;
 		current += sizeof(int);
-		strcpy(info.spectators[seat_num], name);
 
-		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s spectator seat %d at table %d",
-			player->name, name,
-			(opcode == GGZ_UPDATE_SPECTATOR_JOIN ? "join" : "leave"),
-			seat_num, info.index);
+		update_data = &spectator;
+
+		dbg_msg(GGZ_DBG_UPDATE,
+			"%s sees %s %s spectator seat %d at table %d",
+			player->name, spectator.name,
+			opcode == GGZ_UPDATE_SPECTATOR_JOIN ? "join" : "leave",
+			spectator.index, info.index);
 		break;
 	}
 
-	if (net_send_table_update(player->client->net, opcode, &info, seat_num) < 0)
+	if (net_send_table_update(player->client->net, opcode,
+				  &info, update_data) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
@@ -1365,14 +1366,13 @@ static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
 	struct GGZTableSeat *seat = &(seat_change->seat);
 
 	info.index = seat_change->table;
-	info.seat_types[seat->index] = seat->type;
-	strcpy(info.seat_names[seat->index], seat->name);
 	
 	dbg_msg(GGZ_DBG_UPDATE, "%s sees seat %d change to %s (%s) at table %d", 
 		player->name, seat->index, ggz_seattype_to_string(seat->type),
 		seat->name, info.index);
 
-	if (net_send_table_update(player->client->net, GGZ_UPDATE_SEAT, &info, seat->index) < 0)
+	if (net_send_table_update(player->client->net, GGZ_UPDATE_SEAT,
+				  &info, &seat) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;

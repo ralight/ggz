@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.h 4452 2002-09-08 01:06:03Z jdorje $
+ * $Id: seats.h 4497 2002-09-09 10:28:33Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -32,7 +32,7 @@
 
 
 /* Seat structure */
-struct GGZTableSeat {
+typedef struct GGZTableSeat {
 
 	/* Seat index */
 	int index;
@@ -45,10 +45,10 @@ struct GGZTableSeat {
 
 	/* File descriptor */
 	int fd;
-};
+} GGZTableSeat;
 
 /* Spectator structure */
-struct GGZTableSpectator {
+typedef struct GGZTableSpectator {
 	/* Spectator index */
 	int index;
 
@@ -57,7 +57,7 @@ struct GGZTableSpectator {
 
 	/* File descriptor */
 	int fd;
-};
+} GGZTableSpectator;
 
 #define GGZ_SEATNUM_ANY -1
 

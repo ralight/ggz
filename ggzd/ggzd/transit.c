@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4475 2002-09-09 00:51:25Z jdorje $
+ * $Id: transit.c 4497 2002-09-09 10:28:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -227,7 +227,9 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 		spectator->name, spectator->fd);
 
 	action = GGZ_TRANSIT_JOIN_SPECTATOR;
-	if (spectator->index >= 0 && table->spectators[spectator->index][0])
+	if (spectator->index >= 0
+	    && spectator->index < table->max_num_spectators
+	    && table->spectators[spectator->index][0])
 		action = GGZ_TRANSIT_LEAVE_SPECTATOR;
 
 
@@ -452,13 +454,31 @@ static int transit_find_seat(GGZTable *table, char *name)
 
 static int transit_find_spectator(GGZTable *table, char *name)
 {
-	int i, num_spectators = spectator_seats_num(table);
+	int i, allow_spectators, old, new;
 
-	/* If that failed, look for first open spectator. */
-	for (i = 0; i < num_spectators; i++)
+	/* Look for first open spectator. */
+	for (i = 0; i < table->max_num_spectators; i++)
 		if (!table->spectators[i][0])
 			return i;
 
-	return -1;
+	/* If that failed, see if we allow specators here. */
+	pthread_rwlock_rdlock(&game_types[table->type].lock);
+	allow_spectators = game_types[table->type].allow_spectators;
+	pthread_rwlock_unlock(&game_types[table->type].lock);
+
+	/* If spectators aren't allowed, then don't allow one. */
+	if (!allow_spectators)
+		return -1;
+
+	/* Otherwise increase the size of the spectator array. */
+	old = table->max_num_spectators;
+	new = old ? old * 2 : 1;
+	table->spectators = realloc(table->spectators,
+				    new * sizeof(*table->spectators));
+	for (i = old; i < new; i++)
+		table->spectators[i][0] = '\0';
+	table->max_num_spectators = new;
+
+	return old;
 }
 
