@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/8/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.h 4553 2002-09-13 17:39:35Z jdorje $
+ * $Id: event.h 4589 2002-09-16 22:33:35Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -57,34 +57,7 @@ typedef GGZEventFuncReturn (*GGZEventFunc)(void* target,
 typedef void (*GGZEventDataFree)(void* data);
 
 
-/* 
- * The GGZEvent structure is meant to be a node in a linked list
- * of events.
- */
-typedef struct GGZEvent {
-
-	/* Pointer to next node in the linked list */
-	struct GGZEvent *next;
-
-	/* 
-	 * Reference count for this event.  When refcount reaches 0,
-	 * typically the event will be removed from the list.  
-	 */
-	unsigned int ref_count;
-
-	/* Size of event data (in bytes) */
-	size_t size;
-
-	/* Pointer to data for event */
-	void *data;
-
-	/* Function to free the event data. */
-	GGZEventDataFree free;
-	
-	/* Callback for processing event */
-	GGZEventFunc handle;
-
-} GGZEvent;
+typedef struct GGZEvent GGZEvent;
 
 
 /*
