@@ -19,12 +19,14 @@ fi
 dnl Check for standard build environment
 dnl ====================================
 AC_PROG_CC
+AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_CPP
+AM_PROG_LIBTOOL
 AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
+#AC_PROG_RANLIB
 
 
 dnl Compiling Options
@@ -258,6 +260,9 @@ AC_OUTPUT([Makefile
      game_servers/chess/Makefile
      game_servers/chess/libcgc/Makefile
 	   game_servers/chinese-checkers/Makefile
+		game_servers/krosswater/Makefile
+		game_servers/krosswater/stackpath/Makefile
+		game_servers/krosswater/zoneserver/Makefile
 	   ])
 
 
