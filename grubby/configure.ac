@@ -73,9 +73,9 @@ fi
 if test "$enable_ruby" = yes; then
 	echo -n "Extra check: ruby... "
 
-	incs=`ruby -r rbconfig -e 'printf("%s", Config::CONFIG@<:@"archdir"@:>@)'`
-	libs=`ruby -r rbconfig -e 'printf("%s", Config::CONFIG@<:@"libdir"@:>@)'`
-	rver=`ruby -r rbconfig -e 'printf("%s", Config::CONFIG@<:@"ruby_install_name"@:>@)'`
+	incs=`ruby -r rbconfig -e 'printf("%s", Config::CONFIG@<:@"archdir"@:>@)' 2>/dev/null`
+	libs=`ruby -r rbconfig -e 'printf("%s", Config::CONFIG@<:@"libdir"@:>@)' 2>/dev/null`
+	rver=`ruby -r rbconfig -e 'printf("%s", Config::CONFIG@<:@"ruby_install_name"@:>@)' 2>/dev/null`
 
 	AC_GGZ_FIND_FILE("ruby.h", $incs, ruby_incdir)
 	ruby_includes="$ruby_incdir"
