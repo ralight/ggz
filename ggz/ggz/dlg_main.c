@@ -630,11 +630,11 @@ void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
         }
                         
         if (strcmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "") != 0
-            && es_write_int(connection.sock, REQ_CHAT) > 0)
+            && es_write_int(connection.sock, REQ_CHAT) == 0)
                         
                 es_write_string(connection.sock,
                                 gtk_entry_get_text(GTK_ENTRY(user_data)));
-                        
+        
         gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }
                         
