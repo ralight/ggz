@@ -25,11 +25,6 @@ ggz_ccheckers_SOURCES = display.c	display.h	\
 			about_dlg.c	about_dlg.h	\
 			prefs_dlg.c	prefs_dlg.h	\
 			prefs_cb.c	prefs_cb.h	\
-							\
-			board.xpm			\
-			hole.xpm			\
-			blue.xpm cyan.xpm green.xpm	\
-			purple.xpm red.xpm yellow.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_ccheckers_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.a
