@@ -35,8 +35,3 @@ World::~World()
 {
 }
 
-void World::keyPressEvent(QKeyEvent *e)
-{
-	std::cout << "world key press" << std::endl;
-}
-

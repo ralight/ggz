@@ -85,6 +85,8 @@ void Win::slotLoggedin(QString name)
 	setCaption(QString("Keepalive: Logged in as %1").arg(name));
 	m_login->hide();
 	m_world->show();
+	m_world->setFocusPolicy(StrongFocus);
+	m_world->setFocus();
 }
 
 // Forward key presses to the canvas
