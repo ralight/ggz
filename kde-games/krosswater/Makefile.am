@@ -7,7 +7,7 @@ bin_PROGRAMS = krosswater_client
 
 bindir = $(ggzexecmoddir)
 
-INCLUDES = -Izoneclient -I$(qt_includes) -I$(kde_includes) $(all_includes)
+INCLUDES = -Izoneclient -I$(qt_includes) -I$(kde_includes) $(all_includes) $(EASYSOCK_INCLUDES)
 
 noinst_HEADERS = krosswater.h \
 		dlg_person.h \
@@ -30,7 +30,7 @@ krosswater_client_METASOURCES = AUTO
 EXTRA_DIST =
 
 UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
-krosswater_client_LDADD = zoneclient/libzoneclient.la $(UI) -leasysock
+krosswater_client_LDADD = zoneclient/libzoneclient.la $(UI) $(EASYSOCK_LDFLAGS) $(LIB_EASYSOCK)
 
 DISTCLEANFILES = $(krosswater_client_METASOURCES)
 

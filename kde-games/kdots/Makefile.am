@@ -23,7 +23,9 @@ noinst_HEADERS = \
 
 INCLUDES = $(EASYSOCK_INCLUDES) $(all_includes) -I Dot
 
-kdots_client_LDADD = $(all_libraries) -lqt -lkdeui -lkdecore -L Dot -ldot $(LIB_EASYSOCK)
+UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
+kdots_client_LDFLAGS = -rpath $(easysock_libraries)
+kdots_client_LDADD = $(all_libraries) $(UI) -L Dot -ldot $(EASYSOCK_LDFLAGS) $(LIB_EASYSOCK)
 
 METASOURCES = AUTO
 
