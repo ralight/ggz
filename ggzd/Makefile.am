@@ -5,7 +5,7 @@ CLEAN_FILES = ggzd.debug ggzd.log
 SUBDIRS = @SUBDIRS@
 
 EXTRA_DIST = HACKING README.GGZ \
-		m4/ggz.m4 m4/ggz-debug.m4 m4/libtool.m4
+		m4/ggz.m4 m4/ggz-debug.m4
 
 test: all testdir test-recursive
 

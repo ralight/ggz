@@ -2,4 +2,4 @@
 
 SUBDIRS = ggzmod ggzcore ggz-config man
 EXTRA_DIST = TODO HACKING README.GGZ QuickStart.GGZ \
-	m4/ggz.m4 m4/ggz-debug.m4 m4/libtool.m4
+	m4/ggz.m4 m4/ggz-debug.m4
