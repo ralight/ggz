@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: net.c 3995 2002-04-15 11:14:49Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -525,15 +525,13 @@ void broadcast_global_cardlist_message(const char *mark, int *lengths,
 
 int rec_language(player_t p)
 {
-	char *lang;
+	char lang[128];
 	int fd = get_player_socket(p);
 	
-	if (ggz_read_string_alloc(fd, &lang) < 0)
+	if (ggz_read_string(fd, lang, sizeof(lang))) < 0)
 		return -1;
 		
 	handle_player_language(p, lang);
-	
-	ggz_free(lang);
 	
 	return 0;
 }
