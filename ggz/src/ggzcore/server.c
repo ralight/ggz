@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 5340 2003-01-22 13:50:38Z dr_maux $
+ * $Id: server.c 5484 2003-03-29 20:38:07Z dr_maux $
  *
  * Code for handling server connection state and properties
  *
@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <netdb.h>
 
 #include <ggz.h>
 
@@ -890,14 +891,16 @@ void _ggzcore_server_reset(GGZServer *server)
 int _ggzcore_server_connect(GGZServer *server)
 {
 	int status;
+	char *errmsg;
 	
 	_ggzcore_server_change_state(server, GGZ_TRANS_CONN_TRY);
 	status = _ggzcore_net_connect(server->net);
 	
 	if (status < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
-		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, 
-				      strerror(errno));
+		if(status == -1) errmsg = strerror(errno);
+		else errmsg = (char*)hstrerror(h_errno);
+		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, errmsg);
 	}
 	else
 		_ggzcore_server_event(server, GGZ_CONNECTED, NULL);
@@ -911,6 +914,7 @@ int _ggzcore_server_create_channel(GGZServer *server)
 	int status;
 	const char *host;
 	unsigned int port;
+	char *errmsg;
 	
 	/* FIXME: make sure we don't already have a channel */
 	server->channel = _ggzcore_net_new();
@@ -921,8 +925,9 @@ int _ggzcore_server_create_channel(GGZServer *server)
 	
 	if (status < 0) {
 		ggz_debug(GGZCORE_DBG_SERVER, "Channel creation failed");
-		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, 
-				      strerror(errno));
+		if(status == -1) errmsg = strerror(errno);
+		else errmsg = (char*)hstrerror(h_errno);
+		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, errmsg);
 	}
 	else {
 		ggz_debug(GGZCORE_DBG_SERVER, "Channel created");

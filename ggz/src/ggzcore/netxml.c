@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5434 2003-02-22 06:16:31Z jdorje $
+ * $Id: netxml.c 5484 2003-03-29 20:38:07Z dr_maux $
  *
  * Code for parsing XML streamed from the server
  *
@@ -312,7 +312,7 @@ int _ggzcore_net_connect(GGZNet *net)
 	if (net->fd >= 0)
 		return 0;  /* success */
 	else
-		return -1; /* error */
+		return net->fd; /* error */
 }
 
 
@@ -693,7 +693,7 @@ int _ggzcore_net_data_is_pending(GGZNet *net)
 	int pending = 0;
 	struct pollfd fd[1] = {{net->fd, POLLIN, 0}};
 
-	if (net && net->fd != -1) {
+	if (net && net->fd >= 0) {
 	
 		ggz_debug(GGZCORE_DBG_POLL, "Checking for net events");	
 		if ( (pending = poll(fd, 1, 0)) < 0) {
