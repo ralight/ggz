@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6866 2005-01-24 01:39:48Z jdorje $
+ * $Id: ggzmod.c 6979 2005-03-11 07:22:18Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -840,11 +840,13 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 		}
 		ggzmod->pid = -1;
 #else
+#  ifdef HAVE_WINSOCK_H
 		if (ggzmod->process != INVALID_HANDLE_VALUE) {
 			TerminateProcess(ggzmod->process, 0);
 			CloseHandle(ggzmod->process);
 			ggzmod->process = INVALID_HANDLE_VALUE;
 		}
+#  endif
 #endif
 		
 		_ggzmod_set_state(ggzmod, GGZMOD_STATE_DONE);
