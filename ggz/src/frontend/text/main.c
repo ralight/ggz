@@ -38,6 +38,10 @@
 #include <string.h>
 
 
+/* Event loop timeout value */
+#define TIMEOUT 1
+
+
 /* Termination handler */
 RETSIGTYPE term_handle(int signum)
 {
@@ -92,7 +96,7 @@ int main(void)
 	output_prompt();
 
 	/* Event loop */
-	loop_init();
+	loop_init(TIMEOUT);
 	loop_add_fd(STDIN_FILENO, input_command, NULL);
 	loop();
 

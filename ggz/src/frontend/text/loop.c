@@ -33,34 +33,39 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
-/* FIXME: make this a parameter ? */
-#define TIMEOUT 1
 
-
+/* Information about a fd and what to do under various conditions */
 struct _fd_info {
 	unsigned int fd;
 	unsigned char removed;
 	callback read;
+	callback write; 
 	callback destroy;
 };
 
 
-static void loop_process_remove(void);
-
-static fd_set active_fd_set;
-static struct _fd_info *fds;
+/* Private variables and functions */
+static fd_set active_fd_set;  
+static struct _fd_info *fds;  
 static int num_fds, fd_max;
 static unsigned char done;
+static int timeout;
+
+static void _loop_process_remove(void);
+static void _loop_remove_fd(int num);
 
 
-void loop_init(void)
+void loop_init(int seconds)
 {
 	FD_ZERO(&active_fd_set);
-	if (fds)
+	if (fds) {
 		free(fds);
+		fds = NULL;
+	}
 	num_fds = 0;
 	fd_max = 0;
 	done = 0;
+	timeout = seconds;
 }
 
 
@@ -72,6 +77,7 @@ void loop_add_fd(unsigned int fd, callback read, callback destroy)
 	fds[num_fds].fd = fd;
 	fds[num_fds].removed = 0;
 	fds[num_fds].read = read;
+	fds[num_fds].write = NULL;
 	fds[num_fds].destroy = destroy;
 
 	num_fds++;
@@ -88,9 +94,6 @@ void loop_remove_fd(unsigned int fd)
 
 	for (i = 0; i < num_fds; i++) 
 		if (fds[i].fd == fd) {
-#if 0
-			output_text("removing fd %d", fd);
-#endif
 			FD_CLR(fd, &active_fd_set);
 			/* FIXME: for efficiency, we should recalc fd_max */
 			fds[i].removed = 1;
@@ -108,7 +111,7 @@ void loop(void)
 
 	while (!done) {
 
-		tv.tv_sec = TIMEOUT;
+		tv.tv_sec = timeout;
 		tv.tv_usec = 0;
 		read_fd_set = active_fd_set;
 
@@ -118,14 +121,15 @@ void loop(void)
 				if (FD_ISSET(fds[i].fd, &read_fd_set))
 					fds[i].read();
 		}
-#if 0
-		if (status == 0)
-			output_text("timedout");
+		if (status == 0) {
+			/* time-out occurred */
+		}
 
-		if (status < 0)
-			output_text("err");
-#endif
-		loop_process_remove();
+		if (status < 0) {
+			/* select() error occurred */
+		}
+		
+		_loop_process_remove();
 
 		/* FIXME: make this an "idle" type func? */
 		output_status();
@@ -140,28 +144,46 @@ void loop_quit(void)
 
 
 /* FIXME: come with with good algorithm for removing fds from array */
-static void loop_process_remove(void)
+static void _loop_process_remove(void)
 {
 	int i;
 	
-	for (i = 0; i < num_fds; i++)
+	for (i = 0; i < num_fds; i++) 
 		if (fds[i].removed && fds[i].destroy) {
 			fds[i].destroy();
 			fds[i].removed = 0;
+			_loop_remove_fd(i);
 		}
-#if 0
-	int cur = 0, next = 0;
-
-	while (cur < num_fds) {
-
-		if (!fds[cur].removed) {
-			cur++;
-			continue;
-		}
-
-		/* if we're here, the current node needs replaced */
-#endif
-
 }
 
 
+/* FIXME: this function can be optimized */
+static void _loop_remove_fd(int num)
+{
+
+	/* simplest case: only one fd */
+	if (num_fds == 1) {
+		free(fds);
+		fds = NULL;
+		num_fds = 0;
+		fd_max = 0;
+	}
+
+	/* simple case: fd to remove is last one */	
+	else if (num == (num_fds - 1)) {
+		if (!(fds = realloc(fds, (num_fds - 1) * sizeof(struct _fd_info)))) 
+			ggzcore_error_sys_exit("realloc failed in loop_init");
+		
+		num_fds--;
+	}
+
+	/* general case: swap fd to removed with last one */
+	else {
+		
+		fds[num] = fds[(num_fds -1)];
+		if (!(fds = realloc(fds, (num_fds - 1) * sizeof(struct _fd_info)))) 
+			ggzcore_error_sys_exit("realloc failed in loop_init");
+		
+		num_fds--;
+	}
+}

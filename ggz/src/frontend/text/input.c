@@ -239,10 +239,8 @@ static void input_handle_msg(char* line)
 	}
 }
 
+
 static void input_handle_exit(void)
 {
-        ggzcore_event_process_all();
-        ggzcore_destroy();
-        output_shutdown();
-        exit(1);
+        loop_quit();
 }
