@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 5874 2004-02-10 01:48:49Z jdorje $
+ * $Id: chat.c 5911 2004-02-11 14:06:39Z josef $
  *
  * This file contains all functions that are chat related.
  *
@@ -648,7 +648,11 @@ int chat_checkurl(GtkXText *xtext, char *word)
 {
 	char *at, *dot;
 	int i, dots;
-	int len = strlen (word);
+	int len;
+
+	if(!word) return 0;
+	
+	len = strlen (word);
 
 	/* Check for URLs */
 	if (!strncasecmp (word, "ftp.", 4))
