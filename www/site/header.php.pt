@@ -7,8 +7,7 @@ GGZ Gaming Zone
 include("style.php");
 ?>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-<link rel="icon" href="favicon.ico" type="image/x-icon">
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body bgcolor="#dcdcdc" background="/pics/site/bg.png" text="#000000" link="#000000" vlink="#000000" alink="#000000">
 

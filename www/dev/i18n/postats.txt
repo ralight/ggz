@@ -6,60 +6,62 @@ de.po                    -    73/73    (100%)  -0
 pt_BR.po                 -    73/73    (100%)  -0
 grubby/grubby/po
 de.po                    -    33/33    (100%)  -0
+pt_BR.po                 -    33/33    (100%)  -0
 gtk-client/po
-pt_BR.po                 -   230/304   ( 75%)  -74
 es_AR.po                 -   237/304   ( 77%)  -67
 sv.po                    -   281/287   ( 97%)  -6
-de.po                    -   287/287   (100%)  -0
+de.po                    -   272/272   (100%)  -0
+pt_BR.po                 -   272/272   (100%)  -0
 gtk-games/po/chess
-de.po                    -    71/71    (100%)  -0
+de.po                    -    67/67    (100%)  -0
 gtk-games/po/chinese-checkers
-de.po                    -    42/44    ( 95%)  -2
+de.po                    -    42/42    (100%)  -0
 gtk-games/po/combat
-de.po                    -    94/94    (100%)  -0
+de.po                    -    96/96    (100%)  -0
 gtk-games/po/common
-de.po                    -    26/26    (100%)  -0
+de.po                    -    24/24    (100%)  -0
 gtk-games/po/dots
-de.po                    -    82/83    ( 98%)  -1
+de.po                    -    82/82    (100%)  -0
 gtk-games/po/ggzcards
-de.po                    -    70/94    ( 74%)  -24
+de.po                    -    91/91    (100%)  -0
 gtk-games/po/hastings
-de.po                    -    75/78    ( 96%)  -3
-gtk-games/po/lapocha
-de.po                    -    63/63    (100%)  -0
+de.po                    -    76/76    (100%)  -0
 gtk-games/po/reversi
-de.po                    -    31/34    ( 91%)  -3
+de.po                    -    32/32    (100%)  -0
 gtk-games/po/spades
-de.po                    -    79/79    (100%)  -0
+de.po                    -    78/78    (100%)  -0
 gtk-games/po/tictactoe
-de.po                    -    54/54    (100%)  -0
+de.po                    -    50/50    (100%)  -0
 kde-client/po/compcal
-de.po                    -    20/20    (100%)  -0
+de.po                    -    25/25    (100%)  -0
 kde-client/po/ggzap
 de.po                    -    41/41    (100%)  -0
 kde-client/po/kcm_ggz
-de.po                    -    71/71    (100%)  -0
+de.po                    -    80/80    (100%)  -0
 kde-client/po/modsniff
-de.po                    -    11/11    (100%)  -0
+de.po                    -    12/12    (100%)  -0
 kde-client/po/shadowbridge
 de.po                    -    31/31    (100%)  -0
 kde-client/ggz-kde/po
-fr.po                    -     7/296   (  2%)  -289
-es.po                    -   161/296   ( 54%)  -135
-pt_BR.po                 -   213/296   ( 71%)  -83
-de.po                    -   309/310   ( 99%)  -1
+es.po                    -   164/310   ( 52%)  -146
+de.po                    -   310/310   (100%)  -0
+pt_BR.po                 -   310/310   (100%)  -0
 kde-games/po/KReversi
 de.po                    -    26/26    (100%)  -0
 kde-games/po/kdots
 de.po                    -    57/57    (100%)  -0
 kde-games/po/koenig
-de.po                    -    77/77    (100%)  -0
+de.po                    -    84/84    (100%)  -0
 kde-games/po/krosswater
-de.po                    -    50/50    (100%)  -0
+de.po                    -    51/51    (100%)  -0
 kde-games/po/ktictactux
-de.po                    -    49/49    (100%)  -0
+de.po                    -    52/52    (100%)  -0
 kde-games/po/muehle
-de.po                    -    48/48    (100%)  -0
+de.po                    -    49/49    (100%)  -0
+kde-games/po/fyrdman
+de.po                    -    78/78    (100%)  -0
+python/po
+de.po                    -     4/4     (100%)  -0
 txt-client/po
 de.po                    -    69/69    (100%)  -0
 pt_BR.po                 -    69/69    (100%)  -0
