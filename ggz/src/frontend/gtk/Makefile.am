@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5185 2002-11-03 21:50:54Z jdorje $
+#  $Id: Makefile.am 5192 2002-11-03 23:28:51Z jdorje $
 
 SUBDIRS = .
 
@@ -15,6 +15,7 @@ ggzdata_DATA = ggz_gtk_admin.xpm ggz_gtk_guest.xpm ggz_gtk_registered.xpm \
 ggz_gtk_SOURCES =	main.c \
 			about.c \
 			about.h \
+			about_bg.xpm \
 			chat.c \
 			chat.h \
 			client.c \
