@@ -1,5 +1,6 @@
-SUBDIRS = . games players
+SUBDIRS = games players
 
+pixdir = $(kde_datadir)/kggz/images/icons
 pix_DATA = \
 	browser.png \
 	cancel.png \
@@ -25,6 +26,6 @@ pix_DATA = \
 	metaserver.png \
 	serverred.png \
 	watcher_off.png \
-	watcher_on.png
+	watcher_on.png \
+	watcher_room.png
 
-pixdir = $(kde_datadir)/kggz/images/icons
