@@ -222,7 +222,7 @@ int combat_check_move(combat_game *_game, int from, int to) {
 				return CBT_ERROR_MOVE_SCOUT;
 		}
 		// Check if he is moving >1 and attacking at the same time
-		if (abs(dx+dy) != 1 && t_u != U_EMPTY && !(_game->options & OPT_SUPER_SCOUT))
+		if ((abs(dx)>1||abs(dy)>1) && t_u != U_EMPTY && !(_game->options & OPT_SUPER_SCOUT))
 			return CBT_ERROR_MOVE_SCOUT;
 	}
   else if (_game->options & OPT_SF_SERGEANT && f_u == U_SERGEANT) {
