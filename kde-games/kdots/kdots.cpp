@@ -83,6 +83,12 @@ void KDots::slotTurn(int x, int y, int direction)
 {
 	int sdotx, sdoty;
 
+	if(proto->num < 0)
+	{
+		emit signalStatus(i18n("You're only watching"));
+		return;
+	}
+
 	if(proto->turn != proto->num)
 	{
 		emit signalStatus(i18n("Not your turn!"));
@@ -145,7 +151,8 @@ void KDots::slotInput()
 		case proto->msgseat:
 			proto->getSeat();
 			if(proto->num == 1) emit signalColor(QColor(0, 0, 250));
-			else emit signalColor(QColor(0, 0, 50));
+			else if(proto->num == 0) emit signalColor(QColor(0, 0, 50));
+			else emit signalColor(QColor(255, 255, 255));
 			break;
 		case proto->msgplayers:
 			proto->getPlayers();
@@ -165,11 +172,13 @@ void KDots::slotInput()
 			proto->getOppMove(proto->sndmoveh);
 			dots->setBorderValue(proto->movex, proto->movey, QDots::right, proto->turn, 1);
 			dots->repaint();
+			if(proto->num < 0) proto->turn = !proto->turn;
 			break;
 		case proto->msgmovev:
 			proto->getOppMove(proto->sndmovev);
 			dots->setBorderValue(proto->movex, proto->movey, QDots::down, proto->turn, 1);
 			dots->repaint();
+			if(proto->num < 0) proto->turn = !proto->turn;
 			break;
 		case proto->rspmove:
 			if(proto->getMove() != -1)
