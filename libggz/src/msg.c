@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 4377 2002-08-20 21:12:36Z jdorje $
+ * $Id: msg.c 4545 2002-09-13 15:43:04Z jdorje $
  *
  * Debug and error messages
  *
@@ -27,13 +27,14 @@
 
 #include <config.h>
 
-#include <sys/types.h>
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include "ggz.h"
@@ -44,6 +45,10 @@
 static void err_doit(int priority, const char *prefix,
                      const char *fmt, va_list ap,
                      char err);
+
+/* A function to fork and dump core, allowing the original process
+   to continue. */
+static void dump_core(void);
 
 /* Debug file pointer */
 static FILE * debug_file;
@@ -171,6 +176,20 @@ void _ggz_msg(const char *fmt, ...)
 }
 
 
+static void dump_core(void)
+{
+	int pid = fork();
+
+	if (pid < 0)
+		ggz_error_sys_exit("Fork failed");
+	else if (pid == 0)
+		abort();
+	else
+		if (waitpid(pid, NULL, 0) <= 0)
+			ggz_error_sys_exit("Wait failed");
+}
+
+
 void ggz_error_sys(const char *fmt, ...)
 {
 	va_list ap;
@@ -178,6 +197,8 @@ void ggz_error_sys(const char *fmt, ...)
 	va_start(ap, fmt);
 	err_doit(LOG_ERR, NULL, fmt, ap, 1);
 	va_end(ap);
+
+	dump_core();
 }
 
 
@@ -188,8 +209,8 @@ void ggz_error_sys_exit(const char *fmt, ...)
 	va_start(ap, fmt);
 	err_doit(LOG_CRIT, NULL, fmt, ap, 1);
 	va_end(ap);
-	/*cleanup(); */
-	exit(-1);
+
+	abort();
 }
 
 
@@ -200,6 +221,8 @@ void ggz_error_msg(const char *fmt, ...)
 	va_start(ap, fmt);
 	err_doit(LOG_ERR, NULL, fmt, ap, 0);
 	va_end(ap);
+
+	dump_core();
 }
 
 
@@ -210,8 +233,8 @@ void ggz_error_msg_exit(const char *fmt, ...)
 	va_start(ap, fmt);
 	err_doit(LOG_CRIT, NULL, fmt, ap, 1);
 	va_end(ap);
-	/*cleanup(); */
-	exit(-1);
+
+	abort();
 }
 
 
