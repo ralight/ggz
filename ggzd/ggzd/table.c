@@ -581,6 +581,7 @@ static void table_remove(int t_index)
 		}
 	dbg_msg(GGZ_DBG_ROOM, "Room %d table count = %d", room, count);
 	chat_room[room].table_timestamp = time(NULL);
+	chat_room[room].player_timestamp = time(NULL);
 	pthread_rwlock_unlock(&chat_room[room].lock);
 
 	pthread_rwlock_wrlock(&tables.lock);

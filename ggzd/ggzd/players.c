@@ -781,6 +781,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		dbg_msg(GGZ_DBG_ROOM,
 			"Room %d table count = %d", table.room, count);
 		chat_room[table.room].table_timestamp = time(NULL);
+		chat_room[table.room].player_timestamp = time(NULL);
 		pthread_rwlock_unlock(&chat_room[table.room].lock);
 	}
 
@@ -880,6 +881,7 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 	pthread_rwlock_unlock(&tables.lock);
 	pthread_rwlock_wrlock(&chat_room[room].lock);
 	chat_room[room].table_timestamp = time(NULL);
+	chat_room[room].player_timestamp = time(NULL);
 	pthread_rwlock_unlock(&chat_room[room].lock);
 
 	return GGZ_REQ_OK;
@@ -933,6 +935,7 @@ static int player_table_leave(int p_index, int p_fd)
 	pthread_rwlock_unlock(&tables.lock);
 	pthread_rwlock_wrlock(&chat_room[room].lock);
 	chat_room[room].table_timestamp = time(NULL);
+	chat_room[room].player_timestamp = time(NULL);
 	pthread_rwlock_unlock(&chat_room[room].lock);
 
 	pthread_rwlock_wrlock(&players.lock);
