@@ -1,0 +1,44 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Documentation</b><br>
+All existing documentation will eventually be available from here.
+<br><br>
+
+<i>Player docs</i><br>
+All applications and games are described on their respective pages on this
+web site. Additional documentation:
+<br><br>
+
+<a href="">link1</a><br>
+<a href="">link2</a>
+<br><br>
+
+<i>Developer docs</i><br>
+Developer documentation can be found in the developer section of this
+web site.
+<br><br>
+
+<a href="">link1</a><br>
+<a href="">link2</a>
+<br><br>
+
+<i>Admin docs</i><br>
+Server administrators can find instructions and recommendations here.
+<br><br>
+
+<a href="">link1</a><br>
+<a href="">link2</a>
+<br><br>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+
