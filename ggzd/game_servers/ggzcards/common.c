@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3403 2002-02-17 15:16:03Z jdorje $
+ * $Id: common.c 3412 2002-02-18 09:02:33Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -434,23 +434,18 @@ static int determine_host(void)
 	return host;
 }
 
-/* This handles a launch event, when ggz connects to our server for the first
-   time. */
-void handle_launch_event(GGZdMod * ggz, GGZdModEvent event, void *data)
+/* This handles a launch event, when GGZ connects to us for the first time. */
+static void handle_launch_event(void)
 {
-	player_t p;
-
-	ggzdmod_log(game.ggz, "Handling a launch event.");
-	if (game.state != STATE_PRELAUNCH) {
-		ggzdmod_log(game.ggz, "ERROR: "
-			    "state wasn't prelaunch when handling a launch.");
-		return;
-	}
-
+	int p;
+	
+	ggzdmod_log(game.ggz, "Table launch.");
+	
+	assert(game.state == STATE_PRELAUNCH);
+	
 	/* determine number of players. */
-	game.num_players = ggzdmod_get_num_seats(game.ggz);	/* ggz seats
-								   == players 
-								 */
+	/* ggz seats == players */
+	game.num_players = ggzdmod_get_num_seats(game.ggz);	
 	game.host = -1;		/* no host since none has joined yet */
 
 	game.players = ggz_malloc(game.num_players * sizeof(*game.players));
@@ -467,8 +462,36 @@ void handle_launch_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 		init_game();
 
 	set_game_state(STATE_NOTPLAYING);
-	save_game_state();	/* no players are connected yet, so we enter
-				   waiting phase */
+}
+
+/* This handles a state change event, when the table changes state. */
+void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
+{
+	GGZdModState old_state = *(GGZdModState*)data;
+	GGZdModState new_state = ggzdmod_get_state(ggz);
+	
+	if (old_state == GGZDMOD_STATE_CREATED) {
+		assert(new_state == GGZDMOD_STATE_WAITING);
+		handle_launch_event();
+	}
+	
+	switch (new_state) {
+	case GGZDMOD_STATE_CREATED:
+	case GGZDMOD_STATE_DONE:
+		break;
+	case GGZDMOD_STATE_WAITING:
+		/* Enter waiting phase. */
+		save_game_state();
+		break;
+	case GGZDMOD_STATE_PLAYING:
+		/* All other changes are done in the join event. */
+		assert(seats_full());
+		restore_game_state();
+		break;
+	}
+
+	/* Otherwise do nothing (yet...) */
+	
 	return;
 }
 
@@ -506,7 +529,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	   continue playing (below).  The state is restored up here so that
 	   the sync will be handled correctly. */
 	if (seats_full())
-		restore_game_state();
+		ggzdmod_set_state(ggz, GGZDMOD_STATE_PLAYING);
 		
 	/* If we're already playing, we should send the client a NEWGAME
 	   alert - although it's not really a NEWGAME but a game in
@@ -573,6 +596,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 {
 	player_t player = *(int *) data;
 	seat_t seat = game.players[player].seat;
+	GGZdModState new_state;
 
 	ggzdmod_log(game.ggz,
 		    "Handling a leave event for player %d (seat %d).", player,
@@ -596,10 +620,16 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 
 	/* get rid of old player message */
 	set_player_message(player);
-
-	/* save old state and enter waiting phase */
-	assert(!seats_full());
-	save_game_state();
+	
+	/* Figure out what state to move to. */
+	if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_PLAYER) == 0)
+		new_state = GGZDMOD_STATE_DONE;
+	else
+		new_state = GGZDMOD_STATE_WAITING;
+		
+	/* Change the table (and hence game) state. */
+	if (ggzdmod_set_state(game.ggz, GGZDMOD_STATE_DONE) < 0)
+		assert(0);
 	
 	ggzdmod_log(game.ggz, "Player leave successful.");
 }

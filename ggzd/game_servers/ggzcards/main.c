@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: main.c 3412 2002-02-18 09:02:33Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -113,7 +113,7 @@ int main(int argc, char **argv)
 
 	/* Initialize GGZ structures. */
 	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &handle_launch_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &handle_state_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &handle_join_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &handle_leave_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
@@ -158,7 +158,9 @@ int main(int argc, char **argv)
 	/* Connect to GGZ server; main loop */
 	if (ggzdmod_connect(ggz) < 0)
 		return -1;
+	(void) ggzdmod_log(ggz, "Starting table.");
 	(void) ggzdmod_loop(ggz);
+	(void) ggzdmod_log(ggz, "Halting table.");
 	(void) ggzdmod_disconnect(ggz);
 	ggzdmod_free(ggz);
 

@@ -1,4 +1,4 @@
-# $Id: ggzcards-lapocha.dsc 3244 2002-02-04 07:58:51Z jdorje $
+# $Id: ggzcards-lapocha.dsc 3412 2002-02-18 09:02:33Z jdorje $
 [GameInfo]
 Author = Rich Gade
 Description = GGZ Cards game module for La Pocha
@@ -17,3 +17,4 @@ Version = devel-5
 AllowLeave = 1
 BotsAllowed = 0 1 2 3
 PlayersAllowed = 4
+KillWhenEmpty = 0
