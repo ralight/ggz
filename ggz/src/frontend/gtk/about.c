@@ -80,6 +80,8 @@ static void about_ok(GtkWidget *widget, gpointer data)
 {
 	gtk_timeout_remove(about_tag);
 	gtk_widget_destroy(about_dialog);
+	about_dialog = NULL;
+	about_tag = NULL;
 }
 
 
