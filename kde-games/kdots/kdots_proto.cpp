@@ -10,21 +10,23 @@
 ///////////////////////////////////////////////////////////////
 
 #include "kdots_proto.h"
-
-#include <sys/types.h>
-#include <sys/un.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "kdots.h"
 
 // GGZ includes
 #include <ggz.h>
 #include <ggz_common.h>
 
-KDotsProto::KDotsProto()
+KDotsProto *KDotsProto::self;
+
+KDotsProto::KDotsProto(KDots *game)
 {
 	state = stateinit;
+	mod = NULL;
+	gameobject = game;
+	self = this;
+
+	fd = -1;
+	fdcontrol = -1;
 }
 
 KDotsProto::~KDotsProto()
@@ -93,7 +95,19 @@ void KDotsProto::getPlayers()
 
 void KDotsProto::connect()
 {
-	fd = 3;
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_server);
+	ggzmod_connect(mod);
+	fdcontrol = ggzmod_get_fd(mod);
+}
+
+void KDotsProto::disconnect()
+{
+	if(mod)
+	{
+		ggzmod_disconnect(mod);
+		ggzmod_free(mod);
+	}
 }
 
 void KDotsProto::sendMove(int x, int y, int direction)
@@ -157,5 +171,17 @@ void KDotsProto::getOppMove(int direction)
 	movex = nx;
 	movey = ny;
 	if(turn == -1) turn = !num;
+}
+
+void KDotsProto::dispatch()
+{
+	ggzmod_dispatch(mod);
+}
+
+void KDotsProto::handle_server(GGZMod *mod, GGZModEvent e, void *data)
+{
+	self->fd = (int)data;
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+	self->gameobject->input();
 }
 

@@ -12,13 +12,17 @@
 #ifndef KDOTS_PROTO_H
 #define KDOTS_PROTO_H
 
+#include <ggzmod.h>
+
 #define MAX_WIDTH 25
 #define MAX_HEIGHT 25
+
+class KDots;
 
 class KDotsProto
 {
 	public:
-		KDotsProto();
+		KDotsProto(KDots *game);
 		~KDotsProto();
 
 		enum Errors
@@ -71,15 +75,12 @@ class KDotsProto
 			eventmovev = 4
 		};
 
-		/*enum Directions
-		{
-			horizontal = 0,
-			vertical = 1
-		};*/
-
 		void connect();
+		void disconnect();
 		void init();
 		void sync();
+		void dispatch();
+		static void handle_server(GGZMod *mod, GGZModEvent e, void *data);
 
 		void getPlayers();
 		void getSeat();
@@ -95,6 +96,7 @@ class KDotsProto
 		
 		int state;
 		int fd;
+		int fdcontrol;
 		int num;
 		char players[2][32];
 		char width, height;
@@ -102,6 +104,11 @@ class KDotsProto
 		int movex, movey;
 		int m_lastx, m_lasty;
 		int m_lastdir;
+
+	private:
+		GGZMod *mod;
+		KDots *gameobject;
+		static KDotsProto *self;
 };
 
 #endif

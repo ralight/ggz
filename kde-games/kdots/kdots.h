@@ -27,6 +27,7 @@ class KDots : public QWidget
 		~KDots();
 		void gameinit();
 		void gamesync();
+		void input();
 
 	public slots:
 		void slotOptions();
@@ -34,6 +35,7 @@ class KDots : public QWidget
 		void slotTurn(int x, int y, int direction);
 		void slotInput();
 		void slotSync();
+		void slotDispatch();
 
 	signals:
 		void signalStatus(const char *message);

@@ -45,17 +45,18 @@ KDots::KDots(QWidget *parent, const char *name)
 	setFixedSize(400, 400);
 	show();
 
-	proto = new KDotsProto();
+	proto = new KDotsProto(this);
 	proto->connect();
 	proto->turn = -1;
 	proto->num = -2;
 
-	sn = new QSocketNotifier(proto->fd, QSocketNotifier::Read, this);
-	connect(sn, SIGNAL(activated(int)), SLOT(slotInput()));
+	sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
+	connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
 }
 
 KDots::~KDots()
 {
+	proto->disconnect();
 	delete proto;
 }
 
@@ -251,5 +252,18 @@ void KDots::gamesync()
 	dots->repaint();
 
 	emit signalStatus(i18n("Syncing successful"));
+}
+
+void KDots::input()
+{
+	QSocketNotifier *sn;
+
+	sn = new QSocketNotifier(proto->fd, QSocketNotifier::Read, this);
+	connect(sn, SIGNAL(activated(int)), SLOT(slotInput()));
+}
+
+void KDots::slotDispatch()
+{
+	proto->dispatch();
 }
 
