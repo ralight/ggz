@@ -40,6 +40,7 @@
 #include <err_func.h>
 #include <players.h>
 #include <parse_opt.h>
+#include <chat.h>
 
 /* Server options */
 Options opt;
@@ -91,6 +92,8 @@ void init_data(void)
 	game_types.info[0] = spades;
 	game_types.count++;
 	pthread_rwlock_unlock(&game_types.lock);
+
+	chat_init();
 
 }
 

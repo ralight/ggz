@@ -334,6 +334,7 @@ static void player_remove(int p_index)
 	players.count--;
 	pthread_rwlock_unlock(&players.lock);
 
+	/* FIXME: mark all my chats as read */
 	close(fd);
 }
 
@@ -347,7 +348,7 @@ static int player_updates(int p) {
 	/*FIXME: Add user_list updates */
 	/*FIXME: Add game_type updates */
 	/*FIXME: Add game_table updates */
-
+	
 	
 	return 0;
 }

@@ -39,9 +39,10 @@
 #define MAX_GAME_TYPES 5
 #define MAX_TABLES  50
 #define MAX_USERS 500
+#define MAX_CHAT_LENGTH 512
+#define MAX_CHAT_BUFFER 32
 
-
-/* Defines for allowable players */
+/* Bitmasks for allowable player numbers */
 #define PLAY_ALLOW_ZERO    0
 #define PLAY_ALLOW_ONE     1
 #define PLAY_ALLOW_TWO     (1 << 1)
@@ -52,7 +53,7 @@
 #define PLAY_ALLOW_SEVEN   (1 << 6)
 #define PLAY_ALLOW_EIGHT   (1 << 7)
 
-/* Defines for allowable computer players*/
+/* Bitmasks for allowable computer player numbers */
 #define COMP_ALLOW_ZERO    0
 #define COMP_ALLOW_ONE     1
 #define COMP_ALLOW_TWO     (1 << 1)
@@ -63,6 +64,14 @@
 #define COMP_ALLOW_SEVEN   (1 << 6)
 #define COMP_ALLOW_EIGHT   (1 << 7)
 
+/* Special UID values */
+#define NG_UID_NONE -1
+#define NG_UID_ANON -2
+
+/* Specical game type values */
+#define NG_TYPE_ALL  -1
+#define NG_TYPE_RES  -2
+#define NG_TYPE_OPEN -3
 
 
 /* Datatypes for server options*/
@@ -152,18 +161,28 @@ struct Users {
 };
 
 
+/* A chat consists of the message and a flag of who hasn't read it*/
+typedef struct {
+	char msg[MAX_CHAT_LENGTH];
+	int p_index;
+	char p_name[MAX_USER_NAME_LEN+1];
+	char unread[MAX_USERS];
+} ChatInfo;
+
+
+/* Array of chats in buffer, their mutex, and a counter */
+struct Chats {
+	ChatInfo info[MAX_CHAT_BUFFER];
+	int count;
+	pthread_rwlock_t lock;
+};
+	
+
 /* Reservation info */
 typedef struct {
 	int game_index;
 	int uid;
 } ReserveInfo;
 
-
-#define NG_UID_NONE -1		/* Fixed invalid UID value */
-#define NG_UID_ANON -2		/* UID for all anonymous players */
-
-#define NG_TYPE_ALL  -1
-#define NG_TYPE_RES  -2
-#define NG_TYPE_OPEN -3
 
 #endif

@@ -8,18 +8,19 @@ INCLUDES = -I$(top_srcdir)/easysock
 
 bin_PROGRAMS = ggzd
 
-ggzd_SOURCES = \
-	control.c \
-	datatypes.h \
-	err_func.c \
-	err_func.h \
-	parse_opt.c \
-	parse_opt.h \
-	players.c \
-	players.h \
-	protocols.h \
-	table.c \
-	table.h
+ggzd_SOURCES =	chat.c \
+		chat.h \
+		control.c \
+		datatypes.h \
+		err_func.c \
+		err_func.h \
+		parse_opt.c \
+		parse_opt.h \
+		players.c \
+		players.h \
+		protocols.h \
+		table.c \
+		table.h
 
 
 confdir = $(sysconfdir)
