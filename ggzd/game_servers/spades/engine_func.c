@@ -197,6 +197,7 @@ void GetGameInfo( void ) {
 	int seat;
 	char ret;
 	char fd_name[21];
+	char* name;
 	struct sockaddr_un addr;
 	
 	/* Connect to Unix domain socket */
@@ -234,19 +235,42 @@ void GetGameInfo( void ) {
 	/* Wait for player joins */
 	while (open_seats > 0) {
 		ReadIntOrDie(gameInfo.ggz_sock, &op);
-		ReadIntOrDie(gameInfo.ggz_sock, &seat);
-		readstring(gameInfo.ggz_sock, &gameInfo.players[seat]);
-		es_read_fd(gameInfo.ggz_sock, &gameInfo.playerSock[seat]);
 
-		dbg_msg("%s on %d in seat %d\n", gameInfo.players[seat], 
-			gameInfo.playerSock[seat], seat);
+		switch(op) {
+		case REQ_GAME_JOIN:
+			ReadIntOrDie(gameInfo.ggz_sock, &seat);
+			readstring(gameInfo.ggz_sock, &gameInfo.players[seat]);
+			es_read_fd(gameInfo.ggz_sock, &gameInfo.playerSock[seat]);
+			
+			dbg_msg("%s on %d in seat %d\n", gameInfo.players[seat],
+				gameInfo.playerSock[seat], seat);
 
-		WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_JOIN);
-		status = 0;
-		write(gameInfo.ggz_sock, &status, 1);
-		open_seats--;
+			WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_JOIN);
+			status = 0;
+			write(gameInfo.ggz_sock, &status, 1);
+			open_seats--;
+			break;
+		case REQ_GAME_LEAVE:
+			readstring(gameInfo.ggz_sock, &name);
+			for (i=0; i<4; i++)
+				if (!strcmp(name, gameInfo.players[i]))
+					break;
+			if (i == 4) /* Player not found */
+				status = -1;
+			else {
+				dbg_msg("Removed %s from seat %d\n",
+					gameInfo.players[i], i);
+				gameInfo.playerSock[i] = SOCK_INVALID;
+				open_seats++;
+				status = 0;
+			}
+			WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_LEAVE);
+			write(gameInfo.ggz_sock, &status, 1);
+
+			break;
+		}
 	}
-
+	
 	for (i=0; i<4; i++) {
 		if( gameInfo.playerSock[i] == SOCK_COMP ) {
 			continue;
