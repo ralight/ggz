@@ -63,7 +63,7 @@ void net_login(const char *username, const char *password)
 	if(password) m_password = strdup(password);
 
 	if(!host) host = "localhost";
-	ggzcore_server_set_hostinfo(server, host, 5688/*, 0*/); /*4th argument is for tls*/
+	ggzcore_server_set_hostinfo(server, host, 5688, 0);
 	printf("Logging in as %s...\n", m_username);
 	fflush(NULL);
 	ggzcore_server_connect(server);

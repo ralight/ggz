@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 5288 2002-12-15 12:04:23Z dr_maux $
+ * $Id: main.c 5419 2003-02-16 15:14:16Z dr_maux $
  *
  * Main program code for ggz-cmd program.
  *
@@ -255,7 +255,7 @@ static GGZHookReturn server_room_entered(GGZServerEvent id,
 static void exec_command(GGZCommand * cmd)
 {
 	server = ggzcore_server_new();
-	ggzcore_server_set_hostinfo(server, cmd->host, cmd->port);
+	ggzcore_server_set_hostinfo(server, cmd->host, cmd->port, 0);
 	ggzcore_server_set_logininfo(server, cmd->login_type,
 				     cmd->login, cmd->passwd);
 
