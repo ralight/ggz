@@ -19,6 +19,11 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
+dnl Compiler stuff
+dnl ==============
+
+CFLAGS="$CFLAGS -Wall"
+
 dnl Check for SDL and OpenGL
 dnl ========================
 
