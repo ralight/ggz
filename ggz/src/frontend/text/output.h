@@ -48,6 +48,8 @@ void output_players(void);
 
 void output_rooms(void);
 
+void output_types(void);
+
 void output_status(void);
 
 void output_init(void);

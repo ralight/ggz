@@ -45,6 +45,7 @@ static GGZHookReturn server_negotiated(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_login_ok(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_login_fail(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_list_rooms(GGZServerEvent id, void*, void*);
+static GGZHookReturn server_list_types(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_enter_ok(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_enter_fail(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_logout(GGZServerEvent id, void*, void*);
@@ -105,6 +106,8 @@ static void server_register(GGZServer *server)
 				      server_login_fail);
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, 
 				      server_list_rooms);
+	ggzcore_server_add_event_hook(server, GGZ_TYPE_LIST, 
+				      server_list_types);
 	ggzcore_server_add_event_hook(server, GGZ_ENTERED,
 				      server_enter_ok);
 	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, 
@@ -306,6 +309,14 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void
 	for (i = 0; i < num; i++)
 		room_register(ggzcore_server_get_nth_room(server, i));
 
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn server_list_types(GGZServerEvent id, void* event_data, void* user_data)
+{
+	output_types();
+	
 	return GGZ_HOOK_OK;
 }
 

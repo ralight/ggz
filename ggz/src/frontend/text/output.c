@@ -154,6 +154,21 @@ void output_rooms(void)
 }
 
 
+void output_types(void)
+{
+	int i;
+	char** names = NULL;
+
+	if (!(names = ggzcore_server_get_gametype_names(server)))
+		return;  
+
+	for (i = 0; names[i]; i++)
+		output_text("-- Gametype %d : %s", i, names[i]);
+
+	free(names);
+}
+
+
 void output_players(void)
 {
 	int i;
