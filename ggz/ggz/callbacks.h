@@ -46,3 +46,7 @@ get_tables                             (GtkMenuItem     *menuitem,
 void
 fill_defaults                          (GtkWidget       *widget,
                                         gpointer         user_data);
+
+void
+input_chat_msg                         (GtkWidget       *editable,
+                                        gpointer         user_data);

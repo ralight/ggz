@@ -1,3 +1,82 @@
+Tue Feb  8 15:55:55 2000  bmh  <bmh@users.sourceforce.net>
+
+	* game_clients/spades/callbacks.c, game_clients/spades/client.h, game_clients/spades/client_func.c, game_clients/spades/client_main.c, game_clients/spades/gtk_connect.c:
+	- Fixed spades client to accept '-o' option if player needs to
+	  set game options (and don't ask for them otherwise)
+	- Display main window earlier (so it looks like we're doing something)
+
+	* ggz/callbacks.c, ggz/connect.c, ggz/game.c, ggz/game.h:
+	- Support {RSP|REQ}_GAME opcodes.  This removes the dirty hack I
+	  was using to get the game_client and game_server to talk.
+	- Exec game_client with '-o' if we need options to be set
+	  (since players who join existing tables don't set options)
+	- Pass flag to launch_game() if we are actually launching
+	  (versus joining)
+
+	* ggz/protocols.h:
+	- Updated to newest protocols from ggzd
+
+Tue Feb  8 00:41:17 2000  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c:
+	- RSP_TABLE_LIST  This displays games, but does not store the information
+	-                 localy yet.
+
+Mon Feb  7 20:59:12 2000  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.h:
+	- Fixed typo in comment.  es_{write|read}n return -1 on error, not 1
+
+Sun Feb  6 03:42:46 2000  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c:
+	- Fixes RSP_USER_LIST now handles -1
+
+Sat Feb  5 23:37:04 2000  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/client.h, ggz/connect.c, ggz/main.c:
+	- Added support for RSP_USER_LIST
+
+Sat Feb  5 21:51:37 2000  bmh  <bmh@users.sourceforce.net>
+
+	* configure.in:
+	- Updated to compile prelim. client and spades game
+
+	* game_clients/spades/Makefile.am, game_clients/spades/all-cards.xpm:
+	- Oops, forgot a couple
+
+	* game_clients/spades/.cvsignore, game_clients/spades/callbacks.c, game_clients/spades/callbacks.h, game_clients/spades/card.c, game_clients/spades/card.h, game_clients/spades/client.h, game_clients/spades/client_func.c, game_clients/spades/client_main.c, game_clients/spades/display.h, game_clients/spades/gtk_connect.c, game_clients/spades/gtk_connect.h, game_clients/spades/gtk_dlg_about.c, game_clients/spades/gtk_dlg_about.h, game_clients/spades/gtk_dlg_disconnect.c, game_clients/spades/gtk_dlg_disconnect.h, game_clients/spades/gtk_dlg_error.c, game_clients/spades/gtk_dlg_error.h, game_clients/spades/gtk_dlg_exit.c, game_clients/spades/gtk_dlg_exit.h, game_clients/spades/gtk_dlg_options.c, game_clients/spades/gtk_dlg_options.h, game_clients/spades/gtk_dlg_stat.c, game_clients/spades/gtk_dlg_stat.h, game_clients/spades/gtk_io.c, game_clients/spades/gtk_io.h, game_clients/spades/gtk_menu.c, game_clients/spades/gtk_menu.h, game_clients/spades/gtk_play.c, game_clients/spades/gtk_play.h, game_clients/spades/gtk_taunt.c, game_clients/spades/gtk_taunt.h, game_clients/spades/gtkspinbutton.c, game_clients/spades/gtkspinbutton.h, game_clients/spades/options.h, game_clients/spades/socketfunc.c, game_clients/spades/socketfunc.h:
+	- Added files from spades client as a temporary hack (sigh).
+
+	* ggz/.cvsignore, ggz/Makefile.am, ggz/callbacks.c, ggz/callbacks.h, ggz/client.h, ggz/client_func.c, ggz/connect.c, ggz/connect.h, ggz/dlg_error.c, ggz/dlg_error.h, ggz/dlg_exit.c, ggz/dlg_exit.h, ggz/err_func.c, ggz/err_func.h, ggz/game.c, ggz/game.h, ggz/interface.c, ggz/interface.h, ggz/main.c, ggz/options.h, ggz/parse_opt.c, ggz/parse_opt.h, ggz/protocols.h, ggz/support.c, ggz/support.h:
+	- Added temporary hack of a client from spades code
+	  (Hey, we need to have *something* to test the server with!)
+
+Sat Jan 29 19:36:57 2000  bmh  <bmh@users.sourceforce.net>
+
+	* game_clients/.cvsignore, game_clients/Makefile.am:
+	- Added files
+
+Wed Jan 26 16:59:31 2000  bmh  <bmh@users.sourceforce.net>
+
+	* .cvsignore, AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am, NEWS, README, TODO, acconfig.h, autogen.sh, configure.in, ggz/Makefile.am:
+	- Added support files (no source yet)
+
+	* /cvsroot/GGZ/easysock/.cvsignore:
+	- Added easysock.lo and libeasysock.la to .cvsignore
+
+	* /cvsroot/GGZ/easysock/.cvsignore, /cvsroot/GGZ/easysock/BUGS, /cvsroot/GGZ/easysock/COPYING, /cvsroot/GGZ/easysock/ChangeLog, /cvsroot/GGZ/easysock/INSTALL, /cvsroot/GGZ/easysock/Makefile.am, /cvsroot/GGZ/easysock/NEWS, /cvsroot/GGZ/easysock/TODO, /cvsroot/GGZ/easysock/acconfig.h, /cvsroot/GGZ/easysock/configure.in, /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	Imported easysock sources
+
+	* /cvsroot/GGZ/easysock/.cvsignore, /cvsroot/GGZ/easysock/BUGS, /cvsroot/GGZ/easysock/COPYING, /cvsroot/GGZ/easysock/ChangeLog, /cvsroot/GGZ/easysock/INSTALL, /cvsroot/GGZ/easysock/Makefile.am, /cvsroot/GGZ/easysock/NEWS, /cvsroot/GGZ/easysock/TODO, /cvsroot/GGZ/easysock/acconfig.h, /cvsroot/GGZ/easysock/configure.in, /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	Initial revision
+
+	* /cvsroot/GGZ/easysock/AUTHORS, /cvsroot/GGZ/easysock/README, /cvsroot/GGZ/easysock/autogen.sh:
+	Imported easysock sources
+
+	* /cvsroot/GGZ/easysock/AUTHORS, /cvsroot/GGZ/easysock/README, /cvsroot/GGZ/easysock/autogen.sh:
+	Initial revision
+
 2000-01-21 04:57:17  Brent Hendricks  <brentmh@ece.rice.edu>
 
 	* /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c:

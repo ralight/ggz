@@ -55,6 +55,7 @@ static void add_user_list( gchar* name, gint table);
 static void add_table_list( gint TableNum, TableInfo Table);
 static int anon_login( void );
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
+static void display_chat(char* name, char* msg);
 
 GtkWidget* tmpWidget;
 
@@ -115,11 +116,12 @@ void Disconnect( GtkWidget* widget, gpointer data )
 void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 
   char *message;
+  char name[9];
   int op, size, status;
-  char byte;
   int checksum, ibyte;
-  char buf[4096];
   int count, i, j;
+  char byte;
+  char buf[4096];
   TableInfo Table;
 
   CheckReadInt(source, (int*)&op);
@@ -177,6 +179,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
   case RSP_GAME_TYPES:
 	  connect_msg("[RSP_GAME_TYPES] %d\n", byte);
 	  break;
+
   case RSP_TABLE_LIST:
 	  CheckReadInt(source, &ibyte );
 	  count=ibyte;
@@ -204,6 +207,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 		  add_table_list(i, Table);
 	  }
 	  break;
+
   case RSP_USER_LIST:
 	  CheckReadInt(source, &ibyte );
 	  count=ibyte;
@@ -217,7 +221,6 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  }
 	  break;
 	  
-
   case RSP_GAME:	  
 	  es_read_int(source, &size);
 	  connect_msg("[RSP_GAME] %d bytes\n", size);
@@ -229,19 +232,37 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 		  close(opt.game_fd);
 	  }
 	  break;
+
+  case RSP_CHAT:
+	  es_read_char(source, &byte);
+	  connect_msg("[RSP_CHAT] %d\n", byte);
+	  break;
 	  
+  case MSG_CHAT:
+	  es_read_string(source, name);
+	  connect_msg("[MSG_CHAT] msg from %s\n", name);
+	  es_read_string_alloc(source, &message);
+	  connect_msg("[MSG_CHAT] %s\n", message);
+	  display_chat(name, message);
+	  g_free(message);
+	  break;
+
   case MSG_SERVER_FULL:
   case RSP_NEW_LOGIN:
+
   case RSP_LOGIN:
+	  read(source, &byte, 1);
 	  connect_msg("[RSP_LOGIN] %d\n", byte);
 	  CheckWriteInt(opt.sock, REQ_USER_LIST);  
 	  break;
   case RSP_MOTD:
+
   case RSP_PREF_CHANGE:
   case RSP_REMOVE_USER:
   case RSP_TABLE_OPTIONS:
   case RSP_USER_STAT:
   case RSP_ERROR:
+	  
   }
   
 }
@@ -332,10 +353,26 @@ int anon_login( void ) {
 /* Complete sync with server */
 static void server_sync()
 {
-        tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),"player_list"));
+        tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),
+						   "player_list"));
 	gtk_clist_clear (GTK_CLIST (tmpWidget));
 	CheckWriteInt(opt.sock, REQ_USER_LIST);  
 	CheckWriteInt(opt.sock, REQ_TABLE_LIST);  
 	CheckWriteInt(opt.sock, -1);  
 }
+
+
+static void display_chat(char* name, char* msg)
+{
+	char* buf;
+	GtkWidget* tmp;
+
+	tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),
+					     "chat_text"));
+	buf = g_strdup_printf( "[ %s ] %s\n", name, msg);
+	/* FIXME: colors for different users */
+	gtk_text_insert( GTK_TEXT(tmp), NULL, NULL, NULL, buf, -1 );
+	g_free( buf );
+}
+
 

@@ -188,3 +188,17 @@ fill_defaults                          (GtkWidget       *win,
 	gtk_entry_set_text(GTK_ENTRY(tmp), port );
 }
 
+
+void
+input_chat_msg                         (GtkWidget        *widget,
+                                        gpointer         user_data) {
+	
+	/* FIXME: Check to see if connected */
+	if (strcmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "") != 0
+	    && CheckWriteInt( opt.sock, REQ_CHAT ) == NET_OK)
+		
+		CheckWriteString(opt.sock, 
+				 gtk_entry_get_text(GTK_ENTRY(user_data)));
+	
+	gtk_entry_set_text(GTK_ENTRY(user_data), "");
+}
