@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: games.c 977 2001-01-04 22:59:13Z perdig $
+ *  $Id: games.c 981 2001-01-05 18:27:38Z perdig $
  */
 
 #include <stdlib.h>
@@ -136,7 +136,7 @@ cgc_join_table(struct game *joined, int player, int color)
 		break;
 	case WHITE:
 		if(joined->player1 == EMPTY)
-			joined->player2 = player;
+			joined->player1 = player;
 		else if(joined->player2 != EMPTY)
 			return E_SEATFULL;
 		else

@@ -67,11 +67,13 @@ void game_update(int event_id, void *data) {
       /* Check for current state */
       if (game_info.state != CHESS_STATE_WAIT)
         break;
+      ggz_debug("New player!");
       /* Add to cgc */
       if (cgc_join_game(game, *(int*)data, 
           *(int*)data == 0 ? WHITE : BLACK) < 0)
         /* Boy, that's bad... */
         return;
+      ggz_debug("Protocol stuff");
       /* Send seat */
       game_send_seat(*(int *)data);
       /* Send players */
@@ -176,7 +178,8 @@ void game_update(int event_id, void *data) {
  *  CHESS_REQ_TIME -> Check for validity, then CHESS_EVENT_TIME
  *  CHESS_REQ_MOVE -> Check for validity, then CHESS_EVENT_MOVE */
 void game_handle_player(int id, int *seat) {
-  int op, fd, time;
+  int fd, time;
+  char op;
   void *data;
   struct timeval now;
 
@@ -185,15 +188,21 @@ void game_handle_player(int id, int *seat) {
   if (fd < 0)
     return;
 
+  ggz_debug("Handling player");
+
   /* Get the opcode */
-  if (es_read_int(fd, &op) < 0)
+  if (es_read_char(fd, &op) < 0)
     return;
+
+  ggz_debug("Received opcode %d", op);
 
   /* What to do? */
   switch (op) {
-    case CHESS_REQ_TIME:
+    case CHESS_RSP_TIME:
+      ggz_debug("Player sent a RSP_TIME");
       if (es_read_int(fd, &time) < 0)
         return;
+      ggz_debug("Player sent the following time: %d", time);
       /* Is it a valid time ? */
       if ((time >> 24) > 3) {
         game_update(CHESS_EVENT_TIME, NULL);
