@@ -218,7 +218,7 @@ static GGZHookReturn server_login_ok(GGZServerEvent id, void* event_data,
 #ifdef DEBUG
 	output_text("--- Logged into to %s.", ggzcore_server_get_host(server));
 #endif
-//	ggzcore_server_list_rooms(server, -1, 1);
+	ggzcore_server_list_rooms(server, -1, 1);
 
 	return GGZ_HOOK_OK;
 }
@@ -443,8 +443,13 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void
 {
 	int i, num;
 	
-	output_rooms();
-	
+	if(ggzcore_server_get_state(server) == GGZ_STATE_LOGGED_IN)
+	{
+		ggzcore_server_join_room(server, 0);
+	}else{
+		output_rooms();
+	}
+
 	/* Register callbacks for all rooms */
 	num = ggzcore_server_get_num_rooms(server);
 	for (i = 0; i < num; i++)

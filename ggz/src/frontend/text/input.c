@@ -48,6 +48,7 @@ static void input_handle_join_table(char* line);
 static void input_handle_desc(char* line);
 static void input_handle_chat(char* line);
 static void input_handle_msg(char* line);
+static void input_handle_wall(char* line);
 static void input_handle_beep(char* line);
 static void input_handle_launch(char *line);
 static void input_handle_exit(void);
@@ -113,6 +114,9 @@ void input_command(void)
 		else if (strcmp(command, "msg") == 0) {
 			input_handle_msg(current);
 		}
+		else if (strcmp(command, "wall") == 0) {
+			input_handle_wall(current);
+		}
 		else if (strcmp(command, "desc") == 0) {
 			input_handle_desc(current);
 		}
@@ -146,7 +150,7 @@ static int input_is_command(char *line)
 static void input_handle_connect(char* line)
 {
 	int portnum;
-	char *arg, *host, *port, *login;
+	char *arg, *host, *port, *login, *pwd;
 	GGZLoginType type;
 
 	arg = strsep(&line, delim);
@@ -172,7 +176,15 @@ static void input_handle_connect(char* line)
 	else
 		login = strdup(getenv("LOGNAME"));
 	
-	server_init(host, portnum, type, login, NULL);
+	arg = strsep(&line, delim);
+	if (arg && strcmp(arg, "") != 0)
+	{
+		type = GGZ_LOGIN;
+		pwd = strdup(arg);
+		server_init(host, portnum, type, login, pwd);
+	}else{
+		server_init(host, portnum, type, login, NULL);
+	}
 }
 
 
@@ -298,6 +310,16 @@ static void input_handle_msg(char* line)
 		msg = strdup(line);
 		ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, player, msg);
 	}
+}
+
+
+static void input_handle_wall(char* line)
+{
+	char *msg;
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+
+	msg = strdup(line);
+	ggzcore_room_chat(room, GGZ_CHAT_ANNOUNCE, NULL, msg);
 }
 
 
