@@ -109,6 +109,8 @@ create_dlg_license (void)
 
 #ifdef GTK2
   license_text = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
+  gtk_text_view_set_editable(GTK_TEXT_VIEW(license_text), FALSE);
+  gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(license_text), FALSE);
 #else
   license_text = gtk_text_new (NULL, NULL);
 #endif

@@ -207,6 +207,8 @@ create_dlg_motd (void)
 
 #ifdef GTK2
   motd_text = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
+  gtk_text_view_set_editable(GTK_TEXT_VIEW(motd_text), FALSE);
+  gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(motd_text), FALSE);
 #else
   motd_text = gtk_text_new (NULL, NULL);
 #endif
