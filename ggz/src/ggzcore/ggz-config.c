@@ -37,6 +37,7 @@
 #define QUERY_CONFIG	1
 #define QUERY_GAMEDIR	2
 #define QUERY_VERSION	3
+#define QUERY_DATADIR	4
 static char *modname = NULL;
 static char *modversion = NULL;
 static char *modexec = NULL;
@@ -58,6 +59,8 @@ static const struct poptOption args[] = {
 	 "Query GGZCONFDIR - location of configuration directory"},
 	{"gamedir",	'g',	POPT_ARG_NONE,	&did_query,	QUERY_GAMEDIR,
 	 "Query GGZGAMEDIR - location of game modules directory"},
+	{"datadir",	'd',	POPT_ARG_NONE,	&did_query,	QUERY_DATADIR,
+	 "Query GGZDATADIR - location of game data directory"},
 	{"version",	'v',	POPT_ARG_NONE,	&did_query,	QUERY_VERSION,
 	 "Query VERSION - version identifier of ggzcore files"},
 	{"install",	'\0',	POPT_ARG_NONE,	&install_mod,	0,
@@ -417,7 +420,9 @@ int main(const int argc, const char **argv)
 			case QUERY_VERSION:
 				printf("%s\n", VERSION);
 				break;
-
+			case QUERY_DATADIR:
+				printf("%s\n", GGZDATADIR);
+				break;
 			default:
 				fprintf(stderr, "%s: %s\n",
 					poptBadOption(context, 0),
