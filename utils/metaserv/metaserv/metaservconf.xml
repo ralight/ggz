@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <metaserver>
 	<entrylist class="ggz">
-		<connection version="0.0.7pre" preference="100" location="pennsylvania/usa" speed="768">ggz://jzaun.com:5689</connection>
-		<connection version="0.0.5" preference="100" location="dresden/germany" speed="128">ggz://mindx.dyndns.org:5688</connection>
-		<connection version="0.0.6" preference="100" location="berlin/germany" speed="2000">ggz://ggz.snafu.de:5688</connection>
+		<connection version="0.0.8pre" preference="100" location="pennsylvania/usa" speed="768">ggz://jzaun.com:5689</connection>
+		<connection version="0.0.6" preference="100" location="dresden/germany" speed="128">ggz://mindx.dyndns.org:5688</connection>
+		<connection version="0.0.7" preference="100" location="berlin/germany" speed="2000">ggz://ggz.snafu.de:5688</connection>
 		<meta version="0.1" preference="100">ggzmeta://ggz.snafu.de:15689</meta>
 		<meta version="0.1" preference="20">ggzmeta://mindx.dyndns.org:15689</meta>
 	</entrylist>
@@ -21,7 +21,6 @@
 	</entrylist>
 	<configuration>
 		<authorization username="josef" password="ggzrocks" realm="ggz" update="1"/>
-		<authorization username="capsi" password="whatever" realm="atlantik" update="1"/>
 		<peer username="node02" password="ggzrocks">ggz://jzaun.com:5688</peer>
 	</configuration>
 </metaserver>
