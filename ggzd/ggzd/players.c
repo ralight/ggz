@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4984 2002-10-22 04:34:51Z jdorje $
+ * $Id: players.c 5001 2002-10-22 20:23:12Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -384,68 +384,162 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 	return GGZ_EVENT_OK;
 }
 
-
-GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
+/* Check if the player has permissions to modify the table.  This will need
+   to be more extensive later.  Return the table if they have
+   permissions, otherwise NULL. */
+static GGZTable *check_table_perms(GGZPlayer *player,
+				   int room_id, int table_id)
 {
-	int i;
-	char owner[MAX_USER_NAME_LEN + 1];
-	GGZClientReqError status = E_OK;
-	GGZTable *real_table;
-	struct GGZTableSeat seat;
-	
-	dbg_msg(GGZ_DBG_TABLE, "Handling table update for %s", player->name);
-	
+	GGZTable *table;
+
 	/* Check permissions */
-	real_table = table_lookup(table->room, table->index);
-	strcpy(owner, real_table->owner);
-	pthread_rwlock_unlock(&real_table->lock);
-	if (strcmp(owner, player->name) != 0) {
-		dbg_msg(GGZ_DBG_TABLE, "%s tried to modify table owned by %s",
-			player->name, owner);
+	table = table_lookup(room_id, table_id);
+	if (!table)
+		return NULL;
+
+	if (perms_is_admin(player))
+		return table;
+
+	if (strcmp(table->owner, player->name) != 0) {
+		pthread_rwlock_unlock(&table->lock);
+		dbg_msg(GGZ_DBG_TABLE, "%s tried to modify bad table",
+			player->name);
+		return NULL;
+	}
+
+	return table;
+}
+
+
+GGZPlayerHandlerStatus player_table_desc_update(GGZPlayer* player,
+						int room_id, int table_id,
+						const char *desc)
+{
+	GGZTable *table = check_table_perms(player, room_id, table_id);
+	if (!table) {
 		if(net_send_update_result(player->client->net,
 					  E_NO_PERMISSION) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
-	
-	/* Do actual table update */
+	pthread_rwlock_unlock(&table->lock);
 
-	/*  Update the description if necessary */
-	if (strlen(table->desc))
-		table_set_desc(real_table, table->desc);
-	
-	/* Find the seat that was updated: it's the one that isn't NONE */
-	/* NOTE: don't use seats_num or seats_type since the table's seats
-	   may not all be valid. */
-	for (i = 0; i < table->num_seats; i++) {
-		if (table->seat_types[i] != GGZ_SEAT_NONE) {
-			seat.index = i;
-			seat.type = table->seat_types[i];
-			strcpy(seat.name, table->seat_names[i]);
-			seat.fd = -1;
+	/* FIXME: this is buggy for two reasons.  (1) Since we don't have
+	   a lock on the table at this point, it is possible for the
+	   table to be deallocated by the table thread, causing a server
+	   segfault (at best).  (2) We (the player thread) should not be
+	   accessing and using a write lock on the table's description -
+	   the new desc should instead be sent to the table thread to
+	   do this. */
+	if (desc)
+		table_set_desc(table, desc);
 
-			dbg_msg(GGZ_DBG_TABLE,
-				"%s requested seat %d on table %d/%d "
-				"become %s",
-				player->name, i, table->room, table->index,
-				ggz_seattype_to_string(seat.type));
-    
-			
-			if (transit_seat_event(table->room, table->index,
-					       seat, player->name) != GGZ_OK) {
-				status = E_NO_TABLE;
-				break;
-			}
-		}
+	if(net_send_update_result(player->client->net, E_OK) < 0)
+		return GGZ_REQ_DISCONNECT;
+	return GGZ_REQ_OK;
+}
+
+GGZPlayerHandlerStatus player_table_seat_update(GGZPlayer *player,
+						int room_id, int table_id,
+						GGZTableSeat *seat)
+{
+	int allow;
+
+	GGZTable *table = check_table_perms(player, room_id, table_id);
+	if (!table) {
+		if(net_send_update_result(player->client->net,
+					  E_NO_PERMISSION) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
 	}
 
-	/* Return any immediate failures to client*/
+	pthread_rwlock_rdlock(&game_types[table->type].lock);
+	allow = game_types[table->type].allow_leave;
+	pthread_rwlock_unlock(&game_types[table->type].lock);
+	pthread_rwlock_unlock(&table->lock);
+
+	if (!allow) {
+		if(net_send_update_result(player->client->net,
+					  E_LEAVE_FORBIDDEN) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	dbg_msg(GGZ_DBG_TABLE,
+		"%s requested seat %d on table %d/%d become %s",
+		player->name, seat->index, table->room, table->index,
+		ggz_seattype_to_string(seat->type));
+
+	/* This function is buggy, just like player_table_desc_update */
+
+	if (transit_seat_event(table->room, table->index,
+			       *seat, player->name) != GGZ_OK) {
+		if(net_send_update_result(player->client->net,
+					  E_NO_TABLE) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	if(net_send_update_result(player->client->net, E_OK) < 0)
+		return GGZ_REQ_DISCONNECT;
+	return GGZ_REQ_OK;
+}
+
+GGZPlayerHandlerStatus player_table_boot_update(GGZPlayer *player,
+						int room_id, int table_id,
+						const char *name)
+{
+	GGZPlayer *them;
+	GGZClientReqError status;
+	int allow;
+
+	GGZTable *table = check_table_perms(player, room_id, table_id);
+	if (!table) {
+		if(net_send_update_result(player->client->net,
+					  E_NO_PERMISSION) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	/* This function is buggy, just like player_table_desc_update */
+
+	pthread_rwlock_rdlock(&game_types[table->type].lock);
+	allow = game_types[table->type].allow_leave;
+	pthread_rwlock_unlock(&game_types[table->type].lock);
+	pthread_rwlock_unlock(&table->lock);
+
+	dbg_msg(GGZ_DBG_TABLE,
+		"%s tried to boot %s from table %d in room %d",
+		player->name, name, table_id, room_id);
+
+	if (!allow) {
+		if(net_send_update_result(player->client->net,
+					  E_LEAVE_FORBIDDEN) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	them = hash_player_lookup(name);
+	if (!them || them->room != room_id || them->table != table_id) {
+		if (them)
+			pthread_rwlock_unlock(&them->lock);
+		if (net_send_update_result(player->client->net,
+					   E_BAD_OPTIONS) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+	pthread_rwlock_unlock(&them->lock);
+	/* FIXME: player lock is lost... */
+	status = player_transit(them, GGZ_TRANSIT_LEAVE, table_id);
+
 	if (status != E_OK) {
 		if (net_send_update_result(player->client->net, status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
-	
+
+	if(net_send_update_result(player->client->net, E_OK) < 0)
+		return GGZ_REQ_DISCONNECT;
 	return GGZ_REQ_OK;
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4984 2002-10-22 04:34:51Z jdorje $
+ * $Id: table.c 5001 2002-10-22 20:23:12Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -897,7 +897,7 @@ GGZClientReqError table_launch(GGZTable *table, char* name)
 
 
 /* Change table description of running table */
-void table_set_desc(GGZTable *table, char *desc)
+void table_set_desc(GGZTable *table, const char *desc)
 {
 	dbg_msg(GGZ_DBG_TABLE, "Table %p new desc: '%s'", table, desc);
 	

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4979 2002-10-22 02:16:46Z jdorje $
+ * $Id: net.c 5001 2002-10-22 20:23:12Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1141,41 +1141,79 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <UPDATE> tag */
 static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 {
-	char *type, *room;
-	GGZTable *table;
-	GGZPlayer *player;
+	char *type, *action, *room;
 
-	if (update) {
+	if (!update)
+		return;
 
-		if (!check_playerconn(net, "protocol")) return;
+	/* Make sure player is logged in. */
+	if (!check_playerconn(net, "protocol")) return;
 
-		/* Grab update data from tag */
-		type = ggz_xmlelement_get_attr(update, "TYPE");
+	/* Grab update data from tag */
+	type = ggz_xmlelement_get_attr(update, "TYPE");
+	action = ggz_xmlelement_get_attr(update, "ACTION");
+	room = ggz_xmlelement_get_attr(update, "ROOM");
 
-		if (type && strcasecmp(type, "player") == 0) {
-			if (!(player = ggz_xmlelement_get_data(update))) {
-				_net_send_result(net, "update", E_BAD_OPTIONS);
-				return;
-			}
+	if (!type || !action) {
+		_net_send_result(net, "update", E_BAD_OPTIONS);
+		return;
+	}
 
-			/* FIXME: update password and other data */
-		}
-		else if (type && strcasecmp(type, "table") == 0) {
-			if (!(table = ggz_xmlelement_get_data(update))) {
-				_net_send_result(net, "update", E_BAD_OPTIONS);
-				return;
-			}
-
-			/* If room was specified, override default current room */
-			if ( (room = ggz_xmlelement_get_attr(update, "ROOM")))
-				table->room = safe_atoi(room);
-			
-			player_table_update(net->client->data, table);
-		} else {
+	if (strcasecmp(type, "player") == 0) {
+		GGZPlayer *player = ggz_xmlelement_get_data(update);
+		if (!player) {
 			_net_send_result(net, "update", E_BAD_OPTIONS);
 			return;
 		}
-	}
+
+		/* FIXME: update password and other data */
+	} else if (strcasecmp(type, "table") == 0) {
+		GGZTable *table = ggz_xmlelement_get_data(update);
+		if (!table) {
+			_net_send_result(net, "update", E_BAD_OPTIONS);
+			return;
+		}
+
+		/* If room was specified, override default current room */
+		if (room)
+			table->room = safe_atoi(room);
+
+		if (!strcasecmp(action, "desc")) {
+			player_table_desc_update(net->client->data,
+						 table->room,
+						 table->index,
+						 table->desc);
+		} else if (!strcasecmp(action, "seat")) {
+			int i;
+			for (i = 0; i < table->num_seats; i++) {
+				GGZTableSeat seat;
+				if (table->seat_types[i] == GGZ_SEAT_NONE)
+					continue;
+				seat.index = i;
+				seat.type = table->seat_types[i];
+				strcpy(seat.name, table->seat_names[i]);
+				seat.fd = -1;
+				player_table_seat_update(net->client->data,
+							 table->room,
+							 table->index,
+							 &seat);
+			}
+		} else if (!strcasecmp(action, "boot")) {
+			int i;
+			for (i = 0; i < table->num_seats; i++) {
+				if (table->seat_types[i] == GGZ_SEAT_NONE
+				    || !table->seat_names[i][0])
+					continue;
+				player_table_boot_update(net->client->data,
+							 table->room,
+							 table->index,
+							 table->seat_names[i]);
+			}
+		} else {
+			_net_send_result(net, "update", E_BAD_OPTIONS);
+		}
+	} else
+		_net_send_result(net, "update", E_BAD_OPTIONS);
 }
 
 
@@ -1429,8 +1467,11 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		case GGZ_SEAT_PLAYER:
 			/* A bad client might send this...how should
 			   we deal with it? */
-			err_msg("Client launched table with GGZ_SEAT_PLAYER seat.");
-			seat_type = GGZ_SEAT_NONE;
+			if (!seat->name)
+				seat_type = GGZ_SEAT_NONE;
+			else
+				strcpy(table->seat_names[seat->index],
+				       seat->name);
 			break;
 		}
 		table->seat_types[seat->index] = seat_type;

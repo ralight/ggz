@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4984 2002-10-22 04:34:51Z jdorje $
+ * $Id: table.h 5001 2002-10-22 20:23:12Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -111,7 +111,7 @@ void table_free(GGZTable* table);
 GGZClientReqError table_launch(struct GGZTable *table, char* name);
 
 /* Change table description of running table */
-void table_set_desc(struct GGZTable *table, char *desc);
+void table_set_desc(struct GGZTable *table, const char *desc);
 
 /* Call to have a player join the table.  Only the table thread can call
    this function. */
