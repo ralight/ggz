@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2368 2001-09-05 07:01:58Z jdorje $
+ * $Id: spades.c 2391 2001-09-07 13:10:52Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -92,9 +92,11 @@ static void spades_init_game()
 
 	game.must_break_trump = 1;	/* in spades, you can't lead trump until it's broken */
 	game.target_score = 500;	/* adjustable by options */
-	GSPADES.nil_value = 100;
 	game.trump = SPADES;
 	game.ai_type = GGZ_AI_SPADES;
+
+	GSPADES.nil_value = 100;
+	GSPADES.nil_tricks_count = 1;
 }
 
 static void spades_get_options()

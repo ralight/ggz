@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2390 2001-09-07 12:50:53Z jdorje $
+ * $Id: spades.c 2391 2001-09-07 13:10:52Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -44,6 +44,10 @@
 #include "../common.h"
 
 #include "../games/spades.h"
+
+
+#define DEBUG_BID
+#define DEBUG_PLAY
 
 
 static char *get_name(player_t p);
@@ -603,7 +607,7 @@ static card_t get_play(player_t p, seat_t s)
 		ggzd_debug("AI-SPADES: My lead\n");
 	else
 		ggzd_debug("AI-SPADES: %s led. %s of %s is high \n",
-			   suit_names[(int) suit],
+			   suit_names[(int) lead.suit],
 			   face_names[(int) hi_card.face],
 			   suit_names[(int) hi_card.suit]);
 #endif
@@ -627,14 +631,12 @@ static card_t get_play(player_t p, seat_t s)
 	if (myNeed < 0)
 		myNeed = 0;
 
-	/* JDS: doesn't this assume that nil busts don't count toward the
-	   team? */
 	i = (num + 1) % 2;
-	oppNeed = game.players[i].bid.sbid.val + game.players[i +
-							      2].bid.sbid.val;
-	if (game.players[i].bid.sbid.val > 0)
+	oppNeed = game.players[i].bid.sbid.val +
+		  game.players[i + 2].bid.sbid.val;
+	if (GSPADES.nil_tricks_count || game.players[i].bid.sbid.val > 0)
 		oppNeed -= game.players[i].tricks;
-	if (game.players[i + 2].bid.sbid.val > 0)
+	if (GSPADES.nil_tricks_count || game.players[i + 2].bid.sbid.val > 0)
 		oppNeed -= game.players[i + 2].tricks;
 	if (oppNeed < 0)
 		oppNeed = 0;
