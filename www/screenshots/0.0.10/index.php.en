@@ -1,0 +1,62 @@
+<? include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+
+<b>GGZ 0.0.10 Screenshots</b><br>
+
+These screenshots have been made for release 0.0.10.
+The previous ones of version 0.0.7, 0.0.8 and 0.0.9 are still available
+<a href="/screenshots/0.0.7/">here</a>,
+<a href="/screenshots/0.0.8/">here</a>
+and <a href="/screenshots/0.0.9/">here</a>.
+<br><br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="community.jpg"><img src="community.small.jpg" alt="GGZ Community" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="geekgame-intro.jpg"><img src="geekgame-intro.small.jpg" alt="Geekgame intro" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+The GGZ Community opened its doors for all GGZ players
+</td><td bgcolor="#ffffa0">
+Geekgame got a nice intro screen
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="ggzboard-hnefatafl.jpg"><img src="ggzboard-hnefatafl.small.jpg" alt="Hnefatafl" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="widelands.jpg"><img src="widelands.small.jpg" alt="Widelands support" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Hnefatafl is an old vikings game
+</td><td bgcolor="#ffffa0">
+The build-up strategy game Widelands got initial GGZ support
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="ghns.jpg"><img src="ghns.small.jpg" alt="Get Hot New Stuff" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="rooms.jpg"><img src="rooms.small.jpg" alt="KGGZ rooms" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Get Hot New Stuff: New levels, integrated into GGZBoard
+</td><td bgcolor="#ffffa0">
+That's a lot of rooms to explore!
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="koenig-themes.jpg"><img src="koenig-themes.small.jpg" alt="Koenig themes" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="gaim.jpg"><img src="gaim.small.jpg" alt="Gaim launcher" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+The KDE chess game can install Knights and SVG themes
+</td><td bgcolor="#ffffa0">
+Gaim and Kopete bring GGZ to the IM community
+</td></tr>
+
+<? include_once("../../site/footer.php"); ?>
