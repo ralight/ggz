@@ -200,10 +200,13 @@ int room_handle_join(const int p_index, const int p_fd)
 		return -1;
 
 	/* Check for silliness from the user */
-	if(room > room_info.num_rooms || room < 0)
+	if(room > room_info.num_rooms || room < 0) {
 		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
 		   || es_write_char(p_fd, E_BAD_OPTIONS) < 0)
 			return -1;
+		
+		return GGZ_REQ_FAIL;
+	}
 
 	/* Do the actual room change, and return results */
 	result = room_join(p_index, room, p_fd);
