@@ -1,0 +1,14 @@
+Colorsniff allows you to follow the GGZ protocol exchange between a client and
+a server.
+It highlights traffic from either side with a special color, acting as a
+wrapper around the output of 'ngrep'.
+A neat feature is to turn off the display of PING/PONG.
+
+A sample call looks like that:
+ngrep -d lo | ./colorsniff.pl --noping
+
+You need the perl module Term::ANSIColor installed, but this is normally part
+of every perl installation.
+
+Josef
+
