@@ -102,7 +102,8 @@ void chat_print(int color, char* left, char* right)
 		gtk_xtext_refresh(tmp);
 	} else if(color == CHAT_COLOR_SOME) {
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-		if (!strcmp(connection.username, left))
+		buf = g_strdup_printf("<%s>",connection.username); 
+		if (!strcmp(buf, left))
 		{
 			buf = g_strdup_printf("\003%d%s\00300", 
 			ggzrc_read_int("CHAT","YourColor",1), left);

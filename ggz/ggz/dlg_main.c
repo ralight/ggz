@@ -143,6 +143,9 @@ void ggz_get_tables(GtkMenuItem * menuitem, gpointer user_data)
 
 static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 {
+	gchar *name = NULL;
+	gint i;
+
         if (!connection.connected) {
                 err_dlg(_("Not Connected"));
                 return;
@@ -155,9 +158,19 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 		{
 			if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/msg ", 5))
 			{
-				if (es_write_char(connection.sock, GGZ_CHAT_PERSONAL) == 0)
-	        	        	es_write_string(connection.sock,
-                        	        	gtk_entry_get_text(GTK_ENTRY(user_data))+5);
+					name = g_strdup(gtk_entry_get_text(GTK_ENTRY(user_data))+5);
+					for(i=0;i<strlen(name);i++)
+					{
+						if(name[i]==' ')
+						{
+							name[i]='\0';
+							es_write_char(connection.sock, GGZ_CHAT_PERSONAL);
+			        	        	es_write_string(connection.sock, name);
+			        	        	es_write_string(connection.sock,
+        	        	        	        	gtk_entry_get_text(GTK_ENTRY(user_data))+6+i);
+							i = strlen(name)+1;
+						}
+					}
 			} else if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/beep ", 6))
 			{
 				if (es_write_char(connection.sock, GGZ_CHAT_BEEP) == 0)
@@ -184,10 +197,6 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 		chat_print(CHAT_COLOR_SERVER, "---", "   Displays an action.");
 		chat_print(CHAT_COLOR_SERVER, "---", "/beep <user>");
 		chat_print(CHAT_COLOR_SERVER, "---", "   Makes <user>'s computer beep.");
-		chat_print(CHAT_COLOR_SERVER, "---", "/anounce");
-		chat_print(CHAT_COLOR_SERVER, "---", "   Reserved for server operators,");
-		chat_print(CHAT_COLOR_SERVER, "---", "   this command sends a message to");
-		chat_print(CHAT_COLOR_SERVER, "---", "   all rooms on the server");
 	}
         gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }
