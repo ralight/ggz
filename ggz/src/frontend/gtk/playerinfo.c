@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 6377 2004-11-15 21:40:23Z jdorje $
+ * $Id: playerinfo.c 6380 2004-11-16 00:22:21Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -243,16 +243,12 @@ GtkWidget *create_dlg_info(void)
 	GtkWidget *highscore;
 	GtkWidget *chat_label;
 	GtkWidget *chat;
-	GtkWidget *dialog_action_area1;
-	GtkWidget *button_box;
-	GtkWidget *ok_button;
 
-	dlg_info = gtk_dialog_new();
-	gtk_window_set_transient_for(GTK_WINDOW(dlg_info),
-				     GTK_WINDOW(win_main));
+	dlg_info = gtk_dialog_new_with_buttons(_("Player Information"),
+					       GTK_WINDOW(win_main), 0,
+					       GTK_STOCK_CLOSE,
+					       GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dlg_info), "dlg_info", dlg_info);
-	gtk_window_set_title(GTK_WINDOW(dlg_info),
-			     _("Player Information"));
 
 	dialog_vbox = GTK_DIALOG(dlg_info)->vbox;
 	g_object_set_data(G_OBJECT(dlg_info), "dialog_vbox", dialog_vbox);
@@ -426,36 +422,10 @@ GtkWidget *create_dlg_info(void)
 	g_signal_connect(chat, "activate",
 			 GTK_SIGNAL_FUNC(chat_activate), NULL);
 
-	/* Make ACTION area. */
-	dialog_action_area1 = GTK_DIALOG(dlg_info)->action_area;
-	g_object_set_data(G_OBJECT(dlg_info), "dialog_action_area1",
-			  dialog_action_area1);
-	gtk_widget_show(dialog_action_area1);
-	gtk_container_set_border_width(GTK_CONTAINER(dialog_action_area1),
-				       10);
-
-	button_box = gtk_hbutton_box_new();
-	gtk_widget_ref(button_box);
-	g_object_set_data_full(G_OBJECT(dlg_info), "button_box",
-			       button_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(button_box);
-	gtk_box_pack_start(GTK_BOX(dialog_action_area1), button_box, TRUE,
-			   TRUE, 0);
-
-	ok_button = gtk_button_new_from_stock(GTK_STOCK_OK);
-	gtk_widget_ref(ok_button);
-	g_object_set_data_full(G_OBJECT(dlg_info), "ok_button", ok_button,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(ok_button);
-	gtk_container_add(GTK_CONTAINER(button_box), ok_button);
-	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
-
-	g_signal_connect(GTK_OBJECT(dlg_info), "destroy",
+	g_signal_connect(dlg_info, "destroy",
 			 GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dialog);
-	g_signal_connect_swapped(GTK_OBJECT(ok_button), "clicked",
-				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				 GTK_OBJECT(dlg_info));
+	g_signal_connect(dlg_info, "response",
+			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
 
 	return dlg_info;
 }
