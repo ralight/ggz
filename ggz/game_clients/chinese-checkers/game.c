@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: game.c 3033 2002-01-09 12:47:10Z dr_maux $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -39,7 +39,7 @@
 #include <easysock.h>
 #include <ggzmod.h>
 
-#include "ggzcore.h"
+#include "ggz.h"
 #include "game.h"
 #include "display.h"
 #include "main.h"
@@ -78,12 +78,12 @@ void game_init(void)
 
 	/* Get our preferences */
 	filename = g_strdup_printf("%s/.ggz/ccheckers-gtk.rc", getenv("HOME"));
-	game.conf_handle = ggzcore_confio_parse(filename,
-		 				GGZ_CONFIO_RDWR |
-						GGZ_CONFIO_CREATE);
+	game.conf_handle = ggz_conf_parse(filename,
+		 				GGZ_CONF_RDWR |
+						GGZ_CONF_CREATE);
 	g_free(filename);
 	get_theme_data();
-	game.beep = ggzcore_confio_read_int(game.conf_handle, "Options",
+	game.beep = ggz_conf_read_int(game.conf_handle, "Options",
 					    "Beep", 1);
 
 	/* Display the main dialog */
@@ -502,20 +502,20 @@ void game_update_config(char *theme, int beep)
 {
 	if(beep != game.beep) {
 		game.beep = beep;
-		ggzcore_confio_write_int(game.conf_handle, "Options",
+		ggz_conf_write_int(game.conf_handle, "Options",
 					 "Beep", game.beep);
 	}
 
 	if(strcmp(theme, game.theme)) {
 		free(game.theme);
 		game.theme = strdup(theme);
-		ggzcore_confio_write_string(game.conf_handle, "Options",
+		ggz_conf_write_string(game.conf_handle, "Options",
 					    "Theme", game.theme);
 		display_init();
 		display_refresh_board();
 	}
 
-	ggzcore_confio_commit(game.conf_handle);
+	ggz_conf_commit(game.conf_handle);
 }
 
 
@@ -548,7 +548,7 @@ static void get_theme_data(void)
 	/* Get the directory for themes and the .rc theme setting */
 	theme_dir = g_strdup_printf("%s/ccheckers/pixmaps", GGZDATADIR);
 printf("%s\n", theme_dir);
-	game.theme = ggzcore_confio_read_string(game.conf_handle,
+	game.theme = ggz_conf_read_string(game.conf_handle,
 						"Options", "Theme", "default");
 
 	/* Scan the theme directory and build an array of installed themes */
