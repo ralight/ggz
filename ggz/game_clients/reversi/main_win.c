@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6388 2004-11-16 06:14:51Z jdorje $
+ * $Id: main_win.c 6741 2005-01-19 19:29:46Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -36,7 +36,6 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#include <librsvg/rsvg.h>
 #include <ggz.h>
 
 #include "dlg_about.h"
@@ -184,8 +183,8 @@ static GdkPixbuf *load_pixmap(const char *name)
 
 	fullpath = g_strdup_printf("%s/reversi/pixmaps/%s.svg",
 				   GGZDATADIR, name);
-	image = rsvg_pixbuf_from_file_at_size(fullpath, PIXSIZE, PIXSIZE,
-					      &error);
+	image = gdk_pixbuf_new_from_file_at_size(fullpath, PIXSIZE, PIXSIZE,
+						 &error);
 	if (image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);

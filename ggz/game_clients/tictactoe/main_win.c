@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6341 2004-11-12 17:32:37Z jdorje $
+ * $Id: main_win.c 6741 2005-01-19 19:29:46Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -35,7 +35,6 @@
 #include <unistd.h>
 
 #include <gdk/gdkkeysyms.h>
-#include <librsvg/rsvg.h>
 #include <gtk/gtk.h>
 
 #include "dlg_about.h"
@@ -162,9 +161,8 @@ static GdkPixbuf *load_pixmap(const char *name)
 	GdkPixbuf *image;
 	GError *error = NULL;
 
-	image =
-	    rsvg_pixbuf_from_file_at_size(fullpath, PIXSIZE, PIXSIZE,
-					  &error);
+	image = gdk_pixbuf_new_from_file_at_size(fullpath, PIXSIZE, PIXSIZE,
+						 &error);
 	if (image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);

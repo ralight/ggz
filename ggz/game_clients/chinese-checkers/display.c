@@ -31,7 +31,6 @@
 #include <stdlib.h>
 
 #include <gtk/gtk.h>
-#include <librsvg/rsvg.h>
 #include <ggz.h>	/* libggz */
 
 #include "display.h"
@@ -88,8 +87,8 @@ static GdkPixbuf *display_load_pixmap(const char *name, int size)
 	GError *error = NULL;
 
 	fullpath = g_strdup_printf("%s/%s.svg", get_theme_dir(), name);
-	image =
-	    rsvg_pixbuf_from_file_at_size(fullpath, size, size, &error);
+	image = gdk_pixbuf_new_from_file_at_size(fullpath,
+						 size, size, &error);
 	free(fullpath);
 	if (image)
 		return image;

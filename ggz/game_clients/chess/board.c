@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: board.c 6741 2005-01-19 19:29:46Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -33,7 +33,6 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
-#include <librsvg/rsvg.h>
 #include <ggz.h>
 
 #include "board.h"
@@ -72,9 +71,8 @@ static GdkPixbuf *load_pixmap(const char *name)
 	GdkPixbuf *image;
 	GError *error = NULL;
 
-	image =
-	    rsvg_pixbuf_from_file_at_size(fullpath, PIXSIZE, PIXSIZE,
-					  &error);
+	image = gdk_pixbuf_new_from_file_at_size(fullpath, PIXSIZE, PIXSIZE,
+						 &error);
 	if (image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6735 2005-01-19 02:20:46Z jdorje $
+dnl $Id: configure.ac 6741 2005-01-19 19:29:46Z jdorje $
 
 AC_INIT([GGZ GTK games], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -134,15 +134,6 @@ dnl ==============
 # Check for GTK linkage
 AM_PATH_GTK_2_0([2.0.0], [],
     [AC_MSG_ERROR([*** Can't build GTK+-2.0 frontend: GTK+-2.0 not found])])
-
-# Check for librsvg (SVG image loader)
-RSVG_CFLAGS=`$PKG_CONFIG librsvg-2.0 --cflags`
-AC_SUBST(RSVG_CFLAGS)
-RSVG_LIBS=`$PKG_CONFIG librsvg-2.0 --libs`
-AC_SUBST(RSVG_LIBS)
-if test "x$RSVG_CFLAGS" = "x" || test "x$RSVG_LIBS" = "x"; then
-	AC_MSG_ERROR([*** SVG libraries (rsvg) not found])
-fi
 
 dnl Debug modes
 dnl ===========
