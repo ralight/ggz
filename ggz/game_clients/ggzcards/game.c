@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4108 2002-04-29 05:29:32Z jdorje $
+ * $Id: game.c 4109 2002-04-29 06:16:29Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -245,6 +245,10 @@ void game_alert_newgame(cardset_type_t cardset_type)
 
 void game_alert_newhand(void)
 {
+#ifdef DEBUG
+	if (preferences.use_ai)
+		start_hand();
+#endif
 	/* nothing */
 }
 
