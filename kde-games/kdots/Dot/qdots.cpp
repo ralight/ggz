@@ -121,6 +121,45 @@ void QDots::paintEvent(QPaintEvent *e)
 	hs = h / (m_rows + 1);
 	updatescreen = 0;
 
+	for(int j = 1; j < m_rows; j++)
+	{
+		for(int i = 1; i < m_cols; i++)
+		{
+			if(m_shadow->at((j - 1) * m_arywidth + i - 1) != content(i - 1, j - 1))
+			{
+				m_shadow->at((j - 1) * m_arywidth + i - 1) = content(i - 1, j - 1);
+				for(int y = 0; y < tileheight; y++)
+					for(int x = 0; x < tilewidth; x++)
+					{
+						rgb = bgimg->pixel(i * tilewidth + x, j * tileheight + y);
+
+						if(content(i - 1, j - 1) != -1)
+						{
+							bluepart = qBlue(rgb) / 3;
+							if(bluepart < 50) bluepart = 50;
+							if(content(i - 1, j - 1) == 1) bluepart *= 4;
+							if(bluepart > 255) bluepart = 255;
+							rgb = qRgb(0, 0, bluepart);
+						}
+						fgimg->setPixel(i * tilewidth + x, j * tileheight + y, rgb);
+					}
+				p.begin(bgpix);
+				p.drawImage(i * tilewidth, j * tileheight, *fgimg, i * tilewidth, j * tileheight, tilewidth, tileheight);
+				p.end();
+				updatescreen = 1;
+
+				m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2) = -2;
+				m_shadowlines->at(((j) * m_cols + (i - 1)) * 2) = -2;
+				m_shadowlines->at(((j - 1) * m_cols + (i)) * 2) = -2;
+				m_shadowlines->at(((j) * m_cols + (i)) * 2) = -2;
+				m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2 + 1) = -2;
+				m_shadowlines->at(((j) * m_cols + (i - 1)) * 2 + 1) = -2;
+				m_shadowlines->at(((j - 1) * m_cols + (i)) * 2 + 1) = -2;
+				m_shadowlines->at(((j) * m_cols + (i)) * 2 + 1) = -2;
+			}
+		}
+	}
+
 	p.begin(bgpix);
 	for(int j = 1; j <= m_rows; j++)
 	{
@@ -158,31 +197,6 @@ void QDots::paintEvent(QPaintEvent *e)
 	}
 	p.end();
 
-	for(int j = 1; j < m_rows; j++)
-	{
-		for(int i = 1; i < m_cols; i++)
-		{
-			if(m_shadow->at((j - 1) * m_arywidth + i - 1) != content(i - 1, j - 1))
-			{
-				m_shadow->at((j - 1) * m_arywidth + i - 1) = content(i - 1, j - 1);
-				for(int y = 0; y < tileheight; y++)
-					for(int x = 0; x < tilewidth; x++)
-					{
-						rgb = bgimg->pixel(i * tilewidth + x, j * tileheight + y);
-						bluepart = qBlue(rgb) / 3;
-						if(bluepart < 50) bluepart = 50;
-						if(content(i - 1, j - 1) == 1) bluepart *= 4;
-						if(bluepart > 255) bluepart = 255;
-						fgimg->setPixel(i * tilewidth + x, j * tileheight + y, qRgb(0, 0, bluepart));
-					}
-				p.begin(bgpix);
-				p.drawImage(i * tilewidth, j * tileheight, *fgimg, i * tilewidth, j * tileheight, tilewidth, tileheight);
-				p.end();
-				updatescreen = 1;
-			}
-		}
-	}
-
 	if(updatescreen) setErasePixmap(*bgpix);
 }
 
@@ -198,7 +212,7 @@ void QDots::mousePressEvent(QMouseEvent *e)
 	y -= m_yoffset;
 
 	// These two lines are essential for GGZ mode!!!
-	success = vSetBorderValue(x, y, 1);
+	success = vSetBorderValue(x, y, Dots::move);
 	if(success) emit signalTurn(m_lastx, m_lasty, m_lastdirection);
 }
 

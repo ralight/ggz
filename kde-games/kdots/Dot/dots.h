@@ -12,6 +12,17 @@
 #ifndef DOTS_H
 #define DOTS_H
 
+#include <qvaluelist.h>
+
+struct move_t
+{
+	int x;
+	int y;
+	int side;
+	int direction;
+};
+typedef struct move_t Move;
+
 typedef int* dot_t;
 
 class Dots
@@ -31,14 +42,21 @@ class Dots
 			down = 3,
 			fieldrightbelow = 4
 		};
+		enum Actions
+		{
+			check = 0,
+			move = 1,
+			replay = 2
+		};
 	protected:
 		int borders(int x, int y, int side);
 		int border(int x, int y, int direction);
 		int content(int x, int y);
+		void cleanup();
 
 		int m_cols, m_rows;
+		QValueList<Move> m_moves;
 	private:
-		void cleanup();
 		void assignBorder(int x, int y, int direction, int side);
 
 		dot_t **m_field;

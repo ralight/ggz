@@ -28,10 +28,10 @@ int main(int argc, char **argv)
 	dots->resizeBoard(10, 10);
 
 	cout << "Influencing" << endl;
-	dots->setBorderValue(0, 0, Dots::right, 1, 1);
-	dots->setBorderValue(0, 0, Dots::down, 1, 1);
-	dots->setBorderValue(1, 1, Dots::up, 1, 1);
-	dots->setBorderValue(0, 1, Dots::right, 1, 1);
+	dots->setBorderValue(0, 0, Dots::right, 1, Dots::move);
+	dots->setBorderValue(0, 0, Dots::down, 1, Dots::move);
+	dots->setBorderValue(1, 1, Dots::up, 1, Dots::move);
+	dots->setBorderValue(0, 1, Dots::right, 1, Dots::move);
 
 	cout << "Counting fields" << endl;
 	val = dots->count(1);

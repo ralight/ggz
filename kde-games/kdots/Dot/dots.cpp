@@ -30,6 +30,7 @@ Dots::~Dots()
 void Dots::resizeBoard(int cols, int rows)
 {
 	cleanup();
+	m_moves.clear();
 
 	m_rows = rows + 1;
 	m_cols = cols + 1;
@@ -66,6 +67,16 @@ void Dots::assignBorder(int x, int y, int direction, int side)
 		m_field[x][y - 1][fieldrightbelow] = side;
 	if((x > 0) && (y > 0) && (borders(x - 1, y - 1, -1) == 0) && (m_field[x - 1][y - 1][fieldrightbelow] == -1))
 		m_field[x - 1][y - 1][fieldrightbelow] = side;
+
+	// likewise for the other way around
+	if((borders(x, y, -1) > 0) && (m_field[x][y][fieldrightbelow] != -1))
+		m_field[x][y][fieldrightbelow] = -1;
+	if((x > 0) && (borders(x - 1, y, -1) > 0) && (m_field[x - 1][y][fieldrightbelow] != -1))
+		m_field[x - 1][y][fieldrightbelow] = -1;
+	if((y > 0) && (borders(x, y - 1, -1) > 0) && (m_field[x][y - 1][fieldrightbelow] != -1))
+		m_field[x][y - 1][fieldrightbelow] = -1;
+	if((x > 0) && (y > 0) && (borders(x - 1, y - 1, -1) > 0) && (m_field[x - 1][y - 1][fieldrightbelow] != -1))
+		m_field[x - 1][y - 1][fieldrightbelow] = -1;
 }
 
 int Dots::setBorderValue(int x, int y, int direction, int side, int action)
@@ -77,8 +88,8 @@ int Dots::setBorderValue(int x, int y, int direction, int side, int action)
 	if((y == 0) && (direction == up)) return 0;
 	if((x == m_cols - 1) && (direction == right)) return 0;
 	if((y == m_rows - 1) && (direction == down)) return 0;
-	if(m_field[x][y][direction] >= 0) return 0;
-	if(!action) return 1;
+	if((m_field[x][y][direction] >= 0) && (side != -1)) return 0;
+	if(action == check) return 1;
 
 	assignBorder(x, y, direction, side);
 	switch(direction)
@@ -98,6 +109,14 @@ int Dots::setBorderValue(int x, int y, int direction, int side, int action)
 		default:
 			cout << "CRITICAL DOT ERROR!" << endl;
 	}
+
+	Move m;
+	m.x = x;
+	m.y = y;
+	m.side = side;
+	m.direction = direction;
+	if(action != replay) m_moves.append(m);
+
 	return 1;
 }
 

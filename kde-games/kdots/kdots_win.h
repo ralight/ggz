@@ -18,12 +18,13 @@
 class KDots;
 class KDotsAbout;
 class KDotsHelp;
+class KDotsReplay;
 
 class KDotsWin : public KMainWindow
 {
 	Q_OBJECT
 	public:
-		KDotsWin();
+		KDotsWin(bool ggzmode);
 		~KDotsWin();
 
 		enum MenuItems
@@ -31,7 +32,8 @@ class KDotsWin : public KMainWindow
 			menuhelp,
 			menuabout,
 			menuquit,
-			menusync
+			menusync,
+			menureplay
 		};
 	
 	public slots:
@@ -43,6 +45,7 @@ class KDotsWin : public KMainWindow
 		KDots *m_dots;
 		KDotsAbout *kdots_about;
 		KDotsHelp *kdots_help;
+		KDotsReplay *kdots_replay;
 		QWidget *m_color;
 };
 

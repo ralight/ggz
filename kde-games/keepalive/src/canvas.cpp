@@ -125,29 +125,30 @@ void Canvas::slotInput()
 	{
 		case op_map:
 			*m_net >> width >> height;
+			std::cout << "(net) Receive map: " << width << "/" << height << std::endl;
 			resize(width, height);
 			break;
 		case op_init:
 			*m_net >> x >> y;
-			std::cout << "Move to " << x << "/" << y << std::endl;
+			std::cout << "(net) Move peasant to " << x << "/" << y << std::endl;
 			f = new UnitFactory();
 			ar = f->load("peasant");
 			delete f;
-			std::cout << "Unit loaded" << std::endl;
-			if(!ar) std::cerr << "No graphics found!" << std::endl;
+			if(!ar) std::cerr << "(net) No graphics found!" << std::endl;
 			else
 			{
-				m_player = new QCanvasSprite(/*new QCanvasPixmapArray(KEEPALIVE_DIR "/man.png", 1)*/ar, this);
+				std::cout << "(net) Unit loaded" << std::endl;
+				m_player = new QCanvasSprite(ar, this);
 				m_player->move(x, y);
 				m_player->show();
 				m_targetx = x;
 				m_targety = y;
-				std::cout << "Move done" << std::endl;
+				std::cout << "(net) Move done" << std::endl;
 			}
 			break;
 		case op_player:
 			*m_net >> count;
-			std::cout << "Receive data of " << count << " players" << std::endl;
+			std::cout << "(net) Receive data of " << count << " players" << std::endl;
 			for(int i = 0; i < count; i++)
 			{
 				*m_net >> name;
@@ -164,37 +165,40 @@ void Canvas::slotInput()
 			}
 			break;
 		case op_spectator:
-			std::cout << "SPECTATOR!" << std::endl;
+			std::cout << "(net) SPECTATOR!" << std::endl;
 			emit signalLoggedin(i18n("spectator"));
 			m_spectator = 1;
 			break;
 		case op_name:
 			*m_net >> name;
+			std::cout << "(net) Name is " << name << std::endl;
 			emit signalLoggedin(name);
 			free(name);
 			break;
 		case op_moved:
 			*m_net >> name;
 			*m_net >> x >> y;
-			std::cout << "Receive move of: " << name << ": " << x << ", " << y << std::endl;
+			std::cout << "(net) Receive move of: " << name << ": " << x << ", " << y << std::endl;
 			sprite = new QCanvasSprite(new QCanvasPixmapArray(KEEPALIVE_DIR "/avatar.png", 1), this);
 			sprite->move(x, y);
 			sprite->show();
 			free(name);
 			break;
 		case op_loginfailed:
+			std::cout << "(net) Login failed!" << std::endl;
 			QMessageBox::information(NULL, "Notice", "Login failed");
 			break;
 		case op_chatted:
 			*m_net >> name;
 			*m_net >> message;
+			std::cout << "(chat) Chat " << message << " from " << name << std::endl;
 			QMessageBox::information(NULL, "Chat", QString("Chat from %1:\n%2").arg(name).arg(message));
 			free(name);
 			free(message);
 			break;
 		case op_quit:
 			*m_net >> name;
-			std::cout << "Player " << name << " died" << std::endl;
+			std::cout << "(net) Player " << name << " died" << std::endl;
 			// FIXME: lookup player
 			sprite = new QCanvasSprite(new QCanvasPixmapArray(KEEPALIVE_DIR "/rip.png", 1), this);
 			sprite->move(100, 100);
@@ -203,7 +207,7 @@ void Canvas::slotInput()
 			break;
 		default:
 			//QMessageBox::information(NULL, "Notice", QString("Unknown opcode: %1").arg((int)c));
-			std::cout << "Unknown opcode: " << (int)c << std::endl;
+			std::cout << "(net) Unknown opcode: " << (int)c << std::endl;
 	}
 }
 
@@ -289,7 +293,7 @@ void Canvas::domove(int x, int y)
 	&& (vy < height() - 32))
 	{
 		m_player->move(vx, vy);
-		std::cout << "Moving to " << vx << "/" << vy << std::endl;
+		std::cout << "(net-out) Moving to " << vx << "/" << vy << std::endl;
 		*m_net << (Q_INT8)op_move << (Q_INT32)vx << (Q_INT32)vy;
 	}
 }
@@ -322,6 +326,7 @@ void Canvas::login(QString username, QString password, QString hostname)
 		m_net = new QDataStream(m_dev);
 	}
 
+	std::cout << "(net-out) Connect as " << username << std::endl;
 	*m_net << (Q_INT8)op_login << username.latin1() << password.latin1();
 }
 
@@ -334,6 +339,7 @@ void Canvas::chat(QString message)
 {
 	if(m_spectator) return;
 
+	std::cout << "(net-out) Chat: " << message << std::endl;
 	*m_net << (Q_INT8)op_chat << message.latin1();
 }
 

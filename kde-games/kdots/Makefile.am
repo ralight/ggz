@@ -9,6 +9,7 @@ kdots_client_SOURCES = \
 	kdots_options.cpp \
 	kdots_help.cpp \
 	kdots_proto.cpp \
+	kdots_replay.cpp \
 	kdots_win.cpp
 
 noinst_HEADERS = \
@@ -17,6 +18,7 @@ noinst_HEADERS = \
 	kdots_options.h \
 	kdots_help.h \
 	kdots_proto.h \
+	kdots_replay.h \
 	kdots_win.h
 
 INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) -I $(top_srcdir)/kdots/Dot

@@ -13,18 +13,20 @@
 #include "kdots.h"
 #include "kdots_about.h"
 #include "kdots_help.h"
+#include "kdots_replay.h"
 
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <kstatusbar.h>
 
-KDotsWin::KDotsWin()
+KDotsWin::KDotsWin(bool ggzmode)
 : KMainWindow()
 {
 	KPopupMenu *menu_game, *menu_help;
 
 	kdots_help = NULL;
 	kdots_about = NULL;
+	kdots_replay = NULL;
 
 	m_color = new QWidget(statusBar());
 	statusBar()->insertItem(i18n("Launching KDots..."), 1, 1);
@@ -32,6 +34,8 @@ KDotsWin::KDotsWin()
 
 	menu_game = new KPopupMenu(this);
 	menu_game->insertItem(i18n("Synchronize"), menusync);
+	menu_game->insertSeparator();
+	menu_game->insertItem(i18n("Replay games..."), menureplay);
 	menu_game->insertSeparator();
 	menu_game->insertItem(i18n("Quit"), menuquit);
 
@@ -46,13 +50,19 @@ KDotsWin::KDotsWin()
 	connect(menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(menu_help, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
-	m_dots = new KDots(this, "KDots"); 
+	m_dots = new KDots(ggzmode, this, "KDots"); 
 	setCentralWidget(m_dots);
 
 	connect(m_dots, SIGNAL(signalStatus(const char*)), SLOT(slotStatus(const char*)));
 	connect(m_dots, SIGNAL(signalColor(const QColor&)), SLOT(slotColor(const QColor&)));
 
-	slotStatus(i18n("Waiting for opponent..."));
+	if(ggzmode)
+		slotStatus(i18n("Waiting for opponent..."));
+	else
+	{
+		slotStatus(i18n("Replay-only mode"));
+		menu_game->setItemEnabled(menusync, false);
+	}
 
 	setFixedSize(400, 400);
 	setCaption(i18n("Connect The Dots for KDE"));
@@ -80,6 +90,10 @@ void KDotsWin::slotMenu(int id)
 			break;
 		case menusync:
 			m_dots->slotSync();
+			break;
+		case menureplay:
+			if(!kdots_replay) kdots_replay = new KDotsReplay(NULL, "KDotsReplay");
+			kdots_replay->show();
 			break;
 	}
 }

@@ -19,6 +19,11 @@ class VDots : public Dots
 	public:
 		VDots();
 		~VDots();
+
+		void save(QString filename);
+		void load(QString filename);
+		int positions();
+		void step(int position);
 	protected:
 		void vResizeBoard(int width, int height);
 		int vSetBorderValue(int x, int y, int side);

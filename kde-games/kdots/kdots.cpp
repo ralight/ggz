@@ -21,11 +21,13 @@
 #include <qmenubar.h>
 #include <qlayout.h>
 #include <qsocketnotifier.h>
+#include <qdir.h>
+#include <qdatetime.h>
 
 #include <iostream>
 #include <cstdlib>
 
-KDots::KDots(QWidget *parent, const char *name)
+KDots::KDots(bool ggzmode, QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;
@@ -45,19 +47,26 @@ KDots::KDots(QWidget *parent, const char *name)
 	setFixedSize(400, 400);
 	show();
 
-	proto = new KDotsProto(this);
-	proto->connect();
-	proto->turn = -1;
-	proto->num = -2;
+	if(ggzmode)
+	{
+		proto = new KDotsProto(this);
+		proto->connect();
+		proto->turn = -1;
+		proto->num = -2;
 
-	sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
-	connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
+		sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
+		connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
+	}
+	else proto = NULL;
 }
 
 KDots::~KDots()
 {
-	proto->disconnect();
-	delete proto;
+	if(proto)
+	{
+		proto->disconnect();
+		delete proto;
+	}
 }
 
 void KDots::slotOptions()
@@ -125,6 +134,7 @@ void KDots::slotTurn(int x, int y, int direction)
 
 void KDots::slotSync()
 {
+	if(!proto) return;
 	if(proto->turn == -1)
 	{
 		KMessageBox::sorry(this, i18n("No game running yet!"), i18n("Synchronization"));
@@ -138,7 +148,9 @@ void KDots::slotInput()
 	int op;
 	int ret;
 	QString str;
+	QString savegame, savepath;
 	char status;
+	QDir dir;
 
 	if(proto->state == proto->statedone) return;
 
@@ -170,20 +182,20 @@ void KDots::slotInput()
 			break;
 		case proto->msgmoveh:
 			proto->getOppMove(proto->sndmoveh);
-			dots->setBorderValue(proto->movex, proto->movey, QDots::right, proto->turn, 1);
+			dots->setBorderValue(proto->movex, proto->movey, QDots::right, proto->turn, Dots::move);
 			dots->repaint();
 			if(proto->num < 0) proto->turn = !proto->turn;
 			break;
 		case proto->msgmovev:
 			proto->getOppMove(proto->sndmovev);
-			dots->setBorderValue(proto->movex, proto->movey, QDots::down, proto->turn, 1);
+			dots->setBorderValue(proto->movex, proto->movey, QDots::down, proto->turn, Dots::move);
 			dots->repaint();
 			if(proto->num < 0) proto->turn = !proto->turn;
 			break;
 		case proto->rspmove:
 			if(proto->getMove() != -1)
 			{
-				dots->setBorderValue(proto->m_lastx, proto->m_lasty, proto->m_lastdir, proto->turn, 1);
+				dots->setBorderValue(proto->m_lastx, proto->m_lasty, proto->m_lastdir, proto->turn, Dots::move);
 				dots->repaint();
 				proto->turn = (proto->num + 1) % 2;
 			}
@@ -193,6 +205,15 @@ void KDots::slotInput()
 			}
 			break;
 		case proto->msggameover:
+			savepath = QDir::home().path() + "/.ggz";
+			dir.mkdir(savepath);
+			savepath += "/games";
+			dir.mkdir(savepath);
+			savepath += "/kdots";
+			dir.mkdir(savepath);
+			savegame = QString("%1-%2-%3").arg(
+					QDateTime::currentDateTime().toString()).arg(proto->players[0]).arg(proto->players[1]);
+			dots->save(savepath + "/" + savegame);
 			status = proto->getStatus();
 			if(status == -1) exit(-1);
 			proto->state = proto->statechoose;

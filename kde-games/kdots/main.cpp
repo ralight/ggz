@@ -44,12 +44,11 @@ int main(int argc, char **argv)
 
 	if(!args->isSet("ggz"))
 	{
-		std::cout << "Sorry, this game does only work in GGZ mode so far." << std::endl;
-		return -1;
+		std::cout << "Running in replay-only mode." << std::endl;
 	}
 
 	KApplication a;
-	kdotswin = new KDotsWin();
+	kdotswin = new KDotsWin(args->isSet("ggz"));
 	a.setMainWidget(kdotswin);
 	return a.exec();
 }

@@ -23,7 +23,7 @@ class KDots : public QWidget
 {
 	Q_OBJECT
 	public:
-		KDots(QWidget *parent = NULL, const char *name = NULL);
+		KDots(bool ggzmode, QWidget *parent = NULL, const char *name = NULL);
 		~KDots();
 		void gameinit();
 		void gamesync();
