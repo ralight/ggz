@@ -274,11 +274,13 @@ create_main_win (void)
   GtkAccelGroup *help_menu_accels;
   GtkWidget *about;
   GtkWidget *toolbar;
+  GtkWidget *disconnect_button;
+  GtkWidget *connect_button;
   GtkWidget *launch_button;
   GtkWidget *join_button;
   GtkWidget *prefs_button;
-  GtkWidget *stat_button;
-  GtkWidget *button1;
+  GtkWidget *stats_button;
+  GtkWidget *exit_button;
   GtkWidget *v_pane;
   GtkWidget *table_box;
   GtkWidget *table_label;
@@ -559,6 +561,28 @@ create_main_win (void)
   gtk_widget_show (toolbar);
   gtk_box_pack_start (GTK_BOX (main_box), toolbar, FALSE, FALSE, 0);
 
+  disconnect_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+                                GTK_TOOLBAR_CHILD_BUTTON,
+                                NULL,
+                                "Disconnect",
+                                NULL, NULL,
+                                NULL, NULL, NULL);
+  gtk_widget_ref (disconnect_button);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "disconnect_button", disconnect_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (disconnect_button);
+
+  connect_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+                                GTK_TOOLBAR_CHILD_BUTTON,
+                                NULL,
+                                "Connect",
+                                NULL, NULL,
+                                NULL, NULL, NULL);
+  gtk_widget_ref (connect_button);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "connect_button", connect_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (connect_button);
+
   launch_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
@@ -592,27 +616,27 @@ create_main_win (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_button);
 
-  stat_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+  stats_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 "Stats",
                                 NULL, NULL,
                                 NULL, NULL, NULL);
-  gtk_widget_ref (stat_button);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "stat_button", stat_button,
+  gtk_widget_ref (stats_button);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "stats_button", stats_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (stat_button);
+  gtk_widget_show (stats_button);
 
-  button1 = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+  exit_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 "Exit",
                                 NULL, NULL,
                                 NULL, NULL, NULL);
-  gtk_widget_ref (button1);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "button1", button1,
+  gtk_widget_ref (exit_button);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "exit_button", exit_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button1);
+  gtk_widget_show (exit_button);
 
   v_pane = gtk_vpaned_new ();
   gtk_widget_ref (v_pane);
@@ -895,13 +919,19 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (motd), "activate",
                       GTK_SIGNAL_FUNC (ggz_motd),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (disconnect_button), "clicked",
+                      GTK_SIGNAL_FUNC (ggz_disconnect),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
+                      GTK_SIGNAL_FUNC (ggz_connect),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (launch_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_get_game_options),
                       main_win);
   gtk_signal_connect (GTK_OBJECT (join_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_join_game),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (button1), "clicked",
+  gtk_signal_connect (GTK_OBJECT (exit_button), "clicked",
                       GTK_SIGNAL_FUNC (exit_dlg),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (table_tree), "select_row",

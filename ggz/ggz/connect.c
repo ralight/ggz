@@ -116,8 +116,6 @@ gint connect_to_server(void)
 	sock_handle = gdk_input_add_full(connection.sock, GDK_INPUT_READ,
 					 handle_server_fd, NULL, NULL);
 
-	login_connect();
-
 	return 0;
 }
 
@@ -251,7 +249,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_LOGOUT:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		login_connect();
+		login_disconnect();
 		break;
 
 	case RSP_LIST_TYPES:
