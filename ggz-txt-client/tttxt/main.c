@@ -222,7 +222,7 @@ static unsigned char readkey()
 	fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
 
 	ret = 0;
-	while(ret != 2)
+	while(ret < 1)
 	{
 		if(ggzmode) ggz_network();
 		if(refresh)
@@ -237,6 +237,7 @@ static unsigned char readkey()
 			if(errno != EAGAIN) return 0;
 		}
 	}
+	if(ret == 1) buf[0] = '\n';
 
 	return buf[0];
 }
