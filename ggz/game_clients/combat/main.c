@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
- * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: main.c 3392 2002-02-17 09:29:11Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -25,6 +25,7 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -53,8 +54,12 @@ extern struct game_info_t cbt_info;
 /* Global game variables */
 combat_game cbt_game;
 
+static void initialize_debugging(void);
+static void cleanup_debugging(void);
+
 int main(int argc, char *argv[]) {
 	
+	initialize_debugging();
 	gtk_init(&argc, &argv);
 
 	game_init();
@@ -76,6 +81,41 @@ int main(int argc, char *argv[]) {
 
 	if (ggzmod_disconnect() < 0)
 		return -2;
+	cleanup_debugging();
 	
 	return 0;
+}
+
+
+static void initialize_debugging(void)
+{
+	/* Our debugging code uses libggz's ggz_debug() function, so we
+	   just initialize the _types_ of debugging we want. */
+#ifdef DEBUG
+	const char *debugging_types[] = { "main", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+	/* Debugging goes to ~/.ggz/combat-gtk.debug */
+	char *file_name =
+		g_strdup_printf("%s/.ggz/combat-gtk.debug", getenv("HOME"));
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug("main", "Starting combat client.");	
+}
+
+
+/* This function should be called at the end of the program to clean up
+ * debugging, as necessary. */
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a
+	   memory check at the same time. */
+	ggz_debug("main", "Shutting down combat client.");
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 3244 2002-02-04 07:58:51Z jdorje $
+ * $Id: game.c 3392 2002-02-17 09:29:11Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -90,11 +90,11 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 
   // Read the fd
   if (ggz_read_int(fd, &op) < 0) {
-    printf("Couldn't read the game fd\n");
+    ggz_error_msg("Couldn't read the game fd");
     return;
   }
 
-  printf("Got message from the server! (%d)\n", op);
+  ggz_debug("main", "Got message from the server! (%d)", op);
 
   switch (op) {
     case CBT_MSG_SEAT:
@@ -615,8 +615,7 @@ void game_status( const char* format, ... )
   message = g_strdup_vprintf(format, ap);
   va_end(ap);
   
-  //printf(message);
-  //printf("\n");
+  /* ggz_debug("main", "%s", message); */
   
   tmp = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
   
@@ -690,7 +689,7 @@ void game_handle_move(int p) {
     a = combat_check_move(&cbt_game, last_current, p);
     if (a < 0) {
       game_status("This move is invalid!");
-      printf("Move error: %d\n", a);
+      ggz_error_msg("Move error: %d", a);
     }
     else {
       if (ggz_write_int(cbt_info.fd, CBT_REQ_MOVE) < 0 ||

@@ -218,7 +218,7 @@ void map_load(combat_game *_game, char *filename, int *changed) {
   sprintf(hash_str, ".%u", hash);
   if (strstr(filename, hash_str) == NULL) {
     // Hash don't match!!
-    printf("Filename for map %s should be %s.%u, and not %s\n", _game->name, _game->name, hash, filename);
+    ggz_error_msg("Filename for map %s should be %s.%u, and not %s", _game->name, _game->name, hash, filename);
     // Let's rename it!
     new_filename = (char *)malloc(strlen(filename) + strlen(hash_str) + 14);
     for (a = strlen(filename); a >= 0; a--) {
