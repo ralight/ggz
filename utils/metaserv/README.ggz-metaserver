@@ -18,6 +18,14 @@ ggzm       15689/tcp            # GGZ Gaming Zone meta server
 /etc/inetd.conf:
 ggzm stream tcp nowait josef /usr/local/bin/metaserv
 
+
+----------------------------------------------
+Update 2003-06-26:
+An example of an application using the metaserver
+can be found here:
+http://mindx.dyndns.org/kde/radio/
+----------------------------------------------
+
 Josef Spillner
 2001-08-12
 
