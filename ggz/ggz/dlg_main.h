@@ -30,4 +30,3 @@ GtkWidget* create_main_win (void);
 void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data);
 void ggz_get_players(GtkMenuItem * menuitem, gpointer user_data);
 void ggz_get_tables(GtkMenuItem * menuitem, gpointer user_data);
-void ggz_login();

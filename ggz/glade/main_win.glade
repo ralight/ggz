@@ -10,18 +10,12 @@
   <language>C</language>
   <gnome_support>False</gnome_support>
   <gettext_support>False</gettext_support>
-  <use_widget_names>False</use_widget_names>
   <output_main_file>False</output_main_file>
   <output_support_files>False</output_support_files>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
   <main_source_file>dlg_main.c</main_source_file>
   <main_header_file>dlg_main.h</main_header_file>
-  <handler_source_file>callbacks.c</handler_source_file>
-  <handler_header_file>callbacks.h</handler_header_file>
-  <support_source_file>support.c</support_source_file>
-  <support_header_file>support.h</support_header_file>
-  <translatable_strings_file></translatable_strings_file>
 </project>
 
 <widget>
@@ -37,6 +31,11 @@
     <name>destroy</name>
     <handler>gtk_main_quit</handler>
     <last_modification_time>Tue, 11 Jan 2000 21:28:40 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>realize</name>
+    <handler>ggz_realize</handler>
+    <last_modification_time>Mon, 27 Mar 2000 23:35:08 GMT</last_modification_time>
   </signal>
   <title>Gnu Gaming Zone</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
@@ -105,36 +104,6 @@
 	      <last_modification_time>Mon, 27 Mar 2000 16:14:37 GMT</last_modification_time>
 	    </signal>
 	    <label>_Disconnect</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>separator1</name>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>login</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>ggz_login</handler>
-	      <last_modification_time>Mon, 27 Mar 2000 16:15:37 GMT</last_modification_time>
-	    </signal>
-	    <label>_Login</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>logout</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>ggz_logout</handler>
-	      <last_modification_time>Mon, 27 Mar 2000 16:15:49 GMT</last_modification_time>
-	    </signal>
-	    <label>L_ogout</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -348,19 +317,7 @@
       <widget>
 	<class>GtkButton</class>
 	<child_name>Toolbar:button</child_name>
-	<name>logout_button</name>
-	<signal>
-	  <name>clicked</name>
-	  <handler>ggz_logout</handler>
-	  <last_modification_time>Mon, 27 Mar 2000 16:33:56 GMT</last_modification_time>
-	</signal>
-	<label>Logout</label>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<child_name>Toolbar:button</child_name>
-	<name>exit_button</name>
+	<name>button1</name>
 	<signal>
 	  <name>clicked</name>
 	  <handler>exit_dlg</handler>
