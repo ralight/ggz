@@ -1,3 +1,17 @@
+Todo for 0.0.5:
+- security (prevent running as root)
+
+Todo for 0.0.6:
+- add Skat engine to GGZCards
+- add Escape & Keepalive games
+- Meta server stuff
+- (maybe) DB backend choice
+- split ggzd & game server CVS modules?
+
+
+========================
+Old GGZ Roadmap:
+
 For v0.0.4
 ==========
 Massive Client rewrite 
