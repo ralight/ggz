@@ -371,6 +371,7 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 void props_profile_box_realized(GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget* tmp;
+	gchar *port;
 
 	props_profiles_reload();
 
@@ -380,6 +381,11 @@ void props_profile_box_realized(GtkWidget *widget, gpointer user_data)
 	gtk_widget_set_sensitive(tmp, FALSE);
 	tmp = lookup_widget(props_dialog, "delete_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
+
+	tmp = lookup_widget(props_dialog, "port_entry");  
+	port = g_strdup_printf("%d", 5688);
+	gtk_entry_set_text(GTK_ENTRY(tmp), port);
+	g_free(port);
 }
 
 
