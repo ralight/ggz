@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2739 2001-11-13 21:39:00Z jdorje $
+ * $Id: euchre.c 2743 2001-11-13 23:34:36Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -33,6 +33,10 @@
 static int euchre_is_valid_game(void);
 static card_t euchre_map_card(card_t c);
 static void euchre_init_game(void);
+static void euchre_get_options(void);
+static int euchre_handle_option(char *option, int value);
+static char *euchre_get_option_text(char *buf, int bufsz, char *option,
+				    int value);
 static void euchre_start_bidding(void);
 static int euchre_get_bid(void);
 static void euchre_handle_bid(player_t p, bid_t bid);
@@ -48,9 +52,9 @@ static void euchre_end_hand(void);
 struct game_function_pointers euchre_funcs = {
 	euchre_is_valid_game,
 	euchre_init_game,
-	game_get_options,
-	game_handle_option,
-	game_get_option_text,
+	euchre_get_options,
+	euchre_handle_option,
+	euchre_get_option_text,
 	euchre_set_player_message,
 	euchre_get_bid_text,
 	euchre_start_bidding,
@@ -110,6 +114,44 @@ static void euchre_init_game(void)
 	/* Game-specific data */
 	game.specific = ggz_malloc(sizeof(euchre_game_t));
 	EUCHRE.maker = -1;
+}
+
+static void euchre_get_options(void)
+{
+	add_option("screw_the_dealer", 1, 0, "Stick the dealer");
+	add_option("super_euchre", 1, 0, "Allow \"super euchre\"");
+	game_get_options();
+}
+
+
+static int euchre_handle_option(char *option, int value)
+{
+	if (!strcmp("screw_the_dealer", option))
+		EUCHRE.screw_the_dealer = value;
+	else if (!strcmp("super_euchre", option))
+		EUCHRE.super_euchre = value;
+	else
+		return game_handle_option(option, value);
+	return 0;
+}
+
+
+static char *euchre_get_option_text(char *buf, int bufsz, char *option,
+				    int value)
+{
+	if (!strcmp("screw_the_dealer", option)) {
+		if (value)
+			snprintf(buf, bufsz, "Playing \"stick the dealer\".");
+		else
+			*buf = 0;
+	} else if (!strcmp("super_euchre", option)) {
+		if (value)
+			snprintf(buf, bufsz, "Allowing \"super euchre\".");
+		else
+			*buf = 0;
+	} else
+		return NULL;
+	return buf;
 }
 
 static void euchre_start_bidding(void)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.h 2738 2001-11-13 21:12:44Z jdorje $
+ * $Id: euchre.h 2743 2001-11-13 23:34:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -65,6 +65,7 @@ typedef struct euchre_game_t {
 				   "alone" bids? */
 
 	/* options */
-	int screw_the_dealer;
-	int super_euchre;
+	int screw_the_dealer;	/* Dealer must bid if it goes around twice */
+	int super_euchre;	/* Defenders taking all five tricks get a
+				   "super euchre" bonus */
 } euchre_game_t;
