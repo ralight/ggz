@@ -5,9 +5,9 @@ data = 8x8.* Bridge.* Checkers.* Corridors.* Default.* In\ The\ Wild.* Island\ I
 EXTRA_DIST = $(data)
 
 install-data-local:
-	$(mkinstalldirs) $(ggzexecmoddir)/combat/maps ;\
+	$(mkinstalldirs) $(DESTDIR)$(ggzexecmoddir)/combat/maps ;\
 	for p in $(data); do \
-    $(INSTALL_DATA) "$$p" $(ggzexecmoddir)/combat/maps ;\
+    $(INSTALL_DATA) "$$p" $(DESTDIR)$(ggzexecmoddir)/combat/maps ;\
 	done
 
 uninstall-local:

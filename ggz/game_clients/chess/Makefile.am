@@ -8,7 +8,7 @@ INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	ggz-config -D --install --fromfile=module.dsc --force
+	$(top_srcdir)/src/ggzcore/ggz-config -D --install --fromfile=module.dsc --force
 
 uninstall:
 	@$(NORMAL_UNINSTALL)

@@ -24,7 +24,7 @@ ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	ggz-config -D --install --fromfile=$(GAME_DSC) --force
+	$(top_srcdir)/src/ggzcore/ggz-config -D --install --fromfile=$(GAME_DSC) --force
 
 uninstall:
 	@$(NORMAL_UNINSTALL)

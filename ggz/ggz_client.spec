@@ -40,13 +40,17 @@ cp po/de.gmo $RPM_BUILD_ROOT/usr/share/locale/de/LC_MESSAGES/ggz_client.mo
 
 %config /etc/ggz.modules
 
-/usr/bin/ggz
+/usr/bin/ggz-gtk
+/usr/bin/ggz-txt
 /usr/bin/ggz-config
 /usr/lib/ggz
 /usr/share/locale/de/LC_MESSAGES/ggz_client.mo
 
 %changelog
 %changelog
+* Fri Mar 16 2001 Rich Gade <rgade@users.sourceforge.net>
+- Fixed binaries to distribute in /usr/bin
+
 * Thu Mar 15 2001 Rich Gade <rgade@users.sourceforge.net>
 - Updated for 0.0.4pre
 
