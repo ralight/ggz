@@ -160,39 +160,39 @@ void KDots::slotInput()
 
 	switch(op)
 	{
-		case proto->msgseat:
+		case KDotsProto::msgseat:
 			proto->getSeat();
 			if(proto->num == 1) emit signalColor(QColor(0, 0, 250));
 			else if(proto->num == 0) emit signalColor(QColor(0, 0, 50));
 			else emit signalColor(QColor(255, 255, 255));
 			break;
-		case proto->msgplayers:
+		case KDotsProto::msgplayers:
 			proto->getPlayers();
 			if(proto->state != proto->statechoose) proto->state = proto->statewait;
 			break;
-		case proto->msgoptions:
+		case KDotsProto::msgoptions:
 			proto->getOptions();
 			dots->resizeBoard(proto->width - 1, proto->height - 1);
 			dots->refreshBoard();
 			break;
-		case proto->reqmove:
+		case KDotsProto::reqmove:
 			emit signalStatus(i18n("Your turn."));
 			proto->state = proto->statemove;
 			proto->turn = proto->num;
 			break;
-		case proto->msgmoveh:
+		case KDotsProto::msgmoveh:
 			proto->getOppMove(proto->sndmoveh);
 			dots->setBorderValue(proto->movex, proto->movey, QDots::right, proto->turn, Dots::move);
 			dots->repaint();
 			if(proto->num < 0) proto->turn = !proto->turn;
 			break;
-		case proto->msgmovev:
+		case KDotsProto::msgmovev:
 			proto->getOppMove(proto->sndmovev);
 			dots->setBorderValue(proto->movex, proto->movey, QDots::down, proto->turn, Dots::move);
 			dots->repaint();
 			if(proto->num < 0) proto->turn = !proto->turn;
 			break;
-		case proto->rspmove:
+		case KDotsProto::rspmove:
 			if(proto->getMove() != -1)
 			{
 				dots->setBorderValue(proto->m_lastx, proto->m_lasty, proto->m_lastdir, proto->turn, Dots::move);
@@ -204,7 +204,7 @@ void KDots::slotInput()
 				emit signalStatus(i18n("Invalid move, please try again!"));
 			}
 			break;
-		case proto->msggameover:
+		case KDotsProto::msggameover:
 			savepath = QDir::home().path() + "/.ggz";
 			dir.mkdir(savepath);
 			savepath += "/games";
@@ -229,10 +229,10 @@ void KDots::slotInput()
 				exit(-1);
 			}
 			break;
-		case proto->sndsync:
+		case KDotsProto::sndsync:
 			gamesync();
 			break;
-		case proto->reqoptions:
+		case KDotsProto::reqoptions:
 			slotOptions();
 			break;
 		default:
