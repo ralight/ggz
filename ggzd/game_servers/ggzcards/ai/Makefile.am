@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3668 2002-03-25 18:31:06Z jdorje $
+# $Id: Makefile.am 3669 2002-03-25 18:51:08Z jdorje $
 
 SUBDIRS = .
 
@@ -19,8 +19,8 @@ noinst_LIBRARIES = libggzcardsai.a
 libggzcardsai_a_SOURCES = aicommon.c game.c main.c aicommon.h game.h
 noinst_HEADERS = aicommon.h game.h
 
-AILIB = $(top_srcdir)/game_servers/ggzcards/client/libclient.a \
-	$(top_srcdir)/game_servers/ggzcards/common/libcommon.a \
+AILIB = $(top_builddir)/game_servers/ggzcards/client/libclient.a \
+	$(top_builddir)/game_servers/ggzcards/common/libcommon.a \
 	libggzcardsai.a \
 	$(LDADD)
 
