@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5111 2002-10-30 06:51:30Z jdorje $
+ * $Id: netxml.c 5127 2002-10-31 02:18:57Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1961,7 +1961,12 @@ static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
 	vsprintf(buf, line, ap);
 	va_end(ap);
 	strcat(buf, "\n");
-	return write(net->fd, buf, strlen(buf));
+
+	/* Some of our callers assume we return 0 on success.  So don't
+	   return a positive value... */
+	if (write(net->fd, buf, strlen(buf)) < 0)
+		return -1;
+	return 0;
 }
 
 
