@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6342 2004-11-12 17:42:38Z jdorje $
+ * $Id: game.c 6346 2004-11-13 08:37:39Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -556,17 +556,11 @@ void game_add_player_info(int number)
 {
 	int a, b;
 	GtkWidget *box;
-	GtkWidget **unit_info = NULL;
+	GtkListStore *unit_list[number];
 	char name_str[32];
-	char **info;
-
-	info = (char **)calloc(3, sizeof(char *));
-	info[1] = (char *)ggz_malloc(1 * sizeof(char));
-	info[2] = (char *)ggz_malloc(5 * sizeof(char));
 
 	// Allocs memory
-	player_list = (GtkWidget **) calloc(number, sizeof(GtkWidget *));
-	unit_info = (GtkWidget **) calloc(number, sizeof(GtkWidget *));
+	player_list = calloc(number, sizeof(*player_list));
 
 	// Finds box
 	box = g_object_get_data(G_OBJECT(main_win), "player_box");
@@ -575,11 +569,11 @@ void game_add_player_info(int number)
 	for (a = 0; a < number; a++) {
 		sprintf(name_str, "player_list[%d]", a);
 		player_list[a] =
-		    (GtkWidget *) gtk_player_info_new(main_win, name_str,
-						      a);
-		unit_info[a] =
+		    gtk_player_info_new(main_win, name_str, a);
+		unit_list[a] =
 		    g_object_get_data(G_OBJECT(player_list[a]),
-				      "unit_list");
+				      "unit_list_store");
+		gtk_list_store_clear(unit_list[a]);
 		gtk_box_pack_start(GTK_BOX(box), player_list[a], TRUE,
 				   TRUE, 0);
 		gtk_widget_show(player_list[a]);
@@ -588,39 +582,61 @@ void game_add_player_info(int number)
 
 	// Now adds the unit names and power
 	for (b = 0; b < 12; b++) {
-		info[0] = unitname[b];
-		strcpy(info[1], "");
-		if (b <= U_BOMB)
-			strcpy(info[2], "-");
-		else
-			sprintf(info[2], "%d", b - 1);
-		for (a = 0; a < number; a++)
-			gtk_clist_insert(GTK_CLIST(unit_info[a]), b, info);
+			char power[32];
+
+			if (b > U_BOMB) {
+			  snprintf(power, sizeof(power), "%d", b - 1);
+			} else {
+			  snprintf(power, sizeof(power), "-");
+			}
+
+		for (a = 0; a < number; a++) {
+			GtkTreeIter iter;
+
+			gtk_list_store_append(unit_list[a], &iter);
+			gtk_list_store_set(unit_list[a], &iter,
+					   UNIT_COLUMN_ID, (gint)b,
+					   UNIT_COLUMN_NAME, unitname[b],
+					   UNIT_COLUMN_POWER, power,
+					   -1);
+		}
 	}
 }
 
 void game_update_unit_list(int seat)
 {
-	GtkWidget *unit_list;
+	GtkListStore *unit_list;
 	GtkWidget *player_info;
 	char widget_name[32];
-	char info[6];
 	int a;
+	GtkTreeIter iter;
 
 	sprintf(widget_name, "player_list[%d]", seat);
 	player_info = g_object_get_data(G_OBJECT(main_win), widget_name);
-	unit_list = g_object_get_data(G_OBJECT(player_info), "unit_list");
+	unit_list = g_object_get_data(G_OBJECT(player_info),
+				      "unit_list_store");
 
+	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(unit_list), &iter);
 	for (a = 0; a < 12; a++) {
+		gchar number[6];
+
 		if (seat == cbt_info.seat
 		    || !(cbt_game.options & OPT_HIDE_UNIT_LIST)) {
-			sprintf(info, "%d/%d", cbt_game.army[seat][a],
-				cbt_game.army[cbt_game.number][a]);
+			snprintf(number, sizeof(number),
+				 "%d/%d", cbt_game.army[seat][a],
+				 cbt_game.army[cbt_game.number][a]);
 		} else {
-			sprintf(info, "?/%d",
-				cbt_game.army[cbt_game.number][a]);
+			snprintf(number, sizeof(number), "?/%d",
+				 cbt_game.army[cbt_game.number][a]);
 		}
-		gtk_clist_set_text(GTK_CLIST(unit_list), a, 1, info);
+
+		gtk_list_store_set(unit_list, &iter,
+				   UNIT_COLUMN_NUMBER, number, -1);
+
+		if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(unit_list),
+					      &iter)) {
+		  break;
+		}
 	}
 }
 
@@ -721,9 +737,12 @@ void game_change_turn(void)
 
 }
 
-void game_unit_list_handle(GtkCList * clist, gint row, gint column,
-			   GdkEventButton * event, gpointer user_data)
+void game_unit_list_handle(GtkTreeSelection * select, gpointer user_data)
 {
+	GtkTreeModel *model;
+	GList *list = gtk_tree_selection_get_selected_rows(select, &model);
+	GtkTreeIter iter;
+
 	// If its not prep time, there is no need to do that!
 	if (cbt_game.state != CBT_STATE_WAIT
 	    && cbt_game.state != CBT_STATE_SETUP)
@@ -734,10 +753,17 @@ void game_unit_list_handle(GtkCList * clist, gint row, gint column,
 		return;
 
 	// Marks or unmarks the current row
-	if (GPOINTER_TO_INT(user_data) == 1)
-		cbt_info.current = row;
-	else
+	if (!list || !list->data) {
 		cbt_info.current = U_EMPTY;
+	} else {
+		gint id;
+
+		gtk_tree_model_get_iter(model, &iter, list->data);
+		gtk_tree_model_get(model, &iter, UNIT_COLUMN_ID, &id, -1);
+		cbt_info.current = id;
+		gtk_tree_path_free(list->data);
+	}
+	g_list_free(list);
 
 	// If it hasn't enough units of that kind, then just mark it as empty
 	if (cbt_game.army[cbt_info.seat][(int)cbt_info.current] <= 0)

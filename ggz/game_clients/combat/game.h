@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game header
- * $Id: game.h 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: game.h 6346 2004-11-13 08:37:39Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -52,8 +52,8 @@ struct game_info_t {
 
 // Handle IO
 gboolean game_handle_io(GGZMod * mod);
-void game_unit_list_handle(GtkCList * clist, gint row, gint column,
-			   GdkEventButton * event, gpointer user_data);
+void game_unit_list_handle(GtkTreeSelection * treeselection,
+			   gpointer user_data);
 
 // Handle setup
 void game_handle_setup(int);
@@ -103,3 +103,11 @@ GtkWidget *gtk_player_info_new(GtkWidget *, char *, int);
 // Saves maps
 void game_ask_save_map(void);
 void game_confirm_save_map(GtkButton *, gpointer);
+
+enum {
+	UNIT_COLUMN_ID,
+	UNIT_COLUMN_NAME,
+	UNIT_COLUMN_NUMBER,
+	UNIT_COLUMN_POWER,
+	UNIT_COLUMNS
+};

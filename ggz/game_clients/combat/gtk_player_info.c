@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 10/14/2000
  * Desc: Player info widget
- * $Id: gtk_player_info.c 6342 2004-11-12 17:42:38Z jdorje $
+ * $Id: gtk_player_info.c 6346 2004-11-13 08:37:39Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -27,15 +27,66 @@
 #  include <config.h>	/* Site-specific config */
 #endif
 
+#include <assert.h>
+
 #include <gtk/gtk.h>
+
+#include "ggz_gtk.h"
 
 #include "game.h"
 
 extern GdkColor *player_colors;
 
-void game_unit_list_handle(GtkCList * clist, gint row, gint column,
-			   GdkEventButton * event, gpointer user_data);
+static GtkWidget *tree_new(GtkWidget * parent)
+{
+	GtkListStore *store;
+	GtkWidget *tree;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *select;
 
+	assert(UNIT_COLUMNS == 4);
+	store = gtk_list_store_new(UNIT_COLUMNS, G_TYPE_INT,
+				   G_TYPE_STRING, G_TYPE_STRING,
+				   G_TYPE_STRING);
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Name"),
+							  renderer, "text",
+							  UNIT_COLUMN_NAME,
+							  NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Number"),
+							  renderer, "text",
+							  UNIT_COLUMN_NUMBER,
+							  NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Power"),
+							  renderer, "text",
+							  UNIT_COLUMN_POWER,
+							  NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	gtk_widget_ref(tree);
+	g_object_set_data_full(G_OBJECT(parent), "unit_list",
+			       tree, (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data(G_OBJECT(parent), "unit_list_store", store);
+	gtk_widget_show(tree);
+
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+
+	g_signal_connect(select, "changed",
+			 GTK_SIGNAL_FUNC(game_unit_list_handle), parent);
+
+	return tree;
+}
 
 GtkWidget *gtk_player_info_new(GtkWidget * parent, char *name, int seat)
 {
@@ -43,9 +94,6 @@ GtkWidget *gtk_player_info_new(GtkWidget * parent, char *name, int seat)
 	GtkWidget *player_name;
 	GtkWidget *unit_view;
 	GtkWidget *unit_list;
-	GtkWidget *name_lbl;
-	GtkWidget *power_lbl;
-	GtkWidget *number_lbl;
 	GtkStyle *label_style;
 	int j;
 
@@ -83,50 +131,8 @@ GtkWidget *gtk_player_info_new(GtkWidget * parent, char *name, int seat)
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
 
-	unit_list = gtk_clist_new(3);
-	gtk_widget_ref(unit_list);
-	g_object_set_data_full(G_OBJECT(player_info), "unit_list",
-			       unit_list,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(unit_list);
+	unit_list = tree_new(player_info);
 	gtk_container_add(GTK_CONTAINER(unit_view), unit_list);
-	gtk_clist_set_column_width(GTK_CLIST(unit_list), 0, 50);
-	gtk_clist_set_column_width(GTK_CLIST(unit_list), 1, 55);
-	gtk_clist_set_column_width(GTK_CLIST(unit_list), 2, 45);
-	gtk_clist_column_titles_show(GTK_CLIST(unit_list));
-
-	// Collums
-	name_lbl = gtk_label_new("Name");
-	gtk_widget_ref(name_lbl);
-	g_object_set_data_full(G_OBJECT(player_info), "name_lbl", name_lbl,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(name_lbl);
-	gtk_clist_set_column_widget(GTK_CLIST(unit_list), 0, name_lbl);
-
-	number_lbl = gtk_label_new("Number");
-	gtk_widget_ref(number_lbl);
-	g_object_set_data_full(G_OBJECT(player_info), "number_lbl",
-			       number_lbl,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(number_lbl);
-	gtk_clist_set_column_widget(GTK_CLIST(unit_list), 1, number_lbl);
-
-	power_lbl = gtk_label_new("Power");
-	gtk_widget_ref(power_lbl);
-	g_object_set_data_full(G_OBJECT(player_info), "Power", power_lbl,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(power_lbl);
-	gtk_clist_set_column_widget(GTK_CLIST(unit_list), 2, power_lbl);
-
-
-	// Connect signals
-	g_signal_connect(GTK_OBJECT(unit_list), "select-row",
-			 GTK_SIGNAL_FUNC(game_unit_list_handle),
-			 GINT_TO_POINTER(1));
-	g_signal_connect(GTK_OBJECT(unit_list), "unselect-row",
-			 GTK_SIGNAL_FUNC(game_unit_list_handle),
-			 GINT_TO_POINTER(-1));
-
 
 	return player_info;
 }
