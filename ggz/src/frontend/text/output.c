@@ -33,6 +33,7 @@
 #include <sys/ioctl.h>
 #include <time.h>
 #include "output.h"
+#include "state.h"
 
 /* Color Codes */
 #define COLOR_BRIGHT_GREY	"\e[1m\e[30m"
@@ -175,43 +176,7 @@ void output_status(void)
 	char *user = NULL, *server = NULL, *room = NULL;
 	char *currentstatus = NULL;
 	
-	switch((int)ggzcore_state_get_id())
-	{
-		case GGZ_STATE_OFFLINE:
-			currentstatus = "Offline";
-			break;
-		case GGZ_STATE_CONNECTING:
-			currentstatus = "Connecting";
-			break;
-		case GGZ_STATE_ONLINE:
-			currentstatus = "Online";
-			break;
-		case GGZ_STATE_LOGGING_IN:
-			currentstatus = "Logging In";
-			break;
-		case GGZ_STATE_LOGGED_IN:
-			currentstatus = "Logged In";
-			break;
-		case GGZ_STATE_BETWEEN_ROOMS:
-		case GGZ_STATE_ENTERING_ROOM:
-			currentstatus = "--> Room";
-			break;
-		case GGZ_STATE_IN_ROOM:
-			currentstatus = "Chatting";
-			break;
-		case GGZ_STATE_JOINING_TABLE:
-			currentstatus = "--> Table";
-			break;
-		case GGZ_STATE_AT_TABLE:
-			currentstatus = "Playing";
-			break;
-		case GGZ_STATE_LEAVING_TABLE:
-			currentstatus = "<-- Table";
-			break;
-		case GGZ_STATE_LOGGING_OUT:
-			currentstatus = "Logging Out";
-			break;
-	}
+	currentstatus = state_get();
 	
 	if (ggzcore_state_is_online()) {
 		user = ggzcore_state_get_profile_login();

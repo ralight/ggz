@@ -48,6 +48,7 @@ int main (int argc, char *argv[])
 
 	ggzcore_init(opt);
 	ggz_event_init();
+	ggz_state_init();
 	
 	gtk_init(&argc, &argv);
 	chat_allocate_colors();

@@ -11,6 +11,8 @@ ggz_txt_SOURCES = 	input.c \
 			output.c \
 			output.h \
 			server.c \
-			server.h
+			server.h \
+			state.c \
+			state.h 
 
 ggz_txt_LDADD = $(top_builddir)/src/ggzcore/libggzcore.a @EASYSOCK_LIB@

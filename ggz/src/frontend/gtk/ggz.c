@@ -49,7 +49,7 @@ void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data);
 void ggz_logout(GGZEventID id, void* event_data, void* user_data);
 void ggz_room_enter(GGZEventID id, void* event_data, void* user_data);
 void ggz_room_part(GGZEventID id, void* event_data, void* user_data);
-
+static void ggz_state_change(GGZStateID id, void* event_data, void* user_data);
 
 void ggz_event_init(void)
 {
@@ -68,6 +68,23 @@ void ggz_event_init(void)
 	ggzcore_event_add_callback(GGZ_SERVER_ROOM_ENTER, ggz_room_enter);
 	ggzcore_event_add_callback(GGZ_SERVER_ROOM_LEAVE, ggz_room_part);
 	ggzcore_event_add_callback(GGZ_NET_ERROR, NULL);
+}
+
+
+void ggz_state_init(void)
+{
+	ggzcore_state_add_callback(GGZ_STATE_OFFLINE, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_CONNECTING, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_ONLINE, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_LOGGING_IN, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_LOGGED_IN, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_BETWEEN_ROOMS, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_ENTERING_ROOM, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_IN_ROOM, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_JOINING_TABLE, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_AT_TABLE, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_LEAVING_TABLE, ggz_state_change);
+	ggzcore_state_add_callback(GGZ_STATE_LOGGING_OUT, ggz_state_change);
 }
 
 
@@ -371,4 +388,57 @@ void ggz_motd(GGZEventID id, void* event_data, void* user_data)
 	motd_create_or_raise();
 	for(i = 0; motd[i] != NULL; i++)
 		motd_print_line(motd[i]);
+}
+
+
+static void ggz_state_change(GGZStateID id, void* event_data, void* user_data)
+{
+	GtkWidget* statebar;
+	char *state;
+
+	switch (id) {
+	case GGZ_STATE_OFFLINE:
+		state = "Offline";
+		break;
+	case GGZ_STATE_CONNECTING:
+		state = "Connecting";
+		break;
+	case GGZ_STATE_ONLINE:
+		state = "Online";
+		break;
+	case GGZ_STATE_LOGGING_IN:
+		state = "Logging In";
+		break;
+	case GGZ_STATE_LOGGED_IN:
+		state = "Logged In";
+		break;
+	case GGZ_STATE_BETWEEN_ROOMS:
+	case GGZ_STATE_ENTERING_ROOM:
+		state = "--> Room";
+		break;
+	case GGZ_STATE_IN_ROOM:
+		state = "Chatting";
+		break;
+	case GGZ_STATE_JOINING_TABLE:
+		state = "--> Table";
+		break;
+	case GGZ_STATE_AT_TABLE:
+		state = "Playing";
+		break;
+	case GGZ_STATE_LEAVING_TABLE:
+		state = "<-- Table";
+		break;
+	case GGZ_STATE_LOGGING_OUT:
+		state = "Logging Out";
+		break;
+	default:
+		state = "**none**";
+		
+	}
+
+	statebar = lookup_widget(win_main, "statebar");
+	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statebar), "state");
+	gtk_statusbar_pop(GTK_STATUSBAR(statebar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(statebar), id, state);
+
 }

@@ -498,8 +498,6 @@ client_realize                    (GtkWidget       *widget,
 }
 
 
-
-
 GtkWidget*
 create_win_main (void)
 {
@@ -584,7 +582,10 @@ create_win_main (void)
   GtkWidget *chat_entry;
   GtkWidget *chat_hbuttonbox;
   GtkWidget *send_button;
+  GtkWidget *status_box;
+  GtkWidget *messagebar;
   GtkWidget *statusbar;
+  GtkWidget *statebar;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -1311,12 +1312,35 @@ create_win_main (void)
   GTK_WIDGET_UNSET_FLAGS (send_button, GTK_CAN_FOCUS);
   GTK_WIDGET_SET_FLAGS (send_button, GTK_CAN_DEFAULT);
 
+  status_box = gtk_hbox_new (FALSE, 5);
+  gtk_widget_ref (status_box);
+  gtk_object_set_data_full (GTK_OBJECT (win_main), "status_box", status_box,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (status_box);
+  gtk_box_pack_start (GTK_BOX (main_vbox), status_box, FALSE, FALSE, 0);
+
+  messagebar = gtk_statusbar_new ();
+  gtk_widget_ref (messagebar);
+  gtk_object_set_data_full (GTK_OBJECT (win_main), "messagebar", messagebar,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (messagebar);
+  gtk_box_pack_start (GTK_BOX (status_box), messagebar, TRUE, TRUE, 0);
+
   statusbar = gtk_statusbar_new ();
   gtk_widget_ref (statusbar);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "statusbar", statusbar,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (statusbar);
-  gtk_box_pack_start (GTK_BOX (main_vbox), statusbar, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (status_box), statusbar, FALSE, FALSE, 0);
+  gtk_widget_set_usize (statusbar, 75, -2);
+
+  statebar = gtk_statusbar_new ();
+  gtk_widget_ref (statebar);
+  gtk_object_set_data_full (GTK_OBJECT (win_main), "statebar", statebar,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (statebar);
+  gtk_box_pack_start (GTK_BOX (status_box), statebar, FALSE, FALSE, 0);
+  gtk_widget_set_usize (statebar, 100, -2);
 
   gtk_signal_connect (GTK_OBJECT (win_main), "realize",
                       GTK_SIGNAL_FUNC (client_realize),
@@ -1426,6 +1450,7 @@ create_win_main (void)
 
   return win_main;
 }
+
 
 GtkWidget*
 create_mnu_room (void)

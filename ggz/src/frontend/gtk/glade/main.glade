@@ -939,13 +939,47 @@
     </widget>
 
     <widget>
-      <class>GtkStatusbar</class>
-      <name>statusbar</name>
+      <class>GtkHBox</class>
+      <name>status_box</name>
+      <homogeneous>False</homogeneous>
+      <spacing>5</spacing>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
 	<fill>False</fill>
       </child>
+
+      <widget>
+	<class>GtkStatusbar</class>
+	<name>messagebar</name>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkStatusbar</class>
+	<name>statusbar</name>
+	<width>75</width>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkStatusbar</class>
+	<name>statebar</name>
+	<width>100</width>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
     </widget>
   </widget>
 </widget>

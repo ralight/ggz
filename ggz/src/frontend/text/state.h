@@ -1,11 +1,12 @@
 /*
- * File: ggz.h
- * Author: Justin Zaun
- * Project: GGZ GTK Client
+ * File: state.h
+ * Author: Brent Hendricks
+ * Project: GGZ Text Client 
+ * Date: 9/26/00
  *
- * This is the main program body for the GGZ client
+ * Functions for handling state events
  *
- * Copyright (C) 2000 Justin Zaun.
+ * Copyright (C) 2000 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifndef _GGZ_
-#define _GGZ_
 
+void state_register(void);
 
-void ggz_event_init(void);
-void ggz_state_init(void);
-void ggz_sensitivity_init(void);
-
-#endif
+char* state_get(void);
