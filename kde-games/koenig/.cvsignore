@@ -7,4 +7,5 @@ Makefile.in
 .deps
 .libs
 module.dsc
+koenig_meta_unload.cc
 
