@@ -34,7 +34,7 @@ void grubby_init( void )
 	printf ("AGRUB Version 0.1.0\n-----\n");
 
 	/* Initilize grubbies information	*/
-	printf ("  |- Getting Options\n");
+	printf ("  Getting Options\n");
 	grubby.port   = -1;  
 	grubby.host   = NULL;
 	grubby.name   = NULL;
@@ -53,6 +53,9 @@ void ggz_init( void )
 	user_conf = malloc((strlen(getenv("HOME"))+15)*sizeof(char*));
 	sprintf(user_conf, "%s/.ggz/grubby.rc", getenv("HOME"));
 	ggzcore_conf_initialize(global_conf, user_conf);
+	free(user_conf);
+        opt.debug_file = ggzcore_conf_read_string("Debug", "File", "/tmp/ggz-grubby.debug");
+        opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL);
 	ggzcore_init(opt);
 
 	/* Connect Callbacks */
