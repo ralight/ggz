@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 2280 2001-08-27 18:29:25Z jdorje $
+ * $Id: game.c 2282 2001-08-27 19:02:17Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -193,6 +193,7 @@ int game_start() {
 	return 0;
 }
 
+/* return -1 on error, 1 on gameover */
 int game_handle_player(ggzd_event_t event, void* data) {
 	int seat = *(int*)data;
 	int fd, op, move, status;
@@ -222,7 +223,8 @@ int game_handle_player(ggzd_event_t event, void* data) {
 
 	}
 
-	return status;
+	if (status < 0) return -1;
+	return 0;
 
 }
 
