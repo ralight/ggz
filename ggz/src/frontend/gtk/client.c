@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3092 2002-01-12 10:48:13Z jdorje $
+ * $Id: client.c 3149 2002-01-19 19:16:49Z perdig $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -31,6 +31,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <ggzcore.h>
+#include <ggz.h> /* For list functions */
 #include <stdlib.h>
 
 #include "about.h"
@@ -61,6 +62,9 @@ static gint tablerow = -1;
  */
 gint popup_row = 0;
 gint poping = FALSE;
+
+/* Maximum cache size for last entries */
+#define CHAT_MAXIMUM_CACHE 5
 
 /* Callbacks for main client window */
 static void client_realize(GtkWidget *widget, gpointer data);
@@ -379,12 +383,20 @@ client_chat_entry_activate		(GtkEditable	*editable,
 					 gpointer	 data)
 {
 	GtkEntry *tmp;
+  GGZList *last_list; /* List for last entries */
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
+  last_list = gtk_object_get_data(GTK_OBJECT(tmp), "last_list");
+
+  while (ggz_list_count(last_list) > CHAT_MAXIMUM_CACHE)
+    ggz_list_delete_entry(last_list, ggz_list_head(last_list));
 
 	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
 	{
 		chat_send(gtk_entry_get_text(GTK_ENTRY(tmp)));
+    ggz_list_insert(last_list, gtk_entry_get_text(GTK_ENTRY(tmp)));
+    /* Clear the current entry */
+    gtk_object_set_data(GTK_OBJECT(tmp), "current_entry", NULL);
 	}
 
 	/* Clear the entry box */
@@ -400,6 +412,8 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 	GtkWidget *tmp;
 	gint x, i, max, length, first = TRUE;
 	gchar *name = NULL, *text = NULL, *startname = NULL, *out = NULL;
+  GGZList *last_list;
+  GGZListEntry *entry;
 
 	if (event->keyval == GDK_Tab)
 	{
@@ -446,7 +460,43 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 		if (out)
 			g_free(out);
 		return TRUE;
-	}
+	} else if (event->keyval == GDK_Up || event->keyval == GDK_Down) {
+    tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
+    text = gtk_entry_get_text(GTK_ENTRY(tmp));
+    last_list = gtk_object_get_data(GTK_OBJECT(tmp), "last_list");
+    entry = gtk_object_get_data(GTK_OBJECT(tmp), "current_entry");
+    if (!entry) {
+      /* The text is not on the list!
+       * We will save it as "current" text */
+      gtk_object_set_data(GTK_OBJECT(tmp), "current_text", ggz_strdup(text));
+      if (event->keyval == GDK_Up)
+        entry = ggz_list_tail(last_list);
+      else
+        entry = ggz_list_head(last_list);
+    } else {
+      if (event->keyval == GDK_Up)
+        entry = ggz_list_prev(entry);
+      else
+        entry = ggz_list_next(entry);
+    }
+    out = ggz_list_get_data(entry);
+    /* Set the new current entry */
+    gtk_object_set_data(GTK_OBJECT(tmp), "current_entry", entry);
+    if (out)
+      gtk_entry_set_text(GTK_ENTRY(tmp), out);
+    else {
+      /* There isn't a entry in the cache for it
+       * Let's use the current entry then */
+      out = gtk_object_get_data(GTK_OBJECT(tmp), "current_text");
+      if (out) {
+        gtk_entry_set_text(GTK_ENTRY(tmp), out);
+        gtk_object_set_data(GTK_OBJECT(tmp), "current_text", NULL);
+        ggz_free(out);
+      } else
+        gtk_entry_set_text(GTK_ENTRY(tmp), "");
+    }
+    return TRUE;
+  }
 	return TRUE;
 }                                        
 
@@ -455,12 +505,20 @@ client_send_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
 	GtkEntry *tmp;
+  GGZList *last_list;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
+  last_list = gtk_object_get_data(GTK_OBJECT(tmp), "last_list");
+
+  while (ggz_list_count(last_list) > CHAT_MAXIMUM_CACHE)
+    ggz_list_delete_entry(last_list, ggz_list_head(last_list));
 
 	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
 	{
 		chat_send(gtk_entry_get_text(GTK_ENTRY(tmp)));
+    ggz_list_insert(last_list, gtk_entry_get_text(GTK_ENTRY(tmp)));
+    /* Clear the current entry */
+    gtk_object_set_data(GTK_OBJECT(tmp), "current_entry", NULL);
 	}
 
 	/* Clear the entry box */
@@ -1051,6 +1109,9 @@ create_win_main (void)
   GtkWidget *statusbar;
   GtkWidget *statebar;
   GtkAccelGroup *accel_group;
+
+  /* List for storing last messages */
+  GGZList *last_list;
 
   accel_group = gtk_accel_group_new ();
 
@@ -1773,6 +1834,10 @@ create_win_main (void)
   gtk_widget_show (chat_entry);
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_entry, TRUE, TRUE, 0);
   gtk_widget_set_sensitive (chat_entry, FALSE);
+
+  /* List for last entries */
+  last_list = ggz_list_create(NULL, ggz_list_create_str, ggz_list_destroy_str, GGZ_LIST_ALLOW_DUPS);
+  gtk_object_set_data( GTK_OBJECT(chat_entry), "last_list", last_list );
 
   chat_hbuttonbox = gtk_hbutton_box_new ();
   gtk_widget_ref (chat_hbuttonbox);
