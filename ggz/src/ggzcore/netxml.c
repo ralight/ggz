@@ -112,13 +112,6 @@ typedef struct _GGZTableData {
 } GGZTableData;
 
 
-/* Seat data structure */
-typedef struct _GGZSeatData {
-	int index;
-	char *type; 
-	char *name;
-} GGZSeatData;
-
 /* Callbacks for XML parser */
 static void _ggzcore_net_parse_start_tag(void *, const char*, const char **);
 static void _ggzcore_net_parse_end_tag(void *data, const char *el);
@@ -153,12 +146,14 @@ static void _ggzcore_net_game_set_protocol(GGZXMLElement*, char*, char *);
 static void _ggzcore_net_game_set_allowed(GGZXMLElement*, GGZAllowed, GGZAllowed);
 static void _ggzcore_net_game_set_info(GGZXMLElement*, char*, char *);
 static void _ggzcore_net_game_set_desc(GGZXMLElement*, char*);
-static void _ggzcore_net_table_add_seat(GGZXMLElement*, GGZSeatData*);
+static void _ggzcore_net_table_add_seat(GGZXMLElement*, struct _GGZSeat*);
+static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update, char *action);
+static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *action);
 static void _ggzcore_net_table_set_desc(GGZXMLElement*, char*);
 static GGZTableData* _ggzcore_net_tabledata_new(void);
 static void _ggzcore_net_tabledata_free(GGZTableData*);
-static void* _ggzcore_net_seat_copy(void *data);
-static void _ggzcore_net_seat_free(GGZSeatData*);
+static struct _GGZSeat* _ggzcore_net_seat_copy(struct _GGZSeat *orig);
+static void _ggzcore_net_seat_free(struct _GGZSeat*);
 
 /* Trigger network error event */
 static void _ggzcore_net_error(struct _GGZNet *net, char* message);
@@ -1043,11 +1038,7 @@ static void _ggzcore_net_list_insert(GGZXMLElement *list_tag, void *data)
 /* Functions for <UPDATE> tag */
 static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 {
-	int i, seats, room_num;
-	char *name, *action, *type;
-	GGZRoom *room;
-	GGZPlayer *player;
-	GGZTable *table, *real_table;
+	char *action, *type;
 
 	/* Return if there's no tag */
 	if (!update)
@@ -1056,11 +1047,6 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 	/* Grab update data from tag */
 	type = ggz_xmlelement_get_attr(update, "TYPE");
 	action = ggz_xmlelement_get_attr(update, "ACTION");
-	if (!ggz_xmlelement_get_attr(update, "ROOM"))
-		room_num = -1;
-	else
-		room_num = safe_atoi(ggz_xmlelement_get_attr(update, "ROOM"));
-
 
 	if (strcmp(type, "room") == 0) {
 		/* FIXME: implement this */
@@ -1068,76 +1054,115 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 	else if (strcmp(type, "game") == 0) {
 		/* FIXME: implement this */
 	}
-	else if (strcmp(type, "player") == 0) {
-		player = ggz_xmlelement_get_data(update);
-		room = _ggzcore_server_get_room_by_id(net->server, room_num);
+	else if (strcmp(type, "player") == 0)
+		_ggzcore_net_player_update(net, update, action);
+	else if (strcmp(type, "table") == 0)
+		_ggzcore_net_table_update(net, update, action);
+}
 
-		if (strcmp(action, "add") == 0)
-			_ggzcore_room_add_player(room, player->name, 
-						 player->type, player->lag);
-		else if (strcmp(action, "delete") == 0)
-			_ggzcore_room_remove_player(room, player->name);
-		else if (strcmp(action, "lag") == 0)
-			/* FIXME: Should be a player "class-based" event */
-			_ggzcore_room_set_player_lag(room, player->name, player->lag);
-			
-		ggz_free(player);
+
+/* Handle Player update */
+static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update, char *action)
+{
+	int room_num;
+	GGZPlayer *player;
+	GGZRoom *room;
+
+	if (!ggz_xmlelement_get_attr(update, "ROOM"))
+		room_num = -1;
+	else
+		room_num = safe_atoi(ggz_xmlelement_get_attr(update, "ROOM"));
+
+
+	player = ggz_xmlelement_get_data(update);
+	room = _ggzcore_server_get_room_by_id(net->server, room_num);
+	
+	if (strcmp(action, "add") == 0)
+		_ggzcore_room_add_player(room, player->name, player->type, player->lag);
+	
+	else if (strcmp(action, "delete") == 0)
+		_ggzcore_room_remove_player(room, player->name);
+	else if (strcmp(action, "lag") == 0)
+		/* FIXME: Should be a player "class-based" event */
+		_ggzcore_room_set_player_lag(room, player->name, player->lag);
+	
+	ggz_free(player);
+}
+
+
+/* Handle table update */
+static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *action)
+{
+	int i, room_num;
+	GGZTable *table, *table_data;
+	GGZRoom *room;
+	struct _GGZSeat seat;
+
+	/* Sanity check: we can't proceed without a room number */
+	if (!ggz_xmlelement_get_attr(update, "ROOM")) {
+		room_num = -1;
+		_ggzcore_server_protocol_error(net->server, "Server didn't send room number");
+		return;
 	}
-	else if (strcmp(type, "table") == 0) {
-		table = ggz_xmlelement_get_data(update);
-		room = _ggzcore_server_get_room_by_id(net->server, room_num);
-		real_table = _ggzcore_room_get_table_by_id(room, table->id);
+	
+	room_num = safe_atoi(ggz_xmlelement_get_attr(update, "ROOM"));
+	room = _ggzcore_server_get_room_by_id(net->server, room_num);
 
-		if (strcmp(action, "add") == 0) {
-			_ggzcore_room_add_table(room, table);
-			table = NULL;
-		}
-		else if (strcmp(action, "delete") == 0)
-			_ggzcore_room_remove_table(room, table->id);
+	if (!room) {
+		_ggzcore_server_protocol_error(net->server, "Server specified non-existent room");
+		return;
+	}
+	
+	table_data = ggz_xmlelement_get_data(update);
+	table = _ggzcore_room_get_table_by_id(room, table_data->id);
 
-		else if (strcmp(action, "join") == 0) {
-			/* FIXME: this is a lousy way of getting this info */
-			seats = _ggzcore_table_get_num_seats(table);
-			for (i = 0; i < seats; i++) {
-				name = _ggzcore_table_get_nth_player_name(table, i);
-				if (name) {
-					_ggzcore_table_set_seat(real_table, i,
-								GGZ_SEAT_PLAYER,
-								name);
-					
-					break;
-				}
+	/* Table can only be NULL if we're adding it */
+	if (!table && strcmp(action, "add") != 0) {
+		_ggzcore_server_protocol_error(net->server, "Server specified non-existent table");
+		return;
+	}
+
+	if (strcmp(action, "add") == 0) {
+		_ggzcore_room_add_table(room, table_data);
+		/* Set table_data to NULL so it doesn't get freed at
+                   the end of this function */
+		table_data = NULL;
+	}
+	else if (strcmp(action, "delete") == 0)
+		_ggzcore_room_remove_table(room, table_data->id);
+
+	else if (strcmp(action, "join") == 0) {
+		for (i = 0; i < table_data->num_seats; i++)
+			if (table_data->seats[i].type != GGZ_SEAT_NONE)
+				_ggzcore_table_set_seat(table, &table_data->seats[i]);
+	}
+	else if (strcmp(action, "leave") == 0) {
+		for (i = 0; i < table_data->num_seats; i++) {
+			if (table_data->seats[i].type != GGZ_SEAT_NONE) {
+				/* Player is vacating seat */
+				seat.index = i;
+				seat.type = GGZ_SEAT_OPEN;
+				seat.name = NULL;
+				_ggzcore_table_set_seat(table, &seat);
 			}
 		}
-		else if (strcmp(action, "leave") == 0) {
-			/* FIXME: this is a lousy way of getting this info */
-			seats = _ggzcore_table_get_num_seats(table);
-			for (i = 0; i < seats; i++) {
-				name = _ggzcore_table_get_nth_player_name(table, i);
-				if (name) {
-					_ggzcore_table_set_seat(real_table, i,
-								GGZ_SEAT_OPEN,
-								NULL);
-					
-					break;
-				}
-			}
-		}
-		else if (strcmp(action, "status") == 0) {
-			_ggzcore_table_set_state(real_table, table->state);
-		}
-		else if (strcmp(action, "desc") == 0) {
-			_ggzcore_table_set_desc(real_table, table->desc);
-		}
-		else if (strcmp(action, "seat") == 0) {
-			/* FIXME: _ggzcore_table_set_seat(real_table, seat, type, name);*/
-		}
+	}
+	else if (strcmp(action, "status") == 0) {
+		_ggzcore_table_set_state(table, table_data->state);
+	}
+	else if (strcmp(action, "desc") == 0) {
+		_ggzcore_table_set_desc(table, table_data->desc);
+	}
+	else if (strcmp(action, "seat") == 0) {
+		for (i = 0; i < table_data->num_seats; i++)
+			_ggzcore_table_set_seat(table, &table_data->seats[i]);
+	}
 			
-		if (table)
-			_ggzcore_table_free(table);
-		}
+	if (table_data)
+		_ggzcore_table_free(table_data);
 
 }
+
 
 
 /* Functions for <GAME> tag */
@@ -1438,12 +1463,12 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 {
 	char *parent_tag;
 	GGZGameType *type;
-	GGZSeatData *seat;
 	GGZTableData *data;
 	GGZTable *table_obj;
+	struct _GGZSeat *seat;
 	GGZList *seats = NULL;
 	GGZListEntry *entry;
-	int id, game, status, num_seats;
+	int id, game, status, num_seats, i;
 	char *desc = NULL;
 	GGZXMLElement *parent;
 
@@ -1470,14 +1495,17 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 		type = _ggzcore_server_get_type_by_id(net->server, game);
 		_ggzcore_table_init(table_obj, type, desc, num_seats, status, 
 				    id);
-				    
+
+		/* Initialize seats to none */
+		/* FIXME: perhaps tables should come this way? */
+		for (i = 0; i < num_seats; i++)
+			table_obj->seats[i].type = GGZ_SEAT_NONE;
+		
 		/* Add seats */
 		entry = ggz_list_head(seats);
 		while (entry) {
 			seat = ggz_list_get_data(entry);
-			_ggzcore_table_set_seat(table_obj, seat->index,
-				ggz_string_to_seattype(seat->type),
-				seat->name);
+			_ggzcore_table_set_seat(table_obj, seat);
 			entry = ggz_list_next(entry);
 		}
 		
@@ -1493,7 +1521,7 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 	}
 }
 
-static void _ggzcore_net_table_add_seat(GGZXMLElement *table, GGZSeatData *seat)
+static void _ggzcore_net_table_add_seat(GGZXMLElement *table, struct _GGZSeat *seat)
 {
 	struct _GGZTableData *data;
 	
@@ -1532,9 +1560,9 @@ static GGZTableData* _ggzcore_net_tabledata_new(void)
 	data = ggz_malloc(sizeof(struct _GGZTableData));
 
 	data->seats = ggz_list_create(NULL, 
-					   _ggzcore_net_seat_copy, 
-					   (ggzEntryDestroy)_ggzcore_net_seat_free, 
-					   GGZ_LIST_ALLOW_DUPS);
+				      (ggzEntryCreate)_ggzcore_net_seat_copy, 
+				      (ggzEntryDestroy)_ggzcore_net_seat_free, 
+				      GGZ_LIST_ALLOW_DUPS);
 
 	return data;
 }
@@ -1555,7 +1583,7 @@ static void _ggzcore_net_tabledata_free(GGZTableData *data)
 /* Functions for <SEAT> tag */
 static void _ggzcore_net_handle_seat(GGZNet *net, GGZXMLElement *seat)
 {
-	struct _GGZSeatData seat_obj;
+	struct _GGZSeat seat_obj;
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
@@ -1565,34 +1593,30 @@ static void _ggzcore_net_handle_seat(GGZNet *net, GGZXMLElement *seat)
 
 		/* Get seat information out of tag */
 		seat_obj.index = safe_atoi(ggz_xmlelement_get_attr(seat, "NUM"));
-		seat_obj.type = ggz_xmlelement_get_attr(seat, "TYPE");
+		seat_obj.type = ggz_string_to_seattype(ggz_xmlelement_get_attr(seat, "TYPE"));
 		seat_obj.name = ggz_xmlelement_get_text(seat);
 		_ggzcore_net_table_add_seat(parent, &seat_obj);
 	}
 }
 
 
-static void* _ggzcore_net_seat_copy(void *data)
+static struct _GGZSeat* _ggzcore_net_seat_copy(struct _GGZSeat *orig)
 {
-	struct _GGZSeatData *seat1, *seat2;
+	struct _GGZSeat *copy;
 
-	seat1 = (GGZSeatData*)data;
+	copy = ggz_malloc(sizeof(struct _GGZSeat));
 
-	seat2 = ggz_malloc(sizeof(struct _GGZSeatData));
+	copy->index = orig->index;
+	copy->type = orig->type;
+	copy->name = ggz_strdup(orig->name);
 
-	seat2->index = seat1->index;
-	seat2->type = ggz_strdup(seat1->type);
-	seat2->name = ggz_strdup(seat1->name);
-
-	return seat2;
+	return copy;
 }
 
 
-static void _ggzcore_net_seat_free(GGZSeatData *seat)
+static void _ggzcore_net_seat_free(struct _GGZSeat *seat)
 {
 	if (seat) {
-		if (seat->type)
-			ggz_free(seat->type);
 		if (seat->name)
 			ggz_free(seat->name);
 		ggz_free(seat);

@@ -93,11 +93,8 @@ void _ggzcore_table_set_desc(struct _GGZTable *table, const char *desc);
  *  called by both front-end and back-end functions to do the
  *  actual work of changing the seat.
  */
-void _ggzcore_table_set_seat(struct _GGZTable *table,
-			     const unsigned int seat,
-			     GGZSeatType type,
-			     char *name);
-int _ggzcore_table_remove_player(struct _GGZTable *table, char *name);
+void _ggzcore_table_set_seat(struct _GGZTable *table, struct _GGZSeat *seat);
+
 
 struct _GGZRoom*      _ggzcore_table_get_room(struct _GGZTable *table);
 int                   _ggzcore_table_get_id(struct _GGZTable *table);

@@ -426,7 +426,7 @@ struct _GGZPlayer* _ggzcore_room_get_player_by_name(struct _GGZRoom *room,
 	struct _GGZPlayer player, *found = NULL;
 
 	if (room->players) {
-		_ggzcore_player_init(&player, name, room, -1, GGZ_PLAYER_NONE, 0);
+		player.name = name;
 		entry = ggz_list_search(room->players, &player);
 
 		if (entry)
@@ -560,8 +560,7 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name)
 
 	/* Only try to delete if the list exists */
 	if (room->players) {	
-		/* Default to no table (-1) or type */
-		_ggzcore_player_init(&player, name, room, -1, GGZ_PLAYER_NONE, 0);
+		player.name = name;
 		entry = ggz_list_search(room->players, &player);
 		if (entry) {
 			ggz_list_delete_entry(room->players, entry);

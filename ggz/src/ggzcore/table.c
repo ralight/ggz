@@ -88,7 +88,7 @@ int ggzcore_table_set_seat(GGZTable *table,
 	if (!table || index >= table->num_seats)
 		return -1;
 		
-	/* The GGZ client should only set seats to OPEN, BOT, or RESERVED. */
+	/* GGZ clients should only ever set seats to OPEN, BOT, or RESERVED. */
 	if (type != GGZ_SEAT_OPEN
 	    && type != GGZ_SEAT_BOT
 	    && type != GGZ_SEAT_RESERVED)
@@ -101,7 +101,7 @@ int ggzcore_table_set_seat(GGZTable *table,
 	/* If the table is newly created and not involved in a game
            yet, users may change seats all they want */
 	if (table->state == GGZ_TABLE_CREATED)
-		_ggzcore_table_set_seat(table, index, type, name);
+		_ggzcore_table_set_seat(table, &seat);
 	else {
 		/* Otherwise we have to do it through the server */
 		if (!(room = _ggzcore_table_get_room(table)))
@@ -158,10 +158,22 @@ int ggzcore_table_set_desc(GGZTable *table, const char *desc)
 
 int ggzcore_table_remove_player(GGZTable *table, char *name)
 {
-	if (table && name)
-		return _ggzcore_table_remove_player(table, name);
-	else
-		return -1;
+	int i, status = -1;
+	struct _GGZSeat seat;
+
+	if (table && name) {
+		for (i = 0; i < table->num_seats; i++)
+			if (table->seats[i].name != NULL 
+			    && strcmp(table->seats[i].name, name) == 0) {
+				seat.index = i;
+				seat.type = GGZ_SEAT_OPEN;
+				seat.name = NULL;
+				_ggzcore_table_set_seat(table, &seat);
+				status = 0;
+			}
+	}
+	
+	return status;
 }
 
 
@@ -336,23 +348,27 @@ void _ggzcore_table_set_desc(struct _GGZTable *table, const char *desc)
 }
 
 
-void _ggzcore_table_set_seat(struct _GGZTable *table,
-			     const unsigned int index,
-			     GGZSeatType type,
-			     char* name)
+void _ggzcore_table_set_seat(struct _GGZTable *table, struct _GGZSeat *seat)
 {
 	/* Set up the new seat. */
-	struct _GGZSeat seat = {index, type, ggz_strdup(name)}, oldseat;
-	
-	oldseat = table->seats[index];
-	table->seats[index] = seat;
+	struct _GGZSeat oldseat;
+
+	/* Sanity check */
+	if (seat->index >= table->num_seats) {
+		ggzcore_debug(GGZ_DBG_TABLE, "Attempt to set seat %d on table with only %d seats", seat->index, table->num_seats);
+	}
+
+	oldseat = table->seats[seat->index];
+	table->seats[seat->index].index = seat->index;
+	table->seats[seat->index].type = seat->type;
+	table->seats[seat->index].name = ggz_strdup(seat->name);
 	
 	/* Check for specific seat changes */
-	if (seat.type == GGZ_SEAT_PLAYER) {
+	if (seat->type == GGZ_SEAT_PLAYER) {
 		ggzcore_debug(GGZ_DBG_TABLE, "%s joining seat %d at table %d",
-			      seat.name, seat.index, table->id);
+			      seat->name, seat->index, table->id);
 		if (table->room)
-			_ggzcore_room_player_set_table(table->room, name, table->id);
+			_ggzcore_room_player_set_table(table->room, seat->name, table->id);
 	}
 	else if (oldseat.type == GGZ_SEAT_PLAYER) {
 		ggzcore_debug(GGZ_DBG_ROOM, "%s leaving seat %d at table %d",
@@ -360,25 +376,14 @@ void _ggzcore_table_set_seat(struct _GGZTable *table,
 		if (table->room)
 			_ggzcore_room_player_set_table(table->room, oldseat.name, -1);
 	}
-
+	else {
+		/* FIXME: need to notify room of table update */
+		
+	}
+	
 	/* Get rid of the old seat. */
 	if (oldseat.name)
 		ggz_free(oldseat.name);
-}
-
-
-int  _ggzcore_table_remove_player(struct _GGZTable *table, char *name)
-{
-	int i;
-
-	for (i = 0; i < table->num_seats; i++)
-		if (table->seats[i].name != NULL 
-		    && strcmp(table->seats[i].name, name) == 0) {
-			_ggzcore_table_set_seat(table, i, GGZ_SEAT_OPEN, NULL);
-			return 0;
-		}
-
-	return -1;
 }
 
 
