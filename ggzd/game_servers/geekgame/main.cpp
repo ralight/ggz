@@ -25,7 +25,7 @@
 #include <ctime>
 
 // Version information
-#define GEEKGAME_VERSION "0.1"
+#define GEEKGAME_VERSION "0.2"
 
 // Possible server startup modes
 #define MODE_NORMAL 1

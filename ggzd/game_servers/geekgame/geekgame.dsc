@@ -1,16 +1,16 @@
 [GameInfo]
 Author = Josef Spillner
 Description = The Geek Game
-Homepage = http://ggz.sourceforge.net/games/geekgame/
+Homepage = http://www.ggzgamingzone.org/games/geekgame/
 Name = Geekgame
-Version = 0.1
+Version = 0.2
 
 [LaunchInfo]
 ExecutablePath = geekgameserver --ggz
 
 [Protocol]
 Engine = Geekgame
-Version = 1
+Version = 2
 
 [TableOptions]
 AllowLeave = 1
