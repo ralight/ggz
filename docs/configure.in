@@ -9,6 +9,7 @@ dnl Options for building GGZ-Docs
 dnl =============================
 
 AC_ARG_ENABLE(guides,  [  --enable-guides    build the GGZ guides], enable_guides=yes, enable_guides=no)
+AC_ARG_ENABLE(spec,    [  --enable-spec      build the GGZ specs ], enable_spec=yes, enable_spec=no)
 
 dnl Use GGZDOCDIR as the top-level installation directory
 dnl =====================================================
@@ -28,6 +29,14 @@ if test "$enable_guides" = yes; then
 fi
 AC_SUBST(ggzgamedevelopmentguide)
 AC_SUBST(ggzhostingguide)
+
+if test "$enable_spec" = yes; then
+  AC_PATH_PROG([SGML2HTML], ["sgml2html tool"], [docbook-2-html])
+  AC_SUBST(SGML2HTML)
+  EXTRA_SUBDIRS="$EXTRA_SUBDIRS spec"
+fi
+
+AC_SUBST(EXTRA_SUBDIRS)
 
 dnl Create the Makefiles
 dnl ====================
@@ -57,5 +66,6 @@ echo ""
 echo "Installation prefix: $prefix"
 echo "Documentation goes to: $GGZDOCDIR"
 echo "Build guides: $enable_guides"
+echo "Build specification: $enable_spec"
 echo ""
 
