@@ -23,7 +23,7 @@
 #include <qsocketnotifier.h>
 
 #include <iostream>
-//#include <stdlib.h>
+#include <cstdlib>
 
 KDots::KDots(QWidget *parent, const char *name)
 : QWidget(parent, name)
