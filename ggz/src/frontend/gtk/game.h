@@ -26,7 +26,11 @@
 
 #include "ggzcore.h"
 
-int game_init(void);
+/** Initialize a game client.
+ *
+ *  @param spectating 1 if we're spectating, 0 if we're joining
+ */
+int game_init(int spectating);
 
 int game_launch(void);
 

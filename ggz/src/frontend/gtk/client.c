@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 4378 2002-08-20 21:19:06Z jdorje $
+ * $Id: client.c 4405 2002-09-04 18:50:29Z dr_maux $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -23,7 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -54,6 +58,7 @@ extern GdkColor colors[];
 GtkWidget *win_main;
 extern GGZServer *server;
 static gint tablerow = -1;
+static gint spectating = -1;
 
 /*
  * FIXME: There has got to be a better way than
@@ -74,6 +79,7 @@ static void client_exit_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_launch_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_join_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_joinm_activate(GtkMenuItem *menuitem, gpointer data);
+static void client_watchm_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_leave_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_properties_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_room_list_activate(GtkMenuItem *menuitem, gpointer data);
@@ -91,6 +97,7 @@ static void client_connect_button_clicked(GtkButton *button, gpointer data);
 static void client_disconnect_button_clicked(GtkButton *button, gpointer data);
 static void client_launch_button_clicked(GtkButton *button, gpointer data);
 static void client_join_button_clicked(GtkButton *button, gpointer data);
+static void client_watch_button_clicked(GtkButton *button, gpointer data);
 static void client_leave_button_clicked(GtkButton *button, gpointer data);
 static void client_props_button_clicked(GtkButton *button, gpointer data);
 static void client_stats_button_clicked(GtkButton *button, gpointer data);
@@ -118,6 +125,7 @@ static int client_get_table_index(guint row);
 static int client_get_table_open(guint row);
 static void client_join_room(guint room);				 
 static void client_start_table_join(void);
+static void client_start_table_watch(void);
 static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data);
 static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data);
 static void client_send_private_message_activate(GtkMenuItem *menuitem, gpointer data);
@@ -203,6 +211,14 @@ client_joinm_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
 	client_start_table_join();
+}
+
+
+static void
+client_watchm_activate		(GtkMenuItem	*menuitem,
+				 gpointer	 data)
+{
+	client_start_table_watch();
 }
 
 
@@ -578,6 +594,12 @@ client_join_button_clicked		(GtkButton	*button,
 	client_start_table_join();
 }
 
+static void
+client_watch_button_clicked (GtkButton *button, gpointer data)
+{
+	client_start_table_watch();
+}
+
 
 static void
 client_leave_button_clicked		(GtkButton	*button,
@@ -892,7 +914,46 @@ static void client_start_table_join(void)
 	tablerow = -1;
 
 	/* Initialize a game module */
-	if (game_init() == 0) {
+	spectating = 0;
+	if (game_init(0) == 0) {
+		if (game_launch() < 0) {
+			msgbox(_("Error launching game module."), _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+			game_destroy();
+		}
+	}
+}
+
+
+static void client_start_table_watch(void)
+{
+	/* Make sure a table is selected */
+	if (tablerow == -1) {
+		msgbox(_("You must highlight a table before "
+			 "you can watch it."), 
+		       _("Error Spectating"), MSGBOX_OKONLY, MSGBOX_INFO, 
+		       MSGBOX_NORMAL);
+		return;
+	}
+
+#if 0 /* We don't check to see if there's an open place to stand around
+	 the table.  Eventually we won't have to. */
+	/* Make sure we select a proper table */
+	if(tablerow <= numtables)
+	{
+		/* Make sure table has open seats */
+		if (client_get_table_open(tablerow) == FALSE) {
+			msgbox("That table is full.", "Error Joining",
+				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
+			return;
+		}
+	}
+#endif
+
+	tablerow = -1;
+
+	/* Initialize a game module */
+	spectating = 1;
+	if (game_init(1) == 0) {
 		if (game_launch() < 0) {
 			msgbox(_("Error launching game module."), _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 			game_destroy();
@@ -909,7 +970,11 @@ void client_join_table(void)
 	table_index = client_get_table_index(tablerow);
 	
 	room = ggzcore_server_get_cur_room(server);
-	status = ggzcore_room_join_table(room, table_index);
+	assert(spectating >= 0);
+	if (spectating)
+		status = ggzcore_room_join_table_spectator(room, table_index);
+	else
+		status = ggzcore_room_join_table(room, table_index);
 	
 	if (status < 0) {
 		msgbox(_("Failed to join table.\n Join aborted."), _("Join Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
@@ -940,6 +1005,11 @@ client_realize                    (GtkWidget       *widget,
 	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Launch a new game"), _("Start playing a game at a new table"));
 	tmp3 = lookup_widget(win_main, "join_button");
 	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Join a game"), _("Join an existing game"));
+	tmp3 = lookup_widget(win_main, "watch_button");
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3,
+			     _("Watch (spectate) a game"),
+			     _("Watch an existing game - "
+			       "become a spectator of the table"));
 	tmp3 = lookup_widget(win_main, "leave_button");
 	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Lave a game"), _("Leave the game you're currently playing"));
 	tmp3 = lookup_widget(win_main, "props_button");
@@ -1084,6 +1154,7 @@ create_win_main (void)
   GtkAccelGroup *game_menu_accels;
   GtkWidget *launch;
   GtkWidget *join;
+  GtkWidget *watch;
   GtkWidget *separator2;
   GtkWidget *leave;
   GtkWidget *edit;
@@ -1117,6 +1188,7 @@ create_win_main (void)
   GtkWidget *disconnect_button;
   GtkWidget *launch_button;
   GtkWidget *join_button;
+  GtkWidget *watch_button;
   GtkWidget *leave_button;
   GtkWidget *props_button;
   GtkWidget *stats_button;
@@ -1294,6 +1366,20 @@ create_win_main (void)
   gtk_container_add (GTK_CONTAINER (game_menu), join);
   gtk_widget_add_accelerator (join, "activate", accel_group,
                               GDK_J, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  watch = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (watch)->child),
+                                   _("_Watch"));
+  gtk_widget_add_accelerator (watch, "activate_item", game_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_ref (watch);
+  gtk_object_set_data_full (GTK_OBJECT (win_main), "watch", watch,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (watch);
+  gtk_container_add (GTK_CONTAINER (game_menu), watch);
+  gtk_widget_add_accelerator (watch, "activate", accel_group,
+                              GDK_W, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   separator2 = gtk_menu_item_new ();
@@ -1616,6 +1702,19 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (join_button);
   gtk_widget_set_sensitive (join_button, FALSE);
+
+  watch_button = gtk_toolbar_append_element(GTK_TOOLBAR (toolbar),
+					    GTK_TOOLBAR_CHILD_BUTTON,
+					    NULL,
+					    _("Watch"),
+					    NULL, NULL,
+					    NULL, NULL, NULL);
+  gtk_widget_ref (join_button);
+  gtk_object_set_data_full (GTK_OBJECT (win_main), "watch_button",
+			    watch_button,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (watch_button);
+  gtk_widget_set_sensitive (watch_button, FALSE);
 
   leave_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
@@ -1953,6 +2052,9 @@ create_win_main (void)
   gtk_signal_connect (GTK_OBJECT (join), "activate",
                       GTK_SIGNAL_FUNC (client_joinm_activate),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (watch), "activate",
+                      GTK_SIGNAL_FUNC (client_watchm_activate),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (leave), "activate",
                       GTK_SIGNAL_FUNC (client_leave_activate),
                       NULL);
@@ -2004,6 +2106,9 @@ create_win_main (void)
   gtk_signal_connect (GTK_OBJECT (join_button), "clicked",
                       GTK_SIGNAL_FUNC (client_join_button_clicked),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (watch_button), "clicked",
+		      GTK_SIGNAL_FUNC (client_watch_button_clicked),
+		      NULL);
   gtk_signal_connect (GTK_OBJECT (leave_button), "clicked",
                       GTK_SIGNAL_FUNC (client_leave_button_clicked),
                       NULL);

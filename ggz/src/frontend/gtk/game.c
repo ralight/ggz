@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 4267 2002-06-22 05:16:36Z bmh $
+ * $Id: game.c 4405 2002-09-04 18:50:29Z dr_maux $
  *
  * Functions for handling game events
  *
@@ -61,8 +61,8 @@ static gint game_handle;
 extern GGZServer *server;
 extern GtkWidget *win_main;
 
-
-int game_init(void)
+/* Spectate is 1 if we're spectating; 0 if we're playing. */
+int game_init(int spectate)
 {
 	gchar *message;
 	gchar *name;

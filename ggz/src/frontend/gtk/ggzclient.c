@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4378 2002-08-20 21:19:06Z jdorje $
+ * $Id: ggzclient.c 4405 2002-09-04 18:50:29Z dr_maux $
  *
  * This is the main program body for the GGZ client
  *
@@ -335,6 +335,8 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 		gtk_widget_set_sensitive(tmp, FALSE);
 		tmp = lookup_widget(win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
+		tmp = lookup_widget(win_main, "watch_button");
+		gtk_widget_set_sensitive(tmp, FALSE);
 	}else{
 		arg[0].name = "user_data";
 		tmp = lookup_widget(win_main, "table_vpaned");
@@ -343,6 +345,8 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 		tmp = lookup_widget(win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		tmp = lookup_widget(win_main, "join_button");
+		gtk_widget_set_sensitive(tmp, TRUE);
+		tmp = lookup_widget(win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 	}
 
@@ -587,6 +591,9 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		tmp = lookup_widget(win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
+		tmp = lookup_widget(win_main, "watch_button");
+		gtk_widget_set_sensitive(tmp, FALSE);
+
 		tmp = lookup_widget(win_main, "leave_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 		
@@ -686,6 +693,9 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		tmp = lookup_widget(win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
+		tmp = lookup_widget(win_main, "watch_button");
+		gtk_widget_set_sensitive(tmp, TRUE);
+
 		/* Client area */
 		tmp = lookup_widget(win_main, "room_clist");
 		gtk_widget_set_sensitive(tmp, TRUE);
@@ -711,6 +721,9 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		tmp = lookup_widget(win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
+		tmp = lookup_widget(win_main, "watch_button");
+		gtk_widget_set_sensitive(tmp, FALSE);
+
 		/* Menu bar */
 		tmp = lookup_widget(win_main, "launch");
 		gtk_widget_set_sensitive(tmp, FALSE);
@@ -725,6 +738,9 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		tmp = lookup_widget(win_main, "join_button");
+		gtk_widget_set_sensitive(tmp, FALSE);
+
+		tmp = lookup_widget(win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		/* Menu bar */
@@ -774,6 +790,9 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		gtk_widget_set_sensitive(tmp, FALSE);
 		
 		tmp = lookup_widget(win_main, "join_button");
+		gtk_widget_set_sensitive(tmp, FALSE);
+
+		tmp = lookup_widget(win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		tmp = lookup_widget(win_main, "leave_button");

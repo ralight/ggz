@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 4267 2002-06-22 05:16:36Z bmh $
+ * $Id: launch.c 4405 2002-09-04 18:50:29Z dr_maux $
  *
  * Code for launching games through the GTK client
  *
@@ -289,7 +289,7 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 	}
 
 	/* Create new game object */
-	if (game_init() == 0) {
+	if (game_init(0) == 0) {
 		if (game_launch() < 0) {
 			msgbox(_("Error launching game module."), _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 			game_destroy();
