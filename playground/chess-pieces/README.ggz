@@ -1,7 +1,14 @@
 These are the metafont sources for the chess pieces used by Xboard.  Since
-GGZ uses theses same graphics we include them here.
+GGZ uses these same graphics we include them here.  It would be nice to
+render them into SVG.  See the README files lying around as well as the
+bitmaps README in the xboard source tarball.
 
-It would be nice to render them into SVG.  See the README files lying around
-as well as the bitmaps README in the xboard source tarball.
+So far my research suggests there is no reliable way to convert MF data
+directly into TTF or SVG.  The best alternative is to render the MF fonts
+at high resolution and then autoscan them into SVG.
+
+Note also that the original xboard bitmaps were hand-edited after being
+rendered from MF.  So even if we render the MF into SVG we'll have to edit
+it to fix alignment, etc.
 
 -Jason Short
