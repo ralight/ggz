@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 6031 2004-06-13 17:20:42Z josef $
+ * $Id: ggz-config.c 6171 2004-09-04 05:38:40Z jdorje $
  *
  * Configuration query and module install program.
  *
@@ -307,16 +307,12 @@ static int open_conffile(void)
 	int	global;
 
 	if(moddest)
-		global_pathname = malloc(strlen(destdir) +
-					 strlen(GGZCONFDIR) +
-					 strlen(global_filename) + 3);
+		global_pathname = ggz_malloc(strlen(destdir) +
+					     strlen(GGZCONFDIR) +
+					     strlen(global_filename) + 3);
 	else
-		global_pathname = malloc(strlen(GGZCONFDIR) +
-					 strlen(global_filename) + 2);
-	if(global_pathname == NULL) {
-		fprintf(stderr, "malloc failure\n");
-		return -1;
-	}
+		global_pathname = ggz_malloc(strlen(GGZCONFDIR) +
+					     strlen(global_filename) + 2);
 
 	if(moddest)
 		sprintf(global_pathname, "%s/%s/%s", destdir,
