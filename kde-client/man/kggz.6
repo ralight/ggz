@@ -1,28 +1,35 @@
-.TH "kggz" "6" "0.0.5" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "kggz" "6" "0.0.6" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
-.LP 
+.LP
 kggz \- KDE core client for the GGZ Gaming Zone
+.SH "SYNOPSIS"
+.LP
+.B kggz
+[\fIURL\fR]
 .SH "DESCRIPTION"
-.LP 
+.LP
 This is the KDE frontend for the GGZ Gaming Zone, and a
 "brother" of GGZ-Gtk and GGZ-txt. It exists to let you connect
 to a GGZ server, login there and chat with other people.
 The second task is to launch games for you, or let you join
 running games.
+.LP
+A connection \fIURL\fR like ggz://username@host:port can be given as argument.
+In such a case kggz will connect directly to the GGZ server.
 .SH "FILES"
-.LP 
+.LP
 \fI$HOME/.ggz/kggz.rc\fP - configuration
 .LP
 \fI$HOME/.ggz/kggzlog.html\fP - chat log (if enabled)
 .SH "BUGS"
-.LP 
+.LP
 Some known bugs are related to the connection dialog.
 The client itself is rather young and untested, but it
 works for most situations.
 .SH "AUTHORS"
-.LP 
+.LP
 The GGZ Development Team
 <ggz\-dev@lists.sourceforge.net>
 .SH "SEE ALSO"
-.LP 
+.LP
 ggzap(6)
