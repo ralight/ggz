@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 5235 2002-11-06 22:12:47Z dr_maux $
+ * $Id: game.c 5236 2002-11-07 06:23:39Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -49,7 +49,7 @@ static int mymap;
 
 const int verbose = 1;
 
-void game_loadmap(const char *file)
+static void game_loadmap(const char *file)
 {
 	FILE *f;
 	char buf[128];
@@ -342,7 +342,7 @@ int game_send_seat(int seat)
 
 
 /* Send out list of maps */
-int game_send_maps(int seat)
+static int game_send_maps(int seat)
 {
 	int i, j;
 	int fd = ggzdmod_get_seat(hastings_game.ggz, seat).fd;
