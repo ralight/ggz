@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 7012 2005-03-18 10:40:40Z josef $
+ * $Id: input.c 7013 2005-03-18 10:57:25Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -63,6 +63,7 @@ static void input_handle_wall(char* line);
 static void input_handle_beep(char* line);
 static void input_handle_launch(char *line);
 static void input_handle_exit(void);
+static void input_handle_log(char *line);
 static int input_roomnumber(const char *line);
 
 static char delim[] = " \n";
@@ -123,6 +124,9 @@ void input_commandhandler(char *current)
 		}
 		else if (strcmp(command, "launch") == 0) {
 			input_handle_launch(current);
+		}
+		else if (strcmp(command, "log") == 0) {
+			input_handle_log(current);
 		}
 		else if ((strcmp(command, "exit") == 0)
 		|| (strcmp(command, "quit") == 0)) {
@@ -569,5 +573,10 @@ static void input_handle_join_table(char *line)
 static void input_handle_exit(void)
 {
 	loop_quit();
+}
+
+static void input_handle_log(char *line)
+{
+	output_log_init(line);
 }
 

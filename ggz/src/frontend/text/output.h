@@ -62,4 +62,9 @@ void output_resize(void);
 
 void output_enable(int enabled);
 
+void output_log_init(const char *logfile);
+
+void output_log(char* fmt, ...)
+     ggz__attribute((format(printf, 1, 2)));
+
 #endif /*__OUTPUT_H__*/

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 7010 2005-03-18 10:20:41Z josef $
+ * $Id: output.c 7013 2005-03-18 10:57:25Z josef $
  *
  * Functions for display text/messages
  *
@@ -77,6 +77,7 @@ static char **chat;
 static int chat_offset = 0;
 static int reverse_display = 0;
 static int output_enabled = 1;
+static FILE *loghandle = NULL;
 
 /* Private functions */
 static void output_table_info(GGZTable *table);
@@ -118,6 +119,7 @@ void output_display_help(void)
 	output_text(_("--- /version                                Display the client version"));
 	output_text(_("--- /who                                    List current player in the room"));
 	output_text(_("--- /wall <msg>                             Admin only command, broadcast to all rooms"));
+	output_text(_("--- /log <logfile>                          Log conversation into logfile"));
 }
 
 void output_banner(void)
@@ -248,6 +250,7 @@ void output_chat(GGZChatType type, const char *player, const char *message)
 	case GGZ_CHAT_UNKNOWN:
 	case GGZ_CHAT_NORMAL:
 		output_text("%s<%s> %s", timestamp, player, message);
+		output_log("%s<%s> %s", timestamp, player, message);
 		break;
 	}
 }
@@ -555,3 +558,29 @@ static void output_table_info(GGZTable *table)
 		}
 	}
 }
+
+void output_log_init(const char *logfile)
+{
+	if(loghandle) fclose(loghandle);
+	loghandle = fopen(logfile, "a");
+}
+
+void output_log(char* fmt, ...)
+{
+	char message[1024];	/* FIXME: Make me dynamic */
+	char timestamp[32];
+	va_list ap;
+	time_t t;
+
+	if(!loghandle) return;
+
+	va_start(ap, fmt);
+	vsnprintf(message, sizeof(message), fmt, ap);
+	va_end(ap);
+
+	strftime(timestamp, sizeof(timestamp), "%T", localtime(&t));
+
+	fprintf(loghandle, "[%s] %s\n", timestamp, message);
+	fflush(loghandle);
+}
+
