@@ -144,17 +144,22 @@ static int handle_message_player()
 
 static int handle_req_play()
 {
-	int hand;
-	if (es_read_int(game.fd, &hand) < 0) /* TODO: implement playing from other hands */ {
-		ggz_debug("CLIENT BUG: Not implemented: playing from other hands.");
+	if (es_read_int(game.fd, &game.play_hand) < 0)
 		return -1;
-	}
+
 #ifdef ANIMATION
 	if(game.state == WH_STATE_ANIM)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
+
 	game.state = WH_STATE_PLAY;
-	statusbar_message( _("Your turn to play a card") );
+	if (game.play_hand == 0)
+		statusbar_message( _("Your turn to play a card") );
+	else {
+		char buf[100];
+		snprintf(buf, sizeof(buf), _("Your turn to play a card from %s's hand."), game.players[game.play_hand].name);
+		statusbar_message( buf );
+	}
 	return 0;	
 }
 
@@ -339,13 +344,14 @@ static void handle_badplay(void)
 {
 	int card;
 	char err_msg[100];
+	int p = game.play_hand;
 
-	if(es_read_string(game.fd, err_msg, 100) < 0)
-		return;
+	if(es_read_string(game.fd, err_msg, sizeof(err_msg)) < 0)
+		snprintf(err_msg, sizeof(err_msg), _("Bad play: unknown reason.") );
 
 	/* Restore the cards the way they should be */
-	card = game.players[0].hand.in_play_card_num;
-	game.players[0].hand.card[card] = game.players[0].hand.in_play_card_val;
+	card = game.players[p].hand.in_play_card_num;
+	game.players[p].hand.card[card] = game.players[p].hand.in_play_card_val;
 #ifdef ANIMATION
 	table_animation_abort();
 #endif /* ANIMATION */
@@ -355,10 +361,7 @@ static void handle_badplay(void)
 	game.state = WH_STATE_PLAY;
 	
 	statusbar_message(err_msg);
-	sleep(1);
-	/* TODO: BUG: I don't know whether it's in client, server, or interface, but sometimes when
-	 * the server sends a badplay message things hang.  The client goes ahead and plays their
-	 * next card (as expected), but it appears as though the server isn't ready for it... */
+	sleep(1); /* TODO: why is this here?  Just a delay? */
 }
 
 
@@ -405,7 +408,7 @@ static int handle_play(void)
 	hand->hand_size--;
 
 	/* now update the graphics */
-	table_display_hand(0);
+	table_display_hand(p);
 	table_play_card(p, card);
 
 	return 0;

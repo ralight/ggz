@@ -71,7 +71,7 @@ static struct {
 #endif /* ANIMATION */
 
 static void table_card_clicked(int);
-static void table_card_play(int);
+static void table_card_play(int, int);
 
 static void table_show_card(int, card_t);
 
@@ -442,7 +442,7 @@ void table_handle_click_event(GdkEventButton *event)
 	int which = -1;
 	int x_outer, y_outer, w_outer, h_outer, xo, yo;
 	int x, y, x1, y1;
-	int p = 0; /* player whose hand it is */
+	int p = game.play_hand; /* player whose hand it is */
 	float xdiff, ydiff;
 	int card_width, card_height;
 
@@ -487,17 +487,18 @@ void table_handle_click_event(GdkEventButton *event)
  */
 static void table_card_clicked(int card)
 {
-	if(card == game.players[0].hand.selected_card) {
+	int p = game.play_hand;
+	if(card == game.players[p].hand.selected_card) {
 		card_t c;
-		game.players[0].hand.selected_card = -1;
+		game.players[p].hand.selected_card = -1;
 
 		/* Start the graphic animation */
-		table_card_play(card);
+		table_card_play(p, card);
 
 		/* We save these values in case the server rejects the card */
-		c = game.players[0].hand.card[card];
-		game.players[0].hand.in_play_card_num = card;
-		game.players[0].hand.in_play_card_val = game.players[0].hand.card[card];
+		c = game.players[p].hand.card[card];
+		game.players[p].hand.in_play_card_num = card;
+		game.players[p].hand.in_play_card_val = game.players[p].hand.card[card];
 
 		/* Now, remove the card from our hand */
 		/* NO, don't remove it from our hand.  We just skip over it when we look at it. */
@@ -506,8 +507,8 @@ static void table_card_clicked(int card)
 		game_play_card(c);
 	} else {
 		/* Pop the card forward and select it */
-		game.players[0].hand.selected_card = card;
-		table_display_hand(0);
+		game.players[p].hand.selected_card = card;
+		table_display_hand(p);
 	}
 }
 
@@ -538,7 +539,7 @@ static void get_card_coordinates(card_t card,
 			break;
 		case 2: /* just mirror everything */
 			xc = 4 - xp - 1;
-			yc = 12 - yp - 1;
+			yc = 13 - yp - 1;
 			break;
 		case 3:
 			xc = yp;
@@ -579,19 +580,24 @@ static void draw_card(card_t card,
 /* table_card_play()
  *   Move the selected card out onto the playing area.
  */
-static void table_card_play(int card)
+static void table_card_play(int p, int card)
 {
+/*
 	int x, y;
+*/
 
-	game.players[0].table_card = game.players[0].hand.card[card];
+	game.players[p].table_card = game.players[p].hand.card[card];
 
 	/* Draw the cards, eliminating the card in play */
-	table_display_hand(0);
+	table_display_hand(p);
 
-	/* Now draw the card on the table */
+	/* Now redraw the hand. */
+	table_display_hand(p);
+/*
 	x = TEXT_BOX_WIDTH + 2*XWIDTH + 0.5 + (card * CARDWIDTH/4.0);
 	y = f1->allocation.height - TEXT_BOX_WIDTH;
-	draw_card(game.players[0].hand.card[card], 0, x, y);
+	draw_card(game.players[p].hand.card[card], orientation(p), x, y);
+*/
 
 	/* And refresh the on-screen image */
 	table_show_table(TEXT_BOX_WIDTH + XWIDTH, f1->allocation.height - TEXT_BOX_WIDTH - 2*XWIDTH,
@@ -599,7 +605,7 @@ static void table_card_play(int card)
 
 #ifdef ANIMATION
 	/* Setup and trigger the card animation */
-	table_animation_trigger(game.players[0].hand.card[card], x, y, 199, 242);
+	table_animation_trigger(game.players[p].hand.card[card], x, y, 199, 242);
 #else
 	game.state = WH_STATE_WAIT;	
 #endif /* ANIMATION */

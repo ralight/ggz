@@ -40,8 +40,9 @@ struct seat_t {
 };
 
 struct game_t {
-	int fd; 					/* the socket for the server connection */
-	char state; 			/* the state the game is, i.e. LA_STATE_<something> */
+	int fd;			/* the socket for the server connection */
+	char state;		/* the state the game is, i.e. LA_STATE_<something> */
+	int play_hand;		/* the hand we're playing from */
 	int num_players;	/* starts at 0 so we know once we've received them */
 	struct seat_t *players;	/* player info; must be allocated */
 };
