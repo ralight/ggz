@@ -14,6 +14,8 @@
 // System includes
 #include <list>
 
+using namespace std;
+
 /**
 * This class does all the calculation on its own by inheriting itself.
 * It uses a list which gets passed from and to its ancestors.

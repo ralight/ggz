@@ -7,8 +7,8 @@
 #define ZONE_SEAT_OPEN -1
 #define ZONE_SEAT_BOT -2
 
-#define ZONEDEBUG(fmt...) printf("ZONE: "fmt##);
-#define ZONEERROR(fmt...) printf("# ZONE ERROR: "fmt##);
+#define ZONEDEBUG(fmt, args...) printf("ZONE:" fmt, ##args);
+#define ZONEERROR(fmt, args...) printf("# ZONE ERROR:" fmt, ##args);
 
 class ZoneGGZ
 {

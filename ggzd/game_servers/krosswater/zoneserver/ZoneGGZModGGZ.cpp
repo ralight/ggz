@@ -13,6 +13,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 char* ZoneGGZModGGZ::name;
 int ZoneGGZModGGZ::fd;
 int ZoneGGZModGGZ::seats;
