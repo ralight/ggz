@@ -25,7 +25,7 @@
 #include <config.h>		/* Site specific config */
 
 #include <ggzd.h>
-#include <datatypes.h>
+#include <table.h>
 #include <seats.h>
 
 

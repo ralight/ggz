@@ -22,11 +22,91 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <datatypes.h>
+#ifndef _GGZ_TABLE_H
+#define _GGZ_TABLE_H
 
+#include <pthread.h>
+
+#include <ggzd.h>
+
+/* 
+ * The TableInfo structure contains information about a single game
+ * table 
+ */
+typedef struct TableInfo {
+
+	/* Type of game being played on table */
+	int type_index;
+
+	/* Room in which game exists */
+	int room;
+
+	/* State of game: One of GGZ_TABLE_XXXX */
+	char state;
+
+	/* 
+	 * Condition variable and corresponding mutex for
+	 * signaling a change in state across threads
+	 */
+	pthread_cond_t state_cond;
+	pthread_mutex_t state_lock;
+	
+	/* 
+	 * Variables to hold player and related data during transit to
+	 * and from table
+	 */
+	int transit;
+	int transit_fd;
+	int transit_seat;
+
+	/* Transit status flags: Bitmak of GGZ_TRANSIT_XXX */
+	unsigned char transit_flag;
+
+	/* 
+	 * Condition variable and corresponding mutex for
+	 * signaling a change in transit state across threads
+	 */
+	pthread_cond_t transit_cond;
+	pthread_mutex_t transit_lock;
+
+	/* File descriptor for communicating withgame server module */
+	int fd_to_game;
+
+	/* Process ID of game server module running this game-table */
+	int pid;
+
+	/* Seat assignments */
+	int seats[MAX_TABLE_SIZE];
+
+	/* Seat reservations */
+	int reserve[MAX_TABLE_SIZE];
+
+	/* Client-provided description of this table */
+	char desc[MAX_GAME_DESC_LEN + 1];
+	
+} TableInfo;
+
+
+/* Array of game-tables, their mutex, and a counter */
+struct GameTables {
+	TableInfo info[MAX_TABLES];
+	int count;
+	pthread_rwlock_t lock;
+};
+
+
+/* Launch a table */
 int table_launch(int p, TableInfo table, int* t_index);
+
+/* Join a player to the table */
 int table_join(int p, int t_index, int* t_fd);
+
+/* Pull player from table */
 int table_leave(int p, int t_index);
+
+#endif
+
+
 
 
 

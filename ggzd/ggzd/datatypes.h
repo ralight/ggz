@@ -79,37 +79,6 @@ struct GameTypes {
 };
 
 
-/* Info about a particular game-table */
-typedef struct {
-	int type_index;
-	int room;
-	char state;
-	pthread_cond_t state_cond;
-	pthread_mutex_t state_lock;
-	int transit;
-	int transit_fd;
-	int transit_seat;
-	unsigned char transit_flag;
-	pthread_cond_t transit_cond;
-	pthread_mutex_t transit_lock;
-	int fd_to_game;
-	int pid;
-	int seats[MAX_TABLE_SIZE];
-	int reserve[MAX_TABLE_SIZE];
-	char desc[MAX_GAME_DESC_LEN + 1];
-} TableInfo;
-
-
-/* Array of game-tables, their mutex, and a counter */
-struct GameTables {
-	TableInfo info[MAX_TABLES];
-	int count;
-	pthread_rwlock_t lock;
-};
-
-
-
-
 /* Info about a logged-in user */
 typedef struct {
 	pthread_rwlock_t lock;

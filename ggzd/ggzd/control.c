@@ -46,6 +46,7 @@
 #include <motd.h>
 #include <room.h>
 #include <ggzdb.h>
+#include <table.h>
 
 /* Server options */
 Options opt;

@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <datatypes.h>
+#include <table.h>
 
 int seats_open(TableInfo table);
 int seats_num(TableInfo table);

@@ -37,6 +37,7 @@
 #include <err_func.h>
 #include <easysock.h>
 #include <protocols.h>
+#include <table.h>
 
 /* MOTD info */
 MOTDInfo motd_info;
