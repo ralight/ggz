@@ -11,12 +11,12 @@ Query Mode:
 .LP 
 Install Mode:
 .br 
-\fBggz\-config \-\-install \-\-fromfile=\fR\fIFILENAME\fP
+\fBggz\-config \-\-install \-\-modfile=\fR\fIFILENAME\fP
 \fB[\-\-destdir] [\-\-force]\fR
 .LP 
 Uninstall Mode:
 .br 
-\fBggz\-config \-\-remove \-\-fromfile=\fR\fIFILENAME\fP
+\fBggz\-config \-\-remove \-\-modfile=\fR\fIFILENAME\fP
 .SH "DESCRIPTION"
 .LP 
 This program can be used for several purposes.  Primarily
@@ -53,7 +53,7 @@ Install Mode Options
 \fB\-\-install\fR
 Specifies that we are installing a game module description.
 .TP 
-\fB\-\-fromfile=\fR\fIFILENAME\fP
+\fB\-\-modfile=\fR\fIFILENAME\fP
 Specifies the source module description file.
 .TP 
 \fB\-\-force\fR
@@ -71,7 +71,7 @@ Uninstall Mode Options
 \fB\-\-remove\fR
 Specifies that we are removing a game module description.
 .TP 
-\fB\-\-fromfile=\fR\fIFILENAME\fP
+\fB\-\-modfile=\fR\fIFILENAME\fP
 Specifies the source module description file.
 .SH "FILES"
 .LP 
