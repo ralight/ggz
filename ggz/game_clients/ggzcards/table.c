@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: table.c 3283 2002-02-09 23:12:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -215,6 +215,11 @@ void table_setup(void)
 	gtk_widget_set_usize(table, get_table_width(), get_table_height());
 
 	/* And resize the table buffer... */
+	/* Note: I'm not entirely sure how reference counts work for gdk.
+	   I assume that when I create a new pixmap (as below), it starts
+	   with a refcount of 1.  In that case, this code should correctly
+	   free the pixmap when it is discarded. */
+	assert(table_buf);
 	gdk_pixmap_unref(table_buf);
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(), -1);
