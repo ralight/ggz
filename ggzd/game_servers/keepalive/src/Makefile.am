@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 3109 2002-01-14 02:37:59Z jdorje $
+
 SUBDIRS = .
 
 ggzdexecmod_PROGRAMS = keepalivesrv
@@ -12,3 +15,5 @@ noinst_HEADERS = keepalive.h player.h world.h protocol.h
 
 INCLUDES = -I$(top_srcdir)/ggzdmod $(EASYSOCK_INCLUDES)
 
+test:
+	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
