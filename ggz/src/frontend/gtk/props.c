@@ -1209,6 +1209,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (color_table);
   gtk_box_pack_start (GTK_BOX (vbox9), color_table, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (color_table), 3);
 
   white_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("White Background"));
   Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (white_radio));
@@ -1240,6 +1241,7 @@ create_dlg_props (void)
                     (GtkAttachOptions) (0), 8, 0);
   gtk_label_set_justify (GTK_LABEL (label26), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label26), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label26), 1, 0.5);
 
   label25 = gtk_label_new (_("Highlight Color"));
   gtk_widget_ref (label25);
@@ -1251,8 +1253,9 @@ create_dlg_props (void)
                     (GtkAttachOptions) (0), 7, 0);
   gtk_label_set_justify (GTK_LABEL (label25), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label25), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label25), 1, 0.5);
 
-  label24 = gtk_label_new (_("Friends's Color"));
+  label24 = gtk_label_new (_("Friend Color"));
   gtk_widget_ref (label24);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label24", label24,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1262,6 +1265,7 @@ create_dlg_props (void)
                     (GtkAttachOptions) (0), 7, 0);
   gtk_label_set_justify (GTK_LABEL (label24), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label24), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label24), 1, 0.5);
 
   h_spin_adj = gtk_adjustment_new (1, 0, 15, 1, 1, 1);
   h_spin = gtk_spin_button_new (GTK_ADJUSTMENT (h_spin_adj), 1, 0);
@@ -1299,7 +1303,7 @@ create_dlg_props (void)
   gtk_widget_set_usize (f_spin, 45, -2);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (f_spin), TRUE);
 
-  f_label = gtk_label_new (_("  "));
+  f_label = gtk_label_new (_("Default chat color assigned to your friends"));
   gtk_widget_ref (f_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "f_label", f_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1308,8 +1312,9 @@ create_dlg_props (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_usize (f_label, 240, -2);
+  gtk_misc_set_alignment (GTK_MISC (f_label), 7.45058e-09, 0.5);
 
-  h_label = gtk_label_new (_(" "));
+  h_label = gtk_label_new (_("Chat color used when your name is typed"));
   gtk_widget_ref (h_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "h_label", h_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1319,7 +1324,7 @@ create_dlg_props (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (h_label), 0, 0.5);
 
-  n_label = gtk_label_new (_(" "));
+  n_label = gtk_label_new (_("Chat color used for all other chats"));
   gtk_widget_ref (n_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "n_label", n_label,
                             (GtkDestroyNotify) gtk_widget_unref);

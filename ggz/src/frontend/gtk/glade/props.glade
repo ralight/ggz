@@ -862,6 +862,7 @@
 	      <widget>
 		<class>GtkTable</class>
 		<name>color_table</name>
+		<border_width>3</border_width>
 		<rows>3</rows>
 		<columns>4</columns>
 		<homogeneous>False</homogeneous>
@@ -937,7 +938,7 @@
 		  <label>Normal Color</label>
 		  <justify>GTK_JUSTIFY_LEFT</justify>
 		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
+		  <xalign>1</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
 		  <ypad>0</ypad>
@@ -963,7 +964,7 @@
 		  <label>Highlight Color</label>
 		  <justify>GTK_JUSTIFY_LEFT</justify>
 		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
+		  <xalign>1</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
 		  <ypad>0</ypad>
@@ -986,10 +987,10 @@
 		<widget>
 		  <class>GtkLabel</class>
 		  <name>label24</name>
-		  <label>Friends's Color</label>
+		  <label>Friend Color</label>
 		  <justify>GTK_JUSTIFY_LEFT</justify>
 		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
+		  <xalign>1</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
 		  <ypad>0</ypad>
@@ -1112,10 +1113,10 @@
 		  <class>GtkLabel</class>
 		  <name>f_label</name>
 		  <width>240</width>
-		  <label>  </label>
+		  <label>Default chat color assigned to your friends</label>
 		  <justify>GTK_JUSTIFY_CENTER</justify>
 		  <wrap>False</wrap>
-		  <xalign>0.5</xalign>
+		  <xalign>7.45058e-09</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
 		  <ypad>0</ypad>
@@ -1138,7 +1139,7 @@
 		<widget>
 		  <class>GtkLabel</class>
 		  <name>h_label</name>
-		  <label> </label>
+		  <label>Chat color used when your name is typed</label>
 		  <justify>GTK_JUSTIFY_CENTER</justify>
 		  <wrap>False</wrap>
 		  <xalign>0</xalign>
@@ -1164,7 +1165,7 @@
 		<widget>
 		  <class>GtkLabel</class>
 		  <name>n_label</name>
-		  <label> </label>
+		  <label>Chat color used for all other chats</label>
 		  <justify>GTK_JUSTIFY_CENTER</justify>
 		  <wrap>False</wrap>
 		  <xalign>0</xalign>
