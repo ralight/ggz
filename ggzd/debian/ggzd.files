@@ -3,3 +3,5 @@ etc/ggzd/ggzd.motd
 usr/bin/ggzd
 usr/bin/ggzduedit
 usr/share/man/man6/ggzd.6
+usr/share/man/man6/ggzduedit.6
+

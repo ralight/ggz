@@ -82,7 +82,7 @@ binary-arch: build install
 #	dh_installpam
 #	dh_installinit
 #	dh_installcron
-	dh_installmanpages
+#	dh_installmanpages
 #	dh_installinfo
 #	dh_undocumented
 	dh_installchangelogs
@@ -96,7 +96,7 @@ binary-arch: build install
 #	dh_perl
 	dh_shlibdeps
 	dh_gencontrol
-	dh_md5sums
+	dh_md5sums --include-conffiles
 	dh_builddeb
 
 binary: binary-indep binary-arch
