@@ -52,7 +52,6 @@ static GGZHookReturn server_enter_fail(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_logout(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_state_change(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_motd_loaded(GGZServerEvent id, void*, void*);
-static GGZHookReturn server_table_left(GGZServerEvent id, void*, void*);
 
 static GGZHookReturn server_net_error(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_protocol_error(GGZServerEvent id, void*, void*);
@@ -65,6 +64,12 @@ static GGZHookReturn room_list_players(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_list_tables(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_enter(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_leave(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_table_launched(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_table_launch_fail(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_table_joined(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_table_left(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_data(GGZRoomEvent id, void*, void*);
 
 
@@ -135,8 +140,6 @@ static void server_register(GGZServer *server)
 				      server_state_change);
         ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED,
 				      server_motd_loaded);
-	ggzcore_server_add_event_hook(server, GGZ_TABLE_LEFT,
-				      server_table_left);
 }
 
 
@@ -150,7 +153,14 @@ static void room_register(GGZRoom *room)
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LIST, room_list_tables);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, room_enter);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, room_leave);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_LAUNCHED, room_table_launched);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_LAUNCH_FAIL, room_table_launch_fail);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_JOINED, room_table_joined);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_JOIN_FAIL, room_table_join_fail);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEFT, room_table_left);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, room_table_leave_fail);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, room_table_data);
+
 }
 
 
@@ -346,11 +356,60 @@ static GGZHookReturn room_enter(GGZRoomEvent id, void* event_data, void* user_da
 	return GGZ_HOOK_OK;
 }
 
+
 static GGZHookReturn room_leave(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	output_text("<-- %s left the room.", event_data);
 	return GGZ_HOOK_OK;
 }
+
+
+static GGZHookReturn room_table_launched(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	output_text("-- Table launched");
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn room_table_launch_fail(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	output_text("-- Table launch failed");
+	/* FIXME: kill game */
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn room_table_joined(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	output_text("-- Table joined");
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	output_text("-- Table join failed");
+	/* FIXME: kill game */
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn room_table_left(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	output_text("-- Left table");
+
+	game_quit();
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	output_text("-- Table leave failed");
+	return GGZ_HOOK_OK;
+}
+	
 
 static GGZHookReturn room_table_data(GGZRoomEvent id, void* event_data, void* user_data)
 {
@@ -397,11 +456,3 @@ static GGZHookReturn server_motd_loaded(GGZServerEvent id, void* event_data, voi
 }
 
 
-static GGZHookReturn server_table_left(GGZServerEvent id, void* event_data, void* user_data)
-{
-	output_text("-- Left table");
-
-	game_quit();
-
-	return GGZ_HOOK_OK;
-}

@@ -69,6 +69,7 @@ char* state_get(void)
 	case GGZ_STATE_IN_ROOM:
 		return "Chatting";
 		break;
+	case GGZ_STATE_LAUNCHING_TABLE:
 	case GGZ_STATE_JOINING_TABLE:
 		return "--> Table";
 		break;
