@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 5165 2002-11-03 07:54:39Z jdorje $
+ * $Id: main_win.c 6243 2004-11-03 20:46:06Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -44,18 +44,14 @@
 #include "dlg_players.h"
 #include "menus.h"
 
-#include <game.h>
-#include <support.h>
-#include <options_dlg.h>
-#include <black.xpm>
-#include <dot.xpm>
-#include <white.xpm>
+#include "game.h"
+#include "support.h"
+#include "options_dlg.h"
 
 
 /* Pixmaps */
 #define PIXSIZE 48
-GdkPixmap* pix[3];
-GdkBitmap* pix_mask[3];
+GdkPixbuf *pix[3];
 GdkGC* pix_gc;
 GdkGC* bg_gc;
 GdkGC* last_gc;
@@ -143,14 +139,17 @@ void display_board(void)
 		x = (X(i)-1)*PIXSIZE;
 		y = (Y(i)-1)*PIXSIZE;
 		
-		gdk_gc_set_tile(pix_gc, pix[piece]);
-		gdk_gc_set_ts_origin(pix_gc, x, y);
-		gdk_gc_set_clip_origin(pix_gc, x, y);
-		gdk_gc_set_clip_mask(pix_gc, pix_mask[piece]);
-		// if last move, mark it (draw using a different function)
-		if (i == game.last_move)
-			gdk_draw_rectangle(rvr_buf, last_gc, TRUE, x+1, y+1, PIXSIZE-2, PIXSIZE-2);
-		gdk_draw_rectangle(rvr_buf, pix_gc, TRUE, x, y, PIXSIZE, PIXSIZE);
+		if (i == game.last_move) {
+			/* if last move, mark it (draw using a different
+			 * background). */
+			gdk_draw_rectangle(rvr_buf, last_gc, TRUE,
+					   x+1, y+1, PIXSIZE-2, PIXSIZE-2);
+		}
+		gdk_pixbuf_render_to_drawable(pix[piece], rvr_buf,
+					      pix_gc,
+					      0, 0, x + 1, y + 1,
+					      PIXSIZE - 2, PIXSIZE - 2,
+					      GDK_RGB_DITHER_NONE, 0, 0);
 	}
 
 	if (game.state == RVR_STATE_PLAYING && game.turn == game.num)
@@ -170,6 +169,21 @@ void display_board(void)
 	gtk_widget_draw(tmp, NULL);
 }
 
+static GdkPixbuf *load_pixmap(const char *name)
+{
+	char *fullpath;
+	GdkPixbuf *image;
+	GError *error = NULL;
+
+	fullpath = g_strdup_printf("%s/reversi/pixmaps/%s.png",
+				   GGZDATADIR, name);
+	image = gdk_pixbuf_new_from_file(fullpath, &error);
+	if(image == NULL)
+		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
+	g_free(fullpath);
+
+	return image;
+}
 
 static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
@@ -203,24 +217,10 @@ static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 	gdk_gc_set_foreground(last_gc, last_color);
 
 
-	// Create the black pix
-	pix[PLAYER2SEAT(BLACK)] = gdk_pixmap_create_from_xpm_d( main_win->window, &pix_mask[PLAYER2SEAT(BLACK)],
-					      &style->black, 
-					      (gchar**)black_xpm );
-	gdk_pixmap_ref(pix[PLAYER2SEAT(BLACK)]);
-	gdk_bitmap_ref(pix_mask[PLAYER2SEAT(BLACK)]);
-
-	// Sets up the white pix
-	pix[PLAYER2SEAT(WHITE)] = gdk_pixmap_create_from_xpm_d( main_win->window, &pix_mask[PLAYER2SEAT(WHITE)],
-					      &style->white, 
-					      (gchar**)white_xpm );
-	gdk_pixmap_ref(pix[PLAYER2SEAT(WHITE)]);
-	gdk_bitmap_ref(pix_mask[PLAYER2SEAT(WHITE)]);
-
-	// Create the dot pix
-	pix[2] = gdk_pixmap_create_from_xpm_d( main_win->window, &pix_mask[2], NULL, (gchar**)dot_xpm);
-	gdk_pixmap_ref(pix[2]);
-	gdk_bitmap_ref(pix_mask[2]);
+	/* Create the white piece, black piece, and dot images. */
+	pix[PLAYER2SEAT(BLACK)] = load_pixmap("black");
+	pix[PLAYER2SEAT(WHITE)] = load_pixmap("white");
+	pix[2] = load_pixmap("dot");
 }
 
 
