@@ -45,7 +45,6 @@
 /* Termination handler */
 RETSIGTYPE term_handle(int signum)
 {
-        ggzcore_event_process_all(); 
         ggzcore_destroy(); 
         output_shutdown(); 
 	exit(1);
@@ -99,8 +98,6 @@ int main(void)
 	loop_init(TIMEOUT);
 	loop_add_fd(STDIN_FILENO, input_command, NULL);
 	loop();
-
-	ggzcore_event_process_all();
 
 	ggzcore_destroy();
 

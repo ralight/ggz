@@ -159,9 +159,11 @@ static void input_handle_list(char* line)
 
 	/* What are we listing? */
 	if (strcmp(line, "types") == 0)
-		ggzcore_event_enqueue(GGZ_USER_LIST_TYPES, NULL, NULL);
-	else if (strcmp(line, "tables") == 0)
-		ggzcore_event_enqueue(GGZ_USER_LIST_TABLES, NULL, NULL);
+		ggzcore_server_list_gametypes(server, 1);
+	else if (strcmp(line, "tables") == 0) {
+		room = ggzcore_server_get_cur_room(server);
+		ggzcore_room_list_tables(room, -1, 0);
+	}
 	else if (strcmp(line, "players") == 0) {
 		room = ggzcore_server_get_cur_room(server);
 		if (ggzcore_room_get_num_players(room) >= 1) {
