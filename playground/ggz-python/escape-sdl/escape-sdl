@@ -10,6 +10,33 @@ import sys
 import time
 import random
 
+def validate((blobpos, trail, x, y)):
+	(bx, by, bplayer) = blobpos
+
+	found = 0
+	if (abs(x - bx) == 1 and abs(y - by) <= 1) or (abs(x - bx) <= 1 and abs(y - by) == 1):
+		found = 1
+	if x < 0 or y < 0 or x > 8 or y > 11:
+		found = 0
+	elif (x == 0 and bx == 0) or (x == 8 and bx == 8) or (y == 0 and by == 0) or (y == 11 and by == 11):
+		found = 0
+	else:
+		index = 0
+		for t in trail:
+			(tx, ty, tplayer) = t
+			if tx == x and ty == y:
+				if index > 0:
+					(tx2, ty2, tplayer2) = trail[index - 1]
+					if tx2 == bx and ty2 == by:
+						found = 0
+				if index < len(trail) - 1:
+					(tx2, ty2, tplayer2) = trail[index + 1]
+					if tx2 == bx and ty2 == by:
+						found = 0
+			index += 1
+
+	return found
+
 def ai((blobpos, trail)):
 	time.sleep(2)
 
@@ -21,15 +48,8 @@ def ai((blobpos, trail)):
 		tries += 1
 		x = random.randint(bx - 1, bx + 1)
 		y = random.randint(by - 1, by + 1)
-		if x != bx and y != by:
-			found = 1
-			if x < 0 or y < 0 or x > 8 or y > 11:
-				found = 0
-			for t in trail:
-				(tx, ty, tplayer) = t
-				if tx == x and ty == y:
-					if tx != bx and ty != by:
-						found = 0
+		if x != bx or y != by:
+			found = validate((blobpos, trail, x, y))
 
 	if tries < 100:
 		blobpos = (x, y, 1 - bplayer)
@@ -129,6 +149,7 @@ def main():
 	ggzmode = 0
 	madeturn = 0
 	aierror = 0
+	humanerror = 0
 	gameover = 0
 
 	mouse = stone
@@ -154,10 +175,13 @@ def main():
 			y = (y - 30 + 20) / 40
 			if x >= 0 and x < 9 and y >= 0 and y < 11:
 				(x2, y2, player) = blobpos
-				if (abs(x - x2) == 1 and abs(y - y2) <= 1) or (abs(x - x2) <= 1 and abs(y - y2) == 1):
+				if validate((blobpos, trail, x, y)):
 					blobpos = (x, y, 0)
 					trail.append(blobpos)
 					madeturn = 1
+					humanerror = 0
+				else:
+					humanerror = 1
 			pressed = 1
 
 		if not b1 and pressed:
@@ -202,6 +226,11 @@ def main():
 				waiting = font4.render("AI error, game over", 1, (165, 140, 0))
 			else:
 				waiting = font4.render("Waiting for opponent", 1, (165, 140, 0))
+			screen.blit(waiting, (610 - waiting.get_width(), 400))
+
+		if humanerror:
+			font4 = pygame.font.Font(None, 24)
+			waiting = font4.render("Not allowed, try again", 1, (165, 140, 0))
 			screen.blit(waiting, (610 - waiting.get_width(), 400))
 
 		pygame.display.flip()
