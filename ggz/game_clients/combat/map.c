@@ -31,9 +31,9 @@
 #include <string.h>
 #include <dirent.h>
 #include <fcntl.h>
+#include <ggzcore.h>
 
 #include "combat.h"
-#include "ggzcore.h"
 #include "map.h"
 
 #define GLOBAL_MAPS GAMEDIR "/combat/maps"
