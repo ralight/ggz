@@ -844,7 +844,7 @@ int main(int argc, char *argv[])
 				printf("Published under GNU GPL conditions\n\n");
 				printf("Available options:\n");
 				printf("[-c | --configuration]: Use this configuration file\n");
-				printf("[-C | --cache        ]: Use this cache file\n]");
+				printf("[-C | --cache        ]: Use this cache file\n");
 				printf("[-d | --daemon       ]: Run in daemon mode\n");
 				printf("[-h | --help         ]: Show this help\n");
 				printf("[-v | --version      ]: Display version number\n");
