@@ -1,5 +1,7 @@
 <?php
 
+include_once("player.php");
+
 function stats_players($lookup)
 {
 global $database;
@@ -106,11 +108,6 @@ global $database;
 		$rating = (int)($rating);
 
 		$handlecaption = $handle;
-		$pic = "player.png";
-		if ($handle == $ggzuser) :
-			$handlecaption = "<b>$handle</b>";
-			$pic = "you.png";
-		endif;
 
 		if ($rank == 1) :
 			$rankstr = "st";
@@ -132,7 +129,9 @@ global $database;
 			$icon = "";
 		endif;
 
-		echo "<img src='/db/ggzicons/players/$pic' width=16 height=16>\n";
+		$player = new Player($handle);
+		$player->icon();
+
 		echo "<a href='/db/players/?lookup=$handle'>$handlecaption</a>\n";
 		if ($method == "wins/losses") :
 			echo "achieved <b>$wins</b> wins, <b>$losses</b> losses, <b>$ties</b> ties, <b>$forfeits</b> forfeits.<br>\n";

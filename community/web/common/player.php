@@ -163,6 +163,32 @@ class Player
 			}
 		endif;
 	}
+
+	function icon()
+	{
+		global $database;
+
+		$ggzuser = $this->handle;
+
+		$res = $database->exec("SELECT * FROM permissions WHERE handle = '$ggzuser'");
+		if (($res) && ($database->numrows($res) > 0)) :
+			$chat_bot = $database->result($res, 0, "chat_bot");
+			$rooms_admin = $database->result($res, 0, "rooms_admin");
+		endif;
+
+		$pic = "player.png";
+		if ($rooms_admin) :
+			$pic = "admin.png";
+		endif;
+		if ($chat_bot) :
+			$pic = "bot.png";
+		endif;
+		if ($this->handle == Auth::username()) :
+			$pic = "you.png";
+		endif;
+
+		echo "<img src='/db/ggzicons/players/$pic' width=16 height=16>\n";
+	}
 }
 
 ?>
