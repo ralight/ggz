@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 2768 2001-12-01 06:51:06Z bmh $
+ * $Id: ggzd.h 2926 2001-12-18 00:18:06Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -75,6 +75,14 @@
 #define GGZ_TABLE_WAITING    1
 #define GGZ_TABLE_PLAYING    2
 #define GGZ_TABLE_DONE       3
+
+/*
+ * Configuration options
+ */
+
+/* If defined, ggzd will automatically destroy
+   a table if it has no human players. */
+#define KILL_TABLES_WHEN_EMPTY
 
 #endif
 

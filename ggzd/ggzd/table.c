@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2847 2001-12-10 03:27:13Z bmh $
+ * $Id: table.c 2926 2001-12-18 00:18:06Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -550,8 +550,10 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 
 	/* FIXME: is this the right thing to do???
 	   Maybe we should let the game do it by calling ggzdmod_halt_()*/
+#ifdef KILL_TABLES_WHEN_EMPTY	
 	if (empty)
 		(void)ggzdmod_disconnect(ggzdmod);
+#endif
 }
 
 
