@@ -11,7 +11,7 @@ messages:
 	done;
 
 install-data-local:
-	for j in *.po; do \
+	for j in $(top_srcdir)/po/*.po; do \
 		country=`echo $$j | cut -d "." -f 1`; \
 		dir=$(DESTDIR)$(prefix)/share/locale/$$country/LC_MESSAGES; \
 		echo "installing $$dir/ggz-txt.mo ($$j)"; \
