@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 2266 2001-08-26 21:51:03Z jdorje $
+ * $Id: err_func.c 2536 2001-10-04 23:44:50Z rgade $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -52,6 +52,25 @@ LogInfo log_info = { 0, 0,
 		   , 0, NULL, NULL, 0
 #endif
 };
+
+/* Update log values */
+static struct {
+	pthread_mutex_t mut;
+	time_t start_time;
+	time_t next_update;
+	int anon_users;
+	int regd_users;
+	int num_logins;
+	int num_logouts;
+	int kb_in;
+	int kb_out;
+	int db_rd;
+	int db_wr;
+	int tables;
+	int tables_created;
+	int tables_closed;
+} update_info;
+
 
 /* Internal use functions */
 static FILE *log_open_logfile(char *);
@@ -294,6 +313,21 @@ void logfile_initialize(void)
 		openlog("ggzd", 0, log_info.syslog_facility);
 	}
 
+	pthread_mutex_init(&update_info.mut, NULL);
+	update_info.next_update = time(NULL) + LOG_UPDATE_INTERVAL;
+	update_info.start_time = time(NULL);
+	update_info.anon_users = 0;
+	update_info.regd_users = 0;
+	update_info.num_logins = 0;
+	update_info.num_logouts = 0;
+	update_info.kb_in = 0;
+	update_info.kb_out = 0;
+	update_info.db_rd = 0;
+	update_info.db_wr = 0;
+	update_info.tables = 0;
+	update_info.tables_created = 0;
+	update_info.tables_closed = 0;
+
 #ifdef DEBUG
 	/* Setup the debug logfile */
 	if(log_info.dbg_fname) {
@@ -335,4 +369,88 @@ static FILE *log_open_logfile(char *fname)
 	}
 
 	return( fopen(f, "a") );
+}
+
+
+/* Return number of seconds until next update log entry */
+int log_next_update_sec(void)
+{
+	int max_select_wait;
+
+	if((max_select_wait = update_info.next_update - time(NULL)) < 1)
+		max_select_wait = 1;
+
+	return max_select_wait;
+}
+
+
+/* Generate an update log entry */
+void log_generate_update(void)
+{
+	int uptime;
+	int anon, regd, login, logout;
+
+	/* Not in critical section (only our thread uses these) */
+	uptime = time(NULL) - update_info.start_time;
+	update_info.next_update = time(NULL) + LOG_UPDATE_INTERVAL;
+
+	pthread_mutex_lock(&update_info.mut);
+
+	/* Get all our info */
+	anon = update_info.anon_users;
+	regd = update_info.regd_users;
+	login = update_info.num_logins;
+	logout = update_info.num_logouts;
+
+	/* Clear periodic counters */
+	update_info.num_logins = 0;
+	update_info.num_logouts = 0;
+	update_info.kb_in = 0;
+	update_info.kb_out = 0;
+	update_info.db_rd = 0;
+	update_info.db_wr = 0;
+	update_info.tables_created = 0;
+	update_info.tables_closed = 0;
+
+	pthread_mutex_unlock(&update_info.mut);
+
+	log_msg(GGZ_LOG_UPDATE, "%d %d %d %d %d", uptime,
+						  anon, regd,
+						  login, logout);
+}
+
+
+void log_login_anon(void)
+{
+	pthread_mutex_lock(&update_info.mut);
+	update_info.anon_users++;
+	update_info.num_logins++;
+	pthread_mutex_unlock(&update_info.mut);
+}
+
+
+void log_logout_anon(void)
+{
+	pthread_mutex_lock(&update_info.mut);
+	update_info.anon_users--;
+	update_info.num_logouts++;
+	pthread_mutex_unlock(&update_info.mut);
+}
+
+
+void log_login_regd(void)
+{
+	pthread_mutex_lock(&update_info.mut);
+	update_info.regd_users++;
+	update_info.num_logins++;
+	pthread_mutex_unlock(&update_info.mut);
+}
+
+
+void log_logout_regd(void)
+{
+	pthread_mutex_lock(&update_info.mut);
+	update_info.regd_users--;
+	update_info.num_logouts++;
+	pthread_mutex_unlock(&update_info.mut);
 }

@@ -35,6 +35,7 @@
 #define GGZ_LOG_CONNECTION_INFO	(unsigned) 0x00000002
 #define GGZ_LOG_SECURITY	(unsigned) 0x00000004
 #define GGZ_LOG_TABLES		(unsigned) 0x00000008
+#define GGZ_LOG_UPDATE		(unsigned) 0x00000010
 #define GGZ_LOG_ALL		(unsigned) 0xFFFFFFFF
 
 /* Debug levels for dbg_msg */
@@ -59,6 +60,8 @@
 #define GGZ_LOGOPT_THREAD_LOGS	(unsigned) 0x0008
 #define GGZ_LOGOPT_INC_GAMETYPE	(unsigned) 0x0010
 #define GGZ_DBGOPT_USE_SYSLOG	(unsigned) 0x0020
+
+#define LOG_UPDATE_INTERVAL	600	/* Seconds between update log entries */
 
 
 /* Logfile info */
@@ -112,3 +115,11 @@ extern void logfile_initialize(void);
 
 /* Log a normal message */
 extern void log_msg(const unsigned, const char *, ...);
+
+/* Update log handlers */
+extern int log_next_update_sec(void);
+extern void log_generate_update(void);
+extern void log_login_anon(void);
+extern void log_login_regd(void);
+extern void log_logout_anon(void);
+extern void log_logout_regd(void);

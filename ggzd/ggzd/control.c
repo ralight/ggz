@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 2520 2001-09-29 15:56:14Z bmh $
+ * $Id: control.c 2536 2001-10-04 23:44:50Z rgade $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -26,6 +26,7 @@
 
 #include <config.h>		/* Site specific config */
 
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -153,7 +154,7 @@ int main(int argc, const char *argv[])
 	socklen_t addrlen;
 	struct sockaddr_in addr;
 	fd_set active_fd_set, read_fd_set;
-
+	struct timeval tv;
 
        	/* Parse options */
 	parse_args(argc, argv);
@@ -207,14 +208,18 @@ int main(int argc, const char *argv[])
 	while (!term_signal) {
 
 		read_fd_set = active_fd_set;
-		status = select((main_sock + 1), &read_fd_set, NULL, NULL, 
-				NULL);
+		tv.tv_sec = log_next_update_sec();
+		tv.tv_usec = 0;
+		status = select((main_sock + 1), &read_fd_set, NULL, NULL, &tv);
 
-		if (status <= 0) {
-			if (status == 0 || errno == EINTR)
+		if (status < 0) {
+			if (errno == EINTR)
 				continue;
 			else
 				err_sys_exit("select error");
+		} else if(status == 0) {
+			log_generate_update();
+			continue;
 		}
 
 		addrlen = sizeof(addr);

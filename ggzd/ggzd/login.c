@@ -160,12 +160,14 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	
 	/* Setup the player's information */
 	pthread_rwlock_wrlock(&player->lock);
-	if (type == GGZ_LOGIN_GUEST) 
+	if (type == GGZ_LOGIN_GUEST) {
 		player->uid = GGZ_UID_ANON;
-	else {
+		log_login_anon();
+	} else {
 		/* Setup initial registered player info */
 		player->uid = 0;
 		perms_init(player, &db_pe);
+		log_login_regd();
 	}
 	strncpy(player->name, name, MAX_USER_NAME_LEN + 1);
 	ip_addr = player->addr;
