@@ -568,7 +568,7 @@ static int read_table_info(int p_index, int p_fd, int *t_fd)
 		pthread_rwlock_wrlock(&game_tables.lock);
 		if (game_tables.count == MAX_TABLES) {
 			pthread_rwlock_unlock(&game_tables.lock);
-			status = E_SERVER_FULL;
+			status = E_ROOM_FULL;
 		} else {
 			for (i = 0; i < MAX_TABLES; i++)
 				if (game_tables.info[i].type_index < 0) {
@@ -597,7 +597,7 @@ static int read_table_info(int p_index, int p_fd, int *t_fd)
 		game_tables.info[t_index].pid = -1;
 		game_tables.count--;
 		pthread_rwlock_unlock(&game_tables.lock);
-	case E_SERVER_FULL:
+	case E_TABLE_FULL:
 	case E_BAD_OPTIONS:
 		free(options);
 		dbg_msg("Player %d's table launch failed with err %d",
@@ -619,34 +619,35 @@ static int read_table_info(int p_index, int p_fd, int *t_fd)
 /* FIXME: Some day we'll worry about reservations. Not today*/
 static int join_table(int p_index, int p_fd, int *t_fd)
 {
-
 	int i, t_index, fds[2];
 	int status = 0;
 
 	dbg_msg("Handling table join for player %d", p_index);
-
+	
 	if (FAIL(es_read_int(p_fd, &(t_index))))
 		return -1;
 
 	dbg_msg("Player %d attempting to join table %d", p_index, t_index);
-
-	/* Create socketpair for communication */
-	socketpair(PF_UNIX, SOCK_STREAM, 0, fds);
-	*t_fd = fds[1];
-
-	/* Check for open seats at table */
+	
 	pthread_rwlock_wrlock(&game_tables.lock);
-	if (game_tables.info[t_index].open_seats == 0) {
+	if (game_tables.info[t_index].type_index == -1) {
 		pthread_rwlock_unlock(&game_tables.lock);
-		status = E_SERVER_FULL;
+		status = E_TABLE_EMPTY;
+	}
+	else if (game_tables.info[t_index].open_seats == 0) {
+		pthread_rwlock_unlock(&game_tables.lock);
+		status = E_TABLE_FULL;
 	} else {
 		/* Take my seat */
 		for (i = 0; i < game_tables.info[t_index].num_seats; i++)
 			if (game_tables.info[t_index].players[i] < 0) {
 				game_tables.info[t_index].players[i] =
-				    p_index;
+					p_index;
+				/* Create socketpair for communication */
+				socketpair(PF_UNIX, SOCK_STREAM, 0, fds);
 				game_tables.info[t_index].player_fd[i] =
-				    fds[0];
+					fds[0];
+				*t_fd = fds[1];
 				dbg_msg("Player %d sitting in seat %d",
 					p_index, i);
 				break;
@@ -670,7 +671,8 @@ static int join_table(int p_index, int p_fd, int *t_fd)
 	switch (status) {
 	case E_RESPOND_FAIL:
 		/* FIXME: must do major cleanup to remove player from game */
-	case E_SERVER_FULL:
+	case E_TABLE_EMPTY:
+	case E_TABLE_FULL:
 	case E_BAD_OPTIONS:
 		dbg_msg("Player %d's table join failed with err %d",
 			p_index, status);

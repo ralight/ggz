@@ -79,9 +79,10 @@ typedef enum {
 	REQ_GAME_LAUNCH
 } ControlToTable;
 
-
-#define E_USR_LOOKUP  -1
-#define E_BAD_OPTIONS -2
-#define E_SERVER_FULL -3
-#define E_LAUNCH_FAIL -4
-#define E_RESPOND_FAIL -5
+#define E_USR_LOOKUP   -1
+#define E_BAD_OPTIONS  -2
+#define E_ROOM_FULL    -3
+#define E_TABLE_FULL   -4
+#define E_TABLE_EMPTY  -5
+#define E_LAUNCH_FAIL  -6
+#define E_RESPOND_FAIL -7
