@@ -30,13 +30,15 @@
 #include <stdarg.h>
 #include <poll.h>
 
+#include <ggz_client.h>
+
 /** @file ggzcore.h
  *  @brief The interface for the ggzcore library used by GGZ clients
  */
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
 /* GGZCore library features */
 typedef enum {
@@ -139,19 +141,6 @@ typedef enum {
 	GGZ_PLAYER_GUEST,
 	GGZ_PLAYER_ADMIN
 } GGZPlayerType;
-
-/* This same enumeration is provided by ggzmod as well, so we
-   protect it like this. */
-#ifndef __GGZ_SEAT_TYPE_INCLUDED
-#define __GGZ_SEAT_TYPE_INCLUDED
-typedef enum {
-	GGZ_SEAT_OPEN     = -1,
-	GGZ_SEAT_BOT      = -2,
-	GGZ_SEAT_RESERVED = -3,
-	GGZ_SEAT_NONE     = -4,
-	GGZ_SEAT_PLAYER   = -5
-} GGZSeatType;
-#endif /* GGZ_SEAT_TYPE_INCLUDED */
 
 /**
  * A GGZServerEvent is an event triggered by a communication from the

@@ -12,7 +12,10 @@ EXTRA_DIST = $(ggzconf_DATA)
 
 lib_LTLIBRARIES = libggzcore.la
 
-include_HEADERS = ggzcore.h
+# ggz_client isn't directly tied to ggzcore; it's used by ggzcore and
+# ggzmod.  But since they're both in the same library, I've just placed
+# it here for now - it can be moved later.
+include_HEADERS = ggzcore.h ggz_client.h
 
 libggzcore_la_LIBADD = @LDADD@
 
@@ -25,6 +28,8 @@ libggzcore_la_SOURCES =	conf.c \
 			game.h \
 		      	gametype.c \
 		      	gametype.h \
+		      	ggzcore.h \
+		      	ggz_client.h \
 			hook.c \
 			hook.h \
 			module.c \
