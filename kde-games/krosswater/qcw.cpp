@@ -22,14 +22,20 @@ QCw::QCw(QWidget* parent = 0, char* name = 0)
 	m_y = -1;
 	m_state = normal;
 	startTimer(1000);
-	m_numplayers = 0;
 
-	for(int i = 0; i < 4; i++)
-		m_players[i][2] = -1;
+	resetPlayers();
 }
 
 QCw::~QCw()
 {
+}
+
+void QCw::resetPlayers()
+{
+	cout << "QCW:: Remove all players" << endl;
+	m_numplayers = 0;
+	for(int i = 0; i < 4; i++)
+		m_players[i][2] = -1;
 }
 
 void QCw::paintEvent(QPaintEvent *e)

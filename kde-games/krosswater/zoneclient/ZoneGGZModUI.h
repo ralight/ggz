@@ -26,6 +26,7 @@ public:
 	int ZonePlayernum;
 	char ZonePlayers[16][17];
 	int ZoneRules, ZoneMaxplayers;
+	int ZoneGamePlayers;
 signals:
 	void signalZoneReady();
 	void signalZoneInput(int op);

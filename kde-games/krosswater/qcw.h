@@ -14,7 +14,8 @@ class QCw : public QWidget
 		void setSize(int width, int height);
 		void setStone(int x, int y, int value);
 		void setStoneState(int x, int y, int state);
-		
+
+		void resetPlayers();		
 		void addPlayer(int x, int y);
 		void setPlayerPixmap(int player, int pixmap);
 	signals:

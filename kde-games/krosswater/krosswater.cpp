@@ -92,17 +92,18 @@ void Krosswater::slotSelected(int person)
 	m_selectedperson = person;
 	cout << "zonePlayers: " << zonePlayers() << endl;
 	cout << "ZoneMaxplayers: " << ZoneMaxplayers << endl;
+	cout << "ZoneGameplayers: " << ZoneGamePlayers << endl;
 	cout << "Person: " << person << endl;
-	if(zonePlayers() == ZoneMaxplayers) showStatus(("Game started"));
+	if(zonePlayers() == ZoneGamePlayers) showStatus(("Game started"));
 	else showStatus(("Waiting for other players..."));
 
-	for(int i = 0; i < zonePlayers(); i++)
+	/*for(int i = 0; i < zonePlayers(); i++)
 	{
 		if(i == zoneMe()) person = m_selectedperson;
 		else person = (m_selectedperson + 1) % 3;
 		if(qcw) qcw->setPlayerPixmap(i, person);
 		cout << "qcw->setPlayer " << person << " - " << m_selectedperson<< endl;
-	}
+	}*/
 
 	show();
 }
@@ -172,6 +173,7 @@ void Krosswater::slotZoneInput(int op)
 			return;
 		}
 		cout << "players: " << maxplayers << endl;
+		qcw->resetPlayers();
 		for(int i = 0; i < maxplayers; i++)
 		{
 			if((es_read_int(fd(), &x) < 0)
@@ -180,8 +182,15 @@ void Krosswater::slotZoneInput(int op)
 				printf("error in protocol (6m)\n");
 				return;
 			}
-			cout << "Player found: " << x << ", " << y << endl;
-			if(qcw) qcw->addPlayer(x, y);
+			if(i < ZoneGamePlayers)
+			{
+				cout << "Player found: " << x << ", " << y << endl;
+				qcw->addPlayer(x, y);
+
+				if(i == zoneMe()) person = m_selectedperson;
+				else person = (m_selectedperson + 1) % 3;
+				qcw->setPlayerPixmap(i, person);
+			}
 		}
 	}
 
@@ -295,7 +304,7 @@ void Krosswater::slotMenuHelp()
 	dlghelp = new DlgHelp(NULL, "DlgHelp");
 }
 
-void Krosswater::showStatus(const char *state)
+void Krosswater::showStatus(QString state)
 {
 	QPainter p;
 

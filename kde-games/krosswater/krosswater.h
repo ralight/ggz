@@ -43,14 +43,15 @@ class Krosswater : public ZoneGGZModUI
 		void paintEvent(QPaintEvent *e);
 
 	private:
-		void showStatus(const char *state);
+		void showStatus(QString state);
 
 		QCw* qcw;
 		int m_fromx, m_fromy, m_tox, m_toy;
-		const char *m_currentstate;
+		QString m_currentstate;
 		QFrame *m_statusframe;
 		int m_selectedperson;
 		DlgAgain *m_again;
 };
 
 #endif
+

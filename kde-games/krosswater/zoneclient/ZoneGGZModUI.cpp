@@ -22,6 +22,8 @@ ZoneGGZModUI::ZoneGGZModUI(QWidget *parent, char *name = NULL)
 	}
 	ZoneSeat = -1;
 	ZonePlayernum = -1;
+	ZoneMaxplayers = 0;
+	ZoneGamePlayers = 0;
 	m_ready = 0;
 	m_turn = 0;
 }
@@ -155,6 +157,7 @@ void ZoneGGZModUI::zoneGetPlayers()
 
 	m_ready = 1;
 	m_players = 0;
+	ZoneGamePlayers = 0;
 	for(int i = 0; i < ZonePlayernum; i++)
 	{
 		if (es_read_int(zone_fd, &ZoneSeats[i]) < 0)
@@ -173,6 +176,7 @@ void ZoneGGZModUI::zoneGetPlayers()
 			}
 			ZONEDEBUG("** received player: %s\n", ZonePlayers[i]);
 			m_players++;
+			ZoneGamePlayers++;
 		}
 		else m_ready = 0;
 	}
