@@ -3,6 +3,7 @@
 #include <SDL/SDL_ttf.h>
 
 #include <ggz.h>
+#include <ggzmod.h>
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -18,6 +19,92 @@
 
 #define DATA_GLOBAL GGZDATADIR "/geekgame/"
 #define DATA_LOCAL "/tmp/"
+
+static GGZMod *mod = NULL;
+static int modfd;
+static int ggzmode = 0;
+
+static void game_handle_io(void)
+{
+	int op, i;
+	
+	if (ggz_read_int(modfd, &op) < 0)
+	{
+		/* ... */
+		return;
+	}
+
+	printf("Read opcode: %i\n", op);
+}
+
+static void handle_ggz()
+{
+	ggzmod_dispatch(mod);
+}
+
+static void handle_ggzmod_server(GGZMod *ggzmod, GGZModEvent e, void *data)
+{
+	int fd = *(int*)data;
+
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+	modfd = fd;
+}
+
+static void ggz_init()
+{
+	int ret;
+
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+
+	ret = ggzmod_connect(mod);
+	if(ret < 0)
+	{
+		fprintf(stderr, "Couldn't initialize GGZ.\n");
+		exit(-1);
+	}
+}
+
+static void ggz_finish()
+{
+	ggzmod_disconnect(mod);
+	ggzmod_free(mod);
+}
+
+static void ggz_network()
+{
+	int maxfd;
+	fd_set set;
+	struct timeval tv;
+	int ret;
+	int serverfd;
+
+	FD_ZERO(&set);
+
+	serverfd = ggzmod_get_fd(mod);
+
+	FD_SET(serverfd, &set);
+	maxfd = serverfd;
+	if(modfd >= 0)
+	{
+		FD_SET(modfd, &set);
+		if(modfd > maxfd) maxfd = modfd;
+	}
+
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+
+	ret = select(maxfd + 1, &set, NULL, NULL, &tv);
+
+	if(ret)
+	{
+		if(modfd >= 0)
+		{
+			if(FD_ISSET(modfd, &set)) game_handle_io();
+		}
+		if(FD_ISSET(serverfd, &set)) handle_ggz();
+	}
+}
 
 void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green)
 {
@@ -88,9 +175,7 @@ int main(int argc, char *argv[])
 		{0, 0, 0, 0}
 	};
 	int index = 0, c;
-	int ggzmode;
-
-	ggzmode = 0;
+	int ret;
 
 	while((c = getopt_long(argc, argv, "g", op, &index)) != -1)
 	{
@@ -114,7 +199,13 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	return startgame();
+	if(ggzmode) ggz_init();
+
+	ret = startgame();
+
+	if(ggzmode) ggz_finish();
+
+	return ret;
 }
 
 int startgame(void)
@@ -300,6 +391,8 @@ int startgame(void)
 		}
 
 		SDL_Delay(50);
+
+		if(ggzmode) ggz_network();
 	}
 
 	SDL_Quit();
