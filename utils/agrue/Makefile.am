@@ -4,5 +4,5 @@ bin_PROGRAMS = agrue
 
 agrue_SOURCES = agrue.c protocols.h
 
-agrue_LDADD = $(LDADD) $(LIB_EASYSOCK)
+agrue_LDADD = $(LDADD) $(LIB_EASYSOCK) $(LIB_GGZ)
 

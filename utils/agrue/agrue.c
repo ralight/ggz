@@ -5,8 +5,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <easysock.h>
-#include <protocols.h>
+#include <ggz.h>
+
+#include "protocols.h"
 
 #define PORT 5688
 #define HOSTNAME "localhost"
@@ -39,7 +40,7 @@ int main()
 	struct timeval timeout;
 
 	srandom((unsigned)time(NULL));
-	my_socket = es_make_socket(ES_CLIENT, PORT, HOSTNAME);
+	my_socket = ggz_make_socket(GGZ_SOCK_CLIENT, PORT, HOSTNAME);
 
 	timeout.tv_sec = 5;
 	timeout.tv_usec = 0;
@@ -75,14 +76,14 @@ void handle_read(void)
 	char *string;
 	char chr;
 
-	es_read_int(my_socket, &opcode);
+	ggz_read_int(my_socket, &opcode);
 	/*printf("OP: %s\n", opstring[opcode]);*/
 	switch(opcode) {
 		case MSG_SERVER_ID:
-			es_read_string_alloc(my_socket, &string);
+			ggz_read_string_alloc(my_socket, &string);
 			free(string);
-			es_read_int(my_socket, &num);
-			es_read_int(my_socket, &max_chatlen);
+			ggz_read_int(my_socket, &num);
+			ggz_read_int(my_socket, &max_chatlen);
 			if(num != PROTOCOL_VERSION) {
 				printf("Server is protocol version %d\n", num);
 				printf("We are version %d\n", PROTOCOL_VERSION);
@@ -91,8 +92,8 @@ void handle_read(void)
 			}
 			break;
 		case RSP_LOGIN_ANON:
-			es_read_char(my_socket, &chr);
-			es_read_int(my_socket, &num);
+			ggz_read_char(my_socket, &chr);
+			ggz_read_int(my_socket, &num);
 			if(chr != 0)
 				logged_in = 0;
 			else
@@ -100,89 +101,89 @@ void handle_read(void)
 			req_room_list();
 			break;
 		case MSG_MOTD:
-			es_read_int(my_socket, &num);
+			ggz_read_int(my_socket, &num);
 			for(i=0; i<num; i++) {
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
 			}
 			break;
 		case RSP_LIST_ROOMS:
-			es_read_int(my_socket, &num);
+			ggz_read_int(my_socket, &num);
 			rooms = num;
 			for(i=0; i<num; i++) {
-				es_read_int(my_socket, &num2);
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_int(my_socket, &num2);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
-				es_read_int(my_socket, &num2);
+				ggz_read_int(my_socket, &num2);
 			}
 			break;
 		case RSP_ROOM_JOIN:
-			es_read_char(my_socket, &chr);
+			ggz_read_char(my_socket, &chr);
 			break;
 		case MSG_CHAT:
-			es_read_char(my_socket, &chr);
-			es_read_string_alloc(my_socket, &string);
+			ggz_read_char(my_socket, &chr);
+			ggz_read_string_alloc(my_socket, &string);
 			free(string);
 			if(chr & GGZ_CHAT_M_MESSAGE) {
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
 			}
 			break;
 		case RSP_CHAT:
-			es_read_char(my_socket, &chr);
+			ggz_read_char(my_socket, &chr);
 			break;
 		case MSG_UPDATE_PLAYERS:
-			es_read_char(my_socket, &chr);
-			es_read_string_alloc(my_socket, &string);
+			ggz_read_char(my_socket, &chr);
+			ggz_read_string_alloc(my_socket, &string);
 			free(string);
 			break;
 		case MSG_UPDATE_TYPES:
-			es_write_int(my_socket, REQ_LIST_TYPES);
-			es_write_char(my_socket, 1);
+			ggz_write_int(my_socket, REQ_LIST_TYPES);
+			ggz_write_char(my_socket, 1);
 			break;
 		case MSG_UPDATE_TABLES:
-			es_write_int(my_socket, REQ_LIST_TABLES);
-			es_write_int(my_socket, -1);
-			es_write_char(my_socket, 0);
+			ggz_write_int(my_socket, REQ_LIST_TABLES);
+			ggz_write_int(my_socket, -1);
+			ggz_write_char(my_socket, 0);
 			break;
 		case RSP_LIST_PLAYERS:
-			es_read_int(my_socket, &num);
+			ggz_read_int(my_socket, &num);
 			for(i=0; i<num; i++) {
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
-				es_read_int(my_socket, &num2);
+				ggz_read_int(my_socket, &num2);
 			}
 			break;
 		case RSP_LIST_TYPES:
-			es_read_int(my_socket, &num);
+			ggz_read_int(my_socket, &num);
 			for(i=0; i<num; i++) {
-				es_read_int(my_socket, &num2);
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_int(my_socket, &num2);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
-				es_read_char(my_socket, &chr);
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_char(my_socket, &chr);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
 			}
 			break;
 		case RSP_LIST_TABLES:
-			es_read_int(my_socket, &num);
+			ggz_read_int(my_socket, &num);
 			for(i=0; i<num; i++) {
-				es_read_int(my_socket, &num2);
-				es_read_int(my_socket, &num2);
-				es_read_int(my_socket, &num2);
-				es_read_string_alloc(my_socket, &string);
+				ggz_read_int(my_socket, &num2);
+				ggz_read_int(my_socket, &num2);
+				ggz_read_int(my_socket, &num2);
+				ggz_read_string_alloc(my_socket, &string);
 				free(string);
-				es_read_char(my_socket, &chr);
-				es_read_int(my_socket, &num2);
+				ggz_read_char(my_socket, &chr);
+				ggz_read_int(my_socket, &num2);
 				for(j=0; j<num2; j++) {
-					es_read_int(my_socket, &num3);
-					es_read_string_alloc(my_socket,&string);
+					ggz_read_int(my_socket, &num3);
+					ggz_read_string_alloc(my_socket,&string);
 					free(string);
 				}
 			}
@@ -199,7 +200,7 @@ void req_login(void)
 	char my_name[9];
 	int i;
 
-	es_write_int(my_socket, REQ_LOGIN_ANON);
+	ggz_write_int(my_socket, REQ_LOGIN_ANON);
 	for(i=0; i<8; i++) {
 		my_name[i] = (random() % 26) + 'a';
 		if(random() % 12 == 0) {
@@ -209,15 +210,15 @@ void req_login(void)
 	}
 	my_name[i] = '\0';
 
-	es_write_string(my_socket, my_name);
+	ggz_write_string(my_socket, my_name);
 }
 
 
 void req_room_list(void)
 {
-	es_write_int(my_socket, REQ_LIST_ROOMS);
-	es_write_int(my_socket, -1);
-	es_write_char(my_socket, (char)0);
+	ggz_write_int(my_socket, REQ_LIST_ROOMS);
+	ggz_write_int(my_socket, -1);
+	ggz_write_char(my_socket, (char)0);
 }
 
 
@@ -229,8 +230,8 @@ void change_room(void)
 		return;
 	while(new_room == cur_room)
 		new_room = random() % rooms;
-	es_write_int(my_socket, REQ_ROOM_JOIN);
-	es_write_int(my_socket, new_room);
+	ggz_write_int(my_socket, REQ_ROOM_JOIN);
+	ggz_write_int(my_socket, new_room);
 	cur_room = new_room;
 }
 
@@ -252,7 +253,7 @@ void yack_away(void)
 	}
 	msg[i] = '\0';
 
-	es_write_int(my_socket, REQ_CHAT);
-	es_write_char(my_socket, GGZ_CHAT_NORMAL);
-	es_write_string(my_socket, msg);
+	ggz_write_int(my_socket, REQ_CHAT);
+	ggz_write_char(my_socket, GGZ_CHAT_NORMAL);
+	ggz_write_string(my_socket, msg);
 }
