@@ -1,4 +1,4 @@
-/*
+*
  * File: game.c
  * Author: Rich Gade (Modified for Escape by Roger Light)
  * Project: GGZ Escape game module
@@ -291,7 +291,7 @@ int game_send_players(void)
 /* Send out move for player: num */
 int game_send_move(int num, int event, char direction)
 {
-	int fd = ggz_seats[(num+1)%2].fd;
+	int fd = ggz_seats[escape_game.opponent].fd;
 	int i;
 
 	ggz_debug("game_send_move(%d, %d, %d)\n",num, event, direction);	
@@ -301,7 +301,7 @@ int game_send_move(int num, int event, char direction)
 		return 0;
 
 	ggz_debug("\tSending player %d's move to player %d",
-		   num, (num+1)%2);
+		   num, escape_game.opponent);
 
 	if(es_write_int(fd, ESCAPE_MSG_MOVE) < 0
 	   || es_write_char(fd, direction) < 0){
