@@ -1,5 +1,5 @@
 // GGZap - GGZ quick start application for the KDE panel
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -39,16 +39,16 @@ int main(int argc, char **argv)
 
 	aboutData = new KAboutData("ggzap",
 		I18N_NOOP("GGZ Quick Launcher"),
-		"0.2",
+		"0.3",
 		I18N_NOOP("Tool to start GGZ games directly."),
 		KAboutData::License_GPL,
-		"(C) 2000 - 2002 Josef Spillner\n"
+		"(C) 2000 - 2003 Josef Spillner\n"
 		"The MindX Open Source Project",
 		I18N_NOOP("GGZap"),
 		"http://ggz.sourceforge.net/coreclients/ggzap",
-		"dr_maux@users.sourceforge.net");
+		"josef@ggzgamingzone.org");
 
-	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Author"), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
+	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Author"), "josef@ggzgamingzone.org", "http://mindx.sourceforge.net");
 
 	KCmdLineArgs::init(argc, argv, aboutData);
 	KCmdLineArgs::addCmdLineOptions(op);
