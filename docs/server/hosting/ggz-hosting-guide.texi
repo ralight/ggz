@@ -44,9 +44,10 @@ See http://ggz.sourceforge.net for the latest edition.
 @menu
 * Foreword:: General notes about this document
 * Game Servers:: History and Diversity
-* Preconditions:: How to prepare for a GGZ installation
+* Installation:: How to prepare and survive a GGZ installation
 * Internal Games:: Description of available games
 * External Games:: Additional games for GGZ
+* Other GGZ Servers:: How to install the Meta Server and TelGGZ
 * Server Maintaining:: Help for administrators
 @end menu
 
@@ -69,7 +70,7 @@ does its best to keep this guide always up-to-date and tries to avoid any
 errors and typos, but this is a very new topic and may take some time to
 stabilize.
 
-@node Game Servers, Preconditions, Foreword, Top
+@node Game Servers, Installation, Foreword, Top
 @chapter Game Servers
 @c @cindex Index entry for First Chapter
 
@@ -83,8 +84,8 @@ leave whenever they wish.
 GGZ does currently only support non-permanent games, but this issue will be
 resolved soon.
 
-@node Preconditions, Internal Games, Game Servers, Top
-@chapter Preconditions
+@node Installation, Internal Games, Game Servers, Top
+@chapter Installation
 @c @cindex Index entry for Second Chapter
 
 @section Overview
@@ -192,13 +193,15 @@ worth to be installed:
 @item Grubby, the GGZ chat bot
 @end itemize
 
+In a later chapter the details on how to install these are explained.
+
 @section Extended installation
 
 Some programs are only installed by very few people, mostly because they are
 very specialized. TelGGZ, the telnet wrapper which allows world-wide
 participation in GGZ chat sessions over telnet, is one such candidate.
 
-@node Internal Games, External Games, Preconditions, Top
+@node Internal Games, External Games, Installation, Top
 @chapter Internal Games
 @c @cindex Index entry for Third Chapter
 
@@ -239,7 +242,7 @@ done properly, lots of ghost tables will show up after some time.
 @subsection Reversi
 @subsection TicTacToe
 
-@node External Games, Server Maintaining, Internal Games, Top
+@node External Games, Other GGZ Servers, Internal Games, Top
 @chapter External Games
 @c @cindex Index entry for Fourth Chapter
 
@@ -262,9 +265,40 @@ Stalker is an SDL realtime game which uses UDP communication.
 
 @subsection T.E.G.
 
-@node Server Maintaining, (dir), External Games, Top
-@chapter Server Maintaining
+@node Other GGZ Servers, Server Maintaining, External Games, Top
+@chapter Other GGZ Servers
 @c @cindex Index entry for Fifth Chapter
+
+@section The GGZ Meta Server (ggzmetaserv)
+
+This is an XML based service which allows clients to connect to select between
+several servers, without having to manually configure all of them. Meta servers
+operate in networks and keep themselves consistant automatically, so that both
+a broken GGZ server and a broken GGZ Meta Server doesn't annoy that much.
+Meta servers can be installed quite forward, no further configuration is
+necessary - all of the initial setup is read from a single read-only
+configuration file named metaservconf.xml.
+However, during operation a cache file named $HOME/.ggz/metaserver.cache is
+created which contains the URIs of other meta servers, so the network can grow
+dynamically.
+
+@section The GGZ Telnet Wrapper (telggz)
+
+This server requires the ggzcore library to be installed on the server side,
+just like grubby. It also uses the meta server, which doesn't have to be
+available on the same host, but the metaserver.cache file must be available
+(see comments on the meta server).
+TelGGZ should be invoked over inetd on port 15688. This allows to connect to
+any GGZ server from all over the world, whereever one finds a telnet client.
+
+@section The GGZ Chat Bot (grubby)
+
+Grubby comes with its own manuals, including an administrator's manual and a
+user's manual.
+
+@node Server Maintaining, (dir), Other GGZ Servers, Top
+@chapter Server Maintaining
+@c @cindex Index entry for Sixth Chapter
 
 @section Security
 
