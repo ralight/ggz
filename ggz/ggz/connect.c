@@ -293,17 +293,17 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 
 	case MSG_UPDATE_PLAYERS:
 		connect_msg("[%s]\n", opcode_str[op]);
-		get_players(NULL, NULL);
+		ggz_get_players(NULL, NULL);
 		break;
 
 	case MSG_UPDATE_TYPES:
 		connect_msg("[%s]\n", opcode_str[op]);
-		get_types(NULL, NULL);
+		ggz_get_types(NULL, NULL);
 		break;
 
 	case MSG_UPDATE_TABLES:
 		connect_msg("[%s]\n", opcode_str[op]);
-		get_tables(NULL, NULL);
+		ggz_get_tables(NULL, NULL);
 		break;
 
 	case RSP_LOGIN_NEW:

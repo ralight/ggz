@@ -280,22 +280,22 @@ create_dlg_login (void)
                       GTK_SIGNAL_FUNC (gtk_widget_destroy),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (dlg_login), "realize",
-                      GTK_SIGNAL_FUNC (fill_defaults),
+                      GTK_SIGNAL_FUNC (login_fill_defaults),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (anon_radio), "toggled",
-                      GTK_SIGNAL_FUNC (anon_toggled),
+                      GTK_SIGNAL_FUNC (login_anon_toggled),
                       dlg_login);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
-                      GTK_SIGNAL_FUNC (input_options),
+                      GTK_SIGNAL_FUNC (login_input_options),
                       dlg_login);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
-                      GTK_SIGNAL_FUNC (start_session),
+                      GTK_SIGNAL_FUNC (login_start_session),
                       dlg_login);
   gtk_signal_connect_object (GTK_OBJECT (cancel_button), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              GTK_OBJECT (dlg_login));
   gtk_signal_connect (GTK_OBJECT (details_button), "clicked",
-                      GTK_SIGNAL_FUNC (show_details),
+                      GTK_SIGNAL_FUNC (login_show_details),
                       dlg_login);
 
   gtk_widget_grab_default (connect_button);
@@ -303,6 +303,7 @@ create_dlg_login (void)
 
   return dlg_login;
 }
+
 
 GtkWidget*
 create_dlg_details (void)
@@ -363,7 +364,7 @@ create_dlg_details (void)
   GTK_WIDGET_SET_FLAGS (cancel_button, GTK_CAN_DEFAULT);
 
   gtk_signal_connect (GTK_OBJECT (cancel_button), "clicked",
-                      GTK_SIGNAL_FUNC (cancel_details),
+                      GTK_SIGNAL_FUNC (details_cancel_details),
                       NULL);
 
   return dlg_details;
@@ -736,7 +737,7 @@ create_main_win (void)
   gtk_widget_show (label13);
   gtk_clist_set_column_widget (GTK_CLIST (table_tree), 6, label13);
   gtk_signal_connect(GTK_OBJECT (table_tree), "select_row", 
-			GTK_SIGNAL_FUNC(table_select_row_callback),
+			GTK_SIGNAL_FUNC(ggz_table_select_row_callback),
 			NULL);
 
   h_pane = gtk_hpaned_new ();
@@ -870,43 +871,43 @@ create_main_win (void)
                       GTK_SIGNAL_FUNC (gtk_main_quit),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (new_game2), "activate",
-                      GTK_SIGNAL_FUNC (get_game_options),
+                      GTK_SIGNAL_FUNC (ggz_get_game_options),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (join_game1), "activate",
-                      GTK_SIGNAL_FUNC (join_game),
+                      GTK_SIGNAL_FUNC (ggz_join_game),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (logout1), "activate",
-                      GTK_SIGNAL_FUNC (logout),
+                      GTK_SIGNAL_FUNC (ggz_logout),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (exit1), "activate",
                       GTK_SIGNAL_FUNC (exit_dlg),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (game_types1), "activate",
-                      GTK_SIGNAL_FUNC (get_types),
+                      GTK_SIGNAL_FUNC (ggz_get_types),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (players1), "activate",
-                      GTK_SIGNAL_FUNC (get_players),
+                      GTK_SIGNAL_FUNC (ggz_get_players),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (tables1), "activate",
-                      GTK_SIGNAL_FUNC (get_tables),
+                      GTK_SIGNAL_FUNC (ggz_get_tables),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (launch_button), "clicked",
-                      GTK_SIGNAL_FUNC (get_game_options),
+                      GTK_SIGNAL_FUNC (ggz_get_game_options),
                       main_win);
   gtk_signal_connect (GTK_OBJECT (join_button), "clicked",
-                      GTK_SIGNAL_FUNC (join_game),
+                      GTK_SIGNAL_FUNC (ggz_join_game),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (logout_button), "clicked",
-                      GTK_SIGNAL_FUNC (logout),
+                      GTK_SIGNAL_FUNC (ggz_logout),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (exit_button), "clicked",
                       GTK_SIGNAL_FUNC (exit_dlg),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (msg_entry), "activate",
-                      GTK_SIGNAL_FUNC (input_chat_msg),
+                      GTK_SIGNAL_FUNC (ggz_input_chat_msg),
                       msg_entry);
   gtk_signal_connect (GTK_OBJECT (msg_button), "clicked",
-                      GTK_SIGNAL_FUNC (input_chat_msg),
+                      GTK_SIGNAL_FUNC (ggz_input_chat_msg),
                       msg_entry);
 
   gtk_window_add_accel_group (GTK_WINDOW (main_win), accel_group);

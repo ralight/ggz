@@ -26,40 +26,31 @@
 #include <gtk/gtk.h>
 #include "dlg_exit.h"
 
-void anon_toggled(GtkWidget * widget, gpointer user_data);
+/*  Login dialog */
+void login_anon_toggled(GtkWidget * widget, gpointer user_data);
+void login_fill_defaults(GtkWidget * widget, gpointer user_data);
+void login_input_options(GtkButton * button, gpointer user_data);
+void login_input_chat_msg(GtkWidget * editable, gpointer user_data);
+void login_start_session(GtkButton * button, gpointer user_data);
+void login_show_details(GtkButton * button, gpointer user_data);
 
-void fill_defaults(GtkWidget * widget, gpointer user_data);
-
-void input_options(GtkButton * button, gpointer user_data);
-
-void input_chat_msg(GtkWidget * editable, gpointer user_data);
-
-void start_session(GtkButton * button, gpointer user_data);
-
-void show_details(GtkButton * button, gpointer user_data);
-
-void join_game(GtkButton * button, gpointer user_data);
-
-void get_game_options(GtkButton * button, gpointer user_data);
-
+/* Launch Game dialog */
 void launch_change_type(GtkCombo *type_combo, gpointer user_data);
-
 void launch_start_game(GtkWidget *btn_launch, gpointer user_data);
 
-void cancel_details(GtkButton * button, gpointer user_data);
+/* Details dialog */
+void details_cancel_details(GtkButton * button, gpointer user_data);
 
-void logout(GtkMenuItem * menuitem, gpointer user_data);
-
-void get_types(GtkMenuItem * menuitem, gpointer user_data);
-
-void get_players(GtkMenuItem * menuitem, gpointer user_data);
-
-void get_tables(GtkMenuItem * menuitem, gpointer user_data);
-
-void input_chat_msg(GtkWidget * editable, gpointer user_data);
-
-void table_select_row_callback(GtkWidget *widget,
-				gint row,
-				gint column,
-				GdkEventButton *event,
-				gpointer data);
+/* Main GGZ client window */
+void ggz_get_game_options(GtkButton * button, gpointer user_data);
+void ggz_join_game(GtkButton * button, gpointer user_data);
+void ggz_logout(GtkMenuItem * menuitem, gpointer user_data);
+void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data);
+void ggz_get_players(GtkMenuItem * menuitem, gpointer user_data);
+void ggz_get_tables(GtkMenuItem * menuitem, gpointer user_data);
+void ggz_input_chat_msg(GtkWidget * editable, gpointer user_data);
+void ggz_table_select_row_callback(GtkWidget *widget,
+					gint row,
+					gint column,
+					GdkEventButton *event,
+					gpointer data);
