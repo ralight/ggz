@@ -9,6 +9,7 @@ dnl Compiling Options
 dnl =====================
 AC_ARG_ENABLE(agrue,  [  --disable-agrue        Don't build AGRUE],, enable_agrue=yes)
 AC_ARG_ENABLE(grubby, [  --disable-grubby       Don't build GRUBBY],, enable_grubby=yes)
+AC_ARG_ENABLE(gensec, [  --disable-gensec       Don't build GenSecure],, enable_gensec=yes)
 AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
 
 
@@ -112,10 +113,19 @@ if test "$enable_grubby" = yes; then
     SUBDIRS="$SUBDIRS grubby"
 fi
 
+if test "$enable_gensec" = yes; then
+	SUBDIRS="$SUBDIRS gensecure"
+fi
 
 AC_SUBST(LDADD)
 AC_SUBST(grubby_LIBS)
 AC_SUBST(SUBDIRS)
 
-AC_OUTPUT(Makefile grubby/Makefile agrue/Makefile man/Makefile)
+AC_OUTPUT(Makefile
+		grubby/Makefile
+		agrue/Makefile
+		gensecure/Makefile
+		gensecure/io/Makefile
+		gensecure/src/Makefile
+		man/Makefile)
 
