@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 5013 2002-10-23 21:18:03Z jdorje $
+ * $Id: dlg_players.c 5037 2002-10-26 03:42:18Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -43,6 +43,7 @@ typedef struct playerlists {
 
 static PlayerLists *player_lists = NULL;
 static GtkWidget *dlg_players = NULL;
+static int num_entries = 0;
 
 static void update_player_clist(GtkWidget * player_clist);
 static void update_player_dialog(void);
@@ -86,6 +87,7 @@ static void update_player_clist(GtkWidget * player_clist)
 	gtk_clist_freeze(GTK_CLIST(player_clist));
 
 	gtk_clist_clear(GTK_CLIST(player_clist));
+	num_entries = 0;
 
 	/* Put all players on the list. */
 	num = ggzmod_get_num_seats(ggz);
@@ -118,6 +120,7 @@ static void update_player_clist(GtkWidget * player_clist)
 		}
 
 		gtk_clist_append(GTK_CLIST(player_clist), player);
+		num_entries++;
 
 		g_free(player[0]);
 	}
@@ -135,6 +138,7 @@ static void update_player_clist(GtkWidget * player_clist)
 		player[2] = seat.name;
 
 		gtk_clist_append(GTK_CLIST(player_clist), player);
+		num_entries++;
 	}
 
 	gtk_clist_thaw(GTK_CLIST(player_clist));
@@ -509,9 +513,13 @@ static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
 					     buttonevent->x,
 					     buttonevent->y,
 					     &row, &col);
+
+		/* Without this check, we could select a nonexistent row. */
+		if (row < 0 || row >= num_entries)
+			return FALSE;
+
 		gtk_clist_select_row(GTK_CLIST(player_clist), row, 0);
 
-		assert(row >= 0);
 		if (row < ggzmod_get_num_seats(ggz)) {
 			spectator = 0;
 			seat = ggzmod_get_seat(ggz, row);
