@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 3603 2002-03-20 05:14:13Z jdorje $
+ * $Id: types.h 3748 2002-04-05 07:47:36Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -27,6 +27,8 @@
 
 #ifndef __TYPES_H__
 #define __TYPES_H__
+
+#include <sys/types.h>
 
 #include "shared.h"
 
@@ -82,7 +84,7 @@ struct game_player_t {
 #ifdef DEBUG
 	int err_fd;
 #endif /* DEBUG */
-	int pid;
+	pid_t pid;
 
 	bid_data_t bid_data;	/* bidding information for this player */
 	
