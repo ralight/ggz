@@ -1,5 +1,5 @@
 # RPM Spec file for GGZ Gaming Zone common library
-# $Id: libggz.spec 4807 2002-10-08 00:08:24Z jdorje $
+# $Id: libggz.spec 4808 2002-10-08 00:11:33Z jdorje $
 
 Summary: Common library for the GGZ Gaming Zone
 Name: libggz
@@ -36,7 +36,7 @@ PATH="$PATH:/sbin" ldconfig
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS COPYING ChangeLog INSTALL NEWS README README.GGZ QuickStart.GGZ
+%doc AUTHORS COPYING ChangeLog INSTALL NEWS QuickStart.GGZ README README.GGZ
 
 /usr/include/ggz.h
 /usr/include/ggz_common.h
