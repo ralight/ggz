@@ -51,7 +51,7 @@
  */
 
 /* Our private functions and vars */
-static _ggzcore_list * file_parser(char *path);
+static _ggzcore_list * file_parser(char *path, int autocreate);
 static void parse_line(char *line, char **varname, char **varvalue);
 static int section_compare(void *a, void *b);
 static void *section_create(void *data);
@@ -483,14 +483,14 @@ void _ggzcore_confio_cleanup(void)
 }
 
 
-/* _ggzcore_confio_parse(path)
+/* _ggzcore_confio_parse(path, autocreate)
  *	Load up and parse a configuration file into a set of linked lists.
  *
  *	Returns:
  *	  - an integer handle which the caller can use to access the variables
  *	  - -1 on failure
  */
-int	_ggzcore_confio_parse(char *path)
+int	_ggzcore_confio_parse(char *path, int autocreate)
 {
 	static int		next_handle=0;
 
@@ -504,7 +504,7 @@ int	_ggzcore_confio_parse(char *path)
 						 _GGZCORE_LIST_ALLOW_DUPS);
 
 	/* Go do the dirty work and give us a section_list */
-	section_list = file_parser(path);
+	section_list = file_parser(path, autocreate);
 
 	/* Build our file list data entry */
 	file_data = malloc(sizeof(_ggzcore_confio_file));
@@ -528,13 +528,13 @@ int	_ggzcore_confio_parse(char *path)
 /* file_parser()
  *	Opens the file 'path', builds a section list and associated
  *	entry lists for all parsed variable entries, then closes the
- *	file.
+ *	file. If autocreate is true, create a file if it doesn't exist.
  *
  *	Returns:
  *	  - ptr to a section list
  *	  - NULL on failure
  */
-static _ggzcore_list * file_parser(char *path)
+static _ggzcore_list * file_parser(char *path, int autocreate)
 {
 	FILE			*c_file;
 	char			line[1024];
@@ -555,10 +555,14 @@ static _ggzcore_list * file_parser(char *path)
 		return NULL;
 
 	/* Open the input config file */
-	if((c_file = fopen(path, "r")) == NULL) {
-		printf("Unable to read file %s", path);
-		return NULL;
-	}
+  if((c_file = fopen(path, "r")) == NULL) {
+    /* File 'path' couldn't be opened to reading
+     * try opening it for writing (create a new file) */
+    if (!autocreate || (c_file = fopen(path, "w+")) == NULL) {
+      printf("Unable to read file %s", path);
+      return NULL;
+    }
+  }
 
 	/* Setup some temp storage to use */
 	if((e_data = malloc(sizeof(_ggzcore_confio_entry))) == NULL)

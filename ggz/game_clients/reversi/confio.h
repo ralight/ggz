@@ -53,7 +53,7 @@ typedef struct _ggzcore_confio_entry {
  **** Function prototypes
  ****/
 
-int _ggzcore_confio_parse		(char *path);
+int _ggzcore_confio_parse		(char *path, int autocreate);
 
 int _ggzcore_confio_commit		(int handle);
 

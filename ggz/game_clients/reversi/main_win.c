@@ -196,7 +196,7 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 
   // Loads configuration options
 	user_conf_path = g_strdup_printf("%s/.ggz/reversi-gtk.rc", getenv("HOME"));;
-  config_file = _ggzcore_confio_parse(user_conf_path);
+  config_file = _ggzcore_confio_parse(user_conf_path, 1);
   back_color_str[0] = _ggzcore_confio_read_string(config_file, "background color", "red", "29695");
   back_color_str[1] = _ggzcore_confio_read_string(config_file, "background color", "green", "27391");
   back_color_str[2] = _ggzcore_confio_read_string(config_file, "background color", "blue", "44031");
