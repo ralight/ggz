@@ -69,7 +69,6 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 {
 	QVBoxLayout *vbox1, *vbox2;
 	QHBoxLayout *hbox1, *hbox2, *hbox3, *hbox4;
-	QPushButton *button_ok, *button_cancel;
 	QLabel *label_host, *label_port, *label_name, *label_password;
 	QRadioButton *mode_normal, *mode_guest, *mode_firsttime;
 	QLabel *label_mode;
@@ -325,6 +324,8 @@ void KGGZConnect::slotAccept()
 {
 	slotSaveProfile();
 
+	button_ok->setEnabled(false);
+
 	if(input_host->text() != i18n("Automatic"))
 	{
 		close();
@@ -535,5 +536,10 @@ void KGGZConnect::slotWrite()
 	s = QString("query://ggz/connection/%1\n").arg(KGGZVERSION);
 	m_sock->writeBlock(s.latin1(), s.length());
 	m_sock->flush();
+}
+
+void KGGZConnect::showEvent(QShowEvent *e)
+{
+	button_ok->setEnabled(true);
 }
 

@@ -425,12 +425,13 @@ void KGGZ::timerEvent(QTimerEvent *e)
 
 void KGGZ::slotServerData()
 {
-	kggzserver->dataRead();
+	KGGZDEBUG("slotServerData\n");
+	if(kggzserver) kggzserver->dataRead();
 }
 
 void KGGZ::slotGameData()
 {
-	kggzgame->dataRead();
+	if(kggzgame) kggzgame->dataRead();
 }
 
 void KGGZ::listTables()
@@ -868,14 +869,16 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::negotiatefail:
 			KGGZDEBUG("negotiatefail\n");
-			KMessageBox::error(this, i18n("Could not connect, maybe the server version is incompatible."), i18n("Error!"));
 
-			detachServerCallbacks();
+			/*kggzserver->disconnect();*/
+			/*detachServerCallbacks();
 			delete kggzserver;
 			kggzserver = NULL;
-			//m_killserver = 1;
 			delete m_sn_server;
-			m_sn_server = NULL;
+			m_sn_server = NULL;*/
+			/*m_killserver = 1;*/
+
+			KMessageBox::error(this, i18n("Could not connect, maybe the server version is incompatible."), i18n("Error!"));
 
 			menuConnect();
 			break;

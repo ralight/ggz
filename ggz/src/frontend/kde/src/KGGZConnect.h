@@ -64,6 +64,10 @@ class KGGZConnect : public QWidget
 		// secure connection?
 		int optionSecure();
 
+	protected:
+		// Widget is about to be shown
+		void showEvent(QShowEvent *e);
+
 	protected slots:
 		// Accept the current input
 		void slotAccept();
@@ -130,6 +134,8 @@ class KGGZConnect : public QWidget
 		QWidget *m_pane;
 		// Meta server connection
 		QSocket *m_sock;
+		// Buttons
+		QPushButton *button_ok, *button_cancel;
 };
 
 #endif
