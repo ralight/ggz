@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_main.c 4891 2002-10-12 20:52:43Z jdorje $
+ * $Id: client_main.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This file contains the client function which is responsible for
  * handling the particulars of playing spades on the client side.  I
@@ -29,9 +29,9 @@
  */
 
 
-#include <config.h>		/* Site data config */
+#include <config.h>	/* Site data config */
 
-#include <signal.h>		/* for signal */
+#include <signal.h>	/* for signal */
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
@@ -61,7 +61,7 @@ static void initialize_about_dialog(void);
 int main(int argc, char *argv[])
 {
 	int i;
-	
+
 	initialize_debugging();
 
 	ggz_intl_init("spades");
@@ -71,10 +71,10 @@ int main(int argc, char *argv[])
 	signal(SIGPIPE, die);
 
 	AppInit();
-	
+
 	if (ParseOptions(argc, argv) < 0)
 		return -1;
-	
+
 	gtk_init(&argc, &argv);
 	initialize_about_dialog();
 
@@ -88,10 +88,10 @@ int main(int argc, char *argv[])
 	else
 		DisplayInit();
 
-	
+
 	/*DisplayInit();
-	  DisplayStatusLine( "Welcome to Gnu Gaming Zone Spades %s", VERSION );
-	*/
+	   DisplayStatusLine( "Welcome to Gnu Gaming Zone Spades %s", VERSION );
+	 */
 
 	gtk_main();
 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 			gameState.players[i] = NULL;
 		}
 	}
-	
+
 	cleanup_debugging();
 
 	return (0);
@@ -130,11 +130,11 @@ static void initialize_debugging(void)
 #endif
 	/* Debugging goes to ~/.ggz/netspades-gtk.debug */
 	char *file_name =
-		g_strdup_printf("%s/.ggz/netspades-gtk.debug", getenv("HOME"));
+	    g_strdup_printf("%s/.ggz/netspades-gtk.debug", getenv("HOME"));
 	ggz_debug_init(debugging_types, file_name);
 	g_free(file_name);
 
-	ggz_debug("main", "Starting NetSpades client.");	
+	ggz_debug("main", "Starting NetSpades client.");
 }
 
 
@@ -154,9 +154,10 @@ static void cleanup_debugging(void)
 
 static void initialize_about_dialog(void)
 {
-  char *header;
-  header = g_strdup_printf(_("GtkSpades Client Version %s\n"), VERSION);
-  init_dlg_about(_("About GtkSpades"), header,
-		 _("Copyright 1999: Brent Hendricks"));
-  g_free(header);
+	char *header;
+	header =
+	    g_strdup_printf(_("GtkSpades Client Version %s\n"), VERSION);
+	init_dlg_about(_("About GtkSpades"), header,
+		       _("Copyright 1999: Brent Hendricks"));
+	g_free(header);
 }

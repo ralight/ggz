@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_play.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: gtk_play.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This fils contains functions for creating and handling the playing area
  *
@@ -171,9 +171,9 @@ void CreatePlayArea(void)
 
 	/* Signals used to handle backing pixmap */
 	g_signal_connect(GTK_OBJECT(playArea->table), "expose_event",
-			   GTK_SIGNAL_FUNC(exposeTable), NULL);
+			 GTK_SIGNAL_FUNC(exposeTable), NULL);
 	g_signal_connect(GTK_OBJECT(playArea->table), "configure_event",
-			   GTK_SIGNAL_FUNC(configTable), NULL);
+			 GTK_SIGNAL_FUNC(configTable), NULL);
 
 
 	/* Line between table and hand */
@@ -190,12 +190,12 @@ void CreatePlayArea(void)
 
 	/* Signals used to handle backing pixmap */
 	g_signal_connect(GTK_OBJECT(playArea->hand), "expose_event",
-			   GTK_SIGNAL_FUNC(exposeHand), NULL);
+			 GTK_SIGNAL_FUNC(exposeHand), NULL);
 	g_signal_connect(GTK_OBJECT(playArea->hand), "configure_event",
-			   GTK_SIGNAL_FUNC(configHand), NULL);
+			 GTK_SIGNAL_FUNC(configHand), NULL);
 	g_signal_connect(GTK_OBJECT(playArea->hand),
-			   "button_press_event", GTK_SIGNAL_FUNC(ReadCard),
-			   NULL);
+			 "button_press_event", GTK_SIGNAL_FUNC(ReadCard),
+			 NULL);
 
 
 	/* Create bid input dial */
@@ -210,18 +210,18 @@ void CreatePlayArea(void)
 
 	gtk_widget_show(bid);
 	g_signal_connect(GTK_OBJECT(bid), "input",
-			   GTK_SIGNAL_FUNC(SpinInput), NULL);
+			 GTK_SIGNAL_FUNC(SpinInput), NULL);
 
 	g_signal_connect(GTK_OBJECT(bid), "output",
-			   GTK_SIGNAL_FUNC(SpinOutput), NULL);
+			 GTK_SIGNAL_FUNC(SpinOutput), NULL);
 
 
 	/* Make bid button */
 	playArea->bidButton = gtk_button_new_with_label(_("Send Bid"));
 	gtk_widget_set_sensitive(playArea->bidButton, FALSE);
 	g_signal_connect_swapped(GTK_OBJECT(playArea->bidButton),
-				  "clicked", GTK_SIGNAL_FUNC(ReadBid),
-				  GTK_OBJECT(bid));
+				 "clicked", GTK_SIGNAL_FUNC(ReadBid),
+				 GTK_OBJECT(bid));
 	gtk_widget_show(playArea->bidButton);
 
 
@@ -431,7 +431,7 @@ static gint ReadCard(GtkWidget * widget, GdkEventButton * event)
 {
 
 	int status;
-	int x = (int) (event->x);
+	int x = (int)(event->x);
 	int handIndex;
 
 	if (event->button == 1 && playArea->handBuf != NULL) {
@@ -448,7 +448,8 @@ static gint ReadCard(GtkWidget * widget, GdkEventButton * event)
 
 			/* Back up one if we get an "already played" */
 			while (handIndex > 0
-			       && gameState.hand[handIndex] == BLANK_CARD) {
+			       && gameState.hand[handIndex] ==
+			       BLANK_CARD) {
 				handIndex--;
 			}
 
@@ -472,7 +473,8 @@ static gint ReadCard(GtkWidget * widget, GdkEventButton * event)
 				break;
 			case -2:	/* Renege */
 				DisplayStatusLine
-				    (_("Hey, no cheating, you're not out yet"));
+				    (_
+				     ("Hey, no cheating, you're not out yet"));
 				break;
 			case 0:	/* Card ok */
 				DisplayPlayedCard(gameState.
@@ -482,7 +484,7 @@ static gint ReadCard(GtkWidget * widget, GdkEventButton * event)
 				ClearStatusLine();
 				break;
 			}
-		}		/* if it's our turn to play */
+		}	/* if it's our turn to play */
 	}
 	/* if left-click and drawing area != NULL */
 	return TRUE;

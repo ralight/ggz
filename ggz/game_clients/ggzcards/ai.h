@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/23/2002
  * Desc: AI for the client
- * $Id: ai.h 4787 2002-10-03 03:02:07Z jdorje $
+ * $Id: ai.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This file contains headers for the AI for the ggzcards client.  Drop in
  * any one of the server ai files, and it should work.  Useful for debugging.
@@ -31,7 +31,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifdef DEBUG			/* The client-side AI is just for debugging. */
+#ifdef DEBUG	/* The client-side AI is just for debugging. */
 
 #include "cards.h"
 
@@ -44,6 +44,6 @@ void alert_bid(int p, bid_t bid);
 void alert_play(int p, card_t card);
 void alert_trick(int winner);
 bid_t get_bid(bid_t * bid_choices, int bid_count);
-card_t get_play(int play_hand, bool *valid_plays);
+card_t get_play(int play_hand, bool * valid_plays);
 
 #endif

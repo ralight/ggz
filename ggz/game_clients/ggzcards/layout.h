@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.h 4180 2002-05-07 09:44:19Z jdorje $
+ * $Id: layout.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -35,7 +35,7 @@ typedef enum {
 	FACE_RIGHT
 } orientation_t;
 
-#include "drawcard.h"		/* FIXME */
+#include "drawcard.h"	/* FIXME */
 
 /* no more than 6 players will work */
 #define MAX_NUM_PLAYERS 6

@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.h 5013 2002-10-23 21:18:03Z jdorje $
+ * $Id: dlg_players.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -32,7 +32,7 @@
    if the game wants its own handlers for these events you should
    register them *after* calling this function, and then be sure to
    call update_player_lists when the events occur. */
-void init_player_list(GGZMod *ggzmod);
+void init_player_list(GGZMod * ggzmod);
 
 /* The player list will attach itself to the SEAT and SPECTATOR ggzmod
    events, but if you override them you should call this function instead.
@@ -51,9 +51,8 @@ void create_or_raise_dlg_players(void);
    seat.  Either seat or sseat must be defined (but not both).  button
    is the number of the button pressed to open the menu
    (see GdkEventButton::button) */
-void popup_player_menu(GGZSeat *seat,
-		       GGZSpectatorSeat *sseat,
-		       guint button);
+void popup_player_menu(GGZSeat * seat,
+		       GGZSpectatorSeat * sseat, guint button);
 
 /* Some more vaguely related functions.  Call do_sit() to sit down at the
    table, and do_stand() to stand up (obviously). */

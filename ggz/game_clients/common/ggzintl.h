@@ -2,7 +2,7 @@
  * File: ggzintl.h
  * Author: GGZ Development Team
  * Project: GGZ Gtk Games
- * $Id: ggzintl.h 3719 2002-04-03 17:18:31Z jdorje $
+ * $Id: ggzintl.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This file contains common functions and data for i18n of the
  * gtk-games package.
@@ -43,4 +43,3 @@
 void ggz_intl_init(const char *modulename);
 
 #endif /* GGZ_INTL_H */
-

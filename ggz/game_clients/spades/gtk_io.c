@@ -25,11 +25,11 @@
  */
 
 
-#include <config.h>		/* Site config data */
+#include <config.h>	/* Site config data */
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>		/* For atoi */
+#include <stdlib.h>	/* For atoi */
 #include <stdarg.h>
 #include <gtk/gtk.h>
 
@@ -64,7 +64,8 @@ guint id;
  */
 void DisplayInit(void)
 {
-	GtkWidget *mainBox, *splitBox, *vLine, *tauntArea, *menuBar/*, *tmp*/;
+	GtkWidget *mainBox, *splitBox, *vLine, *tauntArea,
+	    *menuBar /*, *tmp */ ;
 
 	/* Allocate playArea */
 	playArea = (playArea_t *) malloc(sizeof(playArea_t));
@@ -78,7 +79,7 @@ void DisplayInit(void)
 	gtk_window_set_title(GTK_WINDOW(playArea->window), "GtkSpades");
 
 	g_signal_connect(GTK_OBJECT(playArea->window), "delete_event",
-			   GTK_SIGNAL_FUNC(ExitDialog), NULL);
+			 GTK_SIGNAL_FUNC(ExitDialog), NULL);
 
 
 
@@ -95,14 +96,14 @@ void DisplayInit(void)
 	/* gtk_widget_show(vLine); */
 
 	/* Create Taunt Area */
-	tauntArea = CreateTauntArea(); 
+	tauntArea = CreateTauntArea();
 	/* gtk_widget_show(tauntArea); */
 
 	/* Status Bar */
 	statusBar = gtk_statusbar_new();
 	/*gtk_container_set_border_width( GTK_CONTAINER(statusBar), 10 ); */
-	id =
-	    gtk_statusbar_get_context_id(GTK_STATUSBAR(statusBar), "Main");
+	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusBar),
+					  "Main");
 	gtk_widget_show(statusBar);
 
 	/* Packing boxes */
@@ -129,8 +130,8 @@ void DisplayInit(void)
 }
 
 
-static GdkPixbuf *load_pixmap(GdkWindow *window, GdkBitmap **mask,
-	    GdkColor *trans, const char *name)
+static GdkPixbuf *load_pixmap(GdkWindow * window, GdkBitmap ** mask,
+			      GdkColor * trans, const char *name)
 {
 	char *fullpath;
 	GdkPixbuf *image;
@@ -138,7 +139,7 @@ static GdkPixbuf *load_pixmap(GdkWindow *window, GdkBitmap **mask,
 
 	fullpath = g_strdup_printf("%s/pixmaps/%s", GGZDATADIR, name);
 	image = gdk_pixbuf_new_from_file(fullpath, &error);
-	if(image == NULL)
+	if (image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);
 
@@ -159,7 +160,7 @@ void InitPixmaps(GtkWidget * window)
 	playArea->cards = load_pixmap(window->window, &mask,
 				      &style->bg[GTK_STATE_NORMAL],
 				      "cards-1.png");
-#if 0 /* Card backs aren't used */
+#if 0	/* Card backs aren't used */
 	playArea->cardbacks = load_pixmap(window->window, &mask,
 					  &style->bg[GTK_STATE_NORMAL],
 					  "cards-b1.png");
@@ -292,9 +293,9 @@ void DisplayCard(Card card, int y, int x)
 
 	gdk_pixbuf_render_to_drawable(playArea->cards, playArea->handBuf,
 				      playArea->hand->style->
-				      fg_gc[GTK_WIDGET_STATE(playArea->hand)],
-				      localX, localY, x, y,
-				      CARDWIDTH, CARDHEIGHT,
+				      fg_gc[GTK_WIDGET_STATE
+					    (playArea->hand)], localX,
+				      localY, x, y, CARDWIDTH, CARDHEIGHT,
 				      GDK_RGB_DITHER_NONE, 0, 0);
 
 #ifdef DEBUG
@@ -407,7 +408,8 @@ void DisplayScores(void)
 		gtk_label_set_text(GTK_LABEL(playArea->teams[i]), buf);
 		g_free(buf);
 
-		buf = g_strdup_printf(_("Score: % 4d"), gameState.scores[i]);
+		buf =
+		    g_strdup_printf(_("Score: % 4d"), gameState.scores[i]);
 		gtk_label_set_text(GTK_LABEL(playArea->scores[i]), buf);
 		g_free(buf);
 
@@ -465,7 +467,7 @@ void DisplayPrompt(void)
 		}
 		break;
 
-	}			/*switch( gameState.gameSegment ) */
+	}	/*switch( gameState.gameSegment ) */
 }
 
 

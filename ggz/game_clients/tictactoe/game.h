@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 4/11/00
  * Desc: TTT game functions
- * $Id: game.h 4441 2002-09-07 18:34:27Z jdorje $
+ * $Id: game.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -60,7 +60,7 @@ struct game_state_t {
 	int num;
 	int seats[2];
 	char names[2][17];
-	
+
 	/* TTT game specifics */
 	char board[9];
 	char state;

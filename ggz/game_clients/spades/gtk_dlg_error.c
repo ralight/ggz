@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <gtk_connect.h>
@@ -47,7 +47,7 @@ void DisplayMessage(char *message, gboolean quit)
 	GtkWidget *labelBox;
 	GtkWidget *okButton;
 
-	/*char *buf;*/
+	/*char *buf; */
 
 	window = gtk_dialog_new();
 	if (quit) {
@@ -76,11 +76,11 @@ void DisplayMessage(char *message, gboolean quit)
 
 	if (quit) {
 		g_signal_connect(GTK_OBJECT(okButton), "clicked",
-				   GTK_SIGNAL_FUNC(Disconnect), NULL);
+				 GTK_SIGNAL_FUNC(Disconnect), NULL);
 	}
 	g_signal_connect_swapped(GTK_OBJECT(okButton), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(window));
+				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 GTK_OBJECT(window));
 	gtk_widget_show(okButton);
 
 

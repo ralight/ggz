@@ -26,7 +26,6 @@
 #define HASTINGS_DLG_YESNO_H
 
 /* Show a question to be answered with yes or no */
-GtkWidget* create_dlg_yesno(const char *question);
+GtkWidget *create_dlg_yesno(const char *question);
 
 #endif
-

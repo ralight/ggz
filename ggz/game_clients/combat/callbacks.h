@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.h 5122 2002-10-30 22:12:20Z jdorje $
+ * $Id: callbacks.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -26,55 +26,45 @@
 
 
 gboolean
-on_main_window_configure_event         (GtkWidget       *widget,
-                                        GdkEventConfigure *event,
-                                        gpointer         user_data);
+on_main_window_configure_event(GtkWidget * widget,
+			       GdkEventConfigure * event,
+			       gpointer user_data);
 
 void
-on_main_window_draw                    (GtkWidget       *widget,
-                                        GdkRectangle    *area,
-                                        gpointer         user_data);
+on_main_window_draw(GtkWidget * widget,
+		    GdkRectangle * area, gpointer user_data);
 
 gboolean
-on_main_window_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_main_window_delete_event(GtkWidget * widget,
+			    GdkEvent * event, gpointer user_data);
 
 gboolean
-on_mainarea_expose_event               (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data);
+on_mainarea_expose_event(GtkWidget * widget,
+			 GdkEventExpose * event, gpointer user_data);
 
 void game_exit(void);
 
 
 gboolean
-main_window_exit                       (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+main_window_exit(GtkWidget * widget, GdkEvent * event, gpointer user_data);
 
 
 gboolean
-on_mainarea_configure_event            (GtkWidget       *widget,
-                                        GdkEventConfigure *event,
-                                        gpointer         user_data);
+on_mainarea_configure_event(GtkWidget * widget,
+			    GdkEventConfigure * event, gpointer user_data);
 
 gboolean
-on_mainarea_button_press_event         (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+on_mainarea_button_press_event(GtkWidget * widget,
+			       GdkEventButton * event, gpointer user_data);
 
-void
-callback_widget_set_enabled (char *name, gboolean mode);
+void callback_widget_set_enabled(char *name, gboolean mode);
 
-void
-on_send_setup_clicked                  (GtkButton       *button,
-                                        gpointer         user_data);
+void on_send_setup_clicked(GtkButton * button, gpointer user_data);
 
 void on_save_map_menu_activate(void);
 
 void on_show_game_options_activate(void);
 
-void change_show_enemy(GtkWidget *button, gpointer user_data);
+void change_show_enemy(GtkWidget * button, gpointer user_data);
 
 void on_remember_enemy_units_toggled(void);

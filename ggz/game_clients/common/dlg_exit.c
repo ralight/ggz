@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: dlg_exit.c 6268 2004-11-05 08:00:15Z jdorje $
+ * $Id: dlg_exit.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
@@ -34,7 +34,8 @@
 #include "dlg_exit.h"
 #include "ggzintl.h"
 
-static GtkWidget *make_exit_dialog(int can_return, GtkWidget *parent_window)
+static GtkWidget *make_exit_dialog(int can_return,
+				   GtkWidget * parent_window)
 {
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
@@ -46,12 +47,12 @@ static GtkWidget *make_exit_dialog(int can_return, GtkWidget *parent_window)
 	GtkWidget *cancelButton;
 	GtkWidget *image;
 	char *text;
-	
+
 	if (can_return) {
 		text = _("Are you sure you want to exit?");
 	} else {
 		text = _("Are you sure you want to exit?\n"
-	               "You will not be able to rejoin.");
+			 "You will not be able to rejoin.");
 	}
 
 	window = gtk_dialog_new();
@@ -98,8 +99,7 @@ static GtkWidget *make_exit_dialog(int can_return, GtkWidget *parent_window)
 	gtk_container_set_border_width(GTK_CONTAINER(dialog_action_area1),
 				       10);
 
-	gtk_box_pack_start(GTK_BOX(buttonBox), exitButton, TRUE, TRUE,
-			   0);
+	gtk_box_pack_start(GTK_BOX(buttonBox), exitButton, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(buttonBox), cancelButton, TRUE, TRUE,
 			   0);
 
@@ -118,25 +118,24 @@ static GtkWidget *make_exit_dialog(int can_return, GtkWidget *parent_window)
 	gtk_widget_show(buttonBox);
 	gtk_widget_show(dialog_vbox1);
 	gtk_widget_show(dialog_action_area1);
-	
-        return window;
+
+	return window;
 }
 
-void ggz_show_exit_dialog(int can_return, GtkWidget *parent_window)
+void ggz_show_exit_dialog(int can_return, GtkWidget * parent_window)
 {
 	static GtkWidget *dialog = NULL;
-	
+
 	if (dialog) {
 		gdk_window_show(dialog->window);
 		gdk_window_raise(dialog->window);
 	} else {
-        	dialog = make_exit_dialog(can_return, parent_window);
-		
+		dialog = make_exit_dialog(can_return, parent_window);
+
 		g_signal_connect(dialog, "destroy",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 				 &dialog);
-		
+
 		gtk_widget_show(dialog);
 	}
 }
-

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
- * $Id: game.h 4488 2002-09-09 04:32:04Z jdorje $
+ * $Id: game.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -224,7 +224,7 @@ void game_update_scores(void);
 
 
 // Graphic functions
-GtkWidget* create_main_win (void);  
+GtkWidget *create_main_win(void);
 void display_board(void);
-void game_status( const char *, ...);
+void game_status(const char *, ...);
 void draw_bg(GtkWidget *);

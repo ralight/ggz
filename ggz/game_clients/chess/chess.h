@@ -147,33 +147,33 @@
 
 /* Game info structure */
 struct chess_info {
-  /* Clock type 
-   * 0 -> No clock
-   * 1 -> Client
-   * 2 -> Server + Lag
-   * 3 -> Server*/
-  char clock_type;
-  /* Number of seconds for each player */
-  int seconds[2];
-  int t_seconds[2]; /* Only for the timer */
-  /* Current state */
-  char state;
-  /* Current turn */
-  int turn;
-  /* Game fd */
-  int fd;
-  /* Current seat */
-  char seat;
-  /* Server's protocol version */
-  char version;
-  /* Hold information about the players */
-  char assign[2];
-  char name[2][18];
-  /* Last moves */
-  char dest_x, dest_y;
-  char src_x, src_y;
-  /* Am I in check? */
-  char check;
+	/* Clock type 
+	 * 0 -> No clock
+	 * 1 -> Client
+	 * 2 -> Server + Lag
+	 * 3 -> Server*/
+	char clock_type;
+	/* Number of seconds for each player */
+	int seconds[2];
+	int t_seconds[2];	/* Only for the timer */
+	/* Current state */
+	char state;
+	/* Current turn */
+	int turn;
+	/* Game fd */
+	int fd;
+	/* Current seat */
+	char seat;
+	/* Server's protocol version */
+	char version;
+	/* Hold information about the players */
+	char assign[2];
+	char name[2][18];
+	/* Last moves */
+	char dest_x, dest_y;
+	char src_x, src_y;
+	/* Am I in check? */
+	char check;
 	/* Timer for client clock */
 	GTimer *timer;
 };

@@ -61,8 +61,9 @@ static char *label_color[6] = {
 	"RGB:FF/00/FF"
 };
 
-static gchar *colors[6] = {"red", "blue", "green",
-			   "yellow", "cyan", "purple"};
+static gchar *colors[6] = { "red", "blue", "green",
+	"yellow", "cyan", "purple"
+};
 
 static int BOARD_SIZE = 400;
 
@@ -85,9 +86,11 @@ static GdkPixbuf *display_load_pixmap(const char *name, int size)
 	GError *error = NULL;
 
 	fullpath = g_strdup_printf("%s/%s.svg", get_theme_dir(), name);
-	image = rsvg_pixbuf_from_file_at_size(fullpath, size, size, &error);
+	image =
+	    rsvg_pixbuf_from_file_at_size(fullpath, size, size, &error);
 	free(fullpath);
-	if (image) return image;
+	if (image)
+		return image;
 
 	fullpath = g_strdup_printf("%s/%s.png", get_theme_dir(), name);
 	error = NULL;
@@ -101,7 +104,7 @@ static GdkPixbuf *display_load_pixmap(const char *name, int size)
 	return image;
 }
 
-static void draw(GdkPixbuf *image, int x, int y, int w, int h)
+static void draw(GdkPixbuf * image, int x, int y, int w, int h)
 {
 	GdkGC *gc = draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)];
 
@@ -118,7 +121,7 @@ int display_init(void)
 	int i;
 
 	/* Create and display the main dialog */
-	if(dlg_main == NULL) {
+	if (dlg_main == NULL) {
 		dlg_main = create_dlg_main();
 		gtk_widget_show(dlg_main);
 	}
@@ -137,8 +140,7 @@ int display_init(void)
 
 	board_buf = gdk_pixmap_new(draw_area->window,
 				   draw_area->allocation.width,
-				   draw_area->allocation.height,
-				   -1);
+				   draw_area->allocation.height, -1);
 	gdk_draw_rectangle(board_buf,
 			   draw_area->style->black_gc, TRUE, 0, 0,
 			   draw_area->allocation.width,
@@ -152,7 +154,7 @@ int display_init(void)
 	for (i = 0; i < 6; i++) {
 		marble_img[i] = display_load_pixmap(colors[i], HOLE_SIZE);
 		if (marble_img[i] == NULL)
-			return -1;	  
+			return -1;
 	}
 
 	/* Setup the gc for our line drawing */
@@ -215,15 +217,15 @@ void display_resized(void)
 
 
 /* Redrsaw board areas that just got exposed */
-void display_handle_expose_event(GdkEventExpose *event)
+void display_handle_expose_event(GdkEventExpose * event)
 {
-	if(draw_area)
+	if (draw_area)
 		gdk_draw_pixmap(draw_area->window,
-			draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)],
-			board_buf,
-			event->area.x, event->area.y,
-			event->area.x, event->area.y,
-			event->area.width, event->area.height);
+				draw_area_style->
+				fg_gc[GTK_WIDGET_STATE(draw_area)],
+				board_buf, event->area.x, event->area.y,
+				event->area.x, event->area.y,
+				event->area.width, event->area.height);
 }
 
 
@@ -257,18 +259,19 @@ void display_refresh_board(void)
 			}
 
 			/* Plop a marble */
-			draw(img, GET_X(j), GET_Y(i), HOLE_SIZE, HOLE_SIZE);
+			draw(img, GET_X(j), GET_Y(i), HOLE_SIZE,
+			     HOLE_SIZE);
 		}
 
 	/* Draw our pixmap buffer */
 	gdk_draw_pixmap(draw_area->window,
-			draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)],
-			board_buf,
-			0, 0, 0, 0, w, h);
+			draw_area_style->
+			fg_gc[GTK_WIDGET_STATE(draw_area)], board_buf, 0,
+			0, 0, 0, w, h);
 }
 
 
-void display_handle_click_event(GdkEventButton *event)
+void display_handle_click_event(GdkEventButton * event)
 {
 	int row, col;
 
@@ -284,9 +287,9 @@ void display_handle_click_event(GdkEventButton *event)
 
 void display_statusbar(char *msg)
 {
-	static int firsttime=1;
+	static int firsttime = 1;
 
-	if(firsttime)
+	if (firsttime)
 		firsttime = 0;
 	else
 		gtk_statusbar_pop(GTK_STATUSBAR(statusbar), sb_context);
@@ -296,17 +299,17 @@ void display_statusbar(char *msg)
 
 
 /* Not really animation, just draws a line from src to dest */
-void display_show_path(GSList *path_list)
+void display_show_path(GSList * path_list)
 {
 	GdkRectangle update_rect;
 	struct node_t *node;
 	int x1, y1, x2, y2;
 	GSList *tmp;
-	static GSList *old_path_list=NULL;
+	static GSList *old_path_list = NULL;
 
-	if(old_path_list) {
+	if (old_path_list) {
 		tmp = old_path_list;
-		while(tmp) {
+		while (tmp) {
 			node = tmp->data;
 			x1 = GET_X(node->co) + HOLE_SIZE / 2;
 			y1 = GET_Y(node->ro) + HOLE_SIZE / 2;
@@ -314,22 +317,19 @@ void display_show_path(GSList *path_list)
 			y2 = GET_Y(node->rd) + HOLE_SIZE / 2;
 			g_free(node);
 
-			if(x1 <= x2)
-				update_rect.x = x1-1;
+			if (x1 <= x2)
+				update_rect.x = x1 - 1;
 			else
-				update_rect.x = x2-1;
-			if(y1 <= y2)
-				update_rect.y = y1-1;
+				update_rect.x = x2 - 1;
+			if (y1 <= y2)
+				update_rect.y = y1 - 1;
 			else
-				update_rect.y = y2-1;
+				update_rect.y = y2 - 1;
 
-			update_rect.height = abs(y1-y2) + 2;
-			update_rect.width = abs(x1-x2) + 2;
+			update_rect.height = abs(y1 - y2) + 2;
+			update_rect.width = abs(x1 - x2) + 2;
 
-			gdk_draw_line(board_buf,
-				      gc_line,
-				      x1, y1,
-				      x2, y2);
+			gdk_draw_line(board_buf, gc_line, x1, y1, x2, y2);
 
 			gtk_widget_draw(draw_area, &update_rect);
 
@@ -340,29 +340,26 @@ void display_show_path(GSList *path_list)
 	}
 
 	tmp = path_list;
-	while(tmp) {
+	while (tmp) {
 		node = tmp->data;
 		x1 = GET_X(node->co) + HOLE_SIZE / 2;
 		y1 = GET_Y(node->ro) + HOLE_SIZE / 2;
 		x2 = GET_X(node->cd) + HOLE_SIZE / 2;
 		y2 = GET_Y(node->rd) + HOLE_SIZE / 2;
 
-		if(x1 <= x2)
+		if (x1 <= x2)
 			update_rect.x = x1;
 		else
 			update_rect.x = x2;
-		if(y1 <= y2)
+		if (y1 <= y2)
 			update_rect.y = y1;
 		else
 			update_rect.y = y2;
 
-		update_rect.height = abs(y1-y2) + 1;
-		update_rect.width = abs(x1-x2) + 1;
+		update_rect.height = abs(y1 - y2) + 1;
+		update_rect.width = abs(x1 - x2) + 1;
 
-		gdk_draw_line(board_buf,
-			      gc_line,
-			      x1, y1,
-			      x2, y2);
+		gdk_draw_line(board_buf, gc_line, x1, y1, x2, y2);
 
 		gtk_widget_draw(draw_area, &update_rect);
 
@@ -377,7 +374,7 @@ void display_set_name(int p, char *p_name)
 {
 	int pos;
 
-	pos = homes[game.players-1][p];
+	pos = homes[game.players - 1][p];
 	gtk_label_set_text(GTK_LABEL(label[pos]), p_name);
 }
 
@@ -398,17 +395,18 @@ void display_set_label_colors(void)
 	label[5] = g_object_get_data(G_OBJECT(dlg_main), "p6_label");
 
 	sys_colormap = gdk_colormap_get_system();
-	for(i=0; i<6; i++) {
+	for (i = 0; i < 6; i++) {
 		GdkFont *font;
-		l_index = homes[game.players-1][i];
-		if(l_index == -1)
+		l_index = homes[game.players - 1][i];
+		if (l_index == -1)
 			break;
 		gdk_color_parse(label_color[i], &color);
-		gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
+		gdk_colormap_alloc_color(sys_colormap, &color, FALSE,
+					 TRUE);
 		label_style = gtk_style_new();
 		font = gdk_font_load("fixed");
 		gtk_style_set_font(label_style, font);
-		for(j=0; j<5; j++)
+		for (j = 0; j < 5; j++)
 			label_style->fg[j] = color;
 		gtk_widget_set_style(label[l_index], label_style);
 	}

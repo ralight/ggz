@@ -23,7 +23,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <gtk/gtk.h>
@@ -51,7 +51,7 @@ static GtkWidget *information;
 static struct hastings_map_t *maplist;
 static int mapcount;
 
-static void activated(GtkWidget *w, gpointer data)
+static void activated(GtkWidget * w, gpointer data)
 {
 	const gchar *s;
 	char buffer[256];
@@ -60,22 +60,24 @@ static void activated(GtkWidget *w, gpointer data)
 
 	s = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(list)->entry));
 
-	for(i = 0; i < mapcount; i++)
-	{
+	for (i = 0; i < mapcount; i++) {
 		map = maplist[i];
-		if(!strcmp(map.title, s))
-		{
+		if (!strcmp(map.title, s)) {
 			GtkTextBuffer *text_buf;
-			g_snprintf(buffer, sizeof(buffer), _("Name: %s\nAuthor:%s\nVersion:%s\nWidth:%i\nHeight:%i\nPlayers: unknown\n"),
-				map.title, map.author, map.version, map.width, map.height);
-			text_buf = gtk_text_view_get_buffer
-				(GTK_TEXT_VIEW(information));
+			g_snprintf(buffer, sizeof(buffer),
+				   _
+				   ("Name: %s\nAuthor:%s\nVersion:%s\nWidth:%i\nHeight:%i\nPlayers: unknown\n"),
+				   map.title, map.author, map.version,
+				   map.width, map.height);
+			text_buf =
+			    gtk_text_view_get_buffer(GTK_TEXT_VIEW
+						     (information));
 			gtk_text_buffer_set_text(text_buf, buffer, -1);
 		}
 	}
 }
 
-static void selected(GtkWidget *w, gpointer data)
+static void selected(GtkWidget * w, gpointer data)
 {
 	const gchar *s;
 
@@ -104,9 +106,11 @@ GtkWidget *selector()
 
 	label = gtk_label_new(_("Please select a map:"));
 
-	information = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
+	information =
+	    gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(information), FALSE);
-	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(information), FALSE);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(information),
+					 FALSE);
 
 	button = gtk_button_new_with_label("Use map");
 
@@ -117,28 +121,29 @@ GtkWidget *selector()
 	maplist = malloc(count * sizeof(struct hastings_map_t));
 	mapcount = count;
 
-	for(i = 0; i < count; i++)
-	{
+	for (i = 0; i < count; i++) {
 		ggz_read_string_alloc(game.fd, &maplist[i].title);
 		ggz_read_string_alloc(game.fd, &maplist[i].author);
 		ggz_read_string_alloc(game.fd, &maplist[i].version);
 		ggz_read_string_alloc(game.fd, &maplist[i].graphics);
 		ggz_read_int(game.fd, &maplist[i].width);
 		ggz_read_int(game.fd, &maplist[i].height);
-		for(j = 0; j < maplist[i].height; j++)
+		for (j = 0; j < maplist[i].height; j++)
 			ggz_readn(game.fd, &maplist[i].board[j], 30);
-		for(j = 0; j < maplist[i].height; j++)
+		for (j = 0; j < maplist[i].height; j++)
 			ggz_readn(game.fd, &maplist[i].boardmap[j], 30);
 	}
 
-	for(i = 0; i < mapcount; i++)
+	for (i = 0; i < mapcount; i++)
 		maps = g_list_append(maps, maplist[i].title);
 	gtk_combo_set_popdown_strings(GTK_COMBO(list), maps);
 	g_list_free(maps);
 
-	g_signal_connect(GTK_OBJECT(GTK_COMBO(list)->entry), "changed", GTK_SIGNAL_FUNC(activated), NULL);
-	g_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(selected), window);
-	/*g_signal_connect_swapped(G_OBJECT(button), "clicked", G_CALLBACK(destroyed), G_OBJECT(window));*/
+	g_signal_connect(GTK_OBJECT(GTK_COMBO(list)->entry), "changed",
+			 GTK_SIGNAL_FUNC(activated), NULL);
+	g_signal_connect(GTK_OBJECT(button), "clicked",
+			 GTK_SIGNAL_FUNC(selected), window);
+	/*g_signal_connect_swapped(G_OBJECT(button), "clicked", G_CALLBACK(destroyed), G_OBJECT(window)); */
 	activated(NULL, NULL);
 
 	gtk_box_pack_start(GTK_BOX(box), label, TRUE, TRUE, 0);
@@ -157,4 +162,3 @@ GtkWidget *selector()
 
 	return window;
 }
-

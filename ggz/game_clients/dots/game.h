@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Routines to manipulate the CtD board
- * $Id: game.h 2877 2001-12-11 07:18:13Z jdorje $
+ * $Id: game.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -67,9 +67,9 @@
 
 /* Exposed variables */
 extern guint8 board_width, board_height;
-extern guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
-extern guint8 horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
-extern gint8 owners_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT-1];
+extern guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT - 1];
+extern guint8 horz_board[MAX_BOARD_WIDTH - 1][MAX_BOARD_HEIGHT];
+extern gint8 owners_board[MAX_BOARD_WIDTH - 1][MAX_BOARD_HEIGHT - 1];
 extern GdkColor fg_color, bg_color, p1_color, p2_color;
 
 /* Global functions exported from game.c */

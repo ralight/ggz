@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_menu.c 4925 2002-10-14 23:29:39Z jdorje $
+ * $Id: gtk_menu.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This file contains functions for creating and handling menus
  *
@@ -25,7 +25,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <gtk/gtk.h>
@@ -55,20 +55,20 @@ GtkWidget *CreateMenus(GtkWidget * window)
 	GtkAccelGroup *accelGroup;
 	GtkWidget *menuBar, *menuItem;
 	GtkItemFactoryEntry menuItems[] = {
-	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Table/Player _list"), "<ctrl>L",
-	   create_or_raise_dlg_players, 0, NULL},
-	  {_("/Table/_Sync with server"), "<ctrl>S", NULL, 0, NULL},
-	  {_("/Table/E_xit"), "<ctrl>X", ExitDialog, 0, NULL},
-	  {_("/_Game"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Game/_New"), NULL, OptionsDialog, 0, NULL},
-	  {_("/Game/_End"), NULL, DisconnectDialog, 0, NULL},
-	  {_("/Game/_Statistics"), NULL, StatDialog, 0, NULL},
-	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-	  {_("/Help/_About"), "<ctrl>A",
-	   create_or_raise_dlg_about, 0, NULL},
+		{_("/_Table"), NULL, NULL, 0, "<Branch>"},
+		{_("/Table/Player _list"), "<ctrl>L",
+		 create_or_raise_dlg_players, 0, NULL},
+		{_("/Table/_Sync with server"), "<ctrl>S", NULL, 0, NULL},
+		{_("/Table/E_xit"), "<ctrl>X", ExitDialog, 0, NULL},
+		{_("/_Game"), NULL, NULL, 0, "<Branch>"},
+		{_("/Game/_New"), NULL, OptionsDialog, 0, NULL},
+		{_("/Game/_End"), NULL, DisconnectDialog, 0, NULL},
+		{_("/Game/_Statistics"), NULL, StatDialog, 0, NULL},
+		{_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
+		{_("/Help/_About"), "<ctrl>A",
+		 create_or_raise_dlg_about, 0, NULL},
 #if 0
-	  {_("/Help/_GamePlay"), NULL, HelpDialog, 0, NULL},
+		{_("/Help/_GamePlay"), NULL, HelpDialog, 0, NULL},
 #endif
 	};
 
@@ -83,7 +83,8 @@ GtkWidget *CreateMenus(GtkWidget * window)
 	menuBar = gtk_item_factory_get_widget(playArea->menu, "<main>");
 
 	menuItem =
-	    gtk_item_factory_get_widget(playArea->menu, _("<main>/Game/End"));
+	    gtk_item_factory_get_widget(playArea->menu,
+					_("<main>/Game/End"));
 	gtk_widget_set_sensitive(menuItem, FALSE);
 
 	menuItem = gtk_item_factory_get_widget(playArea->menu,

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Callback functions for the main Gtk window
- * $Id: cb_main.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: cb_main.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -47,58 +47,52 @@ static void try_to_quit(void)
 {
 
 	/* In CHOOSE state, exiting means NO */
-	if(game.state == DOTS_STATE_CHOOSE)
+	if (game.state == DOTS_STATE_CHOOSE)
 		handle_newgame(FALSE);
 
 	/* Are you sure? / Cleanup */
 	/* See also on_mnu_exit_activate */
 	if (game.state == DOTS_STATE_CHOOSE ||
-	    game.state == DOTS_STATE_INIT ||
-	    game.state == DOTS_STATE_WAIT)
+	    game.state == DOTS_STATE_INIT || game.state == DOTS_STATE_WAIT)
 		gtk_main_quit();
 	else
 		ggz_show_exit_dialog(1, main_win);
 }
 
-void
-on_mnu_exit_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	try_to_quit();
 }
 
 
 void
-on_mnu_preferences_activate            (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-	if(dlg_pref != NULL) {
+	if (dlg_pref != NULL) {
 		gdk_window_show(dlg_pref->window);
 		gdk_window_raise(dlg_pref->window);
 	} else {
 		dlg_pref = create_dlg_pref();
 		g_signal_connect(GTK_OBJECT(dlg_pref),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				   &dlg_pref);
+				 "destroy",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				 &dlg_pref);
 		gtk_widget_show(dlg_pref);
 	}
 }
 
 
 gboolean
-on_window_delete_event                 (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_window_delete_event(GtkWidget * widget,
+		       GdkEvent * event, gpointer user_data)
 {
 	try_to_quit();
 	return TRUE;
 }
 
 gboolean
-on_board_expose_event                  (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data)
+on_board_expose_event(GtkWidget * widget,
+		      GdkEventExpose * event, gpointer user_data)
 {
 	board_handle_expose_event(widget, event);
 	return FALSE;
@@ -106,11 +100,10 @@ on_board_expose_event                  (GtkWidget       *widget,
 
 
 gboolean
-on_board_button_press_event            (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
+on_board_button_press_event(GtkWidget * widget,
+			    GdkEventButton * event, gpointer user_data)
 {
-	if(event->button == 1)
+	if (event->button == 1)
 		board_handle_click(widget, event);
 
 	return TRUE;
@@ -118,9 +111,8 @@ on_board_button_press_event            (GtkWidget       *widget,
 
 
 gboolean
-on_p1b_expose_event                    (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data)
+on_p1b_expose_event(GtkWidget * widget,
+		    GdkEventExpose * event, gpointer user_data)
 {
 	board_handle_pxb_expose();
 	return FALSE;
@@ -128,11 +120,9 @@ on_p1b_expose_event                    (GtkWidget       *widget,
 
 
 gboolean
-on_p2b_expose_event                    (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data)
+on_p2b_expose_event(GtkWidget * widget,
+		    GdkEventExpose * event, gpointer user_data)
 {
 	board_handle_pxb_expose();
 	return FALSE;
 }
-

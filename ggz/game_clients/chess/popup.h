@@ -22,16 +22,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-GtkWidget* create_draw_dialog (void);
-GtkWidget* create_clock_dialog (void);
-GtkWidget* create_promote_dialog (void);
+GtkWidget *create_draw_dialog(void);
+GtkWidget *create_clock_dialog(void);
+GtkWidget *create_promote_dialog(void);
 
 /* Callbacks */
 
-void
-clock_option_select                    (GtkButton       *button,
-                                        gpointer         user_data);
+void clock_option_select(GtkButton * button, gpointer user_data);
 
-void
-clock_option_cancel                    (GtkButton       *button,
-                                        gpointer         user_data);
+void clock_option_cancel(GtkButton * button, gpointer user_data);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.h 4086 2002-04-26 19:37:51Z jdorje $
+ * $Id: cards.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -47,7 +47,7 @@ typedef enum {
 	 *  which has a number.  For storage purposes, the higher
 	 *  side will be considered the "suit" and the lower side the
 	 *  "face". */
-	CARDSET_DOMINOES	
+	CARDSET_DOMINOES
 } cardset_type_t;
 
 void set_cardset_type(cardset_type_t cardset_type);
@@ -120,14 +120,14 @@ int is_valid_card(card_t card);
 typedef struct hand_t {
 	/* the size of the hand, when it's full.  This may or may not
 	   actually be used (client-side it is currently unused). */
-	int full_hand_size;	
-	
+	int full_hand_size;
+
 	/* the current size of the hand (number of cards currently in
 	   the hand. */
-	int hand_size;	
-		
+	int hand_size;
+
 	/* A variable-sized array containing the cards present. */
-	card_t *cards;		
+	card_t *cards;
 } hand_t;
 
 
@@ -135,7 +135,7 @@ typedef struct hand_t {
    arbitrary data structure for it */
 /* This shouldn't really go here, but... */
 typedef union bid_t {
-	int bid;	/* DO NOT USE */
+	int bid;		/* DO NOT USE */
 	struct special_bid_struct {
 		/* this can be used for many different games that have
 		   unusual but similar bidding. Different games may use it

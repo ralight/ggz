@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 6285 2004-11-06 07:00:27Z jdorje $
+ * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -75,9 +75,9 @@ static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 	ggzmod_dispatch(mod);
 }
 
-static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
 {
-	int fd = *(int*)data;
+	int fd = *(int *)data;
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	game.fd = fd;
@@ -87,7 +87,7 @@ static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
 int main(int argc, char *argv[])
 {
 	char *filename;
-	
+
 	initialize_debugging();
 
 	ggz_intl_init("dots");
@@ -96,17 +96,18 @@ int main(int argc, char *argv[])
 	initialize_about_dialog();
 
 	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
+			   &handle_ggzmod_server);
 	init_player_list(mod);
 
 	ggzmod_connect(mod);
 
-	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz, NULL);
+	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz,
+		      NULL);
 
 	filename = g_strdup_printf("%s/.ggz/dots-gtk.rc", getenv("HOME"));
 	conf_handle = ggz_conf_parse(filename,
-					   GGZ_CONF_RDWR |
-					   GGZ_CONF_CREATE);
+				     GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 	g_free(filename);
 
 	game.state = DOTS_STATE_INIT;
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
 	if (ggzmod_disconnect(mod) < 0)
 		return -2;
 	ggzmod_free(mod);
-		
+
 	cleanup_debugging();
 
 	return 0;
@@ -135,11 +136,11 @@ static void initialize_debugging(void)
 #endif
 	/* Debugging goes to ~/.ggz/dots-gtk.debug */
 	char *file_name =
-		g_strdup_printf("%s/.ggz/dots-gtk.debug", getenv("HOME"));
+	    g_strdup_printf("%s/.ggz/dots-gtk.debug", getenv("HOME"));
 	ggz_debug_init(debugging_types, file_name);
 	g_free(file_name);
 
-	ggz_debug("main", "Starting dots client.");	
+	ggz_debug("main", "Starting dots client.");
 }
 
 
@@ -161,90 +162,93 @@ static void initialize_about_dialog(void)
 {
 	char *header;
 	const char *content =
-	  _("Authors:\n"
-	    "        Gtk+ Client:\n"
-	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
-	    "\n"
-	    "        Windows 9X Client:\n"
-	    "            Doug Hudson  <djh@users.sourceforge.net>\n"
-	    "\n"
-	    "        Game Server:\n"
-	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
-	    "\n"
-	    "Website:\n"
-	    "        http://www.ggzgamingzone.org/games/dots/");
+	    _("Authors:\n"
+	      "        Gtk+ Client:\n"
+	      "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	      "\n"
+	      "        Windows 9X Client:\n"
+	      "            Doug Hudson  <djh@users.sourceforge.net>\n"
+	      "\n"
+	      "        Game Server:\n"
+	      "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	      "\n"
+	      "Website:\n"
+	      "        http://www.ggzgamingzone.org/games/dots/");
 
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"
-				   "Connect The Dots Version %s"), VERSION);
+				   "Connect The Dots Version %s"),
+				 VERSION);
 	init_dlg_about(_("About Connect the Dots"), header, content);
 	g_free(header);
 }
 
 
-char *opstr[] = { "DOTS_MSG_SEAT",   "DOTS_MSG_PLAYERS",  "DOTS_MSG_MOVE_H",
-		  "DOTS_MSG_MOVE_V", "DOTS_MSG_GAMEOVER", "DOTS_REQ_MOVE",
-		  "DOTS_RSP_MOVE",   "DOTS_SND_SYNC",     "DOTS_MSG_OPTIONS" };
+char *opstr[] = { "DOTS_MSG_SEAT", "DOTS_MSG_PLAYERS", "DOTS_MSG_MOVE_H",
+	"DOTS_MSG_MOVE_V", "DOTS_MSG_GAMEOVER", "DOTS_REQ_MOVE",
+	"DOTS_RSP_MOVE", "DOTS_SND_SYNC", "DOTS_MSG_OPTIONS"
+};
 
-static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+static void game_handle_io(gpointer data, gint source,
+			   GdkInputCondition cond)
 {
 	int op, status;
 
-	if(ggz_read_int(game.fd, &op) < 0) {
+	if (ggz_read_int(game.fd, &op) < 0) {
 		/* FIXME: do something here... */
 		return;
 	}
 
 	status = 0;
-	
+
 	ggz_debug("main", "Received opcode %s", opstr[op]);
-	
-	switch(op) {
-		case DOTS_MSG_SEAT:
-			status = get_seat();
-			break;
-		case DOTS_MSG_PLAYERS:
-			status = get_players();
-			if(game.state != DOTS_STATE_CHOOSE)
-				game.state = DOTS_STATE_WAIT;
-			break;
-		case DOTS_MSG_OPTIONS:
-			if((status = get_options()) == 0)
-				board_init(board_width, board_height);
-			break;
-		case DOTS_REQ_MOVE:
-			/* We ignore this unless we've seen an opponents move */
-			/*if(game.state != DOTS_STATE_OPPONENT) {*/
-				game.state = DOTS_STATE_MOVE;
-				statusbar_message("Your turn to move");
-				game.move = game.me;
-				break;
-			/*}*/
-		case DOTS_MSG_MOVE_H:
-			status = board_opponent_move(1);
-			break;
-		case DOTS_MSG_MOVE_V:
-			status = board_opponent_move(0);
-			break;
-		case DOTS_RSP_MOVE:
-			status = get_move_status();
-			break;
-		case DOTS_MSG_GAMEOVER:
-			status = get_gameover_status();
-			break;
-		case DOTS_SND_SYNC:
-			status = get_sync_info();
-			break;
-		case DOTS_REQ_OPTIONS:
-			opt_dialog = create_dlg_opt();
-			gtk_widget_show(opt_dialog);
-			break;
-		default:
-			ggz_error_msg("Unknown opcode received %d", op);
-			status = -1;
-			break;
+
+	switch (op) {
+	case DOTS_MSG_SEAT:
+		status = get_seat();
+		break;
+	case DOTS_MSG_PLAYERS:
+		status = get_players();
+		if (game.state != DOTS_STATE_CHOOSE)
+			game.state = DOTS_STATE_WAIT;
+		break;
+	case DOTS_MSG_OPTIONS:
+		if ((status = get_options()) == 0)
+			board_init(board_width, board_height);
+		break;
+	case DOTS_REQ_MOVE:
+		/* We ignore this unless we've seen an opponents move */
+		/*if(game.state != DOTS_STATE_OPPONENT) { */
+		game.state = DOTS_STATE_MOVE;
+		statusbar_message("Your turn to move");
+		game.move = game.me;
+		break;
+		/*} */
+	case DOTS_MSG_MOVE_H:
+		status = board_opponent_move(1);
+		break;
+	case DOTS_MSG_MOVE_V:
+		status = board_opponent_move(0);
+		break;
+	case DOTS_RSP_MOVE:
+		status = get_move_status();
+		break;
+	case DOTS_MSG_GAMEOVER:
+		status = get_gameover_status();
+		break;
+	case DOTS_SND_SYNC:
+		status = get_sync_info();
+		break;
+	case DOTS_REQ_OPTIONS:
+		opt_dialog = create_dlg_opt();
+		gtk_widget_show(opt_dialog);
+		break;
+	default:
+		ggz_error_msg("Unknown opcode received %d", op);
+		status = -1;
+		break;
 	}
 
-	if(status < 0) {
+	if (status < 0) {
 		ggz_error_msg("Ouch!");
 		close(game.fd);
 		exit(-1);
@@ -257,21 +261,21 @@ void game_init(void)
 	int i, j;
 	GtkWidget *l1, *l2;
 
-	for(i=0; i<MAX_BOARD_WIDTH; i++)
-		for(j=0; j<MAX_BOARD_HEIGHT-1; j++)
+	for (i = 0; i < MAX_BOARD_WIDTH; i++)
+		for (j = 0; j < MAX_BOARD_HEIGHT - 1; j++)
 			vert_board[i][j] = 0;
-	for(i=0; i<MAX_BOARD_WIDTH-1; i++)
-		for(j=0; j<MAX_BOARD_HEIGHT; j++)
+	for (i = 0; i < MAX_BOARD_WIDTH - 1; i++)
+		for (j = 0; j < MAX_BOARD_HEIGHT; j++)
 			horz_board[i][j] = 0;
-	for(i=0; i<MAX_BOARD_WIDTH-1; i++)
-		for(j=0; j<MAX_BOARD_HEIGHT-1; j++)
+	for (i = 0; i < MAX_BOARD_WIDTH - 1; i++)
+		for (j = 0; j < MAX_BOARD_HEIGHT - 1; j++)
 			owners_board[i][j] = -1;
 	game.score[0] = 0;
 	game.score[1] = 0;
 	game.got_players = 0;
 
 	/* Setup the main board now */
-	if(main_win == NULL)
+	if (main_win == NULL)
 		main_win = create_dlg_main();
 	l1 = g_object_get_data(G_OBJECT(main_win), "lbl_score0");
 	l2 = g_object_get_data(G_OBJECT(main_win), "lbl_score1");
@@ -286,9 +290,9 @@ void game_init(void)
 
 int send_options(void)
 {
-	if(ggz_write_int(game.fd, DOTS_SND_OPTIONS) < 0
-	   || ggz_write_char(game.fd, board_width) < 0
-	   || ggz_write_char(game.fd, board_height) < 0)
+	if (ggz_write_int(game.fd, DOTS_SND_OPTIONS) < 0
+	    || ggz_write_char(game.fd, board_width) < 0
+	    || ggz_write_char(game.fd, board_height) < 0)
 		return -1;
 	return 0;
 }
@@ -296,8 +300,8 @@ int send_options(void)
 
 static int get_options(void)
 {
-	if(ggz_read_char(game.fd, &board_width) < 0
-	   || ggz_read_char(game.fd, &board_height) < 0)
+	if (ggz_read_char(game.fd, &board_width) < 0
+	    || ggz_read_char(game.fd, &board_height) < 0)
 		return -1;
 	return 0;
 }
@@ -305,9 +309,9 @@ static int get_options(void)
 
 static int get_seat(void)
 {
-	if(ggz_read_int(game.fd, &game.me) < 0)
+	if (ggz_read_int(game.fd, &game.me) < 0)
 		return -1;
-	game.opponent = (game.me+1)%2;
+	game.opponent = (game.me + 1) % 2;
 	return 0;
 }
 
@@ -321,26 +325,32 @@ static int get_players(void)
 	frame[0] = g_object_get_data(G_OBJECT(main_win), "frame_left");
 	frame[1] = g_object_get_data(G_OBJECT(main_win), "frame_right");
 
-	for(i=0; i<2; i++) {
-		if(ggz_read_int(game.fd, &game.seats[i]) < 0)
+	for (i = 0; i < 2; i++) {
+		if (ggz_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
-		if(game.seats[i] != GGZ_SEAT_OPEN) {
-			if(ggz_read_string(game.fd, (char*)&game.names[i], 17)<0)
+		if (game.seats[i] != GGZ_SEAT_OPEN) {
+			if (ggz_read_string
+			    (game.fd, (char *)&game.names[i], 17) < 0)
 				return -1;
 			temp = g_strdup_printf("   %s   ", game.names[i]);
-			gtk_frame_set_label(GTK_FRAME(frame[i]), game.names[i]);
+			gtk_frame_set_label(GTK_FRAME(frame[i]),
+					    game.names[i]);
 			g_free(temp);
-			if(i != game.me) {
-				temp = g_strdup_printf(_("%s joined the table"),
-							game.names[i]);
+			if (i != game.me) {
+				temp =
+				    g_strdup_printf(_
+						    ("%s joined the table"),
+						    game.names[i]);
 				statusbar_message(temp);
 				g_free(temp);
 			}
 		} else {
-			gtk_frame_set_label(GTK_FRAME(frame[i]), _("Empty Seat"));
-			if(game.got_players) {
-				temp = g_strdup_printf(_("%s left the table"),
-							game.names[i]);
+			gtk_frame_set_label(GTK_FRAME(frame[i]),
+					    _("Empty Seat"));
+			if (game.got_players) {
+				temp =
+				    g_strdup_printf(_("%s left the table"),
+						    game.names[i]);
 				statusbar_message(temp);
 				g_free(temp);
 			}
@@ -360,16 +370,16 @@ static int get_move_status(void)
 	int i;
 	char t_x, t_y;
 
-	if(ggz_read_char(game.fd, &status) < 0
-	   || ggz_read_char(game.fd, &t_s) < 0)
+	if (ggz_read_char(game.fd, &status) < 0
+	    || ggz_read_char(game.fd, &t_s) < 0)
 		return -1;
-	for(i=0; i<t_s; i++) {
-		if(ggz_read_char(game.fd, &t_x) < 0
-		   || ggz_read_char(game.fd, &t_y) < 0)
+	for (i = 0; i < t_s; i++) {
+		if (ggz_read_char(game.fd, &t_x) < 0
+		    || ggz_read_char(game.fd, &t_y) < 0)
 			return -1;
 	}
 
-	if(status < 0)
+	if (status < 0)
 		ggz_error_msg(_("Client cheater!"));
 
 	return (int)status;
@@ -378,31 +388,31 @@ static int get_move_status(void)
 
 static int get_sync_info(void)
 {
-	int i,j;
+	int i, j;
 	gchar *text;
 	GtkWidget *l1, *l2;
 
-	if(ggz_read_char(game.fd, &game.move) < 0
-	   || ggz_read_int(game.fd, &game.score[0]) < 0
-	   || ggz_read_int(game.fd, &game.score[1]) < 0)
+	if (ggz_read_char(game.fd, &game.move) < 0
+	    || ggz_read_int(game.fd, &game.score[0]) < 0
+	    || ggz_read_int(game.fd, &game.score[1]) < 0)
 		return -1;
-	for(i=0; i<board_width; i++)
-		for(j=0; j<board_height-1; j++)
-			if(ggz_read_char(game.fd, &vert_board[i][j]) < 0)
+	for (i = 0; i < board_width; i++)
+		for (j = 0; j < board_height - 1; j++)
+			if (ggz_read_char(game.fd, &vert_board[i][j]) < 0)
 				return -1;
-	for(i=0; i<board_width-1; i++)
-		for(j=0; j<board_height; j++)
-			if(ggz_read_char(game.fd, &horz_board[i][j]) < 0)
+	for (i = 0; i < board_width - 1; i++)
+		for (j = 0; j < board_height; j++)
+			if (ggz_read_char(game.fd, &horz_board[i][j]) < 0)
 				return -1;
-	for(i=0; i<board_width-1; i++)
-		for(j=0; j<board_height-1; j++)
-			if(ggz_read_char(game.fd, &owners_board[i][j]) < 0)
+	for (i = 0; i < board_width - 1; i++)
+		for (j = 0; j < board_height - 1; j++)
+			if (ggz_read_char(game.fd, &owners_board[i][j]) <
+			    0)
 				return -1;
 
 	board_redraw();
 
-	if(game.score[0] != 0 || game.score[1] != 0)
-	{
+	if (game.score[0] != 0 || game.score[1] != 0) {
 		l1 = g_object_get_data(G_OBJECT(main_win), "lbl_score0");
 		l2 = g_object_get_data(G_OBJECT(main_win), "lbl_score1");
 		text = g_strdup_printf(_("Score = %d"), game.score[0]);
@@ -423,7 +433,7 @@ static int get_gameover_status(void)
 	gchar *tstr;
 	GtkWidget *lbl_winner, *lbl_score;
 
-	if(ggz_read_char(game.fd, &status) < 0)
+	if (ggz_read_char(game.fd, &status) < 0)
 		return -1;
 
 	/* Create the New Game dialog */
@@ -431,31 +441,36 @@ static int get_gameover_status(void)
 	lbl_winner = g_object_get_data(G_OBJECT(new_dialog), "lbl_winner");
 	lbl_score = g_object_get_data(G_OBJECT(new_dialog), "lbl_score");
 
-	if(status == game.me) {
+	if (status == game.me) {
 		tstr = g_strconcat(_("Game over, you beat "),
 				   game.names[game.opponent], "!", NULL);
 		statusbar_message(tstr);
 		g_free(tstr);
-		tstr = g_strconcat(_("You beat "), game.names[game.opponent],NULL);
-	} else if(status == game.opponent) {
+		tstr =
+		    g_strconcat(_("You beat "), game.names[game.opponent],
+				NULL);
+	} else if (status == game.opponent) {
 		tstr = g_strconcat(_("Game over, "),
-				   game.names[game.opponent], _(" won :("), NULL);
+				   game.names[game.opponent], _(" won :("),
+				   NULL);
 		statusbar_message(tstr);
 		g_free(tstr);
-		tstr = g_strconcat(_("You lost to "), game.names[game.opponent],
-				   NULL);
+		tstr =
+		    g_strconcat(_("You lost to "),
+				game.names[game.opponent], NULL);
 	} else {
 		tstr = g_strconcat(_("Game over, you tied with "),
 				   game.names[game.opponent], ".", NULL);
 		statusbar_message(tstr);
 		g_free(tstr);
-		tstr = g_strconcat(_("You tied with "), game.names[game.opponent],
-				   NULL);
+		tstr =
+		    g_strconcat(_("You tied with "),
+				game.names[game.opponent], NULL);
 	}
 	gtk_label_set_text(GTK_LABEL(lbl_winner), tstr);
 	g_free(tstr);
 	tstr = g_strdup_printf(_("%d to %d."), game.score[game.me],
-					    game.score[game.opponent]);
+			       game.score[game.opponent]);
 	gtk_label_set_text(GTK_LABEL(lbl_score), tstr);
 	g_free(tstr);
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: dlg_main.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -46,7 +46,7 @@
 #include "layout.h"
 #include "table.h"
 
-static GtkWidget *create_menus(GtkWidget *window)
+static GtkWidget *create_menus(GtkWidget * window)
 {
 	GtkItemFactoryEntry items[] = {
 		TABLE_MENU,
@@ -100,7 +100,7 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_set_name(vbox1, "vbox1");
 	gtk_widget_ref(vbox1);
 	g_object_set_data_full(G_OBJECT(dlg_main), "vbox1", vbox1,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(dlg_main), vbox1);
 
@@ -108,7 +108,7 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_set_name(menubar, "menubar");
 	gtk_widget_ref(menubar);
 	g_object_set_data_full(G_OBJECT(dlg_main), "menubar", menubar,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(vbox1), menubar, FALSE, FALSE, 0);
 
@@ -117,17 +117,18 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_set_name(fixed1, "fixed1");
 	gtk_widget_ref(fixed1);
 	g_object_set_data_full(G_OBJECT(dlg_main), "fixed1", fixed1,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(fixed1);
 	gtk_box_pack_start(GTK_BOX(vbox1), fixed1, TRUE, TRUE, 0);
-	gtk_widget_set_usize(fixed1, get_table_width(), get_table_height());
+	gtk_widget_set_usize(fixed1, get_table_width(),
+			     get_table_height());
 
 	messagebar = gtk_statusbar_new();
 	gtk_widget_set_name(messagebar, "messagebar");
 	gtk_widget_ref(messagebar);
 	g_object_set_data_full(G_OBJECT(dlg_main), "messagebar",
-				 messagebar,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       messagebar,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(messagebar);
 	gtk_box_pack_start(GTK_BOX(vbox1), messagebar, FALSE, FALSE, 0);
 
@@ -135,8 +136,8 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_set_name(statusbar1, "statusbar1");
 	gtk_widget_ref(statusbar1);
 	g_object_set_data_full(G_OBJECT(dlg_main), "statusbar1",
-				 statusbar1,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       statusbar1,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(statusbar1);
 	gtk_box_pack_start(GTK_BOX(vbox1), statusbar1, FALSE, FALSE, 0);
 
@@ -144,25 +145,25 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_set_name(chatline, "chat");
 	gtk_widget_ref(chatline);
 	g_object_set_data_full(G_OBJECT(dlg_main), "chat",
-				 chatline,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       chatline,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show_all(chatline);
 	gtk_box_pack_start(GTK_BOX(vbox1), chatline, FALSE, FALSE, 0);
 
-	(void) g_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
-				  GTK_SIGNAL_FUNC(on_dlg_main_delete_event),
-				  NULL);
-	(void) g_signal_connect(GTK_OBJECT(fixed1), "button_press_event",
-				  GTK_SIGNAL_FUNC
-				  (on_fixed1_button_press_event), NULL);
-	(void) g_signal_connect(GTK_OBJECT(fixed1), "style_set",
-				  GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
-				  NULL);
-#if 0				/* We need some kind of redraw, I think, but
-				   this doesn't draw correctly. */
-	(void) g_signal_connect(GTK_OBJECT(fixed1), "size_allocate",
-				  GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
-				  NULL);
+	(void)g_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
+			       GTK_SIGNAL_FUNC(on_dlg_main_delete_event),
+			       NULL);
+	(void)g_signal_connect(GTK_OBJECT(fixed1), "button_press_event",
+			       GTK_SIGNAL_FUNC
+			       (on_fixed1_button_press_event), NULL);
+	(void)g_signal_connect(GTK_OBJECT(fixed1), "style_set",
+			       GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
+			       NULL);
+#if 0	/* We need some kind of redraw, I think, but
+	   this doesn't draw correctly. */
+	(void)g_signal_connect(GTK_OBJECT(fixed1), "size_allocate",
+			       GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
+			       NULL);
 #endif
 
 	return dlg_main;

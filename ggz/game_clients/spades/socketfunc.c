@@ -63,8 +63,7 @@ int makesocket(unsigned short int port, short int type, char *server)
 
 	case SERVER:
 		name.sin_addr.s_addr = htonl(INADDR_ANY);
-		if (bind(sock, (struct sockaddr *) &name, sizeof(name)) <
-		    0) {
+		if (bind(sock, (struct sockaddr *)&name, sizeof(name)) < 0) {
 			return (ERR_SOCK_BIND);
 		}
 		break;
@@ -74,7 +73,7 @@ int makesocket(unsigned short int port, short int type, char *server)
 			return (ERR_HOST);
 		}
 		memcpy(&name.sin_addr, hp->h_addr, hp->h_length);
-		if (connect(sock, (struct sockaddr *) &name, sizeof(name))
+		if (connect(sock, (struct sockaddr *)&name, sizeof(name))
 		    == -1) {
 			return (ERR_SOCK_CONN);
 		}
@@ -100,16 +99,18 @@ int writestring(int msgsock, const char *message)
 
 	if (status <= 0) {
 		status = -1;
-		ggz_debug("socket", "[%d]: Error sending string size", getpid());
+		ggz_debug("socket", "[%d]: Error sending string size",
+			  getpid());
 	} else {
 		ggz_debug("socket", "[%d]: Sending \"%d\" : %d bytes",
-			getpid(), size, status);
+			  getpid(), size, status);
 
 		status = write(msgsock, message, size);
 
 		if (status <= 0) {
 			status = -1;
-			ggz_debug("socket", "[%d]: Error sending string", getpid());
+			ggz_debug("socket", "[%d]: Error sending string",
+				  getpid());
 		} else {
 			ggz_debug("socket",
 				  "[%d]: Sending \"%s\" : %d bytes",
@@ -139,16 +140,17 @@ int readstring(int msgsock, char **message)
 		ggz_debug("socket", "[%d]: Error receiving string size",
 			  getpid());
 	} else if (status == 0) {
-		ggz_debug("socket", "[%d]: Warning: fd is closed", getpid());
+		ggz_debug("socket", "[%d]: Warning: fd is closed",
+			  getpid());
 	} else {
 		ggz_debug("socket", "[%d]: Received \"%d\" : %d bytes",
-			getpid(), size, status);
+			  getpid(), size, status);
 
-		*message = (char *) malloc(size * sizeof(char));
+		*message = (char *)malloc(size * sizeof(char));
 
 		if (*message == NULL) {
 			ggz_error_msg("[%d]: Error: Not enough memory",
-			              getpid());
+				      getpid());
 			status = -1;
 		} else {
 			memset(*message, 0, size);
@@ -168,8 +170,8 @@ int readstring(int msgsock, char **message)
 					  getpid(), *message, status);
 			}
 
-		}		/* else not out of memory */
-	}			/* else status >0  */
+		}	/* else not out of memory */
+	}	/* else status >0  */
 
 	return status;
 }
@@ -191,7 +193,7 @@ int writeint(int msgsock, const int message)
 		ggz_debug("socket", "[%d]: Error sending int", getpid());
 	} else {
 		ggz_debug("socket", "[%d]: Sending \"%d\" : %d bytes",
-			getpid(), message, status);
+			  getpid(), message, status);
 	}
 
 	return status;
@@ -214,10 +216,11 @@ int readint(int msgsock, int *message)
 	if (status < 0) {
 		ggz_debug("socket", "[%d]: Error receiving int", getpid());
 	} else if (status == 0) {
-		ggz_debug("socket", "[%d]: Warning: fd is closed", getpid());
+		ggz_debug("socket", "[%d]: Warning: fd is closed",
+			  getpid());
 	} else {
 		ggz_debug("socket", "[%d]: Received \"%d\" : %d bytes",
-			getpid(), *message, status);
+			  getpid(), *message, status);
 	}
 
 	return status;

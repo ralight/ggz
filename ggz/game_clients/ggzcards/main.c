@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6285 2004-11-06 07:00:27Z jdorje $
+ * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <ggz.h>		/* libggz */
+#include <ggz.h>	/* libggz */
 
 #include "dlg_about.h"
 #include "dlg_chat.h"
@@ -112,13 +112,13 @@ static void initialize_debugging(void)
 	   initialize the _types_ of debugging we want. */
 #ifdef DEBUG
 	const char *debugging_types[] =
-		{ DBG_MAIN, DBG_TABLE, DBG_ANIM, DBG_CLIENT, NULL };
+	    { DBG_MAIN, DBG_TABLE, DBG_ANIM, DBG_CLIENT, NULL };
 #else
 	const char *debugging_types[] = { NULL };
 #endif
 	/* Debugging goes to ~/.ggz/ggzcards-gtk.debug */
 	char *file_name =
-		g_strdup_printf("%s/.ggz/ggzcards-gtk.debug", getenv("HOME"));
+	    g_strdup_printf("%s/.ggz/ggzcards-gtk.debug", getenv("HOME"));
 	ggz_debug_init(debugging_types, file_name);
 	g_free(file_name);
 
@@ -164,26 +164,26 @@ void listen_for_server(bool listen)
 static void init_about_dialog(void)
 {
 	const char *about_content =
-	  _("Authors:\n"
-	    "        Gtk+ Client:\n"
-	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
-	    "            Jason Short      <jdorje@users.sourceforge.net>\n"
-	    "\n"
-	    "        Game Server:\n"
-	    "            Jason Short      <jdorje@users.sourceforge.net>\n"
-	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
-	    "\n"
-	    "        Game Modules:\n"
-	    "            Jason Short      <jdorje@users.sourceforge.net>\n"
-	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
-	    "            Ismael Orenstein <perdig@users.sourceforge.net>\n"
-	    "\n"
-	    "        AI Modules:\n"
-	    "            Jason Short      <jdorje@users.sourceforge.net>\n"
-	    "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
-	    "\n"
-	    "Website:\n"
-	    "        http://www.ggzgamingzone.org/games/ggzcards/");
+	    _("Authors:\n"
+	      "        Gtk+ Client:\n"
+	      "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	      "            Jason Short      <jdorje@users.sourceforge.net>\n"
+	      "\n"
+	      "        Game Server:\n"
+	      "            Jason Short      <jdorje@users.sourceforge.net>\n"
+	      "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	      "\n"
+	      "        Game Modules:\n"
+	      "            Jason Short      <jdorje@users.sourceforge.net>\n"
+	      "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	      "            Ismael Orenstein <perdig@users.sourceforge.net>\n"
+	      "\n"
+	      "        AI Modules:\n"
+	      "            Jason Short      <jdorje@users.sourceforge.net>\n"
+	      "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
+	      "\n"
+	      "Website:\n"
+	      "        http://www.ggzgamingzone.org/games/ggzcards/");
 	char *about_header;
 
 	about_header = g_strdup_printf(_("GGZ Gaming Zone\n"
@@ -211,11 +211,12 @@ void statusbar_message(const char *msg)
 		/* Retrieve the statusbar widget, which was allocated in
 		   create_dlg_main(). */
 		sb = g_object_get_data(G_OBJECT(dlg_main), "statusbar1");
-		sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb),
-							  "Game Messages");
+		sb_context =
+		    gtk_statusbar_get_context_id(GTK_STATUSBAR(sb),
+						 "Game Messages");
 	}
 
-	(void) gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
+	(void)gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
 	ggz_debug(DBG_TABLE, "Put up statusbar message: '%s'", msg);
 }
 
@@ -230,11 +231,12 @@ void messagebar_message(const char *msg)
 
 	if (sb == NULL) {
 		sb = g_object_get_data(G_OBJECT(dlg_main), "messagebar");
-		sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb),
-							  "Game Messages");
+		sb_context =
+		    gtk_statusbar_get_context_id(GTK_STATUSBAR(sb),
+						 "Game Messages");
 	}
 
-	(void) gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
+	(void)gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
 	ggz_debug(DBG_TABLE, "Put up messagebar message: '%s'", msg);
 }
 
@@ -258,7 +260,7 @@ static void on_mnu_messages_activate(GtkMenuItem * menuitem,
 
 static void verify_msg_menu(void)
 {
-	if (msg_menu == NULL) {	
+	if (msg_menu == NULL) {
 		msg_menu = get_menu_item(_("<main>/Messages"));
 		assert(msg_menu);
 	}
@@ -290,13 +292,13 @@ static GtkWidget *new_message_dialog(const char *mark)
 	gtk_widget_set_name(menu_item, mark);
 	gtk_widget_ref(menu_item);
 	g_object_set_data_full(G_OBJECT(dlg_main), mark,
-				 menu_item,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       menu_item,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(menu_item);
 	gtk_container_add(GTK_CONTAINER(msg_menu), menu_item);
-	(void) g_signal_connect(GTK_OBJECT(menu_item), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_messages_activate),
-				  (gpointer) g_strdup(mark));
+	(void)g_signal_connect(GTK_OBJECT(menu_item), "activate",
+			       GTK_SIGNAL_FUNC(on_mnu_messages_activate),
+			       (gpointer) g_strdup(mark));
 
 	/* 
 	 * Make the dialog window
@@ -306,9 +308,9 @@ static GtkWidget *new_message_dialog(const char *mark)
 	g_object_set_data(G_OBJECT(msg_menu), mark, dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), mark);
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
-	(void) g_signal_connect_swapped(GTK_OBJECT(dialog), "delete_event",
-					 GTK_SIGNAL_FUNC(gtk_widget_hide),
-					 GTK_OBJECT(dialog));
+	(void)g_signal_connect_swapped(GTK_OBJECT(dialog), "delete_event",
+				       GTK_SIGNAL_FUNC(gtk_widget_hide),
+				       GTK_OBJECT(dialog));
 
 	/* dialog->vbox is used for placing the message data in; however, this 
 	   data depends on the _type_ of message so we leave that for later. */
@@ -322,13 +324,13 @@ static GtkWidget *new_message_dialog(const char *mark)
 	close_button = gtk_button_new_with_label("Close");
 	gtk_widget_ref(close_button);
 	g_object_set_data_full(G_OBJECT(dialog), "close_button",
-				 close_button,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       close_button,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(close_button);
 	gtk_widget_set_usize(close_button, 64, -2);
-	(void) g_signal_connect_swapped(GTK_OBJECT(close_button), "clicked",
-					 GTK_SIGNAL_FUNC(gtk_widget_hide),
-					 GTK_OBJECT(dialog));
+	(void)g_signal_connect_swapped(GTK_OBJECT(close_button), "clicked",
+				       GTK_SIGNAL_FUNC(gtk_widget_hide),
+				       GTK_OBJECT(dialog));
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
 			  close_button);
 
@@ -357,10 +359,12 @@ void menubar_text_message(const char *mark, const char *msg)
 		gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 		gtk_widget_ref(label);
 		g_object_set_data_full(G_OBJECT(dlg), "label", label,
-					 (GtkDestroyNotify) gtk_widget_unref);
+				       (GtkDestroyNotify)
+				       gtk_widget_unref);
 		gtk_widget_show(label);
 
-		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox), label);
+		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox),
+				  label);
 
 		gtk_widget_modify_font(label, fixed_font);
 
@@ -411,13 +415,13 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 				 ggzcards.num_players, 0, 0, 0, 0);
 
 		name_labels =
-			g_malloc(ggzcards.num_players * sizeof(*name_labels));
+		    g_malloc(ggzcards.num_players * sizeof(*name_labels));
 		g_object_set_data(G_OBJECT(dlg), "names", name_labels);
 		for (p = 0; p < ggzcards.num_players; p++) {
 			name_labels[p] =
-				gtk_label_new(ggzcards.players[p].name);
-			gtk_table_attach(GTK_TABLE(layout), name_labels[p], 0,
-					 1, p, p + 1, 0, 0, 0, 0);
+			    gtk_label_new(ggzcards.players[p].name);
+			gtk_table_attach(GTK_TABLE(layout), name_labels[p],
+					 0, 1, p, p + 1, 0, 0, 0, 0);
 		}
 		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox),
 				  layout);

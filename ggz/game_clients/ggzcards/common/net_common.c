@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 04/16/2002
  * Desc: GGZCards network common code
- * $Id: net_common.c 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: net_common.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Contains common networking functions.
  *
@@ -29,12 +29,12 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <assert.h>
 
-#include <ggz.h>		/* for easysock */
+#include <ggz.h>	/* for easysock */
 
 #include "net_common.h"
 
@@ -44,16 +44,16 @@ int read_card(int fd, card_t * card)
 	    ggz_read_char(fd, &card->suit) < 0 ||
 	    ggz_read_char(fd, &card->deck) < 0)
 		return -1;
-		
+
 	/* We go ahead and check the card for validity. */
 	if (is_valid_card(*card))
 		return 0;
-	
-#if 0 /* This could be dangerous - anyone could crash us! */
+
+#if 0	/* This could be dangerous - anyone could crash us! */
 	assert(FALSE);
 #endif
 
-#if 0 /* This probably makes the most sense, but... */
+#if 0	/* This probably makes the most sense, but... */
 	return -1;
 #endif
 
@@ -65,7 +65,7 @@ int write_card(int fd, card_t card)
 {
 	/* Check for validity. */
 	assert(is_valid_card(card));
-	
+
 	if (ggz_write_char(fd, card.face) < 0 ||
 	    ggz_write_char(fd, card.suit) < 0 ||
 	    ggz_write_char(fd, card.deck) < 0)

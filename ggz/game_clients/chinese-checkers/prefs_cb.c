@@ -11,9 +11,7 @@
 #include "main_cb.h"
 
 
-void
-on_ok_button_clicked                   (GtkButton       *button,
-                                        gpointer         user_data)
+void on_ok_button_clicked(GtkButton * button, gpointer user_data)
 {
 	on_apply_button_clicked(button, user_data);
 
@@ -21,16 +19,14 @@ on_ok_button_clicked                   (GtkButton       *button,
 }
 
 
-void
-on_apply_button_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
+void on_apply_button_clicked(GtkButton * button, gpointer user_data)
 {
 	char *theme;
 	int beep;
 	GtkWidget *toggle;
 	GtkWidget *tree = lookup_widget(dlg_prefs, "theme_list");
 	GtkTreeSelection *select
-	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	    = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
@@ -43,7 +39,7 @@ on_apply_button_clicked                (GtkButton       *button,
 
 	toggle = g_object_get_data(G_OBJECT(dlg_prefs), "check_beep");
 
-	if(GTK_TOGGLE_BUTTON(toggle)->active)
+	if (GTK_TOGGLE_BUTTON(toggle)->active)
 		beep = 1;
 	else
 		beep = 0;
@@ -54,14 +50,12 @@ on_apply_button_clicked                (GtkButton       *button,
 }
 
 
-void
-on_cancel_button_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
+void on_cancel_button_clicked(GtkButton * button, gpointer user_data)
 {
 	gtk_widget_destroy(dlg_prefs);
 }
 
-void on_theme_list_select_changed(GtkTreeSelection *select, gpointer data)
+void on_theme_list_select_changed(GtkTreeSelection * select, gpointer data)
 {
 
 }

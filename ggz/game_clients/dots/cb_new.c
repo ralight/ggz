@@ -37,29 +37,24 @@
 static gboolean allow_dlg_new_delete = FALSE;
 
 gboolean
-on_dlg_new_delete_event                (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_dlg_new_delete_event(GtkWidget * widget,
+			GdkEvent * event, gpointer user_data)
 {
 	/* Do not allow this dialog to close until they choose */
-	if(allow_dlg_new_delete)
+	if (allow_dlg_new_delete)
 		return FALSE;
 	else
 		return TRUE;
 }
 
 
-void
-on_new_btn_yes_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
+void on_new_btn_yes_clicked(GtkButton * button, gpointer user_data)
 {
 	handle_newgame(TRUE);
 }
 
 
-void
-on_new_btn_no_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
+void on_new_btn_no_clicked(GtkButton * button, gpointer user_data)
 {
 	handle_newgame(FALSE);
 	gtk_main_quit();
@@ -67,7 +62,7 @@ on_new_btn_no_clicked                  (GtkButton       *button,
 
 void handle_newgame(gboolean opt)
 {
-	if(opt == TRUE)
+	if (opt == TRUE)
 		handle_req_newgame();
 
 	allow_dlg_new_delete = TRUE;

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
- * $Id: main.c 4885 2002-10-12 19:53:38Z jdorje $
+ * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdio.h>
@@ -70,17 +70,18 @@ static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 	ggzmod_dispatch(mod);
 }
 
-static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
 {
-	int fd = *(int*)data;
+	int fd = *(int *)data;
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	cbt_info.fd = fd;
 	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 }
 
-int main(int argc, char *argv[]) {
-	
+int main(int argc, char *argv[])
+{
+
 	initialize_debugging();
 
 	ggz_intl_init("combat");
@@ -99,11 +100,13 @@ int main(int argc, char *argv[]) {
 	gtk_widget_show(main_win);
 
 	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
+			   &handle_ggzmod_server);
 
 	ggzmod_connect(mod);
 
-	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz, NULL);
+	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz,
+		      NULL);
 
 	gtk_main();
 
@@ -112,7 +115,7 @@ int main(int argc, char *argv[]) {
 	ggzmod_free(mod);
 
 	cleanup_debugging();
-	
+
 	return 0;
 }
 
@@ -128,11 +131,11 @@ static void initialize_debugging(void)
 #endif
 	/* Debugging goes to ~/.ggz/combat-gtk.debug */
 	char *file_name =
-		g_strdup_printf("%s/.ggz/combat-gtk.debug", getenv("HOME"));
+	    g_strdup_printf("%s/.ggz/combat-gtk.debug", getenv("HOME"));
 	ggz_debug_init(debugging_types, file_name);
 	g_free(file_name);
 
-	ggz_debug("main", "Starting combat client.");	
+	ggz_debug("main", "Starting combat client.");
 }
 
 

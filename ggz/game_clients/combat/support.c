@@ -16,108 +16,105 @@
 #include "support.h"
 
 /* This is an internally used function to check if a pixmap file exists. */
-static gchar* check_file_exists        (const gchar     *directory,
-                                        const gchar     *filename);
+static gchar *check_file_exists(const gchar * directory,
+				const gchar * filename);
 
-GtkWidget*
-lookup_widget                          (GtkWidget       *widget,
-                                        const gchar     *widget_name)
+GtkWidget *lookup_widget(GtkWidget * widget, const gchar * widget_name)
 {
-  GtkWidget *parent, *found_widget;
+	GtkWidget *parent, *found_widget;
 
-  for (;;)
-    {
-      if (GTK_IS_MENU (widget))
-        parent = gtk_menu_get_attach_widget (GTK_MENU (widget));
-      else
-        parent = widget->parent;
-      if (parent == NULL)
-        break;
-      widget = parent;
-    }
+	for (;;) {
+		if (GTK_IS_MENU(widget))
+			parent =
+			    gtk_menu_get_attach_widget(GTK_MENU(widget));
+		else
+			parent = widget->parent;
+		if (parent == NULL)
+			break;
+		widget = parent;
+	}
 
-  found_widget = (GtkWidget*) gtk_object_get_data (GTK_OBJECT (widget),
-                                                   widget_name);
-  if (!found_widget)
-    g_warning ("Widget not found: %s", widget_name);
-  return found_widget;
+	found_widget =
+	    (GtkWidget *) gtk_object_get_data(GTK_OBJECT(widget),
+					      widget_name);
+	if (!found_widget)
+		g_warning("Widget not found: %s", widget_name);
+	return found_widget;
 }
 
 static GList *pixmaps_directories = NULL;
 
 /* Use this function to set the directory containing installed pixmaps. */
-void
-add_pixmap_directory                   (const gchar     *directory)
+void add_pixmap_directory(const gchar * directory)
 {
-  pixmaps_directories = g_list_prepend (pixmaps_directories,
-                                        g_strdup (directory));
+	pixmaps_directories = g_list_prepend(pixmaps_directories,
+					     g_strdup(directory));
 }
 
 /* This is an internally used function to create pixmaps. */
-GdkPixbuf *load_pixmap(const gchar *name)
+GdkPixbuf *load_pixmap(const gchar * name)
 {
-  gchar *filename, *found_filename = NULL;
-  GdkPixbuf *image;
-  GList *elem;
-  GError *error = NULL;
+	gchar *filename, *found_filename = NULL;
+	GdkPixbuf *image;
+	GList *elem;
+	GError *error = NULL;
 
-  if (!name || !name[0])
-    return NULL;
+	if (!name || !name[0])
+		return NULL;
 
-  filename = g_strdup_printf("%s.png", name);
+	filename = g_strdup_printf("%s.png", name);
 
-  /* We first try any pixmaps directories set by the application. */
-  elem = pixmaps_directories;
-  while (elem) {
-    found_filename = check_file_exists ((gchar*)elem->data, filename);
-    if (found_filename)
-      break;
-    elem = elem->next;
-  }
+	/* We first try any pixmaps directories set by the application. */
+	elem = pixmaps_directories;
+	while (elem) {
+		found_filename =
+		    check_file_exists((gchar *) elem->data, filename);
+		if (found_filename)
+			break;
+		elem = elem->next;
+	}
 
-  /* If we haven't found the pixmap, try the source directory. */
-  if (!found_filename) {
-    found_filename = check_file_exists ("", filename);
-  }
+	/* If we haven't found the pixmap, try the source directory. */
+	if (!found_filename) {
+		found_filename = check_file_exists("", filename);
+	}
 
-  g_free(filename);
-  filename = NULL;
+	g_free(filename);
+	filename = NULL;
 
-  if (!found_filename) {
-    g_warning(_("Couldn't find pixmap file: %s"), name);
-    return NULL;
-  }
+	if (!found_filename) {
+		g_warning(_("Couldn't find pixmap file: %s"), name);
+		return NULL;
+	}
 
-  image = gdk_pixbuf_new_from_file(found_filename, &error);
-  if (image == NULL) {
-    g_warning (_("Error loading pixmap file: %s"), found_filename);
-    g_free(found_filename);
-    return NULL;
-  }
-  g_free(found_filename);
+	image = gdk_pixbuf_new_from_file(found_filename, &error);
+	if (image == NULL) {
+		g_warning(_("Error loading pixmap file: %s"),
+			  found_filename);
+		g_free(found_filename);
+		return NULL;
+	}
+	g_free(found_filename);
 
-  return image;
+	return image;
 }
 
 /* This is an internally used function to check if a pixmap file exists. */
-gchar*
-check_file_exists                      (const gchar     *directory,
-                                        const gchar     *filename)
+gchar *check_file_exists(const gchar * directory, const gchar * filename)
 {
-  gchar *full_filename;
-  struct stat s;
-  gint status;
+	gchar *full_filename;
+	struct stat s;
+	gint status;
 
-  full_filename = (gchar*) g_malloc (strlen (directory) + 1
-                                     + strlen (filename) + 1);
-  strcpy (full_filename, directory);
-  strcat (full_filename, G_DIR_SEPARATOR_S);
-  strcat (full_filename, filename);
+	full_filename = (gchar *) g_malloc(strlen(directory) + 1
+					   + strlen(filename) + 1);
+	strcpy(full_filename, directory);
+	strcat(full_filename, G_DIR_SEPARATOR_S);
+	strcat(full_filename, filename);
 
-  status = stat (full_filename, &s);
-  if (status == 0 && S_ISREG (s.st_mode))
-    return full_filename;
-  g_free (full_filename);
-  return NULL;
+	status = stat(full_filename, &s);
+	if (status == 0 && S_ISREG(s.st_mode))
+		return full_filename;
+	g_free(full_filename);
+	return NULL;
 }
-

@@ -1,8 +1,8 @@
 /* Board.h must be included before this */
 
 struct _stat {
-        int total_games;
-        int cur_games;
+	int total_games;
+	int cur_games;
 };
 
 struct game {
@@ -20,10 +20,10 @@ struct game {
 	int onmove;
 	int hmcount;
 	struct posnode *postab[NHASH];
-	piece_t wkr; /* White king's rank */
-	piece_t wkf; /* White king's file */
-	piece_t bkr; /* Black king's rank */
-	piece_t bkf; /* Black king's file */
+	piece_t wkr;		/* White king's rank */
+	piece_t wkf;		/* White king's file */
+	piece_t bkr;		/* Black king's rank */
+	piece_t bkf;		/* Black king's file */
 	struct game *next;
 	struct game *prev;
 	char lastmove[5];

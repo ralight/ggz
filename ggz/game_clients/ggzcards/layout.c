@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: layout.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -198,14 +198,15 @@ static layout_t layout_5 = {
 };
 
 static layout_t layout_6 = {
-	{FACE_BOTTOM, FACE_LEFT, FACE_LEFT, FACE_TOP, FACE_RIGHT, FACE_RIGHT},
+	{FACE_BOTTOM, FACE_LEFT, FACE_LEFT, FACE_TOP, FACE_RIGHT,
+	 FACE_RIGHT},
 	{TEXT_ON_LEFT, TEXT_ON_RIGHT, TEXT_ON_LEFT, TEXT_ON_LEFT,
 	 TEXT_ON_RIGHT, TEXT_ON_LEFT},
 	{&bottom_box6, &bl_box6, &tl_box6, &top_box6, &tr_box6, &br_box6}
 };
 
 static layout_t *layouts[MAX_NUM_PLAYERS + 1] =
-	{ NULL, NULL, &layout_2, &layout_3, &layout_4, &layout_5, &layout_6 };
+    { NULL, NULL, &layout_2, &layout_3, &layout_4, &layout_5, &layout_6 };
 
 #define LAYOUT (layouts[ggzcards.num_players])
 #define BOX(p) (LAYOUT->player_boxes[p])
@@ -230,19 +231,19 @@ int get_table_height(void)
 int get_hand_width(void)
 {
 	int num_cards_wide = (get_max_hand_size() + NUM_CARD_ROWS - 1)
-		/ NUM_CARD_ROWS;
-	float extra_width = ((float) num_cards_wide - 1.0) * CARD_VISIBILITY
-		+ 0.5;
-	return CARDWIDTH + (int) extra_width;
+	    / NUM_CARD_ROWS;
+	float extra_width = ((float)num_cards_wide - 1.0) * CARD_VISIBILITY
+	    + 0.5;
+	return CARDWIDTH + (int)extra_width;
 }
 
 int get_text_width(void)
 {
 	int text_width = get_min_text_width();
-	float extra_height = ((float) NUM_CARD_ROWS - 1.0) *
-		get_card_visibility_height() + 0.5;
+	float extra_height = ((float)NUM_CARD_ROWS - 1.0) *
+	    get_card_visibility_height() + 0.5;
 
-	return MAX(CARDHEIGHT + (int) extra_height, text_width);
+	return MAX(CARDHEIGHT + (int)extra_height, text_width);
 }
 
 orientation_t orientation(int p)
@@ -272,7 +273,7 @@ void get_tablecard_pos(int p, int *x, int *y)
 		*y = positions[p][1];
 	} else {
 		int positions[6][2] =
-			{ {mx - CARDWIDTH / 2, my + offset + CARDHEIGHT / 2},
+		    { {mx - CARDWIDTH / 2, my + offset + CARDHEIGHT / 2},
 		{mx - CARDWIDTH - offset, my - CARDHEIGHT / 4},
 		{mx - CARDWIDTH - offset, my - 3 * CARDHEIGHT / 4},
 		{mx - CARDWIDTH / 2, my - offset - 3 * CARDHEIGHT / 2},
@@ -424,8 +425,8 @@ void get_full_card_area(int p, int *x, int *y, int *w, int *h)
 void get_inner_card_area_pos(int p, int *x, int *y)
 {
 	float extra_card_height =
-		((float) NUM_CARD_ROWS - 1.0) * get_card_visibility_height();
-	int card_area_height = get_card_height(0) + (int) extra_card_height;
+	    ((float)NUM_CARD_ROWS - 1.0) * get_card_visibility_height();
+	int card_area_height = get_card_height(0) + (int)extra_card_height;
 
 	int wdiff = XWIDTH;
 	int hdiff = TEXT_BOX_WIDTH / 2 - card_area_height / 2;
@@ -485,32 +486,32 @@ void get_card_pos(int p, int card_num, bool selected, int *x, int *y)
 
 	/* FIXME */
 	int cards_per_row =
-		(table_max_hand_size + NUM_CARD_ROWS - 1) / NUM_CARD_ROWS;
+	    (table_max_hand_size + NUM_CARD_ROWS - 1) / NUM_CARD_ROWS;
 	int row = card_num / cards_per_row;
-	float col = (float) (card_num % cards_per_row);
+	float col = (float)(card_num % cards_per_row);
 	int num_cards_on_row;
 
 	if (row < NUM_CARD_ROWS - 1)
 		num_cards_on_row = cards_per_row;
 	else
 		num_cards_on_row =
-			table_max_hand_size - (NUM_CARD_ROWS -
-					       1) * cards_per_row;
+		    table_max_hand_size - (NUM_CARD_ROWS -
+					   1) * cards_per_row;
 
-	col += (float) (cards_per_row - num_cards_on_row) / 2.0;
+	col += (float)(cards_per_row - num_cards_on_row) / 2.0;
 
 	get_inner_card_area_pos(p, &x0, &y0);
 
 	get_card_coloffset(p, &w, &h);
-	x0 += (int) (((float) col * w) + 0.5);
-	y0 += (int) (((float) col * h) + 0.5);
+	x0 += (int)(((float)col * w) + 0.5);
+	y0 += (int)(((float)col * h) + 0.5);
 
 	if (orientation(p) == 1 || orientation(p) == 2)
 		row = NUM_CARD_ROWS - row - 1;
 
 	get_card_rowoffset(p, &w, &h);
-	x0 += (int) (((float) row * w) + 0.5);
-	y0 += (int) (((float) row * h) + 0.5);
+	x0 += (int)(((float)row * w) + 0.5);
+	y0 += (int)(((float)row * h) + 0.5);
 
 	if (selected) {
 		x0 += get_card_selection_offset_x(p);

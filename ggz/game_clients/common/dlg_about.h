@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 10/12/2002
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.h 4882 2002-10-12 19:36:19Z jdorje $
+ * $Id: dlg_about.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -26,8 +26,7 @@
 /* Call this function to set the title and content for the
  * about dialog.  Make sure all of the values are translated. */
 void init_dlg_about(const char *title,
-		    const char *header,
-		    const char *about);
+		    const char *header, const char *about);
 
 /* Call this function to show the about dialog. */
 void create_or_raise_dlg_about(void);

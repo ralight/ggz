@@ -26,17 +26,16 @@
 #ifndef HASTINGS_MAIN_WIN_H
 #define HASTINGS_MAIN_WIN_H
 
-extern const char* player_colors[];
-extern const char* team_colors[];
+extern const char *player_colors[];
+extern const char *team_colors[];
 
 /* Create the main window */
-GtkWidget* create_main_win (void);
+GtkWidget *create_main_win(void);
 
 /* Display the game status */
-void game_status( const char* format, ... );
+void game_status(const char *format, ...);
 
 /* Paint the game board */
 void display_board(void);
 
 #endif
-

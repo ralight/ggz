@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4990 2002-10-22 08:32:21Z jdorje $
+ * $Id: client.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -65,9 +65,9 @@ typedef struct seat_t {
 	 *  need not correspond with what is actually drawn by the GUI.
 	 */
 	card_t table_card;
-	
+
 	hand_t hand;		/**< player's hand */
-	
+
 	/** @brief The size of the uncompressed hand.
 	 *
 	 *  The player's "hand" is stored in the hand structure, above.
@@ -79,11 +79,11 @@ typedef struct seat_t {
 	 *  are cards that have already been played.  (The "u" stands
 	 *  for "uncollapsed", I suppose.) */
 	int u_hand_size;
-	
+
 	/** @see u_hand_size */
 	struct {
 		bool is_valid;
-		card_t card;		
+		card_t card;
 	} *u_hand;
 } seat_t;
 
@@ -118,7 +118,7 @@ struct ggzcards_game_t {
 	 *  is sent to the server, it's not reset to -1 until
 	 *  we get verification.
 	 */
-	int play_hand;		
+	int play_hand;
 };
 
 #ifdef GUI_CLIENT
@@ -198,8 +198,8 @@ extern void game_handle_gameover(int num_winners, int *winners);
  *  @param old_status The previous type of the seat.
  *  @param old_name The previous name of the player (seat). */
 extern void game_alert_player(int player,
-                              GGZSeatType old_status,
-                              const char *old_name);
+			      GGZSeatType old_status,
+			      const char *old_name);
 
 /** Alert the table that the number of players has changed.  The
  *  table will probably want to redesign itself.
@@ -222,16 +222,14 @@ extern void game_display_hand(int player);
   * @param possible_bids The number of possible bid choices.
   * @param bid_choices An array of strings, one corresponding to each bid choice. */
 extern void game_get_bid(int possible_bids,
-                         bid_t *bid_choices,
-                         char **bid_texts,
-                         char **bid_descs);
+			 bid_t * bid_choices,
+			 char **bid_texts, char **bid_descs);
 
 /** Called to request a play.  The frontend should call client_send_play
  *  at any point afterwards to send the response.
  *  @param hand The player number of the hand to play from. */
 extern void game_get_play(int play_hand,
-                          int num_valid_cards,
-                          card_t *valid_cards);
+			  int num_valid_cards, card_t * valid_cards);
 
 /** Called when we're informed of a bid.  This data is not tracked
  *  internally and is of little use to the GUI (but would be crucial
@@ -253,7 +251,7 @@ extern void game_alert_badplay(char *err_msg);
  *  @param pos The (former) position of the card in a compressed hand.
  *  @param hand_pos The position of the card in an uncompressed hand. */
 extern void game_alert_play(int player, card_t card,
-                            int pos, int hand_pos);
+			    int pos, int hand_pos);
 
 /** Called when we're informaed of the table cards.  The information
  *  itself resides in the player structures; all the frontend has to
@@ -276,10 +274,9 @@ extern void game_alert_trick(int player);
  *  @return 0 if you are going to handle the option request, -1 if you aren't
  *  @note All parameters are freed after the function returns. */
 extern int game_get_options(int option_cnt,
-                            char **descriptions,
-                            int *choice_cnt,
-                            int *defaults,
-			    char ***option_choices);
+			    char **descriptions,
+			    int *choice_cnt,
+			    int *defaults, char ***option_choices);
 
 /** A gui-dependent function called to set a global TEXT message.
  *  This should be defined by the frontend code and is accessed by a

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 11/05/2004 (adapted from Glade-generated file)
  * Desc: Provides miscellaneous support code
- * $Id: support.c 6271 2004-11-05 20:48:41Z jdorje $
+ * $Id: support.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -42,7 +42,8 @@ GtkWidget *lookup_widget(GtkWidget * widget, const gchar * widget_name)
 
 	for (;;) {
 		if (GTK_IS_MENU(widget))
-			parent = gtk_menu_get_attach_widget(GTK_MENU(widget));
+			parent =
+			    gtk_menu_get_attach_widget(GTK_MENU(widget));
 		else
 			parent = widget->parent;
 		if (parent == NULL)

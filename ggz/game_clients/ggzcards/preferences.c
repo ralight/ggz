@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 6226 2004-10-28 05:54:14Z jdorje $
+ * $Id: preferences.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -28,9 +28,9 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <stdlib.h>		/* for getenv */
+#include <stdlib.h>	/* for getenv */
 
-#include <ggz.h>		/* libggz */
+#include <ggz.h>	/* libggz */
 
 #include "ggzintl.h"
 
@@ -69,12 +69,13 @@ PrefType pref_types[] = {
 
 	{"multiple_animation",
 	 N_("Multiple (simultaneous) animations"),
-	 N_("If this preference is selected, then any time a new animation "
-	    "is ready to start while an old one is still going they will "
-	    "both proceed simultaneously.  This is prettier, but may not "
-	    "work well on slower computers and is (possibly) harder to "
-	    "follow.  Disabling it will \"zip\" the current animation to "
-	    "a finish when the new one is started."),
+	 N_
+	 ("If this preference is selected, then any time a new animation "
+	  "is ready to start while an old one is still going they will "
+	  "both proceed simultaneously.  This is prettier, but may not "
+	  "work well on slower computers and is (possibly) harder to "
+	  "follow.  Disabling it will \"zip\" the current animation to "
+	  "a finish when the new one is started."),
 	 &preferences.multiple_animation,
 	 FALSE},
 
@@ -118,10 +119,11 @@ PrefType pref_types[] = {
 
 	{"cardlists",
 	 N_("Show graphical cardlists"),
-	 N_("If this is selected, then card lists (like the \"Last Trick\" "
-	    "and \"Previous Hand\" messages) will be drawn graphically.  "
-	    "Disable it to get simple text-drawn card lists.  The choice "
-	    "will not take effect until you restart GGZCards."),
+	 N_
+	 ("If this is selected, then card lists (like the \"Last Trick\" "
+	  "and \"Previous Hand\" messages) will be drawn graphically.  "
+	  "Disable it to get simple text-drawn card lists.  The choice "
+	  "will not take effect until you restart GGZCards."),
 	 &preferences.cardlists,
 	 TRUE},
 
@@ -210,10 +212,12 @@ static void access_preferences(int save)
 		/* Preferences go in ~/.ggz/ggzcards-gtk.rc */
 		char *name = g_strdup_printf("%s/.ggz/ggzcards-gtk.rc",
 					     getenv("HOME"));
-		file = ggz_conf_parse(name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
+		file =
+		    ggz_conf_parse(name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 
 		if (file < 0)
-			ggz_error_msg("Couldn't open conf file '%s'.", name);
+			ggz_error_msg("Couldn't open conf file '%s'.",
+				      name);
 
 		g_free(name);
 	}
@@ -230,8 +234,8 @@ static void access_preferences(int save)
 		/* Load. */
 		for (pref = pref_types; pref->name; pref++) {
 			*pref->value =
-				ggz_conf_read_int(file, "BOOLEAN", pref->name,
-						  pref->dflt);
+			    ggz_conf_read_int(file, "BOOLEAN", pref->name,
+					      pref->dflt);
 		}
 	}
 }

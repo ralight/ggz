@@ -23,6 +23,6 @@
  */
 
 
-GtkWidget* create_main_win (void);
-void game_status( const char* format, ... );
+GtkWidget *create_main_win(void);
+void game_status(const char *format, ...);
 void display_board(void);

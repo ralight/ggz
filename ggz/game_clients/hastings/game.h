@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 9/10/00
  * Desc: Hastings1066 game functions
- * $Id: game.h 6195 2004-10-16 16:07:39Z josef $
+ * $Id: game.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -65,21 +65,21 @@
 /* Data structure for the Game */
 struct game_state_t {
 	/* Basic info about connection */
-	int fd; /* file descriptor */
-	int num; /* current player */
-	int seats[8]; /* maximum 8 seats */
-	int parties[8]; /* black or white, bad or good */
-	int teams[8]; /* countries, earldoms, nations */
-	char knightnames[8][17]; /* player names */
-	char teamnames[8][17]; /* team names */
+	int fd;			/* file descriptor */
+	int num;		/* current player */
+	int seats[8];		/* maximum 8 seats */
+	int parties[8];		/* black or white, bad or good */
+	int teams[8];		/* countries, earldoms, nations */
+	char knightnames[8][17];	/* player names */
+	char teamnames[8][17];	/* team names */
 
 	/* Hastings1066 game specifics */
-	char boardmap[6][19]; /* the game board with hexagons */
-	char board[6][19]; /* the game board with units */
-	char state; /* current state */
-	int move_src_x, move_src_y; /* used for moves: where a unit comes from */
-	int move_dst_x, move_dst_y; /* used for moves: where a unit goes to */
-	char playercount; /* number of players (isn't this already stored somewhere?) */
+	char boardmap[6][19];	/* the game board with hexagons */
+	char board[6][19];	/* the game board with units */
+	char state;		/* current state */
+	int move_src_x, move_src_y;	/* used for moves: where a unit comes from */
+	int move_dst_x, move_dst_y;	/* used for moves: where a unit goes to */
+	char playercount;	/* number of players (isn't this already stored somewhere?) */
 	int playernum;
 	int self;
 };
@@ -114,4 +114,3 @@ int send_my_move(void);
 int request_sync(void);
 
 #endif
-

@@ -25,43 +25,35 @@
 #include <gtk/gtk.h>
 
 gboolean
-on_bg_colorspot_button_press_event     (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+on_bg_colorspot_button_press_event(GtkWidget * widget,
+				   GdkEventButton * event,
+				   gpointer user_data);
 
 gboolean
-on_p2_colorspot_button_press_event     (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+on_p2_colorspot_button_press_event(GtkWidget * widget,
+				   GdkEventButton * event,
+				   gpointer user_data);
 
 gboolean
-on_p1_colorspot_button_press_event     (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+on_p1_colorspot_button_press_event(GtkWidget * widget,
+				   GdkEventButton * event,
+				   gpointer user_data);
 
 gboolean
-on_fg_colorspot_button_press_event     (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+on_fg_colorspot_button_press_event(GtkWidget * widget,
+				   GdkEventButton * event,
+				   gpointer user_data);
 
-void
-on_pref_button_ok_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
+void on_pref_button_ok_clicked(GtkButton * button, gpointer user_data);
 
-void
-on_pref_button_apply_clicked           (GtkButton       *button,
-                                        gpointer         user_data);
+void on_pref_button_apply_clicked(GtkButton * button, gpointer user_data);
 
-void
-on_pref_button_cancel_clicked          (GtkButton       *button,
-                                        gpointer         user_data);
+void on_pref_button_cancel_clicked(GtkButton * button, gpointer user_data);
 
 gboolean
-on_dlg_pref_expose_event               (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data);
+on_dlg_pref_expose_event(GtkWidget * widget,
+			 GdkEventExpose * event, gpointer user_data);
 
 gboolean
-on_dlg_pref_delete_event               (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_dlg_pref_delete_event(GtkWidget * widget,
+			 GdkEvent * event, gpointer user_data);

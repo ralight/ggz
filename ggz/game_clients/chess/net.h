@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Header for net.c
- * $Id: net.h 6270 2004-11-05 19:26:41Z jdorje $
+ * $Id: net.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -43,5 +43,5 @@ void net_update_server(int time);
 
 /* All server input will pass through here
  * Then we will filter it and send to game_update */
-gboolean net_handle_input(GIOChannel *source, GIOCondition condition,
+gboolean net_handle_input(GIOChannel * source, GIOCondition condition,
 			  gpointer data);

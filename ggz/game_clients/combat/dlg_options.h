@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.h 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: dlg_options.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -25,9 +25,10 @@
 
 #include <gtk/gtk.h>
 
-GtkWidget* create_dlg_options (int number);
-GtkWidget* create_dlg_save (void);
-GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function, gpointer user_data);
+GtkWidget *create_dlg_options(int number);
+GtkWidget *create_dlg_save(void);
+GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function,
+			     gpointer user_data);
 void dlg_options_update(GtkWidget *);
 int dlg_options_list_maps(GtkWidget *);
 void cancel_button_clicked(GtkButton *, gpointer dialog);
@@ -35,44 +36,40 @@ void cancel_button_clicked(GtkButton *, gpointer dialog);
 void load_button_clicked(GtkButton *, gpointer dialog);
 void save_button_clicked(GtkButton *, gpointer dialog);
 void save_map(GtkButton *, GtkWidget *);
-gboolean preview_expose (GtkWidget *widget, GdkEventExpose *event, 
-                       gpointer);
+gboolean preview_expose(GtkWidget * widget, GdkEventExpose * event,
+			gpointer);
 
 gboolean
-init_preview           (GtkWidget       *widget,
-                                        GdkEventConfigure *event,
-                                        gpointer         user_data);
+init_preview(GtkWidget * widget,
+	     GdkEventConfigure * event, gpointer user_data);
 
-gboolean draw_preview (GtkWidget *dlg_options);
+gboolean draw_preview(GtkWidget * dlg_options);
 
-void delete_button_clicked(GtkButton *button, gpointer dialog);
+void delete_button_clicked(GtkButton * button, gpointer dialog);
 
-void delete_map(GtkButton *button, gpointer dialog);
+void delete_map(GtkButton * button, gpointer dialog);
 
-void load_map(char *filename, GtkWidget *dialog);
+void load_map(char *filename, GtkWidget * dialog);
 
 void update_counters(GtkWidget *);
 
 combat_game *quick_load_map_on_struct(char *filename);
 
-void maps_list_selected (GtkCList *clist, gint row, gint column,
-	 											 GdkEventButton *event, gpointer user_data);
+void maps_list_selected(GtkCList * clist, gint row, gint column,
+			GdkEventButton * event, gpointer user_data);
 
 
 gboolean
-mini_board_expose             (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data);
+mini_board_expose(GtkWidget * widget,
+		  GdkEventExpose * event, gpointer user_data);
 
 gboolean
-mini_board_configure           (GtkWidget       *widget,
-                                        GdkEventConfigure *event,
-                                        gpointer         user_data);
+mini_board_configure(GtkWidget * widget,
+		     GdkEventConfigure * event, gpointer user_data);
 
 gboolean
-mini_board_click         (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+mini_board_click(GtkWidget * widget,
+		 GdkEventButton * event, gpointer user_data);
 
 void init_mini_board(GtkWidget *);
 void draw_mini_board(GtkWidget *);

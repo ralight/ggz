@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 6271 2004-11-05 20:48:41Z jdorje $
+ * $Id: dlg_options.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -84,8 +84,8 @@ static void dlg_option_checked(GtkWidget * widget, gpointer data)
 	decode_option_selection(data, &option, &choice);
 
 	if (GTK_TOGGLE_BUTTON(widget)->active) {
-		ggz_debug(DBG_TABLE, "Boolean option %d/%d selected.", option,
-			  choice);
+		ggz_debug(DBG_TABLE, "Boolean option %d/%d selected.",
+			  option, choice);
 		options_selected[option] = choice;
 	} else {
 		ggz_debug(DBG_TABLE, "Boolean option %d/%d deselected.",
@@ -100,13 +100,14 @@ static void dlg_option_toggled(GtkWidget * widget, gpointer data)
 	decode_option_selection(data, &option, &choice);
 
 	if (GTK_TOGGLE_BUTTON(widget)->active) {
-		ggz_debug(DBG_TABLE, "Multiple-choice option %d/%d selected.",
-			  option, choice);
+		ggz_debug(DBG_TABLE,
+			  "Multiple-choice option %d/%d selected.", option,
+			  choice);
 		options_selected[option] = choice;
 	} else
 		ggz_debug(DBG_TABLE,
-			  "Multiple-choice option %d/%d deselected.", option,
-			  choice);
+			  "Multiple-choice option %d/%d deselected.",
+			  option, choice);
 }
 
 static gint dlg_opt_delete(GtkWidget * widget, gpointer data)
@@ -159,8 +160,8 @@ void dlg_option_display(int option_cnt,
 						     (subbox),
 						     options_selected[i]);
 			g_signal_connect(subbox, "toggled",
-					 GTK_SIGNAL_FUNC(dlg_option_checked),
-					 user_data);
+					 GTK_SIGNAL_FUNC
+					 (dlg_option_checked), user_data);
 			if (descriptions[i] && descriptions[i][0] != '\0');
 			gtk_tooltips_set_tip(tooltips, subbox,
 					     descriptions[i], NULL);
@@ -172,13 +173,15 @@ void dlg_option_display(int option_cnt,
 			for (j = 0; j < option_sizes[i]; j++) {
 				GtkWidget *radio;
 				gpointer user_data =
-					encode_option_selection(i, j);
+				    encode_option_selection(i, j);
 				char *choice = options[i][j];
 
-				radio = gtk_radio_button_new_with_label(group,
-									choice);
-				group = gtk_radio_button_get_group
-					(GTK_RADIO_BUTTON(radio));
+				radio =
+				    gtk_radio_button_new_with_label(group,
+								    choice);
+				group =
+				    gtk_radio_button_get_group
+				    (GTK_RADIO_BUTTON(radio));
 				g_signal_connect(radio, "toggled",
 						 GTK_SIGNAL_FUNC
 						 (dlg_option_toggled),
@@ -187,7 +190,8 @@ void dlg_option_display(int option_cnt,
 				if (descriptions[i]
 				    && descriptions[i][0] != '\0');
 				gtk_tooltips_set_tip(tooltips, radio,
-						     descriptions[i], NULL);
+						     descriptions[i],
+						     NULL);
 
 				gtk_box_pack_start(GTK_BOX(subbox), radio,
 						   FALSE, FALSE, 0);
@@ -196,9 +200,9 @@ void dlg_option_display(int option_cnt,
 					active_radio = radio;
 			}
 			if (active_radio)
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
-							     (active_radio),
-							     TRUE);
+				gtk_toggle_button_set_active
+				    (GTK_TOGGLE_BUTTON(active_radio),
+				     TRUE);
 		}
 		gtk_box_pack_start(GTK_BOX(box), subbox, FALSE, FALSE, 0);
 		gtk_widget_show(subbox);
@@ -210,8 +214,7 @@ void dlg_option_display(int option_cnt,
 
 	/* If you close the window, it pops right back up again. */
 	g_signal_connect_swapped(window, "delete_event",
-				 GTK_SIGNAL_FUNC(dlg_opt_delete),
-				 window);
+				 GTK_SIGNAL_FUNC(dlg_opt_delete), window);
 
 	gtk_box_pack_start(GTK_BOX(box), button, FALSE, FALSE, 0);
 	gtk_widget_show(button);

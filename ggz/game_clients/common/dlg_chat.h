@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 2/20/2004 (moved from GGZCards)
  * Desc: Create the "Chat" Gtk dialog
- * $Id: dlg_chat.h 5954 2004-02-21 08:17:22Z jdorje $
+ * $Id: dlg_chat.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -30,7 +30,7 @@
  * handler for the CHAT event.  If the game wants its own handler for this
  * event you should register it *after* calling this function, and handle
  * the chat manually. */
-void init_chat(GGZMod *ggzmod);
+void init_chat(GGZMod * ggzmod);
 
 /* Creates a widget containing a chatbox. */
 GtkWidget *create_chat_widget(void);
@@ -38,4 +38,4 @@ GtkWidget *create_chat_widget(void);
 /* Creates or raises the main chat dialog window. */
 void create_or_raise_dlg_chat(void);
 
-void toggle_chat_window(gpointer data, guint action, GtkWidget *w);
+void toggle_chat_window(gpointer data, guint action, GtkWidget * w);

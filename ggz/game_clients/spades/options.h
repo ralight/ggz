@@ -35,15 +35,15 @@ typedef struct {
 } option_t;
 
 
-#define MSK_OFFLINE  1		/* %0000 0001 */
-#define MSK_COMP_1   2		/* %0000 0010 */
-#define MSK_COMP_2   4		/* %0000 0100 */
-#define MSK_COMP_3   8		/* %0000 1000 */
-#define MSK_AI      14		/* %0000 1110 */
-#define MSK_GAME    48		/* %0011 0000 */
-#define GAME_SPADES  0		/* %xx00 xxxx */
-#define GAME_HEARTS 16		/* %xx01 xxxx */
-#define MSK_NILS    64		/* %0100 0000 */
-#define MSK_BAGS   128		/* %1000 0000 */
+#define MSK_OFFLINE  1	/* %0000 0001 */
+#define MSK_COMP_1   2	/* %0000 0010 */
+#define MSK_COMP_2   4	/* %0000 0100 */
+#define MSK_COMP_3   8	/* %0000 1000 */
+#define MSK_AI      14	/* %0000 1110 */
+#define MSK_GAME    48	/* %0011 0000 */
+#define GAME_SPADES  0	/* %xx00 xxxx */
+#define GAME_HEARTS 16	/* %xx01 xxxx */
+#define MSK_NILS    64	/* %0100 0000 */
+#define MSK_BAGS   128	/* %1000 0000 */
 
 #endif

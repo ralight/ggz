@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 4108 2002-04-29 05:29:32Z jdorje $
+ * $Id: protocol.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -89,7 +89,7 @@ typedef enum {
 	   considered "boolean" and either a 0 or 1 may be sent.  It needs a
 	   RSP_OPTIONS in response. */
 	REQ_OPTIONS,
-	
+
 	/* Tells the client a new hand is starting.  No data. */
 	MSG_NEWHAND,
 
@@ -125,7 +125,7 @@ typedef enum {
 	   text, and a longer bid description.  The client must choose one 
 	   of these bids and send a RSP_BID in response. */
 	REQ_BID,
-	
+
 	/* Tells the client of a player's bid.  It is followed by a seat # for
 	   the seat from which the bid comes, then the bid itself. */
 	MSG_BID,
@@ -140,7 +140,7 @@ typedef enum {
 } server_msg_t;
 
 /** @brief Return a string description of the opcode. */
-const char* get_server_opcode_name(server_msg_t opcode);
+const char *get_server_opcode_name(server_msg_t opcode);
 
 /* Global message types */
 /* Each MESSAGE_GAME will be followed by one of these opcodes.  This
@@ -167,7 +167,7 @@ typedef enum {
 } game_message_t;
 
 /** @brief Return a string description of the opcode. */
-const char* get_game_message_name(game_message_t opcode);
+const char *get_game_message_name(game_message_t opcode);
 
 /* Messages from client */
 typedef enum {
@@ -202,6 +202,6 @@ typedef enum {
 } client_msg_t;
 
 /** @brief Return a string description of the opcode. */
-const char* get_client_opcode_name(client_msg_t opcode);
+const char *get_client_opcode_name(client_msg_t opcode);
 
 #endif /* __PROTOCOL_H__ */

@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 2/20/2004 (moved from GGZCards)
  * Desc: Create the "Chat" Gtk dialog
- * $Id: dlg_chat.c 6268 2004-11-05 08:00:15Z jdorje $
+ * $Id: dlg_chat.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This file implements a chat widget.  Much of the code is taken from
  * Freeciv's chat widget, written by Vasco Alexandre da Silva Costa.
@@ -27,7 +27,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>		/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdio.h>
@@ -49,7 +49,8 @@ static ChatWidgets *chats;
 static GtkWidget *dlg_chat;
 GGZMod *ggz;
 
-static void handle_ggz_chat_event(GGZMod *ggzmod, GGZModEvent e, void *data)
+static void handle_ggz_chat_event(GGZMod * ggzmod, GGZModEvent e,
+				  void *data)
 {
 	GGZChat *chat = data;
 	ChatWidgets *list;
@@ -61,7 +62,8 @@ static void handle_ggz_chat_event(GGZMod *ggzmod, GGZModEvent e, void *data)
 		 chat->player, chat->message);
 
 	for (list = chats; list; list = list->next) {
-		if (!list->container) continue;
+		if (!list->container)
+			continue;
 
 		buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(list->text));
 		gtk_text_buffer_get_end_iter(buf, &i);
@@ -70,19 +72,20 @@ static void handle_ggz_chat_event(GGZMod *ggzmod, GGZModEvent e, void *data)
 		/* have to use a mark, or this won't work properly */
 		gtk_text_buffer_get_end_iter(buf, &i);
 		mark = gtk_text_buffer_create_mark(buf, NULL, &i, FALSE);
-		gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(list->text),
-						   mark);
+		gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW
+						   (list->text), mark);
 		gtk_text_buffer_delete_mark(buf, mark);
 	}
 }
 
-void init_chat(GGZMod *ggzmod)
+void init_chat(GGZMod * ggzmod)
 {
 	ggz = ggzmod;
-	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_CHAT, handle_ggz_chat_event);
+	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_CHAT,
+			   handle_ggz_chat_event);
 }
 
-static void inputline_return(GtkEntry *w, gpointer data)
+static void inputline_return(GtkEntry * w, gpointer data)
 {
 	const char *theinput = gtk_entry_get_text(w);
 
@@ -118,7 +121,7 @@ GtkWidget *create_chat_widget(void)
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
 	gtk_container_add(GTK_CONTAINER(sw), text);
 	gtk_widget_set_name(text, "chatline");
-  
+
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 5);
 
@@ -186,8 +189,8 @@ static GtkWidget *create_dlg_chat(void)
 	close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
 	gtk_widget_ref(close_button);
 	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
-			   0);
+	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE,
+			   FALSE, 0);
 	g_signal_connect_swapped(close_button, "clicked",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				 dialog);
@@ -219,12 +222,13 @@ void create_or_raise_dlg_chat(void)
 	}
 }
 
-void toggle_chat_window(gpointer data, guint action, GtkWidget *w)
+void toggle_chat_window(gpointer data, guint action, GtkWidget * w)
 {
 	ChatWidgets *list;
 
 	for (list = chats; list; list = list->next) {
-		if (!list->container) continue;
+		if (!list->container)
+			continue;
 
 		if (GTK_CHECK_MENU_ITEM(w)->active) {
 			gtk_widget_show(list->container);

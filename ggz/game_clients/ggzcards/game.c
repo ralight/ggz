@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 5162 2002-11-03 06:31:19Z jdorje $
+ * $Id: game.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -125,7 +125,8 @@ void game_play_card(int card_num)
 
 	assert(player >= 0 && player < ggzcards.num_players);
 
-	ggz_debug(DBG_MAIN, "Sending play of card %d to server.", card_num);
+	ggz_debug(DBG_MAIN, "Sending play of card %d to server.",
+		  card_num);
 	statusbar_message(_("Sending play to server..."));
 
 	status = client_send_play(card);
@@ -134,7 +135,7 @@ void game_play_card(int card_num)
 	   is handled, this function has to be called _before_ we update
 	   table_cards[player] (below). */
 	if (preferences.animation)
-		(void) animation_start(player, card, card_num, -1);
+		(void)animation_start(player, card, card_num, -1);
 
 	/* We go ahead and move the card out onto the table, even though we
 	   don't yet have validation that it's been played. */
@@ -198,7 +199,7 @@ void game_resync(void)
 
 	animation_stop(TRUE);
 
-	(void) client_send_sync_request();
+	(void)client_send_sync_request();
 }
 
 
@@ -214,11 +215,12 @@ void game_alert_server(int server_socket_fd)
 void game_get_newgame(void)
 {
 	if (preferences.autostart) {
-		(void) game_send_newgame();
+		(void)game_send_newgame();
 	} else {
 		set_menu_sensitive(_("<main>/Game/Start game"), TRUE);
 
-		ggz_debug(DBG_MAIN, "Handling newgame request from server.");
+		ggz_debug(DBG_MAIN,
+			  "Handling newgame request from server.");
 
 		statusbar_message(_("Select \"Start Game\" "
 				    "to begin the game."));
@@ -279,8 +281,9 @@ void game_handle_gameover(int num_winners, int *winners)
 				fmt = "%s, and ";
 			else
 				fmt = "%s, ";
-			snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
-				 fmt, ggzcards.players[winners[i]].name);
+			snprintf(msg + strlen(msg),
+				 sizeof(msg) - strlen(msg), fmt,
+				 ggzcards.players[winners[i]].name);
 		}
 		snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
 			 _("won the game."));
@@ -301,15 +304,17 @@ void game_alert_player(int player,
 	GGZSeatType new_status = ggzcards.players[player].status;
 	char *new_name = ggzcards.players[player].name;
 
-	ggz_debug(DBG_MAIN, "Handling player update for player %d.", player);
+	ggz_debug(DBG_MAIN, "Handling player update for player %d.",
+		  player);
 
 	switch (new_status) {
 	case GGZ_SEAT_PLAYER:
 		/* This assumes we can't have a smooth transition from one
 		   human player to another.  Could be a problem... */
 		if (old_status != GGZ_SEAT_PLAYER)
-			message = g_strdup_printf(_("%s joined the table."),
-						  new_name);
+			message =
+			    g_strdup_printf(_("%s joined the table."),
+					    new_name);
 		break;
 	case GGZ_SEAT_OPEN:
 		new_name = _("Empty Seat");
@@ -342,7 +347,8 @@ void game_alert_num_players(int new, int old)
 
 void game_alert_hand_size(int max_hand_size)
 {
-	ggz_debug(DBG_MAIN, "Table max hand size upped to %d.", max_hand_size);
+	ggz_debug(DBG_MAIN, "Table max hand size upped to %d.",
+		  max_hand_size);
 
 	set_max_hand_size(max_hand_size);
 
@@ -362,11 +368,13 @@ void game_get_bid(int possible_bids,
 		  possible_bids);
 
 	if (BID_ON_TABLE) {
-		statusbar_message(_("It's your turn to bid.  Please choose "
-				    "a bid from the selection above."));
+		statusbar_message(_
+				  ("It's your turn to bid.  Please choose "
+				   "a bid from the selection above."));
 	} else {
-		statusbar_message(_("It's your turn to bid.  Please choose "
-				    "a bid from the bid window."));
+		statusbar_message(_
+				  ("It's your turn to bid.  Please choose "
+				   "a bid from the bid window."));
 	}
 
 	dlg_bid_destroy();
@@ -410,7 +418,8 @@ void game_alert_bid(int bidder, bid_t bid)
 	/* otherwise nothing */
 }
 
-void game_get_play(int play_hand, int num_valid_cards, card_t * valid_cards)
+void game_get_play(int play_hand, int num_valid_cards,
+		   card_t * valid_cards)
 {
 	ggz_debug(DBG_MAIN, "Handle play request.");
 
@@ -419,7 +428,8 @@ void game_get_play(int play_hand, int num_valid_cards, card_t * valid_cards)
 	else {
 		char buf[100];
 		snprintf(buf, sizeof(buf),
-			 _("It's your turn to play a card (from %s's hand)."),
+			 _
+			 ("It's your turn to play a card (from %s's hand)."),
 			 ggzcards.players[play_hand].name);
 		statusbar_message(buf);
 	}
@@ -504,7 +514,7 @@ void game_alert_play(int player, card_t card, int pos, int hand_pos)
 		   over.  But we leave that up to animation_start. */
 		if (!preferences.collapse_hand)
 			pos = hand_pos;
-		(void) animation_start(player, card, pos, -1);
+		(void)animation_start(player, card, pos, -1);
 	}
 
 	/* This probably isn't necessary at this point, but it's consistent to 
@@ -541,7 +551,8 @@ void game_alert_trick(int winner)
 {
 	char *t_str;
 
-	ggz_debug(DBG_MAIN, "Handling trick alert; player %d won.", winner);
+	ggz_debug(DBG_MAIN, "Handling trick alert; player %d won.",
+		  winner);
 
 #ifdef DEBUG
 	if (preferences.use_ai)
@@ -564,7 +575,8 @@ void game_alert_trick(int winner)
 
 int game_get_options(int option_cnt,
 		     char **descriptions,
-		     int *choice_cnt, int *defaults, char ***option_choices)
+		     int *choice_cnt, int *defaults,
+		     char ***option_choices)
 {
 	ggz_debug(DBG_MAIN, "Handling option request.");
 
@@ -641,12 +653,14 @@ static void text_cardlist_message(const char *mark, int *lengths,
 			for (i = 0; i < lengths[p]; i++) {
 				card_t card = cardlist[p][i];
 				snprintf(buf + strlen(buf),
-					 sizeof(buf) - strlen(buf), "%2s%s ",
+					 sizeof(buf) - strlen(buf),
+					 "%2s%s ",
 					 get_short_face_name(card.face),
 					 get_short_suit_name(card.suit));
 			}
 		}
-		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "\n");
+		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+			 "\n");
 	}
 
 	game_set_text_message(mark, buf);

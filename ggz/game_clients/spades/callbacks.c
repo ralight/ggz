@@ -2,7 +2,7 @@
  * File: callbacks.c
  * Author: Brent Hendricks
  * Project: NetSpades
- * $Id: callbacks.c 5165 2002-11-03 07:54:39Z jdorje $
+ * $Id: callbacks.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This file contains the functions which operate on the type card. See the
  * header file card.h for a better description of these functions.
@@ -53,22 +53,18 @@ void launch_game(GtkButton * button, gpointer user_data)
 	input_t *in = (input_t *) user_data;
 
 	options.endGame =
-		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(in->endGame));
+	    gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(in->endGame));
 	options.minBid =
-		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(in->minBid));
+	    gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(in->minBid));
 
 	CheckWriteInt(gameState.spadesSock, sizeof(options));
 	write(gameState.spadesSock, &options, sizeof(options));
 	g_printerr("Sent options\n");
 
-	/*DisplayInit();*/
+	/*DisplayInit(); */
 }
 
-void ExitDialog(GtkWidget *widget, gpointer user_data)
+void ExitDialog(GtkWidget * widget, gpointer user_data)
 {
 	ggz_show_exit_dialog(0, playArea->window);
 }
-
-
-
-

@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <gtk/gtk.h>
@@ -56,11 +56,12 @@ GtkWidget *CreateTauntArea(void)
 
 	/* Create the GtkText widget */
 	tauntDisplay =
-		gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
+	    gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(tauntDisplay), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(tauntDisplay),
 				    GTK_WRAP_WORD);
-	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(tauntDisplay), FALSE);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(tauntDisplay),
+					 FALSE);
 	gtk_widget_show(tauntDisplay);
 
 
@@ -72,8 +73,8 @@ GtkWidget *CreateTauntArea(void)
 	/* Taunt entry */
 	tauntBox = gtk_entry_new_with_max_length(256);
 	g_signal_connect_swapped(GTK_OBJECT(tauntBox), "activate",
-				  GTK_SIGNAL_FUNC(ReadTaunt),
-				  GTK_OBJECT(tauntBox));
+				 GTK_SIGNAL_FUNC(ReadTaunt),
+				 GTK_OBJECT(tauntBox));
 	gtk_widget_set_sensitive(tauntBox, FALSE);
 	gtk_widget_show(tauntBox);
 
@@ -81,8 +82,8 @@ GtkWidget *CreateTauntArea(void)
 	/* Taunt submit button */
 	button = gtk_button_new_with_label("Send");
 	g_signal_connect_swapped(GTK_OBJECT(button), "clicked",
-				  GTK_SIGNAL_FUNC(ReadTaunt),
-				  GTK_OBJECT(tauntBox));
+				 GTK_SIGNAL_FUNC(ReadTaunt),
+				 GTK_OBJECT(tauntBox));
 	gtk_widget_show(button);
 
 
@@ -171,12 +172,12 @@ void DisplayTaunt(char *taunt, int playerNum)
 	}
 
 	/* FIXME: color */
-	gtk_text_buffer_insert_at_cursor(
-		gtk_text_view_get_buffer(GTK_TEXT_VIEW(tauntDisplay)),
-		buf, -1);
-	gtk_text_buffer_insert_at_cursor(
-		gtk_text_view_get_buffer(GTK_TEXT_VIEW(tauntDisplay)),
-		"\n", -1);
+	gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer
+					 (GTK_TEXT_VIEW(tauntDisplay)),
+					 buf, -1);
+	gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer
+					 (GTK_TEXT_VIEW(tauntDisplay)),
+					 "\n", -1);
 
 	g_free(buf);
 

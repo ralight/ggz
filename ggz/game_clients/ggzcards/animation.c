@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 6271 2004-11-05 20:48:41Z jdorje $
+ * $Id: animation.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -29,7 +29,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#include <string.h>		/* for memset */
+#include <string.h>	/* for memset */
 #include <sys/time.h>
 #include <time.h>
 
@@ -48,11 +48,11 @@
 
 /* The delay before clearing cards off of the table (milliseconds). */
 #ifdef DEBUG
-	#define TABLE_CLEARING_DELAY	\
+#define TABLE_CLEARING_DELAY	\
 		(preferences.no_clearing_delay ? 100 \
 		 : (preferences.longer_clearing_delay ? 2000 : 1000))
 #else
-	#define TABLE_CLEARING_DELAY 100
+#define TABLE_CLEARING_DELAY 100
 #endif
 
 /* A backing store used only for animation.  It basically sits on top of
@@ -87,7 +87,8 @@ void anim_setup(void)
 		g_object_unref(anim_buf);
 
 	anim_buf = gdk_pixmap_new(table->window,
-				  get_table_width(), get_table_height(), -1);
+				  get_table_width(), get_table_height(),
+				  -1);
 
 	/* If this happened while we were animating, the animation would
 	 * be fubar.  But this should be impossible. */
@@ -115,7 +116,8 @@ int animation_start(int player, card_t card, int card_num, int destination)
 
 	/* The function could conceivably be called twice; in that case just
 	   return immediately. */
-	if (anim[player].animating && destination == anim[player].destination)
+	if (anim[player].animating
+	    && destination == anim[player].destination)
 		return FALSE;
 
 	/* If the card was _already_ placed out on the table, we don't want to 
@@ -127,7 +129,8 @@ int animation_start(int player, card_t card, int card_num, int destination)
 	    card.deck == table_cards[player].deck)
 		return FALSE;
 
-	if (animating && !preferences.multiple_animation && destination < 0) {
+	if (animating && !preferences.multiple_animation
+	    && destination < 0) {
 		int p;
 		/* If someone _else_ is animating, make them stop. This
 		   doesn't apply to off-table animation. */
@@ -258,7 +261,8 @@ static gint start_offtable_animation(gpointer winner)
 	for (p = 0; p < ggzcards.num_players; p++) {
 		card_t card = table_cards[p];
 
-		if (preferences.animation && card.suit >= 0 && card.face >= 0)
+		if (preferences.animation && card.suit >= 0
+		    && card.face >= 0)
 			if (!animation_start(p, card, -1, winning_player))
 				assert(0);
 
@@ -340,11 +344,11 @@ static gint animation_callback(gpointer ignored)
 
 		/* Calculate our new position */
 		anim[player].cur_x
-		  = anim[player].start_x
+		    = anim[player].start_x
 		    + (anim[player].dest_x - anim[player].start_x)
 		    * (mytime / total_time);
 		anim[player].cur_y
-		  = anim[player].start_y
+		    = anim[player].start_y
 		    + (anim[player].dest_y - anim[player].start_y)
 		    * (mytime / total_time);
 
@@ -386,7 +390,8 @@ static gint animation_callback(gpointer ignored)
 
 		/* Draw our new card position to the animation buffer */
 		draw_card(anim[player].card, 0,
-			  anim[player].cur_x, anim[player].cur_y, anim_buf);
+			  anim[player].cur_x, anim[player].cur_y,
+			  anim_buf);
 	}
 
 	/* Now draw from the animation buffer to the screen.  This could

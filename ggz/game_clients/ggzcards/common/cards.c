@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.c 4047 2002-04-22 01:07:22Z jdorje $
+ * $Id: cards.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -50,9 +50,10 @@ cardset_type_t get_cardset_type(void)
 	return cardset_type;
 }
 
-const card_t UNKNOWN_CARD = {face: UNKNOWN_FACE,
-                             suit: UNKNOWN_SUIT,
-                             deck: UNKNOWN_DECK};
+const card_t UNKNOWN_CARD = { face:UNKNOWN_FACE,
+      suit:UNKNOWN_SUIT,
+      deck:UNKNOWN_DECK
+};
 
 /* FIXME: a better system for returning names is needed.  It should
    be i18n'able, at least at the client. */
@@ -188,7 +189,7 @@ const char *get_face_name(char face)
 		}
 		break;
 	case UNKNOWN_CARDSET:
-		break;	
+		break;
 	}
 	return "[unknown face]";
 }
@@ -246,7 +247,7 @@ const char *get_short_face_name(char face)
 		}
 		break;
 	case UNKNOWN_CARDSET:
-		break;	
+		break;
 	}
 	return "X";
 }
@@ -256,23 +257,21 @@ int is_valid_card(card_t card)
 	switch (cardset_type) {
 	case UNKNOWN_CARDSET:
 		return card.face == UNKNOWN_FACE
-		       && card.suit == UNKNOWN_SUIT
-		       && card.deck == UNKNOWN_DECK;
+		    && card.suit == UNKNOWN_SUIT
+		    && card.deck == UNKNOWN_DECK;
 	case CARDSET_FRENCH:
 		return (card.face == UNKNOWN_FACE
-		        || (card.face >= ACE_LOW && card.face <= ACE_HIGH))
-		       && (card.suit == UNKNOWN_SUIT
-		           || (card.suit >= CLUBS && card.suit <= SPADES))
-		       && (card.deck == UNKNOWN_DECK
-		           || (card.deck >= 0));
+			|| (card.face >= ACE_LOW && card.face <= ACE_HIGH))
+		    && (card.suit == UNKNOWN_SUIT
+			|| (card.suit >= CLUBS && card.suit <= SPADES))
+		    && (card.deck == UNKNOWN_DECK || (card.deck >= 0));
 	case CARDSET_DOMINOES:
 		if (card.deck != UNKNOWN_DECK && card.deck < 0)
 			return FALSE;
 		if (card.suit == -1 && card.face == -1)
 			return TRUE;
 		return card.suit != -1
-		       && card.face != -1
-		       && card.suit >= card.face;
+		    && card.face != -1 && card.suit >= card.face;
 	}
 	return FALSE;
 }
@@ -281,7 +280,6 @@ int is_valid_card(card_t card)
 int are_cards_equal(card_t card1, card_t card2)
 {
 	return card1.suit == card2.suit
-	       && card1.face == card2.face
-	       && card1.deck == card2.deck
-	       /* && card1.type == card2.type */;
+	    && card1.face == card2.face && card1.deck == card2.deck
+	    /* && card1.type == card2.type */ ;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 6271 2004-11-05 20:48:41Z jdorje $
+ * $Id: dlg_prefs.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -37,7 +37,7 @@
 
 static void on_pref_toggled(GtkToggleButton * togglebutton, gpointer value)
 {
-	*(int *) value = togglebutton->active;
+	*(int *)value = togglebutton->active;
 }
 
 static void dlg_prefs_closed(GtkWidget * widget, gpointer data)
@@ -107,8 +107,8 @@ GtkWidget *create_dlg_prefs(void)
 	close_button = gtk_button_new_with_label(_("Close"));
 	gtk_widget_ref(close_button);
 	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
-			   0);
+	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE,
+			   FALSE, 0);
 	g_signal_connect_swapped(close_button, "clicked",
 				 GTK_SIGNAL_FUNC(dlg_prefs_closed),
 				 dialog);

@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Interface code
- * $Id: interface.h 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: interface.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -23,4 +23,4 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-GtkWidget* create_main_window (void);
+GtkWidget *create_main_window(void);

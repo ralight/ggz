@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game header
- * $Id: game.h 5122 2002-10-30 22:12:20Z jdorje $
+ * $Id: game.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -50,8 +50,8 @@ struct game_info_t {
 
 // Handle IO
 void game_handle_io(gpointer, gint, GdkInputCondition);
-void game_unit_list_handle (GtkCList *clist, gint row, gint column,
-	 													GdkEventButton *event, gpointer user_data);
+void game_unit_list_handle(GtkCList * clist, gint row, gint column,
+			   GdkEventButton * event, gpointer user_data);
 
 // Handle setup
 void game_handle_setup(int);
@@ -74,9 +74,8 @@ void game_handle_move(int);
 void game_send_setup(void);
 int game_send_options(GtkWidget *);
 void game_resync(void);
-gboolean game_refuse_options (GtkWidget       *widget,
-                              GdkEvent        *event,
-                              gpointer         user_data);
+gboolean game_refuse_options(GtkWidget * widget,
+			     GdkEvent * event, gpointer user_data);
 
 // Init variables
 void game_init(void);
@@ -92,8 +91,8 @@ void game_draw_terrain(int, int, int);
 void game_add_player_info(int);
 void game_update_unit_list(int);
 void game_update_player_name(int);
-void game_status(const char *format, ... );
-void game_message(const char *format, ... );
+void game_status(const char *format, ...);
+void game_message(const char *format, ...);
 void game_change_turn(void);
 
 // Player info widget
@@ -101,4 +100,4 @@ GtkWidget *gtk_player_info_new(GtkWidget *, char *, int);
 
 // Saves maps
 void game_ask_save_map(void);
-void game_confirm_save_map(GtkButton *, gpointer );
+void game_confirm_save_map(GtkButton *, gpointer);

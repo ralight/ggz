@@ -121,7 +121,8 @@ void ReadServerSocket(gpointer data, gint source, GdkInputCondition cond)
 			ConnectDialogReset(data);
 		else if (gameState.playerId < 0) {
 			ConnectDialogReset(data);
-			DisplayError("Sorry, server full.  Try again later");
+			DisplayError
+			    ("Sorry, server full.  Try again later");
 		} else {
 			UpdateGame();
 		}
@@ -130,7 +131,7 @@ void ReadServerSocket(gpointer data, gint source, GdkInputCondition cond)
 	case ST_GET_GAME:
 		if (GetGame() == NET_FAIL)
 			ConnectDialogReset(data);
-		else 
+		else
 			UpdateGame();
 		break;
 
@@ -139,13 +140,13 @@ void ReadServerSocket(gpointer data, gint source, GdkInputCondition cond)
 			ConnectDialogReset(data);
 		else {
 			UpdateGame();
-			
+
 			/* We're done registering now, so close the dialog box */
 			SafeCloseDialog();
-			
+
 			/* Next game State */
 			gameState.gameSegment = ST_GET_HAND;
-			
+
 			/* Game is starting now so initialize and clear the screen */
 			GameInit();
 			DisplayTable();
@@ -181,9 +182,9 @@ void ReadServerSocket(gpointer data, gint source, GdkInputCondition cond)
 		if (GetBid() == NET_OK) {
 			if (gameState.bids[gameState.curPlayer] ==
 			    BID_KNEEL)
-				    DisplayStatusLine("%s bid nil",
-						      gameState.players
-						      [gameState.curPlayer]);
+				DisplayStatusLine("%s bid nil",
+						  gameState.players
+						  [gameState.curPlayer]);
 			else
 				DisplayStatusLine("%s bid %d",
 						  gameState.players
@@ -273,7 +274,7 @@ void ReadServerSocket(gpointer data, gint source, GdkInputCondition cond)
 			}
 		}
 		break;
-	}			/* switch( gameState.gameSegment ) */
+	}	/* switch( gameState.gameSegment ) */
 }
 
 
@@ -293,6 +294,7 @@ void ReadTauntSocket(gpointer data, gint source, GdkInputCondition cond)
 
 	}
 }
+
 /* 
  * Timer for clearing table after a trick
  */ static gint TableClearTimer(gpointer data)

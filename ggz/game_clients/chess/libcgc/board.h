@@ -16,14 +16,14 @@ struct posnode {
 
 /* board.c */
 game_t *cgc_setup_table(void);
-int setup_board(piece_t **board);
+int setup_board(piece_t ** board);
 piece_t **cgc_get_empty_board(void);
-int cgc_free_board(piece_t **board);
+int cgc_free_board(piece_t ** board);
 int color(piece_t piece);
 piece_t cgc_piece_type(piece_t piece);
 unsigned int cgc_hash(char *str);
 void cgc_free_postab(struct posnode *postab[]);
 struct posnode *cgc_add_pos(struct posnode *postab[], char position[]);
-int cgc_getboard(char *output, piece_t **board);
+int cgc_getboard(char *output, piece_t ** board);
 
 #endif

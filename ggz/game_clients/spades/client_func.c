@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 6292 2004-11-07 05:45:19Z jdorje $
+ * $Id: client_func.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -29,24 +29,24 @@
  */
 
 
-#include <config.h>		/* Site config data */
+#include <config.h>	/* Site config data */
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <gtk/gtk.h>
-#include <unistd.h>		/* For getopt et. al */
-#include <stdlib.h>		/* For exit, atoi */
-#include <signal.h>		/* For signal */
+#include <unistd.h>	/* For getopt et. al */
+#include <stdlib.h>	/* For exit, atoi */
+#include <signal.h>	/* For signal */
 #include <sys/wait.h>
 
 #ifdef DEBUG_MEM
 # include <dmalloc.h>
 #endif
 
-#include <string.h>		/* For strcpy */
+#include <string.h>	/* For strcpy */
 
-#include <ggz.h>		/* libggz */
+#include <ggz.h>	/* libggz */
 #include <ggz_common.h>
 #include <ggzmod.h>
 
@@ -73,7 +73,7 @@ option_t options;
 static GGZMod *ggzmod = NULL;
 
 /* Event handlers for ggzmod */
-static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data);
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data);
 static void handle_ggz(gpointer data, gint source, GdkInputCondition cond);
 
 int CheckReadInt(int msgsock, int *message)
@@ -164,14 +164,14 @@ int CheckWriteString(int msgsock, const char *message)
 void AppInit(void)
 {
 	int i;
-		
+
 	gameState.get_opt = FALSE;
 	gameState.gameSegment = ST_GET_ID;
 
 	options.endGame = 100;
 	options.minBid = 3;
 	options.bitOpt = GAME_SPADES | MSK_NILS | MSK_BAGS | MSK_COMP_1
-		| MSK_COMP_2 | MSK_COMP_3;
+	    | MSK_COMP_2 | MSK_COMP_3;
 
 	/* Init dynamic memory to NULL */
 	gameState.record = NULL;
@@ -181,7 +181,8 @@ void AppInit(void)
 
 	/* use libggzmod to connect to GGZ.  --JDS */
 	ggzmod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER,
+			   &handle_ggzmod_server);
 	init_player_list(ggzmod);
 	ggzmod_connect(ggzmod);
 
@@ -190,13 +191,14 @@ void AppInit(void)
 }
 
 
-static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
 {
-	int fd = *(int*)data;
+	int fd = *(int *)data;
 
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
 	gameState.spadesSock = fd;
-	spadesHandle = gdk_input_add(fd, GDK_INPUT_READ, ReadServerSocket, NULL);
+	spadesHandle =
+	    gdk_input_add(fd, GDK_INPUT_READ, ReadServerSocket, NULL);
 }
 
 
@@ -278,8 +280,9 @@ int ParseOptions(int argc, char *argv[])
 			gameState.get_opt = TRUE;
 			break;
 		case 'V':
-			g_printerr("Gnu Gaming Zone spades client version %s\n", 
-				   VERSION);
+			g_printerr
+			    ("Gnu Gaming Zone spades client version %s\n",
+			     VERSION);
 			status = -1;
 			break;
 		default:
@@ -347,7 +350,9 @@ int GetPlayerId(void)
 	int status;
 	g_printerr("Getting my ID\n");
 
-	if ( (status = CheckReadInt(gameState.spadesSock, &gameState.playerId) == NET_OK))
+	if ((status =
+	     CheckReadInt(gameState.spadesSock,
+			  &gameState.playerId) == NET_OK))
 		g_printerr("My ID is %d\n", gameState.playerId);
 
 	/* If we're player 0, read in game options */
@@ -355,7 +360,7 @@ int GetPlayerId(void)
 		OptionsDialog(NULL, NULL);
 
 #if 0
-	    NET_OK 
+	NET_OK
 	    && gameState.playerId > -1
 	    && CheckWriteString(gameState.spadesSock,
 				gameState.userName) == NET_OK
@@ -389,7 +394,8 @@ int GetGame(void)
 	if (CheckReadInt(gameState.spadesSock, &(gameState.gameNum)) ==
 	    NET_OK
 	    && CheckReadInt(gameState.spadesSock,
-			    &(gameState.playerId)) == NET_OK) status =
+			    &(gameState.playerId)) == NET_OK)
+		status =
 		    CheckReadInt(gameState.spadesSock,
 				 &(gameState.gamePid));
 
@@ -408,13 +414,12 @@ int GetPlayers(void)
 	int i, status = NET_FAIL;
 
 	for (i = 0; i < 4; i++) {
-		if (
-		    (status =
+		if ((status =
 		     CheckReadString(gameState.spadesSock,
 				     &gameState.players[i])) == NET_FAIL)
 			break;
 		ggz_debug("main", "Player %d is named %s", i,
-			gameState.players[i]);
+			  gameState.players[i]);
 	}
 
 	/*Send back id as OK */
@@ -453,7 +458,7 @@ int GetHand(void)
 		    CheckWriteInt(gameState.spadesSock,
 				  gameState.playerId);
 	}
-	
+
 	return status;
 }
 
@@ -484,7 +489,8 @@ int GetBid(void)
 	int status = NET_FAIL;
 
 	if (CheckReadInt(gameState.spadesSock,
-			 &(gameState.bids[gameState.curPlayer])) == NET_OK) {
+			 &(gameState.bids[gameState.curPlayer])) ==
+	    NET_OK) {
 		status =
 		    CheckWriteInt(gameState.spadesSock,
 				  gameState.playerId);
@@ -622,9 +628,9 @@ int GetScores(void)
 	if (status == NET_OK && (gameState.gameOver & GAME_OVER)) {
 		gameState.gameCount++;
 		gameState.record =
-		    (int *) realloc(gameState.record,
-				    2 * (gameState.gameCount) *
-				    sizeof(int));
+		    (int *)realloc(gameState.record,
+				   2 * (gameState.gameCount) *
+				   sizeof(int));
 		gameState.record[2 * gameState.gameCount - 2] =
 		    gameState.scores[0];
 		gameState.record[2 * gameState.gameCount - 1] =
@@ -734,7 +740,7 @@ void UpdateGame(void)
 		}
 		break;
 
-	}			/*switch( gameState.gameSegment ) */
+	}	/*switch( gameState.gameSegment ) */
 
 #ifdef DEBUG
 	DisplayStatusLine("Current game state : %d",
@@ -750,7 +756,7 @@ void NetClose(void)
 	g_printerr("I'm dying 2\n");
 	gdk_input_remove(spadesHandle);
 	if (ggzmod_disconnect(ggzmod) < 0)
-		exit(-2); /* is this the desired behavior? */
+		exit(-2);	/* is this the desired behavior? */
 	ggzmod_free(ggzmod);
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 6271 2004-11-05 20:48:41Z jdorje $
+ * $Id: dlg_bid.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -106,7 +106,8 @@ void dlg_bid_display(int possible_bids,
 
 	for (i = 0; i < possible_bids; i++) {
 		int x, y;
-		GtkWidget *button = gtk_button_new_with_label(bid_texts[i]);
+		GtkWidget *button =
+		    gtk_button_new_with_label(bid_texts[i]);
 
 		/* trickery - we don't pass a pointer to the data but the data 
 		   itself */
@@ -147,17 +148,19 @@ void dlg_bid_display(int possible_bids,
 		get_fulltable_dim(&x, &y, &w, &h);
 		gtk_widget_set_size_request(window, w - 2 * XWIDTH,
 					    h - 2 * XWIDTH);
-		(void) gtk_fixed_put(GTK_FIXED(table), window,
-				     x + XWIDTH, y + XWIDTH);
+		(void)gtk_fixed_put(GTK_FIXED(table), window,
+				    x + XWIDTH, y + XWIDTH);
 
 		/* This seems to be necessary... */
-		table_show_table(0, 0, get_table_width(), get_table_height());
+		table_show_table(0, 0, get_table_width(),
+				 get_table_height());
 	} else {
 		/* Create a dialog window to place the table_box in. */
 		window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_transient_for(GTK_WINDOW(window),
 					     GTK_WINDOW(dlg_main));
-		gtk_window_set_title(GTK_WINDOW(window), _("Bid Selection"));
+		gtk_window_set_title(GTK_WINDOW(window),
+				     _("Bid Selection"));
 		gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 		gtk_container_add(GTK_CONTAINER(window), table_box);
 

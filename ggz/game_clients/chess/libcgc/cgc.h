@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-typedef struct game game_t;
-typedef struct move move_t;
+	typedef struct game game_t;
+	typedef struct move move_t;
 
 #include "board.h"
 #include "games.h"
@@ -20,7 +20,7 @@ typedef struct move move_t;
  */
 
 /* Requested move is invalid  */
-#define E_BADMOVE -1 
+#define E_BADMOVE -1
 
 /* Attempt to play even though both parties aren't in the game */
 #define E_PLAYERALONE -2
@@ -50,17 +50,16 @@ typedef struct move move_t;
 #define DRAW_MOVECOUNT 3
 #define DRAW_POSREP 4
 #define DRAW_INSUFFICIENT 5
-#define CHECK 6 
+#define CHECK 6
 #define MATE 7
 
-game_t *cgc_create_game(void);
-int cgc_join_game(game_t *game, int color);
-int cgc_make_move(game_t *game, char *move);
-int cgc_has_sufficient(game_t *game, int color);
-void cgc_free_game(game_t *game);
+	game_t *cgc_create_game(void);
+	int cgc_join_game(game_t * game, int color);
+	int cgc_make_move(game_t * game, char *move);
+	int cgc_has_sufficient(game_t * game, int color);
+	void cgc_free_game(game_t * game);
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif

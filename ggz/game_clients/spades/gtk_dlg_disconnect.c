@@ -53,7 +53,8 @@ void DisconnectDialog(GtkWidget * widget, gpointer data)
 	GtkWidget *noButton;
 
 	window = gtk_dialog_new();
-	gtk_window_set_title(GTK_WINDOW(window), _("Disconnect from Server"));
+	gtk_window_set_title(GTK_WINDOW(window),
+			     _("Disconnect from Server"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
@@ -67,14 +68,14 @@ void DisconnectDialog(GtkWidget * widget, gpointer data)
 	yesButton = gtk_button_new_with_label(_("Yes"));
 
 	g_signal_connect(GTK_OBJECT(yesButton), "clicked",
-			   GTK_SIGNAL_FUNC(Disconnect), NULL);
+			 GTK_SIGNAL_FUNC(Disconnect), NULL);
 	g_signal_connect_swapped(GTK_OBJECT(yesButton), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(window));
+				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 GTK_OBJECT(window));
 
 	g_signal_connect_swapped(GTK_OBJECT(noButton), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(window));
+				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 GTK_OBJECT(window));
 
 	gtk_widget_show(noButton);
 	gtk_widget_show(yesButton);

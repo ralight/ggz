@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
+ * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <assert.h>
@@ -60,11 +60,11 @@ static void handle_ggz(gpointer data, gint source, GdkInputCondition cond);
 
 static void initialize_about_dialog(void);
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
 	ggz_intl_init("tictactoe");
-		
-	gtk_init (&argc, &argv);
+
+	gtk_init(&argc, &argv);
 	initialize_about_dialog();
 
 	main_win = create_main_win();
@@ -76,7 +76,8 @@ int main(int argc, char* argv[])
 	init_chat(game.ggzmod);
 	init_player_list(game.ggzmod);
 	ggzmod_connect(game.ggzmod);
-	gdk_input_add(ggzmod_get_fd(game.ggzmod), GDK_INPUT_READ, handle_ggz, NULL);
+	gdk_input_add(ggzmod_get_fd(game.ggzmod), GDK_INPUT_READ,
+		      handle_ggz, NULL);
 
 	game_status(_("Watching the game..."));
 
@@ -84,7 +85,7 @@ int main(int argc, char* argv[])
 
 	if (ggzmod_disconnect(game.ggzmod) < 0)
 		return -1;
-	
+
 	ggzmod_free(game.ggzmod);
 	return 0;
 }
@@ -92,9 +93,9 @@ int main(int argc, char* argv[])
 static void initialize_about_dialog(void)
 {
 	const char *content =
-	  _("Copyright (C) 2000 by Brent Hendricks\n"
-	    "\n"
-	    "Website: http://www.ggzgamingzone.org/games/tictactoe/");
+	    _("Copyright (C) 2000 by Brent Hendricks\n"
+	      "\n"
+	      "Website: http://www.ggzgamingzone.org/games/tictactoe/");
 	char *header;
 
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"
@@ -115,9 +116,10 @@ static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 }
 
 
-static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
+static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
+				 void *data)
 {
-	int fd = *(int*)data;
+	int fd = *(int *)data;
 
 	ggzmod_set_state(game.ggzmod, GGZMOD_STATE_PLAYING);
 	game.fd = fd;
@@ -131,48 +133,48 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	int op;
 
 	if (ggz_read_int(source, &op) < 0) {
-		/* FIXME: do something here...*/
+		/* FIXME: do something here... */
 		return;
 	}
-	
-	switch(op) {
-		
+
+	switch (op) {
+
 	case TTT_MSG_SEAT:
 		receive_seat();
 		break;
-		
+
 	case TTT_MSG_PLAYERS:
 		receive_players();
 		game.state = STATE_WAIT;
 		break;
-		
+
 	case TTT_REQ_MOVE:
 		game.state = STATE_MOVE;
 		game_status(_("It's your move."));
 		break;
-		
+
 	case TTT_RSP_MOVE:
 		receive_move_status();
 		display_board();
 		break;
-		
+
 	case TTT_MSG_MOVE:
 		receive_move();
 		display_board();
 		break;
-		
+
 	case TTT_SND_SYNC:
 		receive_sync();
 		display_board();
 		break;
-		
+
 	case TTT_MSG_GAMEOVER:
 		receive_gameover();
 		game.state = STATE_DONE;
 		break;
 	}
 
-}		
+}
 
 
 int receive_seat(void)
@@ -181,7 +183,7 @@ int receive_seat(void)
 
 	if (ggz_read_int(game.fd, &game.num) < 0)
 		return -1;
-	
+
 	return 0;
 }
 
@@ -194,9 +196,10 @@ int receive_players(void)
 	for (i = 0; i < 2; i++) {
 		if (ggz_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
-		
+
 		if (game.seats[i] != GGZ_SEAT_OPEN) {
-			if (ggz_read_string(game.fd, (char*)&game.names[i], 17) < 0)
+			if (ggz_read_string
+			    (game.fd, (char *)&game.names[i], 17) < 0)
 				return -1;
 			game_status(_("%s is %c."),
 				    game.names[i], get_player_symbol(i));
@@ -223,11 +226,12 @@ int receive_move(void)
 
 	if (game.num < 0)
 		game_status(_("%s (%c) has moved."),
-			    game.names[nummove], get_player_symbol(nummove));
+			    game.names[nummove],
+			    get_player_symbol(nummove));
 	else
 		game_status(_("Your opponent has moved."));
 
-	game.board[move] = (nummove == 1 ? 'o' : 'x');	
+	game.board[move] = (nummove == 1 ? 'o' : 'x');
 
 	return 0;
 }
@@ -238,22 +242,22 @@ int receive_sync(void)
 	int i;
 	char turn;
 	char space;
-	
+
 	game_status(_("Syncing with server..."));
-	
+
 	if (ggz_read_char(game.fd, &turn) < 0)
 		return -1;
 
 	game_status(_("It's %s (%c)'s turn."),
 		    game.names[(int)turn], get_player_symbol(turn));
-	
-        for (i = 0; i < 9; i++) {
+
+	for (i = 0; i < 9; i++) {
 		if (ggz_read_char(game.fd, &space) < 0)
 			return -1;
 		if (space >= 0)
 			game.board[i] = (space == 0 ? 'x' : 'o');
 	}
-	
+
 	game_status(_("Sync completed."));
 	return 0;
 }
@@ -267,7 +271,7 @@ int receive_gameover(void)
 
 	if (ggz_read_char(game.fd, &winner) < 0)
 		return -1;
-	
+
 	switch (winner) {
 	case 0:
 	case 1:
@@ -291,13 +295,14 @@ void game_init(void)
 {
 	int i;
 	GGZMod *ggzmod;
-	
+
 	for (i = 0; i < 9; i++)
 		game.board[i] = ' ';
 
 	game.state = STATE_INIT;
 	ggzmod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER,
+			   &handle_ggzmod_server);
 	game.ggzmod = ggzmod;
 	game.num = -1;
 }
@@ -305,7 +310,8 @@ void game_init(void)
 
 int send_my_move(void)
 {
-	if(game.num < 0) return -1;
+	if (game.num < 0)
+		return -1;
 	game_status(_("Sending move."));
 	if (ggz_write_int(game.fd, TTT_SND_MOVE) < 0
 	    || ggz_write_int(game.fd, game.move) < 0)
@@ -316,7 +322,7 @@ int send_my_move(void)
 }
 
 
-int send_options(void) 
+int send_options(void)
 {
 	game_status(_("Sending options."));
 	return (ggz_write_int(game.fd, 0));
@@ -326,11 +332,11 @@ int send_options(void)
 int receive_move_status(void)
 {
 	char status;
-	
+
 	if (ggz_read_char(game.fd, &status) < 0)
 		return -1;
 
-	switch(status) {
+	switch (status) {
 	case TTT_ERR_STATE:
 		game_status(_("Server not ready!!"));
 		break;

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 6270 2004-11-05 19:26:41Z jdorje $
+ * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -57,16 +57,16 @@ static void initialize_about_dialog(void);
 
 static GGZMod *mod;
 
-static gboolean handle_ggz(GIOChannel *source, GIOCondition condition,
+static gboolean handle_ggz(GIOChannel * source, GIOCondition condition,
 			   gpointer data)
 {
 	ggzmod_dispatch(mod);
 	return TRUE;
 }
 
-static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
 {
-	int fd = *(int*)data;
+	int fd = *(int *)data;
 	GIOChannel *channel = g_io_channel_unix_new(fd);
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
@@ -74,7 +74,8 @@ static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
 	g_io_add_watch(channel, G_IO_IN, net_handle_input, NULL);
 }
 
-int main(int argc, char *argv[]) {	
+int main(int argc, char *argv[])
+{
 	int ret;
 
 	initialize_debugging();
@@ -100,7 +101,8 @@ int main(int argc, char *argv[]) {
 	game_update(CHESS_EVENT_INIT, NULL);
 
 	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
+			   &handle_ggzmod_server);
 	init_player_list(mod);
 
 	ret = ggzmod_connect(mod);
@@ -111,7 +113,7 @@ int main(int argc, char *argv[]) {
 		       G_IO_IN, handle_ggz, NULL);
 
 	gtk_main();
-	
+
 	if (ggzmod_disconnect(mod) < 0)
 		return -2;
 	ggzmod_free(mod);
@@ -133,11 +135,11 @@ static void initialize_debugging(void)
 #endif
 	/* Debugging goes to ~/.ggz/chess-gtk.debug */
 	char *file_name =
-		g_strdup_printf("%s/.ggz/chess-gtk.debug", getenv("HOME"));
+	    g_strdup_printf("%s/.ggz/chess-gtk.debug", getenv("HOME"));
 	ggz_debug_init(debugging_types, file_name);
 	g_free(file_name);
 
-	ggz_debug("main", "Starting chess client.");	
+	ggz_debug("main", "Starting chess client.");
 }
 
 
@@ -157,12 +159,12 @@ static void cleanup_debugging(void)
 
 static void initialize_about_dialog(void)
 {
-  char *header;
-  header = g_strdup_printf(_("GGZ Gaming Zone\n"
-			     "Chess Version %s"), VERSION);
-  init_dlg_about(_("About Chess"), header,
-		 _("Copyright (C) 2001 Ismael Orenstein.\n"
-		   "\n"
-		   "Website: http://www.ggzgamingzone.org/games/chess/"));
-  g_free(header);
+	char *header;
+	header = g_strdup_printf(_("GGZ Gaming Zone\n"
+				   "Chess Version %s"), VERSION);
+	init_dlg_about(_("About Chess"), header,
+		       _("Copyright (C) 2001 Ismael Orenstein.\n"
+			 "\n"
+			 "Website: http://www.ggzgamingzone.org/games/chess/"));
+	g_free(header);
 }

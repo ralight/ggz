@@ -23,11 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: games.c 3990 2002-04-15 07:23:26Z jdorje $
+ *  $Id: games.c 6293 2004-11-07 05:51:47Z jdorje $
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdlib.h>
@@ -41,8 +41,7 @@ struct game *gamelist = NULL;
 
 static void remove_game(struct game *delgame);
 
-int
-cgc_handle_move(struct game *curgame, char *move)
+int cgc_handle_move(struct game *curgame, char *move)
 {
 	struct posnode *posn = NULL;
 	int fs, fd;
@@ -50,37 +49,41 @@ cgc_handle_move(struct game *curgame, char *move)
 	int promote = 0;
 	int status = 0;
 	int retval;
-	piece_t ekf, ekr; /* Enemy king file and rank */
-	char pos[75];	
+	piece_t ekf, ekr;	/* Enemy king file and rank */
+	char pos[75];
 
-	if(curgame == NULL)
+	if (curgame == NULL)
 		return E_NOGAME;
 
-	if(!strcmp("O-O",move)) {
-		if(curgame->onmove == WHITE)
-			strcpy(move,"E1G1");
-		if(curgame->onmove == BLACK)
-			strcpy(move,"E8G8");
-	} else if(!strcmp("O-O-O",move)) {
-		if(curgame->onmove == WHITE)
+	if (!strcmp("O-O", move)) {
+		if (curgame->onmove == WHITE)
+			strcpy(move, "E1G1");
+		if (curgame->onmove == BLACK)
+			strcpy(move, "E8G8");
+	} else if (!strcmp("O-O-O", move)) {
+		if (curgame->onmove == WHITE)
 			strcpy(move, "E1C1");
-		if(curgame->onmove == BLACK)
+		if (curgame->onmove == BLACK)
 			strcpy(move, "E8C8");
 	}
- 
+
 	fs = move[0] - 'A';
 	rs = move[1] - '0' - 1;
 	fd = move[2] - 'A';
 	rd = move[3] - '0' - 1;
 
-	if(move[4] == 'Q') promote = QUEEN;
-	if(move[4] == 'N') promote = KNIGHT;
-	if(move[4] == 'B') promote = BISHOP;
-	if(move[4] == 'R') promote = ROOK;
+	if (move[4] == 'Q')
+		promote = QUEEN;
+	if (move[4] == 'N')
+		promote = KNIGHT;
+	if (move[4] == 'B')
+		promote = BISHOP;
+	if (move[4] == 'R')
+		promote = ROOK;
 
 	status = OK;
 
-	if(curgame->onmove == WHITE)
+	if (curgame->onmove == WHITE)
 		ekr = curgame->bkr, ekf = curgame->bkf;
 	else
 		ekr = curgame->wkr, ekf = curgame->wkf;
@@ -91,10 +94,11 @@ cgc_handle_move(struct game *curgame, char *move)
 	 * which will perform the actual move operation.
 	 */
 
-	if((retval = cgc_valid_move(curgame, fs, rs, fd, rd, promote)) != VALID)
+	if ((retval =
+	     cgc_valid_move(curgame, fs, rs, fd, rd, promote)) != VALID)
 		return retval;
 
-		
+
 	/* Make the move */
 
 	cgc_register_move(curgame, fs, rs, fd, rd, promote);
@@ -102,7 +106,7 @@ cgc_handle_move(struct game *curgame, char *move)
 	cgc_do_move(curgame, fs, rs, fd, rd, promote);
 	++curgame->hmcount;
 
-	switch(cgc_check_state(curgame, ekf, ekr)) {
+	switch (cgc_check_state(curgame, ekf, ekr)) {
 	case MATE:
 		status = MATE;
 		break;
@@ -110,15 +114,15 @@ cgc_handle_move(struct game *curgame, char *move)
 		status = CHECK;
 		break;
 	default:
-		if(cgc_is_stale(curgame, ekf, ekr))
+		if (cgc_is_stale(curgame, ekf, ekr))
 			status = DRAW_STALE;
-		if(!cgc_has_sufficient(curgame, WHITE) &&
-		   !cgc_has_sufficient(curgame, BLACK))
+		if (!cgc_has_sufficient(curgame, WHITE) &&
+		    !cgc_has_sufficient(curgame, BLACK))
 			status = DRAW_INSUFFICIENT;
 		break;
 	}
-	
-	if(curgame->hmcount == 100) {
+
+	if (curgame->hmcount == 100) {
 		status = DRAW_MOVECOUNT;
 	}
 
@@ -126,10 +130,10 @@ cgc_handle_move(struct game *curgame, char *move)
 
 	posn = cgc_add_pos(curgame->postab, pos);
 
-	if(posn->count >= 3)
+	if (posn->count >= 3)
 		status = DRAW_POSREP;
 
-	switch(status) {
+	switch (status) {
 	case CHECK:
 	case OK:
 		return status;
@@ -142,25 +146,24 @@ cgc_handle_move(struct game *curgame, char *move)
 	/* NOTREACHED */
 }
 
-int
-cgc_join_table(struct game *joined, int color)
+int cgc_join_table(struct game *joined, int color)
 {
-	if(joined == NULL)
+	if (joined == NULL)
 		return E_NOGAME;
-	
-	switch(color) {
+
+	switch (color) {
 	case BLACK:
-		if(!joined->player2)
+		if (!joined->player2)
 			joined->player2 = 1;
-		else if(!joined->player1)
+		else if (!joined->player1)
 			return E_SEATFULL;
 		else
 			return E_GAMEFULL;
 		break;
 	case WHITE:
-		if(!joined->player1)
+		if (!joined->player1)
 			joined->player1 = 1;
-		else if(!joined->player2)
+		else if (!joined->player2)
 			return E_SEATFULL;
 		else
 			return E_GAMEFULL;
@@ -170,8 +173,7 @@ cgc_join_table(struct game *joined, int color)
 	return OK;
 }
 
-static struct game *
-new_gameslot(void)
+static struct game *new_gameslot(void)
 {
 	struct game *newgame;
 	int i;
@@ -182,10 +184,10 @@ new_gameslot(void)
 
 	newgame->board = cgc_get_empty_board();
 
-	for( i=0; i < NHASH; i++)
+	for (i = 0; i < NHASH; i++)
 		newgame->postab[i] = NULL;
 
-	if(gamelist == NULL) {
+	if (gamelist == NULL) {
 		gamelist = newgame;
 		gamelist->next = gamelist->prev = NULL;
 		gamelist->gid = 1;
@@ -193,41 +195,40 @@ new_gameslot(void)
 		newgame->next = gamelist;
 		newgame->prev = NULL;
 		gamelist = newgame;
-		gamelist->gid = gamelist->next->gid + 1; 
+		gamelist->gid = gamelist->next->gid + 1;
 	}
-	
+
 	return newgame;
 }
 
-static void
-remove_game(struct game *delgame)
+static void remove_game(struct game *delgame)
 {
 	struct move *walker;
 
-	if(delgame->prev) {  /* If we aren't the first */
-		if(delgame->next) { /* And we aren't the last */
+	if (delgame->prev) {	/* If we aren't the first */
+		if (delgame->next) {	/* And we aren't the last */
 			delgame->prev->next = delgame->next;
 			delgame->next->prev = delgame->prev;
-		} else { /* If we aren't the first but are the last */
+		} else {	/* If we aren't the first but are the last */
 			delgame->prev->next = NULL;
 		}
-	} else { /* If we are the first */
-		if(delgame->next) { /* But aren't the last */
+	} else {	/* If we are the first */
+		if (delgame->next) {	/* But aren't the last */
 			delgame->next->prev = NULL;
 			gamelist = delgame->next;
-		} else { /* We're the first and the last */
+		} else {	/* We're the first and the last */
 			gamelist = NULL;
 		}
 	}
 
-	if(delgame->movelist && delgame->movelist->next) {
+	if (delgame->movelist && delgame->movelist->next) {
 		walker = delgame->movelist->next;
-		while(walker) {
+		while (walker) {
 			free(walker->prev);
 			walker->prev = NULL;
 			walker = walker->next;
 		}
-	} else if(delgame->movelist)
+	} else if (delgame->movelist)
 		free(delgame->movelist);
 
 	cgc_free_postab(delgame->postab);
@@ -235,8 +236,7 @@ remove_game(struct game *delgame)
 	free(delgame);
 }
 
-game_t *
-cgc_setup_table(void)
+game_t *cgc_setup_table(void)
 {
 	struct game *slot;
 
@@ -260,17 +260,14 @@ cgc_setup_table(void)
 	slot->wkcastle = slot->wqcastle = 1;
 	slot->bkcastle = slot->bqcastle = 1;
 
-	strcpy(slot->lastmove,"none");
+	strcpy(slot->lastmove, "none");
 
 	return slot;
 }
 
-int
-cgc_game_over(struct game *curgame)
+int cgc_game_over(struct game *curgame)
 {
-        
-        remove_game(curgame);
-        return 0;
+
+	remove_game(curgame);
+	return 0;
 }
-
-

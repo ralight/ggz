@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Chess game module
  * Desc: Chess client main window creation
- * $Id: main_win.h 4896 2002-10-12 23:06:58Z jdorje $
+ * $Id: main_win.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -22,4 +22,4 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-GtkWidget* create_main_win (void);
+GtkWidget *create_main_win(void);

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 2001
  * Desc: Support code
- * $Id: support.h 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: support.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -35,14 +35,13 @@
  * or alternatively any widget in the component, and the name of the widget
  * you want returned.
  */
-GtkWidget*  lookup_widget              (GtkWidget       *widget,
-                                        const gchar     *widget_name);
+GtkWidget *lookup_widget(GtkWidget * widget, const gchar * widget_name);
 
 /* get_widget() is deprecated. Use lookup_widget instead. */
 #define get_widget lookup_widget
 
 /* Use this function to set the directory containing installed pixmaps. */
-void        add_pixmap_directory       (const gchar     *directory);
+void add_pixmap_directory(const gchar * directory);
 
 
 /*
@@ -50,6 +49,4 @@ void        add_pixmap_directory       (const gchar     *directory);
  */
 
 /* This is used to create the pixmaps in the interface. */
-GtkWidget*  create_pixmap              (GtkWidget       *widget,
-                                        const gchar     *filename);
-
+GtkWidget *create_pixmap(GtkWidget * widget, const gchar * filename);

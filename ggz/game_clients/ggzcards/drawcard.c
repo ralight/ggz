@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 6271 2004-11-05 20:48:41Z jdorje $
+ * $Id: drawcard.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -35,8 +35,8 @@
 
 #include "cards.h"
 #include "drawcard.h"
-#include "game.h"		/* For preferences information */
-#include "table.h"		/* HACK: we need table_style */
+#include "game.h"	/* For preferences information */
+#include "table.h"	/* HACK: we need table_style */
 
 /* Card pictures for each of the 4 orientations */
 struct {
@@ -66,7 +66,7 @@ static GdkPixbuf *load_pixmap(const char *name)
 
 	fullpath = g_strdup_printf("%s/pixmaps/%s", GGZDATADIR, name);
 	image = gdk_pixbuf_new_from_file(fullpath, &error);
-	if(image == NULL)
+	if (image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);
 
@@ -142,7 +142,7 @@ static void get_card_coordinates(card_t card, orientation_t orientation,
 		xc = 13 - yp - 1;
 		yc = xp;
 		break;
-	case FACE_TOP:		/* just mirror everything */
+	case FACE_TOP:	/* just mirror everything */
 		xc = 4 - xp - 1;
 		yc = 13 - yp - 1;
 		break;
@@ -227,11 +227,10 @@ static void draw_domino_card(card_t card, orientation_t orientation,
 	assert(get_card_width0() - 1 == 2 * h);
 
 	gdk_draw_rectangle(image,
-			   show ? table_style->bg_gc[GTK_WIDGET_STATE(table)]
+			   show ? table_style->
+			   bg_gc[GTK_WIDGET_STATE(table)]
 			   : table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE,
-			   x, y,
-			   get_card_width(orientation),
+			   TRUE, x, y, get_card_width(orientation),
 			   get_card_height(orientation));
 
 	if (!show)
@@ -332,12 +331,12 @@ int get_card_height(orientation_t orientation)
 
 float get_card_visibility_width(void)
 {
-	float width = (float) get_card_width0();
+	float width = (float)get_card_width0();
 	switch (client_card_type) {
 	case CARDSET_FRENCH:
 		return width / 5.0;
 	case CARDSET_DOMINOES:
-		return width + (float) CARD_OFFSET;
+		return width + (float)CARD_OFFSET;
 	default:
 		return 0.0;
 	}
@@ -345,6 +344,6 @@ float get_card_visibility_width(void)
 
 float get_card_visibility_height(void)
 {
-	float height = (float) get_card_height0();
-	return height + (float) CARD_OFFSET;
+	float height = (float)get_card_height0();
+	return height + (float)CARD_OFFSET;
 }

@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/25/2002
  * Desc: Main window menus
- * $Id: menus.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: menus.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * The point of this file is to help games to achieve a consistent look
  * and feel in their menus.  The TABLE_MENU and HELP_MENU should be used
@@ -40,15 +40,16 @@ static GtkItemFactory *menu = NULL;
 
 static void set_menu_active(const char *item, gboolean active);
 
-GtkWidget *ggz_create_menus(GtkWidget *window,
-			    GtkItemFactoryEntry *items,
+GtkWidget *ggz_create_menus(GtkWidget * window,
+			    GtkItemFactoryEntry * items,
 			    const unsigned int num_items)
 {
 	GtkAccelGroup *accel_group = gtk_accel_group_new();
 
 	assert(menu == NULL);
 
-	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
+	menu =
+	    gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
 	gtk_item_factory_create_items(menu, num_items, items, NULL);
 	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 

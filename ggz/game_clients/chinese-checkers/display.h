@@ -26,9 +26,9 @@ extern GtkWidget *dlg_main;
 
 extern int display_init(void);
 void display_resized(void);
-extern void display_handle_expose_event(GdkEventExpose *event);
+extern void display_handle_expose_event(GdkEventExpose * event);
 extern void display_refresh_board(void);
-extern void display_handle_click_event(GdkEventButton *event);
+extern void display_handle_click_event(GdkEventButton * event);
 extern void display_statusbar(char *);
 extern void display_show_path(GSList *);
 extern void display_set_name(int, char *);

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Header for board.c
- * $Id: board.h 6240 2004-11-03 19:24:53Z jdorje $
+ * $Id: board.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -48,7 +48,7 @@ int board_translate(int cgc_val);
 
 /* dnd stuff */
 void board_dnd_init(void);
-void board_dnd_highlight( int x, int y, GdkDragContext *drag_context );
+void board_dnd_highlight(int x, int y, GdkDragContext * drag_context);
 
 /* info (labels and move list) */
 void board_info_init(void);
@@ -70,6 +70,4 @@ void board_request_update(void);
 int board_auto_call(void);
 
 /* Promote hack */
-void
-promote_piece                          (GtkButton       *button,
-                                        gpointer         user_data);
+void promote_piece(GtkButton * button, gpointer user_data);

@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 6283 2004-11-06 04:36:45Z jdorje $
+ * $Id: dlg_players.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>		/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <assert.h>
@@ -58,11 +58,11 @@ static PlayerLists *player_lists = NULL;
 static GtkWidget *dlg_players = NULL;
 static int num_entries = 0;
 
-static void update_player_list(GtkWidget *tree);
+static void update_player_list(GtkWidget * tree);
 static void update_player_dialog(void);
 
-static gboolean player_list_button_event(GtkWidget *widget,
-					 GdkEventButton *event,
+static gboolean player_list_button_event(GtkWidget * widget,
+					 GdkEventButton * event,
 					 gpointer data);
 
 void update_player_lists(void)
@@ -75,22 +75,25 @@ void update_player_lists(void)
 		update_player_list(list->this);
 }
 
-static void handle_ggz_seat_event(GGZMod *ggzmod, GGZModEvent e, void *data)
+static void handle_ggz_seat_event(GGZMod * ggzmod, GGZModEvent e,
+				  void *data)
 {
 	update_player_lists();
 }
 
-void init_player_list(GGZMod *ggzmod)
+void init_player_list(GGZMod * ggzmod)
 {
 	ggz = ggzmod;
 	assert(ggz);
-	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SEAT, handle_ggz_seat_event);
+	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SEAT,
+			   handle_ggz_seat_event);
 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SPECTATOR_SEAT,
 			   handle_ggz_seat_event);
-	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_STATE, handle_ggz_seat_event);
+	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_STATE,
+			   handle_ggz_seat_event);
 }
 
-static void update_player_list(GtkWidget *tree)
+static void update_player_list(GtkWidget * tree)
 {
 	int p, num;
 	GtkListStore *store = g_object_get_data(G_OBJECT(tree), "store");
@@ -136,11 +139,10 @@ static void update_player_list(GtkWidget *tree)
 
 		gtk_list_store_set(store, &iter,
 				   PLAYER_COLUMN_SEAT, num,
-				   PLAYER_COLUMN_ISSPECTATOR, (gboolean)FALSE,
-				   PLAYER_COLUMN_SEATNUM, (gint)p,
-				   PLAYER_COLUMN_TYPE, status,
-				   PLAYER_COLUMN_NAME, name,
-				   -1);
+				   PLAYER_COLUMN_ISSPECTATOR,
+				   (gboolean) FALSE, PLAYER_COLUMN_SEATNUM,
+				   (gint) p, PLAYER_COLUMN_TYPE, status,
+				   PLAYER_COLUMN_NAME, name, -1);
 
 		num_entries++;
 	}
@@ -157,11 +159,11 @@ static void update_player_list(GtkWidget *tree)
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter,
 				   PLAYER_COLUMN_SEAT, "-",
-				   PLAYER_COLUMN_ISSPECTATOR, (gboolean)TRUE,
-				   PLAYER_COLUMN_SEATNUM, (gint)p,
-				   PLAYER_COLUMN_TYPE, _("Spectator"),
-				   PLAYER_COLUMN_NAME, seat.name,
-				   -1);
+				   PLAYER_COLUMN_ISSPECTATOR,
+				   (gboolean) TRUE, PLAYER_COLUMN_SEATNUM,
+				   (gint) p, PLAYER_COLUMN_TYPE,
+				   _("Spectator"), PLAYER_COLUMN_NAME,
+				   seat.name, -1);
 		num_entries++;
 	}
 }
@@ -191,26 +193,32 @@ static GtkWidget *create_player_list(void)
 				   G_TYPE_STRING,
 				   G_TYPE_STRING,
 				   G_TYPE_STRING,
-				   G_TYPE_BOOLEAN,
-				   G_TYPE_INT);
+				   G_TYPE_BOOLEAN, G_TYPE_INT);
 	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_set_data(G_OBJECT(tree), "store", store);
 	g_object_unref(store);
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes(_("#"), renderer,
-				"text", PLAYER_COLUMN_SEAT, NULL);
+							  "text",
+							  PLAYER_COLUMN_SEAT,
+							  NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes(_("Status"),
-				renderer,
-				"text", PLAYER_COLUMN_TYPE, NULL);
+							  renderer,
+							  "text",
+							  PLAYER_COLUMN_TYPE,
+							  NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes(_("Name"), renderer,
-				"text", PLAYER_COLUMN_NAME, NULL);
+	column =
+	    gtk_tree_view_column_new_with_attributes(_("Name"), renderer,
+						     "text",
+						     PLAYER_COLUMN_NAME,
+						     NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
@@ -287,8 +295,8 @@ static GtkWidget *create_dlg_players(void)
 	close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
 	gtk_widget_ref(close_button);
 	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
-			   0);
+	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE,
+			   FALSE, 0);
 	g_signal_connect_swapped(close_button, "clicked",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				 dialog);
@@ -334,7 +342,7 @@ static void decode_seat(gpointer data, int *spectator, int *seat_num)
 }
 
 /* Get info on the player (pop up a window) */
-static void player_info_activate(GtkMenuItem *menuitem, gpointer data)
+static void player_info_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	int spectator, seat_num;
 
@@ -344,7 +352,7 @@ static void player_info_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 /* Boot the player from the table */
-static void player_boot_activate(GtkMenuItem *menuitem, gpointer data)
+static void player_boot_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	int spectator, seat_num;
 	const char *name;
@@ -361,7 +369,7 @@ static void player_boot_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 /* We (a spectator) will sit here. */
-static void player_sit_activate(GtkMenuItem *menuitem, gpointer data)
+static void player_sit_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	int spectator, seat_num;
 
@@ -372,7 +380,7 @@ static void player_sit_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 /* Replace the open seat with a bot */
-static void player_bot_activate(GtkMenuItem *menuitem, gpointer data)
+static void player_bot_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	int spectator, seat_num;
 
@@ -383,7 +391,7 @@ static void player_bot_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 /* Replace the bot or reserved seat with an open one */
-static void player_open_activate(GtkMenuItem *menuitem, gpointer data)
+static void player_open_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	int spectator, seat_num;
 
@@ -393,7 +401,8 @@ static void player_open_activate(GtkMenuItem *menuitem, gpointer data)
 	ggzmod_request_open(ggz, seat_num);
 }
 
-void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
+void popup_player_menu(GGZSeat * seat, GGZSpectatorSeat * sseat,
+		       guint button)
 {
 	GtkWidget *menu;
 	gpointer which = encode_seat(sseat ? 1 : 0,
@@ -414,7 +423,8 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		info = gtk_menu_item_new_with_label(_("Info"));
 		gtk_widget_ref(info);
 		g_object_set_data_full(G_OBJECT(menu), "info", info,
-				       (GtkDestroyNotify) gtk_widget_unref);
+				       (GtkDestroyNotify)
+				       gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), info);
 		gtk_widget_set_sensitive(info, FALSE);
 		g_signal_connect(info, "activate",
@@ -423,15 +433,16 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 	}
 
 	if ((sseat && strcasecmp(sseat->name, my_name))
-	     || (seat && seat->type == GGZ_SEAT_PLAYER
-		 && strcasecmp(seat->name, my_name))) {
+	    || (seat && seat->type == GGZ_SEAT_PLAYER
+		&& strcasecmp(seat->name, my_name))) {
 		GtkWidget *boot;
 
 		/* FIXME: you shouldn't be able to boot yourself */
 		boot = gtk_menu_item_new_with_label(_("Boot player"));
 		gtk_widget_ref(boot);
 		g_object_set_data_full(G_OBJECT(menu), "boot", boot,
-				       (GtkDestroyNotify) gtk_widget_unref);
+				       (GtkDestroyNotify)
+				       gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), boot);
 		// gtk_widget_set_sensitive(boot, FALSE);
 		g_signal_connect(boot, "activate",
@@ -454,7 +465,8 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		sit = gtk_menu_item_new_with_label(label);
 		gtk_widget_ref(sit);
 		g_object_set_data_full(G_OBJECT(menu), "sit", sit,
-				       (GtkDestroyNotify) gtk_widget_unref);
+				       (GtkDestroyNotify)
+				       gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), sit);
 		// gtk_widget_set_sensitive(sit, FALSE);
 		g_signal_connect(sit, "activate",
@@ -469,7 +481,8 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		bot = gtk_menu_item_new_with_label(_("Play with bot"));
 		gtk_widget_ref(bot);
 		g_object_set_data_full(G_OBJECT(menu), "bot", bot,
-				       (GtkDestroyNotify) gtk_widget_unref);
+				       (GtkDestroyNotify)
+				       gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), bot);
 		g_signal_connect(bot, "activate",
 				 GTK_SIGNAL_FUNC(player_bot_activate),
@@ -489,7 +502,8 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		open = gtk_menu_item_new_with_label(label);
 		gtk_widget_ref(open);
 		g_object_set_data_full(G_OBJECT(menu), "open", open,
-				       (GtkDestroyNotify) gtk_widget_unref);
+				       (GtkDestroyNotify)
+				       gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), open);
 		g_signal_connect(open, "activate",
 				 GTK_SIGNAL_FUNC(player_open_activate),
@@ -501,8 +515,8 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, button, 0);
 }
 
-static gboolean player_list_button_event(GtkWidget *tree,
-					 GdkEventButton *buttonevent,
+static gboolean player_list_button_event(GtkWidget * tree,
+					 GdkEventButton * buttonevent,
 					 gpointer data)
 {
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tree));
@@ -522,17 +536,19 @@ static gboolean player_list_button_event(GtkWidget *tree,
 		gboolean is_spectator;
 
 		gtk_tree_model_get(model, &iter,
-				   PLAYER_COLUMN_ISSPECTATOR, &is_spectator,
-				   PLAYER_COLUMN_SEATNUM, &seatnum,
-				   -1);
+				   PLAYER_COLUMN_ISSPECTATOR,
+				   &is_spectator, PLAYER_COLUMN_SEATNUM,
+				   &seatnum, -1);
 
 		if (is_spectator) {
 			GGZSpectatorSeat sseat;
 			sseat = ggzmod_get_spectator_seat(ggz, seatnum);
-			popup_player_menu(NULL, &sseat, buttonevent->button);
+			popup_player_menu(NULL, &sseat,
+					  buttonevent->button);
 		} else {
 			GGZSeat seat = ggzmod_get_seat(ggz, seatnum);
-			popup_player_menu(&seat, NULL, buttonevent->button);
+			popup_player_menu(&seat, NULL,
+					  buttonevent->button);
 		}
 	}
 

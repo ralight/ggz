@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 6271 2004-11-05 20:48:41Z jdorje $
+ * $Id: table.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -141,10 +141,12 @@ static void table_clear_table(int write_to_screen)
 	/* Clear the buffer to the style's background color */
 	gdk_draw_rectangle(table_buf,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE, 0, 0, get_table_width(), get_table_height());
+			   TRUE, 0, 0, get_table_width(),
+			   get_table_height());
 
 	if (write_to_screen)
-		table_show_table(0, 0, get_table_width(), get_table_height());
+		table_show_table(0, 0, get_table_width(),
+				 get_table_height());
 }
 
 /* Draws a "splash screen" that is shown before the game is initialized. */
@@ -200,7 +202,8 @@ void table_initialize(void)
 	assert(table_drawing_area->window);
 	assert(get_table_width() > 0 && get_table_height > 0);
 	table_buf = gdk_pixmap_new(table->window,
-				   get_table_width(), get_table_height(), -1);
+				   get_table_width(), get_table_height(),
+				   -1);
 	assert(table_buf);
 
 	/* Redraw and display the table. */
@@ -240,8 +243,10 @@ void table_setup(void)
 		game_started = TRUE;
 	}
 
-	ggz_debug(DBG_TABLE, "Setting up table." "  Width and height are %d."
-		  "  %d players.", get_table_width(), ggzcards.num_players);
+	ggz_debug(DBG_TABLE,
+		  "Setting up table." "  Width and height are %d."
+		  "  %d players.", get_table_width(),
+		  ggzcards.num_players);
 
 	/* We may need to resize the table */
 	gtk_widget_set_size_request(table, get_table_width(),
@@ -257,7 +262,8 @@ void table_setup(void)
 	assert(table_buf);
 	g_object_unref(table_buf);
 	table_buf = gdk_pixmap_new(table->window,
-				   get_table_width(), get_table_height(), -1);
+				   get_table_width(), get_table_height(),
+				   -1);
 
 	/* Resize the animation buffer. */
 	anim_setup();
@@ -352,13 +358,14 @@ static void table_show_player_box(int player, int write_to_screen)
 	/* Clear the text box */
 	gdk_draw_rectangle(table_buf,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE, x, y, TEXT_BOX_WIDTH - 1, TEXT_BOX_WIDTH - 1);
+			   TRUE, x, y, TEXT_BOX_WIDTH - 1,
+			   TEXT_BOX_WIDTH - 1);
 
 	x += XWIDTH;
 	y += XWIDTH;
 	w = h = TEXT_WIDTH;
 
-	string_y = y;		/* The y values we're going to draw at. */
+	string_y = y;	/* The y values we're going to draw at. */
 
 	/* Draw the name. */
 	if (name) {
@@ -371,7 +378,8 @@ static void table_show_player_box(int player, int write_to_screen)
 		max_height = MAX(max_height, rect.height);
 
 		gdk_draw_layout(table_buf, gc,
-				x + (w - rect.width) / 2, string_y, layout);
+				x + (w - rect.width) / 2, string_y,
+				layout);
 
 		string_y += max_height + 5;
 	}
@@ -393,7 +401,8 @@ static void table_show_player_box(int player, int write_to_screen)
 			string_y += 3;
 
 			pango_layout_set_text(layout, next, -1);
-			pango_layout_get_pixel_extents(layout, NULL, &rect);
+			pango_layout_get_pixel_extents(layout, NULL,
+						       &rect);
 
 			max_height = MAX(max_height, rect.height);
 			max_width = MAX(max_width, rect.width);
@@ -417,7 +426,8 @@ static void table_show_player_box(int player, int write_to_screen)
 	}
 
 	if (write_to_screen)
-		table_show_table(x, y, TEXT_BOX_WIDTH - 1, TEXT_BOX_WIDTH - 1);
+		table_show_table(x, y, TEXT_BOX_WIDTH - 1,
+				 TEXT_BOX_WIDTH - 1);
 
 	g_object_unref(layout);
 }
@@ -425,7 +435,8 @@ static void table_show_player_box(int player, int write_to_screen)
 /* Display's a player's name on the table. */
 void table_set_name(int player, const char *name)
 {
-	ggz_debug(DBG_TABLE, "Setting player name: %d => %s.", player, name);
+	ggz_debug(DBG_TABLE, "Setting player name: %d => %s.", player,
+		  name);
 
 	if (player_names[player])
 		ggz_free(player_names[player]);
@@ -474,12 +485,13 @@ void table_redraw(void)
 			table_show_player_box(p, FALSE);
 
 		/* Then draw the whole buffer to the window */
-		table_show_table(0, 0, get_table_width(), get_table_height());
+		table_show_table(0, 0, get_table_width(),
+				 get_table_height());
 
 		/* There has GOT to be a better way to force the redraw! */
 		gdk_window_hide(table_drawing_area->window);
 		gdk_window_show(table_drawing_area->window);
-	} else {		/* not if (table_ready) */
+	} else {	/* not if (table_ready) */
 		if (table_buf)
 			draw_splash_screen();
 	}
@@ -517,8 +529,9 @@ gboolean table_handle_cardclick_event(GdkEventButton * event)
 
 	assert(p >= 0 && p < ggzcards.num_players);
 
-	ggz_debug(DBG_TABLE, "table_handle_click_event: " "click at %f %f.",
-		  event->x, event->y);
+	ggz_debug(DBG_TABLE,
+		  "table_handle_click_event: " "click at %f %f.", event->x,
+		  event->y);
 
 	/* This gets all of the layout information from the layout engine.
 	   Unfortunately, it's very dense code. */
@@ -527,8 +540,8 @@ gboolean table_handle_cardclick_event(GdkEventButton * event)
 
 	/* Calculate our card target */
 	hand_size = preferences.collapse_hand
-		? ggzcards.players[p].hand.hand_size
-		: ggzcards.players[p].u_hand_size;
+	    ? ggzcards.players[p].hand.hand_size
+	    : ggzcards.players[p].u_hand_size;
 	for (target = 0; target < hand_size; target++) {
 		int x, y;
 
@@ -555,7 +568,7 @@ gboolean table_handle_cardclick_event(GdkEventButton * event)
 
 
 /* Right-clicking on the table can pop up a menu. */
-gboolean table_handle_menuclick_event(GdkEventButton *event)
+gboolean table_handle_menuclick_event(GdkEventButton * event)
 {
 	int p;
 
@@ -565,15 +578,15 @@ gboolean table_handle_menuclick_event(GdkEventButton *event)
 		int w = get_text_width();
 		int x, y;
 
-		if (seat_num < 0) continue;
+		if (seat_num < 0)
+			continue;
 
 		get_text_box_pos(p, &x, &y);
 		x += XWIDTH;
 		y += XWIDTH;
 		if (event->x < x
 		    || event->x >= x + w
-		    || event->y < y
-		    || event-> y >= y + w)
+		    || event->y < y || event->y >= y + w)
 			continue;
 
 		seat = ggzmod_get_seat(client_get_ggzmod(), seat_num);
@@ -589,7 +602,8 @@ gboolean table_handle_menuclick_event(GdkEventButton *event)
    it is already selected. */
 static void table_card_clicked(int card_num)
 {
-	ggz_debug(DBG_TABLE, "table_card_clicked: Card %d clicked.", card_num);
+	ggz_debug(DBG_TABLE, "table_card_clicked: Card %d clicked.",
+		  card_num);
 
 	if (card_num == selected_card || preferences.single_click_play) {
 		/* If you click on the already selected card, it gets played.
@@ -652,8 +666,8 @@ void table_display_hand(int p, int write_to_screen)
 
 	/* Draw the cards */
 	hand_size = preferences.collapse_hand
-		? ggzcards.players[p].hand.hand_size
-		: ggzcards.players[p].u_hand_size;
+	    ? ggzcards.players[p].hand.hand_size
+	    : ggzcards.players[p].u_hand_size;
 	for (i = 0; i < hand_size; i++) {
 		card_t card;
 		int x, y;

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.h 6264 2004-11-05 06:15:15Z jdorje $
+ * $Id: game.h 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -39,7 +39,7 @@ struct game_t {
 	char board[17][25];
 	int conf_handle;
 	int beep;
-	char *theme;	/* Allocated with ggz_malloc/ggz_strdup */
+	char *theme;		/* Allocated with ggz_malloc/ggz_strdup */
 	char **theme_names;
 	int num_themes;
 	/* These two are never actually used: */
@@ -56,7 +56,7 @@ extern struct game_t game;
 extern int homes[6][6];
 
 extern void game_init(void);
-void game_zap_board(void); /* Clears board - called in several places. */
+void game_zap_board(void);	/* Clears board - called in several places. */
 void game_init_board(void);
 extern void game_handle_click_event(int, int);
 extern void game_notify_our_turn(void);
@@ -65,4 +65,3 @@ extern void game_handle_sync(int);
 extern void game_update_config(char *, int);
 extern char *get_theme_dir(void);
 extern GGZMod *game_mod(void);
-

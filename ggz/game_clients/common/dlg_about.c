@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 10/12/2002
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 6268 2004-11-05 08:00:15Z jdorje $
+ * $Id: dlg_about.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -100,8 +100,8 @@ static GtkWidget *create_dlg_about(void)
 			       close_button,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
-			   0);
+	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE,
+			   FALSE, 0);
 	g_signal_connect_swapped(close_button, "clicked",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				 dialog);

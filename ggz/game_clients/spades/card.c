@@ -26,7 +26,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <card.h>
@@ -45,7 +45,7 @@ int card_face(Card c)
 /* Return the suit as an int */
 int card_suit_num(Card c)
 {
-	return (c == BLANK_CARD) ? BLANK_CARD : (int) (c / 13);
+	return (c == BLANK_CARD) ? BLANK_CARD : (int)(c / 13);
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
- * $Id: main_cb.c 6291 2004-11-06 19:15:04Z jdorje $
+ * $Id: main_cb.c 6293 2004-11-07 05:51:47Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -46,9 +46,8 @@ GtkWidget *dlg_prefs = NULL;
 
 
 gboolean
-on_dlg_main_delete_event               (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_dlg_main_delete_event(GtkWidget * widget,
+			 GdkEvent * event, gpointer user_data)
 {
 	game_exit();
 	return TRUE;
@@ -75,7 +74,8 @@ static void update_theme_list(void)
 	int i;
 
 	tree = GTK_TREE_VIEW(lookup_widget(dlg_prefs, "theme_list"));
-	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(tree)));
+	store =
+	    GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(tree)));
 	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 
 	gtk_list_store_clear(GTK_LIST_STORE(store));
@@ -95,45 +95,44 @@ static void update_theme_list(void)
 }
 
 void
-on_preferences_menu_activate	       (GtkMenuItem	*menuitem,
-					gpointer	 user_data)
+on_preferences_menu_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	GtkWidget *toggle;
 
-	if(dlg_prefs != NULL) {
+	if (dlg_prefs != NULL) {
 		gdk_window_show(dlg_prefs->window);
 		gdk_window_raise(dlg_prefs->window);
 	} else {
 		dlg_prefs = create_dlg_prefs();
 		g_signal_connect(GTK_OBJECT(dlg_prefs),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				   &dlg_prefs);
+				 "destroy",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				 &dlg_prefs);
 		update_theme_list();
 
-		toggle = g_object_get_data(G_OBJECT(dlg_prefs), "check_beep");
-		if(game.beep == 1)
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle),
-						     TRUE);
+		toggle =
+		    g_object_get_data(G_OBJECT(dlg_prefs), "check_beep");
+		if (game.beep == 1)
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
+						     (toggle), TRUE);
 		else
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle),
-						     FALSE);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
+						     (toggle), FALSE);
 		gtk_widget_show(dlg_prefs);
 	}
 }
 
 
 gboolean
-on_draw_area_expose_event              (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data)
+on_draw_area_expose_event(GtkWidget * widget,
+			  GdkEventExpose * event, gpointer user_data)
 {
 	display_handle_expose_event(event);
 	return FALSE;
 }
 
-gboolean on_draw_area_configure_event(GtkWidget *widget,
-				      GdkEventExpose *event,
+gboolean on_draw_area_configure_event(GtkWidget * widget,
+				      GdkEventExpose * event,
 				      gpointer user_data)
 {
 	display_resized();
@@ -142,11 +141,10 @@ gboolean on_draw_area_configure_event(GtkWidget *widget,
 
 
 gboolean
-on_draw_area_button_press_event        (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
+on_draw_area_button_press_event(GtkWidget * widget,
+				GdkEventButton * event, gpointer user_data)
 {
-	if(event->button == 1)
+	if (event->button == 1)
 		display_handle_click_event(event);
 	return TRUE;
 }
