@@ -271,7 +271,7 @@ static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event, void *dat
 		
 	case GGZMOD_STATE_DONE:
 		ggz_debug("GGZCORE:GAME", "Game now done");
-		_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);
+		/*_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);*/
 		break;
 
 	default:
