@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 534 $</revnumber>
-	<date>$Date: 2000-06-04 19:51:35 -0700 (Sun, 04 Jun 2000) $</date>
+	<revnumber>$Revision: 575 $</revnumber>
+	<date>$Date: 2000-06-13 09:32:21 -0700 (Tue, 13 Jun 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -2189,219 +2189,216 @@
 	</refsect1>
       </refentry>
 
-      <![IGNORE[
-
-    <refentry id="rsp.login.new"><?dbhtml filename="rsp_login_new.html">
-    <refmeta>
-    <indexterm>
-    <primary>RSP_LOGIN_NEW</primary>
-    </indexterm>
-    <refentrytitle>RSP_LOGIN_NEW</refentrytitle>
-    </refmeta>
+      <refentry id="rsp.login.new"><?dbhtml filename="rsp_login_new.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_LOGIN_NEW</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_LOGIN_NEW</refentrytitle>
+	</refmeta>
       
-    <refnamediv>
-    <refname>RSP_LOGIN_NEW</refname>
-    <refpurpose>Server response to first-time login request</refpurpose>
-    </refnamediv>
+	<refnamediv>
+	  <refname>RSP_LOGIN_NEW</refname>
+	  <refpurpose>Server response to first-time login request</refpurpose>
+	</refnamediv>
       
-    <refsynopsisdiv><title>Synopsis</title>
-    <informaltable>
-    <tgroup cols="3">
-    <colspec colnum="1" colname="C1" align="left">
-    <colspec colnum="2" colname="C2">
-    <colspec colnum="3" colname="C3">
-    <tbody>
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
       
-    <row rowsep="0">
-    <entry namest="C1" nameend="C2">
-    <emphasis role="bold">Opcode</emphasis>
-    </entry>
-    <entry>9</entry>
-    </row>
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Opcode</emphasis>
+		  </entry>
+		  <entry>9</entry>
+		</row>
+		
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">RSP_LOGIN_NEW</entry>
+		</row>
       
-    <row rowsep="0">
-    <entry namest="C1" nameend="C3">RSP_LOGIN_NEW</entry>
-    </row>
+		<row rowsep="1">
+		  <entry><emphasis role="bold">Data</emphasis></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
+		</row>
       
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">
-    <emphasis role="bold">Data</emphasis>
-    </entry>
-    <entry><emphasis role="bold">Type</emphasis></entry>
-    </row>
+		<row rowsep="1">
+		  <entry>status</entry>
+		  <entry>char</entry>
+		  <entry>always</entry>
+		</row>
       
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">status</entry>
-    <entry>char</entry>
-    </row>
+		<row rowsep="1">
+		  <entry>password</entry>
+		  <entry>string</entry>
+		  <entry>if success</entry>
+		</row>
       
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">password</entry>
-    <entry>string</entry>
-    </row>
+		<row rowsep="1">
+		  <entry>checksum</entry>
+		  <entry>int</entry>
+		  <entry>if success</entry>
+		</row>
       
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">checksum</entry>
-    <entry>int</entry>
-    </row>
-      
-    </tbody>
-    </tgroup>
-    </informaltable>
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
 	</refsynopsisdiv>
       
-    <refsect1>
-    <title>Description</title>
-    <para>Server response to first-time login request</para>
-    <refsect2>
-    <title>Message Data</title>
-    <variablelist>
-    <varlistentry>
-    <term><emphasis role="bold">status</emphasis></term>
-    <listitem>
-    <para>
-      status of login request (zero if successful,
-      negative on error)
-    </para>
-    </listitem>
-    </varlistentry>
-    <varlistentry>
-    <term><emphasis role="bold">password</emphasis></term>
-    <listitem>
-    <para>
-      Password for new account (only sent if login successful)
-    </para>
-    </listitem>
-    </varlistentry>
-    <varlistentry>
-    <term><emphasis role="bold">checksum</emphasis></term>
-    <listitem>
-    <para>
-      Checksum of game types (only sent if login successful)
-    </para>
-    </listitem>
-    </varlistentry>
-    </variablelist>
-    </refsect2>
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to first-time login request</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of login request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">password</emphasis></term>
+		<listitem>
+		  <para>
+		    Password for new account (only sent if login successful)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">checksum</emphasis></term>
+		<listitem>
+		  <para>
+		    Checksum of game types (only sent if login successful)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
 	  
-    <refsect2>
-    <title>Usage</title>
-    <para>
-      RSP_LOGIN_NEW is sent from the server to the client in
-      response to a new login request via <link
-      linkend="req.login.new">REQ_LOGIN_NEW</link>.
-    </para>
-    </refsect2>
-    </refsect1>
-    </refentry>
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_LOGIN_NEW is sent from the server to the client in
+	      response to a new login request via <link
+	      linkend="req.login.new">REQ_LOGIN_NEW</link>.
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
       
-    <refentry id="rsp.login"><?dbhtml filename="rsp_login.html">
-    <refmeta>
-    <indexterm>
-    <primary>RSP_LOGIN</primary>
-    </indexterm>
-    <refentrytitle>RSP_LOGIN</refentrytitle>
-    </refmeta>
-
-    <refnamediv>
-    <refname>RSP_LOGIN</refname>
-    <refpurpose>Server response to login request</refpurpose>
-    </refnamediv>
+      <refentry id="rsp.login"><?dbhtml filename="rsp_login.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_LOGIN</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_LOGIN</refentrytitle>
+	</refmeta>
+	
+	<refnamediv>
+	  <refname>RSP_LOGIN</refname>
+	  <refpurpose>Server response to login request</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+		
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Opcode</emphasis>
+		  </entry>
+		  <entry>10</entry>
+		</row>
+		
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">RSP_LOGIN</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry><emphasis role="bold">Data</emphasis></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
+		</row>
       
-    <refsynopsisdiv><title>Synopsis</title>
-    <informaltable>
-    <tgroup cols="3">
-    <colspec colnum="1" colname="C1" align="left">
-    <colspec colnum="2" colname="C2">
-    <colspec colnum="3" colname="C3">
-    <tbody>
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
       
-    <row rowsep="0">
-    <entry namest="C1" nameend="C2">
-    <emphasis role="bold">Opcode</emphasis>
-    </entry>
-    <entry>10</entry>
-    </row>
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">checksum</entry>
+		  <entry>int</entry>
+		</row>
       
-    <row rowsep="0">
-    <entry namest="C1" nameend="C3">RSP_LOGIN</entry>
-    </row>
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">reservations</entry>
+		  <entry>char</entry>
+		</row>
+		
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+	
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player login request</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of login request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">checksum</emphasis></term>
+		<listitem>
+		  <para>
+		    Checksum of game types (only sent if login successful)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">reservation</emphasis></term>
+		<listitem>
+		  <para>
+		    Flag to indicate if player has resverations
+		    waiting (only sent if login successful)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_LOGIN is sent from the server to the client in
+	      response to a login request via <link
+	      linkend="rsp.login.new">RSP_LOGIN</link>.
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
       
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">
-    <emphasis role="bold">Data</emphasis>
-    </entry>
-    <entry><emphasis role="bold">Type</emphasis></entry>
-    </row>
-      
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">status</entry>
-    <entry>char</entry>
-    </row>
-      
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">checksum</entry>
-    <entry>int</entry>
-    </row>
-      
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">reservations</entry>
-    <entry>char</entry>
-    </row>
-      
-    </tbody>
-    </tgroup>
-    </informaltable>
-    </refsynopsisdiv>
-      
-    <refsect1>
-    <title>Description</title>
-    <para>Server response to player login request</para>
-    <refsect2>
-    <title>Message Data</title>
-    <variablelist>
-    <varlistentry>
-    <term><emphasis role="bold">status</emphasis></term>
-    <listitem>
-    <para>
-      status of login request (zero if successful,
-      negative on error)
-    </para>
-    </listitem>
-    </varlistentry>
-    <varlistentry>
-    <term><emphasis role="bold">checksum</emphasis></term>
-    <listitem>
-    <para>
-      Checksum of game types (only sent if login successful)
-    </para>
-    </listitem>
-    </varlistentry>
-    <varlistentry>
-    <term><emphasis role="bold">reservation</emphasis></term>
-    <listitem>
-    <para>
-      Flag to indicate if player has resverations
-      waiting (only sent if login successful)
-    </para>
-    </listitem>
-    </varlistentry>
-    </variablelist>
-    </refsect2>
-      
-    <refsect2>
-    <title>Usage</title>
-    <para>
-      RSP_LOGIN is sent from the server to the client in
-      response to a login request via <link
-      linkend="rsp.login.new">RSP_LOGIN</link>.
-    </para>
-    </refsect2>
-    </refsect1>
-    </refentry>
-      
-      ]]>
-
       <refentry id="rsp.login.anon"><?dbhtml filename="rsp_login_anon.html">
 	<refmeta>
 	  <indexterm>
@@ -3807,180 +3804,177 @@
     
     <section id ="client-to-server"><title>Client to server messages</title>
       
-      <![IGNORE[
-      
-    <refentry id="req.login.new"><?dbhtml filename="req_login_new.html">
-    <refmeta>
-    <indexterm>
-    <primary>REQ_LOGIN_NEW</primary>
-    </indexterm>
-    <refentrytitle>REQ_LOGIN_NEW</refentrytitle>
-    </refmeta>
-      
-    <refnamediv>
-    <refname>REQ_LOGIN_NEW</refname>
-    <refpurpose>Client requested first-time login</refpurpose>
-    </refnamediv>
-      
+      <refentry id="req.login.new"><?dbhtml filename="req_login_new.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_LOGIN_NEW</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_LOGIN_NEW</refentrytitle>
+	</refmeta>
+	
+	<refnamediv>
+	  <refname>REQ_LOGIN_NEW</refname>
+	  <refpurpose>Client requested first-time login</refpurpose>
+	</refnamediv>
+	
     <refsynopsisdiv><title>Synopsis</title>
-    <informaltable>
-    <tgroup cols="3">
-    <colspec colnum="1" colname="C1" align="left">
-    <colspec colnum="2" colname="C2">
-    <colspec colnum="3" colname="C3">
-    <tbody>
-      
-    <row rowsep="0">
-    <entry namest="C1" nameend="C2">
-    <emphasis role="bold">Opcode</emphasis>
-    </entry>
-    <entry>0</entry>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+		
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Opcode</emphasis>
+		  </entry>
+		  <entry>0</entry>
+		</row>
+		
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_LOGIN_NEW</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
     </row>
-      
-    <row rowsep="0">
-    <entry namest="C1" nameend="C3">REQ_LOGIN_NEW</entry>
-    </row>
-      
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">
-    <emphasis role="bold">Data</emphasis>
-    </entry>
-    <entry><emphasis role="bold">Type</emphasis></entry>
-    </row>
-      
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">name</entry>
-    <entry>string</entry>
-    </row>
-      
-    </tbody>
-    </tgroup>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">name</entry>
+		  <entry>string</entry>
+		</row>
+		
+	      </tbody>
+	    </tgroup>
 	  </informaltable>
-    </refsynopsisdiv>
+	</refsynopsisdiv>
+	
+	<refsect1>
+	  <title>Description</title>
+	  <para>Client requested login of new player</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Requested user name for new player
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_LOGIN_NEW is sent from the client to the server to
+	      request that a new player account be created with the
+	      specified name.  The request may come after <link
+	      linkend="msg.server.id">MSG_SERVER_ID</link>.  The
+	      server will respond to the request with <link
+	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
       
-    <refsect1>
-    <title>Description</title>
-    <para>Client requested login of new player</para>
-    <refsect2>
-    <title>Message Data</title>
-    <variablelist>
-    <varlistentry>
-    <term><emphasis role="bold">name</emphasis></term>
-    <listitem>
-    <para>
-      Requested user name for new player
-    </para>
-    </listitem>
-    </varlistentry>
-    </variablelist>
-    </refsect2>
+      <refentry id="req.login"><?dbhtml filename="req_login.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_LOGIN</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_LOGIN</refentrytitle>
+	</refmeta>
       
-    <refsect2>
-    <title>Usage</title>
-    <para>
-      REQ_LOGIN_NEW is sent from the client to the server to
-      request that a new player account be created with the
-      specified name.  The request may come after <link
-      linkend="msg.server.id">MSG_SERVER_ID</link>.  The server
-      will respond to the request with <link
-      linkend="rsp.login.new">RSP_LOGIN_NEW</link>
-    </para>
-    </refsect2>
-    </refsect1>
-    </refentry>
-      
-    <refentry id="req.login"><?dbhtml filename="req_login.html">
-    <refmeta>
-    <indexterm>
-    <primary>REQ_LOGIN</primary>
-    </indexterm>
-    <refentrytitle>REQ_LOGIN</refentrytitle>
-    </refmeta>
-      
-    <refnamediv>
-    <refname>REQ_LOGIN</refname>
-    <refpurpose>Client requested login</refpurpose>
-    </refnamediv>
-      
-    <refsynopsisdiv><title>Synopsis</title>
-    <informaltable>
-    <tgroup cols="3">
-    <colspec colnum="1" colname="C1" align="left">
-    <colspec colnum="2" colname="C2">
-    <colspec colnum="3" colname="C3">
-    <tbody>
-      
-    <row rowsep="0">
-    <entry namest="C1" nameend="C2">
-    <emphasis role="bold">Opcode</emphasis>
-    </entry>
-    <entry>1</entry>
-    </row>
-      
-    <row rowsep="0">
-    <entry namest="C1" nameend="C3">REQ_LOGIN</entry>
-    </row>
-      
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">
-    <emphasis role="bold">Data</emphasis>
-    </entry>
-    <entry><emphasis role="bold">Type</emphasis></entry>
-    </row>
-      
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">name</entry>
-    <entry>string</entry>
-    </row>
-      
-    <row rowsep="1">
-    <entry namest="C1" nameend="C2">password</entry>
-    <entry>string</entry>
-    </row>
-      
-    </tbody>
-    </tgroup>
-    </informaltable>
-    </refsynopsisdiv>
-      
-    <refsect1>
-    <title>Description</title>
-    <para>Client requested login</para>
-    <refsect2>
-    <title>Message Data</title>
-    <variablelist>
-    <varlistentry>
-    <term><emphasis role="bold">name</emphasis></term>
-    <listitem>
-    <para>
-      Login name
-    </para>
-    </listitem>
-    </varlistentry>
-    <varlistentry>
-    <term><emphasis role="bold">password</emphasis></term>
-    <listitem>
-    <para>
-      Player password
-    </para>
-    </listitem>
-    </varlistentry>
-    </variablelist>
-    </refsect2>
-      
-    <refsect2>
-    <title>Usage</title>
-    <para>
-      REQ_LOGIN is sent from the client to the server to
-      request a player login.  The request may come after
-    <link linkend="msg.server.id">MSG_SERVER_ID</link>.  The
-      server will respond to the request with <link
-      linkend="rsp.login">RSP_LOGIN</link>
-    </para>
-    </refsect2>
-    </refsect1>
-    </refentry>
-      ]]>
+	<refnamediv>
+	  <refname>REQ_LOGIN</refname>
+	  <refpurpose>Client requested login</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+		
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Opcode</emphasis>
+		  </entry>
+		  <entry>1</entry>
+		</row>
+		
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_LOGIN</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">name</entry>
+		  <entry>string</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">password</entry>
+		  <entry>string</entry>
+		</row>
+		
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+	
+	<refsect1>
+	  <title>Description</title>
+	  <para>Client requested login</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Login name
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">password</emphasis></term>
+		<listitem>
+		  <para>
+		    Player password
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_LOGIN is sent from the client to the server to
+	      request a player login.  The request may come after
+	      <link linkend="msg.server.id">MSG_SERVER_ID</link>.  The
+	      server will respond to the request with <link
+	      linkend="rsp.login">RSP_LOGIN</link>
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
 
       <refentry id="req.login.anon"><?dbhtml filename="req_login_anon.html">
 	<refmeta>
