@@ -248,22 +248,31 @@ static PyObject *pyggzcoresimple_server_disconnect(PyObject *self, PyObject *arg
 
 static PyObject *pyggzcoresimple_server_process(PyObject *self, PyObject *args)
 {
-	int ret;
+	int ret, sret;
+	fd_set set;
+	int fd;
+	struct timeval to;
+	struct timeval *top;
 
 	if(!PyArg_ParseTuple(args, "")) return NULL;
 	if(ggzcore_server_data_is_pending(ggzserver))
 		ret = ggzcore_server_read_data(ggzserver, ggzcore_server_get_fd(ggzserver));
 	else ret = 0;
 
-printf("(pyggzcoresimple) FDs: server=%i channel=%i game=%i (ggzgame=%p rc=%i rg=%i)\n",
-ggzcore_server_get_fd(ggzserver),
-ggzcore_server_get_channel(ggzserver),
-ggzcore_game_get_control_fd(ggzgame),
-ggzgame, read_channel, read_game);
-
 	if(read_game)
 		if(ggzcore_game_get_control_fd(ggzgame) != -1)
-			ggzcore_game_read_data(ggzgame);
+		{
+			to.tv_sec = 0;
+			to.tv_usec = 0;
+			top = &to;
+
+			fd = ggzcore_game_get_control_fd(ggzgame);
+			FD_ZERO(&set);
+			FD_SET(fd, &set);
+			sret = select(fd + 1, &set, NULL, NULL, top);
+			if(sret == 1)
+				ggzcore_game_read_data(ggzgame);
+		}
 	if(read_channel)
 		if(ggzcore_server_get_channel(ggzserver) != -1)
 			ggzcore_server_read_data(ggzserver, ggzcore_server_get_channel(ggzserver));
@@ -343,7 +352,6 @@ static PyObject *pyggzcoresimple_room_join(PyObject *self, PyObject *args)
 	GGZModule *module;
 
 	if(!PyArg_ParseTuple(args, "i", &table)) return NULL;
-printf("(pyggzcoresimple) join table: %i\n", table);
 	join_table = table;
 
 	ret = 1;
@@ -362,6 +370,7 @@ printf("(pyggzcoresimple) join table: %i\n", table);
 			i);
 		if(ggzcore_module_get_environment(module) == GGZ_ENVIRONMENT_XWINDOW) break;
 		if(ggzcore_module_get_environment(module) == GGZ_ENVIRONMENT_XFULLSCREEN) break;
+		module = NULL;
 	}
 	if(!module) ret = 0;
 	ggzgame = ggzcore_game_new();
@@ -690,12 +699,10 @@ static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, void *event
 	}
 	if(id == GGZ_CHANNEL_CONNECTED)
 	{
-printf("!! channel connected\n");
 		read_channel = 1;
 	}
 	if(id == GGZ_CHANNEL_READY)
 	{
-printf("!! channel ready\n");
 		ggzcore_game_set_server_fd(ggzgame, ggzcore_server_get_channel(ggzserver));
 		read_channel = 0;
 	}
@@ -734,7 +741,6 @@ static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, void *event_d
 	int i, j;
 
 	/*printf("(pyggzcore) room event: %i %p %p\n", id, event_data, user_data);*/
-printf("(pyggzcore) room event: %i %p %p\n", id, event_data, user_data);
 
 	arg = NULL;
 	str = NULL;
@@ -799,11 +805,10 @@ printf("(pyggzcore) room event: %i %p %p\n", id, event_data, user_data);
 	}
 	if(id == GGZ_TABLE_JOINED) /* launched or joined? */
 	{
-printf("!! table joined\n");
 	}
 	if(id == GGZ_TABLE_LEFT)
 	{
-printf("!! table left\n");
+		ggzcore_game_free(ggzgame);
 		ggzgame = NULL;
 		read_game = 0;
 	}
@@ -833,7 +838,6 @@ static GGZHookReturn pyggzcoresimple_cb_game_hook(unsigned int id, void *event_d
 	char *str;
 
 	/*printf("(pyggzcore) game event: %i %p %p\n", id, event_data, user_data);*/
-printf("(pyggzcore) game event: %i %p %p\n", id, event_data, user_data);
 
 	arg = NULL;
 	str = NULL;
@@ -844,12 +848,10 @@ printf("(pyggzcore) game event: %i %p %p\n", id, event_data, user_data);
 	}
 	if(id == GGZ_GAME_NEGOTIATED)
 	{
-printf("!! game negotiated\n");
 		ggzcore_server_create_channel(ggzserver);
 	}
 	if(id == GGZ_GAME_PLAYING)
 	{
-printf("!! game playing\n");
 		ggzcore_room_join_table(ggzroom, join_table, 0);
 	}
 
