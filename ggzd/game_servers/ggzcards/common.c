@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: common.c 4152 2002-05-05 00:32:02Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -697,8 +697,6 @@ void init_game()
 	assert(game.data != NULL);
 	assert(game.data->is_valid_game());
 	assert(!game.initted);
-	
-	ggzd_set_module(game.data->name);
 
 	/* default values */
 	game.use_stats = TRUE;

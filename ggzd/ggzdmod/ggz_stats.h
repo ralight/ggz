@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.h 4131 2002-05-02 04:29:21Z jdorje $
+ * $Id: ggz_stats.h 4152 2002-05-05 00:32:02Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -49,7 +49,3 @@ void ggzd_set_game_winner(GGZdMod * ggz, int player, double score);
    In the short-term there is no database so the data should be held locally
    for the next game. */
 int ggzd_recalculate_ratings(GGZdMod * ggz);
-
-/* A function like this will probably not be needed in the final API, since
-   GGZ should be able to determine it automatically (by game). */
-void ggzd_set_module(const char* module_name);

@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 4147 2002-05-03 18:49:11Z jdorje $
+ * $Id: ggz_stats.c 4152 2002-05-05 00:32:02Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -41,7 +41,9 @@ static int teams = 0;
 static int *team_list = NULL;
 static double *winners = NULL;
 static GGZRatingSystem rating_system = GGZ_ELO_RATING;
-static const char *module = NULL;
+
+#define lock_name "ggz-stats-lock"
+#define stats_name "ggz-stats"
 
 /* FIXME: this table is about the ugliest thing ever.  It holds the CDF's of
    the normalized normal distribution. */
@@ -446,25 +448,19 @@ void ggzd_set_rating_system(GGZRatingSystem system)
 int read_ratings(GGZdMod * ggz)
 {
 	int num = ggzdmod_get_num_seats(ggz);
-	char fname[128], lockname[128];
 	int player;
 	int handle;
-	
-	if (!module)
-		return -1;
 		
 	/* FIXME: use database */
 		
-	snprintf(lockname, sizeof(lockname), "stats-lock-%s", module);
-	while (mkdir(lockname, S_IRWXU) < 0) {
+	while (mkdir(lock_name, S_IRWXU) < 0) {
 		fprintf(stderr, "Couldn't access stats lock.");
 		sleep(1);
 	}
 	
-	snprintf(fname, sizeof(fname), "stats-%s", module);
-	handle = ggz_conf_parse(fname, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
+	handle = ggz_conf_parse(stats_name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 	if (handle < 0) {
-		if (rmdir(lockname) < 0)
+		if (rmdir(lock_name) < 0)
 			assert(0);
 		return -1;
 	}
@@ -490,7 +486,7 @@ int read_ratings(GGZdMod * ggz)
 	
 	ggz_conf_cleanup(); /* Hope nobody else is using this! */
 		
-	if (rmdir(lockname) < 0)
+	if (rmdir(lock_name) < 0)
 		assert(0);
 		
 	return 0;
@@ -499,25 +495,19 @@ int read_ratings(GGZdMod * ggz)
 int write_ratings(GGZdMod * ggz)
 {
 	int num = ggzdmod_get_num_seats(ggz);
-	char fname[128], lockname[128];
 	int handle;
 	int player;
-	
-	if (!module)
-		return -1;
 		
 	/* FIXME: use database */
 		
-	snprintf(lockname, sizeof(lockname), "stats-lock-%s", module);
-	while (mkdir(lockname, S_IRWXU) < 0) {
+	while (mkdir(lock_name, S_IRWXU) < 0) {
 		fprintf(stderr, "Couldn't access stats lock.");
 		sleep(1);
 	}	
 	
-	snprintf(fname, sizeof(fname), "stats-%s", module);
-	handle = ggz_conf_parse(fname, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
+	handle = ggz_conf_parse(stats_name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 	if (handle < 0) {
-		if (rmdir(lockname) < 0)
+		if (rmdir(lock_name) < 0)
 			assert(0);
 		return -1;
 	}
@@ -542,7 +532,7 @@ int write_ratings(GGZdMod * ggz)
 	ggz_conf_commit(handle);
 	ggz_conf_cleanup(); /* Hope nobody else is using this! */
 		
-	if (rmdir(lockname) < 0)
+	if (rmdir(lock_name) < 0)
 		assert(0);
 		
 	return 0;
@@ -717,9 +707,4 @@ int ggzd_recalculate_ratings(GGZdMod * ggz)
 	memset(winners, 0, num * sizeof(*winners));
 
 	return 0;		/* success */
-}
-
-void ggzd_set_module(const char* module_name)
-{
-	module = module_name;
 }
