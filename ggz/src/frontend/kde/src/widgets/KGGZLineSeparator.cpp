@@ -38,7 +38,7 @@ KGGZLineSeparator::KGGZLineSeparator(QWidget *parent, const char *name)
 : QFrame(parent, name)
 {
 	setFrameStyle(Panel | Sunken);
-	setBackgroundColor(QColor(150, 0, 0));
+	setEraseColor(QColor(150, 0, 0));
 	setDirection(horizontal);
 	show();
 }

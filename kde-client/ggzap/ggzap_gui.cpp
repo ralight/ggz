@@ -34,7 +34,7 @@ GGZapGui::GGZapGui(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QPixmap pix = QPixmap(KGGZ_DIRECTORY "/ggzap/redgear.png");
-	setBackgroundPixmap(pix);
+	setErasePixmap(pix);
 	setFixedSize(pix.width(), pix.height());
 	setMask(QBitmap(KGGZ_DIRECTORY "/ggzap/redgearmask.png"));
 	setMouseTracking(1);

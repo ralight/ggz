@@ -53,9 +53,9 @@ KGGZCaption::KGGZCaption(QString caption, QString explanation, QWidget *parent, 
 	font.setBold(TRUE);
 	label->setFont(font);
 
-	setBackgroundColor(QColor(100, 0, 0));
-	label->setBackgroundColor(QColor(100, 0, 0));
-	label2->setBackgroundColor(QColor(100, 0, 0));
+	setEraseColor(QColor(100, 0, 0));
+	label->setEraseColor(QColor(100, 0, 0));
+	label2->setEraseColor(QColor(100, 0, 0));
 
 	pal = palette();
 	pal.setColor(QColorGroup::Foreground, QColor(255, 255, 255));

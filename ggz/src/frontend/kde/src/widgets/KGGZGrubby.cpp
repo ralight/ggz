@@ -77,7 +77,7 @@ KGGZGrubby::KGGZGrubby(QWidget *parent, const char *name)
 
 	image = new QFrame(this);
 	image->setFixedSize(128, 128);
-	image->setBackgroundPixmap(QPixmap(KGGZ_DIRECTORY "/images/grubbybig.png"));
+	image->setErasePixmap(QPixmap(KGGZ_DIRECTORY "/images/grubbybig.png"));
 
 	combo = new QComboBox(this);
 	combo->insertItem(i18n("Have you seen ...:"));

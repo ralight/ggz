@@ -92,7 +92,7 @@ extern "C"
 
 void KCMGGZGames::add(QString location, QString name, QString frontend, QString authors, QString homepage, QString version, QString protocol)
 {
-	QListViewItem *loc, *item;
+	KListViewItem *loc, *item;
 	QString value;
 	QString pixname;
 
@@ -101,11 +101,11 @@ void KCMGGZGames::add(QString location, QString name, QString frontend, QString 
 	{
 		if(i->text(0) == location)
 		{
-			loc = i;
+			loc = reinterpret_cast<KListViewItem*>(i);
 			break;
 		}
 	}
-	if(!loc) loc = new QListViewItem(view, location);
+	if(!loc) loc = new KListViewItem(view, location);
 	loc->setOpen(true);
 
 	item = NULL;
@@ -113,14 +113,14 @@ void KCMGGZGames::add(QString location, QString name, QString frontend, QString 
 	{
 		if(i->text(0) == name)
 		{
-			item = i;
+			item = reinterpret_cast<KListViewItem*>(i);
 			break;
 		}
 	}
-	if(!item) item = new QListViewItem(loc, name);
+	if(!item) item = new KListViewItem(loc, name);
 	item->setOpen(true);
 
-	item = new QListViewItem(item, frontend, version, protocol, homepage, authors);
+	item = new KListViewItem(item, frontend, version, protocol, homepage, authors);
 
 	pixname = "game.png";
 	if((frontend == "gtk") || (frontend == "gnome")) pixname = "game_gnome.png";

@@ -90,7 +90,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	m_dns = NULL;
 	m_gameinfodialog = NULL;
 
-	setBackgroundColor(QColor(0, 0, 0));
+	setEraseColor(QColor(0, 0, 0));
 
 	m_splash = new KGGZSplash(this, "splash");
 
@@ -832,7 +832,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			//}
 			//if(kggzserver->state() == GGZ_STATE_IN_ROOM)
 			//{
-				//m_workspace->widgetLogo()->setBackgroundPixmap(QPixmap(NULL));
+				//m_workspace->widgetLogo()->setErasePixmap(QPixmap(NULL));
 			//}
 			emit signalState(kggzserver->state());
 			break;

@@ -53,7 +53,7 @@
 
 // Constructor
 KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
-: QListView(parent, name)
+: KListView(parent, name)
 {
 	itemmain = new QListViewItem(this, i18n("Not playing"));
 	itemmain->setOpen(TRUE);

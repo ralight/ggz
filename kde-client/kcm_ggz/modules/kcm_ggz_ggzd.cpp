@@ -117,7 +117,7 @@ extern "C"
 
 void KCMGGZGgzd::add(QString category, QString key, QString def)
 {
-	QListViewItem *cat, *item;
+	KListViewItem *cat, *item;
 	QString value;
 
 	cat = NULL;
@@ -125,19 +125,19 @@ void KCMGGZGgzd::add(QString category, QString key, QString def)
 	{
 		if(i->text(0) == category)
 		{
-			cat = i;
+			cat = reinterpret_cast<KListViewItem*>(i);
 			break;
 		}
 	}
 	if(!cat)
 	{
-		cat = new QListViewItem(view, category);
+		cat = new KListViewItem(view, category);
 		cat->setOpen(true);
 	}
 
 	value = "0x00";
 
-	item = new QListViewItem(cat, key, value, def);
+	item = new KListViewItem(cat, key, value, def);
 }
 
 void KCMGGZGgzd::reload()

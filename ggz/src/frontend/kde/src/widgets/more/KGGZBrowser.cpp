@@ -52,11 +52,11 @@ KGGZBrowser::KGGZBrowser(QWidget *parent, const char *name)
 	//KHTMLView *view;
 	QPushButton *home;
 
-	//setBackgroundColor(QColor(255, 0, 255));
+	//setEraseColor(QColor(255, 0, 255));
 
 	m_part = new KHTMLPart(this);
 	//m_part->view()->resize(500, 400);
-	//part->enableJava(ggzcore_conf_read_int("KGGZ-Settings", "Java", 0));
+	//part->setJavaEnabled(ggzcore_conf_read_int("KGGZ-Settings", "Java", 0));
 
 	home = new QPushButton(i18n("Home"), this);
 

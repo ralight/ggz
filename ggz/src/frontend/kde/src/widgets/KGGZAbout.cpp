@@ -59,7 +59,7 @@ KGGZAbout::KGGZAbout(QWidget *parent, const char *name)
 
 	m_frame = new QFrame(this);
 	m_frame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	m_frame->setBackgroundColor(QColor(100, 0, 0));
+	m_frame->setEraseColor(QColor(100, 0, 0));
 
 	ok = new QPushButton("OK", this);
 
@@ -167,7 +167,7 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	}
 	else
 	{
-		m_frame->setBackgroundPixmap(*pix);
+		m_frame->setErasePixmap(*pix);
 		show();
 	}
 

@@ -339,7 +339,7 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 				if((s.startsWith("<tr")) && (counter++))
 				{
 					int i = 0;
-					//QListViewItem *item = new QListViewItem(this);
+					//KListViewItem *item = new KListViewItem(this);
 					while(!s.contains("</tr>"))
 					{
 						QStringList l;

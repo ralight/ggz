@@ -34,9 +34,11 @@
 #ifndef KGGZ_LAUNCH_H
 #define KGGZ_LAUNCH_H
 
+// KDE includes
+#include <klistview.h>
+
 // Qt includes
 #include <qwidget.h>
-#include <qlistview.h>
 #include <qslider.h>
 #include <qpopupmenu.h>
 #include <qlineedit.h>
@@ -98,7 +100,7 @@ class KGGZLaunch : public QWidget
 		QString typeName(int seattype);
 
 		// Widget holding all seat entries
-		QListView *m_listbox;
+		KListView *m_listbox;
 		// Allows editing of the number of players
 		QSlider *m_slider;
 		// Menu which lets user set the type of a seat

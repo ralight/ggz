@@ -50,12 +50,12 @@ KGGZLogo::KGGZLogo(QWidget *parent, const char *name)
 	QVBoxLayout *vbox;
 
 	setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	setBackgroundColor(QColor(150, 0, 0));
+	setEraseColor(QColor(150, 0, 0));
 	setMinimumSize(64, 64);
 
 	m_logo = new QFrame(this);
 	//m_logo->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	m_logo->setBackgroundColor(QColor(150, 0, 0));
+	m_logo->setEraseColor(QColor(150, 0, 0));
 
 	vbox = new QVBoxLayout(this, 0);
 	vbox->add(m_logo);
@@ -89,7 +89,7 @@ void KGGZLogo::setLogo(const char *logo, const char *name)
 	if(!uselogo) uselogo = KGGZ_DIRECTORY "/images/icons/module.png";
 
 	pix = QPixmap(uselogo);
-	m_logo->setBackgroundPixmap(pix);
+	m_logo->setErasePixmap(pix);
 	m_logo->setFixedSize(pix.width(), pix.height());
 }
 
@@ -101,7 +101,7 @@ void KGGZLogo::mousePressEvent(QMouseEvent *e)
 void KGGZLogo::shutdown()
 {
 	erase();
-	m_logo->setBackgroundPixmap(NULL);
+	m_logo->setErasePixmap(NULL);
 }
 
 bool KGGZLogo::eventFilter(QObject *o, QEvent *e)

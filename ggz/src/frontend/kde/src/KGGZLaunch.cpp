@@ -67,7 +67,7 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	m_slider->setTickmarks(QSlider::Below);
 	m_slider->setPageStep(1);
 
-	m_listbox = new QListView(this);
+	m_listbox = new KListView(this);
 	m_listbox->addColumn(i18n("Seat"));
 	m_listbox->addColumn(i18n("Player"));
 

@@ -35,11 +35,11 @@
 #define KGGZ_USERS_H
 
 // Qt includes
-#include <qlistview.h>
+#include <klistview.h>
 #include <qpopupmenu.h>
 
 // KGGZ_Users: list of all players in current room
-class KGGZUsers : public QListView
+class KGGZUsers : public KListView
 {
 	Q_OBJECT
 	public:

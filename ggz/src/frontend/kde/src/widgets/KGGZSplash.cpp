@@ -52,7 +52,7 @@ KGGZSplash::KGGZSplash(QWidget *parent, const char *name)
 	m_kggz = new QWidget(this);
 	QPixmap p_kggz(KGGZ_DIRECTORY "/images/splash/title-kggz.png");
 	QBitmap b_kggz(KGGZ_DIRECTORY "/images/splash/title-kggz-mask.png");
-	m_kggz->setBackgroundPixmap(p_kggz);
+	m_kggz->setErasePixmap(p_kggz);
 	m_kggz->setMask(b_kggz);
 	m_kggz->setFixedSize(p_kggz.width(), p_kggz.height());
 	m_kggz->show();
@@ -60,7 +60,7 @@ KGGZSplash::KGGZSplash(QWidget *parent, const char *name)
 	m_ggz = new QWidget(this);
 	QPixmap p_ggz(KGGZ_DIRECTORY "/images/splash/title-ggz.png");
 	QBitmap b_ggz(KGGZ_DIRECTORY "/images/splash/title-ggz-mask.png");
-	m_ggz->setBackgroundPixmap(p_ggz);
+	m_ggz->setErasePixmap(p_ggz);
 	m_ggz->setMask(b_ggz);
 	m_ggz->setFixedSize(p_ggz.width(), p_ggz.height());
 	m_ggz->show();
@@ -68,12 +68,12 @@ KGGZSplash::KGGZSplash(QWidget *parent, const char *name)
 	m_version = new QWidget(this);
 	QPixmap p_version(KGGZ_DIRECTORY "/images/splash/title-version.png");
 	QBitmap b_version(KGGZ_DIRECTORY "/images/splash/title-version-mask.png");
-	m_version->setBackgroundPixmap(p_version);
+	m_version->setErasePixmap(p_version);
 	m_version->setMask(b_version);
 	m_version->setFixedSize(p_version.width(), p_version.height());
 	m_version->show();
 
-	setBackgroundColor(QColor(90, 0, 0));
+	setEraseColor(QColor(90, 0, 0));
 
 	startTimer(2000);
 

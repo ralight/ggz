@@ -162,12 +162,12 @@ void KCMGGZMetaserver::slotAutoRead()
 			element = element.firstChild().toElement();
 			if(m_query == query)
 			{
-				(void)new QListViewItem(view, element.text(), "ggz");
+				(void)new KListViewItem(view, element.text(), "ggz");
 			}
 			else
 			{
 				pref = element.attribute("preference", "20");
-				(void)new QListViewItem(view_servers, element.text(), pref, "???");
+				(void)new KListViewItem(view_servers, element.text(), pref, "???");
 			}
 		}
 		node = node.nextSibling();
@@ -178,24 +178,24 @@ void KCMGGZMetaserver::slotAutoRead()
 
 void KCMGGZMetaserver::slotAdded(QString uri, QString proto)
 {
-	(void)new QListViewItem(view, uri, proto);
+	(void)new KListViewItem(view, uri, proto);
 }
 
 void KCMGGZMetaserver::slotAddedServer(QString uri, QString type, QString comment)
 {
-	(void)new QListViewItem(view_servers, uri, type, comment);
+	(void)new KListViewItem(view_servers, uri, type, comment);
 }
 
 void KCMGGZMetaserver::load()
 {
-	(void)new QListViewItem(view_servers, "ggz://jzaun.com", "GGZ Gaming Zone", "Justin's Developer server");
-	(void)new QListViewItem(view_servers, "ggz://ggz.snafu.de", "GGZ Gaming Zone", "GGZ Europe One server");
-	(void)new QListViewItem(view_servers, "kmonop://somewhere.org", "Atlantik", "Yet another host");
-	(void)new QListViewItem(view_servers, "freeciv://civserver.freeciv.org", "FreeCiv", "SmallPox is cool");
+	(void)new KListViewItem(view_servers, "ggz://jzaun.com", "GGZ Gaming Zone", "Justin's Developer server");
+	(void)new KListViewItem(view_servers, "ggz://ggz.snafu.de", "GGZ Gaming Zone", "GGZ Europe One server");
+	(void)new KListViewItem(view_servers, "kmonop://somewhere.org", "Atlantik", "Yet another host");
+	(void)new KListViewItem(view_servers, "freeciv://civserver.freeciv.org", "FreeCiv", "SmallPox is cool");
 
-	(void)new QListViewItem(view, "ggzmeta://jzaun.com", "ggz");
-	(void)new QListViewItem(view, "ggzmeta://ggz.snafu.de", "ggz");
-	(void)new QListViewItem(view, "http://www.freeciv.org/metaserver.html", "freeciv");
+	(void)new KListViewItem(view, "ggzmeta://jzaun.com", "ggz");
+	(void)new KListViewItem(view, "ggzmeta://ggz.snafu.de", "ggz");
+	(void)new KListViewItem(view, "http://www.freeciv.org/metaserver.html", "freeciv");
 }
 
 void KCMGGZMetaserver::save()
