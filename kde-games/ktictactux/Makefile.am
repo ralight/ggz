@@ -27,12 +27,12 @@ EXTRA_DIST = module.dsc.in
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
+	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
 	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/ktictactux
 	-$(INSTALL) -m 644 *.png $(DESTDIR)$(ggzdatadir)/ktictactux/
 
 uninstall-local:
 	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --fromfile=module.dsc
+	-$(GGZ_CONFIG) --remove --modfile=module.dsc
 	-rm -rf $(DESTDIR)$(ggzdatadir)/ktictactux
 
