@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 4340 2002-08-07 06:31:34Z jdorje $
+ * $Id: ggzmod.h 4912 2002-10-14 20:22:18Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -56,6 +56,8 @@
 
 #ifndef __GGZMOD_H__
 #define __GGZMOD_H__
+
+#include <ggz_common.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -110,6 +112,32 @@ typedef enum {
 	 * This event occurs when a new connection to the game server
 	 * has been made.  The fd is passed as the event's data. */
 	GGZMOD_EVENT_SERVER,
+
+	/** @brief The player's seat status has changed.
+	 *
+	 *  This event occurs when the player's seat status changes;
+	 *  i.e. he changes seats or starts/stops spectating.  The
+	 *  event data is a int[2] pair consisting of the old
+	 *  {is_spectator, seat_num}.
+	 */
+	GGZMOD_EVENT_PLAYER,
+
+	/** @brief A seat change.
+	 *
+	 *  This event occurs when a seat change occurs.  The old seat
+	 *  (a GGZSeat*) is passed as the event's data.  The seat
+	 *  information will be updated before the event is invoked.
+	 */
+	GGZMOD_EVENT_SEAT,
+
+	/* @brief A spectator seat change.
+	 *
+	 * This event occurs when a spectator seat change occurs.  The
+	 * old spectator (a GGZSpectator*) is passed as teh event's data.
+	 * The spectator information will be updated before the event is
+	 * invoked.
+	 */
+	GGZMOD_EVENT_SPECTATOR_SEAT,
 	
 	/** @brief An error has occurred
 	 *  This event occurs when a GGZMod error has occurred.  An
@@ -130,6 +158,25 @@ typedef enum {
 	GGZMOD_GAME	/**< Used by the game client ("table"). */
 } GGZModType;
 
+/** @brief A seat at a GGZ game table.
+ *
+ *  Each seat at the table is tracked like this.
+ */
+typedef struct {
+	unsigned int num;	/**< Seat index; 0..(num_seats-1). */
+	GGZSeatType type;	/**< Type of seat. */
+	char *name;		/**< Name of player occupying seat. */
+} GGZSeat;
+
+/** @brief A game spectator entry.
+ *
+ * Spectators are kept in their own table.  A spectator seat is occupied
+ * if it has a name, empty if the name is NULL.
+ */
+typedef struct {
+	unsigned int num;	/**< Spectator seat index */
+	char *name;		/**< The spectator's name (NULL => empty) */
+} GGZSpectatorSeat;
 
 /** @brief A GGZmod object, used for tracking a ggz<->table connection.
  *
@@ -148,6 +195,9 @@ typedef struct GGZMod GGZMod;
  *  The additional data will be of the following form:
  *    - GGZMOD_EVENT_STATE: The old state (GGZModState*)
  *    - GGZMOD_EVENT_SERVER: The fd of the server connection (int*)
+ *    - GGZMOD_EVENT_PLAYER: The old player data (int[2])
+ *    - GGZMOD_EVENT_SEAT: The old seat (GGZSeat*)
+ *    - GGZMOD_EVENT_SPECTATOR_SEAT: The old seat (GGZSpectatorSeat*)
  *    - GGZMOD_EVENT_ERROR: An error string (char*)
  */
 typedef void (*GGZModHandler) (GGZMod * mod, GGZModEvent e, void *data);
@@ -200,6 +250,50 @@ GGZModState ggzmod_get_state(GGZMod * ggzmod);
  */
 int ggzmod_get_server_fd(GGZMod * ggzmod);
 
+/** @brief Get the total number of seats at the table.
+ *  @return The number of seats, or -1 on error.
+ *  @note If no connection is present, -1 will be returned.
+ *  @note While in GGZMOD_STATE_CREATED, we don't know the number of seats.
+ */
+int ggzmod_get_num_seats(GGZMod *ggzmod);
+
+/** @brief Get all data for the specified seat.
+ *  @param ggzmod The GGZMod object.
+ *  @param seat The seat number (0..(number of seats - 1)).
+ *  @return A valid GGZSeat structure, if seat is a valid seat.
+ */
+GGZSeat ggzmod_get_seat(GGZMod *ggzmod, int seat);
+
+/** @brief Get the maximum number of spectators.
+ *  This function returns the maximum number of spectator seats available.  A
+ *  game can use this to iterate over the spectator seats to look for
+ *  spectators occupying them.  Since spectators may come and go at any point
+ *  and there is no limit on the number of spectators, you should consider
+ *  this value to be dynamic and call this function again each time you're
+ *  looking for spectators.
+ *  @return The number of available spectator seats, or -1 on error.
+ */
+int ggzmod_get_num_spectator_seats(GGZMod *ggzmod);
+
+/** @brief Get a spectator's data.
+ *  @param ggzmod The GGZdMod object.
+ *  @param spectator The number, between 0 and (number of spectators - 1).
+ *  @return A valid GGZSpectator structure, if given a valid seat.
+ */
+GGZSpectatorSeat ggzmod_get_spectator_seat(GGZMod * ggzmod,
+					   int seat);
+
+/** @brief Get data about this player.
+ *
+ *  Call this function to find out where at the table this player is
+ *  sitting.
+ *  @param ggzmod The GGZMod object.
+ *  @param is_spectator Will be set to TRUE iff player is spectating.
+ *  @param seat_num Will be set to the number of our (spectator) seat.
+ */
+void ggzmod_get_my_seat(GGZMod *ggzmod,
+			int *is_spectator, int *seat_num);
+
 /** @brief Return gamedata pointer
  *
  *  Each GGZMod object can be given a "gamedata" pointer that is returned
@@ -248,6 +342,34 @@ void ggzmod_set_module(GGZMod * ggzmod, const char *pwd, char **args);
  *  @return The server connection fd
  */
 void ggzmod_set_server_fd(GGZMod * ggzmod, int fd);
+
+/** @brief Set data about which seat at which this ggzmod is sitting.
+ *
+ *  The GGZ client can use this function to set data about this client.
+ *  @param ggzmod The GGZMod object.
+ *  @param is_spectator TRUE iff the player is a spectator.
+ *  @param seat_num The seat or spectator seat number.
+ *  @return 0 on success, negative on error.
+ */
+int ggzmod_set_my_seat(GGZMod *ggzmod,
+		       int is_spectator, int seat_num);
+
+/** @brief Set seat data.
+ *
+ *  The GGZ client can use this function to set data about
+ *  a seat.
+ *  @param seat The new seat structure (which includes seat number).
+ *  @return 0 on success, negative on failure.
+ */
+int ggzmod_set_seat(GGZMod *ggzmod, GGZSeat * seat);
+
+/** @brief Set spectator data.
+ *
+ *  The GGZ client can use this function to set data about a spectator seat.
+ *  @param seat The new spectator seat data.
+ *  @return 0 on success, negative on failure.
+ */
+int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat * seat);
 
 
 /* 
