@@ -7,7 +7,6 @@ Version = 0.0.2
 
 [LaunchInfo]
 ExecutablePath = ggzd.tictactoe
-#GameDisabled = 1
 
 [Protocol]
 Engine = TicTacToe

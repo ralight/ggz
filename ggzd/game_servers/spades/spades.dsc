@@ -7,7 +7,6 @@ Version = 0.0.3
 
 [LaunchInfo]
 ExecutablePath = ggzd.spades
-#GameDisabled = 1
 
 [Protocol]
 Engine = NetSpades

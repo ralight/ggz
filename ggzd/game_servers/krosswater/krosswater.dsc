@@ -7,7 +7,6 @@ Version = 0.0.4
 
 [LaunchInfo]
 ExecutablePath = krosswater_server
-#GameDisabled = 1
 
 [Protocol]
 Engine = Krosswater

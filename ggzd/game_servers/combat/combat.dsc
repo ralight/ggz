@@ -7,7 +7,6 @@ Version = 1.0
 
 [LaunchInfo]
 ExecutablePath = ggzd.combat
-#GameDisabled = 1
 
 [Protocol]
 Engine = Combat

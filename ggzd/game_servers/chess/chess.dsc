@@ -7,7 +7,6 @@ Version = 0.0.6
 
 [LaunchInfo]
 ExecutablePath = ggzd.chess
-#GameDisabled = 1
 
 [Protocol]
 Engine = Chess

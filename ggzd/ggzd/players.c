@@ -664,8 +664,7 @@ int player_list_types(GGZPlayer* player, char verbose)
 	
 	for (i = 0; (i < MAX_GAME_TYPES && count < max); i++) {
 		pthread_rwlock_rdlock(&game_types[i].lock);
-		if (game_types[i].enabled)
-			info[count++] = game_types[i];
+		info[count++] = game_types[i];
 		pthread_rwlock_unlock(&game_types[i].lock);
 	}
 		

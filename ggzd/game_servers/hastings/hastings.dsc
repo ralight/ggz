@@ -7,7 +7,6 @@ Version = 0.0.4
 
 [LaunchInfo]
 ExecutablePath = ggzd.hastings
-#GameDisabled = 1
 
 [Protocol]
 Engine = Hastings

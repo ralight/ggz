@@ -7,7 +7,6 @@ Version = 0.0.1
 
 [LaunchInfo]
 ExecutablePath = ggzd.ccheckers
-#GameDisabled = 1
 
 [Protocol]
 Engine = CCheckers

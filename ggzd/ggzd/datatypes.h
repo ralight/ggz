@@ -75,7 +75,6 @@ typedef struct GameInfo {
 	unsigned char player_allow_mask;
 	unsigned char bot_allow_mask;
 	unsigned char allow_leave;
-	unsigned char enabled;
 	char path[MAX_PATH_LEN];
 	char **args;
 	int n_args;

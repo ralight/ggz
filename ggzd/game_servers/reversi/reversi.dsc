@@ -7,7 +7,6 @@ Version = 0.0.5
 
 [LaunchInfo]
 ExecutablePath = ggzd.reversi
-#GameDisabled = 1
 
 [Protocol]
 Engine = Reversi

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2351 2001-09-04 03:19:36Z rgade $
+ * $Id: parse_opt.c 2446 2001-09-10 23:53:19Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -418,7 +418,6 @@ static void parse_game(char *name, char *dir)
 	if((game_info = malloc(sizeof(GameInfo))) == NULL)
 		err_sys_exit("malloc error in parse_game()");
 	memset(game_info, 0, sizeof(GameInfo));
-	game_info->enabled = 1;
 	pthread_rwlock_init(&game_info->lock, NULL);	
 
 	/* [GameInfo] */
@@ -461,7 +460,6 @@ static void parse_game(char *name, char *dir)
 	}
 	conf_read_list(ch, "LaunchInfo", "ArgList",
 		       &game_info->n_args, &game_info->args);
-	game_info->enabled = !conf_read_int(ch, "LaunchInfo", "GameDisabled",0);
 
 	/* [Protocol] */
 	strval = conf_read_string(ch, "Protocol", "Engine", NULL);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 2310 2001-08-29 01:17:32Z bmh $
+ * $Id: control.c 2446 2001-09-10 23:53:19Z rgade $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -135,8 +135,6 @@ void init_data(void)
 
 	for (i = 0; i < MAX_GAME_TYPES; i++) {
 		pthread_rwlock_init(&game_types[i].lock, NULL);
-		/* This is not necessary since game_types is in BSS */
-		game_types[i].enabled = 0;
 	}
 
 	if (ggzdb_init() < 0)
