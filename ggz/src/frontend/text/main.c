@@ -35,6 +35,8 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
+
 
 #define TIMEOUT 500
 
@@ -46,6 +48,22 @@ RETSIGTYPE term_handle(int signum)
         output_shutdown(); 
 	exit(1);
 }
+
+char* string_cat(char *s1, char *s2)
+{
+	char *new;
+
+	new = malloc(strlen(s1) + strlen(s2) + 1); /* Leave space for NULL */
+	
+	if (!new)  /* malloc() failed */
+		exit(-1);
+		
+	strcpy(new, s1);
+	strcat(new, s2);
+
+	return new;
+}
+	
 
 int main(void)
 {
@@ -59,10 +77,8 @@ int main(void)
 
 	/* Setup options and initialize ggzcore lib */
 	opt.flags = GGZ_OPT_PARSER;
-	opt.global_conf = "/etc/ggz-text.rc";
-        opt.user_conf = malloc((strlen(getenv("HOME"))+15)*sizeof(char*));
-        sprintf(opt.user_conf, "%s/.ggz/grubby.rc", getenv("HOME"));
-
+	opt.global_conf = string_cat(GGZCONFDIR, "/ggz-text.rc");
+        opt.user_conf = string_cat(getenv("HOME"), "/.ggz/ggz-text.rc");
 	ggzcore_init(opt);
 
 	/* Register for callbacks */
