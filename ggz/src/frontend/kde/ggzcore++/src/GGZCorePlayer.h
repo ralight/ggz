@@ -26,7 +26,7 @@ class GGZCorePlayer
 	public:
 		/**
 		 * Constructor */
-		GGZCorePlayer();
+		GGZCorePlayer(GGZPlayer *player);
 		/**
 		 * Destructor */
 		~GGZCorePlayer();

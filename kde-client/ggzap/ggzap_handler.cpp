@@ -23,6 +23,8 @@
 #include "GGZCoreGametype.h"
 #include "GGZCore.h"
 #include "GGZCoreConfio.h"
+#include "GGZCoreTable.h"
+#include "GGZCorePlayer.h"
 
 // Qt includes
 #include <qsocketnotifier.h>
@@ -309,7 +311,7 @@ void GGZapHandler::getModule()
 
 void GGZapHandler::hookRoomActive(unsigned int id, void *data)
 {
-	GGZPlayer *player;
+	GGZCorePlayer *player;
 	GGZCoreTable *table;
 	GGZCoreGametype *gametype;
 	char *name;
@@ -324,7 +326,7 @@ void GGZapHandler::hookRoomActive(unsigned int id, void *data)
 			for(int i = 0; i < m_room->countPlayers(); i++)
 			{
 				player = m_room->player(i);
-				name = ggzcore_player_get_name(player);
+				name = player->name();
 			}
 			break;
 		case GGZCoreRoom::tablelist:

@@ -39,6 +39,8 @@
 
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
+#include "GGZCoreRoom.h"
+#include "GGZCorePlayer.h"
 
 // KDE includes
 #include <klocale.h>
@@ -46,6 +48,7 @@
 
 // Qt includes
 #include <qpixmap.h>
+#include <qpopupmenu.h>
 
 // System includes
 #include <string.h>
@@ -66,6 +69,7 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 
 	setRootIsDecorated(TRUE);
 
+	m_room = NULL;
 	m_menu = NULL;
 
 	m_menu_assign = new QPopupMenu(NULL);
@@ -81,7 +85,7 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 	connect(m_menu_assign, SIGNAL(activated(int)), SLOT(slotAssigned(int)));
 	connect(m_menu_info, SIGNAL(activated(int)), SLOT(slotInformation(int)));
 
-	startTimer(1000);
+	//startTimer(1000);
 }
 
 // Destructor
@@ -93,9 +97,9 @@ KGGZUsers::~KGGZUsers()
 // add a player to the list
 void KGGZUsers::add(const char *name)
 {
-	QListViewItem *tmp;
+	KListViewItem *tmp;
 
-	tmp = new QListViewItem(itemmain, name);
+	tmp = new KListViewItem(itemmain, name);
 	itemmain->insertItem(tmp);
 	assign(tmp, -1);
 	lag(tmp, 1);
@@ -173,12 +177,11 @@ void KGGZUsers::removeall()
 
 void KGGZUsers::addTable(int i)
 {
-	//char foo[128];
-	QListViewItem *tmp;
+	KListViewItem *tmp;
 	QString foo;
 
-	foo.sprintf("Table: %i", i);
-	tmp = new QListViewItem(this, foo);
+	foo = i18n("Table: %1").arg(i);
+	tmp = new KListViewItem(this, foo);
 	insertItem(tmp);
 	tmp->setOpen(TRUE);
 }
@@ -186,7 +189,6 @@ void KGGZUsers::addTable(int i)
 void KGGZUsers::addTablePlayer(int i, const char *name)
 {
 	QListViewItem *tmp, *tmp2;
-	//char foo[128];
 	QString foo;
 
 	foo.sprintf("%s-%i", name, i);
@@ -195,7 +197,7 @@ void KGGZUsers::addTablePlayer(int i, const char *name)
 	tmp2 = table(i);
 	if(!tmp2)
 	{
-		KGGZDEBUG("Player %sshould go to table %i; however, it's absent!\n");
+		KGGZDEBUG("Player %s should go to table %i; however, it's absent!\n");
 		return;
 	}
 	tmp = new QListViewItem(tmp2, name);
@@ -206,7 +208,6 @@ void KGGZUsers::addTablePlayer(int i, const char *name)
 QListViewItem *KGGZUsers::table(int i)
 {
 	QListViewItem *tmp;
-	//char foo[128];
 	QString foo;
 
 	tmp = firstChild();
@@ -345,16 +346,47 @@ void KGGZUsers::slotInformation(int id)
 {
 	QListViewItem *tmp;
 	int wins, losses, ties, forfeits;
-	QString player;
+	int rating, ranking, highscore;
+	QString playername, text;
+	GGZCorePlayer *player, *tmpplayer;
+
+	if(!m_room) return;
 
 	tmp = selectedItem();
 	if(!tmp) return;
 
-	player = tmp->text(0);
-	ggzcore_player_get_record(NULL, &wins, &losses, &ties, &forfeits);
+	playername = tmp->text(0);
+	player = NULL;
+	for(int i = 0; i < m_room->countPlayers(); i++)
+	{
+		tmpplayer = m_room->player(i);
+		if(playername == tmpplayer->name())
+		{
+			player = tmpplayer;
+			break;
+		}
+	}
+	if(!player) return;
 
-	KMessageBox::information(this,
-		i18n("Information about %1:\nWins: %2\nLosses:%3\nTies:%4\nForfeits:%5").arg(player).arg(wins).arg(losses).arg(ties).arg(forfeits),
-		i18n("Player information"));
+	wins = player->recordWins();
+	losses = player->recordLosses();
+	ties = player->recordTies();
+	forfeits = player->recordForfeits();
+
+	highscore = player->highscore();
+	ranking = player->ranking();
+	rating = player->rating();
+
+		text = i18n("Information about %1:\n").arg(playername);
+		text = text + i18n("Wins: %1\nLosses: %2\n").arg(wins).arg(losses);
+		text = text + i18n("Ties: %1\nForfeits: %2\n").arg(ties).arg(forfeits);
+		text = text + i18n("Rating: %1\nRanking: %2\nHighscore: %3\n").arg(rating).arg(ranking).arg(highscore);
+
+	KMessageBox::information(this, text, i18n("Player information"));
+}
+
+void KGGZUsers::setRoom(GGZCoreRoom *room)
+{
+	m_room = room;
 }
 

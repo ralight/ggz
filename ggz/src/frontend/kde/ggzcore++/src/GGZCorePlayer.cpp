@@ -14,8 +14,9 @@
 
 #include "GGZCorePlayer.h"
 
-GGZCorePlayer::GGZCorePlayer()
+GGZCorePlayer::GGZCorePlayer(GGZPlayer *player)
 {
+	m_player = player;
 }
 
 GGZCorePlayer::~GGZCorePlayer()

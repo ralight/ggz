@@ -49,7 +49,7 @@ class KGGZTables : public QIconView
 		// Clear the table widget
 		void reset();
 		// Add a table to the widget
-		void add(char *gametype, char *name, int used, int total);
+		void add(const char *gametype, const char *name, int used, int total);
 		// Return the selected table number, or the first one if none selected
 		int tablenum();
 };

@@ -55,10 +55,9 @@ void KGGZTables::reset()
 	clear();
 }
 
-void KGGZTables::add(char *gametype, char *name, int used, int total)
+void KGGZTables::add(const char *gametype, const char *name, int used, int total)
 {
 	QIconViewItem *tmp;
-	//char buffer[128];
 	QString buffer;
 
 	buffer.sprintf("(%s) %s\n(%i seats, %i open)", gametype, name, total, total - used);

@@ -459,7 +459,7 @@ void KGGZ::listTables()
 	GGZCoreTable *table;
 	GGZCoreGametype *gametype;
 	int tableseats, tableseatsopen;
-	char *tabledescription;
+	const char *tabledescription;
 	const char *playername;
 
 	if(!kggzroom)
@@ -535,7 +535,7 @@ void KGGZ::listTables()
 void KGGZ::listPlayers()
 {
 	int number;
-	GGZPlayer *player;
+	GGZCorePlayer *player;
 	char *playername;
 	int type;
 
@@ -547,9 +547,9 @@ void KGGZ::listPlayers()
 	for(int i = 0; i < number; i++)
 	{
 		player = kggzroom->player(i);
-		playername = ggzcore_player_get_name(player);
+		playername = player->name();
 		m_workspace->widgetUsers()->add(playername);
-		switch(ggzcore_player_get_type(player))
+		switch(player->type())
 		{
 			case GGZCorePlayer::guest:
 				type = KGGZUsers::assignplayer;
@@ -575,7 +575,7 @@ void KGGZ::listPlayers()
 void KGGZ::lagPlayers()
 {
 	int number, lag;
-	GGZPlayer *player;
+	GGZCorePlayer *player;
 	char *playername;
 
 	if(!kggzroom) return;
@@ -583,8 +583,8 @@ void KGGZ::lagPlayers()
 	for(int i = 0; i < number; i++)
 	{
 		player = kggzroom->player(i);
-		playername = ggzcore_player_get_name(player);
-		lag = ggzcore_player_get_lag(player);
+		playername = player->name();
+		lag = player->lag();
 		m_workspace->widgetUsers()->setLag(playername, lag);
 	}
 }
@@ -976,6 +976,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			if(kggzroom->description())
 				m_workspace->widgetChat()->receive(NULL, i18n("(Description: %1)").arg(kggzroom->description()), KGGZChat::RECEIVE_ADMIN);
+			m_workspace->widgetUsers()->setRoom(kggzroom);
 			emit signalLocation(i18n("  Room: ") + kggzroom->name() + "  ");
 			emit signalMenu(MENUSIG_ROOMENTER);
 			gametype = kggzroom->gametype();
@@ -1596,7 +1597,7 @@ void KGGZ::slotLoadLogo()
 {
 	GGZCoreModule *module;
 	GGZCoreGametype *gametype;
-	char *icon;
+	const char *icon;
 
 	KGGZDEBUG("__ loading logo __\n");
 	if(!kggzroom) return;
@@ -1734,6 +1735,7 @@ void KGGZ::eventLeaveRoom()
 	m_workspace->widgetTables()->reset();
 	m_workspace->widgetChat()->shutdown();
 	m_workspace->widgetLogo()->shutdown();
+	m_workspace->widgetUsers()->setRoom(NULL);
 	emit signalLocation(i18n("  No room selected  "));
 }
 

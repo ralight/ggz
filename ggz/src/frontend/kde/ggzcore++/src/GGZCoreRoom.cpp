@@ -13,6 +13,9 @@
 ///// GGZ Room ///////////////////////////////////////////////////
 
 #include "GGZCoreRoom.h"
+#include "GGZCoreGametype.h"
+#include "GGZCoreTable.h"
+#include "GGZCorePlayer.h"
 #include "config.h"
 
 GGZCoreRoom::GGZCoreRoom()
@@ -22,6 +25,7 @@ GGZCoreRoom::GGZCoreRoom()
 	m_gametype = NULL;
 	m_coregametype = NULL;
 	m_table = NULL;
+	m_player = NULL;
 	m_coretable = NULL;
 	m_register = NULL;
 }
@@ -33,6 +37,7 @@ GGZCoreRoom::GGZCoreRoom(GGZRoom* room)
 	m_gametype = NULL;
 	m_coregametype = NULL;
 	m_table = NULL;
+	m_player = NULL;
 	m_coretable = NULL;
 	m_register = NULL;
 }
@@ -122,9 +127,24 @@ int GGZCoreRoom::countPlayers()
 	return ggzcore_room_get_num_players(m_room);
 }
 
-GGZPlayer* GGZCoreRoom::player(const unsigned int number)
+GGZCorePlayer* GGZCoreRoom::player(const unsigned int number)
 {
-	return ggzcore_room_get_nth_player(m_room, number);
+	m_tmpplayer = ggzcore_room_get_nth_player(m_room, number);
+	if(!m_player)
+	{
+		m_player = m_tmpplayer;
+		m_coreplayer = new GGZCorePlayer(m_player);
+	}
+	else
+	{
+		if(m_player != m_tmpplayer)
+		{
+			delete m_coreplayer;
+			m_player = m_tmpplayer;
+			m_coreplayer = new GGZCorePlayer(m_player);
+		}
+	}
+	return m_coreplayer;
 }
 
 int GGZCoreRoom::countTables()

@@ -17,8 +17,10 @@
 
 #include <ggzcore.h>
 #include <GGZCoreCommon.h>
-#include <GGZCoreGametype.h>
-#include <GGZCoreTable.h>
+
+class GGZCoreGametype;
+class GGZCoreTable;
+class GGZCorePlayer;
 
 /**
 * A GGZCoreRoom stands for a room on a server, which is connected to a
@@ -104,7 +106,7 @@ class GGZCoreRoom
 		int countPlayers();
 		/**
 		 * Return specified player. */
-		GGZPlayer* player(const unsigned int number);
+		GGZCorePlayer* player(const unsigned int number);
 
 		/**
 		 * Count number of launched tables. */
@@ -155,7 +157,9 @@ class GGZCoreRoom
 		GGZGameType *m_gametype, *m_tmpgametype;
 		GGZCoreGametype *m_coregametype;
 		GGZTable *m_table, *m_tmptable;
+		GGZPlayer *m_player, *m_tmpplayer;
 		GGZCoreTable *m_coretable;
+		GGZCorePlayer *m_coreplayer;
 		GGZCoreRoom **m_register;
 		int m_destructive;
 };

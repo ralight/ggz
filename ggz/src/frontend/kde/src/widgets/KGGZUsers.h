@@ -36,7 +36,10 @@
 
 // Qt includes
 #include <klistview.h>
-#include <qpopupmenu.h>
+
+// Forward declarations
+class QPopupMenu;
+class GGZCoreRoom;
 
 // KGGZ_Users: list of all players in current room
 class KGGZUsers : public KListView
@@ -63,6 +66,8 @@ class KGGZUsers : public KListView
 		void setLag(const char *playername, int lagvalue);
 		// Assign a role to a player
 		void assignRole(const char *playername, int role);
+		// Set current room
+		void setRoom(GGZCoreRoom *room);
 
 		enum Assignments
 		{
@@ -105,6 +110,9 @@ class KGGZUsers : public KListView
 		QPopupMenu *m_menu_assign, *m_menu_info;
 		// Name of the player
 		QString m_self;
+
+		// Current room
+		GGZCoreRoom *m_room;
 };
 
 #endif
