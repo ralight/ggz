@@ -169,9 +169,9 @@ void QDots::paintEvent(QPaintEvent *e)
 					for(int x = 0; x < tilewidth; x++)
 					{
 						rgb = bgimg->pixel(i * tilewidth + x, j * tileheight + y);
-						bluepart = qBlue(rgb) / 2;
+						bluepart = qBlue(rgb) / 3;
 						if(bluepart < 50) bluepart = 50;
-						if(content(i - 1, j - 1) == 1) bluepart *= 3;
+						if(content(i - 1, j - 1) == 1) bluepart *= 4;
 						if(bluepart > 255) bluepart = 255;
 						fgimg->setPixel(i * tilewidth + x, j * tileheight + y, qRgb(0, 0, bluepart));
 					}
