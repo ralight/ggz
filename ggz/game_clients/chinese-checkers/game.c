@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 4341 2002-08-07 06:31:57Z jdorje $
+ * $Id: game.c 4921 2002-10-14 23:08:40Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -40,6 +40,7 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
+#include "dlg_players.h"
 #include "ggzintl.h"
 
 #include "game.h"
@@ -94,6 +95,8 @@ void game_init(void)
 	/* Connect to GGZ */
 	mod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+
+	init_player_list(mod);
 
 	ggzmod_connect(mod);
 

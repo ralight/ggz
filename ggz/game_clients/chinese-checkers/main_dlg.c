@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Chinese Checkers Client
  * Desc: Main dialog code
- * $Id: main_dlg.c 4897 2002-10-13 03:59:35Z jdorje $
+ * $Id: main_dlg.c 4921 2002-10-14 23:08:40Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -34,6 +34,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "dlg_players.h"
 #include "ggzintl.h"
 
 #include "main_cb.h"
@@ -46,9 +47,11 @@ static GtkWidget *create_menus(GtkWidget *window)
 	GtkItemFactory *menu;
 	GtkWidget *menu_item;
 	GtkItemFactoryEntry items[] = {
-	  {_("/_File"), NULL, NULL, 0, "<Branch>"},
-	  {_("/File/_Sync with server"), "<ctrl>S", NULL, 0, NULL},
-	  {_("/File/E_xit"), "<ctrl>Q", on_exit_menu_activate, 0, NULL},
+	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Table/Player _list"), "<ctrl>L",
+	   create_or_raise_dlg_players, 0, NULL},
+	  {_("/Table/_Sync with server"), "<ctrl>S", NULL, 0, NULL},
+	  {_("/Table/E_xit"), "<ctrl>X", on_exit_menu_activate, 0, NULL},
 	  {_("/_Options"), NULL, NULL, 0, "<Branch>"},
 	  {_("/Options/_Preferences"), "<ctrl>P", on_preferences_menu_activate,
 	   0, NULL},
@@ -64,7 +67,7 @@ static GtkWidget *create_menus(GtkWidget *window)
 	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 
 	menu_item = gtk_item_factory_get_widget(menu,
-						_("<main>/File/"
+						_("<main>/Table/"
 						  "Sync with server"));
 	gtk_widget_set_sensitive(menu_item, FALSE);
 
