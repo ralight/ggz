@@ -20,6 +20,10 @@
  * By Peter Zelezny <zed@linux.com>.
  * Some functions used from Zvt and Eterm (transparency stuff).
  *
+ * GGZ: There have been some minor changes.  I wanted to update to the
+ * most recent version of the file, but it doesn't seem to be easily
+ * compatible.  --JDS
+ *
  */
 
 #define REFRESH_TIMEOUT 20
@@ -547,6 +551,10 @@ gtk_xtext_find_x (GtkXText * xtext, int x, textentry * ent, int offset,
 	int indent;
 	char *str;
 
+	/* In ggz-gtk, this line has been moved up so that there's no way
+	   for it to be returned uninitialized.  --JDS */
+	*out_of_bounds = 0;
+
 	if (offset < 1)
 		indent = ent->indent;
 	else
@@ -568,8 +576,6 @@ gtk_xtext_find_x (GtkXText * xtext, int x, textentry * ent, int offset,
 		*out_of_bounds = 1;
 		return (str - ent->str);
 	}
-
-	*out_of_bounds = 0;
 
 	return find_x (xtext, ent, str, x, indent);
 }
