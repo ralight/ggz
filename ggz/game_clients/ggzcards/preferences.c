@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 3688 2002-03-26 07:13:01Z jdorje $
+ * $Id: preferences.c 3695 2002-03-27 08:30:36Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -43,21 +43,24 @@ PrefType pref_types[] = {
 	 N_("If this is disabled, there will be no animation at all.  Without "
 	    "animation, none of the other animation preferences will have "
 	    "any effect."),
-	 &preferences.animation, TRUE},
+	 &preferences.animation,
+	 TRUE},
 	
 	{"faster_animation",
 	 N_("Faster animation"),
 	 N_("If this is selected, the animation will happen faster.  The "
 	    "faster animation generally looks smoother, but may not work "
 	    "well on slower computers."),
-	 &preferences.faster_animation, FALSE},
+	 &preferences.faster_animation,
+	 TRUE},
 	
 	{"smoother_animation",
 	 N_("Smoother animation"),
 	 N_("If this is selected, there will be more frames in each "
 	    "animation sequence.  This will generally make the animation "
 	    "look smoother, but may not work well on slower computers."),
-	 &preferences.smoother_animation, FALSE},
+	 &preferences.smoother_animation,
+	 TRUE},
 	
 	{"multiple_animation",
 	 N_("Multiple (simultaneous) animations"),
@@ -67,7 +70,8 @@ PrefType pref_types[] = {
 	    "work well on slower computers and is (possibly) harder to "
 	    "follow.  Disabling it will \"zip\" the current animation to "
 	    "a finish when the new one is started."),
-	 &preferences.multiple_animation, FALSE},
+	 &preferences.multiple_animation,
+	 FALSE},
 	
 	{"longer_clearing_delay",
 	 N_("Have a longer delay before clearing the table"),
@@ -77,7 +81,8 @@ PrefType pref_types[] = {
 	    "after the cards are cleared, the previous trick will "
 	    "(depending on the game) still be visible in the "
 	    "\"Last Trick\" selection of the \"Messages\" menu."),
-	 &preferences.longer_clearing_delay, FALSE},
+	 &preferences.longer_clearing_delay,
+	 FALSE},
 	
 	{"cardlists",
 	 N_("Show graphical cardlists"),
@@ -85,7 +90,8 @@ PrefType pref_types[] = {
 	    "and \"Previous Hand\" messages) will be drawn graphically.  "
 	    "Disable it to get simple text-drawn card lists.  The choice "
 	    "will not take effect until you restart GGZCards."),
-	 &preferences.cardlists, TRUE},
+	 &preferences.cardlists,
+	 TRUE},
 	
 	{"bid_on_table",
 	 N_("Show bid choices right on the table"),
@@ -94,7 +100,8 @@ PrefType pref_types[] = {
 	    "If it's deselected you will instead get a popup window showing "
 	    "the choices.  Having them drawn on the table is better, but "
 	    "may not work for all games."),
-	 &preferences.bid_on_table, FALSE},
+	 &preferences.bid_on_table,
+	 TRUE},
 	
 	{"autostart",
 	 N_("Automatically start game"),
@@ -102,7 +109,8 @@ PrefType pref_types[] = {
 	    "choose \"Start Game\" from the \"Game\" menu, the game "
 	    "will instead start immediately (once everyone else is "
 	    "ready, of course)."),
-	 &preferences.autostart, FALSE},
+	 &preferences.autostart,
+	 FALSE},
 	
 	{"use_default_options",
 	 N_("Always use default options"),
@@ -110,7 +118,8 @@ PrefType pref_types[] = {
 	    "game options (which only happens at the start of a game "
 	    "when you are the table host) the default choices will "
 	    "automatically be chosen."),
-	 &preferences.use_default_options, FALSE},
+	 &preferences.use_default_options,
+	 FALSE},
 	
 	{NULL, NULL, NULL, 0}
 };
