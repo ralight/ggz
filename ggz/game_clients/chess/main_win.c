@@ -16,7 +16,6 @@
 
 #include "callbacks.h"
 #include "main_win.h"
-#include "board.h"
 #include "support.h"
 
 GtkWidget*
@@ -158,6 +157,7 @@ create_main_win (void)
   gtk_container_add (GTK_CONTAINER (options_menu), auto_call_flag);
   gtk_tooltips_set_tip (tooltips, auto_call_flag, _("Call a flag when your oponnents time drops below 0"), NULL);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (auto_call_flag), TRUE);
+  gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (auto_call_flag), TRUE);
 
   hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);
@@ -275,7 +275,7 @@ create_main_win (void)
   gtk_widget_show (last_moves);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), last_moves);
   gtk_text_insert (GTK_TEXT (last_moves), NULL, NULL, NULL,
-                   _("Last moves:\n"), 12);
+                   _("Last moves:\n"), -1);
 
   statusbar = gtk_statusbar_new ();
   gtk_widget_ref (statusbar);
@@ -288,7 +288,7 @@ create_main_win (void)
                       GTK_SIGNAL_FUNC (gtk_main_quit),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
-                      GTK_SIGNAL_FUNC (gtk_main_quit),
+                      GTK_SIGNAL_FUNC (ExitDialog),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (exit), "activate",
                       GTK_SIGNAL_FUNC (on_exit_activate),

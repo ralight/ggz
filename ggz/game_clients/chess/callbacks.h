@@ -2,6 +2,11 @@
 #include "board.h"
 
 
+gboolean
+ExitDialog                             (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
 void
 on_exit_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);

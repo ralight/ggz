@@ -1,11 +1,11 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2213 2001-08-24 02:45:21Z jdorje $
+# $Id: Makefile.am 3631 2002-03-23 20:02:30Z jdorje $
 
 EXTRA_DIST = module.dsc.in bitmaps/*.xpm
 
 SUBDIRS = libcgc .
 
-INCLUDES = @GTK_CFLAGS@
+INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/common
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -36,4 +36,5 @@ ggz_chess_SOURCES = main_win.c \
                     main.c
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_chess_LDADD = @GTK_LIBS@ $(LDADD) libcgc/libcgc.a
+ggz_chess_LDADD = @GTK_LIBS@ $(LDADD) libcgc/libcgc.a \
+		  $(top_builddir)/common/libgtk-games.a

@@ -24,12 +24,21 @@ extern GdkPixmap *board_buf;
 
 extern GtkTargetEntry *target;
 
+
+gboolean
+ExitDialog                             (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+  ggz_show_exit_dialog(0);
+  return TRUE;
+}
+
 void
 on_exit_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  gtk_main_quit();
-
+  ggz_show_exit_dialog(1);
 }
 
 
