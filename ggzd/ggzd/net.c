@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4858 2002-10-10 21:04:56Z jdorje $
+ * $Id: net.c 4943 2002-10-18 02:23:56Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -526,14 +526,12 @@ GGZReturn net_send_table(GGZNetIO *net, GGZTable *table)
 		_net_send_seat(net, &seat);
 	}
 
-#if 0 /* Should this be enabled??? */
 	for (i = 0; i < spectator_seats_num(table); i++) {
 		GGZTableSpectator seat = {index: i};
 		if (table->spectators[i][0] == '\0') continue;
 		strcpy(seat.name, table->spectators[i]);
 		_net_send_spectator(net, &seat);
 	}
-#endif
 	
 	return _net_send_line(net, "</TABLE>");
 }
