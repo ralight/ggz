@@ -69,6 +69,9 @@ struct _GGZModule {
 int _ggzcore_module_setup(void);
 unsigned int _ggzcore_module_get_num(void);
 
+void _ggzcore_module_embedded(void);
+int _ggzcore_module_is_embedded(void);
+
 /* Returns how many modules support this game and protocol */
 int _ggzcore_module_get_num_by_type(const char *game, 
 				    const char *engine,

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 5754 2004-01-27 18:11:10Z josef $
+ * $Id: init.c 6614 2005-01-08 19:03:18Z josef $
  *
  * Initialization code
  *
@@ -55,6 +55,9 @@ int ggzcore_init(GGZOptions options)
 	/* Initialize various systems */
 	if (options.flags & GGZ_OPT_MODULES)
 		_ggzcore_module_setup();
+
+	if (options.flags & GGZ_OPT_EMBEDDED)
+		_ggzcore_module_embedded();
 
 	return 0;
 }

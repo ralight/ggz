@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 5972 2004-03-22 17:05:09Z josef $
+ * $Id: module.c 6614 2005-01-08 19:03:18Z josef $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -43,6 +43,7 @@
 static GGZList *module_list;
 static unsigned int num_modules;
 static int mod_handle = -1;
+static int embedded_module = 0;
 
 /* static internal functions */
 static struct _GGZModule* _ggzcore_module_new(void);
@@ -324,6 +325,18 @@ int _ggzcore_module_setup(void)
 unsigned int _ggzcore_module_get_num(void)
 {
 	return num_modules;
+}
+
+
+void _ggzcore_module_embedded(void)
+{
+	embedded_module = 1;
+}
+
+
+int _ggzcore_module_is_embedded(void)
+{
+	return embedded_module;
 }
 
 

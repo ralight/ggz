@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6485 2004-12-15 17:51:58Z josef $
+ * $Id: ggzcore.h 6614 2005-01-08 19:03:18Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -86,7 +86,8 @@ extern "C" {
 typedef enum {
 	GGZ_OPT_PARSER      = 0x0001,   /* %0000 0000 */
 	GGZ_OPT_MODULES     = 0x0002,   /* %0000 0010 */
-	GGZ_OPT_THREADED_IO = 0x0004    /* %0000 0100 */
+	GGZ_OPT_THREADED_IO = 0x0004,   /* %0000 0100 */
+	GGZ_OPT_EMBEDDED    = 0x0008    /* %0000 1000 */
 } GGZOptionFlags;
 
 

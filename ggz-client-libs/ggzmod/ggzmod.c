@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6612 2005-01-08 18:18:04Z jdorje $
+ * $Id: ggzmod.c 6614 2005-01-08 19:03:18Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -74,6 +74,7 @@ static int _ggzmod_handle_event(GGZMod * ggzmod, fd_set read_fds);
 static void _ggzmod_set_state(GGZMod * ggzmod, GGZModState state);
 static int send_game_launch(GGZMod * ggzmod);
 static int game_fork(GGZMod * ggzmod);
+static int game_embedded(GGZMod * ggzmod);
 
 /* Functions for manipulating seats */
 static GGZSeat* seat_copy(GGZSeat *orig);
@@ -674,9 +675,17 @@ int ggzmod_connect(GGZMod * ggzmod)
 	if (ggzmod->type == GGZMOD_GGZ) {
 		/* For the ggz side, we fork the game and then send the launch message */
 		
-		if (game_fork(ggzmod) < 0) {
-			_ggzmod_error(ggzmod, "Error: table fork failed");
-			return -1;
+		if (ggzmod->argv) {
+			if (game_fork(ggzmod) < 0) {
+				_ggzmod_error(ggzmod, "Error: table fork failed");
+				return -1;
+			}
+		} else {
+			ggz_debug("GGZMOD", "Running embedded game (no fork)");
+			if (game_embedded(ggzmod) < 0) {
+				_ggzmod_error(ggzmod, "Error: embedded table failed");
+				return -1;
+			}
 		}
 		
 		if (send_game_launch(ggzmod) < 0) {
@@ -686,7 +695,7 @@ int ggzmod_connect(GGZMod * ggzmod)
 
 	} else {
 #ifdef HAVE_SOCKETPAIR
-		ggzmod->fd = 3;
+		ggzmod->fd = 103;
 #else /* Winsock implementation: see game_fork(). */
 		char buf[100];
 		int port, sock;
@@ -935,11 +944,11 @@ static int game_fork(GGZMod * ggzmod)
 
 		/* debugging message??? */
 
-		/* Now we copy one end of the socketpair to fd 3 */
-		if (fd_pair[1] != 3) {
+		/* Now we copy one end of the socketpair to fd 103 */
+		if (fd_pair[1] != 103) {
 			/* We'd like to send an error message if either of
 			   these fail, but we can't.  --JDS */
-			if (dup2(fd_pair[1], 3) != 3 || close(fd_pair[1]) < 0)
+			if (dup2(fd_pair[1], 103) != 103 || close(fd_pair[1]) < 0)
 				ggz_error_sys_exit("dup failed");
 		}
 
@@ -985,6 +994,62 @@ static int game_fork(GGZMod * ggzmod)
 	CloseHandle(pi.hThread);
 	ggzmod->process = pi.hProcess;
 #endif
+#ifndef HAVE_SOCKETPAIR
+	/* FIXME: we need to select, with a maximum timeout. */
+	/* FIXME: this is insecure; it should be restricted to local
+	 * connections. */
+	sock2 = accept(sock, NULL, NULL);
+	if (sock2 < 0) {
+		ggz_error_sys("Listening to socket failed.");
+		return -1;
+	}
+	closesocket(sock);
+	ggzmod->fd = sock2;
+#endif
+	return 0;
+}
+
+
+/* Similar to game_fork(), but runs the game embedded */
+static int game_embedded(GGZMod * ggzmod)
+{
+#ifdef HAVE_SOCKETPAIR
+	int fd_pair[2];		/* socketpair */
+#else
+	int sock, sock2, port;
+	char buf[100];
+#endif
+
+#ifdef HAVE_SOCKETPAIR
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
+		ggz_error_sys_exit("socketpair failed");
+#else
+	/* Winsock implementation: see ggzmod_connect. */
+	port = 5898;
+	do {
+		port++;
+		sock = ggz_make_socket(GGZ_SOCK_SERVER, port, NULL);
+	} while (sock < 0 && port < 7000);
+	if (sock < 0) {
+		ggz_error_msg("Could not bind socket.");
+		return -1;
+	}
+	if (listen(sock, 1) < 0) {
+		ggz_error_msg("Could not listen on socket.");
+		return -1;
+	}
+#endif
+
+	if (fd_pair[1] != 103) {
+		/* We'd like to send an error message if either of
+		   these fail, but we can't.  --JDS */
+		if (dup2(fd_pair[1], 103) != 103 || close(fd_pair[1]) < 0)
+			ggz_error_sys_exit("dup failed");
+	}
+
+	ggzmod->fd = fd_pair[0];
+	ggzmod->pid = -1; /* FIXME: use -1 for embedded ggzcore? getpid()? */
+
 #ifndef HAVE_SOCKETPAIR
 	/* FIXME: we need to select, with a maximum timeout. */
 	/* FIXME: this is insecure; it should be restricted to local

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 5972 2004-03-22 17:05:09Z josef $
+ * $Id: game.c 6614 2005-01-08 19:03:18Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -140,10 +140,13 @@ GGZGame* ggzcore_game_new(void)
 int ggzcore_game_init(GGZGame *game, GGZServer *server, GGZModule *module)
 {
 	if (!game
-	    || !module
 	    || !server
 	    || !_ggzcore_server_get_cur_room(server)
 	    || _ggzcore_server_get_cur_game(server))
+		return -1;
+
+	if (!module
+	    && !_ggzcore_module_is_embedded())
 		return -1;
 
 	_ggzcore_game_init(game, server, module);
@@ -246,7 +249,7 @@ GGZModule* ggzcore_game_get_module(GGZGame *game)
 
 int ggzcore_game_launch(GGZGame *game)
 {
-	if (game && game->module)
+	if (game && (game->module || _ggzcore_module_is_embedded()))
 		return _ggzcore_game_launch(game);
 	else
 		return -1;
@@ -313,11 +316,13 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	ggzmod_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_CHAT,
 				       _ggzcore_game_handle_chat);
-	ggzmod_set_module(game->client, NULL,
-			  _ggzcore_module_get_argv(game->module));
 	ggzmod_set_player(game->client,
 			  _ggzcore_server_get_handle(server),
 			  0, -1);
+
+	if (!_ggzcore_module_is_embedded())
+		ggzmod_set_module(game->client, NULL,
+				  _ggzcore_module_get_argv(game->module));
 }
 
 
@@ -642,7 +647,10 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 {
 	int status;
 
-	ggz_debug(GGZCORE_DBG_GAME, "Launching game of %s",
+	if (_ggzcore_module_is_embedded())
+		ggz_debug(GGZCORE_DBG_GAME, "Launching embedded game");
+	else
+		ggz_debug(GGZCORE_DBG_GAME, "Launching game of %s",
 		      _ggzcore_module_get_name(game->module));
 
 	if ( (status = ggzmod_connect(game->client)) == 0) {
