@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: bridge.c 4125 2002-05-01 02:33:10Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -292,6 +292,8 @@ static void bridge_get_play(player_t p)
 
 static void bridge_handle_play(player_t p, seat_t s, card_t card)
 {
+	game_handle_play(p, s, card);
+
 	if (game.play_count == 1 && game.trick_count == 0) {
 		/* after the first play of the hand, we reveal the dummy's
 		   hand to everyone */
