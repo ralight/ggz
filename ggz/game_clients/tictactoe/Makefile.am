@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4666 2002-09-23 12:33:57Z jdorje $
+#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/common
+INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES)
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 
 EXTRA_DIST = module.dsc.in
@@ -24,4 +24,6 @@ ggz_ttt_SOURCES =			\
 	x.xpm				\
 	o.xpm
 
-ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/common/libgtk-games.a
+ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/common/libgtk-games.a $(LIB_GGZMOD)
+ggz_ttt_LDFLAGS = $(GGZMOD_LDFLAGS)
+

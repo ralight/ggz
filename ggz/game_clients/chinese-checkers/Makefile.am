@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4666 2002-09-23 12:33:57Z jdorje $
+#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
 
 SUBDIRS = . pixmaps
 
-INCLUDES = -I$(top_srcdir)/common/
+INCLUDES = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES)
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 
 EXTRA_DIST = module.dsc.in
@@ -27,4 +27,6 @@ ggz_ccheckers_SOURCES =	about_dlg.c	about_dlg.h	\
 			protocol.h			\
 			support.c	support.h
 
-ggz_ccheckers_LDADD = @GTK_LIBS@ $(top_builddir)/common/libgtk-games.a $(LDADD)
+ggz_ccheckers_LDADD = @GTK_LIBS@ $(top_builddir)/common/libgtk-games.a $(LDADD) $(LIB_GGZMOD)
+ggz_ccheckers_LDFLAGS = $(GGZMOD_LDFLAGS)
+
