@@ -24,13 +24,14 @@
 
 
 void client_clear_tables(void);
+void display_tables(void);
+void display_players(void);
 void client_join_table(void);
+
 GtkWidget* create_win_main (void);
 GtkWidget* create_mnu_room (void);
 GtkWidget* create_mnu_player (void);
 GtkWidget* create_mnu_table (void);
-
-void reset_table_selection(void);
 
 /* Default font */
 #define DEFAULT_FONT "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"

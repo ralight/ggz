@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4440 2002-09-07 17:49:13Z jdorje $
+ * $Id: ggzclient.c 4499 2002-09-09 20:43:45Z uid40310 $
  *
  * This is the main program body for the GGZ client
  *
@@ -58,9 +58,6 @@ extern GGZGame *game;
 
 gint numrooms;
 gint numtables;
-
-void display_tables(void);
-void display_players(void);
 
 static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void* user_data);
@@ -984,170 +981,6 @@ static void ggz_input_removed(gpointer data)
 
 	ggzcore_server_free((GGZServer*)data);
 	server = NULL;
-}
-
-
-void display_tables(void)
-{
-	GtkWidget *tmp;
-	gchar *table[4] = {NULL, NULL, NULL, NULL}, *desc;
-	gint i, num, avail, seats;
-	GGZRoom *room;
-	GGZTable *t = NULL;
-
-	/* Clear the table */
-	client_clear_tables();
-
-	/* Retrieve the list. */
-	tmp = lookup_widget(win_main, "table_clist");
-	
-	/* "Freeze" the clist.  This prevents any graphical updating
-	 * until we "thaw" it later. */
-	gtk_clist_freeze(GTK_CLIST(tmp));
-	
-	room = ggzcore_server_get_cur_room(server);
-
-	/* Display current list of players
-	if (!(numbers = ggzcore_room_get_numbers()))
-		return GGZ_HOOK_OK;*/
-	
-	numtables = ggzcore_room_get_num_tables(room);
-	for (i = 0; i < numtables; i++) {
-	
-		t = ggzcore_room_get_nth_table(room, i);
-		num   = ggzcore_table_get_id(t);
-		avail = ggzcore_table_get_seat_count(t, GGZ_SEAT_OPEN)
-			+ ggzcore_table_get_seat_count(t, GGZ_SEAT_RESERVED);
-		seats = ggzcore_table_get_num_seats(t);
-		desc = ggzcore_table_get_desc(t);
-		if(!desc) {
-			desc = _("No description available.");
-		}
-
-		/* FIXME: we have a significant problem here.  Do we
-		   display the number of open seats, the number of
-		   available-to-us seats, or the total number of
-		   unfilled seats?  Any way we do it we'll have
-		   problems.  Right now I just show the total
-		   number of unfilled seats. */
-			
-		table[0] = g_strdup_printf("%d", num);
-		table[1] = g_strdup_printf("%d/%d", avail, seats);
-		table[2] = g_strdup_printf("%s", desc);
-		gtk_clist_append(GTK_CLIST(tmp), table);
-		g_free(table[0]);
-		g_free(table[1]);
-		g_free(table[2]);
-	}
-	
-	/* "Thaw" the clist (it was "frozen" up above). */
-	gtk_clist_thaw(GTK_CLIST(tmp));
-
-	/* When the tables get redrawn, there is no longer a selected table.
-	   We call this function to give a notification of that.  But, there
-	   could be a major problem: if the table list changes constantly
-	   (i.e. a busy server) we won't be able to have a consistent
-	   selection.  The solution will be to reference tables by ID, not
-	   just by index.  --JDS */
-	reset_table_selection();
-}
-
-
-void display_players(void)
-{
-	GtkWidget *tmp;
-	gint i, num;
-	/* Some of the fields of the clist receive pixmaps
-	 * instead, and are therefore set to NULL. */
-	gchar *player[4] = {NULL, NULL, NULL, NULL} ;
-	gchar *path = NULL;
-	GGZPlayer *p;
-	GGZTable *table;
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	GdkPixmap *pixmap1 = NULL, *pixmap2 = NULL;
-	GdkBitmap *mask1, *mask2;
-	
-	/* Retrieve the player list (CList) widget. */
-	tmp = lookup_widget(win_main, "player_clist");
-	
-	/* "Freeze" the clist.  This prevents any graphical updating
-	 * until we "thaw" it later. */
-	gtk_clist_freeze(GTK_CLIST(tmp));
-	
-	/* Clear current list of players */
-	gtk_clist_clear(GTK_CLIST(tmp));
-
-	/* Display current list of players */
-	num = ggzcore_room_get_num_players(room);
-
-	for (i = 0; i < num; i++) {
-		p = ggzcore_room_get_nth_player(room, i);
-
-		table = ggzcore_player_get_table(p);
-		
-		/* These values are freed down below. */
-		if(!table)
-			player[1] = g_strdup("--");
-		else
-			player[1] = g_strdup_printf("%d", ggzcore_table_get_id(table));
-		player[2] = g_strdup(ggzcore_player_get_name(p));
-		
-		gtk_clist_append(GTK_CLIST(tmp), player);
-
-		if(ggzcore_player_get_lag(p) == -1 || ggzcore_player_get_lag(p) ==0)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag0.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 1)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag1.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 2)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag2.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 3)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag3.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 4)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag4.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 5)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag5.xpm", NULL);
-		
-		if (path) {
-			pixmap1 = gdk_pixmap_create_from_xpm(tmp->window, &mask1,
-							    NULL, path);
-			if (pixmap1)
-				gtk_clist_set_pixmap(GTK_CLIST(tmp), i, 0, pixmap1, mask1);
-			g_free(path);
-		}
-
-
-		if(ggzcore_player_get_type(p) == GGZ_PLAYER_GUEST)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_guest.xpm", NULL);
-		else if(ggzcore_player_get_type(p) == GGZ_PLAYER_NORMAL)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_registered.xpm", NULL);
-		else if(ggzcore_player_get_type(p) == GGZ_PLAYER_ADMIN)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_admin.xpm", NULL);
-		
-		if (path) {
-			pixmap2 = gdk_pixmap_create_from_xpm(tmp->window, &mask2,
-							    NULL, path);
-			if (pixmap2)
-				gtk_clist_set_pixtext(GTK_CLIST(tmp), i, 2, player[2], 5, pixmap2, mask2);
-			g_free(path);
-		}
-		
-		/* Note player[2] is used right above, so these calls
-		   have to come way down here. */
-		g_free(player[1]);
-		g_free(player[2]);
-	}
-	
-	/* "Thaw" the clist (it was "frozen" up above). */
-	gtk_clist_thaw(GTK_CLIST(tmp));
 }
 
 
