@@ -13,14 +13,15 @@ build-stamp:
 	dh_testdir
 
 	# Configure ggz-kde-client
+	test -f configure || NOCONFIGURE=yes ./autogen.sh
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --enable-browser --enable-ggzfinal
 
 	# RPath workaround
-	#sed < libtool > libtool-2 \
-	#	-e 's/^hardcode_libdir_flag_spec.*$$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
-	#	#-e '/^archive_cmds="/s/"$$/ \\$$deplibs"/'
-	#mv libtool-2 libtool
-	#chmod 755 libtool
+	sed < libtool > libtool-2 \
+		-e 's/^hardcode_libdir_flag_spec.*$$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
+		#-e '/^archive_cmds="/s/"$$/ \\$$deplibs"/'
+	mv libtool-2 libtool
+	chmod 755 libtool
 
 	# Don't build yet.
 	#$(MAKE)
@@ -52,8 +53,8 @@ install: build
 
 	# No development library, only runtime
 	rm -f `pwd`/debian/ggz-kde-client/usr/lib/libggzcorepp.so
-	rm -f `pwd`/debian/ggz-kde-client/usr/lib/libkio_ggz.so
-	rm -f `pwd`/debian/ggz-kde-client/usr/lib/libkio_ggzmeta.so
+	#rm -f `pwd`/debian/ggz-kde-client/usr/lib/libkio_ggz.so
+	#rm -f `pwd`/debian/ggz-kde-client/usr/lib/libkio_ggzmeta.so
 
 
 # Build architecture-independent files here.

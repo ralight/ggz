@@ -4,9 +4,9 @@ SUBDIRS = .
 #KDE_DOCS = AUTO
 
 kioggzmetadocdir = $(kde_htmldir)/en/kioslave
-kioggzmetadoc_DATA = ggzmeta.docbook $(top_builddir)/kio_ggzmeta/kioslave/ggzmeta.html
+kioggzmetadoc_DATA = ggzmeta.docbook ggzmeta.html
 
-$(top_builddir)/kio_ggzmeta/kioslave/ggzmeta.html: $(top_srcdir)/kio_ggzmeta/kioslave/index.docbook
+ggzmeta.html: $(top_srcdir)/kio_ggzmeta/kioslave/index.docbook
 	$(MEINPROC) --stdout $< > $@
 
 #install-data-local:
