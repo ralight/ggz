@@ -17,7 +17,14 @@ textures2 = [0,0]
 texture1 = [[],[]]
 texture2 = [[],[]]
 starships = []
+bullets = []
 angle = 0
+shipobject = [[],[]]
+enemyobject = [[],[]]
+bulletobject = [[], []]
+shiptex = [0,0]
+enemytex = [0,0]
+bullettex = [0,0]
 
 def resize((width, height)):
     glViewport(0, 0, width, height)
@@ -30,6 +37,9 @@ def init():
     global texture1
     global texture2
     global starships
+    global shipobject
+    global enemyobject
+    global bulletobject
 
     glShadeModel(GL_SMOOTH)
     glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -47,6 +57,15 @@ def init():
     texture = pygame.image.load("starfield.png")
     texture2 = pygame.image.tostring(texture, "RGBX", 1)
     glBindTexture(GL_TEXTURE_2D, textures2[0])
+    texture = pygame.image.load("ship.png")
+    shipobject = pygame.image.tostring(texture, "RGBX", 1)
+    glBindTexture(GL_TEXTURE_2D, shiptex[0])
+    texture = pygame.image.load("enemy.png")
+    enemyobject = pygame.image.tostring(texture, "RGBX", 1)
+    glBindTexture(GL_TEXTURE_2D, enemytex[0])
+    texture = pygame.image.load("bullet.png")
+    bulletobject = pygame.image.tostring(texture, "RGBX", 1)
+    glBindTexture(GL_TEXTURE_2D, bullettex[0])
 
     for i in range(10):
         ship = (randrange(-75, 75), randrange(-75, 75), randrange(-75, 75), randrange(-75, 75))
@@ -59,6 +78,9 @@ def draw():
     global texture2
     global starships
     global angle
+    global shipobject
+    global bulletobject
+    global bullets
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
@@ -68,6 +90,8 @@ def draw():
     glRotatef(angle, 0.0, 0.0, 1.0)
 
     glScalef(3.0, 3.0, 3.0)
+
+    """ Background """
 
     glTranslatef(xpos, ypos, 0)
 
@@ -87,6 +111,8 @@ def draw():
     glEnd()
 
     glDisable(GL_TEXTURE_2D)
+
+    """ Background blend """
 
     glTranslatef(xpos, ypos, 0)
 
@@ -113,6 +139,69 @@ def draw():
 
     glPopMatrix()
 
+    """ Ship """
+
+    glPushMatrix()
+
+    glTranslatef(xpos, ypos, 0)
+
+    glEnable(GL_TEXTURE_2D)
+    glEnable(GL_BLEND)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, shipobject);
+
+    glColor3f(1.0, 1.0, 1.0)
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0, 0.0)
+    glVertex3f(-0.2, -0.2, 0.1)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3f(-0.2, 0.2, 0.1)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3f(0.2, 0.2, 0.1)
+    glTexCoord2f(1.00, 0.0)
+    glVertex3f(0.2, -0.2, 0.1)
+    glEnd()
+
+    glDisable(GL_BLEND)
+    glDisable(GL_TEXTURE_2D)
+
+    glPopMatrix()
+
+    """ Bullets """
+
+    glPushMatrix()
+
+    glTranslatef(xpos, ypos, 0)
+
+    glEnable(GL_TEXTURE_2D)
+    glEnable(GL_BLEND)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 16, 16, 0, GL_RGBA, GL_UNSIGNED_BYTE, bulletobject);
+
+    for bulletpos in bullets:
+        (x, y) = bulletpos
+
+        glTranslatef(x, y, 0)
+
+        glColor3f(1.0, 1.0, 1.0)
+        glBegin(GL_QUADS)
+        glTexCoord2f(0.0, 0.0)
+        glVertex3f(-0.02, -0.02, 0.1)
+        glTexCoord2f(0.0, 1.0)
+        glVertex3f(-0.02, 0.02, 0.1)
+        glTexCoord2f(1.0, 1.0)
+        glVertex3f(0.02, 0.02, 0.1)
+        glTexCoord2f(1.00, 0.0)
+        glVertex3f(0.02, -0.02, 0.1)
+        glEnd()
+
+        glTranslate(-x, -y, 0)
+
+    glDisable(GL_BLEND)
+    glDisable(GL_TEXTURE_2D)
+
+    glPopMatrix()
+
+    """ Minimap """
+
     glPushMatrix()
 
     glTranslatef(0.6, -0.9, 0.0)
@@ -128,13 +217,17 @@ def draw():
     glVertex3f(1.0, 0.0, 0.2)
     glEnd()
 
-    glColor4f(0.0, 0.0, 0.4, 0.2)
+    """ Self on minimap """
+
+    glColor4f(0.0, 0.0, 0.2, 0.2)
     glBegin(GL_QUADS)
-    glVertex3f(0.5 - xpos * 0.6 + 0.0625, 0.5 - ypos * 0.6 + 0.0625, 0.3)
-    glVertex3f(0.5 - xpos * 0.6 + 0.0625, 0.5 - ypos * 0.6 - 0.0625, 0.3)
-    glVertex3f(0.5 - xpos * 0.6 - 0.0625, 0.5 - ypos * 0.6 - 0.0625, 0.3)
-    glVertex3f(0.5 - xpos * 0.6 - 0.0625, 0.5 - ypos * 0.6 + 0.0625, 0.3)
+    glVertex3f(0.5 - xpos * 0.6 + 0.04, 0.5 - ypos * 0.6 + 0.04, 0.3)
+    glVertex3f(0.5 - xpos * 0.6 + 0.04, 0.5 - ypos * 0.6 - 0.04, 0.3)
+    glVertex3f(0.5 - xpos * 0.6 - 0.04, 0.5 - ypos * 0.6 - 0.04, 0.3)
+    glVertex3f(0.5 - xpos * 0.6 - 0.04, 0.5 - ypos * 0.6 + 0.04, 0.3)
     glEnd()
+
+    """ Ships on minimap """
 
     for i in range(10):
         ship = starships[i]
@@ -156,6 +249,7 @@ def main():
     global xpos
     global ypos
     global angle
+    global bullets
 
     pygame.init()
     pygame.display.set_caption("Slurp")
@@ -197,6 +291,11 @@ def main():
                 xpos = xpos + speed
             if keyinput[K_LCTRL] or keyinput[K_RCTRL]:
                 angle = angle - 1
+        if keyinput[K_SPACE]:
+            bulletpos = (-0.1, 0.0)
+            bullets.append(bulletpos)
+            bulletpos = (+0.1, 0.0)
+            bullets.append(bulletpos)
 
         for i in range(10):
             ship = starships[i]
@@ -210,6 +309,10 @@ def main():
                 ship = (ship[0], ship[1], randrange(-75, 75), randrange(-75, 75))
             ship = (ship[0] + xdir, ship[1] + ydir, ship[2], ship[3])
             starships[i] = ship
+
+        for i in range(len(bullets)):
+            (x, y) = bullets[i]
+            bullets[i] = (x, y + 0.02)
 
         draw()
 
