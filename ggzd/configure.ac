@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6910 2005-01-30 08:48:10Z jdorje $
+dnl $Id: configure.ac 6960 2005-03-04 01:13:04Z josef $
 
 AC_INIT([GGZ server], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -232,26 +232,22 @@ AC_DEFINE_UNQUOTED([PACKAGE_SOURCE_DIR], "${packagesrcdir}",
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS="man ggzdmod"
+COMPILE_SUBDIRS="man ggzdmod"
 
 if test "$enable_server" = yes; then
-    SUBDIRS="$SUBDIRS ggzd"
+    COMPILE_SUBDIRS="$COMPILE_SUBDIRS ggzd"
 fi
 
 if test "$enable_games" = yes; then
-    SUBDIRS="$SUBDIRS game_servers"
+    COMPILE_SUBDIRS="$COMPILE_SUBDIRS game_servers"
 fi
 
 dnl Compile the test code
-SUBDIRS="$SUBDIRS tests"
-
-#LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
+COMPILE_SUBDIRS="$COMPILE_SUBDIRS tests"
 
 AC_SUBST(LDADD)
-#AC_SUBST(LIBOBJS)
-#AC_SUBST(LTLIBOBJS)
 AC_SUBST(ggzd_LIBS)
-AC_SUBST(SUBDIRS)
+AC_SUBST(COMPILE_SUBDIRS)
 AC_SUBST(ggzdconfdir)
 AC_SUBST(ggzdroomdir)
 AC_SUBST(ggzdgamedir)

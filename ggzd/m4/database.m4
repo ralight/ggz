@@ -371,5 +371,10 @@ if test "$database" = yes; then
 fi
 
 AC_SUBST(LIB_DATABASE)
+AM_CONDITIONAL([GGZDB_DB2], [test "$database" = "db2"])
+AM_CONDITIONAL([GGZDB_DB3], [test "$database" = "db3"])
+AM_CONDITIONAL([GGZDB_DB4], [test "$database" = "db4"])
+AM_CONDITIONAL([GGZDB_MYSQL], [test "$database" = "mysql"])
+AM_CONDITIONAL([GGZDB_PGSQL], [test "$database" = "pgsql"])
 ])
 
