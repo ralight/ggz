@@ -832,6 +832,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 {
 	int result;
 	QString buffer;
+	GGZCoreGametype *gametype;
 
 	switch(id)
 	{
@@ -940,6 +941,10 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			emit signalLocation(i18n("  Room: ") + kggzroom->name() + "  ");
 			emit signalMenu(MENUSIG_ROOMENTER);
+			gametype = kggzroom->gametype();
+			KGGZDEBUG("Spectators allowed here? %i\n", gametype->maxSpectators());
+			if(gametype->maxSpectators()) emit signalMenu(MENUSIG_SPECTATORS);
+			else emit signalMenu(MENUSIG_NOSPECTATORS);
 			break;
 		case GGZCoreServer::enterfail:
 			KGGZDEBUG("enterfail\n");

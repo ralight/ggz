@@ -379,6 +379,16 @@ void KGGZBase::slotMenuSignal(int signal)
 			m_menu_game->setItemEnabled(MENU_GAME_SPECTATOR, TRUE);
 #endif
 			break;
+		case KGGZ::MENUSIG_SPECTATORS:
+#ifdef KGGZ_PATCH_SPECTATORS
+			m_menu_game->setItemEnabled(MENU_GAME_SPECTATOR, TRUE);
+#endif
+			break;
+		case KGGZ::MENUSIG_NOSPECTATORS:
+#ifdef KGGZ_PATCH_SPECTATORS
+			m_menu_game->setItemEnabled(MENU_GAME_SPECTATOR, FALSE);
+#endif
+			break;
 		default:
 			KGGZDEBUG("Unknown signal for menu handling: %i!\n", signal);
 			break;

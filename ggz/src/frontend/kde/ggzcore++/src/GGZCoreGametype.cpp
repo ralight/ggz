@@ -77,8 +77,7 @@ int GGZCoreGametype::maxBots()
 int GGZCoreGametype::maxSpectators()
 {
 #ifdef KGGZ_PATCH_SPECTATORS
-	/*return ggzcore_gametype_get_max_spectators(m_gametype);*/
-	return 1;
+	return ggzcore_gametype_get_spectators_allowed(m_gametype);
 #else
 	return 0;
 #endif
