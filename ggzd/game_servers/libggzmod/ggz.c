@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2217 2001-08-24 05:16:27Z jdorje $
+ * $Id: ggz.c 2225 2001-08-25 13:48:17Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -125,7 +125,7 @@ int ggzdmod_disconnect(void)
 }
 
 
-int ggzdmod_game_launch(void)
+static int ggzdmod_game_launch(void)
 {
 	int i, len;
 	char status = 0;
@@ -170,7 +170,7 @@ int ggzdmod_game_launch(void)
 }
 
 
-int ggzdmod_player_join(int* p_seat, int* p_fd)
+static int ggzdmod_player_join(int* p_seat, int* p_fd)
 {
 	int seat;
 	char status = 0;
@@ -195,7 +195,7 @@ int ggzdmod_player_join(int* p_seat, int* p_fd)
 }
 
 
-int ggzdmod_player_leave(int* p_seat, int* p_fd)
+static int ggzdmod_player_leave(int* p_seat, int* p_fd)
 {
 	int i;
 	char status = 0;
