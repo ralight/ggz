@@ -13,6 +13,13 @@ Information about developers resources and processes.
 <tr>
 <td valign="top" colspan="2">
 
+<i>Starters</i><br>
+If you are new to GGZ and want to know where you can contribute,
+consult the <a href="contribute.php">contributions page</a>.
+
+</td></tr>
+<tr><td valign="top">
+
 <i>Resources</i><br>
 GGZ developers use mailing lists, a bug tracker and a CVS repository for their
 work. If there are any questions, the ggz-dev mailing list is the right place
