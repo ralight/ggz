@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 4919 2002-10-14 22:41:43Z jdorje $
+ * $Id: main_win.c 5046 2002-10-26 04:48:48Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -42,6 +42,7 @@
 #include "dlg_about.h"
 #include "dlg_exit.h"
 #include "dlg_players.h"
+#include "menus.h"
 
 #include <game.h>
 #include <support.h>
@@ -69,16 +70,6 @@ GdkColor *last_color;
 GdkColor *back_color;
 
 void update_options(GtkButton *, gpointer);
-
-static void try_to_quit(void)
-{
-	if (game.state == RVR_STATE_INIT ||
-	    game.state == RVR_STATE_WAIT ||
-	    game.state == RVR_STATE_DONE)
-		gtk_main_quit();
-	else
-		ggz_show_exit_dialog(1);
-}
 
 void game_status( const char* format, ... ) 
 {
@@ -236,15 +227,14 @@ static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 static gboolean main_exit(GtkWidget *widget, GdkEvent *event,
 			  gpointer user_data)
 {
-	try_to_quit();
-	
+	game_exit();	
 	return TRUE;
 }
 
 
-static void game_resync(GtkMenuItem *menuitem, gpointer user_data)
+void game_resync(void)
 {
-	// Request sync from the server
+	/* Request sync from the server */
 	request_sync();
 }
 
@@ -283,15 +273,14 @@ void update_options(GtkButton *button, gpointer user_data)
 }
 
 
-static void game_exit(GtkMenuItem *menuitem, gpointer user_data)
+void game_exit(void)
 {
-  try_to_quit();
-}
-
-
-static void game_about(GtkMenuItem *menuitem, gpointer user_data)
-{
-	create_or_raise_dlg_about();
+	if (game.state == RVR_STATE_INIT ||
+	    game.state == RVR_STATE_WAIT ||
+	    game.state == RVR_STATE_DONE)
+		gtk_main_quit();
+	else
+		ggz_show_exit_dialog(1);
 }
 
 
@@ -406,29 +395,17 @@ static gboolean handle_move(GtkWidget *widget, GdkEventButton *event,
 
 static GtkWidget *create_menus(GtkWidget *window)
 {
-	GtkAccelGroup *accel_group;
-	GtkItemFactory *menu;
 	GtkItemFactoryEntry items[] = {
-	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Table/Player _list"), "<ctrl>L",
-	   create_or_raise_dlg_players, 0, NULL},
-	  {_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
-	  {_("/Table/E_xit"), "<ctrl>X", game_exit, 0, NULL},
-	  {_("/_Options"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Options/_Preferences"), "<ctrl>P", game_get_options,
-	   0, NULL},
-	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-	  {_("/Help/_About"), "<ctrl>A", game_about, 0, NULL}
+		TABLE_MENU,
+		{_("/_Options"), NULL, NULL, 0, "<Branch>"},
+		{_("/Options/_Preferences"), "<ctrl>P", game_get_options,
+		 0, NULL},
+		HELP_MENU
 	};
-	const int num = sizeof(items) / sizeof(items[0]);
 
-	accel_group = gtk_accel_group_new();
-
-	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
-	gtk_item_factory_create_items(menu, num, items, NULL);
-	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
-
-	return gtk_item_factory_get_widget(menu, "<main>");
+	return ggz_create_menus(window,
+				items,
+				sizeof(items) / sizeof(items[0]));
 }
 
 GtkWidget*
