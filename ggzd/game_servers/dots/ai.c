@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots AI module
  * Date: 05/11/2000
  * Desc: Artificial Intelligence for CtD
- * $Id: ai.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: ai.c 4483 2002-09-09 04:05:28Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ai.h"
 #include "game.h"
 
 /* Global game variables */

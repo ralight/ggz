@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
+ * $Id: game.c 4483 2002-09-09 04:05:28Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -153,7 +153,7 @@ int game_send_options(int seat)
 
 
 /* Send a request for client to set options */
-int game_send_options_request(int seat)
+static int game_send_options_request(int seat)
 {
 	int fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
 
