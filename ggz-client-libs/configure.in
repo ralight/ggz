@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(ggz-client-libs, 0.0.4pre)
+AM_INIT_AUTOMAKE(ggz-client-libs, 0.0.4)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -59,7 +59,7 @@ dnl ==================
 
 AC_CHECK_LIB(easysock, es_make_socket, 
     [AC_CHECK_HEADER(easysock.h, 
-        [AC_EGREP_CPP([[0-9]\.[2-9].[0-9]], [#include <easysock.h>
+        [AC_EGREP_CPP([0.[2-9].[0-9]], [#include <easysock.h>
 			   EASYSOCK_VERSION ], LDADD="$LDADD -leasysock",
             AC_MSG_ERROR(*** Need easysock 0.2.X later))],
 	    AC_MSG_ERROR(*** Cannot find easysock.h))],

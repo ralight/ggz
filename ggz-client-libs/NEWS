@@ -1,0 +1,11 @@
+Announcing the release of ggz-client-libs-0.0.4!
+
+The GGZ client libraries currently consists of the single library
+ggzcore.  ggzcore provide core client functionality for all of the GGZ
+client frontends.  It handles services such as client server
+communication, game module management, etc.
+
+This is the first public release of the code for ggz-client-libs.  Its
+API is still somewhat under development, but the code is used by the
+text, gtk, and kde frontends
+

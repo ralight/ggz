@@ -1,3 +1,61 @@
+Installing ggz-client-libs
+==========================
+
+ggz-client-libs is a very straight-forward installation.  By default,
+the compilation process will build both static and shared versions of
+the GGZ client libraries.  This behavior may be altered by passing
+either --disable-shared or --disable-static to the configure script.
+We recommend using shared library when possible.
+
+The ggz-client-libs configuration sets several file locations that
+will be used by the client and game installations.  These directories
+are as follows:
+
+  Directory	Default			What Goes Here
+  ----------	--------------------	--------------
+  GGZCONFDIR	$(prefix)/etc/		ggz.modules (config file)
+  GGZGAMEDIR	$(prefix)/lib/ggz/	game module executables
+  GGZDATADIR	$(prefix)/share/ggz/	game module datafiles (pixmaps, etc)
+
+The default settings are sane for the standard install prefix of
+/usr/local.  Precompiled packahes usually use /usr, and override
+GGZCONFDIR to be /etc.
+
+GGZCONFDIR may be set with the --sysconfdir option of configure.
+
+GGZGAMEDIR may be set with the --libdir option to configure.  Game
+modules will be installed in a ggz subdirectory under this dir.
+
+GGZDATADIR may be set using --datadir.  Game specific data will be
+stored under a ggz subdirectory in this dir.
+
+If you move files from these locations at a later time, it is possible
+that the client and/or games will stop working.  This could happen if
+a game cannot find it's datafiles, or if ggz-client-libs cannot find a
+game module due to it being moved to a different location.
+
+No games will work at all if ggz-client-libs can no longer find the
+ggz.modules file!  This file keeps track of every game you have
+installed.
+
+If you MUST move these directories at a later time, you should
+uninstall all games and clients and rebuild them after reinstalling
+ggz-client-libs with it's new values.
+
+ggz-client-libs will install a simple command-line utility,
+ggz-config, that enables the client packages and game packages to
+install themselves properly in the configured directories. This binary
+will end up in the --bindir, which is $(prefix)/bin by default.  This
+can be anywhere as long as it is in your path for future make
+invocations.
+
+Typical Installation:
+./configure 
+make
+make install (as root)
+ldconfig (as root)
+
+
 Basic Installation
 ==================
 
