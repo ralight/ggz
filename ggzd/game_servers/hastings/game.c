@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 5246 2002-11-16 21:08:44Z dr_maux $
+ * $Id: game.c 5247 2002-11-16 22:16:00Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -126,15 +126,15 @@ static void game_loadmap(const char *file)
 					else quality = quality_bad;
 					break;
 				case state_map:
-					if(y < 10)
+					if(mapy < 10)
 					{
-						bzero(map.boardmap[y], 30);
+						bzero(map.boardmap[mapy], 30);
 						if(strlen(buf + 1) > 30)
 						{
 							buf[31] = 0;
 							quality = quality_bad;
 						}
-						memcpy(map.boardmap[y], buf + 1, strlen(buf + 1));
+						memcpy(map.boardmap[mapy], buf + 1, strlen(buf + 1));
 						if(strlen(buf + 1) > mapx) mapx = strlen(buf + 1);
 						mapy++;
 					}
