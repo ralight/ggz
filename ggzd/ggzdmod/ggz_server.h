@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.h 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: ggz_server.h 2800 2001-12-07 03:41:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,38 +33,34 @@ extern "C" {
 
 #include "ggzdmod.h"
 
+	extern GGZdMod *ggzdmod;
+
 #define GGZ_EVENT_PLAYER GGZDMOD_EVENT_PLAYER_DATA
 #define GGZ_EVENT_LAUNCH GGZDMOD_EVENT_STATE
 #define GGZ_EVENT_QUIT   GGZDMOD_EVENT_STATE
 #define GGZ_EVENT_JOIN   GGZDMOD_EVENT_JOIN
 #define GGZ_EVENT_LEAVE   GGZDMOD_EVENT_LEAVE
 
-	/* This interface is depricated and should not be used. */
+	/* This interface is depricated and should not be used.  I
+	   am in the process of phasing it out. */
 
 	/* Return current state: CREATED, WAITING, PLAYING, DONE */
-	GGZdModState ggzd_get_state(void);
+#define ggzd_get_state() ggzdmod_get_state(ggzdmod)
 
-	GGZdModSeat ggzd_get_seat_status(int seat);
-	int ggzd_set_seat_status(int seat, GGZdModSeat status);
+#define ggzd_get_seat_status(seat) (ggzdmod_get_seat(ggzdmod, seat).type)
 
-	const char *ggzd_get_player_name(int seat);
+#define ggzd_get_player_name(seat) (ggzdmod_get_seat(ggzdmod, seat).name)
 	int ggzd_set_player_name(int seat, char *name);
 
-	int ggzd_get_player_socket(int seat);
-#define ggzd_get_player_udp_socket(seat) (-1)
+#define ggzd_get_player_socket(seat) (ggzdmod_get_seat(ggzdmod, seat).fd)
 
 	int ggzd_debug(const char *fmt, ...);
 
 #define ggzd_seats_num() ggzd_get_seats_num()
 #define ggzd_seats_open() ggzd_get_seat_count(GGZ_SEAT_OPEN)
-#define ggzd_seats_bot() ggzd_get_seat_count(GGZ_SEAT_BOT)
-#define ggzd_seats_reserved() ggzd_get_seat_count(GGZ_SEAT_RESV)
-#define ggzd_seats_human() ggzd_get_seat_count(GGZ_SEAT_PLAYER)
+#define ggzd_seats_num() ggzdmod_get_num_seats(ggzdmod)
 
-	int ggzd_get_seats_num(void);
-	int ggzd_get_seat_count(GGZdModSeat status);
-	void ggzd_gameover(int status);
-	int ggzd_get_gameover(void);
+#define ggzd_get_seat_count(status) ggzdmod_count_seats(ggzdmod, status)
 
 	typedef void (*GGZDHandler) (GGZdModEvent event_id,
 				     void *handler_data);
@@ -72,12 +68,6 @@ extern "C" {
 	void ggzd_set_handler(GGZdModEvent event_id,
 			      const GGZDHandler handler);
 
-	int ggzd_connect(void);
-	int ggzd_disconnect(void);
-
-	void ggzd_dispatch(void);
-	int ggzd_io_is_pending(void);
-	void ggzd_io_read_all(void);
 	int ggzd_main_loop(void);
 
 #ifdef __cplusplus

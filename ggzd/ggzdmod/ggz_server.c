@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.c 2788 2001-12-06 09:44:43Z jdorje $
+ * $Id: ggz_server.c 2800 2001-12-07 03:41:16Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -30,30 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static GGZdMod *ggzdmod = NULL;
-
-GGZdModState ggzd_get_state(void)
-{
-	return ggzdmod_get_state(ggzdmod);
-}
-
-GGZdModSeat ggzd_get_seat_status(int seat)
-{
-	return ggzdmod_get_seat(ggzdmod, seat).type;
-}
-
-int ggzd_set_seat_status(int seat, GGZdModSeat status)
-{
-	GGZSeat myseat = ggzdmod_get_seat(ggzdmod, seat);
-	myseat.type = status;
-	ggzdmod_set_seat(ggzdmod, &myseat);
-	return 0;
-}
-
-const char *ggzd_get_player_name(int seat)
-{
-	return ggzdmod_get_seat(ggzdmod, seat).name;
-}
+GGZdMod *ggzdmod = NULL;
 
 int ggzd_set_player_name(int seat, char *name)
 {
@@ -61,11 +38,6 @@ int ggzd_set_player_name(int seat, char *name)
 	myseat.name = name;
 	ggzdmod_set_seat(ggzdmod, &myseat);
 	return 0;
-}
-
-int ggzd_get_player_socket(int seat)
-{
-	return ggzdmod_get_seat(ggzdmod, seat).fd;
 }
 
 int ggzd_debug(const char *fmt, ...)
@@ -78,30 +50,6 @@ int ggzd_debug(const char *fmt, ...)
 	va_end(ap);
 
 	return ggzdmod_log(ggzdmod, "%s", buffer);
-}
-
-int ggzd_get_seats_num(void)
-{
-	return ggzdmod_get_num_seats(ggzdmod);
-}
-
-int ggzd_get_seat_count(GGZdModSeat status)
-{
-	int i, count = 0;
-	for (i = 0; i < ggzdmod_get_num_seats(ggzdmod); i++)
-		if (ggzd_get_seat_status(i) == status)
-			count++;
-	return count;
-}
-
-void ggzd_gameover(int status)
-{
-	ggzdmod_set_state(ggzdmod, GGZDMOD_STATE_DONE);
-}
-
-int ggzd_get_gameover(void)
-{
-	return ggzdmod_get_state(ggzdmod) == GGZDMOD_STATE_DONE;
 }
 
 static GGZDHandler handlers[6] = { NULL };
@@ -124,37 +72,20 @@ void ggzd_set_handler(GGZdModEvent event_id, const GGZDHandler handler)
 				    ggzd_ggzdmod_event_handler);
 }
 
-int ggzd_connect(void)
-{
-	ggzdmod = ggzdmod_new(GGZDMOD_GAME);
-	ggzdmod_connect(ggzdmod);
-	return ggzdmod_get_fd(ggzdmod);
-}
-
-int ggzd_disconnect(void)
-{
-	ggzdmod_disconnect(ggzdmod);
-	ggzdmod_free(ggzdmod);
-	return 0;
-}
-
-void ggzd_dispatch(void)
-{
-	ggzdmod_dispatch(ggzdmod);
-}
-
-void ggzd_io_read_all(void)
-{
-	ggzdmod_dispatch(ggzdmod);
-}
-
 int ggzd_main_loop(void)
 {
 	GGZdModEvent i;
-	ggzd_connect();
+	
+	ggzdmod = ggzdmod_new(GGZDMOD_GAME);
+	ggzdmod_connect(ggzdmod);
+	
 	for (i = 0; i < 6; i++)
 		ggzdmod_set_handler(ggzdmod, i, ggzd_ggzdmod_event_handler);
+		
 	ggzdmod_loop(ggzdmod);
-	ggzd_disconnect();
+	
+	ggzdmod_disconnect(ggzdmod);
+	ggzdmod_free(ggzdmod);
+	
 	return 0;
 }
