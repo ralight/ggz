@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 4151 2002-05-05 00:22:08Z jdorje $
+ * $Id: ggzdmod.h 4194 2002-05-13 18:46:16Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -140,8 +140,8 @@
  *
  *     void handle_player_join(GGZdMod* ggz, GGZdModEvent event, void* data)
  *     {
- *         int player = *(int*)data;
- *         GGZSeat seat = ggzdmod_get_seat(ggz, player);
+ *         GGZSeat *old_seat = (GGZSeat*)data;
+ *         GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
  *
  *         // ... do other player initializations ...
  *
@@ -154,7 +154,8 @@
  *
  *     void handle_player_leave(GGZdMod* ggz, GGZdModEvent event, void* data)
  *     {
- *         int player = *(int*)data;
+ *         GGZSeat *old_seat = (GGZSeat*)data;
+ *         GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
  *
  *         // ... do other player un-initializations ...
  *
