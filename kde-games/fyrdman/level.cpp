@@ -134,7 +134,7 @@ void Level::loadFromFile(const char *filename)
 						}
 						memcpy(m_cell[y], buf + 1, strlen(buf + 1));
 						memcpy(m_cellown[y], buf + 1, strlen(buf + 1));
-						if(strlen(buf + 1) > x) x = strlen(buf + 1);
+						if((int)strlen(buf + 1) > x) x = strlen(buf + 1);
 						for(j = 0; j < 30; j++)
 						{
 							/* Humancode-to-computercode conversion */
@@ -159,7 +159,7 @@ void Level::loadFromFile(const char *filename)
 							quality = quality_bad;
 						}
 						memcpy(m_cellboard[mapy], buf + 1, strlen(buf + 1));
-						if(strlen(buf + 1) > mapx) mapx = strlen(buf + 1);
+						if((int)strlen(buf + 1) > mapx) mapx = strlen(buf + 1);
 						mapy++;
 					}
 					else quality = quality_bad;

@@ -171,7 +171,7 @@ void Map::setupMap(Level *level)
 		for(int j = 0; j < (m_height + 1) * ys + offy /** 2*/; j++)
 			for(int i = 0; i < (m_width + 1) * xs - offx /*+ offx * 2*/; i++)
 			{
-				int r, g, b, a;
+				int r = 0, g = 0, b = 0;
 				QRgb tripel, tripel2;
 
 				tripel = xim1.pixel(i, j);
