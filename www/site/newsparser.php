@@ -27,6 +27,7 @@ function xmlStart($parser, $name, $attributes)
 	endif;
 
 	if ($tagname != $name) :
+		$att = "";
 		while (list($k, $v) = each($attributes))
 		{
 			$att .= " $k=$v";
