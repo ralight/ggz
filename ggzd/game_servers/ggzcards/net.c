@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2741 2001-11-13 22:52:40Z jdorje $
+ * $Id: net.c 2821 2001-12-09 07:57:00Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -141,8 +141,9 @@ int send_gameover(int winner_cnt, player_t * winners)
 	/* FIXME: this shouldn't be handled here.  It should be handled in
 	   the calling function. */
 	for (i = 0; i < winner_cnt; i++)
-		ggzd_set_game_winner(winners[i], 1.0 / (double) winner_cnt);
-	if (ggzd_recalculate_ratings() < 0) {
+		ggzd_set_game_winner(game.ggz, winners[i],
+				     1.0 / (double) winner_cnt);
+	if (ggzd_recalculate_ratings(game.ggz) < 0) {
 		ggzd_debug("ERROR: couldn't recalculate ratings.");
 	}
 

@@ -1,10 +1,10 @@
-/*
+/* 
  * File: ggz_stats.c
  * Author: GGZ Dev Team
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 2647 2001-11-04 03:50:54Z jdorje $
+ * $Id: ggz_stats.c 2821 2001-12-09 07:57:00Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -26,20 +26,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ggz_server.h"
+#include "ggzdmod.h"
 #include "ggz_stats.h"
 
 extern int num_seats;
 extern struct ggzd_seat_t *seat_data;
 
+/* FIXME: using static values is no good with GGZdmod's object-orient system. 
+ */
 static int *ratings = NULL;
 static int teams = 0;
 static int *team_list = NULL;
 static double *winners = NULL;
 static GGZRatingSystem rating_system = GGZ_ELO_RATING;
 
-/* FIXME: this table is about the ugliest thing ever.  It
- * holds the CDF's of the normalized normal distribution. */
+/* FIXME: this table is about the ugliest thing ever.  It holds the CDF's of
+   the normalized normal distribution. */
 static double ztable[301] = {
 	0.0013498974275996112,
 	0.0013948866316060848,
@@ -358,9 +360,8 @@ static double get_normal_cdf(double z)
 	if (z > 3)
 		return 1.0;
 
-	/* There are 100 entries per std-dev, and
-	 * they're in reverse order, AND they're
-	 * for the lower end of the CDF. */
+	/* There are 100 entries per std-dev, and they're in reverse order,
+	   AND they're for the lower end of the CDF. */
 	return 1 - ztable[300 - (int) (z * 100.0 + 0.5)];
 }
 
@@ -388,11 +389,9 @@ static double elo_integrate_part(double val, double incr,
 	return prob;
 }
 
-/* Returns ELO-style probability of winning determined by integration
- *   num is number of players
- *   i is player being considered
- *   ratings is ratings of all players
- */
+/* Returns ELO-style probability of winning determined by integration num is
+   number of players i is player being considered ratings is ratings of all
+   players */
 static double elo_integrate_all(int num, int i, double *ratings)
 {
 	double prob = 0, p;
@@ -404,7 +403,8 @@ static double elo_integrate_all(int num, int i, double *ratings)
 	return prob;
 }
 
-void elo_compute_expectations(int num, int *ratings, double *probs)
+void elo_compute_expectations(GGZdMod * ggz, int num, int *ratings,
+			      double *probs)
 {
 	double myratings[num];
 	int i;
@@ -421,14 +421,14 @@ void elo_compute_expectations(int num, int *ratings, double *probs)
 		sum += probs[i];
 	}
 
-	ggzd_debug("GGZDMOD: ELO STATS: "
-		   "Probabilities sum to %f; normalizing.", sum);
+	ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
+		    "Probabilities sum to %f; normalizing.", sum);
 	for (i = 0; i < num; i++)
 		probs[i] /= sum;
 }
 
 
-/*
+/* 
  * below here we have the interface functions
  */
 
@@ -440,24 +440,23 @@ void ggzd_set_rating_system(GGZRatingSystem system)
 }
 
 
-int ggzd_get_rating(int player)
+int ggzd_get_rating(GGZdMod * ggz, int player)
 {
-	if (player < 0 || player >= ggzd_seats_num()) {
-		ggzd_debug("GGZDMOD: ELO STATS: "
-			   "ggzd_get_rating: invalid player %d.", player);
+	if (player < 0 || player >= ggzdmod_get_num_seats(ggz)) {
+		ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
+			    "ggzd_get_rating: invalid player %d.", player);
 		return 0;
 	}
 
-	/* FIXME: right now we don't have persistent ratings since
-	 * there's no access to the backend database.  So we just
-	 * initialize everyone to 1500 at the start of each table.
-	 * Not sure how this will work with people joining/leaving
-	 * the table... */
+	/* FIXME: right now we don't have persistent ratings since there's no 
+	   access to the backend database.  So we just initialize everyone to 
+	   1500 at the start of each table. Not sure how this will work with
+	   people joining/leaving the table... */
 	if (!ratings) {
-		int i, num = ggzd_seats_num();
+		int i, num = ggzdmod_get_num_seats(ggz);
 		ratings = malloc(num * sizeof(*ratings));
-		/* just to be interesting, we'll start with
-		 * slightly arbitrary ratings. */
+		/* just to be interesting, we'll start with slightly
+		   arbitrary ratings. */
 		for (i = 0; i < num; i++)
 			ratings[i] = 1500 + rand() % 600;
 	}
@@ -465,29 +464,29 @@ int ggzd_get_rating(int player)
 	return ratings[player];
 }
 
-void ggzd_set_num_teams(int num_teams)
+void ggzd_set_num_teams(GGZdMod * ggz, int num_teams)
 {
-	if (teams < 0 || teams >= ggzd_seats_num()) {
-		ggzd_debug("GGZDMOD: ELO STATS: "
-			   "ggzd_set_num_teams: invalid number %d.",
-			   num_teams);
+	if (teams < 0 || teams >= ggzdmod_get_num_seats(ggz)) {
+		ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
+			    "ggzd_set_num_teams: invalid number %d.",
+			    num_teams);
 		return;
 	}
 	teams = num_teams;
 }
 
-void ggzd_set_team(int player, int team)
+void ggzd_set_team(GGZdMod * ggz, int player, int team)
 {
-	if (player < 0 || player >= ggzd_seats_num() || team < 0
+	if (player < 0 || player >= ggzdmod_get_num_seats(ggz) || team < 0
 	    || team >= teams) {
-		ggzd_debug("GGZDMOD: ELO STATS: "
-			   "ggzd_set_team: invalid params %d/%d.", player,
-			   team);
+		ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
+			    "ggzd_set_team: invalid params %d/%d.", player,
+			    team);
 		return;
 	}
 
 	if (!team_list) {
-		int i, num = ggzd_seats_num();
+		int i, num = ggzdmod_get_num_seats(ggz);
 		team_list = malloc(num * sizeof(*team_list));
 		for (i = 0; i < num; i++)
 			team_list[i] = -1;	/* no team */
@@ -496,18 +495,18 @@ void ggzd_set_team(int player, int team)
 	team_list[player] = team;
 }
 
-void ggzd_set_game_winner(int player, double score)
+void ggzd_set_game_winner(GGZdMod * ggz, int player, double score)
 {
-	if (player < 0 || player >= ggzd_seats_num() || score < 0.0
+	if (player < 0 || player >= ggzdmod_get_num_seats(ggz) || score < 0.0
 	    || score > 1.0) {
-		ggzd_debug("GGZDMOD: ELO STATS: "
-			   "ggzd_set_game_winner: invalid params %d/%f.",
-			   player, score);
+		ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
+			    "ggzd_set_game_winner: invalid params %d/%f.",
+			    player, score);
 		return;
 	}
 
 	if (!winners) {
-		int i, num = ggzd_seats_num();
+		int i, num = ggzdmod_get_num_seats(ggz);
 		winners = malloc(num * sizeof(*winners));
 		for (i = 0; i < num; i++)
 			winners[i] = 0;	/* not a winner */
@@ -516,17 +515,16 @@ void ggzd_set_game_winner(int player, double score)
 	winners[player] = score;
 }
 
-/* NOTE
- * Teams are handled like this: a team effectively has a rating equal to the
- * average of all players on that team.  This is put into ELO to determine
- * the chance of each team winning.  However, the rating change of each
- * player is dependent on that players's rating (or variance), not the
- * team's, according to the standard ELO (or Glicko) formula. */
+/* NOTE Teams are handled like this: a team effectively has a rating equal to 
+   the average of all players on that team.  This is put into ELO to
+   determine the chance of each team winning.  However, the rating change of
+   each player is dependent on that players's rating (or variance), not the
+   team's, according to the standard ELO (or Glicko) formula. */
 
 /* This function is pretty damned ugly. */
-int ggzd_recalculate_ratings()
+int ggzd_recalculate_ratings(GGZdMod * ggz)
 {
-	int i, num = teams > 0 ? teams : ggzd_seats_num();
+	int i, num = teams > 0 ? teams : ggzdmod_get_num_seats(ggz);
 	double sum = 0;
 
 	double team_probs[num], team_scores[num];
@@ -534,8 +532,8 @@ int ggzd_recalculate_ratings()
 
 	/* check to see if all data is initted */
 	if (!winners || !ratings || (teams && !team_list)) {
-		ggzd_debug("GGZDMOD: ELO: ERROR: "
-			   "ggzd_recalculate_ratings: invalid rating data.");
+		ggzdmod_log(ggz, "GGZDMOD: ELO: ERROR: "
+			    "ggzd_recalculate_ratings: invalid rating data.");
 		return -1;
 	}
 
@@ -543,13 +541,13 @@ int ggzd_recalculate_ratings()
 	for (i = 0; i < num; i++) {
 		team_ratings[i] = team_sizes[i] = team_scores[i] = 0;
 	}
-	for (i = 0; i < ggzd_seats_num(); i++) {
+	for (i = 0; i < ggzdmod_get_num_seats(ggz); i++) {
 		int team = teams > 0 ? team_list[i] : i;
 		team_ratings[team] += ratings[i];
 		team_sizes[team]++;
 		if (team_scores[team] && team_scores[team] != winners[i]) {
-			ggzd_debug("GGZDMOD: ELO: ERROR: "
-				   "ggzd_recalculate_ratings: inconsistent team.");
+			ggzdmod_log(ggz, "GGZDMOD: ELO: ERROR: "
+				    "ggzd_recalculate_ratings: inconsistent team.");
 			return -1;
 		}
 		team_scores[team] = winners[i];
@@ -557,35 +555,38 @@ int ggzd_recalculate_ratings()
 	for (i = 0; i < num; i++) {
 		/* the team rating is the average of the individual ratings. */
 		team_ratings[i] /= team_sizes[i];	/* FIXME */
-		ggzd_debug("GGZDMOD: ELO: " "Team rating for team %d is %d.",
-			   i, team_ratings[i]);
+		ggzdmod_log(ggz,
+			    "GGZDMOD: ELO: " "Team rating for team %d is %d.",
+			    i, team_ratings[i]);
 		sum += team_scores[i];
 	}
 
 	/* Verify there is exactly 1 winner. */
 	if (sum != 1.0) {
 		/* FIXME: rounding error might cause this */
-		ggzd_debug("GGZDMOD: ERROR: winner sums add to %f.", sum);
+		ggzdmod_log(ggz, "GGZDMOD: ERROR: winner sums add to %f.",
+			    sum);
 		return -1;
 	}
 
 	/* Calculate the probability for each player to win, ELO-style. */
-	elo_compute_expectations(num, team_ratings, team_probs);
+	elo_compute_expectations(ggz, num, team_ratings, team_probs);
 
 	/* Debugging data */
-	for (i = 0; i < ggzd_seats_num(); i++) {
+	for (i = 0; i < ggzdmod_get_num_seats(ggz); i++) {
 		int team = teams > 0 ? team_list[i] : i;
-		ggzd_debug("GGZDMOD: ELO RATINGS: "
-			   "Player %d has rating %d, expectation %f.", i,
-			   team_ratings[team], team_probs[team]);
+		ggzdmod_log(ggz, "GGZDMOD: ELO RATINGS: "
+			    "Player %d has rating %d, expectation %f.", i,
+			    team_ratings[team], team_probs[team]);
 	}
 
 	/* Calculate new ratings for all players. */
-	for (i = 0; i < ggzd_seats_num(); i++) {
+	for (i = 0; i < ggzdmod_get_num_seats(ggz); i++) {
 		int team = teams > 0 ? team_list[i] : i;
 		double K, diff;
 
-		/* FIXME: this is the chess distribution; games should be able to set their own. */
+		/* FIXME: this is the chess distribution; games should be
+		   able to set their own. */
 		if (ratings[i] < 2000)
 			K = 30.0;
 		else if (ratings[i] > 2400)
@@ -595,9 +596,9 @@ int ggzd_recalculate_ratings()
 
 		diff = K * (team_scores[team] - team_probs[team]);
 		ratings[i] += (int) (diff + 0.5);
-		ggzd_debug("GGZDMOD: ELO RATING: "
-			   "Player %d has new rating %d (slope %f).", i,
-			   ratings[i], K);
+		ggzdmod_log(ggz, "GGZDMOD: ELO RATING: "
+			    "Player %d has new rating %d (slope %f).", i,
+			    ratings[i], K);
 	}
 
 	/* re-init the winners */
