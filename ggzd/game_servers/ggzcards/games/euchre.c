@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2701 2001-11-09 01:24:51Z jdorje $
+ * $Id: euchre.c 2702 2001-11-09 01:33:52Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -115,15 +115,22 @@ static void euchre_start_bidding()
 static int euchre_get_bid()
 {
 	if (game.bid_count < 4) {
-		/* first four bids: either "pass" or "take" */
-		add_sbid(0, 0, EUCHRE_TAKE);
+		/* Tirst four bids are either "pass" or "take".  The suit of
+		   the up-card becomes trump. */
 		add_sbid(0, 0, EUCHRE_PASS);
+		add_sbid(0, 0, EUCHRE_TAKE);
 		return req_bid(game.next_bid);
 	} else {
+		/* After we've bid around, the bidding becomes either "pass"
+		   or "take" with a specific suit. */
 		char suit;
+
+		/* The dealer (8th and last bid) is not allowed to pass a
+		   second time.  (I'm not sure if this is correct.) */
+		if (game.bid_count != 7)
+			add_sbid(0, 0, EUCHRE_PASS);
 		for (suit = 0; suit < 4; suit++)
 			add_sbid(0, suit, EUCHRE_TAKE_SUIT);
-		add_sbid(0, 0, EUCHRE_PASS);
 		return req_bid(game.next_bid);
 	}
 	/* TODO: dealer's last bid */
