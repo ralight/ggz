@@ -1,13 +1,14 @@
 [Desktop Entry]
-Comment=The GGZ Gaming Zone for KDE 2
-Comment[de]=Die GGZ Gaming Zone für KDE 2
-Comment[fr]=La GGZ Gaming Zone pour KDE 2
+Comment=The GGZ Gaming Zone for KDE 3
+Comment[de]=Die GGZ Gaming Zone für KDE 3
+Comment[fr]=La GGZ Gaming Zone pour KDE 3
+GenericName=The GGZ Gaming Zone for KDE 3
+GenericName[de]=Die GGZ Gaming Zone für KDE 3
+GenericName[fr]=La GGZ Gaming Zone pour KDE 3
 Exec=kggz
 Icon=kggz
 MimeType=application/zone;Application
-Name=KGGZ (KDE Client)
-Name[de]=KGGZ (KDE Client)
-Name[fr]=KGGZ (KDE Client)
+Name=KGGZ
 Path=
 DocPath=kggz/index.docbook
 ServiceTypes=

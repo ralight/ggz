@@ -1,4 +1,7 @@
 [Desktop Entry]
 Comment=All GGZ Games on one click
+Comment[de]=Alle GGZ-Spiele mit einem Klick
+GenericName=GGZ Quick Launcher
+GenericName[de]=GGZ Spielestarter
 Icon=ggz
-Name=Quick Launcher
+Name=GGZap

@@ -1,11 +1,12 @@
 [Desktop Entry]
-Comment=Searches GGZ games for menu inclusion.
-Comment[de]=Sucht GGZ-Spiele zur Einbindung ins Menü.
+Comment=Searches GGZ games for menu inclusion
+Comment[de]=Sucht GGZ-Spiele zur Einbindung ins Menü
+GenericName=Utility to find GGZ games
+GenericName[de]=Werkzeug zum Suchen von GGZ-Spielen
 Exec=ggzmodsniff
 Icon=ggzmodsniff
 MimeType=application/zone;Application
 Name=ModSniffer
-Name[de]=ModSniffer
 Path=
 ServiceTypes=
 SwallowExec=
