@@ -192,13 +192,23 @@ static void hearts_end_trick()
 static void hearts_end_hand()
 {
 	player_t p;
+	int max = 0;
+	char buf[1024];
+
 	for (p=0; p<game.num_players; p++) {
 		int points = GHEARTS.points_on_hand[p];
 		int score = (points == 26 ? -26 : points);
 		/* if you take all 26 points you "shoot the moon" and earn -26 instead.
 		 * TODO: option of giving everyone else 26.  It could be handled as a bid... */
 		game.players[p].score += score;
-		if (score == -26)
-			set_global_message("", "%s shot the moon.", ggz_seats[p].name);
+
+		if (score == -26) {
+			snprintf(buf, sizeof(buf), "%s shot the moon.", ggz_seats[p].name);
+			max = 26;
+		} else if (score > max) {
+			max = score;
+			snprintf(buf, sizeof(buf), "%s took %d points.", ggz_seats[p].name, score);
+		}
 	}
+	set_global_message("", "%s", buf);
 }
