@@ -202,6 +202,8 @@ static int game_get_options(int seat)
     	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][1][9] = dtBlocked;
     	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][escape_game.boardheight - 1][3] = dtBlocked;
 
+	escape_game.x = (escape_game.goalwidth + 2 * escape_game.wallwidth - 1)/2 +1;
+	escape_game.y = escape_game.boardheight/2;
 	return game_update(ESCAPE_EVENT_OPTIONS, NULL);
 }
 
