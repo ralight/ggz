@@ -36,8 +36,9 @@ class GGZGameServer {
 		virtual void leaveEvent ( int player );
 		virtual void dataEvent  ( int player );
 #ifdef GGZSPECTATORS
-		virtual void spectatorJoinEvent  ( int player );
-		virtual void spectatorLeaveEvent ( int player );
+		virtual void spectatorJoinEvent  ( int spectator );
+		virtual void spectatorLeaveEvent ( int spectator );
+		virtual void spectatorDataEvent ( int spectator );
 #endif
 		virtual void errorEvent ();
 		int fd ( int player );
@@ -53,6 +54,7 @@ class GGZGameServer {
 #ifdef GGZSPECTATORS
 		static void handle_spectator_join  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
 		static void handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
+		static void handle_spectator_data ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
 #endif
 		int m_connected;
 };

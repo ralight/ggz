@@ -37,8 +37,9 @@ GGZGameServer::GGZGameServer () {
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &handle_data );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_ERROR, &handle_error );
 #ifdef GGZSPECTATORS
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, &handle_spectator_join);
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave);
+	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, &handle_spectator_join );
+	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave );
+	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &handle_spectator_data );
 #endif
 	m_connected = 0;
 }
@@ -81,6 +82,10 @@ void GGZGameServer::spectatorJoinEvent ( int player ) {
 
 // Virtual spectator leave hook
 void GGZGameServer::spectatorLeaveEvent ( int player ) {
+}
+
+// Virtual spectator data hook
+void GGZGameServer::spectatorDataEvent ( int player ) {
 }
 #endif
 
@@ -127,16 +132,23 @@ void GGZGameServer::handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, void* d
 #ifdef GGZSPECTATORS
 // Callback for the spectator join hook
 void GGZGameServer::handle_spectator_join ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
-	int player = ((GGZSpectator*)data)->num;
+	int spectator = ((GGZSpectator*)data)->num;
 	std::cout << "GGZGameServer: spectatorJoinEvent" << std::endl;
-	self->spectatorJoinEvent ( player );
+	self->spectatorJoinEvent ( spectator );
 }
 
 // Callback for the spectator leave hook
 void GGZGameServer::handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
-	int player = ((GGZSpectator*)data)->num;
+	int spectator = ((GGZSpectator*)data)->num;
 	std::cout << "GGZGameServer: spectatorLeaveEvent" << std::endl;
-	self->spectatorLeaveEvent ( player );
+	self->spectatorLeaveEvent ( spectator );
+}
+
+// Callback for the spectator data hook
+void GGZGameServer::handle_spectator_data ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+	int spectator = ((GGZSpectator*)data)->num;
+	std::cout << "GGZGameServer: spectatorDataEvent" << std::endl;
+	self->spectatorDataEvent ( spectator );
 }
 #endif
 
