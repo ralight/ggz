@@ -1537,13 +1537,19 @@ void KGGZ::slotGrubby(const char *grubby, const char *argument, int id)
 			slotChat(QString("%1 have you seen %2").arg(grubby).arg(argument).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
 			break;
 		case KGGZGrubby::actionalertadd:
-			slotChat(QString("%1 alert add %2").arg(grubby).arg(argument).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat(QString("%1 alert %2").arg(grubby).arg(argument).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
 			break;
 		case KGGZGrubby::actionmessages:
 			slotChat(QString("%1 do i have any messages").arg(grubby).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
 			break;
 		case KGGZGrubby::actionbye:
 			KMessageBox::information(m_grubby, i18n("The pleasure has been on my side :)"), "Grubby");
+			break;
+		case KGGZGrubby::actionteach:
+			slotChat(QString("%1 %2").arg(grubby).arg(argument), NULL, KGGZChat::RECEIVE_CHAT);
+			break;
+		case KGGZGrubby::actionwhois:
+			slotChat(QString("%1 who is %2").arg(grubby).arg(argument), NULL, KGGZChat::RECEIVE_CHAT);
 			break;
 		default:
 			KMessageBox::information(m_grubby, i18n("I don't know that command, sorry."), "Error!");
