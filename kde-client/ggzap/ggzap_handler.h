@@ -5,6 +5,7 @@
 
 #include "GGZCoreServer.h"
 #include "GGZCoreRoom.h"
+#include "GGZCoreGame.h"
 
 class GGZapHandler : public QObject
 {
@@ -14,6 +15,7 @@ class GGZapHandler : public QObject
 		~GGZapHandler();
 
 		void init(const char *modulename);
+		void process();
 
 		enum States
 		{
@@ -29,7 +31,12 @@ class GGZapHandler : public QObject
 		};
 
 		static GGZHookReturn hookServer(unsigned int id, void *event_data, void *user_data);
-		void hook(unsigned int id);
+		static GGZHookReturn hookRoom(unsigned int id, void *event_data, void *user_data);
+		static GGZHookReturn hookGame(unsigned int id, void *event_data, void *user_data);
+
+		void hookServerActive(unsigned int id);
+		void hookRoomActive(unsigned int id);
+		void hookGameActive(unsigned int id, void *data);
 
 	signals:
 		void signalState(int state);
@@ -37,9 +44,14 @@ class GGZapHandler : public QObject
 	private:
 		void attachServerCallbacks();
 		void detachServerCallbacks();
+		void attachRoomCallbacks();
+		void detachRoomCallbacks();
+		void attachGameCallbacks();
+		void detachGameCallbacks();
 		
 		GGZCoreServer *m_server;
 		GGZCoreRoom *m_room;
+		GGZCoreGame *m_game;
 		const char *m_modulename;
 };
 

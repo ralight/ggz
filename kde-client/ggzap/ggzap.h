@@ -3,6 +3,7 @@
 
 #include <qwidget.h>
 #include <qlabel.h>
+#include <qevent.h>
 
 class GGZapHandler;
 
@@ -17,6 +18,9 @@ class GGZap : public QWidget
 
 	public slots:
 		void slotState(int state);
+
+	protected:
+		void timerEvent(QTimerEvent *e);
 
 	private:
 		void fat(QLabel *label);

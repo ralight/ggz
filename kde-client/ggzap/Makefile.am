@@ -22,3 +22,6 @@ INCLUDES = $(ggzcorepp_includes) $(all_includes)
 
 EXTRA_DIST = README
 
+pix_DATA = ggzap.png
+pixdir = $(kde_datadir)/kggz/ggzap
+
