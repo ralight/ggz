@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4043 2002-04-21 22:58:26Z jdorje $
+ * $Id: fortytwo.c 4049 2002-04-22 17:40:30Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -49,6 +49,7 @@ typedef struct {
 
 static bool fortytwo_is_valid_game(void);
 static void fortytwo_init_game(void);
+static void fortytwo_set_player_message(player_t p);
 static int fortytwo_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static int fortytwo_get_bid_desc(char *buf, size_t buf_len, bid_t bid);
 static void fortytwo_get_bid(void);
@@ -69,7 +70,7 @@ game_data_t fortytwo_data = {
 	game_get_options,
 	game_handle_option,
 	game_get_option_text,
-	game_set_player_message,
+	fortytwo_set_player_message,
 	fortytwo_get_bid_text,
 	fortytwo_get_bid_desc,
 	game_start_bidding,
@@ -117,7 +118,25 @@ static void fortytwo_init_game(void)
 	
 	/* TODO: specific fortytwo initializations */
 	FORTYTWO.declarer = -1;
+}
+
+/* Sets the player message for a given player. */
+static void fortytwo_set_player_message(player_t p)
+{
+	clear_player_message(game.players[p].seat);
+	add_player_rating_message(p);
+	add_player_score_message(p);
+	add_player_tricks_message(p);
 	
+	if (game.state != STATE_NEXT_BID
+	    && p == FORTYTWO.declarer)
+		add_player_message(p, "Contract: %d\n", FORTYTWO.contract);
+		
+	if (game.state == STATE_NEXT_BID
+	    || game.state == STATE_WAIT_FOR_BID)
+		add_player_bid_message(p);
+		
+	add_player_action_message(p);
 }
 
 static int fortytwo_get_bid_text(char *buf, size_t buf_len, bid_t bid)
