@@ -2,7 +2,7 @@
 ####   Makefile.am generated automatically by KDEStudio   ####
 #### WARNING! All changes made in this part will be lost! ####
 ##############################################################
-SUBDIRS = KReversi 
+SUBDIRS = KReversi krosswater
 EXTRA_DIST = admin/* Makefile.cvs kde-games.studio \
 		configure.in.in
 ##############################################################

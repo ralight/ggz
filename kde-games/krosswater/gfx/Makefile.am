@@ -1,9 +1,9 @@
 EXTRA_DIST = alien.png franzl.png bg.png geek.png title.png mindx.png ok.png
 
 install-data-local:
-	$(mkinstalldirs) $(ggz_datadir)/krosswater/gfx
-	$(INSTALL_DATA) *.png $(ggz_datadir)/krosswater/gfx/
+	$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/krosswater/gfx
+	$(INSTALL_DATA) *.png $(DESTDIR)$(ggzdatadir)/krosswater/gfx/
 
 uninstall-local:
-	-rm -f $(ggz_datadir)/krosswater/gfx/*.png
-	-rm -f $(ggz_datadir)/krosswater/gfx
+	-rm -f $(ggzdatadir)/krosswater/gfx/*.png
+	-rm -f $(ggzdatadir)/krosswater/gfx

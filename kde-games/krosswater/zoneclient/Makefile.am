@@ -4,7 +4,7 @@ lib_LTLIBRARIES = libzoneclient.la
 
 include_HEADERS = ZoneGGZModUI.h ZoneGGZ.h ZoneProtocols.h
 
-INCLUDES = -I $(qt_includes) -I $(kde_includes)
+INCLUDES = -I$(qt_includes) -I$(kde_includes)
 
 libzoneclient_la_LIBADD = @LDADD@ -leasysock
 

@@ -1,11 +1,13 @@
-dist-hook:
-	-perl am_edit
+#dist-hook:
+#	-perl am_edit
 
 SUBDIRS = zoneclient gfx
 
 bin_PROGRAMS = krosswater_client
 
-INCLUDES = -I zoneclient -I $(qt_includes) -I $(kde_includes) $(all_includes)
+bindir = $(ggzexecmoddir)
+
+INCLUDES = -Izoneclient -I$(qt_includes) -I$(kde_includes) $(all_includes)
 
 noinst_HEADERS = krosswater.h \
 		 dlg_person.h \
@@ -25,9 +27,9 @@ krosswater_client_METASOURCES = AUTO
 
 EXTRA_DIST =
 
-UI = -L $(qt_libraries) -L $(kde_libraries) -lqt -lkdeui -lkdecore
+UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
 krosswater_client_LDADD = zoneclient/libzoneclient.la $(UI) -leasysock
 
 DISTCLEANFILES = $(krosswater_client_METASOURCES)
 
-AUTOMAKE_OPTIONS = foreign
+# AUTOMAKE_OPTIONS = foreign
