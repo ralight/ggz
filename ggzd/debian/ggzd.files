@@ -1,8 +1,0 @@
-etc/ggzd/ggzd.conf
-etc/ggzd/ggzd.motd
-etc/ggzd/rooms/entry.room
-usr/bin/ggzd
-usr/bin/ggzduedit
-usr/share/man/man6/ggzd.6
-usr/share/man/man6/ggzduedit.6
-
