@@ -7,11 +7,13 @@ bin_PROGRAMS = ktictactux_client
 ktictactux_client_SOURCES = \
 	main.cpp \
 	ktictactux.cpp \
+	ktictactuxwin.cpp \
 	ktictactuxproto.cpp \
 	qwhiteframe.cpp
 
 noinst_HEADERS = \
 	ktictactux.h \
+	ktictactuxwin.h \
 	ktictactuxproto.h \
 	qwhiteframe.h
 

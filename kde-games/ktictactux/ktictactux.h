@@ -1,8 +1,14 @@
+//////////////////////////////////////////////////////////////////////
+// KTicTacTux
+// Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+// Published under GNU GPL conditions
+//////////////////////////////////////////////////////////////////////
+
 #ifndef KTICTACTUX_H
 #define KTICTACTUX_H
 
 // KDE includes
-#include <kmainwindow.h>
+#include <qwidget.h>
 
 // KTicTacTux includes
 #include "config.h"
@@ -10,7 +16,6 @@
 
 // Qt includes
 #include "qwhiteframe.h"
-#include <qlabel.h>
 #include <qevent.h>
 
 // Player setup
@@ -19,11 +24,14 @@
 #define PLAYER_AI      2
 #define PLAYER_NETWORK 3
 
-class KTicTacTux : public KMainWindow
+// TicTacToe GUI for KDE
+class KTicTacTux : public QWidget
 {
 	Q_OBJECT
 	public:
+		// Constructor
 		KTicTacTux(QWidget *parent = NULL, char *name = NULL);
+		// Destructor
 		~KTicTacTux();
 		// Set opponent type
 		void setOpponent(int type);
@@ -31,8 +39,14 @@ class KTicTacTux : public KMainWindow
 		void init();
 
 	public slots:
+		// Evaluate user input
 		void slotSelected(QWidget *widget);
+		// Evaluate network input
 		void slotNetwork();
+
+	signals:
+		// Emit the game status
+		void signalStatus(QString status);
 
 	private:
 		// Wait for bot or network input
@@ -58,16 +72,25 @@ class KTicTacTux : public KMainWindow
 		// Show all assigned fields
 		void drawBoard();
 
-		//QFrame *fboard;
+		// Array of boxes for the images
 		QWhiteFrame *frame[3][3];
+		// ID of the first box
 		WId m_firstid;
+		// The player who does the next move
 		int m_turn;
-		QLabel *label;
+		// Coordinates of any field
 		int m_x, m_y;
+		// The scores
 		int m_score_opp, m_score_you;
+		// Indicates that there's a winner
 		int m_winner;
+		// Indicates that there'll be a winner
+		int m_seewinner;
+		// Type of the opponent
 		int m_opponent;
+		// Internal protocol class
 		KTicTacTuxProto *proto;
 };
 
 #endif
+
