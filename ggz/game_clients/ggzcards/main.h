@@ -1,4 +1,4 @@
-/* $Id: main.h 2940 2001-12-18 22:17:50Z jdorje $ */
+/* $Id: main.h 2943 2001-12-18 23:10:24Z jdorje $ */
 /* 
  * File: main.h
  * Author: Rich Gade
@@ -26,14 +26,6 @@
 #include "common.h"
 
 extern GtkWidget *dlg_main;
-
-/** @brief Called when we're ready to start a new game.
- *
- *  When we're ready to start a new game, this function should
- *  be called to tell the server.
- *  @see game_get_newgame
- */
-void table_send_newgame(void);
 
 void statusbar_message(char *msg);
 void messagebar_message(const char *msg);

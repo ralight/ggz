@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2941 2001-12-18 22:29:24Z jdorje $
+ * $Id: game.c 2943 2001-12-18 23:10:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -51,6 +51,11 @@ void game_init(void)
 	statusbar_message(_("Waiting for server"));
 }
 
+void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+{
+	client_handle_server();
+}
+
 void game_send_bid(int bid)
 {
 	int status = client_send_bid(bid);
@@ -60,21 +65,37 @@ void game_send_bid(int bid)
 	assert(status == 0);
 }
 
+void game_send_options(int option_count, int *options_selection)
+{
+	int status = client_send_options(option_count, options_selection);
+
+	statusbar_message(_("Sending options to server"));
+
+	assert(status == 0);
+}
+
 
 void game_play_card(card_t card)
 {
-	int status;
-
-	status = client_send_play(card);
+	int status = client_send_play(card);
 
 	statusbar_message(_("Sending play to server"));
 
 	assert(status == 0);
 }
 
-void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+void game_send_newgame(void)
 {
-	client_handle_server();
+	GtkWidget *menu;
+	int status = client_send_newgame();
+
+	menu = gtk_object_get_data(GTK_OBJECT(dlg_main), "mnu_startgame");
+	assert(menu);
+	gtk_widget_set_sensitive(menu, FALSE);
+
+	statusbar_message(_("Waiting for the other players..."));
+
+	assert(status == 0);
 }
 
 

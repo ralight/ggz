@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 2940 2001-12-18 22:17:50Z jdorje $
+ * $Id: dlg_options.c 2943 2001-12-18 23:10:24Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -112,9 +112,7 @@ static gint dlg_opt_delete(GtkWidget * widget, gpointer data)
 
 static void dlg_options_submit(GtkWidget * widget, gpointer data)
 {
-	client_send_options(option_count, options_selected);
-
-	statusbar_message(_("Sending options to server"));
+	game_send_options(option_count, options_selected);
 
 	destroy_options_selection();
 }

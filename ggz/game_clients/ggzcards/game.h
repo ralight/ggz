@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 2940 2001-12-18 22:17:50Z jdorje $
+ * $Id: game.h 2943 2001-12-18 23:10:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -41,9 +41,23 @@ extern int table_max_hand_size;
  *  @note A lot of other initialization is also done in main() */
 void game_init(void);
 
+/** @brief Called when we're ready to start a new game.
+ *
+ *  When we're ready to start a new game, this function should
+ *  be called to tell the server.
+ *  @see game_get_newgame
+ */
+void game_send_newgame(void);
+
 /** @brief Sends the bid to the server, and updates the graphics.
  *  @param bid An index into the list of bids sent by the server. */
 void game_send_bid(int bid);
+
+/** @brief Sends the option list to the server, and updates
+ *  the graphics.
+ *  @param option_count The number of options to send.
+ *  @param options_selection The option_count option choices. */
+void game_send_options(int option_count, int *options_selection);
 
 /** @brief Sends the card to the server, and updates the graphics.
  *  @param card The specific card to play (from the appropriate hand) */

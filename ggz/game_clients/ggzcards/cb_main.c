@@ -1,4 +1,4 @@
-/* $Id: cb_main.c 2860 2001-12-10 17:17:29Z jdorje $ */
+/* $Id: cb_main.c 2943 2001-12-18 23:10:24Z jdorje $ */
 /* 
  * File: cb_main.c
  * Author: Rich Gade
@@ -38,7 +38,7 @@
 
 void on_mnu_startgame_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-	table_send_newgame();
+	game_send_newgame();
 }
 
 void on_mnu_sync_activate(GtkMenuItem * menuitem, gpointer user_data)

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2942 2001-12-18 22:40:48Z jdorje $
+ * $Id: main.c 2943 2001-12-18 23:10:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -105,15 +105,6 @@ static void cleanup_debugging(void)
 {
 	ggz_debug("main", "Shutting down GGZCards client.");
 	ggz_debug_cleanup(GGZ_CHECK_MEM);
-}
-
-void table_send_newgame(void)
-{
-	GtkWidget *menu =
-		gtk_object_get_data(GTK_OBJECT(dlg_main), "mnu_startgame");
-	client_send_newgame();
-	statusbar_message(_("Waiting for the other players..."));
-	gtk_widget_set_sensitive(menu, FALSE);
 }
 
 void statusbar_message(char *msg)
