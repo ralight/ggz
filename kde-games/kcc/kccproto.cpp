@@ -28,6 +28,7 @@ KCCProto::KCCProto(KCC *game)
 	num = -1;
 	max = 0;
 	status = errother;
+	state = statenone;
 
 	mod = NULL;
 	fdcontrol = -1;
@@ -77,6 +78,13 @@ void KCCProto::init()
 	for(int i = 0; i < 15 * 17; i++)
 		board[i / 17][i % 17] = tboard[i / 17][i % 17];
 
+	if(max)
+	{
+		for(int i = 0; i < 15 * 17; i++)
+			if(board[i / 17][i % 17] > max + 1)
+				board[i / 17][i % 17] = 1;
+	}
+
 	state = stateinit;
 	turn = none;
 }
@@ -94,7 +102,8 @@ int KCCProto::getOp()
 int KCCProto::getSeat()
 {
 	ggz_read_int(fd, &max);
-	return ggz_read_int(fd, &num);
+	ggz_read_int(fd, &num);
+	init();
 }
 
 // Receive the player names
@@ -149,7 +158,7 @@ int KCCProto::getOpponentMove()
 // Oooops... volunteers :-)
 int KCCProto::getSync()
 {
-	char space;
+	//char space;
 	int ret = 0;
 
 	/*ret |= ggz_read_char(fd, &turn);

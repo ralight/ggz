@@ -52,10 +52,11 @@ class KCCProto
 		// All available game states
 		enum States
 		{
-			stateinit = 0,
-			statewait = 1,
-			statemove = 2,
-			statedone = 3
+			statenone = 0,
+			stateinit = 2,
+			statewait = 3,
+			statemove = 4,
+			statedone = 5
 		};
 
 		// Possible owners of each field

@@ -29,16 +29,16 @@
 KCC::KCC(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WRepaintNoErase)
 {
-	setErasePixmap(QPixmap(QString("%1/kcc/bg.png").arg(GGZDATADIR)));
-//?	setMask(QBitmap(QString("%1/kcc/mask.png").arg(GGZDATADIR)));
-
 	m_fx = -1;
 	m_turn = 0;
+	m_opponent = PLAYER_NONE;
 
 	m_score_opp = 0;
 	m_score_you = 0;
 
 	proto = new KCCProto(this);
+
+	drawBoard();
 }
 
 // Destructor
@@ -56,8 +56,8 @@ void KCC::slotSelected(QWidget *widget)
 // Prepare your turn
 void KCC::yourTurn()
 {
-	if(proto->state == proto->statemove) emit signalStatus(i18n("Your turn"));
-	proto->state = proto->statemove;
+	if(proto->state == KCCProto::statemove) emit signalStatus(i18n("Your turn"));
+	proto->state = KCCProto::statemove;
 }
 
 // Handle the opponent's turn
@@ -104,7 +104,7 @@ int KCC::gameOver()
 	// Check for draw (no empty fields left)
 	for(int j = 0; j < 3; j++)
 		for(int i = 0; i < 3; i++)
-			if(proto->board[i][j] == proto->none)
+			if(proto->board[i][j] == KCCProto::none)
 			{
 				m_x = i;
 				m_y = j;
@@ -126,7 +126,7 @@ int KCC::gameOver()
 			}
 			else
 			{
-				if(m_winner == proto->opponent)
+				if(m_winner == KCCProto::opponent)
 				{
 					m_score_opp++;
 					conf->writeEntry("humanwon", conf->readNumEntry("humanwon") + 1);
@@ -184,6 +184,7 @@ void KCC::init()
 	QSocketNotifier *sn;
 
 	proto->init();
+	drawBoard();
 
 	if(m_opponent == PLAYER_NETWORK)
 	{
@@ -206,6 +207,12 @@ void KCC::setOpponent(int type)
 		emit signalScore(i18n("Network game"));
 		emit signalStatus(i18n("Waiting for opponent!"));
 	}
+}
+
+void KCC::setPlayers(int players)
+{
+	kdDebug() << "set number of players to " << players << endl;
+	proto->max = players;
 }
 
 // Synchronization
@@ -246,12 +253,12 @@ void KCC::slotNetwork()
 			break;
 		case proto->cc_msg_players:
 			proto->getPlayers();
-			proto->state = proto->statewait;
+			proto->state = KCCProto::statewait;
 			emit signalScore(i18n("Network game"));
 			kdDebug() << "*proto* got players " << endl;
 			break;
 		case proto->cc_req_move:
-			proto->state = proto->statemove;
+			proto->state = KCCProto::statemove;
 			m_turn = proto->num;
 			emit signalStatus(i18n("Your move"));
 			kdDebug() << "*proto* move requested" << endl;
@@ -274,12 +281,12 @@ void KCC::slotNetwork()
 			//getNextTurn();
 			kdDebug() << "*proto* rsp_move " << status << ": " << (int)proto->status << endl;
 
-			if(proto->status == proto->errnone)
+			if(proto->status == KCCProto::errnone)
 			{
 				tmp = proto->board[m_fx][m_fy];
 				proto->board[m_fx][m_fy] = 1;
 				proto->board[m_tx][m_ty] = tmp;
-				repaint();
+				drawBoard();
 			}
 			break;
 		case proto->cc_msg_move:
@@ -294,7 +301,7 @@ void KCC::slotNetwork()
 		case proto->cc_msg_gameover:
 			proto->getGameOver();
 			kdDebug() << "*proto* gameover" << endl;
-			proto->state = proto->statedone;
+			proto->state = KCCProto::statedone;
 			gameOver();
 			break;
 	}
@@ -305,19 +312,25 @@ void KCC::slotNetwork()
 void KCC::drawBoard()
 {
 	QPainter p;
-	QString s;
 
-	p.begin(this);
+	QPixmap b(QString("%1/kcc/bg.png").arg(GGZDATADIR));
+	//setMask(QBitmap(QString("%1/kcc/mask.png").arg(GGZDATADIR)));
+	p.begin(&b);
 
-	for(int j = 0; j < 17; j++)
-		for(int i = 0; i < 15; i++)
-		{
-			if(proto->board[i][j])
-				p.drawPixmap(i * 22 + 40 + (j % 2) * 11, j * 18 + 50,
-					QPixmap(QString("%1/kcc/point%2.png").arg(GGZDATADIR).arg(proto->board[i][j] - 1)));
-		}
+	if(proto->state != KCCProto::statenone)
+		for(int j = 0; j < 17; j++)
+			for(int i = 0; i < 15; i++)
+			{
+				if(proto->board[i][j])
+					p.drawPixmap(i * 22 + 40 + (j % 2) * 11, j * 19 + 44,
+						QPixmap(QString("%1/kcc/point%2.png").arg(
+							GGZDATADIR).arg(proto->board[i][j] - 1)));
+			}
 
 	p.end();
+	setErasePixmap(b);
+	//setPaletteBackgroundPixmap(b);
+	repaint();
 }
 
 // Evaluate network control input
@@ -334,7 +347,7 @@ void KCC::mousePressEvent(QMouseEvent *e)
 
 	if(m_turn != proto->num) return;
 
-	y = (e->y() - 50) / 18;
+	y = (e->y() - 44) / 19;
 	x = ((e->x() - 40) - (y % 2) * 11) / 22;
 
 	//kdDebug() << "* " << e->x() << ", " << e->y() << endl;
@@ -352,7 +365,8 @@ void KCC::mousePressEvent(QMouseEvent *e)
 			m_tx = x;
 			m_ty = y;
 
-			kdDebug() << m_fy << "/" << (m_fx * 2) + (m_fy % 2) - 2 << " - " << y << "/" << (x * 2) + (y % 2) - 2 << endl;
+			kdDebug() << m_fy << "/" << (m_fx * 2) + (m_fy % 2) - 2 <<
+				" - " << y << "/" << (x * 2) + (y % 2) - 2 << endl;
 			proto->sendMyMove(m_fx, m_fy, x, y);
 		}
 		else
@@ -379,7 +393,7 @@ void KCC::mousePressEvent(QMouseEvent *e)
 				tmp = proto->board[m_fx][m_fy];
 				proto->board[m_fx][m_fy] = 1;
 				proto->board[x][y] = tmp;
-				repaint();
+				drawBoard();
 			}
 			else
 			{
@@ -392,8 +406,8 @@ void KCC::mousePressEvent(QMouseEvent *e)
 	}
 }
 
-void KCC::paintEvent(QPaintEvent *e)
-{
-	drawBoard();
-}
+//void KCC::paintEvent(QPaintEvent *e)
+//{
+//	drawBoard();
+//}
 

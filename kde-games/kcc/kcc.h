@@ -34,6 +34,8 @@ class KCC : public QWidget
 		~KCC();
 		// Set opponent type
 		void setOpponent(int type);
+		// Set number of opponents
+		void setPlayers(int players);
 		// Set up the game
 		void init();
 		// Request a synchonization
@@ -63,7 +65,7 @@ class KCC : public QWidget
 
 	protected:
 		void mousePressEvent(QMouseEvent *e);
-		void paintEvent(QPaintEvent *e);
+		//void paintEvent(QPaintEvent *e);
 
 	private:
 		// Wait for bot or network input
