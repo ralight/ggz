@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4447 2002-09-07 21:50:49Z jdorje $
+ * $Id: table.c 4451 2002-09-08 00:37:19Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -916,6 +916,18 @@ static void table_remove(GGZTable* table)
 						   table->seat_names[i], i);
 			transit_player_event(table->seat_names[i],
 					     GGZ_TRANSIT_LEAVE, 0, 0);
+		}
+	}
+
+	/* And send them out for spectators also */
+	for (i = 0; i < spectators_count(table); i++) {
+		if (table->spectators[i][0] != '\0') {
+			table_update_event_enqueue(table,
+						   GGZ_UPDATE_SPECTATOR_LEAVE,
+						   table->spectators[i], i);
+			transit_player_event(table->spectators[i],
+					     GGZ_TRANSIT_LEAVE_SPECTATOR,
+					     0, 0);
 		}
 	}
 
