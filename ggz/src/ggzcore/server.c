@@ -228,7 +228,8 @@ void ggzcore_server_free(GGZServer *server)
 	/* Free room list */
 	/* Free type list */
 
-	_ggzcore_room_free(server->room);
+	if (server->room)
+		_ggzcore_room_free(server->room);
 
 	for (i = 0; i < GGZ_NUM_SERVER_EVENTS; i++)
 		_ggzcore_hook_list_destroy(server->event_hooks[i]);
