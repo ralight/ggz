@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Client für die Konsole: GGZ-Txt</b><br>
+<b>Client fÃ¼r die Konsole: GGZ-Txt</b><br>
 <br>
 
 <table class="inner">
@@ -14,15 +14,15 @@
 
 <i>Merkmale</i><br>
 <ul>
-<li>benötigt kein X11 zur Ausführung
-<li>unterstützt Terminal-Farben und Befehlsspeicher (readline, history)
+<li>benÃ¶tigt kein X11 zur AusfÃ¼hrung
+<li>unterstÃ¼tzt Terminal-Farben und Befehlsspeicher (readline, history)
 <li>kann zum Spielen verwendet werden, z.B. unter xterm
 </ul>
 <br>
 
 </td><td valign="top">
 
-<img src="pics/ggz-txt.png"><br>
+<img src="/clients/pics/ggz-txt.png"><br>
 
 </td>
 </tr>

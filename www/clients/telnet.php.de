@@ -14,15 +14,15 @@
 
 <i>Merkmale</i><br>
 <ul>
-<li>läuft auf entfernten Rechnern und ist von überall her über telnet/netcat ansprechbar
-<li>nutzt den Meta-Server, um nur gültige Server anzubieten
-<li>Antwort-Pufferung während der Chat-Eingaben
+<li>lÃ¤uft auf entfernten Rechnern und ist von Ã¼berall her Ã¼ber telnet/netcat ansprechbar
+<li>nutzt den Meta-Server, um nur gÃ¼ltige Server anzubieten
+<li>Antwort-Pufferung wÃ¤hrend der Chat-Eingaben
 </ul>
 <br>
 
 </td><td valign="top">
 
-<img src="pics/telggz.png"><br>
+<img src="/clients/pics/telggz.png"><br>
 
 </td>
 </tr>
