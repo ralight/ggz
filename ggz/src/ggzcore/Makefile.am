@@ -2,8 +2,10 @@
 SUBDIRS = .
 
 bin_PROGRAMS = ggz-config
+
 ggz_config_LDADD = libggzcore.la @LDADD@
 ggz_config_SOURCES = ggz-config.c
+
 ggzconf_DATA = ggz.modules
 
 EXTRA_DIST = $(ggzconf_DATA)
@@ -12,7 +14,7 @@ lib_LTLIBRARIES = libggzcore.la
 
 include_HEADERS = ggzcore.h
 
-libggzcore_la_LIBADD = @LDADD@
+libggzcore_la_LIBADD = @LDADD@ -lexpat
 
 libggzcore_la_LDFLAGS = -version-info 1:0:0
 
@@ -35,16 +37,23 @@ libggzcore_la_SOURCES =	conf.c \
 			module.h \
 			msg.c \
 			msg.h \
-			net.c \
-			net.h \
+#			net.c \
+#			net.h \
+			netxml.c \
+			netxml.h \
 			player.c \
 			player.h \
+			protocol.c \
 			protocol.h \
 			room.c \
 			room.h \
 			server.c \
 			server.h \
+			stack.c \
+			stack.h \
 			state.c \
 			state.h \
 			table.c \
 			table.h \
+			xmlelement.c \
+			xmlelement.h 

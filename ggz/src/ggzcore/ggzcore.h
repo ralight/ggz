@@ -75,6 +75,7 @@ typedef enum {
 	GGZ_DBG_MEMDETAIL = 0x00004000,
 	GGZ_DBG_MODULE    = 0x00008000,
 	GGZ_DBG_GAME      = 0x00010000,
+	GGZ_DBG_XML       = 0x00020000,
 	GGZ_DBG_ALL       = 0xFFFFFFFF
 } GGZDebugLevel;
 
@@ -225,6 +226,7 @@ typedef enum {
 
 
 
+typedef struct _GGZNet      GGZNet;
 typedef struct _GGZServer   GGZServer;
 typedef struct _GGZRoom     GGZRoom;
 typedef struct _GGZPlayer   GGZPlayer;

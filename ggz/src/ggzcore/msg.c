@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 2220 2001-08-24 21:16:22Z jdorje $
+ * $Id: msg.c 2397 2001-09-08 03:26:38Z bmh $
  *
  * Debug and error messages
  *
@@ -108,6 +108,9 @@ void ggzcore_debug(GGZDebugLevel level, const char *fmt, ...)
 			break;
 		case GGZ_DBG_GAME:
 			prefix = "GAME";
+			break;
+		case GGZ_DBG_XML:
+			prefix = "XML";
 			break;
 		default:
 			prefix = "DEBUG";

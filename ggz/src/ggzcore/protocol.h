@@ -1,5 +1,5 @@
 /*
- * File: protocols.h
+ * File: protocol.h
  * Author: Brent Hendricks
  * Project: GGZ
  * Date: 10/18/99
@@ -26,7 +26,9 @@
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
 
-#define GGZ_CS_PROTO_VERSION  4
+#include "xmlelement.h"
+
+#define GGZ_CS_PROTO_VERSION  5
 
 /* Chat subop bitmasks */
 
@@ -116,5 +118,8 @@ typedef enum {
 #define E_NOT_IN_ROOM   -13
 #define E_AT_TABLE     -14
 #define E_IN_TRANSIT   -15
+
+GGZXMLElement* _ggzcore_protocol_new_element(char *tag, char **attrs);
+void _ggzcore_protocol_process_element(GGZXMLElement *element, GGZXMLElement *parent, struct _GGZNet *net);
 
 #endif /*__PROTOCOL_H__*/

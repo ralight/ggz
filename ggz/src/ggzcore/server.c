@@ -31,6 +31,7 @@
 #include "errno.h"
 #include "lists.h"
 #include "player.h"
+#include "protocol.h"
 
 #include <stdlib.h>
 #include <string.h>
