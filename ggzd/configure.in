@@ -291,6 +291,8 @@ AC_OUTPUT([Makefile
 		game_servers/krosswater/zoneserver/Makefile
 		game_servers/muehle/Makefile
 		game_servers/muehle/ggz/Makefile
+		game_servers/keepalive/Makefile
+		game_servers/keepalive/src/Makefile
 		man/Makefile
 		tests/Makefile
 	   ])
