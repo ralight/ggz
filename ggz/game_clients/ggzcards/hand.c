@@ -79,10 +79,15 @@ int hand_read_hand(void)
 			ggz_debug("Increasing max hand size because the available table size (%d %d) isn't as big as what's required (%d %d).", w, h, w1, h1);
 			game.max_hand_size++;
 		}
-		/* if (game.max_hand_size < 13) game.max_hand_size = 13; */
 		for (p = 0; p<game.num_players; p++) {
-			if (game.players[p].hand.card)
+			/* TODO: figure out how this code could even fail at all.
+			   In the meantime, I've disabled the call to free, conceding
+			   the memory leak so that we don't have an unexplained seg fault
+			   (which we would have if these two lines were included) */
+/*
+			if (game.players[p].hand.card != NULL)
 				g_free(game.players[p].hand.card);
+*/
 			game.players[p].hand.card = (card_t *)g_malloc(game.max_hand_size * sizeof(card_t));
 		}
 		table_setup();
