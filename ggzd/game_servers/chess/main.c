@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Main loop
- * $Id: main.c 2214 2001-08-24 02:54:33Z jdorje $
+ * $Id: main.c 2227 2001-08-25 14:01:56Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -53,7 +53,7 @@ int main(void)
   /* White player starts ! */
   game_info.turn = 0;
 
-  ggzdmod_main("Chess");
+  ggzdmod_main();
   return 0;
 }
 
