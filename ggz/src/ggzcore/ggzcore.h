@@ -23,6 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+
 #ifndef __GGZCORE_H__
 #define __GGZCORE_H__
 
@@ -60,7 +61,6 @@ typedef enum {
 	GGZ_DBG_ALL       = 0xFFFFFFFF
 } GGZDebugLevel;
 
-
 /* Options structure for ggzcore library */
 typedef struct _GGZOptions {
 	
@@ -96,49 +96,12 @@ int ggzcore_init(GGZOptions options);
 void ggzcore_destroy(void);
 
 
-/* IDs for all GGZ events */
-typedef enum {
-	GGZ_SERVER_CONNECT,
-	GGZ_SERVER_CONNECT_FAIL,
-	GGZ_SERVER_MOTD,
-	GGZ_SERVER_LOGIN,
-	GGZ_SERVER_LOGIN_FAIL, 
-	GGZ_SERVER_LIST_ROOMS,
-	GGZ_SERVER_ROOM_JOIN,
-	GGZ_SERVER_ROOM_JOIN_FAIL,
-	GGZ_SERVER_LIST_PLAYERS,
-	GGZ_SERVER_CHAT,
-	GGZ_SERVER_CHAT_FAIL,
-	GGZ_SERVER_CHAT_MSG,
-	GGZ_SERVER_CHAT_ANNOUNCE,
-	GGZ_SERVER_CHAT_PRVMSG,
-	GGZ_SERVER_CHAT_BEEP,
-	GGZ_SERVER_LOGOUT,
-	GGZ_SERVER_ERROR,
-	GGZ_SERVER_ROOM_ENTER,
-	GGZ_SERVER_ROOM_LEAVE,
-	GGZ_SERVER_TABLE_UPDATE,
-	GGZ_NET_ERROR,
-	GGZ_USER_LOGIN, 
-	GGZ_USER_LIST_ROOMS,
-	GGZ_USER_LIST_TYPES,
-	GGZ_USER_JOIN_ROOM,
-	GGZ_USER_LIST_TABLES,
-	GGZ_USER_LIST_PLAYERS,
-	GGZ_USER_CHAT,
-	GGZ_USER_CHAT_PRVMSG,
-	GGZ_USER_CHAT_BEEP,
-	GGZ_USER_MOTD,
-	GGZ_USER_LOGOUT
-} GGZEventID;
-
-
 /* GGZ Hook function return types */
 typedef enum {
-	GGZ_HOOK_OK,
-	GGZ_HOOK_REMOVE,
-	GGZ_HOOK_ERROR,
-	GGZ_HOOK_CRISIS
+      GGZ_HOOK_OK,
+      GGZ_HOOK_REMOVE,
+      GGZ_HOOK_ERROR,
+      GGZ_HOOK_CRISIS
 } GGZHookReturn;
 
 /* GGZ Event hook function type, used as a vallback for events */
@@ -146,8 +109,9 @@ typedef GGZHookReturn (*GGZHookFunc)(unsigned int id,
 				     void* event_data, 
 				     void* user_data);
 
-/* GGZ object destroy function type */			
+/* GGZ object destroy function type */                        
 typedef void (*GGZDestroyFunc)(void* data);
+
 
 
 typedef enum {
@@ -155,6 +119,113 @@ typedef enum {
 	GGZ_LOGIN_GUEST,
 	GGZ_LOGIN_NEW
 } GGZLoginType;
+
+
+typedef enum {
+	GGZ_CONNECTED,
+	GGZ_CONNECT_FAIL,
+	GGZ_NEGOTIATED,
+	GGZ_NEGOTIATE_FAIL,
+	GGZ_LOGGED_IN,
+	GGZ_LOGIN_FAIL,
+	GGZ_MOTD_LOADED,
+	GGZ_ROOM_LIST,
+	GGZ_ENTERED,
+	GGZ_ENTER_FAIL,
+	GGZ_LOGOUT,
+	GGZ_NET_ERROR
+} GGZServerEvent;
+
+
+typedef enum {
+	GGZ_STATE_OFFLINE,
+	GGZ_STATE_CONNECTING,
+	GGZ_STATE_ONLINE,
+	GGZ_STATE_LOGGING_IN,
+	GGZ_STATE_LOGGED_IN,
+	GGZ_STATE_ENTERING_ROOM,
+	GGZ_STATE_IN_ROOM,
+	GGZ_STATE_BETWEEN_ROOMS,
+	GGZ_STATE_JOINING_TABLE,
+	GGZ_STATE_AT_TABLE,
+	GGZ_STATE_LEAVING_TABLE,
+	GGZ_STATE_LOGGING_OUT,
+} GGZStateID;
+
+typedef struct _GGZServer GGZServer;
+typedef struct _GGZRoomList GGZRoomList;
+
+/* Function for allocating and initializing new GGZServer object */
+GGZServer* ggzcore_server_new(const char *host,
+			      const unsigned int port,
+			      const GGZLoginType type,
+			      const char *handle,
+			      const char *password);
+
+/* Functions for attaching hooks to GGZServer events */
+int ggzcore_server_add_event_hook(GGZServer *server,
+				  const GGZServerEvent event, 
+				  const GGZHookFunc func);
+
+int ggzcore_server_add_event_hook_full(GGZServer *server,
+				       const GGZServerEvent event, 
+				       const GGZHookFunc func,
+				       void *data);
+
+/* Functions for removing hooks from GGZServer events */
+int ggzcore_server_remove_event_hook(GGZServer *server,
+				     const GGZServerEvent event, 
+				     const GGZHookFunc func);
+
+int ggzcore_server_remove_event_hook_id(GGZServer *server,
+					const GGZServerEvent event, 
+					const unsigned int hook_id);
+
+/* Functions for querying a GGZServer object for information */
+char*        ggzcore_server_get_host(GGZServer *server);
+int          ggzcore_server_get_port(GGZServer *server);
+GGZLoginType ggzcore_server_get_type(GGZServer *server);
+char*        ggzcore_server_get_handle(GGZServer *server);
+char*        ggzcore_server_get_password(GGZServer *server);
+int          ggzcore_server_get_fd(GGZServer *server);
+GGZStateID   ggzcore_server_get_state(GGZServer *server);
+int          ggzcore_server_get_cur_room(GGZServer *server);
+GGZRoomList* ggzcore_server_get_roomlist(GGZServer *server);
+int          ggzcore_server_get_num_rooms(GGZServer *server);
+char**       ggzcore_server_get_room_names(GGZServer *server);
+char*        ggzcore_server_get_room_name(GGZServer *server, 
+					  const unsigned int);
+char*        ggzcore_server_get_room_desc(GGZServer *server, 
+					  const unsigned int);
+int          ggzcore_server_get_room_gametype(GGZServer *server, 
+					      const unsigned int id);
+
+
+/* ggzcore_server_is_XXXX()
+ * 
+ * These functions return 1 if the server connection is in the
+ * specified state, and 0 otherwise 
+*/
+int ggzcore_server_is_online(GGZServer *server);
+int ggzcore_server_is_logged_in(GGZServer *server);
+int ggzcore_server_is_in_room(GGZServer *server);
+int ggzcore_server_is_at_table(GGZServer *server);
+
+/* GGZ Server Actions */
+void ggzcore_server_connect(GGZServer *server);
+void ggzcore_server_login(GGZServer *server);
+void ggzcore_server_list_rooms(GGZServer *server, const int type, const char verbose);
+void ggzcore_server_join_room(GGZServer *server, const int room);
+void ggzcore_server_logout(GGZServer *server);
+
+/* Functions for data processing */
+int ggzcore_server_data_is_pending(GGZServer *server);
+int ggzcore_server_read_data(GGZServer *server);
+int ggzcore_server_write_data(GGZServer *server);
+
+/* Free GGZServer object and accompanying data */
+void ggzcore_server_free(GGZServer *server);
+
 
 typedef enum {
 	GGZ_SEAT_OPEN   = -1,
@@ -164,28 +235,26 @@ typedef enum {
 	GGZ_SEAT_PLAYER = -5
 } GGZSeatType;
 
-/* The GGZProfile describes a server/login profile */
-typedef struct _GGZProfile {
-	
-	/* Name of profile */
-	char* name;
-	
-	/* Hostname of GGZ server */
-	char* host;
-
-	/* Port on which GGZ server in running */
-	unsigned int port;
-
-	/* Login type: one of GGZ_LOGIN, GGZ_LOGIN_GUEST, GGZ_LOGIN_NEW */
-	GGZLoginType type;
-
-	/* Login name on this server */
-	char* login;
-
-	/* Password for this server (optional) */
-	char* password;
-
-} GGZProfile;
+/* IDs for all GGZ events */
+typedef enum {
+	GGZ_SERVER_LIST_PLAYERS,
+	GGZ_SERVER_CHAT,
+	GGZ_SERVER_CHAT_FAIL,
+	GGZ_SERVER_CHAT_MSG,
+	GGZ_SERVER_CHAT_ANNOUNCE,
+	GGZ_SERVER_CHAT_PRVMSG,
+	GGZ_SERVER_CHAT_BEEP,
+	GGZ_SERVER_ROOM_ENTER,
+	GGZ_SERVER_ROOM_LEAVE,
+	GGZ_SERVER_TABLE_UPDATE,
+	GGZ_USER_LIST_TYPES,
+	GGZ_USER_LIST_TABLES,
+	GGZ_USER_LIST_PLAYERS,
+	GGZ_USER_CHAT,
+	GGZ_USER_CHAT_PRVMSG,
+	GGZ_USER_CHAT_BEEP,
+	GGZ_USER_MOTD,
+} GGZEventID;
 
 
 
@@ -295,68 +364,16 @@ int ggzcore_event_enqueue(const GGZEventID id, void *data,
 			  const GGZDestroyFunc func);
 
 
-typedef enum {
-	GGZ_STATE_OFFLINE,
-	GGZ_STATE_CONNECTING,
-	GGZ_STATE_ONLINE,
-	GGZ_STATE_LOGGING_IN,
-	GGZ_STATE_LOGGED_IN,
-	GGZ_STATE_ENTERING_ROOM,
-	GGZ_STATE_IN_ROOM,
-	GGZ_STATE_BETWEEN_ROOMS,
-	GGZ_STATE_JOINING_TABLE,
-	GGZ_STATE_AT_TABLE,
-	GGZ_STATE_LEAVING_TABLE,
-	GGZ_STATE_LOGGING_OUT,
-} GGZStateID;
-
-
 int ggzcore_state_add_hook(const GGZStateID id, const GGZHookFunc func);
 int ggzcore_state_add_hook_full(const GGZStateID id, 
 				const GGZHookFunc func, 
 				void* user_data);
 
 
-
 int ggzcore_state_remove_hook(const GGZStateID id, const GGZHookFunc func);
 int ggzcore_state_remove_hook_id(const GGZStateID id, 
 				 const unsigned int hook_id);
 
-
-/* ggzcore_state_is_XXXX()
- * 
- * These functions return 1 if ggzcore is in the specified state, and 
- * 0 otherwise 
- */
-int ggzcore_state_is_online(void);
-int ggzcore_state_is_logged_in(void);
-int ggzcore_state_is_in_room(void);
-int ggzcore_state_is_at_table(void);
-
-
-GGZStateID ggzcore_state_get_id(void);
-char* ggzcore_state_get_profile_login(void);
-char* ggzcore_state_get_profile_name(void);
-char* ggzcore_state_get_profile_host(void);
-int ggzcore_state_get_room(void);
-
-
-/* ggzcore_net_get_fd() - Get a copy of the network socket
- * Receives:
- *
- * Returns:
- * int : network socket fd
- *
- * Note: this is for detecting network data arrival only.  Do *NOT* attempt
- * to write to this fd.
- */
-int ggzcore_net_get_fd(void);
-
-unsigned int ggzcore_room_get_num(void);
-char* ggzcore_room_get_name(const unsigned int);
-char* ggzcore_room_get_desc(const unsigned int);
-char** ggzcore_room_get_names(void);
-int ggzcore_room_get_gametype(const unsigned int id);
 
 unsigned int ggzcore_player_get_num(void);
 char** ggzcore_player_get_names(void);

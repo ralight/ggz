@@ -23,17 +23,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-#include <conf.h>
-#include <confio.h>
-#include <ggzcore.h>
-#include <event.h>
-#include <user.h>
-#include <msg.h>
-#include <net.h>
-#include <state.h>
-#include <server.h>
-#include <gametype.h>
+#include "config.h"
+#include "conf.h"
+#include "confio.h"
+#include "ggzcore.h"
+#include "event.h"
+#include "user.h"
+#include "msg.h"
+#include "net.h"
+#include "state.h"
+#include "gametype.h"
 
 
 int ggzcore_init(GGZOptions options)
@@ -55,10 +54,6 @@ int ggzcore_init(GGZOptions options)
 	_ggzcore_state_init();
 	_ggzcore_net_init();
 /*     	_ggzcore_module_init();*/
-
-	/* Register internal callbacks for events */
-	_ggzcore_user_register();
-	_ggzcore_server_register();
 
 	/* Setup the gametype linked list */
 	_ggzcore_gametype_list_clear();	

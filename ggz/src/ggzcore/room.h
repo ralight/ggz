@@ -24,14 +24,3 @@
  */
 
 
-
-void _ggzcore_room_list_clear(void);
-
-int _ggzcore_room_list_add(const unsigned int id, const char* name, 
-			   const unsigned int game, const char* desc);
-
-int _ggzcore_room_list_remove(const unsigned int id);
-
-int _ggzcore_room_list_replace(const unsigned int id, const char* name, 
-			       const unsigned int game, const char* desc);
-

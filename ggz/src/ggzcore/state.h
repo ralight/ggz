@@ -30,26 +30,11 @@
 
 struct _GGZClientState {
 
-	/* State ID */
-	GGZStateID id;
-
-	/* Current room on game server */
-	int room;
-
-	/* Room to which we are transitioning */
-	int trans_room;
-
-	/* Verbosity level for rooms */
-	char room_verbose;
-	
 	/* Current table we're at */
 	int table;
 
 	/* Table to which we are transitioning */
 	int trans_table;
-	
-	/* Server/user profile */
-	GGZProfile profile;
 };
 
 
@@ -69,14 +54,9 @@ typedef enum {
 	GGZ_TRANS_LOGOUT_OK
 } GGZTransID;
 
-/* Global state variable */
-extern struct _GGZClientState _ggzcore_state;
-
 void _ggzcore_state_init(void);
 
-GGZStateID _ggzcore_state_get_id(void);
-
-void _ggzcore_state_transition(GGZTransID id);
+void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur);
 
 void _ggzcore_state_destroy(void);
 

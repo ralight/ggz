@@ -25,14 +25,11 @@
 
 
 #include <config.h>
-#include <ggzcore.h>
 #include <state.h>
 #include <hook.h>
 #include <msg.h>
 
 #include <stdlib.h>
-
-
 
 /* Structure to represent state transition pairs */
 struct _GGZTransition {
@@ -148,13 +145,6 @@ static struct _GGZState _ggz_states[] = {
 };
 
 static void _ggzcore_state_dump_hooks(GGZStateID id);
-static void _ggzcore_state_set(GGZStateID id);
-static GGZHookReturn _ggzcore_state_event_handler(GGZEventID id, 
-						  void *event_data,
-						  void *user_data);
-
-/* Global state variable */
-struct _GGZClientState _ggzcore_state;
 
 
 /* Publicly Exported functions (prototypes in ggzcore.h) */
@@ -166,8 +156,8 @@ int ggzcore_state_add_hook(const GGZStateID id, const GGZHookFunc func)
 
 
 int ggzcore_state_add_hook_full(const GGZStateID id, 
-				    const GGZHookFunc func,
-				    void* data)
+				const GGZHookFunc func,
+				void* data)
 {
 	int status = _ggzcore_hook_add_full(_ggz_states[id].hooks, func, data);
 					    
@@ -216,64 +206,7 @@ int ggzcore_state_remove_hook_id(const GGZStateID id,
 }
 
 
-int ggzcore_state_is_online(void)
-{
-	return (_ggzcore_state.id >= GGZ_STATE_ONLINE);
-}
-
-
-int ggzcore_state_is_logged_in(void)
-{
-	return (_ggzcore_state.id >= GGZ_STATE_LOGGED_IN);
-}
-
-
-int ggzcore_state_is_in_room(void)
-{
-	return (_ggzcore_state.id >= GGZ_STATE_IN_ROOM
-		&& _ggzcore_state.id < GGZ_STATE_LOGGING_OUT);
-}
-
-
-int ggzcore_state_is_at_table(void)
-{
-	return (_ggzcore_state.id >= GGZ_STATE_AT_TABLE
-		&& _ggzcore_state.id <= GGZ_STATE_LEAVING_TABLE);
-}
-
-
-GGZStateID ggzcore_state_get_id(void)
-{
-	return _ggzcore_state.id;
-}
-
-
-char* ggzcore_state_get_profile_login(void)
-{
-	return _ggzcore_state.profile.login;
-}
-
-
-char* ggzcore_state_get_profile_name(void)
-{
-	return _ggzcore_state.profile.name;
-}
-
-
-char* ggzcore_state_get_profile_host(void)
-{
-	return _ggzcore_state.profile.host;
-}
-
-
-int ggzcore_state_get_room(void)
-{
-	return _ggzcore_state.room;
-}
-
-
 /* Internal library functions (prototypes in state.h) */
-
 
 void _ggzcore_state_init(void)
 {	
@@ -292,67 +225,32 @@ void _ggzcore_state_init(void)
 				      _ggz_states[i].name, _ggz_states[i].id);
 		}
 	}
-
-	/* Initialize state variable */
-	_ggzcore_state.id = GGZ_STATE_OFFLINE;
-	_ggzcore_state.room = -1;
-	_ggzcore_state.table = -1;
-	_ggzcore_state.trans_room = -1;
-	_ggzcore_state.trans_table = -1;
-
-	ggzcore_event_add_hook(GGZ_SERVER_CONNECT, 
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_SERVER_CONNECT_FAIL, 
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_SERVER_LOGIN, 
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_SERVER_LOGIN_FAIL,  
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_SERVER_ROOM_JOIN, 
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_SERVER_ROOM_JOIN_FAIL, 
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_SERVER_LOGOUT, 
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_NET_ERROR, 
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_USER_LOGIN,  
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_USER_JOIN_ROOM, 
-				   _ggzcore_state_event_handler);
-	ggzcore_event_add_hook(GGZ_USER_LOGOUT,
-				   _ggzcore_state_event_handler);
 }
 
 
-GGZStateID _ggzcore_state_get_id(void)
-{
-	return _ggzcore_state.id;
-}
-
-
-void _ggzcore_state_transition(GGZTransID id)
+void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur)
 {
 	int i = 0;
 	struct _GGZTransition *transitions;
 	GGZStateID next = -1;
 
-	transitions = _ggz_states[_ggzcore_state.id].transitions;
+	transitions = _ggz_states[*cur].transitions;
 	
 	/* Look through valid transitions to see if this one is OK */
 	while (transitions[i].id != -1) {
-		if (transitions[i].id == id) {
+		if (transitions[i].id == trans) {
 			next = transitions[i].next;
 			break;
 		}
 		++i;
 	}
 
-	if (next != _ggzcore_state.id && next != -1) {
+	if (next != *cur && next != -1) {
 		ggzcore_debug(GGZ_DBG_STATE, "State transition %s -> %s", 
-			      _ggz_states[_ggzcore_state.id].name, 
+			      _ggz_states[*cur].name, 
 			      _ggz_states[next].name);
-		_ggzcore_state_set(next);
+		*cur = next;
+		_ggzcore_hook_list_invoke(_ggz_states[*cur].hooks, NULL);
 	}
 }
 
@@ -373,78 +271,10 @@ void _ggzcore_state_destroy(void)
 
 /* Static functions internal to this file */
 
-static void _ggzcore_state_set(GGZStateID id)
-{
-	_ggzcore_state.id = id;
-
-	_ggzcore_hook_list_invoke(_ggz_states[id].hooks, NULL);
-
-	switch(id) {
-	case GGZ_STATE_OFFLINE:
-		_ggzcore_state.room = -1;
-		_ggzcore_state.table = -1;
-		break;
-		
-	default:
-		break;
-	}
-}
-
-
 /* Debugging function to examine state of hook list */
 static void _ggzcore_state_dump_hooks(GGZStateID id)
 {
 	ggzcore_debug(GGZ_DBG_HOOK, "-- State: %s", _ggz_states[id].name);
 	_ggzcore_hook_list_dump(_ggz_states[id].hooks);
 	ggzcore_debug(GGZ_DBG_HOOK, "-- End of state");
-}
-
-
-static GGZHookReturn _ggzcore_state_event_handler(GGZEventID id, 
-						  void *event_data,
-						  void *user_data)
-{
-	switch (id) {
-	case GGZ_USER_LOGIN: 
-		if (_ggzcore_state.id == GGZ_STATE_OFFLINE)
-			_ggzcore_state_transition(GGZ_TRANS_CONN_TRY);
-		else
-			_ggzcore_state_transition(GGZ_TRANS_LOGIN_TRY);
-		break;
-	case GGZ_SERVER_CONNECT:
-		_ggzcore_state_transition(GGZ_TRANS_CONN_OK);
-		break;
-	case GGZ_SERVER_CONNECT_FAIL:
-		_ggzcore_state_transition(GGZ_TRANS_CONN_FAIL);
-		break;
-
-	case GGZ_SERVER_LOGIN:
-		_ggzcore_state_transition(GGZ_TRANS_LOGIN_OK);
-		break;
-	case GGZ_SERVER_LOGIN_FAIL:
-		_ggzcore_state_transition(GGZ_TRANS_LOGIN_FAIL);
-		break;
-
-	case GGZ_USER_JOIN_ROOM:
-		_ggzcore_state_transition(GGZ_TRANS_ENTER_TRY);
-		break;
-	case GGZ_SERVER_ROOM_JOIN:
-		_ggzcore_state_transition(GGZ_TRANS_ENTER_OK);
-		break;
-	case GGZ_SERVER_ROOM_JOIN_FAIL:
-		_ggzcore_state_transition(GGZ_TRANS_ENTER_FAIL);
-		break;
-
-	case GGZ_USER_LOGOUT:
-		_ggzcore_state_transition(GGZ_TRANS_LOGOUT_TRY);
-		break;
-	case GGZ_SERVER_LOGOUT:
-		_ggzcore_state_transition(GGZ_TRANS_LOGOUT_OK);
-		break;
-
-	default:
-		break;
-	}
-
-	return GGZ_HOOK_OK;
 }

@@ -32,25 +32,44 @@
 #include <protocol.h>
 
 void _ggzcore_net_init(void);
+int _ggzcore_net_connect(const char* server, const unsigned int port);
+void _ggzcore_net_disconnect(const unsigned int fd);
 
-void _ggzcore_net_connect(const char* server, const unsigned int port);
-void _ggzcore_net_disconnect(void);
+/* Functions for sending data/requests to server */
+int _ggzcore_net_send_login(const unsigned int fd, 
+			    GGZLoginType type, 
+			    const char* login, 
+			    const char* pass);
+int _ggzcore_net_send_logout(const unsigned int fd);
+int _ggzcore_net_send_list_rooms(const unsigned int fd, 
+				 const int type, 
+				 const char verbose);
+int _ggzcore_net_send_join_room(const unsigned int fd, 
+				const int room);
+int _ggzcore_net_send_list_players(const unsigned int fd);
+int _ggzcore_net_send_chat(const unsigned int fd, 
+			   const GGZChatOp op,
+			   const char* player, 
+			   const char* msg); 
 
-int _ggzcore_net_ispending(void);
-int _ggzcore_net_process(void);
+/* Functions for reasding data from server */
+int _ggzcore_net_read_opcode(const unsigned int fd, GGZServerOp *op);
+int _ggzcore_net_read_server_id(const unsigned int fd, int *protocol);
+int _ggzcore_net_read_login_anon(const unsigned int fd, char *status);
+int _ggzcore_net_read_motd(const unsigned int fd, int *lines, char ***buffer);
+int _ggzcore_net_read_logout(const unsigned int fd, char *status);
+int _ggzcore_net_read_num_rooms(const unsigned int fd, int *num);
+int _ggzcore_net_read_room(const unsigned int fd, 
+			   const char verbose,
+			   int *id,
+			   char **name,
+			   int *game,
+			   char **desc);
+int _ggzcore_net_read_room_join(const unsigned int fd, char *status);
+int _ggzcore_net_read_chat(const unsigned int fd);
+int _ggzcore_net_read_update_players(const unsigned int fd);
+int _ggzcore_net_read_update_tables(const unsigned int fd);
 
-void _ggzcore_net_send_login(GGZLoginType type, const char* login, const char* pass);
-void _ggzcore_net_send_logout(void);
-
-void _ggzcore_net_send_motd(void);
-
-void _ggzcore_net_send_list_rooms(const int type, const char verbose);
-void _ggzcore_net_send_join_room(const int room);
-
-void _ggzcore_net_send_list_players(void);
-
-void _ggzcore_net_send_chat(const GGZChatOp op, const char* player, 
-			    const char* msg); 
 
 #endif /* __NET_H__ */
 

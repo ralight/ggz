@@ -36,13 +36,9 @@
 #include <string.h>
 
 /* Hooks */
-static GGZHookReturn _ggzcore_user_login(GGZEventID, void*, void*);
-static GGZHookReturn _ggzcore_user_list_rooms(GGZEventID, void*, void*);
-static GGZHookReturn _ggzcore_user_join_room(GGZEventID, void*, void*);
 static GGZHookReturn _ggzcore_user_list_players(GGZEventID, void*, void*);
 static GGZHookReturn _ggzcore_user_motd(GGZEventID, void*, void*);
 static GGZHookReturn _ggzcore_user_chat(GGZEventID, void*, void*);
-static GGZHookReturn _ggzcore_user_logout(GGZEventID, void*, void*);
 
 
 /* ggzcore_user_register() - Register hooks for UI events
@@ -53,11 +49,6 @@ static GGZHookReturn _ggzcore_user_logout(GGZEventID, void*, void*);
  */
 void _ggzcore_user_register(void)
 {
-	ggzcore_event_add_hook(GGZ_USER_LOGIN, _ggzcore_user_login);
-	ggzcore_event_add_hook(GGZ_USER_LIST_ROOMS, 
-				   _ggzcore_user_list_rooms);
-	ggzcore_event_add_hook(GGZ_USER_JOIN_ROOM, 
-				   _ggzcore_user_join_room);
 	ggzcore_event_add_hook(GGZ_USER_LIST_PLAYERS, 
 				   _ggzcore_user_list_players);
 	ggzcore_event_add_hook(GGZ_USER_MOTD, _ggzcore_user_motd);
@@ -69,114 +60,6 @@ void _ggzcore_user_register(void)
 					(void*)GGZ_CHAT_PERSONAL);
 	ggzcore_event_add_hook_full(GGZ_USER_CHAT_BEEP, _ggzcore_user_chat,
 					(void*)GGZ_CHAT_BEEP);
-
-	ggzcore_event_add_hook(GGZ_USER_LOGOUT, _ggzcore_user_logout);
-}
-
-
-/* _ggzcore_user_login() - Hook for user login events
- *
- * Receives:
- * GGZEventID id    : ID code of triggered event
- * void* event_data : Event-specific data
- * void* user_data  : "User" data
- *
- * Returns:
- */
-static GGZHookReturn _ggzcore_user_login(GGZEventID id, void* event_data, void* user_data)
-				
-{
-	GGZProfile* profile = (GGZProfile*)event_data;
-
-	ggzcore_debug(GGZ_DBG_USER, "Executing user_login");
-
-	/* Parse profile data if present */
-	if (profile) {
-		ggzcore_debug(GGZ_DBG_USER, "User provided profile data:");
-		ggzcore_debug(GGZ_DBG_USER, "Profile name %s", profile->name);
-		ggzcore_debug(GGZ_DBG_USER, "Profile host %s", profile->host);
-		ggzcore_debug(GGZ_DBG_USER, "Profile port %d", profile->port);
-		ggzcore_debug(GGZ_DBG_USER, "Profile type %d", profile->type);
-		ggzcore_debug(GGZ_DBG_USER, "Profile login %s", profile->login);
-		ggzcore_debug(GGZ_DBG_USER, "Profile password %s", profile->password);
-
-		/* Always use provided profile name, type, login and password*/
-		if (profile->name)
-			/* FIXME: look up info in profile list (?) */
-			_ggzcore_state.profile.name = strdup(profile->name);
-		else
-			_ggzcore_state.profile.name = NULL;
-		
-		_ggzcore_state.profile.type = profile->type;
-		_ggzcore_state.profile.login = strdup(profile->login);
-		if (profile->password)
-			_ggzcore_state.profile.password = strdup(profile->password);
-	}
-
-	/* If we're not online yet, put us there */
-	if (ggzcore_state_get_id() == GGZ_STATE_CONNECTING) {
-		ggzcore_debug(GGZ_DBG_USER, "Not online yet: connecting");
-		
-		/* Only copy these if we're going online now,
-		   otherwise you can't change them! */
-		_ggzcore_state.profile.host = strdup(profile->host);
-		_ggzcore_state.profile.port = profile->port;
-
-		_ggzcore_net_connect(profile->host, profile->port);
-	}
-	else {
-		ggzcore_debug(GGZ_DBG_USER, "Online now: sending info");
-		/* We're already online, so send login info */
-		_ggzcore_net_send_login(_ggzcore_state.profile.type, 
-					_ggzcore_state.profile.login, 
-					_ggzcore_state.profile.password);
-	}
-
-	return GGZ_HOOK_OK;
-}
-
-
-/* _ggzcore_user_list_rooms() - Hook for user room-list request
- *
- * Receives:
- * GGZEventID id    : ID code of triggered event
- * void* event_data : Event-specific data
- * void* user_data  : "User" data
- *
- * Returns:
- */
-static GGZHookReturn _ggzcore_user_list_rooms(GGZEventID id, void* event_data, void* user_data)
-{
-
-	ggzcore_debug(GGZ_DBG_USER, "Executing user_list_rooms");	
-	/* FIXME: get options from event_data */
-	/* -1 means request rooms of all types */
-	/* For now, always set verbose to TRUE */
-	_ggzcore_net_send_list_rooms(-1, 1);
-
-	return GGZ_HOOK_OK;
-}
-
-
-/* _ggzcore_user_join_room() - Hook for user "join room" event
- *
- * Receives:
- * GGZEventID id    : ID code of triggered event
- * void* event_data : Event-specific data
- * void* user_data  : "User" data
- *
- * Returns:
- */
-static GGZHookReturn _ggzcore_user_join_room(GGZEventID id, void* event_data, void* user_data)
-{
-	int room = (int)event_data;
-
-	ggzcore_debug(GGZ_DBG_USER, "Executing user_join_room");	
-	_ggzcore_net_send_join_room(room);
-	
-	_ggzcore_state.trans_room = room;
-
-	return GGZ_HOOK_OK;
 }
 
 
@@ -192,7 +75,7 @@ static GGZHookReturn _ggzcore_user_join_room(GGZEventID id, void* event_data, vo
 static GGZHookReturn _ggzcore_user_list_players(GGZEventID id, void* event_data, void* user_data)
 {
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_list_players");
-	_ggzcore_net_send_list_players();
+	_ggzcore_net_send_list_players(-1);
 
 	return GGZ_HOOK_OK;
 }
@@ -237,7 +120,7 @@ static GGZHookReturn _ggzcore_user_chat(GGZEventID id, void* event_data, void* u
 		break;
 	}
 
-	_ggzcore_net_send_chat(opcode, player, msg);
+	_ggzcore_net_send_chat(-1, opcode, player, msg);
 
 	return GGZ_HOOK_OK;
 }
@@ -255,29 +138,7 @@ static GGZHookReturn _ggzcore_user_chat(GGZEventID id, void* event_data, void* u
 static GGZHookReturn _ggzcore_user_motd(GGZEventID id, void* event_data, void* user_data)
 {
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_motd");	
-	_ggzcore_net_send_motd();
+	_ggzcore_net_send_motd(-1);
 
 	return GGZ_HOOK_OK;
 }
-
-
-/* _ggzcore_user_logout() - Hook for user login events
- *
- * Receives:
- * GGZEventID id    : ID code of triggered event
- * void* event_data : Event-specific data
- * void* user_data  : "User" data
- *
- * Returns:
- */
-static GGZHookReturn _ggzcore_user_logout(GGZEventID id, void* event_data, void* user_data)
-{
-	ggzcore_debug(GGZ_DBG_USER, "Executing user_logout");	
-	_ggzcore_net_send_logout();
-
-	return GGZ_HOOK_OK;
-}
-
-
-
-

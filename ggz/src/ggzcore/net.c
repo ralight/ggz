@@ -24,17 +24,17 @@
  */
 
 
-#include <config.h>
-#include <ggzcore.h>
-#include <net.h>
-#include <msg.h>
-#include <protocol.h>
-#include <easysock.h>
-#include <player.h>
-#include <room.h>
-#include <state.h>
-#include <table.h>
-#include <gametype.h>
+#include "config.h"
+#include "ggzcore.h"
+#include "net.h"
+#include "msg.h"
+#include "protocol.h"
+#include "easysock.h"
+#include "player.h"
+#include "room.h"
+#include "state.h"
+#include "table.h"
+#include "gametype.h"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -43,277 +43,150 @@
 #include <errno.h>
 
 /* Handlers for various server commands */
-static void _ggzcore_net_handle_server_id(void);
-static void _ggzcore_net_handle_login(void);
-static void _ggzcore_net_handle_login_anon(void);
-static void _ggzcore_net_handle_motd(void);
-static void _ggzcore_net_handle_logout(void);
-static void _ggzcore_net_handle_list_rooms(void);
-static void _ggzcore_net_handle_room_join(void);
-static void _ggzcore_net_handle_list_players(void);
-static void _ggzcore_net_handle_rsp_chat(void);
-static void _ggzcore_net_handle_chat(void);
-static void _ggzcore_net_handle_update_players(void);
-static void _ggzcore_net_handle_update_tables(void);
-static void _ggzcore_net_handle_list_tables(void);
-static void _ggzcore_net_handle_list_types(void);
+static void _ggzcore_net_read_list_players(const unsigned int fd);
+static void _ggzcore_net_read_rsp_chat(const unsigned int fd);
+static void _ggzcore_net_read_list_tables(const unsigned int fd);
+static void _ggzcore_net_read_list_types(const unsigned int fd);
 
 /* Error function for Easysock */
 static void _ggzcore_net_err_func(const char *, const EsOpType, 
 				  const EsDataType);
 			 
-/* Handler for GGZ_NET_ERROR event */
-static GGZHookReturn _ggzcore_net_handle_error(GGZEventID id, 
-					       void* event_data, 
-					       void* user_data);
 
-
-/* Datatype for a message from the server */
-struct _GGZServerMsg {
-
-	/* Opcode from server */
-	GGZServerOp opcode;
-
-	/* Name of opcode */
-	char* name;
-
-	/* Handler */
-	void (*handler)(void); 
-};
-
-/* Array of all server messages */
-static struct _GGZServerMsg ggz_server_msgs[] = {
-	{MSG_SERVER_ID,      "msg_server_id", _ggzcore_net_handle_server_id},
-	{MSG_SERVER_FULL,    "msg_server_full", NULL },
-	{MSG_MOTD,           "msg_motd", _ggzcore_net_handle_motd},
-	{MSG_CHAT,           "msg_chat", _ggzcore_net_handle_chat},
-	{MSG_UPDATE_PLAYERS, "msg_update_players", _ggzcore_net_handle_update_players},
-	{MSG_UPDATE_TYPES,   "msg_update_types", NULL},
-	{MSG_UPDATE_TABLES,  "msg_update_tables", _ggzcore_net_handle_update_tables},
-	{MSG_UPDATE_ROOMS,   "msg_update_rooms", NULL},
-	{MSG_ERROR,          "msg_error", NULL},
-	{RSP_LOGIN_NEW,      "rsp_login_new", NULL},
-	{RSP_LOGIN,          "rsp_login", _ggzcore_net_handle_login},
-	{RSP_LOGIN_ANON,     "rsp_login_anon", _ggzcore_net_handle_login_anon},
-	{RSP_LOGOUT,         "rsp_logout", _ggzcore_net_handle_logout},
-	{RSP_PREF_CHANGE,    "rsp_pref_change", NULL},
-	{RSP_REMOVE_USER,    "rsp_remove_user", NULL},
-	{RSP_LIST_PLAYERS,   "rsp_list_players", _ggzcore_net_handle_list_players},
-	{RSP_LIST_TYPES,     "rsp_list_types", _ggzcore_net_handle_list_types},
-	{RSP_LIST_TABLES,    "rsp_list_tables", _ggzcore_net_handle_list_tables},
-	{RSP_LIST_ROOMS,     "rsp_list_rooms", _ggzcore_net_handle_list_rooms},
-	{RSP_TABLE_OPTIONS,  "rsp_table_options", NULL},
-	{RSP_USER_STAT,      "rsp_user_stat", NULL},
-	{RSP_TABLE_LAUNCH,   "rsp_table_launch", NULL},
-	{RSP_TABLE_JOIN,     "rsp_table_join", NULL},
-	{RSP_TABLE_LEAVE,    "rsp_table_leave", NULL},
-	{RSP_GAME,           "rsp_game", NULL},
-	{RSP_CHAT,           "rsp_chat", _ggzcore_net_handle_rsp_chat},
-        {RSP_MOTD,           "rsp_motd", _ggzcore_net_handle_motd},
-	{RSP_ROOM_JOIN,      "rsp_room_join", _ggzcore_net_handle_room_join}
-};
-
-/* Total number of recognized messages */
-static unsigned int num_messages;
-
-/* Socket for communication with server */
-static int ggz_server_sock = -1;
-
-
-/* FIXME: Handle threaded I/O */
 void _ggzcore_net_init(void)
 {
-	/* Obtain accurate message count */
-	num_messages = sizeof(ggz_server_msgs)/sizeof(struct _GGZServerMsg);
-
+#if 0
 	/* Install socket error handler */
 	es_err_func_set(_ggzcore_net_err_func);
-
-	/* Register hook for network error event */
-	ggzcore_event_add_hook(GGZ_NET_ERROR, _ggzcore_net_handle_error);
+	
+#endif
 }
 
 
 /* FIXME: set a timeout for connecting */
-void _ggzcore_net_connect(const char* server, const unsigned int port)
+int _ggzcore_net_connect(const char* server, const unsigned int port)
 {
-	int sock;
-	
 	ggzcore_debug(GGZ_DBG_NET, "Connecting to %s:%d", server, port);
-	if ( (sock = es_make_socket(ES_CLIENT, port, server)) >= 0)
-		ggz_server_sock = sock;
-	
-	/* We don't need to handle failure here because it gets done
-	   by the error func. registered with easysock */
-
-	/* FIXME: somehow notify FE that we have a fd now */
+	return es_make_socket(ES_CLIENT, port, server);
 }
 
 
-void _ggzcore_net_disconnect(void)
+void _ggzcore_net_disconnect(const unsigned int fd)
 {
-	if (ggzcore_state_get_id() == GGZ_STATE_OFFLINE)
-		return;
-
 	ggzcore_debug(GGZ_DBG_NET, "Disconnecting");
-	close(ggz_server_sock);
-	ggz_server_sock = -1;
+	close(fd);
 }
 
 
-/* ggzcore_net_get_fd() - Get a copy of the network socket
- * Receives:
- *
- * Returns:
- * int : network socket fd
- *
- * Note: this is for detecting network data arrival only.  Do *NOT* attempt
- * to write to this fd.
- */
-int ggzcore_net_get_fd(void)
-{
-	return ggz_server_sock;
-}
-
-
-int _ggzcore_net_ispending(void)
+int _ggzcore_net_send_login(const unsigned int fd, 
+			     GGZLoginType type, 
+			     const char* login, 
+			     const char* pass)
 {
 	int status = 0;
-	struct pollfd fd[1] = {{ggz_server_sock, POLLIN, 0}};
 
-	if (ggz_server_sock == -1)
-		return 0;
-
-	ggzcore_debug(GGZ_DBG_POLL, "Checking for net events");	
-	if ( (status = poll(fd, 1, 0)) < 0) {
-		if (errno == EINTR) 
-			/* Ignore interruptions */
-			status = 0;
-		else 
-			ggzcore_error_sys_exit("poll failed in _ggzcore_net_pending");
+	switch (type) {
+	case GGZ_LOGIN:
+		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN");
+		if (es_write_int(fd, REQ_LOGIN) < 0
+		    || es_write_string(fd, login) < 0
+		    || es_write_string(fd, pass) < 0)
+			status = -1;
+		break;
+	case GGZ_LOGIN_GUEST:
+		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_GUEST");
+		if (es_write_int(fd, REQ_LOGIN_ANON) < 0
+		    || es_write_string(fd, login) < 0)
+			status = -1;
+		break;
+	case GGZ_LOGIN_NEW:
+		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_NEW");
+		if (es_write_int(fd, REQ_LOGIN_NEW) < 0
+		    || es_write_string(fd, login) < 0)
+			status = -1;
+		break;
 	}
-	else if (status)
-		ggzcore_debug(GGZ_DBG_POLL, "Found a net event!");
 
 	return status;
 }
 
 
-int _ggzcore_net_process(void)
-{
-	GGZServerOp opcode;
-	void (*handler)(void);
-
-	ggzcore_debug(GGZ_DBG_NET, "Processing net events");
-	if (es_read_int(ggz_server_sock, (int*)&opcode) < 0)
-		return -1;
-		
-	if (opcode < 0 || opcode >= num_messages) {
-		ggzcore_debug(GGZ_DBG_NET, "Bad opcode from server %d/%d", opcode, num_messages);
-		ggzcore_event_enqueue(GGZ_SERVER_ERROR, NULL, NULL);
-		return -1;
-	}
-	
-	/* Call handler function */
-	if (!(handler = ggz_server_msgs[opcode].handler))
-		ggzcore_debug(GGZ_DBG_NET, "Server msg: %s not handled yet", 
-			      ggz_server_msgs[opcode].name);
-	else {
-		ggzcore_debug(GGZ_DBG_NET, "Handling %s", 
-			      ggz_server_msgs[opcode].name);
-		handler();
-	}
-	
-	return 0;
-}
-
-
-void _ggzcore_net_send_login(GGZLoginType type, const char* login, 
-			     const char* pass)
-{
-	switch (type) {
-	case GGZ_LOGIN:
-		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN");
-		if (es_write_int(ggz_server_sock, REQ_LOGIN) == 0
-		    && es_write_string(ggz_server_sock, login) == 0)
-			es_write_string(ggz_server_sock, pass);
-		break;
-	case GGZ_LOGIN_GUEST:
-		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_GUEST");
-		if (es_write_int(ggz_server_sock, REQ_LOGIN_ANON) == 0)
-			es_write_string(ggz_server_sock, login);
-		break;
-	case GGZ_LOGIN_NEW:
-		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_NEW");
-		if (es_write_int(ggz_server_sock, REQ_LOGIN_NEW) == 0)
-			es_write_string(ggz_server_sock, login);
-		break;
-	}
-}
-
-
-void _ggzcore_net_send_logout(void)
+int _ggzcore_net_send_logout(const unsigned int fd)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LOGOUT");	
-	es_write_int(ggz_server_sock, REQ_LOGOUT);
+	return es_write_int(fd, REQ_LOGOUT);
 }
 
 
-void _ggzcore_net_send_motd(void)
+int _ggzcore_net_send_motd(const unsigned int fd)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_MOTD");	
-	es_write_int(ggz_server_sock, REQ_MOTD);
+	return es_write_int(fd, REQ_MOTD);
 }
 
 
-void _ggzcore_net_send_list_rooms(const int type, const char verbose)
+int _ggzcore_net_send_list_rooms(const unsigned fd,
+				 const int type, 
+				 const char verbose)
 {	
+	int status = 0;
+
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_ROOMS");	
-	if (es_write_int(ggz_server_sock, REQ_LIST_ROOMS) == 0
-	    && es_write_int(ggz_server_sock, type) == 0)
-		es_write_char(ggz_server_sock, verbose);
+	if (es_write_int(fd, REQ_LIST_ROOMS) < 0
+	    || es_write_int(fd, type) < 0
+	    || es_write_char(fd, verbose) < 0)
+		status = -1;
 
-	/* Save verbosity state for later */
-	_ggzcore_state.room_verbose = verbose;
+	return status;
 }
 
 
-void _ggzcore_net_send_join_room(const int room)
+int _ggzcore_net_send_join_room(const unsigned int fd, const int room)
 {
+	int status = 0;
+
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_ROOM_JOIN");	
-	if (es_write_int(ggz_server_sock, REQ_ROOM_JOIN) == 0)
-		es_write_int(ggz_server_sock, room);
+	if (es_write_int(fd, REQ_ROOM_JOIN) < 0
+	    || es_write_int(fd, room) < 0)
+		status = -1;
+	
+	return status;
 }
 
 
-void _ggzcore_net_send_list_players(void)
+int _ggzcore_net_send_list_players(const unsigned int fd)
 {	
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_PLAYERS");	
-	es_write_int(ggz_server_sock, REQ_LIST_PLAYERS);
+	return es_write_int(fd, REQ_LIST_PLAYERS);
 }
 
 
-void _ggzcore_net_send_chat(const GGZChatOp op, const char* player, 
-			    const char* msg)
+int _ggzcore_net_send_chat(const unsigned int fd, 
+			   const GGZChatOp op, 
+			   const char* player, 
+			   const char* msg)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_CHAT");	
-	if (es_write_int(ggz_server_sock, REQ_CHAT) < 0
-	    || es_write_char(ggz_server_sock, op) < 0)
-		return;
+	if (es_write_int(fd, REQ_CHAT) < 0
+	    || es_write_char(fd, op) < 0)
+		return -1;
 	
 	if (op & GGZ_CHAT_M_PLAYER)
-		if (es_write_string(ggz_server_sock, player) < 0)
-			return;
+		if (es_write_string(fd, player) < 0)
+			return -1;
 	
 	if (op & GGZ_CHAT_M_MESSAGE)
-		if (es_write_string(ggz_server_sock, msg) < 0)
-			return;
+		if (es_write_string(fd, msg) < 0)
+			return -1;
+
+	return 0;
 }
 
 
 static void _ggzcore_net_err_func(const char * msg, const EsOpType op, 
 				  const EsDataType data)
 {
+#if 0
 	switch(op) {
 	case ES_CREATE:
 		ggzcore_event_enqueue(GGZ_SERVER_CONNECT_FAIL, (void*)msg, 
@@ -322,248 +195,164 @@ static void _ggzcore_net_err_func(const char * msg, const EsOpType op,
 	case ES_WRITE:
 	case ES_READ:
 		ggzcore_event_enqueue(GGZ_NET_ERROR, (void*)msg, NULL);
-		ggz_server_sock = -1;
+		fd = -1;
 		break;
 	default:
 		break;
 	}
+#endif
 }
 			 
 
-static GGZHookReturn _ggzcore_net_handle_error(GGZEventID id, 
-					       void* event_data, 
-					       void* user_data)
+int _ggzcore_net_read_opcode(const unsigned int fd, GGZServerOp *op)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Network error: %s", (char*)event_data);
-	_ggzcore_net_disconnect();
-
-	return GGZ_HOOK_OK;
+	return es_read_int(fd, (int*)op);
 }
-
-
-static void _ggzcore_net_handle_server_id(void)
+		
+		
+int _ggzcore_net_read_server_id(const unsigned int fd, int *protocol)
 {
 	unsigned int size;
-	unsigned int version;
-	char* status;
+	int status = 0;
 	char msg[4096];
 
-	status = malloc(sizeof(char));
-	*status = 0;
-
-	if (es_read_string(ggz_server_sock, (char*)&msg, 4096) == 0
-	    && es_read_int(ggz_server_sock, &version) == 0
-	    && es_read_int(ggz_server_sock, &size) == 0) {
-		
+	if (es_read_string(fd, (char*)&msg, 4096) < 0
+	    || es_read_int(fd, protocol) < 0
+	    || es_read_int(fd, &size) < 0)
+		status = -1;
+	else 
 		ggzcore_debug(GGZ_DBG_NET, "%s : proto %d: chat %d", msg, 
-			      version, size);
-
-		if (version == GGZ_CS_PROTO_VERSION)
-			ggzcore_event_enqueue(GGZ_SERVER_CONNECT, NULL, NULL);
-		else
-			ggzcore_event_enqueue(GGZ_SERVER_CONNECT_FAIL, 
-					      "Protocol mismatch", NULL);
-	}
+			      *protocol, size);
+	
+	return status;
 }
 
-static void _ggzcore_net_handle_login(void)
+
+int _ggzcore_net_read_login(const unsigned int fd)
 {
 	char status, res;
 	int checksum, reservations;
 
-	if (es_read_char(ggz_server_sock, &status) < 0)
-		return;
+	if (es_read_char(fd, &status) < 0)
+		return -1;
 	
-	if (status == 0 && es_read_int(ggz_server_sock, &checksum) < 0)
-		return;
+	if (status == 0 && es_read_int(fd, &checksum) < 0)
+		return -1;
 	
 	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN from server : %d, %d", 
 		      status, checksum);
-	
-	switch (status) {
-	case 0:
-		if (es_read_char(ggz_server_sock, &res) < 0)
-			return;
-		reservations = (int)res;
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN, (void*)reservations, NULL);
-		break;
-	case E_ALREADY_LOGGED_IN:
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
-				      "Already logged in", NULL);
-		break;
-	case E_USR_LOOKUP:
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
-				      "Name taken", NULL);
-		break;
-	}
 
-	/* FIXME: Add to its own function */
-	/* Get list of game types */
-	es_write_int(ggz_server_sock, REQ_LIST_TYPES);
-	es_write_char(ggz_server_sock, 1);
+	if (status == 0 && es_read_char(fd, &res) < 0)
+		return -1;
+
+	return 0;
 }
 
-static void _ggzcore_net_handle_login_anon(void)
-{
-	char status;
-	int checksum;
 
-	if (es_read_char(ggz_server_sock, &status) < 0)
-		return;
+int _ggzcore_net_read_login_anon(const unsigned int fd, char *status)
+{
+	int checksum = 0;
+
+	if (es_read_char(fd, status) < 0)
+		return -1;
 	
-	if (status == 0 && es_read_int(ggz_server_sock, &checksum) < 0)
-		return;
+	if (*status == 0 && es_read_int(fd, &checksum) < 0)
+		return -1;
 	
 	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN_ANON from server : %d, %d", 
-		      status, checksum);
+		      *status, checksum);
 	
-	switch (status) {
-	case 0:
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN, NULL, NULL);
-		break;
-	case E_ALREADY_LOGGED_IN:
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
-				      "Already logged in", NULL);
-		break;
-	case E_USR_LOOKUP:
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
-				      "Name taken", NULL);
-		break;
-	}
-
-	/* FIXME: Add to its own function */
-	/* Get list of game types */
-	es_write_int(ggz_server_sock, REQ_LIST_TYPES);
-	es_write_char(ggz_server_sock, 1);
+	return 0;
 }
 
 
-static void _ggzcore_net_handle_motd(void)
+int _ggzcore_net_read_motd(const unsigned int fd, int *lines, char ***buffer)
 {
-	int i, lines;
-	char **motd;
+	int i;
+	char **motd = *buffer;
 
 	/* FIXME: check for errors */
-	if (es_read_int(ggz_server_sock, &lines) < 0)
-		return;
+	if (es_read_int(fd, lines) < 0)
+		return -1;
 
-	if (!(motd = calloc((lines+1), sizeof(char*))))
-		ggzcore_error_sys_exit("calloc() failed in net_handle_motd");
+	if (!(motd = calloc((*lines + 1), sizeof(char*))))
+		ggzcore_error_sys_exit("calloc() failed in net_read_motd");
 	
-	for (i = 0; i < lines; i++)
-		if (es_read_string_alloc(ggz_server_sock, &motd[i]) < 0)
-			return;
+	for (i = 0; i < *lines; i++)
+		if (es_read_string_alloc(fd, &motd[i]) < 0)
+			return -1;
 	
-	ggzcore_debug(GGZ_DBG_NET, "MSG_MOTD from server : %d lines", lines);
+	ggzcore_debug(GGZ_DBG_NET, "MSG_MOTD from server : %d lines", *lines);
 
-	/* FIXME: use argv free function */
-	ggzcore_event_enqueue(GGZ_SERVER_MOTD, motd, NULL);
+	return 0;
 }
 
 
-static void _ggzcore_net_handle_logout(void)
+int _ggzcore_net_read_logout(const unsigned int fd, char *status)
 {
-	char* status;
-
-	status = malloc(sizeof(char));
-	*status = 0;
-
-	if (es_read_char(ggz_server_sock, status) < 0)
-		return;
+	if (es_read_char(fd, status) < 0)
+		return -1;
 
 	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGOUT from server : %d", *status);
-	ggzcore_event_enqueue(GGZ_SERVER_LOGOUT, status, free);
+	
+	return 0;
 }
 
 
-static void _ggzcore_net_handle_list_rooms(void)
+int _ggzcore_net_read_num_rooms(const unsigned int fd, int *num)
 {
-	int i, num, id, game;
-	char *name;
-	char *desc = NULL;
-	
-	if (es_read_int(ggz_server_sock, &num) < 0)
-		return;
-	
-	_ggzcore_room_list_clear();
-
-	for (i = 0; i < num; i++) {
-		if (es_read_int(ggz_server_sock, &id) < 0
-		    || es_read_string_alloc(ggz_server_sock, &name) < 0
-		    || es_read_int(ggz_server_sock, &game) < 0)
-			return;
-		
-		if (_ggzcore_state.room_verbose &&
-		    es_read_string_alloc(ggz_server_sock, &desc) < 0)
-			return;
-
-		_ggzcore_room_list_add(id, name, game, desc);
-		ggzcore_debug(GGZ_DBG_NET, "Room: %d plays %d %s", id, game, 
-			      name);
-
-		/* Free allocated memory */
-		if (desc)
-			free(desc);
-		if (name)
-			free(name);
-	}
-	
-	ggzcore_event_enqueue(GGZ_SERVER_LIST_ROOMS, NULL, NULL);
+	return es_read_int(fd, num);
 }
 
 
-static void _ggzcore_net_handle_room_join(void)
+int _ggzcore_net_read_room(const unsigned int fd, 
+			   const char verbose,
+			   int *id,
+			   char **name,
+			   int *game,
+			   char **desc)
 {
-	char status;
 	
-	if (es_read_char(ggz_server_sock, &status) < 0)
-		return;
+	if (es_read_int(fd, id) < 0
+	    || es_read_string_alloc(fd, name) < 0
+	    || es_read_int(fd, game) < 0)
+		return  -1;
+	
+	/* _ggzcore_state.room_verbose */
+	if (verbose && es_read_string_alloc(fd, desc) < 0)
+		return -1;
+	
+	ggzcore_debug(GGZ_DBG_NET, "Room: %d (%s) plays %d", *id, *name, 
+		      *game);
 
-	ggzcore_debug(GGZ_DBG_NET, "RSP_ROOM_JOIN from server : %d",
-		      status);
+	return 0;
+}
 
-	switch (status) {
-	case 0:
-		ggzcore_event_enqueue(GGZ_SERVER_ROOM_JOIN, NULL, NULL);
-		break;
-	case E_AT_TABLE:
-		ggzcore_event_enqueue(GGZ_SERVER_ROOM_JOIN_FAIL, 
-				      "Can't change rooms while at a table", 
-				      NULL);
-		break;
-		
-	case E_IN_TRANSIT:
-		ggzcore_event_enqueue(GGZ_SERVER_ROOM_JOIN_FAIL, 
-				      "Can't change rooms while joining/leaving a table", 
-				      NULL);
-		break;
-		
-	case E_BAD_OPTIONS:
-		ggzcore_event_enqueue(GGZ_SERVER_ROOM_JOIN_FAIL, 
-				      "Bad room number", NULL);
-		break;
-	}
 
-	/* Get list of tables */
-        es_write_int(ggz_server_sock, REQ_LIST_TABLES);
-        es_write_int(ggz_server_sock, -1);
-        es_write_char(ggz_server_sock, 0);
+int _ggzcore_net_read_room_join(const unsigned int fd, char *status)
+{
+	if (es_read_char(fd, status) < 0)
+		return -1;
+
+	ggzcore_debug(GGZ_DBG_NET, "RSP_ROOM_JOIN from server : %d", *status);
+	
+	return 0;
 }
 		
 
-static void _ggzcore_net_handle_list_players(void)
+static void _ggzcore_net_read_list_players(const unsigned int fd)
 {
 	int i, num, table;
 	char name[256];
 	
-	if (es_read_int(ggz_server_sock, &num) < 0)
+	if (es_read_int(fd, &num) < 0)
 		return;
 
 	_ggzcore_player_list_clear();
 
 	for (i = 0; i < num; i++) {
-		if (es_read_string(ggz_server_sock, name, sizeof(name)) < 0
-		    || es_read_int(ggz_server_sock, &table) < 0)
+		if (es_read_string(fd, name, sizeof(name)) < 0
+		    || es_read_int(fd, &table) < 0)
 			return;
 		
 		_ggzcore_player_list_add(name, table);
@@ -575,11 +364,11 @@ static void _ggzcore_net_handle_list_players(void)
 }
 
 
-static void _ggzcore_net_handle_rsp_chat(void)
+static void _ggzcore_net_read_rsp_chat(const unsigned int fd)
 {
 	char status;
 	
-	if (es_read_char(ggz_server_sock, &status) < 0)
+	if (es_read_char(fd, &status) < 0)
 		return;
 
 	ggzcore_debug(GGZ_DBG_NET, "RSP_CHAT from server : %d",
@@ -603,21 +392,21 @@ static void _ggzcore_net_handle_rsp_chat(void)
 }
 
 
-static void _ggzcore_net_handle_chat(void)
+int _ggzcore_net_read_chat(const unsigned int fd)
 {
 	unsigned char subop;
 	char** data;
 
 	if (!(data = calloc(2, sizeof(char*))))
-		ggzcore_error_sys_exit("calloc() failed in net_handle_chat");
+		ggzcore_error_sys_exit("calloc() failed in net_read_chat");
 
-	if (es_read_char(ggz_server_sock, &subop) < 0
-	    || es_read_string_alloc(ggz_server_sock, &(data[0])) < 0)
-		return;
+	if (es_read_char(fd, &subop) < 0
+	    || es_read_string_alloc(fd, &(data[0])) < 0)
+		return -1;
 
 	if (subop & GGZ_CHAT_M_MESSAGE) 
-		if (es_read_string_alloc(ggz_server_sock, &(data[1])) < 0)
-			return;
+		if (es_read_string_alloc(fd, &(data[1])) < 0)
+			return -1;
 
 	switch((GGZChatOp)subop) {
 	case GGZ_CHAT_NORMAL:
@@ -635,18 +424,22 @@ static void _ggzcore_net_handle_chat(void)
 	}
 
 	/* FIXME: come up with a function to free data */
+	return 0;
 }
 
 
-static void _ggzcore_net_handle_update_players(void)
+int _ggzcore_net_read_update_players(const unsigned int fd)
 {
 	char subop;
 	char *name;
 	
-	if (es_read_char(ggz_server_sock, &subop) < 0
-	    || es_read_string_alloc(ggz_server_sock, &name) < 0)
-		return;
+	if (es_read_char(fd, &subop) < 0
+	    || es_read_string_alloc(fd, &name) < 0)
+		return -1;
 
+	return 0;
+
+#if 0
 	switch ((GGZUpdateOp)subop) {
 	case GGZ_UPDATE_DELETE:
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s left", name);
@@ -662,69 +455,82 @@ static void _ggzcore_net_handle_update_players(void)
 	default:
 		/* FIXME: handle invalid opcode? */
 	}
+#endif 
+
 }
 
 
-static void _ggzcore_net_handle_update_tables(void)
+int _ggzcore_net_read_update_tables(const unsigned int fd)
 {
 	char subop, state;
 	int table, room, type, num, i, open;
 	char *player, *desc;
 	GGZSeatType seat;
 
-	if (es_read_char(ggz_server_sock, &subop) < 0
-	    || es_read_int(ggz_server_sock, &table) < 0)
-		return;
+	if (es_read_char(fd, &subop) < 0
+	    || es_read_int(fd, &table) < 0)
+		return -1;
 
 	
 	switch ((GGZUpdateOp)subop) {
 	case GGZ_UPDATE_DELETE:
+#if 0
 		_ggzcore_table_list_remove(table);
+#endif
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: %d done", table);
 		break;
 		
 	case GGZ_UPDATE_STATE:
-		if (es_read_char(ggz_server_sock, &state) < 0)
-			return;
+		if (es_read_char(fd, &state) < 0)
+			return -1;
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: %d new state %d", 
 			      table, state);
 		break;
 
 	case GGZ_UPDATE_JOIN:
-		if (es_read_int(ggz_server_sock, &num) < 0
-		    || es_read_string_alloc(ggz_server_sock, &player) < 0)
-			return;
+		if (es_read_int(fd, &num) < 0
+		    || es_read_string_alloc(fd, &player) < 0)
+			return -1;
+#if 0
 		_ggzcore_table_list_join(table);
 		_ggzcore_player_list_replace(player, table);
+#endif
 		break;
 
 	case GGZ_UPDATE_LEAVE:
-		if (es_read_int(ggz_server_sock, &seat) < 0
-		    || es_read_string_alloc(ggz_server_sock, &player) < 0)
-			return;
+		if (es_read_int(fd, &seat) < 0
+		    || es_read_string_alloc(fd, &player) < 0)
+			return -1;
+#if 0
 		_ggzcore_table_list_leave(table);
 		_ggzcore_player_list_replace(player, -1);
+#endif
 		break;
 		
 	case GGZ_UPDATE_ADD:
-		es_read_int(ggz_server_sock, &room);
-		es_read_int(ggz_server_sock, &type);
-		es_read_string_alloc(ggz_server_sock, &desc);
-		es_read_char(ggz_server_sock, &state);
-		es_read_int(ggz_server_sock, &num);
+		if (es_read_int(fd, &room) < 0
+		    || es_read_int(fd, &type) < 0
+		    || es_read_string_alloc(fd, &desc) < 0
+		    || es_read_char(fd, &state) < 0
+		    || es_read_int(fd, &num) < 0)
+			return -1;
 		
 		open = 0;
 		for (i = 0; i < num; i++) {
-			es_read_int(ggz_server_sock, &seat);
+			if (es_read_int(fd, &seat) < 0)
+				return -1;
 			if (seat == GGZ_SEAT_PLAYER
 			    || seat == GGZ_SEAT_RESV) {
-				es_read_string_alloc(ggz_server_sock, &player);
+				if (es_read_string_alloc(fd, &player) < 0)
+					return -1;
 			}
 			if (seat == GGZ_SEAT_OPEN)
 				open++;
 		}
 
+#if 0
 		_ggzcore_table_list_add(table, type, desc, state, num, open);
+#endif
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: new table %d", 
 			      table);
 		break;
@@ -732,10 +538,12 @@ static void _ggzcore_net_handle_update_tables(void)
 
 	ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
 	ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);
+
+	return 0;
 }
 
 
-static void _ggzcore_net_handle_list_tables(void)
+static void _ggzcore_net_read_list_tables(const unsigned int fd)
 {
 	int total, id, room, type, num, i, x, open;
 	char *player = NULL, *desc = NULL;
@@ -744,23 +552,23 @@ static void _ggzcore_net_handle_list_tables(void)
 
 	_ggzcore_table_list_clear();
 		
-	if (es_read_int(ggz_server_sock, &total) < 0)
+	if (es_read_int(fd, &total) < 0)
 		return;
 
 	for (i = 0; i < total; i++) {
-		es_read_int(ggz_server_sock, &id);
-		es_read_int(ggz_server_sock, &room);
-		es_read_int(ggz_server_sock, &type);
-		es_read_string_alloc(ggz_server_sock, &desc);
-		es_read_char(ggz_server_sock, &state);
-		es_read_int(ggz_server_sock, &num);
+		es_read_int(fd, &id);
+		es_read_int(fd, &room);
+		es_read_int(fd, &type);
+		es_read_string_alloc(fd, &desc);
+		es_read_char(fd, &state);
+		es_read_int(fd, &num);
 
 		open = 0;
 		for (x = 0; x < num; x++) {
-			es_read_int(ggz_server_sock, &seat);
+			es_read_int(fd, &seat);
 			if (seat == GGZ_SEAT_PLAYER
 			    || seat == GGZ_SEAT_RESV) {
-				es_read_string_alloc(ggz_server_sock, &player);
+				es_read_string_alloc(fd, &player);
 				free(player);
 			}
 			if (seat == GGZ_SEAT_OPEN)
@@ -774,7 +582,7 @@ static void _ggzcore_net_handle_list_tables(void)
 }
 
 
-static void _ggzcore_net_handle_list_types(void)
+static void _ggzcore_net_read_list_types(const unsigned int fd)
 {
 	int count, i;
 	int id;
@@ -782,18 +590,18 @@ static void _ggzcore_net_handle_list_types(void)
 	char *name, *version, *desc, *author, *url;
 
 
-	es_read_int(ggz_server_sock, &count);
+	es_read_int(fd, &count);
 
 	for(i = 0; i < count; i++)
 	{
-		es_read_int(ggz_server_sock, &id);
-		es_read_string_alloc(ggz_server_sock, &name);
-		es_read_string_alloc(ggz_server_sock, &version);
-		es_read_char(ggz_server_sock, &players);
-		es_read_char(ggz_server_sock, &bots);
-		es_read_string_alloc(ggz_server_sock, &desc);
-		es_read_string_alloc(ggz_server_sock, &author);
-		es_read_string_alloc(ggz_server_sock, &url);
+		es_read_int(fd, &id);
+		es_read_string_alloc(fd, &name);
+		es_read_string_alloc(fd, &version);
+		es_read_char(fd, &players);
+		es_read_char(fd, &bots);
+		es_read_string_alloc(fd, &desc);
+		es_read_string_alloc(fd, &author);
+		es_read_string_alloc(fd, &url);
 		_ggzcore_gametype_list_add(id, name, version, players,
 					bots, desc, author, url);
 	}

@@ -23,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef __LISTS_H__
+#define __LISTS_H__
 
 /****
  **** Option values for _ggzcore_list_create()
@@ -108,3 +110,5 @@ _ggzcore_list_delete_entry	(_ggzcore_list *list,
 
 void
 _ggzcore_list_destroy		(_ggzcore_list *list);
+
+#endif /* __LISTS_H__ */

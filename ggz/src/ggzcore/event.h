@@ -27,6 +27,27 @@
 #ifndef __EVENT_H__
 #define __EVENT_H__
 
+#include "ggzcore.h"
+#include "hook.h"
+
+/* Structure for a particular event type */
+struct _GGZEvent {
+
+	/* Unique id number */
+	GGZEventID id;
+	
+	/* Descriptive string (mainly for debugging purposes) */
+	const char *name;
+
+	/* Array of valid state transitions */
+	GGZStateID *states;
+
+	/* List of hook functions */
+	GGZHookList *hooks;
+};
+
+
+
 /* _ggzcore_event_init() - Initialize event system
  *
  * Receives:

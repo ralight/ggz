@@ -28,6 +28,8 @@ libggzcore_a_SOURCES =	conf.c \
 			protocol.h \
 			room.c \
 			room.h \
+			roomlist.c \
+			roomlist.h \
 			server.c \
 			server.h \
 			state.c \

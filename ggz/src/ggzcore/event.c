@@ -31,29 +31,13 @@
 #include "net.h"
 #include "msg.h"
 
+
 #include <errno.h>
 #include <poll.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-
-/* Structure for a particular event type */
-struct _GGZEvent {
-
-	/* Unique id number */
-	GGZEventID id;
-	
-	/* Descriptive string (mainly for debugging purposes) */
-	const char *name;
-
-	/* Array of valid state transitions */
-	GGZStateID *states;
-
-	/* List of hook functions */
-	GGZHookList *hooks;
-};
-
-
+#if 0
 /* Giant list of state transitions for each event */
 static GGZStateID _server_connect_states[] = {
 	GGZ_STATE_CONNECTING,
@@ -112,6 +96,7 @@ static GGZStateID _server_room_join_fail_states[] = {
 	GGZ_STATE_BETWEEN_ROOMS,
 	-1          
 };
+#endif
 
 static GGZStateID _server_list_players_states[] = {
 	GGZ_STATE_IN_ROOM,       
@@ -173,6 +158,7 @@ static GGZStateID _server_chat_beep_states[] = {
 	-1          
 };                  
 
+#if 0
 static GGZStateID _server_logout_states[] = {
 	GGZ_STATE_LOGGING_OUT,
 	-1          
@@ -192,6 +178,7 @@ static GGZStateID _server_error_states[] = {
 	GGZ_STATE_LOGGING_OUT,   
 	-1          
 };                      
+#endif
 
 static GGZStateID _server_room_enter_states[] = {
 	GGZ_STATE_IN_ROOM,       
@@ -222,6 +209,7 @@ static GGZStateID _server_table_update_states[] = {
 	-1          
 };
 
+#if 0
 /* FIXME: this will be going away with error hooks */
 static GGZStateID _net_error_states[] = {
 	GGZ_STATE_OFFLINE,
@@ -257,6 +245,7 @@ static GGZStateID _user_list_rooms_states[] = {
 	GGZ_STATE_LEAVING_TABLE, 
 	-1          
 };                   
+#endif
 
 static GGZStateID _user_list_types_states[] = {
 	GGZ_STATE_ONLINE,        
@@ -271,11 +260,13 @@ static GGZStateID _user_list_types_states[] = {
 	-1          
 };                   
 
+#if 0
 static GGZStateID _user_join_room_states[] = {
 	GGZ_STATE_LOGGED_IN,
 	GGZ_STATE_IN_ROOM,
 	-1          
 };
+#endif
 
 static GGZStateID _user_list_tables_states[] = {
 	GGZ_STATE_IN_ROOM,       
@@ -328,6 +319,7 @@ static GGZStateID _user_motd_states[] = {
 	-1          
 };                        
 
+#if 0
 static GGZStateID _user_logout_states[] = {
 	GGZ_STATE_ONLINE,
 	GGZ_STATE_LOGGING_IN,
@@ -337,42 +329,11 @@ static GGZStateID _user_logout_states[] = {
 	GGZ_STATE_BETWEEN_ROOMS,
 	-1
 };
+#endif
 
 
 /* Array of all GGZ events */
 static struct _GGZEvent _ggz_events[] = {
-
-	{GGZ_SERVER_CONNECT, 
-	 "server_connect", 
-	 _server_connect_states},
-	
-	{GGZ_SERVER_CONNECT_FAIL, 
-	 "server_connect_fail", 
-	 _server_connect_fail_states},
-	
-	{GGZ_SERVER_MOTD, 
-	 "server_motd",
-	 _server_motd_states},
-	
-	{GGZ_SERVER_LOGIN,          
-	 "server_login_ok",
-	 _server_login_ok_states},
-	
-	{GGZ_SERVER_LOGIN_FAIL,
-	 "server_login_fail",
-	 _server_login_fail_states},
-
-	{GGZ_SERVER_LIST_ROOMS,     
-	 "server_list_rooms",
-	 _server_list_rooms_states},
-	
-	{GGZ_SERVER_ROOM_JOIN,      
-	 "server_room_join",
-	 _server_room_join_states},
-
-	{GGZ_SERVER_ROOM_JOIN_FAIL, 
-	 "server_room_join_fail",
-	 _server_room_join_fail_states},
 
 	{GGZ_SERVER_LIST_PLAYERS,   
 	 "server_list_players",               
@@ -402,14 +363,6 @@ static struct _GGZEvent _ggz_events[] = {
 	 "server_chat_beep",                  
 	 _server_chat_beep_states},
 
-	{GGZ_SERVER_LOGOUT,         
-	 "server_logout",                     
-	 _server_logout_states},
-
-	{GGZ_SERVER_ERROR,          
-	 "server_error",                      
-	 _server_error_states},
-	
 	{GGZ_SERVER_ROOM_ENTER,     
 	 "server_room_enter",                        
 	 _server_room_enter_states},
@@ -422,25 +375,9 @@ static struct _GGZEvent _ggz_events[] = {
 	 "server_table_update",
 	 _server_table_update_states},
 
-	{GGZ_NET_ERROR,             
-	 "net_error",                         
-	 _net_error_states},
-
-	{GGZ_USER_LOGIN,            
-	 "user_login",                        
-	 _user_login_states},
-
-	{GGZ_USER_LIST_ROOMS,       
-	 "user_list_rooms",                   
-	 _user_list_rooms_states},
-
 	{GGZ_USER_LIST_TYPES,       
 	 "user_list_types",                   
 	 _user_list_types_states},
-
-	{GGZ_USER_JOIN_ROOM,        
-	 "user_join_room",                    
-	 _user_join_room_states},
 
 	{GGZ_USER_LIST_TABLES,      
 	 "user_list_tables",                  
@@ -465,10 +402,6 @@ static struct _GGZEvent _ggz_events[] = {
 	{GGZ_USER_MOTD,             
 	 "user_motd",                         
 	 _user_motd_states},
-
-	{GGZ_USER_LOGOUT,           
-	 "user_logout",
-	 _user_logout_states}
 
 };
 
@@ -646,7 +579,7 @@ int ggzcore_event_poll(struct pollfd *ufds, unsigned int nfds, int timeout)
 	do_net = 1;
 	
 	if (do_net) {
-		if ( (sock = ggzcore_net_get_fd()) >= 0)
+		if ( (sock = ggzcore_server_get_fd(NULL)) >= 0)
 			total_fds++;
 		else
 			do_net = 0;
@@ -681,9 +614,9 @@ int ggzcore_event_poll(struct pollfd *ufds, unsigned int nfds, int timeout)
 
 	if (do_net && fds[nfds+1].revents) {
 		if (fds[nfds+1].revents == POLLHUP)
-			_ggzcore_net_disconnect();
+			_ggzcore_net_disconnect(-1);
 		else 
-			_ggzcore_net_process();
+			ggzcore_server_read_data(NULL);
 		count--;
 	}
 
@@ -863,8 +796,13 @@ static int _ggzcore_event_is_valid(GGZEventID id)
 	int i = 0, valid = 0;
 	GGZStateID state, *states;
 
+	/* FIXME: temporary hack to allow events we don't handle yet */
+	return 1;
+
 	states = _ggz_events[id].states;
+#if 0
 	state = _ggzcore_state_get_id();
+#endif
 
 	/* Look through states to see if the event is valid*/
 	while (states[i] != -1)
