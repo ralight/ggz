@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 4949 2002-10-19 00:34:05Z jdorje $
+ * $Id: protocol.h 5007 2002-10-23 17:50:56Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -103,6 +103,17 @@ typedef enum {
 	 *      spectator's client socket, IF the spectator seat is occupied.
 	 */
 	MSG_GAME_SPECTATOR_SEAT,
+
+	/** @brief Signals a player changing seats.
+	 *
+	 *  The packet is composed of:
+	 *    - An integer containing MSG_GAME_RESEAT.
+	 *    - An integer, boolean, whether the player *was* a spectator.
+	 *    - An integer, the (spectator) seat the player *was* at.
+	 *    - An integer, boolean, whether the player *will be* a spectator.
+	 *    - An integer, the (speectator) seat the player *will be* at.
+	 */
+	MSG_GAME_RESEAT,
 
 	/** @brief Signals the start of a RSP_GAME_STATE packet.
 	 *

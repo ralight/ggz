@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 4952 2002-10-19 19:03:33Z jdorje $
+ * $Id: ggzdmod.h 5007 2002-10-23 17:50:56Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -514,6 +514,22 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat * seat);
  *  @return 0 on success, negative on failure.
  */
 int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator * spectator);
+
+
+/** @brief Change a player's seat.
+ *
+ *  Move a player from a seat to another seat, from a spectator seat to
+ *  a seat, or from a seat to a spectator seat.
+ *  @param old_seat The (spectator) seat number of the player.
+ *  @param was_spectator Whether the seat is a normal or spectator seat.
+ *  @param new_seat The (spectator) seat the player moves to.
+ *  @param is_spectator Whether the new seat is a normal/spectator seat.
+ *  @note This should only be called by GGZ.
+ *  @return 0 on success, negative on failure.
+ */
+int ggzdmod_reseat(GGZdMod * ggzdmod,
+		   int old_seat, int was_spectator,
+		   int new_seat, int is_spectator);
 
 /** @brief Count seats of the given type.
  *

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 4949 2002-10-19 00:34:05Z jdorje $
+ * $Id: io.c 5007 2002-10-23 17:50:56Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -47,6 +47,7 @@ static int _io_read_req_launch(GGZdMod *ggzdmod);
 static int _io_read_req_state(GGZdMod *ggzdmod);
 static int _io_read_msg_log(GGZdMod *ggzdmod);
 static int _io_read_msg_seat_change(GGZdMod * ggzdmod);
+static int _io_read_msg_reseat(GGZdMod * ggzdmod);
 static int _io_read_msg_spectator_seat_change(GGZdMod *ggzdmod);
 
 
@@ -76,6 +77,21 @@ int _io_send_seat_change(int fd, GGZSeat *seat)
 		if (ggz_write_fd(fd, seat->fd) < 0)
 			return -1;
 	}
+	return 0;
+}
+
+
+int _io_send_reseat(int fd,
+		    int old_seat, int was_spectator,
+		    int new_seat, int is_spectator)
+{
+	ggz_debug("GGZDMOD", "Sending reseat");
+	if (ggz_write_int(fd, MSG_GAME_RESEAT) < 0
+	    || ggz_write_int(fd, old_seat) < 0
+	    || ggz_write_int(fd, was_spectator) < 0
+	    || ggz_write_int(fd, new_seat) < 0
+	    || ggz_write_int(fd, is_spectator) < 0)
+		return -1;
 	return 0;
 }
 
@@ -152,6 +168,8 @@ int _io_read_data(GGZdMod * ggzdmod)
 			return _io_read_req_launch(ggzdmod);
 		case MSG_GAME_SEAT:
 			return _io_read_msg_seat_change(ggzdmod);
+		case MSG_GAME_RESEAT:
+			return _io_read_msg_reseat(ggzdmod);
 		case MSG_GAME_SPECTATOR_SEAT:
 			return _io_read_msg_spectator_seat_change(ggzdmod);
 		case RSP_GAME_STATE:
@@ -264,6 +282,24 @@ static int _io_read_msg_seat_change(GGZdMod * ggzdmod)
 	if (seat.name)
 		ggz_free(seat.name);
 	
+	return 0;
+}
+
+
+static int _io_read_msg_reseat(GGZdMod * ggzdmod)
+{
+	int old_seat, was_spectator;
+	int new_seat, is_spectator;
+
+	if (ggz_read_int(ggzdmod->fd, &old_seat) < 0
+	    || ggz_read_int(ggzdmod->fd, &was_spectator) < 0
+	    || ggz_read_int(ggzdmod->fd, &new_seat) < 0
+	    || ggz_read_int(ggzdmod->fd, &is_spectator) < 0)
+		return -1;
+
+	_ggzdmod_handle_reseat(ggzdmod,
+			       old_seat, was_spectator,
+			       new_seat, is_spectator);
 	return 0;
 }
 
