@@ -1,25 +1,23 @@
 ## Process this file with automake to produce Makefile.in
+#  $Id: Makefile.am 4601 2002-09-17 03:37:40Z jdorje $
 
-SUBDIRS = intl po macros src
+SUBDIRS = .
 
-install-data-local:
-	@$(NORMAL_INSTALL)
-	if test -d $(srcdir)/pixmaps; then \
-	  $(mkinstalldirs) $(DESTDIR)@PACKAGE_PIXMAPS_DIR@; \
-	  for pixmap in $(srcdir)/pixmaps/*; do \
-	    if test -f $$pixmap; then \
-	      $(INSTALL_DATA) $$pixmap $(DESTDIR)@PACKAGE_PIXMAPS_DIR@; \
-	    fi \
-	  done \
-	fi
+INCLUDES = -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR)
 
-dist-hook:
-	if test -d pixmaps; then \
-	  mkdir $(distdir)/pixmaps; \
-	  for pixmap in pixmaps/*; do \
-	    if test -f $$pixmap; then \
-	      cp -p $$pixmap $(distdir)/pixmaps; \
-	    fi \
-	  done \
-	fi
+bin_PROGRAMS = motd_editor
 
+motd_editor_SOURCES =	callbacks.c \
+			callbacks.h \
+			interface.c \
+			interface.h \
+			main.c \
+			support.c \
+			support.h
+
+motd_editor_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
+
+yo:
+	echo $(GNOME_LIBDIR)
+	echo $(GNOMEUI_LIBS)
+	echo $(INTLLIBS)
