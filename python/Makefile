@@ -54,5 +54,5 @@ dist:
 	rm -rf ../ggz-python-0.0.9
 	cp -r ../python ../ggz-python-0.0.9
 	find ../ggz-python-0.0.9 -name CVS | xargs rm -rf
-	cd .. && tar cvf ggz-python-0.0.9.tar.gz ggz-python-0.0.9
+	cd .. && tar cvzf ggz-python-0.0.9.tar.gz ggz-python-0.0.9
 
