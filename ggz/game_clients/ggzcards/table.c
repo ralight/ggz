@@ -691,15 +691,15 @@ void table_play_card(int p, card_t card)
 void table_clear_table(void)
 {
 	int i;
-	int outer = CARDHEIGHT + 4*XWIDTH + 1;
+	int size = 2 * (CARDHEIGHT + CARDHEIGHT/12);
 	gdk_draw_rectangle(table_buf,
 			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
 			   TRUE,
-			   outer, outer,
-			   f1->allocation.width - 2 * outer, f1->allocation.height- 2 * outer);
+			   (f1->allocation.width-size)/2, (f1->allocation.height-size)/2,
+			   size,size);
 
-	table_show_table(outer, outer,
-			f1->allocation.width- outer, f1->allocation.height - outer);
+	table_show_table((f1->allocation.width-size)/2, (f1->allocation.height-size)/2,
+			   size,size);
 
 	for(i = 0; i < game.num_players; i++) {
 		game.players[i].table_card = UNKNOWN_CARD;
