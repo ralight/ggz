@@ -14,4 +14,5 @@ DONE: new splash screen :)
 todo for 0.0.6:
 - configurability: component-based architecture with custem chat window etc.
 - add KGamePart to kde-client package
+- port to KDE 3.0
 
