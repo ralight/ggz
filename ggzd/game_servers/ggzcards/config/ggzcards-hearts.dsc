@@ -1,10 +1,10 @@
-# $Id: ggzcards-hearts.dsc 3701 2002-03-28 03:22:32Z jdorje $
+# $Id: ggzcards-hearts.dsc 3906 2002-04-12 06:39:42Z jdorje $
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Hearts
 Homepage = http://ggz.sourceforge.net/games/ggzcards
 Name = GGZCards-Hearts
-Version = 0.0.4
+Version = 0.0.5
 
 [LaunchInfo]
 ExecutablePath = ggzd.ggzcards --game=hearts --option=open_hands:0
