@@ -156,7 +156,8 @@ AC_SUBST(LDADD)
 
 AC_OUTPUT([Makefile 
 	   src/Makefile
-	   tests/Makefile])
+	   tests/Makefile
+	   man/Makefile])
 
 
 dnl Status Output

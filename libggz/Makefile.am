@@ -2,6 +2,4 @@
 
 EXTRA_DIST = Doxyfile README.GGZ QuickStart.GGZ
 
-SUBDIRS = src tests
-
-
+SUBDIRS = src tests man
