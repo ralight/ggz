@@ -10,6 +10,6 @@ PlayersAllowed = 2
 # Set AllowLeave to 1 if game supports players leaving during gameplay
 AllowLeave = 1
 # ExecutablePath is figured relative to GameDir unless starting with /
-ExecutablePath = /home/perdig/prog/GGZ/ggzd/game_servers/combat/ggzd.combat
+ExecutablePath = ggzd.combat
 # GameDisabled is a quick way to turn off the game if necessary
 #GameDisabled
