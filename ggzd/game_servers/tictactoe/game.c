@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 5025 2002-10-25 08:31:11Z jdorje $
+ * $Id: game.c 5068 2002-10-27 21:25:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -102,7 +102,7 @@ static int game_send_sync(int fd);
 #ifdef GGZSTATISTICS
 static int game_send_stats(int num);
 #endif
-static int game_send_gameover(char winner);
+static int game_send_gameover(int winner);
 static int game_read_move(int num, int* move);
 
 /* TTT-move functions */
@@ -413,7 +413,7 @@ static int game_send_sync(int fd)
 	
 
 /* Send out game-over message */
-static int game_send_gameover(char winner)
+static int game_send_gameover(int winner)
 {
 	int i;
 	GGZSeat seat;
@@ -436,6 +436,18 @@ static int game_send_gameover(char winner)
 	ggzstats_recalculate_ratings(stats);
 	ggzstats_free(stats);
 #endif
+
+	{
+		GGZGameResult results[2];
+		if (winner < 2) {
+			results[winner] = GGZ_GAME_WIN;
+			results[1 - winner] = GGZ_GAME_LOSS;
+		} else {
+			results[0] = results[1] = GGZ_GAME_TIE;
+		}
+
+		ggzdmod_report_game(ttt_game.ggz, NULL, results);
+	}
 	
 	for (i = 0; i < 2; i++) {
 		seat = ggzdmod_get_seat(ttt_game.ggz, i);
