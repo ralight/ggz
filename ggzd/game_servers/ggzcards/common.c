@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3358 2002-02-15 00:39:12Z jdorje $
+ * $Id: common.c 3359 2002-02-15 01:13:20Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -882,12 +882,14 @@ const char *get_seat_name(seat_t s)
 		break;
 	case GGZ_SEAT_NONE:
 		name = game.seats[s].name;
+		break;
 	}
 	
 	/* For some reason, this error occurs, as some seat names may
 	   get overwritten.  This could be the symptom of a serious
 	   bug. */
-	if (strcmp(name, game.seats[s].name))
+	if (!name || !game.seats[s].name
+	    || strcmp(name, game.seats[s].name))
 		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
 		            "Seat %d names (%s/%s) do not match up.",
 		            s,
