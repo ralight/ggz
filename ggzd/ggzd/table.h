@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 3185 2002-01-24 10:59:56Z jdorje $
+ * $Id: table.h 3186 2002-01-24 11:51:06Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -93,12 +93,6 @@ GGZTable* table_new(void);
 
 /* Launch a table */
 int table_launch(GGZTable *table, char* name);
-
-/* Join a player to the table */
-int table_join(char* name, int room, int index, int* t_fd);
-
-/* Pull player from table */
-int table_leave(char* name, int room, int index);
 
 /* Search for tables */
 int table_search(char* name, int room, int type, char global, 
