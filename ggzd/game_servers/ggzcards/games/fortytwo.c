@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4054 2002-04-23 00:52:21Z jdorje $
+ * $Id: fortytwo.c 4060 2002-04-23 07:52:57Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -127,14 +127,12 @@ static void fortytwo_set_player_message(player_t p)
 	add_player_rating_message(p);
 	add_player_score_message(p);
 	add_player_tricks_message(p);
-	
-	if (game.state != STATE_NEXT_BID
-	    && p == FORTYTWO.declarer)
-		add_player_message(p, "Contract: %d\n", FORTYTWO.contract);
 		
 	if (game.state == STATE_NEXT_BID
 	    || game.state == STATE_WAIT_FOR_BID)
 		add_player_bid_message(p);
+	else if (p == FORTYTWO.declarer)
+		add_player_message(p, "Contract: %d\n", FORTYTWO.contract);
 		
 	add_player_action_message(p);
 }
