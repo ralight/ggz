@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4748 2002-09-27 15:30:30Z dr_maux $
+# $Id: Makefile.am 5060 2002-10-27 06:26:31Z jdorje $
 
 SUBDIRS = .
 
@@ -15,7 +15,8 @@ lib_LTLIBRARIES = libggzdmod.la
 
 libggzdmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 1:0:0
 libggzdmod_la_LIBADD = @LDADD@ $(LIB_GGZ)
-libggzdmod_la_SOURCES = ggzdmod.h ggzdmod.c \
+libggzdmod_la_SOURCES = ggzdmod.h ggzdmod-ggz.h \
+			ggzdmod.c \
 			io.c io.h \
 			protocol.h mod.h \
 			\
@@ -29,7 +30,7 @@ libggzdmod_la_SOURCES = ggzdmod.h ggzdmod.c \
 #noinst_LIBRARIES = libggzdmod.a
 #libggzdmod_a_SOURCES = $(libggzdmod_la_SOURCES)
 
-include_HEADERS = ggzdmod.h
+include_HEADERS = ggzdmod.h ggzdmod-ggz.h
 
 INCLUDES = $(LIBGGZ_INCLUDES)
 

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 5030 2002-10-25 17:33:21Z jdorje $
+ * $Id: ggzdmod.h 5060 2002-10-27 06:26:31Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -362,6 +362,7 @@ typedef struct {
 	int fd;			/**< File descriptor for communication */
 } GGZSpectator;
 
+
 /* 
  * Creation functions
  */
@@ -380,6 +381,7 @@ GGZdMod *ggzdmod_new(GGZdModType type);
  *  @param ggzdmod The GGZdMod object.
  */
 void ggzdmod_free(GGZdMod * ggzdmod);
+
 
 /* 
  * Accessor functions
@@ -429,14 +431,6 @@ GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int seat);
  *  @see ggzdmod_set_gamedata */
 void * ggzdmod_get_gamedata(GGZdMod * ggzdmod);
 
-/** @brief Set the number of seats for the table.
- *  @param ggzdmod The GGZdMod object.
- *  @param num_seats The number of seats to set.
- *  @return 0 on success, -1 on failure.
- *  @note This will only work for ggzd.
- *  @todo Allow the table to change the number of seats. */
-int ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
-
 /** @brief Set gamedata pointer
  *  @param ggzdmod The GGZdMod object.
  *  @param data The gamedata block (or NULL for none).
@@ -477,61 +471,6 @@ GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int spectator);
 int ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
 			GGZdModHandler func);
 
-/** @brief Set the module executable, pwd, and arguments
- *
- *  GGZdmod must execute and launch the game to start a table; this
- *  function allows ggzd to specify how this should be done.
- *  @note This should not be called by the table, only ggzd.
- *  @param ggzdmod The GGZdmod object.
- *  @param pwd The working directory for the game, or NULL.
- *  @param args The arguments for the program, as needed by exec.
- *  @note The pwd directory must already exist.
- *  @note The executable must be an absolute path (or relative to pwd).
- */
-void ggzdmod_set_module(GGZdMod * ggzdmod,
-                        const char *pwd, char **args);
-
-/** @brief Set seat data.
- *
- *  A game server or the ggz server can use this function to set
- *  data about a seat.  The game server may only change the following
- *  things about a seat:
- *    - The name (only if the seat is a bot).
- *    - The socket FD (only if the FD is -1).
- *  @param seat The new seat structure (which includes seat number).
- *  @return 0 on success, negative on failure.
- *  @todo The game should be able to toggle between BOT and OPEN seats.
- *  @todo The game should be able to kick a player out of the table.
- */
-int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat * seat);
-
-/** @brief Set spectator data.
- *
- *  A game server or the ggz server can use this function to set
- *  data about a spectator.  The game server may only change the following
- *  things about a spectator:
- *    - The socket FD (only if the FD is -1).
- *  @param spectator The new spectator structure (which includes spectator number).
- *  @return 0 on success, negative on failure.
- */
-int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator * spectator);
-
-
-/** @brief Change a player's seat.
- *
- *  Move a player from a seat to another seat, from a spectator seat to
- *  a seat, or from a seat to a spectator seat.
- *  @param old_seat The (spectator) seat number of the player.
- *  @param was_spectator Whether the seat is a normal or spectator seat.
- *  @param new_seat The (spectator) seat the player moves to.
- *  @param is_spectator Whether the new seat is a normal/spectator seat.
- *  @note This should only be called by GGZ.
- *  @return 0 on success, negative on failure.
- */
-int ggzdmod_reseat(GGZdMod * ggzdmod,
-		   int old_seat, int was_spectator,
-		   int new_seat, int is_spectator);
-
 /** @brief Count seats of the given type.
  *
  *  This is a convenience function that counts how many seats
@@ -556,6 +495,7 @@ int ggzdmod_count_seats(GGZdMod * ggzdmod, GGZSeatType seat_type);
  *  @return The number of spectators watching the game (0 on error)
  */
 int ggzdmod_count_spectators(GGZdMod * ggzdmod);
+
 
 /* 
  * Event/Data handling
@@ -585,6 +525,7 @@ int ggzdmod_dispatch(GGZdMod * ggzdmod);
  *  @see ggzdmod_set_state
  */
 int ggzdmod_loop(GGZdMod * ggzdmod);
+
 
 /* 
  * Control functions
@@ -626,6 +567,9 @@ int ggzdmod_connect(GGZdMod * ggzdmod);
 int ggzdmod_disconnect(GGZdMod * ggzdmod);
 
 
+/* 
+ * Logging functions
+ */
 
 /** @brief Log data
  *
