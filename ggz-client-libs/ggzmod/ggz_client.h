@@ -1,5 +1,10 @@
-/*	$Id: ggz_client.h 2092 2001-08-01 05:54:10Z jdorje $	*/
 /*
+ * File: ggz_client.h
+ * Author: GGZ Development Team
+ * Project: GGZMod library
+ * Desc: GGZ game module functions
+ * $Id: ggz_client.h 2209 2001-08-23 22:01:30Z jdorje $
+ *
  * Copyright (C) 2000 GGZ devel team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
- *
  */
 
 /**
@@ -37,7 +41,7 @@
  *
  * @return The file descriptor for the communications socket (or -1 on failure).
  */
-extern int ggz_client_connect( );
+int ggz_client_connect( );
 
 /**
  * This destroys all of ggzmod's internal data.  It does not yet disconnect 
@@ -45,7 +49,7 @@ extern int ggz_client_connect( );
  *
  * @return 0 on success; -1 on failure.
  */
-extern int ggz_client_quit( );
+int ggz_client_quit( );
 
 /**
  * This prepares for connection to the GGZ client.  It should be
@@ -54,7 +58,7 @@ extern int ggz_client_quit( );
  * @param game_name The name of the card game; currently unused.
  * @return 0 on success; -1 on failure.
  */
-extern int ggz_client_init(char *game_name);
+int ggz_client_init(char *game_name);
 
 /**
  *  This returns the file descriptor of the communications socket to
@@ -62,6 +66,6 @@ extern int ggz_client_init(char *game_name);
  *
  * @return The FD integer, or -1 on no connection.
  */
-extern int ggz_client_get_sock( );
+int ggz_client_get_sock( );
 
 #endif /* __GGZ_CLIENT_GGZ_H */
