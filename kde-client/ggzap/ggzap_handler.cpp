@@ -345,7 +345,7 @@ void GGZapHandler::hookRoomActive(unsigned int id, void *data)
 			break;
 		case GGZCoreRoom::tablejoined:
 			m_game = new GGZCoreGame();
-			m_game->init(m_module->module());
+			m_game->init(m_server->server(), m_module->module());
 			attachGameCallbacks();
 			delete m_module;
 			m_module = NULL;
