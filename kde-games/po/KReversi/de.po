@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-24 17:06+0100\n"
+"POT-Creation-Date: 2002-09-26 02:28+0200\n"
 "PO-Revision-Date: 2002-04-10 17:42GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
 "Language-Team:  <de@li.org>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: ../../KReversi/kreversi.cpp:128
+#: ../../KReversi/kreversi.cpp:128 ../../KReversi/kreversi.cpp:129
 msgid " ! Check your installation!"
 msgstr " ! Ueberpruefe deine Installation!"
 
@@ -23,26 +23,27 @@ msgid "! Check your installation!"
 msgstr "! Ueberpruefe deine Installation!"
 
 #: ../../KReversi/kreversi.cpp:228 ../../KReversi/kreversi.cpp:230
+#: ../../KReversi/kreversi.cpp:229 ../../KReversi/kreversi.cpp:231
 msgid "%1 (%2): %3"
 msgstr "%1 (%2): %3"
 
-#: ../../KReversi/kreversi.cpp:189
+#: ../../KReversi/kreversi.cpp:189 ../../KReversi/kreversi.cpp:190
 msgid "%1's turn"
 msgstr "%1 ist dran"
 
-#: ../../KReversi/kreversi.cpp:43
+#: ../../KReversi/kreversi.cpp:43 ../../KReversi/kreversi.cpp:44
 msgid "&Request sync"
 msgstr "&Geforderte Synchronisation"
 
-#: ../../KReversi/main.cpp:35
+#: ../../KReversi/main.cpp:35 ../../KReversi/main.cpp:36
 msgid "0.0.1"
 msgstr "0.0.1"
 
-#: ../../KReversi/kreversi.cpp:197
+#: ../../KReversi/kreversi.cpp:197 ../../KReversi/kreversi.cpp:198
 msgid "Congratulations! You won!"
 msgstr "Gartulation! Du hast gewonnen!"
 
-#: ../../KReversi/kreversi.cpp:128
+#: ../../KReversi/kreversi.cpp:128 ../../KReversi/kreversi.cpp:129
 msgid "Couldn't find any theme in "
 msgstr "Konnte keine Theme finden in "
 
@@ -63,51 +64,61 @@ msgstr ""
 "Wenn du \"nein\" auswaehlst, kannst du ein neues Spiel\n"
 "im Menue \"Spiel|Nochmal spielen\" starten"
 
-#: ../../KReversi/kreversi.cpp:177
+#: ../../KReversi/kreversi.cpp:206
+#, fuzzy
+msgid ""
+"Do you want to play again? If you select \"No\" now, you can request a new "
+"game by selecting the \"Game|Play again\" menu"
+msgstr ""
+"Moechtest du nochmal spielen?\n"
+"\n"
+"Wenn du \"nein\" auswaehlst, kannst du ein neues Spiel\n"
+"im Menue \"Spiel|Nochmal spielen\" starten"
+
+#: ../../KReversi/kreversi.cpp:177 ../../KReversi/kreversi.cpp:178
 msgid "Game has started"
 msgstr "Spiel wurde gestartet"
 
-#: ../../KReversi/main.cpp:38
+#: ../../KReversi/main.cpp:38 ../../KReversi/main.cpp:39
 msgid "KDE client for GGZ's Reversi game module"
 msgstr "KDE-Client fuer das GGZ-Reversi-modul"
 
-#: ../../KReversi/main.cpp:51
+#: ../../KReversi/main.cpp:51 ../../KReversi/main.cpp:52
 msgid "KGGZReversi"
 msgstr "KGGZReversi"
 
-#: ../../KReversi/kreversi.cpp:44
+#: ../../KReversi/kreversi.cpp:44 ../../KReversi/kreversi.cpp:45
 msgid "Play again"
 msgstr "Nochmal spielen"
 
-#: ../../KReversi/kreversi.cpp:205
+#: ../../KReversi/kreversi.cpp:205 ../../KReversi/kreversi.cpp:206
 msgid "Play again?"
 msgstr "Nochmal spielen?"
 
-#: ../../KReversi/kreversi.cpp:45
+#: ../../KReversi/kreversi.cpp:45 ../../KReversi/kreversi.cpp:46
 msgid "Select theme"
 msgstr "Waehle Thema aus"
 
-#: ../../KReversi/kreversi.cpp:347
+#: ../../KReversi/kreversi.cpp:347 ../../KReversi/kreversi.cpp:348
 msgid "Syncing game!"
 msgstr "Synchronisiere Spiel!"
 
-#: ../../KReversi/kreversi.cpp:201
+#: ../../KReversi/kreversi.cpp:201 ../../KReversi/kreversi.cpp:202
 msgid "That game was a draw"
 msgstr "Dieses Spiel wurde aufgeben"
 
-#: ../../KReversi/kreversi.cpp:199
+#: ../../KReversi/kreversi.cpp:199 ../../KReversi/kreversi.cpp:200
 msgid "That's too bad... you lost"
 msgstr "Das war zu schlecht... du hast verloren"
 
-#: ../../KReversi/main.cpp:44
+#: ../../KReversi/main.cpp:44 ../../KReversi/main.cpp:45
 msgid "This game will use GGZ"
 msgstr "Dieses Spiel wird GGZ nutzen"
 
-#: ../../KReversi/kreversi.cpp:76
+#: ../../KReversi/kreversi.cpp:76 ../../KReversi/kreversi.cpp:77
 msgid "Wait..."
 msgstr "Warte..."
 
-#: ../../KReversi/kreversi.cpp:187
+#: ../../KReversi/kreversi.cpp:187 ../../KReversi/kreversi.cpp:188
 msgid "Your turn!"
 msgstr "Dein Zug!"
-

@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-24 17:17+0100\n"
+"POT-Creation-Date: 2002-09-26 02:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../kdots/kdots.cpp:209
+#: ../../kdots/kdots.cpp:209 ../../kdots/kdots.cpp:219
 msgid "A protocol error has been detected. Aborting the game."
 msgstr ""
 
-#: ../../kdots/kdots_win.cpp:40
+#: ../../kdots/kdots_win.cpp:40 ../../kdots/kdots_win.cpp:41
 msgid "About"
 msgstr ""
 
@@ -31,15 +32,15 @@ msgid "Author."
 msgstr ""
 
 #: ../../kdots/kdots_about.cpp:103 ../../kdots/kdots_win.cpp:57
-#: ../../kdots/main.cpp:32
+#: ../../kdots/main.cpp:32 ../../kdots/kdots_win.cpp:58
 msgid "Connect The Dots for KDE"
 msgstr ""
 
-#: ../../kdots/kdots_win.cpp:42
+#: ../../kdots/kdots_win.cpp:42 ../../kdots/kdots_win.cpp:43
 msgid "Game"
 msgstr ""
 
-#: ../../kdots/kdots_win.cpp:38
+#: ../../kdots/kdots_win.cpp:38 ../../kdots/kdots_win.cpp:39
 msgid "Game Help"
 msgstr ""
 
@@ -47,11 +48,11 @@ msgstr ""
 msgid "Game help for KDots"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:193
+#: ../../kdots/kdots.cpp:193 ../../kdots/kdots.cpp:203
 msgid "Game over"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:190
+#: ../../kdots/kdots.cpp:190 ../../kdots/kdots.cpp:200
 msgid "Game over!"
 msgstr ""
 
@@ -59,7 +60,7 @@ msgstr ""
 msgid "Have fun!"
 msgstr ""
 
-#: ../../kdots/kdots_win.cpp:43
+#: ../../kdots/kdots_win.cpp:43 ../../kdots/kdots_win.cpp:44
 msgid "Help"
 msgstr ""
 
@@ -67,7 +68,7 @@ msgstr ""
 msgid "Horizontal"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:182
+#: ../../kdots/kdots.cpp:182 ../../kdots/kdots.cpp:192
 msgid "Invalid move, please try again!"
 msgstr ""
 
@@ -83,15 +84,15 @@ msgstr ""
 msgid "KDots Options"
 msgstr ""
 
-#: ../../kdots/kdots_win.cpp:29
+#: ../../kdots/kdots_win.cpp:29 ../../kdots/kdots_win.cpp:30
 msgid "Launching KDots..."
 msgstr ""
 
-#: ../../kdots/kdots.cpp:123
+#: ../../kdots/kdots.cpp:123 ../../kdots/kdots.cpp:130
 msgid "No game running yet!"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:87
+#: ../../kdots/kdots.cpp:87 ../../kdots/kdots.cpp:94
 msgid "Not your turn!"
 msgstr ""
 
@@ -103,15 +104,15 @@ msgstr ""
 msgid "Please specify the board size here."
 msgstr ""
 
-#: ../../kdots/kdots.cpp:209
+#: ../../kdots/kdots.cpp:209 ../../kdots/kdots.cpp:219
 msgid "Protocol error"
 msgstr ""
 
-#: ../../kdots/kdots_win.cpp:35
+#: ../../kdots/kdots_win.cpp:35 ../../kdots/kdots_win.cpp:36
 msgid "Quit"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:138
+#: ../../kdots/kdots.cpp:138 ../../kdots/kdots.cpp:145
 msgid "Receiving data"
 msgstr ""
 
@@ -119,27 +120,27 @@ msgstr ""
 msgid "Request GGZ game explicitely"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:64
+#: ../../kdots/kdots.cpp:64 ../../kdots/kdots.cpp:65
 msgid "Requesting game options"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:76
+#: ../../kdots/kdots.cpp:76 ../../kdots/kdots.cpp:77
 msgid "Sending game options"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:107
+#: ../../kdots/kdots.cpp:107 ../../kdots/kdots.cpp:114
 msgid "Sending move"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:123
+#: ../../kdots/kdots.cpp:123 ../../kdots/kdots.cpp:130
 msgid "Synchronization"
 msgstr ""
 
-#: ../../kdots/kdots_win.cpp:33
+#: ../../kdots/kdots_win.cpp:33 ../../kdots/kdots_win.cpp:34
 msgid "Synchronize"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:253
+#: ../../kdots/kdots.cpp:253 ../../kdots/kdots.cpp:263
 msgid "Syncing successful"
 msgstr ""
 
@@ -147,7 +148,7 @@ msgstr ""
 msgid "Thanks to www.drachenburg.de"
 msgstr ""
 
-#: ../../kdots/kdots.cpp:191
+#: ../../kdots/kdots.cpp:191 ../../kdots/kdots.cpp:201
 #, c-format
 msgid ""
 "The game is over.\n"
@@ -168,11 +169,15 @@ msgstr ""
 msgid "Vertical"
 msgstr ""
 
-#: ../../kdots/kdots_win.cpp:54
+#: ../../kdots/kdots_win.cpp:54 ../../kdots/kdots_win.cpp:55
 msgid "Waiting for opponent..."
 msgstr ""
 
-#: ../../kdots/kdots.cpp:159
+#: ../../kdots/kdots.cpp:88
+msgid "You're only watching"
+msgstr ""
+
+#: ../../kdots/kdots.cpp:159 ../../kdots/kdots.cpp:167
 msgid "Your turn."
 msgstr ""
 
