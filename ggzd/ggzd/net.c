@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5009 2002-10-23 18:10:38Z jdorje $
+ * $Id: net.c 5048 2002-10-26 05:26:53Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1294,14 +1294,11 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element)
 	to = ggz_xmlelement_get_attr(element, "TO");
 	msg = ggz_xmlelement_get_text(element);
 
-	/* TYPE is required */
 	if (!type_str) {
-		_net_send_result(net, "chat", E_BAD_OPTIONS);
-		return;
-	}
-
-	/* FIXME: error checking on these? */
-	type = ggz_string_to_chattype(type_str);
+		/* If no type is specified, assume a normal chat. */
+		type = GGZ_CHAT_NORMAL;
+	} else
+		type = ggz_string_to_chattype(type_str);
 
 	player_chat(net->client->data, type, to, msg);
 }
