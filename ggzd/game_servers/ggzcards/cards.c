@@ -238,6 +238,12 @@ char cards_highest_in_suit(hand_t *hand, char suit)
 	return hi_card;
 }
 
+int cards_equal(card_t c1, card_t c2)
+{
+	/* not to take any chances with filler space... */
+	return (c1.face == c2.face && c1.suit == c2.suit && c1.deck == c2.deck);
+}
+
 /* none of this should go here, but that's okay for now */
 #include "easysock.h"
 

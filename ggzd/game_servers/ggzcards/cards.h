@@ -81,6 +81,8 @@ extern char cards_cut_for_trump(void);
 extern int cards_suit_in_hand(hand_t *, char);
 extern char cards_highest_in_suit(hand_t *, char);
 
+extern int cards_equal(card_t, card_t);
+
 extern int es_read_card(int, card_t *);
 extern int es_write_card(int, card_t);
 
