@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: ggzclient.c 4166 2002-05-05 21:18:39Z bmh $
  *
  * This is the main program body for the GGZ client
  *
@@ -28,13 +28,15 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <ggz.h>
 #include <ggzcore.h>
 #include <stdlib.h>
 #include <sys/time.h>
 
 #include "chat.h"
-#include "ggz.h"
+#include "client.h"
 #include "login.h"
+#include "launch.h"
 #include "msgbox.h"
 #include "motd.h"
 #include "game.h"
@@ -43,7 +45,8 @@
 #include "xtext.h"
 
 
-static gint server_handle=-1;
+static gint server_handle = -1;
+static gint channel_handle = -1;
 
 extern GtkWidget *login_dialog;
 extern GtkWidget *win_main;
@@ -60,6 +63,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* us
 static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_negotiated(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_channel_ready(GGZGameEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user_data);
@@ -82,7 +86,10 @@ static GGZHookReturn ggz_list_tables(GGZRoomEvent id, void* event_data, void* us
 static GGZHookReturn ggz_table_update(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, void* user_data);
+
+/* Gdk input callbacks */
 static void ggz_input_removed(gpointer data);
+static void ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond);
 
 /* Table functions */
 static GGZHookReturn ggz_table_launched(GGZRoomEvent id, void*, void*);
@@ -100,12 +107,16 @@ static GGZHookReturn ggz_auto_join(GGZServerEvent id, void*, void*);
 static void server_disconnect(void);
 
 
-GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond);
+
+
 
 void ggz_event_init(GGZServer *Server)
 {
 	ggzcore_server_add_event_hook(Server, GGZ_CONNECTED, ggz_connected);
+	ggzcore_server_add_event_hook(Server, GGZ_CHANNEL_CONNECTED, ggz_connected);
 	ggzcore_server_add_event_hook(Server, GGZ_CONNECT_FAIL,	ggz_connect_fail);
+	ggzcore_server_add_event_hook(Server, GGZ_CHANNEL_FAIL,	ggz_connect_fail);
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY, ggz_channel_ready);
 	ggzcore_server_add_event_hook(Server, GGZ_NEGOTIATED, ggz_negotiated);
 	ggzcore_server_add_event_hook(Server, GGZ_NEGOTIATE_FAIL, ggz_connect_fail);
 	ggzcore_server_add_event_hook(Server, GGZ_LOGGED_IN, ggz_logged_in);
@@ -120,6 +131,7 @@ void ggz_event_init(GGZServer *Server)
 	ggzcore_server_add_event_hook(server, GGZ_TABLE_LEFT, ggz_table_left);
 	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, ggz_server_error);
 	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, ggz_net_error);
+	
 }
 
 
@@ -127,14 +139,25 @@ static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* us
 {
 	int fd;
 	
-	ggz_debug("connection", "We're connected.");
+	if (id == GGZ_CONNECTED) {
+		ggz_debug("connection", "We're connected.");
+		
+		/* Add the fd to the ggtk main loop */
+		fd = ggzcore_server_get_fd(server);
+		server_handle = gdk_input_add_full(fd, GDK_INPUT_READ, 
+						   ggz_check_fd, 
+						   (gpointer)server,
+						   ggz_input_removed);
+	}
+	else if (id == GGZ_CHANNEL_CONNECTED) {
+		ggz_debug("connection", "Direct game channel connected.");
 
-	/* Add the fd to the ggtk main loop */
-	fd = ggzcore_server_get_fd(server);
-	server_handle = gdk_input_add_full(fd, GDK_INPUT_READ, 
-					   (GdkInputFunction)ggz_check_fd, 
-					   (gpointer)server,
-					   ggz_input_removed);
+		/* Add the fd to the ggtk main loop */
+		fd = ggzcore_server_get_channel(server);
+		channel_handle = gdk_input_add(fd, GDK_INPUT_READ, 
+					       ggz_check_fd, 
+					       (gpointer)server);
+	}
 
 	return GGZ_HOOK_OK;
 }
@@ -158,6 +181,23 @@ static GGZHookReturn ggz_negotiated(GGZServerEvent id, void* event_data, void* u
 {
 	ggzcore_server_login(server);
 
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn ggz_channel_ready(GGZGameEvent id, void* event_data, void* user_data)
+{
+	ggz_debug("connection", "Direct game channel ready for game");
+
+	/* Remove channel from gdk input list */
+	gdk_input_remove(channel_handle);
+	channel_handle = -1;
+	
+	if (launch_in_process())
+		launch_table();
+	else
+		client_join_table();
+	
 	return GGZ_HOOK_OK;
 }
 
@@ -240,7 +280,6 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LEFT, ggz_table_left);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, ggz_table_leave_fail);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, ggz_table_update);
-		ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, ggz_table_data);
 		ggzcore_room_add_event_hook(room, GGZ_PLAYER_LAG, ggz_list_players);
 	}
 
@@ -890,29 +929,14 @@ static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void* event_data, voi
 }
 	
 
-static GGZHookReturn ggz_table_data(GGZRoomEvent id, void* event_data, void* user_data)
-{
-	if (ggzcore_game_send_data(game, event_data) < 0) {
-		/* FIXME: better handling here.  We should probably
-		   terminate the game. */
-		ggz_error_msg("Error sending data to game.");
-		return GGZ_HOOK_ERROR;	
-	}
-        return GGZ_HOOK_OK;
-}
-
-
-
-
 /* The below function are used to
  * add and remove servers to the 
  * main loop
  */
 
-GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond)
+static void ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond)
 {
-	ggzcore_server_read_data(server);
-	return 0;
+	ggzcore_server_read_data(server, fd);
 }
 
 

@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 3986 2002-04-15 04:17:33Z jdorje $
+ * $Id: launch.c 4166 2002-05-05 21:18:39Z bmh $
  *
  * Code for launching games through the GTK client
  *
@@ -46,6 +46,7 @@
 #define MAX_RESERVED_NAME_LEN 16
 
 extern GGZServer *server;
+extern GGZGame *game;
 
 static void launch_fill_defaults(GtkWidget *widget, gpointer data);
 static void launch_seats_changed(GtkWidget *widget, gpointer data);
@@ -56,6 +57,7 @@ static void launch_seat_show(gint seat, gchar show);
 static GtkWidget* create_dlg_launch (void);
 
 static GtkWidget *launch_dialog;
+static char _launching = 0;
 
 void launch_create_or_raise(void)
 {
@@ -189,50 +191,37 @@ static void launch_resv_toggle(GtkWidget *widget, gpointer data)
 }
 
 
-static void launch_start_game(GtkWidget *widget, gpointer data)
+char launch_in_process(void)
+{
+	return _launching;
+}
+
+void launch_table(void)
 {
 	GtkWidget *tmp;
 	GGZRoom *room;
 	GGZTable *table;
 	GGZGameType *gt;
-	gint x, seats, status, bots;
+	gint seats;
+	int x, status;
 	gchar *widget_name;
-
-	/* Grab the number of seats */
-	tmp = lookup_widget(launch_dialog, "seats_combo");
-	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
-
-
-	/* Let's go bot counting....*/
-	bots = 0;
-	for( x = 0; x < seats; x++ )
-	{
-                widget_name = g_strdup_printf("seat%d_bot", (x+1));
-		tmp = lookup_widget(launch_dialog, widget_name);
-		g_free(widget_name);
-		if (GTK_TOGGLE_BUTTON(tmp)->active)
-			bots++;
-	}
-
-	room = ggzcore_server_get_cur_room(server);
-	gt = ggzcore_room_get_gametype(room);
-
-	if (! ggzcore_gametype_num_bots_is_valid(gt, bots)) {
-		msgbox(_("Invalid number of bots specified"), _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
-		
-		return;
-	}
-
+	
+	_launching = 0;
+	ggzcore_game_set_fd(game, ggzcore_server_get_channel(server));
 
 	/* Initialize a game module */
 	if (game_launch() < 0)
 		return;
 
+	/* Grab the number of seats */
+	tmp = lookup_widget(launch_dialog, "seats_combo");
+	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
+	
 	/* Create a table for sending to the server */
 	table = ggzcore_table_new();
-
-	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "desc_entry");
-
+	room = ggzcore_server_get_cur_room(server);
+	gt = ggzcore_room_get_gametype(room);
+	tmp = lookup_widget(launch_dialog, "desc_entry");
 	ggzcore_table_init(table, gt, gtk_entry_get_text(GTK_ENTRY(tmp)), seats);
 
 	for( x = 0; x < seats; x++ )
@@ -272,6 +261,44 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 	}
 
 	gtk_widget_destroy(launch_dialog);
+}
+
+
+
+static void launch_start_game(GtkWidget *widget, gpointer data)
+{
+	GtkWidget *tmp;
+	GGZRoom *room;
+	GGZGameType *gt;
+	gint x, seats, bots;
+	gchar *widget_name;
+
+	/* Grab the number of seats */
+	tmp = lookup_widget(launch_dialog, "seats_combo");
+	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
+
+	/* Let's go bot counting....*/
+	bots = 0;
+	for( x = 0; x < seats; x++ )
+	{
+                widget_name = g_strdup_printf("seat%d_bot", (x+1));
+		tmp = lookup_widget(launch_dialog, widget_name);
+		g_free(widget_name);
+		if (GTK_TOGGLE_BUTTON(tmp)->active)
+			bots++;
+	}
+
+	room = ggzcore_server_get_cur_room(server);
+	gt = ggzcore_room_get_gametype(room);
+
+	if (! ggzcore_gametype_num_bots_is_valid(gt, bots)) {
+		msgbox(_("Invalid number of bots specified"), _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		
+		return;
+	}
+
+	_launching = 1;
+	ggzcore_server_create_channel(server);
 }
 
 

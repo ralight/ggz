@@ -2,7 +2,7 @@
  * File: ggzclient.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.h 3387 2002-02-17 08:44:28Z rgade $
+ * $Id: ggzclient.h 4166 2002-05-05 21:18:39Z bmh $
  *
  * This is the main program body for the GGZ client
  *
@@ -35,3 +35,4 @@ extern gint numrooms;
 extern gint numtables;
 
 #endif
+

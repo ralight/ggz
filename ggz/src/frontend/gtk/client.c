@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3842 2002-04-07 20:18:31Z jzaun $
+ * $Id: client.c 4166 2002-05-05 21:18:39Z bmh $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -53,6 +53,7 @@
 extern GdkColor colors[];
 GtkWidget *win_main;
 extern GGZServer *server;
+extern GGZGame *game;
 static gint tablerow = -1;
 
 /*
@@ -117,7 +118,7 @@ static void client_info_activate(GtkMenuItem *menuitem, gpointer data);
 static int client_get_table_index(guint row);
 static int client_get_table_open(guint row);
 static void client_join_room(guint room);				 
-static void client_join_table(void);
+static void client_start_table_join(void);
 static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data);
 static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data);
 static void client_send_private_message_activate(GtkMenuItem *menuitem, gpointer data);
@@ -202,7 +203,7 @@ static void
 client_joinm_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	client_join_table();
+	client_start_table_join();
 }
 
 
@@ -575,7 +576,7 @@ static void
 client_join_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	client_join_table();
+	client_start_table_join();
 }
 
 
@@ -684,7 +685,7 @@ client_table_event			(GtkWidget	*widget,
 {
 	/* Check to see if the event was a mouse button press */
 	if( event->type == GDK_2BUTTON_PRESS )
-		client_join_table();
+		client_start_table_join();
 	return FALSE;
 }
 
@@ -868,11 +869,8 @@ static void client_join_room(guint room)
 }
 
 
-static void client_join_table(void)
+static void client_start_table_join(void)
 {
-	GGZRoom *room;
-        int table_index, status;
-
 	/* Make sure a table is selected */
 	if (tablerow == -1) {
 		msgbox("You must highlight a table before you can join it.", 
@@ -890,23 +888,37 @@ static void client_join_table(void)
 				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
 			return;
 		}
-
-		/* Initialize a game module */
-		if (game_init() < 0 || game_launch() < 0)
-			return;
-
-		table_index = client_get_table_index(tablerow);
-
-		room = ggzcore_server_get_cur_room(server);
-		status = ggzcore_room_join_table(room, table_index);
-	
-		if (status < 0) {
-			msgbox(_("Failed to join table.\n Join aborted."), _("Join Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
-			game_destroy();
-		}
 	}
 
 	tablerow = -1;
+	ggzcore_server_create_channel(server);
+}
+
+
+void client_join_table(void)
+{
+	GGZRoom *room;
+        int table_index, status;
+
+	/* Initialize a game module */
+	if (game_init() < 0)
+		return;
+	
+	ggzcore_game_set_fd(game, ggzcore_server_get_channel(server));
+
+	/* Launch game module */
+	if (game_launch() < 0)
+		return;
+
+	table_index = client_get_table_index(tablerow);
+	
+	room = ggzcore_server_get_cur_room(server);
+	status = ggzcore_room_join_table(room, table_index);
+	
+	if (status < 0) {
+		msgbox(_("Failed to join table.\n Join aborted."), _("Join Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		game_destroy();
+	}
 }
 
 

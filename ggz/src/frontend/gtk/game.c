@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: game.c 4166 2002-05-05 21:18:39Z bmh $
  *
  * Functions for handling game events
  *
@@ -42,19 +42,15 @@
 
 /* Hooks for game events */
 static void game_register(GGZGame *game);
-static void game_process(void);
 static GGZHookReturn game_launched(GGZGameEvent, void*, void*);
 static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
-static GGZHookReturn game_data(GGZGameEvent, void *, void*);
 static GGZHookReturn game_over(GGZGameEvent, void *, void*);
 static GGZHookReturn game_delayed_leave(GGZServerEvent, void *, void *);
-static void game_input_removed(gpointer data);
+
 
 GGZGame *game;
-static int fd = -1;
-static gint game_handle;
 
 extern GGZServer *server;
 extern GtkWidget *win_main;
@@ -181,12 +177,7 @@ int game_launch(void)
 
 void game_quit(void)
 {
-	if (fd != -1)
-	{
-	        gdk_input_remove(game_handle);
-        	game_handle = -1;
-		fd = -1;
-	}
+	game_destroy();
 }
 
 
@@ -198,20 +189,12 @@ void game_destroy(void)
 }
 
 
-static void game_process(void)
-{
-	if (game)
-		ggzcore_game_read_data(game);
-}
-
-
 static void game_register(GGZGame *game)
 {
 	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED, game_launched);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL, game_launch_fail);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_DATA, game_data);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, game_over);
 	/* FIXME: handle IO_ERROR and PROTO_ERROR events */
 }
@@ -222,12 +205,6 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 {
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Launched game"));
 	
-	fd = ggzcore_game_get_fd(game);
-        game_handle = gdk_input_add_full(fd, GDK_INPUT_READ,
-					 (GdkInputFunction)game_process,
-					 (gpointer)server,
-					 game_input_removed);
-
 	return GGZ_HOOK_OK;
 }
 
@@ -255,21 +232,6 @@ static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
 }
 
 
-static GGZHookReturn game_data(GGZGameEvent id, void* event_data, void* user_data)
-{
-	GGZRoom *room;
-
-	room = ggzcore_server_get_cur_room(server);
-	if (ggzcore_room_send_game_data(room, event_data)) {
-		/* FIXME: better error handling */
-		ggz_error_msg("Lost some game data on its way to the server!");
-		return GGZ_HOOK_ERROR;
-	}
-
-	return GGZ_HOOK_OK;
-}
-
-
 static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_data)
 {
 	GGZRoom *room;
@@ -289,6 +251,7 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 		msgbox(_("Error leaving table"),
 		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 
+	game_destroy();
 	return GGZ_HOOK_OK;
 }
 
@@ -327,17 +290,9 @@ static GGZHookReturn game_delayed_leave(GGZServerEvent event, void *event_data, 
 }
 
 
-
-/* GdkDestroyNotify function for server fd */
-static void game_input_removed(gpointer data)
-{
-	game_destroy();
-}
-
-
 int game_play(void)
 {
-	if(fd != -1)
+	if (game)
 		return TRUE;
 	return FALSE;
 }

@@ -24,6 +24,7 @@
 
 
 void client_clear_tables(void);
+void client_join_table(void);
 GtkWidget* create_win_main (void);
 GtkWidget* create_mnu_room (void);
 GtkWidget* create_mnu_player (void);
