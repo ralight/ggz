@@ -14,7 +14,6 @@
 #include <time.h>
 #include <popt.h>
 #include <signal.h>
-
 #include <easysock.h>
 #include <protocols.h>
 
@@ -44,6 +43,8 @@ void check_seen(char *, char *);
 void whois(char *sender, char *name);
 void queue_message(char *, char *);
 void graceless_exit(int);
+void log_on(char *sender, char *command);
+void log_off(char *sender, char *command);
 
 int my_socket, rooms=0, cur_room=-1, logged_in=0;
 char **room_list;
@@ -51,7 +52,7 @@ char out_msg[1024];
 int player_greet = 0;
 int last_used = 0;
 int sig_logout = 0;
-
+FILE *log_file;
 
 
 #define MAX_KNOWN 50
@@ -305,7 +306,8 @@ int main(const int argc, const char *argv[])
 			else if(rooms != 0 && cur_room == -1)
 				change_room();
 			else if(rooms != 0 && last_used > 240) {
-				change_room();
+				if(log_file == NULL)
+					change_room();
 				last_used = 0;
 			}
 		}
@@ -365,6 +367,8 @@ void handle_read(void)
 			es_read_string_alloc(my_socket, &string);
 			es_read_string_alloc(my_socket, &string2);
 			handle_chat(string, string2);
+			if (log_file != NULL)
+				fprintf(log_file, "[%s] %s\n",string, string2);
 			free(string);
 			free(string2);
 			break;
@@ -536,6 +540,18 @@ void handle_command(char *sender, char *command)
 		whois(sender, command+7);
 	} else if(!strncasecmp(command, "whois ", 6)) {
 		whois(sender, command+6);
+	} else if(!strncasecmp(command, "log on ", 7)) {
+		if(!strcmp(sender, owner)) {
+			log_on(sender,command+7);
+		} else {
+			send_chat("Sorry, only my owner can tell me to do that.");
+		}
+	} else if(!strncasecmp(command, "log off", 7)) {
+		if(!strcmp(sender, owner)) {
+			log_off(sender, NULL);
+		} else {
+			send_chat("Sorry, only my owner can tell me to do that.");
+		}
 	} else {
 		send_chat("Huh?");
 		sprintf(out_msg, "Type '%s: Help' to see what commands I know!",
@@ -756,6 +772,34 @@ void store_aka(char *sender, char *aka)
 	newstr = malloc(strlen(aka)+1);
 	strcpy(newstr, aka);
 	known[i].aka = newstr;
+}
+
+
+void log_on(char *sender, char *command)
+{
+	if(log_file != NULL)
+	{
+		send_chat("I'm already logging this room.");
+		return;
+	}
+	log_file = fopen(command, "w");
+	if (log_file == NULL)
+	{
+		send_chat("Error opening file.");
+		return;
+	}
+}
+
+
+void log_off(char *sender, char *command)
+{
+	if (log_file == NULL)
+	{
+		send_chat("I'm not logging anything");
+		return;
+	}
+	fclose(log_file);
+	log_file=NULL;
 }
 
 
