@@ -16,7 +16,7 @@ noinst_HEADERS = map.h pacman.h tuxmanserv.h proto.h
 mapdir = $(ggzddatadir)/tuxmanserv
 dist_map_DATA = level9.pac
 
-INCLUDES = -I$(top_srcdir)/game_servers/tuxman/lib \
+AM_CPPFLAGS = -I$(top_srcdir)/game_servers/tuxman/lib \
 	   -I$(top_srcdir)/ggzdmod \
 	   $(LIBGGZ_INCLUDES)
 

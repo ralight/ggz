@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4741 2002-09-26 20:56:08Z dr_maux $
+# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
 
 SUBDIRS = stackpath zoneserver
 
@@ -11,7 +11,7 @@ krosswater_server_LDADD = $(LDADD) \
 	stackpath/libstackpath.a \
 	$(top_builddir)/ggzdmod/libggzdmod.la
 
-INCLUDES = -I $(top_srcdir)/game_servers/krosswater/stackpath  \
+AM_CPPFLAGS = -I $(top_srcdir)/game_servers/krosswater/stackpath  \
 	   -I $(top_srcdir)/game_servers/krosswater/zoneserver \
 	   -I $(top_srcdir)/ggzdmod \
 	   $(LIBGGZ_INCLUDES)

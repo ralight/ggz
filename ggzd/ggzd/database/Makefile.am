@@ -12,7 +12,7 @@ libggzdb_a_SOURCES = \
 	ggzdb.h \
 	ggzdb_proto.h
 
-INCLUDES = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES)
 
 #libggzdb_a_LDFLAGS = $(LIBGGZ_LDFLAGS)
 #libggzdb_a_LIBADD = $(LDADD) $(ggzd_LIBS) $(LIB_GGZ)

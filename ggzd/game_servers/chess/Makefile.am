@@ -1,11 +1,11 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6061 2004-06-27 19:34:15Z josef $
+# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
 
 EXTRA_DIST = chess.dsc chess.room
 
 SUBDIRS = libcgc
 
-INCLUDES = -Ilibcgc -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = -Ilibcgc -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 ggzdexecmod_PROGRAMS = ggzd.chess
 ggzdgame_DATA = chess.dsc

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5276 2002-12-07 06:33:03Z jdorje $
+# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
 
 SUBDIRS = database
 
@@ -52,7 +52,7 @@ ggzd_SOURCES =	chat.c\
 		util.c util.h
 
 
-INCLUDES = -I$(top_srcdir)/ggzd/database -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = -I$(top_srcdir)/ggzd/database -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 ggzd_LDFLAGS = $(LIBGGZ_LDFLAGS)
 ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a

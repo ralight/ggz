@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4741 2002-09-26 20:56:08Z dr_maux $
+# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
 
 SUBDIRS = qtserv ggz variants
 
@@ -17,7 +17,7 @@ muehleserv_LDADD = $(LDADD) \
 
 noinst_HEADERS = muehleserver.h loader.h net.h
 
-INCLUDES = -I$(top_srcdir)/game_servers/muehle/ggz \
+AM_CPPFLAGS = -I$(top_srcdir)/game_servers/muehle/ggz \
 	   -I$(top_srcdir)/game_servers/muehle/qtserv \
 	   -I$(top_srcdir)/ggzdmod \
 	   $(LIBGGZ_INCLUDES)

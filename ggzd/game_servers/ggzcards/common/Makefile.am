@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3997 2002-04-16 19:03:58Z jdorje $
+# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
 
 SUBDIRS = .
 
@@ -11,6 +11,6 @@ libcommon_a_SOURCES = \
 	protocol.c protocol.h \
 	shared.h
 
-INCLUDES = $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = $(LIBGGZ_INCLUDES)
 
 test: # nothing to be done (ggz-server only)

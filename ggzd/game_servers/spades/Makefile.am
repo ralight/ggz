@@ -23,7 +23,7 @@ ggzd_spades_SOURCES = card.c \
 
 ggzd_spades_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
 
-INCLUDES = $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = $(LIBGGZ_INCLUDES)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

@@ -13,7 +13,7 @@ geekgameserver_LDADD = $(LDADD) \
 
 noinst_HEADERS = geekgame.h protocol.h
 
-INCLUDES = -I$(top_srcdir)/game_servers/muehle/ggz \
+AM_CPPFLAGS = -I$(top_srcdir)/game_servers/muehle/ggz \
 	-I$(top_srcdir)/ggzdmod \
 	$(LIBGGZ_INCLUDES)
 

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5231 2002-11-06 09:07:32Z dr_maux $
+# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
 
 EXTRA_DIST = hastings.dsc hastings.room
 
@@ -13,7 +13,7 @@ ggzd_hastings_SOURCES =  main.c \
 		         game.c \
                          game.h
 
-INCLUDES = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 ggzd_hastings_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
 

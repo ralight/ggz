@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5718 2003-12-18 11:16:43Z dr_maux $
+# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
 
 EXTRA_DIST = connectx.dsc connectx.room
 
@@ -14,7 +14,7 @@ ggzd_connectx_SOURCES = \
 	game.c \
 	game.h
 
-INCLUDES = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 ggzd_connectx_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
 
