@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: first.c 4295 2002-07-08 15:52:05Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -129,7 +129,7 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 	ggz_free(old);
 	ggzcore_conf_write_int("CVS Developer Server (Slow)", "Port",
 		ggzcore_conf_read_int("CVS Developer Server (Slow)", "Port",
-					 5688));
+					 5689));
 	ggzcore_conf_write_int("CVS Developer Server (Slow)", "Type",
 		ggzcore_conf_read_int("CVS Developer Server (Slow)", "Type",
 					 1));
