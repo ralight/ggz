@@ -1,10 +1,10 @@
-/* $Id: dlg_bid.c 2381 2001-09-06 02:27:46Z jdorje $ */
 /*
  * File: dlg_bid.c
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request Gtk fixed dialog
+ * $Id: dlg_bid.c 2382 2001-09-07 07:55:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,7 +39,6 @@
 
 #include "common.h"
 
-#include "cb_bid.h"
 #include "dlg_bid.h"
 #include "main.h"
 #include "game.h"
