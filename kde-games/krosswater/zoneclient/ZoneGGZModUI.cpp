@@ -36,37 +36,7 @@ ZoneGGZModUI::~ZoneGGZModUI()
 // private: create socket, connect to fd
 int ZoneGGZModUI::zoneCreateFd(char *modulename)
 {
-	char *zone_name;
-        struct sockaddr_un addr;
-	int len;
-
-	len = strlen(modulename) + strlen(TMPDIR) + 16;
-	if((zone_name = (char*)malloc(len)) == NULL)
-	{
-		ZONEERROR("couldn't allocate zone_name\n");
-		return -1;
-	}
-	sprintf(zone_name, "%s/%s.%d", TMPDIR, modulename, getpid());
-
-	ZONEDEBUG("Listen on: %s\n", zone_name);
-
-	if((zone_fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
-	{
-		ZONEERROR("couldn't create socket\n");
-		return -1;
-	}
-
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, zone_name);
-	free(zone_name);
-
-	if(::connect(zone_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-	{
-		ZONEERROR("couldn't connect\n");
-		return -1;
-	}
-
+	zone_fd = 3;
 	return 0;
 }
 
