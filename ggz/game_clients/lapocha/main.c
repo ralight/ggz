@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: main.c 3386 2002-02-17 08:41:22Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,6 +50,8 @@
 GtkWidget *dlg_main = NULL;
 
 /* Private functions */
+static void initialize_debugging(void);
+static void cleanup_debugging(void);
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 static void game_init(void);
 static int get_seat(void);
@@ -69,6 +71,7 @@ static int get_dealer(void);
 
 int main(int argc, char *argv[])
 {
+	initialize_debugging();
 	gtk_init(&argc, &argv);
 
 	game.fd = ggzmod_connect();
@@ -87,19 +90,52 @@ int main(int argc, char *argv[])
 
 	if (ggzmod_disconnect() < 0)
 		return -2;
+	cleanup_debugging();
 
 	return 0;
 }
 
 
+static void initialize_debugging(void)
+{
+	/* Our debugging code uses libggz's ggz_debug() function, so we
+	   just initialize the _types_ of debugging we want. */
 #ifdef DEBUG
+	const char *debugging_types[] = { "main", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+	/* Debugging goes to ~/.ggz/lapocha-gtk.debug */
+	char *file_name =
+		g_strdup_printf("%s/.ggz/lapocha-gtk.debug", getenv("HOME"));
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug("main", "Starting La Pocha client.");	
+}
+
+
+/* This function should be called at the end of the program to clean up
+ * debugging, as necessary. */
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a
+	   memory check at the same time. */
+	ggz_debug("main", "Shutting down La Pocha client.");
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
+}
+
+
 char *opstr[] = { "LP_MSG_SEAT",    "LP_MSG_PLAYERS",    "LP_MSG_GAMEOVER",
 		  "LP_MSG_HAND",    "LP_REQ_BID",        "LP_RSP_BID",
                   "LP_MSG_BID",     "LP_REQ_PLAY",       "LP_RSP_PLAY",
                   "LP_MSG_PLAY",    "LP_SND_SYNC",       "LP_MSG_TRUMP",
 		  "LP_REQ_TRUMP",   "LP_MSG_TRICK",      "LP_MSG_SCORES",
 		  "LP_RSP_TRUMP" };
-#endif
 
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
@@ -112,9 +148,9 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	}
 
 	status = 0;
-#ifdef DEBUG
-	fprintf(stderr, "%s\n", opstr[op]);
-#endif
+	
+	ggz_debug("main", "Received opcode %s", opstr[op]);
+	
 	switch(op) {
 		case LP_MSG_SEAT:
 			status = get_seat();
@@ -182,13 +218,13 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			status = get_trump_status();
 			break;
 		default:
-			fprintf(stderr, "Unknown opcode received %d\n", op);
+			ggz_error_msg("Unknown opcode received %d", op);
 			status = -1;
 			break;
 	}
 
 	if(status == -1) {
-		fprintf(stderr, "Lost connection to server?!\n");
+		ggz_error_msg("Lost connection to server?!");
 		close(game.fd);
 		exit(-1);
 	}
@@ -368,6 +404,7 @@ static int get_gameover_status(void)
 }
 
 
+#if 0 /* currently unused */
 static void handle_req_newgame(void)
 {
 	/* Reinitialize the game data and board */
@@ -376,6 +413,7 @@ static void handle_req_newgame(void)
 	/* Send a game request to the server */
 	ggz_write_int(game.fd, LP_REQ_NEWGAME);
 }
+#endif
 
 
 void statusbar_message(char *msg)
