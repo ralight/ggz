@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: cards.c 2772 2001-12-02 02:39:48Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -175,26 +175,17 @@ void cards_deal_hand(int handsize, hand_t * hand)
 
 	ggzd_debug("\tDealing out a hand of size %d.", handsize);
 
-	if (hand == NULL) {
-		ggzd_debug("ERROR: SERVER BUG: " "can't deal NULL hand.");
-		exit(-1);
-	}
+	if (hand == NULL)
+		fatal_error("BUG: can't deal NULL hand.");
 
-	if (gamedeck == NULL) {
-		ggzd_debug("ERROR: SERVER BUG: "
-			   "can't deal from NULL deck.");
-		exit(-1);
-	}
+	if (gamedeck == NULL)
+		fatal_error("BUG: can't deal from NULL deck.");
 
 	/* Deal the cards out */
 	hand->hand_size = hand->full_hand_size = handsize;
 	for (c = 0; c < hand->hand_size; c++) {
-		if (deck_ptr >= deck_size) {
-			ggzd_debug
-				("ERROR: SERVER BUG: "
-				 "too many cards being dealt out.");
-			exit(-1);
-		}
+		if (deck_ptr >= deck_size)
+			fatal_error("BUG: too many cards being dealt out.");
 		card = gamedeck[deck_ptr];
 		hand->cards[c] = card;
 		deck_ptr++;
@@ -222,12 +213,10 @@ void cards_sort_hand(hand_t * hand)
 card_t cards_deal_card()
 {
 	card_t card;
-	if (deck_ptr >= deck_size) {
-		ggzd_debug
-			("ERROR: SERVER BUG: "
-			 "too many cards being handed out.");
-		exit(-1);
-	}
+
+	if (deck_ptr >= deck_size)
+		fatal_error("BUG: too many cards being handed out.");
+
 	card = gamedeck[deck_ptr];
 	deck_ptr++;
 	return card;

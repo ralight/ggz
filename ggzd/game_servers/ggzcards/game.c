@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2766 2001-11-28 07:31:42Z jdorje $
+ * $Id: game.c 2772 2001-12-02 02:39:48Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -223,9 +223,9 @@ void game_next_bid(void)
 
 
 /* Called between the bidding and playing sequences.  A lot of stuff is done
-   automatically at this point, all we have to do is any game-specific
-   stuff.  This means figuring out who leads, writing out any contract
-   messages, etc. */
+   automatically at this point, all we have to do is any game-specific stuff. 
+   This means figuring out who leads, writing out any contract messages, etc. 
+ */
 void game_start_playing(void)
 {
 	game.trick_total = game.hand_size;
@@ -309,9 +309,9 @@ char *game_verify_play(card_t card)
 
 
 /* Sets up for the next play note that game.play_count has already been
-   incremented.  As with bidding, we track the play_count and play_total.
-   For most games, you can just say game.play_total = 4 up above so that
-   we'll automatically get 4 plays on each hand. */
+   incremented.  As with bidding, we track the play_count and play_total. For 
+   most games, you can just say game.play_total = 4 up above so that we'll
+   automatically get 4 plays on each hand. */
 void game_next_play(void)
 {
 	game.next_play = (game.next_play + 1) % game.num_players;
@@ -393,9 +393,9 @@ void game_end_hand(void)
 }
 
 
-/* Called at the beginning of a game, it initializes any necessary data.
-   This is pretty empty right now, but we don't yet play multiple games so
-   it's not necessary yet anyway. */
+/* Called at the beginning of a game, it initializes any necessary data. This 
+   is pretty empty right now, but we don't yet play multiple games so it's
+   not necessary yet anyway. */
 void game_start_game(void)
 {
 	player_t p;

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 2732 2001-11-13 06:56:14Z jdorje $
+ * $Id: suaro.c 2772 2001-12-02 02:39:48Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -95,7 +95,7 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 		}
 	}
 	if (bestsuit < 0)
-		abort();
+		fatal_error("BUG: suaro_ai::get_bid: no best suit found)");
 	bestsuit++;		/* suit 0 is lo */
 	ai_debug("Best suit is %s.", short_suaro_suit_names[(int) bestsuit]);
 

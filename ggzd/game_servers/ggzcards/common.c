@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2741 2001-11-13 22:52:40Z jdorje $
+ * $Id: common.c 2772 2001-12-02 02:39:48Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -250,11 +250,8 @@ static void newgame(void)
 {
 	player_t p;
 
-	if (game.which_game == GGZ_GAME_UNKNOWN) {
-		ggzd_debug("ERROR: SERVER BUG: "
-			   "starting newgame() on unknown game.");
-		exit(-1);
-	}
+	if (game.which_game == GGZ_GAME_UNKNOWN)
+		fatal_error("BUG: newgame(): unknown game.");
 
 	finalize_options();
 
@@ -725,12 +722,8 @@ void init_game()
 	seat_t s;
 	player_t p;
 
-	if (!games_valid_game(game.which_game)) {
-		ggzd_debug("ERROR: SERVER BUG: "
-			   "game_init_game: invalid game %d chosen.",
-			   game.which_game);
-		exit(-1);
-	}
+	if (!games_valid_game(game.which_game))
+		fatal_error("BUG: init_game: invalid game chosen.");
 
 	if (game.initted || game.which_game == GGZ_GAME_UNKNOWN) {
 		ggzd_debug("ERROR: SERVER BUG: "
@@ -828,4 +821,13 @@ ggzd_assign_t get_seat_status(seat_t s)
 		return ggzd_get_seat_status(game.seats[s].player);
 	else
 		return GGZ_SEAT_NONE;
+}
+
+/* libggz should handle this instead! */
+void fatal_error(const char *msg)
+{
+	if (ggzd_debug("ERROR: %s", msg))
+		fprintf(stderr, "Error: %s", msg);	/* What else can we
+							   do? */
+	abort();
 }

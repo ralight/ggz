@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 2741 2001-11-13 22:52:40Z jdorje $
+ * $Id: options.c 2772 2001-12-02 02:39:48Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -145,10 +145,8 @@ int rec_options(int num_options, int *options)
 {
 	int fd = game.host >= 0 ? ggzd_get_player_socket(game.host) : -1,
 		status = 0, i;
-	if (fd == -1) {
-		ggzd_debug("SERVER bug: unknown host in rec_options.");
-		exit(-1);
-	}
+	if (fd == -1)
+		fatal_error("BUG: unknown host in rec_options.");
 
 	for (i = 0; i < num_options; i++)
 		if (es_read_int(fd, &options[i]) < 0)

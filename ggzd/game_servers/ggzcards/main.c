@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: main.c 2772 2001-12-02 02:39:48Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -110,6 +110,8 @@ int main(int argc, char **argv)
 
 	int which_game = GGZ_GAME_UNKNOWN;
 
+	fprintf(stderr, "Starting.\n");
+
 	/* set up easysock functions to be called on error/exit */
 	es_err_func_set(es_error);
 	es_exit_func_set(es_exit);
@@ -152,6 +154,8 @@ int main(int argc, char **argv)
 
 	/* Connect to GGZ server; main loop */
 	(void) ggzd_main_loop();
+
+	fprintf(stderr, "Stopping.\n");
 
 	return 0;
 }

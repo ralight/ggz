@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 2741 2001-11-13 22:52:40Z jdorje $
+ * $Id: games.c 2772 2001-12-02 02:39:48Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -140,11 +140,8 @@ int games_req_gametype()
 		}
 	}
 
-	if (cnt == 0) {
-		ggzd_debug("ERROR: SERVER BUG: "
-			   "no valid games in games_req_gametype.");
-		exit(-1);
-	}
+	if (cnt == 0)
+		fatal_error("BUG: games_req_gametype: no valid games.");
 
 	if (cnt == 1) {
 		ggzd_debug("Just one valid game: choosing %d.",
