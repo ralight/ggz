@@ -190,7 +190,7 @@ static void input_handle_desc(char* line)
 	char* desc;
 	
 	room = atoi(line);
-	desc = ggzcore_server_get_room_desc(server, room);
+	desc = ggzcore_room_get_desc(ggzcore_server_get_room(server, room));
 	output_text(desc);
 }
 
@@ -198,10 +198,11 @@ static void input_handle_desc(char* line)
 static void input_handle_chat(char *line)
 {
 	char *msg;
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
 	if (strcmp(line, "") != 0) {
 		msg = strdup(line);
-		ggzcore_server_chat(server, GGZ_CHAT_NORMAL, NULL, msg);
+		ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, msg);
 	}
 }
 
@@ -209,10 +210,11 @@ static void input_handle_chat(char *line)
 static void input_handle_beep(char* line)
 {
 	char* player;
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
 	if (strcmp(line, "") != 0) {
 		player = strdup(line);
-		ggzcore_server_chat(server, GGZ_CHAT_BEEP, player, NULL);
+		ggzcore_room_chat(room, GGZ_CHAT_BEEP, player, NULL);
 	}
 }
 
@@ -221,13 +223,14 @@ static void input_handle_msg(char* line)
 {
 	char *player;
 	char *msg;
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
 	if (!(player = strsep(&line, delim)))
 		return;
 	
 	if (line && strcmp(line, "") != 0) {
 		msg = strdup(line);
-		ggzcore_server_chat(server, GGZ_CHAT_PERSONAL, player, msg);
+		ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, player, msg);
 	}
 }
 

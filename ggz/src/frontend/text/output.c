@@ -171,13 +171,14 @@ void output_players(void)
 
 void output_status(void)
 {
-	int num, room_num = -1;
+	int num, roomnum = -1;
 	time_t now;		/* time */
 	char *currenttime;	/* String formatted time */
 	char displaytime[9];	/* What we display */
-	char *user = NULL, *host = NULL, *room = NULL;
+	char *user = NULL, *host = NULL, *roomname = NULL;
 	char *currentstatus = NULL;
-	
+	GGZRoom *room;
+
 	currentstatus = state_get();
 
 	if (ggzcore_server_is_online(server)) {
@@ -186,8 +187,9 @@ void output_status(void)
 	}
 
 	if (ggzcore_server_is_in_room(server)) {
-		room_num = ggzcore_server_get_cur_room(server);
-		room = ggzcore_server_get_room_name(server, room_num);
+		room = ggzcore_server_get_cur_room(server);
+		roomname = ggzcore_room_get_name(room);
+		roomnum = ggzcore_room_get_num(room);
 	}
 	
 	now = time(NULL);
@@ -227,7 +229,7 @@ void output_status(void)
 	{
 		output_goto(window.ws_row - 2, 0);
 		output_label("Room");
-		printf("\e[K %d -- %s", room_num, room);
+		printf("\e[K %d -- %s", roomnum, roomname);
 	} else {
 		output_goto(window.ws_row - 2, 0);
 		output_label("Room");
