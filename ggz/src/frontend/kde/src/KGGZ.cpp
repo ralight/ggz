@@ -1383,7 +1383,7 @@ void KGGZ::slotGrubby(const char *grubby, const char *argument, int id)
 			slotChat(QString("%1 alert add %2").arg(grubby).arg(argument).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
 			break;
 		case KGGZGrubby::actionmessages:
-			slotChat(QString("%1 do you have any messages for me").arg(grubby).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat(QString("%1 do i have any messages").arg(grubby).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
 			break;
 		case KGGZGrubby::actionbye:
 			KMessageBox::information(m_grubby, i18n("The pleasure has been on my side :)"), "Grubby");

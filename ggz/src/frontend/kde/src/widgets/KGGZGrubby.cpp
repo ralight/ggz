@@ -70,12 +70,12 @@ KGGZGrubby::KGGZGrubby(QWidget *parent, const char *name)
 	image->setBackgroundPixmap(QPixmap(KGGZ_DIRECTORY "/images/grubbybig.png"));
 
 	combo = new QComboBox(this);
-	combo->insertItem(i18n("Have you seen ..."), actionseen);
-	combo->insertItem(i18n("Do you have any messages for me?"), actionmessages);
-	combo->insertItem(i18n("Add this to the alert words:"), actionalertadd);
-	combo->insertItem(i18n("I need help!"), actionhelp);
-	combo->insertItem(i18n("Tell me something about you"), actionabout);
-	combo->insertItem(i18n("Thanks for taking the time!"), actionbye);
+	combo->insertItem(i18n("Have you seen ..."));
+	combo->insertItem(i18n("Do you have any messages for me?"));
+	combo->insertItem(i18n("Add this to the alert words:"));
+	combo->insertItem(i18n("I need help!"));
+	combo->insertItem(i18n("Tell me something about you"));
+	combo->insertItem(i18n("Thanks for taking the time!"));
 
 	label = new QLabel(i18n("This is grubby:"), this);
 	m_player = new QComboBox(this);
