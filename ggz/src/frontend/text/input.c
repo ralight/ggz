@@ -30,6 +30,7 @@
 #include "output.h"
 #include "server.h"
 #include "loop.h"
+#include "game.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -45,6 +46,7 @@ static void input_handle_desc(char* line);
 static void input_handle_chat(char* line);
 static void input_handle_msg(char* line);
 static void input_handle_beep(char* line);
+static void input_handle_launch(char *line);
 static void input_handle_exit(void);
 
 static char delim[] = " \n";
@@ -64,6 +66,8 @@ void input_command(void)
 			server_disconnect();
 			server_destroy();
 		}
+		game_quit();
+		game_destroy();
 		loop_quit();
 		return;
 	}
@@ -109,6 +113,9 @@ void input_command(void)
 		}
 		else if (strcmp(command, "who") == 0) {
 			input_handle_list("players");
+		}
+		else if (strcmp(command, "launch") == 0) {
+			input_handle_launch(current);
 		}
 		else if (strcmp(command, "exit") == 0) {
 			input_handle_exit();
@@ -247,7 +254,27 @@ static void input_handle_msg(char* line)
 }
 
 
+static void input_handle_launch(char *line)
+{
+	char *name;
+	char *protocol;
+	GGZRoom *room;
+	GGZGameType *type;
+	GGZModule *module;
+
+	room = ggzcore_server_get_cur_room(server);
+	type = ggzcore_room_get_gametype(room);
+	name = ggzcore_gametype_get_name(type);
+	protocol = ggzcore_gametype_get_protocol(type);
+	output_text("Launching game of %s, v%s", name, protocol);
+	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
+	output_text("Launching %s", ggzcore_module_get_path(module));
+	game_init(module);
+}
+
+	
 static void input_handle_exit(void)
 {
         loop_quit();
 }
+

@@ -1,0 +1,125 @@
+/*
+ * File: game.c
+ * Author: Brent Hendricks
+ * Project: GGZ Text Client 
+ * Date: 3/1/01
+ *
+ * Functions for handling game events
+ *
+ * Copyright (C) 2000 Brent Hendricks.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
+
+#include "game.h"
+#include "output.h"
+#include "loop.h"
+
+#include <ggzcore.h>
+#include <stdlib.h>
+
+/* Hooks for game events */
+static void game_register(GGZGame *game);
+static void game_process(void);
+static GGZHookReturn game_launched(GGZGameEvent, void*, void*);
+static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
+static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
+static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
+				      
+
+GGZGame *game;
+static int fd = -1;
+
+
+void game_init(GGZModule *module)
+{
+	game = ggzcore_game_new();
+	ggzcore_game_init(game, module);
+	game_register(game);
+	ggzcore_game_launch(game);
+}
+
+
+void game_quit(void)
+{
+	if (fd != -1)
+		loop_remove_fd(fd);
+}
+
+
+void game_destroy(void)
+{
+	if (game)
+		ggzcore_game_free(game);
+	game = NULL;
+}
+
+
+static void game_process(void)
+{
+	if (game)
+		ggzcore_game_read_data(game);
+}
+
+
+static void game_register(GGZGame *game)
+{
+	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED, game_launched);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL, game_launch_fail);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
+
+}
+
+
+static GGZHookReturn game_launched(GGZGameEvent id, void* event_data, 
+				   void* user_data)
+{
+	output_text("--- Launched game");
+	
+	fd = ggzcore_game_get_fd(game);
+	loop_add_fd(fd, game_process, game_destroy);
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
+				      void* user_data)
+{
+	output_text("--- Launch failed: %s", (char*)event_data);
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data, 
+				     void* user_data)
+{
+	output_text("--- Negotiated game");
+	
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
+				      void* user_data)
+{
+	output_text("--- Negotiate failed: %s", (char*)event_data);
+
+	return GGZ_HOOK_OK;
+}
+

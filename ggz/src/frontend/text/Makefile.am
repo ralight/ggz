@@ -5,7 +5,9 @@ INCLUDES = -I$(top_srcdir)/src/ggzcore @EASYSOCK_INC@
 
 bin_PROGRAMS = ggz-txt
 
-ggz_txt_SOURCES = 	input.c \
+ggz_txt_SOURCES = 	game.c \
+			game.h \
+			input.c \
 			input.h \
 			loop.c \
 			loop.h \
