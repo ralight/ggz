@@ -51,7 +51,8 @@
 #define GGZ_LOGOPT_INC_TIME	(unsigned) 0x0002
 #define GGZ_LOGOPT_USE_SYSLOG	(unsigned) 0x0004
 #define GGZ_LOGOPT_THREAD_LOGS	(unsigned) 0x0008
-#define GGZ_DBGOPT_USE_SYSLOG	(unsigned) 0x0010
+#define GGZ_LOGOPT_INC_GAMETYPE	(unsigned) 0x0010
+#define GGZ_DBGOPT_USE_SYSLOG	(unsigned) 0x0020
 
 /*
  * Error printing functions based on those found in W. Richard Stevens book: 

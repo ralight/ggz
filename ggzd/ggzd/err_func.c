@@ -43,6 +43,7 @@
 LogInfo log_info = { 0, 0,
 		     ( GGZ_LOGOPT_INC_PID
 		       | GGZ_LOGOPT_USE_SYSLOG
+		       | GGZ_LOGOPT_INC_GAMETYPE
 		       | GGZ_DBGOPT_USE_SYSLOG ),
 		     NULL, NULL, 0
 #ifdef DEBUG

@@ -447,6 +447,22 @@ static void parse_file(FILE *configfile)
 			continue;
 		}
 
+		/*** GAMETYPEINLOGS = 0,1 ***/
+		if(!strcmp(varname, "gametypeinlogs")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval == 0)
+				log_info.options &= ~GGZ_LOGOPT_INC_GAMETYPE;
+			else if(intval == 1)
+				log_info.options |= GGZ_LOGOPT_INC_GAMETYPE;
+			else
+				PARSE_ERR("Invalid value for GameTypeInLogs");
+			continue;
+		}
+
 		/*** INVALID VARIABLE ***/
 		PARSE_ERR("Syntax error");
 	}
