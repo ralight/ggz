@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 3686 2002-03-25 23:23:15Z jzaun $
+ * $Id: login.c 3751 2002-04-05 16:12:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -90,6 +90,9 @@ void
 login_failed(void)
 {
 	GtkWidget *tmp;
+	
+	/* First, disconnect from the server. */
+	ggzcore_server_logout(server);
 
 	/* Re-enable the "connect" button and change it say "Login" */
 	tmp = lookup_widget(login_dialog, "connect_button");
