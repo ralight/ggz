@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4699 2002-09-25 16:11:16Z dr_maux $
+#  $Id: Makefile.am 4700 2002-09-25 16:19:08Z dr_maux $
 
 MODULES = chess chinese-checkers combat dots ggzcards hastings lapocha reversi spades tictactoe
 
 SUBDIRS = .
-DIST_SUBDIRS = $(MODULES)
+EXTRA_DIST = $(MODULES)
 
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
