@@ -52,6 +52,7 @@ static int _net_handle_msg_from_sized(GGZPlayer *player);
 static int _net_handle_chat(GGZPlayer *player);
 static int _net_handle_motd(GGZPlayer *player);
 
+static int _net_send_result(GGZPlayer *player, unsigned char opcode, char result);
 static int _net_send_error(GGZPlayer *player);
 static int _net_send_login_normal_status(GGZPlayer *player, char status);
 static int _net_send_login_anon_status(GGZPlayer *player, char status);
@@ -181,13 +182,29 @@ int net_send_login(GGZLoginType type, GGZPlayer *player, char status, char *pass
 
 int net_send_motd(GGZPlayer *player)
 {
+	int i, num;
+	char line[1024];
 	int fd = _net_get_fd(player);
-	
+
+	num = motd_get_num_lines();
+		
 	if (es_write_int(fd, MSG_MOTD) < 0
-	    || motd_send_motd(fd) < 0)
+	    || es_write_int(fd, num) < 0)
 		return -1;
+	
+	for (i = 0; i < num; i++) {
+		motd_get_line(i, line, sizeof(line));
+		if (es_write_string(fd, line) < 0)
+			return -1;
+	}
 
 	return 0;
+}
+
+
+int net_send_motd_error(GGZPlayer *player, char status)
+{
+	return _net_send_result(player, RSP_MOTD, status);
 }
 
 
@@ -210,24 +227,24 @@ int net_send_chat(GGZPlayer *player, unsigned char opcode, char *name, char *msg
 
 int net_send_chat_result(GGZPlayer *player, char status)
 {
-	int fd = _net_get_fd(player);
-	
-	if (es_write_int(fd, RSP_CHAT) < 0
-	    || es_write_char(fd, status) < 0)
-		return -1;
-
-	return 0;
+	return _net_send_result(player, RSP_CHAT, status);
 }
 
 
 int net_send_logout(GGZPlayer *player, char status)
 {
+	return _net_send_result(player, RSP_LOGOUT, status);
+}
+
+
+static int _net_send_result(GGZPlayer *player, unsigned char opcode, char result)
+{
 	int fd = _net_get_fd(player);
-
-	if (es_write_int(fd, RSP_LOGOUT) < 0 
-	    || es_write_char(fd, 0) < 0)
-		return 1;
-
+	
+	if (es_write_int(fd, opcode) < 0
+	    || es_write_char(fd, result) < 0)
+		return -1;
+	
 	return 0;
 }
 
@@ -237,8 +254,7 @@ static int _net_send_login_normal_status(GGZPlayer *player, char status)
 	int fd = _net_get_fd(player);
 
 	/* Try to send login status */
-	if (es_write_int(fd, RSP_LOGIN) < 0 
-	    || es_write_char(fd, status) < 0)
+	if (_net_send_result(player, RSP_LOGIN, status) < 0)
 		return -1;
 
 	/* Try to send checksum if successful */
@@ -256,8 +272,7 @@ static int _net_send_login_anon_status(GGZPlayer *player, char status)
 	int fd = _net_get_fd(player);
 	
 	/* Try to send login status */
-	if (es_write_int(fd, RSP_LOGIN_ANON) < 0 
-	    || es_write_char(fd, status) < 0)
+	if (_net_send_result(player, RSP_LOGIN_ANON, status) < 0)
 		return -1;
 
 	/* Try to send checksum if successful */
@@ -274,10 +289,9 @@ static int _net_send_login_new_status(GGZPlayer *player, char status, char *pass
 	int fd = _net_get_fd(player);
 	
 	/* Try to send login status */
-	if (es_write_int(fd, RSP_LOGIN_NEW) < 0 
-	    || es_write_char(fd, status) < 0)
+	if (_net_send_result(player, RSP_LOGIN_NEW, status) < 0)
 		return -1;
-
+	
 	/* Try to send checksum if successful */
 	if (status == 0 
 	    && (es_write_string(fd, password) < 0

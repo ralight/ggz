@@ -46,5 +46,12 @@ extern MOTDInfo motd_info;
 /* Read the MOTD file */
 extern void motd_read_file(void);
 
-/* Send out the message of the day, return TRUE on success */
-extern int motd_send_motd(int);
+/* Returns 'true' if motd is defined */
+int motd_is_defined(void);
+
+/* Return number of lines in the motd */
+int motd_get_num_lines(void);
+
+/* Parse a line of the motd, filling in parameters */
+char *motd_get_line(int, char *, int);
+

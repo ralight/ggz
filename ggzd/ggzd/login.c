@@ -168,7 +168,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		return GGZ_REQ_DISCONNECT;
 
 	/* Send off the Message Of The Day */
-	if (motd_info.use_motd && net_send_motd(player) < 0)
+	if (motd_is_defined() && net_send_motd(player) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Successful login of %s", name);

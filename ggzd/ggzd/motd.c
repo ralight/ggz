@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 2266 2001-08-26 21:51:03Z jdorje $
+ * $Id: motd.c 2307 2001-08-28 23:31:51Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,7 +50,6 @@ extern struct GGZState state;
 
 
 /* Local functions */
-static char *motd_parse_motd_line(char *, char *, int);
 static char *motd_get_uptime(char *, int);
 static char *motd_get_date(char *, int);
 static char *motd_get_time(char *, int);
@@ -125,30 +124,24 @@ void motd_read_file(void)
 }
 
 
-/* Send out the message of the day, return 0 on success */
-int motd_send_motd(int sock)
+/* Returns 'true' if motd is defined */
+int motd_is_defined(void)
 {
-	int i;
-	char pline[1024];
-
-	if (es_write_int(sock, motd_info.motd_lines) < 0)
-		return -1;
-	
-	for(i=0; i<motd_info.motd_lines; i++) {
-		motd_parse_motd_line(motd_info.motd_text[i],
-					 pline, sizeof(pline));
-		if(es_write_string(sock, pline) < 0)
-			return -1;
-	}
-
-	return 0;
+	return motd_info.use_motd;
 }
 
 
-/* Parse a motd line and return a pointer to a string */
-static char *motd_parse_motd_line(char *line, char *outline, int sz_outline)
+/* Return number of lines in the motd */
+int motd_get_num_lines(void)
 {
-	char *in = line;
+	return motd_info.motd_lines;
+}
+
+
+/* Return cooked version of a motd line */
+char *motd_get_line(int index, char *outline, int sz_outline)
+{
+	char *in = motd_info.motd_text[index];
 	char *p;
 	int outindex = 0;
 	char str[32];

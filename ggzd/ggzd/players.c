@@ -955,7 +955,8 @@ static int read_name(int sock, char name[MAX_USER_NAME_LEN + 1])
 int player_motd(GGZPlayer* player, int fd)
 {
 	dbg_msg(GGZ_DBG_CHAT, "Handling motd request for %s", player->name);
-  	if (!motd_info.use_motd)
+
+  	if (!motd_is_defined())
 		return GGZ_REQ_OK;
 
  	/* Don't send motd if they're not logged in */
@@ -967,9 +968,8 @@ int player_motd(GGZPlayer* player, int fd)
  			return GGZ_REQ_DISCONNECT;
  		return GGZ_REQ_FAIL;
  	}
-	
-	if (es_write_int(fd, RSP_MOTD) < 0
-	    || motd_send_motd(fd) < 0)
+
+	if (net_send_motd(player) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	return GGZ_REQ_OK;
