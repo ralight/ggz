@@ -102,6 +102,9 @@ if test "$enable_ggzfinal" = yes; then
 fi
 
 #AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${kde_datadir}/kggz")
+if test "x${prefix}" = "xNONE"; then
+	prefix=/usr/local
+fi
 AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${prefix}/share/apps/kggz")
 
 AC_SUBST(SUBDIRS)
