@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 6785 2005-01-21 18:48:01Z jdorje $
+ * $Id: module.c 6797 2005-01-22 01:21:50Z jdorje $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -360,8 +360,9 @@ int _ggzcore_module_get_num_by_type(const char *game,
 	for (i = 0; i < count; i++) {
 		_ggzcore_module_read(&module, ids[i]);
 		/* Subtract out modules that aren't the same protocol */
-		if (strcmp(engine, module.prot_engine) != 0
-		    || (version && strcmp(version, module.prot_version) != 0)
+		if (ggz_strcmp(engine, module.prot_engine) != 0
+		    || (version
+			&& ggz_strcmp(version, module.prot_version) != 0)
 		    /* || game not included in game list */)
 			numcount--;
 	}
@@ -402,7 +403,7 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game,
 	for (i = 0; i < total; i++) {
 		module = _ggzcore_module_new();
 		_ggzcore_module_read(module, ids[i]);
-		if (strcmp(version, module->prot_version) == 0) {
+		if (ggz_strcmp(version, module->prot_version) == 0) {
 			/* FIXME:  also check to see if 'game' is in supported list */
 			if (count++ == num) {
 				/* Now find same module in list */
@@ -660,7 +661,7 @@ static void _ggzcore_module_print(struct _GGZModule *module)
 	ggz_debug(GGZCORE_DBG_MODULE, "URL: %s", module->url);
 	ggz_debug(GGZCORE_DBG_MODULE, "Icon: %s", module->icon);
 	ggz_debug(GGZCORE_DBG_MODULE, "Help: %s", module->help);
-	while (module->argv[i]) {
+	while (module->argv && module->argv[i]) {
 		ggz_debug(GGZCORE_DBG_MODULE, "Argv[%d]: %s", i, 
 			  module->argv[i]);
 		++i;
@@ -697,16 +698,16 @@ static int _ggzcore_module_compare(const void *p, const void *q)
 	const struct _GGZModule *pmod = p;
 	const struct _GGZModule *qmod = q;
 
-	compare = strcmp(pmod->name, qmod->name);
+	compare = ggz_strcmp(pmod->name, qmod->name);
 	if (compare != 0) return compare;
 
-	compare = strcmp(pmod->prot_engine, qmod->prot_engine);
+	compare = ggz_strcmp(pmod->prot_engine, qmod->prot_engine);
 	if (compare != 0) return compare;
 	
-	compare = strcmp(pmod->prot_version, qmod->prot_version);
+	compare = ggz_strcmp(pmod->prot_version, qmod->prot_version);
 	if (compare != 0) return compare;
 	
-	compare = strcmp(pmod->frontend, qmod->frontend);
+	compare = ggz_strcmp(pmod->frontend, qmod->frontend);
 	
 	return compare; 
 }
