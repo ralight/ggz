@@ -11,7 +11,10 @@
 Map::Map(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
-	setBackgroundPixmap(QPixmap("data/bayeux.png"));
+	m_map = true;
+	m_knights = true;
+	m_possession = true;
+	m_animation = true;
 
 	setupMap(6, 13);
 }
@@ -74,6 +77,8 @@ void Map::setupMap(int x, int y)
 	m_width = x;
 	m_height = y;
 
+	setBackgroundPixmap(QPixmap("data/bayeux.png"));
+
 	pix = backgroundPixmap();
 	QImage im = pix->convertToImage();
 	QImage im2 = im.smoothScale((m_width + 1) * xs + offx * 2, (m_height + 1) * ys + offy * 2);
@@ -84,123 +89,159 @@ void Map::setupMap(int x, int y)
 
 	// Paint hex fields
 
-	p.begin(&pix3);
-	p.setBrush(QColor(255, 255, 255));
-	p.setPen(QPen(QColor(255, 255, 255), 2, DotLine));
+	if(m_possession)
+	{
+		p.begin(&pix3);
+		p.setBrush(QColor(255, 255, 255));
+		p.setPen(QPen(QColor(255, 255, 255), 2, DotLine));
 
-	for(int j = 0; j < m_height; j++)
-		for(int i = 0; i < m_width; i++)
-		{
-			roffx = offx;
-			if(j % 2) roffx = offx + fwidth - angle;
+		for(int j = 0; j < m_height; j++)
+			for(int i = 0; i < m_width; i++)
+			{
+				roffx = offx;
+				if(j % 2) roffx = offx + fwidth - angle;
 
-			xpos = i * xs + roffx;
-			ypos = j * ys + offy;
+				xpos = i * xs + roffx;
+				ypos = j * ys + offy;
 
-			int x = rand() % 4;
-			if(x > 2) x = 0;
-			p.setBrush(QColor(x, x, x));
+				int x = rand() % 4;
+				if(x > 2) x = 0;
+				p.setBrush(QColor(x, x, x));
 
-			QPointArray a(6);
-			a.putPoints(0, 6,
-				xpos + angle, ypos,
-				xpos + fwidth - angle, ypos,
-				xpos + fwidth, ypos + fheight / 2,
-				xpos + fwidth - angle, ypos + fheight,
-				xpos + angle, ypos + fheight,
-				xpos, ypos + fheight / 2);
+				QPointArray a(6);
+				a.putPoints(0, 6,
+					xpos + angle, ypos,
+					xpos + fwidth - angle, ypos,
+					xpos + fwidth, ypos + fheight / 2,
+					xpos + fwidth - angle, ypos + fheight,
+					xpos + angle, ypos + fheight,
+					xpos, ypos + fheight / 2);
 
-			p.drawPolygon(a);
-		}
+				p.drawPolygon(a);
+			}
 
-	p.end();
+		p.end();
+	}
 
 	setFixedSize((m_width + 1) * xs + offx * 2, (m_height + 1) * ys + offy * 2);
 
 	// Paint possessions
 
-	QImage xim1 = pix3.convertToImage();
-	QImage xim2 = pix2.convertToImage();
-	for(int j = 0; j < (m_height + 1) * ys + offy * 2; j++)
-		for(int i = 0; i < (m_width + 1) * xs + offx * 2; i++)
-		{
-			int r, g, b, a;
-			QRgb tripel, tripel2;
-
-			tripel = xim1.pixel(i, j);
-			if(qRed(tripel))
+	if(m_possession)
+	{
+		QImage xim1 = pix3.convertToImage();
+		QImage xim2 = pix2.convertToImage();
+		for(int j = 0; j < (m_height + 1) * ys + offy * 2; j++)
+			for(int i = 0; i < (m_width + 1) * xs + offx * 2; i++)
 			{
-				tripel2 = xim2.pixel(i, j);
-				if(qRed(tripel) == 1)
+				int r, g, b, a;
+				QRgb tripel, tripel2;
+
+				tripel = xim1.pixel(i, j);
+				if(qRed(tripel))
 				{
-					r = qRed(tripel2) + 40;
-					g = qGreen(tripel2) - 40;
-					b = qBlue(tripel2) - 40;
+					tripel2 = xim2.pixel(i, j);
+					if(qRed(tripel) == 1)
+					{
+						r = qRed(tripel2) + 40;
+						g = qGreen(tripel2) - 40;
+						b = qBlue(tripel2) - 40;
+					}
+					else if(qRed(tripel) == 2)
+					{
+						r = qRed(tripel2) - 40;
+						g = qGreen(tripel2) - 40;
+						b = qBlue(tripel2) + 40;
+					}
+					if(r < 0) r = 0;
+					if(g < 0) g = 0;
+					if(b < 0) b = 0;
+					xim2.setPixel(i, j, qRgb(r, g, b));
 				}
-				else if(qRed(tripel) == 2)
-				{
-					r = qRed(tripel2) - 40;
-					g = qGreen(tripel2) - 40;
-					b = qBlue(tripel2) + 40;
-				}
-				if(r < 0) r = 0;
-				if(g < 0) g = 0;
-				if(b < 0) b = 0;
-				xim2.setPixel(i, j, qRgb(r, g, b));
 			}
-		}
-	pix2.convertFromImage(xim2);
+		pix2.convertFromImage(xim2);
+	}
 
 	// Paint stippled borders
 
-	p.begin(&pix2);
-	p.setBrush(QColor(255, 255, 255));
-	p.setPen(QPen(QColor(255, 255, 255), 2, DotLine));
+	if(m_map)
+	{
+		p.begin(&pix2);
+		p.setBrush(QColor(255, 255, 255));
+		p.setPen(QPen(QColor(255, 255, 255), 2, DotLine));
 
-	for(int j = 0; j < m_height; j++)
-		for(int i = 0; i < m_width; i++)
-		{
-			roffx = offx;
-			if(j % 2) roffx = offx + fwidth - angle;
+		for(int j = 0; j < m_height; j++)
+			for(int i = 0; i < m_width; i++)
+			{
+				roffx = offx;
+				if(j % 2) roffx = offx + fwidth - angle;
 
-			xpos = i * xs + roffx;
-			ypos = j * ys + offy;
+				xpos = i * xs + roffx;
+				ypos = j * ys + offy;
 
-			p.drawLine(xpos + angle, ypos, xpos + fwidth - angle, ypos);
-			p.drawLine(xpos + angle, ypos + fheight, xpos + fwidth - angle, ypos + fheight);
+				p.drawLine(xpos + angle, ypos, xpos + fwidth - angle, ypos);
+				p.drawLine(xpos + angle, ypos + fheight, xpos + fwidth - angle, ypos + fheight);
 
-			p.drawLine(xpos + angle, ypos, xpos, ypos + fheight / 2);
-			p.drawLine(xpos + angle, ypos + fheight, xpos, ypos + fheight / 2);
+				p.drawLine(xpos + angle, ypos, xpos, ypos + fheight / 2);
+				p.drawLine(xpos + angle, ypos + fheight, xpos, ypos + fheight / 2);
 
-			p.drawLine(xpos + fwidth - angle, ypos, xpos + fwidth, ypos + fheight / 2);
-			p.drawLine(xpos + fwidth - angle, ypos + fheight, xpos + fwidth, ypos + fheight / 2);
+				p.drawLine(xpos + fwidth - angle, ypos, xpos + fwidth, ypos + fheight / 2);
+				p.drawLine(xpos + fwidth - angle, ypos + fheight, xpos + fwidth, ypos + fheight / 2);
 
-		}
+			}
 
-	p.end();
+		p.end();
+	}
 
 	// Paint units
 
-	p.begin(&pix2);
+	if(m_knights)
+	{
+		p.begin(&pix2);
 
-	for(int j = 0; j < m_height; j++)
-		for(int i = 0; i < m_width; i++)
-		{
-			roffx = offx;
-			if(j % 2) roffx = offx + fwidth - angle;
+		for(int j = 0; j < m_height; j++)
+			for(int i = 0; i < m_width; i++)
+			{
+				roffx = offx;
+				if(j % 2) roffx = offx + fwidth - angle;
 
-			xpos = i * xs + roffx;
-			ypos = j * ys + offy;
+				xpos = i * xs + roffx;
+				ypos = j * ys + offy;
 
-			int x = rand() % 10;
-			if(x == 1)
-				p.drawPixmap(QPoint(xpos + angle, ypos - angle), QPixmap("data/knight2.png"));
-			else if(x == 2)
-				p.drawPixmap(QPoint(xpos + angle, ypos - angle), QPixmap("data/knight1.png"));
-		}
+				int x = rand() % 10;
+				if(x == 1)
+					p.drawPixmap(QPoint(xpos + angle, ypos - angle), QPixmap("data/knight2.png"));
+				else if(x == 2)
+					p.drawPixmap(QPoint(xpos + angle, ypos - angle), QPixmap("data/knight1.png"));
+			}
 
-	p.end();
+		p.end();
+	}
 
 	setBackgroundPixmap(pix2);
+}
+
+void Map::setMap(bool map)
+{
+	m_map = map;
+	setupMap(m_width, m_height);
+}
+
+void Map::setKnights(bool knights)
+{
+	m_knights = knights;
+	setupMap(m_width, m_height);
+}
+
+void Map::setPossession(bool possession)
+{
+	m_possession = possession;
+	setupMap(m_width, m_height);
+}
+
+void Map::setAnimation(bool animation)
+{
+	m_animation = animation;
+	setupMap(m_width, m_height);
 }
 

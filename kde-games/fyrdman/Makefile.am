@@ -5,11 +5,15 @@ ggzexecmod_PROGRAMS = fyrdman
 fyrdman_SOURCES = \
 	main.cpp \
 	mainwindow.cpp \
-	map.cpp
+	map.cpp \
+	levelselector.cpp \
+	network.cpp
 
 noinst_HEADERS = \
 	mainwindow.h \
-	map.h
+	map.h \
+	levelselector.h \
+	network.h
 
 INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
 

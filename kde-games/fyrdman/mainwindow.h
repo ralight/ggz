@@ -3,6 +3,10 @@
 
 #include <kmainwindow.h>
 
+class KPopupMenu;
+class Map;
+class Network;
+
 class MainWindow : public KMainWindow
 {
 	Q_OBJECT
@@ -10,12 +14,18 @@ class MainWindow : public KMainWindow
 		MainWindow();
 		~MainWindow();
 
+		void enableNetwork();
+
 	public slots:
 		void slotMenu(int id);
+		void slotData();
 
 	private:
+		void levelSelector();
+
 		enum Items
 		{
+			game_new,
 			game_info,
 			game_sync,
 			game_quit,
@@ -24,6 +34,10 @@ class MainWindow : public KMainWindow
 			option_knights,
 			option_animation
 		};
+
+		KPopupMenu *displaymenu, *optionmenu;
+		Map *map;
+		Network *network;
 };
 
 #endif

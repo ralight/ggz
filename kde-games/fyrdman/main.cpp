@@ -5,9 +5,16 @@
 
 #include "mainwindow.h"
 
+static const KCmdLineOptions op[] =
+{
+	{"ggz", I18N_NOOP("Play in GGZ mode"), 0},
+	{0, 0, 0}
+};
+
 int main(int argc, char **argv)
 {
 	MainWindow *mainwindow;
+	KCmdLineArgs *args;
 	KAboutData data("fyrdman",
 		I18N_NOOP("Fyrdman"),
 		"0.1",
@@ -17,11 +24,17 @@ int main(int argc, char **argv)
 		"dr_maux@users.sourceforge.net");
 
 	KCmdLineArgs::init(argc, argv, &data);
+	KCmdLineArgs::addCmdLineOptions(op);
+	args = KCmdLineArgs::parsedArgs();
 
 	KApplication app;
 
 	mainwindow = new MainWindow();
 	app.setMainWidget(mainwindow);
+	if(args->isSet("ggz"))
+	{
+		mainwindow->enableNetwork();
+	}
 	return app.exec();
 }
 
