@@ -1,10 +1,10 @@
-/*
+/* 
  * File: ai/random.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: random.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: random.c 2416 2001-09-09 03:15:38Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -83,21 +83,24 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 
 static card_t get_play(player_t p, seat_t s)
 {
-	int choice;
 	hand_t *hand = &game.seats[s].hand;
-	card_t selection;
-	char *error;
+	int choices[hand->hand_size], i, max;
 
-	while (1) {
-		choice = random() % hand->hand_size;
-		selection = hand->cards[choice];
-		error = game.funcs->verify_play(selection);
+	for (i = 0; i < hand->hand_size; i++)
+		choices[i] = i;
+
+	/* This clever algorithm will search at most n times to find at
+	   random a correct element from the set of n */
+	for (max = hand->hand_size; max > 0; max--) {
+		int choice = random() % max;
+		card_t selection = hand->cards[choices[choice]];
+		char *error = game.funcs->verify_play(selection);
 		if (error == NULL)
 			return selection;
-		ggzd_debug
-			("random ai: card (%d %d %d) was invalid because %s.",
-			 selection.face, selection.suit, selection.deck,
-			 error);
+
+		choices[choice] = choices[max - 1];
 	}
+
+	ggzd_debug("RANDOM-AI: get_play: " "no valid play found.");
 	return UNKNOWN_CARD;
 }
