@@ -142,7 +142,6 @@ void ReadServerSocket(gpointer data, gint source, GdkInputCondition cond)
 			
 			/* We're done registering now, so close the dialog box */
 			SafeCloseDialog();
-			DisplayInit();
 			
 			/* Next game State */
 			gameState.gameSegment = ST_GET_HAND;

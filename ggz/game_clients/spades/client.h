@@ -55,6 +55,8 @@
 
 typedef struct gameState_t {
 
+	char get_opt;
+
 	int gameSegment;
 	int saveSegment;
 

@@ -64,7 +64,16 @@ int main(int argc, char *argv[])
 	
 	gtk_init(&argc, &argv);
 
-	OptionsDialog(NULL, NULL);
+	/* 
+	 * Display option window if this is a new table,
+	 * main window otherwise
+	 */
+	if (gameState.get_opt)
+		OptionsDialog(NULL, NULL);
+	else
+		DisplayInit();
+
+
 	/*DisplayInit();
 	  DisplayStatusLine( "Welcome to Gnu Gaming Zone Spades %s", VERSION );
 	*/

@@ -12,8 +12,8 @@
 #include <gtk_dlg_options.h>
 #include <gtk_dlg_error.h>
 #include <options.h>
-
-#include "callbacks.h"
+#include <display.h>
+#include <callbacks.h>
 
 
 GtkWidget *detail_window = NULL;
@@ -37,7 +37,10 @@ void launch_game(GtkButton * button, gpointer user_data)
 	write(gameState.spadesSock, &options, sizeof(options));
 	write(gameState.spadesSock, &ai, 1);	/* AI players */	
 	g_printerr("Sent options\n");
+
+	DisplayInit();
 }
+
 
 
 

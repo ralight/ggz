@@ -149,6 +149,7 @@ void AppInit(void)
 {
 	int i;
 
+	gameState.get_opt = FALSE;
 	gameState.spadesSock = STDIN_FILENO;
 	gameState.gameSegment = ST_GET_GAME;
 	spadesHandle = gdk_input_add(STDIN_FILENO, GDK_INPUT_READ, 
@@ -237,10 +238,10 @@ int ParseOptions(int argc, char *argv[])
 			gameState.userName = optarg;
 			break;
 		case 'o':
-			options.bitOpt |= MSK_OFFLINE;
+			gameState.get_opt = TRUE;
 			break;
 		case 'V':
-			g_printerr("Gnu Gaming Zone client Version %s\n", 
+			g_printerr("Gnu Gaming Zone spades client version %s\n", 
 				   VERSION);
 			status = -1;
 			break;
