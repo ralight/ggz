@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 5061 2002-10-27 12:44:22Z jdorje $
+ * $Id: ggzdmod.h 5078 2002-10-28 04:10:34Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -598,9 +598,17 @@ int ggzdmod_log(GGZdMod * ggzdmod, char *fmt, ...)
 void ggzdmod_check(GGZdMod *ggzdmod);
 
 typedef enum {
+	GGZ_GAME_WIN,
 	GGZ_GAME_LOSS,
 	GGZ_GAME_TIE,
-	GGZ_GAME_WIN
+	/** A forfeit is (for instance) an abandoned game.  The player will
+	 *  not only be credited with the forfeit but their rating/ranking
+	 *  may drop dramatically. */
+	GGZ_GAME_FORFEIT,
+	/** If the player didn't take part in the game, use this label.  For
+	 *  instance if one player abandons the game they might get a
+	 *  forfeit while nobody else is affected. */
+	GGZ_GAME_NONE
 } GGZGameResult;
 
 /** @brief Report the results of a game to GGZ.
