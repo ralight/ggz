@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: cb_main.c 3401 2002-02-17 13:28:20Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -63,6 +63,11 @@ void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 				   &dlg_prefs);
 		gtk_widget_show(dlg_prefs);
 	}
+}
+
+void on_mnu_forceredraw_activate(GtkMenuItem * menuitem, gpointer user_data)
+{
+	table_redraw();
 }
 
 void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)

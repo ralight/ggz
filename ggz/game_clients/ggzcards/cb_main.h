@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.h 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: cb_main.h 3401 2002-02-17 13:28:20Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -23,13 +23,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef __CB_MAIN_H__
+#define __CB_MAIN_H__
+
 #include <gtk/gtk.h>
-
-
 
 void on_mnu_startgame_activate(GtkMenuItem * menuitem, gpointer user_data);
 void on_mnu_sync_activate(GtkMenuItem * menuitem, gpointer user_data);
 void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data);
+void on_mnu_forceredraw_activate(GtkMenuItem * menuitem, gpointer user_data);
 void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data);
 
 void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data);
@@ -43,3 +45,5 @@ gboolean on_fixed1_expose_event(GtkWidget * widget, GdkEventExpose * event,
 				gpointer user_data);
 void on_fixed1_redraw_event(GtkWidget * widget, GtkStyle * previous_style,
 			    gpointer user_data);
+	
+#endif /* __CB_MAIN_H__ */
