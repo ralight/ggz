@@ -13,18 +13,25 @@ FIG_FILES  = images/server_arch.fig
 EXTRA_DIST = $(SGML_FILES) \
 	     $(FIG_FILES)
 
-all-docs: html-docs, txt-docs
+all-docs: html-docs txt-docs
 
-txt-docs: $(TXT_FILES) 
+txt-docs: txtdir $(TXT_FILES) 
 
-html-docs: gif-files $(HTML_FILES) 
+html-docs: htmldir gif-files $(HTML_FILES) 
 	-cp images/*.gif html
 
-ps-docs: eps-files $(PS_FILES) 
+ps-docs: psdir eps-files $(PS_FILES) 
 
+htmldir:
+	(cd $(srcdir); mkdir -p html;)
 
+txtdir:
+	(cd $(srcdir); mkdir -p txt;)
+
+psdir:
+	(cd $(srcdir); mkdir -p ps;)
+	
 %.txt: %.sgml
-	-mkdir txt
 	-cd $(srcdir) && jade -t sgml -dascii-lynx.dsl $^ > tmp.html
 	-lynx -dump tmp.html -nolist > txt/$@
 	-rm tmp.html
@@ -33,11 +40,10 @@ ps-docs: eps-files $(PS_FILES)
 	-cd $(srcdir) && db2html $^
 	-mv $* html
 
-#%.ps: %.sgml
-#	-mkdir ps
-#	-cd $(srcdir) && db2ps $^
-#	-mv *.ps ps
-#	-rm -f *.tex *.aux *.dvi *.log *.html
+%.ps: %.sgml
+	-cd $(srcdir) && db2ps $^
+	-mv *.ps ps
+	-rm -f *.tex *.aux *.dvi *.log *.html
 
 
 gif-files: $(FIG_FILES)
@@ -61,10 +67,10 @@ DIST-hook: html-docs
 #	-cp $(srcdir)/images/*.gif $(srcdir)/images/*.jpg $(distdir)/images
 
 install-data-local: 
-	$(mkinstalldirs) $(DESTDIR)$(gnumeric_helpdir)/images
-	-for file in $(srcdir)/gnumeric/*.html $(srcdir)/gnumeric/*.css; do \
-	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(DESTDIR)$(gnumeric_helpdir)/$$basefile; \
+#	$(mkinstalldirs) $(DESTDIR)$(gnumeric_helpdir)/images
+#	-for file in $(srcdir)/gnumeric/*.html $(srcdir)/gnumeric/*.css; do \
+#	basefile=`basename $$file`; \
+#	$(INSTALL_DATA) $$file $(DESTDIR)$(gnumeric_helpdir)/$$basefile; \
 #	done
 #	-for file in $(srcdir)/images/*.jpg $(srcdir)/images/*.gif; do \
 #	$(INSTALL_DATA) $$file $(DESTDIR)$(gnumeric_helpdir)/images;\
