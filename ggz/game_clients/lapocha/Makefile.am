@@ -4,7 +4,7 @@ EXTRA_DIST = lapocha.dsc
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
+INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ 
 
 ggzexecmod_PROGRAMS = ggz.lapocha
 
@@ -23,6 +23,5 @@ ggz_lapocha_SOURCES = \
 	cards.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_lapocha_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la
-ggz_lapocha_LDFLAGS = -static
+ggz_lapocha_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ 
 

@@ -1,13 +1,35 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AC_CONFIG_SUBDIRS( easysock )
 AM_INIT_AUTOMAKE(ggz_client, 0.0.4pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
+dnl Check for standard build environment
+dnl ====================================
+
+dnl Make sure ${prefix}/include is on include path
+dnl ==============================================
+if test "x${prefix}" = "xNONE"; then
+   CPPFLAGS="$CPPFLAGS -I${ac_default_prefix}/include"
+   LDFLAGS="$LDFLAGS -L${ac_default_prefix}/lib"
+else
+   CPPFLAGS="$CPPFLAGS -I${prefix}/include"
+   LDFLAGS="$LDFLAGS -L${prefix}/lib"
+fi
+
+AC_PROG_CC
+AC_ISC_POSIX
+AC_PROG_INSTALL
+AC_PROG_CPP
+AM_PROG_CC_STDC
+AM_PROG_LIBTOOL
+AC_PROG_MAKE_SET
+
+
 dnl Compiling Options
 dnl =====================
+AC_ARG_WITH(included-easysock, [  --with-included-easysock Use the easysock lib included here],, with_included_easysock=no)
 AC_ARG_ENABLE(client, [  --disable-client        Don't build GGZ clients],, enable_client=yes)
 AC_ARG_ENABLE(textfe, [  --disable-textfe        Don't build Text frontend],, enable_textfe=yes)
 AC_ARG_ENABLE(gtkfe,  [  --disable-gtkfe         Don't build Gtk frontend],, enable_gtkfe=yes)
@@ -18,17 +40,6 @@ AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,e
 AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
 
 
-
-dnl Check for standard build environment
-dnl ====================================
-AC_PROG_CC
-AC_ISC_POSIX
-AC_PROG_INSTALL
-AC_PROG_CPP
-AM_PROG_CC_STDC
-AM_PROG_LIBTOOL
-AC_PROG_MAKE_SET
-
 dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
@@ -37,7 +48,6 @@ AC_CHECK_HEADERS(sys/time.h unistd.h)
 
 dnl Check for gettext support
 dnl =========================
-
 ALL_LINGUAS="de"
 AM_GNU_GETTEXT
 if test "x${prefix}" = "xNONE"; then
@@ -57,35 +67,73 @@ AC_EGREP_CPP(WAIT_ANY, [ #include <sys/wait.h>
 	         AC_DEFINE(WAIT_ANY, (pid_t)-1))
 
 
-
 dnl Check for library functions
 dnl ===========================
-AC_CHECK_FUNC(select)
-AC_CHECK_FUNC(socket, ,
-    AC_CHECK_LIB(socket, socket,
-	AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
-	    AC_MSG_ERROR(*** Cannot find socket headers ); exit ),
-	AC_MSG_ERROR(*** Cannot find socket library ); exit ))
+AC_CHECK_FUNC(poll)
 
-AC_CHECK_FUNC(gethostbyname, ,
-    AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
-
-AC_CHECK_FUNC(inet_ntoa, ,
-    AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
-
-AC_CHECK_LIB(popt, poptGetNextOpt,
-    AC_CHECK_HEADER(popt.h, LDADD="$LDADD -lpopt",
-        AC_MSG_ERROR(*** Cannot find popt.h header); exit),
-    AC_MSG_ERROR(*** Cannot find popt library ); exit)
+if test "$with_included_easysock" = no; then
+    AC_CHECK_LIB(easysock, es_make_socket, 
+        [AC_CHECK_HEADER(easysock.h, 
+            [AC_EGREP_CPP([[0-9]\.[0-9]\.2], [#include <easysock.h>
+			   EASYSOCK_VERSION ], EASYSOCK_LIB="-leasysock",
+                AC_MSG_WARN(*** Need easysock 0.0.2 or later -- using internal)
+                with_included_easysock=yes)],
+	    AC_MSG_WARN(*** Cannot find easysock.h -- using internal)
+	    with_included_easysock=yes)],
+        AC_MSG_WARN(**** Cannot find easysock library -- using internal)
+        with_included_easysock=yes)
+fi
 
 
-dnl Which progs to compile
-dnl ======================
+dnl What to compile
+dnl ===============
 
-SUBDIRS="easysock"
+SUBDIRS=""
 FRONTENDDIRS=""
+
+dnl Do lots of easysock stuff if using included one
+dnl ===============================================
+if test "$with_included_easysock" = yes; then
+    SUBDIRS="$SUBDIRS easysock"
+    EASYSOCK_INC="-I\$(top_srcdir)/easysock"
+    EASYSOCK_LIB="\$(top_builddir)/easysock/libeasysock.a"
+
+
+dnl Check for PF_LOCAL/PF_UNIX
+dnl ==========================
+    AC_MSG_CHECKING([for PF_LOCAL])
+    AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
+                 PF_LOCAL ], AC_MSG_RESULT(no) 
+			     AC_MSG_CHECKING([for PF_UNIX])
+			     AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
+				          PF_UNIX ], AC_MSG_RESULT(no)
+				                     AC_MSG_ERROR(*** Cannot PF_LOCAL or PF_UNIX),
+                                          AC_MSG_RESULT(yes)
+					  AC_DEFINE(PF_LOCAL, PF_UNIX)
+			                  AC_DEFINE(AF_LOCAL, AF_UNIX)), 
+                 AC_MSG_RESULT(yes))
+
+dnl Check for msghdr member msg_control
+dnl ===================================
+    AC_EGREP_HEADER([size_t msg_controllen], sys/socket.h, 
+		       AC_DEFINE(HAVE_MSGHDR_MSG_CONTROL))
+
+
+    AC_CHECK_FUNC(socket, ,
+        AC_CHECK_LIB(socket, socket,
+	    AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
+	        AC_MSG_ERROR(*** Cannot find socket headers ); exit ),
+	    AC_MSG_ERROR(*** Cannot find socket library ); exit ))
+
+    AC_CHECK_FUNC(gethostbyname, ,
+        AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl",
+	    AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
+
+    AC_CHECK_FUNC(inet_ntoa, ,
+        AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
+	    AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
+fi
+
 
 if test "$enable_client" = yes; then
     SUBDIRS="$SUBDIRS src"
@@ -98,9 +146,12 @@ if test "$enable_client" = yes; then
         AM_PATH_GTK(1.2.0, FRONTENDDIRS="$FRONTENDDIRS gtk",
 		       AC_MSG_WARN(*** Can't build GTK frontend: GTK not found)
 		       enable_gtkfe=no)
-    fi
-	   
 
+        AC_CHECK_LIB(popt, poptGetNextOpt,
+            AC_CHECK_HEADER(popt.h, LDADD="$LDADD -lpopt",
+                AC_MSG_ERROR(*** Cannot find popt.h header); exit),
+        AC_MSG_ERROR(*** Cannot find popt library ); exit)
+    fi
 fi
 
 if test "$enable_games" = yes; then
@@ -179,6 +230,8 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
 
 AC_SUBST(LDADD)
+AC_SUBST(EASYSOCK_INC)
+AC_SUBST(EASYSOCK_LIB)
 AC_SUBST(SUBDIRS)
 AC_SUBST(FRONTENDDIRS)
 AC_SUBST(ggzconfdir)
@@ -186,6 +239,7 @@ AC_SUBST(ggzexecmoddir)
 AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 
+           easysock/Makefile
 	   ggz/Makefile
 	   ggz/ggzrc.test
 	   src/Makefile

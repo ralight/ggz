@@ -16,7 +16,7 @@
 
 /* defined by automake */
 
-#undef WAIT_ANY
+#undef AF_LOCAL
 #undef DEBUG
 #undef DEBUG_SOCKET
 #undef DEBUG_MEM
@@ -24,12 +24,15 @@
 #undef HAVE_CATGETS
 #undef HAVE_GETTEXT
 #undef HAVE_LC_MESSAGES
+#undef HAVE_MSGHDR_MSG_CONTROL
 #undef HAVE_STPCPY
 #undef PACKAGE_LOCALE_DIR
 #undef PACKAGE_DATA_DIR
 #undef GGZCONFDIR
 #undef GAMEDIR
 #undef PACKAGE_SOURCE_DIR
+#undef PF_LOCAL
+#undef WAIT_ANY
 #undef _XOPEN_SOURCE
     
 

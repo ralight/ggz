@@ -4,7 +4,7 @@ EXTRA_DIST = dots.dsc
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
+INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ 
 
 ggzexecmod_PROGRAMS = ggz.dots
 
@@ -21,6 +21,5 @@ ggz_dots_SOURCES = \
 	cb_new.c cb_new.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la
-ggz_dots_LDFLAGS = -static
+ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ 
 

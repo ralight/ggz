@@ -1,12 +1,11 @@
 
 SUBDIRS = .
 
+INCLUDES = @EASYSOCK_INC@
+
 noinst_LIBRARIES = libggzcore.a
 
-easysock_SOURCES = easysock.c easysoch.h 
-
-libggzcore_a_SOURCES =	$(easysock_SOURCES) \
-			event.c \
+libggzcore_a_SOURCES =	event.c \
 		      	event.h \
 		      	init.c \
 			ggzcore.h \
