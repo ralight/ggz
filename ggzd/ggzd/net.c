@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4525 2002-09-12 15:45:27Z jdorje $
+ * $Id: net.c 4528 2002-09-12 19:34:02Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -26,26 +26,30 @@
  */
 
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
 
+#include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/poll.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include <expat.h>
+#include <ggz.h>
+
+#include "client.h"
 #include "err_func.h"
+#include "ggzd.h"
 #include "ggzdb.h"
 #include "hash.h"
 #include "motd.h"
 #include "net.h"
 #include "protocols.h"
 #include "seats.h"
-#include "client.h"
-
-#include <errno.h>
-#include <expat.h>
-#include <ggz.h>
-#include <string.h>
-#include <sys/poll.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 
 /* For convenience */
@@ -1325,7 +1329,7 @@ static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <TABLE> tag */
 static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 {
-	int type, index, db_status;
+	int type, index, num_seats, db_status;
 	GGZTable *table;
 	GGZTableData *data;
 	GGZSeatData *seat;
@@ -1348,6 +1352,9 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 
 	/* For updates, they might have specified the ID and room */
 	index = safe_atoi(ggz_xmlelement_get_attr(element, "ID"));
+
+	/* Read the number of seats. */
+	num_seats = safe_atoi(ggz_xmlelement_get_attr(element, "SEATS"));
 		
 	data = ggz_xmlelement_get_data(element);
 	if (data) {
@@ -1367,6 +1374,21 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	table = table_new();
 	table->index = index;
 	table->type = type;
+#ifdef UNLIMITED_SEATS
+	if (num_seats > 0) {
+		int i;
+		/* FIXME: what if num_seats is really large? */
+		table->num_seats = num_seats;
+		table->seat_types = ggz_malloc(num_seats *
+					       sizeof(*table->seat_types));
+		table->seat_names = ggz_malloc(num_seats *
+					       sizeof(*table->seat_names));
+		for (i = 0; i < num_seats; i++) {
+			table->seat_types[i] = GGZ_SEAT_NONE;
+			table->seat_names[i][0] = '\0';
+		}
+	}
+#endif
 
 	/* If room was specified, use it, otherwise use players current room */
 	table->room = player_get_room(net->client->data);
@@ -1382,7 +1404,13 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		seat = ggz_list_get_data(entry);
 		seat_type = ggz_string_to_seattype(seat->type);
 
-		if (seat->index < 0 || seat->index >= MAX_TABLE_SIZE) {
+		if (seat->index < 0 ||
+#ifdef UNLIMITED_SEATS
+		    seat->index >= table->num_seats
+#else
+		    seat->index >= MAX_TABLE_SIZE
+#endif
+		    ) {
 			err_msg("Client launched game with invalid seat %d.",
 				seat->index);
 			if (data) _net_tabledata_free(data);
@@ -1391,7 +1419,7 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		}
 
 		switch (seat_type) {
-		case GGZ_SEAT_OPEN:		
+		case GGZ_SEAT_OPEN:
 		case GGZ_SEAT_BOT:
 		case GGZ_SEAT_NONE:
 			break;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4527 2002-09-12 18:24:27Z jdorje $
+ * $Id: players.c 4528 2002-09-12 19:34:02Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -290,6 +290,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 		return GGZ_REQ_FAIL;
 	}
 	
+#ifndef UNLIMITED_SEATS
 	/* Silly client. Tables are only so big*/
 	if (seats_num(table) > MAX_TABLE_SIZE) {
 		dbg_msg(GGZ_DBG_TABLE, 
@@ -299,6 +300,10 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
+#else
+	/* Shouldn't some check be done?  Note that the number of players is
+	   checked against the player_allow_list later.  --JDS */
+#endif
 	
 	/* Don't allow multiple table launches */
 	if (player->table != -1 || player->launching) {
@@ -377,7 +382,7 @@ GGZEventFuncReturn player_launch_callback(void* target, int size, void* data)
 
 GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 {
-	int i;
+	int i, num_seats;
 	char owner[MAX_USER_NAME_LEN + 1];
 	GGZPlayerHandlerStatus status = 0;
 	GGZTable *real_table;
@@ -404,7 +409,8 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 		table_set_desc(real_table, table->desc);
 	
 	/* Find the seat that was updated: it's the one that isn't NONE */
-	for (i = 0; i < MAX_TABLE_SIZE; i++) {
+	num_seats = seats_num(table);
+	for (i = 0; i < num_seats; i++) {
 		if (seats_type(table, i) != GGZ_SEAT_NONE) {
 			seat.index = i;
 			seat.type = seats_type(table, i);

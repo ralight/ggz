@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4525 2002-09-12 15:45:27Z jdorje $
+ * $Id: table.c 4528 2002-09-12 19:34:02Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -122,8 +122,10 @@ static int   type_match_table(int type, GGZTable* table);
 
 GGZTable* table_new(void)
 {
-	int i;
 	GGZTable *table;
+#if !defined UNLIMITED_SEATS || !defined UNLIMITED_SPECTATORS
+	int i;
+#endif
 	
 	/* Allocate a new table structure */
 	table = ggz_malloc(sizeof(*table));
@@ -138,8 +140,14 @@ GGZTable* table_new(void)
 	table->transit_seat = -1;
 	table->ggzdmod = NULL;
 
+#ifdef UNLIMITED_SEATS
+	table->num_seats = 0;
+	table->seat_types = NULL;
+	table->seat_names = NULL;
+#else
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		table->seat_types[i] = GGZ_SEAT_NONE;
+#endif
 
 #ifdef UNLIMITED_SPECTATORS
 	table->max_num_spectators = 0;
@@ -564,7 +572,7 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	/* Read in saved transit data */
 	name = table->transit_name;
 	seat = table->transit_seat;
-	
+
 	if (status == 0) {
 		/* Vacate seat */
 		dbg_msg(GGZ_DBG_TABLE, 
@@ -1420,20 +1428,18 @@ static int table_launch_event(char* name, int status, int index)
 /* Free dynamically allocated memory associated with a table*/
 void table_free(GGZTable* table)
 {
-#if 0
-	int i;
-
-	for (i = 0; i < MAX_TABLE_SIZE; i++) {
-		ggz_free(table->seats[i]);
-		if (table->reserve[i])
-			ggz_free(table->reserve[i]);
+#ifdef UNLIMITED_SEATS
+	if (table->num_seats > 0) {
+		ggz_free(table->seat_types);
+		ggz_free(table->seat_names);
 	}
+#endif
+#ifdef UNLIMITED_SPECTATORS
+	if (table->max_num_spectators > 0)
+		ggz_free(table->spectators);
 #endif
 
 	/* FIXME: do we need to free transit too? */
-
-	if (table->spectators)
-		ggz_free(table->spectators);
 
 	ggzdmod_free(table->ggzdmod);
 	ggz_free(table);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 4525 2002-09-12 15:45:27Z jdorje $
+ * $Id: ggzd.h 4528 2002-09-12 19:34:02Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -27,6 +27,10 @@
 #ifndef _GGZ_DEFS
 #define _GGZ_DEFS
 
+/* Server options */
+/* #define UNLIMITED_SEATS */
+/* #define UNLIMITED_SPECTATORS */
+
 /* Server limits */
 #define MAX_USER_NAME_LEN 16
 #define MAX_PATH_LEN 256
@@ -36,8 +40,9 @@
 #define MAX_CHAT_LEN 512
 #define MAX_GAME_DESC_LEN 512
 #define MAX_CHAT_BUFFER 32
-#define MAX_TABLE_SIZE 8
-/* #define UNLIMITED_SPECTATORS */
+#ifndef UNLIMITED_SEATS
+#  define MAX_TABLE_SIZE 8
+#endif
 #ifndef UNLIMITED_SPECTATORS
 #  define MAX_TABLE_SPECTATORS 4
 #endif

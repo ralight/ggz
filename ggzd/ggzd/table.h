@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4525 2002-09-12 15:45:27Z jdorje $
+ * $Id: table.h 4528 2002-09-12 19:34:02Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -77,8 +77,14 @@ struct GGZTable {
 	 * from ggzdmod because we have to worry about locking
 	 * them before we change them.
 	 */
+#ifdef UNLIMITED_SEATS
+	int num_seats;
+	GGZSeatType *seat_types;
+	char (*seat_names)[MAX_USER_NAME_LEN + 1];
+#else
 	GGZSeatType seat_types[MAX_TABLE_SIZE];
 	char seat_names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
+#endif
 
 	/* Spectator assignments.  An empty name ("") means there
 	   is no spectator in the seat. */

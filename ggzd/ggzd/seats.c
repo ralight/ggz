@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 4525 2002-09-12 15:45:27Z jdorje $
+ * $Id: seats.c 4528 2002-09-12 19:34:02Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -27,18 +27,23 @@
 
 #include <string.h>
 
+#include <ggz.h>
+
 #include "datatypes.h"
+#include "err_func.h"
 #include "ggzd.h"
 #include "ggzdmod.h"
-#include "table.h"
 #include "seats.h"
+#include "table.h"
 
 extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 int seats_count(GGZTable* table, GGZSeatType type)
 {
 	int i, count = 0;
-	for (i = 0; i < MAX_TABLE_SIZE; i++)
+	int max = seats_num(table);
+
+	for (i = 0; i < max; i++)
 		if (table->seat_types[i] == type)
 			count++;
 	return count;
@@ -48,9 +53,23 @@ int seats_count(GGZTable* table, GGZSeatType type)
 int seats_num(GGZTable* table)
 {
 	int i;
+
+#ifdef UNLIMITED_SEATS
+	i = table->num_seats;
+
+#  ifdef DEBUG
+	for (i = 0; i < table->num_seats; i++)
+		if (table->seat_types[i] == GGZ_SEAT_NONE) {
+			err_msg("Table has seat with type NONE.");
+			break;
+		}
+#  endif
+#else
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		if (table->seat_types[i] == GGZ_SEAT_NONE)
 			break;
+#endif
+
 	return i;
 }
 
@@ -85,5 +104,7 @@ int spectator_seats_num(GGZTable *table)
 
 GGZSeatType seats_type(GGZTable* table, int seat)
 {
+	if (seat < 0 || seat >= seats_num(table))
+		return GGZ_SEAT_NONE;
 	return table->seat_types[seat];
 }
