@@ -33,17 +33,9 @@
 #include "display.h"
 #include "main_dlg.h"
 #include "game.h"
-#include "board.xpm"
-#include "hole.xpm"
-#include "red.xpm"
-#include "blue.xpm"
-#include "green.xpm"
-#include "yellow.xpm"
-#include "cyan.xpm"
-#include "purple.xpm"
 
 
-static GtkWidget *dlg_main;
+static GtkWidget *dlg_main = NULL;
 static GtkWidget *draw_area = NULL;
 static GtkWidget *statusbar;
 static guint sb_context;
@@ -70,16 +62,32 @@ static char *label_color[6] = {
 static void display_draw_holes(void);
 
 
+static GdkPixmap *display_load_pixmap(GdkWindow *window, GdkBitmap **mask,
+				   GdkColor *trans, const char *name)
+{
+	char *fullpath;
+	GdkPixmap *pixmap;
+
+	fullpath = g_strdup_printf("%s/%s", game.pixmap_dir, name);
+	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
+	if(pixmap == NULL)
+		fprintf(stderr, "Can't load pixmap %s\n", fullpath);
+
+	return pixmap;
+}
+
+
 /* Initialize the game display (dlg_main and board) */
-void display_init(void)
+int display_init(void)
 {
 	GdkColormap *sys_colormap;
 	GdkColor color;
-	GtkWidget *tmpwidget;
 
 	/* Create and display the main dialog */
-	dlg_main = create_dlg_main();
-	gtk_widget_show(dlg_main);
+	if(dlg_main == NULL) {
+		dlg_main = create_dlg_main();
+		gtk_widget_show(dlg_main);
+	}
 
 	/* Get and store a pointer to our drawingarea and statusbar */
 	draw_area = gtk_object_get_data(GTK_OBJECT(dlg_main), "draw_area");
@@ -89,59 +97,75 @@ void display_init(void)
 						  "Game Messages");
 
 	/* Create a pixmap buffer from our xpm */
-	board_buf = gdk_pixmap_create_from_xpm_d(draw_area->window, NULL,
+	board_buf = display_load_pixmap(draw_area->window, NULL,
 					NULL,
-					(gchar **) board_xpm);
+					"board.xpm");
+	if(board_buf == NULL)
+		return -1;
 
 	/* Convert the rest of our xpms to masked pixmaps */
 	hole_gc = gdk_gc_new(draw_area->window);
 	gdk_gc_set_fill(hole_gc, GDK_TILED);
-	hole_pixmap = gdk_pixmap_create_from_xpm_d(draw_area->window,
+	hole_pixmap = display_load_pixmap(draw_area->window,
 					&hole_mask,
 					NULL,
-					(gchar **) hole_xpm);
+					"hole.xpm");
+	if(hole_pixmap == NULL)
+		return -1;
 	gdk_gc_set_tile(hole_gc, hole_pixmap);
 	marble_gc[0] = gdk_gc_new(draw_area->window);
 	gdk_gc_set_fill(marble_gc[0], GDK_TILED);
-	marble_pixmap[0] = gdk_pixmap_create_from_xpm_d(draw_area->window,
-							&marble_mask[0],
-							NULL,
-							(gchar **) red_xpm);
+	marble_pixmap[0] = display_load_pixmap(draw_area->window,
+						&marble_mask[0],
+						NULL,
+						"red.xpm");
+	if(marble_pixmap[0] == NULL)
+		return -1;
 	gdk_gc_set_tile(marble_gc[0], marble_pixmap[0]);
 	marble_gc[1] = gdk_gc_new(draw_area->window);
 	gdk_gc_set_fill(marble_gc[1], GDK_TILED);
-	marble_pixmap[1] = gdk_pixmap_create_from_xpm_d(draw_area->window,
-							&marble_mask[1],
-							NULL,
-							(gchar **) blue_xpm);
+	marble_pixmap[1] = display_load_pixmap(draw_area->window,
+						&marble_mask[1],
+						NULL,
+						"blue.xpm");
+	if(marble_pixmap[1] == NULL)
+		return -1;
 	gdk_gc_set_tile(marble_gc[1], marble_pixmap[1]);
 	marble_gc[2] = gdk_gc_new(draw_area->window);
 	gdk_gc_set_fill(marble_gc[2], GDK_TILED);
-	marble_pixmap[2] = gdk_pixmap_create_from_xpm_d(draw_area->window,
-							&marble_mask[2],
-							NULL,
-							(gchar **) green_xpm);
+	marble_pixmap[2] = display_load_pixmap(draw_area->window,
+						&marble_mask[2],
+						NULL,
+						"green.xpm");
+	if(marble_pixmap[2] == NULL)
+		return -1;
 	gdk_gc_set_tile(marble_gc[2], marble_pixmap[2]);
 	marble_gc[3] = gdk_gc_new(draw_area->window);
 	gdk_gc_set_fill(marble_gc[3], GDK_TILED);
-	marble_pixmap[3] = gdk_pixmap_create_from_xpm_d(draw_area->window,
-							&marble_mask[3],
-							NULL,
-							(gchar **) yellow_xpm);
+	marble_pixmap[3] = display_load_pixmap(draw_area->window,
+						&marble_mask[3],
+						NULL,
+						"yellow.xpm");
+	if(marble_pixmap[3] == NULL)
+		return -1;
 	gdk_gc_set_tile(marble_gc[3], marble_pixmap[3]);
 	marble_gc[4] = gdk_gc_new(draw_area->window);
 	gdk_gc_set_fill(marble_gc[4], GDK_TILED);
-	marble_pixmap[4] = gdk_pixmap_create_from_xpm_d(draw_area->window,
-							&marble_mask[4],
-							NULL,
-							(gchar **) cyan_xpm);
+	marble_pixmap[4] = display_load_pixmap(draw_area->window,
+						&marble_mask[4],
+						NULL,
+						"cyan.xpm");
+	if(marble_pixmap[4] == NULL)
+		return -1;
 	gdk_gc_set_tile(marble_gc[4], marble_pixmap[4]);
 	marble_gc[5] = gdk_gc_new(draw_area->window);
 	gdk_gc_set_fill(marble_gc[5], GDK_TILED);
-	marble_pixmap[5] = gdk_pixmap_create_from_xpm_d(draw_area->window,
-							&marble_mask[5],
-							NULL,
-							(gchar **) purple_xpm);
+	marble_pixmap[5] = display_load_pixmap(draw_area->window,
+						&marble_mask[5],
+						NULL,
+						"purple.xpm");
+	if(marble_pixmap[5] == NULL)
+		return -1;
 	gdk_gc_set_tile(marble_gc[5], marble_pixmap[5]);
 
 	/* Setup the gc for our line drawing */
@@ -165,9 +189,7 @@ void display_init(void)
 			0, 0,
 			400, 400);
 
-	/* Grey out the Preferences menu item */
-	tmpwidget = gtk_object_get_data(GTK_OBJECT(dlg_main), "preferences_menu");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmpwidget), FALSE);
+	return 0;
 }
 
 

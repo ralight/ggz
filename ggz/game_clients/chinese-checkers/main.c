@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 	game_init();
 
 	gtk_main();
+
 	return 0;
 }
 
@@ -100,7 +101,7 @@ void main_io_handler(gpointer data, gint source, GdkInputCondition cond)
 	if(status < 0) {
 		fprintf(stderr, "Ouch!\n");
 		close(game.fd);
-		exit(-1);
+		exit(1);
 	}
 }
 

@@ -1,10 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = ccheckers.dsc
+SUBDIRS = . pixmaps
 
-SUBDIRS = .
-
-INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ 
+INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ -I$(top_srcdir)/src/ggzcore
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -25,6 +23,8 @@ ggz_ccheckers_SOURCES = display.c	display.h	\
 			main_dlg.c	main_dlg.h	\
 			main_cb.c	main_cb.h	\
 			about_dlg.c	about_dlg.h	\
+			prefs_dlg.c	prefs_dlg.h	\
+			prefs_cb.c	prefs_cb.h	\
 							\
 			board.xpm			\
 			hole.xpm			\
@@ -32,5 +32,5 @@ ggz_ccheckers_SOURCES = display.c	display.h	\
 			purple.xpm red.xpm yellow.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_ccheckers_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ 
+ggz_ccheckers_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.a
 

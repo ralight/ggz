@@ -23,7 +23,7 @@
  */
 
 
-extern void display_init(void);
+extern int display_init(void);
 extern void display_handle_expose_event(GdkEventExpose *event);
 extern void display_refresh_board(void);
 extern void display_handle_click_event(GdkEventButton *event);

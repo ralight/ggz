@@ -30,9 +30,13 @@
 
 #include "main_cb.h"
 #include "main_dlg.h"
+#include "prefs_dlg.h"
 #include "support.h"
 #include "display.h"
 #include "about_dlg.h"
+#include "game.h"
+
+GtkWidget *dlg_prefs = NULL;
 
 
 gboolean
@@ -50,6 +54,35 @@ on_exit_menu_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	gtk_main_quit();
+}
+
+
+void
+on_preferences_menu_activate	       (GtkMenuItem	*menuitem,
+					gpointer	 user_data)
+{
+	GtkWidget *entry, *toggle;
+
+	if(dlg_prefs != NULL) {
+		gdk_window_show(dlg_prefs->window);
+		gdk_window_raise(dlg_prefs->window);
+	} else {
+		dlg_prefs = create_dlg_prefs();
+		gtk_signal_connect(GTK_OBJECT(dlg_prefs),
+				   "destroy",
+				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				   &dlg_prefs);
+		entry = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "dir_entry");
+		toggle = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "check_beep");
+		gtk_entry_set_text(GTK_ENTRY(entry), game.pixmap_dir);
+		if(game.beep == 1)
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle),
+						     TRUE);
+		else
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle),
+						     FALSE);
+		gtk_widget_show(dlg_prefs);
+	}
 }
 
 

@@ -29,7 +29,9 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
+#include "ggzcore.h"
 #include "game.h"
 #include "ggz.h"
 #include "display.h"
@@ -58,14 +60,40 @@ static int game_find_path(int, int, int, int, int);
 /* Perform game initialization tasks */
 void game_init(void)
 {
+	char *filename;
+	char *tmp;
+
 	/* Connect to GGZ */
 	ggz_connect();
 
 	/* Trap our input from the socket */
 	gdk_input_add(game.fd, GDK_INPUT_READ, main_io_handler, NULL);
 
+	/* Get our preferences */
+	filename = g_strdup_printf("%s/.ggz/ccheckers-gtk.rc", getenv("HOME"));
+	game.conf_handle = ggzcore_confio_parse(filename,
+		 				GGZ_CONFIO_RDWR |
+						GGZ_CONFIO_CREATE);
+	g_free(filename);
+	tmp = g_strdup_printf("%s/ccheckers/pixmaps/default", GAMEDIR);
+	game.pixmap_dir = ggzcore_confio_read_string(game.conf_handle,
+						     "Options", "Theme", tmp);
+	g_free(tmp);
+	game.beep = ggzcore_confio_read_int(game.conf_handle, "Options",
+					    "Beep", 1);
+
 	/* Display the main dialog */
-	display_init();
+	if(display_init() != 0) {
+		/* Theme loading failed, try default dir */
+		free(game.pixmap_dir);
+		tmp = g_strdup_printf("%s/ccheckers/pixmaps/default", GAMEDIR);
+		game.pixmap_dir = strdup(tmp);
+		g_free(tmp);
+		if(display_init() != 0) {
+			fprintf(stderr, "Failed to load default theme!\n");
+			exit(1);
+		}
+	}
 
 	/* Setup the board array */
 	game_zap_board();
@@ -450,6 +478,9 @@ void game_notify_our_turn(void)
 	game.my_turn = 1;
 
 	display_statusbar("Your move, click a marble to move");
+
+	if(game.beep)
+		gdk_beep();
 }
 
 
@@ -462,6 +493,27 @@ void game_opponent_move(int seat, int ro, int co, int rd, int cd)
 
 	display_refresh_board();
 	display_show_path(path_list);
+}
+
+
+void game_update_config(char *pixmap_dir, int beep)
+{
+	if(beep != game.beep) {
+		game.beep = beep;
+		ggzcore_confio_write_int(game.conf_handle, "Options",
+					 "Beep", game.beep);
+	}
+
+	if(strcmp(pixmap_dir, game.pixmap_dir)) {
+		free(game.pixmap_dir);
+		game.pixmap_dir = strdup(pixmap_dir);
+		ggzcore_confio_write_string(game.conf_handle, "Options",
+					    "Theme", game.pixmap_dir);
+		display_init();
+		display_refresh_board();
+	}
+
+	ggzcore_confio_commit(game.conf_handle);
 }
 
 
