@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6273 2004-11-05 21:49:00Z jdorje $
+ * $Id: login.c 6277 2004-11-05 23:38:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -46,6 +46,7 @@
 #include "msgbox.h"
 #include "playerlist.h"
 #include "props.h"
+#include "roomlist.h"
 #include "server.h"
 #include "support.h"
 
@@ -331,8 +332,7 @@ static void login_start_session(void)
 
 	/* Clearout the room, table and player lists */
 	/* FIXME: this should be done as a function in client.c */
-	tmp = lookup_widget(win_main, "room_clist");
-	gtk_clist_clear(GTK_CLIST(tmp));
+	clear_room_list();
 	tmp = lookup_widget(win_main, "table_clist");
 	gtk_clist_clear(GTK_CLIST(tmp));
 	clear_player_list();

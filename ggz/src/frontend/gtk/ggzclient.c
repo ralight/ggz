@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: ggzclient.c 6277 2004-11-05 23:38:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -45,6 +45,7 @@
 #include "msgbox.h"
 #include "motd.h"
 #include "playerlist.h"
+#include "roomlist.h"
 #include "server.h"
 #include "support.h"
 #include "tablelist.h"
@@ -238,61 +239,13 @@ static GGZHookReturn ggz_login_fail(GGZServerEvent id,
 	return GGZ_HOOK_OK;
 }
 
-static void update_room_list(void)
+static void client_update_one_room(int room)
 {
-	GtkWidget *tmp = lookup_widget(win_main, "room_clist");
-	int i;
-	const int numrooms = ggzcore_server_get_num_rooms(server);
-
-	/* Clear current list of rooms */
-	gtk_clist_freeze(GTK_CLIST(tmp));
-	gtk_clist_clear(GTK_CLIST(tmp));
-
-	for (i = 0; i < numrooms; i++) {
-		gchar *table[3];
-		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
-		gchar *name = ggzcore_room_get_name(room);
-		int players = ggzcore_room_get_num_players(room);
-
-		table[0] = g_strdup_printf("%s", name);
-		if (players >= 0) {
-			table[1] = g_strdup_printf("%d", players);
-		} else {
-			table[1] = NULL;
-		}
-		table[2] = NULL;
-
-		gtk_clist_append(GTK_CLIST(tmp), table);
-	}
-
-	gtk_clist_thaw(GTK_CLIST(tmp));
-}
-
-static void update_one_room(int room)
-{
-	GtkWidget *tmp;
-	gchar *name;
-	int players;
-	gchar *table[2];
 	GGZRoom *roomptr = ggzcore_server_get_nth_room(server, room);
 
-	if (!roomptr) return;
-
-	tmp = lookup_widget(win_main, "room_clist");
-	name = ggzcore_room_get_name(roomptr);
-	players = ggzcore_room_get_num_players(roomptr);
-
-	table[0] = g_strdup_printf("%s", name);
-	if (players >= 0) {
-		table[1] = g_strdup_printf("%d", players);
-	} else {
-		table[1] = NULL;
+	if (roomptr) {
+		update_one_room(roomptr);
 	}
-
-	gtk_clist_freeze(GTK_CLIST(tmp));
-	gtk_clist_set_text(GTK_CLIST(tmp), room, 0, table[0]);
-	gtk_clist_set_text(GTK_CLIST(tmp), room, 1, table[1]);
-	gtk_clist_thaw(GTK_CLIST(tmp));
 }
 
 static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* user_data)
@@ -482,14 +435,14 @@ static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* u
 	int *room = event_data;
 
 	update_player_list();
-	if(room) update_one_room(*room);
+	if(room) client_update_one_room(*room);
 	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn ggz_player_count(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	int *room = (int *)event_data;
-	update_one_room(*room);
+	client_update_one_room(*room);
 	return GGZ_HOOK_OK;
 }
 
@@ -498,8 +451,8 @@ static GGZHookReturn ggz_room_enter(GGZRoomEvent id,\
 {
 	GGZRoomChangeEventData *data = event_data;
 
-	update_one_room(data->to_room);
-	update_one_room(data->from_room);
+	client_update_one_room(data->to_room);
+	client_update_one_room(data->from_room);
 	update_player_list();
 	chat_enter(data->player_name, data->from_room);
 
@@ -512,8 +465,8 @@ static GGZHookReturn ggz_room_leave(GGZRoomEvent id,
 {
 	GGZRoomChangeEventData *data = event_data;
 
-	update_one_room(data->to_room);
-	update_one_room(data->from_room);
+	client_update_one_room(data->to_room);
+	client_update_one_room(data->from_room);
 	update_player_list();
 	chat_part(data->player_name, data->to_room);
 
@@ -658,8 +611,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		gtk_widget_set_sensitive(tmp, FALSE);
 		
 		/* Client area */
-		tmp = lookup_widget(win_main, "room_clist");
-		gtk_widget_set_sensitive(tmp, FALSE);
+		sensitize_room_list(FALSE);
 
 		sensitize_player_list(FALSE);
 
@@ -718,8 +670,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		gtk_widget_set_sensitive(tmp, TRUE);
 		
 		/* Client area */
-		tmp = lookup_widget(win_main, "room_clist");
-		gtk_widget_set_sensitive(tmp, TRUE);
+		sensitize_room_list(TRUE);
 		break;
 
 	case GGZ_STATE_BETWEEN_ROOMS:
@@ -753,8 +704,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		gtk_widget_set_sensitive(tmp, TRUE);
 
 		/* Client area */
-		tmp = lookup_widget(win_main, "room_clist");
-		gtk_widget_set_sensitive(tmp, TRUE);
+		sensitize_room_list(TRUE);
 
 		sensitize_player_list(TRUE);
 		
@@ -857,8 +807,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		gtk_widget_set_sensitive(tmp, FALSE);
 		
 		/* Client area */
-		tmp = lookup_widget(win_main, "room_clist");
-		gtk_widget_set_sensitive(tmp, FALSE);
+		sensitize_room_list(FALSE);
 
 		sensitize_player_list(FALSE);
 
@@ -905,10 +854,7 @@ static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* us
 
 	server_disconnect();
 
-        /* Clear current list of rooms */
-        tmp = g_object_get_data(G_OBJECT(win_main), "room_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
- 
+	clear_room_list();
 	clear_player_list();
 
         /* Clear current list of tables */
@@ -1068,13 +1014,11 @@ static void ggz_input_removed(gpointer data)
 }
 
 
-static GGZHookReturn ggz_auto_join(GGZServerEvent id, void* event_data, void* user_data)
+static GGZHookReturn ggz_auto_join(GGZServerEvent id, void* event_data,
+				   void* user_data)
 {
-	GtkWidget *tmp;
-
 	ggzcore_server_join_room(server, 0);
-	tmp =  lookup_widget(win_main, "room_clist");
-	gtk_clist_select_row(GTK_CLIST(tmp), 0, 0);
+	select_room(ggzcore_server_get_nth_room(server, 0));
 
 	return GGZ_HOOK_REMOVE;
 }

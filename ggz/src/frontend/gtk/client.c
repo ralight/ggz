@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6273 2004-11-05 21:49:00Z jdorje $
+ * $Id: client.c 6277 2004-11-05 23:38:34Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -32,13 +32,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
-#include <ggzcore.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <ggz.h> /* For list functions */
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtk.h>
+#include <ggzcore.h>
 
 #include "about.h"
 #include "client.h"
@@ -52,6 +52,7 @@
 #include "login.h"
 #include "msgbox.h"
 #include "props.h"
+#include "roomlist.h"
 #include "server.h"
 #include "support.h"
 #include "tablelist.h"
@@ -72,12 +73,11 @@ static void client_connect_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_disconnect_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_exit_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_launch_activate(GtkMenuItem *menuitem, gpointer data);
-static void client_room_join_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_joinm_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_watchm_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_leave_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_properties_activate(GtkMenuItem *menuitem, gpointer data);
-static void client_room_list_activate(GtkMenuItem *menuitem, gpointer data);
+static void client_room_toggle_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_player_toggle_activate(GtkMenuItem *menuitem,
 					  gpointer data);
 static void client_server_stats_activate(GtkMenuItem *menuitem, gpointer data);
@@ -98,19 +98,12 @@ static void client_leave_button_clicked(GtkButton *button, gpointer data);
 static void client_props_button_clicked(GtkButton *button, gpointer data);
 static void client_stats_button_clicked(GtkButton *button, gpointer data);
 static void client_exit_button_clicked(GtkButton *button, gpointer data);
-static gboolean client_room_clist_event(GtkWidget *widget, GdkEvent *event, gpointer data);
 
-static void client_room_clist_select_row(GtkCList *clist, gint row, 
-					 gint column, GdkEvent *event, 
-					 gpointer data);
 static void client_chat_entry_activate(GtkEditable *editable, gpointer data);
 gboolean client_chat_entry_key_press_event(GtkWidget *widget, 
 					   GdkEventKey *event, gpointer data);
 static void client_send_button_clicked(GtkButton *button, gpointer data);
-static GtkWidget* create_mnu_room(int room_num);
-static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data);
 static int client_get_table_open(guint row);
-static void client_join_room(guint room);				 
 static void client_start_table_watch(void);
 static void client_tables_size_request(GtkWidget *widget, gpointer data);
 
@@ -136,9 +129,7 @@ client_disconnect_activate		(GtkMenuItem	*menuitem,
 		ggz_error_msg("Error logging out in "
 		              "client_disconnect_activate");
 
-	/* Clear current list of rooms */
-        tmp = g_object_get_data(G_OBJECT(win_main), "room_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
+	clear_room_list();
 
 	/* Clear current list of tables */
         tmp = g_object_get_data(G_OBJECT(win_main), "table_clist");
@@ -178,13 +169,6 @@ client_launch_activate		(GtkMenuItem	*menuitem,
 }
 
 
-static void client_room_join_activate(GtkMenuItem *menuitem, gpointer data)
-{
-	int room_num = GPOINTER_TO_INT(data);
-	client_join_room(room_num);
-}
-
-
 static void
 client_joinm_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
@@ -217,9 +201,8 @@ client_properties_activate	(GtkMenuItem	*menuitem,
 }
 
 
-static void
-client_room_list_activate	(GtkMenuItem	*menuitem,
-				 gpointer	 data)
+static void client_room_toggle_activate(GtkMenuItem *menuitem,
+					gpointer data)
 {
 	GtkWidget *tmp;
 	static gboolean room_view = TRUE;
@@ -340,16 +323,6 @@ main_xtext_chat_create			(gchar		*widget_name,
 }
 
 
-
-static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data)
-{
-	/* Display room's info in a nice dialog */
-	int room_num = GPOINTER_TO_INT(data);
-	GGZRoom *room = ggzcore_server_get_nth_room(server, room_num);
-	room_info_create_or_raise(room);		
-}
-
-
 static void
 client_connect_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
@@ -368,10 +341,7 @@ client_disconnect_button_clicked	(GtkButton	*button,
 		ggz_error_msg("Error logging out in "
 		              "client_disconnect_button_clicked");
 
-	/* Clear current list of rooms */
-        tmp = g_object_get_data(G_OBJECT(win_main), "room_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
-
+	clear_room_list();
 	clear_player_list();
 
 	/* Clear current list of tables */
@@ -572,56 +542,6 @@ client_props_button_clicked		(GtkButton	*button,
 }
 
 
-static gboolean 
-client_room_clist_event			(GtkWidget	*widget,
-					 GdkEvent	*event,
-					 gpointer	 data)
-{
-	gboolean single_join;
-	gint row, column;
-	GtkWidget *menu;
-	GdkEventButton* buttonevent = (GdkEventButton*)event;
-	GtkWidget *clist= lookup_widget(win_main, "room_clist");
-
-	if (!gtk_clist_get_selection_info(GTK_CLIST(clist),
-					  buttonevent->x,
-					  buttonevent->y,
-					  &row, &column)) {
-		return FALSE;
-	}
-
-	single_join = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
-
-	switch(event->type) { 
-	case GDK_2BUTTON_PRESS:
-		/* Double click */
-		if (buttonevent->button == 1 && !single_join) {
-			client_join_room(row);
-			return TRUE;
-		}
-		break;
-	case GDK_BUTTON_PRESS:
-		/* Single click */
-		if (buttonevent->button == 1 && single_join) {
-			client_join_room(row);
-			return TRUE;
-		} else if (buttonevent->button == 3) {
-			/* Right mouse button */
-			/* Create and display the menu */
-			gtk_clist_select_row(GTK_CLIST(clist), row, column);
-			menu = create_mnu_room(row);
-			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
-					NULL, buttonevent->button, 0);
-		}
-		break;
-	default:
-		/* Some Other event */
-		break;
-	}
-
-	return FALSE;
-}
-
 static void
 client_stats_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
@@ -639,15 +559,6 @@ client_exit_button_clicked		(GtkButton	*button,
 }
 
 
-static void
-client_room_clist_select_row		(GtkCList       *clist,
-                                         gint            row,
-                                         gint            column,
-                                         GdkEvent       *event,
-                                         gpointer        data)
-{
-}
-
 static int client_get_table_open(guint row)
 {
 	GtkWidget *tmp;
@@ -664,64 +575,6 @@ static int client_get_table_open(guint row)
 	}
 }
 
-
-static void client_join_room(guint room)
-{
-	gchar *err_msg = NULL;
-	gint singleclick, status = -1;
-	GtkWidget *tmp;
-	GGZRoom *ggzroom;
-
-	switch (ggzcore_server_get_state(server)) {
-	case GGZ_STATE_OFFLINE:
-	case GGZ_STATE_CONNECTING:
-	case GGZ_STATE_ONLINE:
-	case GGZ_STATE_LOGGING_IN:
-	case GGZ_STATE_LOGGING_OUT:
-		err_msg = _("You can't join a room, you're not logged int");
-		break;
-	case GGZ_STATE_BETWEEN_ROOMS:
-	case GGZ_STATE_ENTERING_ROOM:
-		err_msg = _("You're already in between rooms");
-		break;
-	case GGZ_STATE_JOINING_TABLE:
-	case GGZ_STATE_AT_TABLE:
-	case GGZ_STATE_LEAVING_TABLE:
-		err_msg = _("You can't switch rooms while playing a game");
-		break;
-	case GGZ_STATE_IN_ROOM:
-	case GGZ_STATE_LOGGED_IN:
-		status = 0;
-		break;
-	default:
-		err_msg = _("Unknown error");
-		status = -1;
-	}
-
-	if (status == 0) {
-		ggzroom = ggzcore_server_get_cur_room(server);
-			if (ggzcore_server_join_room(server, room) == 0) {
-	
-			/* Only desensitize with single click, dues to
-	                some weird bug that freezes the mouse if we
-        	        doubleclick and then desensitize */
-			singleclick = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
-			if (singleclick) {
-				/* Set roomlist insensitive */
-				tmp = lookup_widget(win_main, "room_clist");
-				gtk_widget_set_sensitive(tmp, FALSE);
-			}
-			return;
-		}
-		else {
-			err_msg = _("Error joining room");
-		}
-	}
-
-	/* If we get here, there was an error */
-	msgbox(err_msg, _("Error joining room"), MSGBOX_OKONLY, MSGBOX_STOP, 
-	       MSGBOX_NORMAL);
-}
 
 void client_start_table_join(void)
 {
@@ -931,7 +784,7 @@ create_win_main (void)
   GtkWidget *properties;
   GtkWidget *view;
   GtkWidget *view_menu;
-  GtkWidget *room_list;
+  GtkWidget *room_toggle;
   GtkWidget *player_toggle;
   GtkWidget *separator8;
   GtkWidget *server_stats;
@@ -965,7 +818,6 @@ create_win_main (void)
   GtkWidget *lists_vbox;
   GtkWidget *room_scrolledwindow;
   GtkWidget *room_clist;
-  GtkWidget *room_label;
   GtkWidget *player_scrolledwindow;
   GtkWidget *player_tree;
   GtkWidget *table_vpaned;
@@ -1195,16 +1047,19 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (view), view_menu);
 
-  room_list = gtk_check_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (room_list)->child),
+  room_toggle = gtk_check_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline(GTK_LABEL(GTK_BIN(room_toggle)->child),
                                    _("_Room List"));
-  gtk_widget_ref (room_list);
-  g_object_set_data_full(G_OBJECT (win_main), "room_list", room_list,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (room_list);
-  gtk_container_add (GTK_CONTAINER (view_menu), room_list);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (room_list), TRUE);
-  gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (room_list), TRUE);
+  gtk_widget_ref (room_toggle);
+  g_object_set_data_full(G_OBJECT (win_main), "room_toggle",
+			 room_toggle,
+			 (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (room_toggle);
+  gtk_container_add (GTK_CONTAINER (view_menu), room_toggle);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (room_toggle),
+				  TRUE);
+  gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(room_toggle),
+				      TRUE);
 
   player_toggle = gtk_check_menu_item_new_with_label("");
   tmp_key = gtk_label_parse_uline(GTK_LABEL(GTK_BIN(player_toggle)->child),
@@ -1523,32 +1378,8 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (lists_vbox), room_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (room_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  room_clist = gtk_clist_new(2);
-  gtk_widget_ref (room_clist);
-  g_object_set_data_full(G_OBJECT (win_main), "room_clist", room_clist,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (room_clist);
+  room_clist = create_room_list(win_main);
   gtk_container_add (GTK_CONTAINER (room_scrolledwindow), room_clist);
-  gtk_widget_set_sensitive (room_clist, FALSE);
-  GTK_WIDGET_UNSET_FLAGS (room_clist, GTK_CAN_FOCUS);
-  gtk_widget_set_events (room_clist, GDK_BUTTON_PRESS_MASK);
-  gtk_clist_set_column_width(GTK_CLIST(room_clist), 0, 130);
-  gtk_clist_set_column_width(GTK_CLIST(room_clist), 1, 15);
-  gtk_clist_column_titles_show (GTK_CLIST (room_clist));
-
-  room_label = gtk_label_new (_("Rooms"));
-  gtk_widget_ref (room_label);
-  g_object_set_data_full(G_OBJECT (win_main), "room_label", room_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (room_label);
-  gtk_clist_set_column_widget (GTK_CLIST (room_clist), 0, room_label);
-
-  room_label = gtk_label_new("#");
-  gtk_widget_ref(room_label);
-  g_object_set_data_full(G_OBJECT (win_main), "room_players_label",
-			   room_label, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show(room_label);
-  gtk_clist_set_column_widget(GTK_CLIST(room_clist), 1, room_label);
 
   player_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (player_scrolledwindow);
@@ -1722,8 +1553,8 @@ create_win_main (void)
   g_signal_connect (GTK_OBJECT (properties), "activate",
                       GTK_SIGNAL_FUNC (client_properties_activate),
                       NULL);
-  g_signal_connect (GTK_OBJECT (room_list), "activate",
-                      GTK_SIGNAL_FUNC (client_room_list_activate),
+  g_signal_connect (GTK_OBJECT (room_toggle), "activate",
+                      GTK_SIGNAL_FUNC (client_room_toggle_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT(player_toggle), "activate",
                       GTK_SIGNAL_FUNC(client_player_toggle_activate),
@@ -1782,12 +1613,6 @@ create_win_main (void)
   g_signal_connect (GTK_OBJECT (exit_button), "clicked",
                       GTK_SIGNAL_FUNC (client_exit_button_clicked),
                       NULL);
-  g_signal_connect (GTK_OBJECT (room_clist), "select_row",
-                      GTK_SIGNAL_FUNC (client_room_clist_select_row),
-                      NULL);
-  g_signal_connect (GTK_OBJECT (room_clist), "button-press-event",
-                      GTK_SIGNAL_FUNC (client_room_clist_event),
-                      NULL);
   g_signal_connect (GTK_OBJECT (scrolledwindow3), "size_request",
                       GTK_SIGNAL_FUNC (client_tables_size_request),
                       NULL);
@@ -1805,49 +1630,4 @@ create_win_main (void)
   gtk_window_add_accel_group (GTK_WINDOW (win_main), accel_group);
 
   return win_main;
-}
-
-
-static GtkWidget* create_mnu_room(int room_num)
-{
-  GtkWidget *mnu_room;
-  GtkWidget *info;
-  GtkWidget *join;
-  GtkAccelGroup *accel_group;
-
-  accel_group = gtk_accel_group_new ();
-
-  mnu_room = gtk_menu_new ();
-  g_object_set_data(G_OBJECT (mnu_room), "mnu_room", mnu_room);
-
-  info = gtk_menu_item_new_with_label (_("Info"));
-  gtk_widget_ref (info);
-  g_object_set_data_full(G_OBJECT (mnu_room), "info", info,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (info);
-  gtk_container_add (GTK_CONTAINER (mnu_room), info);
-  gtk_widget_add_accelerator (info, "activate", accel_group,
-                              GDK_I, GDK_CONTROL_MASK,
-                              GTK_ACCEL_VISIBLE);
-
-  join = gtk_menu_item_new_with_label (_("Join"));
-  gtk_widget_ref (join);
-  g_object_set_data_full(G_OBJECT (mnu_room), "join", join,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (join);
-  gtk_container_add (GTK_CONTAINER (mnu_room), join);
-  gtk_widget_add_accelerator (join, "activate", accel_group,
-                              GDK_J, GDK_CONTROL_MASK,
-                              GTK_ACCEL_VISIBLE);
-
-  g_signal_connect (GTK_OBJECT (info), "activate",
-                      GTK_SIGNAL_FUNC (client_room_info_activate),
-                      GINT_TO_POINTER(room_num));
-  g_signal_connect (GTK_OBJECT (join), "activate",
-                      GTK_SIGNAL_FUNC (client_room_join_activate),
-                      GINT_TO_POINTER(room_num));
-
-  gtk_menu_set_accel_group (GTK_MENU (mnu_room), accel_group);
-
-  return mnu_room;
 }
