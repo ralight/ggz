@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.c 5092 2002-10-28 23:26:35Z jdorje $
+ * $Id: roominfo.c 5093 2002-10-28 23:37:41Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -58,6 +58,8 @@ extern GGZServer *server;
 void room_info_create_or_raise(GGZRoom * room)
 {
 	GtkWidget *tmp;
+	GGZGameType *gt = ggzcore_room_get_gametype(room);
+	char *text;
 
 	if (!dialog) {
 		dialog = create_dlg_info();
@@ -67,21 +69,32 @@ void room_info_create_or_raise(GGZRoom * room)
 		gdk_window_raise(dialog->window);
 	}
 
-	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "desc");
-	gtk_label_set_text(GTK_LABEL(tmp), ggzcore_room_get_name(room));
 	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "name");
-	gtk_label_set_text(GTK_LABEL(tmp),
-			   ggzcore_gametype_get_name
-			   (ggzcore_room_get_gametype(room)));
-	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "author");
-	gtk_label_set_text(GTK_LABEL(tmp),
-			   ggzcore_gametype_get_author
-			   (ggzcore_room_get_gametype(room)));
-	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "www");
-	gtk_label_set_text(GTK_LABEL(tmp),
-			   ggzcore_gametype_get_url
-			   (ggzcore_room_get_gametype(room)));
+	if (gt)
+		text = ggzcore_gametype_get_name(gt);
+	else
+		text = _("This room has no game");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
 
+	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "author");
+	if (gt)
+		text = ggzcore_gametype_get_author(gt);
+	else
+		text = _("N/A");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "www");
+	if (gt)
+		text = ggzcore_gametype_get_url(gt);
+	else
+		text = _("N/A");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "desc");
+	text = ggzcore_room_get_name(room);
+	if (!text)
+		text = _("Unknown room");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
 }
 
 
@@ -111,7 +124,7 @@ GtkWidget *create_dlg_info(void)
 
 	dlg_info = gtk_dialog_new();
 	gtk_object_set_data(GTK_OBJECT(dlg_info), "dlg_info", dlg_info);
-	gtk_widget_set_usize(dlg_info, 424, -2);
+	gtk_widget_set_usize(dlg_info, -2, -2);
 	gtk_window_set_title(GTK_WINDOW(dlg_info), _("Room Information"));
 
 	dialog_vbox = GTK_DIALOG(dlg_info)->vbox;
@@ -159,7 +172,7 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label1);
 	gtk_box_pack_start(GTK_BOX(name_hbox), label1, FALSE, FALSE, 0);
-	gtk_widget_set_usize(label1, 100, -2);
+	gtk_widget_set_usize(label1, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(label1), 0.02, 0.5);
 
 	name = gtk_label_new("");
@@ -184,7 +197,7 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label2);
 	gtk_box_pack_start(GTK_BOX(author_hbox), label2, FALSE, FALSE, 0);
-	gtk_widget_set_usize(label2, 100, -2);
+	gtk_widget_set_usize(label2, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(label2), 0.02, 0.5);
 
 	author = gtk_label_new("");
@@ -208,7 +221,7 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label3);
 	gtk_box_pack_start(GTK_BOX(www_hbox), label3, FALSE, FALSE, 0);
-	gtk_widget_set_usize(label3, 100, -2);
+	gtk_widget_set_usize(label3, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(label3), 0.02, 0.5);
 
 	www = gtk_label_new("");
@@ -232,7 +245,7 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label4);
 	gtk_box_pack_start(GTK_BOX(desc_hbox), label4, FALSE, FALSE, 0);
-	gtk_widget_set_usize(label4, 100, -2);
+	gtk_widget_set_usize(label4, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(label4), 0.02, 0);
 
 	desc = gtk_label_new("");
@@ -269,8 +282,7 @@ GtkWidget *create_dlg_info(void)
 	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
 
 	gtk_signal_connect(GTK_OBJECT(dlg_info), "destroy",
-			   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-			   &dialog);
+			   GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dialog);
 	gtk_signal_connect_object(GTK_OBJECT(ok_button), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dlg_info));
