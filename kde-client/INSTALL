@@ -1,0 +1,17 @@
+Installation of GGZ-KDE
+=======================
+
+1. Make sure you have 2 packages installed:
+	- easysock (for low level network functionality)
+	- ggzcore (for frontend handling)
+   You can find ggzcore in the ggz-client-libs package.
+
+2. Make sure you have the correct versions of Qt
+   and KDE installed. You need at least version 2.0
+   of either one.
+
+3. Type ./autogen.sh (or ./configure if not building from
+   the CVS sources), make and make install (as root).
+
+4. Have fun :)
+

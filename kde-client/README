@@ -1,0 +1,25 @@
+===============================================
+The GGZ Gaming Zone - KDE Frontends and Clients
+===============================================
+
+Beginning with version 0.0.4, GGZ is also available for our fellow KDE'ers.
+Due to some lack of time there is currently only one application available,
+but some more will follow soon.
+
+Content of GGZ-KDE:
+	- GGZCore++, a high-level C++ API for handling online games,
+		largely based on the ggzcore C library
+	- KGGZ, the well-known fronted. It provides a chat and is
+		configurable.
+Both have their own README for more information on them.
+
+Please read 'INSTALL' if you aren't experienced with the build yet.
+
+If you encounter any bugs, please send them to
+	Josef Spillner, <dr_maux@users.sourceforge.net>,
+or to the mailing list,
+	ggz-dev@lists.sourceforge.net.
+
+Have fun!
+	- The GGZ Gaming Zone Development Team
+

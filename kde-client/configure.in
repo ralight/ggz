@@ -10,7 +10,7 @@ AM_CONFIG_HEADER(config.h)
 dnl Options for building KGGZ
 dnl =========================
 
-AC_ARG_DISABLE(disable-ggzcorepp, [  --disable-ggzcorepp  don't build GGZCore++ ],, disable_ggzcorepp=no)
+AC_ARG_ENABLE(ggzcorepp, [  --disable-ggzcorepp  don't build GGZCore++ ], disable_ggzcorepp=no, disable_ggzcorepp=yes)
 
 dnl Check for Qt and KDE
 dnl ====================
@@ -21,16 +21,19 @@ AC_CHECK_COMPILERS
 AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(no)
 KDE_PROG_LIBTOOL
-AM_KDE_WITH_NLS
 AM_PROG_LIBTOOL
+AM_KDE_WITH_NLS
 AC_PATH_KDE
+
+SUBDIRS="src data"
 
 dnl Check for easysock and ggzcore
 dnl ==============================
 
-if test "$disable_ggzcorepp" = no; then
-	AC_GGZ_EASYSOCK(0.0.2)
+if test "$disable_ggzcorepp" = yes; then
+	AC_GGZ_EASYSOCK
 	AC_GGZ_GGZCORE
+	SUBDIRS="ggzcore++ $SUBDIRS"
 fi
 
 dnl Set up variables for KGGZ
@@ -38,22 +41,23 @@ dnl =========================
 
 AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${kde_datadir_c}/kggz")
 
-AC_SUBST(ggzdirectory)
+AC_SUBST(SUBDIRS)
 
 dnl Create Makefiles
 dnl ================
 
 AC_OUTPUT(Makefile
-	ggzcore++/Makefile
-	ggzcore++/src/Makefile
-	ggzcore++/doc/Makefile
-	ggzcore++/doc/html/Makefile
-	src/Makefile
-	src/widgets/Makefile
-	src/abstract/Makefile
-	data/Makefile
-	data/icons/Makefile
-	data/kde/Makefile)
+	ggz-kde/Makefile
+	ggz-kde/ggzcore++/Makefile
+	ggz-kde/ggzcore++/src/Makefile
+	ggz-kde/ggzcore++/doc/Makefile
+	ggz-kde/ggzcore++/doc/html/Makefile
+	ggz-kde/src/Makefile
+	ggz-kde/src/widgets/Makefile
+	ggz-kde/src/abstract/Makefile
+	ggz-kde/data/Makefile
+	ggz-kde/data/icons/Makefile
+	ggz-kde/data/kde/Makefile)
 
 dnl Report success
 dnl ==============
@@ -64,6 +68,6 @@ echo "The following installation layout is used:"
 echo ""
 echo "Installation prefix: $prefix"
 echo "Data: $prefix/share/apps/kggz/"
-echo "Skip included GGZCore++: $disable_ggzcorepp"
+echo "Build included GGZCore++: $disable_ggzcorepp"
 echo ""
 
