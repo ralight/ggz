@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
+ * $Id: ggzd.h 2329 2001-08-31 03:06:17Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -78,13 +79,6 @@
 #define GGZ_TABLE_LAUNCHED   1
 #define GGZ_TABLE_PLAYING    2
 #define GGZ_TABLE_DONE       3
-
-/* Special seat assignment values */
-#define GGZ_SEAT_OPEN   -1
-#define GGZ_SEAT_BOT    -2
-#define GGZ_SEAT_RESV   -3
-#define GGZ_SEAT_NONE   -4
-#define GGZ_SEAT_PLAYER -5
 
 #endif
 

@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
+ * $Id: net.c 2329 2001-08-31 03:06:17Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -31,6 +32,7 @@
 
 #include <err_func.h>
 #include <ggzd.h>
+#include <ggzdmod.h>
 #include <login.h>
 #include <motd.h>
 #include <net.h>
