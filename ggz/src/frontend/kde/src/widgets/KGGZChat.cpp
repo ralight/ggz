@@ -306,7 +306,7 @@ char *KGGZChat::plaintext(const char *text)
 	int j = 0;
 
 	if(ret) free(ret);
-	ret = (char*)malloc(strlen(text) * 3); // erm... :-)
+	ret = (char*)malloc(strlen(text) * 7); // erm... :-)
 	strcpy(ret, "");
 	for(int i = 0; i < strlen(text); i++)
 	{
@@ -319,6 +319,11 @@ char *KGGZChat::plaintext(const char *text)
 		{
 			strcat(ret, "&gt;");
 			j += 4;
+		}
+		else if(text[i] == ' ')
+		{
+			strcat(ret, "&nbsp;");
+			j += 6;
 		}
 		else
 		{
