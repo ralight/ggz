@@ -685,7 +685,7 @@ void dlg_options_list_maps(GtkWidget *dlg) {
   clist_names = (char **)calloc(1, sizeof(char *));
   names = (char **)calloc(n, sizeof(char *));
   printf("Number of maps: %d\n", n);
-  while (n--) {
+  while (n-- > 0) {
     clist_names[0] = dirlist[n]->d_name;
     names[n] = (char *)malloc(15 + strlen(dirlist[n]->d_name));
     strcpy(names[n], "maps/");
