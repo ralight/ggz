@@ -1,4 +1,4 @@
-.TH "ggz.h" 3 "11 May 2003" "LibGGZ" \" -*- nroff -*-
+.TH "ggz.h" 3 "7 Feb 2004" "LibGGZ" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,19 +16,19 @@ ggz.h \-
 .ti -1c
 .RI "struct \fB_GGZListEntry\fP"
 .br
-.RI "\fIA single entry in a GGZList.\fP"
+.RI "\fIA single entry in a GGZList. \fP"
 .ti -1c
 .RI "struct \fB_GGZList\fP"
 .br
-.RI "\fISimple doubly-linked list.\fP"
+.RI "\fISimple doubly-linked list. \fP"
 .ti -1c
 .RI "struct \fB_GGZXMLElement\fP"
 .br
-.RI "\fIObject representing a single XML element.\fP"
+.RI "\fIObject representing a single XML element. \fP"
 .ti -1c
 .RI "struct \fBhash_t\fP"
 .br
-.RI "\fIHash data structure.\fP"
+.RI "\fIHash data structure. \fP"
 .in -1c
 .SS "Defines"
 
@@ -40,46 +40,46 @@ ggz.h \-
 .RI "#define \fBLIBGGZ_VERSION_MINOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   7"
+.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   8"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '1:1:0'"
+.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '2:0:1'"
 .br
 .ti -1c
 .RI "#define \fBggz__attribute\fP(att)"
 .br
-.RI "\fIAllow easy use of GCC's 'attribute' macro for debugging.\fP"
+.RI "\fIAllow easy use of GCC's 'attribute' macro for debugging. \fP"
 .ti -1c
 .RI "#define \fB_GGZFUNCTION_\fP   __FUNCTION__"
 .br
 .ti -1c
 .RI "#define \fBggz_malloc\fP(size)   _ggz_malloc(size, _GGZFUNCTION_ ' in ' __FILE__, __LINE__)"
 .br
-.RI "\fIMacro for memory allocation.\fP"
+.RI "\fIMacro for memory allocation. \fP"
 .ti -1c
 .RI "#define \fBggz_realloc\fP(mem, size)   _ggz_realloc(mem, size, _GGZFUNCTION_ ' in ' __FILE__, __LINE__)"
 .br
-.RI "\fIMacro for resizing previously allocated memory.\fP"
+.RI "\fIMacro for resizing previously allocated memory. \fP"
 .ti -1c
 .RI "#define \fBggz_free\fP(mem)   _ggz_free(mem, _GGZFUNCTION_ ' in ' __FILE__,  __LINE__)"
 .br
-.RI "\fIMacro for freeing memory previously allocated.\fP"
+.RI "\fIMacro for freeing memory previously allocated. \fP"
 .ti -1c
 .RI "#define \fBggz_strdup\fP(string)   _ggz_strdup(string, _GGZFUNCTION_ ' in ' __FILE__,  __LINE__)"
 .br
-.RI "\fIMacro for duplicating string.\fP"
+.RI "\fIMacro for duplicating string. \fP"
 .ti -1c
 .RI "#define \fBGGZ_LIST_REPLACE_DUPS\fP   0x00"
 .br
-.RI "\fIOverwrite duplicate values on insert.\fP"
+.RI "\fIOverwrite duplicate values on insert. \fP"
 .ti -1c
 .RI "#define \fBGGZ_LIST_ALLOW_DUPS\fP   0x01"
 .br
-.RI "\fIAllow duplicate data entries to exist in the list.\fP"
+.RI "\fIAllow duplicate data entries to exist in the list. \fP"
 .ti -1c
 .RI "#define \fBGGZ_SOCKET_DEBUG\fP   'socket'"
 .br
-.RI "\fIggz_debug debugging type for Easysock debugging.\fP"
+.RI "\fIggz_debug debugging type for Easysock debugging. \fP"
 .in -1c
 .SS "Typedefs"
 
@@ -87,47 +87,47 @@ ggz.h \-
 .ti -1c
 .RI "typedef int(* \fBggzEntryCompare\fP )(void *a, void *b)"
 .br
-.RI "\fIA function type for doing data comparison on two items in a \fB::GGZList\fP.\fP"
+.RI "\fIA function type for doing data comparison on two items in a \fBGGZList\fP. \fP"
 .ti -1c
 .RI "typedef void *(* \fBggzEntryCreate\fP )(void *data)"
 .br
-.RI "\fIA function type for creating a copy of a data item for insertion into a \fB::GGZList\fP.\fP"
+.RI "\fIA function type for creating a copy of a data item for insertion into a \fBGGZList\fP. \fP"
 .ti -1c
 .RI "typedef void(* \fBggzEntryDestroy\fP )(void *data)"
 .br
-.RI "\fIA function type to destroy an entry in a GGZList.\fP"
+.RI "\fIA function type to destroy an entry in a GGZList. \fP"
 .ti -1c
 .RI "typedef \fB_GGZListEntry\fP \fBGGZListEntry\fP"
 .br
-.RI "\fIA single entry in a GGZList.\fP"
+.RI "\fIA single entry in a GGZList. \fP"
 .ti -1c
 .RI "typedef \fB_GGZList\fP \fBGGZList\fP"
 .br
-.RI "\fISimple doubly-linked list.\fP"
+.RI "\fISimple doubly-linked list. \fP"
 .ti -1c
 .RI "typedef \fB_GGZList\fP \fBGGZStack\fP"
 .br
-.RI "\fISimple implementation of stacks using \fB::GGZList\fP.\fP"
+.RI "\fISimple implementation of stacks using \fBGGZList\fP. \fP"
 .ti -1c
 .RI "typedef \fB_GGZXMLElement\fP \fBGGZXMLElement\fP"
 .br
-.RI "\fIObject representing a single XML element.\fP"
+.RI "\fIObject representing a single XML element. \fP"
 .ti -1c
 .RI "typedef void(* \fBGGZDebugHandlerFunc\fP )(int priority, const char *msg)"
 .br
-.RI "\fIA callback function to handle debugging output.\fP"
+.RI "\fIA callback function to handle debugging output. \fP"
 .ti -1c
 .RI "typedef _GGZFile \fBGGZFile\fP"
 .br
-.RI "\fIStructure used internally by \fBggz_read_line()\fP.\fP"
+.RI "\fIStructure used internally by \fBggz_read_line()\fP. \fP"
 .ti -1c
 .RI "typedef void(* \fBggzIOError\fP )(const char *msg, const \fBGGZIOType\fP type, const int fd, const \fBGGZDataType\fP data)"
 .br
-.RI "\fIAn error function type.\fP"
+.RI "\fIAn error function type. \fP"
 .ti -1c
 .RI "typedef void(* \fBggzIOExit\fP )(int status)"
 .br
-.RI "\fIAn exit function type.\fP"
+.RI "\fIAn exit function type. \fP"
 .in -1c
 .SS "Enumerations"
 
@@ -135,31 +135,31 @@ ggz.h \-
 .ti -1c
 .RI "enum \fBGGZConfType\fP { \fBGGZ_CONF_RDONLY\fP =  ((unsigned char) 0x01), \fBGGZ_CONF_RDWR\fP =  ((unsigned char) 0x02), \fBGGZ_CONF_CREATE\fP =  ((unsigned char) 0x04) }"
 .br
-.RI "\fISpecifies the mode for opening a configuration file.\fP"
+.RI "\fISpecifies the mode for opening a configuration file. \fP"
 .ti -1c
 .RI "enum \fBGGZCheckType\fP { \fBGGZ_CHECK_NONE\fP =  0x00, \fBGGZ_CHECK_MEM\fP =  0x01 }"
 .br
-.RI "\fIWhat memory checks should we do?\fP"
+.RI "\fIWhat memory checks should we do? \fP"
 .ti -1c
 .RI "enum \fBGGZIOType\fP { \fBGGZ_IO_CREATE\fP, \fBGGZ_IO_READ\fP, \fBGGZ_IO_WRITE\fP, \fBGGZ_IO_ALLOCATE\fP }"
 .br
-.RI "\fIAn error type for the GGZ socket functions.\fP"
+.RI "\fIAn error type for the GGZ socket functions. \fP"
 .ti -1c
 .RI "enum \fBGGZDataType\fP { \fBGGZ_DATA_NONE\fP, \fBGGZ_DATA_CHAR\fP, \fBGGZ_DATA_INT\fP, \fBGGZ_DATA_STRING\fP, \fBGGZ_DATA_FD\fP }"
 .br
-.RI "\fIA data type for the GGZ socket function error handler.\fP"
+.RI "\fIA data type for the GGZ socket function error handler. \fP"
 .ti -1c
 .RI "enum \fBGGZSockType\fP { \fBGGZ_SOCK_SERVER\fP, \fBGGZ_SOCK_CLIENT\fP }"
 .br
-.RI "\fIA socket type.\fP"
+.RI "\fIA socket type. \fP"
 .ti -1c
 .RI "enum \fBGGZTLSType\fP { \fBGGZ_TLS_CLIENT\fP, \fBGGZ_TLS_SERVER\fP }"
 .br
-.RI "\fITLS operation mode.\fP"
+.RI "\fITLS operation mode. \fP"
 .ti -1c
 .RI "enum \fBGGZTLSVerificationType\fP { \fBGGZ_TLS_VERIFY_NONE\fP, \fBGGZ_TLS_VERIFY_PEER\fP }"
 .br
-.RI "\fITLS verification type.\fP"
+.RI "\fITLS verification type. \fP"
 .in -1c
 .SS "Functions"
 
@@ -167,430 +167,430 @@ ggz.h \-
 .ti -1c
 .RI "void * \fB_ggz_malloc\fP (const size_t size, const char *tag, int line)"
 .br
-.RI "\fIFunction to actually perform memory allocation.\fP"
+.RI "\fIFunction to actually perform memory allocation. \fP"
 .ti -1c
 .RI "void * \fB_ggz_realloc\fP (const void *ptr, const size_t size, const char *tag, int line)"
 .br
-.RI "\fIFunction to perform memory reallocation.\fP"
+.RI "\fIFunction to perform memory reallocation. \fP"
 .ti -1c
 .RI "int \fB_ggz_free\fP (const void *ptr, const char *tag, int line)"
 .br
-.RI "\fIFunction to free allocated memory.\fP"
+.RI "\fIFunction to free allocated memory. \fP"
 .ti -1c
 .RI "char * \fB_ggz_strdup\fP (const char *ptr, const char *tag, int line)"
 .br
-.RI "\fIFunction to copy a string.\fP"
+.RI "\fIFunction to copy a string. \fP"
 .ti -1c
 .RI "int \fBggz_memory_check\fP (void)"
 .br
-.RI "\fICheck memory allocated against memory freed and display any discrepencies.\fP"
+.RI "\fICheck memory allocated against memory freed and display any discrepencies. \fP"
 .ti -1c
 .RI "void \fBggz_conf_cleanup\fP (void)"
 .br
-.RI "\fICloses all open configuration files.\fP"
+.RI "\fICloses all open configuration files. \fP"
 .ti -1c
 .RI "void \fBggz_conf_close\fP (int handle)"
 .br
-.RI "\fICloses one configuration file.\fP"
+.RI "\fICloses one configuration file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_parse\fP (const char *path, const \fBGGZConfType\fP options)"
 .br
-.RI "\fIOpens a configuration file and parses the variables so they can be retrieved with the access functions.\fP"
+.RI "\fIOpens a configuration file and parses the variables so they can be retrieved with the access functions. \fP"
 .ti -1c
 .RI "int \fBggz_conf_commit\fP (int handle)"
 .br
-.RI "\fICommits any changed variables to the configuration file.\fP"
+.RI "\fICommits any changed variables to the configuration file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_write_string\fP (int handle, const char *section, const char *key, const char *value)"
 .br
-.RI "\fIWrites a string value to a section and key in an open configuration file.\fP"
+.RI "\fIWrites a string value to a section and key in an open configuration file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_write_int\fP (int handle, const char *section, const char *key, int value)"
 .br
-.RI "\fIWrites an integer value to a section and key in an open configuration file.\fP"
+.RI "\fIWrites an integer value to a section and key in an open configuration file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_write_list\fP (int handle, const char *section, const char *key, int argc, char **argv)"
 .br
-.RI "\fIWrites a list of string values to a section and key in an open configuration file.\fP"
+.RI "\fIWrites a list of string values to a section and key in an open configuration file. \fP"
 .ti -1c
 .RI "char * \fBggz_conf_read_string\fP (int handle, const char *section, const char *key, const char *def)"
 .br
-.RI "\fIReads a string value from an open configuration file.\fP"
+.RI "\fIReads a string value from an open configuration file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_read_int\fP (int handle, const char *section, const char *key, int def)"
 .br
-.RI "\fIReads an integer value from an open configuration file.\fP"
+.RI "\fIReads an integer value from an open configuration file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_read_list\fP (int handle, const char *section, const char *key, int *argcp, char ***argvp)"
 .br
-.RI "\fIReads a list of string values from an open configuration file.\fP"
+.RI "\fIReads a list of string values from an open configuration file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_remove_section\fP (int handle, const char *section)"
 .br
-.RI "\fIThis will remove an entire section and all its associated keys from a configuration file.\fP"
+.RI "\fIThis will remove an entire section and all its associated keys from a configuration file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_remove_key\fP (int handle, const char *section, const char *key)"
 .br
-.RI "\fIThis will remove a single key from a configuration file.\fP"
+.RI "\fIThis will remove a single key from a configuration file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_get_sections\fP (int handle, int *argcp, char ***argvp)"
 .br
-.RI "\fIThis function returns a list of all sections in a config file.\fP"
+.RI "\fIThis function returns a list of all sections in a config file. \fP"
 .ti -1c
 .RI "int \fBggz_conf_get_keys\fP (int handle, const char *section, int *argcp, char ***argvp)"
 .br
-.RI "\fIThis function returns a list of all keys within a section in a config file.\fP"
+.RI "\fIThis function returns a list of all keys within a section in a config file. \fP"
 .ti -1c
 .RI "\fBGGZList\fP * \fBggz_list_create\fP (\fBggzEntryCompare\fP compare_func, \fBggzEntryCreate\fP create_func, \fBggzEntryDestroy\fP destroy_func, int options)"
 .br
-.RI "\fICreate a new \fB::GGZList\fP.\fP"
+.RI "\fICreate a new \fBGGZList\fP. \fP"
 .ti -1c
 .RI "int \fBggz_list_insert\fP (\fBGGZList\fP *list, void *data)"
 .br
-.RI "\fIInsert data into a list.\fP"
+.RI "\fIInsert data into a list. \fP"
 .ti -1c
 .RI "\fBGGZListEntry\fP * \fBggz_list_head\fP (\fBGGZList\fP *list)"
 .br
-.RI "\fIGet the first node of a list.\fP"
+.RI "\fIGet the first node of a list. \fP"
 .ti -1c
 .RI "\fBGGZListEntry\fP * \fBggz_list_tail\fP (\fBGGZList\fP *list)"
 .br
-.RI "\fIGet the last node of a list.\fP"
+.RI "\fIGet the last node of a list. \fP"
 .ti -1c
 .RI "\fBGGZListEntry\fP * \fBggz_list_next\fP (\fBGGZListEntry\fP *entry)"
 .br
-.RI "\fIGet the next node of a list.\fP"
+.RI "\fIGet the next node of a list. \fP"
 .ti -1c
 .RI "\fBGGZListEntry\fP * \fBggz_list_prev\fP (\fBGGZListEntry\fP *entry)"
 .br
-.RI "\fIGet the previous node of a list.\fP"
+.RI "\fIGet the previous node of a list. \fP"
 .ti -1c
 .RI "void * \fBggz_list_get_data\fP (\fBGGZListEntry\fP *entry)"
 .br
-.RI "\fIRetrieve the data stored in a list entry.\fP"
+.RI "\fIRetrieve the data stored in a list entry. \fP"
 .ti -1c
 .RI "\fBGGZListEntry\fP * \fBggz_list_search\fP (\fBGGZList\fP *list, void *data)"
 .br
-.RI "\fISearch for a specified data item in the list.\fP"
+.RI "\fISearch for a specified data item in the list. \fP"
 .ti -1c
 .RI "\fBGGZListEntry\fP * \fBggz_list_search_alt\fP (\fBGGZList\fP *list, void *data, \fBggzEntryCompare\fP compare_func)"
 .br
-.RI "\fISearch for a specified data item in the list using a provided comparison function.\fP"
+.RI "\fISearch for a specified data item in the list using a provided comparison function. \fP"
 .ti -1c
 .RI "void \fBggz_list_delete_entry\fP (\fBGGZList\fP *list, \fBGGZListEntry\fP *entry)"
 .br
-.RI "\fIRemoves an entry from a list, calling a destructor if registered.\fP"
+.RI "\fIRemoves an entry from a list, calling a destructor if registered. \fP"
 .ti -1c
 .RI "void \fBggz_list_free\fP (\fBGGZList\fP *list)"
 .br
-.RI "\fIFree all resources associated with a list.\fP"
+.RI "\fIFree all resources associated with a list. \fP"
 .ti -1c
 .RI "int \fBggz_list_count\fP (\fBGGZList\fP *list)"
 .br
-.RI "\fIGet the length of the list.\fP"
+.RI "\fIGet the length of the list. \fP"
 .ti -1c
 .RI "int \fBggz_list_compare_str\fP (void *a, void *b)"
 .br
-.RI "\fICompare two character strings.\fP"
+.RI "\fICompare two character strings. \fP"
 .ti -1c
 .RI "void * \fBggz_list_create_str\fP (void *data)"
 .br
-.RI "\fICopy a character string.\fP"
+.RI "\fICopy a character string. \fP"
 .ti -1c
 .RI "void \fBggz_list_destroy_str\fP (void *data)"
 .br
-.RI "\fIFree a character string.\fP"
+.RI "\fIFree a character string. \fP"
 .ti -1c
 .RI "\fBGGZStack\fP * \fBggz_stack_new\fP (void)"
 .br
-.RI "\fICreate a new stack.\fP"
+.RI "\fICreate a new stack. \fP"
 .ti -1c
 .RI "void \fBggz_stack_push\fP (\fBGGZStack\fP *stack, void *data)"
 .br
-.RI "\fIPush a data item onto the top of the stack.\fP"
+.RI "\fIPush a data item onto the top of the stack. \fP"
 .ti -1c
 .RI "void * \fBggz_stack_pop\fP (\fBGGZStack\fP *stack)"
 .br
-.RI "\fIPop the top item off of the stack.\fP"
+.RI "\fIPop the top item off of the stack. \fP"
 .ti -1c
 .RI "void * \fBggz_stack_top\fP (\fBGGZStack\fP *stack)"
 .br
-.RI "\fIGet the top item on the stack without popping it.\fP"
+.RI "\fIGet the top item on the stack without popping it. \fP"
 .ti -1c
 .RI "void \fBggz_stack_free\fP (\fBGGZStack\fP *stack)"
 .br
-.RI "\fIFree the stack.\fP"
+.RI "\fIFree the stack. \fP"
 .ti -1c
 .RI "\fBGGZXMLElement\fP * \fBggz_xmlelement_new\fP (char *tag, char **attrs, void(*process)(), void(*free)())"
 .br
-.RI "\fICreate a new \fB::GGZXMLElement\fP element.\fP"
+.RI "\fICreate a new \fBGGZXMLElement\fP element. \fP"
 .ti -1c
 .RI "void \fBggz_xmlelement_init\fP (\fBGGZXMLElement\fP *element, char *tag, char **attrs, void(*process)(), void(*free)())"
 .br
-.RI "\fIInitialize a \fB::GGZXMLElement\fP.\fP"
+.RI "\fIInitialize a \fBGGZXMLElement\fP. \fP"
 .ti -1c
 .RI "void \fBggz_xmlelement_set_data\fP (\fBGGZXMLElement\fP *element, void *data)"
 .br
-.RI "\fISet ancillary data on a \fB::GGZXMLElement\fP object.\fP"
+.RI "\fISet ancillary data on a \fBGGZXMLElement\fP object. \fP"
 .ti -1c
 .RI "char * \fBggz_xmlelement_get_tag\fP (\fBGGZXMLElement\fP *element)"
 .br
-.RI "\fIGet an XML element's name.\fP"
+.RI "\fIGet an XML element's name. \fP"
 .ti -1c
 .RI "char * \fBggz_xmlelement_get_attr\fP (\fBGGZXMLElement\fP *element, char *attr)"
 .br
-.RI "\fIGet the value of an attribute on XML element.\fP"
+.RI "\fIGet the value of an attribute on XML element. \fP"
 .ti -1c
 .RI "void * \fBggz_xmlelement_get_data\fP (\fBGGZXMLElement\fP *element)"
 .br
-.RI "\fIGet the user-supplied data associated with an XML element.\fP"
+.RI "\fIGet the user-supplied data associated with an XML element. \fP"
 .ti -1c
 .RI "char * \fBggz_xmlelement_get_text\fP (\fBGGZXMLElement\fP *element)"
 .br
-.RI "\fIGet an XML element's content text.\fP"
+.RI "\fIGet an XML element's content text. \fP"
 .ti -1c
 .RI "void \fBggz_xmlelement_add_text\fP (\fBGGZXMLElement\fP *element, const char *text, int len)"
 .br
-.RI "\fIAppend a string to the element's content text.\fP"
+.RI "\fIAppend a string to the element's content text. \fP"
 .ti -1c
 .RI "void \fBggz_xmlelement_free\fP (\fBGGZXMLElement\fP *element)"
 .br
-.RI "\fIFree the memory associated with an XML element.\fP"
+.RI "\fIFree the memory associated with an XML element. \fP"
 .ti -1c
 .RI "void \fBggz_debug_init\fP (const char **types, const char *file)"
 .br
-.RI "\fIInitialize and configure debugging for the program.\fP"
+.RI "\fIInitialize and configure debugging for the program. \fP"
 .ti -1c
 .RI "\fBGGZDebugHandlerFunc\fP \fBggz_debug_set_func\fP (\fBGGZDebugHandlerFunc\fP func)"
 .br
-.RI "\fISet the debug handler function.\fP"
+.RI "\fISet the debug handler function. \fP"
 .ti -1c
 .RI "void \fBggz_debug_enable\fP (const char *type)"
 .br
-.RI "\fIEnable a specific type of debugging.\fP"
+.RI "\fIEnable a specific type of debugging. \fP"
 .ti -1c
 .RI "void \fBggz_debug_disable\fP (const char *type)"
 .br
-.RI "\fIDisable a specific type of debugging.\fP"
+.RI "\fIDisable a specific type of debugging. \fP"
 .ti -1c
 .RI "void \fBggz_debug\fP (const char *type, const char *fmt,...) ggz__attribute((format(printf"
 .br
-.RI "\fILog a debugging message.\fP"
+.RI "\fILog a debugging message. \fP"
 .ti -1c
 .RI "void \fBggz_log\fP (const char *type, const char *fmt,...) ggz__attribute((format(printf"
 .br
-.RI "\fILog a notice message.\fP"
+.RI "\fILog a notice message. \fP"
 .ti -1c
 .RI "void \fBggz_error_sys\fP (const char *fmt,...) ggz__attribute((format(printf"
 .br
-.RI "\fILog a syscall error.\fP"
+.RI "\fILog a syscall error. \fP"
 .ti -1c
 .RI "void \fBggz_error_sys_exit\fP (const char *fmt,...) ggz__attribute((format(printf"
 .br
-.RI "\fILog a fatal syscall error.\fP"
+.RI "\fILog a fatal syscall error. \fP"
 .ti -1c
 .RI "void \fBggz__attribute\fP ((noreturn))"
 .br
 .ti -1c
 .RI "void \fBggz_error_msg\fP (const char *fmt,...) ggz__attribute((format(printf"
 .br
-.RI "\fILog an error message.\fP"
+.RI "\fILog an error message. \fP"
 .ti -1c
 .RI "void \fBggz_error_msg_exit\fP (const char *fmt,...) ggz__attribute((format(printf"
 .br
-.RI "\fILog a fatal error message.\fP"
+.RI "\fILog a fatal error message. \fP"
 .ti -1c
 .RI "void \fBggz_debug_cleanup\fP (\fBGGZCheckType\fP check)"
 .br
-.RI "\fICleans up debugging state and prepares for exit.\fP"
+.RI "\fICleans up debugging state and prepares for exit. \fP"
 .ti -1c
 .RI "char * \fBggz_xml_escape\fP (char *str)"
 .br
-.RI "\fIEscape XML characters in a text string.\fP"
+.RI "\fIEscape XML characters in a text string. \fP"
 .ti -1c
 .RI "char * \fBggz_xml_unescape\fP (char *str)"
 .br
-.RI "\fIRestore escaped XML characters into a text string.\fP"
+.RI "\fIRestore escaped XML characters into a text string. \fP"
 .ti -1c
 .RI "\fBGGZFile\fP * \fBggz_get_file_struct\fP (int fdes)"
 .br
-.RI "\fISetup a file structure to use with \fBggz_read_line()\fP.\fP"
+.RI "\fISetup a file structure to use with \fBggz_read_line()\fP. \fP"
 .ti -1c
 .RI "char * \fBggz_read_line\fP (\fBGGZFile\fP *file)"
 .br
-.RI "\fIRead a line of arbitrary length from a file.\fP"
+.RI "\fIRead a line of arbitrary length from a file. \fP"
 .ti -1c
 .RI "void \fBggz_free_file_struct\fP (\fBGGZFile\fP *file)"
 .br
-.RI "\fIDeallocate a file structure allocated via \fBggz_get_file_struct()\fP.\fP"
+.RI "\fIDeallocate a file structure allocated via \fBggz_get_file_struct()\fP. \fP"
 .ti -1c
 .RI "int \fBggz_strcmp\fP (const char *s1, const char *s2)"
 .br
-.RI "\fIString comparison function that is safe with NULLs.\fP"
+.RI "\fIString comparison function that is safe with NULLs. \fP"
 .ti -1c
 .RI "int \fBggz_strcasecmp\fP (const char *s1, const char *s2)"
 .br
-.RI "\fICase-insensitive string comparison function that is safe with NULLs The function returns an integer less than, equal to, or greater than zero if s1 is found, respectively, to be less than, to match, or be greater than s2. NULL in considered to be less than any non-NULL string and equal to itself.\fP"
+.RI "\fICase-insensitive string comparison function that is safe with NULLs The function returns an integer less than, equal to, or greater than zero if s1 is found, respectively, to be less than, to match, or be greater than s2. NULL in considered to be less than any non-NULL string and equal to itself. \fP"
 .ti -1c
 .RI "int \fBggz_set_io_error_func\fP (\fBggzIOError\fP func)"
 .br
-.RI "\fISet the ggz/easysock error handling function.\fP"
+.RI "\fISet the ggz/easysock error handling function. \fP"
 .ti -1c
 .RI "\fBggzIOError\fP \fBggz_remove_io_error_func\fP (void)"
 .br
-.RI "\fIRemove the ggz/easysock error handling function.\fP"
+.RI "\fIRemove the ggz/easysock error handling function. \fP"
 .ti -1c
 .RI "int \fBggz_set_io_exit_func\fP (\fBggzIOExit\fP func)"
 .br
-.RI "\fISet the ggz/easysock exit function.\fP"
+.RI "\fISet the ggz/easysock exit function. \fP"
 .ti -1c
 .RI "\fBggzIOExit\fP \fBggz_remove_io_exit_func\fP (void)"
 .br
-.RI "\fIRemove the ggz/easysock exit function.\fP"
+.RI "\fIRemove the ggz/easysock exit function. \fP"
 .ti -1c
 .RI "unsigned int \fBggz_get_io_alloc_limit\fP (void)"
 .br
-.RI "\fIGet libggz's limit on memory allocation.\fP"
+.RI "\fIGet libggz's limit on memory allocation. \fP"
 .ti -1c
 .RI "unsigned int \fBggz_set_io_alloc_limit\fP (const unsigned int limit)"
 .br
-.RI "\fISet libggz's limit on memory allocation.\fP"
+.RI "\fISet libggz's limit on memory allocation. \fP"
 .ti -1c
 .RI "int \fBggz_make_socket\fP (const \fBGGZSockType\fP type, const unsigned short port, const char *server)"
 .br
-.RI "\fIMake a socket connection.\fP"
+.RI "\fIMake a socket connection. \fP"
 .ti -1c
 .RI "int \fBggz_make_socket_or_die\fP (const \fBGGZSockType\fP type, const unsigned short port, const char *server)"
 .br
-.RI "\fIMake a socket connection, exiting on error.\fP"
+.RI "\fIMake a socket connection, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_make_unix_socket\fP (const \fBGGZSockType\fP type, const char *name)"
 .br
-.RI "\fIConnect to a unix domain socket.\fP"
+.RI "\fIConnect to a unix domain socket. \fP"
 .ti -1c
 .RI "int \fBggz_make_unix_socket_or_die\fP (const \fBGGZSockType\fP type, const char *name)"
 .br
-.RI "\fIConnect to a unix domain socket, exiting on error.\fP"
+.RI "\fIConnect to a unix domain socket, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_write_char\fP (const int sock, const char data)"
 .br
-.RI "\fIWrite a character value to the given socket.\fP"
+.RI "\fIWrite a character value to the given socket. \fP"
 .ti -1c
 .RI "void \fBggz_write_char_or_die\fP (const int sock, const char data)"
 .br
-.RI "\fIWrite a character value to the given socket, exiting on error.\fP"
+.RI "\fIWrite a character value to the given socket, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_read_char\fP (const int sock, char *data)"
 .br
-.RI "\fIRead a character value from the given socket.\fP"
+.RI "\fIRead a character value from the given socket. \fP"
 .ti -1c
 .RI "void \fBggz_read_char_or_die\fP (const int sock, char *data)"
 .br
-.RI "\fIRead a character value from the given socket, exiting on error.\fP"
+.RI "\fIRead a character value from the given socket, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_write_int\fP (const int sock, const int data)"
 .br
-.RI "\fIWrite an integer to the socket in network byte order.\fP"
+.RI "\fIWrite an integer to the socket in network byte order. \fP"
 .ti -1c
 .RI "void \fBggz_write_int_or_die\fP (const int sock, const int data)"
 .br
-.RI "\fIWrite an integer to the socket, exiting on error.\fP"
+.RI "\fIWrite an integer to the socket, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_read_int\fP (const int sock, int *data)"
 .br
-.RI "\fIRead an integer from the socket in network byte order.\fP"
+.RI "\fIRead an integer from the socket in network byte order. \fP"
 .ti -1c
 .RI "void \fBggz_read_int_or_die\fP (const int sock, int *data)"
 .br
-.RI "\fIRead an integer from the socket, exiting on error.\fP"
+.RI "\fIRead an integer from the socket, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_write_string\fP (const int sock, const char *data)"
 .br
-.RI "\fIWrite a string to the given socket.\fP"
+.RI "\fIWrite a string to the given socket. \fP"
 .ti -1c
 .RI "void \fBggz_write_string_or_die\fP (const int sock, const char *data)"
 .br
-.RI "\fIWrite a string to the given socket, exiting on error.\fP"
+.RI "\fIWrite a string to the given socket, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_va_write_string\fP (const int sock, const char *fmt,...) ggz__attribute((format(printf"
 .br
-.RI "\fIWrite a printf-style formatted string to the given socket.\fP"
+.RI "\fIWrite a printf-style formatted string to the given socket. \fP"
 .ti -1c
 .RI "void \fBggz_va_write_string_or_die\fP (const int sock, const char *fmt,...) ggz__attribute((format(printf"
 .br
-.RI "\fIWrite a formatted string to the socket, exiting on error.\fP"
+.RI "\fIWrite a formatted string to the socket, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_read_string\fP (const int sock, char *data, const unsigned int len)"
 .br
-.RI "\fIRead a string from the given socket.\fP"
+.RI "\fIRead a string from the given socket. \fP"
 .ti -1c
 .RI "void \fBggz_read_string_or_die\fP (const int sock, char *data, const unsigned int len)"
 .br
-.RI "\fIRead a string from the given socket, exiting on error.\fP"
+.RI "\fIRead a string from the given socket, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_read_string_alloc\fP (const int sock, char **data)"
 .br
-.RI "\fIRead and allocate a string from the given socket.\fP"
+.RI "\fIRead and allocate a string from the given socket. \fP"
 .ti -1c
 .RI "void \fBggz_read_string_alloc_or_die\fP (const int sock, char **data)"
 .br
-.RI "\fIRead and allocate string from the given socket, exiting on error.\fP"
+.RI "\fIRead and allocate string from the given socket, exiting on error. \fP"
 .ti -1c
 .RI "int \fBggz_write_fd\fP (const int sock, int sendfd)"
 .br
-.RI "\fIWrite a file descriptor to the given (local) socket.\fP"
+.RI "\fIWrite a file descriptor to the given (local) socket. \fP"
 .ti -1c
 .RI "int \fBggz_read_fd\fP (const int sock, int *recvfd)"
 .br
-.RI "\fIRead a file descriptor from the given (local) socket.\fP"
+.RI "\fIRead a file descriptor from the given (local) socket. \fP"
 .ti -1c
 .RI "int \fBggz_writen\fP (const int sock, const void *vdata, size_t n)"
 .br
-.RI "\fIWrite a sequence of bytes to the socket.\fP"
+.RI "\fIWrite a sequence of bytes to the socket. \fP"
 .ti -1c
 .RI "int \fBggz_readn\fP (const int sock, void *data, size_t n)"
 .br
-.RI "\fIRead a sequence of bytes from the socket.\fP"
+.RI "\fIRead a sequence of bytes from the socket. \fP"
 .ti -1c
 .RI "\fBhash_t\fP \fBggz_hash_create\fP (const char *algo, const char *text)"
 .br
-.RI "\fICreate a hash over a text.\fP"
+.RI "\fICreate a hash over a text. \fP"
 .ti -1c
 .RI "\fBhash_t\fP \fBggz_hmac_create\fP (const char *algo, const char *text, const char *secret)"
 .br
-.RI "\fICreate a HMAC hash over a text.\fP"
+.RI "\fICreate a HMAC hash over a text. \fP"
 .ti -1c
 .RI "char * \fBggz_base64_encode\fP (const char *text, int length)"
 .br
-.RI "\fIEncodes text to base64.\fP"
+.RI "\fIEncodes text to base64. \fP"
 .ti -1c
 .RI "char * \fBggz_base64_decode\fP (const char *text, int length)"
 .br
-.RI "\fIDecodes text from base64.\fP"
+.RI "\fIDecodes text from base64. \fP"
 .ti -1c
 .RI "void \fBggz_tls_init\fP (const char *certfile, const char *keyfile, const char *password)"
 .br
-.RI "\fIInitialize TLS support on the server side.\fP"
+.RI "\fIInitialize TLS support on the server side. \fP"
 .ti -1c
 .RI "int \fBggz_tls_support_query\fP (void)"
 .br
-.RI "\fICheck TLS support.\fP"
+.RI "\fICheck TLS support. \fP"
 .ti -1c
 .RI "int \fBggz_tls_enable_fd\fP (int fdes, \fBGGZTLSType\fP whoami, \fBGGZTLSVerificationType\fP verify)"
 .br
-.RI "\fIEnable TLS for a file descriptor.\fP"
+.RI "\fIEnable TLS for a file descriptor. \fP"
 .ti -1c
 .RI "int \fBggz_tls_disable_fd\fP (int fdes)"
 .br
-.RI "\fIDisable TLS for a file descriptor.\fP"
+.RI "\fIDisable TLS for a file descriptor. \fP"
 .ti -1c
 .RI "size_t \fBggz_tls_write\fP (int fd, void *ptr, size_t n)"
 .br
-.RI "\fIWrite some bytes to a secured file descriptor.\fP"
+.RI "\fIWrite some bytes to a secured file descriptor. \fP"
 .ti -1c
 .RI "size_t \fBggz_tls_read\fP (int fd, void *ptr, size_t n)"
 .br
-.RI "\fIRead from a secured file descriptor.\fP"
+.RI "\fIRead from a secured file descriptor. \fP"
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -604,7 +604,7 @@ Brent M. Hendricks
 Fri Nov 2 23:32:17 2001 
 .PP
 \fBId\fP.RS 4
-\fBggz.h\fP,v 1.46 2003/03/29 20:36:50 dr_maux Exp 
+\fBggz.h\fP,v 1.49 2004/02/07 09:48:18 josef Exp 
 .RE
 .PP
 .RE
@@ -622,7 +622,7 @@ You should have received a copy of the GNU General Public License along with thi
 .PP 
 .SS "#define ggz__attribute(att)"
 .PP
-Allow easy use of GCC's 'attribute' macro for debugging.Under gcc, we use the __attribute__ macro to check variadic arguments, for instance to printf-style functions. Other compilers may be able to do something similar, but this is generally unnecessary since it's only realy purpose is to give warning messages when the developer compiles the code. 
+Allow easy use of GCC's 'attribute' macro for debugging. Under gcc, we use the __attribute__ macro to check variadic arguments, for instance to printf-style functions. Other compilers may be able to do something similar, but this is generally unnecessary since it's only realy purpose is to give warning messages when the developer compiles the code. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for LibGGZ from the source code.
