@@ -6,7 +6,7 @@ AC_CONFIG_SRCDIR([configure.ac])
 AC_CANONICAL_TARGET([])
 AC_ARG_PROGRAM
 AM_INIT_AUTOMAKE(ggz-kde-client, 0.0.7)
-AC_CONFIG_HEADERS([config.h])
+AM_CONFIG_HEADER([config.h])
 
 dnl Options for building KGGZ
 dnl =========================
