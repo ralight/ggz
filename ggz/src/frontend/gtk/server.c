@@ -61,6 +61,7 @@ void server_profiles_load(void)
 	}
 
 	ggzcore_conf_read_list("Servers", "ProfileList", &count, &profiles);
+	g_print("%d servers found\n", count);
 
 	for (i = 0; i < count; i++) {
 		server = g_malloc0(sizeof(Server));
@@ -195,6 +196,14 @@ static void server_list_print(void)
 
 static void server_print(gpointer server, gpointer data)
 {
+	g_print("Profile name: %s\n", ((Server*)server)->name);
+        g_print("  Host %s:%d\n", ((Server*)server)->host, 
+                ((Server*)server)->port);
+        g_print("  Login type: %d\n", ((Server*)server)->type);
+        g_print("  Login: %s\n", ((Server*)server)->login);
+        if (((Server*)server)->type == GGZ_LOGIN)
+                g_print("  Password: %s\n", ((Server*)server)->password);
+
 }
 
 
