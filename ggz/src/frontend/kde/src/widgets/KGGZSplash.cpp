@@ -44,6 +44,8 @@
 KGGZSplash::KGGZSplash(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WResizeNoErase)
 {
+	m_current = 0;
+
 	m_list.append(KGGZ_DIRECTORY "/images/splash/ttt.png");
 	m_list.append(KGGZ_DIRECTORY "/images/splash/dots.png");
 
