@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4703 2002-09-25 21:09:40Z jdorje $
+ * $Id: client.c 4704 2002-09-25 21:28:07Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -325,7 +325,8 @@ static void client_free(GGZClient *client)
 		player_free(client->data);
 		break;
 	case GGZ_CLIENT_CHANNEL:
-		/* nothing */
+		/* The data is allocated in _net_handle_channel */
+		ggz_free(client->data);
 		break;
 	case GGZ_CLIENT_GENERIC:
 		/* nothing */
