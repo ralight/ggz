@@ -209,5 +209,12 @@ extern void set_num_seats(int num_seats);
 /* the game structure */
 extern struct wh_game_t game;
 
+
+
+
+/* random helper function */
+extern void* alloc(int);
+extern char** alloc_string_array(int, int);
+
 #endif /* __COMMON_H__ */
 

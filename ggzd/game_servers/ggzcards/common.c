@@ -1183,3 +1183,60 @@ void set_num_seats(int num_seats)
 
 
 
+
+
+
+/* JDS: these are just helper functions which should be moved to another
+ * file */
+
+/* alloc
+ *   this helper function checks to see if allocation fails, and also
+ *   zeroes all the memory
+ */
+void* alloc(int size)
+{
+	void* ret = malloc(size);
+	if (ret == NULL) {
+		/* TODO: handle failure more intelligently. */
+		ggz_debug("SERVER error: failed malloc.");
+		exit (-1);
+	}
+	memset(ret, 0, size); /* zero it all */
+	return ret;
+}	
+
+/* alloc_char_array, free_char_array
+ *   this allocates/frees an array of strings
+ *   it really shouldn't go here...
+ */
+char** alloc_string_array(int num, int len)
+{
+	int i;
+	char** bids;
+	char* bids2;
+	i = num * sizeof(char*);
+	bids = (char**)alloc(i);
+
+	i = len * num * sizeof(char);
+	bids2 = (char*)alloc(i);
+
+	for(i = 0; i < num; i++) {
+		bids[i] = bids2;
+		bids2 += len;
+	}
+
+	return bids;
+}
+
+/*
+static void free_string_array(char** bids)
+{
+	int i;
+	free(bids[0]);
+	free(bids);
+}
+*/
+
+
+
+

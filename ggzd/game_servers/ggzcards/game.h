@@ -144,35 +144,41 @@ typedef struct skat_game_t {
 
 
 /* Game-specific functions */
-extern int game_compare_cards(const void *, const void *);
 
-extern int game_send_hand(int, int);		/* send a hand to a player */
+/* initializing */
+extern void game_init_game();			/* initialize the game data */
+extern int game_get_options();			/* determine/request options */
+extern void game_handle_options();		/* handle options from player */
 
+/* messaging */
 extern void game_set_player_message(player_t); /* determine and send the player message */
 
-extern int game_get_bid_text(char*, int, bid_t);	/* determines the textual string for the bid */
-extern void game_start_bidding();	/* updates data for the first bid */
-extern int game_get_bid();		/* gets a bid from next player */
-extern int game_handle_bid(int);	/* handles a bid from current bidder */
-extern void game_next_bid();		/* updates data for the next bid */
-extern void game_start_playing();	/* updates data after the last bid/before the playing starts */
+/* bidding */
+extern int game_get_bid_text(char*, int, bid_t);/* determines the textual string for the bid */
+extern void game_start_bidding();		/* updates data for the first bid */
+extern int game_get_bid();			/* gets a bid from next player */
+extern int game_handle_bid(int);		/* handles a bid from current bidder */
+extern void game_next_bid();			/* updates data for the next bid */
 
+/* playing */
+extern void game_start_playing();		/* updates data after the last bid/before the playing starts */
 extern char* game_verify_play(int card_index);	/* verifies the play is legal */
 extern void game_next_play();			/* sets up for next play */
 extern void game_get_play(player_t);		/* retreives a play */
 extern void game_handle_play(card_t);		/* handle a play */
 
+/* each hand */
 extern int game_deal_hand(void);		/* deal next hand */
 extern void game_end_trick(void);		/* end-of-trick calculations */
 extern void game_end_hand(void);		/* end-of-hand calculations */
 
-extern void game_init_game();			/* initialize the game data */
-extern int game_get_options();			/* determine/request options */
-extern void game_handle_options();		/* handle options from player */
+/* starting/ending games */
 extern void game_start_game();			/* start a game */
 extern int game_test_for_gameover();		/* returns TRUE iff gameover */
 extern int game_handle_gameover();		/* handle a gameover */
 
+/* miscellaneous */
+extern int game_compare_cards(const void *, const void *);
+extern int game_send_hand(player_t, seat_t);	/* sends a hand to a player */
 
-/* random helper function */
-extern void* alloc(int);
+
