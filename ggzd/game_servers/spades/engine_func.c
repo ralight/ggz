@@ -435,12 +435,11 @@ void GetAndSendBids(int lead, int bids[4], int kneels[4], Card hands[4][13]) {
     while( bidStatus != 0) {
       bidStatus = 0;
       
-      ReadIntOrDie( gameInfo.playerSock[curPlayer], &bid );
-      
+      es_read_int_or_die(gameInfo.playerSock[curPlayer], &bid);
+
       if( bid < -1 || bid > 13 ) {
 	if( log )
-	    dbg_msg( "Invalid bid received for %s",
-		   gameInfo.players[curPlayer] );
+	   dbg_msg("Invalid bid received for %s", gameInfo.players[curPlayer]);
 	bidStatus = -1;
       }
       /* Check for minimum bid */
