@@ -1,4 +1,4 @@
-.TH "ggz_server.h" 3 "26 Aug 2001" "Doxygen" \" -*- nroff -*-
+.TH "ggz_server.h" 3 "27 Aug 2001" "libggzdmod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,28 +6,13 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .SH SYNOPSIS
 .br
 .PP
-.SS Compounds
-
-.in +1c
-.ti -1c
-.RI "struct \fBggzd_seat_t\fR"
-.br
-.RI "\fIA GGZ seat; one spot at a table.\fR"
-.in -1c
-.SS Defines
-
-.in +1c
-.ti -1c
-.RI "#define \fBMAX_USER_NAME_LEN\fR  16"
-.br
-.RI "\fIThe maximum length of a player name.\fR"
-.in -1c
 .SS Typedefs
 
 .in +1c
 .ti -1c
-.RI "typedef int (* \fBGGZDHandler\fR )(ggzd_event_t event_id, void *handler_data)"
+.RI "typedef int (* \fBGGZDHandler\fR )(\fBggzd_event_t\fR event_id, void *handler_data)"
 .br
+.RI "\fIPrototype for an event handler function.\fR"
 .in -1c
 .SS Enumerations
 
@@ -35,14 +20,27 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .ti -1c
 .RI "enum \fBggzd_assign_t\fR { \fBGGZ_SEAT_OPEN\fR =  -1, \fBGGZ_SEAT_BOT\fR =  -2, \fBGGZ_SEAT_RESV\fR =  -3, \fBGGZ_SEAT_NONE\fR =  -4, \fBGGZ_SEAT_PLAYER\fR =  -5 }"
 .br
-.RI "\fISeat assignment values.\fR"
+.RI "\fISeat assignment (status) values.\fR"
 .ti -1c
 .RI "enum \fBggzd_event_t\fR { \fBGGZ_EVENT_LAUNCH\fR =  0, \fBGGZ_EVENT_JOIN\fR =  1, \fBGGZ_EVENT_LEAVE\fR =  2, \fBGGZ_EVENT_QUIT\fR =  3, \fBGGZ_EVENT_PLAYER\fR =  4, \fBGGZ_EVENT_TICK\fR =  5 }"
 .br
+.RI "\fIA ggzdmod event.\fR"
 .in -1c
 .SS Functions
 
 .in +1c
+.ti -1c
+.RI "\fBggzd_assign_t\fR \fBggzd_get_seat_status\fR (int seat)"
+.br
+.RI "\fIFind the seat assignment status of a given seat.\fR"
+.ti -1c
+.RI "const char* \fBggzd_get_player_name\fR (int seat)"
+.br
+.RI "\fIFind the name of a given player.\fR"
+.ti -1c
+.RI "int \fBggzd_get_player_socket\fR (int seat)"
+.br
+.RI "\fIFind the socket file descriptor for a given seat.\fR"
 .ti -1c
 .RI "int \fBggzd_debug\fR (const char *fmt,...)"
 .br
@@ -50,47 +48,55 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .ti -1c
 .RI "int \fBggzd_seats_num\fR (void)"
 .br
+.RI "\fICount the total number of seats.\fR"
 .ti -1c
 .RI "int \fBggzd_seats_open\fR (void)"
 .br
+.RI "\fICount the number of open seats.\fR"
 .ti -1c
 .RI "int \fBggzd_seats_bot\fR (void)"
 .br
+.RI "\fICount the number of bot/AI seats.\fR"
 .ti -1c
 .RI "int \fBggzd_seats_reserved\fR (void)"
 .br
+.RI "\fICount the number of reserved seats.\fR"
 .ti -1c
 .RI "int \fBggzd_seats_human\fR (void)"
 .br
+.RI "\fICount the number of human-occupied seats.\fR"
 .ti -1c
 .RI "int \fBggzd_fd_max\fR (void)"
 .br
+.RI "\fIGet ggzdmod's highest FD.\fR"
 .ti -1c
-.RI "void \fBggzd_set_handler\fR (ggzd_event_t event_id, const \fBGGZDHandler\fR handler)"
+.RI "void \fBggzd_set_blocking\fR (int block)"
 .br
+.RI "\fISet ggzdmod to block (or not) waiting for data.\fR"
+.ti -1c
+.RI "void \fBggzd_set_handler\fR (\fBggzd_event_t\fR event_id, const \fBGGZDHandler\fR handler)"
+.br
+.RI "\fISets a handler for the specified event.\fR"
 .ti -1c
 .RI "int \fBggzd_connect\fR (void)"
 .br
+.RI "\fIConnects to GGZD.\fR"
 .ti -1c
 .RI "int \fBggzd_disconnect\fR (void)"
 .br
+.RI "\fIDisconnects from GGZD.\fR"
 .ti -1c
 .RI "int \fBggzd_dispatch\fR (void)"
 .br
+.RI "\fIHandle data from GGZD.\fR"
 .ti -1c
 .RI "int \fBggzd_read_data\fR (void)"
 .br
+.RI "\fIRead data from all sockets.\fR"
 .ti -1c
 .RI "int \fBggzd_main\fR (void)"
 .br
-.in -1c
-.SS Variables
-
-.in +1c
-.ti -1c
-.RI "struct \fBggzd_seat_t\fR* \fBggzd_seats\fR"
-.br
-.RI "\fIThe array of seats at the table.\fR"
+.RI "\fIConnect to GGZ and run the game.\fR"
 .in -1c
 .SH DETAILED DESCRIPTION
 .PP 
@@ -101,39 +107,90 @@ The interface for the ggzdmod library used by game servers.
 .PP
 GGZDmod currently provides an event-driven interface. Data from GGZD is read in by the library, and a handler function (registered as a callback) is invoked to handle the event. The game server should not read data from the GGZD socket unless it really knows what it is doing.
 .PP
-That this does not apply to the client sockets: ggzdmod provides one file desriptor for communicating (TCP) to each client. If data is ready to be read by one of these file descriptors ggzdmod may invoke the appropriate handler (see below), but will never actually read any data.
+Note that this does not apply to the client sockets: ggzdmod provides one file desriptor for communicating (TCP) to each client. If data is ready to be read by one of these file descriptors ggzdmod may invoke the appropriate handler (see below), but will never actually read any data.
 .PP
-\fB\fBTodo: \fR\fR
-.in +1c
-Example code.
+Here's the simplest possible example: 
+.PP
+.nf
+     int ggz_update(ggzd_assign_t event, void* data); // See GGZDHandler
+
+     int main() {
+         // First we register functions to handle some events.
+         ggzd_set_handler(GGZ_EVENT_LAUNCH, &ggz_update);
+         ggzd_set_handler(GGZ_EVENT_JOIN, &ggz_update);
+         ggzd_set_handler(GGZ_EVENT_LEAVE, &ggz_update);
+         ggzd_set_handler(GGZ_EVENT_PLAYER, &ggz_update);
+
+         // Then ggzd_main does all the rest.
+         ggzd_main();
+     }
+.fi
 .PP
 For more information, see the documentation at http://ggz.sf.net/.
 .PP
-.SH DEFINE DOCUMENTATION
-.PP 
-.SS #define MAX_USER_NAME_LEN  16
-.PP
-The maximum length of a player name.
-.PP
-\fBNote: \fR
-.in +1c
-Does not include trailing \\0. 
-.PP
-\fB\fBTodo: \fR\fR
-.in +1c
- If ggzd_seats was encapsulated, this wouldn't be necessary.  
 .SH TYPEDEF DOCUMENTATION
 .PP 
-.SS typedef int(* GGZDHandler)(ggzd_event_t event_id, void *handler_data)
+.SS typedef int(* GGZDHandler)(\fBggzd_event_t\fR event_id, void *handler_data)
 .PP
-A handler function should correspond to this prototype. 
+Prototype for an event handler function.
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIevent_id\fR\fR
+The type of event that has just happened. 
+.TP
+\fB\fIhandler_data\fR\fR
+Specific data; varies by event. 
+.PP
+\fBReturns: \fR
+.in +1c
+A negative return value indicates unrecoverable failure.
+.PP
+Here is an example function showing the most generic use: 
+.PP
+.nf
+      int ggz_update(ggzd_event_t event, void *data) {
+          int player, socket_fd;
+          switch (event) {
+            case GGZ_EVENT_LAUNCH:
+              // do something to handle a game launch (startup)
+              break;
+            case GGZ_EVENT_JOIN:
+              player = *(int*)data; // data for this event
+              // do something to handle a player joining
+              break;
+            case GGZ_EVENT_LEAVE:
+              player = *(int*)data; // data for this event
+              // do something to handle a player leaving
+              break;
+            case GGZ_EVENT_QUIT:
+              // do something to quit the game
+              break;
+            case GGZ_EVENT_PLAYER:
+              player = *(int*)data;
+              socket_fd = ggzd_get_player_socket(player);
+              // read and handle data from the player
+              break;
+            case GGZ_EVENT_TICK:
+              // Real-time games may use the tick event.
+              break;
+          }
+          return 0;
+      }
+.fi
+ 
 .SH ENUMERATION TYPE DOCUMENTATION
 .PP 
 .SS enum ggzd_assign_t
 .PP
-Seat assignment values.
+Seat assignment (status) values.
 .PP
 Each seat at a game has a status taken from one of these. 
+.PP
+\fBSee also: \fR
+.in +1c
+\fBggzd_get_seat_status\fR 
 .PP
 \fBEnumeration values:\fR
 .in +1c
@@ -153,6 +210,12 @@ This seat does not exist.
 \fB\fIGGZ_SEAT_PLAYER\fR \fR
 The seat has a regular player in it. 
 .SS enum ggzd_event_t
+.PP
+A ggzdmod event.
+.PP
+\fBSee also: \fR
+.in +1c
+\fBGGZDHandler\fR 
 .PP
 \fBEnumeration values:\fR
 .in +1c
@@ -178,11 +241,15 @@ a passed-time event
 .PP 
 .SS int ggzd_connect (void)
 .PP
-Connects to GGZD. 
+Connects to GGZD.
 .PP
 \fBReturns: \fR
 .in +1c
 The GGZ file descriptor on success, -1 on failure 
+.PP
+\fB\fBTodo: \fR\fR
+.in +1c
+ Is another function needed to recover the FD?  
 .SS int ggzd_debug (const char * fmt, ...)
 .PP
 Sends a debugging message to ggzd to be logged.
@@ -201,14 +268,16 @@ a printf-stype list of arguments
 0 on success, -1 on failure 
 .SS int ggzd_disconnect (void)
 .PP
-Disconnects from GGZD. 
+Disconnects from GGZD.
 .PP
 \fBReturns: \fR
 .in +1c
 0 on success, -1 on failure. 
 .SS int ggzd_dispatch (void)
 .PP
-This function may be called when there's GGZ data ready to be read from GGZD. It calls the appropriate event handler. 
+Handle data from GGZD.
+.PP
+This function may be called when there's GGZ data ready to be read from GGZD. It does internal handling and calls the appropriate event handler. 
 .PP
 \fBReturns: \fR
 .in +1c
@@ -223,14 +292,65 @@ This function only covers the GGZ socket, not player sockets.
 \fBggzd_set_handler\fR 
 .SS int ggzd_fd_max (void)
 .PP
+Get ggzdmod's highest FD.
+.PP
 \fBReturns: \fR
 .in +1c
 The highest file descriptor used by ggzd. 
 .PP
 \fB\fBTodo: \fR\fR
 .in +1c
- Is this even necessary??? 
+ Is this function necessary? 
+.SS const char * ggzd_get_player_name (int seat)
+.PP
+Find the name of a given player.
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIseat\fR\fR
+The GGZ seat number of the queried player 
+.PP
+\fBReturns: \fR
+.in +1c
+A pointer to the string. Do not modify. 
+.PP
+\fB\fBTodo: \fR\fR
+.in +1c
+ Is it correct to return a const char*? 
+.SS int ggzd_get_player_socket (int seat)
+.PP
+Find the socket file descriptor for a given seat.
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIseat\fR\fR
+The GGZ seat number of the queried player 
+.PP
+\fBReturns: \fR
+.in +1c
+The file descriptor for the TCP communications socket 
+.PP
+\fB\fBTodo: \fR\fR
+.in +1c
+ Another function will be needed for a UDP socket 
+.SS \fBggzd_assign_t\fR ggzd_get_seat_status (int seat)
+.PP
+Find the seat assignment status of a given seat.
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIseat\fR\fR
+The GGZ seat number of the queried seat 
+.PP
+\fBReturns: \fR
+.in +1c
+The assignment status. 
 .SS int ggzd_main (void)
+.PP
+Connect to GGZ and run the game.
 .PP
 This should do all of the GGZ work necessary for most games. It repeatedly takes data from GGZD and calls the appropriate event handler. It also connects to GGZD. 
 .PP
@@ -245,6 +365,8 @@ This function will check for data on both GGZ and player sockets.
 .in +1c
 This function supercedes ggzd_read_data, ggzd_dispatch, ggzd_connect, and ggzd_disconnect. 
 .SS int ggzd_read_data (void)
+.PP
+Read data from all sockets.
 .PP
 This function may be called to read data from GGZD. It will block until GGZ or player data is available, then dispatch the appropriate handler. 
 .PP
@@ -262,52 +384,104 @@ This function supercedes ggzd_dispatch.
 .in -1c
 .in +1c
 This function will check for data on both GGZ and player sockets. 
-.in -1c
+.PP
+\fB\fBTodo: \fR\fR
 .in +1c
-This function may not be a part of the final API 
+ This function may not be a part of the final API 
 .SS int ggzd_seats_bot (void)
+.PP
+Count the number of bot/AI seats.
 .PP
 \fBReturns: \fR
 .in +1c
 The number of bot-occupied seats at the table. 
+.PP
+\fBNote: \fR
+.in +1c
+This is the number of seats whose status is GGZ_SEAT_BOT. 
+.PP
+\fB\fBTodo: \fR\fR
+.in +1c
+ Is this function necessary? 
 .SS int ggzd_seats_human (void)
+.PP
+Count the number of human-occupied seats.
 .PP
 \fBReturns: \fR
 .in +1c
 The number of occupied player seats at the table. 
+.PP
+\fBNote: \fR
+.in +1c
+This is the number of seats whose status is GGZ_SEAT_PLAYER 
+.PP
+\fB\fBTodo: \fR\fR
+.in +1c
+ Is this function necessary? 
 .SS int ggzd_seats_num (void)
+.PP
+Count the total number of seats.
 .PP
 \fBReturns: \fR
 .in +1c
 The total number of seats at the table. 
 .SS int ggzd_seats_open (void)
 .PP
+Count the number of open seats.
+.PP
 \fBReturns: \fR
 .in +1c
 The number of open (unoccupied) seats at the table. 
+.PP
+\fBNote: \fR
+.in +1c
+This is the number of seats whose status is GGZ_SEAT_OPEN. 
 .SS int ggzd_seats_reserved (void)
+.PP
+Count the number of reserved seats.
 .PP
 \fBReturns: \fR
 .in +1c
 The number of reserved seats at the table. 
-.SS void ggzd_set_handler (ggzd_event_t event_id, const \fBGGZDHandler\fR handler)
-.PP
-Sets a handler for the specified event. 
-.SH VARIABLE DOCUMENTATION
-.PP 
-.SS struct \fBggzd_seat_t\fR * ggzd_seats
-.PP
-The array of seats at the table.
-.PP
-This is a pointer to an array of GGZ seats. The size of the array can be found with ggz_seats_num(). 
 .PP
 \fBNote: \fR
 .in +1c
-This array is allocated internally. Do not change it. 
+This is the number of seats whose status is GGZ_SEAT_RESV 
 .PP
 \fB\fBTodo: \fR\fR
 .in +1c
- Should this be encapsulated? 
+ Is this function necessary? 
+.SS void ggzd_set_blocking (int block)
+.PP
+Set ggzdmod to block (or not) waiting for data.
+.PP
+Sets blocking status of ggzdmod. If blocking is set, ggzd_main and ggzd_read_data will block waiting for data (the default). 
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIblock\fR\fR
+1 for blocking, 0 for not 
+.PP
+\fB\fBTodo: \fR\fR
+.in +1c
+Brent doesn't want to allow non-blocking or have this function. 
+.PP
+ This function isn't implemented; there's just this prototype.  
+.SS void ggzd_set_handler (\fBggzd_event_t\fR event_id, const \fBGGZDHandler\fR handler)
+.PP
+Sets a handler for the specified event.
+.PP
+This function registers a handler for a GGZ event. Each time this event occurs, that function will be invoked as a callback. 
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIevent_id\fR\fR
+The event that is being associated 
+.TP
+\fB\fIhandler\fR\fR
+The function that will be used as the handler 
 .SH AUTHOR
 .PP 
-Generated automatically by Doxygen from the source code.
+Generated automatically by Doxygen for libggzdmod from the source code.

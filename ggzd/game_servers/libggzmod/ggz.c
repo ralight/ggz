@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: ggz.c 2274 2001-08-27 07:33:22Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -80,7 +80,7 @@ ggzd_assign_t ggzd_get_seat_status(int seat)
 		return seat_data[seat].assign;
 }
 
-char* ggzd_get_player_name(int seat)
+const char* ggzd_get_player_name(int seat)
 {
 	char *name = NULL;
 
