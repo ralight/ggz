@@ -19,12 +19,6 @@
 #include "profilesi.h"
 #include "support.h"
 
-#define GLADE_HOOKUP_OBJECT(component,widget,name) \
-  gtk_object_set_data_full (GTK_OBJECT (component), name, \
-    gtk_widget_ref (widget), (GtkDestroyNotify) gtk_widget_unref)
-
-#define GLADE_HOOKUP_OBJECT_NO_REF(component,widget,name) \
-  gtk_object_set_data (GTK_OBJECT (component), name, widget)
 
 GtkWidget*
 create_winProfiles (void)
