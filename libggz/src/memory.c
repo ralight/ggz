@@ -91,6 +91,10 @@ void * _ggz_realloc(const void *ptr, const unsigned size,char *tag,int line)
 	struct _memptr *targetmem;
 	void *new;
 
+	/* If ptr is NULL, treat this like a call to malloc */
+	if (ptr == NULL)
+		return _ggz_malloc(size, tag, line);
+
 	/* Search through allocated memory for this chunk */
 	targetmem = alloc;
 	while(targetmem != NULL && ptr != targetmem->ptr) {
