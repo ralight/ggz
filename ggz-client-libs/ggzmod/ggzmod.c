@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6632 2005-01-11 01:26:25Z jdorje $
+ * $Id: ggzmod.c 6633 2005-01-11 02:44:15Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -1042,7 +1042,7 @@ static int game_embedded(GGZMod * ggzmod)
 	SetEnvironmentVariable("GGZMOD_SOCKET_FD", buf);
 #endif
 
-#ifdef HAVE_SOCKKETPAIR
+#ifdef HAVE_SOCKETPAIR
 	if (fd_pair[1] != 103) {
 		/* We'd like to send an error message if either of
 		   these fail, but we can't.  --JDS */
