@@ -34,29 +34,46 @@
 #include "gametype.h"
 
 
-/* Create a new room object for a given server */
+/* Allocate space for a new room object */
 struct _GGZRoom* _ggzcore_room_new(void);
 
+/* Initialize room object */
 void _ggzcore_room_init(struct _GGZRoom *room,
 			const struct _GGZServer *server,
 			const unsigned int id, 
-			const char* name, 
+			const char *name, 
 			const unsigned int game, 
-			const char* desc);
+			const char *desc);
 
-/* Utility functions for room lists */
-int   _ggzcore_room_compare(void* p, void* q);
-void* _ggzcore_room_copy(void* p);
-void  _ggzcore_room_destroy(void* p);
+/* De-allocate room object and its children */
+void _ggzcore_room_free(struct _GGZRoom *room);
+
+/* Functions to retrieve room information */
+struct _GGZServer*   _ggzcore_room_get_server(struct _GGZRoom *room);
+unsigned int         _ggzcore_room_get_id(struct _GGZRoom *room);
+char*                _ggzcore_room_get_name(struct _GGZRoom *room);
+struct _GGZGameType* _ggzcore_room_get_game(struct _GGZRoom *room); 
+char*                _ggzcore_room_get_desc(struct _GGZRoom *room);
+
+unsigned int       _ggzcore_room_get_num_players(struct _GGZRoom *room);
+struct _GGZPlayer* _ggzcore_room_get_nth_player(struct _GGZRoom *room, 
+						const unsigned int num);
+struct _GGZPlayer* _ggzcore_room_get_player_by_name(struct _GGZRoom *room, 
+						    const char *name);
+
+unsigned int      _ggzcore_room_get_num_tables(struct _GGZRoom *room);
+struct _GGZTable* _ggzcore_room_get_nth_table(struct _GGZRoom *room, 
+					      const unsigned int num);
+struct _GGZTable* _ggzcore_room_get_table_by_id(struct _GGZRoom *room, 
+						const unsigned int id);
 
 
-/* Functions for attaching hooks to GGZRoom events */
+/* Functions for manipulating hooks to GGZRoom events */
 int _ggzcore_room_add_event_hook_full(struct _GGZRoom *room,
 				      const GGZRoomEvent event, 
 				      const GGZHookFunc func,
 				      void *data);
 
-/* Functions for removing hooks from GGZRoom events */
 int _ggzcore_room_remove_event_hook(struct _GGZRoom *room,
 				    const GGZRoomEvent event, 
 				    const GGZHookFunc func);
@@ -65,46 +82,21 @@ int _ggzcore_room_remove_event_hook_id(struct _GGZRoom *room,
 				       const GGZRoomEvent event, 
 				       const unsigned int hook_id);
 
-
-/* Functions to retrieve room information */
-struct _GGZServer*   _ggzcore_room_get_server(struct _GGZRoom *room);
-unsigned int         _ggzcore_room_get_id(struct _GGZRoom *room);
-char*                _ggzcore_room_get_name(struct _GGZRoom *room);
-struct _GGZGameType* _ggzcore_room_get_game(struct _GGZRoom *room); 
-char*                _ggzcore_room_get_desc(struct _GGZRoom *room);
-unsigned int         _ggzcore_room_get_num_players(struct _GGZRoom *room);
-struct _GGZPlayer*   _ggzcore_room_get_nth_player(struct _GGZRoom *room, 
-						const unsigned int num);
-struct _GGZPlayer*   _ggzcore_room_get_player_by_name(struct _GGZRoom *room, 
-						      const char *name);
-
-
-unsigned int       _ggzcore_room_get_num_tables(struct _GGZRoom *room);
-struct _GGZTable*  _ggzcore_room_get_nth_table(struct _GGZRoom *room, 
-					       const unsigned int num);
-
-struct _GGZTable*  _ggzcore_room_get_table_by_id(struct _GGZRoom *room, 
-						 const unsigned int id);
-
+/* Functions for changing GGZRoom data */
+void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor);
 
 void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,
 				   struct _ggzcore_list *list);
+void _ggzcore_room_add_player(struct _GGZRoom *room, char *name);
+void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name);
 
 void _ggzcore_room_set_table_list(struct _GGZRoom *room,
 				  unsigned int count,
 				  struct _ggzcore_list *list);
-
-void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor);
-
-void _ggzcore_room_add_player(struct _GGZRoom *room, char *name);
-
-void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name);
-
-void _ggzcore_room_add_table(struct _GGZRoom *room, 
-			     struct _GGZTable *table);
-
+void _ggzcore_room_add_table(struct _GGZRoom *room, struct _GGZTable *table);
 void _ggzcore_room_remove_table(struct _GGZRoom *room, const unsigned int id);
+
 
 void _ggzcore_room_player_join_table(struct _GGZRoom *room, 
 				     const unsigned int table,
@@ -125,34 +117,29 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room,
 			    char *name,
 			    char *msg);
 
-int  _ggzcore_room_send_game_data(struct _GGZRoom *room, 
-				  char *buffer);
+/* Functions for invoking GGZRoom "actions" */
 
-void _ggzcore_room_recv_game_data(struct _GGZRoom *room,
-				  char *buffer);
-
-int _ggzcore_room_launch_table(struct _GGZRoom *room, 
-			       struct _GGZTable *table);
-
-int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num);
-
-int _ggzcore_room_leave_table(struct _GGZRoom *room);
-
-void _ggzcore_room_list_players(struct _GGZRoom *room);
-
-void _ggzcore_room_list_tables(struct _GGZRoom *room, 
-			       const int type, 
-			       const char global);
+void _ggzcore_room_load_playerlist(struct _GGZRoom *room);
+void _ggzcore_room_load_tablelist(struct _GGZRoom *room, 
+				  const int type, 
+				  const char global);
 
 void _ggzcore_room_chat(struct _GGZRoom *room,
 			const GGZChatOp opcode,
 			const char *player,
 			const char *msg);
 
+int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table);
+int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num);
+int _ggzcore_room_leave_table(struct _GGZRoom *room);
 
-unsigned int _ggzcore_room_get_num(struct _GGZRoom *room);
-
-void _ggzcore_room_free(struct _GGZRoom *room);
+int  _ggzcore_room_send_game_data(struct _GGZRoom *room, char *buffer);
+void _ggzcore_room_recv_game_data(struct _GGZRoom *room, char *buffer);
+				  
+/* Utility functions for room lists */
+int   _ggzcore_room_compare(void* p, void* q);
+void* _ggzcore_room_copy(void* p);
+void  _ggzcore_room_destroy(void* p);
 
 
 #endif /* __ROOM_H_ */

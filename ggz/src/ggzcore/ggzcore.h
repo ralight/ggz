@@ -315,25 +315,51 @@ int ggzcore_server_write_data(GGZServer *server);
 void ggzcore_server_free(GGZServer *server);
 
 
+/* Functions for manipulating GGZRoom objects */
 
-/* Functions for attaching hooks to GGZRoom events */
+
+/* Allocate space for a new room object */
+GGZRoom* ggzcore_room_new(void);
+
+/* Initialize room object */
+int ggzcore_room_init(GGZRoom *room, 
+		      const GGZServer *server, 
+		      const unsigned int id, 
+		      const char *name, 
+		      const unsigned int game, 
+		      const char *desc);
+
+/* De-allocate room object and its children */
+void ggzcore_room_free(GGZRoom *room);
+
+
+/* Functions for querying a GGZRoom object for information */
+char*        ggzcore_room_get_name(GGZRoom *room);
+char*        ggzcore_room_get_desc(GGZRoom *room);
+GGZGameType* ggzcore_room_get_gametype(GGZRoom *room);
+
+int        ggzcore_room_get_num_players(GGZRoom *room);
+GGZPlayer* ggzcore_room_get_nth_player(GGZRoom *room, const unsigned int num);
+
+int       ggzcore_room_get_num_tables(GGZRoom *room);
+GGZTable* ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
+
+
+/* Functions for manipulating hooks to GGZRoom events */
 int ggzcore_room_add_event_hook(GGZRoom *room,
 				const GGZRoomEvent event, 
 				const GGZHookFunc func);
-
 int ggzcore_room_add_event_hook_full(GGZRoom *room,
 				     const GGZRoomEvent event, 
 				     const GGZHookFunc func,
 				     void *data);
-
-/* Functions for removing hooks from GGZRoom events */
 int ggzcore_room_remove_event_hook(GGZRoom *room,
 				   const GGZRoomEvent event, 
 				   const GGZHookFunc func);
-
 int ggzcore_room_remove_event_hook_id(GGZRoom *room,
 				      const GGZRoomEvent event, 
 				      const unsigned int hook_id);
+
 
 /* Functions for performing actions on a room */
 void ggzcore_room_list_players(GGZRoom *room);
@@ -352,16 +378,7 @@ int ggzcore_room_leave_table(GGZRoom *room);
 int ggzcore_room_send_game_data(GGZRoom *room, char *buffer);
 
 
-/* Functions for querying a GGZRoom object for information */
-char*        ggzcore_room_get_name(GGZRoom *room);
-char*        ggzcore_room_get_desc(GGZRoom *room);
-GGZGameType* ggzcore_room_get_gametype(GGZRoom *room);
-int          ggzcore_room_get_num_players(GGZRoom *room);
-char**       ggzcore_room_get_player_names(GGZRoom *room);
-GGZPlayer*   ggzcore_room_get_nth_player(GGZRoom *room, const unsigned int num);
-int          ggzcore_room_get_num_tables(GGZRoom *room);
-GGZTable*    ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
-
+/* Functions for manipulating GGZPlayer objects */
 
 char*     ggzcore_player_get_name(GGZPlayer *player);
 GGZTable* ggzcore_player_get_table(GGZPlayer *player);
