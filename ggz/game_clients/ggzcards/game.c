@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4037 2002-04-21 08:14:26Z jdorje $
+ * $Id: game.c 4045 2002-04-21 23:27:00Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -526,16 +526,16 @@ static void text_cardlist_message(const char *mark, int *lengths,
 				snprintf(buf + strlen(buf),
 					 sizeof(buf) - strlen(buf),
 					 _("%s of %s"),
-					 face_names[(int) card.face],
-					 suit_names[(int) card.suit]);
+					 get_face_name(card.face),
+					 get_suit_name(card.suit));
 			}
 		} else {
 			for (i = 0; i < lengths[p]; i++) {
 				card_t card = cardlist[p][i];
 				snprintf(buf + strlen(buf),
 					 sizeof(buf) - strlen(buf), "%2s%s ",
-					 short_face_names[(int) card.face],
-					 short_suit_names[(int) card.suit]);
+					 get_short_face_name(card.face),
+					 get_short_suit_name(card.suit));
 			}
 		}
 		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "\n");

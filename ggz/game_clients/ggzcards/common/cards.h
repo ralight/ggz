@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.h 4037 2002-04-21 08:14:26Z jdorje $
+ * $Id: cards.h 4045 2002-04-21 23:27:00Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -107,14 +107,13 @@ typedef struct card_t {
 	char type;
 } card_t;
 
+const char *get_suit_name(char suit);
+const char *get_short_suit_name(char suit);
+const char *get_face_name(char face);
+const char *get_short_face_name(char face);
+
 int are_cards_equal(card_t card1, card_t card2);
 int is_valid_card(card_t card);
-
-extern const char *suit_names[];
-extern const char *short_suit_names[];
-extern const char *face_names[];
-extern const char *short_face_names[];
-
 
 
 /* A hand structure */
