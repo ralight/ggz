@@ -20,8 +20,9 @@
 /* Defines */
 #define GRUBBYCONF "/.ggz/grubby.rc"
 
-/* Plugin call function */
+/* Plugin call functions */
 typedef Guru* (*modulefunc)(Guru *message);
+typedef void (*initfunc)();
 
 /* Global variables */
 char **modulenamelist = NULL;
@@ -133,8 +134,9 @@ Gurucore *guru_module_init()
 /* Insert a plugin dynamically */
 int guru_module_add(const char *modulealias)
 {
-	void *handle, *init;
+	void *handle;
 	modulefunc func;
+	initfunc init;
 	char *modulename;
 	int i;
 
@@ -146,7 +148,7 @@ int guru_module_add(const char *modulealias)
 
 	/* Avoid duplicates */
 	for(i = 0; i < modulecount; i++)
-		if((modulelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
+		if((modulenamelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
 		{
 			printf("ERROR: Already loaded!!\n");
 			return 0;
@@ -172,7 +174,7 @@ int guru_module_add(const char *modulealias)
 	}
 
 	/* Initialize the plugin */
-	((void*(*)(void))init)();
+	(init)();
 
 	/* Insert it into the plugin list for later reference */
 	modulecount++;
@@ -181,7 +183,6 @@ int guru_module_add(const char *modulealias)
 	modulenamelist = (char**)realloc(modulenamelist, (modulecount + 1) * sizeof(char*));
 	modulelist[modulecount - 1] = handle;
 	modulelist[modulecount] = NULL;
-	functionlist[modulecount - 1] = (modulefunc)malloc(sizeof(modulefunc));
 	functionlist[modulecount - 1] = func;
 	functionlist[modulecount] = NULL;
 	modulenamelist[modulecount - 1] = (char*)malloc(strlen(modulealias) + 1);
@@ -193,7 +194,6 @@ int guru_module_add(const char *modulealias)
 }
 
 /* Deactivate a plugin and unload it */
-/* FIXME: look at free, and dlclose() module */
 int guru_module_remove(const char *modulealias)
 {
 	int i;
@@ -202,10 +202,10 @@ int guru_module_remove(const char *modulealias)
 	{
 		if((modulenamelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
 		{
+			dlclose(modulelist);
 			modulelist[i] = NULL;
-			/*free(modulenamelist[i]);*/ /* HUH? */
+			free(modulenamelist[i]);
 			modulenamelist[i] = NULL;
-			/*free(functionlist[i]);*/ /* HUH? */
 			functionlist[i] = NULL;
 			return 1;
 		}
@@ -218,14 +218,16 @@ int guru_module_remove(const char *modulealias)
 char *guru_modules_list()
 {
 	static char *list = NULL;
-	const char *prepend;
-	int i;
+	char *prepend, *none;
+	int i, j;
 
 	/* Build up list dynamically */
 	prepend = _("List of available modules:");
+	none = _("No modules loaded at all.");
 	if(list) free(list);
 	list = (char*)malloc(strlen(prepend) + 1);
 	strcpy(list, prepend);
+	j = 0;
 	for(i = 0; i < modulecount; i++)
 	{
 		if(modulenamelist[i])
@@ -233,7 +235,14 @@ char *guru_modules_list()
 			list = (char*)realloc(list, strlen(list) + strlen(modulenamelist[i]) + 2);
 			strcat(list, " ");
 			strcat(list, modulenamelist[i]);
+			j++;
 		}
+	}
+	if(!j)
+	{
+		list = (char*)realloc(list, strlen(list) + strlen(none) + 2);
+		strcat(list, " ");
+		strcat(list, none);
 	}
 	return list;
 }
@@ -243,16 +252,17 @@ Guru *guru_module_internal(Guru *message)
 {
 	char *token;
 	int i;
-	int modules, modadd, modremove;
+	int modules, modadd, modremove, modreload;
 	char *mod;
 
-	i = 0;
 	modules = 0;
 	modadd = 0;
 	modremove = 0;
+	modreload = 0;
 	mod = NULL;
 	
 	/* Find all commands */
+	i = 0;
 	while((message->list) && (message->list[i]))
 	{
 		token = message->list[i];
@@ -261,7 +271,8 @@ Guru *guru_module_internal(Guru *message)
 		if((i == 1) && (!strcmp(token, "modules"))) modules++;
 		if((i == 1) && (!strcmp(token, "insmod"))) modadd++;
 		if((i == 1) && (!strcmp(token, "rmmod"))) modremove++;
-		if((i == 2) && ((modadd) || (modremove))) mod = strdup(token);
+		if((i == 1) && (!strcmp(token, "reload"))) modreload++;
+		if((i == 2) && ((modadd) || (modremove) || (modreload))) mod = strdup(token);
 		i++;
 	}
 	if(message->type == GURU_PRIVMSG) modules++;
@@ -274,7 +285,7 @@ Guru *guru_module_internal(Guru *message)
 		message->type = GURU_PRIVMSG;
 		return message;
 	}
-	if((modules == 1) && ((modadd) || (modremove)) && (mod))
+	if((modules == 1) && ((modadd) || (modremove) || (modreload)) && (mod))
 	{
 		free(message->message);
 		message->type = GURU_PRIVMSG;
@@ -290,6 +301,12 @@ Guru *guru_module_internal(Guru *message)
 				if(guru_module_remove(mod)) message->message = "Module removed.";
 				else message->message = "Error: Could not remove module.";
 			}
+			if(modreload)
+			{
+				guru_module_remove(mod);
+				if(guru_module_add(mod)) message->message = "Module reloaded.";
+				else message->message = "Error: Could not reload module.";
+			}
 		}
 		else message->message = "Only my owner can change the module setup.";
 		if(mod) free(mod);
@@ -300,14 +317,11 @@ Guru *guru_module_internal(Guru *message)
 }
 
 /* Main function: Iterate over all loaded plugins */
-/* FIXME: memory issues, and make sleep() a plugin issue */
 Guru *guru_module_work(Guru *message, int priority)
 {
 	int i, j;
 	modulefunc func;
 	Guru *ret;
-	char *savemsg;
-	char *moresave;
 
 	/* Check admin commands first */
 	ret = guru_module_internal(message);
@@ -315,27 +329,21 @@ Guru *guru_module_work(Guru *message, int priority)
 
 	/* Now try plugins, with decreasing priority */
 	if(!modulelist) return NULL;
-	savemsg = message->message;
 	for(j = 10; j >= 0; j-=11)
 	{
 		for(i = 0; i < modulecount; i++)
 		{
 			if(!functionlist[i]) continue;
-			if(savemsg) message->message = strdup(savemsg);
-			moresave = message->message;
 			if(j == 10) printf("Trying module no. %i with '%s'\n", i, message->message);
 			func = functionlist[i];
 			ret = (func)(message);
-			if(savemsg) free(moresave); /* EH?! */
 			if((ret) && (ret->message))
 			{
-				/*sleep(strlen(g.message) / 7);*/
-				free(savemsg);
 				return ret;
 			}
 		}
 	}
-	free(savemsg);
+	free(message->message);
 	return NULL;
 }
 
