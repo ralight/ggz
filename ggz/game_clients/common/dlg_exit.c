@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: dlg_exit.c 3633 2002-03-23 20:27:51Z jdorje $
+ * $Id: dlg_exit.c 3640 2002-03-24 00:56:22Z jdorje $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
@@ -33,7 +33,7 @@
 
 #include "dlg_exit.h"
 
-void ggz_show_exit_dialog(int can_return)
+static GtkWidget *make_exit_dialog(int can_return)
 {
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
@@ -108,6 +108,25 @@ void ggz_show_exit_dialog(int can_return)
 	gtk_widget_show(buttonBox);
 	gtk_widget_show(dialog_vbox1);
 	gtk_widget_show(dialog_action_area1);
+	
+        return window;
+}
 
-	gtk_widget_show(window);
+void ggz_show_exit_dialog(int can_return)
+{
+	static GtkWidget *dialog = NULL;
+	
+	if (dialog) {
+		gdk_window_show(dialog->window);
+		gdk_window_raise(dialog->window);
+	} else {
+        	dialog = make_exit_dialog(can_return);
+		
+		gtk_signal_connect(GTK_OBJECT(dialog),
+		                   "destroy",
+		                   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+		                   &dialog);
+		
+		gtk_widget_show(dialog);
+	}
 }
