@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2786 2001-12-06 09:07:04Z jdorje $
+ * $Id: ggzdmod.c 2788 2001-12-06 09:44:43Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -513,7 +513,7 @@ static int handle_event(_GGZdMod * mod, fd_set read_fds)
 		if (status < 0) {
 			_ggzdmod_error(mod, "Error reading data");
 			/* FIXME: should be disconnect? */
-			ggzdmod_halt_table(mod);
+			ggzdmod_set_state(mod, GGZDMOD_STATE_DONE);
 		}
 		count++;
 	}
@@ -598,17 +598,30 @@ int ggzdmod_loop(GGZdMod * mod)
 	return 0;		/* should handle errors */
 }
 
-int ggzdmod_halt_table(GGZdMod * mod)
+int ggzdmod_set_state(GGZdMod * mod, GGZdModState state)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME) {
+	if (!CHECK_GGZDMOD(ggzdmod))
 		return -1;
-	}
+	
 	if (ggzdmod->type == GGZDMOD_GAME) {
-		set_state(ggzdmod, GGZDMOD_STATE_DONE);
+		/* The game may only change the state from one of
+		   these two states. */
+		if (ggzdmod->state != GGZDMOD_STATE_WAITING &&
+		    ggzdmod->state != GGZDMOD_STATE_PLAYING)
+			return -1;
+
+		/* The game may only change the state to one of
+		   these three states. */
+		if (state == GGZDMOD_STATE_PLAYING ||
+		    state == GGZDMOD_STATE_WAITING ||
+		    state == GGZDMOD_STATE_DONE)
+			set_state(ggzdmod, state);
+		else
+			return -1;
 	} else {
 		/* TODO: an extension to the communications protocol will be
-		   needed for halt_game to work ggz-side.  Let's get the rest 
+		   needed for this to work ggz-side.  Let's get the rest
 		   of it working first... */
 		return -1;
 	}
@@ -761,7 +774,7 @@ int ggzdmod_disconnect(GGZdMod * mod)
 		/* For client the game side we send a game over message */
 		
 		/* First warn the server of halt (if we haven't already) */
-		ggzdmod_halt_table(ggzdmod);
+		ggzdmod_set_state(ggzdmod, GGZDMOD_STATE_DONE);
 		ggzdmod_log(ggzdmod, "GGZDMOD: Disconnected from GGZ server.");
 	}
 	

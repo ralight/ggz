@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 2785 2001-12-06 02:33:36Z jdorje $
+ * $Id: game.c 2788 2001-12-06 09:44:43Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -580,7 +580,7 @@ int game_update(int event, void* data)
 			ttt_game.state = TTT_STATE_DONE;
 			game_send_gameover(victor);
 			/* Notify GGZ server of game over */
-			ggzdmod_halt_table(ttt_game.ggz);
+			ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_DONE);
 			return 1;
 		}
 		break;

@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.c 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: ggz_server.c 2788 2001-12-06 09:44:43Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -96,7 +96,7 @@ int ggzd_get_seat_count(GGZdModSeat status)
 
 void ggzd_gameover(int status)
 {
-	ggzdmod_halt_table(ggzdmod);
+	ggzdmod_set_state(ggzdmod, GGZDMOD_STATE_DONE);
 }
 
 int ggzd_get_gameover(void)

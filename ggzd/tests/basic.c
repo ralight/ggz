@@ -141,8 +141,8 @@ int main (void) {
 		printf(" -- Error: ggzdmod_dispatch(NULL) claimed to succeed.\n");
 	if (ggzdmod_loop(NULL) >= 0)
 		printf(" -- Error: ggzdmod_loop(NULL) claimed to succeed.\n");
-	if (ggzdmod_halt_table(NULL) >= 0)
-		printf(" -- Error: ggzdmod_halt_table(NULL) claimed to succeed.\n");
+	if (ggzdmod_set_state(NULL, GGZDMOD_STATE_DONE) >= 0)
+		printf(" -- Error: ggzdmod_set_state(NULL, GGZDMOD_STATE_DONE) claimed to succeed.\n");
 	if (ggzdmod_connect(NULL) >= 0)
 		printf(" -- Error: ggzdmod_connect(NULL) claimed to succeed.\n");
 	if (ggzdmod_disconnect(NULL) >= 0)

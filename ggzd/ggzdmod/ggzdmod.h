@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2787 2001-12-06 09:23:06Z jdorje $
+ * $Id: ggzdmod.h 2788 2001-12-06 09:44:43Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -292,21 +292,22 @@ int ggzdmod_dispatch(GGZdMod * mod);
  *  @param mod The ggzdmod object.
  *  @return 0 on success, -1 on error.
  *  @see ggzdmod_dispatch
- *  @see ggzdmod_halt_table */
+ *  @see ggzdmod_set_state */
 int ggzdmod_loop(GGZdMod * mod);
 
 /* 
  * Control functions
  */
 
-/** @brief Halt the table.
+/** @brief Change the table's state.
  *
- *  This function should be called when the table is finished.  When
- *  called by the game, it will stop looping and change the game state.
- *  @note It should inform ggzd of this change.
- *  @note ggzd should be able to request this as well.
- *  @note This is deprecated and will probably be replaced by ggzdmod_set_state(). */
-int ggzdmod_halt_table(GGZdMod * mod);
+ *  This function should be called to change the state of a table.
+ *  A game can use this function to change state between WAITING
+ *  and PLAYING, or to set it to DONE.
+ *  @param mod The ggzdmod object.
+ *  @param state The new state.
+ *  @return 0 on success, -1 on failure/error. */
+int ggzdmod_set_state(GGZdMod * mod, GGZdModState state);
 
 /** @brief Connect to ggz
  *
