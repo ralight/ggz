@@ -99,8 +99,8 @@ static GGZList	*file_list=NULL;
  *	  - ptr to a malloc()'ed copy of default if not found
  *	  - ptr to NULL if not found and no default
  */
-char * conf_read_string(int handle, const char *section,
-		        const char *key, const char *def)
+char * ggz_conf_read_string(int handle, const char *section,
+			    const char *key, const char *def)
 {
 	conf_file_t	*f_data;
 	GGZListEntry	*s_entry, *e_entry;
@@ -144,13 +144,13 @@ do_default:
  *	Returns:
  *	  - int value from variable, or def if not found
  */
-int conf_read_int(int handle, const char *section, const char *key, int def)
+int ggz_conf_read_int(int handle, const char *section, const char *key, int def)
 {
 	char	tmp[20], *tmp2;
 	int	value;
 
 	sprintf(tmp, "%d", def);
-	tmp2 = conf_read_string(handle, section, key, tmp);
+	tmp2 = ggz_conf_read_string(handle, section, key, tmp);
 	value = atoi(tmp2);
 	free(tmp2);
 
@@ -168,7 +168,7 @@ int conf_read_int(int handle, const char *section, const char *key, int def)
  *	  - 0 on success
  *	  - -1 on error
  */
-int conf_read_list(int handle, const char *section, const char *key,
+int ggz_conf_read_list(int handle, const char *section, const char *key,
 		   int *argcp, char ***argvp)
 {
 	int	index, rc;
@@ -176,7 +176,7 @@ int conf_read_list(int handle, const char *section, const char *key,
 	char	*str, *tmp, *tmp2;
 	char	saw_space=0, saw_backspace;
 
-	str = conf_read_string(handle, section, key, NULL);
+	str = ggz_conf_read_string(handle, section, key, NULL);
 
 	if (str != NULL) {
 		rc = 0;
@@ -249,8 +249,8 @@ int conf_read_list(int handle, const char *section, const char *key,
  *	  - 0 on no error
  *	  - -1 on error
  */
-int conf_write_string(int handle, const char *section,
-		      const char *key, const char *value)
+int ggz_conf_write_string(int handle, const char *section,
+			  const char *key, const char *value)
 {
 	conf_file_t	*f_data;
 	GGZListEntry	*s_entry;
@@ -301,12 +301,12 @@ int conf_write_string(int handle, const char *section,
  *	  - 0 on success
  *	  - -1 on failure
  */
-int conf_write_int(int handle, const char *section, const char *key, int value)
+int ggz_conf_write_int(int handle, const char *section, const char *key, int value)
 {
 	char	tmp[20];
 
 	sprintf(tmp, "%d", value);
-	return conf_write_string(handle, section, key, tmp);
+	return ggz_conf_write_string(handle, section, key, tmp);
 }
 
 
@@ -323,8 +323,8 @@ int conf_write_int(int handle, const char *section, const char *key, int value)
  *	  - 0 on success
  *	  - -1 on failure
  */
-int conf_write_list(int handle, const char *section, 
-		    const char *key, int argc, char **argv)
+int ggz_conf_write_list(int handle, const char *section, 
+			const char *key, int argc, char **argv)
 {
 	int	i;
 	char	buf[1023];
@@ -352,7 +352,7 @@ int conf_write_list(int handle, const char *section,
 	dst--;
 	*dst = '\0';
 
-	return conf_write_string(handle, section, key, buf);
+	return ggz_conf_write_string(handle, section, key, buf);
 }
 
 
@@ -376,8 +376,8 @@ int conf_remove_section(int handle, const char *section)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		ggz_debug("CONF",
-		      "ggzcore_confio_remove_section: file is read-only");
+		ggz_debug("CONF", "ggz_conf_remove_section: file is read-only");
+			  
 		return -1;
 	}
 
@@ -403,7 +403,7 @@ int conf_remove_section(int handle, const char *section)
  *	  - 1 if [Section] or Key did not exist (soft error)
  *	  - -1 on failure
  */
-int conf_remove_key(int handle, const char *section, const char *key)
+int ggz_conf_remove_key(int handle, const char *section, const char *key)
 {
 	conf_file_t	*f_data;
 	GGZListEntry	*s_entry, *e_entry;
@@ -449,7 +449,7 @@ int conf_remove_key(int handle, const char *section, const char *key)
  *	  - 0 on success
  *	  - -1 on failure
  */
-int conf_commit(int handle)
+int ggz_conf_commit(int handle)
 {
 	conf_file_t	*f_data;
 	GGZListEntry	*s_entry, *e_entry;
@@ -519,7 +519,7 @@ int conf_commit(int handle)
  *	The caller is assumed to have committed the config files before using
  *	this routine to clear out old files.
  */
-void conf_cleanup(void)
+void ggz_conf_cleanup(void)
 {
 	GGZListEntry	*f_entry;
 	conf_file_t	*f_data;
@@ -545,12 +545,13 @@ void conf_cleanup(void)
  *	  - an integer handle which the caller can use to access the variables
  *	  - -1 on failure
  */
-int	conf_parse(const char *path, const unsigned char options)
+int ggz_conf_parse(const char *path, const unsigned char options)
 {
 	static int	next_handle=0;
 
 	conf_file_t	*file_data;
 	GGZList		*section_list;
+	GGZListEntry	*file_entry;
 
 	int		opt_create, opt_rdonly, opt_rdwr;
 	int		t_file;
@@ -600,6 +601,25 @@ int	conf_parse(const char *path, const unsigned char options)
 	if(opt_rdwr && access(path, R_OK | W_OK)) {
 		ggz_error_sys("Unable to read or write file %s", path);
 		return -1;
+	}
+
+	/* See if this path is already opened */
+	/* Note this code can easily be fooled by using different */
+	/* relative paths to the same file. */
+	file_entry = ggz_list_head(file_list);
+	while(file_entry) {
+		file_data = ggz_list_get_data(file_entry);
+		if(!strcmp(file_data->path, path))
+			break;
+		file_entry = ggz_list_next(file_entry);
+	}
+	if(file_entry) {
+		/* Check if we need to enable writing */
+		if(opt_rdwr && !file_data->writeable)
+			file_data->writeable = opt_rdwr;
+
+		/* Return existing handle */
+		return file_data->handle;
 	}
 
 	/* Go do the dirty work and give us a section_list */

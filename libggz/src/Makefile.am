@@ -10,8 +10,6 @@ libggz_la_LIBADD = @LDADD@
 libggz_la_LDFLAGS = -version-info 0:0:0
 
 libggz_la_SOURCES =	conf.c \
-			confio.h \
-			confio.c \
 		   	list.c \
 		   	memory.c \
 			msg.c \
