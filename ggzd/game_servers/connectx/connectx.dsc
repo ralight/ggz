@@ -1,4 +1,4 @@
-# $Id: connectx.dsc 5306 2002-12-20 10:10:29Z oojah $
+# $Id: connectx.dsc 5544 2003-05-10 23:15:02Z dr_maux $
 
 [GameInfo]
 Author = Roger Light
@@ -12,7 +12,7 @@ ExecutablePath = ggzd.connectx
 
 [Protocol]
 Engine = ConnectX
-Version = 2-pre1
+Version = 2
 
 [TableOptions]
 AllowLeave = 1

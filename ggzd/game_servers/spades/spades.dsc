@@ -1,11 +1,11 @@
-# $Id: spades.dsc 4757 2002-09-29 11:53:43Z dr_maux $
+# $Id: spades.dsc 5544 2003-05-10 23:15:02Z dr_maux $
 
 [GameInfo]
 Author = Brent Hendricks
 Description = NetSpades is a multiuser networked spades game
 Homepage = http://www.ece.rice.edu/~brentmh/spades
 Name = NetSpades
-Version = 0.0.4
+Version = 0.0.5
 
 [LaunchInfo]
 ExecutablePath = ggzd.spades

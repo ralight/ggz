@@ -1,4 +1,4 @@
-# $Id: escape.dsc 5298 2002-12-18 11:46:17Z oojah $
+# $Id: escape.dsc 5544 2003-05-10 23:15:02Z dr_maux $
 
 [GameInfo]
 Author = Roger Light
@@ -12,7 +12,7 @@ ExecutablePath = ggzd.escape
 
 [Protocol]
 Engine = Escape
-Version = 2-pre1
+Version = 2
 
 [TableOptions]
 AllowLeave = 1

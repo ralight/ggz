@@ -1,18 +1,18 @@
-# $Id: dots.dsc 5410 2003-02-15 03:45:28Z jdorje $
+# $Id: dots.dsc 5544 2003-05-10 23:15:02Z dr_maux $
 
 [GameInfo]
 Author = Rich Gade
 Description = Simple GGZ game module for playing Connect The Dots
 Homepage = http://ggz.sourceforge.net/games/dots/
 Name = Dots
-Version = 0.0.2
+Version = 0.0.3
 
 [LaunchInfo]
 ExecutablePath = ggzd.dots
 
 [Protocol]
 Engine = Dots
-Version = 3
+Version = 4
 
 [TableOptions]
 AllowLeave = 1

@@ -1,11 +1,11 @@
-# $Id: muehle.dsc 4757 2002-09-29 11:53:43Z dr_maux $
+# $Id: muehle.dsc 5544 2003-05-10 23:15:02Z dr_maux $
 
 [GameInfo]
 Author = Josef Spillner
 Description = Muehle game for GGZ
 Homepage = http://ggz.sourceforge.net/games/muehle/
 Name = Muehle
-Version = 0.2
+Version = 0.3
 
 [LaunchInfo]
 ExecutablePath = muehleserv --ggz
