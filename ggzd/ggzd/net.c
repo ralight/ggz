@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.c 2329 2001-08-31 03:06:17Z jdorje $
+ * $Id: net.c 2398 2001-09-08 03:31:04Z bmh $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -68,13 +68,16 @@ static int _net_handle_msg_from_sized(GGZNetIO *net);
 static int _net_handle_chat(GGZNetIO *net);
 static int _net_handle_motd(GGZNetIO *net);
 
-static int _net_send_result(GGZNetIO *net, unsigned char opcode, char result);
+static int _net_send_result(GGZNetIO *net, char *action, char code);
 static int _net_send_error(GGZNetIO *net);
 static int _net_send_login_normal_status(GGZNetIO *net, char status);
 static int _net_send_login_anon_status(GGZNetIO *net, char status);
 static int _net_send_login_new_status(GGZNetIO *net, char status, char *password);
-
+static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int num);
+static int _net_send_line(GGZNetIO *net, char *line, ...);
+static int _net_send_string(GGZNetIO *net, char *fmt, ...);
 static int _net_read_name(int sock, char name[MAX_USER_NAME_LEN + 1]);
+
 
 
 /* Create a new network IO object */
@@ -224,19 +227,21 @@ void net_free(GGZNetIO* net)
 
 int net_send_serverid(GGZNetIO *net)
 {
-	if (es_write_int(net->fd, MSG_SERVER_ID) < 0 
-	    || es_va_write_string(net->fd, "GGZ-%s", VERSION) < 0
-	    || es_write_int(net->fd, GGZ_CS_PROTO_VERSION) < 0
-	    || es_write_int(net->fd, MAX_CHAT_LEN) < 0)
-		return -1;
-
+	_net_send_line(net, "<SESSION>");
+	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, "Brent&apos;s Server", GGZ_CS_PROTO_VERSION, "ok");
+	_net_send_line(net, "\t\t<OPTIONS CHATLEN='%d'/>", MAX_CHAT_LEN);
+	_net_send_line(net, "\t</SERVER>");
+			
 	return 0;
 }
  
 
 int net_send_server_full(GGZNetIO *net)
 {
-	return es_write_int(net->fd, MSG_SERVER_FULL);
+	_net_send_line(net, "<SESSION>");
+	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'/>", VERSION, "Brent&apos;s Server", GGZ_CS_PROTO_VERSION, "full");
+			
+	return 0;
 }
 
 
@@ -263,211 +268,242 @@ int net_send_motd(GGZNetIO *net)
 	int i, num;
 	char line[1024];
 	
+	_net_send_line(net, "<MOTD PRIORITY='normal'><![CDATA[");
 
 	num = motd_get_num_lines();
 		
-	if (es_write_int(net->fd, MSG_MOTD) < 0
-	    || es_write_int(net->fd, num) < 0)
-		return -1;
-	
 	for (i = 0; i < num; i++) {
 		motd_get_line(i, line, sizeof(line));
-		if (es_write_string(net->fd, line) < 0)
-			return -1;
+		_net_send_line(net, line);
 	}
 
+	_net_send_line(net, "]]></MOTD>");
 	return 0;
 }
 
 
 int net_send_motd_error(GGZNetIO *net, char status)
 {
-	return _net_send_result(net, RSP_MOTD, status);
+	return _net_send_result(net, "motd", status);
 }
 
 
 int net_send_room_list_error(GGZNetIO *net, char status)
 {
-	if (es_write_int(net->fd, RSP_LIST_ROOMS) < 0
-	    || es_write_int(net->fd, (int)status) < 0)
-		return -1;
-	
-	return 0;
+	return _net_send_result(net, "list", status);
 }
 
 
 int net_send_room_list_count(GGZNetIO *net, int count)
 {
-	if (es_write_int(net->fd, RSP_LIST_ROOMS) < 0
-	    || es_write_int(net->fd, count) < 0)
-		return -1;
-	
+	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
+	_net_send_line(net, "<LIST TYPE='room'>");
 	return 0;
 }
 
 
 int net_send_room(GGZNetIO *net, int index, RoomStruct *room)
 {
-	if (es_write_int(net->fd, index) < 0
-	    || es_write_string(net->fd, room->name) < 0
-	    || es_write_int(net->fd, room->game_type) < 0)
-		return -1;
+	_net_send_line(net, "<ROOM ID='%d' NAME='%s' GAME='%d'>",
+		       index, room->name, room->game_type);
+	if (room->description)
+		_net_send_line(net, "<DESC>%s</DESC>", room->description);
+	_net_send_line(net, "</ROOM>");
 
-	if (room->description && es_write_string(net->fd, room->description) < 0)
-		return -1;
+	return 0;
+}
 
+
+int net_send_room_list_end(GGZNetIO *net)
+{
+	_net_send_line(net, "</LIST>");
+	_net_send_line(net, "</RESULT>");
 	return 0;
 }
 
 
 int net_send_type_list_error(GGZNetIO *net, char status)
 {
-	if (es_write_int(net->fd, RSP_LIST_TYPES) < 0
-	    || es_write_int(net->fd, (int)status) < 0)
-		return -1;
-	
-	return 0;
+	return _net_send_result(net, "list", status);
 }
 
 
 int net_send_type_list_count(GGZNetIO *net, int count)
 {
-	if (es_write_int(net->fd, RSP_LIST_TYPES) < 0
-	    || es_write_int(net->fd, count) < 0)
-		return -1;
-	
+	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
+	_net_send_line(net, "<LIST TYPE='game'>");
 	return 0;
 }
 
 
 int net_send_type(GGZNetIO *net, int index, GameInfo *type, char verbose)
 {
-	if (es_write_int(net->fd, index) < 0
-	    || es_write_string(net->fd, type->name) < 0
-	    || es_write_string(net->fd, type->version) < 0
-	    || es_write_string(net->fd, type->p_engine) < 0
-	    || es_write_string(net->fd, type->p_version) < 0
-	    || es_write_char(net->fd, type->player_allow_mask) < 0
-	    || es_write_char(net->fd, type->bot_allow_mask) < 0)
-		return -1;
-
+	_net_send_line(net, "<GAME ID='%d' NAME='%s' VERSION='%s'>",
+		       index, type->name, type->version);
+	_net_send_line(net, "<PROTOCOL ENGINE='%s' VERSION='%s'/>",
+		       type->p_engine, type->p_version);
+	_net_send_line(net, "<ALLOW PLAYERS='%d' BOTS='%d'/>",
+		       type->player_allow_mask, type->bot_allow_mask);
+	
 	if (verbose) {
-		if (es_write_string(net->fd, type->desc) < 0
-		    || es_write_string(net->fd, type->author) < 0
-		    || es_write_string(net->fd, type->homepage) < 0)
-			return -1;
+		_net_send_line(net, "<ABOUT AUTHOR='%s' URL='%s'/>",
+			       type->author, type->homepage);
+		_net_send_line(net, "<DESC>%s</DESC>", type->desc);
 	}
-
+	_net_send_line(net, "</GAME>");
 	return 0;
 }
 
 
+int net_send_type_list_end(GGZNetIO *net)
+{
+	_net_send_line(net, "</LIST>");
+	_net_send_line(net, "</RESULT>");
+	return 0;
+}
+
 int net_send_player_list_error(GGZNetIO *net, char status)
 {
-	if (es_write_int(net->fd, RSP_LIST_PLAYERS) < 0
-	    || es_write_int(net->fd, (int)status) < 0)
-		return -1;
-	
-	return 0;
+	return _net_send_result(net, "list", status);
 }
 
 
 int net_send_player_list_count(GGZNetIO *net, int count)
 {
-	
-	
-	if (es_write_int(net->fd, RSP_LIST_PLAYERS) < 0
-	    || es_write_int(net->fd, count) < 0)
-		return -1;
-	
+	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
+	_net_send_line(net, "<LIST TYPE='player' ROOM=''>");
 	return 0;
 }
 
 
 int net_send_player(GGZNetIO *net, GGZPlayer *p2)
 {
-	if (es_write_string(net->fd, p2->name) < 0
-	    || es_write_int(net->fd, p2->table) < 0)
-		return -1;
-	
+	return _net_send_line(net, 
+			      "<PLAYER ID='%s' TYPE='guest' TABLE='%d' />",
+			      p2->name, p2->table);
+}
+
+
+int net_send_player_list_end(GGZNetIO *net)
+{
+	_net_send_line(net, "</LIST>");
+	_net_send_line(net, "</RESULT>");
 	return 0;
 }
 
 
 int net_send_table_list_error(GGZNetIO *net, char status)
 {
-	if (es_write_int(net->fd, RSP_LIST_TABLES) < 0
-	    || es_write_int(net->fd, (int)status) < 0)
-		return -1;
-	
-	return 0;
+	return _net_send_result(net, "list", status);
 }
 
 
 int net_send_table_list_count(GGZNetIO *net, int count)
 {
-	if (es_write_int(net->fd, RSP_LIST_TABLES) < 0
-	    || es_write_int(net->fd, count) < 0)
-		return -1;
-	
+	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
+	_net_send_line(net, "<LIST TYPE='table' ROOM=''>");
 	return 0;
 }
 
 
-int net_send_table(GGZNetIO *net, GGZTable *table)
+int net_send_table(GGZNetIO *net, GGZTable *table, int seat)
 {
-	char *name = NULL;
-	int i, seat;
-	
-	if (es_write_int(net->fd, table->index) < 0
-	    || es_write_int(net->fd, table->room) < 0
-	    || es_write_int(net->fd, table->type) < 0
-	    || es_write_string(net->fd, table->desc) < 0
-	    || es_write_char(net->fd, table->state) < 0
-	    || es_write_int(net->fd, seats_num(table)) < 0)
-		return -1;
-	
-	for (i = 0; i < seats_num(table); i++) {
-		seat = seats_type(table, i);
-		if (es_write_int(net->fd, seat) < 0)
-			return -1;
-		
-		switch(seat) {
-		case GGZ_SEAT_OPEN:
-		case GGZ_SEAT_BOT:
-			continue;  /* no name for these */
-		case GGZ_SEAT_RESV:
-			name = table->reserve[i];
-			break;
-		case GGZ_SEAT_PLAYER:
-			name = table->seats[i];
-			break;
-		}
-		
-		if (es_write_string(net->fd, name) < 0)
-			return -1;
-	}
+	int i;
 
+	_net_send_line(net, "<TABLE ID='%d' GAME='%d' STATUS='%d' SEATS='%d'>",
+		       table->index, table->type, table->state, 
+		       seats_num(table));
+
+	_net_send_line(net, "<DESC>%s</DESC>", table->desc);
+
+	/* If no seat specified, send them all */
+	if (seat < 0) {
+		for (i = 0; i < seats_num(table); i++)
+			_net_send_table_seat(net, table, i);
+	}
+	else 
+		_net_send_table_seat(net, table, seat);
+	
+	_net_send_line(net, "</TABLE>");
+
+	return 0;
+}
+
+int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int num)
+{
+	int seat;
+	char *type = NULL;
+	char *name = NULL;
+
+	seat = seats_type(table, num);
+	switch (seat) {
+	case GGZ_SEAT_OPEN:
+		type = "open";
+		break;
+	case GGZ_SEAT_BOT:
+		type = "bot";
+		break;
+	case GGZ_SEAT_RESV:
+		type = "reserved";
+		name = table->reserve[num];
+		break;
+	case GGZ_SEAT_PLAYER:
+		type = "player";
+		name = table->seats[num];
+		break;
+	}
+	
+	if (name)
+		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>", 
+			       num, type, name);
+	else
+		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
+			       num, type);
+
+	return 0;
+}
+
+
+int net_send_table_list_end(GGZNetIO *net)
+{
+	_net_send_line(net, "</LIST>");
+	_net_send_line(net, "</RESULT>");
 	return 0;
 }
 
 
 int net_send_room_join(GGZNetIO *net, char status)
 {
-	return _net_send_result(net, RSP_ROOM_JOIN, status);
+	return _net_send_result(net, "enter", status);
 }
 
 
 int net_send_chat(GGZNetIO *net, unsigned char opcode, char *name, char *msg)
 {
-	if (es_write_int(net->fd, MSG_CHAT) < 0
-	    || es_write_char(net->fd, opcode) < 0
-	    || es_write_string(net->fd, name) < 0)
-		return -1;
+	char *type = NULL;
 
-	if (opcode & GGZ_CHAT_M_MESSAGE
-	    && es_write_string(net->fd, msg) < 0)
-		return -1;
+	switch (opcode) {
+	case GGZ_CHAT_NORMAL:
+		type = "normal";
+		break;
+	case GGZ_CHAT_ANNOUNCE:
+		type = "announce";
+		break;
+	case GGZ_CHAT_BEEP:
+		type = "beep";
+		break;
+	case GGZ_CHAT_PERSONAL:
+		type = "private";
+		break;
+	}
+
+	if (opcode & GGZ_CHAT_M_MESSAGE) {
+		_net_send_line(net, "<CHAT TYPE='%s' FROM='%s'><![CDATA[%s]]></CHAT>", 
+			       type, name, msg);
+	}
+	else 
+		_net_send_line(net, "<CHAT TYPE='%s' FROM='%s'/>", type, name);
+			       
 
 	return 0;
 }
@@ -475,84 +511,100 @@ int net_send_chat(GGZNetIO *net, unsigned char opcode, char *name, char *msg)
 
 int net_send_chat_result(GGZNetIO *net, char status)
 {
-	return _net_send_result(net, RSP_CHAT, status);
+	return _net_send_result(net, "chat", status);
 }
 
 
 int net_send_table_launch(GGZNetIO *net, char status)
 {
-	return _net_send_result(net, RSP_TABLE_LAUNCH, status);
+	return _net_send_result(net, "launch", status);
 }
 
 
 int net_send_table_join(GGZNetIO *net, char status)
 {
-	return _net_send_result(net, RSP_TABLE_JOIN, status);
+	return _net_send_result(net, "join", status);
 }
 
 
 int net_send_table_leave(GGZNetIO *net, char status)
 {
-	return _net_send_result(net, RSP_TABLE_LEAVE, status);
+	return _net_send_result(net, "leave", status);
 }
 
 
 int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 {
-	if (es_write_int(net->fd, MSG_UPDATE_PLAYERS) < 0
-	    || es_write_char(net->fd, opcode) < 0
-	    || es_write_string(net->fd, name) < 0)
-		return -1;
+	char *action = NULL;
+	
+	switch (opcode) {
+	case GGZ_UPDATE_DELETE:
+		action = "delete";
+		break;
+	case GGZ_UPDATE_ADD:
+		action = "add";
+		break;
+	}
+	_net_send_line(net, "<UPDATE TYPE='player' ACTION='%s' ROOM=''>",
+		       action);
+	_net_send_line(net, "<PLAYER ID='%s' TYPE='guest' />", name);
+	_net_send_line(net, "</UPDATE>");
 	
 	return 0;
 }
 
+
 int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, int seat)
 {
-	/* Always send opcode */
-	if (es_write_int(net->fd, MSG_UPDATE_TABLES) < 0 
-	    || es_write_char(net->fd, opcode) < 0)
-		return -1;
-	
-	/* If it's an add, all we do it send the table */
-	if (opcode == GGZ_UPDATE_ADD)
-		return net_send_table(net, table);
+	char *action = NULL;
 
-	/* For the others, we always send the index */
-	if (es_write_int(net->fd, table->index) < 0)
-		return -1;
-
-	/* If it's a delete, we're done now */
 	switch (opcode) {
-	case GGZ_UPDATE_DELETE:  /* no more to do for delete */
+	case GGZ_UPDATE_DELETE:
+		action = "delete";
 		break;
-	case GGZ_UPDATE_STATE:
-		return es_write_char(net->fd, table->state);
+	case GGZ_UPDATE_ADD:
+		action = "add";
+		break;
+	case GGZ_UPDATE_LEAVE:
+		action = "leave";
 		break;
 	case GGZ_UPDATE_JOIN:
-	case GGZ_UPDATE_LEAVE:
-		if (es_write_int(net->fd, seat) < 0
-		    || es_write_string(net->fd, table->seats[seat]) < 0)
-			return -1;
+		action = "join";
+		break;
+	case GGZ_UPDATE_STATE:
+		action = "status";
+		break;
 	}
 
-	/* If we get here it must have been OK */
+	/* Always send opcode */
+	_net_send_line(net, "<UPDATE TYPE='table' ACTION='%s' ROOM=''>",
+		       action);
+	
+	net_send_table(net, table, seat);
+
+	_net_send_line(net, "</UPDATE>");
+
 	return 0;
 }
 
 
 int net_send_logout(GGZNetIO *net, char status)
 {
-	return _net_send_result(net, RSP_LOGOUT, status);
+	return _net_send_line(net, "</SESSION>");
 }
 
 
 int net_send_game_data(GGZNetIO *net, int size, char *data)
 {
-	if (es_write_int(net->fd, RSP_GAME) < 0
-	    || es_write_int(net->fd, size) < 0
-	    || es_writen(net->fd, data, size) < 0)
-		return -1;
+	int i;
+	char buf[5];
+	_net_send_string(net, "<DATA SIZE='%d'><![CDATA[", size);
+	buf[0] = '\0';
+	for (i = 0; i < size; i++) {
+		sprintf(buf, "%d ", data[i]);
+		write(net->fd, buf, strlen(buf));
+	}
+	_net_send_string(net, "]]></DATA>");
 
 	return 0;
 }
@@ -621,7 +673,7 @@ static int _net_handle_table_launch(GGZNetIO *net)
 	for (i = count; i < MAX_TABLE_SIZE; i++)
 		seats[i] = GGZ_SEAT_NONE;
 
-	return player_table_launch(net->player, type, desc, count, seats, names);
+ 	return player_table_launch(net->player, type, desc, count, seats, names);
 }
 
 
@@ -739,59 +791,35 @@ static int _net_handle_motd(GGZNetIO *net)
 
 /************ Utility/Convenience functions *******************/
 
-static int _net_send_result(GGZNetIO *net, unsigned char opcode, char result)
+static int _net_send_result(GGZNetIO *net, char *action, char code)
 {
-	if (es_write_int(net->fd, opcode) < 0
-	    || es_write_char(net->fd, result) < 0)
-		return -1;
-	
-	return 0;
+	return _net_send_line(net, "<RESULT ACTION='%s' CODE='%d'/>",
+			      action, code);
 }
 
 
 static int _net_send_login_normal_status(GGZNetIO *net, char status)
 {
-	/* Try to send login status */
-	if (_net_send_result(net, RSP_LOGIN, status) < 0)
-		return -1;
-
-	/* Try to send checksum if successful */
-	if (status == 0 
-	    && (es_write_int(net->fd, 265) < 0
-		|| es_write_char(net->fd, 0) < 0))
-		return -1;
-	
-	return 0;
+	return _net_send_result(net, "login", status);
 }
 
 
 static int _net_send_login_anon_status(GGZNetIO *net, char status)
 {
-	/* Try to send login status */
-	if (_net_send_result(net, RSP_LOGIN_ANON, status) < 0)
-		return -1;
-
-	/* Try to send checksum if successful */
-	if (status == 0 && es_write_int(net->fd, 265) < 0)
-		return -1;
-	
-	
-	return 0;
+	return _net_send_result(net, "login", status);
 }
 
 
 static int _net_send_login_new_status(GGZNetIO *net, char status, char *password)
 {
 	/* Try to send login status */
-	if (_net_send_result(net, RSP_LOGIN_NEW, status) < 0)
-		return -1;
+	_net_send_line(net, "<RESULT ACTION='login' CODE='%d'>", status);
 	
 	/* Try to send checksum if successful */
-	if (status == 0 
-	    && (es_write_string(net->fd, password) < 0
-		|| es_write_int(net->fd, 265) < 0))
-		return -1;
+	if (status == 0)
+		_net_send_line(net, "<PASSWORD>%s</PASSWORD>", password);
 	
+	_net_send_line(net, "</RESULT>");
 	return 0;
 }
 
@@ -818,3 +846,27 @@ static int _net_read_name(int sock, char name[MAX_USER_NAME_LEN + 1])
 	return 0;
 }
 
+
+static int _net_send_line(GGZNetIO *net, char *line, ...)
+{
+	char buf[4096];
+	va_list ap;
+
+	va_start(ap, line);
+	vsprintf(buf, line, ap);
+	va_end(ap);
+	strcat(buf, "\n");
+	return write(net->fd, buf, strlen(buf));
+}
+
+
+static int _net_send_string(GGZNetIO *net, char *fmt, ...)
+{
+	char buf[4096];
+	va_list ap;
+
+	va_start(ap, fmt);
+	vsprintf(buf, fmt, ap);
+	va_end(ap);
+	return write(net->fd, buf, strlen(buf));
+}

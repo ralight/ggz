@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 2313 2001-08-29 03:55:39Z jdorje $
+ * $Id: protocols.h 2398 2001-09-08 03:31:04Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 
-#define GGZ_CS_PROTO_VERSION  4
+#define GGZ_CS_PROTO_VERSION  5
 
 typedef enum {
 	REQ_LOGIN_NEW,

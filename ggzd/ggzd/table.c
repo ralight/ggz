@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2351 2001-09-04 03:19:36Z rgade $
+ * $Id: table.c 2398 2001-09-08 03:31:04Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -998,7 +998,7 @@ static int table_event_callback(void* target, int size, void* data)
 	char* name = NULL;
 	char* current;
 	GGZTable info;
-	int seat = 0, index;
+	int seat = -1, index;
 	GGZPlayer* player;
 
 	player = (GGZPlayer*)target;

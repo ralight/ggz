@@ -633,6 +633,9 @@ int player_list_players(GGZPlayer* player)
 			return GGZ_REQ_DISCONNECT;
 		}
 
+	if (net_send_player_list_end(player->net) < 0)
+		return GGZ_REQ_DISCONNECT;
+
 	free(data);
 	return GGZ_REQ_OK;
 }
@@ -674,6 +677,10 @@ int player_list_types(GGZPlayer* player, char verbose)
 		if (net_send_type(player->net, i, &info[i], verbose) < 0)
 			return GGZ_REQ_DISCONNECT;
 	
+	if (net_send_type_list_end(player->net) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+
 	return GGZ_REQ_OK;
 }
 
@@ -710,14 +717,19 @@ int player_list_tables(GGZPlayer* player, int type, char global)
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Don`t proceed if there was an error, or no tables found*/
-	if (count <= 0)
+	if (count < 0)
 		return GGZ_REQ_FAIL;
 	
 	for (i = 0; i < count; i++)
-		if (net_send_table(player->net, &my_tables[i]) < 0)
+		if (net_send_table(player->net, &my_tables[i], -1) < 0)
 			return GGZ_REQ_DISCONNECT;
-	
-	free(my_tables);
+
+
+	if (net_send_table_list_end(player->net) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	if (count > 0)
+		free(my_tables);
 	
 	return GGZ_REQ_OK;
 }

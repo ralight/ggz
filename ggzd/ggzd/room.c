@@ -101,6 +101,10 @@ int room_list_send(GGZPlayer* player, int req_game, char verbose)
 				return GGZ_REQ_DISCONNECT;
 		}
 
+	/* End room list */
+	if (net_send_room_list_end(player->net) < 0)
+		return GGZ_REQ_DISCONNECT;
+	
 	return GGZ_REQ_OK;
 }
 

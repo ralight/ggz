@@ -58,18 +58,22 @@ int net_send_motd_error(GGZNetIO *net, char status);
 int net_send_room_list_error(GGZNetIO *net, char status);
 int net_send_room_list_count(GGZNetIO *net, int count);
 int net_send_room(GGZNetIO *net, int index, RoomStruct *room);
+int net_send_room_list_end(GGZNetIO *net);
 
 int net_send_type_list_error(GGZNetIO *net, char status);
 int net_send_type_list_count(GGZNetIO *net, int count);
 int net_send_type(GGZNetIO *net, int index, GameInfo *type, char verbose);
+int net_send_type_list_end(GGZNetIO *net);
 
 int net_send_player_list_error(GGZNetIO *net, char status);
 int net_send_player_list_count(GGZNetIO *net, int count);
 int net_send_player(GGZNetIO *net, GGZPlayer *p2);
+int net_send_player_list_end(GGZNetIO *net);
 
 int net_send_table_list_error(GGZNetIO *net, char status);
 int net_send_table_list_count(GGZNetIO *net, int count);
-int net_send_table(GGZNetIO *net, GGZTable *table);
+int net_send_table(GGZNetIO *net, GGZTable *table, int seat);
+int net_send_table_list_end(GGZNetIO *net);
 
 int net_send_room_join(GGZNetIO *net, char status);
 int net_send_chat(GGZNetIO *net, unsigned char opcode, char *name, char *msg);
