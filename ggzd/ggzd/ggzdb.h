@@ -31,10 +31,11 @@
 /* Structures to use to pass data to front end functions */
 
 /* Anytime structures change, bump the version id */
-#define GGZDB_VERSION_ID	"0.3"
+#define GGZDB_VERSION_ID	"0.4"
 
 /* For ggzdb_player_XXX */
 typedef struct ggzdbPlayerEntry {
+	unsigned int user_id;			/* Numeric UID */
 	char handle[MAX_USER_NAME_LEN+1];	/* Players nickname/handle */
 	char password[17];			/* Players password */
 	char name[33];				/* Players real name */
@@ -60,6 +61,7 @@ extern int ggzdb_player_add(ggzdbPlayerEntry *);
 extern int ggzdb_player_update(ggzdbPlayerEntry *);
 extern int ggzdb_player_get(ggzdbPlayerEntry *);
 extern int ggzdb_player_delete(char *handle);
+extern unsigned int ggzdb_player_next_uid(void);
 
 
 #ifdef DB_STANDALONE

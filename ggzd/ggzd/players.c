@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4161 2002-05-05 18:43:52Z bmh $
+ * $Id: players.c 4170 2002-05-05 21:51:20Z rgade $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -102,7 +102,7 @@ GGZPlayer* player_new(GGZClient *client)
 	player->launching = 0;
 	player->transit = 0;
 	player->room = -1;
-	player->uid = GGZ_UID_NONE;
+	player->login_status = GGZ_LOGIN_NONE;
 	player->perms = PERMS_DEFAULT_ANON;
 	strcpy(player->name, "<none>");
 	player->room_events = NULL;
@@ -131,7 +131,7 @@ void player_logout(GGZPlayer* player)
 	/* There's no need to remove them if they aren't "here" */
 	if(strcmp(player->name, "<none>")) {
 		connect_time = (long)time(NULL) - player->login_time;
-		if(player->uid == GGZ_UID_ANON)
+		if(player->login_status == GGZ_LOGIN_ANON)
 			anon = 1;
 		pthread_rwlock_unlock(&player->lock);
 
@@ -235,7 +235,7 @@ GGZPlayerType player_get_type(GGZPlayer *player)
 	int type;
 
 	pthread_rwlock_rdlock(&player->lock);
-	if(player->uid == GGZ_UID_ANON)
+	if(player->login_status == GGZ_LOGIN_ANON)
 		type = GGZ_PLAYER_GUEST;
 	else if(perms_is_admin(player))
 		type = GGZ_PLAYER_ADMIN;
@@ -656,7 +656,7 @@ GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose)
 		player->name);
 		
 	/* Don't send list if they're not logged in */
- 	if (player->uid == GGZ_UID_NONE) {
+ 	if (player->login_status == GGZ_LOGIN_NONE) {
 		dbg_msg(GGZ_DBG_UPDATE, "%s requested type list before login",
 			player->name);
 		if (net_send_type_list_error(player->client->net, E_NOT_LOGGED_IN) < 0)
@@ -701,7 +701,7 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 	
 	
 	/* Don`t send list if they`re not logged in */
-	if (player->uid == GGZ_UID_NONE) {
+	if (player->login_status == GGZ_LOGIN_NONE) {
 		dbg_msg(GGZ_DBG_UPDATE, "%s requested table list before login",
 			player->name);
 		if (net_send_table_list_error(player->client->net, E_NOT_LOGGED_IN) < 0)
@@ -795,7 +795,7 @@ GGZPlayerHandlerStatus player_motd(GGZPlayer* player)
 		return GGZ_REQ_OK;
 
  	/* Don't send motd if they're not logged in */
- 	if (player->uid == GGZ_UID_NONE) {
+ 	if (player->login_status == GGZ_LOGIN_NONE) {
 		dbg_msg(GGZ_DBG_CHAT, "%s requested motd before logging in",
 			player->name);
 		if (net_send_motd_error(player->client->net, E_NOT_LOGGED_IN) < 0)

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 4142 2002-05-03 04:07:23Z bmh $
+ * $Id: login.c 4170 2002-05-05 21:51:20Z rgade $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -152,6 +152,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 	else if (type == GGZ_LOGIN_NEW) {
 		/* At this point, we know the name is not currently in
                    use, so try adding it to the database*/
+		db_pe.user_id = ggzdb_player_next_uid();
 		if(db_status != GGZDB_ERR_NOTFOUND
 		   || login_add_user(&db_pe, name, new_pw) < 0) {
 			hash_player_delete(name);
@@ -159,8 +160,8 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
-		log_msg(GGZ_LOG_SECURITY, "NEWACCT from %s for %s",
-			player->client->addr, name);
+		log_msg(GGZ_LOG_SECURITY, "NEWACCT (%u) from %s for %s",
+			db_pe.user_id, player->client->addr, name);
 		login_type = " newly registered player";
 	} else
 		login_type = "n anonymous player";
@@ -168,12 +169,12 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 	/* Setup the player's information */
 	pthread_rwlock_wrlock(&player->lock);
 	if (type == GGZ_LOGIN_GUEST) {
-		player->uid = GGZ_UID_ANON;
+		player->login_status = GGZ_LOGIN_ANON;
 		log_login_anon();
 	} else {
 		/* Setup initial registered player info */
-		/* FIXME: give each registered player a unique UID */
-		player->uid = GGZ_UID_REGISTERED;
+		player->login_status = GGZ_LOGIN_REGISTERED;
+		player->uid = db_pe.user_id;
 		perms_init(player, &db_pe);
 		log_login_regd();
 	}

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 4161 2002-05-05 18:43:52Z bmh $
+ * $Id: players.h 4170 2002-05-05 21:51:20Z rgade $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -48,8 +48,11 @@ struct _GGZPlayer {
 
 	GGZClient *client;
 
-	/* FIXME: need to replace with a "logged-in" flag */
-	int uid;
+	/* Player's login status/type */
+	GGZLoginStatus login_status;
+
+	/* Players User ID number*/
+	unsigned int uid;
 
 	/* "Room" in which player currently resides (if any) */
 	int room;

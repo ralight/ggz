@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: ggzd.h 4170 2002-05-05 21:51:20Z rgade $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -51,14 +51,12 @@ typedef enum {
 
 typedef struct _GGZNetIO GGZNetIO;
 
-/* Special UID values.  Eventually, every registered player
-   will have a unique UID, but for now they are all just
-   assigned a UID of 0. */
+/* User login status */
 typedef enum {
-	GGZ_UID_REGISTERED = 0,
-	GGZ_UID_NONE = -1,
-	GGZ_UID_ANON = -2
-} GGZUIDType;
+	GGZ_LOGIN_ANON = -1,
+	GGZ_LOGIN_NONE = 0,
+	GGZ_LOGIN_REGISTERED = 1
+} GGZLoginStatus;
 
 typedef enum {
 	GGZ_PLAYER_NONE,

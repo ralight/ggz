@@ -43,7 +43,8 @@ static DB *db_p = NULL;
 static DB_ENV *db_e;
 static int standalone = 0;
 
-/* Internal functions */
+
+int _ggzdb_player_add(ggzdbPlayerEntry *);
 
 
 /* Function to initialize the db3 database system */
@@ -99,6 +100,7 @@ int _ggzdb_init_player(char *datadir)
 {
 	int rc;
 	u_int32_t flags;
+	ggzdbPlayerEntry marker;
 
 	if(standalone)
 		flags = 0;
@@ -113,6 +115,16 @@ int _ggzdb_init_player(char *datadir)
 	/* Check for errors */
 	if(rc != 0)
 		err_sys_exit("db_p->open() failed in _ggzdb_init_player()");
+
+	/* Add a marker entry for our next UID */
+	marker.user_id = 1;
+#if MAX_USER_NAME_LEN < 8
+#error MAX_USER_NAME_LEN (see ggzd.h) must be at least 8 characters
+#endif
+	strcpy(marker.handle, "&nxtuid&");
+
+	/* FIXME: We really should check for "impossible" failure below */
+	_ggzdb_player_add(&marker);
 
 	return 0;
 }
@@ -200,6 +212,25 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	db_p->sync(db_p, 0);
 
 	return rc;
+}
+
+
+/* Function to get and update the next uid */
+unsigned int _ggzdb_player_next_uid(void)
+{
+	ggzdbPlayerEntry marker;
+	unsigned int nxt;
+
+	/* Get the marker entry for our next UID */
+	strcpy(marker.handle, "&nxtuid&");
+
+	/* FIXME: We really should check for "impossible" failures below */
+	_ggzdb_player_get(&marker);
+	nxt = marker.user_id;
+	marker.user_id++;
+	_ggzdb_player_update(&marker);
+
+	return nxt;
 }
 
 

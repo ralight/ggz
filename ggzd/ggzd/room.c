@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: room.c 4170 2002-05-05 21:51:20Z rgade $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -66,7 +66,7 @@ GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int req_game,
 	/* and options can change ONLY before threads are in existence	    */
 		
 	/* Don't send list if they're not logged in */
-	if (player->uid == GGZ_UID_NONE) {
+	if (player->login_status == GGZ_LOGIN_NONE) {
 		if (net_send_room_list_error(player->client->net, E_NOT_LOGGED_IN) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;

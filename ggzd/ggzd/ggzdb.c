@@ -56,6 +56,7 @@ extern int _ggzdb_init_player(char *datadir);
 extern int _ggzdb_player_add(ggzdbPlayerEntry *);
 extern int _ggzdb_player_get(ggzdbPlayerEntry *);
 extern int _ggzdb_player_update(ggzdbPlayerEntry *);
+extern unsigned int _ggzdb_player_next_uid(void);
 
 
 /* Function to initialize the database system */
@@ -179,6 +180,14 @@ int ggzdb_player_update(ggzdbPlayerEntry *pe)
 	
 	_ggzdb_exit();
 	return rc;
+}
+
+
+/* Function to get the next valid user id to assign */
+unsigned int ggzdb_player_next_uid(void)
+{
+	/* Just link to the db specific code */
+	return _ggzdb_player_next_uid();
 }
 
 

@@ -61,7 +61,7 @@ void list_players(void)
 		fprintf(stderr, "_ggzdb_player_get_first() rc=%d\n", rc);
 		return;
 	}
-	printf("%s\n", pe.handle);
+	printf("%-8u %s\n", pe.user_id, pe.handle);
 	while((rc = _ggzdb_player_get_next(&pe)) == 0) {
 		if(++count % 23 == 0) {
 			printf("[pause]\007 ");
@@ -69,7 +69,7 @@ void list_players(void)
 			if(lb[0] == 'Q' || lb[0] == 'q')
 				break;
 		}
-		printf("%s\n", pe.handle);
+		printf("%-8u %s\n", pe.user_id, pe.handle);
 	}
 	if(lb[0] != 'Q' && lb[0] != 'q' && (count % 23) > 12) {
 		printf("[pause]\007 ");
@@ -123,6 +123,10 @@ void add_player(void)
 	char time_asc[128];
 
 	printf("Adding new user\n");
+	printf("UserID Number: ");
+	getnextline();
+	pe.user_id = strtoul(lb, NULL, 10);
+
 	printf("User handle:   ");
 	getnextline();
 	for(i=0; i<MAX_USER_NAME_LEN; i++) {
@@ -212,6 +216,7 @@ void edit_player(int edit)
 	printf("\n");
 	if(!edit) {
 		printf("User entry for %s\n", pe.handle);
+		printf("UserID number: %u\n", pe.user_id);
 		printf("Real name:     [%s]\n", pe.name);
 		printf("Email address: [%s]\n", pe.email);
 		printf("Password:      [%s]\n", pe.password);
@@ -222,10 +227,11 @@ void edit_player(int edit)
 	}
 
 	printf("Editing user entry for %s\n", pe.handle);
-	printf("1) Real name:     [%s]\n", pe.name);
-	printf("2) Email address: [%s]\n", pe.email);
-	printf("3) Password:      [%s]\n", pe.password);
-	printf("4) Permissions:   ");
+	printf("1) UserID number: %u\n", pe.user_id);
+	printf("2) Real name:     [%s]\n", pe.name);
+	printf("3) Email address: [%s]\n", pe.email);
+	printf("4) Password:      [%s]\n", pe.password);
+	printf("5) Permissions:   ");
 	show_perms(pe.perms, 3);
 	printf("   Last login:    %s\n", time_asc);
 	printf("   A) Accepts     C) Cancels\n");
@@ -234,6 +240,14 @@ void edit_player(int edit)
 		getnextline();
 		switch((int)lb[0]) {
 			case '1':
+				printf("%u >", pe.user_id);
+				getnextline();
+				if(!lb[0])
+					break;
+				pe.user_id = strtoul(lb, NULL, 10);
+				printf("UserID number: %u\n", pe.user_id);
+				break;
+			case '2':
 				printf("[%s] >", pe.name);
 				getnextline();
 				if(!lb[0])
@@ -242,7 +256,7 @@ void edit_player(int edit)
 				pe.name[32] = '\0';
 				printf("Real name:     [%s]\n", pe.name);
 				break;
-			case '2':
+			case '3':
 				printf("[%s] >", pe.email);
 				getnextline();
 				if(!lb[0])
@@ -251,7 +265,7 @@ void edit_player(int edit)
 				pe.email[32] = '\0';
 				printf("Email address: [%s]\n", pe.email);
 				break;
-			case '3':
+			case '4':
 				printf("[%s] >", pe.password);
 				getnextline();
 				if(!lb[0])
@@ -260,7 +274,7 @@ void edit_player(int edit)
 				pe.password[16] = '\0';
 				printf("Password:      [%s]\n", pe.password);
 				break;
-			case '4':
+			case '5':
 				printf("[0x%08X] >0x", pe.perms);
 				getnextline();
 				if(!lb[0])
@@ -279,10 +293,11 @@ void edit_player(int edit)
 				break;
 			default:
 				printf("Editing user entry for %s\n",pe.handle);
-				printf("1) Real name:     [%s]\n", pe.name);
-				printf("2) Email address: [%s]\n", pe.email);
-				printf("3) Password:      [%s]\n", pe.password);
-				printf("4) Permissions:   ");
+				printf("1) UserID number: %u\n", pe.user_id);
+				printf("2) Real name:     [%s]\n", pe.name);
+				printf("3) Email address: [%s]\n", pe.email);
+				printf("4) Password:      [%s]\n", pe.password);
+				printf("5) Permissions:   ");
 				show_perms(pe.perms, 3);
 				printf("   Last login:    %s\n", time_asc);
 				printf("   A) Accepts     C) Cancels\n");
