@@ -10,9 +10,9 @@ use Digest::MD5;
 
 # connection parameters for phpBB
 
-my $phpbb_type = "mysql";
+my $phpbb_type = "Pg";
 my $phpbb_host = "localhost";
-my $phpbb_name = "phpbb";
+my $phpbb_name = "phpbb2";
 my $phpbb_user = "xxx";
 my $phpbb_pass = "xxx";
 
@@ -73,9 +73,11 @@ while($res->fetch()){
 		}
 		$res3->finish();
 
+		my $stamp = `date +%s`;
+
 		$res3 = $phpbb_conn->prepare("INSERT INTO phpbb_users " .
-			"(user_id, username, user_password, user_email, user_from) VALUES " .
-			"($id, '$name', '$md5pass', '$email', '$country')");
+			"(user_id, username, user_password, user_email, user_from, user_active, user_level, user_regdate) VALUES " .
+			"($id, '$name', '$md5pass', '$email', '$country', 1, 0, $stamp)");
 		$res3->execute();
 		$res3->finish();
 
