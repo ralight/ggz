@@ -243,6 +243,11 @@ void Board::mousePressEvent(QMouseEvent *e)
 					net->output(QString("[%1,%2].").arg(x).arg(y));
 				}
 			}
+			else
+			{
+				// FIXME: this is a pseudo win situation
+				emit signalEnd();
+			}
 		}
 
 		// Check for turn-win situation (muehle)

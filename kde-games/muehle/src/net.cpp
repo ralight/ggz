@@ -20,6 +20,7 @@
 
 // System includes
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -34,8 +35,16 @@ Net::~Net()
 }
 
 // Send a line over the net
-void Net::output(QString s)
+void Net::output(const QString &s)
 {
 	cout << "[" << s.latin1() << "]" << endl;
+}
+
+// Read a single line
+QString Net::input()
+{
+	string s;
+	cin >> s;
+	return QString(s.c_str());
 }
 

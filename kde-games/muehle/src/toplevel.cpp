@@ -36,13 +36,13 @@
 Toplevel::Toplevel()
 : KMainWindow()
 {
-	KPopupMenu *menu_game, *menu_theme, *menu_player, *menu_variants;
+	KPopupMenu *menu_theme, *menu_player;
 	int counter;
 	KStandardDirs d;
 	QString s;
 
 	menu_game = new KPopupMenu(this);
-	menu_game->insertItem(i18n("New"), menugamenew);
+	menu_game->insertItem(i18n("Start new game"), menugamenew);
 	menu_game->insertSeparator();
 	menu_game->insertItem(i18n("Quit"), menugamequit);
 
@@ -80,11 +80,11 @@ Toplevel::Toplevel()
 	menu_player->insertItem(i18n("Offer remis"), menuplayerremis);
 	menu_player->insertItem(i18n("Give up"), menuplayerloose);
 
-	menuBar()->insertItem(i18n("Game"), menu_game);
-	menuBar()->insertItem(i18n("Variants"), menu_variants);
-	menuBar()->insertItem(i18n("Player"), menu_player);
-	menuBar()->insertItem(i18n("Theme"), menu_theme);
-	menuBar()->insertItem(i18n("Help"), helpMenu());
+	menuBar()->insertItem(i18n("Game"), menu_game, 1);
+	menuBar()->insertItem(i18n("Variants"), menu_variants, 2);
+	menuBar()->insertItem(i18n("Player"), menu_player, 3);
+	menuBar()->insertItem(i18n("Theme"), menu_theme, 4);
+	menuBar()->insertItem(i18n("Help"), helpMenu(), 5);
 
 	statusBar()->insertItem("nobody: 0", statusplayer, 2);
 	statusBar()->insertItem("nobody: 0", statusopponent, 2);
@@ -99,6 +99,7 @@ Toplevel::Toplevel()
 	connect(menu_theme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(menu_variants, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
+	connect(board, SIGNAL(signalEnd()), SLOT(slotEnd()));
 	connect(board, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
 	connect(board, SIGNAL(signalScore(const QString &, int, int)), SLOT(slotScore(const QString &, int, int)));
 
@@ -150,4 +151,20 @@ void Toplevel::slotScore(const QString &player, int num, int score)
 {
 	statusBar()->changeItem(QString("%1: %1").arg(player).arg(score), num);
 }
+
+// Turn the game client into a network game interface
+void Toplevel::enableNetwork()
+{
+	menuBar()->setItemEnabled(2, false);
+	menu_game->setItemEnabled(menugamenew, false);
+	setCaption(i18n("Network game"));
+}
+
+// End the game
+void Toplevel::slotEnd()
+{
+	menuBar()->setItemEnabled(3, false);
+	setCaption(i18n("Game over"));
+}
+
 

@@ -51,15 +51,13 @@ int main(int argc, char **argv)
 	KCmdLineArgs::addCmdLineOptions(op);
 	args = KCmdLineArgs::parsedArgs();
 
-	if(!args->isSet("ggz"))
-	{
-		cout << "Sorry, this game does only work in GGZ mode so far." << endl;
-		return -1;
-	}
-
 	KApplication a;
 
 	top = new Toplevel();
+	if(args->isSet("ggz"))
+	{
+		top->enableNetwork();
+	}
 	a.setMainWidget(top);
 	return a.exec();
 }

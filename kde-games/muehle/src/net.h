@@ -27,7 +27,8 @@ class Net
 	public:
 		Net();
 		~Net();
-		void output(QString s);
+		void output(const QString &s);
+		QString input();
 };
 
 #endif

@@ -45,6 +45,7 @@ class Board : public QWidget
 	signals:
 		void signalStatus(const QString &message);
 		void signalScore(const QString &player, int num, int score);
+		void signalEnd();
 
 	protected:
 		void paintEvent(QPaintEvent *e);

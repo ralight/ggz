@@ -26,6 +26,7 @@
 
 // Class declarations
 class Board;
+class KPopupMenu;
 
 // Main window which controls the game
 class Toplevel : public KMainWindow
@@ -34,6 +35,7 @@ class Toplevel : public KMainWindow
 	public:
 		Toplevel();
 		~Toplevel();
+		void enableNetwork();
 		enum MenuItems
 		{
 			menugamenew = 1,
@@ -54,10 +56,12 @@ class Toplevel : public KMainWindow
 		void slotMenu(int id);
 		void slotStatus(const QString &message);
 		void slotScore(const QString &player, int num, int score);
+		void slotEnd();
 
 	private:
 		Board *board;
 		QStringList themelist, variantslist;
+		KPopupMenu *menu_variants, *menu_game;
 };
 
 #endif
