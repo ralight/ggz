@@ -10,7 +10,7 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 
 .in +1c
 .ti -1c
-.RI "typedef int (* \fBGGZDHandler\fR )(\fBggzd_event_t\fR event_id, void *handler_data)"
+.RI "typedef void (* \fBGGZDHandler\fR )(\fBggzd_event_t\fR event_id, void *handler_data)"
 .br
 .RI "\fIPrototype for an event handler function.\fR"
 .in -1c
@@ -37,6 +37,10 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .RI "const char* \fBggzd_get_player_name\fR (int seat)"
 .br
 .RI "\fIFind the name of a given player.\fR"
+.ti -1c
+.RI "int \fBggzd_set_player_name\fR (int seat, char *name)"
+.br
+.RI "\fISet a player's name.\fR"
 .ti -1c
 .RI "int \fBggzd_get_player_socket\fR (int seat)"
 .br
@@ -78,6 +82,14 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .br
 .RI "\fISet ggzdmod to block (or not) waiting for data.\fR"
 .ti -1c
+.RI "void \fBggzd_gameover\fR (int status)"
+.br
+.RI "\fITell ggzdmod the game is over.\fR"
+.ti -1c
+.RI "int \fBggzd_get_gameover\fR (void)"
+.br
+.RI "\fICheck to see if the game is over.\fR"
+.ti -1c
 .RI "void \fBggzd_set_handler\fR (\fBggzd_event_t\fR event_id, const \fBGGZDHandler\fR handler)"
 .br
 .RI "\fISets a handler for the specified event.\fR"
@@ -90,11 +102,11 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .br
 .RI "\fIDisconnects from GGZD.\fR"
 .ti -1c
-.RI "int \fBggzd_dispatch\fR (void)"
+.RI "void \fBggzd_dispatch\fR (void)"
 .br
 .RI "\fIHandle data from GGZD.\fR"
 .ti -1c
-.RI "int \fBggzd_read_data\fR (void)"
+.RI "void \fBggzd_read_data\fR (void)"
 .br
 .RI "\fIRead data from all sockets.\fR"
 .ti -1c
@@ -116,7 +128,7 @@ Note that this does not apply to the client sockets: ggzdmod provides one file d
 Here's the simplest possible example: 
 .PP
 .nf
-     int ggz_update(ggzd_assign_t event, void* data); // See GGZDHandler
+     void ggz_update(ggzd_assign_t event, void* data); // See GGZDHandler
 
      int main() {
          // First we register functions to handle some events.
@@ -134,7 +146,7 @@ For more information, see the documentation at http://ggz.sf.net/.
 .PP
 .SH TYPEDEF DOCUMENTATION
 .PP 
-.SS typedef int(* GGZDHandler)(\fBggzd_event_t\fR event_id, void *handler_data)
+.SS typedef void(* GGZDHandler)(\fBggzd_event_t\fR event_id, void *handler_data)
 .PP
 Prototype for an event handler function.
 .PP
@@ -145,16 +157,12 @@ Prototype for an event handler function.
 The type of event that has just happened. 
 .TP
 \fB\fIhandler_data\fR\fR
-Specific data; varies by event. 
-.PP
-\fBReturns: \fR
-.in +1c
-A negative return value indicates unrecoverable failure.
+Specific data; varies by event.
 .PP
 Here is an example function showing the most generic use: 
 .PP
 .nf
-      int ggz_update(ggzd_event_t event, void *data) {
+      void ggz_update(ggzd_event_t event, void *data) {
           int player, socket_fd;
           switch (event) {
             case GGZ_EVENT_LAUNCH:
@@ -180,7 +188,6 @@ Here is an example function showing the most generic use:
               // Real-time games may use the tick event.
               break;
           }
-          return 0;
       }
 .fi
  
@@ -277,7 +284,7 @@ Disconnects from GGZD.
 \fBReturns: \fR
 .in +1c
 0 on success, -1 on failure. 
-.SS int ggzd_dispatch (void)
+.SS void ggzd_dispatch (void)
 .PP
 Handle data from GGZD.
 .PP
@@ -305,6 +312,38 @@ The highest file descriptor used by ggzd.
 \fB\fBTodo: \fR\fR
 .in +1c
  Is this function necessary? 
+.SS void ggzd_gameover (int status)
+.PP
+Tell ggzdmod the game is over.
+.PP
+Call this function when the game is over; that way ggzd_main will know to stop looping and your own code can query the gameover. 
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIstatus\fR\fR
+The exit status. 
+.PP
+\fBNote: \fR
+.in +1c
+This is an experimental function. 
+.SS int ggzd_get_gameover (void)
+.PP
+Check to see if the game is over.
+.PP
+Call this function to find out if the game is over. 
+.PP
+\fBReturns: \fR
+.in +1c
+0 for no gameover, 1 for gameover. 
+.PP
+\fBSee also: \fR
+.in +1c
+\fBggzd_gameover\fR() 
+.PP
+\fBNote: \fR
+.in +1c
+This is an experimental function. 
 .SS const char * ggzd_get_player_name (int seat)
 .PP
 Find the name of a given player.
@@ -377,7 +416,7 @@ This should do all of the GGZ work necessary for most games. It repeatedly takes
 .PP
 \fBReturns: \fR
 .in +1c
-0 on success, -1 on failure 
+0 on success, -1 on connection failure 
 .PP
 \fBNote: \fR
 .in +1c
@@ -385,7 +424,7 @@ This function will check for data on both GGZ and player sockets.
 .in -1c
 .in +1c
 This function supercedes ggzd_read_data, ggzd_dispatch, ggzd_connect, and ggzd_disconnect. 
-.SS int ggzd_read_data (void)
+.SS void ggzd_read_data (void)
 .PP
 Read data from all sockets.
 .PP
@@ -488,7 +527,9 @@ Sets blocking status of ggzdmod. If blocking is set, ggzd_main and ggzd_read_dat
 .in +1c
 Brent doesn't want to allow non-blocking or have this function. 
 .PP
- This function isn't implemented; there's just this prototype.  
+\fBNote: \fR
+.in +1c
+This is an experimental function. 
 .SS void ggzd_set_handler (\fBggzd_event_t\fR event_id, const \fBGGZDHandler\fR handler)
 .PP
 Sets a handler for the specified event.
@@ -503,6 +544,29 @@ The event that is being associated
 .TP
 \fB\fIhandler\fR\fR
 The function that will be used as the handler 
+.SS int ggzd_set_player_name (int seat, char * name)
+.PP
+Set a player's name.
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIseat\fR\fR
+The GGZ seat of the player whose name will be set. 
+.TP
+\fB\fIname\fR\fR
+The new name for the player. 
+.PP
+\fBReturns: \fR
+.in +1c
+0 on success, -1 on failure. 
+.PP
+\fBNote: \fR
+.in +1c
+You may only set the name of an AI player. 
+.in -1c
+.in +1c
+This is an experimental function. 
 .SH AUTHOR
 .PP 
 Generated automatically by Doxygen for libggzdmod from the source code.
