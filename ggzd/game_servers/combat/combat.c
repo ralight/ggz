@@ -31,6 +31,8 @@
 #include "stdio.h"
 #include "string.h"
 
+/* Returns a string containing the options data.  The string is malloced
+   and must be freed by the caller. */
 unsigned char *combat_options_string_write(combat_game * _game,
 					   int for_hash)
 {
@@ -92,9 +94,9 @@ int combat_options_string_read(unsigned char *_optstr, combat_game * _game)
 	int a, b;
 	int len = strlen(_optstr);
 	int retval = 0;
-	unsigned char *optstr;
+	unsigned char optstr_buf[len + 1], *optstr = optstr_buf;
+
 	// Copy the string from the parameter
-	optstr = (char *)malloc((len + 1) * sizeof(char));
 	strncpy(optstr, _optstr, len + 1);
 	// Removes one from all the string, to return the zeroes
 	for (a = 0; a < len; a++)
