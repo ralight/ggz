@@ -55,7 +55,7 @@ static void * _ggz_allocate(const unsigned int size, char *tag, int line, int lo
 	struct _memptr *newmem;
 
 	/* Try to allocate our memory */
-	newmem = malloc(sizeof(_memptr) + size);
+	newmem = malloc(sizeof(_memptr) + size); /* should be only "malloc" call. */
 	if(newmem == NULL)
 		ggz_error_sys_exit("Memory allocation failure: %s/%d", tag, 
 				    line);
@@ -196,7 +196,7 @@ int _ggz_free(const void *ptr, char *tag, int line)
 	_ggz_debug("MEMDETAIL", "%d bytes deallocated at %p from %s/%d",
 		   oldsize, ptr, tag, line);
 
-	free(targetmem);
+	free(targetmem); /* should be the only "free" call */
 
 	return 0;
 }

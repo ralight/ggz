@@ -59,7 +59,7 @@ extern "C" {
  * 
  * @param size the size of memory to allocate
  * 
- * @return a pointer to the newly allocated memory
+ * @return a pointer to the newly allocated and zeroed memory
  */
 #define ggz_malloc(size) _ggz_malloc(size, __FUNCTION__ " in " __FILE__, __LINE__)
 						   
@@ -91,6 +91,8 @@ extern "C" {
  * @param string string to duplicate
  * 
  * @return pointer to new string
+ *
+ * @note It is safe to pass a NULL string.
  */
 #define ggz_strdup(string) _ggz_strdup(string, __FUNCTION__ " in " __FILE__,  __LINE__)
 						 
@@ -104,7 +106,7 @@ extern "C" {
  * @param  char * string describing the calling function 
  * @param int linenumber 
  * 
- * @return pointer to newly allocated memory
+ * @return pointer to newly allocated, zeroed memory
 */
 void * _ggz_malloc(const unsigned int, char *, int);
 
@@ -142,7 +144,9 @@ int _ggz_free(const void *, char *, int);
  * @param int linenumber 
  * 
  * @return newly allocated string
-*/
+ *
+ * @note It is safe to pass a NULL string.
+ */
 char * _ggz_strdup(const char *, char *, int);
 
 
@@ -295,10 +299,10 @@ int ggz_conf_write_list	(int	handle,
  * @param def A value to be returned if the entry does not exist (may be NULL)
  * @return A dynamically allocated copy of the stored (or default) value
  * or NULL
- * @note The copy is allocated via a standard malloc() call and the caller
- * is expected to be responsible for calling free() on the returned value
- * when they no longer need the value.  No memory is allocated if a default
- * value of NULL is returned.
+ * @note The copy is allocated via a standard ggz_malloc() call and the
+ * caller is expected to be responsible for calling ggz_free() on the
+ * returned value when they no longer need the value.  No memory is allocated
+ * if a default value of NULL is returned.
  */
 char * ggz_conf_read_string	(int	handle,
 			 const char	*section,
@@ -329,11 +333,11 @@ int ggz_conf_read_int	(int	handle,
  * @param argvp A pointer to a string array.  This will receive a value
  * pointing to a dynamically allocated array of string values.
  * @return 0 on success, -1 on failure
- * @note The array is allocated via standard malloc() calls and the caller
- * is expected to be responsible for calling free() on the string values
- * and the associated array structure when they no longer need the list.
- * If the section/key combination is not found -1 will be returned, argcp
- * is set to a value of zero, no memory will be allocated, and
+ * @note The array is allocated via standard ggz_malloc() calls and the
+ * caller is expected to be responsible for calling ggz_free() on the string
+ * values and the associated array structure when they no longer need the
+ * list.  If the section/key combination is not found -1 will be returned,
+ * argcp is set to a value of zero, no memory will be allocated, and
  * argvp will retain it's (possibly undefined) value.
  */
 int ggz_conf_read_list	(int	handle,

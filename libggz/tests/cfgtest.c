@@ -120,7 +120,7 @@ void check_testfile(void)
 	else
 		pass();
 	if(str) {
-		free(str);
+		ggz_free(str);
 		str = NULL;
 	}
 
@@ -131,7 +131,7 @@ void check_testfile(void)
 	else
 		pass();
 	if(str) {
-		free(str);
+		ggz_free(str);
 		str = NULL;
 	}
 
@@ -243,7 +243,7 @@ void check_testfile(void)
 	else
 		pass();
 	if(str) {
-		free(str);
+		ggz_free(str);
 		str = NULL;
 	}
 	num = ggz_conf_read_int(handle, "IntTest", "Negative", 0);

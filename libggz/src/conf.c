@@ -96,9 +96,9 @@ static GGZList	*file_list=NULL;
  *	stored under section/key.
  *
  *	Returns:
- *	  - ptr to a malloc()'ed copy of value
- *	  - ptr to a malloc()'ed copy of default if not found
- *	  - ptr to NULL if not found and no default
+ *	  - ptr to a ggz_malloc()'ed copy of value
+ *	  - ptr to a ggz_malloc()'ed copy of default if not found
+ *	  - NULL if not found and no default
  */
 char * ggz_conf_read_string(int handle, const char *section,
 			    const char *key, const char *def)
@@ -126,15 +126,12 @@ char * ggz_conf_read_string(int handle, const char *section,
 	e_data = ggz_list_get_data(e_entry);
 
 	/* Duplicate the resulting value and return it to the caller */
-	return strdup(e_data->value);
+	return ggz_strdup(e_data->value);
 
 do_default:
 	/* Any failure causes a branch to here to return */
 	/* a defualt value if provided by the caller.	 */
-	if(def != NULL)
-		return strdup(def);
-	else
-		return NULL;
+	return ggz_strdup(def);
 }
 
 
@@ -153,7 +150,7 @@ int ggz_conf_read_int(int handle, const char *section, const char *key, int def)
 	sprintf(tmp, "%d", def);
 	tmp2 = ggz_conf_read_string(handle, section, key, tmp);
 	value = atoi(tmp2);
-	free(tmp2);
+	ggz_free(tmp2);
 
 	return value;
 }
@@ -196,7 +193,7 @@ int ggz_conf_read_list(int handle, const char *section, const char *key,
 			}
 		}
 
-		*argvp = (char **) calloc((*argcp + 1), sizeof(char *));
+		*argvp = (char **) ggz_malloc((*argcp + 1) * sizeof(char *));
 
 
 		p = str;
@@ -213,8 +210,7 @@ int ggz_conf_read_list(int handle, const char *section, const char *key,
 					saw_backspace = 0;
 			}
 
-			if((tmp2 = malloc(p-tmp+1)) == NULL)
-				ggz_error_sys_exit("malloc failed in conf_read_list");
+			tmp2 = ggz_malloc(p-tmp+1);
 			(*argvp)[index] = strncpy(tmp2, tmp, p - tmp);
 			tmp2[p-tmp] = '\0';
 			s1 = s2 = (*argvp)[index++];
@@ -231,7 +227,7 @@ int ggz_conf_read_list(int handle, const char *section, const char *key,
 				p++;
 		} while (*p);
 
-		free(str);
+		ggz_free(str);
 	} else {
 		rc = -1;
 		*argcp = 0;
@@ -529,8 +525,8 @@ void ggz_conf_cleanup(void)
 	while(f_entry) {
 		f_data = ggz_list_get_data(f_entry);
 		ggz_list_free(f_data->section_list);
-		free(f_data->path);
-		free(f_data);
+		ggz_free(f_data->path);
+		ggz_free(f_data);
 		f_entry = ggz_list_next(f_entry);
 	}
 
@@ -630,8 +626,8 @@ int ggz_conf_parse(const char *path, const GGZConfType options)
 		return -1;
 
 	/* Build our file list data entry */
-	file_data = malloc(sizeof(conf_file_t));
-	file_data->path = strdup(path);
+	file_data = ggz_malloc(sizeof(conf_file_t));
+	file_data->path = ggz_strdup(path);
 	file_data->handle = next_handle;
 	file_data->writeable = opt_rdwr;
 	file_data->section_list = section_list;
@@ -688,7 +684,7 @@ static GGZList * file_parser(const char *path)
 	c_struct = ggz_get_file_struct(c_file);
 
 	/* Setup some temp storage to use */
-	e_data = malloc(sizeof(conf_entry_t));
+	e_data = ggz_malloc(sizeof(conf_entry_t));
 
 	/* Read individual lines and pass them off to be parsed */
 	while((line = ggz_read_line(c_struct)) != NULL) {
@@ -732,7 +728,7 @@ static GGZList * file_parser(const char *path)
 	}
 
 	/* Cleanup after ourselves */
-	free(e_data);
+	ggz_free(e_data);
 	ggz_free_file_struct(c_struct);
 	close(c_file);
 
@@ -857,17 +853,17 @@ static void *section_create(void *data)
 	/* is not expected to be the full struct, but just the name str  */
 	conf_section_t	*dst;
 
-	dst = malloc(sizeof(conf_section_t));
+	dst = ggz_malloc(sizeof(conf_section_t));
 
 	/* Copy the section name and create an entry list */
-	dst->name = strdup(data);
+	dst->name = ggz_strdup(data);
 	dst->entry_list = ggz_list_create(entry_compare,
 				       entry_create,
 				       entry_destroy,
 				       GGZ_LIST_REPLACE_DUPS);
 	if(!dst->entry_list) {
-		free(dst->name);
-		free(dst);
+		ggz_free(dst->name);
+		ggz_free(dst);
 		dst = NULL;
 	}
 
@@ -879,9 +875,9 @@ static void section_destroy(void *data)
 	conf_section_t	*s_data;
 
 	s_data = data;
-	free(s_data->name);
+	ggz_free(s_data->name);
 	ggz_list_free(s_data->entry_list);
-	free(s_data);
+	ggz_free(s_data);
 }
 
 
@@ -902,11 +898,11 @@ static void *entry_create(void *data)
 	conf_entry_t	*src, *dst;
 
 	src = data;
-	dst = malloc(sizeof(conf_entry_t));
+	dst = ggz_malloc(sizeof(conf_entry_t));
 
 	/* Copy the key and value data */
-	dst->key = strdup(src->key);
-	dst->value = strdup(src->value);
+	dst->key = ggz_strdup(src->key);
+	dst->value = ggz_strdup(src->value);
 
 	return dst;
 }
@@ -916,9 +912,9 @@ static void entry_destroy(void *data)
 	conf_entry_t	*e_data;
 
 	e_data = data;
-	free(e_data->key);
-	free(e_data->value);
-	free(e_data);
+	ggz_free(e_data->key);
+	ggz_free(e_data->value);
+	ggz_free(e_data);
 }
 
 /* make_path()
@@ -929,10 +925,10 @@ int make_path(const char *full, mode_t mode)
 	char		*copy, *node, *path;
 	struct stat	stats;
 
-	copy = strdup(full);
+	copy = ggz_strdup(full);
 
 	/* Allocate and zero memory for path */
-	path = malloc(strlen(full)+1);
+	path = ggz_malloc(strlen(full)+1);
  
 	/* Skip preceding / */
 	if (copy[0] == '/')
@@ -944,8 +940,8 @@ int make_path(const char *full, mode_t mode)
 			strcat(strcat(path, "/"), node);
 			if (mkdir(path, mode) < 0
 			    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
-				free(path);
-				free(copy);
+				ggz_free(path);
+				ggz_free(copy);
 				
 				return -1;
 			}
