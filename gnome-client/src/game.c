@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5005 2002-10-23 00:59:25Z jzaun $
+ * $Id: game.c 5006 2002-10-23 15:23:22Z jzaun $
  *
  * Functions for handling game events
  *
@@ -48,14 +48,16 @@ GGZGame *game;
 GGZGameType *gametype;
 static int gameindex;
 static int fd = -1;
+static int spectating = FALSE;
 
 static int game_handle;
 static int channel_handle;
 
-void game_init(GGZModule *module, GGZGameType *type, int index)
+void game_init(GGZModule *module, GGZGameType *type, int index, int spec)
 {
 	gametype = type;
 	gameindex = index;
+	spectating = spec;
 
 	game = ggzcore_game_new();
 	ggzcore_game_init(game, server, module);
@@ -72,7 +74,6 @@ void game_quit(void)
         	game_handle = -1;
 		fd = -1;
 	}
-//	loop_remove_fd(fd);
 }
 
 
@@ -106,13 +107,11 @@ void game_channel_connected(int fd)
 					 (GdkInputFunction)channel_process,
 					 (gpointer)server,
 					 NULL);
-//	loop_add_fd(fd, channel_process, NULL);
 }
 
 
 void game_channel_ready(int fd)
 {
-//	loop_remove_fd(fd);
         gdk_input_remove(channel_handle);
        	channel_handle = -1;
 
@@ -139,8 +138,6 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 					 (GdkInputFunction)game_process,
 					 (gpointer)server,
 					 game_destroy);
-
-//	loop_add_fd(fd, game_process, game_destroy);
 
 	return GGZ_HOOK_OK;
 }
@@ -190,7 +187,7 @@ static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, void* user_
 //		ggzcore_table_free(table);
 //	}
 //	else {
-		status = ggzcore_room_join_table(room, gameindex, FALSE);
+		status = ggzcore_room_join_table(room, gameindex, spectating);
 //	}
 	return GGZ_HOOK_OK;
 }

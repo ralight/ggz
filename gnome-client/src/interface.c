@@ -951,12 +951,16 @@ create_login (void)
 
   btnJoin = gtk_button_new_with_mnemonic (_("Join Game"));
   gtk_widget_set_name (btnJoin, "btnJoin");
+  gtk_object_set_data_full (GTK_OBJECT (window), "btnJoin", btnJoin,
+                            (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (btnJoin);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnJoin);
   GTK_WIDGET_SET_FLAGS (btnLaunch, GTK_CAN_DEFAULT);
 
   btnWatch = gtk_button_new_with_mnemonic (_("Watch Game"));
   gtk_widget_set_name (btnWatch, "btnWatch");
+  gtk_object_set_data_full (GTK_OBJECT (window), "btnWatch", btnWatch,
+                            (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (btnWatch);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnWatch);
   GTK_WIDGET_SET_FLAGS (btnLaunch, GTK_CAN_DEFAULT);
