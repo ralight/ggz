@@ -71,11 +71,11 @@ void launch_create_or_raise(void)
 static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 {
 	GtkWidget *tmp;
-	gchar *text;
+	gchar *text, *seatstring;
 	GGZRoom *room;
 	GGZGameType *gt;
 	GList *items = NULL;
-	gint maxplayers, x;
+	gint maxplayers, maxbots, x;
 
 	room  = ggzcore_server_get_cur_room(server);
 	gt = ggzcore_room_get_gametype(room);
@@ -126,10 +126,16 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seat1_open");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 
-	/* Default to computer players for everyone else */
+	/* If bots are allowed, default to bot players, otherwise open */
+	maxbots = ggzcore_gametype_get_max_bots(gt);
+	if (maxbots > 0) 
+		seatstring = "seat%d_bot";
+	else
+		seatstring = "seat%d_open";
+
 	for (x = 2; x <= maxplayers; x++) {
-		text = g_strdup_printf("seat%d_bot", x);
-		tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), text);
+		text = g_strdup_printf(seatstring, x);
+		tmp = lookup_widget(launch_dialog, text);
 		g_free(text);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
