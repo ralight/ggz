@@ -99,6 +99,7 @@ int main(void) {
 
 	}
 
+	ggz_debug("Quitting now\n");
 	ggz_quit();
 	return 0;
 }

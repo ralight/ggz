@@ -26,7 +26,7 @@
 #define WHITE +1
 #define EMPTY  0
 
-/* REVERSI PROTOCOL VERSION 0.0.4
+/* REVERSI PROTOCOL VERSION 0.0.5
  *
  * The server handles everything, from the AI to the validity of moves
  *
@@ -120,6 +120,8 @@
  *
  * If anyone has left the table, it will receive a RVR_MSG_PLAYERS from the server. Then it enters waiting mode again.
  *
+ * When the game is over, it sends a RVR_MSG_GAMEOVER (int)winner to the players, and enters DONE state. If it receives enough RVR_REQ_AGAIN msgs, it sends a RVR_MSG_START to the players.
+ *
  * Luckily that's all, this protocol is perfect and it shouldn't be modified anymore. Or so I hope. :) */
 
 // Reversi protocol
@@ -128,6 +130,7 @@
 #define RVR_MSG_PLAYERS 1
 #define RVR_MSG_SYNC 6
 #define RVR_REQ_SYNC 7
+#define RVR_REQ_AGAIN 8
 #define RVR_MSG_START 5
 #define RVR_MSG_MOVE 2
 #define RVR_MSG_GAMEOVER 3
@@ -216,6 +219,8 @@ int game_check_over();
 void game_skip_move();
 // Game is over! Send gameover message and stop everything
 void game_gameover();
+// Play again?
+int game_play_again(int);
 // Update scores
 void game_update_scores();
 	

@@ -197,6 +197,8 @@ int game_start() {
 			return -1;
 	}
 
+	ggz_debug("Game has started!\n");
+
 	return 0;
 }
 
@@ -216,6 +218,10 @@ int game_handle_player(int seat) {
 
 		case RVR_REQ_SYNC:
 			status = game_send_sync(seat);
+			break;
+
+		case RVR_REQ_AGAIN:
+			status = game_play_again(seat);
 			break;
 
 		default:
@@ -472,8 +478,40 @@ void game_gameover() {
 	}
 	
 	// What to do now?
+	// Puts human players score = 0
+	// When they send a REQ_AGAIN message, put it = 1
+	// When everyone equal = 1, then starts it all again
+	ggz_debug("Game is over. Waiting to see if we should play again\n");
+	rvr_game.white = (ggz_seats[PLAYER2SEAT(WHITE)].assign == GGZ_SEAT_BOT);
+	rvr_game.black = (ggz_seats[PLAYER2SEAT(BLACK)].assign == GGZ_SEAT_BOT);
 	
 	return;
+
+}
+
+int game_play_again(int seat) {
+	ggz_debug("%d wants to play again! He is a good fellow.\n", seat);
+	// If game is not finished, forget about it
+	if (rvr_game.state != RVR_STATE_DONE) {
+		ggz_debug("The game wasn`t over yet! Are you crazy?\n");
+		return RVR_SERVER_ERROR;
+	}
+	
+	if (SEAT2PLAYER(seat) == WHITE)
+		rvr_game.white = 1;
+	else if (SEAT2PLAYER(seat) == BLACK)
+		rvr_game.black = 1;
+	
+	if (rvr_game.white && rvr_game.black) {
+		// Starts is again
+		game_init();
+		game_start();
+		rvr_game.turn = BLACK;
+		game_play();
+	}
+
+
+	return RVR_SERVER_OK;
 
 }
 
@@ -488,3 +526,4 @@ void game_update_scores() {
 			rvr_game.black++;
 	}
 }
+
