@@ -4,11 +4,11 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 6903 2005-01-25 18:57:38Z jdorje $
+ * $Id: ggzmod.h 7046 2005-03-26 09:51:15Z josef $
  *
  * This file contains the main interface for the ggzmod library.  This
- * library facilitates the communication between the GGZ server (ggz)
- * and game servers.  This file provides a unified interface that can be
+ * library facilitates the communication between the GGZ core client (ggz)
+ * and game clients.  This file provides a unified interface that can be
  * used at both ends.
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
@@ -331,7 +331,7 @@ GGZSeat ggzmod_get_seat(GGZMod *ggzmod, int seat);
 int ggzmod_get_num_spectator_seats(GGZMod *ggzmod);
 
 /** @brief Get a spectator's data.
- *  @param ggzmod The GGZdMod object.
+ *  @param ggzmod The GGZMod object.
  *  @param seat The number, between 0 and (number of spectators - 1).
  *  @return A valid GGZSpectator structure, if given a valid seat.
  */

@@ -4,11 +4,11 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 6903 2005-01-25 18:57:38Z jdorje $
+ * $Id: ggzmod-ggz.h 7046 2005-03-26 09:51:15Z josef $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
- * library facilitates the communication between the GGZ server (ggz)
- * and game servers.  This file provides a unified interface that can be
+ * library facilitates the communication between the GGZ core client (ggz)
+ * and game clients.  This file provides a unified interface that can be
  * used at both ends.
  *
  * Copyright (C) 2002 GGZ Development Team.

@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 6112 2004-07-16 17:31:15Z jdorje $
+ * $Id: protocol.h 7046 2005-03-26 09:51:15Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -24,14 +24,14 @@
  */
 
 
-#ifndef __GGZ_SERVER_PROTOCOL_H
-#define __GGZ_SERVER_PROTOCOL_H
+#ifndef __GGZ_CLIENT_PROTOCOL_H
+#define __GGZ_CLIENT_PROTOCOL_H
 
 /*
- * Protocols for GGZDMOD game server <-> ggzd communication.
+ * Protocols for GGZMOD game client <-> core client communication.
  */
 
-/** Messages sent from the game server to the ggz server. */
+/** Messages sent from the game client to the ggz core client. */
 typedef enum {
 	MSG_GAME_STATE,
 
@@ -43,7 +43,7 @@ typedef enum {
 	REQ_CHAT
 } TableToControl;
 
-/** Messages sent from the ggz server to the game server. */
+/** Messages sent from the ggz core client to the game client. */
 typedef enum {
 	MSG_GAME_LAUNCH,
 	MSG_GAME_SERVER,
@@ -61,4 +61,4 @@ typedef enum {
 	MSG_GAME_STATS
 } ControlToTable;
 
-#endif /* __GGZ_SERVER_PROTOCOL_H */
+#endif /* __GGZ_CLIENT_PROTOCOL_H */

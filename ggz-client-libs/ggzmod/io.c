@@ -4,11 +4,11 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 6866 2005-01-24 01:39:48Z jdorje $
+ * $Id: io.c 7046 2005-03-26 09:51:15Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
- * library facilitates the communication between the GGZ server (ggz)
- * and game servers.  This file provides backend code that can be
+ * library facilitates the communication between the GGZ core client (ggz)
+ * and game clients.  This file provides backend code that can be
  * used at both ends.
  *
  * Copyright (C) 2001 GGZ Dev Team.

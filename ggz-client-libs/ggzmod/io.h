@@ -1,14 +1,14 @@
 /* 
  * File: io.h
  * Author: GGZ Dev Team
- * Project: ggzdmod
+ * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.h 6866 2005-01-24 01:39:48Z jdorje $
+ * $Id: io.h 7046 2005-03-26 09:51:15Z josef $
  *
- * This file contains the backend for the ggzdmod library.  This
- * library facilitates the communication between the GGZ server (ggzd)
- * and game servers.  This file provides backend code that can be
+ * This file contains the backend for the ggzmod library.  This
+ * library facilitates the communication between the GGZ core client (ggz)
+ * and game clients.  This file provides backend code that can be
  * used at both ends.
  *
  * Copyright (C) 2001 GGZ Dev Team.
