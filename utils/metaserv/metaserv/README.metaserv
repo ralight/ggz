@@ -5,12 +5,12 @@ This component should be able to deal with two types of queries.
 The first one is the simple case: one passes an URI, and it returns another URI
 then.
 
-	c->s: query://ggz/connection/0.0.5pre
-	s->c: ggz://jzaun.com:5688
+	c->s: query://ggz/connection/0.0.7pre
+	s->c: ggz://jzaun.com:5689
 
 This implementation returns a NULL pointer if no entry could be found or the
 URI didn't have a valid format.
-For 0.0.5 all core clients should be able to deal with ggz:// URI's since
+For GGZ 0.0.7 all core clients should be able to deal with ggz:// URI's since
 they're used in the chat, in the connection dialog, maybe in KDE io slaves
 (GnomeVFS the same?) and (hopefully) on web pages.
 
@@ -20,17 +20,20 @@ to be returned.
 
 	c->s:	<?xml version="1.0"?>
 			<query class="ggz" type="connection">
-				0.0.5pre
+				0.0.7pre
 			</query>
 	s->c:	<?xml version="1.0"?>
 			<resultset referer="query">
 				<result preference="100">
 					<uri>
-						ggz://jzaun.com:5688
+						ggz://jzaun.com:5689
 					</uri>
 					<location>
 						pennsylvania, us
 					</location>
+					<speed>
+						768
+					</speed>
 				</result>
 			</resultset>
 
@@ -38,12 +41,16 @@ The meta server does automatically handle both cases. The configuration has
 been moved from a ggzcore_confio format to an XML-based one, so one can pass
 native DOM subtrees to the client.
 
-The configuration file is metaservconf.xml.
+The configuration file is metaservconf.xml, but can be specified via -c.
 Metaserv should be installed on port "ggzm" (15689), to be invoked by inetd.
 
 In XML, an empty resultset is returned if no entries are found.
 URI-based results are chosen by priority; the entry with the highest priority
 is returned; among equals, one is randomly chosen.
+
+Help can be obtained via the help:// protocol.
+
+See http://ggz.sourceforge.net/metaserver/ for more details.
 
 Josef
 

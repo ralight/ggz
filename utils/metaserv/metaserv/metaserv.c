@@ -1,23 +1,28 @@
 /*
  * The GGZ Gaming Zone Metaserver Project
- * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org
  * Published under GNU GPL conditions.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
-#include "minidom.h"
+#include <time.h>
 #include <getopt.h>
-#include <stdarg.h>
+
+#include "minidom.h"
+
+#include "helper.h"
 
 #include "config.h"
+
+/* Version number */
+#define METASERV_VERSION "0.2"
 
 /* The directory where metaservconf.xml resides */
 #define METASERV_DIR PREFIX "/share/metaserv"
@@ -25,52 +30,16 @@
 /* Optimized code is much faster, but not so readable */
 #define METASERV_OPTIMIZED 1
 
-/*
- URI:
- query://ggz/connection/0.0.5pre
- Answer:
- ggz://jzaun.com:5688
-
- XML:
- <?xml version="1.0"><query class="ggz" type="connection">0.0.5pre</query>
- Answer:
- <?xml version="1.0"><resultset><result preference="100"><uri>ggz://jzaun.com:5688</uri>..</result></resultset>
-*/
-
+/* Global variables */
 static DOM *configuration = NULL;
-static char *logfile = NULL;
-
-static void log(const char *fmt, ...)
-{
-	FILE *f;
-	time_t t;
-	char *ct;
-	va_list ap;
-
-	if(!logfile) return;
-
-	f = fopen(logfile, "a");
-	if(f)
-	{
-		t = time(NULL);
-		ct = ctime(&t);
-		if(ct) ct[strlen(ct) - 1] = 0;
-		else ct = "*";
-		fprintf(f, "%s: ", ct);
-		va_start(ap, fmt);
-		vfprintf(f, fmt, ap);
-		va_end(ap);
-		fprintf(f, "\n");
-		fclose(f);
-	}
-}
+char *logfile = NULL;
 
 static char *metaserv_lookup(const char *class, const char *category, const char *key, int xmlformat)
 {
 	const char *header = "<?xml version=\"1.0\"?><resultset referer=\"query\">";
 	const char *footer = "</resultset>";
 	static char *xmlret = NULL;
-	char *ret, *r;
+	char *ret, *r, *version;
 	int i, j, valid;
 	ELE **ele;
 	ATT **att;
@@ -84,7 +53,6 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 
 	if((!class) || (!category) || (!key)) return NULL;
 
-	/*att = configuration->el->at;*/
 	valid = 0;
 	preference = 0;
 	ret = NULL;
@@ -127,39 +95,58 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 	}
 	if(!valid) return NULL;
 
-	/*ele = configuration->el->el;*/
 	i = 0;
+	preference = 0;
 	while((ele) && (ele[i]))
 	{
 		r = NULL;
 		if(!strcmp(ele[i]->name, category))
 		{
-			att = ele[i]->at;
-			j = 0;
-			while((att) && (att[j]))
+			version = MD_att(ele[i], "version");
+			if((!version) || (strcmp(version, key)))
 			{
-				if((!strcmp(att[j]->name, "version"))
-				&& (!strcmp(att[j]->value, key)))
+				i++;
+				continue;
+			}
+
+			r = ele[i]->value;
+			if(!xmlformat)
+			{
+				pref = atoi(MD_att(ele[i], "preference"));
+
+				if((pref == preference) && (rand() % 2)) ret = r;
+				if((rand() % (100 + pref) > preference) || (!preference))
 				{
-					r = ele[i]->value;
+					preference = pref;
+					ret = r;
 				}
-				if((r) && (!strcmp(att[j]->name, "preference")))
+			}
+			else
+			{
+				preference = atoi(MD_att(ele[i], "preference"));
+				snprintf(tmp, sizeof(tmp), "<result preference=\"%i\"><uri>%s</uri>", preference, r);
+				xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(tmp) + 1);
+				strcat(xmlret, tmp);
+
+				j = 0;
+				att = ele[i]->at;
+				while((att) && (att[j]))
 				{
-					pref = atoi(att[j]->value);
-					if((pref == preference) && (rand() % 2)) ret = r;
-					if(pref > preference)
+					if(!(strcmp(att[j]->name, "preference"))
+					|| (!strcmp(att[j]->name, "version")))
 					{
-						preference = pref;
-						ret = r;
+						j++;
+						continue;
 					}
-					if((xmlformat) && (r))
-					{
-						sprintf(tmp, "<result preference=\"%i\"><uri>%s</uri></result>", preference, r);
-						xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(tmp) + 1);
-						strcat(xmlret, tmp);
-					}
+					xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(att[j]->name) * 2 + 5 + strlen(att[j]->value) + 1);
+					snprintf(tmp, sizeof(tmp), "<%s>%s</%s>", att[j]->name, att[j]->value, att[j]->name);
+					strcat(xmlret, tmp);
+					j++;
 				}
-				j++;
+
+				snprintf(tmp, sizeof(tmp), "</result>");
+				xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(tmp) + 1);
+				strcat(xmlret, tmp);
 			}
 		}
 		i++;
@@ -171,8 +158,11 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 		strcat(xmlret, footer);
 		ret = xmlret;
 	}
-	
-	if(!ret) ret = r;
+	else
+	{
+		if(!ret) ret = r;
+	}
+
 	return ret;
 }
 
@@ -231,38 +221,6 @@ static int metaserv_auth(const char *username, const char *password, const char 
 	return 0;
 }
 
-static char *meta_uri_host_internal(const char *uri)
-{
-	char *s;
-
-	s = strdup(uri);
-	s = strtok(s, ":");
-	if(s)
-	{
-		s = strtok(NULL, ":");
-		if(s) return s + 2;
-	}
-	return NULL;
-}
-
-static int meta_uri_port_internal(const char *uri)
-{
-	char *s;
-
-	s = strdup(uri);
-	s = strtok(s, ":");
-	if(s)
-	{
-		s = strtok(NULL, ":");
-		if(s)
-		{
-			s = strtok(NULL, ":");
-			if(s) return atoi(s);
-		}
-	}
-	return 0;
-}
-
 static int metaserv_notify(const char *username, const char *password, const char *uri, ELE *ele)
 {
 	int fd, ret;
@@ -277,7 +235,7 @@ static int metaserv_notify(const char *username, const char *password, const cha
 	hostname = meta_uri_host_internal(uri);
 	port = meta_uri_port_internal(uri);
 
-	fd = socket(AF_INET, SOCK_STREAM, /*PROTO_TCP*/6);
+	fd = socket(AF_INET, SOCK_STREAM, 6);
 	if(fd < 0)
 	{
 		log("Notify: failed (socket)");
@@ -493,7 +451,7 @@ static char *metaserv_update(const char *class, const char *category, const char
 	xmlret = (char*)malloc(strlen(header) + 1);
 	strcpy(xmlret, header);
 
-	sprintf(tmp, "<result><status>%s</status></result>", status);
+	snprintf(tmp, sizeof(tmp), "<result><status>%s</status></result>", status);
 	xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(tmp) + 1);
 	strcat(xmlret, tmp);
 
@@ -621,6 +579,10 @@ static char *metaserv_xml(const char *uri)
 		}
 		ret = metaserv_update(class, category, username, password, uri2, att, atnum, mode);
 	}
+	else if(!strcmp(query->el->name, "help"))
+	{
+		ret = "<result><text>No help present yet.</text></result>";
+	}
 	else
 	{
 		log("XML: Unknown type of operation: name=%s", query->el->name);
@@ -631,30 +593,16 @@ static char *metaserv_xml(const char *uri)
 	return ret;
 }
 
-static char *metamagic(const char *rawuri)
+static char *metaserv_uri(char *requri)
 {
 	char *ret;
 	char *token;
 	char *category, *class;
-	char *uri;
 
-	if(!rawuri) return NULL;
-
-	uri = strdup(rawuri);
-
-	if((strlen(uri) > 5) && (!strncmp(uri, "<?xml ", 5)))
-	{
-		ret = metaserv_xml(uri);
-		free(uri);
-		return ret;
-	}
-
-	if(uri[strlen(uri) - 1] == '\n') uri[strlen(uri) - 1] = 0;
-	if(uri[strlen(uri) - 1] == '\r') uri[strlen(uri) - 1] = 0;
 	ret = NULL;
 
 	/* query://ggz/connection/0.0.5pre */
-	token = strtok(uri, ":/");
+	token = strtok(requri, ":/");
 	/* query ggz connection 0.0.5pre */
 	if(!token) return NULL;
 	if(!strcmp(token, "query"))
@@ -673,18 +621,55 @@ static char *metamagic(const char *rawuri)
 		free(category);
 		free(class);
 	}
+	else if(!strcmp(token, "help"))
+	{
+		token = strtok(NULL, ":/");
+		if(!token)
+		{
+			ret = "<result><text>No help present yet.</text></result>";
+		}
+		else log("Unknown class type in %s", token);
+	}
+	else log("Unknown query type in %s", requri);
+
 	while(token) token = strtok(NULL, ":/");
+
+	return ret;
+}
+
+static char *metamagic(const char *rawuri)
+{
+	char *ret;
+	char *uri;
+
+	if(!rawuri) return NULL;
+
+	uri = strdup(rawuri);
+
+	if((strlen(uri) > 5) && (!strncmp(uri, "<?xml ", 5)))
+	{
+		ret = metaserv_xml(uri);
+		free(uri);
+		return ret;
+	}
+
+	if(uri[strlen(uri) - 1] == '\n') uri[strlen(uri) - 1] = 0;
+	if(uri[strlen(uri) - 1] == '\r') uri[strlen(uri) - 1] = 0;
+
+	ret = metaserv_uri(uri);
+
 	free(uri);
 
 	return ret;
 }
 
-static void metaserv_init()
+static void metaserv_init(const char *configfile)
 {
 	log("Initialization");
-	configuration = minidom_load(METASERV_DIR "/metaservconf.xml");
-	/*minidom_dump(configuration);*/
-	/*fflush(NULL);*/
+	if(!configfile) configfile = METASERV_DIR "/metaservconf.xml";
+	log("Using configuration: %s", configfile);
+	configuration = minidom_load(configfile);
+	if(!configuration) log("Configuration invalid!");
 }
 
 static void metaserv_shutdown()
@@ -722,7 +707,7 @@ static int metaserv_work()
 		}
 		else
 		{
-			log("Disconnection.");
+			log("Disconnection");
 			exit(0);
 		}
 	}
@@ -733,10 +718,12 @@ static int metaserv_work()
 int main(int argc, char *argv[])
 {
 	int ret;
+	char *config = NULL;
 	int optindex;
 	int opt;
 	struct option options[] =
 	{
+		{"configuration", required_argument, 0, 'c'},
 		{"help", no_argument, 0, 'h'},
 		{"version", no_argument, 0, 'v'},
 		{"logfile", required_argument, 0, 'l'},
@@ -745,22 +732,27 @@ int main(int argc, char *argv[])
 
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "hvl:", options, &optindex);
+		opt = getopt_long(argc, argv, "c:hl:v", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
+			case 'c':
+				config = optarg;
+				break;
 			case 'h':
 				printf("The GGZ Gaming Zone Meta Server\n");
-				printf("Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net\n");
+				printf("Version %s (GGZ %s)\n", METASERV_VERSION, VERSION);
+				printf("Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org\n");
 				printf("Published under GNU GPL conditions\n\n");
 				printf("Available options:\n");
-				printf("[-h | --help]:    Show this help\n");
-				printf("[-v | --version]: Display version number\n");
-				printf("[-l | --logfile]: Log events into this file\n");
+				printf("[-c | --configuration]: Use this configuration file\n");
+				printf("[-h | --help         ]: Show this help\n");
+				printf("[-v | --version      ]: Display version number\n");
+				printf("[-l | --logfile      ]: Log events into this file\n");
 				exit(0);
 				break;
 			case 'v':
-				printf("0.1\n");
+				printf("%s\n", METASERV_VERSION);
 				exit(0);
 				break;
 			case 'l':
@@ -772,7 +764,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	metaserv_init();
+	metaserv_init(config);
 	ret = metaserv_work();
 	metaserv_shutdown();
 
