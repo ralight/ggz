@@ -14,6 +14,7 @@
 // KGGZ includes
 #include "KGGZLaunch.h"
 #include "KGGZConnect.h"
+#include "KGGZMotd.h"
 
 // GGZCore++
 #include "GGZCore.h"
@@ -127,6 +128,7 @@ class KGGZ : public QWidget
 #ifdef KGGZ_BROWSER
 		KGGZBrowser *m_browser;
 #endif
+		KGGZMotd *m_motd;
 };
 
 #endif
