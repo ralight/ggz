@@ -38,10 +38,10 @@
 #include <net.h>
 #include <players.h>
 #include <protocols.h>
+#include <perms.h>
 
 static void login_generate_password(char *);
-static int login_check_password(ggzdbPlayerEntry *,char *name, char *password);
-static int login_add_user(char *name, char *password);
+static int login_add_user(ggzdbPlayerEntry *entry, char *name, char *password);
 static int  validate_username(char *);
 
 
@@ -63,6 +63,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	char lc_name[MAX_USER_NAME_LEN + 1], new_pw[17];
 	ggzdbPlayerEntry db_pe;
 	char *login_type=NULL;
+	int db_status=0;
 
 	new_pw[0] = '\0';
 
@@ -97,11 +98,10 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	name_ok = 1;
 	
 	/* Check guest names vs. the database */
-	if (type == GGZ_LOGIN_GUEST) {
-		strcpy(db_pe.handle, lc_name);
-		if (ggzdb_player_get(&db_pe) != GGZDB_ERR_NOTFOUND)
+	strcpy(db_pe.handle, lc_name);
+	db_status = ggzdb_player_get(&db_pe);
+	if(type == GGZ_LOGIN_GUEST && db_status != GGZDB_ERR_NOTFOUND)
 			name_ok = 0;
-	}
 	
 	/* Add the player name to the hash table */
 	if (name_ok)
@@ -115,11 +115,19 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 
 	/* Verify password for normal users */
 	if (type == GGZ_LOGIN) {
-
 		/* Check password */
-		if (login_check_password(&db_pe, lc_name, password) < 0) {
+		if(db_status == GGZDB_ERR_NOTFOUND) {
+			dbg_msg(GGZ_DBG_CONNECTION,
+				"Unsuccessful login of %s - no account", name);
+			name_ok = 0;
+		} else if(strcmp(password, db_pe.password)) {
+			dbg_msg(GGZ_DBG_CONNECTION,
+				"Unsuccessful login of %s - bad password",name);
 			log_msg(GGZ_LOG_SECURITY, "BADPWD from %s for %s",
 				player->addr, name);
+			name_ok = 0;
+		}
+		if(!name_ok) {
 			hash_player_delete(lc_name);
 			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
@@ -131,12 +139,14 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		db_pe.last_login = time(NULL);
 		if (ggzdb_player_update(&db_pe) != 0)
 			err_msg("Player database update failed (%s)", name);
+
 		login_type = " registered player";
 	}
 	else if (type == GGZ_LOGIN_NEW) {
 		/* At this point, we know the name is not currently in
                    use, so try adding it to the database*/
-		if (login_add_user(lc_name, new_pw) < 0) {
+		if(db_status != GGZDB_ERR_NOTFOUND
+		   || login_add_user(&db_pe, lc_name, new_pw) < 0) {
 			hash_player_delete(lc_name);
 			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
@@ -152,8 +162,10 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	pthread_rwlock_wrlock(&player->lock);
 	if (type == GGZ_LOGIN_GUEST) 
 		player->uid = GGZ_UID_ANON;
-	else
+	else {
 		player->uid = 0;
+		player->perms = db_pe.perms;
+	}
 	strncpy(player->name, name, MAX_USER_NAME_LEN + 1);
 	ip_addr = player->addr;
 	player->login_time = (long) time(NULL);
@@ -214,43 +226,19 @@ static void login_generate_password(char *pw)
 }
 
 
-static int login_check_password(ggzdbPlayerEntry *db_pe, char *name, char *password)
+static int login_add_user(ggzdbPlayerEntry *db_entry, char *name,char *password)
 {
-	/* Lookup the player in the database so we can verify the password */
-	strcpy(db_pe->handle, name);
-
-	/* If they aren't found, return an error */
-	if (ggzdb_player_get(db_pe) == GGZDB_ERR_NOTFOUND) {
-		dbg_msg(GGZ_DBG_CONNECTION,
-			"Unsuccessful login of %s - no account", name);
-		return -1;
-	}
-
-	/* They were found, so verify the password */
-	if(strcmp(db_pe->password, password)) {
-		dbg_msg(GGZ_DBG_CONNECTION,
-			"Unsuccessful login of %s - bad password", name);
-		return -1;
-	}
-
-	return 0;
-}
-
-
-static int login_add_user(char *name, char *password)
-{
-	ggzdbPlayerEntry db_entry;
-	
 	/*  Initialize player entry */
 	login_generate_password(password);
-	strcpy(db_entry.password, password);
-	strcpy(db_entry.handle, name);
-	strcpy(db_entry.name, "N/A");
-	strcpy(db_entry.email, "N/A");
-	db_entry.last_login = time(NULL);
+	strcpy(db_entry->password, password);
+	strcpy(db_entry->handle, name);
+	strcpy(db_entry->name, "N/A");
+	strcpy(db_entry->email, "N/A");
+	db_entry->perms = PERMS_DEFAULT_SETTINGS;
+	db_entry->last_login = time(NULL);
 	
 	/* If we tried to overwrite a value, then we know it existed */
-	if (ggzdb_player_add(&db_entry) == GGZDB_ERR_DUPKEY) {
+	if (ggzdb_player_add(db_entry) == GGZDB_ERR_DUPKEY) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s", 
 			name);
 		return -1;

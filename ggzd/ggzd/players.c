@@ -56,6 +56,7 @@
 #include <hash.h>
 #include <transit.h>
 #include <net.h>
+#include <perms.h>
 
 
 /* Timeout for server resync */
@@ -153,6 +154,7 @@ static void* player_new(void *arg_ptr)
 	player->transit = 0;
 	player->room = -1;
 	player->uid = GGZ_UID_NONE;
+	player->perms = PERMS_DEFAULT_ANON;
 	strcpy(player->name, "<none>");
 	/*player->addr = addr.sin_addr;*/
 	inet_ntop(AF_INET, &addr.sin_addr, player->addr, sizeof(player->addr));
@@ -419,6 +421,15 @@ int player_table_launch(GGZPlayer* player, GGZTable *table)
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for %s", player->name);
 
+	/* Check permissions */
+	if(perms_check(player, PERMS_LAUNCH_TABLE) == PERMS_DENY) {
+		dbg_msg(GGZ_DBG_TABLE, "%s insufficient perms to launch",
+			player->name);
+		if(net_send_table_launch(player->net, E_NO_PERMISSION) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
 	/* Check if in a room */
 	if ( (room = player->room) == -1) {
 		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch table in room -1", 
@@ -541,6 +552,8 @@ int player_table_join(GGZPlayer* player, int index)
 		status = E_AT_TABLE;
 	else if (player->transit)
 		status = E_IN_TRANSIT;
+	else if (perms_check(player, PERMS_JOIN_TABLE) == PERMS_DENY)
+		status = E_NO_PERMISSION;
 	else /* Send a join event to the table */
 		status = player_transit(player, GGZ_TRANSIT_JOIN, index);
 

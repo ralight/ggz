@@ -28,7 +28,7 @@
 /* Structures to use to pass data to front end functions */
 
 /* Anytime structures change, bump the version id */
-#define GGZDB_VERSION_ID	"0.2"
+#define GGZDB_VERSION_ID	"0.3"
 
 /* For ggzdb_player_XXX */
 typedef struct ggzdbPlayerEntry {
@@ -37,6 +37,7 @@ typedef struct ggzdbPlayerEntry {
 	char name[33];				/* Players real name */
 	char email[33];				/* Players email address */
 	time_t last_login;			/* Last login */
+	unsigned int perms;			/* Permission settings */
 } ggzdbPlayerEntry;
 
 

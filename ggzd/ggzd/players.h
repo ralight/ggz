@@ -81,7 +81,15 @@ struct _GGZPlayer {
 	long login_time;
 
 	/* Type of player: normal, guest, admin, etc. */
+	/* FIXME: This isn't really type of player, it's just the  */
+	/* login style.  This is being replaced by the permissions */
+	/* system, and we can probably eliminate this 'type' at    */
+	/* some point.						   */
 	int type;
+
+	/* Player permissions settings */
+	unsigned int perms;
+	/*list_t *op_rooms;	Not yet */
 };
 
 typedef struct _GGZPlayer GGZPlayer; 
