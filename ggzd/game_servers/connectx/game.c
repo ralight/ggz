@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 5306 2002-12-20 10:10:29Z oojah $
+ * $Id: game.c 6080 2004-07-11 04:43:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,12 +33,7 @@
 
 #include "game.h"
 
-#define GGZSTATISTICS
 #define GGZSPECTATORS
-
-#ifdef GGZSTATISTICS
-#include "ggz_stats.h"
-#endif
 
 /* Data structure for ConnectX game */
 struct connectx_game_t {
@@ -65,18 +60,12 @@ struct connectx_game_t {
 #define CONNECTX_REQ_OPTIONS  8
 #define CONNECTX_MSG_CHAT     9
 #define CONNECTX_RSP_CHAT    10
-#ifdef GGZSTATISTICS
-#define CONNECTX_SND_STATS    11
-#endif
 
 /* Messages from client */
 #define CONNECTX_SND_MOVE     0
 #define CONNECTX_REQ_SYNC     1
 #define CONNECTX_SND_OPTIONS  2
 #define CONNECTX_REQ_NEWGAME  3
-#ifdef GGZSTATISTICS
-#define CONNECTX_REQ_STATS    4
-#endif
 
 /* Move errors */
 #define CONNECTX_ERR_STATE   -1
@@ -99,9 +88,6 @@ static int game_send_seat(int seat);
 static int game_send_players(void);
 static int game_send_move(int num, int move);
 static int game_send_sync(int fd);
-#ifdef GGZSTATISTICS
-static int game_send_stats(int num);
-#endif
 static int game_send_gameover(int winner);
 static int game_read_move(int num, int* move);
 
@@ -259,11 +245,6 @@ void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 //		game_handle_newgame(num);
 		break;
 
-#ifdef GGZSTATISTICS
-	case CONNECTX_REQ_STATS:
-		game_send_stats(num);
-		break;
-#endif
 	default:
 		ggzdmod_log(ggz, "Unrecognised player opcode %d.", op);
 	}
@@ -354,31 +335,6 @@ static int game_send_move(int num, int column)
 	return 0;
 }
 
-#ifdef GGZSTATISTICS
-/* Send game statistics */
-static int game_send_stats(int num)
-{
-	int wins, losses, ties;
-	GGZStats *stats;
-	GGZSeat seat;
-
-	seat = ggzdmod_get_seat(connectx_game.ggz, num);
-
-	ggzdmod_log(connectx_game.ggz, "Handling statistics for player %d", num);
-
-	stats = ggzstats_new(connectx_game.ggz);
-	ggzstats_get_record(stats, num, &wins, &losses, &ties);
-	ggzstats_free(stats);
-
-	if(ggz_write_int(seat.fd, CONNECTX_SND_STATS) < 0
-		|| ggz_write_int(seat.fd, wins) < 0
-		|| ggz_write_int(seat.fd, losses) < 0
-	   || ggz_write_int(seat.fd, ties) < 0)
-		return -1;
-	return 0;
-}
-#endif
-
 /* Send out board layout */
 static int game_send_sync(int fd)
 {
@@ -409,22 +365,7 @@ static int game_send_gameover(int winner)
 #ifdef GGZSPECTATORS
 	GGZSpectator spectator;
 #endif
-
-#ifdef GGZSTATISTICS
-	GGZStats *stats;
-
-	stats = ggzstats_new(connectx_game.ggz);
-	if(winner < 2) {
-		ggzstats_set_game_winner(stats, winner, 1.0);
-		ggzstats_set_game_winner(stats, (winner + 1) % 2, 0.0);
-	} else{
-		/* Draw */
-		ggzstats_set_game_winner(stats, 0, 0.5);
-		ggzstats_set_game_winner(stats, 1, 0.5);
-	}
-	ggzstats_recalculate_ratings(stats);
-	ggzstats_free(stats);
-#endif
+	GGZGameResult results[2];
 
 	for(i = 0; i < 2; i++){
 		seat = ggzdmod_get_seat(connectx_game.ggz, i);
@@ -446,6 +387,17 @@ static int game_send_gameover(int winner)
 		ggz_write_char(spectator.fd, winner);
 	}
 #endif
+
+	/* Report the results to GGZ. */
+	if (winner < 2) {
+		/* One player won. */
+		results[winner] = GGZ_GAME_WIN;
+		results[1 - winner] = GGZ_GAME_LOSS;
+	} else {
+		/* Draw. */
+		results[0] = results[1] = GGZ_GAME_TIE;
+	}
+	ggzdmod_report_game(connectx_game.ggz, NULL, results);
 
 	return 0;
 }
