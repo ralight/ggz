@@ -301,11 +301,13 @@ static void suaro_start_playing(void)
 		temp = game.seats[s1].hand.cards;
 		game.seats[s1].hand.cards = game.seats[s2].hand.cards;
 		game.seats[s2].hand.cards = temp;
-		send_hand(SUARO.declarer, s2, 1); /* reveal the new hand to the player */
 		SUARO.kitty_revealed = 1;
-		for(p = 0; p<game.num_players; p++)
-			/* reveal the kitty to everyone */
-			send_hand(p, s1, 1);
+		for(p = 0; p<game.num_players; p++) {
+			/* resend the hands */
+			game.funcs->send_hand(p, s1);
+			game.funcs->send_hand(p, s2);
+		}
+			
 	}	
 }
 
