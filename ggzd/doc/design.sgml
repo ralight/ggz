@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 290 $</revnumber>
-	<date>$Date: 2000-03-27 14:32:52 -0800 (Mon, 27 Mar 2000) $</date>
+	<revnumber>$Revision: 302 $</revnumber>
+	<date>$Date: 2000-03-27 20:35:18 -0800 (Mon, 27 Mar 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -272,6 +272,15 @@
           RSP_TABLE_OPTIONS
             int: size of options struct (-1 for error)
             struct: game options
+
+	  REQ_LIST_ROOMS
+            chr: verbose flag (0 for short list, 1 for long descriptions)
+	  RSP_LIST_ROOMS
+	    int: number of rooms (-1 for error)
+	    sequence of
+	      str: Name of room
+	      str: Long room description (long list)
+	      int: Supported game type index (long list)
 
 	  REQ_USER_STAT
             str: login name (NULL for all users)
