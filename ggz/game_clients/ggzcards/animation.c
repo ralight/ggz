@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3351 2002-02-13 09:15:18Z jdorje $
+ * $Id: animation.c 3352 2002-02-13 09:53:05Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -55,10 +55,14 @@ static struct {
 	int player;
 	card_t card;
 
+	int start_x, start_y;
 	int dest_x, dest_y;
-	int card_x, card_y;
-	float cur_x, cur_y;
-	float step_x, step_y;
+	
+	int card_x, card_y;	/* Position of the card in the XPM */
+	
+	int cur_x, cur_y;
+	int cur_frame;		/* 0..FRAMES */
+	
 	guint cb_tag;
 } anim = {-1};
 
@@ -77,9 +81,6 @@ void anim_alloc_table(void)
 /* Function to setup and trigger a card animation */
 void animation_start(int player, card_t card, int card_num)
 {
-	int start_x, start_y;
-	int end_x, end_y;
-
 	ggz_debug("animation", "Setting up animation for player %d", player);
 	
 	assert(player >= 0 && player < ggzcards.num_players);
@@ -107,29 +108,31 @@ void animation_start(int player, card_t card, int card_num)
 	   animation. */
 	if (!preferences.animation)
 		return;
+		
+	/*
+	 * Build the anim structure.
+	 */
 
-	get_card_pos(player, card_num, &start_x, &start_y);
+	/* Find the initial position of the animation. */
+	get_card_pos(player, card_num, &anim.start_x, &anim.start_y);
 	if (orientation(player) % 2 == 1) {
 		/* The player's cards are horizontal, but we're going to
 		   animate vertically.  So we recenter. */
-		start_x = start_x + CARDHEIGHT / 2 - CARDWIDTH / 2;
-		start_y = start_y + CARDWIDTH / 2 - CARDHEIGHT / 2;			
+		anim.start_x = anim.start_x + CARDHEIGHT / 2 - CARDWIDTH / 2;
+		anim.start_y = anim.start_y + CARDWIDTH / 2 - CARDHEIGHT / 2;			
 	}
 	
-	get_tablecard_pos(player, &end_x, &end_y);
-
-	/* Store all our info */
+	/* Find the ending position of the animation. */
+	get_tablecard_pos(player, &anim.dest_x, &anim.dest_y);
+	
+	/* Find the coordinates of the card itself in the cards1 pixmap */
+	get_card_coordinates(card, 0, &anim.card_x, &anim.card_y);
+	
 	anim.card = card;
 	anim.player = player;
-	get_card_coordinates(card, 0, &anim.card_x, &anim.card_y);
-	anim.cur_x = start_x;
-	anim.cur_y = start_y;
-	anim.dest_x = end_x;
-	anim.dest_y = end_y;
-
-	/* This sets up 15 frames of animation */
-	anim.step_x = (end_x - start_x) / (float) FRAMES;
-	anim.step_y = (end_y - start_y) / (float) FRAMES;
+	anim.cur_frame = 0;
+	anim.cur_x = anim.start_x;
+	anim.cur_y = anim.start_y;
 
 	/* This sets up our timeout callback */
 	anim.cb_tag = gtk_timeout_add(DURATION / FRAMES,
@@ -143,30 +146,32 @@ void animation_start(int player, card_t card, int card_num)
    setup in animation_start(). */
 static gint animation_callback(gpointer ignored)
 {
-	float new_x, new_y;
+	int new_x, new_y;
 	
 	int draw_x, draw_y, draw_x_width, draw_y_width;
 
 	assert(animating);
-
-	/* Calculate our next move */
-	new_x = anim.cur_x + anim.step_x;
-	if (abs(new_x - anim.dest_x) < 2)
-		new_x = anim.dest_x;
-	new_y = anim.cur_y + anim.step_y;
-	if (abs(new_y - anim.dest_y) < 2)
-		new_y = anim.dest_y;
+	
+	anim.cur_frame++;
+	
+	/* Calculate our new position */
+	new_x = anim.start_x, new_y = anim.start_y;
+	new_x += (anim.dest_x - anim.start_x) * anim.cur_frame / FRAMES;
+	new_y += (anim.dest_y - anim.start_y) * anim.cur_frame / FRAMES;
+	
 		
-	/* First we draw the table onto the animation buffer, then we draw
-	   the card onto the animation buffer, then we draw the animation
-	   buffer to the window. */
+	/*
+	 * First we draw the table onto the animation buffer, then we draw
+	 * the card onto the animation buffer, then we draw the animation
+	 * buffer to the window.
+	 */
 		
 	/* We have to figure out the "surrounding rectangle" of the changed
 	   graphics. */
 	draw_x = MIN(anim.cur_x, new_x);
 	draw_y = MIN(anim.cur_y, new_y);
-	draw_x_width = CARDWIDTH + ABS(anim.step_x) + 2;
-	draw_y_width = CARDHEIGHT + ABS(anim.step_y) + 2;
+	draw_x_width = CARDWIDTH + ABS(anim.cur_x - new_x);
+	draw_y_width = CARDHEIGHT + ABS(anim.cur_y - new_y);
 
 	/* Draw over the old animation and surrounding areas. */
 	table_draw_table(anim_buf, draw_x, draw_y, draw_x_width, draw_y_width);
@@ -190,10 +195,10 @@ static gint animation_callback(gpointer ignored)
 			draw_x, draw_y, draw_x_width, draw_y_width);
 			
 				
-	/* If we are there, stop the animation process and draw the card "for
-	   real".  Otherwise, we just draw the next step in the animation and
-	   then continue. */
-	if (new_x == anim.dest_x && new_y == anim.dest_y) {
+	/* If we are done, stop the animation process and draw the card "for
+	   real".  Note that FRAMES might change mid-animation, so we must
+	   be careful with this check. */
+	if (anim.cur_frame >= FRAMES) {
 		table_show_card(anim.player, anim.card, TRUE);
 		animating = 0;
 		return FALSE;
