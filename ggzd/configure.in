@@ -337,17 +337,17 @@ dnl Status Output
 dnl =============
 
 echo "Options"  
-echo "    Build Server........$enable_server" 
-echo "    Build Game Servers..$enable_games" 
-echo "    Database Type.......$database" 
-echo "    General Debuging....$enable_debug" 
+echo "    Build Server.........$enable_server" 
+echo "    Build Game Servers...$enable_games" 
+echo "    Database Type........$database" 
+echo "    General Debuging.....$enable_debug" 
 echo "    GDB Debugging........$enable_debug_gdb" 
 echo "    Memory Debugging.....$enable_debug_mem" 
 echo " " 
 echo "To compile and install server:" 
 echo "    'make install'" 
 echo "To compile and test server locally without installing:" 
-echo "    'make test; ./ggzd/ggzd -F -f ./ggzd/ggzd.test'"
+echo "    'make test && ./ggzd/ggzd -F -f ./ggzd/ggzd.test'"
 
 
 
