@@ -25,6 +25,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <errno.h>
 #include <fstream>
 #include <string>
 #include "config.h"
