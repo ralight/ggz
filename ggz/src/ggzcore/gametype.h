@@ -27,7 +27,19 @@
 #ifndef __GAMETYPE_H_
 #define __GAMETYPE_H_
 
-#if 0
+
+typedef enum {
+	GGZ_ALLOW_ONE   =   1,    /* %0000 0001 */
+	GGZ_ALLOW_TWO   =   2,    /* %0000 0010 */
+	GGZ_ALLOW_THREE =   4,    /* %0000 0100 */
+	GGZ_ALLOW_FOUR  =   8,    /* %0000 1000 */
+	GGZ_ALLOW_FIVE  =  16,    /* %0001 0000 */
+	GGZ_ALLOW_SIX   =  32,    /* %0010 0000 */
+	GGZ_ALLOW_SEVEN =  64,    /* %0100 0000 */
+	GGZ_ALLOW_EIGHT = 128     /* %1000 0000 */
+} GGZAllowed;
+
+
 /* Structure describing specific game type */
 struct _GGZGameType {
 	
@@ -46,19 +58,52 @@ struct _GGZGameType {
 	/* Homepage for game */
 	char *url;
 
-	/* Bitmask of alowable numbers of players 
-	GGZAllowed allow_players;*/
+	/* Bitmask of alowable numbers of players */
+	GGZAllowed allow_players;
 
-	/* Bitmask of alowable numbers of bots 
-	GGZAllowed allow_bots;*/
+	/* Bitmask of alowable numbers of bots */
+	GGZAllowed allow_bots;
 	
-	/* ID of this game on the server (or -1 if not supported) */
-	int id;
-
-	/* FIXME: Some way of identifiying which module to run on the client */
-	/* possible use another id?  or perhaps a pointer would be best */
+	/* ID of this game on the server */
+	unsigned int id;
 };
-#endif
+
+
+/* Create a new gametype with the given properties */
+struct _GGZGameType* _ggzcore_gametype_new(const unsigned int id, 
+					   const char* name, 
+					   const char* version,
+					   const GGZAllowed allow_players, 
+					   const GGZAllowed allow_bots,  
+					   const char* desc,
+					   const char* author, 
+					   const char *url);
+
+/* Initialize an existing gametype with the given properties */
+void _ggzcore_gametype_init(struct _GGZGameType *gametype,
+			    const unsigned int id,
+			    const char* name, 
+			    const char* version,
+			    const GGZAllowed allow_players, 
+			    const GGZAllowed allow_bots,  
+			    const char* desc,
+			    const char* author, 
+			    const char *url);
+
+void _ggzcore_gametype_free(struct _GGZGameType *type);
+
+unsigned int _ggzcore_gametype_get_num(struct _GGZGameType *type);
+
+char*  _ggzcore_gametype_get_name(struct _GGZGameType *type);
+
+char*  _ggzcore_gametype_get_version(struct _GGZGameType *type);
+
+char*  _ggzcore_gametype_get_author(struct _GGZGameType *type);
+
+char*  _ggzcore_gametype_get_url(struct _GGZGameType *type);
+
+char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type);
+
 
 #if 0
 void _ggzcore_gametype_list_clear(void);

@@ -72,7 +72,8 @@ int _ggzcore_net_read_room(const unsigned int fd,
 			   int *game,
 			   char **desc);
 
-void _ggzcore_net_read_list_types(const unsigned int fd);
+int _ggzcore_net_read_num_types(const unsigned int fd, int *num);
+int _ggzcore_net_read_type(const unsigned int fd, struct _GGZGameType *type);
 
 int _ggzcore_net_read_room_join(const unsigned int fd, char *status);
 int _ggzcore_net_read_num_players(const unsigned int fd, int *num);

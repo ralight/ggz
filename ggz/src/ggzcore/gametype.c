@@ -33,52 +33,158 @@
 #include <string.h>
 
 
-/* 
- * The game type structure is meant to be a node in a linked list of
- * the game types on the server 
- */
-struct _GGZGameType {
-	
-	/* Game ID (index) */
-	unsigned int id;
-
-	/* Name of game */
-	char *name;	
-
-	/* Version of game*/
-	char *game;
-
-	/* Players allowed */
-	unsigned int players;
-	
-	/* Bots allowed */
-	unsigned int bots;
-
-	/* Game description */
-	char *desc;
-
-	/* Game author */
-	char *author;
-
-	/* Game website */
-	char *url;
-};
-
-/* List of game types on the server */
-static struct _ggzcore_list *gametype_list;
-static unsigned int num_gametypes;
-
-
-/* Local functions for manipulating gametype list */
-static void _ggzcore_gametype_list_print(void);
-static void _ggzcore_gametype_print(struct _GGZGameType*);
-
 /* Utility functions used by _ggzcore_list */
 static int   _ggzcore_gametype_compare(void* p, void* q);
 static void* _ggzcore_gametype_create(void* p);
 static void  _ggzcore_gametype_destroy(void* p);
 
 
+/* Publicly exported functions */
+
+int ggzcore_gametype_get_num(GGZGameType *type)
+{
+	if (!type)
+		return -1;
+
+	return _ggzcore_gametype_get_num(type);
+}
+
+
+char* ggzcore_gametype_get_name(GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_name(type);
+}
+
+
+char* ggzcore_gametype_get_author(GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_author(type);
+}
+
+
+char* ggzcore_gametype_get_url(GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_url(type);
+}
+
+
+char* ggzcore_gametype_get_desc(GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_desc(type);
+}
+
+
+/* Internal library functions (prototypes in gametype.h) */
+
+struct _GGZGameType* _ggzcore_gametype_new(const unsigned int id, 
+					   const char* name, 
+					   const char* version,
+					   const GGZAllowed allow_players, 
+					   const GGZAllowed allow_bots,  
+					   const char* desc,
+					   const char* author, 
+					   const char *url)
+{
+	struct _GGZGameType *gametype;
+
+	/* Allocate and zero space for GGZGameType object */
+	if (!(gametype = calloc(1, sizeof(struct _GGZGameType))))
+		ggzcore_error_sys_exit("malloc() failed in ggzcore_gametype_new");
+	
+	_ggzcore_gametype_init(gametype, id, name, version, allow_players,
+			       allow_bots, desc, author, url);
+
+	return gametype;
+}
+
+
+void _ggzcore_gametype_init(struct _GGZGameType *gametype,
+			    const unsigned int id,
+			    const char* name, 
+			    const char* version,
+			    const GGZAllowed allow_players, 
+			    const GGZAllowed allow_bots,  
+			    const char* desc,
+			    const char* author, 
+			    const char *url)
+{
+	gametype->id = id;
+	gametype->name = strdup(name);
+	gametype->version = strdup(version);
+	gametype->allow_players = allow_players;
+	gametype->allow_bots = allow_bots;
+	gametype->desc = strdup(desc);
+	gametype->author = strdup(author);
+	gametype->url = strdup(url);
+}
+
+
+void _ggzcore_gametype_free(struct _GGZGameType *type)
+{
+	if (type->name)
+		free(type->name);
+	if (type->version)
+		free(type->version);
+	if (type->desc)
+		free(type->desc);
+	if (type->author)
+		free(type->author);
+	if (type->url)
+		free(type->url);
+
+	free(type);
+}
+
+
+unsigned int _ggzcore_gametype_get_num(struct _GGZGameType *type)
+{
+	return type->id;
+}
+
+
+char*  _ggzcore_gametype_get_name(struct _GGZGameType *type)
+{
+	return type->name;
+}
+
+
+char*  _ggzcore_gametype_get_version(struct _GGZGameType *type)
+{
+	return type->version;
+}
+
+
+char*  _ggzcore_gametype_get_author(struct _GGZGameType *type)
+{
+	return type->author;
+}
+
+
+char*  _ggzcore_gametype_get_url(struct _GGZGameType *type)
+{
+	return type->url;
+}
+
+
+char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type)
+{
+	return type->desc;
+}
+
+
+#if 0
 void _ggzcore_gametype_list_clear(void)
 {
 	if (gametype_list)
@@ -136,8 +242,9 @@ int _ggzcore_gametype_list_remove(const unsigned int id)
 
 	return 0;
 }
+#endif
 
-
+/* Private functions internal to this file */
 
 /* Return 0 if equal, -1 greaterthan, 1 lessthan */
 static int _ggzcore_gametype_compare(void* p, void* q)
@@ -162,9 +269,9 @@ static void* _ggzcore_gametype_create(void* p)
 
 	new->id = src->id;
 	new->name = strdup(src->name);
-	new->game = strdup(src->game);
-	new->players = src->players;
-	new->bots = src->bots;
+	new->version = strdup(src->version);
+	new->allow_players = src->allow_players;
+	new->allow_bots = src->allow_bots;
 	if (src->desc)
 		new->desc = strdup(src->desc);
 	else
@@ -184,135 +291,10 @@ static void* _ggzcore_gametype_create(void* p)
 
 static void  _ggzcore_gametype_destroy(void* p)
 {
-	struct _GGZGameType *gametype = p;
-
-	if (gametype->name)
-		free(gametype->name);
-	if (gametype->game)
-		free(gametype->game);
-	if (gametype->desc)
-		free(gametype->desc);
-	if (gametype->author)
-		free(gametype->author);
-	if (gametype->url)
-		free(gametype->url);
-
-	free(p);
+	_ggzcore_gametype_free(p);
 }
 
 
 
-static void _ggzcore_gametype_list_print(void)
-{
-	struct _ggzcore_list_entry *cur;
-	
-	for (cur = _ggzcore_list_head(gametype_list); cur; cur = _ggzcore_list_next(cur))
-		_ggzcore_gametype_print(_ggzcore_list_get_data(cur));
-}
-
-
-static void _ggzcore_gametype_print(struct _GGZGameType *gametype)
-{
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "Game type %d:", gametype->id);
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "  name:    %s", gametype->name);
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "  game:    %s", gametype->game);
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "  players: %d", gametype->players);
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "  bots:    %d", gametype->bots);
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "  game:    %s", gametype->game);
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "  desc:    %d", gametype->desc);
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "  author:  %s", gametype->author);
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "  url:     %d", gametype->url);
-}
-
-
-
-/* Lookup Functions */
-
-unsigned int ggzcore_gametype_get_num(void)
-{
-	return num_gametypes;
-}
-
-
-char* ggzcore_gametype_get_name(const unsigned int id)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZGameType data, *gametype;
-
-	data.id = id;
-	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
-		return NULL;
-
-	gametype = _ggzcore_list_get_data(entry);
-	
-	return gametype->name;
-}
-
-
-char* ggzcore_gametype_get_author(const unsigned int id)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZGameType data, *gametype;
-
-	data.id = id;
-	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
-		return NULL;
-
-	gametype = _ggzcore_list_get_data(entry);
-	
-	return gametype->author;
-}
-
-
-char* ggzcore_gametype_get_url(const unsigned int id)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZGameType data, *gametype;
-
-	data.id = id;
-	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
-		return NULL;
-
-	gametype = _ggzcore_list_get_data(entry);
-	
-	return gametype->url;
-}
-
-
-char* ggzcore_gametype_get_desc(const unsigned int id)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZGameType data, *gametype;
-
-	data.id = id;
-	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
-		return NULL;
-
-	gametype = _ggzcore_list_get_data(entry);
-	
-	return gametype->desc;
-}
-
-
-char** ggzcore_gametype_get_names(void)
-{
-	int i = 0;
-	char **names = NULL;
-	struct _ggzcore_list_entry *cur;
-	struct _GGZGameType *gametype;
-
-	if (num_gametypes >= 0) {
-		if (!(names = calloc((num_gametypes + 1), sizeof(char*))))
-			ggzcore_error_sys_exit("calloc() failed in gametype_get_names");
-		cur = _ggzcore_list_head(gametype_list);
-		while (cur) {
-			gametype = _ggzcore_list_get_data(cur);
-			names[i++] = gametype->name;
-			cur = _ggzcore_list_next(cur);
-		}
-	}
-				
-	return names;
-}
 
 

@@ -37,11 +37,28 @@
 #include <string.h>
 #include <easysock.h>
 
-/* Pricate functions */
+/* Private functions */
 static void _ggzcore_server_init(void);
+
+/* Functions for manipulating list of rooms */
+static void _ggzcore_server_init_roomlist(struct _GGZServer *server,
+					  const int num);
+static void _ggzcore_server_free_roomlist(struct _GGZServer *server);
+static void _ggzcore_server_add_room(struct _GGZServer *server, 
+				     struct _GGZRoom *room);
+
+/* Functions for manipulating list of gametypes */
+static void _ggzcore_server_init_typelist(struct _GGZServer *server, 
+					  const int num);
+static void _ggzcore_server_free_typelist(struct _GGZServer *server);
+static void _ggzcore_server_add_type(struct _GGZServer *server, 
+				     struct _GGZGameType *type);
+
+
 static int _ggzcore_server_event_is_valid(GGZServerEvent event);
 static void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans);
 static GGZHookReturn _ggzcore_server_event(GGZServer*, GGZServerEvent, void*);
+
 
 /* Handlers for various server commands */
 static void _ggzcore_server_handle_server_id(GGZServer *server);
@@ -224,7 +241,9 @@ void ggzcore_server_free(GGZServer *server)
 	if (server->password)
 		free(server->password);
 
-	/* Free room list */
+	/* Free room list 
+	_ggzcore_list_destroy(server->room_list);*/
+
 	/* Free type list */
 
 	if (server->room)
@@ -317,19 +336,18 @@ GGZRoom* ggzcore_server_get_cur_room(GGZServer *server)
 }
 
 
-GGZRoom* ggzcore_server_get_nth_room(GGZServer *server, const unsigned int id)
+GGZRoom* ggzcore_server_get_nth_room(GGZServer *server, const unsigned int num)
 {
-	struct _ggzcore_list_entry *entry;
-	struct _GGZRoom data;
+	int i;
+	struct _ggzcore_list_entry *cur = NULL;
+	
+	if (!server || num >= server->num_rooms)
+		return NULL;
 
-	if (!server)
-		return NULL;
+	for (i = 0; i < num; i++)
+		cur = _ggzcore_list_next(cur);
 	
-	data.id = id;
-	if (!(entry = _ggzcore_list_search(server->room_list, &data)))
-		return NULL;
-	
-	return _ggzcore_list_get_data(entry);
+	return _ggzcore_list_get_data(cur);
 }
 
 
@@ -361,6 +379,37 @@ char** ggzcore_server_get_room_names(GGZServer *server)
 		cur = _ggzcore_list_next(cur);
 	}
 	
+	return names;
+}
+
+
+int ggzcore_server_get_num_gametypes(GGZServer *server)
+{
+	if (!server)
+		return -1;
+
+	return server->num_gametypes;
+}
+
+
+char** ggzcore_server_get_gametype_names(GGZServer *server)
+{
+	int i = 0;
+	char **names = NULL;
+	struct _ggzcore_list_entry *cur;
+	struct _GGZGameType *type;
+	
+	if (!server)
+		return NULL;
+	
+	if (!(names = calloc((server->num_gametypes + 1), sizeof(char*))))
+		ggzcore_error_sys_exit("calloc() failed in ggzcore_server_get_gametype_names");
+	cur = _ggzcore_list_head(server->room_list);
+	for (i = 0; i < server->num_gametypes; i++) {
+		type = server->gametypes[i];
+		names[i] = _ggzcore_gametype_get_name(type);
+	}
+		
 	return names;
 }
 
@@ -620,6 +669,67 @@ static void _ggzcore_server_init(void)
 }
 
 
+static void _ggzcore_server_init_roomlist(struct _GGZServer *server,
+					  const int num)
+{
+	
+
+}
+
+
+static void _ggzcore_server_free_roomlist(struct _GGZServer *server)
+{
+
+
+}
+
+
+static void _ggzcore_server_add_room(struct _GGZServer *server, 
+				     struct _GGZRoom *room)
+{
+
+
+}
+
+
+static void _ggzcore_server_init_typelist(struct _GGZServer *server, 
+					  const int num)
+{
+	server->num_gametypes = num;
+
+	if (!(server->gametypes = calloc(num, sizeof(struct _GGZGameTypes*))))
+		ggzcore_error_sys_exit("calloc() failed in ggzcore_server_init_gametype_list");
+}
+
+
+static void _ggzcore_server_free_typelist(struct _GGZServer *server)
+{
+	int i;
+
+	for (i = 0; i < server->num_gametypes; i++) {
+		_ggzcore_gametype_free(server->gametypes[i]);
+	}
+
+	free(server->gametypes);
+	server->num_gametypes = 0;
+}
+
+
+static void _ggzcore_server_add_type(struct _GGZServer *server, 
+				     struct _GGZGameType *type)
+{
+	int i = 0;
+
+	/* Find first open spot and stick it in */
+	while (i < server->num_gametypes) {
+		if (server->gametypes[i] == NULL) {
+			server->gametypes[i] = type;
+			break;
+		}
+		++i;
+	}
+}
+
 static void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans)
 {
 	_ggzcore_state_transition(trans, &server->state);
@@ -794,6 +904,35 @@ static void _ggzcore_server_handle_list_rooms(GGZServer *server)
 }
 
 
+static void _ggzcore_server_handle_list_types(GGZServer *server)
+{
+	int i, num, status;
+	struct _GGZGameType *type;
+	
+	/* Free previous list of types*/
+	if (server->num_gametypes > 0)
+		_ggzcore_server_free_typelist(server);
+
+	status = _ggzcore_net_read_num_types(server->fd, &num);
+	/* FIXME: handle errors */
+
+	ggzcore_debug(GGZ_DBG_SERVER, "Server sending %d types", num);
+	_ggzcore_server_init_typelist(server, num);
+
+	for(i = 0; i < num; i++) {
+		if (!(type = calloc(1, sizeof(struct _GGZGameType))))
+			ggzcore_error_sys_exit("malloc() failed in ggzcore_gametype_new");
+		status = _ggzcore_net_read_type(server->fd, type);
+		/* FIXME: handle errors */
+		
+		
+		_ggzcore_server_add_type(server, type);
+	}
+
+	_ggzcore_server_event(server, GGZ_TYPE_LIST, NULL);
+}
+
+
 static void _ggzcore_server_handle_room_join(GGZServer *server)
 {
 	char ok;
@@ -947,12 +1086,6 @@ static void _ggzcore_server_handle_list_tables(GGZServer *server)
 
 
 /* completely bogus functions to avoid messiness */
-static void _ggzcore_server_handle_list_types(GGZServer *server)
-{
-	_ggzcore_net_read_list_types(server->fd);
-}
-
-
 static void _ggzcore_server_handle_update_tables(GGZServer *server)
 {
 	_ggzcore_net_read_update_tables(server->fd);

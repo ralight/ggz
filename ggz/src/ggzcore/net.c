@@ -42,6 +42,16 @@
 #include <string.h>
 #include <errno.h>
 
+
+typedef enum {
+	GGZ_SEAT_OPEN   = -1,
+	GGZ_SEAT_COMP   = -2,
+	GGZ_SEAT_RESV   = -3,
+	GGZ_SEAT_NONE   = -4,
+	GGZ_SEAT_PLAYER = -5
+} GGZSeatType;
+
+
 /* Handlers for various server commands */
 #if 0
 /* Error function for Easysock */
@@ -352,6 +362,37 @@ int _ggzcore_net_read_room(const unsigned int fd,
 }
 
 
+int _ggzcore_net_read_num_types(const unsigned int fd, int *num)
+{
+	return es_read_int(fd, num);
+}
+
+
+int _ggzcore_net_read_type(const unsigned int fd, struct _GGZGameType *type)
+{
+	int id;
+	char players, bots;
+	char *name, *version, *desc, *author, *url;
+
+	if (es_read_int(fd, &id) < 0
+	    || es_read_string_alloc(fd, &name) < 0
+	    || es_read_string_alloc(fd, &version) < 0
+	    || es_read_char(fd, &players) < 0
+	    || es_read_char(fd, &bots) < 0
+	    || es_read_string_alloc(fd, &desc) < 0
+	    || es_read_string_alloc(fd, &author) < 0
+	    || es_read_string_alloc(fd, &url) < 0)
+		return -1;
+	    
+	ggzcore_debug(GGZ_DBG_NET, "Read info for game %d: %s", id, name);
+
+	_ggzcore_gametype_init(type, id, name, version, players, bots, desc,
+			       author, url);
+	
+	return 0;
+}
+
+
 int _ggzcore_net_read_room_join(const unsigned int fd, char *status)
 {
 	if (es_read_char(fd, status) < 0)
@@ -404,6 +445,7 @@ int _ggzcore_net_read_table(const unsigned int fd, struct _GGZTable *table)
 		return -1;
 
 	open = 0;
+	/* FIXME: we should do this internal to the table structure */
 	for (i = 0; i < num; i++) {
 		if (es_read_int(fd, &seat) < 0)
 			return -1;
@@ -560,31 +602,4 @@ int _ggzcore_net_read_update_tables(const unsigned int fd)
 	return 0;
 }
 
-
-void _ggzcore_net_read_list_types(const unsigned int fd)
-{
-	int count, i;
-	int id;
-	char players, bots;
-	char *name, *version, *desc, *author, *url;
-
-
-	es_read_int(fd, &count);
-
-	for(i = 0; i < count; i++)
-	{
-		es_read_int(fd, &id);
-		es_read_string_alloc(fd, &name);
-		es_read_string_alloc(fd, &version);
-		es_read_char(fd, &players);
-		es_read_char(fd, &bots);
-		es_read_string_alloc(fd, &desc);
-		es_read_string_alloc(fd, &author);
-		es_read_string_alloc(fd, &url);
-		ggzcore_debug(GGZ_DBG_NET, "Read info for game %d: %s",
-			      id, name);
-		/*_ggzcore_gametype_list_add(id, name, version, players,
-		  bots, desc, author, url);*/
-	}
-}
 

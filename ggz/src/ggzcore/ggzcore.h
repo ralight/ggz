@@ -139,6 +139,7 @@ typedef enum {
 	GGZ_LOGIN_FAIL,
 	GGZ_MOTD_LOADED,
 	GGZ_ROOM_LIST,
+	GGZ_TYPE_LIST,
 	GGZ_ENTERED,
 	GGZ_ENTER_FAIL,
 	GGZ_LOGOUT,
@@ -229,6 +230,9 @@ GGZRoom*     ggzcore_server_get_cur_room(GGZServer *server);
 GGZRoom*     ggzcore_server_get_nth_room(GGZServer *server, const unsigned int id);
 int          ggzcore_server_get_num_rooms(GGZServer *server);
 char**       ggzcore_server_get_room_names(GGZServer *server);
+int          ggzcore_server_get_num_gametypes(GGZServer *server);
+char**       ggzcore_server_get_gametype_names(GGZServer *server);
+
 
 
 /* ggzcore_server_is_XXXX()
@@ -316,13 +320,15 @@ int          ggzcore_table_get_open(GGZTable *table);
 int          ggzcore_table_get_bots(GGZTable *table);
 char*        ggzcore_table_get_desc(GGZTable *table);
 
-typedef enum {
-	GGZ_SEAT_OPEN   = -1,
-	GGZ_SEAT_COMP   = -2,
-	GGZ_SEAT_RESV   = -3,
-	GGZ_SEAT_NONE   = -4,
-	GGZ_SEAT_PLAYER = -5
-} GGZSeatType;
+
+/* These function are lookups to gametype information. */
+int    ggzcore_gametype_get_num(GGZGameType *type);
+char*  ggzcore_gametype_get_name(GGZGameType *type);
+char*  ggzcore_gametype_get_version(GGZGameType *type);
+char*  ggzcore_gametype_get_author(GGZGameType *type);
+char*  ggzcore_gametype_get_url(GGZGameType *type);
+char*  ggzcore_gametype_get_desc(GGZGameType *type);
+
 
 /* ggzcore_error_sys()
  * ggzcore_error_sys_exit()
@@ -580,15 +586,6 @@ char* ggzcore_module_get_path(const unsigned int id);
 char* ggzcore_module_get_icon_path(const unsigned int id);
 char* ggzcore_module_get_help_path(const unsigned int id);
 
-
-/* These function are lookups to gametype information. All you need pass
-   is the index number.*/
-unsigned int ggzcore_gametype_get_num(void);
-char* ggzcore_gametype_get_name(const unsigned int id);
-char* ggzcore_gametype_get_author(const unsigned int id);
-char* ggzcore_gametype_get_url(const unsigned int id);
-char* ggzcore_gametype_get_desc(const unsigned int id);
-char** ggzcore_gametype_get_names(void);
 
 #ifdef __cplusplus
 }

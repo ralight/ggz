@@ -31,7 +31,7 @@
 #include "state.h"
 #include "room.h"
 
-#define GGZ_NUM_SERVER_EVENTS 13
+#define GGZ_NUM_SERVER_EVENTS 14
 
 /* The GGZServer structure manages information about a particular
    GGZ server connection */
@@ -77,7 +77,7 @@ struct _GGZServer {
 	int num_gametypes;
 
 	/* List of game types */
-	struct _ggzcore_list *gametype_list;
+	struct _GGZGameType **gametypes;
 
 	/* Gametype verbosity (need to save) */
 	char gametype_verbose;
