@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Game-dependent game functions for Whist
- * $Id: whist.c 3495 2002-02-27 13:02:23Z jdorje $
+ * $Id: whist.c 3570 2002-03-16 06:36:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -101,17 +101,7 @@ static void whist_set_player_message(player_t p)
 	if (p == game.dealer)
 		add_player_message(s, "dealer\n");
 	
-	/* Are these the right times? */
-	/* (this part is identical to spades) */
-	if (game.state == STATE_WAIT_FOR_PLAY
-	    || game.state == STATE_NEXT_TRICK
-	    || game.state == STATE_NEXT_PLAY) {
-		add_player_message(s, "Tricks: %d (%d)\n",
-				   game.players[p].tricks,
-				   game.players[p].tricks +
-				   game.players[(p + 2) % 4].tricks);
-	}
-	
+	add_player_tricks_message(p);
 	add_player_action_message(p);
 }
 

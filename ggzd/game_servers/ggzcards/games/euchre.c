@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 3495 2002-02-27 13:02:23Z jdorje $
+ * $Id: euchre.c 3570 2002-03-16 06:36:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -368,10 +368,8 @@ static void euchre_set_player_message(player_t p)
 	    || game.state == STATE_NEXT_PLAY) {
 		if (EUCHRE.going_alone[p])
 			add_player_message(s, "Going Alone\n");
-		add_player_message(s, "Tricks: %d\n",
-				   game.players[p].tricks +
-				   game.players[(p + 2) % 4].tricks);
 	}
+	add_player_tricks_message(p);
 	add_player_action_message(p);
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3569 2002-03-16 06:28:38Z jdorje $
+ * $Id: bridge.c 3570 2002-03-16 06:36:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -334,12 +334,7 @@ static void bridge_set_player_message(player_t p)
 	} else
 		add_player_bid_message(p);
 		
-	if (game.state == STATE_WAIT_FOR_PLAY
-	    || game.state == STATE_NEXT_TRICK
-	    || game.state == STATE_NEXT_PLAY)
-		add_player_message(s, "Tricks: %d\n",
-				   game.players[p].tricks +
-				   game.players[(p + 2) % 4].tricks);
+	add_player_tricks_message(p);
 	add_player_action_message(p);
 }
 

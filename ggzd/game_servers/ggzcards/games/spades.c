@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3495 2002-02-27 13:02:23Z jdorje $
+ * $Id: spades.c 3570 2002-03-16 06:36:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -323,16 +323,7 @@ static void spades_set_player_message(player_t p)
 	} else
 		add_player_bid_message(p);
 	
-	/* Are these the right times? */
-	if (game.state == STATE_WAIT_FOR_PLAY
-	    || game.state == STATE_NEXT_TRICK
-	    || game.state == STATE_NEXT_PLAY) {
-		add_player_message(s, "Tricks: %d (%d)\n",
-				   game.players[p].tricks,
-				   game.players[p].tricks +
-				   game.players[(p + 2) % 4].tricks);
-	}
-	
+	add_player_tricks_message(p);
 	add_player_action_message(p);
 }
 
