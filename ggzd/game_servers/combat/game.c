@@ -109,6 +109,7 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
         status = CBT_SERVER_LEFT;
         break;
       }
+      game_send_players();
       switch (cbt_game.state) {
         case CBT_STATE_WAIT:
           if (host == seat) {
