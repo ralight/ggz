@@ -34,9 +34,6 @@ void loop_init(int timeout);
 /* Add a file descriptor to the event loop */
 void loop_add_fd(unsigned int fd, callback read, callback destroy);
 
-/* Remove file descriptor to the event loop */
-void loop_remove_fd(unsigned int fd);
-
 /* Start event loop processing */
 void loop(void);
 

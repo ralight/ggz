@@ -1,8 +1,9 @@
 CC=gcc
+FLAGS=-Wall -g -pedantic -Wimplicit
 
 GGZDIR = /home/ggz/BUILD
 
-CFLAGS+=-Wall -g -I. -I$(GGZDIR)/include $(shell pkg-config glib-2.0 --cflags)
+CFLAGS+=$(FLAGS) -I. -I$(GGZDIR)/include $(shell pkg-config glib-2.0 --cflags)
 LDFLAGS+=-L$(GGZDIR)/lib -lggzcore -lreadline -lncurses $(shell pkg-config glib-2.0 --libs)
 
 all: ggz-wrapper

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6473 2004-12-14 20:55:44Z josef $
+ * $Id: server.c 6486 2004-12-15 18:40:29Z josef $
  *
  * Functions for handling server events
  *
@@ -24,7 +24,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
 #include "server.h"
 #include "loop.h"
 #include "game.h"
@@ -36,11 +35,15 @@
 #include <string.h>
 #include <unistd.h>
 
+#define _(x) x
+
 extern char *dst_nick;
 extern char *game_name;
 
 static void server_register(GGZServer *server);
 static void server_process(void);
+
+static void checkplayer(void);
 
 /* Hooks for server events */
 static GGZHookReturn server_connected(GGZServerEvent id, void*, void*);
@@ -70,11 +73,11 @@ static GGZHookReturn room_table_joined(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_left(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_table_update(GGZRoomEvent id, void*, void*);
 
 GGZServer *server = NULL;
 static int fd;
-static int first_room_list = 0;
-static int tableleft_once = 0;
+static int playing = 0;
 
 extern GGZGame *game;
 
@@ -91,7 +94,6 @@ int server_init(char *host, int port, GGZLoginType type, char* login, char* pass
 
 	return ggzcore_server_connect(server);
 }
-
 
 static void server_process(void)
 {
@@ -147,6 +149,7 @@ static void room_register(GGZRoom *room)
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_JOIN_FAIL, room_table_join_fail);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEFT, room_table_left);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, room_table_leave_fail);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, room_table_update);
 }
 
 static GGZHookReturn server_connected(GGZServerEvent id, void* event_data, 
@@ -162,7 +165,7 @@ static GGZHookReturn server_connected(GGZServerEvent id, void* event_data,
 static GGZHookReturn server_connect_fail(GGZServerEvent id, void* event_data,
 					 void* user_data)
 {
-	fprintf(stderr, "Connection failed: %s\n", (char*)event_data);
+	fprintf(stderr, _("Connection failed: %s\n"), (char*)event_data);
 
 	return GGZ_HOOK_OK;
 }
@@ -184,7 +187,7 @@ static GGZHookReturn server_login_ok(GGZServerEvent id, void* event_data,
 
 static GGZHookReturn server_login_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
-	fprintf(stderr, "Login failed: %s\n", (char*)event_data);
+	fprintf(stderr, _("Login failed: %s\n"), (char*)event_data);
 
 	/* For the time being disconnect at not to confuse us */
 	ggzcore_server_logout(server);
@@ -202,12 +205,11 @@ static GGZModule * pick_module(GGZGameType *gt)
 	num = ggzcore_module_get_num_by_type(name, engine, version);
 
 	if (num == 0) {
-		fprintf(stderr, "Game is not installed!\n");
+		fprintf(stderr, _("Game is not installed!\n"));
 		return NULL;
 	}
 
 	return ggzcore_module_get_nth_by_type(name, engine, version, 0);
-
 }
 
 static GGZHookReturn server_enter_ok(GGZServerEvent id, void* event_data, 
@@ -226,7 +228,7 @@ static GGZHookReturn server_enter_ok(GGZServerEvent id, void* event_data,
 
 static GGZHookReturn server_enter_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
-	fprintf(stderr, "Enter failed: %s\n", (char*)event_data);
+	fprintf(stderr, _("Enter failed: %s\n"), (char*)event_data);
 
 	return GGZ_HOOK_OK;
 }
@@ -248,9 +250,8 @@ static GGZHookReturn server_protocol_error(GGZServerEvent id, void* event_data,
 					   void* user_data)
 {
 	char *msg = event_data;
-	fprintf(stderr, "Server error: %s disconnected\n", msg);
+	fprintf(stderr, _("Server error: %s disconnected\n"), msg);
 	exit(0);
-	loop_remove_fd(fd);
 
 	return GGZ_HOOK_OK;
 }
@@ -258,90 +259,91 @@ static GGZHookReturn server_protocol_error(GGZServerEvent id, void* event_data,
 static GGZHookReturn room_list_players(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	GGZRoom *room;
-	room=ggzcore_server_get_cur_room(server);
-	ggzcore_room_list_tables(room,0,0);
+	room = ggzcore_server_get_cur_room(server);
+	ggzcore_room_list_tables(room, 0, 0);
 	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn room_list_tables(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	checkplayer();
+	return GGZ_HOOK_OK;
+}
+
+static void checkplayer()
 {
 	GGZRoom *room;
 	GGZPlayer *player;
 	GGZTable *table;
 	GGZGameType *gt;
 	GGZModule *module;
-	int i, a, table_id;
+	int i, table_id, found;
+
+	if(playing) return;
+	alarm(15);
 
 	room = ggzcore_server_get_cur_room(server);
 	if(dst_nick) {
-		sleep(2);
+		found = 0;
 		for(i = 0; i < ggzcore_room_get_num_players(room); i++) {
-				player=ggzcore_room_get_nth_player(room, i);
-				if(strcmp(ggzcore_player_get_name(player), dst_nick) == 0)
+				player = ggzcore_room_get_nth_player(room, i);
+				if(strcmp(ggzcore_player_get_name(player), dst_nick) == 0) {
+					found = 1;
 					break;
+				}
 		}
-		if(i >= ggzcore_room_get_num_players(room)) {
-			printf("Le joueur '%s' n'a pas été trouvé\n", dst_nick);
-			exit(0);
-			return GGZ_HOOK_OK;
+		if(!found) {
+			printf(_("checkplayer: The player %s could not be found.\n"), dst_nick);
+			return;
 		}
-		a = 0;
-		if((table = ggzcore_player_get_table(player)) == NULL) {
-			sleep(1);
-			a++;
-			if(a >= 10) {
-				printf("%s n'a pas ete trouvé\n", dst_nick);
-				exit(0);
-			}
-			ggzcore_room_list_players(room);
-			return GGZ_HOOK_OK;
-		}
-		if(table == NULL) {
-			printf("%s n'est point la :(", dst_nick);
-			exit(0);
+		found = 0;
+		table = ggzcore_player_get_table(player);
+		if(!table) {
+			printf(_("checkplayer: %s not at a table?\n"), dst_nick);
+			return;
 		}
 		table_id = ggzcore_table_get_id(table);
-	
-	} else
+	} else {
 		table_id = -1;
+	}
 
 	gt = ggzcore_room_get_gametype(room);
 	if(!gt) {
-		printf("Pas dans une room??\n");
-		return GGZ_HOOK_OK;
+		printf(_("checkplayer: room without gametype?\n"));
+		return;
 	}
 	module = pick_module(gt);
 	if(!module) {
-		return GGZ_HOOK_OK;
+		return;
 	}
+	printf(_("checkplayer: We're playing...\n"));
+	alarm(0);
+	playing = 1;
 	game_init(module, gt, table_id, NULL);
-	return GGZ_HOOK_OK;
+	return;
 }
 
 static GGZHookReturn room_enter(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	char *player;
-	player=event_data;
+	checkplayer();
 	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn room_leave(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	char *player;
-	player=event_data;
 	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn room_table_launched(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	tableleft_once = 0;
+	checkplayer();
 	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn room_table_launch_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	char *err_msg = event_data;
-	fprintf(stderr, "Table launch failed: %s\n", err_msg);
+	fprintf(stderr, _("Table launch failed: %s\n"), err_msg);
 
 	game_quit();
 
@@ -350,33 +352,33 @@ static GGZHookReturn room_table_launch_fail(GGZRoomEvent id, void* event_data, v
 
 static GGZHookReturn room_table_joined(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	tableleft_once = 0;
 	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	char *err_msg = event_data;
-	fprintf(stderr, "Table join failed: %s\n", err_msg);
+	fprintf(stderr, _("Table join failed: %s\n"), err_msg);
 
 	game_quit();
-
 	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn room_table_left(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	if(tableleft_once) return GGZ_HOOK_OK;
-	tableleft_once = 1;
-
 	exit(0);
+	return GGZ_HOOK_OK;
+}
 
+static GGZHookReturn room_table_update(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	checkplayer();
 	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	fprintf(stderr, "Table leave failed\n");
+	fprintf(stderr, _("Table leave failed\n"));
 	return GGZ_HOOK_OK;
 }
 	
@@ -384,9 +386,6 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void
 {
 	int i, num;
 	
-	if(first_room_list == 1)
-		first_room_list = 0;
-
 	/* Register callbacks for all rooms */
 	num = ggzcore_server_get_num_rooms(server);
 	for (i = 0; i < num; i++)

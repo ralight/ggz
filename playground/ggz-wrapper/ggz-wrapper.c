@@ -46,6 +46,10 @@ int main(int argc, char **argv) {
 		{0, 0, 0, 0}
 	};
 	char optstring[] = "g:u:p:s:d:P:h";
+	char randomuser[64];
+
+	int optch;
+	int optindex;
 
 	char *server = DEFAULT_SERVER;
 	char *password = DEFAULT_PASSWORD;
@@ -55,10 +59,6 @@ int main(int argc, char **argv) {
 	game_name = DEFAULT_GAMENAME;
 	dst_nick = DEFAULT_DESTNICK;
 
-	char randomuser[64];
-
-	int optch;
-	int optindex;
 	while((optch = getopt_long(argc, argv, optstring, options, &optindex)) != -1) {
 		switch(optch) {
 			case 'g':
