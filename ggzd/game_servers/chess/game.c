@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.c 6898 2005-01-25 08:56:44Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -445,7 +445,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id,
   const int *seat = seat_data;
   int fd, time;
   char op;
-  void *data;
+  void *data = NULL;
 
   /* Is the seat valid? */
   fd = ggzdmod_get_seat(ggz, *seat).fd;
@@ -569,7 +569,8 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id,
       game_update(CHESS_EVENT_DRAW, &id);
       break;
   }
-  return;
+  if (data)
+    free(data);
 }
 
 static void game_send_seat(int seat)
