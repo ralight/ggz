@@ -157,7 +157,7 @@ char * _ggz_strdup(const char *, char *, int);
  * @defgroup conf Configuration file parsing
  * Configuration file routines to store and retrieve values.
  * Configuration file parsing begins by calling ggz_conf_parse() to open
- * a config file.  The file can be created automatically if CONF_CREATE
+ * a config file.  The file can be created automatically if GGZ_CONF_CREATE
  * is specified.  The returned handle uniquely identifies the configuration
  * file, so multiple files can be open at one time.
  *
@@ -204,20 +204,15 @@ char * _ggz_strdup(const char *, char *, int);
  */
 
 /** 
- * Specifies opening a configuration file in read-only mode
+ * Specifies the mode for opening a configuration file
  * @see ggz_conf_parse()
  */
-#define CONF_RDONLY	((unsigned char) 0x01)
-/** 
- * Specifies opening a configuration file for both reading and writing
- * @see ggz_conf_parse()
- */
-#define CONF_RDWR	((unsigned char) 0x02)
-/** 
- * Specifies creating the configuration file if it does not already exist
- * @see ggz_conf_parse()
- */
-#define CONF_CREATE	((unsigned char) 0x04)
+typedef enum {
+	GGZ_CONF_RDONLY = ((unsigned char) 0x01),
+	GGZ_CONF_RDWR = ((unsigned char) 0x02),
+	GGZ_CONF_CREATE = ((unsigned char) 0x04)
+} GGZConfType;
+
 
 /**
  * Closes all open configuration files.
@@ -230,12 +225,12 @@ void ggz_conf_cleanup (void);
  * Opens a configuration file and parses the variables so they can
  * be retrieved with the access functions.
  * @param path A string specifying the filename to be parsed
- * @param options An or'ed set of CONF_* option bits
+ * @param options An or'ed set of GGZ_CONF_* option bits
  * @return An integer configuration file handle or -1 on error
- * @see CONF_RDONLY, CONF_RDWR, CONF_CREATE
+ * @see GGZConfType
  */
 int ggz_conf_parse		(const char *path,
-			 const unsigned char options);
+				 const GGZConfType options);
 
 /**
  * Commits any changed variables to the configuration file. The configuration

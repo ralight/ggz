@@ -546,7 +546,7 @@ void ggz_conf_cleanup(void)
  *	  - an integer handle which the caller can use to access the variables
  *	  - -1 on failure
  */
-int ggz_conf_parse(const char *path, const unsigned char options)
+int ggz_conf_parse(const char *path, const GGZConfType options)
 {
 	static int	next_handle=0;
 
@@ -563,9 +563,9 @@ int ggz_conf_parse(const char *path, const unsigned char options)
 		file_list = ggz_list_create(NULL, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
 
 	/* Check for insane options */
-	opt_create = ((options & CONF_CREATE) == CONF_CREATE);
-	opt_rdonly = ((options & CONF_RDONLY) == CONF_RDONLY);
-	opt_rdwr = ((options & CONF_RDWR) == CONF_RDWR);
+	opt_create = ((options & GGZ_CONF_CREATE) == GGZ_CONF_CREATE);
+	opt_rdonly = ((options & GGZ_CONF_RDONLY) == GGZ_CONF_RDONLY);
+	opt_rdwr = ((options & GGZ_CONF_RDWR) == GGZ_CONF_RDWR);
 
 	if(opt_rdonly && (opt_rdwr || opt_create)) {
 		_ggz_debug("CONF",
