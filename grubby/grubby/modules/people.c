@@ -80,7 +80,9 @@ Guru *gurumod_exec(Guru *message)
 				strcat(info, message->player);
 				strcat(info, ", I'm ");
 				strcat(info, message->guru);
-				strcat(info, ". I have never seen you before here.\nType 'guru help' to change this :)");
+				strcat(info, ". I have never seen you before here.\nType '");
+				strcat(info, message->guru);
+				strcat(info, " help' to change this :)");
 			}
 			message->message = info;
 			message->type = GURU_CHAT;
