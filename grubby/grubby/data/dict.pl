@@ -2,7 +2,7 @@
 
 # Guru module: Translate single words using the dict sources
 # IDP sources can be converted to get a larger dictionary base
-# Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+# Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 # Published under GNU GPL conditions
 
 # Commands:

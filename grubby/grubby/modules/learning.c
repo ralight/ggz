@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/

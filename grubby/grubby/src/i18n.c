@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -40,7 +40,7 @@ void setlanguage(char *player, char *language)
 	p = guru_player_lookup(player);
 	if(p)
 	{
-		printf("||||| %s is from %s |||||\n", player, language);
+		/*printf("||||| %s is from %s |||||\n", player, language);*/
 		p->language = language;
 		guru_player_save(p);
 	}
@@ -83,7 +83,7 @@ char *guru_i18n_translate(char *player, char *messageset)
 	if(!messageset) return NULL;
 	messageset = strdup(messageset); /* FIXME: eeek! this bug is not normal! */
 
-printf("--trans1: %s, %s\n", player, messageset);
+	/*printf("--trans1: %s, %s\n", player, messageset);*/
 	if(player)
 	{
 		p = guru_player_lookup(player);
@@ -93,7 +93,7 @@ printf("--trans1: %s, %s\n", player, messageset);
 		}
 		else guru_i18n_setlanguage(p->language);
 	}
-printf("--trans2: %s, %s\n", player, messageset);
+	/*printf("--trans2: %s, %s\n", player, messageset);*/
 
 	if(ret)
 	{
@@ -102,8 +102,8 @@ printf("--trans2: %s, %s\n", player, messageset);
 	}
 
 	message = _(messageset);
-printf("MESSAGE: %s\n", message);
-printf("MESSAGESET: %s\n", messageset);
+	/*printf("MESSAGE: %s\n", message);
+	printf("MESSAGESET: %s\n", messageset);*/
 	if(strcmp(message, messageset)) return strdup(message); /* FIXME: another leak */
 	
 	dup = strdup(messageset);
@@ -112,9 +112,9 @@ printf("MESSAGESET: %s\n", messageset);
 	i = 0;
 	while(token)
 	{
-		printf("Lookup: %s\n", token);
+		/*printf("Lookup: %s\n", token);*/
 		message = _(token);
-		printf("* translating \"%s\" to \"%s\"\n", token, message);
+		/*printf("* translating \"%s\" to \"%s\"\n", token, message);*/
 		ret = (char*)realloc(ret, (ret ? strlen(ret) : 0) + strlen(message) + (ret ? 2 : 1));
 		if(!i) strcpy(ret, message);
 		else

@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -118,16 +118,16 @@ char *process(const char *program, Guru *message)
 		default:
 			fcntl(fd[1], F_SETFL, O_NONBLOCK);
 			write(fd[1], writebuffer, strlen(writebuffer));
-			printf("==> (%s)\n", message->message);
+			/*printf("==> (%s)\n", message->message);*/
 			i = read(fd[1], readbuffer, MAXSIZE);
-if(i != -1) printf("FIRST: %i\n", i);
-else i = -2;
+			if(i != -1) /*printf("FIRST: %i\n", i)*/;
+			else i = -2;
 			while((waitpid(pid, NULL, WNOHANG) == 0) && (time(NULL) - start < MAXDELAY) && (i <= 1))
 			{
 				i = read(fd[1], readbuffer, MAXSIZE);
-if(i != -1) printf("NOW: %i\n", i);
+			/*if(i != -1) printf("NOW: %i\n", i);*/
 			}
-			printf("<== (%i)\n", i);
+			/*printf("<== (%i)\n", i);*/
 			if(i > 1)
 			{
 				//readbuffer[strlen(readbuffer) - 1] = 0;
@@ -148,12 +148,12 @@ Guru *gurumod_exec(Guru *message)
 	i = 0;
 	while((programlist) && (programlist[i]))
 	{	
-		printf("EXEC: %s (%s)\n", programlist[i], message->message);
+		/*printf("EXEC: %s (%s)\n", programlist[i], message->message);*/
 		answer = process(programlist[i], message);
 		if(answer)
 		{
 			message->message = strdup(answer);
-			printf(" --> GOT ANSWER: '%s'\n", answer);
+			/*printf(" --> GOT ANSWER: '%s'\n", answer);*/
 			return message;
 		}
 		i++;

@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -58,7 +58,7 @@ int admin(Guru *guru, Gurucore *core)
 		default:
 			if(!strcmp(guru->list[1], "announce"))
 			{
-printf("DEBUG: announce!!!!!!!!\n");
+				/*printf("DEBUG: announce!!!!!!!!\n");*/
 				guru->message = strdup(guru->list[2]);
 				guru->type = GURU_ADMIN;
 				(core->net_output)(guru);
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 		{
 			case 'h':
 				printf("Grubby - the GGZ Gaming Zone Chat Bot\n");
-				printf("Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net\n");
+				printf("Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net\n");
 				printf("Published under GNU GPL conditions\n\n");
 				printf("Recognized options:\n");
 				printf("[-h | --help]:    Show this help screen\n");
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 				optname = optarg;
 				break;
 			case 'v':
-				printf("Grubby version 0.1\n");
+				printf("Grubby version 0.2\n");
 				exit(0);
 				break;
 			default:

@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -182,8 +182,8 @@ void net_output(Guru *output)
 
 	/* Handle multi-line answers */
 	if(!output->message) return;
-printf("DEBUG: output is at %i\n", output);
-printf("DEBUG: net_output(%s)\n", output->message);
+/*printf("DEBUG: output is at %i\n", output);
+printf("DEBUG: net_output(%s)\n", output->message);*/
 	msg = strdup(output->message);
 	token = strtok(msg, "\n");
 	while(token)

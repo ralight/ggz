@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -336,7 +336,7 @@ Guru *guru_module_work(Guru *message, int priority)
 		for(i = 0; i < modulecount; i++)
 		{
 			if(!functionlist[i]) continue;
-			if(j == 10) printf("Trying module no. %i with '%s'\n", i, message->message);
+			/*if(j == 10) printf("Trying module no. %i with '%s'\n", i, message->message);*/
 			func = functionlist[i];
 			ret = (func)(message);
 			if((ret) && (ret->message))
