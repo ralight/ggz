@@ -20,11 +20,12 @@ extern struct GameTypes game_types;
 GtkWidget *dlg_launch;
 
 /* Local callbacks which no other file will call */
-static void launch_change_type(GtkCombo *type_combo, gpointer user_data);
-static void launch_start_game(GtkWidget *btn_launch, gpointer user_data);
-static void launch_fill_defaults(GtkWidget* widget, gpointer data);
-static void launch_seat_show(int i, char show);
-static int max_allowed_players(unsigned char mask);
+void launch_change_type(GtkCombo *type_combo, gpointer user_data);
+void launch_start_game(GtkWidget *btn_launch, gpointer user_data);
+void launch_fill_defaults(GtkWidget* widget, gpointer data);
+void launch_seat_show(int i, char show);
+int max_allowed_players(unsigned char mask);
+void launch_reserved_toggle(GtkWidget* button, GtkWidget *entry);
 
 GtkWidget*
 create_dlgLaunch (void)
@@ -625,6 +626,30 @@ create_dlgLaunch (void)
   gtk_signal_connect (GTK_OBJECT (dlg_launch), "realize",
                       GTK_SIGNAL_FUNC (launch_fill_defaults),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (radiobutton3), "toggled",
+                      GTK_SIGNAL_FUNC (launch_reserved_toggle),
+                      GTK_ENTRY(entry12));
+  gtk_signal_connect (GTK_OBJECT (radiobutton6), "toggled",
+                      GTK_SIGNAL_FUNC (launch_reserved_toggle),
+                      GTK_ENTRY(entry13));
+  gtk_signal_connect (GTK_OBJECT (radiobutton9), "toggled",
+                      GTK_SIGNAL_FUNC (launch_reserved_toggle),
+                      GTK_ENTRY(entry14));
+  gtk_signal_connect (GTK_OBJECT (radiobutton12), "toggled",
+                      GTK_SIGNAL_FUNC (launch_reserved_toggle),
+                      GTK_ENTRY(entry15));
+  gtk_signal_connect (GTK_OBJECT (radiobutton15), "toggled",
+                      GTK_SIGNAL_FUNC (launch_reserved_toggle),
+                      GTK_ENTRY(entry16));
+  gtk_signal_connect (GTK_OBJECT (radiobutton18), "toggled",
+                      GTK_SIGNAL_FUNC (launch_reserved_toggle),
+                      GTK_ENTRY(entry17));
+  gtk_signal_connect (GTK_OBJECT (radiobutton21), "toggled",
+                      GTK_SIGNAL_FUNC (launch_reserved_toggle),
+                      GTK_ENTRY(entry18));
+  gtk_signal_connect (GTK_OBJECT (radiobutton24), "toggled",
+                      GTK_SIGNAL_FUNC (launch_reserved_toggle),
+                      GTK_ENTRY(entry19));
 
   return dlg_launch;
 }
@@ -735,6 +760,16 @@ void launch_start_game(GtkWidget *btn_launch, gpointer user_data)
           
 }
 
+void launch_reserved_toggle(GtkWidget* button, GtkWidget *entry)
+{
+        if (GTK_TOGGLE_BUTTON(button)->active) {
+		gtk_entry_set_editable (GTK_ENTRY (entry), TRUE);
+		gtk_widget_grab_focus(GTK_ENTRY(entry));
+        }else{
+		gtk_entry_set_text (GTK_ENTRY (entry), "");
+		gtk_entry_set_editable (GTK_ENTRY (entry), FALSE);
+	}
+}
 
 /*                              *
  *        Helper Functions      *
