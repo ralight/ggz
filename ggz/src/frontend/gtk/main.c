@@ -54,6 +54,7 @@ int main (int argc, char *argv[])
 	win_main = create_win_main();
 	dlg_login = create_dlg_login();
 
+	ggz_sensitivity_init();
 	gtk_widget_show(win_main);
 
 	gtk_main();

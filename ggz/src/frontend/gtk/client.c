@@ -34,6 +34,7 @@
 #include "client.h"
 #include "chat.h"
 #include "login.h"
+#include "ggz.h"
 #include "xtext.h"
 
 extern GdkColor colors[];
@@ -66,6 +67,12 @@ on_disconnect_activate                 (GtkMenuItem     *menuitem,
 	/* Clear current list of players */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
         gtk_clist_clear(GTK_CLIST(tmp));
+
+	/* Clear current list of tables */
+        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
+        gtk_clist_clear(GTK_CLIST(tmp));
+
+	ggz_sensitivity_init();
 }
 
 
@@ -270,6 +277,12 @@ on_disconnect_button_clicked           (GtkButton         *button,
 	/* Clear current list of players */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
         gtk_clist_clear(GTK_CLIST(tmp));
+
+	/* Clear current list of tables */
+        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
+        gtk_clist_clear(GTK_CLIST(tmp));
+
+	ggz_sensitivity_init();
 }
 
 
@@ -899,12 +912,14 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (exit_button);
 
-  Current_room_label = gtk_label_new ("Please select a room.");
+  Current_room_label = gtk_label_new ("Current Room:");
   gtk_widget_ref (Current_room_label);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "Current_room_label", Current_room_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (Current_room_label);
   gtk_box_pack_start (GTK_BOX (main_vbox), Current_room_label, FALSE, FALSE, 0);
+  gtk_misc_set_alignment (GTK_MISC (Current_room_label), 7.45058e-09, 0.5);
+  gtk_misc_set_padding (GTK_MISC (Current_room_label), 8, 5);
 
   client_hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (client_hbox);
@@ -912,6 +927,7 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (client_hbox);
   gtk_box_pack_start (GTK_BOX (main_vbox), client_hbox, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (client_hbox), 3);
 
   client_hpaned = gtk_hpaned_new ();
   gtk_widget_ref (client_hpaned);

@@ -527,13 +527,13 @@
     <widget>
       <class>GtkLabel</class>
       <name>Current_room_label</name>
-      <label>Please select a room.</label>
+      <label>Current Room:</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>7.45058e-09</xalign>
       <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <xpad>8</xpad>
+      <ypad>5</ypad>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
@@ -544,6 +544,7 @@
     <widget>
       <class>GtkHBox</class>
       <name>client_hbox</name>
+      <border_width>3</border_width>
       <homogeneous>False</homogeneous>
       <spacing>0</spacing>
       <child>

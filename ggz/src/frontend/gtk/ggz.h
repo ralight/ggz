@@ -27,5 +27,6 @@
 
 
 void ggz_event_init(void);
+void ggz_sensitivity_init(void);
 
 #endif

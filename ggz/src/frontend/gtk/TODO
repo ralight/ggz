@@ -6,9 +6,9 @@ Current
 
 	GUI
 	---
-	- Padding around the room label
-	- Left align the room label
-	- More padding around the edges of client_hbox
+	* Padding around the room label
+	* Left align the room label
+	* More padding around the edges of client_hbox
 
 	Interaction
 	-----------
@@ -21,6 +21,7 @@ Current
 	  gtk/KDE event loop directly
 	- rename callbacks to filename_ rather than on_
 	- statically declare callbacks and local function in .c files
+	* sensitivity within ggzcore event callbacks
 
 To Add
 ------
@@ -30,6 +31,7 @@ To Add
 	- About
 	- Game Types (Still needs planning)
 	- Launch
+	- Licence
 	- MOTD
 	- Preferances
 	- Player Stats

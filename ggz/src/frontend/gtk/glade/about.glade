@@ -27,9 +27,9 @@
   </signal>
   <signal>
     <name>destroy</name>
-    <handler>gtk_widget_destroyed</handler>
-    <data>&amp;dlg_about</data>
-    <last_modification_time>Fri, 28 Jul 2000 03:55:01 GMT</last_modification_time>
+    <handler>gtk_widget_destroy</handler>
+    <object>dlg_about</object>
+    <last_modification_time>Mon, 13 Nov 2000 17:06:19 GMT</last_modification_time>
   </signal>
   <title>About</title>
   <type>GTK_WINDOW_DIALOG</type>
