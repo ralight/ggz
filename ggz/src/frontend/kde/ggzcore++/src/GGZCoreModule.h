@@ -28,6 +28,17 @@ class GGZCoreModule
 {
 	public:
 		/**
+		 * Environments */
+		enum GGZCoreModuleEnvironment
+		{
+			passive = GGZ_ENVIRONMENT_PASSIVE,
+			console = GGZ_ENVIRONMENT_CONSOLE,
+			framebuffer = GGZ_ENVIRONMENT_FRAMEBUFFER,
+			xwindow = GGZ_ENVIRONMENT_XWINDOW,
+			xfullscreen = GGZ_ENVIRONMENT_XFULLSCREEN
+		};
+
+		/**
 		 * Constructor */
 		GGZCoreModule();
 		/**
@@ -45,7 +56,8 @@ class GGZCoreModule
 		 * Add a game. */
 		int add(const char* game, const char* version, const char* protocol, const char *engine,
 			const char* author, const char* frontend, const char* url,
-			const char* exe_path, const char* icon_path, const char* help_path);
+			const char* exe_path, const char* icon_path, const char* help_path,
+			GGZModuleEnvironment env);
 
 		/**
 		 * Launch this module. */
@@ -81,6 +93,9 @@ class GGZCoreModule
 		/**
 		 * Return the help path of this game module. */
 		const char* pathHelp();
+		/**
+		 * Return the preferred environment of this game module. */
+		GGZModuleEnvironment environment();
 
 		/**
 		 * Initialize this module to find out compatible ones. */

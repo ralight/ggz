@@ -50,9 +50,9 @@ unsigned int GGZCoreModule::count()
 	return ggzcore_module_get_num_by_type(m_game, m_engine, m_protocol);
 }
 
-int GGZCoreModule::add(const char* game, const char* version, const char* protocol, const char *engine, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path)
+int GGZCoreModule::add(const char* game, const char* version, const char* protocol, const char *engine, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path, GGZModuleEnvironment env)
 {
-	return ggzcore_module_add(game, version, protocol, engine, author, frontend, url, exe_path, icon_path, help_path);
+	return ggzcore_module_add(game, version, protocol, engine, author, frontend, url, exe_path, icon_path, help_path, env);
 }
 
 int GGZCoreModule::launch()
@@ -108,6 +108,11 @@ const char* GGZCoreModule::pathIcon()
 const char* GGZCoreModule::pathHelp()
 {
 	return ggzcore_module_get_help_path(m_module);
+}
+
+GGZModuleEnvironment GGZCoreModule::environment()
+{
+	return ggzcore_module_get_environment(m_module);
 }
 
 GGZModule *GGZCoreModule::module()

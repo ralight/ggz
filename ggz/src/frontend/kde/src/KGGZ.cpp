@@ -1428,6 +1428,7 @@ void KGGZ::slotGameFrontend()
 {
 	GGZCoreGametype *gametype;
 	int modules;
+	int env;
 
 	if((!kggzroom) || (!m_gameinfo))
 	{
@@ -1469,7 +1470,9 @@ void KGGZ::slotGameFrontend()
 		for(int i = 0; i < modules; i++)
 		{
 			m_module->setActive(i);
-			m_selector->addFrontend(m_module->frontend());
+			env = m_module->environment();
+			if((env == GGZCoreModule::xwindow) || (env == GGZCoreModule::xfullscreen))
+				m_selector->addFrontend(m_module->frontend());
 		}
 		m_selector->show();
 		connect(m_selector, SIGNAL(signalFrontend(int)), SLOT(slotGamePrepare(int)));
