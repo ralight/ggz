@@ -36,6 +36,7 @@
 #include <chat.h>
 #include <game.h>
 #include "ggzcore.h"
+#include <msgbox.h>
 
 extern GGZServer *server;
 
@@ -190,14 +191,27 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 	gchar *message;
 	gchar *name;
 	gchar *protocol;
-	gint seats, x;
+	gint seats, x, status;
 	GGZRoom *room;
 	GGZGameType *gt;
 	GGZModule *module;
 	GGZTable *table;
 
 	room = ggzcore_server_get_cur_room(server);
+	if(!room)
+	{
+		status = msgbox("You must be in a room to launch a\ngame. Launch aborted", "Launch Error",
+				MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		return;
+	}
+
 	gt = ggzcore_room_get_gametype(room);
+	if(!gt)
+	{
+		status = msgbox("No game types defined for this\nserver. Launch aborted.", "Launch Error",
+				MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		return;
+	}
 	name = ggzcore_gametype_get_name(gt);
 	protocol = ggzcore_gametype_get_protocol(gt);
 	message = g_strdup_printf("Launching Game of %s, v%s", name, protocol);
@@ -205,6 +219,15 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 	g_free(message);
 	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
 	game_init(module);
+	if(!module)
+	{
+		message = g_strdup_printf("You don't have this game installed. You can download\nit from %s.",
+					ggzcore_gametype_get_url(gt));
+		status = msgbox(message, "Launch Error",
+				MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		g_free(message);
+		return;
+	}
 
 	table = ggzcore_table_new();
 	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seats_combo");
