@@ -121,12 +121,11 @@ if test "$enable_gensec" = yes; then
 	SUBDIRS="$SUBDIRS gensecure"
 fi
 
-if test "$enable_guru" = yes; then
-	SUBDIRS="$SUBDIRS telggz"
-fi
-
 if test "$enable_metaserv" = yes; then
 	SUBDIRS="$SUBDIRS metaserv"
+	if test "$enable_telggz" = yes; then
+		SUBDIRS="$SUBDIRS telggz"
+	fi
 fi
 
 AC_SUBST(LDADD)
