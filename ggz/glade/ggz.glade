@@ -10,420 +10,18 @@
   <language>C</language>
   <gnome_support>False</gnome_support>
   <gettext_support>True</gettext_support>
+  <use_widget_names>False</use_widget_names>
   <output_main_file>False</output_main_file>
   <output_support_files>False</output_support_files>
   <output_build_files>False</output_build_files>
+  <backup_source_files>True</backup_source_files>
+  <main_source_file>interface.c</main_source_file>
+  <main_header_file>interface.h</main_header_file>
+  <handler_source_file>callbacks.c</handler_source_file>
+  <handler_header_file>callbacks.h</handler_header_file>
+  <support_source_file>support.c</support_source_file>
+  <support_header_file>support.h</support_header_file>
 </project>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>dlg_login</name>
-  <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Tue, 11 Jan 2000 01:48:25 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Tue, 11 Jan 2000 01:48:58 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>realize</name>
-    <handler>fill_defaults</handler>
-    <last_modification_time>Fri, 28 Jan 2000 21:09:17 GMT</last_modification_time>
-  </signal>
-  <title>Login</title>
-  <type>GTK_WINDOW_DIALOG</type>
-  <position>GTK_WIN_POS_MOUSE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkHBox</class>
-    <name>main_box</name>
-    <border_width>5</border_width>
-    <homogeneous>False</homogeneous>
-    <spacing>0</spacing>
-
-    <widget>
-      <class>GtkVBox</class>
-      <name>vbox</name>
-      <homogeneous>False</homogeneous>
-      <spacing>5</spacing>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox</name>
-	<border_width>5</border_width>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkFrame</class>
-	  <name>name_frame</name>
-	  <border_width>5</border_width>
-	  <label_xalign>0</label_xalign>
-	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkVBox</class>
-	    <name>info_box</name>
-	    <border_width>10</border_width>
-	    <homogeneous>False</homogeneous>
-	    <spacing>0</spacing>
-
-	    <widget>
-	      <class>GtkHBox</class>
-	      <name>name_box</name>
-	      <homogeneous>False</homogeneous>
-	      <spacing>0</spacing>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>name_label</name>
-		<label>Username : </label>
-		<justify>GTK_JUSTIFY_RIGHT</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkEntry</class>
-		<name>name_entry</name>
-		<width>96</width>
-		<tooltip>Enter your login name here</tooltip>
-		<can_focus>True</can_focus>
-		<editable>True</editable>
-		<text_visible>True</text_visible>
-		<text_max_length>8</text_max_length>
-		<text></text>
-		<child>
-		  <padding>0</padding>
-		  <expand>True</expand>
-		  <fill>True</fill>
-		</child>
-	      </widget>
-	    </widget>
-
-	    <widget>
-	      <class>GtkHBox</class>
-	      <name>pass_box</name>
-	      <homogeneous>False</homogeneous>
-	      <spacing>0</spacing>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>pass_label</name>
-		<label>Password : </label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkEntry</class>
-		<name>pass_entry</name>
-		<width>96</width>
-		<tooltip>Enter your password here</tooltip>
-		<can_focus>True</can_focus>
-		<editable>True</editable>
-		<text_visible>False</text_visible>
-		<text_max_length>0</text_max_length>
-		<text></text>
-		<child>
-		  <padding>0</padding>
-		  <expand>True</expand>
-		  <fill>True</fill>
-		</child>
-	      </widget>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkFrame</class>
-	  <name>opt_frame</name>
-	  <border_width>5</border_width>
-	  <label_xalign>0</label_xalign>
-	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkVBox</class>
-	    <name>radio_box</name>
-	    <border_width>5</border_width>
-	    <homogeneous>False</homogeneous>
-	    <spacing>0</spacing>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>normal_radio</name>
-	      <can_focus>True</can_focus>
-	      <label>Normal Login</label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>login_type</group>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>anon_radio</name>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>anon_toggled</handler>
-		<data>dlg_login</data>
-		<last_modification_time>Sat, 19 Feb 2000 19:39:07 GMT</last_modification_time>
-	      </signal>
-	      <label>Anonymous Login</label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>login_type</group>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>first_radio</name>
-	      <can_focus>True</can_focus>
-	      <label>First-time Login</label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>login_type</group>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkFrame</class>
-	<name>server_frame</name>
-	<border_width>5</border_width>
-	<label_xalign>0</label_xalign>
-	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
-
-	<widget>
-	  <class>GtkHBox</class>
-	  <name>server_box</name>
-	  <border_width>10</border_width>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>host_label</name>
-	    <label>Server:</label>
-	    <justify>GTK_JUSTIFY_RIGHT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkEntry</class>
-	    <name>host_entry</name>
-	    <can_focus>True</can_focus>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>256</text_max_length>
-	    <text></text>
-	    <child>
-	      <padding>5</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkEntry</class>
-	    <name>port_entry</name>
-	    <width>50</width>
-	    <can_focus>True</can_focus>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>0</text_max_length>
-	    <text></text>
-	    <child>
-	      <padding>5</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	      <pack>GTK_PACK_END</pack>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>port_label</name>
-	    <label>Port:</label>
-	    <justify>GTK_JUSTIFY_CENTER</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	      <pack>GTK_PACK_END</pack>
-	    </child>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkHSeparator</class>
-	<name>hseparator</name>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-      </widget>
-
-      <widget>
-	<class>GtkHButtonBox</class>
-	<name>button_box</name>
-	<border_width>5</border_width>
-	<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
-	<spacing>30</spacing>
-	<child_min_width>85</child_min_width>
-	<child_min_height>27</child_min_height>
-	<child_ipad_x>7</child_ipad_x>
-	<child_ipad_y>0</child_ipad_y>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>connect_button</name>
-	  <can_default>True</can_default>
-	  <has_default>True</has_default>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>input_options</handler>
-	    <data>dlg_login</data>
-	    <last_modification_time>Sat, 19 Feb 2000 20:34:51 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>start_session</handler>
-	    <data>dlg_login</data>
-	    <last_modification_time>Sat, 19 Feb 2000 20:34:59 GMT</last_modification_time>
-	  </signal>
-	  <label>Connect</label>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>cancel_button</name>
-	  <can_default>True</can_default>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>gtk_widget_destroy</handler>
-	    <object>dlg_login</object>
-	    <last_modification_time>Tue, 11 Jan 2000 02:19:16 GMT</last_modification_time>
-	  </signal>
-	  <label>Cancel</label>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>details_button</name>
-	  <width>93</width>
-	  <can_default>True</can_default>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>show_details</handler>
-	    <data>dlg_login</data>
-	    <last_modification_time>Tue, 11 Jan 2000 02:42:10 GMT</last_modification_time>
-	  </signal>
-	  <label>Details &gt;&gt;</label>
-	</widget>
-      </widget>
-    </widget>
-  </widget>
-</widget>
 
 <widget>
   <class>GtkDialog</class>
@@ -444,6 +42,29 @@
     <name>dialog-vbox1</name>
     <homogeneous>False</homogeneous>
     <spacing>0</spacing>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolled_window</name>
+      <border_width>10</border_width>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkText</class>
+	<name>text</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text></text>
+      </widget>
+    </widget>
 
     <widget>
       <class>GtkHBox</class>
@@ -488,29 +109,6 @@
 	</widget>
       </widget>
     </widget>
-
-    <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolled_window</name>
-      <border_width>10</border_width>
-      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkText</class>
-	<name>text</name>
-	<can_focus>True</can_focus>
-	<editable>False</editable>
-	<text></text>
-      </widget>
-    </widget>
   </widget>
 </widget>
 
@@ -533,6 +131,29 @@
     <name>vbox6</name>
     <homogeneous>False</homogeneous>
     <spacing>0</spacing>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow2</name>
+      <border_width>5</border_width>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkText</class>
+	<name>text2</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text></text>
+      </widget>
+    </widget>
 
     <widget>
       <class>GtkHBox</class>
@@ -584,29 +205,6 @@
 	    <fill>False</fill>
 	  </child>
 	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolledwindow2</name>
-      <border_width>5</border_width>
-      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkText</class>
-	<name>text2</name>
-	<can_focus>True</can_focus>
-	<editable>False</editable>
-	<text></text>
       </widget>
     </widget>
   </widget>
