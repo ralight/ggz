@@ -468,15 +468,15 @@ int es_readn(int fd, void *vptr, size_t n)
 int es_write_fd(int fd, int sendfd)
 {
         int status;
-        struct msghdr	msg;
-	struct iovec	iov[1];
+        struct msghdr msg;
+	struct iovec iov[1];
 
 #ifdef	HAVE_MSGHDR_MSG_CONTROL
 	union {
-	  struct cmsghdr	cm;
-	  char				control[CMSG_SPACE(sizeof(int))];
+		struct cmsghdr cm;
+		char control[CMSG_SPACE(sizeof(int))];
 	} control_un;
-	struct cmsghdr	*cmptr;
+	struct cmsghdr *cmptr;
 
 	msg.msg_control = control_un.control;
 	msg.msg_controllen = sizeof(control_un.control);
@@ -497,31 +497,36 @@ int es_write_fd(int fd, int sendfd)
         /* We're just sending a fd, so it's a dummy byte */
         iov[0].iov_base = "";
 	iov[0].iov_len = 1;
+
 	msg.msg_iov = iov;
 	msg.msg_iovlen = 1;
 
-       if (sendmsg(fd, &msg, 0) < 0) {
-               return -1;
-       }
-  
-      return 0;
+	if (sendmsg(fd, &msg, 0) < 0) {
+		_debug("Error sending fd\n");
+		if (_err_func)
+			(*_err_func) (strerror(errno), ES_WRITE, ES_FD);
+		return -1;
+	}
+
+	_debug("Sent \"%d\" : fd\n", sendfd);
+	return 0;
 }
 
 
 int es_read_fd(int fd, int *recvfd)
 {
-	struct msghdr	msg;
-	struct iovec	iov[1];
-	ssize_t			n;
-	int				newfd;
+	struct msghdr msg;
+	struct iovec iov[1];
+	ssize_t	n;
+	int newfd;
         char dummy;
   
 #ifdef	HAVE_MSGHDR_MSG_CONTROL
 	union {
-	  struct cmsghdr	cm;
-	  char				control[CMSG_SPACE(sizeof(int))];
+		struct cmsghdr cm;
+		char control[CMSG_SPACE(sizeof(int))];
 	} control_un;
-	struct cmsghdr	*cmptr;
+	struct cmsghdr *cmptr;
 
 	msg.msg_control = control_un.control;
 	msg.msg_controllen = sizeof(control_un.control);
@@ -533,41 +538,65 @@ int es_read_fd(int fd, int *recvfd)
 	msg.msg_name = NULL;
 	msg.msg_namelen = 0;
 
+        /* We're just sending a fd, so it's a dummy byte */
 	iov[0].iov_base = &dummy;
 	iov[0].iov_len = 1;
+
 	msg.msg_iov = iov;
 	msg.msg_iovlen = 1;
 
 	if ( (n = recvmsg(fd, &msg, 0)) < 0) {
+		_debug("Error reading fd msg\n");
+		if (_err_func)
+			(*_err_func) (strerror(errno), ES_READ, ES_FD);
 		return -1;
 	}
 
         if (n == 0) {
+		_debug("Warning: fd is closed\n");
+		if (_err_func)
+			(*_err_func) ("fd closed", ES_READ, ES_FD);
 	        return -1; 
 	}
   
 #ifdef	HAVE_MSGHDR_MSG_CONTROL
-        if ( (cmptr = CMSG_FIRSTHDR(&msg)) != NULL &&
-	    cmptr->cmsg_len == CMSG_LEN(sizeof(int))) {
-		if (cmptr->cmsg_level != SOL_SOCKET)
-		        if (_err_func)
-			        (*_err_func) ("control level != SOL_SOCKET", ES_READ, ES_STRING);
-	                return -1;
-		if (cmptr->cmsg_type != SCM_RIGHTS) {
-		        if (_err_func)
-			        (*_err_func) ("control type != SOL_RIGHTS", ES_READ, ES_STRING);
-	                return -1;
-		}
-		*recvfd = *((int *) CMSG_DATA(cmptr));
-	} else
-		*recvfd = -1;		/* descriptor was not passed */
-#else
-	if (msg.msg_accrightslen == sizeof(int))
-		*recvfd = newfd;
-	else 
-		*recvfd = -1;		/* descriptor was not passed */
-#endif
+        if ( (cmptr = CMSG_FIRSTHDR(&msg)) == NULL 
+	     || cmptr->cmsg_len != CMSG_LEN(sizeof(int))) {
+		_debug("Bad cmsg\n");
+		if (_err_func)
+			(*_err_func) ("Bad cmsg", ES_READ, ES_FD);
+		return -1;
+	}
 
-        return (*recvfd != -1) ? 0 : -1;
+	if (cmptr->cmsg_level != SOL_SOCKET) {
+		_debug("Bad cmsg\n");
+		if (_err_func)
+			(*_err_func) ("level != SOL_SOCKET", ES_READ, ES_FD);
+		return -1;
+	}
+
+	if (cmptr->cmsg_type != SCM_RIGHTS) {
+		_debug("Bad cmsg\n");
+		if (_err_func)
+			(*_err_func) ("type != SOL_RIGHTS", ES_READ, ES_FD);
+		return -1;
+	}
+
+	/* Everything is good */
+	*recvfd = *((int *) CMSG_DATA(cmptr));
+#else
+	if (msg.msg_accrightslen =! sizeof(int)) {
+		_debug("Bad msg\n");
+		if (_err_func)
+			(*_err_func) ("Bad msg", ES_READ, ES_FD);
+		return -1;
+	}		
+
+	/* Everything is good */
+	*recvfd = newfd;
+#endif
+	
+	_debug("Received \"%d\" : fd\n", *recvfd);
+        return 0;
 }
 

@@ -48,7 +48,8 @@ typedef enum {
 	ES_NONE,
 	ES_CHAR,
 	ES_INT,
-	ES_STRING
+	ES_STRING,
+	ES_FD
 } EsDataType;
 
 typedef void (*es_err_func) (const char *, const EsOpType, 
