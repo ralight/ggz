@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 1748 2001-06-18 22:25:57Z riq $	*/
+/*	$Id: ggz.c 2064 2001-07-22 06:17:37Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -74,11 +74,11 @@ int ggz_server_connect(void)
 		return -1;
 	}
 
-	len = strlen(name) + strlen(TMPDIR) + 7;
+	len = strlen(name) + strlen(TMPDIR) + 8;
 	if ( (fd_name = malloc(len)) == NULL) {
 		return -1;
 	}
-	sprintf(fd_name, "%s/%s.%d", TMPDIR, name, getpid());
+	snprintf(fd_name, len, "%s/%s.%d", TMPDIR, name, getpid());
 	
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_LOCAL;
@@ -202,7 +202,7 @@ void ggz_debug(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-        vsprintf(buf, fmt, ap);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
 	es_write_int(ggzfd, MSG_DBG);
 	es_write_int(ggzfd, GGZ_DBG_TABLE);
 	es_write_string(ggzfd, buf);
