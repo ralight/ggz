@@ -2,7 +2,7 @@
 
 Summary: GGZ Client for KDE
 Name: ggz-kde-client
-Version: 0.0.4pre6
+Version: 0.0.4
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
