@@ -61,6 +61,11 @@ class Game:
 
 		ggzchess.init(ggzchess.WHITE, 2)
 
+		self.datapath = "./"
+
+	def init(self, path):
+		self.datapath = path
+
 	def name(self):
 		return "Chess"
 
@@ -68,7 +73,7 @@ class Game:
 		(gfx, color) = piece
 		colorstr = color
 		piecestr = gfx
-		return "chess/" + piecestr + "_" + colorstr + ".svg"
+		return self.datapath + "chess/" + piecestr + "_" + colorstr + ".svg"
 
 	def validatemove(self, fromcolor, frompos, topos):
 		(oldx, oldy) = frompos

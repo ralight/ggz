@@ -17,6 +17,16 @@ import rsvgsdl
 import sdlnewstuff
 import playertable
 
+path = sys.argv[0]
+if path[0] == ".":
+	DATAPATH = "./"
+	MODULEPATH = "./"
+else:
+	path = os.path.abspath(path)
+	DATAPATH = str("/").join(path.split("/")[:-2]) + "/share/ggz/ggzboard/"
+	MODULEPATH = str("/").join(path.split("/")[:-2]) + "/lib/site-python/"
+print ">>>>> ggzboard: starting with datapath", DATAPATH, "modulepath", MODULEPATH
+
 class Conf:
 	def __init__(self):
 		self.alpha = 120
@@ -76,7 +86,7 @@ class GGZBoardUI:
 
 	def setsurface(self, surface):
 			if surface:
-				self.origsurface = pygame.image.load(surface)
+				self.origsurface = pygame.image.load(DATAPATH + surface)
 				self.surface = pygame.transform.scale(self.origsurface, self.currentres)
 				self.backgroundarea = self.deepcopy(self.surface)
 			else:
@@ -126,19 +136,19 @@ class GGZBoard:
 				self.modulelist.append(m.group(1))
 
 	def load(self, gamename):
-		os.path.walk(".", self.walker, None)
+		os.path.walk(MODULEPATH, self.walker, None)
 
 		if gamename:
 			self.loadgame(gamename)
 
 	def loadgame(self, gamename):
-		(fileobj, filename, desc) = imp.find_module("module_" + gamename, ["."])
+		(fileobj, filename, desc) = imp.find_module("module_" + gamename, None)
 		mod = imp.load_module("ggzboardgame", fileobj, filename, desc)
 		fileobj.close()
 		self.game = mod.ggzboardgame
 
 		if self.ggzmode:
-			(fileobj, filename, desc) = imp.find_module("net_" + gamename, ["."])
+			(fileobj, filename, desc) = imp.find_module("net_" + gamename, None)
 			mod = imp.load_module("ggzboardnet", fileobj, filename, desc)
 			fileobj.close()
 			self.net = mod.ggzboardnet
@@ -239,6 +249,8 @@ class GGZBoard:
 		game = self.game
 		ui = self.ui
 		net = self.net
+
+		game.init(DATAPATH)
 
 		if self.ggzsuccess:
 			ret = net.connect()

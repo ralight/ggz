@@ -49,6 +49,11 @@ class Game:
 
 		self.isover = 0
 
+		self.datapath = "./"
+
+	def init(self, path):
+		self.datapath = path
+
 	def name(self):
 		return "Checkers/Draughts"
 
@@ -62,7 +67,7 @@ class Game:
 			piecestr = "piece"
 		else:
 			piecestr = "king"
-		return "checkers/" + piecestr + "-" + colorstr + ".svg"
+		return self.datapath + "checkers/" + piecestr + "-" + colorstr + ".svg"
 
 	def validatemove(self, fromcolor, frompos, topos):
 		(oldx, oldy) = frompos

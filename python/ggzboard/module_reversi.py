@@ -29,6 +29,11 @@ class Game:
 		self.isover = 0
 		self.lastmove = ""
 
+		self.datapath = "./"
+
+	def init(self, path):
+		self.datapath = path
+
 	def name(self):
 		return "Reversi"
 
@@ -39,7 +44,7 @@ class Game:
 		else:
 			colorstr = "black"
 		piecestr = "piece"
-		return "reversi/" + piecestr + "-" + colorstr + ".svg"
+		return self.datapath + "reversi/" + piecestr + "-" + colorstr + ".svg"
 
 	def validatemove(self, fromcolor, topos):
 		(x, y) = topos
