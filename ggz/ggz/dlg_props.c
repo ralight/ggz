@@ -78,6 +78,15 @@ void props_update()
 			ggzrc_write_int("CHAT","ColorNames", CHAT_COLOR_FULL);
 		} else {
 			ggzrc_write_int("CHAT","ColorNames", CHAT_COLOR_SOME);
+		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "y_spin");
+			ggzrc_write_int("CHAT","YourColor",
+				gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
+		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "f_spin");
+			ggzrc_write_int("CHAT","FriendsColor",
+				gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
+		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "o_spin");
+			ggzrc_write_int("CHAT","OthersColor",
+				gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
 		}
 	} else
 		ggzrc_write_int("CHAT","ColorNames", CHAT_COLOR_NONE);
@@ -200,10 +209,19 @@ void dlg_props_realize (GtkWidget *widget, gpointer user_data)
 		if(ggzrc_read_int("CHAT","ColorNames",CHAT_COLOR_SOME) == CHAT_COLOR_FULL)
 		{
 		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "full_radio");
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 		} else {
 		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "some_radio");
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "y_spin");
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp),
+				ggzrc_read_int("CHAT","YourColor",1));
+		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "f_spin");
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp),
+				ggzrc_read_int("CHAT","FriendsColor",2));
+		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "o_spin");
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp),
+				ggzrc_read_int("CHAT","OthersColor",12));
 		}
 	} else
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), FALSE);
@@ -213,15 +231,15 @@ void dlg_props_realize (GtkWidget *widget, gpointer user_data)
 	
 	/*User Info Tab*/
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_name");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Name",""));
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Name","."));
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_city");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","City",""));
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","City","."));
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_state");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","State",""));
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","State","."));
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_country");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Country",""));
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Country","."));
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_comments");
-	gtk_text_insert (GTK_TEXT (tmp), NULL, NULL, NULL, ggzrc_read_string("UserInfo","Comments",""), -1);
+	gtk_text_insert (GTK_TEXT (tmp), NULL, NULL, NULL, ggzrc_read_string("UserInfo","Comments","."), -1);
 }
 
 GtkWidget*

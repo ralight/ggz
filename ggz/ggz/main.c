@@ -61,7 +61,7 @@ char *local_conf_fname = NULL;
 /* Aray of GdkColors currently used for chat and MOTD */
 GdkColor colors[] = 
 {
-	{0, 0, 0xcccc, 0},		/* 0   green			*/
+	{0, 0, 0, 0},			/* 0   black	*/
 	{0, 0, 0, 0xcccc},		/* 1   bule			*/
 	{0, 0xcccc, 0, 0},		/* 2   red			*/
 	{0, 0xbbbb, 0xbbbb, 0},		/* 3   yellow/brown		*/

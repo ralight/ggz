@@ -55,13 +55,7 @@ void display_chat(gchar *name, gchar *msg)
 	strcpy(line,msg);
 
 	/* Get color for user */
-	color_index = -1;
-	if(ggzrc_read_int("CHAT","ColorNames", CHAT_COLOR_SOME) == CHAT_COLOR_SOME)
-	{
-		color_index=1;
-		if (!strcmp(connection.username, name))
-			color_index=0;
-	}
+	color_index = ggzrc_read_int("CHAT","ColorNames", CHAT_COLOR_SOME);
         
         /* Skip until we find the end of the command, converting */
         /* everything (for convenience) to lowercase as we go */
@@ -92,19 +86,19 @@ void display_chat(gchar *name, gchar *msg)
 			if(ggzrc_read_int("CHAT","Beep",TRUE) == TRUE)
 				gdk_beep();
 			buf = g_strdup_printf("You've been beeped by %s", name);
-			chat_print(color_index, "---", buf);
+			chat_print(CHAT_COLOR_SERVER, "---", buf);
 			g_free(buf);
 		}else{
 			buf = g_strdup_printf("%s was been beeped by %s", out, name);
-			chat_print(color_index, "---", buf);
+			chat_print(CHAT_COLOR_SERVER, "---", buf);
 			g_free(buf);
 		}
 	}else if (!strcmp(cmd,"/sjoins")){	/* Server message join room */
 		if(ggzrc_read_int("CHAT","IgnoreJoinPart",FALSE) == FALSE)
-			chat_print(color_index, "-->", name);
+			chat_print(CHAT_COLOR_SERVER, "-->", name);
 	}else if (!strcmp(cmd,"/sparts")){	/* Server message part room */
 		if(ggzrc_read_int("CHAT","IgnoreJoinPart",FALSE) == FALSE)
-			chat_print(color_index, "<--", name);
+			chat_print(CHAT_COLOR_SERVER, "<--", name);
 	}else{		/* No command given, display it all */
 		chat_print(color_index, name, msg);
 	}
@@ -112,14 +106,34 @@ void display_chat(gchar *name, gchar *msg)
 
 void chat_print(int color, char* left, char* right)
 {
-	gpointer tmp;			/* chat widget */
+	gpointer tmp;	/* chat widget */
+	gchar *buf;	/* Temporary buffer */
 
-	if(color == -1)
+	if(color == CHAT_COLOR_NONE)
 	{
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		gtk_xtext_append_indent(GTK_XTEXT(tmp), left, strlen(left), right, strlen(right));
 		gtk_xtext_refresh(tmp);
-	} else {
+	} else if(color == CHAT_COLOR_SOME) {
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+		if (!strcmp(connection.username, left))
+		{
+			buf = g_strdup_printf("\003%d%s\00300", 
+			ggzrc_read_int("CHAT","YourColor",1), left);
+			gtk_xtext_append_indent(GTK_XTEXT(tmp), buf, strlen(buf), right, strlen(right));
+			g_free(buf);
+		} else {
+			buf = g_strdup_printf("\003%d%s\00300", 
+			ggzrc_read_int("CHAT","OthersColor",12), left);
+			gtk_xtext_append_indent(GTK_XTEXT(tmp), buf, strlen(buf), right, strlen(right));
+			g_free(buf);
+		}
+		gtk_xtext_refresh(tmp);
+	} else if(color == CHAT_COLOR_FULL) {
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+		gtk_xtext_append_indent(GTK_XTEXT(tmp), left, strlen(left), right, strlen(right));
+		gtk_xtext_refresh(tmp);
+	} else if(color == CHAT_COLOR_SERVER) {
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		gtk_xtext_append_indent(GTK_XTEXT(tmp), left, strlen(left), right, strlen(right));
 		gtk_xtext_refresh(tmp);
