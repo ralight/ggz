@@ -823,7 +823,7 @@
 
 		  <row rowsep="0">
 		    <entry namest="C1" nameend="C3">
-			  &lt;UPDATE TYPE="type" ACTION="action" ROOM="room"&gt;
+			  &lt;UPDATE TYPE="type" ACTION="action" ROOM="room" FROMROOM="from" TOROOM="to"&gt;
 			</entry>
 		  </row>
 
@@ -849,6 +849,19 @@
 		    <entry>ROOM</entry>
 			<entry>int</entry>
 			<entry>1</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>FROMROOM</entry>
+		    <entry>int</entry>
+		    <entry>2</entry>
+		  </row>
+
+
+		  <row rowsep="1">
+		    <entry>TOROOM</entry>
+		    <entry>int</entry>
+		    <entry>3</entry>
 		  </row>
 
 		</tbody>
@@ -894,6 +907,26 @@
 	      <para>
 		Room to which the update applies.
 		Only used for types 'player' and 'table'.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">FROMROOM</emphasis></term>
+	    <listitem>
+	      <para>
+		Room the player is coming from.
+		Only used for type 'add'.
+		The room may be -1 indicating "no room".
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">ROOM</emphasis></term>
+	    <listitem>
+	      <para>
+		Room the player is going to.
+		Only used for type 'delete'.
+		The room may be -1 indicating "no room".
 	      </para>
 	    </listitem>
 	  </varlistentry>
