@@ -36,7 +36,7 @@ endif
 all: $(wrappers)
 	@echo "ready with building ggz-python"
 
-install: $(instwrappers) install-rest
+install: $(instwrappers) install-ggzboard install-rest
 	@echo "ready with installation of ggz-python"
 
 ggzmod-build:
@@ -121,6 +121,33 @@ install-rest:
 	@echo Installing SDL newstuff dialog
 	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
 	cp lib/sdlnewstuff.py $(DESTDIR)$(prefix)/lib/site-python
+
+install-ggzboard:
+	@echo Installing GGZBoard framework and games
+	mkdir -p $(DESTDIR)$(prefix)/bin/
+	cp ggzboard/ggzboard.py $(DESTDIR)$(prefix)/bin
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/
+	cp ggzboard/*.jpg $(DESTDIR)$(prefix)/share/ggz/ggzboard
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/checkers
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/chess
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/go
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/hnefatafl
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/reversi
+	cp ggzboard/checkers/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/checkers
+	cp ggzboard/chess/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/chess
+	cp ggzboard/go/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/go
+	cp ggzboard/hnefatafl/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/hnefatafl
+	cp ggzboard/reversi/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/reversi
+	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
+	cp ggzboard/ggzboard_net.py $(DESTDIR)$(prefix)/lib/site-python
+	cp ggzboard/server_*.py $(DESTDIR)$(prefix)/lib/site-python
+	cp ggzboard/module_*.py $(DESTDIR)$(prefix)/lib/site-python
+	cp ggzboard/net_*.py $(DESTDIR)$(prefix)/lib/site-python
+	$(ggz-config) --install --force --modfile=ggzboard/module_checkers.dsc
+	$(ggz-config) --install --force --modfile=ggzboard/module_chess.dsc
+	$(ggz-config) --install --force --modfile=ggzboard/module_go.dsc
+	$(ggz-config) --install --force --modfile=ggzboard/module_hnefatafl.dsc
+	$(ggz-config) --install --force --modfile=ggzboard/module_reversi.dsc
 
 dist:
 	rm -rf ../ggz-python-$(version)
