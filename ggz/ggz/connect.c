@@ -135,6 +135,8 @@ void disconnect(GtkWidget * widget, gpointer data)
 
 	close(connection.sock);
 	connection.connected = FALSE;
+	connection.cur_room=-3;
+	connection.new_room=-1;
 }
 
 
@@ -361,6 +363,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_CHAT:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
+		if (status == -1)
+			display_chat("< <  > >","You must join a room before you can chat or play games.");
 		break;
 
 	case MSG_CHAT:
