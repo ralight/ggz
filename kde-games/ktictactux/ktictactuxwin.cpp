@@ -28,15 +28,22 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 : KMainWindow(parent, name)
 {
 	KStandardDirs d;
+	QString icontheme;
 
 	m_tux = new KTicTacTux(this);
 	setCentralWidget(m_tux);
 
 	m_networked = false;
 
-	QString pixexit = d.findResource("icon", "hicolor/16x16/actions/exit.png");
-	QString pixsync = d.findResource("icon", "hicolor/16x16/actions/reload.png");
-	QString pixscore = d.findResource("icon", "hicolor/16x16/actions/history.png");
+#if ((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1) || (KDE_VERSION_MAJOR > 3))
+	icontheme = "crystalsvg";
+#else
+	icontheme = "hicolor";
+#endif
+
+	QString pixexit = d.findResource("icon", icontheme + "/16x16/actions/exit.png");
+	QString pixsync = d.findResource("icon", icontheme + "/16x16/actions/reload.png");
+	QString pixscore = d.findResource("icon", icontheme + "/16x16/actions/history.png");
 
 	mgame = new KPopupMenu(this);
 	mgame->insertItem(QIconSet(QPixmap(pixsync)), i18n("Synchronize"), menusync);
@@ -221,6 +228,13 @@ void KTicTacTuxWin::loadThemes()
 	QString name, player1, player2;
 	QString file;
 	int index = menuthemes;
+	QString icontheme;
+
+#if ((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1) || (KDE_VERSION_MAJOR > 3))
+	icontheme = "crystalsvg";
+#else
+	icontheme = "hicolor";
+#endif
 
 	// Recursively scan all data directories
 	kdDebug() << "loadThemes" << endl;
@@ -248,7 +262,7 @@ void KTicTacTuxWin::loadThemes()
 				m_player1[file] = (*it) + player1;
 				m_player2[file] = (*it) + player2;
 
-				QString pixtheme = d.findResource("icon", "hicolor/16x16/actions/imagegallery.png");
+				QString pixtheme = d.findResource("icon", icontheme + "/16x16/actions/imagegallery.png");
 				mtheme->insertItem(QIconSet(QPixmap(pixtheme)), name, index++);
 			}
 		}

@@ -46,12 +46,19 @@ Toplevel::Toplevel()
 	QString s;
 	QWidget *root;
 	QVBoxLayout *vbox;
+	QString icontheme;
 
-	QString pixnew = d.findResource("icon", "hicolor/16x16/mimetypes/Mime.png");
-	QString pixexit = d.findResource("icon", "hicolor/16x16/actions/exit.png");
-	QString pixvariant = d.findResource("icon", "hicolor/16x16/actions/gear.png");
-	QString pixtheme = d.findResource("icon", "hicolor/16x16/actions/imagegallery.png");
-	QString pixaction = d.findResource("icon", "hicolor/16x16/actions/wizard.png");
+#if ((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1) || (KDE_VERSION_MAJOR > 3))
+	icontheme = "crystalsvg";
+#else
+	icontheme = "hicolor";
+#endif
+
+	QString pixnew = d.findResource("icon", icontheme + "/16x16/mimetypes/Mime.png");
+	QString pixexit = d.findResource("icon", icontheme + "/16x16/actions/exit.png");
+	QString pixvariant = d.findResource("icon", icontheme + "/16x16/actions/gear.png");
+	QString pixtheme = d.findResource("icon", icontheme + "/16x16/actions/imagegallery.png");
+	QString pixaction = d.findResource("icon", icontheme + "/16x16/actions/wizard.png");
 
 
 	menu_game = new KPopupMenu(this);
