@@ -47,6 +47,7 @@ KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
 #ifdef KGGZ_BROWSER
 	m_browser = NULL;
 #endif
+	m_motd = NULL;
 
 	setBackgroundColor(QColor(0.0, 0.0, 0.0));
 
@@ -641,6 +642,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 					"Your personal password is: %s"), kggzserver->password());
 				KMessageBox::information(this, buffer, "Information");
 			}
+			menuView(VIEW_CHAT);
 			break;
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
@@ -649,7 +651,9 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::motdloaded:
 			KGGZDEBUG("motdloaded\n");
-			// load motd here
+			if(!m_motd) m_motd = new KGGZMotd(NULL, "KGGZMotd");
+			m_motd->setSource(data);
+			m_motd->show();
 			kggzserver->listRooms(-1, 0);
 			if(kggzserver->listGames(1) != 0) // NEVER use 0 here, it will hang the client !!!
 			{
@@ -1139,22 +1143,22 @@ void KGGZ::menuGameInfo()
 	KGGZDEBUG("URL: %s\n", gametype->url());
 	KGGZDEBUG("Description: %s\n", gametype->description());
 	KGGZDEBUG("Protocol: %s\n", gametype->protocol());
-	strcpy(buffer, i18n("Name:"));
+	strcpy(buffer, i18n("Name: "));
 	strcat(buffer, gametype->name());
 	strcat(buffer, "\n");
-	strcat(buffer, i18n("Description:\n"));
+	strcat(buffer, i18n("Description: "));
 	strcat(buffer, gametype->description());
 	strcat(buffer, "\n");
-	strcat(buffer, i18n("Author:\n"));
+	strcat(buffer, i18n("Author: "));
 	strcat(buffer, gametype->author());
 	strcat(buffer, "\n");
-	strcat(buffer, i18n("Version:\n"));
+	strcat(buffer, i18n("Version: "));
 	strcat(buffer, gametype->version());
 	strcat(buffer, "\n");
-	strcat(buffer, i18n("Protocol:\n"));
+	strcat(buffer, i18n("Protocol: "));
 	strcat(buffer, gametype->protocol());
 	strcat(buffer, "\n");
-	strcat(buffer, i18n("URL:\n"));
+	strcat(buffer, i18n("URL: "));
 	strcat(buffer, gametype->url());
 	//sprintf(buffer, "Name: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nProtocol: %s\nURL: %s",
 	//	gametype->name(), gametype->description(), gametype->author(), gametype->version(), gametype->protocol(), gametype->url());
