@@ -246,7 +246,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS="man tests ggzdmod"
+SUBDIRS="man ggzdmod tests"
 
 if test "$enable_server" = yes; then
     SUBDIRS="$SUBDIRS ggzd"
