@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 4116 2002-04-29 22:59:04Z jdorje $
+ * $Id: login.c 4117 2002-04-30 02:08:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -184,7 +184,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 		perms_init(player, &db_pe);
 		log_login_regd();
 	}
-	strncpy(player->name, name, MAX_USER_NAME_LEN + 1);
+	snprintf(player->name, sizeof(player->name), "%s", name);
 	ip_addr = player->addr;
 	player->login_time = (long) time(NULL);
 	player->next_ping = time(NULL) + 5;
@@ -248,10 +248,10 @@ static int login_add_user(ggzdbPlayerEntry *db_entry, char *name,char *password)
 {
 	/*  Initialize player entry */
 	login_generate_password(password);
-	strcpy(db_entry->password, password);
-	strcpy(db_entry->handle, name);
-	strcpy(db_entry->name, "N/A");
-	strcpy(db_entry->email, "N/A");
+	snprintf(db_entry->handle, sizeof(db_entry->handle), "%s", name);
+	snprintf(db_entry->password, sizeof(db_entry->password), "%s", password);
+	snprintf(db_entry->name, sizeof(db_entry->name), "N/A");
+	snprintf(db_entry->email, sizeof(db_entry->email), "N/A");
 	db_entry->perms = PERMS_DEFAULT_SETTINGS;
 	db_entry->last_login = time(NULL);
 	
