@@ -22,8 +22,7 @@
 #include <iostream>
 #include <kdebug.h>
 
-// quickhack!
-#define GGZ_SEAT_OPEN -1
+#include <ggzmod.h>
 
 Game::Game(void)
 {

@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 
-#define GGZ_SEAT_OPEN -1
+#include <ggzmod.h>
 
 int ggz_connect(char *name);
 
