@@ -251,7 +251,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 
 	// read values for selected server
 	KGGZDEBUG("slotLoadProfile: read values in %s...\n", listentry);
-	host = config->read(listentry, "Host", "ggz.morat.net");
+	host = config->read(listentry, "Host", "213.73.91.24");
 	port = config->read(listentry, "Port", "5688");
 	username = config->read(listentry, "Login", "zocker");
 	password = config->read(listentry, "Password", "");
@@ -353,7 +353,7 @@ void KGGZConnect::slotProfileProcess(const char *identifier)
 	m_current = QString(identifier);
 	input_host->setText("");
 	input_name->setText("");
-	input_port->setText("");
+	input_port->setText("5688");
 	input_password->setText("");
 
 	// Save it (although is is empty)
