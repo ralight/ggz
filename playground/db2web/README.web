@@ -1,0 +1,13 @@
+db2web - prototype for a web-based GGZ community platform
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Copy the 'web' directory into the document root of your web server,
+and point your browser to the pages.
+
+Database connection parameters will later be made available by something like
+/etc/ggz/db2web.conf, right now they're hardcoded into index.php.
+
+All the icons are from kggz, they need improvement.
+
+No i18n is done yet.
+
