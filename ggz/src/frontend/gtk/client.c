@@ -31,8 +31,10 @@
 #include <gtk/gtk.h>
 #include <ggzcore.h>
 
+#include "about.h"
 #include "client.h"
 #include "chat.h"
+#include "license.h"
 #include "login.h"
 #include "ggz.h"
 #include "xtext.h"
@@ -40,6 +42,8 @@
 extern GdkColor colors[];
 extern GtkWidget *win_main;
 extern GtkWidget *dlg_login;
+extern GtkWidget *dlg_about;
+extern GtkWidget *dlg_license;
 
 
 void
@@ -190,7 +194,9 @@ void
 on_about_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+        if(dlg_about != NULL)
+                dlg_about = create_dlg_about();
+        gtk_widget_show(dlg_about);
 }
 
 
@@ -198,7 +204,9 @@ void
 on_gpl_license_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+        if(dlg_license != NULL)
+                dlg_about = create_dlg_license();
+        gtk_widget_show(dlg_license);
 }
 
 

@@ -9,7 +9,7 @@
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <language>C</language>
   <gnome_support>False</gnome_support>
-  <gettext_support>True</gettext_support>
+  <gettext_support>False</gettext_support>
   <output_main_file>False</output_main_file>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
@@ -21,15 +21,15 @@
   <class>GtkDialog</class>
   <name>dlg_license</name>
   <signal>
-    <name>realize</name>
-    <handler>dlg_about_realize</handler>
-    <last_modification_time>Fri, 28 Jul 2000 01:51:51 GMT</last_modification_time>
+    <name>destroy_event</name>
+    <handler>gtk_widget_destroy</handler>
+    <object>dlg_license</object>
+    <last_modification_time>Mon, 13 Nov 2000 18:46:31 GMT</last_modification_time>
   </signal>
   <signal>
-    <name>destroy</name>
-    <handler>gtk_widget_destroyed</handler>
-    <data>&amp;dlg_about</data>
-    <last_modification_time>Fri, 28 Jul 2000 03:55:01 GMT</last_modification_time>
+    <name>realize</name>
+    <handler>license_realize</handler>
+    <last_modification_time>Mon, 13 Nov 2000 18:58:23 GMT</last_modification_time>
   </signal>
   <title>License</title>
   <type>GTK_WINDOW_DIALOG</type>

@@ -9,7 +9,7 @@
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <language>C</language>
   <gnome_support>False</gnome_support>
-  <gettext_support>True</gettext_support>
+  <gettext_support>False</gettext_support>
   <output_main_file>False</output_main_file>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
@@ -20,11 +20,6 @@
 <widget>
   <class>GtkDialog</class>
   <name>dlg_about</name>
-  <signal>
-    <name>realize</name>
-    <handler>dlg_about_realize</handler>
-    <last_modification_time>Fri, 28 Jul 2000 01:51:51 GMT</last_modification_time>
-  </signal>
   <signal>
     <name>destroy</name>
     <handler>gtk_widget_destroy</handler>
@@ -106,7 +101,8 @@
       <widget>
 	<class>GtkLabel</class>
 	<name>title_label</name>
-	<label></label>
+	<label>GNU Gaming Zone
+GTK+ Client</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>

@@ -1,5 +1,5 @@
 /*
- * File: main.c
+ * File: license.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
  *
@@ -22,51 +22,4 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-#include <gtk/gtk.h>
-#include <ggzcore.h>
-
-#include "about.h"
-#include "chat.h"
-#include "client.h"
-#include "ggz.h"
-#include "license.h"
-#include "login.h"
-
-GtkWidget *win_main;
-GtkWidget *dlg_login;
-GtkWidget *dlg_about;
-GtkWidget *dlg_license;
-
-
-int main (int argc, char *argv[])
-{
-	GGZOptions opt;
-
-	opt.flags = GGZ_OPT_PARSER;
-	opt.global_conf = "/etc/ggz-text.rc";
-	opt.user_conf = "~/.ggz-txtrc";
-	opt.local_conf = NULL;
-
-	ggzcore_init(opt);
-	ggz_event_init();
-	
-	gtk_init(&argc, &argv);
-	chat_allocate_colors();
-	g_main_set_poll_func((GPollFunc)ggzcore_event_poll);
-
-	dlg_about = create_dlg_about();
-	win_main = create_win_main();
-	dlg_license = create_dlg_license();
-	dlg_login = create_dlg_login();
-
-	ggz_sensitivity_init();
-	gtk_widget_show(win_main);
-
-	gtk_main();
-
-	ggzcore_destroy();
-
-	return 0;
-}
-
+GtkWidget* create_dlg_license (void);
