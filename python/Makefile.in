@@ -146,14 +146,17 @@ install-ggzboard:
 	cp ggzboard/reversi/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/reversi
 	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
 	cp ggzboard/ggzboard_net.py $(DESTDIR)$(prefix)/lib/site-python
-	cp ggzboard/server_*.py $(DESTDIR)$(prefix)/lib/site-python
 	cp ggzboard/module_*.py $(DESTDIR)$(prefix)/lib/site-python
 	cp ggzboard/net_*.py $(DESTDIR)$(prefix)/lib/site-python
+	mkdir -p $(DESTDIR)$(prefix)/lib/ggzd/
+	cp ggzboard/server_*.py $(DESTDIR)$(prefix)/lib/ggzd
 	$(ggz-config) --install --force --modfile=ggzboard/module_checkers.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_chess.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_go.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_hnefatafl.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_reversi.dsc
+	mkdir -p $(DESTDIR)$(prefix)/etc/ggzd/games
+	mkdir -p $(DESTDIR)$(prefix)/etc/ggzd/rooms
 	cp ggzboard/server_hnefatafl.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
 	cp ggzboard/server_checkers.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
 	cp ggzboard/server_hnefatafl.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
