@@ -1,0 +1,242 @@
+# translation of es.po to 
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Luis Pérez Meliá, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: es\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-15 01:59+0100\n"
+"PO-Revision-Date: 2005-03-26 11:58+0100\n"
+"Last-Translator: Luis Pérez Meliá\n"
+"Language-Team:  <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+
+#: ../../krosswater/dlg_again.cpp:44
+msgid "(result unknown)"
+msgstr "(resultado desconocido)"
+
+#: ../../krosswater/krosswater.cpp:110 ../../krosswater/krosswater.cpp:112
+#: ../../krosswater/krosswater.cpp:117 ../../krosswater/krosswater.cpp:118
+msgid "A protocol error has been detected. Aborting the game."
+msgstr "Se ha detectado un error de protocolo. Abortando el juego."
+
+#: ../../krosswater/krosswater.cpp:73 ../../krosswater/krosswater.cpp:74
+#: ../../krosswater/krosswater.cpp:77
+msgid "About"
+msgstr "Sobre"
+
+#: ../../krosswater/dlg_about.cpp:42
+msgid "About Krosswater"
+msgstr "Sobre Krosswater"
+
+#: ../../krosswater/dlg_help.cpp:62
+msgid "As one of 2 to 4 players on the board, your task is to"
+msgstr "Tanto uno como 2 a 4 jugadores en el tablero, tu misión es"
+
+#: ../../krosswater/krosswater.cpp:110 ../../krosswater/krosswater.cpp:112
+#: ../../krosswater/krosswater.cpp:134 ../../krosswater/krosswater.cpp:136
+#: ../../krosswater/krosswater.cpp:117 ../../krosswater/krosswater.cpp:141
+#: ../../krosswater/krosswater.cpp:146 ../../krosswater/krosswater.cpp:119
+#: ../../krosswater/krosswater.cpp:147 ../../krosswater/krosswater.cpp:152
+msgid "Client message"
+msgstr "Mensaje del cliente"
+
+#: ../../krosswater/krosswater.cpp:405 ../../krosswater/krosswater.cpp:412
+msgid "Execute move"
+msgstr "Ejecutar movimiento"
+
+#: ../../krosswater/main.cpp:45
+msgid "GGZ version of Cross The Water"
+msgstr "Versión de GGZ del Cross The Water"
+
+#: ../../krosswater/krosswater.cpp:76 ../../krosswater/krosswater.cpp:77
+#: ../../krosswater/krosswater.cpp:80
+msgid "Game"
+msgstr "Juego"
+
+#: ../../krosswater/dlg_again.cpp:49
+msgid "Game Over"
+msgstr "Juego terminado"
+
+#: ../../krosswater/krosswater.cpp:267 ../../krosswater/krosswater.cpp:271
+#: ../../krosswater/krosswater.cpp:283 ../../krosswater/krosswater.cpp:289
+msgid "Game over"
+msgstr "Juego terminado"
+
+#: ../../krosswater/krosswater.cpp:118 ../../krosswater/krosswater.cpp:120
+#: ../../krosswater/krosswater.cpp:125 ../../krosswater/krosswater.cpp:130
+msgid "Game started"
+msgstr "Juego comenzado"
+
+#: ../../krosswater/krosswater.cpp:340 ../../krosswater/krosswater.cpp:344
+#: ../../krosswater/krosswater.cpp:351 ../../krosswater/krosswater.cpp:357
+msgid "Get move"
+msgstr "Obtener movimiento"
+
+#: ../../krosswater/krosswater.cpp:74 ../../krosswater/krosswater.cpp:75
+#: ../../krosswater/krosswater.cpp:78 ../../krosswater/krosswater.cpp:79
+#: ../../krosswater/krosswater.cpp:82
+msgid "Help"
+msgstr "Ayuda"
+
+#: ../../krosswater/main.cpp:52
+msgid "Initial developer"
+msgstr "Desarrollador inicial"
+
+#: ../../krosswater/krosswater.cpp:276 ../../krosswater/krosswater.cpp:280
+#: ../../krosswater/krosswater.cpp:292 ../../krosswater/krosswater.cpp:298
+msgid "Invalid move!"
+msgstr "Movimiento invalido!"
+
+#: ../../krosswater/main.cpp:43
+msgid "Krosswater"
+msgstr ""
+
+#: ../../krosswater/krosswater.cpp:99 ../../krosswater/krosswater.cpp:104
+msgid "Krosswater - Cross the Water!"
+msgstr ""
+
+#: ../../krosswater/dlg_help.cpp:42
+msgid "Krosswater Help"
+msgstr "Ayuda de Krosswater"
+
+#: ../../krosswater/krosswater.cpp:146 ../../krosswater/krosswater.cpp:152
+msgid "Moves are not finished yet."
+msgstr "Los movimientos no se han terminado todavía."
+
+#: ../../krosswater/dlg_again.cpp:39
+msgid "No"
+msgstr ""
+
+#: ../../krosswater/krosswater.cpp:134 ../../krosswater/krosswater.cpp:136
+#: ../../krosswater/krosswater.cpp:141 ../../krosswater/krosswater.cpp:147
+msgid "Not your turn yet."
+msgstr "No es tu tuno aún."
+
+#: ../../krosswater/dlg_help.cpp:38
+msgid "OK"
+msgstr ""
+
+#: ../../krosswater/dlg_again.cpp:71
+msgid "Play another game?"
+msgstr "¿Jugamos de nuevo?"
+
+#: ../../krosswater/dlg_person.cpp:94
+msgid "Please select your"
+msgstr "Por favor selecciona tu"
+
+#: ../../krosswater/krosswater.cpp:70 ../../krosswater/krosswater.cpp:71
+#: ../../krosswater/krosswater.cpp:74
+msgid "Quit"
+msgstr "Salir"
+
+#: ../../krosswater/krosswater.cpp:162 ../../krosswater/krosswater.cpp:166
+#: ../../krosswater/krosswater.cpp:176 ../../krosswater/krosswater.cpp:182
+msgid "Receiving..."
+msgstr "Recibiendo..."
+
+#: ../../krosswater/main.cpp:38
+msgid "Request GGZ game explicitely"
+msgstr "Petición explicita del juego GGZ "
+
+#: ../../krosswater/krosswater.cpp:251 ../../krosswater/krosswater.cpp:255
+#: ../../krosswater/krosswater.cpp:267 ../../krosswater/krosswater.cpp:273
+msgid "Send map"
+msgstr "Mandar el mapa"
+
+#: ../../krosswater/krosswater.cpp:138 ../../krosswater/krosswater.cpp:140
+#: ../../krosswater/krosswater.cpp:150 ../../krosswater/krosswater.cpp:156
+msgid "Sending move"
+msgstr "Mandando movimiento"
+
+#: ../../krosswater/krosswater.cpp:276 ../../krosswater/krosswater.cpp:280
+#: ../../krosswater/krosswater.cpp:292 ../../krosswater/krosswater.cpp:298
+msgid "Server message"
+msgstr "Mensaje del servidor"
+
+#: ../../krosswater/krosswater.cpp:242 ../../krosswater/krosswater.cpp:246
+#: ../../krosswater/krosswater.cpp:258 ../../krosswater/krosswater.cpp:264
+msgid "Sorry, but you lost the game."
+msgstr "Lo siento, pero has perdido el juego."
+
+#: ../../krosswater/main.cpp:53
+msgid "TRANSLATOR-EMAIL"
+msgstr "luipeme@yahoo.es"
+
+#: ../../krosswater/main.cpp:53
+msgid "TRANSLATOR-NAME"
+msgstr "Luis Pérez Meliá"
+
+#: ../../krosswater/dlg_help.cpp:68
+msgid "The game ends if the first player has build a track of stones from his"
+msgstr "El juego termina cuando un jugador ha construido un sendero de piedras desde su"
+
+#: ../../krosswater/dlg_again.cpp:69
+msgid "The game is over."
+msgstr "El juego se ha terminado."
+
+#: ../../krosswater/dlg_help.cpp:66
+msgid "The more players participate, the more fun it is to steal stone tiles that"
+msgstr "Cuantos más jugadores participan, más divertido es robar baldosas de piedra que"
+
+#: ../../krosswater/dlg_about.cpp:63 ../../krosswater/main.cpp:48
+msgid "This game is part of the GGZ Gaming Zone."
+msgstr "Este juego es parte de GGZ Gaming Zone."
+
+#: ../../krosswater/dlg_about.cpp:62
+msgid "Try to cross the water the most efficient way!"
+msgstr "Intenta cruzar el agua de la forma más eficiente!"
+
+#: ../../krosswater/krosswater.cpp:67 ../../krosswater/krosswater.cpp:68
+#: ../../krosswater/krosswater.cpp:71
+msgid "Uninitialized"
+msgstr "Inutilizado"
+
+#: ../../krosswater/krosswater.cpp:119 ../../krosswater/krosswater.cpp:121
+#: ../../krosswater/krosswater.cpp:126 ../../krosswater/krosswater.cpp:132
+msgid "Waiting for other players..."
+msgstr "Esperando a los otros jugadores..."
+
+#: ../../krosswater/dlg_again.cpp:38
+msgid "Yes"
+msgstr "Si"
+
+#: ../../krosswater/krosswater.cpp:241 ../../krosswater/krosswater.cpp:245
+#: ../../krosswater/krosswater.cpp:257 ../../krosswater/krosswater.cpp:263
+msgid "You won the game."
+msgstr "Has ganado el juego."
+
+#: ../../krosswater/krosswater.cpp:260 ../../krosswater/krosswater.cpp:264
+#: ../../krosswater/krosswater.cpp:276 ../../krosswater/krosswater.cpp:282
+msgid "Your turn"
+msgstr "Tu turno"
+
+#: ../../krosswater/dlg_help.cpp:64
+msgid "by clicking on a stone tile, and then clicking on a water tile to move"
+msgstr "seleccionando una baldosa de piedra, y entonces seleccionando en una baldosa de agua para mover"
+
+#: ../../krosswater/dlg_help.cpp:63
+msgid "cross the water from the left to the right. This can be accomplished"
+msgstr "cruza el agua de izquierda a derecha. Esto puede ser  logrado"
+
+#: ../../krosswater/dlg_person.cpp:95
+msgid "favorite character!"
+msgstr "carácter favorito!"
+
+#: ../../krosswater/dlg_help.cpp:67
+msgid "have been placed by the opponents for their own purpose."
+msgstr "ha sido colocado por el otro oponente para su propia intención."
+
+#: ../../krosswater/dlg_help.cpp:69
+msgid "starting point to somewhere on the right side."
+msgstr "punto de comienzo en algún lugar en el lado derecho."
+
+#: ../../krosswater/dlg_help.cpp:65
+msgid "the stone tile there."
+msgstr "la baldosa de piedra allí."
+
