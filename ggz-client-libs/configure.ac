@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6835 2005-01-23 11:29:26Z josef $
+dnl $Id: configure.ac 6952 2005-02-27 23:24:22Z josef $
 
 AC_INIT([GGZ client libraries], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -195,6 +195,7 @@ AC_CONFIG_FILES([Makefile
 	   man/ggzmod_h.3
 	   man/ggzcore_h.3
 	   tests/Makefile
+	   desktop/Makefile
 	   ])
 AC_OUTPUT
 
