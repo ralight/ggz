@@ -49,9 +49,9 @@ void start_log( char *file, char *type )
 		return;
 	}
 
-	grubby.logname = malloc( sizeof( file ) );
+	grubby.logname = malloc( sizeof( char ) * ( strlen( file ) + 1 ) );
 	strcpy( grubby.logname, file);
-	grubby.logtype = malloc( sizeof( type ) );
+	grubby.logtype = malloc( sizeof( char ) * ( strlen( type ) + 1 ) );
 	strcpy( grubby.logtype, type );
 
 	/* Initilize the log file */

@@ -262,7 +262,7 @@ void add_name( char *from, char *name )
 	{
 
 	} else {
-		memmory.people[i].realname = malloc( sizeof( name ) );
+		memmory.people[i].realname = malloc( sizeof( char ) * ( strlen( name ) + 1 ) );
 		strcpy( memmory.people[i].realname, name);
 		sprintf( out, "I'll remember your name as %s from now on %s.", memmory.people[i].realname, from );
 		send_msg( from, out );
