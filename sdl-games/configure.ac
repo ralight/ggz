@@ -1,7 +1,7 @@
 dnl Configuration for GGZ-SDL-Games
 dnl ===============================
 
-AC_INIT(configure.in)
+AC_INIT(configure.ac)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 AM_INIT_AUTOMAKE(ggz-sdl-games, 0.0.7pre)
