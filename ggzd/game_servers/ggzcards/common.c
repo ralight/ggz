@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3495 2002-02-27 13:02:23Z jdorje $
+ * $Id: common.c 3577 2002-03-16 16:13:37Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -288,8 +288,12 @@ static void newgame(void)
 		game.players[p].ready = 0;
 	if (!game.initted)
 		init_game();
-	game.funcs->start_game();
+		
 	init_cumulative_scores();
+	set_global_message("", "%s", "");
+	
+	game.funcs->start_game();
+	
 	for (p = 0; p < game.num_players; p++)
 		set_player_message(p);
 	broadcast_newgame();
