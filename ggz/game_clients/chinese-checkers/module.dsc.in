@@ -1,7 +1,7 @@
 # Chinese Checkers description file
 [ModuleInfo]
 Author = Rich Gade
-CommandLine = @ggzexecmoddir@/ggz.ccheckers
+CommandLine = @ggzexecmoddir@/ggz.ccheckers @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/chinese-checkers/
 Name = ccheckers

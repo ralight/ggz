@@ -1,8 +1,8 @@
 # GGZ Cards description file
-# $Id: module.dsc.in 6100 2004-07-13 17:04:00Z josef $
+# $Id: module.dsc.in 6344 2004-11-13 03:39:09Z jdorje $
 [ModuleInfo]
 Author = Jason Short, Rich Gade
-CommandLine = @ggzexecmoddir@/ggz.ggzcards
+CommandLine = @ggzexecmoddir@/ggz.ggzcards @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/ggzcards/
 Name = GGZCards

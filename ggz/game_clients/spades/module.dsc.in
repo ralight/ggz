@@ -1,7 +1,7 @@
 [ModuleInfo]
 Name = NetSpades
 Author = Brent Hendricks
-CommandLine = @ggzexecmoddir@/ggz.spades
+CommandLine = @ggzexecmoddir@/ggz.spades @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ece.rice.edu/~brentmh/spades
 ProtocolEngine = NetSpades

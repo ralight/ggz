@@ -1,11 +1,11 @@
 # TicTacToe description file
-# $Id: module.dsc.in 6132 2004-07-17 02:30:07Z josef $
+# $Id: module.dsc.in 6344 2004-11-13 03:39:09Z jdorje $
 
 [ModuleInfo]
 Game = TicTacToe
 Author = Brent Hendricks
 # CommandLine path is figured relative to GameDir unless starting with /
-CommandLine = @ggzexecmoddir@/ggz.ttt
+CommandLine = @ggzexecmoddir@/ggz.ttt @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/tictactoe/
 Name = TicTacToe

@@ -4,6 +4,6 @@ Author = Ismael Orenstein
 ProtocolEngine = Combat
 ProtocolVersion = 3
 Version = 1.2
-CommandLine = @ggzexecmoddir@/ggz.combat
+CommandLine = @ggzexecmoddir@/ggz.combat @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/combat/

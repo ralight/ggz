@@ -2,7 +2,7 @@
 [ModuleInfo]
 Name = Reversi
 Author = Ismael Orenstein
-CommandLine = @ggzexecmoddir@/ggz.reversi
+CommandLine = @ggzexecmoddir@/ggz.reversi @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/reversi/
 ProtocolEngine = Reversi
