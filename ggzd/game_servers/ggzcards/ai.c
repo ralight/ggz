@@ -26,37 +26,44 @@
  */
 
 #include "ai.h"
+#include "common.h"
+#include "ggz.h"
 
-/* they're all empty for now... */
+extern struct ai_function_pointers random_ai_funcs;
+
+struct ai_function_pointers *ai_funcs[] =
+	{&random_ai_funcs};
 
 /* this inits AI static data at the start of a hand */
 void ai_start_hand()
 {
-	ggz_debug("ERROR: ai_start_hand: not implemented.");
+	ai_funcs[game.ai_type]->start_hand();
 }
 
 /* this alerts the ai to someone else's bid/play */
 void ai_alert_bid( player_t p, bid_t bid )
 {
-	ggz_debug("ERROR: ai_alert_bid: not implemented.");
+	ai_funcs[game.ai_type]->alert_bid(p, bid);
 }
 
 void ai_alert_play( player_t p, card_t card )
 {
-	ggz_debug("ERROR: ai_alert_bid: not implemented.");
+	ai_funcs[game.ai_type]->alert_play( p, card );
 }
 
 /* this gets a bid or play from the ai */
 bid_t ai_get_bid( player_t p )
 {
-	bid_t bid;
-	bid.bid = 0;
-	ggz_debug("ERROR: ai_get_bid: not implemented.");
+	char buf[100];
+	bid_t bid = ai_funcs[game.ai_type]->get_bid( p );
+	game.funcs->get_bid_text(buf, sizeof(buf), bid);
+	ggz_debug("AI chose to bid %s.", buf);
 	return bid;
 }
 
 card_t ai_get_play( player_t p, seat_t s )
 {
-	ggz_debug("ERROR: ai_get_play: not implemented.");
-	return UNKNOWN_CARD;
+	card_t card = ai_funcs[game.ai_type]->get_play(p, s);
+	ggz_debug("AI selected card (%d %d %d) to play.", card.face, card.suit, card.deck);
+	return card;
 }

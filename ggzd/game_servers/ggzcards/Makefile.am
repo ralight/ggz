@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = config games .
+SUBDIRS = config games ai .
 
 EXTRA_DIST =
 
@@ -20,10 +20,10 @@ ggzd_ggzcards_SOURCES = ai.c ai.h \
 			protocol.h \
 			types.h
 
-ggzd_ggzcards_DEPENENCIES = games/libgames.a
+ggzd_ggzcards_DEPENENCIES = games/libgames.a ai/libai.a
 
 
-ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a
+ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a ai/libai.a
 
 test: test-recursive
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

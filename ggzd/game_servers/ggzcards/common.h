@@ -22,6 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-130
  */
 
+#include "ai.h"
 #include "cards.h"
 #include "games.h"
 #include "protocol.h"
@@ -49,6 +50,7 @@ typedef enum {
 struct wh_game_t {
 	game_type_t which_game;	/* the game; currently defined in cards.h */
 	struct game_function_pointers *funcs;	/* game-specific functions */
+	ai_type_t ai_type;	/* the type of AI we're using */
 	deck_type_t deck_type;	/* the type of deck used, as defined in cards.h */
 	char* name;		/* the name of the game */
 	char* rules_url;	/* the URL of where to read the game's rules */
