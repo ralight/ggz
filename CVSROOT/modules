@@ -36,13 +36,15 @@ gtk-games       ggz/game_clients
 kde-games       kde-games
 
 # Frontends (and such)
-ggz-gtk         ggz/src/frontend/gtk
-ggz-kde         ggz/src/frontend/kde
-ggz-txt		ggz/src/frontend/text
+ggz-gtk         -s INTERNAL ggz/src/frontend/gtk
+ggz-kde         -s INTERNAL ggz/src/frontend/kde
+ggz-txt		-s INTERNAL ggz/src/frontend/text
 ggz-grubby      ggz/src/frontend/grubby
 
 # Clients
-ggz-txt-client ggz-txt-client &ggz-txt
+txt-client ggz-txt-client &ggz-txt
+gtk-client gtk-client &ggz-gtk
+kde-client kde-client &ggz-kde
 
 
 # Libs
@@ -51,3 +53,5 @@ ggz-client-libs ggz-client-libs &ggzcore
 
 # Meta-module for pulling gtk client together
 ggz-gtk-all     ggz-gtk-all &easysock &ggz-client-libs &ggz-gtk &gtk-games
+
+
