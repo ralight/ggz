@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2723 2001-11-11 18:34:44Z rgade $
+ * $Id: parse_opt.c 3001 2002-01-05 11:09:29Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -34,11 +34,11 @@
 #include <dirent.h>
 
 #include <ggzd.h>
+#include <ggz.h>
 #include <datatypes.h>
 #include <err_func.h>
 #include <motd.h>
 #include <room.h>
-#include <conf.h>
 #include <perms.h>
 
 /* Stuff from control.c we need access to */
@@ -160,7 +160,7 @@ void parse_conf_file(void)
 
 	/* Use conf_parse on an approrpriate configuration file */
 	if (opt.local_conf) {
-		if((c_handle = conf_parse(opt.local_conf, CONF_RDONLY)) >= 0) {
+		if((c_handle = ggz_conf_parse(opt.local_conf, CONF_RDONLY)) >= 0) {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
 				"Reading local conf file : %s", opt.local_conf);
 		} else
@@ -172,7 +172,7 @@ void parse_conf_file(void)
 		strcpy(tempstr, GGZDCONFDIR);  /* If this changes be sure to */
 		strcat(tempstr, "/ggzd.conf"); /* change the malloc() above! */
 
-		if((c_handle = conf_parse(tempstr, CONF_RDONLY)) >= 0) {
+		if((c_handle = ggz_conf_parse(tempstr, CONF_RDONLY)) >= 0) {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
 				"Reading global conf file : %s", tempstr);
 		} else
@@ -250,83 +250,83 @@ static void get_config_options(int ch)
 
 	/* [General] */
 	if(opt.main_port == 0)
-		opt.main_port = conf_read_int(ch, "General", "Port", 5688);
-	opt.admin_name = conf_read_string(ch, "General", "AdminName",
+		opt.main_port = ggz_conf_read_int(ch, "General", "Port", 5688);
+	opt.admin_name = ggz_conf_read_string(ch, "General", "AdminName",
 					  "<unconfigured>");
-	opt.admin_email = conf_read_string(ch, "General", "AdminEmail",
+	opt.admin_email = ggz_conf_read_string(ch, "General", "AdminEmail",
 					  "<unconfigured>");
-	opt.server_name = conf_read_string(ch, "General", "ServerName",
+	opt.server_name = ggz_conf_read_string(ch, "General", "ServerName",
 					   "An Unconfigured GGZ Server");
 
 	/* [Directories] */
-	opt.game_dir = conf_read_string(ch, "Directories", "GameDir", NULL);
-	opt.conf_dir = conf_read_string(ch, "Directories", "ConfDir", NULL);
-	opt.data_dir = conf_read_string(ch, "Directories", "DataDir", NULL);
+	opt.game_dir = ggz_conf_read_string(ch, "Directories", "GameDir", NULL);
+	opt.conf_dir = ggz_conf_read_string(ch, "Directories", "ConfDir", NULL);
+	opt.data_dir = ggz_conf_read_string(ch, "Directories", "DataDir", NULL);
 
 	/* [Games] */
-	conf_read_list(ch, "Games", "GameList", &g_count, &g_list);
+	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);
 	if(g_count == 0) {
-		conf_read_list(ch, "Games", "IgnoredGames", &g_count, &g_list);
+		ggz_conf_read_list(ch, "Games", "IgnoredGames", &g_count, &g_list);
 		g_count *= -1;
 	}
-	conf_read_list(ch, "Games", "RoomList", &r_count, &r_list);
+	ggz_conf_read_list(ch, "Games", "RoomList", &r_count, &r_list);
 	if(r_count == 0) {
-		conf_read_list(ch, "Games", "IgnoredRooms", &r_count, &r_list);
+		ggz_conf_read_list(ch, "Games", "IgnoredRooms", &r_count, &r_list);
 		r_count *= -1;
 	}
 
 	/* [Files] */
-	motd_info.motd_file = conf_read_string(ch, "Files", "MOTD", NULL);
+	motd_info.motd_file = ggz_conf_read_string(ch, "Files", "MOTD", NULL);
 	if(motd_info.motd_file != NULL)
 		motd_info.use_motd = 1;
 
 	/* [Logs] */
-	log_info.log_fname = conf_read_string(ch, "Logs", "LogFile", NULL);
-	conf_read_list(ch, "Logs", "LogTypes", &t_count, &t_list);
+	log_info.log_fname = ggz_conf_read_string(ch, "Logs", "LogFile", NULL);
+	ggz_conf_read_list(ch, "Logs", "LogTypes", &t_count, &t_list);
 	if(t_count > 0)
 		log_info.log_types |= parse_log_types(t_count, t_list);
 #ifdef DEBUG
-	log_info.dbg_fname = conf_read_string(ch, "Logs", "DebugFile", NULL);
+	log_info.dbg_fname = ggz_conf_read_string(ch, "Logs", "DebugFile", NULL);
 	t_count = 0;
-	conf_read_list(ch, "Logs", "DebugTypes", &t_count, &t_list);
+	ggz_conf_read_list(ch, "Logs", "DebugTypes", &t_count, &t_list);
 	if(t_count > 0)
 		log_info.dbg_types |= parse_dbg_types(t_count, t_list);
 #endif /*DEBUG*/
-	strval = conf_read_string(ch, "Logs", "Facility", NULL);
+	strval = ggz_conf_read_string(ch, "Logs", "Facility", NULL);
 	if(strval) {
 		if(logfile_set_facility(strval) < 0)
 			err_msg("Configuration: Invalid syslogd facility");
 		free(strval);
 	}
-	intval = conf_read_int(ch, "Logs", "PIDInLogs", 1);
+	intval = ggz_conf_read_int(ch, "Logs", "PIDInLogs", 1);
 	if(intval == 0)
 		log_info.options &= ~GGZ_LOGOPT_INC_PID;
 	else
 		log_info.options |= GGZ_LOGOPT_INC_PID;
-	intval = conf_read_int(ch, "Logs", "ThreadLogs", 0);
+	intval = ggz_conf_read_int(ch, "Logs", "ThreadLogs", 0);
 	if(intval == 0)
 		log_info.options &= ~GGZ_LOGOPT_THREAD_LOGS;
 	else
 		log_info.options |= GGZ_LOGOPT_THREAD_LOGS;
-	intval = conf_read_int(ch, "Logs", "TimeInLogs", 0);
+	intval = ggz_conf_read_int(ch, "Logs", "TimeInLogs", 0);
 	if(intval == 0)
 		log_info.options &= ~GGZ_LOGOPT_INC_TIME;
 	else
 		log_info.options |= GGZ_LOGOPT_INC_TIME;
-	intval = conf_read_int(ch, "Logs", "GameTypeInLogs", 1);
+	intval = ggz_conf_read_int(ch, "Logs", "GameTypeInLogs", 1);
 	if(intval == 0)
 		log_info.options &= ~GGZ_LOGOPT_INC_GAMETYPE;
 	else
 		log_info.options |= GGZ_LOGOPT_INC_GAMETYPE;
 
 	/* Miscellaneous */
-	opt.ping_freq = conf_read_int(ch, "Miscellaneous", "LagFrequency", 10);
-	opt.lag_class[0] = conf_read_int(ch, "Miscellaneous","LagClass1", 500);
-	opt.lag_class[1] = conf_read_int(ch, "Miscellaneous","LagClass2", 1000);
-	opt.lag_class[2] = conf_read_int(ch, "Miscellaneous","LagClass3", 2000);
-	opt.lag_class[3] = conf_read_int(ch, "Miscellaneous","LagClass4", 5000);
+	opt.ping_freq = ggz_conf_read_int(ch, "Miscellaneous", "LagFrequency", 10);
+	opt.lag_class[0] = ggz_conf_read_int(ch, "Miscellaneous","LagClass1", 500);
+	opt.lag_class[1] = ggz_conf_read_int(ch, "Miscellaneous","LagClass2", 1000);
+	opt.lag_class[2] = ggz_conf_read_int(ch, "Miscellaneous","LagClass3", 2000);
+	opt.lag_class[3] = ggz_conf_read_int(ch, "Miscellaneous","LagClass4", 5000);
 
-	conf_cleanup();
+	ggz_conf_cleanup();
 }
 
 
@@ -393,7 +393,7 @@ void parse_game_files(void)
 		g_count = 0;
 	}
 
-	conf_cleanup();
+	ggz_conf_cleanup();
 }
 
 
@@ -423,7 +423,7 @@ static void parse_game(char *name, char *dir)
 		err_sys_exit("malloc error in parse_game()");
 	snprintf(fname, len, "%s/%s.dsc", dir, name);
 
-	if((ch = conf_parse(fname, CONF_RDONLY)) < 0) {
+	if((ch = ggz_conf_parse(fname, CONF_RDONLY)) < 0) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
 		free(fname);
 		return;
@@ -438,34 +438,34 @@ static void parse_game(char *name, char *dir)
 	pthread_rwlock_init(&game_info->lock, NULL);	
 
 	/* [GameInfo] */
-	strval = conf_read_string(ch, "GameInfo", "Name", NULL);
+	strval = ggz_conf_read_string(ch, "GameInfo", "Name", NULL);
 	if(strval) {
 		strncpy(game_info->name, strval, MAX_GAME_NAME_LEN);
 		free(strval);
 	}
-	strval = conf_read_string(ch, "GameInfo", "Version", NULL);
+	strval = ggz_conf_read_string(ch, "GameInfo", "Version", NULL);
 	if(strval) {
 		strncpy(game_info->version, strval, MAX_GAME_VER_LEN);
 		free(strval);
 	}
-	strval = conf_read_string(ch, "GameInfo", "Description", NULL);
+	strval = ggz_conf_read_string(ch, "GameInfo", "Description", NULL);
 	if(strval) {
 		strncpy(game_info->desc, strval, MAX_GAME_DESC_LEN);
 		free(strval);
 	}
-	strval = conf_read_string(ch, "GameInfo", "Author", NULL);
+	strval = ggz_conf_read_string(ch, "GameInfo", "Author", NULL);
 	if(strval) {
 		strncpy(game_info->author, strval, MAX_GAME_AUTH_LEN);
 		free(strval);
 	}
-	strval = conf_read_string(ch, "GameInfo", "Homepage", NULL);
+	strval = ggz_conf_read_string(ch, "GameInfo", "Homepage", NULL);
 	if(strval) {
 		strncpy(game_info->homepage, strval, MAX_GAME_WEB_LEN);
 		free(strval);
 	}
 
 	/* [LaunchInfo] */
-	strval = conf_read_string(ch, "LaunchInfo", "ExecutablePath", NULL);
+	strval = ggz_conf_read_string(ch, "LaunchInfo", "ExecutablePath", NULL);
 	if(strval) {
 		/* Copy just the string if we have an absolute path */
 		if(*strval == '/')
@@ -475,24 +475,24 @@ static void parse_game(char *name, char *dir)
 				  "%s/%s", opt.game_dir, strval);
 		free(strval);
 	}
-	conf_read_list(ch, "LaunchInfo", "ArgList",
+	ggz_conf_read_list(ch, "LaunchInfo", "ArgList",
 		       &game_info->n_args, &game_info->args);
 
 	/* [Protocol] */
-	strval = conf_read_string(ch, "Protocol", "Engine", NULL);
+	strval = ggz_conf_read_string(ch, "Protocol", "Engine", NULL);
 	if(strval) {
 		strncpy(game_info->p_engine, strval, MAX_GAME_PROTOCOL_LEN);
 		free(strval);
 	}
-	strval = conf_read_string(ch, "Protocol", "Version", NULL);
+	strval = ggz_conf_read_string(ch, "Protocol", "Version", NULL);
 	if(strval) {
 		strncpy(game_info->p_version, strval, MAX_GAME_VER_LEN);
 		free(strval);
 	}
 
 	/* [TableOptions] */
-	game_info->allow_leave=conf_read_int(ch,"TableOptions","AllowLeave",0);
-	conf_read_list(ch, "TableOptions", "BotsAllowed", &b_count, &b_list);
+	game_info->allow_leave = ggz_conf_read_int(ch,"TableOptions","AllowLeave",0);
+	ggz_conf_read_list(ch, "TableOptions", "BotsAllowed", &b_count, &b_list);
 	if(b_count != 0) {
 		for(i=0; i<b_count; i++) {
 			intval = atoi(b_list[i]);
@@ -508,7 +508,7 @@ static void parse_game(char *name, char *dir)
 		b_list = NULL;
 		b_count = 0;
 	}
-	conf_read_list(ch, "TableOptions", "PlayersAllowed", &b_count, &b_list);
+	ggz_conf_read_list(ch, "TableOptions", "PlayersAllowed", &b_count, &b_list);
 	if(b_count != 0) {
 		for(i=0; i<b_count; i++) {
 			intval = atoi(b_list[i]);
@@ -621,7 +621,7 @@ static void parse_room(char *name, char *dir)
 		err_sys_exit("malloc error in parse_game()");
 	snprintf(fname, len, "%s/%s.room", dir, name);
 
-	if((ch = conf_parse(fname, CONF_RDONLY)) < 0) {
+	if((ch = ggz_conf_parse(fname, CONF_RDONLY)) < 0) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
 		free(fname);
 		return;
@@ -639,12 +639,12 @@ static void parse_room(char *name, char *dir)
 	rooms[num].perms = 0;
 
 	/* [RoomInfo] */
-	rooms[num].name = conf_read_string(ch, "RoomInfo", "Name", NULL);
-	rooms[num].description = conf_read_string(ch, "RoomInfo", "Description",
+	rooms[num].name = ggz_conf_read_string(ch, "RoomInfo", "Name", NULL);
+	rooms[num].description = ggz_conf_read_string(ch, "RoomInfo", "Description",
 						  NULL);
-	rooms[num].max_players = conf_read_int(ch, "RoomInfo", "MaxPlayers", 0);
-	rooms[num].max_tables = conf_read_int(ch, "RoomInfo", "MaxTables", -1);
-	strval = conf_read_string(ch, "RoomInfo", "GameType", NULL);
+	rooms[num].max_players = ggz_conf_read_int(ch, "RoomInfo", "MaxPlayers", 0);
+	rooms[num].max_tables = ggz_conf_read_int(ch, "RoomInfo", "MaxTables", -1);
+	strval = ggz_conf_read_string(ch, "RoomInfo", "GameType", NULL);
 	if(strval) {
 		for(i=0; i<state.types; i++)
 			if(!strcmp(strval, game_types[i].name))
@@ -657,7 +657,7 @@ static void parse_room(char *name, char *dir)
 			err_msg("Invalid GameType specified in room %s", name);
 		free(strval);
 	}
-	strval = conf_read_string(ch, "RoomInfo", "EntryRestriction", NULL);
+	strval = ggz_conf_read_string(ch, "RoomInfo", "EntryRestriction", NULL);
 	if(strval) {
 		if(!strcasecmp(strval, "Admin"))
 			rooms[num].perms = PERMS_ROOMS_ADMIN;
