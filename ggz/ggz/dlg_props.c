@@ -149,10 +149,13 @@ void props_add_button_clicked (GtkButton *button, gpointer user_data)
 	new_server->port = atoi( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_username");
 	new_server->login = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
-	new_server->password = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
-	gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(tmp), TRUE );
+	if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(tmp) ) )
+	{
+		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
+		new_server->password = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	}
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
 	if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(tmp) ) )
 		new_server->type = 0;
 	else
@@ -197,8 +200,17 @@ void props_modify_button_clicked (GtkButton *button, gpointer user_data)
 	new_server->port = atoi( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_username");
 	new_server->login = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
-	new_server->password = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
+	if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(tmp) ) )
+	{
+		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
+		new_server->password = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	}
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
+	if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(tmp) ) )
+		new_server->type = 0;
+	else
+		new_server->type = 1;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
 	server_list_remove( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
