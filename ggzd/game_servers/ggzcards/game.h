@@ -169,8 +169,6 @@ extern void game_start_game();			/* start a game */
 extern int game_test_for_gameover();		/* returns TRUE iff gameover */
 extern int game_handle_gameover();		/* handle a gameover */
 
-extern int game_valid_game(int);		/* is the game valid? */
-
 
 /* random helper function */
 extern void* alloc(int);

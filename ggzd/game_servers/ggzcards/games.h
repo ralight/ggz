@@ -50,3 +50,4 @@ extern int game_types[];
 
 extern int games_get_gametype(char*);	/* which game is this? */
 extern int games_req_gametype();	/* what do you want to play today? */
+extern int games_valid_game(int);		/* is the game valid? */

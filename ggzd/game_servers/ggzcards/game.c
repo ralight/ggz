@@ -108,7 +108,7 @@ void game_init_game()
 	player_t p;
 	seat_t s;
 
-	if (!game_valid_game(game.which_game)) {
+	if (!games_valid_game(game.which_game)) {
 		ggz_debug("SERVER BUG: game_init_game: invalid game %d chosen.", game.which_game);
 		exit(-1);
 	}
@@ -1606,31 +1606,6 @@ void game_end_hand(void)
 			ggz_debug("SERVER not implemented: game_end_hand for game %d.", game.which_game);
 			break;
 	}                                                         	
-}
-
-/* game_valid_game
- *   returns a boolean, TRUE if the game is valid in the current setup and false otherwise.
- *   currently, the "current setup" is just the number of players (which is set automatically
- *   by ggz)
- */
-int game_valid_game(int which_game)
-{
-	switch (which_game) {
-		case GGZ_GAME_SUARO:
-			return (game.num_players == 2);
-		case GGZ_GAME_ROOK:
-			return 0;	/* not yet supported */
-		case GGZ_GAME_BRIDGE:
-		case GGZ_GAME_LAPOCHA:
-		case GGZ_GAME_SPADES:
-		case GGZ_GAME_EUCHRE:
-			return (game.num_players == 4);
-		case GGZ_GAME_HEARTS:
-			return (game.num_players > 2 && game.num_players <= 7);	/* 3-7 players */
-		default:
-			ggz_debug("SERVER BUG: game_valid_gams: unknown game %d.", which_game);
-			return 0;
-	}
 }
 
 

@@ -40,7 +40,6 @@ char* game_names[7] = {"Suaro", "Spades", "Hearts", "Bridge", "La Pocha", "Euchr
 /* static int game_type_cnt; */
 int game_types[GGZ_NUM_GAMES];	/* possible types of games; used for option requests */
 
-
 /* games_get_gametype
  *   determines which game the text corresponds to.  If the --game=<game> parameter
  *   is passed to the server on startup, <game> is passed here to determine the
@@ -71,6 +70,32 @@ int games_get_gametype(char* text)
 }
 
 
+
+/* game_valid_game
+ *   returns a boolean, TRUE if the game is valid in the current setup and false otherwise.
+ *   currently, the "current setup" is just the number of players (which is set automatically
+ *   by ggz)
+ */
+int games_valid_game(int which_game)
+{
+	switch (which_game) {
+		case GGZ_GAME_SUARO:
+			return (game.num_players == 2);
+		case GGZ_GAME_ROOK:
+			return 0;	/* not yet supported */
+		case GGZ_GAME_BRIDGE:
+		case GGZ_GAME_LAPOCHA:
+		case GGZ_GAME_SPADES:
+		case GGZ_GAME_EUCHRE:
+			return (game.num_players == 4);
+		case GGZ_GAME_HEARTS:
+			return (game.num_players > 2 && game.num_players <= 7);	/* 3-7 players */
+		default:
+			ggz_debug("SERVER BUG: game_valid_gams: unknown game %d.", which_game);
+			return 0;
+	}
+}
+
 /* games_req_gametype
  *   this function requests the game type from the host client.  It's only called if
  *   this information isn't determined automatically (i.e. via --game=spades parameter).
@@ -86,7 +111,7 @@ int games_req_gametype()
 	}
 
 	for (i=0; i < GGZ_NUM_GAMES; i++) {
-		if (game_valid_game(i)) {
+		if (games_valid_game(i)) {
 			game_types[cnt] = i;
 			cnt++;
 		}
