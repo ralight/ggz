@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 5483 2003-03-29 20:36:50Z dr_maux $
+ * $Id: easysock.c 5537 2003-05-10 14:32:19Z dr_maux $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -508,7 +508,7 @@ int ggz_writen(const int sock, const void *vptr, size_t n)
 		nleft -= nwritten;
 		ptr += nwritten;
 	}
-	ggz_debug(GGZ_SOCKET_DEBUG, "Wrote %d bytes.", n);
+	ggz_debug(GGZ_SOCKET_DEBUG, "Wrote %zi bytes.", n);
 	return (n);
 }
 
@@ -535,7 +535,7 @@ int ggz_readn(const int sock, void *vptr, size_t n)
 		nleft -= nread;
 		ptr += nread;
 	}
-	ggz_debug(GGZ_SOCKET_DEBUG, "Read %d bytes.", (n - nleft));
+	ggz_debug(GGZ_SOCKET_DEBUG, "Read %zi bytes.", (n - nleft));
 	return (n - nleft);	/* return >= 0 */
 }
 
