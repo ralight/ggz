@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: random.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: random.c 2732 2001-11-13 06:56:14Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -35,7 +35,7 @@
 #include "../common.h"
 
 static char *get_name(player_t p);
-static void start_hand();
+static void start_hand(void);
 static void alert_bid(player_t p, bid_t bid);
 static void alert_play(player_t p, card_t card);
 static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count);
@@ -58,7 +58,7 @@ static char *get_name(player_t p)
 }
 
 /* this inits AI static data at the start of a hand */
-static void start_hand()
+static void start_hand(void)
 {
 	/* nothing */
 }

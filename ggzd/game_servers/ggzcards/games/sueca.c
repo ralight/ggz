@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: sueca.c 2732 2001-11-13 06:56:14Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein
  *
@@ -29,14 +29,14 @@
 
 #include "sueca.h"
 
-static int sueca_is_valid_game();
-static int sueca_deal_hand();
+static int sueca_is_valid_game(void);
+static int sueca_deal_hand(void);
 static card_t sueca_map_card(card_t c);
-static void sueca_init_game();
-static void sueca_start_bidding();
-static void sueca_start_playing();
-static void sueca_end_trick();
-static void sueca_end_hand();
+static void sueca_init_game(void);
+static void sueca_start_bidding(void);
+static void sueca_start_playing(void);
+static void sueca_end_trick(void);
+static void sueca_end_hand(void);
 static void sueca_set_player_message(player_t p);
 
 struct game_function_pointers sueca_funcs = {
@@ -68,12 +68,12 @@ struct game_function_pointers sueca_funcs = {
 };
 
 
-static int sueca_is_valid_game()
+static int sueca_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }
 
-static void sueca_init_game()
+static void sueca_init_game(void)
 {
 	seat_t s;
 
@@ -94,13 +94,13 @@ static void sueca_init_game()
 
 }
 
-static void sueca_start_bidding()
+static void sueca_start_bidding(void)
 {
 	/* there is no bidding phase */
 	set_game_state( WH_STATE_FIRST_TRICK );
 }
 
-static void sueca_start_playing() {
+static void sueca_start_playing(void) {
   player_t p;
   game_start_playing();
   for (p=0; p<game.num_players; p++)
@@ -135,7 +135,7 @@ static card_t sueca_map_card(card_t c)
 
 }
 
-static void sueca_end_trick()
+static void sueca_end_trick(void)
 {
   player_t p;
   card_t card;
@@ -169,7 +169,7 @@ static void sueca_end_trick()
 
 }
 
-static void sueca_end_hand()
+static void sueca_end_hand(void)
 {
   int points; /* The points for the 0/2 team */
   points = GSUECA.points_on_hand[0] + GSUECA.points_on_hand[2];
@@ -200,7 +200,7 @@ static void sueca_end_hand()
 
 }
 
-static int sueca_deal_hand()
+static int sueca_deal_hand(void)
 {
   seat_t s;
   game.hand_size = 10;

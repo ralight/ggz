@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 2561 2001-10-14 06:56:17Z jdorje $
+ * $Id: suaro.c 2732 2001-11-13 06:56:14Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -35,7 +35,7 @@
 #include "aicommon.h"
 
 static char *get_name(player_t p);
-static void start_hand();
+static void start_hand(void);
 static void alert_bid(player_t p, bid_t bid);
 static void alert_play(player_t p, card_t card);
 static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count);
@@ -56,7 +56,7 @@ static char *get_name(player_t p)
 }
 
 /* this inits AI static data at the start of a hand */
-static void start_hand()
+static void start_hand(void)
 {
 
 }

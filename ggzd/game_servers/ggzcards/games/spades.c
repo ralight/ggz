@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: spades.c 2732 2001-11-13 06:56:14Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -76,12 +76,12 @@ struct game_function_pointers spades_funcs = {
 	spades_send_hand
 };
 
-static int spades_is_valid_game()
+static int spades_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }
 
-static void spades_init_game()
+static void spades_init_game(void)
 {
 	seat_t s;
 
@@ -100,7 +100,7 @@ static void spades_init_game()
 	GSPADES.nil_tricks_count = 1;
 }
 
-static void spades_get_options()
+static void spades_get_options(void)
 {
 	/* three options: target score: 100, 250, 500, 1000 nil value: 0, 50, 
 	   100 minimum team bid: 0, 1, 2, 3, 4 double nil value: 0, 100, 200 */
@@ -174,7 +174,7 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 	return buf;
 }
 
-static void spades_start_bidding()
+static void spades_start_bidding(void)
 {
 	game_start_bidding();
 	game.bid_total = game.num_players;
@@ -184,7 +184,7 @@ static void spades_start_bidding()
 		game.bid_total += game.num_players;
 }
 
-static int spades_get_bid()
+static int spades_get_bid(void)
 {
 	int i;
 	/* partner's bid (value) */
@@ -239,7 +239,7 @@ static void spades_handle_bid(player_t p, bid_t bid)
 	}
 }
 
-static void spades_next_bid()
+static void spades_next_bid(void)
 {
 	int next;
 	if (game.bid_count == 0)
@@ -299,7 +299,7 @@ static void spades_set_player_message(player_t p)
 	add_player_action_message(p);
 }
 
-static int spades_deal_hand()
+static int spades_deal_hand(void)
 {
 	int shown = GSPADES.double_nil_value == 0;
 	seat_t s;
@@ -314,14 +314,14 @@ static int spades_deal_hand()
 	return game_deal_hand();
 }
 
-static void spades_end_trick()
+static void spades_end_trick(void)
 {
 	game_end_trick();
 	/* update teammate's info as well */
 	set_player_message((game.winner + 2) % 4);
 }
 
-static void spades_end_hand()
+static void spades_end_hand(void)
 {
 	player_t p;
 

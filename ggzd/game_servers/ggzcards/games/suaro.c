@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: suaro.c 2732 2001-11-13 06:56:14Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -82,12 +82,12 @@ char *short_suaro_suit_names[6] = { "lo", "C", "D", "H", "S", "hi" };
 static char *long_suaro_suit_names[6] =
 	{ "low", "clubs", "diamonds", "hearts", "spades", "high" };
 
-static int suaro_is_valid_game()
+static int suaro_is_valid_game(void)
 {
 	return (game.num_players == 2);
 }
 
-static void suaro_init_game()
+static void suaro_init_game(void)
 {
 	game.specific = ggz_malloc(sizeof(suaro_game_t));
 	set_num_seats(4);
@@ -108,7 +108,7 @@ static void suaro_init_game()
 	game.last_trick = 1;	/* show "last trick" */
 }
 
-static void suaro_get_options()
+static void suaro_get_options(void)
 {
 	/* four options for now: shotgun -> boolean unlimited redoubling ->
 	   boolean persistent doubles -> boolean target score -> 25, 50, 100, 
@@ -181,7 +181,7 @@ static char *suaro_get_option_text(char *buf, int bufsz, char *option,
 	return buf;
 }
 
-static void suaro_start_bidding()
+static void suaro_start_bidding(void)
 {
 	char suit;
 	game.bid_total = -1;	/* no set total */
@@ -194,7 +194,7 @@ static void suaro_start_bidding()
 	SUARO.bonus = 1;
 }
 
-static int suaro_get_bid()
+static int suaro_get_bid(void)
 {
 	char val, suit;
 
@@ -257,7 +257,7 @@ static void suaro_handle_bid(player_t p, bid_t bid)
 	}
 }
 
-static void suaro_next_bid()
+static void suaro_next_bid(void)
 {
 	if (SUARO.pass_count == 2) {
 		/* done bidding */
@@ -314,7 +314,7 @@ static void suaro_start_playing(void)
 	}
 }
 
-static int suaro_deal_hand()
+static int suaro_deal_hand(void)
 {
 
 	seat_t s;
@@ -353,7 +353,7 @@ static int suaro_get_bid_text(char *buf, int buf_len, bid_t bid)
 	return snprintf(buf, buf_len, "%s", "");
 }
 
-static void suaro_end_hand()
+static void suaro_end_hand(void)
 {
 	int points, tricks;
 	player_t winner;
@@ -408,7 +408,7 @@ static void suaro_set_player_message(player_t p)
 	add_player_action_message(p);
 }
 
-static void suaro_end_trick()
+static void suaro_end_trick(void)
 {
 	player_t hi_player = game.leader, p, lo_player = game.leader;
 	card_t hi_card = game.lead_card, lo_card = game.lead_card;

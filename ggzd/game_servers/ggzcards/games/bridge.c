@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: bridge.c 2732 2001-11-13 06:56:14Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -85,7 +85,7 @@ static char *long_bridge_suit_names[5] =
 	{ "clubs", "diamonds", "hearts", "spades", "notrump" };
 
 
-static int bridge_is_valid_game()
+static int bridge_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }
@@ -103,7 +103,7 @@ static int bridge_compare_cards(card_t card1, card_t card2)
 	return game_compare_cards(card1, card2);
 }
 
-static void bridge_init_game()
+static void bridge_init_game(void)
 {
 	seat_t s;
 
@@ -118,7 +118,7 @@ static void bridge_init_game()
 	BRIDGE.declarer = -1;
 }
 
-static void bridge_start_bidding()
+static void bridge_start_bidding(void)
 {
 	int i, j;
 	game.next_bid = game.dealer;	/* dealer bids first */
@@ -130,7 +130,7 @@ static void bridge_start_bidding()
 			BRIDGE.opener[i][j] = -1;
 }
 
-static int bridge_get_bid()
+static int bridge_get_bid(void)
 {
 	char suit, val;
 
@@ -202,7 +202,7 @@ static void bridge_handle_bid(player_t p, bid_t bid)
 	}
 }
 
-static void bridge_next_bid()
+static void bridge_next_bid(void)
 {
 	/* closely based on Suaro code, below */
 	if (BRIDGE.pass_count == 4) {
@@ -227,7 +227,7 @@ static void bridge_next_bid()
 	}
 }
 
-static void bridge_start_playing()
+static void bridge_start_playing(void)
 {
 	game.trick_total = game.hand_size;
 	game.play_total = game.num_players;
@@ -266,7 +266,7 @@ static void bridge_handle_play(card_t card)
 	}
 }
 
-static int bridge_test_for_gameover()
+static int bridge_test_for_gameover(void)
 {
 	/* TODO: implement bridge scoring */
 	return 0;
@@ -325,7 +325,7 @@ static void bridge_set_player_message(player_t p)
 	add_player_action_message(p);
 }
 
-static void bridge_end_trick()
+static void bridge_end_trick(void)
 {
 	game_end_trick();
 
@@ -334,7 +334,7 @@ static void bridge_end_trick()
 
 }
 
-static void bridge_set_score_message()
+static void bridge_set_score_message(void)
 {
 	player_t team;
 	int widths[2], len = 0, i, g;
@@ -372,7 +372,7 @@ static void bridge_set_score_message()
 	set_global_message("Scores", "%s", buf);
 }
 
-static void bridge_end_hand()
+static void bridge_end_hand(void)
 {
 	int points_above = 0, points_below = 0, tricks, g;
 	int winning_team, team;
@@ -548,7 +548,7 @@ static void bridge_end_hand()
 	BRIDGE.contract = 0;
 }
 
-static void bridge_start_game()
+static void bridge_start_game(void)
 {
 	/* TODO: zero other scores */
 	bridge_set_score_message();

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: common.c 2732 2001-11-13 06:56:14Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -71,9 +71,9 @@ static const char *get_state_name(server_state_t state)
 	return "[unknown state]";
 }
 
-static int try_to_start_game();
-static void newgame();
-static int determine_host();
+static int try_to_start_game(void);
+static void newgame(void);
+static int determine_host(void);
 
 /* Changes the state of the game, printing a debugging message. */
 void set_game_state(server_state_t state)
@@ -223,7 +223,7 @@ void init_ggzcards(int which)
 
 /* Tries to start a game, requesting information from players where
    necessary.  returns 1 on successful start. */
-static int try_to_start_game()
+static int try_to_start_game(void)
 {
 	player_t p;
 	int ready = 1;
@@ -246,7 +246,7 @@ static int try_to_start_game()
 }
 
 /* start a new game! */
-static void newgame()
+static void newgame(void)
 {
 	player_t p;
 
@@ -401,7 +401,7 @@ void next_play(void)
 
 /* The oldest player becomes the host.  The oldest player is the one with the 
    youngest "age". */
-static int determine_host()
+static int determine_host(void)
 {
 	player_t p, host = -1;
 	int age = -1;

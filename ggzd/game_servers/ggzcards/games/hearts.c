@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: hearts.c 2732 2001-11-13 06:56:14Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -29,18 +29,18 @@
 
 #include "hearts.h"
 
-static int hearts_is_valid_game();
-static void hearts_init_game();
-static void hearts_get_options();
+static int hearts_is_valid_game(void);
+static void hearts_init_game(void);
+static void hearts_get_options(void);
 static int hearts_handle_option(char *option, int value);
 static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 				    int value);
-static int hearts_handle_gameover();
-static void hearts_start_bidding();
-static void hearts_start_playing();
+static int hearts_handle_gameover(void);
+static void hearts_start_bidding(void);
+static void hearts_start_playing(void);
 static char *hearts_verify_play(card_t card);
-static void hearts_end_trick();
-static void hearts_end_hand();
+static void hearts_end_trick(void);
+static void hearts_end_hand(void);
 
 struct game_function_pointers hearts_funcs = {
 	hearts_is_valid_game,
@@ -71,12 +71,12 @@ struct game_function_pointers hearts_funcs = {
 };
 
 
-static int hearts_is_valid_game()
+static int hearts_is_valid_game(void)
 {
 	return (game.num_players >= 3 && game.num_players <= 6);
 }
 
-static void hearts_init_game()
+static void hearts_init_game(void)
 {
 	seat_t s;
 
@@ -91,7 +91,7 @@ static void hearts_init_game()
 	GHEARTS.no_blood = 1;
 }
 
-static void hearts_get_options()
+static void hearts_get_options(void)
 {
 	add_option("jack_diamonds", 1, 0, "The jack of diamonds counts -10");
 	add_option("no_blood", 1, 1, "No blood on the first trick");
@@ -148,7 +148,7 @@ static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 	return buf;
 }
 
-static int hearts_handle_gameover()
+static int hearts_handle_gameover(void)
 {
 	player_t p;
 	player_t winners[game.num_players];
@@ -170,13 +170,13 @@ static int hearts_handle_gameover()
 	return send_gameover(winner_cnt, winners);
 }
 
-static void hearts_start_bidding()
+static void hearts_start_bidding(void)
 {
 	/* there is no bidding phase */
 	set_game_state(WH_STATE_FIRST_TRICK);
 }
 
-static void hearts_start_playing()
+static void hearts_start_playing(void)
 {
 	player_t p;
 	char face;
@@ -268,7 +268,7 @@ static char *hearts_verify_play(card_t card)
 	return game_verify_play(card);
 }
 
-static void hearts_end_trick()
+static void hearts_end_trick(void)
 {
 	player_t p;
 	game_end_trick();
@@ -294,7 +294,7 @@ static void hearts_end_trick()
 	}
 }
 
-static void hearts_end_hand()
+static void hearts_end_hand(void)
 {
 	player_t p;
 	int max = 0;

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: lapocha.c 2732 2001-11-13 06:56:14Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -69,12 +69,12 @@ struct game_function_pointers lapocha_funcs = {
 };
 
 
-static int lapocha_is_valid_game()
+static int lapocha_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }
 
-static void lapocha_init_game()
+static void lapocha_init_game(void)
 {
 	seat_t s;
 
@@ -89,7 +89,7 @@ static void lapocha_init_game()
 					   if you can */
 }
 
-static int lapocha_handle_gameover()
+static int lapocha_handle_gameover(void)
 {
 	player_t p;
 	int hi_score = -9999;
@@ -122,14 +122,14 @@ static int lapocha_handle_gameover()
 	return send_gameover(winner_cnt, winners);
 }
 
-static void lapocha_start_bidding()
+static void lapocha_start_bidding(void)
 {
 	/* all 4 players bid once, but the first bid determines the trump */
 	game.bid_total = 5;
 	LAPOCHA.bid_sum = 0;
 }
 
-static int lapocha_get_bid()
+static int lapocha_get_bid(void)
 {
 	if (game.bid_count == 0) {	/* determine the trump suit */
 		/* handled just like a bid */
@@ -171,7 +171,7 @@ static void lapocha_handle_bid(player_t p, bid_t bid)
 		LAPOCHA.bid_sum += bid.sbid.val;
 }
 
-static void lapocha_next_bid()
+static void lapocha_next_bid(void)
 {
 	if (game.bid_count == 1)
 		game.next_bid = (game.dealer + 1) % game.num_players;
@@ -179,12 +179,12 @@ static void lapocha_next_bid()
 		game_next_bid();
 }
 
-static int lapocha_test_for_gameover()
+static int lapocha_test_for_gameover(void)
 {
 	return (game.hand_num >= 28);
 }
 
-static int lapocha_deal_hand()
+static int lapocha_deal_hand(void)
 {
 	seat_t s;
 
@@ -236,7 +236,7 @@ static void lapocha_set_player_message(player_t p)
 	add_player_action_message(p);
 }
 
-static void lapocha_end_hand()
+static void lapocha_end_hand(void)
 {
 	player_t p;
 
