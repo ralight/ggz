@@ -1,5 +1,5 @@
 // Geekgame - a game which only real geeks understand
-// Copyright (C) 2002, 2003 Josef Spillner, josef@ggzgamingzone.org
+// Copyright (C) 2002 - 2004 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 		{
 			case 'h':
 				std::cout << "The GGZ Gaming Zone Geekgame Server" << std::endl
-					<< "Copyright (C) 2002 Josef Spillner, dr_maux@users.sourceforge.net" << std::endl
+					<< "Copyright (C) 2002 - 2004 Josef Spillner, josef@ggzgamingzone.org" << std::endl
 					<< "Published under GNU GPL conditions " << std::endl << std::endl
 					<< "Options: " << std::endl
 					<< "[-h | --help]    This help screen" << std::endl

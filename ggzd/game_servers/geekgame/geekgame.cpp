@@ -1,5 +1,5 @@
 // Geekgame - a game which only real geeks understand
-// Copyright (C) 2002, 2003 Josef Spillner, josef@ggzgamingzone.org
+// Copyright (C) 2002 - 2004 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -106,6 +106,7 @@ void Geekgame::dataEvent(int player)
 			for(int i = 0; i < players(); i++)
 			{
 				int bfd = fd(i);
+				if(bfd == -1) continue;
 				ggz_write_char(bfd, op_server_numplayers);
 				ggz_write_int(bfd, players());
 			}
@@ -114,6 +115,7 @@ void Geekgame::dataEvent(int player)
 			for(int i = 0; i < players(); i++)
 			{
 				int bfd = fd(i);
+				if(bfd == -1) continue;
 				ggz_write_char(bfd, op_server_newplayer);
 				ggz_write_string(bfd, playername);
 				ggz_write_string(bfd, playerpic);
@@ -156,6 +158,7 @@ void Geekgame::game_start()
 	for(int i = 0; i < players(); i++)
 	{
 		int bfd = fd(i);
+		if(bfd == -1) continue;
 		ggz_write_char(bfd, op_server_gamestart);
 
 		ggz_write_int(bfd, ARRAY_HEIGHT);
@@ -163,7 +166,7 @@ void Geekgame::game_start()
 
 		for(int j = 0; j < ARRAY_HEIGHT; j++)
 			for(int k = 0; k < ARRAY_WIDTH; k++)
-				ggz_write_int(bfd, m_array[j][k]);
+				ggz_write_int(bfd, m_array[k][j]);
 	}
 }
 
@@ -172,6 +175,7 @@ void Geekgame::game_stop()
 	for(int i = 0; i < players(); i++)
 	{
 		int bfd = fd(i);
+		if(bfd == -1) continue;
 		ggz_write_char(bfd, op_server_gamestop);
 	}
 }
@@ -181,6 +185,7 @@ void Geekgame::game_end()
 	for(int i = 0; i < players(); i++)
 	{
 		int bfd = fd(i);
+		if(bfd == -1) continue;
 		ggz_write_char(bfd, op_server_gameend);
 		//ggz_write_int(bfd, winner);
 	}
