@@ -1,0 +1,116 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="3">
+<b>GGZ Gaming Zone Server</b><br>
+Server, Netzwerk und Informationen über Mirrors.
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<img src="/pics/site/flags/flag-us.png">
+<i>Haupt-GGZ-Server USA</i><br>
+Der Server ggzgamingzone.org befindet sich in Atlanta/USA. Er hostet www, dev, ftp,
+live, mail, bugs und cvs.
+Das System ist ein gemietetes User-Mode-Linux-Image.
+Das Portal GGZ Community läuft ebenfalls auf diesem Server, aber es soll mittelfristig
+auf einen anderen umziehen.
+<br><br>
+<img src="/pics/site/flags/flag-de.png">
+<i>Mirror Deutschland</i><br>
+Der Server de.ggzgamingzone.org läuft in Berlin. Er spiegelt die Bereiche www und ftp
+in einer Hostingumgebung. Desweiteren läuft hierauf die zentrale administrative
+Infrastruktur inklusive dem Nameserver.
+<br><br>
+<img src="/pics/site/flags/flag-fr.png">
+<i>Mirror Frankreich</i><br>
+Unser zweiter Mirror spiegelt ebenfalls www und ftp, und befindet sich in Paris.
+<br><br>
+<img src="/pics/site/flags/flag-us.png">
+<i>Downloadserver USA</i><br>
+Dank ibiblio ist es uns möglich, FTP-Speicherplatz auf einem Server in den USA zu nutzen.
+<br><br>
+<img src="/pics/site/flags/flag-dk.png">
+<i>Downloadserver Dänemark</i><br>
+Dank Sunsite ist es uns möglich, FTP-Speicherplatz auf einem Server in Dänemark zu nutzen.
+<br><br>
+<img src="/pics/site/flags/flag-be.png">
+<i>Downloadserver Belgien</i><br>
+Dank Belnet ist es uns möglich, FTP-Speicherplatz auf einem Server in Belgien zu nutzen.
+</td>
+</tr>
+</table>
+
+Kontaktiere bitte den <a href="mailto:hostmaster@ggzgamingzone.org">GGZ Hostmaster</a>,
+wenn du Hilfe beim Hosting anzubieten hast.
+</td>
+</tr>
+
+<tr>
+<td colspan="3">
+<i>Geschichte der Webseiten</i><br>
+</td>
+</tr>
+
+<tr>
+<td>
+<center>
+<a href="/pics/network/ggz.jzaun.com"><img src="/pics/network/thumb.ggz.jzaun.com" border="0"></a><br clear="all">
+</center>
+</td>
+<td>
+<center>
+<a href="/pics/network/ggz.sf.net"><img src="/pics/network/thumb.ggz.sf.net" border="0"></a><br clear="all">
+</center>
+</td>
+<td>
+<center>
+<a href="/pics/network/www.ggzgamingzone.org"><img src="/pics/network/thumb.www.ggzgamingzone.org" border="0"></a><br clear="all">
+</center>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+Die erste Seite auf ggz.jzaun.com (und später ggz.sourceforge.net) lief von
+Anfang an bis Juni 2001. Dynamisch generierte Neuigkeiten waren bereits enthalten.
+</td>
+<td valign="top">
+Die zweite Seite auf ggz.sourceforge.net dauerte von Juni 2001 bis
+Februar 2004 an. Sie nutzte das CMS j00k. Die meisten Inhalte wurden aus einer
+Datenbank gelesen.
+</td>
+<td valign="top">
+Die aktuelle Seite auf www.ggzgamingzone.org ging im Februar 2004 online.
+Sie bietet viele Möglichkeiten im Bereich i18n und reflektiert besser die
+gewachsenen Projektstrukturen. Durch die Pflege im CVS wird sie noch
+eine ganze Weile genutzt werden...
+</td>
+</tr>
+
+<tr>
+<td colspan="3">
+<i>Ehemalige Server</i><br>
+Früher wurden ein paar Server genutzt, die mittlerweile nicht mehr
+aktiv sind. Dies waren:
+<br>
+<table class="inner">
+<tr>
+<td valign="top">
+ggz.jzaun.com<br>
+ggz.morat.net<br>
+ggz.snafu.de<br>
+mindx.dyndns.org<br>
+</td>
+</tr>
+</table>
+Wir würden uns dennoch freuen, wenn wieder jemand bereit ist, einen
+permanenten GGZ-Dienst zu betreiben.
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

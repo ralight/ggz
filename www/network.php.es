@@ -1,4 +1,5 @@
 <? include_once("site/header.php"); ?>
+<? outdated(); ?>
 
 <table class="content" width="100%">
 <tr>
