@@ -1,0 +1,69 @@
+dnl Configuration for KGGZ
+dnl ======================
+
+AC_INIT(acinclude.m4)
+AC_CANONICAL_SYSTEM
+AC_ARG_PROGRAM
+AM_INIT_AUTOMAKE(kggz,0.0.4pre6)
+AM_CONFIG_HEADER(config.h)
+
+dnl Options for building KGGZ
+dnl =========================
+
+AC_ARG_DISABLE(disable-ggzcorepp, [  --disable-ggzcorepp  don't build GGZCore++ ],, disable_ggzcorepp=no)
+
+dnl Check for Qt and KDE
+dnl ====================
+
+KDE_SET_PREFIX
+KDE_USE_QT(2)
+AC_CHECK_COMPILERS
+AC_ENABLE_SHARED(yes)
+AC_ENABLE_STATIC(no)
+KDE_PROG_LIBTOOL
+AM_KDE_WITH_NLS
+AM_PROG_LIBTOOL
+AC_PATH_KDE
+
+dnl Check for easysock and ggzcore
+dnl ==============================
+
+if test "$disable_ggzcorepp" = no; then
+	AC_GGZ_EASYSOCK(0.0.2)
+	AC_GGZ_GGZCORE
+fi
+
+dnl Set up variables for KGGZ
+dnl =========================
+
+AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${kde_datadir_c}/kggz")
+
+AC_SUBST(ggzdirectory)
+
+dnl Create Makefiles
+dnl ================
+
+AC_OUTPUT(Makefile
+	ggzcore++/Makefile
+	ggzcore++/src/Makefile
+	ggzcore++/doc/Makefile
+	ggzcore++/doc/html/Makefile
+	src/Makefile
+	src/widgets/Makefile
+	src/abstract/Makefile
+	data/Makefile
+	data/icons/Makefile
+	data/kde/Makefile)
+
+dnl Report success
+dnl ==============
+
+echo ""
+echo "KGGZ is now configured. Please type 'make' in order to compile it."
+echo "The following installation layout is used:"
+echo ""
+echo "Installation prefix: $prefix"
+echo "Data: $prefix/share/apps/kggz/"
+echo "Skip included GGZCore++: $disable_ggzcorepp"
+echo ""
+
