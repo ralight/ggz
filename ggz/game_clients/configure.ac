@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5693 2003-12-04 07:15:41Z jdorje $
+dnl $Id: configure.ac 5698 2003-12-04 08:22:11Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -54,8 +54,6 @@ AC_PROG_RANLIB
 
 dnl Compiling Options
 dnl =================
-AC_ARG_ENABLE(debug,           [  --disable-debug         Disable debugging ],, enable_debug=yes)
-AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
 AC_ARG_ENABLE(gtk, AC_HELP_STRING([--enable-gtk=[gtk1.2/gtk2]],
                                   [Specify GTK+-1.2 or GTK+-2.0 linkage]))
 
@@ -139,17 +137,7 @@ changequote([,])dnl
 
 dnl Debug modes
 dnl ===========
-if test "$enable_debug" = yes; then
-    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
-    DFLAGS="DEBUG"
-else
-    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
-    DFLAGS="NDEBUG"
-fi
-
-if test "$enable_debug_gdb" = yes; then
-    CFLAGS="$CFLAGS -ggdb"
-fi
+AC_GGZ_DEBUG
 
 
 dnl Various dirs
