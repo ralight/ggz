@@ -463,7 +463,10 @@ int game_handle_move(int num, unsigned char *direction)
 //				}
 			}		
 			if(!escape_game.repeatmove){ // move on to next player
+				ggz_debug("\tmove on to next player");
 				escape_game.turn = (escape_game.turn + 1) % 2;
+			}else{
+				ggz_debug("\tdon't move on to next player");
 			}
 			if(num%2){
 				escape_game.board[escape_game.x][escape_game.y][*direction]=dtPlayer1;
