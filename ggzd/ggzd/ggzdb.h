@@ -28,7 +28,7 @@
 /* Structures to use to pass data to front end functions */
 
 /* Anytime structures change, bump the version id */
-#define GGZDB_VERSION_ID	"0.1"
+#define GGZDB_VERSION_ID	"0.2"
 
 /* For ggzdb_player_XXX */
 typedef struct ggzdbPlayerEntry {
