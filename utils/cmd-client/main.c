@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 5419 2003-02-16 15:14:16Z dr_maux $
+ * $Id: main.c 5712 2003-12-09 14:11:35Z dr_maux $
  *
  * Main program code for ggz-cmd program.
  *
@@ -48,11 +48,17 @@
 
 #define GGZ_CMD_ANNOUNCE_CMD "announce"
 #define GGZ_CMD_CHECKONLINE_CMD "checkonline"
+#define GGZ_CMD_CHECKNAGIOS_CMD "checknagios"
 #define GGZ_CMD_BATCH_CMD "batch"
+
+#define STATUS_CRITICAL 2
+#define STATUS_WARNING 1
+#define STATUS_OK 0
 
 typedef enum {
 	GGZ_CMD_ANNOUNCE,
 	GGZ_CMD_CHECKONLINE,
+	GGZ_CMD_CHECKNAGIOS,
 	GGZ_CMD_BATCH
 } CommandType;
 
@@ -69,11 +75,31 @@ typedef struct {
 
 GGZCommand command;
 
-GGZServer *server = NULL;
-int server_fd = -1;
-int in_room = 0;
+static GGZServer *server = NULL;
+static int server_fd = -1;
+static int in_room = 0;
+static int nagiosexit = 0;
 
 static void exec_command(GGZCommand * cmd);
+
+static int exitcode(int code)
+{
+	if(!nagiosexit)
+	{
+		if(code == STATUS_OK) code = 0;
+		else code = -1;
+	}
+	return code;
+}
+
+static FILE *errorstream(FILE *stream)
+{
+	if(nagiosexit)
+	{
+		if(stream == stderr) stream = stdout;
+	}
+	return stream;
+}
 
 static void print_help(char *exec_name)
 {
@@ -84,9 +110,11 @@ static void print_help(char *exec_name)
 	fprintf(stderr,
 		"  Commands include:\n"
 		"    " GGZ_CMD_ANNOUNCE_CMD
-		" <message> - announce message from room 0.\n"
+		" <message> - announce message from room 0\n"
 		"    " GGZ_CMD_CHECKONLINE_CMD
-		" - check server status.\n"
+		" - check server status\n"
+		"    " GGZ_CMD_CHECKNAGIOS_CMD
+		" - nagios check for server status\n"
 		"    " GGZ_CMD_BATCH_CMD
 		" <batchfile> - execute commands from batchfile\n");
 	fprintf(stderr,
@@ -106,6 +134,8 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	FILE *f;
 	char *token;
 	char line[1024];
+
+	nagiosexit = 0;
 
 	if (argc < 5) {
 		if((argc == 3) && (!strcmp(argv[1], GGZ_CMD_BATCH_CMD))) {
@@ -181,6 +211,11 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	} else if (!strcasecmp(cmd_name, GGZ_CMD_CHECKONLINE_CMD)){
 		cmd->command = GGZ_CMD_CHECKONLINE;
 		cmd->data = NULL;
+	} else if (!strcasecmp(cmd_name, GGZ_CMD_CHECKNAGIOS_CMD)){
+		cmd->command = GGZ_CMD_CHECKNAGIOS;
+		cmd->data = NULL;
+		cmd->login_type = GGZ_LOGIN_GUEST;
+		nagiosexit = 1;
 	} else {
 		print_help(argv[0]);
 		return -2;
@@ -205,8 +240,8 @@ static void wait_for_input(int fd)
 		ggz_error_sys_exit("Select error while blocking.");
 
 	if (!FD_ISSET(fd, &my_fd_set)) {
-		fprintf(stderr, "Connection to server timed out.\n");
-		exit(-1);
+		fprintf(errorstream(stderr), "Connection to server timed out.\n");
+		exit(exitcode(STATUS_WARNING));
 	}
 }
 
@@ -214,8 +249,9 @@ static GGZHookReturn server_failure(GGZServerEvent id,
 				    void *event_data, void *user_data)
 {
 	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
-	fprintf(stderr, "ggz-cmd: Could not connect to server: %s\n", (char*)event_data);
-	exit(-1);
+	fprintf(errorstream(stderr),
+		"ggz-cmd: Could not connect to server: %s\n", (char*)event_data);
+	exit(exitcode(STATUS_CRITICAL));
 }
 
 static GGZHookReturn server_connected(GGZServerEvent id,
@@ -296,7 +332,7 @@ static void exec_command(GGZCommand * cmd)
 			ggz_debug(DBG_MAIN, "Server join room failed.  "
 				  "There are %d rooms.",
 				  ggzcore_server_get_num_rooms(server));
-			exit(-1);
+			exit(exitcode(STATUS_WARNING));
 		}
 
 		do {
@@ -308,6 +344,11 @@ static void exec_command(GGZCommand * cmd)
 		ggzcore_room_chat(ggzcore_server_get_cur_room(server),
 				  GGZ_CHAT_ANNOUNCE, NULL, command.data);
 		ggz_debug(DBG_MAIN, "Sending announcement.");
+	}
+
+	if(cmd->command == GGZ_CMD_CHECKNAGIOS)
+	{
+		printf("ggz-cmd: Everything OK\n");
 	}
 
 	/* FIXME: we don't officially disconnect, we just close
@@ -338,5 +379,6 @@ int main(int argc, char **argv)
 	}
 
 	if(command.command != GGZ_CMD_BATCH) exec_command(&command);
-	return 0;
+
+	return exitcode(STATUS_OK);
 }
