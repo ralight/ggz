@@ -12,7 +12,7 @@ doc_DATA = games.html
 	texi2html -split_node $<
 
 clean-local:
-	-rm -f *.html
+	-rm -f ggz-*.html
 
 install-data-local:
-	-cp *.html $(guidedir)
+	-cp ggz-*.html $(guidedir)
