@@ -10,6 +10,7 @@ least it will someday!)
 Features in this release:
 
 - New XML-based protocol
+- Support for player reservations
 - Player lag meters
 - New GGZCards engine plays Hearts, Spades, Bridge, and more
 - Many, many bugfixes
