@@ -318,6 +318,9 @@
  *  (note: Maybe it should send the ATTACK msg only to the players
  *  that are taking part on the attack, and send a MSG_MOVE to the
  *  others)
+ *  If we have set some option that hides the results of the attack (like
+ *  OPT_UNKNOWN_VICTOR), then we send the U_UNKNOWN code as the attacking
+ *  unit to the players that do not own that unit
  *
  *  It then checks if the game is over. Must check:
  *  	- TODO: Must see what are the winning conditions on multiplayer

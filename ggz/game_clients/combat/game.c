@@ -68,7 +68,7 @@ GdkGC *tile_gc;
 #define PIXMAPS 12 // (May have more: Lakes, Unknown units, etc)
 
 // Name of units
-char unitname[12][36] = {"Flag", "Bomb", "Spy", "Scout", "Miner", "Sergeant", "Lieutenant", "Captain", "Major", "Colonel", "General", "Marshall"};
+char unitname[13][36] = {"Flag", "Bomb", "Spy", "Scout", "Miner", "Sergeant", "Lieutenant", "Captain", "Major", "Colonel", "General", "Marshall", "Unknown"};
 // Number of units
 int unitdefault[12] = {1, 6, 1, 8, 5, 4, 4, 4, 3, 2, 1, 1};
 // File names

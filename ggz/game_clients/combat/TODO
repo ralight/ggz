@@ -1,9 +1,6 @@
 What *must* be done before next version of GGZ:
 
 - Add the following options:
-  UNKNOWN_VICTOR
-  SILENT_DEFFENSE
-  SILENT_OFFENSE
   RANDOM_SETUP
   RUSH
 - Make the "Show Enemy units" menu work

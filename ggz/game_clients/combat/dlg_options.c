@@ -457,7 +457,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[8]);
   gtk_container_add (GTK_CONTAINER (eventbox9), opt_bin1[8]);
-  gtk_widget_set_sensitive (opt_bin1[8], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[8], TRUE);
 
   eventbox10 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox10, "eventbox10");
@@ -477,7 +477,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[9]);
   gtk_container_add (GTK_CONTAINER (eventbox10), opt_bin1[9]);
-  gtk_widget_set_sensitive (opt_bin1[9], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[9], TRUE);
 
   eventbox11 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox11, "eventbox11");
@@ -497,7 +497,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[10]);
   gtk_container_add (GTK_CONTAINER (eventbox11), opt_bin1[10]);
-  gtk_widget_set_sensitive (opt_bin1[10], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[10], TRUE);
 
   eventbox12 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox12, "eventbox12");
