@@ -31,7 +31,9 @@ include_HEADERS = \
 libggzcorepp_la_LDFLAGS = -version-info 2:0:0 $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
 libggzcorepp_la_LIBADD = $(LIB_GGZCORE) $(LIB_GGZ)
 
-AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
+AM_CXXFLAGS = @COMPILEOPTIONS@
+
+INCLUDES = $(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
 
 api-docs:
 	-kdoc -d ../doc/html -n GGZCore++ *.cpp *.h
