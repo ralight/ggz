@@ -43,6 +43,8 @@ class Eventdisplay : public QWidget
 		void slotProcess(KProcess *proc);
 
 	private:
+		void restoreDefaults();
+
 		KListView *m_list;
 		QLabel *participants;
 		QFrame *image;

@@ -165,7 +165,7 @@ int Parser::parseSeries(QDomNode *pnode)
 int Parser::parseEventgroup(QDomNode *pnode)
 {
 	QString id;
-	QString title, status, image, policy;
+	QString title, status, image, policy, game;
 	QDomNode node;
 	QDomElement el;
 	int ret;
@@ -193,11 +193,15 @@ int Parser::parseEventgroup(QDomNode *pnode)
 		{
 			policy = el.text();
 		}
+		else if(el.tagName() == "game")
+		{
+			game = el.text();
+		}
 		else ret = unknown;
 		node = node.nextSibling();
 	}
 
-	Eventgroup *eventgroup = new Eventgroup(title, status, image, policy);
+	Eventgroup *eventgroup = new Eventgroup(title, status, image, policy, game);
 	eventgroup->setId(pnode->toElement().attribute("id"));
 	m_eventgrouplist.append(eventgroup);
 

@@ -28,7 +28,7 @@ class Event;
 class Eventgroup
 {
 	public:
-		Eventgroup(QString title, QString status, QString image, QString policy);
+		Eventgroup(QString title, QString status, QString image, QString policy, QString game);
 		~Eventgroup();
 		void addEvent(Event *event);
 
@@ -36,6 +36,7 @@ class Eventgroup
 		QString image();
 		QString status();
 		QString policy();
+		QString game();
 		QPtrList<Event> events();
 
 		void setId(QString id);
@@ -48,6 +49,7 @@ class Eventgroup
 		QPtrList<Event> m_events;
 		QString m_policy;
 		QString m_id;
+		QString m_game;
 };
 
 #endif

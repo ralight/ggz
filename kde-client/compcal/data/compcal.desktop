@@ -4,6 +4,7 @@ Icon=compcal
 MimeType=Application
 Name=Competition Calendar
 GenericName=Online games tracker
+GenericName[de]=Onlinespiele-Verwaltung
 Path=
 ServiceTypes=
 SwallowExec=

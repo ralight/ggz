@@ -180,6 +180,7 @@ void App::slotEvent(QListViewItem *item)
 				{
 					kdDebug() << "got it!" << endl;
 					m_display->setEvent(event);
+					return;
 				}
 			}
 		}

@@ -21,12 +21,13 @@
 
 #include "event.h"
 
-Eventgroup::Eventgroup(QString title, QString status, QString image, QString policy)
+Eventgroup::Eventgroup(QString title, QString status, QString image, QString policy, QString game)
 {
 	m_status = status;
 	m_image = image;
 	m_title = title;
 	m_policy = policy;
+	m_game = game;
 }
 
 Eventgroup::~Eventgroup()
@@ -56,6 +57,11 @@ QString Eventgroup::image()
 QString Eventgroup::policy()
 {
 	return m_policy;
+}
+
+QString Eventgroup::game()
+{
+	return m_game;
 }
 
 QPtrList<Event> Eventgroup::events()

@@ -30,6 +30,7 @@
 #include <kprocess.h>
 #include <kdebug.h>
 #include <kio/netaccess.h>
+#include <kstandarddirs.h>
 
 #include <qlayout.h>
 #include <qpixmap.h>
@@ -83,10 +84,23 @@ Eventdisplay::Eventdisplay(QWidget *parent, const char *name)
 	connect(location, SIGNAL(leftClickedURL(const QString&)), SLOT(slotUrl(const QString&)));
 
 	setCaption(i18n("GGZ Event"));
+
+	restoreDefaults();
 }
 
 Eventdisplay::~Eventdisplay()
 {
+}
+
+void Eventdisplay::restoreDefaults()
+{
+	KStandardDirs d;
+
+	image->setBackgroundPixmap(QPixmap(d.findResource("data", "compcal/event.png")));
+	image->setFixedSize(128, 128);
+
+	logo->setBackgroundPixmap(QPixmap());
+	logo->setFixedSize(64, 64);
 }
 
 void Eventdisplay::setEvent(Event *event)
@@ -112,6 +126,8 @@ void Eventdisplay::setEvent(Event *event)
 	title->setText(QString("<b>%1</b>").arg(event->title()));
 	date->setText(event->date());
 
+	restoreDefaults();
+
 	src = event->parent()->image();
 	if(KIO::NetAccess::download(src, dst))
 	{
@@ -121,11 +137,24 @@ void Eventdisplay::setEvent(Event *event)
 	}
 
 	src = event->image();
-	if(KIO::NetAccess::download(src, dst))
+	if(src.isEmpty())
 	{
-		pix = QPixmap(dst);
+		KStandardDirs d;
+		QString pixfile;
+
+		pixfile = d.findResource("data", QString("kggz/images/icons/games/%1.png").arg(event->parent()->game()));
+		pix = QPixmap(pixfile);
 		logo->setBackgroundPixmap(pix);
 		logo->setFixedSize(pix.width(), pix.height());
+	}
+	else
+	{
+		if(KIO::NetAccess::download(src, dst))
+		{
+			pix = QPixmap(dst);
+			logo->setBackgroundPixmap(pix);
+			logo->setFixedSize(pix.width(), pix.height());
+		}
 	}
 }
 
