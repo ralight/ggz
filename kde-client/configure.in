@@ -10,9 +10,9 @@ AM_CONFIG_HEADER(config.h)
 dnl Options for building KGGZ
 dnl =========================
 
-AC_ARG_ENABLE(ggzcorepp, [  --disable-ggzcorepp  don't build GGZCore++             ], enable_ggzcorepp=no, enable_ggzcorepp=yes)
-AC_ARG_ENABLE(browser,   [  --enable-browser     include KHTML browser [default=no]], enable_browser=yes, enable_browser=no)
-AC_ARG_ENABLE(ggzfinal,  [  --enable-ggzfinal    perform compile tests [default=no]], enable_ggzfinal=yes, enable_ggzfinal=no)
+AC_ARG_ENABLE(ggzcorepp, [  --disable-ggzcorepp  don't build GGZCore++              ], enable_ggzcorepp=no, enable_ggzcorepp=yes)
+AC_ARG_ENABLE(browser,   [  --disable-browser    include KHTML browser [default=yes]], enable_browser=no, enable_browser=yes)
+AC_ARG_ENABLE(ggzfinal,  [  --enable-ggzfinal    perform compile tests  [default=no]], enable_ggzfinal=yes, enable_ggzfinal=no)
 
 dnl Check for Qt and KDE
 dnl ====================
@@ -77,7 +77,7 @@ dnl =========================
 if test "$enable_browser" = yes; then
 	kggzbrowservar=1;
 	BROWSERSUBDIR="more";
-	BROWSERLIB="-L widgets/more -lkggzuimore -lkhtml";
+	BROWSERLIB="\$(top_builddir)/ggz-kde/src/widgets/more/libkggzuimore.a -lkhtml";
 	AC_DEFINE_UNQUOTED(KGGZ_BROWSER, ${kggzbrowservar})
 else
 	kggzbrowservar=;
@@ -106,6 +106,7 @@ if test "x${prefix}" = "xNONE"; then
 	prefix=/usr/local
 fi
 AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${prefix}/share/apps/kggz")
+AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
 
 AC_SUBST(SUBDIRS)
 AC_SUBST(COMPILEOPTIONS)
