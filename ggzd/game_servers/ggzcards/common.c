@@ -427,6 +427,8 @@ int req_play(player_t p, seat_t s)
 
 	set_game_state(WH_STATE_WAIT_FOR_PLAY);
 
+	game_set_player_message(p);
+
 	return 0;
 }
 
@@ -518,6 +520,8 @@ int req_bid(player_t p, int num, char** bid_choices)
 	game.bid_text_ref = bid_choices;
 
 	set_game_state( WH_STATE_WAIT_FOR_BID );
+
+	game_set_player_message(p);
 
 	if (status != 0)
 		ggz_debug("ERROR: req_bid: status is %d.", status);
