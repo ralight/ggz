@@ -58,7 +58,7 @@ Guru *gurumod_exec(Guru *message)
 	else if((message->list) && (message->list[0]))
 	{
 		if(!strcmp(message->list[0], message->guru)) type = typetogrubby;
-		if(!strcmp(message->guru, message->player)) type = typefromgrubby;
+		if((message->player) && (!strcmp(message->guru, message->player))) type = typefromgrubby;
 	}
 	if(type == typefromgrubby) return NULL;
 

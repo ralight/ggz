@@ -41,7 +41,7 @@ struct gurucore_t
 	void *nethandle;
 	void *i18nhandle;
 	void *playerhandle;
-	int autojoin;
+	char *autojoin;
 	netconnectfunc net_connect;
 	netjoinfunc net_join;
 	netstatusfunc net_status;

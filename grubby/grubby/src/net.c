@@ -66,8 +66,7 @@ void net_logfile(const char *logfile)
 
 /* Add a message to the incoming queue */
 /* FIXME: Provide real queue */
-static void net_internal_queueadd(const char *player, const char *message,
-				  int type)
+static void net_internal_queueadd(const char *player, const char *message, int type)
 {
 	Guru *guru;
 	char *listtoken;
@@ -143,9 +142,10 @@ void net_connect(const char *host, int port, const char *name, const char *guest
 }
 
 /* Change the current room */
-void net_join(int room)
+void net_join(const char *room)
 {
-	ggzcore_server_join_room(server, room);
+	if(room) ggzcore_server_join_room(server, atoi(room));
+	else ggzcore_server_join_room(server, 0);
 }
 
 /* Loop function */

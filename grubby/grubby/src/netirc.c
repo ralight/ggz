@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <time.h>
+#include <ggz.h>
 
 /* Globals */
 int status = NET_NOOP;
@@ -22,7 +23,9 @@ int queuelen = 1;
 char *guruname = NULL;
 char *guruguestname = NULL;
 FILE *logstream = NULL;
-char *playername;
+FILE *irc = NULL;
+char *playername = NULL;
+char *chatroom = NULL;
 
 /* Prototypes */
 void chat(const char *message);
@@ -97,42 +100,77 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 	queue[queuelen - 1] = NULL;
 }
 
-/* Dummy connection: just setup the console */
+/* Establish connection: log into an IRC server */
 void net_connect(const char *host, int port, const char *name, const char *guestname)
 {
-	char buffer[16];
+	/*char buffer[256];*/
+	int fd;
+	/*int i;*/
 
 	guruname = (char*)name;
 	guruguestname = (char*)guestname;
 
-	printf("Enter your name please:\n");
-	fgets(buffer, sizeof(buffer), stdin);
-	buffer[strlen(buffer) - 1] = 0;
-	playername = strdup(buffer);
+	fd = ggz_make_socket(GGZ_SOCK_CLIENT, 6667, host);
+	if(fd < 0)
+	{
+		status = NET_ERROR;
+		return;
+	}
+	irc = fdopen(fd, "a+");
+	if(!irc)
+	{
+		status = NET_ERROR;
+		return;
+	}
 
-	fcntl(0, F_SETFL, O_NONBLOCK);
+	/*printf("Logon IRC...\n");*/
+	/*fcntl(fd, F_SETFL, O_NONBLOCK);*/
 
-	status = NET_GOTREADY;
+	/*for(i = 0; i < 4; i++)
+	{
+		fgets(buffer, sizeof(buffer), irc);
+		buffer[strlen(buffer) - 1] = 0;
+		printf("Buffer: %s\n", buffer);
+	}*/
+
+	fprintf(irc, "NICK %s\r\n", guruname);
+	fflush(irc);
+	fprintf(irc, "USER %s %s %s :%s\r\n", guruname, "noosphere", "localhost", guruname);
+	fflush(irc);
+
+	status = NET_LOGIN;
 }
 
-/* Change the current room (dummy function for netconsole) */
+/* Change the current room (channel, in this case) */
 void net_join(const char *room)
 {
+	/*printf("Join IRC room...\n");*/
+	fprintf(irc, "JOIN %s\r\n", room);
+	fflush(irc);
+
+	chatroom = room;
+
+	status = NET_GOTREADY;
 }
 
 /* Loop function */
 int net_status()
 {
 	int ret;
-	int num;
+	/*int num;*/
 	char buffer[1024];
 
-	num = read(0, buffer, sizeof(buffer));
-	if(num > 0)
+	if(status == NET_NOOP)
 	{
-		buffer[num - 1] = 0;
-		/*printf("Got: %s\n", buffer);*/
-		chat(buffer);
+		/*num = read(fileno(irc), buffer, sizeof(buffer));*/
+		fgets(buffer, sizeof(buffer), irc);
+		buffer[strlen(buffer) - 2] = 0;
+
+		/*if(num > 0)
+		{
+			buffer[num - 1] = 0;*/
+			chat(buffer);
+		/*}*/
 	}
 
 	ret = status;
@@ -147,6 +185,7 @@ Guru *net_input()
 {
 	if(queue)
 	{
+printf("input is '%s'\n", queue[queuelen - 2]->message);
 		return queue[queuelen - 2];
 	}
 	return NULL;
@@ -161,19 +200,20 @@ void net_output(Guru *output)
 	/* Handle multi-line answers */
 	if(!output->message) return;
 	msg = strdup(output->message);
-	token = strtok(msg, "\n");
+	token = strtok(msg, "\r\n");
 	while(token)
 	{
 		switch(output->type)
 		{
 			case GURU_CHAT:
-				printf("> %s\n", token);
+				fprintf(irc, "PRIVMSG %s :%s\r\n", chatroom, token);
+				fflush(irc);
 				break;
 			case GURU_PRIVMSG:
-				printf("-> %s: %s\n", output->player, token);
+				/*printf("-> %s: %s\n", output->player, token);*/
 				break;
 			case GURU_ADMIN:
-				printf(">> %s\n", token);
+				/*printf(">> %s\n", token);*/
 				break;
 		}
 		token = strtok(NULL, "\n");
@@ -187,7 +227,8 @@ void chat(const char *message)
 	char *ts;
 
 	/* Ignore all self-generates messages */
-	net_internal_queueadd(playername, message, /*GURU_CHAT*/GURU_PRIVMSG);
+	playername = NULL;
+	net_internal_queueadd(playername, message, GURU_CHAT/*GURU_PRIVMSG*/);
 	status = NET_INPUT;
 
 	/* Log all messages to the logfile if enabled */

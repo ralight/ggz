@@ -26,7 +26,7 @@ static int admin(Guru *guru, Gurucore *core)
 	if(!guru) return 0;
 	if(!guru->message) return 0;
 	if(!core->owner) return 0;
-	if(strcmp(guru->player, core->owner)) return 0;
+	if((guru->player) && (strcmp(guru->player, core->owner))) return 0;
 
 	i = 0;
 	while((guru->list) && (guru->list[i])) i++;

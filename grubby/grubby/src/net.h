@@ -24,7 +24,7 @@ enum States
 
 /* Interface */
 void net_connect(const char *host, int port, const char *name, const char *guestname);
-void net_join(int room);
+void net_join(const char *room);
 int net_status(void);
 Guru *net_input(void);
 void net_output(Guru *output);

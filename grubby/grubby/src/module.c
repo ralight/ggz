@@ -77,7 +77,7 @@ Gurucore *guru_module_init(const char *datadir)
 	strcat(core->guestname, "(G)");
 	core->owner = ggz_conf_read_string(handler, "preferences", "owner", NULL);
 	core->language = ggz_conf_read_string(handler, "preferences", "language", "en");
-	core->autojoin = ggz_conf_read_int(handler, "preferences", "autojoin", 0);
+	core->autojoin = ggz_conf_read_string(handler, "preferences", "autojoin", NULL);
 	core->logfile = ggz_conf_read_string(handler, "preferences", "logfile", NULL);
 
 	/* Preload libraries shared among multiple plugins */
