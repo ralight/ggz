@@ -50,8 +50,7 @@ static int state_entries = -1;
 static gnutls_session *state = NULL;
 static gnutls_anon_server_credentials s_cred;
 static gnutls_anon_client_credentials c_cred;
-/*static gnutls_dh_params params;
-static gnutls_datum prime, generator;*/
+static gnutls_dh_params params;
 
 const int cipher_priority[] = {GNUTLS_CIPHER_3DES_CBC, GNUTLS_CIPHER_NULL, GNUTLS_CIPHER_ARCFOUR_40, GNUTLS_CIPHER_ARCFOUR_128, 0};
 const int mac_priority[] = {GNUTLS_MAC_NULL, GNUTLS_MAC_MD5, GNUTLS_MAC_SHA, 0};
@@ -92,10 +91,9 @@ int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify
 			gnutls_anon_allocate_client_credentials(&c_cred);
 		} else {
 			gnutls_anon_allocate_server_credentials(&s_cred);
-			/*gnutls_dh_params_init(&params);
-			gnutls_dh_params_generate(&prime, &generator, 512);
-			gnutls_dh_params_set(params, prime, generator, 512);
-			gnutls_anon_set_server_dh_params(s_cred, params);*/
+			ret = gnutls_dh_params_init(&params);
+			ret = gnutls_dh_params_generate2(params, 1024);
+			gnutls_anon_set_server_dh_params(s_cred, params);
 		}
 		state_entries = 0;
 	}
@@ -115,6 +113,7 @@ int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify
 		gnutls_cipher_set_priority(session, cipher_priority);
 	}
 	else {
+		/*gnutls_set_default_priority(session);*/
 		gnutls_protocol_set_priority(session, protocol_priority);
 		gnutls_compression_set_priority(session, compression_priority);
 		gnutls_cipher_set_priority(session, cipher_priority);
@@ -123,11 +122,17 @@ int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify
 	}
 
 	/*gnutls_dh_set_prime_bits(session, 512);*/
+	if(whoami == GGZ_TLS_CLIENT) sleep(1);
 
 	if(whoami == GGZ_TLS_CLIENT)
-		gnutls_credentials_set(session, GNUTLS_CRD_ANON, c_cred);
+		ret = gnutls_credentials_set(session, GNUTLS_CRD_ANON, c_cred);
 	else
-		gnutls_credentials_set(session, GNUTLS_CRD_ANON, s_cred);
+		ret = gnutls_credentials_set(session, GNUTLS_CRD_ANON, s_cred);
+	if(ret != GNUTLS_E_SUCCESS)
+	{
+		ggz_error_msg("TLS credentials could not be set (%s)\n", gnutls_strerror(ret));
+		return 0;
+	}
 
 	gnutls_transport_set_ptr(session, (gnutls_transport_ptr)fdes);
 	do {
