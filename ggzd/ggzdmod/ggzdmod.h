@@ -4,14 +4,14 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2991 2001-12-28 20:19:10Z dr_maux $
+ * $Id: ggzdmod.h 3105 2002-01-13 19:02:42Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
  * and game servers.  This file provides a unified interface that can be
  * used at both ends.
  *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001-2002 GGZ Development Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,7 +245,7 @@ typedef enum {
  * all the state information for communicating with GGZ.  The ggz server
  * will track one such object for every game table that is running.
  */
-typedef void GGZdMod;
+typedef struct GGZdMod GGZdMod;
 
 /** @brief Event handler prototype
  *
@@ -290,7 +290,7 @@ GGZdMod *ggzdmod_new(GGZdModType type);
  *  After the connection is through, the object may be freed.
  *  @param mod The GGZdMod object.
  */
-void ggzdmod_free(GGZdMod * mod);
+void ggzdmod_free(GGZdMod * ggzdmod);
 
 /* 
  * Accessor functions
@@ -303,20 +303,20 @@ void ggzdmod_free(GGZdMod * mod);
  *  @note Games should not use this; in fact it probably shouldn't be used at all!
  *  @todo Should this be removed?
  */
-int ggzdmod_get_fd(GGZdMod * mod);
+int ggzdmod_get_fd(GGZdMod * ggzdmod);
 
 /** @brief Get the type of the ggzdmod object. */
-GGZdModType ggzdmod_get_type(GGZdMod * mod);
+GGZdModType ggzdmod_get_type(GGZdMod * ggzdmod);
 
 /** @brief Get the current state of the table. */
-GGZdModState ggzdmod_get_state(GGZdMod * mod);
+GGZdModState ggzdmod_get_state(GGZdMod * ggzdmod);
 
 /** @brief Get the total number of seats at the table. */
-int ggzdmod_get_num_seats(GGZdMod * mod);
+int ggzdmod_get_num_seats(GGZdMod * ggzdmod);
 
 /** @brief Get all data for the specified seat.
  *  @return A valid GGZSeat structure, if seat is a valid seat. */
-GGZSeat ggzdmod_get_seat(GGZdMod * mod, int seat);
+GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int seat);
 
 /** @brief Return gamedata pointer
  *
@@ -324,16 +324,16 @@ GGZSeat ggzdmod_get_seat(GGZdMod * mod, int seat);
  *  that is returned by this function.  This is useful for
  *  when a single process serves multiple GGZdmod's.
  *  @see ggzdmod_set_gamedata */
-void * ggzdmod_get_gamedata(GGZdMod * mod);
+void * ggzdmod_get_gamedata(GGZdMod * ggzdmod);
 
 /** @brief Set the number of seats for the table.
  *  @note This will only work for ggzd.
  *  @todo Allow the table to change the number of seats. */
-void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats);
+void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
 
 /** @brief Set gamedata pointer
  *  @see ggzdmod_get_gamedata */
-void ggzdmod_set_gamedata(GGZdMod * mod, void * data);
+void ggzdmod_set_gamedata(GGZdMod * ggzdmod, void * data);
 
 /** @brief Set a handler for the given event.
  *
@@ -345,7 +345,8 @@ void ggzdmod_set_gamedata(GGZdMod * mod, void * data);
  *  @param e The GGZdmod event.
  *  @param func The handler function being registered.
  *  @see ggzdmod_get_gamedata */
-void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func);
+void ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
+			 GGZdModHandler func);
 
 /** @brief Set the module executable and it's arguments
  *
@@ -355,7 +356,7 @@ void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func);
  *  @param mod The GGZdmod object.
  *  @param args The arguments for the program, as needed by exec.
  */
-void ggzdmod_set_module(GGZdMod * mod, char **args);
+void ggzdmod_set_module(GGZdMod * ggzdmod, char **args);
 
 /** @brief Set seat data.
  *
@@ -368,7 +369,7 @@ void ggzdmod_set_module(GGZdMod * mod, char **args);
  *  @todo The game should be able to toggle between BOT and OPEN seats.
  *  @todo The game should be able to kick a player out of the table.
  */
-int ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat);
+int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat * seat);
 
 /** @brief Count seats of the given type.
  *
@@ -381,7 +382,7 @@ int ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat);
  *  @return The number of seats that match seat_type.
  *  @note This could go into a wrapper library instead.
  */
-int ggzdmod_count_seats(GGZdMod * mod, GGZSeatType seat_type);
+int ggzdmod_count_seats(GGZdMod * ggzdmod, GGZSeatType seat_type);
 
 /* 
  * Event/Data handling
@@ -396,7 +397,7 @@ int ggzdmod_count_seats(GGZdMod * mod, GGZSeatType seat_type);
  *      registered for the PLAYER_DATA event.
  *    - It will call an event handler as necessary.
  */
-int ggzdmod_dispatch(GGZdMod * mod);
+int ggzdmod_dispatch(GGZdMod * ggzdmod);
 
 /** @brief Loop while handling input.
  *
@@ -407,7 +408,7 @@ int ggzdmod_dispatch(GGZdMod * mod);
  *  @see ggzdmod_dispatch
  *  @see ggzdmod_set_state
  */
-int ggzdmod_loop(GGZdMod * mod);
+int ggzdmod_loop(GGZdMod * ggzdmod);
 
 /* 
  * Control functions
@@ -422,7 +423,7 @@ int ggzdmod_loop(GGZdMod * mod);
  *  @param state The new state.
  *  @return 0 on success, -1 on failure/error.
  */
-int ggzdmod_set_state(GGZdMod * mod, GGZdModState state);
+int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state);
 
 /** @brief Connect to ggz.
  *
@@ -433,7 +434,7 @@ int ggzdmod_set_state(GGZdMod * mod, GGZdModState state);
  *  @param mod The ggzdmod object.
  *  @return 0 on success, -1 on failure.
  */
-int ggzdmod_connect(GGZdMod * mod);
+int ggzdmod_connect(GGZdMod * ggzdmod);
 
 /** @brief Disconnect from ggz.
  *
@@ -445,7 +446,7 @@ int ggzdmod_connect(GGZdMod * mod);
  *  @param mod The ggzdmod object.
  *  @return 0 on success, -1 on failure.
  */
-int ggzdmod_disconnect(GGZdMod * mod);
+int ggzdmod_disconnect(GGZdMod * ggzdmod);
 
 
 
@@ -457,7 +458,7 @@ int ggzdmod_disconnect(GGZdMod * mod);
  *  @param fmt A printf-style format string.
  *  @return 0 on success, -1 on failure.
  */
-int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
+int ggzdmod_log(GGZdMod * ggzdmod, char *fmt, ...)
 		ggz__attribute((format(printf, 2, 3)));
 
 #ifdef __cplusplus

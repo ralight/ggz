@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 2767 2001-12-01 06:44:49Z bmh $
+ * $Id: mod.h 3105 2002-01-13 19:02:42Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -40,7 +40,7 @@
 #define GGZDMOD_NUM_HANDLERS 6
 
 /* This is the actual structure, but it's only visible internally. */
-typedef struct _GGZdMod {
+struct GGZdMod {
 	GGZdModType type;	/* ggz-end or game-end */
 	GGZdModState state;	/* the state of the game */
 	int fd;			/* file descriptor */
@@ -55,23 +55,23 @@ typedef struct _GGZdMod {
 	char **argv;            /* command-line arguments for launching module */
 
 	/* etc. */
-} _GGZdMod;
+};
 
-void _ggzdmod_error(_GGZdMod *mod, char* error);
+void _ggzdmod_error(GGZdMod *ggzdmod, char* error);
 
 /* GGZ side functions for handling various messages */
-void _ggzdmod_handle_join_response(_GGZdMod * mod, char status);
-void _ggzdmod_handle_leave_response(_GGZdMod * mod, char status);
-void _ggzdmod_handle_state(_GGZdMod * mod, GGZdModState state);
-void _ggzdmod_handle_log(_GGZdMod * mod, char *msg);
+void _ggzdmod_handle_join_response(GGZdMod * ggzdmod, char status);
+void _ggzdmod_handle_leave_response(GGZdMod * ggzdmod, char status);
+void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state);
+void _ggzdmod_handle_log(GGZdMod * ggzdmod, char *msg);
 
 /* Game side functions for handling various messages */
-void _ggzdmod_handle_launch_begin(_GGZdMod * mod, int num_seats);
-void _ggzdmod_handle_launch_seat(_GGZdMod * mod, GGZSeat seat);
-void _ggzdmod_handle_launch_end(_GGZdMod * mod);
-void _ggzdmod_handle_join(_GGZdMod * mod, GGZSeat seat);
-void _ggzdmod_handle_leave(_GGZdMod * mod, char *name);
-void _ggzdmod_handle_state_response(_GGZdMod * ggzdmod);
+void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats);
+void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat);
+void _ggzdmod_handle_launch_end(GGZdMod * ggzdmod);
+void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat);
+void _ggzdmod_handle_leave(GGZdMod * ggzdmod, char *name);
+void _ggzdmod_handle_state_response(GGZdMod * ggzdmod);
 
 
-#endif
+#endif /* __GGZ_MOD_H__ */

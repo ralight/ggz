@@ -4,14 +4,14 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2947 2001-12-19 01:07:53Z jdorje $
+ * $Id: ggzdmod.c 3105 2002-01-13 19:02:42Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
  * and game servers.  This file provides backend code that can be
  * used at both ends.
  *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001-2002 GGZ Development Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,15 +60,15 @@
  * internal function prototypes
  */
 
-static void call_handler(_GGZdMod *mod, GGZdModEvent event, void *data);
-static int get_fd_max(_GGZdMod * mod);
-static fd_set get_active_fd_set(_GGZdMod *mod);
-static void _ggzdmod_set_num_seats(_GGZdMod *mod, int num_seats);
+static void call_handler(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+static int get_fd_max(GGZdMod * ggzdmod);
+static fd_set get_active_fd_set(GGZdMod * ggzdmod);
+static void _ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
 static int strings_differ(char *s1, char *s2);
-static void set_state(_GGZdMod * ggzdmod, GGZdModState state);
-static int handle_event(_GGZdMod * mod, fd_set read_fds);
-static int send_game_launch(_GGZdMod * mod);
-static int game_fork(_GGZdMod * mod);
+static void set_state(GGZdMod * ggzdmod, GGZdModState state);
+static int handle_event(GGZdMod * ggzdmod, fd_set read_fds);
+static int send_game_launch(GGZdMod * ggzdmod);
+static int game_fork(GGZdMod * ggzdmod);
 
 /* Functions for manipulating seats */
 static GGZSeat* seat_copy(GGZSeat *orig);
@@ -76,24 +76,24 @@ static int seat_compare(GGZSeat *a, GGZSeat *b);
 static int seat_find_player(GGZSeat *a, GGZSeat *b);
 static void seat_free(GGZSeat *seat);
 #if 0 /* Not currently used */
-static void dump_seats(_GGZdMod *mod);
+static void dump_seats(GGZdMod *mod);
 #endif
-static void seat_print(_GGZdMod* mod, GGZSeat *seat);
+static void seat_print(GGZdMod * ggzdmod, GGZSeat *seat);
 
 /* Invokes handlers for the specefied event */
-static void call_handler(_GGZdMod *mod, GGZdModEvent event, void *data)
+static void call_handler(GGZdMod * ggzdmod, GGZdModEvent event, void *data)
 {
-	if (mod->handlers[event])
-		(*mod->handlers[event]) (mod, event, data);
+	if (ggzdmod->handlers[event])
+		(*ggzdmod->handlers[event]) (ggzdmod, event, data);
 	else {
 		/* We'd like to send a debugging message if there's
 		   no handler registered for an event.  But in the
 		   case of the ERROR event, this can cause problems
 		   since the problem is usually a missing connection!
 		   So, we use this hack to avoid a recursive loop. */
-		char *which = mod->type == GGZDMOD_GAME ? "game" : "ggz";
+		char *which = ggzdmod->type == GGZDMOD_GAME ? "game" : "ggz";
 		if (event != GGZDMOD_EVENT_ERROR)
-			ggzdmod_log(mod,
+			ggzdmod_log(ggzdmod,
 				    "GGZDMOD: unhandled event %d by %s.",
 				    event, which);
 		else
@@ -105,16 +105,16 @@ static void call_handler(_GGZdMod *mod, GGZdModEvent event, void *data)
 
 
 /* Returns the highest-numbered FD used by ggzdmod. */
-static int get_fd_max(_GGZdMod * mod)
+static int get_fd_max(GGZdMod * ggzdmod)
 {
-	int max = mod->fd;
+	int max = ggzdmod->fd;
 	GGZListEntry *entry;
 	GGZSeat *seat;
 
 	/* If we don't have a player data handler set
-	   up, we won't monitor the player data handlers. */
-	if (mod->handlers[GGZDMOD_EVENT_PLAYER_DATA])
-		for (entry = ggz_list_head(mod->seats);
+	   up, we won't monitor the player data sockets. */
+	if (ggzdmod->handlers[GGZDMOD_EVENT_PLAYER_DATA])
+		for (entry = ggz_list_head(ggzdmod->seats);
 		     entry != NULL;
 		     entry = ggz_list_next(entry)) {
 
@@ -127,19 +127,19 @@ static int get_fd_max(_GGZdMod * mod)
 }
 
 
-static fd_set get_active_fd_set(_GGZdMod *mod)
+static fd_set get_active_fd_set(GGZdMod * ggzdmod)
 {
 	fd_set active_fd_set;
 	GGZListEntry *entry;
 	GGZSeat *seat;
 	
 	FD_ZERO(&active_fd_set);
-	if (mod->fd != -1)
-		FD_SET(mod->fd, &active_fd_set);
+	if (ggzdmod->fd != -1)
+		FD_SET(ggzdmod->fd, &active_fd_set);
 
 	/* Only monitory player fds if there is a PLAYER_DATA handler set */
-	if (mod->handlers[GGZDMOD_EVENT_PLAYER_DATA]) {
-		for (entry = ggz_list_head(mod->seats);
+	if (ggzdmod->handlers[GGZDMOD_EVENT_PLAYER_DATA]) {
+		for (entry = ggz_list_head(ggzdmod->seats);
 		     entry != NULL;
 		     entry = ggz_list_next(entry)) {
 			
@@ -163,7 +163,7 @@ static fd_set get_active_fd_set(_GGZdMod *mod)
 GGZdMod *ggzdmod_new(GGZdModType type)
 {
 	int i;
-	_GGZdMod *ggzdmod;
+	GGZdMod *ggzdmod;
 
 	/* verify parameter */
 	if (type != GGZDMOD_GGZ && type != GGZDMOD_GAME)
@@ -196,10 +196,9 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 
 
 /* Frees (deletes) a ggzdmod object */
-void ggzdmod_free(GGZdMod * mod)
+void ggzdmod_free(GGZdMod * ggzdmod)
 {
 	int i;
-	_GGZdMod *ggzdmod = mod;
 
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return;
@@ -230,9 +229,8 @@ void ggzdmod_free(GGZdMod * mod)
  */
 
 /* The ggzdmod FD is the main ggzd<->game server communications socket. */
-int ggzdmod_get_fd(GGZdMod * mod)
+int ggzdmod_get_fd(GGZdMod * ggzdmod)
 {
-	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
@@ -240,9 +238,8 @@ int ggzdmod_get_fd(GGZdMod * mod)
 }
 
 
-GGZdModType ggzdmod_get_type(GGZdMod * mod)
+GGZdModType ggzdmod_get_type(GGZdMod * ggzdmod)
 {
-	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;	/* not very useful */
 	}
@@ -250,9 +247,8 @@ GGZdModType ggzdmod_get_type(GGZdMod * mod)
 }
 
 
-GGZdModState ggzdmod_get_state(GGZdMod * mod)
+GGZdModState ggzdmod_get_state(GGZdMod * ggzdmod)
 {
-	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;	/* not very useful */
 	}
@@ -260,9 +256,8 @@ GGZdModState ggzdmod_get_state(GGZdMod * mod)
 }
 
 
-int ggzdmod_get_num_seats(GGZdMod * mod)
+int ggzdmod_get_num_seats(GGZdMod * ggzdmod)
 {
-	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
@@ -270,12 +265,11 @@ int ggzdmod_get_num_seats(GGZdMod * mod)
 }
 
 
-GGZSeat ggzdmod_get_seat(GGZdMod * mod, int num)
+GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int num)
 {
 	GGZSeat seat = {num, GGZ_SEAT_NONE, NULL, -1};
 	GGZListEntry *entry;
 
-	_GGZdMod *ggzdmod = mod;
 	if (CHECK_GGZDMOD(ggzdmod) && num >= 0 && num < ggzdmod->num_seats) {
 		if ( (entry = ggz_list_search(ggzdmod->seats, &seat)))
 			seat = *(GGZSeat*)ggz_list_get_data(entry);
@@ -285,21 +279,20 @@ GGZSeat ggzdmod_get_seat(GGZdMod * mod, int num)
 }
 
 
-void* ggzdmod_get_gamedata(GGZdMod * mod)
+void* ggzdmod_get_gamedata(GGZdMod * ggzdmod)
 {
-	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return NULL;
 	}
 	return ggzdmod->gamedata;
 }
 
-static void _ggzdmod_set_num_seats(_GGZdMod *mod, int num_seats)
+static void _ggzdmod_set_num_seats(GGZdMod *ggzdmod, int num_seats)
 {
 	GGZSeat seat;
 	int i, old_num;
 
-	old_num = mod->num_seats;
+	old_num = ggzdmod->num_seats;
 	
 	/* If the table size is increasing, add more seats */
 	if (num_seats > old_num) {
@@ -309,7 +302,7 @@ static void _ggzdmod_set_num_seats(_GGZdMod *mod, int num_seats)
 			seat.type = GGZ_SEAT_OPEN;
 			seat.name = NULL;
 			seat.fd = -1;
-			ggz_list_insert(mod->seats, &seat);
+			ggz_list_insert(ggzdmod->seats, &seat);
 		}
 	}
 	/* If the table size is increasing, add more seats */
@@ -317,26 +310,23 @@ static void _ggzdmod_set_num_seats(_GGZdMod *mod, int num_seats)
 		/* FIXME: delete extra seats */
 	}
 	
-	mod->num_seats = num_seats;
+	ggzdmod->num_seats = num_seats;
 }
 
 
-void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats)
+void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats)
 {
-	_GGZdMod *ggzdmod = mod;
-	
 	/* Check parameters */
 	if (!CHECK_GGZDMOD(ggzdmod) || num_seats < 0
 	    || ggzdmod->type != GGZDMOD_GGZ) {
 		return;		/* not very useful */
 	}
 	
-	_ggzdmod_set_num_seats(mod, num_seats);
+	_ggzdmod_set_num_seats(ggzdmod, num_seats);
 }
 			   
-void ggzdmod_set_module(GGZdMod * mod, char **argv)
+void ggzdmod_set_module(GGZdMod * ggzdmod, char **argv)
 {
-	_GGZdMod *ggzdmod = mod;
 	int i;
 
 	ggz_debug("GGZDMOD", "Setting arguments");
@@ -345,13 +335,13 @@ void ggzdmod_set_module(GGZdMod * mod, char **argv)
 		return;
 
 	if (ggzdmod->type != GGZDMOD_GGZ) {
-		_ggzdmod_error(mod, "Cannot set module args from module");
+		_ggzdmod_error(ggzdmod, "Cannot set module args from module");
 		return;
 	}
 		
 	/* Check parameters */
 	if (!argv || !argv[0]) {
-		_ggzdmod_error(mod, "Bad module arguments");
+		_ggzdmod_error(ggzdmod, "Bad module arguments");
 		return;
 	}
 
@@ -367,10 +357,8 @@ void ggzdmod_set_module(GGZdMod * mod, char **argv)
 }
 
 
-void ggzdmod_set_gamedata(GGZdMod * mod, void * data)
+void ggzdmod_set_gamedata(GGZdMod * ggzdmod, void * data)
 {
-	_GGZdMod *ggzdmod = mod;
-
 	/* Check parameters */
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return;		/* not very useful */
@@ -380,10 +368,9 @@ void ggzdmod_set_gamedata(GGZdMod * mod, void * data)
 }
 
 
-void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func)
+void ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
+			 GGZdModHandler func)
 {
-	_GGZdMod *ggzdmod = mod;
-
 	if (!CHECK_GGZDMOD(ggzdmod) || e < 0 || e >= GGZDMOD_NUM_HANDLERS) {
 		return;		/* not very useful */
 	}
@@ -404,35 +391,36 @@ static int strings_differ(char *s1, char *s2)
 }
 
 
-static int _ggzdmod_set_seat(_GGZdMod * mod, GGZSeat *seat)
+static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
-	GGZSeat oldseat = ggzdmod_get_seat(mod, seat->num);
+	GGZSeat oldseat = ggzdmod_get_seat(ggzdmod, seat->num);
 	
 	/* If we're connected to the game, send a message */
-	if (mod->type == GGZDMOD_GGZ && mod->state != GGZDMOD_STATE_CREATED) {
+	if (ggzdmod->type == GGZDMOD_GGZ
+	    && ggzdmod->state != GGZDMOD_STATE_CREATED) {
 		
 		if (oldseat.type == GGZ_SEAT_OPEN 
 		    && seat->type == GGZ_SEAT_PLAYER) {
-			if (_io_send_join(mod->fd, seat) < 0)
-				_ggzdmod_error(mod, "Error writing to game");
+			if (_io_send_join(ggzdmod->fd, seat) < 0)
+				_ggzdmod_error(ggzdmod,
+					       "Error writing to game");
 		}
 		else if (oldseat.type == GGZ_SEAT_PLAYER 
 			 && seat->type == GGZ_SEAT_OPEN) {
-			if (_io_send_leave(mod->fd, &oldseat) < 0)
-				_ggzdmod_error(mod, "Error writing to game");
+			if (_io_send_leave(ggzdmod->fd, &oldseat) < 0)
+				_ggzdmod_error(ggzdmod,
+					       "Error writing to game");
 		}
 	}
 
-	ggz_list_insert(mod->seats, seat);
-	
+	ggz_list_insert(ggzdmod->seats, seat);
 	
 	return 0;
 }
 
 
-int ggzdmod_set_seat(GGZdMod * mod, GGZSeat *seat)
+int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
-	_GGZdMod *ggzdmod = mod;
 	GGZSeat oldseat;
 	if (!CHECK_GGZDMOD(ggzdmod) || !seat || seat->num < 0
 	    || seat->num >= ggzdmod->num_seats) {
@@ -457,7 +445,7 @@ int ggzdmod_set_seat(GGZdMod * mod, GGZSeat *seat)
 			return -1;
 	}
 
-	return _ggzdmod_set_seat(mod, seat);
+	return _ggzdmod_set_seat(ggzdmod, seat);
 }
 
 
@@ -467,7 +455,7 @@ int ggzdmod_set_seat(GGZdMod * mod, GGZSeat *seat)
    ggzdmod data at all - it could just as easily be written
    by the game, or included in a wrapper library.  But every
    game we have uses it, so it's here for now... */
-int ggzdmod_count_seats(GGZdMod *mod, GGZSeatType seat_type)
+int ggzdmod_count_seats(GGZdMod *ggzdmod, GGZSeatType seat_type)
 {
 	int count = 0;
 #if 0 /* This form could be used as part of a wrapper library. */
@@ -479,7 +467,6 @@ int ggzdmod_count_seats(GGZdMod *mod, GGZSeatType seat_type)
 #else /* This form is better and must be ggzdmod-internal. */
 	GGZListEntry *entry;
 	GGZSeat *seat;
-	_GGZdMod *ggzdmod = mod;
 	
 	if (!CHECK_GGZDMOD(ggzdmod))
 		return -1;
@@ -539,7 +526,7 @@ static void randomize_names(char **names, char **randnames, int num)
    this function will no longer be viable and should be
    replaced by (I think) _ggzdmod_set_state, which can be
    called from the network/io code. */
-static void set_state(_GGZdMod * ggzdmod, GGZdModState state)
+static void set_state(GGZdMod * ggzdmod, GGZdModState state)
 {
 	GGZdModState old_state = ggzdmod->state;
 	if (state == ggzdmod->state)
@@ -562,31 +549,32 @@ static void set_state(_GGZdMod * ggzdmod, GGZdModState state)
 
 /* Returns -1 on error (?). */
 
-static int handle_event(_GGZdMod * mod, fd_set read_fds)
+static int handle_event(GGZdMod * ggzdmod, fd_set read_fds)
 {
 	int status, count = 0;
 	GGZListEntry *entry;
 	GGZSeat *seat;
 
-	if (FD_ISSET(mod->fd, &read_fds)) {
-		status = _io_read_data(mod);
+	if (FD_ISSET(ggzdmod->fd, &read_fds)) {
+		status = _io_read_data(ggzdmod);
 		if (status < 0) {
-			_ggzdmod_error(mod, "Error reading data");
+			_ggzdmod_error(ggzdmod, "Error reading data");
 			/* FIXME: should be disconnect? */
-			ggzdmod_set_state(mod, GGZDMOD_STATE_DONE);
+			ggzdmod_set_state(ggzdmod, GGZDMOD_STATE_DONE);
 		}
 		count++;
 	}
 
 	/* Only monitory player fds if there is a PLAYER_DATA handler set */
-	if (mod->handlers[GGZDMOD_EVENT_PLAYER_DATA]) {
-		for (entry = ggz_list_head(mod->seats);
+	if (ggzdmod->handlers[GGZDMOD_EVENT_PLAYER_DATA]) {
+		for (entry = ggz_list_head(ggzdmod->seats);
 		     entry != NULL;
 		     entry = ggz_list_next(entry)) {
 			
 			seat = ggz_list_get_data(entry);
 			if (seat->fd != -1 && FD_ISSET(seat->fd, &read_fds)) {
-				call_handler(mod, GGZDMOD_EVENT_PLAYER_DATA, 
+				call_handler(ggzdmod,
+					     GGZDMOD_EVENT_PLAYER_DATA,
 					     &seat->num);
 				
 				count++;
@@ -599,9 +587,8 @@ static int handle_event(_GGZdMod * mod, fd_set read_fds)
 
 
 /* Returns number of events that occured. */
-int ggzdmod_dispatch(GGZdMod * mod)
+int ggzdmod_dispatch(GGZdMod * ggzdmod)
 {
-	_GGZdMod *ggzdmod = mod;
 	struct timeval timeout;
 	fd_set read_fd_set;
 	int status;
@@ -636,9 +623,8 @@ int ggzdmod_dispatch(GGZdMod * mod)
 }
 
 /* unlike the old ggzd_main_loop() this one doesn't connect/disconnect. */
-int ggzdmod_loop(GGZdMod * mod)
+int ggzdmod_loop(GGZdMod * ggzdmod)
 {
-	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
@@ -668,9 +654,8 @@ int ggzdmod_loop(GGZdMod * mod)
 	return 0;		/* should handle errors */
 }
 
-int ggzdmod_set_state(GGZdMod * mod, GGZdModState state)
+int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state)
 {
-	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod))
 		return -1;
 	
@@ -705,24 +690,24 @@ int ggzdmod_set_state(GGZdMod * mod, GGZdModState state)
 /* Sends a game launch packet to ggzdmod-game. A negative return value
    indicates a serious (fatal) error. */
 /* No locking should be necessary within this function. */
-static int send_game_launch(_GGZdMod * mod)
+static int send_game_launch(GGZdMod * ggzdmod)
 {
 	GGZListEntry *entry;
 	GGZSeat *seat;
 		
 
-	if (_io_send_launch(mod->fd, mod->num_seats) < 0) {
-		_ggzdmod_error(mod, "Error writing to game");
+	if (_io_send_launch(ggzdmod->fd, ggzdmod->num_seats) < 0) {
+		_ggzdmod_error(ggzdmod, "Error writing to game");
 		return -1;
 	}
 
-	for (entry = ggz_list_head(mod->seats);
+	for (entry = ggz_list_head(ggzdmod->seats);
 	     entry != NULL;
 	     entry = ggz_list_next(entry)) {
 		
 		seat = ggz_list_get_data(entry);
-		if (_io_send_seat(mod->fd, seat) < 0) {
-			_ggzdmod_error(mod, "Error writing to game");
+		if (_io_send_seat(ggzdmod->fd, seat) < 0) {
+			_ggzdmod_error(ggzdmod, "Error writing to game");
 			return -1;
 		}
 	}
@@ -733,14 +718,14 @@ static int send_game_launch(_GGZdMod * mod)
 
 /* Forks the game.  A negative return value indicates a serious error. */
 /* No locking should be necessary within this function. */
-static int game_fork(_GGZdMod * mod)
+static int game_fork(GGZdMod * ggzdmod)
 {
 	int pid;
 	int fd_pair[2];		/* socketpair */
 
 	/* If there are no args, we don't know what to run! */
-	if (mod->argv == NULL || mod->argv[0] == NULL) {
-		_ggzdmod_error(mod, "No arguments");
+	if (ggzdmod->argv == NULL || ggzdmod->argv[0] == NULL) {
+		_ggzdmod_error(ggzdmod, "No arguments");
 		return -1;
 	}
 
@@ -768,16 +753,17 @@ static int game_fork(_GGZdMod * mod)
 		   CLOSE_ON_EXEC */
 
 		/* FIXME: can we call ggzdmod_log() from here? */
-		execv(mod->argv[0], mod->argv);	/* run game */
+		execv(ggzdmod->argv[0], ggzdmod->argv);	/* run game */
 
 		/* We should never get here.  If we do, it's an eror */
-		ggz_error_sys_exit("exec of %s failed", mod->argv[0]);	/* we still can't send error messages */
+		/* we still can't send error messages... */
+		ggz_error_sys_exit("exec of %s failed", ggzdmod->argv[0]);
 	} else {
 		/* parent */
 		close(fd_pair[1]);
 
-		mod->fd = fd_pair[0];
-		mod->pid = pid;
+		ggzdmod->fd = fd_pair[0];
+		ggzdmod->pid = pid;
 		
 		/* FIXME: should we delete the argv arguments? */
 		
@@ -787,9 +773,8 @@ static int game_fork(_GGZdMod * mod)
 }
 
 
-int ggzdmod_connect(GGZdMod * mod)
+int ggzdmod_connect(GGZdMod * ggzdmod)
 {
-	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
@@ -832,9 +817,8 @@ int ggzdmod_connect(GGZdMod * mod)
 	return 0; /* success */
 }
 
-int ggzdmod_disconnect(GGZdMod * mod)
+int ggzdmod_disconnect(GGZdMod * ggzdmod)
 {
-	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->fd < 0 ) {
 		return -1;
 	}
@@ -874,9 +858,8 @@ int ggzdmod_disconnect(GGZdMod * mod)
  * module specific actions
  */
 
-int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
+int ggzdmod_log(GGZdMod * ggzdmod, char *fmt, ...)
 {
-	_GGZdMod *ggzdmod = mod;
 	char buf[4096];
 	va_list ap;
 
@@ -908,33 +891,33 @@ int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
 
 /**** Internal library functions ****/
 
-void _ggzdmod_error(_GGZdMod *mod, char* error)
+void _ggzdmod_error(GGZdMod *ggzdmod, char* error)
 {
-	call_handler(mod, GGZDMOD_EVENT_ERROR, error);
+	call_handler(ggzdmod, GGZDMOD_EVENT_ERROR, error);
 }
 
 
-void _ggzdmod_handle_join_response(_GGZdMod * mod, char status)
+void _ggzdmod_handle_join_response(GGZdMod * ggzdmod, char status)
 {
 	if (status == 0)
-		call_handler(mod, GGZDMOD_EVENT_JOIN, NULL);
+		call_handler(ggzdmod, GGZDMOD_EVENT_JOIN, NULL);
 	else
-		_ggzdmod_error(mod, "Player failed to join");
+		_ggzdmod_error(ggzdmod, "Player failed to join");
 }
 
 
-void _ggzdmod_handle_leave_response(_GGZdMod * mod, char status)
+void _ggzdmod_handle_leave_response(GGZdMod * ggzdmod, char status)
 {
 	if (status == 0)
-		call_handler(mod, GGZDMOD_EVENT_LEAVE, &status);
+		call_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &status);
 	else
-		_ggzdmod_error(mod, "Player failed to leave");
+		_ggzdmod_error(ggzdmod, "Player failed to leave");
 }
 
 
-void _ggzdmod_handle_state(_GGZdMod * mod, GGZdModState state)
+void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state)
 {
-	_io_respond_state(mod->fd);
+	_io_respond_state(ggzdmod->fd);
 
 	/* There's only certain ones the game is allowed to set it to,
 	   and they can only change it if the state is currently
@@ -955,24 +938,25 @@ void _ggzdmod_handle_state(_GGZdMod * mod, GGZdModState state)
 		   be to have ggzdmod-ggz and ggzdmod-game both
 		   separately change states when the launch packet
 		   is sent. */
-		set_state(mod, state);
+		set_state(ggzdmod, state);
 		break;
 	default:
-		_ggzdmod_error(mod, "Game requested incorrect state value");
+		_ggzdmod_error(ggzdmod,
+			       "Game requested incorrect state value");
 	}
 	
 	/* Is this right? has the gameover happened yet? */   
 }
 
 
-void _ggzdmod_handle_log(_GGZdMod * mod, char *msg)
+void _ggzdmod_handle_log(GGZdMod * ggzdmod, char *msg)
 {
-	call_handler(mod, GGZDMOD_EVENT_LOG, msg);
+	call_handler(ggzdmod, GGZDMOD_EVENT_LOG, msg);
 }
 
 
 /* Game-side event: launch event received from ggzd */
-void _ggzdmod_handle_launch_begin(_GGZdMod * mod, int num_seats)
+void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats)
 {
 #if 0
 	int bots = 0;
@@ -983,22 +967,22 @@ void _ggzdmod_handle_launch_begin(_GGZdMod * mod, int num_seats)
 #endif
 
 	if (num_seats <= 0) {
-		_ggzdmod_error(mod, "Error: %d seats received from GGZ");
-		ggzdmod_log(mod, "GGZDMOD: ERROR: %d seats sent upon launch.",
+		_ggzdmod_error(ggzdmod, "Error: %d seats received from GGZ");
+		ggzdmod_log(ggzdmod,
+			    "GGZDMOD: ERROR: %d seats sent upon launch.",
 			    num_seats);
 		return;
 	}
 
-	_ggzdmod_set_num_seats(mod, num_seats);
+	_ggzdmod_set_num_seats(ggzdmod, num_seats);
 }
 
 
-void _ggzdmod_handle_launch_seat(_GGZdMod * mod, GGZSeat seat)
+void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat)
 {
-
 	switch (seat.type) {
 	case GGZ_SEAT_OPEN:
-		ggzdmod_log(mod, "GGZDMOD: Seat %d is open", seat.num);
+		ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is open", seat.num);
 		break;
 
 	case GGZ_SEAT_BOT:
@@ -1012,48 +996,49 @@ void _ggzdmod_handle_launch_seat(_GGZdMod * mod, GGZSeat seat)
 			 rand_bot_names[bots]);
 		bots++;
 #endif
-		ggzdmod_log(mod, "GGZDMOD: Seat %d is a bot named %s", 
+		ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is a bot named %s",
 			    seat.num, seat.name);
 		break;
 
 	case GGZ_SEAT_RESV:
-		ggzdmod_log(mod, "GGZDMOD: Seat %d reserved for %s", seat.num,
-			    seat.name);
+		ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d reserved for %s",
+			    seat.num, seat.name);
 		break;
 	default:
-		_ggzdmod_error(mod, "Error: received unknown seat from GGZ");
-		ggzdmod_log(mod, "GGZDMOD: Unknown seat type %d", 
+		_ggzdmod_error(ggzdmod,
+			       "Error: received unknown seat from GGZ");
+		ggzdmod_log(ggzdmod, "GGZDMOD: Unknown seat type %d",
 			    seat.type);
 	}
 
 
-	if (_ggzdmod_set_seat(mod, &seat) < 0) {
-		_ggzdmod_error(mod, "Error setting seat");
-		ggzdmod_log(mod, "GGZDMOD: Error setting seat");
-		seat_print(mod, &seat);
+	if (_ggzdmod_set_seat(ggzdmod, &seat) < 0) {
+		_ggzdmod_error(ggzdmod, "Error setting seat");
+		ggzdmod_log(ggzdmod, "GGZDMOD: Error setting seat");
+		seat_print(ggzdmod, &seat);
 	}
 }
 
 
-void _ggzdmod_handle_launch_end(_GGZdMod * mod)
+void _ggzdmod_handle_launch_end(GGZdMod * ggzdmod)
 {
 	/* Normally we let the game control its own state, but
 	   we control the transition from CREATED to WAITING. */
-        set_state(mod, GGZDMOD_STATE_WAITING);
+        set_state(ggzdmod, GGZDMOD_STATE_WAITING);
 }
 
 
 /* game-side event: player join event received from ggzd */
-void _ggzdmod_handle_join(_GGZdMod * mod, GGZSeat seat)
+void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat)
 {
-	_ggzdmod_set_seat(mod, &seat);
-	ggzdmod_log(mod, "GGZDMOD: %s on fd %d in seat %d", seat.name, seat.fd,
-		    seat.num);
+	_ggzdmod_set_seat(ggzdmod, &seat);
+	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in seat %d",
+		    seat.name, seat.fd, seat.num);
 	
-	call_handler(mod, GGZDMOD_EVENT_JOIN, &seat.num);
+	call_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &seat.num);
 
-	if (_io_respond_join(mod->fd) < 0) {
-		_ggzdmod_error(mod, "Error sending data to GGZ");
+	if (_io_respond_join(ggzdmod->fd) < 0) {
+		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
 		return;
 	}
 
@@ -1064,7 +1049,7 @@ void _ggzdmod_handle_join(_GGZdMod * mod, GGZSeat seat)
 
 
 /* game-side event: player leave received from ggzd */
-void _ggzdmod_handle_leave(_GGZdMod * mod, char *name)
+void _ggzdmod_handle_leave(GGZdMod * ggzdmod, char *name)
 {
 	char status = -1;
 	GGZListEntry *entry;
@@ -1072,21 +1057,21 @@ void _ggzdmod_handle_leave(_GGZdMod * mod, char *name)
 
 	/* Set seat name, and see if we find anybody who matches */
 	seat.name = name;
-	entry = ggz_list_search_alt(mod->seats, &seat, 
+	entry = ggz_list_search_alt(ggzdmod->seats, &seat,
 				    (ggzEntryCompare)seat_find_player);
 	
 	if (entry) {
 		status = 0;
 		seat = *(GGZSeat*)ggz_list_get_data(entry);
-		ggzdmod_log(mod, "GGZDMOD: Removed %s from seat %d", 
+		ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from seat %d",
 			    seat.name, seat.num);
 			    
 		/* Reset seat to open state, and reinsert into list */
 		seat.fd = -1;
 		seat.name = NULL;
 		seat.type = GGZ_SEAT_OPEN;
-		ggz_list_insert(mod->seats, &seat);
-		call_handler(mod, GGZDMOD_EVENT_LEAVE, &seat.num);
+		ggz_list_insert(ggzdmod->seats, &seat);
+		call_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &seat.num);
 	
 
 		/* Most games will want to change their status to
@@ -1095,17 +1080,18 @@ void _ggzdmod_handle_leave(_GGZdMod * mod, char *name)
 	}
 
 	else
-		_ggzdmod_error(mod, "Error: non-existant player tried to leave");
+		_ggzdmod_error(ggzdmod,
+			       "Error: non-existant player tried to leave");
 
 
-	if (_io_respond_leave(mod->fd, status) < 0)
-		_ggzdmod_error(mod, "Error sending data to GGZ");
+	if (_io_respond_leave(ggzdmod->fd, status) < 0)
+		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
 
 }
 
 
 /* game-side event: game state response received from ggzd */
-void _ggzdmod_handle_state_response(_GGZdMod * ggzdmod)
+void _ggzdmod_handle_state_response(GGZdMod * ggzdmod)
 {
 	/* FIXME: what do we do here? */
 }
@@ -1113,26 +1099,26 @@ void _ggzdmod_handle_state_response(_GGZdMod * ggzdmod)
 
 #if 0 /* Not currently used.  See also the
 	 prototype up above. */
-static void dump_seats(_GGZdMod *mod)
+static void dump_seats(GGZdMod *ggzdmod)
 {
 	GGZListEntry *entry;
 	GGZSeat *seat;
 
-	ggzdmod_log(mod, "GGZDMOD: Begin Seat dump (%d):", 
+	ggzdmod_log(ggzdmod, "GGZDMOD: Begin Seat dump (%d):",
 		    ggzdmod_get_num_seats(mod));
-	for (entry = ggz_list_head(mod->seats);
+	for (entry = ggz_list_head(ggzdmod->seats);
 	     entry != NULL;
 	     entry = ggz_list_next(entry)) {
 		
 		seat = ggz_list_get_data(entry);
-		seat_print(mod, seat);
+		seat_print(ggzdmod, seat);
 	}
-	ggzdmod_log(mod, "GGZDMOD: End Seat dump");
+	ggzdmod_log(ggzdmod, "GGZDMOD: End Seat dump");
 }
 #endif
 
 
-static void seat_print(_GGZdMod* mod, GGZSeat *seat)
+static void seat_print(GGZdMod * ggzdmod, GGZSeat * seat)
 {
 	char *type = NULL;
 
@@ -1143,7 +1129,7 @@ static void seat_print(_GGZdMod* mod, GGZSeat *seat)
 	case GGZ_SEAT_NONE: type = "NONE"; break;		
 	case GGZ_SEAT_PLAYER: type = "PLAYER"; break;
 	}
-	ggzdmod_log(mod, "GGZDMOD: Seat %d is %s (%s) on %d",
+	ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is %s (%s) on %d",
 		    seat->num, type, seat->name, seat->fd);
 }
 
