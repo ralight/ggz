@@ -231,16 +231,14 @@ void game_update(int event_id, void *data) {
     case CHESS_EVENT_FLAG:
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
-      /* I now that the claiming player isn't out of time
+      /* I know that the claiming player isn't out of time
        * ie, there is only one player out of time */
-      if (game_info.seconds[0] - *(int*)data <= 0)
+      if (game_info.seconds[0] - (((game_info.turn+1)%2)*(*(int*)data)) <= 0)
         st = CHESS_GAMEOVER_WIN_2_FLAG;
-      else if (game_info.seconds[1] - *(int*)data <= 0)
+      else if (game_info.seconds[1] - ((game_info.turn%2)*(*(int*)data)) <= 0)
         st = CHESS_GAMEOVER_WIN_1_FLAG;
-      else {
-        ggz_debug("This should never happen!");
+      else
         break;
-      }
       game_update(CHESS_EVENT_GAMEOVER, &st);
       break;
     case CHESS_EVENT_DRAW:
@@ -378,7 +376,7 @@ void game_handle_player(int id, int *seat) {
           time = now.tv_sec - cronometer.tv_sec;
         }
         /* If first turn, there is no time! */
-        if (!game_info.turn)
+        if (game_info.turn == 0 || game_info.turn == 1)
           time = 0;
         ggz_debug("Move: %s\tTime: %d", data, time);
         *((int *)data + (6/sizeof(int)) + 1) = time;
@@ -409,7 +407,7 @@ void game_handle_player(int id, int *seat) {
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK)
         break;
       time = 0;
-      /* If server clock, geth the time until now*/
+      /* If server clock, get the time until now*/
       if (game_info.clock_type == CHESS_CLOCK_SERVER ||
           game_info.clock_type == CHESS_CLOCK_SERVERLAG) {
         gettimeofday(&now, NULL);
