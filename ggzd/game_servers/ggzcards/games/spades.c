@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 4074 2002-04-24 09:53:59Z jdorje $
+ * $Id: spades.c 4107 2002-04-29 04:03:17Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -338,6 +338,9 @@ static void spades_set_player_message(player_t p)
 	clear_player_message(p);
 	add_player_rating_message(p);
 	add_player_score_message(p);
+	
+	if (game.state == STATE_NOTPLAYING)
+		return;
 	
 	/* we show both the individual and team contract, if applicable.
 	   But is this really the best way to tell if it's applicable? */
