@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 3685 2002-03-25 22:40:22Z jdorje $
+ * $Id: dlg_bid.c 3697 2002-03-28 00:00:06Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -88,10 +88,18 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 
 	table_box = gtk_table_new(yw + 1, xw, FALSE);
 	
-	/* Create a title label within the table itself. */
-	label = gtk_label_new(_("Select your bid:"));
-	gtk_table_attach_defaults(GTK_TABLE(table_box), label,
-	                          0, xw, 0, 1);
+	if (!preferences.bid_on_table) {
+		/* Create a title label within the table itself. */
+		/* We don't show this when bid_on_table because the gtk_label
+		   won't be drawn properly on top of the table graphics.  It
+		   also allows more bids to fit cleanly on the table.  The
+		   implementation is a bit ugly, but it gives good results.
+		   (Note that down below we adjust "y" to take this into
+		   account.) */
+		label = gtk_label_new(_("Select your bid:"));
+		gtk_table_attach_defaults(GTK_TABLE(table_box), label,
+		                          0, xw, 0, 1);
+	}
 		
 	for (i = 0; i < possible_bids; i++) {
 		int x, y;
@@ -104,7 +112,13 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 					  GINT_TO_POINTER(i));
 
 		x = i % xw;
-		y = i / xw + 1;
+		y = i / xw;
+		
+		if (!preferences.bid_on_table) {
+			/* If we're not bid_on_table, we have an extra
+			   row at the top.  See above. */
+			y++;
+		}
 
 		gtk_table_attach_defaults(GTK_TABLE(table_box), button,
 		                          x, x + 1, y, y + 1);
