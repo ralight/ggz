@@ -163,8 +163,8 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>client_join_activate</handler>
-	      <last_modification_time>Sat, 14 Oct 2000 23:30:51 GMT</last_modification_time>
+	      <handler>client_joinm_activate</handler>
+	      <last_modification_time>Fri, 09 Mar 2001 20:44:14 GMT</last_modification_time>
 	    </signal>
 	    <label>_Join</label>
 	    <right_justify>False</right_justify>
@@ -745,6 +745,11 @@
 		<name>click_column</name>
 		<handler>client_table_clist_click_column</handler>
 		<last_modification_time>Sun, 15 Oct 2000 00:08:08 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>event</name>
+		<handler>client_table_event</handler>
+		<last_modification_time>Fri, 09 Mar 2001 20:44:00 GMT</last_modification_time>
 	      </signal>
 	      <columns>3</columns>
 	      <column_widths>26,38,80</column_widths>

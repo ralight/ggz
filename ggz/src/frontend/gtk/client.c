@@ -34,6 +34,7 @@
 #include "about.h"
 #include "client.h"
 #include "chat.h"
+#include "game.h"
 #include "ggz.h"
 #include "info.h"
 #include "launch.h"
@@ -49,6 +50,8 @@
 extern GdkColor colors[];
 GtkWidget *win_main;
 extern GGZServer *server;
+static gint tablerow = -1;
+
 /*
  * FIXME: There has got to be a better way than
  *        a global var. This is set at popup time
@@ -63,6 +66,7 @@ static void client_disconnect_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_exit_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_launch_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_join_activate(GtkMenuItem *menuitem, gpointer data);
+static void client_joinm_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_leave_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_properties_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_room_list_activate(GtkMenuItem *menuitem, gpointer data);
@@ -85,6 +89,7 @@ static void client_props_button_clicked(GtkButton *button, gpointer data);
 static void client_stats_button_clicked(GtkButton *button, gpointer data);
 static void client_exit_button_clicked(GtkButton *button, gpointer data);
 static gboolean client_room_clist_event(GtkWidget *widget, GdkEvent *event, gpointer data);
+static gboolean client_table_event(GtkWidget *widget, GdkEvent *event, gpointer data);
 static void client_room_clist_select_row(GtkCList *clist, gint row, 
 					 gint column, GdkEvent *event, 
 					 gpointer data);
@@ -160,10 +165,36 @@ client_join_activate		(GtkMenuItem	*menuitem,
 
 
 static void
+client_joinm_activate		(GtkMenuItem	*menuitem,
+				 gpointer	 data)
+{
+        char *name;
+        char *protocol;
+        GGZRoom *room;
+        GGZGameType *type;
+        GGZModule *module;
+        int table_index;
+
+	if(tablerow != -1)
+	{
+	        room = ggzcore_server_get_cur_room(server);
+        	type = ggzcore_room_get_gametype(room);
+	        name = ggzcore_gametype_get_name(type);
+        	protocol = ggzcore_gametype_get_protocol(type);
+        	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
+        	game_init(module);
+ 
+        	table_index = tablerow;
+        	ggzcore_room_join_table(room, table_index);
+		tablerow = -1;
+	}
+}
+
+static void
 client_leave_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-
+	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server));
 }
 
 
@@ -389,7 +420,7 @@ client_table_clist_select_row		(GtkCList	*clist,
 					 GdkEvent	*event,
 					 gpointer	 data)
 {
-
+	tablerow = row;
 }
 
 
@@ -398,7 +429,6 @@ client_table_clist_click_column		(GtkCList	*clist,
 					 gint		 column,
 					 gpointer	 data)
 {
-
 }
 
 
@@ -414,7 +444,26 @@ static void
 client_join_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
+        char *name;
+        char *protocol;
+        GGZRoom *room;
+        GGZGameType *type;
+        GGZModule *module;
+        int table_index;
 
+	if(tablerow != -1)
+	{
+	        room = ggzcore_server_get_cur_room(server);
+        	type = ggzcore_room_get_gametype(room);
+        	name = ggzcore_gametype_get_name(type);
+        	protocol = ggzcore_gametype_get_protocol(type);
+        	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
+        	game_init(module);
+ 
+        	table_index = tablerow;
+        	ggzcore_room_join_table(room, table_index);
+		tablerow = -1;
+	}
 }
 
 
@@ -422,7 +471,7 @@ static void
 client_leave_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-
+	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server));
 }
 
 
@@ -498,6 +547,40 @@ client_room_clist_event			(GtkWidget	*widget,
 		}
 	}
 
+	return FALSE;
+}
+
+
+static gboolean 
+client_table_event			(GtkWidget	*widget,
+					 GdkEvent	*event,
+					 gpointer	 data)
+{
+	
+	/* Check to see if the event was a mouse button press */
+	if( event->type == GDK_2BUTTON_PRESS )
+	{
+	        char *name;
+        	char *protocol;
+        	GGZRoom *room;
+        	GGZGameType *type;
+        	GGZModule *module;
+        	int table_index;
+
+		if(tablerow != -1)
+		{
+	        	room = ggzcore_server_get_cur_room(server);
+        		type = ggzcore_room_get_gametype(room);
+        		name = ggzcore_gametype_get_name(type);
+        		protocol = ggzcore_gametype_get_protocol(type);
+	        	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
+        		game_init(module);
+ 
+	        	table_index = tablerow;
+        		ggzcore_room_join_table(room, table_index);
+			tablerow = -1;
+		}
+	}
 	return FALSE;
 }
 
@@ -1425,7 +1508,7 @@ create_win_main (void)
                       GTK_SIGNAL_FUNC (client_launch_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (join), "activate",
-                      GTK_SIGNAL_FUNC (client_join_activate),
+                      GTK_SIGNAL_FUNC (client_joinm_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (leave), "activate",
                       GTK_SIGNAL_FUNC (client_leave_activate),
@@ -1501,6 +1584,9 @@ create_win_main (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (table_clist), "click_column",
                       GTK_SIGNAL_FUNC (client_table_clist_click_column),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (table_clist), "event",
+                      GTK_SIGNAL_FUNC (client_table_event),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (chat_entry), "activate",
                       GTK_SIGNAL_FUNC (client_chat_entry_activate),
@@ -1620,6 +1706,4 @@ create_mnu_room (void)
 
   return mnu_room;
 }
-
-
 
