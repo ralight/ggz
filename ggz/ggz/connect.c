@@ -36,7 +36,6 @@
 
 #include "connect.h"
 #include "dlg_error.h"
-#include "client.h"
 #include "easysock.h"
 #include "protocols.h"
 #include "err_func.h"
@@ -113,8 +112,8 @@ void Disconnect(GtkWidget * widget, gpointer data)
 		gdk_input_remove(sock_handle);
 	sock_handle = 0;
 
-	/* Close out network connection */
-	NetClose();
+	close(connection.sock);
+	connection.connected = FALSE;
 }
 
 
@@ -131,11 +130,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	char buf[4096];
 	TableInfo tmp_table;
 
-	CheckReadInt(source, &op);
+	es_read_int(source, &op);
 	
 	switch (op) {
 	case MSG_SERVER_ID:
-		CheckReadString(source, &message);
+		es_read_string_alloc(source, &message);
 		connect_msg("[%s] %s\n", opcode_str[op], message);
 		switch (connection.login_type) {
 		case 0:	/*Normal login */
@@ -155,7 +154,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			Disconnect(NULL, NULL);
 			return;
 		}
-		CheckReadInt(source, &checksum);
+		es_read_int(source, &checksum);
 		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
 		server_sync();
 		break;
@@ -242,7 +241,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 				    tmp_table.num_humans);
 
 			for (j = 1; j <= tmp_table.num_humans; j++) {
-				CheckReadString(source, &message);
+				es_read_string_alloc(source, &message);
 			}
 
 			add_table_list(tmp_table);
@@ -252,12 +251,12 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_USER_LIST:
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "player_list");
 		gtk_clist_clear(GTK_CLIST(tmp));
-		CheckReadInt(source, &count);
+		es_read_int(source, &count);
 		connect_msg("[%s] User List Count %d\n", opcode_str[op], count);
 		for (i = 0; i < count; i++) {
 			es_read_string(source, name);
 			connect_msg("[%s] User %s\n", opcode_str[op], name);
-			CheckReadInt(source, &num);
+			es_read_int(source, &num);
 			connect_msg("[%s] Table %d\n", opcode_str[op], num);
 			add_user_list(name, num);
 		}
@@ -292,7 +291,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_LOGIN:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		CheckWriteInt(connection.sock, REQ_USER_LIST);
+		es_write_int(connection.sock, REQ_USER_LIST);
 		break;
 
 	case RSP_NEW_LOGIN:
@@ -388,8 +387,8 @@ void add_table_list(TableInfo table)
 int anon_login(void)
 {
 
-	CheckWriteInt(connection.sock, REQ_ANON_LOGIN);
-	CheckWriteString(connection.sock, connection.username);
+	es_write_int(connection.sock, REQ_ANON_LOGIN);
+	es_write_string(connection.sock, connection.username);
 
 	return 0;
 }

@@ -32,6 +32,7 @@
 
 #include <easysock.h>
 #include <err_func.h>
+#include <dlg_error.h>
 
 
 static void err_doit(int flag, const char *fmt, va_list ap)
@@ -105,20 +106,40 @@ void dbg_msg(const char *fmt, ...)
 }
 
 
-void err_sock(const char *err, const EsOpType op, const EsDataType type)
+void err_sock(const char* err, const EsOpType op, const EsDataType type)
 {
 	switch (op) {
 	case ES_CREATE:
-		err_msg("Error while creating socket: %s\n", err);
+		err_dlg("Error while creating socket: %s\n", err);
 		break;
 	case ES_READ:
-		err_msg("Error while reading from socket: %s\n", err);
+		switch (type) {
+		case ES_CHAR:
+			err_dlg("Error reading byte from socket: %s\n", err);
+			break;
+		case ES_INT:
+			err_dlg("Error reading int from socket: %s\n", err);
+			break;
+		case ES_STRING:
+			err_dlg("Error reading string from socket: %s\n", err);
+			break;
+		}
 		break;
 	case ES_WRITE:
-		err_msg("Error while writing to socket: %s\n", err);
+		switch (type) {
+		case ES_CHAR:
+			err_dlg("Error writing byte from socket: %s\n", err);
+			break;
+		case ES_INT:
+			err_dlg("Error writing int from socket: %s\n", err);
+			break;
+		case ES_STRING:
+			err_dlg("Error writing string from socket: %s\n", err);
+			break;
+		}
 		break;
 	case ES_ALLOCATE:
-		err_msg("Error while allocating memory: %s\n", err);
+		err_dlg("Error while allocating memory: %s\n", err);
 		break;
 	}
 }

@@ -32,9 +32,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#include "client.h"
 #include "connect.h"
-/*#include <gtk_dlg_options.h>*/
 #include "dlg_error.h"
 #include "protocols.h"
 #include "datatypes.h"
@@ -119,14 +117,14 @@ void input_options(GtkButton * button, gpointer window)
 void start_session(GtkButton * button, gpointer window)
 {
 	if (connection.connected) {
-		DisplayWarning("Already Connected.");
+		warn_dlg("Already Connected.");
 		return;
 	}
 	
 	/* FIXME: Initialize for new game session */
 	
 	if (connect_to_server() < 0) {
-		DisplayError("Could not connect");
+		err_dlg("Could not connect");
 		return;
 	}
 
@@ -156,8 +154,8 @@ void join_game(GtkButton * button, gpointer user_data)
 {
 	/* FIXME: Don't hardcode table numnber! */
 	dbg_msg("joining game");
-	CheckWriteInt(connection.sock, REQ_JOIN_GAME);
-	CheckWriteInt(connection.sock, 0);
+	es_write_int(connection.sock, REQ_JOIN_GAME);
+	es_write_int(connection.sock, 0);
 	launch_game(0, 0);
 }
 
@@ -167,7 +165,7 @@ void get_game_options(GtkButton * button, gpointer user_data)
 	int type = 0;		/* FIXME: Input type of game to launch */
 
 	if (!connection.connected)
-		DisplayWarning("Not connected!");
+		warn_dlg("Not connected!");
 	else {
 		launch_game(type, 1);
 	}
@@ -177,7 +175,7 @@ void get_game_options(GtkButton * button, gpointer user_data)
 void logout(GtkMenuItem * menuitem, gpointer user_data)
 {
 	dbg_msg("Logging out");
-	CheckWriteInt(connection.sock, REQ_LOGOUT);
+	es_write_int(connection.sock, REQ_LOGOUT);
 }
 
 
@@ -185,36 +183,36 @@ void get_types(GtkMenuItem * menuitem, gpointer user_data)
 {
 	char verbose = 1;
 
-	CheckWriteInt(connection.sock, REQ_GAME_TYPES);
+	es_write_int(connection.sock, REQ_GAME_TYPES);
 	write(connection.sock, &verbose, 1);
 }
 
 
 void get_players(GtkMenuItem * menuitem, gpointer user_data)
 {
-	CheckWriteInt(connection.sock, REQ_USER_LIST);
+	es_write_int(connection.sock, REQ_USER_LIST);
 }
 
 
 void get_tables(GtkMenuItem * menuitem, gpointer user_data)
 {
-	CheckWriteInt(connection.sock, REQ_TABLE_LIST);
-	CheckWriteInt(connection.sock, -1);
+	es_write_int(connection.sock, REQ_TABLE_LIST);
+	es_write_int(connection.sock, -1);
 }
 
 
 void input_chat_msg(GtkWidget * widget, gpointer user_data)
 {
 	if (!connection.connected) {
-		DisplayError("Not Connected");
+		err_dlg("Not Connected");
 		return;
 	}
 	
 	if (strcmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "") != 0
-	    && CheckWriteInt(connection.sock, REQ_CHAT) == NET_OK)
+	    && es_write_int(connection.sock, REQ_CHAT) == 0)
 		
-		CheckWriteString(connection.sock,
-				 gtk_entry_get_text(GTK_ENTRY(user_data)));
+		es_write_string(connection.sock,
+				gtk_entry_get_text(GTK_ENTRY(user_data)));
 	
 	gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }

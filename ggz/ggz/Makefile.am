@@ -9,7 +9,6 @@ bin_PROGRAMS = ggz
 ggz_SOURCES = 	main.c \
 		callbacks.c \
 	   	callbacks.h \
-		client_func.c \
 		connect.c \
 	   	connect.h \
 		datatypes.h \

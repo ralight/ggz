@@ -28,11 +28,11 @@
 
 #include <gtk/gtk.h>
 
-#include "client.h"
 #include "interface.h"
-#include "support.h"
 #include "datatypes.h"
 #include "parse_opt.h"
+#include "easysock.h"
+#include "err_func.h"
 
 /* Main global data structures */
 struct ConnectInfo connection;
@@ -43,9 +43,9 @@ GtkWidget *dlg_login;
 int main(int argc, char *argv[])
 {
 	parse_args(argc, argv);
-
 	gtk_init(&argc, &argv);
-
+	es_err_func_set(err_sock);
+	
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
 	dlg_login = create_dlg_login();

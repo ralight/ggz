@@ -50,6 +50,6 @@ void dbg_msg(const char *fmt, ...);
 
 
 /*
- * Error fprinting function for easysock lib
+ * Error printing function for easysock lib
  */
 void err_sock(const char *, const EsOpType, const EsDataType);

@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 
-void DisplayError(char *);
-void DisplayWarning(char *);
-void DisplayMessage(char *, gboolean);
+void err_dlg(const char *, ...);
+void warn_dlg(const char *, ...);
+void msg_dlg(char *, gboolean);
+

@@ -25,10 +25,12 @@
 
 
 #include <gtk/gtk.h>
+#include <unistd.h>
 
+#include "dlg_error.h"
 #include "connect.h"
 
-void DisplayMessage(char *str, gboolean quit)
+void msg_dlg(char *str, gboolean quit)
 {
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
@@ -38,9 +40,9 @@ void DisplayMessage(char *str, gboolean quit)
 	GtkWidget *buttonBox;
 	GtkWidget *labelBox;
 	GtkWidget *okButton;
-	char message[4096];
+	char* message;
 
-	snprintf(message, 4096, "[%d]: %s", getpid(), str);
+	message = g_strdup_printf("[%d]: %s", getpid(), str);
 
 	window = gtk_dialog_new();
 	if (quit) {
@@ -109,12 +111,27 @@ void DisplayMessage(char *str, gboolean quit)
 }
 
 
-void DisplayError(char *message)
+void err_dlg(const char *fmt, ...)
 {
-	DisplayMessage(message, TRUE);
+	char* message;
+	va_list ap;
+
+	va_start(ap,fmt);	
+	message = g_strdup_vprintf(fmt, ap);
+	msg_dlg(message, TRUE);
+	va_end(ap);
+	g_free(message);
 }
 
-void DisplayWarning(char *message)
+
+void warn_dlg(const char *fmt, ...)
 {
-	DisplayMessage(message, FALSE);
+	char* message;
+	va_list ap;
+
+	va_start(ap,fmt);	
+	message = g_strdup_vprintf(fmt, ap);
+	msg_dlg(message, FALSE);
+	va_end(ap);
+	g_free(message);
 }

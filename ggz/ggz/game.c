@@ -37,7 +37,6 @@
 #include "game.h"
 #include "dlg_error.h"
 #include "datatypes.h"
-#include "client.h"
 #include "protocols.h"
 #include "err_func.h"
 
@@ -69,11 +68,11 @@ void launch_game(int type, char launch)
 	
 	/* Fork table process */
 	if ((pid = fork()) < 0) {
-		DisplayError("fork failed");
+		err_dlg("fork failed");
 		return;
 	} else if (pid == 0) {
 		run_game(type, launch, fd[0]);
-		DisplayError("exec failed");
+		err_dlg("exec failed");
 		return;
 	} else {
 		/* Close the remote ends of the socket pairs */
@@ -117,19 +116,19 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 
 	dbg_msg("Getting options from game client");
 
-	CheckReadInt(source, &size);
+	es_read_int(source, &size);
 	options = malloc(size);
 	/*FIXME: check for failed malloc */
 	es_readn(source, options, size);
 	es_read_char(source, &ai);
 
 	/* Send launch game request to server */
-	CheckWriteInt(connection.sock, REQ_LAUNCH_GAME);
-	CheckWriteInt(connection.sock, 0);	/* Game type index */
-	CheckWriteInt(connection.sock, 4);	/* Number of seats */
+	es_write_int(connection.sock, REQ_LAUNCH_GAME);
+	es_write_int(connection.sock, 0);	/* Game type index */
+	es_write_int(connection.sock, 4);	/* Number of seats */
 	es_write_char(connection.sock, ai);	/* AI players */
-	CheckWriteInt(connection.sock, 0);	/* Number of reservations */
-	CheckWriteInt(connection.sock, size);
+	es_write_int(connection.sock, 0);	/* Number of reservations */
+	es_write_int(connection.sock, size);
 	es_writen(connection.sock, options, size);
 	free(options);
 
@@ -148,8 +147,8 @@ static void handle_game(gpointer data, gint source, GdkInputCondition cond)
 
 	size = read(source, buf, 4096);
 	dbg_msg("Client sent %d bytes", size);
-	CheckWriteInt(connection.sock, REQ_GAME);
-	CheckWriteInt(connection.sock, size);
+	es_write_int(connection.sock, REQ_GAME);
+	es_write_int(connection.sock, size);
 	status = es_writen(connection.sock, buf, size);
 
 	if (status <= 0) {	/* Game over */
