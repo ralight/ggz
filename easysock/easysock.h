@@ -38,25 +38,24 @@
  *
  ***************************************************************************/
 typedef enum {
-  ES_CREATE,
-  ES_READ,
-  ES_WRITE,
-  ES_ALLOCATE
+	ES_CREATE,
+	ES_READ,
+	ES_WRITE,
+	ES_ALLOCATE
 } EsOpType;
 
 typedef enum {
-  ES_NONE,
-  ES_CHAR,
-  ES_INT,
-  ES_STRING
+	ES_NONE,
+	ES_CHAR,
+	ES_INT,
+	ES_STRING
 } EsDataType;
 
-typedef void (*es_err_func) (const char*, 
-			     const EsOpType, 
+typedef void (*es_err_func) (const char *, const EsOpType, 
 			     const EsDataType);
 
-int es_err_func_set( es_err_func func );
-es_err_func es_err_func_rem( void );
+int es_err_func_set(es_err_func func);
+es_err_func es_err_func_rem(void);
 
 
 
@@ -72,8 +71,8 @@ es_err_func es_err_func_rem( void );
  ***************************************************************************/
 typedef void (*es_exit_func) (int);
 
-int es_exit_func_set( es_exit_func func );
-es_exit_func es_exit_func_rem( void );
+int es_exit_func_set(es_exit_func func);
+es_exit_func es_exit_func_rem(void);
 
 
 /****************************************************************************
@@ -86,17 +85,16 @@ es_exit_func es_exit_func_rem( void );
  * Returns socket fd or -1 on error
  ***************************************************************************/
 typedef enum {
-  ES_SERVER,
-  ES_CLIENT
+	ES_SERVER,
+	ES_CLIENT
 } EsSockType;
 
-int es_make_socket( const EsSockType type,
-		    const unsigned short port,  
-		    const char* server );
+int es_make_socket(const EsSockType type, const unsigned short port, 
+		   const char *server);
 
-int es_make_socket_or_die( const EsSockType type,
-			   const unsigned short port,  
-			   const char* server );
+int es_make_socket_or_die(const EsSockType type,
+			  const unsigned short port, 
+			  const char *server);
 
 
 /****************************************************************************
@@ -107,10 +105,10 @@ int es_make_socket_or_die( const EsSockType type,
  * 
  * Returns 0 if successful, -1 on error.
  ***************************************************************************/
- int es_write_char( const int sock, const char data );
-void es_write_char_or_die( const int sock, const char data );
- int es_read_char( const int sock, char* data );
-void es_read_char_or_die( const int sock, char* data );
+int es_write_char(const int sock, const char data);
+void es_write_char_or_die(const int sock, const char data);
+int es_read_char(const int sock, char *data);
+void es_read_char_or_die(const int sock, char *data);
 
 
 /****************************************************************************
@@ -121,10 +119,10 @@ void es_read_char_or_die( const int sock, char* data );
  * 
  * Returns 0 if successful, -1 on error.
  ***************************************************************************/
- int es_write_int( const int sock, const int data );
-void es_write_int_or_die( const int sock, const int data );
- int es_read_int( const int sock, int* data );
-void es_read_int_or_die( const int sock, int* data );
+int es_write_int(const int sock, const int data);
+void es_write_int_or_die(const int sock, const int data);
+int es_read_int(const int sock, int *data);
+void es_read_int_or_die(const int sock, int *data);
 
 
 /****************************************************************************
@@ -137,14 +135,14 @@ void es_read_int_or_die( const int sock, int* data );
  * Returns 0 if successful, -1 on error.
  *
  ***************************************************************************/
- int es_write_string( const int sock, const char* data );
-void es_write_string_or_die( const int sock, const char* data );
- int es_va_write_string( const int sock, const char* fmt, ...);
-void es_va_write_string_or_die( const int sock, const char* fmt, ...);
- int es_read_string( const int sock, char* data);
-void es_read_string_or_die( const int sock, char* data);
- int es_read_string_alloc( const int sock, char** data);
-void es_read_string_alloc_or_die( const int sock, char** data);
+int es_write_string(const int sock, const char *data);
+void es_write_string_or_die(const int sock, const char *data);
+int es_va_write_string(const int sock, const char *fmt, ...);
+void es_va_write_string_or_die(const int sock, const char *fmt, ...);
+int es_read_string(const int sock, char *data);
+void es_read_string_or_die(const int sock, char *data);
+int es_read_string_alloc(const int sock, char **data);
+void es_read_string_alloc_or_die(const int sock, char **data);
 
 
 /****************************************************************************
@@ -164,4 +162,3 @@ int es_readn(const int sock, void *data, size_t n);
 int es_writen(const int sock, const void *vdata, size_t n);
 
 #endif
-
