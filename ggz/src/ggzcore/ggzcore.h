@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6424 2004-11-24 08:41:00Z jdorje $
+ * $Id: ggzcore.h 6444 2004-12-11 19:06:32Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -894,6 +894,9 @@ int ggzcore_room_init(GGZRoom *room,
 /** @brief De-allocate room object and its children */
 void ggzcore_room_free(GGZRoom *room);
 
+
+/** @brief Return the server for this room (or NULL on error). */
+GGZServer *ggzcore_room_get_server(GGZRoom *room);
 
 /** @brief Return the ID number of the room (or negative on error). */
 int ggzcore_room_get_id(GGZRoom *room);

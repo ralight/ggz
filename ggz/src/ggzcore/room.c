@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6276 2004-11-05 23:36:58Z jdorje $
+ * $Id: room.c 6444 2004-12-11 19:06:32Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -79,6 +79,15 @@ void ggzcore_room_free(GGZRoom *room)
 {
 	if (room)
 		_ggzcore_room_free(room);
+}
+
+
+GGZServer *ggzcore_room_get_server(GGZRoom *room)
+{
+	if (room)
+		return _ggzcore_room_get_server(room);
+	else
+		return NULL;
 }
 
 
