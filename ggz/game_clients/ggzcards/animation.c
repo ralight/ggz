@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3350 2002-02-13 08:58:11Z jdorje $
+ * $Id: animation.c 3351 2002-02-13 09:15:18Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -38,9 +38,11 @@
 #include "table.h"
 
 
-/* FIXME: these should be preferences */
-#define FRAMES		15
-#define DURATION	500	/* In milliseconds */
+/* The number of frames in an animation sequence. */
+#define FRAMES		(preferences.smoother_animation ? 50 : 15)
+
+/* Intended duration of an animation sequence, in milliseconds. */
+#define DURATION	(preferences.faster_animation ? 50 : 500)	
 
 
 static int animating = 0;

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: game.h 3351 2002-02-13 09:15:18Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -31,9 +31,11 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-/* Current list of preferences.  They can't be changed at runtime yet. */
+/* Current list of preferences. */
 struct prefs {
 	int animation;
+	int faster_animation;
+	int smoother_animation;
 	int autostart;
 	int cardlists;
 	int use_default_options;
