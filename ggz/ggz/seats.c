@@ -84,7 +84,7 @@ gint seats_human(Table table)
 {
 	gint i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		if (table.seats[i] >= 0 )
+		if (table.seats[i] == GGZ_SEAT_PLAYER)
 			count++;
 	
 	return count;

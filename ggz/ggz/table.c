@@ -87,7 +87,7 @@ void table_list_player_join(guint id, guint seat, gchar* name)
 		return;
 
 	table = (Table*)(node->data);
-	table->seats[seat] = 1; /* must be >=0 for humans */
+	table->seats[seat] = GGZ_SEAT_PLAYER; 
 	table->names[seat] = g_strdup(name);
 }
 
