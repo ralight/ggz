@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4041 2002-04-21 21:22:18Z jdorje $
+ * $Id: fortytwo.c 4043 2002-04-21 22:58:26Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -167,11 +167,12 @@ static void fortytwo_handle_bid(player_t p, bid_t bid)
 static void fortytwo_start_playing(void)
 {
 	player_t p;
+		
+	game_start_playing();
 	
 	for (p = 0; p < 4; p++)
 		FORTYTWO.count[p] = 0;
-		
-	game_start_playing();
+	game.leader = FORTYTWO.declarer;
 }
 
 static void fortytwo_handle_play(player_t p, seat_t s, card_t c)
@@ -182,6 +183,7 @@ static void fortytwo_handle_play(player_t p, seat_t s, card_t c)
 		/* FIXME: this is wrong, wrong, wrong! */
 		card_t card = game.seats[game.leader].table;
 		game.trump = card.suit;
+		set_global_message("Trump", "%d's are trump.", game.trump);
 		for (p = 0; p < game.num_players; p++)
 			(void) game.data->send_hand(p, p);
 	}
