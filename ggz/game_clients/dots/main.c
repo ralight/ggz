@@ -61,14 +61,18 @@ static int get_sync_info(void);
 
 int main(int argc, char *argv[])
 {
+	char *filename;
+
 	gtk_init(&argc, &argv);
 
 	ggz_connect();
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
-	conf_handle = ggzcore_confio_parse("/home/rgade/.ggz/dots-gtk.rc",
+	filename = g_strdup_printf("%s/.ggz/dots-gtk.rc", getenv("HOME"));
+	conf_handle = ggzcore_confio_parse(filename,
 					   GGZ_CONFIO_RDWR |
 					   GGZ_CONFIO_CREATE);
+	g_free(filename);
 
 	game.state = DOTS_STATE_INIT;
 	game_init();
