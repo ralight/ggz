@@ -10,6 +10,238 @@ import sys
 import time
 import random
 
+class Game:
+	def __init__(self):
+		self.seat = -1
+		self.domove = 0
+
+	def tomove(self, x2, y2, x, y):
+		move = 0
+		if x == x2 - 1 and y == y2 - 1:
+			move = 7
+		elif x == x2 and y == y2 - 1:
+			move = 8
+		elif x == x2 + 1 and y == y2 - 1:
+			move = 9
+		elif x == x2 + 1 and y == y2:
+			move = 6
+		elif x == x2 + 1 and y == y2 + 1:
+			move = 3
+		elif x == x2 and y == y2 + 1:
+			move = 2
+		elif x == x2 - 1 and y == y2 + 1:
+			move = 1
+		elif x == x2 - 1 and y == y2:
+			move = 4
+
+		return move
+
+	def frommove(self, move):
+		p = (0, 0)
+		if move == 1:
+			p = (-1, 1)
+		elif move == 2:
+			p = (0, 1)
+		elif move == 3:
+			p = (1, 1)
+		elif move == 4:
+			p = (-1, 0)
+		elif move == 5:
+			p = (0, 0)
+		elif move == 6:
+			p = (1, 0)
+		elif move == 7:
+			p = (-1, -1)
+		elif move == 8:
+			p = (0, -1)
+		elif move == 9:
+			p = (1, -1)
+
+		return p
+
+class Network:
+	def __init__(self):
+		self.sock = None
+		self.gamefd = -1
+
+		self.MSG_SEAT = 0
+		self.MSG_PLAYERS = 1
+		self.MSG_MOVE = 2
+		self.MSG_GAMEOVER = 3
+		self.REQ_MOVE = 4
+		self.RSP_MOVE = 5
+		self.SND_SYNC = 6
+		self.MSG_OPTIONS = 7
+		self.REQ_OPTIONS = 8
+		self.MSG_CHAT = 9
+		self.RSP_CHAT = 10
+		self.SND_STATS = 11
+
+		self.SND_MOVE = 0
+		self.REQ_SYNC = 1
+		self.SND_OPTIONS = 2
+		self.REQ_NEWGAME = 3
+		self.REQ_STATS = 4
+
+		self.ERR_STATE = -1
+		self.ERR_TURN = -2
+		self.ERR_BOUND = -3
+		self.ERR_FULL = -4
+
+		self.SEAT_OPEN = 1
+
+		self.game = Game()
+
+	def init(self, fd):
+		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
+
+	def getbyte(self):
+		opstr = self.sock.recv(4)
+		op = ord(opstr[0]) * 256 * 256 * 256
+		op += ord(opstr[1]) * 256 * 256
+		op += ord(opstr[2]) * 256
+		op += ord(opstr[3])
+		return op
+
+	def getchar(self):
+		opstr = self.sock.recv(1)
+		op = ord(opstr[0])
+		return op
+
+	def getstring(self):
+		length = self.getbyte()
+		opstr = self.sock.recv(length)
+		return opstr
+
+	def sendbyte(self, byte):
+		nbyte = socket.htonl(byte)
+		c1 = (nbyte >> 0) & 0xFF
+		c2 = (nbyte >> 8) & 0xFF
+		c3 = (nbyte >> 16) & 0xFF
+		c4 = (nbyte >> 24) & 0xFF
+		self.sock.send(chr(c1))
+		self.sock.send(chr(c2))
+		self.sock.send(chr(c3))
+		self.sock.send(chr(c4))
+
+	def sendchar(self, char):
+		self.sock.send(chr(char))
+
+	def sendstring(self, str):
+		self.sendbyte(len(str))
+		self.sock.send(str)
+
+def handle_server(fd):
+	global net
+
+	ggzmod.setState(ggzmod.STATE_PLAYING)
+
+	net.gamefd = fd
+	net.init(net.gamefd)
+
+def network():
+	global net
+	global blobpos
+	global trail
+	global madeturn
+
+	print "network!"
+
+	op = net.getbyte()
+
+	if op == net.MSG_PLAYERS:
+		print "- players"
+		seattype = net.getbyte()
+		print "seattype:", seattype
+		if seattype != net.SEAT_OPEN:
+			name = net.getstring()
+			print "name:", name
+		seattype = net.getbyte()
+		print "seattype:", seattype
+		if seattype != net.SEAT_OPEN:
+			name = net.getstring()
+			print "name:", name
+	elif op == net.MSG_SEAT:
+		print "- seat"
+		seat = net.getbyte()
+		print "seat:", seat
+		net.game.seat = seat
+	elif op == net.MSG_MOVE:
+		print "- move"
+		direction = net.getbyte()
+		print "direction:", direction
+
+		(xd, yd) = net.game.frommove(direction)
+		(x, y, player) = blobpos
+		blobpos = (x + xd, y + yd, 1)
+		trail.append(blobpos)
+	elif op == net.SND_STATS:
+		print "- stats"
+		wins = net.getbyte()
+		losses = net.getbyte()
+		ties = net.getbyte()
+		print "wins:", wins, "losses:", losses, "ties:", ties
+	elif op == net.SND_SYNC:
+		print "- sync"
+		boardheight = net.getchar()
+		goalwidth = net.getchar()
+		wallwidth = net.getchar()
+		turn = net.getchar()
+		x = net.getbyte()
+		y = net.getbyte()
+		print "boardheight:", boardheight, "goalwidth:", goalwidth, "wallwidth:", wallwidth
+		print "turn:", turn, "x:", x, "y:", y
+
+		for p in range(0, goalwidth + wallwidth * 2):
+			for q in range(0, boardheight):
+				for d in range(1, 10):
+					c = net.getchar()
+	elif op == net.MSG_GAMEOVER:
+		print "- gameover"
+		winner = net.getchar()
+		print "winner:", winner
+	elif op == net.RSP_MOVE:
+		print "- rspmove"
+		status = net.getchar()
+		move = net.getbyte()
+		print "status:", status, "move:", move
+	elif op == net.REQ_MOVE:
+		print "- reqmove"
+		net.game.domove = 1
+		madeturn = 0
+	elif op == net.REQ_OPTIONS:
+		print "- reqoptions"
+
+		boardheight = 11
+		goalwidth = 1
+		wallwidth = 4
+
+		net.sendbyte(net.SND_OPTIONS)
+		net.sendchar(boardheight)
+		net.sendchar(goalwidth)
+		net.sendchar(wallwidth)
+	elif op == net.MSG_OPTIONS:
+		print "- options"
+		boardheight = net.getchar()
+		goalwidth = net.getchar()
+		wallwidth = net.getchar()
+		print "boardheight:", boardheight, "goalwidth:", goalwidth, "wallwidth:", wallwidth
+	else:
+		print "- unknown opcode"
+
+def handle_network():
+	global net
+
+	networked = 0
+	if net.gamefd != -1:
+		networked = 1
+
+	ret = ggzmod.autonetwork(networked, net.gamefd)
+	if ret == 1 or ret == 3:
+		network()
+	if ret == 2 or ret == 3:
+		ggzmod.dispatch()
+
 def validate((blobpos, trail, x, y)):
 	(bx, by, bplayer) = blobpos
 
@@ -57,7 +289,12 @@ def ai((blobpos, trail)):
 
 	return (blobpos, trail)
 
-def main():
+def main(ggzmode):
+	global net
+	global blobpos
+	global trail
+	global madeturn
+
 	""" Pygame setup """
 
 	pygame.init()
@@ -144,9 +381,31 @@ def main():
 	surface.blit(hline, (30, 430))
 	surface.blit(hline, (368 - 150, 430))
 
+	""" Network setup """
+
+	ggzsuccess = 0
+
+	if ggzmode:
+		ggzmod.setHandler(ggzmod.EVENT_SERVER, handle_server)
+
+		ret = ggzmod.connect()
+		if ret < 0:
+			ggzsuccess = 0
+		else:
+			ggzsuccess = 1
+			net = Network()
+
+	if ggzmode:
+		ggzfont = pygame.font.Font(None, 20)
+		if ggzsuccess:
+			ggz = ggzfont.render("Running on GGZ", 1, (165, 140, 0))
+		else:
+			ggz = ggzfont.render("GGZ unavailable", 1, (165, 140, 0))
+
+		surface.blit(ggz, (420, 140))
+
 	""" Main loop """
 
-	ggzmode = 0
 	madeturn = 0
 	aierror = 0
 	humanerror = 0
@@ -161,6 +420,8 @@ def main():
 	pygame.event.clear()
 
 	while 1:
+		if ggzsuccess:
+			handle_network()
 		pygame.event.pump()
 
 		keyinput = pygame.key.get_pressed()
@@ -170,18 +431,24 @@ def main():
 
 		(b1, b2, b3) = pygame.mouse.get_pressed()
 		if b1 and not pressed and not madeturn:
-			(x, y) = pygame.mouse.get_pos()
-			x = (x - 30 + 20) / 40
-			y = (y - 30 + 20) / 40
-			if x >= 0 and x < 9 and y >= 0 and y < 11:
-				(x2, y2, player) = blobpos
-				if validate((blobpos, trail, x, y)):
-					blobpos = (x, y, 0)
-					trail.append(blobpos)
-					madeturn = 1
-					humanerror = 0
-				else:
-					humanerror = 1
+			if not ggzmode or (ggzsuccess and net.game.domove):
+				(x, y) = pygame.mouse.get_pos()
+				x = (x - 30 + 20) / 40
+				y = (y - 30 + 20) / 40
+				if x >= 0 and x < 9 and y >= 0 and y < 11:
+					if validate((blobpos, trail, x, y)):
+						(x2, y2, player) = blobpos
+						blobpos = (x, y, 0)
+						trail.append(blobpos)
+						madeturn = 1
+						humanerror = 0
+
+						if ggzsuccess and net.game.domove:
+							move = net.game.tomove(x2, y2, x, y)
+							net.sendbyte(net.SND_MOVE)
+							net.sendbyte(move)
+					else:
+						humanerror = 1
 			pressed = 1
 
 		if not b1 and pressed:
@@ -244,5 +511,8 @@ def main():
 				aierror = 1
 
 if __name__ == "__main__":
-		main()
+		if len(sys.argv) == 2 and sys.argv[1] == "--ggz":
+			main(1)
+		else:
+			main(0)
 

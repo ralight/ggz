@@ -1,6 +1,6 @@
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = /usr/local/bin/pykamikaze --ggz
+CommandLine = /usr/local/bin/escape-sdl --ggz
 Frontend = sdl
 Homepage = http://ggz.sourceforge.net/games/escape/
 Name = Escape/SDL
