@@ -80,12 +80,15 @@ KGGZGrubby::KGGZGrubby(QWidget *parent, const char *name)
 	image->setBackgroundPixmap(QPixmap(KGGZ_DIRECTORY "/images/grubbybig.png"));
 
 	combo = new QComboBox(this);
-	combo->insertItem(i18n("Have you seen ..."));
+	combo->insertItem(i18n("Have you seen ...:"));
 	combo->insertItem(i18n("Do you have any messages for me?"));
-	combo->insertItem(i18n("Add this to the alert words:"));
+	combo->insertItem(i18n("Alert this player if you see him:"));
+	combo->insertItem(i18n("What do you know about ...:"));
+	combo->insertItem(i18n("Who is ...:"));
 	combo->insertItem(i18n("I need help!"));
 	combo->insertItem(i18n("Tell me something about you"));
 	combo->insertItem(i18n("Thanks for taking the time!"));
+	
 
 	label = new QLabel(i18n("This is grubby:"), this);
 	label2 = new QLabel(i18n("Select a command:"), this);
@@ -148,6 +151,8 @@ void KGGZGrubby::slotActivated(int index)
 			break;
 		case actionalertadd:
 		case actionseen:
+		case actionteach:
+		case actionwhois:
 			m_ed->setEnabled(TRUE);
 			break;
 	}

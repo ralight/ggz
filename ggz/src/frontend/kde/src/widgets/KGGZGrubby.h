@@ -54,6 +54,8 @@ class KGGZGrubby : public QWidget
 			actionseen,
 			actionmessages,
 			actionalertadd,
+			actionteach,
+			actionwhois,
 			actionhelp,
 			actionabout,
 			actionbye
