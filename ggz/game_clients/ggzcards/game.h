@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 4086 2002-04-26 19:37:51Z jdorje $
+ * $Id: game.h 4094 2002-04-27 22:15:35Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -30,6 +30,11 @@
 
 #ifndef __GAME_H__
 #define __GAME_H__
+
+/* Standard debugging types.  These are necessary for alternate AIs. */
+#define DBG_BID "bid"
+#define DBG_PLAY "play"
+#define DBG_AI "misc"
 
 /*
  * Current list of preferences.
