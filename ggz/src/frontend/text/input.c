@@ -361,7 +361,7 @@ static void input_handle_launch(char *line)
 
 	table = ggzcore_table_new();
 	ggzcore_table_init(table, type, "Test", 2);
-	ggzcore_table_add_bot(table, NULL, 1);
+	ggzcore_table_set_seat(table, 1, GGZ_SEAT_BOT, NULL);
 
 	ggzcore_room_launch_table(room, table);
 	ggzcore_table_free(table);
