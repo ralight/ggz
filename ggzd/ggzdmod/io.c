@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 5007 2002-10-23 17:50:56Z jdorje $
+ * $Id: io.c 5061 2002-10-27 12:44:22Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -43,9 +43,11 @@
 
 
 /* Private IO reading functions */
-static int _io_read_req_launch(GGZdMod *ggzdmod);
 static int _io_read_req_state(GGZdMod *ggzdmod);
 static int _io_read_msg_log(GGZdMod *ggzdmod);
+static int _io_read_msg_report(GGZdMod *ggzdmod);
+
+static int _io_read_req_launch(GGZdMod *ggzdmod);
 static int _io_read_msg_seat_change(GGZdMod * ggzdmod);
 static int _io_read_msg_reseat(GGZdMod * ggzdmod);
 static int _io_read_msg_spectator_seat_change(GGZdMod *ggzdmod);
@@ -148,6 +150,34 @@ int _io_send_log(int fd, char *msg)
 }
 
 
+int _io_send_game_report(int fd, int num_players,
+			 char **names, int *teams, GGZGameResult *results)
+{
+	int p;
+
+	if (ggz_write_int(fd, MSG_GAME_REPORT) < 0
+	    || ggz_write_int(fd, num_players) < 0)
+		return -1;
+
+	/* Note - we need to send the number of players, as well as the
+	   list of player names, because some players could be in the
+	   process of joining/leaving and GGZd may have a different updated
+	   "master" list of who's at the table. */
+
+	for (p = 0; p < num_players; p++) {
+		int team = teams ? teams[p] : p;
+		int result = results[p];
+		char *name = names[p] ? names[p] : "";
+		if (ggz_write_string(fd, name) < 0
+		    || ggz_write_int(fd, team) < 0
+		    || ggz_write_int(fd, result) < 0)
+			return -1;
+	}
+
+	return 0;
+}
+
+
 int _io_respond_state(int fd)
 {
 	return ggz_write_int(fd, RSP_GAME_STATE);
@@ -182,6 +212,8 @@ int _io_read_data(GGZdMod * ggzdmod)
 			return _io_read_req_state(ggzdmod);
 		case MSG_LOG:
 			return _io_read_msg_log(ggzdmod);
+		case MSG_GAME_REPORT:
+			return _io_read_msg_report(ggzdmod);
 		}
 	}
 
@@ -213,6 +245,48 @@ static int _io_read_msg_log(GGZdMod * ggzdmod)
 		ggz_free(msg);
 	}
 	
+	return 0;
+}
+
+
+static int _io_read_msg_report(GGZdMod *ggzdmod)
+{
+	int num_players;
+
+	if (ggz_read_int(ggzdmod->fd, &num_players) < 0)
+		return -1;
+	else {
+		char *names[num_players];
+		int teams[num_players];
+		GGZGameResult results[num_players];
+		int p;
+
+		for (p = 0; p < num_players; p++) {
+			int result;
+			char *name;
+
+			if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0
+			    || ggz_read_int(ggzdmod->fd, &teams[p]) < 0
+			    || ggz_read_int(ggzdmod->fd, &result) < 0)
+				return -1; /* FIXME - mem leak */
+
+			if (name)
+				names[p] = name;
+			else {
+				ggz_free(name);
+				names[p] = NULL; /* Bot */
+			}
+			results[p] = result;
+		}
+
+		_ggzdmod_handle_report(ggzdmod, num_players,
+				       names, teams, results);
+
+		for (p = 0; p < num_players; p++)
+			if (names[p])
+				ggz_free(names[p]);
+	}
+
 	return 0;
 }
 

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 5060 2002-10-27 06:26:31Z jdorje $
+ * $Id: ggzdmod.h 5061 2002-10-27 12:44:22Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -293,6 +293,9 @@ typedef enum {
 	 *  For games which support spectators, this indicates that one of them
 	 *  sent some data to the game server. */
 	GGZDMOD_EVENT_SPECTATOR_DATA,
+
+	/** @brief For GGZ only.  Reports the results of a game. */
+	GGZDMOD_EVENT_GAMEREPORT,
 
 	/** @brief An error has occurred
 	 *  This event occurs when a GGZdMod error has occurred.  An
@@ -593,6 +596,27 @@ int ggzdmod_log(GGZdMod * ggzdmod, char *fmt, ...)
  *  @return void; errors in ggzdmod_log are ignored.
  */
 void ggzdmod_check(GGZdMod *ggzdmod);
+
+typedef enum {
+	GGZ_GAME_LOSS,
+	GGZ_GAME_TIE,
+	GGZ_GAME_WIN
+} GGZGameResult;
+
+/** @brief Report the results of a game to GGZ.
+ *
+ *  After a game has completed, the game server should call this function to
+ *  report the results to GGZ.  GGZ can then use the information to track
+ *  player statistics - including an ELO-style rating, win-loss records, etc.
+ *
+ *  @param ggzdmod The ggzdmod object.
+ *  @param teams An array listing a team number for each player, or NULL.
+ *  @param results An array listing the result of the game for each player.
+ */
+void ggzdmod_report_game(GGZdMod *ggzdmod,
+			 int *teams,
+			 GGZGameResult *results);
+				 
 
 #ifdef __cplusplus
 }

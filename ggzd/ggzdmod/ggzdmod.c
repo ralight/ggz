@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5060 2002-10-27 06:26:31Z jdorje $
+ * $Id: ggzdmod.c 5061 2002-10-27 12:44:22Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1614,4 +1614,47 @@ void ggzdmod_check(GGZdMod *ggzdmod)
 	}
 	
 	ggzdmod_log(ggzdmod, "--- GGZDMOD CHECK COMPLETE ---");
+}
+
+
+void ggzdmod_report_game(GGZdMod *ggzdmod,
+			 int *teams,
+			 GGZGameResult *results)
+{
+	if (ggzdmod) {
+		char *names[ggzdmod->num_seats];
+		int p;
+
+		for (p = 0; p < ggzdmod->num_seats; p++) {
+			GGZSeat seat = ggzdmod_get_seat(ggzdmod, p);
+			if (seat.type == GGZ_SEAT_PLAYER)
+				names[p] = seat.name;
+			else {
+				/* FIXME: use actual AI name - in brackets
+				   so it can't be confused with an actual
+				   player name.  Bots should have their stats
+				   tracked too. */
+				names[p] = "[AI]";
+				if (seat.type != GGZ_SEAT_BOT)
+					_ggzdmod_error(ggzdmod,
+						       "Invalid player.");
+			}
+		}
+
+		_io_send_game_report(ggzdmod->fd,
+				     ggzdmod->num_seats,
+				     names, teams, results);
+	}
+}
+
+
+void _ggzdmod_handle_report(GGZdMod * ggzdmod,
+			    int num_players,
+			    char **names, int *teams, GGZGameResult *results)
+{
+	GGZdModGameReportData data = {num_players: num_players,
+				      names: names,
+				      teams: teams,
+				      results: results};
+	call_handler(ggzdmod, GGZDMOD_EVENT_GAMEREPORT, &data);
 }
