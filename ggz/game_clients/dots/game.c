@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-#include "ggzcore.h"
+#include "ggz.h"
 #include "dlg_main.h"
 #include "support.h"
 #include "easysock.h"
@@ -85,51 +85,51 @@ void board_init(guint8 width, guint8 height)
 	}
 
 	sys_colormap = gdk_colormap_get_system();
-	bg_color.red = ggzcore_confio_read_int(conf_handle,
+	bg_color.red = ggz_conf_read_int(conf_handle,
 						"BackgroundColor",
 						"Red",
 						0);
-	bg_color.green = ggzcore_confio_read_int(conf_handle,
+	bg_color.green = ggz_conf_read_int(conf_handle,
 						"BackgroundColor",
 						"Green",
 						32768);
-	bg_color.blue = ggzcore_confio_read_int(conf_handle,
+	bg_color.blue = ggz_conf_read_int(conf_handle,
 						"BackgroundColor",
 						"Blue",
 						0);
-	fg_color.red = ggzcore_confio_read_int(conf_handle,
+	fg_color.red = ggz_conf_read_int(conf_handle,
 						"ForegroundColor",
 						"Red",
 						65535);
-	fg_color.green = ggzcore_confio_read_int(conf_handle,
+	fg_color.green = ggz_conf_read_int(conf_handle,
 						"ForegroundColor",
 						"Green",
 						65535);
-	fg_color.blue = ggzcore_confio_read_int(conf_handle,
+	fg_color.blue = ggz_conf_read_int(conf_handle,
 						"ForegroundColor",
 						"Blue",
 						0);
-	p1_color.red = ggzcore_confio_read_int(conf_handle,
+	p1_color.red = ggz_conf_read_int(conf_handle,
 						"PlayerOneColor",
 						"Red",
 						65535);
-	p1_color.green = ggzcore_confio_read_int(conf_handle,
+	p1_color.green = ggz_conf_read_int(conf_handle,
 						"PlayerOneColor",
 						"Green",
 						0);
-	p1_color.blue = ggzcore_confio_read_int(conf_handle,
+	p1_color.blue = ggz_conf_read_int(conf_handle,
 						"PlayerOneColor",
 						"Blue",
 						0);
-	p2_color.red = ggzcore_confio_read_int(conf_handle,
+	p2_color.red = ggz_conf_read_int(conf_handle,
 						"PlayerTwoColor",
 						"Red",
 						0);
-	p2_color.green = ggzcore_confio_read_int(conf_handle,
+	p2_color.green = ggz_conf_read_int(conf_handle,
 						"PlayerTwoColor",
 						"Green",
 						0);
-	p2_color.blue = ggzcore_confio_read_int(conf_handle,
+	p2_color.blue = ggz_conf_read_int(conf_handle,
 						"PlayerTwoColor",
 						"Blue",
 						65535);
@@ -654,54 +654,54 @@ void game_apply_colors(GdkColor new_fg, GdkColor new_bg,
 
 void game_write_colors(void)
 {
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "BackgroundColor",
 				 "Red",
 				 bg_color.red);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "BackgroundColor",
 				 "Green",
 				 bg_color.green);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "BackgroundColor",
 				 "Blue",
 				 bg_color.blue);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "ForegroundColor",
 				 "Red",
 				 fg_color.red);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "ForegroundColor",
 				 "Green",
 				 fg_color.green);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "ForegroundColor",
 				 "Blue",
 				 fg_color.blue);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "PlayerOneColor",
 				 "Red",
 				 p1_color.red);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "PlayerOneColor",
 				 "Green",
 				 p1_color.green);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "PlayerOneColor",
 				 "Blue",
 				 p1_color.blue);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "PlayerTwoColor",
 				 "Red",
 				 p2_color.red);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "PlayerTwoColor",
 				 "Green",
 				 p2_color.green);
-	ggzcore_confio_write_int(conf_handle,
+	ggz_conf_write_int(conf_handle,
 				 "PlayerTwoColor",
 				 "Blue",
 				 p2_color.blue);
 
-	ggzcore_confio_commit(conf_handle);
+	ggz_conf_commit(conf_handle);
 }

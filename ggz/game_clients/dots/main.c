@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: main.c 3029 2002-01-09 12:38:32Z dr_maux $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -39,7 +39,7 @@
 #include <easysock.h>
 #include <ggzmod.h>
 
-#include "ggzcore.h"
+#include "ggz.h"
 #include "dlg_main.h"
 #include "dlg_opt.h"
 #include "dlg_new.h"
@@ -73,9 +73,9 @@ int main(int argc, char *argv[])
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	filename = g_strdup_printf("%s/.ggz/dots-gtk.rc", getenv("HOME"));
-	conf_handle = ggzcore_confio_parse(filename,
-					   GGZ_CONFIO_RDWR |
-					   GGZ_CONFIO_CREATE);
+	conf_handle = ggz_conf_parse(filename,
+					   GGZ_CONF_RDWR |
+					   GGZ_CONF_CREATE);
 	g_free(filename);
 
 	game.state = DOTS_STATE_INIT;
