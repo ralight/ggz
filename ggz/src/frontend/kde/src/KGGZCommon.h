@@ -59,7 +59,7 @@
 #ifdef VERSION
 #define KGGZVERSION VERSION
 #else
-#define KGGZVERSION "0.0.4"
+#define KGGZVERSION "0.0.5pre"
 #endif
 #endif
 
