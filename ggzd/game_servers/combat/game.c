@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 2811 2001-12-09 01:19:38Z jdorje $
+ * $Id: game.c 2934 2001-12-18 08:11:09Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -275,7 +275,7 @@ void game_send_sync(int seat, int cheated) {
 
   syncstr[len-1] = 0;
 
-	ggzdmod_log(cbt_game.ggz, "Sync string player %d");
+	ggzdmod_log(cbt_game.ggz, "Sync string player %d", seat);
 	for (a = 0; a < cbt_game.width*cbt_game.height+2; a++)
 		ggzdmod_log(cbt_game.ggz, "%d", syncstr[a]);
 

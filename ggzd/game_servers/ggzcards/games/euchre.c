@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2834 2001-12-09 22:12:57Z jdorje $
+ * $Id: euchre.c 2934 2001-12-18 08:11:09Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -236,7 +236,7 @@ static void euchre_next_bid(void)
 	} else if (game.bid_count == 8) {
 		/* This should only happen if we aren't playing "screw the
 		   dealer". */
-		set_global_message("", "s", "Everyone passed; redealing.");
+		set_global_message("", "Everyone passed; redealing.");
 		set_game_state(STATE_NEXT_HAND);
 	} else
 		game_next_bid();

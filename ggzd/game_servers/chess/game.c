@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 2810 2001-12-09 00:39:33Z jdorje $
+ * $Id: game.c 2934 2001-12-18 08:11:09Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -408,7 +408,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
         /* If first turn, there is no time! */
         if (game_info.turn == 0 || game_info.turn == 1)
           time = 0;
-        ggzdmod_log(game_info.ggz, "Move: %s\tTime: %d", data, time);
+        ggzdmod_log(game_info.ggz, "Move: %s\tTime: %d", (char*)data, time);
         *((int *)data + (6/sizeof(int)) + 1) = time;
       }
       /* Check if correct turn */

@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 2818 2001-12-09 06:43:08Z jdorje $
+ * $Id: game.c 2934 2001-12-18 08:11:09Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -493,7 +493,7 @@ char game_check_win(void)
 		ggzdmod_log(escape_game.ggz, "\tescape_game.y = %d",escape_game.y);
 		for(i=1; i<10; i++){
 			if(i!=5){
-				ggzdmod_log(escape_game.ggz, "\tescape_game.board[][][%d] = %d",escape_game.board[escape_game.x][escape_game.y][i]);
+				ggzdmod_log(escape_game.ggz, "\tescape_game.board[][][%d] = %d",i, escape_game.board[escape_game.x][escape_game.y][i]);
 			}
 		}	
 		return 2;

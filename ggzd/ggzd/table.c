@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2926 2001-12-18 00:18:06Z jdorje $
+ * $Id: table.c 2934 2001-12-18 08:11:09Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -174,7 +174,7 @@ static int table_check(GGZTable* table)
 	dbg_msg(GGZ_DBG_TABLE, "Open Seats : %d", seats_open(table));
 	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_reserved(table));
 	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table->state);
-	dbg_msg(GGZ_DBG_TABLE, "GGZdMod    : %x", table->ggzdmod);
+	dbg_msg(GGZ_DBG_TABLE, "GGZdMod    : %x", (unsigned int)table->ggzdmod);
 	if (table->ggzdmod)
 		dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", ggzdmod_get_fd(table->ggzdmod));
 			
@@ -195,7 +195,7 @@ static int table_check(GGZTable* table)
 				table->seats[i]);
 			break;
 		default:
-			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: **invalid**");
+			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: **invalid**", i);
 			status = E_BAD_OPTIONS;
 			break;
 		}

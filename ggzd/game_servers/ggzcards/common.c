@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2927 2001-12-18 00:33:36Z jdorje $
+ * $Id: common.c 2934 2001-12-18 08:11:09Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -92,7 +92,7 @@ void set_game_state(server_state_t state)
 		   waiting mode. */
 		if (game.saved_state != state)
 			ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-				    "Setting game saved state to %d - %ws.",
+				    "Setting game saved state to %d - %s.",
 				    state, get_state_name(state));
 		game.saved_state = state;
 	} else {
