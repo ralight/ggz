@@ -28,14 +28,6 @@
 #include "common.h"
 #include "games.h"
 
-/* ---------- LA POCHA ---------- */
-
-/* la pocha specific data */
-#define LAPOCHA ( *(lapocha_game_t *)(game.specific) )
-typedef struct lapocha_game_t {
-	int bid_sum;		/* what the sum of the bids is */
-} lapocha_game_t;
-
 /* ---------- EUCHRE ---------- */
 
 /* special bids */

@@ -147,21 +147,6 @@ void game_init_game()
 			game.target_score = 100;
 			game.name = "Skat";
 			break;
-		case GGZ_GAME_LAPOCHA:
-			game.specific = alloc(sizeof(lapocha_game_t));
-			set_num_seats(4);
-			for(p = 0; p < game.num_players; p++) {
-				s = p;
-				game.players[p].seat = s;
-				game.seats[s].ggz = &ggz_seats[p];
-			}
-			game.deck_type = GGZ_DECK_LAPOCHA;
-			game.max_bid_choices = 12;
-			game.max_bid_length = 4;
-			game.max_hand_length = 10;
-			game.must_overtrump = 1;	/* in La Pocha, you *must* overtrump if you can */
-			game.name = "La Pocha";
-			break;
 		default:  	
 			ggz_debug("SERVER BUG: game_launch not implemented for game %d.", game.which_game);
 			game.name = "(Unknown)";
@@ -227,16 +212,6 @@ int game_handle_gameover(void)
 	int winner_cnt = 0;
 
 	switch (game.which_game) {
-		case GGZ_GAME_LAPOCHA:
-			/* in La Pocha, anyone who has 0 at the end automatically wins */
-			for (p=0; p<game.num_players; p++) {
-				if(game.players[p].score == 0) {
-					winners[winner_cnt] = p;
-					winner_cnt++;
-				}
-			}
-			if (winner_cnt > 0) break;
-			/* else fall through */
 		case GGZ_GAME_EUCHRE:
 		default:
 			/* in the default case, just take the highest score(s)
@@ -279,11 +254,6 @@ int game_handle_gameover(void)
 void game_start_bidding()
 {
 	switch (game.which_game) {
-		case GGZ_GAME_LAPOCHA:
-			/* all 4 players bid once, but the first bid determines the trump */
-			game.bid_total = 5;
-			LAPOCHA.bid_sum = 0;
-			break;
 		case GGZ_GAME_EUCHRE:
 			game.bid_total = 8; /* twice around, at most */
 			game.next_bid = (game.dealer + 1) % game.num_players;
@@ -331,32 +301,6 @@ int game_get_bid()
 			}
 			/* TODO: dealer's last bid */
 			break;
-		case GGZ_GAME_LAPOCHA:
-			if (game.bid_count == 0) { /* determine the trump suit */
-				/* handled just like a bid */
-				if(game.hand_size != 10) {
-					bid.bid = (long)cards_deal_card().suit;
-					handle_bid_event(bid); /* TODO: Does this work? */
-				} else
-					status = req_bid(game.dealer, 4, suit_names);
-			} else { /* get a player's numerical bid */
-				int i, num=0;
-				for (i = 0; i <= game.hand_size; i++) {
-					/* the dealer can't make the sum of the bids equal the hand size;
-					 * somebody's got to go down */
-					if (game.next_bid == game.dealer &&
-					    LAPOCHA.bid_sum + i == game.hand_size) {
-						ggz_debug("Disallowing a bid of %d because that makes the bid sum of %d to equal the hand size of %d.",
-							i, LAPOCHA.bid_sum, game.hand_size);
-						continue;
-					}
-					game.bid_choices[num].bid = i;
-					num++;
-				}
-
-				status = req_bid(game.next_bid, num, NULL);
-			}
-			break;
 		default:
 			ggz_debug("SERVER BUG: game_get_bid called for unimplemented game.");
 			status = -1;
@@ -383,13 +327,6 @@ int game_handle_bid(bid_t bid)
 			}
 			/* bidding is ended automatically by game_next_bid */
 			break;
-		case GGZ_GAME_LAPOCHA:
-			if (game.bid_count == 0) {
-				game.trump = bid.bid;
-				set_global_message("", "Trump is %s.", suit_names[(int)game.trump % 4]);
-			} else
-				LAPOCHA.bid_sum += bid.bid;
-			break;	
 		default:
  			break; /* no special handling necessary */
 	}
@@ -418,12 +355,6 @@ void game_next_bid()
 			} else
 				goto normal_order;
 			break;
-		case GGZ_GAME_LAPOCHA:
-			if (game.bid_count == 1) {
-				game.next_bid = (game.dealer + 1) % game.num_players;
-				break;
-			}
-			goto normal_order;
 		default:
 normal_order:
 			if (game.bid_count == 0)
@@ -448,9 +379,6 @@ void game_start_playing(void)
 	game.play_total = game.num_players;
 
 	switch (game.which_game) {
-		case GGZ_GAME_LAPOCHA:
-			game.leader = (game.dealer + 1) % game.num_players;
-			break;
 		case GGZ_GAME_EUCHRE:
 			/* maker is set in game_handle_bid */
 			set_global_message("", "%s is the maker in %s.", ggz_seats[EUCHRE.maker].name, suit_names[(int)game.trump]);
@@ -581,8 +509,6 @@ int game_test_for_gameover()
 {
 	player_t p;
 	switch (game.which_game) {
-		case GGZ_GAME_LAPOCHA:
-			return (game.hand_num == 29);
 		case GGZ_GAME_EUCHRE:
 		default:
 			/* in the default case, it's just a race toward a target score */
@@ -602,24 +528,8 @@ int game_test_for_gameover()
 int game_deal_hand(void)
 {
 	seat_t s;
-	int result=0;
 
 	switch (game.which_game) {
-		case GGZ_GAME_LAPOCHA:
-			{
-			/* The number of cards dealt each hand; it's
-			 * easier just to write it out than use any kind of function */
-			int lap_card_count[] = { 1, 1, 1, 1,
-					2, 3, 4, 5, 6, 7, 8, 9,
-					10, 10, 10, 10,
-					9, 8, 7, 6, 5, 4, 3, 2,
-					1, 1, 1, 1 };
-			/* in la pocha, there are a predetermined number of cards
-			 * each hand, as defined by lap_card_count above */
-			game.hand_size = lap_card_count[game.hand_num];
-			game.trump = -1; /* must be determined later */ /* TODO: shouldn't go here */
-			}
-			goto regular_deal;
 		case GGZ_GAME_EUCHRE:
 			/* in Euchre, players 0-3 (seats 0, 1, 3, 4) get 5 cards each.
 			 * the up-card (seat 5) gets one card, and the kitty (seat 2)
@@ -638,7 +548,7 @@ regular_deal:
 				cards_deal_hand(game.hand_size, &game.seats[s].hand);
 	}
 
-	return result;
+	return 0;
 }
 
 
@@ -673,8 +583,6 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 			if (bid.sbid.spec == EUCHRE_TAKE) return snprintf(buf, buf_len, "Take");
 			if (bid.sbid.spec == EUCHRE_TAKE_SUIT) return snprintf(buf, buf_len, "Take at %s", suit_names[(int)bid.sbid.suit]);
 			break;
-		case GGZ_GAME_LAPOCHA:
-			return snprintf(buf, buf_len, "%d", (int)bid.bid);
 		default:
 			/* nothing... */
 	}
@@ -731,17 +639,6 @@ void game_set_player_message(player_t p)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "maker\n");
 			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
 				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks + game.players[(p+2)%4].tricks);
-			REGULAR_ACTION_MESSAGES;
-			break;
-		case GGZ_GAME_LAPOCHA:
-			REGULAR_SCORE_MESSAGE;
-			if (p == game.dealer)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dealer\n");
-			if (game.state >= WH_STATE_FIRST_TRICK && game.state <= WH_STATE_WAIT_FOR_PLAY) {
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Contract: %d\n", (int)game.players[p].bid.bid);
-			}
-			REGULAR_TRICKS_MESSAGE;
-			REGULAR_BID_MESSAGE;
 			REGULAR_ACTION_MESSAGES;
 			break;
 		default:
@@ -803,7 +700,6 @@ void game_end_trick(void)
 		case GGZ_GAME_EUCHRE:	
 			/* TODO: handle out-of-order cards */
 			break;
-		case GGZ_GAME_LAPOCHA:
 		default:
 			/* no additional scoring is necessary */
 			break;
@@ -820,7 +716,6 @@ void game_end_trick(void)
 			/* update teammate's info as well */
 			set_player_message((game.winner+2)%4);
 			break;
-		case GGZ_GAME_LAPOCHA:
 		default:
 			break;
 	}
@@ -832,19 +727,7 @@ void game_end_trick(void)
  */
 void game_end_hand(void)
 {
-	player_t p;
-
 	switch (game.which_game) {
-		case GGZ_GAME_LAPOCHA:
-			for(p=0; p<game.num_players; p++) {
-				ggz_debug("Player %d/%s got %d tricks on a bid of %d", p, ggz_seats[p].name,
-					  game.players[p].tricks, (int)game.players[p].bid.bid);
-				if(game.players[p].tricks == game.players[p].bid.bid)
-					game.players[p].score += 10 + (5 * game.players[p].bid.bid);
-				else
-					game.players[p].score -= 5 * game.players[p].bid.bid;
-			}
-			break;
 		case GGZ_GAME_EUCHRE:
 			{
 			int tricks, winning_team;
