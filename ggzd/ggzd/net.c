@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5048 2002-10-26 05:26:53Z jdorje $
+ * $Id: net.c 5050 2002-10-26 05:46:25Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -997,11 +997,12 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	type = ggz_xmlelement_get_attr(element, "TYPE");
-	if (type && strcasecmp(type, "normal") == 0)
-		login_type = GGZ_LOGIN;
-	else if (type && strcasecmp(type, "guest") == 0)
+	if (!type || strcasecmp(type, "guest") == 0) {
+		/* If no type is sent, assume a guest login. */
 		login_type = GGZ_LOGIN_GUEST;
-	else if (type && strcasecmp(type, "first") == 0)
+	} else if (strcasecmp(type, "normal") == 0)
+		login_type = GGZ_LOGIN;
+	else if (strcasecmp(type, "first") == 0)
 		login_type = GGZ_LOGIN_NEW;
 	else {
 		/* If they didn't send a valid TYPE, it's an error */
