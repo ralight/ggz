@@ -183,6 +183,7 @@ AC_OUTPUT([Makefile
 	   doc/Makefile
 	   game_servers/Makefile
 	   game_servers/spades/Makefile
+	   game_servers/tictactoe/Makefile
 	   ])
 
 
