@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3359 2002-02-15 01:13:20Z jdorje $
+ * $Id: common.c 3377 2002-02-17 02:06:55Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -58,7 +58,7 @@ static int seats_full(void)
 		+ ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
 }
 
-static const char *get_state_name(server_state_t state)
+const char *get_state_name(server_state_t state)
 {
 	switch (state) {
 	case STATE_NONE:
@@ -659,7 +659,6 @@ int handle_play_event(card_t card)
 		/* end of trick */
 		ggzdmod_log(game.ggz, "End of trick; %d/%d.  Scoring it.",
 			    game.trick_count, game.trick_total);
-		sleep(1);
 		game.funcs->end_trick();
 		send_last_trick();
 		(void) send_trick(game.winner);
@@ -670,7 +669,6 @@ int handle_play_event(card_t card)
 			ggzdmod_log(game.ggz, "End of hand number %d.",
 				    game.hand_num);
 			send_last_hand();
-			sleep(1);
 			game.funcs->end_hand();
 			set_all_player_messages();
 			update_cumulative_scores();

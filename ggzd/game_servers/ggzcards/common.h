@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: common.h 3377 2002-02-17 02:06:55Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -176,6 +176,7 @@ struct game_t {
 
 
 /* Game-independent functions */
+const char *get_state_name(server_state_t state);
 void set_game_state(server_state_t state);
 void save_game_state();
 void restore_game_state();
