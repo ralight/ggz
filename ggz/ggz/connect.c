@@ -65,29 +65,29 @@ static int anon_login(void);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void display_chat(char *name, char *msg);
 
-char *opcode_str[23] = { "MSG_SERVER_ID",
-			 "MSG_SERVER_FULL",
-			 "MSG_CHAT",
-			 "MSG_USERS_UPDATE",
-			 "MSG_TYPES_UPDATE",
-			 "MSG_TABLES_UPDATE",
-			 "RSP_NEW_LOGIN",
-			 "RSP_LOGIN",
-			 "RSP_ANON_LOGIN",
-			 "RSP_MOTD",
-			 "RSP_LOGOUT",
-			 "RSP_USER_LIST",
-			 "RSP_PREF_CHANGE",
-			 "RSP_REMOVE_USER",
-			 "RSP_GAME_TYPES",
-			 "RSP_TABLE_LIST",
-			 "RSP_TABLE_OPTIONS",
-			 "RSP_LAUNCH_GAME",
-			 "RSP_JOIN_GAME",
-			 "RSP_USER_STAT",
-			 "RSP_GAME",
-			 "RSP_CHAT",
-			 "RSP_ERROR"
+char *opcode_str[] = { 	"MSG_SERVER_ID",
+			"MSG_SERVER_FULL",
+			"MSG_MOTD",
+			"MSG_CHAT",
+			"MSG_UPDATE_PLAYERS",
+			"MSG_UPDATE_TYPES",
+			"MSG_UPDATE_TABLES",
+			"RSP_LOGIN_NEW",
+			"RSP_LOGIN",
+			"RSP_LOGIN_ANON",
+			"RSP_LOGOUT",
+			"RSP_PREF_CHANGE",
+			"RSP_REMOVE_USER",
+			"RSP_LIST_PLAYERS",
+			"RSP_LIST_TYPES",
+			"RSP_LIST_TABLES",
+			"RSP_TABLE_OPTIONS",
+			"RSP_USER_STAT",
+			"RSP_TABLE_LAUNCH",
+			"RSP_TABLE_JOIN",
+			"RSP_TABLE_LEAVE",
+			"RSP_GAME",
+			"RSP_CHAT"
 };
 
 
@@ -155,7 +155,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case MSG_SERVER_FULL:
 		break;
 
-	case RSP_ANON_LOGIN:
+	case RSP_LOGIN_ANON:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
@@ -167,7 +167,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		/*server_sync();*/
 		break;
 
-	case RSP_LAUNCH_GAME:
+	case RSP_TABLE_LAUNCH:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
@@ -178,7 +178,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connection.playing = TRUE;
 		break;
 
-	case RSP_JOIN_GAME:
+	case RSP_TABLE_JOIN:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status >= 0) {
@@ -202,7 +202,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		disconnect(NULL, NULL);
 		break;
 
-	case RSP_GAME_TYPES:
+	case RSP_LIST_TYPES:
 		es_read_int(source, &count);
 		game_types.count = count;
 		connect_msg("[%s] List Count %d\n", opcode_str[op], count);
@@ -230,7 +230,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		}
 		break;
 
-	case RSP_TABLE_LIST:
+	case RSP_LIST_TABLES:
 		selected_table = -1;
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
 		gtk_clist_clear(GTK_CLIST(tmp));
@@ -264,7 +264,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		}
 		break;
 
-	case RSP_USER_LIST:
+	case RSP_LIST_PLAYERS:
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "player_list");
 		gtk_clist_clear(GTK_CLIST(tmp));
 		es_read_int(source, &count);
@@ -314,31 +314,30 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_LOGIN:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		es_write_int(connection.sock, REQ_USER_LIST);
+		es_write_int(connection.sock, REQ_LIST_PLAYERS);
 		break;
 
-	case MSG_USERS_UPDATE:
+	case MSG_UPDATE_PLAYERS:
 		connect_msg("[%s]\n", opcode_str[op]);
 		get_players(NULL, NULL);
 		break;
 
-	case MSG_TYPES_UPDATE:
+	case MSG_UPDATE_TYPES:
 		connect_msg("[%s]\n", opcode_str[op]);
 		get_types(NULL, NULL);
 		break;
 
-	case MSG_TABLES_UPDATE:
+	case MSG_UPDATE_TABLES:
 		connect_msg("[%s]\n", opcode_str[op]);
 		get_tables(NULL, NULL);
 		break;
 
-	case RSP_NEW_LOGIN:
-	case RSP_MOTD:
+	case RSP_LOGIN_NEW:
+	case MSG_MOTD:
 	case RSP_PREF_CHANGE:
 	case RSP_REMOVE_USER:
 	case RSP_TABLE_OPTIONS:
 	case RSP_USER_STAT:
-	case RSP_ERROR:
 		break;
 
 	}
@@ -422,7 +421,7 @@ void add_table_list(TableInfo table)
 int anon_login(void)
 {
 
-	es_write_int(connection.sock, REQ_ANON_LOGIN);
+	es_write_int(connection.sock, REQ_LOGIN_ANON);
 	es_write_string(connection.sock, connection.username);
 
 	return 0;
@@ -432,10 +431,10 @@ int anon_login(void)
 /* Complete sync with server */ 
 static void server_sync()
 {
-	es_write_int(connection.sock, REQ_USER_LIST);
-	es_write_int(connection.sock, REQ_GAME_TYPES);
+	es_write_int(connection.sock, REQ_LIST_PLAYERS);
+	es_write_int(connection.sock, REQ_LIST_TYPES);
 	es_write_char(connection.sock, 1);
-	es_write_int(connection.sock, REQ_TABLE_LIST);
+	es_write_int(connection.sock, REQ_LIST_TABLES);
 	es_write_int(connection.sock, -1);
 } 
 

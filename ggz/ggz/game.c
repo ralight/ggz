@@ -123,7 +123,7 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	es_read_char(source, &ai);
 
 	/* Send launch game request to server */
-	es_write_int(connection.sock, REQ_LAUNCH_GAME);
+	es_write_int(connection.sock, REQ_TABLE_LAUNCH);
 	es_write_int(connection.sock, 0);	/* Game type index */
 	es_write_int(connection.sock, 4);	/* Number of seats */
 	es_write_char(connection.sock, ai);	/* AI players */

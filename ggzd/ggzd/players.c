@@ -277,7 +277,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 	UserToControl op = (UserToControl) request;
 
 	switch (op) {
-	case REQ_ANON_LOGIN:
+	case REQ_LOGIN_ANON:
 		status = anon_login(p_index);
 		break;
 
@@ -286,27 +286,27 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		status = NG_HANDLE_LOGOUT;
 		break;
 
-	case REQ_LAUNCH_GAME:
+	case REQ_TABLE_LAUNCH:
 		status = read_table_info(p_index, p_fd, t_fd);
 		if (status == 0)
 			status = NG_HANDLE_GAME_START;
 		break;
 
-	case REQ_JOIN_GAME:
+	case REQ_TABLE_JOIN:
 		status = join_table(p_index, p_fd, t_fd);
 		if (status == 0)
 			status = NG_HANDLE_GAME_START;
 		break;
 
-	case REQ_USER_LIST:
+	case REQ_LIST_PLAYERS:
 		status = user_list(p_index);
 		break;
 
-	case REQ_GAME_TYPES:
+	case REQ_LIST_TYPES:
 		status = types_list(p_index);
 		break;
 
-	case REQ_TABLE_LIST:
+	case REQ_LIST_TABLES:
 		status = table_list(p_index);
 		break;
 
@@ -322,13 +322,13 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		status = player_chat(p_index, p_fd);
 		break;
 
-	case REQ_NEW_LOGIN:
+	case REQ_LOGIN_NEW:
 	case REQ_LOGIN:
-	case REQ_MOTD:
 	case REQ_PREF_CHANGE:
 	case REQ_REMOVE_USER:
 	case REQ_TABLE_OPTIONS:
 	case REQ_USER_STAT:
+	case REQ_TABLE_LEAVE:
 	default:
 		dbg_msg("Player %d (uid: %d) requested unimplemented op %d",
 			p_index, players.info[p_index].uid, op);
@@ -408,9 +408,9 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	pthread_rwlock_unlock(&game_types.lock);
 
 	/* Send out proper update messages */
-	if ( (user_update && FAIL(es_write_int(fd, MSG_USERS_UPDATE)))
-	     || (type_update && FAIL(es_write_int(fd, MSG_TYPES_UPDATE)))
-	     || (table_update && FAIL(es_write_int(fd, MSG_TABLES_UPDATE))))
+	if ( (user_update && FAIL(es_write_int(fd, MSG_UPDATE_PLAYERS)))
+	     || (type_update && FAIL(es_write_int(fd, MSG_UPDATE_TYPES)))
+	     || (table_update && FAIL(es_write_int(fd, MSG_UPDATE_TABLES))))
 		return(-1);
 	
 	/* Send any unread chats */
@@ -457,7 +457,7 @@ static int new_login(int p)
 	/* FIXME: good password generation */
 	/* FIXME: calculate game type checksum (should be done earlier?) */
 
-	if (FAIL(es_write_int(players.info[p].fd, RSP_NEW_LOGIN)) ||
+	if (FAIL(es_write_int(players.info[p].fd, RSP_LOGIN_NEW)) ||
 	    FAIL(es_write_char(players.info[p].fd, 0)) ||
 	    FAIL(es_write_string(players.info[p].fd, "password")) ||
 	    FAIL(es_write_int(players.info[p].fd, 265)))
@@ -488,7 +488,7 @@ static int anon_login(int p)
 	players.timestamp = time(NULL);
 	pthread_rwlock_unlock(&players.lock);
 
-	if (FAIL(es_write_int(players.info[p].fd, RSP_ANON_LOGIN)) ||
+	if (FAIL(es_write_int(players.info[p].fd, RSP_LOGIN_ANON)) ||
 	    FAIL(es_write_char(players.info[p].fd, 0)) ||
 	    FAIL(es_write_int(players.info[p].fd, 265)))
 		return (-1);
@@ -629,7 +629,7 @@ static int read_table_info(int p_index, int p_fd, int *t_fd)
 		status = E_LAUNCH_FAIL;
 
 	/* Return status */
-	if (FAIL(es_write_int(p_fd, RSP_LAUNCH_GAME)) ||
+	if (FAIL(es_write_int(p_fd, RSP_TABLE_LAUNCH)) ||
 	    FAIL(es_write_char(p_fd, (char) status)))
 		status = E_RESPOND_FAIL;
 
@@ -707,7 +707,7 @@ static int join_table(int p_index, int p_fd, int *t_fd)
 
 
 	/* Return status */
-	if (FAIL(es_write_int(p_fd, RSP_JOIN_GAME)) ||
+	if (FAIL(es_write_int(p_fd, RSP_TABLE_JOIN)) ||
 	    FAIL(es_write_char(p_fd, (char) status)))
 		status = E_RESPOND_FAIL;
 
@@ -751,7 +751,7 @@ static int user_list(int p_index)
 		info[i] = players.info[i];
 	pthread_rwlock_unlock(&players.lock);
 
-	if (FAIL(es_write_int(fd, RSP_USER_LIST)) ||
+	if (FAIL(es_write_int(fd, RSP_LIST_PLAYERS)) ||
 	    FAIL(es_write_int(fd, count))) return (-1);
 
 	for (i = 0; i < count; i++) {
@@ -783,7 +783,7 @@ static int types_list(int p_index)
 		info[i] = game_types.info[i];
 	pthread_rwlock_unlock(&game_types.lock);
 
-	if (FAIL(es_write_int(fd, RSP_GAME_TYPES)) ||
+	if (FAIL(es_write_int(fd, RSP_LIST_TYPES)) ||
 	    FAIL(es_write_int(fd, count))) return (-1);
 
 	for (i = 0; i < count; i++) {
@@ -829,7 +829,7 @@ static int table_list(int p_index)
 	}
 	pthread_rwlock_unlock(&game_tables.lock);
 
-	if (FAIL(es_write_int(fd, RSP_TABLE_LIST)) ||
+	if (FAIL(es_write_int(fd, RSP_LIST_TABLES)) ||
 	    FAIL(es_write_int(fd, count))) 
 		return (-1);
 

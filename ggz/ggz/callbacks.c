@@ -161,7 +161,7 @@ void cancel_details(GtkButton * button, gpointer user_data)
 void join_game(GtkButton * button, gpointer user_data)
 {
 	dbg_msg("joining game");
-	es_write_int(connection.sock, REQ_JOIN_GAME);
+	es_write_int(connection.sock, REQ_TABLE_JOIN);
 	es_write_int(connection.sock, selected_table);
 }
 
@@ -189,20 +189,20 @@ void get_types(GtkMenuItem * menuitem, gpointer user_data)
 {
 	char verbose = 1;
 
-	es_write_int(connection.sock, REQ_GAME_TYPES);
+	es_write_int(connection.sock, REQ_LIST_TYPES);
 	write(connection.sock, &verbose, 1);
 }
 
 
 void get_players(GtkMenuItem * menuitem, gpointer user_data)
 {
-	es_write_int(connection.sock, REQ_USER_LIST);
+	es_write_int(connection.sock, REQ_LIST_PLAYERS);
 }
 
 
 void get_tables(GtkMenuItem * menuitem, gpointer user_data)
 {
-	es_write_int(connection.sock, REQ_TABLE_LIST);
+	es_write_int(connection.sock, REQ_LIST_TABLES);
 	es_write_int(connection.sock, -1);
 }
 
