@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 5139 2002-11-02 06:40:33Z jdorje $
+ * $Id: protocol.h 5400 2003-02-12 04:37:56Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -54,6 +54,7 @@ typedef enum {
 	 */
 	REQ_GAME_STATE,
 
+	REQ_NUM_SEATS,
 	REQ_BOOT,
 	REQ_BOT,
 	REQ_OPEN,

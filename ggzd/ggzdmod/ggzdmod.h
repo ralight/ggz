@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 5346 2003-01-23 17:10:10Z dr_maux $
+ * $Id: ggzdmod.h 5400 2003-02-12 04:37:56Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -303,6 +303,7 @@ typedef enum {
 	GGZDMOD_EVENT_GAMEREPORT,
 
 	/* GGZ-side only.  These should be moved to ggzdmod-ggz.h. */
+	GGZDMOD_EVENT_REQ_NUM_SEATS,
 	GGZDMOD_EVENT_REQ_BOOT,
 	GGZDMOD_EVENT_REQ_BOT,
 	GGZDMOD_EVENT_REQ_OPEN,
@@ -634,6 +635,10 @@ typedef enum {
 void ggzdmod_report_game(GGZdMod *ggzdmod,
 			 int *teams,
 			 GGZGameResult *results);
+
+/** @brief Tell GGZ to change the number of seats at this table.
+ *  @note This functionality is incomplete, and should not yet be used. */
+void ggzdmod_request_num_seats(GGZdMod * ggzdmod, int num_seats);
 
 /** @brief Tell GGZ to boot the given player from this table. */
 void ggzdmod_request_boot(GGZdMod * ggzdmod, const char *name);

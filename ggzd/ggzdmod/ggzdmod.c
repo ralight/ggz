@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5307 2003-01-03 09:37:41Z jdorje $
+ * $Id: ggzdmod.c 5400 2003-02-12 04:37:56Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1654,6 +1654,12 @@ void ggzdmod_report_game(GGZdMod *ggzdmod,
 }
 
 
+void ggzdmod_request_num_seats(GGZdMod * ggzdmod, int num_seats)
+{
+	_io_send_req_num_seats(ggzdmod->fd, num_seats);
+}
+
+
 void ggzdmod_request_boot(GGZdMod * ggzdmod, const char *name)
 {
 	_io_send_req_boot(ggzdmod->fd, name);
@@ -1682,6 +1688,12 @@ void _ggzdmod_handle_report(GGZdMod * ggzdmod,
 				      teams: teams,
 				      results: results};
 	call_handler(ggzdmod, GGZDMOD_EVENT_GAMEREPORT, &data);
+}
+
+
+void _ggzdmod_handle_num_seats_request(GGZdMod * ggzdmod, int num_seats)
+{
+	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_NUM_SEATS, &num_seats);
 }
 
 
