@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4425 2002-09-06 22:34:55Z jdorje $
+ * $Id: ggzclient.c 4426 2002-09-07 02:37:52Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -962,7 +962,7 @@ static void ggz_check_fd(gpointer my_server, gint fd, GdkInputCondition cond)
 /* GdkDestroyNotify function for server fd */
 static void ggz_input_removed(gpointer data)
 {
-	if (server != data) {
+	if (!server) {
 		/* This function should only be called once when we
 		   disconnect; calling it more than once would attempt to
 		   free the server twice.  See server_disconnect().  It's
@@ -970,10 +970,17 @@ static void ggz_input_removed(gpointer data)
 		   ggzcore_server_free() doesn't get called immediately.
 		   The alternative is to put this code into
 		   server_disconnect(), and drop this function
-		   entirely.  --JDS */
-		assert(0);
+		   entirely.
+
+		   Actually, this function can be called after the server
+		   data has already been deallocated: if ggzd spontaneously
+		   shuts down, for instance.  Just one more but of ugliness...
+
+		   --JDS */
 		return;
 	}
+
+	assert(server == data);
 
 	ggzcore_server_free((GGZServer*)data);
 	server = NULL;
