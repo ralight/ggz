@@ -8,7 +8,8 @@ Build-Depends: debhelper (>> 3.0.0), autoconf, automake, libtool, libc6-dev (>= 
 Package: ggzd
 Architecture: any
 Section: net
-Depends: ${shlibs:Depends}, libggzdmod0 (= ${Source-Version})
+Depends: ${shlibs:Depends}
+Suggests: ggz-game-servers (= ${Source-Version})
 Description: GGZ Gaming Zone Main Server
  This server is not required if you want to play online games,
  but it will be needed if you intend to do game hosting on your
@@ -21,7 +22,8 @@ Description: GGZ Gaming Zone Main Server
 Package: ggz-game-servers
 Architecture: any
 Section: games
-Depends: ${shlibs:Depends}, ggzd (= ${Source-Version}), libggzdmod0 (= ${Source-Version})
+Depends: ${shlibs:Depends}
+Recommends: ggzd (= ${Source-Version})
 Description: GGZ Gaming Zone Game Servers
  All internal GGZ games currently available are included in this
  package.
