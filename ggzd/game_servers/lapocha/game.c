@@ -245,11 +245,62 @@ static int game_send_sync(int num)
 	   || es_write_char(fd, game.turn) < 0)
 		return -1;
 	
+	/* First send scores */
 	for(i=0; i<4; i++)
-		if(es_write_int(fd, game.score[0]) < 0)
+		if(es_write_int(fd, game.score[i]) < 0)
 			return -1;
 
-	/* TODO: Send out hand */
+	/* Send out hand */
+	if(es_write_char(fd, game.hand[num].hand_size) < 0)
+		return -1;
+	for(i=0; i<game.hand[num].hand_size; i++)
+		if(es_write_char(fd, game.hand[num].card[i]) < 0)
+			return -1;
+
+
+	/* Send out the game state */
+	if(es_write_char(fd, game.saved_state) < 0)
+		return -1;
+
+	/* Send out info necessary for current state */
+	switch(game.saved_state) {
+		case LP_STATE_INIT:
+			/* Can't occur */
+			break;
+		case LP_STATE_WAIT:
+			/* Can't occur */
+			break;
+		case LP_STATE_NEW_HAND:
+			/* Can't occur */
+			break;
+		case LP_STATE_GET_TRUMP:
+
+		case LP_STATE_BIDDING:
+
+		case LP_STATE_PLAYING:
+			/* Notify of dealer, leader, trump and led suit */
+			if(es_write_char(fd, game.dealer) < 0
+			   || es_write_char(fd, game.leader) < 0
+			   || es_write_char(fd, game.trump) < 0
+			   || es_write_char(fd, game.led_suit) < 0)
+				return -1;
+
+			/* Send all four bids, trick counts and cards on table*/
+			for(i=0; i<4; i++)
+				if(es_write_int(fd, game.bid[i]) < 0)
+					return -1;
+			for(i=0; i<4; i++)
+				if(es_write_int(fd, game.tricks[i]) < 0)
+					return -1;
+			for(i=0; i<4; i++)
+				if(es_write_char(fd, game.table[i]) < 0)
+					return -1;
+
+			break;
+		case LP_STATE_DONE:
+			/* Can't occur */
+			break;
+	}
 
 	return 0;
 }
@@ -304,8 +355,10 @@ static void game_play(void)
 			game.bid_now = (game.dealer + 1) % 4;
 			game.bid_count = 0;
 			game.bid_total = 0;
-			for(i=0; i<4; i++)
+			for(i=0; i<4; i++) {
 				game.tricks[i] = 0;
+				game.table[i] = -1;
+			}
 			if(game.state == LP_STATE_BIDDING)
 				game_req_bid();
 			break;
@@ -319,11 +372,14 @@ static void game_play(void)
 				for(i=0; i<4; i++)
 					game.table[i] = -1;
 				game.state = LP_STATE_PLAYING;
+				game.play_count = 0;
 				game_req_play();
 			}
 			break;
 		case LP_STATE_PLAYING:
-			if(game.turn == game.leader) {
+			if(game.play_count < 4)
+				game_req_play();
+			else {
 				sleep(1);
 				game_score_trick();
 				if(game.tricks_left == 0) {
@@ -331,10 +387,11 @@ static void game_play(void)
 					game_score_hand();
 					game_play();	/* A minor recursion */
 						/* as state will = NEW_HAND  */
-				} else
+				} else {
+					game.play_count = 0;
 					game_req_play();
-			} else
-				game_req_play();
+				}
+			}
 			break;
 	}
 
@@ -536,24 +593,31 @@ static int game_update(int event, void *data)
 			game_send_seat(seat);
 			game_send_players();
 
+			/* Rejoiner must learn table info */
+			if(game.turn != -1)
+				game_send_sync(seat);
+
+			/* All the seats are occupied ? */
 			if(!ggz_seats_open()) {
+				/* If first time, then initialize */
 				if(game.turn == -1) {
 					game.turn = 0;
 					game.dealer = 0;
 					game.hand_num = 1;
 					game.state = LP_STATE_NEW_HAND;
-				} else {
-					game_send_sync(seat);
-					game.state = LP_STATE_PLAYING;
-				}
-			
+				} else
+					/* Restore state */
+					game.state = game.saved_state;
+
+				/* (Re)Start game play */
 				game_play();
 			}
 			break;
 		case LP_EVENT_LEAVE:
 			game_send_players();
-			if(game.state == LP_STATE_PLAYING)
-				game.state = LP_STATE_WAIT;
+			if(game.state != LP_STATE_WAIT)
+				game.saved_state = game.state;
+			game.state = LP_STATE_WAIT;
 			break;
 		case LP_EVENT_PLAY:
 			card = *(char*)data;
@@ -561,6 +625,7 @@ static int game_update(int event, void *data)
 
 			/* Request next move */
 			game.turn = (game.turn + 1) % 4;
+			game.play_count++;
 			game_play();
 			break;
 		case LP_EVENT_BID:
@@ -755,5 +820,8 @@ void game_score_hand(void)
 		   || es_write_int(fd, game.score[2]) < 0
 		   || es_write_int(fd, game.score[3]) < 0)
 			;
+
+		/* Brush their card from teh table */
+		game.table[i] = -1;
 	}
 }

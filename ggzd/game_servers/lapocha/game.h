@@ -79,6 +79,7 @@
 /* Data structure for La Pocha game */
 struct lp_game_t {
 	char state;
+	char saved_state;
 	int turn;
 	int dealer;
 	int leader;
@@ -89,6 +90,7 @@ struct lp_game_t {
 	struct hand_t hand[4];
 	int bid_now;
 	int bid_count;
+	int play_count;
 	int bid_total;
 	int bid[4];
 	int tricks[4];
