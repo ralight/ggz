@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 3606 2002-03-21 02:52:30Z bmh $
+ * $Id: table.h 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -31,6 +31,7 @@
 #include <pthread.h>
 
 #include "ggzdmod.h"
+#include "ggzd.h"
 
 /*
  * The GGZTable structure contains information about a single game
@@ -41,7 +42,7 @@
  * can use the copy in another thread without worrying about the
  * original thread freeing the memory
  */
-typedef struct GGZTable {
+struct GGZTable {
 
 	/* Individual mutex lock */
 	pthread_rwlock_t lock;
@@ -90,24 +91,24 @@ typedef struct GGZTable {
 	void* events_head;
 	void* events_tail;
 	
-} GGZTable;
+};
 
 
 /* Create a new table object */
-GGZTable* table_new(void);
+struct GGZTable* table_new(void);
 
 /* Launch a table */
-int table_launch(GGZTable *table, char* name);
+int table_launch(struct GGZTable *table, char* name);
 
 /* Change table description of running table */
-void table_set_desc(GGZTable *table, char *desc);
+void table_set_desc(struct GGZTable *table, char *desc);
 
 /* Kill the table */
 int table_kill(int room, int index, char *name);
 
 /* Search for tables */
 int table_search(char* name, int room, int type, char global, 
-		 GGZTable** tables);
+		 struct GGZTable** tables);
 
 /* Find a player at a table */
 int table_find_player(int room, int index, char *name);
@@ -125,6 +126,6 @@ int table_find_player(int room, int index, char *name);
  *
  * Note: table is returned with write lock acquired
  */
-GGZTable* table_lookup(int room, int index);
+struct GGZTable* table_lookup(int room, int index);
 
 #endif

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 3445 2002-02-23 04:59:49Z bmh $
+ * $Id: ggzd.h 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -39,6 +39,38 @@
 #define MAX_TABLE_SIZE 8
 #define DEFAULT_MAX_ROOM_USERS 100
 #define DEFAULT_MAX_ROOM_TABLES 50
+
+typedef struct GGZClient GGZClient;
+
+typedef enum {
+	GGZ_CLIENT_GENERIC,
+	GGZ_CLIENT_PLAYER,
+	GGZ_CLIENT_CHANNEL
+} GGZClientType;
+
+
+typedef struct _GGZNetIO GGZNetIO;
+
+/* Special UID values.  Eventually, every registered player
+   will have a unique UID, but for now they are all just
+   assigned a UID of 0. */
+typedef enum {
+	GGZ_UID_REGISTERED = 0,
+	GGZ_UID_NONE = -1,
+	GGZ_UID_ANON = -2
+} GGZUIDType;
+
+typedef enum {
+	GGZ_PLAYER_NONE,
+	GGZ_PLAYER_NORMAL,
+	GGZ_PLAYER_GUEST,
+	GGZ_PLAYER_ADMIN
+} GGZPlayerType;
+
+typedef struct _GGZPlayer GGZPlayer; 
+
+typedef struct GGZTable GGZTable;
+
 
 /* Specical game type values */
 typedef enum {

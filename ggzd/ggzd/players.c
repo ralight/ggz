@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4100 2002-04-28 23:00:01Z rgade $
+ * $Id: players.c 4139 2002-05-03 03:17:08Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -59,6 +59,7 @@
 #include <transit.h>
 #include <net.h>
 #include <perms.h>
+#include "client.h"
 
 
 /* Timeout for server resync */
@@ -72,100 +73,32 @@ extern struct GGZState state;
 extern Options opt;
 
 
-/* Used for banned IP addresses */
-static uint32_t *banned_nets_a;
-static uint32_t *banned_nets_m;
-static int banned_nets_c;
-static int player_get_time_since_ping(GGZPlayer *player);
-static int player_check_ip_ban_list(struct in_addr *sin);
-
-
 /* Local functions for handling players */
-static void* player_new(void * sock_ptr);
-static void  player_loop(GGZPlayer* player);
-static void  player_remove(GGZPlayer* player);
 static GGZPlayerHandlerStatus   player_updates(GGZPlayer* player);
 static GGZPlayerHandlerStatus player_msg_to_sized(GGZPlayer* player);
 static int   player_transit(GGZPlayer* player, char opcode, int index);
 static GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player);
+static int player_get_time_since_ping(GGZPlayer *player);
 
 
-/*
- * player_launch_handler() launches a new dedicated handler thread.
+/**
+ * Create and initialize new player structure.
  *
- * Receives:
- * int sock : fd for communicating with the client
+ * @param client : pointer to the client connection.
+ *
+ * @return pointer to new GGZPlayer object
  */
-void player_handler_launch(int sock)
+GGZPlayer* player_new(GGZClient *client)
 {
-	pthread_t thread;
-	void *arg_ptr;
-	int status;
-
-	/* Temporary storage to pass fd */
-	if ((arg_ptr = malloc(sizeof(int))) == NULL)
-		err_sys_exit("malloc error in player_handler_launch()");
-	*((int *)arg_ptr) = sock;
-
-	status = pthread_create(&thread, NULL, player_new, arg_ptr);
-	if (status != 0) {
-		errno = status;
-		err_sys_exit("pthread_create error");
-	}
-}
-
-
-/*
- * player_new() is the initial function executed by a new player
- * handler thread .  It sends the initial server messages to the
- * client, and creates the new player structure.
- *
- * Receives:
- * void* arg_ptr : pointer to the client fd.
- *
- * Returns:
- * void* : NULL
- */
-static void* player_new(void *arg_ptr)
-{
-	int sock, status;
-	struct sockaddr_in addr;
 	GGZPlayer *player;
-	int addrlen = sizeof(addr);
-	struct hostent hostbuf, *hp;
-	char tmphstbuf[1024];
-	int rc, herr;
-
-	/* Get our arguments out of the arg buffer */
-	sock = *((int *)arg_ptr);
-	free(arg_ptr);
-
-	/* Detach thread since no one needs to join us */
-	status = pthread_detach(pthread_self());
-	if (status != 0) {
-		errno = status;
-		err_sys_exit("pthread_detach error");
-	}
-
-	/* Get the client's IP address and store it */
-	getpeername(sock, (struct sockaddr*)&addr, &addrlen);
-
+	
 	/* Allocate new player structure */
 	if ( (player = malloc(sizeof(GGZPlayer))) == NULL)
 		err_sys_exit("malloc error in player_new()");
 	
 	/* Initialize player data */
 	pthread_rwlock_init(&player->lock, NULL);
-	player->net = net_new(sock, player);
-	
-	/* This will dump all XML output into the file ggzd.protocol.
-	   Unfortunately, it'll get overwritten each time a new player
-	   connects. */
-#if 0
-	net_set_dump_file(player->net, "ggzd.protocol");
-#endif
-
-	player->thread = pthread_self();
+	player->client = client;
 	player->table = -1;
 	player->game_fd = -1;
 	player->launching = 0;
@@ -174,64 +107,13 @@ static void* player_new(void *arg_ptr)
 	player->uid = GGZ_UID_NONE;
 	player->perms = PERMS_DEFAULT_ANON;
 	strcpy(player->name, "<none>");
-	rc = -1;
-	if(opt.perform_lookups) {
-		rc = gethostbyaddr_r(&addr.sin_addr, sizeof(struct in_addr),
-			AF_INET, &hostbuf, tmphstbuf, 1024, &hp, &herr);
-		/* Note if we get an error we don't bother expanding the */
-		/* buffer or so forth. Is the hostname vs. IP that important? */
-		if(rc == 0) {
-			strncpy(player->addr, hostbuf.h_name, sizeof(player->addr));
-			player->addr[sizeof(player->addr)-1] = '\0';
-		}
-	}
-	if(rc < 0)
-		inet_ntop(AF_INET, &addr.sin_addr, player->addr, sizeof(player->addr));
- 
 	player->room_events = NULL;
 	player->my_events_head = NULL;
 	player->my_events_tail = NULL;
-
 	player->lag_class = 1;			/* Assume they are low lag */
 	player->next_ping = 0;			/* Don't ping until login */
 
-	if(player_check_ip_ban_list(&addr.sin_addr) < 0) {
-		log_msg(GGZ_LOG_SECURITY,"IPBAN Connection not allowed from %s",
-			player->addr);
-		free(player);
-		pthread_exit(NULL);
-	}
-
-	/* Send server ID */
-	if (net_send_serverid(player->net, opt.server_name) < 0) {
-		free(player);
-		pthread_exit(NULL);
-	}
-	
-	pthread_rwlock_wrlock(&state.lock);
-	if (state.players == MAX_USERS) {
-		pthread_rwlock_unlock(&state.lock);
-		net_send_server_full(player->net, opt.server_name);
-		close(sock);
-		log_msg(GGZ_LOG_NOTICE,
-			"SERVER_FULL - Rejected connection from %s",
-			player->addr);
-		free(player);
-		pthread_exit(NULL);
-	}
-	state.players++;
-	pthread_rwlock_unlock(&state.lock);
-
-
-	dbg_msg(GGZ_DBG_CONNECTION, "New player connected from %s", 
-		player->addr);
-	
-	player_loop(player);
-	player_remove(player);
-	net_free(player->net);
-	free(player);
-
-	return (NULL);
+	return player;
 }
 
 
@@ -243,14 +125,14 @@ static void* player_new(void *arg_ptr)
  * GGZPlayer* player : pointer to player structure managed by this thread
  * int p_fd : player's fd
  */
-static void player_loop(GGZPlayer* player)
+void player_loop(GGZPlayer* player)
 {
 	int status, fd_max, p_fd;
 	fd_set active_fd_set, read_fd_set;
 	struct timeval timer;
 
 	/* Get socket from netIO object */
-	p_fd = net_get_fd(player->net);
+	p_fd = net_get_fd(player->client->net);
 
 	/* Start off listening only to player */
 	FD_ZERO(&active_fd_set);
@@ -297,7 +179,7 @@ static void player_loop(GGZPlayer* player)
 
 		/* Check for message from player */
 		if (FD_ISSET(p_fd, &read_fd_set)) {
-			if ( (status = net_read_data(player->net)) < 0)
+			if ( (status = net_read_data(player->client->net)) < 0)
 				break;
 		}
 		
@@ -329,7 +211,7 @@ static void player_loop(GGZPlayer* player)
  * Receives:
  * GGZPlayer* player : pointer to player structure
  */
-static void player_remove(GGZPlayer* player)
+void player_remove(GGZPlayer* player)
 {
 	long connect_time;
 	int hours, mins, secs;
@@ -369,7 +251,7 @@ static void player_remove(GGZPlayer* player)
 	event_player_flush(player);
 
 	pthread_rwlock_wrlock(&player->lock);
-	net_disconnect(player->net);
+	net_disconnect(player->client->net);
 	pthread_rwlock_unlock(&player->lock);	
 
 	pthread_rwlock_wrlock(&state.lock);
@@ -496,7 +378,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	if(perms_check(player, PERMS_LAUNCH_TABLE) == PERMS_DENY) {
 		dbg_msg(GGZ_DBG_TABLE, "%s insufficient perms to launch",
 			player->name);
-		if(net_send_table_launch(player->net, E_NO_PERMISSION) < 0)
+		if(net_send_table_launch(player->client->net, E_NO_PERMISSION) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -505,7 +387,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	if ( (room = player->room) == -1) {
 		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch table in room -1", 
 			player->name);
-		if (net_send_table_launch(player->net, E_NOT_IN_ROOM) < 0)
+		if (net_send_table_launch(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -515,7 +397,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 		dbg_msg(GGZ_DBG_TABLE, 
 			"%s tried to launch a table with > %d seats",
 			player->name, MAX_TABLE_SIZE);
-		if (net_send_table_launch(player->net, E_BAD_OPTIONS) < 0)
+		if (net_send_table_launch(player->client->net, E_BAD_OPTIONS) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -524,7 +406,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	if (player->table != -1 || player->launching) {
 		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch table while at one",
 			player->name);
-		if (net_send_table_launch(player->net, E_LAUNCH_FAIL) < 0)
+		if (net_send_table_launch(player->client->net, E_LAUNCH_FAIL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -536,7 +418,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	if (table->type != rooms[room].game_type) {
 		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch wrong table type",
 			player->name);
-		if (net_send_table_launch(player->net, E_NOT_IN_ROOM) < 0)
+		if (net_send_table_launch(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -550,7 +432,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 		player->launching = 1;
 		pthread_rwlock_unlock(&player->lock);
 	} else {
-		if (net_send_table_launch(player->net, (char)status) < 0)
+		if (net_send_table_launch(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		status = GGZ_REQ_FAIL;
 	}
@@ -588,7 +470,7 @@ GGZEventFuncReturn player_launch_callback(void* target, int size, void* data)
 		player_transit(player, GGZ_TRANSIT_JOIN, index);
 
 	/* Return status to client */
-	if (net_send_table_launch(player->net, (char)status) < 0)
+	if (net_send_table_launch(player->client->net, (char)status) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
@@ -612,7 +494,7 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 	if (strcmp(owner, player->name) != 0) {
 		dbg_msg(GGZ_DBG_TABLE, "%s tried to modify table owned by %s",
 			player->name, owner);
-		if(net_send_update_result(player->net, E_NO_PERMISSION) < 0)
+		if(net_send_update_result(player->client->net, E_NO_PERMISSION) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -637,7 +519,7 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 
 	/* Return any immediate failures to client*/
 	if (status < 0) {
-		if (net_send_update_result(player->net, (char)status) < 0)
+		if (net_send_update_result(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		status = GGZ_REQ_FAIL;
 	}
@@ -681,7 +563,7 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index)
 
 	/* Return any immediate failures to client*/
 	if (status < 0) {
-		if (net_send_table_join(player->net, (char)status) < 0)
+		if (net_send_table_join(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		status = GGZ_REQ_FAIL;
 	}
@@ -740,7 +622,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player, char force)
 	
 	/* Return any immediate failures to client*/
 	if (status < 0) {
-		if (net_send_table_leave(player->net, (char)status) < 0)
+		if (net_send_table_leave(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		status = GGZ_REQ_FAIL;
 	}
@@ -811,7 +693,7 @@ GGZPlayerHandlerStatus player_list_players(GGZPlayer* player)
 	if (player->room == -1) {
 		dbg_msg(GGZ_DBG_UPDATE, "%s requested player list in room -1",
 			player->name);
-		if (net_send_player_list_error(player->net, E_NOT_IN_ROOM) < 0)
+		if (net_send_player_list_error(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -835,18 +717,18 @@ GGZPlayerHandlerStatus player_list_players(GGZPlayer* player)
 	}
 	pthread_rwlock_unlock(&rooms[room].lock);
 
-	if (net_send_player_list_count(player->net, count) < 0) {
+	if (net_send_player_list_count(player->client->net, count) < 0) {
 		free(data);
 		return GGZ_REQ_DISCONNECT;
 	}
 
 	for (i = 0; i < count; i++)
-		if (net_send_player(player->net, &data[i]) < 0) {
+		if (net_send_player(player->client->net, &data[i]) < 0) {
 			free(data);
 			return GGZ_REQ_DISCONNECT;
 		}
 
-	if (net_send_player_list_end(player->net) < 0)
+	if (net_send_player_list_end(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	free(data);
@@ -866,7 +748,7 @@ GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose)
  	if (player->uid == GGZ_UID_NONE) {
 		dbg_msg(GGZ_DBG_UPDATE, "%s requested type list before login",
 			player->name);
-		if (net_send_type_list_error(player->net, E_NOT_LOGGED_IN) < 0)
+		if (net_send_type_list_error(player->client->net, E_NOT_LOGGED_IN) < 0)
  			return GGZ_REQ_DISCONNECT;
  		return GGZ_REQ_FAIL;
  	}
@@ -882,14 +764,14 @@ GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose)
 	}
 		
 	/* Send game type count */
-	if (net_send_type_list_count(player->net, count) < 0)
+	if (net_send_type_list_count(player->client->net, count) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	for (i = 0; i < count; i++)
-		if (net_send_type(player->net, i, &info[i], verbose) < 0)
+		if (net_send_type(player->client->net, i, &info[i], verbose) < 0)
 			return GGZ_REQ_DISCONNECT;
 	
-	if (net_send_type_list_end(player->net) < 0)
+	if (net_send_type_list_end(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 
@@ -911,14 +793,14 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 	if (player->uid == GGZ_UID_NONE) {
 		dbg_msg(GGZ_DBG_UPDATE, "%s requested table list before login",
 			player->name);
-		if (net_send_table_list_error(player->net, E_NOT_LOGGED_IN) < 0)
+		if (net_send_table_list_error(player->client->net, E_NOT_LOGGED_IN) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
 	
 	/* Don't send list if they're not in a room */
 	if (player->room == -1) {
-		if (net_send_table_list_error(player->net, E_NOT_IN_ROOM) < 0)
+		if (net_send_table_list_error(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -926,7 +808,7 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 	count = table_search(player->name, player->room, type, global, 
 			     &my_tables);
 	
-	if (net_send_table_list_count(player->net, count) < 0)
+	if (net_send_table_list_count(player->client->net, count) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Don`t proceed if there was an error, or no tables found*/
@@ -934,11 +816,11 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 		return GGZ_REQ_FAIL;
 	
 	for (i = 0; i < count; i++)
-		if (net_send_table(player->net, &my_tables[i]) < 0)
+		if (net_send_table(player->client->net, &my_tables[i]) < 0)
 			return GGZ_REQ_DISCONNECT;
 
 
-	if (net_send_table_list_end(player->net) < 0)
+	if (net_send_table_list_end(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	if (count > 0)
@@ -967,7 +849,7 @@ static GGZPlayerHandlerStatus player_msg_to_sized(GGZPlayer* p)
 		return GGZ_REQ_FAIL;
 	}
 
-	if (net_send_game_data(p->net, size, buf) < 0)
+	if (net_send_game_data(p->client->net, size, buf) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
 	dbg_msg(GGZ_DBG_GAME_MSG, "Game to User: %d bytes", size);
@@ -1011,7 +893,7 @@ int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg)
 	if (player->room == -1) {
 		dbg_msg(GGZ_DBG_CHAT, "%s tried to chat from room -1", 
 			player->name);
-		if (net_send_chat_result(player->net, E_NOT_IN_ROOM) < 0)
+		if (net_send_chat_result(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
 	}
 	
@@ -1036,7 +918,7 @@ int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg)
 	}
 
 	dbg_msg(GGZ_DBG_CHAT, "%s's chat result: %d", player->name, status);
-	if (net_send_chat_result(player->net, status) < 0)
+	if (net_send_chat_result(player->client->net, status) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Don't return the chat error code */
@@ -1055,12 +937,12 @@ GGZPlayerHandlerStatus player_motd(GGZPlayer* player)
  	if (player->uid == GGZ_UID_NONE) {
 		dbg_msg(GGZ_DBG_CHAT, "%s requested motd before logging in",
 			player->name);
-		if (net_send_motd_error(player->net, E_NOT_LOGGED_IN) < 0)
+		if (net_send_motd_error(player->client->net, E_NOT_LOGGED_IN) < 0)
  			return GGZ_REQ_DISCONNECT;
  		return GGZ_REQ_FAIL;
  	}
 
-	if (net_send_motd(player->net) < 0)
+	if (net_send_motd(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
 	return GGZ_REQ_OK;
@@ -1070,7 +952,7 @@ GGZPlayerHandlerStatus player_motd(GGZPlayer* player)
 GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player)
 {
 	/* Send a ping and mark send time */
-	if(net_send_ping(player->net) < 0)
+	if(net_send_ping(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 	gettimeofday(&player->sent_ping, NULL);
 
@@ -1118,50 +1000,3 @@ void player_handle_pong(GGZPlayer *player)
 }
 
 
-void player_set_ip_ban_list(int count, char **list)
-{
-	int i;
-	char *addr, *mask;
-	struct in_addr sin;
-
-	if((banned_nets_c = count) == 0)
-		return;
-
-	banned_nets_a = ggz_malloc(count * sizeof(uint32_t));
-	banned_nets_m = ggz_malloc(count * sizeof(uint32_t));
-
-	/* Convert the list of IP/Mask specs to internal format */
-	/* If it's invalid, just make the address part all zeros */
-	for(i=0; i<count; i++) {
-		addr = list[i];
-		for(mask=addr; *mask!='\0' && *mask!='/'; mask++)
-			;
-		if(*mask == '\0')
-			mask = "255.255.255.255";
-		else {
-			*mask = '\0';
-			mask++;
-		}
-		if(inet_aton(addr, &sin) != 0) {
-			banned_nets_a[i] = sin.s_addr;
-			if(inet_aton(mask, &sin) != 0)
-				banned_nets_m[i] = sin.s_addr;
-			else
-				banned_nets_a[i] = 0;
-		} else
-			banned_nets_a[i] = 0;
-	}
-}
-
-
-static int player_check_ip_ban_list(struct in_addr *sina)
-{
-	int i;
-	for(i=0; i<banned_nets_c; i++) {
-		if(banned_nets_a[i] != 0
-                   && (sina->s_addr & banned_nets_m[i]) == banned_nets_a[i])
-			return -1;
-	}
-
-	return 0;
-}

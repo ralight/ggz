@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 3985 2002-04-14 19:56:00Z jdorje $
+ * $Id: net.c 4139 2002-05-03 03:17:08Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -35,6 +35,7 @@
 #include "net.h"
 #include "protocols.h"
 #include "seats.h"
+#include "client.h"
 
 #include <errno.h>
 #include <expat.h>
@@ -54,8 +55,8 @@
 /* GGZNet structure for handling the network connection to the server */
 struct _GGZNetIO {
 
-	/* The player this object serves */
-	struct _GGZPlayer *player;
+	/* The client this object serves */
+	GGZClient *client;
 
 	/* The actual socket */
 	int fd;
@@ -74,7 +75,7 @@ struct _GGZNetIO {
 
 	/* File to dump protocol session */
 	int dump_file;
-
+	
 	/* Count the number of bytes we've parsed since the last tag*/
 	int byte_count;
 
@@ -97,6 +98,13 @@ typedef struct _GGZSeatData {
 	char *type; 
 	char *name;
 } GGZSeatData;
+
+
+/* Authentication data structure */
+typedef struct _GGZAuthData {
+	char *name;
+	char *password;
+} GGZAuthData;
 
 
 /* Callbacks for XML parser */
@@ -141,8 +149,10 @@ static int _net_send_line(GGZNetIO *net, char *line, ...)
 static int _net_send_string(GGZNetIO *net, char *fmt, ...)
 			    ggz__attribute((format(printf, 2, 3)));
 
-static void _net_login_set_name(GGZXMLElement *login, char *name);
-static void _net_login_set_password(GGZXMLElement *login, char *password);
+static GGZAuthData* _net_authdata_new(void);
+static void _net_authdata_free(GGZAuthData *data);
+static void _net_auth_set_name(GGZXMLElement *login, char *name);
+static void _net_auth_set_password(GGZXMLElement *login, char *password);
 static void _net_table_add_seat(GGZXMLElement*, GGZSeatData*);
 static void _net_table_set_desc(GGZXMLElement*, char*);
 static GGZTableData* _net_tabledata_new(void);
@@ -154,7 +164,7 @@ static void _net_seat_free(GGZSeatData*);
 
 /* Internal library functions (prototypes in net.h) */
 
-GGZNetIO* net_new(int fd, GGZPlayer *player)
+GGZNetIO* net_new(int fd, GGZClient *client)
 {
 	GGZNetIO *net = NULL;
 
@@ -163,7 +173,7 @@ GGZNetIO* net_new(int fd, GGZPlayer *player)
 	
 	/* Set fd to invalid value */
 	net->fd = fd;
-	net->player = player;
+	net->client = client;
 	net->dump_file = -1;
 	net->parsing = 0;
 	net->done = 0;
@@ -412,7 +422,7 @@ int net_send_player_list_count(GGZNetIO *net, int count)
 {
 	int room;
 
-	room = player_get_room(net->player);
+	room = player_get_room(net->client->data);
 	
 	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
 	_net_send_line(net, "<LIST TYPE='player' ROOM='%d'>", room);
@@ -478,7 +488,7 @@ int net_send_table_list_count(GGZNetIO *net, int count)
 {
 	int room;
 
-	room = player_get_room(net->player);
+	room = player_get_room(net->client->data);
 
 	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
 	_net_send_line(net, "<LIST TYPE='table' ROOM='%d'>", room);
@@ -579,7 +589,7 @@ int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 	GGZPlayer *player;
 	int room;
 
-	room = player_get_room(net->player);
+	room = player_get_room(net->client->data);
 	
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:
@@ -622,7 +632,7 @@ int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode, GGZTable *table
 	char *action = NULL;
 	int room;
 
-	room = player_get_room(net->player);
+	room = player_get_room(net->client->data);
 
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:
@@ -783,8 +793,8 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 
 	/* If client disconnected..*/
 	if (done) {
-		dbg_msg(GGZ_DBG_CONNECTION, "%s disconnected", 
-			net->player->name);
+		dbg_msg(GGZ_DBG_CONNECTION, "Client from %s disconnected", 
+			net->client->addr);
 	}
 	else if (!XML_ParseBuffer(net->parser, len, done)) {
 		dbg_msg(GGZ_DBG_XML, "Parse error at line %d, col %d:%s",
@@ -928,7 +938,7 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 /* Functions for <SESSION> tag */
 static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session)
 {
-	logout_player(net->player);
+	logout_player(net->client->data);
 	net->done = 1;
 }
 
@@ -937,8 +947,9 @@ static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session)
 static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 {
 	GGZLoginType login_type;
+	GGZAuthData *auth;	
 	char *type;
-	char **data;
+
 
 	if (login) {
 		type = ggz_xmlelement_get_attr(login, "TYPE");
@@ -960,57 +971,90 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 			return;
 		}
 		
-		data = ggz_xmlelement_get_data(login);
+		auth = ggz_xmlelement_get_data(login);
 		
 		/* It's an error if they didn't send the right data */
-		if (!data 
-		    || !data[0] 
-		    || (!data[1] && login_type == GGZ_LOGIN)) {
+		if (!auth || !auth->name
+		    || (!auth->password && login_type == GGZ_LOGIN)) {
 			_net_send_result(net, "login", E_BAD_OPTIONS);
 			return;
 		}
-
-		login_player(login_type, net->player, data[0], data[1]);
+		
+		/* Can't login twice */
+		if (net->client->data) {
+			dbg_msg(GGZ_DBG_CONNECTION, "Client from %s attempted to log in again", 
+				net->client->addr);
+			net_send_login(net, login_type, E_ALREADY_LOGGED_IN, NULL);
+		}
+		else {
+			net->client->data = player_new(net->client);
+			login_player(login_type, net->client->data, auth->name, auth->password);
+			net->client->type = GGZ_CLIENT_PLAYER;
+			/* FIXME: this is a hack so that the player loop will start */
+			client_end_session(net->client);
+		}
 
 		/* Free up any resources we allocated */
-		if (data[0])
-			free(data[0]);
-		if (data[1])
-			free(data[1]);
+		_net_authdata_free(auth);
+	}
+}
+
+
+static GGZAuthData* _net_authdata_new(void)
+{
+	GGZAuthData *data;
+
+	if ( (data = malloc(sizeof(GGZAuthData))) == NULL)
+		err_sys_exit("malloc error in net_authdata_new()");
+	
+	data->name = NULL;
+	data->password = NULL;
+	
+	return data;
+}
+
+
+static void _net_auth_set_name(GGZXMLElement *auth, char *name)
+{
+	 GGZAuthData *data;
+	
+	data = ggz_xmlelement_get_data(auth);
+
+	/* If data doesn't already exist, create it */
+	if (!data) {
+		data = _net_authdata_new();
+		ggz_xmlelement_set_data(auth, data);
+	}
+	
+	data->name = name;
+}
+
+
+static void _net_auth_set_password(GGZXMLElement *auth, char *password)
+{
+	GGZAuthData *data;
+	
+	data = ggz_xmlelement_get_data(auth);
+
+	/* If data doesn't already exist, create it */
+	if (!data) {
+		data = _net_authdata_new();
+		ggz_xmlelement_set_data(auth, data);
+	}
+	
+	data->password = password;
+}
+
+
+static void _net_authdata_free(GGZAuthData *data)
+{
+	if (data) {
+		if (data->name)
+			free(data->name);
+		if (data->password)
+			free(data->password);
 		free(data);
 	}
-}
-
-
-static void _net_login_set_name(GGZXMLElement *login, char *name)
-{
-	char **data;
-	
-	data = ggz_xmlelement_get_data(login);
-
-	/* If data doesn't already exist, create it */
-	if (!data) {
-		data = calloc(2, sizeof(char*));
-		ggz_xmlelement_set_data(login, data);
-	}
-	
-	data[0] = name;
-}
-
-
-static void _net_login_set_password(GGZXMLElement *login, char *password)
-{
-	char **data;
-	
-	data = ggz_xmlelement_get_data(login);
-
-	/* If data doesn't already exist, create it */
-	if (!data) {
-		data = calloc(2, sizeof(char*));
-		ggz_xmlelement_set_data(login, data);
-	}
-	
-	data[1] = password;
 }
 
 
@@ -1035,7 +1079,7 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LOGIN") == 0)
-			_net_login_set_name(parent, name);
+			_net_auth_set_name(parent, name);
 		else 
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 	}
@@ -1063,7 +1107,7 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LOGIN") == 0)
-			_net_login_set_password(parent, password);
+			_net_auth_set_password(parent, password);
 		else 
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 	}
@@ -1100,7 +1144,7 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 			if ( (room = ggz_xmlelement_get_attr(update, "ROOM")))
 				table->room = safe_atoi(room);
 			
-			player_table_update(net->player, table);
+			player_table_update(net->client->data, table);
 		}
 	}
 }
@@ -1125,15 +1169,15 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 			verbose = 1;
 		
 		if (strcmp(type, "game") == 0)
-			player_list_types(net->player, verbose);
+			player_list_types(net->client->data, verbose);
 		else if (strcmp(type, "room") == 0)
 			/* FIXME: Currently send all types */
-			room_list_send(net->player, -1, verbose);
+			room_list_send(net->client->data, -1, verbose);
 		else if (strcmp(type, "player") == 0)
-			player_list_players(net->player);
+			player_list_players(net->client->data);
 		else if (strcmp(type, "table") == 0)
 			/* FIXME: Currently send all local types */
-			player_list_tables(net->player, GGZ_TYPE_ALL, 0);
+			player_list_tables(net->client->data, GGZ_TYPE_ALL, 0);
 		else
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 	}
@@ -1147,7 +1191,7 @@ static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *enter)
 
 	if (enter) {
 		room = safe_atoi(ggz_xmlelement_get_attr(enter, "ROOM"));
-		room_handle_join(net->player, room);
+		room_handle_join(net->client->data, room);
 	}
 }
 
@@ -1185,7 +1229,7 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 			_net_send_result(net, "chat", E_BAD_OPTIONS);
 		}
 
-		player_chat(net->player, op, to, msg);
+		player_chat(net->client->data, op, to, msg);
 	}
 }
 
@@ -1197,7 +1241,7 @@ static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 
 	if (element) {
 		table = safe_atoi(ggz_xmlelement_get_attr(element, "TABLE"));
-		player_table_join(net->player, table);
+		player_table_join(net->client->data, table);
 	}
 }
 
@@ -1212,7 +1256,7 @@ static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 		att = ggz_xmlelement_get_attr(element, "FORCE");
 		if (att && strcmp(att, "true") == 0)
 			force = 1;
-		player_table_leave(net->player, force);
+		player_table_leave(net->client->data, force);
 	}
 }
 
@@ -1229,7 +1273,7 @@ static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element)
 			return;
 		}
 		
-		player_table_launch(net->player, table);
+		player_table_launch(net->client->data, table);
 	}
 }
 
@@ -1273,7 +1317,7 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	table->type = type;
 
 	/* If room was specified, use it, otherwise use players current room */
-	table->room = player_get_room(net->player);
+	table->room = player_get_room(net->client->data);
 	
 	if (desc)
 		snprintf(table->desc, sizeof(table->desc), "%s", desc);
@@ -1482,7 +1526,7 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <MOTD> tag */
 static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *motd)
 {
-	player_motd(net->player);
+	player_motd(net->client->data);
 }
 
 
@@ -1526,7 +1570,7 @@ static void _net_handle_data(GGZNetIO *net, GGZXMLElement *data)
 			token = strtok(NULL, " ");
 		}
 		
-		player_msg_from_sized(net->player, size, buffer);
+		player_msg_from_sized(net->client->data, size, buffer);
 	}
 }
 
@@ -1534,7 +1578,7 @@ static void _net_handle_data(GGZNetIO *net, GGZXMLElement *data)
 /* Function for <PONG> tag */
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *data)
 {
-	player_handle_pong(net->player);
+	player_handle_pong(net->client->data);
 }
 
 

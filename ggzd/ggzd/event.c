@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 3139 2002-01-19 08:07:46Z bmh $
+ * $Id: event.c 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -37,6 +37,8 @@
 #include <players.h>
 #include <hash.h>
 #include <net.h>
+#include "client.h"
+#include "table.h"
 
 /* Server wide data structures */
 extern Options opt;
@@ -257,7 +259,7 @@ int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size,
 	}
 
 	/* Check to see if player is connected */
-	if (net_get_fd(player->net) == -1) {
+	if (net_get_fd(player->client->net) == -1) {
 		pthread_rwlock_unlock(&player->lock);
 		if (data)
 			free(data);

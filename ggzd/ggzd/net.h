@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 3446 2002-02-23 06:11:46Z bmh $
+ * $Id: net.h 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -33,11 +33,11 @@
 #include "room.h"
 #include "datatypes.h"
 #include "protocols.h"
+#include "client.h"
 
-typedef struct _GGZNetIO GGZNetIO;
 
 /* Create a new network IO object */
-GGZNetIO* net_new(int fd, GGZPlayer *player);
+GGZNetIO* net_new(int fd, GGZClient *client);
 
 /* Set dump file for session */
 int net_set_dump_file(GGZNetIO *net, const char* filename);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 3606 2002-03-21 02:52:30Z bmh $
+ * $Id: players.h 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -31,8 +31,7 @@
 
 #include <pthread.h>
 #include <sys/time.h>
-#include <ggzd.h>
-#include <table.h>
+#include "ggzd.h"
 
 
 /* 
@@ -47,14 +46,7 @@ struct _GGZPlayer {
 	/* Player name, leaving room for '\0' */
 	char name[MAX_USER_NAME_LEN + 1]; 
 
-	/* IP (or hostname) address from which player connected */
-	char addr[64];
-
-	/* Network IO object for communicating with player */
-	struct _GGZNetIO *net;
-
-	/* Thread ID of the thread handling this player's requests */
-	pthread_t thread;
+	GGZClient *client;
 
 	/* FIXME: need to replace with a "logged-in" flag */
 	int uid;
@@ -92,25 +84,10 @@ struct _GGZPlayer {
 	/*list_t *op_rooms;	Not yet */
 };
 
-/* Special UID values.  Eventually, every registered player
-   will have a unique UID, but for now they are all just
-   assigned a UID of 0. */
-typedef enum {
-	GGZ_UID_REGISTERED = 0,
-	GGZ_UID_NONE = -1,
-	GGZ_UID_ANON = -2
-} GGZUIDType;
 
-typedef enum {
-	GGZ_PLAYER_NONE,
-	GGZ_PLAYER_NORMAL,
-	GGZ_PLAYER_GUEST,
-	GGZ_PLAYER_ADMIN
-} GGZPlayerType;
-
-typedef struct _GGZPlayer GGZPlayer; 
-
-void player_handler_launch(int sock);
+GGZPlayer* player_new(GGZClient *client);
+void  player_loop(GGZPlayer* player);
+void  player_remove(GGZPlayer* player);
 
 GGZEventFuncReturn player_launch_callback(void* target, int size, void* data);
 
@@ -131,6 +108,5 @@ GGZPlayerType player_get_type(GGZPlayer *player);
 
 void player_handle_pong(GGZPlayer *player);
 
-void player_set_ip_ban_list(int count, char **list);
 
 #endif

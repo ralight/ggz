@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 3259 2002-02-05 23:41:31Z jdorje $
+ * $Id: control.c 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -54,6 +54,7 @@
 #include <table.h>
 #include <daemon.h>
 #include <hash.h>
+#include "client.h"
 
 
 /* Server options */
@@ -249,7 +250,7 @@ int main(int argc, const char *argv[])
 			}
 		} else {
 			/* This is where to test for ignored IP addresses */
-			player_handler_launch(new_sock);
+			client_handler_launch(new_sock);
 		}
 	}
 

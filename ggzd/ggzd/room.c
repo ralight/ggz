@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 3420 2002-02-19 08:04:27Z jdorje $
+ * $Id: room.c 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -38,6 +38,7 @@
 #include <chat.h>
 #include <net.h>
 #include <perms.h>
+#include "client.h"
 
 
 /* Server wide data structures */
@@ -66,7 +67,7 @@ GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int req_game,
 		
 	/* Don't send list if they're not logged in */
 	if (player->uid == GGZ_UID_NONE) {
-		if (net_send_room_list_error(player->net, E_NOT_LOGGED_IN) < 0)
+		if (net_send_room_list_error(player->client->net, E_NOT_LOGGED_IN) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -77,7 +78,7 @@ GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int req_game,
 
 	if((verbose != 0 && verbose != 1) || req_game < -1 || req_game >= max){
 		/* Invalid Options Sent */
-		if (net_send_room_list_error(player->net, E_BAD_OPTIONS) < 0)
+		if (net_send_room_list_error(player->client->net, E_BAD_OPTIONS) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -92,18 +93,18 @@ GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int req_game,
 		count = room_info.num_rooms;
 
 	/* Do da opcode, and announce our count */
-	if (net_send_room_list_count(player->net, count) < 0)
+	if (net_send_room_list_count(player->client->net, count) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Send off all the room announcements */
 	for(i=0; i<room_info.num_rooms; i++)
 		if(req_game == -1 || req_game == rooms[i].game_type) {
-			if (net_send_room(player->net, i, &rooms[i], verbose) < 0)
+			if (net_send_room(player->client->net, i, &rooms[i], verbose) < 0)
 				return GGZ_REQ_DISCONNECT;
 		}
 
 	/* End room list */
-	if (net_send_room_list_end(player->net) < 0)
+	if (net_send_room_list_end(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
 	return GGZ_REQ_OK;
@@ -162,19 +163,19 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 	
 	/* Check for silliness from the user */
 	if (player->table != -1 || player->launching) {
-		if (net_send_room_join(player->net, E_AT_TABLE) < 0)
+		if (net_send_room_join(player->client->net, E_AT_TABLE) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
 
 	if (player->transit) {
-		if (net_send_room_join(player->net, E_IN_TRANSIT) < 0)
+		if (net_send_room_join(player->client->net, E_IN_TRANSIT) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
 	
 	if(room > room_info.num_rooms || room < 0) {
-		if (net_send_room_join(player->net, E_BAD_OPTIONS) < 0)
+		if (net_send_room_join(player->client->net, E_BAD_OPTIONS) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -194,7 +195,7 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 		free(rname);
 	}
 
-	if (net_send_room_join(player->net, result) < 0)
+	if (net_send_room_join(player->client->net, result) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	/* FIXME: remove this once we have a way of making it automatic */
@@ -376,7 +377,7 @@ static int room_event_callback(GGZPlayer* player, int size, void* data)
 	if (opcode != GGZ_UPDATE_LAG && strcmp(name, player->name) == 0)
 		return 0;
 
-	if (net_send_player_update(player->net, opcode, name) < 0)
+	if (net_send_player_update(player->client->net, opcode, name) < 0)
 		return -1;
 	
 	return 0;

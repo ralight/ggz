@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 3419 2002-02-19 07:18:31Z jdorje $
+ * $Id: chat.c 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,6 +40,8 @@
 #include <net.h>
 #include <players.h>
 #include <perms.h>
+#include "client.h"
+
 
 /* Server wide data structures */
 extern Options opt;
@@ -177,7 +179,7 @@ static GGZEventFuncReturn chat_event_callback(void* target, int size,
 	dbg_msg(GGZ_DBG_CHAT, "%s chat opcode: %d, sender: %s, msg: %s",
 		player->name, opcode, name, msg);
 
-	if (net_send_chat(player->net, opcode, name, msg) < 0)
+	if (net_send_chat(player->client->net, opcode, name, msg) < 0)
 		return GGZ_EVENT_ERROR;
 		
 	return GGZ_EVENT_OK;

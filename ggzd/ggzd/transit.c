@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3607 2002-03-21 05:53:18Z jdorje $
+ * $Id: transit.c 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -42,6 +42,7 @@
 #include "seats.h"
 #include "event.h"
 #include "net.h"
+#include "client.h"
 
 /* Server wide data structures*/
 extern struct GameInfo game_types[MAX_GAME_TYPES];
@@ -224,7 +225,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 			player->table = -1;
 		pthread_rwlock_unlock(&player->lock);
 		
-		if (net_send_table_leave(player->net, (char)status) < 0)
+		if (net_send_table_leave(player->client->net, (char)status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 
@@ -237,11 +238,11 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 		}
 		pthread_rwlock_unlock(&player->lock);		
 
-		if (net_send_table_join(player->net, (char)status) < 0)
+		if (net_send_table_join(player->client->net, (char)status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 	case GGZ_TRANSIT_SEAT:
-		if (net_send_update_result(player->net, (char)status) < 0)
+		if (net_send_update_result(player->client->net, (char)status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 	}

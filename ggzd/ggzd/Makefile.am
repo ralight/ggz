@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3879 2002-04-10 13:37:12Z dr_maux $
+# $Id: Makefile.am 4139 2002-05-03 03:17:08Z bmh $
 
 SUBDIRS = .
 
@@ -14,6 +14,8 @@ ggzdroom_DATA = entry.room
 
 ggzd_SOURCES =	chat.c\
 		chat.h\
+		client.c \
+		client.h \
 		control.c \
 		daemon.c \
 		daemon.h \

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 4117 2002-04-30 02:08:24Z jdorje $
+ * $Id: login.c 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,6 +39,8 @@
 #include <players.h>
 #include <protocols.h>
 #include <perms.h>
+#include "client.h"
+
 
 static void login_generate_password(char *);
 static int login_add_user(ggzdbPlayerEntry *entry, char *name, char *password);
@@ -77,21 +79,12 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 	if (strlen(name) > MAX_USER_NAME_LEN)
 		name[MAX_USER_NAME_LEN] = 0;
 
-	/* Can't login twice */
-	if (player->uid != GGZ_UID_NONE) {
-		dbg_msg(GGZ_DBG_CONNECTION, "%s attempted to log in again", 
-			player->name);
-		if (net_send_login(player->net, type, E_ALREADY_LOGGED_IN, NULL) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-
 	/* Validate the username */
 	if(!validate_username(name)) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s",
 			name);
 		/* FIXME: We should have a specific error code for this */
-		if (net_send_login(player->net, type, E_ALREADY_LOGGED_IN, NULL) < 0)
+		if (net_send_login(player->client->net, type, E_ALREADY_LOGGED_IN, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -122,7 +115,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 	   name in the DB */
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful login of %s", name);
-		if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
+		if (net_send_login(player->client->net, type, E_USR_LOOKUP, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -138,12 +131,12 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 			dbg_msg(GGZ_DBG_CONNECTION,
 				"Unsuccessful login of %s - bad password",name);
 			log_msg(GGZ_LOG_SECURITY, "BADPWD from %s for %s",
-				player->addr, name);
+				player->client->addr, name);
 			name_ok = 0;
 		}
 		if(!name_ok) {
 			hash_player_delete(name);
-			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
+			if (net_send_login(player->client->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
@@ -162,12 +155,12 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 		if(db_status != GGZDB_ERR_NOTFOUND
 		   || login_add_user(&db_pe, name, new_pw) < 0) {
 			hash_player_delete(name);
-			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
+			if (net_send_login(player->client->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
 		log_msg(GGZ_LOG_SECURITY, "NEWACCT from %s for %s",
-			player->addr, name);
+			player->client->addr, name);
 		login_type = " newly registered player";
 	} else
 		login_type = "n anonymous player";
@@ -185,17 +178,17 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 		log_login_regd();
 	}
 	snprintf(player->name, sizeof(player->name), "%s", name);
-	ip_addr = player->addr;
+	ip_addr = player->client->addr;
 	player->login_time = (long) time(NULL);
 	player->next_ping = time(NULL) + 5;
 	pthread_rwlock_unlock(&player->lock);
 	
 	/* Notify user of success and give them their password (if new) */
-	if (net_send_login(player->net, type, 0, new_pw) < 0)
+	if (net_send_login(player->client->net, type, 0, new_pw) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Send off the Message Of The Day */
-	if (motd_is_defined() && net_send_motd(player->net) < 0)
+	if (motd_is_defined() && net_send_motd(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Successful login of %s", name);
@@ -222,7 +215,7 @@ GGZPlayerHandlerStatus logout_player(GGZPlayer* player)
 	dbg_msg(GGZ_DBG_CONNECTION, "Handling logout for %s", player->name);
 
 	/* FIXME: Saving of stats and other things */
-	if (net_send_logout(player->net, 0) < 0)
+	if (net_send_logout(player->client->net, 0) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	return GGZ_REQ_OK;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4100 2002-04-28 23:00:01Z rgade $
+ * $Id: table.c 4139 2002-05-03 03:17:08Z bmh $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -51,6 +51,7 @@
 #include <stdio.h>
 
 #include <ggzdmod.h>
+#include "client.h"
 
 
 #define GGZ_RESYNC_SEC  0
@@ -1139,7 +1140,7 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
 		break;
 	}
 
-	if (net_send_table_update(player->net, opcode, &info, seat_num) < 0)
+	if (net_send_table_update(player->client->net, opcode, &info, seat_num) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
@@ -1163,7 +1164,7 @@ static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
 		player->name, seat->index, ggz_seattype_to_string(seat->type),
 		seat->name, info.index);
 
-	if (net_send_table_update(player->net, GGZ_UPDATE_SEAT, &info, seat->index) < 0)
+	if (net_send_table_update(player->client->net, GGZ_UPDATE_SEAT, &info, seat->index) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
