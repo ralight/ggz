@@ -68,6 +68,7 @@ struct wh_game_t {
 	int last_trick;		/* should the last trick be sent to all the players? */
 	int last_hand;		/* should the last hand be sent to all the players? */
 	int cumulative_scores;	/* should the cumulative score be sent to all the players? */
+	int bid_history;	/* should a complete history of the hand's bidding be shown? */
 
 	int open_hands;		/* are we playing with open hands? */
 
@@ -81,8 +82,11 @@ struct wh_game_t {
 
 	int bid_count;		/* how many bids there have been this bidding cycle */
 	int bid_total;		/* how many bids there will be this bidding cycle */
+	int bid_rounds;		/* number of *rounds* of bidding */
+	int max_bid_rounds;	/* the maximum number of bid rounds we can hold (increased at need) */
+	player_t prev_bid;	/* who made the _previous_ bid? */
 	player_t next_bid;	/* current/next bidder */
-	int num_bid_choices;		/* the number of bid choices */
+	int num_bid_choices;	/* the number of bid choices */
 	int max_bid_choices;	/* the maximum number of choices there may be == sizeof(bid_texts) == sizeof(bid_choices) */
 	int max_bid_length;	/* the longest possible bid (text-wise) */
 	bid_t* bid_choices;	/* the bid choices -- must be allocated in game_launch or declared static*/

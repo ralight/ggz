@@ -61,6 +61,7 @@ struct game_player_t {
 	int age;	/* how long the player has been at the table; simply
 			 * counts upward from 0 (the first player) */
 	bid_t bid;
+	bid_t *allbids;	/* corresponds to game.bid_rounds and max_bid_rounds */
 	int tricks;
 	int seat;	/* the number of the player's seat */
 	int ready;

@@ -787,6 +787,12 @@ void next_play(void)
 			for(p=0; p<game.num_players; p++)
 				game.players[p].tricks = 0;
 
+			/* init bid list */
+			game.bid_rounds = 0;
+			game.prev_bid = -1;
+			for(p=0; p<game.num_players; p++)
+				memset(game.players[p].allbids, 0, game.max_bid_rounds * sizeof(bid_t));
+
 			ggz_debug("Dealing hand %d.", game.hand_num);
 			if(game.funcs->deal_hand() < 0)
 				return;
@@ -1081,6 +1087,20 @@ int handle_bid_event(bid_t bid)
 	game.players[p].bid_count++;
 	game.funcs->handle_bid(bid);
 
+	/* add the bid to the "bid list" */
+	if (p <= game.prev_bid)
+		game.bid_rounds++;
+	if (game.bid_rounds >= game.max_bid_rounds) {
+		player_t p2;
+		game.max_bid_rounds += 10;
+		for (p2 = 0; p2 < game.num_players; p2++) {
+			game.players[p2].allbids = (bid_t*)realloc(game.players[p2].allbids, game.max_bid_rounds * sizeof(bid_t));
+			memset(&game.players[p2].allbids[game.max_bid_rounds-10], 0, 10 * sizeof(bid_t));
+		}
+	}
+	game.players[p].allbids[game.bid_rounds] = bid;
+	send_bid_history();
+
 	/* set up next move */
 	game.bid_count++;
 	game.funcs->next_bid();
@@ -1093,6 +1113,8 @@ int handle_bid_event(bid_t bid)
 
 	/* this is the player that just finished bidding */
 	set_player_message(p);
+
+	game.prev_bid = p;
 
 	if (was_waiting)
 		save_game_state();
@@ -1139,6 +1161,7 @@ void init_game()
 	game.last_trick = 1;
 	game.last_hand = 1;
 	game.cumulative_scores = 1;
+	game.bid_history = 1;	/* TODO: _should_ this be enabled by default? */
 	game.name = game_data[game.which_game].full_name;
 
 	/* now we do all the game-specific initialization... */

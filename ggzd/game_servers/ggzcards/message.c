@@ -137,6 +137,8 @@ void send_all_global_messages(player_t p)
 		send_global_message("Previous Hand", p);
 	if (game.cumulative_scores)
 		send_global_message("Scores", p);
+	if (game.bid_history)
+		send_global_message("Bid History", p);
 }
 
 /* set_global_message
@@ -245,10 +247,10 @@ static void send_cumulative_scores()
 	if (!game.cumulative_scores) return;
 
 	for (p=0; p<game.num_players; p++) {
-		buf_len += snprintf(buf + buf_len, sizeof(buf)-buf_len, "%s%s",
-				ggz_seats[p].name, p == game.num_players-1 ? "" : " ");
 		widths[p] = strlen(ggz_seats[p].name);
 		if (widths[p] < 4) widths[p] = 4;
+		buf_len += snprintf(buf + buf_len, sizeof(buf)-buf_len, "%*s%s",
+				widths[p], ggz_seats[p].name, p == game.num_players-1 ? "" : " ");
 	}
 	buf_len += snprintf(buf+buf_len, sizeof(buf)-buf_len, "\n");
 
@@ -302,5 +304,35 @@ void update_cumulative_scores()
 		cumulative_scores[c_score_count-1][p] = game.players[p].score;
 
 	send_cumulative_scores();
+}
+
+void send_bid_history()
+{
+	int r, buf_len = 0,  widths[game.num_players];
+	player_t p;
+	char buf[4096];
+	char buf2[game.max_bid_length];
+
+	if (!game.bid_history) return;
+
+	for (p=0; p<game.num_players; p++) {
+		widths[p] = strlen(ggz_seats[p].name);
+		if (widths[p] < game.max_bid_length) widths[p] = game.max_bid_length;
+		buf_len += snprintf(buf + buf_len, sizeof(buf)-buf_len, "%*s%s",
+				widths[p], ggz_seats[p].name, p == game.num_players-1 ? "" : " ");
+	}
+	buf_len += snprintf(buf+buf_len, sizeof(buf)-buf_len, "\n");
+
+	for (r=0; r<=game.bid_rounds; r++) {
+		for (p=0; p<game.num_players; p++) {
+			game.funcs->get_bid_text(buf2, sizeof(buf2), game.players[p].allbids[r]);
+			buf_len += snprintf(buf+buf_len, sizeof(buf)-buf_len,
+				"%*s%s", widths[p], buf2, p == game.num_players-1 ? "" : " ");
+				
+		}
+		buf_len += snprintf(buf+buf_len, sizeof(buf)-buf_len, "\n");
+	}
+
+	set_global_message("Bid History", "%s", buf);
 }
 
