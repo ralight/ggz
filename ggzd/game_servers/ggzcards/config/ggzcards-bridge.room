@@ -1,4 +1,5 @@
-# $Id: ggzcards-bridge.room 2189 2001-08-23 07:59:17Z jdorje $
+# $Id: ggzcards-bridge.room 2349 2001-09-04 02:08:26Z rgade $
+[RoomInfo]
 
 # This is the short name for the room
 Name = GGZ Cards - Bridge
