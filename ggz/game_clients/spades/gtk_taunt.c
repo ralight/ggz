@@ -71,7 +71,8 @@ GtkWidget *CreateTauntArea(void)
 
 
 	/* Taunt entry */
-	tauntBox = gtk_entry_new_with_max_length(256);
+	tauntBox = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(tauntBox), 256);
 	g_signal_connect_swapped(GTK_OBJECT(tauntBox), "activate",
 				 GTK_SIGNAL_FUNC(ReadTaunt),
 				 GTK_OBJECT(tauntBox));

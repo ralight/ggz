@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 2001
  * Desc: Support code
- * $Id: support.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: support.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -90,8 +90,8 @@ static GtkWidget *create_dummy_pixmap(GtkWidget * widget)
 	if (gdkpixmap == NULL)
 		g_error("Couldn't create replacement pixmap.");
 	pixmap = gtk_pixmap_new(gdkpixmap, mask);
-	gdk_pixmap_unref(gdkpixmap);
-	gdk_bitmap_unref(mask);
+	g_object_unref(gdkpixmap);
+	g_object_unref(mask);
 	return pixmap;
 }
 
@@ -145,8 +145,8 @@ GtkWidget *create_pixmap(GtkWidget * widget, const gchar * filename)
 	}
 	g_free(found_filename);
 	pixmap = gtk_pixmap_new(gdkpixmap, mask);
-	gdk_pixmap_unref(gdkpixmap);
-	gdk_bitmap_unref(mask);
+	g_object_unref(gdkpixmap);
+	g_object_unref(mask);
 	return pixmap;
 }
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_play.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: gtk_play.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * This fils contains functions for creating and handling the playing area
  *
@@ -357,12 +357,12 @@ static gint exposeHand(GtkWidget * widget, GdkEventExpose * event,
 		       gpointer data)
 {
 
-	gdk_draw_pixmap(widget->window,
-			widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-			playArea->handBuf,
-			event->area.x, event->area.y,
-			event->area.x, event->area.y,
-			event->area.width, event->area.height);
+	gdk_draw_drawable(widget->window,
+			  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+			  playArea->handBuf,
+			  event->area.x, event->area.y,
+			  event->area.x, event->area.y,
+			  event->area.width, event->area.height);
 
 	/* draw a test black rectangle */
 	/*gdk_draw_rectangle( widget->window,
@@ -413,12 +413,12 @@ static gint exposeTable(GtkWidget * widget, GdkEventExpose * event,
 			gpointer data)
 {
 
-	gdk_draw_pixmap(widget->window,
-			widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-			playArea->tableBuf,
-			event->area.x, event->area.y,
-			event->area.x, event->area.y,
-			event->area.width, event->area.height);
+	gdk_draw_drawable(widget->window,
+			  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+			  playArea->tableBuf,
+			  event->area.x, event->area.y,
+			  event->area.x, event->area.y,
+			  event->area.width, event->area.height);
 
 	return FALSE;
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main_win.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -143,11 +143,12 @@ void display_board(void)
 		y = (i / 3) * GRIDSIZE + BORDERSIZE + (GRIDSIZE -
 						       PIXSIZE) / 2;
 
-		gdk_pixbuf_render_to_drawable(piece, ttt_buf,
-					      style->
-					      fg_gc[GTK_WIDGET_STATE(tmp)],
-					      0, 0, x, y, PIXSIZE, PIXSIZE,
-					      GDK_RGB_DITHER_NONE, 0, 0);
+		gdk_draw_pixbuf(ttt_buf,
+				style->
+				fg_gc[GTK_WIDGET_STATE(tmp)],
+				piece,
+				0, 0, x, y, PIXSIZE, PIXSIZE,
+				GDK_RGB_DITHER_NONE, 0, 0);
 	}
 
 	gtk_widget_draw(tmp, NULL);
@@ -178,7 +179,7 @@ static void window_resized(void)
 	int w = widget->allocation.width, h = widget->allocation.height;
 
 	if (ttt_buf) {
-		gdk_pixmap_unref(ttt_buf);
+		g_object_unref(ttt_buf);
 		g_object_unref(x_pix);
 		g_object_unref(o_pix);
 	}
@@ -239,12 +240,12 @@ static gboolean configure_handle(GtkWidget * widget,
 static gboolean expose_handle(GtkWidget * widget, GdkEventExpose * event,
 			      gpointer user_data)
 {
-	gdk_draw_pixmap(widget->window,
-			widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-			ttt_buf,
-			event->area.x, event->area.y,
-			event->area.x, event->area.y,
-			event->area.width, event->area.height);
+	gdk_draw_drawable(widget->window,
+			  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+			  ttt_buf,
+			  event->area.x, event->area.y,
+			  event->area.x, event->area.y,
+			  event->area.width, event->area.height);
 
 	return FALSE;
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
- * $Id: game.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: game.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -70,7 +70,7 @@ void board_init(guint8 width, guint8 height)
 	p2b = g_object_get_data(G_OBJECT(main_win), "p2b");
 
 	if (board_pixmap)
-		gdk_pixmap_unref(board_pixmap);
+		g_object_unref(board_pixmap);
 
 	board_pixmap = gdk_pixmap_new(board->window,
 				      board->allocation.width,
@@ -168,12 +168,12 @@ void board_init(guint8 width, guint8 height)
 
 void board_handle_expose_event(GtkWidget * widget, GdkEventExpose * event)
 {
-	gdk_draw_pixmap(widget->window,
-			widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-			board_pixmap,
-			event->area.x, event->area.y,
-			event->area.x, event->area.y,
-			event->area.width, event->area.height);
+	gdk_draw_drawable(widget->window,
+			  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+			  board_pixmap,
+			  event->area.x, event->area.y,
+			  event->area.x, event->area.y,
+			  event->area.width, event->area.height);
 }
 
 

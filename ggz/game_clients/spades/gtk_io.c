@@ -291,12 +291,12 @@ void DisplayCard(Card card, int y, int x)
 	localX = CARDWIDTH * index;
 	localY = CARDHEIGHT * (card_face(card) - 1);
 
-	gdk_pixbuf_render_to_drawable(playArea->cards, playArea->handBuf,
-				      playArea->hand->style->
-				      fg_gc[GTK_WIDGET_STATE
-					    (playArea->hand)], localX,
-				      localY, x, y, CARDWIDTH, CARDHEIGHT,
-				      GDK_RGB_DITHER_NONE, 0, 0);
+	gdk_draw_pixbuf(playArea->handBuf,
+			playArea->hand->style->
+			fg_gc[GTK_WIDGET_STATE(playArea->hand)],
+			playArea->cards,
+			localX, localY, x, y, CARDWIDTH, CARDHEIGHT,
+			GDK_RGB_DITHER_NONE, 0, 0);
 
 #ifdef DEBUG
 	g_printerr("%s\n", card_name(card, LONG_NAME));
@@ -339,13 +339,13 @@ void DisplayPlayedCard(Card card, int player, int id)
 		break;
 	}
 
-	gdk_pixbuf_render_to_drawable(playArea->cards, playArea->tableBuf,
-				      playArea->table->style->
-				      fg_gc[GTK_WIDGET_STATE(playArea->
-							     table)],
-				      localX, localY, x, y,
-				      CARDWIDTH, CARDHEIGHT,
-				      GDK_RGB_DITHER_NONE, 0, 0);
+	gdk_draw_pixbuf(playArea->tableBuf,
+			playArea->table->style->
+			fg_gc[GTK_WIDGET_STATE(playArea->
+					       table)],
+			playArea->cards,
+			localX, localY, x, y,
+			CARDWIDTH, CARDHEIGHT, GDK_RGB_DITHER_NONE, 0, 0);
 
 	gtk_widget_draw(playArea->table, NULL);
 

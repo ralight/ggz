@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: game.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -260,7 +260,7 @@ int game_get_options(void)
 		     a, GAME_WEBPAGE);
 
 	if (old_width != cbt_game.width || old_height != cbt_game.height) {
-		gdk_pixmap_unref(cbt_buf);
+		g_object_unref(cbt_buf);
 		cbt_buf = NULL;
 		gtk_widget_set_usize(widget,
 				     cbt_game.width * (PIXSIZE + 1) + 1,
@@ -431,10 +431,9 @@ void game_draw_unit(int x, int y, int tile, int player)
 	}
 	// Draws the image, if it is known
 	if (tile >= 0 && tile < PIXMAPS) {
-		gdk_pixbuf_render_to_drawable(tiles[tile], cbt_buf,
-					      tile_gc, 0, 0, x, y, PIXSIZE,
-					      PIXSIZE, GDK_RGB_DITHER_NONE,
-					      0, 0);
+		gdk_draw_pixbuf(cbt_buf, tile_gc, tiles[tile],
+				0, 0, x, y, PIXSIZE,
+				PIXSIZE, GDK_RGB_DITHER_NONE, 0, 0);
 	}
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main_win.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -144,11 +144,10 @@ void display_board(void)
 					   x + 1, y + 1, PIXSIZE - 2,
 					   PIXSIZE - 2);
 		}
-		gdk_pixbuf_render_to_drawable(pix[piece], rvr_buf,
-					      pix_gc,
-					      0, 0, x + 1, y + 1,
-					      PIXSIZE - 2, PIXSIZE - 2,
-					      GDK_RGB_DITHER_NONE, 0, 0);
+		gdk_draw_pixbuf(rvr_buf, pix_gc, pix[piece],
+				0, 0, x + 1, y + 1,
+				PIXSIZE - 2, PIXSIZE - 2,
+				GDK_RGB_DITHER_NONE, 0, 0);
 	}
 
 	if (game.state == RVR_STATE_PLAYING && game.turn == game.num)
@@ -346,12 +345,12 @@ static gboolean expose_handle(GtkWidget * widget, GdkEventExpose * event,
 			      gpointer user_data)
 {
 
-	gdk_draw_pixmap(widget->window,
-			widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-			rvr_buf,
-			event->area.x, event->area.y,
-			event->area.x, event->area.y,
-			event->area.width, event->area.height);
+	gdk_draw_drawable(widget->window,
+			  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+			  rvr_buf,
+			  event->area.x, event->area.y,
+			  event->area.x, event->area.y,
+			  event->area.width, event->area.height);
 
 	return FALSE;
 }

@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main_win.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -119,9 +119,8 @@ static void draw(GdkPixbuf * image, int x, int y, int w, int h)
 	    g_object_get_data(G_OBJECT(main_win), "drawingarea");
 	GdkGC *gc = style->fg_gc[GTK_WIDGET_STATE(tmp)];
 
-	gdk_pixbuf_render_to_drawable(image, hastings_buf, gc,
-				      0, 0, x, y, w, h,
-				      GDK_RGB_DITHER_NONE, 0, 0);
+	gdk_draw_pixbuf(hastings_buf, gc, image,
+			0, 0, x, y, w, h, GDK_RGB_DITHER_NONE, 0, 0);
 }
 
 /* Draw a frame around a knight */
@@ -147,9 +146,9 @@ static void shadow(int col, int row, int widgetstate)
 	offsetx = 75 - row % 2 * 45 + col * 90;
 	offsety = 30 + row * 25;
 
-	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate],
-			shadow_pix, 0, 0, offsetx - 16, offsety - 16, 32,
-			32);
+	gdk_draw_drawable(hastings_buf, style->fg_gc[widgetstate],
+			  shadow_pix, 0, 0, offsetx - 16, offsety - 16, 32,
+			  32);
 }
 #endif
 
@@ -247,7 +246,7 @@ void display_board(void)
 		highlight(game.move_src_x, game.move_src_y,
 			  GTK_WIDGET_STATE(tmp));
 
-	/*gdk_draw_pixmap(main_win->window, tmp->style->black_gc, hastings_buf, 0, 0, 0, 0, 510, 510); */
+	/*gdk_draw_drawable(main_win->window, tmp->style->black_gc, hastings_buf, 0, 0, 0, 0, 510, 510); */
 
 	/* finally, draw it */
 	gtk_widget_draw(tmp, NULL);
@@ -320,7 +319,7 @@ static gboolean configure_handle(GtkWidget * widget,
 				 gpointer user_data)
 {
 	if (hastings_buf)
-		gdk_pixmap_unref(hastings_buf);
+		g_object_unref(hastings_buf);
 	else {
 		hastings_buf = gdk_pixmap_new(widget->window,
 					      widget->allocation.width,
@@ -337,11 +336,11 @@ static gboolean configure_handle(GtkWidget * widget,
 static gboolean expose_handle(GtkWidget * widget, GdkEventExpose * event,
 			      gpointer user_data)
 {
-	gdk_draw_pixmap(widget->window,
-			widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-			hastings_buf, event->area.x, event->area.y,
-			event->area.x, event->area.y, event->area.width,
-			event->area.height);
+	gdk_draw_drawable(widget->window,
+			  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+			  hastings_buf, event->area.x, event->area.y,
+			  event->area.x, event->area.y, event->area.width,
+			  event->area.height);
 
 	return FALSE;
 }

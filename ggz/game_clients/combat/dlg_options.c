@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_options.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -57,7 +57,8 @@ extern char unitname[12][36];
 
 static const char spin_name[12][8] =
     { "spin_F", "spin_B", "spin_1", "spin_2", "spin_3", "spin_4", "spin_5",
-"spin_6", "spin_7", "spin_8", "spin_9", "spin_10" };
+	"spin_6", "spin_7", "spin_8", "spin_9", "spin_10"
+};
 
 GtkWidget *create_dlg_options(int number)
 {
@@ -253,7 +254,7 @@ GtkWidget *create_dlg_options(int number)
 	    gtk_radio_button_new_with_label(terrain_types_group,
 					    _("Open"));
 	terrain_types_group =
-	    gtk_radio_button_group(GTK_RADIO_BUTTON(open));
+	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(open));
 	gtk_widget_set_name(open, "open");
 	g_object_set_data(G_OBJECT(open), "type", GINT_TO_POINTER(OPEN));
 	gtk_widget_ref(open);
@@ -267,7 +268,7 @@ GtkWidget *create_dlg_options(int number)
 	    gtk_radio_button_new_with_label(terrain_types_group,
 					    _("Lake"));
 	terrain_types_group =
-	    gtk_radio_button_group(GTK_RADIO_BUTTON(lake));
+	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(lake));
 	gtk_widget_set_name(lake, "lake");
 	g_object_set_data(G_OBJECT(lake), "type", GINT_TO_POINTER(LAKE));
 	gtk_widget_ref(lake);
@@ -280,7 +281,7 @@ GtkWidget *create_dlg_options(int number)
 	    gtk_radio_button_new_with_label(terrain_types_group,
 					    _("Black"));
 	terrain_types_group =
-	    gtk_radio_button_group(GTK_RADIO_BUTTON(black));
+	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(black));
 	gtk_widget_set_name(black, "black");
 	g_object_set_data(G_OBJECT(black), "type", GINT_TO_POINTER(BLACK));
 	gtk_widget_ref(black);
@@ -293,7 +294,7 @@ GtkWidget *create_dlg_options(int number)
 	    gtk_radio_button_new_with_label(terrain_types_group,
 					    _("Player 1"));
 	terrain_types_group =
-	    gtk_radio_button_group(GTK_RADIO_BUTTON(player_1));
+	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(player_1));
 	gtk_widget_set_name(player_1, "player_1");
 	g_object_set_data(G_OBJECT(player_1), "type",
 			  GINT_TO_POINTER(PLAYER_1));
@@ -307,7 +308,7 @@ GtkWidget *create_dlg_options(int number)
 	    gtk_radio_button_new_with_label(terrain_types_group,
 					    _("Player 2"));
 	terrain_types_group =
-	    gtk_radio_button_group(GTK_RADIO_BUTTON(player_2));
+	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(player_2));
 	gtk_widget_set_name(player_2, "player_2");
 	g_object_set_data(G_OBJECT(player_2), "type",
 			  GINT_TO_POINTER(PLAYER_2));
@@ -1019,8 +1020,7 @@ GtkWidget *create_dlg_options(int number)
 		gtk_widget_set_name(unit_spin[i], spin_name[i]);
 		gtk_widget_ref(unit_spin[i]);
 		g_object_set_data_full(G_OBJECT(dlg_options), spin_name[i],
-				       unit_spin[i],
-				       (GtkDestroyNotify)
+				       unit_spin[i], (GtkDestroyNotify)
 				       gtk_widget_unref);
 		gtk_box_pack_start(GTK_BOX(unit_spin_box), unit_spin[i],
 				   TRUE, FALSE, 0);
@@ -1252,9 +1252,9 @@ void delete_button_clicked(GtkButton * button, gpointer dialog)
 {
 	gint selection;
 	GtkWidget *maps_list = lookup_widget(dialog, "maps_list");
-	GtkWidget *dlg =
-	    create_yes_no_dlg("Delete the map?",
-			      GTK_SIGNAL_FUNC(delete_map), maps_list);
+	GtkWidget *dlg = create_yes_no_dlg("Delete the map?",
+					   GTK_SIGNAL_FUNC(delete_map),
+					   maps_list);
 	GtkWidget *yes = lookup_widget(dlg, "yes");
 	char **namelist;
 	selection =
@@ -1658,11 +1658,11 @@ int dlg_options_list_maps(GtkWidget * dlg)
 gboolean mini_board_expose(GtkWidget * widget, GdkEventExpose * event,
 			   gpointer user_data)
 {
-	gdk_draw_pixmap(widget->window,
-			widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-			mini_buf, event->area.x, event->area.y,
-			event->area.x, event->area.y, event->area.width,
-			event->area.height);
+	gdk_draw_drawable(widget->window,
+			  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+			  mini_buf, event->area.x, event->area.y,
+			  event->area.x, event->area.y, event->area.width,
+			  event->area.height);
 	return 1;
 }
 
@@ -1699,8 +1699,8 @@ gboolean mini_board_click(GtkWidget * widget, GdkEventButton * event,
 	y = event->y / (pix_height);
 
 	radio_button =
-	    gtk_radio_button_group(GTK_RADIO_BUTTON
-				   (lookup_widget(user_data, "open")));
+	    gtk_radio_button_get_group(GTK_RADIO_BUTTON
+				       (lookup_widget(user_data, "open")));
 
 	while (!gtk_toggle_button_get_active
 	       (GTK_TOGGLE_BUTTON(radio_button->data))) {
@@ -1736,7 +1736,7 @@ gboolean init_preview(GtkWidget * widget, GdkEventConfigure * event,
 	gdk_window_get_size(widget->window, &width, &height);
 
 	if (preview_buf)
-		gdk_pixmap_unref(preview_buf);
+		g_object_unref(preview_buf);
 	preview_buf = gdk_pixmap_new(widget->window, width, height, -1);
 	g_object_set_data(G_OBJECT(widget), "clean",
 			  GINT_TO_POINTER(FALSE));
@@ -1751,12 +1751,13 @@ gboolean preview_expose(GtkWidget * widget, GdkEventExpose * event,
 			gpointer user_data)
 {
 	if (GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "clean")))
-		gdk_draw_pixmap(widget->window,
-				widget->style->
-				fg_gc[GTK_WIDGET_STATE(widget)],
-				preview_buf, event->area.x, event->area.y,
-				event->area.x, event->area.y,
-				event->area.width, event->area.height);
+		gdk_draw_drawable(widget->window,
+				  widget->style->
+				  fg_gc[GTK_WIDGET_STATE(widget)],
+				  preview_buf, event->area.x,
+				  event->area.y, event->area.x,
+				  event->area.y, event->area.width,
+				  event->area.height);
 	return 1;
 }
 
@@ -1861,7 +1862,7 @@ void init_mini_board(GtkWidget * dlg_options)
 	// Init the pixmap
 	gdk_window_get_size(widget->window, &width, &height);
 	if (mini_buf)
-		gdk_pixmap_unref(mini_buf);
+		g_object_unref(mini_buf);
 	mini_buf = gdk_pixmap_new(widget->window, width, height, -1);
 
 	draw_mini_board(dlg_options);

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: map.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: map.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -47,7 +47,8 @@ static int _maps_only(const struct dirent *entry);
 
 static char file_unit_name[12][36] =
     { "flag", "bomb", "spy", "scout", "miner", "sergeant", "lieutenant",
-"captain", "major", "colonel", "general", "marshall" };
+	"captain", "major", "colonel", "general", "marshall"
+};
 
 static unsigned int _generate_hash(char *p)
 {

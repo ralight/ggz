@@ -108,9 +108,8 @@ static void draw(GdkPixbuf * image, int x, int y, int w, int h)
 {
 	GdkGC *gc = draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)];
 
-	gdk_pixbuf_render_to_drawable(image, board_buf, gc,
-				      0, 0, x, y, w, h,
-				      GDK_RGB_DITHER_NONE, 0, 0);
+	gdk_draw_pixbuf(board_buf, gc, image,
+			0, 0, x, y, w, h, GDK_RGB_DITHER_NONE, 0, 0);
 }
 
 /* Initialize the game display (dlg_main and board) */
@@ -183,7 +182,7 @@ void display_resized(void)
 	}
 
 	if (board_buf) {
-		gdk_pixmap_unref(board_buf);
+		g_object_unref(board_buf);
 	}
 
 	if (board_img) {
@@ -220,12 +219,12 @@ void display_resized(void)
 void display_handle_expose_event(GdkEventExpose * event)
 {
 	if (draw_area)
-		gdk_draw_pixmap(draw_area->window,
-				draw_area_style->
-				fg_gc[GTK_WIDGET_STATE(draw_area)],
-				board_buf, event->area.x, event->area.y,
-				event->area.x, event->area.y,
-				event->area.width, event->area.height);
+		gdk_draw_drawable(draw_area->window,
+				  draw_area_style->
+				  fg_gc[GTK_WIDGET_STATE(draw_area)],
+				  board_buf, event->area.x, event->area.y,
+				  event->area.x, event->area.y,
+				  event->area.width, event->area.height);
 }
 
 
@@ -264,10 +263,10 @@ void display_refresh_board(void)
 		}
 
 	/* Draw our pixmap buffer */
-	gdk_draw_pixmap(draw_area->window,
-			draw_area_style->
-			fg_gc[GTK_WIDGET_STATE(draw_area)], board_buf, 0,
-			0, 0, 0, w, h);
+	gdk_draw_drawable(draw_area->window,
+			  draw_area_style->
+			  fg_gc[GTK_WIDGET_STATE(draw_area)], board_buf, 0,
+			  0, 0, 0, w, h);
 }
 
 
@@ -396,7 +395,6 @@ void display_set_label_colors(void)
 
 	sys_colormap = gdk_colormap_get_system();
 	for (i = 0; i < 6; i++) {
-		GdkFont *font;
 		l_index = homes[game.players - 1][i];
 		if (l_index == -1)
 			break;
@@ -404,8 +402,6 @@ void display_set_label_colors(void)
 		gdk_colormap_alloc_color(sys_colormap, &color, FALSE,
 					 TRUE);
 		label_style = gtk_style_new();
-		font = gdk_font_load("fixed");
-		gtk_style_set_font(label_style, font);
 		for (j = 0; j < 5; j++)
 			label_style->fg[j] = color;
 		gtk_widget_set_style(label[l_index], label_style);

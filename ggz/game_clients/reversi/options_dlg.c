@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 2000
  * Desc: Options dialog code
- * $Id: options_dlg.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: options_dlg.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2000-2004 GGZ Development Team
  *
@@ -106,7 +106,7 @@ GtkWidget *create_options_dialog(GdkColor * _back_color,
 	    gtk_radio_button_new_with_label(bg_mode_group,
 					    ("Background color"));
 	bg_mode_group =
-	    gtk_radio_button_group(GTK_RADIO_BUTTON(color_radio));
+	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(color_radio));
 	gtk_widget_set_name(color_radio, "color_radio");
 	gtk_widget_ref(color_radio);
 	g_object_set_data_full(G_OBJECT(dialog1), "color_radio",
@@ -120,7 +120,7 @@ GtkWidget *create_options_dialog(GdkColor * _back_color,
 	    gtk_radio_button_new_with_label(bg_mode_group,
 					    ("Background Pixmap"));
 	bg_mode_group =
-	    gtk_radio_button_group(GTK_RADIO_BUTTON(pixmap_radio));
+	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(pixmap_radio));
 	gtk_widget_set_name(pixmap_radio, "pixmap_radio");
 	gtk_widget_ref(pixmap_radio);
 	g_object_set_data_full(G_OBJECT(dialog1), "pixmap_radio",

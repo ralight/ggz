@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: preferences.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -45,7 +45,8 @@ PrefType pref_types[] = {
 	  "animation, none of the other animation preferences will have "
 	  "any effect."),
 	 &preferences.animation,
-	 TRUE},
+	 TRUE}
+	,
 
 	/* These options are no longer used.  Now all animations have 250ms
 	   duration and maximum possible smoothness. */
@@ -56,7 +57,8 @@ PrefType pref_types[] = {
 	    "faster animation generally looks smoother, but may not work "
 	    "well on slower computers."),
 	 &preferences.faster_animation,
-	 TRUE},
+	 TRUE}
+	,
 
 	{"smoother_animation",
 	 N_("Smoother animation"),
@@ -64,7 +66,8 @@ PrefType pref_types[] = {
 	    "animation sequence.  This will generally make the animation "
 	    "look smoother, but may not work well on slower computers."),
 	 &preferences.smoother_animation,
-	 TRUE},
+	 TRUE}
+	,
 #endif
 
 	{"multiple_animation",
@@ -77,7 +80,8 @@ PrefType pref_types[] = {
 	  "follow.  Disabling it will \"zip\" the current animation to "
 	  "a finish when the new one is started."),
 	 &preferences.multiple_animation,
-	 FALSE},
+	 FALSE}
+	,
 
 	{"longer_clearing_delay",
 	 N_("Have a longer delay before clearing the table"),
@@ -88,14 +92,16 @@ PrefType pref_types[] = {
 	    "(depending on the game) still be visible in the "
 	    "\"Last Trick\" selection of the \"Messages\" menu."),
 	 &preferences.longer_clearing_delay,
-	 FALSE},
+	 FALSE}
+	,
 #ifdef DEBUG
 	{"no_clearing_delay",
 	 N_("Clear the table immediately after each trick"),
 	 N_("Setting this option causes the cards to be cleared from the "
 	    "table after just one-tenth of a second."),
 	 &preferences.no_clearing_delay,
-	 FALSE},
+	 FALSE}
+	,
 #endif
 
 	{"single_click_play",
@@ -105,7 +111,8 @@ PrefType pref_types[] = {
 	    "this option, the card is played immediately when you "
 	    "click it."),
 	 &preferences.single_click_play,
-	 FALSE},
+	 FALSE}
+	,
 
 	{"collapse_hand",
 	 N_("Collapse hand as it is played"),
@@ -115,7 +122,8 @@ PrefType pref_types[] = {
 	    "so that the empty spot is filled.  Changing this will take "
 	    "effect immediately, but the transition may not be smooth."),
 	 &preferences.collapse_hand,
-	 TRUE},
+	 TRUE}
+	,
 
 	{"cardlists",
 	 N_("Show graphical cardlists"),
@@ -125,7 +133,8 @@ PrefType pref_types[] = {
 	  "Disable it to get simple text-drawn card lists.  The choice "
 	  "will not take effect until you restart GGZCards."),
 	 &preferences.cardlists,
-	 TRUE},
+	 TRUE}
+	,
 
 #ifdef CAN_BID_ON_TABLE
 	{"bid_on_table",
@@ -136,7 +145,8 @@ PrefType pref_types[] = {
 	    "the choices.  Having them drawn on the table is better, but "
 	    "may not work for all games."),
 	 &preferences.bid_on_table,
-	 TRUE},
+	 TRUE}
+	,
 #endif
 
 	{"bidding_tooltips",
@@ -145,7 +155,8 @@ PrefType pref_types[] = {
 	    "choice when you bid.  The choice will take effect the next "
 	    "time you bid."),
 	 &preferences.bidding_tooltips,
-	 TRUE},
+	 TRUE}
+	,
 
 	{"large_dominoes",
 	 N_("Draw dominoes much larger"),
@@ -154,7 +165,8 @@ PrefType pref_types[] = {
 	    "larger size.  The change may not happen correctly until "
 	    "you restart the client."),
 	 &preferences.large_dominoes,
-	 FALSE},
+	 FALSE}
+	,
 
 	{"autostart",
 	 N_("Automatically start game"),
@@ -163,7 +175,8 @@ PrefType pref_types[] = {
 	    "will instead start immediately (once everyone else is "
 	    "ready, of course)."),
 	 &preferences.autostart,
-	 FALSE},
+	 FALSE}
+	,
 
 	{"use_default_options",
 	 N_("Always use default options"),
@@ -172,14 +185,16 @@ PrefType pref_types[] = {
 	    "when you are the table host) the default choices will "
 	    "automatically be chosen."),
 	 &preferences.use_default_options,
-	 FALSE},
+	 FALSE}
+	,
 
 	{"confirm_exit",
 	 N_("Confirmation before exiting"),
 	 N_("If selected, you will get a confirmation dialog when you "
 	    "try to exit during a game."),
 	 &preferences.confirm_exit,
-	 TRUE},
+	 TRUE}
+	,
 
 #ifdef DEBUG
 	{"use_ai",
@@ -187,7 +202,8 @@ PrefType pref_types[] = {
 	 N_("If selected, the AI player will play the game for you.  "
 	    "This is useful as a debugging tool."),
 	 &preferences.use_ai,
-	 FALSE},
+	 FALSE}
+	,
 #endif /* DEBUG */
 
 	{NULL, NULL, NULL, 0}

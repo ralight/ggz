@@ -192,9 +192,8 @@ int combat_check_move(combat_game * _game, int from, int to)
 	if (f_u <= U_BOMB) {
 		// The only scape is that we are
 		// using MOVING_BOMB/FLAG and t_u is EMPTY!
-		if ((f_u == U_BOMB
-		     && !((_game->options & OPT_MOVING_BOMB)
-			  && t_u == U_EMPTY))
+		if ((f_u == U_BOMB && !((_game->options & OPT_MOVING_BOMB)
+					&& t_u == U_EMPTY))
 		    || (f_u == U_FLAG
 			&& !((_game->options & OPT_MOVING_FLAG)
 			     && t_u == U_EMPTY)))

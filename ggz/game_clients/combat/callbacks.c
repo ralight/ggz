@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: callbacks.c 6330 2004-11-11 16:30:21Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -75,12 +75,12 @@ on_mainarea_expose_event(GtkWidget * widget,
 {
 
 	if (cbt_buf)
-		gdk_draw_pixmap(widget->window,
-				widget->style->
-				fg_gc[GTK_WIDGET_STATE(widget)], cbt_buf,
-				event->area.x, event->area.y,
-				event->area.x, event->area.y,
-				event->area.width, event->area.height);
+		gdk_draw_drawable(widget->window,
+				  widget->style->
+				  fg_gc[GTK_WIDGET_STATE(widget)], cbt_buf,
+				  event->area.x, event->area.y,
+				  event->area.x, event->area.y,
+				  event->area.width, event->area.height);
 
 	return FALSE;
 }
