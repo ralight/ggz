@@ -376,9 +376,9 @@ void GGZapHandler::hookRoomActive(unsigned int id, void *data)
 /*cout << "##### tablejoinfail" << endl;*/
 			emit signalState(startfail);
 			break;
-		case GGZCoreRoom::tabledata:
-			if(m_game) m_game->dataSend((char*)data);
-			break;
+		//case GGZCoreRoom::tabledata:
+		//	if(m_game) m_game->dataSend((char*)data);
+		//	break;
 		case GGZCoreRoom::tableupdate:
 			hookRoomActive(GGZCoreRoom::tablelist, NULL);
 			break;
@@ -464,10 +464,10 @@ void GGZapHandler::attachRoomCallbacks()
 {
 	m_room->addHook(GGZCoreRoom::playerlist, &GGZapHandler::hookRoom, (void*)this);
 	m_room->addHook(GGZCoreRoom::tablelist, &GGZapHandler::hookRoom, (void*)this);
-	m_room->addHook(GGZCoreRoom::chatnormal, &GGZapHandler::hookRoom, (void*)this);
-	m_room->addHook(GGZCoreRoom::chatannounce, &GGZapHandler::hookRoom, (void*)this);
-	m_room->addHook(GGZCoreRoom::chatprivate, &GGZapHandler::hookRoom, (void*)this);
-	m_room->addHook(GGZCoreRoom::chatbeep, &GGZapHandler::hookRoom, (void*)this);
+	//m_room->addHook(GGZCoreRoom::chatnormal, &GGZapHandler::hookRoom, (void*)this);
+	//m_room->addHook(GGZCoreRoom::chatannounce, &GGZapHandler::hookRoom, (void*)this);
+	//m_room->addHook(GGZCoreRoom::chatprivate, &GGZapHandler::hookRoom, (void*)this);
+	//m_room->addHook(GGZCoreRoom::chatbeep, &GGZapHandler::hookRoom, (void*)this);
 	m_room->addHook(GGZCoreRoom::enter, &GGZapHandler::hookRoom, (void*)this);
 	m_room->addHook(GGZCoreRoom::leave, &GGZapHandler::hookRoom, (void*)this);
 	m_room->addHook(GGZCoreRoom::tableupdate, &GGZapHandler::hookRoom, (void*)this);
@@ -477,17 +477,17 @@ void GGZapHandler::attachRoomCallbacks()
 	m_room->addHook(GGZCoreRoom::tablejoinfail, &GGZapHandler::hookRoom, (void*)this);
 	m_room->addHook(GGZCoreRoom::tableleft, &GGZapHandler::hookRoom, (void*)this);
 	m_room->addHook(GGZCoreRoom::tableleavefail, &GGZapHandler::hookRoom, (void*)this);
-	m_room->addHook(GGZCoreRoom::tabledata, &GGZapHandler::hookRoom, (void*)this);
+	//m_room->addHook(GGZCoreRoom::tabledata, &GGZapHandler::hookRoom, (void*)this);
 }
 
 void GGZapHandler::detachRoomCallbacks()
 {
 	m_room->removeHook(GGZCoreRoom::playerlist, &GGZapHandler::hookRoom);
 	m_room->removeHook(GGZCoreRoom::tablelist, &GGZapHandler::hookRoom);
-	m_room->removeHook(GGZCoreRoom::chatnormal, &GGZapHandler::hookRoom);
-	m_room->removeHook(GGZCoreRoom::chatannounce, &GGZapHandler::hookRoom);
-	m_room->removeHook(GGZCoreRoom::chatprivate, &GGZapHandler::hookRoom);
-	m_room->removeHook(GGZCoreRoom::chatbeep, &GGZapHandler::hookRoom);
+	//m_room->removeHook(GGZCoreRoom::chatnormal, &GGZapHandler::hookRoom);
+	//m_room->removeHook(GGZCoreRoom::chatannounce, &GGZapHandler::hookRoom);
+	//m_room->removeHook(GGZCoreRoom::chatprivate, &GGZapHandler::hookRoom);
+	//m_room->removeHook(GGZCoreRoom::chatbeep, &GGZapHandler::hookRoom);
 	m_room->removeHook(GGZCoreRoom::enter, &GGZapHandler::hookRoom);
 	m_room->removeHook(GGZCoreRoom::leave, &GGZapHandler::hookRoom);
 	m_room->removeHook(GGZCoreRoom::tableupdate, &GGZapHandler::hookRoom);
@@ -497,7 +497,7 @@ void GGZapHandler::detachRoomCallbacks()
 	m_room->removeHook(GGZCoreRoom::tablejoinfail, &GGZapHandler::hookRoom);
 	m_room->removeHook(GGZCoreRoom::tableleft, &GGZapHandler::hookRoom);
 	m_room->removeHook(GGZCoreRoom::tableleavefail, &GGZapHandler::hookRoom);
-	m_room->removeHook(GGZCoreRoom::tabledata, &GGZapHandler::hookRoom);
+	//m_room->removeHook(GGZCoreRoom::tabledata, &GGZapHandler::hookRoom);
 }
 
 void GGZapHandler::attachGameCallbacks()
