@@ -2,7 +2,7 @@ SUBDIRS = .
 
 PACKAGE = ggzap
 POTFILE = ggzap.pot
-POFILES = de.po
+POFILES = de.po fr.po
 LOCATIONS = $(top_srcdir)/ggzap/*.cpp
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
