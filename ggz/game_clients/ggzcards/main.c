@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3361 2002-02-15 04:25:51Z jdorje $
+ * $Id: main.c 3376 2002-02-17 02:05:13Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -32,7 +32,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -117,7 +116,9 @@ void listen_for_server(int listen)
 	static int listening = FALSE;
 	int fd = client_get_fd();
 	assert(fd > 0);
-	
+
+	ggz_debug("main", "%s server.", listen ? "Listening for" : "Ignoring");
+		
 	if (listen && !listening) {
 		server_socket_tag = gdk_input_add(fd, GDK_INPUT_READ,
 		                                  game_handle_io, NULL);
@@ -167,6 +168,8 @@ static void access_settings(int save)
 		                   preferences.smoother_animation);
 		ggz_conf_write_int(file, "BOOLEAN", "multiple_animation",
 		                   preferences.multiple_animation);
+		ggz_conf_write_int(file, "BOOLEAN", "longer_clearing_delay",
+		                   preferences.longer_clearing_delay);
 		ggz_conf_write_int(file, "BOOLEAN", "cardlists",
 				   preferences.cardlists);
 		ggz_conf_write_int(file, "BOOLEAN", "autostart",
@@ -189,15 +192,18 @@ static void access_settings(int save)
 		preferences.multiple_animation =
 			ggz_conf_read_int(file, "BOOLEAN",
 					  "multiple_animation", 0);
+		preferences.longer_clearing_delay =
+			ggz_conf_read_int(file, "BOOLEAN",
+			                  "longer_clearing_delay", 0);
 		preferences.cardlists =
 			ggz_conf_read_int(file, "BOOLEAN", "cardlists", 1);
+		preferences.bid_on_table =
+			ggz_conf_read_int(file, "BOOLEAN", "bid_on_table", 0);
 		preferences.autostart =
 			ggz_conf_read_int(file, "BOOLEAN", "autostart", 0);
 		preferences.use_default_options =
 			ggz_conf_read_int(file, "BOOLEAN",
 					  "use_default_options", 0);
-		preferences.bid_on_table =
-			ggz_conf_read_int(file, "BOOLEAN", "bid_on_table", 0);
 	}
 }
 

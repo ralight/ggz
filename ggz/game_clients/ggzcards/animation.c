@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3357 2002-02-14 10:51:54Z jdorje $
+ * $Id: animation.c 3376 2002-02-17 02:05:13Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -46,12 +46,17 @@
 /* Intended duration of an animation sequence, in milliseconds. */
 #define DURATION	(preferences.faster_animation ? 50 : 500)
 
+/* The delay before clearing cards off of the table (milliseconds). */
+#define TABLE_CLEARING_DELAY	\
+	(preferences.longer_clearing_delay ? 2000 : 1000)
+
 /* A backing store used only for animation.  It basically sits
    on top of table_buf. */
 static GdkPixmap *anim_buf = NULL;
 
 static int animating = FALSE;	
 static guint anim_tag;
+static int dest_when_done = -1;
 
 static struct {
 	int animating;
@@ -68,6 +73,7 @@ static struct {
 	int cur_frame;		/* 0..FRAMES */
 } anim[MAX_NUM_PLAYERS];
 
+static gint start_offtable_animation(gpointer winner);
 static gint animation_callback(gpointer ignored);
 
 void anim_setup(void)
@@ -84,7 +90,7 @@ void anim_setup(void)
 }
 
 /* Function to setup and trigger a card animation */
-void animation_start(int player, card_t card, int card_num, int destination)
+int animation_start(int player, card_t card, int card_num, int destination)
 {
 	int start_x, start_y, dest_x, dest_y, card_x, card_y;
 	
@@ -97,16 +103,13 @@ void animation_start(int player, card_t card, int card_num, int destination)
 	assert(player >= 0 && player < ggzcards.num_players);
 	assert(anim_buf);
 
-	/* If we don't have animation enabled, then we simply never start an
-	   animation. */
-	if (!preferences.animation)
-		return;
+	assert(preferences.animation);
 
 	/* The function could conceivably be called twice; in that case
 	   just return immediately. */
 	if (anim[player].animating
 	    && destination == anim[player].destination)
-		return;
+		return FALSE;
 	
 	/* If the card was _already_ placed out on the table, we don't want
 	   to do it again.  This is ugly, because the caller has to be careful
@@ -115,9 +118,11 @@ void animation_start(int player, card_t card, int card_num, int destination)
 	    card.suit == table_cards[player].suit &&
 	    card.face == table_cards[player].face &&
 	    card.deck == table_cards[player].deck)
-		return;
+		return FALSE;
 		
-	if (animating && !preferences.multiple_animation) {
+	if (animating &&
+	    !preferences.multiple_animation
+	    && destination < 0) {
 		int p;
 		/* If someone _else_ is animating, make them stop.
 		   This doesn't apply to off-table animation. */
@@ -137,10 +142,21 @@ void animation_start(int player, card_t card, int card_num, int destination)
 	         && destination < 0));
 	
 	if (destination >= 0) {
+		int p;
 		/* This is a bit of a hack: we'll just ignore the server while
 		   we clear the cards off of the table.  But it should make
 		   up for any lag problems... */
 		listen_for_server(FALSE);
+		
+		/* This is also a bit of a hack: if anyone's to-table
+		   animation hasn't completed, we wait for it to
+		   complete and _then_ do the off-table animation. */
+		for (p = 0; p < ggzcards.num_players; p++)
+			if (anim[p].animating
+			    && anim[p].destination < 0) {
+				dest_when_done = destination;
+				return FALSE;
+			}
 	}
 		
 	
@@ -227,6 +243,65 @@ void animation_start(int player, card_t card, int card_num, int destination)
 		                           animation_callback, NULL);
 		
 	animating = TRUE;
+	
+	return TRUE;
+}
+
+static gint start_offtable_animation(gpointer winner)
+{
+	int p;
+	int winning_player = GPOINTER_TO_INT(winner);
+	
+	ggz_debug("animation", "Starting offtable animation.");
+	
+	assert(!preferences.animation || !animating);
+		
+	for (p = 0; p < ggzcards.num_players; p++) {
+		card_t card = table_cards[p];
+		
+		if (preferences.animation
+		    && card.suit >= 0 && card.face >= 0)
+			if (!animation_start(p, card, -1, winning_player))
+				assert(0);
+			
+		table_cards[p] = UNKNOWN_CARD;
+	}
+	
+	table_show_cards(!preferences.animation);
+	
+	if (!preferences.animation) {
+		/* If animation is enabled, we don't start listening until
+		   the off-table animation completes.  But without animation
+		   we must start listening again here. */
+		listen_for_server(TRUE);
+	}
+	
+	return FALSE;
+}
+
+void animate_cards_off_table(int winner)
+{
+	if (!preferences.animation || !animating) {
+		/* This sets up our timeout callback */
+		anim_tag = gtk_timeout_add(TABLE_CLEARING_DELAY,
+		                           start_offtable_animation,
+		                           GINT_TO_POINTER(winner));
+	} else {
+		int p;
+		
+		for (p = 0; p < ggzcards.num_players; p++) {
+			card_t card = table_cards[p];
+			if (anim[p].animating)
+				assert(anim[p].destination < 0);
+		
+			/* Animate the card off the table - but only
+			   if there _is_ a card there. */
+			if (card.suit >= 0 && card.face >= 0)
+				animation_start(p, card, -1, winner);
+		}
+	}
+	
+	listen_for_server(FALSE);
 }
 
 
@@ -324,8 +399,21 @@ static gint animation_callback(gpointer ignored)
 	animating = (continuations > 0);
 	
 	if (!animating) {
-		/* See the listen_for_server(FALSE) call in animation_start. */
-		listen_for_server(TRUE);	
+		if (dest_when_done >= 0) {
+			/* This sets up our timeout callback */
+			anim_tag = gtk_timeout_add(TABLE_CLEARING_DELAY,
+				start_offtable_animation,
+				GINT_TO_POINTER(dest_when_done));
+			
+			dest_when_done = -1;	
+			
+			ggz_debug("main", "Delaying for off-table animation "
+			                  "from animation_callback.");
+		} else {
+			/* See the listen_for_server(FALSE) call
+			   in animation_start. */
+			listen_for_server(TRUE);
+		}	
 	}
 	
 	return animating;

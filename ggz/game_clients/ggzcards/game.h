@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3361 2002-02-15 04:25:51Z jdorje $
+ * $Id: game.h 3376 2002-02-17 02:05:13Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -31,16 +31,29 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-/* Current list of preferences. */
+/*
+ * Current list of preferences.
+ *
+ * To add a new preference:
+ *   - Add it to the struct prefs.
+ *   - Add code to load/save it to access_settings() in main.c.  The
+ *     defaults are also set here.
+ *   - Add editing code to dlg_prefs.c.  This includes a new function
+ *     of the form on_XXX_toggled(), as well as code in create_dlg_prefs()
+ *     to create the toggle button.
+ */
 struct prefs {
 	int animation;
 	int faster_animation;
 	int smoother_animation;
 	int multiple_animation;
-	int autostart;
+	int longer_clearing_delay;
+	
 	int cardlists;
-	int use_default_options;
 	int bid_on_table;
+	
+	int autostart;
+	int use_default_options;
 };
 
 /* Our set of preferences.  See above. */

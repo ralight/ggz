@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.h 3357 2002-02-14 10:51:54Z jdorje $
+ * $Id: animation.h 3376 2002-02-17 02:05:13Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -37,8 +37,16 @@ void anim_setup(void);
  *  @param card The card.
  *  @param card_num The position of the card in the hand (if applicable).
  *  @param destination -1 for the table, <player #> for a trick winner.
+ *  @return TRUE if an animation is started, FALSE otherwise.
  */
-void animation_start(int player, card_t card, int card_num, int destination);
+int animation_start(int player, card_t card, int card_num, int destination);
+
+/** @brief Move the cards off of the table.
+ *
+ *  This function should be called to start the code to animate the cards
+ *  off of the table.
+ */
+void animate_cards_off_table(int winner);
 
 /** @brief Stop an animation.
  *

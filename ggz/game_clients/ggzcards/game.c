@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3361 2002-02-15 04:25:51Z jdorje $
+ * $Id: game.c 3376 2002-02-17 02:05:13Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -43,15 +43,6 @@
 #include "main.h"
 #include "table.h"
 
-/*
- * To add a new preference:
- *   - Add it to the struct prefs.
- *   - Add code to load/save it to access_settings() in main.c.  The
- *     defaults are also set here.
- *   - Add editing code to dlg_prefs.c.  This includes a new function
- *     of the form on_XXX_toggled(), as well as code in create_dlg_prefs()
- *     to create the toggle button.
- */
 struct prefs preferences;
 
 int table_max_hand_size = 0;
@@ -119,7 +110,8 @@ void game_play_card(int card_num)
 	/* Setup and trigger the card animation.  Because of the ugly way
 	   this is handled, this function has to be called _before_ we
 	   update table_cards[player] (below). */
-	animation_start(player, card, card_num, -1);
+	if (preferences.animation)
+		(void) animation_start(player, card, card_num, -1);
 
 	/* We go ahead and move the card out onto the table, even though
 	   we don't yet have validation that it's been played. */
@@ -371,7 +363,7 @@ void game_alert_play(int player, card_t card, int pos)
 		/* If this is a card _we_ played, then we'll already be
 		   animating, and we really don't want to stop just to start
 		   over.  But we leave that up to animation_start. */
-		animation_start(player, card, pos, -1);
+		(void) animation_start(player, card, pos, -1);
 	}
 	
 	/* This probably isn't necessary at this point, but it's consistent
@@ -403,31 +395,25 @@ void game_alert_table(void)
 	}
 }
 
-void game_alert_trick(int player)
+void game_alert_trick(int winner)
 {
 	char *t_str;
-	int p;
 
-	ggz_debug("main", "Handling trick alert; player %d won.", player);
+	ggz_debug("main", "Handling trick alert; player %d won.", winner);
 	
-	/* Clear cards off the table. */
-	for (p = 0; p < ggzcards.num_players; p++) {
-		card_t card = table_cards[p];
-		
-		/* Animate the card off the table - but only
-		   if there _is_ a card there. */
-		if (card.suit >= 0 && card.face >= 0)
-			animation_start(p, card, -1, player);
-		
-		table_cards[p] = UNKNOWN_CARD;
-	}
+	/* This is a bit of a hack - the code to move cards off the table
+	   is a bit mixed between animating and non-animating versions,
+	   since we want to wait 1 second before doing so.  My solution
+	   is to have the animation code take care of all of it, whether
+	   or not use_animation is actually set.  But maybe this makes
+	   sense, if we consider this delay to be animation even when
+	   !use_animation.  Hmm. */
+	animate_cards_off_table(winner);
 
 	t_str = g_strdup_printf(_("%s won the trick"),
-				ggzcards.players[player].name);
+				ggzcards.players[winner].name);
 	statusbar_message(t_str);
 	g_free(t_str);
-
-	table_show_cards(TRUE);
 }
 
 int game_get_options(int option_cnt, int *choice_cnt, int *defaults,
