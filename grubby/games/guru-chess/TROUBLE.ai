@@ -5,12 +5,13 @@ Kings:
 - two kings can never stand next to each other (DONE)
 - if a king is in check, the move must take him out,
   check-mate otherwise
-- rochade, en-passant etc.?
+- rochade (DONE)
 
 Pawns:
+- en passant (DONE)
 - pawns can go 2 steps initially (DONE)
 - pawns move forward but beat diagonally (DONE)
-- pawn exchange
+- pawn exchange (DONE)
 
 
 Trouble for the AI

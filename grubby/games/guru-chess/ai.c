@@ -50,6 +50,8 @@
 static int chess_ai_table[64][2];
 static int movements[7][10][2];
 static int chess_ai_queue[MAX_RECURSIONS][5];
+static int chess_ai_taken[32][2];
+
 static int chess_ai_queuepos;
 static int best_from, best_to, best_value;
 
@@ -182,6 +184,17 @@ static void chess_ai_init_movementsinverse(void)
 	}
 }
 
+static void chess_ai_init_taken(void)
+{
+	int i;
+
+	for(i = 0; i < 32; i++)
+	{
+		chess_ai_taken[i][C_FIGURE] = C_EMPTY;
+		chess_ai_taken[i][C_COLOR] = C_NONE;
+	}
+}
+
 void chess_ai_init(int color, int depth)
 {
 	if((color != C_WHITE) && (color != C_BLACK)) color = C_WHITE;
@@ -193,6 +206,7 @@ void chess_ai_init(int color, int depth)
 	chess_ai_init_board();
 	chess_ai_init_movements();
 	chess_ai_init_movementsinverse();
+	chess_ai_init_taken();
 }
 
 static int chess_ai_moveexceptions(int from, int to)
@@ -226,6 +240,116 @@ static int chess_ai_moveexceptions(int from, int to)
 	}
 
 	return allowed;
+}
+
+static int chess_ai_value(int figure)
+{
+	int val;
+
+	val = 1;
+	if(figure == C_KING) val = 500;
+	if(figure == C_QUEEN) val = 100;
+	if(figure == C_ROOK) val = 50;
+	if(figure == C_KNIGHT) val = 35;
+	if(figure == C_BISHOP) val = 35;
+	if(figure == C_PAWN) val = 10;
+
+	return val;
+}
+
+static void chess_ai_take(int color, int figure, int takeback)
+{
+	int i, j;
+
+printf("**TAKE** COLOR %i FIGURE %i TAKEBACK %i\n", color, figure, takeback);
+	for(i = 0; chess_ai_taken[i][C_FIGURE] != C_EMPTY; i++)
+	{
+		if((takeback) && (chess_ai_taken[i][C_FIGURE] == figure) && (chess_ai_taken[i][C_COLOR] == color))
+		{
+printf("**TAKE** remove at %i\n", i);
+			for(j = i + 1; chess_ai_taken[j][C_FIGURE] != C_EMPTY; j++)
+			{
+				chess_ai_taken[j - 1][C_FIGURE] = chess_ai_taken[j][C_FIGURE];
+				chess_ai_taken[j - 1][C_COLOR] = chess_ai_taken[j][C_COLOR];
+			}
+printf("**TAKE** empty at %i\n", j - 1);
+			chess_ai_taken[j - 1][C_FIGURE] = C_EMPTY;
+			chess_ai_taken[j - 1][C_COLOR] = C_NONE;
+			break;
+		}
+	}
+	if(!takeback)
+	{
+printf("**TAKE** insert at %i\n", i);
+		chess_ai_taken[i][C_FIGURE] = figure;
+		chess_ai_taken[i][C_COLOR] = color;
+	}
+}
+
+int chess_ai_exchange(int pos, int *figure)
+{
+	int color, tmpfigure, oldfigure;
+	int i, value;
+
+	if((pos < 0) || (pos > 63)) return 0;
+	if((pos >= 8) && (pos < 56)) return 0;
+
+	oldfigure = chess_ai_table[pos][C_FIGURE];
+	if(oldfigure != C_PAWN) return 0;
+
+	color = chess_ai_table[pos][C_COLOR];
+	if((pos < 8) && (color != C_BLACK)) return 0;
+	if((pos >= 56) && (color != C_WHITE)) return 0;
+
+	oldfigure = C_PAWN;
+	value = chess_ai_value(oldfigure);
+	for(i = 0; chess_ai_taken[i][C_FIGURE] != C_EMPTY; i++)
+	{
+		if(chess_ai_taken[i][C_COLOR] != color) continue;
+		tmpfigure = chess_ai_taken[i][C_FIGURE];
+		if(chess_ai_value(tmpfigure) > value)
+		{
+			oldfigure = tmpfigure;
+			value = chess_ai_value(oldfigure);
+printf("take-consider: figure %i has higher value %i\n", oldfigure, value);
+		}
+	}
+	if(oldfigure == C_PAWN) return 0;
+
+	chess_ai_take(color, C_PAWN, 0);
+	chess_ai_take(color, oldfigure, 1);
+
+	chess_ai_table[pos][C_FIGURE] = oldfigure;
+	chess_ai_table[pos][C_COLOR] = color;
+
+	*figure = oldfigure;
+	return 1;
+}
+
+int chess_ai_rochade(int color)
+{
+	int from, to;
+
+	if(color == C_WHITE)
+	{
+		from = 4;
+		to = 7;
+	}
+	else if(color == C_BLACK)
+	{
+		from = 60;
+		to = 63;
+	}
+	else return 0;
+
+// FIXME: not allowed to ever have moved king or rook
+	if(chess_ai_table[from][C_FIGURE] != C_KING) return 0;
+	if(chess_ai_table[to][C_FIGURE] != C_ROOK) return 0;
+
+	if(chess_ai_table[from + 1][C_FIGURE] != C_EMPTY) return 0;
+	if(chess_ai_table[from + 2][C_FIGURE] != C_EMPTY) return 0;
+
+	return 1;
 }
 
 int chess_ai_move(int from, int to, int force)
@@ -275,6 +399,9 @@ int chess_ai_move(int from, int to, int force)
 	}
 	if((!allowed) && (!force)) return 0;
 
+	if(chess_ai_table[to][C_FIGURE] != C_EMPTY)
+		chess_ai_take(chess_ai_table[to][C_COLOR], chess_ai_table[to][C_FIGURE], 0);
+
 	chess_ai_table[to][C_FIGURE] = chess_ai_table[from][C_FIGURE];
 	chess_ai_table[to][C_COLOR] = chess_ai_table[from][C_COLOR];
 	chess_ai_table[from][C_FIGURE] = 0;
@@ -297,13 +424,7 @@ static int chess_ai_find_alphabeta(int color, int from, int to)
 	chess_ai_table[from][C_FIGURE] = C_EMPTY;
 	chess_ai_table[from][C_COLOR] = C_NONE;
 
-	val = 1;
-	if(tmpfigure == C_KING) val = 500;
-	if(tmpfigure == C_QUEEN) val = 100;
-	if(tmpfigure == C_ROOK) val = 50;
-	if(tmpfigure == C_KNIGHT) val = 35;
-	if(tmpfigure == C_BISHOP) val = 35;
-	if(tmpfigure == C_PAWN) val = 10;
+	val = chess_ai_value(tmpfigure);
 
 	chess_ai_queue[chess_ai_queuepos][C_FROM] = from;
 	chess_ai_queue[chess_ai_queuepos][C_TO] = to;
@@ -451,7 +572,7 @@ int chess_ai_find(int color, int *from, int *to)
 		}
 	}
 
-	if((from) && (to))
+	if((from) && (to) && (queuepos > 0))
 	{
 		best_from = tempqueue[0][C_FROM];
 		best_to = tempqueue[0][C_TO];
