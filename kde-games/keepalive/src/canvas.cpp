@@ -26,6 +26,7 @@
 #include <qsocketnotifier.h>
 #include <qsocketdevice.h>
 #include <qdatastream.h>
+#include <qmessagebox.h>
 
 // System includes
 #include <iostream>
@@ -67,6 +68,7 @@ void Canvas::slotInput()
 	*m_net >> (Q_INT8)c;
 
 	std::cout << "Got input: " << (int)c << std::endl;
+	std::cout << "Normal: " << c << endl;
 
 	switch(c)
 	{
@@ -108,6 +110,11 @@ void Canvas::slotInput()
 			sprite->move(x, y);
 			free(name);
 			break;
+		case op_loginfailed:
+			QMessageBox::information(NULL, "Notice", "Login failed");
+			break;
+		default:
+			QMessageBox::information(NULL, "Notice", QString("Unknown opcode: %1").arg((int)c));
 	}
 }
 
