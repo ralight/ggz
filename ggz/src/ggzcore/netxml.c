@@ -81,6 +81,9 @@ struct _GGZNet {
 	/* Gametype verbosity (need to save) */
 	char gametype_verbose;
 
+	/* Flag to indicate we're in a parse call */
+	char parsing;
+
 	/* XML Parser */
 	XML_Parser parser;
 
@@ -540,6 +543,14 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 {
 	char *buf;
 	int len, done;
+
+	/* We're already in a parse call, and XML parsing is *not* reentrant */
+	if (net->parsing) 
+		return 0;
+
+	/* Set flag in case we get called recursively */
+	net->parsing = 1;
+
 	/* Get a buffer to hold the data */
 	if (!(buf = XML_GetBuffer(net->parser, BUFFSIZE)))
 		ggzcore_error_sys_exit("Couldn't allocate buffer");
@@ -565,12 +576,15 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 		_ggzcore_server_set_logout_status(net->server, 1);
 	}
 	if (!XML_ParseBuffer(net->parser, len, done)) {
-		fprintf(stderr, "Parse error at line %d:\n%s\n",
+		fprintf(stderr, "Parse error at line %d, column %d:\n%s\n",
 			XML_GetCurrentLineNumber(net->parser),
+			XML_GetCurrentColumnNumber(net->parser),
 			XML_ErrorString(XML_GetErrorCode(net->parser)));
 		_ggzcore_server_protocol_error(net->server, "Bad XML from server");
 	}
 	
+	/* Clear the flag now that we're done */
+	net->parsing = 0;
 	return done;
 }
 
