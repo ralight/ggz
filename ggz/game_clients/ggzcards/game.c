@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4119 2002-04-30 05:04:06Z jdorje $
+ * $Id: game.c 4122 2002-04-30 05:23:35Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -337,6 +337,7 @@ void game_alert_num_players(int new, int old)
 		ggz_debug("main", "Changing number of players.");
 		table_setup();
 	}
+	table_update_player_list();
 }
 
 void game_alert_hand_size(int max_hand_size)
