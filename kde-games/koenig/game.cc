@@ -23,6 +23,7 @@
 #include <klocale.h>
 
 #include <ggzmod.h>
+#include <ggz_common.h>
 #include <iostream>
 
 Game::Game(void)

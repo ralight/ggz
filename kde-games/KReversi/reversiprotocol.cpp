@@ -20,6 +20,7 @@
 #include <netinet/in.h>
 
 #include <ggzmod.h>
+#include <ggz_common.h>
 
 int ggz_connect(char *name);
 
