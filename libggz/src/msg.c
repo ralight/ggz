@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 2592 2001-10-23 04:06:14Z bmh $
+ * $Id: msg.c 2594 2001-10-23 04:12:02Z bmh $
  *
  * Debug and error messages
  *
@@ -65,12 +65,13 @@ void ggz_debug_init(const char **types, const char* file)
 	/* Parse through the provided types */
 	if (types) {
 		for (i = 0; types[i]; i++)
-			ggz_debug_enable_type(types[i]);
+			ggz_debug_enable(types[i]);
 	}
 }
 
 
-void ggz_debug_enable_type(const char *type)
+/* FIXME: allow specifying NULL to designate enabling all */
+void ggz_debug_enable(const char *type)
 {
 	if (!debug_types || !type)
 		return;
@@ -79,7 +80,7 @@ void ggz_debug_enable_type(const char *type)
 }
 
 
-void ggz_debug_disable_type(const char *type)
+void ggz_debug_disable(const char *type)
 {
 	GGZListEntry *entry;
 

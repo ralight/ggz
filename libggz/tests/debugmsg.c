@@ -25,10 +25,10 @@ int main(void)
 	printf("\n-- NULL init/test foo/cleanup\n");
 	ggz_debug_init(NULL, NULL);
 	ggz_debug("foo", "Testing foo before enabling (shouldn't see this)");
-	ggz_debug_enable_type("foo");
+	ggz_debug_enable("foo");
 	ggz_debug_debug();
 	ggz_debug("foo", "Testing foo after enabling (should see this)");
-	ggz_debug_disable_type("foo");
+	ggz_debug_disable("foo");
 	ggz_debug_debug();
 	ggz_debug("foo", "Testing foo after disabling (shouldn't see this)");
 	ggz_debug_cleanup();

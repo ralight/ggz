@@ -129,7 +129,8 @@ AC_SUBST(ggzdatadir)
 AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 
-	   src/Makefile])
+	   src/Makefile
+	   tests/Makefile])
 
 
 dnl Status Output

@@ -214,8 +214,8 @@ void ggz_xmlelement_free(GGZXMLElement*);
  * (currently used on client and server)
  */
 void ggz_debug_init(const char **types, const char* file);
-void ggz_debug_enable_type(const char *type);
-void ggz_debug_disable_type(const char *type);
+void ggz_debug_enable(const char *type);
+void ggz_debug_disable(const char *type);
 void ggz_debug(const char *type, const char *fmt, ...);
 void ggz_error_sys(const char *fmt, ...);
 void ggz_error_sys_exit(const char *fmt, ...);
