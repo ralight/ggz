@@ -269,7 +269,7 @@ void board_draw_bg() {
       /* i+j even -> dark
        * i+j odd  -> light */
       gdk_draw_rectangle(board_buf,
-          ( (i+j)%2==0 ? dark_gc : light_gc),
+          ( (i+j)%2==0 ? light_gc : dark_gc),
           TRUE,
           i*PIXSIZE, j*PIXSIZE,
           PIXSIZE, PIXSIZE);
