@@ -10,7 +10,7 @@ SRC_URI="http://ftp.ggzgamingzone.org/pub/ggz/${PV}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="x86 ~ppc ~sparc ~amd64"
+KEYWORDS="~x86 ~ppc ~sparc ~amd64"
 IUSE=""
 
 DEPEND="=dev-games/ggz-client-libs-0.0.10

@@ -8,7 +8,7 @@ SRC_URI="http://ftp.ggzgamingzone.org/pub/ggz/${PV}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="x86 ~ppc ~amd64 ~sparc"
+KEYWORDS="~x86 ~ppc ~amd64 ~sparc"
 IUSE="gtk2"
 
 inherit ggz
@@ -16,6 +16,10 @@ inherit ggz
 DEPEND="=games-board/ggz-gtk-client-0.0.10
 	gtk2? ( =x11-libs/gtk+-2* )
 	!gtk2? ( =x11-libs/gtk+-1* )"
+
+pkg_setup() {
+	check_ggz_modules
+}
 
 src_compile() {
 	fix_ggz_module_makefiles "chess chinese-checkers combat dots ggzcards hastings reversi spades tictactoe"

@@ -2,26 +2,28 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header$
 
-DESCRIPTION="The textbased client for GGZ Gaming Zone"
+inherit kde
+inherit ggz
+
+DESCRIPTION="These are the kde versions of the games made by GGZ Gaming Zone"
 HOMEPAGE="http://www.ggzgamingzone.org/"
 SRC_URI="http://ftp.ggzgamingzone.org/pub/ggz/${PV}/${P}.tar.gz"
+
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~ppc ~sparc ~amd64"
 IUSE=""
 
-inherit ggz
+DEPEND="=games-board/ggz-kde-client-0.0.10"
 
-DEPEND="=dev-games/ggz-client-libs-0.0.10
-	sys-libs/ncurses
-	sys-libs/readline"
+need-kde 3
 
 pkg_setup() {
 	check_ggz_modules
 }
 
 src_compile() {
-	fix_ggz_module_makefiles "tttxt"
+	fix_ggz_module_makefiles "fyrdman kcc kdots keepalive koenig krosswater ktictactux muehle"
 	econf || die
 	emake || die
 }
@@ -30,10 +32,10 @@ src_install() {
 	make DESTDIR=${D} install || die
 	dodoc AUTHORS ChangeLog INSTALL NEWS QuickStart.GGZ README* TODO
 
-	install_ggz_modules "tttxt"
+	install_ggz_modules "fyrdman kcc kdots keepalive koenig krosswater ktictactux muehle"
 }
 
 pkg_prerm() {
-	remove_ggz_modules "tttxt"
+	remove_ggz_modules "fyrdman kcc kdots keepalive koenig krosswater ktictactux muehle"
 }
 

@@ -8,7 +8,7 @@ SRC_URI="http://ftp.ggzgamingzone.org/pub/ggz/${PV}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="x86 ~ppc ~sparc ~amd64"
+KEYWORDS="~x86 ~ppc ~sparc ~amd64"
 IUSE=""
 
 inherit ggz
@@ -18,7 +18,10 @@ DEPEND="=dev-games/libggz-0.0.10
 	>=libsdl-1.2.0
 	>=sdl-image-1.2.0
 	>=sdl-ttf-1.2.0"
-	#>=sdl-mixer-1.2.0"
+
+pkg_setup() {
+	check_ggz_modules
+}
 
 src_compile() {
 	fix_ggz_modules_makefile "geekgame ttt3d"

@@ -8,6 +8,16 @@ INHERITED="$INHERITED $ECLASS"
 
 # This eclass contains functions for helping configure GGZ game modules.
 
+check_ggz_modules() {
+	# This function checks for the presence of ggz.modules files that need
+	# to be updated with etc-update. If any are found, we quit the ebuild
+	# because the new game modules will not be installed correctly otherwise.
+	if [ -f /etc/ggz/._cfg*ggz.modules ]
+	then
+		die "Please note that you *must* run etc-update to update the /etc/ggz/ggz.modules file before installing further GGZ game clients"
+	fi
+}
+
 fix_ggz_module_makefiles() {
 	# This function takes as its arguments a list of the game modules in
 	# the current package, so "chess tictactoe dots" for example.
