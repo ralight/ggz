@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4332 2002-08-02 03:35:46Z jdorje $
+ * $Id: client.h 4655 2002-09-23 00:05:12Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -31,6 +31,8 @@
 #ifndef __CLIENT_H__
 #define __CLIENT_H__
 
+/** @brief GGZ debugging type for client code. */
+#define DBG_CLIENT "core"
 
 /** @defgroup Player
  *  A "player" as seen by the client is really just a seat at the

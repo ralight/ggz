@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4401 2002-09-03 21:19:57Z jdorje $
+ * $Id: client.c 4655 2002-09-23 00:05:12Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -120,7 +120,7 @@ int client_initialize(void)
 	game_internal.max_hand_size = 0;
 
 	ggzcards.state = STATE_INIT;
-	ggz_debug("core", "Client initialized.");
+	ggz_debug(DBG_CLIENT, "Client initialized.");
 
 #ifdef GUI_CLIENT
 	game_internal.ggzmod = ggzmod_new(GGZMOD_GAME);
@@ -164,7 +164,7 @@ void client_quit(void)
 		ggz_free(ggzcards.players);
 	ggzcards.players = NULL;
 
-	ggz_debug("core", "Client disconnected.");
+	ggz_debug(DBG_CLIENT, "Client disconnected.");
 }
 
 
@@ -201,7 +201,7 @@ static void set_game_state(client_state_t state)
 	if (state == ggzcards.state) {
 		ggz_error_msg("Staying in state %d.", ggzcards.state);
 	} else {
-		ggz_debug("core", "Changing state from %s to %s.",
+		ggz_debug(DBG_CLIENT, "Changing state from %s to %s.",
 			  get_state_name(ggzcards.state),
 			  get_state_name(state));
 		ggzcards.state = state;
@@ -298,7 +298,7 @@ static int handle_game_message(void)
 
 	/* Note: "size" refers to the size of the data block, not including
 	   the headers above. */
-	ggz_debug("core", "Received game message of size %d for game %s.",
+	ggz_debug(DBG_CLIENT, "Received game message of size %d for game %s.",
 		  size, game);
 
 	handled = game_handle_game_message(game_internal.fd, game, size);
@@ -332,7 +332,7 @@ static int handle_message_global(void)
 
 	op = opcode;
 
-	ggz_debug("core", "Received %s global message opcode.",
+	ggz_debug(DBG_CLIENT, "Received %s global message opcode.",
 		  get_game_message_name(op));
 
 	switch (op) {
@@ -424,7 +424,7 @@ static int handle_msg_players(void)
 						 cards);
 			ggz_free(ggzcards.players);
 		}
-		ggz_debug("core",
+		ggz_debug(DBG_CLIENT,
 			  "get_players: (re)allocating ggzcards.players.");
 		ggzcards.players =
 			ggz_malloc(numplayers * sizeof(*ggzcards.players));
@@ -493,7 +493,7 @@ static void increase_max_hand_size(int max_hand_size)
 								 */
 		return;
 
-	ggz_debug("core",
+	ggz_debug(DBG_CLIENT,
 		  "Expanding max_hand_size to allow for %d cards"
 		  " (previously max was %d).", max_hand_size,
 		  game_internal.max_hand_size);
@@ -553,7 +553,7 @@ static int handle_msg_hand(void)
 		ggzcards.players[player].u_hand[i].is_valid = TRUE;
 	}
 
-	ggz_debug("core", "Received hand message for player %d; %d cards.",
+	ggz_debug(DBG_CLIENT, "Received hand message for player %d; %d cards.",
 		  player, hand->hand_size);
 
 	/* Finally, show the hand. */
@@ -575,7 +575,7 @@ static int handle_req_bid(void)
 	if (ggzcards.state == STATE_BID) {
 		/* The new bid request overrides the old one.  But this means
 		   some messy cleanup is necessary. */
-		ggz_debug("core",
+		ggz_debug(DBG_CLIENT,
 			  "WARNING: new bid message overriding old one.");
 	}
 
@@ -780,7 +780,7 @@ static int handle_msg_play(void)
 		   fact, a clever server could _force_ us to pick wrong.
 		   Figure out how and you'll be ready for a "squeeze" play!
 		   Fortunately, it's easily solved. */
-		ggz_debug("core",
+		ggz_debug(DBG_CLIENT,
 			  "Whoa!  We can't find a match for the card.  That's strange.");
 		(void) client_send_sync_request();
 		return 0;
@@ -818,7 +818,7 @@ static int handle_msg_table(void)
 {
 	int p;
 
-	ggz_debug("core", "Handling table message.");
+	ggz_debug(DBG_CLIENT, "Handling table message.");
 
 	assert(ggzcards.players);
 	for (p = 0; p < ggzcards.num_players; p++) {
@@ -875,7 +875,7 @@ static int handle_req_options(void)
 	if (ggzcards.state == STATE_OPTIONS) {
 		/* The new options request overrides the old one.  But this
 		   means some messy cleanup is necessary. */
-		ggz_debug("core",
+		ggz_debug(DBG_CLIENT,
 			  "WARNING: new options request overriding old one.");
 	}
 
@@ -932,7 +932,7 @@ static int handle_req_options(void)
 /* The language lets the server translate messages for us. */
 int client_send_language(const char *lang)
 {
-	ggz_debug("core", "Sending language %s to the server.", lang);
+	ggz_debug(DBG_CLIENT, "Sending language %s to the server.", lang);
 	
 	if (write_opcode(game_internal.fd, MSG_LANGUAGE) < 0 ||
 	    ggz_write_string(game_internal.fd, lang) < 0)
@@ -1004,7 +1004,7 @@ int client_send_play(card_t card)
 /* A sync request asks for a sync from the server. */
 int client_send_sync_request(void)
 {
-	ggz_debug("core", "Sending sync request to server.");
+	ggz_debug(DBG_CLIENT, "Sending sync request to server.");
 	if (write_opcode(game_internal.fd, REQ_SYNC) < 0) {
 		ggz_error_msg("Couldn't send sync request.");
 		return -1;
@@ -1032,7 +1032,7 @@ int client_handle_server(void)
 	}
 	op = opcode;
 
-	ggz_debug("core", "Received %s opcode from the server.",
+	ggz_debug(DBG_CLIENT, "Received %s opcode from the server.",
 		  get_server_opcode_name(op));
 
 	switch (op) {
