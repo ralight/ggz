@@ -287,7 +287,7 @@ echo " "
 echo "To compile and install server:" 
 echo "    'make install'" 
 echo "To compile and test server locally without installing:" 
-echo "    'make test; cd ggzd; ./ggzd -f ggzd.test'"
+echo "    'make test; ./ggzd/ggzd -f ./ggzd/ggzd.test'"
 
 
 
