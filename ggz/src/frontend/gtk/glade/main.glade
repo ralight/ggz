@@ -13,10 +13,8 @@
   <output_main_file>False</output_main_file>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
-  <main_source_file>win_main_i.c</main_source_file>
-  <main_header_file>win_main_i.h</main_header_file>
-  <handler_source_file>win_main_c.c</handler_source_file>
-  <handler_header_file>win_main_c.h</handler_header_file>
+  <main_source_file>client.c</main_source_file>
+  <main_header_file>client.h</main_header_file>
 </project>
 
 <widget>
@@ -801,6 +799,82 @@
 	<fill>False</fill>
       </child>
     </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkMenu</class>
+  <name>mnu_room</name>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>enter</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_enter_activate</handler>
+      <last_modification_time>Sat, 16 Sep 2000 18:50:21 GMT</last_modification_time>
+    </signal>
+    <label>Enter</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>info</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_info_activate</handler>
+      <last_modification_time>Sat, 16 Sep 2000 18:50:29 GMT</last_modification_time>
+    </signal>
+    <label>Info</label>
+    <right_justify>False</right_justify>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkMenu</class>
+  <name>mnu_table</name>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>join</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_join_activate</handler>
+      <last_modification_time>Sat, 16 Sep 2000 18:53:28 GMT</last_modification_time>
+    </signal>
+    <label>Join</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>leave</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_leave_activate</handler>
+      <last_modification_time>Sat, 16 Sep 2000 18:53:49 GMT</last_modification_time>
+    </signal>
+    <label>Leave</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>menuitem3</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>info</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_info_activate</handler>
+      <last_modification_time>Sat, 16 Sep 2000 18:53:53 GMT</last_modification_time>
+    </signal>
+    <label>Info</label>
+    <right_justify>False</right_justify>
   </widget>
 </widget>
 

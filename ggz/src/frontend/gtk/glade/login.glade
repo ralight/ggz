@@ -13,10 +13,8 @@
   <output_main_file>False</output_main_file>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
-  <main_source_file>dlg_login_i.c</main_source_file>
-  <main_header_file>dlg_login_i.h</main_header_file>
-  <handler_source_file>dlg_login_c.c</handler_source_file>
-  <handler_header_file>dlg_login_c.h</handler_header_file>
+  <main_source_file>login.c</main_source_file>
+  <main_header_file>login.h</main_header_file>
 </project>
 
 <widget>
