@@ -1,17 +1,5 @@
 # List of source files containing translatable strings.
 
-ggz/dlg_about.c
-ggz/dlg_details.c
-ggz/dlg_exit.c
-ggz/dlg_launch.c
-ggz/dlg_login.c
-ggz/dlg_main.c
-ggz/dlg_motd.c
-ggz/dlg_msgbox.c
-ggz/dlg_props.c
-ggz/mnu_players.c
-ggz/mnu_tables.c
-
 src/frontend/gtk/about.c
 src/frontend/gtk/chat.c
 src/frontend/gtk/client.c
