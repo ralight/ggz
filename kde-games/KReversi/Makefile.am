@@ -5,6 +5,9 @@
 
 bin_PROGRAMS = ggz.kreversi
 
+bindir = $(ggzexecmoddir)
+
+
 ggz_kreversi_LDFLAGS = $(all_libraries)
 ggz_kreversi_LDADD = \
 		-lX11 $\
@@ -19,16 +22,12 @@ INCLUDES = $(all_includes)\
 		-I$(top_srcdir)/KReversi
 CXXFLAGS = -g -O2 -Wall 
 DEFS = -I. -I$(srcdir) -I$(top_srcdir)
-noinst_HEADERS = \
-		reversiprotocol.h \
-		reversiview.h \
-		kreversi.h
+ggz_kreversi_METASOURCES = AUTO
 ggz_kreversi_SOURCES = \
 		main.cpp\
 		reversiprotocol.cpp\
 		reversiview.cpp\
 		kreversi.cpp
-ggz_kreversi_METASOURCES = AUTO
 EXTRA_DIST = \
 		main.cpp\
 		tiles.xpm\
@@ -46,5 +45,10 @@ EXTRA_DIST = \
 rcdir = $(kde_datadir)/ggz.kreversi
 rc_DATA = ggz.kreversiui.rc
 
+install-data-local:
+	@$(NORMAL_INSTALL)
+	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
 
-  
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-$(GGZ_CONFIG) --remove --fromfile=module.dsc  
