@@ -37,8 +37,8 @@
 #include <iostream>
 #include <unistd.h>
 
-// Easysock includes
-#include <easysock.h>
+// GGZ includes
+#include <ggz.h>
 
 // Configuration includes
 #include "config.h"
@@ -156,11 +156,11 @@ void Krosswater::slotMove(int fromx, int fromy, int tox, int toy)
 	m_tox = tox;
 	m_toy = toy;
 
-	if((es_write_int(fd(), proto_move) < 0)
-	|| (es_write_int(fd(), fromx) < 0)
-	|| (es_write_int(fd(), fromy) < 0)
-	|| (es_write_int(fd(), tox) < 0)
-	|| (es_write_int(fd(), toy) < 0))
+	if((ggz_write_int(fd(), proto_move) < 0)
+	|| (ggz_write_int(fd(), fromx) < 0)
+	|| (ggz_write_int(fd(), fromy) < 0)
+	|| (ggz_write_int(fd(), tox) < 0)
+	|| (ggz_write_int(fd(), toy) < 0))
 	{
 		printf("error in protocol (3)\n");
 	}
@@ -180,8 +180,8 @@ void Krosswater::slotZoneInput(int op)
 	if(op == proto_map_respond)
 	{
 		cout << "Map response!" << endl;
-		if((es_read_int(fd(), &x) < 0)
-		|| (es_read_int(fd(), &y) < 0))
+		if((ggz_read_int(fd(), &x) < 0)
+		|| (ggz_read_int(fd(), &y) < 0))
 		{
 			printf("error in protocol (6)\n");
 			return;
@@ -191,14 +191,14 @@ void Krosswater::slotZoneInput(int op)
 		for(int j = 0; j < y; j++)
 			for(int i = 0; i < x; i++)
 			{
-				if(es_read_int(fd(), &value) < 0)
+				if(ggz_read_int(fd(), &value) < 0)
 				{
 					printf("error in protocol (7)\n");
 					return;
 				}
 				qcw->setStone(i, j, value);
 			}
-		if(es_read_int(fd(), &maxplayers) < 0)
+		if(ggz_read_int(fd(), &maxplayers) < 0)
 		{
 			printf("error in protocol (6n)\n");
 			return;
@@ -207,8 +207,8 @@ void Krosswater::slotZoneInput(int op)
 		qcw->resetPlayers();
 		for(int i = 0; i < maxplayers; i++)
 		{
-			if((es_read_int(fd(), &x) < 0)
-			|| (es_read_int(fd(), &y) < 0))
+			if((ggz_read_int(fd(), &x) < 0)
+			|| (ggz_read_int(fd(), &y) < 0))
 			{
 				printf("error in protocol (6m)\n");
 				return;
@@ -233,21 +233,21 @@ void Krosswater::slotZoneInput(int op)
 	if(op == proto_map_backtrace)
 	{
 		x = 0;
-		if(es_read_int(fd(), &person) < 0)
+		if(ggz_read_int(fd(), &person) < 0)
 		{
 			printf("error in protocol (9+)\n");
 			return;
 		}
 		while(x != -1)
 		{
-			if(es_read_int(fd(), &x) < 0)
+			if(ggz_read_int(fd(), &x) < 0)
 			{
 				printf("error in protocol (9)\n");
 				return;
 			}
 			if(x != -1)
 			{
-				if(es_read_int(fd(), &y) < 0)
+				if(ggz_read_int(fd(), &y) < 0)
 				{
 					printf("error in protocol (9n)\n");
 					return;
@@ -274,15 +274,15 @@ void Krosswater::slotZoneReady()
 
 	showStatus(i18n("Send map"));
 
-	/*if(es_write_int(fd(), proto_helloworld) < 0)
+	/*if(ggz_write_int(fd(), proto_helloworld) < 0)
 	{
 		printf("error in protocol 1\n");
 	}
-	if(es_write_string(fd(), "Hello World.") < 0)
+	if(ggz_write_string(fd(), "Hello World.") < 0)
 	{
 		printf("error in protocol 2\n");
 	}*/
-	if(es_write_int(fd(), proto_map) < 0)
+	if(ggz_write_int(fd(), proto_map) < 0)
 	{
 		printf("error in protocol 1b\n");
 	}
@@ -374,10 +374,10 @@ void Krosswater::slotZoneBroadcast()
 
  	showStatus(i18n("Get move"));
 
-	if((es_read_int(fd(), &fromx) < 0)
-	|| (es_read_int(fd(), &fromy) < 0)
-	|| (es_read_int(fd(), &tox) < 0)
-	|| (es_read_int(fd(), &toy) < 0))
+	if((ggz_read_int(fd(), &fromx) < 0)
+	|| (ggz_read_int(fd(), &fromy) < 0)
+	|| (ggz_read_int(fd(), &tox) < 0)
+	|| (ggz_read_int(fd(), &toy) < 0))
 	{
 		cout << "Error in protocol (5b)" << endl;
 		return;

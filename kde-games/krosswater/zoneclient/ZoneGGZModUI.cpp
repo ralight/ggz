@@ -19,7 +19,7 @@
 #include "ZoneGGZModUI.h"
 
 // GGZ includes
-#include "easysock.h"
+#include <ggz.h>
 
 // System includes
 #include <sys/types.h>
@@ -78,7 +78,7 @@ void ZoneGGZModUI::slotZoneInput()
 {
 	int op;
 
-	if (es_read_int(zone_fd, &op) < 0)
+	if (ggz_read_int(zone_fd, &op) < 0)
 	{
 		ZONEERROR("couldn't read op\n");
 		return;
@@ -124,7 +124,7 @@ void ZoneGGZModUI::slotZoneInput()
 // private: receive player's seat
 void ZoneGGZModUI::zoneGetSeats()
 {
-	if(es_read_int(zone_fd, &ZoneSeat) < 0)
+	if(ggz_read_int(zone_fd, &ZoneSeat) < 0)
 	{
 		ZONEERROR("couldn't read ZoneSeat\n");
 		return;
@@ -135,7 +135,7 @@ void ZoneGGZModUI::zoneGetSeats()
 // private: get all player and bot names and seat assignments
 void ZoneGGZModUI::zoneGetPlayers()
 {
-	if (es_read_int(zone_fd, &ZonePlayernum) < 0)
+	if (ggz_read_int(zone_fd, &ZonePlayernum) < 0)
 	{
 		ZONEERROR("couldn't read ZonePlayernum\n");
 		return;
@@ -147,7 +147,7 @@ void ZoneGGZModUI::zoneGetPlayers()
 	ZoneGamePlayers = 0;
 	for(int i = 0; i < ZonePlayernum; i++)
 	{
-		if (es_read_int(zone_fd, &ZoneSeats[i]) < 0)
+		if (ggz_read_int(zone_fd, &ZoneSeats[i]) < 0)
 		{
 			ZONEERROR("couldn't read ZoneSeats[]\n");
 			return;
@@ -156,7 +156,7 @@ void ZoneGGZModUI::zoneGetPlayers()
 
 		if(ZoneSeats[i] != ZONE_SEAT_OPEN)
 		{
-			if (es_read_string(zone_fd, (char*)&ZonePlayers[i], 17) < 0)
+			if (ggz_read_string(zone_fd, (char*)&ZonePlayers[i], 17) < 0)
 			{
 				ZONEERROR("couldn't read ZonePlayers[]\n");
 				return;
@@ -172,12 +172,12 @@ void ZoneGGZModUI::zoneGetPlayers()
 // private: receive rules
 void ZoneGGZModUI::zoneGetRules()
 {
-	if(es_read_int(zone_fd, &ZoneRules) < 0)
+	if(ggz_read_int(zone_fd, &ZoneRules) < 0)
 	{
 		ZONEERROR("couldn't read ZoneRules\n");
 		return;
 	}
-	if(es_read_int(zone_fd, &ZoneMaxplayers) < 0)
+	if(ggz_read_int(zone_fd, &ZoneMaxplayers) < 0)
 	{
 		ZONEERROR("couldn't read ZoneMaxplayers\n");
 		return;
