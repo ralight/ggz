@@ -6,6 +6,14 @@ dnl Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
 dnl This file has heavily been inspired by KDE's acinclude :)
 dnl It is published under the conditions of the GNU General Public License.
 dnl
+dnl ======================================
+dnl
+dnl This file is common to most GGZ modules, and should be kept in sync
+dnl between them all.  Currently the following modules use it:
+dnl kde-games, kde-client, grubby.
+dnl
+dnl ======================================
+dnl
 dnl History:
 dnl 2001-05-??: first version to find easysock and ggzcore
 dnl 2001-09-09: include libggz[d]mod support, and rename ac_find_file
