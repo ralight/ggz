@@ -71,6 +71,10 @@ static const struct poptOption args[] = {
 	 "Configuration file", "FILE"},
 	{"log", 'l', POPT_ARG_INT, &log_info.log_types, 0,
 	 "Types of logging to perform", "LEVEL"},
+#ifdef DEBUG
+	{"debug", 'l', POPT_ARG_INT, &log_info.dbg_types, 0,
+	 "Types of debug logging to perform", "DBGLEVEL"},
+#endif
 	{"port", 'p', POPT_ARG_INT, &opt.main_port, 0,
 	 "GGZ port number", "PORT"},
 	{"version", 'V', POPT_ARG_NONE, NULL, 1},
