@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 2/20/2004 (moved from GGZCards)
  * Desc: Create the "Chat" Gtk dialog
- * $Id: dlg_chat.c 5952 2004-02-21 06:43:11Z jdorje $
+ * $Id: dlg_chat.c 5954 2004-02-21 08:17:22Z jdorje $
  *
  * This file implements a chat widget.  Much of the code is taken from
  * Freeciv's chat widget, written by Vasco Alexandre da Silva Costa.
@@ -40,6 +40,7 @@
 
 
 typedef struct chatwidgets {
+	GtkWidget *container;
 	GtkWidget *text;
 #ifndef GTK2
 	GtkWidget *scrollbar;
@@ -65,7 +66,7 @@ static void handle_ggz_chat_event(GGZMod *ggzmod, GGZModEvent e, void *data)
 		 chat->player, chat->message);
 
 	for (list = chats; list; list = list->next) {
-		if (!list->text) continue;
+		if (!list->container) continue;
 
 #ifdef GTK2
 		buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(list->text));
@@ -173,6 +174,7 @@ GtkWidget *create_chat_widget(void)
 
 	list = ggz_malloc(sizeof(*list));
 	list->next = chats;
+	list->container = vbox;
 	list->text = text;
 #ifndef GTK2
 	list->scrollbar = text_scrollbar;
@@ -190,7 +192,7 @@ GtkWidget *create_chat_widget(void)
 
 	(void) gtk_signal_connect(GTK_OBJECT(vbox), "destroy",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				  &list->text);
+				  &list->container);
 
 	return vbox;
 }
@@ -273,5 +275,20 @@ void create_or_raise_dlg_chat(void)
 				GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 				&dlg_chat);
 		gtk_widget_show(dlg_chat);
+	}
+}
+
+void toggle_chat_window(gpointer data, guint action, GtkWidget *w)
+{
+	ChatWidgets *list;
+
+	for (list = chats; list; list = list->next) {
+		if (!list->container) continue;
+
+		if (GTK_CHECK_MENU_ITEM(w)->active) {
+			gtk_widget_show(list->container);
+		} else {
+			gtk_widget_hide(list->container);
+		}
 	}
 }

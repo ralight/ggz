@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/25/2002
  * Desc: Main window menus
- * $Id: menus.h 5043 2002-10-26 04:43:10Z jdorje $
+ * $Id: menus.h 5954 2004-02-21 08:17:22Z jdorje $
  *
  * The point of this file is to help games to achieve a consistent look
  * and feel in their menus.  The TABLE_MENU and HELP_MENU should be used
@@ -30,12 +30,15 @@
 
 #include "ggzintl.h"
 #include "dlg_about.h"
+#include "dlg_chat.h"
 #include "dlg_players.h"
 
 #define TABLE_MENU \
 	{_("/_Table"), NULL, NULL, 0, "<Branch>"}, \
 	{_("/Table/Player _list"), "<ctrl>L", \
 	 create_or_raise_dlg_players, 0, NULL}, \
+	{_("/Table/Chat _window"), "<ctrl>W", \
+	 toggle_chat_window, 0, "<CheckItem>"}, \
 	{_("/Table/Sit down"), NULL, do_sit, 0, NULL}, \
 	{_("/Table/Stand up"), NULL, do_stand, 0, NULL}, \
 	{_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL}, \
@@ -49,6 +52,7 @@ void game_exit(void);
    menu item is renamed, it'll be easily updated here. */
 #define TABLE _("/Table")
 #define TABLE_PLAYER_LIST _("/Table/Player list")
+#define TABLE_CHAT_WINDOW _("/Table/Chat window")
 #define TABLE_SIT _("/Table/Sit down")
 #define TABLE_STAND _("/Table/Stand up")
 #define TABLE_SYNC _("/Table/Sync with server")

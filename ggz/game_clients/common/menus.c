@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/25/2002
  * Desc: Main window menus
- * $Id: menus.c 5043 2002-10-26 04:43:10Z jdorje $
+ * $Id: menus.c 5954 2004-02-21 08:17:22Z jdorje $
  *
  * The point of this file is to help games to achieve a consistent look
  * and feel in their menus.  The TABLE_MENU and HELP_MENU should be used
@@ -38,6 +38,8 @@
 
 static GtkItemFactory *menu = NULL;
 
+static void set_menu_active(const char *item, gboolean active);
+
 GtkWidget *ggz_create_menus(GtkWidget *window,
 			    GtkItemFactoryEntry *items,
 			    const unsigned int num_items)
@@ -52,6 +54,10 @@ GtkWidget *ggz_create_menus(GtkWidget *window,
 
 	gtk_object_set_data(GTK_OBJECT(window), "mbar", menu);
 
+	/* Set default values. */
+	set_menu_active(TABLE_CHAT_WINDOW, TRUE);
+	set_menu_sensitive(TABLE_CHAT_WINDOW, FALSE);
+
 	return gtk_item_factory_get_widget(menu, "<main>");
 }
 
@@ -64,4 +70,12 @@ void set_menu_sensitive(const char *item, gboolean sensitive)
 {
 	GtkWidget *menu_item = get_menu_item(item);
 	gtk_widget_set_sensitive(menu_item, sensitive);
+}
+
+/* Check items only. */
+static void set_menu_active(const char *item, gboolean active)
+{
+	GtkWidget *menu_item = get_menu_item(item);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_item),
+				       active);
 }
