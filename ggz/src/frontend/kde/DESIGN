@@ -1,0 +1,35 @@
+Hacking on KGGZ
+---------------
+
+The KDE frontend for the GGZ Gaming Zone becomes more and more complex.
+In order to preserve the advantages of object-orientated design and programming
+(aka OOP), it is important to know how KGGZ is built. Here we go...
+(in hierarchical order)
+
+1. KApplication object
+	This is the top-most object. It is only needed in main.cpp, and except very
+	few cases (chat beep for example) not even consulted as a global object
+	(kapp).
+
+2. KGGZBase object
+	It's basically a K(T)MainWindow with a menu bar, window content and
+	(optionally) a status bar at the bottom.
+	KGGZBase is responsible for resizing, setting the caption, handling menus,
+	showing the 'about' dialogs, and finding appropriate menu icons.
+
+3. KGGZ object
+	The center of KGGZ, of course :)
+	KGGZ is the only object which knows about GGZ functionality. Its task is to
+	provide a user interface (splash screen, workspace), keep track of server,
+	room and game events, handle connection, disconnection, chat, ...
+	Right now KGGZ does also handle the connection and launch dialogs, this may
+	however be changed in the future.
+
+4. KGGZWorkspace object
+	The most important user interface. The workspace consists of the chat, the
+	players list and the tables list. It can rearrange the childs if needed.
+
+All UI classes are placed in the widgets/ directory. This makes programming
+much easier.
+
+	- Josef
