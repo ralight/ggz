@@ -1,0 +1,9 @@
+*.o
+*.moc
+koenig
+Makefile
+Makefile.in
+.deps
+.libs
+module.dsc
+

@@ -1,0 +1,10 @@
+# Koenig description file
+[ModuleInfo]
+Author = Tobias Koenig
+CommandLine = @ggzexecmoddir@/koenig
+Frontend = kde
+Homepage = http://mindx.sourceforge.net/
+Name = Koenig
+ProtocolVersion = 1
+ProtocolEngine = Chess
+Version = 0.0.4

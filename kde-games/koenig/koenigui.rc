@@ -1,0 +1,13 @@
+<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
+  <kpartgui name="Koenig" version="1">
+  <MenuBar>
+    <Menu name="file"><text>&amp;File</text>
+      <Action name="gamequit"/>
+    </Menu>
+    <Menu name="settings"><text>&amp;Windows</text>
+      <Action name="showmovetable"/>
+      <Action name="showchessboard"/>
+    </Menu>
+  </MenuBar>
+</kpartgui>
+
