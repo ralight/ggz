@@ -2,9 +2,9 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 3889 2002-04-11 03:04:16Z bmh $
+ * $Id: ggz.h 3930 2002-04-13 01:29:54Z bmh $
  * 
- * Header file for ggz componenets lib
+ * Header file for ggz components lib
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -704,47 +704,126 @@ void ggz_stack_free(GGZStack *stack);
 /**
  * @defgroup xml XML parsing 
  * 
- * (currently used on client and server)
+ * Utility functions for doing simple XML parsing.  These can be used
+ * with streaming XML parsers, and don't have the overhead of a full
+ * DOM tree.  ::GGZXMLElement represents a single element, along with
+ * its attributes and text data.  
  *
- * @{
- */
+ * @note This does not parse your XML.  It is simply for use to store
+ * the data as you are parsing.
+ *
+ * @{ */
 
+/** @brief Object representing a single XML element
+ *
+ *  Except for "process", do not access these members directly.
+ *  Instead use the provided accessor functions.  "process" is meant
+ *  to be inovked as a method on instances of GGZXMLElement.
+ */
 struct _GGZXMLElement {
 	
-	/* The name of the tag */
-	char *tag;
-
-	/* Text content */
-	char *text;
-
-	/* Tag attributes */
-	GGZList *attributes;
-	
-	/* Extra data associated with tag (usually gleaned from children) */
-	void *data;
-
-	/* Function to free allocated memory */
-	void (*free)();
-
-	/* Function to process tag */
-	void (*process)();
+	char *tag;           /**< The name of the element */
+	char *text;          /**< Text content of an element */
+	GGZList *attributes; /**< List of attributes on the element */
+	void *data;          /**< Extra data associated with tag (usually gleaned from children) */
+	void (*free)();      /**< Function to free allocated memory */
+	void (*process)();   /**< Function to "process" tag */
 };
 
 
+/** @brief Object representing a single XML element
+ */
 typedef struct _GGZXMLElement GGZXMLElement;
 
+
+/** @brief Create a new ::GGZXMLElement element 
+ *
+ * @param tag The name of the XML element (tag)
+ * @param attrs NULL terminated array of attributes/values.  These must alternate: attribute1, value1, attribute2, value2, etc.
+ * @param process User-defined function for processing XML elements
+ * @param free User-defined function for deallocating ::GGZXMLElement
+ * objects.  If provided, this will be invoked by
+ * ggz_xmlelement_free(), and in addition to any user-defined
+ * processing should call ggz_free() the element itself.
+ * @return Pointer to a newly allocated ::GGZXMLElement object 
+ */
 GGZXMLElement* ggz_xmlelement_new(char *tag, char **attrs, void (*process)(), void (*free)());
+
+
+/** @brief Initialize a ::GGZXMLElement
+ *
+ * @param element Pointer to a ::GGZXMLElemtn to initialize
+ * @param tag The name of the XML element (tag)
+ * @param attrs NULL terminated array of attributes/values.  These must alternate: attribute1, value1, attribute2, value2, etc.
+ * @param process User-defined function for processing XML elements
+ * @param free User-defined function for deallocating ::GGZXMLElement
+ * objects.  If provided, this will be invoked by
+ * ggz_xmlelement_free(), and in addition to any user-defined
+ * processing should call ggz_free() the element itself.
+ * @return Pointer to a newly allocated ::GGZXMLElement object 
+ */
 void ggz_xmlelement_init(GGZXMLElement *element, char *tag, char **attrs, void (*process)(), void (*free)());
 
-void ggz_xmlelement_set_data(GGZXMLElement*, void *data);
 
-char* ggz_xmlelement_get_tag(GGZXMLElement*);
+/** @brief Set ancillary data on a ::GGZXMLElement object
+ *
+ * Associate some extra data with an XML element.
+ * 
+ * @param element Pointer to an XML element
+ * @param data Pointer to user-supplied data
+ * @return The element's name
+ */
+void ggz_xmlelement_set_data(GGZXMLElement *element, void *data);
+
+
+/** @brief Get an XML element's name
+ *
+ * @param element Pointer to an XML element
+ * @return The element's name
+ */
+char* ggz_xmlelement_get_tag(GGZXMLElement *element);
+
+
+/** @brief Get the value of an attribute on XML element
+ *
+ * @param element Pointer to an XML element
+ * @param attr An attribute name 
+ * @return The value of the attribute, or NULL is there is no such
+ * attribute present 
+ */
 char* ggz_xmlelement_get_attr(GGZXMLElement *element, char *attr);
-void* ggz_xmlelement_get_data(GGZXMLElement*);
-char* ggz_xmlelement_get_text(GGZXMLElement*);
-void ggz_xmlelement_add_text(GGZXMLElement*, const char *text, int len);
 
-void ggz_xmlelement_free(GGZXMLElement*);
+
+/** @brief Get the user-supplied data associated with an XML element
+ *
+ * @param element Pointer to an XML element
+ * @return Pointer to the user-supplied data
+ */
+void* ggz_xmlelement_get_data(GGZXMLElement *element);
+
+
+/** @brief Get an XML element's content text
+ *
+ * @param element Pointer to an XML element
+ * @return The text content of the element
+ */
+char* ggz_xmlelement_get_text(GGZXMLElement *element);
+
+
+/** @brief Append a string to the element's content text
+ *
+ * @param element Pointer to an XML element
+ * @param text String to append
+ * @param len The string's length
+ */
+void ggz_xmlelement_add_text(GGZXMLElement *element, const char *text, int len);
+
+
+/** @brief Free the memory associated with an XML element
+ *
+ * @param element Pointer to an XML element
+ */
+void ggz_xmlelement_free(GGZXMLElement *element);
 
 /** @} */
 
