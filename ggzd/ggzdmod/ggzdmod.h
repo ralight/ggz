@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2783 2001-12-06 02:04:55Z jdorje $
+ * $Id: ggzdmod.h 2784 2001-12-06 02:22:17Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -56,7 +56,7 @@
  *     void handle_state_change(GGZdModState old, GGZdModState new);
  *     void handle_player_join(int player, int socket_fd, char* name, GGZdModSeat type);
  *     void handle_player_leave(int player);
- *     void handle_player_data(int player);
+ *     void handle_player_data(int player, int socket_fd);
  *     void game_init(GGZdMod *ggzdmod);
  *
  *     int main() {
@@ -105,7 +105,8 @@
  *             break;
  *           case GGZDMOD_EVENT_PLAYER_DATA:
  *             player = *(int*)data;
- *             handle_player_data(player, fd);
+ *             socket_fd = ggzdmod_get_seat(mod, player).fd;
+ *             handle_player_data(player, socket_fd);
  *             break;
  *           default:
  *             // We don't handle the other events.
@@ -198,7 +199,7 @@ typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent e, void *data);
 /** @brief A seat at a GGZ table.
  *
  *  Each seat at the table is tracked like this. */
-typedef struct _GGZSeat {
+typedef struct {
 	int num;		/**< Seat index; 0..(num_seats-1). */
 	GGZdModSeat type;	/**< Type of seat. */
 	char *name;		/**< Name of player occupying seat. */
