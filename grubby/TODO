@@ -1,9 +1,14 @@
-- more admin commands
-- more user commands
+todo for 0.0.5:
+- DONE: more admin commands
+- DONE: more user commands
 - fix gurumod_people.so (memory issue)
-- finish grubby-config
+- DONE: finish grubby-config
 - get make distcheck to work (brent, you?) - xxx_SCRIPTS issue
 - create debian directory and rpm spec file
 - enhance man page
 - don't forget to add SF commit history
+- fix i18n bug
+
+todo for 0.0.6:
+- IRC net module
 
