@@ -23,6 +23,8 @@
  */
 
 #include <config.h>
+
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -238,11 +240,28 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 
 	for( x = 0; x < seats; x++ )
 	{
+		/* Check to see if the seat is a bot. */
                 widget_name = g_strdup_printf("seat%d_bot", (x+1));
 		tmp = lookup_widget(launch_dialog, widget_name);
 		g_free(widget_name);
 		if (GTK_TOGGLE_BUTTON(tmp)->active)
-			ggzcore_table_add_bot(table, NULL, x);
+			if (ggzcore_table_add_bot(table, NULL, x) < 0)
+				assert(0);
+			
+		/* Check to see if the seat is reserved. */
+		widget_name = g_strdup_printf("seat%d_resv", (x+1));
+		tmp = lookup_widget(launch_dialog, widget_name);
+		g_free(widget_name);
+		if (GTK_TOGGLE_BUTTON(tmp)->active) {
+			gchar *name;
+			widget_name = g_strdup_printf("seat%d_name", (x+1));
+			tmp = lookup_widget(launch_dialog, widget_name);
+			g_free(widget_name);
+			name = gtk_entry_get_text(GTK_ENTRY(tmp));
+			
+			if (ggzcore_table_add_reserved(table, name, x) < 0)
+				assert(0);
+		}
 	}
 
 	status = ggzcore_room_launch_table(room, table);
