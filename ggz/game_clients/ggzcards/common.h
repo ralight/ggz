@@ -1,4 +1,4 @@
-/* $Id: common.h 2415 2001-09-09 02:54:18Z jdorje $ */
+/* $Id: common.h 2475 2001-09-14 07:18:43Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -139,7 +139,7 @@ extern void table_handle_gameover(int num_winners, int *winners);
 /** Alerts the table of a player's name, before changing that name in the game structure.
   * @param player The number of the player whose name we're talking about.
   * @param name The (possibly new) name of the player. */
-extern void table_alert_player_name(int player, char *name);
+extern void table_alert_player_name(int player, const char *name);
 
 /** Currently this "sets up the table".  It's called when the number
  *  of players or the max hand size changes.

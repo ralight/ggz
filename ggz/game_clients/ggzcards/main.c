@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2385 2001-09-07 08:43:35Z jdorje $
+ * $Id: main.c 2475 2001-09-14 07:18:43Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -104,7 +104,7 @@ void table_get_play(int hand)
 }
 
 
-void table_alert_player_name(int player, char *name)
+void table_alert_player_name(int player, const char *name)
 {
 	if (player != 0 && game.num_players &&
 	    strcmp(name, game.players[player].name)) {

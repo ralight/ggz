@@ -1,4 +1,4 @@
-/* $Id: table.h 2380 2001-09-06 02:26:21Z jdorje $ */
+/* $Id: table.h 2475 2001-09-14 07:18:43Z jdorje $ */
 /* 
  * File: table.h
  * Author: Rich Gade
@@ -32,7 +32,6 @@ void table_initialize(void);
 void table_setup(void);
 void table_handle_expose_event(GdkEventExpose *);
 void table_handle_click_event(GdkEventButton *);
-void table_set_name(int, char *);
 void table_set_dealer(void);
 void table_set_bidder(int);
 void table_display_hand(int);
@@ -52,5 +51,6 @@ void table_style_change(void);
 
 void table_play_card(int, card_t);
 
-void table_set_global_message(const char *, const char *);
-void table_set_player_message(int, const char *);
+void table_set_name(int player, const char *name);
+void table_set_player_message(int player, const char *name);
+void table_set_global_message(const char *mark, const char *message);
