@@ -84,6 +84,8 @@ struct dots_game_t {
 };
 
 extern struct dots_game_t dots_game;
+extern int s_x[2], s_y[2];
+extern int score;
 
 void game_init(void);
 int game_handle_ggz(int, int *);

@@ -32,6 +32,8 @@
 
 /* Global game variables */
 struct dots_game_t dots_game;
+int s_x[2], s_y[2];
+int score;
 
 /* Private functions */
 static int game_get_options(int);
@@ -217,6 +219,7 @@ int game_send_players(void)
 int game_send_move(int num, int event, char x, char y)
 {
 	int fd = ggz_seats[dots_game.opponent].fd;
+	int i;
 	int msg;
 	
 	/* If player is a computer, don't need to send */
@@ -233,8 +236,14 @@ int game_send_move(int num, int event, char x, char y)
 
 	if(es_write_int(fd, msg) < 0
 	   || es_write_char(fd, x) < 0
-	   || es_write_char(fd, y) < 0)
+	   || es_write_char(fd, y) < 0
+	   || es_write_char(fd, score) < 0)
 		return -1;
+	for(i=0; i<score; i++) {
+		if(es_write_char(fd, s_x[i]) < 0
+		   || es_write_char(fd, s_y[i]) < 0)
+			return -1;
+	}
 	
 	return 0;
 }
@@ -325,6 +334,7 @@ int game_req_move(int num)
 int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 {
 	int fd = ggz_seats[num].fd;
+	int i;
 	char status;
 	
 	ggz_debug("Handling move for player %d", num);
@@ -332,6 +342,8 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 		return -1;
 	if(es_read_char(fd, y) < 0)
 		return -1;
+
+	score = 0;
 
 	if(*x >= dots_game.board_width
 	   || *y >= dots_game.board_height)
@@ -347,14 +359,18 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 		   	   	   && dots_game.vert_board[*x-1][*y]
 		   	   	   && dots_game.horz_board[*x-1][*y]
 		   	   	   && dots_game.horz_board[*x-1][*y+1]) {
-					status++;
+					s_x[score] = *x-1;
+					s_y[score] = *y;
+					score++;
 					dots_game.owners_board[*x-1][*y] = num;
 				}
 				if(*x != dots_game.board_width-1
 			   	   && dots_game.vert_board[*x+1][*y]
 			   	   && dots_game.horz_board[*x][*y]
 			   	   && dots_game.horz_board[*x][*y+1]) {
-					status++;
+					s_x[score] = *x;
+					s_y[score] = *y;
+					score++;
 					dots_game.owners_board[*x][*y] = num;
 				}
 			}
@@ -367,14 +383,18 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 			   	   && dots_game.horz_board[*x][*y-1]
 			   	   && dots_game.vert_board[*x][*y-1]
 			   	   && dots_game.vert_board[*x+1][*y-1]) {
-					status++;
+					s_x[score] = *x;
+					s_y[score] = *y-1;
+					score++;
 					dots_game.owners_board[*x][*y-1] = num;
 				}
 				if(*y != dots_game.board_height-1
 			   	   && dots_game.horz_board[*x][*y+1]
 			   	   && dots_game.vert_board[*x][*y]
 			   	   && dots_game.vert_board[*x+1][*y]) {
-					status++;
+					s_x[score] = *x;
+					s_y[score] = *y;
+					score++;
 					dots_game.owners_board[*x][*y] = num;
 				}
 			}
@@ -383,8 +403,14 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 
 	/* Send back move status */
 	if(es_write_int(fd, DOTS_RSP_MOVE) < 0
-	    || es_write_char(fd, status))
+	    || es_write_char(fd, status) < 0
+	    || es_write_char(fd, score) < 0)
 		return -1;
+	for(i=0; i<score; i++) {
+		if(es_write_char(fd, s_x[i]) < 0
+		   || es_write_char(fd, s_y[i]) < 0)
+			return -1;
+	}
 
 	/* If move simply invalid, ask for resubmit */
 	if((status == -3 || status == -4)
@@ -396,9 +422,9 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 	
 	/* We make a note who our opponent is, easier on the update func */
 	dots_game.opponent = (num + 1) % 2;
-	if(status > 0)
+	if(score > 0)
 		/* They scored, go again */
-		dots_game.score[num] += status;
+		dots_game.score[num] += score;
 	else
 		/* No score, turn passes */
 		dots_game.turn = (dots_game.turn + 1) % 2;

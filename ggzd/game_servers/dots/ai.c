@@ -351,9 +351,10 @@ static char ai_find_random_line(unsigned char *x, unsigned char *y)
 static void ai_handle_move(int dir, unsigned char *x, unsigned char *y)
 {
 	int num = dots_game.turn;
-	char status = 0;
 
 	ggz_debug("Handling AI move");
+
+	score = 0;
 
 	if(dir == 0) {
 		/* A vertical move */
@@ -362,14 +363,18 @@ static void ai_handle_move(int dir, unsigned char *x, unsigned char *y)
   	  	   && dots_game.vert_board[*x-1][*y]
    	   	   && dots_game.horz_board[*x-1][*y]
    	   	   && dots_game.horz_board[*x-1][*y+1]) {
-			status++;
+			s_x[score] = *x-1;
+			s_y[score] = *y;
+			score++;
 			dots_game.owners_board[*x-1][*y] = num;
 		}
 		if(*x != dots_game.board_width-1
 	   	   && dots_game.vert_board[*x+1][*y]
 	   	   && dots_game.horz_board[*x][*y]
 	   	   && dots_game.horz_board[*x][*y+1]) {
-			status++;
+			s_x[score] = *x;
+			s_y[score] = *y;
+			score++;
 			dots_game.owners_board[*x][*y] = num;
 		}
 	} else {
@@ -379,23 +384,27 @@ static void ai_handle_move(int dir, unsigned char *x, unsigned char *y)
 	   	   && dots_game.horz_board[*x][*y-1]
 	   	   && dots_game.vert_board[*x][*y-1]
 	   	   && dots_game.vert_board[*x+1][*y-1]) {
-			status++;
+			s_x[score] = *x;
+			s_y[score] = *y-1;
+			score++;
 			dots_game.owners_board[*x][*y-1] = num;
 		}
 		if(*y != dots_game.board_height-1
 	   	   && dots_game.horz_board[*x][*y+1]
 	   	   && dots_game.vert_board[*x][*y]
 	   	   && dots_game.vert_board[*x+1][*y]) {
-			status++;
+			s_x[score] = *x;
+			s_y[score] = *y;
+			score++;
 			dots_game.owners_board[*x][*y] = num;
 		}
 	}
 
 	/* We make a note who our opponent is, easier on the update func */
 	dots_game.opponent = (num + 1) % 2;
-	if(status > 0)
+	if(score > 0)
 		/* They scored, go again */
-		dots_game.score[num] += status;
+		dots_game.score[num] += score;
 	else
 		/* No score, turn passes */
 		dots_game.turn = (dots_game.turn + 1) % 2;
