@@ -76,6 +76,7 @@ GtkWidget *detail_window = NULL;
 static guint sock_handle;
 static void connect_msg(const gchar *, ...);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
+static void handle_list_types(gint op, gint fd);
 static void handle_list_tables(gint op, gint fd);
 static void handle_list_players(gint op, gint fd);
 static void handle_update_tables(gint op, gint fd);
@@ -402,39 +403,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case RSP_LIST_TYPES:
-		es_read_int(source, &count);
-		game_types.count = count;
-		connect_msg("[%s] List Count %d\n", opcode_str[op], count);
-		for (i = 0; i < count; i++) {
-
-			es_read_int(source, &game_types.info[i].index);
-			es_read_string(source, game_types.info[i].name,
-				       MAX_GAME_NAME_LEN);
-			es_read_string(source, game_types.info[i].version,
-				       MAX_GAME_VER_LEN);
-			es_read_char(source, &game_types.info[i].num_play_allow);
-			es_read_string(source, game_types.info[i].desc,
-				       MAX_GAME_DESC_LEN);
-			es_read_string(source, game_types.info[i].author,
-				       MAX_GAME_AUTH_LEN);
-			es_read_string(source, game_types.info[i].web,
-				       MAX_GAME_WEB_LEN);
-
-			connect_msg("[%s] Game type %d\n", opcode_str[op], 
-				    game_types.info[i].index);
-			connect_msg("[%s] %s\n", opcode_str[op], 
-				    game_types.info[i].name);
-			connect_msg("[%s] %s\n", opcode_str[op], 
-				    game_types.info[i].version);
-			connect_msg("[%s] %d\n", opcode_str[op], 
-				    game_types.info[i].num_play_allow);
-			connect_msg("[%s] %s\n", opcode_str[op], 
-				    game_types.info[i].desc);
-			connect_msg("[%s] %s\n", opcode_str[op], 
-				    game_types.info[i].author);
-			connect_msg("[%s] %s\n", opcode_str[op], 
-				    game_types.info[i].web);
-		}
+		handle_list_types(op, source);
 		break;
 
 	case RSP_LIST_TABLES:
@@ -652,6 +621,47 @@ gint new_login(void)
 }
 
 
+static void handle_list_types(gint op, gint fd)
+{
+	gint count, i;
+
+	es_read_int(fd, &count);
+	game_types.count = count;
+	connect_msg("[%s] List Count %d\n", opcode_str[op], count);
+
+	for (i = 0; i < count; i++) {
+		es_read_int(fd, &game_types.info[i].index);
+		es_read_string(fd, game_types.info[i].name,
+			       MAX_GAME_NAME_LEN);
+		es_read_string(fd, game_types.info[i].version,
+			       MAX_GAME_VER_LEN);
+		es_read_char(fd, &game_types.info[i].num_play_allow);
+		es_read_char(fd, &game_types.info[i].num_bot_allow);
+		es_read_string(fd, game_types.info[i].desc,
+			       MAX_GAME_DESC_LEN);
+		es_read_string(fd, game_types.info[i].author,
+			       MAX_GAME_AUTH_LEN);
+		es_read_string(fd, game_types.info[i].web,
+			       MAX_GAME_WEB_LEN);
+		
+		connect_msg("[%s] Game type %d\n", opcode_str[op], 
+			    game_types.info[i].index);
+		connect_msg("[%s] %s\n", opcode_str[op], 
+			    game_types.info[i].name);
+		connect_msg("[%s] %s\n", opcode_str[op], 
+			    game_types.info[i].version);
+		connect_msg("[%s] %d\n", opcode_str[op], 
+			    game_types.info[i].num_play_allow);
+		connect_msg("[%s] %s\n", opcode_str[op], 
+			    game_types.info[i].desc);
+		connect_msg("[%s] %s\n", opcode_str[op], 
+			    game_types.info[i].author);
+		connect_msg("[%s] %s\n", opcode_str[op], 
+			    game_types.info[i].web);
+	}
+}
+
+
 static void handle_list_tables(gint op, gint fd)
 {
 	gint i, j, count, seats;
@@ -669,8 +679,8 @@ static void handle_list_tables(gint op, gint fd)
 		/* Allocate a new table */
 		table = (Table*)g_malloc0(sizeof(Table));
 		
-		es_read_int(fd, &table->room);
 		es_read_int(fd, &table->id);
+		es_read_int(fd, &table->room);
 		es_read_int(fd, &table->type);
 		es_read_string(fd, table->desc, MAX_GAME_DESC_LEN);
 		es_read_char(fd, &table->state);
@@ -756,7 +766,7 @@ static void handle_update_players(gint op, gint fd)
 
 static void handle_update_tables(gint op, gint fd)
 {
-	guchar subop;
+	guchar subop, state;
 	guint id, seat, i;
 	gchar name[MAX_USER_NAME_LEN + 1];		
 	Table* table;
@@ -770,6 +780,11 @@ static void handle_update_tables(gint op, gint fd)
 		table_list_remove(id);
 		break;
 
+	case GGZ_UPDATE_STATE:
+		es_read_char(fd, &state);
+		connect_msg("[%s] Table %d new state %d\n", opcode_str[op], 
+			    id, state);
+		break;
 	case GGZ_UPDATE_JOIN:
 		es_read_int(fd, &seat);
 		es_read_string(fd, name, MAX_USER_NAME_LEN + 1);

@@ -23,7 +23,7 @@
  */
 
 
-#define GGZ_CS_PROTO_VERSION  2
+#define GGZ_CS_PROTO_VERSION  3
 
 typedef enum {
 	REQ_LOGIN_NEW,
@@ -102,6 +102,7 @@ typedef enum {
 #define GGZ_UPDATE_ADD    1
 #define GGZ_UPDATE_LEAVE  2
 #define GGZ_UPDATE_JOIN   3
+#define GGZ_UPDATE_STATE   4
 
 typedef enum {
 	RSP_GAME_LAUNCH,

@@ -107,6 +107,7 @@ typedef struct {
 	gchar author[MAX_GAME_AUTH_LEN];
 	gchar web[MAX_GAME_WEB_LEN];
 	guchar num_play_allow;
+	guchar num_bot_allow;
 	gint index;
 } GameInfo;
 
