@@ -1,4 +1,4 @@
-/*	$Id: ggz_protocols.h 2179 2001-08-20 07:12:24Z jdorje $	*/
+/*	$Id: ggz_protocols.h 2320 2001-08-29 06:57:37Z jdorje $	*/
 /*
  * File: protocols.h
  * Author: Brent Hendricks
@@ -27,9 +27,9 @@
 #ifndef __GGZ_SERVER_PROTOCOL_H
 #define __GGZ_SERVER_PROTOCOL_H
 
-/** @file ggz_protocols.h
- *  Protocols for communication between ggz server and game server.
- *  @see ggz_server.h */
+/*
+ * Protocols for GGZDMOD game server <-> ggzd communication.
+ */
 
 /** Messages sent from the game server to the ggz server. */
 typedef enum {
@@ -38,7 +38,10 @@ typedef enum {
 	RSP_GAME_LEAVE,		/**< sent in response to a player leave */
 	MSG_LOG,		/**< a message to log */
 	MSG_DBG,		/**< a debugging message */
-	REQ_GAME_OVER		/**< sent to tell of a game-over */
+	REQ_GAME_OVER,		/**< sent to tell of a game-over */
+/* the following are not implemented */
+	MSG_STATS,		/**< sent to tell of players winning/losing */
+	REQ_SEAT_CHANGE		/**< sent to request a seat type change */
 } TableToControl;
 
 /** Messages sent from the ggz server to the game server. */
@@ -46,7 +49,9 @@ typedef enum {
 	REQ_GAME_LAUNCH,	/**< sent on game launch */
 	REQ_GAME_JOIN,		/**< sent on player join */
 	REQ_GAME_LEAVE,		/**< sent on player leave */
-	RSP_GAME_OVER		/**< sent in response to a gameover */
+	RSP_GAME_OVER,		/**< sent in response to a gameover */
+/* the following are not implemented */
+	RSP_SEAT_CHANGE,	/**< response to REQ_SEAT_CHANGE */
 } ControlToTable;
 
 #endif /* __GGZ_SERVER_PROTOCOL_H */
