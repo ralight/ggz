@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kggzreversi.h  -  description
+                          kreversi.h  -  description
                              -------------------
     begin                : Wed Mar  7 19:16:57 /etc/localtime 2001
     copyright            : (C) 2001 by Ismael Orenstein
@@ -31,6 +31,7 @@
 class ReversiView;
 class ReversiProtocol;
 
+
 /** KReversi is the base class of the porject */
 class KReversi : public KMainWindow
 {
@@ -44,6 +45,8 @@ public:
   void statusMsg(QString);
   /** Update the value on the statusbar */
   void updateScore();
+  /* Check if a move is valid */
+  bool isValid(int player, int mx, int my);
 private: // Private attributes
   /** Handles the game stuff */
   ReversiView *view;
@@ -70,7 +73,9 @@ private: // Private attributes
   void doMove(int move);
   /** mark the board */
   int markBoard(int player, int mx, int my, int dx, int dy);
-protected slots: // Public slots
+  /** Check for validity */
+  bool checkValid(int player, int mx, int my, int dx, int dy);
+protected slots: // Protected slots
   /** Tells the player that the game is over */
   void gameoverSlot(int winner);
   /** Tell the player that the game has started */

@@ -25,6 +25,7 @@
 
 #define T2S(a) (a==BLACK?0:1)
 #define S2T(a) (a==0?BLACK:WHITE)
+#define BOARD(x,y) ( (x<0||y<0||x>=8||y>=8)?OPEN:board[x][y] )
 
 KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name)
 {
@@ -157,6 +158,10 @@ void KReversi::updateScore(){
 void KReversi::playerMoveSlot(int x, int y) {
   if (!playing)
     return;
+  if (!isValid(turn, x, y)) {
+    statusMsg("Invalid move!");
+    return;
+  }
   protocol->send(RVR_REQ_MOVE);
   protocol->send(y*8 + x);
 }
@@ -250,4 +255,32 @@ void KReversi::playAgain() {
   protocol->send(RVR_REQ_AGAIN);
   initGame();
   view->updateBoard(board);
+}
+
+  /* Check if a move is valid */
+bool KReversi::isValid(int player, int mx, int my) {
+  int dx, dy;
+  // Check in all directions
+  for (dy = -1; dy <= 1; dy++) {
+    for (dx = -1; dx <= 1; dx++) {
+      if (BOARD(mx+dx, my+dy) == -player && checkValid(player, mx+dx, my+dy, dx, dy)) {
+        debug("*** Good move: %d, %d ***", dx, dy);
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+bool KReversi::checkValid(int player, int mx, int my, int dx, int dy) {
+  int a = BOARD(mx+dx, my+dy);
+  if (a == player)
+    return true;
+  else if (a == -player)
+    return checkValid(player, mx+dx, my+dy, dx, dy);
+  else if (a == OPEN)
+    return false;
+
+  return false;
 }
