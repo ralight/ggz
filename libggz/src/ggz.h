@@ -155,7 +155,8 @@ char * _ggz_strdup(const char *, char *, int);
  * 
  * 
  * @return 
- */int ggz_memory_check(void);
+ */
+int ggz_memory_check(void);
 
 /** @} */
 
