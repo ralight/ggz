@@ -5,6 +5,7 @@
 #include <qsocket.h>
 
 class ChessBoard;
+class Options;
 
 class TopLevel : public KMainWindow
 {
@@ -24,6 +25,7 @@ private:
 
 	ChessBoard *chessBoard;
 	QSocket mainSocket;
+	Options *options;
 };
 
 #endif
