@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2922 2001-12-17 22:27:22Z jdorje $
+ * $Id: ggzdmod.c 2947 2001-12-19 01:07:53Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -605,16 +605,22 @@ int ggzdmod_dispatch(GGZdMod * mod)
 	struct timeval timeout;
 	fd_set read_fd_set;
 	int status;
+	int fd_max;
 
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
 
+	/* get_fd_max returns -1 if there are no FD's to be read. */
+	fd_max = get_fd_max(ggzdmod);
+	if (fd_max < 0) {
+		return -1;	
+	}
+
 	read_fd_set = get_active_fd_set(ggzdmod);
 	timeout.tv_sec = timeout.tv_usec = 0;	/* is this really portable? */
-
-	status = select(get_fd_max(ggzdmod) + 1,
-			&read_fd_set, NULL, NULL, &timeout);
+	
+	status = select(fd_max + 1, &read_fd_set, NULL, NULL, &timeout);
 
 	/* FIXME: if you don't have a player event handler registered, this
 	   function may errantly return 0 sometimes when it should have
@@ -638,14 +644,18 @@ int ggzdmod_loop(GGZdMod * mod)
 	}
 	while (ggzdmod->state != GGZDMOD_STATE_DONE) {
 		fd_set read_fd_set;
-		int status;
+		int status, fd_max;
 
+		/* get_fd_max returns -1 if there are no FD's to be read. */
+		fd_max = get_fd_max(ggzdmod);
+		if (fd_max < 0)
+			return -1;
+			
 		read_fd_set = get_active_fd_set(ggzdmod);
 
 		/* we have to select so that we can determine what file
 		   descriptors are waiting to be read. */
-		status = select(get_fd_max(ggzdmod) + 1,
-				&read_fd_set, NULL, NULL, NULL);
+		status = select(fd_max + 1, &read_fd_set, NULL, NULL, NULL);
 		if (status <= 0) {
 			if (errno != EINTR) {
 				/* FIXME: handle error */
