@@ -28,6 +28,8 @@
 #define CBT_SERVER_LEFT 2
 #define CBT_SERVER_QUIT 3
 
+#define MOVE_ERROR(STR) ggz_debug("MOVE ERROR: seat %d (%d-%d): %s", seat, from, to, STR);
+
 // Init stuff
 void game_init();
 
@@ -35,17 +37,25 @@ void game_init();
 int game_handle_ggz(int, int*);
 int game_handle_player(int);
 
+// Game logic
+int game_handle_move(int, int, int);
+int game_handle_attack(int, int, int);
+int game_check_over();
+
 // Sends info to the player
 void game_send_seat(int);
 void game_send_options(int);
 void game_send_sync(int);
 void game_send_players();
+void game_send_move_error(int, int);
 
 // Gets info from the player
 int game_get_options(int);
 int game_get_setup(int);
+int game_get_move(int);
 
 // Tells the player to do stuff
 void game_request_options(int);
 void game_request_setup(int);
 void game_start();
+void game_send_gameover(int);
