@@ -51,8 +51,9 @@ static gchar *chat_get_color(gchar *name, gchar *msg);
 extern GtkWidget *win_main;
 extern GGZServer *server;
 
-/* Aray of GdkColors currently used for chat and MOTD */
-/* They are all non-ditherable and as such should look the same everywhere */
+/* Aray of GdkColors currently used for chat and MOTD
+ * They are all non-ditherable and as such should look the same everywhere
+ */
 GdkColor colors[] =
 {
         {0, 0x0000, 0x0000, 0x0000},          /* 0   Black			*/
@@ -77,15 +78,23 @@ GdkColor colors[] =
         {0, 0x0000, 0x0000, 0x0000}           /* 19  background (Black)		*/
 };
 
+/* Used for forground/background colors 
+ * in the chat area
+ */
 GdkColor ColorWhite = {0, 0xFFFF, 0xFFFF, 0xFFFF};
 GdkColor ColorBlack = {0, 0x0000, 0x0000, 0x0000};
 
+/* chatinfo holds 2 arrays one for friends and one for 
+ * people to ignore. Friends are shown in a different 
+ * color in chat and ingnored people's chats don't show
+ * up at all.
+ */
 struct chatinfo {
 	GArray *friends;
 	GArray *ignore;
 }chatinfo;
 
-/* chat_init() - setsup chatinfo
+/* chat_init() - setup chatinfo and allocates colors
  *
  * Recieves:
  *
@@ -103,10 +112,17 @@ void chat_init(void)
 	g_array_prepend_val(chatinfo.friends, dummy);
 	g_array_prepend_val(chatinfo.ignore, dummy);
 	g_free(dummy);
+
+	/* sets up background color for chat area*/
+	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE) == TRUE)
+	{
+		colors[18] = ColorBlack;
+		colors[19] = ColorWhite;
+	}
 }
 
 
-/* chat_allocate_colors() - Allocates the collors all at once so they
+/* chat_allocate_colors() - Allocates the colors all at once so they
  *                          can be called without the need to allocate
  *                          each time.
  *
@@ -143,13 +159,6 @@ void chat_allocate_colors(void)
         if (!gdk_color_alloc (gdk_colormap_get_system(),
         	&ColorWhite))
         	g_error("*** GGZ: Couldn't alloc color\n");
-
-	/* Background */
-	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE) == TRUE)
-	{
-		colors[18] = ColorBlack;
-		colors[19] = ColorWhite;
-	}
 }
 
 /* chat_display_message() - Adds text to the xtext widget wich is used to diaplying
@@ -205,7 +214,8 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 }
 
 
-/* chat_send() - Sends a chat message to the server
+/* chat_send() - Sends a chat message to the server, also parses commads
+ *		 within the chat message.
  *
  * Recieves:
  *	gchar	*message	: The text to send to the server as a chat message
@@ -229,7 +239,7 @@ void chat_send(gchar *message)
 }
 
 
-/* chat_send_msg() - sends the current text on chat_entry to the server
+/* chat_send_msg() - sends a chat message to the server as normal
  *
  * Recieves:
  *	GGZServer *server	: Currently connected server
@@ -247,7 +257,7 @@ void chat_send_msg(GGZServer *server, gchar *message)
 }
 
 
-/* chat_send_prvmsg() - Sends a private nessage to a users
+/* chat_send_prvmsg() - Sends a chat to a user as private
  *
  * Recieves:
  *	GGZServer *server	: Currently connected server
@@ -275,7 +285,7 @@ void chat_send_prvmsg(GGZServer *server, gchar *message)
 		}
 	}
 
-	/* Shouldn't get here */
+	/* Shouldn't get here unless command not followed*/
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Usage: /msg <username> <message>"));
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("    Sends a private message to a user on the network."));
 }
@@ -371,7 +381,7 @@ void chat_help(void)
  *                   to underline.
  *
  * Recieves:
- * GtkXText	*xtest	: The xtext widget the word if from
+ * GtkXText	*xtext	: The xtext widget the word is from
  * char		word	: The current word to chek
  *
  * Returns:
@@ -388,13 +398,13 @@ int chat_checkurl(GtkXText *xtext, char *word)
 	/* Check for URLs */
 	if (!strncasecmp (word, "ftp.", 4))
 		return WORD_URL;
-	if (!strncasecmp (word, "ftp:", 4))
+	if (!strncasecmp (word, "ftp://", 6))
 		return WORD_URL;
 	if (!strncasecmp (word, "www.", 4))
 		return WORD_URL;
-	if (!strncasecmp (word, "http:", 5))
+	if (!strncasecmp (word, "http://", 7))
 		return WORD_URL;
-	if (!strncasecmp (word, "https:", 6))
+	if (!strncasecmp (word, "https://", 8))
 		return WORD_URL;
 	if (!strncasecmp (word, "ggz.", 4))
 		return WORD_GGZ;
@@ -529,6 +539,7 @@ gchar *chat_get_color(gchar *name, gchar *msg)
 	return "00";
 }
 
+
 /* chat_add_friend() - Adds a name to your friends list
  *
  * Recieves:
@@ -543,11 +554,11 @@ void chat_add_friend(gchar *name)
 
 	g_array_append_val(chatinfo.friends, name);
 	out = g_strdup_printf(_("Added %s to your friends list."), name);
-	chat_display_message(CHAT_LOCAL_NORMAL, "---", out);
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
 	g_free(out);
 }
 
-/* chat_remove_friend() - Adds a name to your friends list
+/* chat_remove_friend() - Removes a name to your friends list
  *
  * Recieves:
  * gchar	*name	: name to add
@@ -569,7 +580,58 @@ void chat_remove_friend(gchar *name)
 		{
 			g_array_remove_index_fast(chatinfo.friends, x);
 			out = g_strdup_printf(_("Removed %s from your friends list."), name);
-			chat_display_message(CHAT_LOCAL_NORMAL, "---", out);
+			chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
+			g_free(out);
+			break;
+		}
+		x++;
+	}
+}
+
+
+
+/* chat_add_ignore() - Adds a name to your ignore list
+ *
+ * Recieves:
+ * gchar	*name	: name to add
+ *
+ * Returns:
+ */
+
+void chat_add_ignore(gchar *name)
+{
+	gchar *out;
+
+	g_array_append_val(chatinfo.ignore, name);
+	out = g_strdup_printf(_("Added %s to your ignore list."), name);
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
+	g_free(out);
+}
+
+
+/* chat_remove_ignore() - Removes a name to your ignore list
+ *
+ * Recieves:
+ * gchar	*name	: name to add
+ *
+ * Returns:
+ */
+
+void chat_remove_ignore(gchar *name)
+{
+	int x=0;
+	gchar *out;
+
+	while(1)
+	{
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.ignore, gchar*, x) == NULL)
+			break;
+		if(!strcmp(g_array_index(chatinfo.ignore, gchar*, x), name))
+		{
+			g_array_remove_index_fast(chatinfo.ignore, x);
+			out = g_strdup_printf(_("Removed %s from your ignore list."), name);
+			chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
 			g_free(out);
 			break;
 		}

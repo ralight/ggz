@@ -49,5 +49,7 @@ void chat_word_clicked(GtkXText *xtext, char *word,
 	GdkEventButton *event);
 void chat_add_friend(gchar *name);
 void chat_remove_friend(gchar *name);
+void chat_add_ignore(gchar *name);
+void chat_remove_ignore(gchar *name);
 
 #endif
