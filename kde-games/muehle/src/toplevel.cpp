@@ -86,8 +86,8 @@ Toplevel::Toplevel()
 	menuBar()->insertItem(i18n("Theme"), menu_theme, 4);
 	menuBar()->insertItem(i18n("Help"), helpMenu(), 5);
 
-	statusBar()->insertItem("nobody: 0", statusplayer, 2);
-	statusBar()->insertItem("nobody: 0", statusopponent, 2);
+	statusBar()->insertItem("", statusplayer, 2);
+	statusBar()->insertItem("", statusopponent, 2);
 	statusBar()->insertItem(i18n("Welcome to Muehle."), statushint, 2);
 
 	board = new Board(this);
@@ -153,11 +153,15 @@ void Toplevel::slotScore(const QString &player, int num, int score)
 }
 
 // Turn the game client into a network game interface
-void Toplevel::enableNetwork()
+void Toplevel::enableNetwork(bool enabled)
 {
-	menuBar()->setItemEnabled(2, false);
-	menu_game->setItemEnabled(menugamenew, false);
-	setCaption(i18n("Network game"));
+	if(enabled)
+	{
+		menuBar()->setItemEnabled(2, false);
+		menu_game->setItemEnabled(menugamenew, false);
+		setCaption(i18n("Network game"));
+	}
+	board->enableNetwork(enabled);
 }
 
 // End the game

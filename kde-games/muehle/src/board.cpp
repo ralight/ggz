@@ -24,11 +24,13 @@
 #include "qweb.h"
 #include "net.h"
 #include "qwebpath.h"
+#include "toplevel.h"
 
 // KDE includes
 #include <kstddirs.h>
 #include <kdebug.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 
 // Qt includes
 #include <qfile.h>
@@ -45,13 +47,15 @@
 Board::Board(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
-	net = new Net();
-	net->output(i18n("KDE Muehle Game"));
+	net = NULL;
 
 	bg = NULL;
 	black = NULL;
 	white = NULL;
 	setTheme("standard");
+
+	m_color = colorwhite;
+	m_turn = 1;
 
 	web = NULL;
 	setVariant("classic");
@@ -64,7 +68,7 @@ Board::~Board()
 {
 	if(web) delete web;
 	delete bg;
-	delete net;
+	if(net) delete net;
 }
 
 // Initialize to a null-board
@@ -74,6 +78,14 @@ void Board::init()
 
 	stonelist.clear();
 	repaint();
+
+	m_turn = 1;
+}
+
+// Check network
+void Board::timerEvent(QTimerEvent *e)
+{
+	net->poll();
 }
 
 // draw one Muehle stone
@@ -182,6 +194,21 @@ void Board::mousePressEvent(QMouseEvent *e)
 	QWebPoint *wp;
 
 	if(!web) return;
+	if(m_color == colornone)
+	{
+		KMessageBox::sorry(this, i18n("The server doesn't have assigned a color to you yet."), i18n("Client message"));
+		return;
+	}
+	if(!m_turn)
+	{
+		KMessageBox::sorry(this, i18n("It's not your turn - please wait for the opponent."), i18n("Client message"));
+		return;
+	}
+	if(m_turn < 0)
+	{
+		KMessageBox::sorry(this, i18n("This game has already finished."), i18n("Client message"));
+		return;
+	}
 
 	// Translate coordinates into qweb representation
 	x = (int)(e->x() / web->scale());
@@ -234,13 +261,21 @@ void Board::mousePressEvent(QMouseEvent *e)
 
 				if(astone)
 				{
-					net->output(QString("[%1,%2,%3,%4].").arg(astone->x()).arg(astone->y()).arg(x).arg(y));
+					if(net)
+					{
+						net->output(QString("[%1,%2,%3,%4].").arg(astone->x()).arg(astone->y()).arg(x).arg(y));
+						m_turn = 0;
+					}
 					stonelist.remove(astone);
 					//delete astone;
 				}
 				else
 				{
-					net->output(QString("[%1,%2].").arg(x).arg(y));
+					if(net)
+					{
+						net->output(QString("[%1,%2].").arg(x).arg(y));
+						m_turn = 0;
+					}
 				}
 			}
 			else
@@ -286,9 +321,16 @@ void Board::mousePressEvent(QMouseEvent *e)
 		for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
 		{
 			if(((xrows == 3) && (p->point().x() == xrow)) || ((yrows == 3) && (p->point().y() == yrow)))
+			{
 				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
 					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()))
 						s2->assign(Stone::whitemuehle);
+			}
+		}
+		if((xrows == 3) || (yrows == 3))
+		{
+			m_turn = -1;
+			KMessageBox::information(this, i18n("You have won the game!"), i18n("Client message"));
 		}
 
 		delete path;
@@ -300,13 +342,13 @@ void Board::mousePressEvent(QMouseEvent *e)
 // Send remis to the server
 void Board::remis()
 {
-	net->output("remis.");
+	if(net) net->output("remis.");
 }
 
 // Send wish to loose to the server
 void Board::loose()
 {
-	net->output("loose.");
+	if(net) net->output("loose.");
 }
 
 // Change the active theme
@@ -339,6 +381,11 @@ void Board::setVariant(const QString &variant)
 	{
 		delete web;
 		web = NULL;
+	}
+
+	if(!net)
+	{
+		m_turn = 1;
 	}
 
 	d.addResourceDir("data", GGZDATADIR);
@@ -377,4 +424,100 @@ void Board::setVariant(const QString &variant)
 	f.close();
 	web->setScale(width() / 100.0);
 }
+
+// Enable network mode
+void Board::enableNetwork(bool enabled)
+{
+	//QString s;
+	//s = net->input();
+	//kdDebug(12101) << "Net input: " << s << endl;
+
+	if(!enabled)
+	{
+		emit signalScore(i18n("You"), Toplevel::statusplayer, 0);
+		emit signalScore(i18n("AI"), Toplevel::statusopponent, 0);
+		emit signalScore(i18n("Good luck."), Toplevel::statushint, 0);
+
+		init();
+	}
+	else
+	{
+		m_color = colornone;
+		m_turn = 0;
+
+		net = new Net();
+		net->output(i18n("KDE Muehle Game"));
+
+		connect(net, SIGNAL(signalInput()), SLOT(slotInput()));
+
+		startTimer(100);
+	}
+}
+
+// Input from network
+void Board::slotInput()
+{
+	QString s;
+	int error;
+
+	error = 0;
+
+	s = net->input();
+	kdDebug(12101) << "Board input: " << s << endl;
+
+	if((s == "white.") && (m_color == colornone))
+	{
+		m_color = colorwhite;
+		KMessageBox::information(this, i18n("Your turn, you play with the white stones."), i18n("Server message"));
+		m_turn = 1;
+		signalScore(i18n("White"), Toplevel::statusplayer, 0);
+		signalScore(i18n("Black"), Toplevel::statusopponent, 0);
+		signalScore(i18n("Your turn"), Toplevel::statushint, 0);
+	}
+	else if((s == "black.") && (m_color == colornone))
+	{
+		m_color = colorblack;
+		KMessageBox::information(this, i18n("You play with the black stones, but wait for your opponent first."), i18n("Server message"));
+		m_turn = 0;
+		emit signalScore(i18n("Black"), Toplevel::statusplayer, 0);
+		emit signalScore(i18n("White"), Toplevel::statusopponent, 0);
+		emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
+	}
+	else if((s.left(1) == "[") && (s.right(2) == "].") && (m_color != colornone) && (!m_turn))
+	{
+		QStringList l;
+		Stone *stone;
+
+		l = l.split(",", s.mid(1, s.length() - 3));
+		kdDebug(12101) << "Parts: " << l.count() << " in " << s.mid(1, s.length() - 3) << endl;
+		switch(l.count())
+		{
+			case 2:
+				stone = new Stone();
+				stone->move((*(l.at(0))).toInt(), (*(l.at(1))).toInt());
+				stone->assign(Stone::black);
+				stonelist.append(stone);
+				m_turn = 1;
+				break;
+			case 4:
+				break;
+			default:
+				error = 1;
+				break;
+		}
+	}
+	else if(s == "invalid.")
+	{
+		error = 1;
+	}
+	else error = 1;
+
+	if(error)
+	{
+		KMessageBox::error(this, i18n("Aborting game due to unhandled network input."), i18n("Network error"));
+		m_turn = -1;
+		emit signalEnd();
+	}
+}
+
 

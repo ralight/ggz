@@ -19,16 +19,23 @@
 #define MUEHLE_NET_H
 
 // Qt includes
+#include <qobject.h>
 #include <qstring.h>
 
 // Network wrapper class
-class Net
+class Net : public QObject
 {
+	Q_OBJECT
 	public:
 		Net();
 		~Net();
 		void output(const QString &s);
 		QString input();
+		void poll();
+	signals:
+		void signalInput();
+	private:
+		QString m_input;
 };
 
 #endif

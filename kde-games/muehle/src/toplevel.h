@@ -35,7 +35,7 @@ class Toplevel : public KMainWindow
 	public:
 		Toplevel();
 		~Toplevel();
-		void enableNetwork();
+		void enableNetwork(bool enabled);
 		enum MenuItems
 		{
 			menugamenew = 1,

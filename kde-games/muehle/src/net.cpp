@@ -21,12 +21,17 @@
 // System includes
 #include <iostream>
 #include <string>
+#include <unistd.h>
+#include <qstringlist.h>
+#include <fcntl.h>
 
 using namespace std;
 
 // Constructor
 Net::Net()
+: QObject()
 {
+	fcntl(0, F_SETFL, O_NONBLOCK);
 }
 
 // Destructor
@@ -43,8 +48,30 @@ void Net::output(const QString &s)
 // Read a single line
 QString Net::input()
 {
-	string s;
-	cin >> s;
-	return QString(s.c_str());
+	//string s;
+	//cin >> s;
+	//return QString(s.c_str());
+	return m_input;
+}
+
+// Check for network input
+void Net::poll()
+{
+	char tmp[256];
+	int ret;
+
+	ret = read(0, tmp, sizeof(tmp));
+	if(ret > 0)
+	{
+		tmp[ret - 1] = 0;
+		QString x = tmp;
+		QStringList l;
+		l = l.split('\n', x);
+		for(QStringList::Iterator it = l.begin(); it != l.end(); it++)
+		{
+			m_input = (*it);
+			emit signalInput();
+		}
+	}
 }
 

@@ -56,7 +56,11 @@ int main(int argc, char **argv)
 	top = new Toplevel();
 	if(args->isSet("ggz"))
 	{
-		top->enableNetwork();
+		top->enableNetwork(true);
+	}
+	else
+	{
+		top->enableNetwork(false);
 	}
 	a.setMainWidget(top);
 	return a.exec();

@@ -41,6 +41,10 @@ class Board : public QWidget
 		void loose();
 		void setTheme(const QString &theme);
 		void setVariant(const QString &variant);
+		void enableNetwork(bool enabled);
+
+	public slots:
+		void slotInput();
 
 	signals:
 		void signalStatus(const QString &message);
@@ -51,15 +55,24 @@ class Board : public QWidget
 		void paintEvent(QPaintEvent *e);
 		void resizeEvent(QResizeEvent *e);
 		void mousePressEvent(QMouseEvent *e);
+		void timerEvent(QTimerEvent *e);
 
 	private:
 		void paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner);
+		enum Colors
+		{
+			colornone,
+			colorwhite,
+			colorblack
+		};
 
 		QList<Stone> stonelist;
 		QWeb *web;
 		QPixmap *bg;
 		QPixmap *black, *white;
 		Net *net;
+		int m_color;
+		int m_turn;
 };
 
 #endif
