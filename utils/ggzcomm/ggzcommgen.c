@@ -1,4 +1,5 @@
 /* Include files */
+#include "ggzcommgen.h"
 #include "minidom.h"
 #include <stdio.h>
 #include <stdlib.h>
