@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: de.ggz.h 6963 2005-03-09 18:14:34Z josef $
+ * $Id: de.ggz.h 6966 2005-03-10 10:37:42Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -297,12 +297,12 @@ int ggz_conf_parse		(const char *path,
 int ggz_conf_commit		(int handle);
 
 /**
- * Writes a string value to a section and key in an open configuration file.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param section A string section name to write to
- * @param key A string variable key name to write to
- * @param value The string value to write
- * @return 0 if successful, -1 on failure
+ * Schreibt einen Zeichenkettenwert mit Sektion und Schlüssel in die Konfiguration.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param section Name der zu verwendenden Sektion
+ * @param key Name des zu verwendenden Schlüssels
+ * @param value Zu schreibende Zeichenkette
+ * @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_conf_write_string	(int	handle,
 			 const char	*section,
@@ -310,12 +310,12 @@ int ggz_conf_write_string	(int	handle,
 			 const char	*value);
 
 /**
- * Writes an integer value to a section and key in an open configuration file.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param section A string section name to write to
- * @param key A string variable key name to write to
- * @param value The integer value to write
- * @return 0 if successful, -1 on failure
+ * Schreibt einen Ganzzahlwert mit Sektion und Schlüssel in die Konfiguration.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param section Name der zu verwendenden Sektion
+ * @param key Name des zu verwendenden Schlüssels
+ * @param value Zu schreibende Ganzzahl
+ * @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_conf_write_int	(int	handle,
 			 const char	*section,
@@ -323,14 +323,13 @@ int ggz_conf_write_int	(int	handle,
 			 int	value);
 
 /**
- * Writes a list of string values to a section and key in an open
- * configuration file.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param section A string section name to write to
- * @param key A string variable key name to write to
- * @param argc The number of string array entries in argv
- * @param argv An array of strings to create a list from
- * @return 0 if successful, -1 on failure
+ * Schreibt eine Liste von Zeichenketten mit Sektion und Schlüssel in die Konfiguration.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param section Name der zu verwendenden Sektion
+ * @param key Name des zu verwendenden Schlüssels
+ * @param argc Anzahl der Zeichenketten im Feld argv
+ * @param argv Feld von Zeichenketten, aus denen die Liste konstruiert wird
+ * @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_conf_write_list	(int	handle,
 			 const char	*section,
@@ -339,18 +338,18 @@ int ggz_conf_write_list	(int	handle,
 			 char	**argv);
 
 /**
- * Reads a string value from an open configuration file.  If the section/key
- * combination is not found, the default entry is returned.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param section A string section name to read from
- * @param key A string variable key name to read from
- * @param def A value to be returned if the entry does not exist (may be NULL)
- * @return A dynamically allocated copy of the stored (or default) value
- * or NULL
- * @note The copy is allocated via a standard ggz_malloc() call and the
- * caller is expected to be responsible for calling ggz_free() on the
- * returned value when they no longer need the value.  No memory is allocated
- * if a default value of NULL is returned.
+ * Liest einen Zeichenkettenwert aus der Konfiguration. Falls die Kombination aus
+ * Sektion und Schlüssel nicht gefunden werden kann, wird der angegebene Standardwert
+ * zurückgegeben.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param section Name der zu verwendenden Sektion
+ * @param key Name des zu verwendenden Schlüssels
+ * @param def Zurückzugebener Wert, falls der Eintrag nicht existiert (darf NULL sein)
+ * @return Dynamisch allokierte Kopie des gefundenen Wertes oder des Standardwertes,
+ * oder NULL
+ * @note Die Kopie wird mit Hilfe von ggz_malloc() erzeugt und der Aufrufer sollte
+ * sie demnach mit ggz_free() wieder freigeben, wenn sie nicht länger benötigt wird.
+ * Falls der Standardwert mit NULL angegeben wird, wird kein Speicher allokiert.
  */
 char * ggz_conf_read_string	(int	handle,
 			 const char	*section,
@@ -358,13 +357,14 @@ char * ggz_conf_read_string	(int	handle,
 			 const char	*def);
 
 /**
- * Reads an integer value from an open configuration file.  If the section/key
- * combination is not found, the default entry is returned.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param section A string section name to read from
- * @param key A string variable key name to read from
- * @param def A value to be returned if the entry does not exist
- * @return The integer value stored in the configuration file, or the default
+ * Liest einen Ganzzahlwert aus der Konfiguration. Falls die Kombination aus
+ * Sektion und Schlüssel nicht gefunden werden kann, wird der angegebene Standardwert
+ * zurückgegeben.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param section Name der zu verwendenden Sektion
+ * @param key Name des zu verwendenden Schlüssels
+ * @param def Zurückzugebener Wert, falls der Eintrag nicht existiert
+ * @return Ganzzahlwert aus der Konfiguration, oder der Standardwert
  */
 int ggz_conf_read_int	(int	handle,
 			 const char	*section,
@@ -372,22 +372,22 @@ int ggz_conf_read_int	(int	handle,
 			 int	def);
 
 /**
- * Reads a list of string values from an open configuration file.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param section A string section name to read from
- * @param key A string variable key name to read from
- * @param argcp A pointer to an integer which will receive the number of
- * list entries read
- * @param argvp A pointer to a string array.  This will receive a value
- * pointing to a dynamically allocated array of string values.  The
- * list will be NULL-terminated.
- * @return 0 on success, -1 on failure
- * @note The array is allocated via standard ggz_malloc() calls and the
- * caller is expected to be responsible for calling ggz_free() on the string
- * values and the associated array structure when they no longer need the
- * list.  If the section/key combination is not found -1 will be returned,
- * *argcp is set to a value of zero, no memory will be allocated, and
- * *argvp will be set to NULL.
+ * Liest eine Liste von Zeichenketten aus der Konfiguration.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param section Name der zu verwendenden Sektion
+ * @param key Name des zu verwendenden Schlüssels
+ * @param argcp Pointer zu einer Ganzzahl, in welche die Anzahl der Listeneinträge
+ * geschrieben wird
+ * @param argvp Pointer zu einem Zeichenkettenfeld, in welches ein zu der dynamisch
+ * allokierten Kopie der Zeichenkettenwerte zeigender Wert geschrieben wird,
+ * wobei die Liste NULL-terminiert sein wird
+ * @return 0 im Erfolgsfall, -1 im Fehlerfall
+ * @note Das Feld wird mit Hilfe von ggz_malloc() erzeugt und der Aufrufer sollte
+ * es inklusive der einzelnen Zeichenkettenwerte demnach mit ggz_free() wieder freigeben,
+ * wenn es nicht länger benötigt wird.
+ * Wenn die Kombination aus Sektion und Schlüssel nicht gefunden wird, wird -1
+ * zurückgegeben, *argcp wird auf den Wert Null gesetzt, *argvp wird auf NULL gesetzt,
+ * und es wird kein Speicher allokiert.
  */
 int ggz_conf_read_list(int	handle,
 			 const char	*section,
@@ -396,58 +396,56 @@ int ggz_conf_read_list(int	handle,
 			 char	***argvp);
 
 /**
- * This will remove an entire section and all its associated keys from
- * a configuration file.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param section A string section name to remove
- * @return 0 on success, -1 on failure
+ * Entfernt eine komplette Sektion inklusive aller ihrer Schlüssel von der Konfiguration.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param section Name der zu entfernenden Sektion
+ * @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_conf_remove_section	(int	handle,
 			 const char	*section);
 
 /**
- * This will remove a single key from a configuration file.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param section A string section name the key is located in
- * @param key A string key name to remove
- * @return 0 on success, -1 on failure
+ * Entfernt einen einzelnen Schlüssen von der Konfiguration.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param section Eine Zeichenkette mit dem Namen der Sektion, in der sich der
+ * Schlüssel befindet
+ * @param key Name des zu entfernenden Schlüssels
+ * @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_conf_remove_key	(int	handle,
 			 const char	*section,
 			 const char	*key);
 
 /**
- * This function returns a list of all sections in a config file.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param argcp A pointer to an integer which will receive the number of
- * sections in the configuration file
- * @param argvp A pointer to a string array.  This will receive a value
- * pointing to a dynamically allocated array of string values.  This list
- * is NOT NULL terminated.
- * @return 0 on success, -1 on failure
- * @note The array is allocated via standard ggz_malloc() calls and the
- * caller is expected to be responsible for calling ggz_free() on the string
- * values and the associated array structure when they no longer need the
- * list. 
+ * Gibt die Liste aller Sektionen der Konfiguration zurück.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param argcp Pointer zu einer Ganzzahl, in welche die Anzahl der Sektionen
+ * geschrieben wird
+ * @param argvp Pointer zu einem Zeichenkettenfeld, in welches ein zu der dynamisch
+ * allokierten Kopie der Zeichenkettenwerte zeigender Wert geschrieben wird,
+ * wobei die Liste NICHT NULL-terminiert sein wird
+ * @return 0 im Erfolgsfall, -1 im Fehlerfall
+ * @note Das Feld wird mit Hilfe von ggz_malloc() erzeugt und der Aufrufer sollte
+ * es inklusive der einzelnen Zeichenkettenwerte demnach mit ggz_free() wieder freigeben,
+ * wenn es nicht länger benötigt wird.
  */
 int ggz_conf_get_sections (int handle,
 			 int	*argcp,
 			 char	***argvp);
 
 /**
- * This function returns a list of all keys within a section in a config file.
- * @param handle A valid handle returned by ggz_conf_parse()
- * @param section A string section name
- * @param argcp A pointer to an integer which will receive the number of
- * lists within section in the configuration file
- * @param argvp A pointer to a string array.  This will receive a value
- * pointing to a dynamically allocated array of string values.  This list
- * is NOT NULL terminated.
- * @return 0 on success, -1 on failure
- * @note The array is allocated via standard ggz_malloc() calls and the
- * caller is expected to be responsible for calling ggz_free() on the string
- * values and the associated array structure when they no longer need the
- * list. 
+ * Gibt die Liste aller Schlüsselnamen einer Sektion der Konfiguration zurück.
+ * @param handle Gültige Kennung wie von ggz_conf_parse() zurückgegeben
+ * @param section Name der zu verwendenden Sektion
+ * @param argcp Pointer zu einer Ganzzahl, in welche die Anzahl der Schlüssel
+ * geschrieben wird
+ * @param argvp Pointer zu einem Zeichenkettenfeld, in welches ein zu der dynamisch
+ * allokierten Kopie der Zeichenkettenwerte zeigender Wert geschrieben wird,
+ * wobei die Liste NICHT NULL-terminiert sein wird
+ * @return 0 im Erfolgsfall, -1 im Fehlerfall
+ * @note Das Feld wird mit Hilfe von ggz_malloc() erzeugt und der Aufrufer sollte
+ * es inklusive der einzelnen Zeichenkettenwerte demnach mit ggz_free() wieder freigeben,
+ * wenn es nicht länger benötigt wird.
  */
 int ggz_conf_get_keys (int handle,
 			 const char *section,
@@ -458,262 +456,261 @@ int ggz_conf_get_keys (int handle,
 
 
 /**
- * @defgroup list List functions 
+ * @defgroup list Funktionen zur Listenmanipulation
  *
- * Data Structures and functions for manipulating linked-lists
+ * Datenstrukturen und Funktionen zur Manipulation von verketteten Listen.
  * @{
  */
 
-/** @brief A function type for doing data comparison on two items in a
- *  ::GGZList.
+/** @brief Funktionstyp zum Datenvergleich zweier Einträge in einer ::GGZList.
  *
- *  @param a An arbitrary element in the GGZList.
- *  @param b An arbitrary element in the GGZList.
- *  @return Negative if a < b; 0 if a == b; positive if a > b.  */
+ *  @param a Beliebiges Element in der ::GGZList.
+ *  @param b Beliebiges Element in der ::GGZList.
+ *  @return Negativ falls a < b; 0 fals a == b; positiv falls a > b.  */
 typedef int (*ggzEntryCompare)(const void *a, const void *b);
 
 
-/** @brief A function type for creating a copy of a data item for
- *  insertion into a ::GGZList.
+/** @brief Funktionstyp zur Erstellung einer Kopie eines Eintrages für das Einfügen
+ *  in eine ::GGZList.
  *
- *  A function of this type may be called on an element when
- *  it is first inserted into a GGZList.
- *  @param data A pointer to the data given to the list for insertion.
- *  @return A new copy of the data, safe for list insertion
+ *  Eine Funktion diesen Typs kann für ein Element aufgerufen werden, wenn dieses
+ *  erstmalig in eine ::GGZList eingefügt wird.
+ *  @param data Pointer zum hinzuzufügenden Eintrag
+ *  @return Kopie des Eintrags, welche problemlos in die Liste eingefügt werden kann
  */
 typedef	void *	(*ggzEntryCreate)	(void *data);
 
 
-/** @brief A function type to destroy an entry in a GGZList.
+/** @brief Funktionstyp zur Auflösung eines Eintrages in einer ::GGZList.
  *
- *  A function of this type may be called on an element when
- *  it is removed from a GGZList.
- *  @param data The entry being removed.
+ *  Eine Funktion diesen Typs kann für ein Element aufgerufen werden,
+ *  wenn es von einer ::GGZList entfernt wird.
+ *  @param data Aufzulösenden Eintrag
  */
 typedef	void	(*ggzEntryDestroy)	(void *data);
 
 
-/** @brief A single entry in a GGZList
+/** @brief Einzelner Eintrag in einer ::GGZList.
  *
- *  Do not access these members directly, but use the
- *  ggz_list_get_data(), ggz_list_next() and ggz_list_prev()
- *  accessor functions instead 
+ *  Die Komponenten sollten nicht direkt angesprochen werden.
+ *  Für den Zugriff stehen die Funktionen ggz_list_get_data(), ggz_list_next()
+ *  und ggz_list_prev() bereit.
  */
 typedef struct _GGZListEntry {
-	void		     *data; /**< Pointer to data for this node */
-	struct _GGZListEntry *next, /**< Pointer to next nodes in the list */
-		             *prev; /**< Pointer to previous node in the list */
+	void		     *data;     /**< Pointer zu den Daten dieses Knotens */
+	struct _GGZListEntry *next, /**< Pointer zum nächsten Knoten der Liste */
+		             *prev;     /**< Pointer zum verherigen Knoten der Liste */
 } GGZListEntry;
 
 
-/** @brief Simple doubly-linked list
+/** @brief Einfache doppelt verlinkte Liste.
  *
- *  Do not access these members directly.  Instead use accessor functions.
+ *  Die Komponenten sollten nicht direkt angesprochen werden, sondern nur
+ *  über die entsprechenden Zugriffsfunktionen.
  */
 typedef struct _GGZList {
-	GGZListEntry	*head,         /**< Pointer to the first node in the list */
-		        *tail;         /**< Pointer to the last node in the list */
-	ggzEntryCompare	compare_func;  /**< Function used to compare data entries */
-	ggzEntryCreate	create_func;   /**< Function used to copy data entries */
-	ggzEntryDestroy	destroy_func;  /**< Function used to destroy data entries */
-	int		options;       /**< List options */
-	int		entries;       /**< The current number of list entries (ie. list length) */
+	GGZListEntry	*head,         /**< Pointer zum ersten Knoten der Liste */
+		        *tail;         /**< Pointer zum letzten Knoten der Liste */
+	ggzEntryCompare	compare_func;  /**< Funktion zum Vergleich von Einträgen */
+	ggzEntryCreate	create_func;   /**< Funktion zum Kopieren von Einträgen */
+	ggzEntryDestroy	destroy_func;  /**< Funktion zur Auflösung von Einträgen */
+	int		options;       /**< Listen-Optionen */
+	int		entries;       /**< Aktuelle Anzahl von Listeneinträgen (Listenlänge) */
 } GGZList;
 
 
 
-#define GGZ_LIST_REPLACE_DUPS       0x00 /**< Overwrite duplicate values on insert */
-#define GGZ_LIST_ALLOW_DUPS         0x01 /**< Allow duplicate data entries to exist in the list */
+#define GGZ_LIST_REPLACE_DUPS 0x00 /**< Überschreiben doppelter Einträge beim Einfügen */
+#define GGZ_LIST_ALLOW_DUPS   0x01 /**< Erlauben doppelter Einträge in der Liste */
 
-/** @brief Create a new ::GGZList
+/** @brief Erstellung einer neuen ::GGZList.
  *
- * When creating a a new list, you have some control over its
- * behavior.  The first parameter, compare_func allows you to specify
- * a comparison for sorting the list elements.  If you specify NULL
- * for compare_func, the list will be unordered.  The second
- * parameter, create_func allows you to specify how new copies of data
- * will be created during insertion.  ::GGZList objects stores
- * pointers to your data in ::GGZListEntry nodes. If you specify NULL
- * for create_func, the list will store the actual pointer to your
- * data when you call ggz_list_insert().  If you specify a
- * create_func, it will be called to create a new copy of the object
- * for storage in the list.  You are then safely deallocate the
- * original copy of the data.  The third parameter, destroy_func
- * allows you to specify a deallocation function for data entries when
- * they are removed from the list.  @note The functions
- * ggz_list_compare_str(), ggz_list_create_str()
- * ggz_list_destroy_str() are provided for use with character string
- * data.
+ * Bei der Erstellung einer neuen Liste gibt es einige Kontrollmöglichkeiten
+ * über deren Verhalten. Der erste Parameter, compare_func, erlaubt die
+ * Spezifikation einer Vergleichsfunktion zur Sortierung der Listenelemente.
+ * Wenn NULL für compare_func angegeben wird, bleibt die Liste ungeordnet.
+ * Der zweite Parameter, create_func, erlaubt die Spezifikation der Art
+ * und Weise der Kopie neuer Einträge. ::GGZList-Objekte speichern Pointer
+ * zu den Daten in ::GGZListEntry-Knoten. Wenn NULL für create_func
+ * angegeben wird, wird direkt dieser Pointer zu den Daten in die
+ * Liste aufgenommen. Wenn hingegen eine create_func angegeben wird,
+ * wird diese aufgerufen, um eine neue Kopie des Objektes zur Aufnahme
+ * in die Liste anzulegen.
+ * Der dritte Parameter, destroy_func, erlaubt die Spezifikation einer
+ * Auflösungsfunktion für Dateneinträge bei ihrer Herausnahme aus der Liste.
+ * @note Die Funktionen ggz_list_compare_str(), ggz_list_create_str()
+ * und ggz_list_destroy_str() werden für Zeichenkettendaten bereitgestellt.
  *
- * The last argument must be one of #GGZ_LIST_REPLACE_DUPS or
- * #GGZ_LIST_ALLOW_DUPS, to specify how the list will behave with
- * respect to duplicate data entries.  If #GGZ_LIST_REPLACE_DUPS is
- * passed, duplicate entries (as determined by compare_func) will be
- * replaced upon ggz_list_insert().  If #GGZ_LIST_ALLOW_DUPS is
- * specified, duplicate ata entries will be allowed to exist in the
- * list.
+ * Das letzte muss entweder #GGZ_LIST_REPLACE_DUPS oder #GGZ_LIST_ALLOW_DUPS sein,
+ * und gibt an, wie die Liste mit doppelten Einträgen umgeht.
+ * Wenn #GGZ_LIST_REPLACE_DUPS übergeben wird, werden doppelte Einträge
+ * (nach der Erkennung von compare_func) beim Aufruf von ggz_list_insert()
+ * ersetzt. Wenn hingegen GGZ_LIST_ALLOW_DUPS# angegeben wird,
+ * dürfen doppelte Dateneinträge in der Liste existieren.
  *
- * @note If compare_func is NULL, #GGZ_LIST_REPLACE_DUPS has no meaning
+ * @note Wenn compare_func NULL ist, hat #GGZ_LIST_REPLACE_DUPS keinerlei
+ * Bedeutung.
  *
- * @param compare_func Function to use for comparing data items
- * @param create_func Function to use for allocating and copying data items
- * @param destroy_func Function to use for dellocating data items
- * @param options One of #GGZ_LIST_REPLACE_DUPS or #GGZ_LIST_ALLOW_DUPS
- * specifying how the list should handle duplicate data entries
- * @return A pointer to a newly allocated ::GGZList */
+ * @param compare_func Funktion zum Vergleich von Einträgen
+ * @param create_func Funktion zur Erstellung und Kopie von Einträgen
+ * @param destroy_func Funktion zur Auflösung von Einträgen
+ * @param options Entweder #GGZ_LIST_REPLACE_DUPS oder #GGZ_LIST_ALLOW_DUPS,
+ * je nachdem wie doppelte Einträge in der Liste behandelt werden sollen
+ * @return Pointer zur neu allokierten ::GGZList
+ */
 GGZList *ggz_list_create (ggzEntryCompare compare_func,
 			  ggzEntryCreate create_func,
 			  ggzEntryDestroy destroy_func,
 			  int options);
 
 
-/** @brief Insert data into a list
+/** @brief Einfügen von Daten in eine Liste.
  *
- * @param list Pointer to a ::GGZList 
- * @param data Pointer to data to be inserted
- * @return -1 on failure, 0 is the item was inserted, and 1 if the
- * item replaced an existing list item.  @note Replacement of
- * duplicate items only occurs if #GGZ_LIST_REPLACE_DUPS was passed to
- * ggz_list_create() */
+ * @param list Pointer zu einer ::GGZList
+ * @param data Pointer zu den einzufügenden Daten
+ * @return -1 im Fehlerfall, 0 falls die Daten eingefügt wurden, und 1 falls
+ * die Daten einen bereits existierenden Eintrag ersetzt haben
+ * @note Das Ersetzen tritt nur dann auf, wenn #GGZ_LIST_REPLACE_DUPS
+ * an ggz_list_create() übergeben wurde.
+ */
 int ggz_list_insert            (GGZList *list, void *data);
 
 
-/** @brief Get the first node of a list
+/** @brief Rückgabe des ersten Knotens in einer Liste.
  *
- * @param list Pointer to a ::GGZList
- * @return The ::GGZListEntry that is first in the list
+ * @param list Pointer zu einer ::GGZList
+ * @return Der ::GGZListEntry, welcher an erster Stelle der Liste steht
  */
 GGZListEntry *ggz_list_head	(GGZList *list);
 
 
-/** @brief Get the last node of a list
+/** @brief Rückgabe des letzten Knotens in einer Liste.
  *
- * @param list Pointer to a ::GGZList
- * @return The ::GGZListEntry that is last in the list
+ * @param list Pointer zu einer ::GGZList
+ * @return Der ::GGZListEntry, welcher an letzter Stelle der Liste steht
  */
 GGZListEntry *ggz_list_tail	(GGZList *list);
 
 
-/** @brief Get the next node of a list
+/** @brief Rückgabe des nächsten Knotens einer Liste.
  *
- * @param entry Pointer to a ::GGZListEntry in a ::GGZList
- * @return The next ::GGZListEntry in the list
+ * @param entry Pointer zu einem ::GGZListEntry in einer ::GGZList
+ * @return Der nächste ::GGZListEntry in der Liste
  */
 GGZListEntry *ggz_list_next  	(GGZListEntry *entry);
 
 
-/** @brief Get the previous node of a list
+/** @brief Rückgabe des vorherigen Knotens einer Liste.
  *
- * @param entry Pointer to a ::GGZListEntry in a ::GGZList
- * @return The previous ::GGZListEntry in the list
+ * @param entry Pointer zu einem ::GGZListEntry in einer ::GGZList
+ * @return Der vorherige ::GGZListEntry in der Liste
  */
 GGZListEntry *ggz_list_prev	(GGZListEntry *entry);
 
 
-/** @brief Retrieve the data stored in a list entry
+/** @brief Rückgabe der in einem Listeneintrag enthaltenen Daten.
  *
- * @param entry Pointer to a ::GGZListEntry
- * @return Pointer to the data stored in the specifed node (::GGZListEntry)
+ * @param entry Pointer zu einem ::GGZListEntry
+ * @return Pointer zu den im betreffenden Knoten gespeicherten Daten (::GGZListEntry)
  */
 void *ggz_list_get_data		(GGZListEntry *entry);
 
 
-/** @brief Search for a specified data item in the list
+/** @brief Suche nach einem gegebenen Eintrag in der Liste.
  *
- * ggz_list_search() searches a list for a particular data item using
- * the ggzEntryCompare function provided as compare_func to
- * ggz_list_create().  If you wish to search using an alternative
- * comparison function, see ggz_list_search_alt()
+ * ggz_list_search() sucht in einer Liste nach einem speziellen Entrag
+ * mit Hilfe der Funktion ggzEntryCompare, welche als compare_func an
+ * ggz_list_create() übergeben wurde. Soll eine alternative Vergleichsfunktion
+ * genutzt werden, siehe ggz_list_search_alt().
  *
- * @param list Pointer to a ::GGZList
- * @param data Pointer to data to search for
- * @return Pointer to the ::GGZListEntry containing the specifed node
- * (NULL if the data could not be found or if no compare_func was
- * specified at list-creation time) 
+ * @param list Pointer zu einer ::GGZList
+ * @param data Pointer zu den zu suchenden Daten
+ * @return Pointer zum ::GGZListEntry, welcher den angegebenen Knoten enthält
+ * (NULL wenn die Daten nicht gefunden werden konnten oder keine compare_func
+ * zur Zeit der Listenerstellung angegeben worden war)
  */
 GGZListEntry *ggz_list_search	(GGZList *list, void *data);
 
 
-/** @brief Search for a specified data item in the list using a provided comparison function
+/** @brief Suche nach einem gegebenen Eintrag in der Liste mit einer Vergleichsfunktion.
  *
- * ggz_list_search_alt() searches a list for a particular data item
- * using the passed ggzEntryCompare function.
+ * ggz_list_search_alt() durchsucht eine Liste nach einem speziellen Eintrag
+ * mit Hilfe der angegebenen Funktion ggzEntryCompare.
  *
- * @param list Pointer to a ::GGZList
- * @param data Pointer to data to search for
- * @param compare_func Comparison function
- * @return Pointer to the ::GGZListEntry containing the specifed node
- * (NULL if the data could not be found or if no compare_func was
- * specified) 
+ * @param list Pointer zu einer ::GGZList
+ * @param data Pointer zu den zu suchenden Daten
+ * @param compare_func Vergleichsfunktion
+ * @return Pointer zum ::GGZListEntry, welcher den angegebenen Knoten enthält
+ * (NULL wenn die Daten nicht gefunden werden konnten oder keine compare_func
+ * zur Zeit der Listenerstellung angegeben worden war)
  */
 GGZListEntry *ggz_list_search_alt(GGZList *list, void *data,
 				  ggzEntryCompare compare_func);
 
-/** @brief Removes an entry from a list, calling a destructor if registered
+/** @brief Entfernt einen Eintrag aus einer Liste, und löst ihn auf.
  *
- * ggz_list_delete_entry() removes the specifed entry from the list.
- * If a ggzEntryDestroy function was passed as destroy_func to
- * ggz_list_create(), it will be called on the data item after it has
- * been removed.
+ * ggz_list_delete_entry() entfernt den angegebenen Eintrag von der Liste.
+ * Wenn eine Funktion ggzEntryDestroy als destroy_func zu ggz_list_create()
+ * übergeben worden war, wird sie für den Eintrag aufgerufen, nachdem er
+ * entfernt worden ist.
  *
- * @param list Pointer to a ::GGZList 
- * @param entry Pointer to the ::GGZListEntry to remove */
+ * @param list Pointer zu einer ::GGZList
+ * @param entry Pointer zu dem zu entfernenden ::GGZListEntry
+ */
 void ggz_list_delete_entry	(GGZList *list, GGZListEntry *entry);
 
 
-/** @brief Free all resources associated with a list
+/** @brief Freigabe aller mit einer Liste verknüpften Ressourcen.
  *
- * ggz_list_free() will free all resources allocated by the list.  If
- * a ggzEntryDestroy function was passed as destroy_func to
- * ggz_list_create(), it will be called on all data items in the list
- * as well.
+ * ggz_list_free() gibt alle mit der Liste verknüpften Ressource frei.
+ * Wenn eine funktion ggzEntryDestroy als destroy_func zu ggz_list_create()
+ * übergeben worden war, wird sie auf alle Listeneinträge angewendet
+ * werden.
  *
- * @param list Pointer to a ::GGZList */
+ * @param list Pointer zu einer ::GGZList
+ */
 void ggz_list_free		(GGZList *list);
 
 
-/** @brief Get the length of the list
+/** @brief Rückgabe der Länge einer Liste.
  *
- * @param list Pointer to a ::GGZList
- * @return The number of entries in the list 
+ * @param list Pointer zu einer::GGZList
+ * @return Anzahl der Einträge in der Liste
  */
 int ggz_list_count		(GGZList *list);
 
 
-/* String list functions */
+/* Listenfunktionen für Zeichenketten */
 
-/** @brief Compare two character strings
+/** @brief Vergleich zweier Zeichenketteneinträge.
  *
- *  This function is intended to be passed as the compare_func of
- *  ggz_list_create() when creating a list that stores character
- *  strings.
+ *  Die Funktion ist dafür gedacht, als compare_func an ggz_list_create()
+ *  übergeben zu werden, wenn eine Liste für Zeichenketten erzeugt wird.
  *
- * @param a A string to compare 
- * @param b A second string to compare 
- * @return The result of strcmp() on a and b, or 1 if either is NULL
+ * @param a Zeichenkette für den Vergleich
+ * @param b Zeichenkette für den Vergleich
+ * @return Das Ergebnis von strcmp() auf a und b, oder 1 wenn eine von beiden NULL ist
  * */
 int ggz_list_compare_str	(void *a, void *b);
 
 
-/** @brief Copy a character string
+/** @brief Kopiert einen Zeichenketteneintrag.
  *
- *  This function is intended to be passed as the create_func of
- *  ggz_list_create() when creating a list that stores character
- *  strings.
+ *  Diese Funktion ist dafür gedacht, als create_func an ggz_list_create()
+ *  übergeben zu werden, wenn eine Liste für Zeichenketten erzeugt wird.
  *
- *  @param data A string to copy
- *  @return A newly allocated copy of the string
+ *  @param data Zu kopierende Zeichenkette
+ *  @return Allokierte Kopie der Zeichenkette
  */
 void * ggz_list_create_str	(void *data);
 
 
-/** @brief Free a character string
+/** @brief Freigabe einer Zeichenkette.
  *
- *  This function is intended to be passed as the destroy_func of
- *  ggz_list_create() when creating a list that stores character
- *  strings.
+ *  Diese Funktion ist dafür gedacht, als destroy_func an ggz_list_create()
+ *  übergeben zu werden, wenn eine Liste für Zeichenketten erzeugt wird.
  *
- *  @param data The string to deallocate
+ *  @param data Freizugebende Zeichenkette
  */
 void ggz_list_destroy_str	(void *data);
 
