@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game module functions
- * $Id: ggz_client.h 2211 2001-08-23 22:16:43Z jdorje $
+ * $Id: ggz_client.h 2247 2001-08-25 19:57:49Z jdorje $
  *
  * Copyright (C) 2000 GGZ devel team
  *
@@ -39,23 +39,33 @@
  * (which will then relay information through the ggz server to your game 
  * server).  It should be called by your game at the appropriate time.
  *
- * @return The file descriptor for the communications socket (or -1 on failure).
+ * @return The file descriptor for the TCP communications socket (or -1 on failure).
  */
-int ggzmod_connect(void);
+int ggz_connect(void);
 
 /**
  * This destroys all of ggzmod's internal data.
  *
  * @return 0 on success; -1 on failure.
  */
-int ggzmod_disconnect(void);
+int ggz_disconnect(void);
 
 /**
- *  This returns the file descriptor of the communications socket to
- *  the ggz client.
+ *  This returns the file descriptor of the TCP communications
+ *  socket.  This socket can be used for two-way communication to
+ *  the game server through TCP.
  *
  * @return The FD integer, or -1 on no connection.
  */
-int ggzmod_get_sock(void);
+int ggz_get_sock(void);
+
+/**
+ *  This returns a file descriptor of a UDP communications
+ *  socket.  This socket can be used for two-way communication to
+ *  the game server through UDP.
+ *
+ *  @return The FD integer, or -1 on no connection.
+ *  @todo This functionality is not yet implemented. */
+int ggz_get_udp_sock(void);
 
 #endif /* __GGZ_CLIENT_GGZ_H */

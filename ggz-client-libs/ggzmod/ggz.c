@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game module functions
- * $Id: ggz.c 2211 2001-08-23 22:16:43Z jdorje $
+ * $Id: ggz.c 2247 2001-08-25 19:57:49Z jdorje $
  *
  * Copyright (C) 2000 GGZ devel team
  *
@@ -30,21 +30,25 @@
 
 #include "ggz_client.h"
 
-/* The socket will always be FD 3. */
-#define GGZ_SOCK_FD 3
-
-int ggzmod_connect(void)
+int ggz_connect(void)
 {
-	/* TODO: make sure the socket is real */
-	return GGZ_SOCK_FD;
+	return 3;
 }
 
-int ggzmod_disconnect(void)
+int ggz_disconnect(void)
 {
+	/* FIXME: we should close the connection(s).  This actually is
+	 * important since it will flush the buffer and make sure
+	 * everything went through.  --JDS */
 	return 0;
 }
 
-int ggzmod_get_sock(void)
+int ggz_get_sock(void)
 {
-	return GGZ_SOCK_FD;
+	return 3;
+}
+
+int ggz_get_udp_sock(void)
+{
+	return -1; /* udp socket not implemented */
 }
