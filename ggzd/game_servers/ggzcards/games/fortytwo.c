@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4060 2002-04-23 07:52:57Z jdorje $
+ * $Id: fortytwo.c 4061 2002-04-23 17:27:15Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -52,11 +52,11 @@ static void fortytwo_init_game(void);
 static void fortytwo_set_player_message(player_t p);
 static int fortytwo_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static int fortytwo_get_bid_desc(char *buf, size_t buf_len, bid_t bid);
+static void fortytwo_start_bidding(void);
 static void fortytwo_get_bid(void);
 static void fortytwo_handle_bid(player_t p, bid_t bid);
 static void fortytwo_start_playing(void);
-//static char *fortytwo_verify_play(player_t p, card_t card);
-static void fortytwo_handle_play(player_t p, seat_t s, card_t c);
+static char* fortytwo_verify_play(player_t p, card_t card);
 static void fortytwo_end_trick(void);
 static void fortytwo_end_hand(void);
 static card_t fortytwo_map_card(card_t card);
@@ -73,15 +73,15 @@ game_data_t fortytwo_data = {
 	fortytwo_set_player_message,
 	fortytwo_get_bid_text,
 	fortytwo_get_bid_desc,
-	game_start_bidding,
+	fortytwo_start_bidding,
 	fortytwo_get_bid,
 	fortytwo_handle_bid,
 	game_next_bid,
 	fortytwo_start_playing,
-	game_verify_play,
+	fortytwo_verify_play,
 	game_next_play,
 	game_get_play,
-	fortytwo_handle_play,
+	game_handle_play,
 	game_deal_hand,
 	fortytwo_end_trick,
 	fortytwo_end_hand,
@@ -139,48 +139,107 @@ static void fortytwo_set_player_message(player_t p)
 
 static int fortytwo_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 {
-	if (bid.sbid.spec == FORTYTWO_PASS)
+	switch (bid.sbid.spec) {
+	case FORTYTWO_PASS:
 		return snprintf(buf, buf_len, "Pass");
-	if (bid.sbid.spec == FORTYTWO_DOUBLE)
+	case FORTYTWO_DOUBLE:
 		return snprintf(buf, buf_len, "%d", 42 * bid.sbid.val);
-	return snprintf(buf, buf_len, "%d", bid.sbid.val);
+	case FORTYTWO_BID:
+		return snprintf(buf, buf_len, "%d", bid.sbid.val);
+	case FORTYTWO_TRUMP:
+		return snprintf(buf, buf_len, "%d", bid.sbid.suit);
+	}
+	assert(FALSE);
+	return snprintf(buf, buf_len, " ");
 }
 
 static int fortytwo_get_bid_desc(char *buf, size_t buf_len, bid_t bid)
 {
-	if (bid.sbid.spec == FORTYTWO_PASS)
+	switch (bid.sbid.spec) {
+	case FORTYTWO_PASS:
 		return snprintf(buf, buf_len, "Pass - do not bid");
-	if (bid.sbid.spec == FORTYTWO_DOUBLE)
+	case FORTYTWO_DOUBLE:
 		return snprintf(buf, buf_len,
 		                "Contract to take all 42 points "
 		                "at x%d value.", bid.sbid.val);
-	return snprintf(buf, buf_len, "Contract to take %d points", bid.sbid.val);
+	case FORTYTWO_TRUMP:
+		return snprintf(buf, buf_len, "Choose %s as trump.",
+		                get_suit_name(bid.sbid.suit));
+	case FORTYTWO_BID:
+		return snprintf(buf, buf_len, "Contract to take %d points",
+		                bid.sbid.val);
+	}
+	assert(FALSE);
+	return snprintf(buf, buf_len, " ");
+}
+
+static void fortytwo_start_bidding(void)
+{
+	game_start_bidding();
+	game.bid_total = game.num_players + 1;
 }
 
 static void fortytwo_get_bid(void)
 {
-	char minbid = 30;
-	char val;
+	if (game.bid_count == game.num_players) {
+		bool suits[7];
+		char suit;
+		int c;
+		player_t p = game.next_bid = FORTYTWO.declarer;
+		
+		assert(p >= 0);
+		
+		for (suit = 0; suit < 7; suit++)
+			suits[(int)suit] = FALSE;
+		
+		for (c = 0; c < game.seats[p].hand.hand_size; c++) {
+			card_t card = game.seats[p].hand.cards[c];
+			suits[(int)card.face] = TRUE;
+			suits[(int)card.suit] = TRUE;
+		}
+		
+		for (suit = 0; suit < 7; suit++)
+			if (suits[(int)suit])
+				add_sbid(0, suit, FORTYTWO_TRUMP);
+	} else {
+		char minbid = 30;
+		char val;
 	
-	/* Bids up to (and including) 42 */
-	if (FORTYTWO.declarer >= 0)
-		minbid = FORTYTWO.contract + 1;
-	for (val = minbid; val <= 42; val++)
-		add_sbid(val, 0, FORTYTWO_BID);
-	
-	/* A higher bid: 84/126/168/210 */
-	val = 2;
-	while (val * 42 <= minbid)
-		val++;
-	add_sbid(val, 0, FORTYTWO_DOUBLE);
-	
-	/* Or pass */
-	if (FORTYTWO.declarer >= 0 ||
-	    game.next_bid != game.dealer)
-		add_sbid(0, 0, FORTYTWO_PASS);
+		/* Bids up to (and including) 42 */
+		if (FORTYTWO.declarer >= 0)
+			minbid = FORTYTWO.contract + 1;
+		for (val = minbid; val <= 42; val++)
+			add_sbid(val, 0, FORTYTWO_BID);
+
+		/* A higher bid: 84/126/168/210 */
+		val = 2;
+		while (val * 42 <= minbid)
+			val++;
+		add_sbid(val, 0, FORTYTWO_DOUBLE);
+
+		/* Or pass */
+		if (FORTYTWO.declarer >= 0 ||
+		    game.next_bid != game.dealer)
+			add_sbid(0, 0, FORTYTWO_PASS);
+	}
 	
 	request_client_bid(game.next_bid);
+}
+
+static void set_trump(char suit)
+{
+	seat_t s;
 	
+	game.trump = suit;
+	set_global_message("Trump", "%s are trump.",
+	                   get_suit_name(game.trump));
+	set_global_message("", "Trump is %s.", get_suit_name(game.trump));
+	for (s = 0; s < game.num_seats; s++) {
+		player_t p;
+		cards_sort_hand(&game.seats[s].hand);
+		for (p = 0; p < game.num_players; p++)
+			(void) game.data->send_hand(p, s);
+	}
 }
 
 static void fortytwo_handle_bid(player_t p, bid_t bid)
@@ -189,6 +248,11 @@ static void fortytwo_handle_bid(player_t p, bid_t bid)
 	
 	if (bid.sbid.spec == FORTYTWO_PASS)
 		return;
+		
+	if (bid.sbid.spec == FORTYTWO_TRUMP) {
+		set_trump(bid.sbid.suit);
+		return;
+	}
 	
 	if (bid.sbid.spec == FORTYTWO_DOUBLE)
 		bid_contract = 42 * bid.sbid.val;
@@ -211,25 +275,14 @@ static void fortytwo_start_playing(void)
 	game.leader = FORTYTWO.declarer;
 }
 
-static void fortytwo_handle_play(player_t p, seat_t s, card_t c)
+static char* fortytwo_verify_play(player_t p, card_t card)
 {
-	if (game.play_count == 0 && game.trick_count == 0) {
-		seat_t s;
-		/* After the first play we know trump. */
-		/* FIXME: this is wrong, wrong, wrong! */
-		card_t card = game.seats[game.leader].table;
-		game.trump = card.suit;
-		set_global_message("Trump", "%s are trump.",
-		                   get_suit_name(game.trump));
-		set_global_message("", "Trump is %s.",
-		                   get_suit_name(game.trump));
-		for (s = 0; s < game.num_seats; s++) {
-			player_t p;
-			cards_sort_hand(&game.seats[s].hand);
-			for (p = 0; p < game.num_players; p++)
-				(void) game.data->send_hand(p, s);
-		}
-	}
+	/* Must lead trump to first trick. */
+	if (game.trick_count == 0 && game.play_count == 0)
+		if (game.data->map_card(card).suit != game.trump)
+			return "You must lead trump on the first trick.";
+	
+	return game_verify_play(p, card);
 }
 
 static void fortytwo_end_trick(void)

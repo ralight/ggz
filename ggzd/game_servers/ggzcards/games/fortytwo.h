@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game data for Forty-Two (for use by AI)
- * $Id: fortytwo.h 4054 2002-04-23 00:52:21Z jdorje $
+ * $Id: fortytwo.h 4061 2002-04-23 17:27:15Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -34,5 +34,8 @@ enum {
 	FORTYTWO_DOUBLE,
 
 	/* A pass. */
-	FORTYTWO_PASS
+	FORTYTWO_PASS,
+	
+	/* A bid to choose trump.  The suit indicates the suit (0-6). */
+	FORTYTWO_TRUMP
 };
