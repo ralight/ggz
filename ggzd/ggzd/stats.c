@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 5870 2004-02-09 21:34:39Z jdorje $
+ * $Id: stats.c 5902 2004-02-11 03:22:56Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -43,10 +43,6 @@
 #include "protocols.h"
 #include "room.h"
 #include "stats.h"
-
-
-/* Server wide data structures*/
-extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 
 GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
