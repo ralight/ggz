@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 4405 2002-09-04 18:50:29Z dr_maux $
+ * $Id: game.c 4457 2002-09-08 02:18:00Z jdorje $
  *
  * Functions for handling game events
  *
@@ -99,6 +99,15 @@ int game_init(int spectate)
 	gt = ggzcore_room_get_gametype(room);
 	if (!gt) {
 		msgbox(_("No game types defined for this server.\nLaunch aborted."), _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		return -1;
+	}
+
+	/* In principle this should have been checked earlier, but we didn't
+	   know the game type then. */
+	if (spectate && !ggzcore_gametype_get_spectators_allowed(gt)) {
+		msgbox(_("This game doesn't support spectators."),
+		       _("Launch Error"),
+		       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 		return -1;
 	}
 
