@@ -20,6 +20,10 @@ ggz_combat_SOURCES = combat.h \
 				gtk_player_info.c \
 				dlg_options.c \
 				dlg_options.h \
+        lists.c \
+        lists.h \
+        confio.c \
+        confio.h \
 				game.h \
 				game.c
 

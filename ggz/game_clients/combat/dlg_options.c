@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <dirent.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -449,6 +450,10 @@ create_dlg_options (void)
 										 GTK_SIGNAL_FUNC (mini_board_configure), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (mini_board), "button_press_event",
 									   GTK_SIGNAL_FUNC (mini_board_click), dlg_options);
+	gtk_signal_connect(GTK_OBJECT (load), "clicked",
+									   GTK_SIGNAL_FUNC (load_button_clicked), maps_list);
+	gtk_signal_connect(GTK_OBJECT (maps_list), "select-row",
+									   GTK_SIGNAL_FUNC (maps_list_selected), dlg_options);
 	gtk_signal_connect_object(GTK_OBJECT (width), "changed",
 										 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
 	gtk_signal_connect_object_after(GTK_OBJECT (width), "changed",
@@ -460,9 +465,25 @@ create_dlg_options (void)
 
 	dlg_options_update(dlg_options);
 
+  dlg_options_list_maps(maps_list);
+
   gtk_widget_grab_default (ok_button);
   return dlg_options;
 }
+
+void maps_list_selected (GtkCList *clist, gint row, gint column,
+	 											 GdkEventButton *event, gpointer user_data) {
+  gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
+}
+
+void load_button_clicked(GtkButton *button, gpointer maps_list) {
+  gint selection;
+  char **namelist;
+  selection = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(maps_list), "row"));
+  namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
+  printf("Selected: %s\n", namelist[selection]);
+}
+
 
 GtkWidget*
 create_dlg_save (void)
@@ -578,6 +599,30 @@ void dlg_options_update(GtkWidget *dlg_options) {
 	gtk_object_set_data(GTK_OBJECT(dlg_options), "height_v", GINT_TO_POINTER(height_v));
 	gtk_object_set_data(GTK_OBJECT(dlg_options), "army_data", army_data);
 
+}
+
+int visible_only(const struct dirent *entry) {
+  if (*entry->d_name != '.')
+    return 1;
+  return 0;
+}
+
+void dlg_options_list_maps(GtkWidget *dlg) {
+  int n;
+  struct dirent **dirlist;
+  char **clist_names;
+  char **names;
+
+  n = scandir("maps", &dirlist, visible_only, alphasort);
+  clist_names = (char **)calloc(1, sizeof(char *));
+  names = (char **)malloc(n * sizeof(char *));
+  printf("Number of maps: %d\n", n);
+  while (n--) {
+    clist_names[0] = dirlist[n]->d_name;
+    names[n] = dirlist[n]->d_name;
+    gtk_clist_prepend(GTK_CLIST(dlg), clist_names);
+  }
+  gtk_object_set_data(GTK_OBJECT(dlg), "maps", names);
 }
 
 gboolean mini_board_expose               (GtkWidget       *widget, GdkEventExpose  *event, gpointer         user_data) {

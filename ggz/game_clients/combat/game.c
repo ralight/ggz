@@ -197,6 +197,19 @@ void game_ask_options() {
 	gtk_widget_show_all(options_dialog);
 }
 
+unsigned int rol_hash(char *p) {
+  unsigned int sum = 0;
+  unsigned char bitsave;
+  while (*p != 0) {
+    bitsave = (sum & 0x80000000L);
+    sum *= 2;
+    sum = sum ^ *p;
+    sum = sum + bitsave;
+    p++;
+  }
+  return sum;
+}
+
 int game_get_options() {
 	char *optstr = NULL;
 	int a;
@@ -208,6 +221,7 @@ int game_get_options() {
 		return -1;
 
   a =	combat_options_string_read(optstr, &cbt_game, cbt_info.number);
+  printf("Hash: %u\n", rol_hash(optstr));
   if (a > 0)
     game_message("Please note: \nThis client couldn't recognize %d options sent by the server.\nThe game may have unexpected behavior.\nYou should update your client at %s", a, GAME_WEBPAGE);
 

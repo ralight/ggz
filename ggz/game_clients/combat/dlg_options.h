@@ -3,7 +3,12 @@
 GtkWidget* create_dlg_options (void);
 GtkWidget* create_dlg_save (void);
 void dlg_options_update(GtkWidget *);
+void dlg_options_list_maps(GtkWidget *);
 
+void load_button_clicked(GtkButton *, gpointer dialog);
+
+void maps_list_selected (GtkCList *clist, gint row, gint column,
+	 											 GdkEventButton *event, gpointer user_data);
 
 gboolean
 mini_board_expose             (GtkWidget       *widget,

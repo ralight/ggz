@@ -1,0 +1,18 @@
+[map]
+width = 10
+height = 10
+data = 1111111111111111111111111111111111111111OOLLOOLLOOOOLLOOLLOO2222222222222222222222222222222222222222
+
+[army]
+u_flag = 1
+u_bomb = 6
+u_spy = 1
+u_scout = 8
+u_miner = 5
+u_sergeant = 4
+u_lieutenant = 4
+u_captain = 4
+u_major = 3
+u_colonel = 2
+u_general = 1
+u_marshall = 1
