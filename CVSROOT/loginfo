@@ -25,5 +25,7 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
+ALL             /usr/local/bin/ciabot_cvs.pl %{,,,s} $USER
+
 DEFAULT         /usr/local/bin/log -s -m ggz-cvs@mail.ggzgamingzone.org -f /dev/null %s
 
