@@ -22,6 +22,8 @@ ggz_SOURCES = 	main.c \
 		dlg_login.h \
 		dlg_main.c \
 		dlg_main.h \
+		dlg_motd.c \
+		dlg_motd.h \
 		err_func.c \
 		err_func.h \
 		game.c \
