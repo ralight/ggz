@@ -50,14 +50,14 @@ extern struct GameTypes game_types;
 /* Local data */
 static guint game_handle;
 
-static void run_game(int type, char flag, int fd);
+static void run_game(gint type, gchar flag, gint fd);
 static void handle_game(gpointer data, gint source, GdkInputCondition cond);
 static void handle_options(gpointer data, gint source, GdkInputCondition cond);
 
-void launch_game(int type, char launch)
+void launch_game(gint type, gchar launch)
 {
 	pid_t pid;
-	int fd[2];
+	gint fd[2];
 	GdkInputFunction callback;
 
 	/* Create socketpair for communication */
@@ -92,7 +92,7 @@ void launch_game(int type, char launch)
 }
 
 
-static void run_game(int type, char flag, int fd)
+static void run_game(gint type, gchar flag, gint fd)
 {
 	dbg_msg("Process forked.  Game running");
 
@@ -112,15 +112,15 @@ static void run_game(int type, char flag, int fd)
 
 static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 {
-	int size;
-	char ai;
+	gint size;
+	gchar ai;
 	void *options;
 	GtkWidget *temp_widget;
-	int i,count;
-	int launch_game_type=0;
-	int launch_num_seats=0;
-	char *launch_game_desc;
-	char name[MAX_USER_NAME_LEN+1];
+	gint i,count;
+	gint launch_game_type=0;
+	gint launch_num_seats=0;
+	gchar *launch_game_desc;
+	gchar name[MAX_USER_NAME_LEN+1];
 
 	/* Get game type to play */
 	dbg_msg("handle_options: Get Game Type");
@@ -202,8 +202,8 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 
 static void handle_game(gpointer data, gint source, GdkInputCondition cond)
 {
-	int size, status;
-	char buf[4096];
+	gint size, status;
+	gchar buf[4096];
 
 	dbg_msg("Got game msg from game client");
 

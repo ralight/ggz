@@ -28,5 +28,5 @@
 #include <gtk/gtk.h>
 
 
-void msg(int mode, char *title, char *message);
+void msg(gint mode, gchar *title, gchar *message);
 

@@ -48,8 +48,8 @@ extern GtkWidget *dlg_login;
 GtkWidget *mnu_tables;
 GtkWidget *mnu_players;
 GtkWidget *dlg_launch;
-int selected_table;
-int selected_type;
+gint selected_table;
+gint selected_type;
 struct GameTables tables;
 
 /* Aray of GdkColors currently used for chat */
@@ -68,7 +68,7 @@ GdkColor colors[] =
 };
 
 
-int main(int argc, char *argv[])
+gint main(gint argc, gchar *argv[])
 {
 	parse_args(argc, argv);
 	gtk_init(&argc, &argv);

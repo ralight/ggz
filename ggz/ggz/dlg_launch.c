@@ -23,8 +23,8 @@ GtkWidget *dlg_launch;
 void launch_change_type(GtkCombo *type_combo, gpointer user_data);
 void launch_start_game(GtkWidget *btn_launch, gpointer user_data);
 void launch_fill_defaults(GtkWidget* widget, gpointer data);
-void launch_seat_show(int i, char show);
-int max_allowed_players(unsigned char mask);
+void launch_seat_show(gint i, gchar show);
+gint max_allowed_players(guchar mask);
 void launch_reserved_toggle(GtkWidget* button, GtkWidget *entry);
 
 
@@ -687,7 +687,7 @@ create_dlgLaunch (void)
 
 void launch_fill_defaults(GtkWidget* widget, gpointer data)
 {
-        int i;
+        gint i;
         GList *items = NULL;
         GList *items2 = NULL;
         GtkWidget *tmp;
@@ -731,8 +731,8 @@ void launch_fill_defaults(GtkWidget* widget, gpointer data)
 void launch_change_type(GtkCombo *type_combo, gpointer user_data)
 {
         gpointer tmp;
-        int i, max;
-        int type_index = 0;
+        gint i, max;
+        gint type_index = 0;
 
         /* Get new game type index */
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo11");
@@ -762,8 +762,8 @@ void launch_change_type(GtkCombo *type_combo, gpointer user_data)
 void launch_start_game(GtkWidget *btn_launch, gpointer user_data)
 {
         GtkWidget *temp_widget;
-        int i;
-        int launch_game_type=0;
+        gint i;
+        gint launch_game_type=0;
   
         /* Hide it at this point, we still nead
            it there to get the information from */
@@ -801,10 +801,10 @@ void launch_reserved_toggle(GtkWidget* button, GtkWidget *entry)
  *        Helper Functions      *
  *                              */
 
-void launch_seat_show(int i, char show)
+void launch_seat_show(gint i, gchar show)
 {
         gpointer tmp;
-        char* widget;
+        gchar* widget;
 
         if (show)
                 dbg_msg("Showing seat %d", i);
@@ -822,9 +822,9 @@ void launch_seat_show(int i, char show)
 }
                         
          
-int max_allowed_players(unsigned char mask)
+gint max_allowed_players(guchar mask)
 {
-        char i;
+        gchar i;
 
         for(i = 7; i >= 0; i--)
                 if (mask / (1 << i))
@@ -833,12 +833,12 @@ int max_allowed_players(unsigned char mask)
         return 0;
 }       
 
-int launch_seat_type(int i)
+gint launch_seat_type(gint i)
 {
-        char* widget;
+        gchar* widget;
         GtkWidget *temp_widget;
-	int count = 0;
-        int ret = -1;
+	gint count = 0;
+        gint ret = -1;
 
         dbg_msg("Getting player type for seat %d", i);
 
@@ -860,9 +860,9 @@ int launch_seat_type(int i)
         return ret;
 }
 
-void launch_get_reserve_name(int seat, char *name)
+void launch_get_reserve_name(gint seat, gchar *name)
 {
-        char* widget;
+        gchar* widget;
         GtkWidget *temp_widget;
 
         widget = g_strdup_printf("entry%d", seat+11);

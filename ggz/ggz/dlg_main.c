@@ -27,8 +27,8 @@ extern GtkWidget *dlg_launch;
 extern GtkWidget *dlg_login;
 extern GtkWidget *mnu_players;
 extern GtkWidget *mnu_tables;
-extern int selected_table;
-extern int selected_type;
+extern gint selected_table;
+extern gint selected_type;
 extern struct ConnectInfo connection;
 extern struct GameTypes game_types;
 
@@ -42,8 +42,8 @@ void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data);
 void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
 				   GdkEventButton *event, gpointer data);
 void ggz_get_game_options(GtkButton * button, gpointer user_data);
-int ggz_event_tables( GtkWidget *widget, GdkEvent *event );
-int ggz_event_players( GtkWidget *widget, GdkEvent *event );
+gint ggz_event_tables( GtkWidget *widget, GdkEvent *event );
+gint ggz_event_players( GtkWidget *widget, GdkEvent *event );
 
 GtkWidget*
 create_main_win (void)
@@ -783,7 +783,7 @@ void ggz_logout(GtkMenuItem * menuitem, gpointer user_data)
                         
 void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data)
 {
-        char verbose = 1;
+        gchar verbose = 1;
                  
         es_write_int(connection.sock, REQ_LIST_TYPES);
         write(connection.sock, &verbose, 1);
@@ -822,7 +822,7 @@ void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
                                GdkEventButton *event, gpointer data)
 {
         gchar *text;
-        int i;
+        gint i;
         
         gtk_clist_get_text(GTK_CLIST(widget), row, 1, &text);
         selected_table = atoi(text);
@@ -845,10 +845,10 @@ void ggz_get_game_options(GtkButton * button, gpointer user_data)
         }
 }
 
-int ggz_event_tables( GtkWidget *widget, GdkEvent *event )
+gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 {
 	GtkWidget *tmp;
-	int row, col;
+	gint row, col;
 
 	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
 	{
@@ -882,7 +882,7 @@ int ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 	return 0;
 }
 
-int ggz_event_players( GtkWidget *widget, GdkEvent *event )
+gint ggz_event_players( GtkWidget *widget, GdkEvent *event )
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
 	{

@@ -19,7 +19,7 @@
 GtkWidget *mnu_tables;
 extern GtkWidget *dlg_launch;
 extern struct ConnectInfo connection;
-extern int selected_table;
+extern gint selected_table;
 extern struct GameTables tables;
 
 /* Local callbacks which no other file will call */
@@ -116,8 +116,8 @@ void on_options1_activate(GtkButton * button, gpointer user_data)
 
 void on_players1_activate(GtkButton * button, gpointer user_data)
 {
-	int i=0;
-	char buf[2048];
+	gint i=0;
+	gchar buf[2048];
 	
 	strcpy(buf,"The selected table's players are as follows:\n\n");
 	for (i=0;i<MAX_TABLE_SIZE;i++)

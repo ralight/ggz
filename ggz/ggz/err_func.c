@@ -23,6 +23,7 @@
  */
 
 #include <config.h>
+#include <gtk/gtk.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -35,9 +36,9 @@
 #include <dlg_error.h>
 
 
-static void err_doit(int flag, const char *fmt, va_list ap)
+static void err_doit(gint flag, const gchar *fmt, va_list ap)
 {
-	char buf[4096];
+	gchar buf[4096];
 
 	sprintf(buf, "[%d]: ", getpid());
 	vsprintf(buf + strlen(buf), fmt, ap);
@@ -50,7 +51,7 @@ static void err_doit(int flag, const char *fmt, va_list ap)
 }
 
 
-void err_sys(const char *fmt, ...)
+void err_sys(const gchar *fmt, ...)
 {
 	va_list ap;
 
@@ -60,7 +61,7 @@ void err_sys(const char *fmt, ...)
 }
 
 
-void err_sys_exit(const char *fmt, ...)
+void err_sys_exit(const gchar *fmt, ...)
 {
 	va_list ap;
 
@@ -72,7 +73,7 @@ void err_sys_exit(const char *fmt, ...)
 }
 
 
-void err_msg(const char *fmt, ...)
+void err_msg(const gchar *fmt, ...)
 {
 	va_list ap;
 
@@ -82,7 +83,7 @@ void err_msg(const char *fmt, ...)
 }
 
 
-void err_msg_exit(const char *fmt, ...)
+void err_msg_exit(const gchar *fmt, ...)
 {
 	va_list ap;
 
@@ -94,7 +95,7 @@ void err_msg_exit(const char *fmt, ...)
 }
 
 
-void dbg_msg(const char *fmt, ...)
+void dbg_msg(const gchar *fmt, ...)
 {
 #ifdef DEBUG
 	va_list ap;
@@ -106,7 +107,7 @@ void dbg_msg(const char *fmt, ...)
 }
 
 
-void err_sock(const char* err, const EsOpType op, const EsDataType type)
+void err_sock(const gchar* err, const EsOpType op, const EsDataType type)
 {
 	switch (op) {
 	case ES_CREATE:

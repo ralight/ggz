@@ -24,8 +24,8 @@
 
 #include <datatypes.h>
 
-int seats_open(TableInfo table);
-int seats_num(TableInfo table);
-int seats_comp(TableInfo table);
-int seats_reserved(TableInfo table);
-int seats_human(TableInfo table);
+gint seats_open(TableInfo table);
+gint seats_num(TableInfo table);
+gint seats_comp(TableInfo table);
+gint seats_reserved(TableInfo table);
+gint seats_human(TableInfo table);

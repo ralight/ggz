@@ -28,6 +28,6 @@
 #include <gtk/gtk.h>
 
 GtkWidget* create_dlgLaunch (void);
-int launch_seat_type(int i);
-void launch_get_reserve_name(int seat, char *name);
+gint launch_seat_type(gint i);
+void launch_get_reserve_name(gint seat, gchar *name);
 

@@ -334,7 +334,7 @@ void login_anon_toggled(GtkWidget* button, gpointer window)
 void login_fill_defaults(GtkWidget * win, gpointer user_data)
 {
         gpointer *tmp;
-        char port[5];
+        gchar port[5];
 
         tmp = gtk_object_get_data(GTK_OBJECT(win), "name_entry");
         if (connection.username)

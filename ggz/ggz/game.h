@@ -25,4 +25,4 @@
  */
 
 
-void launch_game(int type, char launch);
+void launch_game(gint type, gchar launch);

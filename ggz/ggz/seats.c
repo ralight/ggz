@@ -32,6 +32,7 @@
 #include <string.h>
 #include <errno.h>
 #include <pthread.h>
+#include <gtk/gtk.h>
 
 #include <easysock.h>
 
@@ -39,9 +40,9 @@
 #include <seats.h>
 
 
-int seats_open(TableInfo table)
+gint seats_open(TableInfo table)
 {
-	int i, count = 0;
+	gint i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		if (table.seats[i] == GGZ_SEAT_OPEN)
 			count++;
@@ -49,9 +50,9 @@ int seats_open(TableInfo table)
 }
 
 
-int seats_num(TableInfo table)
+gint seats_num(TableInfo table)
 {
-	int i;
+	gint i;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		if (table.seats[i] == GGZ_SEAT_NONE)
 			break;
@@ -59,9 +60,9 @@ int seats_num(TableInfo table)
 }
 
 
-int seats_comp(TableInfo table)
+gint seats_comp(TableInfo table)
 {
-	int i, count = 0;
+	gint i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		if (table.seats[i] == GGZ_SEAT_COMP)
 			count++;
@@ -69,9 +70,9 @@ int seats_comp(TableInfo table)
 }
 
 
-int seats_reserved(TableInfo table)
+gint seats_reserved(TableInfo table)
 {
-	int i, count = 0;
+	gint i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		if (table.seats[i] == GGZ_SEAT_RESV)
 			count++;
@@ -79,9 +80,9 @@ int seats_reserved(TableInfo table)
 }
 
 
-int seats_human(TableInfo table)
+gint seats_human(TableInfo table)
 {
-	int i, count = 0;
+	gint i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		if (table.seats[i] >= 0 )
 			count++;

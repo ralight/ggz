@@ -49,9 +49,9 @@ static const struct poptOption args[] = {
 };
 
 /* Parse command-line options */
-void parse_args(int argc, char *argv[])
+void parse_args(gint argc, gchar *argv[])
 {
-	int rc;
+	gint rc;
 	poptContext context = poptGetContext(NULL, argc, argv, args, 0);
 
 	while ((rc = poptGetNextOpt(context)) != -1) {

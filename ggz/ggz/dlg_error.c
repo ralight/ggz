@@ -30,7 +30,7 @@
 #include "dlg_error.h"
 #include "connect.h"
 
-void msg_dlg(char *str, gboolean quit)
+void msg_dlg(gchar *str, gboolean quit)
 {
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
@@ -40,7 +40,7 @@ void msg_dlg(char *str, gboolean quit)
 	GtkWidget *buttonBox;
 	GtkWidget *labelBox;
 	GtkWidget *okButton;
-	char* message;
+	gchar* message;
 
 	message = g_strdup_printf("[%d]: %s", getpid(), str);
 
@@ -111,9 +111,9 @@ void msg_dlg(char *str, gboolean quit)
 }
 
 
-void err_dlg(const char *fmt, ...)
+void err_dlg(const gchar *fmt, ...)
 {
-	char* message;
+	gchar* message;
 	va_list ap;
 
 	va_start(ap,fmt);	
@@ -124,9 +124,9 @@ void err_dlg(const char *fmt, ...)
 }
 
 
-void warn_dlg(const char *fmt, ...)
+void warn_dlg(const gchar *fmt, ...)
 {
-	char* message;
+	gchar* message;
 	va_list ap;
 
 	va_start(ap,fmt);	

@@ -76,22 +76,22 @@
 
 /* Info about a connection */
 struct ConnectInfo {
-	char *server;
-	unsigned int port;
-	char *username;
-	char *password;
-	unsigned char login_type;
-	int sock;
-	unsigned char connected;
-	unsigned char playing;
+	gchar *server;
+	guint port;
+	gchar *username;
+	gchar *password;
+	guchar login_type;
+	gint sock;
+	guchar connected;
+	guchar playing;
 };
 
 
 /* Info about the game we're playing */
 struct Game {
 	pid_t pid;
-	unsigned int type;
-	int fd;
+	guint type;
+	gint fd;
 };
 
 
@@ -100,55 +100,55 @@ typedef void (*GameLaunchFunc) (void);
 
 /* Info about a particular type of game*/
 typedef struct {
-	char name[MAX_GAME_NAME_LEN];
-	char version[MAX_GAME_VER_LEN];
-	char desc[MAX_GAME_DESC_LEN];
-	char author[MAX_GAME_AUTH_LEN];
-	char web[MAX_GAME_WEB_LEN];
-	unsigned char num_play_allow;
-	int index;
+	gchar name[MAX_GAME_NAME_LEN];
+	gchar version[MAX_GAME_VER_LEN];
+	gchar desc[MAX_GAME_DESC_LEN];
+	gchar author[MAX_GAME_AUTH_LEN];
+	gchar web[MAX_GAME_WEB_LEN];
+	guchar num_play_allow;
+	gint index;
 } GameInfo;
 
 
 /* Array of game-types and their mutex */
 struct GameTypes {
 	GameInfo info[MAX_GAME_TYPES];
-	int count;
+	gint count;
 };
 
 
 /* Info about a particular game-table */
 typedef struct {
-	int table_index;
-	int type_index;
-	unsigned char playing;
-	int seats[MAX_TABLE_SIZE];
-	char names[MAX_USER_NAME_LEN + 1];
-	char desc[1024];
+	gint table_index;
+	gint type_index;
+	guchar playing;
+	gint seats[MAX_TABLE_SIZE];
+	gchar names[MAX_USER_NAME_LEN + 1];
+	gchar desc[1024];
 } TableInfo;
 
 
 /* Array of game-tables, their mutex, and a counter */
 struct GameTables {
 	TableInfo info[MAX_TABLES];
-	int count;
+	gint count;
 };
 
 
 /* Info about a logged-in user */
 typedef struct {
-	int uid;
-	char name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
-	int fd;
-	int table_index;
-	int chat_color;
+	gint uid;
+	gchar name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
+	gint fd;
+	gint table_index;
+	gint chat_color;
 } UserInfo;
 
 
 /* Array of logged-in users, their mutex, and a counter */
 struct Users {
 	UserInfo info[MAX_USERS];
-	int count;
+	gint count;
 };
 
 

@@ -26,7 +26,7 @@
 
 #include <gtk/gtk.h>
 
-void err_dlg(const char *, ...);
-void warn_dlg(const char *, ...);
-void msg_dlg(char *, gboolean);
+void err_dlg(const gchar *, ...);
+void warn_dlg(const gchar *, ...);
+void msg_dlg(gchar *, gboolean);
 

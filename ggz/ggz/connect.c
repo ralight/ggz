@@ -58,8 +58,8 @@ extern struct GameTypes game_types;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
 extern GtkWidget *dlg_motd;
-extern int selected_table;
-extern int selected_type;
+extern gint selected_table;
+extern gint selected_type;
 extern GdkColor colors[];
 extern struct GameTables tables;
 
@@ -68,15 +68,15 @@ GtkWidget *detail_window = NULL;
 /* Various local handles */
 static guint sock_handle;
 static void server_sync();
-static void connect_msg(const char *, ...);
+static void connect_msg(const gchar *, ...);
 static void add_user_list(gchar * name, gint table);
 static void add_table_list(TableInfo table);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
-static void handle_list_tables(int op, int fd);
-static void motd_print_line(char *line);
+static void handle_list_tables(gint op, gint fd);
+static void motd_print_line(gchar *line);
 
 
-char *opcode_str[] = { 	"MSG_SERVER_ID",
+gchar *opcode_str[] = { 	"MSG_SERVER_ID",
 			"MSG_SERVER_FULL",
 			"MSG_MOTD",
 			"MSG_CHAT",
@@ -106,7 +106,7 @@ char *opcode_str[] = { 	"MSG_SERVER_ID",
 /**
  * Begin connection to server.  
  */
-int connect_to_server(void)
+gint connect_to_server(void)
 {
 	if (FAIL(connection.sock = es_make_socket(ES_CLIENT, connection.port,
 						  connection.server))) 
@@ -139,12 +139,12 @@ void disconnect(GtkWidget * widget, gpointer data)
 void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 {
 	gpointer tmp;
-	char *message;
-	char name[9];
-	char status;
-	int num, op, size, checksum, count, i;
-	char buf[4096];
-	static int color_index=0;
+	gchar *message;
+	gchar name[9];
+	gchar status;
+	gint num, op, size, checksum, count, i;
+	gchar buf[4096];
+	static gint color_index=0;
 
         if (FAIL(es_read_int(source, &op))) {
 	        disconnect(NULL, NULL);
@@ -339,10 +339,10 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 }
 
 
-void connect_msg(const char *format, ...)
+void connect_msg(const gchar *format, ...)
 {
 	va_list ap;
-	char *message;
+	gchar *message;
 	gpointer tmp;
 
 	/* If we're not displaying details then don't bother */
@@ -414,7 +414,7 @@ void add_table_list(TableInfo table)
 }
 
 
-int anon_login(void)
+gint anon_login(void)
 {
 
 	es_write_int(connection.sock, REQ_LOGIN_ANON);
@@ -435,17 +435,17 @@ static void server_sync()
 } 
 
 
-void display_chat(char *name, char *msg)
+void display_chat(gchar *name, gchar *msg)
 {
-	char *buf;			/* incomeing text */
+	gchar *buf;			/* incomeing text */
 	gpointer tmp;			/* chat widget */
 	GdkColormap *cmap;		/* system colormap */
 	GdkFont *fixed_font;		/* font for chat */
-	int color_index;		/* color for chat */
-	char cmd[1024];			/* command used in chat */
-	char out[1024];			/* text following command */
-	char *line;			/* line to parse */
-	int cmd_index=0, out_index=0;	/* indexes */
+	gint color_index;		/* color for chat */
+	gchar cmd[1024];			/* command used in chat */
+	gchar out[1024];			/* text following command */
+	gchar *line;			/* line to parse */
+	gint cmd_index=0, out_index=0;	/* indexes */
 
 	line=g_strdup(msg);
 	strcpy(line,msg);
@@ -534,9 +534,9 @@ void display_chat(char *name, char *msg)
 }
 
 
-void handle_list_tables(int op, int fd)
+void handle_list_tables(gint op, gint fd)
 {
-	int i, j,  count, num;
+	gint i, j,  count, num;
 	GtkObject* tmp;
 
 	selected_table = -1;
@@ -571,15 +571,15 @@ void handle_list_tables(int op, int fd)
 	tables.count = count;
 }
 
-void motd_print_line(char *line)
+void motd_print_line(gchar *line)
 {
-        char out[1024];
-        int lindex=0;
-        int oindex=0;
+        gchar out[1024];
+        gint lindex=0;
+        gint oindex=0;
 	GtkWidget *temp_widget;
 	GdkColormap *cmap;
 	GdkFont *fixed_font;
-	int color_index=9; /* Black */
+	gint color_index=9; /* Black */
 
 
 	cmap = gdk_colormap_get_system();

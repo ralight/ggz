@@ -111,7 +111,7 @@ void msgbox_close(GtkButton * button, gpointer user_data)
         dlg_msgbox = NULL;
 }
 
-void msg(int mode, char *title, char *message)
+void msg(gint mode, gchar *title, gchar *message)
 {
 	GtkWidget *temp_widget;
 
