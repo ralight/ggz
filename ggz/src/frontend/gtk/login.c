@@ -152,7 +152,13 @@ login_fill_defaults                    (GtkWidget       *widget,
 	}
 	else
 		gtk_widget_set_sensitive(tmp, FALSE);
-		
+
+	/* Set to last server connected to */
+	if(strcmp(ggzcore_conf_read_string("OPTIONS", "LASTPROFILE", "NONE"), "NONE"))
+	{
+		tmp = lookup_widget(login_dialog, "profile_entry");
+		gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("OPTIONS", "LASTPROFILE", "NONE"));
+	}
 }
 
 
@@ -229,10 +235,12 @@ static void login_connect_button_clicked(GtkButton *button, gpointer data)
 	if (!server) {
 		login_start_session();
 	}
+
 	/* If we're not logged in yet, assume second login attempt */
 	else if (ggzcore_server_get_state(server) == GGZ_STATE_ONLINE) {
 		login_relogin();
 	}
+
 	/* otherwise disconnect then reconnect */
 	else {
 		/* FIXME: should popup modal "Are you sure?" */
@@ -301,6 +309,14 @@ static void login_start_session(void)
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port);
 	ggzcore_server_set_logininfo(server, type, login, password);
+
+	/* Save as last profile */
+	tmp = lookup_widget(login_dialog, "profile_entry");
+	if(strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)), ""))
+	{
+		ggzcore_conf_write_string("OPTIONS", "LASTPROFILE", gtk_entry_get_text(GTK_ENTRY(tmp)));
+		ggzcore_conf_commit();
+	}
 
 	/* Setup callbacks on server */
 	ggz_event_init(server);
