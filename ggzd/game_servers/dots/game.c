@@ -573,6 +573,10 @@ static int game_handle_newgame(int seat)
 
 	dots_game.play_again++;
 
+	/* Simulate that the bot wants to play another game */
+	if(ggz_seats[(seat+1)%2].assign == GGZ_SEAT_BOT)
+		dots_game.play_again++;
+
 	/* Issue the game start if second answer comes */
 	/* and options are already setup to go */
 	if(!ggz_seats_open() && dots_game.state == DOTS_STATE_WAIT
