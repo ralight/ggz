@@ -1,5 +1,9 @@
-docdir=$(GGZDOCDIR)/coreclients
- 
-doc_DATA = coreclients.html ggzcore.png gameflow.png ggz-txt-handbook.html
+docdir = $(GGZDOCDIR)/coreclients
+doc_DATA = \
+	ggz-txt-handbook.html \
+	coreclients.html \
+	ggzcore_server.png \
+	ggzcore_room.png \
+	playing.png
 
-EXTRA_DIST = coreclients.html ggzcore.png gameflow.png ggz-txt-handbook.html
+EXTRA_DIST = $(doc_DATA) playing.flw ggzcore.flw

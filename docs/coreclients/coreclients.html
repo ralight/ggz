@@ -1,58 +1,187 @@
-<HTML>
-</HEAD>
-<TITLE>
-GGZ Core Clients
-</TITLE>
-</HEAD>
-<BODY BGCOLOR=#FFFFFF>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>
+GGZ Gaming Zone Core Clients
+</title>
+</head>
+<style type="text/css">
+tt {background-color: #e0e0ff}
+h2 {background-color: #f09020}
+h3 {background-color: #f09020}
+div {font-family: sans-serif}
+th {text-align: left}
+</style>
+<body>
 
-<FONT SIZE=6 FACE="helvetica">
-<B>The GGZ Gaming Zone Core Clients</B>
-<BR><BR>
-</FONT>
+<div>
 
-This documentation serves as reference for all people interesting in hacking on the existing CC's, and those who are even keen on writing new ones.
-In addition, please look at the ggzcore/ggzcore++ API documentation.
-<BR><BR>
+<h2>GGZ Gaming Zone Core Clients</h2>
 
-This is how the whole thing is structured. The image shows a typical GGZ server with some people chatting and some playing games. In addition,
-there could be players outside of a room, for example joining and leaving players.
-Every room is associated with a game type, and every table with a game. Every player has to select a game frontend, which may be done by the CC
-if only one frontend exists.
-<BR><BR>
+<small>
+<i>Revision: 0.1</i><br>
+<i>Date: 10.03.2005</i><br>
+<i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+</small>
 
-<CENTER>
-<IMG SRC="ggzcore.png">
-<BR CLEAR=ALL><BR>
-</CENTER>
+<p>
+Core clients enable players to log into GGZ servers, chat, select a game,
+view the network lag and handle numerous smaller task.
+Hence, they are an essential part of GGZ and their internals should be
+well understood.
+</p>
 
-Normally, a player connects to a server, logs in and selects a room for chatting. This procedure is difficult enough and if a CC has implemented it
-it's already a large amount of work. However, I'll now concentrate on the second task a CC has: launching games (or joining existing ones if possible).
-For that purpose, a number of states has to be passed, all of them linked with user interaction and ggzcore function calls. Here's the "big picture" how things
-work (I've taken KGGZ as the example):
-<BR><BR>
+<h3>The programmes themselves</h3>
 
-<CENTER>
-<IMG SRC="gameflow.png">
-<BR CLEAR=ALL><BR>
-</CENTER>
+<p>
+Basically, each core client starts out as a chat client. It offers
+connection profiles for each server. The server list can be maintained
+by hand or updated via the GGZ metaserver. Connection options include
+the type of login (as a guest, registered player or for the first time),
+the encryption, and of course the nickname.
+</p>
 
-Not so advanced applications like GGZap just skip the user interaction, because there are always reasonable defaults. This process is then much easier.
-<BR><BR>
+<p>
+After having logged in, the core client will enter the first room,
+called the Entry Room or Lounge. It doesn't have any games associated
+with it so only chatting is possible. Within each room, players can
+view their peers and their properties (whether they are guests, bots,
+regular players or admins). They also can start a private conversation,
+check their connection lag, and talk with the chatbot, for which a
+visual dialog might exist.
+</p>
 
-A Core Client is also responsible for managing the connections (user-selectable server list), displaying the users logged in and the running games, as well as
-handle errors like game client crash or network lags, which is not so difficult with the ggzcore functions.
-<BR><BR>
+<p>
+Entering a regular room opens the possibility of launching a table,
+with a predefined number of open and reserved seats and AI players.
+Existing tables can also be joined, either as player or as spectator.
+Then, directly linked to the join is the launch of the local game
+module which will then communicate with the game server.
+Core clients still handle tasks like transmitting the player list,
+highscores and so on.
+</p>
 
-OK, that's the magic for now. More details will follow as soon as there is time for it.
-<BR><BR>
+<h3>A building block: ggzcore</h3>
 
-<BR><BR>
-Josef Spillner, <A HREF="mailto:dr_maux@users.sourceforge.net">dr_maux@users.sourceforge.net</A><BR>
-The GGZ Gaming Zone, <A HREF="http://ggz.sourceforge.net">http://ggz.sourceforge.net</A><BR>
-2001-06-03
-<BR><BR>
+<p>
+The ggzcore library has been written to support the development of
+core clients. It is currently used in the standard clients (like
+KGGZ, ggz-gtk, ggz-gnome, ggz-txt and Víbora), as well as in
+grubby the chatbot, the telnet wrapper, and the command line
+tool ggz-wrapper which is used by the instant messenger plugins
+for Gaim and Kopete.
+Wrappers exist for C++ (called GGZCore++) and Python (called
+PyGGZCoreSimple).
+</p>
 
-</BODY>
-</HTML>
+<p>
+The way ggzcore works is that it maps the entities to
+object-orientated structures and functions. Thus, after initializing
+the library with <tt>ggzcore_init</tt>, the first action will always
+be to initialize a server "object" by calling <tt>ggzcore_server_new</tt>.
+Afterwards, some variables may be set, like the hostname, but
+before actually connecting, callbacks must be set up because ggzcore
+works callback-based all the way. This can be done with
+<tt>ggzcore_server_add_event_hook</tt>. Examples of such hooks are
+GGZ_CONNECTED, when the connection is first established, or
+GGZ_LOGIN_FAIL, if the subsequent login did not succeed.
+</p>
 
+<p style="text-align:center">
+<img src="ggzcore_server.png" alt="Server and rooms relation">
+</p>
+
+<p>
+As can bee seen in the picture, the server hosts a lot of room.
+The room list can be fetched by calling <tt>ggzcore_server_list_rooms</tt>,
+for which the event GGZ_ROOM_LIST will asynchronously be generated
+later on. The client can then change the room, this is what
+<tt>ggzcore_server_join_room</tt> is for.
+</p>
+
+<p>
+In order to prepare gaming, the gametype associated to each room must be
+known also. As for the room list, the list of gametypes will arrive
+upon calling <tt>ggzcore_server_list_gametypes</tt>. Usually, this is
+even performed before joining any room, but to speed up things it could
+also be done afterwards in the background.
+</p>
+
+<p>
+Just like a <tt>GGZServer</tt> object represents the server, the room
+the player has joined is accessible via a <tt>GGZRoom</tt> object, which
+can always conveniently be retrieved as the result of the function
+<tt>ggzcore_server_get_cur_room</tt>.
+</p>
+
+<h3>Chatting</h3>
+
+<p>
+After entering a room, the players will likely see a visual list of
+players, passed to the client by <tt>ggzcore_room_get_nth_player</tt>.
+A message can be sent to all of them by calling <tt>ggzcore_room_chat</tt>
+with a chat type of GGZ_CHAT_NORMAL. Likewise, using GGZ_CHAT_BEEP and
+GGZ_CHAT_PERSONAL send a beep or a message to a selected player,
+respectively. Administrative broadcasts are possible with GGZ_CHAT_ANNOUNCE.
+However, in order to receive all the chat messages, the room hooks
+must be set up just like the server hooks were, which is the task
+of <tt>ggzcore_room_add_event_hook</tt>.
+</p>
+
+<p>
+It is also possible to chat with a subgroup of people who are playing
+on the same table. In order to get that far, a closer look at how games
+are launched must be done first.
+</p>
+
+<h3>Playing games</h3>
+
+<p>
+The gametype associated with each room must be supported by at least
+one game client, but there can also be multiple frontends for each game.
+The way a launch works, a <tt>GGZTable</tt> object is built first with
+<tt>ggzcore_table_new</tt>, and its seats are configured by the launching
+player, who is also known as game host, as opposed to the other players
+who will join later on.
+</p>
+
+<p style="text-align:center">
+<img src="ggzcore_room.png" alt="Tables and players in a room">
+</p>
+
+<p>
+The core client will then move the players to the table, and out
+of the list of players who are not on any table.
+During the game, it keeps the connection to the game client using
+several functions of the ggzcore library, so when a game requests
+statistics, for instance, it will relay this request to the main server
+(ggzd), read the statistics, and forward them to the game client again.
+This helps to keep the game protocols small, since all the common
+data exchanges can be done via GGZ. The same goes for game and team
+chat.
+</p>
+
+<h3>The launch in detail</h3>
+
+<p style="text-align:center">
+<img src="playing.png" alt="Launching table and game">
+</p>
+
+<p>
+The way from wanting to play a game to actually playing it is very complex.
+It consists of two parts, table launch and game launch, where the first
+part only applies to the first player, as all others can simply join
+the table.
+</p>
+
+<p>
+It is important to know when to start reading data from the game module's
+control file descriptor and when to stop it again - at this time the
+game will already be set to the PLAYING state and the core client has
+mostly done its duty.
+</p>
+
+</div>
+
+</body>
+</html>
