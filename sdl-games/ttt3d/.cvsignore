@@ -1,0 +1,7 @@
+ttt3d
+*.o
+Makefile
+Makefile.in
+.deps
+.libs
+

@@ -1,0 +1,27 @@
+upon player join:
+
+	server sends greeting + version number
+		op_greeting
+		[string] "geekgame"
+		[int] 1
+
+	client sends name and picture URL
+		op_presentation
+		[string] "hans"
+		[string] "http://www.thisisme.com/me.png"
+
+	server broadcasts information
+		op_newplayer
+		[string] "hans"
+		[string] "http://www.thisisme.com/me.png"
+
+when all players have joined
+
+	server broadcasts game start
+		op_newgame
+		[char**] <gameboard>
+		op_turn
+		[int] 0
+
+
+

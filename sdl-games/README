@@ -1,0 +1,28 @@
+======================================================
+The GGZ Gaming Zone - SDL Game Modules - Release 0.0.7
+======================================================
+
+GGZ does not only feature Gtk+ and KDE games, but also
+games written with the SDL toolkit.
+The following games are included so far:
+
+	- TicTacToe 3D
+		An OpenGL client compatible to our other TicTacToe clients,
+		and working fine with our server.
+	- The Geek Game
+		Calculate numbers, in either direction: horizontally or
+		vertically, forwards or backwards, and wrapped around the edges.
+
+Please read 'INSTALL' if you aren't experienced with the build yet.
+The file README.GGZ does give you additional information.
+
+Have a look at QuickStart.GGZ to learn about the installation process.
+
+If you encounter any bugs, please send them to
+	Josef Spillner <dr_maux@users.sourceforge.net>,
+or to the mailing list,
+	<ggz-dev@lists.sourceforge.net>.
+
+Have fun!
+	The GGZ Gaming Zone Development Team
+

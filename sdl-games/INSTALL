@@ -1,0 +1,16 @@
+Installation of GGZ-Games-SDL
+=============================
+
+1. Prerequisites are the SDL library (version 1.2 or above),
+   and a working OpenGL setup (Mesa or equivalents).
+   For geekgame, SDL_image and SDL_ttf are needed too
+   (compilation will be disabled otherwise).
+
+2. Type ./autogen.sh (or ./configure if not building from
+   the CVS sources), make and make install (as root).
+
+3. Have fun :)
+
+4. Use the file README.GGZ in case there is any trouble,
+   and for additional information.
+

@@ -1,0 +1,55 @@
+dnl Configuration for GGZ-SDL-Games
+dnl ===============================
+
+AC_INIT(configure.in)
+AC_CANONICAL_SYSTEM
+AC_ARG_PROGRAM
+AM_INIT_AUTOMAKE(ggz-sdl-games, 0.0.7pre)
+AM_CONFIG_HEADER(config.h)
+
+dnl Basic checks
+dnl ============
+
+AC_PROG_CC
+AC_PROG_CPP
+AC_ISC_POSIX
+AM_PROG_CC_STDC
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+
+dnl Check for SDL
+dnl =============
+
+# blah blah... found it :)
+
+dnl Check for GGZ requirements
+dnl ==========================
+
+AC_GGZ_INIT(defaults)
+AC_GGZ_INTL
+AC_GGZ_LIBGGZ
+AC_GGZ_GGZMOD
+AC_GGZ_CONFIG
+
+dnl Create Makefiles
+dnl ================
+
+AC_OUTPUT(Makefile
+	geekgame/Makefile
+	ttt3d/Makefile
+	ttt3d/module.dsc)
+
+dnl Report success
+dnl ==============
+
+echo ""
+echo "GGZ-SDL-Games is now configured. Please type 'make' in order to compile it."
+echo "The following installation layout is used:"
+echo ""
+echo "Generic installation prefix: $prefix (for libraries etc.)"
+echo "Game executable directory: $ggzexecmoddir"
+echo "Game data directory: $ggzdatadir"
+echo ""
+
