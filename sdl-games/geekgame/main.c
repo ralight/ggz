@@ -53,6 +53,7 @@
 /* Geekgame includes */
 #include "wwwget.h"
 #include "proto.h"
+#include "intro.h"
 
 #include "config.h"
 
@@ -75,7 +76,7 @@ static GGZMod *mod = NULL;
 static char *playerimage = NULL;
 static int modfd;
 static int ggzmode = 0;
-static SDL_Surface *screen, *image;
+static SDL_Surface *image;
 static TTF_Font *font = NULL;
 static char *fontpath = NULL;
 static char *musicpath = NULL;
@@ -91,10 +92,11 @@ static int gamerunning = 0;
 static int modemenu = 0;
 static int arraywidth, arrayheight;
 #ifdef HAVE_SOUND
-Mix_Music *music = NULL;
-Mix_Chunk *chunk = NULL;
-int chunkchannel = -1;
+static Mix_Music *music = NULL;
+static Mix_Chunk *chunk = NULL;
+static int chunkchannel = -1;
 #endif
+SDL_Surface *screen;
 
 /* Prototypes */
 int startgame(void);
@@ -1445,7 +1447,13 @@ int startgame(void)
 	icon = IMG_Load(path);
 	if(icon) SDL_WM_SetIcon(icon, 0);
 
-	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, (usefullscreen ? SDL_FULLSCREEN : 0));
+	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0,
+		SDL_OPENGL | (usefullscreen ? SDL_FULLSCREEN : SDL_RESIZABLE));
+
+	geekgame_intro();
+
+	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0,
+		(usefullscreen ? SDL_FULLSCREEN : 0));
 
 	if(!players) players = MAX_PLAYERS;
 
