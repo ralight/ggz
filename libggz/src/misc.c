@@ -58,7 +58,7 @@ char * ggz_xml_unescape(char *str)
 	}
 
 	if(len == strlen(str))
-		return NULL;
+		return ggz_strdup(str);
 
 	q = new = ggz_malloc(len+1);
 	for(p=str; *p != '\0'; p++) {
@@ -118,7 +118,7 @@ char * ggz_xml_escape(char *str)
 		}
 
 	if(len == strlen(str))
-		return NULL;
+		return ggz_strdup(str);
 
 	q = new = ggz_malloc(len+1);
 	for(p=str; *p != '\0'; p++)
