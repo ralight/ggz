@@ -119,6 +119,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	{
 		KGGZDEBUG("Critical: Could not open configuration file!\n");
 		m_config = NULL;
+		m_showmotd = 1;
 	}
 	else
 	{
@@ -129,6 +130,8 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 			m_workspace->widgetChat()->setLogging(1);
 		if(m_config->read("Preferences", "Speech", 0))
 			m_workspace->widgetChat()->setSpeech(1);
+
+		m_showmotd = m_config->read("Preferences", "MOTD", 1);
 	}
 
 	kggzroomcallback = new KGGZCallback(this, COLLECTOR_ROOM);
@@ -318,6 +321,12 @@ void KGGZ::menuConnect()
 			SLOT(slotConnected(const char*, int, const char*, const char*, int)));
 	}
 	m_connect->show();
+}
+
+void KGGZ::menuMotd()
+{
+	if(m_motd) m_motd->show();
+	else KMessageBox::sorry(this, i18n("No MOTD found for this server."), i18n("No MOTD found"));
 }
 
 void KGGZ::dispatcher()
@@ -822,7 +831,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			KGGZDEBUG("motdloaded\n");
 			if(!m_motd) m_motd = new KGGZMotd(NULL, "KGGZMotd");
 			m_motd->setSource(data);
-			m_motd->show();
+			if(m_showmotd) m_motd->show();
 			break;
 		case GGZCoreServer::roomlist:
 			KGGZDEBUG("roomlist\n");
@@ -1452,7 +1461,10 @@ void KGGZ::menuGameInfo()
 	if(!gametype)
 		return;
 	if(!gametype->name())
+	{
+		KMessageBox::information(this, i18n("This is the GGZ Gaming Zone Lounge. You can meet other players here."), "Lounge");
 		return;
+	}
 
 	buffer.append(QString("<b>%1</b>").arg(i18n("Game server")));
 	buffer.append("<br>");

@@ -129,6 +129,8 @@ class KGGZ : public QWidget
 		void menuConnect();
 		// Disconnect again
 		void menuDisconnect();
+		// Display MOTD
+		void menuMotd();
 		// Run a server on localhost
 		void menuServerLaunch();
 		// Shutdown local server
@@ -275,6 +277,8 @@ class KGGZ : public QWidget
 		int m_channelfd;
 		// Current game fd
 		int m_gamefd;
+		// Display MOTD upon login
+		int m_showmotd;
 };
 
 #endif
