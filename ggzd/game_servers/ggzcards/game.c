@@ -455,8 +455,8 @@ void game_set_player_message(player_t p)
  */
 void game_end_trick(void)
 {
-	player_t hi_player = game.leader, p, lo_player = game.leader;
-	card_t hi_card = game.lead_card, lo_card = game.lead_card;
+	player_t hi_player = game.leader, p;
+	card_t hi_card = game.funcs->map_card( game.lead_card );
 
 	/* default method of winning tricks: the winning card is the highest
 	 * card of the suit lead, or the highest trump if there is trump */
@@ -467,12 +467,6 @@ void game_end_trick(void)
 		   || (card.suit == hi_card.suit && card.face > hi_card.face) ) {
 			hi_card = card;
 			hi_player = p;
-		}
-		if (card.suit == lo_card.suit && card.face < lo_card.face) {
-			/* tracking the low card is unnecessary in most cases,
-			 * but it saves us trouble in a few cases (like "low" bids in Suaro) */
-			lo_card = card;
-			lo_player = p;
 		}
 	}
 
