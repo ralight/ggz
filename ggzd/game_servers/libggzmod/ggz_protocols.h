@@ -1,4 +1,4 @@
-/*	$Id: ggz_protocols.h 1748 2001-06-18 22:25:57Z riq $	*/
+/*	$Id: ggz_protocols.h 2176 2001-08-19 22:14:01Z jdorje $	*/
 /*
  * File: protocols.h
  * Author: Brent Hendricks
@@ -26,6 +26,10 @@
 
 #ifndef __GGZ_SERVER_PROTOCOL_H
 #define __GGZ_SERVER_PROTOCOL_H
+
+/** @file ggz_protocols.h
+ *  Protocols for communication between ggz server and game server.
+ *  @see ggz_server.h */
 
 typedef enum {
 	REQ_LOGIN_NEW,
@@ -90,21 +94,22 @@ typedef enum {
 	RSP_ROOM_JOIN
 } ControlToUser;
 
-
+/** Messages sent from the game server to the ggz server. */
 typedef enum {
-	RSP_GAME_LAUNCH,
-	RSP_GAME_JOIN,
-	RSP_GAME_LEAVE,
-        MSG_LOG,
-        MSG_DBG,
-	REQ_GAME_OVER
+	RSP_GAME_LAUNCH,	/**< sent in response to a game launch */
+	RSP_GAME_JOIN,		/**< sent in response to a player join */
+	RSP_GAME_LEAVE,		/**< sent in response to a player leave */
+	MSG_LOG,		/**< a message to log */
+	MSG_DBG,		/**< a debugging message */
+	REQ_GAME_OVER		/**< sent to tell of a game-over */
 } TableToControl;
 
+/** Messages sent from the ggz server to the game server. */
 typedef enum {
-	REQ_GAME_LAUNCH,
-	REQ_GAME_JOIN,
-	REQ_GAME_LEAVE,
-	RSP_GAME_OVER
+	REQ_GAME_LAUNCH,	/**< sent on game launch */
+	REQ_GAME_JOIN,		/**< sent on player join */
+	REQ_GAME_LEAVE,		/**< sent on player leave */
+	RSP_GAME_OVER		/**< sent in response to a gameover */
 } ControlToTable;
 
 #define E_USR_LOOKUP   -1
