@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4575 2002-09-16 04:36:11Z jdorje $
+ * $Id: client.c 4577 2002-09-16 05:13:00Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -253,7 +253,7 @@ static void client_loop(GGZClient* client)
 
 		/* Check for message from client */
 		if (FD_ISSET(fd, &read_fd_set)) {
-			if ( (status = net_read_data(client->net)) < 0)
+			if (net_read_data(client->net) == GGZ_REQ_DISCONNECT)
 				break;
 		}
 		

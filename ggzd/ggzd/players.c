@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4576 2002-09-16 04:57:02Z jdorje $
+ * $Id: players.c 4577 2002-09-16 05:13:00Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -269,7 +269,7 @@ GGZPlayerType player_get_type(GGZPlayer *player)
 GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 {
 	int room;
-	GGZPlayerHandlerStatus status;
+	GGZClientReqError status;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for %s", player->name);
 
@@ -330,7 +330,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	/* Do actual launch of table */
 	status = table_launch(table, player->name);
 	
-	if (status == 0) {
+	if (status == E_OK) {
 		/* Mark player as launching table so we can't launch more */
 		pthread_rwlock_wrlock(&player->lock);
 		player->launching = 1;
@@ -338,10 +338,10 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	} else {
 		if (net_send_table_launch(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
-		status = GGZ_REQ_FAIL;
+		return GGZ_REQ_FAIL;
 	}
 	
-	return status;
+	return GGZ_REQ_OK;
 }
 
 
@@ -376,7 +376,7 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 {
 	int i, num_seats;
 	char owner[MAX_USER_NAME_LEN + 1];
-	GGZPlayerHandlerStatus status = 0;
+	GGZClientReqError status = E_OK;
 	GGZTable *real_table;
 	struct GGZTableSeat seat;
 	
@@ -418,13 +418,13 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 	}
 
 	/* Return any immediate failures to client*/
-	if (status < 0) {
+	if (status != E_OK) {
 		if (net_send_update_result(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
-		status = GGZ_REQ_FAIL;
+		return GGZ_REQ_FAIL;
 	}
 	
-	return status;
+	return GGZ_REQ_OK;
 }
 
 
@@ -445,7 +445,7 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
  */
 GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index)
 {
-	int status;
+	GGZClientReqError status;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table join for %s", player->name);
 
@@ -462,18 +462,18 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index)
 		status = player_transit(player, GGZ_TRANSIT_JOIN, index);
 
 	/* Return any immediate failures to client*/
-	if (status < 0) {
+	if (status != E_OK) {
 		if (net_send_table_join(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
-		status = GGZ_REQ_FAIL;
+		return GGZ_REQ_FAIL;
 	}
 	
-	return status;
+	return GGZ_REQ_OK;
 }
 
 GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 {
-	int status;
+	GGZClientReqError status;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table join (as spectator) for %s", player->name);
 
@@ -490,13 +490,13 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 		status = player_transit(player, GGZ_TRANSIT_JOIN_SPECTATOR, index);
 
 	/* Return any immediate failures to client*/
-	if (status < 0) {
+	if (status != E_OK) {
 		if (net_send_table_join(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
-		status = GGZ_REQ_FAIL;
+		return GGZ_REQ_FAIL;
 	}
 	
-	return status;
+	return GGZ_REQ_OK;
 }
 
 /* 
@@ -516,7 +516,8 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 					  int spectator, int force)
 {
-	int status, gametype;
+	int gametype;
+	GGZClientReqError status;
 	char allow;
 	GGZTableState state;
 	GGZTable *table;
@@ -584,14 +585,14 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 	}
 
 	/* Return any immediate failures to client*/
-	if (status < 0) {
+	if (status != E_OK) {
 		if (net_send_table_leave(player->client->net,
 					 (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
-		status = GGZ_REQ_FAIL;
+		return GGZ_REQ_FAIL;
 	}
 
-	return status;
+	return GGZ_REQ_OK;
 }
 
 
