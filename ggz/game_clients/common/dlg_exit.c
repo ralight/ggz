@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: dlg_exit.c 3718 2002-04-03 17:15:41Z jdorje $
+ * $Id: dlg_exit.c 5164 2002-11-03 07:31:49Z jdorje $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
@@ -34,7 +34,7 @@
 #include "dlg_exit.h"
 #include "ggzintl.h"
 
-static GtkWidget *make_exit_dialog(int can_return)
+static GtkWidget *make_exit_dialog(int can_return, GtkWidget *parent_window)
 {
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
@@ -54,6 +54,9 @@ static GtkWidget *make_exit_dialog(int can_return)
 	}
 
 	window = gtk_dialog_new();
+	if (parent_window)
+		gtk_window_set_transient_for(GTK_WINDOW(window),
+					     GTK_WINDOW(parent_window));
 	gtk_window_set_title(GTK_WINDOW(window), _("Really Exit?"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
@@ -113,7 +116,7 @@ static GtkWidget *make_exit_dialog(int can_return)
         return window;
 }
 
-void ggz_show_exit_dialog(int can_return)
+void ggz_show_exit_dialog(int can_return, GtkWidget *parent_window)
 {
 	static GtkWidget *dialog = NULL;
 	
@@ -121,7 +124,7 @@ void ggz_show_exit_dialog(int can_return)
 		gdk_window_show(dialog->window);
 		gdk_window_raise(dialog->window);
 	} else {
-        	dialog = make_exit_dialog(can_return);
+        	dialog = make_exit_dialog(can_return, parent_window);
 		
 		gtk_signal_connect(GTK_OBJECT(dialog),
 		                   "destroy",

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: dlg_exit.h 3718 2002-04-03 17:15:41Z jdorje $
+ * $Id: dlg_exit.h 5164 2002-11-03 07:31:49Z jdorje $
  *
  * This fils contains functions for creating and handling the 
  * exit dialog box
@@ -27,4 +27,4 @@
 
 #include <gtk/gtk.h>
 
-void ggz_show_exit_dialog(int can_return);
+void ggz_show_exit_dialog(int can_return, GtkWidget *parent_window);
