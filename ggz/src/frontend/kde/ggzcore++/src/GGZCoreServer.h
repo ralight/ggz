@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////
 //                                                                 ///
 // GGZCore++ - C++ API wrapper for the ggzcore library              ///
-// (C) 2001 Josef Spillner                                           ///
+// Copyright (C) 2001, 2002 Josef Spillner                           ///
 // dr_maux@users.sourceforge.net                                      ///
 // The MindX Open Source Project                                      ///
 // http://mindx.sourceforge.net/                                     ///
