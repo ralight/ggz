@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: protocols.h 4962 2002-10-20 07:50:34Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -35,17 +35,16 @@
 
 /* Update opcodes */
 typedef enum {
-	GGZ_UPDATE_DELETE = 0,
-	GGZ_UPDATE_ADD	  = 1,
-	GGZ_UPDATE_LEAVE  = 2,
-	GGZ_UPDATE_JOIN	  = 3,
-	GGZ_UPDATE_STATE  = 4,
-	GGZ_UPDATE_LAG	  = 5,
-	GGZ_UPDATE_SEAT   = 6,
-	GGZ_UPDATE_DESC   = 7,
-	GGZ_UPDATE_SPECTATOR_LEAVE = 8,
-	GGZ_UPDATE_SPECTATOR_JOIN = 9,
-	GGZ_UPDATE_SPECTATOR = 10
+	GGZ_UPDATE_DELETE, /* table is deleted from room */
+	GGZ_UPDATE_ADD, /* table is added to room */
+	GGZ_UPDATE_JOIN, /* player joins table */
+	GGZ_UPDATE_LEAVE, /* player leaves table */
+	GGZ_UPDATE_SEAT, /* misc. table seat change */
+	GGZ_UPDATE_STATE, /* table state changes */
+	GGZ_UPDATE_LAG, /* ??? */
+	GGZ_UPDATE_DESC, /* table desc changes */
+	GGZ_UPDATE_SPECTATOR_LEAVE, /* spectator leaves table */
+	GGZ_UPDATE_SPECTATOR_JOIN /* spectator joins table */
 } GGZUpdateOpcode;
 
 #endif /*_GGZ_PROTOCOL_H*/

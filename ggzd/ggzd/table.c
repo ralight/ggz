@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4950 2002-10-19 00:42:22Z jdorje $
+ * $Id: table.c 4962 2002-10-20 07:50:34Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -73,7 +73,7 @@ typedef struct {
 
 /* Packaging for table events */
 typedef struct {
-	unsigned char opcode;
+	GGZUpdateOpcode opcode;
 	GGZTable *table;
 	/* player and seat are only used for some operations */
 	char player[MAX_USER_NAME_LEN + 1];
@@ -103,25 +103,10 @@ static GGZReturn table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode);
 static GGZReturn table_update_event_enqueue(GGZTable* table,
 					    GGZUpdateOpcode opcode, char* name,
 					    unsigned int seat);
-#if 0
-static GGZReturn table_seat_event_enqueue(GGZTable* table,
-					  GGZUpdateOpcode opcode,
-					  unsigned int seat);
-static GGZReturn table_spectator_event_enqueue(GGZTable* table,
-					       GGZUpdateOpcode opcode,
-					       unsigned int spectator);
-#endif
 			      
 static void table_event_data_free(void* data);
 static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 					       void* data);
-static GGZEventFuncReturn table_seat_event_callback(void* target, size_t size,
-						    void* data);
-#if 0
-static GGZEventFuncReturn table_spectator_event_callback(void* target,
-							 size_t size,
-							 void* data);
-#endif
 static GGZEventFuncReturn table_kill_callback(void* target, size_t size,
 					      void* data);
 static GGZReturn table_launch_event(char* name,
@@ -543,6 +528,10 @@ static void table_loop(GGZTable* table)
  */
 void table_game_join(GGZTable *table, char *name, int num)
 {
+#if 0
+	int i;
+#endif
+
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to join", 
 		table->index, table->room);
 
@@ -570,6 +559,26 @@ void table_game_join(GGZTable *table, char *name, int num)
 	/* Notify everyone in the room about the change. */
 	table_update_event_enqueue(table, GGZ_UPDATE_JOIN, 
 				   name, num);
+
+#if 0
+	/* This is probably better handled by limiting the number of
+	   reservations to one per person on table launch.  But that
+	   won't help in the case where a player watches a table, then
+	   sits down in a seat other than what was reserved for them.  It
+	   may still be necessary to always double-check. */
+	/* Remove any seat reservations this player may have. */
+	for (i = 0; i < table->num_seats; i++) {
+		if (table->seat_types[i] == GGZ_SEAT_RESERVED
+		    && !strcasecmp(table->seat_names[i], name)) {
+			pthread_rwlock_wrlock(&table->lock);
+			table->seat_types[i] = GGZ_SEAT_OPEN;
+			pthread_rwlock_unlock(&table->lock);
+			table_update_event_enqueue(table, GGZ_UPDATE_SEAT,
+						   "", i);
+		}
+	}
+#endif
+
 	dbg_msg(GGZ_DBG_TABLE, 
 		"%s in seat %d at table %d of room %d",
 		name, num,
@@ -1079,49 +1088,6 @@ static GGZReturn table_update_event_enqueue(GGZTable* table,
 }
 
 
-#if 0
-static GGZReturn table_seat_event_enqueue(GGZTable *table,
-					  GGZUpdateOpcode opcode,
-					  unsigned int seat_num)
-{
-	GGZSeatChangeEventData *data;
-
-	data = ggz_malloc(sizeof(*data));
-
-	/* Copy seat data into structure for passing to event */
-	data->seat.index = seat_num;
-	data->seat.type = table->seat_types[seat_num];
-	strcpy(data->seat.name, table->seat_names[seat_num]);
-	data->table = table->index;
-	data->num_seats = seats_num(table);
-
-	/* Queue table event for whole room */
-	return event_room_enqueue(table->room, table_seat_event_callback,
-				  sizeof(*data), data, NULL);
-}
-
-
-static GGZReturn table_spectator_event_enqueue(GGZTable *table,
-					       GGZUpdateOpcode opcode,
-	unsigned int spectator_num)
-{
-	struct GGZSpectatorChange *data;
-
-	data = ggz_malloc(sizeof(struct GGZSpectatorChange));
-
-	/* Copy seat data into structure for passing to event */
-	data->spectator.index = spectator_num;
-	strcpy(data->spectator.name, table->spectators[spectator_num]);
-	data->table = table->index;
-	data->num_spectators = spectators_count(table);
-
-	/* Queue table event for whole room */
-	return event_room_enqueue(table->room, table_spectator_event_callback,
-				  sizeof(data), data);
-}
-#endif
-
-
 static void table_event_data_free(void* data)
 {
 	GGZTableEventData *event_data = data;
@@ -1177,6 +1143,13 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 			seat.index, event->table->index);
 		break;
 
+	case GGZ_UPDATE_SEAT:
+		seat.index = event->seat;
+		seat.type = event->table->seat_types[event->seat];
+		strcpy(seat.name, event->table->seat_names[event->seat]);
+		update_data = &(seat);
+		break;
+
 	case GGZ_UPDATE_SPECTATOR_LEAVE:
 	case GGZ_UPDATE_SPECTATOR_JOIN:
 		strcpy(spectator.name, event->player);
@@ -1191,6 +1164,9 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 				: "leave",
 			spectator.index, event->table->index);
 		break;
+	case GGZ_UPDATE_LAG:
+		err_msg("table_event_callback: invalid opcode LAG.");
+		break;
 	}
 
 	if (net_send_table_update(player->client->net, event->opcode,
@@ -1200,52 +1176,6 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 	return GGZ_EVENT_OK;
 }
 
-
-/* Event callback for delivering table list update to a player */
-static GGZEventFuncReturn table_seat_event_callback(void* target, size_t size,
-						    void* data)
-{
-	GGZTable info;
-	GGZPlayer* player = (GGZPlayer*)target;
-	GGZSeatChangeEventData *seat_change = data;
-	struct GGZTableSeat *seat = &(seat_change->seat);
-
-	info.index = seat_change->table;
-	
-	dbg_msg(GGZ_DBG_UPDATE, "%s sees seat %d change to %s (%s) at table %d", 
-		player->name, seat->index, ggz_seattype_to_string(seat->type),
-		seat->name, info.index);
-
-	if (net_send_table_update(player->client->net, GGZ_UPDATE_SEAT,
-				  &info, &seat) < 0)
-		return GGZ_EVENT_ERROR;
-	
-	return GGZ_EVENT_OK;
-}
-
-/* Event callback for delivering table list update to a player */
-#if 0
-static GGZEventFuncReturn table_spectator_event_callback(void* target,
-							 size_t size,
-							 void* data)
-{
-	GGZTable info;
-	GGZPlayer* player = (GGZPlayer*)target;
-	struct GGZSpectatorChange *spectator_change = data;
-	struct GGZTableSpectator *spectator = &(spectator_change->spectator);
-
-	info.index = spectator_change->table;
-	strcpy(info.spectators[spectator->index], spectator->name);
-	
-	dbg_msg(GGZ_DBG_UPDATE, "%s sees spectator %d change to 'spectator' (%s) at table %d", 
-		player->name, spectator->index, spectator->name, info.index);
-
-	if (net_send_table_update(player->client->net, GGZ_UPDATE_SPECTATOR, &info, spectator->index) < 0)
-		return GGZ_EVENT_ERROR;
-	
-	return GGZ_EVENT_OK;
-}
-#endif
 
 static GGZReturn table_launch_event(char* name,
 				    GGZClientReqError status, int index)
