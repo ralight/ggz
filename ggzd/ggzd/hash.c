@@ -178,9 +178,7 @@ void hash_player_delete(char *name)
 	/* Lose this entry */
 
 	/* First, set the previous entry to point to our next */
-	if(hl == hash_list[hash_num])
-		hash_list[hash_num] = NULL;
-	else if(hp == hash_list[hash_num])
+	if(hp == NULL)
 		hash_list[hash_num] = hl->next;
 	else
 		hp->next = hl->next;
