@@ -95,10 +95,6 @@ void server_login_fail(GGZEventID id, void* event_data, void* user_data)
 void server_logout(GGZEventID id, void* event_data, void* user_data)
 {
 	output_chat(2,"---", "Disconnected");
-	free(Server);
-	Server = NULL;
-	free(Username);
-	Username = NULL;
 	free(Room);
 	Room = NULL;
 }

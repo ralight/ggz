@@ -38,7 +38,5 @@ void output_shutdown(void);
 
 void output_display_help(void);
 
-char *Username;
-char *Server;
 char *Room;
 

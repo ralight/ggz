@@ -47,8 +47,6 @@ static void input_handle_beep(char* line);
 static char delim[] = " \n";
 static char command_prefix = '/';
 
-extern char *Username;
-extern char *Server;
 extern char *Room;
 
 int input_command(short events)
@@ -115,13 +113,9 @@ static void input_handle_connect(char* line)
 
 	arg = strsep(&line, delim);
 	if (arg && strcmp(arg, "") != 0)
-	{
-		Server = strdup (arg);
 		profile->host = strdup(arg);
-	} else {
-		Server = strdup ("localhost");
+	else
 		profile->host = strdup("localhost");
-	}
 	
 	/* Default to port 5688 if none specified */
 	if (!line || strcmp(line, "") != 0)
@@ -131,7 +125,6 @@ static void input_handle_connect(char* line)
 	
 	profile->type = GGZ_LOGIN_GUEST;
 	profile->login = strdup(getenv("LOGNAME"));
-	Username = strdup(getenv("LOGNAME"));
 
 	/* FIXME: provide a destroy function that frees the appropriate mem */
 	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);

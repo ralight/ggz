@@ -68,6 +68,32 @@ int ggzcore_state_is_at_table(void)
 }
 
 
+char* ggzcore_state_get_profile_login(void)
+{
+	return _ggzcore_state.profile.login;
+}
+
+
+char* ggzcore_state_get_profile_name(void)
+{
+	return _ggzcore_state.profile.name;
+}
+
+
+char* ggzcore_state_get_profile_host(void)
+{
+	return _ggzcore_state.profile.host;
+}
+
+
+int ggzcore_state_get_room(void)
+{
+	return _ggzcore_state.room;
+}
+
+
+
+
 /* FIXME: need better way of checking validity */
 unsigned char _ggzcore_state_event_isvalid(GGZEventID id)
 {

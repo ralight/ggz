@@ -257,6 +257,12 @@ int ggzcore_state_is_in_room(void);
 int ggzcore_state_is_at_table(void);
 
 
+char* ggzcore_state_get_profile_login(void);
+char* ggzcore_state_get_profile_name(void);
+char* ggzcore_state_get_profile_host(void);
+int ggzcore_state_get_room(void);
+
+
 /* Debugging categories */
 typedef enum {
 	GGZ_DBG_EVENT  = 0x00000001,

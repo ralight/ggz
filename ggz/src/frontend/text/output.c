@@ -36,8 +36,6 @@
 
 static struct winsize window;
 static int tty_des;
-extern char *Username;
-extern char *Server;
 extern char *Room;
 
 void output_display_help(void)
@@ -103,21 +101,27 @@ void output_status()
 	int num;
 	time_t now;		/* time */
 	char *currenttime;	/* String formatted time */
-
+	char *user = NULL, *server = NULL;
+	
+	if (ggzcore_state_is_online()) {
+		user = ggzcore_state_get_profile_login();
+		server = ggzcore_state_get_profile_host();
+	}
+		
 	now = time(NULL);
 
 	num = window.ws_col - 8;
-	if(Server)
-		num=num-strlen(Server);
+	if(server)
+		num=num-strlen(server);
 	
 	fflush(NULL);
 	printf("\e7");
-	if(Username)
-		printf("\e[%d;0f\e[1m\e[37mU\e[32msername:\e[K \e[36m%s", window.ws_row-3, Username);
+	if(user)
+		printf("\e[%d;0f\e[1m\e[37mU\e[32msername:\e[K \e[36m%s", window.ws_row-3, user);
 	else
 		printf("\e[%d;0f\e[1m\e[37mU\e[32msername:\e[K ", window.ws_row-3);
-	if(Server)
-		printf("\e[%d;%df\e[1m\e[37mS\e[32merver:\e[K \e[36m%s", window.ws_row-3, num, Server);
+	if(server)
+		printf("\e[%d;%df\e[1m\e[37mS\e[32merver:\e[K \e[36m%s", window.ws_row-3, num, server);
 	else
 		printf("\e[%d;%df\e[1m\e[37mS\e[32merver:\e[K ", window.ws_row-3, num);
 	if(Room)
