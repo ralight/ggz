@@ -28,6 +28,9 @@ class MainWindow : public KMainWindow
 		void levelSelector();
 		void synchronize();
 
+		bool checkMove();
+		void aiMove();
+
 		enum Items
 		{
 			game_new,
@@ -37,7 +40,10 @@ class MainWindow : public KMainWindow
 			option_map,
 			option_possession,
 			option_knights,
-			option_animation
+			option_animation,
+			option_map_bayeux,
+			option_map_map,
+			option_map_haroldsreturn
 		};
 
 		enum Statuscodes
@@ -47,7 +53,7 @@ class MainWindow : public KMainWindow
 			status_task
 		};
 
-		KPopupMenu *gamemenu, *displaymenu, *optionmenu;
+		KPopupMenu *gamemenu, *displaymenu, *optionmenu, *backgroundmenu;
 		Map *map;
 		Network *network;
 		QSocketNotifier *sn, *snc;

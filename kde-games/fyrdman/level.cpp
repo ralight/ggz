@@ -61,7 +61,7 @@ void Level::loadFromNetwork(int fd)
 	}
 }
 
-void Level::loadFromFile(const char *filename)
+bool Level::loadFromFile(const char *filename)
 {
 	FILE *f;
 	char buf[128];
@@ -74,7 +74,7 @@ void Level::loadFromFile(const char *filename)
 
 	if(verbose) printf("Load map: %s\n", filename);
 	f = fopen(filename, "r");
-	if(!f) return;
+	if(!f) return false;
 
 	state = state_title;
 	quality = quality_ok;
@@ -96,7 +96,7 @@ void Level::loadFromFile(const char *filename)
 		if(i > 100)
 		{
 			quality = quality_bad;
-			return;
+			return false;
 		}
 
 		if((buf[0] != '\"') && (state == state_knights)) state = state_nowhere;
@@ -184,8 +184,9 @@ void Level::loadFromFile(const char *filename)
 	if((quality == quality_ok) || (quality == quality_bad))
 	{
 		if(verbose) printf("Accepted map: [%s] [%s] [%s] (%i)\n", m_title, m_author, m_version, quality);
+		return true;
 	}
-
+	return false;
 }
 
 const char *Level::title()

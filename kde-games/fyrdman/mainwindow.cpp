@@ -14,6 +14,9 @@
 #include <kdebug.h>
 
 #include <qsocketnotifier.h>
+#include <qdir.h>
+
+#include <stdlib.h> // abs
 
 #include "config.h"
 
@@ -39,6 +42,11 @@ MainWindow::MainWindow()
 
 	gamemenu->setItemEnabled(game_sync, false);
 
+	backgroundmenu = new KPopupMenu(this);
+	backgroundmenu->insertItem(i18n("Bayeux"), option_map_bayeux);
+	backgroundmenu->insertItem(i18n("Standard map"), option_map_map);
+	backgroundmenu->insertItem(i18n("Harold's return"), option_map_haroldsreturn);
+
 	displaymenu = new KPopupMenu(this);
 	displaymenu->insertItem(i18n("Map"), option_map);
 	displaymenu->insertItem(i18n("Knights"), option_knights);
@@ -49,6 +57,7 @@ MainWindow::MainWindow()
 	displaymenu->setItemChecked(option_possession, true);
 
 	optionmenu = new KPopupMenu(this);
+	optionmenu->insertItem(i18n("Background"), backgroundmenu);
 	optionmenu->insertItem(i18n("Display mode"), displaymenu);
 	optionmenu->insertItem(i18n("Animation"), option_animation);
 
@@ -60,9 +69,10 @@ MainWindow::MainWindow()
 
 	statusBar()->insertItem(i18n("Not yet playing"), status_state, 0);
 	statusBar()->insertItem(i18n("No level selected"), status_level, 0);
-	statusBar()->insertItem(i18n("Wait..."), status_task, 0);
+	statusBar()->insertItem(i18n("Select a level..."), status_task, 0);
 
 	connect(gamemenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	connect(backgroundmenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(displaymenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(optionmenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(map, SIGNAL(signalMove(int, int, int, int)), SLOT(slotMove(int, int, int, int)));
@@ -107,6 +117,15 @@ void MainWindow::slotMenu(int id)
 			optionmenu->setItemChecked(option_animation, !optionmenu->isItemChecked(option_animation));
 			map->setAnimation(optionmenu->isItemChecked(option_animation));
 			break;
+		case option_map_map:
+			map->setBackground("map");
+			break;
+		case option_map_bayeux:
+			map->setBackground("bayeux");
+			break;
+		case option_map_haroldsreturn:
+			map->setBackground("haroldsreturn");
+			break;
 	}
 }
 
@@ -130,21 +149,40 @@ void MainWindow::levelSelector()
 	}
 	else
 	{
-		Level *level = new Level();
+		QDir dir(GGZDATADIR "/fyrdman");
+		QStringList s = dir.entryList();
+		for(QStringList::iterator it = s.begin(); it != s.end(); it++)
+		{
+			Level *level = new Level();
+			bool ret = level->loadFromFile(QString("%1/fyrdman/%2").arg(GGZDATADIR).arg((*it)));
+			if(ret)
+			{
+				m_levels.append(level);
+				l.addLevel(level);
+			}
+			else delete level;
+		}
+
+		/*Level *level = new Level();
 		level->loadFromFile(GGZDATADIR "/fyrdman/battle_of_hastings");
 		m_levels.append(level);
-		l.addLevel(level);
+		l.addLevel(level);*/
 	}
 	ret = l.exec();
 	if(ret == QDialog::Accepted)
 	{
+		statusBar()->changeItem(i18n("Level: %1").arg(l.level()), status_level);
 		if(network)
 		{
 			ggz_write_int(network->fd(), Network::sndmap);
 			ggz_write_string(network->fd(), l.level().latin1());
+			statusBar()->changeItem(i18n("Waiting for players"), status_state);
 		}
-		statusBar()->changeItem(i18n("Level: %1").arg(l.level()), status_level);
-		statusBar()->changeItem(i18n("Waiting for players"), status_state);
+		else
+		{
+			statusBar()->changeItem(i18n("Game started"), status_state);
+			statusBar()->changeItem(i18n("Select a knight"), status_task);
+		}
 
 		for(Level *le = m_levels.first(); le; le = m_levels.next())
 			if(le->title() == l.level()) map->setupMap(le);
@@ -163,6 +201,8 @@ void MainWindow::enableNetwork()
 
 	gamemenu->setItemEnabled(game_new, false);
 	gamemenu->setItemEnabled(game_sync, true);
+
+	statusBar()->insertItem(i18n("Wait..."), status_task, 0);
 }
 
 void MainWindow::slotData()
@@ -310,6 +350,84 @@ void MainWindow::slotMove(int x, int y, int x2, int y2)
 		ggz_write_int(network->fd(), x2);
 		ggz_write_int(network->fd(), y2);
 		statusBar()->changeItem(i18n("Move sent"), status_state);
+	}
+	else
+	{
+		statusBar()->changeItem(i18n("Calculating..."), status_task);
+
+		statusBar()->changeItem(i18n("Checking move..."), status_state);
+		checkMove();
+		statusBar()->changeItem(i18n("Move checked"), status_state);
+
+		statusBar()->changeItem(i18n("Moving AI..."), status_state);
+		aiMove();
+		statusBar()->changeItem(i18n("AI moved"), status_state);
+
+		statusBar()->changeItem(i18n("Wait..."), status_task);
+	}
+}
+
+bool MainWindow::checkMove()
+{
+	int x, y, x2, y2;
+	Level *l;
+	int self;
+
+	self = 1;
+
+	l = map->level();
+
+	x = m_movex;
+	y = m_movey;
+	x2 = m_movex2;
+	y2 = m_movey2;
+
+	if((x < 0) || (y < 0) || (x > l->width()) || (y > l->height())) return false;
+	if((x2 < 0) || (y2 < 0) || (x2 > l->width()) || (y2 > l->height())) return false;
+
+	if(((abs(x2 - x) > 1) || (abs(y2 - y) > 2))) return false;
+	if((abs(x2 - x) == 1) && (abs(y2 - y) > 1)) return false;
+	if((abs(y2 - y) == 0) && (abs(x2 - x) > 0)) return false;
+	if((abs(y2 - y) == 2) && (abs(x2 - x) > 0)) return false;
+
+//	if((x2 - x == -1) && (y2 - y == -1) && (y % 2 != 0)) return false;
+//	if((x2 - x == -1) && (y2 - y == 1) && (y % 2 != 0)) return false;
+//	if((x2 - x == 1) && (y2 - y == -1) && (y % 2 == 0)) return false;
+
+	kdDebug() << "cell(x,y)=" << l->cell(x, y) << endl;
+	kdDebug() << "cell(x2,y2)=" << l->cell(x2, y2) << endl;
+	kdDebug() << "cellboard(x2,y2)=" << l->cellboard(x2, y2) << endl;
+
+	if(l->cell(x, y) == -1) return false;
+	if(l->cell(x2, y2) == self) return false;
+	if(l->cellboard(x2, y2) == -1) return false;
+
+	// ...
+
+	map->move(m_movex, m_movey, m_movex2, m_movey2);
+
+	return true;
+}
+
+void MainWindow::aiMove()
+{
+	Level *l;
+	int self;
+	
+	self = -1;
+
+	l = map->level();
+
+	for(int bot = 0; bot < l->players(); bot++)
+	{
+		if(bot == self) continue;
+
+		for(int x = 0; x < l->width(); x++)
+			for(int y = 0; y < l->height(); y++)
+				if(l->cell(x, y) == bot)
+				{
+					// ...
+				}
 	}
 }
 

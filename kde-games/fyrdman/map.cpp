@@ -23,7 +23,7 @@ Map::Map(QWidget *parent, const char *name)
 
 	m_picked = false;
 
-	setupMap(NULL);
+	setBackground("bayeux");
 }
 
 Map::~Map()
@@ -67,12 +67,16 @@ void Map::mousePressEvent(QMouseEvent *e)
 						m_x = i;
 						m_y = j;
 						m_picked = true;
+						//repaint();
+						setupMap(m_level);
 					}
 					else
 					{
 						m_x2 = i;
 						m_y2 = j;
 						m_picked = false;
+						//repaint();
+						setupMap(m_level);
 						if((m_x != m_x2) || (m_y != m_y2))
 						{
 							emit signalMove(m_x, m_y, m_x2, m_y2);
@@ -100,7 +104,7 @@ void Map::setupMap(Level *level)
 	const QPixmap *pix;
 	QPixmap pix2, pix3;
 
-	setBackgroundPixmap(QPixmap(GGZDATADIR "/fyrdman/bayeux.png"));
+	setBackgroundPixmap(QPixmap(QString("%1/fyrdman/%2.png").arg(GGZDATADIR).arg(m_background)));
 
 	m_level = level;
 	if(!level)
@@ -143,6 +147,10 @@ void Map::setupMap(Level *level)
 				if(x >= 0)
 				{
 					p.setBrush(QColor(x % 2 + 1, x % 2 + 1, x % 2 + 1));
+					if((m_picked) && (i == m_x) && (j == m_y))
+					{
+						p.setBrush(QColor(x % 2 + 3, x % 2 + 3, x % 2 + 3));
+					}
 
 					QPointArray a(6);
 					a.putPoints(0, 6,
@@ -178,17 +186,23 @@ void Map::setupMap(Level *level)
 				if(qRed(tripel))
 				{
 					tripel2 = xim2.pixel(i, j);
-					if(qRed(tripel) == 1)
+					if((qRed(tripel) == 1) || (qRed(tripel) == 3))
 					{
 						r = qRed(tripel2) + 40;
 						g = qGreen(tripel2) - 40;
 						b = qBlue(tripel2) - 40;
 					}
-					else if(qRed(tripel) == 2)
+					else if((qRed(tripel) == 2) || (qRed(tripel) == 4))
 					{
 						r = qRed(tripel2) - 40;
 						g = qGreen(tripel2) - 40;
 						b = qBlue(tripel2) + 40;
+					}
+					if((qRed(tripel) == 3) || (qRed(tripel) == 4))
+					{
+						r = r + (i % 2) * 35 + (j % 2) * 35;
+						g = g + (i % 2) * 35 + (j % 2) * 35;
+						b = b + (i % 2) * 35 + (j % 2) * 35;
 					}
 					if(r < 0) r = 0;
 					if(g < 0) g = 0;
@@ -313,6 +327,12 @@ void Map::setAnimation(bool animation)
 	setupMap(m_level);
 }
 
+void Map::setBackground(QString background)
+{
+	m_background = background;
+	setupMap(m_level);
+}
+
 void Map::move(int x, int y, int x2, int y2)
 {
 	if(m_level)
@@ -322,5 +342,10 @@ void Map::move(int x, int y, int x2, int y2)
 		m_level->setCell(x2, y2, tmp);
 		setupMap(m_level);
 	}
+}
+
+Level *Map::level()
+{
+	return m_level;
 }
 

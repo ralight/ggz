@@ -8,7 +8,7 @@ class Level
 		~Level();
 
 		void loadFromNetwork(int fd);
-		void loadFromFile(const char *filename);
+		bool loadFromFile(const char *filename);
 
 		const char *title();
 		const char *version();

@@ -16,8 +16,10 @@ class Map : public QWidget
 		void setKnights(bool knights);
 		void setPossession(bool possession);
 		void setAnimation(bool animation);
+		void setBackground(QString background);
 
 		void setupMap(Level *level);
+		Level *level();
 
 		void move(int x, int y, int x2, int y2);
 
@@ -34,6 +36,7 @@ class Map : public QWidget
 		bool m_picked;
 		int m_x, m_y, m_x2, m_y2;
 		Level *m_level;
+		QString m_background;
 };
 
 #endif
