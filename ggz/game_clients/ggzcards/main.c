@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2475 2001-09-14 07:18:43Z jdorje $
+ * $Id: main.c 2694 2001-11-08 08:25:23Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -243,7 +243,8 @@ void menubar_message(const char *mark, const char *msg)
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(label);
 
-		gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
+		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox),
+				  label);
 
 		ok_button = gtk_button_new_with_label("OK");
 		gtk_widget_ref(ok_button);
@@ -251,8 +252,10 @@ void menubar_message(const char *mark, const char *msg)
 					 ok_button,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(ok_button);
-		gtk_box_pack_start(GTK_BOX(vbox), ok_button, FALSE, FALSE, 0);
 		gtk_widget_set_usize(ok_button, 64, -2);
+
+		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area),
+				  ok_button);
 
 		gtk_signal_connect_object(GTK_OBJECT(dlg), "delete_event",
 					  GTK_SIGNAL_FUNC(gtk_widget_hide),
