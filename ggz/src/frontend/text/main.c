@@ -45,14 +45,14 @@
 
 
 /* Termination handler */
-RETSIGTYPE term_handle(int signum)
+static RETSIGTYPE term_handle(int signum)
 {
         ggzcore_destroy(); 
         output_shutdown(); 
 	exit(1);
 }
 
-char* string_cat(char *s1, char *s2)
+static char* string_cat(char *s1, char *s2)
 {
 	char *new;
 
@@ -62,8 +62,9 @@ char* string_cat(char *s1, char *s2)
 	
 	return new;
 }
-	
-void init_debug(void)
+
+#if 0
+static void init_debug(void)
 {
 	char *default_file, *debug_file;
 	const char **debug_types;
@@ -82,7 +83,7 @@ void init_debug(void)
 	ggz_free(debug_file);
 	ggz_free(default_file);
 }
-
+#endif
 
 int main(int argc, char *argv[])
 {

@@ -23,15 +23,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-#include <config.h>
-#include <ggzcore.h>
-#include "server.h"
-#include "output.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <ggzcore.h>
+
+#include "output.h"
+#include "server.h"
+#include "state.h"
 
 
 extern GGZServer *server;
