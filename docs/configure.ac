@@ -1,10 +1,11 @@
 dnl Configuration for the GGZ Documentation
 dnl =======================================
 
-AC_INIT(configure.ac)
-AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(ggz-docs, 0.0.8pre)
-AM_CONFIG_HEADER(config.h)
+AC_INIT([GGZ documentation], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-docs])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
 
 dnl Options for building GGZ-Docs
 dnl =============================
@@ -49,7 +50,7 @@ AC_SUBST(EXTRA_SUBDIRS)
 dnl Create the Makefiles
 dnl ====================
 
-AC_OUTPUT(Makefile
+AC_CONFIG_FILES([Makefile
 	games/Makefile
 	games/hastings/Makefile
 	games/external-games/Makefile
@@ -62,7 +63,8 @@ AC_OUTPUT(Makefile
 	overview/Makefile
 	server/Makefile
 	server/hosting/Makefile
-	articles/Makefile)
+	articles/Makefile])
+AC_OUTPUT
 
 dnl Report success
 dnl ==============
