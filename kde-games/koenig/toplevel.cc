@@ -170,7 +170,8 @@ void TopLevel::slotFlag()
 
 void TopLevel::slotDraw()
 {
-	game->answerDraw(1);
+	if(game)
+		game->answerDraw(1);
 }
 
 void TopLevel::slotNetDraw()
