@@ -30,6 +30,7 @@ dnl ======================
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(sys/time.h unistd.h)
+AC_CHECK_HEADERS(openssl/ssl.h, , enable_gensec=no)
 
 
 dnl Check for typedefs, structures, and compiler characteristics
@@ -143,4 +144,14 @@ AC_OUTPUT(Makefile
 		metaserv/minidom/Makefile
 		metaserv/metaserv/Makefile
 		man/Makefile)
+
+dnl Output Status
+dnl =============
+
+echo "AGRUE.......$enable_agrue"
+echo "Grubby......$enable_grubby"
+echo "GenSecure...$enable_gensec"
+echo "TelGGZ......$enable_telggz"
+echo "MetaServ....$enable_metaserv"
+echo "Debug.......$enable_debug"
 
