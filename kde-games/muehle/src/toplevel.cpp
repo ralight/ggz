@@ -47,10 +47,17 @@ Toplevel::Toplevel()
 	QWidget *root;
 	QVBoxLayout *vbox;
 
+	QString pixnew = d.findResource("icon", "hicolor/16x16/mimetypes/Mime.png");
+	QString pixexit = d.findResource("icon", "hicolor/16x16/actions/exit.png");
+	QString pixvariant = d.findResource("icon", "hicolor/16x16/actions/gear.png");
+	QString pixtheme = d.findResource("icon", "hicolor/16x16/actions/imagegallery.png");
+	QString pixaction = d.findResource("icon", "hicolor/16x16/actions/wizard.png");
+
+
 	menu_game = new KPopupMenu(this);
-	menu_game->insertItem(i18n("Start new game"), menugamenew);
+	menu_game->insertItem(QIconSet(QPixmap(pixnew)), i18n("Start new game"), menugamenew);
 	menu_game->insertSeparator();
-	menu_game->insertItem(i18n("Quit"), menugamequit);
+	menu_game->insertItem(QIconSet(QPixmap(pixexit)), i18n("Quit"), menugamequit);
 
 	counter = 0;
 	menu_variants = new KPopupMenu(this);
@@ -66,7 +73,7 @@ Toplevel::Toplevel()
 		QString description = conf.readEntry("description");
 		int width = conf.readNumEntry("width");
 		int height = conf.readNumEntry("height");
-		menu_variants->insertItem(description, menuvariants + counter++);
+		menu_variants->insertItem(QIconSet(QPixmap(pixvariant)), description, menuvariants + counter++);
 	}
 
 	counter = 0;
@@ -79,12 +86,12 @@ Toplevel::Toplevel()
 	{
 		tconf.setGroup((*it));
 		QString name = tconf.readEntry("Name");
-		menu_theme->insertItem(name, menuthemes + counter++);
+		menu_theme->insertItem(QIconSet(QPixmap(pixtheme)), name, menuthemes + counter++);
 	}
 
 	menu_player = new KPopupMenu(this);
-	menu_player->insertItem(i18n("Offer remis"), menuplayerremis);
-	menu_player->insertItem(i18n("Give up"), menuplayerloose);
+	menu_player->insertItem(QIconSet(QPixmap(pixaction)), i18n("Offer remis"), menuplayerremis);
+	menu_player->insertItem(QIconSet(QPixmap(pixaction)), i18n("Give up"), menuplayerloose);
 
 	menuBar()->insertItem(i18n("Game"), menu_game, 1);
 	menuBar()->insertItem(i18n("Variants"), menu_variants, 2);
