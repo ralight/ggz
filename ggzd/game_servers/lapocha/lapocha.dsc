@@ -1,18 +1,18 @@
-# $Id: lapocha.dsc 4548 2002-09-13 16:19:50Z jdorje $
+# $Id: lapocha.dsc 4757 2002-09-29 11:53:43Z dr_maux $
 
 [GameInfo]
 Author = Rich Gade
 Description = GGZ Game Module for La Pocha
 Homepage = http://ggz.sourceforge.net/games/lapocha/
 Name = LaPocha
-Version = 0.0.1
+Version = 0.0.2
 
 [LaunchInfo]
 ExecutablePath = ggzd.lapocha
 
 [Protocol]
 Engine = LaPocha
-Version = 2
+Version = 3
 
 [TableOptions]
 AllowLeave = 1
