@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 2908 2001-12-17 01:50:36Z jdorje $
+ * $Id: dlg_about.c 2912 2001-12-17 03:16:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -53,6 +53,7 @@ GtkWidget *create_dlg_about(void)
 	 */
 	vbox = GTK_DIALOG(dialog)->vbox;
 	gtk_object_set_data(GTK_OBJECT(dialog), "vbox", vbox);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
 	/*
@@ -95,7 +96,6 @@ GtkWidget *create_dlg_about(void)
 	gtk_widget_ref(body_label);
 	gtk_object_set_data_full(GTK_OBJECT(dialog), "body_label", body_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_container_set_border_width(GTK_CONTAINER(dialog), 10);
 	gtk_widget_show(body_label);
 	gtk_box_pack_start(GTK_BOX(vbox), body_label, FALSE, FALSE, 0);
 	gtk_label_set_justify(GTK_LABEL(body_label), GTK_JUSTIFY_LEFT);
@@ -106,7 +106,6 @@ GtkWidget *create_dlg_about(void)
 	action_area = GTK_DIALOG(dialog)->action_area;
 	gtk_object_set_data(GTK_OBJECT(dialog), "dialog_action_area1",
 			    action_area);
-	gtk_container_set_border_width(GTK_CONTAINER(action_area), 10);
 	gtk_widget_show(action_area);
 
 	/*
