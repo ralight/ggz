@@ -1475,7 +1475,8 @@ void game_end_hand(void)
 				/* if you take all 26 points you "shoot the moon" and earn -26 instead.
 				 * TODO: option of giving everyone else 26.  It could be handled as a bid... */
 				game.players[p].score += score;
-				set_global_message("", "%s shot the moon.", ggz_seats[p].name);
+				if (score == -26)
+					set_global_message("", "%s shot the moon.", ggz_seats[p].name);
 			}
 			break;
 		default:
