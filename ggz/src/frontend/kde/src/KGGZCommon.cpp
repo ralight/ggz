@@ -47,6 +47,7 @@
 #endif
 #include <unistd.h>
 #include <stdio.h>
+#include <errno.h>
 
 // returns a string describing the current state
 // taken from ggz-txt
@@ -162,6 +163,7 @@ int KGGZCommon::launchProcess(const char* process, char* processpath)
 	{
 		result = execv(processpath, ggzdarg);
 		KGGZDEBUG("execv result: %i\n", result);
+		exit(-1);
 	}
 	else
 	{
@@ -187,7 +189,7 @@ int KGGZCommon::launchProcess(const char* process, char* processpath)
 
 // tries to kill all running ggzd processes
 // sends sigterm first, like the kill(1) command
-// returns -1 on failure, 1 on success, and 0 if only a sigkill was successful
+// returns < 0 on failure, 1 on success, and 0 if only a sigkill was successful
 int KGGZCommon::killProcess(const char* process)
 {
 	pid_t pid;
@@ -213,12 +215,18 @@ int KGGZCommon::killProcess(const char* process)
 				ret = kill(pid, SIGTERM);
 				KGGZDEBUG("SIGKILL-Ret is: %i\n", ret);
 				sigterm = 0;
+				if(ret == -1)
+				{
+					if(errno == EPERM) return -2;
+					if(errno == ESRCH) return -3;
+					return -1;
+				}
 			}
 			counter++;
 		}
 	}
 	if(counter) return sigterm;
-	return -1;
+	return -3;
 }
 
 const char* KGGZCommon::append(const char* string1, const char* string2)

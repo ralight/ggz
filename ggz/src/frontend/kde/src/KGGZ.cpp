@@ -233,15 +233,13 @@ void KGGZ::menuServerLaunch()
 
 	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 	KGGZCommon::clear();
-	process = config->read("Environment", "Server", (char*)NULL);
+	process = config->read("Environment", "Server", "/usr/bin/ggzd");
 	delete config;
 
-	if(!process)
+	if((!process) && (!strlen(process)))
 	{
 		KMessageBox::information(this, i18n("GGZ Gaming Zone server not found.\n"
-			"Please get it from http://ggz.sourceforge.net.\n"
-			"Make sure to add its path to kggz.rc!\n"
-			"See help for details.\n"), "Information");
+			"Please configure it in the settings dialog.\n"), i18n("Note"));
 		return;
 	}
 
@@ -250,10 +248,10 @@ void KGGZ::menuServerLaunch()
 	switch(result)
 	{
 		case -1:
-			KMessageBox::error(this, i18n("Could not start ggzd!"), "Error!");
+			KMessageBox::error(this, i18n("Could not start the server!"), "Error!");
 			break;
 		case -2:
-			KMessageBox::error(this, i18n("The ggzd server is already running!"), "Error!");
+			KMessageBox::error(this, i18n("The GGZ server is already running!"), "Error!");
 			break;
 		default:
 			emit signalMenu(MENUSIG_SERVERSTART);
@@ -268,8 +266,15 @@ void KGGZ::menuServerKill()
 	result = KGGZCommon::killProcess("ggzd");
 	switch(result)
 	{
+		case -3:
+			KMessageBox::error(this, i18n("The server isn't running anymore."), i18n("Error!"));
+			emit signalMenu(MENUSIG_SERVERSTOP);
+			break;
+		case -2:
+			KMessageBox::error(this, i18n("You don't have the privileges to stop the server."), i18n("Error!"));
+			break;
 		case -1:
-			KMessageBox::error(this, i18n("An error occured! Sure it runs? Sure you don't need to be root?"), i18n("Error!"));
+			KMessageBox::error(this, i18n("An unknown error occured."), i18n("Error!"));
 			break;
 		case 0:
 			KMessageBox::error(this, i18n("Could only kill server via sigkill!"), i18n("Error!"));
@@ -626,6 +631,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			KGGZDEBUG("SHALL I QUIT THE GAME HERE???\n");
 			eventLeaveGame();
 			m_workspace->widgetChat()->receive(NULL, i18n("Left table"), KGGZChat::RECEIVE_ADMIN);
+			emit signalMenu(MENUSIG_GAMEOVER);
 			break;
 		case GGZCoreRoom::tableleavefail:
 			KGGZDEBUG("tableleavefail\n");
@@ -790,10 +796,17 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::statechange:
 			KGGZDEBUG("statechange\n");
 			KGGZDEBUG("State is now: %s\n", KGGZCommon::state(kggzserver->state()));
-			if(kggzserver->state() == GGZ_STATE_IN_ROOM)
-			{
+			// Spades-type Workaround
+			//if(kggzserver->state() == GGZ_STATE_IN_ROOM)
+			//{
+				//KGGZDEBUG(" -- Do we have a game? %i\n", kggzgame);
+				//KGGZDEBUG(" -- Do we have a table? %i\n", kggzserver->isAtTable());
+				//if(kggzroom) kggzroom->leaveTable();
+			//}
+			//if(kggzserver->state() == GGZ_STATE_IN_ROOM)
+			//{
 				//m_workspace->widgetLogo()->setBackgroundPixmap(QPixmap(NULL));
-			}
+			//}
 			emit signalState(kggzserver->state());
 			break;
 		default:
@@ -1358,6 +1371,7 @@ void KGGZ::menuGrubby()
 	m_grubby = new KGGZGrubby(NULL, "KGGZGrubby");
 	m_grubby->show();
 	listPlayers();
+	listTables();
 	connect(m_grubby, SIGNAL(signalAction(const char*, const char*, int)), SLOT(slotGrubby(const char*, const char*, int)));
 }
 
@@ -1416,7 +1430,7 @@ void KGGZ::eventLeaveGame()
 	listPlayers();
 	listTables();
 	m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
-	emit signalMenu(MENUSIG_GAMEOVER);
+	//emit signalMenu(MENUSIG_GAMEOVER);
 }
 
 void KGGZ::eventLeaveRoom()
