@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2816 2001-12-09 06:06:41Z jdorje $
+ * $Id: table.c 2846 2001-12-10 03:18:21Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -313,9 +313,11 @@ static void* table_new_thread(void *index_ptr)
 			gname, table->owner);
 		free(gname);
 	}
-	else 
+	else {
 		dbg_msg(GGZ_DBG_TABLE, "Table %d failed to start game module", 
 			table->index);
+		table_launch_event(table->owner, E_LAUNCH_FAIL, 0);
+	}
 	
 	table_remove(table);
 	table_free(table);
@@ -331,7 +333,7 @@ static int table_start_game(GGZTable *table)
 	char *args[] = {"logmod", NULL};
 #endif
 	char *path, **args;
-	int type, n_args, i, num_seats;
+	int type, n_args, i, num_seats, status = 0;
 	GGZSeat seat;
 
 	pthread_rwlock_wrlock(&table->lock);
@@ -383,19 +385,16 @@ static int table_start_game(GGZTable *table)
         }
 
 	/* And start the game */
-	ggzdmod_set_module(table->ggzdmod, args);	
-
-	if (ggzdmod_connect(table->ggzdmod) < 0) {
-		/* FIXME: we _need_ to handle this error!  It could
-		   happen very easily! */
-	}
+	ggzdmod_set_module(table->ggzdmod, args);
+	if (ggzdmod_connect(table->ggzdmod) < 0)
+		status = -1;
 
 	/* Free arguments */
 	for (i = 0; i < n_args + 1; i++)
 		free(args[i]);
 	free(args);
 
-	return 0;
+	return status;
 }
 
 
