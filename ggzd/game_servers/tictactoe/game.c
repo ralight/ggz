@@ -291,8 +291,8 @@ int game_bot_move(int me)
 	/* Local copy of the boaard to rotate*/
 	memcpy(board, ttt_game.board, 9);
 	
+	/* Checking for win */
 	/* Four possible board rotations to check */
-	ggz_debug("Checking for win");
 	for (i = 3; i >= 0; i--) {
 		
 		game_rotate_board(board);
@@ -326,21 +326,16 @@ int game_bot_move(int me)
 			move = 1;
 			break;
 		}
-
-		ggz_debug("Nowhere to win in rotation %d", i);
 	}
 	
 	/* We found a move.  Now "unrotate" it */
 	if (move != -1) {
-		while (i-- > 0) {
-			ggz_debug("Rotating move: %d ", move);
+		while (i-- > 0)
 			move = 2 + 3 * (move % 3) - move / 3;
-			ggz_debug("...into move: %d ", move);
-		}
 		return move;
 	}
 		
-	ggz_debug("Checking for immediate block");
+	/* Checking for immediate block */
 	for (i = 3; i >= 0; i--) {
 
 		game_rotate_board(board);
@@ -374,22 +369,17 @@ int game_bot_move(int me)
 			move = 1;
 			break;
 		}
-
-		ggz_debug("No immediate block in rotation %d", i);
 	}
 
 	/* FIXME: If not playing perfect, move here */
 	/* We found a move.  Now "unrotate" it */
 	if (move != -1) {
-		while (i-- > 0) {
-			ggz_debug("Rotating move: %d ", move);
+		while (i-- > 0)
 			move = 2 + 3 * (move % 3) - move / 3;
-			ggz_debug("...into move: %d ", move);
-		}
 		return move;
 	}
 	
-	ggz_debug("Checking for future block");
+	/* Checking for future block */
 	for (i = 3; i >= 0; i--) {
 
 		game_rotate_board(board);
@@ -433,18 +423,12 @@ int game_bot_move(int me)
 			move = 1;
 			break;
 		}
-
-		
-		ggz_debug("No future block in rotation %d", i);
 	}
 	
 	/* We found a move.  Now "unrotate" it */
 	if (move != -1) {
-		while (i-- > 0) {
-			ggz_debug("Rotating move: %d ", move);
+		while (i-- > 0)
 			move = 2 + 3 * (move % 3) - move / 3;
-			ggz_debug("...into move: %d ", move);
-		}
 	} else {
 		/* If we didn't match a pattern, just pick something*/
 		if (board[4] == -1) {
