@@ -965,21 +965,21 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 					i18n("You are welcome as a new GGZ Gaming Zone player.\n"
 						"Your personal password is: %1").arg(kggzserver->password()),
 					i18n("Information"));
-			}
 #ifdef KGGZ_WALLET
-		w = KWallet::Wallet::openWallet("kggz");
-		if(w)
-		{
-			if(!w->hasFolder("passwords"))
-				w->createFolder("passwords");
-			w->setFolder("passwords");
-			w->writePassword(m_save_hostname, kggzserver->password());
-		}
-		else KMessageBox::error(this,
-			i18n("The wallet could not be opened to insert the password (%1).").arg(
-				kggzserver->password()),
-			i18n("Connection"));
+				w = KWallet::Wallet::openWallet("kggz");
+				if(w)
+				{
+					if(!w->hasFolder("passwords"))
+						w->createFolder("passwords");
+					w->setFolder("passwords");
+					w->writePassword(m_save_hostname, kggzserver->password());
+				}
+				else KMessageBox::error(this,
+					i18n("The wallet could not be opened to insert the password (%1).").arg(
+						kggzserver->password()),
+					i18n("Connection"));
 #endif
+			}
 			buffer.sprintf(i18n("Logged in as %s"), m_save_username);
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_INFO);
 			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_INFO);
