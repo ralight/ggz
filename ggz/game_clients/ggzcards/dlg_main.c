@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: dlg_main.c 3307 2002-02-11 00:44:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -238,7 +238,11 @@ GtkWidget *create_dlg_main(void)
 	gtk_signal_connect(GTK_OBJECT(fixed1), "expose_event",
 			   GTK_SIGNAL_FUNC(on_fixed1_expose_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(fixed1), "style_set",
-			   GTK_SIGNAL_FUNC(on_fixed1_style_set), NULL);
+			   GTK_SIGNAL_FUNC(on_fixed1_redraw_event), NULL);
+#if 0 /* We need some kind of redraw, I think, but this doesn't draw correctly. */
+	gtk_signal_connect(GTK_OBJECT(fixed1), "size_allocate",
+			   GTK_SIGNAL_FUNC(on_fixed1_redraw_event), NULL);
+#endif
 
 	return dlg_main;
 }

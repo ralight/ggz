@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.h 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: cb_main.h 3307 2002-02-11 00:44:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -41,5 +41,5 @@ gboolean on_fixed1_button_press_event(GtkWidget * widget,
 				      gpointer user_data);
 gboolean on_fixed1_expose_event(GtkWidget * widget, GdkEventExpose * event,
 				gpointer user_data);
-void on_fixed1_style_set(GtkWidget * widget, GtkStyle * previous_style,
-			 gpointer user_data);
+void on_fixed1_redraw_event(GtkWidget * widget, GtkStyle * previous_style,
+			    gpointer user_data);
