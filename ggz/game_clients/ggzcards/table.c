@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: table.c 3349 2002-02-13 07:32:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -229,7 +229,13 @@ void table_setup(void)
 	if (ggzcards.num_players == 0 || table_max_hand_size == 0)
 		return;
 		
-	assert(game_started);
+	if (!game_started) {
+		/* If we join a game in progress, this can happen.  Probably
+		   it should be fixed... */
+		ggz_error_msg("ERROR - table_setup() called "
+		              "without a game started.");
+		game_started = TRUE;	
+	}
 
 	ggz_debug("table", "Setting up table." "  Width and height are %d."
 		  "  %d players.", get_table_width(), ggzcards.num_players);
