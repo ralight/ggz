@@ -41,15 +41,6 @@ static GGZHookReturn _ggzcore_room_event(GGZRoom *room, GGZRoomEvent id,
 
 /* Publicly exported functions */
 
-int ggzcore_room_get_num(GGZRoom *room)
-{
-	if (!room)
-		return -1;
-
-	return _ggzcore_room_get_num(room);
-}
-
-
 char* ggzcore_room_get_name(GGZRoom *room)
 {
 	if (!room)
@@ -68,10 +59,10 @@ char* ggzcore_room_get_desc(GGZRoom *room)
 }
 
 
-int ggzcore_room_get_gametype(GGZRoom *room)
+GGZGameType* ggzcore_room_get_gametype(GGZRoom *room)
 {
 	if (!room)
-		return -1;
+		return NULL;
 
 	return _ggzcore_room_get_game(room);
 }
@@ -289,7 +280,7 @@ struct _GGZServer* _ggzcore_room_get_server(struct _GGZRoom *room)
 }
 
 
-unsigned int _ggzcore_room_get_num(struct _GGZRoom *room)
+unsigned int _ggzcore_room_get_id(struct _GGZRoom *room)
 {
 	return room->id;
 }
@@ -301,9 +292,9 @@ char* _ggzcore_room_get_name(struct _GGZRoom *room)
 }
 
 
-unsigned int _ggzcore_room_get_game(struct _GGZRoom *room)
+struct _GGZGameType* _ggzcore_room_get_game(struct _GGZRoom *room)
 {
-	return room->game;
+	return _ggzcore_server_get_type_by_id(room->server, room->game);
 }
 
 

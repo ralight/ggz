@@ -1,9 +1,4 @@
-- finish up room object: player and table lists
-
-- eliminate USER events.  User actions will be performed via function
-  calls and will take place immediately.
-
-- remove event.c
+- finish up room object: table lists updates
 
 - implement GGZ_NET_ERROR event
 
@@ -24,5 +19,7 @@
   called.  We can use this mechanism to pass information such as
   whether a verbose listing was requested, or what room was requested
   (this is really a frontend TODO)
+
+- Reimplement net functionality as its own object
 
 

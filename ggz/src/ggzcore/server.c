@@ -645,6 +645,25 @@ void _ggzcore_server_list_tables(GGZServer *server, const int type, const char g
 }
 
 
+struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
+						const unsigned int id)
+{
+	return NULL;
+}
+
+struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
+						    const unsigned int id)
+{
+	int i;
+
+	for (i = 0; i < server->num_gametypes; i++)
+		if (_ggzcore_gametype_get_id(server->gametypes[i]) == id)
+			return server->gametypes[i];
+
+	return NULL;
+}
+
+
 void _ggzcore_server_chat(GGZServer *server, 
 			  const GGZChatOp opcode,
 			  const char *player,

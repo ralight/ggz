@@ -39,7 +39,7 @@ struct _GGZPlayer {
 	char* name;	
 
 	/* Pointer to table at whoch player is sitting */
-	struct _GGZTable *table;
+	int table
 };
 
 

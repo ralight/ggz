@@ -92,6 +92,13 @@ void _ggzcore_server_list_players(GGZServer *server);
 
 void _ggzcore_server_list_tables(GGZServer *server, const int type, const char global);
 
+struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
+						const unsigned int id);
+
+struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
+						    const unsigned int id);
+
+
 void _ggzcore_server_chat(GGZServer *server, 
 			  const GGZChatOp opcode,
 			  const char *player,

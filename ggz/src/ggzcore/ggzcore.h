@@ -301,22 +301,20 @@ void ggzcore_room_chat(GGZRoom *room,
 
 
 /* Functions for querying a GGZRoom object for information */
-int        ggzcore_room_get_num(GGZRoom *room);
-char*      ggzcore_room_get_name(GGZRoom *room);
-char*      ggzcore_room_get_desc(GGZRoom *room);
-int        ggzcore_room_get_gametype(GGZRoom *room);
-int        ggzcore_room_get_num_players(GGZRoom *room);
-char**     ggzcore_room_get_player_names(GGZRoom *room);
-GGZPlayer* ggzcore_room_get_nth_player(GGZRoom *room, const unsigned int num);
-int        ggzcore_room_get_num_tables(GGZRoom *room);
-GGZTable*  ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
+char*        ggzcore_room_get_name(GGZRoom *room);
+char*        ggzcore_room_get_desc(GGZRoom *room);
+GGZGameType* ggzcore_room_get_gametype(GGZRoom *room);
+int          ggzcore_room_get_num_players(GGZRoom *room);
+char**       ggzcore_room_get_player_names(GGZRoom *room);
+GGZPlayer*   ggzcore_room_get_nth_player(GGZRoom *room, const unsigned int num);
+int          ggzcore_room_get_num_tables(GGZRoom *room);
+GGZTable*    ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
 
 
 char*     ggzcore_player_get_name(GGZPlayer *player);
 GGZTable* ggzcore_player_get_table(GGZPlayer *player);
 
 
-int          ggzcore_table_get_num(GGZTable *table);
 GGZGameType* ggzcore_table_get_type(GGZTable *table);
 char         ggzcore_table_get_state(GGZTable *table);
 int          ggzcore_table_get_seats(GGZTable *table);
@@ -326,7 +324,6 @@ char*        ggzcore_table_get_desc(GGZTable *table);
 
 
 /* These function are lookups to gametype information. */
-int    ggzcore_gametype_get_num(GGZGameType *type);
 char*  ggzcore_gametype_get_name(GGZGameType *type);
 char*  ggzcore_gametype_get_version(GGZGameType *type);
 char*  ggzcore_gametype_get_author(GGZGameType *type);

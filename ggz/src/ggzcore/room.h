@@ -45,13 +45,13 @@ struct _GGZRoom {
 	/* Monitoring flag */
 	char monitor;
 
-	/* Room ID (index) */
+	/* Room ID on the server */
 	unsigned int id;
 
 	/* Name of room */
 	char *name;	
 	
-	/* Supported game type*/
+	/* Supported game type (ID on server) */
 	unsigned int game;
 
 	/* Room description */
@@ -104,13 +104,13 @@ int _ggzcore_room_remove_event_hook_id(struct _GGZRoom *room,
 
 
 /* Functions to retrieve room information */
-struct _GGZServer* _ggzcore_room_get_server(struct _GGZRoom *room);
-unsigned int       _ggzcore_room_get_num(struct _GGZRoom *room);
-char*              _ggzcore_room_get_name(struct _GGZRoom *room);
-unsigned int       _ggzcore_room_get_game(struct _GGZRoom *room); 
-char*              _ggzcore_room_get_desc(struct _GGZRoom *room);
-unsigned int       _ggzcore_room_get_num_players(struct _GGZRoom *room);
-struct _GGZPlayer* _ggzcore_room_get_nth_player(struct _GGZRoom *room, 
+struct _GGZServer*   _ggzcore_room_get_server(struct _GGZRoom *room);
+unsigned int         _ggzcore_room_get_id(struct _GGZRoom *room);
+char*                _ggzcore_room_get_name(struct _GGZRoom *room);
+struct _GGZGameType* _ggzcore_room_get_game(struct _GGZRoom *room); 
+char*                _ggzcore_room_get_desc(struct _GGZRoom *room);
+unsigned int         _ggzcore_room_get_num_players(struct _GGZRoom *room);
+struct _GGZPlayer*   _ggzcore_room_get_nth_player(struct _GGZRoom *room, 
 						const unsigned int num);
 
 unsigned int       _ggzcore_room_get_num_tables(struct _GGZRoom *room);

@@ -43,15 +43,6 @@ static void  _ggzcore_gametype_destroy(void* p);
 
 /* Publicly exported functions */
 
-int ggzcore_gametype_get_num(GGZGameType *type)
-{
-	if (!type)
-		return -1;
-
-	return _ggzcore_gametype_get_num(type);
-}
-
-
 char* ggzcore_gametype_get_name(GGZGameType *type)
 {
 	if (!type)
@@ -150,7 +141,7 @@ void _ggzcore_gametype_free(struct _GGZGameType *type)
 }
 
 
-unsigned int _ggzcore_gametype_get_num(struct _GGZGameType *type)
+unsigned int _ggzcore_gametype_get_id(struct _GGZGameType *type)
 {
 	return type->id;
 }

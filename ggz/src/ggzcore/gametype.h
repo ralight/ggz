@@ -92,7 +92,7 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 
 void _ggzcore_gametype_free(struct _GGZGameType *type);
 
-unsigned int _ggzcore_gametype_get_num(struct _GGZGameType *type);
+unsigned int _ggzcore_gametype_get_id(struct _GGZGameType *type);
 
 char*  _ggzcore_gametype_get_name(struct _GGZGameType *type);
 
