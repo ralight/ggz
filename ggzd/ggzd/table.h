@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 3078 2002-01-12 06:19:00Z jdorje $
+ * $Id: table.h 3183 2002-01-24 04:17:22Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -66,9 +66,6 @@ typedef struct GGZTable {
 
 	/* Data for communicating with game server module */
 	GGZdMod *ggzdmod;
-
-	/* Process ID of game server module running this game-table */
-	int pid;
 
 	/* Seat assignments */
 	char seats[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
