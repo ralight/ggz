@@ -40,6 +40,9 @@
 // KDE includes
 #include <klocale.h>
 
+// Qt includes
+#include <qpixmap.h>
+
 // System includes
 #include <string.h>
 #include <stdio.h>
@@ -73,6 +76,7 @@ void KGGZUsers::add(char *name)
 
 	KGGZDEBUG("USER CONTROL: ===========> add player %s\n", name);
 	tmp = new QListViewItem(itemmain, name);
+	tmp->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/player.png"));
 	itemmain->insertItem(tmp);
 	KGGZDEBUG("Added token %s\n", name);
 }

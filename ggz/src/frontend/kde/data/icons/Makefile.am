@@ -1,4 +1,4 @@
-SUBDIRS = . games
+SUBDIRS = . games players
 
 pix_DATA = \
 	browser.png \

@@ -55,6 +55,11 @@ class KGGZConnect : public QWidget
 		// Destructor
 		~KGGZConnect();
 
+		// start server locally?
+		int optionServer();
+		// secure connection?
+		int optionSecure();
+
 	protected slots:
 		// Accept the current input
 		void slotAccept();
@@ -77,7 +82,7 @@ class KGGZConnect : public QWidget
 
 	signals:
 		// Emitted if connection is wanted
-		void signalConnect(const char *host, int port, const char *username, const char *password, int type, int server);
+		void signalConnect(const char *host, int port, const char *username, const char *password, int type);
 
 	private:
 		// add (1) or delete (2) a server from the configuration list
@@ -87,6 +92,8 @@ class KGGZConnect : public QWidget
 		int m_loginmode;
 		// Whether to start server locally or not
 		QCheckBox *option_server;
+		// Whether to setup a secure connection or not
+		QCheckBox *option_tls;
 		// Lists all known connection profiles
 		QComboBox *profile_select;
 		// Allows in-place editing of profiles

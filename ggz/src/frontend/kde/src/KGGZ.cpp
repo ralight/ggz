@@ -171,7 +171,7 @@ void KGGZ::resizeEvent(QResizeEvent *e)
 	//m_menu->setGeometry(0, 0, e->size().width(), 20);
 }
 
-void KGGZ::slotConnected(const char *host, int port, const char *username, const char *password, int mode, int server)
+void KGGZ::slotConnected(const char *host, int port, const char *username, const char *password, int mode)
 {
 	int result;
 
@@ -179,11 +179,16 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 	/*delete m_connect;
 	m_connect = NULL;*/
 
-	if(server)
+	if(m_connect->optionServer())
 	{
 		KGGZDEBUG("Start server\n");
 		host = "localhost";
 		menuServerLaunch();
+	}
+
+	if(m_connect->optionSecure())
+	{
+		KMessageBox::information(this, i18n("Please note that secure connections are not implemented yet!"), i18n("Connection security"));
 	}
 
 	KGGZDEBUG("Connect with: host=%s port=%i username=%s password=%s mode=%i\n", host, port, username, password, mode);
@@ -302,8 +307,8 @@ KGGZDEBUG("releasecritical: menuconnect is: %i\n", m_connect);
 	if(!m_connect)
 	{
 		m_connect = new KGGZConnect(NULL, "connect");
-		connect(m_connect, SIGNAL(signalConnect(const char*, int, const char*, const char*, int, int)),
-			SLOT(slotConnected(const char*, int, const char*, const char*, int, int)));
+		connect(m_connect, SIGNAL(signalConnect(const char*, int, const char*, const char*, int)),
+			SLOT(slotConnected(const char*, int, const char*, const char*, int)));
 	}
 	m_connect->show();
 }

@@ -116,6 +116,7 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	mode_normal->setChecked(TRUE);
 
 	option_server = new QCheckBox(i18n("Start ggzd server locally"), this);
+	option_tls = new QCheckBox(i18n("Use secure connection (TLS)"), this);
 
 	sep1 = new KGGZLineSeparator(this);
 	sep2 = new KGGZLineSeparator(m_pane);
@@ -154,6 +155,7 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	vbox1->add(m_pane);
 
 	vbox1->add(option_server);
+	vbox1->add(option_tls);
 
 	hbox1 = new QHBoxLayout(vbox1, 5);
 	hbox1->add(button_ok);
@@ -314,7 +316,7 @@ void KGGZConnect::slotAccept()
 {
 	slotSaveProfile();
 	close();
-	emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()), input_name->text().latin1(), input_password->text().latin1(), m_loginmode, option_server->isChecked());
+	emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()), input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
 	//close();
 }
 
@@ -484,5 +486,15 @@ void KGGZConnect::slotPane()
 		profile_edit->setText(i18n("<< Edit"));
 		setFixedHeight(minimumSizeHint().height());
 	}
+}
+
+int KGGZConnect::optionServer()
+{
+	return option_server->isChecked();
+}
+
+int KGGZConnect::optionSecure()
+{
+	return option_tls->isChecked();
 }
 

@@ -149,7 +149,7 @@ class KGGZ : public QWidget
 		void menuGameCancel();
 
 		// Receive connection parameters
-		void slotConnected(const char *host, int port, const char *username, const char *password, int mode, int server);
+		void slotConnected(const char *host, int port, const char *username, const char *password, int mode);
 		// Receive chat message
 		void slotChat(const char *text, char *player, int mode);
 		// Launch a table
