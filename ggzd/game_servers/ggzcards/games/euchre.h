@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: euchre.h 2344 2001-09-03 09:35:30Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,9 +24,11 @@
  */
 
 /* special bids */
-#define EUCHRE_PASS 1
-#define EUCHRE_TAKE 2
-#define EUCHRE_TAKE_SUIT 3
+enum {
+	EUCHRE_PASS = 1,
+	EUCHRE_TAKE = 2,
+	EUCHRE_TAKE_SUIT = 3
+};
 
 #define EUCHRE ( *(euchre_game_t *)(game.specific) )
 typedef struct euchre_game_t {

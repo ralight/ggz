@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2276 2001-08-27 10:29:46Z jdorje $
+ * $Id: euchre.c 2344 2001-09-03 09:35:30Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -39,7 +39,7 @@ static void euchre_next_bid();
 static void euchre_start_playing();
 static int euchre_deal_hand();
 static int euchre_send_hand(player_t p, seat_t s);
-static int euchre_get_bid_text(char* buf, int buf_len, bid_t bid);
+static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void euchre_set_player_message(player_t p);
 static void euchre_end_trick();
 static void euchre_end_hand();
@@ -80,11 +80,14 @@ static int euchre_is_valid_game()
 
 static card_t euchre_map_card(card_t c)
 {
-	if (c.face == JACK && c.suit == 3-game.trump) {
+	/* The "right bauer" is the jack of the trump suit.  It
+	 * is the high trump.  The "left bauer" is the other jack
+	 * of the same color; it is the second highest trump. */
+	if (c.face == JACK && c.suit == 3 - game.trump) {
 		c.suit = game.trump;
-		c.face = ACE_HIGH+1;
+		c.face = ACE_HIGH + 1;
 	} else if (c.face == JACK && c.suit == game.trump)
-		c.face = ACE_HIGH+2;
+		c.face = ACE_HIGH + 2;
 	return c;
 }
 
@@ -94,8 +97,8 @@ static void euchre_init_game()
 
 	game.specific = alloc(sizeof(euchre_game_t));
 	set_num_seats(4);
-	for(s = 0; s < game.num_seats; s++)
-		assign_seat(s, s); /* one player per seat */
+	for (s = 0; s < game.num_seats; s++)
+		assign_seat(s, s);	/* one player per seat */
 
 	game.deck_type = GGZ_DECK_EUCHRE;
 	game.max_hand_length = 5;
@@ -106,7 +109,7 @@ static void euchre_init_game()
 
 static void euchre_start_bidding()
 {
-	game.bid_total = 8; /* twice around, at most */
+	game.bid_total = 8;	/* twice around, at most */
 	game.next_bid = (game.dealer + 1) % game.num_players;
 }
 
@@ -119,7 +122,7 @@ static int euchre_get_bid()
 		return req_bid(game.next_bid);
 	} else {
 		char suit;
-		for (suit=0; suit<4; suit++)
+		for (suit = 0; suit < 4; suit++)
 			add_sbid(0, suit, EUCHRE_TAKE_SUIT);
 		add_sbid(0, 0, EUCHRE_PASS);
 		return req_bid(game.next_bid);
@@ -129,10 +132,10 @@ static int euchre_get_bid()
 
 static void euchre_handle_bid(bid_t bid)
 {
-	if ( bid.sbid.spec == EUCHRE_TAKE ) {
+	if (bid.sbid.spec == EUCHRE_TAKE) {
 		EUCHRE.maker = game.next_bid;
 		game.trump = EUCHRE.up_card.suit;
-	} else if ( bid.sbid.spec == EUCHRE_TAKE_SUIT ) {
+	} else if (bid.sbid.spec == EUCHRE_TAKE_SUIT) {
 		EUCHRE.maker = game.next_bid;
 		game.trump = bid.sbid.suit;
 	}
@@ -145,7 +148,7 @@ static void euchre_next_bid()
 		game.bid_total = game.bid_count;
 	else if (game.bid_count == 8) {
 		set_global_message("", "s", "Everyone passed; redealing.");
-		set_game_state( WH_STATE_NEXT_HAND );
+		set_game_state(WH_STATE_NEXT_HAND);
 	} else
 		game_next_bid();
 }
@@ -158,12 +161,14 @@ static void euchre_start_playing()
 	game_start_playing();
 
 	/* maker is set in game_handle_bid */
-	set_global_message("", "%s is the maker in %s.", ggzd_get_player_name(EUCHRE.maker), suit_names[(int)game.trump]);
+	set_global_message("", "%s is the maker in %s.",
+			   ggzd_get_player_name(EUCHRE.maker),
+			   suit_names[(int) game.trump]);
 	game.leader = (game.dealer + 1) % game.num_players;
 	/* resort/resend hand - this should probably be a function in itself... */
-	for(s=0; s<game.num_seats; s++) {
-		cards_sort_hand( &game.seats[ s ].hand );
-		for (p=0; p<game.num_players; p++)
+	for (s = 0; s < game.num_seats; s++) {
+		cards_sort_hand(&game.seats[s].hand);
+		for (p = 0; p < game.num_players; p++)
 			game.funcs->send_hand(p, s);
 	}
 }
@@ -178,7 +183,8 @@ static int euchre_deal_hand()
 	cards_deal_hand(1, &game.seats[0].hand);
 	EUCHRE.up_card = game.seats[0].hand.cards[0];
 	set_global_message("", "The up-card is the %s of %s.",
-		face_names[(int)EUCHRE.up_card.face], suit_names[(int)EUCHRE.up_card.suit]);
+			   face_names[(int) EUCHRE.up_card.face],
+			   suit_names[(int) EUCHRE.up_card.suit]);
 	game.hand_size = 5;
 
 	/* in a regular deal, we just deal out hand_size cards to everyone */
@@ -193,11 +199,15 @@ static int euchre_send_hand(player_t p, seat_t s)
 	return send_hand(p, s, game.players[p].seat == s || s == 5);
 }
 
-static int euchre_get_bid_text(char* buf, int buf_len, bid_t bid)
+static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid)
 {
-	if (bid.sbid.spec == EUCHRE_PASS) return snprintf(buf, buf_len, "Pass");
-	if (bid.sbid.spec == EUCHRE_TAKE) return snprintf(buf, buf_len, "Take");
-	if (bid.sbid.spec == EUCHRE_TAKE_SUIT) return snprintf(buf, buf_len, "Take at %s", suit_names[(int)bid.sbid.suit]);
+	if (bid.sbid.spec == EUCHRE_PASS)
+		return snprintf(buf, buf_len, "Pass");
+	if (bid.sbid.spec == EUCHRE_TAKE)
+		return snprintf(buf, buf_len, "Take");
+	if (bid.sbid.spec == EUCHRE_TAKE_SUIT)
+		return snprintf(buf, buf_len, "Take at %s",
+				suit_names[(int) bid.sbid.suit]);
 	return snprintf(buf, buf_len, "%s", "");
 }
 
@@ -207,14 +217,19 @@ static void euchre_set_player_message(player_t p)
 
 	clear_player_message(s);
 	add_player_score_message(p);
-	if (game.state == WH_STATE_FIRST_BID || game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
+	if (game.state == WH_STATE_FIRST_BID
+	    || game.state == WH_STATE_NEXT_BID
+	    || game.state == WH_STATE_WAIT_FOR_BID) {
 		if (p == game.dealer)
 			add_player_message(s, "dealer\n");
-	} else
-		if (p == EUCHRE.maker)
-			add_player_message(s, "maker\n");
-	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-		add_player_message(s, "Tricks: %d\n", game.players[p].tricks + game.players[(p+2)%4].tricks);
+	} else if (p == EUCHRE.maker)
+		add_player_message(s, "maker\n");
+	if (game.state == WH_STATE_WAIT_FOR_PLAY
+	    || game.state == WH_STATE_NEXT_TRICK
+	    || game.state == WH_STATE_NEXT_PLAY)
+		add_player_message(s, "Tricks: %d\n",
+				   game.players[p].tricks +
+				   game.players[(p + 2) % 4].tricks);
 	add_player_action_message(p);
 }
 
@@ -223,20 +238,21 @@ static void euchre_end_trick()
 	game_end_trick();
 
 	/* update teammate's info as well */
-	set_player_message((game.winner+2)%4);
+	set_player_message((game.winner + 2) % 4);
 }
 
 static void euchre_end_hand()
 {
 	int tricks, winning_team;
-	tricks = game.players[EUCHRE.maker].tricks + game.players[(EUCHRE.maker+2)%4].tricks;
+	tricks = game.players[EUCHRE.maker].tricks +
+		game.players[(EUCHRE.maker + 2) % 4].tricks;
 	if (tricks >= 3)
 		winning_team = EUCHRE.maker % 2;
 	else
 		winning_team = (EUCHRE.maker + 1) % 2;
 	/* TODO: point values other than 1 */
 	game.players[winning_team].score += 1;
-	game.players[winning_team+2].score += 1;
+	game.players[winning_team + 2].score += 1;
 	EUCHRE.maker = -1;
 	game.trump = -1;
 }
