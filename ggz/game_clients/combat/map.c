@@ -90,7 +90,7 @@ int map_save(combat_game *map) {
   _ggzcore_confio_write_int(handle, "map", "height", map->height);
   // Army data
   for (a = 0; a < 12; a++)
-    _ggzcore_confio_write_int(handle, "army", file_unit_name[a], map->army[0][a]);
+    _ggzcore_confio_write_int(handle, "army", file_unit_name[a], map->army[map->number][a]);
   // Map data
   map_data = (char *)malloc(map->width * map->height + 1);
   for (a = 0; a < map->width*map->height; a++) {
