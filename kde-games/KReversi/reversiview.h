@@ -63,6 +63,8 @@ signals:
 public:
   void updateBoard(char board[8][8]);
   QString getPlayer(int n) { return (n==0?colorNames.first():colorNames.last()); };
+  /** discs image */
+  QCanvasPixmapArray *disc_img;
 private: // Private attributes
   /** Should be used by a QCanvasView to display the game */
   QCanvas *canvas;
@@ -71,8 +73,6 @@ protected: // Protected methods
   void contentsMousePressEvent(QMouseEvent *e);
   /** List of discs */
   QList<ReversiDisc> discs;
-  /** discs image */
-  QCanvasPixmapArray *disc_img;
   /** color names */
   QStringList colorNames;
 };

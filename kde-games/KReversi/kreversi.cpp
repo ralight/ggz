@@ -34,9 +34,6 @@ int select_dirs(const struct dirent *d);
 
 KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name)
 {
-  char mboard[8][8];
-  int x, y;
-
   // Create the protocol
   protocol = new ReversiProtocol();
 
@@ -48,24 +45,25 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
   themes = new KActionMenu(i18n("Select theme"), actionCollection(), "themes");
   createGUI();
 
-  if (scanThemeDir() < 0) {
-    kapp->closeAllWindows();
-    kapp->quit();
-    delete this;
-    exit( -1 );
-  }
+}
+
+int KReversi::initAll() {
+  char mboard[8][8];
+  int x, y;
 
   // Create the game
   initGame();
 
+
+  if (scanThemeDir() < 0)
+    return -1;
+
 	// Create the view
 	view = new ReversiView(kapp->config()->readEntry("Default", "default"), this);
-  if (!view) {
-    kapp->closeAllWindows();
-    kapp->quit();
-    delete this;
-    exit( -1 );
-  }
+
+  if (!view->disc_img)
+    return -1;
+
   for (x = 0; x < 8; x++) {
     for (y = 0; y < 8; y++) {
       mboard[x][y] = board[x][y];
@@ -89,6 +87,7 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
 
   this->setFixedSize( this->width(), this->height() );
 
+  // Connect the protocol actions
   connect( protocol, SIGNAL(gotSeat(int)), this, SLOT(seatSlot(int)) );
   connect( protocol, SIGNAL(gotPlayers(char *, char *)), this, SLOT(playersSlot(char *, char*)) );
   connect( protocol, SIGNAL(gotSync(char, char *)), this, SLOT(syncSlot(char, char *)) );
@@ -96,14 +95,20 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
   connect( protocol, SIGNAL(gotMove(int)), this, SLOT(moveSlot(int)) );
   connect( protocol, SIGNAL(gotGameover(int)), this, SLOT(gameoverSlot(int)) );
 
+  // Connect the view actions
   connect( view, SIGNAL(playerMove(int, int)), this, SLOT(playerMoveSlot(int, int)) );
 
+  this->show();
+
+  return 0;
 
 }
 
 KReversi::~KReversi() {
-  delete view;
-  delete protocol;
+  if (view)
+    delete view;
+  if (protocol)
+    delete protocol;
 }
 
 int KReversi::scanThemeDir() {

@@ -53,11 +53,12 @@ ReversiView::ReversiView(QString theme, QWidget * parent, const char * name, WFl
 	setCanvas(canvas);
   
   /* Load pixmaps */
+  disc_img = NULL;
   if ( loadTheme( theme, false ) < 0 ) {
-    kapp->closeAllWindows();
-    kapp->quit();
-    delete this;
-    exit(-1);
+    //kapp->closeAllWindows();
+    //kapp->quit();
+    //delete this;
+    //exit(-1);
     return;
   }
 //  debug(theme);

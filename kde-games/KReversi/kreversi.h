@@ -43,6 +43,8 @@ public:
     KReversi(QWidget* parent=0, const char *name=0);
     /** destructor */
     ~KReversi();
+    /** Create the view */
+    int initAll();
   /** Displays a status bar message */
   void statusMsg(QString);
   /** Update the value on the statusbar */

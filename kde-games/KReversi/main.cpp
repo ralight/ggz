@@ -57,9 +57,10 @@ int main(int argc, char *argv[])
   KApplication a;
   KReversi *kreversi = new KReversi();
   a.setMainWidget(kreversi);
-  kreversi->show();  
-
-  return a.exec();
+  if (kreversi->initAll() < 0)
+    return -5;
+  else
+    return a.exec();
 }
 
 int ggz_connect(char *name) {
