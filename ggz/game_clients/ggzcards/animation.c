@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2941 2001-12-18 22:29:24Z jdorje $
+ * $Id: animation.c 2942 2001-12-18 22:40:48Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 
+#include <assert.h>
 #include <ggz.h>
 
 #include "animation.h"
@@ -53,12 +54,15 @@ void animation_start(int player, card_t card, int card_num)
 	int start_x, start_y;
 	int end_x, end_y;
 
+	assert(!animating);
+
 	get_card_pos(player, card_num, &start_x, &start_y);
 	get_tablecard_pos(player, &end_x, &end_y);
 
-	ggz_debug("main",
-		  "Setting up animation for player %d from (%d, %d) to (%d, %d).",
-		  player, start_x, start_y, end_x, end_y);
+	ggz_debug("animation",
+		  "Setting up animation for player %d"
+		  " from (%d, %d) to (%d, %d).", player, start_x, start_y,
+		  end_x, end_y);
 
 #define FRAMES		15
 #define DURATION	500	/* In milliseconds */
@@ -90,6 +94,8 @@ gint animation_callback(gpointer ignored)
 {
 	float new_x, new_y;
 	int ref_x, ref_y;
+
+	assert(animating);
 
 	/* Calculate our next move */
 	new_x = anim.cur_x - anim.step_x;
@@ -137,7 +143,7 @@ gint animation_callback(gpointer ignored)
 /* Function to abort the animation process */
 void animation_abort(void)
 {
-	ggz_debug("table", "Aborting animation.");
+	ggz_debug("animation", "Aborting animation.");
 
 	/* First, kill off the animation callback */
 	if (animating) {
@@ -157,6 +163,8 @@ void animation_zip(gboolean restore)
 {
 	if (!animating)
 		return;
+
+	ggz_debug("animation", "Zipping animation (%d).", restore);
 
 	/* First, kill off the animation callback */
 	gtk_timeout_remove(anim.cb_tag);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2940 2001-12-18 22:17:50Z jdorje $
+ * $Id: main.c 2942 2001-12-18 22:40:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -88,7 +88,8 @@ int main(int argc, char *argv[])
 static void initialize_debugging(void)
 {
 #ifdef DEBUG
-	const char *debugging_types[] = { "main", "table", NULL };
+	const char *debugging_types[] =
+		{ "main", "table", "animation", NULL };
 #else
 	const char *debugging_types[] = { NULL };
 #endif
