@@ -1,5 +1,5 @@
-/* $Id: dlg_bid.h 2073 2001-07-23 07:47:48Z jdorje $ */
-/*
+/* $Id: dlg_bid.h 2380 2001-09-06 02:26:21Z jdorje $ */
+/* 
  * File: dlg_bid.h
  * Author: Rich Gade
  * Project: GGZCards Client
@@ -23,10 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-void dlg_bid_display(int possible_bids, char** bid_choices);
+void dlg_bid_display(int possible_bids, char **bid_choices);
 
-/* this next one is included in this file because it's almost identical to handle_bid_request */
-extern int handle_option_request(void); /* handles a WH_REQ_OPTIONS */
+/* this next one is included in this file because it's almost identical to
+   handle_bid_request */
+int handle_option_request(void);	/* handles a WH_REQ_OPTIONS */
 
 extern GtkWidget *dlg_bid_spin;
 extern GtkWidget *dlg_bid_fixed;

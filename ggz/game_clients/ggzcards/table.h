@@ -1,5 +1,5 @@
-/* $Id: table.h 2072 2001-07-23 00:38:33Z jdorje $ */
-/*
+/* $Id: table.h 2380 2001-09-06 02:26:21Z jdorje $ */
+/* 
  * File: table.h
  * Author: Rich Gade
  * Project: GGZCards Client
@@ -24,33 +24,33 @@
  */
 
 #include "hand.h"
-#include "game.h" /* for ANIMATION */
+#include "game.h"		/* for ANIMATION */
 
 extern GtkRcStyle *fixed_font_style;
 
-extern void table_initialize(void);
-extern void table_setup(void);
-extern void table_handle_expose_event(GdkEventExpose *);
-extern void table_handle_click_event(GdkEventButton *);
-extern void table_set_name(int, char *);
-extern void table_set_dealer(void);
-extern void table_set_bidder(int);
-extern void table_display_hand(int);
-extern void table_display_all_hands(void);
-extern void table_set_bid(int, int);
-extern void table_set_tricks(int, int);
-extern void table_set_score(int, int);
-extern void table_set_trump(void);
+void table_initialize(void);
+void table_setup(void);
+void table_handle_expose_event(GdkEventExpose *);
+void table_handle_click_event(GdkEventButton *);
+void table_set_name(int, char *);
+void table_set_dealer(void);
+void table_set_bidder(int);
+void table_display_hand(int);
+void table_display_all_hands(void);
+void table_set_bid(int, int);
+void table_set_tricks(int, int);
+void table_set_score(int, int);
+void table_set_trump(void);
 #ifdef ANIMATION
-extern void table_animation_abort(void);
-extern void table_animation_zip(gboolean);
-extern void table_animation(int, card_t);
+void table_animation_abort(void);
+void table_animation_zip(gboolean);
+void table_animation(int, card_t);
 #endif /* ANIMATION */
-extern void table_clear_table(void);
-extern void table_show_cards();
-extern void table_style_change(void);
+void table_clear_table(void);
+void table_show_cards();
+void table_style_change(void);
 
-extern void table_play_card(int, card_t);
+void table_play_card(int, card_t);
 
-extern void table_set_global_message(const char*, const char*);
-extern void table_set_player_message(int, const char*);
+void table_set_global_message(const char *, const char *);
+void table_set_player_message(int, const char *);

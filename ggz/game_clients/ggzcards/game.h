@@ -1,5 +1,5 @@
-/* $Id: game.h 2080 2001-07-23 13:01:31Z jdorje $ */
-/*
+/* $Id: game.h 2380 2001-09-06 02:26:21Z jdorje $ */
+/* 
  * File: game.h
  * Author: Rich Gade
  * Project: GGZCards Client
@@ -30,20 +30,20 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-/* if this is defined, the animation code will be used.
- * I've disable it because I broke it... */
+/* if this is defined, the animation code will be used. I've disable it
+   because I broke it... */
 /* #define ANIMATION */
 
-extern void game_send_bid(int);
-extern void game_play_card(card_t card);
-extern void game_handle_table_click(char);
+void game_send_bid(int);
+void game_play_card(card_t card);
+void game_handle_table_click(char);
 
 /* GGZ define */
 #define GGZ_SEAT_OPEN		-1
 
-/* substitutes for snprintf.
- * Returns the number of characters put into the buffer. */
-extern int ggz_snprintf(char*, int, char *, ...);
+/* substitutes for snprintf. Returns the number of characters put into the
+   buffer. */
+int ggz_snprintf(char *, int, char *, ...);
 
 /* preliminary internationalization macros */
 #define _(String) (String)
@@ -52,5 +52,3 @@ extern int ggz_snprintf(char*, int, char *, ...);
 #define bindtextdomain(Package, Directory)
 
 #endif /* __GAME_H__ */
-
-

@@ -1,5 +1,5 @@
-/* $Id: layout.h 2070 2001-07-23 00:03:11Z jdorje $ */
-/*
+/* $Id: layout.h 2380 2001-09-06 02:26:21Z jdorje $ */
+/* 
  * File: layout.h
  * Author: Jason Short, Rich Gade
  * Project: GGZCards Client
@@ -41,24 +41,24 @@
 #define CARD_BOX_WIDTH	(HAND_WIDTH + 2*XWIDTH)
 #define TEXT_BOX_WIDTH	(TEXT_WIDTH + 2*XWIDTH)
 
-extern int get_table_width();
-extern int get_table_height();
+int get_table_width();
+int get_table_height();
 
-extern int orientation(int p);
+int orientation(int p);
 
-extern void get_tablecard_pos(int p, int *x, int *y);
-extern void get_table_dim(int *x, int *y, int *w, int *h);
-extern void get_fulltable_size(int *w, int *h);
+void get_tablecard_pos(int p, int *x, int *y);
+void get_table_dim(int *x, int *y, int *w, int *h);
+void get_fulltable_size(int *w, int *h);
 
-extern void get_text_box_pos(int p, int *x, int *y);
-extern void get_card_box_pos(int p, int *x, int *y);
-extern void get_card_box_dim(int p, int *w, int *h);
-extern void get_full_card_area(int p,
-		int *x, int *y, /* the (x, y) position of the upper left corner */
-		int *w, int *h, /* the width and height of the box */
-		int *xo, int *yo /* the x and y offsets for "selected" cards */);
-extern void get_inner_card_area_pos(int p, int *x, int *y);
+void get_text_box_pos(int p, int *x, int *y);
+void get_card_box_pos(int p, int *x, int *y);
+void get_card_box_dim(int p, int *w, int *h);
+void get_full_card_area(int p, int *x, int *y,	/* the (x, y) position of the 
+						   upper left corner */
+			int *w, int *h,	/* the width and height of the box */
+			int *xo, int *yo	/* the x and y offsets for
+						   "selected" cards */ );
+void get_inner_card_area_pos(int p, int *x, int *y);
 
-extern void get_card_offset(int p, float *w, float *h);
-extern void get_card_size(int orientation, int *w, int *h);
-
+void get_card_offset(int p, float *w, float *h);
+void get_card_size(int orientation, int *w, int *h);
