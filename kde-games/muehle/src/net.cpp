@@ -1,6 +1,8 @@
 #include "net.h"
 #include <iostream>
 
+using namespace std;
+
 Net::Net()
 {
 }

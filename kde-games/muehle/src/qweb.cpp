@@ -1,5 +1,6 @@
 #include "qweb.h"
 #include <iostream>
+#include <math.h>
 
 QWebPoint::QWebPoint(QPoint p)
 {

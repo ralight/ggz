@@ -145,7 +145,7 @@ void Board::paintEvent(QPaintEvent *e)
 	float x = web->scale();
 	for(Stone *s = stonelist.first(); s; s = stonelist.next())
 		//p.drawPixmap(x * s->x() - 32, x * s->y() - 32, (s->owner() ? black : white));
-		paintStone(&tmp, &p, x * s->x() - 32, x * s->y() - 32, s->owner());
+		paintStone(&tmp, &p, (int)(x * s->x() - 32), (int)(x * s->y() - 32), s->owner());
 
 	p.end();
 

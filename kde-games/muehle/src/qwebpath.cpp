@@ -2,6 +2,8 @@
 #include "qweb.h"
 #include <iostream>
 
+using namespace std;
+
 QWebPath::QWebPath(QWeb *web, QWebPoint *point)
 {
 	m_web = web;
