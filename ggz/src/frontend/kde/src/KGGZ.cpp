@@ -1307,6 +1307,7 @@ void KGGZ::slotGameFrontend()
 void KGGZ::slotGamePrepare(int frontend)
 {
 	GGZCoreGametype *gametype;
+	int spec;
 
 	if(!kggzroom) return;
 	gametype = kggzroom->gametype();
@@ -1322,7 +1323,12 @@ void KGGZ::slotGamePrepare(int frontend)
 			m_launch = NULL;
 		}
 		if(!m_launch) m_launch = new KGGZLaunch(NULL, "KGGZLaunch");
-		m_launch->initLauncher(m_save_username, gametype->maxPlayers(), gametype->maxBots());
+#ifdef KGGZ_PATCH_SPECTATORS
+		spec = gametype->maxSpectators();
+#else
+		spec = 0;
+#endif
+		m_launch->initLauncher(m_save_username, gametype->maxPlayers(), gametype->maxBots(), spec);
 		for(int i = 0; i < gametype->maxPlayers(); i++)
 		{
 			KGGZDEBUG("Assignment: %i is %i\n", i, gametype->isPlayersValid(i + 1));

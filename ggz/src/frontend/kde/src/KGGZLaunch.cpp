@@ -98,7 +98,7 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	connect(m_ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 
-	setFixedSize(250, 300);
+	setFixedSize(350, 400);
 	setCaption(i18n("Launch a game"));
 	show();
 }
@@ -124,6 +124,7 @@ void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int 
 	if(seat <= m_maxbots) m_popup->insertItem(typeName(seatbot), -seatbot);
 	m_popup->insertItem(typeName(seatopen), -seatopen);
 	m_popup->insertItem(typeName(seatreserved), -seatreserved);
+	m_popup->insertItem(typeName(seatspectator), -seatspectator);
 	m_popup->popup(point);
 
 	connect(m_popup, SIGNAL(activated(int)), SLOT(slotActivated(int)));
@@ -183,11 +184,11 @@ int KGGZLaunch::seats()
 	return m_slider->value();
 }
 
-void KGGZLaunch::initLauncher(char *playername, int maxplayers, int maxbots)
+void KGGZLaunch::initLauncher(char *playername, int maxplayers, int maxbots, int maxspectators)
 {
 	QString str;
 
-	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i, %i)\n", playername, maxplayers, maxbots);
+	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i, %i, %i)\n", playername, maxplayers, maxbots, maxspectators);
 	if(m_array)
 	{
 		KGGZDEBUG("Critical: array initialized twice!\n");
@@ -305,6 +306,9 @@ QString KGGZLaunch::typeName(int seattype)
 			break;
 		case seatunused:
 			ret.append(i18n("(unused)"));
+			break;
+		case seatspectator:
+			ret.append(i18n("Spectator"));
 			break;
 		default:
 			ret.append(i18n("unknown"));

@@ -55,7 +55,7 @@ class KGGZLaunch : public QWidget
 		~KGGZLaunch();
 
 		// Initialize the dialog with the given parameters
-		void initLauncher(char *playername, int maxplayers, int maxbots);
+		void initLauncher(char *playername, int maxplayers, int maxbots, int maxspectators);
 		// Return the customizable room description
 		const char *description();
 		// Return the number of seats wanted
@@ -73,7 +73,8 @@ class KGGZLaunch : public QWidget
 			seatbot = -2,
 			seatplayer = -5,
 			seatunused = -4,
-			seatunknown = -6
+			seatspectator = -6,
+			seatunknown = -7
 		};
 
 	public slots:
@@ -116,7 +117,9 @@ class KGGZLaunch : public QWidget
 		QLabel *m_label;
 		// Holds the maximum number of bots
 		int m_maxbots;
-		// Holds the current number of players and bots
+		// Holds the maximum number of spectators
+		int m_maxspectators;
+		// Holds the current number of players, spectators and bots
 		int m_curplayers;
 };
 
