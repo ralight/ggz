@@ -125,6 +125,11 @@ AC_CHECK_LIB(ggzcore, ggzcore_server_new,
         AC_MSG_ERROR(*** Cannot find ggzcore.h header)),
 AC_MSG_ERROR(*** Cannot find ggzcore library ), -leasysock)
 
+AC_CHECK_LIB(ggzmod, ggz_client_connect,
+    AC_CHECK_HEADER(ggz_client.h, LDADD="$LDADD -lggzmod",
+	AC_MSG_ERROR(*** Cannot find ggz_client.h header)),
+AC_MSG_ERROR(*** Cannot find ggzmod library ))
+
 
 dnl Use -Wall if we have gcc.
 dnl =========================
