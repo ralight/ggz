@@ -46,7 +46,9 @@
 static int _ggzcore_game_event_is_valid(GGZGameEvent event);
 static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game, 
 					 GGZGameEvent id, void *data);
+static char* _ggzcore_game_get_path(struct _GGZGame *game);
 static void _ggzcore_game_exec(char *path);
+
 
 /* Array of GGZGame messages */
 static char* _ggzcore_game_events[] = {
@@ -391,7 +393,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 	struct stat file_status;
 	
 	name = _ggzcore_module_get_game(game->module);
-	path = _ggzcore_module_get_path(game->module);
+	path = _ggzcore_game_get_path(game);
 
 	ggzcore_debug(GGZ_DBG_GAME, "Launching game of %s", name);
 	ggzcore_debug(GGZ_DBG_GAME, "Exec path is  %s", path);
@@ -400,7 +402,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
 				    strerror(errno));
 		ggzcore_debug(GGZ_DBG_GAME, "Bad path: %s", path);
-
+		ggzcore_free(path);
 		return -1;
 	}
 	
@@ -416,6 +418,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		ggzcore_debug(GGZ_DBG_GAME, "Exec failed");
 		return -1;
 	} else {
+		ggzcore_free(path);
 		/* Create Unix domain socket for communication*/
 
 		/* Leave room for "/tmp/" + PID + '\0' */
@@ -484,6 +487,31 @@ static int _ggzcore_game_event_is_valid(GGZGameEvent event)
 static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game, GGZGameEvent id, void *data)
 {
 	return _ggzcore_hook_list_invoke(game->event_hooks[id], data);
+}
+
+
+static char* _ggzcore_game_get_path(struct _GGZGame *game)
+{
+	char *mod_path;
+	char *path;
+	int len;
+
+	mod_path = _ggzcore_module_get_path(game->module);
+	
+	if (mod_path[0] != '/') {
+		ggzcore_debug(GGZ_DBG_GAME, "Module has relative path, prepending gamedir");
+		/* Calcualate string length, leaving room for a slash 
+		   and the trailing null */
+		len = strlen(GAMEDIR) + strlen(mod_path) + 2;
+		path = ggzcore_malloc(len);
+		strcpy(path, GAMEDIR);
+		strcat(path, "/");
+		strcat(path, mod_path);
+	}
+	else
+		path = ggzcore_strdup(mod_path);
+
+	return path;
 }
 
 
