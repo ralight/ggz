@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.h 2865 2001-12-10 21:26:03Z jdorje $
+ * $Id: lapocha.h 2874 2001-12-11 06:27:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,4 +39,19 @@ enum {
 
 	/* Requests a normal bid.  No extra data. */
 	LAP_REQ_BID,
+
+	/* Tells who the dealer is.  Followed by an int for the dealer's
+	   seat. */
+	LAP_MSG_DEALER,
+
+	/* Tells what trump is.  Followed by a char for the trump suit. */
+	LAP_MSG_TRUMP,
+
+	/* Tells of a player's bid.  Followed by an int for the player and an 
+	   int for the bid. */
+	LAP_MSG_BID,
+
+	/* Give the scores of the game.  Followed by one int per player for
+	   that player's score. */
+	LAP_MSG_SCORES,
 };

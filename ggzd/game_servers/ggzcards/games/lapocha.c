@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2865 2001-12-10 21:26:03Z jdorje $
+ * $Id: lapocha.c 2874 2001-12-11 06:27:57Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -45,6 +45,10 @@ static void lapocha_end_hand(void);
 /* these send lapocha-specific game messages. */
 static int lap_send_trump_request(player_t p);
 static int lap_send_bid_request(player_t p);
+static void lap_send_dealer(void);
+static void lap_send_trump(void);
+static void lap_send_bid(player_t bidder, bid_t bid);
+static void lap_send_scores(void);
 
 struct game_function_pointers lapocha_funcs = {
 	lapocha_is_valid_game,
@@ -133,6 +137,7 @@ static void lapocha_start_bidding(void)
 	/* all 4 players bid once, but the first bid determines the trump */
 	game.bid_total = 5;
 	LAPOCHA.bid_sum = 0;
+	lap_send_dealer();
 }
 
 static int lapocha_get_bid(void)
@@ -175,8 +180,11 @@ static void lapocha_handle_bid(player_t p, bid_t bid)
 		game.trump = bid.sbid.suit;
 		set_global_message("", "Trump is %s.",
 				   suit_names[(int) game.trump % 4]);
-	} else
+		lap_send_trump();
+	} else {
 		LAPOCHA.bid_sum += bid.sbid.val;
+		lap_send_bid(p, bid);
+	}
 }
 
 static void lapocha_next_bid(void)
@@ -259,6 +267,7 @@ static void lapocha_end_hand(void)
 		else
 			game.players[p].score -= 5 * game.players[p].bid.bid;
 	}
+	lap_send_scores();
 	set_global_message("", "No trump set.");	/* TODO: give
 							   information about
 							   previous hand */
@@ -272,10 +281,10 @@ static void lapocha_end_hand(void)
 static int lap_send_trump_request(player_t p)
 {
 	int fd = get_player_socket(p);
-	if (write_opcode(fd, MESSAGE_GAME) < 0 || write_opcode(fd, GAME_MESSAGE_GAME) < 0 || es_write_int(fd, GGZ_GAME_LAPOCHA) < 0 || es_write_int(fd, 1) < 0 ||	/* data 
-																					   length 
-																					 */
-	    es_write_char(fd, LAP_REQ_TRUMP) < 0)
+	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
+	    write_opcode(fd, GAME_MESSAGE_GAME) < 0 ||
+	    es_write_int(fd, GGZ_GAME_LAPOCHA) < 0 ||
+	    es_write_int(fd, 1) < 0 || es_write_char(fd, LAP_REQ_TRUMP) < 0)
 		return -1;
 	return 0;
 }
@@ -283,10 +292,76 @@ static int lap_send_trump_request(player_t p)
 static int lap_send_bid_request(player_t p)
 {
 	int fd = get_player_socket(p);
-	if (write_opcode(fd, MESSAGE_GAME) < 0 || write_opcode(fd, GAME_MESSAGE_GAME) < 0 || es_write_int(fd, GGZ_GAME_LAPOCHA) < 0 || es_write_int(fd, 1) < 0 ||	/* data 
-																					   length 
-																					 */
-	    es_write_char(fd, LAP_REQ_BID) < 0)
+	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
+	    write_opcode(fd, GAME_MESSAGE_GAME) < 0 ||
+	    es_write_int(fd, GGZ_GAME_LAPOCHA) < 0 ||
+	    es_write_int(fd, 1) < 0 || es_write_char(fd, LAP_REQ_BID) < 0)
 		return -1;
 	return 0;
+}
+
+static void lap_send_dealer(void)
+{
+	int p;
+	for (p = 0; p < game.num_players; p++) {
+		int fd = get_player_socket(p);
+
+		write_opcode(fd, MESSAGE_GAME);
+		write_opcode(fd, GAME_MESSAGE_GAME);
+		es_write_int(fd, GGZ_GAME_LAPOCHA);
+		es_write_int(fd, 5);
+		es_write_char(fd, LAP_MSG_DEALER);
+		es_write_int(fd, CONVERT_SEAT(game.dealer, p));
+	}
+}
+
+static void lap_send_trump(void)
+{
+	int p;
+	for (p = 0; p < game.num_players; p++) {
+		int fd = get_player_socket(p);
+		write_opcode(fd, MESSAGE_GAME);
+		write_opcode(fd, GAME_MESSAGE_GAME);
+		es_write_int(fd, GGZ_GAME_LAPOCHA);
+		es_write_int(fd, 2);
+		es_write_char(fd, LAP_MSG_TRUMP);
+		es_write_char(fd, game.trump);
+	}
+}
+
+static void lap_send_bid(player_t bidder, bid_t bid)
+{
+	int p;
+	int the_bid = bid.sbid.val;
+	assert(game.players[bidder].seat == bidder);
+	for (p = 0; p < game.num_players; p++) {
+		int fd = get_player_socket(p);
+		write_opcode(fd, MESSAGE_GAME);
+		write_opcode(fd, GAME_MESSAGE_GAME);
+		es_write_int(fd, GGZ_GAME_LAPOCHA);
+		es_write_int(fd, 9);
+		es_write_char(fd, LAP_MSG_BID);
+		es_write_int(fd, bidder);
+		es_write_int(fd, the_bid);
+	}
+}
+
+static void lap_send_scores(void)
+{
+	player_t p;
+
+	for (p = 0; p < game.num_players; p++) {
+		int fd = get_player_socket(p);
+		seat_t s_r;
+		write_opcode(fd, MESSAGE_GAME);
+		write_opcode(fd, GAME_MESSAGE_GAME);
+		es_write_int(fd, GGZ_GAME_LAPOCHA);
+		es_write_int(fd, 17);
+		es_write_char(fd, LAP_MSG_SCORES);
+		for (s_r = 0; s_r < game.num_seats; s_r++) {
+			seat_t s_abs = UNCONVERT_SEAT(s_r, p);
+			assert(game.seats[s_abs].player == s_abs);
+			es_write_int(fd, game.players[s_abs].score);
+		}
+	}
 }
