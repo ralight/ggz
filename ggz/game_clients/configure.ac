@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6660 2005-01-14 02:55:18Z jdorje $
+dnl $Id: configure.ac 6661 2005-01-14 03:17:54Z jdorje $
 
 AC_INIT([GGZ GTK games], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -98,7 +98,7 @@ AC_FUNC_STAT
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([localeconv memset mkdir setlocale strcasecmp \
                 strchr strdup strrchr strstr malloc realloc stat \
-	        sqrt floor],
+	        sqrt floor rand srand],
                [], [AC_MSG_ERROR([cannot find required function])])
 AC_CHECK_FUNCS([socket gethostbyname gettimeofday])
 
