@@ -242,6 +242,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 				
 			case E_LEAVE_FAIL:
 				warn_dlg("Can't leave table");
+				break;
+				
+			case E_LEAVE_FORBIDDEN:
+				warn_dlg("Can't leave table during game");
+				break;
 			}
 		}
 		break;

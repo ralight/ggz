@@ -44,7 +44,7 @@ typedef enum {
 
 	REQ_GAME,
 	REQ_CHAT,
-	REQ_MOTD
+        REQ_MOTD
 } UserToControl;
 
 
@@ -78,21 +78,25 @@ typedef enum {
 
 	RSP_GAME,
 	RSP_CHAT,
-	RSP_MOTD
+        RSP_MOTD
 } ControlToUser;
 
 
 typedef enum {
 	RSP_GAME_LAUNCH,
+	RSP_GAME_JOIN,
+	RSP_GAME_LEAVE,
+        MSG_LOG,
+        MSG_DBG,
 	MSG_GAME_OVER
 } TableToControl;
 
 typedef enum {
 	REQ_GAME_LAUNCH,
-	REQ_PLAYER_JOIN,
-	REQ_PLAYER_LEAVE
-
+	REQ_GAME_JOIN,
+	REQ_GAME_LEAVE
 } ControlToTable;
+
 
 #define E_USR_LOOKUP   -1
 #define E_BAD_OPTIONS  -2
@@ -103,4 +107,4 @@ typedef enum {
 #define E_JOIN_FAIL    -7
 #define E_NO_TABLE     -8
 #define E_LEAVE_FAIL   -9
-
+#define E_LEAVE_FORBIDDEN -10
