@@ -1,9 +1,0 @@
-#!/bin/bash
-
-if /bin/sh libtool --silent --mode=compile gcc -DHAVE_CONFIG_H -I. -I. -I..  -DDATADIR=\"/usr/share\" -DVERSION=\"0.81\" -I../src  -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/X11R6/include -I/usr/include/freetype2 -I/usr/include/freetype2/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include      -g -Wall -g3 -MT simple.lo -MD -MP -MF ".deps/simple.Tpo" -c -o simple.lo simple.c -Wall; \
-then mv -f ".deps/simple.Tpo" ".deps/simple.Plo"; else rm -f ".deps/simple.Tpo"; exit 1; fi
-#/bin/sh libtool --silent --mode=link gcc  -g -O2 -Wall -g3   -o simple.la -rpath /usr/lib/gaim -module -avoid-version simple.lo  -lnsl
-/bin/sh libtool --silent --mode=link gcc  -g -O2 -Wall -g3   -o simple.la -rpath /usr/lib/gaim -module simple.lo  -lnsl
-gcc -shared simple.o -o simple.lo
-gcc -shared simple.o -o simple.so
-ar r simple.a *.o

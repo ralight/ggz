@@ -9,7 +9,7 @@
 #include <gaim/gtkutils.h>
 #include <gaim/gtkplugin.h>
 #include <gaim/gtkconv.h>
-#include <gaim/ui.h>
+/*#include <gaim/ui.h>*/
 #include <gaim/prefs.h>
 #include <gaim/blist.h>
 #include <gaim/gtkblist.h>
