@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4523 2002-09-12 03:27:25Z jdorje $
+ * $Id: transit.c 4525 2002-09-12 15:45:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -226,7 +226,7 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 
 	action = GGZ_TRANSIT_JOIN_SPECTATOR;
 	if (spectator->index >= 0
-	    && spectator->index < table->max_num_spectators
+	    && spectator->index < spectator_seats_num(table)
 	    && table->spectators[spectator->index][0])
 		action = GGZ_TRANSIT_LEAVE_SPECTATOR;
 
@@ -448,13 +448,26 @@ static int transit_find_seat(GGZTable *table, char *name)
 
 static int transit_find_spectator(GGZTable *table, char *name)
 {
-	int i, allow_spectators, old, new;
+	int i, allow_spectators;
+#ifdef UNLIMITED_SPECTATORS
+	int new, old;
+#else
+	int old = -1;
+
+	/* See if we allow specators here. */
+	pthread_rwlock_rdlock(&game_types[table->type].lock);
+	allow_spectators = game_types[table->type].allow_spectators;
+	pthread_rwlock_unlock(&game_types[table->type].lock);
+
+	if (!allow_spectators) return -1;
+#endif
 
 	/* Look for first open spectator. */
-	for (i = 0; i < table->max_num_spectators; i++)
+	for (i = 0; i < spectator_seats_num(table); i++)
 		if (!table->spectators[i][0])
 			return i;
 
+#ifdef UNLIMITED_SPECTATORS
 	/* If that failed, see if we allow specators here. */
 	pthread_rwlock_rdlock(&game_types[table->type].lock);
 	allow_spectators = game_types[table->type].allow_spectators;
@@ -472,6 +485,7 @@ static int transit_find_spectator(GGZTable *table, char *name)
 	for (i = old; i < new; i++)
 		table->spectators[i][0] = '\0';
 	table->max_num_spectators = new;
+#endif
 
 	return old;
 }

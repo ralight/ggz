@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4522 2002-09-12 03:02:55Z jdorje $
+ * $Id: net.c 4525 2002-09-12 15:45:27Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1637,7 +1637,7 @@ static int _net_send_table_spectator(GGZNetIO *net, GGZTable *table,
 				     GGZTableSpectator *spectator)
 {
 	_net_send_line(net, "<TABLE ID='%d' SPECTATORS='%d'>",
-		       table->index, table->max_num_spectators);
+		       table->index, spectator_seats_num(table));
 	_net_send_spectator(net, spectator);
 	_net_send_line(net, "</TABLE>");
 	

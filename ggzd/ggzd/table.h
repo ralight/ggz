@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4517 2002-09-11 19:40:32Z jdorje $
+ * $Id: table.h 4525 2002-09-12 15:45:27Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -82,8 +82,12 @@ struct GGZTable {
 
 	/* Spectator assignments.  An empty name ("") means there
 	   is no spectator in the seat. */
+#ifdef UNLIMITED_SPECTATORS
 	int max_num_spectators;
 	char (*spectators)[MAX_USER_NAME_LEN + 1];
+#else
+	char spectators[MAX_TABLE_SPECTATORS][MAX_USER_NAME_LEN + 1];
+#endif
 
 	/* Client-provided description of this table */
 	char desc[MAX_GAME_DESC_LEN + 1];
