@@ -45,6 +45,8 @@ extern GtkWidget *win_main;
 extern GGZServer *server;
 extern GGZGame *game;
 
+gint numrooms;
+
 void display_tables(void);
 void display_players(void);
 
@@ -189,7 +191,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 {
 	GtkWidget *tmp;
 	GGZRoom *room;
-	gint i, numrooms;
+	gint i;
 	gchar *name;
 
 	/* Clear current list of rooms */

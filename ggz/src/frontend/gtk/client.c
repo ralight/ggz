@@ -566,10 +566,12 @@ client_room_clist_event			(GtkWidget	*widget,
 						     buttonevent->y,
 						     &row, &column);
 
-			/* FIXME: There has to be a better way to pass */
-			popup_row=row;
-			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
-					NULL, buttonevent->button, 0);
+			if(row < numrooms) {
+				/* FIXME: There has to be a better way to pass*/
+				popup_row=row;
+				gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
+						NULL, buttonevent->button, 0);
+			}
 		}
 		break;
 	default:
@@ -581,11 +583,13 @@ client_room_clist_event			(GtkWidget	*widget,
 		tmp =  lookup_widget(win_main, "room_clist");
 		gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, 
 					     buttonevent->y, &row, &column);
-		gtk_clist_select_row(GTK_CLIST(tmp), row, column);
+		if(row < numrooms) {
+			gtk_clist_select_row(GTK_CLIST(tmp), row, column);
 
-		client_join_room(row);
+			client_join_room(row);
 
-		return TRUE;
+			return TRUE;
+		}
 	}
 
 	return FALSE;
