@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6812 2005-01-22 15:28:57Z josef $
+dnl $Id: configure.ac 6910 2005-01-30 08:48:10Z jdorje $
 
 AC_INIT([GGZ server], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -61,6 +61,7 @@ AC_TYPE_SIGNAL
 AC_TYPE_MODE_T
 AC_STRUCT_TM
 AC_CHECK_TYPES([uint8_t])
+AC_C99_INITIALIZERS
 
 # Check for PF_LOCAL/PF_UNIX
 # ==========================
