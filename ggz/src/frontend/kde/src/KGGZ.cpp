@@ -747,6 +747,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				KGGZDEBUG("HUH? Don't give me game type list?!\n");
 				return;
 			}
+
 			break;
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
@@ -768,6 +769,12 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::typelist:
 			KGGZDEBUG("typelist\n");
+
+			if(!kggzroom)
+			{
+				menuView(VIEW_CHAT);
+				menuRoom(0);
+			}
 			break;
 		case GGZCoreServer::entered:
 			KGGZDEBUG("entered\n");
@@ -1427,8 +1434,14 @@ void KGGZ::slotLoadLogo()
 	char *icon;
 
 	KGGZDEBUG("__ loading logo __\n");
-	if((!kggzroom) || (!(gametype = kggzroom->gametype())))
+	if(!kggzroom) return;
+	gametype = kggzroom->gametype();
+	if((!gametype) || (!gametype->name()))
+	{
+		m_workspace->widgetLogo()->setLogo(NULL, "lounge");
 		return;
+	}
+	KGGZDEBUG("__ more loading: %s %s %s\n", gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
 
 	module = new GGZCoreModule();
 	module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
