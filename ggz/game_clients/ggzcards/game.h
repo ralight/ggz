@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 5162 2002-11-03 06:31:19Z jdorje $
+ * $Id: game.h 5163 2002-11-03 07:06:55Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -79,7 +79,7 @@ typedef struct {
  * bid widget to properly overlay the drawing widget. */
 #  define BID_ON_TABLE (FALSE)
 #else
-#  define BID_ON_TABLE preferencees.bid_on_table
+#  define BID_ON_TABLE preferences.bid_on_table
 #endif
 
 /* Our set of preferences.  See above. */
