@@ -45,6 +45,14 @@
 #include <unistd.h>
 
 
+/* FIXME: just #include <ggz.h> when stack stuff is resolved */
+char *ggz_xml_escape(char *str);
+char *ggz_xml_unescape(char *str);
+int _ggz_free(const void *, char *, int);
+#define ggz_free(mem) _ggz_free(mem, __FUNCTION__ " in " __FILE__, __LINE__)
+/* END FIXME */
+
+
 /* For convenience */
 #define BUFFSIZE 8192
 
@@ -249,17 +257,17 @@ int net_send_serverid(GGZNetIO *net, char *srv_name)
 {
 	char *xml_srv_name;
 
-	/* FIXME: Use ggz_xml_escape and ggz_free (lower) when available */
-	/*xml_srv_name = ggz_xml_escape(srv_name);*/
-	  xml_srv_name = srv_name;
+	if((xml_srv_name = ggz_xml_escape(srv_name)) == NULL)
+		xml_srv_name = srv_name;
 
 	_net_send_line(net, "<SESSION>");
 	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "ok");
 	_net_send_line(net, "\t\t<OPTIONS CHATLEN='%d'/>", MAX_CHAT_LEN);
 	_net_send_line(net, "\t</SERVER>");
 
-	/*ggz_free(xml_srv_name);*/
-			
+	if(xml_srv_name != srv_name)
+		ggz_free(xml_srv_name);
+
 	return 0;
 }
  
@@ -268,15 +276,15 @@ int net_send_server_full(GGZNetIO *net, char *srv_name)
 {
 	char *xml_srv_name;
 
-	/* FIXME: Use ggz_xml_escape and ggz_free (lower) when available */
-	/*xml_srv_name = ggz_xml_escape(srv_name);*/
-	  xml_srv_name = srv_name;
+	if((xml_srv_name = ggz_xml_escape(srv_name)) == NULL)
+		xml_srv_name = srv_name;
 
 	_net_send_line(net, "<SESSION>");
 	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'/>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "full");
 
-	/*ggz_free(xml_srv_name);*/
-			
+	if(xml_srv_name != srv_name)
+		ggz_free(xml_srv_name);
+
 	return 0;
 }
 
