@@ -355,10 +355,13 @@ void table_initialize(void)
 	}
 
 	/* Current trump entry */
-	get_text_box_pos(0, &x, &y);
+	/* TODO: put this position into an list */
+	x = TEXT_BOX_WIDTH + 2 * XWIDTH;
+	y = TEXT_BOX_WIDTH + CARD_BOX_WIDTH + 2* XWIDTH - 20;
 	msglabel = gtk_label_new(NULL);
-	gtk_fixed_put(GTK_FIXED(f1), msglabel, x+3, y + TEXT_BOX_WIDTH - 16);
-	gtk_widget_set_usize(msglabel, TEXT_BOX_WIDTH-6, -1);
+	gtk_fixed_put(GTK_FIXED(f1), msglabel, x, y);
+	gtk_label_set_justify(GTK_LABEL(msglabel), GTK_JUSTIFY_LEFT);
+	/* gtk_widget_set_usize(msglabel, TEXT_BOX_WIDTH-6, -1); */
 	gtk_widget_show(msglabel);
 
 	table_initialized = TRUE;
