@@ -800,8 +800,15 @@ void table_set_bidder(int bidder)
 			   game.names[bidder]);
 
 	/* If last bid was by dealer, then we are done bidding */
-	if(bidder == game.dealer)
+	/* Display the current turn for first trick */
+	if(bidder == game.dealer) {
+		seat = (bidder + 1) % 4;
+		name_temp = g_strdup_printf("* %s *", game.names[seat]);
+		gtk_label_set_text(GTK_LABEL(l_name[SEAT_POS(seat)]),name_temp);
+		g_free(name_temp);
+
 		return;
+	}
 
 	/* Set current bidder flag */
 	seat = (bidder + 1) % 4;
@@ -809,6 +816,31 @@ void table_set_bidder(int bidder)
 		name_temp = g_strdup_printf("%s (DB)", game.names[seat]);
 	else
 		name_temp = g_strdup_printf("%s (B)", game.names[seat]);
+	gtk_label_set_text(GTK_LABEL(l_name[SEAT_POS(seat)]), name_temp);
+	g_free(name_temp);
+}
+
+
+/* table_set_turn()
+ *   Notes the current turn with a * NAME * on the screen, and clears
+ *   the previous player's flag.  Note that the (int turn) argument
+ *   is the seat of the PREVIOUS player (response from MSG_PLAY).
+ */
+void table_set_turn(int turn)
+{
+	int seat;
+	char *name_temp;
+
+	/* Clear previous players flag */
+	gtk_label_set_text(GTK_LABEL(l_name[SEAT_POS(turn)]), game.names[turn]);
+
+	/* If last turn was by "leader-1", then we are done */
+	if(turn == (game.lead + 3) % 4)
+		return;
+
+	/* Set current player flag */
+	seat = (turn + 1) % 4;
+	name_temp = g_strdup_printf("* %s *", game.names[seat]);
 	gtk_label_set_text(GTK_LABEL(l_name[SEAT_POS(seat)]), name_temp);
 	g_free(name_temp);
 }

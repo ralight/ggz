@@ -389,9 +389,10 @@ static int get_play_status(void)
 	if(es_read_char(game.fd, &status) < 0)
 		return -1;
 
-	if(status == 0)
+	if(status == 0) {
 		statusbar_message("Waiting for next play");
-	else {
+		table_set_turn(game.me);
+	} else {
 		/* Restore the cards the way they should be */
 		card = hand.in_play_card_num;
 		hand.card[card] = hand.in_play_card_val;
@@ -441,6 +442,8 @@ static int get_opponent_play(void)
 
 	table_animation_opponent(p_num, card);
 
+	table_set_turn(p_num);
+
 	return 0;
 }
 
@@ -464,6 +467,12 @@ static int get_trick_winner(void)
 
 	table_clear_table();
 
+	/* This will set next player, which causes an anomaly at     */
+	/* the end of a hand, but one that won't keep me up at night */
+	game.lead = p_num + 1;
+	table_set_turn((p_num + 3) % 4);
+	game.lead = p_num;
+
 	return 0;
 }
 
@@ -486,8 +495,9 @@ static int get_dealer(void)
 {
 	if(es_read_char(game.fd, &game.dealer) < 0)
 		return -1;
-	else
-		table_set_dealer();
+
+	table_set_dealer();
+	game.lead = (game.dealer + 1) % 4;
 
 	return 0;
 }

@@ -28,6 +28,7 @@ extern void table_handle_click_event(GdkEventButton *);
 extern void table_set_name(int, char *);
 extern void table_set_dealer(void);
 extern void table_set_bidder(int);
+extern void table_set_turn(int);
 extern void table_display_hand(void);
 extern void table_set_bid(int, int);
 extern void table_set_tricks(int, int);

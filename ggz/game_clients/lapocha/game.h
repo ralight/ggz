@@ -36,6 +36,7 @@ struct game_t {
 	int trump_suit;
 	char got_players;
 	char dealer;
+	char lead;
 };
 extern struct game_t game;
 
