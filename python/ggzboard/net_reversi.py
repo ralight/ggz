@@ -12,9 +12,12 @@ class NetworkInfo:
 	def __init__(self):
 		self.playernum = -1
 		self.playerturn = -1
-		self.state = None
+		self.playernames = None
 		self.modified = 0
-		self.returnvalue = -1
+		self.playernum = -1
+
+#		self.state = None
+#		self.returnvalue = -1
 
 class Network(NetworkBase, NetworkInfo):
 	def __init__(self):
@@ -51,14 +54,18 @@ class Network(NetworkBase, NetworkInfo):
 			print "- seat"
 			myseat = self.getbyte()
 			print " + seat", myseat
+			self.playernum = myseat
 		elif op == self.MSG_PLAYERS:
 			print "- players"
+			self.playernames = []
 			for i in range(2):
 				seat = self.getbyte()
 				print " + seat", seat
+				player = ""
 				if seat != ggzmod.SEAT_OPEN:
 					player = self.getstring()
 					print " + player", player
+				self.playernames.append(player)
 		elif op == self.MSG_MOVE:
 			print "- move"
 			move = self.getbyte()
@@ -71,6 +78,7 @@ class Network(NetworkBase, NetworkInfo):
 			print "- gameover"
 			winner = self.getbyte()
 			print " + winner", winner
+			self.inputallowed = 0
 #		elif op == self.REQ_MOVE:
 #			print "- req move"
 		elif op == self.MSG_START:

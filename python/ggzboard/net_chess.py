@@ -10,12 +10,13 @@ from ggzboard_net import *
 
 class NetworkInfo:
 	def __init__(self):
-#		self.playernum = -1
-#		self.playerturn = -1
+		self.playernum = -1
+		self.playerturn = -1
+		self.playernames = None
+		self.modified = 0
+
 #		self.state = None
-#		self.modified = 0
 #		self.returnvalue = -1
-		pass
 
 class Network(NetworkBase, NetworkInfo):
 	def __init__(self):
@@ -69,8 +70,12 @@ class Network(NetworkBase, NetworkInfo):
 			version = self.getchar()
 			print " + seat", seat
 			print " + version", version
+			self.playernum = seat
+			self.playerturn = seat
 		elif op == self.MSG_PLAYERS:
 			print "- players"
+			name1 = "(unnamed)"
+			name2 = "(unnamed)"
 			type1 = self.getchar()
 			if type1 != ggzmod.SEAT_OPEN:
 				name1 = self.getstring()
@@ -79,27 +84,43 @@ class Network(NetworkBase, NetworkInfo):
 				name2 = self.getstring()
 			print " + player1", type1, name1
 			print " + player2", type2, name2
+			self.playernames = []
+			self.playernames.append(name1)
+			self.playernames.append(name2)
+			self.modified = 1
 		elif op == self.REQ_TIME:
 			print "- reqtime"
+			###
+			self.sendchar(self.RSP_TIME)
+			self.sendbyte(0)
+			# 0: no clock is used
+			###
 		elif op == self.RSP_TIME:
 			print "- rsptime"
 			time = self.getbyte()
 			print " + time", time
 		elif op == self.MSG_START:
 			print "- start"
+			self.inputallowed = 1
 		elif op == self.MSG_MOVE:
 			print "- msgmove"
 			length = self.getbyte()
-			x = self.getchar()
-			y = self.getchar()
-			x2 = self.getchar()
-			y2 = self.getchar()
-			cval = self.getchar()
-			print " + move", x, y, x2, y2, cval
+			print " + length", length
+			if length:
+				x = self.getchar()
+				y = self.getchar()
+				x2 = self.getchar()
+				y2 = self.getchar()
+				cval = self.getchar()
+				print " + move", x, y, x2, y2, cval
+				frompos = (x - ord('A'), y - ord('1'))
+				topos = (x2 - ord('A'), y2 - ord('1'))
+				self.movequeue.append((frompos, topos))
 		elif op == self.MSG_GAMEOVER:
 			print "- gameover"
 			cval = self.getbyte()
 			print " + cval", cval
+			self.inputallowed = 0
 		elif op == self.REQ_DRAW:
 			print "- reqdraw"
 		elif op == self.RSP_UPDATE:
@@ -113,11 +134,24 @@ class Network(NetworkBase, NetworkInfo):
 			self.errorcode = 1
 
 	def domove(self, frompos, topos):
-		self.sendbyte(self.REQ_MOVE)
-		(x, y) = topos
-		toposval = y * 8 + x
-#		self.sendbyte(toposval)
-		print "*** SENT", toposval
+		self.sendchar(self.REQ_MOVE)
+		(x, y) = frompos
+		(x2, y2) = topos
+		print "*** SENT", x + ord('A'), y + ord('1'), x2 + ord('A'), y2 + ord('1'), "(", frompos, topos, ")"
+		#y = 8 - y
+		#y2 = 8 - y2
+		#x = 8 - x
+		#x2 = 8 - x2
+		self.sendchar(0)
+		self.sendchar(0)
+		self.sendchar(0)
+		self.sendchar(6)
+		self.sendchar(x + ord('A'))
+		self.sendchar(y + ord('1'))
+		self.sendchar(x2 + ord('A'))
+		self.sendchar(y2 + ord('1'))
+		self.sendchar(0)
+		self.sendchar(0)
 
 	def netmove(self):
 		if len(self.movequeue) == 0:

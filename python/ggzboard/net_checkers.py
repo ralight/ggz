@@ -10,12 +10,14 @@ from ggzboard_net import *
 
 class NetworkInfo:
 	def __init__(self):
-#		self.playernum = -1
-#		self.playerturn = -1
+		self.playernum = -1
+		self.playerturn = -1
+		self.playernames = None
+		self.modified = 0
+		self.playernum = -1
+
 #		self.state = None
-#		self.modified = 0
 #		self.returnvalue = -1
-		pass
 
 class Network(NetworkBase, NetworkInfo):
 	def __init__(self):

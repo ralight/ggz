@@ -381,6 +381,10 @@ class GGZBoard:
 						oldx = -1
 						oldy = -1
 
+			if net.modified:
+				updatescreen = 1
+				net.modified = 0
+
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
 				ui.backgroundarea.blit(title, (20, 30))
@@ -408,6 +412,20 @@ class GGZBoard:
 								ui.backgroundarea.blit(img, (sx - conf.cellwidth / 2, sy - conf.cellwidth / 2))
 							else:
 								ui.backgroundarea.blit(img, (sx, sy))
+
+				if self.ggzsuccess:
+					w = ui.backgroundarea.get_width()
+					h = ui.backgroundarea.get_height()
+					if net.playernames:
+						i = 0
+						for player in net.playernames:
+							x = w - conf.marginwidth
+							y = conf.marginheight + i * 60
+							caption = ui.smallfont.render("Player " + str(i + 1) + ":", 1, (255, 200, 0))
+							ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
+							player = ui.smallfont.render(player, 1, (255, 200, 0))
+							ui.backgroundarea.blit(player, (x - player.get_width(), y + 30))
+							i += 1
 
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
