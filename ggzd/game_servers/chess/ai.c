@@ -1,6 +1,7 @@
 /*
  * Chess game module for Guru
  * Copyright (C) 2004 Josef Spillner, josef@ggzgamingzone.org
+ * $Id: ai.c 6792 2005-01-21 21:47:32Z jdorje $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,7 +221,7 @@ static int chess_ai_moveexceptions(int from, int to)
 	int allowed, newpos;
 	int k, l;
 	int figure;
-	int factor;
+	/* int factor; */
 
 	figure = chess_ai_table[from][C_FIGURE];
 	allowed = 1;
