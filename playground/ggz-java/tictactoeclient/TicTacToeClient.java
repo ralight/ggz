@@ -1,15 +1,17 @@
 import java.awt.*;
 import java.io.*;
+import java.awt.event.*;
 
-class TTTAbout extends Dialog
+class TTTAbout extends Dialog implements ActionListener
 {
+	Button closebutton;
+
 	TTTAbout(Frame parent)
 	{
-		//super(parent, "About GGZ Java TicTacToe Client", true);
-		super(parent);
+		super(parent, "About GGZ Java TicTacToe Client", true);
 		setBackground(Color.blue);
 		setForeground(Color.white);
-		setSize(400, 150);
+		setSize(600, 150);
 
 		Font f = new Font("TimesRoman", Font.PLAIN, 12);
 		setFont(f);
@@ -17,20 +19,21 @@ class TTTAbout extends Dialog
 		GridLayout layout = new GridLayout(5, 1);
 		setLayout(layout);
 		add(new Label("A java client for the GGZ TicTacToe game"));
-		add(new Label("Copyright (C) 2002 Josef Spillner"));
-		add(new Label("dr_maux@users.sourceforge.net"));
+		add(new Label("Copyright (C) 2002 - 2004 Josef Spillner <josef@ggzgamingzone.org>"));
 		add(new Label("Published under GNU GPL conditions"));
-		add(new Button("Close"));
+		closebutton = new Button("Close");
+		add(closebutton);
+
+		closebutton.addActionListener(this);
 	}
 
-	public boolean action(Event e, Object o)
+	public void actionPerformed(ActionEvent e)
 	{
-		if(o.equals("Close"))
+		if(e.getSource() == closebutton)
 		{
 			dispose();
-			return true;
+			return;
 		}
-		else return super.handleEvent(e);
 	}
 }
 
@@ -49,39 +52,18 @@ class TTTProto
 	}
 }
 
-public class TicTacToeClient extends Frame implements Runnable
+class TicTacToeEngine implements Runnable
 {
-	TicTacToeClient()
+	TicTacToeManager mManager;
+
+	TicTacToeEngine(TicTacToeManager manager)
 	{
-		super("GGZ Java TicTacToe Client");
-		setSize(400, 400);
-		setBackground(Color.blue);
-		setForeground(Color.yellow);
+//		Thread t = new Thread(this);
+//		t.start();
 
-		Font font = new Font("TimesRoman", Font.PLAIN, 22);
-		setFont(font);
+		manager.setEngine(this);
+		mManager = manager;
 
-		GridLayout layout = new GridLayout(3, 3);
-		setLayout(layout);
-		add(new Button(""));
-		add(new Button("X"));
-		add(new Button(""));
-		add(new Button("O"));
-		add(new Button(""));
-		add(new Button("X"));
-		add(new Button(""));
-		add(new Button(""));
-		add(new Button(""));
-
-		initGui();
-
-		loop();
-	}
-
-	private void loop()
-	{
-		Thread t = new Thread(this);
-		t.start();
 	}
 
 	public void run()
@@ -92,7 +74,7 @@ public class TicTacToeClient extends Frame implements Runnable
 
 		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
-		while(true)
+		while(x != -1)
 		{
 			try
 			{
@@ -100,6 +82,7 @@ public class TicTacToeClient extends Frame implements Runnable
 			}
 			catch(IOException ex)
 			{
+				x = -1;
 			}
 			if(x > 0)
 			{
@@ -110,13 +93,18 @@ public class TicTacToeClient extends Frame implements Runnable
 				}
 				catch(IOException ex)
 				{
+					x = -1;
 				}
 				for(int i = 0; i < x; i++)
 				{
 					System.out.println("Char: " + b[i]);
 				}
 
-				int op = b[0] + (b[1] << 8) + (b[2] << 16) + (b[3] << 24);
+				mManager.sendMessage(this, b);
+
+				int op = 0;
+				if(x >= 4)
+					op = b[0] + (b[1] << 8) + (b[2] << 16) + (b[3] << 24);
 				switch(op)
 				{
 					case TTTProto.msgseat:
@@ -147,15 +135,50 @@ public class TicTacToeClient extends Frame implements Runnable
 		}
 	}
 
+	public void sendMessage(byte[] message)
+	{
+		for(int i = 0; i < message.length; i++)
+			System.out.println("engine::message " + message[i]);
+	}
+}
+
+class TicTacToeGui extends Frame implements ActionListener
+{
+	MenuItem exitbutton;
+	MenuItem aboutbutton;
+	Button[] buttons;
+	TicTacToeManager mManager;
+
+	TicTacToeGui(TicTacToeManager manager)
+	{
+		super("GGZ Java TicTacToe Client");
+		setSize(400, 400);
+		setBackground(Color.blue);
+		setForeground(Color.yellow);
+
+		Font font = new Font("TimesRoman", Font.PLAIN, 22);
+		setFont(font);
+
+		GridLayout layout = new GridLayout(3, 3);
+		setLayout(layout);
+
+		initGui();
+
+		manager.setGui(this);
+		mManager = manager;
+	}
+
 	private void initGui()
 	{
 		MenuBar menubar = new MenuBar();
 
 		Menu game = new Menu("Game");
-		game.add(new MenuItem("Exit"));
+		exitbutton = new MenuItem("Exit");
+		game.add(exitbutton);
 
 		Menu help = new Menu("Help");
-		help.add(new MenuItem("About"));
+		aboutbutton = new MenuItem("About");
+		help.add(aboutbutton);
 
 		menubar.add(game);
 		menubar.add(help);
@@ -163,41 +186,81 @@ public class TicTacToeClient extends Frame implements Runnable
 		Font font = new Font("TimesRoman", Font.PLAIN, 12);
 		menubar.setFont(font);
 
+		exitbutton.addActionListener(this);
+		aboutbutton.addActionListener(this);
+
 		setMenuBar(menubar);
+
+		buttons = new Button[9];
+		for(int i = 0; i < 9; i++)
+		{
+			Button ttt = new Button("");
+			add(ttt);
+			buttons[i] = ttt;
+			ttt.addActionListener(this);
+		}
 	}
 
-	public boolean action(Event e, Object o)
+	public void actionPerformed(ActionEvent e)
 	{
-		if(o.equals("Exit"))
+		if(e.getSource() == exitbutton)
 		{
 			System.exit(-1);
-			return true;
+			return;
 		}
-		else if(o.equals("About"))
+		else if(e.getSource() == aboutbutton)
 		{
 			TTTAbout a = new TTTAbout(this);
 			a.show();
-			return true;
+			return;
 		}
-		else if(e.target instanceof Button)
+		else
 		{
-			return true;
+			for(int i = 0; i < 9; i++)
+				if(e.getSource() == buttons[i])
+				{
+					byte[] message = new byte[1];
+					message[0] = 42;
+					mManager.sendMessage(this, message);
+				}
 		}
-		else return super.handleEvent(e);
 	}
 
-	public boolean handleEvent(Event e)
+	public void sendMessage(byte[] message)
 	{
-		switch(e.id)
-		{
-			case Event.WINDOW_DESTROY:
-				System.exit(0);
-				return true;
-			default:
-				return super.handleEvent(e);
-		}
+		for(int i = 0; i < message.length; i++)
+			System.out.println("gui::message " + message[i]);
+	}
+}
+
+class TicTacToeManager
+{
+	TicTacToeGui mGui;
+	TicTacToeEngine mEngine;
+
+	TicTacToeManager()
+	{
 	}
 
+	public void setGui(TicTacToeGui gui)
+	{
+		mGui = gui;
+	}
+
+	public void setEngine(TicTacToeEngine engine)
+	{
+		mEngine = engine;
+	}
+
+	public void sendMessage(Object sender, byte[] message)
+	{
+		if(sender == mGui) mEngine.sendMessage(message);
+		else mGui.sendMessage(message);
+	}
+}
+
+public class TicTacToeClient
+{
 	public static void main(String[] args)
 	{
 		int ggz = 0;
@@ -217,8 +280,11 @@ public class TicTacToeClient extends Frame implements Runnable
 			System.exit(0);
 		}
 
-		TicTacToeClient ttt = new TicTacToeClient();
-		ttt.show();
+		TicTacToeManager manager = new TicTacToeManager();
+		TicTacToeGui tttg = new TicTacToeGui(manager);
+		tttg.show();
+		TicTacToeEngine ttte = new TicTacToeEngine(manager);
+		ttte.run();
 	}
 }
 
