@@ -11,27 +11,131 @@ diff -Nur original.tuxman-0.7/Makefile tuxman-0.7/Makefile
  CXXFLAGS = `sdl-config --cflags`
  
  bin/tuxman: obj/main.o \
+diff -Nur original.tuxman-0.7/module.dsc tuxman-0.7/module.dsc
+--- original.tuxman-0.7/module.dsc	1970-01-01 01:00:00.000000000 +0100
++++ tuxman-0.7/module.dsc	2003-05-22 09:06:19.000000000 +0200
+@@ -0,0 +1,11 @@
++[ModuleInfo]
++Game = Tuxman
++Author = Robert Strobl
++CommandLine = ./bin/tuxman --ggz
++Frontend = sdl
++Homepage = http://www.ftpnet.org/
++Name = Tuxman
++ProtocolEngine = Tuxman
++ProtocolVersion = 1
++Version = 0.7
++
+Binärdateien original.tuxman-0.7/obj/control.o and tuxman-0.7/obj/control.o sind verschieden.
 Binärdateien original.tuxman-0.7/obj/main.o and tuxman-0.7/obj/main.o sind verschieden.
 Binärdateien original.tuxman-0.7/obj/tile.o and tuxman-0.7/obj/tile.o sind verschieden.
+Binärdateien original.tuxman-0.7/screen.bmp and tuxman-0.7/screen.bmp sind verschieden.
+diff -Nur original.tuxman-0.7/src/control.cpp tuxman-0.7/src/control.cpp
+--- original.tuxman-0.7/src/control.cpp	2003-05-21 23:36:00.000000000 +0200
++++ tuxman-0.7/src/control.cpp	2003-05-22 09:40:14.000000000 +0200
+@@ -1,4 +1,36 @@
+ #include "control.h"
++#include <iostream>
++
++namespace PACNET
++{
++	enum Opcodes
++	{
++		list = 100,
++		name = 101,
++		monster = 102,
++		event = 103,
++		selected = 120,
++		move = 121
++	};
++	enum Moves
++	{
++		up = 1,
++		left = 2,
++		down = 3,
++		right = 4
++	};
++};
++
++void control::networkMove(pacman &pac, int direction)
++{
++#ifdef GGZ_SUPPORT
++	  if(pac.ggzmode) {
++		std::cout << "event: move left to " << pac.ggzfd << std::endl;
++		ggz_write_int(pac.ggzfd, PACNET::move);
++		ggz_write_int(pac.ggzfd, direction);
++	  }
++#endif
++}
+ 
+ void control::checkEvent(pacman &pac, tile &my_tile) {
+   SDL_Event ev;
+@@ -11,20 +43,31 @@
+       case SDLK_ESCAPE:
+ 	  pac.quit();
+       case SDLK_LEFT:
+-	if (pac.pause != PAUSE)
++	if (pac.pause != PAUSE) {
+ 	  my_tile.my_pac.state=LEFT;
++	  networkMove(pac, PACNET::left);
++	}
+         break;
+       case SDLK_RIGHT:
+ 	if (pac.pause != PAUSE)
++	{
+ 	  my_tile.my_pac.state=RIGHT;
++	  networkMove(pac, PACNET::right);
++	}
+         break;
+       case SDLK_UP:
+ 	if (pac.pause != PAUSE)
++	{
+ 	  my_tile.my_pac.state=UP;
++	  networkMove(pac, PACNET::up);
++	}
+         break;
+       case SDLK_DOWN:
+ 	if (pac.pause != PAUSE)
++	{
+ 	  my_tile.my_pac.state=DOWN;
++	  networkMove(pac, PACNET::down);
++	}
+         break;
+       case SDLK_PLUS:
+ 	pac.GameSpeed-=1;	
+diff -Nur original.tuxman-0.7/src/control.h tuxman-0.7/src/control.h
+--- original.tuxman-0.7/src/control.h	2003-05-21 23:36:00.000000000 +0200
++++ tuxman-0.7/src/control.h	2003-05-22 09:40:24.000000000 +0200
+@@ -22,6 +22,9 @@
+   void checkMonsterMoving(tile &my_tile);
+   void checkPacmansDeath(tile &my_tile, pacman &pac);
+   void checkScroll(tile &my_tile, pacman &pac);
++
++ private:
++  void networkMove(pacman &pac, int direction);
+ };
+ 
+ #endif
 diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
 --- original.tuxman-0.7/src/main.cpp	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/main.cpp	2003-05-22 00:03:48.000000000 +0200
-@@ -2,6 +2,65 @@
++++ tuxman-0.7/src/main.cpp	2003-05-22 09:32:02.000000000 +0200
+@@ -2,6 +2,71 @@
  #include "control.h"
  #include "tile.h"
  #include "sound.h"
 +#ifdef GGZ_SUPPORT
 +#include <ggzmod.h>
++#include <iostream>
 +#endif
 +
 +#ifdef GGZ_SUPPORT
-+static int fdes = -1;
-+static GGZMod *mymod;
++pacman *pacptr = NULL;
++static GGZMod *mymod = NULL;
 +
 +static void pac_ggzmod(GGZMod *mod, GGZModEvent e, void *data)
 +{
-+	fdes = *(int*)data;
-+	ggzmod_set_state(mymod, GGZMOD_STATE_PLAYING);
++	pacptr->ggzfd = *(int*)data;
++	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 +}
 +
 +static void pac_ggz()
@@ -41,6 +145,8 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
 +
 +static void pac_input()
 +{
++	std::cout << "pac_input" << std::endl;
++	/* ... */
 +}
 +
 +/* taken from sdl-games/ttt3d */
@@ -51,6 +157,9 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
 +	struct timeval tv;
 +	int ret;
 +	int serverfd;
++	int fdes;
++
++	fdes = pacptr->ggzfd;
 +
 +	FD_ZERO(&set);
 +
@@ -82,13 +191,15 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
  
  int main(int argc, char *argv[]) {
    int food, i;
-@@ -12,6 +71,16 @@
+@@ -12,6 +77,18 @@
  
    pac.readConfig("tuxman.conf",pac);  
  
 +#ifdef GGZ_SUPPORT
 +  if((argc == 2) && (!strcmp(argv[1], "--ggz"))) {
 +	pac.ggzmode = 1;
++	pac.ggzfd = -1;
++	pacptr = &pac;
 +  } else {
 +	pac.ggzmode = 0;
 +  }
@@ -99,7 +210,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
    srand(time(0));
    
    pac.initSDL();
-@@ -25,12 +94,33 @@
+@@ -25,12 +102,31 @@
    pac.ac_level=1;
    my_tile.my_pac.score=0;
    my_tile.my_pac.lives = 10;
@@ -107,45 +218,44 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
 +
 +#ifdef GGZ_SUPPORT
 +  if(pac.ggzmode) {
++	std::cout << "start GGZ connection" << std::endl;
 +    pac.ggzmod = ggzmod_new(GGZMOD_GAME);
 +	mymod = pac.ggzmod;
 +	ggzmod_set_handler(pac.ggzmod, GGZMOD_EVENT_SERVER, &pac_ggzmod);
 +    ggzmod_connect(pac.ggzmod);
-+	/* pac_ggz(); */
 +  }
 +#endif
 +
-   while(1) {
 +#ifdef GGZ_SUPPORT
-+	pac_network();
++	if(pac.ggzmode) {
++		while(ggzmod_get_state(pac.ggzmod) != GGZMOD_STATE_PLAYING)
++			pac_network();
++		std::cout << "got GGZ connection" << std::endl;
++    }
 +#endif
++
+   while(1) {
      pac.nextLevel();
 -    if (argc>=2)
-+    if (argc>=2) {
++    if ((!pac.ggzmode) && (argc>=2)) {
        sprintf(pac.level,"%s",argv[1]);
 - 
 +	}
 +
-+#ifdef GGZ_SUPPORT
-+	if(pac.ggzmode) {
-+		/* ... */
-+		while(1);
-+    }
-+#endif
-+
      my_tile.initTiles(pac);
      playSound("share/hunger.wav");
      SDL_PauseAudio(0);
-@@ -68,13 +158,24 @@
- 	my_tile.showInformation(pac);
- 	ctrl.checkPacmansDeath(my_tile, pac);
- 	SDL_UpdateRect(pac.screen, 0, 0, 0, 0);
+@@ -46,6 +142,9 @@
+ 	if (food==0)
+ 	  break;
+ 
 +#ifdef GGZ_SUPPORT
-+	pac_network();
++	if(pac.ggzmode) pac_network();
 +#endif
- 	SDL_Delay(pac.GameSpeed*10);
+ 	ctrl.checkPacmansDeath(my_tile, pac);
+ 	ctrl.checkScroll(my_tile,pac);	
        }
-     }
+@@ -74,7 +173,15 @@
      playSound("share/end.wav");
      SDL_PauseAudio(0);
      sleep(2);
@@ -176,7 +286,7 @@ diff -Nur original.tuxman-0.7/src/main.h tuxman-0.7/src/main.h
  #define ICON                ""
 diff -Nur original.tuxman-0.7/src/pacman.h tuxman-0.7/src/pacman.h
 --- original.tuxman-0.7/src/pacman.h	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/pacman.h	2003-05-22 00:02:07.000000000 +0200
++++ tuxman-0.7/src/pacman.h	2003-05-22 09:20:10.000000000 +0200
 @@ -2,6 +2,9 @@
  #define _pacman_h_
  
@@ -187,13 +297,14 @@ diff -Nur original.tuxman-0.7/src/pacman.h tuxman-0.7/src/pacman.h
  
  class pacman {
  public:
-@@ -37,6 +40,11 @@
+@@ -37,6 +40,12 @@
    int frame_time;
    int frame_last;
  
 +  int ggzmode;
 +#ifdef GGZ_SUPPORT
 +  GGZMod *ggzmod;
++  int ggzfd;
 +#endif
 +
    //Prototypes
@@ -201,8 +312,8 @@ diff -Nur original.tuxman-0.7/src/pacman.h tuxman-0.7/src/pacman.h
    void setVideoMode();
 diff -Nur original.tuxman-0.7/src/tile.cpp tuxman-0.7/src/tile.cpp
 --- original.tuxman-0.7/src/tile.cpp	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/tile.cpp	2003-05-21 23:43:34.000000000 +0200
-@@ -289,6 +289,12 @@
++++ tuxman-0.7/src/tile.cpp	2003-05-22 09:13:38.000000000 +0200
+@@ -289,8 +289,14 @@
    drawFont((pac.SCREEN_WIDTH / 2) - (pac.tuxman->w / 2),
  	   (pac.SCREEN_HEIGHT / 2) + FONT_HEIGHT + 5, pac);
  
@@ -213,5 +324,32 @@ diff -Nur original.tuxman-0.7/src/tile.cpp tuxman-0.7/src/tile.cpp
 +  }
 +
    SDL_UpdateRect(pac.screen, 0, 0, 0, 0);
-   sleep(5);
+-  sleep(5);
++  sleep(3);
  
+   pac.BGColor = SDL_MapRGB(pac.screen->format, 97, 144, 181);
+   SDL_FillRect(pac.screen, 0, pac.BGColor);
+diff -Nur original.tuxman-0.7/tuxman.conf tuxman-0.7/tuxman.conf
+--- original.tuxman-0.7/tuxman.conf	2003-05-21 23:36:00.000000000 +0200
++++ tuxman-0.7/tuxman.conf	2003-05-22 09:30:32.000000000 +0200
+@@ -2,10 +2,12 @@
+ # Please edit your config file!
+ 
+ # screen width is you width in pixels
+-ScreenWidth 1024
++ScreenWidth 640
++#ScreenWidth 1024
+ 
+ # screen height is you height in pixels
+-ScreenHeight 768
++ScreenHeight 480
++#ScreenHeight 768
+ 
+ # screen depth 8/16/24/32
+ ScreenDepth 24
+@@ -16,4 +18,4 @@
+ # speed of your game in milliseconds
+ # max = 0
+ # min = not defined ;)
+-GameSpeed 0
++GameSpeed 50
