@@ -31,11 +31,14 @@
 #include <unistd.h>
 
 #include <err_func.h>
+#include <easysock.h>
+#include <engine.h>
+#include <protocols.h>
 
+extern gameInfo_t gameInfo;
 
 static void err_doit(int flag, const char *fmt, va_list ap)
 {
-
 	char buf[4096];
 
 	/*sprintf(buf, "[%d]: ", getpid());*/
@@ -104,13 +107,15 @@ void err_msg_exit(const char *fmt, ...)
 
 void dbg_msg(const char *fmt, ...)
 {
-#ifdef DEBUG
+	char buf[4096];
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(0, fmt, ap);
+        vsprintf(buf, fmt, ap);
+	es_write_int(gameInfo.ggz_sock, MSG_DBG);
+	es_write_int(gameInfo.ggz_sock, GGZ_DBG_TABLE);
+	es_write_string(gameInfo.ggz_sock, buf);
 	va_end(ap);
-#endif
 }
 
 
