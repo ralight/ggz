@@ -40,7 +40,7 @@
 #define MAX_GAME_AUTH_LEN 32
 #define MAX_GAME_WEB_LEN  128
 #define MAX_PATH_LEN 256
-#define MAX_GAME_TYPES 5
+#define MAX_GAME_TYPES 15
 
 
 /* Bitmasks for allowable player numbers */
