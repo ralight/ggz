@@ -310,6 +310,8 @@ echo "</td><td bgcolor='#00c0c0' valign='top'>\n";
 
 echo "Current teams:<br><br>\n";
 
+$teams = array();
+
 $res = pg_exec($id, "SELECT * FROM teammembers WHERE handle = '$ggzuser' AND role LIKE '%member%'");
 for ($i = 0; $i < pg_numrows($res); $i++)
 {
@@ -321,6 +323,8 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 	$attribute = "";
 	$title = "";
 
+	$managed = 0;
+
 	if (strstr($role, "founder")) :
 		$title .= "Founder & ";
 		$attribute = "s";
@@ -331,10 +335,12 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 		if ($attribute != "s") :
 			$attribute = "d";
 		endif;
+		$managed = 1;
 	endif;
 	if (strstr($role, "vice")) :
 		$title .= "Vice Leader & ";
 		$color = "gold";
+		$managed = 1;
 	endif;
 
 	$title = substr($title, 0, strlen($title) - 2);
@@ -345,28 +351,15 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 		echo "<img src='ggzicons/rankings/$color$attribute.png' title='$title'>\n";
 	}
 	echo "<br>\n";
+
+	if ($managed) :
+		$teams[] = $teamname;
+	endif;
 }
-
-
-echo "Bla\n";
-echo "<img src='ggzicons/rankings/golds.png' title='Multiple Winner & Leader & Founder'>\n";
-echo "<img src='ggzicons/rankings/golds.png' title='Multiple Winner & Leader & Founder'>\n";
-echo "<img src='ggzicons/rankings/golds.png' title='Multiple Winner & Leader & Founder'>\n";
-echo "<br>\n";
-echo "Kuh\n";
-echo "<img src='ggzicons/rankings/gold.png' title='Winner & Vice Leader'>\n";
-echo "<img src='ggzicons/rankings/gold.png' title='Winner & Vice Leader'>\n";
-echo "<br>\n";
-echo "Narf\n";
-echo "<img src='ggzicons/rankings/silver.png' title='Winner'>\n";
-echo "<img src='ggzicons/rankings/silver.png' title='Winner'>\n";
-echo "<br>\n";
-echo "Ruffle\n";
-echo "<img src='ggzicons/rankings/silver.png' title='Member'>\n";
-echo "<br>\n";
-echo "TheKing\n";
-echo "<img src='ggzicons/rankings/rubin.png' title='Site Admin'>\n";
-echo "<br>\n";
+if(!pg_numrows($res))
+{
+	echo "You are not yet a member of any team.\n";
+}
 
 $res = pg_exec($id, "SELECT * FROM teammembers WHERE handle = '$ggzuser' AND role NOT LIKE '%member%'");
 
@@ -387,98 +380,95 @@ echo "</td></tr></table>\n";
 
 echo "<br><br>\n";
 
-
-
-echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
-echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
-
-$teamname = 'fooclan';
-
-echo "<b>Team applications for $teamname</b><br>\n";
-
-echo "<table><tr><td bgcolor='#00a0a0'>\n";
-
-echo "<form action='teams.php?approve=1' method='POST'>\n";
-echo "<table>\n";
-echo "<tr><td>Player:</td><td>\n";
-echo "<input type='hidden' name='team_name' value='$teamname'>\n";
-echo "<select name='player_name'>\n";
-$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role = ''");
-for ($i = 0; $i < pg_numrows($res); $i++)
+for ($j = 0; $j < sizeof($teams); $j++)
 {
-	$playername = pg_result($res, $i, "handle");
-	echo "<option>$playername</option>\n";
+	$teamname = $teams[$j];
+
+	echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
+	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
+
+	echo "<b>Team applications for $teamname</b><br>\n";
+
+	echo "<table><tr><td bgcolor='#00a0a0'>\n";
+
+	echo "<form action='teams.php?approve=1' method='POST'>\n";
+	echo "<table>\n";
+	echo "<tr><td>Player:</td><td>\n";
+	echo "<input type='hidden' name='team_name' value='$teamname'>\n";
+	echo "<select name='player_name'>\n";
+	$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role = ''");
+	for ($i = 0; $i < pg_numrows($res); $i++)
+	{
+		$playername = pg_result($res, $i, "handle");
+		echo "<option>$playername</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td></tr>\n";
+	echo "<tr><td>Approval:</td><td>\n";
+	echo "<select name='player_approval'>\n";
+	echo "<option>approved</option>\n";
+	echo "<option>declined</option>\n";
+	echo "</select>\n";
+	echo "</td></tr>\n";
+	echo "<tr><td></td><td><input type='submit' value='Approve'></td></tr>\n";
+	echo "</table>\n";
+	echo "</form>\n";
+
+	echo "</td></tr></table>\n";
+
+	echo "<br><br>\n";
+
+	echo "</td></tr></table>\n";
+	echo "</td></tr></table>\n";
+
+	echo "<br><br>\n";
 }
-echo "</select>\n";
-echo "</td></tr>\n";
-echo "<tr><td>Approval:</td><td>\n";
-echo "<select name='player_approval'>\n";
-echo "<option>approved</option>\n";
-echo "<option>declined</option>\n";
-echo "</select>\n";
-echo "</td></tr>\n";
-echo "<tr><td></td><td><input type='submit' value='Approve'></td></tr>\n";
-echo "</table>\n";
-echo "</form>\n";
 
-echo "</td></tr></table>\n";
-
-echo "<br><br>\n";
-
-echo "</td></tr></table>\n";
-echo "</td></tr></table>\n";
-
-echo "<br><br>\n";
-
-
-
-
-echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
-echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
-
-$teamname = 'fooclan';
-
-echo "<b>Team management for $teamname</b><br>\n";
-
-echo "<table><tr><td bgcolor='#00a0a0'>\n";
-
-echo "<form action='teams.php?manage=1' method='POST'>\n";
-echo "<table>\n";
-echo "<tr><td>Player:</td><td>\n";
-echo "<input type='hidden' name='team_name' value='$teamname'>\n";
-echo "<select name='player_name'>\n";
-$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role <> ''");
-for ($i = 0; $i < pg_numrows($res); $i++)
+for ($j = 0; $j < sizeof($teams); $j++)
 {
-	$playername = pg_result($res, $i, "handle");
-	$role = pg_result($res, $i, "role");
-	echo "<option value='$playername'>$playername ($role)</option>\n";
+	$teamname = $teams[$j];
+
+	echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
+	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
+
+	echo "<b>Team management for $teamname</b><br>\n";
+
+	echo "<table><tr><td bgcolor='#00a0a0'>\n";
+
+	echo "<form action='teams.php?manage=1' method='POST'>\n";
+	echo "<table>\n";
+	echo "<tr><td>Player:</td><td>\n";
+	echo "<input type='hidden' name='team_name' value='$teamname'>\n";
+	echo "<select name='player_name'>\n";
+	$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role <> ''");
+	for ($i = 0; $i < pg_numrows($res); $i++)
+	{
+		$playername = pg_result($res, $i, "handle");
+		$role = pg_result($res, $i, "role");
+		echo "<option value='$playername'>$playername ($role)</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td></tr>\n";
+	echo "<tr><td>Assign role:</td><td>\n";
+	echo "<select name='player_role'>\n";
+	echo "<option value='member'>Member</option>\n";
+	echo "<option value='vice'>Vice Leader</option>\n";
+	echo "<option value='leader'>Leader</option>\n";
+	echo "</select>\n";
+	echo "</td></tr>\n";
+	echo "<tr><td></td><td><input type='submit' value='Change'></td></tr>\n";
+	echo "</table>\n";
+	echo "</form>\n";
+
+	echo "</td></tr></table>\n";
+
+	echo "<br><br>\n";
+
+	echo "</td></tr></table>\n";
+	echo "</td></tr></table>\n";
+
+	echo "<br><br>\n";
 }
-echo "</select>\n";
-echo "</td></tr>\n";
-echo "<tr><td>Assign role:</td><td>\n";
-echo "<select name='player_role'>\n";
-echo "<option value='member'>Member</option>\n";
-echo "<option value='vice'>Vice Leader</option>\n";
-echo "<option value='leader'>Leader</option>\n";
-echo "</select>\n";
-echo "</td></tr>\n";
-echo "<tr><td></td><td><input type='submit' value='Change'></td></tr>\n";
-echo "</table>\n";
-echo "</form>\n";
-
-echo "</td></tr></table>\n";
-
-echo "<br><br>\n";
-
-echo "</td></tr></table>\n";
-echo "</td></tr></table>\n";
-
-echo "<br><br>\n";
-
-
-
-
 
 echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
 echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";

@@ -4,6 +4,7 @@
 &nbsp;&nbsp;
 <font color='#000000' size=5>
 GGZ Gaming Zone Ranking System
+(and <a href="/tournaments/">Tournaments</a>)
 </font>
 <!-- <br><font size=2>Attention: Statistics are not realtime yet!</font> -->
 </td></tr></table>
