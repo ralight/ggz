@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4092 2002-04-27 21:18:12Z jdorje $
+ * $Id: common.c 4101 2002-04-29 01:48:31Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -514,6 +514,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	player_t player = ((GGZSeat*)data)->num;
 	seat_t seat = game.players[player].seat;
 	GGZdModState new_state;
+	player_t p;
 
 	ggzdmod_log(game.ggz,
 		    "Handling a leave event for player %d (seat %d).", player,
@@ -525,6 +526,9 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 
 	/* send new seat data */
 	net_broadcast_player_list();
+	
+	for (p = 0; p < game.num_players; p++)
+		game.players[p].ready = FALSE;
 
 	/* reset player's age; find new host */
 	game.players[player].age = -1;
@@ -568,27 +572,27 @@ void handle_newgame_event(player_t player)
 		(void) try_to_start_game();
 }
 
-/* This handles the event of someone playing a card */
+/* This handles the event of someone playing a card.  The caller must have
+   already checked whether the card is in the seat's hand. */
 void handle_play_event(player_t p, card_t card)
 {
 	seat_t s = game.players[p].play_seat;
-	int i, still_playing;
-	hand_t *hand;
+	int i;
+	hand_t *hand = &game.seats[s].hand;
 	player_t p2;
+	bool still_playing = FALSE;
 	
-	assert(game.players[p].is_playing);
-	
-	/* is this the right place for this? */
-	game.players[p].is_playing = FALSE;
-
-	ggzdmod_log(game.ggz, "Handling a play event.");
-	/* determine the play */
-	hand = &game.seats[s].hand;
+	ggzdmod_log(game.ggz, "%s played the %s of %s.",
+	            get_player_name(p),
+	            get_face_name(card.face),
+	            get_suit_name(card.suit));
 
 	/* send the play */
 	net_broadcast_play(s, card);
 	
-	/* FIXME: what happens if someone sends a card not even in their hand?? */
+	/* is this the right place for this? */
+	assert(game.players[p].is_playing);
+	game.players[p].is_playing = FALSE;
 
 	/* remove the card from the player's hand by sliding it to the end. */
 	/* TODO: this is quite inefficient */
@@ -610,27 +614,37 @@ void handle_play_event(player_t p, card_t card)
 	if (card.suit == game.trump)
 		game.trump_broken = TRUE;
 	game.data->handle_play(p, s, card);
-	
-	for (p2 = 0, still_playing = 0; p2 < game.num_players; p2++)
-		if (game.players[p2].is_playing)
-			still_playing++;
 
 	/* this is the player that just finished playing */
 	set_player_message(p);
 	
-	if (still_playing > 0) {
+	/* Increment the play_count.  Note that this must be done
+	   *after* handle_play is called (above), but before we
+	   check for still_playing (below). */
+	game.play_count++;
+	
+	/* Check to see if anyone is still playing. */
+	for (p2 = 0; p2 < game.num_players; p2++)
+		if (game.players[p2].is_playing)
+			still_playing = TRUE;
+	
+	/* If we're still playing, wait for the current round of
+	   plays to finish.  Circumventing this process would be
+	   tricky; it would have to be handled in game->handle_play. */
+	if (still_playing) {
 		assert(game.state == STATE_WAIT_FOR_PLAY);
+		return;
 	}
 
 	/* set up next move */
-	game.play_count++;
 	game.data->next_play();
-	if (game.play_count != game.play_total)
+	if (game.play_count < game.play_total)
 		set_game_state(STATE_NEXT_PLAY);
 	else {
 		/* end of trick */
 		ggzdmod_log(game.ggz, "End of trick; %d/%d.  Scoring it.",
 			    game.trick_count, game.trick_total);
+		assert(game.play_count == game.play_total);
 		game.data->end_trick();
 		send_last_trick();
 		handle_trick_event(game.winner);
@@ -796,12 +810,8 @@ void handle_client_language(player_t p, const char* lang)
 
 void handle_client_newgame(player_t p)
 {
-	if (game.state == STATE_NOTPLAYING) {
+	if (game.state == STATE_NOTPLAYING && seats_full())
 		handle_newgame_event(p);
-	} else {
-		ggzdmod_log(game.ggz,  "ERROR: received RSP_NEWGAME while we were in state %d (%s).",
-				   game.state, get_state_name(game.state));
-	}
 }
 
 /* Send out current game hand, score, etc.  Doesn't use its own protocol, but
