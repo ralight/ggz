@@ -177,13 +177,13 @@ int GGZCoreRoom::launchTable(GGZTable* table)
 
 int GGZCoreRoom::joinTable(const unsigned int number)
 {
-	return ggzcore_room_join_table(m_room, number);
+	return ggzcore_room_join_table(m_room, number, 0);
 }
 
 int GGZCoreRoom::joinTableSpectator(const unsigned int number)
 {
 #ifdef KGGZ_PATCH_SPECTATORS
-	return ggzcore_room_join_table_spectator(m_room, number);
+	return ggzcore_room_join_table(m_room, number, 1);
 #else
 	return 0;
 #endif
@@ -197,7 +197,7 @@ int GGZCoreRoom::leaveTable(int force)
 int GGZCoreRoom::leaveTableSpectator()
 {
 #ifdef KGGZ_PATCH_SPECTATORS
-	return ggzcore_room_leave_table_spectator(m_room);
+	return ggzcore_room_leave_table(m_room, 0);
 #else
 	return 0;
 #endif
