@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: map.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: map.c 6343 2004-11-13 01:44:11Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,7 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <assert.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -181,8 +185,11 @@ void map_load(combat_game * _game, char *filename, int *changed)
 	int a, b;
 	char *terrain_data;
 	handle = ggz_conf_parse(filename, GGZ_CONF_RDONLY);
-	if (handle < 0)
+	if (handle < 0) {
+		fprintf(stderr, "Couldn't load map %s.\n", filename);
+		assert(0);
 		return;
+	}
 	/* Get the data from the file */
 	// Width / Height
 	_game->width = ggz_conf_read_int(handle, "map", "width", 10);

@@ -510,6 +510,8 @@ typedef struct combat_game_struct {
 	int number;
 	unsigned long int options;
 } combat_game;
+extern combat_game cbt_game;
+
 
 // Commom functions
 unsigned char *combat_options_string_write(combat_game *, int for_hash);

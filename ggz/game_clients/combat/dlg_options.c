@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 6342 2004-11-12 17:42:38Z jdorje $
+ * $Id: dlg_options.c 6343 2004-11-13 01:44:11Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -27,6 +27,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -60,6 +61,179 @@ static const char spin_name[12][8] =
 	"spin_6", "spin_7", "spin_8", "spin_9", "spin_10"
 };
 
+
+enum {
+	MAP_COLUMN_NAME,
+	MAP_COLUMN_FILE,	/* Stored but not shown. */
+	MAP_COLUMNS
+};
+
+
+/* Fill available maps into the list. */
+static void dlg_options_list_maps(GtkTreeView * tree)
+{
+	GtkListStore *store =
+	    GTK_LIST_STORE(gtk_tree_view_get_model(tree));
+	GtkTreeSelection *select = gtk_tree_view_get_selection(tree);
+	char **names;
+
+	gtk_list_store_clear(store);
+	for (names = map_list(); *names; names++) {
+		GtkTreeIter iter;
+		char name_buf[strlen(*names) + 1], *name = name_buf, *tmp;
+
+		strcpy(name, *names);
+		if ((tmp = strrchr(name, '/'))) {
+			name = tmp + 1;
+		}
+		if ((tmp = strrchr(name, '.'))) {
+			*tmp = '\0';
+		}
+
+		gtk_list_store_append(GTK_LIST_STORE(store), &iter);
+		gtk_list_store_set(store, &iter,
+				   MAP_COLUMN_NAME, name,
+				   MAP_COLUMN_FILE, *names, -1);
+
+		if (strcmp(name, "Default") == 0) {
+			gtk_tree_selection_select_iter(select, &iter);
+		}
+	}
+}
+
+
+/* Get the currently selected map's name and file (or NULL).  Both strings
+   must be freed by the caller. */
+static gboolean get_current_map(GtkTreeView * tree,
+				gchar ** mapname, gchar ** filename)
+{
+	GtkTreeSelection *select = gtk_tree_view_get_selection(tree);
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GList *list = gtk_tree_selection_get_selected_rows(select, &model);
+
+	if (!list || !list->data) {
+		*mapname = NULL;
+		*filename = NULL;
+		assert(0);
+		return FALSE;
+	}
+
+	gtk_tree_model_get_iter(model, &iter, list->data);
+	assert(list->next == NULL);
+
+	gtk_tree_model_get(model, &iter, MAP_COLUMN_NAME, mapname, -1);
+	gtk_tree_model_get(model, &iter, MAP_COLUMN_FILE, filename, -1);
+
+	gtk_tree_path_free(list->data);
+	g_list_free(list);
+	return TRUE;
+}
+
+
+/* Called when a map is selected from the list. */
+static void maps_list_selected(GtkTreeSelection * treeselection,
+			       gpointer dlg_options)
+{
+	GtkTreeView *tree = g_object_get_data(dlg_options, "maps_list");
+	combat_game *preview_game;
+	gchar *map, *file;
+	GtkWidget *preview_label =
+	    lookup_widget(dlg_options, "preview_label");
+	GtkTextView *preview_options
+	    = GTK_TEXT_VIEW(lookup_widget(dlg_options, "preview_options"));
+	char preview_string[256];
+	char *preview_options_string;
+	int changed;
+	int tot = 0, other = 0, a;
+
+	get_current_map(tree, &map, &file);
+
+	preview_game = ggz_malloc(sizeof(*preview_game));
+	preview_game->number = cbt_game.number;
+	preview_game->army = calloc(preview_game->number + 1,
+				    sizeof(*preview_game->army));
+	preview_game->army[preview_game->number]
+	    = calloc(12, sizeof(**preview_game->army));
+	preview_game->map = NULL;
+	preview_game->name = NULL;
+	preview_game->options = 0;
+	map_load(preview_game, file, &changed);
+
+	if (!changed)
+		dlg_options_list_maps(tree);
+
+	g_object_set_data(dlg_options, "preview", preview_game);
+
+	/* TODO: Show preview */
+	draw_preview(dlg_options);
+	for (a = U_FLAG; a < U_SERGEANT; a++)
+		tot += ARMY(preview_game, a);
+	for (a = U_SERGEANT; a < 12; a++) {
+		tot += preview_game->army[preview_game->number][a];
+		other += ARMY(preview_game, a);
+	}
+	sprintf(preview_string,
+		"%d x %d\n\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\nOthers: %d\n\nTotal: %d",
+		preview_game->width, preview_game->height,
+		unitname[U_FLAG], ARMY(preview_game, U_FLAG),
+		unitname[U_BOMB], ARMY(preview_game, U_BOMB),
+		unitname[U_SPY], ARMY(preview_game, U_SPY),
+		unitname[U_SCOUT], ARMY(preview_game, U_SCOUT),
+		unitname[U_MINER], ARMY(preview_game, U_MINER), other,
+		tot);
+	gtk_label_set_text(GTK_LABEL(preview_label), preview_string);
+	if (preview_game->options)
+		preview_options_string =
+		    combat_options_describe(preview_game, 1);
+	else {
+		preview_options_string =
+		    (char *)ggz_malloc(sizeof(char) * 11);
+		sprintf(preview_options_string, "No options");
+	}
+	gtk_text_buffer_set_text(gtk_text_view_get_buffer(preview_options),
+				 preview_options_string, -1);
+	g_free(map);
+	g_free(file);
+}
+
+
+static GtkWidget *tree_new(GtkWidget * parent)
+{
+	GtkListStore *store;
+	GtkWidget *tree;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *select;
+
+	assert(MAP_COLUMNS == 2);
+	store =
+	    gtk_list_store_new(MAP_COLUMNS, G_TYPE_STRING, G_TYPE_STRING);
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Stored Maps"),
+							  renderer, "text",
+							  MAP_COLUMN_NAME,
+							  NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	gtk_widget_ref(tree);
+	g_object_set_data_full(G_OBJECT(parent), "maps_list",
+			       tree, (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data(G_OBJECT(parent), "maps_list_store", store);
+	gtk_widget_show(tree);
+
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+
+	g_signal_connect(select, "changed",
+			 GTK_SIGNAL_FUNC(maps_list_selected), parent);
+
+	return tree;
+}
+
 GtkWidget *create_dlg_options(int number)
 {
 	GtkWidget *dlg_options;
@@ -87,9 +261,10 @@ GtkWidget *create_dlg_options(int number)
 	GtkWidget *label4;
 	GtkWidget *label5;
 	GtkWidget *hbox5;
+#if 0
 	GtkWidget *scrolledwindow1;
+#endif
 	GtkWidget *maps_list;
-	GtkWidget *label10;
 	GtkWidget *vbox2;
 	GtkWidget *table2;
 	GtkWidget *preview_board;
@@ -135,8 +310,7 @@ GtkWidget *create_dlg_options(int number)
 	GtkWidget *opt_bin1[16];
 	GtkWidget *opt_box_open_map;
 	GtkTooltips *tooltips;
-	int i, def;
-	char **namelist;
+	int i;
 
 	tooltips = gtk_tooltips_new();
 
@@ -180,7 +354,6 @@ GtkWidget *create_dlg_options(int number)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(mini_board);
 	gtk_box_pack_start(GTK_BOX(hbox3), mini_board, TRUE, TRUE, 0);
-	gtk_widget_set_size_request(mini_board, 300, 300);
 	gtk_widget_set_events(mini_board, GDK_BUTTON_PRESS_MASK);
 
 	vbox1 = gtk_vbox_new(FALSE, 0);
@@ -790,6 +963,7 @@ GtkWidget *create_dlg_options(int number)
 	gtk_widget_show(hbox5);
 	gtk_container_add(GTK_CONTAINER(notebook1), hbox5);
 
+#if 0
 	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_set_name(scrolledwindow1, "scrolledwindow1");
 	gtk_widget_ref(scrolledwindow1);
@@ -803,26 +977,14 @@ GtkWidget *create_dlg_options(int number)
 				       (scrolledwindow1),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+#endif
 
-	maps_list = gtk_clist_new(1);
-	gtk_widget_set_name(maps_list, "maps_list");
-	gtk_widget_ref(maps_list);
-	g_object_set_data_full(G_OBJECT(dlg_options), "maps_list",
-			       maps_list,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(maps_list);
+	maps_list = tree_new(dlg_options);
+#if 0
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), maps_list);
-	gtk_container_set_border_width(GTK_CONTAINER(maps_list), 2);
-	gtk_clist_set_column_width(GTK_CLIST(maps_list), 0, 80);
-	gtk_clist_column_titles_show(GTK_CLIST(maps_list));
-
-	label10 = gtk_label_new(_("Stored Maps"));
-	gtk_widget_set_name(label10, "label10");
-	gtk_widget_ref(label10);
-	g_object_set_data_full(G_OBJECT(dlg_options), "label10", label10,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label10);
-	gtk_clist_set_column_widget(GTK_CLIST(maps_list), 0, label10);
+#else
+	gtk_box_pack_start(GTK_BOX(hbox5), maps_list, FALSE, FALSE, 0);
+#endif
 
 	vbox2 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_set_name(vbox2, "vbox2");
@@ -1053,46 +1215,44 @@ GtkWidget *create_dlg_options(int number)
 	gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_2, FALSE,
 			   FALSE, 2);
 
-	g_signal_connect(GTK_OBJECT(dlg_options), "delete_event",
+	g_signal_connect(dlg_options, "delete_event",
 			 GTK_SIGNAL_FUNC(game_refuse_options), NULL);
-	g_signal_connect(GTK_OBJECT(dlg_options), "destroy_event",
+	g_signal_connect(dlg_options, "destroy_event",
 			 GTK_SIGNAL_FUNC(game_refuse_options), NULL);
-	g_signal_connect(GTK_OBJECT(cancel_button), "clicked",
+	g_signal_connect(cancel_button, "clicked",
 			 GTK_SIGNAL_FUNC(cancel_button_clicked),
 			 dlg_options);
 	g_signal_connect_data(cancel_button, "clicked",
 			      GTK_SIGNAL_FUNC(gtk_widget_destroy),
 			      dlg_options, NULL,
 			      G_CONNECT_SWAPPED | G_CONNECT_AFTER);
-	g_signal_connect(GTK_OBJECT(mini_board), "expose_event",
+	g_signal_connect(mini_board, "expose_event",
 			 GTK_SIGNAL_FUNC(mini_board_expose), dlg_options);
-	g_signal_connect(GTK_OBJECT(mini_board), "configure_event",
+	g_signal_connect(mini_board, "configure_event",
 			 GTK_SIGNAL_FUNC(mini_board_configure),
 			 dlg_options);
-	g_signal_connect(GTK_OBJECT(mini_board), "button_press_event",
+	g_signal_connect(mini_board, "button_press_event",
 			 GTK_SIGNAL_FUNC(mini_board_click), dlg_options);
-	g_signal_connect(GTK_OBJECT(load), "clicked",
+	g_signal_connect(load, "clicked",
 			 GTK_SIGNAL_FUNC(load_button_clicked),
 			 dlg_options);
-	g_signal_connect(GTK_OBJECT(save), "clicked",
+	g_signal_connect(save, "clicked",
 			 GTK_SIGNAL_FUNC(save_button_clicked),
 			 dlg_options);
-	g_signal_connect(GTK_OBJECT(delete), "clicked",
+	g_signal_connect(delete, "clicked",
 			 GTK_SIGNAL_FUNC(delete_button_clicked),
 			 dlg_options);
-	g_signal_connect(GTK_OBJECT(preview_board), "expose_event",
+	g_signal_connect(preview_board, "expose_event",
 			 GTK_SIGNAL_FUNC(preview_expose), dlg_options);
-	g_signal_connect(GTK_OBJECT(preview_board), "configure_event",
+	g_signal_connect(preview_board, "configure_event",
 			 GTK_SIGNAL_FUNC(init_preview), dlg_options);
-	g_signal_connect(GTK_OBJECT(maps_list), "select-row",
-			 GTK_SIGNAL_FUNC(maps_list_selected), dlg_options);
-	g_signal_connect_swapped(GTK_OBJECT(width), "changed",
+	g_signal_connect_swapped(width, "changed",
 				 GTK_SIGNAL_FUNC(dlg_options_update),
 				 GTK_OBJECT(dlg_options));
 	g_signal_connect_data(width, "changed",
 			      GTK_SIGNAL_FUNC(init_map_data), dlg_options,
 			      NULL, G_CONNECT_SWAPPED | G_CONNECT_AFTER);
-	g_signal_connect_swapped(GTK_OBJECT(height), "changed",
+	g_signal_connect_swapped(height, "changed",
 				 GTK_SIGNAL_FUNC(dlg_options_update),
 				 GTK_OBJECT(dlg_options));
 	g_signal_connect_data(height, "changed",
@@ -1100,8 +1260,7 @@ GtkWidget *create_dlg_options(int number)
 			      NULL, G_CONNECT_SWAPPED | G_CONNECT_AFTER);
 
 	for (i = 0; i < 16; i++) {
-		g_signal_connect_swapped(GTK_OBJECT(opt_bin1[i]),
-					 "toggled",
+		g_signal_connect_swapped(opt_bin1[i], "toggled",
 					 GTK_SIGNAL_FUNC
 					 (dlg_options_update),
 					 GTK_OBJECT(dlg_options));
@@ -1109,17 +1268,20 @@ GtkWidget *create_dlg_options(int number)
 
 	mini_buf = NULL;
 
-	g_object_set_data(G_OBJECT(dlg_options), "number",
-			  GINT_TO_POINTER(number));
-
 	dlg_options_update(dlg_options);
 
 	init_map_data(dlg_options);
 
-	def = dlg_options_list_maps(maps_list);
-	namelist = g_object_get_data(G_OBJECT(maps_list), "maps");
-	if (def >= 0 && namelist && namelist[def]) {
-		load_map(namelist[def], dlg_options);
+	{
+		gchar *name, *file;
+
+		dlg_options_list_maps(GTK_TREE_VIEW(maps_list));
+		if (get_current_map(GTK_TREE_VIEW(maps_list),
+				    &name, &file)) {
+			load_map(file, dlg_options);
+			g_free(name);
+			g_free(file);
+		}
 	}
 
 	gtk_widget_grab_default(ok_button);
@@ -1139,9 +1301,8 @@ void init_map_data(GtkWidget * dlg_options)
 		ggz_free(options->map);
 		options->map = NULL;
 	}
-	options->map =
-	    (tile *) ggz_malloc(sizeof(tile) * options->width *
-				options->height + 1);
+	options->map = ggz_malloc(sizeof(tile) * options->width *
+				  options->height + 1);
 	for (a = 0; a < options->width * options->height; a++)
 		options->map[a].type = OPEN;
 
@@ -1151,71 +1312,6 @@ void init_map_data(GtkWidget * dlg_options)
 
 }
 
-
-
-void maps_list_selected(GtkCList * clist, gint row, gint column,
-			GdkEventButton * event, gpointer user_data)
-{
-	combat_game *preview_game;
-	GtkWidget *preview_label =
-	    lookup_widget(user_data, "preview_label");
-	GtkWidget *preview_options =
-	    lookup_widget(user_data, "preview_options");
-	char **filenames;
-	char preview_string[256];
-	char *preview_options_string;
-	int changed = -1;
-	int tot = 0, other = 0, a, pos = 0;
-	g_object_set_data(G_OBJECT(clist), "row", GINT_TO_POINTER(row));
-	filenames = g_object_get_data(G_OBJECT(clist), "maps");
-	preview_game = (combat_game *) ggz_malloc(sizeof(combat_game));
-	preview_game->number =
-	    GPOINTER_TO_INT(g_object_get_data
-			    (G_OBJECT(user_data), "number"));
-	preview_game->army =
-	    (char **)calloc(preview_game->number + 1, sizeof(char *));
-	preview_game->army[preview_game->number] =
-	    (char *)calloc(12, sizeof(char));
-	preview_game->map = NULL;
-	preview_game->name = NULL;
-	preview_game->options = 0;
-	map_load(preview_game, filenames[row], &changed);
-	if (changed == 0)
-		dlg_options_list_maps(GTK_WIDGET(clist));
-	g_object_set_data(G_OBJECT(user_data), "preview", preview_game);
-	/* TODO: Show preview */
-	draw_preview(user_data);
-	for (a = U_FLAG; a < U_SERGEANT; a++)
-		tot += ARMY(preview_game, a);
-	for (a = U_SERGEANT; a < 12; a++) {
-		tot += preview_game->army[preview_game->number][a];
-		other += ARMY(preview_game, a);
-	}
-	sprintf(preview_string,
-		"%d x %d\n\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\nOthers: %d\n\nTotal: %d",
-		preview_game->width, preview_game->height,
-		unitname[U_FLAG], ARMY(preview_game, U_FLAG),
-		unitname[U_BOMB], ARMY(preview_game, U_BOMB),
-		unitname[U_SPY], ARMY(preview_game, U_SPY),
-		unitname[U_SCOUT], ARMY(preview_game, U_SCOUT),
-		unitname[U_MINER], ARMY(preview_game, U_MINER), other,
-		tot);
-	gtk_label_set_text(GTK_LABEL(preview_label), preview_string);
-	gtk_editable_delete_text(GTK_EDITABLE(preview_options), 0, -1);
-	if (preview_game->options)
-		preview_options_string =
-		    combat_options_describe(preview_game, 1);
-	else {
-		preview_options_string =
-		    (char *)ggz_malloc(sizeof(char) * 11);
-		sprintf(preview_options_string, "No options");
-	}
-	gtk_editable_insert_text(GTK_EDITABLE(preview_options),
-				 preview_options_string,
-				 strlen(preview_options_string), &pos);
-	gtk_editable_set_position(GTK_EDITABLE(preview_options), 0);
-
-}
 
 GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function,
 			     gpointer user_data)
@@ -1228,13 +1324,13 @@ GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function,
 	no = gtk_button_new_with_label("No");
 	g_object_set_data(G_OBJECT(dlg), "yes", yes);
 	g_object_set_data(G_OBJECT(yes), "dlg", dlg);
-	g_signal_connect_swapped(GTK_OBJECT(no), "clicked",
+	g_signal_connect_swapped(no, "clicked",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				 GTK_OBJECT(dlg));
 	g_signal_connect_data(yes, "clicked",
 			      GTK_SIGNAL_FUNC(gtk_widget_destroy), dlg,
 			      NULL, G_CONNECT_SWAPPED | G_CONNECT_AFTER);
-	g_signal_connect(GTK_OBJECT(yes), "clicked",
+	g_signal_connect(yes, "clicked",
 			 GTK_SIGNAL_FUNC(function), user_data);
 	gtk_container_set_border_width(GTK_CONTAINER
 				       (GTK_DIALOG(dlg)->vbox), 5);
@@ -1247,25 +1343,28 @@ GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function,
 
 void delete_button_clicked(GtkButton * button, gpointer dialog)
 {
-	gint selection;
 	GtkWidget *maps_list = lookup_widget(dialog, "maps_list");
-	GtkWidget *dlg = create_yes_no_dlg("Delete the map?",
-					   GTK_SIGNAL_FUNC(delete_map),
-					   maps_list);
-	GtkWidget *yes = lookup_widget(dlg, "yes");
-	char **namelist;
-	selection =
-	    GPOINTER_TO_INT(g_object_get_data(G_OBJECT(maps_list), "row"));
-	namelist = g_object_get_data(G_OBJECT(maps_list), "maps");
-	g_object_set_data(G_OBJECT(yes), "filename", namelist[selection]);
-	gtk_widget_show_all(dlg);
+	char *name, *file;
+
+	if (get_current_map(GTK_TREE_VIEW(maps_list), &name, &file)) {
+		GtkWidget *dlg = create_yes_no_dlg("Delete the map?",
+						   GTK_SIGNAL_FUNC
+						   (delete_map),
+						   maps_list);
+		GtkWidget *yes = lookup_widget(dlg, "yes");
+
+		g_object_set_data_full(G_OBJECT(yes), "filename",
+				       file, g_free);
+		gtk_widget_show_all(dlg);
+		g_free(name);
+	}
 }
 
 void delete_map(GtkButton * button, gpointer user_data)
 {
 	char *filename = g_object_get_data(G_OBJECT(button), "filename");
 	unlink(filename);
-	dlg_options_list_maps(GTK_WIDGET(user_data));
+	dlg_options_list_maps(GTK_TREE_VIEW(user_data));
 }
 
 void save_button_clicked(GtkButton * button, gpointer dialog)
@@ -1274,7 +1373,7 @@ void save_button_clicked(GtkButton * button, gpointer dialog)
 	GtkWidget *yes;
 	save_dlg = create_dlg_save();
 	yes = lookup_widget(save_dlg, "yes");
-	g_signal_connect(GTK_OBJECT(yes), "clicked",
+	g_signal_connect(yes, "clicked",
 			 GTK_SIGNAL_FUNC(save_map), save_dlg);
 	g_object_set_data(G_OBJECT(save_dlg), "dlg_options", dialog);
 	gtk_widget_show_all(save_dlg);
@@ -1288,12 +1387,13 @@ void cancel_button_clicked(GtkButton * button, gpointer dialog)
 void load_button_clicked(GtkButton * button, gpointer dialog)
 {
 	GtkWidget *maps_list = lookup_widget(dialog, "maps_list");
-	gint selection;
-	char **namelist;
-	selection =
-	    GPOINTER_TO_INT(g_object_get_data(G_OBJECT(maps_list), "row"));
-	namelist = g_object_get_data(G_OBJECT(maps_list), "maps");
-	load_map(namelist[selection], (GtkWidget *) dialog);
+	char *name, *file;
+
+	if (get_current_map(GTK_TREE_VIEW(maps_list), &name, &file)) {
+		load_map(file, dialog);
+		g_free(name);
+		g_free(file);
+	}
 }
 
 void save_map(GtkButton * button, GtkWidget * dialog)
@@ -1306,8 +1406,8 @@ void save_map(GtkButton * button, GtkWidget * dialog)
 	    g_object_get_data(G_OBJECT(dlg_options), "options");
 	game->name = ggz_strdup(name);
 	map_save(game);
-	dlg_options_list_maps(g_object_get_data
-			      (G_OBJECT(dlg_options), "maps_list"));
+	dlg_options_list_maps(g_object_get_data(G_OBJECT(dlg_options),
+						"maps_list"));
 }
 
 
@@ -1318,11 +1418,10 @@ void load_map(char *filename, GtkWidget * dialog)
 	GtkWidget *options_widget;
 	char options_name[14];
 	int a;
-	combat_game *map = (combat_game *) ggz_malloc(sizeof(combat_game));
-	map->number =
-	    GPOINTER_TO_INT(g_object_get_data(G_OBJECT(dialog), "number"));
-	map->army = (char **)calloc(map->number + 1, sizeof(char *));
-	map->army[map->number] = (char *)calloc(12, sizeof(char));
+	combat_game *map = ggz_malloc(sizeof(combat_game));
+	map->number = cbt_game.number;
+	map->army = calloc(map->number + 1, sizeof(char *));
+	map->army[map->number] = calloc(12, sizeof(char));
 	map->map = NULL;
 	map->name = NULL;
 	map->options = 0;
@@ -1442,7 +1541,7 @@ GtkWidget *create_dlg_save(void)
 	gtk_container_add(GTK_CONTAINER(hbuttonbox4), no);
 	GTK_WIDGET_SET_FLAGS(no, GTK_CAN_DEFAULT);
 
-	g_signal_connect_swapped(GTK_OBJECT(no), "clicked",
+	g_signal_connect_swapped(no, "clicked",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				 GTK_OBJECT(dlg_save));
 	g_signal_connect_data(yes, "clicked",
@@ -1466,9 +1565,7 @@ void dlg_options_update(GtkWidget * dlg_options)
 	options = g_object_get_data(G_OBJECT(dlg_options), "options");
 	if (!options) {
 		options = (combat_game *) ggz_malloc(sizeof(combat_game));
-		options->number =
-		    GPOINTER_TO_INT(g_object_get_data
-				    (G_OBJECT(dlg_options), "number"));
+		options->number = cbt_game.number;
 		options->army =
 		    (char **)calloc(options->number + 1, sizeof(char *));
 		options->army[options->number] =
@@ -1620,37 +1717,6 @@ void update_counters(GtkWidget * dlg_options)
 	gtk_label_set_text(GTK_LABEL(army_player_2), label);
 }
 
-int dlg_options_list_maps(GtkWidget * dlg)
-{
-	char **names;
-	char *char_match[2];
-	char **clist_name;
-	int a, len, current = -1;
-	int def = -1;
-	names = map_list();
-	current = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(dlg), "row"));
-	clist_name = (char **)calloc(1, sizeof(char *));
-	clist_name[0] = (char *)ggz_malloc(64 * sizeof(char));
-	gtk_clist_clear(GTK_CLIST(dlg));
-	g_object_set_data(G_OBJECT(dlg), "maps", names);
-	for (a = 0; names[a]; a++) {
-		char_match[0] = strrchr(names[a], '/');
-		char_match[1] = strrchr(char_match[0], '.');
-		len = strlen(char_match[0]) + 1;
-		if (char_match[1])
-			len -= strlen(char_match[1]);
-		len -= 2;
-		strncpy(clist_name[0], char_match[0] + 1, len);
-		clist_name[0][len] = 0;
-		if (strcmp(clist_name[0], "Default") == 0)
-			def = a;
-		gtk_clist_append(GTK_CLIST(dlg), clist_name);
-	}
-	if (current >= 0)
-		gtk_clist_select_row(GTK_CLIST(dlg), current, 0);
-	return def;
-}
-
 gboolean mini_board_expose(GtkWidget * widget, GdkEventExpose * event,
 			   gpointer user_data)
 {
@@ -1688,8 +1754,8 @@ gboolean mini_board_click(GtkWidget * widget, GdkEventButton * event,
 
 	gdk_drawable_get_size(widget->window, &width, &height);
 
-	pix_width = width / options->width;
-	pix_height = height / options->height;
+	pix_width = width / MAX(options->width, 1);
+	pix_height = height / MAX(options->height, 1);
 
 	x = event->x / (pix_width);
 	y = event->y / (pix_height);
@@ -1889,8 +1955,10 @@ void draw_mini_board(GtkWidget * dlg_options)
 			   0, width, height);
 
 	// Gets the size of each square
-	pix_width = width / options->width;
-	pix_height = height / options->height;
+	/* HACK: avoid division by 0 during startup before the map gets
+	   set up. */
+	pix_width = width / MAX(options->width, 1);
+	pix_height = height / MAX(options->height, 1);
 
 	// Draw terrain
 	for (j = 0; j < options->height; j++) {

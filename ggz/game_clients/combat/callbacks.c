@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: callbacks.c 6343 2004-11-13 01:44:11Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -41,7 +41,6 @@
 #include "dlg_options.h"
 
 extern GdkPixmap *cbt_buf;
-extern combat_game cbt_game;
 struct game_info_t cbt_info;
 extern GtkWidget *main_win;
 

@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_options.h 6343 2004-11-13 01:44:11Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -30,7 +30,6 @@ GtkWidget *create_dlg_save(void);
 GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function,
 			     gpointer user_data);
 void dlg_options_update(GtkWidget *);
-int dlg_options_list_maps(GtkWidget *);
 void cancel_button_clicked(GtkButton *, gpointer dialog);
 
 void load_button_clicked(GtkButton *, gpointer dialog);
@@ -55,21 +54,15 @@ void update_counters(GtkWidget *);
 
 combat_game *quick_load_map_on_struct(char *filename);
 
-void maps_list_selected(GtkCList * clist, gint row, gint column,
-			GdkEventButton * event, gpointer user_data);
+gboolean mini_board_expose(GtkWidget * widget,
+			   GdkEventExpose * event, gpointer user_data);
 
+gboolean mini_board_configure(GtkWidget * widget,
+			      GdkEventConfigure * event,
+			      gpointer user_data);
 
-gboolean
-mini_board_expose(GtkWidget * widget,
-		  GdkEventExpose * event, gpointer user_data);
-
-gboolean
-mini_board_configure(GtkWidget * widget,
-		     GdkEventConfigure * event, gpointer user_data);
-
-gboolean
-mini_board_click(GtkWidget * widget,
-		 GdkEventButton * event, gpointer user_data);
+gboolean mini_board_click(GtkWidget * widget,
+			  GdkEventButton * event, gpointer user_data);
 
 void init_mini_board(GtkWidget *);
 void draw_mini_board(GtkWidget *);
