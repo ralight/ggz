@@ -52,7 +52,7 @@ RoomInfo room_info;
 static void room_notify_change(const int, const int, const int);
 static int room_list_send(const int p, const int p_fd);
 static int room_handle_join(const int, const int);
-
+static int room_event_callback(int p_index, int size, void* data);
 
 /* Handle opcodes from player_handle() */
 int room_handle_request(const int request, const int p, const int p_fd)
@@ -303,12 +303,51 @@ int room_join(const int p_index, const int room, const int fd)
 /* Notifies clients that someone has entered/left the room */
 static void room_notify_change(const int p, const int old, const int new)
 {
+	void* data = NULL;
+	int size;
+
 	dbg_msg(GGZ_DBG_ROOM,
 		"Player %d moved from room %d to %d", p, old, new);
 
-	if(old != -1)
-		chat_room_enqueue(old, GGZ_CHAT_NORMAL, p, "/SpartS");
+	size = sizeof(int) + sizeof(char);
+	
+	/* FIXME: Use appropriate update opcode */
+	if(old != -1) {
+		/* Pack up room-leave message */
+		data = malloc(size);
+		*(char*)data = 0; /* 0 == leave */
+		*(int*)(data + 1) = p; 
 
-	if(new != -1)
-		chat_room_enqueue(new, GGZ_CHAT_NORMAL, p, "/SjoinS");
+		event_room_enqueue(old, room_event_callback, size, data);
+	}
+
+	if(new != -1) {
+		/* Pack up room-join message */
+		data = malloc(size);
+		*(char*)data = 1; /* 1 == join */
+		*(int*)(data + sizeof(char)) = p; 
+		
+		event_room_enqueue(new, room_event_callback, size, data);
+	}
+}
+
+
+/* Event callback for delivering room-update to player */
+static int room_event_callback(int p_index, int size, void* data)
+{
+	unsigned char opcode;
+	int player;
+	int room = players.info[p_index].room;
+
+	/* Unpack event data */
+	opcode = *(unsigned char*)data;
+	player = *(int*)(data + sizeof(char));
+
+	/* FIXME: Use appropriate MSG_UPDATE */
+	if (opcode)
+		chat_room_enqueue(room, GGZ_CHAT_NORMAL, player, "/SjoinS");
+	else
+		chat_room_enqueue(room, GGZ_CHAT_NORMAL, player, "/SpartS");
+
+	return 0;
 }
