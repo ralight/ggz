@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 303 $</revnumber>
-	<date>$Date: 2000-03-27 20:49:43 -0800 (Mon, 27 Mar 2000) $</date>
+	<revnumber>$Revision: 313 $</revnumber>
+	<date>$Date: 2000-03-29 11:50:48 -0800 (Wed, 29 Mar 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -277,8 +277,9 @@
             int: Reqeusted game type index (-1 for all)
             chr: Verbose flag (0 for short list, 1 for long descriptions)
 	  RSP_LIST_ROOMS
-	    int: number of rooms (-1 for error)
+	    int: number of rooms (E_BAD_OPTIONS (-2) for error)
 	    sequence of
+	      int: Room number
 	      str: Name of room
 	      int: Supported game type index
 	      str: Long room description (long list)

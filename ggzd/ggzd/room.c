@@ -39,6 +39,7 @@
 /* Server wide data structures */
 extern Options opt;
 extern struct Users players;
+extern struct GameTypes game_types;
 
 /* Decl of server wide chat room structure */
 RoomStruct *chat_room;
@@ -92,6 +93,14 @@ static int room_list_send(const int p_fd)
 	   || es_read_char(p_fd, &verbose) < 0)
 		return -1;
 
+	if((verbose != 0 && verbose != 1)
+	   || req_game < -1 || req_game >= game_types.count) {
+		/* Invalid Options Sent */
+		if(es_write_int(p_fd, RSP_LIST_ROOMS) < 0
+		   || es_write_int(p_fd, E_BAD_OPTIONS) < 0)
+			return -1;
+	}
+
 	/* First we have to figure out how many rooms to announce  */
 	/* This is easy if a req_game filter hasn't been specified */
 	if(req_game != -1) {
@@ -109,7 +118,8 @@ static int room_list_send(const int p_fd)
 	/* Send off all the room announcements */
 	for(i=0; i<opt.num_rooms; i++)
 		if(req_game == -1 || req_game == chat_room[i].game_type) {
-			if(es_write_string(p_fd, chat_room[i].name) < 0
+			if(es_write_int(p_fd, i) < 0
+			   || es_write_string(p_fd, chat_room[i].name) < 0
 			   || es_write_int(p_fd, chat_room[i].game_type) < 0)
 				return -1;
 			if(verbose
