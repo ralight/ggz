@@ -33,6 +33,12 @@
 #include "games.h"
 #include "ggz.h"
 
+/* BEGINNING of game data.  To add a new game, you'll need to
+ * add information about it here in the form of an extern
+ * declaration of its function pointer set, and an entry
+ * into the game_data array
+ */
+
 /* an extern should be listed here for each game function set you create
  * this is preferable to including the whole <game>.h file. */
 extern struct game_function_pointers suaro_funcs;
@@ -56,6 +62,7 @@ struct game_info game_data[] = {
 		{"rook", &game_funcs} };
 
 
+/* END of game data */
 
 
 const int num_games = sizeof(game_data) / sizeof(struct game_info);
@@ -100,6 +107,7 @@ void games_handle_gametype(int option)
  *   returns a boolean, TRUE if the game is valid in the current setup and false otherwise.
  *   currently, the "current setup" is just the number of players (which is set automatically
  *   by ggz)
+ *   THIS FUNCTION WILL BE INTEGRATED INTO THE GAME FUNCTIONS SOON.
  */
 int games_valid_game(int which_game)
 {

@@ -72,9 +72,8 @@ struct game_info {
 };
 
 /* Game types. */
-/* NOTE: because of the way options are handled, these must start at 0 and
- * count up directly.   See games_req_gametype. */
-/* They also must match with game_names, below */
+/* The game enumerations must start at 0 and count upwards;
+ * they also must match with game_names, below */
 typedef enum game_type_t {
 	GGZ_GAME_UNKNOWN = -1,
 	GGZ_GAME_SUARO = 0,		/* http://suaro.dhs.org */
