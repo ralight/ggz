@@ -66,14 +66,14 @@ void motd_read_file(void)
 	/* Save the server startup time so we can calculate uptime later */
 	motd_info.startup_time = (unsigned int) time(NULL);
 
-	/* If it's an absolute path already, we don't need to add game_dir */
+	/* If it's an absolute path already, we don't need to add conf_dir */
 	if(motd_info.motd_file[0] == '/')
 		fullpath = motd_info.motd_file;
 	else {
 		if((fullpath = malloc(strlen(motd_info.motd_file) +
-				      strlen(opt.game_dir) + 2)) == NULL)
+				      strlen(opt.conf_dir) + 2)) == NULL)
 			err_sys_exit("malloc error in motd_read_file()");
-		sprintf(fullpath, "%s/%s", opt.game_dir, motd_info.motd_file);
+		sprintf(fullpath, "%s/%s", opt.conf_dir, motd_info.motd_file);
 	}
 
 	/* Try to open the file */

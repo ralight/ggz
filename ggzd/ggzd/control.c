@@ -104,7 +104,6 @@ int main(int argc, const char *argv[])
 	/* Parse options */
 	parse_args(argc, argv);
 	parse_conf_file();
-	logfile_initialize();
 	
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Conf file: %s", opt.local_conf);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
@@ -116,6 +115,8 @@ int main(int argc, const char *argv[])
 	/* If the motd option is present, pre-read the file */
 	if (motd_info.use_motd)
 		motd_read_file();
+
+	logfile_initialize();
 
 #ifndef DEBUG
 	daemon_init(argv[0], 0);

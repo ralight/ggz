@@ -52,8 +52,8 @@ static void parse_file(FILE *);
 static void parse_line(char *);
 static AddIgnoreStruct *parse_put_add_ignore_list(char *, AddIgnoreStruct *);
 static AddIgnoreStruct *parse_cleanup_add_ignore_list(AddIgnoreStruct *);
-static void parse_game(char *);
-static void parse_room(char *);
+static void parse_game(char *, char *);
+static void parse_room(char *, char *);
 static int parse_gselect(struct dirent *);
 static int parse_rselect(struct dirent *);
 static unsigned parse_log_types(char *, int);
@@ -161,7 +161,7 @@ void parse_conf_file(void)
 		if((tempstr=malloc(strlen(GGZDCONFDIR)+11)) == NULL)
 			err_sys_exit("malloc error in parse_conf_file()");
 
-		strcpy(tempstr, GGZDCONFDIR);   /* If this changes be sure to */
+		strcpy(tempstr, GGZDCONFDIR);  /* If this changes be sure to */
 		strcat(tempstr, "/ggzd.conf"); /* change the malloc() above! */
 
 		if((configfile=fopen(tempstr,"r"))) {
@@ -178,10 +178,26 @@ void parse_conf_file(void)
 
 	/* If no game_dir, default it to GGZDCONFDIR */
 	if(!opt.game_dir) {
+		if((tempstr=malloc(strlen(GAMEDIR)+1)) == NULL)
+			err_sys_exit("malloc error in parse_conf_file()");
+		strcpy(tempstr, GAMEDIR);
+		opt.game_dir = tempstr;
+	}
+
+	/* If no tmp_dir, default it to TMPDIR */
+	if(!opt.tmp_dir) {
+		if((tempstr=malloc(strlen(TMPDIR)+1)) == NULL)
+			err_sys_exit("malloc error in parse_conf_file()");
+		strcpy(tempstr, TMPDIR);
+		opt.tmp_dir = tempstr;
+	}
+
+	/* If no conf_dir, default it to GGZDCONFDIR */
+	if(!opt.conf_dir) {
 		if((tempstr=malloc(strlen(GGZDCONFDIR)+1)) == NULL)
 			err_sys_exit("malloc error in parse_conf_file()");
 		strcpy(tempstr, GGZDCONFDIR);
-		opt.game_dir = tempstr;
+		opt.conf_dir = tempstr;
 	}
 
 	/* If no main_port, default it to 5688 */
@@ -236,6 +252,32 @@ static void parse_file(FILE *configfile)
 				err_sys_exit("parse_file: malloc error");
 			strcpy(strval, varvalue);
 			opt.game_dir = strval;
+			continue;
+		 }
+
+		/*** ConfDir = DIR ***/
+		if(!strcmp(varname, "confdir")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("parse_file: malloc error");
+			strcpy(strval, varvalue);
+			opt.conf_dir = strval;
+			continue;
+		 }
+
+		/*** TmpDir = DIR ***/
+		if(!strcmp(varname, "tmpdir")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("parse_file: malloc error");
+			strcpy(strval, varvalue);
+			opt.tmp_dir = strval;
 			continue;
 		 }
 
@@ -560,22 +602,28 @@ void parse_game_files(void)
 	AddIgnoreStruct *game;
 	struct dirent **namelist;
 	char *name;
+	char *dir;
 	int num_games, i;
 	int addit;
+
+	/* Setup our directory to "conf_dir/games/" */
+	if((dir = malloc(strlen(opt.conf_dir)+8)) == NULL)
+		err_sys_exit("malloc error in parse_game_files()");
+	strcpy(dir, opt.conf_dir);
+	strcat(dir, "/games/");
 
 	if(add_all_games == 'F') {
 		/* Go through all games explicitly included in the add list */
 		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding games in add list");
 		game = add_ignore_games;
 		while(game) {
-			parse_game(game->name);
+			parse_game(game->name, dir);
 			game = game->next;
 		}
 	} else {
-		/* Scan for all .dsc files in the game_dir */
-		dbg_msg(GGZ_DBG_CONFIGURATION,
-			"Addding all games in %s", opt.game_dir);
-		num_games = scandir(opt.game_dir, &namelist, parse_gselect, 0);
+		/* Scan for all .dsc files in the dir */
+		dbg_msg(GGZ_DBG_CONFIGURATION, "Addding all games in %s", dir);
+		num_games = scandir(dir, &namelist, parse_gselect, 0);
 		for(i=0; i<num_games; i++) {
 			/* Make a temporary copy of the name w/o .dsc */
 			if((name=malloc(strlen(namelist[i]->d_name)+1)) == NULL)
@@ -596,7 +644,7 @@ void parse_game_files(void)
 
 			/* Add it if it's not on the ignore list */
 			if(addit)
-				parse_game(name);
+				parse_game(name, dir);
 			else
 				dbg_msg(GGZ_DBG_CONFIGURATION,
 					"Ignoring game %s", name);
@@ -605,12 +653,13 @@ void parse_game_files(void)
 		}
 	}
 
+	free(dir);
 	add_ignore_games = parse_cleanup_add_ignore_list(add_ignore_games);
 }
 
 
 /* Parse a single game file, adding it's values to the game table */
-static void parse_game(char *name)
+static void parse_game(char *name, char *dir)
 {
 	char *fname;
 	FILE *gamefile;
@@ -623,9 +672,9 @@ static void parse_game(char *name)
 		GGZ_ALLOW_SIX, GGZ_ALLOW_SEVEN, GGZ_ALLOW_EIGHT };
 
 	/* Allocate space and setup a full pathname to description file */
-	if((fname = malloc(strlen(name)+strlen(opt.game_dir)+6)) == NULL)
+	if((fname = malloc(strlen(name)+strlen(dir)+6)) == NULL)
 		err_sys_exit("malloc error in parse_game()");
-	sprintf(fname, "%s/%s.dsc", opt.game_dir, name);
+	sprintf(fname, "%s/%s.dsc", dir, name);
 
 	if((gamefile = fopen(fname, "r")) == NULL) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
@@ -784,23 +833,29 @@ void parse_room_files(void)
 {
 	AddIgnoreStruct *room;
 	struct dirent **namelist;
+	char *dir;
 	char *name;
 	int num_rooms, i;
 	int addit;
+
+	/* Setup our directory to "conf_dir/rooms/" */
+	if((dir = malloc(strlen(opt.conf_dir)+8)) == NULL)
+		err_sys_exit("malloc error in parse_game_files()");
+	strcpy(dir, opt.conf_dir);
+	strcat(dir, "/rooms/");
 
 	if(add_all_rooms == 'F') {
 		/* Go through all rooms explicitly included in the add list */
 		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms in add list");
 		room = add_ignore_rooms;
 		while(room) {
-			parse_room(room->name);
+			parse_room(room->name, dir);
 			room = room->next;
 		}
 	} else {
-		/* Scan for all .room files in the game_dir */
-		dbg_msg(GGZ_DBG_CONFIGURATION,
-			"Addding all rooms in %s", opt.game_dir);
-		num_rooms = scandir(opt.game_dir, &namelist, parse_rselect, 0);
+		/* Scan for all .room files in dir */
+		dbg_msg(GGZ_DBG_CONFIGURATION, "Addding all rooms in %s", dir);
+		num_rooms = scandir(dir, &namelist, parse_rselect, 0);
 		for(i=0; i<num_rooms; i++) {
 			/* Make a temporary copy of the name w/o .room */
 			if((name=malloc(strlen(namelist[i]->d_name)+1)) == NULL)
@@ -821,7 +876,7 @@ void parse_room_files(void)
 
 			/* Add it if it's not on the ignore list */
 			if(addit)
-				parse_room(name);
+				parse_room(name, dir);
 			else
 				dbg_msg(GGZ_DBG_CONFIGURATION,
 					"Ignoring room %s", name);
@@ -830,6 +885,7 @@ void parse_room_files(void)
 		}
 	}
 
+	free(dir);
 	add_ignore_rooms = parse_cleanup_add_ignore_list(add_ignore_rooms);
 
 	/* At this point, we should have at least one working room */
@@ -839,7 +895,7 @@ void parse_room_files(void)
 
 
 /* Parse a single room file, adding it's values to the room table */
-static void parse_room(char *name)
+static void parse_room(char *name, char *dir)
 {
 	char *fname;
 	FILE *roomfile;
@@ -851,9 +907,9 @@ static void parse_room(char *name)
 	int i;
 
 	/* Allocate space and setup a full pathname to description file */
-	if((fname = malloc(strlen(name)+strlen(opt.game_dir)+7)) == NULL)
+	if((fname = malloc(strlen(name)+strlen(dir)+7)) == NULL)
 		err_sys_exit("malloc error in parse_game()");
-	sprintf(fname, "%s/%s.room", opt.game_dir, name);
+	sprintf(fname, "%s/%s.room", dir, name);
 
 	if((roomfile = fopen(fname, "r")) == NULL) {
 		err_msg("Ignoring %s, could not open %s", name, fname);

@@ -41,6 +41,8 @@ typedef struct {
 	int stat_clr_time;
 	int main_port;
 	char *game_dir;		/* CLEANUP CANDIDATE - should get free()'d */
+	char *tmp_dir;		/* cleanup() */
+	char *conf_dir;		/* cleanup() */
 	char *admin_name;	/* cleanup() */
 	char *admin_email;	/* cleanup() */
 	int perform_lookups;
