@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 5949 2004-02-21 05:42:37Z jdorje $
+ * $Id: ggzmod.h 6105 2004-07-15 16:43:00Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -151,6 +151,14 @@ typedef enum {
 	 *  have changed seats or left the table by the time it gets to
 	 *  us. */
 	GGZMOD_EVENT_CHAT,
+
+	/** A player's stats have been updated.
+	 *  @see ggzmod_player_get_record
+	 *  @see ggzmod_player_get_rating
+	 *  @see ggzmod_player_get_ranking
+	 *  @see ggzmod_player_get_highscore
+	 *  @param data The name of the player whose stats have changed. */
+	GGZMOD_EVENT_STATS,
 	
 	/** @brief An error has occurred
 	 *  This event occurs when a GGZMod error has occurred.  An
@@ -405,6 +413,28 @@ void ggzmod_request_boot(GGZMod * ggzmod, const char *name);
 void ggzmod_request_bot(GGZMod * ggzmod, int seat_num);
 void ggzmod_request_open(GGZMod * ggzmod, int seat_num);
 void ggzmod_request_chat(GGZMod *ggzmod, const char *chat_msg);
+
+/** @brief Get the player's win-loss record.
+ *  @return TRUE if there is a record; FALSE if not or on error.
+ */
+int ggzmod_player_get_record(GGZSeat *player,
+			     int *wins, int *losses,
+			     int *ties, int *forfeits);
+
+/** @brief Get the player's rating.
+ *  @return TRUE if there is a rating; FALSE if not or on error.
+ */
+int ggzmod_player_get_rating(GGZSeat *player, int *rating);
+
+/** @brief Get the player's ranking.
+ *  @return TRUE if there is a ranking; FALSE if not or on error.
+ */
+int ggzmod_player_get_ranking(GGZSeat *player, int *ranking);
+
+/** @brief Get the player's highscore.
+ *  @return TRUE if there is a highscore; FALSE if not or on error.
+ */
+int ggzmod_player_get_highscore(GGZSeat *player, long *highscore);
 
 #ifdef __cplusplus
 }

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 5949 2004-02-21 05:42:37Z jdorje $
+ * $Id: ggzmod.c 6105 2004-07-15 16:43:00Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -1037,4 +1037,26 @@ void _ggzmod_handle_server(GGZMod * ggzmod, int fd)
 {
 	ggzmod->server_fd = fd;
 	call_handler(ggzmod, GGZMOD_EVENT_SERVER, &fd);
+}
+
+int ggzmod_player_get_record(GGZSeat *player,
+			     int *wins, int *losses,
+			     int *ties, int *forfeits)
+{
+  return 0;
+}
+
+int ggzmod_player_get_rating(GGZSeat *player, int *rating)
+{
+  return 0;
+}
+
+int ggzmod_player_get_ranking(GGZSeat *player, int *ranking)
+{
+  return 0;
+}
+
+int ggzmod_player_get_highscore(GGZSeat *player, long *highscore)
+{
+  return 0;
 }
