@@ -149,13 +149,13 @@ msgstr ""
 #: ../ggz-txt/output.c:96
 msgid "--- /join room|table <num>                  Join room or table <num>"
 msgstr ""
-"--- /join raum|tisch <num>                  Raum oder Tisch <num> betreten"
+"--- /join room|table <num>                  Raum oder Tisch <num> betreten"
 
 #: ../ggz-txt/output.c:97
 msgid ""
 "--- /list players|rooms|tables|types        List the requested information."
 msgstr ""
-"--- /list spieler|räume|tische|typen        Listet die gewünschten "
+"--- /list players|rooms|tables|types        Listet die gewünschten "
 "Informationen auf"
 
 #: ../ggz-txt/output.c:98
