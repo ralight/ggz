@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 6287 2004-11-06 08:47:13Z jdorje $
+ * $Id: props.c 6289 2004-11-06 17:40:37Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -1184,7 +1184,11 @@ create_dlg_props (void)
   gtk_box_pack_start (GTK_BOX (hbox8), chat_font, TRUE, TRUE, 5);
   gtk_entry_set_editable (GTK_ENTRY (chat_font), FALSE);
 
+#ifdef GTK_STOCK_EDIT
+  Font_button = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+#else
   Font_button = gtk_button_new_with_label (_("Change"));
+#endif
   gtk_widget_ref (Font_button);
   g_object_set_data_full(G_OBJECT (dlg_props), "Font_button", Font_button,
                             (GtkDestroyNotify) gtk_widget_unref);

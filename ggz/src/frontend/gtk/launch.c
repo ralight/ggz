@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 6287 2004-11-06 08:47:13Z jdorje $
+ * $Id: launch.c 6289 2004-11-06 17:40:37Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -677,7 +677,7 @@ GtkWidget *create_dlg_launch(void)
 	gtk_container_add(GTK_CONTAINER(button_box), launch_button);
 	GTK_WIDGET_SET_FLAGS(launch_button, GTK_CAN_DEFAULT);
 
-	cancel_button = gtk_button_new_with_label(_("Cancel"));
+	cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
 	gtk_widget_ref(cancel_button);
 	g_object_set_data_full(G_OBJECT(dlg_launch), "cancel_button",
 				 cancel_button,

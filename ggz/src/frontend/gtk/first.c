@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 6287 2004-11-06 08:47:13Z jdorje $
+ * $Id: first.c 6289 2004-11-06 17:40:37Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -209,7 +209,7 @@ create_dlg_first (void)
   gtk_widget_show (hbuttonbox2);
   gtk_box_pack_start (GTK_BOX (vbox3), hbuttonbox2, FALSE, TRUE, 0);
 
-  button_yes = gtk_button_new_with_label (_("Yes"));
+  button_yes = gtk_button_new_from_stock(GTK_STOCK_YES);
   gtk_widget_ref (button_yes);
   g_object_set_data_full(G_OBJECT (dlg_first), "button_yes", button_yes,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -217,7 +217,7 @@ create_dlg_first (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), button_yes);
   GTK_WIDGET_SET_FLAGS (button_yes, GTK_CAN_DEFAULT);
 
-  button_no = gtk_button_new_with_label (_("No"));
+  button_no = gtk_button_new_from_stock(GTK_STOCK_NO);
   gtk_widget_ref (button_no);
   g_object_set_data_full(G_OBJECT (dlg_first), "button_no", button_no,
                             (GtkDestroyNotify) gtk_widget_unref);

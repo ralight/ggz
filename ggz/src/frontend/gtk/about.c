@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 6287 2004-11-06 08:47:13Z jdorje $
+ * $Id: about.c 6289 2004-11-06 17:40:37Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -130,7 +130,7 @@ GtkWidget *create_dlg_about(void)
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), button_box, TRUE,
 			   TRUE, 0);
 
-	ok_button = gtk_button_new_with_label(_("OK"));
+	ok_button = gtk_button_new_from_stock(GTK_STOCK_OK);
 	gtk_widget_ref(ok_button);
 	g_object_set_data_full(G_OBJECT(dlg_about), "ok_button",
 			       ok_button,
