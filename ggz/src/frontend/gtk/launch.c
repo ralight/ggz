@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 5222 2002-11-05 09:18:18Z jdorje $
+ * $Id: launch.c 5853 2004-02-08 22:19:24Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -68,7 +68,13 @@ void launch_create_or_raise(void)
 	if (!launch_dialog) {
 		/* Dialog for setting table seats */
 		launch_dialog = create_dlg_launch();
-		gtk_widget_show(launch_dialog);
+		if (launch_dialog) {
+			gtk_widget_show(launch_dialog);
+		} else {
+			/* We shouldn't have gotten this far - menu and
+			   buttons should be disabled. */
+			ggz_error_msg("Couldn't create launch dialog.");
+		}
 	} else {
 		/* It already exists, so raise it */
 		gdk_window_show(launch_dialog->window);
