@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3349 2002-02-13 07:32:47Z jdorje $
+ * $Id: table.c 3350 2002-02-13 08:58:11Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -82,12 +82,19 @@ static void table_clear_table(int write_to_screen);
 static void table_card_clicked(int card_num);
 static void table_display_all_hands(int write_to_screen);
 
-void table_show_table(int x, int y, int w, int h)
+
+void table_draw_table(GdkPixmap *pixmap,
+		      int x, int y, int w, int h)
 {
 	/* Display the buffer */
-	gdk_draw_pixmap(table->window,
+	gdk_draw_pixmap(pixmap,
 			table_style->fg_gc[GTK_WIDGET_STATE(table)],
 			table_buf, x, y, x, y, w, h);
+}
+
+void table_show_table(int x, int y, int w, int h)
+{
+	table_draw_table(table->window, x, y, w, h);
 }
 
 /* Draw the box around the player text */
@@ -252,6 +259,9 @@ void table_setup(void)
 	gdk_pixmap_unref(table_buf);
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(), -1);
+	
+	/* Resize the animation buffer. */
+	anim_alloc_table();
 
 	/* _Now_ we're ready to draw stuff. */
 	table_ready = TRUE;

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.h 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: animation.h 3350 2002-02-13 08:58:11Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -26,6 +26,9 @@
 #include <gtk/gtk.h>
 
 #include "common.h"
+
+/* Call this on startup, or when the table is resized. */
+void anim_alloc_table(void);
 
 void animation_start(int player, card_t card, int card_num);
 void animation_stop(int success);

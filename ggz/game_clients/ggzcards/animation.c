@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: animation.c 3350 2002-02-13 08:58:11Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -38,7 +38,16 @@
 #include "table.h"
 
 
+/* FIXME: these should be preferences */
+#define FRAMES		15
+#define DURATION	500	/* In milliseconds */
+
+
 static int animating = 0;
+
+/* A backing store used only for animation.  It basically sits
+   on top of table_buf. */
+static GdkPixmap *anim_buf = NULL;	
 
 static struct {
 	int player;
@@ -51,8 +60,17 @@ static struct {
 	guint cb_tag;
 } anim = {-1};
 
-static void animation_delete(void);
 static gint animation_callback(gpointer ignored);
+
+void anim_alloc_table(void)
+{
+	/* Get rid of old buffer. */
+	if (anim_buf)
+		gdk_pixmap_unref(anim_buf);
+		
+	anim_buf = gdk_pixmap_new(table->window,
+				   get_table_width(), get_table_height(), -1);
+}
 
 /* Function to setup and trigger a card animation */
 void animation_start(int player, card_t card, int card_num)
@@ -63,6 +81,7 @@ void animation_start(int player, card_t card, int card_num)
 	ggz_debug("animation", "Setting up animation for player %d", player);
 	
 	assert(player >= 0 && player < ggzcards.num_players);
+	assert(anim_buf);
 
 	/* We don't currently support animation for more than one player at a 
 	   time. */
@@ -97,10 +116,6 @@ void animation_start(int player, card_t card, int card_num)
 	
 	get_tablecard_pos(player, &end_x, &end_y);
 
-	/* FIXME: these should be preferences */
-#define FRAMES		15
-#define DURATION	500	/* In milliseconds */
-
 	/* Store all our info */
 	anim.card = card;
 	anim.player = player;
@@ -121,19 +136,14 @@ void animation_start(int player, card_t card, int card_num)
 	animating = TRUE;
 }
 
-static void animation_delete(void)
-{
-	assert(animating);
-	/* Draw over the old image. */
-	table_show_table(anim.cur_x, anim.cur_y, CARDWIDTH, CARDHEIGHT);
-}
-
 
 /* Handle one frame of card animation, this is triggered by a GtkTimeout
    setup in animation_start(). */
 static gint animation_callback(gpointer ignored)
 {
 	float new_x, new_y;
+	
+	int draw_x, draw_y, draw_x_width, draw_y_width;
 
 	assert(animating);
 
@@ -144,31 +154,55 @@ static gint animation_callback(gpointer ignored)
 	new_y = anim.cur_y + anim.step_y;
 	if (abs(new_y - anim.dest_y) < 2)
 		new_y = anim.dest_y;
+		
+	/* First we draw the table onto the animation buffer, then we draw
+	   the card onto the animation buffer, then we draw the animation
+	   buffer to the window. */
+		
+	/* We have to figure out the "surrounding rectangle" of the changed
+	   graphics. */
+	draw_x = MIN(anim.cur_x, new_x);
+	draw_y = MIN(anim.cur_y, new_y);
+	draw_x_width = CARDWIDTH + ABS(anim.step_x) + 2;
+	draw_y_width = CARDHEIGHT + ABS(anim.step_y) + 2;
 
-	animation_delete();
+	/* Draw over the old animation and surrounding areas. */
+	table_draw_table(anim_buf, draw_x, draw_y, draw_x_width, draw_y_width);
 
-	/* If we are there, stop the animation process and draw the card "for 
-	   real".  Otherwise, we just draw the next step in the animation and 
+	/* Draw our new card position */
+	gdk_draw_pixmap(anim_buf,
+			table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			card_fronts[0],
+			anim.card_x, anim.card_y,
+			new_x, new_y, CARDWIDTH, CARDHEIGHT);
+			
+	/* Now draw from the animation buffer to the screen.  This could
+	   probably be done more easily if we just drew the _whole screen_,
+	   but that could have bad side effects. */
+	/* Note also, because we use float values (ugh!) we must do some
+	   approximation to make sure we don't miss anything... */
+	gdk_draw_pixmap(table->window,
+			table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			anim_buf,
+			draw_x, draw_y,
+			draw_x, draw_y, draw_x_width, draw_y_width);
+			
+				
+	/* If we are there, stop the animation process and draw the card "for
+	   real".  Otherwise, we just draw the next step in the animation and
 	   then continue. */
 	if (new_x == anim.dest_x && new_y == anim.dest_y) {
 		table_show_card(anim.player, anim.card, TRUE);
 		animating = 0;
 		return FALSE;
-	} else {
-		/* Draw our new card position */
-		gdk_draw_pixmap(table->window,
-				table_style->fg_gc[GTK_WIDGET_STATE(table)],
-				card_fronts[0],
-				anim.card_x, anim.card_y,
-				new_x, new_y, CARDWIDTH, CARDHEIGHT);
-
-		/* Update our information for next time */
-		anim.cur_x = new_x;
-		anim.cur_y = new_y;
-
-		/* Continue animating */
-		return TRUE;
 	}
+
+	/* Update our information for next time */
+	anim.cur_x = new_x;
+	anim.cur_y = new_y;
+
+	/* Continue animating */
+	return TRUE;
 }
 
 
@@ -182,7 +216,7 @@ void animation_stop(int success)
 		return;
 
 	/* First, kill off the animation callback */
-	animation_delete();
+	table_draw_table(table->window, anim.cur_x, anim.cur_y, CARDWIDTH, CARDHEIGHT);
 	gtk_timeout_remove(anim.cb_tag);
 
 	if (success) {

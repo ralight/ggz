@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.h 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: table.h 3350 2002-02-13 08:58:11Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -40,9 +40,15 @@ void table_display_hand(int p, int write_to_screen);
 void table_show_card(int player, card_t card, int write_to_screen);
 void table_show_cards(int write_to_screen);
 
+/* Redraw and show the whole table. */
 void table_redraw(void);
 
+/* Draw the given portion of the table onto the given pixmap. */
+void table_draw_table(GdkPixmap *pixmap, int x, int y, int w, int h);
+
+/* Draw the given portion of the table onto the screen. */
 void table_show_table(int x, int y, int w, int h);
+
 void get_card_coordinates(card_t card, int orientation, int *x, int *y);
 void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image);
 
