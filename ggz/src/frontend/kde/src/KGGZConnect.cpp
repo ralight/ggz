@@ -48,6 +48,12 @@
 #include <qlabel.h>
 #include <qradiobutton.h>
 #include <qvalidator.h>
+#include <qlineedit.h>
+#include <qcombobox.h>
+#include <qpushbutton.h>
+#include <qcheckbox.h>
+#include <qbuttongroup.h>
+#include <qsocket.h>
 
 // System includes
 #include <stdlib.h>
@@ -70,10 +76,14 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	QIntValidator *valid;
 	KGGZLineSeparator *sep1, *sep2;
 	KGGZCaption *caption;
+	QFrame *frame;
+	QHBoxLayout *hbox_frame;
 
 	KGGZDEBUGF("KGGZConnect::KGGZConnect()\n");
 
 	m_input = NULL;
+	m_meta = NULL;
+	m_sock = NULL;
 
 	profile_select = new QComboBox(this);
 	profile_new = new QPushButton(i18n("Create new profile"), this);
@@ -94,7 +104,12 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	valid = new QIntValidator(this);
 	valid->setRange(1024, 32767);
 
-	input_host = new QLineEdit(m_pane);
+	frame = new QFrame(m_pane);
+	frame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+	button_select = new QPushButton("Select", frame);
+
+	input_host = new QLineEdit(frame);
 	input_port = new QLineEdit(m_pane);
 	input_port->setValidator(valid);
 	input_name = new QLineEdit(m_pane);
@@ -113,7 +128,7 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	group_mode->insert(mode_normal);
 	group_mode->insert(mode_guest);
 	group_mode->insert(mode_firsttime);
-	mode_normal->setChecked(TRUE);
+	mode_normal->setChecked(true);
 
 	option_server = new QCheckBox(i18n("Start ggzd server locally"), this);
 
@@ -123,6 +138,10 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 
 	sep1 = new KGGZLineSeparator(this);
 	sep2 = new KGGZLineSeparator(m_pane);
+
+	hbox_frame = new QHBoxLayout(frame, 2);
+	hbox_frame->add(input_host);
+	hbox_frame->add(button_select);
 
 	vbox1 = new QVBoxLayout(this, 5);
 	vbox1->add(caption);
@@ -139,7 +158,7 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 
 	vbox2 = new QVBoxLayout(m_pane, 5);
 	vbox2->add(label_host);
-	vbox2->add(input_host);
+	vbox2->add(frame);
 	vbox2->add(label_port);
 	vbox2->add(input_port);
 	vbox2->add(label_name);
@@ -166,7 +185,6 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	hbox1->add(button_ok);
 	hbox1->add(button_cancel);
 
-	//connect(profile_edit, SIGNAL(clicked()), SLOT(edit()));
 	connect(button_cancel, SIGNAL(clicked()), SLOT(close()));
 	connect(button_ok, SIGNAL(clicked()), SLOT(slotAccept()));
 	connect(group_mode, SIGNAL(clicked(int)), SLOT(slotModes(int)));
@@ -175,15 +193,13 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	connect(profile_new, SIGNAL(clicked()), SLOT(slotProfileNew()));
 	connect(profile_delete, SIGNAL(clicked()), SLOT(slotProfileDelete()));
 	connect(profile_edit, SIGNAL(clicked()), SLOT(slotPane()));
+	connect(button_select, SIGNAL(clicked()), SLOT(slotProfileMeta()));
 
 	m_connected = -1;
 	m_loginmode = 0;
 	m_nosafe = 0;
 
 	setCaption(i18n("Connect to server"));
-	//resize(300, 260);
-
-	KGGZDEBUGF("KGGZConnect::KGGZConnect() ready\n");
 
 	slotLoadProfile(-1);
 }
@@ -197,19 +213,14 @@ KGGZConnect::~KGGZConnect()
 void KGGZConnect::slotSaveProfile()
 {
 	GGZCoreConfio *config;
-	//char *defaultserver;
-	char *current;
+	const char *current;
 
 	KGGZDEBUGF("KGGZConnect::slotSaveProfile()\n");
 
-	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
-	KGGZCommon::clear();
-
-	//defaultserver = config->read("Session", "Defaultserver", i18n("Default server"));
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
 	// Save previous profile and make new one the default (although it's empty)
-	KGGZDEBUG("** save profile\n");
-	current = (char*)m_current.latin1();
+	current = m_current.latin1();
 	config->write(current, "Host", input_host->text());
 	config->write(current, "Port", input_port->text());
 	config->write(current, "Login", input_name->text());
@@ -218,8 +229,6 @@ void KGGZConnect::slotSaveProfile()
 	config->write("Session", "Defaultserver", profile_select->currentText());
 	config->commit();
 	delete config;
-
-	KGGZDEBUGF("KGGZConnect::slotSaveProfile() ready\n");
 }
 
 /* Loads a specified server profile, or the first if profile is -1 */
@@ -237,62 +246,66 @@ void KGGZConnect::slotLoadProfile(int profile)
 
 	KGGZDEBUGF("KGGZConnect::slotLoadProfile()\n");
 
-	if((profile != -1) && (!m_nosafe)) slotSaveProfile();
+	if((profile != -1) && (!m_nosafe))
+		slotSaveProfile();
 	m_nosafe = 0;
 
-	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readonly);
-	KGGZCommon::clear();
-
-	/*profile_edit->setEnabled(TRUE);*/
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readonly);
 
 	// setup entries; try to find suitable first entry
 	if(profile == -1)
 	{
 		profile_select->clear();
-		listentry = config->read("Session", "Metaserver", i18n("Meta server"));
-		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), listentry);
-		listentry = config->read("Session", "Defaultserver", i18n("Default server"));
-		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), listentry);
-		KGGZDEBUG("Cleared profile_select. Rereading entries.\n");
+		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
+		listentry = config->read("Session", "Defaultserver", (char*)NULL);
+		if(listentry)
+		{
+			if(strcmp(listentry, i18n("GGZ Meta Server")))
+				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), listentry);
+			profile_select->setCurrentItem(1);
+		}
+		else
+		{
+			//listentry = i18n("Default CVS Developer Server");
+			profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), i18n("Default CVS Developer Server"));
+		}
+		
 		config->read("Servers", "Servers", &i, &list);
-		KGGZDEBUG("Done. Now putting them in place. Found %i entries.\n", i);
 		for(int j = 0; j < i; j++)
 		{
-			if(strcmp(list[j], listentry) != 0)
-			{
-				if(strcmp(list[j], "") != 0)
-				{
-					KGGZDEBUG("* insert item %s (%i)\n", list[j], j);
-					profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), list[j]);
-				}
-			}
+			if(strcmp(list[j], listentry))
+				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), list[j]);
 			free(list[j]);
 		}
-		if(list)
-		{
-			KGGZDEBUG("List exists, deleting it.\n");
-			free(list);
-		}
-		if(i == 0)
-		{
-			KGGZDEBUG("None found, using default server.\n");
-			modifyServerList(i18n("Default server"), 1);
-			/*profile_select->insertItem(i18n("Default server"));*/
-		}
+		if(list) free(list);
+		if(i == 0) modifyServerList(i18n("Default CVS Developer Server"), 1);
 	}
-	else
-		listentry = profile_select->text(profile);
+	else listentry = profile_select->text(profile);
 
 	// read values for selected server
-	KGGZDEBUG("slotLoadProfile: read values in %s...\n", listentry);
-	host = config->read(listentry, "Host", "jzaun.com");
-	port = config->read(listentry, "Port", "5688");
+	if((profile < 0) || (profile_select->text(profile) == i18n("GGZ Meta Server")))
+	{
+		host = strdup("Automatic");
+		port = strdup("5688");
+		input_host->setEnabled(false);
+		input_port->setEnabled(false);
+		button_select->setEnabled(false);
+		profile_delete->setEnabled(false);
+	}
+	else
+	{
+		host = config->read(listentry, "Host", "jzaun.com");
+		port = config->read(listentry, "Port", "5688");
+		input_host->setEnabled(true);
+		input_port->setEnabled(true);
+		button_select->setEnabled(true);
+		profile_delete->setEnabled(true);
+	}
 	username = config->read(listentry, "Login", "kde-cvs-player");
 	password = config->read(listentry, "Password", "");
 	type = config->read(listentry, "Type", 1);
 
 	// put values into fields
-	KGGZDEBUG("slotLoadProfile: set text...\n");
 	input_host->setText(host);
 	input_port->setText(port);
 	input_name->setText(username);
@@ -300,12 +313,10 @@ void KGGZConnect::slotLoadProfile(int profile)
 	slotModes(type);
 
 	// free allocated memory
-	KGGZDEBUG("slotLoadProfile: Freeing memory...\n");
 	if(host) free(host);
 	if(port) free(port);
 	if(username) free(username);
 	if(password) free(password);
-	//if(listentry) free(listentry);
 
 	// get rid of the configuration object
 	delete config;
@@ -314,17 +325,25 @@ void KGGZConnect::slotLoadProfile(int profile)
 
 	// Make sure even default entries are written
 	slotSaveProfile();
-
-	KGGZDEBUGF("KGGZConnect::slotLoadProfile() ready\n");
 }
 
 /* Start a connection */
 void KGGZConnect::slotAccept()
 {
 	slotSaveProfile();
-	close();
-	emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()), input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
-	//close();
+
+	if(input_host->text() != "Automatic")
+	{
+		close();
+		emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()), input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
+	}
+	else
+	{
+		m_sock = new QSocket();
+		connect(m_sock, SIGNAL(connected()), SLOT(slotWrite()));
+		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
+		m_sock->connectToHost("localhost", 15689);
+	}
 }
 
 void KGGZConnect::slotModes(int loginmode)
@@ -332,17 +351,17 @@ void KGGZConnect::slotModes(int loginmode)
 	m_loginmode = loginmode;
 	group_mode->setButton(loginmode);
 	if(loginmode == 0)
-		input_password->setEnabled(TRUE);
+		input_password->setEnabled(true);
 	else
-		input_password->setEnabled(FALSE);
+		input_password->setEnabled(false);
 }
 
 void KGGZConnect::slotInvoke()
 {
 	if(option_server->isChecked())
-		input_host->setEnabled(FALSE);
+		input_host->setEnabled(false);
 	else
-		input_host->setEnabled(TRUE);
+		input_host->setEnabled(true);
 }
 
 void KGGZConnect::slotProfileNew()
@@ -350,7 +369,6 @@ void KGGZConnect::slotProfileNew()
 	// destroy input window to avoid duplicate signals
 	if(m_input)
 	{
-		KGGZDEBUG("Delete input box now!\n");
 		delete m_input;
 		m_input = NULL;
 	}
@@ -361,16 +379,27 @@ void KGGZConnect::slotProfileNew()
 	connect(m_input, SIGNAL(signalText(const char*)), SLOT(slotProfileProcess(const char*)));
 }
 
+void KGGZConnect::slotProfileMeta()
+{
+	if(!m_meta)
+	{
+		m_meta = new KGGZMeta(NULL, "KGGZMeta");
+		connect(m_meta, SIGNAL(signalData(QString, QString)), SLOT(slotProfileMetaProcess(QString, QString)));
+	}
+	m_meta->show();
+}
+
+void KGGZConnect::slotProfileMetaProcess(QString host, QString port)
+{
+	input_host->setText(host);
+	input_port->setText(port);
+	m_meta->close();
+}
+
 void KGGZConnect::slotProfileDelete()
 {
-	KGGZDEBUG("delete current entry =======================> %s\n", m_current.latin1());
 	modifyServerList(m_current.latin1(), 2);
-	KGGZDEBUG("revoke default server ======================> %i :: %s :: %s\n",
-		profile_select->currentItem(), profile_select->text(profile_select->currentItem()).latin1(), profile_select->currentText().latin1());
 	profile_select->removeItem(profile_select->currentItem());
-	KGGZDEBUG("so we have now =============================> %i :: %s :: %s\n",
-		profile_select->currentItem(), profile_select->text(profile_select->currentItem()).latin1(), profile_select->currentText().latin1());
-	KGGZDEBUG("load list anew\n");
 	m_nosafe = 1;
 	slotLoadProfile(profile_select->currentItem());
 }
@@ -392,10 +421,13 @@ void KGGZConnect::slotProfileProcess(const char *identifier)
 	input_port->setText("5688");
 	input_password->setText("");
 
+	input_host->setEnabled(true);
+	input_port->setEnabled(true);
+	button_select->setEnabled(true);
+	profile_delete->setEnabled(true);
+
 	// Save it (although is is empty)
 	slotSaveProfile();
-
-	KGGZDEBUGF("slotProfileProcess() ready\n");
 }
 
 // mode: 1 = add, 2 = delete
@@ -409,13 +441,10 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 
 	KGGZDEBUGF("KGGZConnect::modifyServerList(%s, %i)\n", server, mode);
 
-	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
-	KGGZCommon::clear();
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
 	// Update the list of available servers
-	KGGZDEBUG("** update server list\n");
 	config->read("Servers", "Servers", &i, &list);
-	KGGZDEBUG("** found %i entries\n", i);
 
 	list2 = (char**)malloc((i + 2) * sizeof(char*));
 	for(int j = 0; j < i + 2; j++)
@@ -429,51 +458,30 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 			list2[number] = (char*)malloc(strlen(list[j]) + 1);
 			strcpy(list2[number], list[j]);
 			number++;
-			KGGZDEBUG("** update: %i - %s\n", number - 1, list[j]);
 		}
 	}
-	KGGZDEBUG("** update server list - 1.5\n");
 	if(mode == 1)
 	{
-		KGGZDEBUG("** update server list - 1: %i - %s\n", number, server);
 		list2[number] = (char*)malloc(strlen(server) + 1);
 		strcpy(list2[number], server);
 		number++;
 	}
-	//list2[number] = NULL;
-	KGGZDEBUG("** update server list - 2 (write %i server)\n", number);
 	config->write("Servers", "Servers", number, list2);
 	if(mode == 2)
 	{
-		KGGZDEBUG("!!! Remove Section: [%s]\n", server);
 		config->removeSection(server);
-		if(number == 0)
-		{
-			KGGZDEBUG("!!! Remove key: Servers\n");
-			config->removeKey("Servers", "Servers");
-		}
+		if(number == 0) config->removeKey("Servers", "Servers");
 	}
 
 	config->commit();
 	delete config;
 
-	KGGZDEBUG("** update server list - 3\n");
 	for(int j = 0; j < i; j++)
-	{
-		KGGZDEBUG("--free(list): %i - %s\n", j, list[j]);
 		free(list[j]);
-	}
 	for(int j = 0; j < number; j++)
-	{
-		KGGZDEBUG("--free(list2): %i - %s\n", j, list2[j]);
 		free(list2[j]);
-	}
-	KGGZDEBUG("** update server list - 4\n");
 	if(list) free(list);
-	KGGZDEBUG("** update server list - 4.5\n");
-	// WARNING!!!!! TODO!!!!! SECURITY BUG!!!!!!! MEMORY HOLE!!!!!
 	if(list2) free(list2);
-	KGGZDEBUG("** update server list - 5\n");
 }
 
 void KGGZConnect::slotPane()
@@ -482,9 +490,6 @@ void KGGZConnect::slotPane()
 	{
 		m_pane->hide();
 		profile_edit->setText(i18n("Edit >>"));
-		//setFixedHeight(minimumSizeHint().height());
-		//resize(50, 50);
-		//adjustSize();
 		setFixedHeight(100);
 	}
 	else
@@ -507,5 +512,37 @@ int KGGZConnect::optionSecure()
 #else
 	return 0;
 #endif
+}
+
+void KGGZConnect::slotRead()
+{
+	QString rdata;
+	QString host, port;
+	QStringList list;
+
+	rdata = m_sock->readLine();
+	rdata.truncate(rdata.length() - 1);
+
+	if(!rdata.isEmpty())
+	{
+		list = list.split(':', rdata);
+		if(list.count() == 3)
+		{
+			host = *(list.at(1));
+			host = host.right(host.length() - 2);
+			port = *(list.at(2));
+			close();
+			emit signalConnect(host, atoi(port.latin1()), input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
+		}
+	}
+}
+
+void KGGZConnect::slotWrite()
+{
+	QString s;
+
+	s = "query://ggz/connection/0.0.5pre\n";
+	m_sock->writeBlock(s.latin1(), s.length());
+	m_sock->flush();
 }
 

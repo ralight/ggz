@@ -9,6 +9,7 @@ Name=KGGZ (KDE Client)
 Name[de]=KGGZ (KDE Client)
 Name[fr]=KGGZ (KDE Client)
 Path=
+DocPath=kggz/index.docbook
 ServiceTypes=
 SwallowExec=
 SwallowTitle=

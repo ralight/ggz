@@ -36,14 +36,18 @@
 
 // KGGZ includes
 #include "KGGZInput.h"
+#include "KGGZMeta.h"
 
 // Qt includes
 #include <qwidget.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qbuttongroup.h>
+
+// Forward declarations
+class QSocket;
+class QButtonGroup;
+class QPushButton;
+class QCheckBox;
+class QComboBox;
+class QLineEdit;
 
 // A comprehensive connection dialog
 class KGGZConnect : public QWidget
@@ -77,8 +81,16 @@ class KGGZConnect : public QWidget
 		void slotProfileDelete();
 		// Process information about new profile
 		void slotProfileProcess(const char *identifier);
+		// Show meta server list window
+		void slotProfileMeta();
+		// Get meta server data
+		void slotProfileMetaProcess(QString host, QString port);
 		// Show pane or not
 		void slotPane();
+		// Write to meta server
+		void slotWrite();
+		// Read from meta server
+		void slotRead();
 
 	signals:
 		// Emitted if connection is wanted
@@ -98,6 +110,8 @@ class KGGZConnect : public QWidget
 		QComboBox *profile_select;
 		// Allows in-place editing of profiles
 		QPushButton *profile_new, *profile_delete, *profile_edit;
+		// Invokes server selection list
+		QPushButton *button_select;
 		// Input fields
 		QLineEdit *input_host, *input_port, *input_name, *input_password;
 		// Holds connection state
@@ -106,12 +120,16 @@ class KGGZConnect : public QWidget
 		QButtonGroup *group_mode;
 		// Little dialog asking for server id
 		KGGZInput *m_input;
+		// Dialog to select from a list of meta servers
+		KGGZMeta *m_meta;
 		// Pointer to current profile (previous one on change)
 		QString m_current;
 		// Indicated whether to save current profile when loading new one or not
 		int m_nosafe;
 		// Pane holding server settings
 		QWidget *m_pane;
+		// Meta server connection
+		QSocket *m_sock;
 };
 
 #endif

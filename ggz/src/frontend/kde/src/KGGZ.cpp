@@ -110,7 +110,6 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	KGGZDEBUG("Initializing GGZCore...\n");
 	m_core = new GGZCore();
 	result = m_core->init(GGZCore::parser | GGZCore::modules, /*"/tmp/kggz.debug"*/NULL, GGZCore::all); // make a debug log configurable!
-	KGGZCommon::clear();
 	if(result == -1)
 	{
 		KGGZDEBUG("Critical: Could not initialize ggzcore!\n");
@@ -119,7 +118,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 
 	KGGZDEBUG("Loading configuration...\n");
 	m_config = new GGZCoreConf();
-	result = m_config->init(KGGZCommon::append(KGGZ_DIRECTORY, "/kggzrc"), KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"));
+	result = m_config->init(KGGZ_DIRECTORY "/kggzrc", QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1());
 	if(result == -1)
 	{
 		KGGZDEBUG("Critical: Could not open configuration file!\n");
@@ -199,9 +198,8 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 	KGGZDEBUG("Connect with: host=%s port=%i username=%s password=%s mode=%i\n", host, port, username, password, mode);
 
 	if(m_dns) delete m_dns;
-	m_dns = new QDns(host);
+	m_dns = new QDns(host, QDns::A);
 	connect(m_dns, SIGNAL(resultsReady()), SLOT(slotConnectedStart()));
-	// FIXME: and now?
 
 	m_save_loginmode = mode;
 	m_save_username = strdup(username);
@@ -219,9 +217,13 @@ void KGGZ::slotConnectedStart()
 	QHostAddress addr;
 
 	KGGZDEBUGF("KGGZ::slotConnectedStart()\n");
-	if(m_dns->addresses().at(0) == m_dns->addresses().end()) return;
+	if(m_dns->addresses().isEmpty())
+	{
+		KMessageBox::error(this, i18n("Host not found!"), "Error!");
+		menuConnect();
+		return;
+	}
 	list = m_dns->addresses();
-	KGGZDEBUG("Pre-Resolve: %s\n", (*list.at(0)).toString().latin1());
 	addr = (*list.at(0));
 	if(m_save_host) free(m_save_host);
 	m_save_host = strdup(addr.toString().latin1());
@@ -229,12 +231,9 @@ void KGGZ::slotConnectedStart()
 
 	kggzserver = new GGZCoreServer();
 	attachServerCallbacks();
-	//ggzcore_server_log_session(kggzserver->server(), KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.xml-log"));
-	kggzserver->logSession(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.xml-log"));
-	KGGZCommon::clear();
+	kggzserver->logSession(QString("%1/.ggz/kggz.xml-log").arg(getenv("HOME")).latin1());
 
 	kggzserver->setHost(m_save_host, m_save_port, m_save_encryption);
-	KGGZDEBUG("connect now!\n");
 	result = kggzserver->connect();
 	if(m_killserver)
 	{
@@ -285,8 +284,7 @@ void KGGZ::menuServerLaunch()
 	GGZCoreConfio *config;
 	char *process;
 
-	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
-	KGGZCommon::clear();
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 	process = config->read("Environment", "Server", "/usr/bin/ggzd");
 	delete config;
 

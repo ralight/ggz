@@ -11,14 +11,16 @@ kggz_SOURCES = \
 	KGGZ.cpp \
 	KGGZConnect.cpp \
 	KGGZLaunch.cpp \
-	KGGZInput.cpp
+	KGGZInput.cpp \
+	KGGZMeta.cpp
 
 noinst_HEADERS = \
 	KGGZCommon.h \
 	KGGZ.h \
 	KGGZConnect.h \
 	KGGZLaunch.h \
-	KGGZInput.h
+	KGGZInput.h \
+	KGGZMeta.h
 
 INCLUDES = $(ggzcorepp_includes) -I widgets -I abstract $(all_includes) -I widgets/more
 

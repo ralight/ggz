@@ -27,84 +27,55 @@
 
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-// KGGZCommon: Contains macros, definitions, constants and versioning information. //
+// KGGZMeta: Present a list of GGZ servers which are fetched from metaserver list. //
 //                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef KGGZ_COMMON_H
-#define KGGZ_COMMON_H
+#ifndef KGGZ_META_H
+#define KGGZ_META_H
 
-////////////////////////////////////////////////////////////////
-// public part                                                //
-////////////////////////////////////////////////////////////////
+// Qt includes
+#include <qwidget.h>
 
-// compile-time defaults can be set here
-// this file is generated automatically when building with autoconf
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#else
-#warning No configuration file included! Using defaults!
-#define KGGZ_DIRECTORY "/usr/local/share/kggz"
-#endif
+// Forward definitions
+class QSocket;
+class KListView;
+class QListViewItem;
+class QPushButton;
 
-// setkggzdebug:
-// set 0 or 1, whatever you want
-#ifndef SETKGGZDEBUG
-#define SETKGGZDEBUG 1
-#endif
-
-// version
-// should always stick to GGZ version numbers
-#ifndef KGGZVERSION
-#ifdef VERSION
-#define KGGZVERSION VERSION
-#else
-#define KGGZVERSION "0.0.5pre"
-#endif
-#endif
-
-////////////////////////////////////////////////////////////////
-// private part                                               //
-////////////////////////////////////////////////////////////////
-
-// KGGZDEBUG:
-// seems like every app has its own debug function... cool...
-#if SETKGGZDEBUG == 1
-  #include <stdio.h>
-  #ifdef __STRICT_ANSI__
-    #define KGGZDEBUG KGGZCommon::kggzdebugdummy
-    #define KGGZDEBUGF KGGZDEBUG
-    //#ifndef __USE_ISO9CX
-    //  #define __USE_ISO9CX
-    //#endif
-    #ifndef atoll
-      #define atoll(x) atol(x)
-    #endif
-    #ifndef strdup
-      #define strdup(x) strcpy(((char*)malloc(strlen(x) + 1)), x)
-    #endif
-  #else
-    #define KGGZDEBUGF(fmt...) printf("KGGZ >> "fmt##)
-    #define KGGZDEBUG(fmt...) printf(">>> "fmt##)
-  #endif
-#else
-  #define KGGZDEBUGF(fmt...)
-  #define KGGZDEBUG(fmt...)
-#endif
-
-// GGZ includes
-#include <ggzcore.h>
-
-class KGGZCommon
+// Metaserver-based GGZ server list
+class KGGZMeta : public QWidget
 {
+	Q_OBJECT
 	public:
-		static const char* state(GGZStateID stateid);
-		static int launchProcess(const char* process, char* processpath);
-		static int killProcess(const char* process);
-		static int findProcess(const char* cmdline);
-		static const char* append(const char* string1, const char* string2);
-		static void clear();
-		static int kggzdebugdummy(const char *x, ...);
+		// Constructor
+		KGGZMeta(QWidget *parent = NULL, const char *name = NULL);
+		// Destructor
+		~KGGZMeta();
+		// Load available meta servers
+		void load();
+
+	signals:
+		// Emit data
+		void signalData(QString host, QString port);
+
+	protected slots:
+		// Accept the current input
+		void slotAccept();
+		// Execute query
+		void slotConnected();
+		// Read query results
+		void slotRead();
+		// Get selection
+		void slotSelection(QListViewItem *item);
+
+	private:
+		// Socket for meta server connections
+		QSocket *m_sock;
+		// List view of meta servers
+		KListView *m_view;
+		// Dynamic button
+		QPushButton *m_ok;
 };
 
 #endif
