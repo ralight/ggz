@@ -277,7 +277,7 @@ void KCMGGZMetaserver::load()
 	// Load default meta servers
 	if(!found)
 	{
-		addURI("ggzmeta://mindx.dyndns.org", "ggz");
+		//addURI("ggzmeta://mindx.dyndns.org", "ggz");
 		addURI("ggzmeta://live.ggzgamingzone.org", "ggz");
 		addURI("http://www.freeciv.org/metaserver.html", "freeciv");
 	}
@@ -299,9 +299,9 @@ void KCMGGZMetaserver::load()
 	// Load default game servers
 	if(!found)
 	{
-		addServerURI("ggz://ggz.jzaun.com:5689", "GGZ Gaming Zone", "10", "Pennsylvania/USA", QString::null, "Justin's Developer server");
-		addServerURI("ggz://live.ggzgamingzone.org", "GGZ Gaming Zone", "10", "Berlin/Germany", QString::null, "GGZ Europe One server");
-		addServerURI("kmonop://somewhere.org", "Atlantik", "10", "Whereever", QString::null, "Yet another host");
+		//addServerURI("ggz://ggz.jzaun.com:5689", "GGZ Gaming Zone", "10", "Pennsylvania/USA", QString::null, "Justin's Developer server");
+		addServerURI("ggz://live.ggzgamingzone.org", "GGZ Gaming Zone", "10", "Atlanta/USA", QString::null, "GGZ Live server");
+		addServerURI("monopd://monopd.org", "Atlantik", "10", "Whereever", QString::null, "Yet another host");
 		addServerURI("freeciv://civserver.freeciv.org", "FreeCiv", "10", "Anywhere", QString::null, "SmallPox is cool");
 	}
 
