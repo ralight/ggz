@@ -804,16 +804,19 @@ void chat_list_ignore(void)
 gchar *chat_complete_name(gchar *name)
 {
 	GtkWidget *tmp;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
 	gchar *fullname = NULL;
 	gchar *returnname = NULL;
 	gint currow;
 	gint multiple = FALSE;
 	gint first = FALSE;
+	guint8 space;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
 	for (currow=0; currow<GTK_CLIST(tmp)->rows; currow++)
 	{
-		gtk_clist_get_text(GTK_CLIST(tmp), currow, 2, &fullname);
+		gtk_clist_get_pixtext(GTK_CLIST(tmp), currow, 2, &fullname, &space, &pixmap, &mask);
 
 		if (strncasecmp(fullname, name, strlen(name)) == 0)
 		{

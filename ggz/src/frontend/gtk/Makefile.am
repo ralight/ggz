@@ -5,6 +5,8 @@ INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/intl
 
 bin_PROGRAMS = ggz-gtk
 
+ggzdata_DATA = ggz_gtk_admin.xpm ggz_gtk_guest.xpm ggz_gtk_registered.xpm
+
 ggz_gtk_SOURCES =	main.c \
 			about.c \
 			about.h \

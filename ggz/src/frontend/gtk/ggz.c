@@ -933,6 +933,8 @@ void display_players(void)
 	GGZPlayer *p;
 	GGZTable *table;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	GdkPixmap *pixmap = NULL;
+	GdkBitmap *mask;
 
 	/* Clear current list of players */
 	tmp = lookup_widget(win_main, "player_clist");
@@ -957,6 +959,16 @@ void display_players(void)
 			player[1] = g_strdup_printf("%d", ggzcore_table_get_id(table));
 		player[2] = g_strdup(ggzcore_player_get_name(p));
 		gtk_clist_append(GTK_CLIST(tmp), player);
+
+		if(ggzcore_player_get_type(p) == GGZ_PLAYER_GUEST)
+			pixmap = gdk_pixmap_create_from_xpm(tmp->window, &mask, NULL, "ggz_gtk_guest.xpm");
+		else if(ggzcore_player_get_type(p) == GGZ_PLAYER_NORMAL)
+			pixmap = gdk_pixmap_create_from_xpm(tmp->window, &mask, NULL, "ggz_gtk_registered.xpm");
+		else if(ggzcore_player_get_type(p) == GGZ_PLAYER_ADMIN)
+			pixmap = gdk_pixmap_create_from_xpm(tmp->window, &mask, NULL, "ggz_gtk_admin.xpm");
+
+		gtk_clist_set_pixtext(GTK_CLIST(tmp), i, 2, player[2], 5, pixmap, mask);
+
 		g_free(player[1]);
 		g_free(player[2]);
 	}
