@@ -686,9 +686,9 @@ char* ggzcore_module_get_protocol(GGZModule *module);
 char* ggzcore_module_get_author(GGZModule *module);
 char* ggzcore_module_get_frontend(GGZModule *module);
 char* ggzcore_module_get_url(GGZModule *module);
-char* ggzcore_module_get_path(GGZModule *module);
 char* ggzcore_module_get_icon_path(GGZModule *module);
 char* ggzcore_module_get_help_path(GGZModule *module);
+char** ggzcore_module_get_argv(GGZModule *module);
 
 
 GGZGame* ggzcore_game_new(void);

@@ -46,8 +46,8 @@
 static int _ggzcore_game_event_is_valid(GGZGameEvent event);
 static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game, 
 					 GGZGameEvent id, void *data);
-static char* _ggzcore_game_get_path(struct _GGZGame *game);
-static void _ggzcore_game_exec(char *path);
+static char* _ggzcore_game_get_path(char **argv);
+static void _ggzcore_game_exec(char *path, char **argv);
 
 
 /* Array of GGZGame messages */
@@ -389,12 +389,14 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 {
 	pid_t pid;
 	int fd, sock_accept;
-	char *name, *path;
+	char *name, *path, **argv;
 	struct stat file_status;
 	
 	name = _ggzcore_module_get_game(game->module);
-	path = _ggzcore_game_get_path(game);
+	argv = _ggzcore_module_get_argv(game->module);
+	path = _ggzcore_game_get_path(argv);
 
+	
 	ggzcore_debug(GGZ_DBG_GAME, "Launching game of %s", name);
 	ggzcore_debug(GGZ_DBG_GAME, "Exec path is  %s", path);
 
@@ -411,7 +413,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 	if ( (pid = fork()) < 0) {
 		ggzcore_error_sys_exit("fork failed");
 	} else if (pid == 0) {
-		_ggzcore_game_exec(path);
+		_ggzcore_game_exec(path, argv);
 		/* If we get here, exec failed.  Bad news */
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
 				    strerror(errno));
@@ -490,13 +492,13 @@ static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game, GGZGameEvent id,
 }
 
 
-static char* _ggzcore_game_get_path(struct _GGZGame *game)
+static char* _ggzcore_game_get_path(char **argv)
 {
 	char *mod_path;
 	char *path;
 	int len;
 
-	mod_path = _ggzcore_module_get_path(game->module);
+	mod_path = argv[0];
 	
 	if (mod_path[0] != '/') {
 		ggzcore_debug(GGZ_DBG_GAME, "Module has relative path, prepending gamedir");
@@ -515,19 +517,12 @@ static char* _ggzcore_game_get_path(struct _GGZGame *game)
 }
 
 
-static void _ggzcore_game_exec(char *path)
+static void _ggzcore_game_exec(char *path, char **argv)
 {
 	ggzcore_debug(GGZ_DBG_GAME, "Process forked.  Game running");
 	
 	/* FIXME: Maybe pass over sock, rather than cmd-line? */
-	execl(path, path, "-o", NULL);
-	
-#if 0
-	if (flag)
-		execl(path, g_basename(path), "-o", NULL);
-	else
-		execl(path, g_basename(path), NULL);
-#endif
+	execv(path, argv);
 }
 
 

@@ -47,8 +47,8 @@ struct _GGZModule {
 	/* Hopepage for this module */
 	char *url;
 
-	/* Path to module executable */
-	char *path;
+	/* Commandline for executing module */
+	char **argv;
 
 	/* Path to icon for this game module */
 	char *icon;
@@ -76,9 +76,9 @@ char* _ggzcore_module_get_protocol(struct _GGZModule *module);
 char* _ggzcore_module_get_author(struct _GGZModule *module);
 char* _ggzcore_module_get_frontend(struct _GGZModule *module);
 char* _ggzcore_module_get_url(struct _GGZModule *module);
-char* _ggzcore_module_get_path(struct _GGZModule *module);
 char* _ggzcore_module_get_icon_path(struct _GGZModule *module);
 char* _ggzcore_module_get_help_path(struct _GGZModule *module);
+char** _ggzcore_module_get_argv(struct _GGZModule *module);
 
 
 #endif /* __MODULE_H_ */

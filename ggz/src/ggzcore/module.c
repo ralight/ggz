@@ -177,15 +177,6 @@ char* ggzcore_module_get_url(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_path(GGZModule *module)
-{	
-	if (!module)
-		return NULL;
-
-	return _ggzcore_module_get_path(module);
-}
-
-
 char* ggzcore_module_get_icon_path(GGZModule *module)
 {	
 	if (!module)
@@ -203,6 +194,14 @@ char* ggzcore_module_get_help_path(GGZModule *module)
 	return _ggzcore_module_get_help_path(module);
 }
 
+
+char** ggzcore_module_get_argv(GGZModule *module)
+{	
+	if (!module)
+		return NULL;
+
+	return _ggzcore_module_get_argv(module);
+}
 
 
 /* Internal library functions (prototypes in module.h) */
@@ -224,7 +223,7 @@ int _ggzcore_module_setup(void)
 	struct _GGZModule *module;
 
 	if (mod_handle != -1) {
-		ggzcore_debug(GGZ_DBG_MODULE, "module_init() called twice");
+		ggzcore_debug(GGZ_DBG_MODULE, "module_setup() called twice");
 		return -1;
 	}
 
@@ -345,12 +344,6 @@ char* _ggzcore_module_get_url(struct _GGZModule *module)
 }
 
 
-char* _ggzcore_module_get_path(struct _GGZModule *module)
-{
-	return module->path;
-}
-
-
 char* _ggzcore_module_get_icon_path(struct _GGZModule *module)
 {
 	return module->icon;
@@ -360,6 +353,12 @@ char* _ggzcore_module_get_icon_path(struct _GGZModule *module)
 char* _ggzcore_module_get_help_path(struct _GGZModule *module)
 {
 	return module->help;
+}
+
+
+char** _ggzcore_module_get_argv(struct _GGZModule *module)
+{
+	return module->argv;
 }
 
 
@@ -416,8 +415,8 @@ static void _ggzcore_module_init(struct _GGZModule *module,
 		module->frontend = strdup(frontend);
 	if (url)
 		module->url = strdup(url);
-	if (exec_path)
-		module->path = strdup(exec_path);
+/*	if (exec_path)
+	module->path = strdup(exec_path);*/
 	if (icon_path)
 		module->icon = strdup(icon_path);
 	if (help_path)
@@ -440,8 +439,8 @@ static void _ggzcore_module_free(struct _GGZModule *module)
 		free(module->frontend);
 	if (module->url)
 		free(module->url);
-	if (module->path)
-		free(module->path);
+	/*if (module->path)
+	  free(module->path);*/
 	if (module->icon)
 		free(module->icon);
 	if (module->help)
@@ -481,6 +480,7 @@ static char* _ggzcore_module_conf_filename(void)
 
 static void _ggzcore_module_read(struct _GGZModule *mod, char *id)
 {
+	int argc;
 	/* FIXME: check for errors on all of these */
 
 	mod->game = ggzcore_confio_read_string(mod_handle, id, "Name", NULL);
@@ -493,8 +493,8 @@ static void _ggzcore_module_read(struct _GGZModule *mod, char *id)
 	mod->frontend = ggzcore_confio_read_string(mod_handle, id, "Frontend",
 						    NULL);
 	mod->url = ggzcore_confio_read_string(mod_handle, id, "Homepage", NULL);
-     	mod->path = ggzcore_confio_read_string(mod_handle, id, "ExecPath", 
-						NULL);
+     	ggzcore_confio_read_list(mod_handle, id, "CommandLine", &argc, 
+				 &mod->argv);
 	mod->icon = ggzcore_confio_read_string(mod_handle, id, "IconPath", 
 						NULL);
 	mod->help = ggzcore_confio_read_string(mod_handle, id, "HelpPath", 
@@ -504,15 +504,21 @@ static void _ggzcore_module_read(struct _GGZModule *mod, char *id)
 
 static void _ggzcore_module_print(struct _GGZModule *module)
 {
+	int i=0;
+	
 	ggzcore_debug(GGZ_DBG_MODULE, "Game: %s", module->game);
 	ggzcore_debug(GGZ_DBG_MODULE, "Version: %s", module->version);
 	ggzcore_debug(GGZ_DBG_MODULE, "Protocol: %s", module->protocol);
 	ggzcore_debug(GGZ_DBG_MODULE, "Author: %s", module->author);
 	ggzcore_debug(GGZ_DBG_MODULE, "Frontend: %s", module->frontend);
 	ggzcore_debug(GGZ_DBG_MODULE, "URL: %s", module->url);
-	ggzcore_debug(GGZ_DBG_MODULE, "Path: %s", module->path);
 	ggzcore_debug(GGZ_DBG_MODULE, "Icon: %s", module->icon);
 	ggzcore_debug(GGZ_DBG_MODULE, "Help: %s", module->help);
+	while (module->argv[i]) {
+		ggzcore_debug(GGZ_DBG_MODULE, "Argv[%d]: %s", i, 
+			      module->argv[i]);
+		++i;
+	}
 }
 
 
@@ -555,8 +561,9 @@ static void* _ggzcore_module_create(void* p)
 	new = _ggzcore_module_new();
 	
 	_ggzcore_module_init(new, src->game, src->version, src->protocol,
-			     src->author, src->frontend, src->url, src->path,
-			     src->icon, src->help);
+			     src->author, src->frontend, src->url, 
+			     src->argv[0], src->icon, src->help);
+			     
 
 	return (void*)new;
 }
