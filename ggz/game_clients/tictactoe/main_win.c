@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 5045 2002-10-26 04:46:14Z jdorje $
+ * $Id: main_win.c 5957 2004-02-21 09:00:10Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -259,6 +259,7 @@ static GtkWidget *create_menus(GtkWidget *window)
 				   sizeof(items) / sizeof(items[0]));
 
 	set_menu_sensitive(TABLE_SYNC, FALSE);
+	set_menu_sensitive(TABLE_CHAT_WINDOW, TRUE);
 
 	return menubar;
 }
@@ -272,6 +273,7 @@ create_main_win (void)
   GtkWidget *menubar;
   GtkWidget *drawingarea;
   GtkWidget *statusbar;
+  GtkWidget *chat;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -309,6 +311,13 @@ create_main_win (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (statusbar);
   gtk_box_pack_start (GTK_BOX (main_box), statusbar, FALSE, FALSE, 0);
+
+  chat = create_chat_widget();
+  gtk_widget_ref(chat);
+  gtk_object_set_data_full(GTK_OBJECT(main_win), "chat", chat,
+			   (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show(chat);
+  gtk_box_pack_start(GTK_BOX(main_box), chat, FALSE, FALSE, 0);
 
   gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
                       GTK_SIGNAL_FUNC (main_exit),
