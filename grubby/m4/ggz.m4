@@ -706,7 +706,7 @@ if test "$intl" = 0; then
     AC_MSG_WARN([Internationalization tools missing. (ignored)])
   else
     AC_MSG_RESULT([Internationalization tools missing.])
-    if text "x$2" = "x"; then
+    if test "x$2" = "x"; then
       AC_MSG_ERROR([Internationalization tools missing.])
     fi
 
