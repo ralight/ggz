@@ -91,6 +91,9 @@ AC_CONFIG_FILES([Makefile
 	fyrdman/module.dsc
 	fyrdman/data/Makefile
 	fyrdman/data/fyrdman.desktop
+	kcc/Makefile
+	kcc/kcc.desktop
+	kcc/module.dsc
 	lib/Makefile])
 AC_OUTPUT
 
