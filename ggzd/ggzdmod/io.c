@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: io.c 4476 2002-09-09 00:55:17Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -173,10 +173,10 @@ int _io_send_log(int fd, char *msg)
 
 
 /* Functions for sending repsonses */
-int _io_respond_join(int fd)
+int _io_respond_join(int fd, int status)
 {
 	if (ggz_write_int(fd, RSP_GAME_JOIN) < 0
-	    || ggz_write_char(fd, 0) < 0)
+	    || ggz_write_char(fd, status) < 0)
 		return -1;
 	else
 		return 0;
@@ -192,10 +192,10 @@ int _io_respond_leave(int fd, int status)
 		return 0;
 }
 
-int _io_respond_spectator_join(int fd)
+int _io_respond_spectator_join(int fd, int status)
 {
 	if (ggz_write_int(fd, RSP_GAME_SPECTATOR_JOIN) < 0
-	    || ggz_write_char(fd, 0) < 0)
+	    || ggz_write_char(fd, status) < 0)
 		return -1;
 	else
 		return 0;

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4453 2002-09-08 01:28:15Z jdorje $
+ * $Id: ggzdmod.c 4476 2002-09-09 00:55:17Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -324,7 +324,10 @@ int ggzdmod_get_max_num_spectators(GGZdMod * ggzdmod)
 
 GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int num)
 {
-	GGZSeat seat = {num, GGZ_SEAT_NONE, NULL, -1};
+	GGZSeat seat = {num: num,
+			type: GGZ_SEAT_NONE,
+			name: NULL,
+			fd: -1};
 	GGZListEntry *entry;
 
 	if (CHECK_GGZDMOD(ggzdmod) && num >= 0 && num < ggzdmod->num_seats) {
@@ -338,7 +341,7 @@ GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int num)
 
 GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int num)
 {
-	GGZSpectator spectator = {num, NULL, -1};
+	GGZSpectator spectator = {num: num, name: NULL, fd: -1};
 	GGZListEntry *entry;
 
 	if (CHECK_GGZDMOD(ggzdmod)
@@ -422,17 +425,6 @@ void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats)
 	_ggzdmod_set_num_seats(ggzdmod, num_seats);
 }
 
-void ggzdmod_set_max_num_spectators(GGZdMod * ggzdmod, int num_spectators)
-{
-	/* Check parameters */
-	if (!CHECK_GGZDMOD(ggzdmod) || num_spectators < 0
-	    || ggzdmod->type != GGZDMOD_GGZ) {
-		return;		/* not very useful */
-	}
-	
-	_ggzdmod_set_max_num_spectators(ggzdmod, num_spectators);
-}
-		   
 void ggzdmod_set_module(GGZdMod * ggzdmod,
                         const char *pwd, char **argv)
 {
@@ -600,9 +592,10 @@ static int _ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 	/* If we're connected to the game, send a message */
 	if (ggzdmod->type == GGZDMOD_GGZ
 	    && ggzdmod->state != GGZDMOD_STATE_CREATED) {
+		
 		GGZSpectator oldspectator =
 			ggzdmod_get_spectator(ggzdmod, spectator->num);
-		
+
 		/* Detect join case */
 		if (!oldspectator.name) {
 			if (_io_send_spectator_join(ggzdmod->fd,
@@ -627,8 +620,17 @@ static int _ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 		}
 	}
 
-	ggz_list_insert(ggzdmod->spectators, spectator);
-	
+	if (spectator->name) {
+		if (spectator->num >= ggzdmod->max_num_spectators)
+			ggzdmod->max_num_spectators = spectator->num + 1;
+		ggz_list_insert(ggzdmod->spectators, spectator);
+	} else {
+		/* Non-occupied seats are just empty entries in the list. */
+		GGZListEntry *entry = ggz_list_search(ggzdmod->spectators,
+						      spectator);
+		ggz_list_delete_entry(ggzdmod->spectators, entry);
+	}
+
 	return 0;
 }
 
@@ -637,9 +639,8 @@ int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 {
 	GGZSpectator oldspectator;
 
-	if (!CHECK_GGZDMOD(ggzdmod) || !spectator || spectator->num < 0
-	    || spectator->num >= ggzdmod->max_num_spectators) {
-		return -2;		
+	if (!CHECK_GGZDMOD(ggzdmod) || !spectator) {
+		return -1;		
 	}
 
 	/* The game currently has no need to change the spectator data. */
@@ -647,20 +648,19 @@ int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 		return -2;
 
 	/* The spectator number must be valid. */
-	if (spectator->num < 0
-	    || spectator->num >= ggzdmod->max_num_spectators)
-		return -1;
+	if (spectator->num < 0)
+		return -3;
 
 	/* The name must be null iff the FD is invalid. */
 	if ( (spectator->name && spectator->fd < 0)
 	     || (!spectator->name && spectator->fd >= 0))
-		return -1;
+		return -4;
 
 	/* The new spectator must be valid iff the old one isn't. */
 	oldspectator = ggzdmod_get_spectator(ggzdmod, spectator->num);
 	if ( (oldspectator.name && spectator->name)
 	     || (!oldspectator.name && !spectator->name))
-		return -1;
+		return -5;
 
 	return _ggzdmod_set_spectator(ggzdmod, spectator);
 }
@@ -1320,6 +1320,7 @@ void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat)
 {
 	GGZSeat *old_seat;
 	GGZListEntry *entry;
+	int status = 0;
 
 	/* Copy current seat to old_seat */
 	entry = ggz_list_search(ggzdmod->seats, &seat);
@@ -1327,26 +1328,29 @@ void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat)
 		_ggzdmod_error(ggzdmod,
 		               "GGZDMOD: Error: "
 		               "non-existant player tried to join.");
-		return;
+		status = -1;
 	}
-	old_seat = (GGZSeat*)ggz_list_get_data(entry);
-	old_seat = seat_copy(old_seat);
 
-	/* Place the new seat into the list */
-	ggz_list_insert(ggzdmod->seats, &seat);
-	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in seat %d",
-		seat.name, seat.fd, seat.num);
+	if (status >= 0) {
+		old_seat = (GGZSeat*)ggz_list_get_data(entry);
+		old_seat = seat_copy(old_seat);
+
+		/* Place the new seat into the list */
+		ggz_list_insert(ggzdmod->seats, &seat);
+		ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in seat %d",
+			    seat.name, seat.fd, seat.num);
 	
-	/* Invoke the handler.  Most games will want to change their
-	   status to PLAYING at this point, but we leave that entirely
-	   up to them (via ggzdmod_set_state()). */
-	call_handler(ggzdmod, GGZDMOD_EVENT_JOIN, old_seat);
+		/* Invoke the handler.  Most games will want to change their
+		   status to PLAYING at this point, but we leave that entirely
+		   up to them (via ggzdmod_set_state()). */
+		call_handler(ggzdmod, GGZDMOD_EVENT_JOIN, old_seat);
 
-	/* Free old_seat */
-	seat_free(old_seat);
+		/* Free old_seat */
+		seat_free(old_seat);
+	}
 
 	/* Send response to GGZ */
-	if (_io_respond_join(ggzdmod->fd) < 0)
+	if (_io_respond_join(ggzdmod->fd, status) < 0)
 		_ggzdmod_error(ggzdmod, "GGZDMOD: Error sending data to GGZ");
 }
 
@@ -1434,33 +1438,36 @@ void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat seat)
 /* game-side event: spectator join event received from ggzd.  */
 void _ggzdmod_handle_spectator_join(GGZdMod * ggzdmod, GGZSpectator spectator)
 {
-	GGZSpectator *old_spectator;
-	GGZListEntry *entry;
+	int status = 0;
 
-	/* Copy current spectator to old_spectator */
-	entry = ggz_list_search(ggzdmod->spectators, &spectator);
-	if (!entry) {
+	/* Make sure there's nobody there currently. */
+	if (ggz_list_search(ggzdmod->spectators, &spectator)) {
 		_ggzdmod_error(ggzdmod,
 		               "GGZDMOD: Error: "
-		               "non-existant spectator tried to join.");
-		return;
+		               "spectator tried to join in occupied seat.");
+		status = -1;
 	}
-	old_spectator = (GGZSpectator*)ggz_list_get_data(entry);
-	old_spectator = spectator_copy(old_spectator);
 
-	/* Place the new spectator into the list */
-	ggz_list_insert(ggzdmod->spectators, &spectator);
-	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in spectator %d",
-		spectator.name, spectator.fd, spectator.num);
-	
-	/* Invoke the handler.  */
-	call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, old_spectator);
+	if (status >= 0) {
+		GGZSpectator old_spectator = {num: spectator.num,
+					      name: NULL, fd: -1};
 
-	/* Free old_spectator */
-	spectator_free(old_spectator);
+		/* Increase max_num_spectators, if necessary. */
+		if (spectator.num >= ggzdmod->max_num_spectators)
+			ggzdmod->max_num_spectators = spectator.num + 1;
+
+		/* Place the new spectator into the list */
+		ggz_list_insert(ggzdmod->spectators, &spectator);
+		ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in spectator %d",
+			    spectator.name, spectator.fd, spectator.num);
+
+		/* Invoke the handler.  */
+		call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN,
+			     &old_spectator);
+	}
 
 	/* Send response to GGZ */
-	if (_io_respond_spectator_join(ggzdmod->fd) < 0)
+	if (_io_respond_spectator_join(ggzdmod->fd, status) < 0)
 		_ggzdmod_error(ggzdmod, "GGZDMOD: Error sending data to GGZ");
 }
 

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 4453 2002-09-08 01:28:15Z jdorje $
+ * $Id: ggzdmod.h 4476 2002-09-09 00:55:17Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -250,14 +250,16 @@ typedef enum {
 	 *  @note This may be dropped in favor of the SEAT event */
 	GGZDMOD_EVENT_LEAVE,
 
-	/** @brief A spectator joins the game
-	 *  The spectator information is passed as a (GGZSpectator*) with the event
-	 *  data. */
+	/** @brief A spectator joins the game.
+	 *  The data of the old spectator (GGZSpectator*) is passed as the
+	 *  data for the event.  It can be assumed that the spectator seat
+	 *  was previously empty, so the name and socket given will be
+	 *  invalid (NULL/-1). */
 	GGZDMOD_EVENT_SPECTATOR_JOIN,
 
 	/** @brief A spectator left the game
-	 *  The old spectator data can be obtained via the (GGZSpectator) which is
-	 *  passed as the event data. */
+	 *  The old spectator data can be obtained via the (GGZSpectator*)
+	 *  which is passed as the event data. */
 	GGZDMOD_EVENT_SPECTATOR_LEAVE,
 
 	/** @brief General seat change
@@ -324,7 +326,7 @@ typedef struct GGZdMod GGZdMod;
  *    - GGZDMOD_EVENT_JOIN: The old seat (GGZSeat*)
  *    - GGZDMOD_EVENT_LEAVE: The old seat (GGZSeat*)
  *    - GGZDMOD_EVENT_SEAT: The old seat (GGZSeat*)
- *    - GGZDMOD_EVENT_SPECTATOR_JOIN: The spectator as in (GGZSpectator*)
+ *    - GGZDMOD_EVENT_SPECTATOR_JOIN: The old spectator's data (GGZSpectator*)
  *    - GGZDMOD_EVENT_SPECTATOR_LEAVE: The old spectator's data (GGZSpectator*)
  *    - GGZDMOD_EVENT_LOG: The message string (char*)
  *    - GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
@@ -338,7 +340,7 @@ typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent e, void *data);
  *  Each seat at the table is tracked like this.
  */
 typedef struct {
-	int num;		/**< Seat index; 0..(num_seats-1). */
+	unsigned int num;	/**< Seat index; 0..(num_seats-1). */
 	GGZSeatType type;	/**< Type of seat. */
 	char *name;		/**< Name of player occupying seat. */
 	int fd;			/**< fd to communicate with seat occupant. */
@@ -349,7 +351,7 @@ typedef struct {
  *  Spectators are handles differently from other player types.
  */
 typedef struct {
-	int num;		/**< Spectator seat index */
+	unsigned int num;	/**< Spectator seat index */
 	char *name;		/**< The spectator's name */
 	int fd;			/**< File descriptor for communication */
 } GGZSpectator;
@@ -427,13 +429,6 @@ void * ggzdmod_get_gamedata(GGZdMod * ggzdmod);
  *  @note This will only work for ggzd.
  *  @todo Allow the table to change the number of seats. */
 void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
-
-/** @brief Set the maximum number of spectators for the table.
- *  @param ggzdmod The GGZdMod object.
- *  @param num_spectators The number of spectators to set.
- *  @note This will only work for ggzd.
- *  @todo We should be able to drop this and just add them dynamically. n*/
-void ggzdmod_set_max_num_spectators(GGZdMod * ggzdmod, int num_spectators);
 
 /** @brief Set gamedata pointer
  *  @param ggzdmod The GGZdMod object.

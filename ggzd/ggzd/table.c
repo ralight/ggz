@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4467 2002-09-08 19:41:59Z jdorje $
+ * $Id: table.c 4476 2002-09-09 00:55:17Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -380,7 +380,7 @@ static int table_start_game(GGZTable *table)
 #endif
 	char **args;
 	char *pwd;
-	int type, i, num_seats, num_spectators, status = 0;
+	int type, i, num_seats, status = 0;
 	GGZSeat seat;
 
 	pthread_rwlock_wrlock(&table->lock);
@@ -426,10 +426,6 @@ static int table_start_game(GGZTable *table)
 		if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
 			status = 1;
         }
-
-	/* Setup spectators */
-	num_spectators = spectator_seats_num(table);
-	ggzdmod_set_max_num_spectators(table->ggzdmod, num_spectators);
 
 	/* And start the game */
 	ggzdmod_set_module(table->ggzdmod, pwd, args);
