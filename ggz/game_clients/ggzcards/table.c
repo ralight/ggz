@@ -49,8 +49,6 @@
 #include "cards-b3.xpm"
 #include "cards-b4.xpm"
 
-#define UNKNOWN_CARD (struct card_t){-1, -1, -1}
-
 static GdkPixmap *table_buf = NULL;
 static GdkPixmap *card_fronts[4];
 static GdkPixmap *card_backs[4];
