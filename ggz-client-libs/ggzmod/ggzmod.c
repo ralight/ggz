@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 5861 2004-02-09 02:04:04Z jdorje $
+ * $Id: ggzmod.c 5862 2004-02-09 04:58:25Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -39,8 +39,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/select.h>
-#include <sys/socket.h>
+#ifdef HAVE_SYS_SELECT_H
+# include <sys/select.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif
+#ifdef HAVE_WINSOCK_H
+# include <winsock.h>
+#endif
 #include <sys/time.h>
 #include <sys/types.h>
 #ifdef HAVE_SYS_WAIT_H
