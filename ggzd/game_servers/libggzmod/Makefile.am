@@ -1,4 +1,5 @@
 ## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 2226 2001-08-25 13:56:44Z jdorje $
 
 SUBDIRS = .
 
@@ -16,6 +17,6 @@ libggzdmod_a_SOURCES = ggz.c ggz_server.h ggz_protocols.h
 # This compiles for installation as a shared lib for external servers
 lib_LTLIBRARIES = libggzdmod.la
 libggzdmod_la_SOURCES = ggz.c ggz_server.h ggz_protocols.h
-include_HEADERS = ggz_server.h ggz_protocols.h
+include_HEADERS = ggz_server.h
 
 test: # nothing to be done
