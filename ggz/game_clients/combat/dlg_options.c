@@ -454,6 +454,8 @@ create_dlg_options (void)
 									   GTK_SIGNAL_FUNC (mini_board_click), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (load), "clicked",
 									   GTK_SIGNAL_FUNC (load_button_clicked), dlg_options);
+	gtk_signal_connect(GTK_OBJECT (delete), "clicked",
+									   GTK_SIGNAL_FUNC (delete_button_clicked), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (maps_list), "select-row",
 									   GTK_SIGNAL_FUNC (maps_list_selected), dlg_options);
 	gtk_signal_connect_object(GTK_OBJECT (width), "changed",
@@ -486,6 +488,39 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   /* TODO: Show preview */
 
 }
+
+void delete_button_clicked(GtkButton *button, gpointer dialog) {
+  gint selection;
+  GtkWidget *maps_list;
+  GtkWidget *dlg = gtk_dialog_new();
+  GtkWidget *yes, *no, *label;
+  char **namelist;
+  gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
+  maps_list = lookup_widget(dialog, "maps_list");
+  selection = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(maps_list), "row"));
+  namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
+  label = gtk_label_new("Delete the map?");
+  yes = gtk_button_new_with_label("Yes");
+  no = gtk_button_new_with_label("No");
+  gtk_signal_connect_object(GTK_OBJECT(no), "clicked",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dlg));
+  gtk_signal_connect_object_after(GTK_OBJECT(yes), "clicked",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dlg));
+  gtk_signal_connect(GTK_OBJECT(yes), "clicked",
+                     GTK_SIGNAL_FUNC (delete_map), maps_list); 
+  gtk_object_set_data(GTK_OBJECT(yes), "filename", namelist[selection]);
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area), yes);
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area), no);
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox), label);
+  gtk_widget_show_all(dlg);
+}
+
+void delete_map(GtkButton *button, gpointer user_data) {
+  char *filename = gtk_object_get_data(GTK_OBJECT(button), "filename");
+  unlink(filename);
+  dlg_options_list_maps(GTK_WIDGET(user_data));
+}
+
 
 void load_button_clicked(GtkButton *button, gpointer dialog) {
   GtkWidget *maps_list = lookup_widget(dialog, "maps_list");

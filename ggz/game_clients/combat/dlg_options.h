@@ -7,6 +7,10 @@ void dlg_options_list_maps(GtkWidget *);
 
 void load_button_clicked(GtkButton *, gpointer dialog);
 
+void delete_button_clicked(GtkButton *button, gpointer dialog);
+
+void delete_map(GtkButton *button, gpointer dialog);
+
 void load_map(char *filename, GtkWidget *dialog);
 
 combat_game *quick_load_map_on_struct(char *filename);
