@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 4976 2002-10-22 01:16:14Z jdorje $
+ * $Id: input.c 5187 2002-11-03 22:09:43Z jdorje $
  *
  * Functions for inputing commands from the user
  *
@@ -350,9 +350,9 @@ static void input_handle_wall(char* line)
 
 static void input_handle_launch(char *line)
 {
-	char *name;
-	char *engine;
-	char *version;
+	const char * name;
+	const char * engine;
+	const char * version;
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module;
@@ -388,9 +388,9 @@ static void input_handle_launch(char *line)
 
 static void input_handle_join_table(char *line)
 {
-	char *name;
-	char *engine;
-	char *version;
+	const char * name;
+	const char * engine;
+	const char * version;
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module;
