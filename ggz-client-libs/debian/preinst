@@ -2,7 +2,7 @@
 
 set -e
 
-mv -f /etc/ggz.modules /etc/ggz.modules.installsave || true
+mv -f /etc/ggz.modules /etc/ggz.modules.installsave 2>/dev/null || true
 
 #DEBHELPER#
 
