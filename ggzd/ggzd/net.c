@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4140 2002-05-03 03:49:09Z bmh $
+ * $Id: net.c 4141 2002-05-03 03:50:35Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -63,9 +63,6 @@ struct _GGZNetIO {
 
 	/* Flag to indicate we're in a parse call */
 	char parsing;
-
-	/* Flag to indicate that the session is done */
-	char done;
 
 	/* XML Parser */
 	XML_Parser parser;
@@ -177,7 +174,6 @@ GGZNetIO* net_new(int fd, GGZClient *client)
 	net->client = client;
 	net->dump_file = -1;
 	net->parsing = 0;
-	net->done = 0;
 	net->byte_count = 0;
 	net->tag_seen = 0;
 
