@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4743 2002-09-26 21:11:22Z jdorje $
+ * $Id: control.c 4796 2002-10-07 21:29:28Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -70,6 +70,9 @@ static sig_atomic_t term_signal;
    over the network. */
 static RETSIGTYPE hup_handle(int signum)
 {
+	/* Don't repeat the HUP message. */
+	if (hup_signal) return;
+
 	hup_signal = 1;
 	log_msg(GGZ_LOG_NOTICE, "Server received HUP");
 	chat_server_2_player(NULL,
