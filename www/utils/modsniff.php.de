@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>ModSniffer</b><br>
-Erzeugung von KDE-Menüeinträgen für alle Spiele.
+Erzeugung von KDE-MenÃ¼eintrÃ¤gen fÃ¼r alle Spiele.
 <br>
 
 <table class="inner">
@@ -15,20 +15,20 @@ Erzeugung von KDE-Menüeinträgen für alle Spiele.
 
 <i>Hauptmerkmale</i><br>
 <ul>
-<li>Erstellt KDE-Systemmenü-Einträge unter Spiele/GGZ
-<li>Erstellt Startinformationen für GGZap
+<li>Erstellt KDE-SystemmenÃ¼-EintrÃ¤ge unter Spiele/GGZ
+<li>Erstellt Startinformationen fÃ¼r GGZap
 </ul>
 <br>
 
 <i>Detaillierte Informationen</i><br>
 Dieses kleine Tool sollte einmalig nach der Installation aufgerufen werden,
-und anschließend jeweils nach dem Hinzufügen oder aktualiseren von Spielen.
-Die Unterstützung von externen Spielen durch ModSniffer ist auch vorgesehen.
+und anschlieÃŸend jeweils nach dem HinzufÃ¼gen oder aktualiseren von Spielen.
+Die UnterstÃ¼tzung von externen Spielen durch ModSniffer ist auch vorgesehen.
 
 </td><td valign="top">
 
 <i>Screenshot:</i><br>
-<img src="pics/modsniff.png">
+<img src="/utils/pics/modsniff.png">
 
 </td>
 </tr>

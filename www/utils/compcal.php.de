@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>Competition Calendar</b><br>
-Ereignis-Kalender-Anwendung für KDE
+Ereignis-Kalender-Anwendung fÃ¼r KDE
 <br>
 
 <table class="inner">
@@ -15,22 +15,22 @@ Ereignis-Kalender-Anwendung für KDE
 
 <i>Hauptmerkmale</i><br>
 <ul>
-<li>Zeigt Informationen zu zukünftigen und vergangenen GGZ-Veranstaltungen an
+<li>Zeigt Informationen zu zukÃ¼nftigen und vergangenen GGZ-Veranstaltungen an
 <li>Verschiedene Kategorien und Eventgruppen
 </ul>
 <br>
 
 <i>Detaillierte Informationen</i><br>
-Wettkämpfe und Spielertreffs werden nicht nur durch compcal angekündigt,
-sondern auch für später archiviert.
+WettkÃ¤mpfe und Spielertreffs werden nicht nur durch compcal angekÃ¼ndigt,
+sondern auch fÃ¼r spÃ¤ter archiviert.
 Normalerweise ist auch ein direkter Link zu dem organisierenden GGZ-Server
 enthalten, wie auch eine Liste der Regeln.
-Zukünftig soll auch eine Echtzeitverfolgung von laufenden Spielen möglich sein.
+ZukÃ¼nftig soll auch eine Echtzeitverfolgung von laufenden Spielen mÃ¶glich sein.
 
 </td><td valign="top">
 
 <i>Screenshot:</i><br>
-<img src="pics/compcal.png">
+<img src="/utils/pics/compcal.png">
 
 </td>
 </tr>

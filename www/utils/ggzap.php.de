@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>GGZap</b><br>
-KDE-Schnellstarter für GGZ-Spiele
+KDE-Schnellstarter fÃ¼r GGZ-Spiele
 <br>
 
 <table class="inner">
@@ -24,13 +24,13 @@ KDE-Schnellstarter für GGZ-Spiele
 Anstelle eines GGZ Core-Clients, den man zum Chatten und Spielen startet,
 kann man auch GGZap im Hintergrund laufen lassen und dann ein Spiel
 zum sofortigen Start (falls ein freier Platz an einem Spieltisch gefunden wird)
-oder zum späteren Start auswählen. Im zweiten Fall wird ein Spiel gestartet und
+oder zum spÃ¤teren Start auswÃ¤hlen. Im zweiten Fall wird ein Spiel gestartet und
 auf hinzukommende Spieler gewartet.
 
 </td><td valign="top">
 
 <i>Screenshot:</i><br>
-<img src="pics/ggzap.png">
+<img src="/utils/pics/ggzap.png">
 
 </td>
 </tr>

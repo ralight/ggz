@@ -1,0 +1,38 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Utilities Pages</b><br>
+The following tools and utilities have been created by the GGZ Gaming Zone developers:
+<br><br>
+
+<table class="inner">
+<tr><td>
+
+<i>Quickstart client:</i><br>
+<a href="/utils/ggzap/">GGZap</a>
+<br>
+<i>MOTD Editor:</i><br>
+<a href="/utils/motdeditor/">MOTD Editor</a>
+<br>
+<i>Tournament tracking:</i><br>
+<a href="/utils/compcal/">Competition Calendar</a>
+<br>
+<i>Desktop menu updates:</i><br>
+<a href="/utils/modsniff/">ModSniffer</a>
+<br>
+
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

@@ -23,14 +23,14 @@ GNOME-Anwendung zur Erstellung von MOTDs (Nachrichten des Tages).
 
 <i>Detaillierte Informationen</i><br>
 MOTDs werden bei jedem Login in GGZ angezeigt.
-Sie enthalten normalerweise Informationen über den Server,
+Sie enthalten normalerweise Informationen Ã¼ber den Server,
 eine Kontaktadresse des Administrators und andere spezifische
 Eigenschaften.
 
 </td><td valign="top">
 
 <i>Screenshot:</i><br>
-<img src="pics/motd-editor.png">
+<img src="/utils/pics/motd-editor.png">
 
 </td>
 </tr>
