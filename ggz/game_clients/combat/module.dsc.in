@@ -5,4 +5,4 @@ Protocol = 1.0
 Version = 1.0
 CommandLine = @ggzexecmoddir@/ggz.combat
 Frontend = gtk
-Homepage = http://ggz.sourceforge.net/gamehelp/combat.shtml
+Homepage = http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=5
