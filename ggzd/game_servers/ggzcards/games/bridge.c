@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <easysock.h>
+#include <string.h>
 
 #include "../games.h"
 #include "../game.h"
@@ -287,7 +287,7 @@ static void bridge_set_player_message(player_t p)
 	char* message = game.seats[s].message;
 	int len = 0;
 
-	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
+	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d|%d\n", BRIDGE.points_above_line[p%2], BRIDGE.points_below_line[p%2]);
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 		if (p == BRIDGE.declarer)
 			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
@@ -295,7 +295,7 @@ static void bridge_set_player_message(player_t p)
 			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dummy\n");
 	}
 	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks);
+			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks+game.players[(p+2)%4].tricks);
 	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
 			char bid_text[game.max_bid_length];
 			game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
@@ -321,39 +321,50 @@ static void bridge_end_hand()
 	int points_above, points_below, tricks;
 	int winning_team, team;
 	int tricks_above, tricks_below;
-	tricks = game.players[BRIDGE.declarer].tricks + game.players[BRIDGE.dummy].tricks;
+	char buf[512];
+
+	/* calculate tricks over book */
+	tricks = game.players[BRIDGE.declarer].tricks + game.players[BRIDGE.dummy].tricks - 6;
+
+	ggz_debug("Contract was %d.  Declarer made %d.", BRIDGE.contract, tricks);
+
 	if (tricks >= BRIDGE.contract) {
 		winning_team = BRIDGE.declarer % 2;
 		tricks_below = BRIDGE.contract;
 		tricks_above = tricks - BRIDGE.contract;
+		switch (BRIDGE.contract_suit) {
+			case CLUBS:
+			case DIAMONDS:
+				points_below = 20 * tricks_below;
+				points_above = 20 * tricks_above;
+				break;
+			case HEARTS:
+			case SPADES:
+				points_below = 30 * tricks_below;
+				points_above = 30 * tricks_above;
+				break;
+			case BRIDGE_NOTRUMP:
+			default:
+				points_below = 30 * tricks_below + (tricks_below > 0) ? 10 : 0;
+				points_above = 30 * tricks_above;
+				break;
+		}		
 	} else {
 		winning_team = (BRIDGE.declarer + 1) % 2;
-		tricks_below = 0;
+		tricks_below = points_below = 0;
 		tricks_above = BRIDGE.contract - tricks;
-	}
-
-	switch (BRIDGE.contract_suit) {
-		case CLUBS:
-		case DIAMONDS:
-			points_below = 20 * tricks_below;
-			points_above = 20 * tricks_above;
-			break;
-		case HEARTS:
-		case SPADES:
-			points_below = 30 * tricks_below;
-			points_above = 30 * tricks_above;
-			break;
-		case BRIDGE_NOTRUMP:
-		default:
-			points_below = 30 * tricks_below + (tricks_below > 0) ? 10 : 0;
-			points_above = 30 * tricks_above;
-			break;
+		points_above = 50 * tricks_above;
 	}
 
 	points_below *= BRIDGE.bonus;
 	points_above *= BRIDGE.bonus;
 	BRIDGE.points_above_line[winning_team] += points_above;
 	BRIDGE.points_below_line[winning_team] += points_below;
+
+	if (tricks >= BRIDGE.contract)
+		snprintf(buf, sizeof(buf), "%s made the bid and earned %d|%d points.", ggz_seats[BRIDGE.declarer].name, points_above, points_below);
+	else
+		snprintf(buf, sizeof(buf), "%s went set, giving up %d points.", ggz_seats[BRIDGE.declarer].name, points_above);
 
 	if (BRIDGE.points_below_line[winning_team] >= 100) {
 		/* 500 point bonus for winning a game */
@@ -362,8 +373,11 @@ static void bridge_end_hand()
 			BRIDGE.points_above_line[team] += BRIDGE.points_below_line[team];
 			BRIDGE.points_below_line[team] = 0;
 		}
+		snprintf(buf+strlen(buf), sizeof(buf)-strlen(buf), "  They won a game.");
 	}
 	/* TODO: vulnerable, etc. */
+
+	set_global_message("", "%s", buf);
 
 	BRIDGE.declarer = BRIDGE.dummy = -1;
 	BRIDGE.dummy_revealed = 0;
