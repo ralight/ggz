@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-05-09 21:31+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-15 02:17+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../compcal/src/toplevel.cpp:41
+#: ../../compcal/src/conf.cpp:48
+msgid "Add resource"
+msgstr ""
+
+#: ../../compcal/src/toplevel.cpp:41 ../../compcal/src/toplevel.cpp:43
 msgid "Chronological"
 msgstr ""
 
@@ -23,8 +28,16 @@ msgstr ""
 msgid "Competition Calendar"
 msgstr ""
 
-#: ../../compcal/src/app.cpp:92
+#: ../../compcal/src/toplevel.cpp:37
+msgid "Configure"
+msgstr ""
+
+#: ../../compcal/src/app.cpp:92 ../../compcal/src/app.cpp:100
 msgid "Could not fetch event list."
+msgstr ""
+
+#: ../../compcal/src/app.cpp:96
+msgid "Could not parse list."
 msgstr ""
 
 #: ../../compcal/src/app.cpp:53
@@ -39,7 +52,7 @@ msgstr ""
 msgid "Event"
 msgstr ""
 
-#: ../../compcal/src/app.cpp:92
+#: ../../compcal/src/app.cpp:92 ../../compcal/src/app.cpp:100
 msgid "Fetch error"
 msgstr ""
 
@@ -47,7 +60,7 @@ msgstr ""
 msgid "GGZ Event"
 msgstr ""
 
-#: ../../compcal/src/toplevel.cpp:45
+#: ../../compcal/src/toplevel.cpp:45 ../../compcal/src/toplevel.cpp:47
 msgid "Help"
 msgstr ""
 
@@ -59,23 +72,31 @@ msgstr ""
 msgid "Online game scheduling system"
 msgstr ""
 
+#: ../../compcal/src/app.cpp:96
+msgid "Parse error"
+msgstr ""
+
 #: ../../compcal/src/display.cpp:51
 msgid "Participants"
 msgstr ""
 
-#: ../../compcal/src/toplevel.cpp:43
+#: ../../compcal/src/toplevel.cpp:43 ../../compcal/src/toplevel.cpp:45
 msgid "Program"
 msgstr ""
 
-#: ../../compcal/src/toplevel.cpp:37
+#: ../../compcal/src/toplevel.cpp:37 ../../compcal/src/toplevel.cpp:39
 msgid "Quit"
+msgstr ""
+
+#: ../../compcal/src/conf.cpp:49
+msgid "Remove resource"
 msgstr ""
 
 #: ../../compcal/src/display.cpp:48
 msgid "Score"
 msgstr ""
 
-#: ../../compcal/src/toplevel.cpp:40
+#: ../../compcal/src/toplevel.cpp:40 ../../compcal/src/toplevel.cpp:42
 msgid "Sorted"
 msgstr ""
 
@@ -83,10 +104,10 @@ msgstr ""
 msgid "Teams/Players"
 msgstr ""
 
-#: ../../compcal/src/toplevel.cpp:36
+#: ../../compcal/src/toplevel.cpp:36 ../../compcal/src/toplevel.cpp:38
 msgid "Update events"
 msgstr ""
 
-#: ../../compcal/src/toplevel.cpp:44
+#: ../../compcal/src/toplevel.cpp:44 ../../compcal/src/toplevel.cpp:46
 msgid "View"
 msgstr ""

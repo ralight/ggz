@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-02-23 00:00+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-15 02:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,6 +35,7 @@ msgid ""
 msgstr ""
 
 #: ../../kcm_ggz/kcm_ggz.cpp:101 ../../kcm_ggz/kcm_ggz.cpp:112
+#: ../../kcm_ggz/kcm_ggz.cpp:115
 msgid ""
 "<h1>GGZ Gaming Zone</h1>  is a common way for playing internet games. "
 "Although it is possible to set all options from within the applications "
@@ -60,10 +62,12 @@ msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:29
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:31
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:32
 msgid "Author(s)"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:109
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:121
 msgid "Author: "
 msgstr ""
 
@@ -85,6 +89,7 @@ msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:84
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:129
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:143
 msgid "Available games"
 msgstr ""
 
@@ -94,6 +99,7 @@ msgid "Available meta servers"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:114
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:128
 msgid "Commandline: "
 msgstr ""
 
@@ -108,6 +114,10 @@ msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:147
 msgid "Connection refused"
+msgstr ""
+
+#: ../../kcm_ggz/kcm_ggz.cpp:132
+msgid "Copyright (C) 2002, 2003 Josef Spillner"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:28
@@ -125,19 +135,39 @@ msgid "Description"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:115
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:129
 msgid "Detailed information"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:113
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:127
 msgid "Engine: "
 msgstr ""
 
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:117
+msgid "Entire screen (%1)"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:123
+msgid "Environment: "
+msgstr ""
+
 #: ../../kcm_ggz/kcm_ggz.cpp:65 ../../kcm_ggz/kcm_ggz.cpp:72
+#: ../../kcm_ggz/kcm_ggz.cpp:73
 msgid "Error!"
 msgstr ""
 
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:115
+msgid "Frame buffer (%1)"
+msgstr ""
+
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:108
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:122
 msgid "Frontend: "
+msgstr ""
+
+#: ../../kcm_ggz/kcm_ggz.cpp:128
+msgid "GGZ Gaming Zone Configuration"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:25
@@ -150,15 +180,18 @@ msgid "General"
 msgstr ""
 
 #: ../../kcm_ggz/kcm_ggz.cpp:53 ../../kcm_ggz/kcm_ggz.cpp:59
+#: ../../kcm_ggz/kcm_ggz.cpp:60
 msgid "Got a NULL object."
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:28
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:30
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:31
 msgid "Homepage"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:112
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:126
 msgid "Homepage: "
 msgstr ""
 
@@ -187,11 +220,21 @@ msgstr ""
 msgid "Location:"
 msgstr ""
 
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:28
+msgid "Name"
+msgstr ""
+
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:107
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:120
 msgid "Name: "
 msgstr ""
 
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:113
+msgid "Non-interactive (%1)"
+msgstr ""
+
 #: ../../kcm_ggz/kcm_ggz.cpp:67 ../../kcm_ggz/kcm_ggz.cpp:74
+#: ../../kcm_ggz/kcm_ggz.cpp:75
 msgid "Online Games Configuration"
 msgstr ""
 
@@ -215,10 +258,12 @@ msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:27
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:29
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:30
 msgid "Protocol"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:111
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:125
 msgid "Protocol version: "
 msgstr ""
 
@@ -240,6 +285,7 @@ msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:135
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:185
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:205
 msgid "Show all information"
 msgstr ""
 
@@ -264,6 +310,10 @@ msgstr ""
 msgid "System"
 msgstr ""
 
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:114
+msgid "Text console only (%1)"
+msgstr ""
+
 #: ../../kcm_ggz/modules/kcm_ggz_default.cpp:32
 #: ../../kcm_ggz/modules/kcm_ggz_default.cpp:51
 msgid ""
@@ -273,12 +323,14 @@ msgid ""
 msgstr ""
 
 #: ../../kcm_ggz/kcm_ggz.cpp:65 ../../kcm_ggz/kcm_ggz.cpp:72
+#: ../../kcm_ggz/kcm_ggz.cpp:73
 msgid ""
 "The KCM_GGZ modules couldn't be loaded!\n"
 "(%1)"
 msgstr ""
 
 #: ../../kcm_ggz/kcm_ggz.cpp:55 ../../kcm_ggz/kcm_ggz.cpp:61
+#: ../../kcm_ggz/kcm_ggz.cpp:62
 msgid "This is no KCM_GGZ module."
 msgstr ""
 
@@ -313,6 +365,7 @@ msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:34
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:36
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:35
 msgid "Update local game information"
 msgstr ""
 
@@ -323,20 +376,27 @@ msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:26
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:28
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:29
 msgid "Version"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:110
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:124
 msgid "Version: "
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:134
 #: ../../kcm_ggz/modules/kcm_ggz_games.cpp:184
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:204
 msgid "Visit the project home page"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:169
 msgid "Write error"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:116
+msgid "X11 window (%1)"
 msgstr ""
 
 #: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:167
