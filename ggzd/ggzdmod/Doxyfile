@@ -2,8 +2,8 @@
 #---------------------------------------------------------------------------
 # General configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = GGZDMOD
-PROJECT_NUMBER         = 0.0.5pre
+PROJECT_NAME           = GGZdMod
+PROJECT_NUMBER         = 0.0.6pre
 OUTPUT_DIRECTORY       = api/
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = NO
@@ -89,7 +89,7 @@ TREEVIEW_WIDTH         = 250
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
-GENERATE_LATEX         = NO
+GENERATE_LATEX         = YES
 LATEX_OUTPUT           = latex
 COMPACT_LATEX          = NO
 PAPER_TYPE             = a4wide
