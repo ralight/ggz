@@ -1,10 +1,10 @@
 Index: configure.ac
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/configure.ac,v
-retrieving revision 1.91
-diff -u -r1.91 configure.ac
---- configure.ac	20 Jan 2005 00:00:12 -0000	1.91
-+++ configure.ac	23 Jan 2005 09:20:03 -0000
+retrieving revision 1.80.2.10
+diff -u -r1.80.2.10 configure.ac
+--- configure.ac	19 Jan 2005 23:58:33 -0000	1.80.2.10
++++ configure.ac	17 Mar 2005 05:13:04 -0000
 @@ -33,6 +33,8 @@
  AC_DEFINE_UNQUOTED(VERSION_STRING, "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}${VERSION_LABEL}", [Version string])
  AC_DEFINE_UNQUOTED(IS_DEVEL_VERSION, $IS_DEVEL_VERSION, [Is this a devel version])
@@ -14,7 +14,7 @@ diff -u -r1.91 configure.ac
  
  dnl Initialize automake stuff
  AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
-@@ -287,6 +289,25 @@
+@@ -292,6 +294,25 @@
     fi
  fi
  
@@ -40,7 +40,7 @@ diff -u -r1.91 configure.ac
  dnl BeOS-specific settings
  if test x`$UNAME -s` = xBeOS ; then
    AC_DEFINE(SOCKET_ZERO_ISNT_STDIN, 1, [BeOS-specific setting])
-@@ -647,6 +668,8 @@
+@@ -642,6 +663,8 @@
  
  AC_CONFIG_FILES([Makefile
            data/Makefile 
@@ -55,7 +55,7 @@ RCS file: /home/freeciv/CVS/freeciv/client/Makefile.am,v
 retrieving revision 1.61
 diff -u -r1.61 Makefile.am
 --- client/Makefile.am	24 Sep 2004 15:33:31 -0000	1.61
-+++ client/Makefile.am	23 Jan 2005 09:20:03 -0000
++++ client/Makefile.am	17 Mar 2005 05:13:04 -0000
 @@ -138,7 +138,7 @@
  
  bin_PROGRAMS = civclient
@@ -95,10 +95,10 @@ diff -u -r1.61 Makefile.am
 Index: client/civclient.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/client/civclient.c,v
-retrieving revision 1.212
-diff -u -r1.212 civclient.c
---- client/civclient.c	22 Jan 2005 19:45:38 -0000	1.212
-+++ client/civclient.c	23 Jan 2005 09:20:03 -0000
+retrieving revision 1.197.2.9
+diff -u -r1.197.2.9 civclient.c
+--- client/civclient.c	22 Feb 2005 00:00:32 -0000	1.197.2.9
++++ client/civclient.c	17 Mar 2005 05:13:04 -0000
 @@ -53,6 +53,7 @@
  #include "control.h" 
  #include "dialogs_g.h"
@@ -107,27 +107,27 @@ diff -u -r1.212 civclient.c
  #include "goto.h"
  #include "gui_main_g.h"
  #include "helpdata.h"		/* boot_help_texts() */
-@@ -220,6 +221,9 @@
-       fc_fprintf(stderr, _("  -t, --tiles FILE\t"
- 			   "Use data file FILE.tilespec for tiles\n"));
-       fc_fprintf(stderr, _("  -v, --version\t\tPrint the version number\n"));
+@@ -218,6 +219,9 @@
+     fc_fprintf(stderr, _("  -t, --tiles FILE\t"
+ 		      "Use data file FILE.tilespec for tiles\n"));
+     fc_fprintf(stderr, _("  -v, --version\t\tPrint the version number\n"));
 +#ifdef GGZ_CLIENT
-+      fc_fprintf(stderr, _("  -z, --zone\t\tEnable GGZ mode\n"));
++    fc_fprintf(stderr, _("  -z, --zone\t\tEnable GGZ mode\n"));
 +#endif
-       fc_fprintf(stderr, _("      --\t\t"
- 			   "Pass any following options to the UI.\n"
- 			   "\t\t\tTry \"%s -- --help\" for more.\n"), argv[0]);
-@@ -270,6 +274,10 @@
-     } else if ((option = get_option_malloc("--tiles", argv, &i, argc))) {
+     fc_fprintf(stderr, _("      --\t\t"
+ 		      "Pass any following options to the UI.\n"
+ 		      "\t\t\tTry \"%s -- --help\" for more.\n"), argv[0]);
+@@ -260,6 +264,10 @@
+       }
+    } else if ((option = get_option("--tiles", argv, &i, argc)))
        sz_strlcpy(tileset_name, option);
-       free(option);
 +#ifdef GGZ_CLIENT
-+    } else if (is_option("--zone", argv[i])) {
-+      with_ggz = TRUE;
++   else if (is_option("--zone", argv[i]))
++     with_ggz = TRUE;
 +#endif
-     } else if (is_option("--", argv[i])) {
-       ui_separator = TRUE;
-     } else {
+    else if (is_option("--", argv[i])) {
+      ui_separator = TRUE;
+    } else { 
 @@ -339,6 +347,8 @@
    audio_real_init(sound_set_name, sound_plugin_name);
    audio_play_music("music_start", NULL);
@@ -140,10 +140,10 @@ diff -u -r1.212 civclient.c
 Index: client/clinet.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/client/clinet.c,v
-retrieving revision 1.110
-diff -u -r1.110 clinet.c
---- client/clinet.c	22 Jan 2005 19:45:39 -0000	1.110
-+++ client/clinet.c	23 Jan 2005 09:20:04 -0000
+retrieving revision 1.102.2.7
+diff -u -r1.102.2.7 clinet.c
+--- client/clinet.c	22 Feb 2005 00:53:28 -0000	1.102.2.7
++++ client/clinet.c	17 Mar 2005 05:13:05 -0000
 @@ -183,8 +183,6 @@
  **************************************************************************/
  int try_to_connect(const char *username, char *errbuf, int errbufsize)
@@ -171,10 +171,10 @@ diff -u -r1.110 clinet.c
 +
    connection_common_init(&aconnection);
 +  aconnection.sock = socket;
-   aconnection.is_server = FALSE;
    aconnection.client.last_request_id_used = 0;
    aconnection.client.last_processed_request_id_seen = 0;
-@@ -229,8 +240,6 @@
+   aconnection.client.request_id_of_currently_handled_packet = 0;
+@@ -228,8 +239,6 @@
    sz_strlcpy(req.username, username);
    
    send_packet_server_join_req(&aconnection, &req);
@@ -189,7 +189,7 @@ RCS file: /home/freeciv/CVS/freeciv/client/clinet.h,v
 retrieving revision 1.20
 diff -u -r1.20 clinet.h
 --- client/clinet.h	4 Oct 2004 04:37:32 -0000	1.20
-+++ client/clinet.h	23 Jan 2005 09:20:04 -0000
++++ client/clinet.h	17 Mar 2005 05:13:05 -0000
 @@ -33,6 +33,8 @@
  int get_server_address(const char *hostname, int port, char *errbuf,
  		       int errbufsize);
@@ -204,7 +204,7 @@ Index: client/ggzclient.c
 RCS file: client/ggzclient.c
 diff -N client/ggzclient.c
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ client/ggzclient.c	23 Jan 2005 09:20:04 -0000
++++ client/ggzclient.c	17 Mar 2005 05:13:05 -0000
 @@ -0,0 +1,84 @@
 +/********************************************************************** 
 + Freeciv - Copyright (C) 2005 - Freeciv Development Team
@@ -245,7 +245,7 @@ diff -N client/ggzclient.c
 +  server.
 +**************************************************************************/
 +static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
-+				 void *data)
++				 const void *data)
 +{
 +  const int *socket = data;
 +  const char *username = ggzmod_get_player(ggzmod, NULL, NULL);
@@ -295,7 +295,7 @@ Index: client/ggzclient.h
 RCS file: client/ggzclient.h
 diff -N client/ggzclient.h
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ client/ggzclient.h	23 Jan 2005 09:20:04 -0000
++++ client/ggzclient.h	17 Mar 2005 05:13:05 -0000
 @@ -0,0 +1,32 @@
 +/********************************************************************** 
 + Freeciv - Copyright (C) 2005 - Freeciv Development Team
@@ -332,19 +332,19 @@ diff -N client/ggzclient.h
 Index: client/gui-gtk-2.0/gui_main.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/client/gui-gtk-2.0/gui_main.c,v
-retrieving revision 1.102
-diff -u -r1.102 gui_main.c
---- client/gui-gtk-2.0/gui_main.c	22 Jan 2005 19:45:40 -0000	1.102
-+++ client/gui-gtk-2.0/gui_main.c	23 Jan 2005 09:20:04 -0000
-@@ -55,6 +55,7 @@
+retrieving revision 1.81.2.15
+diff -u -r1.81.2.15 gui_main.c
+--- client/gui-gtk-2.0/gui_main.c	25 Dec 2004 19:50:24 -0000	1.81.2.15
++++ client/gui-gtk-2.0/gui_main.c	17 Mar 2005 05:13:05 -0000
+@@ -53,6 +53,7 @@
+ #include "control.h"
  #include "dialogs.h"
- #include "diplodlg.h"
  #include "gotodlg.h"
 +#include "ggzclient.h"
  #include "graphics.h"
  #include "gui_main.h"
  #include "gui_stuff.h"
-@@ -1460,6 +1461,14 @@
+@@ -1424,6 +1425,14 @@
  }
  
  /**************************************************************************
@@ -359,7 +359,7 @@ diff -u -r1.102 gui_main.c
  ...
  **************************************************************************/
  static void set_wait_for_writable_socket(struct connection *pc,
-@@ -1502,6 +1511,15 @@
+@@ -1466,6 +1475,15 @@
    gdk_window_set_cursor(root_window, NULL);
  }
  
@@ -381,7 +381,7 @@ RCS file: /home/freeciv/CVS/freeciv/client/include/gui_main_g.h,v
 retrieving revision 1.10
 diff -u -r1.10 gui_main_g.h
 --- client/include/gui_main_g.h	3 Sep 2004 04:22:36 -0000	1.10
-+++ client/include/gui_main_g.h	23 Jan 2005 09:20:04 -0000
++++ client/include/gui_main_g.h	17 Mar 2005 05:13:05 -0000
 @@ -23,6 +23,7 @@
  void sound_bell(void);
  void add_net_input(int);
@@ -396,7 +396,7 @@ RCS file: /home/freeciv/CVS/freeciv/data/.cvsignore,v
 retrieving revision 1.4
 diff -u -r1.4 .cvsignore
 --- data/.cvsignore	4 Oct 2004 17:33:08 -0000	1.4
-+++ data/.cvsignore	23 Jan 2005 09:20:04 -0000
++++ data/.cvsignore	17 Mar 2005 05:13:05 -0000
 @@ -1,4 +1,6 @@
  Freeciv
  Makefile
@@ -407,10 +407,10 @@ diff -u -r1.4 .cvsignore
 Index: data/Makefile.am
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/data/Makefile.am,v
-retrieving revision 1.27
-diff -u -r1.27 Makefile.am
---- data/Makefile.am	20 Oct 2004 03:45:19 -0000	1.27
-+++ data/Makefile.am	23 Jan 2005 09:20:04 -0000
+retrieving revision 1.26.2.1
+diff -u -r1.26.2.1 Makefile.am
+--- data/Makefile.am	20 Oct 2004 03:45:21 -0000	1.26.2.1
++++ data/Makefile.am	17 Mar 2005 05:13:05 -0000
 @@ -36,6 +36,9 @@
  	Freeciv	\
  	freeciv.rc	\
@@ -446,7 +446,7 @@ Index: data/civclient.dsc.in
 RCS file: data/civclient.dsc.in
 diff -N data/civclient.dsc.in
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ data/civclient.dsc.in	23 Jan 2005 09:20:04 -0000
++++ data/civclient.dsc.in	17 Mar 2005 05:13:05 -0000
 @@ -0,0 +1,11 @@
 +# GGZ client game description file for Freeciv
 +
@@ -464,7 +464,7 @@ Index: data/civserver.dsc.in
 RCS file: data/civserver.dsc.in
 diff -N data/civserver.dsc.in
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ data/civserver.dsc.in	23 Jan 2005 09:20:04 -0000
++++ data/civserver.dsc.in	17 Mar 2005 05:13:05 -0000
 @@ -0,0 +1,26 @@
 +# GGZ Server game description file for Freeciv
 +
@@ -497,7 +497,7 @@ Index: data/civserver.room
 RCS file: data/civserver.room
 diff -N data/civserver.room
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ data/civserver.room	23 Jan 2005 09:20:04 -0000
++++ data/civserver.room	17 Mar 2005 05:13:05 -0000
 @@ -0,0 +1,16 @@
 +# GGZ Server room description file for Freeciv
 +[RoomInfo]
@@ -520,7 +520,7 @@ Index: m4/ggz.m4
 RCS file: m4/ggz.m4
 diff -N m4/ggz.m4
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ m4/ggz.m4	23 Jan 2005 09:20:04 -0000
++++ m4/ggz.m4	17 Mar 2005 05:13:05 -0000
 @@ -0,0 +1,792 @@
 +dnl ======================================
 +dnl GGZ Gaming Zone - Configuration Macros
@@ -1320,7 +1320,7 @@ RCS file: /home/freeciv/CVS/freeciv/manual/Makefile.am,v
 retrieving revision 1.4
 diff -u -r1.4 Makefile.am
 --- manual/Makefile.am	12 Sep 2004 21:19:36 -0000	1.4
-+++ manual/Makefile.am	23 Jan 2005 09:20:04 -0000
++++ manual/Makefile.am	17 Mar 2005 05:13:05 -0000
 @@ -15,6 +15,7 @@
        ../utility/libcivutility.a ../common/aicore/libaicore.a \
        ../server/userdb/libuserdb.a ../client/helpdata.o \
@@ -1338,10 +1338,10 @@ diff -u -r1.4 Makefile.am
 Index: server/Makefile.am
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/server/Makefile.am,v
-retrieving revision 1.40
-diff -u -r1.40 Makefile.am
---- server/Makefile.am	31 Oct 2004 22:32:33 -0000	1.40
-+++ server/Makefile.am	23 Jan 2005 09:20:04 -0000
+retrieving revision 1.38
+diff -u -r1.38 Makefile.am
+--- server/Makefile.am	12 Sep 2004 21:19:36 -0000	1.38
++++ server/Makefile.am	17 Mar 2005 05:13:05 -0000
 @@ -4,7 +4,7 @@
  
  bin_PROGRAMS = civserver
@@ -1351,7 +1351,7 @@ diff -u -r1.40 Makefile.am
  
  
  ## Above, note -I../intl instead of -I$(top_srdir/intl) is deliberate.
-@@ -40,6 +40,8 @@
+@@ -42,6 +42,8 @@
  		gamelog.h	\
  		gotohand.c	\
  		gotohand.h	\
@@ -1360,7 +1360,7 @@ diff -u -r1.40 Makefile.am
  		handchat.c	\
  		handchat.h	\
  		hand_gen.h	\
-@@ -81,10 +83,11 @@
+@@ -84,10 +86,11 @@
        ../ai/libcivai.a ../utility/libcivutility.a ./libcivserver.a \
        ../utility/libcivutility.a ../common/aicore/libaicore.a \
        ./generator/libgenerator.a $(USER_DB_DEP)
@@ -1376,10 +1376,10 @@ diff -u -r1.40 Makefile.am
 Index: server/civserver.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/server/civserver.c,v
-retrieving revision 1.228
-diff -u -r1.228 civserver.c
---- server/civserver.c	21 Jan 2005 00:00:45 -0000	1.228
-+++ server/civserver.c	23 Jan 2005 09:20:04 -0000
+retrieving revision 1.222.2.6
+diff -u -r1.222.2.6 civserver.c
+--- server/civserver.c	3 Feb 2005 08:04:55 -0000	1.222.2.6
++++ server/civserver.c	17 Mar 2005 05:13:05 -0000
 @@ -36,6 +36,7 @@
  #include "version.h"
  
@@ -1388,23 +1388,18 @@ diff -u -r1.228 civserver.c
  #include "meta.h"
  #include "sernet.h"
  #include "srv_main.h"
-@@ -139,9 +140,13 @@
-       free(option);
-     } else if ((option = get_option_malloc("--saves", argv, &inx, argc))) {
-       srvarg.saves_pathname = option; /* Never freed. */
--    } else if (is_option("--version", argv[inx]))
-+    } else if (is_option("--version", argv[inx])) {
+@@ -134,6 +135,10 @@
+       srvarg.saves_pathname = option;
+     } else if (is_option("--version", argv[inx]))
        showvers = TRUE;
--    else {
 +#ifdef GGZ_CLIENT
-+    } else if (is_option("--zone", argv[inx])) {
++    else if (is_option("--zone", argv[inx]))
 +      with_ggz = TRUE;
 +#endif
-+    } else {
+     else {
        fc_fprintf(stderr, _("Error: unknown option '%s'\n"), argv[inx]);
        showhelp = TRUE;
-       break;
-@@ -198,6 +203,9 @@
+@@ -189,6 +194,9 @@
  	       _("  -S, --Serverid ID\tSets the server id to ID\n"));
      fc_fprintf(stderr, _("  -r, --read FILE\tRead startup script FILE\n"));
      fc_fprintf(stderr, _("  -v, --version\t\tPrint the version number\n"));
@@ -1414,7 +1409,7 @@ diff -u -r1.228 civserver.c
      fc_fprintf(stderr, _("Report bugs to <%s>.\n"), BUG_EMAIL_ADDRESS);
      exit(EXIT_SUCCESS);
    }
-@@ -205,6 +213,8 @@
+@@ -196,6 +204,8 @@
    /* disallow running as root -- too dangerous */
    dont_run_as_root(argv[0], "freeciv_server");
  
@@ -1426,10 +1421,10 @@ diff -u -r1.228 civserver.c
 Index: server/gamelog.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/server/gamelog.c,v
-retrieving revision 1.44
-diff -u -r1.44 gamelog.c
---- server/gamelog.c	22 Jan 2005 19:45:44 -0000	1.44
-+++ server/gamelog.c	23 Jan 2005 09:20:04 -0000
+retrieving revision 1.38.2.4
+diff -u -r1.38.2.4 gamelog.c
+--- server/gamelog.c	16 Jan 2005 02:36:35 -0000	1.38.2.4
++++ server/gamelog.c	17 Mar 2005 05:13:06 -0000
 @@ -30,6 +30,7 @@
  #include "support.h"
  
@@ -1475,7 +1470,7 @@ Index: server/ggzserver.c
 RCS file: server/ggzserver.c
 diff -N server/ggzserver.c
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ server/ggzserver.c	23 Jan 2005 09:20:05 -0000
++++ server/ggzserver.c	17 Mar 2005 05:13:06 -0000
 @@ -0,0 +1,308 @@
 +/********************************************************************** 
 + Freeciv - Copyright (C) 2005 - Freeciv Development Team
@@ -1565,7 +1560,7 @@ diff -N server/ggzserver.c
 +}
 +
 +static void handle_ggz_state_event(GGZdMod * ggz, GGZdModEvent event,
-+				   void *data)
++				   const void *data)
 +{
 +#if 0
 +  const GGZdModState *old_state = data;
@@ -1576,7 +1571,7 @@ diff -N server/ggzserver.c
 +}
 +
 +static void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event,
-+				  void *data)
++				  const void *data)
 +{
 +  const GGZSeat *old_seat = data;
 +  GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
@@ -1623,7 +1618,7 @@ diff -N server/ggzserver.c
 +}
 +
 +static void handle_ggz_spectator_seat_event(GGZdMod *ggz, GGZdModEvent event,
-+					    void *data)
++					    const void *data)
 +{
 +#if 0
 +  const GGZSpectator *old = data;
@@ -1790,7 +1785,7 @@ Index: server/ggzserver.h
 RCS file: server/ggzserver.h
 diff -N server/ggzserver.h
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ server/ggzserver.h	23 Jan 2005 09:20:05 -0000
++++ server/ggzserver.h	17 Mar 2005 05:13:06 -0000
 @@ -0,0 +1,40 @@
 +/********************************************************************** 
 + Freeciv - Copyright (C) 2005 - Freeciv Development Team
@@ -1835,10 +1830,10 @@ diff -N server/ggzserver.h
 Index: server/sernet.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/server/sernet.c,v
-retrieving revision 1.132
-diff -u -r1.132 sernet.c
---- server/sernet.c	22 Jan 2005 19:45:44 -0000	1.132
-+++ server/sernet.c	23 Jan 2005 09:20:05 -0000
+retrieving revision 1.123.2.6
+diff -u -r1.123.2.6 sernet.c
+--- server/sernet.c	16 Dec 2004 23:27:34 -0000	1.123.2.6
++++ server/sernet.c	17 Mar 2005 05:13:06 -0000
 @@ -76,6 +76,7 @@
  
  #include "connecthand.h"
@@ -1847,7 +1842,7 @@ diff -u -r1.132 sernet.c
  #include "meta.h"
  #include "plrhand.h"
  #include "srv_main.h"
-@@ -485,9 +486,18 @@
+@@ -487,9 +488,18 @@
  #endif
      }
  
@@ -1869,7 +1864,7 @@ diff -u -r1.132 sernet.c
  
      for(i=0; i<MAX_NUM_CONNECTIONS; i++) {
        if(connections[i].used) {
-@@ -535,13 +545,15 @@
+@@ -537,13 +547,15 @@
        game.turn_start = time(NULL);
      }
  
@@ -1892,7 +1887,7 @@ diff -u -r1.132 sernet.c
        }
      }
      for(i=0; i<MAX_NUM_CONNECTIONS; i++) {   /* check for freaky players */
-@@ -552,6 +564,17 @@
+@@ -554,6 +566,17 @@
  	close_socket_callback(pconn);
        }
      }
@@ -1910,7 +1905,7 @@ diff -u -r1.132 sernet.c
      
  #ifdef SOCKET_ZERO_ISNT_STDIN
      if (!no_input && (bufptr = my_read_console())) {
-@@ -728,7 +751,6 @@
+@@ -730,7 +753,6 @@
    int new_sock;
    union my_sockaddr fromend;
    struct hostent *from;
@@ -1918,7 +1913,7 @@ diff -u -r1.132 sernet.c
  
    fromlen = sizeof(fromend);
  
-@@ -737,12 +759,28 @@
+@@ -739,12 +761,28 @@
      return -1;
    }
  
@@ -1949,7 +1944,7 @@ diff -u -r1.132 sernet.c
    for(i=0; i<MAX_NUM_CONNECTIONS; i++) {
      struct connection *pconn = &connections[i];
      if (!pconn->used) {
-@@ -768,11 +806,8 @@
+@@ -769,11 +807,8 @@
        pconn->outgoing_packet_notify = NULL;
  
        sz_strlcpy(pconn->username, makeup_connection_name(&pconn->id));
@@ -1961,15 +1956,15 @@ diff -u -r1.132 sernet.c
 +      sz_strlcpy(pconn->addr, client_addr);
 +      sz_strlcpy(pconn->server.ipaddr, client_ip);
  
-       conn_list_append(game.all_connections, pconn);
+       conn_list_insert_back(&game.all_connections, pconn);
    
 Index: server/sernet.h
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/server/sernet.h,v
-retrieving revision 1.11
-diff -u -r1.11 sernet.h
---- server/sernet.h	21 Oct 2004 20:27:29 -0000	1.11
-+++ server/sernet.h	23 Jan 2005 09:20:05 -0000
+retrieving revision 1.10.2.1
+diff -u -r1.10.2.1 sernet.h
+--- server/sernet.h	21 Oct 2004 20:26:59 -0000	1.10.2.1
++++ server/sernet.h	17 Mar 2005 05:13:06 -0000
 @@ -27,6 +27,8 @@
  int sniff_packets(void);
  void close_connections_and_socket(void);
@@ -1982,11 +1977,11 @@ diff -u -r1.11 sernet.h
 Index: server/settings.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/server/settings.c,v
-retrieving revision 1.16
-diff -u -r1.16 settings.c
---- server/settings.c	24 Dec 2004 16:11:54 -0000	1.16
-+++ server/settings.c	23 Jan 2005 09:20:05 -0000
-@@ -21,6 +21,7 @@
+retrieving revision 1.5.2.7
+diff -u -r1.5.2.7 settings.c
+--- server/settings.c	26 Feb 2005 01:05:56 -0000	1.5.2.7
++++ server/settings.c	17 Mar 2005 05:13:06 -0000
+@@ -20,6 +20,7 @@
  #include "map.h"
  
  #include "gamelog.h"
@@ -1994,7 +1989,7 @@ diff -u -r1.16 settings.c
  #include "report.h"
  #include "settings.h"
  #include "stdinhand.h"
-@@ -178,6 +179,15 @@
+@@ -148,6 +149,15 @@
  *************************************************************************/
  static bool maxplayers_callback(int value, const char **error_string)
  {
@@ -2013,11 +2008,11 @@ diff -u -r1.16 settings.c
 Index: server/srv_main.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/server/srv_main.c,v
-retrieving revision 1.221
-diff -u -r1.221 srv_main.c
---- server/srv_main.c	22 Jan 2005 19:45:44 -0000	1.221
-+++ server/srv_main.c	23 Jan 2005 09:20:05 -0000
-@@ -77,6 +77,7 @@
+retrieving revision 1.201.2.10
+diff -u -r1.201.2.10 srv_main.c
+--- server/srv_main.c	16 Jan 2005 02:36:35 -0000	1.201.2.10
++++ server/srv_main.c	17 Mar 2005 05:13:06 -0000
+@@ -78,6 +78,7 @@
  #include "diplhand.h"
  #include "gamehand.h"
  #include "gamelog.h"
@@ -2025,7 +2020,7 @@ diff -u -r1.221 srv_main.c
  #include "handchat.h"
  #include "maphand.h"
  #include "meta.h"
-@@ -1621,7 +1622,9 @@
+@@ -1619,7 +1620,9 @@
  
    /* init network */  
    init_connections(); 
