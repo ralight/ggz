@@ -116,7 +116,7 @@ int _ggzcore_memory_check(void)
 	struct _memptr *memptr;
 
 	ggzcore_debug(GGZ_DBG_MEMORY, "*** Memory Leak Check ***");
-	if(!alloc) {
+	if(alloc != NULL) {
 		memptr = alloc;
 		while(memptr != NULL) {
 			ggzcore_debug(GGZ_DBG_MEMORY,
