@@ -175,8 +175,7 @@ char card_value(char card)
 {
 	char val;
 
-	val = card % 4;
-	if((card+1) % 13 == 0)
+	if((val = (card % 13)) == 0)
 		val += 13;
 
 	return val;
