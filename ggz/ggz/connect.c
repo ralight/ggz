@@ -437,18 +437,21 @@ static void display_chat(char *name, char *msg)
 	GdkColormap *cmap;		/* system colormap */
 	GdkFont *fixed_font;		/* font for chat */
 	int color_index;		/* color for chat */
-	char cmd[10]="          ";
-	char out[1024];	/* command and text for chat */
+	char cmd[1024];			/* command used in chat */
+	char out[1024];			/* text following command */
 	char *line;			/* line to parse */
 	int cmd_index=0, out_index=0;	/* indexes */
 
-	line=msg;
+	line=g_strdup(msg);
+	strcpy(line,msg);
 
 	/* Get color for user */
 	color_index=1;
 	if (!strcmp(connection.username, name))
 		color_index=0;
 
+	/* Load a fixed-size font for chat, */
+	/* if not fixed size, things don't look good */
 	fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
 		
 	/* Get the system color map and allocate the color. */
@@ -477,7 +480,7 @@ static void display_chat(char *name, char *msg)
         }
 	out[out_index]='\0';
 
-	if (!strcmp(cmd,"/me")){
+	if (!strcmp(cmd,"/me")){		/* Action, like in IRC */
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
 		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
@@ -485,7 +488,7 @@ static void display_chat(char *name, char *msg)
 		buf = g_strdup_printf(" %s\n", out);
 		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
 		g_free(buf);
-	}else if (!strcmp(cmd,"/yell")){
+	}else if (!strcmp(cmd,"/yell")){	/* Yelling in chat */
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
 		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
@@ -493,7 +496,7 @@ static void display_chat(char *name, char *msg)
 		buf = g_strdup_printf(" yells from across the room \"%s\".\n", out);
 		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
 		g_free(buf);
-	}else if (!strcmp(cmd,"/beep")){
+	}else if (!strcmp(cmd,"/beep")){	/* Beep a person threw chat */
 		if (!strcmp(out,connection.username)){
 
 			/* Big old hack, got to be a better way */
@@ -516,7 +519,7 @@ static void display_chat(char *name, char *msg)
 			gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
 			g_free(buf);
 		}
-	}else{
+	}else{		/* No command given, display it all */
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		buf = g_strdup_printf("< %s >%*s", name, MAX_USER_NAME_LEN+1-strlen(name), " ");
 		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
