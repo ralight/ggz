@@ -1,3 +1,15 @@
+2001-06-17  Rich Gade  <rgade@badkarma.dyndns.org>
+
+	* /cvsroot/ggz/kde-games/KReversi/Makefile.am, /cvsroot/ggz/kde-games/krosswater/gfx/Makefile.am:
+	- Removed old graphic files from EXTRA_DIST
+
+	* /cvsroot/ggz/kde-games/ChangeLog: - Updated ChangeLog
+
+2001-06-17  dr_maux  <dr_maux@badkarma.dyndns.org>
+
+	* /cvsroot/ggz/kde-games/KReversi/pixmaps/Makefile.am:
+	- install pixmaps properly
+
 2001-06-17  dr_maux  <dr_maux@users.sourceforge.net>
 
 	* /cvsroot/ggz/kde-games/KReversi/pixmaps/Makefile.am:
