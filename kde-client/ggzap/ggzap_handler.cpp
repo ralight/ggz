@@ -67,7 +67,7 @@ void GGZapHandler::init()
 	strcpy(confdir, getenv("HOME"));
 	strcat(confdir, "/.ggz/ggzap.rc");
 	conf = new GGZCoreConfio(confdir, GGZCoreConfio::readonly);
-	m_confserver = conf->read("Global", "Server", "mindx.dyndns.org");
+	m_confserver = conf->read("Global", "Server", "ggz.snafu.de");
 	user = conf->read("Global", "Username", "");
 	delete conf;
 
@@ -195,6 +195,9 @@ cout << "hookServerActive!" << endl;
 			break;
 		case GGZCoreServer::connectfail:
 			emit signalState(connectfail);
+			break;
+		case GGZCoreServer::negotiatefail:
+			emit signalState(negotiatefail);
 			break;
 		case GGZCoreServer::loggedin:
 			emit signalState(loggedin);

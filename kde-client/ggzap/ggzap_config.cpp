@@ -81,8 +81,8 @@ void GGZapConfig::configLoad()
 	GGZCoreConfio *conf;
 
 	conf = new GGZCoreConfio(configfile->latin1(), GGZCoreConfio::readonly);
-	m_server->setText(conf->read("Global", "Server", "mindx.dyndns.org"));
-	m_username->setText(conf->read("Global", "Username", ""));
+	m_server->setText(conf->read("Global", "Server", "ggz.snafu.de"));
+	m_username->setText(conf->read("Global", "Username", getenv("USER")));
 	delete conf;
 }
 

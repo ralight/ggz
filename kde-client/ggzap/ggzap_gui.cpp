@@ -31,7 +31,7 @@
 #include "config.h"
 
 GGZapGui::GGZapGui(QWidget *parent, const char *name)
-: QWidget(parent, name)
+: QWidget(parent, name, WStyle_Customize | WRepaintNoErase)
 {
 	QPixmap pix = QPixmap(KGGZ_DIRECTORY "/ggzap/redgear.png");
 	setErasePixmap(pix);
@@ -74,9 +74,10 @@ void GGZapGui::mousePressEvent(QMouseEvent *e)
 
 	if((m_x > 240) && (m_x < 270) && (m_y > 340) && (m_y < 357))
 	{
-		hide();
 		m_x = -1;
 		m_y = -1;
+		m_hide = 0;
+		hide();
 	}
 	if((m_x > 240) && (m_x < 270) && (m_y > 360) && (m_y < 377))
 	{

@@ -107,27 +107,33 @@ void GGZap::slotState(int state)
 			m_gui->setProgress(2);
 			break;
 		case GGZapHandler::connectfail:
+			slotCancel();
 			KMessageBox::error(m_gui,
 				i18n("Could not connect to server!"), i18n("Error!"));
+			emit signalMenu(GGZapTray::menucancel);
+			break;
+		case GGZapHandler::negotiatefail:
 			slotCancel();
+			KMessageBox::error(m_gui,
+				i18n("Wrong server version."), i18n("Error!"));
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::loggedin:
 			m_gui->setProgress(3);
 			break;
 		case GGZapHandler::loginfail:
+			slotCancel();
 			KMessageBox::error(m_gui,
 				i18n("Couldn't login!\nPlease use your registered user name."), i18n("Error!"));
-			slotCancel();
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::joinedroom:
 			m_gui->setProgress(4);
 			break;
 		case GGZapHandler::joinroomfail:
+			slotCancel();
 			KMessageBox::error(m_gui,
 				i18n("Could not join the room!\nMaybe this game type isn't supported on the server?"), i18n("Error!"));
-			slotCancel();
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::waiting:
@@ -138,9 +144,9 @@ void GGZap::slotState(int state)
 			m_gui->setProgress(5);
 			break;
 		case GGZapHandler::startfail:
+			slotCancel();
 			KMessageBox::error(m_gui,
 				i18n("Could not start the game!\nPlease make sure you have it installed."), i18n("Error!"));
-			slotCancel();
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::finish:

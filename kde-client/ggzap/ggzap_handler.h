@@ -45,6 +45,7 @@ class GGZapHandler : public QObject
 		{
 			connected,
 			connectfail,
+			negotiatefail,
 			loggedin,
 			loginfail,
 			joinedroom,

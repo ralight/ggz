@@ -27,6 +27,7 @@
 // Qt includes
 #include <qpixmap.h>
 #include <qmovie.h>
+#include <qtooltip.h>
 
 // System includes
 #include "config.h"
@@ -51,6 +52,8 @@ GGZapTray::GGZapTray(QWidget *parent, const char *name)
 	connect(m_menu, SIGNAL(activated(int)), SLOT(slotLaunch(int)));
 
 	m_launched = 0;
+
+	QToolTip::add(this, i18n("GGZap - Online Gaming Tool"));
 
 	show();
 }
