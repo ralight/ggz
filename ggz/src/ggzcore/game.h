@@ -28,6 +28,7 @@
 #define __GAME_H__
 
 
+#include "config.h"
 #include "ggzcore.h"
 #include "module.h"
 
@@ -62,7 +63,7 @@ struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game);
 int _ggzcore_game_launch(struct _GGZGame *game);
 int _ggzcore_game_join(struct _GGZGame *game);
 int _ggzcore_game_send_data(struct _GGZGame *game, char *buffer);
-			    
+RETSIGTYPE _ggzcore_game_dead(int sig);			    
 
 #endif /* __GAME_H_ */
 

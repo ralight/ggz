@@ -27,9 +27,11 @@
 #include "confio.h"
 #include "module.h"
 #include "msg.h"
+#include "game.h"
 
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 
 #define GGZ_MOD_RC "ggz.modules"
 
@@ -272,6 +274,8 @@ int _ggzcore_module_setup(void)
 
 	_ggzcore_module_list_print();
 	
+	signal(SIGCHLD, _ggzcore_game_dead);
+
 	return 0;
 }
 

@@ -24,12 +24,14 @@
  */
 
 
+#include "config.h"
 #include "game.h"
 #include "module.h"
 #include "ggzcore.h"
 #include "hook.h"
 
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/poll.h>
@@ -396,10 +398,13 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 	argv = _ggzcore_module_get_argv(game->module);
 	path = _ggzcore_game_get_path(argv);
 
-	
-	ggzcore_debug(GGZ_DBG_GAME, "Launching game of %s", name);
-	ggzcore_debug(GGZ_DBG_GAME, "Exec path is  %s", path);
+	/* Leave room for "/tmp/" + 6 digit PID + '\0' */
+	game->file_name = ggzcore_malloc(strlen(name) + 12);
 
+	ggzcore_debug(GGZ_DBG_GAME, "Launching game of %s", name);
+	ggzcore_debug(GGZ_DBG_GAME, "Exec path is %s", path);
+
+	/* Check for existence of game module */
 	if (stat(path, &file_status) < 0) {
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
 				    strerror(errno));
@@ -408,11 +413,16 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		return -1;
 	}
 	
-	
 	/* Fork table process */
 	if ( (pid = fork()) < 0) {
 		ggzcore_error_sys_exit("fork failed");
 	} else if (pid == 0) {
+
+		/* Wait for parent to create Unix domain socket */
+		sprintf(game->file_name, "/tmp/%s.%d", name, getpid());
+		while (stat(game->file_name, &file_status) < 0)
+			sleep(1);
+
 		_ggzcore_game_exec(path, argv);
 		/* If we get here, exec failed.  Bad news */
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
@@ -423,12 +433,9 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		ggzcore_free(path);
 		/* Create Unix domain socket for communication*/
 
-		/* Leave room for "/tmp/" + PID + '\0' */
 		/* FIXME: should use more secure way of getting filename */
-		/* FIXME: actually, this will go away once we pass fd using env */
-		game->file_name = ggzcore_malloc(strlen(name) + 12);
+		/* FIXME: this will go away once we pass fd using env */
 		sprintf(game->file_name, "/tmp/%s.%d", name, pid);
-		
 		sock_accept = es_make_unix_socket(ES_SERVER, game->file_name);
 		if (sock_accept < 0) {
 			_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
@@ -451,7 +458,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCHED, NULL);
 		/* FIXME: for now, launch and negotiate are one and the same */
 		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
-	
+		
 	}
 
 	return 0;
@@ -526,6 +533,16 @@ static void _ggzcore_game_exec(char *path, char **argv)
 }
 
 
-
-
-
+RETSIGTYPE _ggzcore_game_dead(int sig)
+{
+  	pid_t pid;
+	int status;
+  
+	pid = waitpid(WAIT_ANY, &status, WNOHANG);
+	if( pid > 0 )
+		ggzcore_debug(GGZ_DBG_GAME, "Game module is dead");
+	else if( pid == 0 )
+		ggzcore_error_sys("No dead children found");
+	else 
+		ggzcore_error_sys("Waitpid failure");
+}
