@@ -10,7 +10,7 @@ ExecutablePath = ggzd.reversi
 
 [Protocol]
 Engine = Reversi
-Version = 2-pre1
+Version = 2
 
 [TableOptions]
 AllowLeave = 1

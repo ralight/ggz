@@ -6,6 +6,6 @@ Frontend = kde
 Homepage = http://ggz.sourceforge.net/games/ktictactux/
 Name = TicTacToe
 ProtocolEngine = TicTacToe
-ProtocolVersion = 2-pre1
+ProtocolVersion = 2
 Version = 0.0.5
 

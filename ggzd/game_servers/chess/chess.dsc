@@ -10,7 +10,7 @@ ExecutablePath = ggzd.chess
 
 [Protocol]
 Engine = Chess
-Version = 2-pre1
+Version = 2
 
 [TableOptions]
 AllowLeave = 0
