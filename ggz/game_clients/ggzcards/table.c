@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3353 2002-02-13 21:32:09Z jdorje $
+ * $Id: table.c 3355 2002-02-14 07:42:52Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -61,18 +61,18 @@ GtkWidget *table;		/* widget containing the whole table */
 GtkStyle *table_style;		/* Style for the table */
 static GdkPixmap *table_buf = NULL;	/* backing store for the table */
 
+static const char* player_names[MAX_NUM_PLAYERS] = {NULL};
+static const char* player_messages[MAX_NUM_PLAYERS] = {NULL};
+
 
 /* Card front pictures for each of the 4 orientations */
 GdkPixmap *card_fronts[4];
 static GdkPixmap *card_backs[4];
 
-static GtkWidget *l_name[MAX_NUM_PLAYERS] = { NULL };	/* player names */
-static GtkWidget *label[MAX_NUM_PLAYERS] = { NULL };	/* player labels */
-
 static gboolean table_ready = FALSE;
 
-static int selected_card = -1;	/* the card currently selected from the
-				   playing hand */
+/* the card currently selected from the playing hand */
+static int selected_card = -1;
 
 void table_show_table(int x, int y, int w, int h);
 static void draw_text_box(int p);
@@ -207,7 +207,8 @@ void table_initialize(void)
 						     (gchar **) xpm_backs[i]);
 		if (!card_fronts[i] || !card_backs[i])
 			ggz_debug("table", "ERROR: "
-				  "couldn't load card pixmaps for orientation %d.",
+				  "couldn't load card pixmaps "
+				  "for orientation %d.",
 				  i);
 	}
 
@@ -226,8 +227,6 @@ void table_initialize(void)
    called until the server tells us how big the table must be. */
 void table_setup(void)
 {
-	int x, y, p;
-
 	/* TODO: we really should draw something before this point, since the
 	   player needs to see who's playing.  However, for now this will
 	   work.  The problem is that before you choose what game you're
@@ -269,50 +268,114 @@ void table_setup(void)
 	/* Revert to having no selected card. */
 	selected_card = -1;
 
-	/* Add text labels to display */
-	for (p = 0; p < ggzcards.num_players; p++) {
-		get_text_box_pos(p, &x, &y);
-
-		/* Name entries */
-		if (l_name[p]) {
-			gtk_widget_hide(l_name[p]);
-			gtk_widget_destroy(l_name[p]);
-		}
-		l_name[p] = gtk_label_new(ggzcards.players[p].name);
-		gtk_fixed_put(GTK_FIXED(table), l_name[p], x + 3, y + 1);
-		gtk_widget_set_usize(l_name[p], TEXT_BOX_WIDTH - 6, -1);
-		gtk_widget_show(l_name[p]);
-
-		/* TODO: get the old label before we update */
-		if (label[p]) {
-			gtk_widget_hide(label[p]);
-			gtk_widget_destroy(label[p]);
-		}
-		label[p] = gtk_label_new(NULL);
-		gtk_fixed_put(GTK_FIXED(table), label[p], x + 3, y + 20);
-		gtk_widget_set_usize(label[p], TEXT_BOX_WIDTH - 6, -1);
-		gtk_label_set_justify(GTK_LABEL(label[p]), GTK_JUSTIFY_LEFT);
-		gtk_widget_show(label[p]);
-	}
-
 	/* Redraw and display the table. */
 	table_redraw();
+}
+
+static void table_show_player_box(int player, int write_to_screen)
+{
+	int x, y;
+	int w = TEXT_BOX_WIDTH - 1, h = TEXT_BOX_WIDTH-1;
+	GdkFont *font = table_style->font;
+	const char* name = player_names[player];
+	const char* message = player_messages[player];
+	int string_y;
+	
+	assert(table_ready);
+	
+	get_text_box_pos(player, &x, &y);
+	x++;
+	y++;
+	
+	string_y = y + 2; /* The y values we're going to draw at. */
+	
+	/* Clear the text box */
+	gdk_draw_rectangle(table_buf,
+			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
+			   TRUE, x, y, w, h);
+	
+	/* Draw the name. */
+	if (name) {
+		int ascent, descent, dummy;
+		
+		assert(strchr(name, '\n') == NULL);
+			
+		gdk_string_extents(font, name, &dummy, &dummy, &dummy,
+		                   &ascent, &descent);
+		
+		string_y += ascent;
+			
+		gdk_draw_text(table_buf, font,
+		              table_style->fg_gc[GTK_WIDGET_STATE(table)],
+		              x + w/2 - gdk_string_width(font, name) / 2,
+		              string_y,
+		              name, strlen(name));
+		
+		string_y += descent + 5;
+	}
+	
+	/* Draw player message. */
+	if (message) {
+		char *my_message = ggz_strdup(message);
+		char *next = my_message;
+		int ascent, descent, dummy;
+			
+		gdk_string_extents(font, my_message, &dummy, &dummy, &dummy,
+		                   &ascent, &descent);
+		
+		/* This is so ugly!! Is there no better way?? */
+		do {
+			char *next_after_this = strchr(next, '\n');
+			
+			if (next_after_this) {
+				*next_after_this = '\0';
+				next_after_this++;
+			}
+			
+			string_y += ascent;
+			
+			gdk_draw_string(table_buf, font,
+				table_style->fg_gc[GTK_WIDGET_STATE(table)],
+		                x + 3, string_y, next);
+		                	
+		        string_y += descent + 3;
+		                	
+		        next = next_after_this;
+		} while (next && *next);
+		
+		ggz_free(my_message);
+	}
+	
+	if (write_to_screen)
+		table_show_table(x, y, w, h);
 }
 
 /* Display's a player's name on the table. */
 void table_set_name(int player, const char *name)
 {
 	ggz_debug("table", "Setting player name: %d => %s.", player, name);
-	if (l_name[player] != NULL)
-		gtk_label_set_text(GTK_LABEL(l_name[player]), name);
+	
+	if (player_names[player])
+		ggz_free(player_names[player]);
+		
+	player_names[player] = ggz_strdup(name);
+	
+	if (table_ready)
+		table_show_player_box(player, TRUE);
 }
 
 /* Displays a player's message on the table. */
 void table_set_player_message(int player, const char *message)
 {
 	ggz_debug("table", "Setting player message for %d.", player);
-	if (label[player] != NULL)
-		gtk_label_set_text(GTK_LABEL(label[player]), message);
+	
+	if (player_messages[player])
+		ggz_free(player_messages[player]);
+		
+	player_messages[player] = ggz_strdup(message);
+	
+	if (table_ready)
+		table_show_player_box(player, TRUE);
 }
 
 /* Handle a redraw of necessary items, for instance when a Gtk style change
@@ -321,6 +384,8 @@ void table_redraw(void)
 {
 	ggz_debug("table", "Redrawing table. ");
 	if (table_ready) {
+		int p;
+		
 		/* Complete (zip) any animation in process */
 		animation_stop(TRUE);
 
@@ -333,6 +398,8 @@ void table_redraw(void)
 		draw_card_areas(FALSE);
 		table_display_all_hands(FALSE);
 		table_show_cards(FALSE);
+		for (p = 0; p < ggzcards.num_players; p++)
+			table_show_player_box(p, FALSE);
 
 		/* Then draw the whole buffer to the window */
 		table_show_table(0, 0, get_table_width(), get_table_height());
@@ -428,7 +495,8 @@ static void table_card_clicked(int card_num)
 	ggz_debug("table", "table_card_clicked: Card %d clicked.", card_num);
 
 	if (card_num == selected_card) {
-		/* If you click on the already selected card, it gets played. */
+		/* If you click on the already selected card,
+		   it gets played. */
 		selected_card = -1;
 		game_play_card(card_num);
 	} else {
@@ -505,10 +573,10 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 		/* based on there being 4 different backs */
 		/* TODO: do different decks differently */
 		int xy[4][2] =
-			{ {2 * CARDWIDTH, 0}, {0, 2 * CARDWIDTH}, {CARDWIDTH,
-								   0}, {0,
-									CARDWIDTH}
-		};
+			{ {2 * CARDWIDTH, 0},
+			  {0, 2 * CARDWIDTH},
+			  {CARDWIDTH, 0},
+			  {0, CARDWIDTH} };
 		xc = xy[orientation][0];
 		yc = xy[orientation][1];
 	}
