@@ -259,7 +259,7 @@ class KGGZ : public QWidget
 		// Game information
 		KGGZGameInfo *m_gameinfo;
 		// User data saved from connection dialog
-		char *m_save_username, *m_save_password, *m_save_host;
+		char *m_save_username, *m_save_password, *m_save_host, *m_save_hostname;
 		// Connection data saved from connection dialog
 		int m_save_loginmode, m_save_port, m_save_encryption;
 		// Special flag for failed negotiations and logout

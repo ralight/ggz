@@ -78,6 +78,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	m_save_username = NULL;
 	m_save_password = NULL;
 	m_save_host = NULL;
+	m_save_hostname = NULL;
 	m_launch = NULL;
 	kggzgame = NULL;
 #ifdef KGGZ_BROWSER
@@ -235,6 +236,7 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 	m_save_username = strdup(username);
 	m_save_password = strdup(password);
 	m_save_host = strdup(host);
+	m_save_hostname = strdup(host);
 	m_save_port = port;
 	m_save_encryption = m_connect->optionSecure();
 }
@@ -392,6 +394,7 @@ void KGGZ::dispatcher()
 	if(m_save_username) delete m_save_username;
 	if(m_save_password) delete m_save_password;
 	if(m_save_host) delete m_save_host;
+	if(m_save_hostname) delete m_save_hostname;
 }
 
 void KGGZ::timerEvent(QTimerEvent *e)
@@ -908,7 +911,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::loggedin:
 			KGGZDEBUG("loggedin\n");
 			emit signalMenu(MENUSIG_LOGIN);
-			buffer.sprintf(i18n("logged in as %s@%s:%i (using TLS: %i)"), m_save_username, m_save_host, m_save_port, m_save_encryption);
+			buffer.sprintf(i18n("logged in as %s@%s:%i (using TLS: %i)"), m_save_username, m_save_hostname, m_save_port, m_save_encryption);
 			emit signalCaption(buffer);
 			menuView(VIEW_CHAT);
 			if(m_save_loginmode == GGZCoreServer::firsttime)
