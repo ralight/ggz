@@ -2,7 +2,7 @@ SUBDIRS = .
 
 lib_LTLIBRARIES = libzoneserver.la
 
-include_HEADERS = ZoneGGZModServer.h ZoneGGZModGGZ.h ZoneProtocols.h
+noinst_HEADERS = ZoneGGZModServer.h ZoneGGZModGGZ.h ZoneProtocols.h
 
 libzoneserver_la_LIBADD = @LDADD@
 

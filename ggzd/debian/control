@@ -1,0 +1,21 @@
+Source: ggzd
+Section: games
+Priority: optional
+Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
+Standards-Version: 3.0.1
+Build-Depends: debhelper
+
+Package: ggzd
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: GGZ Gaming Zone Main Server and Game Servers
+ This server is not required if you want to play online games,
+ but it will be needed if you intend to do game hosting on your
+ own, be it for having an own little server or for development
+ purposes.
+ .
+ It loads all required game servers dynamically, so you can
+ start very quickly. It is, however, very configurable.
+ .
+ All internal GGZ games currently available are included in this
+ package.
