@@ -5,7 +5,7 @@ ggz-txt \- Console-based core client for the GGZ Gaming Zone
 .SH "SYNOPSIS"
 .LP
 .B ggz-txt
-[\fIOPTIONS\fR]
+[\fIOPTIONS\fR] [\fIURI\fR]
 .SH "DESCRIPTION"
 .LP
 This program allows one to use the GGZ without having a graphics
@@ -15,6 +15,8 @@ rooms, view the message of the day (MOTD), and so on.
 .LP
 When starting ggz-txt, simply type "/connect", optionally followed
 by the server host name if not running at localhost.
+Alternatively, the connection URI can be given as a command line argument in
+the format 'user@host:port', 'host:port' or simply 'host'.
 .LP
 You can always type "/help" to get a list of all available commands.
 .SH "OPTIONS"
