@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2491 2001-09-17 07:00:59Z rgade $
+ * $Id: parse_opt.c 2505 2001-09-24 02:36:50Z bmh $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -80,7 +80,8 @@ static struct LogTypes dbg_types[] = {
 	{ "misc",		GGZ_DBG_MISC },
 	{ "room",		GGZ_DBG_ROOM },
 	{ "lists",		GGZ_DBG_LISTS },
-	{ "game_msg",           GGZ_DBG_GAME_MSG}
+	{ "game_msg",           GGZ_DBG_GAME_MSG},
+	{ "xml",                GGZ_DBG_XML}
 };
 static int num_dbg_types = sizeof(dbg_types) / sizeof(dbg_types[0]);
 

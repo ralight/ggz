@@ -92,7 +92,7 @@ int player_launch_callback(void* target, int size, void* data);
 
 int player_msg_from_sized(GGZPlayer* p, int size, char *buf);
 int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg);
-int player_table_launch(GGZPlayer* player, int type, char *desc, int count, int seats[], char* names[MAX_TABLE_SIZE]);
+int   player_table_launch(GGZPlayer* player, GGZTable *table);
 int   player_table_join(GGZPlayer* player, int index);
 int   player_table_leave(GGZPlayer* player);
 int   player_list_players(GGZPlayer* player);

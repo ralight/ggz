@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 2330 2001-08-31 03:54:57Z jdorje $
+ * $Id: table.h 2505 2001-09-24 02:36:50Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -89,9 +89,11 @@ typedef struct GGZTable {
 } GGZTable;
 
 
+/* Create a new table object */
+GGZTable* table_new(void);
+
 /* Launch a table */
-int table_launch(char* name, int type, int room, char* desc, int seats[], 
-		 char* names[MAX_TABLE_SIZE]);
+int table_launch(GGZTable *table, char* name);
 
 /* Join a player to the table */
 int table_join(char* name, int room, int index, int* t_fd);

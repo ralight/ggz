@@ -30,16 +30,20 @@
 #include <players.h>
 #include <login.h>
 #include <room.h>
+#include <datatypes.h>
 
 typedef struct _GGZNetIO GGZNetIO;
 
 /* Create a new network IO object */
 GGZNetIO* net_new(int fd, GGZPlayer *player);
 
+/* Set dump file for session */
+int net_set_dump_file(GGZNetIO *net, const char* filename);
+
 /* Get filedescriptor for communication */
 int net_get_fd(GGZNetIO* net);
 
-/* Read data from socket for a particu;ar player */
+/* Read data from socket for a particular player */
 int net_read_data(GGZNetIO* net);
 
 /* Disconnect from network */

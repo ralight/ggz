@@ -49,6 +49,7 @@
 #define GGZ_DBG_ROOM		(unsigned) 0x00000100
 #define GGZ_DBG_LISTS		(unsigned) 0x00000200
 #define GGZ_DBG_GAME_MSG	(unsigned) 0x00000400
+#define GGZ_DBG_XML             (unsigned) 0x00000800
 #define GGZ_DBG_ALL		(unsigned) 0xFFFFFFFF
 
 /* Logging options */

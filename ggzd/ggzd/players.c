@@ -143,6 +143,8 @@ static void* player_new(void *arg_ptr)
 	/* Initialize player data */
 	pthread_rwlock_init(&player->lock, NULL);
 	player->net = net_new(sock, player);
+	/*net_set_dump_file(player->net, "ggzd.protocol");*/
+
 	player->type = -1;
 	player->thread = pthread_self();
 	player->table = -1;
@@ -411,7 +413,7 @@ int player_get_type(GGZPlayer *player)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : request succeeded.  t_fd points to new fd 
  */
-int player_table_launch(GGZPlayer* player, int type, char *desc, int count, int seats[], char* names[MAX_TABLE_SIZE])
+int player_table_launch(GGZPlayer* player, GGZTable *table)
 {
 	int room, status;
 
@@ -427,7 +429,7 @@ int player_table_launch(GGZPlayer* player, int type, char *desc, int count, int 
 	}
 	
 	/* Silly client. Tables are only so big*/
-	if (count > MAX_TABLE_SIZE) {
+	if (seats_num(table) > MAX_TABLE_SIZE) {
 		dbg_msg(GGZ_DBG_TABLE, 
 			"%s tried to launch a table with > %d seats",
 			player->name, MAX_TABLE_SIZE);
@@ -449,7 +451,7 @@ int player_table_launch(GGZPlayer* player, int type, char *desc, int count, int 
 	/* FIXME: Do we need a room lock here? */
 	/* RG: Eventually we will need more room locks when we have dynamic */
 	/*     rooms, right now the room's game_type can't change           */
-	if (type != rooms[room].game_type) {
+	if (table->type != rooms[room].game_type) {
 		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch wrong table type",
 			player->name);
 		if (net_send_table_launch(player->net, E_NOT_IN_ROOM) < 0)
@@ -458,7 +460,7 @@ int player_table_launch(GGZPlayer* player, int type, char *desc, int count, int 
 	}
 
 	/* Do actual launch of table */
-	status = table_launch(player->name, type, room, desc, seats, names);
+	status = table_launch(table, player->name);
 	
 	if (status == 0) {
 		/* Mark player as launching table so we can't launch more */

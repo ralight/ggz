@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2478 2001-09-14 13:11:38Z bmh $
+# $Id: Makefile.am 2505 2001-09-24 02:36:50Z bmh $
 
 SUBDIRS = .
 
@@ -51,7 +51,11 @@ ggzd_SOURCES =	chat.c\
 		lists.c \
 		lists.h \
 		conf.c \
-		conf.h
+		conf.h \
+		stack.c \
+		stack.h \
+		xmlelement.c \
+		xmlelement.h
 
 
 ggzd_LDADD = $(LDADD) $(ggzd_LIBS)

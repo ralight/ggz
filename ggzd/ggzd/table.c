@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2491 2001-09-17 07:00:59Z rgade $
+ * $Id: table.c 2505 2001-09-24 02:36:50Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -62,7 +62,7 @@ extern Options opt;
 /* Local functions for handling tables */
 static int   table_check(GGZTable* table);
 static int   table_handler_launch(GGZTable* table);
-static void* table_new(void *index_ptr);
+static void* table_new_thread(void *index_ptr);
 static void  table_fork(GGZTable* table);
 static void  table_loop(GGZTable* table);
 static void  table_remove(GGZTable* table);
@@ -86,6 +86,37 @@ static int   table_launch_event(char* name, int status, int index);
 static void  table_free(GGZTable* table);
 
 static int   type_match_table(int type, GGZTable* table);
+
+
+
+GGZTable* table_new(void)
+{
+	int i;
+	GGZTable *table;
+	
+	/* Allocate a new table structure */
+	if ( (table = calloc(1, sizeof(GGZTable))) == NULL)
+		err_sys_exit("malloc error in net_handle_table()");
+	
+	
+	pthread_rwlock_init(&table->lock, NULL);
+	table->type = -1;
+	table->room = -1;
+	table->index = -1;
+	table->state = GGZ_TABLE_CREATED;
+	table->transit = 0;
+	table->transit_name = NULL;
+	table->transit_fd = -1;
+	table->transit_seat = -1;
+	table->ggzdmod = NULL;
+	table->pid = -1;
+
+	for (i = 0; i < MAX_TABLE_SIZE; i++)
+		strcpy(table->seats[i], "<none>");
+
+	return table;
+}
+
 
 
 /*
@@ -188,7 +219,7 @@ int table_handler_launch(GGZTable* table)
 	if ( (index_ptr = malloc(sizeof(GGZTable*))) == NULL)
 		err_sys_exit("malloc error");
 	*index_ptr = table;
-	status = pthread_create(&thread, NULL, table_new, index_ptr);
+	status = pthread_create(&thread, NULL, table_new_thread, index_ptr);
 	if (status != 0) {
 		free(index_ptr);
 	}
@@ -203,7 +234,7 @@ int table_handler_launch(GGZTable* table)
  * starting the game.  At the end of the game, it removes the table
  * 
  */
-static void* table_new(void *index_ptr)
+static void* table_new_thread(void *index_ptr)
 {
 	GGZTable* table;
 	int i, status, count;
@@ -746,55 +777,10 @@ static void table_remove(GGZTable* table)
 
 
 /* FIXME: redo using events to notify player */
-int table_launch(char* name, int type, int room, char* desc, int seats[], 
-		 char* names[MAX_TABLE_SIZE])
+int table_launch(GGZTable *table, char* name)
 {
-	int i;
-	GGZTable *table;
-
-	/* Allocate a new table structure */
-	if ( (table = calloc(1, sizeof(GGZTable))) == NULL)
-		err_sys_exit("malloc error in table_launch()");
-
-	/* Fill in the table structure */
-	pthread_rwlock_init(&table->lock, NULL);
-	table->type = type;
-	table->room = room;
-	table->index = -1;
-	table->state = GGZ_TABLE_CREATED;
-	table->transit = 0;
-	table->transit_name = NULL;
-	table->transit_fd = -1;
-	table->transit_seat = -1;
-	table->ggzdmod = NULL;
-	table->pid = -1;
+	/* Fill in the table owner */
 	strcpy(table->owner, name);	
-	strcpy(table->desc, desc);	
-	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		switch (seats[i]) {
-		case GGZ_SEAT_OPEN:
-			strcpy(table->seats[i], "<open>");
-			break;
-		case GGZ_SEAT_BOT:
-			strcpy(table->seats[i], "<bot>");
-			break;
-		case GGZ_SEAT_NONE:
-			strcpy(table->seats[i], "<none>");
-			break;
-		case GGZ_SEAT_RESV:
-			strcpy(table->seats[i], "<reserved>");
-			/*
-			 * FIXME: lookup reserve name to verify.
-			 * upon error, send E_USR_LOOKUP
-			 */
-			strcpy(table->reserve[i], names[i]);
-			break;
-		default:
-			/* Error in seat assignments */
-			table_free(table);
-			return E_BAD_OPTIONS;
-		}
-	
 	
 	/* Check validity of table info */
 	if (table_check(table) < 0) {
@@ -807,7 +793,7 @@ int table_launch(char* name, int type, int room, char* desc, int seats[],
 		table_free(table);
 		return E_LAUNCH_FAIL;
 	}
-
+	
 	return 0;
 }
 
