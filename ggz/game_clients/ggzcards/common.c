@@ -1,4 +1,4 @@
-/* $Id: common.c 2081 2001-07-23 13:07:48Z jdorje $ */
+/* $Id: common.c 2083 2001-07-23 23:47:14Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
@@ -76,6 +76,7 @@ int client_initialize(void)
 	ggzfd = ggz_client_connect();
 	if (ggzfd < 0)
 		exit(-1);
+	game.state = WH_STATE_INIT;
 	return ggzfd;
 }
 

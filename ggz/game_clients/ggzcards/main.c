@@ -1,4 +1,4 @@
-/* $Id: main.c 2073 2001-07-23 07:47:48Z jdorje $ */
+/* $Id: main.c 2083 2001-07-23 23:47:14Z jdorje $ */
 /*
  * File: main.c
  * Author: Rich Gade
@@ -115,7 +115,6 @@ static void game_init(void)
 {
 	client_debug("Entering game_init().");
 	statusbar_message( _("Waiting for server") );
-	game.state = WH_STATE_INIT;
 }
 
 
