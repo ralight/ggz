@@ -55,6 +55,8 @@ typedef enum {
 	GGZ_DBG_ROOM      = 0x00000100,
 	GGZ_DBG_TABLE     = 0x00000200,
 	GGZ_DBG_GAMETYPE  = 0x00000400,
+	GGZ_DBG_HOOK      = 0x00000800,
+	GGZ_DBG_INIT      = 0x00001000,
 	GGZ_DBG_ALL       = 0xFFFFFFFF
 } GGZDebugLevel;
 
@@ -131,10 +133,20 @@ typedef enum {
 } GGZEventID;
 
 
-/* Event-callback function type */
-typedef void (*GGZCallback)(unsigned int id, 
-			    void* callback_data, 
-			    void* user_data);
+/* GGZ Hook function return types */
+typedef enum {
+	GGZ_HOOK_OK,
+	GGZ_HOOK_REMOVE,
+	GGZ_HOOK_ERROR,
+	GGZ_HOOK_CRISIS
+} GGZHookReturn;
+
+/* GGZ Event hook function type, used as a vallback for events */
+typedef GGZHookReturn (*GGZHookFunc)(unsigned int id, 
+				     void* event_data, 
+				     void* user_data);
+
+/* GGZ object destroy function type */			
 typedef void (*GGZDestroyFunc)(void* data);
 
 
@@ -177,49 +189,47 @@ typedef struct _GGZProfile {
 
 
 
-/* ggzcore_event_add_callback() - Register callback for specific GGZ-event
+/* ggzcore_event_add_hook() - Register hook for specific GGZ-event
  *
  * Receives:
- * GGZEventID id         : ID code of event
- * GGZCallback callback : Callback function
+ * GGZEventID id    : ID code of event
+ * GGZHookFunc hook : Hook function
  *
  * Returns:
- * int : id for this callback 
+ * int : id for this hook 
  */
-int ggzcore_event_add_callback(const GGZEventID id, const GGZCallback func);
+int ggzcore_event_add_hook(const GGZEventID id, const GGZHookFunc func);
 			  
 
-/* ggzcore_event_add_callback_full() - Register callback for specific GGZ-event
- *                                     specifying all parameters
+/* ggzcore_event_add_hook_full() - Register hook for specific GGZ-event
+ *                                 specifying all parameters
  * 
  * Receives:
- * GGZEventID id         : ID code of event
- * GGZCallback callback : Callback function
- * void* user_data       : "User" data to pass to callback
- * GGZDestroyFunc func   : function to call to free user data
+ * GGZEventID id    : ID code of event
+ * GGZHookFunc hook : Hook function
+ * void* user_data  : "User" data to pass to hook
  *
  * Returns:
- * int : id for this callback 
+ * int : id for this hook 
  */
-int ggzcore_event_add_callback_full(const GGZEventID id, 
-				    const GGZCallback func, 
-				    void* user_data,
-				    GGZDestroyFunc destroy);
+int ggzcore_event_add_hook_full(const GGZEventID id, 
+				    const GGZHookFunc func, 
+				    void* user_data);
 
 
-/* ggzcore_event_remove_callback() - Remove specific callback from an event
- * ggzcore_event_remove_callback_id() - Remove specific callback from an event
+/* ggzcore_event_remove_hook()    - Remove specific hook from an event
+ * ggzcore_event_remove_hook_id() - Remove specific hook from an event
  *
  * Receives:
- * GGZEventID id            : ID code of event
- * unsigned int callback_id : ID of callback to remove
+ * GGZEventID id        : ID code of event
+ * unsigned int hook_id : ID of hook to remove
  *
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int ggzcore_event_remove_callback(const GGZEventID id, const GGZCallback func);
-int ggzcore_event_remove_callback_id(const GGZEventID id, 
-				     const unsigned int callback_id);
+int ggzcore_event_remove_hook(const GGZEventID id, const GGZHookFunc func);
+int ggzcore_event_remove_hook_id(const GGZEventID id, 
+				     const unsigned int hook_id);
 
 
 
@@ -301,16 +311,16 @@ typedef enum {
 } GGZStateID;
 
 
-int ggzcore_state_add_callback(const GGZStateID id, const GGZCallback func);
-int ggzcore_state_add_callback_full(const GGZStateID id, 
-				    const GGZCallback func, 
-				    void* user_data,
-				    GGZDestroyFunc destroy);
+int ggzcore_state_add_hook(const GGZStateID id, const GGZHookFunc func);
+int ggzcore_state_add_hook_full(const GGZStateID id, 
+				const GGZHookFunc func, 
+				void* user_data);
 
 
-int ggzcore_state_remove_callback(const GGZStateID id, const GGZCallback func);
-int ggzcore_state_remove_callback_id(const GGZStateID id, 
-				     const unsigned int callback_id);
+
+int ggzcore_state_remove_hook(const GGZStateID id, const GGZHookFunc func);
+int ggzcore_state_remove_hook_id(const GGZStateID id, 
+				 const unsigned int hook_id);
 
 
 /* ggzcore_state_is_XXXX()
@@ -353,14 +363,22 @@ char** ggzcore_player_get_names(void);
 int ggzcore_player_get_table(char *name);
 
 
+/* ggzcore_error_sys()
+ * ggzcore_error_sys_exit()
+ * ggzcore_error_msg()
+ * ggzcore_error_msg_exit()
+ * 
+ * Receives:
+ * GGZEventID id        : ID code of event
+ * unsigned int hook_id : ID of hook to remove
+ *
+ * Returns:
+ * int : 0 if successful, -1 on error
+ */
 void ggzcore_debug(const GGZDebugLevel level, const char *fmt, ...);
-
 void ggzcore_error_sys(const char *fmt, ...);
-
 void ggzcore_error_sys_exit(const char *fmt, ...);
-
 void ggzcore_error_msg(const char *fmt, ...);
-
 void ggzcore_error_msg_exit(const char *fmt, ...);
 
 

@@ -29,6 +29,7 @@
 #include <ggzcore.h>
 #include <event.h>
 #include <user.h>
+#include <module.h>
 #include <msg.h>
 #include <net.h>
 #include <state.h>
@@ -50,11 +51,11 @@ int ggzcore_init(GGZOptions options)
 
 
 	/* Initialize various systems */
-	/* FIXME: Get filename and levels from conf file */
 	_ggzcore_debug_init(options.debug_levels, options.debug_file);
-	_ggzcore_state_init();
 	_ggzcore_event_init();
+	_ggzcore_state_init();
 	_ggzcore_net_init();
+/*     	_ggzcore_module_init();*/
 
 	/* Register internal callbacks for events */
 	_ggzcore_user_register();
@@ -68,9 +69,10 @@ int ggzcore_init(GGZOptions options)
 
 void ggzcore_destroy(void)
 {
+/*	_ggzcore_module_cleanup();*/
 	_ggzcore_confio_cleanup();
-	_ggzcore_event_destroy();
 	_ggzcore_state_destroy();
+	_ggzcore_event_destroy();
 	_ggzcore_debug_cleanup();
 }
 	

@@ -27,6 +27,7 @@
 #include <config.h>
 #include <ggzcore.h>
 #include <net.h>
+#include <msg.h>
 #include <protocol.h>
 #include <easysock.h>
 #include <player.h>
@@ -62,8 +63,9 @@ static void _ggzcore_net_err_func(const char *, const EsOpType,
 				  const EsDataType);
 			 
 /* Handler for GGZ_NET_ERROR event */
-static void _ggzcore_net_handle_error(GGZEventID id, void* event_data, 
-				      void* user_data);
+static GGZHookReturn _ggzcore_net_handle_error(GGZEventID id, 
+					       void* event_data, 
+					       void* user_data);
 
 
 /* Datatype for a message from the server */
@@ -127,8 +129,8 @@ void _ggzcore_net_init(void)
 	/* Install socket error handler */
 	es_err_func_set(_ggzcore_net_err_func);
 
-	/* Register callback for network error event */
-	ggzcore_event_add_callback(GGZ_NET_ERROR, _ggzcore_net_handle_error);
+	/* Register hook for network error event */
+	ggzcore_event_add_hook(GGZ_NET_ERROR, _ggzcore_net_handle_error);
 }
 
 
@@ -328,11 +330,14 @@ static void _ggzcore_net_err_func(const char * msg, const EsOpType op,
 }
 			 
 
-static void _ggzcore_net_handle_error(GGZEventID id, void* event_data, 
-				      void* user_data)
+static GGZHookReturn _ggzcore_net_handle_error(GGZEventID id, 
+					       void* event_data, 
+					       void* user_data)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Network error: %s", (char*)event_data);
 	_ggzcore_net_disconnect();
+
+	return GGZ_HOOK_OK;
 }
 
 

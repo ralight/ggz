@@ -30,11 +30,22 @@
 #include <hook.h>
 #include <state.h>
 #include <net.h>
+#include <msg.h>
 
 #include <errno.h>
 #include <poll.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+/* Static functions */
+static void _ggzcore_hook_remove_actual(GGZHookList *list, 
+					struct _GGZHook *hook,
+					struct _GGZHook *prev);
+
+/* No publicly Exported functions */
+
+
+/* Internal library functions (prototypes in hook.h) */
 
 
 /* _ggzcore_hook_list_init() - Allocate room for and initialize a hook
@@ -63,14 +74,14 @@ GGZHookList* _ggzcore_hook_list_init(const unsigned int id)
  *
  * Receives:
  * GGZHookList* list : Hooklist to which we are adding function
- * GGZCallback func  : Callback function
+ * GGZHookFunc func  : Callback function
  *
  * Returns:
  * int : id for this callback 
  */
-int _ggzcore_hook_add(GGZHookList* list, const GGZCallback func)
+int _ggzcore_hook_add(GGZHookList* list, const GGZHookFunc func)
 {
-	return _ggzcore_hook_add_full(list, func, NULL, NULL);
+	return _ggzcore_hook_add_full(list, func, NULL);
 }
 
 
@@ -79,15 +90,16 @@ int _ggzcore_hook_add(GGZHookList* list, const GGZCallback func)
  * 
  * Receives:
  * GGZHookList* list     : Hooklist to which we are adding function
- * GGZCallback func      : Callback function
+ * GGZHookFunc func      : Callback function
  * void* user_data       : "User" data to pass to callback
  * GGZDestroyFunc destroy: function to call to free user data
  *
  * Returns:
  * int : id for this callback 
  */
-int _ggzcore_hook_add_full(GGZHookList* list, const GGZCallback func,
-			   void* user_data, GGZDestroyFunc destroy)
+int _ggzcore_hook_add_full(GGZHookList* list, 
+			   const GGZHookFunc func,
+			   void* user_data)
 {
 	struct _GGZHook *hook, *cur, *next;
 	
@@ -98,7 +110,6 @@ int _ggzcore_hook_add_full(GGZHookList* list, const GGZCallback func,
 	hook->id = list->seq_id++;
 	hook->func = func;
 	hook->user_data = user_data;
-	hook->destroy = destroy;
 
 	/* Append onto list of callbacks */
 	if ( (next = list->hooks) == NULL)
@@ -119,11 +130,8 @@ int _ggzcore_hook_add_full(GGZHookList* list, const GGZCallback func,
  *
  * Receives:
  * GGZHookList* list : Hooklist from which to remove hooks
- *
- * Returns:
- * int : 0 if successful, -1 on error
  */
-int _ggzcore_hook_remove_all(GGZHookList *list)
+void _ggzcore_hook_remove_all(GGZHookList *list)
 {
 	struct _GGZHook *cur, *next;
 
@@ -131,12 +139,9 @@ int _ggzcore_hook_remove_all(GGZHookList *list)
 	while (next) {
 		cur = next;
 		next = cur->next;
-		/* FIXME: need to worry about freeing user_data */
 		free(cur);
 	}
 	list->hooks = NULL;
-	
-	return 0;
 }
 
 
@@ -151,28 +156,21 @@ int _ggzcore_hook_remove_all(GGZHookList *list)
  */
 int _ggzcore_hook_remove_id(GGZHookList *list, const unsigned int id)
 {
+	int status = -1;
 	struct _GGZHook *cur, *prev = NULL;
 
 	cur = list->hooks;
-	while (cur && cur->id != id) {
+	while (cur && (cur->id != id)) {
 		prev = cur;
 		cur = cur->next;
 	}
 	
 	if (cur) {
-		/* Special case if it was first in the list */
-		if (!prev)
-			list->hooks = cur->next;
-		else
-			prev->next = cur->next;
-
-		/* FIXME: Worry about freeing user_data */
-		free(cur);
-		return 0;
+		_ggzcore_hook_remove_actual(list, cur, prev);
+		status = 0;
 	}
-	/* Couldn't find it! */
-	else 
-		return -1;
+	
+	return status;
 }
 
 
@@ -180,35 +178,28 @@ int _ggzcore_hook_remove_id(GGZHookList *list, const unsigned int id)
  *
  * Receives:
  * GGZHookList* list : Hooklist from which to remove hoook
- * GGZCallback func  : pointer to hook function 
+ * GGZHookFunc func  : pointer to hook function 
  *
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int _ggzcore_hook_remove(GGZHookList *list, const GGZCallback func)
+int _ggzcore_hook_remove(GGZHookList *list, const GGZHookFunc func)
 {
+	int status = -1;
 	struct _GGZHook *cur, *prev = NULL;
 
 	cur = list->hooks;
-	while (cur && cur->func != func) {
+	while (cur && (cur->func != func)) {
 		prev = cur;
 		cur = cur->next;
 	}
 
 	if (cur) {
-		/* Special case if it was first in the list */
-		if (!prev)
-			list->hooks = cur->next;
-		else
-			prev->next = cur->next;
-
-		/* FIXME: Worry about freeing user_data */
-		free(cur);
-		return 0;
+		_ggzcore_hook_remove_actual(list, cur, prev);
+		status = 0;
 	}
-	/* Couldn't find it! */		
-	else 
-		return -1;
+	
+	return status;
 }
 
 
@@ -217,22 +208,38 @@ int _ggzcore_hook_remove(GGZHookList *list, const GGZCallback func)
  * Receives:
  * GGZHookList *list : list of hooks to invoke
  * void *data        : commin data passed to all hook functions in list
+ *
+ * Returns:
+ * GGZ_HOOK_OK     if all hooks execute properly (even if some are removed)
+ * GGZ_HOOK_ERROR  if at least one hook returned an error message
+ * GGZ_HOOK_CRISIS if a hook terminated the sequence with a crisis
  */
-void _ggzcore_hook_list_invoke(GGZHookList *list, void *data)
+GGZHookReturn _ggzcore_hook_list_invoke(GGZHookList *list, void *event_data)
 {
-	struct _GGZHook *cur;
-	struct _GGZHook copy; 
-	
-	for (cur = list->hooks; cur != NULL; cur = copy.next) {
-		/* We make a copy in case the function removes the
-		   hook out from under us */
-		copy = *cur;
-		(*copy.func)(list->id, data, copy.user_data);
+	GGZHookReturn status, retval = GGZ_HOOK_OK;
+	struct _GGZHook *cur, *next, *prev = NULL;
+
+	cur = list->hooks;
+	while (cur != NULL) {
+		next = cur->next;
+		status = (cur->func)(list->id, event_data, cur->user_data);
 		
-		/* Free callback specific data */
-		if (copy.user_data && copy.destroy)
-			(*copy.destroy)(copy.user_data);
+		if (status == GGZ_HOOK_ERROR)
+			retval = GGZ_HOOK_ERROR;
+		else if (status == GGZ_HOOK_REMOVE) {
+			_ggzcore_hook_remove_actual(list, cur, prev);
+			cur = prev;
+		}
+		else if (status == GGZ_HOOK_CRISIS) {
+			retval = GGZ_HOOK_CRISIS;
+			break;
+		}
+		
+		prev = cur;
+		cur = next;
 	}
+	
+	return retval;
 }
 
 
@@ -247,4 +254,34 @@ void _ggzcore_hook_list_destroy(GGZHookList *list)
 	free(list);
 }
 
+
+/* _ggzcore_hook_list_dump() - Dump list of hooks to screen for debugging
+ *
+ * Receives:
+ * GGZHookList *list : hooklist to destroy
+ */
+void _ggzcore_hook_list_dump(GGZHookList *list)
+{
+	struct _GGZHook *cur;
+	
+	for (cur = list->hooks; cur != NULL; cur = cur->next)
+		ggzcore_debug(GGZ_DBG_HOOK, "  Hook id %d", cur->id);
+}
+
+
+/* Static functions internal to this file */
+
+/* Remove a particular hook node (prev should be NULL for first node) */
+static void _ggzcore_hook_remove_actual(GGZHookList *list, 
+					struct _GGZHook *hook,
+					struct _GGZHook *prev)
+{
+	/* Special case if it was first in the list */
+	if (!prev)
+		list->hooks = hook->next;
+	else
+		prev->next = hook->next;
+	
+	free(hook);
+}
 

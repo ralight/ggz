@@ -37,7 +37,7 @@
 
 
 /* Workhorse function for actually outputting messages */
-static void err_doit(int flag, const char *fmt, va_list ap);
+static void err_doit(int flag, const char *prefix, const char *fmt, va_list ap);
 
 /* Debug file pointer */
 static FILE * debug_file;
@@ -50,11 +50,58 @@ void ggzcore_debug(GGZDebugLevel level, const char *fmt, ...)
 {
 #ifdef DEBUG
 	va_list ap;
-
+	char *prefix;
+  
 	/* Only display information if that level was enabled */
 	if (debug_levels & level) {
+
+		switch (level) {
+		case GGZ_DBG_EVENT:
+			prefix = "EVENT";
+			break;
+		case GGZ_DBG_NET:
+			prefix = "NET";
+			break;
+		case GGZ_DBG_USER:
+			prefix = "USER";
+			break;
+		case GGZ_DBG_SERVER:
+			prefix = "SERVER";
+			break;
+		case GGZ_DBG_CONF:
+			prefix = "CONF";
+			break;
+		case GGZ_DBG_POLL:
+			prefix = "POLL";
+			break;
+		case GGZ_DBG_STATE:
+			prefix = "STATE";
+			break;
+		case GGZ_DBG_PLAYER:
+			prefix = "PLAYER";
+			break;
+		case GGZ_DBG_ROOM:
+			prefix = "ROOM";
+			break;
+		case GGZ_DBG_TABLE:
+			prefix = "TABLE";
+			break;
+		case GGZ_DBG_GAMETYPE:
+			prefix = "GAMETYPE";
+			break;
+		case GGZ_DBG_HOOK:
+			prefix = "HOOK";
+			break;
+		case GGZ_DBG_INIT:
+			prefix = "INIT";
+			break;
+		default:
+			prefix = "DEBUG";
+			break;
+		}
+
 		va_start(ap, fmt);
-		err_doit(0, fmt, ap);
+		err_doit(0, prefix, fmt, ap);
 		va_end(ap);
 	}
 #endif
@@ -66,7 +113,7 @@ void ggzcore_error_sys(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(1, fmt, ap);
+	err_doit(1, "GGZCORE", fmt, ap);
 	va_end(ap);
 }
 
@@ -76,7 +123,7 @@ void ggzcore_error_sys_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(1, fmt, ap);
+	err_doit(1, "GGZCORE", fmt, ap);
 	va_end(ap);
 	/*cleanup(); */
 	exit(-1);
@@ -88,7 +135,7 @@ void ggzcore_error_msg(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(0, fmt, ap);
+	err_doit(0, "GGZCORE", fmt, ap);
 	va_end(ap);
 }
 
@@ -98,7 +145,7 @@ void ggzcore_error_msg_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(1, fmt, ap);
+	err_doit(1, "GGZCORE", fmt, ap);
 	va_end(ap);
 	/*cleanup(); */
 	exit(-1);
@@ -122,7 +169,7 @@ void _ggzcore_debug_cleanup(void)
 }
 
 
-static void err_doit(int flag, const char *fmt, va_list ap)
+static void err_doit(int flag, const char* prefix, const char *fmt, va_list ap)
 {
 	char buf[4096];
 	unsigned int size;
@@ -135,6 +182,10 @@ static void err_doit(int flag, const char *fmt, va_list ap)
 #else
 	buf[0] = '\0';
 #endif
+
+	if (prefix)
+		sprintf(buf + strlen(buf), "(%s) ", prefix);
+	
 
 	vsnprintf(buf + strlen(buf), (size - strlen(buf)), fmt, ap);
 	if (flag)
