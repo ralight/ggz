@@ -2,7 +2,7 @@ SUBDIRS = .
 
 KSTUFF = $(all_libraries) $(KDE_PLUGIN) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT)
 
-lib_LTLIBRARIES = libkcm_ggz_default.la libkcm_ggz_metaserver.la libkcm_ggz_ggzd.la libkcm_ggz_games.la
+kde_module_LTLIBRARIES = libkcm_ggz_default.la libkcm_ggz_metaserver.la libkcm_ggz_ggzd.la libkcm_ggz_games.la
 noinst_LTLIBRARIES = libkcm_ggz_drs.la
 
 libkcm_ggz_default_la_SOURCES = kcm_ggz_default.cpp
