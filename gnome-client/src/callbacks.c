@@ -75,14 +75,23 @@ on_entLogin_changed			(GtkEntry       *widget,
 	}
 
 	/*Set the buttons sensitivity*/
-	tmp = lookup_widget (interface, "btnLogin");
 	if (form[0] == TRUE && form[1] == TRUE && form[2] == TRUE)
 	{
+		tmp = lookup_widget (interface, "btnLogin");
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), TRUE);
 	} else {
+		tmp = lookup_widget (interface, "btnLogin");
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
 	}
-	tmp = lookup_widget (interface, "btnNewCreate");
+	tmp = lookup_widget (interface, "btnGuest");
+	if (form[0] == TRUE && form[2] == TRUE && gtk_toggle_button_get_active (tmp) == TRUE)
+	{
+		tmp = lookup_widget (interface, "btnLogin");
+		gtk_widget_set_sensitive (GTK_WIDGET(tmp), TRUE);
+	} else {
+		tmp = lookup_widget (interface, "btnLogin");
+		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
+	}tmp = lookup_widget (interface, "btnNewCreate");
 	if (form[3] == TRUE && form[4] == TRUE && form[5] == TRUE)
 	{
 		gtk_widget_set_sensitive (GTK_WIDGET (tmp), TRUE);
