@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4426 2002-09-07 02:37:52Z jdorje $
+ * $Id: ggzclient.c 4440 2002-09-07 17:49:13Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -1042,6 +1042,14 @@ void display_tables(void)
 	
 	/* "Thaw" the clist (it was "frozen" up above). */
 	gtk_clist_thaw(GTK_CLIST(tmp));
+
+	/* When the tables get redrawn, there is no longer a selected table.
+	   We call this function to give a notification of that.  But, there
+	   could be a major problem: if the table list changes constantly
+	   (i.e. a busy server) we won't be able to have a consistent
+	   selection.  The solution will be to reference tables by ID, not
+	   just by index.  --JDS */
+	reset_table_selection();
 }
 
 

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 4438 2002-09-07 13:36:55Z jdorje $
+ * $Id: client.c 4440 2002-09-07 17:49:13Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -911,8 +911,6 @@ static void client_start_table_join(void)
 		}
 	}
 
-	tablerow = -1;
-
 	/* Initialize a game module */
 	spectating = 0;
 	if (game_init(0) == 0) {
@@ -949,8 +947,6 @@ static void client_start_table_watch(void)
 	}
 #endif
 
-	tablerow = -1;
-
 	/* Initialize a game module */
 	spectating = 1;
 	if (game_init(1) == 0) {
@@ -959,6 +955,12 @@ static void client_start_table_watch(void)
 			game_destroy();
 		}
 	}
+}
+
+
+void reset_table_selection(void)
+{
+	tablerow = -1;
 }
 
 
