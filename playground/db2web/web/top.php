@@ -1,6 +1,6 @@
 <table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>
 <table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>
-<a href='index.php'><img src='ggzlogogreen.png' align='middle' border=0 alt="ggzlogo"></a>
+<a href='/'><img src='ggzlogogreen.png' align='middle' border=0 alt="ggzlogo"></a>
 &nbsp;&nbsp;
 <font color='#000000' size=5>
 GGZ Gaming Zone Ranking System

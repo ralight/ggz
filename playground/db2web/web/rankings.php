@@ -55,8 +55,6 @@ function rankings_players($id, $lookup)
 		$tournament = pg_result($res, $i, "tournament");
 		$place = pg_result($res, $i, "place");
 
-		$date = date("d.m.Y", $stamp);
-
 		if ($place == 1) :
 			$ranking = "1st place";
 			$icon = "cupgold.png";
@@ -68,6 +66,10 @@ function rankings_players($id, $lookup)
 		$res2 = pg_exec($id, "SELECT * FROM tournaments WHERE id = $tournament");
 		$game = pg_result($res2, 0, "game");
 		$name = pg_result($res2, 0, "name");
+		$stamp = pg_result($res2, 0, "date");
+
+		$date = date("d.m.Y", $stamp);
+
 
 		echo "<img src='ggzicons/rankings/$icon' title='$ranking'>\n";
 		echo "Tournament '$name' of gametype $game ($date): $ranking\n";
