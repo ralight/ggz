@@ -369,7 +369,7 @@ GGZHookReturn net_hook_fail(unsigned int id, const void *event_data, const void 
 /* Callback for new players coming in */
 GGZHookReturn net_hook_roomenter(unsigned int id, const void *event_data, const void *user_data)
 {
-	char *player;
+	const char *player;
 	const GGZRoomChangeEventData *data = event_data;
 
 	player = data->player_name;
@@ -382,7 +382,7 @@ GGZHookReturn net_hook_roomenter(unsigned int id, const void *event_data, const 
 /* Callback for players leaving the room */
 GGZHookReturn net_hook_roomleave(unsigned int id, const void *event_data, const void *user_data)
 {
-	char *player;
+	const char *player;
 	const GGZRoomChangeEventData *data = event_data;
 
 	player = data->player_name;
