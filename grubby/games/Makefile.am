@@ -1,2 +1,2 @@
-SUBDIRS = guru-ttt
+SUBDIRS = lib guru-ttt guru-chess
 

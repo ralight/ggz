@@ -408,7 +408,6 @@ void net_internal_game(GGZPlayer *player)
 				ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED, net_hook_launched);
 				ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, net_hook_negotiated);
 				ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, net_hook_playing);
-				ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, net_hook_over);
 
 				ggzcore_game_launch(game);
 			}
