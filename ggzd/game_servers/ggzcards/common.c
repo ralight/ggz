@@ -1302,8 +1302,10 @@ void init_game()
 		(bid_t *) alloc(game.max_bid_choices * sizeof(bid_t));
 
 	set_global_message("", "%s", "");
-	for (s = 0; s < game.num_seats; s++)
-		game.seats[s].message[0] = 0;
+	/* This is no longer necessary under the put_player_message system
+	   for (s = 0; s < game.num_seats; s++)
+	   game.seats[s].message[0] = 0;
+	 */
 	if (game.bid_texts == NULL || game.bid_choices == NULL) {
 		ggz_debug("ERROR: SERVER BUG: "
 			  "game.bid_texts not allocated.");

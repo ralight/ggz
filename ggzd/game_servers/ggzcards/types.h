@@ -56,7 +56,7 @@ struct game_seat_t
 	hand_t hand;
 	card_t table;
 	struct ggz_seat_t *ggz;	/* ggz seat data; probably points to something in ggz_seats */
-	char message[MAX_MESSAGE_LENGTH];
+	char *pmessage;		/* the "player message" (really associated with a seat) */
 };
 typedef int seat_t;		/* just to make things clearer */
 

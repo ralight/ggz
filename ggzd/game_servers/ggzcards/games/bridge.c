@@ -299,29 +299,29 @@ static int bridge_get_bid_text(char* buf, int buf_len, bid_t bid)
 static void bridge_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
-	char* message = game.seats[s].message;
-	int len = 0;
 
 /*
 	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d|%d\n", BRIDGE.points_above_line[p%2], BRIDGE.points_below_line[p%2]);
 */
+	put_player_message(s, "");
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 		if (p == BRIDGE.declarer)
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
+			add_player_message(s, "declarer\n");
 		if (p == BRIDGE.dummy)
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dummy\n");
+			add_player_message(s, "dummy\n");
 	}
 	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks+game.players[(p+2)%4].tricks);
+			add_player_message(s, "Tricks: %d\n", game.players[p].tricks+game.players[(p+2)%4].tricks);
 	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
 			char bid_text[game.max_bid_length];
 			game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
-			if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
+			if (*bid_text)
+				add_player_message(s, "Bid: %s\n", bid_text);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");	
+		add_player_message(s, "Bidding...");	
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
+		add_player_message(s, "Playing...");
 }
 
 static void bridge_end_trick()

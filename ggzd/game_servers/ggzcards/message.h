@@ -23,22 +23,34 @@
  */
 
 
-extern void init_messages();
+extern void init_messages();	/* initializes all necessary message data */
 
-extern void send_player_message(seat_t, player_t);
-extern void send_player_message_toall(seat_t);
-extern void set_player_message(player_t p);
-extern void set_all_player_messages();
+/* Note the difference between set_player_message and set_global_message.  They
+ * have similar names, but behave quite differently.  This is because global and
+ * player messages are handled quite differently.  Global messages are set at
+ * specific points in the code, and sent out to the clients as-is.  Player
+ * messages are set by a specific function in the code, so the rest of the code
+ * just calls set_player_message() to have them automatically set up and sent
+ * out. */
 
-extern void send_global_message(char *, player_t);
-extern void send_global_message_toall(char *);
-extern void send_all_global_messages(player_t p);
-extern void set_global_message(char *, char *, ...);
-extern char *get_global_message(char *);
+/* player messages */
+extern void send_player_message(seat_t, player_t);	/* sends the seat's message to one player */
+extern void send_player_message_toall(seat_t);	/* sends the seat's message to all players */
+extern void put_player_message(seat_t s, char *, ...);	/* sets the player message for the appropriate seat, printf-style. */
+extern void add_player_message(seat_t s, char *fmt, ...);	/* adds to an existing player message */
+extern void set_player_message(player_t p);	/* calls the appropriate game set_player_message function, then sends mesage to everyone */
+extern void set_all_player_messages();	/* calls set_player_message for all players */
+
+/* global messages */
+extern void send_global_message(char *, player_t);	/* simply sends the current message */
+extern void send_global_message_toall(char *);	/* sends the current message to everyone */
+extern void send_all_global_messages(player_t p);	/* sends _all_ messages to one player */
+extern void set_global_message(char *, char *, ...);	/* sets the global message (sprintf-stype), and sends it to everyone */
+extern char *get_global_message(char *);	/* returns the message */
 
 /* the following are automated messages */
-extern void send_last_hand();
-extern void send_last_trick();
-extern void init_cumulative_scores();
-extern void update_cumulative_scores();
-extern void send_bid_history();
+extern void send_last_hand();	/* sends a listing of the cards in the last hand */
+extern void send_last_trick();	/* sends a listing of the cards on the last trick */
+extern void init_cumulative_scores();	/* initialized the "cumulative scores" tracking */
+extern void update_cumulative_scores();	/* updates the "cumulative scores", and sends new one */
+extern void send_bid_history();	/* sends the bid history from the current hand */

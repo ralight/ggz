@@ -439,31 +439,26 @@ int game_get_bid_text(char *buf, int buf_len, bid_t bid)
 void game_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
-	char *message = game.seats[s].message;
-	int len = 0;
 
-	/* This function is tricky.  The problem is that we're trying to assemble a 
-	   single player string out of multiple units of data - score, bid, tricks, 
-	   etc.  The solution here is to integrate these all into one
-	   function (this one).  The problem is that you have to check each unit of 
-	   data to see if it should be shown - for instance, tricks should only be 
-	   shown while the hand is being played.  Another solution would be to update 
-	   things separately.  The disadvantage there is that the code is all 
-	   spread out, and it's difficult to deal with multiple units of data */
+	/* This function is tricky.  The problem is that we're trying to
+	   assemble a single player string out of multiple units of data -
+	   score, bid, tricks, etc.  The solution here is to integrate
+	   these all into one function (this one).  You have to check each
+	   unit of data to see if it should be shown - for instance, tricks
+	   should only be shown while the hand is being played.  Another
+	   solution would be to update things separately.  The disadvantage
+	   there is that the code is all spread out, and it's difficult to
+	   deal with multiple units of data */
 
 	/* Note that this way depends on this function being called at the proper 
 	   times - every time the player is affected, and on some game state 
 	   changes.  Much of this is handled by the game-independent code */
 
-	/* did I mention this was really ugly?  It could be much worse... */
-
-	len += snprintf(message + len, MAX_MESSAGE_LENGTH - len,
-			"Score: %d\n", game.players[p].score);
+	put_player_message(s, "Score: %d\n", game.players[p].score);
 	if (game.state == WH_STATE_WAIT_FOR_PLAY
 	    || game.state == WH_STATE_NEXT_TRICK
 	    || game.state == WH_STATE_NEXT_PLAY)
-		len += snprintf(message + len, MAX_MESSAGE_LENGTH - len,
-				"Tricks: %d\n", game.players[p].tricks);
+		add_player_message(s, "Tricks: %d\n", game.players[p].tricks);
 	if ((game.state == WH_STATE_NEXT_BID
 	     || game.state == WH_STATE_WAIT_FOR_BID)
 	    && game.players[p].bid_count > 0) {
@@ -471,16 +466,12 @@ void game_set_player_message(player_t p)
 		game.funcs->get_bid_text(bid_text, game.max_bid_length,
 					 game.players[p].bid);
 		if (*bid_text)
-			len += snprintf(message + len,
-					MAX_MESSAGE_LENGTH - len, "Bid: %s\n",
-					bid_text);
+			add_player_message(s, "Bid: %s\n", bid_text);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		len += snprintf(message + len, MAX_MESSAGE_LENGTH - len,
-				"Bidding...");
+		add_player_message(s, "Bidding...");
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		len += snprintf(message + len, MAX_MESSAGE_LENGTH - len,
-				"Playing...");
+		add_player_message(s, "Playing...");
 }
 
 /* game_end_trick

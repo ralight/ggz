@@ -57,14 +57,56 @@ void init_messages()
 void send_player_message(seat_t s, player_t p)
 {
 	int fd = ggz_seats[p].fd;
-	if (fd == -1)
+	if (ggz_seats[p].assign == GGZ_SEAT_BOT ||
+	    game.seats[s].pmessage == NULL)
 		return;
 	ggz_debug("Sending seat %d/%s's message to player %d/%s: %s", s,
 		  game.seats[s].ggz->name, p, ggz_seats[p].name,
-		  game.seats[s].message);
-	es_write_int(fd, WH_MESSAGE_PLAYER);
-	es_write_int(fd, CONVERT_SEAT(s, p));
-	es_write_string(fd, game.seats[s].message);
+		  game.seats[s].pmessage);
+	if (es_write_int(fd, WH_MESSAGE_PLAYER) < 0 ||
+	    es_write_int(fd, CONVERT_SEAT(s, p)) < 0 ||
+	    es_write_string(fd, game.seats[s].pmessage) < 0)
+		ggz_debug("ERROR: failed to send player message.");
+}
+
+static void doput_player_message(seat_t s, char *msg)
+{
+	if (game.seats[s].pmessage != NULL)
+		free(game.seats[s].pmessage);
+	game.seats[s].pmessage = strdup(msg);
+	if (game.seats[s].pmessage == NULL) {
+		ggz_debug("ERROR: " "bad strdup.");
+		exit(-1);
+	}
+}
+
+void put_player_message(seat_t s, char *fmt, ...)
+{
+	char buf[4096];
+
+	va_list ap;
+	va_start(ap, fmt);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
+	va_end(ap);
+
+	doput_player_message(s, buf);
+}
+
+void add_player_message(seat_t s, char *fmt, ...)
+{
+	va_list ap;
+	char buf[4096] = "";
+	int len;
+
+	if (game.seats[s].pmessage != NULL)
+		strcpy(buf, game.seats[s].pmessage);
+	len = strlen(buf);
+
+	va_start(ap, fmt);
+	vsnprintf(buf + len, sizeof(buf) - len, fmt, ap);
+	va_end(ap);
+
+	doput_player_message(s, buf);
 }
 
 /* send_player_message_toall

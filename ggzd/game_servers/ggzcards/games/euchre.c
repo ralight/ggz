@@ -223,22 +223,20 @@ static int euchre_get_bid_text(char* buf, int buf_len, bid_t bid)
 static void euchre_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
-	char* message = game.seats[s].message;
-	int len = 0;
 
-	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
+	put_player_message(s, "Score: %d\n", game.players[p].score);
 	if (game.state == WH_STATE_FIRST_BID || game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
 		if (p == game.dealer)
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dealer\n");
+			add_player_message(s, "dealer\n");
 	} else
 		if (p == EUCHRE.maker)
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "maker\n");
+			add_player_message(s, "maker\n");
 	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks + game.players[(p+2)%4].tricks);
+		add_player_message(s, "Tricks: %d\n", game.players[p].tricks + game.players[(p+2)%4].tricks);
 	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");	
+		add_player_message(s, "Bidding...");	
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
+		add_player_message(s, "Playing...");
 }
 
 static void euchre_end_trick()

@@ -196,30 +196,30 @@ static int spades_get_bid_text(char* buf, int buf_len, bid_t bid)
 static void spades_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
-	char* message = game.seats[s].message;
-	int len = 0;
 
-	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
+	put_player_message(s, "Score: %d\n", game.players[p].score);
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 		/* we show both the individual and team contract */
 		char bid_text[game.max_bid_length];
 		int contract = game.players[p].bid.sbid.val + game.players[(p+2)%4].bid.sbid.val;
 		game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
-		if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s (%d)\n", bid_text, contract);
+		if (*bid_text)
+			add_player_message(s, "Bid: %s (%d)\n", bid_text, contract);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY) {
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d (%d)\n",
+		add_player_message(s, "Tricks: %d (%d)\n",
 			game.players[p].tricks, game.players[p].tricks + game.players[(p+2)%4].tricks);
 	}
 	if ( (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) && game.players[p].bid_count > 0) {
 			char bid_text[game.max_bid_length];
 			game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
-			if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
+			if (*bid_text)
+				add_player_message(s, "Bid: %s\n", bid_text);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");	
+		add_player_message(s, "Bidding...");	
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
+		add_player_message(s, "Playing...");
 }
 
 static void spades_end_trick()

@@ -222,7 +222,6 @@ static void sueca_set_player_message(player_t p)
   /*char rubber[4] = {' ', ' ', ' ', ' '}*/
   int score_this_hand;
   seat_t s = game.players[p].seat;
-  char* message = game.seats[s].message;
   char status[] = "Playing";
 
   /* The player information should be like this:
@@ -251,7 +250,7 @@ static void sueca_set_player_message(player_t p)
   score_this_hand = GSUECA.points_on_hand[p] + GSUECA.points_on_hand[(p+2)%4];
   if (!(game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play))
     sprintf(status, " ");
-  sprintf(message, "Score:\nIn the game: %d\nIn the hand: %d\n%s", game.players[p].score, score_this_hand, status);
+  put_player_message(s, "Score:\nIn the game: %d\nIn the hand: %d\n%s", game.players[p].score, score_this_hand, status);
 
   /* Waiting
    * sprintf(message, "  Rubber \n    %c    \n    |    \n %c--O--%c \n    |    \n    %c    \nThis hand: %d\n%s", rubber[3], rubber[2], rubber[1], rubber[0], score_this_hand, status); */

@@ -223,27 +223,26 @@ static int lapocha_get_bid_text(char* buf, int buf_len, bid_t bid)
 static void lapocha_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
-	char* message = game.seats[s].message;
-	int len = 0;
 
-	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
+	put_player_message(s, "Score: %d\n", game.players[p].score);
 	if (p == game.dealer)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dealer\n");
+		add_player_message(s, "dealer\n");
 	if (game.state >= WH_STATE_FIRST_TRICK && game.state <= WH_STATE_WAIT_FOR_PLAY) {
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Contract: %d\n", (int)game.players[p].bid.bid);
+		add_player_message(s, "Contract: %d\n", (int)game.players[p].bid.bid);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks);
+			add_player_message(s, "Tricks: %d\n", game.players[p].tricks);
 	if ( (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID)
 	      && game.players[p].bid_count > 0) {
 		char bid_text[game.max_bid_length];
 		game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
-		if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
+		if (*bid_text)
+			add_player_message(s, "Bid: %s\n", bid_text);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");	
+		add_player_message(s, "Bidding...");	
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
+		add_player_message(s, "Playing...");
 }
 
 static void lapocha_end_hand()
