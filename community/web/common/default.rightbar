@@ -29,4 +29,12 @@ latest_blogs();
 latest_forumposts();
 ?>
 	</div>
+
+	<hr class="leather">
+
+	<div class="menubar">
+		<h1>Players worldwide</h1>
+
+		<img src="/images/mundomap.png">
+	</div>
 </div>
