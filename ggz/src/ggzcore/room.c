@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 5436 2003-02-22 06:46:20Z jdorje $
+ * $Id: room.c 5863 2004-02-09 08:28:20Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -816,11 +816,21 @@ void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, int status)
 }
 
 
+/* OK, we've joined a table.  Deal with it. */
 void _ggzcore_room_set_table_join(GGZRoom *room, int table_index)
 {
 	ggz_debug(GGZCORE_DBG_ROOM, "Player joined table %d.", table_index);
 	_ggzcore_server_set_table_join_status(room->server, E_OK);
 	_ggzcore_room_event(room, GGZ_TABLE_JOINED, &table_index);
+
+	if (_ggzcore_server_get_cur_game(room->server) == NULL) {
+		/* GGZd thinks we're at a table but we know there's no game
+		 * client running.  Probably the game client exited during the
+		 * connection process.  So, tell ggzd that we've left. */
+		if (_ggzcore_room_leave_table(room, 1) < 0) {
+			/* Uh-oh; this shouldn't happen. */
+		}
+	}
 }
 					   
 
@@ -1009,14 +1019,20 @@ int _ggzcore_room_leave_table(struct _GGZRoom *room, int force)
 	GGZGame *game = ggzcore_server_get_cur_game(room->server);
 	int spectating;
 
-	/* Make sure we're at a table (FIXME: should probably make
+	/* Game may be NULL if the game client has already exited. */
+
+	/* Make sure we're at a table. (FIXME: should probably make
            sure we're in *this* room) */
-	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_AT_TABLE
-	    || !game)
+	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_AT_TABLE) {
 		return -1;
+	}
 
 	net = _ggzcore_server_get_net(room->server);
-	spectating = _ggzcore_game_is_spectator(game);
+	if (game) {
+		spectating = _ggzcore_game_is_spectator(game);
+	} else {
+		spectating = 0;
+	}
 	status = _ggzcore_net_send_table_leave(net, force, spectating);
 
 	if (status == 0)

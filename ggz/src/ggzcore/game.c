@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 5862 2004-02-09 04:58:25Z jdorje $
+ * $Id: game.c 5863 2004-02-09 08:28:20Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -338,7 +338,7 @@ static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event, void *dat
 		
 	case GGZMOD_STATE_DONE:
 		ggz_debug(GGZCORE_DBG_GAME, "Game now done");
-		/*_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);*/
+		/* Leave the game running. */
 		break;
 
 	default:
@@ -563,6 +563,33 @@ int _ggzcore_game_get_control_fd(struct _GGZGame *game)
 	return ggzmod_get_fd(game->client);
 }
 
+/*
+ * Called when the game client fails.  Most likely the user has just
+ * exited.  Make sure ggzd knows we've left the table.
+ */
+static void abort_game(struct _GGZGame *game)
+{
+	GGZTableLeaveEventData event_data = {reason: GGZ_LEAVE_NORMAL,
+					     player: NULL};
+	GGZServer *server = game->server;
+	GGZRoom *room = _ggzcore_server_get_cur_room(server);
+
+	if (room) {
+		_ggzcore_room_table_event(room, GGZ_TABLE_LEFT, &event_data);
+	}
+
+	if (room && ggzcore_server_get_state(server) == GGZ_STATE_AT_TABLE) {
+		(void) ggzcore_room_leave_table(room, 1);
+	}
+
+	/* Make sure current game is free.  This way even if the leave
+	 * failed above, we'll know to leave later. */
+	game = _ggzcore_server_get_cur_game(server);
+	if (game) {
+		ggzcore_game_free(game);
+	}
+}
+
 int _ggzcore_game_read_data(struct _GGZGame *game)
 {
 	int status;
@@ -571,7 +598,7 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 	ggz_debug(GGZCORE_DBG_GAME, "Result of reading from game: %d", status);
 
 	if (status < 0) {
-		_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);
+		abort_game(game);
 		ggzmod_disconnect(game->client);
 	}
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5006 2002-10-23 15:23:22Z jzaun $
+ * $Id: game.c 5863 2004-02-09 08:28:20Z jdorje $
  *
  * Functions for handling game events
  *
@@ -41,7 +41,6 @@ static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_playing(GGZGameEvent, void *, void*);
-static GGZHookReturn game_over(GGZGameEvent, void *, void*);
 
 extern GGZServer *server;
 GGZGame *game;
@@ -126,7 +125,6 @@ static void game_register(GGZGame *game)
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, game_playing);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, game_over);
 }
 
 
@@ -191,16 +189,3 @@ static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, void* user_
 //	}
 	return GGZ_HOOK_OK;
 }
-
-
-static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_data)
-{
-	GGZRoom *room;
-
-	game_quit();
-	room = ggzcore_server_get_cur_room(server);
-	ggzcore_room_leave_table(room, 0);
-
-	return GGZ_HOOK_OK;
-}
-

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5818 2004-02-07 09:52:52Z josef $
+ * $Id: ggzcore.h 5863 2004-02-09 08:28:20Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -455,19 +455,6 @@ typedef enum {
 	/** Game reached the 'playing' state.
 	 *  @param data NULL */
 	GGZ_GAME_PLAYING,
-
-	/** A game is over. The player is going to leave the table.
-	 *  @todo Currently IO errors cause this event.
-	 *  @param data NULL */
-	GGZ_GAME_OVER,
-
-	/** Error: An input/output error happened.
-	 *  @todo Currently this can't actually happen... */
-	GGZ_GAME_IO_ERROR,
-
-	/** Error: Protocol error caused by the game.
-	 *  @todo Currently this can't actually happen... */
-	GGZ_GAME_PROTO_ERROR,
 } GGZGameEvent;
 
 

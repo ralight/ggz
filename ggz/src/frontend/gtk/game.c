@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5834 2004-02-07 23:18:02Z jdorje $
+ * $Id: game.c 5863 2004-02-09 08:28:20Z jdorje $
  *
  * Functions for handling game events
  *
@@ -53,8 +53,6 @@ static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_playing(GGZGameEvent, void*, void*);
-static GGZHookReturn game_over(GGZGameEvent, void *, void*);
-static GGZHookReturn game_delayed_leave(GGZServerEvent, void *, void *);
 static void game_input_removed(gpointer data);
 
 GGZGame *game;
@@ -230,8 +228,7 @@ void game_quit(void)
 
 void game_destroy(void)
 {
-	if (game)
-		ggzcore_game_free(game);
+	ggzcore_game_free(ggzcore_server_get_cur_game(server));
 	game = NULL;
 }
 
@@ -250,8 +247,6 @@ static void game_register(GGZGame *game)
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, game_playing);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, game_over);
-	/* FIXME: handle IO_ERROR and PROTO_ERROR events */
 }
 
 
@@ -307,70 +302,6 @@ static GGZHookReturn game_playing(GGZGameEvent id, void* event_data,
 	
 	return GGZ_HOOK_OK;
 }
-
-
-static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_data)
-{
-	GGZRoom *room;
-
-	game_quit();
-	
-	switch (ggzcore_server_get_state(server)) {
-	case GGZ_STATE_AT_TABLE:
-		room = ggzcore_server_get_cur_room(server);
- 		if (ggzcore_room_leave_table(room, 1) < 0)
-			msgbox(_("Error leaving table"), _("Game Error"), 
-			       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
-		break;
-		
-	case GGZ_STATE_LAUNCHING_TABLE:
-	case GGZ_STATE_JOINING_TABLE:
-		/* If we haven't actually made it to the table yet,
-		   register a callback for when we do so that we can
-		   leave :) */
-		ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, 
-					      game_delayed_leave);
-		break;
-	default:
-		/* We appear to be already gone so we'll silently let it pass...*/
-		ggz_debug("game", "Already gone from table");
-		break;
-	}
-		
-	return GGZ_HOOK_OK;
-}
-
-
-static GGZHookReturn game_delayed_leave(GGZServerEvent event, void *event_data, void *user_data)
-{
-	GGZRoom *room;
-
-	switch (ggzcore_server_get_state(server)) {
-	case GGZ_STATE_AT_TABLE:
-		/* We finally made it to the table, so leave it */
-		room = ggzcore_server_get_cur_room(server);
-		if (ggzcore_room_leave_table(room, 1) < 0)
-			msgbox(_("Error leaving table"), _("Game Error"), 
-			       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
-		return GGZ_HOOK_REMOVE;
-		break;
-		
-	case GGZ_STATE_JOINING_TABLE:
-	case GGZ_STATE_LAUNCHING_TABLE:
-	case GGZ_STATE_LEAVING_TABLE:
-		/* Either We're not there yet, so hang on...  or we're
-		   in the cllback a second time because of the above
-		   ggzcore_room_leave_table() command (yuck!!) */
-		return GGZ_HOOK_OK;
-		break;
-	default:
-		/* Something else bizarre happened, so do nothing and
-                   get rid of callback */
-		return GGZ_HOOK_REMOVE;
-		break;
-	}
-}
-
 
 
 /* GdkDestroyNotify function for server fd */
