@@ -1,11 +1,11 @@
 Makefile
 Makefile.in
-helper.lo
-helper.o
-kio_ggz.lo
-kio_ggz.o
-libkio_ggzmeta.la
-libkio_ggzmeta.la.closure
+*.lo
+*.o
+*.moc.cpp
+*.la
+*.la.closure
 .deps
 .libs
+*_meta_unload.cpp
 
