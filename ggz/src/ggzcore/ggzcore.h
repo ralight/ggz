@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4437 2002-09-07 13:28:04Z jdorje $
+ * $Id: ggzcore.h 4638 2002-09-20 07:15:16Z dr_maux $
  *
  * Interface file to be included by client frontends
  *
@@ -41,6 +41,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* Definitions and enumerations */
+/* ---------------------------- */
 
 /* GGZCore debugging codes.  Use with ggz_debug and friends. */
 #define GGZCORE_DBG_CONF   "GGZCORE:CONF"
@@ -124,10 +127,21 @@ typedef enum {
 } GGZLoginType;
 
 
+/**
+ * The type of a player logged in. This is partially determined by the
+ * type of login.
+ */
 typedef enum {
+	/** Not logged in. */
 	GGZ_PLAYER_NONE,
+
+	/** Normal registered login. */
 	GGZ_PLAYER_NORMAL,
+
+	/** Login as guest. */
 	GGZ_PLAYER_GUEST,
+
+	/** Special case: Player has administrative privileges. */
 	GGZ_PLAYER_ADMIN
 } GGZPlayerType;
 
@@ -160,9 +174,15 @@ typedef enum {
 	
 	/** Error: login failure */
 	GGZ_LOGIN_FAIL,
-	
+
+	/** The MOTD has been read from the server and can be displayed. */
 	GGZ_MOTD_LOADED,
+
+	/** The room list arrived. It is very likely followed by the game type
+	 * list. */
 	GGZ_ROOM_LIST,
+
+	/** The list of game types is available. */
 	GGZ_TYPE_LIST,
 	
 	/** We have successfully entered a room.
@@ -171,6 +191,8 @@ typedef enum {
 	
 	/** Error: we have tried to enter a room and failed. */
 	GGZ_ENTER_FAIL,
+
+	/** Logged out of the server. */
 	GGZ_LOGOUT,
 	
 	/** Error: a network error occurred. */
@@ -178,43 +200,98 @@ typedef enum {
 	
 	/** Error: a communication protocol error occured. */
 	GGZ_PROTOCOL_ERROR,
-	
+
+	/** Error: A chat message could not be sent. */
 	GGZ_CHAT_FAIL,
+
+	/** The internal state of ggzcore has changed. */
 	GGZ_STATE_CHANGE,
+
+	/** Status event: a requested direct game connection has been established. */
 	GGZ_CHANNEL_CONNECTED,
+
+	/** Game channel is ready for read/write operations. */
 	GGZ_CHANNEL_READY,
+
+	/** Error: Failure during setup of direct connection to game server. */
 	GGZ_CHANNEL_FAIL
 } GGZServerEvent;
 
 
 typedef enum {
+	/** The list of players in a room has arrived. */
 	GGZ_PLAYER_LIST,
+
+	/** Received the list of active tables. */
 	GGZ_TABLE_LIST,
+
+	/** Received a normal chat message, sent to all players. */
 	GGZ_CHAT,
+
+	/** A chat announcement of a player, sent to all players. */
 	GGZ_ANNOUNCE,
+
+	/** Private message from a player to the receiver. */
 	GGZ_PRVMSG,
+
+	/** Beep message to the receiver. */
 	GGZ_BEEP,
+
+	/** Attempt to enter a room has been successful. */
 	GGZ_ROOM_ENTER,
+
+	/** A room could not be entered. */
 	GGZ_ROOM_LEAVE,
+
+	/** Update at one of the tables. */
 	GGZ_TABLE_UPDATE,
+
+	/** A new table has been launched successfully. */
 	GGZ_TABLE_LAUNCHED,
+
+	/** Table could not be launched by the player. */
 	GGZ_TABLE_LAUNCH_FAIL,
+
+	/** Successfully joined an existing table. */
 	GGZ_TABLE_JOINED,
+
+	/** Joining a table did not succeed. */
 	GGZ_TABLE_JOIN_FAIL,
+
+	/** The player successfully left a table. */
 	GGZ_TABLE_LEFT,
+
+	/** Failure leaving a table. */
 	GGZ_TABLE_LEAVE_FAIL,
+
+	/** Lag message from the server to measure the connection speed. */
 	GGZ_PLAYER_LAG
 } GGZRoomEvent;
 
 
 typedef enum {
+	/** A game was launched by the player. */
 	GGZ_GAME_LAUNCHED,
+
+	/** Game launch failed. */
 	GGZ_GAME_LAUNCH_FAIL,
+
+	/** Negotiation with server was successful. */
 	GGZ_GAME_NEGOTIATED,
+
+	/** Negotiation was not successful, game launch failed. */
 	GGZ_GAME_NEGOTIATE_FAIL,
+
+	/** Game reached the 'playing' state. */
 	GGZ_GAME_PLAYING,
+
+	/** A game is over. The player is going to leave the table. */
 	GGZ_GAME_OVER,
+
+	/** Error: An input/output error happened. */
 	GGZ_GAME_IO_ERROR,
+
+	/** Error: Protocol error caused by the game. */
 	GGZ_GAME_PROTO_ERROR,
 } GGZGameEvent;
 
@@ -259,7 +336,7 @@ typedef enum {
 } GGZChatOp;
 
 
-
+/* Definitions for all internal ggzcore structures. */
 typedef struct _GGZNet      GGZNet;
 typedef struct _GGZServer   GGZServer;
 typedef struct _GGZRoom     GGZRoom;
@@ -268,6 +345,9 @@ typedef struct _GGZTable    GGZTable;
 typedef struct _GGZGameType GGZGameType;
 typedef struct _GGZModule   GGZModule;
 typedef struct _GGZGame     GGZGame;
+
+/* Server object related functions */
+/* ------------------------------- */
 
 /** @brief Create a new server object.
  *
@@ -375,13 +455,22 @@ int ggzcore_server_set_logininfo(GGZServer *server,
 				 const GGZLoginType type, 
 				 const char *handle, 
 				 const char *password);
-				
+
+/** @brief Initiate logging of ggzcore events
+ *
+ * Normally, ggzcore traffic is not logged anywhere. With this functions, such
+ * output can be directed into a file. It contains all the network messages
+ * received from the server.
+ *
+ * @param server The GGZ server object.
+ * @param filename The file the messages are written to.
+ * @return 0 on success, -1 on error.
+ */
 int ggzcore_server_log_session(GGZServer *server, const char *filename);
 
 
-/*
- * Functions for querying a GGZServer object for information
- */
+/* Functions for querying a GGZServer object for information */
+/* --------------------------------------------------------- */
 
 /** @brief Get the hostname of the server.
  *
@@ -468,23 +557,30 @@ GGZRoom*     ggzcore_server_get_cur_room(GGZServer *server);
 GGZRoom*     ggzcore_server_get_nth_room(GGZServer *server, 
 					 const unsigned int num);
 
+/** @brief Return the overall number of game types on the server.
+ *
+ * @param server The GGZ server object.
+ * @return The number of game types on this server, or -1 on error.
+ * @note This number is 0 until @see GGZ_TYPE_LIST.
+ */
 int          ggzcore_server_get_num_gametypes(GGZServer *server);
+
+/** @brief Get the nth gametype, or NULL on error. */
 GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server, 
-					    const unsigned int num);
+					const unsigned int num);
 
 /* ggzcore_server_is_XXXX()
- * 
+ *
  * These functions return 1 if the server connection is in the
- * specified state, and 0 otherwise 
+ * specified state, and 0 otherwise.
 */
 int ggzcore_server_is_online(GGZServer *server);
 int ggzcore_server_is_logged_in(GGZServer *server);
 int ggzcore_server_is_in_room(GGZServer *server);
 int ggzcore_server_is_at_table(GGZServer *server);
 
-/*
- * GGZ Server Actions
- */
+/* GGZ Server Actions */
+/* ------------------ */
 
 /** @brief Connect to the server.
  *
@@ -505,6 +601,15 @@ int ggzcore_server_is_at_table(GGZServer *server);
  */
 int ggzcore_server_connect(GGZServer *server);
 
+/** @brief Establish a direct connection.
+ *
+ *  Direct connections are requested for games. They are similar to
+ *  connections, instead of that no login takes place, but a channel for
+ *  arbitrary game data is created.
+ *
+ *  @param server The GGZ server object.
+ *  @return 0 on success, -1 on failure.
+ */
 int ggzcore_server_create_channel(GGZServer *server);
 
 /** @brief Log in to the server.
@@ -524,12 +629,43 @@ int ggzcore_server_create_channel(GGZServer *server);
  *  @note On failure no events will be generated.
  */
 int ggzcore_server_login(GGZServer *server);
+
+/** @brief Request the MOTD from the server. */
 int ggzcore_server_motd(GGZServer *server);
+
+/** @brief Request room list.
+ *
+ * @param server The GGZ server object.
+ * @param type Not used yet.
+ * @param verbose Receive all information about a room or only the essentials.
+ * @return 0 on success, -1 on failure.
+ * @note A GGZ_ROOM_LIST might be generated thereafter.
+ */
 int ggzcore_server_list_rooms(GGZServer *server, const int type, const char verbose);
+
+/** @brief Request game type list.
+ *
+ * @param server The GGZ server object.
+ * @param verbose Receive detailed gametype information or not.
+ * @return 0 on success, -1 on failure.
+ * @note A GGZ_TYPE_LIST event will be the asynchronous response on success.
+ */
 int ggzcore_server_list_gametypes(GGZServer *server, const char verbose);
+
+/** @brief Join a room on the server
+ *
+ * @param server The GGZ server object.
+ * @param room The number of the room to join.
+ * @return 0 on success, -1 on failure (e.g. non-existing room number).
+ */
 int ggzcore_server_join_room(GGZServer *server, const unsigned int room);
+
+/** @brief Log out of a server. */
 int ggzcore_server_logout(GGZServer *server);
+
+/** @brief Disconnect from a server after having logged out. */
 int ggzcore_server_disconnect(GGZServer *server);
+
 
 /* Functions for data processing */
 int ggzcore_server_data_is_pending(GGZServer *server);
@@ -541,7 +677,7 @@ void ggzcore_server_free(GGZServer *server);
 
 
 /* Functions for manipulating GGZRoom objects */
-
+/* ------------------------------------------ */
 
 /** Allocate space for a new room object */
 GGZRoom* ggzcore_room_new(void);
@@ -604,6 +740,7 @@ int ggzcore_room_leave_table(GGZRoom *room, int force);
 
 
 /* Functions for manipulating GGZPlayer objects */
+/* -------------------------------------------- */
 
 char*         ggzcore_player_get_name(GGZPlayer *player);
 GGZPlayerType ggzcore_player_get_type(GGZPlayer *player);
@@ -638,11 +775,14 @@ int ggzcore_table_set_seat(GGZTable *table,
 			   char *name);
 int ggzcore_table_remove_player(GGZTable *table, char *name);
 
+/* Functions to get information about a table. */
 int           ggzcore_table_get_id(GGZTable *table);
 GGZGameType*  ggzcore_table_get_type(GGZTable *table);
 char*         ggzcore_table_get_desc(GGZTable *table);
 GGZTableState ggzcore_table_get_state(GGZTable *table);
 int           ggzcore_table_get_num_seats(GGZTable *table);
+
+/* Set the table description. */
 int           ggzcore_table_set_desc(GGZTable *table, const char *desc);
 
 /** @brief Count the seats of the given type.
@@ -655,8 +795,13 @@ int           ggzcore_table_set_desc(GGZTable *table, const char *desc);
  *  @return The number of seats matching the type, or -1 on error.
  */
 int          ggzcore_table_get_seat_count(GGZTable *table, GGZSeatType type);
+
+/** @brief Return the name of a player at the table, or NULL on error. */
 char*        ggzcore_table_get_nth_player_name(GGZTable *table,
 					       const unsigned int num);
+
+/** @brief Return the type of a player at the table, or GGZ_PLAYER_NONE on
+ *  error. */
 GGZSeatType  ggzcore_table_get_nth_player_type(GGZTable *table, 
 					       const unsigned int num);
 
@@ -674,12 +819,16 @@ char* ggzcore_gametype_get_desc(GGZGameType *type);
 int ggzcore_gametype_get_max_players(GGZGameType *type);
 int ggzcore_gametype_get_max_bots(GGZGameType *type);
 
+/* Return whether spectators are allowed or not for this game type. */
 int ggzcore_gametype_get_spectators_allowed(GGZGameType *type);
 
 /* Verify that a paticular number of players/bots is valid */
 int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num);
 int ggzcore_gametype_num_bots_is_valid(GGZGameType *type, unsigned int num);
 
+
+/* Group of configuration functions */
+/* -------------------------------- */
 
 /* ggzcore_conf_initialize()
  *	Opens the global and/or user configuration files for the frontend.
@@ -808,6 +957,8 @@ int ggzcore_conf_remove_key(const char *section, const char *key);
 int ggzcore_conf_commit(void);
 
 
+/* Game module related functions */
+/* ----------------------------- */
 
 /* This returns the number of registered modules */
 unsigned int ggzcore_module_get_num(void);
@@ -860,6 +1011,9 @@ char* ggzcore_module_get_help_path(GGZModule *module);
 char** ggzcore_module_get_argv(GGZModule *module);
 
 
+/* Functions related to game clients */
+/* --------------------------------- */
+
 GGZGame* ggzcore_game_new(void);
 int ggzcore_game_init(GGZGame *game, GGZModule *module);
 void ggzcore_game_free(GGZGame *game);
@@ -889,7 +1043,7 @@ GGZModule* ggzcore_game_get_module(GGZGame *game);
 
 int ggzcore_game_launch(GGZGame *game);
 int ggzcore_game_join(GGZGame *game);
-int ggzcore_game_read_data(GGZGame *game);			   
+int ggzcore_game_read_data(GGZGame *game);
 
 #ifdef __cplusplus
 }
