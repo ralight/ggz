@@ -360,18 +360,25 @@ static void bridge_set_score_message()
 
 static void bridge_end_hand()
 {
-	int points_above, points_below, tricks, g;
+	int points_above = 0, points_below = 0, tricks, g;
 	int winning_team, team;
 	int tricks_above, tricks_below;
+	int vulnerable = BRIDGE.vulnerable[BRIDGE.declarer % 2];
 	char buf[512];
+	char buf2[512] = "";
+	char* bonus_text = BRIDGE.bonus == 1 ? "" : BRIDGE.bonus == 2 ? ", doubled" : ", redoubled";
 
 	/* calculate tricks over book */
 	tricks = game.players[BRIDGE.declarer].tricks + game.players[BRIDGE.dummy].tricks - 6;
 
 	ggz_debug("Contract was %d.  Declarer made %d.", BRIDGE.contract, tricks);
 
+	winning_team = (tricks >= BRIDGE.contract) ? BRIDGE.declarer % 2 : (BRIDGE.declarer+1) % 2;
+
+	snprintf(buf2, sizeof(buf2), "%s and %s get:\n",
+		 ggz_seats[winning_team].name, ggz_seats[winning_team+2].name);
+
 	if (tricks >= BRIDGE.contract) {
-		winning_team = BRIDGE.declarer % 2;
 		tricks_below = BRIDGE.contract;
 		tricks_above = tricks - BRIDGE.contract;
 		switch (BRIDGE.contract_suit) {
@@ -391,15 +398,66 @@ static void bridge_end_hand()
 				points_above = 30 * tricks_above;
 				break;
 		}		
+
+		points_below *= BRIDGE.bonus;
+		points_above *= BRIDGE.bonus;
+
+		snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2), "  %d points below the line for %d %s%s.",
+			 points_below, BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit], bonus_text);
+		if (points_above)
+			snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2), " %d points above the line for %d overtricks%s.",
+				 points_above, tricks_above, bonus_text);
+
+		/* you get a bonus just for making a doubled/redoubled contract */
+		if (BRIDGE.bonus > 1) {
+			int insult_bonus = BRIDGE.bonus > 2 ? 100 : 50;
+			snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2),
+				 "  %d points above the line for the insult.", insult_bonus);
+			points_above += insult_bonus;
+		}
+
+		if (BRIDGE.contract >= 6) {
+			int slam_bonus;
+			if (BRIDGE.contract == 6)
+				slam_bonus = vulnerable ? 1000 : 500;
+			else
+				slam_bonus = vulnerable ? 1500 : 750;
+			snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2),
+				 "  %d points for a %s slam%s.",
+				 slam_bonus, BRIDGE.contract == 7 ? "grand" : "small",
+				 vulnerable ? " while vulnerable" : "");
+			points_above += slam_bonus;
+		}
 	} else {
-		winning_team = (BRIDGE.declarer + 1) % 2;
-		tricks_below = points_below = 0;
 		tricks_above = BRIDGE.contract - tricks;
-		points_above = 50 * tricks_above;
+
+		/* Penalty:          not vulnerable        vulnerable
+		 * not doubled            50                  100
+		 * doubled - 1st          100                 200
+		 * doubled - 2nd,3rd      200 ea              300 ea
+		 * doubled - 4th+         300 ea              300 ea
+		 * redoubled           2x doubled          2x doubled
+		 */
+
+		if (BRIDGE.bonus == 1)
+			points_above = tricks_above * (vulnerable ? 100 : 50);
+		else {
+			points_above = tricks_above * (vulnerable ? 200 : 100);
+			if (tricks_above > 1)
+				points_above += (tricks_above-1) * 100;
+			if (tricks_above > 3)
+				points_above += (tricks_above-3) * (vulnerable ? 0 : 100);
+			if (BRIDGE.bonus == 4)
+				points_above *= 2;        	
+		}
+		snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2),
+			 "  %d points above for setting by %d tricks%s%s.",
+			 points_above, tricks_above,
+			 bonus_text,
+			 vulnerable ? ", vulnerable" : "");
+
 	}
 
-	points_below *= BRIDGE.bonus;
-	points_above *= BRIDGE.bonus;
 	BRIDGE.points_above_line[winning_team] += points_above;
 	BRIDGE.points_below_line[BRIDGE.game_count][winning_team] += points_below;
 
@@ -407,6 +465,8 @@ static void bridge_end_hand()
 		snprintf(buf, sizeof(buf), "%s made the bid and earned %d|%d points.", ggz_seats[BRIDGE.declarer].name, points_above, points_below);
 	else
 		snprintf(buf, sizeof(buf), "%s went set, giving up %d points.", ggz_seats[BRIDGE.declarer].name, points_above);
+
+	/* TODO: points for honors */
 
 	if (BRIDGE.points_below_line[BRIDGE.game_count][winning_team] >= 100) {
 		if (BRIDGE.vulnerable[winning_team]) {
@@ -433,6 +493,7 @@ static void bridge_end_hand()
 	/* TODO: vulnerable, etc. */
 
 	set_global_message("", "%s", buf);
+	set_global_message("Hand Score", buf2);
 	bridge_set_score_message();
 
 	BRIDGE.declarer = BRIDGE.dummy = -1;
