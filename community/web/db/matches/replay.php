@@ -18,11 +18,16 @@
 	<div class="text">
 <?php
 
-$savegamedir = "/home/ggz/BUILD/var/ggzd/gamedata/";
-//$savegame = "$savegamedir/TicTacToe/savegame.NFZl2v";
-$savegamefile = "$savegamedir/TicTacToe/savegame.0H3rkd";
+include_once("match.php");
+include_once("savegame.php");
 
-$lookup = 78;
+$match = new Match($lookup);
+
+$savegamedir = $ggzgamedir;
+$savegamefile = "$savegamedir/$match->game/$match->savegame";
+
+$savegame = new Savegame();
+$savegame->load($savegamefile);
 
 echo "<img src='image.php?savegamefile=$savegamefile'>\n";
 
@@ -37,17 +42,8 @@ echo "<img src='image.php?savegamefile=$savegamefile'>\n";
 	<div class="text">
 <?php
 
-include("savegame.php");
-
-$savegame = new Savegame();
-$savegame->load($savegamefile);
-
 $starttime = date("d.m.Y H:i:s", $savegame->starttime);
 $endtime = date("d.m.Y H:i:s", $savegame->endtime);
-
-include("match.php");
-
-$match = new Match($lookup);
 
 if ($savegame->winner) :
 	$winner = $match->link($savegame->winner);
