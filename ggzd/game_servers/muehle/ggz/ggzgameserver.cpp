@@ -71,7 +71,7 @@ void GGZGameServer::leaveEvent ( int player ) {
 }
 
 // Virtual game data hook
-void GGZGameServer::dataEvent ( int player, void* data ) {
+void GGZGameServer::dataEvent ( int player ) {
 }
 
 // Virtual error handling hook
@@ -99,7 +99,7 @@ void GGZGameServer::handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* d
 // Callback for the game data hook
 void GGZGameServer::handle_data ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
 	std::cout << "GGZGameServer: dataEvent" << std::endl;
-	self->dataEvent ( *(int* ) data, data);
+	self->dataEvent ( *(int* ) data);
 }
 
 // Callback for the error handling hook

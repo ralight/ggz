@@ -32,7 +32,7 @@ class GGZGameServer {
 		virtual void stateEvent ();
 		virtual void joinEvent ( int player );
 		virtual void leaveEvent ( int player );
-		virtual void dataEvent ( int player, void* data );
+		virtual void dataEvent ( int player );
 		virtual void errorEvent ();
 		int fd ( int player );
 
