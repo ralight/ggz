@@ -2,7 +2,7 @@
 
 Summary: Client software for the Gnu Gaming Zone
 Name: ggz_client
-Version: 0.0.2
+Version: 0.0.3pre
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
