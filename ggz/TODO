@@ -11,30 +11,31 @@ then have radio buttons for: open, reserved, or computer.  This should be
 part of the ggz client, not the game_client.  The game_client should only
 worry about options for itself.
 
-* IRC stile actions in the chat  ex.  /me says hello
-- Connect button in menu and toolbar
-- MOTD item under view menu
-- pull in the config file code
-- game_clients directory
+- IRC stile actions in the chat  ex.  /me says hello
+* Connect button in menu and toolbar
+* MOTD item under view menu
+- config file code
 - configurible font size in chat and MOTD
 - config dialog
 * make /beep not print to the terminal
-- Connect menu on far left (Connect, Disconnect, Login, Logout, Exit)
-- Help menu on far right (Help, About)
-- Game menu (Launch, Join)
+* Connect menu on far left (Connect, Disconnect, Login, Logout, Exit)
+- Help menu on far right (About)
+* Game menu (Launch, Join, Leave)
 - View menu (Game types, MOTD)
 * double-click a game joins it
 - chat autoscroll off
+* Room support for chat
 
 For 0.0.3
 =========
 
 - Save last server/port/username between sessions
 - Server "Profiles" (last 5 servers/logins)
-- crypt() passwords
+- crypt() passwords ??
 - configurible colors (3-4 color themes, light, dark, laptop, wacked out, etc.)
 - user-customizable toolbar
-* Right-click pop-up of games (join, options, players)
+* Right-click pop-up for tables (join/launch, options, players)
+- Right-click pop-up for players
 - log chats to file
 
 For 0.0.4
