@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 4341 2002-08-07 06:31:57Z jdorje $
+ * $Id: main.c 4358 2002-08-10 19:13:01Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -179,10 +179,12 @@ int get_players(void)
 
 int get_opponent_move(void)
 {
-	int move;
+	int move, nummove;
 
 	game_status(_("Getting opponent's move"));
-	
+
+	if (ggz_read_int(game.fd, &nummove) < 0)
+		return -1;
 	if (ggz_read_int(game.fd, &move) < 0)
 		return -1;
 
