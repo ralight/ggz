@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: euchre.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -49,7 +49,7 @@ static int euchre_handle_option(char *option, int value);
 static char *euchre_get_option_text(char *buf, int bufsz, char *option,
 				    int value);
 static void euchre_start_bidding(void);
-static int euchre_get_bid(void);
+static void euchre_get_bid(void);
 static void euchre_handle_bid(player_t p, bid_t bid);
 static void euchre_next_bid(void);
 static void euchre_start_playing(void);
@@ -186,13 +186,13 @@ static void euchre_start_bidding(void)
 	memset(EUCHRE.going_alone, 0, sizeof(*EUCHRE.going_alone) * 4);
 }
 
-static int euchre_get_bid(void)
+static void euchre_get_bid(void)
 {
 	player_t p;
 	if (EUCHRE.maker >= 0) {
 		if (EUCHRE.req_alone_bid)	/* don't do it more than once 
 						 */
-			return 0;
+			return;
 		/* If the maker has been chosen, then we need to request bids 
 		   from everyone to see if they're going alone or not. */
 		for (p = 0; p < 4; p++) {
@@ -203,13 +203,13 @@ static int euchre_get_bid(void)
 			}
 		}
 		EUCHRE.req_alone_bid = 1;
-		return request_all_bids();
+		request_all_bids();
 	} else if (game.bid_count < 4) {
 		/* Tirst four bids are either "pass" or "take".  The suit of
 		   the up-card becomes trump. */
 		add_sbid(0, 0, EUCHRE_PASS);
 		add_sbid(0, 0, EUCHRE_TAKE);
-		return req_bid(game.next_bid);
+		req_bid(game.next_bid);
 	} else {
 		/* After we've bid around, the bidding becomes either "pass"
 		   or "take" with a specific suit. */
@@ -222,7 +222,7 @@ static int euchre_get_bid(void)
 			add_sbid(0, 0, EUCHRE_PASS);
 		for (suit = 0; suit < 4; suit++)
 			add_sbid(0, suit, EUCHRE_TAKE_SUIT);
-		return req_bid(game.next_bid);
+		req_bid(game.next_bid);
 	}
 }
 

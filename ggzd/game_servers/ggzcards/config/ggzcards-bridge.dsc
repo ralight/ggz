@@ -1,17 +1,17 @@
-# $Id: ggzcards-bridge.dsc 3912 2002-04-12 18:35:15Z jdorje $
+# $Id: ggzcards-bridge.dsc 3997 2002-04-16 19:03:58Z jdorje $
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Bridge
 Homepage = http://ggz.sourceforge.net/games/ggzcards
 Name = GGZCards-Bridge
-Version = 0.0.5
+Version = 0.0.6pre
 
 [LaunchInfo]
 ExecutablePath = ggzd.ggzcards --game=bridge --option=open_hands:0
 
 [Protocol]
 Engine = GGZCards
-Version = 1
+Version = 2-pre1
 
 [TableOptions]
 AllowLeave = 1

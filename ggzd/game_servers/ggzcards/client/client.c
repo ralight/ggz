@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: client.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -37,8 +37,10 @@
 
 #include <ggz.h>
 
-#include "client.h"
+#include "net_common.h"
 #include "protocol.h"
+
+#include "client.h"
 
 
 static int handle_message_global(void);
@@ -847,7 +849,8 @@ int client_send_options(int option_cnt, int *options)
 {
 	int i, status = 0;
 
-	if (write_opcode(game_internal.fd, RSP_OPTIONS) < 0)
+	if (write_opcode(game_internal.fd, RSP_OPTIONS) < 0 ||
+	    ggz_write_int(game_internal.fd, option_cnt) < 0)
 		status = -1;
 	for (i = 0; i < option_cnt; i++)
 		if (ggz_write_int(game_internal.fd, options[i]) < 0)

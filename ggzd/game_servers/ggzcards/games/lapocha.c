@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: lapocha.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -31,6 +31,8 @@
 
 #include <ggz.h>
 
+#include "net_common.h"
+
 #include "bid.h"
 #include "common.h"
 #include "game.h"
@@ -41,9 +43,9 @@
 
 static bool lapocha_is_valid_game(void);
 static void lapocha_init_game(void);
-static int lapocha_handle_gameover(void);
+static void lapocha_handle_gameover(void);
 static void lapocha_start_bidding(void);
-static int lapocha_get_bid(void);
+static void lapocha_get_bid(void);
 static void lapocha_handle_bid(player_t p, bid_t bid);
 static void lapocha_next_bid(void);
 static bool lapocha_test_for_gameover(void);
@@ -114,7 +116,7 @@ static void lapocha_init_game(void)
 	game.rules_url = "http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=6";				
 }
 
-static int lapocha_handle_gameover(void)
+static void lapocha_handle_gameover(void)
 {
 	player_t p;
 	int hi_score = -9999;
@@ -144,7 +146,7 @@ static int lapocha_handle_gameover(void)
 		}
 	}
 
-	return send_gameover(winner_cnt, winners);
+	handle_gameover_event(winner_cnt, winners);
 }
 
 static void lapocha_start_bidding(void)
@@ -155,7 +157,7 @@ static void lapocha_start_bidding(void)
 	lap_send_dealer();
 }
 
-static int lapocha_get_bid(void)
+static void lapocha_get_bid(void)
 {
 	if (game.bid_count == 0) {	/* determine the trump suit */
 		/* handled just like a bid */
@@ -170,7 +172,7 @@ static int lapocha_get_bid(void)
 			for (suit = 0; suit < 4; suit++)
 				add_sbid(0, suit, LAPOCHA_TRUMP);
 			(void) lap_send_trump_request(game.dealer);
-			return req_bid(game.dealer);
+			req_bid(game.dealer);
 		}
 	} else {		/* get a player's numerical bid */
 		int i;
@@ -183,9 +185,8 @@ static int lapocha_get_bid(void)
 			add_sbid(i, 0, 0);
 		}
 		(void) lap_send_bid_request(game.next_bid);
-		return req_bid(game.next_bid);
+		req_bid(game.next_bid);
 	}
-	return 0;
 }
 
 static void lapocha_handle_bid(player_t p, bid_t bid)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: play.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -51,7 +51,7 @@ void req_play(player_t p, seat_t s)
 	set_game_state(STATE_WAIT_FOR_PLAY);
 	set_player_message(p);
 	
-	(void) send_play_request(p, s);
+	net_send_play_request(p, s);
 }
 
 void handle_client_play(player_t p, card_t card)
@@ -78,7 +78,7 @@ void handle_client_play(player_t p, card_t card)
 			break;
 
 	if (i == hand->hand_size) {
-		(void) send_badplay(p,
+		handle_badplay_event(p,
 				    "That card isn't even in your hand."
 				    "  This must be a bug.");
 		send_sync(p);
@@ -105,5 +105,5 @@ void handle_client_play(player_t p, card_t card)
 		   changed... */
 		handle_play_event(p, card);
 	else
-		(void) send_badplay(p, err);
+		handle_badplay_event(p, err);
 }

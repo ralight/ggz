@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: game.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -60,7 +60,7 @@ static void bad_game(char *func)
 bool game_is_valid_game(void)
 {
 	bad_game("is_valid_game");
-	return 0;
+	return FALSE;
 }
 
 
@@ -188,10 +188,9 @@ void game_start_bidding(void)
 /* Asks for bid from the client/AI.  AI can be inserted here; just call
    handle_bid_event; however, this has never been tested.  It needs to work
    pretty closely with the other bidding functions. */
-int game_get_bid(void)
+void game_get_bid(void)
 {
 	bad_game("get_bid");
-	return -1;
 }
 
 
@@ -427,7 +426,7 @@ card_t game_map_card(card_t c)
 
 /* The game is over and we should send out game-over message.  This function
    determines who has won and calls send_gameover. */
-int game_handle_gameover(void)
+void game_handle_gameover(void)
 {
 	player_t p;
 	int hi_score = -9999;
@@ -447,7 +446,7 @@ int game_handle_gameover(void)
 		}
 	}
 
-	return send_gameover(winner_cnt, winners);
+	handle_gameover_event(winner_cnt, winners);
 }
 
 
@@ -470,9 +469,9 @@ int game_compare_cards(card_t card1, card_t card2)
 /* Show a player a hand.  This has to determine whether the hand is going to
    be revealed to the player or not.  It's called automatically after dealing 
    the hand, but may be called at other times as well. */
-int game_send_hand(player_t p, seat_t s)
+void game_send_hand(player_t p, seat_t s)
 {
 	/* in most cases, we want to reveal the hand only to the player who
 	   owns it. */
-	return send_hand(p, s, game.players[p].seat == s);
+	send_hand(p, s, game.players[p].seat == s);
 }

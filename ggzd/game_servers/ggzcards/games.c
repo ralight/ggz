@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 3994 2002-04-15 09:52:12Z jdorje $
+ * $Id: games.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -35,6 +35,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ggz.h>
+
+#include "net_common.h"
 
 #include "common.h"
 #include "net.h"
@@ -111,14 +113,9 @@ void games_handle_gametype(int choice)
    called if this information isn't determined automatically (i.e. via
    --game=<game> parameter).  The reply is sent to games_handle_gametype,
    below. */
-int games_req_gametype()
+void games_req_gametype(void)
 {
-	int fd = get_player_socket(game.host);
 	int cnt = 0, i;
-	int status = 0;
-	const char *desc = "What do you want to play today?";
-	
-	assert(fd >= 0);
 
 	for (i = 0; i < NUM_GAMES; i++) {
 		if (game_data[i]->is_valid_game()) {
@@ -127,33 +124,33 @@ int games_req_gametype()
 		}
 	}
 
-	if (cnt == 0)
+	if (cnt <= 0)
 		fatal_error("BUG: games_req_gametype: no valid games.");
-
-	if (cnt == 1) {
+	else if (cnt == 1) {
 		ggzdmod_log(game.ggz, "Just one valid game: choosing %d.",
 			    game_types[0]);
 		game.data = game_data[game_types[0]];
 		init_game();
 		broadcast_sync();
-		return 0;
+	} else {
+		char* option_descs[0];
+		int num_choices[0];
+		int option_defaults[0];
+		char** option_choices[0];
+		char* the_option_choices[cnt];
+		
+		option_descs[0] = "What do you want to play today?";
+		num_choices[0] = cnt;
+		option_defaults[0] = 0;
+		option_choices[0] = the_option_choices;
+		for (i = 0; i < cnt; i++)
+			option_choices[0][i] = game_data[game_types[i]]->full_name;
+        	
+		net_send_options_request(game.host,
+		                         1, /* 1 option */
+		                         option_descs,
+		                         num_choices,
+		                         option_defaults,
+		                         option_choices);
 	}
-
-	if (write_opcode(fd, REQ_OPTIONS) < 0 ||
-	    ggz_write_int(fd, 1) < 0 ||	/* 1 option */
-	    ggz_write_string(fd, desc) < 0 || /* description */
-	    ggz_write_int(fd, cnt) < 0 ||	/* cnt choices */
-	    ggz_write_int(fd, 0) < 0)	/* default is 0 */
-		status = -1;
-	for (i = 0; i < cnt; i++) {
-		game_data_t *data = game_data[game_types[i]];
-		if (ggz_write_string(fd, data->full_name) < 0)
-			status = -1;
-	}
-
-	if (status != 0)
-		ggzdmod_log(game.ggz,
-			    "ERROR: games_req_gametype: status is %d.",
-			    status);
-	return status;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 3748 2002-04-05 07:47:36Z jdorje $
+ * $Id: types.h 3997 2002-04-16 19:03:58Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -37,7 +37,7 @@
 
 /* This struct holds all data about a player's bidding status. */
 typedef struct {
-	int is_bidding;		/* is this player currently bidding? Are we
+	bool is_bidding;		/* is this player currently bidding? Are we
 				   waiting for a bid from them? */
 
 	/* FIXME: should this use libggz's list structure? */

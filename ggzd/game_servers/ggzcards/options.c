@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: options.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -44,10 +44,14 @@
 #include <string.h>
 #include <ggz.h>
 
+#include "net_common.h"
+
 #include "common.h"
 #include "message.h"
+#include "net.h"
+#include "options.h"
 
-static int options_initted = 0;
+static bool options_initted = FALSE;
 
 static struct option_t {
 	char *key;
@@ -67,7 +71,15 @@ static struct pending_option_t {
 static int option_count = 0;
 static int pending_option_count = 0;
 
-int options_set()
+
+/** Handles a correct options response from the host client.
+ *  Should be called when an option message is received in response
+ *  to a get_options() option request.
+ *  @note Only called by common code.
+ *  @todo Perhaps should be called handle_options_event? */
+static void handle_options(int *options);
+
+int options_set(void)
 {
 	return options_initted;
 }
@@ -117,60 +129,74 @@ void add_option(char *key, char *desc, int num, int dflt, ...)
 	pending_options = po;
 }
 
-void get_options()
+void get_options(void)
 {
-	int fd = game.host >= 0 ? get_player_socket(game.host) : -1;
-	int op, choice;
-
 	ggzdmod_log(game.ggz, "Entering get_options.");
 
 	game.data->get_options();
 
 	if (pending_options == NULL) {
-		options_initted = 1;
+		options_initted = TRUE;
 		ggzdmod_log(game.ggz, "get_options: no options to get.");
-	} else if (fd == -1) {
-		ggzdmod_log(game.ggz,
-			    "ERROR: SERVER BUG: " "no connection to host.");
 	} else {
 		struct pending_option_t *po = pending_options;
-		write_opcode(fd, REQ_OPTIONS);
-		ggz_write_int(fd, pending_option_count);
+		char *option_descs[pending_option_count];
+		int num_choices[pending_option_count];
+		int option_defaults[pending_option_count];
+		char** option_choices[pending_option_count];
+		int op;
+		
 		for (op = 0; op < pending_option_count; op++) {
-			ggz_write_string(fd, po->desc);
-			ggz_write_int(fd, po->num);
-			ggz_write_int(fd, po->dflt);
-			for (choice = 0; choice < po->num; choice++)
-				ggz_write_string(fd, po->choices[choice]);
+			option_descs[op] = po->desc;
+			num_choices[op] = po->num;
+			option_defaults[op] = po->dflt;
+			option_choices[op] = po->choices;
+			
 			po = po->next;
 		}
+		
+		net_send_options_request(game.host,
+		                         pending_option_count,
+		                         option_descs,
+		                         num_choices,
+		                         option_defaults,
+		                         option_choices);
 	}
 }
 
-int rec_options(int num_options, int *options)
+
+void handle_client_options(player_t p, int num_options, int *options)
 {
-	int fd = game.host >= 0 ? get_player_socket(game.host) : -1,
-		status = 0, i;
-	if (fd == -1)
-		fatal_error("BUG: unknown host in rec_options.");
+	assert(num_options > 0); /* Should be assured by caller */
 
-	for (i = 0; i < num_options; i++)
-		if (ggz_read_int(fd, &options[i]) < 0)
-			status = options[i] = -1;
+	if (p != game.host) {
+		/* how could this happen? */
+		ggzdmod_log(game.ggz,
+			    "ERROR: received options from non-host player.");
+		return;
+	}
 
-	if (status != 0)
-		ggzdmod_log(game.ggz, "ERROR: rec_options: status is %d.",
-			    status);
-	return status;
+	if (game.data == NULL) {
+		games_handle_gametype(options[0]);
+
+		init_game();
+		broadcast_sync();
+
+		if (seats_full())
+			next_play();
+	} else {
+		if (num_options != pending_option_count)
+			return;
+		handle_options(options);
+	}
 }
 
-void handle_options()
+static void handle_options(int *options)
 {
-	int options[pending_option_count], op;
+	int op;
 	struct pending_option_t *po = pending_options;
 
 	ggzdmod_log(game.ggz, "Entering handle_options.");
-	rec_options(pending_option_count, options);
 
 	for (op = 0; op < pending_option_count; op++) {
 		set_option(po->key, options[op]);
@@ -182,10 +208,12 @@ void handle_options()
 		option_count++;
 	}
 
-	options_initted = 1;
+	options_initted = TRUE;
+	
+	try_to_start_game();
 }
 
-void finalize_options()
+void finalize_options(void)
 {
 	struct option_t *op;
 	char *optext;

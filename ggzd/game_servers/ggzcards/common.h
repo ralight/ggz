@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: common.h 3997 2002-04-16 19:03:58Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -152,28 +152,12 @@ typedef struct {
 
 } game_t;
 
-/** convert an "absolute" seat number s to the
- * "relative" seat number used by player p */
-#define CONVERT_SEAT(s, p)					\
-	(assert(game.players[(p)].seat >= 0),			\
-	 ((s) - game.players[(p)].seat + game.num_seats) % game.num_seats)
-#define UNCONVERT_SEAT(s_rel, p)				\
-	(assert(game.players[(p)].seat >= 0),			\
-	 (game.players[(p)].seat + (s_rel)) % game.num_seats)
 
-
-/* Game-independent functions */
+/* State manipulation functions */
 const char *get_state_name(server_state_t state);
 void set_game_state(server_state_t state);
 void save_game_state(void);
 void restore_game_state(void);
-
-void init_game(void);
-
-
-void next_play(void);		/* make the next move */
-
-/* handle player events -- used to all just be "update" */
 
 /* these are GGZ communication events that we must handle */
 void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data);
@@ -184,13 +168,27 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data);
 /* these are internal GGZCards events */
 void handle_newgame_event(player_t p);
 void handle_play_event(player_t p, card_t card);
+void handle_badplay_event(player_t p, char *msg);
 void handle_bid_event(player_t p, bid_t bid);
+void handle_trick_event(player_t winner);
+void handle_gameover_event(int winner_cnt, player_t * winners);
 
-void handle_player_language(player_t p, const char* lang);
+/* Handlers for general client messages.  Other handlers may be in
+   their specific files. */
+void handle_client_language(player_t p, const char* lang);
+void handle_client_newgame(player_t p);
+void handle_client_sync(player_t p);
 
-/* Initialize the program, passing in the name of the game (if known) */
+/* General high-level functions */
 void init_ggzcards(GGZdMod * ggz, game_data_t *game_data);
+bool try_to_start_game(void);
+void init_game(void);
+void next_play(void);		/* make the next move */
+void send_sync(player_t p);
+void broadcast_sync(void);
+void send_hand(const player_t p, const seat_t s, int reveal);
 
+/* Seat manipulation functions */
 void set_num_seats(int num_seats);
 void assign_seat(seat_t s, player_t p);	/* player #p sits in seat #s */
 void empty_seat(seat_t s, char *name);	/* seat s is empty; give it a label */
@@ -208,6 +206,8 @@ GGZSeatType get_seat_status(seat_t s);
 const char* get_player_name(player_t p);
 GGZSeatType get_player_status(player_t p);
 int get_player_socket(int p);
+
+bool seats_full(void);
 
 /* Support functions.  Should go into a different file. */
 void fatal_error(const char *message);

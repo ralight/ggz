@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: game.h 3997 2002-04-16 19:03:58Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -158,7 +158,7 @@ void game_start_bidding(void);
  *  @todo The calling code should call req_bid, not the function itself.
  *  @note Any game that uses bidding must replace this function.
  */
-int game_get_bid(void);
+void game_get_bid(void);
 
 /** @brief Specialty handling of a bid.
  *
@@ -319,15 +319,15 @@ bool game_test_for_gameover(void);
 /** @brief Specialty handling when a game is over.
  *
  *  This function is called when the game is actually over.  It should
- *  determine who has won, and call send_gameover to alert the clients that
- *  the game is over.  By default, we just take the player(s) with the
- *  highest score(s) as the winner(s).  This should be sufficient for many
- *  games.
+ *  determine who has won, and call handle_gameover_event to alert the
+ *  clients that  the game is over.  By default, we just take the player(s)
+ *  with the highest score(s) as the winner(s).  This should be sufficient
+ *  for many games.
  *
  *  @return 0 on success, -1 on (network) failure
  *  @see lapocha_handle_gameover
  */
-int game_handle_gameover(void);
+void game_handle_gameover(void);
 
 /** @brief Makes one card act like another.
  *
@@ -367,4 +367,4 @@ int game_compare_cards(card_t card1, card_t card2);
  *  @note send_hand will take care of game.open_hands.
  *  @see bridge_send_hand
  */
-int game_send_hand(player_t p, seat_t s);
+void game_send_hand(player_t p, seat_t s);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.h 3700 2002-03-28 01:18:27Z jdorje $
+ * $Id: options.h 3997 2002-04-16 19:03:58Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -40,16 +40,7 @@
  *  Options are set after get_options is called and then (if
  *  necessary) handle_options handle's the client's response.
  *  @note Only needed by common code. */
-int options_set();
-
-/** Reads a list of options from the client as sent by the
- *  option protocol.
- *  @param num_options the number of options in the list
- *  @param options array options are placed in
- *  @return 0 on success, -1 on failure
- *  @note Only called by common code.
- *  @see handle_options */
-int rec_options(int num_options, int *options);
+int options_set(void);
 
 /** adds an option to the list of pending options
  *  @param key the key string for the option
@@ -72,15 +63,14 @@ void set_option(char *key, int value);
  *  @return Returns (void) immediately, upon success or failure.
  *  @note If there are no pending options, no request is sent.
  *  @note Only called by common code. */
-void get_options();
+void get_options(void);
 
-/** Receives options from the host client and puts them in the option list.
- *  Should be called when an option message is received in response
- *  to a get_options() option request.
- *  @note Only called by common code. */
-void handle_options();
+/** Handle an options response from the given player.  This is called
+ *  anytime a player sends us a REQ_OPTIONS; it's up to the function
+ *  to determine what (if anything) to do with the options. */
+void handle_client_options(player_t p, int num_options, int *options);
 
 /** Calls the game's option handler for each option.  Must be
  *  called manually at the start of a game.
  *  @note Only called by common code. */
-void finalize_options();
+void finalize_options(void);

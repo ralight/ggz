@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: bid.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <ggz.h>
 
+#include "bid.h"
 #include "common.h"
 #include "message.h"
 #include "net.h"
@@ -70,7 +71,7 @@ void add_sbid(char val, char suit, char spec)
 
 /* Request bid from current bidder parameters are: player to get bid from,
    number of possible bids, text entry for each bid */
-int req_bid(player_t p)
+void req_bid(player_t p)
 {
 	bid_data_t *bid_data = &game.players[p].bid_data;
 
@@ -78,16 +79,13 @@ int req_bid(player_t p)
 		    "Requesting a bid from player %d/%s; %d choices", p,
 		    get_player_name(p), bid_data->bid_count);
 
-	if (bid_data->is_bidding)
-		ggzdmod_log(game.ggz, "ERROR: req_bid: "
-			    "requesting a bid from a player who's already bidding!");
-	bid_data->is_bidding = 1;
+	assert(!bid_data->is_bidding);
+	bid_data->is_bidding = TRUE;
 
 	set_player_message(p);
 	set_game_state(STATE_WAIT_FOR_BID);
 
-	return send_bid_request(p, bid_data->bid_count,
-					bid_data->bids);
+	net_send_bid_request(p, bid_data->bid_count, bid_data->bids);
 }
 
 /* Requests bids from all players that have a bid list.  This function is
@@ -95,20 +93,17 @@ int req_bid(player_t p)
    correct order for multiple bids.  In fact, this function _could_ replace
    req_bid; the only drawback is that it's much slower. */
 /* FIXME: I don't think this is necessary anymore. */
-int request_all_bids(void)
+void request_all_bids(void)
 {
 	player_t p;
-	int status = 0;
 
 	ggzdmod_log(game.ggz, "Requesting bids from some/all players.");
 
 	/* Mark all players as bidding. */
 	for (p = 0; p < game.num_players; p++)
 		if (game.players[p].bid_data.bid_count > 0) {
-			if (game.players[p].bid_data.is_bidding)
-				ggzdmod_log(game.ggz, "ERROR: req_bid: "
-					    "requesting a bid from a player who's already bidding!");
-			game.players[p].bid_data.is_bidding = 1;
+			assert(!game.players[p].bid_data.is_bidding);
+			game.players[p].bid_data.is_bidding = TRUE;
 			set_player_message(p);
 		}
 
@@ -116,12 +111,10 @@ int request_all_bids(void)
 
 	/* Send all human-player bid requests */
 	for (p = 0; p < game.num_players; p++)
-		if (game.players[p].bid_data.bid_count > 0) {
-			if (send_bid_request
-			    (p, game.players[p].bid_data.bid_count,
-			     game.players[p].bid_data.bids) < 0)
-				status = -1;
-		}
+		if (game.players[p].bid_data.bid_count > 0)
+			net_send_bid_request(p,
+			                     game.players[p].bid_data.bid_count,
+			                     game.players[p].bid_data.bids);
 
 	/* OK, we're done.  We return now, and continue to wait for responses
 	   from non-AI players. There's still a potential problem because as
@@ -130,20 +123,12 @@ int request_all_bids(void)
 	   everyone has bid.  OTOH, this isn't how things work in real card
 	   games, so it'll probably be okay if we just ignore this little
 	   unfairness. */
-	return status;
 }
 
-/* Receive a bid from an arbitrary player.  Test to make sure it's not
-   out-of-turn.  Note that a return of -1 here indicates a GGZ error, which
-   will disconnect the player. */
-int rec_bid(player_t p, bid_t * bid)
+void handle_client_bid(player_t p, int bid_choice)
 {
 	bid_data_t *bid_data = &game.players[p].bid_data;
-	int fd = get_player_socket(p), index;
-
-	/* Receive the bid index */
-	if (ggz_read_int(fd, &index) < 0)
-		return -1;
+	bid_t bid;
 
 	/* Is this a valid bid? */
 	if (!game.players[p].bid_data.is_bidding) {
@@ -152,21 +137,19 @@ int rec_bid(player_t p, bid_t * bid)
 		ggzdmod_log(game.ggz,
 			    "Received out-of-turn bid from player %d/%s.", p,
 			    get_player_name(p));
-	} else if (bid_data->bid_count == 0) {
-		/* This is probably an error/bug in ggzcards-server. */
-		ggzdmod_log(game.ggz,
-			    "ERROR: rec_bid: we don't know what the choices are!");
-		return -1;
+		return;
 	}
+	
+	assert(bid_data->bid_count > 0);
 
 	/* Compute the bid from the index */
-	index %= bid_data->bid_count;
-	if (index < 0)
-		index += bid_data->bid_count;
-	*bid = bid_data->bids[index];
+	bid_choice %= bid_data->bid_count;
+	if (bid_choice < 0)
+		bid_choice += bid_data->bid_count;
+	bid = bid_data->bids[bid_choice];
 
 	/* Success! */
 	ggzdmod_log(game.ggz, "Received bid choice %d from player %d/%s",
-		    index, p, get_player_name(p));
-	return 0;
+		    bid_choice, p, get_player_name(p));
+	handle_bid_event(p, bid);
 }

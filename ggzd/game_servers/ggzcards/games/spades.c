@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: spades.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -64,7 +64,7 @@ static int spades_handle_option(char *option, int value);
 static char *spades_get_option_text(char *buf, int bufsz, char *option,
 				    int value);
 static void spades_start_bidding(void);
-static int spades_get_bid(void);
+static void spades_get_bid(void);
 static void spades_handle_bid(player_t p, bid_t bid);
 static void spades_next_bid(void);
 static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid);
@@ -73,7 +73,7 @@ static void spades_set_player_message(player_t p);
 static void spades_deal_hand(void);
 static void spades_end_hand(void);
 static void spades_start_game(void);
-static int spades_send_hand(player_t p, seat_t s);
+static void spades_send_hand(player_t p, seat_t s);
 
 game_data_t spades_data = {
 	"spades",
@@ -233,7 +233,7 @@ static void spades_start_bidding(void)
 		game.bid_total += game.num_players;
 }
 
-static int spades_get_bid(void)
+static void spades_get_bid(void)
 {
 	int i;
 	/* partner's bid (value) */
@@ -270,8 +270,7 @@ static int spades_get_bid(void)
 	}
 
 	/* TODO: other specialty bids */
-
-	return req_bid(game.next_bid);
+	req_bid(game.next_bid);
 }
 
 
@@ -434,10 +433,10 @@ static void spades_start_game(void)
 	game_start_game();
 }
 
-static int spades_send_hand(player_t p, seat_t s)
+static void spades_send_hand(player_t p, seat_t s)
 {
 	/* in most cases, we want to reveal the hand only to the player who
 	   owns it. */
-	return send_hand(p, s, (game.players[p].seat == s)
-			 && GSPADES.show_hand[s]);
+	send_hand(p, s, (game.players[p].seat == s)
+	          && GSPADES.show_hand[s]);
 }

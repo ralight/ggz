@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: suaro.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -68,12 +68,12 @@ static int suaro_handle_option(char *option, int value);
 static char *suaro_get_option_text(char *buf, int bufsz, char *option,
 				   int value);
 static void suaro_start_bidding(void);
-static int suaro_get_bid(void);
+static void suaro_get_bid(void);
 static void suaro_handle_bid(player_t p, bid_t bid);
 static void suaro_next_bid(void);
 static void suaro_start_playing(void);
 static void suaro_deal_hand(void);
-static int suaro_send_hand(player_t p, seat_t s);
+static void suaro_send_hand(player_t p, seat_t s);
 static int suaro_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static int suaro_get_bid_desc(char *buf, size_t buf_len, bid_t bid);
 static void suaro_end_hand(void);
@@ -244,7 +244,7 @@ static void suaro_start_bidding(void)
 	SUARO.bonus = 1;
 }
 
-static int suaro_get_bid(void)
+static void suaro_get_bid(void)
 {
 	char val, suit;
 
@@ -280,7 +280,7 @@ static int suaro_get_bid(void)
 	/* make "pass" bid */
 	add_sbid(0, 0, SUARO_PASS);
 
-	return req_bid(game.next_bid);
+	req_bid(game.next_bid);
 }
 
 static void suaro_handle_bid(player_t p, bid_t bid)
@@ -377,13 +377,15 @@ static void suaro_deal_hand(void)
 	deal_hand(game.deck, 1, &game.seats[3].hand);
 }
 
-static int suaro_send_hand(player_t p, seat_t s)
+static void suaro_send_hand(player_t p, seat_t s)
 {
-	/* reveal the kitty after it's been turned up */
-	if (s == 1 && SUARO.kitty_revealed)
-		return send_hand(p, s, 1);
-	/* each player can see their own hand plus the key card */
-	return send_hand(p, s, game.players[p].seat == s || s == 3);
+	if (s == 1 && SUARO.kitty_revealed) {
+		/* reveal the kitty after it's been turned up */
+		send_hand(p, s, 1);
+	} else {
+		/* each player can see their own hand plus the key card */
+		send_hand(p, s, game.players[p].seat == s || s == 3);
+	}
 }
 
 static int suaro_get_bid_text(char *buf, size_t buf_len, bid_t bid)

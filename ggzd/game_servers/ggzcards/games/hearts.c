@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: hearts.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -44,7 +44,7 @@ static void hearts_get_options(void);
 static int hearts_handle_option(char *option, int value);
 static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 				    int value);
-static int hearts_handle_gameover(void);
+static void hearts_handle_gameover(void);
 static void hearts_start_bidding(void);
 static void hearts_start_playing(void);
 static char *hearts_verify_play(player_t p, card_t card);
@@ -171,7 +171,7 @@ static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 	return buf;
 }
 
-static int hearts_handle_gameover(void)
+static void hearts_handle_gameover(void)
 {
 	player_t p;
 	player_t winners[game.num_players];
@@ -190,7 +190,8 @@ static int hearts_handle_gameover(void)
 			winner_cnt++;
 		}
 	}
-	return send_gameover(winner_cnt, winners);
+	
+	handle_gameover_event(winner_cnt, winners);
 }
 
 static void hearts_start_bidding(void)

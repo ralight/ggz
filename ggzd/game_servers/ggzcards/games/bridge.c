@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: bridge.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -44,14 +44,14 @@ static bool bridge_is_valid_game(void);
 static int bridge_compare_cards(card_t, card_t);
 static void bridge_init_game(void);
 static void bridge_start_bidding(void);
-static int bridge_get_bid(void);
+static void bridge_get_bid(void);
 static void bridge_handle_bid(player_t p, bid_t bid);
 static void bridge_next_bid(void);
 static void bridge_start_playing(void);
 static void bridge_get_play(player_t p);
 static void bridge_handle_play(player_t p, seat_t s, card_t card);
 static bool bridge_test_for_gameover(void);
-static int bridge_send_hand(player_t p, seat_t s);
+static void bridge_send_hand(player_t p, seat_t s);
 static int bridge_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void bridge_set_player_message(player_t p);
 static void bridge_end_hand(void);
@@ -148,7 +148,7 @@ static void bridge_start_bidding(void)
 			BRIDGE.opener[i][j] = -1;
 }
 
-static int bridge_get_bid(void)
+static void bridge_get_bid(void)
 {
 	char suit, val;
 
@@ -182,7 +182,7 @@ static int bridge_get_bid(void)
 	/* make "pass" bid */
 	add_sbid(0, 0, BRIDGE_PASS);
 
-	return req_bid(game.next_bid);
+	req_bid(game.next_bid);
 }
 
 static void bridge_handle_bid(player_t p, bid_t bid)
@@ -290,16 +290,16 @@ static bool bridge_test_for_gameover(void)
 	return 0;
 }
 
-static int bridge_send_hand(player_t p, seat_t s)
+static void bridge_send_hand(player_t p, seat_t s)
 {
 	/* we explicitly send out the dummy hand, but a player who joins late
 	   won't see it.  We have the same problem with Suaro. */
 	if (s == BRIDGE.dummy	/* player/seat crossover; ok because it's
 				   bridge */
 	    && BRIDGE.dummy_revealed)
-		return send_hand(p, s, 1);
-
-	return game_send_hand(p, s);
+		send_hand(p, s, 1);
+	else
+		game_send_hand(p, s);
 }
 
 static int bridge_get_bid_text(char *buf, size_t buf_len, bid_t bid)

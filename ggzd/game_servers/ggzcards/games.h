@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3994 2002-04-15 09:52:12Z jdorje $
+ * $Id: games.h 3997 2002-04-16 19:03:58Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -65,7 +65,7 @@ typedef struct {
 	                                            	   description of the
 	                                            	   bid */
 	void (*start_bidding) (void);	/* updates data for the first bid */
-	int (*get_bid) (void);	/* gets a bid from next player */
+	void (*get_bid) (void);	/* gets a bid from next player */
 	void (*handle_bid) (player_t, bid_t);	/* handles a bid from the
 						   given bidder */
 	void (*next_bid) (void);	/* updates data for the next bid */
@@ -86,12 +86,12 @@ typedef struct {
 	/* starting/ending games */
 	void (*start_game) (void);	/* start a game */
 	bool (*test_for_gameover) (void);	/* returns TRUE iff gameover */
-	int (*handle_gameover) (void);	/* handle a gameover */
+	void (*handle_gameover) (void);	/* handle a gameover */
 
 	/* miscellaneous */
 	  card_t(*map_card) (card_t);
 	int (*compare_cards) (card_t, card_t);
-	int (*send_hand) (player_t, seat_t);	/* sends a hand to a player */
+	void (*send_hand) (player_t, seat_t);	/* sends a hand to a player */
 } game_data_t;
 
 extern game_data_t *game_data[];
@@ -101,6 +101,6 @@ game_data_t *games_get_gametype(char *game_name);
 
 void games_handle_gametype(int choice);	/* set the game */
 
-int games_req_gametype();	/* what do you want to play today? */
+void games_req_gametype(void);	/* what do you want to play today? */
 
 #endif /* __GAMES_H__ */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: common.c 3997 2002-04-16 19:03:58Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -38,6 +38,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "net_common.h"
+
 #include "ai.h"
 #include "bid.h"
 #include "common.h"
@@ -59,7 +61,7 @@ game_t game = { 0 };
  * correctly.  This works as desired...the problem is that all other
  * games will need identical changes too.
  */
-static bool seats_full(void)
+bool seats_full(void)
 {
 	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)
 		+ ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
@@ -94,7 +96,6 @@ const char *get_state_name(server_state_t state)
 	return "[unknown state]";
 }
 
-static bool try_to_start_game(void);
 static void newgame(void);
 static int determine_host(void);
 static void set_player_name(player_t p, const char *name);
@@ -150,79 +151,7 @@ void restore_game_state()
 void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 {
 	player_t p = *(int *) data;
-	int fd, status = 0;
-	bid_t bid;
-	client_msg_t op;
-
-	fd = get_player_socket(p);
-
-	if (read_opcode(fd, (int*)&op) < 0)
-		return;
-
-	ggzdmod_log(game.ggz, "Received %d (%s) from player %d/%s.",
-	            op, get_client_opcode_name(op), p, get_player_name(p));
-
-	switch (op) {
-	case MSG_LANGUAGE:
-		status = rec_language(p);
-		break;
-	case RSP_NEWGAME:
-		if (game.state == STATE_NOTPLAYING) {
-			status = 0;
-			handle_newgame_event(p);
-		} else {
-			ggzdmod_log(game.ggz,
-				    "SERVER/CLIENT bug?: received RSP_NEWGAME while we were in state %d (%s).",
-				    game.state, get_state_name(game.state));
-			status = -1;
-		}
-		break;
-	case RSP_OPTIONS:
-		if (p != game.host) {
-			/* how could this happen? */
-			ggzdmod_log(game.ggz,
-				    "SERVER/CLIENT bug: received options from non-host player.");
-			status = -1;
-		} else {
-			if (game.data == NULL) {
-				int option;
-				rec_options(1, &option);
-				games_handle_gametype(option);
-
-				init_game();
-				broadcast_sync();
-
-				if (seats_full())
-					next_play();
-			} else {
-				handle_options();
-				try_to_start_game();
-			}
-		}
-		break;
-	case RSP_BID:
-		if ((status = rec_bid(p, &bid)) == 0)
-			handle_bid_event(p, bid);
-		break;
-	case RSP_PLAY:
-		status = rec_play(p);
-		break;
-	case REQ_SYNC:
-		status = send_sync(p);
-		break;
-	default:
-		/* Unrecognized opcode */
-		ggzdmod_log(game.ggz, "SERVER/CLIENT BUG: "
-			    "game_handle_player: unrecognized opcode %d.",
-			    op);
-		status = -1;
-		break;
-	}
-
-	if (status != 0)
-		ggzdmod_log(game.ggz,
-			    "ERROR: handle_player: status is %d on message from player %d/%s.",
-			    status, p, get_player_name(p));
+	net_read_player_data(p);
 }
 
 /* Setup game state and board.  Also initializes the _type_ of game. */
@@ -246,8 +175,8 @@ void init_ggzcards(GGZdMod * ggz, game_data_t *game_data)
 }
 
 /* Tries to start a game, requesting information from players where
-   necessary.  returns 1 on successful start. */
-static bool try_to_start_game(void)
+   necessary.  returns TRUE on successful start. */
+bool try_to_start_game(void)
 {
 	player_t p;
 	int ready = TRUE;
@@ -290,7 +219,7 @@ static void newgame(void)
 	
 	for (p = 0; p < game.num_players; p++)
 		set_player_message(p);
-	broadcast_newgame();
+	net_broadcast_newgame();
 	game.dealer = random() % game.num_players;
 	set_game_state(STATE_NEXT_HAND);
 
@@ -316,7 +245,7 @@ void next_play(void)
 		for (p = 0; p < game.num_players; p++)
 			game.players[p].ready = 0;
 		for (p = 0; p < game.num_players; p++)
-			(void) send_newgame_request(p);
+			(void) net_send_newgame_request(p);
 		break;
 	case STATE_NEXT_HAND:
 		ggzdmod_log(game.ggz, "Next play: dealing a new hand.");
@@ -327,7 +256,7 @@ void next_play(void)
 			return;
 		}
 		
-		broadcast_newhand();
+		net_broadcast_newhand();
 
 		/* shuffle and deal a hand */
 		shuffle_deck(game.deck);
@@ -348,9 +277,7 @@ void next_play(void)
 		/* Now send the resulting hands to each player */
 		for (p = 0; p < game.num_players; p++)
 			for (s = 0; s < game.num_seats; s++)
-				if (game.data->send_hand(p, s) < 0)
-					ggzdmod_log(game.ggz,
-						    "Error: game_send_hand returned -1.");
+				game.data->send_hand(p, s);
 
 		set_game_state(STATE_FIRST_BID);
 		ggzdmod_log(game.ggz,
@@ -561,7 +488,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	   alert - although it's not really a NEWGAME but a game in
 	   progress. */
 	if (game.state > STATE_WAITFORPLAYERS)
-		send_newgame(player);
+		net_send_newgame(player);
 
 	/* send all table info to joiner */
 	(void) send_sync(player);
@@ -570,7 +497,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	   player joining.  I think it only did that because the player list
 	   is also sent out in the sync, but there could be a better reason
 	   as well. */
-	broadcast_player_list();
+	net_broadcast_player_list();
 
 	/* should this be in sync??? */
 	if (seat >= 0 &&	/* see above comment about seat==-1 */
@@ -636,7 +563,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	set_player_name(player, "Empty Seat");
 
 	/* send new seat data */
-	broadcast_player_list();
+	net_broadcast_player_list();
 
 	/* reset player's age; find new host */
 	game.players[player].age = -1;
@@ -689,7 +616,7 @@ void handle_play_event(player_t p, card_t card)
 	hand = &game.seats[s].hand;
 
 	/* send the play */
-	(void) broadcast_play(s, card);
+	(void) net_broadcast_play(s, card);
 	
 	/* FIXME: what happens if someone sends a card not even in their hand?? */
 
@@ -736,7 +663,7 @@ void handle_play_event(player_t p, card_t card)
 			    game.trick_count, game.trick_total);
 		game.data->end_trick();
 		send_last_trick();
-		(void) send_trick(game.winner);
+		handle_trick_event(game.winner);
 		game.trick_count++;
 		set_game_state(STATE_NEXT_TRICK);
 		if (game.trick_count == game.trick_total) {
@@ -757,12 +684,19 @@ void handle_play_event(player_t p, card_t card)
 	next_play();
 }
 
+void handle_badplay_event(player_t p, char *msg)
+{
+	set_game_state(STATE_WAIT_FOR_PLAY);
+	net_send_badplay(p, msg);
+	/* Now we'll wait for them to play again. */
+}
+
 /* This handles the event of someone making a bid */
 void handle_bid_event(player_t p, bid_t bid)
 {
 	int was_waiting = 0;
 	
-	broadcast_bid(p, bid);
+	net_broadcast_bid(p, bid);
 
 	game.players[p].bid_data.is_bidding = 0;
 	clear_bids(p);
@@ -831,13 +765,124 @@ void handle_bid_event(player_t p, bid_t bid)
 		next_play();
 }
 
+void handle_trick_event(player_t winner)
+{
+	seat_t s;
+	
+	ggzdmod_log(game.ggz,
+		    "Player %d/%s won the trick.",
+		    winner, get_player_name(winner));
 
-void handle_player_language(player_t p, const char* lang)
+	for (s = 0; s < game.num_seats; s++)
+		/* note: we also clear the table at the beginning of every
+		   hand */
+		game.seats[s].table = UNKNOWN_CARD;
+		
+	net_broadcast_trick(winner);
+}
+
+void handle_gameover_event(int winner_cnt, player_t * winners)
+{
+	player_t p;
+	ggzdmod_log(game.ggz, "Handling gameover event.");
+
+
+#ifdef USE_GGZ_STATS		/* defined in common.h */
+	/* calculate new player ratings */
+	/* FIXME: this shouldn't be handled here.  It should be handled in
+	   the calling function. */
+	for (i = 0; i < winner_cnt; i++)
+		ggzd_set_game_winner(game.ggz, winners[i],
+				     1.0 / (double) winner_cnt);
+	if (ggzd_recalculate_ratings(game.ggz) < 0) {
+		ggzdmod_log(game.ggz, "ERROR: couldn't recalculate ratings.");
+	}
+#endif /* USE_GGZ_STATS */
+
+	for (p = 0; p < game.num_players; p++)
+		set_player_message(p);	/* some data could have changed */
+		
+	net_broadcast_gameover(winner_cnt, winners);
+}
+
+void handle_client_language(player_t p, const char* lang)
 {
 	/* FIXME: store the language and use it to translate messages */
 	ggzdmod_log(game.ggz, "Player %d set their language to %s.", p, lang);
 }
 
+void handle_client_newgame(player_t p)
+{
+	if (game.state == STATE_NOTPLAYING) {
+		handle_newgame_event(p);
+	} else {
+		ggzdmod_log(game.ggz,  "ERROR: received RSP_NEWGAME while we were in state %d (%s).",
+				   game.state, get_state_name(game.state));
+	}
+}
+
+/* Send out current game hand, score, etc.  Doesn't use its own protocol, but
+   calls on others */
+void send_sync(player_t p)
+{
+	seat_t s;
+
+	ggzdmod_log(game.ggz, "Sending sync to player %d/%s.", p,
+		    get_player_name(p));
+
+	net_send_player_list(p);
+
+	/* send out messages again */
+	send_all_global_messages(p);
+	for (s = 0; s < game.num_seats; s++)
+		send_player_message(s, p);
+
+	/* Send out hands */
+	if (game.state != STATE_NOTPLAYING)
+		for (s = 0; s < game.num_seats; s++)
+			game.data->send_hand(p, s);
+
+	/* Send out table cards */
+	net_send_table(p);
+
+	/* request bid/play again, if necessary */
+	if (game.players[p].bid_data.is_bidding) {
+		/* We can't call req_bid, because it has side effects (like
+		   changing the game's state). */
+		net_send_bid_request(p,
+		                     game.players[p].bid_data.bid_count,
+		                     game.players[p].bid_data.bids);
+	}
+	if (game.state == STATE_WAIT_FOR_PLAY && game.players[p].is_playing)
+		net_send_play_request(p, game.players[p].play_seat);
+}
+
+
+void broadcast_sync(void)
+{
+	player_t p;
+	for (p = 0; p < game.num_players; p++)
+		send_sync(p);
+}
+
+void handle_client_sync(player_t p)
+{
+	(void) send_sync(p);
+}
+
+void send_hand(const player_t p, const seat_t s, int reveal)
+{
+	/* We used to refuse to send hands of size 0, but some games may need
+	   to do this! */
+	assert(game.state != STATE_NOTPLAYING);
+
+	/* The open_hands option causes everyone's hand to always be
+	   revealed. */
+	if (game.open_hands)
+		reveal = 1;
+		
+	(void) net_send_hand(p, s, reveal);
+}
 
 void set_num_seats(int num_seats)
 {

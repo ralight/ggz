@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.h 3595 2002-03-17 00:14:56Z jdorje $
+ * $Id: net.h 3997 2002-04-16 19:03:58Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -30,50 +30,63 @@
 
 #include "types.h"
 
+/** convert an "absolute" seat number s to the
+ * "relative" seat number used by player p */
+#define CONVERT_SEAT(s, p)					\
+	(assert(game.players[(p)].seat >= 0),			\
+	 ((s) - game.players[(p)].seat + game.num_seats) % game.num_seats)
+#define UNCONVERT_SEAT(s_rel, p)				\
+	(assert(game.players[(p)].seat >= 0),			\
+	 (game.players[(p)].seat + (s_rel)) % game.num_seats)
+
 /* Functions to send packets to the client. */
 
-void broadcast_player_list(void);
+void net_send_player_list(player_t p);
+void net_broadcast_player_list(void);
 
-void broadcast_play(seat_t player, card_t card);
+void net_send_options_request(player_t p,
+                              int num_options,
+                              char **option_descs,
+                              int *num_choices,
+                              int *option_defaults,
+                              char ***option_choices);
 
-int send_gameover(int winner_cnt, player_t * winners);
+void net_broadcast_play(seat_t player, card_t card);
 
-int send_table(player_t p);
+void net_broadcast_gameover(int winner_cnt, player_t * winners);
 
-int send_sync(player_t p);
-void broadcast_sync(void);
+void net_send_table(player_t p);
 
-int send_bid_request(player_t p, int bid_count, bid_t * bids);
+void net_send_bid_request(player_t p, int bid_count, bid_t * bids);
 
-void broadcast_bid(player_t bidder, bid_t bid);
+void net_broadcast_bid(player_t bidder, bid_t bid);
 
-int send_play_request(player_t p, seat_t s);
+void net_send_play_request(player_t p, seat_t s);
 
-int send_badplay(player_t p, char *msg);
+void net_send_badplay(player_t p, char *msg);
 
-int send_hand(player_t p, seat_t s, int reveal);
+void net_send_hand(player_t p, seat_t s, int reveal);
 
-int send_trick(player_t winner);
+void net_broadcast_trick(player_t winner);
 
-int send_newgame_request(player_t p);
+void net_send_newgame_request(player_t p);
 
 /* Send a newgame to one person. */
-int send_newgame(player_t p);
-void broadcast_newgame(void);
+void net_send_newgame(player_t p);
+void net_broadcast_newgame(void);
 
-void broadcast_newhand(void);
+void net_broadcast_newhand(void);
 
-int send_global_text_message(player_t p, const char *mark,
+void net_send_global_text_message(player_t p, const char *mark,
 			      const char *message);
-void broadcast_global_text_message(const char *mark, const char* message);
+void net_broadcast_global_text_message(const char *mark, const char* message);
 
-int send_global_cardlist_message(player_t p, const char *mark, int *lengths,
+void net_send_player_text_message(player_t p, seat_t s, const char *message);
+
+void net_send_global_cardlist_message(player_t p, const char *mark, int *lengths,
 				  card_t ** cardlist);
-void broadcast_global_cardlist_message(const char *mark, int *lengths,
+void net_broadcast_global_cardlist_message(const char *mark, int *lengths,
 				       card_t ** cardlist);
 
 /* Functions to receive packets from the client. */
-
-int rec_language(player_t p);
-
-int rec_play(player_t p);
+void net_read_player_data(player_t p);
