@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 5091 2002-10-28 22:53:23Z jdorje $
+ * $Id: animation.c 5277 2002-12-08 08:41:19Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -76,6 +76,7 @@ static struct {
 static gint start_offtable_animation(gpointer winner);
 static gint animation_callback(gpointer ignored);
 
+/* Setup the animation data, on startup or when the table is resized. */
 void anim_setup(void)
 {
 	/* Get rid of old buffer. */
@@ -85,8 +86,12 @@ void anim_setup(void)
 	anim_buf = gdk_pixmap_new(table->window,
 				  get_table_width(), get_table_height(), -1);
 
-	if (!animating)		/* I should hope not! */
-		memset(anim, 0, sizeof(anim));
+	/* If this happened while we were animating, the animation would
+	 * be fubar.  But this should be impossible. */
+	assert(!animating);
+
+	/* Necessary because we may setup the animation multiple times. */
+	memset(anim, 0, sizeof(anim));
 }
 
 /* Function to setup and trigger a card animation */
