@@ -1,3 +1,3 @@
 SUBDIRS =
 
-man_MANS = ggz-txt.6
+man_MANS = ggzd.6
