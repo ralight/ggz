@@ -151,7 +151,7 @@
 	  message-of-the-day, the server will send it via <link
 	  linkend="rsp.motd">RSP_MOTD</link>.  If it does not exist,
 	  the server will ignore the request.
-	  <para>
+	</para>
       </listitem>
       
     </itemizedlist>
