@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.h 4689 2002-09-25 05:04:53Z jdorje $
+ * $Id: motd.h 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -29,7 +29,7 @@
 void motd_read_file(const char *file);
 
 /* Returns 'true' if motd is defined */
-int motd_is_defined(void);
+bool motd_is_defined(void);
 
 /* Return number of lines in the motd */
 int motd_get_num_lines(void);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: net.h 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -54,7 +54,7 @@ void net_disconnect(GGZNetIO* net);
 void net_free(GGZNetIO* net);
 
 /* Functions to send data to the client */
-GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, int use_tls);
+GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, bool use_tls);
 GGZReturn net_send_server_full(GGZNetIO *net, char *srv_name);
 GGZReturn net_send_login(GGZNetIO *net, GGZLoginType type,
 			 GGZClientReqError status, char *password);
@@ -88,8 +88,7 @@ GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
 			const char *sender, const char *msg);
 GGZReturn net_send_chat_result(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_table_launch(GGZNetIO *net, GGZClientReqError status);
-GGZReturn net_send_table_join(GGZNetIO *net,
-			      int is_spectator,
+GGZReturn net_send_table_join(GGZNetIO *net, bool is_spectator,
 			      const unsigned int table_index);
 GGZReturn net_send_table_join_result(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_table_leave(GGZNetIO *net, GGZLeaveType reason,

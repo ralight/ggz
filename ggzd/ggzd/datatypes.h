@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 5919 2004-02-13 16:54:27Z jdorje $
+ * $Id: datatypes.h 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -38,8 +38,10 @@
 /* Datatypes for server options*/
 typedef struct {
 	char *local_conf;
-	char remove_users;
-	int foreground;
+#if 0
+	bool remove_users;
+#endif
+	bool foreground;
 	int user_inact_time;
 	char clear_stats;
 	int stat_clr_time;
@@ -53,7 +55,7 @@ typedef struct {
 	char *admin_name;	/* cleanup() */
 	char *admin_email;	/* cleanup() */
 	char *server_name;	/* cleanup() */
-	int perform_lookups;
+	bool perform_lookups;
 	int ping_freq;
 	int lag_class[4];
 	int room_update_freq;
@@ -62,7 +64,7 @@ typedef struct {
 	char *dbusername;
 	char *dbpassword;
 	char *dbhashing;
-	int tls_use;
+	bool tls_use;
 	char *tls_key;
 	char *tls_cert;
 	char *tls_password;
@@ -106,18 +108,18 @@ typedef struct GameInfo {
 	
 	/* Are players allowed to leave mid-game?  (i.e. does the
 	   game support this?) */
-	unsigned char allow_leave;
+	bool allow_leave;
 	
 	/* Should we automatically kill the game server (table) when the
 	   last player leaves? */
-	unsigned char kill_when_empty;
+	bool kill_when_empty;
 
 	/* Types of stats to keep */
-	unsigned char stats_records;
-	unsigned char stats_ratings;
+	bool stats_records;
+	bool stats_ratings;
 #if 0
-	unsigned char stats_rankings;
-	unsigned char stats_highscores;
+	bool stats_rankings;
+	bool stats_highscores;
 #endif
 	
 	/* Executable information: a NULL-terminated list of

@@ -51,12 +51,12 @@
 				| PERMS_ROOMS_LOGIN)
 
 /* This function will acquire a read-lock on the player. */
-int perms_check(GGZPlayer *player, unsigned int perm);
+bool perms_check(GGZPlayer *player, unsigned int perm);
 
 /* These functions must already have a player read-lock. */
 void perms_init(GGZPlayer *player, ggzdbPlayerEntry *db_pe);
-int perms_is_admin(GGZPlayer *player);
-int perms_is_bot(GGZPlayer *player);
+bool perms_is_admin(GGZPlayer *player);
+bool perms_is_bot(GGZPlayer *player);
 
 #ifdef PERMS_DEFINE_STR_TABLE
 char perms_str_table[32][21] = {

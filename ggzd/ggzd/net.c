@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5918 2004-02-13 07:31:26Z jdorje $
+ * $Id: net.c 5923 2004-02-14 21:12:29Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -281,7 +281,7 @@ void net_free(GGZNetIO *net)
 
 /* net_send_XXX() functions for sending messages to the client */
 
-GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, int use_tls)
+GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, bool use_tls)
 {
 	char *xml_srv_name;
 	GGZReturn status;
@@ -289,10 +289,12 @@ GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, int use_tls)
 	xml_srv_name = ggz_xml_escape(srv_name);
 
 	_net_send_line(net, "<SESSION>");
-	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s' TLS_SUPPORT='%s'>",
-		VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "ok", ((use_tls && ggz_tls_support_query()) ? "yes" : "no"));
-	_net_send_line(net, "\t\t<OPTIONS CHATLEN='%d'/>", MAX_CHAT_LEN);
-	status = _net_send_line(net, "\t</SERVER>");
+	_net_send_line(net, "<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' "
+		       "STATUS='ok' TLS_SUPPORT='%s'>",
+		       VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION,
+		       ((use_tls && ggz_tls_support_query()) ? "yes" : "no"));
+	_net_send_line(net, "<OPTIONS CHATLEN='%d'/>", MAX_CHAT_LEN);
+	status = _net_send_line(net, "</SERVER>");
 
 	ggz_free(xml_srv_name);
 
@@ -308,7 +310,9 @@ GGZReturn net_send_server_full(GGZNetIO *net, char *srv_name)
 	xml_srv_name = ggz_xml_escape(srv_name);
 
 	_net_send_line(net, "<SESSION>");
-	status = _net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'/>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "full");
+	status = _net_send_line(net, "<SERVER ID='GGZ-%s' NAME='%s' "
+				"VERSION='%d' STATUS='full'/>",
+				VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION);
 
 	ggz_free(xml_srv_name);
 
@@ -625,7 +629,7 @@ GGZReturn net_send_table_launch(GGZNetIO *net, GGZClientReqError status)
 
 
 GGZReturn net_send_table_join(GGZNetIO *net,
-			      int is_spectator,
+			      bool is_spectator,
 			      const unsigned int table_index)
 {
 	return _net_send_line(net,
@@ -856,26 +860,28 @@ GGZReturn net_send_ping(GGZNetIO *net)
 
 /* Check for incoming data */
 #if 0
-static int net_data_is_pending(GGZNetIO *net)
+static bool net_data_is_pending(GGZNetIO *net)
 {
-	int pending = 0;
+	int result;
 	struct pollfd fd[1] = {{net->fd, POLLIN, 0}};
 
 	if (net && net->fd != -1) {
-	
-	dbg_msg(GGZ_DBG_CONNECTION, "Checking for net events");	
-	if ( (pending = poll(fd, 1, 0)) < 0) {
-		if (errno == EINTR)
-			/* Ignore interruptions */
-			pending = 0;
-		else 
-			err_sys_exit("poll failed in ggzcore_server_data_is_pending");
-	}
-	else if (pending)
-		dbg_msg(GGZ_DBG_CONNECTION, "Found a net event!");
+		dbg_msg(GGZ_DBG_CONNECTION, "Checking for net events");
+		result = poll(fd, 1, 0);
+		if (result < 0) {
+			if (errno == EINTR) {
+				/* Ignore interruptions */
+				return false;
+			} else {
+				err_sys_exit("poll failed in ggzcore_server_data_is_pending");
+			}
+
+		} else if (result > 0) {
+			return true;
+		}
 	}
 
-	return pending;
+	return false;
 }
 #endif
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/23/01
  * Desc: Functions for dealing with user permissions
- * $Id: perms.c 5906 2004-02-11 13:16:25Z josef $
+ * $Id: perms.c 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -38,30 +38,25 @@ void perms_init(GGZPlayer *player, ggzdbPlayerEntry *pe)
 }
 
 
-int perms_check(GGZPlayer *player, unsigned int perm)
+bool perms_check(GGZPlayer *player, unsigned int perm)
 {
-	int rc=0;
+	bool result;
 
 	pthread_rwlock_rdlock(&player->lock);
-	if((player->perms & perm) == perm)
-		rc = 1;
+	result = ((player->perms & perm) == perm);
 	pthread_rwlock_unlock(&player->lock);
 
-	return rc;
+	return result;
 }
 
 
-int perms_is_admin(GGZPlayer *player)
+bool perms_is_admin(GGZPlayer *player)
 {
-	if((player->perms & PERMS_ADMIN_MASK) != 0)
-		return 1;
-	return 0;
+	return ((player->perms & PERMS_ADMIN_MASK) != 0);
 }
 
 
-int perms_is_bot(GGZPlayer *player)
+bool perms_is_bot(GGZPlayer *player)
 {
-	if((player->perms & PERMS_CHAT_BOT) != 0)
-		return 1;
-	return 0;
+	return ((player->perms & PERMS_CHAT_BOT) != 0);
 }

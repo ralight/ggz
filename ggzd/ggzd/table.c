@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: table.c 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -598,7 +598,7 @@ void table_game_join(GGZTable *table, char *name,
 void table_game_leave(GGZTable *table, char *caller,
 		      GGZLeaveType reason, int num)
 {
-	char empty;
+	bool empty;
 	char player[MAX_USER_NAME_LEN + 1];
 	strcpy(player, table->seat_names[num]);
 
@@ -987,7 +987,8 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 {
 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
 	char *name = data;
-	int seat_num, is_spectator = 0, found = 1;
+	int seat_num;
+	bool is_spectator = false, found = true;
 	int len = strlen(name);
 	GGZTransitType transit;
 	GGZTableUpdateType update;
@@ -1007,14 +1008,14 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 			break;
 	}
 	if (seat_num == table->num_seats) {
-		is_spectator = 1;
+		is_spectator = true;
 		for (seat_num = 0; seat_num < table->max_num_spectators;
 		     seat_num++) {
 			if (strcmp(table->spectators[seat_num], name) == 0)
 				break;
 		}
 		if (seat_num == table->max_num_spectators)
-			found = 0;
+			found = false;
 	}
 
 	/* Update the seat. */

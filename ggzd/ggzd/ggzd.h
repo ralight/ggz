@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 5918 2004-02-13 07:31:26Z jdorje $
+ * $Id: ggzd.h 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -26,6 +26,18 @@
 
 #ifndef _GGZ_DEFS
 #define _GGZ_DEFS
+
+#if HAVE_STDBOOL_H
+# include <stdbool.h>
+#else
+# if !HAVE__BOOL
+typedef unsigned char _Bool;
+# endif
+# define bool _Bool
+# define false 0
+# define true 1
+# define __bool_true_false_are_defined 1
+#endif
 
 /* Server options */
 #define UNLIMITED_SEATS

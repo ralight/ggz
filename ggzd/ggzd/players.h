@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: players.h 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -72,10 +72,10 @@ struct _GGZPlayer {
 	int game_fd;
 	   
 	/* Launching flag */
-	char launching;
+	bool launching;
 
 	/* Transit flag */
-	char transit;
+	bool transit;
 
 	/* Linked lists of events */
 	GGZEvent *room_events;        /* protected by room lock*/
@@ -96,12 +96,12 @@ struct _GGZPlayer {
 	   data may be written to by any thread.  Thus it needs a separate
 	   lock, which everyone needs to use to read and write to it. */
 	pthread_rwlock_t stats_lock;
-	int have_record;
+	bool have_record;
 	int wins, losses, ties, forfeits;
 	int have_rating;
 	int rating;
 #if 0
-	int have_ranking;
+	bool have_ranking;
 	unsigned int ranking;
 	int have_highscore;
 	long highscore;

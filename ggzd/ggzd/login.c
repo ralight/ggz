@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: login.c 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,10 +44,10 @@
 #include "client.h"
 
 
-static void login_generate_password(char *);
+static void login_generate_password(char *pw);
 static GGZReturn login_add_user(ggzdbPlayerEntry *entry,
 				char *name, char *password);
-static int is_valid_username(char *);
+static bool is_valid_username(char *);
 
 
 /*
@@ -65,11 +65,11 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
                                     char *name, char *password)
 {
 	char *ip_addr;
-	int name_ok;
+	bool name_ok;
 	char new_pw[17];
 	ggzdbPlayerEntry db_pe;
 	char *login_type=NULL;
-	int db_status=0;
+	GGZDBResult db_status;
 
 	new_pw[0] = '\0';
 
@@ -94,7 +94,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 
 
 	/* Start off assuming name is good */
-	name_ok = 1;
+	name_ok = true;
 	
 	/* Check guest names vs. the database */
 	snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
@@ -103,14 +103,14 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 		dbg_msg(GGZ_DBG_CONNECTION,
 		        "Guest player trying to use actual login name %s.",
 		        name);
-		name_ok = 0;
+		name_ok = false;
 	}
 	
 	/* Add the player name to the hash table */
 	if (name_ok && !hash_player_add(name, player)) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Could not add player %s to hash.",
 		        name);
-		name_ok = 0;
+		name_ok = false;
 	}
 
 
@@ -129,13 +129,13 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 		if(db_status == GGZDB_ERR_NOTFOUND) {
 			dbg_msg(GGZ_DBG_CONNECTION,
 				"Unsuccessful login of %s - no account", name);
-			name_ok = 0;
+			name_ok = false;
 		} else if(ggzdb_compare_password(password, db_pe.password) != 1) {
 			dbg_msg(GGZ_DBG_CONNECTION,
 				"Unsuccessful login of %s - bad password",name);
 			log_msg(GGZ_LOG_SECURITY, "BADPWD from %s for %s",
 				player->client->addr, name);
-			name_ok = 0;
+			name_ok = false;
 		}
 		if(!name_ok) {
 			hash_player_delete(name);
@@ -247,13 +247,13 @@ static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
 
 
 /* This routine validates the username request */
-static int is_valid_username(char *name)
+static bool is_valid_username(char *name)
 {
 	char *p;
 
 	/* "<none>" is invalid */
 	if(!strcmp(name, "<none>"))
-		return 0;
+		return false;
 
 	/* Nothing less than a space and no extended ASCII */
 	/* & - can mess with M$ Windows labels, etc */
@@ -261,7 +261,7 @@ static int is_valid_username(char *name)
 	/* \ - can screw up log and debug's printf()s */
 	for(p=name; *p!='\0'; p++)
 		if(*p < 33 || *p == '%' || *p == '&' || *p == '\\' || *p > 126)
-			return 0;
+			return false;
 
-	return 1;
+	return true;
 }

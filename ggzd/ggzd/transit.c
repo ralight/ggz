@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: transit.c 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -126,7 +126,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	GGZTable *table = target;
 	GGZSeatEventData *event = data;
 	struct GGZTableSeat *seat = &(event->seat);
-	int spectating = 0;
+	bool spectating = false;
 
 	dbg_msg(GGZ_DBG_TABLE, 
 		"%s requested seat change %d on table %d: "
@@ -206,7 +206,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 	case GGZ_TRANSIT_LEAVE:
 	case GGZ_TRANSIT_LEAVE_SPECTATOR:
 		pthread_rwlock_wrlock(&player->lock);
-		player->transit = 0;
+		player->transit = false;
 		if (data->status == E_OK || data->status == E_NO_STATUS)
 			player->table = -1;
 		pthread_rwlock_unlock(&player->lock);
@@ -229,7 +229,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 	case GGZ_TRANSIT_JOIN:
 	case GGZ_TRANSIT_JOIN_SPECTATOR:
 		pthread_rwlock_wrlock(&player->lock);
-		player->transit = 0;
+		player->transit = false;
 		if (data->status == E_OK || data->status == E_NO_STATUS) {
 			player->table = data->table_index;
 		}
@@ -254,7 +254,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 	case GGZ_TRANSIT_SIT:
 	case GGZ_TRANSIT_STAND:
 	case GGZ_TRANSIT_MOVE:
-		player->transit = 0;
+		player->transit = false;
 		if (net_send_reseat_result(player->client->net,
 					   data->status) != GGZ_OK)
 			return GGZ_EVENT_ERROR;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: motd.c 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -195,7 +195,7 @@ void motd_read_file(const char *file)
 
 
 /* Returns 'true' if motd is defined */
-int motd_is_defined(void)
+bool motd_is_defined(void)
 {
 	return (motd_info.motd_text != NULL);
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5922 2004-02-14 19:32:53Z jdorje $
+ * $Id: players.c 5923 2004-02-14 21:12:29Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -99,8 +99,8 @@ GGZPlayer* player_new(GGZClient *client)
 	player->client = client;
 	player->table = -1;
 	player->game_fd = -1;
-	player->launching = 0;
-	player->transit = 0;
+	player->launching = false;
+	player->transit = false;
 	player->room = -1;
 	player->login_status = GGZ_LOGIN_NONE;
 	player->perms = PERMS_DEFAULT_ANON;
@@ -385,7 +385,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	if (status == E_OK) {
 		/* Mark player as launching table so we can't launch more */
 		pthread_rwlock_wrlock(&player->lock);
-		player->launching = 1;
+		player->launching = true;
 		pthread_rwlock_unlock(&player->lock);
 	} else {
 		if (net_send_table_launch(player->client->net, status) < 0)
@@ -405,7 +405,7 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 
 	/* Launch compleyed */
 	pthread_rwlock_wrlock(&player->lock);
-	player->launching = 0;
+	player->launching = true;
 	pthread_rwlock_unlock(&player->lock);
 
 	dbg_msg(GGZ_DBG_TABLE, "%s launch result: %d",
@@ -424,8 +424,8 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 }
 
 /* Check if the player has permissions to modify the table.  This will need
-   to be more extensive later.  Return the table if they have
-   permissions, otherwise NULL. */
+   to be more extensive later.  Return the table (with write-lock) if they
+   have permissions, otherwise NULL. */
 static GGZTable *check_table_perms(GGZPlayer *player,
 				   int room_id, int table_id)
 {
@@ -485,7 +485,7 @@ GGZPlayerHandlerStatus player_table_seat_update(GGZPlayer *player,
 						int room_id, int table_id,
 						GGZTableSeat *seat)
 {
-	int allow;
+	bool allow;
 
 	GGZTable *table = check_table_perms(player, room_id, table_id);
 	if (!table) {
@@ -534,7 +534,7 @@ GGZPlayerHandlerStatus player_table_boot_update(GGZPlayer *player,
 {
 	GGZPlayer *them;
 	GGZClientReqError status;
-	int allow;
+	bool allow;
 
 	GGZTable *table = check_table_perms(player, room_id, table_id);
 	if (!table) {
@@ -692,7 +692,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 {
 	int gametype;
 	GGZClientReqError status;
-	char allow;
+	bool allow;
 	GGZTableState state;
 	GGZTable *table;
 	GGZTransitType transit;
@@ -726,7 +726,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 
 		/* FIXME: make sure the player really is a spectator!
 		   Otherwise the table could break! */
-		allow = 1;
+		allow = true;
 		state = GGZ_TABLE_WAITING;
 
 		transit = GGZ_TRANSIT_LEAVE_SPECTATOR;
@@ -780,7 +780,8 @@ GGZPlayerHandlerStatus player_table_reseat(GGZPlayer *player,
 					   int seat_num)
 {
 	GGZTable *table;
-	int gametype, allow;
+	int gametype;
+	bool allow;
 	GGZClientReqError status;
 	GGZTransitType action;
 
@@ -1087,7 +1088,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 
 	/* Mark player as "in transit" */
 	pthread_rwlock_wrlock(&player->lock);
-	player->transit = 1;
+	player->transit = true;
 	pthread_rwlock_unlock(&player->lock);
 
 	return E_OK;
