@@ -112,10 +112,10 @@ static void ggz_connect(void)
 
 static int handle_message_global()
 {
- 	char mark[100];
+ 	char *mark;
 	char *message;
 
-	if (es_read_string(game.fd, mark, sizeof(mark)) < 0)
+	if (es_read_string_alloc(game.fd, &mark) < 0)
 		return -1;
 	if (es_read_string_alloc(game.fd, &message) < 0)
 		return -1;
@@ -127,6 +127,7 @@ static int handle_message_global()
 	table_set_message(mark, message);
 
 	g_free( message );
+	g_free( mark );
 
 	return 0;
 }
@@ -134,14 +135,16 @@ static int handle_message_global()
 static int handle_message_player()
 {
 	int p;
-	char message[100];
+	char *message;
 	if (es_read_int(game.fd, &p) < 0)
 		return -1;
 	assert(p >= 0 && p < game.num_players);
-	if (es_read_string(game.fd, message, sizeof(message)) < 0)
+	if (es_read_string_alloc(game.fd, &message) < 0)
 		return -1;
 
 	table_set_player_message(p, message);
+
+	g_free( message );
 
 	return 0;
 }
@@ -473,10 +476,10 @@ void menubar_message(char *mark, char *msg)
 
 static void handle_badplay(void)
 {
-	char err_msg[100];
+	char *err_msg;
 	int p = game.play_hand;
 
-	if(es_read_string(game.fd, err_msg, sizeof(err_msg)) < 0)
+	if(es_read_string_alloc(game.fd, &err_msg) < 0)
 		ggz_snprintf(err_msg, sizeof(err_msg), _("Bad play: unknown reason.") );
 
 	/* Restore the cards the way they should be */
@@ -492,6 +495,7 @@ static void handle_badplay(void)
 	
 	statusbar_message(err_msg);
 	sleep(1); /* just a delay? */
+	g_free( err_msg );
 }
 
 
