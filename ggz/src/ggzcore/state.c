@@ -58,13 +58,15 @@ int ggzcore_state_is_logged_in(void)
 
 int ggzcore_state_is_in_room(void)
 {
-	return (_ggzcore_state.id >= GGZ_STATE_IN_ROOM);
+	return (_ggzcore_state.id >= GGZ_STATE_IN_ROOM
+		&& _ggzcore_state.id < GGZ_STATE_LOGGING_OUT);
 }
 
 
 int ggzcore_state_is_at_table(void)
 {
-	return (_ggzcore_state.id >= GGZ_STATE_AT_TABLE);
+	return (_ggzcore_state.id >= GGZ_STATE_AT_TABLE
+		&& _ggzcore_state.id <= GGZ_STATE_LEAVING_TABLE);
 }
 
 
