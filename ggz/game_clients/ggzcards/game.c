@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4122 2002-04-30 05:23:35Z jdorje $
+ * $Id: game.c 4168 2002-05-05 21:44:03Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -489,7 +489,7 @@ void game_alert_badplay(char *err_msg)
 #endif /* DEBUG */
 }
 
-void game_alert_play(int player, card_t card, int pos)
+void game_alert_play(int player, card_t card, int pos, int hand_pos)
 {
 	ggz_debug("main", "Handling play alert for player %d.", player);
 	
@@ -504,6 +504,8 @@ void game_alert_play(int player, card_t card, int pos)
 		/* If this is a card _we_ played, then we'll already be
 		   animating, and we really don't want to stop just to start
 		   over.  But we leave that up to animation_start. */
+		if (!preferences.collapse_hand)
+			pos = hand_pos;
 		(void) animation_start(player, card, pos, -1);
 	}
 	

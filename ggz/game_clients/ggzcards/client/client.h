@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4119 2002-04-30 05:04:06Z jdorje $
+ * $Id: client.h 4168 2002-05-05 21:44:03Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -224,8 +224,10 @@ extern void game_alert_badplay(char *err_msg);
  *  been updated; the frontend should redraw it and perhaps draw animation.
  *  @param player The player whose hand was played from.
  *  @param card The card that was played.
- *  @param pos The (former) position of the card. */
-extern void game_alert_play(int player, card_t card, int pos);
+ *  @param pos The (former) position of the card in a compressed hand.
+ *  @param hand_pos The position of the card in an uncompressed hand. */
+extern void game_alert_play(int player, card_t card,
+                            int pos, int hand_pos);
 
 /** Called when we're informaed of the table cards.  The information
  *  itself resides in the player structures; all the frontend has to
