@@ -25,6 +25,7 @@
 #include "cards.h"
 #include "games.h"
 #include "protocol.h"
+#include "types.h"c
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
@@ -43,44 +44,6 @@ typedef enum {
 	WH_STATE_NEXT_PLAY,		/* asking for a new play */
 	WH_STATE_WAIT_FOR_PLAY		/* waiting for a play */
 } server_state_t;
-
-
-/* in different games, bids may have different meanings.
- *   we'll just use this arbitrary data structure for it */
-typedef union bid_t {
-	/* this assumes a "long" is at least 32-bit. */
-	long bid;
-	struct special_bid_struct {
-		/* this can be used for many different games
-		 * that have unusual but similar bidding.
-		 * Different games may use it differently. */
-		char val;	/* the value of the bid */
-		char suit;	/* the suit of the bid (generally trump) */
-		char spec;	/* specialty bids (defined per-game) */
-	} sbid;
-} bid_t;
-
-/* all players have seats, but every seat doesn't necessarily have a player.
- * some seats may be dummies or kitties */
-/* the tricky thing is that GGZ knows only about _players_ while the
- * client game knows only about _seats_ */
-#define MAX_MESSAGE_LENGTH 100
-struct game_seat_t {
-	hand_t hand;
-	card_t table;
-	struct ggz_seat_t * ggz; /* ggz seat data; probably points to something in ggz_seats */
-	char message[MAX_MESSAGE_LENGTH];
-};
-typedef int seat_t; /* just to make things clearer */
-
-struct game_player_t {
-	int score;
-	bid_t bid;
-	int tricks;
-	int seat; /* the number of the player's seat */
-	int ready;
-};
-typedef int player_t; /* just to make things clearer */
 
 /* Data structure for generic trick-taking card game */
 struct wh_game_t {
