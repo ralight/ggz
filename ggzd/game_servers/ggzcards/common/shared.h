@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: shared.h 3746 2002-04-05 07:09:05Z jdorje $
+ * $Id: shared.h 3987 2002-04-15 04:58:10Z jdorje $
  *
  * This contains miscellaneous definitions common to both GGZCards
  * client and server.
@@ -36,6 +36,7 @@
 #define FALSE 0
 typedef int bool;
 
+#define MIN(a, b) ( (a) < (b) ? (a) : (b) )
 #define MAX(a, b) ( (a) > (b) ? (a) : (b) )
 
 #endif /* __SHARED_H__ */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.h 3567 2002-03-16 05:48:45Z jdorje $
+ * $Id: aicommon.h 3987 2002-04-15 04:58:10Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -30,13 +30,10 @@
 
 #include "protocol.h"
 
-/* Debugging types */
+/* Standard debugging types */
 #define DBG_BID "bid"
 #define DBG_PLAY "play"
 #define DBG_AI "misc"
-
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 /* FIXME: Right now this code assumes 4 players and 4 suits. */
 
