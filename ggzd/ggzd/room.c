@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: room.c 4514 2002-09-11 07:44:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -369,7 +369,7 @@ static int room_event_callback(GGZPlayer* player, int size, void* data)
 	name = current + 1;
 
 	/* Don't deliver updates about ourself (except lag) */
-	if (opcode != GGZ_UPDATE_LAG && strcmp(name, player->name) == 0)
+	if (opcode != GGZ_UPDATE_LAG && strcasecmp(name, player->name) == 0)
 		return 0;
 
 	if (net_send_player_update(player->client->net, opcode, name) < 0)

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4508 2002-09-11 03:48:41Z jdorje $
+ * $Id: net.c 4514 2002-09-11 07:44:05Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -895,39 +895,39 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 {
 	void (*process_func)();
 
-	if (strcmp(tag, "SESSION") == 0)
+	if (strcasecmp(tag, "SESSION") == 0)
 		process_func = _net_handle_session;
-	else if (strcmp(tag, "LOGIN") == 0)
+	else if (strcasecmp(tag, "LOGIN") == 0)
 		process_func = _net_handle_login;
-	else if (strcmp(tag, "CHANNEL") == 0)
+	else if (strcasecmp(tag, "CHANNEL") == 0)
 		process_func = _net_handle_channel;
-	else if (strcmp(tag, "NAME") == 0)
+	else if (strcasecmp(tag, "NAME") == 0)
 		process_func = _net_handle_name;
-	else if (strcmp(tag, "PASSWORD") == 0)
+	else if (strcasecmp(tag, "PASSWORD") == 0)
 		process_func = _net_handle_password;
-	else if (strcmp(tag, "UPDATE") == 0)
+	else if (strcasecmp(tag, "UPDATE") == 0)
 		process_func = _net_handle_update;
-	else if (strcmp(tag, "LIST") == 0)
+	else if (strcasecmp(tag, "LIST") == 0)
 		process_func = _net_handle_list;
-	else if (strcmp(tag, "ENTER") == 0)
+	else if (strcasecmp(tag, "ENTER") == 0)
 		process_func = _net_handle_enter;
-	else if (strcmp(tag, "CHAT") == 0)
+	else if (strcasecmp(tag, "CHAT") == 0)
 		process_func = _net_handle_chat;
-	else if (strcmp(tag, "JOIN") == 0)
+	else if (strcasecmp(tag, "JOIN") == 0)
 		process_func = _net_handle_join;
-	else if (strcmp(tag, "LEAVE") == 0)
+	else if (strcasecmp(tag, "LEAVE") == 0)
 		process_func = _net_handle_leave;
-	else if (strcmp(tag, "LAUNCH") == 0)
+	else if (strcasecmp(tag, "LAUNCH") == 0)
 		process_func = _net_handle_launch;
-	else if (strcmp(tag, "TABLE") == 0)
+	else if (strcasecmp(tag, "TABLE") == 0)
 		process_func = _net_handle_table;
-	else if (strcmp(tag, "SEAT") == 0)
+	else if (strcasecmp(tag, "SEAT") == 0)
 		process_func = _net_handle_seat;
-	else if (strcmp(tag, "DESC") == 0)
+	else if (strcasecmp(tag, "DESC") == 0)
 		process_func = _net_handle_desc;
-	else if (strcmp(tag, "MOTD") == 0)
+	else if (strcasecmp(tag, "MOTD") == 0)
 		process_func = _net_handle_motd;
-	else if (strcmp(tag, "PONG") == 0)
+	else if (strcasecmp(tag, "PONG") == 0)
 		process_func = _net_handle_pong;
 	else
 		process_func = NULL;
@@ -986,11 +986,11 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 			return;
 		}
 
-		if (strcmp(type, "normal") == 0)
+		if (strcasecmp(type, "normal") == 0)
 			login_type = GGZ_LOGIN;
-		else if (strcmp(type, "guest") == 0)
+		else if (strcasecmp(type, "guest") == 0)
 			login_type = GGZ_LOGIN_GUEST;
-		else if (strcmp(type, "first") == 0)
+		else if (strcasecmp(type, "first") == 0)
 			login_type = GGZ_LOGIN_NEW;
 		else {
 			_net_send_result(net, "login", E_BAD_OPTIONS);
@@ -1100,7 +1100,7 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 		name = safe_strdup(ggz_xmlelement_get_text(element));
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
-		if (strcmp(parent_tag, "LOGIN") == 0)
+		if (strcasecmp(parent_tag, "LOGIN") == 0)
 			_net_auth_set_name(parent, name);
 		else 
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
@@ -1128,7 +1128,7 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 		password = safe_strdup(ggz_xmlelement_get_text(element));
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
-		if (strcmp(parent_tag, "LOGIN") == 0)
+		if (strcasecmp(parent_tag, "LOGIN") == 0)
 			_net_auth_set_password(parent, password);
 		else 
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
@@ -1148,7 +1148,7 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 		/* Grab update data from tag */
 		type = ggz_xmlelement_get_attr(update, "TYPE");
 
-		if (strcmp(type, "player") == 0) {
+		if (strcasecmp(type, "player") == 0) {
 			if (!(player = ggz_xmlelement_get_data(update))) {
 				_net_send_result(net, "protocol", E_BAD_OPTIONS);
 				return;
@@ -1156,7 +1156,7 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 
 			/* FIXME: update password and other data */
 		}
-		else if (strcmp(type, "table") == 0) {
+		else if (strcasecmp(type, "table") == 0) {
 			if (!(table = ggz_xmlelement_get_data(update))) {
 				_net_send_result(net, "protocol", E_BAD_OPTIONS);
 				return;
@@ -1190,14 +1190,14 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 		if (str_to_bool(full, 0))
 			verbose = 1;
 		
-		if (strcmp(type, "game") == 0)
+		if (strcasecmp(type, "game") == 0)
 			player_list_types(net->client->data, verbose);
-		else if (strcmp(type, "room") == 0)
+		else if (strcasecmp(type, "room") == 0)
 			/* FIXME: Currently send all types */
 			room_list_send(net->client->data, -1, verbose);
-		else if (strcmp(type, "player") == 0)
+		else if (strcasecmp(type, "player") == 0)
 			player_list_players(net->client->data);
-		else if (strcmp(type, "table") == 0)
+		else if (strcasecmp(type, "table") == 0)
 			/* FIXME: Currently send all local types */
 			player_list_tables(net->client->data, GGZ_TYPE_ALL, 0);
 		else
@@ -1239,13 +1239,13 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 			
 		/* FIXME: error checking on these? */
 		
-		if (strcmp(type, "normal") == 0)
+		if (strcasecmp(type, "normal") == 0)
 			op = GGZ_CHAT_NORMAL;
-		else if (strcmp(type, "private") == 0)
+		else if (strcasecmp(type, "private") == 0)
 			op = GGZ_CHAT_PERSONAL;
-		else if (strcmp(type, "announce") == 0)
+		else if (strcasecmp(type, "announce") == 0)
 			op = GGZ_CHAT_ANNOUNCE;
-		else if (strcmp(type, "beep") == 0)
+		else if (strcasecmp(type, "beep") == 0)
 			op = GGZ_CHAT_BEEP;
 		else {
 			_net_send_result(net, "chat", E_BAD_OPTIONS);
@@ -1394,8 +1394,8 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	parent_tag = ggz_xmlelement_get_tag(parent);
- 	if (strcmp(parent_tag, "LAUNCH") == 0
-	    || strcmp(parent_tag, "UPDATE") == 0 ) {
+ 	if (strcasecmp(parent_tag, "LAUNCH") == 0
+	    || strcasecmp(parent_tag, "UPDATE") == 0 ) {
 		ggz_xmlelement_set_data(parent, table);
 	}
 	else
@@ -1481,7 +1481,7 @@ static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element)
 		return;
 	}
 
-	if (strcmp(parent->tag, "TABLE") != 0) {
+	if (strcasecmp(parent->tag, "TABLE") != 0) {
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 		return;
 	}
@@ -1544,7 +1544,7 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element)
 			desc = safe_strdup(ggz_xmlelement_get_text(element));
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
-		if (strcmp(parent_tag, "TABLE") == 0)
+		if (strcasecmp(parent_tag, "TABLE") == 0)
 			_net_table_set_desc(parent, desc);
 		else
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
