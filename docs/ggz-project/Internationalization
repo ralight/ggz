@@ -6,6 +6,19 @@ from America to Europe, from the frosty North to the warm South. In order to
 let everyone participate as easy as possible, translation is probably among the
 most important parts.
 
+* New: The GGZ Internationalization Center!
+* http://dev.ggzgamingzone.org/i18n/
+
+Common infrastructure
+---------------------
+There are different strategies of how i18n is integrated into the build system.
+www, community: PHP file templates
+kde-client, kde-games: KDE build system already supports i18n
+python: gettext and python wrapper
+gtk-client, gtk-games, txt-client, utils, grubby, gnome-client: use i18n.mk
+
+Individual module descriptions
+------------------------------
 GGZ-KDE-Client: To update the message catalog, type 'make messages' in the
 kde-client/ggz-kde/po directory.
 This is now a po/ directory in the root directory of the CVS module. This is
@@ -73,7 +86,7 @@ kde-games:    src: en de
               man: en
 gtk-client:   src: en de
               man: en
-kde-client:   src: en de
+kde-client:   src: en de (fr)
               man: en
 gnome-client: src: en de
               man: -
@@ -83,6 +96,9 @@ ggzd:         src: en
               man: en
 utils:        src: en
               man: en
+python:       src: en (de)
+              man: -
+community:    src: en (de) (sv)
 
 Need advice?
 ------------
@@ -95,4 +111,5 @@ written: 2001-06-02
 updated: 2001-09-09
 updated: 2002-03-20
 updated: 2003-04-28
+updated: 2005-01-22
 
