@@ -85,13 +85,13 @@ void _ggzcore_xmlelement_add_text(GGZXMLElement *element, const char *text, int 
 		/* Allocate space for text if we haven't already */
 		if (!element->text) {
 			new_len = len + 1;
-			element->text = malloc(new_len * sizeof(char));
+			element->text = ggzcore_malloc(new_len * sizeof(char));
 			element->text[0] = '\0';
 		}
 		else {
 			old_len = strlen(element->text);
 			new_len = old_len + len + 1;
-			element->text = realloc(element->text, new_len);
+			element->text = ggzcore_realloc(element->text, new_len);
 		}
 		
 		strncat(element->text, text, len);
@@ -106,7 +106,7 @@ void _ggzcore_xmlelement_free(GGZXMLElement *element)
 		if (element->tag)
 			ggzcore_free(element->tag);
 		if (element->text)
-			free(element->text);
+			ggzcore_free(element->text);
 		if (element->free)
 			element->free(element);
 	}
