@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 11/30/00
- * $Id: conf.c 4335 2002-08-05 12:11:00Z jdorje $
+ * $Id: conf.c 4842 2002-10-10 12:41:35Z dr_maux $
  *
  * External functions for handling configuration files
  *
@@ -68,7 +68,9 @@ int ggzcore_conf_initialize(const char *g_path, const char *u_path)
 	if(g_handle != -1 || u_handle != -1) {
 		ggz_debug(GGZCORE_DBG_CONF,
 			  "ggzcore_conf_initialize() called twice");
-		return -1;
+		/*return -1;*/
+		if(g_handle != -1) ggz_conf_close(g_handle);
+		if(u_handle != -1) ggz_conf_close(u_handle);
 	}
 
 	/* Let ggz_conf handle opening the files */
