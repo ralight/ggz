@@ -2,11 +2,11 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 2219 2001-08-24 20:15:58Z jdorje $
+ * $Id: first.c 3092 2002-01-12 10:48:13Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
- * Copyright (C) 2000, 2001 Justin Zaun.
+ * Copyright (C) 2000-2002 Justin Zaun.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@
 
 #include "client.h"
 #include "first.h"
-#include "ggz.h"
+#include "ggzclient.h"
 #include "ggzcore.h"
 #include "login.h"
 #include "server.h"

@@ -2,10 +2,11 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: main.c 3092 2002-01-12 10:48:13Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
- * Copyright (C) 2000 Justin Zaun.
+ * Copyright (C) 2000-2002 Justin Zaun.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +24,10 @@
  */
 
 #include <config.h>
+
+#include <ggz.h>   /* libggz */
+
 #include <gtk/gtk.h>
-#include <ggzcore.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -32,11 +35,13 @@
 #include <libintl.h>
 #endif
 
+#include <ggzcore.h>
+
 #include "about.h"
 #include "chat.h"
 #include "client.h"
 #include "first.h"
-#include "ggz.h"
+#include "ggzclient.h"
 #include "license.h"
 #include "login.h"
 #include "server.h"
@@ -74,7 +79,7 @@ int main (int argc, char *argv[])
 
 	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL & ~GGZ_DBG_MEMDETAIL);
 	ggzcore_init(opt);
-	free(opt.debug_file);
+	ggz_free(opt.debug_file);
 	server_profiles_load();
 	
 	gtk_init(&argc, &argv);

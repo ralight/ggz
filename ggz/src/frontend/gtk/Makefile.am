@@ -20,8 +20,8 @@ ggz_gtk_SOURCES =	main.c \
 			first.h \
 			game.c \
 			game.h \
-			ggz.c \
-			ggz.h \
+			ggzclient.c \
+			ggzclient.h \
 			info.c \
 			info.h \
 			launch.c \

@@ -2,10 +2,11 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: login.c 3092 2002-01-12 10:48:13Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
- * Copyright (C) 2000 Justin Zaun.
+ * Copyright (C) 2000-2002 Justin Zaun.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +38,7 @@
 #include "server.h"
 #include "support.h"
 #include "props.h"
-#include "ggz.h"
+#include "ggzclient.h"
 
 GtkWidget *login_dialog;
 gint entries_update;
