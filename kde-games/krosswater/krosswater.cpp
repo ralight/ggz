@@ -258,6 +258,7 @@ void Krosswater::slotZoneReady()
 void Krosswater::slotZoneTurn()
 {
 	showStatus(i18n("Your turn"));
+	qcw->setPlayerTurn(zoneMe());
 }
 
 // Display game over status
@@ -330,6 +331,11 @@ void Krosswater::paintEvent(QPaintEvent *e)
 void Krosswater::slotZoneBroadcast()
 {
 	int fromx, tox, fromy, toy;
+	static int turn = 0;
+
+	if((turn % ZoneGamePlayers) == zoneMe()) turn++;
+	qcw->setPlayerTurn(turn % ZoneGamePlayers);
+	turn++;
 
  	showStatus(i18n("Get move"));
 
@@ -354,6 +360,8 @@ void Krosswater::slotZoneBroadcast()
 	sleep(1);
 	qcw->setStoneState(tox, toy, 0);
 	qcw->setStoneState(fromx, fromy, 0);
+
+	qcw->setPlayerTurn(turn % ZoneGamePlayers);
 	qcw->repaint();
 }
 

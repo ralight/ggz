@@ -47,6 +47,7 @@ QCw::QCw(QWidget* parent, const char* name)
 	startTimer(500);
 	m_update = 0;
 	m_enabled = 0;
+	m_turn = -1;
 
 	resetPlayers();
 }
@@ -126,7 +127,11 @@ void QCw::paintEvent(QPaintEvent *e)
 				playerpixmap = GGZDATADIR "/krosswater/gfx/geek.png";
 				break;
 		}
-		if(m_players[i][2] >= 0) p.drawPixmap(m_players[i][0] * 20, m_players[i][1] * 20, QPixmap(playerpixmap));
+		if(m_players[i][2] >= 0)
+		{
+			if(m_turn == i) p.fillRect(m_players[i][0] * 20 + 2, m_players[i][1] * 20 + 2, 16, 16, QBrush(QColor(220, 160, 90)));
+			p.drawPixmap(m_players[i][0] * 20, m_players[i][1] * 20, QPixmap(playerpixmap));
+		}
 	}
 
 	if(m_state == selected)
@@ -254,5 +259,10 @@ void QCw::setPlayerPixmap(int player, int pixmap)
 void QCw::disable()
 {
 	m_enabled = 0;
+}
+
+void QCw::setPlayerTurn(int player)
+{
+	m_turn = player;
 }
 
