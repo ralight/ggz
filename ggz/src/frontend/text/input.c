@@ -321,7 +321,7 @@ static void input_handle_launch(char *line)
 			    ggzcore_gametype_get_url(type));
 		return;
 	}
-	output_text("Launching %s", ggzcore_module_get_path(module));
+
 	game_init(module);
 
 	table = ggzcore_table_new();
@@ -365,7 +365,6 @@ static void input_handle_join_table(char *line)
 		return;
 	}
 
-	output_text("Launching %s", ggzcore_module_get_path(module));
 	game_init(module);
 
 	table_index = atoi(line);
