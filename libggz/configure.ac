@@ -20,7 +20,7 @@ AC_PROG_MAKE_SET
 dnl Compiling Options
 dnl =================
 AC_ARG_WITH([gcrypt],
-	    AC_HELP_STRING([--with-gcrypt], [Add encryption support](,
+	    AC_HELP_STRING([--with-gcrypt], [Add encryption support]),
 	    [enable_gcrypt=yes], [enable_gcrypt=no])
 
 
