@@ -55,8 +55,8 @@
 
 // System includes
 #include <stdio.h>
-#include <iostream.h>
-#include <stdlib.h>
+#include <iostream>
+#include <cstdlib>
 
 // GGZCore++ includes
 #include "GGZCoreConfio.h"

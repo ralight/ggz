@@ -243,7 +243,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 		slotSaveProfile();
 	m_nosafe = 0;
 
-	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readonly | GGZCoreConfio::create);
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readonly);
 
 	// setup entries; try to find suitable first entry
 	if(profile == -1)
@@ -267,7 +267,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 		config->read("Servers", "Servers", &i, &list);
 		for(int j = 0; j < i; j++)
 		{
-			if(strcmp(list[j], listentry))
+			if((listentry) && (strcmp(list[j], listentry)))
 				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), list[j]);
 			GGZCoreConfio::free(list[j]);
 		}
