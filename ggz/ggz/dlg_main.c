@@ -181,23 +181,30 @@ static void ggz_join_game(GtkButton * button, gpointer user_data)
 	gchar* game_name;
 	gint type;
 
-	type = room_info.info[client.cur_room].game_type;
-	game_name = g_strdup(game_types.info[type].name);
-
-        if ( ggzrc_read_string(game_name, "Path", NULL) == NULL)
-                warn_dlg(_("Sorry, but you don't seem to have %s installed. You\ncan get it from %s."), 
-			 game_name, game_types.info[type].web);
+	if (client.cur_room < 0)
+		warn_dlg(_("You must be in room to join a table."));
         else if (!client.connected)
-                warn_dlg(_("Not connected!"));
-        else {
-	        dbg_msg("joining game");
-	        es_write_int(client.sock, REQ_TABLE_JOIN);
-	        es_write_int(client.sock, selected_table);
-        }
+                warn_dlg(_("You are not connected to a server!"));
+        else if (selected_table == -1)
+		warn_dlg(_("You must select a table to join."));
+	else {
+	
+		type = room_info.info[client.cur_room].game_type;
+		game_name = g_strdup(game_types.info[type].name);
 
-	g_free(game_name);
+		if (ggzrc_read_string(game_name, "Path", NULL) == NULL)
+			warn_dlg(_("Sorry, but you don't seem to have %s installed. You\ncan get it from %s."), game_name, game_types.info[type].web);
+		
+		else {
+			dbg_msg("joining game");
+			es_write_int(client.sock, REQ_TABLE_JOIN);
+			es_write_int(client.sock, selected_table);
+		}
 
+		g_free(game_name);
+	}
 }
+
 
 static void ggz_leave_game(GtkWidget* widget, gpointer data)
 {
@@ -209,6 +216,7 @@ static void ggz_leave_game(GtkWidget* widget, gpointer data)
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
 	gtk_widget_grab_focus(tmp);
 }
+
 
 void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -235,6 +243,7 @@ void ggz_get_tables(GtkMenuItem * menuitem, gpointer user_data)
         es_write_int(client.sock, -1);
 	es_write_char(client.sock, 0);
 }
+
 
 static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 {
@@ -337,54 +346,37 @@ static void ggz_get_game_options(GtkButton * button, gpointer user_data)
 	g_free(game_name);
 }
 
+
 gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 {
 	GtkWidget *tmp;
-	int row,col;
-	gchar* game_name;
-	gint type;
+	gint row, col;
 
-	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
+	if (event->type == GDK_2BUTTON_PRESS)
+		ggz_join_game(NULL, NULL);
+
+	else if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
 	{
-		tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch");
+		tmp = lookup_widget(mnu_tables, "launch");
 		gtk_widget_show(GTK_WIDGET(tmp));
-		tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+		tmp = lookup_widget(mnu_tables, "join1");
 		gtk_widget_hide(GTK_WIDGET(tmp));
 
-		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
+		tmp = lookup_widget(main_win, "table_tree");
 		if (gtk_clist_get_selection_info(GTK_CLIST(tmp), event->button.x, event->button.y, &row, &col) > 0)
 		{
-			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch");
+			tmp = lookup_widget(mnu_tables, "launch");
 			gtk_widget_hide(GTK_WIDGET(tmp));
-			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+			tmp = lookup_widget(mnu_tables, "join1");
 			gtk_widget_show(GTK_WIDGET(tmp));
 
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
-			gtk_clist_unselect_all (GTK_CLIST (tmp));
-			gtk_clist_select_row (GTK_CLIST (tmp), row, 0);
+			tmp = lookup_widget(main_win, "table_tree");
+			gtk_clist_unselect_all(GTK_CLIST (tmp));
+			gtk_clist_select_row(GTK_CLIST (tmp), row, 0);
 		}
 		gtk_menu_popup (GTK_MENU (mnu_tables), NULL, NULL, NULL, NULL,
 			event->button.button, event->button.time);
         }
-	if (event->type == GDK_2BUTTON_PRESS)
-	{
-		type = room_info.info[client.cur_room].game_type;
-		game_name = g_strdup(game_types.info[type].name);
-
-	        if ( ggzrc_read_string(game_name, "Path", NULL) == NULL)
-        	        warn_dlg(_("Sorry, but you don't seem to have %s installed. You\ncan get it from %s."), 
-				 game_name, game_types.info[type].web);
-	        else if (!client.connected)
-        	        warn_dlg(_("Not connected!"));
-        	else {
-	        	dbg_msg("joining game");
-		        es_write_int(client.sock, REQ_TABLE_JOIN);
-		        es_write_int(client.sock, selected_table);
-        	}
-
-		g_free(game_name);
-	}
-
 
 	return 0;
 }
