@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6167 2004-08-17 14:38:15Z josef $
+dnl $Id: configure.ac 6555 2004-12-22 16:31:06Z josef $
 
 AC_INIT([GGZ common libraries], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -264,5 +264,5 @@ echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to compile libggz."
 echo ""
-echo "When complete, type \"make install\ to install the library.  You "
+echo "When complete, type \"make install\" to install the library.  You "
 echo "may need to perform this step as root."
