@@ -23,13 +23,15 @@ char memsaveusername[1024];
 void KGGZ_Server::init()
 {
 	GGZOptions opt;
+	char userconf[128];
 
 	if(m_running) return;
 
 	opt.flags = GGZ_OPT_PARSER;
-	opt.global_conf = "/etc/kggz.rc";
-	opt.user_conf = "~./kggzrc";
-	opt.local_conf = NULL;
+	opt.global_conf = "/etc/ggz/ggz.conf";
+	sprintf(userconf, "%s/.ggz/kggz.rc", getenv("HOME"));
+	opt.user_conf = strdup(userconf);
+	/*opt.local_conf = NULL;*/ // this has been removed
 
 	if(ggzcore_init(opt) != 0)
 	{
