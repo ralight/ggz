@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
+ * $Id: main.c 6226 2004-10-28 05:54:14Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -61,11 +61,7 @@ static void initialize_debugging(void);
 static void cleanup_debugging(void);
 static void init_about_dialog(void);
 
-#ifdef GTK2
 static const char *font = "fixed";
-#else
-static char *font = "-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
-#endif
 
 int main(int argc, char *argv[])
 {
@@ -81,13 +77,8 @@ int main(int argc, char *argv[])
 
 	/* This shouldn't go here, but I see no better place right now. The
 	   message windows are supposed to use a fixed-width font. */
-#ifdef GTK2
 	fixed_font = pango_font_description_new();
 	pango_font_description_set_family(fixed_font, font);
-#else
-	fixed_font_style = gtk_rc_style_new();
-	fixed_font_style->fontset_name = font;
-#endif
 
 	/* Now some more initializations... */
 	init_player_list(client_get_ggzmod());
@@ -371,11 +362,7 @@ void menubar_text_message(const char *mark, const char *msg)
 
 		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox), label);
 
-#ifdef GTK2
 		gtk_widget_modify_font(label, fixed_font);
-#else
-		gtk_widget_modify_style(label, fixed_font_style);
-#endif
 
 		/* in theory, the window *can't* be destroyed. */
 	} else {

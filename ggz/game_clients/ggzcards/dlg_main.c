@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 5955 2004-02-21 08:32:25Z jdorje $
+ * $Id: dlg_main.c 6226 2004-10-28 05:54:14Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -94,11 +94,7 @@ GtkWidget *create_dlg_main(void)
 	/* Perhaps we should allow the user to resize the window, and scale
 	   the table with it.  As long as that doesn't happen, though, there's
 	   no need whatsoever to change the window size. */
-#ifdef GTK2
 	gtk_window_set_resizable(GTK_WINDOW(dlg_main), FALSE);
-#else
-	gtk_window_set_policy(GTK_WINDOW(dlg_main), FALSE, FALSE, TRUE);
-#endif
 
 	vbox1 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_set_name(vbox1, "vbox1");
@@ -117,9 +113,7 @@ GtkWidget *create_dlg_main(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), menubar, FALSE, FALSE, 0);
 
 	fixed1 = gtk_fixed_new();
-#ifdef GTK2
 	gtk_fixed_set_has_window(GTK_FIXED(fixed1), TRUE);
-#endif
 	gtk_widget_set_name(fixed1, "fixed1");
 	gtk_widget_ref(fixed1);
 	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "fixed1", fixed1,

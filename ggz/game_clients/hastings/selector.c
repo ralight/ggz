@@ -65,20 +65,12 @@ static void activated(GtkWidget *w, gpointer data)
 		map = maplist[i];
 		if(!strcmp(map.title, s))
 		{
-#ifdef GTK2
 			GtkTextBuffer *text_buf;
-#endif
 			g_snprintf(buffer, sizeof(buffer), _("Name: %s\nAuthor:%s\nVersion:%s\nWidth:%i\nHeight:%i\nPlayers: unknown\n"),
 				map.title, map.author, map.version, map.width, map.height);
-#ifdef GTK2
 			text_buf = gtk_text_view_get_buffer
 				(GTK_TEXT_VIEW(information));
 			gtk_text_buffer_set_text(text_buf, buffer, -1);
-#else
-			gtk_text_set_point(GTK_TEXT(information), 0);
-			gtk_text_forward_delete(GTK_TEXT(information), gtk_text_get_length(GTK_TEXT(information)));
-			gtk_text_insert(GTK_TEXT(information), NULL, NULL, NULL, buffer, -1);
-#endif
 		}
 	}
 }
@@ -112,14 +104,9 @@ GtkWidget *selector()
 
 	label = gtk_label_new(_("Please select a map:"));
 
-#ifdef GTK2
 	information = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(information), FALSE);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(information), FALSE);
-#else
-	information = gtk_text_new(NULL, NULL);
-	gtk_text_set_editable(GTK_TEXT(information), 0);
-#endif
 
 	button = gtk_button_new_with_label("Use map");
 

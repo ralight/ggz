@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.h 5158 2002-11-03 03:07:10Z jdorje $
+ * $Id: table.h 6226 2004-10-28 05:54:14Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -30,11 +30,7 @@
 
 #define DBG_TABLE "table.h"
 
-#ifdef GTK2
 extern PangoFontDescription *fixed_font;
-#else
-extern GtkRcStyle *fixed_font_style;
-#endif
 extern GtkWidget *table;	/* widget containing the whole table */
 extern GtkWidget *table_drawing_area;
 extern GtkStyle *table_style;	/* Style for the table */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 5970 2004-03-14 00:29:47Z jdorje $
+ * $Id: preferences.c 6226 2004-10-28 05:54:14Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -125,7 +125,7 @@ PrefType pref_types[] = {
 	 &preferences.cardlists,
 	 TRUE},
 
-#ifndef GTK2
+#ifdef CAN_BID_ON_TABLE
 	{"bid_on_table",
 	 N_("Show bid choices right on the table"),
 	 N_("If this is selected, then (for games that use bidding) the "

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 5955 2004-02-21 08:32:25Z jdorje $
+ * $Id: drawcard.c 6226 2004-10-28 05:54:14Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -40,13 +40,8 @@
 
 /* Card pictures for each of the 4 orientations */
 struct {
-#ifndef GTK2
-	GdkPixmap *front;
-	GdkPixmap *back;
-#else
 	GdkPixbuf *front;
 	GdkPixbuf *back;
-#endif /* GTK2 */
 } cards[4];
 
 static cardset_type_t client_card_type = UNKNOWN_CARDSET;
@@ -63,28 +58,15 @@ static void draw_domino_card(card_t card, orientation_t orientation, int x,
 static int get_card_width0(void);
 static int get_card_height0(void);
 
-#ifndef GTK2
-static GdkPixmap *
-#else
-static GdkPixbuf *
-#endif /* GTK2 */
-load_pixmap(GdkWindow *window, GdkBitmap **mask,
+static GdkPixbuf *load_pixmap(GdkWindow *window, GdkBitmap **mask,
 	    GdkColor *trans, const char *name)
 {
 	char *fullpath;
-#ifndef GTK2
-	GdkPixmap *image;
-#else
 	GdkPixbuf *image;
 	GError *error = NULL;
-#endif /* GTK2 */
 
 	fullpath = g_strdup_printf("%s/pixmaps/%s", GGZDATADIR, name);
-#ifndef GTK2
-	image = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
-#else
 	image = gdk_pixbuf_new_from_file(fullpath, &error);
-#endif /* GTK2 */
 	if(image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);
@@ -185,11 +167,7 @@ static void draw_french_card(card_t card, orientation_t orientation,
 	int width, height;
 	int xc = 0, yc = 0;
 	int show = (card.suit != -1 && card.face != -1);
-#ifndef GTK2
-	GdkPixmap *pixmap;
-#else
 	GdkPixbuf *pixbuf;
-#endif /* GTK2 */
 
 	assert(orientation >= 0 && orientation < 4);
 
@@ -211,20 +189,12 @@ static void draw_french_card(card_t card, orientation_t orientation,
 		xc = xy[orientation][0];
 		yc = xy[orientation][1];
 	}
-
-#ifndef GTK2
-	pixmap = show ? cards[orientation].front : cards[orientation].back;
-	gdk_draw_pixmap(image,
-			table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			pixmap, xc, yc, x, y, width, height);
-#else
 	pixbuf = show ? cards[orientation].front : cards[orientation].back;
 	gdk_pixbuf_render_to_drawable(pixbuf, image,
 				      table_style->
 				      fg_gc[GTK_WIDGET_STATE(table)],
 				      xc, yc, x, y, width, height,
 				      GDK_RGB_DITHER_NONE, 0, 0);
-#endif /* GTK2 */
 }
 
 static void draw_domino_card(card_t card, orientation_t orientation,
