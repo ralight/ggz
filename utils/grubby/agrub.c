@@ -35,6 +35,9 @@ void send_chat_insert_name(char *);
 void do_logout(void);
 void do_greet(char *);
 void store_aka(char *, char *);
+void store_email(char *, char *);
+void store_url(char *, char *);
+void store_info(char *, char *);
 void check_seen(char *, char *);
 void whois(char *sender, char *name);
 void queue_message(char *, char *);
@@ -49,6 +52,9 @@ int last_used = 0;
 struct {
 	char *name;
 	char *aka;
+	char *email;
+	char *url;
+	char *info;
 	time_t last_seen;
 	char *last_room;
 	char *msg_from;
@@ -63,6 +69,9 @@ char *help_strings[] = {
 	"    %s: Help",
 	"    %s: Go away",
 	"    %s: My name is <name>",
+	"    %s: My email is <name>",
+	"    %s: My url is <name>",
+	"    %s: My info is <name>",
 	"    %s: Have you seen <name>",
 	"    %s: Tell <name> <A message>",
 	"    %s: Whois <name>"
@@ -110,6 +119,9 @@ int main(const int argc, const char *argv[])
 	for(i=0; i<MAX_KNOWN; i++)
 		known[i].name
 		  = known[i].aka
+		  = known[i].email
+		  = known[i].url
+		  = known[i].info
 		  = known[i].msg_from
 		  = known[i].msg
 		    = NULL;
@@ -181,6 +193,30 @@ int main(const int argc, const char *argv[])
 			if(!strcmp(known[j].aka,"NULL"))
 				known[j].aka = NULL;
 			printf("- %s",known[j].aka);
+
+			fgets(tmp, 1024, grub_file);
+			tmp[strlen(tmp)-1] = '\0';
+			known[j].email = malloc(strlen(tmp));
+			strcpy(known[j].email, tmp);
+			if(!strcmp(known[j].email,"NULL"))
+				known[j].email = NULL;
+			printf("- %s",known[j].email);
+
+			fgets(tmp, 1024, grub_file);
+			tmp[strlen(tmp)-1] = '\0';
+			known[j].url = malloc(strlen(tmp));
+			strcpy(known[j].url, tmp);
+			if(!strcmp(known[j].url,"NULL"))
+				known[j].url = NULL;
+			printf("- %s",known[j].url);
+
+			fgets(tmp, 1024, grub_file);
+			tmp[strlen(tmp)-1] = '\0';
+			known[j].info = malloc(strlen(tmp));
+			strcpy(known[j].info, tmp);
+			if(!strcmp(known[j].info,"NULL"))
+				known[j].info = NULL;
+			printf("- %s",known[j].info);
 
 			fgets(tmp, 1024, grub_file);
 			known[j].last_seen = atoi (tmp);
@@ -450,6 +486,12 @@ void handle_command(char *sender, char *command)
 		}
 	} else if(!strncasecmp(command, "my name is ", 11)) {
 		store_aka(sender, command+11);
+	} else if(!strncasecmp(command, "my email is ", 12)) {
+		store_email(sender, command+12);
+	} else if(!strncasecmp(command, "my url is ", 10)) {
+		store_url(sender, command+10);
+	} else if(!strncasecmp(command, "my info is ", 11)) {
+		store_info(sender, command+11);
 	} else if(!strncasecmp(command, "have you seen ", 14)) {
 		check_seen(sender, command+14);
 	} else if(!strncasecmp(command, "tell ", 5)) {
@@ -531,6 +573,18 @@ void do_logout(void)
 			fprintf(grub_file, "NULL\n");
 		if(known[i].aka != NULL)
 			fprintf(grub_file, "%s\n", known[i].aka);
+		else
+			fprintf(grub_file, "NULL\n");
+		if(known[i].email != NULL)
+			fprintf(grub_file, "%s\n", known[i].email);
+		else
+			fprintf(grub_file, "NULL\n");
+		if(known[i].url != NULL)
+			fprintf(grub_file, "%s\n", known[i].url);
+		else
+			fprintf(grub_file, "NULL\n");
+		if(known[i].info != NULL)
+			fprintf(grub_file, "%s\n", known[i].info);
 		else
 			fprintf(grub_file, "NULL\n");
 
@@ -642,6 +696,102 @@ void store_aka(char *sender, char *aka)
 	newstr = malloc(strlen(aka)+1);
 	strcpy(newstr, aka);
 	known[i].aka = newstr;
+}
+
+
+void store_email(char *sender, char *email)
+{
+	int i;
+	char *newstr;
+
+	for(i=0; i<num_known; i++)
+		if(!strcmp(sender, known[i].name))
+			break;
+	if(i >= num_known) {
+		sprintf(out_msg, "Sorry %s, I'd like to remember your email as %s, ",
+			sender, email);
+		sprintf(out_msg+strlen(out_msg),
+			"but I already know %d people.", MAX_KNOWN);
+		send_chat(out_msg);
+		return;
+	}
+
+	if(known[i].email) {
+		sprintf(out_msg, "OK %s, changing your email to %s.",
+			known[i].aka, email);
+		free(known[i].email);
+	} else
+		sprintf(out_msg, "OK %s, I'll remember that your email is %s.",
+			sender, email);
+	send_chat(out_msg);
+
+	newstr = malloc(strlen(email)+1);
+	strcpy(newstr, email);
+	known[i].email = newstr;
+}
+
+
+void store_url(char *sender, char *url)
+{
+	int i;
+	char *newstr;
+
+	for(i=0; i<num_known; i++)
+		if(!strcmp(sender, known[i].name))
+			break;
+	if(i >= num_known) {
+		sprintf(out_msg, "Sorry %s, I'd like to remember your url as %s, ",
+			sender, url);
+		sprintf(out_msg+strlen(out_msg),
+			"but I already know %d people.", MAX_KNOWN);
+		send_chat(out_msg);
+		return;
+	}
+
+	if(known[i].url) {
+		sprintf(out_msg, "OK %s, changing your url to %s.",
+			known[i].aka, url);
+		free(known[i].url);
+	} else
+		sprintf(out_msg, "OK %s, I'll remember that your url is %s.",
+			sender, url);
+	send_chat(out_msg);
+
+	newstr = malloc(strlen(url)+1);
+	strcpy(newstr, url);
+	known[i].url = newstr;
+}
+
+
+void store_info(char *sender, char *info)
+{
+	int i;
+	char *newstr;
+
+	for(i=0; i<num_known; i++)
+		if(!strcmp(sender, known[i].name))
+			break;
+	if(i >= num_known) {
+		sprintf(out_msg, "Sorry %s, I'd like to remember your info as %s, ",
+			sender, info);
+		sprintf(out_msg+strlen(out_msg),
+			"but I already know %d people.", MAX_KNOWN);
+		send_chat(out_msg);
+		return;
+	}
+
+	if(known[i].aka) {
+		sprintf(out_msg, "OK %s, changing your info to %s.",
+			known[i].aka, info);
+		free(known[i].info);
+	} else
+		sprintf(out_msg, "OK %s, I'll remember that your info as %s.",
+			sender, info);
+	send_chat(out_msg);
+
+	newstr = malloc(strlen(info)+1);
+	strcpy(newstr, info);
+	known[i].info = newstr;
 }
 
 
