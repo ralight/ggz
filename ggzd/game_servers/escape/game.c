@@ -111,7 +111,7 @@ int game_handle_player(int num)
 	unsigned char direction;
 
 	ggz_debug("game_handle_player(%d) called",num);
-	ggz_debug("\tnum = %d, escape_game.turn = %d",num, escape_game.turn");
+	ggz_debug("\tnum = %d, escape_game.turn = %d",num, escape_game.turn);
 
 	fd = ggz_seats[num].fd;
 	
@@ -245,7 +245,7 @@ int game_send_seat(int seat)
 {
 	int fd = ggz_seats[seat].fd;
 
-	ggz_debug("Sending player %d's seat num", seat);
+	ggz_debug("Sending player %d`s seat num", seat);
 
 	if(es_write_int(fd, ESCAPE_MSG_SEAT) < 0
 	   || es_write_int(fd, seat) < 0)
@@ -298,7 +298,7 @@ int game_send_move(int num, int event, char direction)
 	if(fd == -1)
 		return 0;
 
-	ggz_debug("\tSending player %d's move to player %d",
+	ggz_debug("\tSending player %d`s move to player %d",
 		   num, escape_game.opponent);
 
 	if(es_write_int(fd, ESCAPE_MSG_MOVE) < 0
@@ -496,7 +496,7 @@ int game_handle_move(int num, unsigned char *direction)
 		ggz_debug("\tmove on to next player");
 		escape_game.turn = 1 - escape_game.turn;
 	}else{
-		ggz_debug("\tdon't move on to next player");
+		ggz_debug("\tdon`t move on to next player");
 	}
 	return 0;
 }
@@ -524,10 +524,12 @@ char game_check_win(void)
 	int count=0;
 
 	if((escape_game.x>=escape_game.wallwidth) && (escape_game.x<=escape_game.wallwidth+escape_game.goalwidth))
+	{
 		if(!escape_game.y)
 			return 0;
 		else if(escape_game.y==escape_game.boardheight)
 			return 1;
+	}
 
 	for(i=1; i<10; i++)
 		if((escape_game.board[escape_game.x][escape_game.y][i]!=dtEmpty) && (i!=5))
