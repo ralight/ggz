@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 5162 2002-11-03 06:31:19Z jdorje $
+ * $Id: dlg_bid.c 6271 2004-11-05 20:48:41Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -110,9 +110,9 @@ void dlg_bid_display(int possible_bids,
 
 		/* trickery - we don't pass a pointer to the data but the data 
 		   itself */
-		(void) gtk_signal_connect(GTK_OBJECT(button), "clicked",
-					  GTK_SIGNAL_FUNC(dlg_bid_clicked),
-					  GINT_TO_POINTER(i));
+		g_signal_connect(button, "clicked",
+				 GTK_SIGNAL_FUNC(dlg_bid_clicked),
+				 GINT_TO_POINTER(i));
 
 		x = i % xw;
 		y = i / xw;
@@ -145,7 +145,8 @@ void dlg_bid_display(int possible_bids,
 		/* Is this the right layout? I doubt it, but I'm not sure how
 		   to do better. */
 		get_fulltable_dim(&x, &y, &w, &h);
-		gtk_widget_set_usize(window, w - 2 * XWIDTH, h - 2 * XWIDTH);
+		gtk_widget_set_size_request(window, w - 2 * XWIDTH,
+					    h - 2 * XWIDTH);
 		(void) gtk_fixed_put(GTK_FIXED(table), window,
 				     x + XWIDTH, y + XWIDTH);
 
@@ -161,11 +162,9 @@ void dlg_bid_display(int possible_bids,
 		gtk_container_add(GTK_CONTAINER(window), table_box);
 
 		/* If you close the window, it pops right back up again. */
-		(void) gtk_signal_connect_object(GTK_OBJECT(window),
-						 "delete_event",
-						 GTK_SIGNAL_FUNC
-						 (dlg_bid_delete),
-						 (gpointer) window);
+		g_signal_connect_swapped(window, "delete_event",
+					 GTK_SIGNAL_FUNC(dlg_bid_delete),
+					 window);
 	}
 
 	gtk_widget_show_all(window);

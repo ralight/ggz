@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 4869 2002-10-11 23:16:04Z jdorje $
+ * $Id: dlg_options.c 6271 2004-11-05 20:48:41Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -158,11 +158,9 @@ void dlg_option_display(int option_cnt,
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
 						     (subbox),
 						     options_selected[i]);
-			(void) gtk_signal_connect(GTK_OBJECT(subbox),
-						  "toggled",
-						  GTK_SIGNAL_FUNC
-						  (dlg_option_checked),
-						  user_data);
+			g_signal_connect(subbox, "toggled",
+					 GTK_SIGNAL_FUNC(dlg_option_checked),
+					 user_data);
 			if (descriptions[i] && descriptions[i][0] != '\0');
 			gtk_tooltips_set_tip(tooltips, subbox,
 					     descriptions[i], NULL);
@@ -179,13 +177,12 @@ void dlg_option_display(int option_cnt,
 
 				radio = gtk_radio_button_new_with_label(group,
 									choice);
-				group = gtk_radio_button_group
+				group = gtk_radio_button_get_group
 					(GTK_RADIO_BUTTON(radio));
-				(void) gtk_signal_connect(GTK_OBJECT(radio),
-							  "toggled",
-							  GTK_SIGNAL_FUNC
-							  (dlg_option_toggled),
-							  user_data);
+				g_signal_connect(radio, "toggled",
+						 GTK_SIGNAL_FUNC
+						 (dlg_option_toggled),
+						 user_data);
 
 				if (descriptions[i]
 				    && descriptions[i][0] != '\0');
@@ -208,14 +205,13 @@ void dlg_option_display(int option_cnt,
 	}
 
 	button = gtk_button_new_with_label(_("Send options"));
-	(void) gtk_signal_connect(GTK_OBJECT(button), "clicked",
-				  GTK_SIGNAL_FUNC(dlg_options_submit),
-				  (gpointer) 0);
+	g_signal_connect(button, "clicked",
+			 GTK_SIGNAL_FUNC(dlg_options_submit), NULL);
 
 	/* If you close the window, it pops right back up again. */
-	(void) gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
-					 GTK_SIGNAL_FUNC(dlg_opt_delete),
-					 (gpointer) window);
+	g_signal_connect_swapped(window, "delete_event",
+				 GTK_SIGNAL_FUNC(dlg_opt_delete),
+				 window);
 
 	gtk_box_pack_start(GTK_BOX(box), button, FALSE, FALSE, 0);
 	gtk_widget_show(button);

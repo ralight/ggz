@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 5970 2004-03-14 00:29:47Z jdorje $
+ * $Id: animation.c 6271 2004-11-05 20:48:41Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -84,7 +84,7 @@ void anim_setup(void)
 {
 	/* Get rid of old buffer. */
 	if (anim_buf)
-		gdk_pixmap_unref(anim_buf);
+		g_object_unref(anim_buf);
 
 	anim_buf = gdk_pixmap_new(table->window,
 				  get_table_width(), get_table_height(), -1);
@@ -238,7 +238,7 @@ int animation_start(int player, card_t card, int card_num, int destination)
 
 	if (!animating) {
 		/* This sets up our timeout callback */
-		anim_tag = gtk_timeout_add(0, animation_callback, NULL);
+		anim_tag = g_timeout_add(0, animation_callback, NULL);
 	}
 
 	animating = TRUE;
@@ -281,9 +281,9 @@ void animate_cards_off_table(int winner)
 {
 	if (!preferences.animation || !animating) {
 		/* This sets up our timeout callback */
-		anim_tag = gtk_timeout_add(TABLE_CLEARING_DELAY,
-					   start_offtable_animation,
-					   GINT_TO_POINTER(winner));
+		anim_tag = g_timeout_add(TABLE_CLEARING_DELAY,
+					 start_offtable_animation,
+					 GINT_TO_POINTER(winner));
 	} else {
 		int p;
 
@@ -392,21 +392,21 @@ static gint animation_callback(gpointer ignored)
 	/* Now draw from the animation buffer to the screen.  This could
 	   probably be done more easily if we just drew the _whole screen_,
 	   but that could have bad side effects. */
-	gdk_draw_pixmap(table_drawing_area->window,
-			table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			anim_buf,
-			min_x, min_y,
-			min_x, min_y, max_x - min_x, max_y - min_y);
+	gdk_draw_drawable(table_drawing_area->window,
+			  table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			  anim_buf,
+			  min_x, min_y,
+			  min_x, min_y, max_x - min_x, max_y - min_y);
 
 	animating = (continuations > 0);
 
 	if (!animating) {
 		if (dest_when_done >= 0) {
 			/* This sets up our timeout callback */
-			anim_tag = gtk_timeout_add(TABLE_CLEARING_DELAY,
-						   start_offtable_animation,
-						   GINT_TO_POINTER
-						   (dest_when_done));
+			anim_tag = g_timeout_add(TABLE_CLEARING_DELAY,
+						 start_offtable_animation,
+						 GINT_TO_POINTER
+						 (dest_when_done));
 
 			dest_when_done = -1;
 
@@ -436,7 +436,7 @@ void animation_stop(int success)
 	ggz_debug(DBG_ANIM, "Stopping animation (%d).", success);
 
 	/* First, kill off the animation callback */
-	gtk_timeout_remove(anim_tag);
+	g_source_remove(anim_tag);
 
 	for (player = 0; player < ggzcards.num_players; player++) {
 

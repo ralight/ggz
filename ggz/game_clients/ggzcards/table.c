@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 6226 2004-10-28 05:54:14Z jdorje $
+ * $Id: table.c 6271 2004-11-05 20:48:41Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -83,9 +83,9 @@ void table_draw_table(GdkPixmap * pixmap, int x, int y, int w, int h)
 		pixmap = table_drawing_area->window;
 
 	/* Display the buffer */
-	gdk_draw_pixmap(pixmap,
-			table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			table_buf, x, y, x, y, w, h);
+	gdk_draw_drawable(pixmap,
+			  table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			  table_buf, x, y, x, y, w, h);
 }
 
 /* FIXME: maybe this function should be dropped... */
@@ -185,19 +185,17 @@ void table_initialize(void)
 	ggz_debug(DBG_TABLE, "Initializing table.");
 
 	/* This starts our drawing code */
-	table = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
+	table = g_object_get_data(G_OBJECT(dlg_main), "fixed1");
 	table_style = gtk_widget_get_style(table);
 	gtk_widget_show(table);
 
 	table_drawing_area = gtk_drawing_area_new();
-	gtk_drawing_area_size(GTK_DRAWING_AREA(table_drawing_area),
-			      get_table_width(), get_table_height());
+	gtk_widget_set_size_request(table_drawing_area,
+				    get_table_width(), get_table_height());
 	gtk_fixed_put(GTK_FIXED(table), table_drawing_area, 0, 0);
 	gtk_widget_show(table_drawing_area);
-	(void) gtk_signal_connect(GTK_OBJECT(table_drawing_area),
-				  "expose_event",
-				  GTK_SIGNAL_FUNC(on_table_expose_event),
-				  NULL);
+	g_signal_connect(table_drawing_area, "expose_event",
+			 GTK_SIGNAL_FUNC(on_table_expose_event), NULL);
 
 	assert(table_drawing_area->window);
 	assert(get_table_width() > 0 && get_table_height > 0);
@@ -246,9 +244,10 @@ void table_setup(void)
 		  "  %d players.", get_table_width(), ggzcards.num_players);
 
 	/* We may need to resize the table */
-	gtk_widget_set_usize(table, get_table_width(), get_table_height());
-	gtk_drawing_area_size(GTK_DRAWING_AREA(table_drawing_area),
-			      get_table_width(), get_table_height());
+	gtk_widget_set_size_request(table, get_table_width(),
+				    get_table_height());
+	gtk_widget_set_size_request(table_drawing_area,
+				    get_table_width(), get_table_height());
 
 	/* And resize the table buffer... */
 	/* Note: I'm not entirely sure how reference counts work for gdk. I
@@ -256,7 +255,7 @@ void table_setup(void)
 	   refcount of 1.  In that case, this code should correctly free the
 	   pixmap when it is discarded. */
 	assert(table_buf);
-	gdk_pixmap_unref(table_buf);
+	g_object_unref(table_buf);
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(), -1);
 
@@ -331,15 +330,20 @@ void table_cleanup(void)
 static void table_show_player_box(int player, int write_to_screen)
 {
 	int x, y, w, h;
-	GdkFont *font = gtk_style_get_font(table_style);
 	const char *name = player_names[player];
 	const char *message = player_messages[player];
 	int string_y;
 	int max_width = 0;
+	PangoLayout *layout;
+	PangoRectangle rect;
+	GdkGC *gc = table_style->fg_gc[GTK_WIDGET_STATE(table)];
 
-	static int max_ascent = 0, max_descent = 0;
+	static int max_height = 0;
 
 	assert(table_ready);
+
+	layout = pango_layout_new(gdk_pango_context_get());
+	pango_layout_set_font_description(layout, table_style->font_desc);
 
 	get_text_box_pos(player, &x, &y);
 	x++;
@@ -358,61 +362,46 @@ static void table_show_player_box(int player, int write_to_screen)
 
 	/* Draw the name. */
 	if (name) {
-		int ascent, descent, dummy, width;
-
 		assert(strchr(name, '\n') == NULL);
 
-		gdk_string_extents(font, name, &dummy, &dummy,
-				   &width, &ascent, &descent);
-		max_width = MAX(max_width, width);
+		pango_layout_set_text(layout, name, -1);
+		pango_layout_get_pixel_extents(layout, NULL, &rect);
 
-		max_ascent = MAX(max_ascent, ascent);
-		max_descent = MAX(max_descent, descent);
+		max_width = MAX(max_width, rect.width);
+		max_height = MAX(max_height, rect.height);
 
-		string_y += max_ascent;
+		gdk_draw_layout(table_buf, gc,
+				x + (w - rect.width) / 2, string_y, layout);
 
-		gdk_draw_text(table_buf, font,
-			      table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			      x + w / 2 - gdk_string_width(font, name) / 2,
-			      string_y, name, strlen(name));
-
-		string_y += max_descent + 5;
+		string_y += max_height + 5;
 	}
 
 	/* Draw player message. */
 	if (message) {
 		char *my_message = ggz_strdup(message);
 		char *next = my_message;
-		int ascent, descent, dummy;
-
-		gdk_string_extents(font, my_message, &dummy, &dummy,
-				   &dummy, &ascent, &descent);
-
-		max_ascent = MAX(max_ascent, ascent);
-		max_descent = MAX(max_descent, descent);
 
 		/* This is so ugly!! Is there no better way?? */
 		do {
 			char *next_after_this = strchr(next, '\n');
-			int width;
 
 			if (next_after_this) {
 				*next_after_this = '\0';
 				next_after_this++;
 			}
 
-			string_y += 3 + max_ascent;
+			string_y += 3;
 
-			gdk_string_extents(font, next, &dummy, &dummy,
-					   &width, &dummy, &dummy);
-			max_width = MAX(max_width, width);
+			pango_layout_set_text(layout, next, -1);
+			pango_layout_get_pixel_extents(layout, NULL, &rect);
 
-			gdk_draw_string(table_buf, font,
-					table_style->
-					fg_gc[GTK_WIDGET_STATE(table)], x + 3,
-					string_y, next);
+			max_height = MAX(max_height, rect.height);
+			max_width = MAX(max_width, rect.width);
 
-			string_y += max_descent;
+			gdk_draw_layout(table_buf, gc,
+					x + 3, string_y, layout);
+
+			string_y += rect.height;
 
 			next = next_after_this;
 		} while (next && *next);
@@ -422,12 +411,15 @@ static void table_show_player_box(int player, int write_to_screen)
 
 	/* FIXME: we shouldn't call table_setup() from *within* the drawing
 	   code */
-	if (set_min_text_width(string_y - y) || set_min_text_width(max_width)) {
+	if (set_min_text_width(string_y - y)
+	    || set_min_text_width(max_width)) {
 		table_setup();
 	}
 
 	if (write_to_screen)
 		table_show_table(x, y, TEXT_BOX_WIDTH - 1, TEXT_BOX_WIDTH - 1);
+
+	g_object_unref(layout);
 }
 
 /* Display's a player's name on the table. */

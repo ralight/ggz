@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 5165 2002-11-03 07:54:39Z jdorje $
+ * $Id: cb_main.c 6271 2004-11-05 20:48:41Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -65,10 +65,9 @@ void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 		gdk_window_raise(dlg_prefs->window);
 	} else {
 		dlg_prefs = create_dlg_prefs();
-		(void) gtk_signal_connect(GTK_OBJECT(dlg_prefs),
-					  "destroy",
-					  GTK_SIGNAL_FUNC
-					  (gtk_widget_destroyed), &dlg_prefs);
+		g_signal_connect(dlg_prefs, "destroy",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				 &dlg_prefs);
 		gtk_widget_show(dlg_prefs);
 	}
 }

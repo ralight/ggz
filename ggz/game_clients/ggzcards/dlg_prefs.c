@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 4869 2002-10-11 23:16:04Z jdorje $
+ * $Id: dlg_prefs.c 6271 2004-11-05 20:48:41Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -62,9 +62,8 @@ GtkWidget *create_dlg_prefs(void)
 	 * Create outer window.
 	 */
 	dialog = gtk_dialog_new();
-	gtk_object_set_data(GTK_OBJECT(dialog), "dlg_prefs", dialog);
+	g_object_set_data(G_OBJECT(dialog), "dlg_prefs", dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Preferences"));
-	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
 	/* 
 	 * Set up tooltips.
@@ -77,7 +76,7 @@ GtkWidget *create_dlg_prefs(void)
 	 * Get vertical box packing widget.
 	 */
 	vbox = GTK_DIALOG(dialog)->vbox;
-	gtk_object_set_data(GTK_OBJECT(dialog), "vbox", vbox);
+	g_object_set_data(G_OBJECT(dialog), "vbox", vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
@@ -91,9 +90,9 @@ GtkWidget *create_dlg_prefs(void)
 		gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 					     *pref->value);
-		(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-					  GTK_SIGNAL_FUNC(on_pref_toggled),
-					  pref->value);
+		g_signal_connect(button, "toggled",
+				 GTK_SIGNAL_FUNC(on_pref_toggled),
+				 pref->value);
 	}
 
 	/* 
@@ -110,17 +109,16 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_widget_show(close_button);
 	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(close_button, 64, -2);
-	(void) gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
-					 GTK_SIGNAL_FUNC(dlg_prefs_closed),
-					 GTK_OBJECT(dialog));
+	g_signal_connect_swapped(close_button, "clicked",
+				 GTK_SIGNAL_FUNC(dlg_prefs_closed),
+				 dialog);
 
 	/* 
 	 * Set up callbacks
 	 */
-	(void) gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
-					 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-					 GTK_OBJECT(dialog));
+	g_signal_connect_swapped(dialog, "delete_event",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 dialog);
 
 	/* 
 	 * Done!

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 6236 2004-11-03 06:15:32Z jdorje $
+ * $Id: drawcard.c 6271 2004-11-05 20:48:41Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -185,11 +185,10 @@ static void draw_french_card(card_t card, orientation_t orientation,
 		yc = xy[orientation][1];
 	}
 	pixbuf = show ? cards[orientation].front : cards[orientation].back;
-	gdk_pixbuf_render_to_drawable(pixbuf, image,
-				      table_style->
-				      fg_gc[GTK_WIDGET_STATE(table)],
-				      xc, yc, x, y, width, height,
-				      GDK_RGB_DITHER_NONE, 0, 0);
+	gdk_draw_pixbuf(image, table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			pixbuf,
+			xc, yc, x, y, width, height,
+			GDK_RGB_DITHER_NONE, 0, 0);
 }
 
 static void draw_domino_card(card_t card, orientation_t orientation,
