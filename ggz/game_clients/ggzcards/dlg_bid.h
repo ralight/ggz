@@ -1,10 +1,10 @@
-/* $Id: dlg_bid.h 2742 2001-11-13 22:58:05Z jdorje $ */
 /* 
  * File: dlg_bid.h
- * Author: Rich Gade
+ * Author: Jason Short, Rich Gade
  * Project: GGZCards Client
  * Date: 08/14/2000
- * Desc: Creates the bid request Gtk fixed dialog
+ * Desc: Creates the bid request dialog
+ * $Id: dlg_bid.h 2852 2001-12-10 04:57:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,11 +23,5 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/* Display a dialog window for the user to make a bid choice. */
 void dlg_bid_display(int possible_bids, char **bid_choices);
-
-/* this next one is included in this file because it's almost identical to
-   handle_bid_request */
-int handle_option_request(void);	/* handles a REQ_OPTIONS */
-
-extern GtkWidget *dlg_bid_spin;
-extern GtkWidget *dlg_bid_fixed;
