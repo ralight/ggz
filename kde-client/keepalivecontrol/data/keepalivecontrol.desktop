@@ -1,0 +1,14 @@
+[Desktop Entry]
+Exec=keepalivecontrol
+Icon=keepalivecontrol
+MimeType=Application
+Name=Keepalive Control
+GenericName=Online game admin tool
+Path=
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=false
+TerminalOptions=
+Type=Application
+
