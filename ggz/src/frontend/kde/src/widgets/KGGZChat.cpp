@@ -62,7 +62,8 @@ KGGZChat::KGGZChat(QWidget *parent = NULL, char *name = NULL)
 	QVBoxLayout *vbox1;
 	QLabel *label;
 
-	input = new QLineEdit(this);
+	//input = new QLineEdit(this);
+	input = new KGGZChatLine(this);
 	input->setFixedHeight(20);
 	input->setEnabled(FALSE);
 
@@ -588,6 +589,7 @@ void KGGZChat::init()
 {
 	input->setEnabled(TRUE);
 	input->setFocus();
+	input->setFocusPolicy(KGGZChatLine::StrongFocus);
 }
 
 // execute a beep event
@@ -602,3 +604,7 @@ void KGGZChat::shutdown()
 	input->setEnabled(FALSE);
 }
 
+KGGZChatLine *KGGZChat::chatline()
+{
+	return input;
+}

@@ -27,79 +27,47 @@
 
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-// KGGZChat: display the chat, receive text/events, and send user text via signal. //
+// KGGZChatLine: Replace the simple line input with one which autocompletes names. //
 //                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef KGGZ_CHAT_H
-#define KGGZ_CHAT_H
-
-// KGGZ includes
-#include "KGGZChatLine.h"
-
-// KDE includes
-#include <ktextbrowser.h>
+#ifndef KGGZ_CHATLINE_H
+#define KGGZ_CHATLINE_H
 
 // Qt includes
-//#include <qlineedit.h>
-#include <qstring.h>
+#include <qlineedit.h>
+#include <qevent.h>
 
-// System includes
-#include <sys/time.h>
-
-// Structure for client-side lag measurement
-struct Lag
-{
-	long lagid;
-	struct timeval lagtime;
-};
-
-// KGGZ_Chatwidget: The name says it all
-class KGGZChat : public QWidget
+// A QLineEdit extension
+class KGGZChatLine : public QLineEdit
 {
 	Q_OBJECT
 	public:
-		enum ReceiveMode
-		{
-			RECEIVE_CHAT,
-			RECEIVE_OWN,
-			RECEIVE_ADMIN,
-			RECEIVE_INFO
-		};
+		// Constructor
+		KGGZChatLine(QWidget *parent = NULL, char *name = NULL);
+		// Destructor
+		~KGGZChatLine();
 
-		KGGZChat(QWidget *parent = NULL, char *name = NULL);
-		~KGGZChat();
-		void init();
-		void shutdown();
-		void receive(const char *player, const char *message, ReceiveMode mode);
-		void beep();
+		// Add a player to the internal completion list
+		void addPlayer(char *name);
+		// Remove a player
+		void removePlayer(char *name);
+		// Cleanup the players list
+		void removeAll();
 
-		// whether or not display a players listing in the chat
-		int m_listusers;
-
-		KGGZChatLine *chatline();
-
-	signals:
-		void signalChat(char *text);
-
-	protected slots:
-		void slotSend();
+	protected:
+		// Catch all user key events
+		void keyPressEvent(QKeyEvent *e);
+		// Catch dumb focus loss
+		void focusOutEvent(QFocusEvent *e);
 
 	private:
-		void logChat(QString text);
-		long setLag(long lagid);
-		long getLag(long lagid);
-		long randomLag();
-		void checkLag(const char *text);
-		int separator(const char *c);
-		char *plaintext(const char *text);
-		void parse(char *text);
+		// Internal: Autocomplete at current position
+		void autocomplete(QString pattern);
 
-		KTextBrowser *output;
-		//QLineEdit *input;
-		KGGZChatLine *input;
-		Lag lag[10];
-		int xlag;
+		// The list of names for possible autocompletions
+		QStringList m_list;
 };
 
 #endif
+
