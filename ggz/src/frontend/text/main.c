@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 5485 2003-03-29 20:39:38Z dr_maux $
+ * $Id: main.c 5491 2003-04-28 06:52:33Z dr_maux $
  *
  * Main loop
  *
@@ -47,6 +47,9 @@
 #ifdef HAVE_READLINE_HISTORY_H
 #include <readline/history.h>
 #endif
+
+#include <libintl.h>
+#define _(x) gettext(x)
 
 /* Event loop timeout value */
 #define TIMEOUT 1
@@ -118,6 +121,10 @@ int main(int argc, char *argv[])
 	int option;
 	int opt_reverse = 0;
 
+	bindtextdomain("ggz-txt", PREFIX "/share/locale");
+	textdomain("ggz-txt");
+	setlocale(LC_ALL, "");
+
 	while(1)
 	{
 		option = getopt_long(argc, argv, "hrv", options, &optindex);
@@ -125,12 +132,12 @@ int main(int argc, char *argv[])
 		switch(option)
 		{
 			case 'h':
-				printf("The GGZ Gaming Zone Text Client\n");
-				printf("http://ggz.sourceforge.net/\n\n");
-				printf("Call: ggz-txt [options] [uri]:\n");
-				printf("-r / --reverse: Use reverse colours\n");
-				printf("-h / --help: Display this help\n");
-				printf("-v / --version: Display version information\n");
+				printf(_("The GGZ Gaming Zone Text Client\n"));
+				printf(_("http://ggz.sourceforge.net/\n\n"));
+				printf(_("Call: ggz-txt [options] [uri]:\n"));
+				printf(_("-r / --reverse: Use reverse colours\n"));
+				printf(_("-h / --help: Display this help\n"));
+				printf(_("-v / --version: Display version information\n"));
 				exit(0);
 				break;
 			case 'v':

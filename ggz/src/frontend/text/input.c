@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 5393 2003-02-04 19:42:17Z dr_maux $
+ * $Id: input.c 5491 2003-04-28 06:52:33Z dr_maux $
  *
  * Functions for inputing commands from the user
  *
@@ -42,6 +42,9 @@
 #ifdef HAVE_READLINE_HISTORY_H
 #include <readline/history.h>
 #endif
+
+#include <libintl.h>
+#define _(x) gettext(x)
 
 #define LINE_LENGTH 160
 
@@ -158,10 +161,10 @@ void input_commandline(char *text)
 			input_handle_exit();
 		}
 		else if (strcmp(command, "version") == 0) {
-			output_text("--- Client version: %s", VERSION);
+			output_text(_("--- Client version: %s"), VERSION);
 		}
 		else {
-			output_text("--- Unknown command, try %chelp.", command_prefix);
+			output_text(_("--- Unknown command, try %chelp."), command_prefix);
 		}
 	} else {
 		/* Its a chat */
@@ -256,7 +259,7 @@ static void input_handle_list(char* line)
 			ggzcore_room_list_players(room);
 	}
 	else
-		output_text("List what?");
+		output_text(_("List what?"));
 }
 
 
@@ -268,7 +271,7 @@ static void input_handle_join(char* line)
 	if (!arg || strcmp(arg, "") == 0)
 		return;
 
-	output_text("Joining a %s", arg);
+	output_text(_("Joining a %s"), arg);
 
 	/* What are we listing? */
 	if (strcmp(arg, "room") == 0)
@@ -276,7 +279,7 @@ static void input_handle_join(char* line)
 	else if (strcmp(arg, "table") == 0)
 		input_handle_join_table(line);
 	else
-		output_text("Join what?");
+		output_text(_("Join what?"));
 }
 
 
@@ -288,7 +291,7 @@ static void input_handle_join_room(char* line)
 		room = atoi(line);
 		ggzcore_server_join_room(server, room);
 	} else {
-		output_text("Join which room?");
+		output_text(_("Join which room?"));
 	}
 }
 
@@ -303,7 +306,7 @@ static void input_handle_desc(char* line)
 		desc = ggzcore_room_get_desc(ggzcore_server_get_nth_room(server, room));
 		output_text("%s", desc);
 	} else {
-		output_text("Describe which room?");
+		output_text(_("Describe which room?"));
 	}
 }
 
@@ -314,13 +317,13 @@ static void input_handle_chat(char *line)
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	GGZStateID state = ggzcore_server_get_state(server);
 
-	if(state == -1 || state == GGZ_STATE_OFFLINE)
+	if((int)state == -1 || state == GGZ_STATE_OFFLINE)
 	{
-		output_text("You must connect to a server first.");
+		output_text(_("You must connect to a server first."));
 	}
 	else if(!room)
 	{
-		output_text("You must join a room first.");
+		output_text(_("You must join a room first."));
 	}
 	else
 	{
@@ -364,8 +367,10 @@ static void input_handle_table(char* line)
 {
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
-	if (line[0] == '\0')
+	if (!line) {
+		output_text(_("Send message to which table?"));
 		return;
+	}
 
 	ggzcore_room_chat(room, GGZ_CHAT_TABLE, NULL, line);
 }
@@ -392,25 +397,25 @@ static void input_handle_launch(char *line)
 
 	room = ggzcore_server_get_cur_room(server);
 	if (!room) {
-		output_text("You must be in a room to launch a game.");
+		output_text(_("You must be in a room to launch a game."));
 		return;
 	}
 
 	type = ggzcore_room_get_gametype(room);
 	if (!type) {
-		output_text("No game types defined for this room. "
-			    "Maybe try 'list types'?");
+		output_text(_("No game types defined for this room. "
+			    "Maybe try 'list types'?"));
 		return;
 	}
 	
 	name = ggzcore_gametype_get_name(type);
 	engine = ggzcore_gametype_get_prot_engine(type);
 	version = ggzcore_gametype_get_prot_version(type);
-	output_text("Launching game of %s, (%s-%s)", name, engine, version);
+	output_text(_("Launching game of %s, (%s-%s)"), name, engine, version);
 	module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
 	if (!module) {
-		output_text("No game modules defined for that game");
-		output_text("Download one from %s", 
+		output_text(_("No game modules defined for that game"));
+		output_text(_("Download one from %s"),
 			    ggzcore_gametype_get_url(type));
 		return;
 	}
@@ -430,39 +435,39 @@ static void input_handle_join_table(char *line)
 	int table_index;
 
 	if (!line) {
-		output_text("Join which table?");
+		output_text(_("Join which table?"));
 		return;
 	}
 
 	room = ggzcore_server_get_cur_room(server);
 	if (!room) {
-		output_text("You must be in a room to launch a game.");
+		output_text(_("You must be in a room to launch a game."));
 		return;
 	}
 
 	type = ggzcore_room_get_gametype(room);
 	if (!type) {
-		output_text("No game types defined for this room. "
-			    "Maybe try 'list types'?");
+		output_text(_("No game types defined for this room. "
+			    "Maybe try 'list types'?"));
 		return;
 	}
 	
 	name = ggzcore_gametype_get_name(type);
 	engine = ggzcore_gametype_get_prot_engine(type);
 	version = ggzcore_gametype_get_prot_version(type);
-	output_text("Launching game of %s, (%s-%s)", name, engine, version);
+	output_text(_("Launching game of %s, (%s-%s)"), name, engine, version);
 	module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
 	if (!module) {
-		output_text("No game modules defined for that game");
-		output_text("Download one from %s", 
+		output_text(_("No game modules defined for that game"));
+		output_text(_("Download one from %s"),
 			    ggzcore_gametype_get_url(type));
 		return;
 	}
 
 	table_index = atoi(line);
 	if (!ggzcore_room_get_table_by_id(room, table_index)) {
-		output_text("That table doesn't exist! "
-			    "Maybe try '/list tables'?");
+		output_text(_("That table doesn't exist! "
+			    "Maybe try '/list tables'?"));
 		return;
 	}
 

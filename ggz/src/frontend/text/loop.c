@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: loop.c 4868 2002-10-11 19:35:05Z jdorje $
+ * $Id: loop.c 5491 2003-04-28 06:52:33Z dr_maux $
  *
  * Functions for handling main IO loop
  *
@@ -49,12 +49,12 @@ struct _fd_info {
 /* Private variables and functions */
 static fd_set active_fd_set;  
 static struct _fd_info *fds;  
-static int num_fds, fd_max;
+static unsigned int num_fds, fd_max;
 static unsigned char done;
 static int timeout;
 
 static void _loop_process_remove(void);
-static void _loop_remove_fd(int num);
+static void _loop_remove_fd(unsigned int num);
 
 
 void loop_init(int seconds)
@@ -91,7 +91,7 @@ void loop_add_fd(unsigned int fd, callback read, callback destroy)
 
 void loop_remove_fd(unsigned int fd)
 {
-	int i;
+	unsigned int i;
 
 	for (i = 0; i < num_fds; i++) 
 		if (fds[i].fd == fd) {
@@ -106,7 +106,8 @@ void loop_remove_fd(unsigned int fd)
 void loop(void)
 {
 	fd_set read_fd_set;
-	int i, status;
+	unsigned int i;
+	int status;
 	struct timeval tv;
 
 
@@ -155,7 +156,7 @@ void loop_quit(void)
 /* FIXME: come with with good algorithm for removing fds from array */
 static void _loop_process_remove(void)
 {
-	int i;
+	unsigned int i;
 	
 	for (i = 0; i < num_fds; i++) 
 		if (fds[i].removed && fds[i].destroy) {
@@ -167,7 +168,7 @@ static void _loop_process_remove(void)
 
 
 /* FIXME: this function can be optimized */
-static void _loop_remove_fd(int num)
+static void _loop_remove_fd(unsigned int num)
 {
 
 	/* simplest case: only one fd */

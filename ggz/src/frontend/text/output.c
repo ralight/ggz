@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 5378 2003-02-04 12:48:49Z dr_maux $
+ * $Id: output.c 5491 2003-04-28 06:52:33Z dr_maux $
  *
  * Functions for display text/messages
  *
@@ -38,6 +38,9 @@
 #include "output.h"
 #include "server.h"
 #include "state.h"
+
+#include <libintl.h>
+#define _(x) gettext(x)
 
 /* Color Codes */
 #define COLOR_BRIGHT_GREY	"\e[1m\e[30m"
@@ -82,29 +85,29 @@ void output_goto(int row, int col);	/* Goto's <r>,<c> on the screen this is	*/
 
 void output_display_help(void)
 {
-	output_text("--- GGZ Gaming Zone -- Help");
-	output_text("--- -----------------------");
-	output_text("---");
-	output_text("--- /connect [<server>[:<port>]] [<nick>] [<password>]");
-	output_text("---    Connect to a GGZ server");
-	output_text("--- /disconnect                             Disconnect from server");
-	output_text("--- /exit                                   Quit GGZ Gaming Zone");
-	output_text("--- /desc <room>                            Get description of room <room>");
-	output_text("--- /join room|table <num>                  Join room or table <num>");
-	output_text("--- /list players|rooms|tables|types        List the requested information.");
-	output_text("--- /msg <player> <msg>                     Send a msg to a player");
-	output_text("--- /table <msg>                            Send a msg to your table");
-	output_text("--- /beep <player>                          Beep player <player>");
-	output_text("--- /launch                                 Launch a game if possible");
-	output_text("--- /version                                Display the client version");
-	output_text("--- /who                                    List current player in the room");
-	output_text("--- /wall <msg>                             Admin only command, broadcast to all rooms");
+	output_text(_("--- GGZ Gaming Zone -- Help"));
+	output_text(_("--- -----------------------"));
+	output_text(_("---"));
+	output_text(_("--- /connect [<server>[:<port>]] [<nick>] [<password>]"));
+	output_text(_("---    Connect to a GGZ server"));
+	output_text(_("--- /disconnect                             Disconnect from server"));
+	output_text(_("--- /exit                                   Quit GGZ Gaming Zone"));
+	output_text(_("--- /desc <room>                            Get description of room <room>"));
+	output_text(_("--- /join room|table <num>                  Join room or table <num>"));
+	output_text(_("--- /list players|rooms|tables|types        List the requested information."));
+	output_text(_("--- /msg <player> <msg>                     Send a msg to a player"));
+	output_text(_("--- /table <msg>                            Send a msg to your table"));
+	output_text(_("--- /beep <player>                          Beep player <player>"));
+	output_text(_("--- /launch                                 Launch a game if possible"));
+	output_text(_("--- /version                                Display the client version"));
+	output_text(_("--- /who                                    List current player in the room"));
+	output_text(_("--- /wall <msg>                             Admin only command, broadcast to all rooms"));
 }
 
 void output_banner(void)
 {
-	output_text("Welcome to the text-only GGZ client!\n");
-	output_text("--Written by Brent Hendricks & Justin Zaun  (C) 2000\n");
+	output_text(_("Welcome to the text-only GGZ client!\n"));
+	output_text(_("--Written by Brent Hendricks & Justin Zaun  (C) 2000\n"));
 }
 
 void output_prompt(void)
@@ -176,7 +179,7 @@ void output_chat(GGZChatType type, const char *player, const char *message)
 {
 	switch(type) {
 	case GGZ_CHAT_BEEP:
-		output_text("--- You've been beeped by %s.", player);
+		output_text(_("--- You've been beeped by %s."), player);
 		printf("\007");
 		break;
 	case GGZ_CHAT_PERSONAL:
@@ -208,11 +211,11 @@ void output_rooms(void)
 		room = ggzcore_server_get_nth_room(server, i);
 		type = ggzcore_room_get_gametype(room);
 		if (type)
-			output_text("-- Room %d : %s (%s)", i, 
+			output_text(_("-- Room %d : %s (%s)"), i,
 				    ggzcore_room_get_name(room),
 				    ggzcore_gametype_get_name(type));
 		else
-			output_text("-- Room %d : %s", i, 
+			output_text(_("-- Room %d : %s"), i,
 				    ggzcore_room_get_name(room));
 	}
 }
@@ -227,7 +230,7 @@ void output_types(void)
 
 	for (i = 0; i < num; i++) {
 		type = ggzcore_server_get_nth_gametype(server, i);
-		output_text("-- Gametype %d : %s", i, 
+		output_text(_("-- Gametype %d : %s"), i,
 			    ggzcore_gametype_get_name(type));
 	}
 }
@@ -243,16 +246,16 @@ void output_players(void)
 	room = ggzcore_server_get_cur_room(server);
 	num = ggzcore_room_get_num_players(room);
 
-	output_text("Players in current room");
+	output_text(_("Players in current room"));
 	for (i = 0; i < num; i++) {
 		player = ggzcore_room_get_nth_player(room, i);
 		table = ggzcore_player_get_table(player);
 		if (table)
-			output_text("-- %s at table %d", 
+			output_text(_("-- %s at table %d"),
 				    ggzcore_player_get_name(player),
 				    ggzcore_table_get_id(table));
 		else 
-			output_text("-- %s", ggzcore_player_get_name(player));
+			output_text(_("-- %s"), ggzcore_player_get_name(player));
 	}
 }
 
@@ -267,14 +270,14 @@ void output_tables(void)
 	num_tables = ggzcore_room_get_num_tables(room);
 
 	if (num_tables > 0) {
-		output_text("Tables in current room:");
+		output_text(_("Tables in current room:"));
 		for (i = 0; i < num_tables; i++) {
 			table = ggzcore_room_get_nth_table(room, i);
 			output_table_info(table);
 		}
 	}
 	else
-		output_text("No tables");
+		output_text(_("No tables"));
 }
 
 
@@ -311,39 +314,39 @@ void output_status(void)
 	if(user)
 	{
 		output_goto(window.ws_row - 3, 0);
-		output_label("Username");
+		output_label(_("Username"));
 		printf("\e[K%s", user);
 	} else {
 		output_goto(window.ws_row - 3, 0);
-		output_label("Username");
+		output_label(_("Username"));
 		printf("\e[K");
 	}
 	
 	if(host)
 	{
 		output_goto(window.ws_row - 3, 28);
-		output_label("Server");
+		output_label(_("Server"));
 		printf("\e[K%s", host);
 	} else {
 		output_goto(window.ws_row - 3, 28);
-		output_label("Server");
+		output_label(_("Server"));
 		printf("\e[K");
 	}
 
 	output_goto(window.ws_row - 3, window.ws_col - 19);
-	output_label("Status");
+	output_label(_("Status"));
 	printf("\e[K%s", currentstatus);
 	
 	if (ggzcore_server_is_in_room(server))
 	{
 		output_goto(window.ws_row - 2, 0);
-		output_label("Room");
+		output_label(_("Room"));
 		/*printf("\e[K %d -- %s", roomnum, roomname);*/
 		printf("\e[K %s", roomname);
 		
 	} else {
 		output_goto(window.ws_row - 2, 0);
-		output_label("Room");
+		output_label(_("Room"));
 		printf("\e[K");
 	}
 
@@ -361,7 +364,7 @@ void output_status(void)
 	ggz_free(currenttime);
 
 	output_goto(window.ws_row - 2, window.ws_col - 19);
-	output_label("Time");
+	output_label(_("Time"));
 	printf("\e[K%s", displaytime);
 
 	printf("\e8"); /* Restore cursor */
@@ -446,31 +449,31 @@ static void output_table_info(GGZTable *table)
 {
 	int i, num_seats;
 
-	output_text("Table %d : %s", ggzcore_table_get_id(table),
+	output_text(_("Table %d : %s"), ggzcore_table_get_id(table),
 		    ggzcore_table_get_desc(table));
 
 	num_seats = ggzcore_table_get_num_seats(table);
 	for (i = 0; i < num_seats; i++) {
 		switch (ggzcore_table_get_nth_player_type(table, i)) {
 		case GGZ_SEAT_PLAYER:
-			output_text("-- Seat %d: %s", i,
+			output_text(_("-- Seat %d: %s"), i,
 				    ggzcore_table_get_nth_player_name(table, i));
 			break;
 		case GGZ_SEAT_RESERVED:
-			output_text("-- Seat %d: Reserved for %s", i,
+			output_text(_("-- Seat %d: Reserved for %s"), i,
 				    ggzcore_table_get_nth_player_name(table, i));
 			break;
 		case GGZ_SEAT_BOT:
-			output_text("-- Seat %d: -Bot-", i);
+			output_text(_("-- Seat %d: -Bot-"), i);
 			break;
 		case GGZ_SEAT_OPEN:
-			output_text("-- Seat %d: -Open-", i);
+			output_text(_("-- Seat %d: -Open-"), i);
 			break;
 		case GGZ_SEAT_NONE:
-			output_text("-- Not a seat");
+			output_text(_("-- Not a seat"));
 			break;
 		default:
-			output_text("Internal error");
+			output_text(_("Internal error"));
 		}
 	}
 }
