@@ -1,0 +1,120 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(configure.in)
+AM_INIT_AUTOMAKE(ggz_gtk, 0.0.4pre)
+AM_CONFIG_HEADER(config.h)
+AM_MAINTAINER_MODE
+
+dnl Check for standard build environment
+dnl ====================================
+
+dnl Make sure ${prefix}/include is on include path
+dnl ==============================================
+if test "x${prefix}" = "xNONE"; then
+   CPPFLAGS="$CPPFLAGS -I${ac_default_prefix}/include"
+   LDFLAGS="$LDFLAGS -L${ac_default_prefix}/lib"
+else
+   CPPFLAGS="$CPPFLAGS -I${prefix}/include"
+   LDFLAGS="$LDFLAGS -L${prefix}/lib"
+fi
+
+AC_PROG_CC
+AC_ISC_POSIX
+AC_PROG_INSTALL
+AM_PROG_CC_STDC
+AC_PROG_MAKE_SET
+
+
+dnl Compiling Options
+dnl =================
+AC_ARG_ENABLE(debug,           [  --enable-debug          Enable debugging ],, enable_debug=no)
+AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
+
+
+dnl Check for header files
+dnl ======================
+AC_HEADER_STDC
+
+dnl Check for gettext support
+dnl =========================
+dnl ALL_LINGUAS="de pt_BR"
+dnl AM_GNU_GETTEXT
+dnl if test "x${prefix}" = "xNONE"; then
+dnl   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
+dnl else
+dnl   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
+dnl fi
+
+dnl Check for typedefs, structures, and compiler characteristics
+dnl ============================================================
+AC_C_CONST
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+
+
+dnl Check for library functions
+dnl ===========================
+AC_CHECK_FUNC(poll)
+
+dnl Check for libs
+dnl ==============
+AC_CHECK_LIB(ggzcore, ggzcore_server_new,
+    AC_CHECK_HEADER(ggzcore.h, LDADD="$LDADD -lggzcore",
+        AC_MSG_ERROR(*** Cannot find ggzcore.h header)),
+AC_MSG_ERROR(*** Cannot find ggzcore library ))
+
+AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK frontend: GTK not found))
+	 	       
+
+
+dnl What to compile
+dnl ===============
+
+
+dnl Use -Wall if we have gcc.
+dnl =========================
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \	]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall" ;;
+  esac
+fi
+changequote([,])dnl
+
+
+dnl Debug modes
+dnl ===========
+if test "$enable_debug" = yes; then
+    AC_DEFINE(DEBUG)
+    DFLAGS="DEBUG"
+fi
+
+if test "$enable_debug_gdb" = yes; then
+    CFLAGS="$CFLAGS -ggdb"
+fi
+
+dnl Various dirs
+dnl ============
+
+
+
+AC_SUBST(LDADD)
+
+AC_OUTPUT([Makefile 
+	   ])
+
+
+dnl Status Output
+dnl =============
+echo ""
+echo "Options"
+echo "    General Debuging..$enable_debug"
+echo "    GDB Debuging......$enable_debug_gdb"
+echo ""
+echo "At the prompt type \"make\" to"
+echo "front ends that are listed above."
+echo ""
+echo "When compleate su to root"
+echo "and type \"make install\" to"
+echo "install the client software."
