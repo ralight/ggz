@@ -173,7 +173,20 @@ void net_connect(const char *host, int port, const char *name, const char *passw
 /* Change the current room */
 void net_join(const char *room)
 {
-	if(room) ggzcore_server_join_room(server, atoi(room));
+	int roomid, i;
+	GGZRoom *ggzroom;
+
+	if(room)
+	{
+		roomid = atoi(room);
+		for(i = 0; i < ggzcore_server_get_num_rooms(server); i++)
+		{
+			ggzroom = ggzcore_server_get_nth_room(server, i);
+			if(!strcasecmp(ggzcore_room_get_name(ggzroom), room)) roomid = i;
+		}
+	}
+
+	if(room) ggzcore_server_join_room(server, roomid);
 	else ggzcore_server_join_room(server, 0);
 }
 
