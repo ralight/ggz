@@ -21,6 +21,7 @@
 
 /* Reversi Disc */
 ReversiDisc::ReversiDisc( QCanvasPixmapArray *seq, QCanvas *canv ) : QCanvasSprite(seq, canv) {
+  dir = 0;
 }
 
 ReversiDisc::~ReversiDisc() {
@@ -30,17 +31,13 @@ void ReversiDisc::advance( int stage ) {
   int a = frame();
   if (stage == 0)
     return;
-  if (a < 10) {
-    setFrame(a+1);
-    if (a == 9)
-      setAnimated(false);
-  } else if (a >= 10 && a < 19) {
-    setFrame(a+1);
-    if (a == 18)
-      setAnimated(false);
-  } else if (a == 19) {
-    setFrame(0);
-  }
+  if (a == 0)
+    dir = 1;
+  if (a == 19)
+    dir = -1;
+  setFrame(a+dir);
+  if (a+dir == 0 || a+dir == 19)
+    setAnimated(false);
 }
 
 /* Reversi View */
@@ -63,10 +60,10 @@ ReversiView::ReversiView(QWidget * parent, const char * name, WFlags f) : QCanva
 
   /* Add the initial four discs */
   discs.append( new ReversiDisc(disc_img, canvas) );
-  discs.last()->move( 3*50, 3*50, 10 );
+  discs.last()->move( 3*50, 3*50, 19 );
   discs.last()->show();
   discs.append( new ReversiDisc(disc_img, canvas) );
-  discs.last()->move( 4*50, 4*50, 10 );
+  discs.last()->move( 4*50, 4*50, 19 );
   discs.last()->show();
   discs.append( new ReversiDisc(disc_img, canvas) );
   discs.last()->move( 3*50, 4*50, 0 );
@@ -75,7 +72,7 @@ ReversiView::ReversiView(QWidget * parent, const char * name, WFlags f) : QCanva
   discs.last()->move( 4*50, 3*50, 0 );
   discs.last()->show();
 
-  canvas->setAdvancePeriod( 100 );
+  canvas->setAdvancePeriod( 50 );
 
 
 }
@@ -112,7 +109,7 @@ void ReversiView::updateBoard(char board[8][8]) {
         case VIEW_LAST_WHITE:
           canvas->setTile(x, y, 1);
         case VIEW_WHITE:
-          a->move(x*50, y*50, 10);
+          a->move(x*50, y*50, 19);
           a->show();
           break;
         case VIEW_LAST_BLACK:
@@ -127,7 +124,7 @@ void ReversiView::updateBoard(char board[8][8]) {
           a->setAnimated(true);
           break;
         case VIEW_MOVE_BLACK:
-          a->move(x*50, y*50, 10);
+          a->move(x*50, y*50, 19);
           a->show();
           a->setAnimated(true);
           break;

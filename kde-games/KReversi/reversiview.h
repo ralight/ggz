@@ -43,6 +43,7 @@ public:
   ReversiDisc( QCanvasPixmapArray *, QCanvas *);
   ~ReversiDisc();
   virtual void advance( int stage );
+  int dir;
 
 };
 

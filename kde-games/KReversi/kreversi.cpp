@@ -158,6 +158,10 @@ void KReversi::updateScore(){
 void KReversi::playerMoveSlot(int x, int y) {
   if (!playing)
     return;
+  if (turn != S2T(seat)) {
+    statusMsg("That's not your turn!");
+    return;
+  }
   if (!isValid(turn, x, y)) {
     statusMsg("Invalid move!");
     return;
