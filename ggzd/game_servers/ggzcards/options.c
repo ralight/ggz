@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: options.c 4081 2002-04-25 21:23:26Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -129,7 +129,7 @@ void add_option(char *key, char *desc, int num, int dflt, ...)
 	pending_options = po;
 }
 
-void get_options(void)
+void request_client_options(void)
 {
 	ggzdmod_log(game.ggz, "Entering get_options.");
 
@@ -137,7 +137,8 @@ void get_options(void)
 
 	if (pending_options == NULL) {
 		options_initted = TRUE;
-		ggzdmod_log(game.ggz, "get_options: no options to get.");
+		ggzdmod_log(game.ggz, "request_client_options: "
+		            "no options to get.");
 	} else {
 		struct pending_option_t *po = pending_options;
 		char *option_descs[pending_option_count];
