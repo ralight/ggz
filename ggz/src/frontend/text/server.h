@@ -30,3 +30,6 @@ void server_init(char *host, int port, GGZLoginType type, char* login, char* pas
 
 void server_disconnect(void);
 
+void server_destroy(void);
+
+

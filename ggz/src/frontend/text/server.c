@@ -38,7 +38,6 @@
 /* Hooks for server events */
 static void server_register(GGZServer *server);
 static void server_process(void);
-static void server_destroy(void);
 static GGZHookReturn server_connected(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_connect_fail(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_negotiated(GGZServerEvent id, void*, void*);
@@ -76,17 +75,17 @@ void server_disconnect(void)
 }
 
 
+void server_destroy(void)
+{
+	ggzcore_server_free(server);
+	server = NULL;
+}
+
+
 static void server_process(void)
 {
 	if (server)
 		ggzcore_server_read_data(server);
-}
-
-
-static void server_destroy(void)
-{
-	ggzcore_server_free(server);
-	server = NULL;
 }
 
 

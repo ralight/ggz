@@ -134,6 +134,8 @@ void loop(void)
 		/* FIXME: make this an "idle" type func? */
 		output_status();
 	}
+
+	/* FIXME: go through removal process for all fds? */
 }
 
 

@@ -58,7 +58,12 @@ void input_command(void)
 	char *current;
 	char *command;
 
+	/* EOF means user closed session */
 	if (!fgets(line, sizeof(line)/sizeof(char), stdin)) {
+		if (server) {
+			server_disconnect();
+			server_destroy();
+		}
 		loop_quit();
 		return;
 	}
