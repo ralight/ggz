@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 7024 2005-03-19 13:25:19Z josef $
+ * $Id: game.c 7077 2005-04-03 15:11:41Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -724,8 +724,10 @@ static void game_send_gameover(char code)
   int winner = (code == CHESS_GAMEOVER_WIN_1_MATE) ? 0 : 1;
   char *event, *site, *date, *round, *white, *black, *result;
   time_t t;
-  move_t move;
-  int movecount, i;
+  move_t move, move2;
+  move_t *walker;
+  int i;
+  char movestr[8], movestr2[8];
 
   /* Report results to GGZ. */
   results[winner] = GGZ_GAME_WIN;
@@ -747,7 +749,7 @@ static void game_send_gameover(char code)
   event = "some game...";
   site = "GGZ";
   date = (char*)ggz_malloc(32);
-  strftime(date, sizeof(date), "Y.m.d", localtime(&t));
+  strftime(date, 32, "%Y.%m.%d", localtime(&t));
   round = "1";
   white = ggz_strdup(ggzdmod_get_seat(game_info.ggz, 0).name);
   black = ggz_strdup(ggzdmod_get_seat(game_info.ggz, 1).name);
@@ -772,11 +774,23 @@ static void game_send_gameover(char code)
 
   /* Write PGN savegame moves */
   /* TODO: keep track of moves */
-  movecount = game->hmcount;
-  printf(">>> total %i moves", movecount);
-  for(i = 0; i < movecount; i++) {
-    move = game->movelist[i];
-    printf(">>> move %i: %i/%i %i/%i", i, move.fs, move.fd, move.rs, move.rd);
+  if(game->movelist && game->movelist->next) {
+    walker = game->movelist->next;
+	i = 1;
+    while(walker) {
+      move = *walker;
+      walker = walker->next;
+	  if(walker) {
+        move2 = *walker;
+        walker = walker->next;
+      } else {
+        move2.fs = -1;
+      }
+      snprintf(movestr, sizeof(movestr), "%c%c", move.rs + 'a', move.rd + '0');
+      snprintf(movestr2, sizeof(movestr2), "%c%c", move2.rs + 'a', move2.rd + '0');
+      game_save("%i. %s %s", i, movestr, movestr2);
+	  i += 1;
+    }
   }
 
   /* Finish savegame */
@@ -803,7 +817,7 @@ static void game_save(char *fmt, ...)
   char buffer[1024];
 
   if(!savegame) {
-    savegamepath = ggz_strdup(DATADIR "/gamedata/Chess/savegame.XXXXXX.pgn");
+    savegamepath = ggz_strdup(DATADIR "/gamedata/Chess/savegame.pgn.XXXXXX");
     fd = mkstemp(savegamepath);
     ggz_free(savegamepath);
     if(fd < 0) return;
