@@ -29,15 +29,16 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
+#include <unistd.h>
 #include <signal.h>
 #include <string.h>
-
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
 #include <dirent.h>
+#include <fcntl.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -146,11 +147,12 @@ void init_data(void)
 
 int main(int argc, const char *argv[])
 {
-	int main_sock, new_sock;
+	int main_sock, new_sock, addrlen, status, flags;
 	struct sockaddr_in addr;
-	int addrlen;
-	
-	/* Parse options */
+	fd_set active_fd_set, read_fd_set;
+
+
+       	/* Parse options */
 	parse_args(argc, argv);
 	parse_conf_file();
 	
@@ -181,6 +183,13 @@ int main(int argc, const char *argv[])
 	/* Create SERVER socket on main_port */
 	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
 	
+	/* Make socket non-blocking */
+	if ( (flags = fcntl(main_sock, F_GETFL, 0)) < 0)
+		err_sys_exit("F_GETFL error");
+	flags |= O_NONBLOCK;
+	if (fcntl(main_sock, F_SETFL, flags) < 0)
+		err_sys_exit("F_SETFL error");
+
 	/* Start accepting connections */
 	if (listen(main_sock, MAX_USERS) < 0)
 		err_sys_exit("Error listening to socket");
@@ -188,14 +197,34 @@ int main(int argc, const char *argv[])
 	log_msg(GGZ_LOG_NOTICE,
 		"GGZ server initialized and ready for player connections");
 
+	FD_ZERO(&active_fd_set);
+	FD_SET(main_sock, &active_fd_set);
+
 	/* Main loop */
 	while (!term_signal) {
-		addrlen = sizeof(addr);
-		if ( (new_sock = accept(main_sock, &addr, &addrlen)) < 0) {
-			if (errno == EINTR)
+
+		read_fd_set = active_fd_set;
+		status = select((main_sock + 1), &read_fd_set, NULL, NULL, 
+				NULL);
+
+		if (status <= 0) {
+			if (status == 0 || errno == EINTR)
 				continue;
 			else
+				err_sys_exit("select error");
+		}
+
+		addrlen = sizeof(addr);
+		if ( (new_sock = accept(main_sock, &addr, &addrlen)) < 0) {
+			switch (errno) {
+			case EWOULDBLOCK:
+			case ECONNABORTED:
+			case EINTR:
+				continue;
+				break;
+			default:
 				err_sys_exit("Error accepting connection");
+			}
 		} else {
 			/* This is where to test for ignored IP addresses */
 			player_handler_launch(new_sock);
