@@ -10,7 +10,8 @@ $date = pg_result($res, $i, "date");
 
 $datestr = date("d.m.Y", $date);
 
-echo "Selected tournament: $name ($game)<br>\n";
+echo "Selected tournament: $name<br>\n";
+echo "Game type: <a href=\"/db/games/?lookup=$game\">$game</a><br>\n";
 echo "Starting: $datestr<br><br>\n";
 
 echo "Participants:<br><br>\n";
@@ -21,7 +22,7 @@ for($i = 0; $i < pg_numrows($res); $i++)
 	$name = pg_result($res, $i, "name");
 	$number = pg_result($res, $i, "number");
 
-	echo "$name<br>\n";
+	echo "<a href=\"/db/players/?lookup=$name\">$name</a><br>\n";
 
 	$num++;
 	$players[$number] = $name;

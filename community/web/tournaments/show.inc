@@ -2,7 +2,7 @@
 
 $conn = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
 
-$res = pg_exec($conn, "SELECT * FROM tournaments");
+$res = pg_exec($conn, "SELECT * FROM tournaments ORDER BY date DESC");
 
 for($i = 0; $i < pg_numrows($res); $i++)
 {
