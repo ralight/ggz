@@ -33,6 +33,7 @@ GGZHookReturn net_hook_fail(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_chatfail(unsigned int id, void *event_data, void *user_data);
 
 /* Initialize the net functions */
 void net_internal_init(const char *logfile)
@@ -131,6 +132,7 @@ void net_connect(const char *host, int port, const char *name, const char *guest
 	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, net_hook_fail);
 	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, net_hook_fail);
 	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, net_hook_fail);
+	ggzcore_server_add_event_hook(server, GGZ_CHAT_FAIL, net_hook_chatfail);
 	ggzcore_server_add_event_hook(server, GGZ_ENTERED, net_hook_enter);
 	ggzcore_server_add_event_hook(server, GGZ_LOGGED_IN, net_hook_login);
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, net_hook_roomlist);
@@ -193,6 +195,9 @@ printf("DEBUG: net_output(%s)\n", output->message);
 				break;
 			case GURU_PRIVMSG:
 				ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, output->player, token);
+				break;
+			case GURU_ADMIN:
+				ggzcore_room_chat(room, GGZ_CHAT_ANNOUNCE, NULL, token);
 				break;
 		}
 		token = strtok(NULL, "\n");
@@ -307,6 +312,12 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 		fflush(logstream);
 	}
 	
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_chatfail(unsigned int id, void *event_data, void *user_data)
+{
+	printf("Chat failed!\n");
 	return GGZ_HOOK_OK;
 }
 

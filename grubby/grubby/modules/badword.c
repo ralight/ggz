@@ -52,6 +52,7 @@ Guru *gurumod_exec(Guru *message)
 	static char *buf = NULL;
 	int bad, you;
 
+	if(!message->message) return NULL;
 	type = typenone;
 	if(message->type == GURU_PRIVMSG) type = typetogrubby;
 	else if((message->list) && (message->list[0]))

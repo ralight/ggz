@@ -24,7 +24,7 @@ messages:
 install-data-local:
 	for j in `ls -1 *.po`; do \
 		country=`echo $$j | cut -d "." -f 1`; \
-		dir=$(prefix)/share/locale/$$country/LC_MESSAGES; \
+		dir=$(DESTDIR)$(prefix)/share/locale/$$country/LC_MESSAGES; \
 		echo "installing $$dir/guru.mo ($$j)"; \
 		install -d $$dir; \
 		$(MSGFMT) -o $$dir/guru.mo $$j; \

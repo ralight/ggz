@@ -30,6 +30,10 @@ int admin(Guru *guru, Gurucore *core)
 
 	switch(i)
 	{
+		case 0:
+		case 1:
+		case 2:
+			break;
 		case 3:
 			if(!strcmp(guru->list[1], "goto"))
 			{
@@ -49,6 +53,15 @@ int admin(Guru *guru, Gurucore *core)
 				return 1;
 			}
 			break;
+		default:
+			if(!strcmp(guru->list[1], "announce"))
+			{
+printf("DEBUG: announce!!!!!!!!\n");
+				guru->message = strdup(guru->list[2]);
+				guru->type = GURU_ADMIN;
+				(core->net_output)(guru);
+				return 1;
+			}
 	}
 
 	return 0;
