@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3393 2002-02-17 09:31:07Z rgade $
+ * $Id: client.c 3397 2002-02-17 11:21:59Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -413,7 +413,7 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 {
 	GtkWidget *tmp;
 	gint x, i, max, length, first = TRUE;
-	gchar *name = NULL, *text = NULL, *startname = NULL, *out = NULL;
+	gchar *name = NULL, *text = NULL, *startname = NULL;
   GGZList *last_list;
   GGZListEntry *entry;
 
@@ -449,6 +449,7 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 		/* Check for matching name */
 		if(chat_complete_name(startname) != NULL)
 		{
+			gchar *out;
 			name = g_strdup(chat_complete_name(startname));
 			/* If it matches, copy the rest of the name */
 			if (first == TRUE)
@@ -457,48 +458,49 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 				out = g_strdup_printf("%s%s ", text, &name[strlen(startname)]);
 			tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
 			gtk_entry_set_text(GTK_ENTRY(tmp), out);
+			g_free(out);
 			return TRUE;
 		}
-		if (out)
-			g_free(out);
 		return TRUE;
 	} else if (event->keyval == GDK_Up || event->keyval == GDK_Down) {
-    tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-    text = gtk_entry_get_text(GTK_ENTRY(tmp));
-    last_list = gtk_object_get_data(GTK_OBJECT(tmp), "last_list");
-    entry = gtk_object_get_data(GTK_OBJECT(tmp), "current_entry");
-    if (!entry) {
-      /* The text is not on the list!
-       * We will save it as "current" text */
-      gtk_object_set_data(GTK_OBJECT(tmp), "current_text", ggz_strdup(text));
-      if (event->keyval == GDK_Up)
-        entry = ggz_list_tail(last_list);
-      else
-        entry = ggz_list_head(last_list);
-    } else {
-      if (event->keyval == GDK_Up)
-        entry = ggz_list_prev(entry);
-      else
-        entry = ggz_list_next(entry);
-    }
-    out = ggz_list_get_data(entry);
-    /* Set the new current entry */
-    gtk_object_set_data(GTK_OBJECT(tmp), "current_entry", entry);
-    if (out)
-      gtk_entry_set_text(GTK_ENTRY(tmp), out);
-    else {
-      /* There isn't a entry in the cache for it
-       * Let's use the current entry then */
-      out = gtk_object_get_data(GTK_OBJECT(tmp), "current_text");
-      if (out) {
-        gtk_entry_set_text(GTK_ENTRY(tmp), out);
-        gtk_object_set_data(GTK_OBJECT(tmp), "current_text", NULL);
-        ggz_free(out);
-      } else
-        gtk_entry_set_text(GTK_ENTRY(tmp), "");
-    }
-    return TRUE;
-  }
+		gchar *out;
+		tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
+		text = gtk_entry_get_text(GTK_ENTRY(tmp));
+		last_list = gtk_object_get_data(GTK_OBJECT(tmp), "last_list");
+		entry = gtk_object_get_data(GTK_OBJECT(tmp), "current_entry");
+		if (!entry) {
+			/* The text is not on the list!
+			 * We will save it as "current" text */
+			gtk_object_set_data(GTK_OBJECT(tmp), "current_text", ggz_strdup(text));
+			if (event->keyval == GDK_Up)
+				entry = ggz_list_tail(last_list);
+			else
+				entry = ggz_list_head(last_list);
+		} else {
+			if (event->keyval == GDK_Up)
+				entry = ggz_list_prev(entry);
+			else
+				entry = ggz_list_next(entry);
+		}
+		
+		out = ggz_list_get_data(entry);
+		/* Set the new current entry */
+		gtk_object_set_data(GTK_OBJECT(tmp), "current_entry", entry);
+		if (out)
+			gtk_entry_set_text(GTK_ENTRY(tmp), out);
+		else {
+			/* There isn't a entry in the cache for it
+			 * Let's use the current entry then */
+			out = gtk_object_get_data(GTK_OBJECT(tmp), "current_text");
+			if (out) {
+				gtk_entry_set_text(GTK_ENTRY(tmp), out);
+				gtk_object_set_data(GTK_OBJECT(tmp), "current_text", NULL);
+				ggz_free(out);
+			} else
+				gtk_entry_set_text(GTK_ENTRY(tmp), "");
+		}
+		return TRUE;
+	}
 	return TRUE;
 }                                        
 

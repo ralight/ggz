@@ -28,6 +28,8 @@
  * This file contains all functions that are chat related.
  */
 
+#include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
@@ -53,7 +55,7 @@ void chat_save_lists(void);
 void chat_load_lists(void);
 void chat_list_friend(void);
 void chat_list_ignore(void);
-static gchar *chat_get_color(gchar *name, gchar *msg);
+static const gchar *chat_get_color(gchar *name, gchar *msg);
 extern GtkWidget *win_main;
 extern GGZServer *server;
 
@@ -301,25 +303,33 @@ void chat_send_msg(GGZServer *server, gchar *message)
 void chat_send_prvmsg(GGZServer *server, gchar *message)
 {
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	gchar *name = NULL;
+	gchar *line, *name;
 	gint i;
+	int success = FALSE;
 
-	name = g_strstrip(g_strdup(message+5));
+	assert(strlen(message) >= 4);
+	line = ggz_strdup(message + 5);
+	
+	name = g_strstrip(line);
 	for(i = 0; i < strlen(name); i++)
 	{
 		if(name[i] == ' ')
 		{
+			gchar *msg = name + i + 1;
 			name[i] = '\0';
-			ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, name, name+1+i);
-			chat_display_message(CHAT_SEND_PRVMSG, name, name+1+i);
-			i = strlen(name)+1;
-			return;
+			ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, name, msg);
+			chat_display_message(CHAT_SEND_PRVMSG, name, msg);
+			success = TRUE;
+			break;
 		}
 	}
 
-	/* Shouldn't get here unless command not followed*/
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Usage: /msg <username> <message>"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("    Sends a private message to a user on the network."));
+	if (!success) {
+		chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Usage: /msg <username> <message>"));
+		chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("    Sends a private message to a user on the network."));
+	}
+	
+	ggz_free(line);
 }
 
 
@@ -338,8 +348,10 @@ void chat_send_wall(GGZServer *server, gchar *message)
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	char *msg;
 
-	msg = g_strstrip(strdup(message+5));
+	assert(strlen(message) >= 4);
+	msg = g_strstrip(ggz_strdup(message + 5));
 	ggzcore_room_chat(room, GGZ_CHAT_ANNOUNCE, NULL, msg);
+	ggz_free(msg);
 }
 
 
@@ -357,11 +369,13 @@ void chat_send_beep(GGZServer *server, gchar *message)
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	char *player;
 
-	player = g_strstrip(strdup(message+6));
+	assert(strlen(message) >= 5);
+	player = g_strstrip(ggz_strdup(message + 6));
 
 	ggzcore_room_chat(room, GGZ_CHAT_BEEP, player, NULL);
 
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Beep Sent"));
+	ggz_free(player);
 }
 
 
@@ -547,17 +561,18 @@ void chat_word_clicked(GtkXText *xtext, char *word,
  * gchar 		*msg	: Message that was sent
  *
  * Returns:
- * gchar		*color	: The color to use
+ * gchar		*color	: The color to use (a _static_ string)
  */
 
 /* FIXME: Everything that calls this needs to free the memory */
-gchar *chat_get_color(gchar *name, gchar *msg)
+const gchar *chat_get_color(gchar *name, gchar *msg)
 {
 	int i;
 	int pos;
 	char *srv_handle;
 	char *p;
 	int c;
+	static gchar color[16];
 
 	/* Is our name in the message? */
 	srv_handle = ggzcore_server_get_handle(server);
@@ -568,7 +583,8 @@ gchar *chat_get_color(gchar *name, gchar *msg)
 			if(!strncasecmp(msg+pos, srv_handle,strlen(srv_handle)))
 			{
 				c = ggzcore_conf_read_int("CHAT", "H_COLOR", 3);
-				return g_strdup_printf("%02d", c);
+				snprintf(color, sizeof(color), "%02d", c);
+				return color;
 			}
 		}
 	}
@@ -578,13 +594,15 @@ gchar *chat_get_color(gchar *name, gchar *msg)
 		p = g_array_index(chatinfo.friends, char *, i);
 		if(!strcmp(p, name)) {
 			c = ggzcore_conf_read_int("CHAT", "F_COLOR", 6);
-			return g_strdup_printf("%02d", c);
+			snprintf(color, sizeof(color), "%02d", c);
+			return color;
 		}
 	}
 
 	/* Normal color */
 	c = ggzcore_conf_read_int("CHAT", "N_COLOR", 2);
-	return g_strdup_printf("%02d", c);
+	snprintf(color, sizeof(color), "%02d", c);
+	return color;
 }
 
 
@@ -709,21 +727,19 @@ void chat_save_lists(void)
 {
 	int i;
 	char *p;
-	char *c_num;
+	char c_num[16];
 
 	for(i=0; i<ignore_count; i++) {
+		snprintf(c_num, sizeof(c_num), "%d", i+1);
 		p = g_array_index(chatinfo.ignore, char *, i);
-		c_num = g_strdup_printf("%d", i+1);
 		ggzcore_conf_write_string("IGNORE", c_num, p);
-		g_free(c_num);
 	}
 	ggzcore_conf_write_int("IGNORE", "TOTAL", ignore_count);
 
 	for(i=0; i<friend_count; i++) {
+		snprintf(c_num, sizeof(c_num), "%d", i+1);
 		p = g_array_index(chatinfo.friends, char *, i);
-		c_num = g_strdup_printf("%d", i+1);
 		ggzcore_conf_write_string("FRIENDS", c_num, p);
-		g_free(c_num);
 	}
 	ggzcore_conf_write_int("FRIENDS", "TOTAL", friend_count);
 
@@ -741,23 +757,21 @@ void chat_save_lists(void)
 void chat_load_lists(void)
 {
 	int i, count;
-	char *num, *p;
+	char num[16], *p;
 
 	count = ggzcore_conf_read_int("IGNORE", "TOTAL", 0);
 	for(i=0; i<count; i++) {
-		num = g_strdup_printf("%d", i+1);
+		snprintf(num, sizeof(num), "%d", i+1);
 		p = ggzcore_conf_read_string("IGNORE", num, "Unknown");
 		chat_add_ignore(p, FALSE);
-		g_free(num);
 		ggz_free(p);
 	}
 
 	count = ggzcore_conf_read_int("FRIENDS", "TOTAL", 0);
 	for(i=0; i<count; i++) {
-		num = g_strdup_printf("%d", i+1);
+		snprintf(num, sizeof(num), "%d", i+1);
 		p = ggzcore_conf_read_string("FRIENDS", num, "Unknown");
 		chat_add_friend(p, FALSE);
-		g_free(num);
 		ggz_free(p);
 	}
 }
@@ -796,7 +810,7 @@ void chat_list_ignore(void)
  * 	gchar*		: NULL if not matched, or matched name
  */
 
-gchar *chat_complete_name(gchar *name)
+const gchar *chat_complete_name(gchar *name)
 {
 	GtkWidget *tmp;
 	GdkPixmap *pixmap;
@@ -817,19 +831,17 @@ gchar *chat_complete_name(gchar *name)
 		{
 			if(multiple == FALSE)
 			{
-				returnname = g_strdup(fullname);
+				returnname = fullname;
 				multiple = TRUE;
 			}else{
 				if(first == FALSE)
 				{
 					chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Multiple matches:"));
 					chat_display_message(CHAT_LOCAL_NORMAL, NULL, returnname);
-					g_free(returnname);
 					first = TRUE;
 				}
-				returnname = g_strdup(fullname);
+				returnname = fullname;
 				chat_display_message(CHAT_LOCAL_NORMAL, NULL, returnname);
-				g_free(returnname);
 				returnname = NULL;
 			}
 		}

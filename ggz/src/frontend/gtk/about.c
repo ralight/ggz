@@ -727,8 +727,9 @@ static gint about_update(gpointer data)
 	gdk_draw_pixmap (pixmap, GTK_WIDGET(background)->style->fg_gc[GTK_WIDGET_STATE(background)], bg_img, 0, 0, 0, 0,
 			250, 300);
 	status = about_draw_text(background, "GGZ Gaming Zone",	font1, Yloc, TRUE);
-	ver = g_strdup_printf("%s", VERSION);
-	status = about_draw_text(background, ver, font2, Yloc, FALSE);
+	
+	status = about_draw_text(background, VERSION, font2, Yloc, FALSE);
+	
 	status = about_draw_text(background, "(C) 1999, 2000, 2001", font2, Yloc, FALSE);
 	status = about_draw_text(background, "(http://ggz.sourceforge.net)", font4, Yloc, FALSE);
 	status = about_draw_text(background, " ",		font2, Yloc, FALSE);

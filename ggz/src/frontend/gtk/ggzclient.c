@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3387 2002-02-17 08:44:28Z rgade $
+ * $Id: ggzclient.c 3397 2002-02-17 11:21:59Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -179,7 +179,7 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 		message = g_strdup_printf("Your new password is %s", password);
 		msgbox(message, "New password", MSGBOX_OKONLY, MSGBOX_INFO, 
 		       MSGBOX_NORMAL);
-		free(message);
+		g_free(message);
 	}
 		
 
@@ -987,14 +987,14 @@ void display_players(void)
 		p = ggzcore_room_get_nth_player(room, i);
 
 		table = ggzcore_player_get_table(p);
+		
+		/* These values are freed down below. */
 		if(!table)
 			player[1] = g_strdup("--");
-		/*else if (ggzcore_player_get_table(names[i]) == -2)
-		  player[1] = g_strdup("??");*/
 		else
 			player[1] = g_strdup_printf("%d", ggzcore_table_get_id(table));
-
 		player[2] = g_strdup(ggzcore_player_get_name(p));
+		
 		gtk_clist_append(GTK_CLIST(tmp), player);
 
 		if(ggzcore_player_get_lag(p) == -1 || ggzcore_player_get_lag(p) ==0)
@@ -1043,7 +1043,8 @@ void display_players(void)
 			g_free(path);
 		}
 		
-//		g_free(player[0]);
+		/* Note player[2] is used right above, so these calls
+		   have to come way down here. */
 		g_free(player[1]);
 		g_free(player[2]);
 	}

@@ -105,7 +105,7 @@ void server_profiles_save(void)
 	profiles = server_get_names();
 	
 	ggzcore_conf_write_list("Servers", "ProfileList", count, profiles);	
-	g_free(profiles);
+	ggz_free(profiles);
 
 	for (node = servers; node != NULL; node = node->next) {
 		server = (Server*)(node->data);
@@ -158,7 +158,7 @@ char** server_get_names(void)
 	int i = 0;
 	GList* node;
 
-	profiles = g_malloc0(sizeof(char*) * g_list_length(servers));
+	profiles = ggz_malloc(sizeof(char*) * g_list_length(servers));
 	node = servers;
 	while (node) {
 		profiles[i++] = ((Server*)(node->data))->name;
