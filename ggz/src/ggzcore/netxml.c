@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: netxml.c 4856 2002-10-10 20:55:19Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -446,6 +446,7 @@ int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatType type,
 	switch (type) {
 	case GGZ_CHAT_NORMAL:
 	case GGZ_CHAT_ANNOUNCE:
+	case GGZ_CHAT_TABLE:
 		status = _ggzcore_net_send_line(net,
 			"<CHAT TYPE='%s'><![CDATA[%s]]></CHAT>",
 			type_str, msg);
