@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2705 2001-11-09 02:03:54Z jdorje $
+ * $Id: common.c 2707 2001-11-09 02:22:20Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -455,7 +455,6 @@ void handle_launch_event(ggzd_event_t event, void *data)
 void handle_join_event(ggzd_event_t event, void *data)
 {
 	player_t player = *(int *) data;
-	player_t p;
 	seat_t seat = game.players[player].seat;
 
 	ggzd_debug("Handling a join event for player %d (seat %d).", player,
@@ -487,16 +486,17 @@ void handle_join_event(ggzd_event_t event, void *data)
 	/* send all table info to joiner */
 	(void) send_sync(player);
 
-	/* send player list to everyone else */
-	for (p = 0; p < game.num_players; p++)
-		if (p != player)
-			(void) send_player_list(p);
+	/* We send player list to everyone.  This used to skip over the
+	   player joining.  I think it only did that because the player list
+	   is also sent out in the sync, but there could be a better reason
+	   as well. */
+	(void) broadcast_player_list();
 
 	/* should this be in sync??? */
 	if (game.state != WH_STATE_NOTPLAYING &&
 	    !(game.state == WH_STATE_WAITFORPLAYERS
 	      && game.saved_state == WH_STATE_NOTPLAYING))
-		send_player_message_toall(game.players[p].seat);
+		send_player_message_toall(game.players[player].seat);
 
 	if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
 		games_req_gametype();
@@ -516,7 +516,7 @@ void handle_join_event(ggzd_event_t event, void *data)
 /* This handles the event of a player leaving */
 void handle_leave_event(ggzd_event_t event, void *data)
 {
-	player_t player = *(int *) data, p;
+	player_t player = *(int *) data;
 	seat_t seat = game.players[player].seat;
 	char *name = "Empty Seat";
 
@@ -527,8 +527,7 @@ void handle_leave_event(ggzd_event_t event, void *data)
 	game.seats[seat].name = "Empty Seat";
 
 	/* send new seat data */
-	for (p = 0; p < game.num_players; p++)
-		(void) send_player_list(p);
+	(void) broadcast_player_list();
 
 	/* reset player's age; find new host */
 	game.players[player].age = -1;

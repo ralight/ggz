@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2698 2001-11-08 20:39:15Z jdorje $
+ * $Id: net.c 2707 2001-11-09 02:22:20Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -80,6 +80,16 @@ int send_player_list(player_t p)
 
 	if (status != 0)
 		ggzd_debug("ERROR: send_player_list: status is %d.", status);
+	return status;
+}
+
+int broadcast_player_list(void)
+{
+	player_t p;
+	int status = 0;
+	for (p = 0; p < game.num_players; p++)
+		if (send_player_list(p) < 0)
+			status = -1;
 	return status;
 }
 
