@@ -8,5 +8,6 @@ DebugFile = @packagesrcdir@/ggzd.debug
 DebugTypes = Process, Connection, Table, Protocol, Update, Misc, Room
 ConfDir = @packagesrcdir@/test
 GameDir = @packagesrcdir@/test
+DataDir = @packagesrcdir@/test
 AddAllGames
 AddAllRooms

@@ -141,6 +141,8 @@ else
   ggzdexecmoddir="${libdir}/ggzd"
 fi
 AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdexecmoddir}")
+ggzddatadir="${ggzdexecmoddir}/data"
+AC_DEFINE_UNQUOTED(DATADIR, "${ggzddatadir}")
 
 AC_DEFINE_UNQUOTED(TMPDIR, "${tmpdir}")
 
@@ -169,6 +171,7 @@ AC_SUBST(ggzdconfdir)
 AC_SUBST(ggzdroomdir)
 AC_SUBST(ggzdgamedir)
 AC_SUBST(ggzdexecmoddir)
+AC_SUBST(ggzddatadir)
 AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 

@@ -122,9 +122,9 @@ DebugTypes = All
 #   This is where the server looks for game and room description files
 #ConfDir = @ggzdconfdir@
 
-# Data directory (Not Implemented)
+# Data directory
 #   Where all server tables are stored if SQL is not used
-#datadir = /usr/local/ggzd/data/
+#DataDir = @ggzddatadir@
 
 # Game Servers directory
 #   This is where the server can find the game server modules

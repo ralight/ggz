@@ -43,6 +43,7 @@ typedef struct {
 	char *game_dir;		/* CLEANUP CANDIDATE - should get free()'d */
 	char *tmp_dir;		/* cleanup() */
 	char *conf_dir;		/* cleanup() */
+	char *data_dir;		/* cleanup() */
 	char *admin_name;	/* cleanup() */
 	char *admin_email;	/* cleanup() */
 	int perform_lookups;

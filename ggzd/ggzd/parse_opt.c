@@ -208,6 +208,14 @@ void parse_conf_file(void)
 		opt.conf_dir = tempstr;
 	}
 
+	/* If no data_dir, default it to GAMEDIR */
+	if(!opt.data_dir) {
+		if((tempstr=malloc(strlen(GAMEDIR)+1)) == NULL)
+			err_sys_exit("malloc error in parse_conf_file()");
+		strcpy(tempstr, GAMEDIR);
+		opt.data_dir = tempstr;
+	}
+
 	/* If no main_port, default it to 5688 */
 	if(!opt.main_port)
 		opt.main_port = 5688;
@@ -286,6 +294,19 @@ static void parse_file(FILE *configfile)
 				err_sys_exit("parse_file: malloc error");
 			strcpy(strval, varvalue);
 			opt.conf_dir = strval;
+			continue;
+		 }
+
+		/*** DataDir = DIR ***/
+		if(!strcmp(varname, "datadir")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("parse_file: malloc error");
+			strcpy(strval, varvalue);
+			opt.data_dir = strval;
 			continue;
 		 }
 
