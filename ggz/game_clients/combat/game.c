@@ -168,95 +168,99 @@ void game_start() {
 }
 
 
-  int game_get_seat() {
+int game_get_seat() {
 
-    if (es_read_int(cbt_info.fd, &cbt_info.seat) < 0)
-      return -1;
+  if (es_read_int(cbt_info.fd, &cbt_info.seat) < 0)
+    return -1;
 
-    if (es_read_int(cbt_info.fd, &cbt_game.number) < 0)
-      return -1;
+  if (es_read_int(cbt_info.fd, &cbt_game.number) < 0)
+    return -1;
 
-    if (es_read_int(cbt_info.fd, &cbt_info.version) < 0)
-      return -1;
+  if (es_read_int(cbt_info.fd, &cbt_info.version) < 0)
+    return -1;
 
-    // TODO: Compare the client and the server version
-    if (cbt_info.version != PROTOCOL_VERSION)
-      game_message("Your client is using Combat protocol %d, while the server uses protocol %d. You may run into problems.\nYou should get a newer version on %s", PROTOCOL_VERSION, cbt_info.version, GAME_WEBPAGE);
+  // TODO: Compare the client and the server version
+  if (cbt_info.version != PROTOCOL_VERSION)
+    game_message("Your client is using Combat protocol %d, while the server uses protocol %d. You may run into problems.\nYou should get a newer version on %s", PROTOCOL_VERSION, cbt_info.version, GAME_WEBPAGE);
 
-    game_status("Getting init information\nSeat: %d\tPlayers: %d\tVersion: %d\n", cbt_info.seat, cbt_game.number, cbt_info.version);
+  game_status("Getting init information\nSeat: %d\tPlayers: %d\tVersion: %d\n", cbt_info.seat, cbt_game.number, cbt_info.version);
 
-    cbt_game.state = CBT_STATE_WAIT;
+  cbt_game.state = CBT_STATE_WAIT;
 
-    // Create the names
-    cbt_info.names = (char **)calloc(cbt_game.number, sizeof(char *));
+  // Create the names
+  cbt_info.names = (char **)calloc(cbt_game.number, sizeof(char *));
 
-    // Create the seats
-    cbt_info.seats = (int *)malloc(cbt_game.number * sizeof(int));
+  // Create the seats
+  cbt_info.seats = (int *)malloc(cbt_game.number * sizeof(int));
 
-    game_add_player_info(cbt_game.number);
+  game_add_player_info(cbt_game.number);
 
-    return 0;
+  return 0;
+}
+
+void game_ask_options() {
+  GtkWidget *options_dialog;
+  GtkWidget *ok_button;
+  options_dialog = create_dlg_options(cbt_game.number); 
+  ok_button = lookup_widget(options_dialog, "ok_button"); 
+  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+                             GTK_SIGNAL_FUNC (game_send_options), 
+                             GTK_OBJECT (options_dialog));
+  gtk_widget_show_all(options_dialog);
+}
+
+int game_get_options() {
+  char *optstr = NULL;
+  int a;
+  int old_width = cbt_game.width;
+  int old_height = cbt_game.height;
+  GtkWidget *checkmenuitem = lookup_widget(main_win, "remember_enemy_units");
+  char *title;
+  GtkWidget *widget = lookup_widget(main_win, "mainarea");
+
+  if (es_read_string_alloc(cbt_info.fd, &optstr) < 0)
+    return -1;
+
+  a = combat_options_string_read(optstr, &cbt_game);
+  if (a > 0)
+    game_message("Please note: \nThis client couldn't recognize %d options sent by the server.\nThe game may have unexpected behavior.\nYou should update your client at %s", a, GAME_WEBPAGE);
+
+  if (old_width != cbt_game.width || old_height != cbt_game.height) {
+    gdk_pixmap_unref(cbt_buf);
+    cbt_buf = NULL;
+    gtk_widget_set_usize(widget, cbt_game.width * (PIXSIZE+1)+1,
+                                 cbt_game.height * (PIXSIZE+1)+1);
   }
 
-  void game_ask_options() {
-    GtkWidget *options_dialog;
-    GtkWidget *ok_button;
-    options_dialog = create_dlg_options(cbt_game.number); 
-    ok_button = lookup_widget(options_dialog, "ok_button"); 
-    gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
-                               GTK_SIGNAL_FUNC (game_send_options), 
-                               GTK_OBJECT (options_dialog));
-    gtk_widget_show_all(options_dialog);
+  for (a = 0; a < cbt_game.number; a++)
+    game_update_unit_list(a);
+
+  // Put all the units in their initial positions
+  for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
+    if (GET_OWNER(cbt_game.map[a].type) >= 0 && GET_OWNER(cbt_game.map[a].type) != cbt_info.seat)
+      // Initial place
+      cbt_game.map[a].unit = OWNER(GET_OWNER(cbt_game.map[a].type)) + U_UNKNOWN;
   }
 
-  int game_get_options() {
-    char *optstr = NULL;
-    int a;
-    int old_width = cbt_game.width;
-    int old_height = cbt_game.height;
-    char *title;
-    GtkWidget *widget = lookup_widget(main_win, "mainarea");
-
-    if (es_read_string_alloc(cbt_info.fd, &optstr) < 0)
-      return -1;
-
-    a = combat_options_string_read(optstr, &cbt_game);
-    if (a > 0)
-      game_message("Please note: \nThis client couldn't recognize %d options sent by the server.\nThe game may have unexpected behavior.\nYou should update your client at %s", a, GAME_WEBPAGE);
-
-    if (old_width != cbt_game.width || old_height != cbt_game.height) {
-      gdk_pixmap_unref(cbt_buf);
-      cbt_buf = NULL;
-      gtk_widget_set_usize(widget, cbt_game.width * (PIXSIZE+1)+1,
-                                   cbt_game.height * (PIXSIZE+1)+1);
-    }
-
-    for (a = 0; a < cbt_game.number; a++)
-      game_update_unit_list(a);
-
-    // Put all the units in their initial positions
-    for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
-      if (GET_OWNER(cbt_game.map[a].type) >= 0 && GET_OWNER(cbt_game.map[a].type) != cbt_info.seat)
-        // Initial place
-        cbt_game.map[a].unit = OWNER(GET_OWNER(cbt_game.map[a].type)) + U_UNKNOWN;
-    }
-
-    if (cbt_game.name) {
-      title = malloc(strlen("Combat - ") + strlen(cbt_game.name) + 1);
-      sprintf(title, "Combat - %s", cbt_game.name);
-      gtk_window_set_title(GTK_WINDOW(main_win), title);
-      free(title);
-    }
-
-    if (cbt_game.options & OPT_OPEN_MAP || cbt_game.options & OPT_SHOW_ENEMY_UNITS)
-      cbt_info.show_enemy = TRUE;
-
-    // Show we show the game optiosn?
-    if (cbt_game.options)
-      on_show_game_options_activate(NULL, NULL);
-
-    return 0;
+  if (cbt_game.name) {
+    title = malloc(strlen("Combat - ") + strlen(cbt_game.name) + 1);
+    sprintf(title, "Combat - %s", cbt_game.name);
+    gtk_window_set_title(GTK_WINDOW(main_win), title);
+    free(title);
   }
+
+  if (cbt_game.options & OPT_OPEN_MAP || cbt_game.options & OPT_SHOW_ENEMY_UNITS) {
+    cbt_info.show_enemy = TRUE;
+    gtk_object_set_data(GTK_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(TRUE));
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(checkmenuitem), TRUE);
+  }
+
+  // Show we show the game optiosn?
+  if (cbt_game.options)
+    on_show_game_options_activate(NULL, NULL);
+
+  return 0;
+}
 
 void game_init() {
   cbt_game.map = NULL;

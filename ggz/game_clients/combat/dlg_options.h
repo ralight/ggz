@@ -2,8 +2,9 @@
 
 GtkWidget* create_dlg_options (int number);
 GtkWidget* create_dlg_save (void);
+GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function, gpointer user_data);
 void dlg_options_update(GtkWidget *);
-void dlg_options_list_maps(GtkWidget *);
+int dlg_options_list_maps(GtkWidget *);
 void cancel_button_clicked(GtkButton *, gpointer dialog);
 
 void load_button_clicked(GtkButton *, gpointer dialog);

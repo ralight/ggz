@@ -34,7 +34,7 @@ create_main_window (void)
   GtkAccelGroup *game_menu_accels;
   GtkWidget *save_map_menu;
   GtkWidget *request_sync;
-  GtkWidget *hide_enemy_units1;
+  GtkWidget *remember_enemy_units;
   GtkWidget *show_game_options;
   GtkWidget *hbox;
   GtkWidget *mainarea;
@@ -151,19 +151,18 @@ create_main_window (void)
   gtk_container_add (GTK_CONTAINER (game_menu), request_sync);
   gtk_tooltips_set_tip (tooltips, request_sync, _("Requests the current game state from the game server"), NULL);
 
-  hide_enemy_units1 = gtk_check_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (hide_enemy_units1)->child),
-                                   _("_Hide enemy units"));
-  gtk_widget_add_accelerator (hide_enemy_units1, "activate_item", game_menu_accels,
+  remember_enemy_units = gtk_check_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (remember_enemy_units)->child),
+                                   _("_Remember enemy units"));
+  gtk_widget_add_accelerator (remember_enemy_units, "activate_item", game_menu_accels,
                               tmp_key, 0, 0);
-  gtk_widget_set_name (hide_enemy_units1, "hide_enemy_units1");
-  gtk_widget_ref (hide_enemy_units1);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "hide_enemy_units1", hide_enemy_units1,
+  gtk_widget_set_name (remember_enemy_units, "remember_enemy_units");
+  gtk_widget_ref (remember_enemy_units);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "remember_enemy_units", remember_enemy_units,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hide_enemy_units1);
-  gtk_container_add (GTK_CONTAINER (game_menu), hide_enemy_units1);
-  gtk_tooltips_set_tip (tooltips, hide_enemy_units1, _("Shows/Hide the enemies units that you shouldn't see"), NULL);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (hide_enemy_units1), TRUE);
+  gtk_widget_show (remember_enemy_units);
+  gtk_container_add (GTK_CONTAINER (game_menu), remember_enemy_units);
+  gtk_tooltips_set_tip (tooltips, remember_enemy_units, _("Set it if you want to remember your enemy units"), NULL);
 
   show_game_options = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (show_game_options)->child),
@@ -266,8 +265,8 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (request_sync), "activate",
                       GTK_SIGNAL_FUNC (on_request_sync_activate),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (hide_enemy_units1), "activate",
-                      GTK_SIGNAL_FUNC (on_hide_enemy_units1_activate),
+  gtk_signal_connect (GTK_OBJECT (remember_enemy_units), "toggled",
+                      GTK_SIGNAL_FUNC (on_remember_enemy_units_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (show_game_options), "activate",
                       GTK_SIGNAL_FUNC (on_show_game_options_activate),

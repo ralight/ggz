@@ -1,9 +1,7 @@
 What *must* be done before next version of GGZ:
 
-- Make the "Show Enemy units" menu work
 - Clean up the debug messages
 - Update the version number
-
 
 What should be done someday
 
@@ -16,5 +14,4 @@ What should be done someday
 - Saving/Resuming of games
 - About dialog
 - Are you sure? on some places
-  - Add a "Yes/No" dialog widget
 - Play again

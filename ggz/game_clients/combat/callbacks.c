@@ -10,9 +10,11 @@
 #include "support.h"
 #include "combat.h"
 #include "game.h"
+#include "dlg_options.h"
 
 extern GdkPixmap *cbt_buf;
 extern combat_game cbt_game;
+struct game_info_t cbt_info;
 extern GtkWidget *main_win;
 
 gboolean
@@ -142,12 +144,13 @@ on_request_sync_activate              (GtkMenuItem     *menuitem,
 
 }
 
-void
-on_hide_enemy_units1_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
+void change_show_enemy(GtkWidget *button, gpointer user_data) {
+  GtkWidget *checkmenuitem = gtk_object_get_data(GTK_OBJECT(button), "checkmenu");
+  gtk_object_set_data(GTK_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(TRUE));
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(checkmenuitem), GPOINTER_TO_INT(user_data));
+  cbt_info.show_enemy = GPOINTER_TO_INT(user_data);
 }
+
 
 
 void
@@ -163,5 +166,41 @@ on_show_game_options_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   if (cbt_game.army && cbt_game.map)
-    game_message(combat_options_describe(&cbt_game));
+    game_message(combat_options_describe(&cbt_game, 0));
 }
+
+void
+on_remember_enemy_units_toggled        (GtkCheckMenuItem *checkmenuitem,
+                                        gpointer         user_data)
+{
+  GtkWidget *dlg;
+  GtkWidget *yes;
+  gboolean dirty = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(checkmenuitem), "dirty"));
+  if (dirty) {
+    gtk_object_set_data(GTK_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(FALSE));
+    return;
+  }
+  // Let's see the current state
+  if (checkmenuitem->active) {
+    // Let's see if it's possible
+    if (cbt_game.options & OPT_SHOW_ENEMY_UNITS) {
+      // Ok, that's normal
+      // Just do it without drama
+      cbt_info.show_enemy = TRUE;
+      return;
+    }
+    // Ok, the user is cheating.
+    dlg = create_yes_no_dlg("You are cheating. This is really bad!\nPlease take a moment to think in your opponent.\nDoes he know what you are doing?\n\n\nSo, are you sure you want to do it?", GTK_SIGNAL_FUNC(change_show_enemy), GINT_TO_POINTER(TRUE));
+    yes = lookup_widget(dlg, "yes");
+    gtk_object_set_data(GTK_OBJECT(yes), "checkmenu", checkmenuitem);
+    gtk_widget_show_all(dlg);
+    // Let's keep it not active until the user selects
+    gtk_check_menu_item_set_active(checkmenuitem, FALSE);
+  }
+  else {
+    // It is being deactived
+    // Let's just keep it
+    cbt_info.show_enemy = FALSE;
+  }
+}
+

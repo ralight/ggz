@@ -106,7 +106,8 @@ create_dlg_options (int number)
   GtkWidget *opt_bin1[16];
   GtkWidget *opt_box_open_map;
   GtkTooltips *tooltips;
-	int i;
+	int i, def;
+  char **namelist;
 
   tooltips = gtk_tooltips_new ();
 
@@ -914,7 +915,11 @@ create_dlg_options (int number)
 
   init_map_data(dlg_options);
 
-  dlg_options_list_maps(maps_list);
+  def = dlg_options_list_maps(maps_list);
+  namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
+  if (def >= 0 && namelist && namelist[def]) {
+    load_map(namelist[def], dlg_options);
+  }
 
   gtk_widget_grab_default (ok_button);
   return dlg_options;
@@ -950,7 +955,8 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   GtkWidget *preview_label = lookup_widget(user_data, "preview_label");
   GtkWidget *preview_options = lookup_widget(user_data, "preview_options");
   char **filenames;
-  char preview_string[1024];
+  char preview_string[256];
+  char *preview_options_string;
   int changed = -1;
   int tot = 0, other = 0, a, pos = 0;
   gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
@@ -991,71 +997,47 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
           tot);
   gtk_label_set_text(GTK_LABEL(preview_label), preview_string);
   gtk_editable_delete_text(GTK_EDITABLE(preview_options), 0, -1);
-  strcpy(preview_string, "");
-  if (preview_game->options) {
-    if (preview_game->options & OPT_OPEN_MAP)
-      strcat(preview_string, "Open map, ");
-    if (preview_game->options & OPT_ONE_TIME_BOMB)
-      strcat(preview_string, "One time bomb, ");
-    if (preview_game->options & OPT_TERRORIST_SPY)
-      strcat(preview_string, "Terrorist spy, ");
-    if (preview_game->options & OPT_MOVING_BOMB)
-      strcat(preview_string, "Moving bombs, ");
-    if (preview_game->options & OPT_SUPER_SCOUT)
-      strcat(preview_string, "Super scout, ");
-    if (preview_game->options & OPT_MOVING_FLAG)
-      strcat(preview_string, "Moving flags, ");
-    if (preview_game->options & OPT_RANDOM_OUTCOME)
-      strcat(preview_string, "Random outcome of attacks, ");
-    if (preview_game->options & OPT_ALLOW_DIAGONAL)
-      strcat(preview_string, "Allow diagonal moves, ");
-    if (preview_game->options & OPT_UNKNOWN_VICTOR)
-      strcat(preview_string, "Unknown victor, ");
-    if (preview_game->options & OPT_SILENT_DEFENSE)
-      strcat(preview_string, "Silent deffense, ");
-    if (preview_game->options & OPT_SILENT_OFFENSE)
-      strcat(preview_string, "Silent offense, ");
-    if (preview_game->options & OPT_RANDOM_SETUP)
-      strcat(preview_string, "Random setup, ");
-    if (preview_game->options & OPT_SF_SERGEANT)
-      strcat(preview_string, "Special forces sergeant, ");
-    if (preview_game->options & OPT_RUSH_ATTACK)
-      strcat(preview_string, "Rush attack, ");
-    if (preview_game->options & OPT_HIDE_UNIT_LIST)
-      strcat(preview_string, "Hide enemy unit list, ");
-    if (preview_game->options & OPT_SHOW_ENEMY_UNITS)
-      strcat(preview_string, "Remember enemy units, ");
-    preview_string[strlen(preview_string)-2] = 0;
-  } else {
-    sprintf(preview_string, "No options");
+  if (preview_game->options)
+    preview_options_string = combat_options_describe(preview_game, 1);
+  else {
+    preview_options_string = (char *)malloc(sizeof(char) * 11);
+    sprintf(preview_options_string, "No options");
   }
-  gtk_editable_insert_text(GTK_EDITABLE(preview_options), preview_string, strlen(preview_string), &pos);
+  gtk_editable_insert_text(GTK_EDITABLE(preview_options), preview_options_string, strlen(preview_options_string), &pos);
+  gtk_editable_set_position(GTK_EDITABLE(preview_options), 0);
 
 }
 
-void delete_button_clicked(GtkButton *button, gpointer dialog) {
-  gint selection;
-  GtkWidget *maps_list;
+GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function, gpointer user_data) {
   GtkWidget *dlg = gtk_dialog_new();
   GtkWidget *yes, *no, *label;
-  char **namelist;
   gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
-  maps_list = lookup_widget(dialog, "maps_list");
-  selection = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(maps_list), "row"));
-  namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
-  label = gtk_label_new("Delete the map?");
+  label = gtk_label_new(text);
   yes = gtk_button_new_with_label("Yes");
   no = gtk_button_new_with_label("No");
+  gtk_object_set_data(GTK_OBJECT(dlg), "yes", yes);
+  gtk_object_set_data(GTK_OBJECT(yes), "dlg", dlg);
   gtk_signal_connect_object(GTK_OBJECT(no), "clicked",
                       GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dlg));
   gtk_signal_connect_object_after(GTK_OBJECT(yes), "clicked",
                       GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dlg));
   gtk_signal_connect(GTK_OBJECT(yes), "clicked",
-                     GTK_SIGNAL_FUNC (delete_map), maps_list); 
-  gtk_object_set_data(GTK_OBJECT(yes), "filename", namelist[selection]);
+                     GTK_SIGNAL_FUNC (function), user_data); 
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area), yes);
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area), no);
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox), label);
+  return dlg;
+}
+
+void delete_button_clicked(GtkButton *button, gpointer dialog) {
+  gint selection;
+  GtkWidget *maps_list = lookup_widget(dialog, "maps_list");
+  GtkWidget *dlg = create_yes_no_dlg("Delete the map?", GTK_SIGNAL_FUNC(delete_map), maps_list);
+  GtkWidget *yes = lookup_widget(dlg, "yes");
+  char **namelist;
+  selection = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(maps_list), "row"));
+  namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
+  gtk_object_set_data(GTK_OBJECT(yes), "filename", namelist[selection]);
   gtk_widget_show_all(dlg);
 }
 
@@ -1388,11 +1370,12 @@ void update_counters(GtkWidget *dlg_options) {
   gtk_label_set_text(GTK_LABEL(army_player_2), label);
 }
 
-void dlg_options_list_maps(GtkWidget *dlg) {
+int dlg_options_list_maps(GtkWidget *dlg) {
   char **names;
   char *char_match[2];
   char **clist_name;
   int a, len, current = -1;
+  int def = -1;
   names = map_list();
   current = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(dlg), "row"));
   clist_name = (char **)calloc(1, sizeof(char *));
@@ -1408,10 +1391,13 @@ void dlg_options_list_maps(GtkWidget *dlg) {
     len-=2;
     strncpy(clist_name[0], char_match[0]+1, len);
     clist_name[0][len] = 0;
+    if (strcmp(clist_name[0], "Default") == 0)
+      def = a;
     gtk_clist_append(GTK_CLIST(dlg), clist_name);
   }
   if (current >= 0)
     gtk_clist_select_row(GTK_CLIST(dlg), current, 0);
+  return def;
 }
 
 gboolean mini_board_expose               (GtkWidget       *widget, GdkEventExpose  *event, gpointer         user_data) {
