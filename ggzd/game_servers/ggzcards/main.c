@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2193 2001-08-23 08:57:10Z jdorje $
+ * $Id: main.c 2194 2001-08-23 09:02:04Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -109,9 +109,7 @@ static void es_exit(int result)
 
 int main(int argc, char **argv)
 {
-	char game_over = 0;
-	int i, fd, ggz_sock, fd_max, status;
-	fd_set active_fd_set, read_fd_set;
+	int i;
 
 	int which_game = GGZ_GAME_UNKNOWN;
 
