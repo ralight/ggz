@@ -77,6 +77,8 @@ typedef struct GameInfo {
 	unsigned char allow_leave;
 	unsigned char enabled;
 	char path[MAX_PATH_LEN];
+	char **args;
+	int n_args;
 } GameInfo;
 
 

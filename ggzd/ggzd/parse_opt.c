@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2350 2001-09-04 02:20:47Z rgade $
+ * $Id: parse_opt.c 2351 2001-09-04 03:19:36Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -459,6 +459,8 @@ static void parse_game(char *name, char *dir)
 				  "%s/%s", opt.game_dir, strval);
 		free(strval);
 	}
+	conf_read_list(ch, "LaunchInfo", "ArgList",
+		       &game_info->n_args, &game_info->args);
 	game_info->enabled = !conf_read_int(ch, "LaunchInfo", "GameDisabled",0);
 
 	/* [Protocol] */
