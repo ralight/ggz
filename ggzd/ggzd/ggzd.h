@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 4542 2002-09-13 06:40:51Z jdorje $
+ * $Id: ggzd.h 4551 2002-09-13 17:25:48Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -105,9 +105,16 @@ typedef enum {
 } GGZEventFuncReturn;
 
 
+/* Many functions return 0 on success, -1 on error: this just
+   formalizes it. */
+typedef enum {
+	GGZ_OK = 0,
+	GGZ_ERROR = -1
+} GGZReturn;
+
+
 /*
  * Configuration options
  */
 
 #endif
-
