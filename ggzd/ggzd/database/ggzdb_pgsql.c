@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: ggzdb_pgsql.c 5962 2004-02-28 03:57:40Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -53,10 +53,10 @@ static int itercount;
 static pthread_mutex_t mutex;
 static GGZList *list;
 
-static char *dbhost;
-static char *dbname;
-static char *dbusername;
-static char *dbpassword;
+static const char *dbhost;
+static const char *dbname;
+static const char *dbusername;
+static const char *dbpassword;
 
 /* Entry type for the connection pool */
 typedef struct connection_t
