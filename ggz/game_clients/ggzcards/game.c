@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2990 2001-12-23 04:21:52Z jdorje $
+ * $Id: game.c 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -103,18 +103,17 @@ void game_play_card(int card_num)
 
 	status = client_send_play(card);
 
-	/* It's _really_ not our place to put the card out on the
-	   table like this.  But right now we use this information
-	   to draw things properly, so we'd better stick to it
-	   for now. */
+	/* It's _really_ not our place to put the card out on the table like
+	   this.  But right now we use this information to draw things
+	   properly, so we'd better stick to it for now. */
 	ggzcards.players[player].table_card = card;
 
 	/* Draw the cards, eliminating the card in play */
 	table_display_hand(player);
 
-	/* We don't remove the card from our hand until we have
-	   validation that it's been played. Graphically, the
-	   table_card is skipped over when drawing the hand. */
+	/* We don't remove the card from our hand until we have validation
+	   that it's been played. Graphically, the table_card is skipped over 
+	   when drawing the hand. */
 
 	statusbar_message(_("Sending play to server"));
 
@@ -248,8 +247,8 @@ void game_alert_player(int player, GGZSeatType status, const char *name)
 
 void game_alert_num_players(int new, int old)
 {
-	/* We ignore new and old; ggzcards.num_players contains
-	   the new value anyway. */
+	/* We ignore new and old; ggzcards.num_players contains the new value 
+	   anyway. */
 	if (game_started) {
 		ggz_debug("main", "Changing number of players.");
 		table_setup();
@@ -331,20 +330,20 @@ void game_alert_play(int player, card_t card, int pos)
 	ggz_debug("main", "Handling play alert for player %d.", player);
 
 	if (preferences.animation) {
-		/* If this is a card _we_ played, then we'll already be animating,
-		   and we really don't want to stop just to start over.  But we
-		   leave that up to animation_start. */
+		/* If this is a card _we_ played, then we'll already be
+		   animating, and we really don't want to stop just to start
+		   over.  But we leave that up to animation_start. */
 		animation_start(player, card, pos);
 	} else {		/* not if (pref_animation) */
-		/* We only show the card on the table if we're not
-		   animating - if we're animating then we wait for it
-		   to get there naturally. */
+		/* We only show the card on the table if we're not animating
+		   - if we're animating then we wait for it to get there
+		   naturally. */
 		table_show_card(player, card);
 	}			/* if (pref_animation) */
 
-	/* Note, even for cards we played we don't actually remove the
-	   card from our hand until we hear confirmation.  So we need to
-	   redraw the hand in any case. */
+	/* Note, even for cards we played we don't actually remove the card
+	   from our hand until we hear confirmation.  So we need to redraw
+	   the hand in any case. */
 	table_display_hand(player);
 }
 
@@ -475,8 +474,8 @@ void game_set_cardlist_message(const char *mark, int *lengths,
 		   cardlist popup dialog. */
 		menubar_cardlist_message(mark, lengths, cardlist);
 	} else {
-		/* if pref_cardlists is _not_ set, then we translate
-		   the cardlist message into a text list. */
+		/* if pref_cardlists is _not_ set, then we translate the
+		   cardlist message into a text list. */
 		text_cardlist_message(mark, lengths, cardlist);
 	}
 }

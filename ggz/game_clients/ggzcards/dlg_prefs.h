@@ -1,10 +1,10 @@
-/*
+/* 
  * File: dlg_prefs.h
  * Author: Jason Short
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.h 2971 2001-12-21 01:22:05Z jdorje $
+ * $Id: dlg_prefs.h 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team
  *

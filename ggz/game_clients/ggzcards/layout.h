@@ -1,10 +1,10 @@
-/*
+/* 
  * File: layout.h
  * Author: Jason Short, Rich Gade
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.h 2946 2001-12-18 23:59:37Z jdorje $
+ * $Id: layout.h 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

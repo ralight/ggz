@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3030 2002-01-09 12:41:08Z dr_maux $
+ * $Id: main.c 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -36,7 +36,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <easysock.h>
 #include <ggz.h>		/* libggz */
 #include "common.h"
 
@@ -226,7 +225,7 @@ static GtkWidget *new_message_dialog(const char *mark)
 
 	ggz_debug("table", "Making new thingy for mark %s.", mark);
 
-	/*
+	/* 
 	 * Make the menu item
 	 */
 	menu_item = gtk_menu_item_new_with_label(mark);
@@ -241,7 +240,7 @@ static GtkWidget *new_message_dialog(const char *mark)
 			   GTK_SIGNAL_FUNC(on_mnu_messages_activate),
 			   (gpointer) g_strdup(mark));
 
-	/*
+	/* 
 	 * Make the dialog window
 	 */
 	dialog = gtk_dialog_new();
@@ -255,13 +254,13 @@ static GtkWidget *new_message_dialog(const char *mark)
 				  GTK_OBJECT(dialog));
 
 	/* dialog->vbox is used for placing the message data in; however,
-	   this data depends on the _type_ of message so we leave that
-	   for later. */
+	   this data depends on the _type_ of message so we leave that for
+	   later. */
 	vbox = GTK_DIALOG(dialog)->vbox;
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
-	/*
+	/* 
 	 * Make the "close" button
 	 */
 	close_button = gtk_button_new_with_label("Close");

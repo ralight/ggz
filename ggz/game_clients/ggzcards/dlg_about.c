@@ -1,10 +1,10 @@
-/*
+/* 
  * File: dlg_about.c
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 2971 2001-12-21 01:22:05Z jdorje $
+ * $Id: dlg_about.c 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,7 +39,7 @@ GtkWidget *create_dlg_about(void)
 	GtkWidget *action_area;
 	GtkWidget *close_button;
 
-	/*
+	/* 
 	 * Create outer window.
 	 */
 	dialog = gtk_dialog_new();
@@ -48,7 +48,7 @@ GtkWidget *create_dlg_about(void)
 	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
-	/*
+	/* 
 	 * Get vertical box packing widget.
 	 */
 	vbox = GTK_DIALOG(dialog)->vbox;
@@ -56,7 +56,7 @@ GtkWidget *create_dlg_about(void)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
-	/*
+	/* 
 	 * Make title label
 	 */
 	title_label =
@@ -70,7 +70,7 @@ GtkWidget *create_dlg_about(void)
 	gtk_widget_show(title_label);
 	gtk_box_pack_start(GTK_BOX(vbox), title_label, FALSE, FALSE, 0);
 
-	/*
+	/* 
 	 * Make body label
 	 */
 	body_label = gtk_label_new(_("Authors:\n"
@@ -100,7 +100,7 @@ GtkWidget *create_dlg_about(void)
 	gtk_box_pack_start(GTK_BOX(vbox), body_label, FALSE, FALSE, 0);
 	gtk_label_set_justify(GTK_LABEL(body_label), GTK_JUSTIFY_LEFT);
 
-	/*
+	/* 
 	 * Get "action area"
 	 */
 	action_area = GTK_DIALOG(dialog)->action_area;
@@ -108,7 +108,7 @@ GtkWidget *create_dlg_about(void)
 			    action_area);
 	gtk_widget_show(action_area);
 
-	/*
+	/* 
 	 * Make "close" button
 	 */
 	close_button = gtk_button_new_with_label(_("Close"));
@@ -124,14 +124,14 @@ GtkWidget *create_dlg_about(void)
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dialog));
 
-	/*
+	/* 
 	 * Set up callbacks
 	 */
 	gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dialog));
 
-	/*
+	/* 
 	 * Done!
 	 */
 	return dialog;

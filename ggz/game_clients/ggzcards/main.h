@@ -1,10 +1,10 @@
-/*
+/* 
  * File: main.h
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.h 2946 2001-12-18 23:59:37Z jdorje $
+ * $Id: main.h 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

@@ -1,10 +1,10 @@
-/*
+/* 
  * File: layout.c
  * Author: Jason Short, Rich Gade
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 2946 2001-12-18 23:59:37Z jdorje $
+ * $Id: layout.c 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -246,9 +246,9 @@ void get_card_box_dim(int p, int *w, int *h)
 	}
 }
 
-/* (*x,*y) is the position of the upper left corner.  (w,h)
-   is the width and heigh of the box.  (*xo,*yo) is the
-   offset vector to be used for "selected" cards. */
+/* (*x,*y) is the position of the upper left corner.  (w,h) is the width and
+   heigh of the box.  (*xo,*yo) is the offset vector to be used for
+   "selected" cards. */
 void get_full_card_area(int p, int *x, int *y, int *w, int *h, int *xo,
 			int *yo)
 {

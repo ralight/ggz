@@ -1,10 +1,10 @@
-/*
+/* 
  * File: animation.c
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2977 2001-12-21 09:38:32Z jdorje $
+ * $Id: animation.c 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -58,8 +58,8 @@ void animation_start(int player, card_t card, int card_num)
 
 	ggz_debug("animation", "Setting up animation for player %d", player);
 
-	/* We don't currently support animation for more than one player
-	   at a time. */
+	/* We don't currently support animation for more than one player at a 
+	   time. */
 	if (animating) {
 		if (player == anim.player && card.suit == anim.card.suit
 		    && card.face == anim.card.face)
@@ -68,15 +68,15 @@ void animation_start(int player, card_t card, int card_num)
 			animation_stop(TRUE);
 	}
 
-	/* If we don't have animation enabled, then we simply never
-	   start an animation. */
+	/* If we don't have animation enabled, then we simply never start an
+	   animation. */
 	if (!preferences.animation)
 		return;
 
 	get_card_pos(player, card_num, &start_x, &start_y);
 	get_tablecard_pos(player, &end_x, &end_y);
 
-/* FIXME: these should be preferences */
+	/* FIXME: these should be preferences */
 #define FRAMES		15
 #define DURATION	500	/* In milliseconds */
 
@@ -108,8 +108,8 @@ static void animation_delete(void)
 }
 
 
-/* Handle one frame of card animation, this is
-   triggered by a GtkTimeout setup in animation_start(). */
+/* Handle one frame of card animation, this is triggered by a GtkTimeout
+   setup in animation_start(). */
 gint animation_callback(gpointer ignored)
 {
 	float new_x, new_y;
@@ -126,9 +126,9 @@ gint animation_callback(gpointer ignored)
 
 	animation_delete();
 
-	/* If we are there, stop the animation process and draw the card
-	   "for real".  Otherwise, we just draw the next step in the
-	   animation and then continue. */
+	/* If we are there, stop the animation process and draw the card "for 
+	   real".  Otherwise, we just draw the next step in the animation and 
+	   then continue. */
 	if (new_x == anim.dest_x && new_y == anim.dest_y) {
 		table_show_card(anim.player, anim.card);
 		animating = 0;
@@ -151,9 +151,8 @@ gint animation_callback(gpointer ignored)
 }
 
 
-/* Function to stop the animation process. "success" is true if
-   the card movement should continue to completion, false if it
-   must be undone. */
+/* Function to stop the animation process. "success" is true if the card
+   movement should continue to completion, false if it must be undone. */
 void animation_stop(int success)
 {
 	ggz_debug("animation", "Stopping animation (%d).", success);
@@ -169,11 +168,11 @@ void animation_stop(int success)
 		/* And move the card to it's final resting place */
 		table_show_card(anim.player, anim.card);
 	} else {
-		/* The caller is assumed to have restored the card to
-		   the hand so we can redraw the full hand and should
-		   be done.  However, if the animation was completed
-		   then the card will be drawn on the table as well,
-		   so we'll need to clean that up. */
+		/* The caller is assumed to have restored the card to the
+		   hand so we can redraw the full hand and should be done.
+		   However, if the animation was completed then the card will 
+		   be drawn on the table as well, so we'll need to clean that 
+		   up. */
 		table_display_hand(anim.player);
 		table_show_cards();
 	}

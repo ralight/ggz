@@ -1,10 +1,10 @@
-/*
+/* 
  * File: dlg_about.h
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.h 2901 2001-12-17 00:59:09Z jdorje $
+ * $Id: dlg_about.h 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

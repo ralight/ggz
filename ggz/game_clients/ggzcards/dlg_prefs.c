@@ -1,10 +1,10 @@
-/*
+/* 
  * File: dlg_prefs.h
  * Author: Jason Short
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 2974 2001-12-21 04:19:31Z jdorje $
+ * $Id: dlg_prefs.c 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team
  *
@@ -65,7 +65,7 @@ GtkWidget *create_dlg_prefs(void)
 	GtkWidget *action_area;
 	GtkWidget *close_button;
 
-	/*
+	/* 
 	 * Create outer window.
 	 */
 	dialog = gtk_dialog_new();
@@ -74,7 +74,7 @@ GtkWidget *create_dlg_prefs(void)
 	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
-	/*
+	/* 
 	 * Get vertical box packing widget.
 	 */
 	vbox = GTK_DIALOG(dialog)->vbox;
@@ -82,7 +82,7 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
-	/*
+	/* 
 	 * Make "animation" button
 	 */
 	button = gtk_check_button_new_with_label(_("Use Animation"));
@@ -94,7 +94,7 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_animation_toggled), NULL);
 
-	/*
+	/* 
 	 * Make "cardlists" button
 	 */
 	button = gtk_check_button_new_with_label(_
@@ -108,7 +108,7 @@ GtkWidget *create_dlg_prefs(void)
 			   GTK_SIGNAL_FUNC(on_cardlists_toggled), NULL);
 	gtk_widget_set_sensitive(button, FALSE);	/* not implemented */
 
-	/*
+	/* 
 	 * Make "autostart" button
 	 */
 	button = gtk_check_button_new_with_label(_
@@ -121,13 +121,13 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_autostart_toggled), NULL);
 
-	/*
+	/* 
 	 * Get "action area"
 	 */
 	action_area = GTK_DIALOG(dialog)->action_area;
 	gtk_widget_show(action_area);
 
-	/*
+	/* 
 	 * Make "close" button
 	 */
 	close_button = gtk_button_new_with_label(_("Close"));
@@ -140,14 +140,14 @@ GtkWidget *create_dlg_prefs(void)
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dialog));
 
-	/*
+	/* 
 	 * Set up callbacks
 	 */
 	gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dialog));
 
-	/*
+	/* 
 	 * Done!
 	 */
 	return dialog;

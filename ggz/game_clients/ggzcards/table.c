@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3003 2002-01-06 06:57:10Z jdorje $
+ * $Id: table.c 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -387,8 +387,7 @@ static void table_card_clicked(int card_num)
 	ggz_debug("table", "table_card_clicked: Card %d clicked.", card_num);
 
 	if (card_num == selected_card) {
-		/* If you click on the already selected card, it gets played.
-		 */
+		/* If you click on the already selected card, it gets played. */
 		selected_card = -1;
 		game_play_card(card_num);
 	} else {
@@ -482,8 +481,8 @@ void table_display_hand(int p)
 	card_t table_card = ggzcards.players[p].table_card;
 
 #if 0
-	/* It looks like the server violates this, although it's probably
-	   a bug in the server. */
+	/* It looks like the server violates this, although it's probably a
+	   bug in the server. */
 	assert(table_ready && game_started);
 #endif
 
@@ -510,8 +509,7 @@ void table_display_hand(int p)
 	/* Draw the cards */
 	for (i = 0; i < ggzcards.players[p].hand.hand_size; i++) {
 		card_t card = ggzcards.players[p].hand.card[i];
-		if (table_card.face != -1 &&	/* is this an adequate check?
-						 */
+		if (table_card.face != -1 &&	/* is this an adequate check? */
 		    !memcmp(&card, &table_card, sizeof(card_t)))
 			/* if the player has a card on the table _and_ it
 			   matches this card, skip over it. */

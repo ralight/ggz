@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2990 2001-12-23 04:21:52Z jdorje $
+ * $Id: common.c 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -31,7 +31,6 @@
 #include <unistd.h>		/* for close() */
 
 #include <config.h>
-#include <easysock.h>
 #include <ggz.h>
 
 #include "common.h"
@@ -131,12 +130,12 @@ static void set_game_state(client_state_t state)
 static int handle_text_message(void)
 {
 	char *message, *mark;
-	if (es_read_string_alloc(game_internal.fd, &mark) < 0 ||
-	    es_read_string_alloc(game_internal.fd, &message) < 0)
+	if (ggz_read_string_alloc(game_internal.fd, &mark) < 0 ||
+	    ggz_read_string_alloc(game_internal.fd, &message) < 0)
 		return -1;
 	game_set_text_message(mark, message);
-	free(message);		/* allocated by easysock */
-	free(mark);		/* allocated by easysock */
+	ggz_free(message);	/* allocated by easysock */
+	ggz_free(mark);		/* allocated by easysock */
 	return 0;
 }
 
@@ -151,11 +150,11 @@ static int handle_cardlist_message(void)
 	if (!cardlist || !lengths)
 		abort();
 
-	if (es_read_string_alloc(game_internal.fd, &mark) < 0)
+	if (ggz_read_string_alloc(game_internal.fd, &mark) < 0)
 		status = -1;
 
 	for (p = 0; p < ggzcards.num_players; p++) {
-		if (es_read_int(game_internal.fd, &lengths[p]))
+		if (ggz_read_int(game_internal.fd, &lengths[p]))
 			status = -1;
 		cardlist[p] = ggz_malloc(lengths[p] * sizeof(**cardlist));
 		for (i = 0; i < lengths[p]; i++)
@@ -170,7 +169,7 @@ static int handle_cardlist_message(void)
 		ggz_free(cardlist[p]);
 	ggz_free(cardlist);
 	ggz_free(lengths);
-	free(mark);		/* allocated by easysock */
+	ggz_free(mark);		/* allocated by easysock */
 
 	return status;
 }
@@ -183,13 +182,13 @@ static int handle_player_message(void)
 	char *message;
 
 	if (read_seat(game_internal.fd, &p) < 0 ||
-	    es_read_string_alloc(game_internal.fd, &message) < 0)
+	    ggz_read_string_alloc(game_internal.fd, &message) < 0)
 		return -1;
 	assert(p >= 0 && p < ggzcards.num_players);
 
 	game_set_player_message(p, message);
 
-	free(message);		/* allocated by easysock */
+	ggz_free(message);	/* allocated by easysock */
 
 	return 0;
 }
@@ -209,8 +208,8 @@ static int handle_game_message(void)
 	int size, game, handled;
 	char *block;
 
-	if (es_read_int(game_internal.fd, &game) < 0
-	    || es_read_int(game_internal.fd, &size) < 0)
+	if (ggz_read_int(game_internal.fd, &game) < 0
+	    || ggz_read_int(game_internal.fd, &size) < 0)
 		return -1;
 
 	/* Note: "size" refers to the size of the data block, not including
@@ -227,7 +226,7 @@ static int handle_game_message(void)
 	if (size > 0) {
 		/* We read the block just to get it out of the way. */
 		block = ggz_malloc(size);
-		if (es_readn(game_internal.fd, block, size) < 0)
+		if (ggz_readn(game_internal.fd, block, size) < 0)
 			return -1;
 		ggz_free(block);
 	}
@@ -273,7 +272,7 @@ static int handle_msg_gameover(void)
 {
 	int num_winners, i, *winners = NULL;
 
-	if (es_read_int(game_internal.fd, &num_winners) < 0)
+	if (ggz_read_int(game_internal.fd, &num_winners) < 0)
 		return -1;
 	assert(num_winners >= 0 && num_winners <= ggzcards.num_players);
 
@@ -306,7 +305,7 @@ static int handle_msg_players(void)
 	/* It is possible to have 0 players.  At the begginning of a
 	   "general" game, you don't know how many seats will be used yet so
 	   the number of players is 0. */
-	if (es_read_int(game_internal.fd, &numplayers) < 0)
+	if (ggz_read_int(game_internal.fd, &numplayers) < 0)
 		return -1;
 	assert(numplayers >= 0);
 
@@ -326,7 +325,9 @@ static int handle_msg_players(void)
 			  "get_players: (re)allocating ggzcards.players.");
 		ggzcards.players =
 			ggz_malloc(numplayers * sizeof(*ggzcards.players));
-		game_internal.max_hand_size = 0;	/* this forces reallocating later */
+		game_internal.max_hand_size = 0;	/* this forces
+							   reallocating later 
+							 */
 	}
 
 	/* TODO: support for changing the number of players */
@@ -334,16 +335,17 @@ static int handle_msg_players(void)
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
 		GGZSeatType assign;
-		if (es_read_int(game_internal.fd, &assign) < 0 ||
-		    es_read_string_alloc(game_internal.fd, &t_name) < 0)
+		if (ggz_read_int(game_internal.fd, &assign) < 0 ||
+		    ggz_read_string_alloc(game_internal.fd, &t_name) < 0)
 			return -1;
 
 		game_alert_player(i, assign, t_name);
 
 		/* this causes unnecessary memory fragmentation */
-		if (ggzcards.players[i].name)
-			free(ggzcards.players[i].name);	/* allocated by
-							   easysock */
+		if (ggzcards.players[i].name) {
+			/* allocated by easysock */
+			ggz_free(ggzcards.players[i].name);
+		}
 		ggzcards.players[i].status = assign;
 		ggzcards.players[i].name = t_name;
 	}
@@ -366,7 +368,8 @@ static void increase_max_hand_size(int max_hand_size)
 {
 	int p;
 
-	if (max_hand_size <= game_internal.max_hand_size)	/* no problem */
+	if (max_hand_size <= game_internal.max_hand_size)	/* no problem 
+								 */
 		return;
 
 	ggz_debug("core",
@@ -411,7 +414,7 @@ static int handle_msg_hand(void)
 	assert(player >= 0 && player < ggzcards.num_players);
 
 	/* Find out how many cards in this hand */
-	if (es_read_int(game_internal.fd, &hand_size) < 0)
+	if (ggz_read_int(game_internal.fd, &hand_size) < 0)
 		return -1;
 
 	/* Reallocate hand structures, if necessary */
@@ -451,13 +454,13 @@ static int handle_req_bid(void)
 	}
 
 	/* Determine the number of bidding choices we have */
-	if (es_read_int(game_internal.fd, &possible_bids) < 0)
+	if (ggz_read_int(game_internal.fd, &possible_bids) < 0)
 		return -1;
 	bid_choices = ggz_malloc(possible_bids * sizeof(*bid_choices));
 
 	/* Read in all of the bidding choices. */
 	for (i = 0; i < possible_bids; i++) {
-		if (es_read_string_alloc(game_internal.fd, &bid_choices[i]) <
+		if (ggz_read_string_alloc(game_internal.fd, &bid_choices[i]) <
 		    0)
 			return -1;
 	}
@@ -468,7 +471,7 @@ static int handle_req_bid(void)
 
 	/* Clean up */
 	for (i = 0; i < possible_bids; i++)
-		free(bid_choices[i]);	/* allocated by easysock */
+		ggz_free(bid_choices[i]);	/* allocated by easysock */
 	ggz_free(bid_choices);
 
 	return 0;
@@ -499,7 +502,7 @@ static int handle_msg_badplay(void)
 	char *err_msg;
 
 	/* Read the error message for the bad play. */
-	if (es_read_string_alloc(game_internal.fd, &err_msg) < 0)
+	if (ggz_read_string_alloc(game_internal.fd, &err_msg) < 0)
 		return -1;
 
 	/* Restore the cards the way they should be. */
@@ -510,7 +513,7 @@ static int handle_msg_badplay(void)
 	game_alert_badplay(err_msg);
 
 	/* Clean up. */
-	free(err_msg);		/* allocated by easysock */
+	ggz_free(err_msg);	/* allocated by easysock */
 
 	return 0;
 }
@@ -622,8 +625,7 @@ static int handle_msg_table(void)
 		    (game_internal.fd, &ggzcards.players[p].table_card) < 0)
 			return -1;
 
-	/* TODO: verify that the table cards have been removed from the hands
-	 */
+	/* TODO: verify that the table cards have been removed from the hands */
 
 	game_alert_table();
 
@@ -672,7 +674,7 @@ static int handle_req_options(void)
 	}
 
 	/* Read the number of options. */
-	if (es_read_int(game_internal.fd, &option_cnt) < 0)
+	if (ggz_read_int(game_internal.fd, &option_cnt) < 0)
 		return -1;
 	assert(option_cnt > 0);
 
@@ -683,13 +685,13 @@ static int handle_req_options(void)
 
 	/* Read all the options, their defaults, and the possible choices. */
 	for (i = 0; i < option_cnt; i++) {
-		if (es_read_int(game_internal.fd, &choice_cnt[i]) < 0 ||
-		    es_read_int(game_internal.fd, &defaults[i]) < 0)
+		if (ggz_read_int(game_internal.fd, &choice_cnt[i]) < 0 ||
+		    ggz_read_int(game_internal.fd, &defaults[i]) < 0)
 			return -1;	/* read the default */
 		option_choices[i] =
 			ggz_malloc(choice_cnt[i] * sizeof(**option_choices));
 		for (j = 0; j < choice_cnt[i]; j++)
-			if (es_read_string_alloc
+			if (ggz_read_string_alloc
 			    (game_internal.fd, &option_choices[i][j])
 			    < 0)
 				return -1;
@@ -705,7 +707,7 @@ static int handle_req_options(void)
 	/* Clean up. */
 	for (i = 0; i < option_cnt; i++) {
 		for (j = 0; j < choice_cnt[i]; j++)
-			free(option_choices[i][j]);	/* allocated by
+			ggz_free(option_choices[i][j]);	/* allocated by
 							   easysock */
 		ggz_free(option_choices[i]);
 	}
@@ -733,7 +735,7 @@ int client_send_bid(int bid)
 {
 	set_game_state(STATE_WAIT);
 	if (write_opcode(game_internal.fd, RSP_BID) < 0
-	    || es_write_int(game_internal.fd, bid) < 0) {
+	    || ggz_write_int(game_internal.fd, bid) < 0) {
 		ggz_debug("core-error", "Couldn't send bid.");
 		return -1;
 	}
@@ -749,7 +751,7 @@ int client_send_options(int option_cnt, int *options)
 	if (write_opcode(game_internal.fd, RSP_OPTIONS) < 0)
 		status = -1;
 	for (i = 0; i < option_cnt; i++)
-		if (es_write_int(game_internal.fd, options[i]) < 0)
+		if (ggz_write_int(game_internal.fd, options[i]) < 0)
 			status = -1;
 
 	set_game_state(STATE_WAIT);

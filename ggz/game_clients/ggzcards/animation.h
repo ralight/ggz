@@ -1,10 +1,10 @@
-/*
+/* 
  * File: animation.h
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.h 2961 2001-12-19 23:54:36Z jdorje $
+ * $Id: animation.h 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *

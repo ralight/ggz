@@ -1,10 +1,10 @@
-/*
+/* 
  * File: common.h
  * Author: Jason Short
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Frontend to GGZCards Client-Common
- * $Id: common.h 2990 2001-12-23 04:21:52Z jdorje $
+ * $Id: common.h 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

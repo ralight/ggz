@@ -1,10 +1,10 @@
-/*
+/* 
  * File: cb_main.h
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.h 2946 2001-12-18 23:59:37Z jdorje $
+ * $Id: cb_main.h 3160 2002-01-20 08:50:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
