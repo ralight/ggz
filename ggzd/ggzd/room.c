@@ -258,12 +258,12 @@ int room_send_chat(const int p)
 			dbg_msg(GGZ_DBG_LISTS, "Removing chat %p", cur_chat);
 			if(chat_room[room].chat_tail == cur_chat) {
 				chat_room[room].chat_tail = NULL;
-				free(cur_chat->chat_sender);
-				free(cur_chat->chat_msg);
 			}
 #ifdef DEBUG
 			chat_room[room].chat_head = cur_chat->next;
 #endif DEBUG
+			free(cur_chat->chat_sender);
+			free(cur_chat->chat_msg);
 			free(cur_chat);
 		}
 #ifdef DEBUG
@@ -300,12 +300,12 @@ void room_dequeue_chat(const int p)
 			dbg_msg(GGZ_DBG_LISTS, "Removing chat %p", chat_item);
 			if(chat_room[room].chat_tail == chat_item) {
 				chat_room[room].chat_tail = NULL;
-				free(chat_item->chat_sender);
-				free(chat_item->chat_msg);
 			}
 #ifdef DEBUG
 			chat_room[room].chat_head = chat_item->next;
 #endif DEBUG
+			free(chat_item->chat_sender);
+			free(chat_item->chat_msg);
 			free(chat_item);
 		}
 	}
