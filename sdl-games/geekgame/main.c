@@ -64,7 +64,7 @@
 #define ARRAY_HEIGHT 10
 
 #define MATCH_SERVER "geekgame"
-#define MATCH_VERSION 1
+#define MATCH_VERSION 2
 
 #define MAX_PLAYERS 5
 
@@ -157,6 +157,7 @@ static void game_handle_io(void)
 				ggz_write_string(modfd, "dummy player");
 				ggz_write_string(modfd, playerimage);
 			}
+			else rendermode(150, 170, "Version mismatch!       ");
 			break;
 		case OP_NUMPLAYERS:
 			ggz_read_int(modfd, &players);

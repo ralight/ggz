@@ -3,9 +3,9 @@ Game = Geekgame
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/geekgame -g
 Frontend = sdl
-Homepage = http://ggz.sourceforge.net/games/geekgame/
+Homepage = http://www.ggzgamingzone.org/games/geekgame/
 Name = Geekgame
 ProtocolEngine = Geekgame
-ProtocolVersion = 1
-Version = 0.0.1
+ProtocolVersion = 2
+Version = 0.0.2
 
