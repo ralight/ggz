@@ -859,7 +859,7 @@ client_realize                    (GtkWidget       *widget,
 	g_free(buf);
 
 #ifdef DEBUG
-	char_display_message(CHAT_LOCAL_HIGH, NULL, _("Compiled with debugging."));
+	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Compiled with debugging."));
 #endif
 
 }
