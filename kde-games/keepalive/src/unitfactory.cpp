@@ -34,6 +34,7 @@ QCanvasPixmapArray *UnitFactory::load(const char *image)
 		builtin = image;
 		if(builtin == "gryphon_rider") return NULL;
 		else if(builtin == "footman") im = QImage(KEEPALIVE_DIR "/man.png");
+		else if(builtin == "peasant") im = QImage(KEEPALIVE_DIR "/man.png");
 		else if(builtin == "knight") im = QImage(KEEPALIVE_DIR "/avatar.png");
 		else if(builtin == "mage") im = QImage(KEEPALIVE_DIR "/avatar.png");
 		else if(builtin == "archer") im = QImage(KEEPALIVE_DIR "/avatar.png");

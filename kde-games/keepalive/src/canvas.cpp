@@ -133,11 +133,17 @@ void Canvas::slotInput()
 			f = new UnitFactory();
 			ar = f->load("peasant");
 			delete f;
-			m_player = new QCanvasSprite(/*new QCanvasPixmapArray(KEEPALIVE_DIR "/man.png", 1)*/ar, this);
-			m_player->move(x, y);
-			m_player->show();
-			m_targetx = x;
-			m_targety = y;
+			std::cout << "Unit loaded" << std::endl;
+			if(!ar) std::cerr << "No graphics found!" << std::endl;
+			else
+			{
+				m_player = new QCanvasSprite(/*new QCanvasPixmapArray(KEEPALIVE_DIR "/man.png", 1)*/ar, this);
+				m_player->move(x, y);
+				m_player->show();
+				m_targetx = x;
+				m_targety = y;
+				std::cout << "Move done" << std::endl;
+			}
 			break;
 		case op_player:
 			*m_net >> count;
