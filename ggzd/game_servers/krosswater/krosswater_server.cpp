@@ -100,8 +100,7 @@ int KrosswaterServer::slotZoneInput(int fd, int i)
 	if(ggz_read_int(fd, &op) < 0)
 	{
 		ZONEERROR("error in protocol (3)\n");
-exit(-1);
-		return -1;
+		exit(-1);
 	}
 
 	m_fd = fd;
@@ -145,6 +144,8 @@ void KrosswaterServer::getMove()
 	int fromx, fromy, tox, toy;
 	int valid;
 	int ret;
+
+	if((!map) || (!players)) return;
 
 	// Read move coordinates
 	if((ggz_read_int(m_fd, &fromx) < 0)
@@ -195,6 +196,8 @@ void KrosswaterServer::getMove()
 void KrosswaterServer::sendRestart()
 {
 	eraseMap();
+	createMap();
+	createPlayers();
 
 	for(int i = 0; i < m_numplayers; i++)
 	{
@@ -227,6 +230,21 @@ void KrosswaterServer::createMap()
 	path = new CWPathitem(map_x, map_y, map);
 }
 
+// Setup players and bots
+void KrosswaterServer::createPlayers()
+{
+	players = (struct player_t*)malloc(sizeof(struct player_t) * m_maxplayers);
+	for(int i = 0; i < m_maxplayers; i++)
+	{
+		players[i].x = 0;
+		players[i].y = path->available(0, CWPathitem::force);
+		map[players[i].x][players[i].y] = 2;
+	}
+
+	// Force map to have at least one goal
+	path->available(map_x - 1, CWPathitem::force);
+}
+
 // Broadcast map to joining players
 void KrosswaterServer::sendMap()
 {
@@ -234,18 +252,7 @@ void KrosswaterServer::sendMap()
 	if(!map) createMap();
 
 	// Place all players on the map
-	if((!players) && (path))
-	{
-		players = (struct player_t*)malloc(sizeof(struct player_t) * m_maxplayers);
-		for(int i = 0; i < m_maxplayers; i++)
-		{
-			players[i].x = 0;
-			players[i].y = path->available(0, CWPathitem::force);
-			map[players[i].x][players[i].y] = 2;
-		}
-		// Force map to have at least one goal
-		path->available(map_x - 1, CWPathitem::force);
-	}
+	if(!players) createPlayers();
 
 	// Send map information to the client who joined
 	if((ggz_write_int(m_fd, proto_map_respond) < 0)
@@ -287,6 +294,7 @@ void KrosswaterServer::slotZoneAI()
 	int ret;
 
 	if(!map) createMap();
+	if(!players) createPlayers();
 
 	do
 	{
