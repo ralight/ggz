@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 4471 2002-09-08 21:18:54Z jdorje $
+ * $Id: play.c 4627 2002-09-18 22:14:57Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -34,9 +34,9 @@
 #include "net.h"
 #include "play.h"
 
-#ifndef DEBUG
+#ifndef NDEBUG
 static bool hand_has_valid_card(player_t p, hand_t *hand);
-#endif /* DEBUG */
+#endif /* NDEBUG */
 
 bool is_anyone_playing(void)
 {
@@ -70,7 +70,7 @@ void request_client_play(player_t p, seat_t s)
 	net_send_play_request(p, s);
 }
 
-#ifdef DEBUG
+#ifndef NDEBUG
 static bool hand_has_valid_card(player_t p, hand_t *hand)
 {
 	int i;
@@ -81,7 +81,7 @@ static bool hand_has_valid_card(player_t p, hand_t *hand)
 			
 	return FALSE;
 }
-#endif /* DEBUG */
+#endif /* NDEBUG */
 
 void handle_client_play(player_t p, card_t card)
 {
@@ -142,9 +142,7 @@ void handle_client_play(player_t p, card_t card)
 		   try again. */
 		assert(game.state == STATE_WAIT_FOR_PLAY);
 		net_send_badplay(p, err);
-#ifdef DEBUG
 		assert(hand_has_valid_card(p, hand));
-#endif
 	}
 }
 
