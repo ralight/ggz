@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2973 2001-12-21 02:26:28Z jdorje $
+ * $Id: main.c 2975 2001-12-21 04:19:49Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -113,9 +113,8 @@ static void access_settings(int save)
 	static int file = -1;
 
 	if (file < 0) {
-		char *name =
-			g_strdup_printf("%s/.ggz/ggzcards-gtk.rc",
-					getenv("HOME"));
+		char *name = g_strdup_printf("%s/.ggz/ggzcards-gtk.rc",
+					     getenv("HOME"));
 		file = ggz_conf_parse(name, CONF_RDWR | CONF_CREATE);
 
 		if (file < 0)
@@ -163,7 +162,7 @@ void statusbar_message(char *msg)
 	}
 
 	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
-	ggz_debug("table", "     Put up statusbar message: '%s'", msg);
+	ggz_debug("table", "Put up statusbar message: '%s'", msg);
 }
 
 void messagebar_message(const char *msg)
@@ -178,7 +177,7 @@ void messagebar_message(const char *msg)
 	}
 
 	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
-	ggz_debug("table", "     Put up messagebar message: '%s'", msg);
+	ggz_debug("table", "Put up messagebar message: '%s'", msg);
 }
 
 /* TODO: this stuff should go in its own file */
