@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: game.c 4444 2002-09-07 20:17:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -452,7 +452,7 @@ static int game_send_gameover(char winner)
 	}
 
 #ifdef GGZSPECTATORS
-	for (i = 0; i < ggzdmod_count_spectators(ttt_game.ggz); i++)
+	for (i = 0; i < ggzdmod_get_max_num_spectators(ttt_game.ggz); i++)
 	{
 		spectator = ggzdmod_get_spectator(ttt_game.ggz, i);
 		ggz_write_int(spectator.fd, TTT_MSG_GAMEOVER);
@@ -543,7 +543,7 @@ static int game_do_move(int move)
 	game_send_move(ttt_game.turn, move);
 
 #ifdef GGZSPECTATORS
-	for(i = 0; i < ggzdmod_count_spectators(ttt_game.ggz); i++)
+	for(i = 0; i < ggzdmod_get_max_num_spectators(ttt_game.ggz); i++)
 	{
 		fd = (ggzdmod_get_spectator(ttt_game.ggz, i)).fd;
 		if (ggz_write_int(fd, TTT_MSG_MOVE) < 0
