@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5000 2002-10-22 20:17:36Z jdorje $
+ * $Id: netxml.c 5008 2002-10-23 18:01:43Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -573,7 +573,7 @@ int _ggzcore_net_send_table_reseat(GGZNet *net,
 
 	if (!action) return -1;
 
-	if (seat_num <= 0)
+	if (seat_num < 0)
 		return _ggzcore_net_send_line(net,
 					      "<RESEAT ACTION='%s'/>",
 					      action);
