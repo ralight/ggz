@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2799 2001-12-07 03:06:51Z jdorje $
+ * $Id: ggzdmod.c 2806 2001-12-08 06:20:10Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1136,8 +1136,19 @@ static int seat_compare(GGZSeat *a, GGZSeat *b)
 }
 
 
+/* Because of the way ggz_list is set up, this function
+   is supposed to return 0 if seats a and b match,
+   1 otherwise. */
 static int seat_find_player(GGZSeat *a, GGZSeat *b)
 {
+	/* It is possible that one of the seats will have a
+	   NULL name.  In this case, we do _not_ want to
+	   return a match.  This wouldn't be an issue if we
+	   handled things the "right" way and earched only
+	   by seat number or player UID.  --JDS */
+	if (!a->name || !b->name)
+		return 1;
+
 	return strcmp(a->name, b->name);
 }
 
