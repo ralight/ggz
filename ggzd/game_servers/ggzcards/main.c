@@ -22,6 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <easysock.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <errno.h>
@@ -89,6 +90,21 @@ static char *get_option(const char *option_name, char **argv, int *i,
 	return NULL;
 }
 
+/* these should be part of libggzdmod */
+/* note that for both es_error and es_exit, easysock must be called again
+ * to report the error! */
+static void es_error(const char *msg, const EsOpType op,
+		     const EsDataType data)
+{
+	ggz_debug("ERROR: " "Bad easysock operation: %s.", msg);
+}
+
+static void es_exit(int result)
+{
+	ggz_debug("ERROR: " "exiting because of easysock error.");
+	exit(result);
+}
+
 int main(int argc, char **argv)
 {
 	char game_over = 0;
@@ -96,6 +112,10 @@ int main(int argc, char **argv)
 	fd_set active_fd_set, read_fd_set;
 
 	int which_game = GGZ_GAME_UNKNOWN;
+
+	/* set up easysock functions to be called on error/exit */
+	es_err_func_set(es_error);
+	es_exit_func_set(es_exit);
 
 	/* read options */
 	for (i = 1; i < argc; i++) {

@@ -289,22 +289,18 @@ int cards_equal(card_t c1, card_t c2)
 
 int es_read_card(int fd, card_t * card)
 {
-	if (es_read_char(fd, &card->face) < 0)
-		return -1;
-	if (es_read_char(fd, &card->suit) < 0)
-		return -1;
-	if (es_read_char(fd, &card->deck) < 0)
+	if (es_read_char(fd, &card->face) < 0
+	    || es_read_char(fd, &card->suit) < 0
+	    || es_read_char(fd, &card->deck) < 0)
 		return -1;
 	return 0;
 }
 
 int es_write_card(int fd, card_t card)
 {
-	if (es_write_char(fd, card.face) < 0)
-		return -1;
-	if (es_write_char(fd, card.suit) < 0)
-		return -1;
-	if (es_write_char(fd, card.deck) < 0)
+	if (es_write_char(fd, card.face) < 0
+	    || es_write_char(fd, card.suit) < 0
+	    || es_write_char(fd, card.deck) < 0)
 		return -1;
 	return 0;
 }

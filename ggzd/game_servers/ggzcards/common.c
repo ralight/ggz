@@ -101,10 +101,8 @@ int handle_ggz(int ggz_fd, int *p_fd)
 	int op, status = -1;
 	player_t p;
 
-	if (ggz_fd == -1 || es_read_int(ggz_fd, &op) < 0) {
-		ggz_debug("ERROR: handle_ggz: couldn't read op.");
+	if (es_read_int(ggz_fd, &op) < 0)
 		return -1;
-	}
 
 	switch (op) {
 	case REQ_GAME_LAUNCH:
@@ -378,13 +376,11 @@ int req_play(player_t p, seat_t s)
 		/* request a play from the ai */
 		handle_play_event(ai_get_play(p, s));
 	} else {
-		/* request a play from the client */
-		if (fd == -1 ||
-		    es_write_int(fd, WH_REQ_PLAY) < 0 ||
-		    es_write_int(fd, s_r) < 0) {
-			ggz_debug("req_play: couldn't send play request.");
+		if (fd == -1)
+			ggz_debug("ERROR: SERVER BUG: " "-1 fd in req_play");
+		if (es_write_int(fd, WH_REQ_PLAY) < 0
+		    || es_write_int(fd, s_r) < 0)
 			return -1;
-		}
 	}
 
 	return 0;
@@ -403,10 +399,8 @@ int rec_play(player_t p)
 	char *err;
 
 	/* read the card played */
-	if (fd == -1 || es_read_card(fd, &card) < 0) {
-		ggz_debug("ERROR: rec_play: couldn't read card.");
+	if (es_read_card(fd, &card) < 0)
 		return -1;
-	}
 
 	/* are we waiting for a play? */
 	if (game.state != WH_STATE_WAIT_FOR_PLAY) {
@@ -517,10 +511,9 @@ int rec_bid(player_t p, int *bid_index)
 {
 	int fd = ggz_seats[p].fd;
 
-	if (fd == -1 || es_read_int(fd, bid_index) < 0) {
-		ggz_debug("ERROR: rec_bid: couldn't read bid index.");
+	if (es_read_int(fd, bid_index) < 0)
 		return -1;
-	}
+
 	*bid_index = *bid_index % game.num_bid_choices;
 	if (*bid_index < 0)
 		*bid_index += game.num_bid_choices;
@@ -677,12 +670,8 @@ int handle_player(player_t p)
 
 	fd = ggz_seats[p].fd;
 
-	if (fd == -1 || es_read_int(fd, &op) < 0) {
-		ggz_debug
-			("ERROR: handle_player: can't read op from player %d/%s, fd %d.",
-			 p, ggz_seats[p].name, fd);
+	if (es_read_int(fd, &op) < 0)
 		return -1;
-	}
 
 	if (op >= 0 && op <= WH_REQ_SYNC)
 		ggz_debug("Received %d (%s) from player %d/%s.", op,
