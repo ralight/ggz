@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 4836 2002-10-10 01:37:38Z jdorje $
+ * $Id: server.c 4867 2002-10-11 19:09:49Z jdorje $
  *
  * Functions for handling server events
  *
@@ -252,7 +252,7 @@ static GGZHookReturn server_enter_ok(GGZServerEvent id, void* event_data,
 
 	room = ggzcore_server_get_cur_room(server);
 #ifdef DEBUG
-	output_text("--- Entered room", ggzcore_room_get_name(room));
+	output_text("--- Entered room %s.", ggzcore_room_get_name(room));
 		    
 #endif
 #if 0
@@ -331,7 +331,8 @@ static GGZHookReturn server_protocol_error(GGZServerEvent id, void* event_data,
 					   void* user_data)
 {
 #ifdef DEBUG
-	output_text("--- Server error: %s disconnected", event_data);
+	char *msg = event_data;
+	output_text("--- Server error: %s disconnected", msg);
 #endif
 	loop_remove_fd(fd);
 
