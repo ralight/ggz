@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-DIST_SUBDIRS = agrue grubby man guru telggz
+DIST_SUBDIRS = agrue grubby man guru telggz metaserv
 SUBDIRS = @SUBDIRS@
 
