@@ -301,7 +301,8 @@ static void input_handle_msg(char* line)
 static void input_handle_launch(char *line)
 {
 	char *name;
-	char *protocol;
+	char *engine;
+	char *version;
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module;
@@ -320,9 +321,10 @@ static void input_handle_launch(char *line)
 	}
 	
 	name = ggzcore_gametype_get_name(type);
-	protocol = ggzcore_gametype_get_protocol(type);
-	output_text("Launching game of %s, v%s", name, protocol);
-	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
+	engine = ggzcore_gametype_get_prot_engine(type);
+	version = ggzcore_gametype_get_prot_version(type);
+	output_text("Launching game of %s, (%s-%s)", name, engine, version);
+	module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
 	if (!module) {
 		output_text("No game modules defined for that game");
 		output_text("Download one from %s", 
@@ -344,7 +346,8 @@ static void input_handle_launch(char *line)
 static void input_handle_join_table(char *line)
 {
 	char *name;
-	char *protocol;
+	char *engine;
+	char *version;
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module;
@@ -368,9 +371,10 @@ static void input_handle_join_table(char *line)
 	}
 	
 	name = ggzcore_gametype_get_name(type);
-	protocol = ggzcore_gametype_get_protocol(type);
-	output_text("Launching game of %s, v%s", name, protocol);
-	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
+	engine = ggzcore_gametype_get_prot_engine(type);
+	version = ggzcore_gametype_get_prot_version(type);
+	output_text("Launching game of %s, (%s-%s)", name, engine, version);
+	module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
 	if (!module) {
 		output_text("No game modules defined for that game");
 		output_text("Download one from %s", 
