@@ -263,7 +263,7 @@ void KGGZ::slotConnectedStart()
 
 void KGGZ::menuDisconnect()
 {
-	/*eventLeaveTable(0);
+	eventLeaveTable(0);
     eventLeaveRoom();
 
 	if(!kggzserver)
@@ -278,8 +278,8 @@ void KGGZ::menuDisconnect()
 	}
 
 	KGGZDEBUG("=> logout now! <=\n");
-	kggzserver->logout();*/
-	m_killserver = 1;
+	kggzserver->logout();
+	//m_killserver = 1;
 }
 
 void KGGZ::menuServerLaunch()
@@ -594,6 +594,8 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreGame::over:
 			KGGZDEBUG("over\n");
+			delete m_sn_game;
+			m_sn_game = NULL;
 			m_gamefd = -1;
 			eventLeaveTable(1);
 			m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
@@ -952,11 +954,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::neterror:
 			KGGZDEBUG("neterror\n");
 			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Network error detected!"), KGGZChat::RECEIVE_ADMIN);
-			//emit signalMenu(MENUSIG_DISCONNECT);
-//?
-			menuDisconnect();
-			// This is a quickhack, but for the user's sake
-			/*serverCollector(GGZCoreServer::loggedout, NULL);*/
+			m_killserver = 1;
+			menuConnect();
 			break;
 		case GGZCoreServer::protoerror:
 			KGGZDEBUG("protoerror\n");
@@ -1643,7 +1642,6 @@ void KGGZ::menuPreferencesSettings()
 
 void KGGZ::eventLeaveGame()
 {
-	/**/
 	if(!kggzgame)
 	{
 		KGGZDEBUG("Hrmpf, someone deleted kggzgame...\n");
@@ -1655,7 +1653,6 @@ void KGGZ::eventLeaveGame()
 		kggzgame = NULL;
 		m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
 	}
-	/**/
 }
 
 void KGGZ::eventLeaveTable(int force)
@@ -1663,15 +1660,15 @@ void KGGZ::eventLeaveTable(int force)
 	KGGZDEBUG("Leave table?\n");
 	if((kggzserver) && (kggzserver->state() == GGZ_STATE_AT_TABLE))
 	{
-		KGGZDEBUG("**** Still at table (alert) -> leaving now!\n");
+		KGGZDEBUG("**** Still at table (alert) -> leaving now with force %i!\n", force);
 		kggzroom->leaveTable(force);
 	}
 
-	if((kggzserver) && (force))
-	{
-		listPlayers();
-		listTables();
-	}
+	//if((kggzserver) && (force))
+	//{
+	//	listPlayers();
+	//	listTables();
+	//}
 	//emit signalMenu(MENUSIG_GAMEOVER);
 }
 
