@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6248 2004-11-03 23:55:48Z jdorje $
+ * $Id: main_win.c 6249 2004-11-04 00:17:50Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,9 +47,7 @@
 
 
 /* Pixmaps */
-#define PIXSIZE 30
-#define GRIDSIZE 60
-#define BORDERSIZE 10
+static int PIXSIZE, GRIDSIZE, BORDERSIZE;
 
 GdkPixbuf *x_pix, *o_pix;
 GdkPixmap* ttt_buf;
@@ -86,9 +84,11 @@ void game_status( const char* format, ... )
 void display_board(void)
 {
 	int i, x, y;
-	GtkWidget* tmp;
 	GdkPixbuf* piece;
 	GtkStyle* style;
+	GtkWidget *tmp = gtk_object_get_data(GTK_OBJECT(main_win),
+						"drawingarea");
+	int w = tmp->allocation.width, h = tmp->allocation.height;
 
 #if 0
 	g_print("  %c | %c | %c  \n", game.board[0], game.board[1], game.board[2]);
@@ -101,6 +101,30 @@ void display_board(void)
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
 	style = gtk_widget_get_style(main_win);
+
+	gdk_draw_rectangle(ttt_buf,
+			   tmp->style->black_gc,
+			   TRUE, 0, 0, w, h);
+
+	gdk_draw_line(ttt_buf,
+		      tmp->style->white_gc,
+		      BORDERSIZE + GRIDSIZE, BORDERSIZE,
+		      BORDERSIZE + GRIDSIZE, BORDERSIZE + 3 * GRIDSIZE);
+
+	gdk_draw_line(ttt_buf,
+		      tmp->style->white_gc,
+		      BORDERSIZE + 2 * GRIDSIZE, BORDERSIZE,
+		      BORDERSIZE + 2 * GRIDSIZE, BORDERSIZE + 3 * GRIDSIZE);
+
+	gdk_draw_line(ttt_buf,
+		      tmp->style->white_gc,
+		      BORDERSIZE, BORDERSIZE + GRIDSIZE,
+		      BORDERSIZE + 3 * GRIDSIZE, BORDERSIZE + GRIDSIZE);
+
+	gdk_draw_line(ttt_buf,
+		      tmp->style->white_gc,
+		      BORDERSIZE, BORDERSIZE + 2 * GRIDSIZE,
+		      BORDERSIZE + 3 * GRIDSIZE, BORDERSIZE + 2 * GRIDSIZE);
 
 	for (i = 0; i < 9; i++) {
 		if (game.board[i] == 'x')
@@ -138,15 +162,34 @@ static GdkPixbuf *load_pixmap(const char *name)
   return image;
 }
 
-static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
+static void window_resized(void)
 {
-	GtkStyle* style;
+	GtkWidget *widget = gtk_object_get_data(GTK_OBJECT(main_win),
+						"drawingarea");
+	int w = widget->allocation.width, h = widget->allocation.height;
 
-	/* now for the pixmap from gdk */
-	style = gtk_widget_get_style(main_win);
+	if (ttt_buf) {
+		gdk_pixmap_unref(ttt_buf);
+		g_object_unref(x_pix);
+		g_object_unref(o_pix);
+	}
+
+	gtk_widget_realize(widget); /* HACK: must be realized before used. */
+	ttt_buf = gdk_pixmap_new(widget->window, w, h, -1);
+
+	BORDERSIZE = MIN(w, h) / 20;
+	GRIDSIZE = (MIN(w, h) - 2 * BORDERSIZE) / 3;
+	PIXSIZE = GRIDSIZE / 2;
 
 	x_pix = load_pixmap("x");
 	o_pix = load_pixmap("o");
+
+	display_board();
+}
+
+static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
+{
+	window_resized();
 }
 
 
@@ -171,46 +214,10 @@ void game_exit(void)
 	gtk_main_quit();
 }
 
-
 static gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event, 
 			         gpointer user_data)
 {
-	if (ttt_buf)
-		gdk_pixmap_unref(ttt_buf);
-	else {
-		ttt_buf = gdk_pixmap_new( widget->window,
-					  widget->allocation.width,
-					  widget->allocation.height,
-					  -1);
-		gdk_draw_rectangle( ttt_buf,
-				    widget->style->black_gc,
-				    TRUE,
-				    0, 0,
-				    widget->allocation.width,
-				    widget->allocation.height);
-		
-		gdk_draw_line(ttt_buf, 
-			      widget->style->white_gc,
-			      70, 10,
-			      70, 190);
-
-		gdk_draw_line(ttt_buf, 
-			      widget->style->white_gc,
-			      130, 10,
-			      130, 190);
-
-		gdk_draw_line(ttt_buf, 
-			      widget->style->white_gc,
-			      10, 70,
-			      190, 70);
-
-		gdk_draw_line(ttt_buf, 
-			      widget->style->white_gc,
-			      10, 130,
-			      190, 130);
-
-	}
-	
+	window_resized();
 	return TRUE;
 }
 
@@ -293,9 +300,6 @@ create_main_win (void)
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
   gtk_window_set_title (GTK_WINDOW (main_win), _("Tic-Tac-Toe"));
-
-  /* TTT will crash if resized. */
-  gtk_window_set_resizable(GTK_WINDOW(main_win), FALSE);
 
   main_box = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (main_box);
