@@ -35,6 +35,7 @@ dnl ==============================
 
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZCORE
+AC_GGZ_CONFIG
 
 if test "$enable_ggzcorepp" = yes; then
 	SUBDIRS="ggzcore++ $SUBDIRS"
