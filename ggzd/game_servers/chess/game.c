@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: game.c 2273 2001-08-27 06:48:01Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -115,9 +115,9 @@ int game_update(ggzd_event_t event_id, void *data) {
       game_info.seconds[0] = *(int*)data & 0xFFFFFF;
       game_info.seconds[1] = *(int*)data & 0xFFFFFF;
       /* Send the time to everyone */
-      if (ggzd_seats[0].assign == GGZ_SEAT_PLAYER)
+      if (ggzd_get_seat_status(0) == GGZ_SEAT_PLAYER)
         game_send_time(0);
-      if (ggzd_seats[1].assign == GGZ_SEAT_PLAYER)
+      if (ggzd_get_seat_status(1) == GGZ_SEAT_PLAYER)
         game_send_time(1);
       /* Should we start the game? */
       if (game_info.clock_type >= 0 && ggzd_seats_open() == 0)
@@ -310,7 +310,7 @@ int game_handle_player(ggzd_event_t id, void *seat_data) {
   struct timeval now;
 
   /* Is the seat valid? */
-  fd = ggzd_seats[*seat].fd;
+  fd = ggzd_get_player_socket(*seat);
   if (fd < 0)
     return -1;
 
@@ -437,7 +437,7 @@ int game_handle_player(ggzd_event_t id, void *seat_data) {
 }
 
 void game_send_seat(int seat) {
-  int fd = ggzd_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
   if (fd < 0)
     return;
   if (es_write_char(fd, CHESS_MSG_SEAT) < 0 ||
@@ -450,7 +450,7 @@ void game_send_players() {
 	int i, j, fd;
 	
 	for (j = 0; j < 2; j++) {
-		if ( (fd = ggzd_seats[j].fd) == -1)
+		if ( (fd = ggzd_get_player_socket(j)) == -1)
 			continue;
 
 		ggzd_debug("Sending player list to player %d", j);
@@ -459,10 +459,10 @@ void game_send_players() {
 			return;
 	
 		for (i = 0; i < 2; i++) {
-			if (es_write_char(fd, ggzd_seats[i].assign) < 0)
+			if (es_write_char(fd, ggzd_get_seat_status(i)) < 0)
 				return;
-			if (ggzd_seats[i].assign != GGZ_SEAT_OPEN
-			    && es_write_string(fd, ggzd_seats[i].name) < 0)
+			if (ggzd_get_seat_status(i) != GGZ_SEAT_OPEN
+			    && es_write_string(fd, ggzd_get_player_name(i)) < 0)
 				return;
 		}
 	}
@@ -473,7 +473,7 @@ void game_stop_cronometer() {
 }
 
 void game_request_time(int seat) {
-  int fd = ggzd_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
 
   if (fd < 0)
     return;
@@ -482,7 +482,7 @@ void game_request_time(int seat) {
 }
 
 void game_send_time(int seat) {
-  int fd = ggzd_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
 
   if (fd < 0)
     return;
@@ -497,7 +497,7 @@ void game_send_start() {
   int fd, a;
 
   for (a = 0; a < 2; a++) {
-    fd = ggzd_seats[a].fd;
+    fd = ggzd_get_player_socket(a);
 
     if (fd < 0)
       continue;
@@ -510,7 +510,7 @@ void game_send_move(char *move, int time) {
   int fd, a;
 
   for (a = 0; a < 2; a++) {
-    fd = ggzd_seats[a].fd;
+    fd = ggzd_get_player_socket(a);
     if (fd < 0)
       continue;
 
@@ -543,7 +543,7 @@ void game_send_move(char *move, int time) {
 void game_send_update() {
   int fd, a;
   for (a = 0; a < 2; a++) {
-    fd = ggzd_seats[a].fd;
+    fd = ggzd_get_player_socket(a);
     if (fd < 0)
       return;
     ggzd_debug("To player %d: %d and %d sec", a, game_info.seconds[0], game_info.seconds[1]);
@@ -558,7 +558,7 @@ void game_send_gameover(char code) {
   int fd, a;
 
   for (a = 0; a < 2; a++) {
-    fd = ggzd_seats[a].fd;
+    fd = ggzd_get_player_socket(a);
 
     if (fd < 0)
       continue;
@@ -569,7 +569,7 @@ void game_send_gameover(char code) {
 }
 
 void game_send_draw(int seat) {
-  int fd = ggzd_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
 
   if (fd < 0)
     return;

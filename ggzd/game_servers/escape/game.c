@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 2242 2001-08-25 14:58:07Z jdorje $
+ * $Id: game.c 2273 2001-08-27 06:48:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -57,7 +57,7 @@ int game_handle_player(ggzd_event_t event, void *data)
 	ggzd_debug("game_handle_player(%d) called",num);
 	ggzd_debug("\tnum = %d, escape_game.turn = %d",num, escape_game.turn);
 
-	fd = ggzd_seats[num].fd;
+	fd = ggzd_get_player_socket(num);
 	
 	if(es_read_int(fd, &op) < 0)
 	{
@@ -94,7 +94,7 @@ int game_handle_player(ggzd_event_t event, void *data)
 /* Get options from client */
 static int game_get_options(int seat)
 {
-	int fd = ggzd_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 	int p, q, d;
 
 	ggzd_debug("game_get_options(%d)", seat);
@@ -153,7 +153,7 @@ static int game_get_options(int seat)
 /* Send out options */
 int game_send_options(int seat)
 {
-	int fd = ggzd_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 
 	ggzd_debug("game_send_options(%d)",seat);
 
@@ -172,7 +172,7 @@ int game_send_options(int seat)
 /* Send a request for client to set options */
 int game_send_options_request(int seat)
 {
-	int fd = ggzd_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 	
 	ggzd_debug("game_send_options_request(%d)",seat);
 
@@ -187,7 +187,7 @@ int game_send_options_request(int seat)
 /* Send out seat assignment */
 int game_send_seat(int seat)
 {
-	int fd = ggzd_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 
 	ggzd_debug("Sending player %d`s seat num", seat);
 
@@ -209,7 +209,7 @@ int game_send_players(void)
 	ggzd_debug("game_send_players()");
 
 	for(j=0; j<2; j++) {
-		if((fd = ggzd_seats[j].fd) == -1)
+		if((fd = ggzd_get_player_socket(j)) == -1)
 			continue;
 
 		ggzd_debug("\tSending player list to player %d", j);
@@ -218,10 +218,10 @@ int game_send_players(void)
 			return -1;
 	
 		for(i=0; i<2; i++) {
-			if(es_write_int(fd, ggzd_seats[i].assign) < 0)
+			if(es_write_int(fd, ggzd_get_seat_status(i)) < 0)
 				return -1;
-			if(ggzd_seats[i].assign != GGZ_SEAT_OPEN
-			    && es_write_string(fd, ggzd_seats[i].name) < 0)
+			if(ggzd_get_seat_status(i) != GGZ_SEAT_OPEN
+			    && es_write_string(fd, ggzd_get_player_name(i)) < 0)
 				return -1;
 		}
 	}
@@ -233,7 +233,7 @@ int game_send_players(void)
 /* Send out move for player: num */
 int game_send_move(int num, int event, char direction)
 {
-	int fd = ggzd_seats[escape_game.opponent].fd;
+	int fd = ggzd_get_player_socket(escape_game.opponent);
 	/* int i; */
 
 	ggzd_debug("game_send_move(%d, %d, %d)",num, event, direction);	
@@ -259,7 +259,7 @@ int game_send_move(int num, int event, char direction)
 /* Send out board layout */
 int game_send_sync(int num)
 {	
-	int fd = ggzd_seats[num].fd;
+	int fd = ggzd_get_player_socket(num);
 	int p, q, d;
 
 	ggzd_debug("Handling sync for player %d", num);
@@ -286,7 +286,7 @@ int game_send_gameover(char winner)
 	int i, fd;
 	
 	for(i=0; i<2; i++) {
-		if((fd = ggzd_seats[i].fd) == -1)
+		if((fd = ggzd_get_player_socket(i)) == -1)
 			continue;
 
 		ggzd_debug("Sending game-over to player %d", i);
@@ -305,7 +305,7 @@ int game_move(void)
 	int num = escape_game.turn;
 	/* unsigned char dir, x, y; */
 
-//	if(ggzd_seats[num].assign == GGZ_SEAT_BOT) {
+//	if(ggzd_get_seat_status(num) == GGZ_SEAT_BOT) {
 //		dir = ai_move(&x, &y);
 //		if(dir == 0)
 //			/* FIXME: These will cause recursion on score */
@@ -322,7 +322,7 @@ int game_move(void)
 /* Request move from current player */
 int game_req_move(int num)
 {
-	int fd = ggzd_seats[num].fd;
+	int fd = ggzd_get_player_socket(num);
 
 	ggzd_debug("game_req_move(num = %d)", num);
 
@@ -340,7 +340,7 @@ int game_req_move(int num)
 /* Handle incoming move from player */
 int game_handle_move(int num, unsigned char *direction)
 {
-	int fd = ggzd_seats[num].fd;
+	int fd = ggzd_get_player_socket(num);
 	int i;
 	int newx, newy;
 	char status=0;
@@ -544,7 +544,7 @@ int game_update(int event, void *d1)
 			
 			/* Send the options to anyone waiting for them */
 			for(seat=0; seat<2; seat++)
-				if(ggzd_seats[seat].assign == GGZ_SEAT_PLAYER)
+				if(ggzd_get_seat_status(seat) == GGZ_SEAT_PLAYER)
 					game_send_options(seat);
 
 			ggzd_debug("\tOptions sent to players");
@@ -644,7 +644,7 @@ static int game_handle_newgame(int seat)
 	escape_game.play_again++;
 
 	/* Simulate that the bot wants to play another game */
-	if(ggzd_seats[(seat+1)%2].assign == GGZ_SEAT_BOT)
+	if(ggzd_get_seat_status((seat+1)%2) == GGZ_SEAT_BOT)
 		escape_game.play_again++;
 
 	/* Issue the game start if second answer comes */

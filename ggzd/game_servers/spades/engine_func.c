@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 2206 2001-08-23 21:32:06Z jdorje $
+ * $Id: engine_func.c 2273 2001-08-27 06:48:01Z jdorje $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -31,7 +31,6 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <netinet/in.h>
-#include <stdio.h>          /* For fprintf */
 #include <stdlib.h>         /* For exit */
 #include <time.h>           /* Used for randomize */
 #include <unistd.h>         /* For read, write, etc */

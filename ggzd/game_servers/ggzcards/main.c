@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: main.c 2273 2001-08-27 06:48:01Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -77,11 +77,11 @@ static char *get_option(const char *option_name, char **argv, int *i,
 				(*i)++;
 				opt = argv[*i];
 				if (strlen(opt) == 0) {
-/*	  fprintf(stderr, _("Empty argument for \"%s\".\n", option_name); */
+/*	  ggzd_debug(stderr, _("Empty argument for \"%s\".\n", option_name); */
 					exit(1);
 				}
 			} else {
-/*	fprintf(stderr, _("Missing argument for \"%s\".\n"), option_name); */
+/*	ggzd_debug(stderr, _("Missing argument for \"%s\".\n"), option_name); */
 				exit(1);
 			}
 		}

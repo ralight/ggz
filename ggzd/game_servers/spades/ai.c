@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 8/4/99
- * $Id: ai.c 2261 2001-08-26 21:25:21Z jdorje $
+ * $Id: ai.c 2273 2001-08-27 06:48:01Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -28,8 +28,6 @@
 
 
 #include <config.h>         /* Site specific config */
-
-#include <stdio.h>          /* For fprintf */
 
 #include <card.h>
 #include <engine.h>
@@ -126,7 +124,7 @@ int AIBid( int num ) {
       else {
 	p1 += 100;
 #ifdef DEBUG_BID
-	printf("Counting guaranteed spade as 100\n");
+	ggzd_debug("Counting guaranteed spade as 100\n");
 #endif
       }
     }
@@ -145,7 +143,7 @@ int AIBid( int num ) {
     if( suitCount[SPADES] > 3 ) {
       nilrisk += suitCount[SPADES] - 2;
 #ifdef DEBUG_BID
-      printf("Inc. nilrisk for %d excess spades\n", suitCount[SPADES] -2 );
+      ggzd_debug("Inc. nilrisk for %d excess spades\n", suitCount[SPADES] -2 );
 #endif
     }
     for( s = 0; s < 4; s++ ) {
@@ -153,7 +151,7 @@ int AIBid( int num ) {
 	if( s != SPADES ) {
 	  nilrisk -= 2;
 #ifdef DEBUG_BID
-	  printf("Dec. nilrisk for shortsuit in %s\n", card_suit_str(s*13) );
+	  ggzd_debug("Dec. nilrisk for shortsuit in %s\n", card_suit_str(s*13) );
 #endif
 	}
 	continue; /* for( s = 0; s < 4; s++ ) */
@@ -167,26 +165,26 @@ int AIBid( int num ) {
 	  continue;               /* for( s = 0; s < 4; s++ ) */
       nilrisk += suitCount[s] - count;	/* risky high cards */
 #ifdef DEBUG_BID
-      printf("Inc. nilrisk for %d high %s\n", suitCount[s]-count, 
+      ggzd_debug("Inc. nilrisk for %d high %s\n", suitCount[s]-count,
 	     card_suit_str(s*13) );
 #endif
       if (count == 0) { /* no low cards */
 	nilrisk++;
 #ifdef DEBUG_BID
-	printf("Inc. nilrisk for no low cards\n");
+	ggzd_debug("Inc. nilrisk for no low cards\n");
 #endif
       }
       if( s == SPADES ) {
-	if( HasCard(num, card_conv(KING,SPADES)) ) { 
+	if( HasCard(num, card_conv(KING,SPADES)) ) {
 	  nilrisk += 2;
 #ifdef DEBUG_BID
-	  printf("Inc. nilrisk for King of spades\n");
+	  ggzd_debug("Inc. nilrisk for King of spades\n");
 #endif
 	}
-	if( HasCard(num, card_conv(QUEEN,SPADES)) ) {  
+	if( HasCard(num, card_conv(QUEEN,SPADES)) ) {
 	  nilrisk += 1;
 #ifdef DEBUG_BID
-	  printf("Inc. nilrisk for Queen of spades\n");
+	  ggzd_debug("Inc. nilrisk for Queen of spades\n");
 #endif
 	}
       }
@@ -194,15 +192,15 @@ int AIBid( int num ) {
 	if( HasCard(num, card_conv(KING,s)) && suitCount[s] <= 3 ) {
 	  nilrisk += ((suitCount[s] <= 2) ? 2 : 1);	/* king is riskier */
 #ifdef DEBUG_BID
-	  printf("Inc. nilrisk by %d for King of %s\n",(suitCount[s]<=2)? 2 :1,
+	  ggzd_debug("Inc. nilrisk by %d for King of %s\n",(suitCount[s]<=2)? 2 :1,
 		 card_suit_str(s*13));
 #endif
 	}
-	  
+	
 	if (HasCard(num, card_conv(ACE,s)) && suitCount[s] <= 3) {
 	  nilrisk += ((suitCount[s] <= 2) ? 3 : 2);	/* ace is riskiest */
 #ifdef DEBUG_BID
-	  printf("Inc. nilrisk by %d for Ace of %s\n",(suitCount[s]<=2)? 3 : 2,
+	  ggzd_debug("Inc. nilrisk by %d for Ace of %s\n",(suitCount[s]<=2)? 3 : 2,
 		 card_suit_str(s*13));
 #endif
 
@@ -220,18 +218,18 @@ int AIBid( int num ) {
     if( HasCard(num, card_conv(KING,SPADES)) && suitCount[SPADES] >= 2) {
       p1 += ((suitCount[SPADES] >= 3) ? 100 : 60);
 #ifdef DEBUG_BID
-      printf("Counting King of Spades as %d\n",(suitCount[SPADES]>=3)? 100 : 60);
+      ggzd_debug("Counting King of Spades as %d\n",(suitCount[SPADES]>=3)? 100 : 60);
 #endif
     }
     /* Queen with 2+ covers */
     if( HasCard(num, card_conv(QUEEN,SPADES)) && suitCount[SPADES] >= 3) {
       p1 += ((suitCount[SPADES] >= 4) ? 100 : 30);
 #ifdef DEBUG_BID
-      printf("Counting Queen of Spades as %d\n",(suitCount[SPADES]>=4)? 100 :30);
+      ggzd_debug("Counting Queen of Spades as %d\n",(suitCount[SPADES]>=4)? 100 :30);
 #endif
     }
   }
-  
+
 
   /*
    * Now figure if we use our trumps on other suits:
@@ -246,21 +244,21 @@ int AIBid( int num ) {
       p2 += 225;
       count -= 2;
 #ifdef DEBUG_BID
-      printf("Counting shortsuit as 225\n");
+      ggzd_debug("Counting shortsuit as 225\n");
 #endif
     }
     else if(count >= 2) {
       p2 += 190;
       count -= 2;
 #ifdef DEBUG_BID
-      printf("Counting shortsuit as 190\n");
+      ggzd_debug("Counting shortsuit as 190\n");
 #endif
     }
     else {
       p2 += 90;
       count -= 1;
 #ifdef DEBUG_BID
-      printf("Counting shortsuit as 90\n");
+      ggzd_debug("Counting shortsuit as 90\n");
 #endif
     }
   }
@@ -269,14 +267,14 @@ int AIBid( int num ) {
       p2 += 175;
       count -= 2;
 #ifdef DEBUG_BID
-      printf("Counting singleton as 175\n");
+      ggzd_debug("Counting singleton as 175\n");
 #endif
     }
     else {
       p2 += 90;
       count -= 1;
 #ifdef DEBUG_BID
-      printf("Counting singleton as 90\n");
+      ggzd_debug("Counting singleton as 90\n");
 #endif
     }
   }
@@ -284,7 +282,7 @@ int AIBid( int num ) {
     p2 += 75;
     count -= 1;
 #ifdef DEBUG_BID
-      printf("Counting doubleton as 75\n");
+      ggzd_debug("Counting doubleton as 75\n");
 #endif
   }
   if( count > suitAvg[SPADES] ) {
@@ -293,25 +291,25 @@ int AIBid( int num ) {
      */
     p2 += (count - suitAvg[SPADES] - 1) * 80;
 #ifdef DEBUG_BID
-    printf("Counting extra spades as %d\n",(count - suitAvg[SPADES] - 1) * 80);
+    ggzd_debug("Counting extra spades as %d\n",(count - suitAvg[SPADES] - 1) * 80);
 #endif
   }
   else if( count == 0 ) {
     p2 -= 30;		/* be wary of exhausting all trump */
 #ifdef DEBUG_BID
-    printf("Removing 30 points for exhausting spades(?)\n");
+    ggzd_debug("Removing 30 points for exhausting spades(?)\n");
 #endif
   }
 
-    
+
   /*
    * Okay, choose the better of the two scores.
    */
   points = (p1 > p2) ? p1 : p2;
-#ifdef DEBUG_BID  
-  printf("Spade points: %d\n",points);
+#ifdef DEBUG_BID
+  ggzd_debug("Spade points: %d\n",points);
 #endif
-  
+
   /* --------------- OTHER SUITS -----------------
    *
    * We bid other suits using a confidence system.  We combine two
@@ -326,8 +324,8 @@ int AIBid( int num ) {
     for (; count > 0; count--, c--) {
       if( HasCard(num, c)) {
 	points += prob;
-#ifdef DEBUG_BID  
-	printf("Counting %s as %d\n", card_name(c,LONG_NAME),prob);
+#ifdef DEBUG_BID
+	ggzd_debug("Counting %s as %d\n", card_name(c,LONG_NAME),prob);
 #endif
 	prob = prob * 9 / 10;
       }
@@ -336,7 +334,7 @@ int AIBid( int num ) {
     }
   }
 
- 
+
   /* --------------- NIL BIDS -----------------
    *
    * Consider bidding nil.
@@ -344,24 +342,24 @@ int AIBid( int num ) {
   if( bids[(num+1)%4] == BID_NIL || bids[(num+3)%4] == BID_NIL ) {
     nilrisk -= 2;
 #ifdef DEBUG_BID
-    printf("Dec. nilrisk because opponent is kneeling\n");
+    ggzd_debug("Dec. nilrisk because opponent is kneeling\n");
 #endif
   }
-    
+
   if( (pard >= gameInfo.opt.minBid || pard == BID_INVALID) &&
       ( (nilrisk <= 0) ||
 	(nilrisk <= 1 && points < 250) ||
 	(nilrisk <= 2 && points < 150) ||
 	(pard >= 3 + nilrisk))) {
-    
+
     bid = BID_NIL;
 #ifdef DEBUG_BID
-    printf("Bidding nil\n");
+    ggzd_debug("Bidding nil\n");
 #endif
   }
 
-    
-  
+
+
   /* --------------- NORMAL BIDS -----------------
    *
    * Okay, divide points by 100 and that's our bid.
@@ -370,21 +368,21 @@ int AIBid( int num ) {
     if( pard == BID_INVALID ) {
       prob = 70;
 #ifdef DEBUG_BID
-      printf("Adding 70 because partner hasn't bid\n");
+      ggzd_debug("Adding 70 because partner hasn't bid\n");
 #endif
     }
     else {
       prob = 30;
 #ifdef DEBUG_BID
-      printf("Adding 30 because partner has bidn\n");
+      ggzd_debug("Adding 30 because partner has bidn\n");
 #endif
     }
 
     bid = (points + prob) / 100;
 #ifdef DEBUG_BID
-    printf("Subtotal bid: %d\n",bid);
+    ggzd_debug("Subtotal bid: %d\n",bid);
 #endif
-    
+
     /*
      * Consider ramifications of others' bids if everyone else has
      * bid.
@@ -410,7 +408,7 @@ int AIBid( int num ) {
 	  bid = points / 100;
       }
     }
-#endif 
+#endif
 
   /* don't forget the minimum bid!!! */
     if( pard == BID_NIL ) /* nil is 0 for purposes of minimum bid */
@@ -418,21 +416,21 @@ int AIBid( int num ) {
     if( (pard != BID_INVALID) && (bid+pard < gameInfo.opt.minBid) ) {
       bid = gameInfo.opt.minBid-pard;
 #ifdef DEBUG_BID
-      printf("Upping bid to meet minimum of %d\n", gameInfo.opt.minBid);
+      ggzd_debug("Upping bid to meet minimum of %d\n", gameInfo.opt.minBid);
 #endif
     }
   }
 
 #ifdef DEBUG_BID
-  printf("Final bid: %d\n",bid);
+  ggzd_debug("Final bid: %d\n",bid);
 #endif
   return bid;
 }
-  
-       
+
+
 int AIPlay( int num, int lead ) {
 
-  
+
   int i, chosen = -1;
   int myNeed, oppNeed, totTricks;
 
@@ -454,13 +452,13 @@ int AIPlay( int num, int lead ) {
 
 #ifdef DEBUG_PLAY
   if( lead == num )
-      printf("My lead\n");
-  else 
-      printf("%s led. %s is high \n", card_suit_str(suit*13),
+      ggzd_debug("My lead\n");
+  else
+      ggzd_debug("%s led. %s is high \n", card_suit_str(suit*13),
 	     card_name(trick[high],LONG_NAME));
 #endif
 
-  
+
   /*
    * Determine our "aggression" level.  We're more aggressive if we're
    * trying to take tricks or set our opponents.  We're less aggressive
@@ -486,9 +484,9 @@ int AIPlay( int num, int lead ) {
     oppNeed = 0;
 
 #ifdef DEBUG_PLAY
-  printf("We need %d and they need %d\n",myNeed, oppNeed);
+  ggzd_debug("We need %d and they need %d\n",myNeed, oppNeed);
 #endif
-  
+
   /* XXX agg = 0 for oppNeed == 0 && myNeed == totTricks &&
    * this trick hopeless */
 
@@ -506,10 +504,10 @@ int AIPlay( int num, int lead ) {
     agg = 100;
 
 #ifdef DEBUG_PLAY
-  printf("Aggression set to %d\n", agg);
+  ggzd_debug("Aggression set to %d\n", agg);
 #endif
 
-  
+
 #if 0   /* not implemented yet*/
   /*
    * The lastTrick indicator is a special case when this is the last trick
@@ -522,10 +520,10 @@ int AIPlay( int num, int lead ) {
   else if (S.prefExpert && myNeed == 0 && oppNeed == totTricks)
     lastTrick = 1;
   else
-#endif 
+#endif
     lastTrick = 0;
 
-  
+
   /*
    * Populate the play structure with our valid plays.
    */
@@ -538,11 +536,11 @@ int AIPlay( int num, int lead ) {
       plays++;
     }
   }
-  
+
 #ifdef DEBUG_PLAY
-  printf("Calculate %d:\n", num);
+  ggzd_debug("Calculate %d:\n", num);
   for( i = 0; i < plays; i++)
-      printf(" %s,%d,%d\n", card_name(play[i].card,LONG_NAME), play[i].trick,
+      ggzd_debug(" %s,%d,%d\n", card_name(play[i].card,LONG_NAME), play[i].trick,
 	     play[i].future);
 #endif
 
@@ -559,19 +557,19 @@ int AIPlay( int num, int lead ) {
       chosen = PlayNormal(num);
 
 #ifdef DEBUG_PLAY
-  printf("Chosen play is %d\n", chosen);
+  ggzd_debug("Chosen play is %d\n", chosen);
 #endif
 
-     
+
   for( i=0; i<13; i++)
       if( play[chosen].card == hands[num][i] )
 	  break;
 
   return i;
-  
+
 }
 
-  
+
 static int ValidPlay(int p, int index) {
 
   int i, status = 0;
@@ -606,7 +604,7 @@ static int ValidPlay(int p, int index) {
     }
     return 0;
   }
-#endif 
+#endif
 
   /*
    * Must follow suit unless we lead
@@ -638,7 +636,7 @@ static int ValidPlay(int p, int index) {
     }
   }
 #endif
-  
+
   /*
    * Valid!
    */
@@ -663,7 +661,7 @@ static void Calculate(int num, struct play *play) {
 
   /*
    * Calculate bitmap of ranks which beat this card
-   */ 
+   */
   mask = 0;
   for( r = card_rank(play->card)+1; r < 13; r++)
     mask |= (1<<r);
@@ -685,7 +683,7 @@ static void Calculate(int num, struct play *play) {
    * Card's rank is its likelihood of taking this trick if the card
    * is higher than the highest current card.
    */
-  if (high < 0 
+  if (high < 0
       || card_comp( play->card, trick[high] ) > 0
       || play->card == trick[high] ) {
     count = sCount = 0;
@@ -701,7 +699,7 @@ static void Calculate(int num, struct play *play) {
       else {
 	s = suit;
 	/* did we trump? */
-	trump = (s != SPADES && card_suit_num(play->card) == SPADES);   
+	trump = (s != SPADES && card_suit_num(play->card) == SPADES);
       }
       for( ; o != num && trick[o] == BLANK_CARD; o = (o+1) % 4) {
 	if( o == pard && bids[num] > 0 )
@@ -732,7 +730,7 @@ static void Calculate(int num, struct play *play) {
   }
   else
       play->trick = -1;
-  
+
 
 #if 0 /* we don't do this */
   /*
@@ -758,7 +756,7 @@ static void Calculate(int num, struct play *play) {
     }
   }
 #endif
-      
+
   /*
    * Figure out how many players probably still have cards in
    * this suit, and determine likelihood of making card good in
@@ -797,7 +795,7 @@ static void Calculate(int num, struct play *play) {
     n = (count == 0) ? 0 : ((n * 100) / count);
     if (n <= 100)
 	danger++;
-    
+
     /*
      * XXX this should be redone to use relative rank in remaining
      * cards rather than hard-coded ace, king, queen.
@@ -828,7 +826,7 @@ static void Calculate(int num, struct play *play) {
 static int SuitMap(int p, int v, int s) {
 
   int map, i;
-  
+
   if( p == v ) { /* it's us! */
     map = 0;
     for( i = 0; i < 13; i++ ) {
@@ -854,9 +852,9 @@ static int PlayNil(int p) {
   int i, chosen = -1;
 
 #ifdef DEBUG_PLAY
-  printf("Strategy: play nil\n");
+  ggzd_debug("Strategy: play nil\n");
 #endif
-  
+
   /*
    * For nil bids, pick the card with highest potential that doesn't
    * take the trick.
@@ -880,7 +878,7 @@ static int CoverNil(int p) {
   int s = -1; /* avoid compiler warning */
 
 #ifdef DEBUG_PLAY
-  printf("Strategy: cover nil\n");
+  ggzd_debug("Strategy: cover nil\n");
 #endif
 
   /*
@@ -902,7 +900,7 @@ static int CoverNil(int p) {
   /*
    * Determine if there's any danger of our pard taking this trick.
    */
-  if( high >= 0 && trick[pard] == BLANK_CARD 
+  if( high >= 0 && trick[pard] == BLANK_CARD
      && card_suit_num(trick[high]) == suit) {
     for( r = card_rank(trick[high]) + 1; r < 13; r++)
 	if(map[suit] & (1<<r))
@@ -968,7 +966,7 @@ static int CoverNil(int p) {
 	    /* If we're here then we're trumping.  Normally we'd throw
 	     * our highest trump at this low aggression level, but we
 	     * need to cover our pard's trumps later.
-	     * 
+	     *
 	     * XXX maybe throw a higher trump if pard is covered?*/
 	    if (play[i].trick < play[chosen].trick)
 		chosen = i;	/* for now, choose lowest trump*/
@@ -998,7 +996,7 @@ static int CoverNil(int p) {
 	}
       }
     }
-    
+
     /*
      * If we still haven't chosen one, then we're in a load of trouble.
      * Play our highest card.
@@ -1033,7 +1031,7 @@ static int CoverNil(int p) {
 	    chosen = i;
   }
 
-  /* XXX can you upgrade the chosen card to one with a better chance 
+  /* XXX can you upgrade the chosen card to one with a better chance
    * because you know that your pard doesn't have anything between this
    * card and the higher one?*/
 
@@ -1047,7 +1045,7 @@ static int SetNil(int p) {
 
 
 #ifdef DEBUG_PLAY
-  printf("Strategy: set nil\n");
+  ggzd_debug("Strategy: set nil\n");
 #endif
 /*
    * If one of our opponents bid nil and either hasn't played or has played
@@ -1099,7 +1097,7 @@ static int SetNil(int p) {
       map = SuitMap(pp, p, suit);
       for (mask = 0, i = r + 1; i < 13; i++)
 	mask |= (1<<i);		/* bitmap of ranks which beat high card */
-      
+
       if ((agg > 50 && high != pard)
        || (count < 2)
        || (r >= 9 && high != pard)
@@ -1147,7 +1145,7 @@ static int SetNil(int p) {
   return chosen;
 }
 
-      
+
 static int PlayNormal(int p ) {
 
   int i, chosen = -1, n, r, s;
@@ -1155,7 +1153,7 @@ static int PlayNormal(int p ) {
   /* int tmp, pmap[4], omap[4]; */
 
 #ifdef DEBUG_PLAY
-  printf("Strategy: play normal\n");
+  ggzd_debug("Strategy: play normal\n");
 #endif
 
   /*

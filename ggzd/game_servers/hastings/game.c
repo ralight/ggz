@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 2244 2001-08-25 15:21:40Z jdorje $
+ * $Id: game.c 2273 2001-08-27 06:48:01Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -30,11 +30,12 @@
 #include <unistd.h>
 #include <string.h>
 
-/* GGZ includes */
-#include <game.h>
-
-/* Easysock */
+/* special libraries */
 #include <easysock.h>
+
+/* game headers */
+#include "game.h"
+
 
 /* Global game variables */
 struct hastings_game_t hastings_game;
@@ -105,11 +106,11 @@ int game_handle_player(ggzd_event_t event, void *seat_data)
 	int num = *(int*)seat_data;
 	int fd, op, status;
 
-	fd = ggzd_seats[num].fd;
+	fd = ggzd_get_player_socket(num);
 
 	if (es_read_int(fd, &op) < 0) return -1;
 
-printf("## handle player: %i\n", num);
+ggzd_debug("## handle player: %i\n", num);
 
 	switch (op)
 	{
@@ -141,9 +142,9 @@ printf("## handle player: %i\n", num);
 /* Send out seat assignment */
 int game_send_seat(int seat)
 {
-	int fd = ggzd_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 
-	printf("Sending player %d's seat num\n", seat);
+	ggzd_debug("Sending player %d's seat num\n", seat);
 
 	if (es_write_int(fd, HASTINGS_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0) return -1;
 
@@ -156,37 +157,30 @@ int game_send_players(void)
 {
 	int i, j, fd;
 
-	/* The number of players is unknown yet */
-	hastings_game.playernum = 0;
-
 	/* Determine number of players, 8 at a maximum */
-	for(i = 0; i < 8; i++)
-	{
-		if(ggzd_seats[i].fd) hastings_game.playernum++;
-		else printf("Evil seat number: %i (step %i) => %i\n", ggzd_seats[i].fd, i, hastings_game.playernum);
-	}
-	printf("%i players found; sending number to clients...\n", hastings_game.playernum);
+	hastings_game.playernum = ggzd_seats_num();
+	ggzd_debug("%i players found; sending number to clients...\n", hastings_game.playernum);
 
 	for (j = 0; j < hastings_game.playernum; j++)
 	{
 		hastings_game.players[j] = 1;
 
-		if((fd = ggzd_seats[j].fd) == -1)
+		if((fd = ggzd_get_player_socket(j)) == -1)
 		{
-			printf("Player %i is a unassigned (%i).\n", j, ggzd_seats[j].assign);
+			ggzd_debug("Player %i is a unassigned (%i).\n", j, ggzd_get_seat_status(j));
 			/*assignment: -1 is unassigned player, -2 is unassigned bot*/
 			continue;
 		}
 
-		printf("Sending player list to player %d\n", j);
+		ggzd_debug("Sending player list to player %d\n", j);
 
 		if(es_write_int(fd, HASTINGS_MSG_PLAYERS) < 0) return -1;
 		if(es_write_int(fd, hastings_game.playernum) < 0) return -1;
 
 		for(i = 0; i < hastings_game.playernum; i++)
 		{
-			if(es_write_int(fd, ggzd_seats[i].assign) < 0) return -1;
-			if((ggzd_seats[i].assign != GGZ_SEAT_OPEN) && (es_write_string(fd, ggzd_seats[i].name) < 0)) return -1;
+			if(es_write_int(fd, ggzd_get_player_socket(i)) < 0) return -1;
+			if((ggzd_get_player_socket(i) != GGZ_SEAT_OPEN) && (es_write_string(fd, ggzd_get_player_name(i)) < 0)) return -1;
 		}
 	}
 	return 0;
@@ -202,12 +196,12 @@ int game_send_move(int num)
 	{
 		if(i != num)
 		{
-			fd = ggzd_seats[i].fd;
+			fd = ggzd_get_player_socket(i);
 
 			/* If player is a computer, don't need to send */
 			if (fd == -1) return 0;
 
-			printf("Sending player %d's move to player %d\n", num, i);
+			ggzd_debug("Sending player %d's move to player %d\n", num, i);
 
 			if (es_write_int(fd, HASTINGS_MSG_MOVE) < 0
 			    || es_write_int(fd, num) < 0
@@ -226,9 +220,9 @@ int game_send_move(int num)
 /* Send out board layout */
 int game_send_sync(int num)
 {
-	int i, j, fd = ggzd_seats[num].fd;
+	int i, j, fd = ggzd_get_player_socket(num);
 
-	printf("Handling sync for player %d\n", num);
+	ggzd_debug("Handling sync for player %d\n", num);
 
 	/* First player? */
 	if (hastings_game.turn == -1) hastings_game.turn = 0;
@@ -255,10 +249,10 @@ int game_send_gameover(char winner)
 	int i, fd;
 
 	for (i = 0; i < hastings_game.playernum; i++) {
-		if ( (fd = ggzd_seats[i].fd) == -1)
+		if ( (fd = ggzd_get_player_socket(i)) == -1)
 			continue;
 
-		printf("Sending game-over to player %d\n", i);
+		ggzd_debug("Sending game-over to player %d\n", i);
 
 		if (es_write_int(fd, HASTINGS_MSG_GAMEOVER) < 0
 		    || es_write_char(fd, winner) < 0)
@@ -274,7 +268,7 @@ int game_move(void)
 {
 	int num = hastings_game.turn;
 
-	if (ggzd_seats[num].assign == GGZ_SEAT_BOT)
+	if (ggzd_get_seat_status(num) == GGZ_SEAT_BOT)
 	{
 		game_bot_move(num);
 		game_update(HASTINGS_EVENT_MOVE, NULL);
@@ -288,7 +282,7 @@ int game_move(void)
 /* Request move from current player */
 int game_req_move(int num)
 {
-	int fd = ggzd_seats[num].fd;
+	int fd = ggzd_get_player_socket(num);
 
 	if (es_write_int(fd, HASTINGS_REQ_MOVE) < 0) return -1;
 
@@ -299,10 +293,10 @@ int game_req_move(int num)
 /* Handle incoming move from player */
 int game_handle_move(int num)
 {
-	int fd = ggzd_seats[num].fd;
+	int fd = ggzd_get_player_socket(num);
 	char status;
 
-	printf("Handling move for player %d\n", num);
+	ggzd_debug("Handling move for player %d\n", num);
 
 	if ((es_read_int(fd, &hastings_game.move_src_x) < 0)
 	|| (es_read_int(fd, &hastings_game.move_src_y) < 0)
@@ -516,9 +510,9 @@ int game_update(int event, void* data)
 		break;
 
 	case HASTINGS_EVENT_JOIN:
-printf("## pre-join\n");
+ggzd_debug("## pre-join\n");
 		if (hastings_game.state != HASTINGS_STATE_WAIT) return -1;
-printf("## post-join\n");
+ggzd_debug("## post-join\n");
 
 		seat = *(int*)data;
 		game_send_seat(seat);
@@ -536,8 +530,8 @@ printf("## post-join\n");
 	case HASTINGS_EVENT_MOVE:
 		if (hastings_game.state != HASTINGS_STATE_PLAYING) return -1;
 
-		printf("Player %d from square %d/%d", hastings_game.turn, hastings_game.move_src_x, hastings_game.move_src_y);
- 		printf("to square %d/%d\n", hastings_game.move_dst_x, hastings_game.move_dst_y);
+		ggzd_debug("Player %d from square %d/%d", hastings_game.turn, hastings_game.move_src_x, hastings_game.move_src_y);
+ 		ggzd_debug("to square %d/%d\n", hastings_game.move_dst_x, hastings_game.move_dst_y);
 
 		// disallow dead bots to move (should not happen)
 		if(hastings_game.move_src_x > -1)
@@ -547,8 +541,8 @@ printf("## post-join\n");
 			game_send_move(hastings_game.turn);
 		}
 
-		/*printf("Pre:   --%i--\n", hastings_game.players[hastings_game.turn]);
-		printf("(turn) --%i--\n", hastings_game.turn);*/
+		/*ggzd_debug("Pre:   --%i--\n", hastings_game.players[hastings_game.turn]);
+		ggzd_debug("(turn) --%i--\n", hastings_game.turn);*/
 
 		if((victor = game_check_win()) < 0)
 		{
@@ -561,9 +555,9 @@ printf("## post-join\n");
 		}
 		else i = hastings_game.playernum - 1;
 
-		/*printf("After: --%i--\n", hastings_game.players[hastings_game.turn]);
-		printf("(turn) --%i--\n", hastings_game.turn);
-		printf("(i)    --%i--\n\n", i);*/
+		/*ggzd_debug("After: --%i--\n", hastings_game.players[hastings_game.turn]);
+		ggzd_debug("(turn) --%i--\n", hastings_game.turn);
+		ggzd_debug("(i)    --%i--\n\n", i);*/
 
 		if(i == hastings_game.playernum - 1)
 		{

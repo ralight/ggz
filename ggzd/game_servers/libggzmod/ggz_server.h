@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2259 2001-08-26 20:50:00Z jdorje $
+ * $Id: ggz_server.h 2273 2001-08-27 06:48:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -51,12 +51,6 @@
  * For more information, see the documentation at http://ggz.sf.net/.
  */
 
-/** @brief The maximum length of a player name.
- *  @note Does not include trailing \0.
- *  @todo If ggzd_seats was encapsulated, this wouldn't be necessary.
- */
-#define MAX_USER_NAME_LEN 16
-
 /** @brief Seat assignment values.
  *
  *  Each seat at a game has a status taken from one of these.
@@ -69,22 +63,11 @@ typedef enum {
 	GGZ_SEAT_PLAYER	= -5  /**< The seat has a regular player in it. */
 } ggzd_assign_t;
 
-/** @brief A GGZ seat; one spot at a table.
- *  @see ggzd_seats */
-struct ggzd_seat_t {
-	ggzd_assign_t assign;	/**< The seat assignment value */
-	char name[MAX_USER_NAME_LEN +1];/**< The name of the player at the seat */
-	int fd;			/**< A file descriptor for communicating
-				     with that player */
-};
-
-/** @brief The array of seats at the table.
- *
- *  This is a pointer to an array of GGZ seats.  The size of the array can be
- *  found with ggz_seats_num().
- *  @note This array is allocated internally.  Do not change it.
- *  @todo Should this be encapsulated? */
-extern struct ggzd_seat_t* ggzd_seats;
+/* accessor functions for seat data */
+/* FIXME: should the return values be const? */
+ggzd_assign_t ggzd_get_seat_status(int seat);
+char* ggzd_get_player_name(int seat);
+int ggzd_get_player_socket(int seat);
 
 /** @brief Sends a debugging message to ggzd to be logged.
  *  @param fmt a printf-style format string

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: sueca.c 2273 2001-08-27 06:48:01Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein
  *
@@ -181,19 +181,23 @@ static void sueca_end_hand()
   if (points > 90) {
     game.players[0].score+=2;
     game.players[2].score+=2;
-    set_global_message("", "%s/%s got more than 90 points and so got 2 games", ggzd_seats[0].name, ggzd_seats[2].name);
+    set_global_message("", "%s/%s got more than 90 points and so got 2 games",
+	ggzd_get_player_name(0), ggzd_get_player_name(2));
   } else if (points > 60) {
     game.players[0].score++;
     game.players[2].score++;
-    set_global_message("", "%s/%s got more than 60 points and won that hand", ggzd_seats[0].name, ggzd_seats[2].name);
+    set_global_message("", "%s/%s got more than 60 points and won that hand",
+	ggzd_get_player_name(0), ggzd_get_player_name(2));
   } else if (points > 30) {
     game.players[1].score++;
     game.players[3].score++;
-    set_global_message("", "%s/%s got more than 60 points and won that hand", ggzd_seats[1].name, ggzd_seats[3].name);
+    set_global_message("", "%s/%s got more than 60 points and won that hand",
+	ggzd_get_player_name(1), ggzd_get_player_name(3));
   } else {
     game.players[1].score+=2;
     game.players[3].score+=2;
-    set_global_message("", "%s/%s got more than 90 points and so got 2 games", ggzd_seats[1].name, ggzd_seats[3].name);
+    set_global_message("", "%s/%s got more than 90 points and so got 2 games",
+	ggzd_get_player_name(1), ggzd_get_player_name(3));
   }
 
   set_all_player_messages();

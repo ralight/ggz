@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: suaro.c 2273 2001-08-27 06:48:01Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -258,7 +258,7 @@ static void suaro_start_playing(void)
 	game.play_total = game.num_players;
 	/* declarer is set in game_handle_bid */
 	set_global_message("", "%s has the contract at %s%d %s%s.",
-		ggzd_seats[SUARO.declarer].name,
+		ggzd_get_player_name(SUARO.declarer),
 		SUARO.kitty ? "kitty " : "",
 		SUARO.contract, long_suaro_suit_names[(int)SUARO.contract_suit],
 		SUARO.bonus == 1 ? "" : SUARO.bonus == 2 ? ", doubled" : ", redoubled");
@@ -333,16 +333,16 @@ static void suaro_end_hand()
 		 * the number of overtricks == 2 * contract - tricks */
 		points = (SUARO.contract - overtricks) * SUARO.bonus;
 		ggzd_debug("Player %d/%s made their bid of %d, plus %d overtricks for %d points.",
-			  winner, ggzd_seats[winner].name, SUARO.contract, overtricks, points);
+			  winner, ggzd_get_player_name(winner), SUARO.contract, overtricks, points);
 	} else {
 		winner = 1-SUARO.declarer;
 		/* for setting, you just get the value of the contract */
 		points = SUARO.contract * SUARO.bonus;
 		ggzd_debug("Player %d/%s set the bid of %d, earning %d points.",
-			  winner, ggzd_seats[winner].name, SUARO.contract, points);
+			  winner, ggzd_get_player_name(winner), SUARO.contract, points);
 	}
 	set_global_message("", "%s %s the bid and earned %d point%s.",
-			ggzd_seats[winner].name,
+			ggzd_get_player_name(winner),
 			winner == SUARO.declarer ? "made" : "set",
 			points,
 			points == 1 ? "" : "s");
