@@ -10,3 +10,4 @@ noinst_PROGRAMS =       \
 
 basic_SOURCES = basic.c
 
+test: # nothing necessary

@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "ggzdmod.h"
 #include "ggz.h"
@@ -8,6 +10,10 @@ char * seat_desc(GGZdModSeat type);
 int seatcmp(GGZSeat seat1, GGZSeat seat2);
 int safe_strcmp(char *str1, char *str2);
 int compare_seats(GGZdMod *mod, int num, GGZSeat *seats);
+
+void test_handler(GGZdMod *mod, GGZdModEvent e, void *data) { }
+
+char* test_args[] = {"Arg1", "Arg2", NULL};
 
 int main (void) {
 	
@@ -25,7 +31,10 @@ int main (void) {
 
 	/* Test with an invalid parameter */
 	mod = ggzdmod_new(-1);
-	printf("-- GGZdMod(-1) : %p\n", mod);
+	if (mod != NULL)
+		printf("-- Error : ggzdmod_new(-1) returns %p\n", mod);
+	else
+		printf("-- Success: ggzdmod_new(-1) returns NULL.\n");
 
 	/* Test ggz side object */
 	mod = ggzdmod_new(GGZDMOD_GGZ);
@@ -48,11 +57,14 @@ int main (void) {
 	
 	/* Test various accessor functions */
 	mod = ggzdmod_new(GGZDMOD_GGZ);
-	
-	printf("-- Initial state: %d\n", ggzdmod_get_state(mod));
-	printf("-- Initial fd: %d\n", ggzdmod_get_fd(mod));
-	printf("-- Initial seats: %d\n", ggzdmod_get_num_seats(mod));
-	printf("-- Initial gamedata: %p\n", ggzdmod_get_gamedata(mod));
+	if (ggzdmod_get_state(mod) != GGZ_STATE_CREATED)
+		printf("-- Error: initial state: %d\n", ggzdmod_get_state(mod));
+	if (ggzdmod_get_fd(mod) != -1)
+		printf("-- Error: nitial fd: %d\n", ggzdmod_get_fd(mod));
+	if (ggzdmod_get_num_seats(mod) != 0)
+		printf("-- Error: nitial seats: %d\n", ggzdmod_get_num_seats(mod));
+	if (ggzdmod_get_gamedata(mod) != NULL)
+		printf("-- Error: initial gamedata: %p\n", ggzdmod_get_gamedata(mod));
 	
 
 	/* Set setting/getting game data */
@@ -90,9 +102,12 @@ int main (void) {
 	/* Test seat setting/getting */
 	control[0].num = 0;
 	control[0].type = GGZ_SEAT_PLAYER;
-	control[0].name = "Test 0";
+	control[0].name = strdup("Test 0");
 	control[0].fd = 17;
 	ggzdmod_set_seat(mod, &control[0]);
+	control[0].name[2] = 'A';
+	free(control[0].name); /* make sure this is safe */
+	control[0].name = "Test 0";
 
 	control[1].num = 1;
 	control[1].type = GGZ_SEAT_BOT;
@@ -108,7 +123,35 @@ int main (void) {
 
 	compare_seats(mod, 3, control);
 	
-
+	/* Pass NULL in to each function. */
+	printf(" -- Testing passing ggzdmod=NULL to functions --\n");
+	ggzdmod_free(NULL);
+	if (ggzdmod_get_fd(NULL) != -1)
+		printf(" -- Error: ggzdmod_get_fd(NULL) == %d\n", ggzdmod_get_fd(NULL));
+	(void)ggzdmod_get_type(NULL);
+	(void)ggzdmod_get_state(NULL);
+	if (ggzdmod_get_num_seats(NULL) > 0)
+		printf(" -- Error: ggzdmod_get_num_seats(NULL) == %d\n", ggzdmod_get_num_seats(NULL));
+	(void)ggzdmod_get_seat(NULL, 0);
+	if (ggzdmod_get_gamedata(NULL) != NULL)
+		printf(" -- Error: ggzdmod_get_gamedata(NULL) == %p\n", ggzdmod_get_gamedata(NULL));
+	ggzdmod_set_num_seats(NULL, 8);
+	ggzdmod_set_handler(NULL, GGZ_EVENT_PLAYER_DATA, test_handler);
+	ggzdmod_set_module(NULL, test_args);
+	if (ggzdmod_set_seat(NULL, &control[0]) >= 0)
+		printf(" -- Error: ggzdmod_set_seat(NULL, ...) claimed to succeed.\n");
+	if (ggzdmod_dispatch(NULL) >= 0)
+		printf(" -- Error: ggzdmod_dispatch(NULL) claimed to succeed.\n");
+	if (ggzdmod_loop(NULL) >= 0)
+		printf(" -- Error: ggzdmod_loop(NULL) claimed to succeed.\n");
+	if (ggzdmod_halt_table(NULL) >= 0)
+		printf(" -- Error: ggzdmod_halt_table(NULL) claimed to succeed.\n");
+	if (ggzdmod_connect(NULL) >= 0)
+		printf(" -- Error: ggzdmod_connect(NULL) claimed to succeed.\n");
+	if (ggzdmod_disconnect(NULL) >= 0)
+		printf(" -- Error: ggzdmod_disconnect(NULL) claimed to succeed.\n");
+	if (ggzdmod_log(NULL, "Test message") >= 0)
+		printf(" -- Error: ggzdmod_log(NULL, ...) claimed to succeed.\n");
 	
 	
 	ggzdmod_free(mod);
@@ -118,6 +161,8 @@ int main (void) {
 
 	ggz_debug_cleanup();
 	ggz_memory_check();
+	
+	printf(" -- All tests complete -- \n");
 
 	return 0;
 }
