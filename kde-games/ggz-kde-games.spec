@@ -3,7 +3,7 @@
 Summary: GGZ Games for KDE
 Name: ggz-kde-games
 Version: 0.0.4
-Release: 1
+Release: 2
 Copyright: GPL
 Group: Amusements/Games
 Source: http://download.sourceforge.net/GGZ/ggz-kde-games-0.0.4.tar.gz
@@ -11,6 +11,7 @@ URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
 BuildRoot: /var/tmp/%{name}-buildroot
+requires: libggzcore.so.0
 
 %description
 The complete set of Gnu Gaming Zone games for the KDE user interface.
@@ -95,5 +96,8 @@ PATH="$PATH:/sbin" ldconfig
 
 
 %changelog
+* Mon Jun 18 2001 Rich Gade <rgade@users.sourceforge.net>
+- Added missing dependency information (libggzcore.so.0)
+
 * Sun Jun 17 2001 Rich Gade <rgade@users.sourceforge.net>
 - Initial specification file
