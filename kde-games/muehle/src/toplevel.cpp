@@ -149,7 +149,10 @@ void Toplevel::slotStatus(const QString &message)
 // Update the scores in the status bar
 void Toplevel::slotScore(const QString &player, int num, int score)
 {
-	statusBar()->changeItem(QString("%1: %1").arg(player).arg(score), num);
+	if(num != statushint)
+		statusBar()->changeItem(QString("%1: %1").arg(player).arg(score), num);
+	else
+		statusBar()->changeItem(QString("%1").arg(player), num);
 }
 
 // Turn the game client into a network game interface

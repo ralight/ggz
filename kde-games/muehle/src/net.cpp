@@ -42,7 +42,8 @@ Net::~Net()
 // Send a line over the net
 void Net::output(const QString &s)
 {
-	cout << "[" << s.latin1() << "]" << endl;
+	//cout << "[" << s.latin1() << "]" << endl;
+	cout << s.latin1() << endl;
 }
 
 // Read a single line
@@ -70,6 +71,7 @@ void Net::poll()
 		for(QStringList::Iterator it = l.begin(); it != l.end(); it++)
 		{
 			m_input = (*it);
+			cerr << "==> " << (*it) << endl;
 			emit signalInput();
 		}
 	}

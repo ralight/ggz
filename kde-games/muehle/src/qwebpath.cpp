@@ -73,16 +73,16 @@ void QWebPath::findRecursive(QWebPoint *old, QWebPoint *origin, int length)
 				wp = tmp;
 		if(!wp)
 		{
-			cout << "invalid point: " << p->x() << "," << p->y() << endl;
+			//cout << "invalid point: " << p->x() << "," << p->y() << endl;
 			continue;
 		}
 
 		if(wp != old)
 		{
-			cout << "level " << length << ", peer: " << p->x() << "," << p->y() << endl;
+			//cout << "level " << length << ", peer: " << p->x() << "," << p->y() << endl;
 			findRecursive(origin, wp, length - 1);
 		}
-		else cout << "left out: " << p->x() << "," << p->y() << endl;
+		//else cout << "left out: " << p->x() << "," << p->y() << endl;
 	}
 }
 

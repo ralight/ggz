@@ -265,6 +265,7 @@ void Board::mousePressEvent(QMouseEvent *e)
 					{
 						net->output(QString("[%1,%2,%3,%4].").arg(astone->x()).arg(astone->y()).arg(x).arg(y));
 						m_turn = 0;
+						emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
 					}
 					stonelist.remove(astone);
 					//delete astone;
@@ -275,6 +276,7 @@ void Board::mousePressEvent(QMouseEvent *e)
 					{
 						net->output(QString("[%1,%2].").arg(x).arg(y));
 						m_turn = 0;
+						emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
 					}
 				}
 			}
@@ -498,6 +500,7 @@ void Board::slotInput()
 				stone->assign(Stone::black);
 				stonelist.append(stone);
 				m_turn = 1;
+				emit signalScore(i18n("Your turn"), Toplevel::statushint, 0);
 				break;
 			case 4:
 				break;
@@ -509,6 +512,12 @@ void Board::slotInput()
 	else if(s == "invalid.")
 	{
 		error = 1;
+	}
+	else if(s == "loose.")
+	{
+		KMessageBox::information(this, i18n("Your opponent has given up."), i18n("Server message"));
+		m_turn = -1;
+		emit signalEnd();
 	}
 	else error = 1;
 
