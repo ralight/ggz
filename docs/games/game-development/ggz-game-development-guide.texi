@@ -1,0 +1,252 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename ggz-game-development-guide.info
+@settitle The GGZ Gaming Zone 0.0.5 - Game Development Guide
+@setchapternewpage odd
+@c %**end of header
+
+@c TODO: 
+@c nothing
+
+@ifinfo
+Copyright (C) 2002 Josef Spillner
+@end ifinfo
+
+@c Frontpage
+@titlepage
+@title The GGZ Game Development Guide
+@subtitle Development of games for the GGZ Gaming Zone 0.0.5
+@author Josef Spillner
+
+@c Copyright page
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2002 Josef Spillner
+Published under the GNU Free Documentation License.
+@end titlepage
+
+@c Index (Top)
+@node Top, Foreword, (dir), (dir)
+@c @top Foreword
+
+@ifinfo
+This file is the info format of the GGZ Gaming Zone Game Development Guide, which is
+also available in postscript and HTML format.
+It describes how to develop game clients and servers which run over GGZ.
+See http://ggz.sourceforge.net for the latest edition.
+@end ifinfo
+
+@menu
+* Foreword:: General notes about this document
+* The GGZ System:: How games can use the GGZ Gaming Zone
+* Game Clients:: Get into the player's eye
+* Game Servers:: Where the real magic takes place
+* Programming Details:: Network, configuration etc.
+@end menu
+
+@node Foreword, The GGZ System, Top, Top
+@chapter Foreword
+@c @cindex Index entry for Chapter Zero
+
+The central element of the GGZ Gaming Zone is, obviously, everything related to
+games, especially the games themselves. From the very beginning, games of any
+kind have been a part of GGZ. After a long time of premature development, a lot
+of experience is present to be shared with the humble reader.
+
+As games are very different from applications, it is not easy to recommend for
+this or against that. Instead, a general collection of hints is presented,
+divided into the major differences on the client side (frontends) and the
+server side (programming languages).
+
+@node The GGZ System, Game Clients, Foreword, Top
+@chapter The GGZ System
+@c @cindex Index entry for First Chapter
+
+@section Native GGZ Games ("internal")
+
+With more than a dozen games available, GGZ offers a solid bunch of different
+games by itself. They're all developed based on a client/server model.
+So how does that work?
+
+The player, using a GGZ core client to chat with others in a room, launches a
+game which he wants to play with some others. Technically, a table is created
+to hold that game, and the player is put onto that table, occupying one seat.
+The other available seats can be left empty, filled up with bots or used by
+other players. The quantity of each type is determined by the game server, for
+example, some games might not support bots (AI players) at all.
+
+@section Games which want to use GGZ ("external")
+
+External game work no different to internal ones. However, a few assumptions
+can be made: ...
+
+@node Game Clients, Game Servers, The GGZ System, Top
+@chapter Game Clients
+@c @cindex Index entry for Second Chapter
+
+@section Introduction
+
+Game clients in a client/server relation should be regarded as the
+visualization of the game itself. This is not the traditional view where the
+game client was the game itself, but in times of connected entertainment not
+every player can be trusted, so it is a general agreement that the server is
+the trusted element and the clients are just there to convert the game data to
+a more human-friendly format.
+However, this shouldn't stop anybody of developing great game clients.
+Furthermore, there are some GGZ games which run without a server.
+
+@section Game Registry
+
+Every game client must be registered in order to be found by the GGZ core
+clients like KGGZ or GGZ-Gtk. This is done via the ggz-config utily during the
+installation step. Basically, every game client has a file called module.dsc,
+which is used for this purpose:
+@command{ggz-config --install --force --modfile=module.dsc}
+
+The format of this configuration file is defined as follows:
+@c @samp{
+@verbatim
+[ModuleInfo]
+Author = <author>
+CommandLine = <commandline>
+Frontend = <frontend>
+Homepage = <url>
+Name = <name of the game>
+ProtocolEngine = <engine name>
+ProtocolVersion = <protoversion>
+Version = <version>
+@end verbatim
+@c }
+
+The entries don't have to have any special values, except that the combination
+of protocol engine and protocol version is used to ensure the compatibility
+with any game server of this name. The frontend should be a common abbreviation
+like kde, gtk or sdl.
+
+@section Client Toolkits
+@subsection KDE (C++)
+@subsection Gtk+ (C), Gtk-- (C++)
+@subsection SDL (C, C++, Python)
+
+@node Game Servers, Programming Details, Game Clients, Top
+@chapter Game Servers
+@c @cindex Index entry for Third Chapter
+
+@section Introduction
+
+Game servers are launched by the main GGZ server and receive events on one
+dedicated file descriptor. There are different event types:
+
+@itemize @bullet
+@item STATE: indicates that the state has changed (see below)
+@item JOIN: a player has joined the game
+@item LEAVE: a player has left the game
+@item PLAYER_DATA: one of the players (clients) sent some data
+@end itemize
+
+The states in which a game server can be are:
+
+@itemize @bullet
+@item STATE_CREATED
+@item STATE_WAITING
+@item STATE_PLAYING
+@item STATE_DONE
+@end itemize
+
+@section Configuration Files
+
+Each game server must supply at least one file for each of main server's lists.
+Currently there is a room list and a game list, so a game can be present in
+multiple rooms, with either the same or another configuration.
+
+The game file (<name>.dsc) has the following format:
+
+@verbatim
+[GameInfo]
+Author = <author>
+Description = <description>
+Homepage = <url>
+Name = <name of the game>
+Version = <version>
+
+[LaunchInfo]
+ExecutablePath = <server executable>
+
+[Protocol]
+Engine = <protocol name>
+Version = <protocol version>
+
+[TableOptions]
+AllowLeave = <0/1>
+BotsAllowed = <0 [1 [2 ...]]>
+PlayersAllowed = <1 [2 [3 ...]]>
+KillWhenEmpty = <0/1>
+@end verbatim
+
+The room file (<name>.room) has the following format:
+
+@verbatim
+[RoomInfo]
+Name = <roomname>
+Description = <description>
+GameType = <name of the game>
+MaxPlayers = <maximum of players>
+MaxTables = <maximum of tables>
+@end verbatim
+
+@section Programming Language
+@subsection C Development
+
+C programmers can use ggzdmod natively.
+
+@subsection C++ Development
+
+For C++ developers there exist some choices in wrapping the ggzdmod library.
+For example, Krosswater uses the Zone library, and Muehle uses the
+GGZGameServer class, which are both wrappers for ggzdmod.
+
+@subsection Python Development
+
+There is a python wrapper for ggzdmod: pyggzdmod.
+
+@subsection Ruby Development
+
+There is a ruby wrapper for ggzdmod: ruggzdmod.
+
+@node Programming Details, (dir), Game Servers, Top
+@chapter Programming Details
+@c @cindex Index entry for Fourth Chapter
+
+@section Network connections
+
+@subsection Easysock (C)
+
+A very easy and convenious library for those who don't need any fancy features
+for TCP connections. This library is part of GGZ and therefore always
+available.
+
+@subsection Qt (C++)
+
+Those game clients which use the Qt toolkit will most likely use the Qt network
+code as well. This has mostly to do with QSocket, QSocketNotifier and
+QDataStream.
+
+@section Configuration
+
+@subsection GGZConfIO (ini-Style)
+
+Many GGZ configurations are read and written using GGZConfIO. Formerly located
+in the ggzcore library, it is now part of libggz and consists of many
+ggz_conf_* functions.
+
+@subsection Minidom (XML-Style)
+
+If you want to read or write XML data, while avoiding the overhead of a complex
+XML library, the GGZ project offers the minidom library.
+
+@c @printindex cp
+
+@contents
+@bye
+
+
