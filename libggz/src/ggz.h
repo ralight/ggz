@@ -26,6 +26,14 @@
 #ifndef __GGZ_H__
 #define __GGZ_H__
 
+/* Under gcc, we use the __attribute__ macro to check variadic arguments,
+   for instance to printf-style functions.  Other compilers may be able
+   to do something similar.  Great for debugging. */
+#ifdef __GNUC__
+#  define ggz__attribute(att)  __attribute__(att)
+#else
+#  define ggz__attribute(att)
+#endif
 
 /**
  * @defgroup memory Memory Handling
@@ -528,11 +536,16 @@ void ggz_debug_disable(const char *type);
  * @param fmt A printf-style format string
  * @see ggz_debug_enable, ggz_debug_disable
  */
-void ggz_debug(const char *type, const char *fmt, ...);
-void ggz_error_sys(const char *fmt, ...);
-void ggz_error_sys_exit(const char *fmt, ...);
-void ggz_error_msg(const char *fmt, ...);
-void ggz_error_msg_exit(const char *fmt, ...);
+void ggz_debug(const char *type, const char *fmt, ...)
+               ggz__attribute((format(printf, 2, 3)));
+void ggz_error_sys(const char *fmt, ...)
+                   ggz__attribute((format(printf, 1, 2)));
+void ggz_error_sys_exit(const char *fmt, ...)
+                        ggz__attribute((format(printf, 1, 2)));
+void ggz_error_msg(const char *fmt, ...)
+                   ggz__attribute((format(printf, 1, 2)));
+void ggz_error_msg_exit(const char *fmt, ...)
+                        ggz__attribute((format(printf, 1, 2)));
 
 /**
  * @brief Cleans up debugging state and prepares for exit.
