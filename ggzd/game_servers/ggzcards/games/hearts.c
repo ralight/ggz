@@ -28,10 +28,13 @@
 #include "../game.h"
 #include "../ggz.h"
 #include "../message.h"
+#include "../options.h"
 
 #include "hearts.h"
 
 static void hearts_init_game();
+static void hearts_get_options();
+static int hearts_handle_option(char* option, int value);
 static int hearts_handle_gameover();
 static void hearts_start_bidding();
 static void hearts_start_playing();
@@ -41,8 +44,8 @@ static void hearts_end_hand();
 
 struct game_function_pointers hearts_funcs = {
 	hearts_init_game,
-	game_get_options,
-	game_handle_option,
+	hearts_get_options,
+	hearts_handle_option,
 	game_set_player_message,
 	game_get_bid_text,
 	hearts_start_bidding,
@@ -83,6 +86,21 @@ static void hearts_init_game()
 	game.max_bid_length = 0;
 	game.target_score = 100;
 	game.name = "Hearts";
+}
+
+static void hearts_get_options()
+{
+	add_option("jack_diamonds", 1, 0, "The jack of diamonds counts -10");
+	game_get_options();
+}
+
+static int hearts_handle_option(char* option, int value)
+{
+	if (!strcmp("jack_diamonds", option))
+		GHEARTS.jack_diamonds = value;
+	else
+		return game_handle_option(option, value);
+	return 0;
 }
 
 static int hearts_handle_gameover()
@@ -127,6 +145,11 @@ static void hearts_start_playing()
 
 	/* in hearts, the lowest club leads first */
 	game.leader = -1;
+
+	/* this is initialized to -1 because under some systems, it
+	 * may be possible for nobody to win the jack */
+	GHEARTS.jack_winner = -1;
+
 	/* TODO: what if we're playing with multiple decks? */
 	for (face = 2; face <= ACE_HIGH; face++) {
 		for (p=0; p<game.num_players; p++) {
@@ -151,7 +174,10 @@ static char* hearts_verify_play( card_t card)
 {
 	seat_t s = game.play_seat;
 
-	/* the game hearts must be handled differently */
+	/* in hearts, we have two additional rules:
+	 * the low club must lead the first trick, and
+	 * hearts cannot be lead until broken. */
+
 	if (game.next_play == game.leader) {
 		/* the low club must lead on the first trick */
 		if (game.trick_count == 0 && game.play_count == 0 &&
@@ -181,10 +207,16 @@ static void hearts_end_trick()
 			points = 1;
 		if (card.suit == SPADES && card.face == QUEEN)
 			points = 13;
-		/* in hearts, it's not really "trump broken" but rather "points broken".
-		 * however, it works about the same way. */
-		if (points > 0)
+		/* as an optional rule, the Jack of Diamonds is worth -10 */
+		if (GHEARTS.jack_diamonds && card.suit == DIAMONDS && card.face == JACK)
+			GHEARTS.jack_winner = p;
+
+		if (points > 0) {
+			/* in hearts, it's not really "trump broken"
+			 * but rather "points broken".
+			 * However, it works about the same way. */
 			game.trump_broken = 1;
+		}
 		GHEARTS.points_on_hand[game.winner] += points;
 	}
 }
@@ -202,10 +234,14 @@ static void hearts_end_hand()
 		 * TODO: option of giving everyone else 26.  It could be handled as a bid... */
 		game.players[p].score += score;
 
+		if (GHEARTS.jack_winner == p)
+			game.players[p].score -= 10;
+
 		if (score == -26) {
 			snprintf(buf, sizeof(buf), "%s shot the moon.", ggz_seats[p].name);
 			max = 26;
 		} else if (score > max) {
+			/* only the maximum player's score is written; this is less than ideal. */
 			max = score;
 			snprintf(buf, sizeof(buf), "%s took %d points.", ggz_seats[p].name, score);
 		}
