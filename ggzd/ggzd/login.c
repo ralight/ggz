@@ -30,7 +30,6 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include <easysock.h>
 #include <err_func.h>
 #include <ggzdb.h>
 #include <hash.h>
