@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4083 2002-04-26 06:18:29Z jdorje $
+ * $Id: client.c 4085 2002-04-26 07:26:10Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -618,6 +618,9 @@ static int match_card(card_t card, hand_t * hand)
 		/* TODO: look for a stronger match */
 		card_t hcard = hand->cards[tc];
 		int tc_matches = 0;
+		
+		if (!hcard.meta)
+			continue;
 
 		if ((hcard.deck != -1 && hcard.deck != card.deck) ||
 		    (hcard.suit != -1 && hcard.suit != card.suit) ||
