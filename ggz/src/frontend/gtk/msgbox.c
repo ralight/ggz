@@ -178,7 +178,7 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	GtkWidget *packingbox;
 	GtkWidget *packingbox2;
 	GtkWidget *packingbox3;
-	GtkWidget *icon;
+	GtkWidget *icon = NULL;
 	GdkColormap *colormap;
 	GdkPixmap *pixmap;
 	GdkPixmap *mask;
@@ -193,10 +193,10 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	gtk_container_set_border_width (GTK_CONTAINER (dialogwindow), 10);
 	gtk_window_set_position (GTK_WINDOW(dialogwindow), GTK_WIN_POS_CENTER);
 
-	packingbox = gtk_vbox_new (TRUE, 5);
+	packingbox = gtk_vbox_new (FALSE, 5);
 	gtk_container_add (GTK_CONTAINER(dialogwindow), packingbox);
 
-	packingbox3 = gtk_hbox_new (TRUE, 2);
+	packingbox3 = gtk_hbox_new (FALSE, 2);
 	dialogwidget = AddWidget (packingbox3, packingbox);
 
 	if (itype == MSGBOX_STOP)
@@ -221,6 +221,7 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 		gdk_bitmap_unref (mask);
 		dialogwidget = AddWidget (icon, packingbox3);
 	}
+	gtk_widget_set_usize(GTK_WIDGET(icon), 40, 40);
 
 	dialogwidget = AddWidget (gtk_label_new (textmessage), packingbox3);
 	dialogwidget = AddWidget (gtk_hseparator_new(), packingbox);
