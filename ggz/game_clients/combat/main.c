@@ -36,6 +36,9 @@
 #include "interface.h"
 #include "callbacks.h"
 #include "support.h"
+#include "config.h"
+
+#define DEFAULTDIR GAMEDIR "/combat/pixmaps/default/"
 
 // GGZ connect
 void ggz_connect();
@@ -57,6 +60,7 @@ int main(int argc, char *argv[]) {
 
 	// TODO: Check for directory the user wants
 	add_pixmap_directory("tiles/default");
+	add_pixmap_directory(DEFAULTDIR);
 
 	main_win = create_main_window();
 	gtk_widget_show(main_win);
