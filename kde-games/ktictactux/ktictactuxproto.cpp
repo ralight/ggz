@@ -70,7 +70,6 @@ int KTicTacTuxProto::getOp()
 // Get one's own seat number
 int KTicTacTuxProto::getSeat()
 {
-printf("TTTCLIENT: Get my seat!\n");
 	ggz_read_int(fd, &num);
 }
 
@@ -104,7 +103,6 @@ int KTicTacTuxProto::getOpponentMove()
 	ggz_read_int(fd, &nummove);
 	ggz_read_int(fd, &move);
 
-printf("TTTCLIENT: (num=%i) nummove=%i move=%i\n", num, nummove, move);
 	if(num < 0)
 	{
 		if(nummove == 0) board[move % 3][move / 3] = opponent;
@@ -132,7 +130,6 @@ int KTicTacTuxProto::getSync()
 int KTicTacTuxProto::getGameOver()
 {
 	ggz_read_char(fd, &winner);
-printf("game over: %i\n", winner);
 }
 
 // Read statistics

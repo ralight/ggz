@@ -389,7 +389,7 @@ void KTicTacTux::slotNetwork()
 		case proto->msgplayers:
 			proto->getPlayers();
 			proto->state = proto->statewait;
-			if(proto->names[!proto->num][0])
+			if((proto->num >= 0) && (proto->names[!proto->num][0]))
 				emit signalScore(i18n("Network game with %1").arg(proto->names[!proto->num]));
 			break;
 		case proto->reqmove:
@@ -419,6 +419,7 @@ void KTicTacTux::slotNetwork()
 			break;
 		case proto->msgmove:
 			proto->getOpponentMove();
+			if(proto->num < 0) emit signalStatus(i18n("Watching the game"));
 			break;
 		case proto->sndsync:
 			proto->getSync();
