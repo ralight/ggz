@@ -358,6 +358,21 @@ static void parse_file(FILE *configfile)
 			continue;
 		 }
 
+		/*** PIDINLOGS = 0,1 ***/
+		if(!strcmp(varname, "pidinlogs")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 0 || intval > 1) {
+				PARSE_ERR("Invalid value for PIDInLogs");
+				continue;
+			}
+			log_info.include_pid = intval;
+			continue;
+		}
+
 		/*** INVALID VARIABLE ***/
 		PARSE_ERR("Syntax error");
 	}

@@ -43,6 +43,7 @@ typedef struct {
 	char *game_dir;		/* CLEANUP CANDIDATE - should get free()'d */
 	char *admin_name;	/* cleanup() */
 	char *admin_email;	/* cleanup() */
+	int perform_lookups;
 } Options;
 
 
@@ -108,6 +109,7 @@ typedef struct {
 	pthread_t pid;
 	int table_index;
 	char *ip_addr;				/* cleanup() */
+	char *hostname;				/* cleanup() */
 } UserInfo;
 
 
@@ -163,6 +165,7 @@ typedef struct {
 typedef struct {
 	int log_initialized;
 	int syslog_facility;
+	int include_pid;
 	char *log_fname;			/* cleanup() */
 	FILE *logfile;
 	int log_level;

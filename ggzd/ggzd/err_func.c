@@ -38,9 +38,9 @@
 #include <err_func.h>
 
 /* Logfile info */
-LogInfo log_info = { 0, 0, NULL, NULL, -1, 1 
+LogInfo log_info = { 0, 0, 1, NULL, NULL, -1, 1 
 #ifdef DEBUG
-		         , NULL, NULL, -1, 1
+		            , NULL, NULL, -1, 1
 #endif
 };
 
@@ -50,7 +50,11 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 
 	char buf[4096];
 
-	sprintf(buf, "[%d]: ", getpid());
+	if(log_info.include_pid || priority == LOG_DEBUG)
+		sprintf(buf, "[%d]: ", getpid());
+	else
+		buf[0] = '\0';
+
 	vsprintf(buf + strlen(buf), fmt, ap);
 	if (flag)
 		sprintf(buf + strlen(buf), ": %s", strerror(errno));
