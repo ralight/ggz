@@ -293,44 +293,46 @@ dnl Attempt to use as much as we can on systems with glibc
 AC_DEFINE(_GNU_SOURCE)
 
 AC_OUTPUT([Makefile
-	   ggzdmod/Makefile
-           ggzd/Makefile 
-	   ggzd/ggzd.conf
-	   ggzd/ggzd.test
-	   doc/Makefile
-	   doc/C/Makefile
-	   doc/C/design/Makefile
-	   game_servers/Makefile
-	   game_servers/spades/Makefile
-	   game_servers/tictactoe/Makefile
-	   game_servers/dots/Makefile
-	   game_servers/lapocha/Makefile
-	   game_servers/ggzcards/Makefile
-	   game_servers/ggzcards/games/Makefile
-	   game_servers/ggzcards/ai/Makefile
-	   game_servers/ggzcards/config/Makefile
-	   game_servers/ggzcards/common/Makefile
-	   game_servers/ggzcards/client/Makefile
-	   game_servers/reversi/Makefile
-	   game_servers/combat/Makefile
-	   game_servers/hastings/Makefile
-	   game_servers/escape/Makefile
-     game_servers/chess/Makefile
-     game_servers/chess/libcgc/Makefile
-	   game_servers/chinese-checkers/Makefile
-		game_servers/krosswater/Makefile
-		game_servers/krosswater/stackpath/Makefile
-		game_servers/krosswater/zoneserver/Makefile
-		game_servers/muehle/Makefile
-		game_servers/muehle/ggz/Makefile
-		game_servers/muehle/qtserv/Makefile
-		game_servers/muehle/variants/Makefile
-		game_servers/keepalive/Makefile
-		game_servers/keepalive/src/Makefile
-		game_servers/keepalive/ggzsh/Makefile
-		man/Makefile
-		tests/Makefile
-	   ])
+	ggzdmod/Makefile
+	ggzd/Makefile 
+	ggzd/ggzd.conf
+	ggzd/ggzd.test
+	doc/Makefile
+	doc/C/Makefile
+	doc/C/design/Makefile
+	game_servers/Makefile
+	game_servers/spades/Makefile
+	game_servers/tictactoe/Makefile
+	game_servers/dots/Makefile
+	game_servers/lapocha/Makefile
+	game_servers/ggzcards/Makefile
+	game_servers/ggzcards/games/Makefile
+	game_servers/ggzcards/ai/Makefile
+	game_servers/ggzcards/config/Makefile
+	game_servers/ggzcards/common/Makefile
+	game_servers/ggzcards/client/Makefile
+	game_servers/reversi/Makefile
+	game_servers/combat/Makefile
+	game_servers/hastings/Makefile
+	game_servers/chess/Makefile
+	game_servers/chess/libcgc/Makefile
+	game_servers/chinese-checkers/Makefile
+	game_servers/krosswater/Makefile
+	game_servers/krosswater/stackpath/Makefile
+	game_servers/krosswater/zoneserver/Makefile
+	game_servers/muehle/Makefile
+	game_servers/muehle/ggz/Makefile
+	game_servers/muehle/qtserv/Makefile
+	game_servers/muehle/variants/Makefile
+	man/Makefile
+])
+
+dnl AC_OUTPUT for 0.0.6:
+dnl game_servers/escape/Makefile
+dnl game_servers/keepalive/Makefile
+dnl game_servers/keepalive/src/Makefile
+dnl game_servers/keepalive/ggzsh/Makefile
+dnl tests/Makefile
 
 
 dnl Status Output
