@@ -3,6 +3,3 @@
 SUBDIRS = ggzcore ggzmod man
 EXTRA_DIST = TODO HACKING README.GGZ QuickStart.GGZ
 
-clean-local:
-	rm -rf config.status
-
