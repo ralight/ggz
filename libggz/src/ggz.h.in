@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h.in 5905 2004-02-11 04:14:40Z jdorje $
+ * $Id: ggz.h.in 5925 2004-02-15 00:31:25Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -1088,7 +1088,7 @@ void ggz_debug_cleanup(GGZCheckType check);
  * did not contain any characters which required escaping a ggz_strdup() copy
  * is returned.
  */
-char * ggz_xml_escape(char *str);
+char * ggz_xml_escape(const char *str);
 
 /**
  * Restore escaped XML characters into a text string.
@@ -1100,7 +1100,7 @@ char * ggz_xml_escape(char *str);
  * did not contain any characters which required decoding, a ggz_strdup() copy
  * is returned.
  */
-char * ggz_xml_unescape(char *str);
+char * ggz_xml_unescape(const char *str);
 
 /** @brief Structure used internally by ggz_read_line()
  */

@@ -38,10 +38,10 @@
 
 static char * _fill_buffer(char *low_byte, GGZFile *file);
 
-char * ggz_xml_unescape(char *str)
+char * ggz_xml_unescape(const char *str)
 {
-	char *new;
-	char *p, *q;
+	char *new, *q;
+	const char *p;
 	size_t len = 0;
 
 	if(str == NULL)
@@ -97,10 +97,10 @@ char * ggz_xml_unescape(char *str)
 }
 
 
-char * ggz_xml_escape(char *str)
+char * ggz_xml_escape(const char *str)
 {
-	char *new;
-	char *p, *q;
+	char *new, *q;
+	const char *p;
 	size_t len = 0;
 
 	if(str == NULL)
