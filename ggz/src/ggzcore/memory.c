@@ -76,6 +76,41 @@ void * _ggzcore_malloc(const unsigned int size, char *tag, int line)
 }
 
 
+void * _ggzcore_realloc(const void *ptr, const unsigned size,char *tag,int line)
+{
+	struct _memptr *newmem, *prev, *targetmem;
+
+	/* Search through allocated memory for this chunk */
+	prev = NULL;
+	targetmem = alloc;
+	while(targetmem != NULL && ptr != targetmem->ptr) {
+		prev = targetmem;
+		targetmem = targetmem->next;
+	}
+
+	/* This memory was never allocated via ggzcore */
+	if(targetmem == NULL) {
+		ggzcore_error_msg("Memory reallocation <%p> failure: %s/%d",
+				  ptr, tag, line);
+		return NULL;
+	}
+
+	/* Try to allocate our memory */
+	ggzcore_debug(GGZ_DBG_MEMDETAIL,
+		      "Reallocating %d bytes at %p to %d bytes from %s/%d\n",
+		      targetmem->size, targetmem->ptr, size, tag, line);
+	newmem = _ggzcore_malloc(sizeof(_memptr) + size, tag, line);
+
+	/* Copy the old to the new */
+	memcpy(newmem->ptr, targetmem->ptr, targetmem->size);
+
+	/* And free the old chunk */
+	_ggzcore_free(targetmem->ptr, tag, line);
+
+	return newmem->ptr;
+}
+
+
 int _ggzcore_free(const void *ptr, char *tag, int line)
 {
 	struct _memptr *prev, *targetmem;
