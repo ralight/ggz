@@ -9,7 +9,7 @@
 @c nothing
 
 @ifinfo
-Copyright (C) 2002 Josef Spillner, dr_maux@users.sourceforge.net
+Copyright (C) 2002 Josef Spillner
 @end ifinfo
 
 @c Frontpage
@@ -21,7 +21,7 @@ Copyright (C) 2002 Josef Spillner, dr_maux@users.sourceforge.net
 @c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002 Josef Spillner, dr_maux@users.sourceforge.net
+Copyright @copyright{} 2002 Josef Spillner
 Published under the GNU Free Documentation License.
 @end titlepage
 
