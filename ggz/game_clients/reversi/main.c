@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 3257 2002-02-05 22:35:11Z jdorje $
+ * $Id: main.c 3381 2002-02-17 08:02:54Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -25,6 +25,7 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -43,8 +44,13 @@ extern GtkWidget *main_win;
 /* Global game variables */
 struct game_state_t game;
 
+static void initialize_debugging(void);
+static void cleanup_debugging(void);
+
 int main(int argc, char *argv[]) {
 	
+	initialize_debugging();
+
 	gtk_init(&argc, &argv);
   add_pixmap_directory(".");
 
@@ -67,8 +73,39 @@ int main(int argc, char *argv[]) {
 
 	if (ggzmod_disconnect() < 0)
 		return -2;
+		
+	cleanup_debugging();
 	
 	return 0;
+}
+
+static void initialize_debugging(void)
+{
+	/* Our debugging code uses libggz's ggz_debug() function, so we
+	   just initialize the _types_ of debugging we want. */
+#ifdef DEBUG
+	const char *debugging_types[] =
+		{ "reversi", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+	/* Debugging goes to ~/.ggz/reversi-gtk.debug */
+	char *file_name =
+		g_strdup_printf("%s/.ggz/reversi-gtk.debug", getenv("HOME"));
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug("reversi", "Starting Reversi client.");	
+}
+
+/* This function should be called at the end of the program to clean up
+ * debugging, as necessary. */
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a
+	   memory check at the same time. */
+	ggz_debug("main", "Shutting down Reversi client.");
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
 }
 
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
@@ -76,7 +113,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 
 	// Read the fd
 	if (ggz_read_int(game.fd, &op) < 0) {
-		printf("Couldn't read the game fd\n");
+		ggz_error_msg("Couldn't read the game fd\n");
 		return;
 	}
 
@@ -94,7 +131,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 			break;
 		case RVR_MSG_START:
 			game.state = RVR_STATE_PLAYING;
-			printf("Game has started\n");
+			ggz_debug("reversi", "Game has started\n");
 			display_board();
 			break;
 		case RVR_MSG_MOVE:
@@ -245,7 +282,7 @@ void send_my_move(int move) {
 		game_status("Can't send move!");
 		return;
 	}
-	printf("Sent move: %d\n", move);
+	ggz_debug("reversi", "Sent move: %d\n", move);
 }
 
 int request_sync() {
