@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2628 2001-10-29 05:31:50Z jdorje $
+ * $Id: bid.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -50,7 +50,7 @@ void add_bid(bid_t bid)
 	bid_count++;
 	if (bid_count > bid_size) {
 		bid_size = bid_size ? 2 * bid_size : 8;
-		bids = realloc(bids, bid_size * sizeof(bid_t));
+		bids = ggz_realloc(bids, bid_size * sizeof(bid_t));
 	}
 	bids[bid_count - 1] = bid;
 }

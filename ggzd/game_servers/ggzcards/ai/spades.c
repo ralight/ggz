@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2530 2001-10-03 05:24:34Z jdorje $
+ * $Id: spades.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -87,7 +87,7 @@ static char *get_name(player_t p)
 		name = "Brent-AI";
 		break;
 	}
-	return strdup(name);
+	return ggz_strdup(name);
 }
 
 static int count_cards[4];	/* the number of "count" cards each player

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2707 2001-11-09 02:22:20Z jdorje $
+ * $Id: common.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -432,7 +432,7 @@ void handle_launch_event(ggzd_event_t event, void *data)
 	game.num_players = ggzd_seats_num();	/* ggz seats == players */
 	game.host = -1;		/* no host since none has joined yet */
 
-	game.players = alloc(game.num_players * sizeof(*game.players));
+	game.players = ggz_malloc(game.num_players * sizeof(*game.players));
 	for (p = 0; p < game.num_players; p++) {
 		game.players[p].seat = -1;
 		game.players[p].allbids = NULL;
@@ -662,8 +662,9 @@ int handle_bid_event(bid_t bid)
 		game.max_bid_rounds += 10;
 		for (p2 = 0; p2 < game.num_players; p2++) {
 			game.players[p2].allbids =
-				realloc(game.players[p2].allbids,
-					game.max_bid_rounds * sizeof(bid_t));
+				ggz_realloc(game.players[p2].allbids,
+					    game.max_bid_rounds *
+					    sizeof(bid_t));
 			memset(&game.players[p2].
 			       allbids[game.max_bid_rounds - 10], 0,
 			       10 * sizeof(bid_t));
@@ -705,8 +706,8 @@ void set_num_seats(int num_seats)
 	ggzd_debug("Setting number of seats to %d.", num_seats);
 	game.num_seats = num_seats;
 	if (game.seats != NULL)
-		free(game.seats);
-	game.seats = alloc(game.num_seats * sizeof(*game.seats));
+		ggz_free(game.seats);
+	game.seats = ggz_malloc(game.num_seats * sizeof(*game.seats));
 	for (s = 0; s < game.num_seats; s++) {
 		game.seats[s].player = -1;
 		game.seats[s].name = "Unclaimed Seat";	/* TODO: reserved
@@ -770,7 +771,7 @@ void init_game()
 	/* allocate hands */
 	for (s = 0; s < game.num_seats; s++) {
 		game.seats[s].hand.cards =
-			alloc(game.max_hand_length * sizeof(card_t));
+			ggz_malloc(game.max_hand_length * sizeof(card_t));
 	}
 
 	set_global_message("", "%s", "");
@@ -825,41 +826,4 @@ ggzd_assign_t get_seat_status(seat_t s)
 		return ggzd_get_seat_status(game.seats[s].player);
 	else
 		return GGZ_SEAT_NONE;
-}
-
-
-/* JDS: these are just helper functions which should be moved to another file 
- */
-
-/* this helper function checks to see if allocation fails, and also zeroes
-   all the memory */
-void *alloc(int size)
-{
-	void *ret = malloc(size);
-	if (ret == NULL) {
-		/* TODO: handle failure more intelligently. */
-		ggzd_debug("SERVER error: failed malloc.");
-		exit(-1);
-	}
-	memset(ret, 0, size);	/* zero it all */
-	return ret;
-}
-
-/* This allocates an double-array of num blocks of size len, complete with
-   linkages. Unfortunately, it returns just a void* instead of a void** since 
-   C doesn't treat a void** as nicely as void*'s. */
-void *alloc2(int num, int len)
-{
-	int i;
-	void **bids, *bids2;
-
-	/* We do some magical math to just use one malloc. */
-
-	bids = bids2 = alloc(num * sizeof(void *) + num * len);
-
-	for (i = 0; i < num; i++)
-		bids[i] = bids2 + num * sizeof(void *) + i * len;	/* magic!!! 
-									 */
-
-	return bids;
 }

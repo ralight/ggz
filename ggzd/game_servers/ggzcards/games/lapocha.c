@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games/lapocha.c
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2454 2001-09-11 20:12:21Z jdorje $
+ * $Id: lapocha.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -36,7 +36,7 @@ static void lapocha_handle_bid(bid_t bid);
 static void lapocha_next_bid();
 static int lapocha_test_for_gameover();
 static int lapocha_deal_hand();
-static int lapocha_get_bid_text(char* buf, int buf_len, bid_t bid);
+static int lapocha_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void lapocha_set_player_message(player_t p);
 static void lapocha_end_hand();
 
@@ -78,14 +78,15 @@ static void lapocha_init_game()
 {
 	seat_t s;
 
-	game.specific = alloc(sizeof(lapocha_game_t));
+	game.specific = ggz_malloc(sizeof(lapocha_game_t));
 	set_num_seats(4);
-	for(s = 0; s < game.num_seats; s++)
-		assign_seat(s, s); /* one player per seat */
+	for (s = 0; s < game.num_seats; s++)
+		assign_seat(s, s);	/* one player per seat */
 
 	game.deck_type = GGZ_DECK_LAPOCHA;
 	game.max_hand_length = 10;
-	game.must_overtrump = 1;	/* in La Pocha, you *must* overtrump if you can */
+	game.must_overtrump = 1;	/* in La Pocha, you *must* overtrump
+					   if you can */
 }
 
 static int lapocha_handle_gameover()
@@ -96,17 +97,17 @@ static int lapocha_handle_gameover()
 	int winner_cnt = 0;
 
 	/* in La Pocha, anyone who has 0 at the end automatically wins */
-	for (p=0; p<game.num_players; p++) {
-		if(game.players[p].score == 0) {
+	for (p = 0; p < game.num_players; p++) {
+		if (game.players[p].score == 0) {
 			winners[winner_cnt] = p;
 			winner_cnt++;
 		}
 	}
 
 	if (winner_cnt == 0) {
-		/* in the default case, just take the highest score(s)
-		 * this should automatically handle the case of teams! */
-		for (p=0; p<game.num_players; p++) {
+		/* in the default case, just take the highest score(s) this
+		   should automatically handle the case of teams! */
+		for (p = 0; p < game.num_players; p++) {
 			if (game.players[p].score > hi_score) {
 				winner_cnt = 1;
 				winners[0] = p;
@@ -130,9 +131,9 @@ static void lapocha_start_bidding()
 
 static int lapocha_get_bid()
 {
-	if (game.bid_count == 0) { /* determine the trump suit */
+	if (game.bid_count == 0) {	/* determine the trump suit */
 		/* handled just like a bid */
-		if(game.hand_size != 10) {
+		if (game.hand_size != 10) {
 			bid_t bid;
 			bid.bid = 0;
 			bid.sbid.suit = cards_deal_card().suit;
@@ -140,15 +141,15 @@ static int lapocha_get_bid()
 			handle_bid_event(bid);
 		} else {
 			char suit;
-			for (suit=0; suit<4; suit++)
+			for (suit = 0; suit < 4; suit++)
 				add_sbid(0, suit, LAPOCHA_TRUMP);
 			return req_bid(game.dealer);
 		}
-	} else { /* get a player's numerical bid */
+	} else {		/* get a player's numerical bid */
 		int i;
 		for (i = 0; i <= game.hand_size; i++) {
-			/* the dealer can't make the sum of the bids equal the hand size;
-			 * somebody's got to go down */
+			/* the dealer can't make the sum of the bids equal
+			   the hand size; somebody's got to go down */
 			if (game.next_bid == game.dealer &&
 			    LAPOCHA.bid_sum + i == game.hand_size)
 				continue;
@@ -163,7 +164,8 @@ static void lapocha_handle_bid(bid_t bid)
 {
 	if (bid.sbid.spec == LAPOCHA_TRUMP) {
 		game.trump = bid.sbid.suit;
-		set_global_message("", "Trump is %s.", suit_names[(int)game.trump % 4]);
+		set_global_message("", "Trump is %s.",
+				   suit_names[(int) game.trump % 4]);
 	} else
 		LAPOCHA.bid_sum += bid.sbid.val;
 }
@@ -185,17 +187,18 @@ static int lapocha_deal_hand()
 {
 	seat_t s;
 
-	/* The number of cards dealt each hand; it's
-	 * easier just to write it out than use any kind of function */
+	/* The number of cards dealt each hand; it's easier just to write it
+	   out than use any kind of function */
 	int lap_card_count[] = { 1, 1, 1, 1,
-			2, 3, 4, 5, 6, 7, 8, 9,
-			10, 10, 10, 10,
-			9, 8, 7, 6, 5, 4, 3, 2,
-			1, 1, 1, 1 };
-	/* in la pocha, there are a predetermined number of cards
-	 * each hand, as defined by lap_card_count above */
+		2, 3, 4, 5, 6, 7, 8, 9,
+		10, 10, 10, 10,
+		9, 8, 7, 6, 5, 4, 3, 2,
+		1, 1, 1, 1
+	};
+	/* in la pocha, there are a predetermined number of cards each hand,
+	   as defined by lap_card_count above */
 	game.hand_size = lap_card_count[game.hand_num];
-	game.trump = -1; /* must be determined later */ /* TODO: shouldn't go here */
+	game.trump = -1;	/* must be determined later *//* TODO: shouldn't go here */
 
 
 	/* in a regular deal, we just deal out hand_size cards to everyone */
@@ -205,11 +208,12 @@ static int lapocha_deal_hand()
 	return 0;
 }
 
-static int lapocha_get_bid_text(char* buf, int buf_len, bid_t bid)
+static int lapocha_get_bid_text(char *buf, int buf_len, bid_t bid)
 {
 	if (bid.sbid.spec == LAPOCHA_TRUMP)
-		return snprintf(buf, buf_len, "%s", suit_names[(int)bid.sbid.suit % 4]);
-	return snprintf(buf, buf_len, "%d", (int)bid.sbid.val);
+		return snprintf(buf, buf_len, "%s",
+				suit_names[(int) bid.sbid.suit % 4]);
+	return snprintf(buf, buf_len, "%d", (int) bid.sbid.val);
 }
 
 static void lapocha_set_player_message(player_t p)
@@ -221,8 +225,10 @@ static void lapocha_set_player_message(player_t p)
 	add_player_score_message(p);
 	if (p == game.dealer)
 		add_player_message(s, "dealer\n");
-	if (game.state >= WH_STATE_FIRST_TRICK && game.state <= WH_STATE_WAIT_FOR_PLAY) {
-		add_player_message(s, "Contract: %d\n", (int)game.players[p].bid.bid);
+	if (game.state >= WH_STATE_FIRST_TRICK
+	    && game.state <= WH_STATE_WAIT_FOR_PLAY) {
+		add_player_message(s, "Contract: %d\n",
+				   (int) game.players[p].bid.bid);
 	}
 	add_player_tricks_message(p);
 	add_player_bid_message(p);
@@ -233,13 +239,17 @@ static void lapocha_end_hand()
 {
 	player_t p;
 
-	for(p=0; p<game.num_players; p++) {
-		ggzd_debug("Player %d/%s got %d tricks on a bid of %d", p, ggzd_get_player_name(p),
-			  game.players[p].tricks, (int)game.players[p].bid.bid);
-		if(game.players[p].tricks == game.players[p].bid.bid)
-			game.players[p].score += 10 + (5 * game.players[p].bid.bid);
+	for (p = 0; p < game.num_players; p++) {
+		ggzd_debug("Player %d/%s got %d tricks on a bid of %d", p,
+			   ggzd_get_player_name(p), game.players[p].tricks,
+			   (int) game.players[p].bid.bid);
+		if (game.players[p].tricks == game.players[p].bid.bid)
+			game.players[p].score +=
+				10 + (5 * game.players[p].bid.bid);
 		else
 			game.players[p].score -= 5 * game.players[p].bid.bid;
 	}
-	set_global_message("", "No trump set."); /* TODO: give information about previous hand */
+	set_global_message("", "No trump set.");	/* TODO: give
+							   information about
+							   previous hand */
 }

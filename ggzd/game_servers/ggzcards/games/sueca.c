@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 2454 2001-09-11 20:12:21Z jdorje $
+ * $Id: sueca.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein
  *
@@ -77,7 +77,7 @@ static void sueca_init_game()
 {
 	seat_t s;
 
-	game.specific = alloc(sizeof(sueca_game_t));
+	game.specific = ggz_malloc(sizeof(sueca_game_t));
 	set_num_seats(game.num_players);
 	for(s = 0; s < game.num_seats; s++)
 		assign_seat(s, s); /* one player per seat */

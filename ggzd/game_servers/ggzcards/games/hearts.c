@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games/hearts.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 2454 2001-09-11 20:12:21Z jdorje $
+ * $Id: hearts.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -80,10 +80,10 @@ static void hearts_init_game()
 {
 	seat_t s;
 
-	game.specific = alloc(sizeof(hearts_game_t));
+	game.specific = ggz_malloc(sizeof(hearts_game_t));
 	set_num_seats(game.num_players);
 	for (s = 0; s < game.num_seats; s++)
-		assign_seat(s, s); /* one player per seat */
+		assign_seat(s, s);	/* one player per seat */
 
 	game.trump = -1;	/* no trump in hearts */
 	game.target_score = 100;
@@ -107,7 +107,7 @@ static int hearts_handle_option(char *option, int value)
 		GHEARTS.no_blood = value;
 	else if (!strcmp("num_decks", option)) {
 		/* HACK - the deck will already have been made at this point,
-		 * so we need to destroy and recreate it. */
+		   so we need to destroy and recreate it. */
 		seat_t s;
 		GHEARTS.num_decks = value + 1;
 		game.deck_type =
@@ -119,9 +119,10 @@ static int hearts_handle_option(char *option, int value)
 		game.max_hand_length = cards_deck_size() / game.num_players;
 		for (s = 0; s < game.num_seats; s++) {
 			if (game.seats[s].hand.cards)
-				free(game.seats[s].hand.cards);
+				ggz_free(game.seats[s].hand.cards);
 			game.seats[s].hand.cards =
-				alloc(game.max_hand_length * sizeof(card_t));
+				ggz_malloc(game.max_hand_length *
+					   sizeof(card_t));
 		}
 	} else
 		return game_handle_option(option, value);
@@ -190,14 +191,15 @@ static void hearts_start_playing()
 	/* in hearts, the lowest club leads first */
 	game.leader = -1;
 
-	/* this is initialized to -1 because under some systems, it
-	 * may be possible for nobody to win the jack */
+	/* this is initialized to -1 because under some systems, it may be
+	   possible for nobody to win the jack */
 	GHEARTS.jack_winner = -1;
 
 	/* TODO: what if we're playing with multiple decks? */
 	for (face = 2; face <= ACE_HIGH; face++) {
 		for (p = 0; p < game.num_players; p++) {
-			/* TODO: this only works because the cards are sorted this way */
+			/* TODO: this only works because the cards are sorted 
+			   this way */
 			card_t card =
 				game.seats[game.players[p].seat].hand.
 				cards[0];
@@ -220,9 +222,9 @@ static char *hearts_verify_play(card_t card)
 {
 	seat_t s = game.play_seat;
 
-	/* in hearts, we have two additional rules about leading:
-	 * the low club must lead the first trick, and
-	 * hearts cannot be lead until broken. */
+	/* in hearts, we have two additional rules about leading: the low
+	   club must lead the first trick, and hearts cannot be lead until
+	   broken. */
 
 	if (game.next_play == game.leader) {
 		/* the low club must lead on the first trick */
@@ -243,9 +245,9 @@ static char *hearts_verify_play(card_t card)
 		return "Hearts have not yet been broken.";
 	}
 
-	/* also in hearts, the "no blood on the first trick" rule
-	 * means you can't play points onto the first trick (unless
-	 * that's all you have) */
+	/* also in hearts, the "no blood on the first trick" rule means you
+	   can't play points onto the first trick (unless that's all you
+	   have) */
 	if (GHEARTS.no_blood &&
 	    game.trick_count == 0 &&
 	    (card.suit == HEARTS
@@ -283,9 +285,9 @@ static void hearts_end_trick()
 			GHEARTS.jack_winner = game.winner;
 
 		if (points > 0) {
-			/* in hearts, it's not really "trump broken"
-			 * but rather "points broken".
-			 * However, it works about the same way. */
+			/* in hearts, it's not really "trump broken" but
+			   rather "points broken". However, it works about
+			   the same way. */
 			game.trump_broken = 1;
 		}
 		GHEARTS.points_on_hand[game.winner] += points;
@@ -300,8 +302,9 @@ static void hearts_end_hand()
 
 	for (p = 0; p < game.num_players; p++) {
 		int points = GHEARTS.points_on_hand[p];
-		/* if you take all 26 points you "shoot the moon" and earn -26 instead.
-		 * TODO: option of giving everyone else 26.  It could be handled as a bid... */
+		/* if you take all 26 points you "shoot the moon" and earn
+		   -26 instead. TODO: option of giving everyone else 26.  It
+		   could be handled as a bid... */
 		int score = (points == 26 ? -26 : points);
 		int fullscore = score;
 
@@ -314,7 +317,8 @@ static void hearts_end_hand()
 				 ggzd_get_player_name(p));
 			max = 26;
 		} else if (fullscore > max) {
-			/* only the maximum player's score is written; this is less than ideal. */
+			/* only the maximum player's score is written; this
+			   is less than ideal. */
 			max = fullscore;
 			snprintf(buf, sizeof(buf), "%s took %d points.",
 				 ggzd_get_player_name(p), fullscore);

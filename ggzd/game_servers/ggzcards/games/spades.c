@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2476 2001-09-14 07:27:18Z jdorje $
+ * $Id: spades.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -85,7 +85,7 @@ static void spades_init_game()
 {
 	seat_t s;
 
-	game.specific = alloc(sizeof(spades_game_t));
+	game.specific = ggz_malloc(sizeof(spades_game_t));
 	set_num_seats(4);
 	for (s = 0; s < game.num_players; s++)
 		assign_seat(s, s);	/* one player per seat */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 2561 2001-10-14 06:56:17Z jdorje $
+ * $Id: suaro.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -89,7 +89,7 @@ static int suaro_is_valid_game()
 
 static void suaro_init_game()
 {
-	game.specific = alloc(sizeof(suaro_game_t));
+	game.specific = ggz_malloc(sizeof(suaro_game_t));
 	set_num_seats(4);
 
 	assign_seat(0, 0);	/* seat 0 => player 0 */
@@ -131,9 +131,9 @@ static int suaro_handle_option(char *option, int value)
 		SUARO.persistent_doubles = value;
 	else if (!strcmp(option, "target")) {
 		switch (value) {
-			/* this highlights a problem with this protocol.
-			   Only discrete entries are possible. it would be
-			   better if the client could just enter a number */
+			/* this highlights a problem with this protocol. Only 
+			   discrete entries are possible. it would be better
+			   if the client could just enter a number */
 		case 0:
 			game.target_score = 25;
 			break;

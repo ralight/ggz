@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: random.c 2416 2001-09-09 03:15:38Z jdorje $
+ * $Id: random.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -54,7 +54,7 @@ static char *get_name(player_t p)
 {
 	char buf[17];
 	snprintf(buf, sizeof(buf), "Random %d", p);
-	return strdup(buf);
+	return ggz_strdup(buf);
 }
 
 /* this inits AI static data at the start of a hand */

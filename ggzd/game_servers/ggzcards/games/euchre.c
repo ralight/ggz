@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2725 2001-11-12 23:38:54Z jdorje $
+ * $Id: euchre.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -94,7 +94,7 @@ static void euchre_init_game(void)
 {
 	seat_t s;
 
-	game.specific = alloc(sizeof(euchre_game_t));
+	game.specific = ggz_malloc(sizeof(euchre_game_t));
 	set_num_seats(4);
 	for (s = 0; s < game.num_seats; s++)
 		assign_seat(s, s);	/* one player per seat */

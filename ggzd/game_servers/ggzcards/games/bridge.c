@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2628 2001-10-29 05:31:50Z jdorje $
+ * $Id: bridge.c 2726 2001-11-13 00:05:44Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -107,7 +107,7 @@ static void bridge_init_game()
 {
 	seat_t s;
 
-	game.specific = alloc(sizeof(bridge_game_t));
+	game.specific = ggz_malloc(sizeof(bridge_game_t));
 	set_num_seats(4);
 	for (s = 0; s < game.num_seats; s++)
 		assign_seat(s, s);	/* one player per seat */
