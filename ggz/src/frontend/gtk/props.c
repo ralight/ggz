@@ -133,6 +133,27 @@ static void props_update(void)
 	tmp = lookup_widget((props_dialog), "o_spin");
 	ggzcore_conf_write_int("CHAT", "O_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
 
+	/* Name */
+	tmp = lookup_widget((props_dialog), "info_name");
+	ggzcore_conf_write_string("USER INFO", "NAME", gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	/* City */
+	tmp = lookup_widget((props_dialog), "info_city");
+	ggzcore_conf_write_string("USER INFO", "CITY", gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	/* State */
+	tmp = lookup_widget((props_dialog), "info_state");
+	ggzcore_conf_write_string("USER INFO", "STATE", gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	/* Country */
+	tmp = lookup_widget((props_dialog), "info_country");
+	ggzcore_conf_write_string("USER INFO", "COUNTRY", gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	/* Comments */
+	tmp = lookup_widget((props_dialog), "info_comments");
+	ggzcore_conf_write_string("USER INFO", "COMMENTS", gtk_editable_get_chars(GTK_EDITABLE(tmp), 0, gtk_text_get_length(GTK_TEXT(tmp))));
+
+
 	ggzcore_conf_commit();
 
 
@@ -242,6 +263,26 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	tmp = lookup_widget((props_dialog), "o_spin");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "O_COLOR", 2));
 
+	/* Name */
+	tmp = lookup_widget((props_dialog), "info_name");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("USER INFO", "NAME", "."));
+
+	/* City */
+	tmp = lookup_widget((props_dialog), "info_city");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("USER INFO", "CITY", "."));
+
+	/* State */
+	tmp = lookup_widget((props_dialog), "info_state");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("USER INFO", "STATE", "."));
+
+	/* Country */
+	tmp = lookup_widget((props_dialog), "info_country");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("USER INFO", "COUNTRY", "."));
+
+	/* Comments */
+	tmp = lookup_widget((props_dialog), "info_comments");
+	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, ggzcore_conf_read_string("USER INFO", "COMMENTS", "."),
+			strlen(ggzcore_conf_read_string("USER INFO", "COMMENTS", ".")));
 }
 
 
