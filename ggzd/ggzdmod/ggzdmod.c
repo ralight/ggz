@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3807 2002-04-07 08:08:31Z jdorje $
+ * $Id: ggzdmod.c 3844 2002-04-07 22:27:57Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -579,8 +579,7 @@ static void set_state(GGZdMod * ggzdmod, GGZdModState state)
 	}
 }
 
-/* Returns -1 on error (?). */
-
+/* Returns -1 on error, the number of events handled on success. */
 static int handle_event(GGZdMod * ggzdmod, fd_set read_fds)
 {
 	int status, count = 0;
@@ -647,8 +646,8 @@ int ggzdmod_dispatch(GGZdMod * ggzdmod)
 
 	if (status <= 0) {
 		if (errno == EINTR)
-			return 1;
-		return 0;
+			return 0;
+		return -1;
 	}
 
 	return handle_event(ggzdmod, read_fd_set);
