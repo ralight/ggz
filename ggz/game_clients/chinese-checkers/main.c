@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 4269 2002-06-23 11:33:21Z dr_maux $
+ * $Id: main.c 4889 2002-10-12 20:34:26Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -36,6 +36,7 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
+#include "dlg_about.h"
 #include "ggzintl.h"
 
 #include "main.h"
@@ -45,6 +46,7 @@
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void initialize_about_dialog(void);
 
 static int get_seat(void);
 static int get_players(void);
@@ -59,6 +61,7 @@ int main(int argc, char *argv[])
 	ggz_intl_init("chinese-checkers");
 
 	gtk_init(&argc, &argv);
+	initialize_about_dialog();
 
 	game_init();
 
@@ -105,6 +108,21 @@ static void cleanup_debugging(void)
 #else
 	ggz_debug_cleanup(GGZ_CHECK_NONE);
 #endif
+}
+
+
+static void initialize_about_dialog(void)
+{
+	const char *content =
+	  _("Visit us at http://ggz.sourceforge.net/.\n"
+	    "\n"
+	    "Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n");
+	char *header;
+
+	header = g_strdup_printf(_("GGZ Gaming Zone\n"
+				   "Chinese Checkers Version %s"), VERSION);
+	init_dlg_about(_("About Chinese Checkers"), header, content);
+	g_free(header);
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
- * $Id: main_cb.c 3706 2002-03-28 07:37:30Z jdorje $
+ * $Id: main_cb.c 4889 2002-10-12 20:34:26Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "dlg_about.h"
 #include "dlg_exit.h"
 
 #include "main_cb.h"
@@ -38,7 +39,6 @@
 #include "prefs_dlg.h"
 #include "support.h"
 #include "display.h"
-#include "about_dlg.h"
 #include "game.h"
 
 GtkWidget *dlg_prefs = NULL;
@@ -139,18 +139,6 @@ void
 on_about_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	static GtkWidget *dlg_about = NULL;
-
-	if(dlg_about != NULL) {
-		gdk_window_show(dlg_about->window);
-		gdk_window_raise(dlg_about->window);
-	} else {
-		dlg_about = create_dlg_about();
-		gtk_signal_connect(GTK_OBJECT(dlg_about),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				   &dlg_about);
-		gtk_widget_show(dlg_about);
-	}
+	create_or_raise_dlg_about();
 }
 

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
+#  $Id: Makefile.am 4889 2002-10-12 20:34:26Z jdorje $
 
 SUBDIRS = . pixmaps
 
@@ -16,8 +16,7 @@ uninstall-local:
 
 ggzexecmod_PROGRAMS = ggz.ccheckers
 
-ggz_ccheckers_SOURCES =	about_dlg.c	about_dlg.h	\
-			display.c	display.h	\
+ggz_ccheckers_SOURCES =	display.c	display.h	\
 			game.c		game.h		\
 			main.c		main.h		\
 			main_cb.c	main_cb.h	\
