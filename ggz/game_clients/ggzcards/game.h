@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <assert.h>
+
 #include "hand.h"
 
 #ifndef __GAME_H
@@ -32,11 +34,11 @@
 /* #define ANIMATION */
 
 struct seat_t {
- 	int seat;						/* ggz seating info */
-	char name[17];			/* player's name */
-	char message[100]; 	/* message info */
-	card_t table_card; /* card on table, index into hand */
-	struct hand_t hand; /* player's hand */
+ 	int seat;		/* ggz seating info */
+	char name[17];		/* player's name */
+	char message[100];	/* message info */
+	card_t table_card;	/* card on table, index into hand */
+	struct hand_t hand;	/* player's hand */
 };
 
 struct game_t {
