@@ -1,10 +1,12 @@
-/* $Id: protocol.h 2070 2001-07-23 00:03:11Z jdorje $ */
-/*
+/* 
  * File: protocol.h
  * Author: Jason Short
- * Project: GGZ
+ * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
+ * $Id: protocol.h 2376 2001-09-05 21:40:11Z jdorje $
+ *
+ * This just contains the communications protocol information.
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -28,32 +30,36 @@
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
 
-/* GGZCards protocol */
+/* We don't need to define/check the protocol version since GGZ does this
+   automatically.  What we may want to do is include capabilities or a minor
+   version number so that slightly different protocols are supported
+   compatibly. */
+
 /* Messages from server */
 typedef enum {
-	WH_REQ_NEWGAME,		
-	WH_MSG_NEWGAME,		
-	WH_MSG_GAMEOVER,	
-	WH_MSG_PLAYERS,		
-	WH_MSG_HAND,     	
-	WH_REQ_BID,		
-	WH_REQ_PLAY,     	
-	WH_MSG_BADPLAY, 	
-	WH_MSG_PLAY,		
-	WH_MSG_TRICK,		
-	WH_MESSAGE_GLOBAL,	
-	WH_MESSAGE_PLAYER,	
-	WH_REQ_OPTIONS,		
-	WH_MSG_TABLE		
+	WH_REQ_NEWGAME,
+	WH_MSG_NEWGAME,
+	WH_MSG_GAMEOVER,
+	WH_MSG_PLAYERS,
+	WH_MSG_HAND,
+	WH_REQ_BID,
+	WH_REQ_PLAY,
+	WH_MSG_BADPLAY,
+	WH_MSG_PLAY,
+	WH_MSG_TRICK,
+	WH_MESSAGE_GLOBAL,
+	WH_MESSAGE_PLAYER,
+	WH_REQ_OPTIONS,
+	WH_MSG_TABLE
 } server_msg_t;
 
 /* Messages from client */
 typedef enum {
-	WH_RSP_NEWGAME,		
-	WH_RSP_OPTIONS,		
-	WH_RSP_PLAY,		
-	WH_RSP_BID,		
-	WH_REQ_SYNC		
+	WH_RSP_NEWGAME,
+	WH_RSP_OPTIONS,
+	WH_RSP_PLAY,
+	WH_RSP_BID,
+	WH_REQ_SYNC
 } client_msg_t;
 
 #endif /* __PROTOCOL_H__ */
