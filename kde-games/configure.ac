@@ -1,12 +1,11 @@
 dnl Configuration for GGZ-KDE-Games
 dnl ===============================
 
-AC_INIT
+AC_INIT([GGZ KDE games], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-kde-games])
 AC_CONFIG_SRCDIR([configure.ac])
-AC_CANONICAL_TARGET([])
-AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(ggz-kde-games, 0.0.7)
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
 
 dnl Check for Qt and KDE
 dnl ====================

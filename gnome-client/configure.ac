@@ -1,10 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5613 2003-06-26 09:23:13Z dr_maux $
+dnl $Id: configure.ac 5731 2003-12-31 17:35:48Z dr_maux $
 
-AC_INIT
+AC_INIT([GGZ GNOME client], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-gnome-client])
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-gnome-client, 0.0.7)
 AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
 
 PKG_CHECK_MODULES(GGZ, libgnomeui-2.0)
 AC_SUBST(GGZ_CFLAGS)
@@ -42,11 +43,11 @@ LDADD="$LDADD $LIB_GGZCORE $LIB_GGZ"
 AC_SUBST(LDADD)
 
 AC_CONFIG_FILES([
-Makefile
-pixmaps/Makefile
-motd-editor/Makefile
-src/Makefile
-po/Makefile
+	Makefile
+	pixmaps/Makefile
+	motd-editor/Makefile
+	src/Makefile
+	po/Makefile
 ])
 AC_OUTPUT
 

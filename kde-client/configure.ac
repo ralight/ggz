@@ -1,12 +1,11 @@
 dnl Configuration for KGGZ
 dnl ======================
 
-AC_INIT
+AC_INIT([GGZ KDE client], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-kde-client])
 AC_CONFIG_SRCDIR([configure.ac])
-AC_CANONICAL_TARGET([])
-AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(ggz-kde-client, 0.0.7)
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
 
 dnl Options for building KGGZ
 dnl =========================
