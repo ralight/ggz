@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5174 2002-11-03 19:37:36Z jdorje $
+ * $Id: netxml.c 5227 2002-11-06 07:10:06Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -177,6 +177,7 @@ static void _ggzcore_net_dump_data(GGZNet *net, char *data, int size);
 /* Utility functions */
 static int _ggzcore_net_send_table_seat(GGZNet *net, struct _GGZSeat *seat);
 static void _ggzcore_net_send_header(GGZNet *net);
+static int _ggzcore_net_send_pong(GGZNet *net, const char *id);
 static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
 	ggz__attribute((format(printf, 2, 3)));
 static int str_to_int(const char *str, int dflt);
@@ -1942,7 +1943,8 @@ static void _ggzcore_net_handle_chat(GGZNet *net, GGZXMLElement *element)
 static void _ggzcore_net_handle_ping(GGZNet *net, GGZXMLElement *element)
 {
 	/* No need to bother the client or anything, just send pong */
-	_ggzcore_net_send_line(net, "<PONG/>");
+	const char *id = ATTR(element, "ID");
+	_ggzcore_net_send_pong(net, id);
 }
 
 
@@ -1959,6 +1961,15 @@ void _ggzcore_net_send_header(GGZNet *net)
 	_ggzcore_net_send_line(net,
 			       "<?xml version='1.0' encoding='ISO-8859-1'?>");
 	_ggzcore_net_send_line(net, "<SESSION>");
+}
+
+
+int _ggzcore_net_send_pong(GGZNet *net, const char *id)
+{
+	if (id)
+		return _ggzcore_net_send_line(net, "<PONG ID='%s'/>", id);
+	else
+		return _ggzcore_net_send_line(net, "<PONG/>");
 }
 
 
