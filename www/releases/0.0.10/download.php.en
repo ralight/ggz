@@ -73,6 +73,38 @@ Users and other interested people should definitely subscribe to the low-traffic
 </td></tr>
 
 <tr><td bgcolor="#ffd000" valign="top">
+Sunsite Mirror <img src="/pics/site/flags/flag-dk.png"> Denmark:<br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/">http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/</a><br>
+<a href="ftp://mirrors.sunsite.dk/mirrors/ggzgamingzone/0.0.10/">ftp://mirrors.sunsite.dk/mirrors/ggzgamingzone/0.0.10/</a>
+<br><br>
+Make sure to check the source file integrity using the
+<br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/MD5SUMS.asc">digital signature</a>
+<br>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+<br><br>
+Thanks to <a href="http://sunsite.dk/">Sunsite</a> for providing the mirror!
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/libggz-0.0.10.tar.gz">libggz-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-client-libs-0.0.10.tar.gz">ggz-client-libs-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-server-0.0.10.tar.gz">ggz-server-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-txt-client-0.0.10.tar.gz">ggz-txt-client-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-gtk-client-0.0.10.tar.gz">ggz-gtk-client-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-kde-client-0.0.10.tar.gz">ggz-kde-client-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-gnome-client-0.0.10.tar.gz">ggz-gnome-client-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-gtk-games-0.0.10.tar.gz">ggz-gtk-games-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-kde-games-0.0.10.tar.gz">ggz-kde-games-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-sdl-games-0.0.10.tar.gz">ggz-sdl-games-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-python-0.0.10.tar.gz">ggz-python-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-utils-0.0.10.tar.gz">ggz-utils-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-grubby-0.0.10.tar.gz">ggz-grubby-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-docs-0.0.10.tar.gz">ggz-docs-0.0.10.tar.gz</a><br>
+<a href="http://mirrors.sunsite.dk/ggzgamingzone/0.0.10/ggz-community-0.0.10.tar.gz">ggz-community-0.0.10.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
 Main repository <img src="/pics/site/flags/flag-us.png"> USA:<br>
 <a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/">http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/</a><br>
 <a href="ftp://ftp.ggzgamingzone.org/pub/ggz/0.0.10/">ftp://ftp.ggzgamingzone.org/pub/ggz/0.0.10/</a>
@@ -129,6 +161,37 @@ of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">
 <a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-grubby-0.0.10.tar.gz">ggz-grubby-0.0.10.tar.gz</a><br>
 <a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-docs-0.0.10.tar.gz">ggz-docs-0.0.10.tar.gz</a><br>
 <a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-community-0.0.10.tar.gz">ggz-community-0.0.10.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Download Mirror <img src="/pics/site/flags/flag-gb.png"> UK:<br>
+uk.ggzgamingzone.org
+<br><br>
+<!--
+Make sure to check the source file integrity using the
+<br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/MD5SUMS.asc">digital signature</a>
+<br>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+-->
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/libggz-0.0.10.tar.gz">libggz-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-client-libs-0.0.10.tar.gz">ggz-client-libs-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-server-0.0.10.tar.gz">ggz-server-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-txt-client-0.0.10.tar.gz">ggz-txt-client-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gtk-client-0.0.10.tar.gz">ggz-gtk-client-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-kde-client-0.0.10.tar.gz">ggz-kde-client-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gnome-client-0.0.10.tar.gz">ggz-gnome-client-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gtk-games-0.0.10.tar.gz">ggz-gtk-games-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-kde-games-0.0.10.tar.gz">ggz-kde-games-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-sdl-games-0.0.10.tar.gz">ggz-sdl-games-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-python-0.0.10.tar.gz">ggz-python-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-utils-0.0.10.tar.gz">ggz-utils-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-grubby-0.0.10.tar.gz">ggz-grubby-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-docs-0.0.10.tar.gz">ggz-docs-0.0.10.tar.gz</a><br>
+<a href="http://uk.ggzgamingzone.org/pub/ggz/0.0.10/ggz-community-0.0.10.tar.gz">ggz-community-0.0.10.tar.gz</a>
 </td></tr>
 
 <tr><td bgcolor="#ffd000" valign="top">
