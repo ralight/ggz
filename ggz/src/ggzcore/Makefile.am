@@ -10,6 +10,8 @@ libggzcore_a_SOURCES =	$(easysock_SOURCES) \
 		      	event.h \
 		      	init.c \
 			ggzcore.h \
+			lists.c \
+			lists.h \
 			msg.c \
 			msg.h \
 			net.c \
