@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2003, 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Published under GNU GPL conditions
 
 import pygame
 import pygame.image
@@ -10,6 +11,26 @@ import socket
 import sys
 import time
 import random
+import os, pwd
+
+def username():
+	return pwd.getpwuid(os.geteuid())[0]
+
+def playernames(surface, player1, player2):
+	font3 = pygame.font.Font(None, 30)
+	player1 = font3.render(player1, 1, (165, 140, 0))
+	vs = font3.render("vs.", 1, (165, 140, 0))
+	player2 = font3.render(player2, 1, (165, 140, 0))
+
+	surface.blit(player1, (610 - player1.get_width(), 285))
+	surface.blit(vs, (610 - vs.get_width(), 315))
+	surface.blit(player2, (610 - player2.get_width(), 345))
+
+class Proto:
+	def __init__(self):
+		self.move_invalid = 0
+		self.move_ok = 1
+		self.move_again = 2
 
 class Game:
 	def __init__(self):
@@ -145,6 +166,8 @@ def network():
 	global blobpos
 	global trail
 	global madeturn
+	global surface
+	global winner
 
 	print "network!"
 
@@ -155,13 +178,14 @@ def network():
 		seattype = net.getbyte()
 		print "seattype:", seattype
 		if seattype != net.SEAT_OPEN:
-			name = net.getstring()
-			print "name:", name
+			name1 = net.getstring()
+			print "name:", name1
 		seattype = net.getbyte()
 		print "seattype:", seattype
 		if seattype != net.SEAT_OPEN:
-			name = net.getstring()
-			print "name:", name
+			name2 = net.getstring()
+			print "name:", name2
+		playernames(surface, name1, name2)
 	elif op == net.MSG_SEAT:
 		print "- seat"
 		seat = net.getbyte()
@@ -244,40 +268,46 @@ def handle_network():
 		ggzmod.dispatch()
 
 def validate((blobpos, trail, x, y)):
+	global proto
+
 	(bx, by, bplayer) = blobpos
 
-	found = 0
+	found = proto.move_invalid
 	if (abs(x - bx) == 1 and abs(y - by) <= 1) or (abs(x - bx) <= 1 and abs(y - by) == 1):
-		found = 1
+		found = proto.move_ok
 	if x < 0 or y < 0 or x > 8 or y > 11:
-		found = 0
+		found = proto.move_invalid
 	elif (x == 0 and bx == 0) or (x == 8 and bx == 8) or (y == 0 and by == 0) or (y == 11 and by == 11):
-		found = 0
+		found = proto.move_invalid
 	else:
 		index = 0
 		for t in trail:
 			(tx, ty, tplayer) = t
 			if tx == x and ty == y:
+				if found == proto.move_ok:
+					found = proto.move_again
 				if index > 0:
 					(tx2, ty2, tplayer2) = trail[index - 1]
 					if tx2 == bx and ty2 == by:
-						found = 0
+						found = proto.move_invalid
 				if index < len(trail) - 1:
 					(tx2, ty2, tplayer2) = trail[index + 1]
 					if tx2 == bx and ty2 == by:
-						found = 0
+						found = proto.move_invalid
 			index += 1
 
 	return found
 
 def ai((blobpos, trail)):
-	time.sleep(2)
+	global proto
+
+	time.sleep(1)
 
 	(bx, by, bplayer) = blobpos
 
-	found = 0
+	found = proto.move_invalid
 	tries = 0
-	while not found and tries < 100:
+	while found == proto.move_invalid and tries < 100:
 		tries += 1
 		x = random.randint(bx - 1, bx + 1)
 		y = random.randint(by - 1, by + 1)
@@ -295,6 +325,11 @@ def main(ggzmode):
 	global blobpos
 	global trail
 	global madeturn
+	global surface
+	global winner
+	global proto
+
+	proto = Proto()
 
 	""" Pygame setup """
 
@@ -337,14 +372,8 @@ def main(ggzmode):
 	surface.blit(sdl, (550, 130))
 	surface.blit(slash, (540, 105))
 
-	font3 = pygame.font.Font(None, 30)
-	player1 = font3.render("you", 1, (165, 140, 0))
-	vs = font3.render("vs.", 1, (165, 140, 0))
-	player2 = font3.render("opponent", 1, (165, 140, 0))
-
-	surface.blit(player1, (610 - player1.get_width(), 285))
-	surface.blit(vs, (610 - vs.get_width(), 315))
-	surface.blit(player2, (610 - player2.get_width(), 345))
+	if not ggzmode:
+		playernames(surface, username(), "opponent")
 
 	""" Points on the game board """
 
@@ -408,9 +437,11 @@ def main(ggzmode):
 	""" Main loop """
 
 	madeturn = 0
+	againturn = 0
 	aierror = 0
 	humanerror = 0
 	gameover = 0
+	winner = 0
 
 	mouse = stone
 	pressed = 0
@@ -437,11 +468,16 @@ def main(ggzmode):
 				x = (x - 30 + 20) / 40
 				y = (y - 30 + 20) / 40
 				if x >= 0 and x < 9 and y >= 0 and y < 11:
-					if validate((blobpos, trail, x, y)):
+					val = validate((blobpos, trail, x, y))
+					if val is not proto.move_invalid:
 						(x2, y2, player) = blobpos
 						blobpos = (x, y, 0)
 						trail.append(blobpos)
-						madeturn = 1
+						if val is not proto.move_again:
+							madeturn = 1
+							againturn = 0
+						else:
+							againturn = 1
 						humanerror = 0
 
 						if ggzsuccess and net.game.domove:
@@ -479,8 +515,14 @@ def main(ggzmode):
 		screen.blit(mouse, pygame.mouse.get_pos())
 
 		if (y == 0 and x == 4) or (y == 10 and x == 4):
-			font4 = pygame.font.Font(None, 24)
 			if y == 0:
+				winner = 2
+			else:
+				winner = 1
+
+		if winner:
+			font4 = pygame.font.Font(None, 24)
+			if winner == 2:
 				waiting = font4.render("Game over, you lost", 1, (165, 140, 0))
 			else:
 				waiting = font4.render("Game over, you won", 1, (165, 140, 0))
@@ -500,6 +542,10 @@ def main(ggzmode):
 			font4 = pygame.font.Font(None, 24)
 			waiting = font4.render("Not allowed, try again", 1, (165, 140, 0))
 			screen.blit(waiting, (610 - waiting.get_width(), 400))
+		elif againturn:
+			font4 = pygame.font.Font(None, 24)
+			again = font4.render("Move again", 1, (165, 140, 0))
+			screen.blit(again, (610 - again.get_width(), 400))
 
 		pygame.display.flip()
 
