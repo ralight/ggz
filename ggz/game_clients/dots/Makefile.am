@@ -15,7 +15,8 @@ ggz_dots_SOURCES = \
 	cb_main.c cb_main.h \
 	dlg_opt.c dlg_opt.h \
 	cb_opt.c cb_opt.h \
-	game.c game.h
+	game.c game.h \
+	dlg_about.c dlg_about.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la
