@@ -1,0 +1,18 @@
+This plugin makes it possible to play GGZ game while using
+Kopete to chat on any server, using any protocol.
+
+Installation:
+	copy kopete-ggz to kdenetwork/kopete/plugins/ggz
+	rerun Makefile.cvs and configure
+
+Issues:
+	- ggzchatui.rc is not found, unless in kopete's directory?
+	  (is installed to kopete_ggz)
+	- GGZ icon should be present (install ggz-kde-client)
+	- in IRC, the Contact is the room name instead of the player list
+	  => only in /query mode it is the player name
+
+Todo:
+	- notify peer(s) when launching game (sniffing messages?)
+	- run ggz-wrapper
+

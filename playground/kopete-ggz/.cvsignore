@@ -1,0 +1,6 @@
+*.la
+*.lo
+*.loT
+Makefile
+Makefile.in
+Makefile.rules.in
