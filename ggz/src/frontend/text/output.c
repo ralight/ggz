@@ -126,12 +126,48 @@ void output_status()
 	char *currenttime;	/* String formatted time */
 	char displaytime[9];	/* What we display */
 	char *user = NULL, *server = NULL, *room = NULL;
-	char currentstatus[10] = "Offline";
+	char currentstatus[11];
+
+	switch((int)ggzcore_state_get_id())
+	{
+		case GGZ_STATE_OFFLINE:
+			strcpy(currentstatus, "Offline");
+			break;
+		case GGZ_STATE_CONNECTING:
+			strcpy(currentstatus, "Connecting");
+			break;
+		case GGZ_STATE_ONLINE:
+			strcpy(currentstatus, "Online");
+			break;
+		case GGZ_STATE_LOGGING_IN:
+			strcpy(currentstatus, "Logging In");
+			break;
+		case GGZ_STATE_LOGGED_IN:
+			strcpy(currentstatus, "Logged In");
+			break;
+		case GGZ_STATE_ENTERING_ROOM:
+			strcpy(currentstatus, "--> Room");
+			break;
+		case GGZ_STATE_IN_ROOM:
+			strcpy(currentstatus, "Chatting");
+			break;
+		case GGZ_STATE_JOINING_TABLE:
+			strcpy(currentstatus, "--> Table");
+			break;
+		case GGZ_STATE_AT_TABLE:
+			strcpy(currentstatus, "Playing");
+			break;
+		case GGZ_STATE_LEAVING_TABLE:
+			strcpy(currentstatus, "<-- Table");
+			break;
+		case GGZ_STATE_LOGGING_OUT:
+			strcpy(currentstatus, "Logging Out");
+			break;
+	}
 	
 	if (ggzcore_state_is_online()) {
 		user = ggzcore_state_get_profile_login();
 		server = ggzcore_state_get_profile_host();
-		strcpy(currentstatus, "Online");
 	}
 	
 	if (ggzcore_state_is_in_room())

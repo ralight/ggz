@@ -38,6 +38,7 @@ void server_login_ok(GGZEventID id, void* event_data, void* user_data)
 #ifdef DEBUG
 	output_text("--- Connected to %s.", ggzcore_state_get_profile_host());
 #endif
+	ggzcore_event_trigger(GGZ_USER_LIST_ROOMS, NULL, NULL);
 }
 
 void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
@@ -82,6 +83,9 @@ void server_chat_beep(GGZEventID id, void* event_data, void* user_data)
 void server_connect_fail(GGZEventID id, void* event_data, void* user_data)
 {
 	output_text("--- Connection failed: %s", (char*)event_data);
+
+	/* For the time being disconnect at not to confuse us */
+	ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
 }
 
 
