@@ -168,6 +168,8 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 			        	        	es_write_string(connection.sock, name);
 			        	        	es_write_string(connection.sock,
         	        	        	        	gtk_entry_get_text(GTK_ENTRY(user_data))+6+i);
+
+							chat_print(CHAT_COLOR_SERVER, "---", "Personal message sent");
 							i = strlen(name)+1;
 						}
 					}
@@ -176,6 +178,7 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 				if (es_write_char(connection.sock, GGZ_CHAT_BEEP) == 0)
 	        		        es_write_string(connection.sock,
                         		        gtk_entry_get_text(GTK_ENTRY(user_data))+6);
+				chat_print(CHAT_COLOR_SERVER, "---", "Beep sent");
 			} else if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/announce ", 10))
 			{
 				if (es_write_char(connection.sock, GGZ_CHAT_ANNOUNCE) == 0)

@@ -422,6 +422,10 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_CHAT:
 		es_read_char(source, &status);
 		connect_msg("[%s] Chat Send Status: %d\n", opcode_str[op], status);
+		if (status == E_USR_LOOKUP)
+			chat_print(CHAT_COLOR_SERVER, "---", "User not found.");
+		if (status == E_NOT_IN_ROOM)
+			chat_print(CHAT_COLOR_SERVER, "---", "You must be in a room to chat.");
 		break;
 
 	case MSG_CHAT:
