@@ -68,17 +68,19 @@ layout_t *layouts[MAX_NUM_PLAYERS+1] = { NULL, NULL, &layout_2, &layout_3, &layo
 
 
 
-int get_window_width() {
+int get_table_width()
+{
+	if (game.num_players == 0) return 300;
 	return ( 3*XWIDTH + 2*TEXT_BOX_WIDTH + CARD_BOX_WIDTH );
 }
 
-int get_window_height() {
-	return get_window_width();
+int get_table_height()
+{
+	return get_table_width();
 }
 
 int orientation(int p)
 {
-	ggz_debug("Number of players is %d.", game.num_players);
 	assert (LAYOUT);
 	return LAYOUT->orientations[p];
 }

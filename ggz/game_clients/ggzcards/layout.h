@@ -40,8 +40,8 @@
 #define CARD_BOX_WIDTH	(HAND_WIDTH + 2*XWIDTH)
 #define TEXT_BOX_WIDTH	(TEXT_WIDTH + 2*XWIDTH)
 
-extern int get_window_width();
-extern int get_window_height();
+extern int get_table_width();
+extern int get_table_height();
 
 extern int orientation(int p);
 extern void get_text_box_pos(int p, int *x, int *y);

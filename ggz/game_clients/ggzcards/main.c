@@ -61,8 +61,6 @@ static int get_trick_winner(void);
 
 int main(int argc, char *argv[])
 {
-
-	game.num_players = 4; /* TODO: temporary measure; eventually this should be 0 */
 	ggz_debug("Launching.");
 
 	gtk_init(&argc, &argv);
@@ -263,7 +261,7 @@ static int get_players(void)
 	char *temp;
 	char t_name[17];
 	int numplayers;
-	static int initted = 0; /* TODO: temporary measure */
+	int different;
 
 	if (es_read_int(game.fd, &numplayers) < 0)
 		return -1;
@@ -271,9 +269,9 @@ static int get_players(void)
 	/* TODO: support for changing the number of players */
 
 	/* we may need to allocate memory for the players */
-	if (!initted || game.num_players != numplayers) {
+	different = (game.num_players != numplayers);
+	if (different) {
 		/* TODO: free if necessary */
-		initted = 1;
 		ggz_debug("get_players: (re)allocating game.players.");
   		game.players = (struct seat_t *)g_malloc(numplayers * sizeof(struct seat_t));
 		bzero(game.players, numplayers * sizeof(struct seat_t));
@@ -296,6 +294,9 @@ static int get_players(void)
 	}
 
 	game.num_players = numplayers;
+
+	if (different)
+		table_setup();
 
 	if(left && game.state == WH_STATE_BID) {
 		/* TODO: cancel bid (I think????) */
@@ -398,8 +399,9 @@ static int handle_play(void)
 	hand = &game.players[p].hand;
 
 	/* first, find a matching card to remove.
-	 * Anything "unknown" will match, as will teh card itself*/
+	 * Anything "unknown" will match, as will the card itself*/
 	for (tc=hand->hand_size-1; tc>=0; tc--) {
+		/* TODO: this won't work in mixed known-unknown hands */
 		card_t hcard = hand->card[tc];
 		if (hcard.deck != -1 && hcard.deck != card.deck) continue;
 		if (hcard.suit != -1 && hcard.suit != card.suit) continue;

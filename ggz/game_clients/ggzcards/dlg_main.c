@@ -161,7 +161,7 @@ create_dlg_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (fixed1);
   gtk_box_pack_start (GTK_BOX (vbox1), fixed1, TRUE, TRUE, 0);
-  gtk_widget_set_usize (fixed1, get_window_width(), get_window_height());
+  gtk_widget_set_usize (fixed1, get_table_width(), get_table_height());
 
   statusbar1 = gtk_statusbar_new ();
   gtk_widget_set_name (statusbar1, "statusbar1");

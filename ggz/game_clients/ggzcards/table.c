@@ -75,6 +75,7 @@ static void table_card_clicked(int);
 static void table_card_play(int, int);
 
 static void table_show_card(int, card_t);
+static void draw_card(card_t, int, int, int);
 
 #ifdef ANIMATION
 static gint table_animation_callback(gpointer);
@@ -124,10 +125,10 @@ static void draw_card_areas()
 			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
 			   TRUE,
 			   0, 0,
-			   f1->allocation.width, f1->allocation.height);
+			   get_table_width(), get_table_height());
 
 	/* Draw card areas */
-	for (p=0; p<4; p++) {
+	for (p=0; p<game.num_players; p++) {
 		draw_text_box(p);
 		draw_card_box(p);
 	}
@@ -139,7 +140,7 @@ static void draw_card_areas()
 void table_initialize(void)
 {
 	GdkBitmap *mask;
-	int x, y, p;
+	card_t card = {ACE_HIGH, SPADES, 0};
 
 	gchar** xpm_fronts[4] = {cards_xpm, cards_2_xpm, cards_3_xpm, cards_4_xpm};
 	gchar** xpm_backs[4] = {cards_b1_xpm, cards_b2_xpm, cards_b3_xpm, cards_b4_xpm};
@@ -148,43 +149,73 @@ void table_initialize(void)
 	/* This starts our drawing code */
 	f1 = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
 	f1_style = gtk_widget_get_style(f1);
+	gtk_widget_show(f1);
 
 	/* build pixmaps from the xpms */
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 4 /* 4 orientations */; i++) {
 		card_fronts[i] = gdk_pixmap_create_from_xpm_d(f1->window, &mask,
 						     &f1_style->bg[GTK_STATE_NORMAL],
 						     (gchar **) xpm_fronts[i]);
 		card_backs[i] = gdk_pixmap_create_from_xpm_d(f1->window, &mask,
 						    &f1_style->bg[GTK_STATE_NORMAL],
 						    (gchar **) xpm_backs[i]);
+		if (!card_fronts[i] || !card_backs[i])
+			ggz_debug("ERROR: couldn't load card pixmaps for orientation %d.", i);
 	}
 
-	table_buf = gdk_pixmap_new(f1->window,
-			     f1->allocation.width,
-			     f1->allocation.height,
+	
+	if (game.num_players > 0) {
+		table_setup();
+	} else {
+		/* TODO: draw a "splash screen" here. */
+		table_buf = gdk_pixmap_new(f1->window,
+			     get_table_width(),
+			     get_table_height(),
 			     -1);
+		draw_card( card, 0,
+			   (get_table_width() - CARDWIDTH)/2,
+			   (get_table_height() - CARDHEIGHT)/2);
+		table_show_table(0, 0, get_table_width(), get_table_height());
+	}
 
-	ggz_debug("Width and height are %d and %d.", f1->allocation.width, f1->allocation.height);
+	table_initialized = TRUE;
+}
+
+#include "dlg_main.h"
+
+void table_setup()
+{
+	int x, y, p;
+
+	ggz_debug("Setting up table.  Width and height are %d.  %d players.", get_table_width(), game.num_players);
+
+	gtk_widget_set_usize (f1, get_table_width(), get_table_height());
+
+	/* TODO: avoid memory leak */
+	table_buf = gdk_pixmap_new(f1->window,
+			     get_table_width(),
+			     get_table_height(),
+			     -1);
 
 	draw_card_areas();
 
 	/* Display the buffer */
-	table_show_table(0, 0, f1->allocation.width, f1->allocation.height);	
+	table_show_table(0, 0, get_table_width(), get_table_height());	
 
 
 	/* Add text labels to display */
-	for(p = 0; p < 4; p++) {
+	for (p = 0; p < game.num_players; p++) {
 		get_text_box_pos(p, &x, &y);
 
 		/* Name entries */
-		l_name[p] = gtk_label_new("Empty Seat");
+		l_name[p] = gtk_label_new(game.players[p].name);
 		gtk_fixed_put(GTK_FIXED(f1), l_name[p], x+3, y+1);
 		gtk_widget_set_usize(l_name[p], TEXT_BOX_WIDTH - 6, -1);
 		gtk_widget_show(l_name[p]);
 
 		/* TODO: hack: inserted 4 players here since we haven't gotten
 		 * the actual data yet */
-		label[p] = gtk_label_new("(message goes here)");
+		label[p] = gtk_label_new(game.players[p].message);
 		gtk_fixed_put(GTK_FIXED(f1), label[p], x+3, y+20);
 		gtk_widget_set_usize(label[p], TEXT_BOX_WIDTH - 6, -1);
 		gtk_label_set_justify(GTK_LABEL(label[p]),  GTK_JUSTIFY_LEFT);
@@ -193,15 +224,13 @@ void table_initialize(void)
 
 	/* Current trump entry */
 	/* TODO: put this position into an list */
+	msglabel = gtk_label_new(NULL);
 	x = TEXT_BOX_WIDTH + 2 * XWIDTH;
 	y = TEXT_BOX_WIDTH + CARD_BOX_WIDTH + 2* XWIDTH - 20;
-	msglabel = gtk_label_new(NULL);
 	gtk_fixed_put(GTK_FIXED(f1), msglabel, x, y);
 	gtk_label_set_justify(GTK_LABEL(msglabel), GTK_JUSTIFY_LEFT);
 	/* gtk_widget_set_usize(msglabel, TEXT_BOX_WIDTH-6, -1); */
 	gtk_widget_show(msglabel);
-
-	table_initialized = TRUE;
 }
 
 void table_set_player_message(int p, char* message)
@@ -434,12 +463,12 @@ static void table_card_play(int p, int card)
 	table_display_hand(p);
 /*
 	x = TEXT_BOX_WIDTH + 2*XWIDTH + 0.5 + (card * CARDWIDTH/4.0);
-	y = f1->allocation.height - TEXT_BOX_WIDTH;
+	y = get_table_height() - TEXT_BOX_WIDTH;
 	draw_card(game.players[p].hand.card[card], orientation(p), x, y);
 */
 
 	/* And refresh the on-screen image */
-	table_show_table(TEXT_BOX_WIDTH + XWIDTH, f1->allocation.height - TEXT_BOX_WIDTH - 2*XWIDTH,
+	table_show_table(TEXT_BOX_WIDTH + XWIDTH, get_table_height() - TEXT_BOX_WIDTH - 2*XWIDTH,
 			CARD_BOX_WIDTH, CARDHEIGHT);
 
 #ifdef ANIMATION
@@ -667,7 +696,7 @@ void table_animation(int p, card_t card)
 	int pos[4][4] = { {0,0,0,0},
 			  {0, 146, 120, 186},
 			  {159, 0, 199, 130},
-			  {f1->allocation.width-CARDWIDTH, 226, 280, 186} };
+			  {get_table_width()-CARDWIDTH, 226, 280, 186} };
 
 	table_animation_trigger(card, pos[p][0], pos[p][1], pos[p][2], pos[p][3]);
 }
@@ -694,10 +723,10 @@ void table_clear_table(void)
 	gdk_draw_rectangle(table_buf,
 			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
 			   TRUE,
-			   (f1->allocation.width-size)/2, (f1->allocation.height-size)/2,
+			   (get_table_width()-size)/2, (get_table_height()-size)/2,
 			   size,size);
 
-	table_show_table((f1->allocation.width-size)/2, (f1->allocation.height-size)/2,
+	table_show_table((get_table_width()-size)/2, (get_table_height()-size)/2,
 			   size,size);
 
 	for(i = 0; i < game.num_players; i++) {
@@ -713,7 +742,7 @@ static void table_show_card(int p, card_t c)
 {
 	int x, y;
 	int offset = CARDHEIGHT/12;
-	int mx = f1->allocation.width / 2, my = f1->allocation.height / 2;
+	int mx = get_table_width() / 2, my = get_table_height() / 2;
 	int positions[4][2] = { {mx-CARDWIDTH/2, my+offset},
 				{mx-CARDWIDTH-offset, my-CARDHEIGHT/2},
                           	{mx-CARDWIDTH/2, my-offset-CARDHEIGHT},
