@@ -56,7 +56,6 @@ GGZap::GGZap(QWidget *parent, const char *name)
 
 	resize(250, 100);
 	setCaption(i18n("GGZ Quick Launcher"));
-	show();
 }
 
 GGZap::~GGZap()
@@ -111,7 +110,12 @@ void GGZap::slotCancel()
 
 void GGZap::launch()
 {
-	if(!m_autolaunch) return;
+	if(!m_autolaunch)
+	{
+		showMinimized();
+		return;
+	}
+	show();
 	fat(m_connect);
 	m_handler->init();
 	emit signalMenu(GGZapTray::menulaunch);

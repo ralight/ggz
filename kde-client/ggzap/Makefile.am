@@ -9,12 +9,14 @@ ggzap_SOURCES = \
 	main.cpp \
 	ggzap.cpp \
 	ggzap_tray.cpp \
+	ggzap_config.cpp \
 	ggzap_handler.cpp \
 	ggzap_game.cpp
 
 noinst_HEADERS = \
 	ggzap.h \
 	ggzap_tray.h \
+	ggzap_config.h \
 	ggzap_handler.h \
 	ggzap_game.h
 

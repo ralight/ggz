@@ -6,6 +6,7 @@
 #include <qpopupmenu.h>
 
 class GGZapGame;
+class GGZapConfig;
 
 class GGZapTray : public KSystemTray
 {
@@ -36,6 +37,7 @@ class GGZapTray : public KSystemTray
 
 		QPopupMenu *m_menu;
 		GGZapGame *m_game;
+		GGZapConfig *m_config;
 };
 
 #endif

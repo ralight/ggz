@@ -62,6 +62,8 @@ class GGZapHandler : public QObject
 		GGZCoreModule *m_module;
 		const char *m_modulename;
 		const char *m_frontendtype;
+		const char *m_confserver, *m_confusername;
+		char *m_zapuser;
 };
 
 #endif

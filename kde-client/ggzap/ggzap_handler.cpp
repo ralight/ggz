@@ -3,8 +3,10 @@
 #include "GGZCoreModule.h"
 #include "GGZCoreGametype.h"
 #include "GGZCore.h"
+#include "GGZCoreConfio.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 #include <iostream>
 
@@ -19,6 +21,9 @@ GGZapHandler::GGZapHandler()
 	m_module = NULL;
 	m_frontendtype = NULL;
 	m_modulename = NULL;
+	m_confserver = NULL;
+	m_confusername = NULL;
+	m_zapuser = NULL;
 
 	core = new GGZCore();
 	core->init(GGZCore::parser | GGZCore::modules, "/tmp/ggzap.debug", GGZCore::all);
@@ -32,19 +37,35 @@ GGZapHandler::~GGZapHandler()
 void GGZapHandler::init()
 {
 	int result;
+	GGZCoreConfio *conf;
+	char confdir[1024];
+	char *user;
+
+	m_zapuser = (char*)malloc(17);
+	strcpy(confdir, getenv("HOME"));
+	strcat(confdir, "/.ggz/ggzap.rc");
+	conf = new GGZCoreConfio(confdir, GGZCoreConfio::readonly);
+	m_confserver = conf->read("Global", "Server", "141.30.227.122");
+	user = conf->read("Global", "Username", "");
+	delete conf;
+
+	strncpy(m_zapuser, user, 12);
+	strcat(m_zapuser, "/zap");
+	m_confusername = m_zapuser;
 
 	if(!m_modulename) return;
 
 	m_server = new GGZCoreServer();
 	attachServerCallbacks();
 
-	m_server->setHost("localhost", 5688);
+	m_server->setHost(m_confserver, 5688);
 	result = m_server->connect();
 	if(result == -1) emit signalState(connectfail);
 }
 
 void GGZapHandler::shutdown()
 {
+	if(m_zapuser) free(m_zapuser);
 	if(m_server)
 	{
 		m_server->logout();
@@ -133,7 +154,7 @@ void GGZapHandler::hookServerActive(unsigned int id)
 		case GGZCoreServer::connected:
 			emit signalState(connected);
 			while(!m_server->isOnline()) m_server->dataRead();
-			m_server->setLogin(GGZCoreServer::guest, "randomguest", "foo");
+			m_server->setLogin(GGZCoreServer::guest, m_confusername, "GGZap Game");
 			m_server->login();
 			break;
 		case GGZCoreServer::connectfail:
