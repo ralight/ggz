@@ -38,24 +38,6 @@
 
 #include "ggz.h"
 
-#ifndef gnutls_session
-#define gnutls_session GNUTLS_STATE
-#define gnutls_anon_server_credentials GNUTLS_ANON_SERVER_CREDENTIALS
-#define gnutls_anon_client_credentials GNUTLS_ANON_CLIENT_CREDENTIALS
-#define gnutls_anon_allocate_client_credentials gnutls_anon_allocate_client_sc
-#define gnutls_anon_allocate_server_credentials gnutls_anon_allocate_server_sc
-#define gnutls_credentials_set gnutls_cred_set
-#define GNUTLS_COMP_LZO GNUTLS_COMP_ZLIB
-#endif
-
-#ifndef GNUTLS_CIPHER_ARCFOUR
-#define GNUTLS_CRD_ANON GNUTLS_ANON
-#define GNUTLS_KX_DHE_DSS GNUTLS_KX_X509PKI_DHE_DSS
-#define GNUTLS_KX_DHE_RSA GNUTLS_KX_X509PKI_DHE_RSA
-#define GNUTLS_CIPHER_ARCFOUR_40 GNUTLS_CIPHER_ARCFOUR
-#define GNUTLS_CIPHER_ARCFOUR_128 GNUTLS_CIPHER_ARCFOUR
-#endif
-
 static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 
 static int state_entries = -1;
@@ -141,7 +123,7 @@ int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify
 	else
 		gnutls_credentials_set(session, GNUTLS_CRD_ANON, s_cred);
 
-	gnutls_transport_set_ptr(session, fdes);
+	gnutls_transport_set_ptr(session, (gnutls_transport_ptr)fdes);
 	do {
 		ret = gnutls_handshake(session);
 	} while(ret == GNUTLS_E_INTERRUPTED || ret == GNUTLS_E_AGAIN);

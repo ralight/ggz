@@ -7,18 +7,15 @@
 
 #ifdef USE_GCRYPT
 
-#ifndef GcryMDHd
-#define GcryMDHd GCRY_MD_HD
-#endif
-
 static hash_t hash_create_private(const char *algo, const char *text, const char *secret)
 {
-	GcryMDHd handle;
+	gcry_md_hd_t handle;
 	const unsigned int flags = (secret ? GCRY_MD_FLAG_HMAC : 0);
 	int unsigned algos[] = {GCRY_MD_MD5, 0};
 	int ret;
 	unsigned int i;
 	hash_t hash;
+	gcry_error_t error;
 
 	hash.hash = NULL;
 	hash.hashlen = 0;
@@ -36,8 +33,8 @@ static hash_t hash_create_private(const char *algo, const char *text, const char
 		return hash;
 	}
 
-	handle = gcry_md_open(0, flags);
-	if(!handle)
+	error = gcry_md_open(&handle, 0, flags);
+	if(handle != GPG_ERR_NO_ERROR)
 	{
 		fprintf(stderr, "Error: couldn't create handle.\n");
 		return hash;
