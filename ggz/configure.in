@@ -198,6 +198,7 @@ AC_OUTPUT([Makefile
 	   game_clients/tictactoe/Makefile	
 	   game_clients/dots/Makefile
 	   game_clients/lapocha/Makefile
+	   game_clients/reversi/Makefile
 	   intl/Makefile
 	   po/Makefile.in
 	   ])
