@@ -138,7 +138,6 @@ create_main_window (void)
   gtk_widget_ref (send_setup);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "send_setup", send_setup,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (send_setup);
   gtk_box_pack_start (GTK_BOX (player_box), send_setup, FALSE, FALSE, 3);
   gtk_widget_set_sensitive (send_setup, FALSE);
 
@@ -167,6 +166,9 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (mainarea), "button_press_event",
                       GTK_SIGNAL_FUNC (on_mainarea_button_press_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (send_setup), "clicked",
+                      GTK_SIGNAL_FUNC (on_send_setup_clicked),
                       NULL);
 
   gtk_window_add_accel_group (GTK_WINDOW (main_window), accel_group);

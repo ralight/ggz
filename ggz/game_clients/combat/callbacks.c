@@ -13,6 +13,7 @@
 
 extern GdkPixmap *cbt_buf;
 extern combat_game cbt_game;
+extern GtkWidget *main_win;
 
 gboolean
 on_main_window_configure_event         (GtkWidget       *widget,
@@ -107,5 +108,24 @@ on_mainarea_button_press_event         (GtkWidget       *widget,
 	}
 
   return FALSE;
+}
+
+void callback_sendbutton_set_enabled(gboolean mode) {
+	GtkWidget *button;
+	printf("Enablind/Disabling send button (%d)\n", mode);
+	button = gtk_object_get_data(GTK_OBJECT(main_win), "send_setup");
+	gtk_widget_set_sensitive (button, mode);
+	if (mode == FALSE)
+		gtk_widget_hide(button);
+	else
+		gtk_widget_show(button);
+}
+
+void
+on_send_setup_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	game_send_setup();
+
 }
 

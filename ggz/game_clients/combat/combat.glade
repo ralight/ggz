@@ -142,8 +142,14 @@
 	<widget>
 	  <class>GtkButton</class>
 	  <name>send_setup</name>
+	  <visible>False</visible>
 	  <sensitive>False</sensitive>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_send_setup_clicked</handler>
+	    <last_modification_time>Wed, 18 Oct 2000 23:16:39 GMT</last_modification_time>
+	  </signal>
 	  <label>_Send Setup</label>
 	  <child>
 	    <padding>3</padding>

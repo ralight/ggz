@@ -58,6 +58,7 @@ int game_get_players();
 int game_ask_options();
 void game_handle_setup(int);
 void game_handle_move(int);
+void game_send_setup();
 
 // Init variables
 void game_init();

@@ -46,3 +46,9 @@ on_mainarea_button_press_event         (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data);
 
+void
+callback_sendbutton_set_enabled (gboolean mode);
+
+void
+on_send_setup_clicked                  (GtkButton       *button,
+                                        gpointer         user_data);

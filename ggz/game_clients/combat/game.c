@@ -30,6 +30,7 @@
 #include "game.h"
 #include "combat.h"
 
+#include "callbacks.h"
 #include "support.h"
 
 GtkWidget *main_win;
@@ -72,7 +73,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 	}
 
 	// FIXME: Erase this
-	printf("Got message from the server!\n");
+	printf("Got message from the server! (%d)\n", op);
 
 	switch (op) {
 		case CBT_MSG_SEAT:
@@ -89,6 +90,17 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 		case CBT_MSG_OPTIONS:
 			game_get_options();
 			game_draw_board();
+			break;
+		case CBT_REQ_SETUP:
+			cbt_game.state = CBT_STATE_SETUP;
+			callback_sendbutton_set_enabled(TRUE);
+			break;
+		case CBT_MSG_START:
+			cbt_game.state = CBT_STATE_PLAYING;
+			callback_sendbutton_set_enabled(FALSE);
+			game_draw_bg();
+			game_draw_board();
+			game_status("Game has started!");
 			break;
 		default:
 			game_status("Ops! Wrong message: %d", op);
@@ -337,9 +349,6 @@ void game_draw_board() {
 	if (!cbt_game.map || !cbt_buf)
 		return;
 
-		
-
-
 	for (a = 0; a < cbt_game.width * cbt_game.height; a++) {
 		// Draw the terrain
 		game_draw_terrain(a%cbt_game.width, a/cbt_game.width,
@@ -560,6 +569,51 @@ void game_handle_setup(int p) {
 
 }
 
+void game_send_setup() {
+	char *setup;
+	int len = 0;
+	int a, b = 0;
+
+	if (cbt_game.state != CBT_STATE_SETUP)
+		return;
+
+	// TODO: Check for validity
 	
+	printf("Sending setup...");
+
+	// Gets the number of setup tiles
+	for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
+		if (GET_OWNER(cbt_game.map[a].type) == cbt_info.seat)
+			len++;
+	}
+
+	// Alloc memory
+	setup = (char *)malloc((len+1) * sizeof(char));
+
+	// Puts setup together
+	// Adds one to everyone, so it can be sent without problems
+	// (although the OWNER part of the message should handle it)
+	for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
+		if (GET_OWNER(cbt_game.map[a].type) == cbt_info.seat) {
+			setup[b] = OWNER(cbt_info.seat) + cbt_game.map[a].unit + 1;
+			b++;
+		}
+	}
+	setup[b] = 0;
+
+	// Sends the message
+	if (es_write_int(cbt_info.fd, CBT_MSG_SETUP) < 0 || es_write_string(cbt_info.fd, setup) < 0)
+		game_status("Couldn't send the setup!");
+
+	// Free memory
+	free(setup);
+
+	// Hide the button
+	callback_sendbutton_set_enabled(FALSE);
+	// Update the state (NULL state)
+	cbt_game.state = CBT_STATE_NULL;
+
+	printf("done!\n");
 
 
+}
