@@ -2,6 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: first.c 2219 2001-08-24 20:15:58Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -56,10 +57,11 @@ static void first_button_yes_activate(GtkButton *button, gpointer data);
 static void first_button_no_activate(GtkButton *button, gpointer data);
 static void first_generate_password(char *pw);
 
-static char *pw_words[] = { N_("(G) Wizard"),  N_("(G) Deity"),      N_("(G) Sentinel"), N_("(G) Captain"), N_("(G) Knight"),
-                            N_("(G) Angel"),   N_("(G) Silverlord"), N_("(G) Eagle"),    N_("(G) Vampire"), N_("(G) Chief"),
-                            N_("(G) Colonel"), N_("(G) General"),    N_("(G) Major"),    N_("(G) Scout"),   N_("(G) Lieutenant"),
-                            N_("(G) Stalker"), N_("(G) Scientist"),  N_("(G) Scholar"),  N_("(G) Entity"),  N_("(G) Creator")};
+static char *pw_words[] = { N_("Wizard"),    N_("Deity"),   N_("Sentinel"),   N_("Captain"),
+                            N_("Knight"),    N_("Angel"),   N_("Silverlord"), N_("Eagle"),
+                            N_("Vampire"),   N_("Chief"),   N_("Colonel"),    N_("General"),
+                            N_("Major"),     N_("Scout"),   N_("Lieutenant"), N_("Stalker"),
+                            N_("Scientist"), N_("Scholar"), N_("Entity"),     N_("Creator")};
 
 /* first_create_or_raise() - Displays the dialog or raises the
  *                           current dialog
@@ -161,9 +163,10 @@ static void first_generate_password(char *pw)
         int word, d1, d2;
         
         srandom(time(NULL));
-        word = random() % 20;
+        word = random() % (sizeof(pw_words) / sizeof(pw_words[0]));
         d1 = random() % 10;
         d2 = random() % 10;
+        /* FIXME: shouldn't we translate the pw_words entry here?  --JDS */
         sprintf(pw, "%s%d%d", pw_words[word], d1, d2);
 }
 
