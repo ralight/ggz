@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3437 2002-02-21 10:05:18Z jdorje $
+ * $Id: net.c 3482 2002-02-27 04:36:02Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -36,6 +36,7 @@
 #include <ggz.h>
 
 #include "common.h"
+#include "play.h"
 #ifdef USE_GGZ_STATS		/* defined in common.h */
 # include "../../ggzdmod/ggz_stats.h"
 #endif /* USE_GGZ_STATS */
@@ -442,68 +443,14 @@ void broadcast_newhand(void)
 /* receives a play from the client, and calls update if necessary.  */
 int rec_play(player_t p)
 {
-	int fd = get_player_socket(p), i;
+	int fd = get_player_socket(p);
 	card_t card;
-	hand_t *hand;
-	char *err;
 
 	/* read the card played */
 	if (read_card(fd, &card) < 0)
 		return -1;
-
-	/* are we waiting for a play? */
-	if (game.state != STATE_WAIT_FOR_PLAY) {
-		ggzdmod_log(game.ggz,
-			    "SERVER/CLIENT BUG: we received a play (player %d/%s) when we weren't waiting for one.",
-			    p, get_player_name(p));
-		return -1;
-	}
-
-	/* Is is this player's turn to play? */
-	if (!game.players[p].is_playing) {
-		/* better to just ignore it; a MSG_BADPLAY requests a new
-		   play */
-		ggzdmod_log(game.ggz,
-			    "SERVER/CLIENT BUG: player %d/%s played out of turn!?!?",
-			    p, get_player_name(p));
-		return -1;
-	}
-
-	/* find the card played */
-	hand = &game.seats[game.players[p].play_seat].hand;
-	for (i = 0; i < hand->hand_size; i++)
-		if (are_cards_equal(hand->cards[i], card))
-			break;
-
-	if (i == hand->hand_size) {
-		(void) send_badplay(p,
-				    "That card isn't even in your hand."
-				    "  This must be a bug.");
-		ggzdmod_log(game.ggz, "CLIENT BUG: "
-			    "player %d/%s played a card that wasn't in their hand (%i %i %i)!?!?",
-			    p, get_player_name(p), card.face, card.suit,
-			    card.deck);
-		return -1;
-	}
-
-	ggzdmod_log(game.ggz, "We received a play of card "
-		    "(%d %d %d) from player %d/%s.", card.face, card.suit,
-		    card.deck, p, get_player_name(p));
-
-	/* we've verified that this card could have physically been played;
-	   we still need to check if it's a legal play Note, however, that we
-	   don't return -1 on an error here.  An error returned indicates a
-	   GGZ error, which is not what happened.  This is just a player
-	   mistake */
-	err = game.funcs->verify_play(p, card);
-	if (err == NULL)
-		/* any AI routine would also call handle_play_event, so the
-		   ai must also check the validity as above.  This could be
-		   changed... */
-		handle_play_event(p, card);
-	else
-		(void) send_badplay(p, err);
-
+		
+	handle_client_play(p, card);
 	return 0;
 }
 

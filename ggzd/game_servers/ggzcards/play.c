@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 3438 2002-02-21 10:11:28Z jdorje $
+ * $Id: play.c 3482 2002-02-27 04:36:02Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -49,4 +49,58 @@ void req_play(player_t p, seat_t s)
 	set_player_message(p);
 	
 	(void) send_play_request(p, s);
+}
+
+void handle_client_play(player_t p, card_t card)
+{
+	hand_t *hand;
+	int i;
+	char *err;
+
+	/* Is is this player's turn to play? */
+	if (!game.players[p].is_playing) {
+		/* better to just ignore it; a MSG_BADPLAY requests a new
+		   play */
+		ggzdmod_log(game.ggz,
+			    "SERVER/CLIENT BUG: player %d/%s played "
+			    "out of turn!?!?",
+			    p, get_player_name(p));
+		return;
+	}
+
+	/* find the card played */
+	hand = &game.seats[game.players[p].play_seat].hand;
+	for (i = 0; i < hand->hand_size; i++)
+		if (are_cards_equal(hand->cards[i], card))
+			break;
+
+	if (i == hand->hand_size) {
+		(void) send_badplay(p,
+				    "That card isn't even in your hand."
+				    "  This must be a bug.");
+		send_sync(p);
+		ggzdmod_log(game.ggz, "CLIENT BUG: "
+			    "player %d/%s played a card that wasn't "
+			    "in their hand.",
+			    p, get_player_name(p));
+		return;
+	}
+
+	ggzdmod_log(game.ggz, "We received a play of card "
+		    "(%d %d %d) from player %d/%s.", card.face, card.suit,
+		    card.deck, p, get_player_name(p));
+
+	/* we've verified that this card could have physically been played;
+	   we still need to check if it's a legal play Note, however, that we
+	   don't return -1 on an error here.  An error returned indicates a
+	   GGZ error, which is not what happened.  This is just a player
+	   mistake */
+	err = game.funcs->verify_play(p, card);
+	if (err == NULL)
+		/* any AI routine would also call handle_play_event, so the
+		   ai must also check the validity as above.  This could be
+		   changed... */
+		handle_play_event(p, card);
+	else
+		(void) send_badplay(p, err);
 }
