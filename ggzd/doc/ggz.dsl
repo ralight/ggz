@@ -408,7 +408,12 @@
 (element parameter ($italic-mono-seq$))
 (element prompt ($mono-seq$))
 (element symbol ($charseq$))
-(element emphasis ($italic-seq$))
+;; (element emphasis ($italic-seq$))
+(element emphasis
+  (if (equal? (attribute-string "role") "bold")
+      ($bold-seq$)
+      ($italic-seq$)))
+
 
 
 ;;=====================================
@@ -877,7 +882,12 @@
 (element parameter ($italic-mono-seq$))
 (element prompt ($mono-seq$))
 (element symbol ($charseq$))
-(element emphasis ($italic-seq$))
+;;(element emphasis ($italic-seq$))
+(element emphasis
+  (if (equal? (attribute-string "role") "bold")
+      ($bold-seq$)
+      ($italic-seq$)))
+
 
 
 ;;====================

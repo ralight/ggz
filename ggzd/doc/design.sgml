@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 446 $</revnumber>
-	<date>$Date: 2000-04-23 19:02:44 -0700 (Sun, 23 Apr 2000) $</date>
+	<revnumber>$Revision: 461 $</revnumber>
+	<date>$Date: 2000-04-26 14:12:59 -0700 (Wed, 26 Apr 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -1129,7 +1129,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1141,9 +1141,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -1163,7 +1163,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>serverid</parameter></term>
+		<term><emphasis role="bold">serverid</emphasis></term>
 		<listitem>
 		  <para>
 		    Server identification string (including version number)
@@ -1207,7 +1207,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1219,9 +1219,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 	      </tbody>
@@ -1268,7 +1268,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1280,9 +1280,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -1313,7 +1313,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>lines</parameter></term>
+		<term><emphasis role="bold">lines</emphasis></term>
 		<listitem>
 		  <para>
 		    Number of lines in MOTD to follow.
@@ -1321,7 +1321,7 @@
 		</listitem>
 	      </varlistentry>
 	      <varlistentry>
-		<term><parameter>message</parameter></term>
+		<term><emphasis role="bold">message</emphasis></term>
 		<listitem>
 		  <para>
 		    A single line of the MOTD
@@ -1367,7 +1367,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1377,9 +1377,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -1404,7 +1404,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>player</parameter></term>
+		<term><emphasis role="bold">player</emphasis></term>
 		<listitem>
 		  <para>
 		    Name of player who originated message
@@ -1412,7 +1412,7 @@
 		</listitem>
 	      </varlistentry>
 	      <varlistentry>
-		<term><parameter>message</parameter></term>
+		<term><emphasis role="bold">message</emphasis></term>
 		<listitem>
 		  <para>
 		    Chat message
@@ -1456,7 +1456,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1466,9 +1466,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 	      </tbody>
@@ -1520,7 +1520,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1530,9 +1530,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 	      </tbody>
@@ -1583,7 +1583,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1593,9 +1593,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 	      </tbody>
@@ -1648,7 +1648,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1658,9 +1658,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 	      </tbody>
@@ -1711,7 +1711,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1721,9 +1721,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -1753,7 +1753,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>status</parameter></term>
+		<term><emphasis role="bold">status</emphasis></term>
 		<listitem>
 		  <para>
 		    status of login request (zero if successful,
@@ -1762,7 +1762,7 @@
 		</listitem>
 	      </varlistentry>
 	      <varlistentry>
-		<term><parameter>password</parameter></term>
+		<term><emphasis role="bold">password</emphasis></term>
 		<listitem>
 		  <para>
 		    Password for new account (only sent if login successful)
@@ -1770,7 +1770,7 @@
 		</listitem>
 	      </varlistentry>
 	      <varlistentry>
-		<term><parameter>checksum</parameter></term>
+		<term><emphasis role="bold">checksum</emphasis></term>
 		<listitem>
 		  <para>
 		    Checksum of game types (only sent if login successful)
@@ -1814,7 +1814,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1824,9 +1824,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -1851,7 +1851,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>status</parameter></term>
+		<term><emphasis role="bold">status</emphasis></term>
 		<listitem>
 		  <para>
 		    status of login request (zero if successful,
@@ -1860,7 +1860,7 @@
 		</listitem>
 	      </varlistentry>
 	      <varlistentry>
-		<term><parameter>checksum</parameter></term>
+		<term><emphasis role="bold">checksum</emphasis></term>
 		<listitem>
 		  <para>
 		    checksum of supported game types (if login was successful)
@@ -1904,7 +1904,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -1914,9 +1914,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -1946,7 +1946,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>status</parameter></term>
+		<term><emphasis role="bold">status</emphasis></term>
 		<listitem>
 		  <para>
 		    status of login request (zero if successful,
@@ -1955,7 +1955,7 @@
 		</listitem>
 	      </varlistentry>
 	      <varlistentry>
-		<term><parameter>checksum</parameter></term>
+		<term><emphasis role="bold">checksum</emphasis></term>
 		<listitem>
 		  <para>
 		    Checksum of game types (only sent if login successful)
@@ -1963,7 +1963,7 @@
 		</listitem>
 	      </varlistentry>
 	      <varlistentry>
-		<term><parameter>reservation</parameter></term>
+		<term><emphasis role="bold">reservation</emphasis></term>
 		<listitem>
 		  <para>
 		    Flag to indicate if player has resverations
@@ -2008,7 +2008,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -2018,9 +2018,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -2040,7 +2040,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>status</parameter></term>
+		<term><emphasis role="bold">status</emphasis></term>
 		<listitem>
 		  <para>
 		    status of logout request (zero if successfule,
@@ -2089,7 +2089,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -2099,9 +2099,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -2121,7 +2121,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>name</parameter></term>
+		<term><emphasis role="bold">name</emphasis></term>
 		<listitem>
 		  <para>
 		    Requested user name for new player
@@ -2168,7 +2168,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -2178,9 +2178,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -2200,7 +2200,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>name</parameter></term>
+		<term><emphasis role="bold">name</emphasis></term>
 		<listitem>
 		  <para>
 		    Requested name for "anonymous" player
@@ -2247,7 +2247,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -2257,9 +2257,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
@@ -2284,7 +2284,7 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><parameter>name</parameter></term>
+		<term><emphasis role="bold">name</emphasis></term>
 		<listitem>
 		  <para>
 		    Login name
@@ -2292,7 +2292,7 @@
 		</listitem>
 	      </varlistentry>
 	      <varlistentry>
-		<term><parameter>password</parameter></term>
+		<term><emphasis role="bold">password</emphasis></term>
 		<listitem>
 		  <para>
 		    Player password
@@ -2338,7 +2338,7 @@
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">
-                    <parameter>Opcode</parameter>
+                    <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		</row>
 
@@ -2348,9 +2348,9 @@
 		
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C2">
-		    <parameter>Data</parameter>
+		    <emphasis role="bold">Data</emphasis>
 		  </entry>
-		  <entry><parameter>Type</parameter></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
 		</row>
 
 	      </tbody>
