@@ -1,9 +1,8 @@
-.TH "ggz.h" 3 "17 Jul 2004" "Version 0.0.9" "LibGGZ" \" -*- nroff -*-
+ggz.h File Reference.TH "ggz.h" 3 "23 Jan 2005" "Version 0.0.10" "LibGGZ" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-ggz.h \-  
-
+ggz.h \- 
 .SH SYNOPSIS
 .br
 .PP
@@ -40,10 +39,10 @@ ggz.h \-
 .RI "#define \fBLIBGGZ_VERSION_MINOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   9"
+.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   10"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '2:1:1'"
+.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '3:0:0'"
 .br
 .ti -1c
 .RI "#define \fBggz__attribute\fP(att)"
@@ -77,11 +76,11 @@ ggz.h \-
 .br
 .RI "\fIDebugging type for config-file debugging. \fP"
 .ti -1c
-.RI "#define \fBGGZ_LIST_REPLACE_DUPS\fP   0x00 /**< Overwrite duplicate values on insert */"
+.RI "#define \fBGGZ_LIST_REPLACE_DUPS\fP   0x00"
 .br
 .RI "\fIOverwrite duplicate values on insert. \fP"
 .ti -1c
-.RI "#define \fBGGZ_LIST_ALLOW_DUPS\fP   0x01 /**< Allow duplicate data entries to exist in the list */"
+.RI "#define \fBGGZ_LIST_ALLOW_DUPS\fP   0x01"
 .br
 .RI "\fIAllow duplicate data entries to exist in the list. \fP"
 .ti -1c
@@ -93,7 +92,7 @@ ggz.h \-
 
 .in +1c
 .ti -1c
-.RI "typedef int(* \fBggzEntryCompare\fP )(void *a, void *b)"
+.RI "typedef int(* \fBggzEntryCompare\fP )(const void *a, const void *b)"
 .br
 .RI "\fIA function type for doing data comparison on two items in a \fBGGZList\fP. \fP"
 .ti -1c
@@ -464,6 +463,10 @@ ggz.h \-
 .br
 .RI "\fISet libggz's limit on memory allocation. \fP"
 .ti -1c
+.RI "int \fBggz_init_network\fP (void)"
+.br
+.RI "\fIInitialize the network. \fP"
+.ti -1c
 .RI "int \fBggz_make_socket\fP (const \fBGGZSockType\fP type, const unsigned short port, const char *server)"
 .br
 .RI "\fIMake a socket connection. \fP"
@@ -612,7 +615,7 @@ Brent M. Hendricks
 Fri Nov 2 23:32:17 2001 
 .PP
 \fBId\fP.RS 4
-\fBggz.h\fP,v 1.51 2004/07/17 00:58:43 josef Exp 
+\fBggz.h\fP,v 1.54 2005/01/23 10:29:31 josef Exp 
 .RE
 .PP
 .RE
@@ -630,7 +633,9 @@ You should have received a copy of the GNU General Public License along with thi
 .PP 
 .SS "#define ggz__attribute(att)"
 .PP
-Allow easy use of GCC's 'attribute' macro for debugging. Under gcc, we use the __attribute__ macro to check variadic arguments, for instance to printf-style functions. Other compilers may be able to do something similar, but this is generally unnecessary since it's only realy purpose is to give warning messages when the developer compiles the code. 
+Allow easy use of GCC's 'attribute' macro for debugging. 
+.PP
+Under gcc, we use the __attribute__ macro to check variadic arguments, for instance to printf-style functions. Other compilers may be able to do something similar, but this is generally unnecessary since it's only realy purpose is to give warning messages when the developer compiles the code. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for LibGGZ from the source code.
