@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 
 #include "game.h"
+#include "support.h"
 
 /* main window widget */
 extern GtkWidget *main_win;
@@ -42,6 +43,7 @@ struct game_state_t game;
 int main(int argc, char *argv[]) {
 	
 	gtk_init(&argc, &argv);
+  add_pixmap_directory(".");
 
 	main_win = create_main_win();
 	gtk_widget_show(main_win);

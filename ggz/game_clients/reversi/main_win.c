@@ -31,16 +31,20 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
 #include <game.h>
 #include <support.h>
+#include <options_dlg.h>
 #include <black.xpm>
 #include <dot.xpm>
 #include <white.xpm>
 #include <easysock.h>
+
+#include "confio.h"
 
 
 /* Pixmaps */
@@ -48,12 +52,19 @@
 GdkPixmap* pix[3];
 GdkBitmap* pix_mask[3];
 GdkGC* pix_gc;
+GdkGC* bg_gc;
+GdkGC* last_gc;
 GdkPixmap* rvr_buf;
 
 GtkWidget *main_win;
 
 /* Global game variables */
 extern struct game_state_t game;
+
+/* Config file handle */
+int config_file;
+
+void update_options(GtkButton *, gpointer);
 
 void game_status( const char* format, ... ) 
 {
@@ -134,7 +145,7 @@ void display_board(void)
 		gdk_gc_set_clip_mask(pix_gc, pix_mask[piece]);
 		// if last move, mark it (draw using a different function)
 		if (i == game.last_move)
-			gdk_draw_rectangle(rvr_buf, style->light_gc[3], TRUE, x+1, y+1, PIXSIZE-2, PIXSIZE-2);
+			gdk_draw_rectangle(rvr_buf, last_gc, TRUE, x+1, y+1, PIXSIZE-2, PIXSIZE-2);
 		gdk_draw_rectangle(rvr_buf, pix_gc, TRUE, x, y, PIXSIZE, PIXSIZE);
 	}
 
@@ -159,6 +170,11 @@ void display_board(void)
 void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
 	GtkStyle* style;
+  char *last_color_str[3];
+  char *back_color_str[3];
+  char *user_conf_path;
+  GdkColor *last_color = (GdkColor *)malloc(sizeof(GdkColor));
+  GdkColor *back_color = (GdkColor *)malloc(sizeof(GdkColor));
 	
 	// Get the current style
 	style = gtk_widget_get_style(main_win);
@@ -167,6 +183,39 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 	pix_gc = gdk_gc_new(main_win->window);
 	gdk_gc_ref(pix_gc);
 	gdk_gc_set_fill(pix_gc, GDK_TILED);
+
+  bg_gc = gdk_gc_new(main_win->window);
+  gdk_gc_copy(bg_gc, style->mid_gc[3]);
+	gdk_gc_ref(bg_gc);
+	gdk_gc_set_fill(bg_gc, GDK_SOLID);
+
+  last_gc = gdk_gc_new(main_win->window);
+  gdk_gc_copy(last_gc, style->light_gc[3]);
+	gdk_gc_ref(last_gc);
+	gdk_gc_set_fill(last_gc, GDK_SOLID);
+
+  // Loads configuration options
+	user_conf_path = g_strdup_printf("%s/.ggz/reversi-gtk.rc", getenv("HOME"));;
+  config_file = _ggzcore_confio_parse(user_conf_path);
+  back_color_str[0] = _ggzcore_confio_read_string(config_file, "background color", "red", "29695");
+  back_color_str[1] = _ggzcore_confio_read_string(config_file, "background color", "green", "27391");
+  back_color_str[2] = _ggzcore_confio_read_string(config_file, "background color", "blue", "44031");
+  last_color_str[0] = _ggzcore_confio_read_string(config_file, "last played color", "red", "36863");
+  last_color_str[1] = _ggzcore_confio_read_string(config_file, "last played color", "green", "34047");
+  last_color_str[2] = _ggzcore_confio_read_string(config_file, "last played color", "blue", "54783");
+  sscanf(back_color_str[0], "%hu", &back_color->red);
+  sscanf(back_color_str[1], "%hu", &back_color->green);
+  sscanf(back_color_str[2], "%hu", &back_color->blue);
+  sscanf(last_color_str[0], "%hu", &last_color->red);
+  sscanf(last_color_str[1], "%hu", &last_color->green);
+  sscanf(last_color_str[2], "%hu", &last_color->blue);
+  gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), last_color, TRUE, TRUE);
+  gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), back_color, TRUE, TRUE);
+  gtk_object_set_data(GTK_OBJECT(main_win), "last_color", last_color);
+  gtk_object_set_data(GTK_OBJECT(main_win), "back_color", back_color);
+  gdk_gc_set_foreground(bg_gc, back_color);
+  gdk_gc_set_foreground(last_gc, last_color);
+
 
 	// Create the black pix
 	pix[PLAYER2SEAT(BLACK)] = gdk_pixmap_create_from_xpm_d( main_win->window, &pix_mask[PLAYER2SEAT(BLACK)],
@@ -191,8 +240,28 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 
 gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
+  GdkColor *back_color, *last_color;
+  char temp[16];
 	// FIXME: should call an "are you sure dialog"
 	gtk_main_quit();
+
+  /* Write to config file */
+  back_color = gtk_object_get_data(GTK_OBJECT(main_win), "back_color");
+  last_color = gtk_object_get_data(GTK_OBJECT(main_win), "last_color");
+  sprintf(temp, "%hu", back_color->red);
+  _ggzcore_confio_write_string(config_file, "background color", "red", temp);
+  sprintf(temp, "%hu", back_color->green);
+  _ggzcore_confio_write_string(config_file, "background color", "green", temp);
+  sprintf(temp, "%hu", back_color->blue);
+  _ggzcore_confio_write_string(config_file, "background color", "blue", temp);
+  sprintf(temp, "%hu", last_color->red);
+  _ggzcore_confio_write_string(config_file, "last played color", "red", temp);
+  sprintf(temp, "%hu", last_color->green);
+  _ggzcore_confio_write_string(config_file, "last played color", "green", temp);
+  sprintf(temp, "%hu", last_color->blue);
+  _ggzcore_confio_write_string(config_file, "last played color", "blue", temp);
+  _ggzcore_confio_commit(config_file);
+
 	
 	return FALSE;
 }
@@ -204,11 +273,44 @@ void game_resync(GtkMenuItem *menuitem, gpointer user_data)
 	request_sync();
 }
 
+void game_get_options(GtkMenuItem *menuitem, gpointer user_data)
+{
+  GtkWidget *dialog;
+  GtkWidget *ok;
+  GdkColor *last_color, *back_color;
+  last_color = gtk_object_get_data(GTK_OBJECT(main_win), "last_color");
+  back_color = gtk_object_get_data(GTK_OBJECT(main_win), "back_color");
+  dialog = create_options_dialog(back_color, last_color);
+  gtk_widget_show_all(dialog);
+  ok = lookup_widget(dialog, "ok_button");
+  gtk_signal_connect (GTK_OBJECT(ok), "clicked",
+                      GTK_SIGNAL_FUNC (update_options),
+                      dialog);
+  gtk_signal_connect_object_after (GTK_OBJECT(ok), "clicked",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                      GTK_OBJECT(dialog));
+}
+
+void update_options(GtkButton *button, gpointer user_data)
+{
+  GdkColor *bg_color, *last_color;
+  GtkWidget *last = lookup_widget(user_data, "last_button");
+  GtkWidget *back = lookup_widget(user_data, "back_button");
+  bg_color = gtk_object_get_data(GTK_OBJECT(back), "color");
+  last_color = gtk_object_get_data(GTK_OBJECT(last), "color");
+  gtk_object_set_data(GTK_OBJECT(main_win), "last_color", last_color);
+  gtk_object_set_data(GTK_OBJECT(main_win), "back_color", bg_color);
+  gdk_gc_set_foreground(bg_gc, bg_color);
+  gdk_gc_set_foreground(last_gc, last_color);
+
+  display_board();
+
+}
+
 
 void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 {
-	// FIXME: should call an "are you sure dialog"
-	gtk_main_quit();
+  main_exit(NULL, NULL, NULL);
 }
 
 
@@ -238,7 +340,7 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 void draw_bg(GtkWidget *widget) {
 	int i;
 	gdk_draw_rectangle( rvr_buf,
-					widget->style->mid_gc[3],
+					bg_gc,
 					TRUE,
 					0, 0,
 					PIXSIZE*8,
@@ -346,6 +448,7 @@ create_main_win (void)
   GtkWidget *game_menu;
   GtkAccelGroup *game_menu_accels;
   GtkWidget *resync;
+  GtkWidget *options;
   GtkWidget *exit;
   GtkWidget *help_menuhead;
   GtkWidget *help_menu;
@@ -402,6 +505,17 @@ create_main_win (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (resync);
   gtk_container_add (GTK_CONTAINER (game_menu), resync);
+
+  options = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (options)->child),
+                                   _("O_ptions"));
+  gtk_widget_add_accelerator (options, "activate_item", game_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_ref (options);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "options", options,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (options);
+  gtk_container_add (GTK_CONTAINER (game_menu), options);
 
   exit = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (exit)->child),
@@ -521,6 +635,9 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (resync), "activate",
                       GTK_SIGNAL_FUNC (game_resync),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (options), "activate",
+                      GTK_SIGNAL_FUNC (game_get_options),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (exit), "activate",
                       GTK_SIGNAL_FUNC (game_exit),
                       NULL);
@@ -587,6 +704,3 @@ int get_gameover() {
 	return 1;
 
 }
-
-
-
