@@ -19,9 +19,11 @@ class MainWindow : public KMainWindow
 	public slots:
 		void slotMenu(int id);
 		void slotData();
+		void slotMove(int x, int y, int x2, int y2);
 
 	private:
 		void levelSelector(bool networking);
+		void synchronize();
 
 		enum Items
 		{

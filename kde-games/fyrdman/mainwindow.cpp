@@ -10,6 +10,7 @@
 #include <kapplication.h>
 #include <kstatusbar.h>
 #include <kmessagebox.h>
+#include <kdebug.h>
 
 #include <qsocketnotifier.h>
 
@@ -28,6 +29,8 @@ MainWindow::MainWindow()
 	gamemenu->insertItem(i18n("Synchronize"), game_sync);
 	gamemenu->insertSeparator();
 	gamemenu->insertItem(i18n("Quit"), game_quit);
+
+	gamemenu->setItemEnabled(game_sync, false);
 
 	displaymenu = new KPopupMenu(this);
 	displaymenu->insertItem(i18n("Map"), option_map);
@@ -54,6 +57,7 @@ MainWindow::MainWindow()
 	connect(gamemenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(displaymenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(optionmenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	connect(map, SIGNAL(signalMove(int, int, int, int)), SLOT(slotMove(int, int, int, int)));
 
 	setCaption(i18n("Fyrdman"));
 	show();
@@ -73,6 +77,7 @@ void MainWindow::slotMenu(int id)
 		case game_info:
 			break;
 		case game_sync:
+			synchronize();
 			break;
 		case game_quit:
 			if(network) network->shutdown();
@@ -128,6 +133,12 @@ void MainWindow::levelSelector(bool networking)
 	if(ret == QDialog::Accepted)
 	{
 		// ...
+		if(networking)
+		{
+			ggz_write_int(network->fd(), Network::sndmap);
+			ggz_write_string(network->fd(), l.level().latin1());
+		}
+		statusBar()->changeItem(i18n("Level: %1").arg(l.level()), status_level);
 	}
 }
 
@@ -142,6 +153,7 @@ void MainWindow::enableNetwork()
 	connect(sn, SIGNAL(activated(int)), network, SLOT(slotDispatch()));
 
 	gamemenu->setItemEnabled(game_new, false);
+	gamemenu->setItemEnabled(game_sync, true);
 }
 
 void MainWindow::slotData()
@@ -151,15 +163,22 @@ void MainWindow::slotData()
 	int playernum;
 	int seats[8];
 	char names[8][17];
+	char winner;
+	char status;
+	int movesrcx, movesrcy, movedstx, movedsty;
+	int turn;
+	char cell;
 
 	ggz_read_int(network->fd(), &op);
 	switch(op)
 	{
 		case Network::msgmaps:
+			statusBar()->changeItem(i18n("Selecting map"), status_state);
 			levelSelector(true);
 			break;
 		case Network::msgseat:
 			ggz_read_int(network->fd(), &seat);
+			kdDebug() << "-> Seat: " << seat << endl;
 			break;
 		case Network::msgplayers:
 			ggz_read_int(network->fd(), &playernum);
@@ -170,24 +189,108 @@ void MainWindow::slotData()
 				{
 					ggz_read_string(network->fd(), (char*)names[i], 17);
 				}
+				else
+				{
+					strcpy(names[i], i18n("Bot").latin1());
+				}
+				kdDebug() << "-> Player: " << names[i] << endl;
 			}
+
+			ggz_write_int(network->fd(), Network::reqinit);
 			break;
 		case Network::reqmove:
+			statusBar()->changeItem(i18n("Select a knight"), status_state);
 			break;
 		case Network::rspmove:
+			ggz_read_char(network->fd(), &status);
+			switch(status)
+			{
+				case 0:
+					statusBar()->changeItem(i18n("Move accepted"), status_state);
+					break;
+				case Network::errstate:
+					statusBar()->changeItem(i18n("Server not ready yet"), status_state);
+					break;
+				case Network::errturn:
+					statusBar()->changeItem(i18n("Not your turn"), status_state);
+					break;
+				case Network::errbound:
+					statusBar()->changeItem(i18n("Out of bounds move"), status_state);
+					break;
+				case Network::errempty:
+					statusBar()->changeItem(i18n("Nothing to move"), status_state);
+					break;
+				case Network::errfull:
+					statusBar()->changeItem(i18n("Space occupied"), status_state);
+					break;
+				case Network::errdist:
+					statusBar()->changeItem(i18n("Distance too large"), status_state);
+					break;
+				case Network::errmap:
+					statusBar()->changeItem(i18n("Disallowed by map"), status_state);
+					break;
+				default:
+					break;
+			}
 			break;
 		case Network::msgmove:
+			ggz_read_int(network->fd(), &seat);
+			ggz_read_int(network->fd(), &movesrcx);
+			ggz_read_int(network->fd(), &movesrcy);
+			ggz_read_int(network->fd(), &movedstx);
+			ggz_read_int(network->fd(), &movedsty);
+			kdDebug() << "* Move by: " << seat << endl;
 			break;
 		case Network::sndsync:
+			statusBar()->changeItem(i18n("Performing sync..."), status_state);
+			ggz_read_int(network->fd(), &turn);
+			for (int i = 0; i < 6; i++)
+				for (int j = 0; j < 19; j++)
+				{
+					ggz_read_char(network->fd(), &cell);
+				}
+			for (int i = 0; i < 6; i++)
+				for (int j = 0; j < 19; j++)
+				{
+					ggz_read_char(network->fd(), &cell);
+				}
+			statusBar()->changeItem(i18n("Sync successful"), status_state);
 			break;
 		case Network::msggameover:
+			ggz_read_char(network->fd(), &winner);
+			KMessageBox::information(this,
+				i18n("Player %1 has won.").arg(winner),
+				i18n("Game over"));
 			break;
 		default:
+			network->shutdown();
 			KMessageBox::error(this,
 				i18n("Bogus network message received."),
 				i18n("Network error"));
-			network->shutdown();
 			break;
+	}
+}
+
+void MainWindow::slotMove(int x, int y, int x2, int y2)
+{
+	if(network)
+	{
+		statusBar()->changeItem(i18n("Sending move..."), status_state);
+		ggz_write_int(network->fd(), Network::sndmove);
+		ggz_write_int(network->fd(), x);
+		ggz_write_int(network->fd(), y);
+		ggz_write_int(network->fd(), x2);
+		ggz_write_int(network->fd(), y2);
+		statusBar()->changeItem(i18n("Move sent"), status_state);
+	}
+}
+
+void MainWindow::synchronize()
+{
+	if(network)
+	{
+		statusBar()->changeItem(i18n("Request synchronization"), status_state);
+		ggz_write_int(network->fd(), Network::reqsync);
 	}
 }
 

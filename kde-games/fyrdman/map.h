@@ -15,6 +15,9 @@ class Map : public QWidget
 		void setPossession(bool possession);
 		void setAnimation(bool animation);
 
+	signals:
+		void signalMove(int x, int y, int x2, int y2);
+
 	protected:
 		void paintEvent(QPaintEvent *e);
 		void mousePressEvent(QMouseEvent *e);
@@ -23,7 +26,9 @@ class Map : public QWidget
 		void setupMap(int x, int y);
 
 		int m_width, m_height;
-		int m_map, m_knights, m_possession, m_animation;
+		bool m_map, m_knights, m_possession, m_animation;
+		bool m_picked;
+		int m_x, m_y, m_x2, m_y2;
 };
 
 #endif

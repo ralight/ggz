@@ -18,6 +18,8 @@ Map::Map(QWidget *parent, const char *name)
 	m_possession = true;
 	m_animation = true;
 
+	m_picked = false;
+
 	setupMap(6, 13);
 }
 
@@ -56,6 +58,23 @@ void Map::mousePressEvent(QMouseEvent *e)
 				&& ((abs(e->y() - (ypos + fheight / 2)) < 12)))
 				{
 					kdDebug() << j << " - " << i << endl;
+
+					if(!m_picked)
+					{
+						m_x = i;
+						m_y = j;
+						m_picked = true;
+					}
+					else
+					{
+						m_x2 = i;
+						m_y2 = j;
+						m_picked = false;
+						if((m_x != m_x2) || (m_y != m_y2))
+						{
+							emit signalMove(m_x, m_y, m_x2, m_y2);
+						}
+					}
 				}
 			}
 	}

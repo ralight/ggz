@@ -74,3 +74,8 @@ void LevelSelector::addLevel(QString title)
 	combo->insertItem(title);
 }
 
+QString LevelSelector::level()
+{
+	return combo->currentText();
+}
+

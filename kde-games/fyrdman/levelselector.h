@@ -14,6 +14,7 @@ class LevelSelector : public QDialog
 		~LevelSelector();
 
 		void addLevel(QString title);
+		QString level();
 
 	protected slots:
 		void accept();
