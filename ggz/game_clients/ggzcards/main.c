@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: main.c 4787 2002-10-03 03:02:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -130,17 +130,18 @@ static void cleanup_debugging(void)
 #endif
 }
 
-void listen_for_server(int listen)
+void listen_for_server(bool listen)
 {
 	static guint server_socket_tag;
-	static int listening = FALSE;
-	int fd = client_get_fd();
-	assert(fd > 0);
+	static bool listening = FALSE;
 
 	ggz_debug(DBG_MAIN, "%s server.",
 		  listen ? "Listening for" : "Ignoring");
 
 	if (listen && !listening) {
+		int fd = client_get_fd();
+
+		assert(fd >= 0);
 		server_socket_tag = gdk_input_add(fd, GDK_INPUT_READ,
 						  game_handle_io, NULL);
 		listening = TRUE;

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.h 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: main.h 4787 2002-10-03 03:02:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -36,4 +36,4 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 			      card_t ** cardlist);
 
 /* Call this function to listen to/ignore the server. */
-void listen_for_server(int listen);
+void listen_for_server(bool listen);
