@@ -35,12 +35,12 @@
 
 #include "../common.h"
 
-static char* get_name(player_t p);
+static char *get_name(player_t p);
 static void start_hand();
-static void alert_bid( player_t p, bid_t bid );
-static void alert_play( player_t p, card_t card );
-static bid_t get_bid( player_t p, bid_t *bid_choices, int bid_count );
-static card_t get_play( player_t p, seat_t s );
+static void alert_bid(player_t p, bid_t bid);
+static void alert_play(player_t p, card_t card);
+static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count);
+static card_t get_play(player_t p, seat_t s);
 
 struct ai_function_pointers random_ai_funcs = {
 	get_name,
@@ -51,7 +51,7 @@ struct ai_function_pointers random_ai_funcs = {
 	get_play
 };
 
-static char* get_name(player_t p)
+static char *get_name(player_t p)
 {
 	char buf[17];
 	snprintf(buf, sizeof(buf), "Random %d", p);
@@ -65,37 +65,40 @@ static void start_hand()
 }
 
 /* this alerts the ai to someone else's bid/play */
-static void alert_bid( player_t p, bid_t bid )
+static void alert_bid(player_t p, bid_t bid)
 {
 	/* nothing */
 }
 
-static void alert_play( player_t p, card_t card )
+static void alert_play(player_t p, card_t card)
 {
 	/* nothing */
 }
 
 /* this gets a bid or play from the ai */
-static bid_t get_bid( player_t p, bid_t* bid_choices, int bid_count )
+static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 {
 	int choice = random() % bid_count;
-	return bid_choices[ choice ];
+	return bid_choices[choice];
 }
 
-static card_t get_play( player_t p, seat_t s )
+static card_t get_play(player_t p, seat_t s)
 {
 	int choice;
 	hand_t *hand = &game.seats[s].hand;
 	card_t selection;
-	char* error;
+	char *error;
 
 	while (1) {
 		choice = random() % hand->hand_size;
 		selection = hand->cards[choice];
-		error = game.funcs->verify_play( selection );
-		if ( error == NULL)
+		error = game.funcs->verify_play(selection);
+		if (error == NULL)
 			return selection;
-		ggz_debug("random ai: card (%d %d %d) was invalid because %s.", selection.face, selection.suit, selection.deck, error);
+		ggz_debug
+			("random ai: card (%d %d %d) was invalid because %s.",
+			 selection.face, selection.suit, selection.deck,
+			 error);
 	}
 	return UNKNOWN_CARD;
 }
