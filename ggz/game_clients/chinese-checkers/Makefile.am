@@ -10,6 +10,10 @@ install-data-local:
 	@$(NORMAL_INSTALL)
 	ggz-config --install --fromfile=module.dsc --force
 
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-ggz-config --remove --fromfile=module.dsc
+
 ggzexecmod_PROGRAMS = ggz.ccheckers
 
 ggz_ccheckers_SOURCES = display.c	display.h	\

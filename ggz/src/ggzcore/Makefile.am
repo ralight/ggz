@@ -6,6 +6,7 @@ INCLUDES = @EASYSOCK_INC@
 bin_PROGRAMS = ggz-config
 ggz_config_LDADD = libggzcore.a $(LDADD)
 ggz_config_SOURCES = ggz-config.c
+sysconf_DATA = ggz.modules
 
 noinst_LIBRARIES = libggzcore.a
 
