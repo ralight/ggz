@@ -44,13 +44,14 @@ create_dlg_opt (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (dlg_opt), vbox1);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox1), 1);
 
   frame1 = gtk_frame_new ("Number of squares ");
   gtk_widget_ref (frame1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_opt), "frame1", frame1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame1);
-  gtk_box_pack_start (GTK_BOX (vbox1), frame1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), frame1, TRUE, TRUE, 2);
 
   table1 = gtk_table_new (2, 2, FALSE);
   gtk_widget_ref (table1);
@@ -107,7 +108,7 @@ create_dlg_opt (void)
   gtk_box_pack_start (GTK_BOX (vbox1), hbox2, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (hbox2), 3);
 
-  opt_btn_ok = gtk_button_new_with_label ("OK");
+  opt_btn_ok = gtk_button_new_with_label ("     OK     ");
   gtk_widget_ref (opt_btn_ok);
   gtk_object_set_data_full (GTK_OBJECT (dlg_opt), "opt_btn_ok", opt_btn_ok,
                             (GtkDestroyNotify) gtk_widget_unref);

@@ -23,3 +23,4 @@ extern struct game_t game;
 /* Exposed functions */
 extern int send_options(void);
 extern void game_init(void);
+extern void handle_req_newgame(void);

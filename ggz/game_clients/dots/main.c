@@ -17,13 +17,15 @@
 
 #include "dlg_main.h"
 #include "dlg_opt.h"
+#include "dlg_new.h"
 #include "support.h"
 #include "main.h"
 #include "game.h"
 #include "easysock.h"
 
-GtkWidget *main_win;
+GtkWidget *main_win = NULL;
 GtkWidget *opt_dialog;
+GtkWidget *new_dialog;
 struct game_t game;
 
 static void ggz_connect(void);
@@ -42,6 +44,7 @@ int main(int argc, char *argv[])
 	ggz_connect();
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
+	game.state = DOTS_STATE_INIT;
 	game_init();
 
 	gtk_main();
@@ -74,7 +77,8 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case DOTS_MSG_PLAYERS:
 			status = get_players();
-			game.state = DOTS_STATE_WAIT;
+			if(game.state != DOTS_STATE_CHOOSE)
+				game.state = DOTS_STATE_WAIT;
 			break;
 		case DOTS_MSG_OPTIONS:
 			if((status = get_options()) == 0)
@@ -135,19 +139,21 @@ void game_init(void)
 	for(i=0; i<MAX_BOARD_WIDTH-1; i++)
 		for(j=0; j<MAX_BOARD_HEIGHT-1; j++)
 			owners_board[i][j] = -1;
-	game.state = DOTS_STATE_INIT;
 	game.score[0] = 0;
 	game.score[1] = 0;
 	game.got_players = 0;
 
 	/* Setup the main board now */
-	main_win = create_dlg_main();
+	if(main_win == NULL)
+		main_win = create_dlg_main();
 	l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
 	l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
 	gtk_label_set_text(GTK_LABEL(l1), "No Score");
 	gtk_label_set_text(GTK_LABEL(l2), "No Score");
 	gtk_widget_show(main_win);
 	board_init(0, 0);
+
+	game.state = DOTS_STATE_INIT;
 }
 
 
@@ -298,24 +304,57 @@ static int get_gameover_status(void)
 {
 	char status;
 	gchar *tstr;
+	GtkWidget *lbl_winner, *lbl_score;
 
 	if(es_read_char(game.fd, &status) < 0)
 		return -1;
+
+	/* Create the New Game dialog */
+	new_dialog = create_dlg_new();
+	lbl_winner = gtk_object_get_data(GTK_OBJECT(new_dialog), "lbl_winner");
+	lbl_score = gtk_object_get_data(GTK_OBJECT(new_dialog), "lbl_score");
+
 	if(status == game.me) {
 		tstr = g_strconcat("Game over, you beat ",
 				   game.names[game.opponent], "!", NULL);
 		statusbar_message(tstr);
+		g_free(tstr);
+		tstr = g_strconcat("You beat ", game.names[game.opponent],NULL);
 	} else if(status == game.opponent) {
 		tstr = g_strconcat("Game over, ",
 				   game.names[game.opponent], " won :(", NULL);
 		statusbar_message(tstr);
+		g_free(tstr);
+		tstr = g_strconcat("You lost to ", game.names[game.opponent],
+				   NULL);
 	} else {
 		tstr = g_strconcat("Game over, you tied with ",
 				   game.names[game.opponent], ".", NULL);
 		statusbar_message(tstr);
+		g_free(tstr);
+		tstr = g_strconcat("You tied with ", game.names[game.opponent],
+				   NULL);
 	}
+	gtk_label_set_text(GTK_LABEL(lbl_winner), tstr);
+	g_free(tstr);
+	tstr = g_strdup_printf("%d to %d.", game.score[game.me],
+					    game.score[game.opponent]);
+	gtk_label_set_text(GTK_LABEL(lbl_score), tstr);
 	g_free(tstr);
 
-	game.state = DOTS_STATE_WAIT;
+	gtk_widget_show(new_dialog);
+
+	game.state = DOTS_STATE_CHOOSE;
 	return 0;
+}
+
+
+void handle_req_newgame(void)
+{
+	/* Reinitialize the game data and board */
+	game_init();
+	game.got_players = 1;
+
+	/* Send a game request to the server */
+	es_write_int(game.fd, DOTS_REQ_NEWGAME);
 }

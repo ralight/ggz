@@ -28,8 +28,6 @@ create_dlg_main (void)
   GtkWidget *mnu_game;
   GtkWidget *mnu_game_menu;
   GtkAccelGroup *mnu_game_menu_accels;
-  GtkWidget *mnu_resign;
-  GtkWidget *separator2;
   GtkWidget *mnu_exit;
   GtkWidget *mnu_settings;
   GtkWidget *mnu_settings_menu;
@@ -91,28 +89,9 @@ create_dlg_main (void)
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (mnu_game), mnu_game_menu);
   mnu_game_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_game_menu));
 
-  mnu_resign = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (mnu_resign)->child),
-                                   "_Resign Game");
-  gtk_widget_add_accelerator (mnu_resign, "activate_item", mnu_game_menu_accels,
-                              tmp_key, 0, 0);
-  gtk_widget_ref (mnu_resign);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_resign", mnu_resign,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (mnu_resign);
-  gtk_container_add (GTK_CONTAINER (mnu_game_menu), mnu_resign);
-
-  separator2 = gtk_menu_item_new ();
-  gtk_widget_ref (separator2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "separator2", separator2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (separator2);
-  gtk_container_add (GTK_CONTAINER (mnu_game_menu), separator2);
-  gtk_widget_set_sensitive (separator2, FALSE);
-
   mnu_exit = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (mnu_exit)->child),
-                                   "E_xit Game");
+                                   "E_xit");
   gtk_widget_add_accelerator (mnu_exit, "activate_item", mnu_game_menu_accels,
                               tmp_key, 0, 0);
   gtk_widget_ref (mnu_exit);
@@ -265,9 +244,6 @@ create_dlg_main (void)
 
   gtk_signal_connect (GTK_OBJECT (dlg_main), "delete_event",
                       GTK_SIGNAL_FUNC (on_window_delete_event),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (mnu_resign), "activate",
-                      GTK_SIGNAL_FUNC (on_mnu_resign_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (mnu_exit), "activate",
                       GTK_SIGNAL_FUNC (on_mnu_exit_activate),

@@ -11,20 +11,17 @@
 #include "support.h"
 #include "main.h"
 #include "game.h"
-
-
-void
-on_mnu_resign_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
+#include "cb_new.h"
 
 
 void
 on_mnu_exit_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	/* In CHOOSE state, exiting means NO */
+	if(game.state == DOTS_STATE_CHOOSE)
+		handle_newgame(FALSE);
+
 	/* Are you sure? / Cleanup */
 	/* See also on_window_delete_event */
 	gtk_main_quit();
@@ -63,6 +60,10 @@ on_window_delete_event                 (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
+	/* In CHOOSE state, exiting means NO */
+	if(game.state == DOTS_STATE_CHOOSE)
+		handle_newgame(FALSE);
+
 	/* Are you sure? / Cleanup */
 	/* See also on_mnu_exit_activate */
 	gtk_main_quit();

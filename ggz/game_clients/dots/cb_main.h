@@ -1,10 +1,6 @@
 #include <gtk/gtk.h>
 
 void
-on_mnu_resign_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
 on_mnu_exit_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -18,11 +14,6 @@ on_mnu_about_activate                  (GtkMenuItem     *menuitem,
 
 gboolean
 on_window_delete_event                 (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-gboolean
-on_window_destroy_event                (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data);
 
