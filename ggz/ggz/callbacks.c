@@ -45,8 +45,22 @@
 #include "err_func.h"
 
 
+/* Global data */
 GtkWidget *detail_window = NULL;
 extern struct ConnectInfo connection;
+
+
+void anon_toggled(GtkWidget* button, gpointer window) 
+{
+	GtkWidget *tmp;
+	tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(window), "pass_box"));
+	
+	if (GTK_TOGGLE_BUTTON(button)->active)
+		gtk_widget_hide(tmp);
+	else 
+		gtk_widget_show(tmp);
+}
+
 
 void InputOptions(GtkButton * button, gpointer user_data)
 {
@@ -176,25 +190,25 @@ void get_tables(GtkMenuItem * menuitem, gpointer user_data)
 
 void fill_defaults(GtkWidget * win, gpointer user_data)
 {
-	GtkWidget *tmp;
+	gpointer *tmp;
 	char port[5];
 
 	if (connection.username) {
-		tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(win),
-						     "name_entry"));
+		tmp = gtk_object_get_data(GTK_OBJECT(win), "name_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), connection.username);
 	}
 
 	if (connection.server) {
-		tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(win),
-						     "host_entry"));
+		tmp = gtk_object_get_data(GTK_OBJECT(win), "host_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), connection.server);
 	}
 
-	tmp =
-	    GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(win), "port_entry"));
+	tmp = gtk_object_get_data(GTK_OBJECT(win), "port_entry");
 	snprintf(port, 5, "%d", connection.port);
 	gtk_entry_set_text(GTK_ENTRY(tmp), port);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(win), "anon_radio");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 }
 
 
@@ -210,35 +224,3 @@ void input_chat_msg(GtkWidget * widget, gpointer user_data)
 
 	gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }
-
-
-void NormalOption(GtkWidget * widget, gpointer user_data)
-{
-	GtkWidget *tmpWidget;
-	tmpWidget =
-	    GTK_WIDGET(gtk_object_get_data
-		       (GTK_OBJECT(dlg_login), "pass_box"));
-	gtk_widget_show(tmpWidget);
-}
-
-
-void AnonOption(GtkWidget * widget, gpointer user_data)
-{
-	GtkWidget *tmpWidget;
-	tmpWidget =
-	    GTK_WIDGET(gtk_object_get_data
-		       (GTK_OBJECT(dlg_login), "pass_box"));
-	gtk_widget_hide(tmpWidget);
-}
-
-
-void FirstOption(GtkWidget * Widget, gpointer user_data)
-{
-	GtkWidget *tmpWidget;
-	tmpWidget =
-	    GTK_WIDGET(gtk_object_get_data
-		       (GTK_OBJECT(dlg_login), "pass_box"));
-	gtk_widget_show(tmpWidget);
-}
-
-

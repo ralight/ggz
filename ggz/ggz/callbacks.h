@@ -26,6 +26,8 @@
 #include <gtk/gtk.h>
 #include "dlg_exit.h"
 
+void anon_toggled(GtkWidget * widget, gpointer user_data);
+
 void InputOptions(GtkButton * button, gpointer user_data);
 
 void StartSession(GtkButton * button, gpointer user_data);
@@ -46,13 +48,7 @@ void get_players(GtkMenuItem * menuitem, gpointer user_data);
 
 void get_tables(GtkMenuItem * menuitem, gpointer user_data);
 
-
 void fill_defaults(GtkWidget * widget, gpointer user_data);
 
 void input_chat_msg(GtkWidget * editable, gpointer user_data);
 
-void NormalOption(GtkWidget * widget, gpointer user_data);
-
-void AnonOption(GtkWidget * widget, gpointer user_data);
-
-void FirstOption(GtkWidget * widget, gpointer user_data);

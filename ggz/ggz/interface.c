@@ -127,7 +127,7 @@ create_dlg_login (void)
   gtk_widget_ref (pass_box);
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "pass_box", pass_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-//  gtk_widget_show (pass_box);
+  gtk_widget_show (pass_box);
   gtk_box_pack_start (GTK_BOX (info_box), pass_box, TRUE, TRUE, 0);
 
   pass_label = gtk_label_new ("Password : ");
@@ -139,9 +139,9 @@ create_dlg_login (void)
 
   pass_entry = gtk_entry_new ();
   gtk_widget_ref (pass_entry);
-  gtk_widget_show (pass_entry);
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "pass_entry", pass_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (pass_entry);
   gtk_box_pack_start (GTK_BOX (pass_box), pass_entry, TRUE, TRUE, 0);
   gtk_widget_set_usize (pass_entry, 96, -2);
   gtk_tooltips_set_tip (tooltips, pass_entry, "Enter your password here", NULL);
@@ -178,7 +178,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (anon_radio);
   gtk_box_pack_start (GTK_BOX (radio_box), anon_radio, FALSE, FALSE, 0);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (anon_radio), TRUE);
 
   first_radio = gtk_radio_button_new_with_label (login_type_group, "First-time Login");
   login_type_group = gtk_radio_button_group (GTK_RADIO_BUTTON (first_radio));
@@ -283,6 +282,9 @@ create_dlg_login (void)
   gtk_signal_connect (GTK_OBJECT (dlg_login), "realize",
                       GTK_SIGNAL_FUNC (fill_defaults),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (anon_radio), "toggled",
+                      GTK_SIGNAL_FUNC (anon_toggled),
+                      dlg_login);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
                       GTK_SIGNAL_FUNC (InputOptions),
                       dlg_login);
@@ -294,15 +296,6 @@ create_dlg_login (void)
                              GTK_OBJECT (dlg_login));
   gtk_signal_connect (GTK_OBJECT (details_button), "clicked",
                       GTK_SIGNAL_FUNC (show_details),
-                      dlg_login);
-  gtk_signal_connect (GTK_OBJECT (normal_radio), "clicked",
-                      GTK_SIGNAL_FUNC (NormalOption),
-                      dlg_login);
-  gtk_signal_connect (GTK_OBJECT (anon_radio), "clicked",
-                      GTK_SIGNAL_FUNC (AnonOption),
-                      dlg_login);
-  gtk_signal_connect (GTK_OBJECT (first_radio), "clicked",
-                      GTK_SIGNAL_FUNC (FirstOption),
                       dlg_login);
 
   gtk_widget_grab_default (connect_button);
@@ -442,7 +435,7 @@ create_main_win (void)
 
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
-  gtk_window_set_title (GTK_WINDOW (main_win), "NetGames ");
+  gtk_window_set_title (GTK_WINDOW (main_win), "Gnu Gaming Zone");
   gtk_window_set_default_size (GTK_WINDOW (main_win), 500, 450);
   gtk_window_set_policy (GTK_WINDOW (main_win), TRUE, TRUE, FALSE);
 
