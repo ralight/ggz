@@ -2,7 +2,7 @@
  * File: games/spades.h
  * Author: Jason Short
  * Project: GGZCards game module
- * Date: 06/29/2000
+ * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
  *
  * Copyright (C) 2000 Brent Hendricks.

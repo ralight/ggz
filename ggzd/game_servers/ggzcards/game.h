@@ -36,14 +36,6 @@ typedef struct lapocha_game_t {
 	int bid_sum;		/* what the sum of the bids is */
 } lapocha_game_t;
 
-/* ---------- HEARTS ---------- */
-
-#define GHEARTS ( *(hearts_game_t *)(game.specific) )
-typedef struct hearts_game_t {
-	int points_on_hand[10];	/* the points each player has taken this hand.  Works for up to 10 players. */
-	char lead_card_face;	/* the card that leads first.  It's a club.  Two-deck issues aren't dealt with. */
-} hearts_game_t;
-
 /* ---------- BRIDGE ---------- */
 
 /* special bids */

@@ -2,7 +2,7 @@
  * File: games/suaro.c
  * Author: Jason Short
  * Project: GGZCards game module
- * Date: 06/29/2000
+ * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
  *
  * Copyright (C) 2001 Brent Hendricks.

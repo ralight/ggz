@@ -190,21 +190,6 @@ void game_init_game()
 			/* TODO: for now we won't use bridge scoring */
 			BRIDGE.declarer = -1;
 			break;
-		case GGZ_GAME_HEARTS:
-			game.specific = alloc(sizeof(hearts_game_t));
-			set_num_seats(game.num_players);
-			game.trump = -1; /* no trump in hearts */
-			for(p = 0; p < game.num_players; p++) {
-				s = p;
-				game.players[p].seat = s;
-				game.seats[s].ggz = &ggz_seats[p];
-			}
-			/* hearts has no bidding */
-			game.max_bid_choices = 0;
-			game.max_bid_length = 0;
-			game.target_score = 100;
-			game.name = "Hearts";
-			break;
 		default:  	
 			ggz_debug("SERVER BUG: game_launch not implemented for game %d.", game.which_game);
 			game.name = "(Unknown)";
@@ -270,22 +255,6 @@ int game_handle_gameover(void)
 	int winner_cnt = 0;
 
 	switch (game.which_game) {
-		case GGZ_GAME_HEARTS:
-			/* in hearts, the low score wins */
-			{
-			int lo_score = 100;	
-			for (p=0; p<game.num_players; p++) {
-				if (game.players[p].score < lo_score) {
-					winner_cnt = 1;
-					winners[0] = p;
-					lo_score = game.players[p].score;
-				} else if (game.players[p].score == lo_score) {
-					winners[winner_cnt] = p;
-					winner_cnt++;
-				}
-			}
-			}
-			break;
 		case GGZ_GAME_LAPOCHA:
 			/* in La Pocha, anyone who has 0 at the end automatically wins */
 			for (p=0; p<game.num_players; p++) {
@@ -353,10 +322,6 @@ void game_start_bidding()
 			game.bid_total = -1; /* no set total */
 			BRIDGE.pass_count = 0;
 			BRIDGE.bonus = 1;
-			break;
-		case GGZ_GAME_HEARTS:
-			/* there is no bidding phase */
-			set_game_state( WH_STATE_FIRST_TRICK );
 			break;
 		default:
 			/* all players bid once */
@@ -593,7 +558,6 @@ void game_start_playing(void)
 {
 	player_t p;
 	seat_t s;
-	char face;
 
 	game.trick_total = game.hand_size;
 	game.play_total = game.num_players;
@@ -620,33 +584,6 @@ void game_start_playing(void)
 				BRIDGE.bonus == 1 ? "" : BRIDGE.bonus == 2 ? ", doubled" : ", redoubled");
 			game.leader = (BRIDGE.declarer + 1) % game.num_players;
 			break;
-		case GGZ_GAME_HEARTS:
-			/* we track the points that will be earned this hand. */
-			for (p=0; p<game.num_players; p++)
-				GHEARTS.points_on_hand[p] = 0;
-
-			/* in hearts, the lowest club leads first */
-			game.leader = -1;
-			/* TODO: what if we're playing with multiple decks? */
-			for (face = 2; face <= ACE_HIGH; face++) {
-				for (p=0; p<game.num_players; p++) {
-					/* TODO: this only works because the cards are sorted this way */
-					card_t card = game.seats[ game.players[p].seat ].hand.cards[0];
-					if (card.suit == CLUBS && card.face == face)
-						game.leader = p;
-					
-				}
-				if (game.leader != -1) {
-					GHEARTS.lead_card_face = face;
-					break;
-				}
-			}
-	
-			if (game.leader == -1) {
-				ggz_debug("SERVER BUG: nobody has a club.");
-				game.leader = (game.dealer + 1) % game.num_players;
-			}
-			break;
 		default:
 			game.leader = (game.dealer + 1) % game.num_players;
 			break;
@@ -668,23 +605,6 @@ char* game_verify_play(card_t card)
 	int cnt;
 
 	card = game.funcs->map_card(card);
-
-	/* the game hearts must be handled differently */
-	if (game.which_game == GGZ_GAME_HEARTS &&
-	    game.next_play == game.leader) {
-		/* the low club must lead on the first trick */
-		if (game.trick_count == 0 && game.play_count == 0 &&
-		    (card.suit != CLUBS || card.face != GHEARTS.lead_card_face) )
-			return "You must lead the low club.";
-		/* you can't lead *hearts* until they're broken */
-		/* TODO: integrate this with must_break_trump */
-		if (card.suit != HEARTS) return NULL;
-		if (game.trump_broken) return NULL;
-		if (cards_suit_in_hand(&game.seats[s].hand, HEARTS) == game.seats[s].hand.hand_size)
-			/* their entire hand is hearts */
-			return NULL;
-		return "Hearts have not yet been broken.";
-	}
 
 	/* the leader has his own restrictions */
 	if (game.next_play == game.leader) {
@@ -817,7 +737,6 @@ int game_test_for_gameover()
 		case GGZ_GAME_BRIDGE:
 			ggz_debug("FIXME: bridge scoring not implemented.");
 			return 0;
-		case GGZ_GAME_HEARTS:
 		case GGZ_GAME_EUCHRE:
 		default:
 			/* in the default case, it's just a race toward a target score */
@@ -866,7 +785,6 @@ int game_deal_hand(void)
 			game.hand_size = 5;
 			goto regular_deal;
 		case GGZ_GAME_BRIDGE:
-		case GGZ_GAME_HEARTS:
 		default:
 			game.hand_size = 52 / game.num_players;
 regular_deal:
@@ -926,7 +844,6 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 			break;
 		case GGZ_GAME_LAPOCHA:
 			return snprintf(buf, buf_len, "%d", (int)bid.bid);
-		case GGZ_GAME_HEARTS:
 		default:
 			/* nothing... */
 	}
@@ -1009,13 +926,19 @@ void game_set_player_message(player_t p)
 			REGULAR_BID_MESSAGE;
 			REGULAR_ACTION_MESSAGES;
 			break;
-		case GGZ_GAME_HEARTS:
 		default:
-			REGULAR_SCORE_MESSAGE;
-			REGULAR_TRICKS_MESSAGE;
-			REGULAR_BID_MESSAGE;
-			REGULAR_BIDDING_MESSAGE;
-			REGULAR_PLAYING_MESSAGE;
+			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
+			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks);
+			if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
+					char bid_text[game.max_bid_length];
+					game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
+					if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
+				}
+			if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");
+			if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play) \
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
 			break;
 	}
 
@@ -1061,21 +984,6 @@ void game_end_trick(void)
 
 
 	switch (game.which_game) {
-		case GGZ_GAME_HEARTS:
-			for(p=0; p<game.num_players; p++) {
-				card_t card = game.seats[ game.players[p].seat ].table;
-				int points = 0;
-				if (card.suit == HEARTS)
-					points = 1;
-				if (card.suit == SPADES && card.face == QUEEN)
-					points = 13;
-				/* in hearts, it's not really "trump broken" but rather "points broken".
-				 * however, it works about the same way. */
-				if (points > 0)
-					game.trump_broken = 1;
-				GHEARTS.points_on_hand[hi_player] += points;
-			}
-			break;
 		case GGZ_GAME_EUCHRE:	
 			/* TODO: handle out-of-order cards */
 			break;
@@ -1098,7 +1006,6 @@ void game_end_trick(void)
 			/* update teammate's info as well */
 			game_set_player_message((game.winner+2)%4);
 			break;
-		case GGZ_GAME_HEARTS:
 		case GGZ_GAME_LAPOCHA:
 		default:
 			break;
@@ -1190,17 +1097,6 @@ void game_end_hand(void)
 			game.players[winning_team+2].score += 1;
 			EUCHRE.maker = -1;
 			game.trump = -1;
-			}
-			break;
-		case GGZ_GAME_HEARTS:
-			for (p=0; p<game.num_players; p++) {
-				int points = GHEARTS.points_on_hand[p];
-				int score = (points == 26 ? -26 : points);
-				/* if you take all 26 points you "shoot the moon" and earn -26 instead.
-				 * TODO: option of giving everyone else 26.  It could be handled as a bid... */
-				game.players[p].score += score;
-				if (score == -26)
-					set_global_message("", "%s shot the moon.", ggz_seats[p].name);
 			}
 			break;
 		default:
