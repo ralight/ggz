@@ -1,9 +1,35 @@
+/*
+ * File: callbacks.c
+ * Author: Ismael Orenstein
+ * Project: GGZ Combat game module
+ * Desc: Combat client GTK callback functions
+ * $Id: callbacks.c 3709 2002-03-28 08:22:02Z jdorje $
+ *
+ * Copyright (C) 2002 Ismael Orenstein.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
 #include <gtk/gtk.h>
 #include <stdio.h>
+
+#include "dlg_exit.h"
 
 #include "callbacks.h"
 #include "interface.h"
@@ -17,6 +43,13 @@ extern GdkPixmap *cbt_buf;
 extern combat_game cbt_game;
 struct game_info_t cbt_info;
 extern GtkWidget *main_win;
+
+static void try_to_quit(void)
+{
+  /* FIXME: we don't need a dialog if we're not actively playing
+     a game. */
+  ggz_show_exit_dialog(1);
+}
 
 gboolean
 on_main_window_configure_event         (GtkWidget       *widget,
@@ -57,8 +90,7 @@ main_window_exit                       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	// FIXME: Should call a "are you sure" dialog
-	gtk_main_quit();
+  try_to_quit();
 
   return TRUE;
 }
@@ -69,9 +101,7 @@ void
 on_exit_menu_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
-	main_window_exit(NULL, NULL, NULL);
-
+	try_to_quit();
 }
 
 
