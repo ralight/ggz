@@ -372,7 +372,7 @@ int ggz_va_write_string(const int sock, const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 
 	return ggz_write_string(sock, buf);
@@ -392,7 +392,7 @@ void ggz_va_write_string_or_die(const int sock, const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 
 	ggz_write_string_or_die(sock, buf);
