@@ -55,3 +55,6 @@ void game_send_move(char *move, int time);
 
 /* Send MSG_GAMEOVER to everyone */
 void game_send_gameover(char code);
+
+/* Send REQ_DRAW */
+void game_send_draw(int seat);

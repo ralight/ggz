@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 4
+#define PROTOCOL_VERSION 5
 /* Chess module design
  *
  * We should have 4 game states:
@@ -43,6 +43,7 @@
  * CHESS_EVENT_UPDATE_TIME
  * CHESS_EVENT_REQUEST_UPDATE
  * CHESS_EVENT_FLAG
+ * CHESS_EVENT_DRAW
  *
  * Besides the GGZ events
  * GGZ_EVENT_LAUNCH
@@ -66,6 +67,7 @@
  *                      CHESS_EVENT_UPDATE_TIME
  *                      CHESS_EVENT_REQUEST_UPDATE
  *                      CHESS_EVENT_FLAG
+ *                      CHESS_EVENT_DRAW
  *
  * Thats the way the states and events should work
  * CHESS_STATE_INIT:
@@ -129,6 +131,16 @@
  *    CHESS_EVENT_FLAG:
  *      Check if time is over.
  *      If it is, triggers EVENT_GAMEOVER
+ *
+ *    CHESS_EVENT_DRAW:
+ *      Add to the draw char one of the values:
+ *        Player 1 -> 3
+ *        Player 2 -> 4
+ *        POSREP   -> 5
+ *        MOVCNT   -> 6
+ *      If the draw char is > 6, draw the game.
+ *      Else, send a message to the players asking if they want to
+ *      draw it
  *
  *    CHESS_EVENT_GAMEOVER:
  *      Go to DONE state
@@ -198,6 +210,10 @@
  * that the server can also notify the other player, so that he will take the 
  * appropriated action.
  *
+ * CHESS_REQ_DRAW
+ *
+ * Used by the server and the client to ask for a draw
+ *
  * CHESS_MSG_GAMEOVER (char)WINNER
  *
  * The game is over. The WINNER is one of the winning codes below */
@@ -220,6 +236,7 @@
 #define CHESS_EVENT_UPDATE_TIME 8
 #define CHESS_EVENT_REQUEST_UPDATE 9
 #define CHESS_EVENT_FLAG 10
+#define CHESS_EVENT_DRAW 11
 
 /* Definition of messages */
 #define CHESS_MSG_SEAT 1
@@ -234,6 +251,7 @@
 #define CHESS_RSP_UPDATE 10
 #define CHESS_MSG_UPDATE 11
 #define CHESS_REQ_FLAG 12
+#define CHESS_REQ_DRAW 13
 
 /* Clock types */
 #define CHESS_CLOCK_NOCLOCK 0
@@ -274,4 +292,5 @@ struct chess_info {
   /* For keeping care of draws */
   char movecount;
   char posrep;
+  char draw;
 };

@@ -48,6 +48,9 @@ int main(void)
   game_info.seconds[1] = -1;
   game_info.state = CHESS_STATE_INIT;
   game_info.host = -1;
+  game_info.movecount = 0;
+  game_info.posrep = 0;
+  game_info.draw = 0;
   /* White player starts ! */
   game_info.turn = 0;
 

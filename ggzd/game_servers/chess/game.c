@@ -56,6 +56,7 @@ struct timeval cronometer;
  *  CHESS_EVENT_UPDATE_TIME: Two ints: the seat number and the time
  *  CHESS_EVENT_REQUES_UPDATE: (int)seat of the requesting player
  *  CHESS_EVENT_FLAG: NULL
+ *  CHESS_EVENT_DRAW: (int)What to add to the draw char
  *  CHESS_EVENT_START: NULL */
 void game_update(int event_id, void *data) {
   int time, st;
@@ -184,7 +185,15 @@ void game_update(int event_id, void *data) {
           game_info.posrep = 0;
           break;
       }
-      /* Update the turn */
+      /* Check if we could draw the game */
+      game_info.draw = 0;
+      if (game_info.movecount >= 50) {
+        st = 6;
+        game_update(CHESS_EVENT_DRAW, &st);
+      } else if (game_info.posrep >= 3) {
+        st = 5;
+        game_update(CHESS_EVENT_DRAW, &st);
+      }
       game_info.turn++;
       break;
     case CHESS_EVENT_UPDATE_TIME:
@@ -224,6 +233,40 @@ void game_update(int event_id, void *data) {
         game_update(CHESS_EVENT_GAMEOVER, &st);
       }
       break;
+    case CHESS_EVENT_DRAW:
+      /* Check state */
+      if (game_info.state != CHESS_STATE_PLAYING)
+        break;
+      /* Should the game end? */
+      if (game_info.draw + *(int*)data > 6) {
+        if (game_info.draw + *(int*)data == 7) {
+          /* Both players want to draw! */
+          st = CHESS_GAMEOVER_DRAW_AGREEMENT;
+          game_update(CHESS_EVENT_GAMEOVER, &st);
+        } else if (game_info.draw == 5) {
+          /* Repetition of position */
+          st = CHESS_GAMEOVER_DRAW_POSREP;
+          game_update(CHESS_EVENT_GAMEOVER, &st);
+        } else if (game_info.draw == 6) {
+          /* Move count */
+          st = CHESS_GAMEOVER_DRAW_MOVECOUNT;
+          game_update(CHESS_EVENT_GAMEOVER, &st);
+        }
+        break;
+      }
+      game_info.draw = *(int*)data;
+      if (*(int*)data == 3) 
+        /* Ask player 2 */
+        game_send_draw(1);
+      else if (*(int*)data == 4)
+        /* Ask player 1 */
+        game_send_draw(0);
+      else {
+        /* Ask both players */
+        game_send_draw(0);
+        game_send_draw(1);
+      }
+      break;
     case CHESS_EVENT_GAMEOVER:
       game_info.state = CHESS_STATE_DONE;
       ggz_debug("Game over!");
@@ -244,7 +287,9 @@ void game_update(int event_id, void *data) {
  *  CHESS_REQ_MOVE   -> Check for validity, then CHESS_EVENT_MOVE
  *  CHESS_REQ_UPDATE -> Trigger CHESS_EVENT_REQUEST_UPDATE
  *  CHESS_MSG_UPDATE -> Check for the right clock, then trigger UPDATE_TIME
- *  CHESS_REQ_FLAG   -> Check for the right clock, then trigger EVENT_FLAG */
+ *  CHESS_REQ_FLAG   -> Check for the right clock, then trigger EVENT_FLAG
+ *  CHESS_REQ_DRAW   -> Check if he hasn't done it yet, then trigger EVENT_DRAW
+ *  */
 void game_handle_player(int id, int *seat) {
   int fd, time;
   char op;
@@ -346,6 +391,14 @@ void game_handle_player(int id, int *seat) {
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK)
         break;
       game_update(CHESS_EVENT_FLAG, NULL);
+      break;
+    case CHESS_REQ_DRAW:
+      if (*seat == 0 && game_info.draw == 3)
+        break;
+      if (*seat == 1 && game_info.draw == 4)
+        break;
+      id = *seat+3;
+      game_update(CHESS_EVENT_DRAW, &id);
       break;
   }
 }
@@ -471,4 +524,13 @@ void game_send_gameover(char code) {
     es_write_char(fd, CHESS_MSG_GAMEOVER);
     es_write_char(fd, code);
   }
+}
+
+void game_send_draw(int seat) {
+  int fd = ggz_seats[seat].fd;
+
+  if (fd < 0)
+    return;
+
+  es_write_char(fd, CHESS_REQ_DRAW);
 }
