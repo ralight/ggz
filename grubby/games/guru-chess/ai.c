@@ -251,7 +251,7 @@ static int chess_ai_value(int figure)
 	int val;
 
 	val = 1;
-	if(figure == C_KING) val = 500;
+	if(figure == C_KING) val = 5000;
 	if(figure == C_QUEEN) val = 100;
 	if(figure == C_ROOK) val = 50;
 	if(figure == C_KNIGHT) val = 35;
@@ -261,22 +261,36 @@ static int chess_ai_value(int figure)
 	return val;
 }
 
+int chess_ai_checkmate(void)
+{
+	int i;
+
+	for(i = 0; chess_ai_taken[i][C_FIGURE] != C_EMPTY; i++)
+	{
+		if(chess_ai_taken[i][C_FIGURE] == C_KING)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
 static void chess_ai_take(int color, int figure, int takeback)
 {
 	int i, j;
 
-printf("**TAKE** COLOR %i FIGURE %i TAKEBACK %i\n", color, figure, takeback);
+/*printf("**TAKE** COLOR %i FIGURE %i TAKEBACK %i\n", color, figure, takeback);*/
 	for(i = 0; chess_ai_taken[i][C_FIGURE] != C_EMPTY; i++)
 	{
 		if((takeback) && (chess_ai_taken[i][C_FIGURE] == figure) && (chess_ai_taken[i][C_COLOR] == color))
 		{
-printf("**TAKE** remove at %i\n", i);
+/*printf("**TAKE** remove at %i\n", i);*/
 			for(j = i + 1; chess_ai_taken[j][C_FIGURE] != C_EMPTY; j++)
 			{
 				chess_ai_taken[j - 1][C_FIGURE] = chess_ai_taken[j][C_FIGURE];
 				chess_ai_taken[j - 1][C_COLOR] = chess_ai_taken[j][C_COLOR];
 			}
-printf("**TAKE** empty at %i\n", j - 1);
+/*printf("**TAKE** empty at %i\n", j - 1);*/
 			chess_ai_taken[j - 1][C_FIGURE] = C_EMPTY;
 			chess_ai_taken[j - 1][C_COLOR] = C_NONE;
 			break;
@@ -284,7 +298,7 @@ printf("**TAKE** empty at %i\n", j - 1);
 	}
 	if(!takeback)
 	{
-printf("**TAKE** insert at %i\n", i);
+/*printf("**TAKE** insert at %i\n", i);*/
 		chess_ai_taken[i][C_FIGURE] = figure;
 		chess_ai_taken[i][C_COLOR] = color;
 	}
@@ -315,7 +329,7 @@ int chess_ai_exchange(int pos, int *figure)
 		{
 			oldfigure = tmpfigure;
 			value = chess_ai_value(oldfigure);
-printf("take-consider: figure %i has higher value %i\n", oldfigure, value);
+/*printf("take-consider: figure %i has higher value %i\n", oldfigure, value);*/
 		}
 	}
 	if(oldfigure == C_PAWN) return 0;

@@ -41,10 +41,16 @@ int chess_ai_find(int color, int *from, int *to);
 void chess_ai_output(void);
 
 /* Rochade */
+/* Returns 1 if legal, 0 if not */
 int chess_ai_rochade(int color, int which);
 
 /* Pawn exchange */
+/* Returns 1 if successful, 0 if not */
 int chess_ai_exchange(int pos, int *figure);
+
+/* Checkmate or stalemate (draw) */
+/* Returns 1 on checkmate, 0 for game continuation */
+int chess_ai_checkmate(void);
 
 #endif
 
