@@ -1,4 +1,4 @@
-There are two utility programs currently available for developers/testers:
+There are three utility programs currently available for developers/testers:
 
 AGRUE - A Ggz Random User Emulator
   Used to simulate load on the server.  You must edit the defines PORT
@@ -11,3 +11,10 @@ AGRUB - A Ggz Really Useful Bot (Grubby)
   The code is fairly rough-and-ready, but should be expandable.  The default
   defines at the beginning of agrub.c can be overriden at run time.  Type
   'agrub --help' for a full listing of command line arguments.
+
+pygenclient - Python Generic Client
+  pygenclient is a generic game client, ie, a program that connects to the
+  game server and allows you to get everything that is sent by it, and allow
+  you to send whatever you want. Used mainly for testing game servers that
+  don`t have game clients yet. (Take a look at the pygenclient/README file for
+  further information)

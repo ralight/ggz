@@ -1,0 +1,94 @@
+===========================================================
+
+Python Generic Client README / FAQ
+
+===========================================================
+
+1 - What is it?
+
+The Python Generic Client (or pygenclient or pgc) is a small
+python program to help GGZ game developers to test their 
+game servers. You can use it to communicate with your game
+server just like it was a game client, but it will allow you
+to send whatever you want to your server.
+
+2 - What do I need to run it?
+
+You need python and pygtk (the gtk bindings for python), but
+I'm not sure about the version restrictions. On my system,
+I'm using python 1.5 with pygtk 0.6.
+
+3 - How do I use it?
+
+You need to edit the pygenclient.py file and look for the part
+where it connects to the ggz server (it is something like:
+sock = ggz_connect("gamename") )
+It is usually on the end of the file... just change gamename to
+be the name of your game. (pay attention to the case! It must be
+the same game type registed within GGZ)
+
+Then, edit your ggz.rc file, go to the game type entry for your game
+and in the "Path = " part, put the path for the pgc. In my system, it 
+looks like:
+[Chess]
+Version = 0.0.1
+Path = /home/perdig/prog/GGZ/utils/pygenclient/pygenclient.py
+
+4 - Ok, but how do I *use* it?
+
+After configuring GGZ to use the pgc, just go to your favorite GGZ
+frontend, to your game room, and launch a new game. A little window
+will pop up, that will look like this:
+
+|-------------|
+|             |
+|  TEXT AREA  |
+|             |
+|             |
+---------------
+|  ENTRY      |
+---------------
+
+How it works? The pgc will connect to the game server and every byte that
+the server sends to the game client will appear in the text area. Each byte
+will be represented by one line, with 3 representations: decimal, 
+hexadecimal and character (if it`s a valid chracter)
+
+In the Entry area, you can type the decimal value (only the decimal value!) of 
+one byte (only one byte) and press enter, and it will be sent to the game 
+server.
+
+5 - Ok, but why do I need it?
+
+I don`t know! :)
+It was really handy for me to test the chess game server, as we didn`t 
+have any client yet and I wanted to know if the server was working as 
+expected. I just sent the codes like a client would do and observed the 
+server behaviour. Lots of bugs were squashed thanks to it... :)
+
+Another need to it is to see if your game server can be cheated. Just 
+pretend to be a regular client and send some stuff that a honest client 
+wouldn't send, and see how the server responds. (Like trying to change the 
+game options without being the game host)
+
+6 - Can I play games with it?
+
+In theory, yes... I was able to play agains gnuchess using only my chess
+game server and the pgc... but I must confess it wasn`t very fun... :)
+
+7 - Who is responsible for it and under what license is it?
+
+For further information, contact me at Perdig@users.sourceforge.net
+This program is licensed under the GPL, if you are interested in knowing.
+
+8 - What are your future plans for it?
+
+I want to change it into some sort of a sniffer for ggz... ie, you could 
+be able to launch it instead of the game client, and then it would launch 
+the game client to you. Every byte that is sent from the game client to 
+the server could be intercepted and analyzed by you, as you could also be 
+able to send whatever you want to any one of both.
+
+Much like a man-in-the-middle attack on GGZ... but for testing purposes! :)
+
+
