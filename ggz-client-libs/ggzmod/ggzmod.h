@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 4968 2002-10-21 04:27:00Z jdorje $
+ * $Id: ggzmod.h 5173 2002-11-03 19:30:53Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -165,7 +165,7 @@ typedef enum {
 typedef struct {
 	unsigned int num;	/**< Seat index; 0..(num_seats-1). */
 	GGZSeatType type;	/**< Type of seat. */
-	char *name;		/**< Name of player occupying seat. */
+	const char * name;	/**< Name of player occupying seat. */
 } GGZSeat;
 
 /** @brief A game spectator entry.
@@ -175,7 +175,7 @@ typedef struct {
  */
 typedef struct {
 	unsigned int num;	/**< Spectator seat index */
-	char *name;		/**< The spectator's name (NULL => empty) */
+	const char * name;	/**< The spectator's name (NULL => empty) */
 } GGZSpectatorSeat;
 
 /** @brief A GGZmod object, used for tracking a ggz<->table connection.

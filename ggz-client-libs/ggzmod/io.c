@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 4968 2002-10-21 04:27:00Z jdorje $
+ * $Id: io.c 5173 2002-11-03 19:30:53Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -110,7 +110,7 @@ int _io_send_seat(int fd, GGZSeat *seat)
 
 int _io_send_spectator_seat(int fd, GGZSpectatorSeat *seat)
 {
-	char *name = seat->name ? seat->name : "";
+	const char * name = seat->name ? seat->name : "";
 
 	if (ggz_write_int(fd, MSG_GAME_SPECTATOR_SEAT) < 0
 	    || ggz_write_int(fd, seat->num) < 0
@@ -303,18 +303,22 @@ static int _io_read_msg_player(GGZMod *ggzmod)
 
 static int _io_read_msg_seat(GGZMod *ggzmod)
 {
-	GGZSeat seat = {name: NULL};
+	GGZSeat seat;
+	char *name;
+	int type;
 
 	if (ggz_read_int(ggzmod->fd, &seat.num) < 0
-	    || ggz_read_int(ggzmod->fd, (int*)&seat.type) < 0
-	    || ggz_read_string_alloc(ggzmod->fd, &seat.name) < 0)
+	    || ggz_read_int(ggzmod->fd, &type) < 0
+	    || ggz_read_string_alloc(ggzmod->fd, &name) < 0)
 		  return -1;
 
-	/* Detect no-name case */
-	if (seat.name[0] == '\0') {
-		ggz_free(seat.name);
+	/* Set seat values */
+	seat.type = type;
+	if (name[0] == '\0') {
+		ggz_free(name);
 		seat.name = NULL;
-	}
+	} else
+		seat.name = name;
 
 	_ggzmod_handle_seat(ggzmod, &seat);
 
@@ -327,16 +331,18 @@ static int _io_read_msg_seat(GGZMod *ggzmod)
 static int _io_read_msg_spectator_seat(GGZMod *ggzmod)
 {
 	GGZSpectatorSeat seat;
+	char *name;
 
 	if (ggz_read_int(ggzmod->fd, &seat.num) < 0
-	    || ggz_read_string_alloc(ggzmod->fd, &seat.name) < 0)
+	    || ggz_read_string_alloc(ggzmod->fd, &name) < 0)
 		return -1;
 
 	/* Detect empty seat case */
-	if (seat.name[0] == '\0') {
-		ggz_free(seat.name);
+	if (name[0] == '\0') {
+		ggz_free(name);
 		seat.name = NULL;
-	}
+	} else
+		seat.name = name;
 
 	_ggzmod_handle_spectator_seat(ggzmod, &seat);
 
