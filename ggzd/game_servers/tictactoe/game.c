@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4282 2002-06-29 15:52:06Z dr_maux $
+ * $Id: game.c 4284 2002-06-30 07:57:47Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,6 +34,10 @@
 #include "game.h"
 
 #define GGZSTATISTICS 1
+
+#ifdef GGZSTATISTICS
+# include "ggz_stats.h"
+#endif
 
 /* Data structure for Tic-Tac-Toe-Game */
 struct ttt_game_t {
@@ -295,13 +299,17 @@ static int game_send_move(int num, int move)
 /* Send game statistics */
 static int game_send_stats(int num)
 {	
-	int wins, losses;
-	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
-
+	int wins, losses, ties;
+	GGZStats *stats;
+	GGZSeat seat;
+	
 	ggzdmod_log(ttt_game.ggz, "Handling statistics for player %d", num);
 
-	wins = 42;
-	losses = 23;
+	seat = ggzdmod_get_seat(ttt_game.ggz, num);
+
+	stats = ggzstats_new(ttt_game.ggz);
+	ggzstats_get_record(stats, num, &wins, &losses, &ties);
+	ggzstats_free(stats);
 
 	if (ggz_write_int(seat.fd, TTT_SND_STATS) < 0
 	    || ggz_write_int(seat.fd, wins) < 0
@@ -338,6 +346,16 @@ static int game_send_gameover(char winner)
 {
 	int i;
 	GGZSeat seat;
+
+#ifdef GGZSTATISTICS
+	GGZStats *stats;
+
+	stats = ggzstats_new(ttt_game.ggz);
+	ggzstats_set_game_winner(stats, winner, 1.0);
+	ggzstats_set_game_winner(stats, (winner + 1) % 2, 0.0);
+	ggzstats_recalculate_ratings(stats);
+	ggzstats_free(stats);
+#endif
 	
 	for (i = 0; i < 2; i++) {
 		seat = ggzdmod_get_seat(ttt_game.ggz, i);
