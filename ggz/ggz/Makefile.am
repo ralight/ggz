@@ -27,7 +27,7 @@ ggz_SOURCES = 	main.c \
 		parse_opt.h \
 		protocols.h \
 		support.c \
-	 	support.h \
+	 	support.h
 
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
