@@ -421,7 +421,10 @@ create_login (void)
   GtkWidget *vpRooms;
   GtkWidget *vbRooms;
   GtkWidget *vbTables;
-  GtkWidget *swTables;
+  GtkListStore *stoTables;
+  GtkWidget *treTables;
+  GtkCellRenderer *rndTables;
+  GtkTreeViewColumn *colTables;
   GtkWidget *hbuttonbox1;
   GtkWidget *btnLaunch;
   gint user_data;
@@ -712,7 +715,6 @@ create_login (void)
   gtk_box_pack_start (GTK_BOX (hbNewLogin), btnNewCancel, FALSE, FALSE, 0);
   gtk_widget_set_usize (btnNewCancel, 80, -2);
 
-  
   stoPlayers = gtk_list_store_new (3, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING);
   trePlayers = gtk_tree_view_new_with_model (GTK_TREE_MODEL (stoPlayers));
   gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (trePlayers), TRUE);
@@ -795,8 +797,8 @@ create_login (void)
   gtk_object_set_data_full (GTK_OBJECT (window), "vbChatDisplay", vbChatDisplay,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbChatDisplay);
-  gtk_fixed_put (GTK_FIXED (fixMain), vbChatDisplay, 191, 112);
-  gtk_widget_set_uposition (vbChatDisplay, 191, 112);
+  gtk_fixed_put (GTK_FIXED (fixMain), vbChatDisplay, 191, 110);
+  gtk_widget_set_uposition (vbChatDisplay, 191, 110);
   gtk_widget_set_usize (vbChatDisplay, 428, 348);
 
   nhChatXText = gtk_hbox_new (FALSE, 0);
@@ -862,7 +864,7 @@ create_login (void)
   gtk_object_set_data_full (GTK_OBJECT (window), "swRooms", swRooms,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (swRooms);
-  gtk_fixed_put (GTK_FIXED (fixMain), swRooms, 191, 112);
+  gtk_fixed_put (GTK_FIXED (fixMain), swRooms, 191, 110);
   gtk_widget_set_uposition (swRooms, 191, 112);
   gtk_widget_set_usize (swRooms, 428, 348);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swRooms), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
@@ -885,21 +887,40 @@ create_login (void)
   gtk_object_set_data_full (GTK_OBJECT (window), "vbTables", vbTables,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbTables);
-  gtk_fixed_put (GTK_FIXED (fixMain), vbTables, 191, 112);
+  gtk_fixed_put (GTK_FIXED (fixMain), vbTables, 191, 110);
   gtk_widget_set_usize (vbTables, 428, 348);
-
-  swTables = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_set_name (swTables, "swTables");
-  gtk_widget_show (swTables);
-  gtk_box_pack_start (GTK_BOX (vbTables), swTables, TRUE, TRUE, 5);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swTables), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swTables), GTK_SHADOW_ETCHED_IN);
-  gtk_scrolled_window_set_placement (GTK_SCROLLED_WINDOW (swTables), GTK_CORNER_BOTTOM_LEFT);
+//---------------
+  stoTables = gtk_list_store_new (4, G_TYPE_UINT, G_TYPE_UINT, G_TYPE_UINT, G_TYPE_STRING);
+  treTables = gtk_tree_view_new_with_model (GTK_TREE_MODEL (stoTables));
+  gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treTables), TRUE);
+  g_object_unref (G_OBJECT (stoTables));
+  rndTables = gtk_cell_renderer_text_new ();
+  g_object_set (G_OBJECT (rndTables),
+		"foreground", "black",
+		NULL);
+  colTables = gtk_tree_view_column_new_with_attributes (_("ID"), rndTables,
+		"text", 0, NULL);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (treTables), colTables);
+  colTables = gtk_tree_view_column_new_with_attributes (_("Free"), rndTables,
+		"text", 1, NULL);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (treTables), colTables);
+  colTables = gtk_tree_view_column_new_with_attributes (_("Total"), rndTables,
+		  "text", 2, NULL);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (treTables), colTables);
+  colTables = gtk_tree_view_column_new_with_attributes (_("Description"), rndTables,
+		  "text", 3, NULL);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (treTables), colTables);
+  gtk_widget_set_name (treTables, "treTables");
+  gtk_widget_ref (treTables);
+  gtk_object_set_data_full (GTK_OBJECT (window), "treTables", treTables,
+		(GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (treTables);
+  gtk_box_pack_start (GTK_BOX (vbTables), treTables, TRUE, TRUE, 0);
 
   hbuttonbox1 = gtk_hbutton_box_new ();
   gtk_widget_set_name (hbuttonbox1, "hbuttonbox1");
   gtk_widget_show (hbuttonbox1);
-  gtk_box_pack_start (GTK_BOX (vbTables), hbuttonbox1, FALSE, TRUE, 5);
+  gtk_box_pack_start (GTK_BOX (vbTables), hbuttonbox1, FALSE, FALSE, 5);
   gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 0);
 
   btnLaunch = gtk_button_new_with_mnemonic (_("Launch New Game"));

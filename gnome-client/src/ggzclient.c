@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4903 2002-10-13 20:09:17Z jzaun $
+ * $Id: ggzclient.c 4904 2002-10-13 23:16:29Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -565,7 +565,7 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void*
 	
 	ggz_debug("connection", "Server error.");
 	
-	server_disconnect();
+//	server_disconnect();
 	
 	/* SHould we clear the list of rooms/players/tables? */
 	msg = g_strdup_printf("Server error: %s", (char*)event_data);
@@ -688,10 +688,36 @@ static void ggz_input_removed(gpointer data)
 void display_tables(void)
 {
 	GtkWidget *tmp;
-	gchar *table[4] = {NULL, NULL, NULL, NULL}, *desc;
-	gint i, num, avail, seats;
-	GGZRoom *room;
-	GGZTable *t = NULL;
+	GtkListStore *stoTables;
+	GtkTreeIter iter;
+	gint i, num;
+	GGZTable *table;
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	
+	/* Clear current list of tables */
+        tmp = lookup_widget(interface, "treTables");
+	stoTables = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW (tmp)));
+	gtk_list_store_clear (GTK_LIST_STORE (stoTables));
+			
+	/* Display current list of tables */
+	num = ggzcore_room_get_num_tables(room);
+
+	for (i = 0; i < num; i++) {
+		table = ggzcore_room_get_nth_table(room, i);
+		gtk_list_store_append (stoTables, &iter);
+		gtk_list_store_set (stoTables, &iter,
+				0, ggzcore_table_get_id(table),
+				1, ggzcore_table_get_seat_count(table, GGZ_SEAT_OPEN)+
+				   ggzcore_table_get_seat_count(table, GGZ_SEAT_RESERVED),
+				2, ggzcore_table_get_num_seats(table),
+				3, ggzcore_table_get_desc(table),
+				-1);
+	}
+
+//	GtkWidget *tmp;
+//	gchar *table[4] = {NULL, NULL, NULL, NULL}, *desc;
+//	gint i, num, avail, seats;
+//	GGZTable *t = NULL;
 
 	/* Clear the table */
 //	client_clear_tables();
@@ -703,24 +729,24 @@ void display_tables(void)
 	 * until we "thaw" it later. */
 //	gtk_clist_freeze(GTK_CLIST(tmp));
 	
-	room = ggzcore_server_get_cur_room(server);
+//	room = ggzcore_server_get_cur_room(server);
 
 	/* Display current list of players
-	if (!(numbers = ggzcore_room_get_numbers()))
-		return GGZ_HOOK_OK;*/
+//	if (!(numbers = ggzcore_room_get_numbers()))
+//		return GGZ_HOOK_OK;*/
 	
-	numtables = ggzcore_room_get_num_tables(room);
-	for (i = 0; i < numtables; i++) {
+//	numtables = ggzcore_room_get_num_tables(room);
+//	for (i = 0; i < numtables; i++) {
 	
-		t = ggzcore_room_get_nth_table(room, i);
-		num   = ggzcore_table_get_id(t);
-		avail = ggzcore_table_get_seat_count(t, GGZ_SEAT_OPEN)
-			+ ggzcore_table_get_seat_count(t, GGZ_SEAT_RESERVED);
-		seats = ggzcore_table_get_num_seats(t);
-		desc = ggzcore_table_get_desc(t);
-		if(!desc) {
-			desc = _("No description available.");
-		}
+//		t = ggzcore_room_get_nth_table(room, i);
+//		num   = ggzcore_table_get_id(t);
+//		avail = ggzcore_table_get_seat_count(t, GGZ_SEAT_OPEN)
+//			+ ggzcore_table_get_seat_count(t, GGZ_SEAT_RESERVED);
+//		seats = ggzcore_table_get_num_seats(t);
+//		desc = ggzcore_table_get_desc(t);
+//		if(!desc) {
+//			desc = _("No description available.");
+//		}
 
 		/* FIXME: we have a significant problem here.  Do we
 		   display the number of open seats, the number of
@@ -729,14 +755,14 @@ void display_tables(void)
 		   problems.  Right now I just show the total
 		   number of unfilled seats. */
 			
-		table[0] = g_strdup_printf("%d", num);
-		table[1] = g_strdup_printf("%d/%d", avail, seats);
-		table[2] = g_strdup_printf("%s", desc);
+//		table[0] = g_strdup_printf("%d", num);
+//		table[1] = g_strdup_printf("%d/%d", avail, seats);
+//		table[2] = g_strdup_printf("%s", desc);
 //		gtk_clist_append(GTK_CLIST(tmp), table);
-		g_free(table[0]);
-		g_free(table[1]);
-		g_free(table[2]);
-	}
+//		g_free(table[0]);
+//		g_free(table[1]);
+//		g_free(table[2]);
+//	}
 	
 	/* "Thaw" the clist (it was "frozen" up above). */
 //	gtk_clist_thaw(GTK_CLIST(tmp));
