@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3437 2002-02-21 10:05:18Z jdorje $
+# $Id: Makefile.am 3462 2002-02-25 09:15:28Z jdorje $
 
-SUBDIRS = config games ai .
+SUBDIRS = common client config games ai .
 
 EXTRA_DIST =
 
@@ -20,15 +20,17 @@ ggzd_ggzcards_SOURCES = ai.c ai.h \
 			net.c net.h \
 			options.c options.h \
 			play.c play.h \
-			types.h \
-			\
-			protocol.c protocol.h
+			types.h
 
 ggzd_ggzcards_DEPENDENCIES = games/libgames.a \
+			     common/libcommon.a \
                              $(top_builddir)/ggzdmod/libggzdmod.a
 
-INCLUDES = -I$(top_srcdir)/ggzdmod
+# NOTE: ggzdmod must come last so we don't include "protocol.h" from
+# that directory!!  Ugh!
+INCLUDES = -Icommon -Igames -I$(top_srcdir)/ggzdmod
 ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a \
+		      common/libcommon.a \
                       $(top_builddir)/ggzdmod/libggzdmod.a
 
 test: test-recursive

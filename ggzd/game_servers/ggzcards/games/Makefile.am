@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3439 2002-02-22 23:33:47Z jdorje $
+# $Id: Makefile.am 3462 2002-02-25 09:15:28Z jdorje $
 
 SUBDIRS = .
 
@@ -10,8 +10,12 @@ ggzdexecmod_PROGRAMS =
 ggzdgame_DATA =
 ggzdroom_DATA =
 
-INCLUDES = -I$(top_srcdir)/ggzdmod -I..
-libgames_a_DEPENDENCIES =
+# NOTE: ggzdmod must come last so we don't include "protocol.h" from
+# that directory!!  Ugh!
+INCLUDES = -I.. -I../common -I$(top_srcdir)/ggzdmod
+
+libgames_a_DEPENDENCIES = ../common/libcommon.a
+
 libgames_a_SOURCES =	bridge.c bridge.h	\
 			euchre.c euchre.h	\
 			hearts.c hearts.h	\

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 3457 2002-02-24 19:57:25Z jdorje $
+ * $Id: client.h 3462 2002-02-25 09:15:28Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
