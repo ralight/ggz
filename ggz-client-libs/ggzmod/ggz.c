@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game module functions
- * $Id: ggz.c 2210 2001-08-23 22:08:51Z jdorje $
+ * $Id: ggz.c 2211 2001-08-23 22:16:43Z jdorje $
  *
  * Copyright (C) 2000 GGZ devel team
  *
@@ -33,23 +33,18 @@
 /* The socket will always be FD 3. */
 #define GGZ_SOCK_FD 3
 
-int ggz_client_connect(void)
+int ggzmod_connect(void)
 {
 	/* TODO: make sure the socket is real */
 	return GGZ_SOCK_FD;
 }
 
-int ggz_client_init(char *game_name)
+int ggzmod_disconnect(void)
 {
 	return 0;
 }
 
-int ggz_client_quit(void)
-{
-	return 0;
-}
-
-int ggz_client_get_sock(void)
+int ggzmod_get_sock(void)
 {
 	return GGZ_SOCK_FD;
 }
