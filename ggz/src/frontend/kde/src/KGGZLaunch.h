@@ -130,6 +130,8 @@ class KGGZLaunch : public QWidget
 		int m_maxspectators;
 		// Holds the current number of players, spectators and bots
 		int m_curplayers;
+		// Current number of bots
+		int m_curbots;
 		// Reservation input dialog
 		KGGZInput *m_input;
 };

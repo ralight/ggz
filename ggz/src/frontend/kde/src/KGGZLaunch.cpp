@@ -131,7 +131,8 @@ void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int 
 	seat = selected->text(0).toInt();
 
 	m_popup = new QPopupMenu(this);
-	if(seat <= m_maxbots) m_popup->insertItem(typeName(seatbot), -seatbot);
+	if((m_curbots < m_maxbots) || ((m_curbots = m_maxbots) && (m_maxbots > 0)))
+		m_popup->insertItem(typeName(seatbot), -seatbot);
 	m_popup->insertItem(typeName(seatopen), -seatopen);
 	m_popup->insertItem(typeName(seatreserved), -seatreserved);
 	m_popup->popup(point);
@@ -232,6 +233,7 @@ void KGGZLaunch::initLauncher(char *playername, int maxplayers, int maxbots)
 	m_ok->setEnabled(TRUE);
 
 	m_maxbots = maxbots;
+	m_curbots = maxbots;
 
 	KGGZDEBUGF("KGGZLaunch::initLauncher() done\n");
 }
@@ -259,6 +261,7 @@ void KGGZLaunch::setSeatAssignment(int seat, int enabled)
 void KGGZLaunch::setSeatType(int seat, int seattype)
 {
 	QListViewItem *tmp;
+	int oldtype;
 
 	if(!m_array)
 	{
@@ -288,6 +291,8 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 		}
 	}
 
+	oldtype = seatType(seat);
+
 	tmp->setText(1, typeName(seattype));
 
 	if(seattype == seatreserved)
@@ -302,9 +307,10 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 	}
 	else tmp->setText(2, QString::null);
 
-	KGGZDEBUG("within setSeatType: arry size is: %i (set at %i)\n", m_array->size(), seat);
+	if((seattype == seatbot) && (oldtype != seatbot)) m_curbots++;
+	else if((oldtype == seatbot) && (seattype != seatbot)) m_curbots--;
+
 	m_array->at(seat) = seattype;
-	KGGZDEBUG("after setSeatType: arry size is: %i\n", m_array->size());
 }
 
 QString KGGZLaunch::typeName(int seattype)

@@ -149,8 +149,6 @@ void KGGZ::readConfiguration(bool immediate)
 {
 	int value, result;
 
-	KGGZDEBUGF("readconfiguration!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-
 	if(m_config) delete m_config;
 	m_config = new GGZCoreConf();
 
@@ -401,7 +399,7 @@ void KGGZ::dispatcher()
 
 void KGGZ::timerEvent(QTimerEvent *e)
 {
-	static int lag = 0;
+	//static int lag = 0;
 
 	if(m_channelfd >= 0)
 	{
@@ -431,12 +429,12 @@ void KGGZ::timerEvent(QTimerEvent *e)
 	}
 	if(!kggzserver) return;
 
-	lag++;
-	if(lag == 20)
-	{
-		lag = 0;
-		lagPlayers();
-	}
+	//lag++;
+	//if(lag == 20)
+	//{
+	//	lag = 0;
+	//	lagPlayers();
+	//}
 
 	//if(kggzserver)
 	//{
@@ -854,6 +852,9 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			KGGZDEBUG("tabledata\n");
 			if(kggzgame) kggzgame->dataSend((char*)data);
 			break;*/
+		case GGZCoreRoom::playerlag:
+			lagPlayers();
+			break;
 		default:
 			KGGZDEBUG("unknown\n");
 			break;
@@ -1145,6 +1146,7 @@ void KGGZ::attachRoomCallbacks()
 	kggzroom->addHook(GGZCoreRoom::tableleft, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	kggzroom->addHook(GGZCoreRoom::tableleavefail, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	/*kggzroom->addHook(GGZCoreRoom::tabledata, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);*/
+	kggzroom->addHook(GGZCoreRoom::playerlag, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 }
 
 void KGGZ::detachRoomCallbacks()
@@ -1163,6 +1165,7 @@ void KGGZ::detachRoomCallbacks()
 	kggzroom->removeHook(GGZCoreRoom::tableleft, &KGGZ::hookOpenCollector);
 	kggzroom->removeHook(GGZCoreRoom::tableleavefail, &KGGZ::hookOpenCollector);
 	/*kggzroom->removeHook(GGZCoreRoom::tabledata, &KGGZ::hookOpenCollector);*/
+	kggzroom->removeHook(GGZCoreRoom::playerlag, &KGGZ::hookOpenCollector);
 }
 
 void KGGZ::attachServerCallbacks()
