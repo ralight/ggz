@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -16,6 +16,7 @@
 #define mode_none  0
 #define mode_teach 1
 #define mode_learn 2
+
 /* Grubby's knowledge base */
 #define db_file "/grubby/learning.db"
 
@@ -79,6 +80,9 @@ Guru *gurumod_exec(Guru *message)
 	char *ret;
 	char *request;
 
+	if((message->type != GURU_DIRECT)
+	&& (message->type != GURU_PRIVMSG))
+		return NULL;
 	if(!message->message) return NULL;
 	if(message->priority == 10) return NULL;
 	
@@ -87,8 +91,6 @@ Guru *gurumod_exec(Guru *message)
 	mode = mode_none;
 	while((message->list) && (message->list[i]))
 	{
-		if((i == 0) && (strcmp(message->list[0], message->guru)))
-			return NULL;
 		if((i == 2) && (!strcmp(message->list[i], "is"))) mode = mode_learn;
 		if((i == 2) && (!strcmp(message->list[i], "are"))) mode = mode_learn;
 		if((i == 2) && (!strcmp(message->list[i], "has"))) mode = mode_learn;
@@ -118,11 +120,11 @@ Guru *gurumod_exec(Guru *message)
 			break;
 		case mode_learn:
 			learn(message->list);
-			ret = _("OK, learned that.");
+			ret = __("OK, learned that.");
 			break;
 		case mode_teach:
 			ret = teach(request);
-			if(!ret) ret = _("You're too curious - I don't know everything.");
+			if(!ret) ret = __("You're too curious - I don't know everything.");
 			break;
 	}
 

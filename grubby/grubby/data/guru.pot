@@ -1,12 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-02 16:50+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-03-22 01:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,111 +16,144 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../modules/badword.c:97
+#: ../modules/badword.c:98
 msgid " is a dirty evil bastard."
 msgstr ""
 
-#: ../modules/badword.c:100
+#: ../modules/badword.c:101
 msgid "You aren't any better, bugger."
 msgstr ""
 
-#: ../modules/badword.c:105
+#: ../modules/badword.c:106
 msgid "Watch your language please!"
 msgstr ""
 
-#: ../modules/extra.c:89
+#: ../modules/extra.c:114
 #, c-format
 msgid "Hi %s"
 msgstr ""
 
-#: ../modules/extra.c:113
+#: ../modules/extra.c:138
 msgid "funny eh?"
 msgstr ""
 
-#: ../modules/extra.c:117
+#: ../modules/extra.c:142
 msgid "hehe"
 msgstr ""
 
-#: ../modules/learning.c:121
+#: ../modules/extra.c:147
+msgid "bleh :("
+msgstr ""
+
+#: ../modules/game.c:127
+msgid "Sure let's play..."
+msgstr ""
+
+#: ../modules/learning.c:123
 msgid "OK, learned that."
 msgstr ""
 
-#: ../modules/learning.c:125
+#: ../modules/learning.c:127
 msgid "You're too curious - I don't know everything."
 msgstr ""
 
-#: ../modules/people.c:65
+#: ../modules/people.c:66
 msgid "Nice to see you here again, "
 msgstr ""
 
-#: ../modules/people.c:70
+#: ../modules/people.c:71
 msgid ": Great you come here!"
 msgstr ""
 
-#: ../modules/people.c:79
+#: ../modules/people.c:80
 msgid "Hi "
 msgstr ""
 
-#: ../modules/people.c:81
+#: ../modules/people.c:82
 msgid ", I'm "
 msgstr ""
 
-#: ../modules/people.c:83
+#: ../modules/people.c:84
 msgid ""
 ". I have never seen you before here.\n"
 "Type '"
 msgstr ""
 
-#: ../modules/people.c:85
+#: ../modules/people.c:86
 msgid " help' to change this :)"
 msgstr ""
 
-#: ../modules/people.c:97
+#: ../modules/people.c:98
 msgid "See you later, "
 msgstr ""
 
-#: ../modules/people.c:102
+#: ../modules/people.c:103
 msgid "Have a nice rest."
 msgstr ""
 
-#: ../modules/people.c:106
+#: ../modules/people.c:107
 msgid ": Don't stay away too long."
 msgstr ""
 
-#: ../modules/people.c:110
+#: ../modules/people.c:111
 msgid "Eh, why has he gone?"
 msgstr ""
 
-#: ../modules/people.c:152
+#: ../modules/people.c:157
 msgid "OK, registered your information."
 msgstr ""
 
-#: ../modules/people.c:169
+#: ../modules/people.c:176
 msgid "Name"
 msgstr ""
 
-#: ../modules/people.c:169
+#: ../modules/people.c:176
 msgid "Contact"
 msgstr ""
 
-#: ../modules/people.c:172
+#: ../modules/people.c:176
+msgid "Language"
+msgstr ""
+
+#: ../modules/people.c:179
 msgid "Sorry, I don't know who this is."
 msgstr ""
 
-#: ../modules/people.c:185
+#: ../modules/people.c:192
 msgid "I'm looking right at you now :)"
 msgstr ""
 
-#: ../modules/people.c:194
+#: ../modules/people.c:201
 #, c-format
 msgid "Yeah, he was here at %s"
 msgstr ""
 
-#: ../modules/people.c:197
+#: ../modules/people.c:204
 msgid "Nope, never seen this guy here."
 msgstr ""
 
-#: ../modules/self.c:32
+#: ../modules/programming.c:33
+msgid "Java? You don't know _my_ skills!"
+msgstr ""
+
+#: ../modules/programming.c:35
+msgid "I though Basic is for beginners only. You must be childish."
+msgstr ""
+
+#: ../modules/programming.c:37
+msgid "Don't talk about C. It's so crappy, nobody used it. .NET rulez."
+msgstr ""
+
+#: ../modules/programming.c:39
+msgid ""
+"Oh, I've learned that at school. However, it sucks when compared to Prolog."
+msgstr ""
+
+#: ../modules/programming.c:41
+msgid "Yeah, perl. I hate write-only languages."
+msgstr ""
+
+#: ../modules/self.c:100
 #, c-format
 msgid ""
 "I'm %s, your favorite chat bot!\n"
@@ -127,56 +162,156 @@ msgid ""
 "Have fun :-)"
 msgstr ""
 
-#: ../modules/self.c:44
-msgid ""
-"This is the list of public commands I understand:\n"
-"about: let me tell about myself\n"
-"do i have any messages: let me look up if there's news for you\n"
-"tell <nick> <message>: store message for player nick\n"
-"who is <nick>: request information about nick\n"
-"have you seen <nick>: ask me when I last saw nick\n"
-"my (email | pager) is <contact>: register contact information\n"
-"<nick> is from <countrycode>: register language\n"
-"my name is <fullname>: register you as fullname"
+#: ../modules/self.c:112
+msgid "This is the list of public commands I understand:\n"
 msgstr ""
 
-#: ../src/i18n.c:77
+#: ../modules/self.c:133
+msgid "about: let me tell about myself\n"
+msgstr ""
+
+#: ../modules/self.c:134
+msgid "uptime: disclose my age\n"
+msgstr ""
+
+#: ../modules/self.c:138
+msgid "shut up: make me quiet\n"
+msgstr ""
+
+#: ../modules/self.c:143
+msgid "do i have any messages: let me look up if there's news for you\n"
+msgstr ""
+
+#: ../modules/self.c:145
+msgid "tell <nick> <message>: store message for player nick\n"
+msgstr ""
+
+#: ../modules/self.c:150
+msgid "who is <nick>: request information about nick\n"
+msgstr ""
+
+#: ../modules/self.c:152
+msgid "have you seen <nick>: ask me when I last saw nick\n"
+msgstr ""
+
+#: ../modules/self.c:154
+msgid "my (email | pager) is <contact>: register contact information\n"
+msgstr ""
+
+#: ../modules/self.c:156
+msgid "my name is <fullname>: register you as fullname\n"
+msgstr ""
+
+#: ../modules/self.c:160
+msgid "join my game: make me join your table\n"
+msgstr ""
+
+#: ../modules/self.c:164
+msgid "<thing> is <explanation>: Learn a fact\n"
+msgstr ""
+
+#: ../modules/self.c:165
+msgid "what is <thing>: Get information about a fact\n"
+msgstr ""
+
+#: ../modules/self.c:171
+msgid "i am from <countrycode>: register language\n"
+msgstr ""
+
+#: ../modules/self.c:188
+msgid "No uptime information found."
+msgstr ""
+
+#: ../modules/self.c:191
+#, c-format
+msgid "I've been running for %i hours and %i minutes."
+msgstr ""
+
+#: ../src/i18n.c:100
 msgid "Your language has been registered."
 msgstr ""
 
-#: ../src/module.c:257
+#: ../src/main.c:53
+msgid "Yes, I follow, my master."
+msgstr ""
+
+#: ../src/main.c:63
+msgid "Toggled logging."
+msgstr ""
+
+#: ../src/module.c:259
 msgid "List of available modules:"
 msgstr ""
 
-#: ../src/module.c:258
+#: ../src/module.c:260
 msgid "No modules loaded at all."
 msgstr ""
 
-#: dict.pl:28
-msgid "That's a word. Come on, I don't know your native language yet."
+#: ../src/module.c:330
+msgid "Module added."
+msgstr ""
+
+#: ../src/module.c:331
+msgid "Error: Could not add module."
+msgstr ""
+
+#: ../src/module.c:335
+msgid "Module removed."
+msgstr ""
+
+#: ../src/module.c:336
+msgid "Error: Could not remove module."
+msgstr ""
+
+#: ../src/module.c:341
+msgid "Module reloaded."
+msgstr ""
+
+#: ../src/module.c:342
+msgid "Error: Could not reload module."
+msgstr ""
+
+#: ../src/module.c:345
+msgid "Only my owner can change the module setup."
+msgstr ""
+
+#: ../../games/guru-chess/main.c:113
+msgid "This pawn move was great!"
+msgstr ""
+
+#: ../../games/guru-chess/main.c:118
+msgid "I must admit, he's not playing bad."
 msgstr ""
 
 #: dict.pl:31
+msgid "That's a word. Come on, I don't know your native language yet."
+msgstr ""
+
+#: dict.pl:34
 msgid "What is what dude?"
 msgstr ""
 
-#: dict.pl:59
+#: dict.pl:63
 msgid ""
 "I'm so uneducated I only know english, german, spanish, portuguese, italian."
 msgstr ""
 
-#: dict.pl:106
-msgid "Sorry, I don't know what a $WORD is."
+#: dict.pl:112
+msgid "Sorry, I don't know what a"
 msgstr ""
 
-#: rdf.pl:28
+#: dict.pl:112
+msgid "is."
+msgstr ""
+
+#: rdf.pl:30
 msgid "From what news source my friend?"
 msgstr ""
 
-#: rdf.pl:29
-msgid "Available are: slashdot, register, happypenguin, heise"
+#: rdf.pl:31
+msgid "Available are: slashdot, register, happypenguin, heise, worldforge"
 msgstr ""
 
-#: rdf.pl:65
+#: rdf.pl:74
 msgid "News source not available."
 msgstr ""

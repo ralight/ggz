@@ -109,7 +109,7 @@ close(FILE);
 if($answer){
 	print "$answer\n";
 }else{
-	print i18n("Sorry, I don't know what a $WORD is.");
+	print i18n("Sorry, I don't know what a"), " $WORD ", i18n("is.");
 }
 close(STDOUT);
 sleep(1);

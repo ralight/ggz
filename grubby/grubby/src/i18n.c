@@ -7,25 +7,25 @@
 *
 ********************************************************************/
 
-#include "i18n.h"
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
+
 #include "config.h"
 #include "player.h"
+#include "i18n.h"
 
 /* Global variables */
 static char *stdlang = NULL;
+static char *systemstdlang = NULL;
 
 /* Initializes the i18n subsystem */
-void guru_i18n_initialize(const char *language)
+void guru_i18n_initialize(const char *language, const char *systemlanguage)
 {
-	bindtextdomain("guru", PREFIX "/share/locale");
-	textdomain("guru");
-	setlocale(LC_ALL, "");
-
 	if(language) stdlang = strdup(language);
+	if(systemlanguage) systemstdlang = strdup(systemlanguage);
 }
 
 /* Sets the language to the given locale code */
@@ -39,17 +39,38 @@ void guru_i18n_setlanguage(const char *language)
 	++_nl_msg_cat_cntr;
 }
 
+/* Toggles the translation catalogue */
+void guru_i18n_setcatalog(int guru)
+{
+	if(guru)
+	{
+		bindtextdomain("guru", PREFIX "/share/locale");
+		textdomain("guru");
+		guru_i18n_setlanguage(stdlang);
+	}
+	else
+	{
+		bindtextdomain("grubby", PREFIX "/share/locale");
+		textdomain("grubby");
+		guru_i18n_setlanguage(systemstdlang);
+	}
+}
+
 /* Saves the language dependend on the player's origin */
 static void setlanguage(char *player, char *language)
 {
 	Player *p;
 
 	p = guru_player_lookup(player);
-	if(p)
+	if(!p)
 	{
-		p->language = language;
-		guru_player_save(p);
+		p = guru_player_new();
+		p->name = player;
+		p->firstseen = time(NULL);
 	}
+
+	p->language = language;
+	guru_player_save(p);
 }
 
 /* Check whether player says his language */
@@ -75,7 +96,8 @@ char *guru_i18n_check(char *player, char *message, int language)
 		if((i == 4) && (c == 3))
 		{
 			setlanguage(player, token);
-			ret = _("Your language has been registered.");
+			guru_i18n_setlanguage(token);
+			ret = __("Your language has been registered.");
 		}
 		i++;
 		token = strtok(NULL, " .,:");
@@ -100,7 +122,7 @@ char *guru_i18n_check(char *player, char *message, int language)
 /* FIXME: memory issues (as always) and better interface needed */
 char *guru_i18n_translate(char *player, char *messageset)
 {
-	char *token;
+	char *token, *tmptoken;
 	char *message;
 	static char *ret = NULL;
 	int i;
@@ -128,10 +150,17 @@ char *guru_i18n_translate(char *player, char *messageset)
 		ret = NULL;
 	}
 
+	guru_i18n_setcatalog(1);
+
 	message = _(messageset);
+
 	/*printf("MESSAGE: %s\n", message);
 	printf("MESSAGESET: %s\n", messageset);*/
-	if(strcmp(message, messageset)) return strdup(message); /* FIXME: another leak */
+	if(strcmp(message, messageset))
+	{
+		guru_i18n_setcatalog(0);
+		return strdup(message); /* FIXME: another leak */
+	}
 	
 	dup = strdup(messageset);
 	messageset = dup;
@@ -140,7 +169,15 @@ char *guru_i18n_translate(char *player, char *messageset)
 	while(token)
 	{
 		/*printf("Lookup: %s\n", token);*/
-		message = _(token);
+
+		tmptoken = (char*)malloc(strlen(token) + 2);
+		strcpy(tmptoken, token);
+		strcat(tmptoken, "\n");
+
+		message = _(tmptoken);
+
+		free(tmptoken);
+
 		/*printf("* translating \"%s\" to \"%s\"\n", token, message);*/
 		ret = (char*)realloc(ret, (ret ? strlen(ret) : 0) + strlen(message) + (ret ? 2 : 1));
 		if(!i) strcpy(ret, message);
@@ -153,6 +190,8 @@ char *guru_i18n_translate(char *player, char *messageset)
 		i++;
 	}
 	free(dup);
+
+	guru_i18n_setcatalog(0);
 
 	return ret;
 }

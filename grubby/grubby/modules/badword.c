@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -53,11 +53,12 @@ Guru *gurumod_exec(Guru *message)
 	int bad, you;
 
 	if(!message->message) return NULL;
+
 	type = typenone;
 	if(message->type == GURU_PRIVMSG) type = typetogrubby;
+	else if(message->type == GURU_DIRECT) type = typetogrubby;
 	else if((message->list) && (message->list[0]))
 	{
-		if(!strcmp(message->list[0], message->guru)) type = typetogrubby;
 		if((message->player) && (!strcmp(message->guru, message->player))) type = typefromgrubby;
 	}
 	if(type == typefromgrubby) return NULL;
@@ -94,15 +95,15 @@ Guru *gurumod_exec(Guru *message)
 			{
 				if(!buf) buf = (char*)malloc(strlen(message->player) + 1024);
 				strcpy(buf, message->player);
-				strcat(buf, _(" is a dirty evil bastard."));
+				strcat(buf, __(" is a dirty evil bastard."));
 				message->message = buf;
 			}
-			else message->message = _("You aren't any better, bugger.");
+			else message->message = __("You aren't any better, bugger.");
 			return message;
 		}
 		else
 		{
-			message->message = _("Watch your language please!");
+			message->message = __("Watch your language please!");
 			return message;
 		}
 	}

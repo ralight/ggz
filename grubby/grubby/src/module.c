@@ -124,6 +124,7 @@ Gurucore *guru_module_init(const char *datadir)
 	core->i18n_init = NULL;
 	core->i18n_translate = NULL;
 	core->i18n_check = NULL;
+	core->i18n_catalog = NULL;
 	module = ggz_conf_read_string(handler, "guru", "i18n", NULL);
 	if(module)
 	{
@@ -136,6 +137,7 @@ Gurucore *guru_module_init(const char *datadir)
 		}
 		if(((core->i18n_init = dlsym(core->i18nhandle, "guru_i18n_initialize")) == NULL)
 		|| ((core->i18n_translate = dlsym(core->i18nhandle, "guru_i18n_translate")) == NULL)
+		|| ((core->i18n_catalog = dlsym(core->i18nhandle, "guru_i18n_setcatalog")) == NULL)
 		|| ((core->i18n_check = dlsym(core->i18nhandle, "guru_i18n_check")) == NULL))
 		{
 			printf(_("ERROR: Couldn't find i18n functions\n"));
@@ -254,8 +256,8 @@ static char *guru_modules_list(void)
 	int i, j;
 
 	/* Build up list dynamically */
-	prepend = _("List of available modules:");
-	none = _("No modules loaded at all.");
+	prepend = __("List of available modules:");
+	none = __("No modules loaded at all.");
 	if(list) free(list);
 	list = (char*)malloc(strlen(prepend) + 1);
 	strcpy(list, prepend);
@@ -298,8 +300,8 @@ static Guru *guru_module_internal(Guru *message)
 	while((message->list) && (message->list[i]))
 	{
 		token = message->list[i];
-		if((i == 0) && (!strcasecmp(token, core->name))) modules++;
-		if((i == 0) && (!strcasecmp(token, core->guestname))) modules++;
+		if((i == 0) && (message->type == GURU_DIRECT)) modules++;
+		if((i == 0) && (message->type == GURU_PRIVMSG)) modules++;
 		if((i == 1) && (!strcmp(token, "modules"))) modules++;
 		if((i == 1) && (!strcmp(token, "insmod"))) modadd++;
 		if((i == 1) && (!strcmp(token, "rmmod"))) modremove++;
@@ -325,22 +327,22 @@ static Guru *guru_module_internal(Guru *message)
 		{
 			if(modadd)
 			{
-				if(guru_module_add(mod)) message->message = _("Module added.");
-				else message->message = _("Error: Could not add module.");
+				if(guru_module_add(mod)) message->message = __("Module added.");
+				else message->message = __("Error: Could not add module.");
 			}
 			if(modremove)
 			{
-				if(guru_module_remove(mod)) message->message = _("Module removed.");
-				else message->message = _("Error: Could not remove module.");
+				if(guru_module_remove(mod)) message->message = __("Module removed.");
+				else message->message = __("Error: Could not remove module.");
 			}
 			if(modreload)
 			{
 				guru_module_remove(mod);
-				if(guru_module_add(mod)) message->message = _("Module reloaded.");
-				else message->message = _("Error: Could not reload module.");
+				if(guru_module_add(mod)) message->message = __("Module reloaded.");
+				else message->message = __("Error: Could not reload module.");
 			}
 		}
-		else message->message = _("Only my owner can change the module setup.");
+		else message->message = __("Only my owner can change the module setup.");
 		if(mod) free(mod);
 		return message;
 	}

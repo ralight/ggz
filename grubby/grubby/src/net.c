@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -18,18 +18,19 @@
 #include <unistd.h>
 
 /* Globals */
-int status = NET_NOOP;
-GGZServer *server = NULL;
-GGZRoom *room = NULL;
-GGZGame *game = NULL;
-Guru **queue = NULL;
-int queuelen = 1;
-char *guruname = NULL;
-char *guruguestname = NULL;
-FILE *logstream = NULL;
-int tableid = -1;
-int gamefd = -1;
-int channelfd = -1;
+static int status = NET_NOOP;
+static GGZServer *server = NULL;
+static GGZRoom *room = NULL;
+static GGZGame *game = NULL;
+static Guru **queue = NULL;
+static int queuelen = 1;
+static char *guruname = NULL;
+static char *guruguestname = NULL;
+static FILE *logstream = NULL;
+static int tableid = -1;
+static int gamefd = -1;
+static int channelfd = -1;
+static time_t lasttick = 0;
 
 /* Prototypes */
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data);
@@ -128,6 +129,11 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 		guru->list = NULL;
 	}
 
+	/* Recognize direct speech */
+	if((guru->type == GURU_CHAT) && (guru->list) && (guru->list[0]))
+		if(!strcasecmp(guru->list[0], guruname))
+			guru->type = GURU_DIRECT;
+
 	/* Insert structure into queue */
 	queuelen++;
 	queue = (Guru**)realloc(queue, sizeof(Guru*) * queuelen);
@@ -180,6 +186,8 @@ int net_status(void)
 	fd_set set;
 	struct timeval to;
 	struct timeval *top;
+	struct timespec req;
+	time_t currenttick;
 
 	to.tv_sec = 0;
 	to.tv_usec = 0;
@@ -221,10 +229,26 @@ int net_status(void)
 		if(ret == 1) ggzcore_server_read_data(server, channelfd);
 	}
 
+	if(status == NET_NOOP)
+	{
+		currenttick = time(NULL);
+		if(currenttick - lasttick > 1)
+		{
+			net_internal_queueadd(NULL, NULL, GURU_TICK);
+			status = NET_INPUT;
+			lasttick = currenttick;
+		}
+
+		req.tv_sec = 0;
+		req.tv_nsec = 500000;
+		nanosleep(&req, NULL);
+	}
+
 	ret = status;
 	if(status == NET_GOTREADY) status = NET_NOOP;
 	if(status == NET_LOGIN) status = NET_NOOP;
 	if(status == NET_INPUT) status = NET_NOOP;
+
 	return ret;
 }
 
@@ -257,6 +281,7 @@ printf("DEBUG: net_output(%s)\n", output->message);*/
 		switch(output->type)
 		{
 			case GURU_CHAT:
+			case GURU_DIRECT:
 				ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, token);
 				break;
 			case GURU_PRIVMSG:

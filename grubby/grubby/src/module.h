@@ -24,9 +24,10 @@ typedef void (*netlogfunc)(const char *logfile);
 typedef void (*playerinitfunc)(const char *datadir);
 
 /* I18n function handlers */
-typedef void (*i18ninitfunc)(const char *lang);
+typedef void (*i18ninitfunc)(const char *lang, const char *syslang);
 typedef char* (*i18ntransfunc)(char *player, char *messageset);
 typedef char* (*i18ncheckfunc)(char *player, char *message, int language);
+typedef char* (*i18ncatalogfunc)(int guru);
 
 /* Grubby's structure */
 struct gurucore_t
@@ -51,6 +52,7 @@ struct gurucore_t
 	i18ninitfunc i18n_init;
 	i18ntransfunc i18n_translate;
 	i18ncheckfunc i18n_check;
+	i18ncatalogfunc i18n_catalog;
 };
 
 typedef struct gurucore_t Gurucore;

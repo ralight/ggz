@@ -10,7 +10,7 @@ EXTRA_DIST = dict.pl rdf.pl meeting.rb messages.rb grubby-config.in webtranslato
 
 messages:
 	touch guru.pot
-	$(XGETTEXT) -k_ -kN_ -ki18n ../modules/*.c ../src/*.c *.pl -o guru.pot
+	$(XGETTEXT) -k__ -kN_ -ki18n ../modules/*.c ../src/*.c ../../games/*/*.c *.pl -o guru.pot
 	@for j in `ls -1 *.po`; do \
 		echo "process $$j"; \
 		$(MSGMERGE) $$j guru.pot > .$$j 2>/dev/null; \

@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #include "gurumod.h"
+#include "i18n.h"
 
 /* Empty init */
 void gurumod_init(const char *datadir)
@@ -27,11 +29,17 @@ Guru *gurumod_exec(Guru *message)
 	while((message->list) && (message->list[i]))
 	{
 		token = message->list[i];
-		if(!strcasecmp(token, "java")) outtoken = "Java? You don't know _my_ skills!";
-		if(!strcasecmp(token, "basic")) outtoken = "I though Basic is for beginners only. You must be childish.";
-		if(!strcasecmp(token, "c")) outtoken = "Don't talk about C. It's so crappy, nobody used it. .NET rulez.";
-		if(!strcasecmp(token, "pascal")) outtoken = "Oh, I've learned that at school. However, it sucks when compared to Prolog.";
-		if(!strcasecmp(token, "perl")) outtoken = "Yeah, perl. I hate write-only languages.";
+		if(!strcasecmp(token, "java"))
+			outtoken = __("Java? You don't know _my_ skills!");
+		if(!strcasecmp(token, "basic"))
+			outtoken = __("I though Basic is for beginners only. You must be childish.");
+		if(!strcasecmp(token, "c"))
+			outtoken = __("Don't talk about C. It's so crappy, nobody used it. .NET rulez.");
+		if(!strcasecmp(token, "pascal"))
+			outtoken = __("Oh, I've learned that at school. However, it sucks when compared to Prolog.");
+		if(!strcasecmp(token, "perl"))
+			outtoken = __("Yeah, perl. I hate write-only languages.");
+
 		if(outtoken)
 		{
 			message->message = outtoken;

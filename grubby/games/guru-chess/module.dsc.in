@@ -8,4 +8,5 @@ Name = Guru Chess
 ProtocolEngine = Chess
 ProtocolVersion = 3
 Version = 0.0.8
+Environment = passive
 

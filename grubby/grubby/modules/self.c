@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 - 2003 Josef Spillner, <josef@ggzgamingzone.org>
+* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -9,8 +9,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include <ggz.h>
+
 #include "gurumod.h"
 #include "i18n.h"
+
+#define GRUBBYCONF "/grubby.rc"
+
+#define can(x) strlen(x) < sizeof(x) - 128
 
 /* Empty init */
 void gurumod_init(const char *datadir)
@@ -70,23 +77,27 @@ static int process_uptime()
 Guru *gurumod_exec(Guru *message)
 {
 	int i, active;
-	char buffer[1024];
+	char buffer[2048];
 	int minutes;
+	int ret;
+	char *datadir, *path, *home;
+	int handler;
+	int count;
+	char **list;
 
 	i = 0;
-	active = 0;
+
+	/* Make sure people talk with grubby */
+	if(message->type == GURU_DIRECT) active = 1;
+	else if(message->type == GURU_PRIVMSG) active = 1;
+	else active = 0;
+
 	while((message->list) && (message->list[i]))
 	{
-		/* Make sure people talk with grubby */
-		if((i == 0) && (!strcasecmp(message->list[i], message->guru)))
-		{
-			active = 1;
-		}
-
 		/* Let grubby tell about himself */
 		if((i == 1) && (!strcasecmp(message->list[i], "about")) && (active))
 		{
-			snprintf(buffer, sizeof(buffer), _("I'm %s, your favorite chat bot!\n"
+			snprintf(buffer, sizeof(buffer), __("I'm %s, your favorite chat bot!\n"
 					"I'm here to answer your question, and learn more about you.\n"
 					"You may type '%s help ' to get to know what I understand.\n"
 					"Have fun :-)"), message->guru, message->guru);
@@ -98,15 +109,72 @@ Guru *gurumod_exec(Guru *message)
 		/* Show all available commands, independent of active plugins */
 		if((i == 1) && (!strcasecmp(message->list[i], "help")) && (active))
 		{
-			message->message = _("This is the list of public commands I understand:\n"
-					"about: let me tell about myself\n"
-					"do i have any messages: let me look up if there's news for you\n"
-					"tell <nick> <message>: store message for player nick\n"
-					"who is <nick>: request information about nick\n"
-					"have you seen <nick>: ask me when I last saw nick\n"
-					"my (email | pager) is <contact>: register contact information\n"
-					"<nick> is from <countrycode>: register language\n"
-					"my name is <fullname>: register you as fullname");
+			sprintf(buffer, __("This is the list of public commands I understand:\n"));
+
+			/* Find out grubby's data directory first */
+			home = getenv("HOME");
+			datadir = (char*)malloc(strlen(home) + 10);
+			strcpy(datadir, home);
+			strcat(datadir, "/.ggz");
+
+			/* Open configuration file */
+			path = (char*)malloc(strlen(datadir) + strlen(GRUBBYCONF) + 1);
+			strcpy(path, datadir);
+			strcat(path, GRUBBYCONF);
+			handler = ggz_conf_parse(path, GGZ_CONF_RDONLY);
+
+			ret = ggz_conf_read_list(handler, "guru", "modules", &count, &list);
+			if(ret >= 0)
+			{
+				for(i = 0; i < count; i++)
+				{
+					if(!strcmp(list[i], "self"))
+					{
+						if(can(buffer)) strcat(buffer, __("about: let me tell about myself\n"));
+						if(can(buffer)) strcat(buffer, __("uptime: disclose my age\n"));
+					}
+					else if(!strcmp(list[i], "extra"))
+					{
+						if(can(buffer)) strcat(buffer, __("shut up: make me quiet\n"));
+					}
+					else if(!strcmp(list[i], "exec"))
+					{
+						if(can(buffer)) strcat(buffer,
+							__("do i have any messages: let me look up if there's news for you\n"));
+						if(can(buffer)) strcat(buffer,
+							__("tell <nick> <message>: store message for player nick\n"));
+					}
+					else if(!strcmp(list[i], "people"))
+					{
+						if(can(buffer)) strcat(buffer,
+							__("who is <nick>: request information about nick\n"));
+						if(can(buffer)) strcat(buffer,
+							__("have you seen <nick>: ask me when I last saw nick\n"));
+						if(can(buffer)) strcat(buffer,
+							__("my (email | pager) is <contact>: register contact information\n"));
+						if(can(buffer)) strcat(buffer,
+							__("my name is <fullname>: register you as fullname\n"));
+					}
+					else if(!strcmp(list[i], "game"))
+					{
+						if(can(buffer)) strcat(buffer, __("join my game: make me join your table\n"));
+					}
+					else if(!strcmp(list[i], "learning"))
+					{
+						if(can(buffer)) strcat(buffer, __("<thing> is <explanation>: Learn a fact\n"));
+						if(can(buffer)) strcat(buffer, __("what is <thing>: Get information about a fact\n"));
+					}
+				}
+			}
+
+			/* i18n is always assumed to be present */
+			if(can(buffer)) strcat(buffer, __("i am from <countrycode>: register language\n"));
+
+			ggz_conf_close(handler);
+			free(path);
+			free(datadir);
+
+			message->message = buffer;
 			message->type = GURU_PRIVMSG;
 			return message;
 		}
@@ -117,10 +185,10 @@ Guru *gurumod_exec(Guru *message)
 			minutes = process_uptime();
 
 			if(minutes < 0)
-				snprintf(buffer, sizeof(buffer), _("No uptime information found."));
+				snprintf(buffer, sizeof(buffer), __("No uptime information found."));
 			else
 				snprintf(buffer, sizeof(buffer),
-					_("I've been running for %i hours and %i minutes."),
+					__("I've been running for %i hours and %i minutes."),
 					minutes / 60, minutes % 60);
 			message->message = buffer;
 			message->type = GURU_PRIVMSG;

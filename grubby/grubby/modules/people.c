@@ -30,7 +30,7 @@ void gurumod_init(const char *datadir)
 Guru *gurumod_exec(Guru *message)
 {
 	int i, j;
-	char *realname, *name, *contact;
+	char *realname, *name, *contact, *language;
 	Player *p;
 	static char *info = NULL;
 	int firsttime;
@@ -63,12 +63,12 @@ Guru *gurumod_exec(Guru *message)
 				switch(rand() % 9)
 				{
 					case 0:
-						strcpy(info, _("Nice to see you here again, "));
+						strcpy(info, __("Nice to see you here again, "));
 						strcat(info, message->player);
 						break;
 					case 1:
 						strcpy(info, message->player);
-						strcat(info, _(": Great you come here!"));
+						strcat(info, __(": Great you come here!"));
 						break;
 					default:
 						return NULL;
@@ -77,13 +77,13 @@ Guru *gurumod_exec(Guru *message)
 			}
 			else
 			{
-				strcpy(info, _("Hi "));
+				strcpy(info, __("Hi "));
 				strcat(info, message->player);
-				strcat(info, _(", I'm "));
+				strcat(info, __(", I'm "));
 				strcat(info, message->guru);
-				strcat(info, _(". I have never seen you before here.\nType '"));
+				strcat(info, __(". I have never seen you before here.\nType '"));
 				strcat(info, message->guru);
-				strcat(info, _(" help' to change this :)"));
+				strcat(info, __(" help' to change this :)"));
 			}
 			message->message = info;
 			message->type = GURU_CHAT;
@@ -95,20 +95,20 @@ Guru *gurumod_exec(Guru *message)
 			switch(rand() % 30)
 			{
 				case 0:
-					strcpy(info, _("See you later, "));
+					strcpy(info, __("See you later, "));
 					strcat(info, message->player);
 					message->message = info;
 					break;
 				case 1:
-					message->message = _("Have a nice rest.");
+					message->message = __("Have a nice rest.");
 					break;
 				case 2:
 					strcpy(info, message->player);
-					strcat(info, _(": Don't stay away too long."));
+					strcat(info, __(": Don't stay away too long."));
 					message->message = info;
 					break;
 				case 3:
-					message->message = _("Eh, why has he gone?");
+					message->message = __("Eh, why has he gone?");
 					break;
 				default:
 					message->message = NULL;
@@ -120,6 +120,10 @@ Guru *gurumod_exec(Guru *message)
 
 	i = 0;
 	while((message->list) && (message->list[i])) i++;
+
+	if((message->type != GURU_DIRECT)
+	&& (message->type != GURU_PRIVMSG))
+		return NULL;
 
 	if(i > 4)
 	{
@@ -150,7 +154,7 @@ Guru *gurumod_exec(Guru *message)
 			if(realname) p->realname = realname;
 			if(contact) p->contact = contact;
 			guru_player_save(p);
-			message->message = _("OK, registered your information.");
+			message->message = __("OK, registered your information.");
 			message->type = GURU_PRIVMSG;
 			return message;
 		}
@@ -167,10 +171,12 @@ Guru *gurumod_exec(Guru *message)
 			{
 				realname = (p->realname ? p->realname : "unknown");
 				contact = (p->contact ? p->contact : "unknown");
-				sprintf(info, "%s: %s, %s: %s", _("Name"), realname, _("Contact"), contact);
+				language = (p->language ? p->language : "unknown");
+				sprintf(info, "%s: %s, %s: %s, %s: %s",
+					__("Name"), realname, __("Contact"), contact, __("Language"), language);
 				message->message = info;
 			}
-			else message->message = _("Sorry, I don't know who this is.");
+			else message->message = __("Sorry, I don't know who this is.");
 			return message;
 		}
 	}
@@ -183,7 +189,7 @@ Guru *gurumod_exec(Guru *message)
 		{
 			if(!strcmp(message->player, message->list[4]))
 			{
-				message->message = _("I'm looking right at you now :)");
+				message->message = __("I'm looking right at you now :)");
 			}
 			else
 			{
@@ -192,10 +198,10 @@ Guru *gurumod_exec(Guru *message)
 				{
 					t = p->lastseen;
 					ts = ctime(&t);
-					sprintf(info, _("Yeah, he was here at %s"), ts);
+					sprintf(info, __("Yeah, he was here at %s"), ts);
 					message->message = info;
 				}
-				else message->message = _("Nope, never seen this guy here.");
+				else message->message = __("Nope, never seen this guy here.");
 			}
 			return message;
 		}

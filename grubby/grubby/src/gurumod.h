@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -12,11 +12,13 @@
 
 /* Message types */
 #define GURU_CHAT 1
-#define GURU_PRIVMSG 2
-#define GURU_ADMIN 3
-#define GURU_ENTER 4
-#define GURU_LEAVE 5
-#define GURU_GAME 6
+#define GURU_DIRECT 2
+#define GURU_PRIVMSG 3
+#define GURU_ADMIN 4
+#define GURU_ENTER 5
+#define GURU_LEAVE 6
+#define GURU_GAME 7
+#define GURU_TICK 8
 
 /* Message structure to be passes around to the plugins */
 struct guru_t

@@ -38,7 +38,8 @@ Guru *gurumod_exec(Guru *message)
 	if((message->list)
 	&& (message->list[0])
 	&& (message->list[1])
-	&& (!strcmp(message->list[0], message->guru)))
+	&& ((message->type == GURU_DIRECT)
+	 || (message->type == GURU_PRIVMSG)))
 	{
 		if(message->list[2])
 			if(!strcmp(message->list[1], "say"))
@@ -89,7 +90,8 @@ Guru *gurumod_exec(Guru *message)
 	&& (message->list[1])
 	&& (message->list[2]))
 	{
-		if((!strcmp(message->list[0], message->guru))
+		if(((message->type == GURU_DIRECT)
+		 || (message->type == GURU_PRIVMSG))
 		&& (!strcmp(message->list[1], "shut"))
 		&& (!strcmp(message->list[2], "up")))
 		{
@@ -109,7 +111,7 @@ Guru *gurumod_exec(Guru *message)
 			break;
 		case COMMAND_HI:
 			buf = (char*)malloc((message->player ? strlen(message->player) : 0) + 10);
-			sprintf(buf, _("Hi %s"), message->player);
+			sprintf(buf, __("Hi %s"), message->player);
 			message->message = buf;
 			return message;
 			break;
@@ -133,16 +135,16 @@ Guru *gurumod_exec(Guru *message)
 			return message;
 			break;
 		case COMMAND_FUNNY:
-			message->message = _("funny eh?");
+			message->message = __("funny eh?");
 			return message;
 			break;
 		case COMMAND_FUNNY2:
-			message->message = _("hehe");
+			message->message = __("hehe");
 			return message;
 			break;
 		case COMMAND_SHUTUP:
 			noop_countdown = 2 * 10;
-			message->message = _("bleh :(");
+			message->message = __("bleh :(");
 			return message;
 			break;
 	}

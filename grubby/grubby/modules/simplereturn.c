@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -15,7 +15,12 @@
 Guru *gurumod_exec(Guru *message)
 {
 	if(message->priority == 10) return NULL;
-	return message;
+
+	if((message->type == GURU_DIRECT)
+	|| (message->type == GURU_PRIVMSG))
+		return message;
+
+	return NULL;
 }
 
 /* Empty init */

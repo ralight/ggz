@@ -36,17 +36,29 @@ Update: The i18n interface
 
 All messages to be translated are marked with an underscore,
 like _("Hello World.").
+
 This has two functions:
-- mark the message for translation ('make messages' in the data directory)
+- mark the message for translation ('make messages' in the data and po
+  directories)
 - translate the string into the current language, which is set by the
-  environment variable $LANGUAGE.
+  environment variable $LANGUAGE, derived from $LANG (system) or the grubby
+  configuration, see below.
+
 The question is now how we determine what the current language is.
-- If a player speaks with grubby directly, his registered language is used
+- If grubby outputs some text to the console, the language of the user who
+  invoked grubby is used, if set.
+- If a player speaks with grubby directly, his registered language is used.
 - If grubby only reacts on some speech, the grubby default language is used,
   although one could argue that the language of the affected player would be
-  better.
+  better. This language is configured in grubby.rc.
 - If a player changes his language, the registration is done immideately and
   the player is notified in the new language.
-- The final string which is sent to the output function is translated again, in
-  case it wasn't done already. Is this useful?
+- The final string could sent to the output function is translated again, in
+  case it wasn't done already. Would this be useful? Currently it doesn't
+  seem to be needed.
+
+Thus there are two language catalogs, 'grubby.mo' for system messages and
+'guru.mo' for chat messages. Overlapping strings could be invalidated using
+'***' in the respective wrong catalogs. However to make things easier, _(x)
+is used for system messages, and __(x) for chat messages.
 

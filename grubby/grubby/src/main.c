@@ -37,7 +37,7 @@ static int admin(Guru *guru, Gurucore *core)
 
 	valid = 0;
 	if(guru->type == GURU_PRIVMSG) valid = 1;
-	else if((i > 1) && (!strcmp(guru->list[0], core->name))) valid = 1;
+	else if(guru->type == GURU_DIRECT) valid = 1;
 	if(!valid) return 0;
 
 	switch(i)
@@ -50,7 +50,7 @@ static int admin(Guru *guru, Gurucore *core)
 			if((!strcmp(guru->list[1], "goto")) && (valid = 1))
 			{
 				room = guru->list[2];
-				guru->message = strdup("Yes, I follow, my master.");
+				guru->message = strdup(__("Yes, I follow, my master."));
 				(core->net_output)(guru);
 				sleep(2);
 				(core->net_join)(room);
@@ -60,7 +60,7 @@ static int admin(Guru *guru, Gurucore *core)
 			{
 				if(!strcmp(guru->list[2], "off")) (core->net_log)(NULL);
 				else (core->net_log)(core->logfile);
-				guru->message = strdup("Toggled logging.");
+				guru->message = strdup(__("Toggled logging."));
 				(core->net_output)(guru);
 				return 1;
 			}
@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
 	char *opthost = NULL, *optname = NULL, *optdatadir = NULL;
 	char *input;
 	int language;
+	int ret;
 
 	/* Recognize command line arguments */
 	struct option options[] =
@@ -100,9 +101,14 @@ int main(int argc, char *argv[])
 	int optindex;
 	int opt;
 
+	extern int _nl_msg_cat_cntr;
+
 	bindtextdomain("grubby", PREFIX "/share/locale");
 	textdomain("grubby");
 	setlocale(LC_ALL, "");
+
+	setenv("LANGUAGE", getenv("LANG"), 1);
+	++_nl_msg_cat_cntr;
 
 	while(1)
 	{
@@ -161,7 +167,9 @@ int main(int argc, char *argv[])
 	printf(_("Grubby: connect to %s...\n"), core->host);
 	(core->net_log)(core->logfile);
 	(core->net_connect)(core->host, 5688, core->name, core->guestname);
-	if(core->i18n_init) (core->i18n_init)(core->language);
+	if(core->i18n_init) (core->i18n_init)(core->language, getenv("LANG"));
+
+	/* Main loop */
 	while(1)
 	{
 		/* Permanently check states */
@@ -182,31 +190,45 @@ int main(int argc, char *argv[])
 				guru = (core->net_input)();
 				guru->guru = core->name;
 				guru->datadir = core->datadir;
-				if(!admin(guru, core))
+
+				if(core->i18n_catalog) (core->i18n_catalog)(1);
+				if(core->i18n_check) (core->i18n_check)(guru->player, "", 1);
+				ret = admin(guru, core);
+				if(core->i18n_catalog) (core->i18n_catalog)(0);
+
+				if(!ret)
 				{
 					/* If message is valid, try to translate it first */
+					language = 0;
+					if(guru->type == GURU_PRIVMSG) language = 1;
+					else if(guru->type == GURU_DIRECT) language = 1;
+
 					input = NULL;
 					if(core->i18n_check)
 					{
-						language = 0;
-						if(guru->type == GURU_PRIVMSG) language = 1;
-						else if((guru->list) && (guru->list[0]) && (!strcmp(guru->list[0], core->name))) language = 1;
-
+						(core->i18n_catalog)(1);
 						input = (core->i18n_check)(guru->player, guru->message, language);
+						(core->i18n_catalog)(0);
+
 						if(input)
 						{
 							free(guru->message);
 							guru->message = input;
-							guru->message = (core->i18n_translate)(guru->player, guru->message);
+							/*guru->message = (core->i18n_translate)(guru->player, guru->message);*/
 							(core->net_output)(guru);
 						}
 					}
 					if(!input)
 					{
+						if(core->i18n_catalog) (core->i18n_catalog)(1);
+						if(core->i18n_check) (core->i18n_check)(guru->player, "", language);
 						guru = guru_work(guru);
+						if(core->i18n_catalog) (core->i18n_catalog)(0);
+
 						if(guru)
 						{
-							/*if(core->i18n_translate) guru->message = (core->i18n_translate)(guru->player, guru->message);*/
+							/*if(core->i18n_translate)
+								guru->message = (core->i18n_translate)(guru->player, guru->message);*/
 							(core->net_output)(guru);
 						}
 					}

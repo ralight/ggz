@@ -7,13 +7,13 @@ Yes of course :)
 But now all extended functionality has gone into separate modules, or is
 planned to go there.
 
-modmessage: (view meeting.rb maybe)
+modmessage: (DONE, view meeting.rb)
 -----------
 grubby tell (G)knight where are you now?
 grubby do i have any messages
 grubby alert add someone
 
-modpeople:
+modpeople: (DONE)
 ----------
 grubby my name is Igor
 grubby have you seen Vladimir
@@ -22,12 +22,12 @@ modbadword: (DONE)
 ------------
 grubby you suck!
 
-modself: (DONE, skeleton)
+modself: (DONE)
 --------
 grubby help
 grubby about
 
-modadmin:
+modadmin: (DONE)
 ---------
 grubby goto 0
 grubby log off

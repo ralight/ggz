@@ -1,20 +1,40 @@
 Tutorial: Writing plugins for Grubby
-Josef Spillner, 2001-08-19
-------------------------------------
+Josef Spillner, 2001-08-19, updated 2004-03-21
+----------------------------------------------
+
+0. Introduction
+---------------
+Grubby is a versatile chatbot. It is highly configurable, but this has some
+disadvantages as well, mainly complexity. This tutorial helps in understanding
+the code structure and leads to the ability to build plugins.
 
 1. Plugin architecture
 ----------------------
-Our chat bot has now been converted to use plugins (modules) which do all the
-work for it. These modules have access to both the plugin API (such as
-receiving messages and their sender) and other API's, for example to access the
-player database.
-Thus, although it's still grubby, for developers it's now the "guru".
+The chat bot had now been converted to use plugins (modules) which do all the
+work for it in 2001. These modules have access to both the plugin API (such as
+receiving messages and their sender) and other API's, for example to access
+the player database.
+Thus, although the overall program is still grubby, for developers the core is
+called the "guru".
+It consists of the main program, several core plugins, and a variable number
+of chat plugins. The core plugins are:
+
+* player: Provides database-like acess to player information.
+  Can (and must) be player.
+* net: Provides networking functionality.
+  Can be one of netggz, netirc, netconsole.
+* i18n: Supports player-dependent translation of chat texts and messages.
+  Can be either present or not.
+
+The chat plugins range from simple echo-style ones to those who initiate games,
+execute programs and embed scripts.
 
 2. Basics
 ---------
-A plugin can basically be two things: A file with 2 C functions (gurumod_init
-and gurumod_exec), or it can also be an external program which is wrapped by
-the module modexec.
+A plugin can basically be three things: A file with 2 C functions (gurumod_init
+and gurumod_exec), a script written in one of the languages supported by
+modembed (python, perl or ruby), or it can also be an external program which
+is wrapped by the module modexec.
 
 All C functions get the Guru structure which contains the following fields:
 
@@ -23,16 +43,31 @@ char*	message		- message line, or NULL on events
 int		type		- private message, normal chat, leave event, ...
 char**	list		- tokenized list of the message line
 int		priority	- helper value to control noise output on implicit messages
+char*   guru        - the chatbot's name
+char*   datadir     - data directory currently in use
 
-The first word, and therefore the first token, contain the name of grubby, and
-should always be ignored in modules. It could be "Keeper", "Keeper(G)",
-"keeper:" and even more.
+The type indicates the message semantics:
+
+GURU_CHAT      - public chat
+GURU_DIRECT    - public chat between chatbot and a person
+GURU_PRIVMSG   - private chat between chatbot and a person
+GURU_ADMIN     - announcements sent by the chatbot admin
+GURU_ENTER     - input-only: player enters a room
+GURU_LEAVE     - input-only: player leaves a room
+GURU_GAME      - output-only: player initiated a game
+GURU_TICK      - input-only: regular non-message based event
+
+The first word, and therefore the first token, contains the name of grubby, and
+should always be ignored in modules for direct communication (GURU_PRIVMSG and
+GURU_DIRECT). It could be "Keeper", "Keeper(G)", "keeper:" and even more.
+
 The pritority ranges from 10 down to 0, and means that modules which do not
 listen on special commands (such as "grubby news") but scan for arbitrary words
 like badwords should be quite on a high priority, but more noisy on a priority
 of zero. This avoids the impression that the bot has been created for
 annoyance.
-Before return, the list should be left as is, but the message should be
+
+Before return, the list should be left as is, but the message->message should be
 free()'d and set to the answer or to NULL if there's nothing to answer.
 Multiple line answers are possible if separated by a '\n'.
 On return, the type should almost always be set to private chat, so other
@@ -48,7 +83,7 @@ However, care must be taken about two things:
 - always flush answers
 - always wait about one second after the flush
 This is because otherwise the modexec wrapper wouldn't have a chance to read
-the answer.
+the answer. With modembed, those problems do not occur.
 
 The command line paramers are:
 argv[0] = program name
@@ -57,12 +92,12 @@ argv[2] = type
 argv[3] = priority
 
 Also take care that scripts have the executable flags set after installation,
-else they won't respond anything.
+else they won't respond anything if used by modembed.
 
 4. Embedded scripts
 -------------------
 
-Using mod_embed, scripts of supported programming languages can now also be
+Using mod_embed, scripts of supported programming languages can be
 executed with no time loss as embedded scripts (yet running as external process
 to achieve higher security).
 For ruby scripts, the variable $answer serves as both input and output
@@ -71,10 +106,9 @@ interface.
 5. Player interface
 -------------------
 Some modules want to know when a player was last seen, if he logged in at all
-and more. For those, the file player.c contains some useful functions. Have a
-look at test_player.c on how to use it.
-Grubby commands like "have you seen Keeper" or his automatical first-time
-introduction haven't been coded yet. They should use this easy interface.
+and more. For those, the file player.c contains some useful functions.
+This is used both by the i18n core module (to find out a player's language)
+and by the people chat module (to read/write all other data).
 
 6. Internationalization
 -----------------------
@@ -87,11 +121,13 @@ module input: "grubby meeting"
 moudle output: "sorry, no meetings found"
 player output: "entschuldigung, leider keine einträge über treffen gefunden
 
+Right now, only output is translated, while input is not.
+
 6. Inclusion
 ------------
 Once you created a useful plugin, don't hesitate to contact our development
 mailing list to get the chance to include it into CVS!
--> ggz-dev@lists.sourceforge.net
+-> ggz-dev@mail.ggzgamingzone.org
 
 Josef
 

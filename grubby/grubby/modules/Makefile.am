@@ -41,4 +41,5 @@ libgurumod_learning_la_SOURCES = learning.c
 
 libgurumod_game_la_SOURCES = game.c
 
-# noinst_HEADERS = 
+noinst_HEADERS = game.h
+

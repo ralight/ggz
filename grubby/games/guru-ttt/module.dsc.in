@@ -8,4 +8,4 @@ Name = Guru TicTacToe
 ProtocolEngine = TicTacToe
 ProtocolVersion = 3
 Version = 0.0.1
-
+Environment = passive

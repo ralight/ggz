@@ -1,137 +1,138 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Tradução dos dados de Grubby para Português Brasileiro
+# Copyright (C) 2004 Josef Spillner
+# This file is distributed under the same license as the ggz-grubby package.
+# Josef Spillner <josef@ggzgamingzone.org>, 2004.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 0.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-03-22 01:03+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Francais <fr@li.org>\n"
+"PO-Revision-Date: 1004-03-21 16:08+0400\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
+"Language-Team: Português Brasileiro <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../modules/badword.c:98
 msgid " is a dirty evil bastard."
-msgstr " est fous."
+msgstr " é louco."
 
 #: ../modules/badword.c:101
 msgid "You aren't any better, bugger."
-msgstr "T'es pas plus bien comme moi."
+msgstr "Você é não melhor, miserável."
 
 #: ../modules/badword.c:106
 msgid "Watch your language please!"
-msgstr "Regarde la langue s'il te plaîs!"
+msgstr "Amigo, não usa estas palavras."
 
 #: ../modules/extra.c:114
 #, c-format
 msgid "Hi %s"
-msgstr "Salut %s"
+msgstr "Oi %s"
 
 #: ../modules/extra.c:138
 msgid "funny eh?"
-msgstr "c'est drôle?"
+msgstr "é cómico?"
 
 #: ../modules/extra.c:142
 msgid "hehe"
-msgstr "hehe"
+msgstr "hehehehe"
 
 #: ../modules/extra.c:147
 msgid "bleh :("
-msgstr "merde :("
+msgstr "droga :("
 
 #: ../modules/game.c:127
 msgid "Sure let's play..."
-msgstr "Bien, va jouer..."
+msgstr "Certo, vamos jogar..."
 
 #: ../modules/learning.c:123
 msgid "OK, learned that."
-msgstr "Bon, appris."
+msgstr "Bom, aprendei."
 
 #: ../modules/learning.c:127
 msgid "You're too curious - I don't know everything."
-msgstr "Tu est trop curieux - je sais pas tous."
+msgstr "Você é curioso de mais - eu não sei tudo."
 
 #: ../modules/people.c:66
 msgid "Nice to see you here again, "
-msgstr "Quelle surprise de te revoir ici, "
+msgstr "Sou alegre de ver você de novo, "
 
 #: ../modules/people.c:71
 msgid ": Great you come here!"
-msgstr ": C'est bon que tu es arrivé!"
+msgstr ": Beleza!"
 
 #: ../modules/people.c:80
 msgid "Hi "
-msgstr "Salut"
+msgstr "Alõ "
 
 #: ../modules/people.c:82
 msgid ", I'm "
-msgstr ", je suis "
+msgstr ", sou "
 
 #: ../modules/people.c:84
 msgid ""
 ". I have never seen you before here.\n"
 "Type '"
 msgstr ""
-". Je t'ai jamais vu ici en avant.\n"
-"Saisisses '"
+". Eu ainda não vi você aqui.\n"
+"Aperte '"
 
 #: ../modules/people.c:86
 msgid " help' to change this :)"
-msgstr " help' pour le changer :)"
+msgstr "' por mudar :)"
 
 #: ../modules/people.c:98
 msgid "See you later, "
-msgstr "A bientôt, "
+msgstr "Até-mais, "
 
 #: ../modules/people.c:103
 msgid "Have a nice rest."
-msgstr ""
+msgstr "Fica bom."
 
 #: ../modules/people.c:107
 msgid ": Don't stay away too long."
-msgstr ": Au prochaine fois."
+msgstr ": Volte logo."
 
 #: ../modules/people.c:111
 msgid "Eh, why has he gone?"
-msgstr "Pourquois est-il quitté?"
+msgstr "Hm, por que ele voltou?"
 
 #: ../modules/people.c:157
 msgid "OK, registered your information."
-msgstr "Bien, les informations sont régistrés."
+msgstr "Bom, salvei as suas informaçãos."
 
 #: ../modules/people.c:176
 msgid "Name"
-msgstr "Nom"
+msgstr "Nome"
 
 #: ../modules/people.c:176
 msgid "Contact"
-msgstr "Contact"
+msgstr "Contato"
 
 #: ../modules/people.c:176
 msgid "Language"
-msgstr ""
+msgstr "Linguagem"
 
 #: ../modules/people.c:179
 msgid "Sorry, I don't know who this is."
-msgstr "Excuse-moi, je ne sais pas c'est qui."
+msgstr "Desculpe, não conhesco."
 
 #: ../modules/people.c:192
 msgid "I'm looking right at you now :)"
-msgstr "C'est toi mon ami :)"
+msgstr "Esta pessoa é você :)"
 
 #: ../modules/people.c:201
 #, c-format
 msgid "Yeah, he was here at %s"
-msgstr "Il a été ici à %s"
+msgstr "Sim, ele esteve aqui as %s"
 
 #: ../modules/people.c:204
 msgid "Nope, never seen this guy here."
-msgstr "Jamais vue ce garcon ici."
+msgstr "Nunca encontrei ele aqui."
 
 #: ../modules/programming.c:33
 msgid "Java? You don't know _my_ skills!"
@@ -162,152 +163,148 @@ msgid ""
 "You may type '%s help ' to get to know what I understand.\n"
 "Have fun :-)"
 msgstr ""
-"Je suis %s, ton chat bot préféré!\n"
-"Je peut repondre à tes questions, et apprende de toi.\n"
-"S'il te doit aider, appelle-moi avec '%s help'.\n"
-"Beaucoup de chance :-)"
+"Eu sou %s, o seu chatbot amado!\n"
+"Sou aqui por resposter as suas perguntas, e aprender mais sobre você.\n"
+"Aperte '%s help' por ver o que eu sei.\n"
+"Boa sorte :-)"
 
 #: ../modules/self.c:112
 msgid "This is the list of public commands I understand:\n"
-msgstr ""
+msgstr "Esta é a lista das ordems que eu conheco:\n"
 
 #: ../modules/self.c:133
 msgid "about: let me tell about myself\n"
-msgstr ""
+msgstr "about: vou falar sobre eu\n"
 
 #: ../modules/self.c:134
 msgid "uptime: disclose my age\n"
-msgstr ""
+msgstr "uptime: vou revelar a minha idade\n"
 
 #: ../modules/self.c:138
 msgid "shut up: make me quiet\n"
-msgstr ""
+msgstr "shut up: vou baixar\n"
 
 #: ../modules/self.c:143
 msgid "do i have any messages: let me look up if there's news for you\n"
-msgstr ""
+msgstr "do i have any messages: vou ir buscar as novidades para você\n"
 
 #: ../modules/self.c:145
 msgid "tell <nick> <message>: store message for player nick\n"
-msgstr ""
+msgstr "tell <nick> <mensagem>: salvo mensagem para jogador nick\n"
 
 #: ../modules/self.c:150
 msgid "who is <nick>: request information about nick\n"
-msgstr ""
+msgstr "who is <nick>: mostro informaçãos sobre nick\n"
 
 #: ../modules/self.c:152
 msgid "have you seen <nick>: ask me when I last saw nick\n"
-msgstr ""
+msgstr "have you seen <nick>: pergunte-me quando eu vi nick\n"
 
 #: ../modules/self.c:154
 msgid "my (email | pager) is <contact>: register contact information\n"
-msgstr ""
+msgstr "my (email | pager) is <contato>: salvar os contatos\n"
 
 #: ../modules/self.c:156
 msgid "my name is <fullname>: register you as fullname\n"
-msgstr ""
+msgstr "my name is <nome completo>: registre como nome completo\n"
 
 #: ../modules/self.c:160
 msgid "join my game: make me join your table\n"
-msgstr ""
+msgstr "join my game: vou participar no seu jogo\n"
 
 #: ../modules/self.c:164
 msgid "<thing> is <explanation>: Learn a fact\n"
-msgstr ""
+msgstr "<coisa> is <texto>: Vou aprender uma coisa\n"
 
 #: ../modules/self.c:165
 msgid "what is <thing>: Get information about a fact\n"
-msgstr ""
+msgstr "what is <coisa>: Receba informaçãos sobre uma coise\n"
 
 #: ../modules/self.c:171
 msgid "i am from <countrycode>: register language\n"
-msgstr ""
+msgstr "i am from <countrycode>: Salvo a sua linguagem\n"
 
 #: ../modules/self.c:188
 msgid "No uptime information found."
-msgstr ""
+msgstr "Não achei as informaçãos sobre o uptime."
 
 #: ../modules/self.c:191
 #, c-format
 msgid "I've been running for %i hours and %i minutes."
-msgstr ""
+msgstr "Eu estive aqui por %i horas e %i minutos."
 
 #: ../src/i18n.c:100
 msgid "Your language has been registered."
-msgstr "Ta langue est enrégistrée."
+msgstr "Gravei a sua linguagem."
 
 #: ../src/main.c:53
 msgid "Yes, I follow, my master."
-msgstr ""
+msgstr "Sim, de acordo, o mestre."
 
 #: ../src/main.c:63
 msgid "Toggled logging."
-msgstr ""
+msgstr "Logging comutando."
 
 #: ../src/module.c:259
 msgid "List of available modules:"
-msgstr "Liste des modules:"
+msgstr "Lista dos mõdulos:"
 
 #: ../src/module.c:260
-#, fuzzy
 msgid "No modules loaded at all."
-msgstr "Pas des modules sont actives."
+msgstr "Nenhum mõdulo é ativo."
 
 #: ../src/module.c:330
 msgid "Module added."
-msgstr ""
+msgstr "Acrescentei o mõdulo."
 
 #: ../src/module.c:331
 msgid "Error: Could not add module."
-msgstr ""
+msgstr "Erro: Não pude acrescentar o mõdulo."
 
 #: ../src/module.c:335
 msgid "Module removed."
-msgstr ""
+msgstr "Afastei o mõdulo."
 
 #: ../src/module.c:336
 msgid "Error: Could not remove module."
-msgstr ""
+msgstr "Erro: Não pude afastar o mõdulo."
 
 #: ../src/module.c:341
-#, fuzzy
 msgid "Module reloaded."
-msgstr "Pas des modules sont actives."
+msgstr "Acrescentei os mõdulos de novo."
 
 #: ../src/module.c:342
 msgid "Error: Could not reload module."
-msgstr ""
+msgstr "Erro: Não pude acrescentar os mõdulos de novo."
 
 #: ../src/module.c:345
 msgid "Only my owner can change the module setup."
-msgstr ""
+msgstr "Somente o meu possuidor pode mudar o configuração."
 
 #: ../../games/guru-chess/main.c:113
 msgid "This pawn move was great!"
-msgstr ""
+msgstr "Foi ótimo!"
 
 #: ../../games/guru-chess/main.c:118
 msgid "I must admit, he's not playing bad."
-msgstr ""
+msgstr "Acho que ele joga bem."
 
 #: dict.pl:31
 msgid "That's a word. Come on, I don't know your native language yet."
-msgstr "C'est un mot. Je sais pas ton langue native."
+msgstr "Isto é uma palavra. Eu ainda não sei o sua linguagem."
 
 #: dict.pl:34
 msgid "What is what dude?"
-msgstr "Qu'est-ce que c'est, ca?"
+msgstr "O que é qual?"
 
 #: dict.pl:63
 msgid ""
 "I'm so uneducated I only know english, german, spanish, portuguese, italian."
-msgstr ""
-"Mois, je sais seulement l'anglais, l'allemand, l'espagnol, le portuguese et "
-"l'italien."
+msgstr "Sou inculto, só falo Inglês, Alemão, Espanhol, Português, Italiano."
 
 #: dict.pl:112
 msgid "Sorry, I don't know what a"
-msgstr "Je sais pas c'est quoi, un"
+msgstr "Desculpe, não sei o que é um"
 
 #: dict.pl:112
 msgid "is."
@@ -315,15 +312,13 @@ msgstr "."
 
 #: rdf.pl:30
 msgid "From what news source my friend?"
-msgstr "De quois lieu de nouvelles mon ami?"
+msgstr "Amigo, de qual fonte das novidades?"
 
 #: rdf.pl:31
 msgid "Available are: slashdot, register, happypenguin, heise, worldforge"
-msgstr "Je te offre: slashdot, register, happypenguin, heise et worldforge"
+msgstr "Tenho: slashdot, register, happypenguin, heise, worldforge"
 
 #: rdf.pl:74
 msgid "News source not available."
-msgstr "Pas trouvé."
+msgstr "Fonte da novidade não accessível."
 
-#~ msgid "If you read plain English here, kick your system administrator.\n"
-#~ msgstr "Voulez-vous cou.... ah non, nous sommes des geeks avec morale :)\n"
