@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3356 2002-02-14 09:38:48Z jdorje $
+ * $Id: common.c 3358 2002-02-15 00:39:12Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -867,22 +867,34 @@ void empty_seat(seat_t s, char *name)
 
 const char *get_seat_name(seat_t s)
 {
-	if (game.seats[s].name)
-		return game.seats[s].name;
-	else {
-		switch (get_seat_status(s)) {
-		case GGZ_SEAT_PLAYER:
-			return "[Player]";
-		case GGZ_SEAT_BOT:
-			return "[Bot]";
-		case GGZ_SEAT_OPEN:
-			return "[Empty Seat]";
-		case GGZ_SEAT_RESERVED:
-			return "[Reserved]";
-		default:
-			return "[Unknown]";	
-		}
+	const char *name = NULL;
+	
+	switch (get_seat_status(s)) {
+	case GGZ_SEAT_PLAYER:
+	case GGZ_SEAT_BOT:
+		name = ggzdmod_get_seat(game.ggz, game.seats[s].player).name;
+		break;
+	case GGZ_SEAT_OPEN:
+		name = "Empty Seat";
+		break;
+	case GGZ_SEAT_RESERVED:
+		name = "Reserved Seat";
+		break;
+	case GGZ_SEAT_NONE:
+		name = game.seats[s].name;
 	}
+	
+	/* For some reason, this error occurs, as some seat names may
+	   get overwritten.  This could be the symptom of a serious
+	   bug. */
+	if (strcmp(name, game.seats[s].name))
+		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
+		            "Seat %d names (%s/%s) do not match up.",
+		            s,
+		            name,
+		            game.seats[s].name);
+
+	return name;
 }
 
 GGZSeatType get_seat_status(seat_t s)
