@@ -44,7 +44,7 @@ int main (int argc, char *argv[])
 
 	opt.flags = GGZ_OPT_PARSER;
 	opt.global_conf = "/etc/ggz/ggz.conf";
-	opt.user_conf = g_strdup_printf("%s/.ggz/ggz.rc", getenv("HOME"));;
+	opt.user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));;
 
 	ggzcore_init(opt);
 	ggz_event_init();
