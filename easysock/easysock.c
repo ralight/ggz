@@ -118,6 +118,7 @@ int es_make_socket( const EsSockType type,
       error = 1;
       if( _err_func !=NULL )
 	  (*_err_func)( strerror(errno), ES_CREATE, ES_NONE );
+      break;
     }
     memcpy( &name.sin_addr, hp->h_addr, hp->h_length);
     if (connect(sock, (struct sockaddr*)&name, sizeof(name) ) == -1 ) {
