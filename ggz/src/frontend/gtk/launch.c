@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: launch.c 6273 2004-11-05 21:49:00Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -439,7 +439,6 @@ GtkWidget *create_dlg_launch(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(seats_combo);
 	gtk_box_pack_end(GTK_BOX(game_box), seats_combo, FALSE, TRUE, 0);
-	gtk_widget_set_usize(seats_combo, 50, -2);
 	gtk_combo_set_value_in_list(GTK_COMBO(seats_combo), TRUE, FALSE);
 	seats_combo_items = g_list_append(seats_combo_items, (gpointer) "");
 	gtk_combo_set_popdown_strings(GTK_COMBO(seats_combo),
@@ -543,7 +542,6 @@ GtkWidget *create_dlg_launch(void)
 		gtk_widget_show(seat_box);
 		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW
 						      (scroll), seat_box);
-		gtk_widget_set_usize(scroll, -1, 250);
 	} else
 		seat_box = main_box;
 
@@ -628,7 +626,6 @@ GtkWidget *create_dlg_launch(void)
 		gtk_widget_show(seats[i].name);
 		gtk_box_pack_start(GTK_BOX(seats[i].box), seats[i].name,
 				   FALSE, TRUE, 0);
-		/* gtk_widget_set_usize (seats[i].name, 100, -2); */
 	}
 
 	desc_box = gtk_hbox_new(FALSE, 0);

@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: about.c 6273 2004-11-05 21:49:00Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -107,7 +107,7 @@ GtkWidget *create_dlg_about(void)
 	gtk_widget_show(background);
 	gtk_box_pack_start(GTK_BOX(dialog_vbox1), background, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(background, 250, 300);
+	gtk_widget_set_size_request(background, 250, 300);
 	GTK_WIDGET_UNSET_FLAGS(background, GTK_CAN_FOCUS);
 	GTK_WIDGET_UNSET_FLAGS(background, GTK_CAN_DEFAULT);
 

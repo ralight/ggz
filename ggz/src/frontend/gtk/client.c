@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: client.c 6273 2004-11-05 21:49:00Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -994,7 +994,7 @@ create_win_main (void)
 
   win_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   g_object_set_data(G_OBJECT (win_main), "win_main", win_main);
-  gtk_widget_set_usize (win_main, 620, 400);
+  gtk_widget_set_size_request(win_main, 620, 400);
   gtk_window_set_title (GTK_WINDOW (win_main), _("GGZ Gaming Zone"));
   gtk_window_set_policy (GTK_WINDOW (win_main), FALSE, TRUE, TRUE);
 
@@ -1684,7 +1684,6 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (statusbar);
   gtk_box_pack_start (GTK_BOX (status_box), statusbar, FALSE, FALSE, 0);
-  gtk_widget_set_usize (statusbar, 75, -2);
 
   statebar = gtk_statusbar_new ();
   gtk_widget_ref (statebar);
@@ -1692,7 +1691,6 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (statebar);
   gtk_box_pack_start (GTK_BOX (status_box), statebar, FALSE, FALSE, 0);
-  gtk_widget_set_usize (statebar, 100, -2);
 
   g_signal_connect (GTK_OBJECT (win_main), "realize",
                       GTK_SIGNAL_FUNC (client_realize),

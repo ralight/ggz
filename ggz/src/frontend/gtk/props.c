@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: props.c 6273 2004-11-05 21:49:00Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -871,7 +871,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow4);
   gtk_box_pack_start (GTK_BOX (props_profile_box), scrolledwindow4, TRUE, TRUE, 0);
-  gtk_widget_set_usize (scrolledwindow4, 175, -2);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow4), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
   profile_list = gtk_clist_new (1);
@@ -917,7 +916,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_label);
   gtk_box_pack_start (GTK_BOX (profile_box), profile_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (profile_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (profile_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (profile_label), 1, 0.5);
 
@@ -941,7 +939,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (server_label);
   gtk_box_pack_start (GTK_BOX (server_box), server_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (server_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (server_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (server_label), 1, 0.5);
 
@@ -966,7 +963,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (port_entry);
   gtk_box_pack_start (GTK_BOX (server_box), port_entry, FALSE, TRUE, 5);
-  gtk_widget_set_usize (port_entry, 50, -2);
 
   user_box = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (user_box);
@@ -995,7 +991,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (username_label);
   gtk_box_pack_start (GTK_BOX (username_box), username_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (username_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (username_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (username_label), 1, 0.5);
 
@@ -1005,7 +1000,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (username_entry);
   gtk_box_pack_start (GTK_BOX (username_box), username_entry, FALSE, FALSE, 5);
-  gtk_widget_set_usize (username_entry, 140, -2);
 
   password_box = gtk_hbox_new (FALSE, 5);
   gtk_widget_ref (password_box);
@@ -1020,7 +1014,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (password_label);
   gtk_box_pack_start (GTK_BOX (password_box), password_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (password_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (password_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (password_label), 1, 0.5);
 
@@ -1030,7 +1023,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (password_entry);
   gtk_box_pack_start (GTK_BOX (password_box), password_entry, FALSE, FALSE, 5);
-  gtk_widget_set_usize (password_entry, 140, -2);
   gtk_entry_set_visibility (GTK_ENTRY (password_entry), FALSE);
 
   confirm_box = gtk_hbox_new (FALSE, 5);
@@ -1046,7 +1038,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (confirm_label);
   gtk_box_pack_start (GTK_BOX (confirm_box), confirm_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (confirm_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (confirm_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (confirm_label), 1, 0.5);
 
@@ -1056,7 +1047,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (confirm_entry);
   gtk_box_pack_start (GTK_BOX (confirm_box), confirm_entry, FALSE, FALSE, 5);
-  gtk_widget_set_usize (confirm_entry, 140, -2);
   gtk_entry_set_visibility (GTK_ENTRY (confirm_entry), FALSE);
 
   radio_box = gtk_vbox_new (FALSE, 0);
@@ -1158,7 +1148,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (Font_button);
   gtk_box_pack_start (GTK_BOX (hbox8), Font_button, FALSE, FALSE, 0);
-  gtk_widget_set_usize (Font_button, 65, -2);
 
   chat_table = gtk_table_new (3, 2, TRUE);
   gtk_widget_ref (chat_table);
@@ -1243,7 +1232,6 @@ create_dlg_props (void)
   gtk_table_attach (GTK_TABLE (color_table), h_spin, 2, 3, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (h_spin, 45, -2);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (h_spin), TRUE);
 
   n_spin_adj = gtk_adjustment_new (1, 0, 15, 1, 1, 1);
@@ -1255,7 +1243,6 @@ create_dlg_props (void)
   gtk_table_attach (GTK_TABLE (color_table), n_spin, 2, 3, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (n_spin, 45, -2);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (n_spin), TRUE);
 
   f_spin_adj = gtk_adjustment_new (1, 0, 15, 1, 1, 1);
@@ -1267,7 +1254,6 @@ create_dlg_props (void)
   gtk_table_attach (GTK_TABLE (color_table), f_spin, 2, 3, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (f_spin, 45, -2);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (f_spin), TRUE);
 
   f_label = gtk_label_new (_("Default chat color assigned to your friends"));
@@ -1397,7 +1383,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label17);
   gtk_box_pack_start (GTK_BOX (hbox12), label17, FALSE, FALSE, 0);
-  gtk_widget_set_usize (label17, 100, -2);
   gtk_label_set_justify (GTK_LABEL (label17), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label17), TRUE);
   gtk_misc_set_padding (GTK_MISC (label17), 5, 0);
@@ -1429,7 +1414,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label18);
   gtk_box_pack_start (GTK_BOX (hbox13), label18, FALSE, FALSE, 0);
-  gtk_widget_set_usize (label18, 100, -2);
   gtk_label_set_justify (GTK_LABEL (label18), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label18), TRUE);
   gtk_misc_set_padding (GTK_MISC (label18), 5, 0);
@@ -1454,7 +1438,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label19);
   gtk_box_pack_start (GTK_BOX (hbox14), label19, FALSE, FALSE, 0);
-  gtk_widget_set_usize (label19, 100, -2);
   gtk_label_set_justify (GTK_LABEL (label19), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label19), TRUE);
   gtk_misc_set_padding (GTK_MISC (label19), 5, 0);
@@ -1479,7 +1462,6 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label20);
   gtk_box_pack_start (GTK_BOX (hbox15), label20, FALSE, FALSE, 0);
-  gtk_widget_set_usize (label20, 100, -2);
   gtk_label_set_justify (GTK_LABEL (label20), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label20), TRUE);
   gtk_misc_set_padding (GTK_MISC (label20), 5, 0);

@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: types.c 6273 2004-11-05 21:49:00Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -160,7 +160,7 @@ create_dlg_types (void)
 
   dlg_types = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   g_object_set_data(G_OBJECT (dlg_types), "dlg_types", dlg_types);
-  gtk_widget_set_usize (dlg_types, 620, 200);
+  gtk_widget_set_size_request(dlg_types, 600, 300);
   gtk_window_set_title (GTK_WINDOW (dlg_types), _("Game Types"));
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
@@ -247,7 +247,6 @@ create_dlg_types (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (filter_label);
   gtk_toolbar_append_widget (GTK_TOOLBAR (toolbar1), filter_label, NULL, NULL);
-  gtk_widget_set_usize (filter_label, 130, -2);
 
   filter_optionmenu = gtk_option_menu_new ();
   gtk_widget_ref (filter_optionmenu);
@@ -257,7 +256,6 @@ create_dlg_types (void)
   gtk_toolbar_append_space (GTK_TOOLBAR (toolbar1));
 
   gtk_toolbar_append_widget (GTK_TOOLBAR (toolbar1), filter_optionmenu, NULL, NULL);
-  gtk_widget_set_usize (filter_optionmenu, 171, -2);
   filter_optionmenu_menu = gtk_menu_new ();
   gtk_option_menu_set_menu (GTK_OPTION_MENU (filter_optionmenu), filter_optionmenu_menu);
 
@@ -273,7 +271,6 @@ create_dlg_types (void)
   g_object_set_data_full(G_OBJECT (dlg_types), "filter_button", filter_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (filter_button);
-  gtk_widget_set_usize (filter_button, 50, -2);
 
   g_signal_connect (GTK_OBJECT (dlg_types), "destroy",
                       GTK_SIGNAL_FUNC (gtk_widget_destroyed),

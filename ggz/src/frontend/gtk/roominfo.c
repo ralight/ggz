@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: roominfo.c 6273 2004-11-05 21:49:00Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -122,7 +122,6 @@ GtkWidget *create_dlg_info(void)
 
 	dlg_info = gtk_dialog_new();
 	g_object_set_data(G_OBJECT(dlg_info), "dlg_info", dlg_info);
-	gtk_widget_set_usize(dlg_info, -2, -2);
 	gtk_window_set_title(GTK_WINDOW(dlg_info), _("Room Information"));
 
 	dialog_vbox = GTK_DIALOG(dlg_info)->vbox;
@@ -147,7 +146,6 @@ GtkWidget *create_dlg_info(void)
 	gtk_widget_show(game_pixmap);
 	gtk_box_pack_start(GTK_BOX(display_hbox), game_pixmap, FALSE, TRUE,
 			   0);
-	gtk_widget_set_usize(game_pixmap, 64, 64);
 	gtk_misc_set_alignment(GTK_MISC(game_pixmap), 0.5, 0);
 
 	info_vbox = gtk_vbox_new(FALSE, 0);
@@ -170,7 +168,6 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label1);
 	gtk_box_pack_start(GTK_BOX(name_hbox), label1, FALSE, FALSE, 0);
-	gtk_widget_set_usize(label1, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(label1), 0.02, 0.5);
 
 	name = gtk_label_new("");
@@ -195,7 +192,6 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label2);
 	gtk_box_pack_start(GTK_BOX(author_hbox), label2, FALSE, FALSE, 0);
-	gtk_widget_set_usize(label2, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(label2), 0.02, 0.5);
 
 	author = gtk_label_new("");
@@ -219,7 +215,6 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label3);
 	gtk_box_pack_start(GTK_BOX(www_hbox), label3, FALSE, FALSE, 0);
-	gtk_widget_set_usize(label3, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(label3), 0.02, 0.5);
 
 	www = gtk_label_new("");
@@ -243,7 +238,6 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label4);
 	gtk_box_pack_start(GTK_BOX(desc_hbox), label4, FALSE, FALSE, 0);
-	gtk_widget_set_usize(label4, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(label4), 0.02, 0);
 
 	desc = gtk_label_new("");

@@ -2,7 +2,7 @@
  * File: license.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: license.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: license.c 6273 2004-11-05 21:49:00Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -101,7 +101,7 @@ create_dlg_license (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
   gtk_box_pack_start (GTK_BOX (vbox1), scrolledwindow1, TRUE, TRUE, 0);
-  gtk_widget_set_usize (scrolledwindow1, 440, 350);
+  gtk_widget_set_size_request(scrolledwindow1, 440, 350);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
   license_text = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));

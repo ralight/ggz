@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: msgbox.c 6273 2004-11-05 21:49:00Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -158,7 +158,6 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 		gdk_pixmap_unref (pixmap);
 		gdk_bitmap_unref (mask);
 		dialogwidget = AddWidget (icon, hbox);
-		gtk_widget_set_usize(GTK_WIDGET(icon), 40, 40);
 	}
 
 	dialogwidget = AddWidget (gtk_label_new (textmessage), hbox);

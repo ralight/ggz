@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: login.c 6273 2004-11-05 21:49:00Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -583,7 +583,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_label);
   gtk_box_pack_start (GTK_BOX (profile_box), profile_label, FALSE, TRUE, 0);
-  gtk_widget_set_usize (profile_label, 68, -2);
   gtk_misc_set_alignment (GTK_MISC (profile_label), 1, 0.5);
 
   profile_combo = gtk_combo_new ();
@@ -592,7 +591,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_combo);
   gtk_box_pack_start (GTK_BOX (profile_box), profile_combo, FALSE, TRUE, 5);
-  gtk_widget_set_usize (profile_combo, 222, -2);
   gtk_combo_set_value_in_list (GTK_COMBO (profile_combo), TRUE, FALSE);
 
   profile_entry = GTK_COMBO (profile_combo)->entry;
@@ -631,7 +629,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (server_label);
   gtk_box_pack_start (GTK_BOX (server_box), server_label, FALSE, TRUE, 0);
-  gtk_widget_set_usize (server_label, 68, -2);
   gtk_misc_set_alignment (GTK_MISC (server_label), 1, 0.5);
 
   host_entry = gtk_entry_new_with_max_length (256);
@@ -640,7 +637,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (host_entry);
   gtk_box_pack_start (GTK_BOX (server_box), host_entry, FALSE, FALSE, 5);
-  gtk_widget_set_usize (host_entry, 222, -2);
   gtk_entry_set_text (GTK_ENTRY (host_entry), _("localhost"));
 
   port_label = gtk_label_new (_("Port: "));
@@ -649,7 +645,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (port_label);
   gtk_box_pack_start (GTK_BOX (server_box), port_label, FALSE, TRUE, 2);
-  gtk_widget_set_usize (port_label, 42, -2);
   gtk_misc_set_alignment (GTK_MISC (port_label), 1, 0.5);
 
   port_entry = gtk_entry_new_with_max_length (5);
@@ -658,7 +653,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (port_entry);
   gtk_box_pack_start (GTK_BOX (server_box), port_entry, FALSE, FALSE, 0);
-  gtk_widget_set_usize (port_entry, 50, -2);
   gtk_entry_set_text (GTK_ENTRY (port_entry), _("5688"));
 
   msg_label = gtk_label_new ("");
@@ -703,7 +697,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (user_label);
   gtk_box_pack_start (GTK_BOX (username_box), user_label, TRUE, TRUE, 0);
-  gtk_widget_set_usize (user_label, 62, -2);
   gtk_misc_set_alignment (GTK_MISC (user_label), 1, 0.5);
 
   name_entry = gtk_entry_new_with_max_length (16);
@@ -712,7 +705,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (name_entry);
   gtk_box_pack_start (GTK_BOX (username_box), name_entry, FALSE, TRUE, 0);
-  gtk_widget_set_usize (name_entry, 210, -2);
 
   password_box = gtk_hbox_new (FALSE, 5);
   gtk_widget_ref (password_box);
@@ -727,7 +719,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (pass_label);
   gtk_box_pack_start (GTK_BOX (password_box), pass_label, TRUE, TRUE, 0);
-  gtk_widget_set_usize (pass_label, 62, -2);
   gtk_misc_set_alignment (GTK_MISC (pass_label), 1, 0.5);
 
   pass_entry = gtk_entry_new ();
@@ -736,7 +727,6 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (pass_entry);
   gtk_box_pack_start (GTK_BOX (password_box), pass_entry, FALSE, TRUE, 0);
-  gtk_widget_set_usize (pass_entry, 210, -2);
   gtk_entry_set_visibility (GTK_ENTRY (pass_entry), FALSE);
 
   radio_box = gtk_vbox_new (FALSE, 0);

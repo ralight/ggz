@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: playerinfo.c 6273 2004-11-05 21:49:00Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -269,7 +269,6 @@ GtkWidget *create_dlg_info(void)
 
 	dlg_info = gtk_dialog_new();
 	g_object_set_data(G_OBJECT(dlg_info), "dlg_info", dlg_info);
-	gtk_widget_set_usize(dlg_info, 424, -2);
 	gtk_window_set_title(GTK_WINDOW(dlg_info), _("Player Information"));
 
 	dialog_vbox = GTK_DIALOG(dlg_info)->vbox;
@@ -294,7 +293,6 @@ GtkWidget *create_dlg_info(void)
 	gtk_widget_show(game_pixmap);
 	gtk_box_pack_start(GTK_BOX(display_hbox), game_pixmap, FALSE, TRUE,
 			   0);
-	gtk_widget_set_usize(game_pixmap, 64, 64);
 	gtk_misc_set_alignment(GTK_MISC(game_pixmap), 0.5, 0);
 
 	info_vbox = gtk_vbox_new(FALSE, 0);
@@ -322,7 +320,6 @@ GtkWidget *create_dlg_info(void)
 	gtk_widget_show(handle_label);
 	gtk_box_pack_start(GTK_BOX(handle_hbox), handle_label, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(handle_label, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(handle_label), 0.02, 0.5);
 
 	handle = gtk_label_new("");
@@ -350,7 +347,6 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(table_label);
 	gtk_box_pack_start(GTK_BOX(table_hbox), table_label, FALSE, FALSE, 0);
-	gtk_widget_set_usize(table_label, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(table_label), 0.02, 0.5);
 
 	table = gtk_label_new("-");
@@ -377,7 +373,6 @@ GtkWidget *create_dlg_info(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(type_label);
 	gtk_box_pack_start(GTK_BOX(type_hbox), type_label, FALSE, FALSE, 0);
-	gtk_widget_set_usize(type_label, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(type_label), 0.02, 0);
 
 	type = gtk_label_new("");
@@ -414,7 +409,6 @@ GtkWidget *create_dlg_info(void)
 	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(record_hbox), record_label, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(record_label, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(record_label), 0.02, 0);
 
 	record = gtk_label_new("");
@@ -444,7 +438,6 @@ GtkWidget *create_dlg_info(void)
 	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(rating_hbox), rating_label, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(rating_label, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(rating_label), 0.02, 0);
 
 	rating = gtk_label_new("");
@@ -474,7 +467,6 @@ GtkWidget *create_dlg_info(void)
 	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(ranking_hbox), ranking_label, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(ranking_label, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(ranking_label), 0.02, 0);
 
 	ranking = gtk_label_new("");
@@ -504,7 +496,6 @@ GtkWidget *create_dlg_info(void)
 	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(highscore_hbox), highscore_label, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_usize(highscore_label, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(highscore_label), 0.02, 0);
 
 	highscore = gtk_label_new("");
@@ -533,7 +524,6 @@ GtkWidget *create_dlg_info(void)
 	gtk_widget_show(chat_label);
 	gtk_box_pack_start(GTK_BOX(chat_hbox), chat_label, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_usize(chat_label, 150, -2);
 	gtk_misc_set_alignment(GTK_MISC(chat_label), 0.02, 0);
 
 	chat = gtk_entry_new();
