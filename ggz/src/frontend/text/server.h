@@ -28,6 +28,7 @@
 
 void server_init(char *host, int port, GGZLoginType type, char* login, char* password);
 
+void server_logout(void);
 void server_disconnect(void);
 
 void server_destroy(void);

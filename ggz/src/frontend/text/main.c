@@ -1,4 +1,4 @@
-/*
+*
  * File: main.c
  * Author: Brent Hendricks
  * Project: GGZ Text Client 

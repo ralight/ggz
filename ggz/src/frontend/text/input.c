@@ -92,6 +92,9 @@ void input_command(void)
 		if (strcmp(command, "connect") == 0) {
 			input_handle_connect(current);
 		}
+		else if (strcmp(command, "logout") == 0) {
+			server_logout();
+		}
 		else if (strcmp(command, "disconnect") == 0) {
 			server_disconnect();
 		}

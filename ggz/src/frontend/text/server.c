@@ -49,7 +49,7 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_list_types(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_enter_ok(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_enter_fail(GGZServerEvent id, void*, void*);
-static GGZHookReturn server_logout(GGZServerEvent id, void*, void*);
+static GGZHookReturn server_loggedout(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_state_change(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_motd_loaded(GGZServerEvent id, void*, void*);
 
@@ -93,9 +93,20 @@ void server_init(char *host, int port, GGZLoginType type, char* login, char* pas
 }
 
 
-void server_disconnect(void)
+void server_logout(void)
 {
 	ggzcore_server_logout(server);
+}
+
+
+void server_disconnect(void)
+{
+	ggzcore_server_disconnect(server);
+
+#ifdef DEBUG
+	output_text("--- Disconnected");
+#endif
+	loop_remove_fd(fd);
 }
 
 
@@ -136,7 +147,7 @@ static void server_register(GGZServer *server)
 	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, 
 				      server_enter_fail);
 	ggzcore_server_add_event_hook(server, GGZ_LOGOUT, 
-				      server_logout);
+				      server_loggedout);
 	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, 
 				      server_net_error);
 	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, 
@@ -257,7 +268,7 @@ static GGZHookReturn server_state_change(GGZServerEvent id, void *event_data, vo
 }
 
 
-static GGZHookReturn server_logout(GGZServerEvent id, void* event_data, void* user_data)
+static GGZHookReturn server_loggedout(GGZServerEvent id, void* event_data, void* user_data)
 {
 #ifdef DEBUG
 	output_text("--- Disconnected");
