@@ -15,6 +15,7 @@
 
 struct guru_t
 {
+	char *player;
 	char *message;
 	int type;
 	char **list;
