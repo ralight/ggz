@@ -4,9 +4,9 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 3687 2002-03-26 06:45:02Z jdorje $
+ * $Id: main.c 3704 2002-03-28 07:25:05Z jdorje $
  *
- * Copyright (C) 2001 Richard Gade.
+ * Copyright (C) 2001-2002 Richard Gade.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -198,7 +198,7 @@ static int get_players(void)
 	}
 
 	firsttime = 0;
-	game.got_players++;
+	/* game.got_players++; */
 
 	return 0;
 }

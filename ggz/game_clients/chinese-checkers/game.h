@@ -4,8 +4,9 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
+ * $Id: game.h 3704 2002-03-28 07:25:05Z jdorje $
  *
- * Copyright (C) 2001 Richard Gade.
+ * Copyright (C) 2001-2002 Richard Gade.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,15 +30,16 @@ struct game_t {
 	int players;
 	int seats[6];
 	char names[6][17];
-	char state;
 	char my_turn;
-	char got_players;
 	char board[17][25];
 	int conf_handle;
 	int beep;
 	char *theme;
 	char **theme_names;
 	int num_themes;
+	/* These two are never actually used: */
+	/* char state; */
+	/* char got_players; */
 };
 
 struct node_t {
