@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6425 2004-11-25 23:15:42Z jdorje $
+ * $Id: login.c 6676 2005-01-14 07:35:27Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -373,7 +373,7 @@ static void login_start_session(void)
 	/* Log server communications to file */
 	sessiondump = ggzcore_conf_read_string("Debug", "SessionLog", NULL);
 	ggzcore_server_log_session(server, sessiondump);
-	ggz_free(sessiondump);
+	if (sessiondump) ggz_free(sessiondump);
 
 	/* Save as last profile */
 	tmp = lookup_widget(login_dialog, "profile_entry");

@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 6352 2004-11-13 17:29:24Z jdorje $
+ * $Id: main.c 6676 2005-01-14 07:35:27Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -66,7 +66,7 @@ static void init_debug(void)
 	/* Free up memory */
 	for (i = 0; i < num_types; i++)
 		ggz_free(debug_types[i]);
-	ggz_free(debug_types);
+	if (debug_types) ggz_free(debug_types);
 	ggz_free(debug_file);
 }
 
