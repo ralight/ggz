@@ -7,3 +7,7 @@ GRANT ALL PRIVILEGES ON mantis.* TO mantis@localhost IDENTIFIED BY 'xxx';
 - Cronjobs
 No mailman system cronjob, use root cronjob instead
 
+- CVS
+A binary /usr/local/bin/log must exist, which does not seem to
+exist as a package file
+
