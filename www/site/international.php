@@ -9,7 +9,7 @@ function country($lang)
 	}
 }
 
-$dar = explode("/", $SCRIPT_FILENAME);
+$dar = explode("/", $_SERVER['SCRIPT_FILENAME']);
 $i = 1;
 while($dar[$i]) $i++;
 $file = $dar[$i - 1];
@@ -18,7 +18,7 @@ $i = strlen($file);
 while($file[$i] != ".") $i--;
 $file = substr($file, 0, $i);
 
-$dir = $SCRIPT_FILENAME;
+$dir = $_SERVER['SCRIPT_FILENAME'];
 $i = strlen($dir);
 while($dir[$i] != "/") $i--;
 $dir = substr($dir, 0, $i);

@@ -2,7 +2,13 @@
 
 The page you requested could not been found :(
 <br>
-<a href="<?=$HTTP_REFERER;?>">Go back</a>
+<?php
+if ($_SERVER['HTTP_REFERER']) :
+	echo "<a href='", $_SERVER['HTTP_REFERER'], "'>Go back</a>\n";
+else :
+	echo "<a href='/'>Go to the start page</a>\n";
+endif;
+?>
 <br>
 
 <? include_once("/var/www/ggz/beta/site/footer.php"); ?>

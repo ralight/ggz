@@ -1,11 +1,11 @@
 <?php
 
 $lang = "en";
-$ar = split(", ", $HTTP_ACCEPT_LANGUAGE);
+$ar = split(", ", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
 foreach ($ar as $l)
 {
-	if(file_exists("$DOCUMENT_ROOT/site/header.php.$l")) :
+	if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/site/header.php.$l")) :
 		$lang = $l;
 		break;
 	endif;
