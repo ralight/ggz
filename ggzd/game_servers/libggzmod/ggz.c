@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: ggz.c 2253 2001-08-25 23:53:19Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -159,6 +159,8 @@ static int ggzdmod_game_launch(void)
 		case GGZ_SEAT_RESV:
 			ggzd_debug("GGZDMOD: Seat %d reserved for %s", i, ggzd_seats[i].name);
 			break;
+		default: /* prevent compiler warning */
+			/* We ignore other values (?)  --JDS */
 		}
 
 	if (es_write_int(ggzfd, RSP_GAME_LAUNCH) < 0
