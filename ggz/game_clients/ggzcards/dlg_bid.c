@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request Gtk fixed dialog
- * $Id: dlg_bid.c 2740 2001-11-13 22:19:42Z jdorje $
+ * $Id: dlg_bid.c 2843 2001-12-10 02:19:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include <ggz.h>
 #include "common.h"
 
 #include "dlg_bid.h"
@@ -74,12 +75,12 @@ void dlg_option_checked(GtkWidget * widget, gpointer data)
 	gint choice = GPOINTER_TO_INT(data) & 255;
 
 	if (GTK_TOGGLE_BUTTON(widget)->active) {
-		client_debug("Boolean option %d/%d selected.", option,
-			     choice);
+		ggz_debug("table", "Boolean option %d/%d selected.", option,
+			  choice);
 		options_selected[option] = choice;
 	} else {
-		client_debug("Boolean option %d/%d deselected.", option,
-			     choice);
+		ggz_debug("table", "Boolean option %d/%d deselected.", option,
+			  choice);
 		options_selected[option] = 0;
 	}
 }
@@ -90,12 +91,12 @@ void dlg_option_toggled(GtkWidget * widget, gpointer data)
 	gint choice = GPOINTER_TO_INT(data) & 255;
 
 	if (GTK_TOGGLE_BUTTON(widget)->active) {
-		client_debug("Multiple-choice option %d/%d selected.", option,
-			     choice);
+		ggz_debug("table", "Multiple-choice option %d/%d selected.",
+			  option, choice);
 		options_selected[option] = choice;
 	} else
-		client_debug("Multiple-choice option %d/%d deselected.",
-			     option, choice);
+		ggz_debug("table", "Multiple-choice option %d/%d deselected.",
+			  option, choice);
 }
 
 void dlg_options_submit(GtkWidget * widget, gpointer data)

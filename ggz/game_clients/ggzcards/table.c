@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2742 2001-11-13 22:58:05Z jdorje $
+ * $Id: table.c 2843 2001-12-10 02:19:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <ggz.h>
 #include "common.h"
 
 #include "main.h"
@@ -190,9 +191,9 @@ void table_initialize(void)
 						     bg[GTK_STATE_NORMAL],
 						     (gchar **) xpm_backs[i]);
 		if (!card_fronts[i] || !card_backs[i])
-			client_debug("ERROR: "
-				     "couldn't load card pixmaps for orientation %d.",
-				     i);
+			ggz_debug("table", "ERROR: "
+				  "couldn't load card pixmaps for orientation %d.",
+				  i);
 	}
 
 
@@ -204,14 +205,14 @@ void table_initialize(void)
 	table_initialized = TRUE;
 }
 
-/* Setup all table data that's not initialized by table_initialize.  This may 
-   be called multiple times (for instance, to resize the table), and it's not 
+/* Setup all table data that's not initialized by table_initialize.  This may
+   be called multiple times (for instance, to resize the table), and it's not
    called until the server tells us how big the table must be. */
 void table_setup(void)
 {
 	int x, y, p;
 
-	/* TODO: we really should draw something before this point, since the 
+	/* TODO: we really should draw something before this point, since the
 	   player needs to see who's playing.  However, for now this will
 	   work.  The problem is that before you choose what game you're
 	   playing, the server doesn't know how many seats there are so it
@@ -219,8 +220,8 @@ void table_setup(void)
 	if (game.num_players == 0 || table_max_hand_size == 0)
 		return;
 
-	client_debug("Setting up table." "  Width and height are %d."
-		     "  %d players.", get_table_width(), game.num_players);
+	ggz_debug("table", "Setting up table." "  Width and height are %d."
+		  "  %d players.", get_table_width(), game.num_players);
 
 	/* We may need to resize the table */
 	gtk_widget_set_usize(table, get_table_width(), get_table_height());
@@ -421,8 +422,8 @@ void table_handle_click_event(GdkEventButton * event)
 	if (game.state != STATE_PLAY)
 		return;
 
-	client_debug("table_handle_click_event: " "click at %d %d.", event->x,
-		     event->y);
+	ggz_debug("table", "table_handle_click_event: " "click at %d %d.",
+		  event->x, event->y);
 
 	/* This gets all of the layout information from the layout engine.
 	   Unfortunately, it's very dense code. */
@@ -467,10 +468,11 @@ static void table_card_clicked(int card)
 {
 	int p = game.play_hand;
 
-	client_debug("table_card_clicked: Card %d clicked.", card);
+	ggz_debug("table", "table_card_clicked: Card %d clicked.", card);
 
 	if (card == selected_card) {
-		/* If you click on the already selected card, it gets played. */
+		/* If you click on the already selected card, it gets played. 
+		 */
 		selected_card = -1;
 
 		/* Start the graphic animation */
@@ -722,7 +724,7 @@ void table_display_hand(int p)
 	float ow, oh;
 	card_t table_card = game.players[p].table_card;
 
-	client_debug("     Displaying hand for player %d.", p);
+	ggz_debug("table", "Displaying hand for player %d.", p);
 
 	/* get layout information */
 	get_full_card_area(p, &x_outer, &y_outer, &cw, &ch, &cxo, &cyo);

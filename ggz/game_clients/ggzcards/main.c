@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2841 2001-12-10 00:16:21Z jdorje $
+ * $Id: main.c 2843 2001-12-10 02:19:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 #include <unistd.h>
 
 #include <easysock.h>
+#include <ggz.h>		/* libggz */
 #include <ggz_client.h>
 #include "common.h"
 
@@ -53,6 +54,14 @@ GtkWidget *dlg_main = NULL;
 int main(int argc, char *argv[])
 {
 	int fd;
+#ifdef DEBUG
+	const char *debugging_types[] = { "main", "table", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+
+	ggz_debug_init(debugging_types, NULL);
+	ggz_debug("main", "Starting GGZCards client.");
 
 	gtk_init(&argc, &argv);
 
@@ -76,6 +85,9 @@ int main(int argc, char *argv[])
 	gtk_main();
 
 	client_quit();
+
+	ggz_debug("main", "Shutting down GGZCards client.");
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
 
 	return 0;
 }
@@ -167,7 +179,7 @@ void statusbar_message(char *msg)
 	}
 
 	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
-	client_debug("     Put up statusbar message: '%s'", msg);
+	ggz_debug("table", "     Put up statusbar message: '%s'", msg);
 }
 
 void messagebar_message(const char *msg)
@@ -182,7 +194,7 @@ void messagebar_message(const char *msg)
 	}
 
 	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
-	client_debug("     Put up messagebar message: '%s'", msg);
+	ggz_debug("table", "     Put up messagebar message: '%s'", msg);
 }
 
 /* TODO: this stuff should go in its own file */
@@ -193,7 +205,7 @@ void on_mnu_messages_activate(GtkMenuItem * menuitem, gpointer user_data)
 	char *mark = user_data;
 	GtkWidget *dlg = gtk_object_get_data(GTK_OBJECT(msg_menu), mark);
 
-	client_debug("Activating dialog for mark %s.", mark);
+	ggz_debug("table", "Activating dialog for mark %s.", mark);
 
 	assert(dlg);
 
@@ -229,7 +241,7 @@ static GtkWidget *new_message_dialog(const char *mark)
 {
 	GtkWidget *menu_item, *dlg, *ok_button;
 
-	client_debug("Making new thingy for mark %s.", mark);
+	ggz_debug("table", "Making new thingy for mark %s.", mark);
 	menu_item = gtk_menu_item_new_with_label(mark);
 	gtk_widget_set_name(menu_item, mark);
 	gtk_widget_ref(menu_item);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2384 2001-09-07 08:40:00Z jdorje $
+ * $Id: game.c 2843 2001-12-10 02:19:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
+#include <ggz.h>
 #include "common.h"
 
 #include "main.h"
@@ -67,6 +68,6 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 
 void game_init(void)
 {
-	client_debug("Entering game_init().");
+	ggz_debug("table", "Entering game_init().");
 	statusbar_message(_("Waiting for server"));
 }

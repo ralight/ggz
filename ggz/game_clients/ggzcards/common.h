@@ -1,4 +1,4 @@
-/* $Id: common.h 2742 2001-11-13 22:58:05Z jdorje $ */
+/* $Id: common.h 2843 2001-12-10 02:19:53Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -106,18 +106,6 @@ int client_handle_server(void);
 void client_quit(void);
 
 /** @} end of Setup */
-
-
-/** @defgroup Utility
- *  Utility functions used throughout the code
- *  @{ */
-
-/** Handles the debug message appropriately.
- *  @param fmt a printf-style format string.
- *  @param ... printf-style arguments. */
-void client_debug(const char *fmt, ...);
-
-/** @} end of Utility group */
 
 
 /** @defgroup Callbacks

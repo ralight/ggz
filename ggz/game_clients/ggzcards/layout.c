@@ -1,4 +1,4 @@
-/* $Id: layout.c 2696 2001-11-08 10:09:24Z jdorje $ */
+/* $Id: layout.c 2843 2001-12-10 02:19:53Z jdorje $ */
 /* 
  * File: layout.c
  * Author: Jason Short, Rich Gade
@@ -26,6 +26,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#include <ggz.h>
 #include "common.h"
 
 #include "game.h"
@@ -242,17 +243,17 @@ void get_card_box_dim(int p, int *w, int *h)
 		*h = CARD_BOX_WIDTH;
 		break;
 	default:
-		client_debug("CLIENT BUG: get_card_box_dim");
+		ggz_debug("table", "CLIENT BUG: get_card_box_dim");
 	}
 }
 
-void get_full_card_area(int p, int *x, int *y,	/* the (x, y) position of the 
+void get_full_card_area(int p, int *x, int *y,	/* the (x, y) position of the
 						   upper left corner */
 			int *w, int *h,	/* the width and height of the box */
 			int *xo, int *yo	/* the x and y offsets for
 						   "selected" cards */ )
 {
-	/* the actual card area is inset within the card box by XWIDTH units, 
+	/* the actual card area is inset within the card box by XWIDTH units,
 	   and extends inwards (toward the table) by 2*XWIDTH units. */
 
 	/* get the outer box area */
@@ -289,7 +290,7 @@ void get_full_card_area(int p, int *x, int *y,	/* the (x, y) position of the
 		*xo = -2 * XWIDTH;
 		break;
 	default:
-		client_debug("CLIENT BUG: get_full_card_area");
+		ggz_debug("table", "CLIENT BUG: get_full_card_area");
 	}
 }
 
@@ -314,9 +315,9 @@ void get_card_offset(int p, float *w, float *h)
 		*h = CARDWIDTH / 4.0;
 		break;
 	default:
-		client_debug
-			("CLIENT BUG: get_card_size: unknown orientation %d.",
-			 orientation(p));
+		ggz_debug("table",
+			  "CLIENT BUG: get_card_size: unknown orientation %d.",
+			  orientation(p));
 	}
 }
 
@@ -334,8 +335,8 @@ void get_card_size(int orientation, int *w, int *h)
 		*h = CARDWIDTH;
 		break;
 	default:
-		client_debug
-			("CLIENT BUG: get_card_size: unknown orientation %d.",
-			 orientation);
+		ggz_debug("table",
+			  "CLIENT BUG: get_card_size: unknown orientation %d.",
+			  orientation);
 	}
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2742 2001-11-13 22:58:05Z jdorje $
+ * $Id: common.c 2843 2001-12-10 02:19:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,6 +32,7 @@
 
 #include <config.h>
 #include <easysock.h>
+#include <ggz.h>
 #include <ggz_client.h>
 
 #include "common.h"
@@ -49,10 +50,16 @@ struct game_t game = { 0 };
 
 int client_initialize(void)
 {
+#ifdef DEBUG
+	ggz_debug_enable("core");
+#endif
+	ggz_debug_enable("core-error");
 	ggzfd = ggz_connect();
-	if (ggzfd < 0)
-		exit(-1);
+	if (ggzfd < 0) {
+		ggz_error_msg_exit("Couldn't connect to ggz.");
+	}
 	game.state = STATE_INIT;
+	ggz_debug("core", "Client initialized.");
 	return ggzfd;
 }
 
@@ -61,25 +68,10 @@ void client_quit(void)
 {
 	/* FIXME: is this the desired behavior? */
 	if (ggz_disconnect() < 0)
-		exit(-2);
-}
-
-
-void client_debug(const char *fmt, ...)
-{
-	/* Currently the output goes to stderr, but it could be sent
-	   elsewhere. */
-	/* TODO: having this within #ifdef's wouldn't really work if it was
-	   an external lib */
-#ifdef DEBUG
-	char buf[512];
-	va_list ap;
-
-	va_start(ap, fmt);
-	vsnprintf(buf, sizeof(buf), fmt, ap);
-	fprintf(stderr, "DEBUG: %s\n", buf);
-	va_end(ap);
-#endif /* DEBUG */
+		ggz_error_msg_exit("Couldn't disconnect from ggz.");
+	if (game.players)
+		ggz_free(game.players);
+	ggz_debug("core", "Client disconnected.");
 }
 
 
@@ -107,12 +99,12 @@ static const char *get_state_name(client_state_t state)
 
 static void set_game_state(client_state_t state)
 {
-	if (state == game.state)
-		client_debug("ERROR: " "Staying in state %d.", game.state);
-	else {
-		client_debug("Changing state from %s to %s.",
-			     get_state_name(game.state),
-			     get_state_name(state));
+	if (state == game.state) {
+		ggz_debug("core-error", "ERROR: Staying in state %d.",
+			  game.state);
+	} else {
+		ggz_debug("core", "Changing state from %s to %s.",
+			  get_state_name(game.state), get_state_name(state));
 		game.state = state;
 	}
 }
@@ -129,8 +121,8 @@ static int handle_global_message_text(char *mark)
 static int handle_global_message_cardlist(char *mark)
 {
 	int status = 0, p, i;
-	card_t **cardlist = malloc(game.num_players * sizeof(*cardlist));
-	int *lengths = malloc(game.num_players * sizeof(*lengths));
+	card_t **cardlist = ggz_malloc(game.num_players * sizeof(*cardlist));
+	int *lengths = ggz_malloc(game.num_players * sizeof(*lengths));
 
 	if (!cardlist || !lengths)
 		abort();
@@ -138,7 +130,7 @@ static int handle_global_message_cardlist(char *mark)
 	for (p = 0; p < game.num_players; p++) {
 		if (es_read_int(ggzfd, &lengths[p]))
 			status = -1;
-		cardlist[p] = malloc(lengths[p] * sizeof(**cardlist));
+		cardlist[p] = ggz_malloc(lengths[p] * sizeof(**cardlist));
 		for (i = 0; i < lengths[p]; i++)
 			if (read_card(ggzfd, &cardlist[p][i]) < 0)
 				status = -1;
@@ -148,9 +140,9 @@ static int handle_global_message_cardlist(char *mark)
 		table_set_global_cardlist_message(mark, lengths, cardlist);
 
 	for (p = 0; p < game.num_players; p++)
-		free(cardlist[p]);
-	free(cardlist);
-	free(lengths);
+		ggz_free(cardlist[p]);
+	ggz_free(cardlist);
+	ggz_free(lengths);
 
 	return status;
 }
@@ -163,11 +155,14 @@ static int handle_global_message_block(char *mark)
 	if (es_read_int(ggzfd, &size) < 0)
 		return -1;
 
-	block = malloc(size);
+	/* This system won't work because of network byte order. */
+
+	block = ggz_malloc(size);
 	if (!block || es_readn(ggzfd, block, size) < 0)
 		return -1;
 
 	/* do nothing...yet */
+	ggz_free(block);
 	return 0;
 }
 
@@ -185,7 +180,7 @@ static int handle_message_global(void)
 
 	op = opcode;
 
-	client_debug("Received opcode of type %d.", op);
+	ggz_debug("core", "Received opcode of type %d.", op);
 
 	switch (op) {
 	case GL_MESSAGE_TEXT:
@@ -199,7 +194,7 @@ static int handle_message_global(void)
 		break;
 	}
 
-	free(mark);
+	free(mark);		/* allocated by easysock */
 
 	return status;
 }
@@ -219,7 +214,7 @@ static int handle_message_player(void)
 
 	table_set_player_message(p, message);
 
-	free(message);
+	free(message);		/* message is allocated by easysock */
 
 	return 0;
 }
@@ -235,9 +230,7 @@ static int handle_msg_gameover(void)
 	assert(num_winners >= 0 && num_winners <= game.num_players);
 
 	if (num_winners > 0) {
-		winners = malloc(num_winners * sizeof(*winners));
-		if (!winners)
-			return -1;
+		winners = ggz_malloc(num_winners * sizeof(*winners));
 	}
 
 	for (i = 0; i < num_winners; i++)
@@ -274,12 +267,12 @@ static int handle_msg_players(void)
 		if (game.players) {
 			for (p = 0; p < game.num_players; p++)
 				if (game.players[p].hand.card)
-					free(game.players[p].hand.card);
-			free(game.players);
+					ggz_free(game.players[p].hand.card);
+			ggz_free(game.players);
 		}
-		client_debug("get_players: (re)allocating game.players.");
-		game.players = malloc(numplayers * sizeof(*game.players));
-		memset(game.players, 0, numplayers * sizeof(*game.players));
+		ggz_debug("core",
+			  "get_players: (re)allocating game.players.");
+		game.players = ggz_malloc(numplayers * sizeof(*game.players));
 		game_max_hand_size = 0;	/* this forces reallocating later */
 	}
 
@@ -295,7 +288,8 @@ static int handle_msg_players(void)
 
 		/* this causes unnecessary memory fragmentation */
 		if (game.players[i].name)
-			free(game.players[i].name);
+			free(game.players[i].name);	/* allocated by
+							   easysock */
 		game.players[i].name = t_name;
 	}
 
@@ -336,9 +330,10 @@ static int handle_msg_hand(void)
 	/* Reallocate hand structures, if necessary */
 	if (hand->hand_size > game_max_hand_size) {
 		int p;
-		client_debug("Expanding max_hand_size to allow for %d cards"
-			     " (previously max was %d).", hand->hand_size,
-			     game_max_hand_size);
+		ggz_debug("core",
+			  "Expanding max_hand_size to allow for %d cards"
+			  " (previously max was %d).", hand->hand_size,
+			  game_max_hand_size);
 		game_max_hand_size = hand->hand_size;
 
 		/* Let the table know how big a hand might be. */
@@ -353,10 +348,9 @@ static int handle_msg_hand(void)
 			/* if (game.players[p].hand.card != NULL)
 			   free(game.players[p].hand.card); */
 			game.players[p].hand.card =
-				malloc(game_max_hand_size *
-				       sizeof(*game.players[p].hand.card));
-			if (!game.players[p].hand.card)
-				return -1;
+				ggz_malloc(game_max_hand_size *
+					   sizeof(*game.players[p].hand.
+						  card));
 		}
 
 		table_setup();	/* redesign table */
@@ -388,9 +382,7 @@ static int handle_req_bid(void)
 	/* Determine the number of bidding choices we have */
 	if (es_read_int(ggzfd, &possible_bids) < 0)
 		return -1;
-	bid_choices = malloc(possible_bids * sizeof(*bid_choices));
-	if (!bid_choices)
-		return -1;
+	bid_choices = ggz_malloc(possible_bids * sizeof(*bid_choices));
 
 	/* Read in all of the bidding choices. */
 	for (i = 0; i < possible_bids; i++) {
@@ -404,8 +396,8 @@ static int handle_req_bid(void)
 
 	/* Clean up */
 	for (i = 0; i < possible_bids; i++)
-		free(bid_choices[i]);
-	free(bid_choices);
+		free(bid_choices[i]);	/* allocated by easysock */
+	ggz_free(bid_choices);
 
 	return 0;
 }
@@ -445,7 +437,7 @@ static int handle_msg_badplay(void)
 	table_alert_badplay(err_msg);
 
 	/* Clean up. */
-	free(err_msg);
+	free(err_msg);		/* allocated by easysock */
 
 	return 0;
 }
@@ -523,6 +515,8 @@ static int handle_msg_play(void)
 		   fact, a clever server could _force_ us to pick wrong.
 		   Figure out how and you'll be ready for a "squeeze" play!
 		   Fortunately, it's easily solved. */
+		ggz_debug("core",
+			  "Whoa!  We can't find a match for the card.  That's strange.");
 		client_send_sync_request();
 		return 0;
 	}
@@ -551,7 +545,8 @@ static int handle_msg_table(void)
 		if (read_card(ggzfd, &game.players[p].table_card) < 0)
 			return -1;
 
-	/* TODO: verify that the table cards have been removed from the hands */
+	/* TODO: verify that the table cards have been removed from the hands 
+	 */
 
 	table_alert_table();
 	return 0;
@@ -598,9 +593,9 @@ static int handle_req_options(void)
 	assert(option_cnt > 0);
 
 	/* Allocate all data */
-	choice_cnt = malloc(option_cnt * sizeof(*choice_cnt));
-	defaults = malloc(option_cnt * sizeof(*defaults));
-	option_choices = malloc(option_cnt * sizeof(*option_choices));
+	choice_cnt = ggz_malloc(option_cnt * sizeof(*choice_cnt));
+	defaults = ggz_malloc(option_cnt * sizeof(*defaults));
+	option_choices = ggz_malloc(option_cnt * sizeof(*option_choices));
 
 	/* Read all the options, their defaults, and the possible choices. */
 	for (i = 0; i < option_cnt; i++) {
@@ -608,7 +603,7 @@ static int handle_req_options(void)
 		    es_read_int(ggzfd, &defaults[i]) < 0)
 			return -1;	/* read the default */
 		option_choices[i] =
-			malloc(choice_cnt[i] * sizeof(**option_choices));
+			ggz_malloc(choice_cnt[i] * sizeof(**option_choices));
 		for (j = 0; j < choice_cnt[i]; j++)
 			if (es_read_string_alloc(ggzfd, &option_choices[i][j])
 			    < 0)
@@ -622,12 +617,13 @@ static int handle_req_options(void)
 	/* Clean up. */
 	for (i = 0; i < option_cnt; i++) {
 		for (j = 0; j < choice_cnt[i]; j++)
-			free(option_choices[i][j]);
-		free(option_choices[i]);
+			free(option_choices[i][j]);	/* allocated by
+							   easysock */
+		ggz_free(option_choices[i]);
 	}
-	free(defaults);
-	free(option_choices);
-	free(choice_cnt);
+	ggz_free(defaults);
+	ggz_free(option_choices);
+	ggz_free(choice_cnt);
 
 	return 0;
 }
@@ -636,8 +632,10 @@ static int handle_req_options(void)
 /* A newgame message tells the server to start a new game. */
 int client_send_newgame(void)
 {
-	if (write_opcode(ggzfd, RSP_NEWGAME) < 0)
+	if (write_opcode(ggzfd, RSP_NEWGAME) < 0) {
+		ggz_debug("core-error", "Couldn't send newgame.");
 		return -1;
+	}
 	return 0;
 }
 
@@ -646,8 +644,10 @@ int client_send_newgame(void)
 int client_send_bid(int bid)
 {
 	set_game_state(STATE_WAIT);
-	if (write_opcode(ggzfd, RSP_BID) < 0 || es_write_int(ggzfd, bid) < 0)
+	if (write_opcode(ggzfd, RSP_BID) < 0 || es_write_int(ggzfd, bid) < 0) {
+		ggz_debug("core-error", "Couldn't send bid.");
 		return -1;
+	}
 	return 0;
 }
 
@@ -665,6 +665,10 @@ int client_send_options(int option_cnt, int *options)
 
 	set_game_state(STATE_WAIT);
 
+	if (status < 0) {
+		ggz_debug("core-error", "Couldn't send options.");
+		return -1;
+	}
 	return status;
 }
 
@@ -673,8 +677,10 @@ int client_send_options(int option_cnt, int *options)
 int client_send_play(card_t card)
 {
 	set_game_state(STATE_WAIT);
-	if (write_opcode(ggzfd, RSP_PLAY) < 0 || write_card(ggzfd, card) < 0)
+	if (write_opcode(ggzfd, RSP_PLAY) < 0 || write_card(ggzfd, card) < 0) {
+		ggz_debug("core-error", "Couldn't send play.");
 		return -1;
+	}
 	return 0;
 }
 
@@ -682,8 +688,10 @@ int client_send_play(card_t card)
 /* A sync request asks for a sync from the server. */
 int client_send_sync_request(void)
 {
-	if (write_opcode(ggzfd, REQ_SYNC) < 0)
+	if (write_opcode(ggzfd, REQ_SYNC) < 0) {
+		ggz_debug("core-error", "Couldn't send sync request.");
 		return -1;
+	}
 	return 0;
 }
 
@@ -694,8 +702,10 @@ int client_handle_server(void)
 	int op, status = -1;
 
 	/* Read the opcode */
-	if (read_opcode(ggzfd, &op) < 0)
+	if (read_opcode(ggzfd, &op) < 0) {
+		ggz_debug("core-error", "Couldn't read server opcode.");
 		return -1;
+	}
 
 	switch (op) {
 	case REQ_NEWGAME:
@@ -744,12 +754,9 @@ int client_handle_server(void)
 		break;
 	}
 
-	if (status < 0) {
-		client_debug("Lost connection to server?!  Opcode was %d.",
-			     op);
-		client_quit();
-		exit(-1);
-	}
-
+	if (status < 0)
+		ggz_debug("core-error",
+			  "Error handling message from server (opcode %d).",
+			  op);
 	return status;
 }
