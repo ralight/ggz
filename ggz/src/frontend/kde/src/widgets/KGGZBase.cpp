@@ -143,7 +143,7 @@ KGGZBase::KGGZBase()
 	connect(m_menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_preferences, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(kggz, SIGNAL(signalMenu(int)), SLOT(slotMenuSignal(int)));
-	connect(kggz, SIGNAL(signalRoom(const char*, const char*)), SLOT(slotRoom(const char*, const char*)));
+	connect(kggz, SIGNAL(signalRoom(const char*, const char*, int)), SLOT(slotRoom(const char*, const char*, int)));
 	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(kggz, SIGNAL(signalLocation(const char*)), SLOT(slotLocation(const char*)));
@@ -297,7 +297,7 @@ void KGGZBase::slotMenu(int id)
 				{
 					m_menu_ggz->setItemChecked(MENU_GGZ_WATCHER, true);
 					tray = new KSystemTray(this);
-					slotActivity(0);
+					slotActivity(KGGZ::ACTIVITY_NONE);
 					tray->show();
 				}
 			}
@@ -429,14 +429,15 @@ void KGGZBase::slotMenuSignal(int signal)
 	}
 }
 
-void KGGZBase::slotRoom(const char *roomname, const char *category)
+void KGGZBase::slotRoom(const char *roomname, const char *category, int numplayers)
 {
 	QString caption;
 
 #ifdef KGGZ_PATCH_C_AND_R
 	caption = QString("%1 (%2)").arg(roomname).arg(category);
 #else
-	caption = roomname;
+	//caption = roomname;
+	caption = QString("%1 (%2)").arg(roomname).arg(numplayers);
 #endif
 	m_menu_rooms->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + m_rooms), caption, MENU_ROOMS_SLOTS + m_rooms);
 	m_rooms++;
@@ -460,17 +461,17 @@ void KGGZBase::slotLocation(const char *location)
 
 void KGGZBase::slotActivity(int activity)
 {
-	if((activity > 0) && (activity <= m_activity)) return;
+	if((activity > KGGZ::ACTIVITY_NONE) && (activity <= m_activity)) return;
 
 	m_activity = activity;
 
 	if(tray)
 	{
-		if(activity == 2)
+		if(activity == KGGZ::ACTIVITY_DIRECT)
 		{
 			tray->setPixmap(QPixmap(KGGZ_DIRECTORY "/images/icons/watcher_on.png"));
 		}
-		else if(activity == 1)
+		else if(activity == KGGZ::ACTIVITY_ROOM)
 		{
 			tray->setPixmap(QPixmap(KGGZ_DIRECTORY "/images/icons/watcher_room.png"));
 		}

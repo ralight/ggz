@@ -118,11 +118,19 @@ class KGGZ : public QWidget
 			MENUSIG_NOSPECTATORS
 		};
 
+		// Activity signals
+		enum Activitysignals
+		{
+			ACTIVITY_NONE,
+			ACTIVITY_ROOM,
+			ACTIVITY_DIRECT
+		};
+
 	signals:
 		// Emitted to dis/enable menu items
 		void signalMenu(int signal);
 		// Emitted to announce new room
-		void signalRoom(const char *roomname, const char *category);
+		void signalRoom(const char *roomname, const char *category, int numplayers);
 		// Emitted to change window caption
 		void signalCaption(const char *caption);
 		// Emitted if connection state changes

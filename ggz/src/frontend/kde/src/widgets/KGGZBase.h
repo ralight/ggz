@@ -68,7 +68,7 @@ class KGGZBase : public KMainWindow
 		// Receive a dis/enable event from the KGGZ object
 		void slotMenuSignal(int signal);
 		// Receive a room to be added to the menu
-		void slotRoom(const char *roomname, const char *category);
+		void slotRoom(const char *roomname, const char *category, int numplayers);
 		// Receive the caption dynamically from KGGZ
 		void slotCaption(const char *caption);
 		// Display the state in the status bar

@@ -748,11 +748,13 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 	int chattype = GGZCoreRoom::chatnormal;
 	QString buffer;
 	GGZRoomChangeEventData *event;
+	QString toroom;
+	QString fromroom;
 
 	if(id == GGZCoreRoom::chatevent)
-		emit signalActivity(2);
+		emit signalActivity(ACTIVITY_DIRECT);
 	else if(id != GGZCoreRoom::playerlag)
-		emit signalActivity(1);
+		emit signalActivity(ACTIVITY_ROOM);
 
 	switch(id)
 	{
@@ -820,8 +822,14 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 		case GGZCoreRoom::enter:
 			KGGZDEBUG("enter\n");
 			event = (GGZRoomChangeEventData*)data;
-			buffer.append(event->player_name);
-			buffer.append(i18n(" enters the room."));
+			if(event->from_room == -2) fromroom = "(unknown origin)";
+			else if(event->from_room == -1) fromroom = i18n("first room after login");
+			else fromroom = QString("from room %1").arg(kggzserver->room(event->from_room)->name());
+			buffer = QString("%1 enters the room (%2).").arg(
+				event->player_name).arg(
+				fromroom);
+			//buffer.append(event->player_name);
+			//buffer.append(i18n(" enters the room."));
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->add(event->player_name);
 			m_workspace->widgetChat()->chatline()->addPlayer(event->player_name);
@@ -830,8 +838,14 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 		case GGZCoreRoom::leave:
 			KGGZDEBUG("leave\n");
 			event = (GGZRoomChangeEventData*)data;
-			buffer.append(event->player_name);
-			buffer.append(i18n(" has left the room."));
+			if(event->to_room == -2) toroom = "(unknown destination)";
+			else if(event->to_room == -1) toroom = i18n("disconnect from server");
+			else toroom = QString("to room %1").arg(kggzserver->room(event->to_room)->name());
+			buffer = QString("%1 has left the room (%2).").arg(
+				event->player_name).arg(
+				toroom);
+			//buffer.append(event->player_name);
+			//buffer.append(i18n(" has left the room."));
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->remove(event->player_name);
 			KGGZDEBUG("remove from chatline\n");
@@ -903,7 +917,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 	QString entry;
 #endif
 
-	emit signalActivity(1);
+	emit signalActivity(ACTIVITY_ROOM);
 
 	switch(id)
 	{
@@ -1005,7 +1019,9 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			KGGZDEBUG("roomlist\n");
 			emit signalMenu(MENUSIG_ROOMLIST);
 			for(int i = 0; i < kggzserver->countRooms(); i++)
-				emit signalRoom(kggzserver->room(i)->name(), kggzserver->room(i)->category());
+				emit signalRoom(kggzserver->room(i)->name(),
+					kggzserver->room(i)->category(),
+					kggzserver->room(i)->countPlayers());
 			break;
 		case GGZCoreServer::typelist:
 			KGGZDEBUG("typelist\n");
@@ -1797,6 +1813,6 @@ void KGGZ::menuGameTeam()
 
 void KGGZ::showEvent(QShowEvent *e)
 {
-	emit signalActivity(0);
+	emit signalActivity(ACTIVITY_NONE);
 }
 
