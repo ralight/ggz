@@ -165,7 +165,7 @@ static int lapocha_get_bid()
 
 static void lapocha_handle_bid(bid_t bid)
 {
-	if (game.bid_count == 0) {
+	if (bid.sbid.spec == LAPOCHA_TRUMP) {
 		game.trump = bid.sbid.suit;
 		set_global_message("", "Trump is %s.", suit_names[(int)game.trump % 4]);
 	} else
@@ -211,6 +211,8 @@ static int lapocha_deal_hand()
 
 static int lapocha_get_bid_text(char* buf, int buf_len, bid_t bid)
 {
+	if (bid.sbid.spec == LAPOCHA_TRUMP)
+		return snprintf(buf, buf_len, "%s", suit_names[(int)bid.sbid.suit % 4]);
 	return snprintf(buf, buf_len, "%d", (int)bid.sbid.val);
 }
 
@@ -242,4 +244,5 @@ static void lapocha_end_hand()
 		else
 			game.players[p].score -= 5 * game.players[p].bid.bid;
 	}
+	set_global_message("", "No trump set."); /* TODO: give information about previous hand */
 }
