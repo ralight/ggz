@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 3990 2002-04-15 07:23:26Z jdorje $
+ *  $Id: movecheck.c 4004 2002-04-17 17:21:07Z jdorje $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -76,7 +76,7 @@ cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote
 		{ QUEEN, valid_queen },
 		{ KING, valid_king },
 		{ PAWN, valid_pawn },
-		{ NULL, NULL }
+		{ 0, NULL }
 	}; 
 
 	struct pinfo *cptr;
