@@ -30,7 +30,15 @@ enum KeepaliveOpcodes
 	op_login = 106,
 	op_move = 107,
 	op_chat = 108,
-	op_chatted = 109
+	op_chatted = 109,
+	op_quit = 110
+};
+
+enum KeepaliveTypes
+{
+	type_born = 0,
+	type_avatar = 1,
+	type_grave = 2
 };
 
 // op_map: map size and contents
@@ -38,7 +46,7 @@ enum KeepaliveOpcodes
 // op_init: Initial position
 // x, y
 // op_player: List of 1 or more new players on the map
-// count, {$name, x, y}
+// count, {$name, type, x, y}
 // op_name: The player's character name
 // $name
 // op_loginfailed: Wrong password when trying to login
@@ -46,6 +54,8 @@ enum KeepaliveOpcodes
 // $name, x, y
 // op_chatted: got a chat message
 // $name, $message
+// op_quit: A player left the game
+// $name
 //
 // op_login: Attempt to get ones own character back
 // $username, $password

@@ -69,7 +69,7 @@ void Canvas::slotInput()
 {
 	signed char c;
 	int width, height;
-	int x, y;
+	int x, y, type;
 	int count;
 	char *name, *message;
 	QCanvasSprite *sprite;
@@ -97,9 +97,13 @@ void Canvas::slotInput()
 			for(int i = 0; i < count; i++)
 			{
 				*m_net >> name;
+				*m_net >> type;
 				*m_net >> x >> y;
-				std::cout << name << " (" << x << "/" << y << ")" << std::endl;
-				sprite = new QCanvasSprite(new QCanvasPixmapArray(KEEPALIVE_DIR "/avatar.png", 1), this);
+				std::cout << name << " (" << x << "/" << y << "), type: " << type << std::endl;
+				if(type == type_grave)
+					sprite = new QCanvasSprite(new QCanvasPixmapArray(KEEPALIVE_DIR "/rip.png", 1), this);
+				else
+					sprite = new QCanvasSprite(new QCanvasPixmapArray(KEEPALIVE_DIR "/avatar.png", 1), this);
 				sprite->move(x, y);
 				sprite->show();
 				free(name);
@@ -128,6 +132,15 @@ void Canvas::slotInput()
 			break;
 		case op_chat:
 			QMessageBox::information(NULL, "Chat", QString("Chat from %1:\n%2").arg(name).arg(message));
+			break;
+		case op_quit:
+			*m_net >> name;
+			std::cout << "Player " << name << " died" << std::endl;
+			// FIXME: lookup player
+			sprite = new QCanvasSprite(new QCanvasPixmapArray(KEEPALIVE_DIR "/rip.png", 1), this);
+			sprite->move(100, 100);
+			sprite->show();
+			free(name);
 			break;
 		default:
 			//QMessageBox::information(NULL, "Notice", QString("Unknown opcode: %1").arg((int)c));
