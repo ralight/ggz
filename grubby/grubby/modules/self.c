@@ -31,8 +31,8 @@ Guru *gurumod_exec(Guru *message)
 		{
 			sprintf(buffer, _("I'm %s, your favorite chat bot!\n"
 					"I'm here to answer your question, and learn more about you.\n"
-					"You may type 'grubby help' to get to know what I understand.\n"
-					"Have fun :-)"), message->guru);
+					"You may type '%s' to get to know what I understand.\n"
+					"Have fun :-)"), message->guru, message->guru);
 			message->message = buffer;
 			message->type = GURU_PRIVMSG;
 			return message;
