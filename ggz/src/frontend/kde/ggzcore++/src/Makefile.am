@@ -9,7 +9,8 @@ libggzcorepp_la_SOURCES = GGZCore.cpp \
 			GGZCorePlayer.cpp \
 			GGZCoreRoom.cpp \
 			GGZCoreServer.cpp \
-			GGZCoreTable.cpp
+			GGZCoreTable.cpp \
+			GGZCoreCommon.cpp
 
 include_HEADERS =       GGZCore.h \
 			GGZCoreConf.h \
@@ -26,3 +27,6 @@ include_HEADERS =       GGZCore.h \
 lib_LTLIBRARIES =       libggzcorepp.la
 
 libggzcorepp_la_LDFLAGS = -version-info 0:1:0 @GGZCORE_LDFLAGS@ @LIB_GGZCORE@
+
+CXXFLAGS = @COMPILEOPTIONS@
+

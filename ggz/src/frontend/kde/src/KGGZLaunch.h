@@ -50,7 +50,7 @@ class KGGZLaunch : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZLaunch(QWidget *parent = NULL, char *name = NULL);
+		KGGZLaunch(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZLaunch();
 

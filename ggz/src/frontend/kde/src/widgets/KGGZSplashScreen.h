@@ -44,7 +44,7 @@ class KGGZSplashScreen : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZSplashScreen(QWidget *parent = NULL, char *name = NULL);
+		KGGZSplashScreen(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZSplashScreen();
 

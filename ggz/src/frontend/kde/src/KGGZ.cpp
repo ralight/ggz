@@ -38,7 +38,9 @@
 #include "KGGZWorkspace.h"
 #include "KGGZSplash.h"
 #ifdef KGGZ_BROWSER
+#ifndef __STRICT_ANSI__
 #warning You are building the internal browser which sloooows things down :)
+#endif
 #include "KGGZBrowser.h"
 #endif
 #include "KGGZGrubby.h"
@@ -61,7 +63,7 @@
 #include "GGZCoreTable.h"
 #include "GGZCoreModule.h"
 
-KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
+KGGZ::KGGZ(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	int result;
@@ -282,7 +284,7 @@ void KGGZ::menuConnect()
 	connect(m_connect, SIGNAL(signalConnect(const char*, int, const char*, const char*, int, int)), SLOT(slotConnected(const char*, int, const char*, const char*, int, int)));
 }
 
-void KGGZ::dispatch_free(char *var, char *description)
+void KGGZ::dispatch_free(char *var, const char *description)
 {
 	if(var)
 	{
@@ -292,7 +294,7 @@ void KGGZ::dispatch_free(char *var, char *description)
 	}
 }
 
-void KGGZ::dispatch_delete(void *object, char *description)
+void KGGZ::dispatch_delete(void *object, const char *description)
 {
 	if(object)
 	{
@@ -411,7 +413,7 @@ void KGGZ::listTables()
 					playername = table->playerName(j);
 					if(strlen(playername) == 0)
 					{
-						playername = "(unknown)";
+						playername = (char*)"(unknown)";
 						tableseatsopen++;
 					}
 					KGGZDEBUG("Going to add: %s\n", playername);
@@ -582,6 +584,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			m_workspace->widgetChat()->receive(NULL, buffer.latin1(), KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->add((char*)data);
 			m_workspace->widgetChat()->chatline()->addPlayer((char*)data);
+			if(m_grubby) m_grubby->addPlayer((char*)data);
 			break;
 		case GGZCoreRoom::leave:
 			KGGZDEBUG("leave\n");
@@ -772,6 +775,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			slotLoadLogo();
 			buffer.sprintf(i18n("Entered room %s"), kggzroom->name());
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
+			emit signalLocation(i18n("  Room: ") + kggzroom->name() + "  ");
 			break;
 		case GGZCoreServer::enterfail:
 			KGGZDEBUG("enterfail\n");
@@ -797,6 +801,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				m_workspace->widgetTables()->reset();
 				m_workspace->widgetChat()->shutdown();
 				m_workspace->widgetLogo()->shutdown();
+				emit signalLocation(i18n("  No room selected  "));
 			}
 			detachServerCallbacks();
 			delete kggzserver;
@@ -1113,7 +1118,7 @@ void KGGZ::slotLaunch()
 				break;
 			case KGGZLaunch::seatreserved:
 				KGGZDEBUG("* %i: reserved\n", i);
-				table->addReserved("RESERVED", i);
+				table->addReserved((char*)"RESERVED", i);
 				break;
 			case KGGZLaunch::seatunused:
 				KGGZDEBUG("* %i: unused.\n", i);
@@ -1339,21 +1344,33 @@ void KGGZ::menuGrubby()
 	m_grubby = new KGGZGrubby(NULL, "KGGZGrubby");
 	m_grubby->show();
 	listPlayers();
-	connect(m_grubby, SIGNAL(signalAction(int)), SLOT(slotGrubby(int)));
+	connect(m_grubby, SIGNAL(signalAction(const char*, const char*, int)), SLOT(slotGrubby(const char*, const char*, int)));
 }
 
-void KGGZ::slotGrubby(int id)
+void KGGZ::slotGrubby(const char *grubby, const char *argument, int id)
 {
 	switch(id)
 	{
+		case KGGZGrubby::actionabout:
+			slotChat(QString("%1 about").arg(grubby).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			break;
+		case KGGZGrubby::actionhelp:
+			slotChat(QString("%1 help").arg(grubby).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			break;
 		case KGGZGrubby::actionseen:
-			slotChat("grubby have you seen me", NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat(QString("%1 have you seen %2").arg(grubby).arg(argument).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			break;
+		case KGGZGrubby::actionalertadd:
+			slotChat(QString("%1 alert add %2").arg(grubby).arg(argument).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			break;
+		case KGGZGrubby::actionmessages:
+			slotChat(QString("%1 do you have any messages for me").arg(grubby).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
 			break;
 		case KGGZGrubby::actionbye:
-			KMessageBox::information(this, i18n("The pleasure has been on my side :)"), "Grubby");
+			KMessageBox::information(m_grubby, i18n("The pleasure has been on my side :)"), "Grubby");
 			break;
 		default:
-			KMessageBox::information(this, i18n("I don't know that command, sorry."), "Error!");
+			KMessageBox::information(m_grubby, i18n("I don't know that command, sorry."), "Error!");
 	}
 }
 

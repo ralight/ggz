@@ -38,4 +38,12 @@ In order to preserve the advantages of object-orientated design and programming
 All UI classes are placed in the widgets/ directory. This makes programming
 much easier.
 
+Please care about ANSI C/C++ compliance. You can easily test that with a
+special flag to autogen:
+	./autogen.sh --enable-browser --enable-ggzfinal
+If you are very brave you can add --enable-final too, but this way the KDE
+macros will create lots of files and gcc will complain about Qt's shadow
+variables, so this is probably not what you really want.
+
 	- Josef
+

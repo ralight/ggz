@@ -70,12 +70,26 @@
 // KGGZDEBUG:
 // seems like every app has its own debug function... cool...
 #ifdef SETKGGZDEBUG
-#include <stdio.h>
-#define KGGZDEBUGF(fmt...) printf("KGGZ >> "fmt##)
-#define KGGZDEBUG(fmt...) printf(">>> "fmt##)
+  #include <stdio.h>
+  #ifdef __STRICT_ANSI__
+    #define KGGZDEBUG KGGZCommon::kggzdebugdummy
+    #define KGGZDEBUGF KGGZDEBUG
+    //#ifndef __USE_ISO9CX
+    //  #define __USE_ISO9CX
+    //#endif
+    #ifndef atoll
+      #define atoll(x) atol(x)
+    #endif
+    #ifndef strdup
+      #define strdup(x) strcpy(((char*)malloc(strlen(x) + 1)), x)
+    #endif
+  #else
+    #define KGGZDEBUGF(fmt...) printf("KGGZ >> "fmt##)
+    #define KGGZDEBUG(fmt...) printf(">>> "fmt##)
+  #endif
 #else
-#define KGGZDEBUGF(fmt...)
-#define KGGZDEBUG(fmt...)
+  #define KGGZDEBUGF(fmt...)
+  #define KGGZDEBUG(fmt...)
 #endif
 
 // GGZ includes
@@ -84,13 +98,13 @@
 class KGGZCommon
 {
 	public:
-		static char* state(GGZStateID stateid);
-		static int launchProcess(char* process, char* processpath);
-		static int killProcess(char* process);
-		static int findProcess(char* cmdline);
-		static char* append(char* string1, char* string2);
+		static const char* state(GGZStateID stateid);
+		static int launchProcess(const char* process, char* processpath);
+		static int killProcess(const char* process);
+		static int findProcess(const char* cmdline);
+		static const char* append(const char* string1, const char* string2);
 		static void clear();
-	private:
+		static int kggzdebugdummy(const char *x, ...);
 };
 
 #endif

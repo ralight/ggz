@@ -44,7 +44,7 @@ class KGGZChatLine : public QLineEdit
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZChatLine(QWidget *parent = NULL, char *name = NULL);
+		KGGZChatLine(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZChatLine();
 

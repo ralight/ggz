@@ -24,13 +24,13 @@ GGZCore::~GGZCore()
 	if(m_initialized) ggzcore_destroy();
 }
 
-int GGZCore::init(int options, char* debugfile, int debuglevel)
+int GGZCore::init(int options, const char* debugfile, int debuglevel)
 {
 	GGZOptions opt;
 	int ret;
 
 	opt.flags = (GGZOptionFlags)options;
-	opt.debug_file = debugfile;
+	opt.debug_file = (char*)debugfile;
 	opt.debug_levels = (GGZDebugLevel)debuglevel;
 
 	ret = ggzcore_init(opt);
@@ -38,3 +38,4 @@ int GGZCore::init(int options, char* debugfile, int debuglevel)
 
 	return ret;
 }
+

@@ -37,7 +37,7 @@
 // System includes
 #include <iostream>
 
-KGGZChatLine::KGGZChatLine(QWidget *parent = NULL, char *name = NULL)
+KGGZChatLine::KGGZChatLine(QWidget *parent, const char *name)
 : QLineEdit(parent, name)
 {
 }

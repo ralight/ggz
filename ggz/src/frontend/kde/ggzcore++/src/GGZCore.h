@@ -64,7 +64,7 @@ class GGZCore
 		~GGZCore();
 
 		/** Initialize ggzcore. */
-		int init(int options, char* debugfile, int debuglevel);
+		int init(int options, const char* debugfile, int debuglevel);
 
 	private:
 		int m_initialized;

@@ -49,7 +49,7 @@ class KGGZBrowser : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZBrowser(QWidget *parent = NULL, char *name = NULL);
+		KGGZBrowser(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZBrowser();
 

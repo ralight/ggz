@@ -37,6 +37,7 @@
 // Qt includes
 #include <qwidget.h>
 #include <qcombobox.h>
+#include <qlineedit.h>
 
 // Displays a grubby talk dialog window.
 class KGGZGrubby : public QWidget
@@ -44,13 +45,17 @@ class KGGZGrubby : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZGrubby(QWidget *parent = NULL, char *name = NULL);
+		KGGZGrubby(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZGrubby();
 
 		enum Actions
 		{
 			actionseen,
+			actionmessages,
+			actionalertadd,
+			actionabout,
+			actionhelp,
 			actionbye
 		};
 
@@ -67,11 +72,12 @@ class KGGZGrubby : public QWidget
 
 	signals:
 		// Invoke a grubby action
-		void signalAction(int id);
+		void signalAction(const char *grubby, const char *argument, int id);
 
 	private:
 		int m_lastaction;
 		QComboBox *m_player;
+		QLineEdit *m_ed;
 };
 
 #endif

@@ -48,7 +48,7 @@
 //QListViewItem *KGGZUsers::itemmain;
 
 // Constructor
-KGGZUsers::KGGZUsers(QWidget *parent = NULL, char *name = NULL)
+KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 : QListView(parent, name)
 {
 	itemmain = new QListViewItem(this, i18n("Not playing"));

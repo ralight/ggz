@@ -45,7 +45,7 @@
 #include <qlayout.h>
 #include <qpainter.h>
 
-KGGZSplashScreen::KGGZSplashScreen(QWidget *parent = NULL, char *name = NULL)
+KGGZSplashScreen::KGGZSplashScreen(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	setBackgroundColor(QColor(0.0, 0.0, 255.0));

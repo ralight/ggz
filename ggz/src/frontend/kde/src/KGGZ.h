@@ -70,7 +70,7 @@ class KGGZ : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZ(QWidget *parent = NULL, char *name = NULL);
+		KGGZ(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZ();
 
@@ -111,6 +111,8 @@ class KGGZ : public QWidget
 		void signalCaption(const char *caption);
 		// Emitted if connection state changes
 		void signalState(int state);
+		// Emitted if room changes
+		void signalLocation(const char *location);
 
 	public slots:
 		// Connect to a game server
@@ -141,7 +143,7 @@ class KGGZ : public QWidget
 		// Launch a table
 		void slotLaunch();
 		// Send grubby requests
-		void slotGrubby(int id);
+		void slotGrubby(const char *grubby, const char *argument, int id);
 
 	protected:
 		// Handle resizing
@@ -162,9 +164,9 @@ class KGGZ : public QWidget
 		// ensure that KGGZ is in a proper state
 		void dispatcher();
 		// free allocated memory
-		void dispatch_free(char *var, char *description);
+		void dispatch_free(char *var, const char *description);
 		// delete created objects
-		void dispatch_delete(void *object, char *description);
+		void dispatch_delete(void *object, const char *description);
 
 		// set up room callbacks
 		void attachRoomCallbacks();

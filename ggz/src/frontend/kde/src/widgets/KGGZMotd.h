@@ -44,7 +44,7 @@ class KGGZMotd : public QWidget
 	Q_OBJECT
 		public:
 			// Constructor
-			KGGZMotd(QWidget *parent = NULL, char *name = NULL);
+			KGGZMotd(QWidget *parent = NULL, const char *name = NULL);
 			// Destructor
 			~KGGZMotd();
 			// Load a motd as char** source

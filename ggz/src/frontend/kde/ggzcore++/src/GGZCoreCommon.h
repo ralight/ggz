@@ -20,8 +20,21 @@
 #endif
 
 #ifndef GGZCOREDEBUG
-#include <stdio.h>
-#define GGZCOREDEBUG(fmt...) printf("))) "fmt##)
+  #ifdef __STRICT_ANSI__
+    #define USE_DEBUGDUMMY
+    #ifdef __cplusplus
+      extern "C" {
+    #endif
+    int debugdummy(const char *x, ...);
+    #ifdef __cplusplus
+      }
+    #endif
+    #define GGZCOREDEBUG debugdummy
+  #else
+    #include <stdio.h>
+    #define GGZCOREDEBUG(fmt...) printf("))) "fmt##)
+  #endif
 #endif
 
 #endif
+

@@ -65,6 +65,7 @@ KGGZBase::KGGZBase(char *name)
 	enableStatusBar();
 	statusBar()->insertItem(i18n("  Not connected  "), 1);
 	statusBar()->insertItem(i18n("  Loading...  "), 2);
+	statusBar()->insertItem(i18n("  No room selected  "), 3);
 
 	kggz = new KGGZ(this, "kggz");
 
@@ -136,6 +137,7 @@ KGGZBase::KGGZBase(char *name)
 	connect(kggz, SIGNAL(signalRoom(char*)), SLOT(slotRoom(char*)));
 	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
+	connect(kggz, SIGNAL(signalLocation(const char*)), SLOT(slotLocation(const char*)));
 
 	setView(kggz);
 	setCaption("KGGZ - [offline]");
@@ -175,7 +177,7 @@ KGGZBase::~KGGZBase()
 
 QIconSet KGGZBase::kggzGetIcon(int menuid)
 {
-	char *icon = NULL;
+	const char *icon = NULL;
 	QIconSet iconset;
 
 	switch(menuid)
@@ -376,3 +378,9 @@ void KGGZBase::slotState(int state)
 {
 	statusBar()->changeItem(i18n("  State: ") + KGGZCommon::state((GGZStateID)state) + "  ", 2);
 }
+
+void KGGZBase::slotLocation(const char *location)
+{
+	statusBar()->changeItem(QString("  ") + location + "  ", 3);
+}
+

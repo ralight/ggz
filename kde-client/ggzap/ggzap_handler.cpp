@@ -56,6 +56,7 @@ cout << "server " << id << endl;
 
 	handler = (GGZapHandler*)user_data;
 	handler->hookServerActive(id);
+	return GGZ_HOOK_OK;
 }
 
 GGZHookReturn GGZapHandler::hookRoom(unsigned int id, void *event_data, void *user_data)
@@ -66,6 +67,7 @@ cout << "room " << id << endl;
 
 	handler = (GGZapHandler*)user_data;
 	handler->hookRoomActive(id);
+	return GGZ_HOOK_OK;
 }
 
 GGZHookReturn GGZapHandler::hookGame(unsigned int id, void *event_data, void *user_data)
@@ -76,6 +78,7 @@ cout << "room " << id << endl;
 
 	handler = (GGZapHandler*)user_data;
 	handler->hookGameActive(id, event_data);
+	return GGZ_HOOK_OK;
 }
 
 void GGZapHandler::hookServerActive(unsigned int id)

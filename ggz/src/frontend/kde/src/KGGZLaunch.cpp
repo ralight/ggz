@@ -46,7 +46,7 @@
 #include <qstring.h>
 #include <stdlib.h>
 
-KGGZLaunch::KGGZLaunch(QWidget *parent = NULL, char *name = NULL)
+KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;
@@ -204,7 +204,7 @@ int KGGZLaunch::seatType(int seat)
 {
 	int ret;
 
-	if((!m_array) || (m_array->size() <= seat)) return seatunknown;
+	if((!m_array) || ((int)m_array->size() <= seat)) return seatunknown;
 	ret = m_array->at(seat);
 	return ret;
 }
@@ -218,7 +218,7 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 		KGGZDEBUG("Critical! No array present.\n");
 		return;
 	}
-	if(seat >= m_array->size())
+	if(seat >= (int)m_array->size())
 	{
 		KGGZDEBUG("Critical: not so many seats here (%i/%i)!\n", seat, seattype);
 		return;

@@ -35,6 +35,8 @@ noinst_HEADERS = \
 
 EXTRA_HEADERS = 
 
+CXXFLAGS = @COMPILEOPTIONS@
+
 INCLUDES = $(ggzcorepp_includes) $(all_includes) -I $(top_srcdir)/ggz-kde/src -I $(top_srcdir)/ggz-kde/src/abstract
 
 libkggzui_a_METASOURCES = AUTO

@@ -45,7 +45,7 @@ class KGGZAbout : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZAbout(QWidget *parent = NULL, char *name = NULL);
+		KGGZAbout(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZAbout();
 

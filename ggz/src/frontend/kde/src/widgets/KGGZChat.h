@@ -70,7 +70,7 @@ class KGGZChat : public QWidget
 			RECEIVE_ME
 		};
 
-		KGGZChat(QWidget *parent = NULL, char *name = NULL);
+		KGGZChat(QWidget *parent = NULL, const char *name = NULL);
 		~KGGZChat();
 		void init();
 		void shutdown();

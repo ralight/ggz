@@ -43,7 +43,7 @@
 // System includes
 #include <sys/stat.h>
 
-KGGZLogo::KGGZLogo(QWidget *parent = NULL, char *name = NULL)
+KGGZLogo::KGGZLogo(QWidget *parent, const char *name)
 : QFrame(parent, name)
 {
 }
@@ -57,6 +57,7 @@ void KGGZLogo::setLogo(char *logo, char *name)
 	//char buffer[1024];
 	QString *buffer;
 	struct stat st;
+	const char *uselogo;
 
 	buffer = NULL;
 	KGGZDEBUG("Found module icon: %s\n", logo);
@@ -72,8 +73,9 @@ void KGGZLogo::setLogo(char *logo, char *name)
 		KGGZDEBUG("Retrieve Icon from: %s\n", logo);
 		if((stat(logo, &st) < 0) || (!S_ISREG(st.st_mode))) logo = NULL;
 	}
-	if(!logo) logo = KGGZ_DIRECTORY "/images/icons/module.png";
-	setBackgroundPixmap(QPixmap(logo));
+	if(!logo) uselogo = KGGZ_DIRECTORY "/images/icons/module.png";
+	else uselogo = logo;
+	setBackgroundPixmap(QPixmap(uselogo));
 	if(buffer) delete buffer;
 }
 

@@ -43,7 +43,7 @@ class KGGZTables : public QIconView
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZTables(QWidget *parent = NULL, char *name = NULL);
+		KGGZTables(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZTables();
 		// Clear the table widget

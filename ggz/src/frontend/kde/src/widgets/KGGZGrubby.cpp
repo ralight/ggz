@@ -44,18 +44,16 @@
 #include <qlayout.h>
 #include <qframe.h>
 #include <qmultilineedit.h>
-#include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
 
-KGGZGrubby::KGGZGrubby(QWidget *parent = NULL, char *name = NULL)
+KGGZGrubby::KGGZGrubby(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QVBoxLayout *vbox, *vbox2;
 	QHBoxLayout *hbox, *hbox2, *hbox3;
 	QMultiLineEdit *mle;
 	QComboBox *combo;
-	QLineEdit *ed;
 	QPushButton *go, *quit;
 	QFrame *image;
 	QLabel *label;
@@ -64,7 +62,7 @@ KGGZGrubby::KGGZGrubby(QWidget *parent = NULL, char *name = NULL)
 
 	go = new QPushButton(i18n("Go!"), this);
 	quit = new QPushButton(i18n("Quit"), this);
-	ed = new QLineEdit(this);
+	m_ed = new QLineEdit(this);
 	mle = new QMultiLineEdit(this);
 
 	image = new QFrame(this);
@@ -72,7 +70,11 @@ KGGZGrubby::KGGZGrubby(QWidget *parent = NULL, char *name = NULL)
 	image->setBackgroundPixmap(QPixmap(KGGZ_DIRECTORY "/images/grubbybig.png"));
 
 	combo = new QComboBox(this);
-	combo->insertItem(i18n("Grubby, have you seen"), actionseen);
+	combo->insertItem(i18n("Have you seen ..."), actionseen);
+	combo->insertItem(i18n("Do you have any messages for me?"), actionmessages);
+	combo->insertItem(i18n("Add this to the alert words:"), actionalertadd);
+	combo->insertItem(i18n("I need help!"), actionhelp);
+	combo->insertItem(i18n("Tell me something about you"), actionabout);
 	combo->insertItem(i18n("Thanks for taking the time!"), actionbye);
 
 	label = new QLabel(i18n("This is grubby:"), this);
@@ -87,7 +89,7 @@ KGGZGrubby::KGGZGrubby(QWidget *parent = NULL, char *name = NULL)
 	hbox3->add(m_player);
 	vbox2->add(combo);
 	hbox2 = new QHBoxLayout(vbox2, 5);
-	hbox2->add(ed);
+	hbox2->add(m_ed);
 	hbox2->add(go);
 	hbox2->add(quit);
 	vbox->add(mle);
@@ -109,13 +111,27 @@ KGGZGrubby::~KGGZGrubby()
 
 void KGGZGrubby::slotInvoke()
 {
-	KGGZDEBUG("Perform action: %i\n", m_lastaction);
-	emit signalAction(m_lastaction);
+	KGGZDEBUG("Perform action: %i on %s\n", m_lastaction, m_player->currentItem());
+	emit signalAction(m_player->currentText().latin1(), m_ed->text().latin1(), m_lastaction);
 }
 
 void KGGZGrubby::slotActivated(int index)
 {
 	m_lastaction = index;
+
+	switch(index)
+	{
+		case actionbye:
+		case actionmessages:
+		case actionhelp:
+		case actionabout:
+			m_ed->setEnabled(FALSE);
+			break;
+		case actionalertadd:
+		case actionseen:
+			m_ed->setEnabled(TRUE);
+			break;
+	}
 }
 
 void KGGZGrubby::removeAll()

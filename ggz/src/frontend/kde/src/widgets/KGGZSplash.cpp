@@ -37,7 +37,7 @@
 // Qt includes
 #include <qlayout.h>
 
-KGGZSplash::KGGZSplash(QWidget *parent = NULL, char *name = NULL)
+KGGZSplash::KGGZSplash(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;

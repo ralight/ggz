@@ -41,7 +41,7 @@
 #include <qlabel.h>
 #include <qlayout.h>
 
-KGGZInput::KGGZInput(QWidget *parent = NULL, char *name = NULL)
+KGGZInput::KGGZInput(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QVBoxLayout *vbox;

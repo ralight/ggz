@@ -8,9 +8,11 @@
 #include <qframe.h>
 #include <qpixmap.h>
 
+#include <stdlib.h>
+
 #include "config.h"
 
-GGZap::GGZap(QWidget *parent = NULL, char *name = NULL)
+GGZap::GGZap(QWidget *parent, char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;

@@ -40,7 +40,7 @@
 // Qt includes
 #include <qlayout.h>
 
-KGGZWorkspace::KGGZWorkspace(QWidget *parent = NULL, char *name = NULL)
+KGGZWorkspace::KGGZWorkspace(QWidget *parent, const char *name)
 :  QWidget(parent, name)
 {
 	QHBoxLayout *hbox;

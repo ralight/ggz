@@ -70,6 +70,8 @@ class KGGZBase : public KTMainWindow
 		void slotCaption(const char *caption);
 		// Display the state in the status bar
 		void slotState(int state);
+		// Show room or outside of room message
+		void slotLocation(const char *location);
 
 	private:
 		// assign an icon to a menu item

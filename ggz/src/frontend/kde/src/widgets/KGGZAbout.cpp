@@ -42,7 +42,7 @@
 #include <qpushbutton.h>
 #include <qpainter.h>
 
-KGGZAbout::KGGZAbout(QWidget *parent = NULL, char *name = NULL)
+KGGZAbout::KGGZAbout(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QVBoxLayout *vbox;

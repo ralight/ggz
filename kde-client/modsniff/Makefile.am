@@ -9,6 +9,9 @@ ggzmodsniff_SOURCES = \
 
 ggzmodsniff_LDADD = $(LIB_GGZCORE) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI)
 
+CFLAGS = @COMPILEOPTIONS@
+CXXFLAGS = @COMPILEOPTIONS@
+
 METASOURCES = AUTO
 
 INCLUDES = $(all_includes)

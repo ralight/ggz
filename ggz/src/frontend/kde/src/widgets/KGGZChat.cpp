@@ -57,7 +57,7 @@
 char m_buftmp[2048];
 
 // Constructor
-KGGZChat::KGGZChat(QWidget *parent = NULL, char *name = NULL)
+KGGZChat::KGGZChat(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox1;
@@ -308,7 +308,7 @@ char *KGGZChat::plaintext(const char *text)
 	if(ret) free(ret);
 	ret = (char*)malloc(strlen(text) * 7); // erm... :-)
 	strcpy(ret, "");
-	for(int i = 0; i < strlen(text); i++)
+	for(int i = 0; i < (int)strlen(text); i++)
 	{
 		if(text[i] == '<')
 		{
@@ -357,14 +357,14 @@ void KGGZChat::parse(char *text)
 
         KGGZDEBUG("Parse: %s\n", text);
 	strcpy(localbuf, "");
-	for(i = 0; i < strlen(text); i++)
+	for(i = 0; i < (int)strlen(text); i++)
 	{
 		flag = 0;
 		c = text + i;
 		if(c[0] == '@')
 		{
 			k = i;
-			while((text[k] != ' ') && (k < strlen(text)))
+			while((text[k] != ' ') && (k < (int)strlen(text)))
 			{
 				if((text[k] == '.') && (k - i > 2))
 				{
@@ -388,7 +388,7 @@ void KGGZChat::parse(char *text)
 				localbuf[j] = 0;
 				strcat(localbuf, "<A HREF=\"");
 				n = 0;
-				while(i < strlen(text))
+				while(i < (int)strlen(text))
 				{
 					/*if(text[i] == '@') n = 1;
 					if(n > 0)
@@ -448,7 +448,7 @@ void KGGZChat::parse(char *text)
 			}
 			k = strlen(tmpbuf);
 			kiv = strlen(tmpbufiv);
-			while((!separator(&text[i])) && (i < strlen(text)))
+			while((!separator(&text[i])) && (i < (int)strlen(text)))
 			{
 				tmpbuf[k] = text[i];
 				tmpbufiv[kiv] = text[i];
@@ -491,7 +491,7 @@ void KGGZChat::checkLag(const char *text)
 	long ms;
 
 	if(!text) return;
-	for(i = 0; i < strlen(text); i++)
+	for(i = 0; i < (int)strlen(text); i++)
 	{
 		c = text + i;
 		if((c[0] == 'L') && (c[1] == 'A') && (c[2] == 'G') && (c[3] == 'I') && (c[4] == 'D'))

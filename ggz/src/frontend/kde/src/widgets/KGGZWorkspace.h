@@ -52,7 +52,7 @@ class KGGZWorkspace : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZWorkspace(QWidget *parent = NULL, char *name = NULL);
+		KGGZWorkspace(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZWorkspace();
 		// Returns pointer to chat widget

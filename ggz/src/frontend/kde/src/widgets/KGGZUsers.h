@@ -43,7 +43,7 @@ class KGGZUsers : public QListView
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZUsers(QWidget *parent = NULL, char *name = NULL);
+		KGGZUsers(QWidget *parent = NULL, const char *name = NULL);
 		// Dectructor
 		~KGGZUsers();
 		// Add a user to the table

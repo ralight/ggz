@@ -1,6 +1,16 @@
 #include "kmodsniff.h"
 #include "modsniff.h"
 
+#ifdef __STRICT_ANSI__
+#ifndef __USE_BSD
+#define __USE_BSD
+#include <sys/stat.h>
+#endif
+#ifndef strdup
+#define strdup(x) strcpy(((char*)malloc(strlen(x) + 1)), x)
+#endif
+#endif
+
 #include <klocale.h>
 
 #include <qlabel.h>
@@ -13,10 +23,11 @@
 #include <dirent.h>
 #include <fnmatch.h>
 #include <sys/stat.h>
+#include <string.h>
 
 #define DIRPERM (S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
 
-KModSniff::KModSniff(QWidget *parent = NULL, char *name = NULL)
+KModSniff::KModSniff(QWidget *parent, char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;
@@ -180,7 +191,7 @@ char **KModSniff::installedModules()
 		dp = opendir(moddir);
 		if(dp)
 		{
-			while(ep = readdir(dp))
+			while((ep = readdir(dp)) != 0)
 			{
 				if(!fnmatch("*.desktop", ep->d_name, FNM_NOESCAPE))
 				{

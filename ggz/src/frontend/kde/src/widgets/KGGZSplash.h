@@ -46,7 +46,7 @@ class KGGZSplash : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZSplash(QWidget *parent = NULL, char *name = NULL);
+		KGGZSplash(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZSplash();
 

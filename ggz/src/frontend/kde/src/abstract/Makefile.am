@@ -11,5 +11,7 @@ libkggzabstract_a_SOURCES = \
 noinst_HEADERS = \
 	KGGZCallback.h
 
+CXXFLAGS = @COMPILEOPTIONS@
+
 INCLUDES = $(ggzcorepp_includes) -I $(top_srcdir)/ggz-kde/src
 

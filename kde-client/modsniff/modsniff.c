@@ -1,6 +1,7 @@
 #include <ggzcore.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "modsniff.h"
 
@@ -9,7 +10,11 @@ char **list = NULL;
 int listcount = 0;
 char *modulefile = NULL;
 
-char *modsniff_moduletest(char *directory)
+/* Prototypes */
+char *modsniff_moduletest(const char *directory);
+char *modsniff_modulefile(void);
+
+char *modsniff_moduletest(const char *directory)
 {
 	char *path;
 	FILE *f;
@@ -25,7 +30,7 @@ char *modsniff_moduletest(char *directory)
 	return NULL;
 }
 
-char *modsniff_modulefile()
+char *modsniff_modulefile(void)
 {
 	char *path;
 
@@ -36,7 +41,7 @@ char *modsniff_modulefile()
 	return path;
 }
 
-int modsniff_init()
+int modsniff_init(void)
 {
 	modulefile = modsniff_modulefile();
 	if(!modulefile) return -1;
@@ -52,10 +57,9 @@ int modsniff_init()
 	return 0;
 }
 
-char **modsniff_list()
+char **modsniff_list(void)
 {
 	int ret;
-	int i;
 
 	if(handle == -1) return NULL;
 
@@ -95,7 +99,7 @@ char **modsniff_merge(char **orig)
 	return list;
 }
 
-int modsniff_end()
+int modsniff_end(void)
 {
 	int i;
 		

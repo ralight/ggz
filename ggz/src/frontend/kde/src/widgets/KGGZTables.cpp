@@ -40,7 +40,7 @@
 // Qt includes
 #include <qstring.h>
 
-KGGZTables::KGGZTables(QWidget *parent = NULL, char *name = NULL)
+KGGZTables::KGGZTables(QWidget *parent, const char *name)
 : QIconView(parent, name)
 {
 }

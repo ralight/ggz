@@ -44,12 +44,12 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 
-KGGZBrowser::KGGZBrowser(QWidget *parent = NULL, char *name = NULL)
+KGGZBrowser::KGGZBrowser(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
-	KHTMLView *view;
+	//KHTMLView *view;
 	QPushButton *home;
 
 	//setBackgroundColor(QColor(255.0, 0.0, 255.0));

@@ -51,7 +51,7 @@ class KGGZConnect : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZConnect(QWidget *parent = NULL, char *name = NULL);
+		KGGZConnect(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZConnect();
 

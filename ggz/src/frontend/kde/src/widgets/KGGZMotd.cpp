@@ -49,7 +49,7 @@
 #include <string.h>
 
 // Constructor
-KGGZMotd::KGGZMotd(QWidget *parent = NULL, char *name = NULL)
+KGGZMotd::KGGZMotd(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QPushButton *button;
@@ -79,9 +79,10 @@ KGGZMotd::~KGGZMotd()
 // add more lines
 void KGGZMotd::append(char *text)
 {
-	int i, j, count;
-	char tmp[8];
-	char *html[] = {"000000", "00ff00", "0000ff", "ffff00", "ff00ff", "0000ff", "ffff00", "00ffff", "ff00ff", "777777", "AAAAAA"};
+	unsigned int i;
+	int j, count;
+	//char tmp[8];
+	const char *html[] = {"000000", "00ff00", "0000ff", "ffff00", "ff00ff", "0000ff", "ffff00", "00ffff", "ff00ff", "777777", "AAAAAA"};
 	//char buf[1024];
 	QString buffer;
 

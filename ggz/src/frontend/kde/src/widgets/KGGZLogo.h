@@ -44,7 +44,7 @@ class KGGZLogo : public QFrame
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZLogo(QWidget *parent = NULL, char *name = NULL);
+		KGGZLogo(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZLogo();
 		// Sets the logo. On failure use alternative. On failure use fallback.

@@ -37,16 +37,22 @@
 // System includes
 #include <dirent.h>
 #include <stdlib.h>
-#include <sys/signal.h>
+#ifdef __STRICT_ANSI__
+#define __USE_POSIX
+#endif
+#include <signal.h>
 #include <string.h>
+#ifdef __STRICT_ANSI__
+#define __USE_XOPEN
+#endif
 #include <unistd.h>
 #include <stdio.h>
 
 // returns a string describing the current state
 // taken from ggz-txt
-char* KGGZCommon::state(GGZStateID stateid)
+const char* KGGZCommon::state(GGZStateID stateid)
 {
-	char* statestr;
+	const char* statestr;
 
 	switch(stateid)
 	{
@@ -96,7 +102,7 @@ char* KGGZCommon::state(GGZStateID stateid)
 // find a unix system process by the given name
 // returns pid if process already runs, 0 otherwise; and -1 on error
 // new - taken over from Paralog project (old function is now obsolete)
-int KGGZCommon::findProcess(char *process)
+int KGGZCommon::findProcess(const char *process)
 {
     DIR *d;
     struct dirent *e;
@@ -134,10 +140,10 @@ int KGGZCommon::findProcess(char *process)
 
 // launches the ggzd server
 // returns -1 on error, -2 if already running, child pid else
-int KGGZCommon::launchProcess(char* process, char* processpath)
+int KGGZCommon::launchProcess(const char* process, char* processpath)
 {
 	int result;
-	char *const ggzdarg[] = {process, NULL};
+	char *const ggzdarg[] = {(char*)process, NULL};
 	int counter;
 
 	KGGZDEBUG("Starting process %s...\n", process);
@@ -182,7 +188,7 @@ int KGGZCommon::launchProcess(char* process, char* processpath)
 // tries to kill all running ggzd processes
 // sends sigterm first, like the kill(1) command
 // returns -1 on failure, 1 on success, and 0 if only a sigkill was successful
-int KGGZCommon::killProcess(char* process)
+int KGGZCommon::killProcess(const char* process)
 {
 	pid_t pid;
 	int ret;
@@ -215,7 +221,7 @@ int KGGZCommon::killProcess(char* process)
 	return -1;
 }
 
-char* KGGZCommon::append(char* string1, char* string2)
+const char* KGGZCommon::append(const char* string1, const char* string2)
 {
 	char* tmp;
 
@@ -223,9 +229,15 @@ char* KGGZCommon::append(char* string1, char* string2)
 	strcpy(tmp, string1);
 	strcat(tmp, string2);
 
-	return tmp;
+	return (const char*)tmp;
 }
 
 void KGGZCommon::clear()
 {
 }
+
+int KGGZCommon::kggzdebugdummy(const char *x, ...)
+{
+	return 0;
+}
+

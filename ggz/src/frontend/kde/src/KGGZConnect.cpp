@@ -56,7 +56,7 @@
 #include "GGZCoreConfio.h"
 
 /* Constructor: set up a small dialog for connections; provide server profile list */
-KGGZConnect::KGGZConnect(QWidget *parent = NULL, char *name = NULL)
+KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QVBoxLayout *vbox1;
@@ -165,7 +165,7 @@ KGGZConnect::~KGGZConnect()
 void KGGZConnect::slotSaveProfile()
 {
 	GGZCoreConfio *config;
-	char *defaultserver;
+	//char *defaultserver;
 	char *current;
 
 	KGGZDEBUGF("KGGZConnect::slotSaveProfile()\n");
