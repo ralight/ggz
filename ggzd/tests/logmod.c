@@ -25,7 +25,7 @@ typedef enum {
 	GGZ_SEAT_RESV = -3,	   /**< The seat is reserved for a player. */
 	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
 	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
-} GGZdModSeat;
+} GGZSeatType;
 
 typedef enum {
 	GGZ_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
@@ -39,7 +39,7 @@ int handle_game_launch()
 {
 	int i, num;
 	char name[1024];
-	GGZdModSeat type;
+	GGZSeatType type;
 	
 	es_read_int(fd, &num);
 	printf("Receiving %d seats\n", num);

@@ -6,7 +6,7 @@
 #include "ggz.h"
 
 void print_seat(GGZSeat seat);
-char * seat_desc(GGZdModSeat type);
+char * seat_desc(GGZSeatType type);
 int seatcmp(GGZSeat seat1, GGZSeat seat2);
 int safe_strcmp(char *str1, char *str2);
 int compare_seats(GGZdMod *mod, int num, GGZSeat *seats);
@@ -175,7 +175,7 @@ void print_seat(GGZSeat seat)
 }
 
 
-char * seat_desc(GGZdModSeat type)
+char * seat_desc(GGZSeatType type)
 {
 	switch (type) {
 	case GGZ_SEAT_OPEN:

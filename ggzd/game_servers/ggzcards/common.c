@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2869 2001-12-10 23:21:45Z jdorje $
+ * $Id: common.c 2875 2001-12-11 06:29:21Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -855,7 +855,7 @@ const char *get_seat_name(seat_t s)
 		return "[null seat name]";
 }
 
-GGZdModSeat get_seat_status(seat_t s)
+GGZSeatType get_seat_status(seat_t s)
 {
 	if (game.seats[s].player >= 0)
 		return get_player_status(game.seats[s].player);

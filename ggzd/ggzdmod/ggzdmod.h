@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2817 2001-12-09 06:12:24Z jdorje $
+ * $Id: ggzdmod.h 2875 2001-12-11 06:29:21Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -188,7 +188,7 @@ typedef enum {
 	GGZ_SEAT_RESV = -3,	   /**< The seat is reserved for a player. */
 	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
 	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
-} GGZdModSeat;
+} GGZSeatType;
 
 /** @brief Table states
  *
@@ -263,7 +263,7 @@ typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent e, void *data);
  */
 typedef struct {
 	int num;		/**< Seat index; 0..(num_seats-1). */
-	GGZdModSeat type;	/**< Type of seat. */
+	GGZSeatType type;	/**< Type of seat. */
 	char *name;		/**< Name of player occupying seat. */
 	int fd;			/**< fd to communicate with seat occupant. */
 } GGZSeat;
@@ -375,7 +375,7 @@ int ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat);
  *  @return The number of seats that match seat_type.
  *  @note This could go into a wrapper library instead.
  */
-int ggzdmod_count_seats(GGZdMod * mod, GGZdModSeat seat_type);
+int ggzdmod_count_seats(GGZdMod * mod, GGZSeatType seat_type);
 
 /* 
  * Event/Data handling

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2815 2001-12-09 05:51:07Z jdorje $
+ * $Id: ggzdmod.c 2875 2001-12-11 06:29:21Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -455,7 +455,7 @@ int ggzdmod_set_seat(GGZdMod * mod, GGZSeat *seat)
    ggzdmod data at all - it could just as easily be written
    by the game, or included in a wrapper library.  But every
    game we have uses it, so it's here for now... */
-int ggzdmod_count_seats(GGZdMod *mod, GGZdModSeat seat_type)
+int ggzdmod_count_seats(GGZdMod *mod, GGZSeatType seat_type)
 {
 	int count = 0;
 #if 0 /* This form could be used as part of a wrapper library. */
