@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 5099 2002-10-29 06:12:47Z jdorje $
+ * $Id: playerinfo.c 5155 2002-11-02 23:47:53Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -36,6 +36,7 @@
 
 #include <ggzcore.h>
 
+#include "chat.h"
 #include "playerinfo.h"
 #include "support.h"
 
@@ -201,6 +202,32 @@ void player_info_create_or_raise(GGZPlayer * player)
 }
 
 
+static void chat_activate(GtkEditable *editable, gpointer data)
+{
+	GtkEntry *entry;
+	GtkLabel *handle;
+	const char *text;
+	gchar *name;
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+
+	entry = gtk_object_get_data(GTK_OBJECT(dialog), "chat");
+	handle = gtk_object_get_data(GTK_OBJECT(dialog), "handle");
+
+	text = gtk_entry_get_text(entry);
+	if (strcmp(text, "") == 0)
+		return;
+
+	gtk_label_get(handle, &name);
+	if (!name)
+		return;
+
+	ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, name, text);
+	chat_display_local(CHAT_SEND_PERSONAL, name, text);
+
+	/* Clear the entry box */
+	gtk_entry_set_text(entry, "");
+}
+
 
 GtkWidget *create_dlg_info(void)
 {
@@ -230,6 +257,9 @@ GtkWidget *create_dlg_info(void)
 	GtkWidget *highscore_hbox;
 	GtkWidget *highscore_label;
 	GtkWidget *highscore;
+	GtkWidget *chat_hbox;
+	GtkWidget *chat_label;
+	GtkWidget *chat;
 	GtkWidget *dialog_action_area1;
 	GtkWidget *button_box;
 	GtkWidget *ok_button;
@@ -483,7 +513,37 @@ GtkWidget *create_dlg_info(void)
 	gtk_label_set_line_wrap(GTK_LABEL(highscore), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(highscore), 0, 0.5);
 
+	/* Add "Private chat" label */
+	chat_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_ref(chat_hbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "chat_hbox",
+				 chat_hbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(chat_hbox);
+	gtk_box_pack_start(GTK_BOX(info_vbox), chat_hbox, TRUE, TRUE, 0);
 
+	chat_label = gtk_label_new(_("Message:"));
+	gtk_widget_ref(chat_label);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "chat_label",
+				 chat_label,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(chat_label);
+	gtk_box_pack_start(GTK_BOX(chat_hbox), chat_label, FALSE,
+			   FALSE, 0);
+	gtk_widget_set_usize(chat_label, 150, -2);
+	gtk_misc_set_alignment(GTK_MISC(chat_label), 0.02, 0);
+
+	chat = gtk_entry_new();
+	gtk_widget_ref(chat);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "chat", chat,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(chat);
+	gtk_box_pack_start(GTK_BOX(chat_hbox), chat, TRUE, TRUE, 0);
+	/* gtk_misc_set_alignment(GTK_MISC(chat), 0, 0.5); */
+	gtk_signal_connect(GTK_OBJECT(chat), "activate",
+			   GTK_SIGNAL_FUNC(chat_activate), dlg_info);
+
+	/* Make ACTION area. */
 	dialog_action_area1 = GTK_DIALOG(dlg_info)->action_area;
 	gtk_object_set_data(GTK_OBJECT(dlg_info), "dialog_action_area1",
 			    dialog_action_area1);
