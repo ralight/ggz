@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 4443 2002-09-07 20:14:31Z jdorje $
+ * $Id: ggzdmod.h 4453 2002-09-08 01:28:15Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -432,8 +432,8 @@ void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
  *  @param ggzdmod The GGZdMod object.
  *  @param num_spectators The number of spectators to set.
  *  @note This will only work for ggzd.
- *  @todo Allow the table to change the number of spectators. */
-void ggzdmod_set_num_spectators(GGZdMod * ggzdmod, int num_spectators);
+ *  @todo We should be able to drop this and just add them dynamically. n*/
+void ggzdmod_set_max_num_spectators(GGZdMod * ggzdmod, int num_spectators);
 
 /** @brief Set gamedata pointer
  *  @param ggzdmod The GGZdMod object.

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4448 2002-09-07 21:58:22Z jdorje $
+ * $Id: ggzdmod.c 4453 2002-09-08 01:28:15Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -66,7 +66,8 @@ static void call_handler(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static int get_fd_max(GGZdMod * ggzdmod);
 static fd_set get_active_fd_set(GGZdMod * ggzdmod);
 static void _ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
-static void _ggzdmod_set_num_spectators(GGZdMod * ggzdmod, int num_spectators);
+static void _ggzdmod_set_max_num_spectators(GGZdMod * ggzdmod,
+					    int num_spectators);
 static int strings_differ(char *s1, char *s2);
 static void set_state(GGZdMod * ggzdmod, GGZdModState state);
 static int handle_event(GGZdMod * ggzdmod, fd_set read_fds);
@@ -385,7 +386,8 @@ static void _ggzdmod_set_num_seats(GGZdMod *ggzdmod, int num_seats)
 }
 
 
-static void _ggzdmod_set_num_spectators(GGZdMod *ggzdmod, int num_spectators)
+static void _ggzdmod_set_max_num_spectators(GGZdMod *ggzdmod,
+					    int num_spectators)
 {
 	GGZSpectator spectator;
 	int i, old_num;
@@ -420,7 +422,7 @@ void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats)
 	_ggzdmod_set_num_seats(ggzdmod, num_seats);
 }
 
-void ggzdmod_set_num_spectators(GGZdMod * ggzdmod, int num_spectators)
+void ggzdmod_set_max_num_spectators(GGZdMod * ggzdmod, int num_spectators)
 {
 	/* Check parameters */
 	if (!CHECK_GGZDMOD(ggzdmod) || num_spectators < 0
@@ -428,7 +430,7 @@ void ggzdmod_set_num_spectators(GGZdMod * ggzdmod, int num_spectators)
 		return;		/* not very useful */
 	}
 	
-	_ggzdmod_set_num_spectators(ggzdmod, num_spectators);
+	_ggzdmod_set_max_num_spectators(ggzdmod, num_spectators);
 }
 		   
 void ggzdmod_set_module(GGZdMod * ggzdmod,
@@ -1258,7 +1260,7 @@ void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats, int num_spec
 	}
 
 	_ggzdmod_set_num_seats(ggzdmod, num_seats);
-	_ggzdmod_set_num_spectators(ggzdmod, num_spectators);
+	_ggzdmod_set_max_num_spectators(ggzdmod, num_spectators);
 }
 
 
