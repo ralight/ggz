@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5062 2002-10-27 12:46:20Z jdorje $
+ * $Id: netxml.c 5082 2002-10-28 05:08:00Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -53,6 +53,8 @@
 
 /* For convenience */
 #define XML_BUFFSIZE 8192
+
+#define ATTR ggz_xmlelement_get_attr
 
 
 /* GGZNet structure for handling the network connection to the server */
@@ -854,11 +856,10 @@ void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *server)
 	int version, chatlen;
 
 	if (server) {
-		name = ggz_xmlelement_get_attr(server, "NAME");
-		id = ggz_xmlelement_get_attr(server, "ID");
-		status = ggz_xmlelement_get_attr(server, "STATUS");
-		version = str_to_int(ggz_xmlelement_get_attr(server,
-							     "VERSION"), -1);
+		name = ATTR(server, "NAME");
+		id = ATTR(server, "ID");
+		status = ATTR(server, "STATUS");
+		version = str_to_int(ATTR(server, "VERSION"), -1);
 
 		/* FIXME: unsafe int <-> void* cast */
 		chatlen = (int)ggz_xmlelement_get_data(server);
@@ -894,9 +895,7 @@ static void _ggzcore_net_handle_options(GGZNet *net, GGZXMLElement *options)
 		/* Read the server's maximum chat length.  If none is
 		   specified, assume an unlimited (i.e. really large)
 		   length. */
-		len = str_to_int(ggz_xmlelement_get_attr(options,
-							 "CHATLEN"),
-				 60000);
+		len = str_to_int(ATTR(options, "CHATLEN"), 60000);
 
 		/* FIXME: unsafe int <-> void* cast */
 		ggz_xmlelement_set_data(server, (void*)len);
@@ -911,7 +910,7 @@ static void _ggzcore_net_handle_motd(GGZNet *net, GGZXMLElement *motd)
 	char *message, *priority;
 
 	message = ggz_xmlelement_get_text(motd);
-	priority = ggz_xmlelement_get_attr(motd, "PRIORITY");
+	priority = ATTR(motd, "PRIORITY");
 	
 	ggz_debug(GGZCORE_DBG_NET, "Motd of priority %s", priority);
 
@@ -934,9 +933,8 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 
 	if (result) {
 		
-		action = ggz_xmlelement_get_attr(result, "ACTION");
-		code = str_to_int(ggz_xmlelement_get_attr(result, "CODE"),
-				  E_OK);
+		action = ATTR(result, "ACTION");
+		code = str_to_int(ATTR(result, "CODE"), E_OK);
 		data = ggz_xmlelement_get_data(result);
 		
 		ggz_debug(GGZCORE_DBG_NET, "Result of %s was %d", action, 
@@ -1032,10 +1030,9 @@ static void _ggzcore_net_handle_list(GGZNet *net, GGZXMLElement *list_tag)
 	if (list_tag) {
 
 		/* Grab list data from tag */
-		type = ggz_xmlelement_get_attr(list_tag, "TYPE");
+		type = ATTR(list_tag, "TYPE");
 		list = ggz_xmlelement_get_data(list_tag);
-		room_num = str_to_int(ggz_xmlelement_get_attr(list_tag,
-							      "ROOM"), -1);
+		room_num = str_to_int(ATTR(list_tag, "ROOM"), -1);
 		
 		entry = ggz_list_head(list);
 
@@ -1100,7 +1097,7 @@ static void _ggzcore_net_list_insert(GGZXMLElement *list_tag, void *data)
 	ggzEntryCreate  create_func = NULL;
 	ggzEntryDestroy destroy_func = NULL;
 
-	type = ggz_xmlelement_get_attr(list_tag, "TYPE");
+	type = ATTR(list_tag, "TYPE");
 	list = ggz_xmlelement_get_data(list_tag);
 	
 	/* If list doesn't already exist, create it */
@@ -1138,8 +1135,8 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 		return;
 	
 	/* Grab update data from tag */
-	type = ggz_xmlelement_get_attr(update, "TYPE");
-	action = ggz_xmlelement_get_attr(update, "ACTION");
+	type = ATTR(update, "TYPE");
+	action = ATTR(update, "ACTION");
 
 	if (strcasecmp(type, "room") == 0) {
 		/* FIXME: implement this */
@@ -1161,7 +1158,7 @@ static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update, char 
 	GGZPlayer *player;
 	GGZRoom *room;
 
-	room_num = str_to_int(ggz_xmlelement_get_attr(update, "ROOM"), -1);
+	room_num = str_to_int(ATTR(update, "ROOM"), -1);
 
 	player = ggz_xmlelement_get_data(update);
 	room = _ggzcore_server_get_room_by_id(net->server, room_num);
@@ -1191,19 +1188,19 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *
 	GGZRoom *room;
 
 	/* Sanity check: we can't proceed without a room number */
-	if (!ggz_xmlelement_get_attr(update, "ROOM")) {
+	if (!ATTR(update, "ROOM")) {
 		room_num = -1;
 		_ggzcore_server_protocol_error(net->server, "Server didn't send room number");
 		return;
 	}
 	
-	room_num = str_to_int(ggz_xmlelement_get_attr(update, "ROOM"), -1);
+	room_num = str_to_int(ATTR(update, "ROOM"), -1);
 	room = _ggzcore_server_get_room_by_id(net->server, room_num);
 	if (!room) {
 		char msg[256];
 		snprintf(msg, sizeof(msg),
 			 "Server specified non-existent room %s",
-			 ggz_xmlelement_get_attr(update, "ROOM"));
+			 ATTR(update, "ROOM"));
 		_ggzcore_server_protocol_error(net->server, msg);
 		return;
 	}
@@ -1325,9 +1322,9 @@ static void _ggzcore_net_handle_game(GGZNet *net, GGZXMLElement *game)
 	if (game && parent) {
 		
 		/* Get game data from tag */
-		id = str_to_int(ggz_xmlelement_get_attr(game, "ID"), -1);
-		name = ggz_xmlelement_get_attr(game, "NAME");
-		version = ggz_xmlelement_get_attr(game, "VERSION");
+		id = str_to_int(ATTR(game, "ID"), -1);
+		name = ATTR(game, "NAME");
+		version = ATTR(game, "VERSION");
 		data = ggz_xmlelement_get_data(game);
 
 		if (data) {
@@ -1452,8 +1449,10 @@ static void _ggzcore_net_handle_protocol(GGZNet *net, GGZXMLElement *protocol)
 
 	if (protocol && parent) {
 		_ggzcore_net_game_set_protocol(parent,
-						    ggz_strdup(ggz_xmlelement_get_attr(protocol, "ENGINE")),
-						    ggz_strdup(ggz_xmlelement_get_attr(protocol, "VERSION")));
+					       ggz_strdup(ATTR(protocol,
+							       "ENGINE")),
+					       ggz_strdup(ATTR(protocol,
+							       "VERSION")));
 	}
 }
 
@@ -1467,9 +1466,10 @@ static void _ggzcore_net_handle_allow(GGZNet *net, GGZXMLElement *allow)
 	parent = ggz_stack_top(net->stack);
 
 	if (allow && parent) {
-		GGZNumberList players = ggz_numberlist_read(ggz_xmlelement_get_attr(allow, "PLAYERS"));
-		GGZNumberList bots = ggz_numberlist_read(ggz_xmlelement_get_attr(allow, "BOTS"));
-		int spectators = str_to_bool(ggz_xmlelement_get_attr(allow, "SPECTATORS"), 0);
+		GGZNumberList players = ggz_numberlist_read(ATTR(allow,
+								 "PLAYERS"));
+		GGZNumberList bots = ggz_numberlist_read(ATTR(allow, "BOTS"));
+		int spectators = str_to_bool(ATTR(allow, "SPECTATORS"), 0);
 
 		_ggzcore_net_game_set_allowed(parent,
 					      players, bots, spectators);
@@ -1487,8 +1487,10 @@ static void _ggzcore_net_handle_about(GGZNet *net, GGZXMLElement *about)
 
 	if (about && parent) {
 		_ggzcore_net_game_set_info(parent, 
-						ggz_strdup(ggz_xmlelement_get_attr(about, "AUTHOR")),
-						ggz_strdup(ggz_xmlelement_get_attr(about, "URL")));
+						ggz_strdup(ATTR(about,
+								"AUTHOR")),
+						ggz_strdup(ATTR(about,
+								"URL")));
 	}
 }
 
@@ -1532,9 +1534,9 @@ static void _ggzcore_net_handle_room(GGZNet *net, GGZXMLElement *room)
 	if (room && parent) {
 
 		/* Grab data from tag */
-		id = str_to_int(ggz_xmlelement_get_attr(room, "ID"), -1);
-		name = ggz_xmlelement_get_attr(room, "NAME");
-		game = str_to_int(ggz_xmlelement_get_attr(room, "GAME"), -1);
+		id = str_to_int(ATTR(room, "ID"), -1);
+		name = ATTR(room, "NAME");
+		game = str_to_int(ATTR(room, "GAME"), -1);
 		desc = ggz_xmlelement_get_data(room);
 
 		/* Set up GGZRoom object */
@@ -1574,10 +1576,10 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *player)
 	room = ggzcore_server_get_cur_room(net->server);
 
 	/* Grab player data from tag */
-	str_type = ggz_xmlelement_get_attr(player, "TYPE");
-	name = ggz_xmlelement_get_attr(player, "ID");
-	table = str_to_int(ggz_xmlelement_get_attr(player, "TABLE"), -1);
-	lag = str_to_int(ggz_xmlelement_get_attr(player, "LAG"), 0);
+	str_type = ATTR(player, "TYPE");
+	name = ATTR(player, "ID");
+	table = str_to_int(ATTR(player, "TABLE"), -1);
+	lag = str_to_int(ATTR(player, "LAG"), 0);
 
 	/* Set player's type */
 	if (!str_type || strcasecmp(str_type, "guest") == 0)
@@ -1594,12 +1596,9 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *player)
 	_ggzcore_player_init(ggz_player,  name, room, table, type, lag);
 
 	/* FIXME: should these be initialized through an accessor function? */
-	ggz_player->wins = str_to_int(ggz_xmlelement_get_attr(player,
-							      "WINS"), -1);
-	ggz_player->ties = str_to_int(ggz_xmlelement_get_attr(player,
-							      "TIES"), -1);
-	ggz_player->losses = str_to_int(ggz_xmlelement_get_attr(player,
-							    "LOSSES"), -1);
+	ggz_player->wins = str_to_int(ATTR(player, "WINS"), -1);
+	ggz_player->ties = str_to_int(ATTR(player, "TIES"), -1);
+	ggz_player->losses = str_to_int(ATTR(player, "LOSSES"), -1);
 
 	parent_tag = ggz_xmlelement_get_tag(parent);
 
@@ -1632,14 +1631,11 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 
 		/* Grab table data from tag */
 
-		id = str_to_int(ggz_xmlelement_get_attr(table, "ID"), -1);
-		game = str_to_int(ggz_xmlelement_get_attr(table, "GAME"), -1);
-		status = str_to_int(ggz_xmlelement_get_attr(table,
-							    "STATUS"), 0);
-		num_seats = str_to_int(ggz_xmlelement_get_attr(table,
-							       "SEATS"), 0);
-		num_spectators = str_to_int(ggz_xmlelement_get_attr(table,
-						"SPECTATORS"), -1);
+		id = str_to_int(ATTR(table, "ID"), -1);
+		game = str_to_int(ATTR(table, "GAME"), -1);
+		status = str_to_int(ATTR(table, "STATUS"), 0);
+		num_seats = str_to_int(ATTR(table, "SEATS"), 0);
+		num_spectators = str_to_int(ATTR(table, "SPECTATORS"), -1);
 		data = ggz_xmlelement_get_data(table);
 		if (data) {
 			desc = data->desc;
@@ -1769,10 +1765,8 @@ static void _ggzcore_net_handle_seat(GGZNet *net, GGZXMLElement *seat)
 	if (seat && parent) {
 
 		/* Get seat information out of tag */
-		seat_obj.index = str_to_int(ggz_xmlelement_get_attr(seat,
-								    "NUM"),
-					    -1);
-		seat_obj.type = ggz_string_to_seattype(ggz_xmlelement_get_attr(seat, "TYPE"));
+		seat_obj.index = str_to_int(ATTR(seat, "NUM"), -1);
+		seat_obj.type = ggz_string_to_seattype(ATTR(seat, "TYPE"));
 		seat_obj.name = ggz_xmlelement_get_text(seat);
 		_ggzcore_net_table_add_seat(parent, &seat_obj, 0);
 	}
@@ -1791,9 +1785,7 @@ static void _ggzcore_net_handle_spectator_seat(GGZNet *net,
 	if (seat && parent) {
 
 		/* Get seat information out of tag */
-		seat_obj.index = str_to_int(ggz_xmlelement_get_attr(seat,
-								    "NUM"),
-					    -1);
+		seat_obj.index = str_to_int(ATTR(seat, "NUM"), -1);
 		seat_obj.name = ggz_xmlelement_get_text(seat);
 		_ggzcore_net_table_add_seat(parent, &seat_obj, 1);
 	}
@@ -1832,9 +1824,8 @@ static void _ggzcore_net_handle_leave(GGZNet *net, GGZXMLElement *element)
 	if (!element) return;
 
 	room = _ggzcore_server_get_cur_room(net->server);
-	reason = ggz_string_to_leavetype(ggz_xmlelement_get_attr(element,
-								 "REASON"));
-	player = ggz_xmlelement_get_attr(element, "PLAYER");
+	reason = ggz_string_to_leavetype(ATTR(element, "REASON"));
+	player = ATTR(element, "PLAYER");
 
 	_ggzcore_room_set_table_leave(room, reason, player);
 }
@@ -1848,7 +1839,7 @@ static void _ggzcore_net_handle_join(GGZNet *net, GGZXMLElement *element)
 	if (!element) return;
 
 	room = _ggzcore_server_get_cur_room(net->server);
-	table = str_to_int(ggz_xmlelement_get_attr(element, "TABLE"), -1);
+	table = str_to_int(ATTR(element, "TABLE"), -1);
 
 	_ggzcore_room_set_table_join(room, table);
 }
@@ -1863,8 +1854,8 @@ static void _ggzcore_net_handle_chat(GGZNet *net, GGZXMLElement *chat)
 		GGZChatType type;
 
 		/* Grab chat data from tag */
-		type_str = ggz_xmlelement_get_attr(chat, "TYPE");
-		from = ggz_xmlelement_get_attr(chat, "FROM");
+		type_str = ATTR(chat, "TYPE");
+		from = ATTR(chat, "FROM");
 		msg = ggz_xmlelement_get_text(chat);
 
 		ggz_debug(GGZCORE_DBG_NET, "%s message from %s: '%s'",
