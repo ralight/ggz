@@ -1,4 +1,4 @@
-# $Id: ggzcards-suaro.dsc 4988 2002-10-22 08:23:04Z jdorje $
+# $Id: ggzcards-suaro.dsc 5066 2002-10-27 12:53:20Z jdorje $
 
 [GameInfo]
 Author = Jason Short
@@ -20,3 +20,6 @@ BotsAllowed = 1
 PlayersAllowed = 2
 KillWhenEmpty = 0
 AllowSpectators = 1
+
+[Statistics]
+Records = 1

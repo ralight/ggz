@@ -1,4 +1,4 @@
-# $Id: ggzcards.dsc 4988 2002-10-22 08:23:04Z jdorje $
+# $Id: ggzcards.dsc 5066 2002-10-27 12:53:20Z jdorje $
 [GameInfo]
 Author = Jason Short, Rich Gade
 Description = GGZ Cards game module
@@ -19,3 +19,6 @@ BotsAllowed = 1..5
 PlayersAllowed = 2..6
 KillWhenEmpty = 0
 AllowSpectators = 1
+
+[Statistics]
+Records = 1

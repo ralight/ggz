@@ -1,4 +1,4 @@
-# $Id: ggzcards-hearts.dsc 4988 2002-10-22 08:23:04Z jdorje $
+# $Id: ggzcards-hearts.dsc 5066 2002-10-27 12:53:20Z jdorje $
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Hearts
@@ -19,3 +19,6 @@ BotsAllowed = 1..5
 PlayersAllowed = 3..6
 KillWhenEmpty = 0
 AllowSpectators = 1
+
+[Statistics]
+Records = 1
