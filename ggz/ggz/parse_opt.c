@@ -1,7 +1,7 @@
 /*
  * File: parse_opt.c
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Client
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
  *
@@ -28,16 +28,17 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 
-#include "options.h"
+#include "datatypes.h"
 
-extern Options opt;
+extern struct ConnectInfo connection;
 
 static const struct poptOption args[] = {
-  {"file", 'f', POPT_ARG_STRING, &opt.local_conf, 0, "Configuration file", "FILE"},
-  {"log",  'l', POPT_ARG_INT, &opt.log_level,  0, "Logging level", "LEVEL"},
-  {"server", 's', POPT_ARG_STRING, &opt.server,  0, "GGZ server name", "PORT"},
-  {"port", 'p', POPT_ARG_INT, &opt.port,  0, "GGZ server port", "PORT"},  
-  {"server", 'n', POPT_ARG_STRING, &opt.user_name,  0, "Player name", "PORT"},
+  {"server", 's', POPT_ARG_STRING, &connection.server,  0, "GGZ server name", 
+   "SERVER"},
+  {"port", 'p', POPT_ARG_INT, &connection.port,  0, "GGZ server port", 
+   "PORT"},  
+  {"name", 'n', POPT_ARG_STRING, &connection.username,  0, "Player name", 
+   "PORT"},
   {"version",'V', POPT_ARG_NONE,        NULL, 1},
   POPT_AUTOHELP
   {NULL, '\0', 0, NULL, 0} /* end the list */

@@ -39,12 +39,12 @@
 #include "client.h"
 #include "easysock.h"
 #include "protocols.h"
-#include "options.h"
 #include "err_func.h"
-
+#include "datatypes.h"
 
 /* Global state of game variable */
-extern Options opt;
+extern struct ConnectInfo connection;
+extern struct Game game;
 extern GtkWidget* detail_window;
 extern GtkWidget* main_win;
 static struct GameTypes game_types;
@@ -88,10 +88,10 @@ char* user_msg[18] = { "MSG_SERVER_ID",
  */
 int connect_to_server(void) 
 {
-	if (FAIL(opt.sock = es_make_socket(ES_CLIENT, opt.port, opt.server)))
+	if (FAIL(connection.sock = es_make_socket(ES_CLIENT, connection.port, connection.server)))
 		return -1;
 	
-	sock_handle = gdk_input_add_full(opt.sock, GDK_INPUT_READ, 
+	sock_handle = gdk_input_add_full(connection.sock, GDK_INPUT_READ, 
 					 handle_server_fd, NULL, NULL);
 	
 	return 0;
@@ -132,7 +132,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
   case MSG_SERVER_ID:
 	  CheckReadString( source, &message );
 	  connect_msg("[MSG_SERVER_ID] %s\n", message);
-	  switch (opt.login_type) {
+	  switch (connection.login_type) {
 	  case 0: /*Normal login */
 	  case 2: /*First time login */
 	  case 1: /*Anonymous login */
@@ -159,7 +159,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 		  Disconnect(NULL, NULL);
 		  return;
 	  }
-	  opt.playing = 1;
+	  connection.playing = 1;
 	  break;
 	  
   case RSP_JOIN_GAME:
@@ -169,7 +169,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 		  Disconnect(NULL, NULL);
 		  return;
 	  }
-	  opt.playing = 1;
+	  connection.playing = 1;
 	  break;
 	  
   case RSP_LOGOUT:
@@ -257,11 +257,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  es_read_int(source, &size);
 	  connect_msg("[RSP_GAME] %d bytes\n", size);
 	  es_readn(source, buf, size);
-	  status = es_writen(opt.game_fd, buf, size);
+	  status = es_writen(game.fd, buf, size);
 	  if (status <= 0) { /* Game over */
 		  dbg_msg("Game is over");
-		  opt.playing = 0;
-		  close(opt.game_fd);
+		  connection.playing = 0;
+		  close(game.fd);
 	  }
 	  break;
 
@@ -285,7 +285,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
   case RSP_LOGIN:
 	  read(source, &byte, 1);
 	  connect_msg("[RSP_LOGIN] %d\n", byte);
-	  CheckWriteInt(opt.sock, REQ_USER_LIST);  
+	  CheckWriteInt(connection.sock, REQ_USER_LIST);  
 	  break;
   case RSP_MOTD:
 
@@ -375,8 +375,8 @@ void add_table_list( gint TableNum, TableInfo Table) {
 
 int anon_login( void ) {
   
-  CheckWriteInt(opt.sock, REQ_ANON_LOGIN);
-  CheckWriteString(opt.sock, opt.user_name);
+  CheckWriteInt(connection.sock, REQ_ANON_LOGIN);
+  CheckWriteString(connection.sock, connection.username);
 
   return 0;
 }
@@ -385,11 +385,11 @@ int anon_login( void ) {
 /* Complete sync with server */
 static void server_sync()
 {
-	es_write_int(opt.sock, REQ_USER_LIST);  
-	es_write_int(opt.sock, REQ_GAME_TYPES);  
-	es_write_char(opt.sock, 1);  
-	es_write_int(opt.sock, REQ_TABLE_LIST);  
-	es_write_int(opt.sock, -1);  
+	es_write_int(connection.sock, REQ_USER_LIST);  
+	es_write_int(connection.sock, REQ_GAME_TYPES);  
+	es_write_char(connection.sock, 1);  
+	es_write_int(connection.sock, REQ_TABLE_LIST);  
+	es_write_int(connection.sock, -1);  
 }
 
 
@@ -405,3 +405,4 @@ static void display_chat(char* name, char* msg)
 	gtk_text_insert( GTK_TEXT(tmp), NULL, NULL, NULL, buf, -1 );
 	g_free( buf );
 }
+

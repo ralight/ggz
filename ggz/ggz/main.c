@@ -31,11 +31,12 @@
 #include "client.h"
 #include "interface.h"
 #include "support.h"
-#include "options.h"
+#include "datatypes.h"
 #include "parse_opt.h"
 
-
-Options opt;
+/* Main global data structures */
+struct ConnectInfo connection;
+struct Game game;
 GtkWidget *main_win;
 GtkWidget *dlg_login;
 
@@ -43,7 +44,7 @@ int main (int argc, char *argv[])
 {
   parse_args(argc, argv);
 
-  gtk_init (&argc, &argv);
+  gtk_init(&argc, &argv);
 
   main_win = create_main_win();
   gtk_widget_show(main_win);

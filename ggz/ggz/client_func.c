@@ -45,12 +45,12 @@
 #include "client.h"
 #include "easysock.h"
 #include "dlg_error.h"
-#include "options.h"
+#include "datatypes.h"
 
 #define basename(path) (strrchr(path,'/')==NULL) ? path : strrchr(path, '/')+1
 
 /* Global state of game variable */
-extern Options opt;
+extern struct ConnectInfo connection;
 
 
 int CheckReadInt(int msgsock, int *message)
@@ -132,7 +132,7 @@ int CheckWriteString(int msgsock, char *message)
 
 void NetClose(void)
 {
-	close(opt.sock);
+	close(connection.sock);
 }
 
 

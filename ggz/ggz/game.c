@@ -36,13 +36,15 @@
 
 #include "game.h"
 #include "dlg_error.h"
-#include "options.h"
+#include "datatypes.h"
 #include "client.h"
 #include "protocols.h"
 #include "err_func.h"
 
 
-extern Options opt;
+/* Global data structures */
+extern struct ConnectInfo connection;
+extern struct Game game;
 
 static guint game_handle;
 
@@ -77,8 +79,8 @@ void launch_game(int type, char launch)
 	else {
 		/* Close the remote ends of the socket pairs*/
 		close(fd[0]);
-		opt.game_pid = pid;
-		opt.game_fd = fd[1];
+		game.pid = pid;
+		game.fd = fd[1];
 		if (launch)
 			callback = handle_options;
 		else 
@@ -122,13 +124,13 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	es_read_char(source, &ai);
 	
 	/* Send launch game request to server */
-	CheckWriteInt(opt.sock, REQ_LAUNCH_GAME);
-	CheckWriteInt(opt.sock, 0); /* Game type index */
-	CheckWriteInt(opt.sock, 4); /* Number of seats */
-	es_write_char(opt.sock, ai);    /* AI players */
-	CheckWriteInt(opt.sock, 0); /* Number of reservations */
-	CheckWriteInt(opt.sock, size);
-	es_writen(opt.sock, options, size);
+	CheckWriteInt(connection.sock, REQ_LAUNCH_GAME);
+	CheckWriteInt(connection.sock, 0); /* Game type index */
+	CheckWriteInt(connection.sock, 4); /* Number of seats */
+	es_write_char(connection.sock, ai);    /* AI players */
+	CheckWriteInt(connection.sock, 0); /* Number of reservations */
+	CheckWriteInt(connection.sock, size);
+	es_writen(connection.sock, options, size);
 	free(options);
 
 	gdk_input_remove(game_handle);
@@ -146,13 +148,13 @@ static void handle_game(gpointer data, gint source, GdkInputCondition cond)
 
 	size = read(source, buf, 4096);
 	dbg_msg("Client sent %d bytes", size);
-	CheckWriteInt(opt.sock, REQ_GAME);
-	CheckWriteInt(opt.sock, size);
-	status = es_writen(opt.sock, buf, size);
+	CheckWriteInt(connection.sock, REQ_GAME);
+	CheckWriteInt(connection.sock, size);
+	status = es_writen(connection.sock, buf, size);
 	
 	if (status <= 0) { /* Game over */
 		dbg_msg("Game is over (msg from client)");
-		opt.playing = 0;
+		connection.playing = FALSE;
 		close(source);
 	}
 }

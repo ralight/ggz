@@ -1,9 +1,9 @@
 /*
  * File: datatypes.h
  * Author: Brent Hendricks
- * Project: NetGames
- * Date: 10/11/99
- * Desc: Datatypes used by server
+ * Project: GGZ client
+ * Date: 2/19/00
+ * Desc: Datatypes used by client
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -22,11 +22,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef _GGZ_TYPES
+#define _GGZ_TYPES
 
-#ifndef _NG_TYPES
-#define _NG_TYPES
+#include <stdlib.h>
 
 /* Server limits */
+/* FIXME: Which of these do we really need ?*/
 #define MAX_USER_NAME_LEN 8
 #define MAX_GAME_NAME_LEN 16
 #define MAX_GAME_VER_LEN  8
@@ -37,7 +39,6 @@
 #define MAX_GAME_TYPES 5
 #define MAX_TABLES  50
 #define MAX_USERS 500
-
 
 /* Defines for allowable players */
 #define PLAY_ALLOW_ZERO    0
@@ -61,38 +62,35 @@
 #define COMP_ALLOW_SEVEN   (1 << 6)
 #define COMP_ALLOW_EIGHT   (1 << 7)
 
-/* Datatypes for server options*/
-typedef struct {
 
-	/* Options */
-	char* local_conf;
-	int log_level;
-	char* log_file;
-	char *user_name;
-	char *server;
-	int port;
-	int login_type;
+/* Login types */
+#define GGZ_LOGIN      0
+#define GGZ_LOGIN_ANON 1
+#define GGZ_LOGIN_NEW  2
 
-
-	char *password;
-	int sock;	
-	int game_type;
-	int game_pid;
-	int game_fd;
-	int playerId;
-	char connected;
-	char playing;
-
-	char remove_users;
-	int user_inact_time;
-	char clear_stats;
-	int stat_clr_time;
-} Options;
+/* Info about a connection */
+struct ConnectInfo {
+	char* server;
+	unsigned int port;
+	char* username;
+	char* password;
+	unsigned char login_type;
+	int sock;
+	unsigned char connected;
+	unsigned char playing;
+};
 
 
+/* Info about the game we're playing */
+struct Game {
+	pid_t pid;
+	unsigned int type;
+	int fd;
+};
+
+	
 /* Init function type */
 typedef void (*GameLaunchFunc) (void);
-
 
 /* Info about a particular type of game*/
 typedef struct {
@@ -158,11 +156,5 @@ struct Users {
 };
 
 
-#define NG_UID_NONE -1       /* Fixed invalid UID value */
-#define NG_UID_ANON -2       /* UID for all anonymous players */
-
-#define NG_TYPE_ALL  -1
-#define NG_TYPE_RES  -2
-#define NG_TYPE_OPEN -3
-
 #endif
+

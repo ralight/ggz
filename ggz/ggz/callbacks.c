@@ -37,7 +37,7 @@
 /*#include <gtk_dlg_options.h>*/
 #include "dlg_error.h"
 #include "protocols.h"
-#include "options.h"
+#include "datatypes.h"
 #include "game.h"
 #include "callbacks.h"
 #include "interface.h"
@@ -46,7 +46,7 @@
 
 
 GtkWidget* detail_window = NULL;
-extern Options opt;
+extern struct ConnectInfo connection;
 
 void
 InputOptions                           (GtkButton       *button,
@@ -56,28 +56,28 @@ InputOptions                           (GtkButton       *button,
   GtkWidget* tmp;
 
   tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(user_data),"name_entry"));
-  opt.user_name = g_strdup(gtk_entry_get_text( GTK_ENTRY(tmp)));
+  connection.username = g_strdup(gtk_entry_get_text( GTK_ENTRY(tmp)));
 
   tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(user_data),"pass_entry"));
-  opt.password = g_strdup(gtk_entry_get_text( GTK_ENTRY(tmp)));
+  connection.password = g_strdup(gtk_entry_get_text( GTK_ENTRY(tmp)));
 
   tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(user_data),"host_entry"));
-  opt.server = g_strdup( gtk_entry_get_text( GTK_ENTRY(tmp) ) );
+  connection.server = g_strdup( gtk_entry_get_text( GTK_ENTRY(tmp) ) );
 
   tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(user_data),"port_entry"));
-  opt.port = atoi( gtk_entry_get_text( GTK_ENTRY(tmp) ) );
+  connection.port = atoi( gtk_entry_get_text( GTK_ENTRY(tmp) ) );
   
   tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(user_data),"normal_radio"));
   if( GTK_TOGGLE_BUTTON(tmp)->active )
-    opt.login_type = 0;
+    connection.login_type = GGZ_LOGIN;
 
   tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(user_data),"anon_radio"));
   if( GTK_TOGGLE_BUTTON(tmp)->active ) 
-    opt.login_type = 1;
+    connection.login_type = GGZ_LOGIN_ANON;
 
   tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(user_data),"first_radio"));
   if( GTK_TOGGLE_BUTTON(tmp)->active ) 
-    opt.login_type = 2;
+    connection.login_type = GGZ_LOGIN_NEW;
   
   
 }
@@ -87,7 +87,7 @@ StartSession                           (GtkButton       *button,
                                         gpointer         user_data)
 {
 
-	if (opt.connected) {
+	if (connection.connected) {
 		DisplayWarning("Already Connected.");
 		return;
 	}
@@ -100,7 +100,7 @@ StartSession                           (GtkButton       *button,
 	}
 
 	/* Close connect dialog if we were successful*/
-	opt.connected = 1;
+	connection.connected = TRUE;
 	gtk_widget_destroy(GTK_WIDGET(user_data));
 	/*FIXME: Other session starting things ? */
 }
@@ -132,8 +132,8 @@ join_game                              (GtkButton       *button,
 
 	/* FIXME: Don't hardcode table numnber!*/
 	dbg_msg("joining game");
-	CheckWriteInt(opt.sock, REQ_JOIN_GAME);
-	CheckWriteInt(opt.sock, 0);
+	CheckWriteInt(connection.sock, REQ_JOIN_GAME);
+	CheckWriteInt(connection.sock, 0);
 	launch_game(0, 0);
 }
 
@@ -144,7 +144,7 @@ get_game_options                       (GtkButton       *button,
 {
 	int type = 0;	/* FIXME: Input type of game to launch */
 	
-	if (!opt.connected) 
+	if (!connection.connected) 
 		DisplayWarning("Not connected!");
 	else {
 		launch_game(type, 1);
@@ -157,7 +157,7 @@ logout                                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	dbg_msg("Logging out");
-	CheckWriteInt(opt.sock, REQ_LOGOUT);
+	CheckWriteInt(connection.sock, REQ_LOGOUT);
 }
 
 
@@ -167,23 +167,23 @@ get_types                              (GtkMenuItem     *menuitem,
 {
   char verbose = 1;
   
-  CheckWriteInt(opt.sock, REQ_GAME_TYPES);
-  write(opt.sock, &verbose, 1);
+  CheckWriteInt(connection.sock, REQ_GAME_TYPES);
+  write(connection.sock, &verbose, 1);
 }
 
 void
 get_players                            (GtkMenuItem     *menuitem,
                                         gpointer         user_data) 
 {
-  CheckWriteInt(opt.sock, REQ_USER_LIST);
+  CheckWriteInt(connection.sock, REQ_USER_LIST);
 }
 
 void
 get_tables                             (GtkMenuItem     *menuitem,
                                         gpointer         user_data) 
 {
-  CheckWriteInt(opt.sock, REQ_TABLE_LIST);
-  CheckWriteInt(opt.sock, -1);
+  CheckWriteInt(connection.sock, REQ_TABLE_LIST);
+  CheckWriteInt(connection.sock, -1);
 }
 
 
@@ -196,20 +196,20 @@ fill_defaults                          (GtkWidget       *win,
 	GtkWidget* tmp;
 	char port[5];
 	
-	if (opt.user_name) {
+	if (connection.username) {
 		tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(win), 
 						     "name_entry"));
-		gtk_entry_set_text(GTK_ENTRY(tmp), opt.user_name);
+		gtk_entry_set_text(GTK_ENTRY(tmp), connection.username);
 	}
 	
-	if (opt.server) {
+	if (connection.server) {
 		tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(win), 
 						     "host_entry"));
-		gtk_entry_set_text(GTK_ENTRY(tmp), opt.server);
+		gtk_entry_set_text(GTK_ENTRY(tmp), connection.server);
 	}
 	
 	tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(win), "port_entry"));
-	snprintf(port, 5, "%d", opt.port);
+	snprintf(port, 5, "%d", connection.port);
 	gtk_entry_set_text(GTK_ENTRY(tmp), port );
 }
 
@@ -220,9 +220,9 @@ input_chat_msg                         (GtkWidget        *widget,
 	
 	/* FIXME: Check to see if connected */
 	if (strcmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "") != 0
-	    && CheckWriteInt( opt.sock, REQ_CHAT ) == NET_OK)
+	    && CheckWriteInt( connection.sock, REQ_CHAT ) == NET_OK)
 		
-		CheckWriteString(opt.sock, 
+		CheckWriteString(connection.sock, 
 				 gtk_entry_get_text(GTK_ENTRY(user_data)));
 	
 	gtk_entry_set_text(GTK_ENTRY(user_data), "");
