@@ -109,7 +109,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 
 	KGGZDEBUG("Initializing GGZCore...\n");
 	m_core = new GGZCore();
-	result = m_core->init(GGZCore::parser | GGZCore::modules, "/tmp/kggz.debug", GGZCore::all);
+	result = m_core->init(GGZCore::parser | GGZCore::modules, /*"/tmp/kggz.debug"*/NULL, GGZCore::all); // make a debug log configurable!
 	if(result == -1)
 	{
 		KGGZDEBUG("Critical: Could not initialize ggzcore!\n");
@@ -223,6 +223,8 @@ void KGGZ::slotConnectedStart()
 
 	kggzserver = new GGZCoreServer();
 	attachServerCallbacks();
+/* FIXME: ggzcore++ */
+ggzcore_server_log_session(kggzserver->server(), "/tmp/kggz-xml.log");
 
 	kggzserver->setHost(m_save_host, m_save_port);
 	KGGZDEBUG("connect now!\n");
@@ -774,7 +776,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_ADMIN);
 			if((m_save_loginmode == GGZCoreServer::firsttime) && (m_motd)) m_motd->raise();
-			kggzserver->listRooms(-1, 1);
+			kggzserver->listRooms(-1, 0);
 			if(kggzserver->listGames(1) != 0) // NEVER use 0 here, it will hang the client !!!
 			{
 				KGGZDEBUG("HUH? Don't give me game type list?!\n");
