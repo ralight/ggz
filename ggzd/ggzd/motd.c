@@ -127,14 +127,14 @@ int motd_send_motd(int sock)
 	int i;
 	char pline[1024];
 
-	if(FAIL(es_write_int(sock, MSG_MOTD)) ||
-	   FAIL(es_write_int(sock, motd_info.motd_lines)))
+	if(es_write_int(sock, MSG_MOTD) < 0 ||
+	   es_write_int(sock, motd_info.motd_lines) < 0)
 		return -1;
 	
 	for(i=0; i<motd_info.motd_lines; i++) {
 		motd_parse_motd_line(motd_info.motd_text[i],
 					 pline, sizeof(pline));
-		if(FAIL(es_write_string(sock, pline)))
+		if(es_write_string(sock, pline) < 0)
 			return -1;
 	}
 

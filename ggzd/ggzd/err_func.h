@@ -32,11 +32,6 @@
 #define CONNECTION_INFO	2
 
 /*
- * Quick macro for determining operation failures
- */
-#define FAIL(x) ((x) < 0)
-
-/*
  * Error printing functions based on those found in W. Richard Stevens book: 
  * "Advanced Programming in the Unix Environment"
  * 

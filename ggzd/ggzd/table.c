@@ -107,7 +107,7 @@ int table_handler_launch(int t_index)
 	int status;
 	
 	/* Temporary storage to pass fd */
-	if (FAIL(index_ptr = malloc(sizeof(int))))
+	if ( (index_ptr = malloc(sizeof(int))) == NULL)
 		err_sys_exit("malloc error");
 	*index_ptr = t_index;
 	status = pthread_create(&thread, NULL, table_new, index_ptr);
@@ -257,15 +257,15 @@ static int table_send_opt(int t_index)
 	pthread_rwlock_unlock(&game_types.lock);
 
 	/* Pass options struct and other seat info */
-	if (FAIL(es_write_int(fd, REQ_GAME_LAUNCH)) 
-	    || FAIL(es_writen(fd, tables.info[t_index].options, size)) 
-	    || FAIL(es_write_int(fd, seats_num(tables.info[t_index]))))
+	if (es_write_int(fd, REQ_GAME_LAUNCH) < 0
+	    || es_writen(fd, tables.info[t_index].options, size) < 0
+	    || es_write_int(fd, seats_num(tables.info[t_index])) < 0)
 		return (-1);
 
 	/* Send seat assignments, names, and fd's */
 	for (i = 0; i < seats_num(tables.info[t_index]); i++) {
 
-		if (FAIL(es_write_int(fd, tables.info[t_index].seats[i])))
+		if (es_write_int(fd, tables.info[t_index].seats[i]) < 0)
 			return -1;
 
 		switch(tables.info[t_index].seats[i]) {
@@ -277,7 +277,7 @@ static int table_send_opt(int t_index)
 			uid = tables.info[t_index].reserve[i];
 				/* Look up player name by uid */
 			strcpy(name,"reserved");
-			if (FAIL(es_write_string(fd, name)))
+			if (es_write_string(fd, name) < 0)
 				return (-1);
 			break;
 		default: /* must be a player index */
@@ -285,15 +285,16 @@ static int table_send_opt(int t_index)
 			pthread_rwlock_rdlock(&players.lock);
 			strcpy(name, players.info[index].name);
 			pthread_rwlock_unlock(&players.lock);
-			if (FAIL(es_write_string(fd, name))
-			    || FAIL(es_write_int(fd, tables.info[t_index].player_fd[i])))
+			if (es_write_string(fd, name) < 0
+			    || es_write_int(fd, tables.info[t_index].player_fd[i]) < 0)
 				return (-1);
 			
 		}
 	}
 
 	/* Make sure game server says everything is OK */
-	if (FAIL(es_read_int(fd, &op)) || FAIL(es_read_char(fd, &status)))
+	if (es_read_int(fd, &op) < 0 
+	    || es_read_char(fd, &status) < 0)
 		return (-1);
 
 	if (op != RSP_GAME_LAUNCH)
@@ -312,10 +313,10 @@ static void table_loop(int t_index)
 	fd = tables.info[t_index].fd_to_game;
 
 	for (;;) {
-		if (FAIL(status = es_read_int(fd, (int *) &request)))
+		if ( (status = es_read_int(fd, (int *) &request)) < 0)
 			break;
 
-		if (FAIL(status = table_handle(request, t_index, fd)))
+		if ( (status = table_handle(request, t_index, fd)) < 0)
 			break;
 	}
 }
@@ -368,14 +369,15 @@ static int table_game_over(int index, int fd)
 	dbg_msg("Handling game-over message from table %d", index);
 
 	/* Read number of statistics */
-	if (FAIL(es_read_int(fd, &num)))
+	if (es_read_int(fd, &num) < 0)
 		return (-1);
 
 
 	for (i = 0; i < num; i++) {
-		if (FAIL(es_read_int(fd, &p_index)) ||
-		    FAIL(es_read_int(fd, &won)) ||
-		    FAIL(es_read_int(fd, &lost))) return (-1);
+		if (es_read_int(fd, &p_index) < 0
+		    || es_read_int(fd, &won) < 0 
+		    || es_read_int(fd, &lost) < 0)
+			return (-1);
 
 		/* FIXME: Do something with these statistics */
 

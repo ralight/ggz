@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
 	
 	/* Start accepting connections */
-	if (FAIL(listen(main_sock, MAX_USERS)))
+	if (listen(main_sock, MAX_USERS) < 0)
 		err_sys_exit("Error listening to socket");
 
 	log_msg(NOTICE,
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 	/* Main loop */
 	for (;;) {
 		addrlen = sizeof(addr);
-		if (FAIL(new_sock = accept(main_sock, &addr, &addrlen))) {
+		if ( (new_sock = accept(main_sock, &addr, &addrlen)) < 0) {
 			if (errno == EINTR)
 				continue;
 			else
