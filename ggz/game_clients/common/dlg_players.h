@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.h 4961 2002-10-20 05:16:58Z jdorje $
+ * $Id: dlg_players.h 5013 2002-10-23 21:18:03Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -54,3 +54,8 @@ void create_or_raise_dlg_players(void);
 void popup_player_menu(GGZSeat *seat,
 		       GGZSpectatorSeat *sseat,
 		       guint button);
+
+/* Some more vaguely related functions.  Call do_sit() to sit down at the
+   table, and do_stand() to stand up (obviously). */
+void do_sit(void);
+void do_stand(void);

@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 5002 2002-10-22 20:32:36Z jdorje $
+ * $Id: dlg_players.c 5013 2002-10-23 21:18:03Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -538,4 +538,14 @@ static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
 	}
 
 	return FALSE;
+}
+
+void do_sit(void)
+{
+	ggzmod_request_sit(ggz, -1);
+}
+
+void do_stand(void)
+{
+	ggzmod_request_stand(ggz);
 }
