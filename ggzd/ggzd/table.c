@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2768 2001-12-01 06:51:06Z bmh $
+ * $Id: table.c 2803 2001-12-07 22:16:36Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -677,6 +677,9 @@ static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
 	dbg_msg(GGZ_DBG_TABLE, "GAME ERROR: %s", (char*)data);
+
+	/* FIXME: instead, we should set state to done, once this is supported*/
+	ggzdmod_disconnect(ggzdmod);
 }
 
 
