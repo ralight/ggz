@@ -222,3 +222,88 @@ Troubleshooting/Tips
    is a permanent server installed at ggz.morat.net on port 5688.  Check the
    FAQ on our webpage (http://ggz.sourceforge.net) for any other permanent
    servers that may get setup.
+
+
+ggz-config Usage
+----------------
+
+The ggz-config utility, installed as part of ggz-client-libs, allows client
+and game developers to automatically configure their pathnames for executable
+files, data files and so forth without requiring direct access to the
+ggz-client-libs sources.  In addition, game client installation information
+can be automatically added to the ggz.modules file from the command line
+or a .dsc file.
+
+  Basic ggz-config Queries
+  ------------------------
+  The pathname query features can be used to query the pathnames that are
+  compiled into the ggz-client-libs.  These include the following locations:
+	--configdir	Query location of configuration directory
+	--gamedir	Query location of game modules directory
+	--datadir	Query location of game data storage directory
+
+  Finally, the --version option of ggz-config can be used to check that the
+  currently installed version of ggz-client-libs is sufficient for correct
+  compilation/installation of the client or game.
+
+  ggz-config will print the requested pathname(s) or version to standard
+  output where it can easily be parsed by a shell script.
+
+  Game Module .dsc File Entries
+  -----------------------------
+  The prefered method of installing a game module's launch information into
+  the ggz.modules file is by using a .dsc file.  The command line method of
+  installing information is not yet documented (and may eventually be
+  completely removed).
+
+  A module.dsc file should be formatted as follows:
+
+    # Comment lines are ignored
+    [ModuleInfo]
+    Author = Author Name
+    CommandLine = /pathname/to/executable/ggz.game
+    Frontend = <fe code>
+    Homepage = http://host.domain/location/
+    Name = <game name>
+    Protocol = <protocol version>
+    Version = <game module version>
+
+  The current <fe code>s which are understood are 'gtk' and 'kde' and should
+  describe the preferred ggz client for this game.  Game clients should always
+  work with either client frontend (assuming the user has the required
+  GUI environment installed).
+
+  The <game name> should match the game name as used by the ggzd server.  The
+  actual displayed name for the game will be set by the server.
+
+  The <protocol version> must match the protocol version of the game module
+  server.  This insures that game clients, which may be of different versions
+  will properly work with the game server.
+
+  The <game module version> is used internally to identify which game
+  version to be used.  This allows multiple clients to be installed as
+  long as their game version is different - obviously (or perhaps not) these
+  would need to have different CommandLine entries.
+
+  ggz-config Installation Options
+  -------------------------------
+  The basic options to specify are --install and --fromfile=<module.dsc file>
+  Some additional options, and there effects are as follows:
+	--force		Allows the installation information to overwrite
+			existing information of the same game version.
+	--destdir	Typically used by RPM builds, this causes the
+			installation information to go to a ggz.modules
+			file in a temporary build directory.
+
+  ggz-config Uninstall Options
+  ----------------------------
+  When a game module is removed, ggz-config should be used to remove it's
+  information from the ggz.modules file.  Again, the prefered method of
+  removing the module is to use the original module.dsc file, to do this
+  use the --remove and --fromfile=<module.dsc file> options.
+
+  In the event the original module.dsc file no longer exists, the game
+  module information can be removed manually using the following options:
+	--modname=NAME		Specify the Name entry for the module
+	--modauthor=AUTHOR	Specify the Author entry for the module
+	--modui=<fe code>	Specify the frontend code for the module
