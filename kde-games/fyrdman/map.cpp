@@ -125,6 +125,9 @@ void Map::setupMap(Level *level)
 	if(!level)
 	{
 		setFixedSize(400, 300);
+		m_width = 0;
+		m_height = 0;
+		setBackground("bayeux.png");
 		return;
 	}
 
@@ -222,6 +225,9 @@ void Map::setupMap(Level *level)
 					if(r < 0) r = 0;
 					if(g < 0) g = 0;
 					if(b < 0) b = 0;
+					if(r > 255) r = 255;
+					if(g > 255) g = 255;
+					if(b > 255) b = 255;
 					xim2.setPixel(i, j, qRgb(r, g, b));
 				}
 			}

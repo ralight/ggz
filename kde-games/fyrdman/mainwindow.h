@@ -39,7 +39,8 @@ class MainWindow : public KMainWindow, public FyrdmanDcop
 
 		void synchronize();
 
-		bool checkMove(int self);
+		bool checkMove(int self, bool execute);
+		int cellValue(int bot, int x, int y, bool neightbours);
 		void aiMove();
 
 		enum Items

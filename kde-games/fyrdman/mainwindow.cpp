@@ -438,7 +438,7 @@ void MainWindow::slotMove(int x, int y, int x2, int y2)
 		statusBar()->changeItem(i18n("Calculating..."), status_task);
 
 		statusBar()->changeItem(i18n("Checking move..."), status_state);
-		ret = checkMove(m_self);
+		ret = checkMove(m_self, true);
 
 		if(ret)
 		{
@@ -457,7 +457,7 @@ void MainWindow::slotMove(int x, int y, int x2, int y2)
 	}
 }
 
-bool MainWindow::checkMove(int self)
+bool MainWindow::checkMove(int self, bool execute)
 {
 	int x, y, x2, y2;
 	Level *l;
@@ -473,90 +473,189 @@ bool MainWindow::checkMove(int self)
 	if((x2 < 0) || (y2 < 0) || (x2 > l->width()) || (y2 > l->height())) return false;
 
 	if(((abs(x2 - x) > 1) || (abs(y2 - y) > 2))) return false;
+	if(abs(y2 - y) == 0) return false;
 	if((abs(x2 - x) == 1) && (abs(y2 - y) > 1)) return false;
-	if((abs(y2 - y) == 0) && (abs(x2 - x) > 0)) return false;
-	if((abs(y2 - y) == 2) && (abs(x2 - x) > 0)) return false;
-
-//	if((x2 - x == -1) && (y2 - y == -1) && (y % 2 != 0)) return false;
-//	if((x2 - x == -1) && (y2 - y == 1) && (y % 2 != 0)) return false;
-//	if((x2 - x == 1) && (y2 - y == -1) && (y % 2 == 0)) return false;
-
-	//kdDebug() << "cell(x,y)=" << l->cell(x, y) << endl;
-	//kdDebug() << "cell(x2,y2)=" << l->cell(x2, y2) << endl;
-	//kdDebug() << "cellboard(x2,y2)=" << l->cellboard(x2, y2) << endl;
+	if((x2 - x == -1) && (y % 2 == 0)) return false;
+	if((x2 - x == 1) && (y % 2 == 1)) return false;
 
 	if(l->cell(x, y) != self) return false;
 	if(l->cell(x2, y2) == self) return false;
+	if(l->cell(x2, y2) % 2 == self % 2) return false;
 	if(l->cellboard(x2, y2) != 'x') return false;
 
-	map->move(m_movex, m_movey, m_movex2, m_movey2);
+	if(execute)
+		map->move(m_movex, m_movey, m_movex2, m_movey2);
 
 	return true;
+}
+
+int MainWindow::cellValue(int bot, int x, int y, bool neighbours)
+{
+	int k, j, tmpval, mval;
+	Level *l;
+
+	mval = 0;
+	m_movex = x;
+	m_movey = y;
+
+	l = map->level();
+
+	for(k = -2; k < 3; k++)
+	{
+		for(j = -2; j < 3; j++)
+		{
+			if(neighbours)
+			{
+				if((!j) && (!k)) continue;
+			}
+			else if((j) || (k)) continue;
+			m_movex2 = x + k;
+			m_movey2 = y + j;
+			if((!neighbours) || (checkMove(bot, false)))
+			{
+				if(!mval) tmpval = 1;
+				else tmpval = 0;
+				if(!neighbours)
+				{
+					if(l->cellown(m_movex2, m_movey2) == -1) tmpval += 4;
+					else if(l->cellown(m_movex2, m_movey2) % 2 != bot % 2) tmpval += 7;
+					if(l->cell(m_movex2, m_movey2) == -1) tmpval += 0;
+					else if(l->cell(m_movex2, m_movey2) % 2 != bot % 2) tmpval += 20;
+				}
+				else
+				{
+					if(l->cell(m_movex2, m_movey2) == -1) tmpval += 0;
+					else if(l->cell(m_movex2, m_movey2) % 2 != bot % 2) tmpval -= 12;
+					else if(l->cell(m_movex2, m_movey2) % 2 == bot % 2)
+					{
+						if(l->cell(m_movex2, m_movey2) != bot) tmpval += 7;
+					}
+				}
+				mval += tmpval;
+			}
+		}
+	}
+	return mval;
 }
 
 void MainWindow::aiMove()
 {
 	Level *l;
-	int done;
 	int k, j;
+	int mx, my, mx2, my2, mval, tmpval;
+	int mxtmp, mytmp, mxtmp2, mytmp2;
+	int s1, s2, winner;
 	
 	l = map->level();
 
+	mx = 0;
+	my = 0;
+	mx2 = 0;
+	my2 = 0;
 	for(int bot = 0; bot < l->players(); bot++)
 	{
 		if(bot == m_self) continue;
 
-		done = 0;
+		mval = 0;
 		for(int x = 0; x < l->width(); x++)
 		{
 			for(int y = 0; y < l->height(); y++)
 			{
 				if(l->cell(x, y) == bot)
 				{
-					kdDebug() << "** move bot at " << x << ", " << y << endl;
 					m_movex = x;
 					m_movey = y;
-					if(y < 10)
+					kdDebug() << "=== ** move bot at " << x << ", " << y << endl;
+
+					if(!mval)
 					{
-						for(k = 2; k > -3; k--)
+						for(int k = 0; k < l->width(); k++)
 						{
-							for(j = 2; j > -3; j--)
+							for(int j = 0; j < l->height(); j++)
 							{
-								if((!j) && (!k)) continue;
-								m_movex2 = x + k;
-								m_movey2 = y + j;
-								if(checkMove(bot))
+								if((l->cell(k, j) != -1) && (l->cell(k, j) % 2 != bot % 2))
 								{
-									done = 1;
-									break;
+									m_movex2 = x + ((k - x) ? (k - x) / abs(k - x) : 0);
+									m_movey2 = y + ((j - y) ? (j - y) / abs(j - y) : 0);
+									if(checkMove(bot, false))
+									{
+										mval = (l->width() + l->height() - abs(k - x) - abs(j - y)) / 5;
+										mx = m_movex;
+										my = m_movey;
+										mx2 = m_movex2;
+										my2 = m_movey2;
+									}
 								}
 							}
-							if(done) break;
 						}
 					}
-					else
+
+					for(k = -2; k < 3; k++)
 					{
-						for(k = -2; k < 3; k++)
+						for(j = -2; j < 3; j++)
 						{
-							for(j = -2; j < 3; j++)
+							if((!j) && (!k)) continue;
+							m_movex2 = x + k;
+							m_movey2 = y + j;
+							if(checkMove(bot, false))
 							{
-								if((!j) && (!k)) continue;
-								m_movex2 = x + k;
-								m_movey2 = y + j;
-								if(checkMove(bot))
+								mxtmp = m_movex;
+								mytmp = m_movey;
+								mxtmp2 = m_movex2;
+								mytmp2 = m_movey2;
+								tmpval = cellValue(bot, m_movex2, m_movey2, false);
+//kdDebug() << "** pre-CELLVALUE at " << mxtmp2 << "," << mytmp2 << " valued at " << tmpval << endl;
+								tmpval += cellValue(bot, m_movex2, m_movey2, true);
+//kdDebug() << "** CELLVALUE at " << mxtmp2 << "," << mytmp2 << " valued at " << tmpval << endl;
+								m_movex = mxtmp;
+								m_movey = mytmp;
+								if(tmpval > mval)
 								{
-									done = 1;
-									break;
+									mval = tmpval;
+									mx = mxtmp;
+									my = mytmp;
+									mx2 = mxtmp2;
+									my2 = mytmp2;
 								}
 							}
-							if(done) break;
 						}
 					}
 				}
-				if(done) break;
 			}
-			if(done) break;
 		}
+
+		if(mval)
+		{
+//kdDebug() << "===> move bot at " << mx << ", " << my << " to " << mx2 << ", " << my2 << " -- value " << mval << endl;
+			m_movex = mx;
+			m_movey = my;
+			m_movex2 = mx2;
+			m_movey2 = my2;
+			checkMove(bot, true);
+		}
+	}
+
+	s1 = 0;
+	s2 = 0;
+	for(int x = 0; x < l->width(); x++)
+		for(int y = 0; y < l->height(); y++)
+			if(l->cell(x, y) == -1);
+			else if(l->cell(x, y) % 2 == m_self % 2) s1++;
+			else if(l->cell(x, y) % 2 != m_self % 2) s2++;
+
+	winner = -1;
+	if(!s1) winner = 1;
+	if(!s2) winner = 0;
+//kdDebug() << "S1 " << s1 << " S2 " << s2 << endl;
+	if(winner >= 0)
+	{
+		KMessageBox::information(this,
+			i18n("The game is over. Winner is alliance %1.").arg(winner),
+			i18n("Game over!"));
+
+		statusBar()->changeItem(i18n("Not playing"), status_level);
+		gamemenu->setItemEnabled(game_info, false);
+		map->setupMap(NULL);
 	}
 }
 
