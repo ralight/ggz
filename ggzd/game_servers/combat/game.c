@@ -252,6 +252,7 @@ void game_request_options(int seat) {
 int game_get_options(int seat) {
 	int fd = ggz_seats[seat].fd;
 	char *optstr = NULL;
+  int error;
 
 	ggz_debug("Getting options");
 
@@ -260,7 +261,9 @@ int game_get_options(int seat) {
 
 	ggz_debug("Len: %d", strlen(optstr));
 
-	combat_options_string_read(optstr, &cbt_game);
+	error = combat_options_string_read(optstr, &cbt_game);
+
+  ggz_debug("Wrong options: %d\n", error);
 
 	return combat_options_check(&cbt_game);
 }
