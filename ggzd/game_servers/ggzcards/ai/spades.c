@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2423 2001-09-09 09:47:59Z jdorje $
+ * $Id: spades.c 2433 2001-09-09 21:00:25Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -159,44 +159,28 @@ static void alert_play(player_t p, card_t play)
 #endif
 }
 
-static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
+
+static int count_spade_tricks(player_t num, int suitCount[4], int suitAvg[4])
 {
-	int count, points, gap, p1, p2, prob;
-	bid_t bid, pard;
-	int suitCount[4], suitAvg[4];
+	int p1 = 0, p2 = 0, gap, count;
 	int voids = 0, singletons = 0, doubletons = 0;
-	int nilrisk = 99;
-	card_t card = { 0, 0, 0 };
-	card_t c = { 0, 0, 0 };
-	char s;			/* suit */
+	card_t card, c;
+	char s;
 
-	bid.bid = 0;
-
-	/* Partners's bid */
-	pard = game.players[(num + 2) % 4].bid;
-
-	/* First count our cards in each suit, and determine the average
-	   cards the other players each have in each suit.  Also count our
-	   voids, singletons, and doubletons. */
-	for (s = 0; s < 4; s++)
-		suitCount[(int) s] =
-			libai_count_suit(game.players[num].seat, s);
 	for (s = 0; s < 4; s++) {
-		if (s != SPADES)	/* for off suits */
-			switch (suitCount[(int) s]) {
-			case 0:
-				voids++;
-				break;
-			case 1:
-				singletons++;
-				break;
-			case 2:
-				doubletons++;
-				break;
-			}
-		suitAvg[(int) s] =
-			(game.hand_size -
-			 suitCount[(int) s]) / (game.num_players - 1);
+		if (s == SPADES)
+			continue;
+		switch (suitCount[(int) s]) {
+		case 0:
+			voids++;
+			break;
+		case 1:
+			singletons++;
+			break;
+		case 2:
+			doubletons++;
+			break;
+		}
 	}
 
 	/* --------------- TRUMPS ----------------- */
@@ -205,11 +189,9 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	   either be useful as high trumps or for trumping other tricks if we
 	   have some voids, singletons, or doubletons. */
 
-	/* First, figure out the brute force points possible from trumps: */
-	p1 = p2 = 0;
-	card.suit = SPADES;
-	card.deck = 0;
-	for (card.face = ACE_HIGH, gap = 0; card.face >= 0; card.face--) {
+	/* First, figure out the brute force points possible from trumps. */
+	for (card.suit = SPADES, card.face = ACE_HIGH, card.deck = 0, gap = 0;
+	     card.face >= 0; card.face--) {
 		if (libai_is_card_in_hand(num, card)) {
 			if (gap > 0)
 				gap--;
@@ -220,82 +202,6 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		} else
 			gap++;
 	}
-
-
-	/* If our trumps are losable (ie. p1 == 0) and we don't have many of
-	   them, then consider whether we have low enough cards in each of
-	   the other suits to risk bidding nil. */
-	if (p1 == 0) {
-		nilrisk = 0;
-		if (suitCount[SPADES] > 3) {
-			nilrisk += suitCount[SPADES] - 2;
-			ai_debug("Inc. nilrisk for %d excess spades",
-				 suitCount[SPADES] - 2);
-		}
-		for (s = 0; s < 4; s++) {
-			c.suit = s;
-
-			/* check if we're void -- good! */
-			if (suitCount[(int) s] == 0) {
-				if (s != SPADES) {
-					nilrisk -= 2;
-					ai_debug("Dec. nilrisk for shortsuit in %s", suit_names[(int) s]);
-				}
-				continue;	/* for( s = 0; s < 4; s++ ) */
-			}
-
-			/* count our low cards in the suit */
-			for (count = 0, c.face = 2; c.face < 9; c.face++) {
-				if (libai_is_card_in_hand(num, c))
-					count++;	/* count low cards */
-			}
-			if (count >= 3)	/* suit is covered */
-				continue;	/* for( s = 0; s < 4; s++ ) */
-			nilrisk += suitCount[(int) s] - count;	/* risky high
-								   cards */
-			ai_debug("Inc. nilrisk for %d high %s",
-				 suitCount[(int) s] - count,
-				 suit_names[(int) s]);
-			if (count == 0) {	/* no low cards */
-				nilrisk++;
-				ai_debug("Inc. nilrisk for no low cards");
-			}
-
-			/* check for the queen/king of spades */
-			if (s == SPADES) {
-				c.face = KING;
-				if (libai_is_card_in_hand(num, c)) {
-					nilrisk += 2;
-					ai_debug("Inc. nilrisk for King of spades");
-				}
-				c.face = QUEEN;
-				if (libai_is_card_in_hand(num, c)) {
-					nilrisk += 1;
-					ai_debug("Inc. nilrisk for Queen of spades");
-				}
-			} else {
-				c.face = KING;
-				if (libai_is_card_in_hand(num, c)
-				    && suitCount[(int) s] <= 3) {
-					nilrisk += ((suitCount[(int) s] <= 2) ? 2 : 1);	/* king
-											   is
-											   riskier 
-											 */
-					ai_debug("Inc. nilrisk by %d for King of %s", (suitCount[(int) s] <= 2) ? 2 : 1, suit_names[(int) s]);
-				}
-				c.face = ACE_HIGH;
-				if (libai_is_card_in_hand(num, c)
-				    && suitCount[(int) s] <= 3) {
-					nilrisk += ((suitCount[(int) s] <= 2) ? 3 : 2);	/* ace
-											   is
-											   riskiest 
-											 */
-					ai_debug("Inc. nilrisk by %d for Ace of %s", (suitCount[(int) s] <= 2) ? 3 : 2, suit_names[(int) s]);
-				}
-			}
-		}
-	}
-
 
 	/* That done, frob p1 to count probable trump tricks. */
 	if (p1 == 0) {
@@ -368,8 +274,113 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 
 
 	/* Okay, choose the better of the two scores. */
-	points = (p1 > p2) ? p1 : p2;
-	ai_debug("Spade points: %d", points);
+	{
+		int points = (p1 > p2) ? p1 : p2;
+		ai_debug("Spade points: %d", points);
+		return points;
+	}
+}
+
+static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
+{
+	int count, points, prob;
+	bid_t bid, pard;
+	int suitCount[4], suitAvg[4];
+	int nilrisk = 99;
+	card_t c = { 0, 0, 0 };
+	char s;			/* suit */
+
+	bid.bid = 0;
+
+	/* Partners's bid */
+	pard = game.players[(num + 2) % 4].bid;
+
+	/* First count our cards in each suit, and determine the average
+	   cards the other players each have in each suit.  Also count our
+	   voids, singletons, and doubletons. */
+	for (s = 0; s < 4; s++) {
+		suitCount[(int) s] = libai_count_suit(num, s);
+		suitAvg[(int) s] =
+			(game.hand_size -
+			 suitCount[(int) s]) / (game.num_players - 1);
+	}
+
+
+	points = count_spade_tricks(num, suitCount, suitAvg);
+
+	/* If our trumps are losable (ie. p1 == 0) and we don't have many of
+	   them, then consider whether we have low enough cards in each of
+	   the other suits to risk bidding nil. */
+	if (points <= 50) {
+		nilrisk = 0;
+		if (suitCount[SPADES] > 3) {
+			nilrisk += suitCount[SPADES] - 2;
+			ai_debug("Inc. nilrisk for %d excess spades",
+				 suitCount[SPADES] - 2);
+		}
+		for (s = 0; s < 4; s++) {
+			c.suit = s;
+
+			/* check if we're void -- good! */
+			if (suitCount[(int) s] == 0) {
+				if (s != SPADES) {
+					nilrisk -= 2;
+					ai_debug("Dec. nilrisk for shortsuit in %s", suit_names[(int) s]);
+				}
+				continue;	/* for( s = 0; s < 4; s++ ) */
+			}
+
+			/* count our low cards in the suit */
+			for (count = 0, c.face = 2; c.face < 9; c.face++) {
+				if (libai_is_card_in_hand(num, c))
+					count++;	/* count low cards */
+			}
+			if (count >= 3)	/* suit is covered */
+				continue;	/* for( s = 0; s < 4; s++ ) */
+			nilrisk += suitCount[(int) s] - count;	/* risky high
+								   cards */
+			ai_debug("Inc. nilrisk for %d high %s",
+				 suitCount[(int) s] - count,
+				 suit_names[(int) s]);
+			if (count == 0) {	/* no low cards */
+				nilrisk++;
+				ai_debug("Inc. nilrisk for no low cards");
+			}
+
+			/* check for the queen/king of spades */
+			if (s == SPADES) {
+				c.face = KING;
+				if (libai_is_card_in_hand(num, c)) {
+					nilrisk += 2;
+					ai_debug("Inc. nilrisk for King of spades");
+				}
+				c.face = QUEEN;
+				if (libai_is_card_in_hand(num, c)) {
+					nilrisk += 1;
+					ai_debug("Inc. nilrisk for Queen of spades");
+				}
+			} else {
+				c.face = KING;
+				if (libai_is_card_in_hand(num, c)
+				    && suitCount[(int) s] <= 3) {
+					nilrisk += ((suitCount[(int) s] <= 2) ? 2 : 1);	/* king
+											   is
+											   riskier 
+											 */
+					ai_debug("Inc. nilrisk by %d for King of %s", (suitCount[(int) s] <= 2) ? 2 : 1, suit_names[(int) s]);
+				}
+				c.face = ACE_HIGH;
+				if (libai_is_card_in_hand(num, c)
+				    && suitCount[(int) s] <= 3) {
+					nilrisk += ((suitCount[(int) s] <= 2) ? 3 : 2);	/* ace
+											   is
+											   riskiest 
+											 */
+					ai_debug("Inc. nilrisk by %d for Ace of %s", (suitCount[(int) s] <= 2) ? 3 : 2, suit_names[(int) s]);
+				}
+			}
+		}
+	}
 
 	/* --------------- OTHER SUITS ----------------- */
 	/* We bid other suits using a confidence system.  We combine two
