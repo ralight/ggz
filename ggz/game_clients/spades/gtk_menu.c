@@ -3,10 +3,11 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
+ * $Id: gtk_menu.c 3991 2002-04-15 08:51:54Z jdorje $
  *
- * This fils contains functions for creating and handling menus
+ * This file contains functions for creating and handling menus
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 1998-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +25,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-/* FIXME: compilation breaks if we uncomment this! */
-/* #  include <config.h> */			/* Site-specific config */
+#  include <config.h>			/* Site-specific config */
 #endif
 
 #include <gtk/gtk.h>
@@ -49,16 +49,18 @@
 /* Global widget structure */
 extern playArea_t *playArea;
 
+/* FIXME: these are marked to be translated with N_(), but
+   the text is never actually translated. */
 static GtkItemFactoryEntry menuItems[] = {
-	{_("/_Game"), NULL, NULL, 0, "<Branch>"},
-	{_("/Game/_New"), NULL, OptionsDialog, 0, NULL},
-	{_("/Game/_End"), NULL, DisconnectDialog, 0, NULL},
-	{_("/Game/_Statistics"), NULL, StatDialog, 0, NULL},
-	{_("/Game/sep1"), NULL, NULL, 0, "<Separator>"},
-	{_("/Game/_Quit"), "<alt>F4", ExitDialog, 0, NULL},
-	{_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-/*  {"/Help/_GamePlay",            NULL,       HelpDialog, 0, NULL},*/
-	{_("/Help/_About"), "<ctrl>A", AboutDialog, 0, NULL},
+	{N_("/_Game"), NULL, NULL, 0, "<Branch>"},
+	{N_("/Game/_New"), NULL, OptionsDialog, 0, NULL},
+	{N_("/Game/_End"), NULL, DisconnectDialog, 0, NULL},
+	{N_("/Game/_Statistics"), NULL, StatDialog, 0, NULL},
+	{N_("/Game/sep1"), NULL, NULL, 0, "<Separator>"},
+	{N_("/Game/_Quit"), "<alt>F4", ExitDialog, 0, NULL},
+	{N_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
+/*  {N_("/Help/_GamePlay"),            NULL,       HelpDialog, 0, NULL},*/
+	{N_("/Help/_About"), "<ctrl>A", AboutDialog, 0, NULL},
 };
 
 
