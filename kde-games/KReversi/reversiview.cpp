@@ -18,7 +18,6 @@
 #include <stdio.h>
 #include <config.h>
 #include "reversiview.h"
-#include "tiles.xpm"
 
 /* Reversi Disc */
 ReversiDisc::ReversiDisc( QCanvasPixmapArray *seq, QCanvas *canv ) : QCanvasSprite(seq, canv) {
@@ -47,7 +46,7 @@ void ReversiDisc::advance( int stage ) {
 /* Reversi View */
 
 ReversiView::ReversiView(QWidget * parent, const char * name, WFlags f) : QCanvasView(0, parent, name, f) {
-	canvas = new QCanvas( QPixmap::QPixmap(tiles_xpm), 8, 8, 50, 50 );
+	canvas = new QCanvas( QPixmap::QPixmap(GGZDATADIR "/kreversi/pixmaps/default/tiles.png"), 8, 8, 50, 50 );
   /*
 	canvas->setTile( 3, 3, 1 );
 	canvas->setTile( 4, 4, 1 );
@@ -97,28 +96,44 @@ void ReversiView::updateBoard(char board[8][8]) {
   a = discs.first();
   for (y = 0; y < 8; y++) {
     for (x = 0; x < 8; x++) {
-      if (board[x][y] == OPEN)
-        continue;
-      if (!a) {
+      if (board[x][y] < 8 && !a) {
         discs.append( new ReversiDisc(disc_img, canvas) );
         a = discs.last();
       }
-      if (board[x][y] == WHITE) {
-        a->move(x*50, y*50, 10);
-        a->show();
-      } else if (board[x][y] == BLACK) {
-        a->move(x*50, y*50, 0);
-        a->show();
-      } else if (board[x][y] == 2*WHITE) {
-        a->move(x*50, y*50, 0);
-        a->show();
-        a->setAnimated(true);
-      } else if (board[x][y] == 2*BLACK) {
-        a->move(x*50, y*50, 10);
-        a->show();
-        a->setAnimated(true);
+      /* Clean up tile */
+      canvas->setTile(x, y, 0);
+      switch(board[x][y]) {
+        case VIEW_OPEN:
+          canvas->setTile(x, y, 0);
+          break;
+        case VIEW_POSSIBLE:
+          canvas->setTile(x, y, 2);
+          break;
+        case VIEW_LAST_WHITE:
+          canvas->setTile(x, y, 1);
+        case VIEW_WHITE:
+          a->move(x*50, y*50, 10);
+          a->show();
+          break;
+        case VIEW_LAST_BLACK:
+          canvas->setTile(x, y, 1);
+        case VIEW_BLACK:
+          a->move(x*50, y*50, 0);
+          a->show();
+          break;
+        case VIEW_MOVE_WHITE:
+          a->move(x*50, y*50, 0);
+          a->show();
+          a->setAnimated(true);
+          break;
+        case VIEW_MOVE_BLACK:
+          a->move(x*50, y*50, 10);
+          a->show();
+          a->setAnimated(true);
+          break;
       }
-      a = discs.next();
+      if (a)
+        a = discs.next();
     }
   }
   canvas->update();

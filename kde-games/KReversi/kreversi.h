@@ -72,7 +72,7 @@ private: // Private attributes
   /** do a move */
   void doMove(int move);
   /** mark the board */
-  int markBoard(int player, int mx, int my, int dx, int dy);
+  int markBoard(int player, int mx, int my, int dx, int dy, char mboard[8][8]);
   /** Check for validity */
   bool checkValid(int player, int mx, int my, int dx, int dy);
 protected slots: // Protected slots

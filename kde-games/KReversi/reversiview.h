@@ -24,6 +24,15 @@
 #define BLACK -1
 #define OPEN 0
 
+#define VIEW_WHITE 1
+#define VIEW_BLACK -1
+#define VIEW_MOVE_WHITE 2
+#define VIEW_MOVE_BLACK -2
+#define VIEW_LAST_WHITE 3
+#define VIEW_LAST_BLACK -3
+#define VIEW_OPEN 8
+#define VIEW_POSSIBLE 10
+
 /**Little disc
   *@author Ismael Orenstein
   */

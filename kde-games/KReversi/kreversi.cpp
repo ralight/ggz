@@ -168,6 +168,9 @@ void KReversi::playerMoveSlot(int x, int y) {
 
 void KReversi::doMove(int move) {
   int mx, my;
+  int x, y;
+  /* mboard is the mask of the board, that is sent to ReversiView */
+  char mboard[8][8];
   if (move == RVR_ERROR_INVALIDMOVE || move == RVR_ERROR_WRONGTURN)
     return;
   if (move == RVR_ERROR_CANTMOVE) {
@@ -176,45 +179,60 @@ void KReversi::doMove(int move) {
   }
   mx = move % 8;
   my = move / 8;
-  board[mx][my] = turn;
-  
-  // Mark up
-  markBoard(turn, mx, my, 0, -1);
-  // Mark down
-  markBoard(turn, mx, my, 0, 1);
-  // Mark right
-  markBoard(turn, mx, my, 1, 0);
-  // Mark left
-  markBoard(turn, mx, my, -1, 0);
-  // Mark diagonal
-  markBoard(turn, mx, my, 1, 1);
-  markBoard(turn, mx, my, 1, -1);
-  markBoard(turn, mx, my, -1, 1);
-  markBoard(turn, mx, my, -1, -1);
-
-  view->updateBoard(board);
-  /* Has updated, now clean it up */
-  for (mx = 0; mx < 8; mx++) {
-    for (my = 0; my < 8; my++) {
-      if (board[mx][my] > 0)
-        board[mx][my] = 1;
-      else if (board[mx][my] < 0)
-        board[mx][my] = -1;
-      else
-        board[mx][my] = 0;
+  /* Translate board */
+  for (x = 0; x < 8; x++) {
+    for (y = 0; y < 8; y++) {
+      switch(board[x][y]) {
+        case OPEN:
+          mboard[x][y] = VIEW_OPEN;
+          break;
+        case BLACK:
+          mboard[x][y] = VIEW_BLACK;
+          break;
+        case WHITE:
+          mboard[x][y] = VIEW_WHITE;
+          break;
+      }
     }
   }
+  board[mx][my] = turn;
+  mboard[mx][my] = 3*turn;
+  // Mark up
+  markBoard(turn, mx, my, 0, -1, mboard);
+  // Mark down
+  markBoard(turn, mx, my, 0, 1, mboard);
+  // Mark right
+  markBoard(turn, mx, my, 1, 0, mboard);
+  // Mark left
+  markBoard(turn, mx, my, -1, 0, mboard);
+  // Mark diagonal
+  markBoard(turn, mx, my, 1, 1, mboard);
+  markBoard(turn, mx, my, 1, -1, mboard);
+  markBoard(turn, mx, my, -1, 1, mboard);
+  markBoard(turn, mx, my, -1, -1, mboard);
+
+  /* Check possible moves */
+  for (x = 0; x < 8; x++) {
+    for (y = 0; y < 8; y++) {
+      if (isValid(-turn, x, y))
+        mboard[x][y] = VIEW_POSSIBLE;
+    }
+  }
+
+  /* Update the board mask */
+  view->updateBoard(mboard);
   turn = -turn;
 }
 
-int KReversi::markBoard(int player, int mx, int my, int dx, int dy) {
+int KReversi::markBoard(int player, int mx, int my, int dx, int dy, char mboard[8][8]) {
   // Recursivaly marks the board
   if (mx+dx < 0 || my+dy < 0 || mx+dx >= 8 || my+dy >= 8)
     return 0;
   int b = board[mx+dx][my+dy];
-  if (b == -player || b == -2*player) {
-    if (markBoard(player, mx+dx, my+dy, dx, dy)) {
-      board[mx+dx][my+dy] = 2*player;
+  if (b == -player) {
+    if (markBoard(player, mx+dx, my+dy, dx, dy, mboard)) {
+      board[mx+dx][my+dy] = player;
+      mboard[mx+dx][my+dy] = 2*player;
       return 1;
     }
   } else if (b == player || b == 2*player) {
@@ -274,6 +292,9 @@ void KReversi::playAgain() {
   /* Check if a move is valid */
 bool KReversi::isValid(int player, int mx, int my) {
   int dx, dy;
+  /* Check if it's open */
+  if (BOARD(mx, my) != OPEN)
+    return false;
   // Check in all directions
   for (dy = -1; dy <= 1; dy++) {
     for (dx = -1; dx <= 1; dx++) {
