@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6176 2004-09-04 07:22:54Z jdorje $
+ * $Id: ggzmod.c 6332 2004-11-12 00:14:36Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -202,6 +202,15 @@ GGZModState ggzmod_get_state(GGZMod * ggzmod)
 		return -1;	/* not very useful */
 	}
 	return ggzmod->state;
+}
+
+
+int ggzmod_get_server_fd(GGZMod *ggzmod)
+{
+	if (!ggzmod) {
+		return -1;
+	}
+	return ggzmod->server_fd;
 }
 
 
