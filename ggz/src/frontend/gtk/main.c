@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 3379 2002-02-17 06:52:13Z rgade $
+ * $Id: main.c 3407 2002-02-18 05:41:40Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -101,6 +101,7 @@ int main (int argc, char *argv[])
 
 	gtk_main();
 
+	chat_save_lists();
 	server_profiles_cleanup();
 	chat_lists_cleanup();
 

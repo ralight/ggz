@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3397 2002-02-17 11:21:59Z jdorje $
+ * $Id: client.c 3407 2002-02-18 05:41:40Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -124,6 +124,9 @@ static void client_send_private_message_activate(GtkMenuItem *menuitem, gpointer
 static char *client_get_players_index(guint row);
 static void client_tables_size_request(GtkWidget *widget, gpointer data);
 
+/* Extra helper functions. */
+static void try_to_quit(void);
+
 
 static void
 client_connect_activate			(GtkMenuItem	*menuitem,
@@ -157,17 +160,24 @@ client_disconnect_activate		(GtkMenuItem	*menuitem,
 }
 
 
+/* This is called by client_exit_activate and client_exit_button_clicked */
+static void
+try_to_quit			(void)
+{
+	if (ggz_connection_query() == 0
+            || msgbox(_("Are you sure you want to quit?"), _("Quit?"),
+                      MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) ==MSGBOX_YES)
+	{
+		gtk_main_quit();
+	}
+}
+
+
 static void
 client_exit_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	if (ggz_connection_query() == 0 
-            || msgbox(_("Are you sure you want to quit?"), _("Quit?"),
-                      MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) ==MSGBOX_YES)
-	{
-		chat_save_lists();
-		gtk_main_quit();
-	}
+	try_to_quit();
 }
 
 static void
@@ -658,13 +668,7 @@ static void
 client_exit_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	if (ggz_connection_query() == 0 
-	    || msgbox(_("Are you sure you want to quit?"), _("Quit?"),
-		        MSGBOX_YESNO,MSGBOX_QUESTION,MSGBOX_MODAL) ==MSGBOX_YES)
-	{
-		chat_save_lists();
-		gtk_main_quit();
-	}
+	try_to_quit();
 }
 
 
