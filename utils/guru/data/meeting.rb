@@ -1,10 +1,17 @@
 #!/usr/local/bin/ruby
+
 # Guru module: blackboard to remember meetings
+# Copyright (C) 2001 Josef Spillner, dr_maux@user.sourceforge.net
+# Published under GNU GPL conditions
 
-# guru meeting
-# guru meeting add blah foo 2001-12-24 xmas bashing
+# Commands:
+# guru meeting								-> list all meetings
+# guru meeting add 2001-12-24 xmas			-> add whatever text (no special format)
+# guru meeting remove 2001-12-24 xmas		-> remove that entry again
 
-database = "/tmp/gurumeeting"
+databasedir = "/tmp"
+
+####################################################################################
 
 class GuruMeeting
   def initialize
@@ -13,8 +20,8 @@ class GuruMeeting
   def add(date)
     @notes.push(date)
   end
-  def remove
-    puts "not implemented yet"
+  def remove(date)
+    @notes.delete(date)
   end
   def tell
 	print "Planned meetings: ", @notes.join " - "
@@ -28,7 +35,7 @@ end
 
 m = nil
 begin
-  File.open(database) do |f|
+  File.open(databasedir + "/meetings") do |f|
     m = Marshal.load(f)
   end
 rescue
@@ -43,13 +50,19 @@ if ARGV[2] == "add"
   m.add date
   dump = 1
 end
+if ARGV[2] == "remove"
+  rm = ARGV[3..ARGV.length]
+  date = rm.join " "
+  m.remove date
+  dump = 1
+end
 
 if ARGV[2] == nil
   m.tell
 end
 
 if dump == 1
-  File.open(database, "w+") do |f|
+  File.open(databasedir + "/meetings", "w+") do |f|
     Marshal.dump(m, f)
   end
 end

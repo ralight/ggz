@@ -1,12 +1,26 @@
 #!/usr/bin/perl
 
+# Guru module: Dynamically download news rdf files and display one random
+# headline. The rdf files are stored in $gurudir/cache.
+# Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+# Published under GNU GPL conditions
+
+# Commands:
+# guru news					-> list all news sources
+# guru news slashdot		-> show random headline from slashdot
+
+$gurudir = "/tmp";
+
+#########################################################################
+
 use Net::Telnet;
 
 if($ARGV[1] ne "news"){
-	exit;
+	exit();
 }
 if($ARGV[2] eq ""){
-	print "From what news source my friend?\n";
+	print "From what news source my friend? ";
+	print "Available are: slashdot, register, happypenguin, heise\n";
 	exit();
 }
 
@@ -26,7 +40,8 @@ sub download
 	$conn = new Net::Telnet(Host => $host, Port => 80);
 	$conn->print("GET $document\n");
 	$data = $conn->get(Timeout => 5);
-	open(FILE, ">$ARGV[2].rdf");
+	mkdir("$gurudir/cache", 0755);
+	open(FILE, ">$gurudir/cache/$ARGV[2].rdf");
 	print FILE "$data\n";
 	close(FILE);
 	$downloaded = 1;
@@ -44,7 +59,7 @@ if(!$downloaded){
 }
 
 $r = rand(100) % 10 + 2;
-$ret = open(FILE, $ARGV[2] . ".rdf");
+$ret = open(FILE, "$gurudir/cache/$ARGV[2].rdf");
 if(!$ret){
 	print "Sorry, no more news on $ARGV[2].\n";
 	exit();

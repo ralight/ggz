@@ -1,7 +1,17 @@
 #!/usr/bin/perl
 
-# guru what is foo in german
-# guru what is bar in fuzzy english
+# Guru module: Translate single words using the dict sources
+# IDP sources can be converted to get a larger dictionary base
+# Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+# Published under GNU GPL conditions
+
+# Commands:
+# guru what is foo in de				-> translate from en to de
+# guru what is bar in fuzzy english		-> translate from de to en, use fuzzy match
+
+$dictdir = "/usr/share/trans";
+
+###################################################################################
 
 $letthrough = 0;
 if(($ARGV[1] eq "what") && ($ARGV[2] eq "is")){
@@ -65,13 +75,13 @@ if($reverse){
 	$file = "$FROM-$LANG";
 }
 
-open(FILE, "/usr/share/trans/$file");
+open(FILE, "$dictdir/$file");
 while(<FILE>){
 	chomp;
 	s/\ \{([mfn]|pl)\}//g;
 	@ar = split(/\ ::\ /);
 	$exp = $ar[$reverse];
-	if((($exp =~ /^$WORD$/i) && ($num < 5)) || (($fuzzy) && ($exp =~ /$WORD/i))){
+	if(($exp =~ /^$WORD$/i) || (($fuzzy) && ($exp =~ /$WORD/i) && ($num < 5))){
 		if($answer){
 			$answer .= ", ";
 			$num++;
