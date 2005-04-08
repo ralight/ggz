@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 6416 2004-11-17 22:02:24Z jdorje $
+ * $Id: datatypes.h 7085 2005-04-08 12:51:50Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -52,6 +52,7 @@ typedef struct {
 	const char *conf_dir;
 	const char *data_dir;
 	const char *motd_file;
+	const char *motd_web;
 	const char *admin_name;
 	const char *admin_email;
 	const char *server_name;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 6905 2005-01-26 03:00:49Z jdorje $
+ * $Id: net.c 7085 2005-04-08 12:51:50Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -348,7 +348,8 @@ GGZReturn net_send_motd(GGZNetIO *net)
 	int i, num;
 	char *line;
 	
-	_net_send_line(net, "<MOTD PRIORITY='normal'><![CDATA[");
+	_net_send_line(net, "<MOTD PRIORITY='normal' URL='%s'><![CDATA[",
+		(opt.motd_web ? opt.motd_web : ""));
 
 	num = motd_get_num_lines();
 		
@@ -970,7 +971,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 	/* Clear the flag now that we've completed this round of parsing */
 	net->parsing = false;
 
-	return (done ? GGZ_REQ_DISCONNECT: GGZ_REQ_OK);
+	return (done ? GGZ_REQ_DISCONNECT : GGZ_REQ_OK);
 }
 
 
