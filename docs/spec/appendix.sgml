@@ -756,7 +756,7 @@
 
 		  <row rowsep="0">
 		    <entry namest="C1" nameend="C3">
-		      &lt;MOTD PRIORITY="priority"&gt;
+		      &lt;MOTD PRIORITY="priority" URL="url"&gt;
 			    &lt;![CDATA[...]]&gt;
 			  &lt;/MOTD&gt;
 		    </entry>
@@ -772,6 +772,12 @@
 		    <entry>PRIORITY</entry>
 		    <entry>string</entry>
 			<entry>normal</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>URL</entry>
+		    <entry>string</entry>
+			<entry>http://...</entry>
 		  </row>
 
 		</tbody>
@@ -790,6 +796,14 @@
 	    <listitem>
 	      <para>
 		MOTD priority used to determine whether to display it or not
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">URL</emphasis></term>
+	    <listitem>
+	      <para>
+		Web page containing a HTML MOTD, or empty to display text MOTD
 	      </para>
 	    </listitem>
 	  </varlistentry>
