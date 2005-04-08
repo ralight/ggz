@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6980 2005-03-11 07:24:52Z jdorje $
+ * $Id: netxml.c 7086 2005-04-08 13:03:13Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1003,24 +1003,23 @@ static void _ggzcore_net_handle_options(GGZNet * net,
 /* Functions for <MOTD> tag */
 static void _ggzcore_net_handle_motd(GGZNet * net, GGZXMLElement * element)
 {
-	const char *message, *priority;
-	const char **buffer;
+	const char *message, *priority, *url;
+	GGZMotdEventData motd;
 
 	message = ggz_xmlelement_get_text(element);
 	priority = ATTR(element, "PRIORITY");
+	url = ATTR(element, "URL");
 
 	ggz_debug(GGZCORE_DBG_NET, "Motd of priority %s", priority);
 
 	/* In the old interface the MOTD was sent a line at a time,
 	   NULL-terminated.  Now it's just sent all at once. */
-	buffer = ggz_malloc(2 * sizeof(char *));
-	buffer[0] = message;
-	buffer[1] = NULL;
+	if (url && strlen(url) == 0) url = NULL;
+	motd.motd = message;
+	motd.url = url;
 
 	/* FIXME: do something with the priority */
-	_ggzcore_server_event(net->server, GGZ_MOTD_LOADED, buffer);
-
-	ggz_free(buffer);
+	_ggzcore_server_event(net->server, GGZ_MOTD_LOADED, &motd);
 }
 
 

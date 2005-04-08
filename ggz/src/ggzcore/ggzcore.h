@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6883 2005-01-24 17:44:11Z jdorje $
+ * $Id: ggzcore.h 7086 2005-04-08 13:03:13Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -173,6 +173,12 @@ typedef struct {
 	GGZClientReqError status;
 } GGZErrorEventData;
 
+/** @brief The data associated with a GGZ_MOTD_LOADED server event. */
+typedef struct {
+	const char *motd; /**< MOTD text message */
+	const char *url; /**< URL of a graphical MOTD webpage, or NULL */
+} GGZMotdEventData;
+
 /**
  * A GGZServerEvent is an event triggered by a communication from the
  * server.  Each time an event occurs, the associated event handler
@@ -233,7 +239,7 @@ typedef enum {
 	 *  can also be requested by ggzcore_server_motd.  It is up to the
 	 *  client whether or not to display it.  See the online
 	 *  documentation (somewhere?) about the MOTD markup format.
-	 *  @param data The full MOTD text.
+	 *  @param data Pointer to a GGZMotdEventData including the full MOTD text.
 	 *  @see ggzcore_server_motd
 	 *  @todo The MOTD cannot be accessed outside of this event
 	 *  @see ggzcore_server_read_data! */
@@ -1428,7 +1434,7 @@ GGZModule* ggzcore_module_get_nth_by_type(const char *game,
 #ifndef GGZ_DISABLE_DEPRECATED
 /** This attempts to launch the specified module and returns 0 if
     successful or -1 on error. */
-#define ggzcore_module_launch(m) ((int)(-1)
+#define ggzcore_module_launch(m) ((int)(-1))
 #endif
 
 /** @brief Return the name of the module. */
