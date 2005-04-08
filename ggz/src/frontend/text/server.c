@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 7088 2005-04-08 13:04:43Z josef $
+ * $Id: server.c 7089 2005-04-08 13:08:22Z josef $
  *
  * Functions for handling server events
  *
@@ -490,7 +490,7 @@ static GGZHookReturn server_motd_loaded(GGZServerEvent id,
 					const void *event_data,
 					const void *user_data)
 {
-	GGZMotdEventData *motd = event_data;
+	const GGZMotdEventData *motd = event_data;
 
 	motd_print_line(motd->motd);
 
