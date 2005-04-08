@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 7075 2005-04-02 19:12:30Z josef $
+ * $Id: ggzdb_pgsql.c 7091 2005-04-08 14:10:51Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -93,6 +93,16 @@ static PGconn *claimconnection()
 			{
 				conn->used = 1;
 				pthread_mutex_unlock(&mutex);
+				if(PQstatus(conn->conn) == CONNECTION_BAD)
+				{
+					err_msg("Database connection lost, reconnecting.");
+					PQreset(conn->conn);
+					if((!conn->conn) || (PQstatus(conn->conn) == CONNECTION_BAD))
+					{
+						err_msg("Could not connect to database.");
+						return NULL;
+					}
+				}
 				return conn->conn;
 			}
 			entry = ggz_list_next(entry);
@@ -110,7 +120,7 @@ static PGconn *claimconnection()
 			conn->conn = PQconnectdb(conninfo);
 			if((!conn->conn) || (PQstatus(conn->conn) == CONNECTION_BAD))
 			{
-				err_sys("Could not connect to database.\n");
+				err_msg("Could not connect to database.");
 				pthread_mutex_unlock(&mutex);
 				return NULL;
 			}
@@ -124,7 +134,7 @@ static PGconn *claimconnection()
 		sleep(1);
 	}
 
-	err_sys("Number of database connections exceeded.\n");
+	err_msg("Number of database connections exceeded.");
 	return NULL;
 }
 
@@ -375,7 +385,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			rc = GGZDB_ERR_NOTFOUND;
 		}
 	} else {
-		err_sys("Couldn't lookup player.");
+		err_msg("Couldn't lookup player.");
 		rc = GGZDB_ERR_DB;
 	}
 	PQclear(res);
@@ -410,7 +420,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 
 	res = PQexec(conn, query);
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_sys("Couldn't update player.");
+		err_msg("Couldn't update player.");
 		rc = GGZDB_ERR_DB;
 	}
 	PQclear(res);
@@ -465,7 +475,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			rc = GGZDB_ERR_NOTFOUND;
 		}
 	} else {
-		err_sys("Couldn't lookup player.");
+		err_msg("Couldn't lookup player.");
 		PQclear(iterres);
 		iterres = NULL;
 		rc = GGZDB_ERR_DB;
@@ -482,7 +492,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
 	if (!iterres) {
-		err_sys_exit("get_next called before get_first, dummy");
+		err_msg_exit("get_next called before get_first, dummy");
 	}
 
 	if (itercount < PQntuples(iterres) - 1) {
@@ -511,7 +521,7 @@ void _ggzdb_player_drop_cursor(void)
 		/* This isn't an error; since we clear the cursor at the end
 		   of _ggzdb_player_get_next we should expect to end up
 		   here.  --JDS */
-		/*err_sys_exit("drop_cursor called before get_first, dummy");*/
+		/*err_msg_exit("drop_cursor called before get_first, dummy");*/
 		return;
 	}
 
@@ -566,7 +576,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 			stats->ranking = atol(PQgetvalue(res, 0, 5));
 			stats->highest_score = atol(PQgetvalue(res, 0, 6));
 		} else {
-			err_sys("couldn't lookup player stats");
+			err_msg("couldn't lookup player stats");
 			rc = GGZDB_ERR_NOTFOUND;
 		}
 	}
@@ -600,7 +610,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_sys("couldn't update stats");
+		err_msg("couldn't update stats");
 	} else {
 		if (!strcmp(PQcmdTuples(res), "0")) {
 			snprintf(query, sizeof(query),
@@ -613,7 +623,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 			res2 = PQexec(conn, query);
 
 			if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-				err_sys("couldn't insert stats");
+				err_msg("couldn't insert stats");
 			}
 			else rc = GGZDB_NO_ERROR;
 			PQclear(res2);
@@ -649,7 +659,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-		err_sys("couldn't read match");
+		err_msg("couldn't read match");
 		number = NULL;
 	}
 	else {
@@ -671,7 +681,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_sys("couldn't insert matchplayer");
+		err_msg("couldn't insert matchplayer");
 	}
 	else rc = GGZDB_NO_ERROR;
 	PQclear(res);
@@ -710,7 +720,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_sys("couldn't insert match");
+		err_msg("couldn't insert match");
 	}
 	else rc = GGZDB_NO_ERROR;
 	PQclear(res);
@@ -742,7 +752,7 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_sys("couldn't insert savegame");
+		err_msg("couldn't insert savegame");
 	}
 	else rc = GGZDB_NO_ERROR;
 	PQclear(res);
