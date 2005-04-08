@@ -23,8 +23,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 7039 $</revnumber>
-	<date>$Date: 2005-03-25 08:44:34 -0800 (Fri, 25 Mar 2005) $</date>
+	<revnumber>$Revision: 7093 $</revnumber>
+	<date>$Date: 2005-04-08 13:17:51 -0700 (Fri, 08 Apr 2005) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -53,7 +53,10 @@
     <title>The Protocol</title>
 
 <para>
-  foo bar
+  Communication between server and game server happens by means of binary
+  tokens (opcodes), which are of type integer, followed by zero or more
+  opcode-specific variables which can be of type integer, character,
+  or string.
 </para>
 
 <para>
@@ -74,11 +77,6 @@
     are going to participate, are there any reserved seats, and so on.
     The game server will then notify ggzd about it having the data received,
     and set its internal status from CREATED to WAITING.
-    <note>
-      <para>
-        blah! blah!
-      </para>
-    </note>
   </para>
 
 </section>
@@ -237,9 +235,31 @@
                   </row>
 
                   <row rowsep="1">
-                    <entry>Name of seat assignee</entry>
-                    <entry>string</entry>
-                    <entry>1-AI</entry>
+                    <entrytbl namest="C1" nameend="C3" cols="3">
+                      <colspec colnum="1" colname="C1" align="left">
+                      <colspec colnum="2" colname="C2">
+                      <colspec colnum="3" colname="C3">
+                      <tbody>
+                        <row rowsep="0">
+                          <entry namest="C1" nameend="C3">
+                            Condition (depending on the seat type)
+                          </entry>
+                        </row>
+
+                        <row rowsep="1">
+                          <entry><emphasis role="bold">Data</emphasis></entry>
+                          <entry><emphasis role="bold">Type</emphasis></entry>
+                          <entry><emphasis role="bold">Example</emphasis></entry>
+                        </row>
+
+                        <row rowsep="1">
+                          <entry>Name of seat assignee</entry>
+                          <entry>string</entry>
+                          <entry>reserver58</entry>
+                        </row>
+
+                      </tbody>
+                    </entrytbl>
                   </row>
                 </tbody>
               </entrytbl>
@@ -251,7 +271,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Initialization of game server with table settings</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -261,7 +281,9 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          Sent on game startup to configure the game server according to
+          the table configuration as performed by the client of the game host.
+          The player name is only sent for seats of type GGZ_SEAT_RESERVED.
         </para>
       </refsect2>
     </refsect1>
@@ -277,7 +299,7 @@
 
     <refnamediv>
       <refname>GAME_SEAT</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Informs the game about seat change</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -300,6 +322,57 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="controltotable">ControlToTable</link></entry>
+              <entry>GAME_SEAT</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Seat number</entry>
+              <entry>integer</entry>
+              <entry>0</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Seat type</entry>
+              <entry><link linkend="ggzseattype">GGZSeatType</link></entry>
+              <entry>GGZ_SEAT_PLAYER</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Player name</entry>
+              <entry>string</entry>
+              <entry>player42</entry>
+            </row>
+
+            <row rowsep="1">
+              <entrytbl namest="C1" nameend="C3" cols="3">
+                <colspec colnum="1" colname="C1" align="left">
+                <colspec colnum="2" colname="C2">
+                <colspec colnum="3" colname="C3">
+                <tbody>
+                  <row rowsep="0">
+                    <entry namest="C1" nameend="C3">
+                      Condition (depending on player type)
+                    </entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry><emphasis role="bold">Data</emphasis></entry>
+                    <entry><emphasis role="bold">Type</emphasis></entry>
+                    <entry><emphasis role="bold">Example</emphasis></entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>File descriptor of client connection socket</entry>
+                    <entry>int</entry>
+                    <entry>1</entry>
+                  </row>
+                </tbody>
+              </entrytbl>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -307,7 +380,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Informs the game about seat changes</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -317,7 +390,9 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          Whenever a player or bot player joins or leaves a table, this message
+          is sent to the game server to notify it of the new seat assignment.
+          The file descriptor is sent only if the seat type equals GGZ_SEAT_PLAYER.
         </para>
       </refsect2>
     </refsect1>
@@ -333,7 +408,7 @@
 
     <refnamediv>
       <refname>GAME_SPECTATOR_SEAT</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Informs the game about spectator seat change</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -356,6 +431,51 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="controltotable">ControlToTable</link></entry>
+              <entry>GAME_SPECTATOR_SEAT</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Spectator seat number</entry>
+              <entry>integer</entry>
+              <entry>0</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Spectator name</entry>
+              <entry>string</entry>
+              <entry>spectator28</entry>
+            </row>
+
+            <row rowsep="1">
+              <entrytbl namest="C1" nameend="C3" cols="3">
+                <colspec colnum="1" colname="C1" align="left">
+                <colspec colnum="2" colname="C2">
+                <colspec colnum="3" colname="C3">
+                <tbody>
+                  <row rowsep="0">
+                    <entry namest="C1" nameend="C3">
+                      Condition (depending on spectator seat occupation)
+                    </entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry><emphasis role="bold">Data</emphasis></entry>
+                    <entry><emphasis role="bold">Type</emphasis></entry>
+                    <entry><emphasis role="bold">Example</emphasis></entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>File descriptor of client connection socket</entry>
+                    <entry>int</entry>
+                    <entry>1</entry>
+                  </row>
+                </tbody>
+              </entrytbl>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -363,7 +483,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Informs the game about spectator seat change</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -373,7 +493,9 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message is generated whenever a spectator joins or leaves
+          the table. The file descriptor is sent only if the spectator
+          has joined and thus the spectator seat is occupied.
         </para>
       </refsect2>
     </refsect1>
@@ -389,7 +511,7 @@
 
     <refnamediv>
       <refname>GAME_RESEAT</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Notification of seat/spectator seat change</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -412,6 +534,36 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="controltotable">ControlToTable</link></entry>
+              <entry>GAME_RESEAT</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Number of old seat</entry>
+              <entry>int</entry>
+              <entry>1</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Was old seat a spectator seat?</entry>
+              <entry>integer/boolean</entry>
+              <entry>1</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Number of new seat</entry>
+              <entry>int</entry>
+              <entry>4</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Is new seat a spectator seat?</entry>
+              <entry>integer/boolean</entry>
+              <entry>0</entry>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -419,7 +571,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Notification of seat/spectator seat change</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -429,7 +581,8 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          The STAND and SIT actions allow a player to become a spectator
+          and vice-versa. Both actions will generate this message.
         </para>
       </refsect2>
     </refsect1>
@@ -445,7 +598,7 @@
 
     <refnamediv>
       <refname>GAME_STATE</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>State update</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -468,6 +621,12 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="controltotable">ControlToTable</link></entry>
+              <entry>GAME_STATE</entry>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -475,7 +634,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>State update</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -485,7 +644,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          Acknowledgement of received GAME_STATE request from the game server.
         </para>
       </refsect2>
     </refsect1>
@@ -505,7 +664,7 @@
 
     <refnamediv>
       <refname>LOG</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Log message from the game</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -528,6 +687,18 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="tabletocontrol">TableToControl</link></entry>
+              <entry>LOG</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Log message</entry>
+              <entry>string</entry>
+              <entry>hello world</entry>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -535,7 +706,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Log message from the game</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -545,7 +716,9 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          The game server can write out log messages to ggzd using this
+          message. The text will then be written or ignored according to the
+          ggzd configuration.
         </para>
       </refsect2>
     </refsect1>
@@ -561,7 +734,7 @@
 
     <refnamediv>
       <refname>GAME_STATE</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Request of game state change</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -584,6 +757,18 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="tabletocontrol">TableToControl</link></entry>
+              <entry>GAME_STATE</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Requested game state</entry>
+              <entry><link linkend="ggztablestate">GGZTableState</link> (as char)</entry>
+              <entry>STATE_DONE</entry>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -591,7 +776,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Request of game state change</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -601,7 +786,9 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          Notifies about the game server's decision to change the state
+          to the given one. All changes will be acknowledged by the
+          server with a <link linkend="rsp.gamestate">GAME_STATE</link> response.
         </para>
       </refsect2>
     </refsect1>
@@ -617,7 +804,7 @@
 
     <refnamediv>
       <refname>NUM_SEATS</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Request of seat count change</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -640,6 +827,18 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="tabletocontrol">TableToControl</link></entry>
+              <entry>NUM_SEATS</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Number of seats</entry>
+              <entry>int</entry>
+              <entry>12</entry>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -647,7 +846,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Request of seat count change</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -657,7 +856,9 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          While the initial number of seat can range between two and the
+          maximum number of possible seats for the gametype in use, a game
+          server can always resize its table afterwards using this message.
         </para>
       </refsect2>
     </refsect1>
@@ -673,7 +874,7 @@
 
     <refnamediv>
       <refname>BOOT</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Request of player/spectator boot</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -696,6 +897,18 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="tabletocontrol">TableToControl</link></entry>
+              <entry>BOOT</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Name of player to boot</entry>
+              <entry>string</entry>
+              <entry>player42</entry>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -703,7 +916,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Request of player/spectator boot</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -713,7 +926,8 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          The seat in question, which can be a player or a spectator seat,
+          is emptied by booting the player or spectator occupying it.
         </para>
       </refsect2>
     </refsect1>
@@ -729,7 +943,7 @@
 
     <refnamediv>
       <refname>BOT</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Request to fill seat with bot player</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -752,6 +966,18 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="tabletocontrol">TableToControl</link></entry>
+              <entry>BOT</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Number of seat to use for bot</entry>
+              <entry>int</entry>
+              <entry>2</entry>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -759,7 +985,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Request to fill seat with bot player</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -769,7 +995,8 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          The seat in question is occupied with a bot player, who
+          will thus join the game.
         </para>
       </refsect2>
     </refsect1>
@@ -785,7 +1012,7 @@
 
     <refnamediv>
       <refname>OPEN</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Request to open seat</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -808,6 +1035,18 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="tabletocontrol">TableToControl</link></entry>
+              <entry>OPEN</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Number of seat to open</entry>
+              <entry>int</entry>
+              <entry>3</entry>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -815,7 +1054,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Request to open seat</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -825,7 +1064,9 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          A seat either occupied by a bot or reserved for a player
+          will be opened up again so another player or bot player
+          can occupy it.
         </para>
       </refsect2>
     </refsect1>
@@ -841,7 +1082,7 @@
 
     <refnamediv>
       <refname>GAME_REPORT</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Notification of game results</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -864,6 +1105,70 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="tabletocontrol">TableToControl</link></entry>
+              <entry>GAME_REPORT</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Number of players/seats</entry>
+              <entry>int</entry>
+              <entry>5</entry>
+            </row>
+
+            <row rowsep="1">
+              <entrytbl namest="C1" nameend="C3" cols="3">
+                <colspec colnum="1" colname="C1" align="left">
+                <colspec colnum="2" colname="C2">
+                <colspec colnum="3" colname="C3">
+                <tbody>
+                  <row rowsep="0">
+                    <entry namest="C1" nameend="C3">
+                      Loop (depending on number of seats)
+                    </entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry><emphasis role="bold">Data</emphasis></entry>
+                    <entry><emphasis role="bold">Type</emphasis></entry>
+                    <entry><emphasis role="bold">Example</emphasis></entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>Name of seat assignee</entry>
+                    <entry>string</entry>
+                    <entry>1-AI</entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>Seat type</entry>
+                    <entry><link linkend="ggzseattype">GGZSeatType</link></entry>
+                    <entry>GGZ_SEAT_PLAYER</entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>Team number</entry>
+                    <entry>int</entry>
+                    <entry>0</entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>Game result</entry>
+                    <entry>int</entry>
+                    <entry>0</entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>Game highscore</entry>
+                    <entry>int</entry>
+                    <entry>100</entry>
+                  </row>
+
+                </tbody>
+              </entrytbl>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -871,7 +1176,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Notification of game results</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -881,7 +1186,9 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          When the game has ended, the game results including
+          player positions and highscores, as well as team information,
+          is reported back to ggzd for storage in the database.
         </para>
       </refsect2>
     </refsect1>
@@ -897,7 +1204,7 @@
 
     <refnamediv>
       <refname>SAVEGAME_REPORT</refname>
-      <refpurpose>XXX</refpurpose>
+      <refpurpose>Notification of temporary savegame location</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -920,6 +1227,18 @@
               <entry><emphasis role="bold">Example</emphasis></entry>
             </row>
 
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="tabletocontrol">TableToControl</link></entry>
+              <entry>SAVEGAME_REPORT</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Name of the savegame token</entry>
+              <entry>string</entry>
+              <entry>chess2005.pgn</entry>
+            </row>
+
           </tbody>
 	    </tgroup>
       </informaltable>
@@ -927,7 +1246,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Notification of temporary savegame location</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -937,7 +1256,10 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          A continuously game log or a final savegame can be reported
+          to ggzd using this message. The naming is up to the game server,
+          it might refer to a file or directory name. Note: The message
+          GAME_REPORT will use this value to write it into the database.
         </para>
       </refsect2>
     </refsect1>
