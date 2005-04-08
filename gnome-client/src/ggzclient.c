@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6871 2005-01-24 03:46:22Z jdorje $
+ * $Id: ggzclient.c 7090 2005-04-08 13:18:08Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -611,15 +611,9 @@ static GGZHookReturn ggz_motd_loaded(GGZServerEvent id,
 				     const void *user_data)
 {
 	gint i;
-	const gchar *const *motd = event_data;
+	const GGZMotdEventData *motd = event_data;
 
-	for (i = 0; motd[i] != NULL; i++) {
-		char *mymsg = g_strdup(motd[i]);
-
-		chat_display_message(CHAT_ANNOUNCE, "***", mymsg);
-
-		g_free(mymsg);
-	}
+	chat_display_message(CHAT_ANNOUNCE, "***", motd->motd);
 
 	return GGZ_HOOK_OK;
 }

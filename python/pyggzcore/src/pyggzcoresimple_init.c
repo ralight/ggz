@@ -636,9 +636,10 @@ static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, const void 
 {
 	PyObject *arg, *res;
 	PyObject *element;
-	char *str, **e;
+	char *str;
 	int i;
 	GGZRoom *room;
+	const GGZMotdEventData *motd;
 
 	/*printf("(pyggzcoresimple) server event: %i %p %p\n", id, event_data, user_data);*/
 
@@ -652,18 +653,11 @@ static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, const void 
 
 	if(id == GGZ_MOTD_LOADED)
 	{
-		e = (char**)event_data;
+		motd = event_data;
 
-		if((e) && (e[0]))
+		if((motd) && (motd->motd))
 		{
-			str = strdup(e[0]);
-			i = 1;
-			while(e[i])
-			{
-				str = (char*)realloc(str, strlen(str) + strlen(e[i]) + 2);
-				strcat(str, "\n");
-				strcat(str, e[i]);
-			}
+			str = strdup(motd->motd);
 		}
 	}
 	if(id == GGZ_ROOM_LIST)

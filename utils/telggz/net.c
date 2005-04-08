@@ -181,16 +181,12 @@ static GGZHookReturn net_hook_login(unsigned int id, const void *event_data,
 static GGZHookReturn net_hook_motd(unsigned int id, const void *event_data,
 				   const void *user_data)
 {
-	char **motd;
-	int i;
+	const GGZMotdEventData *motd;
 
-	motd = (char**)event_data;
-	i = 0;
-	while(motd[i])
-	{
-		printf("MOTD: %s\n", motd[i]);
-		i++;
-	}
+	motd = event_data;
+	printf("MOTD:\n");
+	printf("%s\n", motd->motd);
+
 	return GGZ_HOOK_OK;
 }
 
