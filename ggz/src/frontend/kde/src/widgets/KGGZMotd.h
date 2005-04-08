@@ -39,6 +39,7 @@
 
 // Forward declarations
 class QTextView;
+class KHTMLPart;
 
 // KGGZMotd: displays welcome message
 class KGGZMotd : public QWidget
@@ -49,15 +50,19 @@ class KGGZMotd : public QWidget
 			KGGZMotd(QWidget *parent = NULL, const char *name = NULL);
 			// Destructor
 			~KGGZMotd();
-			// Load a motd as char** source
-			void setSource(const char **data);
+			// Load a motd as char* source
+			void setSource(QString motd);
+			// Load motd webpage, if available
+			void setWebpage(QString url);
 
 		private:
 			// Append a line to the display
-			void append(const char *text);
+			void append(QString text);
 
 			// The display itself
-			QTextView *m_edit;
+			QTextView *m_textmotd;
+			// Webpage display
+			KHTMLPart *m_webmotd;
 };
 
 #endif

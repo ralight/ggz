@@ -40,6 +40,8 @@
 
 // KDE includes
 #include <klocale.h>
+#include <khtml_part.h>
+#include <khtmlview.h>
 
 // Qt includes
 #include <qpushbutton.h>
@@ -60,22 +62,27 @@ KGGZMotd::KGGZMotd(QWidget *parent, const char *name)
 	QVBoxLayout *vbox;
 	QFont f;
 
-	m_edit = new QTextView(this);
-	m_edit->setGeometry(5, 5, 310, 360);
+	m_textmotd = new QTextView(this);
+	m_textmotd->setGeometry(5, 5, 310, 360);
 
 	f = QFont("Courier", 10);
 	f.setFixedPitch(true);
 	f.setStyleHint(QFont::TypeWriter);
 
-	m_edit->setFont(f);
+	m_textmotd->setFont(f);
 
-	button = new QPushButton("OK", this);
+	m_webmotd = new KHTMLPart(this);
+	m_webmotd->hide();
 
-	caption = new KGGZCaption(i18n("MOTD"), i18n("GGZ Gaming Zone message of the day"), this);
+	button = new QPushButton(i18n("OK"), this);
+
+	caption = new KGGZCaption(i18n("MOTD"),
+		i18n("GGZ Gaming Zone message of the day"), this);
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(caption);
-	vbox->add(m_edit);
+	vbox->add(m_textmotd);
+	vbox->add(m_webmotd->view());
 	vbox->add(button);
 
 	connect(button, SIGNAL(clicked()), SLOT(close()));
@@ -90,19 +97,24 @@ KGGZMotd::~KGGZMotd()
 }
 
 // add more lines
-void KGGZMotd::append(const char *text)
+void KGGZMotd::append(QString text)
 {
 	unsigned int i;
 	int j, count;
-	const char *html[] = {"000000", "20ff00", "0000ff", "ffa000", "ff00ff", "300fff", "a0d000", "00ff70", "ff20ff", "777777", "AAAAAA"};
+	const char *html[] =
+	{
+		"000000", "20ff00", "0000ff", "ffa000",
+		"ff00ff", "300fff", "a0d000", "00ff70",
+		"ff20ff", "777777", "AAAAAA"
+	};
 	QString buffer;
 
 	count = 0;
-	for(i = 0; i < strlen(text); i++)
+	for(i = 0; i < text.length(); i++)
 	{
 		if(text[i] != '%')
 		{
-			switch(text[i])
+			switch(text[i].latin1())
 			{
 				case ' ':
 					buffer.append("&nbsp;");
@@ -124,8 +136,8 @@ void KGGZMotd::append(const char *text)
 		}
 		else
 		{
-			i+=2;
-			j = (int)text[i] - 48;
+			i += 2;
+			j = text[i].latin1() - 48;
 			if((j >= 0) && (j <= 9))
 			{
 				buffer.append("<font color=#");
@@ -136,22 +148,22 @@ void KGGZMotd::append(const char *text)
 		}
 	}
 
-	m_edit->append(buffer);
+	m_textmotd->append(buffer);
 }
 
-void KGGZMotd::setSource(const char **data)
+void KGGZMotd::setWebpage(QString url)
 {
-	const char **motd;
+	KGGZDEBUG("MOTD Webpage: %s!\n", url.latin1());
+	if(url.isNull()) return;
 
-	motd = data;
-	if(!motd)
-	{
-		KGGZDEBUG("No MOTD data received!\n");
-		return;
-	}
+	m_textmotd->hide();
+	m_webmotd->show();
 
-	m_edit->setText("");
-	for(int i = 0; motd[i] != NULL; i++)
-		append(motd[i]);
+	m_webmotd->openURL(url);
+}
+
+void KGGZMotd::setSource(QString motd)
+{
+	m_textmotd->setText(motd);
 }
 

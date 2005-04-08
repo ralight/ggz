@@ -1,7 +1,4 @@
 # translation of es.po to 
-# translation of es.po to
-# translation of es.po to
-# translation of es.po to
 # Copyright (C) 2005 Free Software Foundation, Inc.
 # Ricardo Quesada <riq@core-sdi.com>, 2001.
 # Luis Pérez Meliá <luis.perez@f1-connecting.com>, 2005.
@@ -26,14 +23,13 @@ msgstr " (fuera de "
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:279
 msgid "%1 -- MARK --"
-msgstr ""
+msgstr "%1 -- MARK --"
 
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:104
 msgid "&Available tables"
 msgstr "&Tablas disponibles"
 
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:124
-#, fuzzy
 msgid "&Cancel game"
 msgstr "&Cancelar juego"
 
@@ -82,7 +78,6 @@ msgid "&List of players"
 msgstr "&Lista de jugadores"
 
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:142
-#, fuzzy
 msgid "&Preferences"
 msgstr "&Preferencias"
 
@@ -115,7 +110,6 @@ msgid "(GGZ team)"
 msgstr "(Equipo GGZ)"
 
 #: ../../ggz-kde/src/KGGZ.cpp:559
-#, fuzzy
 msgid "(unknown)"
 msgstr "(desconocido)"
 
@@ -125,7 +119,7 @@ msgstr "(sin uso)"
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:264
 msgid "--> %1"
-msgstr ""
+msgstr "--> %1"
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:246
 msgid "/away &lt;message&gt; - show a goodbye message."
@@ -647,7 +641,7 @@ msgstr "Iniciar sesión como:"
 
 #: ../../ggz-kde/src/KGGZ.cpp:1024
 msgid "Logged in as %1"
-msgstr "Sesión iniciada como %s"
+msgstr "Sesión iniciada como %1"
 
 #: ../../ggz-kde/src/KGGZ.cpp:1103
 msgid "Logged out"

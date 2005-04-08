@@ -946,6 +946,7 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 	QString entry;
 #endif
 	int roomnumber;
+	GGZMotdEventData *motd;
 
 	emit signalActivity(ACTIVITY_ROOM);
 
@@ -1042,7 +1043,9 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 		case GGZCoreServer::motdloaded:
 			KGGZDEBUG("motdloaded\n");
 			if(!m_motd) m_motd = new KGGZMotd(NULL, "KGGZMotd");
-			m_motd->setSource((const char**)data);
+			motd = (GGZMotdEventData*)data;
+			m_motd->setSource(motd->motd);
+			m_motd->setWebpage(motd->url);
 			if(m_showmotd) m_motd->show();
 			break;
 		case GGZCoreServer::roomlist:
