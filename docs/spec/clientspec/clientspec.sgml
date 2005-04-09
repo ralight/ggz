@@ -23,8 +23,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 7048 $</revnumber>
-	<date>$Date: 2005-03-26 02:38:51 -0800 (Sat, 26 Mar 2005) $</date>
+	<revnumber>$Revision: 7097 $</revnumber>
+	<date>$Date: 2005-04-09 02:44:36 -0700 (Sat, 09 Apr 2005) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -54,7 +54,10 @@
     <title>The Protocol</title>
 
 <para>
-  foo bar
+  Communication between client and game client happens by means of binary
+  tokens (opcodes), which are of type integer, followed by zero or more
+  opcode-specific variables which can be of type integer, character,
+  or string.
 </para>
 
 <para>
@@ -67,7 +70,10 @@
   <title>Startup</title>
 
   <para>
-    blubb
+    Each game client starts up in CREATED mode. In this step there is
+    no information about seats or players yet. The only useful action
+    is to wait for a LAUNCH message so the transition to the CONNECTED
+    state can happen.
   </para>
 
 </section>
@@ -76,7 +82,10 @@
   <title>Connected phase</title>
 
   <para>
-    blubb
+    When in CONNECTED state, a game client still isn't operable. There
+    is another mandatory transition it has to do, namely to the WAITING
+    state. This happens once the core client tells it where to connect
+    to, and this connections could be established without problems.
   </para>
 
 </section>
@@ -85,7 +94,10 @@
   <title>Pregame phase</title>
 
   <para>
-    blubb
+    Now that the game client is in WAITING state, it is fully operational
+    and connected to the game server. The game server will receive
+    player join events, until the game can start. This transition leads
+    to the PLAYING state.
   </para>
 
 </section>
@@ -94,7 +106,10 @@
   <title>Playing phase</title>
 
   <para>
-    blubb
+    The PLAYING state is fully under the control of the game client.
+    In case of a leaving player, it can change the state back to WAITING,
+    and then forward to PLAYING again at any time. Once the game is finished,
+    the (last) transition is done and leads to the DONE state.
   </para>
 
 </section>
@@ -103,7 +118,8 @@
   <title>Done phase</title>
 
   <para>
-    blubb
+    Once a game has reached the DONE state, there's no way back anymore.
+    It will be destroyed and the corresponding table removed.
   </para>
 
 </section>
@@ -161,7 +177,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Initializes the game with its seat data</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -240,7 +256,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Tells the game where to connect to</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -319,7 +335,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Assigns the player's seat on the table</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -398,7 +414,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Assigns one single seat on the table</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -471,7 +487,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Assigns one single spectator seat on the table</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -544,7 +560,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Message from a player on the table</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -682,7 +698,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Statistics about a player</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -756,7 +772,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Indicate state change</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -817,7 +833,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Request to stand up from table and become spectator</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -884,7 +900,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Request to sit down and become a player again</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -951,7 +967,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Boot a player from the table</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -1018,7 +1034,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Reqest for a bot joining the table</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -1085,7 +1101,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Open up a previously reserved seat</para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -1152,7 +1168,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>blubb...</para>
+      <para>Send a chat message</para>
       <refsect2>
         <title>Message Data</title>
         <para>
