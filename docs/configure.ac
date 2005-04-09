@@ -72,6 +72,7 @@ AC_CONFIG_FILES([Makefile
 	games/external-games/Makefile
 	games/ggzcards/Makefile
 	games/game-development/Makefile
+	games/modules/Makefile
 	ggz-project/Makefile
 	coreclients/Makefile
 	grubby/Makefile
