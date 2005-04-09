@@ -23,15 +23,18 @@ include_once("match.php");
 $match = new Match($lookup);
 $game = strtolower($match->game);
 
-include_once("savegame_$game.php");
+$savegamehandler = @include_once("savegame_$game.php");
+if (!$savegamehandler) :
+	echo "The gametype $game doesn't have a savegame handler.";
+else :
+	$savegamedir = $ggzgamedir;
+	$savegamefile = "$savegamedir/$match->game/$match->savegame";
 
-$savegamedir = $ggzgamedir;
-$savegamefile = "$savegamedir/$match->game/$match->savegame";
+	$savegame = new Savegame();
+	$savegame->load($savegamefile);
 
-$savegame = new Savegame();
-$savegame->load($savegamefile);
-
-echo "<img src='image_$game.php?savegamefile=$savegamefile'>\n";
+	echo "<img src='image_$game.php?savegamefile=$savegamefile'>\n";
+endif;
 
 ?>
 	</div>
@@ -44,22 +47,24 @@ echo "<img src='image_$game.php?savegamefile=$savegamefile'>\n";
 	<div class="text">
 <?php
 
-$starttime = date("d.m.Y H:i:s", $savegame->starttime);
-$endtime = date("d.m.Y H:i:s", $savegame->endtime);
+if ($savegamehandler) :
+	$starttime = date("d.m.Y H:i:s", $savegame->starttime);
+	$endtime = date("d.m.Y H:i:s", $savegame->endtime);
 
-if ($savegame->winner) :
-	$winner = $match->link($savegame->winner);
-else :
-	$winner = "no winner (tie game)";
+	if ($savegame->winner) :
+		$winner = $match->link($savegame->winner);
+	else :
+		$winner = "no winner (tie game)";
+	endif;
+
+	echo "Board size: $savegame->width x $savegame->height<br>\n";
+	echo "Started: $starttime<br>\n";
+	echo "Finished: $endtime<br>\n";
+	echo "Winner: $winner<br>\n";
+	echo "<br>\n";
+
+	echo $savegame->history;
 endif;
-
-echo "Board size: $savegame->width x $savegame->height<br>\n";
-echo "Started: $starttime<br>\n";
-echo "Finished: $endtime<br>\n";
-echo "Winner: $winner<br>\n";
-echo "<br>\n";
-
-echo $savegame->history;
 
 ?>
 	</div>
