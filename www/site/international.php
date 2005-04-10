@@ -45,6 +45,16 @@ $i = strlen($dir);
 while($dir[$i] != "/") $i--;
 $dir = substr($dir, 0, $i);
 
+$displayfile = $file;
+$uri = $_SERVER['REQUEST_URI'];
+if((substr($uri, strlen($uri) - 1, 1) == "/") && (!strpos($uri, "."))) :
+	$root = $_SERVER['DOCUMENT_ROOT'];
+	$fulluri = "$root$uri";
+	if (!is_dir($fulluri)) :
+		$displayfile = "../$file";
+	endif;
+endif;
+
 $d = opendir($dir);
 while($f = readdir($d))
 {
@@ -57,7 +67,7 @@ while($f = readdir($d))
 		$country = country($lang);
 
 		$img = "/pics/site/flags/flag-$country.png";
-		echo "<a href=\"$file.$lang\"><img class=\"flag\" src=\"$img\" alt=\"$lang\"></a>\n";
+		echo "<a href=\"$displayfile.$lang\"><img class=\"flag\" src=\"$img\" alt=\"$lang\"></a>\n";
 	endif;
 }
 closedir($d);
