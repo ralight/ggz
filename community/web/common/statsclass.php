@@ -56,7 +56,7 @@ class Statistics
 	{
 		$database = $this->database;
 
-		$res = $database->exec("SELECT teamname FROM teams ORDER BY teamname LIMIT $max");
+		$res = $database->exec("SELECT teamname FROM teams ORDER BY RANDOM() LIMIT $max");
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$team = $database->result($res, $i, "teamname");
@@ -73,7 +73,7 @@ class Statistics
 	{
 		$database = $this->database;
 
-		$res = $database->exec("SELECT handle FROM users ORDER BY handle ASC LIMIT $max");
+		$res = $database->exec("SELECT handle FROM users ORDER BY RANDOM() LIMIT $max");
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$handle = $database->result($res, $i, "handle");
@@ -90,7 +90,8 @@ class Statistics
 	{
 		$database = $this->database;
 
-		$res = $database->exec("SELECT DISTINCT game FROM stats ORDER BY game ASC LIMIT $max");
+		$res = $database->exec("SELECT game FROM (SELECT DISTINCT game FROM stats) " .
+			"AS game ORDER BY RANDOM() LIMIT $max");
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$game = $database->result($res, $i, "game");
