@@ -135,7 +135,7 @@ if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdetc="$ac_ggz_stdetc/ggzd /usr/local/etc/ggzd /etc/ggzd"
 fi
 if test "x$1" = "xexport" || test "x$2" = "xexport"; then
-  CPPFLAGS="$CPPFLAGS -isystem${ac_ggz_prefix_incdir}"
+  CPPFLAGS="$CPPFLAGS -isystem ${ac_ggz_prefix_incdir}"
   LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir}"
 fi
 
