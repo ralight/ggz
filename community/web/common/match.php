@@ -44,9 +44,25 @@ class Match
 		endif;
 	}
 
+	function loadtournament()
+	{
+		global $database;
+
+		$res = $database->exec("SELECT DISTINCT handle FROM tournamentplayers, users " .
+			"WHERE tournamentplayers.name =users.handle");
+		for ($i = 0; $i < $database->numrows($res); $i++)
+		{
+			$handle = $database->result($res, $i, "handle");
+
+			$this->playertypes[$handle] = "registered";
+		}
+	}
+
 	function link($handle)
 	{
 		$playertype = $this->playertypes[$handle];
+		if (!$playertype) $playertype = "unknown";
+
 		if ($playertype == "registered") :
 			$link = "<a href='/db/players/?lookup=$handle'>$handle ($playertype)</a>";
 		else :

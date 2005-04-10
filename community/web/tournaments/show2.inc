@@ -1,5 +1,7 @@
 <?php
 
+include_once("match.php");
+
 $res = $database->exec("SELECT * FROM tournaments WHERE id = $tid");
 
 $name = $database->result($res, $i, "name");
@@ -17,12 +19,15 @@ echo "Starting: $datestr<br><br>\n";
 echo "Participants:<br><br>\n";
 $res = $database->exec("SELECT * FROM tournamentplayers WHERE id = $tid");
 $num = 0;
+$match = new Match();
+$match->loadtournament();
 for($i = 0; $i < $database->numrows($res); $i++)
 {
 	$name = $database->result($res, $i, "name");
 	$number = $database->result($res, $i, "number");
 
-	echo "<a href=\"/db/players/?lookup=$name\">$name</a><br>\n";
+	echo $match->link($name);
+	echo "<br>\n";
 
 	$num++;
 	$players[$number] = $name;

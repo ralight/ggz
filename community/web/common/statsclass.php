@@ -52,11 +52,17 @@ class Statistics
 		$this->games_number = $database->result($res, 0, "count");
 	}
 
-	function listTeams($max = 999)
+	function listTeams($max = 999, $random = false)
 	{
 		$database = $this->database;
 
-		$res = $database->exec("SELECT teamname FROM teams ORDER BY RANDOM() LIMIT $max");
+		if ($random) :
+			$sort = "RANDOM()";
+		else :
+			$sort = "teamname ASC";
+		endif;
+
+		$res = $database->exec("SELECT teamname FROM teams ORDER BY $sort LIMIT $max");
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$team = $database->result($res, $i, "teamname");
@@ -69,11 +75,17 @@ class Statistics
 		}
 	}
 
-	function listPlayers($max = 999)
+	function listPlayers($max = 999, $random = false)
 	{
 		$database = $this->database;
 
-		$res = $database->exec("SELECT handle FROM users ORDER BY RANDOM() LIMIT $max");
+		if ($random) :
+			$sort = "RANDOM()";
+		else :
+			$sort = "handle ASC";
+		endif;
+
+		$res = $database->exec("SELECT handle FROM users ORDER BY $sort LIMIT $max");
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$handle = $database->result($res, $i, "handle");
@@ -86,12 +98,18 @@ class Statistics
 		}
 	}
 
-	function listGames($max = 999)
+	function listGames($max = 999, $random = false)
 	{
 		$database = $this->database;
 
+		if ($random) :
+			$sort = "RANDOM()";
+		else :
+			$sort = "game ASC";
+		endif;
+
 		$res = $database->exec("SELECT game FROM (SELECT DISTINCT game FROM stats) " .
-			"AS game ORDER BY RANDOM() LIMIT $max");
+			"AS game ORDER BY $sort LIMIT $max");
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$game = $database->result($res, $i, "game");

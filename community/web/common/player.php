@@ -195,17 +195,21 @@ class Player
 		endif;
 
 		$pic = "player.png";
+		$desc = "Player";
 		if ($rooms_admin) :
 			$pic = "admin.png";
+			$desc = "Administrator";
 		endif;
 		if ($chat_bot) :
 			$pic = "bot.png";
+			$desc = "Chatbot";
 		endif;
 		if ($this->handle == Auth::username()) :
 			$pic = "you.png";
+			$desc = "Yourself";
 		endif;
 
-		echo "<img src='/db/ggzicons/players/$pic' width=16 height=16>\n";
+		echo "<img src='/db/ggzicons/players/$pic' width=16 height=16 title='$desc'>\n";
 	}
 }
 

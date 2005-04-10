@@ -1,6 +1,6 @@
 AddDefaultCharset utf-8
 
-php_value include_path ".:/home/ggzd/ggzcommunity.org:/home/ggzd/ggzcommunity.org/common"
+php_value include_path ".:/home/ggz/cvs-version/community/web:/home/ggz/cvs-version/community/web/common"
 
 php_value error_reporting E_ALL
 

@@ -80,6 +80,21 @@ function stats_gamesheader($lookup)
 	echo $lookup;
 }
 
+function stats_matchheader($lookup)
+{
+	echo "Match #$lookup";
+}
+
+function stats_tournamentheader($lookup)
+{
+	echo "Tournament #$lookup";
+}
+
+function stats_teamheader($lookup)
+{
+	echo "Team $lookup";
+}
+
 function stats_games($lookup)
 {
 global $database;
@@ -171,9 +186,11 @@ global $database;
 		echo "Founding date: $date.<br>\n";
 		echo "Founded by: <a href='/db/players/?lookup=$founder'>$founder</a>.<br>\n";
 		echo "Homepage: <a href='$homepage'>$homepage</a>.<br>\n";
-		echo "Team logo:<br>\n";
-		echo "<img src='$icon' height='64'>\n";
-		echo "<br clear='all'>\n";
+		if ($icon) :
+			echo "Team logo:<br>\n";
+			echo "<img src='$icon' height='64'>\n";
+			echo "<br clear='all'>\n";
+		endif;
 		echo "<br>\n";
 
 	}
@@ -196,22 +213,25 @@ global $database;
 			$title = "";
 
 			if (strstr($role, "founder")) :
-				$title .= "Founder & ";
+				$title .= "Founder";
 				$attribute = "s";
 			endif;
 			if (strstr($role, "leader")) :
-				$title .= "Leader & ";
+				if ($title) $title .= " &amp; ";
+				$title .= "Leader";
 				$color = "gold";
 				if ($attribute != "s") :
 					$attribute = "d";
 				endif;
 			endif;
 			if (strstr($role, "vice")) :
-				$title .= "Vice Leader & ";
+				if ($title) $title .= " &amp; ";
+				$title .= "Vice Leader";
 				$color = "gold";
 			endif;
-
-			$title = substr($title, 0, strlen($title) - 2);
+			if (!$title) :
+				$title = "Member";
+			endif;
 
 			echo "<img src='/db/ggzicons/rankings/$color$attribute.png' title='$title'>\n";
 			echo "<a href='/db/players/?lookup=$handle'>$handle</a> (since $date)<br>\n";

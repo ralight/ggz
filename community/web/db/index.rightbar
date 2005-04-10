@@ -15,7 +15,7 @@
 	<div class="menubar">
 		<h1>Teams</h1>
 		<div class="menu">
-		<?php $stat->listTeams(5); ?>
+		<?php $stat->listTeams(5, true); ?>
 		</div>
 	</div>
 
@@ -24,7 +24,7 @@
 	<div class="menubar">
 		<h1>Players</h1>
 		<div class="menu">
-		<?php $stat->listPlayers(5); ?>
+		<?php $stat->listPlayers(5, true); ?>
 		</div>
 	</div>
 
@@ -33,7 +33,7 @@
 	<div class="menubar">
 		<h1>Games</h1>
 		<div class="menu">
-		<?php $stat->listGames(5); ?>
+		<?php $stat->listGames(5, true); ?>
 		</div>
 	</div>
 </div>

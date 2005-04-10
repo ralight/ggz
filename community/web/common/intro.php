@@ -4,13 +4,52 @@ function games_intro()
 {
 	global $database;
 
-	$res = $database->exec("SELECT game, COUNT(game) FROM matches GROUP BY game ORDER BY COUNT(game) DESC LIMIT 1");
+	$res = $database->exec("SELECT game, COUNT(game) FROM matches " .
+		"GROUP BY game ORDER BY COUNT(game) DESC LIMIT 1");
 	if (($res) && ($database->numrows($res))) :
 		$count = $database->result($res, $i, "count");
 		$game = $database->result($res, $i, "game");
 
 		echo "<img src='/db/ggzicons/games/$game.png' width=16 height=16>\n";
-		echo "The most popular game is <a href='/db/games/?lookup=$game'>$game</a> with $count finished matches.";
+		echo "The most popular game is ";
+		echo "<a href='/db/games/?lookup=$game'>$game</a> ";
+		echo "with $count finished matches.";
+	endif;
+}
+
+function match_intro()
+{
+	global $database;
+
+	$res = $database->exec("SELECT winner, COUNT(winner) FROM matches " .
+		"GROUP BY winner ORDER BY COUNT(winner) DESC LIMIT 1");
+	if (($res) && ($database->numrows($res))) :
+		$count = $database->result($res, $i, "count");
+		$player = $database->result($res, $i, "winner");
+
+		$p = new Player($player);
+		$p->icon();
+
+		echo "The most successful player is ";
+		echo "<a href='/db/players/?lookup=$player'>$player</a> ";
+		echo "who won $count matches.";
+	endif;
+}
+
+function tournament_intro()
+{
+	global $database;
+
+	$res = $database->exec("SELECT game, COUNT(game) FROM tournaments " .
+		"GROUP BY game ORDER BY COUNT(game) DESC LIMIT 1");
+	if (($res) && ($database->numrows($res))) :
+		$count = $database->result($res, $i, "count");
+		$game = $database->result($res, $i, "game");
+
+		echo "<img src='/db/ggzicons/games/$game.png' width=16 height=16>\n";
+		echo "The most popular game in tournaments is ";
+		echo "<a href='/db/games/?lookup=$game'>$game</a> ";
+		echo "with $count occurrences.";
 	endif;
 }
 
@@ -28,7 +67,25 @@ function player_intro()
 		$p = new Player($player);
 		$p->icon();
 
-		echo "The most active player is <a href='/db/players/?lookup=$player'>$player</a> with $count games played.";
+		echo "The most active player is ";
+		echo "<a href='/db/players/?lookup=$player'>$player</a> ";
+		echo "with $count games played.";
+	endif;
+}
+
+function team_intro()
+{
+	global $database;
+
+	$res = $database->exec("SELECT teamname, COUNT(teamname) FROM teammembers " .
+		"GROUP BY teamname ORDER BY COUNT(teamname) DESC LIMIT 1");
+	if (($res) && ($database->numrows($res))) :
+		$count = $database->result($res, $i, "count");
+		$team = $database->result($res, $i, "teamname");
+
+		echo "The largest team is ";
+		echo "<a href='/db/teams/?lookup=$team'>$team</a> ";
+		echo "with $count members.";
 	endif;
 }
 
