@@ -15,6 +15,8 @@ class Game:
 		self.setonly = 0
 		self.intersections = 0
 		self.noemptytiles = 0
+		self.players = 2
+		self.turnplayer = 0
 
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))

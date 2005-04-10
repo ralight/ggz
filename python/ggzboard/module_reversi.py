@@ -15,6 +15,8 @@ class Game:
 		self.setonly = 1
 		self.intersections = 0
 		self.noemptytiles = 0
+		self.players = 2
+		self.turnplayer = 0
 
 		self.boardstyle = None
 

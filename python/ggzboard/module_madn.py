@@ -16,6 +16,8 @@ class Game:
 		self.setonly = 0
 		self.intersections = 0
 		self.noemptytiles = 1
+		self.players = 4
+		self.turnplayer = 0
 
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))
@@ -168,6 +170,7 @@ class Game:
 		(oldx, oldy) = frompos
 		print "validate moves from", frompos, "to", topos, "counting", steps
 		(cx, cy) = (oldx, oldy)
+		(gfx, color) = self.board[oldy][oldx]
 		performedsteps = 0
 		transitions = (
 			((0, 4), (3, 4), (1, 0), None),
@@ -227,12 +230,14 @@ class Game:
 
 	def trymove(self, frompos, topos):
 		print "tryomove -- ", frompos, topos, "using last dice", self.lastdice
+		if not self.lastdice:
+			return 0
 		(x, y) = topos
 		(oldx, oldy) = frompos
 		if not self.board[oldy][oldx]:
 			return 0
 		if frompos == topos:
-			self.lastdice = None
+			#self.lastdice = None
 			return 0
 		(gfx, color) = self.board[oldy][oldx]
 		
@@ -291,7 +296,8 @@ class Game:
 		return self.isover
 
 	def toggleplayer(self):
-		pass
+		#pass
+		self.turnplayer = (self.turnplayer + 1) % self.players
 
 	def rolldice(self):
 		if self.lastdice is not None:

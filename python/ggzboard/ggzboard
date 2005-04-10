@@ -37,6 +37,9 @@ def asciify(str):
 		asciistr = str.encode("ascii", "replace")
 		return asciistr
 
+def username():
+	return pwd.getpwuid(os.geteuid())[0]
+
 class Conf:
 	def __init__(self):
 		self.alpha = 120
@@ -139,7 +142,7 @@ class GGZBoard:
 		return surface
 
 	def walker(self, arg, dirname, fnames):
-		ex = re.compile("^module_(\S+).py$")
+		ex = re.compile("^module_(\S+)\.py$")
 		for file in fnames:
 			m = ex.match(file)
 			if m:
@@ -155,7 +158,11 @@ class GGZBoard:
 			self.loadgame(gamename)
 
 	def loadgame(self, gamename):
-		(fileobj, filename, desc) = imp.find_module("module_" + gamename, None)
+		try:
+			(fileobj, filename, desc) = imp.find_module("module_" + gamename, None)
+		except:
+			print _("GGZBoard game %s not found") % gamename
+			sys.exit(1)
 		mod = imp.load_module("ggzboardgame", fileobj, filename, desc)
 		fileobj.close()
 		self.game = mod.ggzboardgame
@@ -294,6 +301,7 @@ class GGZBoard:
 		oldx = -1
 		oldy = -1
 		aiturn = 0
+		lastturn = -1
 		shift = 0
 
 		thinking = 0
@@ -381,9 +389,12 @@ class GGZBoard:
 						considered = 1
 				if considered:
 					if x >= game.width or y >= game.height or x < 0 or y < 0:
-						# ignore
-						pass
-					elif oldx == -1:
+						considered = 0
+					elif game.boardstyle and game.noemptytiles:
+						if not game.boardstyle[y][x]:
+							considered = 0
+				if considered:
+					if oldx == -1:
 						if game.setonly:
 							ret = game.trymove(None, (x, y))
 							if ret:
@@ -426,6 +437,14 @@ class GGZBoard:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
 				ui.backgroundarea.blit(title, (20, 30))
 
+				if lastturn != game.turnplayer:
+					lastturn = game.turnplayer
+					if game.dice:
+						ret = game.rolldice()
+						if ret == 0:
+							# TODO: ???
+							pass
+
 				if not inputallowed:
 					w = ui.backgroundarea.get_width()
 					h = ui.backgroundarea.get_height()
@@ -458,28 +477,39 @@ class GGZBoard:
 							else:
 								ui.backgroundarea.blit(img, (sx, sy))
 
+				playernames = None
 				if self.ggzsuccess:
+					if net.playernames:
+						playernames = net.playernames
+				if not playernames:
+					playernames = []
+					playernames.append(username())
+					for i in range(game.players - 1):
+						playernames.append(_("AI #%s") % str(i + 1))
+				if playernames:
 					w = ui.backgroundarea.get_width()
 					h = ui.backgroundarea.get_height()
-					if net.playernames:
-						i = 0
-						for player in net.playernames:
-							x = w - conf.marginwidth
-							y = conf.marginheight + i * 60
-							caption = ui.smallfont.render("Player " + str(i + 1) + ":", 1, (255, 200, 0))
-							ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
-							player = ui.smallfont.render(player, 1, (255, 200, 0))
-							ui.backgroundarea.blit(player, (x - player.get_width(), y + 30))
-							i += 1
+					i = 0
+					for player in playernames:
+						x = w - conf.marginwidth
+						y = conf.marginheight + i * 50
+						playerstr = _("Player %s:") % str(i + 1)
+						if i == game.turnplayer:
+							playerstr = "*** " + playerstr
+						caption = ui.smallfont.render(playerstr, 1, (255, 200, 0))
+						ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
+						player = ui.smallfont.render(player, 1, (255, 200, 0))
+						ui.backgroundarea.blit(player, (x - player.get_width(), y + 18))
+						i += 1
 
 				if game.dice:
 					w = ui.backgroundarea.get_width()
 					h = ui.backgroundarea.get_height()
 					i = 3
-					if not aiturn:
-						ret = game.rolldice()
-						if ret == 0:
-							aiturn = 1
+					#if not aiturn:
+					#	ret = game.rolldice()
+					#	if ret == 0:
+					#		aiturn = 1
 					updatescreen = 1
 					for dice in game.dice:
 						x = w - conf.marginwidth
@@ -511,13 +541,19 @@ class GGZBoard:
 				updatescreen = 1
 
 			if aiturn:
-				aiturn = 0
+				if self.ggzsuccess:
+					aiturn = 0
+				else:
+					if game.turnplayer == game.players - 1:
+						aiturn = 0
 				thinking = 0
 				(ret, frompos, topos) = game.aimove()
 				print "RET(find)", ret
 				if ret:
 					game.toggleplayer()
 					game.domove(frompos, topos)
+				else:
+					game.toggleplayer()
 
 				updatescreen = 1
 
@@ -543,17 +579,17 @@ if __name__ == "__main__":
 			if param:
 				param = 0
 			else:
-				print "Unknown option:", sys.argv[i]
+				print _("Unknown option: %s") % sys.argv[i]
 
 	if help:
-		print "GGZBoard - common board game client for GGZ"
-		print "Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>"
-		print "Published under GNU GPL conditions"
+		print _("GGZBoard - common board game client for GGZ")
+		print _("Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>")
+		print _("Published under GNU GPL conditions")
 		print ""
-		print "Options:"
-		print "[-h | --help           ] Display this game help"
-		print "[-g | --ggz            ] Request game in GGZ mode"
-		print "[-G | --game <gamename>] Skip intro screen and launch game directly"
+		print _("Options:")
+		print _("[-h | --help           ] Display this game help")
+		print _("[-g | --ggz            ] Request game in GGZ mode")
+		print _("[-G | --game <gamename>] Skip intro screen and launch game directly")
 		sys.exit(0)
 
 	core = GGZBoard()

@@ -17,6 +17,8 @@ class Game:
 		self.setonly = 0
 		self.intersections = 0
 		self.noemptytiles = 0
+		self.players = 2
+		self.turnplayer = 0
 
 		self.boardstyle = None
 
@@ -151,6 +153,7 @@ class Game:
 		return self.isover
 
 	def toggleplayer(self):
-		pass
+		#pass
+		self.turnplayer = (self.turnplayer + 1) % self.players
 
 ggzboardgame = Game()
