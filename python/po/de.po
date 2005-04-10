@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-27 13:45+0100\n"
-"PO-Revision-Date: 2005-02-27 13:41+0100\n"
+"POT-Creation-Date: 2005-04-10 15:02+0200\n"
+"PO-Revision-Date: 2005-04-10 15:02+0200\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,54 +28,102 @@ msgstr "installiert"
 msgid "error"
 msgstr "fehler"
 
-#: ../ggzboard/ggzboard:175
+#: ../ggzboard/ggzboard:164
+#, python-format
+msgid "GGZBoard game %s not found"
+msgstr "GGZBoard-Spiel %s nicht gefunden"
+
+#: ../ggzboard/ggzboard:182
 msgid "GGZBoard"
 msgstr "GGZBoard"
 
-#: ../ggzboard/ggzboard:197 ../ggzboard/ggzboard:199
+#: ../ggzboard/ggzboard:204 ../ggzboard/ggzboard:206
 msgid "GGZBoard: game selection"
 msgstr "GGZBoard: Spielauswahl"
 
-#: ../ggzboard/ggzboard:278 ../ggzboard/ggzboard:285 ../ggzboard/ggzboard:313
+#: ../ggzboard/ggzboard:285 ../ggzboard/ggzboard:292 ../ggzboard/ggzboard:320
 msgid "GGZBoard: "
 msgstr "GGZBoard: "
 
-#: ../ggzboard/ggzboard:282 ../ggzboard/ggzboard:311
+#: ../ggzboard/ggzboard:289 ../ggzboard/ggzboard:318
 msgid " (running on GGZ)"
 msgstr " (über GGZ spielend)"
 
-#: ../ggzboard/ggzboard:284 ../ggzboard/ggzboard:312
+#: ../ggzboard/ggzboard:291 ../ggzboard/ggzboard:319
 msgid " (unavailable)"
 msgstr " (nicht verfügbar)"
 
+#: ../ggzboard/ggzboard:479
+#, python-format
+msgid "AI #%s"
+msgstr "KI #%s"
+
 #: ../ggzboard/ggzboard:487
+#, python-format
+msgid "Player %s:"
+msgstr "Spieler %s:"
+
+#: ../ggzboard/ggzboard:508
 msgid "Dice: "
 msgstr "Würfel: "
 
-#: ../ggzboard/ggzboard:500
+#: ../ggzboard/ggzboard:521
 msgid "Thinking..."
 msgstr "Nachdenken..."
 
-#: ../ggzboard/module_checkers.py:60
+#: ../ggzboard/ggzboard:567
+#, python-format
+msgid "Unknown option: %s"
+msgstr "Unbekannte Option: %s"
+
+#: ../ggzboard/ggzboard:570
+msgid "GGZBoard - common board game client for GGZ"
+msgstr "GGZBoard - gemeinsamer Brettspieleclient für GGZ"
+
+#: ../ggzboard/ggzboard:571
+msgid "Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>"
+msgstr "Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>"
+
+#: ../ggzboard/ggzboard:572
+msgid "Published under GNU GPL conditions"
+msgstr "Unter den Bedingungen der GNU GPL veröffentlicht"
+
+#: ../ggzboard/ggzboard:574
+msgid "Options:"
+msgstr "Optionen:"
+
+#: ../ggzboard/ggzboard:575
+msgid "[-h | --help           ] Display this game help"
+msgstr "[-h | --help           ] Diesen Hilfebildschirm anzeigen"
+
+#: ../ggzboard/ggzboard:576
+msgid "[-g | --ggz            ] Request game in GGZ mode"
+msgstr "[-g | --ggz            ] Spiel im GGZ-Modus starten"
+
+#: ../ggzboard/ggzboard:577
+msgid "[-G | --game <gamename>] Skip intro screen and launch game directly"
+msgstr "[-G | --game <gamename>] Einführungsbildschirm überspringen und Spiel starten"
+
+#: ../ggzboard/module_checkers.py:62
 msgid "Checkers/Draughts"
 msgstr "Dame"
 
-#: ../ggzboard/module_chess.py:72
+#: ../ggzboard/module_chess.py:74
 msgid "Chess"
 msgstr "Schach"
 
-#: ../ggzboard/module_go.py:35
+#: ../ggzboard/module_go.py:37
 msgid "Go"
 msgstr "Go"
 
-#: ../ggzboard/module_hnefatafl.py:71
+#: ../ggzboard/module_hnefatafl.py:73
 msgid "Hnefatafl"
 msgstr "Hnefatafl"
 
-#: ../ggzboard/module_madn.py:143
+#: ../ggzboard/module_madn.py:145
 msgid "Ludo"
 msgstr "Mensch ärgere dich nicht"
 
-#: ../ggzboard/module_reversi.py:40
+#: ../ggzboard/module_reversi.py:42
 msgid "Reversi"
 msgstr "Reversi"
