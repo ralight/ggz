@@ -64,6 +64,9 @@ class Locale
 		while($f = readdir($d))
 		{
 			if(substr($f, strlen($f) - 4, 4) == ".php") continue;
+			if(substr($f, strlen($f) - 8, 8) == ".leftbar") continue;
+			if(substr($f, strlen($f) - 9, 9) == ".rightbar") continue;
+
 			if(substr($f, 0, strlen("$file.")) == "$file.") :
 				$far = explode(".", $f);
 				$i = 0;
