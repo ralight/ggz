@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 6977 2005-03-11 07:08:53Z jdorje $
+ * $Id: ggz_common.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -42,6 +42,7 @@
 #define BOT_SEAT_NAME "bot"
 #define PLAYER_SEAT_NAME "player"
 #define RESERVED_SEAT_NAME "reserved"
+#define ABANDONED_SEAT_NAME "abandoned"
 #define NONE_SEAT_NAME "none"
 
 const char *ggz_seattype_to_string(GGZSeatType type)
@@ -55,6 +56,8 @@ const char *ggz_seattype_to_string(GGZSeatType type)
 		return RESERVED_SEAT_NAME;
 	case GGZ_SEAT_PLAYER:
 		return PLAYER_SEAT_NAME;
+	case GGZ_SEAT_ABANDONED:
+		return ABANDONED_SEAT_NAME;
 	case GGZ_SEAT_NONE:
 		return NONE_SEAT_NAME;
 	}
@@ -80,6 +83,8 @@ GGZSeatType ggz_string_to_seattype(const char *type_str)
 		return GGZ_SEAT_RESERVED;
 	else if (strcasecmp(type_str, PLAYER_SEAT_NAME) == 0)
 		return GGZ_SEAT_PLAYER;
+	else if (strcasecmp(type_str, ABANDONED_SEAT_NAME) == 0)
+		return GGZ_SEAT_ABANDONED;
 
 	return GGZ_SEAT_NONE;
 }

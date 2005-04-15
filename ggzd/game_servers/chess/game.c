@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 7077 2005-04-03 15:11:41Z josef $
+ * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -126,8 +126,9 @@ void game_handle_ggz_leave(GGZdMod *ggz,
 
 static int seats_full(void)
 {
-	return ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_OPEN)
-		+ ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_RESERVED) == 0;
+	return ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_OPEN) == 0
+	  && ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_RESERVED) == 0
+	  && ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
 /* game_update(int event_id, void *data) 

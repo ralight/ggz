@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 6900 2005-01-25 09:04:11Z jdorje $
+ * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -99,8 +99,9 @@ void game_handle_ggz_state(GGZdMod * ggz, GGZdModEvent event,
 
 static int seats_full(void)
 {
-	return ggzdmod_count_seats(cbt_game.ggz, GGZ_SEAT_OPEN)
-	    + ggzdmod_count_seats(cbt_game.ggz, GGZ_SEAT_RESERVED) == 0;
+	return ggzdmod_count_seats(cbt_game.ggz, GGZ_SEAT_OPEN) == 0
+	  && ggzdmod_count_seats(cbt_game.ggz, GGZ_SEAT_RESERVED) == 0
+	  && ggzdmod_count_seats(cbt_game.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
 /* This handles a player "join" event from GGZ. */

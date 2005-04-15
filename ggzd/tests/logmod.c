@@ -61,7 +61,9 @@ static int handle_game_launch()
 		case GGZ_SEAT_PLAYER:
 			printf("Received player seat\n");
 			break;
-
+		case GGZ_SEAT_ABANDONED:
+			printf("Received abandoned seat\n");
+			break;
 		}	
 		if (type == GGZ_SEAT_RESERVED
 		    && ggz_read_string(fd, name, 1024) < 0) {

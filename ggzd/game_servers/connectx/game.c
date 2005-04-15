@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -132,9 +132,11 @@ void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, const void *data)
 	}
 }
 
-static int seats_full(void){
+static int seats_full(void)
+{
 	return ggzdmod_count_seats(connectx_game.ggz, GGZ_SEAT_OPEN) == 0
-		&& ggzdmod_count_seats(connectx_game.ggz, GGZ_SEAT_RESERVED) == 0;
+	  && ggzdmod_count_seats(connectx_game.ggz, GGZ_SEAT_RESERVED) == 0
+	  && ggzdmod_count_seats(connectx_game.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
 static int seats_empty(void){

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 7067 2005-03-28 19:30:35Z josef $
+ * $Id: stats.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -256,8 +256,9 @@ void report_statistics(int room, int gametype,
 		if ((report->types[i] == GGZ_SEAT_BOT)
 		&&  (!bot_stats)) continue;
 
-		if ((report->types[i] != GGZ_SEAT_PLAYER)
-		&&  (report->types[i] != GGZ_SEAT_BOT)) {
+		if (report->types[i] != GGZ_SEAT_PLAYER
+		    && report->types[i] != GGZ_SEAT_BOT
+		    && report->types[i] != GGZ_SEAT_ABANDONED) {
 			err_msg("Unknown player type %d in stats calc.",
 				report->types[i]);
 			return;

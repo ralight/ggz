@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 6981 2005-03-11 07:35:03Z jdorje $
+ * $Id: dlg_players.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -131,6 +131,10 @@ static void update_player_list(GtkWidget * tree)
 			break;
 		case GGZ_SEAT_RESERVED:
 			status = _("Reserved");
+			name = seat.name;
+			break;
+		case GGZ_SEAT_ABANDONED:
+			status = _("Abandoned");
 			name = seat.name;
 			break;
 		case GGZ_SEAT_NONE:

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -589,8 +589,9 @@ char game_check_win(void)
 
 static int seats_full(void)
 {
-	return ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_OPEN)
-		+ ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_RESERVED) == 0;
+	return ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_OPEN) == 0
+	  && ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_RESERVED) == 0
+	  && ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
 

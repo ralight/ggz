@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 5513 2003-05-09 23:01:52Z dr_maux $
+ * $Id: engine_func.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -351,6 +351,7 @@ int ggz_init(void)
 			dbg_msg("Seat %d is a bot", i);
 			break;
 		case GGZ_SEAT_RESERVED:
+		case GGZ_SEAT_ABANDONED:
 			readstring(gameInfo.ggz_sock, &gameInfo.players[i]);
 			/* Fall through */
 		case GGZ_SEAT_OPEN: 

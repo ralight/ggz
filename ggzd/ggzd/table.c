@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 7067 2005-03-28 19:30:35Z josef $
+ * $Id: table.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -567,7 +567,8 @@ void table_game_join(GGZTable *table, const char *name,
 	   may still be necessary to always double-check. */
 	/* Remove any seat reservations this player may have. */
 	for (i = 0; i < table->num_seats; i++) {
-		if (table->seat_types[i] == GGZ_SEAT_RESERVED
+		if ((table->seat_types[i] == GGZ_SEAT_RESERVED
+		     || table->seat_types[i] == GGZ_SEAT_ABANDONED)
 		    && !strcasecmp(table->seat_names[i], name)) {
 			pthread_rwlock_wrlock(&table->lock);
 			table->seat_types[i] = GGZ_SEAT_OPEN;

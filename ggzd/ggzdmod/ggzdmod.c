@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 7067 2005-03-28 19:30:35Z josef $
+ * $Id: ggzdmod.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -699,8 +699,23 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 			     .name = NULL,
 			     .type = GGZ_SEAT_OPEN,
 			     .fd = -1};
+		const char *name;
+
+		name = ggz_strdup(ggzdmod_get_seat(ggzdmod, old_seat).name);
+		if (ggzdmod->state == GGZDMOD_STATE_PLAYING) {
+			/* Mark the seat as abandoned rather than open.
+			   FIXME - this should probably be done inside ggzd
+			   rather than here, which would allow it to be
+			   controlled by game options. However this will
+			   take some interface changes.  See also the comment
+			   in handle_reseat. */
+			s.name = name;
+			s.type = GGZ_SEAT_ABANDONED;
+		}
+
 		if (_ggzdmod_set_seat(ggzdmod, &s) < 0)
 			_ggzdmod_error(ggzdmod, "ggzdmod_reseat failed");
+		ggz_free(name); /* It's been copied in _ggzdmod_set_seat. */
 	}
 
 	if (is_spectator) {
@@ -1371,6 +1386,7 @@ void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat)
 		break;
 	case GGZ_SEAT_NONE:
 	case GGZ_SEAT_PLAYER:
+	case GGZ_SEAT_ABANDONED:
 		break;
 	}
 
@@ -1478,6 +1494,16 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 		old->fd = -1;
 
 		name = ggz_strdup(old->name);
+
+		if (ggzdmod->state == GGZDMOD_STATE_PLAYING) {
+			/* Mark the seat as abandoned rather than open.
+			   FIXME - rather than have ggzdmod-game deduce this
+			   on its own, ggzdmod-ggz should instead send the
+			   full value of the new seat.  See also the comment
+			   in ggzdmod_reseat. */
+			s.name = name;
+			s.type = GGZ_SEAT_ABANDONED;
+		}
 
 		old_old = seat_copy(old);
 		_ggzdmod_set_seat(ggzdmod, &s);
@@ -1689,6 +1715,7 @@ void ggzdmod_report_game(GGZdMod *ggzdmod,
 			switch (seat.type) {
 			case GGZ_SEAT_PLAYER:
 			case GGZ_SEAT_BOT:
+			case GGZ_SEAT_ABANDONED:
 				usable = 1;
 				break;
 			case GGZ_SEAT_RESERVED:

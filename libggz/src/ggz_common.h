@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 6760 2005-01-20 05:51:06Z jdorje $
+ * $Id: ggz_common.h 7107 2005-04-15 17:54:31Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -44,7 +44,8 @@ typedef enum {
 	GGZ_SEAT_OPEN,		/**< The seat is open (unoccupied). */
 	GGZ_SEAT_BOT,		/**< The seat has a bot (AI) in it. */
 	GGZ_SEAT_PLAYER,	/**< The seat has a regular player in it. */
-	GGZ_SEAT_RESERVED	/**< The seat is reserved for a player. */
+	GGZ_SEAT_RESERVED,	/**< The seat is reserved for a player. */
+	GGZ_SEAT_ABANDONED	/**< The seat is abandoned by a player. */
 } GGZSeatType;
 
 

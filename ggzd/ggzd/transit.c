@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5934 2004-02-16 00:21:35Z jdorje $
+ * $Id: transit.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -80,6 +80,7 @@ static GGZReturn transit_send_seat_to_game(GGZTable* table,
 
 static int transit_table_find_player(GGZTable *table, char *name);
 static int transit_table_find_spectator(GGZTable *table, char *name);
+static int transit_find_required_seat(GGZTable *table, const char *name);
 static int transit_find_available_seat(GGZTable *table, char *name);
 static int transit_find_available_spectator(GGZTable *table, char *name);
 
@@ -159,6 +160,15 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 		return GGZ_EVENT_OK;
 	}
 
+	if (seat->type == GGZ_SEAT_PLAYER && !spectating) {
+		int index = transit_find_required_seat(table, event->caller);
+
+		if (index >= 0) {
+			/* Force the player into this seat. */
+			seat->index = index;
+		}
+	}
+
 	/* Try to find a seat if one isn't specified */
 	if ((seat->type == GGZ_SEAT_PLAYER || spectating)
 	    && seat->index == GGZ_SEATNUM_ANY) {
@@ -176,6 +186,15 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 					     -1, 0);
 			return GGZ_EVENT_OK;
 		}
+	}
+
+	if (event->transit == GGZ_TRANSIT_LEAVE
+	    && event->reason == GGZ_LEAVE_NORMAL
+	    && table->state == GGZ_TABLE_PLAYING) {
+		/* The seat becomes abandoned not open. */
+		strncpy(event->seat.name, table->seat_names[seat->index],
+			sizeof(event->seat.name));
+		event->seat.type = GGZ_SEAT_ABANDONED;
 	}
 
 	if (transit_send_seat_to_game(table, event->transit,
@@ -311,6 +330,8 @@ static GGZReturn transit_send_seat_to_game(GGZTable* table,
 					event->seat.index, 1);
 		break;
 	case GGZ_TRANSIT_MOVE:
+		/* FIXME: moves shouldn't be allowed while the game
+		   is PLAYING. */
 		old_seat = transit_table_find_player(table, event->caller);
 		result = ggzdmod_reseat(table->ggzdmod,
 					old_seat, 0,
@@ -407,6 +428,25 @@ static int transit_table_find_spectator(GGZTable *table, char *name)
 }
 
 
+/* Call this function to find the required seat for a player.  Even if
+   the player gives a specific preference it should be ignored. */
+static int transit_find_required_seat(GGZTable *table, const char *name)
+{
+	int i, num_seats = seats_num(table);
+
+	for (i = 0; i < num_seats; i++) {
+		GGZSeatType type = seats_type(table, i);
+
+		if (type == GGZ_SEAT_ABANDONED
+		    && strcasecmp(table->seat_names[i], name) == 0)
+			return i;
+	}
+
+	return -1;
+}
+
+/* Call this function to find the preferred seat for a player, only if
+   the player doesn't have a preference. */
 static int transit_find_available_seat(GGZTable *table, char *name)
 {
 	int i, num_seats = seats_num(table);

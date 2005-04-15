@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: common.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -57,7 +57,8 @@ bool seats_full(void)
 {
 	/* This calculation is a bit inefficient, but that's OK */
 	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) == 0
-		&& ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
+	  && ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0
+	  && ggzdmod_count_seats(game.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
 bool seats_empty(void)

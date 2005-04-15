@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 7085 2005-04-08 12:51:50Z josef $
+ * $Id: net.c 7107 2005-04-15 17:54:31Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1647,6 +1647,10 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 				strcpy(table->seat_names[seat->index],
 				       seat->name);
 			break;
+		case GGZ_SEAT_ABANDONED:
+			/* Clients can't do this. */
+			seat_type = GGZ_SEAT_NONE;
+			break;
 		}
 		table->seat_types[seat->index] = seat_type;
 	}
@@ -1903,6 +1907,7 @@ static GGZReturn _net_send_seat(GGZNetIO *net, GGZTableSeat *seat)
 	switch (seat->type) {
 	case GGZ_SEAT_RESERVED:
 	case GGZ_SEAT_PLAYER:
+	case GGZ_SEAT_ABANDONED:
 		name = seat->name;
 		break;
 	case GGZ_SEAT_OPEN:

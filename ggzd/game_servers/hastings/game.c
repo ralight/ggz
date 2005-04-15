@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -255,8 +255,9 @@ void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, const void *data)
 /* Calculate if all seats are full */
 static int seats_full(void)
 {
-	return ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_OPEN)
-		+ ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_RESERVED) == 0;
+	return ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_OPEN) == 0
+	  && ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_RESERVED) == 0
+	  && ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -82,7 +82,8 @@ static int seats_full(void)
 {
 	/* This calculation is a bit inefficient, but that's OK */
 	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) == 0
-		&& ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
+		&& ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0
+		&& ggzdmod_count_seats(game.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
 

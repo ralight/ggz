@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 7067 2005-03-28 19:30:35Z josef $
+ * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -199,7 +199,8 @@ static int seats_full(void)
 {
 	/* This calculation is a bit inefficient, but that's OK */
 	return ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_OPEN) == 0
-		&& ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_RESERVED) == 0;
+	  && ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_RESERVED) == 0
+	  && ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
 static int seats_empty(void)

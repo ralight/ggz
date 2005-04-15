@@ -194,6 +194,8 @@ static char * seat_desc(GGZSeatType type)
 		return "None";
 	case GGZ_SEAT_PLAYER: 
 		return "Player";
+	case GGZ_SEAT_ABANDONED:
+		return "Abandoned";
 	}
 
 	return "**Error**";

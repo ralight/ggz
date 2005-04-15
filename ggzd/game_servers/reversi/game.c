@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6897 2005-01-25 08:47:18Z jdorje $
+ * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -94,7 +94,8 @@ static int seats_full(void)
 {
 	/* This calculation is a bit inefficient, but that's OK */
 	return ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_OPEN) == 0
-		&& ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_RESERVED) == 0;
+		&& ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_RESERVED) == 0
+		&& ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
 
