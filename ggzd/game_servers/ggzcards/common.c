@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: common.c 7108 2005-04-15 18:31:59Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -512,14 +512,12 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, const void *data)
 	if (seats_full()) {
 		/* If all seats are full, start playing. */
 		new_state = GGZDMOD_STATE_PLAYING;
+	} else if (seats_empty()) {
+		/* If all seats are empty, the table is done. */
+		new_state = GGZDMOD_STATE_DONE;
 	} else {
-		if (seats_empty()) {
-			/* If all seats are empty, the table is done. */
-			new_state = GGZDMOD_STATE_DONE;
-		} else {
-			/* If some seats are empty, wait for them to fill. */
-			new_state = GGZDMOD_STATE_WAITING;
-		}
+		/* If some seats are empty, wait for them to fill. */
+		new_state = GGZDMOD_STATE_WAITING;
 	}
 	if (ggzdmod_set_state(game.ggz, new_state) < 0)
 		assert(FALSE);
