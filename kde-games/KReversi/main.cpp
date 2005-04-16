@@ -19,10 +19,6 @@
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
-//#include <qstring.h>
-//#include <sys/un.h>
-//#include <sys/types.h>
-//#include <sys/socket.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <dirent.h>
@@ -37,13 +33,11 @@ static const char *REV_VERSION = "0.0.2";
 
 static const char *description =
 	I18N_NOOP("KDE client for GGZ's Reversi game module");
-// INSERT A DESCRIPTION FOR YOUR APPLICATION HERE
-	
 	
 static KCmdLineOptions options[] =
 {
-  { "ggz", I18N_NOOP("This game will use GGZ"), 0 }
-  // INSERT YOUR COMMANDLINE OPTIONS HERE
+  { "ggz", I18N_NOOP("This game will use GGZ"), 0 },
+  { 0, 0, 0 }
 };
 
 int main(int argc, char *argv[])
