@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 
 import pg
-
-cns = pg.DB(host="localhost", dbname="ggz", user="ggzd", passwd="bahouh")
-
-q = cns.query("SELECT handle, longitude, latitude, handle FROM userinfo WHERE latitude IS NOT NULL")
+import sys
 
 def norm((longitude, latitude), weight):
 	mapwidth = 596
@@ -19,22 +16,40 @@ def norm((longitude, latitude), weight):
 	ypos -= int(weight / 2)
 	return (xpos, ypos)
 
-print "<map name='ggzmap'>"
+def run(factorx, factory):
+	mapwidth = 596
+	mapheight = 331
+	radius = 10
 
-for row in q.dictresult():
-	longitude = int(row['longitude'])
-	latitude = int(row['latitude'])
-	handle = row['handle']
-	#print longitude, latitude, 10
-	(x, y) = norm((longitude, latitude), 10)
-	#print "norm", x, y
-	x = x / 4
-	y = 83 - y / 4
-	coords = str(x) + "," + str(y) + "," + str(x + 10) + "," + str(y + 10)
-	coords = "coords='" + coords + "'"
-	alt = "alt='" + handle + "'"
-	title = "title='" + handle + "'"
-	href = "href='/db/players/?lookup=" + handle + "'"
-	print "<area " + coords + " " + alt + " " + title + " " + href + ">"
-print "</map>"
+	if factorx == 4:
+		radius = 4
+	if factorx == 1:
+		radius = 8
+
+	cns = pg.DB(host="XXX", dbname="XXX", user="XXX", passwd="XXX")
+	q = cns.query("SELECT handle, longitude, latitude, handle FROM userinfo WHERE latitude IS NOT NULL")
+
+	print "<map name='ggzmap'>"
+
+	for row in q.dictresult():
+		longitude = int(row['longitude'])
+		latitude = int(row['latitude'])
+		handle = row['handle']
+		#print longitude, latitude, radius
+		(x, y) = norm((longitude, latitude), radius)
+		#print "norm", x, y
+		x = x / factorx
+		y = (mapheight - y) / factory
+		coords = str(x) + "," + str(y) + "," + str(x + radius) + "," + str(y + radius)
+		coords = "coords='" + coords + "'"
+		alt = "alt='" + handle + "'"
+		title = "title='" + handle + "'"
+		href = "href='/db/players/?lookup=" + handle + "'"
+		print "<area " + coords + " " + alt + " " + title + " " + href + ">"
+	print "</map>"
+
+factor = 1
+if len(sys.argv) == 2:
+	factor = int(sys.argv[1])
+run(factor, factor)
 
