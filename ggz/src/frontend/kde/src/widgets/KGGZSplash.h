@@ -51,21 +51,6 @@ class KGGZSplash : public QWidget
 	protected:
 		// Drawing uzdates
 		void paintEvent(QPaintEvent *e);
-		// Animation trigger
-		void timerEvent(QTimerEvent *e);
-
-	private:
-		// move the banners
-		void paintTitle();
-		// Draw the TV containing game shots
-		void paintTV();
-
-		// Widget holding the banners
-		QWidget *m_kggz, *m_version, *m_ggz;
-		// List of images to show in the animation
-		QStringList m_list;
-		// Current animation frame
-		unsigned int m_current;
 };
 
 #endif
