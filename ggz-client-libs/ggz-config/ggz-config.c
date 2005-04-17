@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 6750 2005-01-20 01:04:58Z jdorje $
+ * $Id: ggz-config.c 7115 2005-04-17 14:24:03Z josef $
  *
  * Configuration query and module install program.
  *
@@ -59,6 +59,8 @@ static char *modenvironment = NULL;
 static char *modicon = NULL;
 static char *modhelp = NULL;
 static char *modfile = NULL;
+static char *iconfile = NULL;
+static char *managediconfile = NULL;
 static int modforce = 0;
 static int moddest = 0;
 static char *destdir = NULL;
@@ -89,6 +91,8 @@ static const struct poptOption args[] = {
 
 	{"modfile",	'\0',	POPT_ARG_STRING,	&modfile,	0,
 	 "Specifies module installation file", "FILENAME"},
+	{"iconfile", '\0',	POPT_ARG_STRING,	&iconfile,	0,
+	 "Specifies icon file to use for the game", "FILENAME"},
 
 	{"force",	'\0',	POPT_ARG_NONE,	&modforce,	0,
 	 "Install over an existing module"},
@@ -252,6 +256,8 @@ static char *get_engine_id(int global)
 						    "Author", NULL);
 		ui = ggz_conf_read_string(global, engine_id,
 						"Frontend", NULL);
+		managediconfile = ggz_conf_read_string(global, engine_id,
+						"IconPath", NULL);
 
 		if((!author) || (!ui))
 		{
@@ -342,6 +348,58 @@ static int open_conffile(void)
 }
 
 
+static void handle_icon(void)
+{
+	char *path;
+	FILE *fin, *fout;
+	int ch;
+
+	if(install_mod) {
+		if(!iconfile) return;
+		/*modicon = modname;*/
+		modicon = iconfile;
+		while(strchr(modicon, '/')) {
+			modicon = strchr(modicon, '/') + 1;
+		}
+		path = ggz_malloc(strlen(GGZDATADIR) + strlen(modicon) + 30);
+		strcpy(path, GGZDATADIR);
+		strcat(path, "/ggz-config/");
+		mkdir(path, 0700);
+		strcat(path, modicon);
+		/* ggz_filecopy(iconfile, path) */
+		fin = fopen(iconfile, "r");
+		if(!fin) {
+			fprintf(stderr, "Icon file cannot be read (%s)\n", iconfile);
+			modicon = NULL;
+			return;
+		}
+		fout = fopen(path, "w");
+		if(!fout) {
+			fprintf(stderr, "Icon file cannot be written to (%s)\n", path);
+			fclose(fin);
+			modicon = NULL;
+			return;
+		}
+		while((ch = fgetc(fin)) != EOF) {
+			fputc(ch, fout);
+		}
+		fclose(fout);
+		fclose(fin);
+		ggz_free(path);
+	} else if(remove_mod) {
+		modicon = managediconfile;
+		if(!modicon) return;
+		if(modicon[0] == '/') return;
+		path = ggz_malloc(strlen(GGZDATADIR) + strlen(modicon) + 30);
+		strcpy(path, GGZDATADIR);
+		strcat(path, "/ggz-config/");
+		strcat(path, modicon);
+		unlink(path);
+		ggz_free(path);
+	}
+}
+
+
 static int remove_module(void)
 {
 	char	*engine_id;
@@ -357,6 +415,8 @@ static int remove_module(void)
 		ggz_conf_cleanup();
 		return -1;
 	}
+
+	handle_icon();
 
 	rc = ggz_conf_remove_section(global, engine_id);
 	if(rc == 0) {
@@ -406,6 +466,8 @@ static int install_module(void)
 		engine_id = new_engine_id(global);
 		modforce = 0;
 	}
+
+	handle_icon();
 
 	rc = ggz_conf_write_string(global, engine_id, "Name", modname);
 	if(rc == 0) {
@@ -831,7 +893,6 @@ phase_five:
 
 	return 0;
 }
-
 
 int main(const int argc, const char **argv)
 {
