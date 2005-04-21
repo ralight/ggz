@@ -68,9 +68,9 @@ class GGZCommEvent
 					seq -= 1
 					count = 0
 				when "%EVAL"
-					seq += 1
+					#seq += 1
 				when "%ENDEVAL"
-					seq -= 1
+					#seq -= 1
 				else
 					if x.length > 0 then
 						if not definition then
@@ -763,6 +763,7 @@ class GGZComm
 			f.puts ""
 			f.puts "#include \"" + basename + ".h" + "\""
 			f.puts "#include <stdlib.h>"
+			f.puts "#include <ggz.h>"
 			if @constants.length > 0 then
 				f.puts ""
 				@constants.each do |name, value|
@@ -800,7 +801,7 @@ class GGZComm
 			f.puts "void ggzcomm_network_main(void)"
 			f.puts "{"
 			f.puts "\tint opcode;"
-			f.puts "\tggz_read_int(&opcode);"
+			f.puts "\tggz_read_int(fd, &opcode);"
 			f.puts ""
 			f.puts "\tif(requirelink)"
 			f.puts "\t{"

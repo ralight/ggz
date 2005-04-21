@@ -15,7 +15,3 @@ EXTRA_DIST = \
 	hastings.protocol \
 	muehle.protocol
 
-test:
-	$(top_builddir)/ggzcomm/ggzcommgen.rb --protocol=tictactoe --format=c --task=server
-	$(top_builddir)/ggzcomm/ggzcommgen.rb --protocol=ggzcards --format=c++ --task=client
-
