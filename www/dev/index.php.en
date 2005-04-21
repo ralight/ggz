@@ -27,8 +27,17 @@ to ask.
 <br>
 Please see below for some quick links.
 For a CVS module overview, look <a href="cvs.php">here</a>.
-Worth a look are the <a href="tools.php">tools</a> and <a href="i18n/">i18n</a>
-and <a href="art/">artwork</a> pages.
+To inform yourself about the used tools and dependencies, view the
+<a href="tools.php">tools</a> page.
+The following pages are organized as subsections of the developer area.
+<br><br>
+
+<a href="i18n/">i18n: Internationalization</a>
+<br>
+<a href="art/">art: Artwork</a>
+<br>
+<a href="tech/">tech: Technologies from the GGZ project</a>
+<br>
 
 </td></tr>
 <tr><td valign="top">

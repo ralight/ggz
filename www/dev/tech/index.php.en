@@ -1,0 +1,65 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Technology</b><br>
+Beside game development, a lot of extra sources happen to be created in a project
+such as GGZ. On this page the developer tools are presented.
+Other game projects can make use of them even when not having integrated GGZ!
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Get Hot New Stuff integration</i><br>
+
+Sharing levels, themes, savegames or avatars among players has never been easier.
+With client implementations for SDL and KDE, this framework allows to upload
+and download data of all kind, including ratings, a download counter and more.
+Have a look at the official <a href="http://www.kstuff.org/?p=ghns">GHNS homepage</a>
+for more details.
+<br><br>
+
+<i>Communication Protocol Compiler (ggzcommgen)</i><br>
+
+Works like with an IDL compiler, albeit with extended functionality:
+From a single XML protocol specification, source code is generated automatically
+for client and/or server, using one out of several available programming languages
+and socket-level networking toolkits.
+<br><br>
+
+<i>Command-line wrappers</i><br>
+
+There is a wrapper for core client functionality, called ggz-wrapper, which allows
+external programs like IM clients to launch GGZ games of a certain type.
+Another wrapper, ggzwrap, transparently forwards game client communication read
+on/written to stdout, making it suitable for games which communicate this way
+and enabling the usage of Java clients. For KDE, the graphical equivalent
+ShadowBridge exists.
+<br><br>
+
+<i>Metaserver</i><br>
+
+The GGZ metaserver is a generic data server with both XML and URI protocol support.
+It allows for data storage, incremental synchronization, authentication and peer
+updates.
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
