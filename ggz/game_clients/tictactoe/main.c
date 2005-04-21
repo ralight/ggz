@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 6664 2005-01-14 03:20:49Z jdorje $
+ * $Id: main.c 7118 2005-04-21 17:54:44Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -93,8 +93,10 @@ static void initialize_about_dialog(void)
 
 static char get_player_symbol(int player)
 {
-	assert(player >= 0 && player < 2);
-	return player ? 'O' : 'X';
+	assert(player >= -1 && player <= 1);
+	if (player == 0) return 'O';
+	else if (player == 1) return 'X';
+	else return '-';
 }
 
 
@@ -155,6 +157,8 @@ int receive_seat(void)
 
 	if (ggz_read_int(game.fd, &game.num) < 0)
 		return -1;
+
+	game_status(_("Waiting for other player..."));
 
 	return 0;
 }
