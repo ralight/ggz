@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: table.c 7117 2005-04-21 17:18:08Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -887,14 +887,14 @@ static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
 		game_name = ggz_strdup(game_types[type].name);
 		pthread_rwlock_unlock(&game_types[type].lock);
 		
-		dbg_msg(GGZ_DBG_TABLE, "(%s) %s", game_name, msg);
+		dbg_msg(GGZ_DBG_GAME_MSG, "(%s) %s", game_name, msg);
 		
 		ggz_free(game_name);
 	} else {
 		/* It's important that we use the %s so that we can
 		   safely log messages containing % and other printf
 		   meta-characters. */
-		dbg_msg(GGZ_DBG_TABLE, "%s", msg);
+		dbg_msg(GGZ_DBG_GAME_MSG, "%s", msg);
 	}
 }
 
