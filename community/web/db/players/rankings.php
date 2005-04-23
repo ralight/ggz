@@ -19,8 +19,10 @@ function rankings_players($lookup)
 			$icon = "cupbronzeg.png";
 		endif;
 
+		$gamelink = "<a href='/db/games/?lookup=$game'>$game</a>";
+
 		echo "<img src='/db/ggzicons/rankings/$icon' title='Rank $rank'>\n";
-		echo "Game class $game: Rank $rank\n";
+		echo "Game class $gamelink: Rank $rank\n";
 		echo "<br>\n";
 	}
 	if(!$database->numrows($res))
@@ -55,8 +57,11 @@ function rankings_tournaments($lookup)
 
 		$date = date("d.m.Y", $stamp);
 
+		$tournamentlink = "<a href='/db/tournaments/?lookup=$tournament'>$name</a>";
+		$gamelink = "<a href='/db/games/?lookup=$game'>$game</a>";
+
 		echo "<img src='/db/ggzicons/rankings/$icon' title='$ranking'>\n";
-		echo "Tournament '$name' of gametype $game ($date): $ranking\n";
+		echo "Tournament $tournamentlink of gametype $gamelink ($date): $ranking\n";
 		echo "<br>\n";
 	}
 	if(!$database->numrows($res))
@@ -73,13 +78,17 @@ function rankings_matches($lookup)
 
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
+		$id = $database->result($res, $i, "id");
 		$game = $database->result($res, $i, "game");
 		$stamp = $database->result($res, $i, "date");
 
 		$date = date("d.m.Y", $stamp);
 
+		$matchlink = "<a href='/db/matches/?lookup=$id'>Match</a>";
+		$gamelink = "<a href='/db/games/?lookup=$game'>$game</a>";
+
 		echo "<img src='/db/ggzicons/rankings/coingold.png' title='Winner'>\n";
-		echo "Game of gametype $game ($date): Winner\n";
+		echo "$matchlink of gametype $gamelink ($date): Winner\n";
 		echo "<br>\n";
 	}
 	if(!$database->numrows($res))
