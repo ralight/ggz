@@ -8,6 +8,8 @@ function stats_players($lookup)
 global $database;
 	if (!$lookup) return;
 
+	$player = new Player($lookup);
+
 	$res = $database->exec("SELECT * FROM stats WHERE lower(handle) = lower('$lookup') AND ranking > 0");
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
@@ -64,7 +66,10 @@ global $database;
 		if ($icon) :
 			echo "<img src='/db/ggzicons/rankings/$icon' title='Rank $rank' width='16' height='16'>\n";
 		endif;
-		echo "This is ranking him/her <b>$rank</b>$rankstr place.<br>\n";
+
+		$genderref = $player->genderref();
+
+		echo "This is ranking $genderref <b>$rank</b>$rankstr place.<br>\n";
 		echo "<br>\n";
 	}
 	if ($database->numrows($res) == 0) :
@@ -148,7 +153,12 @@ global $database;
 		$player = new Player($handle);
 		$player->icon();
 
-		echo "<a href='/db/players/?lookup=$handle'>$handlecaption</a>\n";
+		if ($player->registered) :
+			echo "<a href='/db/players/?lookup=$handle'>$handlecaption</a>\n";
+		else :
+			echo "<span class='linklike'>$handlecaption</span>\n";
+		endif;
+
 		if ($method == "wins/losses") :
 			echo "achieved <b>$wins</b> wins, <b>$losses</b> losses, <b>$ties</b> ties, <b>$forfeits</b> forfeits.<br>\n";
 		endif;
@@ -161,7 +171,10 @@ global $database;
 		if ($icon) :
 			echo "<img src='/db/ggzicons/rankings/$icon' title='Rank $rank' width='16' height='16'>\n";
 		endif;
-		echo "This is ranking him/her <b>$rank</b>$rankstr place.<br>\n";
+
+		$genderref = $player->genderref();
+
+		echo "This is ranking $genderref <b>$rank</b>$rankstr place.<br>\n";
 		echo "<br>\n";
 	}
 }

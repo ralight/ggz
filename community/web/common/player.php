@@ -12,6 +12,7 @@ class Player
 	var $photo;
 	var $gender;
 	var $country;
+	var $registered;
 
 	function Player($ggzuser)
 	{
@@ -23,6 +24,9 @@ class Player
 		if (($res) && ($database->numrows($res) == 1)) :
 			$this->realname = $database->result($res, 0, "name");
 			$this->email = $database->result($res, 0, "email");
+			$this->registered = true;
+		else :
+			$this->registered = false;
 		endif;
 		$res = $database->exec("SELECT * FROM userinfo WHERE handle = '$ggzuser'");
 		if (($res) && ($database->numrows($res) == 1)) :
@@ -30,6 +34,16 @@ class Player
 			$this->gender = $database->result($res, 0, "gender");
 			$this->country = $database->result($res, 0, "country");
 		endif;
+	}
+
+	function genderref()
+	{
+		if ($this->gender == "male") :
+			return "him";
+		elseif ($this->gender == "female") :
+			return "her";
+		endif;
+		return "him/her";
 	}
 
 	function display()
@@ -194,19 +208,27 @@ class Player
 			$rooms_admin = $database->result($res, 0, "rooms_admin");
 		endif;
 
-		$pic = "player.png";
-		$desc = "Player";
-		if ($rooms_admin) :
-			$pic = "admin.png";
-			$desc = "Administrator";
+		if (strpos($this->handle, "|AI")) :
+			$chat_bot = 1;
 		endif;
+
+		$desc = "Guest";
+		$pic = "guest.png";
 		if ($chat_bot) :
 			$pic = "bot.png";
-			$desc = "Chatbot";
+			$desc = "AI/bot player";
 		endif;
-		if (($this->handle) && ($this->handle == Auth::username())) :
-			$pic = "you.png";
-			$desc = "Yourself";
+		if ($this->registered) :
+			$desc = "Player";
+			$pic = "player.png";
+			if ($rooms_admin) :
+				$pic = "admin.png";
+				$desc = "Administrator";
+			endif;
+			if (($this->handle) && ($this->handle == Auth::username())) :
+				$pic = "you.png";
+				$desc = "Yourself";
+			endif;
 		endif;
 
 		echo "<img src='/db/ggzicons/players/$pic' width=16 height=16 title='$desc'>\n";
