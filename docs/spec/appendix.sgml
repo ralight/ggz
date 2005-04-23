@@ -1899,7 +1899,7 @@
 
     <refnamediv>
       <refname>LOGIN</refname>
-      <refpurpose>Client requested login</refpurpose>
+      <refpurpose>Client requested login or registration</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv><title>Synopsis</title>
@@ -1915,6 +1915,7 @@
 			  &lt;LOGIN TYPE="type"&gt;
 			    &lt;NAME&gt;name&lt;/NAME&gt;
 				&lt;PASSWORD&gt;password&lt;/PASSWORD&gt;
+				&lt;EMAIL&gt;email&lt;/EMAIL&gt;
 			  &lt;/LOGIN&gt;
 			</entry>
 		  </row>
@@ -1943,6 +1944,12 @@
 			<entry>xxxx</entry>
 		  </row>
 
+		  <row rowsep="1">
+		    <entry>EMAIL</entry>
+		    <entry>string</entry>
+			<entry>player@ggzcommunity.org</entry>
+		  </row>
+
 		</tbody>
 	</tgroup>
       </informaltable>
@@ -1950,7 +1957,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Client requested login</para>
+      <para>Client requested login or registration</para>
       <refsect2>
 	<title>Message Data</title>
 	<variablelist>
@@ -1975,7 +1982,16 @@
 	    <listitem>
 	      <para>
 		Player password, which is only used for registered ("normal")
-		players
+		players, or (optional) for the registration ("first")
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">EMAIL</emphasis></term>
+	    <listitem>
+	      <para>
+		Player email address for password retrieval, only used for
+		the registration ("first")
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1990,7 +2006,13 @@
 	  <link linkend="msg.server.server">SERVER</link>.
 	  The client must have started the SESSION in advance.
 	  The server will respond to the request with a
-	  <link linkend="rsp.result">RESULT</link> tag
+	  <link linkend="rsp.result">RESULT</link> tag.
+	  There are three ways to use this tag: To login as a guest
+	  player (only name needed), to login as a registered player
+	  (name and password needed), or to register for the first
+	  time (name needed, password and email optional).
+	  If no password is given for the registration, the server will
+	  assign one.
 	</para>
       </refsect2>
     </refsect1>
