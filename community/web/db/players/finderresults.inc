@@ -8,6 +8,7 @@
 
 	$userlist = array();
 	$userinfolist = array();
+	$userkarmalist = array();
 
 	$res = $database->exec("SELECT handle FROM users");
 
@@ -59,6 +60,37 @@
 			if (($bot) || ($admin)) $userlist[$handle] = 0;
 		endif;
 	}
+
+	$res = $database->exec("SELECT karma.tohandle, COUNT(karma.tohandle) AS overall, " .
+		"badkarma.badcount AS bad FROM karma LEFT JOIN " .
+		"(SELECT tohandle, COUNT(karma) AS badcount FROM karma WHERE karma = 0 GROUP BY tohandle) " .
+		"AS badkarma ON karma.tohandle = badkarma.tohandle " .
+		"GROUP BY karma.tohandle, badkarma.badcount");
+	for ($i = 0; $i < $database->numrows($res); $i++)
+	{
+		$handle = $database->result($res, $i, "tohandle");
+		$overall_ratings = $database->result($res, $i, "overall");
+		$bad_ratings = $database->result($res, $i, "bad");
+		$karma = 10 * (1 - ($bad_ratings / $overall_ratings));
+
+		$userkarmalist[$handle] = 1;
+		if ($user_karma == "good") :
+			if ($karma < 8) $userlist[$handle] = 0;
+		endif;
+		if ($user_karma == "medium") :
+			if (($karma < 4) || ($karma > 7)) $userlist[$handle] = 0;
+		endif;
+		if ($user_karma == "bad") :
+			if ($karma > 3) $userlist[$handle] = 0;
+		endif;
+	}
+
+	if ($user_karma) :
+		foreach ($userlist as $handle => $value)
+		{
+			if(!$userkarmalist[$handle]) $userlist[$handle] = 0;
+		}
+	endif;
 
 	include_once("player.php");
 	foreach ($userlist as $handle => $value)
