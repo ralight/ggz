@@ -59,6 +59,7 @@ class Locale
 		$dir = substr($dir, 0, $i);
 
 		echo "Available languages: ";
+		$counter = 0;
 
 		$d = opendir($dir);
 		while($f = readdir($d))
@@ -78,12 +79,17 @@ class Locale
 						$f = "../$f";
 					endif;
 					echo "<a href='$f'>$language</a> ";
+					$counter += 1;
 				else :
 					echo "$language ";
 				endif;
 			endif;
 		}
 		closedir($d);
+
+		if ($counter == 0) :
+			echo Locale::languagename("en");
+		endif;
 	}
 }
 
