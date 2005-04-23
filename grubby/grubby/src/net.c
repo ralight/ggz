@@ -322,9 +322,9 @@ GGZHookReturn net_hook_connect(unsigned int id, const void *event_data, const vo
 	if(status == NET_NOOP)
 	{
 		if(gurupassword)
-			ggzcore_server_set_logininfo(server, GGZ_LOGIN, guruname, gurupassword);
+			ggzcore_server_set_logininfo(server, GGZ_LOGIN, guruname, gurupassword, NULL);
 		else
-			ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, guruname, "");
+			ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, guruname, NULL, NULL);
 		ggzcore_server_login(server);
 	}
 	return GGZ_HOOK_OK;

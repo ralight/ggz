@@ -144,7 +144,7 @@ static GGZHookReturn net_hook_connect(unsigned int id, const void *event_data,
 		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
 
 	ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST,
-				     m_username, m_password);
+				     m_username, m_password, NULL);
 	ggzcore_server_login(server);
 
 	return GGZ_HOOK_OK;

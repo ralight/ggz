@@ -180,7 +180,7 @@ static PyObject *pyggzcoresimple_server_set_logininfo(PyObject *self, PyObject *
 	int ret;
 
 	if(!PyArg_ParseTuple(args, "iss", &type, &handle, &password)) return NULL;
-	ret = ggzcore_server_set_logininfo(ggzserver, type, handle, password);
+	ret = ggzcore_server_set_logininfo(ggzserver, type, handle, password, NULL);
 	return Py_BuildValue("i", ret);
 }
 

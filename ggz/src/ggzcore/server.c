@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6922 2005-02-05 17:01:02Z oojah $
+ * $Id: server.c 7123 2005-04-23 11:31:46Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -94,6 +94,9 @@ struct _GGZServer {
 
 	/* Password for this server (optional) */
 	char *password;
+
+	/* Email address for registration (optional) */
+	char *email;
 
 	/* Current state */
 	GGZStateID state;
@@ -236,7 +239,7 @@ int ggzcore_server_set_hostinfo(GGZServer * server, const char *host,
 
 int ggzcore_server_set_logininfo(GGZServer * server,
 				 const GGZLoginType type,
-				 const char *handle, const char *password)
+				 const char *handle, const char *password, const char *email)
 {
 	/* Check for valid arguments */
 	if (!server || !handle || (type == GGZ_LOGIN && !password))
@@ -250,8 +253,9 @@ int ggzcore_server_set_logininfo(GGZServer * server,
 		_ggzcore_server_set_logintype(server, type);
 		_ggzcore_server_set_handle(server, handle);
 
-		/* Password may be NULL but we set it anyway. */
+		/* Password and email address may be NULL but we set it anyway. */
 		_ggzcore_server_set_password(server, password);
+		_ggzcore_server_set_email(server, email);
 
 		return 0;
 	default:
@@ -750,6 +754,16 @@ void _ggzcore_server_set_password(GGZServer * server, const char *password)
 }
 
 
+void _ggzcore_server_set_email(GGZServer * server, const char *email)
+{
+	/* Free old email if one existed */
+	if (server->email)
+		ggz_free(server->email);
+
+	server->email = ggz_strdup(email);
+}
+
+
 void _ggzcore_server_set_cur_room(GGZServer * server, GGZRoom * room)
 {
 	GGZRoom *old = _ggzcore_server_get_cur_room(server);
@@ -999,7 +1013,7 @@ int ggzcore_channel_connect(const char *host, unsigned int port,
 	server->channel_complete = server->channel_failed = 0;
 	if (ggzcore_server_set_hostinfo(server, host, port, 0) < 0
 	    || ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST,
-					    handle, NULL) < 0) {
+					    handle, NULL, NULL) < 0) {
 		ggzcore_server_free(server);
 		return -1;
 	}
@@ -1055,7 +1069,7 @@ int _ggzcore_server_login(GGZServer * server)
 		  server->handle, server->password);
 
 	status = _ggzcore_net_send_login(server->net, server->type,
-					 server->handle, server->password,
+					 server->handle, server->password, server->email,
 					 getenv("LANG"));
 
 	if (status == 0)

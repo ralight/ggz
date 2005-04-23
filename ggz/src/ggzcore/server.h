@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 6883 2005-01-24 17:44:11Z jdorje $
+ * $Id: server.h 7123 2005-04-23 11:31:46Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -67,6 +67,8 @@ void _ggzcore_server_set_logintype(GGZServer * server,
 void _ggzcore_server_set_handle(GGZServer * server, const char *handle);
 void _ggzcore_server_set_password(GGZServer * server,
 				  const char *password);
+void _ggzcore_server_set_email(GGZServer * server,
+				  const char *email);
 
 void _ggzcore_server_set_cur_room(GGZServer * server, GGZRoom * room);
 

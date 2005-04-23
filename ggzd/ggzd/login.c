@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 6859 2005-01-23 22:13:03Z jdorje $
+ * $Id: login.c 7123 2005-04-23 11:31:46Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -46,7 +46,7 @@
 
 static void login_generate_password(char *pw);
 static GGZReturn login_add_user(ggzdbPlayerEntry *entry,
-				char *name, char *password);
+				const char *name, char *password, const char *email);
 static bool is_valid_username(const char *name);
 
 
@@ -62,16 +62,18 @@ static bool is_valid_username(const char *name);
  *  chr: reservation flag (if success)
  */
 GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
-                                    char *name, const char *password)
+                                    char *name, const char *password, const char *email)
 {
 	char *ip_addr;
 	bool name_ok;
 	char new_pw[17];
 	ggzdbPlayerEntry db_pe;
-	char *login_type=NULL;
+	char *login_type = NULL;
 	GGZDBResult db_status;
 
 	new_pw[0] = '\0';
+	if(password)
+		snprintf(new_pw, sizeof(new_pw), password);
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
 	        player, type);
@@ -138,7 +140,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 			name_ok = false;
 		} else if(ggzdb_compare_password(password, db_pe.password) != 1) {
 			dbg_msg(GGZ_DBG_CONNECTION,
-				"Unsuccessful login of %s - bad password",name);
+				"Unsuccessful login of %s - bad password", name);
 			log_msg(GGZ_LOG_SECURITY, "BADPWD from %s for %s",
 				player->client->addr, name);
 			name_ok = false;
@@ -164,7 +166,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
                    use, so try adding it to the database*/
 		db_pe.user_id = ggzdb_player_next_uid();
 		if(db_status != GGZDB_ERR_NOTFOUND
-		   || login_add_user(&db_pe, name, new_pw) < 0) {
+		   || login_add_user(&db_pe, name, new_pw, email) < 0) {
 			hash_player_delete(name);
 			if (net_send_login(player->client->net, type,
 					   E_USR_LOOKUP, NULL) < 0)
@@ -239,14 +241,18 @@ static void login_generate_password(char *pw)
 
 
 static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
-				char *name, char *password)
+				const char *name, char *password, const char *email)
 {
 	/*  Initialize player entry */
-	login_generate_password(password);
+	if (!password[0])
+		login_generate_password(password);
 	snprintf(db_entry->handle, sizeof(db_entry->handle), "%s", name);
 	snprintf(db_entry->password, sizeof(db_entry->password), "%s", password);
-	snprintf(db_entry->name, sizeof(db_entry->name), "N/A");
-	snprintf(db_entry->email, sizeof(db_entry->email), "N/A");
+	if (email)
+		snprintf(db_entry->email, sizeof(db_entry->email), "%s", email);
+	else
+		strncpy(db_entry->email, "", sizeof(db_entry->name));
+	strncpy(db_entry->name, "", sizeof(db_entry->name));
 	db_entry->perms = PERMS_DEFAULT_SETTINGS;
 	db_entry->last_login = time(NULL);
 	

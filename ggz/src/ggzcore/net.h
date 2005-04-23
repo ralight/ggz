@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: net.h 6883 2005-01-24 17:44:11Z jdorje $
+ * $Id: net.h 7123 2005-04-23 11:31:46Z josef $
  *
  * Code for performing network I/O
  *
@@ -56,7 +56,7 @@ void _ggzcore_net_disconnect(GGZNet * net);
 
 /* Functions for sending data/requests to server */
 int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
-			    const char *handle, const char *password,
+			    const char *handle, const char *password, const char *email,
 			    const char *language);
 int _ggzcore_net_send_channel(GGZNet * net, const char *id);
 int _ggzcore_net_send_motd(GGZNet * net);

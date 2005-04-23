@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 7086 2005-04-08 13:03:13Z josef $
+ * $Id: netxml.c 7123 2005-04-23 11:31:46Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -349,7 +349,7 @@ void _ggzcore_net_disconnect(GGZNet * net)
 /* Sends login packet.  Login type is an enumerated value.  Password is needed
  * only for registered logins. */
 int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
-			    const char *handle, const char *password,
+			    const char *handle, const char *password, const char *email,
 			    const char *language)
 {
 	char *type = "guest";
@@ -371,9 +371,12 @@ int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
 	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle);
 
-	if (login_type == GGZ_LOGIN && password)
+	if ((login_type == GGZ_LOGIN || (login_type == GGZ_LOGIN_NEW)) && password)
 		_ggzcore_net_send_line(net, "<PASSWORD>%s</PASSWORD>",
 				       password);
+	if (login_type == GGZ_LOGIN_NEW && email)
+		_ggzcore_net_send_line(net, "<EMAIL>%s</EMAIL>",
+				       email);
 
 	status = _ggzcore_net_send_line(net, "</LOGIN>");
 

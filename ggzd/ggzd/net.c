@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: net.c 7123 2005-04-23 11:31:46Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -104,6 +104,7 @@ typedef struct _GGZSeatData {
 typedef struct _GGZAuthData {
 	char *name;
 	char *password;
+	char *email;
 } GGZAuthData;
 
 
@@ -121,6 +122,7 @@ static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *channel);
 static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login);
 static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_email(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_update(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_list(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *element);
@@ -170,6 +172,7 @@ static GGZAuthData* _net_authdata_new(void);
 static void _net_authdata_free(GGZAuthData *data);
 static void _net_auth_set_name(GGZXMLElement *login, char *name);
 static void _net_auth_set_password(GGZXMLElement *login, char *password);
+static void _net_auth_set_email(GGZXMLElement *login, char *email);
 static void _net_table_add_seat(GGZXMLElement*, GGZSeatData*);
 static void _net_table_set_desc(GGZXMLElement*, const char*);
 static GGZTableData* _net_tabledata_new(void);
@@ -1047,6 +1050,8 @@ static GGZXMLElement* _net_new_element(const char *tag,
 		process_func = _net_handle_name;
 	else if (strcasecmp(tag, "PASSWORD") == 0)
 		process_func = _net_handle_password;
+	else if (strcasecmp(tag, "EMAIL") == 0)
+		process_func = _net_handle_email;
 	else if (strcasecmp(tag, "UPDATE") == 0)
 		process_func = _net_handle_update;
 	else if (strcasecmp(tag, "LIST") == 0)
@@ -1164,7 +1169,7 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *element)
 
 	client_set_type(net->client, GGZ_CLIENT_PLAYER);
 	login_player(login_type, net->client->data,
-		     auth->name, auth->password);
+		     auth->name, auth->password, auth->email);
 
 	/* Free up any resources we allocated */
 	_net_authdata_free(auth);
@@ -1177,6 +1182,7 @@ static GGZAuthData* _net_authdata_new(void)
 	
 	data->name = NULL;
 	data->password = NULL;
+	data->email = NULL;
 	
 	return data;
 }
@@ -1184,7 +1190,9 @@ static GGZAuthData* _net_authdata_new(void)
 
 static void _net_auth_set_name(GGZXMLElement *auth, char *name)
 {
-	GGZAuthData *data = ggz_xmlelement_get_data(auth);
+	GGZAuthData *data;
+
+	data = ggz_xmlelement_get_data(auth);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
@@ -1200,7 +1208,7 @@ static void _net_auth_set_name(GGZXMLElement *auth, char *name)
 static void _net_auth_set_password(GGZXMLElement *auth, char *password)
 {
 	GGZAuthData *data;
-	
+
 	data = ggz_xmlelement_get_data(auth);
 
 	/* If data doesn't already exist, create it */
@@ -1211,6 +1219,23 @@ static void _net_auth_set_password(GGZXMLElement *auth, char *password)
 
 	if (data->password) ggz_free(data->password); /* duplicate */
 	data->password = password;
+}
+
+
+static void _net_auth_set_email(GGZXMLElement *auth, char *email)
+{
+	GGZAuthData *data;
+
+	data = ggz_xmlelement_get_data(auth);
+
+	/* If data doesn't already exist, create it */
+	if (!data) {
+		data = _net_authdata_new();
+		ggz_xmlelement_set_data(auth, data);
+	}
+
+	if (data->email) ggz_free(data->email); /* duplicate */
+	data->email = email;
 }
 
 
@@ -1279,6 +1304,34 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 
 	password = ggz_strdup(ggz_xmlelement_get_text(element));
 	_net_auth_set_password(parent, password);
+}
+
+
+/* Functions for <EMAIL> tag */
+static void _net_handle_email(GGZNetIO *net, GGZXMLElement *element)
+{
+	char *email;
+	const char *parent_tag;
+	GGZXMLElement *parent;
+
+	if (!element) return;
+
+	/* Get parent off top of stack */
+	parent = ggz_stack_top(net->stack);
+	if (!parent) {
+		/* If there are no elements above us, it's a protocol error */
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+
+	parent_tag = ggz_xmlelement_get_tag(parent);
+	if (strcasecmp(parent_tag, "LOGIN") != 0) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+
+	email = ggz_strdup(ggz_xmlelement_get_text(element));
+	_net_auth_set_email(parent, email);
 }
 
 

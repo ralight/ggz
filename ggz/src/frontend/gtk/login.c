@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6981 2005-03-11 07:35:03Z jdorje $
+ * $Id: login.c 7123 2005-04-23 11:31:46Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -231,17 +231,26 @@ static void login_entry_changed(GtkEditable * editable, gpointer user_data)
 }
 
 
-/* Show password box for normal logins only */
+/* Show password box for normal logins and first-time logins only */
+/* Show email box for first-time logins only */
 static void
 login_normal_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 {
-	GtkWidget *tmp =
-	    lookup_widget(GTK_WIDGET(user_data), "password_box");
+	GtkWidget *tmp;
+
+	tmp = lookup_widget(GTK_WIDGET(user_data), "password_box");
 
 	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
 		gtk_widget_show(tmp);
 	else
 		gtk_widget_hide(tmp);
+
+	tmp = lookup_widget(GTK_WIDGET(user_data), "email_box");
+
+	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
+		gtk_widget_hide(tmp);
+	else
+		gtk_widget_show(tmp);
 
 	if (!entries_update) {
 		tmp = lookup_widget(login_dialog, "profile_entry");
@@ -255,6 +264,13 @@ login_guest_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 {
 	GtkWidget *tmp;
 
+	tmp = lookup_widget(GTK_WIDGET(user_data), "email_box");
+
+	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
+		gtk_widget_hide(tmp);
+	else
+		gtk_widget_show(tmp);
+
 	if (!entries_update) {
 		tmp = lookup_widget(login_dialog, "profile_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), "");
@@ -266,6 +282,21 @@ static void
 login_first_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 {
 	GtkWidget *tmp;
+
+	tmp = lookup_widget(GTK_WIDGET(user_data), "password_box");
+
+	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
+		gtk_widget_show(tmp);
+	else
+		gtk_widget_hide(tmp);
+
+	tmp = lookup_widget(GTK_WIDGET(user_data), "email_box");
+
+	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
+		gtk_widget_show(tmp);
+	else
+		gtk_widget_hide(tmp);
+
 
 	if (!entries_update) {
 		tmp = lookup_widget(login_dialog, "profile_entry");
@@ -313,7 +344,7 @@ static void login_cancel_button_clicked(GtkButton * button, gpointer data)
 static void login_start_session(void)
 {
 	GtkWidget *tmp;
-	const char *host = NULL, *login = NULL, *password = NULL;
+	const char *host = NULL, *login = NULL, *password = NULL, *email = NULL;
 	char *sessiondump;
 	int port;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
@@ -339,24 +370,29 @@ static void login_start_session(void)
 	login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	tmp = g_object_get_data(G_OBJECT(login_dialog), "normal_radio");
-	if (GTK_TOGGLE_BUTTON(tmp)->active) {
+	if (GTK_TOGGLE_BUTTON(tmp)->active) 
 		type = GGZ_LOGIN;
-		tmp =
-		    g_object_get_data(G_OBJECT(login_dialog),
-				      "pass_entry");
-		password = gtk_entry_get_text(GTK_ENTRY(tmp));
-	}
 	tmp = g_object_get_data(G_OBJECT(login_dialog), "guest_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_GUEST;
+	if (!GTK_TOGGLE_BUTTON(tmp)->active) {
+		tmp = g_object_get_data(G_OBJECT(login_dialog),
+				      "pass_entry");
+		password = gtk_entry_get_text(GTK_ENTRY(tmp));
+	}
 	tmp = g_object_get_data(G_OBJECT(login_dialog), "first_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_NEW;
+	if (GTK_TOGGLE_BUTTON(tmp)->active) {
+		tmp = g_object_get_data(G_OBJECT(login_dialog),
+				      "email_entry");
+		email = gtk_entry_get_text(GTK_ENTRY(tmp));
+	}
 
 	/* Create new server object and set connection/login info */
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port, 0);
-	ggzcore_server_set_logininfo(server, type, login, password);
+	ggzcore_server_set_logininfo(server, type, login, password, email);
 
 	/* Log server communications to file */
 	sessiondump =
@@ -385,7 +421,7 @@ static void login_start_session(void)
 static void login_relogin(void)
 {
 	GtkWidget *tmp;
-	const char *login = NULL, *password = NULL;
+	const char *login = NULL, *password = NULL, *email = NULL;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
 
 	/* FIXME: perhaps this should be done elsewhere? 
@@ -397,21 +433,26 @@ static void login_relogin(void)
 	login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	tmp = lookup_widget(login_dialog, "normal_radio");
-	if (GTK_TOGGLE_BUTTON(tmp)->active) {
+	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN;
-		tmp =
-		    g_object_get_data(G_OBJECT(login_dialog),
-				      "pass_entry");
-		password = gtk_entry_get_text(GTK_ENTRY(tmp));
-	}
 	tmp = g_object_get_data(G_OBJECT(login_dialog), "guest_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_GUEST;
+	if (!GTK_TOGGLE_BUTTON(tmp)->active) {
+		tmp = g_object_get_data(G_OBJECT(login_dialog),
+				      "pass_entry");
+		password = gtk_entry_get_text(GTK_ENTRY(tmp));
+	}
 	tmp = g_object_get_data(G_OBJECT(login_dialog), "first_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_NEW;
+	if (GTK_TOGGLE_BUTTON(tmp)->active) {
+		tmp = g_object_get_data(G_OBJECT(login_dialog),
+				      "email_entry");
+		email = gtk_entry_get_text(GTK_ENTRY(tmp));
+	}
 
-	ggzcore_server_set_logininfo(server, type, login, password);
+	ggzcore_server_set_logininfo(server, type, login, password, email);
 	ggzcore_server_login(server);
 }
 
@@ -508,6 +549,9 @@ GtkWidget *create_dlg_login(void)
 	GtkWidget *password_box;
 	GtkWidget *pass_label;
 	GtkWidget *pass_entry;
+	GtkWidget *email_box;
+	GtkWidget *email_label;
+	GtkWidget *email_entry;
 	GtkWidget *radio_box;
 	GSList *login_type_group = NULL;
 	GtkWidget *normal_radio;
@@ -762,6 +806,33 @@ GtkWidget *create_dlg_login(void)
 			   0);
 	gtk_entry_set_visibility(GTK_ENTRY(pass_entry), FALSE);
 
+	email_box = gtk_hbox_new(FALSE, 5);
+	gtk_widget_ref(email_box);
+	g_object_set_data_full(G_OBJECT(dlg_login), "email_box",
+			       email_box,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(email_box);
+	gtk_box_pack_start(GTK_BOX(user_box), email_box, TRUE, TRUE, 0);
+
+	email_label = gtk_label_new(_("Email:"));
+	gtk_widget_ref(email_label);
+	g_object_set_data_full(G_OBJECT(dlg_login), "email_label",
+			       email_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(email_label);
+	gtk_box_pack_start(GTK_BOX(email_box), email_label, TRUE, TRUE,
+			   0);
+	gtk_misc_set_alignment(GTK_MISC(email_label), 1, 0.5);
+
+	email_entry = gtk_entry_new();
+	gtk_widget_ref(email_entry);
+	g_object_set_data_full(G_OBJECT(dlg_login), "email_entry",
+			       email_entry,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(email_entry);
+	gtk_box_pack_start(GTK_BOX(email_box), email_entry, FALSE, TRUE,
+			   0);
+
 	radio_box = gtk_vbox_new(FALSE, 0);
 	gtk_widget_ref(radio_box);
 	g_object_set_data_full(G_OBJECT(dlg_login), "radio_box", radio_box,
@@ -862,9 +933,9 @@ GtkWidget *create_dlg_login(void)
 	g_signal_connect(GTK_OBJECT(normal_radio), "toggled",
 			 GTK_SIGNAL_FUNC(login_normal_toggled), dlg_login);
 	g_signal_connect(GTK_OBJECT(guest_radio), "toggled",
-			 GTK_SIGNAL_FUNC(login_guest_toggled), NULL);
+			 GTK_SIGNAL_FUNC(login_guest_toggled), dlg_login);
 	g_signal_connect(GTK_OBJECT(first_radio), "toggled",
-			 GTK_SIGNAL_FUNC(login_first_toggled), NULL);
+			 GTK_SIGNAL_FUNC(login_first_toggled), dlg_login);
 	g_signal_connect(GTK_OBJECT(connect_button), "clicked",
 			 GTK_SIGNAL_FUNC(login_connect_button_clicked),
 			 NULL);

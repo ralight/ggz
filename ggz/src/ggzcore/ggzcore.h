@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 7086 2005-04-08 13:03:13Z josef $
+ * $Id: ggzcore.h 7123 2005-04-23 11:31:46Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -151,7 +151,7 @@ typedef enum {
 	GGZ_LOGIN_GUEST,
 	
 	/** New user login; only a uname is required.  Password will be
-	 *  assigned by the server. */
+	 *  assigned by the server (but can be passed along). */
 	GGZ_LOGIN_NEW
 } GGZLoginType;
 
@@ -682,8 +682,8 @@ int ggzcore_server_remove_event_hook_id(GGZServer *server,
  *  @note Should never fail when given valid input.
  *  @see ggzcore_server_connect
  */
-int ggzcore_server_set_hostinfo(GGZServer *server, 
-				const char *host, 
+int ggzcore_server_set_hostinfo(GGZServer *server,
+				const char *host,
 				const unsigned int port,
 				const unsigned int use_tls);
 
@@ -697,12 +697,14 @@ int ggzcore_server_set_hostinfo(GGZServer *server,
  *  @param type The type of login to attempt.
  *  @param handle The username to use with the server.
  *  @param password The password to use (may be NULL with some login types).
+ *  @param email The email address to use (may be NULL with some login types).
  *  @return 0 on success, -1 on error.
  */
-int ggzcore_server_set_logininfo(GGZServer *server, 
-				 const GGZLoginType type, 
-				 const char *handle, 
-				 const char *password);
+int ggzcore_server_set_logininfo(GGZServer *server,
+				 const GGZLoginType type,
+				 const char *handle,
+				 const char *password,
+				 const char *email);
 
 /** @brief Initiate logging of ggzcore events
  *

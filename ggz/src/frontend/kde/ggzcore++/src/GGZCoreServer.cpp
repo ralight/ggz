@@ -66,7 +66,8 @@ int GGZCoreServer::setHost(const char* host, const unsigned int port, const int 
 
 int GGZCoreServer::setLogin(const int type, const char* username, const char* password)
 {
-	return ggzcore_server_set_logininfo(m_server, (GGZLoginType)type, username, password);
+	return ggzcore_server_set_logininfo(m_server, (GGZLoginType)type,
+		username, password, NULL);
 }
 
 const char* GGZCoreServer::host()
