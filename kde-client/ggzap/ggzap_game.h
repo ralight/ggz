@@ -19,6 +19,8 @@
 #ifndef GGZAP_GAME_H
 #define GGZAP_GAME_H
 
+#include <qstringlist.h>
+
 // Abstract game class
 class GGZapGame
 {
@@ -26,19 +28,19 @@ class GGZapGame
 		GGZapGame();
 		~GGZapGame();
 
-		void addGame(const char *name, const char *frontend);
+		void addGame(QString name, QString frontend);
 
 		int count();
-		char *name(int id);
-		char *frontend(int id);
+		QString name(int id);
+		QString frontend(int id);
 
 		void clear();
 
 		void autoscan();
 
 	private:
-		int m_count;
-		char ***gamelist;
+		QStringList m_gamelist;
+		QStringList m_frontendlist;
 };
 
 #endif

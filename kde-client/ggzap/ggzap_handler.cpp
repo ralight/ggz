@@ -28,6 +28,7 @@
 
 // Qt includes
 #include <qsocketnotifier.h>
+#include <qdir.h>
 
 // System includes
 #include <cstring>
@@ -45,12 +46,8 @@ GGZapHandler::GGZapHandler()
 	m_room = NULL;
 	m_game = NULL;
 	m_module = NULL;
-	m_frontendtype = NULL;
-	m_modulename = NULL;
-	m_confserver = NULL;
-	m_confusername = NULL;
-	m_zapuser = NULL;
-/*	m_killserver = 0;*/
+	m_killserver = false;
+	m_lock = false;
 	m_activetable = -1;
 
 	m_sn_game = NULL;
@@ -69,29 +66,26 @@ int GGZapHandler::init()
 {
 	int result;
 	GGZCoreConfio *conf;
-	char confdir[1024];
-	char *user;
+	QString confdir;
+	QString user;
 
-	m_zapuser = (char*)malloc(17);
-	strcpy(confdir, getenv("HOME"));
-	strcat(confdir, "/.ggz/ggzap.rc");
-	conf = new GGZCoreConfio(confdir, GGZCoreConfio::readonly);
+	confdir = QDir::home().path() + "/.ggz/ggzap.rc";
+	conf = new GGZCoreConfio(confdir.latin1(), GGZCoreConfio::readonly);
 	m_confserver = conf->read("Global", "Server", "live.ggzgamingzone.org");
 	user = conf->read("Global", "Username", (char*)NULL);
 	delete conf;
 
-	if(!user) return error_username;
+	if(user.isEmpty()) return error_username;
 
-	strncpy(m_zapuser, user, 12);
-	strcat(m_zapuser, "/zap");
+	m_zapuser = user.left(12) + "/zap";
 	m_confusername = m_zapuser;
 
-	if(!m_modulename) return error_module;
+	if(m_modulename.isEmpty()) return error_module;
 
 	m_server = new GGZCoreServer();
 	attachServerCallbacks();
 
-	m_server->setHost(m_confserver, 5688, 0);
+	m_server->setHost(m_confserver.latin1(), 5688, 0);
 	result = m_server->connect();
 	//if(result == -1) emit signalState(connectfail);
 
@@ -100,6 +94,12 @@ int GGZapHandler::init()
 
 void GGZapHandler::shutdown()
 {
+	if(m_lock)
+	{
+		m_killserver = 1;
+		return;
+	}
+
 	if(m_sn_game)
 	{
 		delete m_sn_game;
@@ -137,24 +137,15 @@ void GGZapHandler::shutdown()
 		//process();
 	}
 
-	/*m_killserver = 1;*/
-
-	if(m_zapuser)
-	{
-		free(m_zapuser);
-		m_zapuser = NULL;
-	}
-
-	m_modulename = NULL;
-	m_frontendtype = NULL;
+	m_killserver = false;
 }
 
-void GGZapHandler::setModule(const char *modulename)
+void GGZapHandler::setModule(QString modulename)
 {
 	m_modulename = modulename;
 }
 
-void GGZapHandler::setFrontend(const char *frontendtype)
+void GGZapHandler::setFrontend(QString frontendtype)
 {
 	m_frontendtype = frontendtype;
 }
@@ -219,7 +210,7 @@ void GGZapHandler::hookServerActive(unsigned int id)
 			//while(!m_server->isOnline()) m_server->dataRead();
 			m_sn_server = new QSocketNotifier(m_server->fd(), QSocketNotifier::Read, this);
 			connect(m_sn_server, SIGNAL(activated(int)), SLOT(slotServerData()));
-			m_server->setLogin(GGZCoreServer::guest, m_confusername, "GGZap Game");
+			m_server->setLogin(GGZCoreServer::guest, m_confusername.latin1(), "GGZap Game");
 			//m_server->login();
 			break;
 		case GGZCoreServer::connectfail:
@@ -251,7 +242,7 @@ void GGZapHandler::hookServerActive(unsigned int id)
 				gametype = m_server->room(i)->gametype();
 				if(gametype->gametype())
 				{
-					if(strcmp(gametype->name(), m_modulename) == 0) join = i;
+					if(m_modulename == gametype->name()) join = i;
 					else cout << "type: " << m_server->room(i)->gametype()->name() << endl;
 				}
 			}
@@ -297,12 +288,12 @@ void GGZapHandler::getModule()
 	else
 	{
 		m_module->setActive(0);
-		if(m_frontendtype)
+		if(!m_frontendtype.isEmpty())
 		{
 			for(int i = 0; i < count; i++)
 			{
 				m_module->setActive(i);
-				if(!strcmp(m_frontendtype, m_module->frontend())) break;
+				if(m_frontendtype == m_module->frontend()) break;
 			}
 		}
 /*cout << "##### frontend: " << m_module->frontend() << endl;*/
@@ -540,7 +531,12 @@ void GGZapHandler::detachGameCallbacks()
 
 void GGZapHandler::slotServerData()
 {
+	if(m_lock) return;
+	m_lock = true;
 	m_server->dataRead();
+	m_lock = false;
+
+	if(m_killserver) shutdown();
 }
 
 void GGZapHandler::slotGameData()

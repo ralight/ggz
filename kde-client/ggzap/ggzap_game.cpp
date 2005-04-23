@@ -20,22 +20,13 @@
 
 // KDE includes
 #include <kstandarddirs.h>
+#include <ksimpleconfig.h>
 
-// System includes
-#include <string.h>
-#ifndef strdup
-#define strdup(x) strcpy(((char*)malloc(strlen(x) + 1)), x)
-#endif
-#include <stdlib.h>
-#include <dirent.h>
-#include <stdio.h>
-#include <fnmatch.h>
-#include <iostream>
+// Configuration
+#include "config.h"
 
 GGZapGame::GGZapGame()
 {
-	gamelist = NULL;
-	m_count = 0;
 }
 
 GGZapGame::~GGZapGame()
@@ -43,95 +34,56 @@ GGZapGame::~GGZapGame()
 	clear();
 }
 
-void GGZapGame::addGame(const char *name, const char *frontend)
+void GGZapGame::addGame(QString name, QString frontend)
 {
-	gamelist = (char***)realloc(gamelist, sizeof(char**) * (m_count + 1));
-	gamelist[m_count] = (char**)malloc(sizeof(char*) * 2);
-	gamelist[m_count][0] = (char*)malloc(strlen(name) + 1);
-	gamelist[m_count][1] = (char*)malloc(strlen(frontend) + 1);
-	strcpy(gamelist[m_count][0], name);
-	strcpy(gamelist[m_count][1], frontend);
-	m_count++;
+	m_gamelist << name;
+	m_frontendlist << frontend;
 }
 
 int GGZapGame::count()
 {
-	return m_count;
+	return m_gamelist.count();
 }
 
-char *GGZapGame::name(int id)
+QString GGZapGame::name(int id)
 {
-	if((id < 0) || (id >= m_count)) return NULL;
-	return gamelist[id][0];
+	if((id < 0) || (id >= (int)m_gamelist.count())) return QString::null;
+	return *(m_gamelist.at(id));
 }
 
-char *GGZapGame::frontend(int id)
+QString GGZapGame::frontend(int id)
 {
-	if((id < 0) || (id >= m_count)) return NULL;
-	return gamelist[id][1];
+	if((id < 0) || (id >= (int)m_frontendlist.count())) return QString::null;
+	return *(m_frontendlist.at(id));
 }
 
 void GGZapGame::clear()
 {
-	for(int i = 0; i < m_count; i++)
-	{
-		free(gamelist[i][0]);
-		free(gamelist[i][1]);
-		free(gamelist[i]);
-	}
-	if(gamelist) free(gamelist);
-	m_count = 0;
-	gamelist = NULL;
+	m_gamelist.clear();
+	m_frontendlist.clear();
 }
 
 void GGZapGame::autoscan()
 {
-	KStandardDirs d;
-	QString dir, filename;
+	QStringList enginelist, gameslist;
+	KSimpleConfig conf(GGZMODULECONFDIR "/ggz.modules");
 
-	char buffer[512];
-	char *token;
-	FILE *f;
-	DIR *dp;
-	struct dirent *ep;
-	char *module, *frontend;
-
-	dir = d.localkdedir() + "/share/applnk/Games/ggz/games";
-	dp = opendir(dir.latin1());
-	if(dp)
+	conf.setGroup("Games");
+	QString engine = conf.readEntry("*Engines*");
+	enginelist = enginelist.split(" ", engine);
+	for(QStringList::Iterator it = enginelist.begin(); it != enginelist.end(); it++)
 	{
-		while((ep = readdir(dp)) != 0)
+		conf.setGroup("Games");
+		QString game = conf.readEntry((*it));
+		gameslist = gameslist.split(" ", game);
+		for(QStringList::Iterator it2 = gameslist.begin(); it2 != gameslist.end(); it2++)
 		{
-			if(!fnmatch("*.desktop", ep->d_name, FNM_NOESCAPE))
-			{
-				module = NULL;
-				frontend = NULL;
-				filename = dir + QString("/%1").arg(ep->d_name);
-				f = fopen(filename.latin1(), "r");
-				if(f)
-				{
-					while(fgets(buffer, sizeof(buffer), f))
-					{
-						buffer[strlen(buffer) - 1] = 0;
-						if(strncmp(buffer, "Exec", 4) == 0)
-						{
-							token = strtok(buffer, " ");
-							while(token)
-							{
-								if(!strcmp(token, "--module") && (token = strtok(NULL, " "))) module = strdup(token);
-								if(!strcmp(token, "--frontend") && (token = strtok(NULL, " "))) frontend = strdup(token);
-								if(token) token = strtok(NULL, " ");
-							}
-						}
-					}
-					fclose(f);
-				}
-				if((module) && (frontend)) addGame(module, frontend);
-				if(module) free(module);
-				if(frontend) free(frontend);
-			}
+			conf.setGroup((*it2));
+			QString frontend = conf.readEntry("Frontend");
+			QString gamename = conf.readEntry("Name");
+
+			addGame(gamename, frontend);
 		}
-		closedir(dp);
 	}
 }
 

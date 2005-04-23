@@ -42,8 +42,8 @@ GGZap::GGZap(QWidget *parent, const char *name)
 	conf->setGroup("GUI");
 	gui = conf->readEntry("Type");
 
-	if(gui == "redgear") m_gui = new GGZapGuiAlt();
-	else m_gui = new GGZapGui();
+	if(gui == "bluebox") m_gui = new GGZapGui();
+	else m_gui = new GGZapGuiAlt();
 
 	tray = new GGZapTray(m_gui, "GGZapTray");
 	m_autolaunch = 0;
@@ -51,7 +51,7 @@ GGZap::GGZap(QWidget *parent, const char *name)
 	m_handler = new GGZapHandler();
 
 	connect(m_handler, SIGNAL(signalState(int)), SLOT(slotState(int)));
-	connect(tray, SIGNAL(signalLaunch(char*, char*)), SLOT(slotLaunch(char*, char*)));
+	connect(tray, SIGNAL(signalLaunch(QString, QString)), SLOT(slotLaunch(QString, QString)));
 	connect(tray, SIGNAL(signalCancel()), SLOT(slotCancel()));
 	connect(this, SIGNAL(signalMenu(int)), tray, SLOT(slotMenu(int)));
 
@@ -63,19 +63,19 @@ GGZap::~GGZap()
 	delete m_handler;
 }
 
-void GGZap::setModule(const char *modulename)
+void GGZap::setModule(QString modulename)
 {
 	m_handler->setModule(modulename);
 	m_autolaunch = 1;
 	m_gui->setGame(modulename);
 }
 
-void GGZap::setFrontend(const char *frontendtype)
+void GGZap::setFrontend(QString frontendtype)
 {
 	m_handler->setFrontend(frontendtype);
 }
 
-void GGZap::slotLaunch(char *name, char *frontend)
+void GGZap::slotLaunch(QString name, QString frontend)
 {
 	setModule(name);
 	setFrontend(frontend);

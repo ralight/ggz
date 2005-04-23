@@ -52,40 +52,14 @@ GGZapGui::~GGZapGui()
 
 void GGZapGui::mouseMoveEvent(QMouseEvent *e)
 {
-	/*int tmp;*/
-
 	if((m_x != -1) || (m_y != -1))
 		move(e->globalX() - m_x, e->globalY() - m_y);
-
-	/*tmp = m_hide;
-	if((e->x() > 240) && (e->x() < 270) && (e->y() > 340) && (e->y() < 357)) m_hide = 1;
-	else m_hide = 0;
-	if(tmp != m_hide) repaint(240, 340, 30, 17, false);
-
-	tmp = m_help;
-	if((e->x() > 240) && (e->x() < 270) && (e->y() > 360) && (e->y() < 377)) m_help = 1;
-	else m_help = 0;
-	if(tmp != m_help) repaint(240, 360, 30, 17, false);*/
 }
 
 void GGZapGui::mousePressEvent(QMouseEvent *e)
 {
 	m_x = e->x();
 	m_y = e->y();
-
-	/*if((m_x > 240) && (m_x < 270) && (m_y > 340) && (m_y < 357))
-	{
-		m_x = -1;
-		m_y = -1;
-		m_hide = 0;
-		hide();
-	}
-	if((m_x > 240) && (m_x < 270) && (m_y > 360) && (m_y < 377))
-	{
-		kapp->invokeBrowser("http://ggz.sourceforge.net/clients/ggzap/");
-		m_x = -1;
-		m_y = -1;
-	}*/
 
 }
 
@@ -116,18 +90,6 @@ void GGZapGui::paintEvent(QPaintEvent *e)
 	p.drawText(20, 160, i18n("Waiting..."));
 	if(m_progress < 5) p.setPen(QColor(255, 255, 255));
 	p.drawText(20, 180, i18n("Launch game"));
-
-	/*if(m_hide)
-		p.setPen(QColor(255, 255, 0));
-	else
-		p.setPen(QColor(255, 255, 255));
-	p.drawText(240, 350, i18n("Hide"));
-
-	if(m_help)
-		p.setPen(QColor(255, 255, 0));
-	else
-		p.setPen(QColor(255, 255, 255));
-	p.drawText(240, 370, i18n("Help"));*/
 
 	QFontMetrics m(this->font());
 	int w = m.width(m_game);

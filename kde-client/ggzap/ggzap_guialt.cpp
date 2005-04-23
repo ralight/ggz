@@ -31,7 +31,7 @@
 #include "config.h"
 
 GGZapGuiAlt::GGZapGuiAlt(QWidget *parent, const char *name)
-: GGZapSkin(parent, name, WStyle_Customize | WRepaintNoErase)
+: GGZapSkin(parent, name, WStyle_Customize | WNoAutoErase)
 {
 	QPixmap pix = QPixmap(KGGZ_DIRECTORY "/ggzap/redgear.png");
 	setErasePixmap(pix);
@@ -81,7 +81,7 @@ void GGZapGuiAlt::mousePressEvent(QMouseEvent *e)
 	}
 	if((m_x > 240) && (m_x < 270) && (m_y > 360) && (m_y < 377))
 	{
-		kapp->invokeBrowser("http://ggz.sourceforge.net/clients/ggzap/");
+		kapp->invokeBrowser("http://www.ggzgamingzone.org/utils/ggzap/");
 		m_x = -1;
 		m_y = -1;
 	}

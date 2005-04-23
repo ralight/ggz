@@ -35,8 +35,8 @@ class GGZap : public QObject
 		GGZap(QWidget *parent = NULL, const char *name = NULL);
 		~GGZap();
 
-		void setModule(const char *modulename);
-		void setFrontend(const char *frontendtype);
+		void setModule(QString modulename);
+		void setFrontend(QString frontendtype);
 
 		void launch();
 
@@ -47,7 +47,7 @@ class GGZap : public QObject
 
 	public slots:
 		void slotState(int state);
-		void slotLaunch(char *name, char *frontend);
+		void slotLaunch(QString name, QString frontend);
 		void slotCancel();
 
 /*	protected:

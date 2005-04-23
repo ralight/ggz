@@ -53,7 +53,7 @@ class GGZapTray : public KSystemTray
 		};
 
 	signals:
-		void signalLaunch(char *name, char *frontend);
+		void signalLaunch(QString name, QString frontend);
 		void signalCancel();
 
 	public slots:

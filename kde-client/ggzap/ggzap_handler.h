@@ -20,6 +20,7 @@
 
 // Qt includes
 #include <qobject.h>
+#include <qstring.h>
 
 // GGZCore++ includes
 #include "GGZCoreServer.h"
@@ -38,8 +39,8 @@ class GGZapHandler : public QObject
 		~GGZapHandler();
 
 		int init();
-		void setModule(const char *modulename);
-		void setFrontend(const char *frontendtype);
+		void setModule(QString modulename);
+		void setFrontend(QString frontendtype);
 		/*void process();*/
 		void shutdown();
 
@@ -95,12 +96,13 @@ class GGZapHandler : public QObject
 		GGZCoreRoom *m_room;
 		GGZCoreGame *m_game;
 		GGZCoreModule *m_module;
-		const char *m_modulename;
-		const char *m_frontendtype;
-		const char *m_confserver, *m_confusername;
-		char *m_zapuser;
-		int /*m_killserver,*/ m_activetable;
+		QString m_modulename;
+		QString m_frontendtype;
+		QString m_confserver, m_confusername;
+		QString m_zapuser;
+		int m_activetable;
 		QSocketNotifier *m_sn_server, *m_sn_game;
+		bool m_lock, m_killserver;
 };
 
 #endif
