@@ -30,22 +30,13 @@ latest_forumposts();
 ?>
 	</div>
 
-<!--
 	<hr class="leather">
 
 	<div class="menubar">
 		<h1>Spieler weltweit</h1>
-
-<img src='http://hitmaps.open.ac.uk/counter/index2.php?url=http://www.ggzcommunity.org/' border=0 alt='Locations of visitors to this page' onError="this.onError=null; this.src='http://kmi.open.ac.uk/projects/hitmaps/imgs/hitmaps-soon.jpg'; document.getElementById('hitMapsLink').href='http://kmi.open.ac.uk/projects/hitmaps/'"><br>
-<a href='http://hitmaps.open.ac.uk/stats/www.ggzcommunity.org-/map-world.html' id='hitMapsLink'>Daten von Hitmaps</a>
-
-	</div>
--->
-	<hr class="leather">
-
-	<div class="menubar">
-		<h1>Spieler weltweit</h1>
-
-		<img src="/images/mundomap.png">
+<?php
+include_once("images/mundomap.map");
+?>
+		<a href="/map/"><img src="/images/mundomap.png" usemap="#ggzmap"></a>
 	</div>
 </div>

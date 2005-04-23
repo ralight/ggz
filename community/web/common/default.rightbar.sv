@@ -34,7 +34,9 @@ latest_forumposts();
 
 	<div class="menubar">
 		<h1>Players worldwide</h1>
-
-		<img src="/images/mundomap.png">
+<?php
+include_once("images/mundomap.map");
+?>
+		<a href="/map/"><img src="/images/mundomap.png" usemap="#ggzmap"></a>
 	</div>
 </div>
