@@ -35,6 +35,9 @@ for ($i = 0; $i < $database->numrows($res); $i++)
 
 	echo "<a href='/db/players/?lookup=$name'>$name</a> received $karma points from $ggzuser.<br>\n";
 }
+if ($database->numrows($res) == 0) :
+	echo "The player hasn't donated any karma points yet.<br>\n";
+endif;
 ?>
 	</div>
 	<div class="text">
@@ -45,8 +48,33 @@ for ($i = 0; $i < $database->numrows($res); $i++)
 	$name = $database->result($res, $i, "fromhandle");
 	$karma = $database->result($res, $i, "karma");
 
+	if (!$karma) :
+		$bad_ratings += 1;
+	endif;
+	$overall_ratings += 1;
+
 	echo "<a href='/db/players/?lookup=$name'>$name</a> gave $karma points to $ggzuser.<br>\n";
 }
+if ($database->numrows($res) == 0) :
+	echo "The player hasn't received any karma points yet.<br>\n";
+endif;
+?>
+	</div>
+	<div class="text">
+<?php
+$karma = 10 * (1 - ($bad_ratings / $overall_ratings));
+if ($karma >= 8) :
+	$karmapic = "karma_good";
+	$karmatitle = "Good karma";
+elseif ($karma >= 4) :
+	$karmapic = "karma_medium";
+	$karmatitle = "Medium karma";
+else :
+	$karmapic = "karma_bad";
+	$karmatitle = "Bad karma";
+endif;
+echo "<img src='/db/ggzicons/misc/$karmapic.png' title='$karmatitle'>&nbsp;\n";
+echo "The player's overall karma score is $karma out of 10.<br>\n";
 ?>
 	</div>
 	<h2>
