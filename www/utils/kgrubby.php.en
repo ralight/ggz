@@ -1,0 +1,43 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>KGrubby</b><br>
+Graphical configuration tool for Grubby, the GGZ chatbot.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>The main features</i><br>
+<ul>
+<li>Configuration profiles
+<li>Detailed configuration of modules and core modules
+</ul>
+<br>
+
+<i>Detailed information</i><br>
+While a command line tool named grubby-config exists, KGrubby is a much
+easier to use configuration tool. Its profile support makes it adequate
+for chatbot usage in multiple networks.
+
+</td><td valign="top">
+
+<i>Screenshot:</i><br>
+<img src="/utils/pics/kgrubby.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
