@@ -10,7 +10,8 @@ CREATE TABLE userinfo (
 	"pubkey" character varying(8192),
 	"blogfeed" character varying(256),
 	"longitude" double precision,
-	"latitude" double precision
+	"latitude" double precision,
+	"alterpass" character varying(256)
 );
 
 CREATE TABLE "teams" (
