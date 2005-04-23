@@ -204,7 +204,7 @@ class Player
 			$pic = "bot.png";
 			$desc = "Chatbot";
 		endif;
-		if ($this->handle == Auth::username()) :
+		if (($this->handle) && ($this->handle == Auth::username())) :
 			$pic = "you.png";
 			$desc = "Yourself";
 		endif;

@@ -7,8 +7,8 @@ function games_intro()
 	$res = $database->exec("SELECT game, COUNT(game) FROM matches " .
 		"GROUP BY game ORDER BY COUNT(game) DESC LIMIT 1");
 	if (($res) && ($database->numrows($res))) :
-		$count = $database->result($res, $i, "count");
-		$game = $database->result($res, $i, "game");
+		$count = $database->result($res, 0, "count");
+		$game = $database->result($res, 0, "game");
 
 		echo "<img src='/db/ggzicons/games/$game.png' width=16 height=16>\n";
 		echo "The most popular game is ";
@@ -21,11 +21,12 @@ function match_intro()
 {
 	global $database;
 
-	$res = $database->exec("SELECT winner, COUNT(winner) FROM matches " .
+	$res = $database->exec("SELECT winner, COUNT(winner) FROM matches, users " .
+		"WHERE matches.winner = users.handle " .
 		"GROUP BY winner ORDER BY COUNT(winner) DESC LIMIT 1");
 	if (($res) && ($database->numrows($res))) :
-		$count = $database->result($res, $i, "count");
-		$player = $database->result($res, $i, "winner");
+		$count = $database->result($res, 0, "count");
+		$player = $database->result($res, 0, "winner");
 
 		$p = new Player($player);
 		$p->icon();
@@ -43,8 +44,8 @@ function tournament_intro()
 	$res = $database->exec("SELECT game, COUNT(game) FROM tournaments " .
 		"GROUP BY game ORDER BY COUNT(game) DESC LIMIT 1");
 	if (($res) && ($database->numrows($res))) :
-		$count = $database->result($res, $i, "count");
-		$game = $database->result($res, $i, "game");
+		$count = $database->result($res, 0, "count");
+		$game = $database->result($res, 0, "game");
 
 		echo "<img src='/db/ggzicons/games/$game.png' width=16 height=16>\n";
 		echo "The most popular game in tournaments is ";
@@ -61,8 +62,8 @@ function player_intro()
 		"WHERE HANDLE NOT LIKE '%|AI' GROUP BY handle " .
 		"ORDER BY COUNT(handle) DESC LIMIT 1");
 	if (($res) && ($database->numrows($res))) :
-		$count = $database->result($res, $i, "count");
-		$player = $database->result($res, $i, "handle");
+		$count = $database->result($res, 0, "count");
+		$player = $database->result($res, 0, "handle");
 
 		$p = new Player($player);
 		$p->icon();
@@ -80,8 +81,8 @@ function team_intro()
 	$res = $database->exec("SELECT teamname, COUNT(teamname) FROM teammembers " .
 		"GROUP BY teamname ORDER BY COUNT(teamname) DESC LIMIT 1");
 	if (($res) && ($database->numrows($res))) :
-		$count = $database->result($res, $i, "count");
-		$team = $database->result($res, $i, "teamname");
+		$count = $database->result($res, 0, "count");
+		$team = $database->result($res, 0, "teamname");
 
 		echo "The largest team is ";
 		echo "<a href='/db/teams/?lookup=$team'>$team</a> ";
