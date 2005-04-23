@@ -24,6 +24,9 @@ endif;
 if (preg_match("/^\/my\//", $_SERVER["REQUEST_URI"])) :
 	$active = 1;
 endif;
+if (preg_match("/^\/karma\//", $_SERVER["REQUEST_URI"])) :
+	$active = 1;
+endif;
 
 if ($active) :
 	include_once("auth.php");
