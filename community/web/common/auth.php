@@ -71,13 +71,65 @@ class Auth
 		elseif ($_GET['resend'] == "done"):
 			echo "<font color='#00ff00'>Notice:</font>\n";
 			echo "Resent authentication credentials.";
+		elseif ($_GET['resend'] == "failed"):
+			echo "<font color='#ff0000'>Notice:</font>\n";
+			echo "Could not authentication credentials.";
 		elseif ($_GET['register'] == "failed") :
 			echo "<font color='#ff0000'>Error:</font>\n";
 			echo "Registration failed!";
 		elseif ($_GET['register'] == "done"):
 			echo "<font color='#00ff00'>Notice:</font>\n";
 			echo "You have been registered.";
+		elseif ($_GET['activation'] == "failed") :
+			echo "<font color='#ff0000'>Error:</font>\n";
+			echo "Activation failed!";
+		elseif ($_GET['activation'] == "done"):
+			echo "<font color='#00ff00'>Notice:</font>\n";
+			echo "The new password has been activated.";
 		endif;
+	}
+
+	function checkactivation($token)
+	{
+		global $database;
+
+		$crypttoken = Auth::hash($token);
+
+		$res = $database->exec("SELECT * FROM userinfo WHERE alterpass = '$crypttoken'");
+		if (($res) && ($database->numrows($res) == 1)) :
+			$handle = $database->result($res, 0, "handle");
+			$found = 1;
+			$password = dechex(rand() + time());
+		endif;
+
+		if ($found) :
+			echo "Username: $handle<br>";
+			echo "New password: $password<br>";
+			echo "The password should be changed immediately after login!<br>";
+			echo "<input type='hidden' name='input_token' value='$token'>";
+			echo "<input type='hidden' name='input_activation' value='$password'>";
+			echo "<input type='submit' value='Activate' class='button'>";
+		else :
+			echo "No such token $token found.";
+		endif;
+	}
+
+	function activate($password, $token)
+	{
+		global $database;
+
+		$crypttoken = Auth::hash($token);
+		$cryptpass = Auth::hash($password);
+
+		$res = $database->exec("SELECT * FROM userinfo WHERE alterpass = '$crypttoken'");
+		if (($res) && ($database->numrows($res) == 1)) :
+			$handle = $database->result($res, 0, "handle");
+			$database->exec("UPDATE userinfo SET alterpass = '' WHERE handle = '$handle'");
+			$database->exec("UPDATE users SET password = '$cryptpass' WHERE handle = '$handle'");
+			return true;
+		endif;
+
+		return false;
 	}
 
 	function logout()
@@ -113,14 +165,33 @@ class Auth
 
 		$res = $database->exec("SELECT * FROM users WHERE email = '$email'");
 		if (($res) && ($database->numrows($res) > 0)) :
-			$text = "";
+			$text = "Resending forgotten password(s) as per request.\n";
+			$text .= "\n";
 			$pubkey = "";
+
 			for ($i = 0; $i < $database->numrows($res); $i++)
 			{
 				$user = $database->result($res, $i, "handle");
 				$password = $database->result($res, $i, "password");
 
-				$text .= "$user: $password\n";
+				$regenerate = 1;
+				$reactivate = 1;
+
+				if ($regenerate) :
+					$password = dechex(rand() + time());
+					$cryptpass = Auth::hash($password);
+					if ($reactivate) :
+						$database->exec("UPDATE userinfo SET alterpass = '$cryptpass' WHERE handle = '$user'");
+						$link = "https://www.ggzcommunity.org/login/?task=reactivate&token=$password";
+						$text .= "$user: regenerated, activate on $link\n";
+					else :
+						$database->exec("UPDATE users SET password = '$cryptpass' WHERE handle = '$user'");
+						$text .= "$user: $password (generated)\n";
+					endif;
+				else :
+					$text .= "$user: $password\n";
+				endif;
+
 				if ((!$pubkey) && ($encryption)) :
 					$res2 = $database->exec("SELECT * FROM userinfo WHERE handle = '$user'");
 					if (($res2) && ($database->numrows($res2) == 1)) :
@@ -128,6 +199,7 @@ class Auth
 					endif;
 				endif;
 			}
+
 			if ($pubkey) :
 				$stamp = time();
 				$keyfile = "/tmp/pub.key.$stamp";
@@ -137,7 +209,6 @@ class Auth
 				$f = fopen($keyfile, "w");
 				fwrite($f, $pubkey);
 				fclose($f);
-				#$keyid = `echo $pubkey | gpg | head -1 | cut -d " " -f 3 | cut -d "/" -f 2`;
 				$keyid = `cat $keyfile | gpg | head -1 | cut -d " " -f 3 | cut -d "/" -f 2`;
 				unlink($keyfile);
 
@@ -145,11 +216,21 @@ class Auth
 				$f = fopen($msgfile, "w");
 				fwrite($f, $text);
 				fclose($f);
-				#$text = `echo $text | gpg --armor --trust-model always --batch --encrypt --recipient=$keyid`;
-				$text = `cat $msgfile | gpg --armor --trust-model always --batch --encrypt --recipient=$keyid`;
+				$gpg = "gpg --armor --trust-model always --batch --encrypt";
+				$text = `cat $msgfile | $gpg --recipient=$keyid`;
 				unlink($msgfile);
 			endif;
-			mail($email, "Community: Password", $text);
+
+			$text .= "\n";
+			$text .= "The GGZ Community Administrators\n";
+			$text .= "mailto:info@ggzcommunity.org\n";
+
+			mail($email, "GGZ Community: Password", $text);
+			//echo "XXXXX $text";
+
+			return true;
+		else :
+			return false;
 		endif;
 	}
 }

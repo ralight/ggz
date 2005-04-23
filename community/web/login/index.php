@@ -1,5 +1,4 @@
 <?php
-
 include_once("locale.php");
 Locale::detect();
 
@@ -13,6 +12,12 @@ if ($task == "resend") :
 	exit;
 endif;
 
+if ($task == "reactivate") :
+	//Locale::includefile("reactivate.inc");
+	include("reactivate.inc");
+	exit;
+endif;
+
 include_once("auth.php");
 
 $input_user = $_POST["input_user"];
@@ -20,6 +25,8 @@ $input_pass = $_POST["input_pass"];
 $input_realname = $_POST["input_realname"];
 $input_email = $_POST["input_email"];
 $input_encryption = $_POST["input_encryption"];
+$input_activation = $_POST["input_activation"];
+$input_token = $_POST["input_token"];
 
 $param = "";
 
@@ -34,8 +41,13 @@ if (($input_user) && ($input_pass)) :
 		else $param = "?login=done";
 	endif;
 elseif ($input_email) :
-	Auth::resend($input_email, $input_encryption);
-	$param = "?resend=done";
+	$ret = Auth::resend($input_email, $input_encryption);
+	if ($ret) $param = "?resend=done";
+	else $param = "?resend=failed";
+elseif ($input_activation) :
+	$ret = Auth::activate($input_activation, $input_token);
+	if ($ret) $param = "?activation=done";
+	else $param = "?activation=failed";
 else :
 	Auth::logout();
 endif;
