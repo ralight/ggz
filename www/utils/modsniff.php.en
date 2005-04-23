@@ -1,5 +1,16 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class='pane' width='100%'>
+<tr>
+<td>
+<font size='3'>
+<font color='#ff0000'>Warning:</font>
+This application is not maintained anymore.
+</font>
+</td>
+</tr>
+</table>
+
 <table class="content" width="100%">
 <tr>
 <td>
