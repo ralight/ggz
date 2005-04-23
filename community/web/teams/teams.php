@@ -18,8 +18,13 @@ $player_approval = $_POST["player_approval"];
 $player_role = $_POST["player_role"];
 
 if ($join == 1) :
+	$team_exists = 0;
+	$res = $database->exec("SELECT * FROM teams WHERE teamname = '$team_name'");
+	if (($res) && ($database->numrows($res) == 1)) :
+		$team_exists = 1;
+	endif;
 	$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '$team_name' AND handle = '$ggzuser'");
-	if (($res) && ($database->numrows($res) == 0)) :
+	if (($res) && ($database->numrows($res) == 0) && ($team_exists)) :
 		$res = $database->exec("INSERT INTO teammembers " .
 			"(teamname, handle, role) VALUES " .
 			"('$team_name', '$ggzuser', '')");
