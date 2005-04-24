@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6907 2005-01-28 04:23:51Z jdorje $
+ * $Id: server.c 7147 2005-04-24 06:36:47Z josef $
  *
  * Functions for handling server events
  *
@@ -123,7 +123,7 @@ int server_init(char *host, int port, GGZLoginType type, char *login,
 
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port, 0);
-	ggzcore_server_set_logininfo(server, type, login, password);
+	ggzcore_server_set_logininfo(server, type, login, password, NULL);
 	server_register(server);
 
 	return ggzcore_server_connect(server);
