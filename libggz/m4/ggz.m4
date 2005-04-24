@@ -702,7 +702,7 @@ else
 	if test "x${prefix}" != "xNONE" && test "x${prefix}" != "x${ac_default_prefix}"; then
 		prefixed=1
 	fi
-	if test "x$ggzconfdir" != "x${prefix}/etc/ggzd" && test "x$prefixed" = "x1"; then
+	if test "x$ggzdconfdir" != "x${prefix}/etc/ggzd" && test "x$prefixed" = "x1"; then
 		AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir, but using ${prefix}/etc/ggzd nevertheless)])
 		ggzdconfdir="\${prefix}/etc/ggzd"
 	else
