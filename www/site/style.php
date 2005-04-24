@@ -32,7 +32,7 @@
 	background-image: none;
 }
 .list hr {
-	margin: 4px;
+	margin: 2px;
 }
 .list {
 	line-height: 0px;
@@ -47,7 +47,7 @@
 	border-style: solid;
 
 	text-align: center;
-	line-height: 5px;
+	line-height: 1em;
 }
 .flag {
 	background-color: #ffffff;
