@@ -8,8 +8,11 @@
 <b>TEG</b><br>
 Strategy game for 2-6 players.
 <br>
-The game client and server are not a GGZ projects but can be used on GGZ.
-<br>
+<table class="list">
+<tr><td>
+The game client and server are not GGZ projects but can be used on GGZ.
+</td></tr>
+</table>
 
 <table class="inner">
 <tr>
@@ -21,6 +24,7 @@ The game client and server are not a GGZ projects but can be used on GGZ.
 <li>AI opponents available
 <li>supports game spectators
 <li>supports statistics
+<li>supports savegames
 </ul>
 <br>
 

@@ -8,8 +8,11 @@
 <b>Tuxman</b><br>
 Arcade game for one player.
 <br>
+<table class="list">
+<tr><td>
 The game client is not a GGZ project but can be used on GGZ.
-<br>
+</td></tr>
+</table>
 
 <table class="inner">
 <tr>

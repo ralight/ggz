@@ -8,8 +8,11 @@
 <b>Kamikaze</b><br>
 Action game for 2-8 players.
 <br>
+<table class="list">
+<tr><td>
 The game client and server are not GGZ projects but can be used on GGZ.
-<br>
+</td></tr>
+</table>
 
 <table class="inner">
 <tr>

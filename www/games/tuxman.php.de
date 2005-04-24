@@ -8,8 +8,11 @@
 <b>Tuxman</b><br>
 Arkade-Spiel für einen Spieler.
 <br>
+<table class="list">
+<tr><td>
 Der Spieleclient gehört nicht zu GGZ, das Spiel kann aber via GGZ gespielt werden.
-<br>
+</td></tr>
+</table>
 
 <br>
 

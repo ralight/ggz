@@ -8,8 +8,11 @@
 <b>GNU Go</b><br>
 Board game for 2 players.
 <br>
-The game client and server are not a GGZ projects but can be used on GGZ.
-<br>
+<table class="list">
+<tr><td>
+The game client and server are not GGZ projects but can be used on GGZ.
+</td></tr>
+</table>
 
 <table class="inner">
 <tr>

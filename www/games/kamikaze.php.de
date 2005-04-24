@@ -8,8 +8,11 @@
 <b>Kamikaze</b><br>
 Actionspiel für 2-8 Spieler.
 <br>
+<table class="list">
+<tr><td>
 Spieleclient und -server gehören nicht zu GGZ, können aber via GGZ gespielt werden.
-<br>
+</td></tr>
+</table>
 
 <table class="inner">
 <tr>
