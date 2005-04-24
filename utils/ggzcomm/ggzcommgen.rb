@@ -59,6 +59,7 @@ class GGZCommEvent
 	def decl(definition)
 		x = ""
 		seq = 0
+		count = 0
 		@datalist.each do |data, type, option|
 			case data
 				when "%SEQ"
@@ -87,8 +88,11 @@ class GGZCommEvent
 						x = x + "\t"
 					end
 					x = x + type
-					for i in (1..seq)
-						x = x + "*"
+					#for i in (1..seq)
+					#	x = x + "*"
+					#end
+					if seq == 1 then
+						data += "[" + count.to_s + "]";
 					end
 					if not definition then
 						x = x + " " + data
@@ -153,7 +157,7 @@ class GGZCommEvent
 						count = "variables." + count
 					end
 					vname = "i" + seq.to_s
-					x = x + indent + "\tif(" + count.to_s + " > " + maxcount.to_s + ") ggzcomm_error();\n"
+					#x = x + indent + "\tif(" + count.to_s + " > " + maxcount.to_s + ") ggzcomm_error();\n"
 					x = x + indent + "\tfor(" + vname + " = 0; " + vname + " < " + count.to_s + "; " + vname + "++)\n"
 					x = x + indent + "\t{\n"
 					index = "[" + vname + "]"
@@ -247,7 +251,7 @@ class GGZCommEvent
 						end
 					end
 					vname = "i" + seq.to_s
-					x = x + indent + "\tif(" + count.to_s + " > " + maxcount.to_s + ") emit signalError();\n"
+					#x = x + indent + "\tif(" + count.to_s + " > " + maxcount.to_s + ") emit signalError();\n"
 					x = x + indent + "\tfor(int " + vname + " = 0; " + vname + " < " + count.to_s + "; " + vname + "++)\n"
 					x = x + indent + "\t{\n"
 					index = "[" + vname + "]"
@@ -331,7 +335,7 @@ class GGZCommEvent
 						count = "self." + count
 					end
 					vname = "i" + seq.to_s
-					x = x + indent + "\tif " + count.to_s + " > " + maxcount.to_s + ":\n"
+					#x = x + indent + "\tif " + count.to_s + " > " + maxcount.to_s + ":\n"
 					x = x + indent + "\t\traise Exception()\n"
 					x = x + indent + "\tfor " + vname + " in range(0, " + count.to_s + "):\n"
 					index = "[" + vname + "]"
@@ -750,6 +754,7 @@ class GGZComm
 			f.puts "typedef void (*error_func_type)(void);"
 			f.puts ""
 			f.puts "void ggzcomm_set_fd(int usefd);"
+			f.puts "int  ggzcomm_get_fd(void);"
 			f.puts "void ggzcomm_set_notifier_callback(notifier_func_type f);"
 			f.puts "void ggzcomm_set_error_callback(error_func_type f);"
 			f.puts ""
@@ -834,6 +839,11 @@ class GGZComm
 			f.puts "void ggzcomm_set_fd(int usefd)"
 			f.puts "{"
 			f.puts "\tfd = usefd;"
+			f.puts "}"
+			f.puts ""
+			f.puts "int ggzcomm_get_fd(void)"
+			f.puts "{"
+			f.puts "\treturn fd;"
 			f.puts "}"
 			f.puts ""
 			f.puts "static void ggzcomm_error(void)"

@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <ggzcomm engine="tictactoe" version="4">
 	<definitions>
-		<def name="ggz_seat_bot" value="2"/>
-		<def name="ggz_seat_player" value="3"/>
+		<def name="ggz_seat_open" value="1"/>
 		<def name="msgseat" value="0"/>
 		<def name="msgplayers" value="1"/>
 		<def name="msgmove" value="2"/>
@@ -27,8 +26,7 @@
 			<sequence count="2">
 				<data name="seat" type="int"/>
 				<eval>
-					<condition name="seat" result="ggz_seat_player"/>
-					<condition name="seat" result="ggz_seat_bot"/>
+					<condition name="seat" result="ggz_seat_open" type="unequal"/>
 					<data name="name" type="string"/>
 				</eval>
 			</sequence>
