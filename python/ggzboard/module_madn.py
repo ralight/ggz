@@ -300,8 +300,8 @@ class Game:
 		self.turnplayer = (self.turnplayer + 1) % self.players
 
 	def rolldice(self):
-		if self.lastdice is not None:
-			return 0
+#		if self.lastdice is not None:
+#			return 0
 		print "### ROLL DICE ###"
 		#for dice in self.dice:
 		#	if dice == 0:

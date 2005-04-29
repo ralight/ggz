@@ -29,7 +29,7 @@ else:
 	DATAPATH = basepath + "/share/ggz/ggzboard/"
 	MODULEPATH = basepath + "/lib/site-python/"
 	I18NPATH = basepath + "/share/locale"
-print ">>>>> ggzboard: starting with datapath", DATAPATH, "modulepath", MODULEPATH
+#print ">>>>> ggzboard: starting with datapath", DATAPATH, "modulepath", MODULEPATH
 
 gettext.install("ggzpython", I18NPATH, 1)
 
@@ -303,6 +303,8 @@ class GGZBoard:
 		aiturn = 0
 		lastturn = -1
 		shift = 0
+		sleep = 0
+		skipplayer = 0
 
 		thinking = 0
 		inputallowed = 1
@@ -441,9 +443,11 @@ class GGZBoard:
 					lastturn = game.turnplayer
 					if game.dice:
 						ret = game.rolldice()
+						sleep = 2
 						if ret == 0:
 							# TODO: ???
-							pass
+							#game.toggleplayer()
+							skipplayer = 1
 
 				if not inputallowed:
 					w = ui.backgroundarea.get_width()
@@ -510,7 +514,7 @@ class GGZBoard:
 					#	ret = game.rolldice()
 					#	if ret == 0:
 					#		aiturn = 1
-					updatescreen = 1
+					####updatescreen = 1
 					for dice in game.dice:
 						x = w - conf.marginwidth
 						y = h - conf.marginheight - i * 30
@@ -546,7 +550,7 @@ class GGZBoard:
 				else:
 					if game.turnplayer == game.players - 1:
 						aiturn = 0
-				thinking = 0
+						thinking = 0
 				(ret, frompos, topos) = game.aimove()
 				print "RET(find)", ret
 				if ret:
@@ -560,9 +564,19 @@ class GGZBoard:
 				oldx = -1
 				oldy = -1
 
+			if sleep:
+				pygame.time.delay(1000 * sleep)
+				sleep = 0
+
+			if skipplayer:
+				game.toggleplayer()
+				skipplayer = 0
+				updatescreen = 1
+
 if __name__ == "__main__":
 	ggzmode = 0
 	help = 0
+	version = 0
 	gamename = None
 	param = 0
 
@@ -572,14 +586,21 @@ if __name__ == "__main__":
 			ggzmode = 1
 		elif sys.argv[i] == "-h" or sys.argv[i] == "--help":
 			help = 1
+		elif sys.argv[i] == "-v" or sys.argv[i] == "--version":
+			version = 1
 		elif sys.argv[i] == "-G" or sys.argv[i] == "--game":
-			gamename = sys.argv[i + 1]
-			param = 1
+			if i < len(sys.argv) - 1:
+				gamename = sys.argv[i + 1]
+				param = 1
+			else:
+				print _("Argument required for %s.") % sys.argv[i]
+				sys.exit(1)
 		else:
 			if param:
 				param = 0
 			else:
 				print _("Unknown option: %s") % sys.argv[i]
+				sys.exit(1)
 
 	if help:
 		print _("GGZBoard - common board game client for GGZ")
@@ -588,9 +609,16 @@ if __name__ == "__main__":
 		print ""
 		print _("Options:")
 		print _("[-h | --help           ] Display this game help")
+		print _("[-v | --version        ] Show version information")
 		print _("[-g | --ggz            ] Request game in GGZ mode")
 		print _("[-G | --game <gamename>] Skip intro screen and launch game directly")
 		sys.exit(0)
+
+	if version:
+		print "0.0.1"
+		sys.exit(0)
+
+	print ">>>>> ggzboard: starting with datapath", DATAPATH, "modulepath", MODULEPATH
 
 	core = GGZBoard()
 	core.ggzinit(ggzmode)
