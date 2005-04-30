@@ -16,7 +16,7 @@ setup(
         Extension('ggzmod',
         ['src/pyggzmod_init.c'],
         library_dirs = ["@ggzmod_libraries@"],
-        libraries = ['ggzmod', 'ggz'],
+        libraries = ['ggzmod', 'ggzcore', 'ggz'],
         include_dirs = ["@ggzmod_includes@"])
     ]
 )

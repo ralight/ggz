@@ -18,12 +18,12 @@
 /* Function prototypes                        */
 /**********************************************/
 
-static void pyggzmod_cb_server_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data);
-static void pyggzmod_cb_player_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data);
-static void pyggzmod_cb_seat_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data);
-static void pyggzmod_cb_spectatorseat_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data);
-static void pyggzmod_cb_error_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data);
-static void pyggzmod_cb_state_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data);
+static void pyggzmod_cb_server_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
+static void pyggzmod_cb_player_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
+static void pyggzmod_cb_seat_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
+static void pyggzmod_cb_spectatorseat_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
+static void pyggzmod_cb_error_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
+static void pyggzmod_cb_state_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
 
 /**********************************************/
 /* Global variables                           */
@@ -323,7 +323,7 @@ static PyMethodDef pyggzmod_methods[] =
 /* Internal callbacks                         */
 /**********************************************/
 
-void pyggzmod_cb_server_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data)
+void pyggzmod_cb_server_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -339,7 +339,7 @@ void pyggzmod_cb_server_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_da
 	Py_DECREF(arg);
 }
 
-void pyggzmod_cb_player_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data)
+void pyggzmod_cb_player_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -355,7 +355,7 @@ void pyggzmod_cb_player_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_da
 	Py_DECREF(arg);
 }
 
-void pyggzmod_cb_seat_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data)
+void pyggzmod_cb_seat_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -371,7 +371,7 @@ void pyggzmod_cb_seat_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data
 	Py_DECREF(arg);
 }
 
-void pyggzmod_cb_spectatorseat_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data)
+void pyggzmod_cb_spectatorseat_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -387,7 +387,7 @@ void pyggzmod_cb_spectatorseat_hook(GGZMod *ggzmod, GGZModEvent event, void *han
 	Py_DECREF(arg);
 }
 
-void pyggzmod_cb_error_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data)
+void pyggzmod_cb_error_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -403,7 +403,7 @@ void pyggzmod_cb_error_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_dat
 	Py_DECREF(arg);
 }
 
-void pyggzmod_cb_state_hook(GGZMod *ggzmod, GGZModEvent event, void *handler_data)
+void pyggzmod_cb_state_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
