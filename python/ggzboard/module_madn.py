@@ -164,6 +164,14 @@ class Game:
 
 		self.winner = None
 
+		self.help = []
+		self.help.append(_("Ludo is a game for up to four players."))
+		self.help.append(_("After rolling dice, each player can either move a piece"))
+		self.help.append(_("out of the depot, onto the start field, or move a piece"))
+		self.help.append(_("already outside clock-wise until it reaches the end field."))
+		self.help.append(_("Opponent pieces can be beaten and are put back into the depot."))
+		self.help.append(_("To come out of a depot, a die must show a 1."))
+
 	def init(self, path):
 		self.datapath = path
 

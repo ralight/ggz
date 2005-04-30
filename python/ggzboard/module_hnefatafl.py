@@ -67,6 +67,7 @@ class Game:
 		self.dice = None
 		self.playercolours = None
 		self.winner = None
+		self.help = None
 
 	def init(self, path):
 		self.datapath = path

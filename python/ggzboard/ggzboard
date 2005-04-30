@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # GGZBoard: Board game client container application
-# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 import pygame
@@ -116,6 +116,7 @@ class GGZBoard:
 		self.ui = None
 		self.ggzmode = 0
 		self.ggzsuccess = 0
+		self.shutdown = 0
 
 	def ggzinit(self, ggzmode):
 		self.ggzmode = ggzmode
@@ -193,18 +194,22 @@ class GGZBoard:
 		if self.conf.fullscreen:
 			self.ui.togglefullscreen()
 
-		if not self.game:
+		while not self.shutdown:
 			self.intro()
-		if self.game:
-			self.rungame()
+			if self.game:
+				self.rungame()
+				self.game = None
+			elif not self.shutdown:
+				self.about()
 
-	def intro(self):
+	def helpscreen(self):
 		ui = self.ui
 		conf = self.conf
+		game = self.game
 
-		pygame.display.set_caption(asciify(_("GGZBoard: game selection")))
+		pygame.display.set_caption(asciify(_("GGZBoard: help screen")))
 
-		title = ui.font.render(_("GGZBoard: game selection"), 1, (255, 200, 0))
+		title = ui.font.render(_("GGZBoard: help screen"), 1, (255, 200, 0))
 
 		pygame.event.clear()
 
@@ -213,11 +218,98 @@ class GGZBoard:
 		x = -1
 		y = -1
 		selected = -1
-		gamename = None
+		quit = 0
 
 		(posx, posy) = pygame.mouse.get_pos()
 
-		while not gamename:
+		while quit == 0:
+			pygame.event.pump()
+			if updatescreen:
+				event = pygame.event.poll()
+			else:
+				event = pygame.event.wait()
+
+			if event.type == KEYDOWN:
+				key = event.key
+				if key == K_ESCAPE or pygame.event.peek(QUIT):
+					break
+				if key == K_f:
+					self.ui.togglefullscreen()
+					updatescreen = 1
+
+			if event.type == MOUSEMOTION:
+				(posx, posy) = event.pos
+
+			if event.type == MOUSEBUTTONDOWN:
+				w = ui.backgroundarea.get_width()
+				h = ui.backgroundarea.get_height()
+				x = conf.marginwidth
+				y = h - 25 #h - conf.marginheight + 40
+				if posx > x and posx < x + 150 and posy > y and posy < y + 20:
+					updatescreen = 1
+					selected = 1
+					quit = 1
+
+			if updatescreen:
+				ui.backgroundarea = ui.deepcopy(ui.surface)
+				ui.backgroundarea.blit(title, (20, 30))
+
+				text = []
+				text.append(_("Common GGZBoard functions:"))
+				text.append(_("u: download new games, levels, themes"))
+				text.append(_("p: display the player list"))
+				text.append(_("s: produce a screen shot"))
+				text.append(_("f: toggle fullscreen display"))
+				text.append(_("ESC: quit a running game"))
+				text.append("")
+				text.append(_("Game-specific help:"))
+				if game.help:
+					for line in game.help:
+						text.append(line)
+				i = 0
+				for line in text:
+					img = ui.smallfont.render(line, 1, (255, 200, 0))
+					ui.backgroundarea.blit(img, (30, i * 20 + 100 + 10))
+					i += 1
+
+				w = ui.backgroundarea.get_width()
+				h = ui.backgroundarea.get_height()
+				x = conf.marginwidth
+				y = h - 25 #h - conf.marginheight + 40
+
+				color = conf.tilecolor
+				if selected == 1:
+					(r, g, b) = color
+					color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
+				self.rect(ui.backgroundarea, (255, 255, 255), x, y, 150, 20, color)
+				img = ui.smallfont.render(_("Return to game"), 1, (255, 200, 0))
+				ui.backgroundarea.blit(img, (x + 10, y + 1))
+
+				ui.screen.blit(ui.backgroundarea, (0, 0))
+				updatescreen = 0
+
+				pygame.display.flip()
+
+	def about(self):
+		ui = self.ui
+		conf = self.conf
+
+		pygame.display.set_caption(asciify(_("GGZBoard: about screen")))
+
+		title = ui.font.render(_("GGZBoard: about screen"), 1, (255, 200, 0))
+
+		pygame.event.clear()
+
+		updatescreen = 1
+
+		x = -1
+		y = -1
+		selected = -1
+		quit = 0
+
+		(posx, posy) = pygame.mouse.get_pos()
+
+		while quit == 0:
 			pygame.event.pump()
 			if updatescreen:
 				event = pygame.event.poll()
@@ -242,7 +334,97 @@ class GGZBoard:
 					if ((y - 100) % 50) < 40:
 						selected = (y - 100) / 50
 						updatescreen = 1
-						gamename = self.modulefilelist[selected]
+						if selected == 8:
+							quit = 1
+
+			if updatescreen:
+				ui.backgroundarea = ui.deepcopy(ui.surface)
+				ui.backgroundarea.blit(title, (20, 30))
+
+				text = []
+				text.append(_("GGZBoard: A multi-engine game container"))
+				text.append(_("Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>"))
+				text.append("")
+				text.append(_("GGZBoard contains several board games, each of which can be played"))
+				text.append(_("either alone against the artificial intelligence (AI) or against"))
+				text.append(_("other humans or AIs over the network, using the GGZ Gaming Zone system."))
+				text.append(_("Each of the games provides an in-game helpscreen."))
+				text.append("")
+				text.append(_("More information can be found on the GGZBoard homepage:"))
+				text.append(_("http://www.ggzgamingzone.org/games/ggzboard/"))
+				i = 0
+				for line in text:
+					img = ui.smallfont.render(line, 1, (255, 200, 0))
+					ui.backgroundarea.blit(img, (30, i * 20 + 100 + 10))
+					i += 1
+
+				i = 8
+				color = conf.tilecolor
+				if i == selected:
+					(r, g, b) = color
+					color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
+				self.rect(ui.backgroundarea, (255, 255, 255), 20, i * 50 + 100, 300, 40, color)
+				img = ui.smallfont.render(_("Return to main screen"), 1, (255, 200, 0))
+				ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
+
+				ui.screen.blit(ui.backgroundarea, (0, 0))
+				updatescreen = 0
+
+				pygame.display.flip()
+
+	def intro(self):
+		ui = self.ui
+		conf = self.conf
+
+		pygame.display.set_caption(asciify(_("GGZBoard: game selection")))
+
+		title = ui.font.render(_("GGZBoard: game selection"), 1, (255, 200, 0))
+
+		pygame.event.clear()
+
+		updatescreen = 1
+
+		x = -1
+		y = -1
+		selected = -1
+		gamename = None
+		about = 0
+
+		(posx, posy) = pygame.mouse.get_pos()
+
+		while not gamename and not about:
+			pygame.event.pump()
+			if updatescreen:
+				event = pygame.event.poll()
+			else:
+				event = pygame.event.wait()
+
+			if event.type == KEYDOWN:
+				key = event.key
+				if key == K_ESCAPE or pygame.event.peek(QUIT):
+					self.shutdown = 1
+					break
+				if key == K_f:
+					self.ui.togglefullscreen()
+					updatescreen = 1
+
+			if event.type == MOUSEMOTION:
+				(posx, posy) = event.pos
+
+			if event.type == MOUSEBUTTONDOWN:
+				x = posx
+				y = posy
+				if x > 20 and x < 300 + 20:
+					if ((y - 100) % 50) < 40:
+						selected = (y - 100) / 50
+						updatescreen = 1
+						if selected < len(self.modulefilelist):
+							gamename = self.modulefilelist[selected]
+						elif selected == len(self.modulefilelist) + 1:
+							about = 1
+						elif selected == len(self.modulefilelist) + 2:
+							self.shutdown = 1
+							break
 
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
@@ -259,6 +441,24 @@ class GGZBoard:
 					img = ui.smallfont.render(module, 1, (255, 200, 0))
 					ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
 					i += 1
+
+				i += 1
+				color = conf.tilecolor
+				if i == selected:
+					(r, g, b) = color
+					color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
+				self.rect(ui.backgroundarea, (255, 255, 255), 20, i * 50 + 100, 300, 40, color)
+				img = ui.smallfont.render(_("About..."), 1, (255, 200, 0))
+				ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
+
+				i += 1
+				color = conf.tilecolor
+				if i == selected:
+					(r, g, b) = color
+					color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
+				self.rect(ui.backgroundarea, (255, 255, 255), 20, i * 50 + 100, 300, 40, color)
+				img = ui.smallfont.render(_("Quit..."), 1, (255, 200, 0))
+				ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
 
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
@@ -306,6 +506,7 @@ class GGZBoard:
 		shift = 0
 		sleep = 0
 		skipplayer = 0
+		selected = -1
 
 		thinking = 0
 		inputallowed = 1
@@ -373,6 +574,17 @@ class GGZBoard:
 
 			if event.type == MOUSEMOTION:
 				(posx, posy) = event.pos
+
+			if event.type == MOUSEBUTTONDOWN:
+				w = ui.backgroundarea.get_width()
+				h = ui.backgroundarea.get_height()
+				x = w - conf.marginwidth
+				y = h - 25 #h - conf.marginheight + 40
+				for i in range(4):
+					xpos = x - (4 - i) * 160
+					if posx > xpos and posx < xpos + 150 and posy > y and posy < y + 20:
+						selected = i
+						updatescreen = 1
 
 			if event.type == MOUSEBUTTONDOWN and inputallowed and not thinking:
 				considered = 0
@@ -451,13 +663,15 @@ class GGZBoard:
 				if not inputallowed:
 					w = ui.backgroundarea.get_width()
 					h = ui.backgroundarea.get_height()
+					x = w - conf.marginwidth
+					y = h - conf.marginheight - 40
 					self.rect(ui.backgroundarea, None, 0, 0, w, h, (0, 0, 0))
 
 					caption = ui.smallfont.render(_("Game over!"), 1, (255, 200, 0))
-					ui.backgroundarea.blit(caption, (w - caption.get_width() - conf.marginwidth, h - 100))
+					ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
 					if game.winner:
 						caption = ui.smallfont.render(_("The winner is %s") % game.winner, 1, (255, 200, 0))
-						ui.backgroundarea.blit(caption, (w - caption.get_width() - conf.marginwidth, h - 70))
+						ui.backgroundarea.blit(caption, (w - caption.get_width() - conf.marginwidth, y + 20))
 
 				for j in range(0, game.height):
 					for i in range(0, game.width):
@@ -537,6 +751,24 @@ class GGZBoard:
 					caption = ui.smallfont.render(_("Thinking..."), 1, (255, 200, 0))
 					ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
 
+				w = ui.backgroundarea.get_width()
+				h = ui.backgroundarea.get_height()
+				x = w - conf.marginwidth
+				y = h - 25 #h - conf.marginheight + 40
+
+				i = 0
+				itemlist = (_("Themes & games"), _("Player list"), _("Game help"), _("Main menu"))
+				for caption in itemlist:
+					color = conf.tilecolor
+					if i == selected:
+						(r, g, b) = color
+						color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
+					xpos = x - (len(itemlist) - i) * 160
+					self.rect(ui.backgroundarea, (255, 255, 255), xpos, y, 150, 20, color)
+					img = ui.smallfont.render(caption, 1, (255, 200, 0))
+					ui.backgroundarea.blit(img, (xpos + 10, y + 1))
+					i += 1
+
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
@@ -580,6 +812,18 @@ class GGZBoard:
 					thinking = 0
 				game.toggleplayer()
 				skipplayer = 0
+				updatescreen = 1
+
+			if selected == 0:
+				sdlnewstuff.gethotnewstuff(game.name())
+			elif selected == 1:
+				playertable.show()
+			elif selected == 2:
+				self.helpscreen()
+			elif selected == 3:
+				break
+			if selected != -1:
+				selected = -1
 				updatescreen = 1
 
 if __name__ == "__main__":
