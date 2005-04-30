@@ -146,9 +146,10 @@ class GGZBoard:
 		for file in fnames:
 			m = ex.match(file)
 			if m:
-				self.modulefilelist.append(m.group(1))
 				self.loadgame(m.group(1))
-				self.modulelist.append(self.game.name())
+				if not self.ggzmode or self.ggzsuccess:
+					self.modulefilelist.append(m.group(1))
+					self.modulelist.append(self.game.name())
 		self.game = None
 
 	def load(self, gamename):
@@ -168,11 +169,15 @@ class GGZBoard:
 		self.game = mod.ggzboardgame
 
 		if self.ggzmode:
-			(fileobj, filename, desc) = imp.find_module("net_" + gamename, None)
-			mod = imp.load_module("ggzboardnet", fileobj, filename, desc)
-			fileobj.close()
-			self.net = mod.ggzboardnet
-			self.ggzsuccess = 1
+			try:
+				(fileobj, filename, desc) = imp.find_module("net_" + gamename, None)
+				mod = imp.load_module("ggzboardnet", fileobj, filename, desc)
+				fileobj.close()
+				self.net = mod.ggzboardnet
+				self.ggzsuccess = 1
+			except:
+				self.net = None
+				self.ggzsuccess = 0
 
 	def main(self, fullscreen):
 		self.conf = Conf()
@@ -195,7 +200,8 @@ class GGZBoard:
 			self.ui.togglefullscreen()
 
 		while not self.shutdown:
-			self.intro()
+			if not self.game:
+				self.intro()
 			if self.game:
 				self.rungame()
 				self.game = None
@@ -403,7 +409,7 @@ class GGZBoard:
 				key = event.key
 				if key == K_ESCAPE or pygame.event.peek(QUIT):
 					self.shutdown = 1
-					break
+					updatescreen = 1
 				if key == K_f:
 					self.ui.togglefullscreen()
 					updatescreen = 1
@@ -418,13 +424,12 @@ class GGZBoard:
 					if ((y - 100) % 50) < 40:
 						selected = (y - 100) / 50
 						updatescreen = 1
-						if selected < len(self.modulefilelist):
-							gamename = self.modulefilelist[selected]
-						elif selected == len(self.modulefilelist) + 1:
+						if selected < len(self.modulelist):
+							gamename = self.modulelist[selected]
+						elif selected == len(self.modulelist) + 1:
 							about = 1
-						elif selected == len(self.modulefilelist) + 2:
+						elif selected == len(self.modulelist) + 2:
 							self.shutdown = 1
-							break
 
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
@@ -464,6 +469,9 @@ class GGZBoard:
 				updatescreen = 0
 
 				pygame.display.flip()
+
+			if self.shutdown:
+				break
 
 		if gamename:
 			self.loadgame(gamename)
@@ -875,6 +883,7 @@ if __name__ == "__main__":
 		sys.exit(0)
 
 	print ">>>>> ggzboard: starting with datapath", DATAPATH, "modulepath", MODULEPATH
+	print ">>>>> ggzboard: args", sys.argv
 
 	core = GGZBoard()
 	core.ggzinit(ggzmode)
