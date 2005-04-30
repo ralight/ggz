@@ -29,7 +29,6 @@ else:
 	DATAPATH = basepath + "/share/ggz/ggzboard/"
 	MODULEPATH = basepath + "/lib/site-python/"
 	I18NPATH = basepath + "/share/locale"
-#print ">>>>> ggzboard: starting with datapath", DATAPATH, "modulepath", MODULEPATH
 
 gettext.install("ggzpython", I18NPATH, 1)
 
@@ -174,9 +173,12 @@ class GGZBoard:
 			self.net = mod.ggzboardnet
 			self.ggzsuccess = 1
 
-	def main(self):
+	def main(self, fullscreen):
 		self.conf = Conf()
 		self.ui = GGZBoardUI(self.conf.resolution)
+
+		if fullscreen:
+			self.conf.fullscreen = 1
 
 		pygame.init()
 		pygame.display.set_caption(asciify(_("GGZBoard")))
@@ -187,10 +189,9 @@ class GGZBoard:
 		self.ui.initfonts()
 
 		self.ui.screen = pygame.display.set_mode(self.ui.currentres, DOUBLEBUF)
-		if self.conf.fullscreen:
-			self.ui.toggle_fullscreen()
-
 		self.ui.setsurface(self.conf.background)
+		if self.conf.fullscreen:
+			self.ui.togglefullscreen()
 
 		if not self.game:
 			self.intro()
@@ -439,20 +440,24 @@ class GGZBoard:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
 				ui.backgroundarea.blit(title, (20, 30))
 
-				if lastturn != game.turnplayer:
+				if lastturn != game.turnplayer and not game.over():
 					lastturn = game.turnplayer
 					if game.dice:
 						ret = game.rolldice()
 						sleep = 2
 						if ret == 0:
-							# TODO: ???
-							#game.toggleplayer()
 							skipplayer = 1
 
 				if not inputallowed:
 					w = ui.backgroundarea.get_width()
 					h = ui.backgroundarea.get_height()
 					self.rect(ui.backgroundarea, None, 0, 0, w, h, (0, 0, 0))
+
+					caption = ui.smallfont.render(_("Game over!"), 1, (255, 200, 0))
+					ui.backgroundarea.blit(caption, (w - caption.get_width() - conf.marginwidth, h - 100))
+					if game.winner:
+						caption = ui.smallfont.render(_("The winner is %s") % game.winner, 1, (255, 200, 0))
+						ui.backgroundarea.blit(caption, (w - caption.get_width() - conf.marginwidth, h - 70))
 
 				for j in range(0, game.height):
 					for i in range(0, game.width):
@@ -502,7 +507,10 @@ class GGZBoard:
 							playerstr = "*** " + playerstr
 						caption = ui.smallfont.render(playerstr, 1, (255, 200, 0))
 						ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
-						player = ui.smallfont.render(player, 1, (255, 200, 0))
+						playercolour = (255, 200, 0)
+						if game.playercolours:
+							playercolour = game.playercolours[i]
+						player = ui.smallfont.render(player, 1, playercolour)
 						ui.backgroundarea.blit(player, (x - player.get_width(), y + 18))
 						i += 1
 
@@ -510,11 +518,6 @@ class GGZBoard:
 					w = ui.backgroundarea.get_width()
 					h = ui.backgroundarea.get_height()
 					i = 3
-					#if not aiturn:
-					#	ret = game.rolldice()
-					#	if ret == 0:
-					#		aiturn = 1
-					####updatescreen = 1
 					for dice in game.dice:
 						x = w - conf.marginwidth
 						y = h - conf.marginheight - i * 30
@@ -544,7 +547,7 @@ class GGZBoard:
 				inputallowed = 0
 				updatescreen = 1
 
-			if aiturn:
+			if aiturn and not skipplayer:
 				if self.ggzsuccess:
 					aiturn = 0
 				else:
@@ -569,6 +572,12 @@ class GGZBoard:
 				sleep = 0
 
 			if skipplayer:
+				if game.turnplayer == 0:
+					aiturn = 1
+					thinking = 1
+				elif game.turnplayer == game.players - 1:
+					aiturn = 0
+					thinking = 0
 				game.toggleplayer()
 				skipplayer = 0
 				updatescreen = 1
@@ -579,15 +588,17 @@ if __name__ == "__main__":
 	version = 0
 	gamename = None
 	param = 0
+	fullscreen = 0
 
 	for i in range(1, len(sys.argv)):
-		#print sys.argv[i]
 		if sys.argv[i] == "-g" or sys.argv[i] == "--ggz":
 			ggzmode = 1
 		elif sys.argv[i] == "-h" or sys.argv[i] == "--help":
 			help = 1
 		elif sys.argv[i] == "-v" or sys.argv[i] == "--version":
 			version = 1
+		elif sys.argv[i] == "-f" or sys.argv[i] == "--fullscreen":
+			fullscreen = 1
 		elif sys.argv[i] == "-G" or sys.argv[i] == "--game":
 			if i < len(sys.argv) - 1:
 				gamename = sys.argv[i + 1]
@@ -612,6 +623,7 @@ if __name__ == "__main__":
 		print _("[-v | --version        ] Show version information")
 		print _("[-g | --ggz            ] Request game in GGZ mode")
 		print _("[-G | --game <gamename>] Skip intro screen and launch game directly")
+		print _("[-f | --fullscreen     ] Start in fullscreen mode")
 		sys.exit(0)
 
 	if version:
@@ -623,5 +635,5 @@ if __name__ == "__main__":
 	core = GGZBoard()
 	core.ggzinit(ggzmode)
 	core.load(gamename)
-	core.main()
+	core.main(fullscreen)
 

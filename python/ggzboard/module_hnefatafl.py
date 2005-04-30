@@ -65,6 +65,8 @@ class Game:
 		self.datapath = "./"
 
 		self.dice = None
+		self.playercolours = None
+		self.winner = None
 
 	def init(self, path):
 		self.datapath = path

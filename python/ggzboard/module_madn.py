@@ -135,8 +135,34 @@ class Game:
 
 		self.datapath = "./"
 
-		self.dice = tuple(array(2))
+		self.dice = tuple(array(3))
 		self.lastdice = None
+
+		self.depots = {}
+		self.depots["y"] = ((1, 1), (0, 1), (1, 0), (0, 0))
+		self.depots["b"] = ((9, 0), (10, 0), (9, 1), (10, 1))
+		self.depots["r"] = ((9, 9), (9, 10), (10, 9), (10, 10))
+		self.depots["g"] = ((0, 9), (1, 9), (0, 10), (1, 10))
+
+		self.starts = {}
+		self.starts["y"] = (0, 4)
+		self.starts["b"] = (6, 0)
+		self.starts["r"] = (10, 6)
+		self.starts["g"] = (4, 10)
+
+		self.finishes = {}
+		self.finishes["y"] = ((1, 5), (2, 5), (3, 5), (4, 5))
+		self.finishes["b"] = ((5, 1), (5, 2), (5, 3), (5, 4))
+		self.finishes["r"] = ((6, 5), (7, 5), (8, 5), (9, 5))
+		self.finishes["g"] = ((5, 6), (5, 7), (5, 8), (5, 9))
+
+		self.playercolours = {}
+		self.playercolours[0] = (150, 150, 0)
+		self.playercolours[1] = (0, 0, 200)
+		self.playercolours[2] = (150, 0, 0)
+		self.playercolours[3] = (0, 150, 0)
+
+		self.winner = None
 
 	def init(self, path):
 		self.datapath = path
@@ -229,22 +255,35 @@ class Game:
 		return (cx, cy)
 
 	def trymove(self, frompos, topos):
-		print "tryomove -- ", frompos, topos, "using last dice", self.lastdice
+		print "trymove --", frompos, topos, "using last dice", self.lastdice
+		turncolours = ("y", "b", "r", "g")
+		turncolour = turncolours[self.turnplayer]
+		print "trymove -- player turn", self.turnplayer, "player colour", turncolour
 		if not self.lastdice:
 			return 0
 		(x, y) = topos
 		(oldx, oldy) = frompos
 		if not self.board[oldy][oldx]:
+			print "no figure at that position!"
 			return 0
 		if frompos == topos:
 			#self.lastdice = None
+			print "no real move!"
 			return 0
 		(gfx, color) = self.board[oldy][oldx]
+		if color != turncolour:
+			print "wrong colour!"
+			return 0
+		if self.board[y][x]:
+			(gfx2, color2) = self.board[y][x]
+			if color2 == color:
+				print "suicide!"
+				return 0
 		
 		if self.lastdice == 1:
-			if frompos == (1, 1) or frompos == (0, 1) or frompos == (1, 0) or frompos == (0, 0):
-				if topos == (0, 4):
-					#self.domove(frompos, topos)
+			if frompos in self.depots[turncolour]:
+				if topos == self.starts[turncolour]:
+					print "come out!"
 					return 1
 
 		(cx, cy) = self.find_and_validate(frompos, topos, self.lastdice)
@@ -253,35 +292,43 @@ class Game:
 			print "goooooooal!"
 			return 1
 
-#			if cy == 4:
-#				if cx >= 0 and cx < 4:
-#					cx += 1
-#				elif cx == 4:
-#					cy -= 1
-#				elif cx >= 6 and cx < 10:
-#					cx += 1
-#				elif cx == 10:
-#					cy += 1
-#			elif cy == 6:
-#				if cx <= 10 and cx > 6:
-#					cx -= 1
-#				elif cx == 6:
-#					cy += 1
-#				elif cx <= 4 and cx > 0:
-#					cx -= 1
-#				elif cx == 0:
-#					cy -= 1
-		#if oldy == 4 and y == 4:
-		#	if oldx >= 0 and x <= 4 and x > oldx:
-		#		return 1
-		#	if oldx >= 6 and x <= 10 and x > oldx:
-		#		return 1
-		self.lastdice = None
+		#self.lastdice = None
 		return 0
 
 	def aimove(self):
+		print "####################################### AI MOVE dice=", self.lastdice
+		turncolours = ("y", "b", "r", "g")
+		turncolour = turncolours[self.turnplayer]
+		if self.lastdice == 1:
+			for depot in self.depots[turncolour]:
+				ret = self.trymove(depot, self.starts[turncolour])
+				if ret == 1:
+					return (1, depot, self.starts[turncolour])
+
+		for j in range(self.height):
+			for i in range(self.width):
+				field = self.board[j][i]
+				if field:
+					(gfx, color) = field
+					if color == turncolour:
+						print "AI CHECK move ability", i, j
+						ret = self.find_and_validate((i, j), None, self.lastdice)
+						print " =>", ret
+						if ret is not None:
+							(x, y) = ret
+							
+							if self.board[y][x]:
+								(gfx2, color2) = self.board[y][x]
+								if color2 == color:
+									print "suicide!"
+									ret = 0
+
+							if ret:
+								print "AI move to", x, y
+								return (1, (i, j), (x, y))
+
 		self.lastdice = None
-		self.rolldice()
+		#self.rolldice()
 		return (0, None, None)
 
 	def domove(self, frompos, topos):
@@ -289,28 +336,44 @@ class Game:
 		(x, y) = topos
 		print "** DOMOVE", frompos, topos
 		print self.board[oldy][oldx]
+		(gfx, color) = self.board[oldy][oldx]
+		if self.board[y][x]:
+			(gfx2, color2) = self.board[y][x]
+			print "** KILL", self.board[y][x]
+			for depot in self.depots[color2]:
+				(i, j) = depot
+				if self.board[j][i] == None:
+					self.board[j][i] = (gfx2, color2)
+					break
 		self.board[y][x] = self.board[oldy][oldx]
 		self.board[oldy][oldx] = None
+
+		won = 1
+		for finish in self.finishes[color]:
+			(i, j) = finish
+			if self.board[j][i] == None:
+				won = 0
+		if won:
+			self.isover = 1
+			self.winner = self.turnplayer
 
 	def over(self):
 		return self.isover
 
 	def toggleplayer(self):
-		#pass
 		self.turnplayer = (self.turnplayer + 1) % self.players
 
 	def rolldice(self):
 #		if self.lastdice is not None:
 #			return 0
+		turncolours = ("y", "b", "r", "g")
+		turncolour = turncolours[self.turnplayer]
 		print "### ROLL DICE ###"
-		#for dice in self.dice:
-		#	if dice == 0:
-		#		dice = random.randint(0, 6)
 		self.dice = []
+		self.lastdice = None
 
 		for trial in range(3):
 			dice = random.randint(1, 6)
-			#self.dice = tuple(array(dice))
 			self.dice.append(dice)
 
 			usable = 0
@@ -319,7 +382,7 @@ class Game:
 					field = self.board[j][i]
 					if field:
 						(gfx, color) = field
-						if color == "y":
+						if color == turncolour:
 							print "CHECK move ability", i, j
 							ret = self.find_and_validate((i, j), None, dice)
 							print " =>", ret
