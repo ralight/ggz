@@ -8,8 +8,13 @@ import sys
 import time
 import random
 import os, pwd
+import gettext
 
 import ggzmod
+
+""" Internationalization """
+
+gettext.install("ggzpython", "/usr/local/share/locale", 1)
 
 def rect(surface, color, x1, y1, w, h, bgcolor):
 	surface.fill(bgcolor, ((x1, y1), (w, h)))
@@ -22,7 +27,7 @@ def menurender(surface):
 	titlefont = pygame.font.SysFont("Vera Sans", 24)
 	font = pygame.font.SysFont("Vera Sans", 12)
 
-	title = titlefont.render("Player table", 1, (255, 255, 255))
+	title = titlefont.render(_("Player table"), 1, (255, 255, 255))
 	surface.blit(title, (100, 50))
 
 	for i in range(ggzmod.getNumSeats()):
@@ -31,13 +36,13 @@ def menurender(surface):
 
 		typename = ""
 		if type == ggzmod.SEAT_PLAYER:
-			typename = "Occupied"
+			typename = _("Occupied")
 		elif type == ggzmod.SEAT_OPEN:
-			typename = "Empty"
+			typename = _("Empty")
 		elif type == ggzmod.SEAT_BOT:
-			typename = "Bot"
+			typename = _("Bot")
 		elif type == ggzmod.SEAT_RESERVED:
-			typename = "Reserved"
+			typename = _("Reserved")
 		elif type == ggzmod.SEAT_NONE:
 			typename = "-"
 
@@ -49,15 +54,29 @@ def menurender(surface):
 		surface.blit(typestr, (150, i * 20 + 100))
 		surface.blit(namestr, (250, i * 20 + 100))
 
+	if ggzmod.getNumSeats() == 0:
+		localstr = font.render(_("No players found. Looks like a local game."), 1, (255, 255, 255))
+
+		surface.blit(localstr, (100, 20 + 100))
+		
+
 def show():
-	""" Prepare GHNS """
+	""" Prepare Playerlist """
 
 	screen = pygame.display.get_surface()
 
 	screencopy = pygame.Surface((screen.get_width(), screen.get_height()))
 	screencopy.blit(screen, (0, 0))
 
+	alpha = 1
+	if alpha:
+		dark = pygame.Surface((screen.get_width(), screen.get_height()))
+		dark.fill((0, 0, 0))
+		dark.set_alpha(150)
+		screen.blit(dark, (0, 0))
+
 	surface = pygame.Surface((800, 600))
+	surface.fill((0, 0, 100))
 
 	pygame.event.clear()
 
