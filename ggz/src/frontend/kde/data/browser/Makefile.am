@@ -1,4 +1,4 @@
 SUBDIRS = .
 
-help_DATA = index.html help.html gear_red.png zone_impr2.png
+help_DATA = index.html help.html ggz.png goto.png
 helpdir = $(kde_datadir)/kggz/help/

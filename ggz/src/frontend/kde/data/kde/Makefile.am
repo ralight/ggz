@@ -1,7 +1,7 @@
 SUBDIRS = .
 
-KDE_ICON = kggz ggz ggzmodsniff ggzquick ggzap
+KDE_ICON = kggz ggz
 
-desktop_DATA = kggz.desktop ggzmodsniff.desktop
+desktop_DATA = kggz.desktop
 desktopdir = $(datadir)/applications
 

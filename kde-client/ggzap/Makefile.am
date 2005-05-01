@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
-
 SUBDIRS = .
 
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
@@ -40,6 +37,11 @@ AM_CPPFLAGS = $(ggzcorepp_includes) $(all_includes)
 
 EXTRA_DIST = README
 
-pix_DATA = ggzap.png tray.png trayradar.mng redgear.png redgearmask.png
+pix_DATA = tray.png trayradar.mng redgear.png redgearmask.png
 pixdir = $(kde_datadir)/kggz/ggzap
+
+KDE_ICON = ggzap
+
+desktopdir = $(datadir)/applications
+desktop_DATA = ggzap.desktop
 

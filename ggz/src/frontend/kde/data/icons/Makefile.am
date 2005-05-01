@@ -7,7 +7,6 @@ pix_DATA = \
 	chat.png \
 	connect.png \
 	disconnect.png \
-	ggz.png \
 	grubby.png \
 	info.png \
 	join.png \

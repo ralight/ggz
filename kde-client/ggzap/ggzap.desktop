@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+
+Name=GGZap
+GenericName=Online games quick launcher
+GenericName[de]=Schnellstart von Onlinespielen
+Comment=Quick start of GGZ games
+Comment[de]=Schnellstart von GGZ-Spielen
+
+Type=Application
+Exec=ggzap
+Icon=ggzap
+Terminal=false
+Categories=X-GGZ;DesktopSettings;KDE;Qt;

@@ -25,6 +25,7 @@
 #include <kpopupmenu.h>
 #include <kapplication.h>
 #include <kaboutapplication.h>
+#include <kiconloader.h>
 
 // Qt includes
 #include <qpixmap.h>
@@ -67,7 +68,7 @@ GGZapTray::~GGZapTray()
 
 void GGZapTray::contextMenuAboutToShow(KPopupMenu *menu)
 {
-	QIconSet iconset(QPixmap(KGGZ_DIRECTORY "/ggzap/ggzap.png"));
+	QIconSet iconset = KGlobal::iconLoader()->loadIcon("1uparrow", KIcon::Small);
 
 	m_menu->clear();
 
