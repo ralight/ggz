@@ -1,17 +1,17 @@
 <article lang="&language;" id="ggzmeta">
-<title>GGZ</title>
+<title>GGZ Meta</title>
 
 <para>
-This ioslave enables you to browse GGZ Gaming Zone servers, and to login
-visually. It can also used to fetch data from the servers.
+This is an ioslave which understands several meta servers and can be regarded
+as a central gate for all of them.
+Supported are currently GGZ, Freeciv, Atlantik, Nethack and others.
 </para>
 
 <para>
-For example, a command like <command>ggz://someggzserver.org</command> lists
-you all available rooms.
+Type <command>ggzmeta://</command> to see an overview.
 </para>
 
-<para>Author: Josef Spillner <email>dr_maux@users.sourceforge.net</email></para>
+<para>Author: Josef Spillner <email>josef@ggzgamingzone.org</email></para>
 
 </article>
 
