@@ -1,19 +1,27 @@
+// Debugging (0 or 1)
+#define SLAVE_DEBUG 1
+
+// Header files
 #include "kio_ggz.h"
 #include "helper.h"
 
+// KDE includes
 #include <kinstance.h>
 #include <kmessagebox.h>
+#include <klocale.h>
 
+// GGZCore++ includes
 #include <GGZCore.h>
 #include <GGZCoreServer.h>
 #include <GGZCoreRoom.h>
 
-// temp
+// Miscellaneous includes
+#if SLAVE_DEBUG
 #include <fstream>
 #include <kmessagebox.h>
+#endif
 
-using namespace std;
-
+// Static protocol handler
 GGZProtocol *me;
 
 GGZProtocol::GGZProtocol(const QCString& pool, const QCString& app)
@@ -22,9 +30,10 @@ GGZProtocol::GGZProtocol(const QCString& pool, const QCString& app)
 	m_core = NULL;
 	m_server = NULL;
 
-	debug("IO loaded.");
+	debug("IO slave loaded.");
 
 	me = this;
+	m_finished = false;
 }
 
 GGZProtocol::~GGZProtocol()
@@ -44,44 +53,33 @@ void GGZProtocol::jobOperator(const KURL& url)
 
 	if(u.host())
 	{
-		debug("IO starting...");
+		debug("Host given, start processing...");
 		h = u.host();
 	}
 	else
 	{
-		error("No host given!");
+		errormessage(i18n("No host given!"));
 		return;
 	}
 
-	/*switch(p.contains("/"))
-	{
-		case 0:
-		case 1:
-			do_listServers(u);
-			break;
-		case 2:
-			do_listRooms(u);
-			break;
-		default:
-			do_get(u);
-			break;
-	}*/
-
-	/*do_listRooms(u);*/
-
 	if(url.fileName() == "MOTD")
 	{
+		debug("action: show motd");
 		showMotd();
 		return;
 	}
 	else if(!m_server)
 	{
+		debug("action: init url");
 		init(url);
 	}
-	else return;
+	else
+	{
+		debug("action: nothing (we already have a server)");
+		return;
+	}
 
-	// FIXME!!!
-	while(1)
+	while(!m_finished)
 	{
 		if(m_server->dataPending()) m_server->dataRead();
 	}
@@ -89,12 +87,34 @@ void GGZProtocol::jobOperator(const KURL& url)
 
 void GGZProtocol::listDir(const KURL& url)
 {
+	me->debug(":: listDir");
 	jobOperator(url);
 }
 
 void GGZProtocol::get(const KURL& url)
 {
+	me->debug(":: get");
 	jobOperator(url);
+}
+
+void GGZProtocol::stat(const KURL& url)
+{
+	me->debug(":: stat");
+
+	KIO::UDSEntry entry;
+
+	if(url.fileName() == "MOTD")
+	{
+		GGZProtocolHelper::app_file(entry, QString::null, 0);
+		statEntry(entry);
+	}
+	else
+	{
+		GGZProtocolHelper::app_dir(entry, QString::null, 0);
+		statEntry(entry);
+	}
+
+	finished();
 }
 
 GGZHookReturn GGZProtocol::hook_server_connect(unsigned int id, const void *event, const void *data)
@@ -134,6 +154,7 @@ GGZHookReturn GGZProtocol::hook_server_roomlist(unsigned int id, const void *eve
 		GGZCoreRoom *room = me->server()->room(i);
 		GGZProtocolHelper::app_dir(me->entry, room->name(), 1);
 		me->listEntry(me->entry, false);
+		me->debug(QString("=> room: %1").arg(room->name()));
 	}
 
 	GGZProtocolHelper::app_file(me->entry, "MOTD", 1);
@@ -142,29 +163,26 @@ GGZHookReturn GGZProtocol::hook_server_roomlist(unsigned int id, const void *eve
 	me->listEntry(me->entry, true);
 	me->finished();
 
-	me->debug("=> request motd soon...");
-	me->server()->motd();
+	me->m_finished = 1;
 
 	return GGZ_HOOK_OK;
 }
 
 GGZHookReturn GGZProtocol::hook_server_motd(unsigned int id, const void *event, const void *data)
 {
+	const GGZMotdEventData *motd;
+
 	me->debug("=> motd");
-	//GGZProtocolHelper::app_file(me->entry, "MOTD", 1);
-	//me->listEntry(me->entry, false);
 
-	//me->listEntry(me->entry, true);
-	//me->finished();
-
-	me->savemotd = ((char**)event)[0];
+	motd = (GGZMotdEventData*)event;
+	me->savemotd = motd->motd;
 
 	return GGZ_HOOK_OK;
 }
 
 GGZHookReturn GGZProtocol::hook_server_error(unsigned int id, const void *event, const void *data)
 {
-	me->error(QString("Server error: %1").arg(id));
+	me->errormessage(i18n("Server error: %1").arg(id));
 
 	return GGZ_HOOK_OK;
 }
@@ -173,10 +191,10 @@ void GGZProtocol::showMotd()
 {
 	QCString output;
 
-	mimeType("text/plain");
+	mimeType("text/html");
 
-	if(!savemotd) output.sprintf("No MOTD found.\n");
-	else output.sprintf("This is the MOTD:\n\n%1\n", savemotd.latin1());
+	if(!savemotd) output.sprintf(i18n("No MOTD found.\n"));
+	else output.sprintf(i18n("This is the MOTD:\n\n%1\n").arg(savemotd).local8Bit());
 	data(output);
 	finished();
 }
@@ -207,59 +225,10 @@ void GGZProtocol::init(const KURL& url)
 	m_server->addHook(GGZCoreServer::loginfail, hook_server_error);
 
 	m_server->setHost(url.host().latin1(), port, 0);
-	//m_server->setLogin(GGZCoreServer::guest, "guest", NULL);
 
 	debug("Connecting...");
 	m_server->connect();
 }
-
-/*void GGZProtocol::do_get(const KURL& url)
-{
-	QString name;
-	QCString output;
-
-	mimeType("text/html");
-
-	name = url.path();
-	if((name.isEmpty()) || (name == "/"))
-	{
-		name = "GGZ Welcome";
-	}
-	else
-	{
-		name = name.mid(1);
-	}
-	output.sprintf("<HTML><BODY>* Joining %s...</BODY></HTML>\n", name.latin1());
-
-	data(output);
-	finished();
-}
-
-void GGZProtocol::do_listServers(const KURL& url)
-{
-	KIO::UDSEntry entry;
-
-	GGZProtocolHelper::app_dir(entry, "GGZ Europe One", 1);
-	listEntry(entry, false);
-	GGZProtocolHelper::app_dir(entry, "GGZ Morat.net", 1);
-	listEntry(entry, false);
-
-	listEntry(entry, true);
-	finished();
-}
-
-void GGZProtocol::do_listRooms(const KURL& url)
-{
-	KIO::UDSEntry entry;
-
-	GGZProtocolHelper::app_file(entry, "NetSpades.ggzroom", 1);
-	listEntry(entry, false);
-	GGZProtocolHelper::app_file(entry, "Hastings1066.ggzroom", 1);
-	listEntry(entry, false);
- 
-	listEntry(entry, true);
-	finished();
-}*/
 
 extern "C"
 {
@@ -274,15 +243,17 @@ extern "C"
 
 void GGZProtocol::debug(QString s)
 {
-	ofstream dbg;
-	dbg.open("/tmp/kio_ggz.debug", ios::app);
-	dbg << s.latin1() << endl;
+#if SLAVE_DEBUG
+	std::ofstream dbg;
+	dbg.open("/tmp/kio_ggz.debug", std::ios::app);
+	dbg << s.latin1() << std::endl;
 	dbg.close();
+#endif
 }
 
-void GGZProtocol::error(QString s)
+void GGZProtocol::errormessage(QString s)
 {
-	//KMessageBox::error(NULL, s, "GGZ (ioslave) error");
 	debug("ERROR: " + s);
+	error(KIO::ERR_SLAVE_DEFINED, s);
 }
 

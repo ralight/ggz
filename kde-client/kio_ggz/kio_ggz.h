@@ -14,8 +14,7 @@ class GGZProtocol : public KIO::SlaveBase
 		~GGZProtocol();
 		void get(const KURL& url);
 		void listDir(const KURL& url);
-
-		GGZCoreServer *server() {return m_server;}
+		void stat(const KURL& url);
 
 	protected:
 		static GGZHookReturn hook_server_connect(unsigned int id, const void *event, const void *data);
@@ -27,19 +26,18 @@ class GGZProtocol : public KIO::SlaveBase
 
 	private:
 		void jobOperator(const KURL& url);
-		/*void do_get(const KURL& url);
-		void do_listServers(const KURL& url);
-		void do_listRooms(const KURL& url);*/
 		void init(const KURL& url);
 		void debug(QString s);
-		void error(QString s);
+		void errormessage(QString s);
 
 		void showMotd();
+		GGZCoreServer *server() {return m_server;}
 
 		GGZCore *m_core;
 		GGZCoreServer *m_server;
 		KIO::UDSEntry entry;
 		QString savemotd;
+		bool m_finished;
 };
 
 #endif

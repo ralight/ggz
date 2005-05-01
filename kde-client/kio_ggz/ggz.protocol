@@ -5,4 +5,6 @@ input=none
 output=filesystem
 reading=true
 Icon=ggz
+DocPath=kioslave/ggz.html
 
+listing=Name,Type,
