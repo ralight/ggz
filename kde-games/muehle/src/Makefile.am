@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+# $Id: Makefile.am 7170 2005-05-01 15:25:16Z josef $
 
 SUBDIRS = ggzwrap ai
 
@@ -14,4 +14,6 @@ AM_CPPFLAGS = $(all_includes)
 noinst_HEADERS = toplevel.h board.h stone.h qweb.h qextpainter.h net.h qwebpath.h
 
 METASOURCES = AUTO
+
+kde_conf_DATA = muehlerc
 
