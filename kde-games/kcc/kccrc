@@ -1,4 +1,4 @@
 [KNewStuff]
-MasterServer=http://ftp.ggzgamingzone.org/hotstuff/content/
+ProvidersUrl=http://ftp.ggzgamingzone.org/pub/hotstuff/providers.xml
 TargetDir=kcc
 
