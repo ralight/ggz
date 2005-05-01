@@ -6,7 +6,7 @@ dnl Copyright (C) 2003 Josef Spillner, dr_maux@users.sourceforge.net
 dnl This file is to be used within KDE's build system.
 dnl
 
-AC_DEFUN(AC_KNEWSTUFF,
+AC_DEFUN([AC_KNEWSTUFF],
 [
 AC_MSG_CHECKING([for KDE library: knewstuff])
 
