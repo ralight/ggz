@@ -1,13 +1,15 @@
+// Debugging (0 or 1)
+#define SLAVE_DEBUG 1
+
 // Header files
 #include "kio_ggzmeta.h"
 #include "helper.h"
 
 // KDE includes
 #include <kapplication.h>
+#include <klocale.h>
 #include <kio/netaccess.h>
 #include <kio/job.h>
-// temp
-#include <fstream>
 
 // Qt includes
 #include <qfile.h>
@@ -18,7 +20,10 @@
 #include <qsocket.h>
 #include <qapplication.h>
 
-using namespace std;
+// Miscellaneous includes
+#if SLAVE_DEBUG
+#include <fstream>
+#endif
 
 // Constructor
 GGZMetaProtocol::GGZMetaProtocol(const QCString& pool, const QCString& app)
@@ -61,15 +66,26 @@ void GGZMetaProtocol::jobOperator(const KURL& url)
 // Output information about self
 void GGZMetaProtocol::about()
 {
-	QCString output;
+	QString output;
 
 	debug("General information about ggzmeta://");
 
 	mimeType("text/html");
-	output.sprintf("<b>This is the GGZ Gaming Zone Meta Server IO Slave.\n"
-		"See <a href='http://www.ggzgamingzone.org/metaserver/'>\n"
-		"http://www.ggzgamingzone.org/metaserver/</a> for more details.</b>\n");
-	data(output);
+	output = i18n("<b>This is the GGZ Gaming Zone Meta Server IO Slave.\n"
+		"See <a href='http://www.ggzgamingzone.org/backend/metaserver/'>\n"
+		"http://www.ggzgamingzone.org/metaserver/</a> for more details.</b>\n"
+		"<br><br>\n"
+		"<a href='ggzmeta:index'>ggzmeta:index (Overview)</a><br>\n"
+		"<a href='ggzmeta://ggz/'>ggzmeta://ggz/ (GGZ)</a><br>\n"
+		"<a href='ggzmeta://ggz/connection/0.0.10'>ggzmeta://ggz/connection/0.0.10 (GGZ real)</a><br>\n"
+		"<a href='ggzmeta://freeciv/'>ggzmeta://freeciv/ (Freeciv)</a><br>\n"
+		"<a href='ggzmeta://netrek/foo/'>ggzmeta://netrek/foo/ (Netrek)</a><br>\n"
+		"<a href='ggzmeta://crossfire/foo/'>ggzmeta://crossfire/foo/ (Crossfire)</a><br>\n"
+		"<a href='ggzmeta://atlantik/'>ggzmeta://atlantik/ (Atlantik)</a><br>\n"
+		"<a href='ggzmeta://dopewars/'>ggzmeta://dopewars/ (Dopewars)</a><br>\n"
+		);
+	debug(output.local8Bit());
+	data(QCString(output.local8Bit()));
 }
 
 // Result slot for async copy operations
@@ -96,7 +112,8 @@ void GGZMetaProtocol::slotWrite()
 	{
 		// Recognized valid GGZ meta server URI-style query
 		debug("Write...");
-		s = QString("<?xml version=\"1.0\"><query class=\"%1\" type=\"%2\">%3</query>\n").arg(m_class).arg(*(l.at(0))).arg(*(l.at(1)));
+		QString format = "<?xml version=\"1.0\"><query class=\"%1\" type=\"%2\">%3</query>\n";
+		s = QString(format).arg(m_class).arg(*(l.at(0))).arg(*(l.at(1)));
 		debug(QString("Write: %1").arg(s));
 		m_sock->writeBlock(s.latin1(), s.length());
 		m_sock->flush();
@@ -126,7 +143,8 @@ void GGZMetaProtocol::slotRead()
 			list = list.split('|', rdata);
 			host = *(list.at(0));
 			hostname = *(list.at(1));
-			GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(host).arg(hostname), 1, "application/x-desktop");
+			GGZMetaProtocolHelper::app_file(entry,
+				QString("%1_%2").arg(host).arg(hostname), 1, "application/x-desktop");
 			listEntry(entry, false);
 		}
 		listEntry(entry, true);
@@ -166,7 +184,8 @@ void GGZMetaProtocol::slotRead()
 			{
 				element = element.firstChild().toElement();
 				pref = element.attribute("preference", "20");
-				GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(element.text()).arg(pref), 1, "application/x-desktop");
+				GGZMetaProtocolHelper::app_file(entry,
+					QString("%1_%2").arg(element.text()).arg(pref), 1, "application/x-desktop");
 				listEntry(entry, false);
 				debug(QString("-> entry: %1_%2").arg(element.text()).arg(pref));
 			}
@@ -341,7 +360,7 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 		connect(m_sock, SIGNAL(connected()), SLOT(slotWrite()));
 		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
 		connect(m_sock, SIGNAL(error(int)), SLOT(slotError(int)));
-		m_sock->connectToHost("localhost", 15689);
+		m_sock->connectToHost("live.ggzgamingzone.org", 15689);
 		m_result = 0;
 		qApp->enter_loop();
 		while(!m_result);
@@ -373,13 +392,16 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 					l = l.split(QRegExp("<[^>]+>"), s);
 					QString host = *(l.at(0));
 					QString port = *(l.at(2));
-					GGZMetaProtocolHelper::app_file(entry, QString("%1:%2").arg(host).arg(port), 1, "application/x-desktop");
+					GGZMetaProtocolHelper::app_file(entry,
+						QString("%1:%2").arg(host).arg(port), 1, "application/x-desktop");
 					listEntry(entry, false);
+					debug(QString("-> entry: %1_%2").arg(host).arg(port));
 				}
 			}
-			listEntry(entry, true);
-			finished();
 			file.close();
+			listEntry(entry, true);
+			//data(QByteArray()); // XXX ???
+			finished();
 		}
 	}
 	else if(queryclass == "dopewars")
@@ -447,7 +469,8 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 				port = element.attribute("port", "");
 				version = element.attribute("version", "");
 				users = element.attribute("users", "");
-				GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(host).arg(version), 1, "application/x-desktop");
+				GGZMetaProtocolHelper::app_file(entry,
+					QString("%1_%2").arg(host).arg(version), 1, "application/x-desktop");
 				listEntry(entry, false);
 				debug(QString("-> entry: %1_%2").arg(host).arg(version));
 			}
@@ -465,6 +488,7 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 // Request directory listing
 void GGZMetaProtocol::listDir(const KURL& url)
 {
+	debug(">> listDir");
 	jobOperator(url);
 	/*if(!url.host())
 	{
@@ -476,23 +500,49 @@ void GGZMetaProtocol::listDir(const KURL& url)
 // Request any URI
 void GGZMetaProtocol::get(const KURL& url)
 {
+	debug(">> get");
 	jobOperator(url);
 }
 
 // Request file statistics
 void GGZMetaProtocol::stat(const KURL& url)
 {
-	GGZMetaProtocolHelper::app_file(entry, QString("Whatever"), 1, "application/x-desktop");
+	KIO::UDSEntry entry;
 
-	statEntry(entry);
+	debug(">> stat");
+
+	if(url.host())
+	{
+		if(url.path() == "/")
+		{
+			debug("host present, assume directory!");
+			GGZMetaProtocolHelper::app_dir(entry, QString::null, 0);
+			statEntry(entry);
+		}
+		else
+		{
+			debug("host present but filename too, assume file!");
+			GGZMetaProtocolHelper::app_file(entry, QString::null, 0, QString::null);
+			statEntry(entry);
+		}
+	}
+	else
+	{
+		debug("host absent, assume file!");
+		GGZMetaProtocolHelper::app_file(entry, QString::null, 0, QString::null);
+		statEntry(entry);
+	}
+
 	finished();
 }
 
 // Request file type
-void GGZMetaProtocol::mimetype(const KURL& url)
-{
-	mimeType("application/x-desktop");
-}
+//void GGZMetaProtocol::mimetype(const KURL& url)
+//{
+	//mimeType("application/x-desktop");
+//	mimeType("text/html");
+//	finished();
+//}
 
 // Initialization
 void GGZMetaProtocol::init(const KURL& url)
@@ -514,9 +564,11 @@ extern "C"
 // Temporary debug function
 void GGZMetaProtocol::debug(QString s)
 {
-	ofstream dbg;
-	dbg.open("/tmp/kio_ggzmeta.debug", ios::app);
-	dbg << s.latin1() << endl;
+#if SLAVE_DEBUG
+	std::ofstream dbg;
+	dbg.open("/tmp/kio_ggzmeta.debug", std::ios::app);
+	dbg << s.latin1() << std::endl;
 	dbg.close();
+#endif
 }
 

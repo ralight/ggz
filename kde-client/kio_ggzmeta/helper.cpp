@@ -35,7 +35,7 @@ void GGZMetaProtocolHelper::app_file(KIO::UDSEntry& e, const QString & n, size_t
 	app_entry(e, KIO::UDS_FILE_TYPE, S_IFREG);
 	app_entry(e, KIO::UDS_ACCESS, 0400);
 	app_entry(e, KIO::UDS_SIZE, s);
-	app_entry(e, KIO::UDS_MIME_TYPE, m);
+	if(!m.isNull()) app_entry(e, KIO::UDS_MIME_TYPE, m);
 }
 
 // End of stolen code. I'm a thief :)

@@ -4,6 +4,7 @@ protocol=ggzmeta
 input=none
 output=filesystem
 reading=true
-listing=Name,Type,Size
 Icon=ggz
+DocPath=kioslave/ggzmeta.html
 
+listing=Name,Type,
