@@ -42,7 +42,7 @@ class Stuff:
 
 class Configuration:
 	def __init__(self):
-		self.providers = "http://www.kstuff.org/hotstuff/directory/providers.xml"
+		self.providers = "http://ftp.ggzgamingzone.org/pub/hotstuff/providers.xml"
 		self.installdir = None
 
 		self.unpack = 1
