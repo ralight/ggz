@@ -29,8 +29,8 @@
 #ifdef GGZ_TLS_NONE
 
 #include <unistd.h>
-#ifdef HAVE_WINSOCK_H
-#  include <winsock.h>
+#ifdef HAVE_WINSOCK2_H
+#  include <winsock2.h>
 #endif
 
 #include "ggz.h"
@@ -61,7 +61,7 @@ int ggz_tls_disable_fd(int fdes)
 
 size_t ggz_tls_write(int fd, void *ptr, size_t n)
 {
-#ifdef HAVE_WINSOCK_H
+#ifdef HAVE_WINSOCK2_H
 	return send(fd, ptr, n, 0);
 #else
 	return write(fd, ptr, n);
@@ -70,7 +70,7 @@ size_t ggz_tls_write(int fd, void *ptr, size_t n)
 
 size_t ggz_tls_read(int fd, void *ptr, size_t n)
 {
-#ifdef HAVE_WINSOCK_H
+#ifdef HAVE_WINSOCK2_H
 	return recv(fd, ptr, n, 0);
 #else
 	return read(fd, ptr, n);

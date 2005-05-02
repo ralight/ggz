@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7078 2005-04-03 17:24:02Z josef $
+ * $Id: easysock.c 7171 2005-05-02 18:03:11Z oojah $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -53,8 +53,9 @@
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
-#ifdef HAVE_WINSOCK_H
-#include <winsock.h>
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #endif
 
 #include <stdio.h>
@@ -121,7 +122,7 @@ unsigned int ggz_set_io_alloc_limit(const unsigned int limit)
 
 static void ggz_network_shutdown(void)
 {
-#ifdef HAVE_WINSOCK_H
+#ifdef HAVE_WINSOCK2_H
 	WSACleanup();
 #endif
 }
@@ -134,7 +135,7 @@ int ggz_init_network(void)
 
 	if (!initialized) {
 
-#ifdef HAVE_WINSOCK_H
+#ifdef HAVE_WINSOCK2_H
 		WSADATA wsa;
 		if (WSAStartup(MAKEWORD(1, 1), &wsa) !=0 ){
 			return -1;
@@ -620,7 +621,7 @@ int ggz_writen(const int sock, const void *vptr, size_t n)
 	ptr = vptr;
 	nleft = n;
 	while (nleft > 0) {
-#ifdef HAVE_WINSOCK_H
+#ifdef HAVE_WINSOCK2_H
 		nwritten = send(sock, ptr, nleft, 0);
 #else
 		nwritten = write(sock, ptr, nleft);
@@ -651,7 +652,7 @@ int ggz_readn(const int sock, void *vptr, size_t n)
 	ptr = vptr;
 	nleft = n;
 	while (nleft > 0) {
-#ifdef HAVE_WINSOCK_H
+#ifdef HAVE_WINSOCK2_H
 		nread = recv(sock, ptr, nleft, 0);
 #else
 		nread = read(sock, ptr, nleft);

@@ -15,8 +15,8 @@ Published under GNU GPL conditions
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <unistd.h>
-#ifdef HAVE_WINSOCK_H
-#  include <winsock.h>
+#ifdef HAVE_WINSOCK2_H
+#  include <winsock2.h>
 #endif
 
 #include "ggz.h"
@@ -317,7 +317,7 @@ size_t ggz_tls_read(int fd, void *buffer, size_t size)
 	if(!entry)
 	{
 		/*TLSERROR("Given fd is not secure.");*/
-#ifdef HAVE_WINSOCK_H
+#ifdef HAVE_WINSOCK2_H
 		return recv(fd, buffer, size, 0);
 #else
 		return read(fd, buffer, size);
@@ -366,7 +366,7 @@ size_t ggz_tls_write(int fd, void *s, size_t size)
 	if(!entry)
 	{
 		/*TLSERROR("Given fd is not secure.");*/
-#ifdef HAVE_WINSOCK_H
+#ifdef HAVE_WINSOCK2_H
 		return send(fd, s, size, 0);
 #else
 		return write(fd, s, size);
