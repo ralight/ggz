@@ -1,0 +1,148 @@
+Compiling GGZ on Windows with Mingw/MSYS
+========================================
+
+Revision 1, 2005/05/03
+
+Roger Light <oojah@ggzgamingzone.org>
+
+
+Get Mingw/MSYS
+==============
+
+Go to http://www.mingw.org/download.shtml
+
+Download
+
+MinGW-3.1.0-1.exe
+MSYS-1.0.10.exe
+msysDTK-1.0.1.exe
+msys-autoconf-2.59.tar.bz2
+msys-automake-1.8.2.tar.bz2
+msys-libtool-1.5.tar.bz2
+binutils-2.15.91-20040904-1.tar.gz
+
+or the latest versions of those tools.
+
+Install MSYS to a directory with no spaces in the path, e.g.
+
+c:\msys\
+
+Install Mingw to c:\msys\1.0\mingw\
+
+Install msysDTK to your MSYS directory.
+
+Copy msys-autoconf, msys-automake, msys-libtool, binutils to c:\msys\1.0\
+
+Start MSYS and cd to the root directory
+
+cd /
+
+Now unarchive msys-autoconf, msys-libtool, binutils.
+
+tar -jxf msys-autoconf-2.59.tar.bz2
+tar -jxf msys-automake-1.8.2.tar.bz2
+tar -jxf msys-libtool-1.5.tar.bz2
+tar -zxf msys-binutils-2.15.91-20040904-1.tar.gz
+
+This is a clean MSYS install.
+
+
+Configure a Path Directory
+==========================
+
+I like to keep the required dlls in a seperate directory so that I know where they all are and can add the path to the PATH variable easily.
+
+I usually use c:\msys\path\
+
+To add this to the PATH variable, right click on "My Computer", select "Properties" and then click on the "Advanced" tab.
+
+Click on "Environment Variables" and either add a new PATH variable to the "User variables" list or else add an additional entry to existing PATH variable using ; as a seperator.
+
+
+Get other tools/libraries
+=========================
+
+Go to http://gnuwin.sourceforge.net/ and download the latest packages of:
+
+gettext (bin, lib, dependencies)
+popt (bin, lib, dependencies)
+libiconv (bin, lib)
+
+Copy gettext-0.14.1-bin.zip/bin/* to c:\msys\path\
+Copy gettext-0.14.1-dep.zip/bin/* to c:\msys\path\
+
+Copy popt-1.8.1-bin.zip/bin/* to c:\msys\path\
+Copy popt-1.8.1-dep.zip/bin/* to c:\msys\path\
+
+Copy libiconv-1.8.1-bin.zip/bin/* to c:\msys\path\
+Copy libiconv-1.8.1-dep.zip/bin/* to c:\msys\path\
+
+
+Copy gettext-0.14.1-lib.zip/* to c:\msys\1.0\mingw\
+Copy popt-1.8.1-lib.zip/* to c:\msys\1.0\mingw\
+Copy libiconv-1.8.1-lib.zip/* to c:\msys\1.0\mingw\
+
+
+Go to http://expat.sourceforge.net/ and download the latest expat_win32bin.
+
+Install it to the default location (c:\Expat-1.95.8\ )
+
+Copy c:\Expat-1.95.8\libs\libexpat.dll to c:\msys\path\ AND c:\msys\1.0\home\
+Copy c:\Expat-1.95.8\libs\libexpatw.dll to c:\msys\path\ AND c:\msys\1.0\home\
+Copy c:\Expat-1.95.8\source\lib\expat.h to c:\msys\1.0\mingw\include\
+Copy c:\Expat-1.95.8\source\lib\expat-external.h to c:\msys\1.0\mingw\include\
+
+Expat does not provide Mingw libraries so we have to create them ourselves.
+
+Start MSYS and cd to /home
+
+cd /home
+pexports libexpat.dll > expat.def
+pexports libexpatw.dll > expatw.def
+dlltool -d expat.def -l libexpat.a
+dlltool -d expatw.def -l libexpatw.a
+cp libexapt*.a /mingw/lib
+rm libexpat.dll libexpatw.dll expat.def expatw.def libexpat.a libexpatw.a
+
+You can also uninstall Expat as it is not required (and not in the path anyway).
+
+This is enough for you to compile libggz and ggz-client-libs
+
+
+Compiling libggz
+================
+
+Get libggz from http://www.ggzgamingzone.org/ either as a package or from CVS.
+
+If from a package (downloaded to /home)
+
+cd /home
+tar -zxf libggz-0.0.10.tar.gz
+cd libggz-0.0.10
+./configure
+make
+make install
+
+If from CVS (checked out to /home)
+cd /home/libggz
+./autogen.sh
+make
+make install
+
+In both cases we really need to set the prefix dir for configure to something sensible so everything will work nicely with windows paths. If you use the default, things end up in c:\usr\local\ rather than even in the MSYS path. Not nice.
+
+If you get errors about a missing gai_strerror function, this is because Mingw doesn't include it yet.
+
+You may also get libraries being created with .exe endings instead of .dll. Just renaming should be fine.
+
+Copy c:\msys\1.0\local\lib\libggz-3.dll to c:\msys\path\
+
+
+Compiling ggz-client-libs
+=========================
+
+Get ggz-client libs from http://www.ggzgamingzone.org/ either as a package or from CVS.
+
+
+* This is a bit more complicated - ggzmod and ggzcore share a circular dependency with each other at the time of writing. This is not a problem on *nix, but is on Mingw. My solution has been to compile both libraries into ggzcore by modifying ggzcore\Makefile.am to use the ggzmod source files, then running autogen.sh and running make / make install in ggzcore/ggzconfig only.
+
