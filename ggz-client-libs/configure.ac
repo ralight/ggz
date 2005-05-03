@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6952 2005-02-27 23:24:22Z josef $
+dnl $Id: configure.ac 7172 2005-05-03 20:30:32Z oojah $
 
 AC_INIT([GGZ client libraries], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -49,7 +49,7 @@ AC_GGZ_INTL
 AC_CHECK_HEADERS([fcntl.h limits.h sys/time.h time.h \
                   unistd.h], [],
                  [AC_MSG_ERROR([cannot find required header file])])
-AC_CHECK_HEADERS([netdb.h sys/socket.h winsock.h])
+AC_CHECK_HEADERS([netdb.h sys/socket.h winsock2.h])
 AC_HEADER_SYS_WAIT
 AC_HEADER_TIME
 # We used to check for the presence of WAIT_ANY, and define it as
@@ -89,7 +89,7 @@ AC_EGREP_CPP(PF_LOCAL,
 # ===============================
 
 if test "$MINGW32" = "yes"; then
-	LDFLAGS="$LDFLAGS -no-undefined -lwsock32"
+	LDFLAGS="$LDFLAGS -no-undefined -lws2_32"
 fi
 
 # Check for library functions
@@ -104,7 +104,7 @@ AC_FUNC_FORK
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_VPRINTF
 if test "$MINGW32" = "yes"; then
-	LIBS="$LIBS -lwsock32"
+	LIBS="$LIBS -lws2_32"
 fi
 
 

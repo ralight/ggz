@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6903 2005-01-25 18:57:38Z jdorje $
+ * $Id: game.c 7172 2005-05-03 20:30:32Z oojah $
  *
  * This fils contains functions for handling games being played
  *
@@ -41,8 +41,8 @@
 #ifdef HAVE_SYS_SOCKET_H
 # include <sys/socket.h>
 #endif
-#ifdef HAVE_WINSOCK_H
-# include <winsock.h>
+#ifdef HAVE_WINSOCK2_H
+# include <winsock2.h>
 #endif
 #include <unistd.h>
 

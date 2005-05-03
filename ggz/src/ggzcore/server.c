@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 7123 2005-04-23 11:31:46Z josef $
+ * $Id: server.c 7172 2005-05-03 20:30:32Z oojah $
  *
  * Code for handling server connection state and properties
  *
@@ -36,8 +36,8 @@
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
-#ifdef HAVE_WINSOCK_H
-#include <winsock.h>
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
 #endif
 
 #include <ggz.h>

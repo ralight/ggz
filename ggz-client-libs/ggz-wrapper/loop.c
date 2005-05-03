@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: loop.c 6635 2005-01-11 02:46:46Z jdorje $
+ * $Id: loop.c 7172 2005-05-03 20:30:32Z oojah $
  *
  * Functions for handling main IO loop
  *
@@ -36,8 +36,8 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#ifdef HAVE_WINSOCK_H
-# include <winsock.h>
+#ifdef HAVE_WINSOCK2_H
+# include <winsock2.h>
 #endif
 #ifdef HAVE_SYS_SOCKET_H
 # include <sys/socket.h>

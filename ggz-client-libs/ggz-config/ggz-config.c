@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7115 2005-04-17 14:24:03Z josef $
+ * $Id: ggz-config.c 7172 2005-05-03 20:30:32Z oojah $
  *
  * Configuration query and module install program.
  *
@@ -100,7 +100,7 @@ static const struct poptOption args[] = {
 	{"destdir",	'D',	POPT_ARG_NONE,	&moddest,	0,
 	 "Use $DESTDIR as offset to ggz.modules file"},
 
-#ifndef HAVE_WINSOCK_H
+#ifndef HAVE_WINSOCK2_H
 	/* HACK: POPT_AUTOHELP doesn't work with popt on windows. */
 	POPT_AUTOHELP
 #endif
@@ -338,7 +338,7 @@ static int open_conffile(void)
 		ggz_conf_cleanup();
 		return -1;
 	} else {
-#ifndef HAVE_WINSOCK_H
+#ifndef HAVE_WINSOCK2_H
 		/* HACK: chmod flags aren't available on windows. */
 		chmod(global_pathname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 #endif

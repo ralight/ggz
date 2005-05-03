@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 7123 2005-04-23 11:31:46Z josef $
+ * $Id: netxml.c 7172 2005-05-03 20:30:32Z oojah $
  *
  * Code for parsing XML streamed from the server
  *
@@ -39,8 +39,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#ifdef HAVE_WINSOCK_H
-# include <winsock.h>
+#ifdef HAVE_WINSOCK2_H
+# include <winsock2.h>
 #endif
 
 #include <expat.h>
@@ -335,7 +335,7 @@ int _ggzcore_net_connect(GGZNet * net)
 void _ggzcore_net_disconnect(GGZNet * net)
 {
 	ggz_debug(GGZCORE_DBG_NET, "Disconnecting");
-#ifdef HAVE_WINSOCK_H
+#ifdef HAVE_WINSOCK2_H
 	closesocket(net->fd);
 #else
 	close(net->fd);

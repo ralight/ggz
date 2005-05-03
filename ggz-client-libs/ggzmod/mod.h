@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 6866 2005-01-24 01:39:48Z jdorje $
+ * $Id: mod.h 7172 2005-05-03 20:30:32Z oojah $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -32,8 +32,8 @@
 #ifndef __GGZ_MOD_H__
 #define __GGZ_MOD_H__
 
-#ifdef HAVE_WINSOCK_H
-# include <winsock.h>
+#ifdef HAVE_WINSOCK2_H
+# include <winsock2.h>
 #endif
 
 #include <ggz.h>
