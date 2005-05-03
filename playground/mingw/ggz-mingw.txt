@@ -146,3 +146,49 @@ Get ggz-client libs from http://www.ggzgamingzone.org/ either as a package or fr
 
 * This is a bit more complicated - ggzmod and ggzcore share a circular dependency with each other at the time of writing. This is not a problem on *nix, but is on Mingw. My solution has been to compile both libraries into ggzcore by modifying ggzcore\Makefile.am to use the ggzmod source files, then running autogen.sh and running make / make install in ggzcore/ggzconfig only.
 
+
+Installing GTK+
+===============
+
+Go to http://gimp-win.sourceforge.net/ and download the latest installer for GTK+. Install it.
+
+Go to http://www.gimp.org/~tml/gimp/win32/downloads.html and get the following packages (they must correspond to the versions that you downloaded above)
+
+glib-dev
+pkgconfig
+gtk+-dev
+pango-dev
+atk-dev
+
+Copy the contents of glib-dev, atk-dev, gtk+-dev and pango-dev to c:\msys\1.0\mingw\
+
+Copy pkgconfig\bin\pkg-config.exe to c:\msys\path\
+
+#libiconv
+#gettext-runtime
+#gettext-tools
+
+The files in c:\msys\1.0\mingw\lib\pkgconfig\ need editing so the prefix line is correct. It needs to be
+
+prefix=/mingw
+
+in each case.
+
+This can be done with Cygwin using the following command:
+
+sed -i 's#^prefix=.*#prefix=/mingw# *.pc
+
+sed in MSYS does not support the -i flag.
+
+
+Compiling gtk-client
+====================
+
+Get gtk-client from CVS.
+
+Edit configure.ac and comment out AC_GGZ_GGZMOD unless you have managed to compile ggzcore and ggzmod seperately.
+
+in MSYS:
+
+export PKG_CONFIG_PATH=/mingw/lib/pkgconfig
+./autogen.sh
