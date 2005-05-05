@@ -48,3 +48,7 @@ ggzcore++    | 1.0.0    | 2.0.0    | (noinst) | (noinst) | (noinst) | (noinst)
 zoneclient   | 0.0.0    | 1.0.0    | (noinst) | (noinst) | (noinst) | (noinst)
 zoneserver   | 0.0.0    | 0.1.0    | (noinst) | (noinst) | (noinst) | (noinst)
 
+Inter-library dependencies should only be dealt with in the (depending) library
+itself, not the programme which uses the (depending) library without knowing
+about the (dependee) library.
+
