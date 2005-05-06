@@ -522,8 +522,7 @@ else
   AC_SUBST(GGZMOD_INCLUDES)
   AC_SUBST(GGZMOD_LDFLAGS)
 
-  #HACK: ggzmod requires ggzcore; the dependency is added here.
-  LIB_GGZMOD='-lggzmod -lggzcore'
+  LIB_GGZMOD='-lggzmod'
   AC_SUBST(LIB_GGZMOD)
 
   # Perform actions given by argument 1.

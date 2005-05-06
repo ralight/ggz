@@ -135,7 +135,7 @@ if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdetc="$ac_ggz_stdetc/ggzd /usr/local/etc/ggzd /etc/ggzd"
 fi
 if test "x$1" = "xexport" || test "x$2" = "xexport"; then
-  CPPFLAGS="$CPPFLAGS -isystem${ac_ggz_prefix_incdir}"
+  CPPFLAGS="$CPPFLAGS -isystem ${ac_ggz_prefix_incdir}"
   LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir}"
 fi
 
@@ -522,8 +522,7 @@ else
   AC_SUBST(GGZMOD_INCLUDES)
   AC_SUBST(GGZMOD_LDFLAGS)
 
-  #HACK: ggzmod requires ggzcore; the dependency is added here.
-  LIB_GGZMOD='-lggzmod -lggzcore'
+  LIB_GGZMOD='-lggzmod'
   AC_SUBST(LIB_GGZMOD)
 
   # Perform actions given by argument 1.
@@ -702,7 +701,7 @@ else
 	if test "x${prefix}" != "xNONE" && test "x${prefix}" != "x${ac_default_prefix}"; then
 		prefixed=1
 	fi
-	if test "x$ggzconfdir" != "x${prefix}/etc/ggzd" && test "x$prefixed" = "x1"; then
+	if test "x$ggzdconfdir" != "x${prefix}/etc/ggzd" && test "x$prefixed" = "x1"; then
 		AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir, but using ${prefix}/etc/ggzd nevertheless)])
 		ggzdconfdir="\${prefix}/etc/ggzd"
 	else
