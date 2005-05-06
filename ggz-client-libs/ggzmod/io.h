@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.h 7046 2005-03-26 09:51:15Z josef $
+ * $Id: io.h 7178 2005-05-06 21:08:09Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -28,22 +28,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef __GGZ_IO_H__
+#define __GGZ_IO_H__
 
 #include "ggzmod.h"
 #include "mod.h"
 
-/* Functions for sending IO messages */
-int _io_send_launch(int fd);
+/* Functions for sending IO messages (ggz+game) */
 int _io_send_state(int fd, GGZModState state);
-int _io_send_server(int fd, const char *host, unsigned int port,
-		    const char *handle);
-int _io_send_player(int fd, const char *name, int is_spectator, int seat_num);
-int _io_send_seat(int fd, GGZSeat *seat);
-int _io_send_spectator_seat(int fd, GGZSpectatorSeat *seat);
-int _io_send_msg_chat(int fd, const char *player, const char *chat_msg);
-int _io_send_stats(int fd, int num_players, GGZStat *player_stats,
-		   int num_spectators, GGZStat *spectator_stats);
 
+/* Functions for sending IO messages (game only) */
 int _io_send_req_stand(int fd);
 int _io_send_req_sit(int fd, int seat_num);
 int _io_send_req_boot(int fd, const char *name);
@@ -54,5 +48,4 @@ int _io_send_request_chat(int fd, const char *chat_msg);
 /* Read and dispatch message */
 int _io_read_data(GGZMod * ggzmod);
 
-/* Functions for sending repsonses */
-int _io_respond_launch(int fd, char status);
+#endif /* __GGZ_IO_H__ */

@@ -1,10 +1,10 @@
 /* 
- * File: io.h
+ * File: mod.h
  * Author: GGZ Dev Team
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 7172 2005-05-03 20:30:32Z oojah $
+ * $Id: mod.h 7178 2005-05-06 21:08:09Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -32,18 +32,12 @@
 #ifndef __GGZ_MOD_H__
 #define __GGZ_MOD_H__
 
-#ifdef HAVE_WINSOCK2_H
-# include <winsock2.h>
-#endif
-
 #include <ggz.h>
 
 #include "ggzmod.h"
-#include "ggzmod-ggz.h"
 
 /* The number of event handlers there are. */
 #define GGZMOD_NUM_HANDLERS (GGZMOD_EVENT_ERROR + 1)
-#define GGZMOD_NUM_TRANSACTIONS (GGZMOD_TRANSACTION_CHAT + 1)
 
 /* This is the actual structure, but it's only visible internally. */
 struct GGZMod {
@@ -71,28 +65,24 @@ struct GGZMod {
 	GGZList *spectator_stats;
 
 	/* ggz-only data */
-#ifdef HAVE_FORK
-	pid_t pid;	/* process ID of table */
-#else
-	HANDLE process;
-#endif
-	char *pwd;	/* working directory for game */
-	char **argv;	/* command-line arguments for launching module */
-	GGZModTransactionHandler thandlers[GGZMOD_NUM_TRANSACTIONS];
+	/* see mod-ggz.h */
 
 	/* etc. */
 };
 
+/* Structure for player statistics */
+typedef struct GGZStat {
+	int number;
+	int have_record, have_rating, have_ranking, have_highscore;
+	int wins, losses, ties, forfeits;
+	int rating, ranking, highscore;
+} GGZStat;
+
+/* GGZ+game side error function */
 void _ggzmod_error(GGZMod *ggzmod, char* error);
 
-/* GGZ side functions for handling various messages */
+/* GGZ+game side functions for handling various messages */
 void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state);
-void _ggzmod_handle_stand_request(GGZMod *ggzmod);
-void _ggzmod_handle_sit_request(GGZMod *ggzmod, int seat_num);
-void _ggzmod_handle_boot_request(GGZMod *ggzmod, char *name);
-void _ggzmod_handle_bot_request(GGZMod *ggzmod, int seat_num);
-void _ggzmod_handle_open_request(GGZMod *ggzmod, int seat_num);
-void _ggzmod_handle_chat_request(GGZMod *ggzmod, char *chat_msg);
 
 /* Game side functions for handling various messages */
 void _ggzmod_handle_launch(GGZMod * ggzmod);
@@ -106,6 +96,5 @@ void _ggzmod_handle_spectator_seat(GGZMod *ggzmod, GGZSpectatorSeat *seat);
 void _ggzmod_handle_chat(GGZMod *ggzmod, char *player, char *chat_msg);
 void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
 			  GGZStat *spectator_stats);
-
 
 #endif /* __GGZ_MOD_H__ */

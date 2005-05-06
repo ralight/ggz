@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 7046 2005-03-26 09:51:15Z josef $
+ * $Id: protocol.h 7178 2005-05-06 21:08:09Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -29,6 +29,7 @@
 
 /*
  * Protocols for GGZMOD game client <-> core client communication.
+ * Must be kept synchronized between ggzmod-ggz and ggzmod-game!
  */
 
 /** Messages sent from the game client to the ggz core client. */
