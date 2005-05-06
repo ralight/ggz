@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 7172 2005-05-03 20:30:32Z oojah $
+dnl $Id: configure.ac 7181 2005-05-06 21:12:01Z josef $
 
 AC_INIT([GGZ client libraries], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -187,6 +187,7 @@ AC_SUBST(packagesrcdir)
 AC_CONFIG_FILES([Makefile 
 	   ggzcore/Makefile
 	   ggzmod/Makefile
+	   ggzmod-ggz/Makefile
 	   ggz-config/Makefile
 	   ggz-wrapper/Makefile
 	   man/Makefile
@@ -210,7 +211,7 @@ echo "    Dmalloc Debugging..$enable_debug_mem"
 echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to"
-echo "compile ggzcore"
+echo "compile ggzcore and ggzmod."
 echo ""
 echo "When complete, su to root"
 echo "and type \"make install\" to"
