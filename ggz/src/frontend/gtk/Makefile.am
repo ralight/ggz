@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6740 2005-01-19 07:46:46Z jdorje $
+#  $Id: Makefile.am 7180 2005-05-06 21:10:42Z josef $
 
 SUBDIRS = .
 
 AM_CPPFLAGS = @GTK_CFLAGS@ -I$(top_srcdir)/intl \
-	$(GGZCORE_INCLUDES) $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES)
+	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
 
 bin_PROGRAMS = ggz-gtk
 
@@ -68,7 +68,7 @@ ggz_gtk_SOURCES =	main.c \
 			xtext-ggz.h
 
 ggz_gtk_LDADD = @GTK_LIBS@ $(LDADD) @LIBS@ @INTLLIBS@ \
-		$(LIB_GGZCORE) $(LIB_GGZMOD) $(LIB_GGZ)
-ggz_gtk_LDFLAGS = $(GGZCORE_LDFLAGS) $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
+		$(LIB_GGZCORE) $(LIB_GGZ)
+ggz_gtk_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 EXTRA_DIST = $(ggzdata_DATA) xtext.README
