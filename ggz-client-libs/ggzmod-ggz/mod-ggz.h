@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules, GGZ side
- * $Id: mod-ggz.h 7177 2005-05-06 21:07:44Z josef $
+ * $Id: mod-ggz.h 7186 2005-05-07 16:45:13Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -84,17 +84,17 @@ struct GGZMod {
 };
 
 /* GGZ+game side error function */
-void _ggzmod_error(GGZMod *ggzmod, char* error);
+void _ggzmod_ggz_error(GGZMod *ggzmod, char* error);
 
 /* GGZ+game side functions for handling various messages */
-void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state);
+void _ggzmod_ggz_handle_state(GGZMod * ggzmod, GGZModState state);
 
 /* GGZ side functions for handling various messages */
-void _ggzmod_handle_stand_request(GGZMod *ggzmod);
-void _ggzmod_handle_sit_request(GGZMod *ggzmod, int seat_num);
-void _ggzmod_handle_boot_request(GGZMod *ggzmod, char *name);
-void _ggzmod_handle_bot_request(GGZMod *ggzmod, int seat_num);
-void _ggzmod_handle_open_request(GGZMod *ggzmod, int seat_num);
-void _ggzmod_handle_chat_request(GGZMod *ggzmod, char *chat_msg);
+void _ggzmod_ggz_handle_stand_request(GGZMod *ggzmod);
+void _ggzmod_ggz_handle_sit_request(GGZMod *ggzmod, int seat_num);
+void _ggzmod_ggz_handle_boot_request(GGZMod *ggzmod, char *name);
+void _ggzmod_ggz_handle_bot_request(GGZMod *ggzmod, int seat_num);
+void _ggzmod_ggz_handle_open_request(GGZMod *ggzmod, int seat_num);
+void _ggzmod_ggz_handle_chat_request(GGZMod *ggzmod, char *chat_msg);
 
 #endif /* __GGZ_MOD_GGZ_H__ */

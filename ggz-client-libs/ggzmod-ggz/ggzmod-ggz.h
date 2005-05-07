@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 7177 2005-05-06 21:07:44Z josef $
+ * $Id: ggzmod-ggz.h 7186 2005-05-07 16:45:13Z josef $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -93,18 +93,18 @@ typedef struct GGZStat {
 
 /********************************************************/
 
-/* Function prototypes duplicated from ggzmod */
+/* Function prototypes similar to those from ggzmod */
 
-GGZMod *ggzmod_new(GGZModType type);
-void ggzmod_free(GGZMod * ggzmod);
-int ggzmod_connect(GGZMod * ggzmod);
-int ggzmod_disconnect(GGZMod * ggzmod);
-GGZModState ggzmod_get_state(GGZMod * ggzmod);
-void * ggzmod_get_gamedata(GGZMod * ggzmod);
-void ggzmod_set_gamedata(GGZMod * ggzmod, void * data);
-int ggzmod_dispatch(GGZMod * ggzmod);
-int ggzmod_get_fd(GGZMod * ggzmod);
-void ggzmod_set_handler(GGZMod * ggzmod, GGZModEvent e, GGZModHandler func);
+GGZMod *ggzmod_ggz_new(GGZModType type);
+void ggzmod_ggz_free(GGZMod * ggzmod);
+int ggzmod_ggz_connect(GGZMod * ggzmod);
+int ggzmod_ggz_disconnect(GGZMod * ggzmod);
+GGZModState ggzmod_ggz_get_state(GGZMod * ggzmod);
+void * ggzmod_ggz_get_gamedata(GGZMod * ggzmod);
+void ggzmod_ggz_set_gamedata(GGZMod * ggzmod, void * data);
+int ggzmod_ggz_dispatch(GGZMod * ggzmod);
+int ggzmod_ggz_get_fd(GGZMod * ggzmod);
+void ggzmod_ggz_set_handler(GGZMod * ggzmod, GGZModEvent e, GGZModHandler func);
 
 /********************************************************/
 
@@ -139,7 +139,7 @@ typedef enum {
 typedef void (*GGZModTransactionHandler) (GGZMod * mod, GGZModTransaction t,
 					  const void *data);
 
-void ggzmod_set_transaction_handler(GGZMod * ggzmod, GGZModTransaction t,
+void ggzmod_ggz_set_transaction_handler(GGZMod * ggzmod, GGZModTransaction t,
 				    GGZModTransactionHandler func);
 
 /********************************************************/
@@ -156,7 +156,7 @@ void ggzmod_set_transaction_handler(GGZMod * ggzmod, GGZModTransaction t,
  *  @param args The arguments for the program, as needed by exec.
  *  @note The pwd directory must already exist.
  */
-void ggzmod_set_module(GGZMod * ggzmod, const char *pwd, char **args);
+void ggzmod_ggz_set_module(GGZMod * ggzmod, const char *pwd, char **args);
 		       
 
 /** @brief Set the host and port for the game server connection
@@ -165,7 +165,7 @@ void ggzmod_set_module(GGZMod * ggzmod, const char *pwd, char **args);
  *  @param port The port to connect to.
  *  @param handle The ID to use to connect (currently the player handle).
  */
-void ggzmod_set_server_host(GGZMod * ggzmod,
+void ggzmod_ggz_set_server_host(GGZMod * ggzmod,
 			    const char *host, unsigned int port,
 			    const char *handle);
 
@@ -177,7 +177,7 @@ void ggzmod_set_server_host(GGZMod * ggzmod,
  *  @param seat_num The seat or spectator seat number.
  *  @return 0 on success, negative on error.
  */
-int ggzmod_set_player(GGZMod *ggzmod,
+int ggzmod_ggz_set_player(GGZMod *ggzmod,
 		      const char *my_name,
 		      int is_spectator, int seat_num);
 
@@ -188,7 +188,7 @@ int ggzmod_set_player(GGZMod *ggzmod,
  *  @param seat The new seat structure (which includes seat number).
  *  @return 0 on success, negative on failure.
  */
-int ggzmod_set_seat(GGZMod *ggzmod, GGZSeat * seat);
+int ggzmod_ggz_set_seat(GGZMod *ggzmod, GGZSeat * seat);
 
 /** @brief Set spectator data.
  *
@@ -196,11 +196,11 @@ int ggzmod_set_seat(GGZMod *ggzmod, GGZSeat * seat);
  *  @param seat The new spectator seat data.
  *  @return 0 on success, negative on failure.
  */
-int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat * seat);
+int ggzmod_ggz_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat * seat);
 
-int ggzmod_inform_chat(GGZMod * ggzmod, const char *player, const char *msg);
+int ggzmod_ggz_inform_chat(GGZMod * ggzmod, const char *player, const char *msg);
 
-int ggzmod_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
+int ggzmod_ggz_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
 		     GGZStat *spectator_stats);
 
 #endif /* __GGZMOD_GGZ_H__ */

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 7179 2005-05-06 21:09:45Z josef $
+ * $Id: game.c 7186 2005-05-07 16:45:13Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -290,37 +290,37 @@ void _ggzcore_game_init(struct _GGZGame *game,
 		game->event_hooks[i] = _ggzcore_hook_list_init(i);
 
 	/* Setup client module connection */
-	game->client = ggzmod_new(GGZMOD_GGZ);
-	ggzmod_set_gamedata(game->client, game);
-	ggzmod_set_server_host(game->client,
+	game->client = ggzmod_ggz_new(GGZMOD_GGZ);
+	ggzmod_ggz_set_gamedata(game->client, game);
+	ggzmod_ggz_set_server_host(game->client,
 			       ggzcore_server_get_host(server),
 			       ggzcore_server_get_port(server),
 			       ggzcore_server_get_handle(server));
-	ggzmod_set_handler(game->client, GGZMOD_EVENT_STATE,
+	ggzmod_ggz_set_handler(game->client, GGZMOD_EVENT_STATE,
 			   &_ggzcore_game_handle_state);
-	ggzmod_set_transaction_handler(game->client,
+	ggzmod_ggz_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_SIT,
 				       _ggzcore_game_handle_sit);
-	ggzmod_set_transaction_handler(game->client,
+	ggzmod_ggz_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_STAND,
 				       _ggzcore_game_handle_stand);
-	ggzmod_set_transaction_handler(game->client,
+	ggzmod_ggz_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_BOOT,
 				       _ggzcore_game_handle_boot);
-	ggzmod_set_transaction_handler(game->client,
+	ggzmod_ggz_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_OPEN,
 				       _ggzcore_game_handle_seatchange);
-	ggzmod_set_transaction_handler(game->client,
+	ggzmod_ggz_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_BOT,
 				       _ggzcore_game_handle_seatchange);
-	ggzmod_set_transaction_handler(game->client,
+	ggzmod_ggz_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_CHAT,
 				       _ggzcore_game_handle_chat);
-	ggzmod_set_player(game->client,
+	ggzmod_ggz_set_player(game->client,
 			  _ggzcore_server_get_handle(server), 0, -1);
 
 	if (!_ggzcore_module_is_embedded())
-		ggzmod_set_module(game->client, NULL,
+		ggzmod_ggz_set_module(game->client, NULL,
 				  _ggzcore_module_get_argv(game->module));
 }
 
@@ -333,8 +333,8 @@ void _ggzcore_game_init(struct _GGZGame *game,
 static void _ggzcore_game_handle_state(GGZMod * mod, GGZModEvent event,
 				       const void *data)
 {
-	GGZGame *game = ggzmod_get_gamedata(mod);
-	const GGZModState new = ggzmod_get_state(mod);
+	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
+	const GGZModState new = ggzmod_ggz_get_state(mod);
 	const GGZModState *const prev = data;
 
 	ggz_debug(GGZCORE_DBG_GAME, "Game changing from state %d to %d",
@@ -385,7 +385,7 @@ static void _ggzcore_game_handle_state(GGZMod * mod, GGZModEvent event,
 static void _ggzcore_game_handle_sit(GGZMod * mod, GGZModTransaction t,
 				     const void *data)
 {
-	GGZGame *game = ggzmod_get_gamedata(mod);
+	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
 	GGZNet *net = _ggzcore_server_get_net(game->server);
 	const int *seat_num = data;
 	GGZReseatType op;
@@ -402,7 +402,7 @@ static void _ggzcore_game_handle_sit(GGZMod * mod, GGZModTransaction t,
 static void _ggzcore_game_handle_stand(GGZMod * mod, GGZModTransaction t,
 				       const void *data)
 {
-	GGZGame *game = ggzmod_get_gamedata(mod);
+	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
 	GGZNet *net = _ggzcore_server_get_net(game->server);
 
 	_ggzcore_net_send_table_reseat(net, GGZ_RESEAT_STAND, -1);
@@ -411,7 +411,7 @@ static void _ggzcore_game_handle_stand(GGZMod * mod, GGZModTransaction t,
 static void _ggzcore_game_handle_boot(GGZMod * mod, GGZModTransaction t,
 				      const void *data)
 {
-	GGZGame *game = ggzmod_get_gamedata(mod);
+	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
 	GGZNet *net = _ggzcore_server_get_net(game->server);
 	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
 						     game->room_id);
@@ -450,7 +450,7 @@ static void _ggzcore_game_handle_seatchange(GGZMod * mod,
 					    GGZModTransaction t,
 					    const void *data)
 {
-	GGZGame *game = ggzmod_get_gamedata(mod);
+	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
 	GGZNet *net = _ggzcore_server_get_net(game->server);
 	const int *seat_num = data;
 	GGZTableSeat seat = { .index = *seat_num, .name = NULL };
@@ -470,7 +470,7 @@ static void _ggzcore_game_handle_seatchange(GGZMod * mod,
 static void _ggzcore_game_handle_chat(GGZMod * mod, GGZModTransaction t,
 				      const void *data)
 {
-	GGZGame *game = ggzmod_get_gamedata(mod);
+	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
 	const char *chat = data;
 	GGZRoom *room = _ggzcore_server_get_cur_room(game->server);
 
@@ -483,8 +483,8 @@ void _ggzcore_game_free(struct _GGZGame *game)
 
 	ggz_debug(GGZCORE_DBG_GAME, "Destroying game object");
 
-	ggzmod_disconnect(game->client);
-	ggzmod_free(game->client);
+	ggzmod_ggz_disconnect(game->client);
+	ggzmod_ggz_free(game->client);
 
 	for (i = 0; i < _ggzcore_num_events; i++)
 		_ggzcore_hook_list_destroy(game->event_hooks[i]);
@@ -534,7 +534,7 @@ void _ggzcore_game_set_seat(GGZGame * game, GGZTableSeat * seat)
 	      type:seat->type,
 	      name:seat->name
 	};
-	ggzmod_set_seat(game->client, &mseat);
+	ggzmod_ggz_set_seat(game->client, &mseat);
 }
 
 void _ggzcore_game_set_spectator_seat(GGZGame * game, GGZTableSeat * seat)
@@ -542,7 +542,7 @@ void _ggzcore_game_set_spectator_seat(GGZGame * game, GGZTableSeat * seat)
       GGZSpectatorSeat mseat = { num:seat->index,
 	      name:seat->name
 	};
-	ggzmod_set_spectator_seat(game->client, &mseat);
+	ggzmod_ggz_set_spectator_seat(game->client, &mseat);
 }
 
 void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
@@ -554,7 +554,7 @@ void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
 	game->spectating = is_spectator;
 	game->seat_num = seat_num;
 
-	if (ggzmod_set_player(game->client,
+	if (ggzmod_ggz_set_player(game->client,
 			      _ggzcore_server_get_handle(game->server),
 			      is_spectator, seat_num) < 0)
 		assert(0);
@@ -563,7 +563,7 @@ void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
 void _ggzcore_game_inform_chat(GGZGame * game,
 			       const char *player, const char *msg)
 {
-	if (ggzmod_inform_chat(game->client, player, msg) < 0) {
+	if (ggzmod_ggz_inform_chat(game->client, player, msg) < 0) {
 		/* Nothing. */
 	}
 }
@@ -621,7 +621,7 @@ int _ggzcore_game_remove_event_hook_id(struct _GGZGame *game,
 
 int _ggzcore_game_get_control_fd(struct _GGZGame *game)
 {
-	return ggzmod_get_fd(game->client);
+	return ggzmod_ggz_get_fd(game->client);
 }
 
 /*
@@ -638,7 +638,7 @@ static void abort_game(struct _GGZGame *game)
 
 	/* This would be called automatically later (several times in fact),
 	   but doing it now is safe enough and starts the ball rolling. */
-	ggzmod_disconnect(game->client);
+	ggzmod_ggz_disconnect(game->client);
 
 	if (room) {
 		_ggzcore_room_table_event(room, GGZ_TABLE_LEFT,
@@ -661,7 +661,7 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 {
 	int status;
 
-	status = ggzmod_dispatch(game->client);
+	status = ggzmod_ggz_dispatch(game->client);
 	ggz_debug(GGZCORE_DBG_GAME, "Result of reading from game: %d",
 		  status);
 
@@ -689,7 +689,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		ggz_debug(GGZCORE_DBG_GAME, "Launching game of %s",
 			  _ggzcore_module_get_name(game->module));
 
-	if ((status = ggzmod_connect(game->client)) == 0) {
+	if ((status = ggzmod_ggz_connect(game->client)) == 0) {
 		ggz_debug(GGZCORE_DBG_GAME, "Launched game module");
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCHED, NULL);
 	} else {

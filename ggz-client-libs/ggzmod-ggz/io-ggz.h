@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules, GGZ side
- * $Id: io-ggz.h 7177 2005-05-06 21:07:44Z josef $
+ * $Id: io-ggz.h 7186 2005-05-07 16:45:13Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -35,20 +35,20 @@
 #include "mod-ggz.h"
 
 /* Functions for sending IO messages (ggz+game) */
-int _io_send_state(int fd, GGZModState state);
+int _io_ggz_send_state(int fd, GGZModState state);
 
 /* Functions for sending IO messages (ggz only) */
-int _io_send_launch(int fd);
-int _io_send_server(int fd, const char *host, unsigned int port,
+int _io_ggz_send_launch(int fd);
+int _io_ggz_send_server(int fd, const char *host, unsigned int port,
 		    const char *handle);
-int _io_send_player(int fd, const char *name, int is_spectator, int seat_num);
-int _io_send_seat(int fd, GGZSeat *seat);
-int _io_send_spectator_seat(int fd, GGZSpectatorSeat *seat);
-int _io_send_msg_chat(int fd, const char *player, const char *chat_msg);
-int _io_send_stats(int fd, int num_players, GGZStat *player_stats,
+int _io_ggz_send_player(int fd, const char *name, int is_spectator, int seat_num);
+int _io_ggz_send_seat(int fd, GGZSeat *seat);
+int _io_ggz_send_spectator_seat(int fd, GGZSpectatorSeat *seat);
+int _io_ggz_send_msg_chat(int fd, const char *player, const char *chat_msg);
+int _io_ggz_send_stats(int fd, int num_players, GGZStat *player_stats,
 		   int num_spectators, GGZStat *spectator_stats);
 
 /* Read and dispatch message */
-int _io_read_data(GGZMod * ggzmod);
+int _io_ggz_read_data(GGZMod * ggzmod);
 
 #endif /* __GGZ_IO_GGZ_H__ */

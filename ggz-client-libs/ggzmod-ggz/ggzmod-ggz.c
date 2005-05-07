@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 7177 2005-05-06 21:07:44Z josef $
+ * $Id: ggzmod-ggz.c 7186 2005-05-07 16:45:13Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -73,10 +73,10 @@ static int send_game_launch(GGZMod * ggzmod);
 static int game_fork(GGZMod * ggzmod);
 static int game_embedded(GGZMod * ggzmod);
 
-GGZSeat _ggzmod_get_seat(GGZMod *ggzmod, int num);
-GGZSpectatorSeat _ggzmod_get_spectator_seat(GGZMod * ggzmod, int num);
-static int _ggzmod_handle_event(GGZMod * ggzmod, fd_set read_fds);
-static void _ggzmod_set_state(GGZMod * ggzmod, GGZModState state);
+static GGZSeat _ggzmod_ggz_get_seat(GGZMod *ggzmod, int num);
+static GGZSpectatorSeat _ggzmod_ggz_get_spectator_seat(GGZMod * ggzmod, int num);
+static int _ggzmod_ggz_handle_event(GGZMod * ggzmod, fd_set read_fds);
+static void _ggzmod_ggz_set_state(GGZMod * ggzmod, GGZModState state);
 
 /* Functions for manipulating seats */
 static GGZSeat* seat_copy(GGZSeat *orig);
@@ -102,7 +102,7 @@ static int stats_compare(const void *p, const void *q)
  */
 
 /* Creates a new ggzmod object. */
-GGZMod *ggzmod_new(GGZModType type)
+GGZMod *ggzmod_ggz_new(GGZModType type)
 {
 	int i;
 	GGZMod *ggzmod;
@@ -157,7 +157,7 @@ GGZMod *ggzmod_new(GGZModType type)
 
 
 /* Frees (deletes) a ggzmod object */
-void ggzmod_free(GGZMod * ggzmod)
+void ggzmod_ggz_free(GGZMod * ggzmod)
 {
 	int i;
 
@@ -166,7 +166,7 @@ void ggzmod_free(GGZMod * ggzmod)
 	}
 	
 	if (ggzmod->fd != -1)
-		(void)ggzmod_disconnect(ggzmod);
+		(void)ggzmod_ggz_disconnect(ggzmod);
 	
 	if (ggzmod->server_host) ggz_free(ggzmod->server_host);
 	if (ggzmod->server_handle) ggz_free(ggzmod->server_handle);
@@ -196,7 +196,7 @@ void ggzmod_free(GGZMod * ggzmod)
  */
 
 /* The ggzmod FD is the main ggz<->game server communications socket. */
-int ggzmod_get_fd(GGZMod * ggzmod)
+int ggzmod_ggz_get_fd(GGZMod * ggzmod)
 {
 	if (!ggzmod) {
 		return -1;
@@ -205,7 +205,7 @@ int ggzmod_get_fd(GGZMod * ggzmod)
 }
 
 
-GGZModState ggzmod_get_state(GGZMod * ggzmod)
+GGZModState ggzmod_ggz_get_state(GGZMod * ggzmod)
 {
 	if (!ggzmod) {
 		return -1;	/* not very useful */
@@ -214,7 +214,7 @@ GGZModState ggzmod_get_state(GGZMod * ggzmod)
 }
 
 
-void* ggzmod_get_gamedata(GGZMod * ggzmod)
+void* ggzmod_ggz_get_gamedata(GGZMod * ggzmod)
 {
 	if (!ggzmod) {
 		return NULL;
@@ -223,7 +223,7 @@ void* ggzmod_get_gamedata(GGZMod * ggzmod)
 }
 
 
-void ggzmod_set_module(GGZMod * ggzmod, const char *pwd, char **argv)
+void ggzmod_ggz_set_module(GGZMod * ggzmod, const char *pwd, char **argv)
 {
 	int i;
 
@@ -233,13 +233,13 @@ void ggzmod_set_module(GGZMod * ggzmod, const char *pwd, char **argv)
 		return;
 
 	if (ggzmod->type != GGZMOD_GGZ) {
-		_ggzmod_error(ggzmod, "Cannot set module args from module");
+		_ggzmod_ggz_error(ggzmod, "Cannot set module args from module");
 		return;
 	}
 		
 	/* Check parameters */
 	if (!argv || !argv[0]) {
-		_ggzmod_error(ggzmod, "Bad module arguments");
+		_ggzmod_ggz_error(ggzmod, "Bad module arguments");
 		return;
 	}
 
@@ -256,21 +256,21 @@ void ggzmod_set_module(GGZMod * ggzmod, const char *pwd, char **argv)
 }
 
 
-void ggzmod_set_gamedata(GGZMod * ggzmod, void * data)
+void ggzmod_ggz_set_gamedata(GGZMod * ggzmod, void * data)
 {
 	if (ggzmod)
 		ggzmod->gamedata = data;
 }
 
 
-void ggzmod_set_server_host(GGZMod * ggzmod,
+void ggzmod_ggz_set_server_host(GGZMod * ggzmod,
 			    const char *host, unsigned int port,
 			    const char *handle)
 {
 	if (ggzmod && ggzmod->type == GGZMOD_GGZ) {
 		/* If we're already connected, send the fd */
 		if (ggzmod->state == GGZMOD_STATE_CONNECTED)
-			_io_send_server(ggzmod->fd, host, port, handle);
+			_io_ggz_send_server(ggzmod->fd, host, port, handle);
 		ggzmod->server_host = ggz_strdup(host);
 		ggzmod->server_port = port;
 		ggzmod->server_handle = ggz_strdup(handle);
@@ -278,11 +278,11 @@ void ggzmod_set_server_host(GGZMod * ggzmod,
 }
 
 
-void ggzmod_set_handler(GGZMod * ggzmod, GGZModEvent e,
+void ggzmod_ggz_set_handler(GGZMod * ggzmod, GGZModEvent e,
 			 GGZModHandler func)
 {
 	if (!ggzmod || e < 0 || e >= GGZMOD_NUM_HANDLERS) {
-		ggz_error_msg("ggzmod_set_handler: "
+		ggz_error_msg("ggzmod_ggz_set_handler: "
 			      "invalid params");
 		return;		/* not very useful */
 	}
@@ -291,14 +291,14 @@ void ggzmod_set_handler(GGZMod * ggzmod, GGZModEvent e,
 }
 
 
-void ggzmod_set_transaction_handler(GGZMod * ggzmod,
+void ggzmod_ggz_set_transaction_handler(GGZMod * ggzmod,
 				    GGZModTransaction t,
 				    GGZModTransactionHandler func)
 {
 	if (!ggzmod
 	    || t < 0 || t >= GGZMOD_NUM_TRANSACTIONS
 	    || ggzmod->type != GGZMOD_GGZ) {
-		ggz_error_msg("ggzmod_set_transaction_handler: "
+		ggz_error_msg("ggzmod_ggz_set_transaction_handler: "
 			      "invalid params");
 		return;
 	}
@@ -306,7 +306,7 @@ void ggzmod_set_transaction_handler(GGZMod * ggzmod,
 	ggzmod->thandlers[t] = func;
 }
 
-static void _ggzmod_set_player(GGZMod *ggzmod,
+static void _ggzmod_ggz_set_player(GGZMod *ggzmod,
 			       const char *name,
 			       int is_spectator, int seat_num)
 {
@@ -318,17 +318,17 @@ static void _ggzmod_set_player(GGZMod *ggzmod,
 	ggzmod->my_seat_num = seat_num;
 }
 
-int ggzmod_set_player(GGZMod *ggzmod, const char *name,
+int ggzmod_ggz_set_player(GGZMod *ggzmod, const char *name,
 		      int is_spectator, int seat_num)
 {
 	if (!ggzmod
 	    || ggzmod->type != GGZMOD_GGZ)
 		return -1;
 
-	_ggzmod_set_player(ggzmod, name, is_spectator, seat_num);
+	_ggzmod_ggz_set_player(ggzmod, name, is_spectator, seat_num);
 
 	if (ggzmod->state != GGZMOD_STATE_CREATED)
-		_io_send_player(ggzmod->fd, name, is_spectator, seat_num);
+		_io_ggz_send_player(ggzmod->fd, name, is_spectator, seat_num);
 
 	return 0;
 }
@@ -387,14 +387,14 @@ static void spectator_seat_free(GGZSpectatorSeat *seat)
 	ggz_free(seat);
 }
 
-static void _ggzmod_set_seat(GGZMod *ggzmod, GGZSeat *seat)
+static void _ggzmod_ggz_set_seat(GGZMod *ggzmod, GGZSeat *seat)
 {
 	if (seat->num >= ggzmod->num_seats)
 		ggzmod->num_seats = seat->num + 1;
 	ggz_list_insert(ggzmod->seats, seat);
 }
 
-GGZSeat _ggzmod_get_seat(GGZMod *ggzmod, int num)
+static GGZSeat _ggzmod_ggz_get_seat(GGZMod *ggzmod, int num)
 {
 	GGZSeat seat = {num: num,
 			type: GGZ_SEAT_NONE,
@@ -410,7 +410,7 @@ GGZSeat _ggzmod_get_seat(GGZMod *ggzmod, int num)
 	return seat;
 }
 
-int ggzmod_set_seat(GGZMod * ggzmod, GGZSeat *seat)
+int ggzmod_ggz_set_seat(GGZMod * ggzmod, GGZSeat *seat)
 {
 	GGZSeat oldseat;
 
@@ -422,7 +422,7 @@ int ggzmod_set_seat(GGZMod * ggzmod, GGZSeat *seat)
 	}
 
 	/* If there is no such seat, return error */
-	oldseat = _ggzmod_get_seat(ggzmod, seat->num);
+	oldseat = _ggzmod_ggz_get_seat(ggzmod, seat->num);
 
 	if (oldseat.type == seat->type
 	    && ggz_strcmp(oldseat.name, seat->name) == 0) {
@@ -431,16 +431,16 @@ int ggzmod_set_seat(GGZMod * ggzmod, GGZSeat *seat)
 	}
 
 	if (ggzmod->state != GGZMOD_STATE_CREATED) {
-		if (_io_send_seat(ggzmod->fd, seat) < 0)
-			_ggzmod_error(ggzmod, "Error writing to game");
+		if (_io_ggz_send_seat(ggzmod->fd, seat) < 0)
+			_ggzmod_ggz_error(ggzmod, "Error writing to game");
 	}
 
-	_ggzmod_set_seat(ggzmod, seat);
+	_ggzmod_ggz_set_seat(ggzmod, seat);
 
 	return 0;
 }
 
-static void _ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
+static void _ggzmod_ggz_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
 {
 	if (seat->name) {
 		if (seat->num >= ggzmod->num_spectator_seats)
@@ -456,7 +456,7 @@ static void _ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
 	}
 }
 
-GGZSpectatorSeat _ggzmod_get_spectator_seat(GGZMod * ggzmod, int num)
+static GGZSpectatorSeat _ggzmod_ggz_get_spectator_seat(GGZMod * ggzmod, int num)
 {
 	GGZSpectatorSeat seat = {num: num, name: NULL};
 
@@ -470,7 +470,7 @@ GGZSpectatorSeat _ggzmod_get_spectator_seat(GGZMod * ggzmod, int num)
 	return seat;
 }
 
-int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
+int ggzmod_ggz_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
 {
 	if (!seat) return -1;
 	if (ggzmod->type == GGZMOD_GAME) return -2;
@@ -478,22 +478,22 @@ int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
 
 	if (ggzmod->state != GGZMOD_STATE_CREATED) {
 		GGZSpectatorSeat old_seat;
-		old_seat = _ggzmod_get_spectator_seat(ggzmod, seat->num);
+		old_seat = _ggzmod_ggz_get_spectator_seat(ggzmod, seat->num);
 		if (ggz_strcmp(seat->name, old_seat.name)
-		    && _io_send_spectator_seat(ggzmod->fd, seat) < 0) {
-			_ggzmod_error(ggzmod, "Error writing to game");
+		    && _io_ggz_send_spectator_seat(ggzmod->fd, seat) < 0) {
+			_ggzmod_ggz_error(ggzmod, "Error writing to game");
 			return -4;
 		}
 	}
 
-	_ggzmod_set_spectator_seat(ggzmod, seat);
+	_ggzmod_ggz_set_spectator_seat(ggzmod, seat);
 
 	return 0;
 }
 
-int ggzmod_inform_chat(GGZMod * ggzmod, const char *player, const char *msg)
+int ggzmod_ggz_inform_chat(GGZMod * ggzmod, const char *player, const char *msg)
 {
-	if (_io_send_msg_chat(ggzmod->fd, player, msg) < 0) {
+	if (_io_ggz_send_msg_chat(ggzmod->fd, player, msg) < 0) {
 		return -1;
 	}
 	return 0;
@@ -506,7 +506,7 @@ int ggzmod_inform_chat(GGZMod * ggzmod, const char *player, const char *msg)
  * GGZmod actions
  */
 
-int ggzmod_connect(GGZMod * ggzmod)
+int ggzmod_ggz_connect(GGZMod * ggzmod)
 {
 	if (!ggzmod)
 		return -1;
@@ -516,19 +516,19 @@ int ggzmod_connect(GGZMod * ggzmod)
 		
 		if (ggzmod->argv) {
 			if (game_fork(ggzmod) < 0) {
-				_ggzmod_error(ggzmod, "Error: table fork failed");
+				_ggzmod_ggz_error(ggzmod, "Error: table fork failed");
 				return -1;
 			}
 		} else {
 			ggz_debug("GGZMOD", "Running embedded game (no fork)");
 			if (game_embedded(ggzmod) < 0) {
-				_ggzmod_error(ggzmod, "Error: embedded table failed");
+				_ggzmod_ggz_error(ggzmod, "Error: embedded table failed");
 				return -1;
 			}
 		}
 		
 		if (send_game_launch(ggzmod) < 0) {
-			_ggzmod_error(ggzmod, "Error sending launch to game");
+			_ggzmod_ggz_error(ggzmod, "Error sending launch to game");
 			return -1;
 		}
 	}
@@ -537,7 +537,7 @@ int ggzmod_connect(GGZMod * ggzmod)
 }
 
 
-int ggzmod_dispatch(GGZMod * ggzmod)
+int ggzmod_ggz_dispatch(GGZMod * ggzmod)
 {
 	struct timeval timeout;
 	fd_set read_fd_set;
@@ -565,10 +565,10 @@ int ggzmod_dispatch(GGZMod * ggzmod)
 		return -1;
 	}
 	
-	return _ggzmod_handle_event(ggzmod, read_fd_set);
+	return _ggzmod_ggz_handle_event(ggzmod, read_fd_set);
 }
 
-int ggzmod_disconnect(GGZMod * ggzmod)
+int ggzmod_ggz_disconnect(GGZMod * ggzmod)
 {
 	if (!ggzmod) {
 		return -1;
@@ -604,12 +604,12 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 #  endif
 #endif
 		
-		_ggzmod_set_state(ggzmod, GGZMOD_STATE_DONE);
+		_ggzmod_ggz_set_state(ggzmod, GGZMOD_STATE_DONE);
 		/* FIXME: what other cleanups should we do? */
 	}
 	
 	/* We no longer free the seat data here.  It will stick around until
-	   ggzmod_free is called or it is used again. */
+	   ggzmod_ggz_free is called or it is used again. */
 
 	/* Clean up the ggzmod object.  In theory it could now reconnect for
 	   a new game. */
@@ -626,16 +626,16 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 
 
 /* Returns -1 on error, the number of events handled on success. */
-static int _ggzmod_handle_event(GGZMod * ggzmod, fd_set read_fds)
+static int _ggzmod_ggz_handle_event(GGZMod * ggzmod, fd_set read_fds)
 {
 	int status = 0;
 	
 	if (FD_ISSET(ggzmod->fd, &read_fds)) {
-		status = _io_read_data(ggzmod);
+		status = _io_ggz_read_data(ggzmod);
 		if (status < 0) {
-			_ggzmod_error(ggzmod, "Error reading data");
+			_ggzmod_ggz_error(ggzmod, "Error reading data");
 			/* FIXME: should be disconnect? */
-			_ggzmod_set_state(ggzmod, GGZMOD_STATE_DONE);
+			_ggzmod_ggz_set_state(ggzmod, GGZMOD_STATE_DONE);
 		}
 	}
 
@@ -643,13 +643,13 @@ static int _ggzmod_handle_event(GGZMod * ggzmod, fd_set read_fds)
 }
 
 
-static void _ggzmod_set_state(GGZMod * ggzmod, GGZModState state)
+static void _ggzmod_ggz_set_state(GGZMod * ggzmod, GGZModState state)
 {
 	GGZModState old_state = ggzmod->state;
 	if (state == ggzmod->state)
 		return;		/* Is this an error? */
 
-	/* The callback function retrieves the state from ggzmod_get_state.
+	/* The callback function retrieves the state from ggzmod_ggz_get_state.
 	   It could instead be passed as an argument. */
 	ggzmod->state = state;
 	call_handler(ggzmod, GGZMOD_EVENT_STATE, &old_state);
@@ -668,7 +668,7 @@ static int send_game_launch(GGZMod * ggzmod)
 {
 	GGZListEntry *entry;
 
-	if (_io_send_player(ggzmod->fd,
+	if (_io_ggz_send_player(ggzmod->fd,
 			    ggzmod->my_name,
 			    ggzmod->i_am_spectator,
 			    ggzmod->my_seat_num) < 0)
@@ -678,23 +678,23 @@ static int send_game_launch(GGZMod * ggzmod)
 	     entry;
 	     entry = ggz_list_next(entry)) {
 		GGZSeat *seat = ggz_list_get_data(entry);
-		if (_io_send_seat(ggzmod->fd, seat) < 0)
+		if (_io_ggz_send_seat(ggzmod->fd, seat) < 0)
 			return -3;
 	}
 	for (entry = ggz_list_head(ggzmod->spectator_seats);
 	     entry;
 	     entry = ggz_list_next(entry)) {
 		GGZSpectatorSeat *seat = ggz_list_get_data(entry);
-		if (_io_send_spectator_seat(ggzmod->fd, seat) < 0)
+		if (_io_ggz_send_spectator_seat(ggzmod->fd, seat) < 0)
 			return -4;
 	}
 
-	if (_io_send_launch(ggzmod->fd) < 0)
+	if (_io_ggz_send_launch(ggzmod->fd) < 0)
 		return -1;
 
 	/* If the server fd has already been set, send that too */
 	if (ggzmod->server_host)
-		if (_io_send_server(ggzmod->fd, ggzmod->server_host,
+		if (_io_ggz_send_server(ggzmod->fd, ggzmod->server_host,
 				    ggzmod->server_port,
 				    ggzmod->server_handle) < 0)
 			return -5;
@@ -724,7 +724,7 @@ static int game_fork(GGZMod * ggzmod)
 
 	/* If there are no args, we don't know what to run! */
 	if (ggzmod->argv == NULL || ggzmod->argv[0] == NULL) {
-		_ggzmod_error(ggzmod, "No arguments");
+		_ggzmod_ggz_error(ggzmod, "No arguments");
 		return -1;
 	}
 
@@ -732,7 +732,7 @@ static int game_fork(GGZMod * ggzmod)
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
 		ggz_error_sys_exit("socketpair failed");
 #else
-	/* Winsock implementation: see ggzmod_connect. */
+	/* Winsock implementation: see ggzmod_ggz_connect. */
 	port = 5898;
 	do {
 		port++;
@@ -785,7 +785,7 @@ static int game_fork(GGZMod * ggzmod)
 			/* FIXME: what to do? */
 		}
 
-		/* FIXME: can we call ggzmod_log() from here? */
+		/* FIXME: can we call ggzmod_ggz_log() from here? */
 		execv(ggzmod->argv[0], ggzmod->argv);	/* run game */
 
 		/* We should never get here.  If we do, it's an eror */
@@ -854,7 +854,7 @@ static int game_embedded(GGZMod * ggzmod)
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
 		ggz_error_sys_exit("socketpair failed");
 #else
-	/* Winsock implementation: see ggzmod_connect. */
+	/* Winsock implementation: see ggzmod_ggz_connect. */
 	port = 5898;
 	do {
 		port++;
@@ -937,13 +937,13 @@ static void call_transaction(GGZMod * ggzmod, GGZModTransaction t, void *data)
 }
 
 
-void _ggzmod_error(GGZMod *ggzmod, char* error)
+void _ggzmod_ggz_error(GGZMod *ggzmod, char* error)
 {
 	call_handler(ggzmod, GGZMOD_EVENT_ERROR, error);
 }
 
 
-void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state)
+void _ggzmod_ggz_handle_state(GGZMod * ggzmod, GGZModState state)
 {
 	/* There's only certain ones the game is allowed to set it to,
 	   and they can only change it if the state is currently
@@ -966,46 +966,46 @@ void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state)
 		   be to have ggzmod-ggz and ggzmod-game both
 		   separately change states when the launch packet
 		   is sent. */
-		_ggzmod_set_state(ggzmod, state);
+		_ggzmod_ggz_set_state(ggzmod, state);
 		return;
 	}
-	_ggzmod_error(ggzmod,
+	_ggzmod_ggz_error(ggzmod,
 		      "Game requested incorrect state value");
 
 	/* Is this right? has the gameover happened yet? */
 }
 
-void _ggzmod_handle_stand_request(GGZMod *ggzmod)
+void _ggzmod_ggz_handle_stand_request(GGZMod *ggzmod)
 {
 	call_transaction(ggzmod, GGZMOD_TRANSACTION_STAND, NULL);
 }
 
-void _ggzmod_handle_sit_request(GGZMod *ggzmod, int seat_num)
+void _ggzmod_ggz_handle_sit_request(GGZMod *ggzmod, int seat_num)
 {
 	call_transaction(ggzmod, GGZMOD_TRANSACTION_SIT, &seat_num);
 }
 
-void _ggzmod_handle_boot_request(GGZMod *ggzmod, char *name)
+void _ggzmod_ggz_handle_boot_request(GGZMod *ggzmod, char *name)
 {
 	call_transaction(ggzmod, GGZMOD_TRANSACTION_BOOT, name);
 }
 
-void _ggzmod_handle_bot_request(GGZMod *ggzmod, int seat_num)
+void _ggzmod_ggz_handle_bot_request(GGZMod *ggzmod, int seat_num)
 {
 	call_transaction(ggzmod, GGZMOD_TRANSACTION_BOT, &seat_num);
 }
 
-void _ggzmod_handle_open_request(GGZMod *ggzmod, int seat_num)
+void _ggzmod_ggz_handle_open_request(GGZMod *ggzmod, int seat_num)
 {
 	call_transaction(ggzmod, GGZMOD_TRANSACTION_OPEN, &seat_num);
 }
 
-void _ggzmod_handle_chat_request(GGZMod *ggzmod, char *chat_msg)
+void _ggzmod_ggz_handle_chat_request(GGZMod *ggzmod, char *chat_msg)
 {
 	call_transaction(ggzmod, GGZMOD_TRANSACTION_CHAT, chat_msg);
 }
 
-int ggzmod_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
+int ggzmod_ggz_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
 		     GGZStat *spectator_stats)
 {
 	if (!player_stats
@@ -1016,7 +1016,7 @@ int ggzmod_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
 		return -1;
 	}
 
-	return _io_send_stats(ggzmod->fd, ggzmod->num_seats, player_stats,
+	return _io_ggz_send_stats(ggzmod->fd, ggzmod->num_seats, player_stats,
 			      ggzmod->num_spectator_seats, spectator_stats);
 }
 

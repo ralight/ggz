@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules, GGZ side
- * $Id: io-ggz.c 7177 2005-05-06 21:07:44Z josef $
+ * $Id: io-ggz.c 7186 2005-05-07 16:45:13Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -44,16 +44,16 @@
 
 /* Private IO reading functions (ggz side) */
 
-static int _io_read_msg_state(GGZMod *ggzmod);
-static int _io_read_req_stand(GGZMod *ggzmod);
-static int _io_read_req_sit(GGZMod *ggzmod);
-static int _io_read_req_boot(GGZMod *ggzmod);
-static int _io_read_req_bot(GGZMod *ggzmod);
-static int _io_read_req_open(GGZMod *ggzmod);
-static int _io_read_req_chat(GGZMod *ggzmod);
+static int _io_ggz_read_msg_state(GGZMod *ggzmod);
+static int _io_ggz_read_req_stand(GGZMod *ggzmod);
+static int _io_ggz_read_req_sit(GGZMod *ggzmod);
+static int _io_ggz_read_req_boot(GGZMod *ggzmod);
+static int _io_ggz_read_req_bot(GGZMod *ggzmod);
+static int _io_ggz_read_req_open(GGZMod *ggzmod);
+static int _io_ggz_read_req_chat(GGZMod *ggzmod);
 
 /* Functions for sending IO messages */
-int _io_send_launch(int fd)
+int _io_ggz_send_launch(int fd)
 {
 	if (ggz_write_int(fd, MSG_GAME_LAUNCH) < 0)
 		return -1;
@@ -61,7 +61,7 @@ int _io_send_launch(int fd)
 	return 0;
 }
 
-int _io_send_server(int fd, const char *host, unsigned int port,
+int _io_ggz_send_server(int fd, const char *host, unsigned int port,
 		    const char *handle)
 {
 	if (ggz_write_int(fd, MSG_GAME_SERVER) < 0
@@ -74,7 +74,7 @@ int _io_send_server(int fd, const char *host, unsigned int port,
 }
 
 
-int _io_send_state(int fd, GGZModState state)
+int _io_ggz_send_state(int fd, GGZModState state)
 {
 	if (ggz_write_int(fd, MSG_GAME_STATE) < 0
 	    || ggz_write_char(fd, state) < 0)
@@ -83,7 +83,7 @@ int _io_send_state(int fd, GGZModState state)
 		return 0;
 }
 
-int _io_send_player(int fd, const char *name, int is_spectator, int seat_num)
+int _io_ggz_send_player(int fd, const char *name, int is_spectator, int seat_num)
 {
 	if (ggz_write_int(fd, MSG_GAME_PLAYER) < 0
 	    || ggz_write_string(fd, name ? name : "") < 0
@@ -94,7 +94,7 @@ int _io_send_player(int fd, const char *name, int is_spectator, int seat_num)
 	return 0;
 }
 
-int _io_send_seat(int fd, GGZSeat *seat)
+int _io_ggz_send_seat(int fd, GGZSeat *seat)
 {
 	if (ggz_write_int(fd, MSG_GAME_SEAT) < 0
 	    || ggz_write_int(fd, seat->num) < 0
@@ -105,7 +105,7 @@ int _io_send_seat(int fd, GGZSeat *seat)
 	return 0;
 }
 
-int _io_send_spectator_seat(int fd, GGZSpectatorSeat *seat)
+int _io_ggz_send_spectator_seat(int fd, GGZSpectatorSeat *seat)
 {
 	const char * name = seat->name ? seat->name : "";
 
@@ -117,7 +117,7 @@ int _io_send_spectator_seat(int fd, GGZSpectatorSeat *seat)
 	return 0;
 }
 
-int _io_send_msg_chat(int fd, const char *player, const char *chat_msg)
+int _io_ggz_send_msg_chat(int fd, const char *player, const char *chat_msg)
 {
 	if (ggz_write_int(fd, MSG_GAME_CHAT) < 0
 	    || ggz_write_string(fd, player) < 0
@@ -126,7 +126,7 @@ int _io_send_msg_chat(int fd, const char *player, const char *chat_msg)
 	return 0;
 }
 
-int _io_send_stats(int fd, int num_players, GGZStat *player_stats,
+int _io_ggz_send_stats(int fd, int num_players, GGZStat *player_stats,
 		   int num_spectators, GGZStat *spectator_stats)
 {
 	int i;
@@ -161,7 +161,7 @@ int _io_send_stats(int fd, int num_players, GGZStat *player_stats,
 
 
 /* Functions for reading messages */
-int _io_read_data(GGZMod *ggzmod)
+int _io_ggz_read_data(GGZMod *ggzmod)
 {
 	int op;
 
@@ -171,19 +171,19 @@ int _io_read_data(GGZMod *ggzmod)
 	if (ggzmod->type == GGZMOD_GGZ) {
 		switch ((TableToControl)op) {
 		case MSG_GAME_STATE:
-			return _io_read_msg_state(ggzmod);
+			return _io_ggz_read_msg_state(ggzmod);
 		case REQ_STAND:
-			return _io_read_req_stand(ggzmod);
+			return _io_ggz_read_req_stand(ggzmod);
 		case REQ_SIT:
-			return _io_read_req_sit(ggzmod);
+			return _io_ggz_read_req_sit(ggzmod);
 		case REQ_BOOT:
-			return _io_read_req_boot(ggzmod);
+			return _io_ggz_read_req_boot(ggzmod);
 		case REQ_BOT:
-			return _io_read_req_bot(ggzmod);
+			return _io_ggz_read_req_bot(ggzmod);
 		case REQ_OPEN:
-			return _io_read_req_open(ggzmod);
+			return _io_ggz_read_req_open(ggzmod);
 		case REQ_CHAT:
-			return _io_read_req_chat(ggzmod);
+			return _io_ggz_read_req_chat(ggzmod);
 		}
 	}
 
@@ -191,72 +191,72 @@ int _io_read_data(GGZMod *ggzmod)
 }
 
 
-static int _io_read_msg_state(GGZMod *ggzmod)
+static int _io_ggz_read_msg_state(GGZMod *ggzmod)
 {
 	char state;
 
 	if (ggz_read_char(ggzmod->fd, &state) < 0)
 		return -1;
 	else
-		_ggzmod_handle_state(ggzmod, state);
+		_ggzmod_ggz_handle_state(ggzmod, state);
 	
 	return 0;
 }
 
-static int _io_read_req_stand(GGZMod *ggzmod)
+static int _io_ggz_read_req_stand(GGZMod *ggzmod)
 {
-	_ggzmod_handle_stand_request(ggzmod);
+	_ggzmod_ggz_handle_stand_request(ggzmod);
 	return 0;
 }
 
-static int _io_read_req_sit(GGZMod *ggzmod)
+static int _io_ggz_read_req_sit(GGZMod *ggzmod)
 {
 	int seat_num;
 
 	if (ggz_read_int(ggzmod->fd, &seat_num) < 0)
 		return -1;
 
-	_ggzmod_handle_sit_request(ggzmod, seat_num);
+	_ggzmod_ggz_handle_sit_request(ggzmod, seat_num);
 	return 0;
 }
 
-static int _io_read_req_boot(GGZMod *ggzmod)
+static int _io_ggz_read_req_boot(GGZMod *ggzmod)
 {
 	char *name;
 
 	if (ggz_read_string_alloc(ggzmod->fd, &name) < 0)
 		return -1;
-	_ggzmod_handle_boot_request(ggzmod, name);
+	_ggzmod_ggz_handle_boot_request(ggzmod, name);
 	ggz_free(name);
 	return 0;
 }
 
-static int _io_read_req_bot(GGZMod *ggzmod)
+static int _io_ggz_read_req_bot(GGZMod *ggzmod)
 {
 	int seat_num;
 	if (ggz_read_int(ggzmod->fd, &seat_num) < 0)
 		return -1;
-	_ggzmod_handle_bot_request(ggzmod, seat_num);
+	_ggzmod_ggz_handle_bot_request(ggzmod, seat_num);
 	return 0;
 }
 
-static int _io_read_req_open(GGZMod *ggzmod)
+static int _io_ggz_read_req_open(GGZMod *ggzmod)
 {
 	int seat_num;
 	if (ggz_read_int(ggzmod->fd, &seat_num) < 0)
 		return -1;
-	_ggzmod_handle_open_request(ggzmod, seat_num);
+	_ggzmod_ggz_handle_open_request(ggzmod, seat_num);
 	return 0;
 }
 
 
-static int _io_read_req_chat(GGZMod *ggzmod)
+static int _io_ggz_read_req_chat(GGZMod *ggzmod)
 {
 	char *chat_msg;
 
 	if (ggz_read_string_alloc(ggzmod->fd, &chat_msg) < 0)
 		return -1;
-	_ggzmod_handle_chat_request(ggzmod, chat_msg);
+	_ggzmod_ggz_handle_chat_request(ggzmod, chat_msg);
 	ggz_free(chat_msg);
 	return 0;
 }
