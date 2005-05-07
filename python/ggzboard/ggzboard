@@ -205,6 +205,8 @@ class GGZBoard:
 			if self.game:
 				self.rungame()
 				self.game = None
+				if self.ggzmode:
+					self.shutdown = 1
 			elif not self.shutdown:
 				self.about()
 
@@ -424,11 +426,11 @@ class GGZBoard:
 					if ((y - 100) % 50) < 40:
 						selected = (y - 100) / 50
 						updatescreen = 1
-						if selected < len(self.modulelist):
-							gamename = self.modulelist[selected]
-						elif selected == len(self.modulelist) + 1:
+						if selected < len(self.modulefilelist):
+							gamename = self.modulefilelist[selected]
+						elif selected == len(self.modulefilelist) + 1:
 							about = 1
-						elif selected == len(self.modulelist) + 2:
+						elif selected == len(self.modulefilelist) + 2:
 							self.shutdown = 1
 
 			if updatescreen:
