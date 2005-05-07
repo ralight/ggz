@@ -1,11 +1,11 @@
-Index: src/main.cc
+Index: main.cc
 ===================================================================
 RCS file: /cvsroot/widelands/widelands/src/main.cc,v
-retrieving revision 1.53
-diff -u -r1.53 main.cc
---- src/main.cc	15 Jan 2005 14:51:53 -0000	1.53
-+++ src/main.cc	22 Jan 2005 11:56:47 -0000
-@@ -284,7 +284,9 @@
+retrieving revision 1.54
+diff -u -r1.54 main.cc
+--- main.cc	26 Jan 2005 13:17:36 -0000	1.54
++++ main.cc	7 May 2005 16:04:33 -0000
+@@ -285,7 +285,9 @@
              }
              break;
           }
@@ -16,14 +16,23 @@ diff -u -r1.53 main.cc
  				if(NetGGZ::ref()->host()) netgame = new NetHost();
  				else
  				{
-Index: src/network.cc
+Index: network_ggz.cc
 ===================================================================
-RCS file: /cvsroot/widelands/widelands/src/network.cc,v
-retrieving revision 1.17
-diff -u -r1.17 network.cc
---- src/network.cc	12 Jan 2005 01:30:53 -0000	1.17
-+++ src/network.cc	22 Jan 2005 11:56:48 -0000
-@@ -1093,7 +1093,7 @@
+RCS file: /cvsroot/widelands/widelands/src/network_ggz.cc,v
+retrieving revision 1.1
+diff -u -r1.1 network_ggz.cc
+--- network_ggz.cc	29 Jan 2005 10:08:33 -0000	1.1
++++ network_ggz.cc	7 May 2005 16:04:33 -0000
+@@ -93,7 +93,7 @@
+ }
+ 
+ #ifdef HAVE_GGZ
+-void NetGGZ::ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
++void NetGGZ::ggzmod_server(GGZMod *mod, GGZModEvent e, const void *data)
+ {
+ 	printf("GGZ ## ggzmod_server\n");
+ 	int fd = *(int*)data;
+@@ -190,7 +190,7 @@
  	return ip_address;
  }
  
@@ -32,7 +41,7 @@ diff -u -r1.17 network.cc
  {
  #ifdef HAVE_GGZ
  	GGZOptions opt;
-@@ -1126,7 +1126,7 @@
+@@ -223,7 +223,7 @@
  	ggzcore_server_add_event_hook(ggzserver, GGZ_CHANNEL_CONNECTED, &NetGGZ::callback_server);
  	ggzcore_server_add_event_hook(ggzserver, GGZ_CHANNEL_READY, &NetGGZ::callback_server);
  
@@ -41,7 +50,7 @@ diff -u -r1.17 network.cc
  	ggzcore_server_connect(ggzserver);
  
  	printf("GGZCORE ## start loop\n");
-@@ -1136,6 +1136,17 @@
+@@ -233,6 +233,17 @@
  #endif
  }
  
@@ -59,7 +68,71 @@ diff -u -r1.17 network.cc
  bool NetGGZ::usedcore()
  {
  #ifdef HAVE_GGZ
-@@ -1307,13 +1318,25 @@
+@@ -263,7 +274,7 @@
+ }
+ 
+ #ifdef HAVE_GGZ
+-GGZHookReturn NetGGZ::callback_server(unsigned id, void *data, void *user)
++GGZHookReturn NetGGZ::callback_server(unsigned id, const void *data, const void *user)
+ {
+ 	printf("GGZCORE ## callback: %i\n", id);
+ 	ggzobj->event_server(id, data);
+@@ -273,7 +284,7 @@
+ #endif
+ 
+ #ifdef HAVE_GGZ
+-GGZHookReturn NetGGZ::callback_room(unsigned id, void *data, void *user)
++GGZHookReturn NetGGZ::callback_room(unsigned id, const void *data, const void *user)
+ {
+ 	printf("GGZCORE/room ## callback: %i\n", id);
+ 	ggzobj->event_room(id, data);
+@@ -283,7 +294,7 @@
+ #endif
+ 
+ #ifdef HAVE_GGZ
+-GGZHookReturn NetGGZ::callback_game(unsigned id, void *data, void *user)
++GGZHookReturn NetGGZ::callback_game(unsigned id, const void *data, const void *user)
+ {
+ 	printf("GGZCORE/game ## callback: %i\n", id);
+ 	ggzobj->event_game(id, data);
+@@ -292,7 +303,7 @@
+ }
+ #endif
+ 
+-void NetGGZ::event_server(unsigned int id, void *data)
++void NetGGZ::event_server(unsigned int id, const void *data)
+ {
+ #ifdef HAVE_GGZ
+ 	GGZRoom *room;
+@@ -308,7 +319,11 @@
+ 			break;
+ 		case GGZ_NEGOTIATED:
+ 			printf("GGZCORE ## -- negotiated\n");
+-			ggzcore_server_set_logininfo(ggzserver, GGZ_LOGIN_GUEST, "widelands#ggz", "");
++#if GGZCORE_VERSION_MICRO < 11
++			ggzcore_server_set_logininfo(ggzserver, GGZ_LOGIN_GUEST, "widelands#ggz", NULL);
++#else
++			ggzcore_server_set_logininfo(ggzserver, GGZ_LOGIN_GUEST, "widelands#ggz", NULL, NULL);
++#endif
+ 			ggzcore_server_login(ggzserver);
+ 			break;
+ 		case GGZ_LOGGED_IN:
+@@ -371,7 +386,7 @@
+ #endif
+ }
+ 
+-void NetGGZ::event_room(unsigned int id, void *data)
++void NetGGZ::event_room(unsigned int id, const void *data)
+ {
+ #ifdef HAVE_GGZ
+ 	GGZRoom *room;
+@@ -399,18 +414,30 @@
+ #endif
+ }
+ 
+-void NetGGZ::event_game(unsigned int id, void *data)
++void NetGGZ::event_game(unsigned int id, const void *data)
+ {
  #ifdef HAVE_GGZ
  	GGZRoom *room;
  	GGZGame *game;
@@ -86,7 +159,7 @@ diff -u -r1.17 network.cc
  			break;
  		case GGZ_GAME_LAUNCHED:
  			printf("GGZCORE/game ## -- launched\n");
-@@ -1380,3 +1403,25 @@
+@@ -477,3 +504,25 @@
  #endif
  }
  
@@ -112,33 +185,52 @@ diff -u -r1.17 network.cc
 +#endif
 +}
 +
-Index: src/network.h
+Index: network_ggz.h
 ===================================================================
-RCS file: /cvsroot/widelands/widelands/src/network.h,v
-retrieving revision 1.10
-diff -u -r1.10 network.h
---- src/network.h	12 Jan 2005 01:30:53 -0000	1.10
-+++ src/network.h	22 Jan 2005 11:56:48 -0000
-@@ -303,9 +303,11 @@
+RCS file: /cvsroot/widelands/widelands/src/network_ggz.h,v
+retrieving revision 1.1
+diff -u -r1.1 network_ggz.h
+--- network_ggz.h	29 Jan 2005 10:08:33 -0000	1.1
++++ network_ggz.h	7 May 2005 16:04:33 -0000
+@@ -57,21 +57,23 @@
  		op_broadcast_ip = 4
  	};
  
 -	void initcore();
-+	void initcore(const char *hostname);
-+	void deinitcore();
++ 	void initcore(const char *hostname);
++ 	void deinitcore();
  	bool usedcore();
  	void datacore();
-+	void launch();
++ 	void launch();
  	void join(const char *tablename);
  
      private:
-Index: src/network_lan_promotion.cc
+ #ifdef HAVE_GGZ
+-	static void ggzmod_server(GGZMod *mod, GGZModEvent e, void *data);
+-	static GGZHookReturn callback_server(unsigned int id, void *data, void *user);
+-	static GGZHookReturn callback_room(unsigned int id, void *data, void *user);
+-	static GGZHookReturn callback_game(unsigned int id, void *data, void *user);
++	static void ggzmod_server(GGZMod *mod, GGZModEvent e, const void *data);
++	static GGZHookReturn callback_server(unsigned int id, const void *data, const void *user);
++	static GGZHookReturn callback_room(unsigned int id, const void *data, const void *user);
++	static GGZHookReturn callback_game(unsigned int id, const void *data, const void *user);
+ #endif
+-	void event_server(unsigned int id, void *data);
+-	void event_room(unsigned int id, void *data);
+-	void event_game(unsigned int id, void *data);
++	void event_server(unsigned int id, const void *data);
++	void event_room(unsigned int id, const void *data);
++	void event_game(unsigned int id, const void *data);
+ 
+ 	bool use_ggz;
+ 	int fd;
+Index: network_lan_promotion.cc
 ===================================================================
 RCS file: /cvsroot/widelands/widelands/src/network_lan_promotion.cc,v
 retrieving revision 1.4
 diff -u -r1.4 network_lan_promotion.cc
---- src/network_lan_promotion.cc	1 Jan 2005 17:16:59 -0000	1.4
-+++ src/network_lan_promotion.cc	22 Jan 2005 11:56:48 -0000
+--- network_lan_promotion.cc	1 Jan 2005 17:16:59 -0000	1.4
++++ network_lan_promotion.cc	7 May 2005 16:04:34 -0000
 @@ -181,11 +181,18 @@
  
  LAN_Game_Finder::LAN_Game_Finder ()
@@ -160,13 +252,13 @@ diff -u -r1.4 network_lan_promotion.cc
      
      strncpy (magic, "QUERY", 8);
      magic[6]=LAN_PROMOTION_PROTOCOL_VERSION;
-Index: src/network_lan_promotion.h
+Index: network_lan_promotion.h
 ===================================================================
 RCS file: /cvsroot/widelands/widelands/src/network_lan_promotion.h,v
 retrieving revision 1.2
 diff -u -r1.2 network_lan_promotion.h
---- src/network_lan_promotion.h	31 Dec 2004 17:34:48 -0000	1.2
-+++ src/network_lan_promotion.h	22 Jan 2005 11:56:48 -0000
+--- network_lan_promotion.h	31 Dec 2004 17:34:48 -0000	1.2
++++ network_lan_promotion.h	7 May 2005 16:04:34 -0000
 @@ -89,6 +89,7 @@
  	LAN_Game_Finder ();
  	~LAN_Game_Finder ();
@@ -175,22 +267,22 @@ diff -u -r1.2 network_lan_promotion.h
  	void run ();
  	
  	void set_callback (void(*)(int, const LAN_Open_Game*, void*), void*);
-Index: src/options.cc
+Index: options.cc
 ===================================================================
 RCS file: /cvsroot/widelands/widelands/src/options.cc,v
-retrieving revision 1.28
-diff -u -r1.28 options.cc
---- src/options.cc	12 Jan 2005 01:30:53 -0000	1.28
-+++ src/options.cc	22 Jan 2005 11:56:48 -0000
-@@ -59,7 +59,6 @@
+retrieving revision 1.29
+diff -u -r1.29 options.cc
+--- options.cc	26 Jan 2005 13:17:36 -0000	1.29
++++ options.cc	7 May 2005 16:04:34 -0000
+@@ -62,7 +62,6 @@
  " --coredump       Generates a core dump on segfaults instead of using the SDL\n"
  "\n"
  " --ggz            Starts game as GGZ Gaming Zone client (don't use!)\n"
 -" --ggzcore        GGZ embedded mode (TEMPORARY -> make menu button!)\n"
  "\n"
- " --help           Show this help\n"
- " --version        Show version\n"
-@@ -108,10 +107,6 @@
+ #ifdef DEBUG
+ " --double         Start the game twice (for localhost network testing)\n\n"
+@@ -114,10 +113,6 @@
  			NetGGZ::ref()->init();
  			continue;
  		}
@@ -199,16 +291,16 @@ diff -u -r1.28 options.cc
 -			continue;
 -		}
  
- 		value = strchr(opt, '=');
- 		if (!value) {
-Index: src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc
+ #ifdef DEBUG
+ 		if (!strcmp(opt, "double")) {
+Index: ui/ui_fs_menus/fullscreen_menu_netsetup.cc
 ===================================================================
 RCS file: /cvsroot/widelands/widelands/src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc,v
-retrieving revision 1.9
-diff -u -r1.9 fullscreen_menu_netsetup.cc
---- src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc	12 Jan 2005 01:30:54 -0000	1.9
-+++ src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc	22 Jan 2005 11:56:48 -0000
-@@ -30,11 +30,8 @@
+retrieving revision 1.10
+diff -u -r1.10 fullscreen_menu_netsetup.cc
+--- ui/ui_fs_menus/fullscreen_menu_netsetup.cc	26 Jan 2005 13:17:36 -0000	1.10
++++ ui/ui_fs_menus/fullscreen_menu_netsetup.cc	7 May 2005 16:04:34 -0000
+@@ -31,11 +31,8 @@
  Fullscreen_Menu_NetSetup::Fullscreen_Menu_NetSetup ()
  	:Fullscreen_Menu_Base("singleplmenu.jpg") // change this
  {
@@ -222,7 +314,7 @@ diff -u -r1.9 fullscreen_menu_netsetup.cc
  	
  	// Text
  	UITextarea* title= new UITextarea(this, MENU_XRES/2, 140, "Begin Network Game", Align_HCenter);
-@@ -44,11 +41,11 @@
+@@ -45,11 +42,11 @@
  	UIButton* b;
  
  	b = new UIButton(this, 60, 170, 174, 24, 1, JOINGAME);
@@ -236,7 +328,7 @@ diff -u -r1.9 fullscreen_menu_netsetup.cc
  	b->set_title("Host a New Game");
  
  	b = new UIButton(this, 60, 250, 174, 24, 1, INTERNETGAME);
-@@ -58,10 +55,16 @@
+@@ -59,10 +56,16 @@
  	b = new UIButton(this, 60, 290, 174, 24, 0, CANCEL);
  	b->clickedid.set(this, &Fullscreen_Menu_NetSetup::end_modal);
  	b->set_title("Back");
@@ -254,7 +346,7 @@ diff -u -r1.9 fullscreen_menu_netsetup.cc
  	
  	// List of open games in local network
  	opengames=new UITable(this, 288, 210, 320, 128);
-@@ -73,17 +76,17 @@
+@@ -74,17 +77,17 @@
  
  Fullscreen_Menu_NetSetup::~Fullscreen_Menu_NetSetup ()
  {
@@ -277,7 +369,7 @@ diff -u -r1.9 fullscreen_menu_netsetup.cc
  }
  
  bool Fullscreen_Menu_NetSetup::get_host_address (ulong& addr, ushort& port)
-@@ -115,13 +118,7 @@
+@@ -116,13 +119,7 @@
  {
  	LAN_Open_Game* game=(LAN_Open_Game*) (opengames->get_selection());
  	
@@ -292,7 +384,7 @@ diff -u -r1.9 fullscreen_menu_netsetup.cc
  }
  
  void Fullscreen_Menu_NetSetup::update_game_info (UITable_Entry* entry, const LAN_Game_Info& info)
-@@ -189,3 +186,53 @@
+@@ -190,3 +187,53 @@
  	}
  }
  
@@ -346,13 +438,13 @@ diff -u -r1.9 fullscreen_menu_netsetup.cc
 +	else end_modal(HOSTGAME);
 +}
 +
-Index: src/ui/ui_fs_menus/fullscreen_menu_netsetup.h
+Index: ui/ui_fs_menus/fullscreen_menu_netsetup.h
 ===================================================================
 RCS file: /cvsroot/widelands/widelands/src/ui/ui_fs_menus/fullscreen_menu_netsetup.h,v
 retrieving revision 1.7
 diff -u -r1.7 fullscreen_menu_netsetup.h
---- src/ui/ui_fs_menus/fullscreen_menu_netsetup.h	12 Jan 2005 01:30:54 -0000	1.7
-+++ src/ui/ui_fs_menus/fullscreen_menu_netsetup.h	22 Jan 2005 11:56:48 -0000
+--- ui/ui_fs_menus/fullscreen_menu_netsetup.h	12 Jan 2005 01:30:54 -0000	1.7
++++ ui/ui_fs_menus/fullscreen_menu_netsetup.h	7 May 2005 16:04:34 -0000
 @@ -28,6 +28,7 @@
  class UIEdit_Box;
  class UITable;
