@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7171 2005-05-02 18:03:11Z oojah $
+ * $Id: easysock.c 7187 2005-05-14 19:51:48Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -184,6 +184,7 @@ static int es_bind(const char *host, int port)
 			break;
 
 		close(sockfd);
+		sockfd = -1;
 
 	} while ( (res = res->ai_next) != NULL);
 
@@ -221,6 +222,7 @@ static int es_connect(const char *host, int port)
 			break;
 
 		close(sockfd);
+		sockfd = -1;
 
 	} while ( (res = res->ai_next) != NULL);
 
@@ -252,6 +254,7 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 
 	case GGZ_SOCK_CLIENT:
 		if( (sock = es_connect(server, port)) < 0) {
+			if (_err_func)
 				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
 					      sock, GGZ_DATA_NONE);
 			return -1;
