@@ -1,0 +1,315 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-05-16 09:39+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../ggz-config/ggz-config.c:94
+msgid "Query GGZCONFDIR - location of configuration directory"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:95
+msgid "Query GGZGAMEDIR - location of game modules directory"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:96
+msgid "Query GGZDATADIR - location of game data directory"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:97
+msgid "Query VERSION - version identifier of ggzcore files"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:98
+msgid "Query GGZ_CS_PROTO_VERSION - version of core protocol"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:99
+msgid "Install a module"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:100
+msgid "Remove a module"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:101
+msgid "Check/repair module installation file"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:102
+msgid "Specifies module installation file (needs argument)"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:103
+msgid "Specifies icon file to use for the game (needs argument)"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:104
+msgid "Install over an existing module"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:105
+msgid "Use $DESTDIR as offset to ggz.modules file"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:106
+msgid "Display help"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:107
+msgid "Display usage"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:122
+#, c-format
+msgid "Critical: Module name not specified.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:129
+#, c-format
+msgid "Critical: Module version not specified.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:136
+#, c-format
+msgid "Critical: Executable not specified.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:143
+#, c-format
+msgid "Critical: User interface not specified.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:150
+#, c-format
+msgid "Critical: Protocol engine not specified.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:157
+#, c-format
+msgid "Critical: Protocol version not specified.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:164
+#, c-format
+msgid "Critical: Module author not specified.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:171
+#, c-format
+msgid "Warning: Module homepage not specified.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:334
+#, c-format
+msgid "Setting up GGZ game modules configuration in %s\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:338
+#, c-format
+msgid "Insufficient permission to install modules\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:373
+#, c-format
+msgid "Icon file cannot be read (%s)\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:379
+#, c-format
+msgid "Icon file cannot be written to (%s)\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:415
+#, c-format
+msgid "Warning: Tried to remove nonexistant module\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:429 ../ggz-config/ggz-config.c:526
+#, c-format
+msgid "ggz.modules configuration may be corrupt\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:430
+#, c-format
+msgid "Module removal failed, see documentation\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:453
+#, c-format
+msgid "Your configuration is broken - aborting\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:460
+#, c-format
+msgid "Cannot overwrite existing module\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:527
+#, c-format
+msgid "Module installation failed, see documentation\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:586 ../ggz-config/ggz-config.c:645
+#: ../ggz-config/ggz-config.c:745
+#, c-format
+msgid "Error getting config file sections list\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:587 ../ggz-config/ggz-config.c:652
+#, c-format
+msgid "May be an empty config file?\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:595
+#, c-format
+msgid "*** Checking game config section [%s]\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:602
+#, c-format
+msgid "ERR: missing required key '%s'\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:622
+#, c-format
+msgid "ERR: missing or invalid executable\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:626
+#, c-format
+msgid "Removing section for '%s'\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:651 ../ggz-config/ggz-config.c:787
+#: ../ggz-config/ggz-config.c:860
+#, c-format
+msgid "Error getting config file [Games]:keys list\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:655
+#, c-format
+msgid "*** Computing section cross references\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:683
+#, c-format
+msgid "ERR %s and %s references [%s], deleting %s reference\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:718
+#, c-format
+msgid "*** Checking ProtocolEngine key for engine '%s'\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:727
+#, c-format
+msgid "ERR Setting ProtocolEngine key [%s] to '%s'\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:743
+#, c-format
+msgid "*** Checking back references\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:765
+#, c-format
+msgid "ERR Adding [Games]:%s key pointing to [%s]\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:785
+#, c-format
+msgid "*** Checking forward references\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:803
+#, c-format
+msgid "ERR Section %s doesn't exist in %s, removed reference\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:825
+#, c-format
+msgid "*** Checking for spurious game engine entries\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:833
+#, c-format
+msgid "ERR Game engine '%s' invalid, removing\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:858
+#, c-format
+msgid "*** Checking for missing game engine pointers\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:875
+#, c-format
+msgid "ERR Adding '%s' to game engine list\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:893
+#, c-format
+msgid "Finished - writing %d repairs\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:895
+#, c-format
+msgid "Finished - no configuration errors detected\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:923
+#, c-format
+msgid "GGZ-Config - the GGZ Gaming Zone Configuration Utility\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:924
+#, c-format
+msgid "Copyright (C) 2001 Rich Gade, rgade@users.sourceforge.net\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:925
+#, c-format
+msgid "Copyright (C) 2002 - 2005 The GGZ Gaming Zone developers\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:926
+#, c-format
+msgid "Published under GNU GPL conditions\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:928
+#, c-format
+msgid "Recognized options:\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:939
+#, c-format
+msgid "Usage:\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:995
+#, c-format
+msgid "No operation specified, try --help.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:1003
+#, c-format
+msgid "Must specify module installation file.\n"
+msgstr ""
+
+#: ../ggz-config/ggz-config.c:1008
+#, c-format
+msgid "Required installation file entries missing\n"
+msgstr ""
