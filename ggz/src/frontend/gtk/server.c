@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Client
  * Date: 6/19/00
- * $Id: server.c 5204 2002-11-04 05:38:41Z jdorje $
+ * $Id: server.c 7200 2005-05-16 22:22:14Z jdorje $
  *
  * This file contains functions for handling server client profiles
  *
@@ -114,7 +114,7 @@ void server_profiles_save(void)
 	ggz_free(profiles);
 
 	for (node = servers; node != NULL; node = node->next) {
-		server = (Server*)(node->data);
+		server = node->data;
 		
 		ggzcore_conf_write_string(server->name, "Host", server->host);
 		ggzcore_conf_write_int(server->name, "Port", server->port);
@@ -126,7 +126,7 @@ void server_profiles_save(void)
 	}
 
 	for (node = deleted; node != NULL; node = node->next) {
-		server = (Server*)(node->data);
+		server = node->data;
 		ggzcore_conf_remove_section(server->name);
 	}
 	
@@ -151,9 +151,12 @@ GList* server_get_name_list(void)
 	GList* current;
 	
 	/* Iterate through list, grabbing names */
-	for (current = servers; current != NULL; current = current->next)
-		list = g_list_append(list, ((Server*)(current->data))->name);
-	
+	for (current = servers; current != NULL; current = current->next) {
+		Server *server = current->data;
+
+		list = g_list_append(list, server->name);
+	}
+
 	return list;
 }
 
@@ -164,10 +167,12 @@ char** server_get_names(void)
 	int i = 0;
 	GList* node;
 
-	profiles = ggz_malloc(sizeof(char*) * g_list_length(servers));
+	profiles = ggz_malloc(sizeof(*profiles) * g_list_length(servers));
 	node = servers;
 	while (node) {
-		profiles[i++] = ((Server*)(node->data))->name;
+		Server *server = node->data;
+
+		profiles[i++] = server->name;
 		node = node->next;
 	}
 
@@ -184,7 +189,7 @@ Server* server_get(const gchar* name)
 	if (!node)
 		return NULL;
 
-	return (Server*)(node->data);
+	return node->data;
 }
 
 
@@ -199,7 +204,7 @@ void server_list_remove(const gchar* name)
 	if (!node)
 		return;
 
-	server = (Server*)(node->data);
+	server = node->data;
 	servers = g_list_remove_link(servers, node);
 	g_list_free_1(node);
 
@@ -214,38 +219,44 @@ static void server_list_print(void)
 }
 
 
-static void server_print(gpointer server, gpointer data)
+static void server_print(gpointer server_ptr, gpointer data)
 {
-	ggz_debug("servers", "Profile name: %s\n", ((Server*)server)->name);
-        ggz_debug("servers", "  Host %s:%d\n", ((Server*)server)->host, 
-		  ((Server*)server)->port);
-        ggz_debug("servers", "  Login type: %d\n", ((Server*)server)->type);
-        ggz_debug("servers", "  Login: %s\n", ((Server*)server)->login);
-        if (((Server*)server)->type == GGZ_LOGIN)
+	const Server *server = server_ptr;
+
+	ggz_debug("servers", "Profile name: %s\n", server->name);
+        ggz_debug("servers", "  Host %s:%d\n", server->host, 
+		  server->port);
+        ggz_debug("servers", "  Login type: %d\n", server->type);
+        ggz_debug("servers", "  Login: %s\n", server->login);
+        if (server->type == GGZ_LOGIN)
                 ggz_debug("servers",
-			  "  Password: %s\n", ((Server*)server)->password);
+			  "  Password: %s\n", server->password);
 }
 
 
-static void server_free_node(gpointer server, gpointer data)
+static void server_free_node(gpointer server_ptr, gpointer data)
 {
-	if (((Server*)server)->name)
-		ggz_free(((Server*)server)->name);
+	const Server *server = server_ptr;
 
-	if (((Server*)server)->host)
-		ggz_free(((Server*)server)->host);
+	if (server->name)
+		ggz_free(server->name);
 
-	if (((Server*)server)->login)
-		ggz_free(((Server*)server)->login);
+	if (server->host)
+		ggz_free(server->host);
 
-	if (((Server*)server)->password)
-		ggz_free(((Server*)server)->password);
+	if (server->login)
+		ggz_free(server->login);
+
+	if (server->password)
+		ggz_free(server->password);
 
 	ggz_free(server);
 }
 
 
-static gint server_match_name(gconstpointer server, gconstpointer name)
+static gint server_match_name(gconstpointer server_ptr, gconstpointer name)
 {
-	return strcmp(((Server*)server)->name, name);
+	const Server *server = server_ptr;
+
+	return strcmp(server->name, name);
 }
