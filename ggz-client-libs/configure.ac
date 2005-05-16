@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 7181 2005-05-06 21:12:01Z josef $
+dnl $Id: configure.ac 7194 2005-05-16 21:14:58Z josef $
 
 AC_INIT([GGZ client libraries], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -15,13 +15,6 @@ AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_CPP
-AC_PROG_CC()
-AC_DIAGNOSE([obsolete],[AM_PROG_CC_STDC:
-	your code should no longer depend upon `am_cv_prog_cc_stdc', but upon
-	`ac_cv_prog_cc_stdc'.  Remove this warning and the assignment when
-	you adjust the code.  You can also remove the above call to
-	AC_PROG_CC if you already called it elsewhere.])
-am_cv_prog_cc_stdc=$ac_cv_prog_cc_stdc
 
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
@@ -38,9 +31,6 @@ esac
 # ==========================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
-
-# popt requires gettext, and all ggz-client-libs users probably require it
-# too, so to make things easy we just check for it here.
 AC_GGZ_INTL
 
 
@@ -108,15 +98,6 @@ if test "$MINGW32" = "yes"; then
 fi
 
 
-# Check for popt
-# ==============
-AC_CHECK_LIB(popt, poptGetNextOpt, [LIBPOPT="-lpopt"],
-             [AC_MSG_ERROR(cannot find popt library)])
-AC_CHECK_HEADER(popt.h, [],
-                [AC_MSG_ERROR(cannot find popt.h header)])
-AC_SUBST(LIBPOPT)
-
-
 # Check for expat
 # ===============
 AC_CHECK_LIB(expat, XML_ParserCreate, [LIBEXPAT="-lexpat"],
@@ -175,9 +156,7 @@ fi
 AC_DEFINE_UNQUOTED([GGZDATADIR], "${ggzdatadir}",
 		   [Directory containing GGZ shared data])
 
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}",
-		   [The top-level source directory])
+AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
 AC_SUBST(ggzconfdir)
 AC_SUBST(ggzexecmoddir)
@@ -197,6 +176,7 @@ AC_CONFIG_FILES([Makefile
 	   man/ggzcore_h.3
 	   tests/Makefile
 	   desktop/Makefile
+	   po/Makefile
 	   ])
 AC_OUTPUT
 

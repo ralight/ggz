@@ -9,7 +9,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/ggzmod-ggz $(LIBGGZ_INCLUDES)
 include_HEADERS = ggzcore.h
 
 libggzcore_la_LIBADD = $(top_builddir)/ggzmod-ggz/libggzmod-ggz.la \
-		       $(LIB_GGZ) $(LIBEXPAT) $(LIBPOPT)
+		       $(LIB_GGZ) $(LIBEXPAT)
 
 libggzcore_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 7:0:0
 
