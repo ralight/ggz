@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7192 2005-05-16 21:12:27Z josef $
+ * $Id: ggz-config.c 7199 2005-05-16 21:52:57Z josef $
  *
  * Configuration query and module install program.
  *
@@ -943,10 +943,10 @@ int main(int argc, char *argv[])
 				return 0;
 				break;
 			case 'm':
-				iconfile = optarg;
+				modfile = optarg;
 				break;
 			case 'I':
-				modfile = optarg;
+				iconfile = optarg;
 				break;
 			case 'f':
 				modforce = 1;
