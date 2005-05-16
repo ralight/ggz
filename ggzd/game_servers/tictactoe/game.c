@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 7119 2005-04-21 18:00:51Z josef $
+ * $Id: game.c 7198 2005-05-16 21:44:24Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -370,6 +370,8 @@ static int game_send_seat(int num)
 
 	ggzcomm_set_fd(seat.fd);
 	ggzcomm_msgseat();
+
+	return 0;
 }
 
 
