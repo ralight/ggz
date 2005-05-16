@@ -32,7 +32,7 @@
 
 // Cons... Konstructor :-)
 KCC::KCC(QWidget *parent, const char *name)
-: QWidget(parent, name, WStyle_Customize | WRepaintNoErase)
+: QWidget(parent, name, WStyle_Customize | WNoAutoErase)
 {
 	m_parent = parent;
 	m_parentmain = NULL;
@@ -54,7 +54,6 @@ KCC::KCC(QWidget *parent, const char *name)
 
 	proto = new KCCProto(this);
 
-	setFixedSize(400, 400);
 	toggleBoard();
 }
 
@@ -80,9 +79,11 @@ void KCC::slotSelected(QWidget *widget)
 // Prepare your turn
 void KCC::slotYourMove()
 {
-	m_waypoints.clear();
-	update();
-
+	if(m_waypoints.count())
+	{
+		m_waypoints.clear();
+		update();
+	}
 	emit signalStatus(i18n("Your turn"));
 	proto->state = KCCProto::statemove;
 }
@@ -251,7 +252,6 @@ void KCC::init()
 	QSocketNotifier *sn;
 
 	proto->init();
-	drawBoard();
 
 	if(m_opponent == PLAYER_NETWORK)
 	{
@@ -391,7 +391,7 @@ void KCC::drawBoard()
 	QPainter p;
 	QPoint p1, p2;
 
-kdDebug() << "drawBoard()!" << endl;
+	kdDebug() << "drawBoard()!" << endl;
 
 	QPixmap pix(*(erasePixmap()));
 	p.begin(&pix);
@@ -449,28 +449,29 @@ void KCC::toggleBoard()
 	QBitmap mask(QString("%1/mask.%2").arg(m_theme).arg(m_themetype));
 	QPixmap bgmain(QString("%1/main.%2").arg(m_theme).arg(m_themetype));
 
-kdDebug() << "toggleBoard()!" << endl;
+	kdDebug() << "toggleBoard()!" << endl;
 
 	if(!mask.isNull())
 	{
-		if(parentWidget())
-		{
-			reparent(NULL, WStyle_Customize | WRepaintNoErase, QPoint(0, 0), true);
-		}
 		if(!m_parentmain)
 		{
 			m_parentmain = new QWidget(m_parent);
 			static_cast<KMainWindow*>(m_parent)->setCentralWidget(m_parentmain);
 		}
+		if(parentWidget())
+		{
+			reparent(NULL, WStyle_Customize | WNoAutoErase, QPoint(0, 0), true);
+		}
 		m_parentmain->setErasePixmap(bgmain);
 		m_parentmain->setFixedSize(bgmain.width(), bgmain.height());
+		m_parentmain->reparent(m_parent, 0, QPoint(0, 0), true);
 		m_parent->setFixedSize(bgmain.width(), bgmain.height());
 	}
 	else
 	{
 		if(m_parentmain)
 		{
-			reparent(m_parent, WStyle_Customize | WRepaintNoErase, QPoint(0, 0), true);
+			reparent(m_parent, WStyle_Customize | WNoAutoErase, QPoint(0, 0), true);
 			static_cast<KMainWindow*>(m_parent)->setCentralWidget(this);
 			delete m_parentmain;
 			m_parentmain = NULL;
@@ -481,22 +482,12 @@ kdDebug() << "toggleBoard()!" << endl;
 	setFixedSize(b.width(), b.height());
 	setErasePixmap(b);
 	if(!mask.isNull()) setMask(mask);
-
-	QTimer::singleShot(1000, this, SLOT(slotSizefix()));
 }
 
 QWidget *KCC::widget()
 {
 	if(m_parentmain) return m_parentmain;
 	return this;
-}
-
-void KCC::slotSizefix()
-{
-kdDebug() << "sizefix " << QString("%1/main.%2").arg(m_theme).arg(m_themetype) << endl;
-	if(m_parentmain)
-			m_parent->setFixedSize(m_parentmain->width(), m_parentmain->height());
-	static_cast<KMainWindow*>(m_parent)->setCentralWidget(widget());
 }
 
 void KCC::paintEvent(QPaintEvent *e)

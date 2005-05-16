@@ -60,7 +60,6 @@ KCCWin::KCCWin(QWidget *parent, const char *name)
 	loadThemes();
 
 	m_kcc = new KCC(this);
-	setCentralWidget(m_kcc);
 
 	connect(m_kcc, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
 	connect(m_kcc, SIGNAL(signalScore(const QString &)), SLOT(slotScore(const QString &)));
@@ -72,7 +71,6 @@ KCCWin::KCCWin(QWidget *parent, const char *name)
 	enableNetwork(false);
 
 	setCaption(i18n("Chinese Checkers"));
-	setFixedSize(400, 400);
 	show();
 }
 
@@ -94,9 +92,13 @@ void KCCWin::newTheme(QString theme)
 void KCCWin::scanNewThemes()
 {
 	KStandardDirs d;
+
+	d.addResourceDir("data", GGZDATADIR);
+	d.addResourceDir("data", QDir::home().path() + "/.ggz/games");
+
 	QString basedir = d.findResource("data", "kcc/");
 	QDir dir(basedir);
-	QStringList s = dir.entryList();
+	QStringList s = dir.entryList(QDir::Files);
 	for(QStringList::iterator it = s.begin(); it != s.end(); it++)
 	{
 		if(((*it) == ".") || ((*it) == "..")) continue;
@@ -120,7 +122,7 @@ void KCCWin::loadThemes()
 
 	// Recursively scan all data directories
 	kdDebug() << "loadThemes" << endl;
-	QStringList list(d.findDirs("data", "kcc"));
+	QStringList list(d.findDirs("data", "kcc/"));
 	for(QStringList::iterator it = list.begin(); it != list.end(); it++)
 	{
 		kdDebug() << "Scan dir: " << (*it) << endl;
@@ -130,6 +132,8 @@ void KCCWin::loadThemes()
 		QStringList dirs = dir.entryList(QDir::Dirs);
 		for(QStringList::iterator it2 = dirs.begin(); it2 != dirs.end(); it2++)
 		{
+			if ((*it2) == ".") continue;
+			if ((*it2) == "..") continue;
 			kdDebug() << "Check theme dir: " << (*it2) << endl;
 			QDir dir2((*it) + (*it2));
 			QStringList entries = dir2.entryList(QDir::Files);

@@ -73,8 +73,6 @@ class KCC : public QWidget
 		void paintEvent(QPaintEvent *e);
 
 	private slots:
-		// XXX hack!
-		void slotSizefix();
 		// Wait for player input
 		void slotYourMove();
 
