@@ -57,6 +57,7 @@ public slots:
 	void slotSync();
 	void slotFlag();
 	void slotDraw();
+	void slotOver();
 	void slotNetDraw();
 	void slotWarnmessages();
 	void slotBoardframe();

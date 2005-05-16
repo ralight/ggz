@@ -64,6 +64,7 @@ signals:
 	void signalMove(QString msg);
 	void signalDoMove(int x, int y, int x2, int y2);
 	void signalDraw();
+	void signalOver();
 
 private:
 	GGZ *ggz;

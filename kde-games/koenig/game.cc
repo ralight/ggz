@@ -213,6 +213,7 @@ void Game::handleNetInput()
 			cval = ggz->getChar();
 			kdDebug(12101) << "Gameover msg: " << cval << endl;
 			handleGameOver(cval);
+			emit signalOver();
 			break;
 
 		case CHESS_REQ_DRAW:
@@ -267,6 +268,13 @@ void Game::slotMove(int x, int y, int x2, int y2)
 				QChar(x + 'A')).arg(QChar(y + '1')).arg(QChar(x2 + 'A')).arg(QChar(y2 + '1')));
 			emit signalDoMove(x, y, x2, y2);
 
+			if(chess_ai_checkmate())
+			{
+				emit signalMessage(i18n("Game over - you won!"));
+				emit signalOver();
+				return;
+			}
+
 			ret = chess_ai_find(C_BLACK, &from, &to);
 			if(ret)
 			{
@@ -278,12 +286,19 @@ void Game::slotMove(int x, int y, int x2, int y2)
 				emit signalMove(QString(i18n("AI: from %1/%2 to %3/%4")).arg(
 					QChar(x + 'A')).arg(QChar(y + '1')).arg(QChar(x2 + 'A')).arg(QChar(y2 + '1')));
 				emit signalDoMove(x, y, x2, y2);
+
+				if(chess_ai_checkmate())
+				{
+					emit signalMessage(i18n("Game over - AI won!"));
+					emit signalOver();
+				}
 			}
 			else emit signalMessage(i18n("Internal AI error"));
 		}
 		else emit signalMessage(i18n("Invalid move - try again!"));
 		return;
 	}
+
 	kdDebug(12101) << "Game::slotMove(); got move: " << x << ", " << y << " => " << x2 << ", " << y2 << endl;
 	ggz->putChar(CHESS_REQ_MOVE);
 	ggz->putChar(0);ggz->putChar(0);ggz->putChar(0);ggz->putChar(6);// FIXME: string handling

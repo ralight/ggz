@@ -41,7 +41,7 @@
 #include "board.moc"
 
 ChessBoard::ChessBoard(QWidget *parent, const char *name)
-	: QWidget(parent, name)
+	: QWidget(parent, name, Qt::WNoAutoErase)
 {
 	KStandardDirs d;
 
@@ -198,6 +198,12 @@ void ChessBoard::resetBoard(int color)
 
 	// update the whole scenary
 	update();
+}
+
+void ChessBoard::freezeBoard()
+{
+	activeColor = color_inactive;
+	parentWidget()->setCaption(i18n("Chess Board - Game over"));
 }
 
 void ChessBoard::paintEvent(QPaintEvent *e)

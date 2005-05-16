@@ -128,12 +128,19 @@ TopLevel::~TopLevel()
 
 void TopLevel::newGame()
 {
+	if(game)
+		delete game;
 	game = new Game(false);
+
 	connect(game, SIGNAL(signalMessage(QString)), SLOT(slotMessage(QString)));
 	connect(game, SIGNAL(signalMove(QString)), SLOT(slotMove(QString)));
 	connect(game, SIGNAL(signalDoMove(int, int, int, int)), SLOT(slotDoMove(int, int, int, int)));
+	connect(game, SIGNAL(signalOver()), SLOT(slotOver()));
 
 	connect(chessBoard->root(), SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
+
+	slotMessage(i18n("--------------------------------------"));
+	slotMessage(i18n("Local game against the AI has started."));
 
 	slotStart(0);
 }
@@ -154,6 +161,7 @@ void TopLevel::initNetwork()
 	connect(game, SIGNAL(signalDoMove(int, int, int, int)), SLOT(slotDoMove(int, int, int, int)));
 	connect(game, SIGNAL(signalStart(int)), SLOT(slotStart(int)));
 	connect(game, SIGNAL(signalDraw()), SLOT(slotNetDraw()));
+	connect(game, SIGNAL(signalOver()), SLOT(slotOver()));
 
 	connect(chessBoard->root(), SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
 }
@@ -193,6 +201,7 @@ void TopLevel::slotMove(QString msg)
 void TopLevel::slotStart(int seat)
 {
 	chessBoard->root()->resetBoard((seat ? ChessBoard::color_black : ChessBoard::color_white));
+	tab1->clear();
 }
 
 void TopLevel::slotSync()
@@ -207,6 +216,11 @@ void TopLevel::slotDraw()
 {
 	if(game)
 		game->answerDraw(1);
+}
+
+void TopLevel::slotOver()
+{
+	chessBoard->root()->freezeBoard();
 }
 
 void TopLevel::slotNetDraw()
