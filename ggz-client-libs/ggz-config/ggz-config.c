@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7172 2005-05-03 20:30:32Z oojah $
+ * $Id: ggz-config.c 7192 2005-05-16 21:12:27Z josef $
  *
  * Configuration query and module install program.
  *
@@ -28,11 +28,11 @@
 #  include <config.h>		/* Site-specific config */
 #endif
 
-#include <popt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <getopt.h>
 
 #include <sys/stat.h>
 
@@ -40,13 +40,13 @@
 
 #include "protocol.h"
 
+#include <locale.h>
+#include <libintl.h>
 
-/* POPT Arguments Stuff */
-#define QUERY_CONFIG	1
-#define QUERY_GAMEDIR	2
-#define QUERY_VERSION	3
-#define QUERY_DATADIR	4
-#define QUERY_PVERSION	5
+#define _(x) gettext(x)
+#define N_(x) (x)
+
+/* Command line arguments and global variables */
 static char *modname = NULL;
 static char *modversion = NULL;
 static char *modpengine = NULL;
@@ -67,44 +67,45 @@ static char *destdir = NULL;
 static int install_mod = 0;
 static int remove_mod = 0;
 static int check_file = 0;
-static int did_query = 0;
 
-/* If you change the options here make sure to edit the manpage! */
-static const struct poptOption args[] = {
-	{"configdir",	'c',	POPT_ARG_NONE,	&did_query,	QUERY_CONFIG,
-	 "Query GGZCONFDIR - location of configuration directory"},
-	{"gamedir",	'g',	POPT_ARG_NONE,	&did_query,	QUERY_GAMEDIR,
-	 "Query GGZGAMEDIR - location of game modules directory"},
-	{"datadir",	'd',	POPT_ARG_NONE,	&did_query,	QUERY_DATADIR,
-	 "Query GGZDATADIR - location of game data directory"},
-	{"version",	'v',	POPT_ARG_NONE,	&did_query,	QUERY_VERSION,
-	 "Query VERSION - version identifier of ggzcore files"},
-	{"protocol",	'p',	POPT_ARG_NONE,	&did_query,	QUERY_PVERSION,
-	 "Query GGZ_CS_PROTO_VERSION - version of core protocol"},
+/* Command line options */
+/* If they are changed make sure to edit the manpage! */
+static struct option options[] =
+{
+	{"configdir", no_argument, 0, 'c'},
+	{"gamedir", no_argument, 0, 'g'},
+	{"datadir", no_argument, 0, 'd'},
+	{"version", no_argument, 0, 'v'},
+	{"protocol", no_argument, 0, 'p'},
+	{"install", no_argument, 0, 'i'},
+	{"remove", no_argument, 0, 'r'},
+	{"check", no_argument, 0, 'C'},
+	{"modfile", required_argument, 0, 'm'},
+	{"iconfile", required_argument, 0, 'I'},
+	{"force", no_argument, 0, 'f'},
+	{"destdir", no_argument, 0, 'D'},
+	{"help", no_argument, 0, 'h'},
+	{"usage", no_argument, 0, 'u'},
+	{0, 0, 0, 0}
+};
 
-	{"install",	'\0',	POPT_ARG_NONE,	&install_mod,	0,
-	 "Install a module"},
-	{"remove",	'\0',	POPT_ARG_NONE,	&remove_mod,	0,
-	 "Remove a module"},
-	{"check", 	'\0',	POPT_ARG_NONE,	&check_file,	0,
-	 "Check/repair module installation file"},
-
-	{"modfile",	'\0',	POPT_ARG_STRING,	&modfile,	0,
-	 "Specifies module installation file", "FILENAME"},
-	{"iconfile", '\0',	POPT_ARG_STRING,	&iconfile,	0,
-	 "Specifies icon file to use for the game", "FILENAME"},
-
-	{"force",	'\0',	POPT_ARG_NONE,	&modforce,	0,
-	 "Install over an existing module"},
-
-	{"destdir",	'D',	POPT_ARG_NONE,	&moddest,	0,
-	 "Use $DESTDIR as offset to ggz.modules file"},
-
-#ifndef HAVE_WINSOCK2_H
-	/* HACK: POPT_AUTOHELP doesn't work with popt on windows. */
-	POPT_AUTOHELP
-#endif
-	{NULL, 0, 0, NULL, 0}
+/* Help for the command line options */
+static char *options_help[] = {
+	 N_("Query GGZCONFDIR - location of configuration directory"),
+	 N_("Query GGZGAMEDIR - location of game modules directory"),
+	 N_("Query GGZDATADIR - location of game data directory"),
+	 N_("Query VERSION - version identifier of ggzcore files"),
+	 N_("Query GGZ_CS_PROTO_VERSION - version of core protocol"),
+	 N_("Install a module"),
+	 N_("Remove a module"),
+	 N_("Check/repair module installation file"),
+	 N_("Specifies module installation file (needs argument)"),
+	 N_("Specifies icon file to use for the game (needs argument)"),
+	 N_("Install over an existing module"),
+	 N_("Use $DESTDIR as offset to ggz.modules file"),
+	 N_("Display help"),
+	 N_("Display usage"),
+	 NULL
 };
 
 
@@ -118,61 +119,61 @@ static int load_modfile(void)
 	modname = ggz_conf_read_string(from, "ModuleInfo",
 					     "Name", NULL);
 	if(modname == NULL) {
-		fprintf(stderr, "Critical: Module name not specified.\n");
+		fprintf(stderr, _("Critical: Module name not specified.\n"));
 		status = 0;
 	}
 
 	modversion = ggz_conf_read_string(from, "ModuleInfo",
 						"Version", NULL);
 	if(modversion == NULL) {
-		fprintf(stderr, "Critical: Module version not specified.\n");
+		fprintf(stderr, _("Critical: Module version not specified.\n"));
 		status = 0;
 	}
 
 	modexec = ggz_conf_read_string(from, "ModuleInfo",
 					     "CommandLine", NULL);
 	if(modexec == NULL) {
-		fprintf(stderr, "Critical: Executable not specified.\n");
+		fprintf(stderr, _("Critical: Executable not specified.\n"));
 		status = 0;
 	}
 
 	modui = ggz_conf_read_string(from, "ModuleInfo",
 					   "Frontend", NULL);
 	if(modui == NULL) {
-		fprintf(stderr, "Critical: User interface not specified.\n");
+		fprintf(stderr, _("Critical: User interface not specified.\n"));
 		status = 0;
 	}
 
 	modpengine = ggz_conf_read_string(from, "ModuleInfo",
 					        "ProtocolEngine", NULL);
 	if(modpengine == NULL) {
-		fprintf(stderr, "Critical: Protocol engine not specified.\n");
+		fprintf(stderr, _("Critical: Protocol engine not specified.\n"));
 		status = 0;
 	}
 
 	modpversion = ggz_conf_read_string(from, "ModuleInfo",
 						 "ProtocolVersion", NULL);
 	if(modpversion == NULL) {
-		fprintf(stderr, "Critical: Protocol version not specified.\n");
+		fprintf(stderr, _("Critical: Protocol version not specified.\n"));
 		status = 0;
 	}
 
 	modauthor = ggz_conf_read_string(from, "ModuleInfo",
 					       "Author", NULL);
 	if(modauthor == NULL) {
-		fprintf(stderr, "Critical: Module author not specified.\n");
+		fprintf(stderr, _("Critical: Module author not specified.\n"));
 		status = 0;
 	}
 
 	modurl = ggz_conf_read_string(from, "ModuleInfo",
 					    "Homepage", NULL);
 	if(modurl == NULL)
-		fprintf(stderr, "Warning: Module homepage not specified.\n");
+		fprintf(stderr, _("Warning: Module homepage not specified.\n"));
 
 	modenvironment = ggz_conf_read_string(from, "ModuleInfo",
 					    "Environment", NULL);
 	/*if(modenvironment == NULL)
-		fprintf(stderr, "Warning: Module environment not specified.\n");*/
+		fprintf(stderr, _("Warning: Module environment not specified.\n"));*/
 
 	modicon = ggz_conf_read_string(from, "ModuleInfo",
 					     "IconPath", NULL);
@@ -330,11 +331,11 @@ static int open_conffile(void)
 
 	global = ggz_conf_parse(global_pathname, GGZ_CONF_RDONLY);
 	if(global < 0) {
-		printf("Setting up GGZ game modules configuration in %s\n", global_pathname);
+		printf(_("Setting up GGZ game modules configuration in %s\n"), global_pathname);
 	}
 	global = ggz_conf_parse(global_pathname, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
 	if(global < 0) {
-		fprintf(stderr, "Insufficient permission to install modules\n");
+		fprintf(stderr, _("Insufficient permission to install modules\n"));
 		ggz_conf_cleanup();
 		return -1;
 	} else {
@@ -369,13 +370,13 @@ static void handle_icon(void)
 		/* ggz_filecopy(iconfile, path) */
 		fin = fopen(iconfile, "r");
 		if(!fin) {
-			fprintf(stderr, "Icon file cannot be read (%s)\n", iconfile);
+			fprintf(stderr, _("Icon file cannot be read (%s)\n"), iconfile);
 			modicon = NULL;
 			return;
 		}
 		fout = fopen(path, "w");
 		if(!fout) {
-			fprintf(stderr, "Icon file cannot be written to (%s)\n", path);
+			fprintf(stderr, _("Icon file cannot be written to (%s)\n"), path);
 			fclose(fin);
 			modicon = NULL;
 			return;
@@ -411,7 +412,7 @@ static int remove_module(void)
 	engine_id = get_engine_id(global);
 
 	if(engine_id == NULL) {
-		fprintf(stderr,"Warning: Tried to remove nonexistant module\n");
+		fprintf(stderr, _("Warning: Tried to remove nonexistant module\n"));
 		ggz_conf_cleanup();
 		return -1;
 	}
@@ -425,8 +426,8 @@ static int remove_module(void)
 	}
 
 	if(rc != 0) {
-		fprintf(stderr, "ggz.modules configuration may be corrupt\n");
-		fprintf(stderr, "Module removal failed, see documentation\n");
+		fprintf(stderr, _("ggz.modules configuration may be corrupt\n"));
+		fprintf(stderr, _("Module removal failed, see documentation\n"));
 	}
 
 	ggz_conf_cleanup();
@@ -449,14 +450,14 @@ static int install_module(void)
 
 	if((engine_id) && (!strcmp(engine_id, "error")))
 	{
-		fprintf(stderr, "Your configuration is broken - aborting\n");
+		fprintf(stderr, _("Your configuration is broken - aborting\n"));
 		ggz_conf_cleanup();
 		return -1;
 	}
 
 	if(!modforce) {
 		if(engine_id != NULL) {
-			fprintf(stderr, "Cannot overwrite existing module\n");
+			fprintf(stderr, _("Cannot overwrite existing module\n"));
 			ggz_conf_cleanup();
 			return -1;
 		}
@@ -522,8 +523,8 @@ static int install_module(void)
 	}
 
 	if(rc != 0) {
-		fprintf(stderr, "ggz.modules configuration may be corrupt\n");
-		fprintf(stderr, "Module installation failed, see documentation\n");
+		fprintf(stderr, _("ggz.modules configuration may be corrupt\n"));
+		fprintf(stderr, _("Module installation failed, see documentation\n"));
 	}
 
 	ggz_conf_cleanup();
@@ -553,11 +554,6 @@ static int query(char *name, char *text, int def)
 #endif
 
 
-char *reqd_keys[] = { "Author", "Frontend", "Name", "ProtocolEngine",
-		     "ProtocolVersion", "Version" };
-#define N_REQD_KEYS	6
-
-
 static int check_module_file(void)
 {
 	int	global;
@@ -570,6 +566,16 @@ static int check_module_file(void)
 	int	*section_refd;
 	int	errs=0;
 
+	const char *reqd_keys[] = {
+		"Author",
+		"Frontend",
+		"Name",
+		"ProtocolEngine",
+		"ProtocolVersion",
+		"Version",
+		NULL
+	};
+
 	if((global = open_conffile()) < 0)
 		return global;
 
@@ -577,8 +583,8 @@ static int check_module_file(void)
 	/* Check that every game engine section has req'd entries */
 	if((rc = ggz_conf_get_sections(global, &s_count, &s_list)) <0
 	   || s_count == 0) {
-		printf("Error getting config file sections list\n");
-		printf("May be an empty config file?\n");
+		printf(_("Error getting config file sections list\n"));
+		printf(_("May be an empty config file?\n"));
 		return rc;
 	}
 	for(i=0; i<s_count; i++) {
@@ -586,14 +592,14 @@ static int check_module_file(void)
 			ggz_free(s_list[i]);
 			continue;
 		}
-		printf("*** Checking game config section [%s]\n", s_list[i]);
+		printf(_("*** Checking game config section [%s]\n"), s_list[i]);
 		kill=0;
-		for(j=0; j<N_REQD_KEYS; j++) {
+		for(j=0; reqd_keys[j]; j++) {
 			str = ggz_conf_read_string(global, s_list[i],
 						     reqd_keys[j], NULL);
 			if(str == NULL) {
 				errs++;
-				printf("ERR: missing required key '%s'\n",
+				printf(_("ERR: missing required key '%s'\n"),
 					reqd_keys[j]);
 				kill=1;
 			} else
@@ -613,11 +619,11 @@ static int check_module_file(void)
 			}
 			if(kill) {
 				errs++;
-				printf("ERR: missing or invalid executable\n");
+				printf(_("ERR: missing or invalid executable\n"));
 			}
 		}
 		if(kill) {
-			printf("Removing section for '%s'\n", s_list[i]);
+			printf(_("Removing section for '%s'\n"), s_list[i]);
 			modpengine = ggz_conf_read_string(global, s_list[i], "ProtocolEngine", NULL);
 			rc = ggz_conf_remove_section(global, s_list[i]);
 			if(rc == 0) {
@@ -636,17 +642,17 @@ static int check_module_file(void)
 	/* Phase Two */
 	/* Check for cross references (multiple engines -> one game section) */
 	if((rc = ggz_conf_get_sections(global, &s_count, &s_list)) <0) {
-		printf("Error getting config file sections list\n");
+		printf(_("Error getting config file sections list\n"));
 		return rc;
 	}
 phase_two:
 	if((rc = ggz_conf_get_keys(global, "Games", &k_count, &k_list)) <0
 	   || k_count == 0) {
-		printf("Error getting config file [Games]:keys list\n");
-		printf("May be an emtpy config file?\n");
+		printf(_("Error getting config file [Games]:keys list\n"));
+		printf(_("May be an empty config file?\n"));
 		return rc;
 	}
-	printf("*** Computing section cross references\n");
+	printf(_("*** Computing section cross references\n"));
 	section_refd = ggz_malloc(s_count * sizeof(int));
 	for(i=0; i<k_count; i++) {
 		if(!strcmp(k_list[i], "*Engines*"))
@@ -674,7 +680,7 @@ phase_two:
 					if(str2)
 						ggz_free(str2);
 					errs++;
-					printf("ERR %s and %s references [%s], deleting %s reference\n",
+					printf(_("ERR %s and %s references [%s], deleting %s reference\n"),
 						k_list[i], k_list[section_refd[j]-1],
 						s_list[j], k_list[kill]);
 					ggz_conf_remove_key(global, "Games", k_list[kill]);
@@ -709,7 +715,7 @@ phase_two:
 			ggz_free(k_list[i]);
 			continue;
 		}
-		printf("*** Checking ProtocolEngine key for engine '%s'\n", k_list[i]);
+		printf(_("*** Checking ProtocolEngine key for engine '%s'\n"), k_list[i]);
 		/*str = ggz_conf_read_string(global, "Games", k_list[i], NULL);*/
 		ggz_conf_read_list(global, "Games", k_list[i], &g_count, &g_list);
 		for(k = 0; k < g_count; k++) {
@@ -718,7 +724,7 @@ phase_two:
 			str2 = ggz_conf_read_string(global, str, "ProtocolEngine", NULL);
 			if(str2 && strcmp(k_list[i], str2)) {
 				errs++;
-				printf("ERR Setting ProtocolEngine key [%s] to '%s'\n",
+				printf(_("ERR Setting ProtocolEngine key [%s] to '%s'\n"),
 					str, k_list[i]);
 				ggz_conf_write_string(global, str, "ProtocolEngine", k_list[i]);
 			}
@@ -734,9 +740,9 @@ phase_two:
 
 	/* Phase Four */
 	/* Check that each section references back to a [Games]:key */
-	printf("*** Checking back references\n");
+	printf(_("*** Checking back references\n"));
 	if((rc = ggz_conf_get_sections(global, &s_count, &s_list)) <0) {
-		printf("Error getting config file sections list\n");
+		printf(_("Error getting config file sections list\n"));
 		return rc;
 	}
 	for(i=0; i<s_count; i++) {
@@ -756,7 +762,7 @@ phase_two:
 
 		if(!ok) {
 			errs++;
-			printf("ERR Adding [Games]:%s key pointing to [%s]\n",
+			printf(_("ERR Adding [Games]:%s key pointing to [%s]\n"),
 				 str, s_list[i]);
 			g_count++;
 			g_list = ggz_realloc(g_list, g_count * sizeof(char*));
@@ -776,9 +782,9 @@ phase_two:
 
 	/* Phase Four/b */
 	/* Check that each section key actually has a section*/
-	printf("*** Checking forward references\n");
+	printf(_("*** Checking forward references\n"));
 	if((rc = ggz_conf_get_keys(global, "Games", &k_count, &k_list)) <0) {
-		printf("Error getting config file [Games]:keys list\n");
+		printf(_("Error getting config file [Games]:keys list\n"));
 		return rc;
 	}
 
@@ -794,7 +800,7 @@ phase_two:
 			if(!str)
 			{
 				errs++;
-				printf("ERR Section %s doesn't exist in %s, removed reference\n",
+				printf(_("ERR Section %s doesn't exist in %s, removed reference\n"),
 					g_list[k], k_list[i]);
 				ggz_free(g_list[k]);
 				g_count -= 1;
@@ -816,7 +822,7 @@ phase_two:
 
 	/* Phase Five */
 	/* Check that each entry in *Engines* points to something */
-	printf("*** Checking for spurious game engine entries\n");
+	printf(_("*** Checking for spurious game engine entries\n"));
 phase_five:
 	ggz_conf_read_list(global, "Games", "*Engines*", &e_count, &e_list);
 	for(i=0; i<e_count; i++) {
@@ -824,7 +830,7 @@ phase_five:
 
 			if(!str) {
 				errs++;
-				printf("ERR Game engine '%s' invalid, removing\n",
+				printf(_("ERR Game engine '%s' invalid, removing\n"),
 				       e_list[i]);
 				ggz_free(e_list[i]);
 				e_count--;
@@ -849,9 +855,9 @@ phase_five:
 
 	/* Final Phase */
 	/* Make sure that every [Games]:key exists in [Games]:*Engines* */
-	printf("*** Checking for missing game engine pointers\n");
+	printf(_("*** Checking for missing game engine pointers\n"));
 	if((rc = ggz_conf_get_keys(global, "Games", &k_count, &k_list)) <0) {
-		printf("Error getting config file [Games]:keys list\n");
+		printf(_("Error getting config file [Games]:keys list\n"));
 		return rc;
 	}
 	alt = 0;
@@ -866,7 +872,7 @@ phase_five:
 				ok=1;
 		if(!ok) {
 			errs++;
-			printf("ERR Adding '%s' to game engine list\n",
+			printf(_("ERR Adding '%s' to game engine list\n"),
 				k_list[i]);
 			e_count++;
 			e_list = ggz_realloc(e_list, e_count*sizeof(char *));
@@ -884,9 +890,9 @@ phase_five:
 	if(e_list) ggz_free(e_list);
 
 	if(errs)
-		printf("Finished - writing %d repairs\n", errs);
+		printf(_("Finished - writing %d repairs\n"), errs);
 	else
-		printf("Finished - no configuration errors detected\n");
+		printf(_("Finished - no configuration errors detected\n"));
 	ggz_conf_commit(global);
 
 	ggz_conf_cleanup();
@@ -894,57 +900,112 @@ phase_five:
 	return 0;
 }
 
-int main(const int argc, const char **argv)
+int main(int argc, char *argv[])
 {
-	poptContext	context;
-	int		rc;
+	int optindex;
+	int opt;
+	int i;
+	int rc;
 
-	context = poptGetContext(NULL, argc, argv, args, 0);
-	while((rc = poptGetNextOpt(context)) != -1) {
-		switch(rc) {
-			case QUERY_CONFIG:
+	/* Set up translation */
+	bindtextdomain("ggz-config", PREFIX "/share/locale");
+	textdomain("ggz-config");
+	setlocale(LC_ALL, "");
+
+	/* Parse the command line options */
+	while(1)
+	{
+		opt = getopt_long(argc, argv, "cgdvpirCm:I:fDhu", options, &optindex);
+		if(opt == -1) break;
+		switch(opt)
+		{
+			case 'h':
+				printf(_("GGZ-Config - the GGZ Gaming Zone Configuration Utility\n"));
+				printf(_("Copyright (C) 2001 Rich Gade, rgade@users.sourceforge.net\n"));
+				printf(_("Copyright (C) 2002 - 2005 The GGZ Gaming Zone developers\n"));
+				printf(_("Published under GNU GPL conditions\n"));
+				printf("\n");
+				printf(_("Recognized options:\n"));
+
+				for(i = 0; options[i].name; i++)
+				{
+					printf("[-%c | --%-10s]: %s\n",
+						options[i].val, options[i].name, _(options_help[i]));
+				}
+
+				return 0;
+				break;
+			case 'u':
+				printf(_("Usage:\n"));
+				printf("\tggz-config --install --modfile=<module.dsc> [--force]\n");
+				printf("\tggz-config --remove --modfile=<module.dsc> [--force]\n");
+				printf("\tggz-config --check\n");
+				return 0;
+				break;
+			case 'm':
+				iconfile = optarg;
+				break;
+			case 'I':
+				modfile = optarg;
+				break;
+			case 'f':
+				modforce = 1;
+				break;
+			case 'D':
+				moddest = 1;
+				break;
+			case 'i':
+				install_mod = 1;
+				break;
+			case 'r':
+				remove_mod = 1;
+				break;
+			case 'C':
+				check_file = 1;
+				break;
+			case 'c':
 				printf("%s\n", GGZCONFDIR);
 				return 0;
-			case QUERY_GAMEDIR:
+				break;
+			case 'g':
 				printf("%s\n", GAMEDIR);
 				return 0;
-			case QUERY_VERSION:
-				printf("%s\n", VERSION);
-				return 0;
-			case QUERY_PVERSION:
-				printf("%d\n", GGZ_CS_PROTO_VERSION);
-				return 0;
-			case QUERY_DATADIR:
+				break;
+			case 'd':
 				printf("%s\n", GGZDATADIR);
 				return 0;
+				break;
+			case 'v':
+				printf("%s\n", VERSION);
+				return 0;
+				break;
+			case 'p':
+				printf("%i\n", GGZ_CS_PROTO_VERSION);
+				return 0;
+				break;
 			default:
-				fprintf(stderr, "%s: %s\n",
-					poptBadOption(context, 0),
-					poptStrerror(rc));
-				poptFreeContext(context);
+				/*fprintf(stderr, _("Unknown command line option, try --help.\n"));*/
 				return 1;
 				break;
 		}
 	}
 
+	/* Execute at least one operation (install or remove or check) */
 	if(install_mod + remove_mod + check_file != 1) {
-		if(!did_query) {
-			fprintf(stderr, "Try '%s --help' for help\n", argv[0]);
-			return 1;
-		}
-		return 0;
+		fprintf(stderr, _("No operation specified, try --help.\n"));
+		return 1;
 	}
 
 	if(check_file)
 		return check_module_file();
 
 	if(modfile == NULL) {
-		fprintf(stderr, "Must specify module installation file.\n");
+		fprintf(stderr, _("Must specify module installation file.\n"));
 		return 1;
 	}
 
 	if(!load_modfile()) {
-		fprintf(stderr, "Required installation file entries missing\n");
+		fprintf(stderr, _("Required installation file entries missing\n"));
 		return 1;
 	}
 
@@ -958,6 +1019,8 @@ int main(const int argc, const char **argv)
 		rc = install_module();
 	else if(remove_mod)
 		rc = remove_module();
+	else
+		rc = -1;
 
 	return rc;
 }
