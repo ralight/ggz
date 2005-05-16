@@ -1,8 +1,8 @@
-# $Id: ggzcards.dsc 5544 2003-05-10 23:15:02Z dr_maux $
+# $Id: ggzcards.dsc 7190 2005-05-16 21:10:29Z josef $
 [GameInfo]
 Author = Jason Short, Rich Gade
 Description = GGZ Cards game module
-Homepage = http://ggz.sourceforge.net/games/ggzcards
+Homepage = http://www.ggzgamingzone.org/games/ggzcards/
 Name = GGZCards
 Version = 0.0.7
 

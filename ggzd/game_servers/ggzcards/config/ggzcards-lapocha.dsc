@@ -1,8 +1,8 @@
-# $Id: ggzcards-lapocha.dsc 5544 2003-05-10 23:15:02Z dr_maux $
+# $Id: ggzcards-lapocha.dsc 7190 2005-05-16 21:10:29Z josef $
 [GameInfo]
 Author = Rich Gade
 Description = GGZ Cards game module for La Pocha
-Homepage = http://ggz.sourceforge.net/games/ggzcards
+Homepage = http://www.ggzgamingzone.org/games/ggzcards/
 Name = GGZCards-LaPocha
 Version = 0.0.7
 

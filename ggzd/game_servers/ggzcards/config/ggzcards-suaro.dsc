@@ -1,9 +1,9 @@
-# $Id: ggzcards-suaro.dsc 5544 2003-05-10 23:15:02Z dr_maux $
+# $Id: ggzcards-suaro.dsc 7190 2005-05-16 21:10:29Z josef $
 
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Suaro
-Homepage = http://ggz.sourceforge.net/games/ggzcards
+Homepage = http://www.ggzgamingzone.org/games/ggzcards/
 Name = GGZCards-Suaro
 Version = 0.0.7
 
