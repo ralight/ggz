@@ -24,7 +24,7 @@
 
 
 /* Parse command-line options */
-void parse_args(int argc, const char *argv[]);
+void parse_args(int argc, char *argv[]);
 
 /* Parse options from conf file, but don't overwrite existing options*/
 void parse_conf_file(void);

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6960 2005-03-04 01:13:04Z josef $
+dnl $Id: configure.ac 7191 2005-05-16 21:11:37Z josef $
 
 AC_INIT([GGZ server], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -100,13 +100,6 @@ AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
 
-
-# Check for popt
-# ==============
-AC_CHECK_LIB([popt], [poptGetNextOpt], [ggzd_LIBS="$ggzd_LIBS -lpopt"],
-             [AC_MSG_ERROR([cannot find popt library])])
-AC_CHECK_HEADER([popt.h], [],
-                [AC_MSG_ERROR([cannot find popt.h header])])
 
 # Strsep is implemented in ggzd/strsep.c, this is used if needed.
 AC_CHECK_FUNCS([strsep])

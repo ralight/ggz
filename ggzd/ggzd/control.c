@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 6259 2004-11-04 23:23:22Z josef $
+ * $Id: control.c 7191 2005-05-16 21:11:37Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -212,7 +212,7 @@ static int zeroconf_publish(const char *name, const char *protocol, int port)
 }
 
 
-int main(int argc, const char *argv[])
+int main(int argc, char *argv[])
 {
 	int main_sock, new_sock, status, flags;
 	socklen_t addrlen;

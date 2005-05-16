@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 6168 2004-08-23 19:49:58Z jdorje $
+ * $Id: err_func.c 7191 2005-05-16 21:11:37Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -45,14 +45,21 @@
 #include "ggzd.h"
 
 /* Logfile info */
-LogInfo log_info = { 0, 0,
-		     ( GGZ_LOGOPT_INC_PID
+LogInfo log_info = {
+	log_initialized: 0,
+	syslog_facility: 0,
+	options: ( GGZ_LOGOPT_INC_PID
 		       | GGZ_LOGOPT_USE_SYSLOG
 		       | GGZ_LOGOPT_INC_GAMETYPE
 		       | GGZ_DBGOPT_USE_SYSLOG ),
-		     NULL, NULL, 0
+	log_fname: NULL,
+	logfile: NULL,
+	log_types: 0
 #ifdef DEBUG
-		   , 0, NULL, NULL, 0
+	,
+	dbg_fname: NULL,
+	dbgfile: NULL,
+	verbose_updates: 0
 #endif
 };
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 7085 2005-04-08 12:51:50Z josef $
+ * $Id: parse_opt.c 7191 2005-05-16 21:11:37Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -29,7 +29,7 @@
 
 #include <ctype.h>
 #include <dirent.h>
-#include <popt.h>
+#include <getopt.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -106,53 +106,61 @@ static char **r_list = NULL;
 /* Defaults for Admin items */
 #define ADMIN_ERR     "<You must set this parameter in ggzd.conf>"
 
-static const struct poptOption args[] = {
-	
-	{"foreground", 'F', POPT_ARG_NONE, &opt.foreground, 0,
-	 "Tells ggzd to run in the foreground"},
-	{"file", 'f', POPT_ARG_STRING, &opt.local_conf, 0, 
-	 "Configuration file", "FILE"},
-	{"log", 'l', POPT_ARG_INT, &log_info.log_types, 0,
-	 "Types of logging to perform", "LEVEL"},
-	{"port", 'p', POPT_ARG_INT, &opt.main_port, 0,
-	 "GGZ port number", "PORT"},
-	{"version", 'V', POPT_ARG_NONE, NULL, 1},
-	POPT_AUTOHELP {NULL, '\0', 0, NULL, 0}	/* end the list */
+static struct option options[] = {
+	{"foreground", no_argument, 0, 'F'},
+	{"file", required_argument, 0, 'f'},
+	{"log", required_argument, 0, 'l'},
+	{"port", required_argument, 0, 'p'},
+	{"help", no_argument, 0, 'h'},
+	{"version", no_argument, 0, 'v'},
+	{0, 0, 0, 0}
 };
 
 /* Parse command-line options */
-void parse_args(int argc, const char *argv[])
+void parse_args(int argc, char *argv[])
 {
+	int sopt, optindex;
 
-	poptContext context = poptGetContext(NULL, argc, argv, args, 0);
-	int rc;
-
-	while ((rc = poptGetNextOpt(context)) != -1) {
-		switch (rc) {
-		case 1:	/* Version command */
-			printf("GGZ Gaming Zone server: version %s\n", 
-			       VERSION);
-			poptFreeContext(context);
-			exit(0);
-#ifdef DEBUG
-		case 2: /* They specified --debug */
-			log_info.popt_dbg++;
-			break;
-#endif
-		case POPT_ERROR_NOARG:
-		case POPT_ERROR_BADOPT:
-		case POPT_ERROR_BADNUMBER:
-		case POPT_ERROR_OVERFLOW:
-			err_msg("%s: %s", poptBadOption(context, 0),
-				poptStrerror(rc));
-			poptFreeContext(context);
-			exit(-1);
-			break;
+	while(1)
+	{
+		sopt = getopt_long(argc, argv, "vhFf:l:p:", options, &optindex);
+		if(sopt == -1) break;
+		switch(sopt)
+		{
+			case 'F':
+				opt.foreground = 1;
+				break;
+			case 'f':
+				opt.local_conf = optarg;
+				break;
+			case 'l':
+				log_info.log_types = atoi(optarg);
+				break;
+			case 'p':
+				opt.main_port = atoi(optarg);
+				break;
+			case 'h':
+	 			printf("GGZD - The main server of the GGZ Gaming Zone\n"),
+	 			printf("Copyright (C) 1999 - 2002 Brent Hendricks\n"),
+	 			printf("Copyright (C) 2003 - 2005 The GGZ Gaming Zone developers\n"),
+	 			printf("\n"),
+	 			printf("[-F | --foreground ] Tells ggzd to run in the foreground\n"),
+				printf("[-f | --file <file>] Configuration file\n"),
+				printf("[-l | --log <types>] Types of logging to perform\n"),
+				printf("[-p | --port <port>] GGZ port number\n"),
+				printf("[-v | --version    ] Display version number\n"),
+				printf("[-h | --help       ] Display this help screen\n"),
+				exit(0);
+				break;
+			case 'v':
+				printf("GGZ Gaming Zone server: version %s\n", VERSION);
+				exit(0);
+				break;
+			default:
+				exit(0);
+				break;
 		}
 	}
-
-	poptFreeContext(context);
-
 }
 
 
