@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 7123 2005-04-23 11:31:46Z josef $
+ * $Id: login.c 7204 2005-05-21 09:31:23Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -76,7 +76,6 @@ static void login_relogin(void);
 static GGZHookReturn login_reconnect(GGZServerEvent id, void *event_data,
 				     void *user_data);
 #endif
-static void login_set_entries(Server server);
 
 void login_create_or_raise(void)
 {
@@ -395,11 +394,15 @@ static void login_start_session(void)
 	ggzcore_server_set_logininfo(server, type, login, password, email);
 
 	/* Log server communications to file */
-	sessiondump =
-	    ggzcore_conf_read_string("Debug", "SessionLog", NULL);
-	ggzcore_server_log_session(server, sessiondump);
-	if (sessiondump)
-		ggz_free(sessiondump);
+	if (option_log) {
+		ggzcore_server_log_session(server, option_log);
+	} else {
+		sessiondump =
+		    ggzcore_conf_read_string("Debug", "SessionLog", NULL);
+		ggzcore_server_log_session(server, sessiondump);
+		if (sessiondump)
+			ggz_free(sessiondump);
+	}
 
 	/* Save as last profile */
 	tmp = lookup_widget(login_dialog, "profile_entry");
@@ -469,7 +472,7 @@ static GGZHookReturn login_reconnect(GGZServerEvent id, void *event_data,
 #endif
 
 
-static void login_set_entries(Server server)
+void login_set_entries(Server server)
 {
 	GtkWidget *tmp;
 	gchar *port;

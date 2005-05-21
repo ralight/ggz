@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.h 6418 2004-11-18 05:07:41Z jdorje $
+ * $Id: support.h 7204 2005-05-21 09:31:23Z josef $
  *
  * Support code
  *
@@ -87,7 +87,7 @@ char *nocasestrstr (char *text, char *tofind);
 /*
  * Use this function to load a URL in netscape
  */
-void support_goto_url(gchar *url);
+int support_goto_url(gchar *url);
 
 /*
  * Use this function to fork a command

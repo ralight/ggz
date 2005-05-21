@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7200 2005-05-16 22:22:14Z jdorje $
+ * $Id: ggzclient.c 7204 2005-05-21 09:31:23Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -84,7 +84,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 	if (id == GGZ_CONNECTED) {
 		GIOChannel *channel;
 
-		/* Add the fd to the ggtk main loop */
+		/* Add the fd to the gtk main loop */
 		ggz_debug("connection", "We're connected.");
 		fd = ggzcore_server_get_fd(server);
 		assert(!is_server);
@@ -100,7 +100,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 	} else if (id == GGZ_CHANNEL_CONNECTED) {
 		GIOChannel *channel;
 
-		/* Add the fd to the ggtk main loop */
+		/* Add the fd to the gtk main loop */
 		ggz_debug("connection", "Direct game channel connected.");
 		fd = ggzcore_server_get_channel(server);
 		assert(!is_channel);
@@ -352,7 +352,9 @@ static GGZHookReturn ggz_logout(GGZServerEvent id, const void *event_data,
 {
 	ggz_debug("connection", "Logged out.");
 
-	server_disconnect();
+	if (ggzcore_server_get_state(server) != GGZ_STATE_RECONNECTING) {
+		server_disconnect();
+	}
 
 	/* set title */
 	gtk_window_set_title(GTK_WINDOW(win_main), "GGZ Gaming Zone");
@@ -696,6 +698,9 @@ static GGZHookReturn ggz_state_change(GGZServerEvent id,
 	case GGZ_STATE_CONNECTING:
 		state = _("Connecting");
 		break;
+	case GGZ_STATE_RECONNECTING:
+		state = _("Reconnecting");
+		break;
 	case GGZ_STATE_ONLINE:
 		state = _("Online");
 		break;
@@ -748,6 +753,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 
 	switch (state_id) {
 	case GGZ_STATE_OFFLINE:
+	case GGZ_STATE_RECONNECTING:
 		/* Re-enable connect button */
 		if (login_dialog) {
 			tmp =
@@ -1008,13 +1014,20 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id,
 
 	ggz_debug("connection", "Server error.");
 
-	server_disconnect();
+	if (ggzcore_server_get_state(server) != GGZ_STATE_RECONNECTING) {
+		server_disconnect();
+	} else {
+		g_source_remove(server_tag);
+		is_server = FALSE;
+	}
 
-	/* SHould we clear the list of rooms/players/tables? */
+	/* Should we clear the list of rooms/players/tables? */
 
-	msg = g_strdup_printf(_("Server error: %s"), event_message);
-	msgbox(msg, _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
-	g_free(msg);
+	if (ggzcore_server_get_state(server) != GGZ_STATE_RECONNECTING) {
+		msg = g_strdup_printf(_("Server error: %s"), event_message);
+		msgbox(msg, _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		g_free(msg);
+	}
 
 	return GGZ_HOOK_OK;
 }
@@ -1058,6 +1071,10 @@ static void ggz_input_removed(gpointer data)
 		   shuts down, for instance.  Just one more but of ugliness...
 
 		   --JDS */
+		return;
+	}
+
+	if (ggzcore_server_get_state(server) == GGZ_STATE_RECONNECTING) {
 		return;
 	}
 

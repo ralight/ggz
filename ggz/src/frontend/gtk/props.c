@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 7200 2005-05-16 22:22:14Z jdorje $
+ * $Id: props.c 7204 2005-05-21 09:31:23Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -1605,6 +1605,8 @@ create_dlg_props (void)
   browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Netscape - Existing"));
   browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Opera - New"));
   browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Opera - Existing"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Firefox - New"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Firefox - Existing"));
   gtk_combo_set_popdown_strings (GTK_COMBO (browser_combo), browser_combo_items);
   g_list_free (browser_combo_items);
 

@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.c 6645 2005-01-13 06:42:30Z jdorje $
+ * $Id: support.c 7204 2005-05-21 09:31:23Z josef $
  *
  * Support code
  *
@@ -44,10 +44,6 @@
 
 #include "props.h"
 #include "support.h"
-
-/* This is an internally used parse commands */
-static int my_poptParseArgvString(const char *s, int *argcPtr,
-				  char ***argvPtr);
 
 GtkWidget *lookup_widget(GtkWidget * widget, const gchar * widget_name)
 {
@@ -126,7 +122,7 @@ char *nocasestrstr(char *text, char *tofind)
 	}
 }
 
-void support_goto_url(gchar * url)
+int support_goto_url(gchar * url)
 {
 	char *command = NULL;
 	char *browser_opt;
@@ -136,22 +132,22 @@ void support_goto_url(gchar * url)
 	    ggzcore_conf_read_string("OPTIONS", "BROWSER", "None");
 
 	if (!strcmp(browser_opt, "None")) {
-		command = g_strdup(" ");
-		props_create_or_raise();
-	} else if (!strcmp(browser_opt, "Galeon - New")) {
+		return 0;
+	} else if (!strcmp(browser_opt, _("Galeon - New"))) {
 		command = g_strdup_printf("galeon %s", url);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Galeon - Existing")) {
+	} else if (!strcmp(browser_opt, _("Galeon - Existing"))) {
 		command = g_strdup_printf("galeon -w %s", url);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Gnome URL Handler")) {
+	} else if (!strcmp(browser_opt, _("Gnome URL Handler"))) {
 		command = g_strdup_printf("gnome-moz-remote %s", url);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Konqueror - New")) {
+	} else if (!strcmp(browser_opt, _("Konqueror - New"))) {
 		command = g_strdup_printf("konqueror %s", url);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Konqueror - Existing")) {
-		command =
+	} else if (!strcmp(browser_opt, _("Konqueror - Existing"))) {
+		command = g_strdup_printf("konqueror %s", url);
+		/*command =
 		    g_strdup_printf("dcop konqueror default getWindows");
 		support_exec(command);
 		g_free(command);
@@ -159,168 +155,56 @@ void support_goto_url(gchar * url)
 		    g_strdup_printf
 		    ("dcop konqueror konqueror-mainwindow#1 openURL %s",
 		     url);
+		*/
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Lynx")) {
+	} else if (!strcmp(browser_opt, _("Lynx"))) {
 		lynx_opt =
 		    ggzcore_conf_read_string("OPTIONS", "LYNX", "xterm");
 		command = g_strdup_printf("%s -e lynx %s", lynx_opt, url);
 		ggz_free(lynx_opt);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Mozilla - New")) {
+	} else if (!strcmp(browser_opt, _("Mozilla - New"))) {
 		command = g_strdup_printf("mozilla %s", url);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Mozilla - Existing")) {
+	} else if (!strcmp(browser_opt, _("Mozilla - Existing"))) {
 		command =
 		    g_strdup_printf("mozilla -remote 'openURL(%s)'", url);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Netscape - New")) {
+	} else if (!strcmp(browser_opt, _("Netscape - New"))) {
 		command = g_strdup_printf("netscape %s", url);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Netscape - Existing")) {
+	} else if (!strcmp(browser_opt, _("Netscape - Existing"))) {
 		command =
 		    g_strdup_printf("netscape -remote 'openURL(%s)'", url);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Opera - New")) {
+	} else if (!strcmp(browser_opt, _("Opera - New"))) {
 		command = g_strdup_printf("opera %s", url);
 		support_exec(command);
-	} else if (!strcmp(browser_opt, "Opera - Existing")) {
+	} else if (!strcmp(browser_opt, _("Opera - Existing"))) {
 		command =
 		    g_strdup_printf
 		    ("opera -remote 'openURL(%s,new-window)'", url);
 		support_exec(command);
+	} else if (!strcmp(browser_opt, _("Firefox - New"))) {
+		command = g_strdup_printf("firefox %s", url);
+		support_exec(command);
+	} else if (!strcmp(browser_opt, _("Firefox - Existing"))) {
+		command =
+		    g_strdup_printf("firefox -remote 'openURL(%s)'", url);
+		support_exec(command);
+	} else {
+		return 1;
 	}
 
 	ggz_free(browser_opt);
 
 	g_free(command);
-}
 
+	return 1;
+}
 
 void support_exec(char *cmd)
 {
-#if defined HAVE_FORK && defined HAVE_EXECVP
-	pid_t pid;
-#endif
-	char **argv;
-	int argc;
-
-	if (my_poptParseArgvString(cmd, &argc, &argv) != 0)
-		return;
-
-#if defined HAVE_FORK && defined HAVE_EXECVP
-	if ((pid = fork()) < 0) {
-		return;
-	} else if (pid == 0) {
-		execvp(argv[0], argv);
-		_exit(0); /* Use _exit to avoid any atexit handlers. */
-	}
-#else
-	/* TODO: An implementation for windows using CreateProcess. */
-#endif
-
-	free(argv);
+	g_spawn_command_line_async(cmd, NULL);
 }
 
-/* Taken from XChat */
-
-/* I think gnome1.0.x isn't necessarily linked against popt, ah well! */
-/* !!! For now use this inlined function, or it would break fe-text building */
-/* .... will find a better solution later. */
-/*#ifndef USE_GNOME*/
-
-/* this is taken from gnome-libs 1.2.4 */
-#define POPT_ARGV_ARRAY_GROW_DELTA 5
-
-static int my_poptParseArgvString(const char *s, int *argcPtr,
-				  char ***argvPtr)
-{
-	char *buf, *bufStart, *dst;
-	const char *src;
-	char quote = '\0';
-	int argvAlloced = POPT_ARGV_ARRAY_GROW_DELTA;
-	char **argv = malloc(sizeof(*argv) * argvAlloced);
-	const char **argv2;
-	int argc = 0;
-	int i, buflen;
-
-	buflen = strlen(s) + 1;
-/*    bufStart = buf = alloca(buflen);*/
-	bufStart = buf = malloc(buflen);
-	memset(buf, '\0', buflen);
-
-	src = s;
-	argv[argc] = buf;
-
-	while (*src) {
-		if (quote == *src) {
-			quote = '\0';
-		} else if (quote) {
-			if (*src == '\\') {
-				src++;
-				if (!*src) {
-					free(argv);
-					free(bufStart);
-					return 1;
-				}
-				if (*src != quote)
-					*buf++ = '\\';
-			}
-			*buf++ = *src;
-		} else if (isspace(*src)) {
-			if (*argv[argc]) {
-				buf++, argc++;
-				if (argc == argvAlloced) {
-					argvAlloced +=
-					    POPT_ARGV_ARRAY_GROW_DELTA;
-					argv =
-					    realloc(argv,
-						    sizeof(*argv) *
-						    argvAlloced);
-				}
-				argv[argc] = buf;
-			}
-		} else
-			switch (*src) {
-			case '"':
-			case '\'':
-				quote = *src;
-				break;
-			case '\\':
-				src++;
-				if (!*src) {
-					free(argv);
-					free(bufStart);
-					return 1;
-				}
-				/* fallthrough */
-			default:
-				*buf++ = *src;
-			}
-
-		src++;
-	}
-
-	if (strlen(argv[argc])) {
-		argc++, buf++;
-	}
-
-	dst = malloc((argc + 1) * sizeof(*argv) + (buf - bufStart));
-	argv2 = (void *)dst;
-	dst += (argc + 1) * sizeof(*argv);
-	memcpy(argv2, argv, argc * sizeof(*argv));
-	argv2[argc] = NULL;
-	memcpy(dst, bufStart, buf - bufStart);
-
-	for (i = 0; i < argc; i++) {
-		argv2[i] = dst + (argv[i] - bufStart);
-	}
-
-	free(argv);
-
-	*argvPtr = (char **)argv2;	/* XXX don't change the API */
-	*argcPtr = argc;
-
-	free(bufStart);
-
-	return 0;
-}

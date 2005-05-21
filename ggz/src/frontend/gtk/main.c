@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 6725 2005-01-18 15:12:29Z oojah $
+ * $Id: main.c 7204 2005-05-21 09:31:23Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -53,6 +53,8 @@
 #include "server.h"
 #include "support.h"
 
+/* Global command line options */
+gchar *option_log = NULL, *option_url = NULL;
 
 static void init_debug(void)
 {
@@ -90,6 +92,7 @@ int main (int argc, char *argv[])
 {
 	GGZOptions opt;
 	char *global_conf, *user_conf, *init_version;
+	gboolean ret;
 	
 #ifdef ENABLE_NLS
 	/* GTK2 always uses UTF-8 so we tell gettext to output its
@@ -107,7 +110,7 @@ int main (int argc, char *argv[])
 	ggzcore_conf_initialize(global_conf, user_conf);
 	g_free(user_conf);
 
-	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
+	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES | GGZ_OPT_RECONNECT;
 	
 	ggzcore_init(opt);
 
@@ -117,7 +120,36 @@ int main (int argc, char *argv[])
 
 	server_profiles_load();
 	
+#if GTK_CHECK_VERSION(2, 6, 0)
+	/* Support for command line options since Gtk+ 2.6 */
+
+	gchar **option_urls = NULL;
+
+	GOptionEntry entries[] = {
+		{"log", 'l', 0, G_OPTION_ARG_STRING, &option_log,
+			N_("Enable session log"), "file/stderr"},
+		{G_OPTION_REMAINING, ' ', 0, G_OPTION_ARG_STRING_ARRAY, &option_urls,
+			N_("URL for autoconnection"), NULL},
+		{NULL},
+	};
+
+	ret = gtk_init_with_args(&argc, &argv,
+		N_("GGZ Core Client for Gtk+"),
+		entries,
+		"ggz-gtk",
+		NULL);
+	if(!ret) {
+		fprintf(stderr, _("Wrong arguments, try %s --help.\n"), argv[0]);
+		return -1;
+	}
+
+	if(option_urls)
+		option_url = option_urls[0];
+
+#else
 	gtk_init(&argc, &argv);
+#endif
+
 	chat_init();
 
 	init_version = ggzcore_conf_read_string("INIT", "VERSION", VERSION);
@@ -130,6 +162,42 @@ int main (int argc, char *argv[])
 		ggz_sensitivity_init();
 		gtk_widget_show(win_main);
 		login_create_or_raise();
+
+		/* Auto-connect to GGZ URI */
+		if (option_url) {
+			char *uri, *uribase;
+			char *host = NULL, *user = NULL, *port = NULL;
+			uribase = ggz_strdup(option_url);
+			uri = uribase;
+			if (strstr(uri, "ggz://"))
+				uri += 6;
+			if (strchr(uri, '@'))
+				user = strsep(&uri, "@");
+			if (strchr(uri, ':')) {
+				host = strsep(&uri, ":");
+				port = strsep(&uri, ":");
+			} else {
+				host = uri;
+			}
+
+			Server serv;
+			serv.name = NULL;
+			serv.host = host;
+			serv.port = atoi(port);
+			serv.type = GGZ_LOGIN_GUEST;
+			serv.login = user;
+			serv.password = NULL;
+
+			login_set_entries(serv);
+
+			if(host)
+				ggz_free(host);
+			if(port)
+				ggz_free(port);
+			if(user)
+				ggz_free(user);
+			ggz_free(uribase);
+		}
 	}
 	ggz_free(init_version);
 
