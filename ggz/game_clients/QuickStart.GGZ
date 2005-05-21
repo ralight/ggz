@@ -1,7 +1,7 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.10
+Installation Requirements for the release 0.0.11
 ------------------------------------------------
 
 The GGZ Gaming Zone client is built from three separate packages
@@ -101,10 +101,10 @@ The following important features exist:
 Installing ggz-client-libs
 --------------------------
 
-Before installing ggz-client-libs, you must have the popt and expat
-libraries installed.  You may obtain them from
+Before installing ggz-client-libs, you must have the expat
+library installed (the previous dependency popt is no longer
+required).  You may obtain it from
 
-ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x
 http://prdownloads.sourceforge.net/expat/
 
 Unpack the ggz-client-libs sources.  They should extract into a
@@ -124,7 +124,8 @@ Gtk Client Installation
 
 The Gtk+ client requires that the Gtk+ libraries 2.X be
 installed. These can be downloaded from http://www.gtk.org.
-We recommend the latest stable version.
+We recommend the latest stable version (2.6) to be able to use
+the new stock icons.
 
 Unpack the ggz-gtk-client sources.  They should extract into a
 directory named ggz-gtk-client-X.X.X.  Enter that directory and run
@@ -142,9 +143,9 @@ KDE Client Installation
 
 The KDE client requires that the KDE libraries 3.X be installed.
 These can be downloaded from http://www.kde.org.  We recommend the
-latest stable version, 3.3.2.  As KDE depends on Qt, you will need Qt
-version >= 3.0 (3.3.3 is recommended as it is the version which
-KDE 3.3 development was based on).
+latest stable version, 3.4.0.  As KDE depends on Qt, you will need Qt
+version >= 3.0 (3.3.4 is recommended as it is the version which
+KDE 3.4 development was based on).
 
 Unpack the ggz-kde-client sources.  They should extract into a
 directory named ggz-kde-client-X.X.X.  Enter that directory and run

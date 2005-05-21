@@ -29,7 +29,7 @@ Before you compile the GGZ server you must have the following
 installed on your system:
  
  - pthreads (comes with most C libraries)
- - popt (from ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x)
+ - popt -> is no longer needed from GGZ 0.0.11 on!
  - expat (from http://prdownloads.sourceforge.net/expat/)
  - libdb2 or libdb3 (from http://www.sleepycat.com/update/3.2.9/)
 
