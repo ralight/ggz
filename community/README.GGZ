@@ -1,4 +1,4 @@
-The GGZ Gaming Zone - Release 0.0.10
+The GGZ Gaming Zone - Release 0.0.11
 ====================================
 
 Welcome to the GGZ Gaming Zone, a multiuser networked gaming
@@ -15,6 +15,7 @@ accounts, login, and play games in any one of multiple game rooms.
 Sometimes they can even watch other players.
 More game servers are available in experimental state or as part of
 other projects.
+If you're a game developer, make sure your game includes GGZ support!
 
 The project homepage is located here:
 http://www.ggzgamingzone.org/
@@ -27,6 +28,7 @@ http://dev.ggzgamingzone.org/
 
 It is highly recommended to subscribe to the low-traffic ggz-announce
 mailing list!
+https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo
 
 
 Downloading
