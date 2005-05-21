@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 	KCmdLineArgs *args;
 	KAboutData aboutData("koenig",
 		"Koenig",
-		"0.0.8",
+		"0.0.9",
 		I18N_NOOP("GGZ Chess Frontend for KDE"),
 		KAboutData::License_GPL_V2,
 		"Copyright (C) 2001 - 2004 Tobias Koenig & Josef Spillner",
