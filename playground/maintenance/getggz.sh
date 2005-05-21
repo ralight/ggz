@@ -1,9 +1,9 @@
 #!/bin/sh
 # Performs a local GGZ installation
-# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
-version=0.0.10
+version=0.0.11
 tmp=$HOME/.ggz/getggz-$version
 log=$tmp/getggz.log
 prefix=$HOME/ggz
