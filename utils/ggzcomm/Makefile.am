@@ -1,7 +1,7 @@
 SUBDIRS = .
 
 commdir = $(prefix)/bin
-comm_SCRIPTS = ggzcommgen.rb
+comm_SCRIPTS = ggzcommgen
 
 EXTRA_DIST = \
 	DESIGN \
