@@ -21,6 +21,7 @@ libggzcore_la_SOURCES =	conf.c \
 			gametype.c \
 			gametype.h \
 			ggzcore.h \
+			ggzcore-ggz.h \
 			hook.c \
 			hook.h \
 			module.c \
