@@ -19,20 +19,30 @@ Zusätzliche Dokumentation:
 <br><br>
 
 GGZ-Übersicht:
+<a href="/docs/overview/index.de.html">HTML</a>
+<br>
+
+GGZ-Präsentation:
 <a href="/docs/presentation/html/de/ggz-presentation.html">HTML</a>,
 <a href="/docs/presentation/ggz-presentation.de.sxi">OpenOffice</a>
 <br>
 
 Vergleich der Eigenschaften von Spielen:
-<a href="/docs/features.html">HTML</a>
+<a href="/docs/games/features.html">HTML</a>
 <br>
 
 Grubby (Chatbot) Benutzerhandbuch:
 <a href="/docs/grubby/user-manual.de.html">HTML</a>
 <br>
 
+Benutzerhandbuch für ggz-txt:
+<a href="/docs/coreclients/ggz-txt-handbook.de.html">HTML</a>
+<br>
+
 Artikel-Serie:
-<a href="/docs/articles/">Übersicht</a>
+<a href="/docs/articles/">Übersicht</a> der alten GGZ-Artikel,
+und einige weitere als Teil der
+<a href="https://www.ggzcommunity.org/articles/">GGZ Community-Artikel</a>
 <br><br>
 
 </td></tr>
@@ -43,9 +53,24 @@ Entwickler-Dokumentation steht im Entwicklerbereich dieser Webseiten
 bereit.
 <br><br>
 
-GGZ Design-Dokument and Protokoll-Referenz:
-<a href="/docs/design/html/">HTML</a>,
-<a href="/docs/design/design.txt">Text</a>
+Die Architektur von GGZ:
+<a href="/docs/overview/architecture/">HTML</a>
+<br>
+
+GGZ Server-Architektur:
+<a href="/docs/server/ggzd/">HTML</a>
+<br>
+
+GGZ Core Client-Architektur:
+<a href="/docs/coreclients/coreclients.html">HTML</a>
+<br>
+
+Spielmodule:
+<a href="/docs/games/modules/">HTML</a>
+<br>
+
+Features für Spieleautoren:
+<a href="/docs/games/ggzfeatures.html">HTML</a>
 <br>
 
 Spiele-Entwicklungs-Leitfaden:
@@ -56,7 +81,30 @@ Spiele-Entwicklungs-Leitfaden:
 <br>
 
 Vergleich der Protokolle von Spielen:
-<a href="/docs/games.html">HTML</a>
+<a href="/docs/games/games.html">HTML</a>
+<br>
+
+Grubby-Architektur:
+<a href="/docs/grubby/architecture.html">HTML</a>
+<br>
+<br>
+
+GGZ Design-Dokument und Protokoll-Referenz:
+<a href="/docs/design/html/">HTML</a>,
+<a href="/docs/design/design.txt">Text</a>,
+<a href="/docs/design/design.pdf">PDF</a>
+<br>
+
+GGZ Server-Server (ggzdmod) Protokoll-Referenz:
+<a href="/docs/design/serverspec/serverspec-html/">HTML</a>,
+<a href="/docs/design/serverspec/serverspec.txt">text</a>,
+<a href="/docs/design/serverspec/serverspec.pdf">PDF</a>
+<br>
+
+GGZ Client-Client (ggzmod) Protokoll-Referenz:
+<a href="/docs/design/clientspec/clientspec-html/">HTML</a>,
+<a href="/docs/design/clientspec/clientspec.txt">text</a>,
+<a href="/docs/design/clientspec/clientspec.pdf">PDF</a>
 <br>
 
 API der Bibliothek libggz:

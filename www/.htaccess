@@ -2,6 +2,7 @@ Options +MultiViews
 
 AddDefaultCharset off
 AddCharset UTF-8 php
+AddCharset UTF-8 html
 
 ErrorDocument 406 /site/autonegotiate.php
 ErrorDocument 404 /site/error.php
