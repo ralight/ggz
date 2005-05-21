@@ -881,7 +881,7 @@ if __name__ == "__main__":
 		sys.exit(0)
 
 	if version:
-		print "0.0.1"
+		print "0.0.2"
 		sys.exit(0)
 
 	print ">>>>> ggzboard: starting with datapath", DATAPATH, "modulepath", MODULEPATH

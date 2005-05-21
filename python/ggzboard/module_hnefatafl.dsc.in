@@ -2,7 +2,7 @@
 [ModuleInfo]
 Name = GGZBoard Hnefatafl
 Author = Josef Spillner
-Version = 0.0.1
+Version = 0.0.2
 ProtocolEngine = Hnefatafl
 ProtocolVersion = 1
 CommandLine = @prefix@/bin/ggzboard --ggz --game hnefatafl

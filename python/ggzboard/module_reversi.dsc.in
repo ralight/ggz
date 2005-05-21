@@ -2,7 +2,7 @@
 [ModuleInfo]
 Name = GGZBoard Reversi
 Author = Josef Spillner
-Version = 0.0.1
+Version = 0.0.2
 ProtocolEngine = Reversi
 ProtocolVersion = 4
 CommandLine = @prefix@/bin/ggzboard --ggz --game reversi
