@@ -37,7 +37,7 @@ result=`python -c "import pygame" 2>/dev/null || echo no`
 if test "x$result" = "xno"; then
 	pygame_found=no
 fi
-echo "checking for: pygame installation... $python_found"
+echo "checking for: pygame installation... $pygame_found"
 
 if test "$enable_rsvgsdl" = "yes"; then
 	AC_CHECK_LIB(
