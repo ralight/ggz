@@ -39,10 +39,10 @@ int main(int argc, char **argv)
 
 	aboutData = new KAboutData("ggzap",
 		I18N_NOOP("GGZ Quick Launcher"),
-		"0.4",
+		"0.5",
 		I18N_NOOP("Tool to start GGZ games directly."),
 		KAboutData::License_GPL,
-		"Copyright (C) 2000 - 2004 Josef Spillner",
+		"Copyright (C) 2000 - 2005 Josef Spillner",
 		QString::null,
 		"http://www.ggzgamingzone.org/clients/ggzap/",
 		"josef@ggzgamingzone.org");
