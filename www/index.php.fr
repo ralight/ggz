@@ -27,14 +27,14 @@ Classements de joueurs, spéctateurs des jeux, joueurs artificiels et un robot p
 <br><br>
 
 <i>Télécharger la version courante</i><br>
-La version 0.0.10 de GGZ Gaming Zone est sortie le 24 Janvier 2005.<br/>
-<a href="/releases/0.0.10/release.php">Anonce de la sorite</a><br>
-<a href="/releases/0.0.10/download.php">Aller à la page de téléchargements</a><br>
-<a href="/releases/0.0.10/installation.php">Notes d'installation</a>
+La version 0.0.11 de GGZ Gaming Zone est sortie le 21 Mai 2005.<br/>
+<a href="/releases/0.0.11/release.php">Anonce de la sorite</a><br>
+<a href="/releases/0.0.11/download.php">Aller à la page de téléchargements</a><br>
+<a href="/releases/0.0.11/installation.php">Notes d'installation</a>
 
 </td><td valign="top">
 
-<a href="http://dev.ggzgamingzone.org/contribute.php"><img src="/pics/splash/helpout.png" border="0"></a>
+<a href="/releases/0.0.11/"><img src="/pics/splash/splash-0.0.11.png" border="0"></a>
 
 </td>
 </tr>
