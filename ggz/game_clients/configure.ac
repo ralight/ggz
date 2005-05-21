@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6920 2005-02-04 16:13:04Z josef $
+dnl $Id: configure.ac 7214 2005-05-21 10:46:02Z josef $
 
-AC_INIT([GGZ GTK games], [0.0.11pre], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
+AC_INIT([GGZ GTK games], [0.0.11], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
 
 if test -r $srcdir/package; then
