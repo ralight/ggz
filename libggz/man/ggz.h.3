@@ -1,4 +1,4 @@
-ggz.h File Reference.TH "ggz.h" 3 "23 Jan 2005" "Version 0.0.10" "LibGGZ" \" -*- nroff -*-
+.TH "ggz.h" 3 "21 May 2005" "Version 0.0.11" "LibGGZ" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,26 +9,6 @@ ggz.h \-
 \fC#include <sys/types.h>\fP
 .br
 
-.SS "Data Structures"
-
-.in +1c
-.ti -1c
-.RI "struct \fB_GGZListEntry\fP"
-.br
-.RI "\fIA single entry in a GGZList. \fP"
-.ti -1c
-.RI "struct \fB_GGZList\fP"
-.br
-.RI "\fISimple doubly-linked list. \fP"
-.ti -1c
-.RI "struct \fB_GGZXMLElement\fP"
-.br
-.RI "\fIObject representing a single XML element. \fP"
-.ti -1c
-.RI "struct \fBhash_t\fP"
-.br
-.RI "\fIHash data structure. \fP"
-.in -1c
 .SS "Defines"
 
 .in +1c
@@ -39,10 +19,10 @@ ggz.h \-
 .RI "#define \fBLIBGGZ_VERSION_MINOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   10"
+.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   11"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '3:0:0'"
+.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '3:1:1'"
 .br
 .ti -1c
 .RI "#define \fBggz__attribute\fP(att)"
@@ -102,11 +82,11 @@ ggz.h \-
 .ti -1c
 .RI "typedef void(* \fBggzEntryDestroy\fP )(void *data)"
 .br
-.RI "\fIA function type to destroy an entry in a GGZList. \fP"
+.RI "\fIA function type to destroy an entry in a \fBGGZList\fP. \fP"
 .ti -1c
 .RI "typedef \fB_GGZListEntry\fP \fBGGZListEntry\fP"
 .br
-.RI "\fIA single entry in a GGZList. \fP"
+.RI "\fIA single entry in a \fBGGZList\fP. \fP"
 .ti -1c
 .RI "typedef \fB_GGZList\fP \fBGGZList\fP"
 .br
@@ -190,7 +170,7 @@ ggz.h \-
 .ti -1c
 .RI "int \fBggz_memory_check\fP (void)"
 .br
-.RI "\fICheck memory allocated against memory freed and display any discrepencies. \fP"
+.RI "\fICheck memory allocated against memory freed and display any discrepancies. \fP"
 .ti -1c
 .RI "void \fBggz_conf_cleanup\fP (void)"
 .br
@@ -384,26 +364,26 @@ ggz.h \-
 .br
 .RI "\fILog a debugging message. \fP"
 .ti -1c
-.RI "void \fBggz_log\fP (const char *type, const char *fmt,...) ggz__attribute((format(printf"
+.RI "void void \fBggz_log\fP (const char *type, const char *fmt,...) ggz__attribute((format(printf"
 .br
 .RI "\fILog a notice message. \fP"
 .ti -1c
-.RI "void \fBggz_error_sys\fP (const char *fmt,...) ggz__attribute((format(printf"
+.RI "void void void \fBggz_error_sys\fP (const char *fmt,...) ggz__attribute((format(printf"
 .br
 .RI "\fILog a syscall error. \fP"
 .ti -1c
-.RI "void \fBggz_error_sys_exit\fP (const char *fmt,...) ggz__attribute((format(printf"
+.RI "void void void void \fBggz_error_sys_exit\fP (const char *fmt,...) ggz__attribute((format(printf"
 .br
 .RI "\fILog a fatal syscall error. \fP"
 .ti -1c
-.RI "void \fBggz__attribute\fP ((noreturn))"
+.RI "void void void void \fBggz__attribute\fP ((noreturn))"
 .br
 .ti -1c
 .RI "void \fBggz_error_msg\fP (const char *fmt,...) ggz__attribute((format(printf"
 .br
 .RI "\fILog an error message. \fP"
 .ti -1c
-.RI "void \fBggz_error_msg_exit\fP (const char *fmt,...) ggz__attribute((format(printf"
+.RI "void void \fBggz_error_msg_exit\fP (const char *fmt,...) ggz__attribute((format(printf"
 .br
 .RI "\fILog a fatal error message. \fP"
 .ti -1c
@@ -437,7 +417,7 @@ ggz.h \-
 .ti -1c
 .RI "int \fBggz_strcasecmp\fP (const char *s1, const char *s2)"
 .br
-.RI "\fICase-insensitive string comparison function that is safe with NULLs The function returns an integer less than, equal to, or greater than zero if s1 is found, respectively, to be less than, to match, or be greater than s2. NULL in considered to be less than any non-NULL string and equal to itself. \fP"
+.RI "\fICase-insensitive string comparison function that is safe with NULLs The function returns an integer less than, equal to, or greater than zero if s1 is found, respectively, to be less than, to match, or be greater than s2. \fP"
 .ti -1c
 .RI "int \fBggz_set_io_error_func\fP (\fBggzIOError\fP func)"
 .br
@@ -527,11 +507,11 @@ ggz.h \-
 .br
 .RI "\fIWrite a printf-style formatted string to the given socket. \fP"
 .ti -1c
-.RI "void \fBggz_va_write_string_or_die\fP (const int sock, const char *fmt,...) ggz__attribute((format(printf"
+.RI "int void \fBggz_va_write_string_or_die\fP (const int sock, const char *fmt,...) ggz__attribute((format(printf"
 .br
 .RI "\fIWrite a formatted string to the socket, exiting on error. \fP"
 .ti -1c
-.RI "int \fBggz_read_string\fP (const int sock, char *data, const unsigned int len)"
+.RI "int void int \fBggz_read_string\fP (const int sock, char *data, const unsigned int len)"
 .br
 .RI "\fIRead a string from the given socket. \fP"
 .ti -1c
@@ -615,7 +595,7 @@ Brent M. Hendricks
 Fri Nov 2 23:32:17 2001 
 .PP
 \fBId\fP.RS 4
-\fBggz.h\fP,v 1.54 2005/01/23 10:29:31 josef Exp 
+\fBggz.h\fP,v 1.59 2005/05/21 10:19:22 josef Exp 
 .RE
 .PP
 .RE
@@ -628,7 +608,7 @@ This program is free software; you can redistribute it and/or modify it under th
 .PP
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 .PP
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA 
 .SH "Define Documentation"
 .PP 
 .SS "#define ggz__attribute(att)"
