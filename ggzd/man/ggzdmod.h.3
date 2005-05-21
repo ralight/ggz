@@ -1,4 +1,4 @@
-.TH "ggzdmod.h" 3 "23 Jan 2005" "Version 0.0.10" "GGZdMod" \" -*- nroff -*-
+.TH "ggzdmod.h" 3 "21 May 2005" "Version 0.0.11" "GGZdMod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,10 +21,10 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .RI "#define \fBGGZDMOD_VERSION_MINOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBGGZDMOD_VERSION_MICRO\fP   10"
+.RI "#define \fBGGZDMOD_VERSION_MICRO\fP   11"
 .br
 .ti -1c
-.RI "#define \fBGGZDMOD_VERSION_IFACE\fP   '3:0:0'"
+.RI "#define \fBGGZDMOD_VERSION_IFACE\fP   '4:0:0'"
 .br
 .in -1c
 .SS "Typedefs"
@@ -35,7 +35,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fIA GGZdmod object, used for tracking a ggzd<->table connection. \fP"
 .ti -1c
-.RI "typedef void(* \fBGGZdModHandler\fP )(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP e, void *data)"
+.RI "typedef void(* \fBGGZdModHandler\fP )(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP event, const void *data)"
 .br
 .RI "\fIEvent handler prototype. \fP"
 .in -1c
@@ -47,7 +47,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fITable states. \fP"
 .ti -1c
-.RI "enum \fBGGZdModEvent\fP { \fBGGZDMOD_EVENT_STATE\fP, \fBGGZDMOD_EVENT_JOIN\fP, \fBGGZDMOD_EVENT_LEAVE\fP, \fBGGZDMOD_EVENT_SEAT\fP, \fBGGZDMOD_EVENT_SPECTATOR_JOIN\fP, \fBGGZDMOD_EVENT_SPECTATOR_LEAVE\fP, \fBGGZDMOD_EVENT_SPECTATOR_SEAT\fP, \fBGGZDMOD_EVENT_LOG\fP, \fBGGZDMOD_EVENT_PLAYER_DATA\fP, \fBGGZDMOD_EVENT_SPECTATOR_DATA\fP, \fBGGZDMOD_EVENT_GAMEREPORT\fP, \fBGGZDMOD_EVENT_REQ_NUM_SEATS\fP, \fBGGZDMOD_EVENT_REQ_BOOT\fP, \fBGGZDMOD_EVENT_REQ_BOT\fP, \fBGGZDMOD_EVENT_REQ_OPEN\fP, \fBGGZDMOD_EVENT_ERROR\fP }"
+.RI "enum \fBGGZdModEvent\fP { \fBGGZDMOD_EVENT_STATE\fP, \fBGGZDMOD_EVENT_JOIN\fP, \fBGGZDMOD_EVENT_LEAVE\fP, \fBGGZDMOD_EVENT_SEAT\fP, \fBGGZDMOD_EVENT_SPECTATOR_JOIN\fP, \fBGGZDMOD_EVENT_SPECTATOR_LEAVE\fP, \fBGGZDMOD_EVENT_SPECTATOR_SEAT\fP, \fBGGZDMOD_EVENT_LOG\fP, \fBGGZDMOD_EVENT_PLAYER_DATA\fP, \fBGGZDMOD_EVENT_SPECTATOR_DATA\fP, \fBGGZDMOD_EVENT_GAMEREPORT\fP, \fBGGZDMOD_EVENT_SAVEGAMEREPORT\fP, \fBGGZDMOD_EVENT_REQ_NUM_SEATS\fP, \fBGGZDMOD_EVENT_REQ_BOOT\fP, \fBGGZDMOD_EVENT_REQ_BOT\fP, \fBGGZDMOD_EVENT_REQ_OPEN\fP, \fBGGZDMOD_EVENT_ERROR\fP }"
 .br
 .RI "\fICallback events. \fP"
 .ti -1c
@@ -138,7 +138,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fIDisconnect from ggz. \fP"
 .ti -1c
-.RI "int \fBggzdmod_log\fP (\fBGGZdMod\fP *ggzdmod, char *fmt,...) ggz__attribute((format(printf"
+.RI "int \fBggzdmod_log\fP (\fBGGZdMod\fP *ggzdmod, const char *fmt,...) ggz__attribute((format(printf"
 .br
 .RI "\fILog data. \fP"
 .ti -1c
@@ -149,6 +149,10 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .RI "void \fBggzdmod_report_game\fP (\fBGGZdMod\fP *ggzdmod, int *teams, \fBGGZGameResult\fP *results, int *scores)"
 .br
 .RI "\fIReport the results of a game to GGZ. \fP"
+.ti -1c
+.RI "void \fBggzdmod_report_savegame\fP (\fBGGZdMod\fP *ggzdmod, const char *savegame)"
+.br
+.RI "\fIReport the savegame to GGZ. \fP"
 .ti -1c
 .RI "void \fBggzdmod_request_num_seats\fP (\fBGGZdMod\fP *ggzdmod, int num_seats)"
 .br
@@ -181,9 +185,12 @@ Here is a fairly complete example. In this game we register a handler for each o
 .PP
 .nf
      // Game-defined handler functions for GGZ events; see below.
-     void handle_state_change(GGZdMod* ggz, GGZdModEvent event, void* data);
-     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event, void* data);
-     void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data);
+     void handle_state_change(GGZdMod* ggz, GGZdModEvent event,
+                              const void *data);
+     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event,
+                             const void *data);
+     void handle_player_data(GGZdMod* ggz, GGZdModEvent event,
+                             const void *data);
 
      // Other game-defined functions (not ggz-related).
      void game_init(GGZdMod *ggz); // initialize a game
@@ -226,11 +233,12 @@ Here is a fairly complete example. In this game we register a handler for each o
          ggzdmod_free(ggz);
      }
 
-     void handle_state_change(GGZdMod* ggz, GGZdModEvent event, void* data)
+     void handle_state_change(GGZdMod* ggz, GGZdModEvent event,
+                              const void *data)
      {
-         GGZdModState old_state = *(GGZdModState*)data;
+         const GGZdModState *old_state = data;
          GGZdModState new_state = ggzdmod_get_state(ggz);
-         if (old_state == GGZDMOD_STATE_CREATED)
+         if (*old_state == GGZDMOD_STATE_CREATED)
              // ggzdmod data isn't initialized until it connects with GGZ
              // during the game launch, so some initializations should wait
              // until here.
@@ -262,9 +270,10 @@ Here is a fairly complete example. In this game we register a handler for each o
          }
      }
 
-     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event, void* data)
+     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event,
+                             const void *data)
      {
-       GGZSeat *old_seat = data;
+       const GGZSeat *old_seat = data;
        GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 
        if (new_seat.type == GGZ_SEAT_PLAYER
@@ -292,17 +301,18 @@ Here is a fairly complete example. In this game we register a handler for each o
        }
      }
 
-     void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data)
+     void handle_player_data(GGZdMod* ggz, GGZdModEvent event,
+                             const void *data)
      {
-         int player = *(int*)data;
-         int socket_fd = ggzdmod_get_seat(ggz, player).fd;
+         const int *player = data;
+         int socket_fd = ggzdmod_get_seat(ggz, *player).fd;
 
          // ... read a packet from the socket ...
      }
 .fi
 .PP
 .PP
-For more information, see the documentation at http://ggz.sf.net/.
+For more information, see the documentation at http://ggz.sf.net/. 
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef struct \fBGGZdMod\fP \fBGGZdMod\fP"
@@ -310,7 +320,7 @@ For more information, see the documentation at http://ggz.sf.net/.
 A GGZdmod object, used for tracking a ggzd<->table connection. 
 .PP
 A game server should track a pointer to a GGZdMod object; it contains all the state information for communicating with GGZ. The GGZ server will track one such object for every game table that is running. 
-.SS "typedef void(* \fBGGZdModHandler\fP)(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP e, void *data)"
+.SS "typedef void(* \fBGGZdModHandler\fP)(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP event, const void *data)"
 .PP
 Event handler prototype. 
 .PP
@@ -320,7 +330,7 @@ A function of this type will be called to handle a ggzdmod event.
 .RS 4
 \fImod\fP The ggzdmod state object. 
 .br
-\fIe\fP The event that has occured. 
+\fIevent\fP The event that has occured. 
 .br
 \fIdata\fP Pointer to additional data for the event. The additional data will be of the following form:
 .IP "\(bu" 2
@@ -430,6 +440,9 @@ Data available from spectator For games which support spectators, this indicates
 .TP
 \fB\fIGGZDMOD_EVENT_GAMEREPORT \fP\fP
 For GGZ only. Reports the results of a game. 
+.TP
+\fB\fIGGZDMOD_EVENT_SAVEGAMEREPORT \fP\fP
+For GGZ only. Reports a savegame. 
 .TP
 \fB\fIGGZDMOD_EVENT_ERROR \fP\fP
 An error has occurred This event occurs when a GGZdMod error has occurred. An error message (a char*) will be passed as the event's data. GGZdMod may attempt to recover from the error, but it is not guaranteed that the GGZ connection will continue to work after an error has happened. 
@@ -570,7 +583,7 @@ Disconnect from ggz.
 .PP
 .IP "\(bu" 2
 When called by the game server, this function stops the connection to GGZ. It should only be called when the table is ready to exit.
-.IP "\(bu" 2
+.IP "  \(bu" 4
 When called by the GGZ server, this function will kill and clean up after the table. 
 .PP
 \fBParameters:\fP
@@ -582,6 +595,8 @@ When called by the GGZ server, this function will kill and clean up after the ta
 .RS 4
 0 on success, -1 on failure. 
 .RE
+.PP
+
 .PP
 
 .PP
@@ -763,7 +778,7 @@ The type of the GGZdMod object (GGZ or GAME).
 .RE
 .PP
 
-.SS "int ggzdmod_log (\fBGGZdMod\fP * ggzdmod, char * fmt,  ...)"
+.SS "int ggzdmod_log (\fBGGZdMod\fP * ggzdmod, const char * fmt,  ...)"
 .PP
 Log data. 
 .PP
@@ -838,6 +853,20 @@ After a game has completed, the game server should call this function to report 
 \fIresults\fP An array listing the result of the game for each player. 
 .br
 \fIscores\fP The scores for all players (may be NULL) 
+.RE
+.PP
+
+.SS "void ggzdmod_report_savegame (\fBGGZdMod\fP * ggzdmod, const char * savegame)"
+.PP
+Report the savegame to GGZ. 
+.PP
+If a game saves the game data to disk, the directory name, file name or any other associated token can be reported to GGZ. In the case of a continuous game log, the reporting should happen at the beginning as to allow the continuation of the saved game.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIggzdmod\fP The ggzdmod object. 
+.br
+\fIsavegame\fP Name of the savegame file within the game's directory. 
 .RE
 .PP
 
