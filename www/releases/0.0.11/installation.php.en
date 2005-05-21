@@ -56,7 +56,8 @@ ggz-client-libs
 </td><td bgcolor="#ffd000" valign="top">
 Required.
 </td><td bgcolor="#ffd000" valign="top">
-Needs popt and expat (development files).
+Needs <s>popt and</s> expat (development files).
+Popt is not needed anymore as of GGZ 0.0.11.
 </td></tr>
 
 <tr><td bgcolor="#ffd000" valign="top">
