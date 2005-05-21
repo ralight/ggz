@@ -1,0 +1,61 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+
+<b>GGZ 0.0.11 Screenshots</b><br>
+
+These screenshots have been made for release 0.0.11.
+The previous ones of version 0.0.7 up to 0.0.10 are still available
+<a href="/screenshots/">here</a>.
+<br><br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="ludo.png"><img src="ludo.small.png" alt="Ludo game client module for GGZBoard" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="koenig-espanol.png"><img src="koenig-espanol.small.png" alt="Koenig chess game with Spanish translation" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+The GGZBoard game client got another client module, which implements the Ludo game.
+</td><td bgcolor="#ffffa0">
+The KDE chess game Koenig can now also be played against a local AI.
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="documentation.png"><img src="documentation.small.png" alt="Documentation" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="kcc-gui.png"><img src="kcc-gui.small.png" alt="KCC chinese checkers" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Lots of documentation updates and architecture explanations.
+</td><td bgcolor="#ffffa0">
+The chinese checkers implementation KCC got a facelift.
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="kggz-webmotd.png"><img src="kggz-webmotd.small.png" alt="Web MOTD for KGGZ" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="kgrubby.png"><img src="kgrubby.small.png" alt="KGrubby" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+KGGZ, the GGZ core client for KDE, supports HTML pages for the MOTD.
+</td><td bgcolor="#ffffa0">
+Grubby, the chatbot, can now be configured graphically.
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="communityplayer.png"><img src="communityplayer.small.png" alt="Player profile" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="morecommunity.png"><img src="morecommunity.small.png" alt="Tic-Tac-Toe Replay" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Player profile with won titles in GGZ Community.
+</td><td bgcolor="#ffffa0">
+GGZ Community supports savegame visualisation and a world map.
+</td></tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
