@@ -1,7 +1,7 @@
 /**********************************************/
 /*                                            */
 /* PyGGZDMod - Python wrapper for libggzdmod  */
-/* Copyright (C) 2001 - 2004 Josef Spillner   */
+/* Copyright (C) 2001 - 2005 Josef Spillner   */
 /* josef@ggzgamingzone.org                    */
 /* Published under GNU GPL conditions         */
 /*                                            */
@@ -18,15 +18,15 @@
 /* Function prototypes                        */
 /**********************************************/
 
-static void pyggzdmod_cb_join_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data);
-static void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data);
-static void pyggzdmod_cb_data_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data);
-static void pyggzdmod_cb_spectatorjoin_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data);
-static void pyggzdmod_cb_spectatorleave_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data);
-static void pyggzdmod_cb_spectatordata_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data);
-static void pyggzdmod_cb_log_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data);
-static void pyggzdmod_cb_error_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data);
-static void pyggzdmod_cb_state_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data);
+static void pyggzdmod_cb_join_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_data_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_spectatorjoin_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_spectatorleave_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_spectatordata_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_log_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_error_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_state_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 
 static PyObject *pyggzdmod_test(PyObject *self, PyObject *args);
 
@@ -152,12 +152,12 @@ static PyObject *pyggzdmod_seat_type(PyObject *self, PyObject *args)
 
 static PyObject *pyggzdmod_statistics_report(PyObject *self, PyObject *args)
 {
-	GGZSeat seat;
+	/*GGZSeat seat;*/
 	int winner, i;
 	GGZGameResult results[8];
 
 	if(!PyArg_ParseTuple(args, "i", &winner)) return NULL;
-	if((winner < 0) || (winner > 8)) return;
+	if((winner < 0) || (winner > 8)) return NULL;
 	for(i = 0; i < ggzdmod_get_num_seats(ggzdmod); i++)
 		results[i] = GGZ_GAME_LOSS;
 	results[winner] = GGZ_GAME_WIN;
@@ -254,7 +254,7 @@ static PyMethodDef pyggzdmod_methods[] =
 /* Internal callbacks                         */
 /**********************************************/
 
-void pyggzdmod_cb_join_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
+void pyggzdmod_cb_join_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 	GGZSeat seat;
@@ -273,7 +273,7 @@ void pyggzdmod_cb_join_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_
 	Py_DECREF(arg);
 }
 
-void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
+void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 	GGZSeat seat;
@@ -292,7 +292,7 @@ void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler
 	Py_DECREF(arg);
 }
 
-void pyggzdmod_cb_data_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
+void pyggzdmod_cb_data_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 	GGZSeat seat;
@@ -310,7 +310,7 @@ void pyggzdmod_cb_data_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_
 	Py_DECREF(arg);
 }
 
-void pyggzdmod_cb_spectatorjoin_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
+void pyggzdmod_cb_spectatorjoin_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -326,7 +326,7 @@ void pyggzdmod_cb_spectatorjoin_hook(GGZdMod *ggzdmod, GGZdModEvent event, void 
 	Py_DECREF(arg);
 }
 
-void pyggzdmod_cb_spectatorleave_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
+void pyggzdmod_cb_spectatorleave_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -342,7 +342,7 @@ void pyggzdmod_cb_spectatorleave_hook(GGZdMod *ggzdmod, GGZdModEvent event, void
 	Py_DECREF(arg);
 }
 
-void pyggzdmod_cb_spectatordata_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
+void pyggzdmod_cb_spectatordata_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -358,7 +358,7 @@ void pyggzdmod_cb_spectatordata_hook(GGZdMod *ggzdmod, GGZdModEvent event, void 
 	Py_DECREF(arg);
 }
 
-void pyggzdmod_cb_error_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
+void pyggzdmod_cb_error_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -374,7 +374,7 @@ void pyggzdmod_cb_error_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler
 	Py_DECREF(arg);
 }
 
-void pyggzdmod_cb_log_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
+void pyggzdmod_cb_log_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
@@ -390,7 +390,7 @@ void pyggzdmod_cb_log_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_d
 	Py_DECREF(arg);
 }
 
-void pyggzdmod_cb_state_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
+void pyggzdmod_cb_state_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
 
