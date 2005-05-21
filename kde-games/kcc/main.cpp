@@ -28,10 +28,10 @@ int main(int argc, char **argv)
 
 	aboutData = new KAboutData("kcc",
 		I18N_NOOP("KCC"),
-		"0.1",
+		"0.2",
 		I18N_NOOP("This is a Chinese Checkers game for KDE."),
 		KAboutData::License_GPL,
-		"Copyright (C) 2003, 2004 Josef Spillner",
+		"Copyright (C) 2003 - 2005 Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
 		"http://www.ggzgamingzone.org/games/kcc/",
 		"josef@ggzgamingzone.org");
