@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-hosting-guide.info
-@settitle The GGZ Gaming Zone 0.0.10 - Hosting Guide
+@settitle The GGZ Gaming Zone 0.0.11 - Hosting Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -18,7 +18,7 @@ Copyright (C) 2001 - 2005 Josef Spillner
 
 @c Frontpage
 @titlepage
-@title The GGZ Gaming Zone 0.0.10 - Hosting Guide
+@title The GGZ Gaming Zone 0.0.11 - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
 @author GGZ Development Team
 
@@ -91,7 +91,7 @@ section about the game Keepalive below.
 
 @section Overview
 
-This describes a typical setup for GGZ 0.0.10.
+This describes a typical setup for GGZ 0.0.11.
 All following versions will certainly require other tools or other versions of
 the present one, but the main concept hasn't changed for a while.
 Before installing GGZ on a server, make sure that the following conditions are
@@ -886,7 +886,7 @@ can be filled with either a file name or a virtual file name such as stderr.
 
 @appendix Local GGZ server installation
 
-These instructions apply to a vanilla 0.0.10 installation if one doesn't have
+These instructions apply to a vanilla 0.0.11 installation if one doesn't have
 system privileges.
 You may have to modify some details though.
 
@@ -895,11 +895,11 @@ cd ~
 mkdir localsys
 mkdir localsys/usr
 mkdir localsys/etc
-mkdir ggz-0.0.10
-cd ggz-0.0.10
+mkdir ggz-0.0.11
+cd ggz-0.0.11
 export CVSROOT=:pserver:anonymous@cvs.ggzgamingzone.org:/ggz
 cvs login
-cvs -z3 co -rggz-0-0-10 libggz ggzd
+cvs -z3 co -rggz-0-0-11 libggz ggzd
 cd libggz
 ./autogen.sh --prefix=$HOME/localsys/usr
 make
