@@ -3,6 +3,24 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		GGZ 0.0.11 und Artikel über Paketbau
+		<span class="itemleader"> :: </span>
+		<a name="0011"></a>
+	</h1>
+	<div class="text">
+		<div style="float:left">
+		<img src="images/packagesarticle.png" alt="GGZ package overview">
+		</div>
+		GGZ 0.0.11 kann ab sofort von der Projektseite
+		<a href="http://www.ggzgamingzone.org/">heruntergeladen</a> werden,
+		und wenn du ein Mitarbeiter einer Distribution bist,
+		schau dir den neuen Artikel über
+		<a href="/articles/packaging/" title="GGZ packaging">GGZ-Pakete bauen</a>
+		(auf Englisch) an.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		Serverumzug und Aktualisierungen
 		<span class="itemleader"> :: </span>
 		<a name="servermove"></a>

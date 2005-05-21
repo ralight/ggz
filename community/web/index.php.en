@@ -3,6 +3,22 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		GGZ 0.0.11 and Packaging article
+		<span class="itemleader"> :: </span>
+		<a name="0011"></a>
+	</h1>
+	<div class="text">
+		<div style="float:left">
+		<img src="images/packagesarticle.png" alt="GGZ package overview">
+		</div>
+		You can now <a href="http://www.ggzgamingzone.org/">download</a>
+		GGZ 0.0.11 from the project site, and if you're a packager,
+		do not miss our new article:
+		<a href="/articles/packaging/" title="GGZ packaging">GGZ packaging</a>.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		Server move and updates
 		<span class="itemleader"> :: </span>
 		<a name="servermove"></a>

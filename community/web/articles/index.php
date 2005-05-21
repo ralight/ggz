@@ -15,6 +15,18 @@
 	</div>
 	<h2>
 		<span class="itemleader">:: </span>
+		GGZ Packaging
+		<span class="itemleader"> :: </span>
+		<a name="database"></a>
+	</h2>
+	<div class="text">
+	This article is mainly interesting for distributors, but also
+	players who want to have a top-to-bottom view on GGZ.
+	<br>
+	<a href="packaging/">Read article</a>
+	</div>
+	<h2>
+		<span class="itemleader">:: </span>
 		Introduction to GGZBoard
 		<span class="itemleader"> :: </span>
 		<a name="database"></a>
