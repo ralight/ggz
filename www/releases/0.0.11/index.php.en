@@ -1,0 +1,57 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+GGZ 0.0.11 Release:
+|
+<a href="release.php">Announcement</a>
+|
+<a href="changes.php">Changelog</a>
+|
+<a href="download.php">Download</a>
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+<a href="play.php">Go play!</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<b>GGZ 0.0.11 Release Information</b><br>
+<br>
+Before you read on, make sure you'll be informed in the future:
+<br><br>
+Subscribe to
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-announce">ggz-announce</a>
+in any case, it's low traffic and important!<br>
+Subscribe to
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-servers">ggz-servers</a>
+if you're either a distributor or plan to run/host a GGZ server!<br>
+Subscribe to
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-dev">ggz-dev</a>,
+if you're interested in development!
+<br><br>
+The GGZ 0.0.11 release comes with the following information.
+<br><br>
+<a href="release.php">Release announcement</a><br>
+<a href="changes.php">Changelog</a><br>
+<a href="download.php">Download instructions</a><br>
+<a href="installation.php">Installation manual</a><br>
+<a href="credits.php">Credits</a><br>
+<a href="play.php">Online games information</a><br>
+<br>
+<a href="/screenshots/0.0.10/">New screenshots</a><br>
+</td></tr>
+
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
