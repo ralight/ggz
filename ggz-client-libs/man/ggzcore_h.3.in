@@ -1,4 +1,4 @@
-.TH "ggzcore.h" 3 "22 Jan 2005" "Version 0.0.10" "GGZCore" \" -*- nroff -*-
+.TH "ggzcore.h" 3 "21 May 2005" "Version 0.0.11" "GGZCore" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,29 +13,6 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 \fC#include <ggz_common.h>\fP
 .br
 
-.SS "Data Structures"
-
-.in +1c
-.ti -1c
-.RI "struct \fB_GGZOptions\fP"
-.br
-.ti -1c
-.RI "struct \fBGGZErrorEventData\fP"
-.br
-.RI "\fIThe data describing an error. \fP"
-.ti -1c
-.RI "struct \fBGGZChatEventData\fP"
-.br
-.RI "\fIThe data associated with a GGZ_CHAT_EVENT room event. \fP"
-.ti -1c
-.RI "struct \fBGGZTableLeaveEventData\fP"
-.br
-.RI "\fIThe data associated with a GGZ_TABLE_LEFT room event. \fP"
-.ti -1c
-.RI "struct \fBGGZRoomChangeEventData\fP"
-.br
-.RI "\fIThe data associated with GGZ_ROOM_ENTER/GGZ_ROOM_LEAVE events. \fP"
-.in -1c
 .SS "Defines"
 
 .in +1c
@@ -46,10 +23,10 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .RI "#define \fBGGZCORE_VERSION_MINOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBGGZCORE_VERSION_MICRO\fP   10"
+.RI "#define \fBGGZCORE_VERSION_MICRO\fP   11"
 .br
 .ti -1c
-.RI "#define \fBGGZCORE_VERSION_IFACE\fP   '6:0:0'"
+.RI "#define \fBGGZCORE_VERSION_IFACE\fP   '7:0:0'"
 .br
 .ti -1c
 .RI "#define \fBGGZCORE_DBG_CONF\fP   'GGZCORE:CONF'"
@@ -95,6 +72,21 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .RI "#define \fBGGZCORE_DBG_XML\fP   'GGZCORE:XML'"
 .br
 .RI "\fIggz_debug debugging type for XML processing. \fP"
+.ti -1c
+.RI "#define \fBggzcore_server_get_channel\fP(server)   (-1)"
+.br
+.RI "\fIDeprecated function. Do not use. \fP"
+.ti -1c
+.RI "#define \fBggzcore_server_create_channel\fP(server)   (void)0"
+.br
+.RI "\fIDeprecated function. Do not use. \fP"
+.ti -1c
+.RI "#define \fBggzcore_module_launch\fP(m)   ((int)(-1))"
+.br
+.ti -1c
+.RI "#define \fBggzcore_game_set_server_fd\fP(game, fd)   (void)0"
+.br
+.RI "\fIDeprecated function. Do not use. \fP"
 .in -1c
 .SS "Typedefs"
 
@@ -103,7 +95,7 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .RI "typedef \fB_GGZOptions\fP \fBGGZOptions\fP"
 .br
 .ti -1c
-.RI "typedef \fBGGZHookReturn\fP(* \fBGGZHookFunc\fP )(unsigned int id, void *event_data, void *user_data)"
+.RI "typedef \fBGGZHookReturn\fP(* \fBGGZHookFunc\fP )(unsigned int id, const void *event_data, const void *user_data)"
 .br
 .ti -1c
 .RI "typedef void(* \fBGGZDestroyFunc\fP )(void *data)"
@@ -142,7 +134,7 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 
 .in +1c
 .ti -1c
-.RI "enum \fBGGZOptionFlags\fP { \fBGGZ_OPT_PARSER\fP =  0x0001, \fBGGZ_OPT_MODULES\fP =  0x0002, \fBGGZ_OPT_THREADED_IO\fP =  0x0004, \fBGGZ_OPT_EMBEDDED\fP =  0x0008 }"
+.RI "enum \fBGGZOptionFlags\fP { \fBGGZ_OPT_PARSER\fP =  0x0001, \fBGGZ_OPT_MODULES\fP =  0x0002, \fBGGZ_OPT_THREADED_IO\fP =  0x0004, \fBGGZ_OPT_EMBEDDED\fP =  0x0008, \fBGGZ_OPT_RECONNECT\fP =  0x0010 }"
 .br
 .ti -1c
 .RI "enum \fBGGZHookReturn\fP { \fBGGZ_HOOK_OK\fP, \fBGGZ_HOOK_REMOVE\fP, \fBGGZ_HOOK_ERROR\fP, \fBGGZ_HOOK_CRISIS\fP }"
@@ -160,7 +152,7 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .RI "enum \fBGGZGameEvent\fP { \fBGGZ_GAME_LAUNCHED\fP, \fBGGZ_GAME_LAUNCH_FAIL\fP, \fBGGZ_GAME_NEGOTIATED\fP, \fBGGZ_GAME_NEGOTIATE_FAIL\fP, \fBGGZ_GAME_PLAYING\fP }"
 .br
 .ti -1c
-.RI "enum \fBGGZStateID\fP { \fBGGZ_STATE_OFFLINE\fP, \fBGGZ_STATE_CONNECTING\fP, \fBGGZ_STATE_ONLINE\fP, \fBGGZ_STATE_LOGGING_IN\fP, \fBGGZ_STATE_LOGGED_IN\fP, \fBGGZ_STATE_ENTERING_ROOM\fP, \fBGGZ_STATE_IN_ROOM\fP, \fBGGZ_STATE_BETWEEN_ROOMS\fP, \fBGGZ_STATE_LAUNCHING_TABLE\fP, \fBGGZ_STATE_JOINING_TABLE\fP, \fBGGZ_STATE_AT_TABLE\fP, \fBGGZ_STATE_LEAVING_TABLE\fP, \fBGGZ_STATE_LOGGING_OUT\fP }"
+.RI "enum \fBGGZStateID\fP { \fBGGZ_STATE_OFFLINE\fP, \fBGGZ_STATE_CONNECTING\fP, \fBGGZ_STATE_RECONNECTING\fP, \fBGGZ_STATE_ONLINE\fP, \fBGGZ_STATE_LOGGING_IN\fP, \fBGGZ_STATE_LOGGED_IN\fP, \fBGGZ_STATE_ENTERING_ROOM\fP, \fBGGZ_STATE_IN_ROOM\fP, \fBGGZ_STATE_BETWEEN_ROOMS\fP, \fBGGZ_STATE_LAUNCHING_TABLE\fP, \fBGGZ_STATE_JOINING_TABLE\fP, \fBGGZ_STATE_AT_TABLE\fP, \fBGGZ_STATE_LEAVING_TABLE\fP, \fBGGZ_STATE_LOGGING_OUT\fP }"
 .br
 .RI "\fIThe states a server connection may be in. \fP"
 .ti -1c
@@ -193,7 +185,7 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .br
 .RI "\fIRegister a callback handler for a server event. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_add_event_hook_full\fP (\fBGGZServer\fP *server, const \fBGGZServerEvent\fP event, const \fBGGZHookFunc\fP func, void *data)"
+.RI "int \fBggzcore_server_add_event_hook_full\fP (\fBGGZServer\fP *server, const \fBGGZServerEvent\fP event, const \fBGGZHookFunc\fP func, const void *data)"
 .br
 .RI "\fIRegister a callback handler for a server event. \fP"
 .ti -1c
@@ -209,7 +201,7 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .br
 .RI "\fISet host info for connecting to the server. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_set_logininfo\fP (\fBGGZServer\fP *server, const \fBGGZLoginType\fP type, const char *handle, const char *password)"
+.RI "int \fBggzcore_server_set_logininfo\fP (\fBGGZServer\fP *server, const \fBGGZLoginType\fP type, const char *handle, const char *password, const char *email)"
 .br
 .RI "\fISet login info for logging in to the server. \fP"
 .ti -1c
@@ -217,93 +209,85 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .br
 .RI "\fIInitiate logging of ggzcore events. \fP"
 .ti -1c
-.RI "const char * \fBggzcore_server_get_host\fP (\fBGGZServer\fP *server)"
+.RI "const char * \fBggzcore_server_get_host\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIGet the hostname of the server. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_get_port\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_get_port\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIGet the port of the server. \fP"
 .ti -1c
-.RI "\fBGGZLoginType\fP \fBggzcore_server_get_type\fP (\fBGGZServer\fP *server)"
+.RI "\fBGGZLoginType\fP \fBggzcore_server_get_type\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIGet the login type being used for this server. \fP"
 .ti -1c
-.RI "char * \fBggzcore_server_get_handle\fP (\fBGGZServer\fP *server)"
+.RI "const char * \fBggzcore_server_get_handle\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIGet the handle being used for this server. \fP"
 .ti -1c
-.RI "char * \fBggzcore_server_get_password\fP (\fBGGZServer\fP *server)"
+.RI "const char * \fBggzcore_server_get_password\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIGet the password being used for this server. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_get_fd\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_get_fd\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIGet the socket used for connection with the server. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_get_channel\fP (\fBGGZServer\fP *server)"
-.br
-.RI "\fIGet the socket used for direct gane connections. \fP"
-.ti -1c
-.RI "\fBGGZStateID\fP \fBggzcore_server_get_state\fP (\fBGGZServer\fP *server)"
+.RI "\fBGGZStateID\fP \fBggzcore_server_get_state\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIGet the state of the server connection. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_get_tls\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_get_tls\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIGet the current TLS status of this server. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_get_num_players\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_get_num_players\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIGet the total number of players on the server. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_get_num_rooms\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_get_num_rooms\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIReturn the number of rooms on the server, or -1 on error. \fP"
 .ti -1c
-.RI "\fBGGZRoom\fP * \fBggzcore_server_get_cur_room\fP (\fBGGZServer\fP *server)"
+.RI "\fBGGZRoom\fP * \fBggzcore_server_get_cur_room\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIReturn the current room, or NULL if there is none. \fP"
 .ti -1c
-.RI "\fBGGZRoom\fP * \fBggzcore_server_get_nth_room\fP (\fBGGZServer\fP *server, const unsigned int num)"
+.RI "\fBGGZRoom\fP * \fBggzcore_server_get_nth_room\fP (const \fBGGZServer\fP *server, const unsigned int num)"
 .br
 .RI "\fIReturn the nth room on the server, or NULL on error. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_get_num_gametypes\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_get_num_gametypes\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIReturn the overall number of game types on the server. \fP"
 .ti -1c
-.RI "\fBGGZGameType\fP * \fBggzcore_server_get_nth_gametype\fP (\fBGGZServer\fP *server, const unsigned int num)"
+.RI "\fBGGZGameType\fP * \fBggzcore_server_get_nth_gametype\fP (const \fBGGZServer\fP *server, const unsigned int num)"
 .br
 .RI "\fIGet the nth gametype, or NULL on error. \fP"
 .ti -1c
-.RI "\fBGGZGame\fP * \fBggzcore_server_get_cur_game\fP (\fBGGZServer\fP *server)"
+.RI "\fBGGZGame\fP * \fBggzcore_server_get_cur_game\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIReturn the player's current game. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_is_online\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_is_online\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIReturn TRUE iff the server is online (connected?). \fP"
 .ti -1c
-.RI "int \fBggzcore_server_is_logged_in\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_is_logged_in\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIReturn TRUE iff we are logged into the server. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_is_in_room\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_is_in_room\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIReturn TRUE iff we are in a room on the server. \fP"
 .ti -1c
-.RI "int \fBggzcore_server_is_at_table\fP (\fBGGZServer\fP *server)"
+.RI "int \fBggzcore_server_is_at_table\fP (const \fBGGZServer\fP *server)"
 .br
 .RI "\fIReturn TRUE iff we are at a table on the server. \fP"
 .ti -1c
 .RI "int \fBggzcore_server_connect\fP (\fBGGZServer\fP *server)"
 .br
 .RI "\fIConnect to the server. \fP"
-.ti -1c
-.RI "int \fBggzcore_server_create_channel\fP (\fBGGZServer\fP *server)"
-.br
-.RI "\fIEstablish a direct connection. \fP"
 .ti -1c
 .RI "int \fBggzcore_server_login\fP (\fBGGZServer\fP *server)"
 .br
@@ -349,7 +333,7 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .br
 .RI "\fIAllocate space for a new room object. \fP"
 .ti -1c
-.RI "int \fBggzcore_room_init\fP (\fBGGZRoom\fP *room, const \fBGGZServer\fP *server, const unsigned int id, const char *name, const unsigned int game, const char *desc)"
+.RI "int \fBggzcore_room_init\fP (\fBGGZRoom\fP *room, \fBGGZServer\fP *server, const unsigned int id, const char *name, const unsigned int game, const char *desc)"
 .br
 .RI "\fIInitialize room object. \fP"
 .ti -1c
@@ -401,7 +385,7 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .br
 .RI "\fIRegister a handler (hook) for the room event. \fP"
 .ti -1c
-.RI "int \fBggzcore_room_add_event_hook_full\fP (\fBGGZRoom\fP *room, const \fBGGZRoomEvent\fP event, const \fBGGZHookFunc\fP func, void *data)"
+.RI "int \fBggzcore_room_add_event_hook_full\fP (\fBGGZRoom\fP *room, const \fBGGZRoomEvent\fP event, const \fBGGZHookFunc\fP func, const void *data)"
 .br
 .RI "\fIRegister a handler (hook) for thee room event, with data. \fP"
 .ti -1c
@@ -437,35 +421,39 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .br
 .RI "\fILeave the table you are currently playing at. \fP"
 .ti -1c
-.RI "char * \fBggzcore_player_get_name\fP (\fBGGZPlayer\fP *player)"
+.RI "char * \fBggzcore_player_get_name\fP (const \fBGGZPlayer\fP *player)"
 .br
 .RI "\fIReturn the name of the player. \fP"
 .ti -1c
-.RI "GGZPlayerType \fBggzcore_player_get_type\fP (\fBGGZPlayer\fP *player)"
+.RI "GGZPlayerType \fBggzcore_player_get_type\fP (const \fBGGZPlayer\fP *player)"
 .br
 .RI "\fIReturn the type of the player (admin/registered/guest). \fP"
 .ti -1c
-.RI "\fBGGZTable\fP * \fBggzcore_player_get_table\fP (\fBGGZPlayer\fP *player)"
+.RI "\fBGGZRoom\fP * \fBggzcore_player_get_room\fP (const \fBGGZPlayer\fP *player)"
+.br
+.RI "\fIReturn the player's room, or NULL if none. \fP"
+.ti -1c
+.RI "\fBGGZTable\fP * \fBggzcore_player_get_table\fP (const \fBGGZPlayer\fP *player)"
 .br
 .RI "\fIReturn the player's table, or NULL if none. \fP"
 .ti -1c
-.RI "int \fBggzcore_player_get_lag\fP (\fBGGZPlayer\fP *player)"
+.RI "int \fBggzcore_player_get_lag\fP (const \fBGGZPlayer\fP *player)"
 .br
 .RI "\fIReturn the player's lag class (1..5). \fP"
 .ti -1c
-.RI "int \fBggzcore_player_get_record\fP (\fBGGZPlayer\fP *player, int *wins, int *losses, int *ties, int *forfeits)"
+.RI "int \fBggzcore_player_get_record\fP (const \fBGGZPlayer\fP *player, int *wins, int *losses, int *ties, int *forfeits)"
 .br
 .RI "\fIGet the player's win-loss record. \fP"
 .ti -1c
-.RI "int \fBggzcore_player_get_rating\fP (\fBGGZPlayer\fP *player, int *rating)"
+.RI "int \fBggzcore_player_get_rating\fP (const \fBGGZPlayer\fP *player, int *rating)"
 .br
 .RI "\fIGet the player's rating. \fP"
 .ti -1c
-.RI "int \fBggzcore_player_get_ranking\fP (\fBGGZPlayer\fP *player, int *ranking)"
+.RI "int \fBggzcore_player_get_ranking\fP (const \fBGGZPlayer\fP *player, int *ranking)"
 .br
 .RI "\fIGet the player's ranking. \fP"
 .ti -1c
-.RI "int \fBggzcore_player_get_highscore\fP (\fBGGZPlayer\fP *player, int *highscore)"
+.RI "int \fBggzcore_player_get_highscore\fP (const \fBGGZPlayer\fP *player, int *highscore)"
 .br
 .RI "\fIGet the player's highscore. \fP"
 .ti -1c
@@ -634,9 +622,6 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .br
 .RI "\fIReturns n-th module that supports this game and protocol. \fP"
 .ti -1c
-.RI "int \fBggzcore_module_launch\fP (\fBGGZModule\fP *module)"
-.br
-.ti -1c
 .RI "const char * \fBggzcore_module_get_name\fP (\fBGGZModule\fP *module)"
 .br
 .RI "\fIReturn the name of the module. \fP"
@@ -696,7 +681,7 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .br
 .RI "\fIRegister a hook for a game event. \fP"
 .ti -1c
-.RI "int \fBggzcore_game_add_event_hook_full\fP (\fBGGZGame\fP *game, const \fBGGZGameEvent\fP event, const \fBGGZHookFunc\fP func, void *data)"
+.RI "int \fBggzcore_game_add_event_hook_full\fP (\fBGGZGame\fP *game, const \fBGGZGameEvent\fP event, const \fBGGZHookFunc\fP func, const void *data)"
 .br
 .RI "\fIRegister a hook for a game event. \fP"
 .ti -1c
@@ -711,10 +696,6 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 .RI "int \fBggzcore_game_get_control_fd\fP (\fBGGZGame\fP *game)"
 .br
 .RI "\fIReturn the control (ggzmod) socket for the game. \fP"
-.ti -1c
-.RI "void \fBggzcore_game_set_server_fd\fP (\fBGGZGame\fP *game, unsigned int fd)"
-.br
-.RI "\fIReturn the game's server socket. \fP"
 .ti -1c
 .RI "\fBGGZModule\fP * \fBggzcore_game_get_module\fP (\fBGGZGame\fP *game)"
 .br
@@ -733,6 +714,11 @@ ggzcore.h \- The interface for the ggzcore library used by GGZ clients.
 The interface for the ggzcore library used by GGZ clients. 
 
 
+.SH "Define Documentation"
+.PP 
+.SS "#define ggzcore_module_launch(m)   ((int)(-1))"
+.PP
+This attempts to launch the specified module and returns 0 if successful or -1 on error. 
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef void(* \fBGGZDestroyFunc\fP)(void *data)"
@@ -755,7 +741,7 @@ Each room has one game type; a game may be used in multiple rooms.
 .RE
 .PP
 
-.SS "typedef \fBGGZHookReturn\fP(* \fBGGZHookFunc\fP)(unsigned int id, void *event_data, void *user_data)"
+.SS "typedef \fBGGZHookReturn\fP(* \fBGGZHookFunc\fP)(unsigned int id, const void *event_data, const void *user_data)"
 .PP
 GGZ Event hook function type, used as a vallback for events 
 .SS "typedef struct \fB_GGZOptions\fP  \fBGGZOptions\fP"
@@ -810,7 +796,7 @@ Your game launch has failed. Triggered instead of GGZ_GAME_LAUNCHED when there's
 
 .TP
 \fB\fIGGZ_GAME_NEGOTIATED \fP\fP
-Negotiation with server was successful. This should happen some time after the launch succeeds. The core client should create a channel at this point. 
+Negotiation with server was successful. This should happen some time after the launch succeeds. The core client need do nothing at this point. 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -824,7 +810,7 @@ Negotiation was not successful, game launch failed.
 .PP
 \fBTodo\fP
 .RS 4
-Currently this can't actually happen...
+Currently this can't actually happen... 
 .RE
 .PP
 
@@ -870,7 +856,7 @@ Standard login; uname and correct passwd needed.
 Guest login; only a uname is required. 
 .TP
 \fB\fIGGZ_LOGIN_NEW \fP\fP
-New user login; only a uname is required. Password will be assigned by the server. 
+New user login; only a uname is required. Password will be assigned by the server (but can be passed along). 
 .SS "enum \fBGGZModuleEnvironment\fP"
 .PP
 The environment a game frontend expects. 
@@ -894,6 +880,22 @@ X11 windowed mode (default)
 .TP
 \fB\fIGGZ_ENVIRONMENT_XFULLSCREEN \fP\fP
 X11 fullscreen mode 
+.SS "enum \fBGGZOptionFlags\fP"
+.PP
+\fBEnumeration values: \fP
+.in +1c
+.TP
+\fB\fIGGZ_OPT_MODULES \fP\fP
+Load the default configuration file (unused). 
+.TP
+\fB\fIGGZ_OPT_THREADED_IO \fP\fP
+Load the game module list. 
+.TP
+\fB\fIGGZ_OPT_EMBEDDED \fP\fP
+Provide multi-threaded network IO (unused). 
+.TP
+\fB\fIGGZ_OPT_RECONNECT \fP\fP
+Reconnect automatically after connection loss. 
 .SS "enum \fBGGZRoomEvent\fP"
 .PP
 A GGZRoomEvent is an event associated with the room, that is triggered by a communication from the server. When a room event occurs, the associated event handler will be called, and will be passed the event data (a void*), along with the (optional) user data. All room events apply to the current room unless a room number is given. Room events are almost always triggered by calling ggzcore_server_read_data. 
@@ -985,12 +987,13 @@ One of the tables in the current room has changed.
 .PP
 \fBTodo\fP
 .RS 4
-How are you supposed to know which table has changed?
-.RE
+How are you supposed to know which table has changed? 
 .PP
 \fBParameters:\fP
 .RS 4
 \fIdata\fP NULL 
+.RE
+.PP
 .RE
 .PP
 
@@ -1258,7 +1261,7 @@ The MOTD has been read from the server and can be displayed. The server will sen
 .PP
 \fBParameters:\fP
 .RS 4
-\fIdata\fP The full MOTD text. 
+\fIdata\fP Pointer to a \fBGGZMotdEventData\fP including the full MOTD text. 
 .RE
 .PP
 \fBSee also:\fP
@@ -1268,12 +1271,13 @@ The MOTD has been read from the server and can be displayed. The server will sen
 .PP
 \fBTodo\fP
 .RS 4
-The MOTD cannot be accessed outside of this event
-.RE
+The MOTD cannot be accessed outside of this event 
 .PP
 \fBSee also:\fP
 .RS 4
 ggzcore_server_read_data! 
+.RE
+.PP
 .RE
 .PP
 
@@ -1448,6 +1452,11 @@ Status event: a requested direct game connection has been established. To start 
 \fIdata\fP NULL 
 .RE
 .PP
+\fBNote:\fP
+.RS 4
+This event is deprecated and should not be used. 
+.RE
+.PP
 \fBSee also:\fP
 .RS 4
 \fBggzcore_server_get_channel\fP 
@@ -1465,6 +1474,11 @@ Game channel is ready for read/write operations. After the channel has been conn
 \fIdata\fP NULL 
 .RE
 .PP
+\fBNote:\fP
+.RS 4
+This event is deprecated and should not be used. 
+.RE
+.PP
 \fBSee also:\fP
 .RS 4
 \fBggzcore_server_read_data\fP 
@@ -1478,6 +1492,11 @@ Error: Failure during setup of direct connection to game server. If the channel 
 \fBParameters:\fP
 .RS 4
 \fIdata\fP An unhelpful error string 
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+This event is deprecated and should not be used. 
 .RE
 .PP
 \fBSee also:\fP
@@ -1503,6 +1522,9 @@ Not connected (at all)
 .TP
 \fB\fIGGZ_STATE_CONNECTING \fP\fP
 In the process of connecting. 
+.TP
+\fB\fIGGZ_STATE_RECONNECTING \fP\fP
+Continuous reconnection attempts. 
 .TP
 \fB\fIGGZ_STATE_ONLINE \fP\fP
 Connected, but not doing anything. 
@@ -1733,7 +1755,7 @@ Register a hook for a game event.
 .RE
 .PP
 
-.SS "int ggzcore_game_add_event_hook_full (\fBGGZGame\fP * game, const \fBGGZGameEvent\fP event, const \fBGGZHookFunc\fP func, void * data)"
+.SS "int ggzcore_game_add_event_hook_full (\fBGGZGame\fP * game, const \fBGGZGameEvent\fP event, const \fBGGZHookFunc\fP func, const void * data)"
 .PP
 Register a hook for a game event. 
 .PP
@@ -1835,10 +1857,7 @@ This adds a local module to the list. It returns 0 if successful or -1 on failur
 .SS "const char* ggzcore_module_get_icon_path (\fBGGZModule\fP * module)"
 .PP
 This is (intended to be) an optional xpm file that the module can provide to use for representing the game graphically. 
-.SS "int ggzcore_module_launch (\fBGGZModule\fP * module)"
-.PP
-This attempts to launch the specified module and returns 0 if successful or -1 on error. 
-.SS "int ggzcore_player_get_highscore (\fBGGZPlayer\fP * player, int * highscore)"
+.SS "int ggzcore_player_get_highscore (const \fBGGZPlayer\fP * player, int * highscore)"
 .PP
 Get the player's highscore. 
 .PP
@@ -1848,7 +1867,7 @@ TRUE if there is a highscore; FALSE if not or on error.
 .RE
 .PP
 
-.SS "int ggzcore_player_get_ranking (\fBGGZPlayer\fP * player, int * ranking)"
+.SS "int ggzcore_player_get_ranking (const \fBGGZPlayer\fP * player, int * ranking)"
 .PP
 Get the player's ranking. 
 .PP
@@ -1858,7 +1877,7 @@ TRUE if there is a ranking; FALSE if not or on error.
 .RE
 .PP
 
-.SS "int ggzcore_player_get_rating (\fBGGZPlayer\fP * player, int * rating)"
+.SS "int ggzcore_player_get_rating (const \fBGGZPlayer\fP * player, int * rating)"
 .PP
 Get the player's rating. 
 .PP
@@ -1868,7 +1887,7 @@ TRUE if there is a rating; FALSE if not or on error.
 .RE
 .PP
 
-.SS "int ggzcore_player_get_record (\fBGGZPlayer\fP * player, int * wins, int * losses, int * ties, int * forfeits)"
+.SS "int ggzcore_player_get_record (const \fBGGZPlayer\fP * player, int * wins, int * losses, int * ties, int * forfeits)"
 .PP
 Get the player's win-loss record. 
 .PP
@@ -1911,7 +1930,7 @@ The hook ID, or negative on error.
 .RE
 .PP
 
-.SS "int ggzcore_room_add_event_hook_full (\fBGGZRoom\fP * room, const \fBGGZRoomEvent\fP event, const \fBGGZHookFunc\fP func, void * data)"
+.SS "int ggzcore_room_add_event_hook_full (\fBGGZRoom\fP * room, const \fBGGZRoomEvent\fP event, const \fBGGZHookFunc\fP func, const void * data)"
 .PP
 Register a handler (hook) for thee room event, with data. 
 .PP
@@ -2126,7 +2145,7 @@ More than one handler can be registered for each event.
 .RE
 .PP
 
-.SS "int ggzcore_server_add_event_hook_full (\fBGGZServer\fP * server, const \fBGGZServerEvent\fP event, const \fBGGZHookFunc\fP func, void * data)"
+.SS "int ggzcore_server_add_event_hook_full (\fBGGZServer\fP * server, const \fBGGZServerEvent\fP event, const \fBGGZHookFunc\fP func, const void * data)"
 .PP
 Register a callback handler for a server event. 
 .PP
@@ -2167,46 +2186,7 @@ On failure a GGZ_CONNECT_FAIL event may or may not be generated.
 .RE
 .PP
 
-.SS "int ggzcore_server_create_channel (\fBGGZServer\fP * server)"
-.PP
-Establish a direct connection. 
-.PP
-Direct connections are requested for games. They are similar to connections, instead of that no login takes place, but a channel for arbitrary game data is created.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIserver\fP The GGZ server object. 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success, -1 on failure. 
-.RE
-.PP
-
-.SS "int ggzcore_server_get_channel (\fBGGZServer\fP * server)"
-.PP
-Get the socket used for direct gane connections. 
-.PP
-This returns the file descriptor of the socket for the TCP game connection. This will be handed off to a game module when it is ready.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIserver\fP The GGZ server object. 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-The file descriptor of the connection socket. 
-.RE
-.PP
-\fBSee also:\fP
-.RS 4
-\fBggzcore_server_create_channel\fP 
-.RE
-.PP
-
-.SS "int ggzcore_server_get_fd (\fBGGZServer\fP * server)"
+.SS "int ggzcore_server_get_fd (const \fBGGZServer\fP * server)"
 .PP
 Get the socket used for connection with the server. 
 .PP
@@ -2228,7 +2208,7 @@ The file descriptor of the connection socket.
 .RE
 .PP
 
-.SS "char* ggzcore_server_get_handle (\fBGGZServer\fP * server)"
+.SS "const char* ggzcore_server_get_handle (const \fBGGZServer\fP * server)"
 .PP
 Get the handle being used for this server. 
 .PP
@@ -2248,7 +2228,7 @@ A string containing the handle, or NULL on error.
 .RE
 .PP
 
-.SS "const char* ggzcore_server_get_host (\fBGGZServer\fP * server)"
+.SS "const char* ggzcore_server_get_host (const \fBGGZServer\fP * server)"
 .PP
 Get the hostname of the server. 
 .PP
@@ -2268,7 +2248,7 @@ A string containing the host name, or NULL on error.
 .RE
 .PP
 
-.SS "int ggzcore_server_get_num_gametypes (\fBGGZServer\fP * server)"
+.SS "int ggzcore_server_get_num_gametypes (const \fBGGZServer\fP * server)"
 .PP
 Return the overall number of game types on the server. 
 .PP
@@ -2293,7 +2273,7 @@ This number is 0 until
 .RE
 .PP
 
-.SS "int ggzcore_server_get_num_players (\fBGGZServer\fP * server)"
+.SS "int ggzcore_server_get_num_players (const \fBGGZServer\fP * server)"
 .PP
 Get the total number of players on the server. 
 .PP
@@ -2303,7 +2283,7 @@ Get the total number of players on the server.
 .RE
 .PP
 
-.SS "int ggzcore_server_get_num_rooms (\fBGGZServer\fP * server)"
+.SS "int ggzcore_server_get_num_rooms (const \fBGGZServer\fP * server)"
 .PP
 Return the number of rooms on the server, or -1 on error. 
 .PP
@@ -2313,7 +2293,7 @@ Until we retrieve the list of rooms, this will return 0.
 .RE
 .PP
 
-.SS "char* ggzcore_server_get_password (\fBGGZServer\fP * server)"
+.SS "const char* ggzcore_server_get_password (const \fBGGZServer\fP * server)"
 .PP
 Get the password being used for this server. 
 .PP
@@ -2333,7 +2313,7 @@ A string containing the password, or NULL on error.
 .RE
 .PP
 
-.SS "int ggzcore_server_get_port (\fBGGZServer\fP * server)"
+.SS "int ggzcore_server_get_port (const \fBGGZServer\fP * server)"
 .PP
 Get the port of the server. 
 .PP
@@ -2353,7 +2333,7 @@ The port number of the server, or -1 on error.
 .RE
 .PP
 
-.SS "\fBGGZStateID\fP ggzcore_server_get_state (\fBGGZServer\fP * server)"
+.SS "\fBGGZStateID\fP ggzcore_server_get_state (const \fBGGZServer\fP * server)"
 .PP
 Get the state of the server connection. 
 .PP
@@ -2368,7 +2348,7 @@ The state of the connection, or -1 on error.
 .RE
 .PP
 
-.SS "int ggzcore_server_get_tls (\fBGGZServer\fP * server)"
+.SS "int ggzcore_server_get_tls (const \fBGGZServer\fP * server)"
 .PP
 Get the current TLS status of this server. 
 .PP
@@ -2383,7 +2363,7 @@ Whether TLS is active or not
 .RE
 .PP
 
-.SS "\fBGGZLoginType\fP ggzcore_server_get_type (\fBGGZServer\fP * server)"
+.SS "\fBGGZLoginType\fP ggzcore_server_get_type (const \fBGGZServer\fP * server)"
 .PP
 Get the login type being used for this server. 
 .PP
@@ -2622,11 +2602,11 @@ Should never fail when given valid input.
 .RE
 .PP
 
-.SS "int ggzcore_server_set_logininfo (\fBGGZServer\fP * server, const \fBGGZLoginType\fP type, const char * handle, const char * password)"
+.SS "int ggzcore_server_set_logininfo (\fBGGZServer\fP * server, const \fBGGZLoginType\fP type, const char * handle, const char * password, const char * email)"
 .PP
 Set login info for logging in to the server. 
 .PP
-Call this function to set login info for the GGZ server before trying to login.
+Call this function to set login info for the GGZ server before trying to login. This should only be called when the server is in certain states.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -2637,6 +2617,8 @@ Call this function to set login info for the GGZ server before trying to login.
 \fIhandle\fP The username to use with the server. 
 .br
 \fIpassword\fP The password to use (may be NULL with some login types). 
+.br
+\fIemail\fP The email address to use (may be NULL with some login types). 
 .RE
 .PP
 \fBReturns:\fP

@@ -1,4 +1,4 @@
-.TH "ggz.modules" "5" "0.0.10" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggz.modules" "5" "0.0.11" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP 
 \fBggz.modules\fR \- GGZ Gaming Zone module configuration file

@@ -1,4 +1,4 @@
-.TH "ggzmod.h" 3 "22 Jan 2005" "Version 0.0.10" "GGZMod" \" -*- nroff -*-
+.TH "ggzmod.h" 3 "21 May 2005" "Version 0.0.11" "GGZMod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,21 +11,6 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 \fC#include <ggz_common.h>\fP
 .br
 
-.SS "Data Structures"
-
-.in +1c
-.ti -1c
-.RI "struct \fBGGZSeat\fP"
-.br
-.RI "\fIA seat at a GGZ game table. \fP"
-.ti -1c
-.RI "struct \fBGGZSpectatorSeat\fP"
-.br
-.RI "\fIA game spectator entry. \fP"
-.ti -1c
-.RI "struct \fBGGZChat\fP"
-.br
-.in -1c
 .SS "Defines"
 
 .in +1c
@@ -36,10 +21,10 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 .RI "#define \fBGGZMOD_VERSION_MINOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBGGZMOD_VERSION_MICRO\fP   10"
+.RI "#define \fBGGZMOD_VERSION_MICRO\fP   11"
 .br
 .ti -1c
-.RI "#define \fBGGZMOD_VERSION_IFACE\fP   '3:0:0'"
+.RI "#define \fBGGZMOD_VERSION_IFACE\fP   '3:1:1'"
 .br
 .in -1c
 .SS "Typedefs"
@@ -50,7 +35,7 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fIA GGZmod object, used for tracking a ggz<->table connection. \fP"
 .ti -1c
-.RI "typedef void(* \fBGGZModHandler\fP )(\fBGGZMod\fP *mod, \fBGGZModEvent\fP e, void *data)"
+.RI "typedef void(* \fBGGZModHandler\fP )(\fBGGZMod\fP *mod, \fBGGZModEvent\fP e, const void *data)"
 .br
 .RI "\fIEvent handler prototype. \fP"
 .in -1c
@@ -212,7 +197,7 @@ GGZmod currently provides an event-driven interface. Data from communication soc
 .PP
 That this does not apply to the client sockets: ggzmod provides one file desriptor for communicating (TCP) to each client. If data is ready to be read by one of these file descriptors ggzmod may invoke the appropriate handler (see below), but will never actually read any data.
 .PP
-For more information, see the documentation at http://ggz.sf.net/.
+For more information, see the documentation at http://ggz.sf.net/. 
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef struct \fBGGZMod\fP \fBGGZMod\fP"
@@ -220,7 +205,7 @@ For more information, see the documentation at http://ggz.sf.net/.
 A GGZmod object, used for tracking a ggz<->table connection. 
 .PP
 A game client should track a pointer to a GGZMod object; it contains all the state information for communicating with GGZ. The GGZ client will track one such object for every game table that is running. 
-.SS "typedef void(* \fBGGZModHandler\fP)(\fBGGZMod\fP *mod, \fBGGZModEvent\fP e, void *data)"
+.SS "typedef void(* \fBGGZModHandler\fP)(\fBGGZMod\fP *mod, \fBGGZModEvent\fP e, const void *data)"
 .PP
 Event handler prototype. 
 .PP
@@ -397,7 +382,7 @@ Disconnect from ggz.
 .PP
 .IP "\(bu" 2
 When called by the game server, this function stops the connection to GGZ. It should only be called when the table is ready to exit.
-.IP "\(bu" 2
+.IP "  \(bu" 4
 When called by the GGZ server, this function will kill and clean up after the table. 
 .PP
 \fBParameters:\fP
@@ -409,6 +394,8 @@ When called by the GGZ server, this function will kill and clean up after the ta
 .RS 4
 0 on success, -1 on failure. 
 .RE
+.PP
+
 .PP
 
 .PP
@@ -575,7 +562,7 @@ Get a spectator's data.
 .PP
 \fBParameters:\fP
 .RS 4
-\fIggzmod\fP The GGZdMod object. 
+\fIggzmod\fP The GGZMod object. 
 .br
 \fIseat\fP The number, between 0 and (number of spectators - 1). 
 .RE
