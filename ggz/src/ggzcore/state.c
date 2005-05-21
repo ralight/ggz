@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: state.c 4941 2002-10-17 23:56:16Z jdorje $
+ * $Id: state.c 7203 2005-05-21 09:29:01Z josef $
  *
  * Code for handling state manipulations
  *
@@ -72,6 +72,12 @@ static struct _GGZTransition _connecting_transitions[] = {
 	{-1, -1}
 };
 
+static struct _GGZTransition _reconnecting_transitions[] = {
+	{GGZ_TRANS_CONN_OK,      GGZ_STATE_ONLINE},
+	{GGZ_TRANS_CONN_FAIL,    GGZ_STATE_RECONNECTING},
+	{-1, -1}
+};
+
 static struct _GGZTransition _online_transitions[] = {
 	{GGZ_TRANS_LOGIN_TRY,    GGZ_STATE_LOGGING_IN},
 	{GGZ_TRANS_LOGOUT_TRY,   GGZ_STATE_LOGGING_OUT},
@@ -82,7 +88,7 @@ static struct _GGZTransition _online_transitions[] = {
 
 static struct _GGZTransition _logging_in_transitions[] = {
 	{GGZ_TRANS_LOGIN_OK,     GGZ_STATE_LOGGED_IN},
-        {GGZ_TRANS_LOGIN_FAIL,   GGZ_STATE_ONLINE},
+	{GGZ_TRANS_LOGIN_FAIL,   GGZ_STATE_ONLINE},
 	{GGZ_TRANS_LOGOUT_TRY,   GGZ_STATE_LOGGING_OUT},
 	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
 	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
@@ -170,6 +176,7 @@ static struct _GGZTransition _logging_out_transitions[] = {
 static struct _GGZState _ggz_states[] = {
 	{GGZ_STATE_OFFLINE,         "offline",         _offline_transitions},
 	{GGZ_STATE_CONNECTING,      "connecting",      _connecting_transitions},
+	{GGZ_STATE_RECONNECTING,    "reconnecting",    _reconnecting_transitions},
 	{GGZ_STATE_ONLINE,          "online",          _online_transitions}, 
 	{GGZ_STATE_LOGGING_IN,      "logging_in",      _logging_in_transitions},
 	{GGZ_STATE_LOGGED_IN,       "logged_in",       _logged_in_transitions},

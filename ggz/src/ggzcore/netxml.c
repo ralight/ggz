@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 7172 2005-05-03 20:30:32Z oojah $
+ * $Id: netxml.c 7203 2005-05-21 09:29:01Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -864,8 +864,10 @@ static void _ggzcore_net_error(GGZNet * net, char *message)
 
 static void _ggzcore_net_dump_data(GGZNet * net, char *data, int size)
 {
-	if (net->dump_file)
+	if (net->dump_file) {
 		fwrite(data, 1, size, net->dump_file);
+		fflush(net->dump_file);
+	}
 }
 
 static GGZXMLElement *_ggzcore_net_new_element(const char *tag,

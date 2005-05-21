@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 7123 2005-04-23 11:31:46Z josef $
+ * $Id: server.h 7203 2005-05-21 09:29:01Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -109,6 +109,7 @@ void _ggzcore_server_net_error(GGZServer * server, char *message);
 void _ggzcore_server_protocol_error(GGZServer * server, char *message);
 
 void _ggzcore_server_clear(GGZServer * server);
+void _ggzcore_server_clear_reconnect(GGZServer * server);
 
 void _ggzcore_server_free(GGZServer * server);
 
@@ -130,5 +131,8 @@ int _ggzcore_server_event_is_valid(GGZServerEvent event);
 void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans);
 GGZHookReturn _ggzcore_server_event(GGZServer *, GGZServerEvent, void *);
 void _ggzcore_server_queue_players_changed(GGZServer * server);
+
+
+void _ggzcore_server_set_reconnect(void);
 
 #endif /* __SERVER_H__ */

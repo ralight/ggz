@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 7172 2005-05-03 20:30:32Z oojah $
+ * $Id: server.c 7203 2005-05-21 09:29:01Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -39,6 +39,9 @@
 #ifdef HAVE_WINSOCK2_H
 #include <winsock2.h>
 #endif
+#include <signal.h>
+#include <time.h>
+#include <unistd.h>
 
 #include <ggz.h>
 
@@ -139,6 +142,10 @@ struct _GGZServer {
 		int players_changed;
 	} queued_events;
 };
+
+static int reconnect_policy = 0;
+static GGZServer *reconnect_server = NULL;
+const int reconnect_timeout = 15;
 
 static void _ggzcore_server_main_negotiate_status(GGZServer * server,
 						  GGZClientReqError
@@ -461,8 +468,12 @@ int ggzcore_server_is_at_table(const GGZServer * server)
 
 int ggzcore_server_connect(GGZServer * server)
 {
-	if (server && server->net && server->state == GGZ_STATE_OFFLINE) {
-		return _ggzcore_server_connect(server);
+	if (server && server->net) {
+		if (server->state == GGZ_STATE_OFFLINE
+			|| server->state == GGZ_STATE_RECONNECTING) {
+			return _ggzcore_server_connect(server);
+		} else
+			return -1;
 	} else
 		return -1;
 }
@@ -528,6 +539,7 @@ int ggzcore_server_logout(GGZServer * server)
 {
 	if (server
 	    && server->state != GGZ_STATE_OFFLINE
+	    && server->state != GGZ_STATE_RECONNECTING
 	    && server->state != GGZ_STATE_LOGGING_OUT)
 		return _ggzcore_server_logout(server);
 	else
@@ -537,7 +549,9 @@ int ggzcore_server_logout(GGZServer * server)
 
 int ggzcore_server_disconnect(GGZServer * server)
 {
-	if (server && server->state != GGZ_STATE_OFFLINE)
+	if (server
+		&& server->state != GGZ_STATE_OFFLINE
+		&& server->state != GGZ_STATE_RECONNECTING)
 		return _ggzcore_server_disconnect(server);
 	else
 		return -1;
@@ -548,7 +562,9 @@ int ggzcore_server_data_is_pending(GGZServer * server)
 {
 	int pending = 0;
 
-	if (server && server->net && server->state != GGZ_STATE_OFFLINE) {
+	if (server && server->net
+		&& server->state != GGZ_STATE_OFFLINE
+		&& server->state != GGZ_STATE_RECONNECTING) {
 		pending = _ggzcore_net_data_is_pending(server->net);
 	}
 
@@ -564,7 +580,8 @@ int ggzcore_server_read_data(GGZServer * server, int fd)
 	    || (fd = _ggzcore_net_get_fd(server->net)) < 0)
 		return -1;
 
-	if (server->state != GGZ_STATE_OFFLINE) {
+	if (server->state != GGZ_STATE_OFFLINE
+		&& server->state != GGZ_STATE_RECONNECTING) {
 		status = _ggzcore_net_read_data(server->net);
 
 		/* See comment in
@@ -1147,6 +1164,24 @@ int _ggzcore_server_disconnect(GGZServer * server)
 }
 
 
+void _ggzcore_server_clear_reconnect(GGZServer * server)
+{
+	/* Clear all server-internal members (reconnection only) */
+	if (server->rooms) {
+		_ggzcore_server_free_roomlist(server);
+		server->rooms = NULL;
+		server->num_rooms = 0;
+	}
+	server->room = NULL;
+
+	if (server->gametypes) {
+		_ggzcore_server_free_typelist(server);
+		server->gametypes = NULL;
+		server->num_gametypes = 0;
+	}
+}
+
+
 void _ggzcore_server_clear(GGZServer * server)
 {
 	int i;
@@ -1306,8 +1341,44 @@ void _ggzcore_server_add_type(GGZServer * server, GGZGameType * type)
 	}
 }
 
+static void reconnect_alarm(int signal)
+{
+	if (_ggzcore_net_connect(reconnect_server->net) < 0) {
+		reconnect_server->state = GGZ_STATE_RECONNECTING;
+		alarm(reconnect_timeout);
+	} else {
+		reconnect_server->state = GGZ_STATE_ONLINE;
+		_ggzcore_server_event(reconnect_server, GGZ_CONNECTED, NULL);
+	}
+}
+
 void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans)
 {
+	char *host;
+	int port, use_tls;
+
+	if (trans == GGZ_TRANS_NET_ERROR || trans == GGZ_TRANS_PROTO_ERROR) {
+		if (reconnect_policy) {
+			reconnect_server = server;
+			host = ggz_strdup(_ggzcore_net_get_host(server->net));
+			port = _ggzcore_net_get_port(server->net);
+			use_tls = _ggzcore_net_get_tls(server->net);
+			_ggzcore_net_free(server->net);
+			server->net = _ggzcore_net_new();
+			_ggzcore_net_init(server->net, server, host, port, use_tls);
+			ggz_free(host);
+
+			_ggzcore_server_clear_reconnect(server);
+
+			server->state = GGZ_STATE_RECONNECTING;
+			_ggzcore_server_event(server, GGZ_STATE_CHANGE, NULL);
+
+			signal(SIGALRM, reconnect_alarm);
+			alarm(reconnect_timeout);
+			return;
+		}
+	}
+
 	_ggzcore_state_transition(trans, &server->state);
 	_ggzcore_server_event(server, GGZ_STATE_CHANGE, NULL);
 }
@@ -1356,3 +1427,9 @@ void _ggzcore_server_protocol_error(GGZServer * server, char *message)
 		server->channel_failed = 1;
 	}
 }
+
+void _ggzcore_server_set_reconnect(void)
+{
+	reconnect_policy = 1;
+}
+

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 6879 2005-01-24 07:28:38Z jdorje $
+ * $Id: init.c 7203 2005-05-21 09:29:01Z josef $
  *
  * Initialization code
  *
@@ -35,6 +35,7 @@
 #include "ggzcore.h"
 #include "memory.h"
 #include "module.h"
+#include "server.h"
 #include "net.h"
 #include "state.h"
 
@@ -58,6 +59,9 @@ int ggzcore_init(GGZOptions options)
 
 	if (options.flags & GGZ_OPT_EMBEDDED)
 		_ggzcore_module_set_embedded();
+
+	if (options.flags & GGZ_OPT_RECONNECT)
+		_ggzcore_server_set_reconnect();
 
 	return 0;
 }

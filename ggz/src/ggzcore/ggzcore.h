@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 7186 2005-05-07 16:45:13Z josef $
+ * $Id: ggzcore.h 7203 2005-05-21 09:29:01Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -84,10 +84,11 @@ extern "C" {
 
 /* GGZCore library features */
 typedef enum {
-	GGZ_OPT_PARSER      = 0x0001,   /* %0000 0000 */
-	GGZ_OPT_MODULES     = 0x0002,   /* %0000 0010 */
-	GGZ_OPT_THREADED_IO = 0x0004,   /* %0000 0100 */
-	GGZ_OPT_EMBEDDED    = 0x0008    /* %0000 1000 */
+	GGZ_OPT_PARSER      = 0x0001, /* %0000 0000 */ /**< Load the default configuration file (unused). */
+	GGZ_OPT_MODULES     = 0x0002, /* %0000 0010 */ /**< Load the game module list. */
+	GGZ_OPT_THREADED_IO = 0x0004, /* %0000 0100 */ /**< Provide multi-threaded network IO (unused). */
+	GGZ_OPT_EMBEDDED    = 0x0008, /* %0000 1000 */ /**< Run game with integrated core client. */
+	GGZ_OPT_RECONNECT   = 0x0010  /* %0001 0000 */ /**< Reconnect automatically after connection loss. */
 } GGZOptionFlags;
 
 
@@ -380,7 +381,7 @@ typedef struct {
 	/** @brief The room we are entering.
 	 *
 	 *  This may be -1 if the player is leaving the server, or -2 if the
-	 * info is unknown. */
+	 *  info is unknown. */
 	int to_room;
 
 	/** @brief The room the player is leaving.
@@ -533,6 +534,7 @@ typedef enum {
 typedef enum {
 	GGZ_STATE_OFFLINE, /**< Not connected (at all) */
 	GGZ_STATE_CONNECTING, /**< In the process of connecting. */
+	GGZ_STATE_RECONNECTING, /**< Continuous reconnection attempts. */
 	GGZ_STATE_ONLINE, /**< Connected, but not doing anything. */
 	GGZ_STATE_LOGGING_IN, /**< In the process of logging in. */
 	GGZ_STATE_LOGGED_IN, /**< Online and logged in! */
