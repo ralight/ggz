@@ -47,13 +47,13 @@ if necessary.
 <ul>
 <li><a href="http://lunar-linux.org/?q=node/view/7">Lunar Linux</a>
 <li><a href="http://sorcerer.wox.org/grimoire/grimoire.html.gz">Sorcerer</a>
-<li><a href="http://fink.sourceforge.net/pdb/search.php?s=ggz">Fink</a>
+<li><a href="http://fink.sourceforge.net/pdb/search.php?summary=ggz">Fink</a>
 <li><a href="http://www.fnux.org/">Fnux</a>
 
 <li><a href="http://packages.gentoo.org/search/?sstring=ggz">Gentoo</a> (outdated)
 <li><a href="http://packages.debian.org/cgi-bin/search_packages.pl?keywords=GGZ&searchon=all&version=all&release=all">Debian</a> (outdated)
 <li><a href="http://codex.sourcemage.org/listing.html">SourceMage</a> (outdated)
-<li><a href="http://rpms.mandrakeclub.com/linux/rpm2html/search.php?query=ggz&submit=Search+...&arch=">Mandrake</a> (outdated)
+<li><a href="http://rpms.mandrivaclub.com/linux/rpm2html/search.php?query=ggz&submit=Search+...&arch=">Mandrake</a> (outdated)
 
 <li><a href="http://www.archlinux.org/packages.php?s_repo=all&s_category=all&s_keyword=ggz&s_lastupdate=&pp=50">ArchLinux</a> (only libs)
 <li><a href="http://www.freshports.org/search.php?query=ggz&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive">FreeBSD</a> (only libs)
