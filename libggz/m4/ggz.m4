@@ -23,6 +23,7 @@ dnl
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
+dnl AC_GGZ_INIT - initialization and paths/options setup
 dnl AC_GGZ_LIBGGZ - find the libggz headers and libraries
 dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
 dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
@@ -37,7 +38,6 @@ dnl   2.  Action-if-not-found (or empty for error, or "ignore" to ignore).
 dnl ------------------------------------------------------------------------
 dnl Internal functions:
 dnl ------------------------------------------------------------------------
-dnl AC_GGZ_INIT - initialization
 dnl AC_GGZ_ERROR - user-friendly error messages
 dnl AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
 dnl AC_GGZ_REMOVEDUPS - eliminate duplicate list elements
@@ -387,9 +387,11 @@ if test "$have_ggz_config" != yes; then
   if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggz_config (intentionally ignored)])
     GGZ_CONFIG="/bin/true"
-    AC_SUBST(GGZ_CONFIG)
     ggzexecmoddir="\${prefix}/lib/ggz"
     ggzdatadir="\${prefix}/share/ggz"
+    AC_SUBST(GGZ_CONFIG)
+    AC_SUBST(ggzexecmoddir)
+    AC_SUBST(ggzdatadir)
     AC_DEFINE_UNQUOTED(GAMEDIR, "${prefix}/lib/ggz", [Path where to install the games])
     AC_DEFINE_UNQUOTED(GGZDATADIR, "${prefix}/share/ggz", [Path where the games should look for their data files])
   else
