@@ -404,33 +404,47 @@ if test "$have_ggz_config" != yes; then
     $2
   fi
 else
-  ac_cv_have_ggz_config="have_ggz_config=yes \
-    ac_ggz_config=$ac_ggz_config"
-  AC_MSG_RESULT([$ac_ggz_config/ggz-config])
+  pathto_app=`echo $prefix/bin/ | tr -s "/"`
+  pathto_ggz=`echo $ac_ggz_config/ | tr -s "/"`
 
-  ggz_config="$ac_ggz_config"
+  if test "x$pathto_app" != "x$pathto_ggz"; then
+    AC_MSG_RESULT([$have_ggz_config (dismissed due to different prefix)])
+    GGZ_CONFIG="/bin/true"
+    ggzexecmoddir="\${prefix}/lib/ggz"
+    ggzdatadir="\${prefix}/share/ggz"
+    AC_SUBST(GGZ_CONFIG)
+    AC_SUBST(ggzexecmoddir)
+    AC_SUBST(ggzdatadir)
+    AC_DEFINE_UNQUOTED(GAMEDIR, "${prefix}/lib/ggz", [Path where to install the games])
+    AC_DEFINE_UNQUOTED(GGZDATADIR, "${prefix}/share/ggz", [Path where the games should look for their data files])
+  else
+    ac_cv_have_ggz_config="have_ggz_config=yes \
+      ac_ggz_config=$ac_ggz_config"
+    AC_MSG_RESULT([$ac_ggz_config/ggz-config])
 
-  AC_SUBST(ggz_config)
+    ggz_config="$ac_ggz_config"
+    AC_SUBST(ggz_config)
 
-  GGZ_CONFIG="${ggz_config}/ggz-config"
-  AC_SUBST(GGZ_CONFIG)
+    GGZ_CONFIG="${ggz_config}/ggz-config"
+    AC_SUBST(GGZ_CONFIG)
 
-  ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
-  AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
-  ggzexecmoddir=`$GGZ_CONFIG --gamedir`
-  AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
-  ggzdatadir=`$GGZ_CONFIG --datadir`
-  AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
-  packagesrcdir=`cd $srcdir && pwd`
-  AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
+    ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
+    AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
+    ggzexecmoddir=`$GGZ_CONFIG --gamedir`
+    AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
+    ggzdatadir=`$GGZ_CONFIG --datadir`
+    AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
+    packagesrcdir=`cd $srcdir && pwd`
+    AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
 
-  AC_SUBST(ggzmoduleconfdir)
-  AC_SUBST(ggzexecmoddir)
-  AC_SUBST(ggzdatadir)
-  AC_SUBST(packagesrcdir)
+    AC_SUBST(ggzmoduleconfdir)
+    AC_SUBST(ggzexecmoddir)
+    AC_SUBST(ggzdatadir)
+    AC_SUBST(packagesrcdir)
 
-  # Perform actions given by argument 1.
-  $1
+    # Perform actions given by argument 1.
+    $1
+  fi
 fi
 
 ])
