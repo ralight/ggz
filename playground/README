@@ -55,3 +55,9 @@
 	Gaim-Plugin:
 		Being able to play GGZ games on IRC, from Gaim.
 
+	Freeciv:
+		Patches for GGZ integration into the freeciv game.
+
+	Gentoo:
+		Ebuild files for the gentoo distribution.
+
