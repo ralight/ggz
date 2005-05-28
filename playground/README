@@ -64,3 +64,6 @@
 	Gentoo:
 		Ebuild files for the gentoo distribution.
 
+	Chess-Pieces:
+		Metafont files (scalable) for free chess figures.
+
