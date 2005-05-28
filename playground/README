@@ -55,6 +55,9 @@
 	Gaim-Plugin:
 		Being able to play GGZ games on IRC, from Gaim.
 
+	Kopete-GGZ:
+		Being able to play GGZ games with Kopete, the IM client for KDE.
+
 	Freeciv:
 		Patches for GGZ integration into the freeciv game.
 
