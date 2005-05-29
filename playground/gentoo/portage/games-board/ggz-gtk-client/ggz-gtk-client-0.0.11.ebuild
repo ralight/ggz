@@ -4,14 +4,14 @@
 
 DESCRIPTION="The gtk client for the GGZ Gaming Zone"
 HOMEPAGE="http://www.ggzgamingzone.org/"
-SRC_URI="http://ftp.ggzgamingzone.org/pub/ggz/${PV}/${P}.tar.gz"
+SRC_URI="http://ftp.belnet.be/packages/ggzgamingzone/ggz/${PV}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~ppc ~sparc ~amd64"
 IUSE="gtk2"
 
-DEPEND="=dev-games/ggz-client-libs-0.0.10
+DEPEND="=dev-games/ggz-client-libs-0.0.11
 	>=sys-apps/sed-4
 	gtk2? ( =x11-libs/gtk+-2* )
 	!gtk2? ( =x11-libs/gtk+-1* )"

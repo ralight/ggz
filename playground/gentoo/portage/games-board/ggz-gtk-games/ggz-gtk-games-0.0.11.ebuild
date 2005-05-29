@@ -4,7 +4,7 @@
 
 DESCRIPTION="These are the gtk versions of the games made by GGZ Gaming Zone"
 HOMEPAGE="http://www.ggzgamingzone.org/"
-SRC_URI="http://ftp.ggzgamingzone.org/pub/ggz/${PV}/${P}.tar.gz"
+SRC_URI="http://ftp.belnet.be/packages/ggzgamingzone/ggz/${PV}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -13,7 +13,7 @@ IUSE="gtk2"
 
 inherit ggz
 
-DEPEND="=games-board/ggz-gtk-client-0.0.10
+DEPEND="=games-board/ggz-gtk-client-0.0.11
 	gtk2? ( =x11-libs/gtk+-2* )
 	!gtk2? ( =x11-libs/gtk+-1* )"
 
