@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6947 2005-02-27 19:24:08Z josef $
+#  $Id: Makefile.am 7260 2005-05-29 11:44:13Z josef $
 
 SUBDIRS = src motd-editor pixmaps po
 
@@ -13,5 +13,5 @@ EXTRA_DIST	=	autogen.sh	\
 			indent.pro	\
 			m4/ggz.m4	\
 			m4/iconv.m4	\
-			$(util_DATA)	\
+			$(desktop_DATA)	\
 			$(schema_DATA)
