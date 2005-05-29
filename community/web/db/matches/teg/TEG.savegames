@@ -1,0 +1,4 @@
+This directory should contain the files of a TEG theme to use for
+the savegame display. This will usually be a bunch of PNG files plus
+the XML theme description.
+
