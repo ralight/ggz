@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: game.c 7263 2005-05-29 17:35:15Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,6 +28,9 @@
 #endif
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
 #include <ggz.h>
 
 #include "game.h"
@@ -37,10 +40,12 @@
 struct dots_game_t dots_game;
 int s_x[2], s_y[2];
 int score;
+static FILE *savegame = NULL;
 
 /* Private functions */
 static int game_get_options(int);
 static int game_handle_newgame(int);
+static void game_save(char *fmt, ...);
 
 
 /* Setup game state and board */
@@ -61,6 +66,8 @@ void game_init(GGZdMod *ggz)
 			dots_game.owners_board[i][j] = -1;
 	dots_game.score[0] = dots_game.score[1] = 0;
 	dots_game.ggz = ggz;
+
+	game_save(NULL);
 }
 
 
@@ -78,6 +85,9 @@ void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	const GGZSeat *old_seat = data;
 	game_update(DOTS_EVENT_JOIN, &old_seat->num, NULL);
+
+	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+	game_save("player%i join %s", new_seat.num + 1, new_seat.name);
 }
 
 void game_handle_ggz_spectator_join(GGZdMod *ggz,
@@ -102,6 +112,8 @@ void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, const void *data)
 	const GGZSeat *old_seat = data;
 
 	game_update(DOTS_EVENT_LEAVE, &old_seat->num, NULL);
+
+	game_save("player%i leave %s", old_seat->num + 1, old_seat->name);
 }
 
 
@@ -184,6 +196,9 @@ static int game_get_options(int seat)
 	if(ggz_read_char(fd, &dots_game.board_width) < 0
 	   || ggz_read_char(fd, &dots_game.board_height) < 0)
 		return -1;
+
+	game_save("width %i", dots_game.board_width);
+	game_save("height %i", dots_game.board_height);
 
 	return game_update(DOTS_EVENT_OPTIONS, NULL, NULL);
 }
@@ -396,6 +411,8 @@ int game_send_gameover(char winner)
 	int i, fd;
 	GGZGameResult results[2];
 
+	game_save("player%i winner", winner + 1);
+
 	/* Report game to GGZ. */
 	if (winner == 2) {
 		results[0] = results[1] = GGZ_GAME_TIE;
@@ -432,6 +449,8 @@ int game_move(void)
 			game_update(DOTS_EVENT_MOVE_V, &x, &y);
 		else
 			game_update(DOTS_EVENT_MOVE_H, &x, &y);
+
+		game_save("player%i move %u %u", (dots_game.turn + 1) % 2 + 1, x, y);
 	} else
 		game_req_move(num);
 
@@ -540,6 +559,8 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 
 	if(status < 0)
 		return 1;
+
+	game_save("player%i move %u %u", dots_game.turn + 1, *x, *y);
 	
 	/* We make a note who our opponent is, easier on the update func */
 	dots_game.opponent = (num + 1) % 2;
@@ -733,3 +754,40 @@ static int game_handle_newgame(int seat)
 
 	return status;
 }
+
+
+static void game_save(char *fmt, ...)
+{
+	int fd;
+	char *savegamepath, *savegamename;
+	char buffer[1024];
+
+	if(!fmt) {
+		if(savegame) {
+			fclose(savegame);
+			savegame = NULL;
+		}
+		return;
+	}
+
+	if(!savegame) {
+		savegamepath = ggz_strdup(DATADIR "/gamedata/Dots/savegame.XXXXXX");
+		fd = mkstemp(savegamepath);
+		if(fd < 0) return;
+		savegame = fdopen(fd, "w");
+		if(!savegame) return;
+
+		savegamename = savegamepath + strlen(savegamepath) - strlen("savegame.XXXXXX");
+		ggzdmod_report_savegame(dots_game.ggz, savegamename);
+		ggz_free(savegamepath);
+	}
+
+	va_list ap;
+	va_start(ap, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, ap);
+	va_end(ap);
+
+	fprintf(savegame, "%s\n", buffer);
+	fflush(savegame);
+}
+
