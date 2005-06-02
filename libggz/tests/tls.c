@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 
 	signal(SIGALRM, timeout);
 #ifdef HAVE_ALARM
-	alarm(1);
+	alarm(5); /* FIXME: should suffice to sleep(1), depends on TLS handshake sleep() usage */
 #else
 	/* Alarm isn't present on all platforms.  FIXME: implement without
 	 * using it. */
