@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 7013 2005-03-18 10:57:25Z josef $
+ * $Id: output.c 7270 2005-06-10 12:39:41Z josef $
  *
  * Functions for display text/messages
  *
@@ -198,7 +198,9 @@ void output_debug(char* fmt, ...)
 	vsnprintf(message, sizeof(message), fmt, ap);
 	va_end(ap);
 
+#ifdef DEBUG
 	output_text("%s%s%s", COLOR_ORANGE, message, COLOR_GREY);
+#endif
 }
 
 void output_draw_text(void)
@@ -352,7 +354,6 @@ void output_tables(void)
 
 void output_status(void)
 {
-	int num;
 	time_t now;		/* time */
 	char *currenttime;	/* String formatted time */
 	char displaytime[9];	/* What we display */
@@ -377,9 +378,6 @@ void output_status(void)
 	
 	now = time(NULL);
 
-	if(host)
-		num=num-strlen(host);
-	
 	printf(SEQUENCE_SAVE);
 	if(user)
 	{
