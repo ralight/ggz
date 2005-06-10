@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Client
  * Date: 6/19/00
- * $Id: server.c 7200 2005-05-16 22:22:14Z jdorje $
+ * $Id: server.c 7274 2005-06-10 12:56:50Z josef $
  *
  * This file contains functions for handling server client profiles
  *
@@ -79,7 +79,7 @@ void server_profiles_load(void)
 		deleted = NULL;
 	}
 
-	ggzcore_conf_read_list("Servers", "ProfileList", &count, &profiles);
+	ggzcore_conf_read_list("Servers", "ProfileList", (int*)&count, &profiles);
 
 	for (i = 0; i < count; i++) {
 		server = ggz_malloc(sizeof(Server));
