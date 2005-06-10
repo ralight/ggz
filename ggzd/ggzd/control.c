@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 7191 2005-05-16 21:11:37Z josef $
+ * $Id: control.c 7276 2005-06-10 15:20:37Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -278,6 +278,9 @@ int main(int argc, char *argv[])
 
 	log_msg(GGZ_LOG_NOTICE,
 		"GGZ server initialized and ready for player connections");
+
+	if (opt.foreground)
+		printf("GGZ Server: started\n");
 
 	FD_ZERO(&active_fd_set);
 	FD_SET(main_sock, &active_fd_set);
