@@ -55,7 +55,7 @@ static hash_t hash_create_private(const char *algo, const char *text, const char
 	}
 
 	gcry_md_write(handle, text, strlen(text));
-	hash.hash = gcry_md_read(handle, GCRY_MD_MD5);
+	hash.hash = (char*)gcry_md_read(handle, GCRY_MD_MD5);
 	hash.hashlen = gcry_md_get_algo_dlen(GCRY_MD_MD5);
 
 	gcry_md_close(handle);

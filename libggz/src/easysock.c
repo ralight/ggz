@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7187 2005-05-14 19:51:48Z josef $
+ * $Id: easysock.c 7266 2005-06-10 11:54:33Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -522,7 +522,7 @@ int ggz_read_string(const int sock, char *message, const unsigned int len)
 	unsigned int size;
 	int status;
 
-	if (ggz_read_int(sock, &size) < 0)
+	if (ggz_read_int(sock, (int*)&size) < 0)
 		return -1;
 	
 	if (size > len) {
@@ -569,7 +569,7 @@ int ggz_read_string_alloc(const int sock, char **message)
 	unsigned int size;
 	int status;
 
-	if (ggz_read_int(sock, &size) < 0)
+	if (ggz_read_int(sock, (int*)&size) < 0)
 		return -1;
 
 	if (size > ggz_alloc_limit) {

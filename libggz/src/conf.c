@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 6784 2005-01-21 18:38:38Z jdorje $
+ * $Id: conf.c 7266 2005-06-10 11:54:33Z josef $
  *
  * Internal functions for handling configuration files
  *
@@ -728,6 +728,7 @@ static GGZList * file_parser(const char *path)
 
 	/* Setup some temp storage to use */
 	e_data = ggz_malloc(sizeof(conf_entry_t));
+	varvalue = NULL;
 
 	/* Read individual lines and pass them off to be parsed */
 	while((line = ggz_read_line(c_struct)) != NULL) {

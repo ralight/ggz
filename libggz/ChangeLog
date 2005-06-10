@@ -1,4 +1,135 @@
-2005-01-23 14:19   Josef Spillner <josef@ggzgamingzone.org>
+2005-05-14 21:51  josef
+
+	* src/easysock.c: - improve the ipv6 patch (fixing bugs actually)
+
+2005-05-06 23:19  josef
+
+	* m4/ggz.m4: - synchronization of ggz.m4 files - fixes typo: use
+	  ggzdconfdir instead of ggzconfdir - fixes compiler problems: use
+	  -isystem X instead of -isystemX - fixes ggzcore linkage force in
+	  ggzmod problem
+
+2005-05-02 20:03  oojah
+
+	* configure.ac, src/easysock.c, src/security/ggz_tls_gnutls.c,
+	  src/security/ggz_tls_none.c, src/security/ggz_tls_openssl.c:
+	  Recent changes to easysock do not appear to be supported under
+	  winsock on Win32. This means winsock2 must be used. This update
+	  changes libggz to use winsock2.
+
+	  easysock.c includes an extra header file, ws2tcpip.h, which I
+	  have not checked for in configure.ac on the reasoning that it is
+	  part of the winsock2 package and so HAVE_WINSOCK2_H should imply
+	  ws2tcpip.h exists as well. Shout at me for this if you want.
+
+	  easysock.c makes use of the gai_strerror() function which is not
+	  implemented in current mingw builds. See bug 1188891 at mingw or
+	  this url:
+	  https://sourceforge.net/tracker/?func=detail&atid=102435&aid=1188891&group_id=2435
+	  It has been fixed in CVS so should appear in a release soon
+	  hopefully.
+
+2005-04-24 18:31  josef
+
+	* m4/ggz.m4: - typo: ggzdconfdir, not ggzconfdir!
+
+2005-04-15 19:54  jdorje
+
+	* src/: ggz_common.c, ggz_common.h: Preliminary abandoned-seats
+	  patch.
+
+	  In principle when a player leaves a running game, his seat
+	  becomes abandoned.  He may later rejoin and reclaim his seat, or
+	  after a while he may be given a forfeit.  For the most part this
+	  should be controlled by the game or by ggzd according to the
+	  game's options.
+
+	  This patch introduces the preliminary changes for this.  A new
+	  seat type GGZ_SEAT_ABANDONED is added, and basic changes are made
+	  to support it.  What is missing is ggzd and ggzdmod support for
+	  toggling between player, abandoned, and open seats.  There's also
+	  no forfeit mechanism yet (although the game may do this by hand
+	  if desired).
+
+	  This patch came from the playground; see patches/abandoned.diff
+	  for its history.
+
+2005-04-10 02:13  josef
+
+	* m4/ggz.m4: - a space after -isystem is mandatory, there are
+	  stupid GCCs out there
+
+2005-04-03 19:24  josef
+
+	* src/easysock.c: - Support for IPv6
+
+	  This is riq's old patch (4 years! oh my!) with some slight
+	  changes to make it work, including static methods so we don't
+	  have to bump the interface.  Since ggzcommunity.org is accessible
+	  via IPv6, and it works, this should be made available to all
+	  users.
+
+	  Of course, IP ban protection in ggzd (from clients using IPv6) is
+	  a different matter.
+
+2005-03-11 08:11  jdorje
+
+	* src/easysock.c: Portability fix: add a fallback SUN_LEN macro if
+	  it isn't already defined.
+
+2005-03-11 08:08  jdorje
+
+	* src/: ggz_common.c, misc.c, msg.c: Portability fix: add "#include
+	  <strings.h>" as needed for strcasecmp.
+
+2005-03-10 16:44  josef
+
+	* src/ggz.h: - style, consistancy and spelling fixes
+
+	  This has improved the quality a lot already.	But still more can
+	  be done, e.g. improved group descriptions.
+
+2005-03-10 13:27  josef
+
+	* src/ggz.h: - the usual corrections
+
+2005-03-10 11:36  josef
+
+	* src/ggz.h: - more consistency and spelling corrections, now also
+	  for the lists group
+
+2005-03-09 19:17  josef
+
+	* src/ggz.h: - more consistent documentation: line endings etc.  -
+	  correction to English spelling
+
+2005-02-04 16:59  josef
+
+	* m4/ggz.m4: - synchronize
+
+2005-01-30 09:32  jdorje
+
+	* configure.ac, m4/c99.m4: Update c99.m4.
+
+2005-01-24 07:03  jdorje
+
+	* src/ggz_common.c: Avoid duplicating strings.
+
+2005-01-24 02:39  jdorje
+
+	* m4/ggz.m4: Change the way channels are created at the client
+	  side.  The GGZ client does not create the channel.  Instead the
+	  channel connection data is sent to the game which makes the
+	  connection itself.  This means ggzmod needs to call the
+	  channel-creation function from within ggzcore, adding a new
+	  library dependency.  This is solved by linking ggzcore in along
+	  with ggzmod inside AC_GGZ_GGZMOD.
+
+2005-01-23 22:22  josef
+
+	* AUTHORS, ChangeLog: - authors and changelog
+
+2005-01-23 14:19  josef
 
 	* NEWS: - news update
 
