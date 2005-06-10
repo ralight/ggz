@@ -1,4 +1,191 @@
-2005-01-23 14:19   Josef Spillner <josef@ggzgamingzone.org>
+2005-05-21 13:38  josef
+
+	* kcc/module.dsc.in, koenig/module.dsc.in: - bump version in .dsc
+	  too (duh...)
+
+2005-05-21 13:37  josef
+
+	* kcc/main.cpp: - bump kcc version: 0.1->0.2
+
+2005-05-21 13:36  josef
+
+	* koenig/main.cc: - bump: 0.0.8->0.0.9 (due to single player mode
+	  addition)
+
+2005-05-21 13:11  josef
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ: - common files
+	  synchronisation and README update for 0.0.11
+
+2005-05-21 12:45  josef
+
+	* configure.ac: - LET version = 0.0.11
+
+2005-05-16 23:16  josef
+
+	* koenig/: board.cc, board.h, game.cc, game.h, toplevel.cc,
+	  toplevel.h: - fix single-player gaming: handle end-of-game and
+	  consecutive games - better board drawing
+
+2005-05-16 23:09  josef
+
+	* kcc/: kcc.cpp, kcc.h, kccwin.cpp: - fix split view, including
+	  removal of hack - scan GGZ data directories instead of current
+	  dir after downloading themes - do not produce flicker when
+	  resizing
+
+2005-05-16 23:07  josef
+
+	* kcc/themes/default/board.png: - make background image more sexy
+	  (now with shading)
+
+2005-05-06 23:18  josef
+
+	* m4/ggz.m4: - synchronization of ggz.m4 files - fixes typo: use
+	  ggzdconfdir instead of ggzconfdir - fixes compiler problems: use
+	  -isystem X instead of -isystemX - fixes ggzcore linkage force in
+	  ggzmod problem
+
+2005-05-01 17:25  josef
+
+	* muehle/src/Makefile.am: - install muehlerc file
+
+2005-05-01 17:19  josef
+
+	* m4/knewstuff.m4: - do not underquote the macro
+
+2005-05-01 16:58  josef
+
+	* fyrdman/fyrdmanrc, kcc/kccrc, koenig/koenigrc,
+	  ktictactux/ktictactuxrc, muehle/src/muehlerc: - change providers
+	  URL
+
+2005-05-01 11:43  josef
+
+	* m4/kde.m4: - synchronize m4 quoting fixes from kde-client
+
+2005-04-16 19:26  josef
+
+	* KReversi/main.cpp: - correctly terminate the command line options
+	  to prevent segfaults
+
+2005-03-26 13:30  josef
+
+	* po/: krosswater/Makefile.am, ktictactux/Makefile.am,
+	  muehle/Makefile.am: - addition of the (now complete!) spanish
+	  translations to the makefiles
+
+2005-03-26 13:10  perez
+
+	* po/muehle/es.po:
+	   Added Files:
+		  es.po
+
+2005-03-26 12:44  perez
+
+	* po/ktictactux/es.po:
+	  Added Files:	  es.po
+
+2005-03-26 12:10  perez
+
+	* po/krosswater/es.po:
+	  Added Files:	  es.po
+
+2005-03-26 11:41  josef
+
+	* po/koenig/Makefile.am: - include spanish documentation
+
+2005-03-26 11:25  perez
+
+	* po/koenig/es.po:
+	  Added Files:	  es.po
+
+2005-03-23 17:27  josef
+
+	* po/: KReversi/Makefile.am, fyrdman/Makefile.am,
+	  kdots/Makefile.am: - addition of es.po files to makefiles
+
+2005-03-23 15:00  perez
+
+	* po/KReversi/es.po: - Translation for KReversi
+
+2005-03-23 14:44  perez
+
+	* po/kdots/es.po: - translation for Kdots
+
+2005-03-23 14:41  perez
+
+	* po/fyrdman/es.po: [no log message]
+
+2005-03-11 23:19  josef
+
+	* koenig/: Makefile.am, ai.c, ai.h, board.cc, board.h,
+	  boardcontainer.cc, game.cc, game.h, main.cc, toplevel.cc,
+	  toplevel.h: - first implementation of single player mode - uses
+	  the same AI as grubby, ggzd and ggzboard-chess
+
+2005-02-27 22:54  josef
+
+	* keepalive/hi32-app-keepalive.png: - keepalive got a logo now :)
+
+2005-02-27 22:54  josef
+
+	* configure.ac, fyrdman/Makefile.am, fyrdman/data/Makefile.am,
+	  fyrdman/data/fyrdman.desktop.in, kcc/Makefile.am,
+	  kcc/kcc.desktop.in, kdots/Makefile.am, keepalive/Makefile.am,
+	  keepalive/keepalive.desktop.in, koenig/Makefile.am,
+	  krosswater/Makefile.am, krosswater/zoneclient/ZoneGGZModUI.h,
+	  ktictactux/Makefile.am, ktictactux/ktictactux.desktop.in,
+	  muehle/Makefile.am, muehle/pics/Makefile.am,
+	  muehle/pics/muehle.desktop, muehle/pics/muehle.desktop.in: -
+	  convert desktop files to XDG standard - add keepalive, hide
+	  muehle game because it's not playable yet - remove all *.in files
+	  from the Makefile.am's EXTRA_DIST
+
+	  This also applies to the other modules: Files like module.dsc.in
+	  or *.desktop.in are *always* automatically added to EXTRA_DIST
+	  and don't need to be added by hand!
+
+2005-02-27 18:02  josef
+
+	* fyrdman/data/fyrdman.desktop.in, kcc/kcc.desktop.in,
+	  ktictactux/ktictactux.desktop.in, muehle/pics/muehle.desktop: -
+	  xdg categories for single-player games
+
+2005-02-04 16:50  josef
+
+	* configure.ac, m4/ggz.m4: - if ggz-config is not installed, guess
+	  dummy paths and do not install *.dsc - synchronization includes
+	  BSD fixes
+
+2005-01-25 19:57  jdorje
+
+	* KReversi/network.cpp, KReversi/network.h, fyrdman/network.cpp,
+	  fyrdman/network.h, kcc/kccproto.cpp, kcc/kccproto.h,
+	  kdots/kdots_proto.cpp, kdots/kdots_proto.h,
+	  keepalive/src/network.cpp, keepalive/src/network.h,
+	  koenig/ggz.cc, koenig/ggz.h,
+	  krosswater/zoneclient/ZoneGGZModUI.cpp,
+	  krosswater/zoneclient/ZoneGGZModUI.h,
+	  ktictactux/ktictactuxproto.cpp, ktictactux/ktictactuxproto.h,
+	  muehle/src/ggzwrap/ggzwrap.c: Change ggzmod event handler
+	  functions to take a const data parameter.
+
+2005-01-24 02:39  jdorje
+
+	* m4/ggz.m4: Change the way channels are created at the client
+	  side.  The GGZ client does not create the channel.  Instead the
+	  channel connection data is sent to the game which makes the
+	  connection itself.  This means ggzmod needs to call the
+	  channel-creation function from within ggzcore, adding a new
+	  library dependency.  This is solved by linking ggzcore in along
+	  with ggzmod inside AC_GGZ_GGZMOD.
+
+2005-01-23 22:22  josef
+
+	* AUTHORS, ChangeLog: - authors and changelog
+
+2005-01-23 14:19  josef
 
 	* NEWS: - news update
 

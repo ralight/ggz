@@ -86,7 +86,7 @@ void KCCProto::init()
 	}
 
 	state = stateinit;
-	turn = none;
+	turn = 0;
 }
 
 // Get opcode
@@ -125,13 +125,15 @@ int KCCProto::getPlayers()
 }
 
 // Ask whether move was ok
-int KCCProto::getMoveStatus()
+KCCProto::Errors KCCProto::getMoveStatus()
 {
 	int ret;
+	char statuscode;
 
-	ret = ggz_read_char(fd, &status);
+	ret = ggz_read_char(fd, &statuscode);
+	status = (Errors)statuscode;
 
-	return ret;
+	return status;
 }
 
 // Get opponent's move

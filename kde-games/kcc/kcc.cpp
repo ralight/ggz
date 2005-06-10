@@ -164,6 +164,7 @@ void KCC::getNextTurn()
 }
 
 // Check for game over, and show dialogs
+// FIXME: this is still from ttt...
 int KCC::gameOver()
 {
 	m_x = -1;
@@ -172,7 +173,7 @@ int KCC::gameOver()
 	// Check for draw (no empty fields left)
 	for(int j = 0; j < 3; j++)
 		for(int i = 0; i < 3; i++)
-			if(proto->board[i][j] == KCCProto::none)
+			if(proto->board[i][j] == 0)
 			{
 				m_x = i;
 				m_y = j;
@@ -194,7 +195,7 @@ int KCC::gameOver()
 			}
 			else
 			{
-				if(m_winner == KCCProto::opponent)
+				if(m_winner == -42) // FIXME!!!
 				{
 					m_score_opp++;
 					conf->writeEntry("humanwon", conf->readNumEntry("humanwon") + 1);

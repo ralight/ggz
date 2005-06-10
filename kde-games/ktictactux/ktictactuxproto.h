@@ -83,9 +83,9 @@ class KTicTacTuxProto
 		char names[2][17];
 
 		// The board representation
-		char board[3][3];
+		BoardOwners board[3][3];
 		// The current game state
-		char state;
+		States state;
 		// Holds a move
 		int move;
 		// The player who is on

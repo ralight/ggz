@@ -59,14 +59,6 @@ class KCCProto
 			statedone = 5
 		};
 
-		// Possible owners of each field
-		enum BoardOwners
-		{
-			none = 0,
-			player = -5,
-			opponent = -2
-		};
-
 		// A winner, if any
 		char winner;
 
@@ -84,9 +76,9 @@ class KCCProto
 		char names[6][17];
 
 		// The board representation
-		char board[17][17];
+		int board[17][17];
 		// The current game state
-		char state;
+		States state;
 		// Holds a move
 		int move;
 		// The player who is on
@@ -94,7 +86,7 @@ class KCCProto
 		// Statistics
 		int stats[2];
 		// Game status
-		char status;
+		Errors status;
 
 		// Connect to the socket
 		void connect();
@@ -110,7 +102,7 @@ class KCCProto
 		// Get the player names
 		int getPlayers();
 		// Reveive move status
-		int getMoveStatus();
+		Errors getMoveStatus();
 		// Receive the network opponent's move
 		int getOpponentMove();
 		// Request synchronization

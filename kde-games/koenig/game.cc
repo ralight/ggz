@@ -107,10 +107,10 @@ void Game::handleNetInput()
 		case CHESS_MSG_PLAYERS:
 			kdDebug(12101) << "Got an MSG_PLAYERS" << endl;
 
-			if (GGZ_SEAT_OPEN != (chessInfo.assign[0] = ggz->getChar()))
+			if (GGZ_SEAT_OPEN != (GGZSeatType)(chessInfo.assign[0] = ggz->getChar()))
 				chessInfo.name[0] = ggz->getString();
 
-			if (GGZ_SEAT_OPEN != (chessInfo.assign[1] = ggz->getChar()))
+			if (GGZ_SEAT_OPEN != (GGZSeatType)(chessInfo.assign[1] = ggz->getChar()))
 				chessInfo.name[1] = ggz->getString();
 
 			kdDebug(12101) << "Got players " << chessInfo.name[0]
