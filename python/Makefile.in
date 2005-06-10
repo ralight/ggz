@@ -60,6 +60,11 @@ ggzchess-build:
 	cd chess && make
 	cd pyggzchess && python setup.py build
 
+clean:
+	@echo Cleaning up
+	rm -rf */build
+	cd chess && make clean
+
 ggzmod-install:
 	@echo Installing library PyGGZMod
 	cd pyggzmod && python setup.py install --prefix=$(DESTDIR)$(prefix)
