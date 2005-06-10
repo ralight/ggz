@@ -1,4 +1,93 @@
-2005-01-23 14:19   Josef Spillner <josef@ggzgamingzone.org>
+2005-05-21 13:11  josef
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ: - common files
+	  synchronisation and README update for 0.0.11
+
+2005-05-21 12:44  josef
+
+	* configure.ac: - LET version = 0.0.11
+
+2005-05-06 23:18  josef
+
+	* m4/ggz.m4: - synchronization of ggz.m4 files - fixes typo: use
+	  ggzdconfdir instead of ggzconfdir - fixes compiler problems: use
+	  -isystem X instead of -isystemX - fixes ggzcore linkage force in
+	  ggzmod problem
+
+2005-04-21 19:54  josef
+
+	* tictactoe/: main.c, main_win.c: - in synchronization function,
+	  allow turn -1 (== no player's turn) - show exit confirmation
+	  dialog - improved statusbar message after game startup
+
+2005-04-15 19:54  jdorje
+
+	* common/dlg_players.c: Preliminary abandoned-seats patch.
+
+	  In principle when a player leaves a running game, his seat
+	  becomes abandoned.  He may later rejoin and reclaim his seat, or
+	  after a while he may be given a forfeit.  For the most part this
+	  should be controlled by the game or by ggzd according to the
+	  game's options.
+
+	  This patch introduces the preliminary changes for this.  A new
+	  seat type GGZ_SEAT_ABANDONED is added, and basic changes are made
+	  to support it.  What is missing is ggzd and ggzdmod support for
+	  toggling between player, abandoned, and open seats.  There's also
+	  no forfeit mechanism yet (although the game may do this by hand
+	  if desired).
+
+	  This patch came from the playground; see patches/abandoned.diff
+	  for its history.
+
+2005-03-11 08:43  jdorje
+
+	* ggzcards/table.c: Add missing parameter type.
+
+2005-03-11 08:35  jdorje
+
+	* common/dlg_about.c: Portability fix: use ggz_strdup not strdup.
+
+2005-03-11 08:35  jdorje
+
+	* common/dlg_players.c: Portability fix: add "#include <strings.h>"
+	  as needed for strcasecmp.
+
+2005-02-05 14:24  josef
+
+	* common/ggzintl.c: - move variable declaration up one line to
+	  prevent problems with old C standards
+
+2005-02-04 17:12  josef
+
+	* configure.ac: - use new ggz-config modification
+
+2005-02-04 16:58  josef
+
+	* m4/ggz.m4: - synchronize
+
+2005-01-25 19:57  jdorje
+
+	* chess/main.c, chess/net.c, chess/net.h, common/dlg_chat.c,
+	  common/dlg_players.c, common/ggz_gtk.c, ggzcards/client/client.c,
+	  spades/client_func.c: Change ggzmod event handler functions to
+	  take a const data parameter.
+
+2005-01-24 02:39  jdorje
+
+	* m4/ggz.m4: Change the way channels are created at the client
+	  side.  The GGZ client does not create the channel.  Instead the
+	  channel connection data is sent to the game which makes the
+	  connection itself.  This means ggzmod needs to call the
+	  channel-creation function from within ggzcore, adding a new
+	  library dependency.  This is solved by linking ggzcore in along
+	  with ggzmod inside AC_GGZ_GGZMOD.
+
+2005-01-23 22:21  josef
+
+	* AUTHORS, ChangeLog: - authors and changelog
+
+2005-01-23 14:19  josef
 
 	* NEWS: - news update
 
@@ -4696,7 +4785,7 @@
 	* ggzcards/: cb_bid.c, cb_bid.h, cb_main.c, cb_main.h, dlg_about.c,
 	dlg_about.h, dlg_bid.c, dlg_bid.h, dlg_main.c, dlg_main.h, game.c,
 	game.h, hand.c, hand.h, layout.c, layout.h, main.c, main.h,
-	protocol.h, table.c, table.h: Added $Id: ChangeLog 6856 2005-01-23 21:23:07Z josef $ headers to all (well,
+	protocol.h, table.c, table.h: Added $Id: ChangeLog 7273 2005-06-10 12:54:26Z josef $ headers to all (well,
 	almost all) files.
 	
 	Note that the commit will in itself will make the last-modified
@@ -4705,7 +4794,7 @@
 2001-07-22 18:41  Jason Short <jdorje@users.sourceforge.net>
 
 	* ggzcards/: common.c, common.h: Test of CVS (RCS) keyword
-	substitution for $Id: ChangeLog 6856 2005-01-23 21:23:07Z josef $.
+	substitution for $Id: ChangeLog 7273 2005-06-10 12:54:26Z josef $.
 
 2001-07-22 18:38  Jason Short <jdorje@users.sourceforge.net>
 

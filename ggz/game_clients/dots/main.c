@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 6693 2005-01-16 04:10:53Z jdorje $
+ * $Id: main.c 7273 2005-06-10 12:54:26Z josef $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -291,8 +291,8 @@ int send_options(void)
 
 static int get_options(void)
 {
-	if (ggz_read_char(game.fd, &board_width) < 0
-	    || ggz_read_char(game.fd, &board_height) < 0)
+	if (ggz_read_char(game.fd, (char*)&board_width) < 0
+	    || ggz_read_char(game.fd, (char*)&board_height) < 0)
 		return -1;
 	return 0;
 }
@@ -389,15 +389,15 @@ static int get_sync_info(void)
 		return -1;
 	for (i = 0; i < board_width; i++)
 		for (j = 0; j < board_height - 1; j++)
-			if (ggz_read_char(game.fd, &vert_board[i][j]) < 0)
+			if (ggz_read_char(game.fd, (char*)&vert_board[i][j]) < 0)
 				return -1;
 	for (i = 0; i < board_width - 1; i++)
 		for (j = 0; j < board_height; j++)
-			if (ggz_read_char(game.fd, &horz_board[i][j]) < 0)
+			if (ggz_read_char(game.fd, (char*)&horz_board[i][j]) < 0)
 				return -1;
 	for (i = 0; i < board_width - 1; i++)
 		for (j = 0; j < board_height - 1; j++)
-			if (ggz_read_char(game.fd, &owners_board[i][j]) <
+			if (ggz_read_char(game.fd, (char*)&owners_board[i][j]) <
 			    0)
 				return -1;
 

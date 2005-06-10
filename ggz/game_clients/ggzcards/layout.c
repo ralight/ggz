@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: layout.c 7273 2005-06-10 12:54:26Z josef $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -482,7 +482,7 @@ static void get_card_rowoffset(int p, float *w, float *h)
 void get_card_pos(int p, int card_num, bool selected, int *x, int *y)
 {
 	int x0, y0;
-	float w, h;
+	float w = 0.0, h = 0.0;
 
 	/* FIXME */
 	int cards_per_row =

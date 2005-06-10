@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6673 2005-01-14 06:34:12Z jdorje $
+#  $Id: Makefile.am 7273 2005-06-10 12:54:26Z josef $
 
-SUBDIRS = @SUBDIRS@
+SUBDIRS = common chess chinese-checkers combat dots ggzcards hastings reversi spades tictactoe po
 EXTRA_DIST = package README.GGZ QuickStart.GGZ \
 		m4/gettext.m4	\
 		m4/ggz.m4	\

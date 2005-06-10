@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
- * $Id: game.c 6335 2004-11-12 04:40:58Z jdorje $
+ * $Id: game.c 7273 2005-06-10 12:54:26Z josef $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -344,8 +344,8 @@ gint8 board_opponent_move(guint8 dir)
 	char t_s, t_x, t_y;
 	int i;
 
-	if (ggz_read_char(game.fd, &x) < 0
-	    || ggz_read_char(game.fd, &y) < 0
+	if (ggz_read_char(game.fd, (char*)&x) < 0
+	    || ggz_read_char(game.fd, (char*)&y) < 0
 	    || ggz_read_char(game.fd, &t_s) < 0)
 		return -1;
 	for (i = 0; i < t_s; i++) {

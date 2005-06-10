@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6353 2004-11-13 18:05:57Z jdorje $
+ * $Id: game.c 7273 2005-06-10 12:54:26Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -255,7 +255,7 @@ int game_get_options(void)
 	if (ggz_read_string_alloc(cbt_info.fd, &optstr) < 0)
 		return -1;
 
-	a = combat_options_string_read(optstr, &cbt_game);
+	a = combat_options_string_read((unsigned char*)optstr, &cbt_game);
 	/* Free the String (thanks Jason!) */
 	ggz_free(optstr);
 	if (a > 0)
@@ -1181,7 +1181,7 @@ int game_send_options(GtkWidget * options_dialog)
 		return -1;
 	}
 
-	game_str = combat_options_string_write(_game, 0);
+	game_str = (char*)combat_options_string_write(_game, 0);
 
 	if ((a = combat_options_check(_game)) != 0) {
 		switch (a) {

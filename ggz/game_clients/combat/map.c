@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: map.c 6673 2005-01-14 06:34:12Z jdorje $
+ * $Id: map.c 7273 2005-06-10 12:54:26Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -77,7 +77,7 @@ int map_save(combat_game * map)
 	char options[20];
 	char *map_data;
 	int handle, a;
-	hash = _generate_hash(combat_options_string_write(map, 1));
+	hash = _generate_hash((char*)combat_options_string_write(map, 1));
 	sprintf(filename, "%s/%s.%u", GLOBAL_MAPS, map->name, hash);
 	handle = ggz_conf_parse(filename, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 	if (handle < 0) {
@@ -176,7 +176,7 @@ int map_search(combat_game * map)
 	char dir_name[2][50];
 	DIR* dir;
 
-	hash = _generate_hash(combat_options_string_write(map, 1));
+	hash = _generate_hash((char*)combat_options_string_write(map, 1));
 	sprintf(hash_str, ".%u", hash);
 	sprintf(dir_name[0], GLOBAL_MAPS);
 	sprintf(dir_name[1], "%s/.ggz/combat/maps", getenv("HOME"));
@@ -266,7 +266,7 @@ void map_load(combat_game * _game, char *filename, int *changed)
 	_game->name[b - a - 1] = 0;
 
 	// Well, now that we have loaded the map, let's check it's hash!
-	hash = _generate_hash(combat_options_string_write(_game, 1));
+	hash = _generate_hash((char*)combat_options_string_write(_game, 1));
 	sprintf(hash_str, ".%u", hash);
 	if (strstr(filename, hash_str) == NULL) {
 		// Hash don't match!!

@@ -49,8 +49,8 @@ unsigned char *combat_options_string_write(combat_game * _game,
 	// O_BIN2
 	if (_game->options & (255 << 8))
 		len += 1 + 1 + 1;
-	optstr = (char *)ggz_malloc(sizeof(char) * (len + 1));
-	strcpy(optstr, "");
+	optstr = (unsigned char *)ggz_malloc(sizeof(char) * (len + 1));
+	strcpy((char*)optstr, "");
 	ptr = optstr;
 	/* Width * Height */
 	*ptr = _game->width;
@@ -91,7 +91,7 @@ unsigned char *combat_options_string_write(combat_game * _game,
 int combat_options_string_read(unsigned char *optstr, combat_game * _game)
 {
 	int a, b;
-	int len = strlen(optstr);
+	int len = strlen((char*)optstr);
 	int retval = 0;
 	// Copy the string from the parameter
 	// Removes one from all the string, to return the zeroes
@@ -125,9 +125,9 @@ int combat_options_string_read(unsigned char *optstr, combat_game * _game)
 			optstr++;
 			// optstr now points to the name of the map
 			_game->name =
-			    (char *)ggz_malloc(strlen(optstr) + 1);
+			    (char *)ggz_malloc(strlen((char*)optstr) + 1);
 			if (_game->name)
-				strcpy(_game->name, optstr);
+				strcpy(_game->name, (char*)optstr);
 			// Go until the last character in the string
 			while (*optstr != 0)
 				optstr++;
