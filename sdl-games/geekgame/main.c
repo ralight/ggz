@@ -1,7 +1,7 @@
 /*
  * Geekgame - a game which only real geeks understand
  * Copyright (C) 2002 - 2004 Josef Spillner, josef@ggzgamingzone.org
- * $Id: main.c 6903 2005-01-25 18:57:38Z jdorje $
+ * $Id: main.c 7271 2005-06-10 12:43:29Z josef $
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -34,9 +34,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
-#ifdef HAVE_FNMATCH_H
-#  include <fnmatch.h>
-#endif
+#include <fnmatch.h>
 
 /* SDL include files */
 #include <SDL/SDL.h>
@@ -145,7 +143,7 @@ static void game_handle_io(void)
 	int result;
 	int i, j, field;
 	
-	if (ggz_read_char(modfd, &op) < 0)
+	if (ggz_read_char(modfd, (char*)&op) < 0)
 	{
 		/* ... */
 		return;

@@ -1,7 +1,7 @@
 /*
  * Geekgame - a game which only real geeks understand
  * Copyright (C) 2002, 2003 Josef Spillner, josef@ggzgamingzone.org
- * $Id: wwwget.c 6759 2005-01-20 05:17:31Z jdorje $
+ * $Id: wwwget.c 7271 2005-06-10 12:43:29Z josef $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
-#ifdef HAVE_SYS_WAIT_H
-#  include <sys/wait.h>
-#endif
+#include <sys/wait.h>
 
 #include "wwwget.h"
 
