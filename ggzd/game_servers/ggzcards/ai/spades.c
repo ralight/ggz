@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 4399 2002-09-03 17:25:09Z jdorje $
+ * $Id: spades.c 7268 2005-06-10 12:28:19Z josef $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -718,6 +718,9 @@ card_t get_play(int play_seat, bool *valid_plays)
 	assert(play_seat == 0);
 
 	high = -1;
+	lead.suit = 0;
+	hi_card.suit = 0;
+	hi_card.face = 0;
 
 	/* Determine the suit which was led and the highest card played so
 	   far. */

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: game.c 7268 2005-06-10 12:28:19Z josef $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -319,13 +319,13 @@ int game_handle_move(int num, unsigned char *ro, unsigned char *co,
 	char status;
 
 	ggzdmod_log(game.ggz, "Handling move for player %d", num);
-	if(ggz_read_char(fd, ro) < 0)
+	if(ggz_read_char(fd, (char*)ro) < 0)
 		return -1;
-	if(ggz_read_char(fd, co) < 0)
+	if(ggz_read_char(fd, (char*)co) < 0)
 		return -1;
-	if(ggz_read_char(fd, rd) < 0)
+	if(ggz_read_char(fd, (char*)rd) < 0)
 		return -1;
-	if(ggz_read_char(fd, cd) < 0)
+	if(ggz_read_char(fd, (char*)cd) < 0)
 		return -1;
 
 	if(game.state != CC_STATE_PLAYING) {

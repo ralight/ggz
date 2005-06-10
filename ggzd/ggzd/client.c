@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 6416 2004-11-17 22:02:24Z jdorje $
+ * $Id: client.c 7268 2005-06-10 12:28:19Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -98,7 +98,7 @@ static void* client_thread_init(void *arg_ptr)
 	int sock, status;
 	struct sockaddr_in addr;
 	GGZClient *client;
-	int addrlen = sizeof(addr);
+	unsigned int addrlen = sizeof(addr);
 	struct hostent hostbuf, *hp;
 	char tmphstbuf[1024];
 	int rc, herr;

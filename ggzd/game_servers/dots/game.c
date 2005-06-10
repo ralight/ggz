@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 7263 2005-05-29 17:35:15Z josef $
+ * $Id: game.c 7268 2005-06-10 12:28:19Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -193,8 +193,8 @@ static int game_get_options(int seat)
 {
 	int fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
 
-	if(ggz_read_char(fd, &dots_game.board_width) < 0
-	   || ggz_read_char(fd, &dots_game.board_height) < 0)
+	if(ggz_read_char(fd, (char*)&dots_game.board_width) < 0
+	   || ggz_read_char(fd, (char*)&dots_game.board_height) < 0)
 		return -1;
 
 	game_save("width %i", dots_game.board_width);
@@ -478,9 +478,9 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 	char status;
 	
 	ggzdmod_log(dots_game.ggz, "Handling move for player %d", num);
-	if(ggz_read_char(fd, x) < 0)
+	if(ggz_read_char(fd, (char*)x) < 0)
 		return -1;
-	if(ggz_read_char(fd, y) < 0)
+	if(ggz_read_char(fd, (char*)y) < 0)
 		return -1;
 
 	score = 0;

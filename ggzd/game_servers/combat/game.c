@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: game.c 7268 2005-06-10 12:28:19Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -388,7 +388,7 @@ int game_get_options(int seat)
 		return -1;
 	}
 
-	error = combat_options_string_read(optstr, &cbt_game);
+	error = combat_options_string_read((unsigned char*)optstr, &cbt_game);
 
 	ggzdmod_log(cbt_game.ggz, "Wrong options: %d\n", error);
 
@@ -405,7 +405,7 @@ void game_send_options(int seat)
 		return;
 	}
 
-	opt = combat_options_string_write(&cbt_game, 0);
+	opt = (char*)combat_options_string_write(&cbt_game, 0);
 	if (ggz_write_int(fd, CBT_MSG_OPTIONS) < 0
 	    || ggz_write_string(fd, opt) < 0) {
 		free(opt);

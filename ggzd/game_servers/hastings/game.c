@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: game.c 7268 2005-06-10 12:28:19Z josef $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -475,7 +475,7 @@ int game_send_players(void)
 		{
 			seat2 = ggzdmod_get_seat(hastings_game.ggz, i);
 			if(ggz_write_int(fd, seat2.type) < 0) return -1;
-			if((seat.type != GGZ_SEAT_OPEN) && (seat2.name))
+			if((seat2.type != GGZ_SEAT_OPEN) && (seat2.name))
 				if(ggz_write_string(fd, seat2.name) < 0)
 					return -1;
 		}

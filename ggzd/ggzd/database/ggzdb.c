@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 7067 2005-03-28 19:30:35Z josef $
+ * $Id: ggzdb.c 7268 2005-06-10 12:28:19Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -64,6 +64,7 @@ int ggzdb_init(void)
 	ggzdbConnection connection;
 
 	/* Verify that db version is cool with us */
+	connection.database = 0;
 	if(!connection.database) {
 		snprintf(fname, sizeof(fname), "%s%s", opt.data_dir, suffix);
 
