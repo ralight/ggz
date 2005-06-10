@@ -218,7 +218,7 @@ static int chess_ai_moveexceptions(int from, int to)
 	int allowed, newpos;
 	int k, l;
 	int figure;
-	int factor;
+	/*int factor;*/
 
 	figure = chess_ai_table[from][C_FIGURE];
 	allowed = 1;

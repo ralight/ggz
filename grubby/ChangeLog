@@ -1,4 +1,70 @@
-2005-01-23 14:18   Josef Spillner <josef@ggzgamingzone.org>
+2005-05-06 23:17  josef
+
+	* m4/ggz.m4: - synchronization of ggz.m4 files - fixes typo: use
+	  ggzdconfdir instead of ggzconfdir - fixes compiler problems: use
+	  -isystem X instead of -isystemX - fixes ggzcore linkage force in
+	  ggzmod problem
+
+2005-04-23 13:25  josef
+
+	* grubby/src/net.c: - protocol enhancement:  * allow users to give
+	  initial password when registering  * allow users to give email
+	  address
+
+2005-03-26 19:56  josef
+
+	* grubby/src/netsilc.c: - do not hardcode room
+
+2005-03-26 19:42  josef
+
+	* grubby/src/netsilc.c: - make SILC plugin work (more or less)
+
+2005-03-25 22:16  josef
+
+	* configure.ac, grubby/src/Makefile.am, grubby/src/netsilc.c: - net
+	  core network plugin: SILC
+
+	  It does NOT work yet, it crashes with an illegal instruction.
+	  But most of the work is done already.
+
+2005-03-18 15:07  josef
+
+	* grubby/src/: Makefile.am, net.c: - do not version core plugins
+	  (this was already the case with the others) - allow room names
+	  too in addition to room numbers
+
+2005-02-04 16:58  josef
+
+	* m4/ggz.m4: - synchronize
+
+2005-01-25 19:57  jdorje
+
+	* games/lib/ggzpassive.c: Change ggzmod event handler functions to
+	  take a const data parameter.
+
+2005-01-25 19:43  jdorje
+
+	* grubby/src/net.c: Const-pointer fixes.
+
+2005-01-24 07:09  jdorje
+
+	* grubby/src/net.c: Make hook functions take const pointers.
+
+2005-01-24 02:39  jdorje
+
+	* m4/ggz.m4: Change the way channels are created at the client
+	  side.  The GGZ client does not create the channel.  Instead the
+	  channel connection data is sent to the game which makes the
+	  connection itself.  This means ggzmod needs to call the
+	  channel-creation function from within ggzcore, adding a new
+	  library dependency.  This is solved by linking ggzcore in along
+	  with ggzmod inside AC_GGZ_GGZMOD.
+
+2005-01-23 22:21  josef
+
+	* AUTHORS, ChangeLog: - authors and changelog
+
+2005-01-23 14:18  josef
 
 	* NEWS: - news update
 

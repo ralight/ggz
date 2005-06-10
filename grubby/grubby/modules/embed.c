@@ -134,7 +134,6 @@ Guru *gurumod_exec(Guru *message)
 #endif
 #ifdef EMBED_PERL
 	char *answerstring;
-	int tmpval;
 	char *statement;
 #endif
 #ifdef EMBED_PYTHON
@@ -199,7 +198,7 @@ Guru *gurumod_exec(Guru *message)
 				perl_run(my_perl);
 				free(statement);
 
-				answerstring = SvPV(get_sv("answer", FALSE), tmpval);
+				answerstring = SvPV(get_sv("answer", FALSE), PL_na);
 				if(answerstring)
 				{
 					message->message = answerstring;

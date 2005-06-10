@@ -278,12 +278,12 @@ void net_output(Guru *output)
 			case GURU_CHAT:
 				printf("> %s\n", token);
 				silc_client_send_channel_message(client, connection,
-					lastchannel, NULL, 0, token, strlen(token), TRUE);
+					lastchannel, NULL, 0, (unsigned char*)token, strlen(token), TRUE);
 				break;
 			case GURU_PRIVMSG:
 				printf("-> %s: %s\n", output->player, token);
 				silc_client_send_channel_message(client, connection,
-					lastchannel, NULL, 0, token, strlen(token), TRUE);
+					lastchannel, NULL, 0, (unsigned char*)token, strlen(token), TRUE);
 				break;
 			case GURU_ADMIN:
 				printf(">> %s\n", token);
@@ -344,7 +344,7 @@ static void silc_channel_message(SilcClient client, SilcClientConnection conn, S
 	fprintf(stderr, "Message: %s\n", message);
 
 	lastchannel = channel;
-	net_internal_queueadd(sender->nickname, message, GURU_CHAT);
+	net_internal_queueadd(sender->nickname, (char*)message, GURU_CHAT);
 	status = NET_INPUT;
 }
 
