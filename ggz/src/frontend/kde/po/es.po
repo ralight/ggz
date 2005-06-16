@@ -389,7 +389,7 @@ msgstr "¡Error!"
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:288
 msgid "Error! Unknown command! Try /help instead."
-msgstr "¡Error! Comando desconocido. Intenta con /help"
+msgstr "¡Error! Comando desconocido. Intenta con /help."
 
 #: ../../ggz-kde/src/KGGZ.cpp:734
 msgid "Failed joining the requested table!"
