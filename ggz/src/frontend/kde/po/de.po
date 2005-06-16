@@ -281,7 +281,7 @@ msgstr "Konnte nicht verbinden, eventuell ist die Serverversion inkompatibel."
 
 #: ../../ggz-kde/src/KGGZ.cpp:358
 msgid "Could not start the server!"
-msgstr "Konnte den Server nicht starten"
+msgstr "Konnte den Server nicht starten!"
 
 #: ../../ggz-kde/src/KGGZ.cpp:387
 msgid "Could only kill server via sigkill!"
@@ -289,7 +289,7 @@ msgstr "Kann den Server nur noch mit sigkill killen!"
 
 #: ../../ggz-kde/src/KGGZ.cpp:966
 msgid "Couldn't connect to server!"
-msgstr "Konnte nicht zum Server verbinden"
+msgstr "Konnte nicht zum Server verbinden!"
 
 #: ../../ggz-kde/src/KGGZ.cpp:1604
 msgid "Couldn't launch game!"
