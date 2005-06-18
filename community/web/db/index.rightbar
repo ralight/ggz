@@ -5,7 +5,7 @@
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>Live games</h1>
+		<h1>_(Live games)</h1>
 		<div class="menu">
 			<a href="/db/live/" class="menuitem" title="_(Live games)">_(View games)</a>
 		</div>
