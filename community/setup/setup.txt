@@ -35,3 +35,8 @@ Scripts
 * ggzblogs.pl
   - creates the sections part of the planet configuration file (blogs)
 
+Savegames
+---------
+db/matches/teg:
+ should contain an unpacked TEG theme
+

@@ -1,0 +1,24 @@
+Customized Community
+--------------------
+
+* The directory images/ can be copied to another name
+  and then be referenced in .htconf as a new theme.
+  This includes the stylesheet, images and the layout.
+
+* Most configuration items in .htconf are translatable.
+  Instead of
+    $var = "value";
+  one can write instead
+    $var[''] = "value";
+    $var['de'] = "value2";
+  Note that in the latter case, no simple $var must occur anymore
+  and an empty language ('') must always be provided as a fallback.
+
+* Translations of variables in page templates are done in common/po.
+  The script extract.pl gets all strings, either untagged like _(x)
+  or tagged like _(x)(tag). They are then stored in ggzcommunity.pot
+  and this file can be copied to lang.po and be translated and installed.
+  It is important to implement Locale::localename() for new languages
+  depending on the system, and also Locale::languagename() should be
+  amended.
+
