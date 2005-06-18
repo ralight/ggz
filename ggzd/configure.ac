@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 7214 2005-05-21 10:46:02Z josef $
+dnl $Id: configure.ac 7289 2005-06-18 13:42:21Z josef $
 
 AC_INIT([GGZ server], [0.0.11], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -34,7 +34,7 @@ AC_ARG_WITH([tmpdir],
 	    [tmpdir=$withval], [tmpdir="/tmp/ggzd"])
 AC_ARG_WITH([database],
 	    AC_HELP_STRING([--with-database=DB],
-		[type of database to use: db2, db3, db4, pgsql, mysql]),
+		[type of database to use: db2, db3, db4, pgsql, mysql, sqlite]),
 	    [database=$withval], [database=yes])
 
 

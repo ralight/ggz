@@ -6,6 +6,9 @@ libggzdb_a_SOURCES = \
 	ggzdb.h \
 	ggzdb_proto.h
 
+if GGZDB_SQLITE
+libggzdb_a_SOURCES += ggzdb_sqlite.c
+endif
 if GGZDB_MYSQL
 libggzdb_a_SOURCES += ggzdb_mysql.c
 endif

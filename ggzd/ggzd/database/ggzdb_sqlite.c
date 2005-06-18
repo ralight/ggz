@@ -1,13 +1,4 @@
 /*
- * File: ggzdb_mysql.c
- * Author: Josef Spillner
- * Project: GGZ Server
- * Date: 03.05.2002
- * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 7289 2005-06-18 13:42:21Z josef $
- *
- * Copyright (C) 2000 Brent Hendricks.
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -27,13 +18,10 @@
 # include <config.h>		/* Site specific config */
 #endif
 
-#include <limits.h>
-#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 
-#include <mysql/mysql.h>
+#include <sqlite3.h>
 
 #include "err_func.h"
 #include "ggzd.h"
@@ -42,15 +30,11 @@
 
 
 /* Internal variables */
-static MYSQL *conn = NULL;
-static MYSQL_RES *iterres = NULL;
-static int itercount;
-static pthread_mutex_t mutex;
-
-/* Internal functions */
+static sqlite3 *conn = NULL;
+static sqlite3_stmt *res = NULL;
 
 
-/* Function to initialize the mysql database system */
+/* Function to initialize the database system */
 GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	int rc;
@@ -58,32 +42,38 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 	if(conn) return GGZ_OK;
 
-	conn = mysql_init(conn);
-	conn = mysql_real_connect(conn, connection.host, connection.username,
-		connection.password, connection.database, 0, NULL, 0);
-
-	if(!conn)
+	snprintf(query, sizeof(query), "%s/ggzd.sqlite", connection.datadir);
+	rc = sqlite3_open(query, &conn);
+	
+	if(rc != SQLITE_OK)
 	{
 		err_msg("Couldn't initialize database.");
 		return GGZ_ERROR;
 	}
 
 	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
-		"name varchar(255), email varchar(255), lastlogin int8, permissions int8)");
+		"(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT, password TEXT, "
+		"name TEXT, email TEXT, lastlogin INT, permissions INT)");
 
-	rc = mysql_query(conn, query);
+	rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
+
+	if(rc != SQLITE_OK)
+	{
+		err_msg("Couldn't create database tables.");
+	}
 
 	/* Hack. */
 	return GGZ_OK;
 }
 
 
-/* Function to deinitialize the mysql database system */
+/* Function to deinitialize the database system */
 void _ggzdb_close(void)
 {
-	/*mysql_close(conn);
-	conn = NULL;*/
+	if(!conn) return;
+
+	sqlite3_close(conn);
+	conn = NULL;
 }
 
 
@@ -119,11 +109,9 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 		"('%s', '%s', '%s', '%s', %li, %u)",
 		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
 
-	pthread_mutex_lock(&mutex);
-	rc = mysql_query(conn, query);
-	pthread_mutex_unlock(&mutex);
+	rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
 
-	if (rc != 0) {
+	if (rc != SQLITE_OK) {
 		/* FIXME: is this correct?  If not, how do we detect a
 		   duplicate entry - and notify the calling code?  --JDS */
 		return GGZDB_ERR_DUPKEY;
@@ -137,8 +125,6 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
 	int rc;
-	MYSQL_RES *res;
-	MYSQL_ROW row;
 	char query[4096];
 
 	snprintf(query, sizeof(query), "SELECT "
@@ -146,30 +132,24 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		"handle = '%s'",
 		pe->handle);
 
-	pthread_mutex_lock(&mutex);
-	rc = mysql_query(conn, query);
+	rc = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
 
-	if (rc != 0) {
-		res = mysql_store_result(conn);
-		pthread_mutex_unlock(&mutex);
+	if (rc == SQLITE_OK) {
+		rc = sqlite3_step(res);
 
-		if (mysql_num_rows(res) == 1) {
-			row = mysql_fetch_row(res);
-			strncpy(pe->password, row[0], sizeof(pe->password));
-			strncpy(pe->name, row[1], sizeof(pe->name));
-			strncpy(pe->email, row[2], sizeof(pe->email));
-			pe->last_login = atol(row[3]);
-			pe->perms = atol(row[4]);
-			mysql_free_result(res);
+		if (rc == SQLITE_ROW) {
+			strncpy(pe->password, (char*)sqlite3_column_text(res, 0), sizeof(pe->password));
+			strncpy(pe->name, (char*)sqlite3_column_text(res, 1), sizeof(pe->name));
+			strncpy(pe->email, (char*)sqlite3_column_text(res, 2), sizeof(pe->email));
+			pe->last_login = sqlite3_column_int(res, 3);
+			pe->perms = sqlite3_column_int(res, 4);
 			return GGZDB_NO_ERROR;
 		} else {
 			/* This is supposed to happen if we look up a
 			   nonexistent player. */
-			mysql_free_result(res);
 			return GGZDB_ERR_NOTFOUND;
 		}
 	} else {
-		pthread_mutex_unlock(&mutex);
 		err_msg("Couldn't lookup player.");
 		return GGZDB_ERR_DB;
 	}
@@ -187,11 +167,9 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		"handle = '%s'",
 		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
 
-	pthread_mutex_lock(&mutex);
-	rc = mysql_query(conn, query);
-	pthread_mutex_unlock(&mutex);
+	rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
 
-	if(rc) {
+	if(rc != SQLITE_OK) {
 		err_msg("Couldn't update player.");
 		return GGZDB_ERR_DB;
 	}
@@ -208,39 +186,31 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 {
 	int result;
-	MYSQL_ROW row;
 	char query[4096];
-
-	if (iterres) {
-		mysql_free_result(iterres);
-	}
 
 	snprintf(query, sizeof(query), "SELECT "
 		"id, handle, password, name, email, lastlogin, permissions FROM users");
-	result = mysql_query(conn, query);
 
-	if (result == 0) {
-		iterres = mysql_store_result(conn);
-		if (mysql_num_rows(iterres) > 0) {
-			row = mysql_fetch_row(iterres);
-			pe->user_id = atoi(row[0]);
-			strncpy(pe->handle, row[1], sizeof(pe->handle));
-			strncpy(pe->password, row[2], sizeof(pe->password));
-			strncpy(pe->name, row[3], sizeof(pe->name));
-			strncpy(pe->email, row[4], sizeof(pe->email));
-			pe->last_login = atol(row[5]);
-			pe->perms = atol(row[6]);
-			itercount = 0;
+	result = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
+
+	if (result == SQLITE_OK) {
+		result = sqlite3_step(res);
+
+		if (result == SQLITE_ROW) {
+			pe->user_id = sqlite3_column_int(res, 0);
+			strncpy(pe->handle, (char*)sqlite3_column_text(res, 1), sizeof(pe->handle));
+			strncpy(pe->password, (char*)sqlite3_column_text(res, 2), sizeof(pe->password));
+			strncpy(pe->name, (char*)sqlite3_column_text(res, 3), sizeof(pe->name));
+			strncpy(pe->email, (char*)sqlite3_column_text(res, 4), sizeof(pe->email));
+			pe->last_login = sqlite3_column_int(res, 4);
+			pe->perms = sqlite3_column_int(res, 5);
 			return GGZDB_NO_ERROR;
 		} else {
 			err_msg("No entries found.");
-			mysql_free_result(iterres);
-			iterres = NULL;
 			return GGZDB_NO_ERROR;
 		}
 	} else {
 		err_msg("Couldn't lookup player.");
-		iterres = NULL;
 		return GGZDB_ERR_DB;
 	}
 }
@@ -248,26 +218,20 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
-	MYSQL_ROW row;
+	int result = sqlite3_step(res);
 
-	if (!iterres) {
-		err_msg_exit("get_next called before get_first, dummy");
-	}
-
-	if(itercount < mysql_num_rows(iterres) - 1) {
-		itercount++;
-		row = mysql_fetch_row(iterres);
-		pe->user_id = atoi(row[0]);
-		strncpy(pe->handle, row[1], sizeof(pe->handle));
-		strncpy(pe->password, row[2], sizeof(pe->password));
-		strncpy(pe->name, row[3], sizeof(pe->name));
-		strncpy(pe->email, row[4], sizeof(pe->email));
-		pe->last_login = atol(row[5]);
-		pe->perms = atol(row[6]);
+	if(result == SQLITE_ROW) {
+		pe->user_id = sqlite3_column_int(res, 0);
+		strncpy(pe->handle, (char*)sqlite3_column_text(res, 1), sizeof(pe->handle));
+		strncpy(pe->password, (char*)sqlite3_column_text(res, 2), sizeof(pe->password));
+		strncpy(pe->name, (char*)sqlite3_column_text(res, 3), sizeof(pe->name));
+		strncpy(pe->email, (char*)sqlite3_column_text(res, 4), sizeof(pe->email));
+		pe->last_login = sqlite3_column_int(res, 5);
+		pe->perms = sqlite3_column_int(res, 6);
 		return GGZDB_NO_ERROR;
 	} else {
-		mysql_free_result(iterres);
-		iterres = NULL;
+		result = sqlite3_finalize(res);
+		res = NULL;
 		return GGZDB_ERR_NOTFOUND;
 	}
 }
@@ -275,16 +239,6 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 
 void _ggzdb_player_drop_cursor(void)
 {
-	if(!iterres) {
-		/* This isn't an error; since we clear the cursor at the end
-		   of _ggzdb_player_get_next we should expect to end up
-		   here.  --JDS */
-		/*err_msg_exit("drop_cursor called before get_first, dummy");*/
-		return;
-	}
-
-	mysql_free_result(iterres);
-	iterres = 0;
 }
 
 unsigned int _ggzdb_player_next_uid(void)

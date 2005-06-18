@@ -332,15 +332,38 @@ AC_DEFUN([AC_GGZ_DATABASE_MYSQL],
 	LIBS=$save_libs
 ])
 
+AC_DEFUN([AC_GGZ_DATABASE_SQLITE],
+[
+	AC_CHECK_LIB(sqlite3, sqlite3_open,
+	[
+		AC_CHECK_HEADER(sqlite3.h,
+		[
+			database=sqlite
+			LIB_DATABASE="-lsqlite3"
+		],
+		[
+			if test "$database" = sqlite; then
+				AC_MSG_ERROR([cannot configure sqlite (sqlite3-dev headers needed)])
+			fi
+		])
+	],
+	[
+		if test "$database" = sqlite; then
+			AC_MSG_ERROR([cannot configure sqlite (sqlite3 library needed)])
+		fi
+	])
+])
+
 AC_DEFUN([AC_GGZ_DATABASE],
 [
 case "$database" in
-	db4)   database=db4 ;;
-	db3)   database=db3 ;;
-	db2)   database=db2 ;;
-	pgsql) database=pgsql ;;
-	mysql) database=mysql ;;
-	*)     database=yes ;;
+	db4)    database=db4 ;;
+	db3)    database=db3 ;;
+	db2)    database=db2 ;;
+	pgsql)  database=pgsql ;;
+	mysql)  database=mysql ;;
+	sqlite) database=sqlite ;;
+	*)      database=yes ;;
 esac
 
 dnl Order of preference: db4, db3, db2, PgSQL, MySQL.  This is determined
@@ -373,6 +396,11 @@ if test "$database" = mysql || test "$database" = yes; then
 	AC_GGZ_DATABASE_MYSQL
 fi
 
+dnl Check for SQLite database
+if test "$database" = sqlite || test "$database" = yes; then
+	AC_GGZ_DATABASE_SQLITE
+fi
+
 dnl Make sure a database was configured
 if test "$database" = yes; then
 	AC_MSG_ERROR([no usable database library found.  See above messages for more.])
@@ -384,5 +412,6 @@ AM_CONDITIONAL([GGZDB_DB3], [test "$database" = "db3"])
 AM_CONDITIONAL([GGZDB_DB4], [test "$database" = "db4"])
 AM_CONDITIONAL([GGZDB_MYSQL], [test "$database" = "mysql"])
 AM_CONDITIONAL([GGZDB_PGSQL], [test "$database" = "pgsql"])
+AM_CONDITIONAL([GGZDB_SQLITE], [test "$database" = "sqlite"])
 ])
 
