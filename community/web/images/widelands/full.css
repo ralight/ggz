@@ -4,8 +4,7 @@ body
 		margin:0px;
 		padding:6px;
 		width: 90%;
-		/*background-image:url('images/steel-brushed-outset.png');*/
-		background-repeat : no-repeat;
+		background-image:url('/images/widelands/berg2_00.png');
 	}
 
 #pagehead
@@ -16,82 +15,61 @@ body
 		width: 90%;
 		padding:2px;
 		background-color:#8AC990;
-		border-top: 1px #EEFAFF solid;
-		border-left: 1px #EEFAFF solid;
-		border-right: 1px #5E7683 solid;
-		border-bottom: 1px #5E7683 solid;
-		/*background-image:url('images/steel-brushed-outset-light.png');*/
-		background-image:url('/images/pagehead.png');
-		background-repeat : no-repeat;
-		background-position: right;
-	}
-
-body.banner #pagehead .adblock
-	{
-		position:absolute;
-		top:2px;
-		left:300px;
-		display:block;
-		width:438px;
-		padding:3px;
-		height: 62px;
-		background-color:#7E95A0;
-		border-top: 1px #2E3940 solid;
-		border-left: 1px #2E3940 solid;
-		border-right: 1px #6CAF88 solid;
-		border-bottom: 1px #6CAF88 solid;
-		/*background-image:url('images/steel-brushed-inset-dark.png');*/
-		background-repeat : no-repeat;
+		border-top: 1px #3E8A3F solid;
+		border-left: 1px #3E8A3F solid;
+		border-right: 1px #5E7643 solid;
+		border-bottom: 1px #5E7643 solid;
+		background-image:url('/images/widelands/wiese4_00.png');
+		color: #ffffff;
 	}
 
 #pagehead .menubar
 	{
 		width:390px;
 		background-color:#71DC81;
-		border-top: 1px #EEFAFF solid;
-		border-left: 1px #EEFAFF solid;
-		border-right: 1px #7EA095 solid;
-		border-bottom: 1px #7EA095 solid;
+		border-top: 1px #3E6A3F solid;
+		border-left: 1px #3E6A3F solid;
+		border-right: 1px #4E4045 solid;
+		border-bottom: 1px #4E4045 solid;
 		font-family:sans-serif;
 		font-size:9pt;
 		font-weight:normal;
 		font-style:normal;
 		padding:2px;
 		text-align:right;
-		/*background-image:url('images/steel-brushed-outset-ultralight.png');*/
-		background-repeat : no-repeat;
+		background-image:url('/images/widelands/sumpf_00.png');
 	}
 
 #leftbar
 	{
 		width: 18%;
 		background-color:#7AC980;
-		border-top: 1px #9EFAAF solid;
-		border-left: 1px #9EFAAF solid;
+		border-top: 1px #3E8A3F solid;
+		border-left: 1px #3E8A3F solid;
 		border-right: 1px #2E7653 solid;
 		border-bottom: 1px #2E7653 solid;
 		line-height:12pt;
 		z-index:50;
 		font-size:9pt;
 		font-family:sans-serif;
-		/*background-image:url('images/steel-brushed-outset-light.png');*/
-		background-repeat : no-repeat;
+		background-image:url('/images/widelands/sumpf_00.png');
+		color: #ffffff;
 	}
 
 #rightbar
 	{
 		width: 18%;
 		background-color:#7AC980;
-		border-top: 1px #9EFAAF solid;
-		border-left: 1px #9EFAAF solid;
+		border-top: 1px #3E8A3F solid;
+		border-left: 1px #3E8A3F solid;
 		border-right: 1px #2E7653 solid;
 		border-bottom: 1px #2E7653 solid;
 		line-height:12pt;
 		z-index:50;
 		font-size:9pt;
 		font-family:sans-serif;
-		/*background-image:url('images/steel-brushed-outset-light.png');*/
-		background-repeat : no-repeat;
+		background-image:url('/images/widelands/sumpf_00.png');
+		color: #ffffff;
 	}
 
 #mainandacknowledgements
@@ -102,23 +80,21 @@ body.banner #pagehead .adblock
 #main, #acknowledgements
 	{
 		background-color:#7AC980;
-		border-top: 1px #9EFAAF solid;
-		border-left: 1px #9EFAAF solid;
-		border-right: 1px #2E7653 solid;
-		border-bottom: 1px #2E7653 solid;
-		/*width: 60%;*/
+		border-top: 1px #559B49 solid;
+		border-left: 1px #559B49 solid;
+		border-right: 1px #0D2818 solid;
+		border-bottom: 1px #0D2818 solid;
 		font-size:12pt;
 		font-weight:normal;
 		font-style:normal;
 		z-index:50;
-		/*background-image:url('images/steel-brushed-outset-light.png');*/
-		background-repeat : no-repeat;
+		background-image:url('/images/widelands/sumpf_00.png');
 	}
 
 #main .note, #acknowledgements .note
 	{
 		padding:2px;
-		color:#5E7683;
+		color: #ffffff;
 		font-family:sans-serif;
 		font-size:8pt;
 		text-align:right;
@@ -126,7 +102,7 @@ body.banner #pagehead .adblock
 
 #main .note a, #acknowledgements .note a
 	{
-		color:#5E7683;
+		color: #e0e0e0;
 	}
 
 #leftbar h1
@@ -152,8 +128,8 @@ body.banner #pagehead .adblock
 #main .text, #acknowledgements .text
 	{
 		background-color:#CEFADF;
-		border-top: 1px #7E95A0 solid;
-		border-left: 1px #7E95A0 solid;
+		border-top: 1px #7E9570 solid;
+		border-left: 1px #7E9570 solid;
 		border-right: 1px #FFFFFF solid;
 		border-bottom: 1px #FFFFFF solid;
 		padding:2px;
@@ -162,9 +138,8 @@ body.banner #pagehead .adblock
 		font-size:11pt;
 		font-weight:normal;
 		font-style:normal;
-		color:black;
-		/*background-image:url('images/steel-flat-inset-ultraultralight.png');*/
-		background-repeat : no-repeat;
+		color: black;
+		background-image:url('/images/widelands/strand_00.png');
 	}
 
 #main .text a, #acknowledgements .text a
@@ -172,7 +147,7 @@ body.banner #pagehead .adblock
 		font-family:sans-serif;
 		font-size:smaller;
 		text-decoration:none;
-		color:#2E3940;
+		color: #2E3940;
 		font-weight:bold;
 	}
 
@@ -193,21 +168,20 @@ body.banner #pagehead .adblock
 	{
 		font-family:sans-serif;
 		text-decoration:none;
-		color:black;
+		color: #a0ffa0;
 		font-weight:bold;
 	}
 
 #leftbar a:hover
 	{
-		color:#42936A;
+		color:#828282;
 	}
 
 #rightbar a
 	{
 		font-family:sans-serif;
 		text-decoration:none;
-		color:black;
-		/*font-weight:bold;*/
+		color: #a0ffa0;
 	}
 
 #main .text h1, #acknowledgements .text h1
@@ -246,11 +220,10 @@ body.banner #pagehead .adblock
 		background-color:#1B5432;
 		border-top: 1px #5E7683 solid;
 		border-left: 1px #5E7683 solid;
-		border-right: 1px #D1DCE1 solid;
-		border-bottom: 1px #D1DCE1 solid;
+		border-right: 1px #515C61 solid;
+		border-bottom: 1px #515C61 solid;
 		color:#D1DCE1;
-		/*background-image:url('images/leather-flat-inset-ultradark.png');*/
-		background-repeat : no-repeat;
+		background-image:url('/images/widelands/wiese4_00.png');
 	}
 
 #main h2, #acknowledgements h2
@@ -313,37 +286,6 @@ body #mainandacknowledgements
 		left: 20%;
 	}
 
-/*
-body #main
-	{
-		position:absolute;
-		top:96px;
-		left: 20%;
-	}
-
-body #acknowledgements
-	{
-		position:absolute;
-		bottom:0px;
-		left: 20%;
-	}
-*/
-
-body #pagehead .adblock
-	{
-		display:none;
-	}
-
-body #pagehead .adblock
-	{
-		font-family:sans-serif;
-		text-transform:uppercase;
-		font-size:8pt;
-		font-weight:bold;
-		color:#FFEBCC;
-		text-align:center;
-	}
-
 body #pagehead .menubar
 	{
 		position:absolute;
@@ -363,67 +305,10 @@ body #rightbar
 		left: 81%;
 	}
 
-body.banner #leftbar
-	{
-		position:absolute;
-		top:108px;
-		left:6px;
-	}
-
-body.banner #main, body.banner #acknowledgements
-	{
-		position:absolute;
-		top:108px;
-		left:150px;
-	}
-
-body.banner #pagehead .adblock embed
-	{
-		width:438px;
-		height:48px;
-		padding:0px;
-		margin:0px;
-	}
-
-body.banner #pagehead .adblock img
-	{
-		width:438px;
-		height:48px;
-		padding:0px;
-		margin:0px;
-	}
-
-body.banner #pagehead .adblock object
-	{
-		width:438px;
-		height:48px;
-		padding:0px;
-		margin:0px;
-	}
-
-body.banner #pagehead .menubar
-	{
-		position:absolute;
-		top:76px;
-		left:288px;
-	}
-
-body.banner #pagehead
-	{
-		height:84px;
-	}
-
-body.banner #rightbar
-	{
-		position:absolute;
-		top:108px;
-		left:624px;
-	}
-
 h1 span.itemleader
 	{
 		font-family:sans-serif;
-		color:#89B259;
+		color: #a0ffa0;
 		letter-spacing:0.125em;
 		font-style:normal;
 		font-weight:bold;
@@ -434,27 +319,12 @@ hr.leather
 		background-color:#42936A;
 		border-top:1px #2B744B solid;
 		border-left:1px #2B744B solid;
-		border-right:1px #75CBA9 solid;
-		border-bottom:1px #75CBA9 solid;
+		border-right:1px #254B59 solid;
+		border-bottom:1px #254B59 solid;
 		height:6px;
 		margin-left:6px;
 		margin-right:6px;
-		/*background-image:url('images/leather-flat-inset.png');*/
-		background-repeat : no-repeat;
-	}
-
-hr.steel
-	{
-		background-color:#9CAFB8;
-		border-top:1px #7E95A0 solid;
-		border-left:1px #7E95A0 solid;
-		border-right:1px #D1DCE1 solid;
-		border-bottom:1px #D1DCE1 solid;
-		height:6px;
-		margin-left:6px;
-		margin-right:6px;
-		/*background-image:url('images/steel-flat-inset.png');*/
-		background-repeat : no-repeat;
+		background-image:url('/images/widelands/wiese4_00.png');
 	}
 
 #pagehead div.menu
@@ -466,7 +336,7 @@ hr.steel
 		font-size:8pt;
 		text-align:center;
 		background-color:transparent;
-		color: #2E3940;
+		color: #a0ffa0;
 	}
 
 #pagehead a.menuitem
@@ -474,7 +344,7 @@ hr.steel
 		display:block;
 		text-align:center;
 		margin: 1px;
-		color: #2E3940;
+		color: #a0ffa0;
 		text-decoration:none;
 	}
 
@@ -509,8 +379,7 @@ hr.steel
 		border-left: 1px #8EFA9F solid;
 		border-right: 1px #4E9570 solid;
 		border-bottom: 1px #4E9570 solid;
-		/*background-image:url('images/steel-flat-outset-ultralight.png');*/
-		background-repeat : no-repeat;
+		background-image:url('/images/widelands/wiese4_00.png');
 	}
 
 #pagehead div.menu:hover > div.menu
@@ -526,11 +395,12 @@ hr.steel
 #rightbar div.menubar, #leftbar div.menubar
 	{
 		background-color:#2B744B;
-		border-top: 1px #835E76 solid;
-		border-left: 1px #835E76 solid;
-		border-right: 1px #E1D1DC solid;
-		border-bottom: 1px #E1D1DC solid;
+		border-top: 1px #435E76 solid;
+		border-left: 1px #435E76 solid;
+		border-right: 1px #41212C solid;
+		border-bottom: 1px #31212C solid;
 		color:#D1DCE1;
+		background-image:url('/images/widelands/wiese4_00.png');
 	}
 
 #leftbar div.menu, #rightbar div.menu
@@ -541,6 +411,7 @@ hr.steel
 		text-align:center;
 		background-color:#2B744B;
 		color: #FFEBCC;
+		background-image:url('/images/widelands/wiese4_00.png');
 	}
 
 #leftbar a.menuitem, #rightbar a.menuitem
@@ -583,9 +454,8 @@ hr.steel
 		border-left: 1px #CBA975 solid;
 		border-right: 1px #28180D solid;
 		border-bottom: 1px #28180D solid;
-		/*background-image:url('images/leather-flat-outset-dark.png');*/
-		background-repeat : no-repeat;
-		color:#0D2818;
+		background-image:url('/images/widelands/wiese4_00.png');
+		color: #a0ffa0;
 	}
 
 #leftbar div.menu:hover > div.menu, #rightbarbar div.menu:hover > div.menu
@@ -598,14 +468,13 @@ form.leather
 		margin:2px;
 		padding:2px;
 		display:block;
-		background-color:#2B744B;
-		border-top: 1px #75CBA9 solid;
-		border-left: 1px #75CBA9 solid;
+		background-color:#2B544B;
+		border-top: 1px #559B49 solid;
+		border-left: 1px #559B49 solid;
 		border-right: 1px #0D2818 solid;
 		border-bottom: 1px #0D2818 solid;
-		/*background-image:url('images/leather-brushed-outset-dark.png');*/
-		background-repeat : no-repeat;
-		color:black;
+		background-image:url('/images/widelands/wiese4_00.png');
+		color: #ffffff;
 	}
 
 form.leather h1
@@ -621,7 +490,7 @@ form.leather h2
 form.leather input.button
 	{
 		margin-top:4px;
-		background-color:#59B289;
+		background-color:#599259;
 		border-top: 1px #CCFFEB solid;
 		border-left: 1px #CCFFEB solid;
 		border-right: 1px #1B5432 solid;
@@ -630,7 +499,7 @@ form.leather input.button
 
 form.leather input
 	{
-		background-color:#59B289;
+		background-color:#599259;
 		border-top: 1px #1B5432 solid;
 		border-left: 1px #1B5432 solid;
 		border-right: 1px #CCFFEB solid;
@@ -639,7 +508,7 @@ form.leather input
 
 form.leather select
 	{
-		background-color:#59B289;
+		background-color:#599259;
 		border-top: 1px #CCFFEB solid;
 		border-left: 1px #CCFFEB solid;
 		border-right: 1px #1B5432 solid;
@@ -648,7 +517,7 @@ form.leather select
 
 form.leather textarea
 	{
-		background-color:#59B289;
+		background-color:#599259;
 		border-top: 1px #1B5432 solid;
 		border-left: 1px #1B5432 solid;
 		border-right: 1px #CCFFEB solid;
@@ -657,116 +526,22 @@ form.leather textarea
 
 form.leather input.button:focus
 	{
-		background-color:#59B289;
+		background-color:#599259;
 	}
 
 form.leather input:focus
 	{
-		background-color:#CCFFEB;
+		background-color:#4C8F4B;
 	}
 
 form.leather select:focus
 	{
-		background-color:#CCFFEB;
+		background-color:#4C8F4B;
 	}
 
 form.leather textarea:focus
 	{
-		background-color:#CCFFEB;
-	}
-
-form.steel
-	{
-		margin:2px;
-		padding:2px;
-		display:block;
-		background-color:#7E95A0;
-		border-top: 1px #D1DCE1 solid;
-		border-left: 1px #D1DCE1 solid;
-		border-right: 1px #28180D solid;
-		border-bottom: 1px #28180D solid;
-		color:#28180D;
-		/*background-image:url('images/steel-brushed-outset-dark.png');*/
-		background-repeat : no-repeat;
-	}
-
-form.steel h1
-	{
-		font-size:larger;
-	}
-
-form.steel h2
-	{
-		font-weight:normal;
-	}
-
-form.steel input.button
-	{
-		margin-top:4px;
-		background-color:#BAC9D0;
-		border-top: 1px #EEFAFF solid;
-		border-left: 1px #EEFAFF solid;
-		border-right: 1px #5E7683 solid;
-		border-bottom: 1px #5E7683 solid;
-	}
-
-form.steel input
-	{
-		background-color:#BAC9D0;
-		border-top: 1px #5E7683 solid;
-		border-left: 1px #5E7683 solid;
-		border-right: 1px #EEFAFF solid;
-		border-bottom: 1px #EEFAFF solid;
-	}
-
-form.steel select
-	{
-		background-color:#BAC9D0;
-		border-top: 1px #EEFAFF solid;
-		border-left: 1px #EEFAFF solid;
-		border-right: 1px #5E7683 solid;
-		border-bottom: 1px #5E7683 solid;
-	}
-
-form.steel textarea
-	{
-		background-color:#BAC9D0;
-		border-top: 1px #5E7683 solid;
-		border-left: 1px #5E7683 solid;
-		border-right: 1px #EEFAFF solid;
-		border-bottom: 1px #EEFAFF solid;
-	}
-
-form.steel input.button:focus
-	{
-		background-color:#BAC9D0;
-	}
-
-form.steel input:focus
-	{
-		background-color:#EEFAFF;
-	}
-
-form.steel select:focus
-	{
-		background-color:#EEFAFF;
-	}
-
-form.steel textarea:focus
-	{
-		background-color:#EEFAFF;
-	}
-
-img.steel
-	{
-		padding:4px;
-		background-color:#7E95A0;
-		border-top: 1px #D1DCE1 solid;
-		border-left: 1px #D1DCE1 solid;
-		border-right: 1px #2E3940 solid;
-		border-bottom: 1px #2E3940 solid;
-		/*background-image:url('images/steel-brushed-outset-dark.png');*/
-		background-repeat : no-repeat;
+		background-color:#4C8F4B;
 	}
 
 img.leather
@@ -777,31 +552,17 @@ img.leather
 		border-left: 1px #75CBA9 solid;
 		border-right: 1px #0D2818 solid;
 		border-bottom: 1px #0D2818 solid;
-		/*background-image:url('images/leather-brushed-outset-light.png');*/
-		background-repeat : no-repeat;
-	}
-
-table.steel
-	{
-		padding:4px;
-		background-color:#BAC9D0;
-		border-top: 1px #EEFAFF solid;
-		border-left: 1px #EEFAFF solid;
-		border-right: 1px #7E95A0 solid;
-		border-bottom: 1px #7E95A0 solid;
-		/*background-image:url('images/steel-brushed-outset-light.png');*/
 		background-repeat : no-repeat;
 	}
 
 table.leather
 	{
 		padding:4px;
-		background-color:#59B289;
+		background-color:#599259;
 		border-top: 1px #CCFFEB solid;
 		border-left: 1px #CCFFEB solid;
 		border-right: 1px #2B744B solid;
 		border-bottom: 1px #2B744B solid;
-		/*background-image:url('images/leather-brushed-outset-dark.png');*/
 		background-repeat : no-repeat;
 	}
 
