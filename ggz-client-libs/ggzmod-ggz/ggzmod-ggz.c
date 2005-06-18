@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 7186 2005-05-07 16:45:13Z josef $
+ * $Id: ggzmod-ggz.c 7282 2005-06-18 07:13:21Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -70,6 +70,7 @@
 static void call_handler(GGZMod *ggzmod, GGZModEvent event, void *data);
 static void call_transaction(GGZMod * ggzmod, GGZModTransaction t, void *data);
 static int send_game_launch(GGZMod * ggzmod);
+static int game_prepare(int fd_pair[2], int *sock);
 static int game_fork(GGZMod * ggzmod);
 static int game_embedded(GGZMod * ggzmod);
 
@@ -500,8 +501,6 @@ int ggzmod_ggz_inform_chat(GGZMod * ggzmod, const char *player, const char *msg)
 }
 
 
-#define GGZMOD_SOCKET_FD "GGZMOD_SOCKET_FD"
-
 /* 
  * GGZmod actions
  */
@@ -703,14 +702,51 @@ static int send_game_launch(GGZMod * ggzmod)
 }
 
 
+/* Common setup for normal mode and embedded mode */
+static int game_prepare(int fd_pair[2], int *sock)
+{
+#ifdef HAVE_SOCKETPAIR
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
+		ggz_error_sys_exit("socketpair failed");
+	setenv("GGZSOCKET", "103", 1);
+	setenv("GGZMODE", "true", 1);
+#else
+	/* Winsock implementation: see ggzmod_ggz_connect. */
+	port = 5898;
+	do {
+		port++;
+		*sock = ggz_make_socket(GGZ_SOCK_SERVER, port, NULL);
+	} while (*sock < 0 && port < 7000);
+	if (*sock < 0) {
+		ggz_error_msg("Could not bind socket.");
+		return -1;
+	}
+	if (listen(*sock, 1) < 0) {
+		ggz_error_msg("Could not listen on socket.");
+		return -1;
+	}
+	snprintf(buf, sizeof(buf), "%d", port);
+#ifdef HAVE_SETENV
+	setenv("GGZSOCKET", buf, 1);
+	setenv("GGZMODE", "true", 1);
+#else
+	SetEnvironmentVariable("GGZSOCKET", buf);
+	SetEnvironmentVariable("GGZMODE", "true");
+#endif
+#endif
+
+	return 0;
+}
+
 /* Forks the game.  A negative return value indicates a serious error. */
 /* No locking should be necessary within this function. */
 static int game_fork(GGZMod * ggzmod)
 {
+	int sock;
 #ifdef HAVE_SOCKETPAIR
 	int fd_pair[2];		/* socketpair */
 #else
-	int sock, sock2, port;
+	int sock2, port;
 	char buf[100];
 #endif
 #ifdef HAVE_FORK
@@ -728,31 +764,8 @@ static int game_fork(GGZMod * ggzmod)
 		return -1;
 	}
 
-#ifdef HAVE_SOCKETPAIR
-	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
-		ggz_error_sys_exit("socketpair failed");
-#else
-	/* Winsock implementation: see ggzmod_ggz_connect. */
-	port = 5898;
-	do {
-		port++;
-		sock = ggz_make_socket(GGZ_SOCK_SERVER, port, NULL);
-	} while (sock < 0 && port < 7000);
-	if (sock < 0) {
-		ggz_error_msg("Could not bind socket.");
+	if(game_prepare(fd_pair, &sock) < 0)
 		return -1;
-	}
-	if (listen(sock, 1) < 0) {
-		ggz_error_msg("Could not listen on socket.");
-		return -1;
-	}
-	snprintf(buf, sizeof(buf), "%d", port);
-#ifdef HAVE_SETENV
-	setenv(GGZMOD_SOCKET_FD, buf, 1);
-#else
-	SetEnvironmentVariable(GGZMOD_SOCKET_FD, buf);
-#endif
-#endif
 
 #ifdef HAVE_FORK
 	if ((pid = fork()) < 0)
@@ -843,38 +856,16 @@ static int game_fork(GGZMod * ggzmod)
 /* Similar to game_fork(), but runs the game embedded */
 static int game_embedded(GGZMod * ggzmod)
 {
+	int sock;
 #ifdef HAVE_SOCKETPAIR
 	int fd_pair[2];		/* socketpair */
 #else
-	int sock, sock2, port;
+	int sock2, port;
 	char buf[100];
 #endif
 
-#ifdef HAVE_SOCKETPAIR
-	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
-		ggz_error_sys_exit("socketpair failed");
-#else
-	/* Winsock implementation: see ggzmod_ggz_connect. */
-	port = 5898;
-	do {
-		port++;
-		sock = ggz_make_socket(GGZ_SOCK_SERVER, port, NULL);
-	} while (sock < 0 && port < 7000);
-	if (sock < 0) {
-		ggz_error_msg("Could not bind socket.");
+	if(game_prepare(fd_pair, &sock) < 0)
 		return -1;
-	}
-	if (listen(sock, 1) < 0) {
-		ggz_error_msg("Could not listen on socket.");
-		return -1;
-	}
-	snprintf(buf, sizeof(buf), "%d", port);
-#ifdef HAVE_SETENV
-	setenv(GGZMOD_SOCKET_FD, buf, 1);
-#else
-	SetEnvironmentVariable(GGZMOD_SOCKET_FD, buf);
-#endif
-#endif
 
 #ifdef HAVE_SOCKETPAIR
 	if (fd_pair[1] != 103) {

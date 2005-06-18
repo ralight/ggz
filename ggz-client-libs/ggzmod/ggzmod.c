@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7178 2005-05-06 21:08:09Z josef $
+ * $Id: ggzmod.c 7282 2005-06-18 07:13:21Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -563,35 +563,45 @@ void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
 }
 
 
-#define GGZMOD_SOCKET_FD "GGZMOD_SOCKET_FD"
-
 /* 
  * GGZmod actions
  */
 
 int ggzmod_connect(GGZMod * ggzmod)
 {
+	char *ggzsocketstr;
+	int ggzsocket;
+	int items;
+
 	if (!ggzmod)
 		return -1;
 
 	if (ggzmod->type == GGZMOD_GAME) {
-#ifdef HAVE_SOCKETPAIR
-		ggzmod->fd = 103;
-#else /* Winsock implementation: see game_fork(). */
-		char buf[100];
-		int port, sock;
-
+		ggzsocket = 0;
 #ifdef HAVE_GETENV
-		snprintf(buf, sizeof(buf), "%s", getenv(GGZMOD_SOCKET_FD));
+		ggzsocketstr = getenv("GGZSOCKET");
 #else
-		GetEnvironmentVariable(GGZMOD_SOCKET_FD, buf, sizeof(buf));
+		GetEnvironmentVariable("GGZSOCKET", buf, sizeof(buf));
 #endif
-		sscanf(buf, "%d", &port);
+		if(ggzsocketstr) {
+			items = sscanf(ggzsocketstr, "%d", &ggzsocket);
+			if (items == 0) {
+				ggzsocket = 103;
+			}
+		} else {
+			ggzsocket = 103;
+		}
 
-		if (port == 0) {
+#ifdef HAVE_SOCKETPAIR
+		ggzmod->fd = ggzsocket;
+#else /* Winsock implementation: see game_fork(). */
+		int sock;
+
+		if (ggzsocket == 0) {
 			ggz_error_msg_exit("Could not determine port.");
 		}
-		sock = ggz_make_socket(GGZ_SOCK_CLIENT, port, "localhost");
+
+		sock = ggz_make_socket(GGZ_SOCK_CLIENT, ggzsocket, "localhost");
 		if (sock < 0) {
 			ggz_error_msg_exit("Could not connect to port.");
 		}
