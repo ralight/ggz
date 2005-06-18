@@ -1,10 +1,10 @@
 <div id="rightbar">
-	<h1>Latest changes</h1>
+	<h1>_(Latest changes)</h1>
 
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>Matches/Tournaments</h1>
+		<h1>_(Matches/Tournaments)</h1>
 <?php
 include_once("latest.php");
 latest_matches();
@@ -15,7 +15,7 @@ latest_tournaments();
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>Individual blogs</h1>
+		<h1>_(Individual blogs)(rightbar)</h1>
 <?php
 latest_blogs();
 ?>
@@ -24,7 +24,7 @@ latest_blogs();
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>Forum posts</h1>
+		<h1>_(Forum posts)</h1>
 <?php
 latest_forumposts();
 ?>
@@ -33,9 +33,9 @@ latest_forumposts();
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>Players worldwide</h1>
+		<h1>_(Players worldwide)</h1>
 <?php
-include_once(Config::theme("mundomap.map"));
+include_once(Config::gettheme("mundomap.map"));
 ?>
 		<a href="/map/"><img src="<?php Config::theme("mundomap.png"); ?>" usemap="#ggzmap"></a>
 	</div>

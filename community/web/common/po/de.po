@@ -1,3 +1,54 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Login to Community"
+msgstr "Login zur Community"
+
+msgid "Username"
+msgstr "Nutzername"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Register as new user"
+msgstr "Als neuer Nutzer registrieren"
+
+msgid "Resend password"
+msgstr "Passwort vergessen"
+
+msgid "Need help?"
+msgstr "Brauchst du Hilfe?"
+
+msgid "Administrator mail"
+msgstr "Administrator-Mail"
+
+msgid "Send an email"
+msgstr "Sende eine Mail"
+
+msgid "to the Community administrators..."
+msgstr "zu den Administratoren..."
+
+msgid "Latest changes"
+msgstr "Neuigkeiten..."
+
+msgid "Matches/Tournaments"
+msgstr "Spiele/Tournaments"
+
+msgid "Individual blogs)(rightbar"
+msgstr "Spielerblogs"
+
+msgid "Forum posts"
+msgstr "Foreneinträge"
+
+msgid "Players worldwide"
+msgstr "Spieler weltweit"
+
+msgid "$s"
+msgstr "XXXXX"
+
 msgid "Front page"
 msgstr "Startseite"
 

@@ -1,3 +1,54 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Login to Community"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Register as new user"
+msgstr ""
+
+msgid "Resend password"
+msgstr ""
+
+msgid "Need help?"
+msgstr ""
+
+msgid "Administrator mail"
+msgstr ""
+
+msgid "Send an email"
+msgstr ""
+
+msgid "to the Community administrators..."
+msgstr ""
+
+msgid "Latest changes"
+msgstr ""
+
+msgid "Matches/Tournaments"
+msgstr ""
+
+msgid "Individual blogs)(rightbar"
+msgstr ""
+
+msgid "Forum posts"
+msgstr ""
+
+msgid "Players worldwide"
+msgstr ""
+
+msgid "$s"
+msgstr ""
+
 msgid "Front page"
 msgstr ""
 

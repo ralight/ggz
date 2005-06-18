@@ -72,11 +72,16 @@ class Config
 		echo Config::getvalue($key);
 	}
 
-	function theme($image)
+	function gettheme($image)
 	{
 		global $config_object;
 
-		echo "/images/" . $config_object->theme . "/$image";
+		return "/images/" . $config_object->theme . "/$image";
+	}
+
+	function theme($image)
+	{
+		echo Config::gettheme($image);
 	}
 }
 

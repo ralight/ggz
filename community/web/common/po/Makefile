@@ -6,7 +6,8 @@ install:
 	msgfmt -o de/LC_MESSAGES/ggzcommunity.mo de.po
 
 messages:
-	./extract.pl `find .. -name "*inc*"` > ggzcommunity.pot
+	./extract.pl ../*.* > ggzcommunity.pot
 	msgmerge de.po ggzcommunity.pot > tmp
 	mv tmp de.po
 
+#./extract.pl `find .. -name "*inc*"` > ggzcommunity.pot

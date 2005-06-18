@@ -27,7 +27,7 @@ class Locale
 
 	function replacer($matches)
 	{
-		$s = preg_replace("/\_\(([^\)]*)\)/", "\$1", $matches[0]);
+		$s = preg_replace("/^\_\((.*)\)$/", "\$1", $matches[0]);
 		return _($s);
 	}
 
@@ -47,7 +47,7 @@ class Locale
 			ob_end_clean(); 
 		endif;
 
-		$contents = preg_replace_callback("/\_\([^\)]*\)/",
+		$contents = preg_replace_callback("/\_\([^\)]*\)\([^\)]*\)|\_\([^\)]*\)/",
 			array("Locale", "replacer"),
 			$contents);
 
