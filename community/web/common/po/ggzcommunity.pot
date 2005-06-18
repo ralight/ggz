@@ -1,6 +1,12 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
+msgid "Site design based on Steel-n-Leather"
+msgstr ""
+
+msgid "Portal engine powered by GGZ Community"
+msgstr ""
+
 msgid "Login to Community"
 msgstr ""
 
