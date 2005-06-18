@@ -36,7 +36,7 @@ class Locale
 		if ($s == "de") return "Deutsch";
 		if ($s == "en") return "English";
 		if ($s == "sv") return "Svenska";
-		if ($s == "fr") return "Français";
+		if ($s == "fr") return "FranÃ§ais";
 		return "($s)";
 	}
 

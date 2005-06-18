@@ -18,7 +18,7 @@
 	<hr class="leather">
 
 	<h1>Behöver du hjälp?</h1>
-	<a href="mailto:info@ggzcommunity.org" title="Adminmejl">Skicka ett mejl</a>
+	<a href="mailto:<?php Config::put("mail"); ?>" title="Adminmejl">Skicka ett mejl</a>
 	till administratörerna...
 </div>
 

@@ -18,7 +18,7 @@
 	<hr class="leather">
 
 	<h1>Brauchst du Hilfe?</h1>
-	<a href="mailto:info@ggzcommunity.org" title="Administrator-Mail">Sende eine Mail</a>
+	<a href="mailto:<?php Config::put("mail"); ?>" title="Administrator-Mail">Sende eine Mail</a>
 	zu den Administratoren...
 </div>
 

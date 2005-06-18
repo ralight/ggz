@@ -1,18 +1,29 @@
 <?php
 
 // Fill out the values, and
-// rename this file to .htconf!
+// rename this file to .htconf or htconf!
 
 $dbhost = "localhost";
 $dbname = "xxx";
 $dbuser = "xxx";
 $dbpass = "xxx";
-$dbtype = "pgsql";
+$dbtype = "postgresql";
 
 $ggzhost = "localhost";
 $ggzname = "Local Zone";
-$ggzversion = "0.0.10pre";
+$ggzversion = "0.0.12pre";
 
 $ggzgamedir = "/...../var/ggzd/gamedata/";
+
+$communityname = "GGZ Community";
+$communityslogan = "The gamer's portal powered by GGZ Gaming Zone";
+
+$communitycopyright_title = "GGZ Gaming Zone";
+$communitycopyright_link = "http://www.ggzgamingzone.org/";
+
+$communityurl = "https://www.ggzcommunity.org/";
+$communitymail = "info@ggzcommunity.org";
+
+$communitytls = 0;
 
 ?>

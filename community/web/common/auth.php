@@ -182,7 +182,7 @@ class Auth
 					$cryptpass = Auth::hash($password);
 					if ($reactivate) :
 						$database->exec("UPDATE userinfo SET alterpass = '$cryptpass' WHERE handle = '$user'");
-						$link = "https://www.ggzcommunity.org/login/?task=reactivate&token=$password";
+						$link = Config::getvalue("url") .  "/login/?task=reactivate&token=$password";
 						$text .= "$user: regenerated, activate on $link\n";
 					else :
 						$database->exec("UPDATE users SET password = '$cryptpass' WHERE handle = '$user'");
@@ -223,7 +223,7 @@ class Auth
 
 			$text .= "\n";
 			$text .= "The GGZ Community Administrators\n";
-			$text .= "mailto:info@ggzcommunity.org\n";
+			$text .= "mailto:" . Config::getvalue("mail") . "\n";
 
 			mail($email, "GGZ Community: Password", $text);
 			//echo "XXXXX $text";
