@@ -23,8 +23,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 7097 $</revnumber>
-	<date>$Date: 2005-04-09 02:44:36 -0700 (Sat, 09 Apr 2005) $</date>
+	<revnumber>$Revision: 7285 $</revnumber>
+	<date>$Date: 2005-06-18 00:49:33 -0700 (Sat, 18 Jun 2005) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -74,6 +74,17 @@
     no information about seats or players yet. The only useful action
     is to wait for a LAUNCH message so the transition to the CONNECTED
     state can happen.
+    Games can query whether they run on GGZ or not via the environment
+    variable GGZMODE.
+  </para>
+  
+  <para>
+    In order to carry out the transition to CONNECTED, the game client
+    must connect to the core client. It does so by reading out the value
+    of the environment variable GGZSOCKET, and then either uses this
+    value as file descriptor, or (if no sockets can be passed directly)
+    as local port to connect to. In the former case, GGZSOCKET defaults
+    to the value 103.
   </para>
 
 </section>
