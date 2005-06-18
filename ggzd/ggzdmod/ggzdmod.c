@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: ggzdmod.c 7283 2005-06-18 07:18:33Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1141,6 +1141,10 @@ static int game_fork(GGZdMod * ggzdmod)
 			/* FIXME: what to do? */
 		}
 
+		/* Setup environment variables */
+		setenv("GGZMODE", "true", 1);
+		setenv("GGZSOCKET", "3", 1);
+
 		/* FIXME: can we call ggzdmod_log() from here? */
 		execv(ggzdmod->argv[0], ggzdmod->argv);	/* run game */
 
@@ -1164,6 +1168,10 @@ static int game_fork(GGZdMod * ggzdmod)
 
 int ggzdmod_connect(GGZdMod * ggzdmod)
 {
+	char *ggzsocketstr;
+	int ggzsocket;
+	int items;
+
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
@@ -1185,7 +1193,15 @@ int ggzdmod_connect(GGZdMod * ggzdmod)
 		}
 	} else {
 		/* For the game side we setup the fd */
-		ggzdmod->fd = 3;
+		ggzsocket = 3;
+		ggzsocketstr = getenv("GGZSOCKET");
+		if(ggzsocketstr) {
+			items = sscanf(ggzsocketstr, "%d", &ggzsocket);
+			if (items == 0) {
+				ggzsocket = 3;
+			}
+		}
+		ggzdmod->fd = ggzsocket;
 		
 		if (ggzdmod_log(ggzdmod, "GGZDMOD: Connecting to GGZ server.") < 0) {
 			ggzdmod->fd = -1;
