@@ -1,3 +1,4 @@
+<?php $stat = Statistics::ref(); ?>
 <div id="rightbar">
 	<h1>Database: Games</h1>
 
