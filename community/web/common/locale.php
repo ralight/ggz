@@ -35,7 +35,9 @@ class Locale
 	function replacer($matches)
 	{
 		$s = preg_replace("/^\_\((.*)\)$/", "\$1", $matches[0]);
-		return _($s);
+		$val = _($s);
+		$val = preg_replace("/\)\((.*)$/", "", $val);
+		return $val;
 	}
 
 	function includefile($file)
