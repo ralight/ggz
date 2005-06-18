@@ -23,8 +23,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 7093 $</revnumber>
-	<date>$Date: 2005-04-08 13:17:51 -0700 (Fri, 08 Apr 2005) $</date>
+	<revnumber>$Revision: 7284 $</revnumber>
+	<date>$Date: 2005-06-18 00:37:37 -0700 (Sat, 18 Jun 2005) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -71,7 +71,15 @@
   <para>
     The GGZ server ggzd and the game server communicate via a connection which
     gets established using socketpair(). The game server can then access the
-    communication channel on file descriptor 3. The first message which will
+    communication channel on a certain file descriptor.
+    Usually this descriptor has the value 3, but if the environment variable
+    GGZSOCKET is set, its value should be used instead.
+    Likewise, the environment variable GGZMODE can be queried to see if the
+    game server is running on GGZ at all.
+  </para>
+
+  <para>
+    The first message which will
     arrive is the <link linkend="msg.gamelaunch">GAME_LAUNCH</link> message,
     used to configure the game based on the table information: how many players
     are going to participate, are there any reserved seats, and so on.
@@ -235,6 +243,12 @@
                   </row>
 
                   <row rowsep="1">
+                    <entry>More data (cannot be displayed)</entry>
+                    <entry>---</entry>
+                    <entry>---</entry>
+                  </row>
+<!--
+                  <row rowsep="1">
                     <entrytbl namest="C1" nameend="C3" cols="3">
                       <colspec colnum="1" colname="C1" align="left">
                       <colspec colnum="2" colname="C2">
@@ -261,6 +275,7 @@
                       </tbody>
                     </entrytbl>
                   </row>
+-->
                 </tbody>
               </entrytbl>
             </row>
