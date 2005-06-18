@@ -7,7 +7,7 @@ Locale::detect();
 <html>
 <head>
 	<title><?php Config::put("name"); ?></title>
-	<link href="/images/full.css" rel="stylesheet" type="text/css" title="All sidebars">
+	<link href="<?php Config::theme("full.css"); ?>" rel="stylesheet" type="text/css" title="All sidebars">
 </head>
 
 <body>

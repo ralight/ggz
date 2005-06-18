@@ -26,4 +26,6 @@ $communitymail = "info@ggzcommunity.org";
 
 $communitytls = 0;
 
+$communitytheme = "";
+
 ?>

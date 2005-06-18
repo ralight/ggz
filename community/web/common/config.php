@@ -5,6 +5,7 @@ global $config_object;
 class Config
 {
 	var $config;
+	var $theme;
 	
 	function Config($file)
 	{
@@ -26,6 +27,8 @@ class Config
 		global $ggzname;
 		global $ggzversion;
 		global $ggzgamedir;
+
+		global $communitytheme;
 
 		require_once($file);
 
@@ -49,6 +52,12 @@ class Config
 		$this->config['ggzname'] = $ggzname;
 		$this->config['ggzversion'] = $ggzversion;
 		$this->config['ggzgamedir'] = $ggzgamedir;
+
+		if (!$communitytheme) :
+			$communitytheme = "default";
+		endif;
+
+		$this->theme = $communitytheme;
 	}
 
 	function getvalue($key)
@@ -61,6 +70,13 @@ class Config
 	function put($key)
 	{
 		echo Config::getvalue($key);
+	}
+
+	function theme($image)
+	{
+		global $config_object;
+
+		echo "/images/" . $config_object->theme . "/$image";
 	}
 }
 

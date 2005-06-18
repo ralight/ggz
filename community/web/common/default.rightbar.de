@@ -35,8 +35,8 @@ latest_forumposts();
 	<div class="menubar">
 		<h1>Spieler weltweit</h1>
 <?php
-include_once("images/mundomap.map");
+include_once(Config::theme("mundomap.map"));
 ?>
-		<a href="/map/"><img src="/images/mundomap.png" usemap="#ggzmap"></a>
+		<a href="/map/"><img src="<?php Config::theme("mundomap.png"); ?>" usemap="#ggzmap"></a>
 	</div>
 </div>

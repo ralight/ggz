@@ -1,5 +1,5 @@
 	<div style="float:left">
-	<img src="/images/pagelogo.png" alt="Community logo">
+	<img src="<?php Config::theme("pagelogo.png"); ?>" alt="Community logo">
 	</div>
 	<div style="margin-top: 8px">
 	<h1>GGZ Community</h1>
