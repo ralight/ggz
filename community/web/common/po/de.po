@@ -1,0 +1,74 @@
+msgid "Front page"
+msgstr "Startseite"
+
+msgid "Main"
+msgstr "Start"
+
+msgid "Game statistics and rankings"
+msgstr "Spielstatistiken und -bewertungen"
+
+msgid "Database"
+msgstr "Datenbank"
+
+msgid "Overview"
+msgstr "Überblick"
+
+msgid "Games"
+msgstr "Spieleangebot"
+
+msgid "Matches"
+msgstr "Einzelspiele"
+
+msgid "Tournaments"
+msgstr "Tournaments"
+
+msgid "Players"
+msgstr "Spieler"
+
+msgid "Teams"
+msgstr "Teams/Clans"
+
+msgid "Some online fun"
+msgstr "Spielspaß online"
+
+msgid "Play!"
+msgstr "Spielen!"
+
+msgid "GGZ games"
+msgstr "GGZ-Spiele"
+
+msgid "Web games"
+msgstr "Web-Spiele"
+
+msgid "Player contributions"
+msgstr "Aktive Mitarbeit"
+
+msgid "Manage!"
+msgstr "Mitmachen!"
+
+msgid "Game contents"
+msgstr "Spielinhalte"
+
+msgid "Karma"
+msgstr "Karma"
+
+msgid "Forums"
+msgstr "Foren"
+
+msgid "Community forum"
+msgstr "Community-Forum"
+
+msgid "Individual blogs"
+msgstr "Individuelle Blogs"
+
+msgid "Articles"
+msgstr "Artikel"
+
+msgid "About GGZ Community"
+msgstr "Über GGZ Community"
+
+msgid "About"
+msgstr "Über..."
+
+msgid "Contact"
+msgstr "Kontakt"

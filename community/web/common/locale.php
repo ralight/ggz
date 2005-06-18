@@ -18,6 +18,17 @@ class Locale
 		if ($ending != "php") :
 			$community_locale_lang = $ending;
 		endif;
+
+		setlocale(LC_MESSAGES, Locale::localename($community_locale_lang));
+		$root = $_SERVER["DOCUMENT_ROOT"];
+		bindtextdomain("ggzcommunity", "$root/common/po");
+		textdomain("ggzcommunity");
+	}
+
+	function replacer($matches)
+	{
+		$s = preg_replace("/\_\(([^\)]*)\)/", "\$1", $matches[0]);
+		return _($s);
 	}
 
 	function includefile($file)
@@ -25,10 +36,28 @@ class Locale
 		global $community_locale_lang;
 
 		$lang = $community_locale_lang;
+		ob_start(); 
 		$ret = @include("$file.$lang");
+		$contents = ob_get_contents(); 
+		ob_end_clean(); 
 		if(!$ret) :
+			ob_start(); 
 			include($file);
+			$contents = ob_get_contents(); 
+			ob_end_clean(); 
 		endif;
+
+		$contents = preg_replace_callback("/\_\([^\)]*\)/",
+			array("Locale", "replacer"),
+			$contents);
+
+		echo $contents;
+	}
+
+	function localename($s)
+	{
+		if ($s == "de") return "de_DE@euro";
+		return $s;
 	}
 
 	function languagename($s)

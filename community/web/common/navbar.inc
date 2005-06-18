@@ -1,46 +1,46 @@
 	<div class="menubar">
 		<div class="menu">
-			<a href="/" class="menuitem" title="Front page">Main</a>
+			<a href="/" class="menuitem" title="_(Front page)">_(Main)</a>
 		</div>
 		<div class="menu">
-			<a href="/db/" class="menuitem" title="Game statistics and rankings">Database</a>
+			<a href="/db/" class="menuitem" title="_(Game statistics and rankings)">_(Database)</a>
 			<div class="menu">
-				<a href="/db/" class="menuitem">Overview</a>
-				<a href="/db/games/" class="menuitem">Games</a>
-				<a href="/db/matches/" class="menuitem">Matches</a>
-				<a href="/db/tournaments/" class="menuitem">Tournaments</a>
-				<a href="/db/players/" class="menuitem">Players</a>
-				<a href="/db/teams/" class="menuitem">Teams</a>
+				<a href="/db/" class="menuitem">_(Overview)</a>
+				<a href="/db/games/" class="menuitem">_(Games)</a>
+				<a href="/db/matches/" class="menuitem">_(Matches)</a>
+				<a href="/db/tournaments/" class="menuitem">_(Tournaments)</a>
+				<a href="/db/players/" class="menuitem">_(Players)</a>
+				<a href="/db/teams/" class="menuitem">_(Teams)</a>
 			</div>
 		</div>
 		<div class="menu">
-			<a href="/games/" class="menuitem" title="Some online fun">Play!</a>
+			<a href="/games/" class="menuitem" title="_(Some online fun)">_(Play!)</a>
 			<div class="menu">
-				<a href="/games/" class="menuitem">GGZ games</a>
-				<a href="/webgames/" class="menuitem">Web games</a>
+				<a href="/games/" class="menuitem">_(GGZ games)</a>
+				<a href="/webgames/" class="menuitem">_(Web games)</a>
 			</div>
 		</div>
 		<div class="menu">
-			<a href="/active/hotstuff/" class="menuitem" title="Player contributions">Manage!</a>
+			<a href="/active/hotstuff/" class="menuitem" title="_(Player contributions)">_(Manage!)</a>
 			<div class="menu">
-				<a href="/active/hotstuff/" class="menuitem">Game contents</a>
-				<a href="/active/tournaments/" class="menuitem">Tournaments</a>
-				<a href="/active/teams/" class="menuitem">Teams</a>
-				<a href="/active/karma/" class="menuitem">Karma</a>
+				<a href="/active/hotstuff/" class="menuitem">_(Game contents)</a>
+				<a href="/active/tournaments/" class="menuitem">_(Tournaments)</a>
+				<a href="/active/teams/" class="menuitem">_(Teams)</a>
+				<a href="/active/karma/" class="menuitem">_(Karma)</a>
 			</div>
 		</div>
 		<div class="menu">
-			<a href="/forums/" class="menuitem" title="Forums">Forums</a>
+			<a href="/forums/" class="menuitem" title="_(Forums)">_(Forums)</a>
 			<div class="menu">
-				<a href="/forums/" class="menuitem">Community forum</a>
-				<a href="/blogs/" class="menuitem">Individual blogs</a>
-				<a href="/articles/" class="menuitem">Articles</a>
+				<a href="/forums/" class="menuitem">_(Community forum)</a>
+				<a href="/blogs/" class="menuitem">_(Individual blogs)</a>
+				<a href="/articles/" class="menuitem">_(Articles)</a>
 			</div>
 		</div>
 		<div class="menu">
-			<a href="/contact/" class="menuitem" title="About GGZ Community">About</a>
+			<a href="/contact/" class="menuitem" title="_(About GGZ Community)">_(About)</a>
 			<div class="menu">
-				<a href="/contact/" class="menuitem">Contact</a>
+				<a href="/contact/" class="menuitem">_(Contact)</a>
 			</div>
 		</div>
 	</div>
