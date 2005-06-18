@@ -31,7 +31,10 @@ my $groupid = -1;
 ### end of configuration
 
 my $ggz_conn = DBI->connect("DBI:$ggz_type:host=$ggz_host;dbname=$ggz_name;user=$ggz_user;password=$ggz_pass");
+$ggz_conn || die;
+
 my $phpbb_conn = DBI->connect("DBI:$phpbb_type:host=$phpbb_host;dbname=$phpbb_name;user=$phpbb_user;password=$phpbb_pass");
+$phpbb_conn || die;
 
 my ($id, $name, $fullname, $password, $email);
 my ($country);

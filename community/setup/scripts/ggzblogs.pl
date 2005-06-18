@@ -18,6 +18,7 @@ my $ggz_pass = "xxx";
 ### end of configuration
 
 my $ggz_conn = DBI->connect("DBI:$ggz_type:host=$ggz_host;dbname=$ggz_name;user=$ggz_user;password=$ggz_pass");
+$ggz_conn || die;
 
 my ($name, $blogfeed);
 
