@@ -64,7 +64,18 @@ class Config
 	{
 		global $config_object;
 
-		return $config_object->config[$key];
+		$preval = $config_object->config[$key];
+
+		if (is_array($preval)) :
+			$val = $preval[Locale::language()];
+			if (!$val) :
+				$val = $preval[''];
+			endif;
+		else :
+			$val = $preval;
+		endif;
+
+		return $val;
 	}
 
 	function put($key)

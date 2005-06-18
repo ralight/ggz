@@ -25,6 +25,13 @@ class Locale
 		textdomain("ggzcommunity");
 	}
 
+	function language()
+	{
+		global $community_locale_lang;
+
+		return $community_locale_lang;
+	}
+
 	function replacer($matches)
 	{
 		$s = preg_replace("/^\_\((.*)\)$/", "\$1", $matches[0]);
