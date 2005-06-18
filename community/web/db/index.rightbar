@@ -1,19 +1,20 @@
+<?php $stat = Statistics::ref(); ?>
 <div id="rightbar">
-	<h1>Database</h1>
+	<h1>_(Database)</h1>
 
 	<hr class="leather">
 
 	<div class="menubar">
 		<h1>Live games</h1>
 		<div class="menu">
-			<a href="/db/live/" class="menuitem" title="Live games">View games</a>
+			<a href="/db/live/" class="menuitem" title="_(Live games)">_(View games)</a>
 		</div>
 	</div>
 
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>Teams</h1>
+		<h1>_(Teams)</h1>
 		<div class="menu">
 		<?php $stat->listTeams(5, true); ?>
 		</div>
@@ -22,7 +23,7 @@
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>Players</h1>
+		<h1>_(Players)</h1>
 		<div class="menu">
 		<?php $stat->listPlayers(5, true); ?>
 		</div>
@@ -31,7 +32,7 @@
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>Games</h1>
+		<h1>_(Games)</h1>
 		<div class="menu">
 		<?php $stat->listGames(5, true); ?>
 		</div>

@@ -15,6 +15,13 @@ class Statistics
 	{
 	}
 
+	function ref()
+	{
+		global $stat;
+
+		return $stat;
+	}
+
 	function setConnection($database)
 	{
 		$this->database = $database;

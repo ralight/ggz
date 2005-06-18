@@ -9,10 +9,10 @@
 	$leftbar = str_replace("php", "leftbar", $file);
 
 	if (substr($rightbar, strlen($rightbar) - 3, 1) == ".") :
-		$commonrightbar = substr($rightbar, 0, strlen($rightbar) - 3);
+		$rightbar = substr($rightbar, 0, strlen($rightbar) - 3);
 	endif;
 	if (substr($leftbar, strlen($leftbar) - 3, 1) == ".") :
-		$commonleftbar = substr($leftbar, 0, strlen($leftbar) - 3);
+		$leftbar = substr($leftbar, 0, strlen($leftbar) - 3);
 	endif;
 ?>
 
@@ -26,8 +26,7 @@
 	$mainwidth = 60;
 	$mainleft = 20;
 
-	if ((!$global_leftbar) && (@include($leftbar))) :
-	elseif ((!$global_leftbar) && (@include($commonleftbar))) :
+	if ((!$global_leftbar) && (Locale::includefile($leftbar))) :
 	else :
 		if ($global_leftbar != "disabled") :
 			if (!$global_leftbar) :
@@ -46,8 +45,7 @@
 		endif;
 	endif;
 
-	if ((!$global_rightbar) && (@include($rightbar))) :
-	elseif ((!$global_rightbar) && (@include($commonrightbar))) :
+	if ((!$global_rightbar) && (Locale::includefile($rightbar))) :
 	else :
 		if ($global_rightbar != "disabled") :
 			if (!$global_rightbar) :

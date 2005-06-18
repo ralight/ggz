@@ -130,3 +130,9 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
+msgid "Live games"
+msgstr ""
+
+msgid "View games"
+msgstr ""
+

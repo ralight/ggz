@@ -51,7 +51,7 @@ class Locale
 		ob_end_clean(); 
 		if(!$ret) :
 			ob_start(); 
-			include($file);
+			$ret = @include($file);
 			$contents = ob_get_contents(); 
 			ob_end_clean(); 
 		endif;
@@ -61,6 +61,8 @@ class Locale
 			$contents);
 
 		echo $contents;
+
+		return $ret;
 	}
 
 	function localename($s)
