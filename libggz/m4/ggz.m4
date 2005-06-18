@@ -24,6 +24,7 @@ dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
 dnl AC_GGZ_INIT - initialization and paths/options setup
+dnl AC_GGZ_VERSION - ensure a minimum version of GGZ
 dnl AC_GGZ_LIBGGZ - find the libggz headers and libraries
 dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
 dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
@@ -149,6 +150,34 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	 save_cxxflags="$save_cxxflags -fsigned-char"])
 CFLAGS=$save_cflags
 CXXFLAGS=$save_cxxflags
+])
+
+dnl ------------------------------------------------------------------------
+dnl Ensure that a minimum version of GGZ is present
+dnl Synopsis: AC_GGZ_VERSION(major, minor, micro)
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN([AC_GGZ_VERSION],
+[
+	major=$1
+	minor=$2
+	micro=$3
+
+	testprologue="#include <ggz.h>"
+	testbody=""
+	testbody="$testbody if(LIBGGZ_VERSION_MAJOR > $major) return 0;"
+	testbody="$testbody if(LIBGGZ_VERSION_MAJOR < $major) return -1;"
+	testbody="$testbody if(LIBGGZ_VERSION_MINOR > $minor) return 0;"
+	testbody="$testbody if(LIBGGZ_VERSION_MINOR < $minor) return -1;"
+	testbody="$testbody if(LIBGGZ_VERSION_MICRO > $micro) return 0;"
+	testbody="$testbody if(LIBGGZ_VERSION_MICRO < $micro) return -1;"
+	testbody="$testbody return 0;"
+
+	AC_RUN_IFELSE(
+		[AC_LANG_PROGRAM([[$testprologue]], [[$testbody]])],
+		[],
+		[AC_MSG_ERROR([The GGZ version is too old. Version $major.$minor.$micro is required.])]
+	)
 ])
 
 dnl ------------------------------------------------------------------------
