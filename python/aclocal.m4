@@ -9,31 +9,22 @@ dnl
 dnl ======================================
 dnl
 dnl This file is common to most GGZ modules, and should be kept in sync
-dnl between them all.  Currently the following modules use it:
-dnl kde-games, kde-client, gtk-games, gtk-client, utils, grubby,
-dnl ggz-client-libs, ggzd, gnome-client, txt-client.
+dnl between them all.  The master copy resides with libggz.
+dnl Currently the following modules use it:
+dnl   kde-games, kde-client, gtk-games, gtk-client, utils, grubby,
+dnl   ggz-client-libs, ggzd, gnome-client, txt-client
 dnl See /docs/ggz-project/buildsystem for documentation.
 dnl
 dnl ======================================
 dnl
 dnl History:
-dnl 2001-05-??: first version to find easysock and ggzcore
-dnl 2001-09-09: include libggz[d]mod support, and rename ac_find_file
-dnl 2001-11-05: backport from copenhagen, and more macros
-dnl 2001-12-16: updated for new ggzmod, imported to gtk-games and gtk-client
-dnl 2002-01-12: include libggz support; imported to ggz-client-libs and ggzd
-dnl 2002-01-18: remove easysock functions; look in prefix dirs for
-dnl             includes and libs
-dnl 2002-08-20: change -I<directory> to -isystem<directory> to avoid
-dnl             warnings in gcc3
-dnl 2002-09-25: added AC_GGZ_ERROR, AC_GGZ_REMOVEDUPS, AC_GGZ_INIT, allowing
-dnl             for more control over what is going to happen
-dnl 2002-10-12: added action-if-found and action-if-not-found parameters to
-dnl             all primary macros
-
+dnl   See the CVS log for a full history.
+dnl
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
+dnl AC_GGZ_INIT - initialization and paths/options setup
+dnl AC_GGZ_VERSION - ensure a minimum version of GGZ
 dnl AC_GGZ_LIBGGZ - find the libggz headers and libraries
 dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
 dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
@@ -48,7 +39,6 @@ dnl   2.  Action-if-not-found (or empty for error, or "ignore" to ignore).
 dnl ------------------------------------------------------------------------
 dnl Internal functions:
 dnl ------------------------------------------------------------------------
-dnl AC_GGZ_INIT - initialization
 dnl AC_GGZ_ERROR - user-friendly error messages
 dnl AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
 dnl AC_GGZ_REMOVEDUPS - eliminate duplicate list elements
@@ -146,7 +136,7 @@ if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdetc="$ac_ggz_stdetc/ggzd /usr/local/etc/ggzd /etc/ggzd"
 fi
 if test "x$1" = "xexport" || test "x$2" = "xexport"; then
-  CPPFLAGS="$CPPFLAGS -isystem${ac_ggz_prefix_incdir}"
+  CPPFLAGS="$CPPFLAGS -isystem ${ac_ggz_prefix_incdir}"
   LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir}"
 fi
 
@@ -160,6 +150,34 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	 save_cxxflags="$save_cxxflags -fsigned-char"])
 CFLAGS=$save_cflags
 CXXFLAGS=$save_cxxflags
+])
+
+dnl ------------------------------------------------------------------------
+dnl Ensure that a minimum version of GGZ is present
+dnl Synopsis: AC_GGZ_VERSION(major, minor, micro)
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN([AC_GGZ_VERSION],
+[
+	major=$1
+	minor=$2
+	micro=$3
+
+	testprologue="#include <ggz.h>"
+	testbody=""
+	testbody="$testbody if(LIBGGZ_VERSION_MAJOR > $major) return 0;"
+	testbody="$testbody if(LIBGGZ_VERSION_MAJOR < $major) return -1;"
+	testbody="$testbody if(LIBGGZ_VERSION_MINOR > $minor) return 0;"
+	testbody="$testbody if(LIBGGZ_VERSION_MINOR < $minor) return -1;"
+	testbody="$testbody if(LIBGGZ_VERSION_MICRO > $micro) return 0;"
+	testbody="$testbody if(LIBGGZ_VERSION_MICRO < $micro) return -1;"
+	testbody="$testbody return 0;"
+
+	AC_RUN_IFELSE(
+		[AC_LANG_PROGRAM([[$testprologue]], [[$testbody]])],
+		[],
+		[AC_MSG_ERROR([The GGZ version is too old. Version $major.$minor.$micro is required.])]
+	)
 ])
 
 dnl ------------------------------------------------------------------------
@@ -177,16 +195,17 @@ libggz_libraries=""
 libggz_includes=""
 
 AC_ARG_WITH(libggz-dir,
-    [  --with-libggz-dir=DIR       libggz installation prefix ],
+    AC_HELP_STRING([--with-libggz-dir=DIR],[libggz installation prefix]),
     [  ac_libggz_includes="$withval"/include
        ac_libggz_libraries="$withval"/lib
     ])
 AC_ARG_WITH(libggz-includes,
-    [  --with-libggz-includes=DIR  where the libggz includes are. ],
+    AC_HELP_STRING([--with-libggz-includes=DIR],
+                   [where the libggz includes are]),
     [  ac_libggz_includes="$withval"
     ])
 AC_ARG_WITH(libggz-libraries,
-    [  --with-libggz-libraries=DIR where the libggz libs are. ],
+    AC_HELP_STRING([--with-libggz-libraries=DIR],[where the libggz libs are]),
     [  ac_libggz_libraries="$withval"
     ])
 
@@ -202,10 +221,9 @@ ac_libggz_includes="$libggz_incdir"
 libggz_libdirs="$ac_libggz_libraries $ac_ggz_stdlib"
 AC_GGZ_REMOVEDUPS($libggz_libdirs, libggz_libdirs)
 
-test=NONE
-libggz_libdir=NONE
+libggz_libdir=NO
 for dir in $libggz_libdirs; do
-  try="ls -1 $dir/libggz.so"
+  try="ls -1 $dir/libggz.la $dir/libggz.so"
   if test -n "`$try 2> /dev/null`"; then libggz_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
 done
 
@@ -275,16 +293,18 @@ ggzcore_libraries=""
 ggzcore_includes=""
 
 AC_ARG_WITH(ggzcore-dir,
-    [  --with-ggzcore-dir=DIR       ggzcore installation prefix ],
+    AC_HELP_STRING([--with-ggzcore-dir=DIR],[ggzcore installation prefix]),
     [  ac_ggzcore_includes="$withval"/include
        ac_ggzcore_libraries="$withval"/lib
     ])
 AC_ARG_WITH(ggzcore-includes,
-    [  --with-ggzcore-includes=DIR  where the ggzcore includes are. ],
+    AC_HELP_STRING([--with-ggzcore-includes=DIR],
+                   [where the ggzcore includes are]),
     [  ac_ggzcore_includes="$withval"
     ])
 AC_ARG_WITH(ggzcore-libraries,
-    [  --with-ggzcore-libraries=DIR where the ggzcore libs are. ],
+    AC_HELP_STRING([--with-ggzcore-libraries=DIR],
+                   [where the ggzcore libs are]),
     [  ac_ggzcore_libraries="$withval"
     ])
 
@@ -300,10 +320,9 @@ ac_ggzcore_includes="$ggzcore_incdir"
 ggzcore_libdirs="$ac_ggzcore_libraries $ac_ggz_stdlib"
 AC_GGZ_REMOVEDUPS($ggzcore_libdirs, ggzcore_libdirs)
 
-test=NONE
-ggzcore_libdir=NONE
+ggzcore_libdir=NO
 for dir in $ggzcore_libdirs; do
-  try="ls -1 $dir/libggzcore.so"
+  try="ls -1 $dir/libggzcore.la $dir/libggzcore.so"
   if test -n "`$try 2> /dev/null`"; then ggzcore_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
 done
 
@@ -371,7 +390,7 @@ ac_ggz_config=NO
 ggz_config=""
 
 AC_ARG_WITH(ggzconfig,
-    [  --with-ggzconfig=DIR          path to ggz-config ],
+    AC_HELP_STRING([--with-ggzconfig=DIR],[path to ggz-config]),
     [  ac_ggz_config="$withval"
     ])
 
@@ -396,6 +415,14 @@ eval "$ac_cv_have_ggz_config"
 if test "$have_ggz_config" != yes; then
   if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggz_config (intentionally ignored)])
+    GGZ_CONFIG="/bin/true"
+    ggzexecmoddir="\${prefix}/lib/ggz"
+    ggzdatadir="\${prefix}/share/ggz"
+    AC_SUBST(GGZ_CONFIG)
+    AC_SUBST(ggzexecmoddir)
+    AC_SUBST(ggzdatadir)
+    AC_DEFINE_UNQUOTED(GAMEDIR, "${prefix}/lib/ggz", [Path where to install the games])
+    AC_DEFINE_UNQUOTED(GGZDATADIR, "${prefix}/share/ggz", [Path where the games should look for their data files])
   else
     AC_MSG_RESULT([$have_ggz_config])
     if test "x$2" = "x"; then
@@ -406,33 +433,47 @@ if test "$have_ggz_config" != yes; then
     $2
   fi
 else
-  ac_cv_have_ggz_config="have_ggz_config=yes \
-    ac_ggz_config=$ac_ggz_config"
-  AC_MSG_RESULT([$ac_ggz_config/ggz-config])
+  pathto_app=`echo $prefix/bin/ | tr -s "/"`
+  pathto_ggz=`echo $ac_ggz_config/ | tr -s "/"`
 
-  ggz_config="$ac_ggz_config"
+  if test "x$pathto_app" != "x$pathto_ggz"; then
+    AC_MSG_RESULT([$have_ggz_config (dismissed due to different prefix)])
+    GGZ_CONFIG="/bin/true"
+    ggzexecmoddir="\${prefix}/lib/ggz"
+    ggzdatadir="\${prefix}/share/ggz"
+    AC_SUBST(GGZ_CONFIG)
+    AC_SUBST(ggzexecmoddir)
+    AC_SUBST(ggzdatadir)
+    AC_DEFINE_UNQUOTED(GAMEDIR, "${prefix}/lib/ggz", [Path where to install the games])
+    AC_DEFINE_UNQUOTED(GGZDATADIR, "${prefix}/share/ggz", [Path where the games should look for their data files])
+  else
+    ac_cv_have_ggz_config="have_ggz_config=yes \
+      ac_ggz_config=$ac_ggz_config"
+    AC_MSG_RESULT([$ac_ggz_config/ggz-config])
 
-  AC_SUBST(ggz_config)
+    ggz_config="$ac_ggz_config"
+    AC_SUBST(ggz_config)
 
-  GGZ_CONFIG="${ggz_config}/ggz-config"
-  AC_SUBST(GGZ_CONFIG)
+    GGZ_CONFIG="${ggz_config}/ggz-config"
+    AC_SUBST(GGZ_CONFIG)
 
-  ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
-  AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
-  ggzexecmoddir=`$GGZ_CONFIG --gamedir`
-  AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
-  ggzdatadir=`$GGZ_CONFIG --datadir`
-  AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
-  packagesrcdir=`cd $srcdir && pwd`
-  AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
+    ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
+    AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
+    ggzexecmoddir=`$GGZ_CONFIG --gamedir`
+    AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
+    ggzdatadir=`$GGZ_CONFIG --datadir`
+    AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
+    packagesrcdir=`cd $srcdir && pwd`
+    AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
 
-  AC_SUBST(ggzmoduleconfdir)
-  AC_SUBST(ggzexecmoddir)
-  AC_SUBST(ggzdatadir)
-  AC_SUBST(packagesrcdir)
+    AC_SUBST(ggzmoduleconfdir)
+    AC_SUBST(ggzexecmoddir)
+    AC_SUBST(ggzdatadir)
+    AC_SUBST(packagesrcdir)
 
-  # Perform actions given by argument 1.
-  $1
+    # Perform actions given by argument 1.
+    $1
+  fi
 fi
 
 ])
@@ -452,16 +493,18 @@ ggzmod_libraries=""
 ggzmod_includes=""
 
 AC_ARG_WITH(ggzmod-dir,
-    [  --with-ggzmod-dir=DIR        ggzmod installation prefix ],
+    AC_HELP_STRING([--with-ggzmod-dir=DIR],[ggzmod installation prefix]),
     [  ac_ggzmod_includes="$withval"/include
        ac_ggzmod_libraries="$withval"/lib
     ])
 AC_ARG_WITH(ggzmod-includes,
-    [  --with-ggzmod-includes=DIR   where the ggzmod includes are. ],
+    AC_HELP_STRING([--with-ggzmod-includes=DIR],
+                   [where the ggzmod includes are]),
     [  ac_ggzmod_includes="$withval"
     ])
 AC_ARG_WITH(ggzmod-libraries,
-    [  --with-ggzmod-libraries=DIR  where the ggzmod libs are. ],
+    AC_HELP_STRING([--with-ggzmod-libraries=DIR],
+                   [where the ggzmod libs are]),
     [  ac_ggzmod_libraries="$withval"
     ])
 
@@ -477,10 +520,9 @@ ac_ggzmod_includes="$ggzmod_incdir"
 ggzmod_libdirs="$ac_ggzmod_libraries $ac_ggz_stdlib"
 AC_GGZ_REMOVEDUPS($ggzmod_libdirs, ggzmod_libdirs)
 
-test=NONE
-ggzmod_libdir=NONE
+ggzmod_libdir=NO
 for dir in $ggzmod_libdirs; do
-  try="ls -1 $dir/libggzmod.so"
+  try="ls -1 $dir/libggzmod.la $dir/libggzmod.so"
   if test -n "`$try 2> /dev/null`"; then ggzmod_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
 done
 
@@ -549,16 +591,18 @@ ggzdmod_libraries=""
 ggzdmod_includes=""
 
 AC_ARG_WITH(ggzdmod-dir,
-    [  --with-ggzdmod-dir=DIR        ggzdmod installation prefix ],
+    AC_HELP_STRING([--with-ggzdmod-dir=DIR], [ggzdmod installation prefix]),
     [  ac_ggzdmod_includes="$withval"/include
        ac_ggzdmod_libraries="$withval"/lib
     ])
 AC_ARG_WITH(ggzdmod-includes,
-    [  --with-ggzdmod-includes=DIR   where the ggzdmod includes are. ],
+    AC_HELP_STRING([--with-ggzdmod-includes=DIR], 
+                   [where the ggzdmod includes are]),
     [  ac_ggzdmod_includes="$withval"
     ])
 AC_ARG_WITH(ggzdmod-libraries,
-    [  --with-ggzdmod-libraries=DIR  where the ggzdmod libs are. ],
+    AC_HELP_STRING([--with-ggzdmod-libraries=DIR],
+                   [where the ggzdmod libs are]),
     [  ac_ggzdmod_libraries="$withval"
     ])
 
@@ -574,10 +618,9 @@ ac_ggzdmod_includes="$ggzdmod_incdir"
 ggzdmod_libdirs="$ac_ggzdmod_libraries $ac_ggz_stdlib"
 AC_GGZ_REMOVEDUPS($ggzdmod_libdirs, ggzdmod_libdirs)
 
-test=NONE
-ggzdmod_libdir=NONE
+ggzdmod_libdir=NO
 for dir in $ggzdmod_libdirs; do
-  try="ls -1 $dir/libggzdmod.so"
+  try="ls -1 $dir/libggzdmod.la $dir/libggzdmod.so"
   if test -n "`$try 2> /dev/null`"; then ggzdmod_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
 done
 
@@ -641,7 +684,7 @@ AC_DEFUN([AC_GGZ_SERVER],
 [
 AC_MSG_CHECKING([for GGZ server: ggzd])
 AC_ARG_WITH(ggzd-confdir,
-[  --with-ggzd-confdir=DIR       directory for room/game data],
+    AC_HELP_STRING([--with-ggzd-confdir=DIR], [directory for room/game data]),
 [ ac_ggzd_confdir="$withval"
 ])
 
@@ -703,7 +746,7 @@ else
 	if test "x${prefix}" != "xNONE" && test "x${prefix}" != "x${ac_default_prefix}"; then
 		prefixed=1
 	fi
-	if test "x$ggzconfdir" != "x${prefix}/etc/ggzd" && test "x$prefixed" = "x1"; then
+	if test "x$ggzdconfdir" != "x${prefix}/etc/ggzd" && test "x$prefixed" = "x1"; then
 		AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir, but using ${prefix}/etc/ggzd nevertheless)])
 		ggzdconfdir="\${prefix}/etc/ggzd"
 	else
@@ -758,6 +801,10 @@ intl=1
 if test "x$GETTEXT" = "x"; then intl=0; fi
 if test "x$MSGFMT" = "x"; then intl=0; fi
 if test "x$MSGMERGE" = "x"; then intl=0; fi
+LIBS="$LIBICONV $LIBS"
+AC_CHECK_LIB(intl, gettext, [LIBS="-lintl $LIBS"])
+AC_CHECK_FUNCS([gettext ngettext], [], [intl=0])
+AC_CHECK_HEADERS([libintl.h locale.h])
 if test "$intl" = 0; then
   if test "x$2" = "xignore"; then
     AC_MSG_WARN([Internationalization tools missing. (ignored)])
@@ -781,6 +828,8 @@ else
   AC_SUBST(GMSGFMT)
   AC_SUBST(MSGFMT)
   AC_SUBST(MSGMERGE)
+
+  AC_DEFINE(ENABLE_NLS, 1, [Define if NLS is enabled])
 
   # Perform actions given by argument 1.
   $1
