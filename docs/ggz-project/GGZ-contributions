@@ -15,12 +15,6 @@ Specific contributions
   Taken from drachenburg.de (only slightly confirmed)
   - kde-games/kdots/*dragon.png
 
-* Chess figures
-  Taken from xboard
-  - gtk-games/chess/bitmaps/*.svg (autoscanned)
-  - kde-games/koenig/pixs/*.svg
-  - python/ggzboard/chess/*.svg
-
 * Combat figures
   Grabbed from a clipart cd (perdig)
   - gtk-games/combat/pixmaps/default/*.png
@@ -42,6 +36,15 @@ Imported from other projects
 * Kandalf, Tux, ... icons
   Taken from KDE/GNOME (license ok)
   - kde-games/ktictactux/themes/???.png
+
+* Chess figures
+  Taken from xboard
+  - gtk-games/chess/bitmaps/*.svg (autoscanned)
+  - kde-games/koenig/pixs/*.svg
+  - python/ggzboard/chess/*.svg
+
+* Widelands theme in GGZ Community
+  - community/images/widelands
 
 Code reuse
 ----------
