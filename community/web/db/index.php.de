@@ -1,6 +1,5 @@
-<?php include_once("top.inc"); ?>
-<?php include_once("database.php"); ?>
-<?php include_once("stats.php"); ?>
+<?php include("top.inc"); ?>
+<?php include("stats.php"); ?>
 
 <?php $stat->calculateGeneral(); ?>
 

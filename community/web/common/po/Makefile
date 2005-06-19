@@ -2,12 +2,26 @@ all:
 	@echo "make messages install"
 
 install:
-	mkdir -p de/LC_MESSAGES
-	msgfmt -o de/LC_MESSAGES/ggzcommunity.mo de.po
+	@for i in *.po; do \
+		b=$$(echo $$i | cut -d "." -f 1); \
+		echo Install $$i; \
+		mkdir -p $$b/LC_MESSAGES; \
+		msgfmt -o $$b/LC_MESSAGES/ggzcommunity.mo $$i; \
+	done
 
 messages:
-	./extract.pl ../*.* ../../*/*.rightbar > ggzcommunity.pot
-	msgmerge de.po ggzcommunity.pot > tmp
-	mv tmp de.po
+	@echo Catalog update: templates
+	@x="-name *.rightbar -o -name *.leftbar"; \
+	x="$$x -o -name *.inc -o -name *.php"; \
+	l=$$(find ../.. $$x); \
+	./extract.pl $$l > ggzcommunity.pot
+	@echo Catalog update: source
+	@./extract-php.pl ../*.php >> ggzcommunity.pot
+	#@xgettext --from-code utf-8 --omit-header -LPHP -k__ ../*.php -o tmp
+	#cat tmp >> ggzcommunity.pot
+	rm -f tmp
+	@for i in *.po; do \
+		echo Merge $$i; \
+		msgmerge $$i ggzcommunity.pot > tmp && mv tmp $$i; \
+	done
 
-#./extract.pl `find .. -name "*inc*"` > ggzcommunity.pot

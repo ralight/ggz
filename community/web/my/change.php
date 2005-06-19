@@ -72,6 +72,29 @@ $c->listall();
 
 	</div>
 	<div class="text">
+	In case the language detection does not work or you prefer another language,
+	this can be changed here.
+	</div>
+	<div class="text">
+
+<form action='settings.php?language=1' method='POST'>
+<table>
+<tr><td>Language:</td><td>
+<select name='user_language'>
+<option value=''>(autodetect)</option>
+<option value='de'>Deutsch</option>
+<option value='en'>English</option>
+<option value='fr'>Français</option>
+<option value='es'>Español</option>
+<option value='sv'>Svenska</option>
+</select>
+</td></tr>
+<tr><td></td><td><input type='submit' value='Change'></td></tr>
+</table>
+</form>
+
+	</div>
+	<div class="text">
 	The password can be changed below.
 	</div>
 	<div class="text">

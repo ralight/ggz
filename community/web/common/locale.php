@@ -2,21 +2,39 @@
 
 global $community_locale_lang;
 
+function __($x)
+{
+	return _($x);
+}
+
 class Locale
 {
 	function Locale()
 	{
 	}
 
-	function detect()
+	function ending($file)
+	{
+		$far = explode(".", $file);
+		$ending = $far[sizeof($far) - 1];
+		if ($file == $ending) :
+			return "";
+		endif;
+		return $ending;
+	}
+
+	function detect($lang)
 	{
 		global $community_locale_lang;
 
-		$f = $_SERVER["SCRIPT_FILENAME"];
-		$far = explode(".", $f);
-		$ending = $far[sizeof($far) - 1];
-		if ($ending != "php") :
-			$community_locale_lang = $ending;
+		if ($lang) :
+			$community_locale_lang = $lang;
+		else :
+			$f = $_SERVER["SCRIPT_FILENAME"];
+			$ending = Locale::ending($f);
+			if ($ending != "php") :
+				$community_locale_lang = $ending;
+			endif;
 		endif;
 
 		setlocale(LC_MESSAGES, Locale::localename($community_locale_lang));
@@ -73,10 +91,11 @@ class Locale
 
 	function languagename($s)
 	{
-		if ($s == "de") return "Deutsch";
-		if ($s == "en") return "English";
-		if ($s == "sv") return "Svenska";
-		if ($s == "fr") return "Français";
+		if ($s == "de") return __("Deutsch");
+		if ($s == "en") return __("English");
+		if ($s == "sv") return __("Svenska");
+		if ($s == "fr") return __("Français");
+		if ($s == "es") return __("Español");
 		return "($s)";
 	}
 
@@ -98,7 +117,7 @@ class Locale
 		while($dir[$i] != "/") $i--;
 		$dir = substr($dir, 0, $i);
 
-		echo "Available languages: ";
+		echo __("Available languages: ");
 		$counter = 0;
 
 		$d = opendir($dir);

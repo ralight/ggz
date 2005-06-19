@@ -52,6 +52,9 @@ msgstr ""
 msgid "Players worldwide"
 msgstr ""
 
+msgid "$x"
+msgstr ""
+
 msgid "$s"
 msgstr ""
 
@@ -130,9 +133,126 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
+msgid "Database: Games"
+msgstr ""
+
 msgid "Live games"
 msgstr ""
 
 msgid "View games"
+msgstr ""
+
+msgid "Database: Matches"
+msgstr ""
+
+msgid "Database: Players"
+msgstr ""
+
+msgid "Database: Teams"
+msgstr ""
+
+msgid "Database: Tournaments"
+msgstr ""
+
+msgid "Personal sidebar"
+msgstr ""
+
+msgid "You are logged in as"
+msgstr ""
+
+msgid "Personal page"
+msgstr ""
+
+msgid "Visit"
+msgstr ""
+
+msgid "My Community"
+msgstr ""
+
+msgid "Change my"
+msgstr ""
+
+msgid "settings"
+msgstr ""
+
+msgid "Visit my"
+msgstr ""
+
+msgid "public page"
+msgstr ""
+
+msgid "My Community items"
+msgstr ""
+
+msgid "You must be logged in to access this area."
+msgstr ""
+
+msgid "Error:"
+msgstr ""
+
+msgid "Notice:"
+msgstr ""
+
+msgid "Login failed!"
+msgstr ""
+
+msgid "Need to allow cookies!"
+msgstr ""
+
+msgid "Resent authentication credentials."
+msgstr ""
+
+msgid "Could not authentication credentials."
+msgstr ""
+
+msgid "Registration failed!"
+msgstr ""
+
+msgid "You have been registered."
+msgstr ""
+
+msgid "Activation failed!"
+msgstr ""
+
+msgid "The new password has been activated."
+msgstr ""
+
+msgid "Username:"
+msgstr ""
+
+msgid "New password:"
+msgstr ""
+
+msgid "The password should be changed immediately after login!"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "No such token $token found."
+msgstr ""
+
+msgid "$user: regenerated, activate on $link\n"
+msgstr ""
+
+msgid "The $name Administrators"
+msgstr ""
+
+msgid "Deutsch"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "Svenska"
+msgstr ""
+
+msgid "Français"
+msgstr ""
+
+msgid "Español"
+msgstr ""
+
+msgid "Available languages: "
 msgstr ""
 

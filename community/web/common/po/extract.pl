@@ -11,8 +11,8 @@ print "msgid \"\"\n";
 print "msgstr \"Content-Type: text/plain; charset=UTF-8\\n\"\n";
 print "\n";
 
-my $tagexp = qr/\_\(([^\)]*\)\([^\)]*)\)/;
-my $regexp = qr/\_\(([^\)]*)\)/;
+my $tagexp = qr/[^\_]\_\(([^\)]*\)\([^\)]*)\)/;
+my $regexp = qr/[^\_]\_\(([^\)]*)\)/;
 
 for my $i(0..$#ARGV){
 	open(F, $ARGV[$i]);

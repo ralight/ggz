@@ -31,6 +31,16 @@ class Auth
 		return $cryptpass;
 	}
 
+	function language()
+	{
+		return $_COOKIE["ggzcommunity_lang"];
+	}
+
+	function setlanguage($lang)
+	{
+		setcookie("ggzcommunity_lang", $lang, 0, "/");
+	}
+
 	function cookiename()
 	{
 		// no dot allowed!
@@ -59,33 +69,36 @@ class Auth
 
 	function checklogin()
 	{
+		$error = __("Error:");
+		$notice = __("Notice:");
+
 		if ($_GET['login'] == "failed") :
-			echo "<font color='#ff0000'>Error:</font>\n";
-			echo "Login failed!";
+			echo "<font color='#ff0000'>$error</font>\n";
+			echo __("Login failed!");
 		elseif ($_GET['login'] == "done"):
 			$cookie = $_COOKIE[Auth::cookiename()];
 			if (!$cookie) :
-				echo "<font color='#ff0000'>Error:</font>\n";
-				echo "Need to allow cookies!";
+				echo "<font color='#ff0000'>$error</font>\n";
+				echo __("Need to allow cookies!");
 			endif;
 		elseif ($_GET['resend'] == "done"):
-			echo "<font color='#00ff00'>Notice:</font>\n";
-			echo "Resent authentication credentials.";
+			echo "<font color='#00ff00'>$notice</font>\n";
+			echo __("Resent authentication credentials.");
 		elseif ($_GET['resend'] == "failed"):
-			echo "<font color='#ff0000'>Notice:</font>\n";
-			echo "Could not authentication credentials.";
+			echo "<font color='#ff0000'>$notice</font>\n";
+			echo __("Could not authentication credentials.");
 		elseif ($_GET['register'] == "failed") :
-			echo "<font color='#ff0000'>Error:</font>\n";
-			echo "Registration failed!";
+			echo "<font color='#ff0000'>$error</font>\n";
+			echo __("Registration failed!");
 		elseif ($_GET['register'] == "done"):
-			echo "<font color='#00ff00'>Notice:</font>\n";
-			echo "You have been registered.";
+			echo "<font color='#00ff00'>$notice</font>\n";
+			echo __("You have been registered.");
 		elseif ($_GET['activation'] == "failed") :
-			echo "<font color='#ff0000'>Error:</font>\n";
-			echo "Activation failed!";
+			echo "<font color='#ff0000'>$error</font>\n";
+			echo __("Activation failed!");
 		elseif ($_GET['activation'] == "done"):
-			echo "<font color='#00ff00'>Notice:</font>\n";
-			echo "The new password has been activated.";
+			echo "<font color='#00ff00'>$notice</font>\n";
+			echo __("The new password has been activated.");
 		endif;
 	}
 
@@ -103,14 +116,14 @@ class Auth
 		endif;
 
 		if ($found) :
-			echo "Username: $handle<br>";
-			echo "New password: $password<br>";
-			echo "The password should be changed immediately after login!<br>";
+			echo __("Username:") . " $handle<br>";
+			echo __("New password:") . " $password<br>";
+			echo __("The password should be changed immediately after login!") . "<br>";
 			echo "<input type='hidden' name='input_token' value='$token'>";
 			echo "<input type='hidden' name='input_activation' value='$password'>";
-			echo "<input type='submit' value='Activate' class='button'>";
+			echo "<input type='submit' value='" . __("Activate") . "' class='button'>";
 		else :
-			echo "No such token $token found.";
+			echo __("No such token $token found.");
 		endif;
 	}
 
@@ -165,7 +178,7 @@ class Auth
 
 		$res = $database->exec("SELECT * FROM users WHERE email = '$email'");
 		if (($res) && ($database->numrows($res) > 0)) :
-			$text = "Resending forgotten password(s) as per request.\n";
+			$text = __("Resending forgotten password(s) as per request.") . "\n";
 			$text .= "\n";
 			$pubkey = "";
 
@@ -183,10 +196,10 @@ class Auth
 					if ($reactivate) :
 						$database->exec("UPDATE userinfo SET alterpass = '$cryptpass' WHERE handle = '$user'");
 						$link = Config::getvalue("url") .  "/login/?task=reactivate&token=$password";
-						$text .= "$user: regenerated, activate on $link\n";
+						$text .= __("$user: regenerated, activate on $link\n");
 					else :
 						$database->exec("UPDATE users SET password = '$cryptpass' WHERE handle = '$user'");
-						$text .= "$user: $password (generated)\n";
+						$text .= __("$user: $password (generated)\n");
 					endif;
 				else :
 					$text .= "$user: $password\n";
@@ -221,12 +234,12 @@ class Auth
 				unlink($msgfile);
 			endif;
 
+			$name = Config::getvalue("name");
 			$text .= "\n";
-			$text .= "The GGZ Community Administrators\n";
+			$text .= __("The $name Administrators") . "\n";
 			$text .= "mailto:" . Config::getvalue("mail") . "\n";
 
-			mail($email, "GGZ Community: Password", $text);
-			//echo "XXXXX $text";
+			mail($email, "$name: " . ("Password"), $text);
 
 			return true;
 		else :

@@ -1,5 +1,4 @@
 <?php include("top.inc"); ?>
-<?php include("database.php"); ?>
 <?php include("stats.php"); ?>
 
 <?php include_once("statsclass.php"); ?>

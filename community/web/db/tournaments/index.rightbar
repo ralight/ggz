@@ -1,11 +1,11 @@
 <?php $stat = Statistics::ref(); ?>
 <div id="rightbar">
-	<h1>Database: Tournaments</h1>
+	<h1>_(Database: Tournaments)</h1>
 
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>Tournaments</h1>
+		<h1>_(Tournaments)</h1>
 		<div class="menu">
 		<?php $stat->listTournaments(); ?>
 		</div>

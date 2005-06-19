@@ -1,6 +1,5 @@
 <?php
 
-include_once("database.php");
 include_once("auth.php");
 
 if (!Auth::username()) :
@@ -19,6 +18,7 @@ $user_pubkey = $_POST["user_pubkey"];
 $user_blogfeed = $_POST["user_blogfeed"];
 $user_longitude = $_POST["user_longitude"];
 $user_latitude = $_POST["user_latitude"];
+$user_language = $_POST["user_language"];
 
 $res = $database->exec("SELECT * FROM userinfo WHERE handle = '$ggzuser'");
 if (($res) && ($database->numrows($res) == 0)) :
@@ -49,6 +49,9 @@ if ($pubkey) :
 	$res = $database->exec("UPDATE userinfo SET ".
 		"pubkey = '$user_pubkey' " .
 		"WHERE handle = '$ggzuser'");
+endif;
+if ($language) :
+	Auth::setlanguage($user_language);
 endif;
 
 header("Location: index.php");

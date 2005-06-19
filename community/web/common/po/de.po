@@ -52,6 +52,9 @@ msgstr "Foreneinträge"
 msgid "Players worldwide"
 msgstr "Spieler weltweit"
 
+msgid "$x"
+msgstr "XXXXX"
+
 msgid "$s"
 msgstr "XXXXX"
 
@@ -130,8 +133,125 @@ msgstr "Über..."
 msgid "Contact"
 msgstr "Kontakt"
 
+msgid "Database: Games"
+msgstr "Datenbank: Spiele"
+
 msgid "Live games"
 msgstr "Livespiele"
 
 msgid "View games"
 msgstr "Spiele ansehen"
+
+msgid "Database: Matches"
+msgstr "Datenbank: Spiele"
+
+msgid "Database: Players"
+msgstr "Datenbank: Spieler"
+
+msgid "Database: Teams"
+msgstr "Datenbank: Teams"
+
+msgid "Database: Tournaments"
+msgstr "Datenbank: Tournaments"
+
+msgid "Personal sidebar"
+msgstr "Seitenmenü"
+
+msgid "You are logged in as"
+msgstr "Du bist eingeloggt als"
+
+msgid "Personal page"
+msgstr "Eigene Seite"
+
+msgid "Visit"
+msgstr "Besuche"
+
+msgid "My Community"
+msgstr "Meine Community"
+
+msgid "Change my"
+msgstr "Ändere deine"
+
+msgid "settings"
+msgstr "Einstellungen"
+
+msgid "Visit my"
+msgstr "Besuche deine"
+
+msgid "public page"
+msgstr "öffentliche Seite"
+
+msgid "My Community items"
+msgstr "Eigene Beiträge"
+
+msgid "You must be logged in to access this area."
+msgstr "Du musst eingeloggt sein, um auf diesen Bereich zugreifen zu können."
+
+msgid "Error:"
+msgstr "Fehler:"
+
+msgid "Notice:"
+msgstr "Hinweis:"
+
+msgid "Login failed!"
+msgstr "Login fehlgeschlagen!"
+
+msgid "Need to allow cookies!"
+msgstr "Cookies müssen erlaubt sein!"
+
+msgid "Resent authentication credentials."
+msgstr "Authentifizierungs-Hinweise versendet."
+
+msgid "Could not authentication credentials."
+msgstr "Authentifizierungs-Hinweise konnten nicht versendet werden."
+
+msgid "Registration failed!"
+msgstr "Registrierung fehlgeschlagen!"
+
+msgid "You have been registered."
+msgstr "Registrierung erfolgreich."
+
+msgid "Activation failed!"
+msgstr "Aktivierung fehlgeschlagen!"
+
+msgid "The new password has been activated."
+msgstr "Das neue Passwort wurde aktiviert."
+
+msgid "Username:"
+msgstr "Nutzername:"
+
+msgid "New password:"
+msgstr "Neues Passwort:"
+
+msgid "The password should be changed immediately after login!"
+msgstr "Das Passwort sollte direkt nach dem Login geändert werden!"
+
+msgid "Activate"
+msgstr "Aktivieren"
+
+msgid "No such token $token found."
+msgstr "Kein Token $token gefunden."
+
+msgid "$user: regenerated, activate on $link\n"
+msgstr "$user: neu erzeugt, Aktivierung über $link\n"
+
+msgid "The $name Administrators"
+msgstr "Die Administratoren der $name"
+
+msgid "Deutsch"
+msgstr "Deutsch"
+
+msgid "English"
+msgstr "Englisch"
+
+msgid "Svenska"
+msgstr "Schwedisch"
+
+msgid "Français"
+msgstr "Französisch"
+
+msgid "Español"
+msgstr "Spanisch"
+
+msgid "Available languages: "
+msgstr "Verfügbare Sprachen: "

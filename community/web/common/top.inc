@@ -1,7 +1,7 @@
 <?php
 include_once("config.php");
 include_once("locale.php");
-Locale::detect();
+include_once("negotiation.php");
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
@@ -15,27 +15,5 @@ Locale::detect();
 
 <div id="mainandacknowledgements">
 
-<?php
-if (preg_match("/^\/tournaments\//", $_SERVER["REQUEST_URI"])) :
-	$active = 1;
-endif;
-if (preg_match("/^\/teams\//", $_SERVER["REQUEST_URI"])) :
-	$active = 1;
-endif;
-if (preg_match("/^\/my\//", $_SERVER["REQUEST_URI"])) :
-	$active = 1;
-endif;
-if (preg_match("/^\/karma\//", $_SERVER["REQUEST_URI"])) :
-	$active = 1;
-endif;
-
-if ($active) :
-	include_once("auth.php");
-	if(!Auth::username()) :
-		echo "You must be logged in to access this area.";
-		include("bottom.inc");
-		exit;
-	endif;
-endif;
-?>
+<?php include("access.php"); ?>
 

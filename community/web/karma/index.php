@@ -1,19 +1,6 @@
 <?php include("top.inc"); ?>
 
 <?php
-
-include_once("database.php");
-include_once("auth.php");
-
-if (!Auth::username()) :
-	exit;
-else:
-	$ggzuser = Auth::username();
-endif;
-
-?>
-
-<?php
 	if ($remove) :
 		$database->exec("DELETE FROM karma WHERE fromhandle = '$ggzuser' AND tohandle = '$remove'");
 	endif;
