@@ -3,6 +3,21 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		Extending the Community platform
+		<span class="itemleader"> :: </span>
+		<a name="extending"></a>
+	</h1>
+	<div class="text">
+		The GGZ Community portal is being extended so it can be used more easily
+		by other projects as well. This includes custom stylesheets, internationalization
+		and a template and configuration system.
+		If anyone wants to help with the translation, the current message catalog is
+		as usually available
+		<a href="http://dev.ggzgamingzone.org/i18n/" title="GGZ Internationalization">on our i18n page</a>, and takes up about 100 strings out of 2200 which GGZ has in total.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		GGZ 0.0.11 and Packaging article
 		<span class="itemleader"> :: </span>
 		<a name="0011"></a>

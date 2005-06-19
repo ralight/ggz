@@ -3,6 +3,24 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		Erweiterung der Community-Plattform
+		<span class="itemleader"> :: </span>
+		<a name="extending"></a>
+	</h1>
+	<div class="text">
+		Das GGZ Community-Portal wird momentan erweitert und verbessert, so dass es
+		einfacher von anderen Spieleprojekten eingesetzt werden kann.
+		Dies beinhaltet angepasste Stylesheets, Internationalisierung und ein Template-
+		und Konfigurationssystem.
+		Wer bei der Übersetzung mithelfen möchte, kann sich den aktuellen Katalog
+		mit den Zeichenketten wie immer von
+		<a href="http://dev.ggzgamingzone.org/i18n/" title="GGZ Internationalization">unserer i18n-Seite</a>
+		herunterladen, es sind etwa 100 Zeichenketten von den 2200, die GGZ insgesamt
+		enthält.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		GGZ 0.0.11 und Artikel über Paketbau
 		<span class="itemleader"> :: </span>
 		<a name="0011"></a>
