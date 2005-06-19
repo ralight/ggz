@@ -17,7 +17,7 @@
 	</div>
 	<h1>
 		<span class="itemleader">:: </span>
-		Database Overview
+		Datenbank-Übersicht
 		<span class="itemleader"> :: </span>
 		<a name="database"></a>
 	</h1>
@@ -30,6 +30,18 @@
 	<b><?php echo $stat->tournaments_number ?></b> Tournaments wurden organisiert.<br>
 	<b><?php echo $stat->matches_number ?></b> Einzelspiele wurden gespielt.<br>
 	<b><?php echo $stat->games_number ?></b> verschiedene Spielarten sind in der Datenbank vertreten.<br>
+	</div>
+	<h1>
+		<span class="itemleader">:: </span>
+		GGZ-Informationen
+		<span class="itemleader"> :: </span>
+		<a name="database"></a>
+	</h1>
+	<div class="text">
+
+	GGZ Gaming Zone Version <b><?php Config::put("ggzversion") ?></b><br>
+	Servername <b><?php Config::put("ggzname") ?></b><br>
+	Serverhost <b><a href="<?php Config::put("ggzurl"); ?>"><?php Config::put("ggzurl") ?></a></b><br>
 	</div>
 </div>
 

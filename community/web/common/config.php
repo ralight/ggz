@@ -24,6 +24,7 @@ class Config
 		global $dbtype;
 
 		global $ggzhost;
+		global $ggzurl;
 		global $ggzname;
 		global $ggzversion;
 		global $ggzgamedir;
@@ -49,6 +50,7 @@ class Config
 		$this->config['dbtype'] = $dbtype;
 
 		$this->config['ggzhost'] = $ggzhost;
+		$this->config['ggzurl'] = $ggzurl;
 		$this->config['ggzname'] = $ggzname;
 		$this->config['ggzversion'] = $ggzversion;
 		$this->config['ggzgamedir'] = $ggzgamedir;
