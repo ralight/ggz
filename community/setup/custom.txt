@@ -22,3 +22,41 @@ Customized Community
   depending on the system, and also Locale::languagename() should be
   amended.
 
+* Translations of PHP strings are done using a __(x) construct. These
+  strings are extracted by extract-php.pl. They may contain PHP variables.
+
+* Hacking:
+  Each page must include top.inc and bottom.inc with include(), not with
+  include_once()! All other files can/should be included with include_once().
+
+  The classes
+    Database (common/database.php)
+    Config (common/config.php)
+	Locale (common/locale.php)
+  are the top-most classes which are used only internally.
+
+  The classes
+    Auth (common/auth.php)
+  are on the second level.
+
+  The files
+    negotiation.php
+	access.php
+	navbar.php
+  are used in addition on every request.
+
+  The classes
+    Country (common/countrylist.php)
+    Gender (common/genderlist.php)
+    Match (common/match.php)
+    Player (common/player.php)
+    Statistics (common/statsclass.php)
+  are used on certain pages and depend on the others above.
+  In addition, the files
+    intro.php
+    latest.php
+    live.php
+    stats.php
+  uses these to display some information.
+
+
