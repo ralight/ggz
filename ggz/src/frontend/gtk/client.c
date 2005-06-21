@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7204 2005-05-21 09:31:23Z josef $
+ * $Id: client.c 7313 2005-06-21 19:06:36Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1214,23 +1214,26 @@ create_win_main (void)
   gtk_widget_show(GTK_WIDGET(stats_button));
 #endif
 
-#ifdef GTK_STOCK_CONNECT
-  connect_button = gtk_tool_button_new_from_stock(GTK_STOCK_CONNECT);
-#else
+  /* We should use gtk_tool_button_new_from_stock but for some reason
+   * the connect and disconnect stock items don't have text included. */
   connect_button = gtk_tool_button_new(NULL, _("Connect"));
-  gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(connect_button),
-			       GTK_STOCK_JUMP_TO);
+#ifndef GTK_STOCK_CONNECT
+#  define GTK_STOCK_CONNECT GTK_STOCK_JUMP_TO
 #endif
+  gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(connect_button),
+			       GTK_STOCK_CONNECT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(connect_button), -1);
   gtk_widget_ref(GTK_WIDGET(connect_button));
   g_object_set_data_full(G_OBJECT(win_main), "connect_button",
 			 connect_button, (GtkDestroyNotify)gtk_widget_unref);
   gtk_widget_show(GTK_WIDGET(connect_button));
 
-#ifdef GTK_STOCK_DISCONNECT
-  disconnect_button = gtk_tool_button_new_from_stock(GTK_STOCK_DISCONNECT);
-#else
+  /* We should use gtk_tool_button_new_from_stock but for some reason
+   * the connect and disconnect stock items don't have text included. */
   disconnect_button = gtk_tool_button_new(NULL, _("Disconnect"));
+#ifdef GTK_STOCK_DISCONNECT
+  gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(disconnect_button),
+			       GTK_STOCK_DISCONNECT);
 #endif
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(disconnect_button), -1);
