@@ -10,7 +10,7 @@ Strategy game for 2-30 players.
 <br>
 <table class="list">
 <tr><td>
-The game client and server are not GGZ projects but can be used on GGZ.
+The game client and server are not GGZ projects but can be used on GGZ.  You will need to patch your version of Freeciv; you can get the patch from <a href="ftp://ftp.freeciv.org/freeciv/contrib/development/misc/ggz/">here</a>.  Freeciv 2.0.2 or later is supported, with the GTK+-2.0 client only.  After applying the patch, run "./autogen.sh --with-ggz-server --with-ggz-client --with-readline".
 </td></tr>
 </table>
 
