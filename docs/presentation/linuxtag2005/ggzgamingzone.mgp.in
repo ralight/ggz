@@ -1,0 +1,478 @@
+%deffont "standard" xfont "vera-bold-r"
+%deffont "thick" xfont "vera-bold-r"
+%tab 1 icon box "darkblue" 50
+%tab 2 prefix "   ", icon arc "darkblue" 50
+%page
+%center
+%area 900 600 0 25, prefix 0
+%newimage "talktitle.png"
+%area 1024 768 0 1, prefix 0
+
+%size 2.5, font "thick"
+
+%size 6.5, font "thick"
+GGZ GAMING ZONE
+%bar "black" 6 15 70
+%size 4
+Josef Spillner
+%size 3
+josef@ggzgamingzone.org
+
+%page
+%size 5, fore "white"
+Übersicht
+
+%size 4, fore "darkblue"
+1. Was ist GGZ?
+2. Die Programme
+3. Die Spiele
+4. Auf der Serverseite
+5. Entwickler
+6. Demo
+
+%page
+%size 5, fore "white"
+Wichtige Informationen vorab
+
+%size 4, fore "darkblue"
+Freie Spiele brauchen Unterstützung
+
+	Softwarepatente
+		XOR-Algorithmus auf Schachfiguren
+		Start eines Spiels aus IM-Client (#6,699,125)
+
+	Jugendschutzgesetz
+		schlappe 1000 Euro pro Spiel-Release
+		Tic-Tac-Toe nicht unter 18 Jahren!
+
+	Spielprinzipien
+		Risiko, Monopoly, ...
+
+	Ressourcen
+		Wirtschaft?
+		Server
+		Multimedia
+
+%page
+%center
+%area 1024 768 0 1, prefix 0
+%size 13, font "thick"
+
+%size 5, fore "black"
+Was ist GGZ?
+%bar "black" 6 15 70
+
+%newimage "splash1.png"
+
+%page
+%size 5, fore "white"
+Der Name GGZ
+
+%size 4, fore "darkblue"
+	Gegründet Anfang 2000 als GNU Gaming Zone
+		Lustiger Mailwechsel mit RMS
+
+	2001 Umbenennung zu GGZ Gaming Zone
+		rekursives Akronym
+
+	2004 eigene Domain
+		vorher bei SourceForge, Spieleserver?
+		ggzgamingzone.org: Projektseite
+
+	2005 Community-Portal
+		ggzcommunity.org: Referenzimplementierung
+		über 400 registrierte Spieler
+
+%page
+%size 5, fore "white"
+Das Projekt GGZ
+
+%size 4, fore "darkblue"
+	Entwicklung von Spielen, weil's Spaß macht
+		Suchtfaktor selbst bei einfachen Spielen
+		online (Menschen, KI) oder lokale gegen die KI
+
+	Bereitstellung einer Plattform für andere Spiele
+		Bibliotheken und Tools
+		Webzugriff
+
+	Standardisierungen
+		Protokolle
+		Formate für Spielsicherungen/Logs
+		Datenformate und Themes
+
+%page
+%size 5, fore "white"
+Statistiken
+
+%size 4, fore "darkblue"
+	15 Module
+		(Gtk, KDE)-(Spiele, Clients), GNOME- und Text-Client
+		SDL-Spiele, SDL-Python-(Spiele, Client)
+		Server + Spieleserver
+		Chatbot, Hilfsprogramme
+		Bibliotheken: libggz, ggzmod, ggzdmod, ggzcore
+		Dokumentation
+		Community-Portal
+
+	Weitere im CVS
+		Webseiten (WWW)
+		Playground für neuere Projekte ("Inkubator")
+
+%page
+%size 5, fore "white"
+Statistiken (2)
+
+%size 4, fore "darkblue"
+	Quelltexte: 150 000 Zeilen
+		C etwa 70%
+		C++ etwa 20%
+		Python etwa 5%
+		auch ein wenig Ruby, Java, PHP
+
+	Spieleclients: 25
+		Ein Client für mehrere Server (z.B. GGZBoard)
+		Mehrere Clients für einen Server (z.B. TicTacToe)
+	Spieleserver: 28
+
+	Externe Spiele: 8, gern auch mehr :)
+		Batalla Naval, Tenes Empanadas Graciela (TEG)
+		Tuxman, Widelands, Freeciv (teilweise)
+		Kamikaze/PyKamikaze, Copenhagen
+		demnächst: Freelords
+
+%page
+%center
+%area 1024 768 0 1, prefix 0
+%size 13, font "thick"
+
+%size 5, fore "black"
+Die Programme
+%bar "black" 6 15 70
+
+%newimage "splash2.png"
+
+%page
+%size 5, fore "white"
+KDE-Programme
+
+%size 4, fore "darkblue"
+KGGZ
+	Der umfangreichste Core-Client
+	Minimierung und Benachrichtigung
+	Chatbot-Dialog
+
+GGZap
+	Schnellstarter für die Taskleiste
+
+Competition Calendar
+	Wettkampfkalender
+	Zeigt Termine und Ergebnisse
+
+KGrubby
+	Chatbot-Konfiguration
+	Unterstützt Profile
+
+%page
+%size 5, fore "white"
+GNOME-Programme
+
+%size 4, fore "darkblue"
+GGZ-Gnome
+	Graphisch, für Einsteiger gedacht
+	Unterstützt nicht alle neueren Features
+		Maintainer gesucht :-)
+
+GGZ-Gtk
+	Flinker Client
+	Chat-Komponente von xchat
+
+MOTD Editor
+	zur Erstellung von Servermeldungen
+
+%page
+%size 5, fore "white"
+Weitere Programme
+
+%size 4, fore "darkblue"
+GGZ-Txt
+	Simpler Kommandozeilen-Client
+	skriptfähig
+
+Víbora
+	Python-SDL-Client
+	Visualisierung der Tische
+
+ggz-config
+	Tool zur Installation von Spieleclients
+		Konsistenzprüfung
+		Icons
+
+%page
+%center
+%area 1024 768 0 1, prefix 0
+%size 13, font "thick"
+
+%size 5, fore "black"
+Die Spiele
+%bar "black" 6 15 70
+
+%newimage "splash3.png"
+
+%page
+%size 5, fore "white"
+Angebot an Spielen
+
+%size 4, fore "darkblue"
+batnav, ccheckers, chess, combat, connectx, copenhagen,
+dots, escape, freeciv, geekgame, ggzcards-bridge,
+ggzcards, ggzcards-fortytwo, ggzcards-hearts,
+ggzcards-lapocha, ggzcards-spades, ggzcards-suaro,
+ggzcards-sueca, ggzcards-whist, goserver, hastings,
+kamikaze, keepalive, krosswater, lapocha, muehle,
+reversi, server_checkers, server_hnefatafl, spades,
+teg, tictactoe, tuxman, widelands,
+xadrez-chines-server, xtux
+
+%page
+%size 5, fore "white"
+Mehrfach-Client GGZBoard
+
+%size 4, fore "darkblue"
+%center
+%newimage "ggzboard.png"
+%left
+	Ein Client für alle Brettspiele
+		Schach, Go, Reversi, Halma, MÄDN
+	Würfel
+	Python-Module: Spiellogik, lokale KI, Netzwerk, Server
+
+%page
+%size 5, fore "white"
+Mehrfach-Client GGZCards
+
+%size 4, fore "darkblue"
+%center
+%newimage "ggzcards.png"
+%left
+	Kartenspiele mit vielen Optionen
+		Bridge, Hearts, Suaro, Sueco
+		Spades, LaPocha, Whistle, 42
+	Referenz für Nutzung von GGZ-Features
+
+%page
+%size 5, fore "white"
+Externe Spiele: TEG
+
+%size 4, fore "darkblue"
+Der Klassiker - Risiko-Prinzip
+%center
+%newimage "teg.png"
+%left
+	Clients für GNOME und (in Entwicklung) SDL
+	GGZ-Unterstützung für Highscores und Savegames
+
+%page
+%size 5, fore "white"
+Externe Spiele (2): Widelands
+
+%size 4, fore "darkblue"
+Strategiespiel - Siedler-Prinzip
+%center
+%newimage "widelands.png"
+%left
+	Eingebettete GGZ-Funktionalität
+		Spieleclient mit ggzcore und ggzmod
+		kein GGZ-Client nötig, aber möglich
+		speziell angepasstes Community-Portal
+
+%page
+%center
+%area 1024 768 0 1, prefix 0
+%size 13, font "thick"
+
+%size 5, fore "black"
+Auf der Serverseite
+%bar "black" 6 15 70
+
+%newimage "splash4.png"
+
+%page
+%size 5, fore "white"
+Der GGZ-Server
+
+%size 4, fore "darkblue"
+Der Hauptserver: ggzd
+	Konfiguration über ggzd.conf
+	Nachricht des Tages (MOTD) über ggzd.motd
+	Datenbank: libdb(2,3,4), mysql, postgresql, sqlite
+	Unterstützt IPv6, Bann-Listen, TLS/SSL
+	Einstellbares Logging
+
+Der Metaserver: ggzmetaserv
+	genutzt als generischer Query-Server
+		ggz://connection/0.0.11
+		freeciv://connection/1.14.2
+		<?xml version="1.0"?><update... />
+	auch als Backend für KDE Radio Station
+
+%page
+%size 5, fore "white"
+Grubby, unser Chatbot
+
+%size 4, fore "darkblue"
+Ein voll modularer Chatbot
+	Core-Module
+		I18N für Übersetzungen
+		PLAYER für Spielerdatenbank
+		NET für GGZ, IRC, SILC-Netzwerke
+
+	Plugins
+		Embed zur Skriptausführung
+		Exec zur Skript- und Programmausführung
+		Learning, Badwords, People, ...
+
+Beispiele
+	grubby help
+	grubby LinuxTag is an event where .com meets .org
+	grubby join my game
+
+%page
+%size 5, fore "white"
+Das Community-Portal
+
+%size 4, fore "darkblue"
+Die GGZ Community...
+	läuft permanent auf https://www.ggzcommunity.org/
+	kann auch für LAN-Parties etc. eingesetzt werden
+
+Konglomerat vieler Einzelprojekte
+	GGZ-spezifische Anwendungen
+		Profilverwaltung
+		Anzeige vergangener Spiele, Statistiken
+		Weltkarte mit Spielerpositionen
+		Karmasystem, Teams, Tournaments
+		Tauschbörse für Levels und Themes
+	Einbindung externer Projekte
+		Planet (Blogaggregator)
+		phpBB2 (Forum)
+
+Schon registriert?
+
+%page
+%center
+%area 1024 768 0 1, prefix 0
+%size 13, font "thick"
+
+%size 5, fore "black"
+Entwickler
+%bar "black" 6 15 70
+
+%newimage "splash5.png"
+
+%page
+%size 5, fore "white"
+GGZ-Unterstützung für existierende Spiele
+
+%size 4, fore "darkblue"
+Was wird benötigt?
+	ggzmod für die Clients
+	ggzdmod für die Server
+	ggzwrap für Clients via stdio
+		Java-Clients
+
+Wie hoch ist der Aufwand?
+	jeweils 100-150 Zeilen Code in C
+	etwas weniger mit C++ oder Python
+
+Ablauf der Unterstützung:
+	#ifdef HAVE_GGZ verwenden
+	in configure.ac: AC_GGZ_INIT, AC_GGZ_GGZMOD, ...
+	in Makefile.am:
+		LDADD += $(LIB_GGZMOD)
+		-$(GGZ_CONFIG) --install --modfile=mygame.dsc
+
+%page
+%size 5, fore "white"
+Spielablauf
+
+%size 4, fore "darkblue"
+Spielstart
+	entweder durch Core-Client
+	oder embedded-Modus
+
+Konfiguration
+	Sitzaufteilung: Spieler, KI-Spieler, offen, reserviert
+	Zuschauer
+
+Spiel läuft...
+	hinzukommende und verlassende Spieler
+	Datenübertragung
+	administrative Eingriffe des Spielleiters
+
+Game over!
+	Übertragung des Spielstandes
+	Abspeichern der Daten
+
+%page
+%size 5, fore "white"
+Weitere Ressourcen aus dem GGZ-Projekt
+
+%size 4, fore "darkblue"
+	GGZ CommGen
+		IDL-Compiler für Protokolle
+		verbindungsorientiert, mit Constraints
+		Backends für libggz (C), Qt (C++), Python-Sockets
+		1 XML-Protokoll-Datei - mehrere Implementierungen
+
+	GHNS-Integration
+		Get Hot New Stuff!
+		KNewStuff, SDLNewStuff
+		Tausch von Levels und Themes
+
+	KI-Bibliotheken
+		z.B. Schach (einfache API)
+
+%page
+%size 5, fore "white"
+Wie man GGZ-Hacker wird
+
+%size 4, fore "darkblue"
+Es gibt Mailinglisten!
+	ggz-announce für jedermann
+	ggz-servers für Serverbetreiber und Distributoren
+	ggz-dev für Entwickler
+	ggz-cvs, ggz-bugs für Entwickler
+
+Nicht nur Programmierer gesucht
+	http://dev.ggzgamingzone.org/art/
+	http://dev.ggzgamingzone.org/i18n/
+	https://www.ggzcommunity.org/articles/
+	https://www.ggzcommunity.org/hotstuff/
+
+Installation ist nicht schwer!
+	Erstkontakt über getggz.sh (-> $HOME/ggz)
+	README.GGZ und QuickStart.GGZ lesen
+
+%page
+%center
+%area 1024 768 0 1, prefix 0
+%size 13, font "thick"
+
+%size 5, fore "black"
+Demo
+%bar "black" 6 15 70
+
+%newimage "splash6.png"
+
+%page
+%center
+%area 1024 768 0 1, prefix 0
+%size 13, font "thick"
+
+%size 5, fore "black"
+Dankeschön! Fragen?
+%bar "black" 6 15 70
+
+%newimage "splash7.png"
+
