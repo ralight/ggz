@@ -22,9 +22,13 @@ GGZ-Übersicht:
 <a href="/docs/overview/index.de.html">HTML</a>
 <br>
 
-GGZ-Präsentation:
-<a href="/docs/presentation/html/de/ggz-presentation.html">HTML</a>,
-<a href="/docs/presentation/ggz-presentation.de.sxi">OpenOffice</a>
+GGZ-Präsentation (LinuxTag Karlsruhe 2005):
+<a href="/docs/presentation/linuxtag2005/de/">HTML</a>
+<br>
+
+GGZ-Präsentation (Chemnitzer LinuxTag 2003):
+<a href="/docs/presentation/chemnitz2003/de/ggz-presentation.html">HTML</a>,
+<a href="/docs/presentation/chemnitz2003/ggz-presentation.de.sxi">OpenOffice</a>
 <br>
 
 Vergleich der Eigenschaften von Spielen:
@@ -108,8 +112,8 @@ GGZ Client-Client (ggzmod) Protokoll-Referenz:
 <br>
 
 API der Bibliothek libggz:
-<a href="/docs/api/libggz/">HTML</a>,
-<a href="/docs/api/libggz.pdf">PDF</a>
+<a href="/docs/api/libggz-de/">HTML</a>,
+<a href="/docs/api/libggz-de.pdf">PDF</a>
 <br>
 
 API der Bibliothek ggzcore:
