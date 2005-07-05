@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+
+import socket
+import xml.dom.minidom
+
+impl = xml.dom.minidom.getDOMImplementation()
+dom = impl.createDocument(None, "gamereport", None)
+el = dom.documentElement
+el.setAttribute("name", "Random match #3434")
+el.setAttribute("game", "pyun")
+el.setAttribute("player", "P1")
+
+player1 = dom.createElement("player")
+player1.setAttribute("password", "xxx")
+player1.setAttribute("highscores", "234")
+player1name = dom.createTextNode("P1")
+player1.appendChild(player1name)
+
+player2 = dom.createElement("player")
+player2.setAttribute("password", "yyy")
+player2.setAttribute("highscores", "93")
+player2name = dom.createTextNode("P2")
+player2.appendChild(player2name)
+
+el.appendChild(player1)
+el.appendChild(player2)
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect(("127.0.0.1", 5699))
+s.send(dom.toxml())
+print s.recv(4096)
+s.close()
+
+el.setAttribute("player", "P2")
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect(("127.0.0.1", 5699))
+s.send(dom.toxml())
+print s.recv(4096)
+s.close()
+

@@ -1,0 +1,133 @@
+#!/usr/bin/env python
+
+import socket
+import xml.dom.minidom
+import time
+import pg
+
+class Report:
+	def __init__(self, name, game, player):
+		self.time = time.time()
+		self.name = name
+		self.game = game
+		self.players = {}
+		self.reports = {}
+		self.valid = 1
+
+	def startreport(self, player):
+		if self.players.has_key(player):
+			# double report from player!
+			self.valid = 0
+			return
+		self.players[player] = 1
+
+	def report(self, player, playername, highscore):
+		if self.reports.has_key(playername):
+			if self.reports[playername] != highscore:
+				# difference in report!
+				self.valid = 0
+				return
+			return
+		self.reports[playername] = highscore
+		if len(self.players) > len(self.reports):
+			# too many reports
+			self.valid = 0
+			return
+
+	def isvalid(self):
+		return self.valid
+
+class Collector:
+	def __init__(self):
+		self.reports = {}
+
+	def handle(self, dom):
+		res = "failure"
+
+		el = dom.documentElement
+		if el.tagName == "gamereport":
+			name = el.getAttribute("name")
+			game = el.getAttribute("game")
+			player = el.getAttribute("player")
+			if name and game and player:
+				r = None
+				if self.reports.has_key(name):
+					r = self.reports[name]
+				else:
+					r = Report(name, game, player)
+					self.reports[name] = r
+				r.startreport(player)
+				players = el.getElementsByTagName("player")
+				for p in players:
+					password = p.getAttribute("password")
+					highscore = p.getAttribute("highscore")
+					nametag = p.firstChild
+					playername = nametag.nodeValue
+					r.report(player, playername, highscore)
+
+				current = str(len(r.players))
+				max = str(len(r.reports))
+				gameinfo = game + ": " + name + ", " + player
+				allinfo = current + " out of " + max + " (" + gameinfo + ")"
+				if r.isvalid():
+					if current == max:
+						print "- accepted: " + allinfo
+						self.store(r)
+						del self.reports[name]
+					else:
+						print "- pending: " + allinfo
+				else:
+					print "- aborted: " + allinfo
+				res = "success"
+			else:
+				print "- error: missing attributes in root tag"
+		else:
+			print "- error: xml document error"
+
+		return res
+
+	def store(self, report):
+		try:
+			cns = pg.DB(host="localhost", dbname="ggz", user="xxx", passwd="xxx")
+			fmt = "(date, game, winner, savegame)"
+			values = "(" + str(int(time.time())) + ", '" + report.game + "', '', '')"
+			q = cns.query("INSERT INTO matches " + fmt + " VALUES " + values)
+		except:
+			print "DATABASE ERROR"
+
+	def work(self):
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		s.bind(("127.0.0.1", 5699))
+		s.listen(10)
+
+		while 1:
+			c = s.accept()
+			(sock, address) = c
+			print "CONNECTION " + str(address) + " at " + time.ctime(time.time())
+			data = sock.recv(4096)
+
+			res = "failure"
+
+			try:
+				dom = xml.dom.minidom.parseString(data)
+			except:
+				print "- error: xml format error"
+			else:
+				#print dom.toxml()
+				res = collector.handle(dom)
+				dom.unlink()
+
+			impl = xml.dom.minidom.getDOMImplementation()
+			dom = impl.createDocument(None, "collector", None)
+			result = dom.createElement("result")
+			resulttext = dom.createTextNode(res)
+			result.appendChild(resulttext)
+			el = dom.documentElement
+			el.appendChild(result)
+
+			sock.send(dom.toxml())
+
+collector = Collector()
+collector.work()
+

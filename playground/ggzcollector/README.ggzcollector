@@ -1,0 +1,58 @@
+GGZ Collector - game reporting to GGZ
+=====================================
+
+Games which run on GGZ can comfortably report their savegames, highscores,
+player ratings and player/team game results to the central GGZ database.
+
+With the help of the Collector, even games which do not run on GGZ
+(even those which do not even run in client-server mode) can report results
+to the GGZ database, and make use of GGZ Community for their players.
+
+In the future, GGZ Collector might support different input data formats.
+Right now it expects a certain XML format, and it requires that no logical
+differences exist in all the reports it receives, so that cheats, while not
+completely ruled out, can at least be made as hard as possible.
+
+The input format
+----------------
+
+<?xml version="1.0" encoding="utf-8"?>
+<gamereport game="pyun" name="test match #20050705-0730" player="P1">
+	<player password="***" highscore="13">P1</player>
+	<player password="****" highscore="544">P2"</player>
+	<savegame><![CDATA[...--------...]]></savegame>
+	<review><![CDATA[...--------...]]></review>
+</gamereport>
+
+There are 3 data models currently supported:
+- highscore="<integer>"
+- rating="<integer>"
+- winner="yes"/"no"
+Exactly one of them must be given. The savegame and review fields
+are all optional. Savegame should be the state of the game in a format
+readably by the game itself, while review should be a common graphics
+format.
+
+The answer will then be in the following format (being success or failure):
+
+<?xml version="1.0" encoding="utf-8">
+<collector>
+	<result>success</result>
+</collector>
+
+Security
+--------
+
+GGZ Collector supports TLS encryption, which should always be used when
+including passwords. If passwords are omitted, players show up as guest
+players. Since the records will be rejected if a guest player name equals
+a registered player name, appending "(G)" in this case is recommended.
+
+Input fields are restricted in size. The current limit for the savegame
+and review is 256 kB. All other fields are 16 characters maximum (not bytes),
+and at most one savegame, one review and 100 players can be reported.
+
+To increase security slightly more, each IP address is locked for 60
+seconds after reporting. This might be made configurable per game class,
+depending on the maximum reportable size for savegame and review also
+
