@@ -28,8 +28,9 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
-#include <netinet/in.h>
+#include <netdb.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 
 // Constructor: inherit from ggzgameserver
 WidelandsServer::WidelandsServer()
@@ -98,9 +99,8 @@ void WidelandsServer::dataEvent(int player)
 	char *ip;
 
 	struct sockaddr *addr;
-	struct sockaddr_in sa;
 	socklen_t addrsize;
-	unsigned int ipx;
+	int ret;
 
 	std::cout << "WidelandsServer: dataEvent" << std::endl;
 
@@ -120,16 +120,14 @@ void WidelandsServer::dataEvent(int player)
 
 			addrsize = 256;
 			addr = (struct sockaddr*)malloc(addrsize);
-			getpeername(channel, addr, &addrsize);
-			sa = *(struct sockaddr_in*)addr;
-			ipx = ntohl(sa.sin_addr.s_addr);
-			ip = (char*)ggz_malloc(128);
-			snprintf(ip, 128, "%i.%i.%i.%i",
-				(ipx >> 24) & 0xFF,
-				(ipx >> 16) & 0xFF,
-				(ipx >> 8) & 0xFF,
-				(ipx) & 0xFF);
-			std::cout << "IPx: " << ip << std::endl;
+			ret = getpeername(channel, addr, &addrsize);
+
+			// FIXME: IPv4 compatibility?
+			ip = (char*)ggz_malloc(INET6_ADDRSTRLEN);
+			inet_ntop(AF_INET6, (void*)&(((struct sockaddr_in6*)addr)->sin6_addr),
+				ip, INET6_ADDRSTRLEN);
+
+			std::cout << "broadcast IP: " << ip << std::endl;
 			m_ip = ggz_strdup(ip);
 			ggz_free(ip);
 			break;
