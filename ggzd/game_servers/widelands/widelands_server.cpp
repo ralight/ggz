@@ -123,9 +123,19 @@ void WidelandsServer::dataEvent(int player)
 			ret = getpeername(channel, addr, &addrsize);
 
 			// FIXME: IPv4 compatibility?
-			ip = (char*)ggz_malloc(INET6_ADDRSTRLEN);
-			inet_ntop(AF_INET6, (void*)&(((struct sockaddr_in6*)addr)->sin6_addr),
-				ip, INET6_ADDRSTRLEN);
+			if(addr->sa_family == AF_INET6)
+			{
+				ip = (char*)ggz_malloc(INET6_ADDRSTRLEN);
+				inet_ntop(AF_INET6, (void*)&(((struct sockaddr_in6*)addr)->sin6_addr),
+					ip, INET6_ADDRSTRLEN);
+			}
+			else if(addr->sa_family == AF_INET)
+			{
+				ip = (char*)ggz_malloc(INET_ADDRSTRLEN);
+				inet_ntop(AF_INET, (void*)&(((struct sockaddr_in*)addr)->sin_addr),
+					ip, INET_ADDRSTRLEN);
+			}
+			else ip = NULL;
 
 			std::cout << "broadcast IP: " << ip << std::endl;
 			m_ip = ggz_strdup(ip);
