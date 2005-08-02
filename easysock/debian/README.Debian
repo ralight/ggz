@@ -1,8 +1,0 @@
-easysock for Debian
-----------------------
-
-This is the first debianized version of easysock. This library is, although
-primarily used by GGZ, also useful for learning socket operations in general,
-so we decided to make it an extra (rather small) package.
-
- -- Josef Spillner <dr_maux@users.sourceforge.net>, Tue, 22 May 2001 22:58:59 +0200

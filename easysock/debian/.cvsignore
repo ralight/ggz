@@ -1,6 +1,0 @@
-prerm.debhelper
-postinst.debhelper
-files
-dirs
-tmp
-substvars
