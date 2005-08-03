@@ -25,12 +25,6 @@ AC_ENABLE_STATIC(no)
 AM_PROG_LIBTOOL
 AC_PATH_KDE
 
-dnl KDE-what-have-I-done
-dnl ====================
-
-KDE_PLUGIN="-avoid-version -module -no-undefined \$(KDE_RPATH) \$(KDE_MT_LDFLAGS)"
-AC_SUBST(KDE_PLUGIN)
-
 SUBDIRS="src data po doc"
 COMPILEOPTIONS=""
 
