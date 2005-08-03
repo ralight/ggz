@@ -19,7 +19,7 @@ Con su sistema de clasificación del jugador y las características tales como e
 
 <i>Algunas estadísticas</i><br>
 <ul>
-<li>14 paquetes (módulos CVS) disponibles, además de una exportación a Windows
+<li>15 paquetes (módulos CSVN disponibles, además de una exportación a Windows
 <li>19 protocolos para juegos y 27 clientes pueden darnos horas de diversión
 <li>Más de 150.000 lineas de código en C, C++, Python
 </ul>

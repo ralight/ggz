@@ -19,7 +19,7 @@ per-user languages in multi-user environments such as the web pages or the grubb
 A script automatically assembles all texts which are translatable into a catalog.
 Downloading the potfile catalog is a convenient way of starting a new translation.
 Webpage translations are easily done by checking out the 'www' module from
-<a href="http://cvs.ggzgamingzone.org/">GGZ CVS</a> and adding files ending in .php.$lang.
+<a href="http://svn.ggzgamingzone.org/">GGZ SVN</a> and adding files ending in .php.$lang.
 <br>
 <a href="ggzpots.tar.gz">Download the potfile catalog!</a>
 
@@ -28,7 +28,7 @@ Webpage translations are easily done by checking out the 'www' module from
 <i>Guidelines</i><br>
 The internationalization guidelines are available in the ggz-docs package.
 <br>
-<a href="http://cvs.ggzgamingzone.org/cgi-bin/viewcvs.cgi/docs/ggz-project/Internationalization?rev=HEAD&content-type=text/vnd.viewcvs-markup">Current version</a>
+<a href="http://svn.ggzgamingzone.org/websvn/filedetails.php?repname=GGZ+Gaming+Zone&path=%2Ftrunk%2Fdocs%2Fggz-project%2FInternationalization&rev=0&sc=0">Current version</a>
 
 <br><br>
 

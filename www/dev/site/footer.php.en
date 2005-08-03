@@ -9,7 +9,7 @@ International
 include("international.php");
 ?>
 |
-<a href="http://cvs.ggzgamingzone.org/">CVS</a>
+<a href="http://svn.ggzgamingzone.org/">SVN</a>
 |
 <a href="https://mail.ggzgamingzone.org/">Mail</a>
 |

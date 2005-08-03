@@ -19,7 +19,7 @@ an easy task. Even more so since several game support libraries have been writte
 
 <i>Some statistics</i><br>
 <ul>
-<li>14 packages (CVS modules) available, plus a Windows port
+<li>15 packages (SVN modules) available, plus a Windows port
 <li>19 game engines and 27 game clients can provide hours of fun
 <li>More than 150.000 lines of code in C, C++, Python
 </ul>
