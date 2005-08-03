@@ -1,0 +1,58 @@
+<?php include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>CVS Modules</b><br>
+GGZ development comprises work in a lot of CVS modules. Those are split due to
+either dependencies or reverse dependencies, i.e. other modules depending on
+them.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Module list</i><br>
+
+<table class="list">
+<tr><td>libggz</td><td>Base library</td><td>C</td><td></td></tr>
+<tr><td>ggzd</td><td>Server, game servers, ggzdmod</td><td>C, C++</td><td></td></tr>
+<tr><td>ggz-client-libs</td><td>Client libraries: ggzcore, ggzmod</td><td>C</td><td></td></tr>
+<tr><td>utils</td><td>Utilities</td><td>C</td><td></td></tr>
+<tr><td>grubby</td><td>Chatbot</td><td>C, Perl, ...</td><td></td></tr>
+<tr><td>txt-client</td><td>Text core client</td><td>C</td><td></td></tr>
+<tr><td>gtk-client</td><td>Gtk+ core client</td><td>C</td><td></td></tr>
+<tr><td>gtk-games</td><td>Gtk+ game clients</td><td>C</td><td></td></tr>
+<tr><td>kde-client</td><td>KDE core client and tools</td><td>C++</td><td></td></tr>
+<tr><td>kde-games</td><td>KDE game clients</td><td>C++</td><td></td></tr>
+<tr><td>gnome-client</td><td>GNOME core client</td><td>C</td><td>since 0.0.7</td></tr>
+<tr><td>sdl-games</td><td>SDL game clients</td><td>C</td><td>since 0.0.7</td></tr>
+<tr><td>python</td><td>Python library wrappers and game clients</td><td>Python, C</td><td>since 0.0.8</td></tr>
+<tr><td>community</td><td>Web application for players</td><td>PHP, Perl, Python, C</td><td>since 0.0.10</td></tr>
+<tr><td>docs</td><td>Documentation</td><td>Text, PS, HTML, DocBook</td><td></td></tr>
+<tr><td>playground</td><td>Work in progress</td><td>C, C++, Ruby, Python, ...</td><td>unreleased</td></tr>
+<tr><td>www</td><td>Webpages</td><td>HTML, PHP</td><td>unreleased</td></tr>
+</table>
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Access to GGZ CVS</i><br>
+Everybody has read access to the repository by using anonymous CVS.
+Write access requires an account on the server, which is granted to
+anybody who wants to contribute actively.
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("site/footer.php"); ?>
+
