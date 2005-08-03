@@ -21,12 +21,12 @@ consult the <a href="contribute.php">contributions page</a>.
 <tr><td valign="top">
 
 <i>Resources</i><br>
-GGZ developers use mailing lists, a bug tracker and a CVS repository for their
+GGZ developers use mailing lists, a bug tracker and a SVN repository for their
 work. If there are any questions, the ggz-dev mailing list is the right place
 to ask.
 <br>
 Please see below for some quick links.
-For a CVS module overview, look <a href="cvs.php">here</a>.
+For a SVN module overview, look <a href="svn.php">here</a>.
 To inform yourself about the used tools and dependencies, view the
 <a href="tools.php">tools</a> page.
 The following pages are organized as subsections of the developer area.
