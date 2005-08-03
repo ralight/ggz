@@ -19,12 +19,6 @@ AM_PROG_LIBTOOL
 AC_PATH_KDE
 AC_KNEWSTUFF
 
-dnl KDE-what-have-I-done
-dnl ====================
-
-KDE_PLUGIN="-avoid-version -module -no-undefined \$(KDE_RPATH) \$(KDE_MT_LDFLAGS)"
-AC_SUBST(KDE_PLUGIN)
-
 dnl Check for GGZ requirements
 dnl ==========================
 
