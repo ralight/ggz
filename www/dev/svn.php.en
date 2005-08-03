@@ -5,10 +5,10 @@
 <td>
 <font size="3">
 
-<b>CVS Modules</b><br>
-GGZ development comprises work in a lot of CVS modules. Those are split due to
-either dependencies or reverse dependencies, i.e. other modules depending on
-them.
+<b>SVN Repository Structure</b><br>
+GGZ development comprises work in a lot of SVN 'modules' (a terminology derived from the
+former CVS modules). Those are split due to either dependencies or reverse dependencies,
+i.e. other modules depending on them.
 <br>
 
 <table class="inner">
@@ -40,8 +40,8 @@ them.
 </td></tr>
 <tr><td valign="top">
 
-<i>Access to GGZ CVS</i><br>
-Everybody has read access to the repository by using anonymous CVS.
+<i>Access to the GGZ Repository</i><br>
+Everybody has read access to the repository by using anonymous SVN.
 Write access requires an account on the server, which is granted to
 anybody who wants to contribute actively.
 
