@@ -1,7 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 7214 2005-05-21 10:46:02Z josef $
 
-AC_INIT([GGZ text client], [0.0.11], [ggz-dev@mail.ggzgamingzone.org], [ggz-txt-client])
+AC_INIT([GGZ text client], [0.0.12pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-txt-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -12,7 +11,6 @@ dnl ====================================
 AC_PROG_CC
 AC_ISC_POSIX
 AC_PROG_INSTALL
-AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
 
 
@@ -91,6 +89,12 @@ AC_CHECK_HEADERS(readline/history.h, [], [], [])
 AC_SUBST(LIB_CURSES)
 AC_SUBST(LIB_READLINE)
 
+if test "x$LIB_READLINE" = "x"; then
+	enable_readline="no"
+else
+	enable_readline="yes"
+fi
+
 dnl Various dirs
 dnl ============
 
@@ -99,8 +103,6 @@ if test "x$prefix" = "xNONE"; then
 fi
 
 AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
-
-AC_SUBST(LDADD)
 
 AC_CONFIG_FILES([Makefile
 		ggz-txt/Makefile
@@ -118,6 +120,7 @@ echo ""
 echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
+echo "    Readline support...$enable_readline"
 echo ""
 echo "At the prompt type \"make\" to compile the GGZ text client"
 echo ""
