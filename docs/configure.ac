@@ -19,6 +19,8 @@ dnl =====================================================
 GGZDOCDIR="$datadir/doc/ggz-docs"
 AC_SUBST(GGZDOCDIR)
 
+ggzdocdir=`eval "echo $GGZDOCDIR"`
+
 dnl Apply options
 dnl =============
 
@@ -98,7 +100,7 @@ echo "This package is now configured. Please type 'make' in order to compile."
 echo "The following installation layout is used:"
 echo ""
 echo "Installation prefix: $prefix"
-echo "Documentation goes to: $GGZDOCDIR"
+echo "Documentation goes to: $ggzdocdir"
 echo "Build guides: $enable_guides"
 echo "Build specification: $enable_spec"
 echo ""
