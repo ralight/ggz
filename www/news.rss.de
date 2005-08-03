@@ -10,6 +10,16 @@
 <language>de-de</language>
 
 <item>
+<title><i>03.08.2005: Subversion-Repository</i> (von josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Das GGZ-CVS-Repository wurde jetzt zu Subversion (SVN) migriert).
+Informationen dazu findet man auf der neuen Subdomain
+<a href="http://svn.ggzgamingzone.org/">svn.ggzgamingzone.org</a>.
+</full>
+</item>
+
+<item>
 <title><i>21.05.2005: GGZ 0.0.11</i> (von josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
