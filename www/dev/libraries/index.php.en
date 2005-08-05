@@ -1,0 +1,74 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Libraries</b><br>
+4 base libraries are in use throughout GGZ. These are libggz, ggzcore, ggzmod
+and ggzdmod. Each of those will be presented here and has got a dedicated
+information page for programmers.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>libggz: Making C application development easier</i><br>
+
+The libggz library is a collection of small utility functions. It consists of the modules
+easysock (socket creation, reading/writing data and so on), xml (xml helper functions),
+security (hash calculation functions), lists/stack (for data structures), conf
+(configuration file handling) and debug (debugging).
+<br>
+<a href="libggz/">More about libggz...</a>
+<br><br>
+
+<i>ggzcore: Connecting the user to GGZ</i><br>
+
+The ggzcore library contains an object-oriented interface which abstracts an
+online gaming system, based on the objects server, room and game, and some
+others. It can be used by GGZ core clients to enable player login, chat and
+game launch. But it can also be used by advanced games which would like to
+handles these tasks themselves.
+There are Python and C++ wrappers for ggzcore.
+<br>
+<a href="ggzcore/">More about ggzcore...</a>
+<br><br>
+
+<i>ggzmod: Game client library</i><br>
+
+The ggzmod library is used by game clients for initialization, which includes
+connecting to the game server if not already handled by the core client,
+event dispatching for joins and leaves of users and spectators, and receiving
+chat, statistics and player information.
+Wrappers exist for C++ and Python.
+<br>
+<a href="ggzdmod/">More about ggzdmod...</a>
+<br><br>
+
+<i>ggzdmod: Game server library</i><br>
+
+The ggzdmod library is used by game servers to control the game state (like
+pregame phase or game continuation), handling of events similar to how
+ggzmod works, transmitting the game results to the GGZ server and so on.
+Wrappers exist for C++ and Python.
+<br>
+<a href="ggzmod/">More about ggzmod...</a>
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

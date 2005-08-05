@@ -1,0 +1,67 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Library libggz</b><br>
+The libggz library wraps many common low-level functions which are often used in C programming.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Interfaces to libggz</i><br>
+
+<table class="list">
+<tr><td>libggz</td><td>Language: C</td><td>Location: libggz/src/ggz.h</td><td></td></tr>
+</table>
+
+<br>
+
+<i>Library configuration and dependencies</i><br>
+
+<table class="list">
+<tr><td>OpenSSL</td><td>optional</td><td>for network functions with TLS</td><td></td></tr>
+<tr><td>GnuTLS</td><td>optional</td><td>for network functions with TLS</td><td></td></tr>
+<tr><td>GCrypt</td><td>optional</td><td>for hash creation and validation</td><td></td></tr>
+</table>
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Description</i><br>
+
+There are different groups of functions in libggz. The first such group is memory handling, which
+offers functions such as ggz_strdup() or ggz_malloc(), which resemble their counterparts from libc
+but are more convenient to use. For instance, ggz_strdup(NULL) returns NULL instead of crashing,
+and ggz_malloc() includes a reference counter to be used for debugging in combination with ggz_free().
+The second group is configuration file management. A handle is retrieved with ggz_conf_parse(),
+and is then subsequently used for reading and writing configuration values, including lists. This
+leads to the group of data structure functions. Not only list creation and traversal, but also stacks
+and XML helper functions (to be used with an XML library) are included. Another group are debug
+functions which allow switching on and off debug messages for a certain tag. Another important group
+for game development are the networking functions, historically known as the easysock library.
+They permit the creation of server or client sockets, compatible with IPv6, as well as reading and
+writing basic datatypes such as integers or strings. The last group are security functions, for both
+cryptographic hash creation and comparison (using the gcrypt library), and for TLS encryption for
+network channels using either GnuPG or OpenSSL.
+<br><br>
+
+<i>More information</i><br>
+You might want to start with the <a href="http://www.ggzgamingzone.org/docs/api/libggz/">API documentation</a>.
+Examples of usage can be found nearly anywhere in the GGZ sources.
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
+

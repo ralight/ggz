@@ -15,6 +15,13 @@ Other game projects can make use of them even when not having integrated GGZ!
 <tr>
 <td valign="top" colspan="2">
 
+<i>Game development libraries</i><br>
+
+Our <a href="/libraries/">libraries</a> are available in C, C++ and Python and cover
+general networking tasks, multiplayer support for other games and interfacing the
+login and player system which sits at the heart of GGZ.
+<br><br>
+
 <i>Get Hot New Stuff integration</i><br>
 
 Sharing levels, themes, savegames or avatars among players has never been easier.

@@ -1,4 +1,4 @@
-<?php include_once("/var/www/ggz/www/dev/site/header.php"); ?>
+<?php include_once($_SERVER['DOCUMENT_ROOT'] . "/site/header.php"); ?>
 
 The page you requested could not been found :(
 <br>
@@ -11,5 +11,5 @@ endif;
 ?>
 <br>
 
-<?php include_once("/var/www/ggz/www/dev/site/footer.php"); ?>
+<?php include_once($_SERVER['DOCUMENT_ROOT'] . "/site/footer.php"); ?>
 
