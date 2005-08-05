@@ -1,0 +1,57 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Library ggzdmod</b><br>
+Game servers can use the ggzdmod library to communicate with the GGZ server.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Interfaces to ggzdmod</i><br>
+
+<table class="list">
+<tr><td>ggzdmod</td><td>Language: C</td><td>Location: ggzd/ggzdmod/ggzdmod.h</td><td></td></tr>
+<tr><td>ggzdmod++</td><td>Language: C++</td><td>Location: ggzd/ggzdmod++/ggzdmod++.h</td><td></td></tr>
+<tr><td>pyggzdmod</td><td>Language: Python</td><td>Location: python/pyggzdmod</td><td></td></tr>
+</table>
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Description</i><br>
+
+Similar to how the ggzmod library works for game clients, the ggzdmod library provides a state machine
+and an event dispatcher. However neither of those are identical. The events include JOIN/LEAVE/SEAT
+whenever a player or bot joins or leaves or is kicked by the game host, SPECTATOR_JOIN and so on for
+joining and leaving game spectators, and PLAYER_DATA and SPECTATOR_DATA for input from the game clients.
+The library offers functions such as counting the number of open or occupied seats on the current game table,
+transmitting a game result with highscores, rankings or player ratings back to ggzd, registration of a
+game log (for game continuation) or savegame file, and request methods to change the number of seats,
+replace players with bots and vice-versa, or boot offending players.
+The ggzdmod library depends on libggz.
+<br><br>
+
+<i>More information</i><br>
+You might want to start with the <a href="http://www.ggzgamingzone.org/docs/api/ggzdmod/">API documentation</a>.
+Examples of usage include more or less all game servers which are part of the ggz-server package,
+but also those which are part of the python package.
+The communication protocol between ggzdmod and the GGZ server ggzd is standardized in the
+<a href="http://www.ggzgamingzone.org/docs/spec/serverspec/">server-server specification</a>.
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
+

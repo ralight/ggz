@@ -1,0 +1,59 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Library ggzmod</b><br>
+The ggzmod library facilitates the messaging from and to a GGZ core client in a game client.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Interfaces to ggzmod</i><br>
+
+<table class="list">
+<tr><td>ggzmod</td><td>Language: C</td><td>Location: ggz-client-libs/ggzmod/ggzmod.h</td><td></td></tr>
+<tr><td>ggzmod++</td><td>Language: C++</td><td>Location: ggz-client-libs/ggzmod++/ggzmod++.h</td><td></td></tr>
+<tr><td>pyggzmod</td><td>Language: Python</td><td>Location: python/pyggzmod</td><td></td></tr>
+</table>
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Description</i><br>
+
+With the help of ggzmod, game authors can use GGZ in their game clients. The library provides a state engine
+and an event dispatcher. The states can be for instance CREATED (right after game startup), PLAYING (in the
+middle of the game) or DONE (after the game has finished). Events include STATE (to inform about a new state),
+SERVER (to inform the game client about the connection to the game server), PLAYER (if a player or bot joins
+or leaves), SPECTATOR_SEAT (if a spectator joins or leaves), CHAT (if a table message is sent from one of the
+game participants), and STATS (if the statistics of a player change).
+The game host, aka the initiating player, can kick other players or replace them with bots using ggzmod
+functions.
+Note that there is a counterpart to ggzmod which is called ggzmod-ggz. It is attached to the ggzcore library
+and used by GGZ core clients.
+The ggzmod library depends on libggz.
+<br><br>
+
+<i>More information</i><br>
+You might want to start with the <a href="http://www.ggzgamingzone.org/docs/api/ggzmod/">API documentation</a>.
+Examples of usage include most game clients in the packages kde-games, gtk-games, sdl-games and python.
+It is however also used in tttxt (part of txt-client) and the guru games (part of grubby).
+The communication protocol between ggzmod and ggzmod-ggz is standardized in the
+<a href="http://www.ggzgamingzone.org/docs/spec/clientspec/">client-client specification</a>.
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
+
