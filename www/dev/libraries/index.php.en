@@ -45,7 +45,7 @@ event dispatching for joins and leaves of users and spectators, and receiving
 chat, statistics and player information.
 Wrappers exist for C++ and Python.
 <br>
-<a href="ggzdmod/">More about ggzdmod...</a>
+<a href="ggzmod/">More about ggzmod...</a>
 <br><br>
 
 <i>ggzdmod: Game server library</i><br>
@@ -55,7 +55,7 @@ pregame phase or game continuation), handling of events similar to how
 ggzmod works, transmitting the game results to the GGZ server and so on.
 Wrappers exist for C++ and Python.
 <br>
-<a href="ggzmod/">More about ggzmod...</a>
+<a href="ggzdmod/">More about ggzdmod...</a>
 
 </td>
 </tr>
