@@ -415,7 +415,7 @@ eval "$ac_cv_have_ggz_config"
 if test "$have_ggz_config" != yes; then
   if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggz_config (intentionally ignored)])
-    GGZ_CONFIG="/bin/true"
+    GGZ_CONFIG="true"
     ggzexecmoddir="\${prefix}/lib/ggz"
     ggzdatadir="\${prefix}/share/ggz"
     AC_SUBST(GGZ_CONFIG)
@@ -438,7 +438,7 @@ else
 
   if test "x$pathto_app" != "x$pathto_ggz"; then
     AC_MSG_RESULT([$have_ggz_config (dismissed due to different prefix)])
-    GGZ_CONFIG="/bin/true"
+    GGZ_CONFIG="true"
     ggzexecmoddir="\${prefix}/lib/ggz"
     ggzdatadir="\${prefix}/share/ggz"
     AC_SUBST(GGZ_CONFIG)
