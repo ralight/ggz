@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-10 15:02+0200\n"
+"POT-Creation-Date: 2005-08-05 16:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,102 +29,248 @@ msgstr ""
 msgid "error"
 msgstr ""
 
-#: ../ggzboard/ggzboard:164
+#: ../ggzboard/ggzboard:165
 #, python-format
 msgid "GGZBoard game %s not found"
 msgstr ""
 
-#: ../ggzboard/ggzboard:182
+#: ../ggzboard/ggzboard:190
 msgid "GGZBoard"
 msgstr ""
 
-#: ../ggzboard/ggzboard:204 ../ggzboard/ggzboard:206
+#: ../ggzboard/ggzboard:218 ../ggzboard/ggzboard:220
+msgid "GGZBoard: help screen"
+msgstr ""
+
+#: ../ggzboard/ggzboard:266
+msgid "Common GGZBoard functions:"
+msgstr ""
+
+#: ../ggzboard/ggzboard:267
+msgid "u: download new games, levels, themes"
+msgstr ""
+
+#: ../ggzboard/ggzboard:268
+msgid "p: display the player list"
+msgstr ""
+
+#: ../ggzboard/ggzboard:269
+msgid "s: produce a screen shot"
+msgstr ""
+
+#: ../ggzboard/ggzboard:270
+msgid "f: toggle fullscreen display"
+msgstr ""
+
+#: ../ggzboard/ggzboard:271
+msgid "ESC: quit a running game"
+msgstr ""
+
+#: ../ggzboard/ggzboard:273
+msgid "Game-specific help:"
+msgstr ""
+
+#: ../ggzboard/ggzboard:293
+msgid "Return to game"
+msgstr ""
+
+#: ../ggzboard/ggzboard:305 ../ggzboard/ggzboard:307
+msgid "GGZBoard: about screen"
+msgstr ""
+
+#: ../ggzboard/ggzboard:353
+msgid "GGZBoard: A multi-engine game container"
+msgstr ""
+
+#: ../ggzboard/ggzboard:354
+msgid "Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>"
+msgstr ""
+
+#: ../ggzboard/ggzboard:356
+msgid "GGZBoard contains several board games, each of which can be played"
+msgstr ""
+
+#: ../ggzboard/ggzboard:357
+msgid "either alone against the artificial intelligence (AI) or against"
+msgstr ""
+
+#: ../ggzboard/ggzboard:358
+msgid "other humans or AIs over the network, using the GGZ Gaming Zone system."
+msgstr ""
+
+#: ../ggzboard/ggzboard:359
+msgid "Each of the games provides an in-game helpscreen."
+msgstr ""
+
+#: ../ggzboard/ggzboard:361
+msgid "More information can be found on the GGZBoard homepage:"
+msgstr ""
+
+#: ../ggzboard/ggzboard:362
+msgid "http://www.ggzgamingzone.org/games/ggzboard/"
+msgstr ""
+
+#: ../ggzboard/ggzboard:375
+msgid "Return to main screen"
+msgstr ""
+
+#: ../ggzboard/ggzboard:387 ../ggzboard/ggzboard:389
 msgid "GGZBoard: game selection"
 msgstr ""
 
-#: ../ggzboard/ggzboard:285 ../ggzboard/ggzboard:292 ../ggzboard/ggzboard:320
+#: ../ggzboard/ggzboard:458
+msgid "About..."
+msgstr ""
+
+#: ../ggzboard/ggzboard:467
+msgid "Quit..."
+msgstr ""
+
+#: ../ggzboard/ggzboard:496 ../ggzboard/ggzboard:503 ../ggzboard/ggzboard:535
 msgid "GGZBoard: "
 msgstr ""
 
-#: ../ggzboard/ggzboard:289 ../ggzboard/ggzboard:318
+#: ../ggzboard/ggzboard:500 ../ggzboard/ggzboard:533
 msgid " (running on GGZ)"
 msgstr ""
 
-#: ../ggzboard/ggzboard:291 ../ggzboard/ggzboard:319
+#: ../ggzboard/ggzboard:502 ../ggzboard/ggzboard:534
 msgid " (unavailable)"
 msgstr ""
 
-#: ../ggzboard/ggzboard:479
+#: ../ggzboard/ggzboard:680
+msgid "Game over!"
+msgstr ""
+
+#: ../ggzboard/ggzboard:683
+#, python-format
+msgid "The winner is %s"
+msgstr ""
+
+#: ../ggzboard/ggzboard:721
 #, python-format
 msgid "AI #%s"
 msgstr ""
 
-#: ../ggzboard/ggzboard:487
+#: ../ggzboard/ggzboard:729
 #, python-format
 msgid "Player %s:"
 msgstr ""
 
-#: ../ggzboard/ggzboard:508
+#: ../ggzboard/ggzboard:748
 msgid "Dice: "
 msgstr ""
 
-#: ../ggzboard/ggzboard:521
+#: ../ggzboard/ggzboard:761
 msgid "Thinking..."
 msgstr ""
 
-#: ../ggzboard/ggzboard:567
+#: ../ggzboard/ggzboard:770
+msgid "Themes & games"
+msgstr ""
+
+#: ../ggzboard/ggzboard:770
+msgid "Player list"
+msgstr ""
+
+#: ../ggzboard/ggzboard:770
+msgid "Game help"
+msgstr ""
+
+#: ../ggzboard/ggzboard:770
+msgid "Main menu"
+msgstr ""
+
+#: ../ggzboard/ggzboard:861
+#, python-format
+msgid "Argument required for %s."
+msgstr ""
+
+#: ../ggzboard/ggzboard:867
 #, python-format
 msgid "Unknown option: %s"
 msgstr ""
 
-#: ../ggzboard/ggzboard:570
+#: ../ggzboard/ggzboard:871
 msgid "GGZBoard - common board game client for GGZ"
 msgstr ""
 
-#: ../ggzboard/ggzboard:571
+#: ../ggzboard/ggzboard:872
 msgid "Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>"
 msgstr ""
 
-#: ../ggzboard/ggzboard:572
+#: ../ggzboard/ggzboard:873
 msgid "Published under GNU GPL conditions"
 msgstr ""
 
-#: ../ggzboard/ggzboard:574
+#: ../ggzboard/ggzboard:875
 msgid "Options:"
 msgstr ""
 
-#: ../ggzboard/ggzboard:575
+#: ../ggzboard/ggzboard:876
 msgid "[-h | --help           ] Display this game help"
 msgstr ""
 
-#: ../ggzboard/ggzboard:576
+#: ../ggzboard/ggzboard:877
+msgid "[-v | --version        ] Show version information"
+msgstr ""
+
+#: ../ggzboard/ggzboard:878
 msgid "[-g | --ggz            ] Request game in GGZ mode"
 msgstr ""
 
-#: ../ggzboard/ggzboard:577
+#: ../ggzboard/ggzboard:879
 msgid "[-G | --game <gamename>] Skip intro screen and launch game directly"
 msgstr ""
 
-#: ../ggzboard/module_checkers.py:62
+#: ../ggzboard/ggzboard:880
+msgid "[-f | --fullscreen     ] Start in fullscreen mode"
+msgstr ""
+
+#: ../ggzboard/module_checkers.py:65
 msgid "Checkers/Draughts"
 msgstr ""
 
-#: ../ggzboard/module_chess.py:74
+#: ../ggzboard/module_chess.py:77
 msgid "Chess"
 msgstr ""
 
-#: ../ggzboard/module_go.py:37
+#: ../ggzboard/module_go.py:40
 msgid "Go"
 msgstr ""
 
-#: ../ggzboard/module_hnefatafl.py:73
+#: ../ggzboard/module_hnefatafl.py:76
 msgid "Hnefatafl"
 msgstr ""
 
-#: ../ggzboard/module_madn.py:145
+#: ../ggzboard/module_madn.py:168
+msgid "Ludo is a game for up to four players."
+msgstr ""
+
+#: ../ggzboard/module_madn.py:169
+msgid "After rolling dice, each player can either move a piece"
+msgstr ""
+
+#: ../ggzboard/module_madn.py:170
+msgid "out of the depot, onto the start field, or move a piece"
+msgstr ""
+
+#: ../ggzboard/module_madn.py:171
+msgid "already outside clock-wise until it reaches the end field."
+msgstr ""
+
+#: ../ggzboard/module_madn.py:172
+msgid "Opponent pieces can be beaten and are put back into the depot."
+msgstr ""
+
+#: ../ggzboard/module_madn.py:173
+msgid "To come out of a depot, a die must show a 1."
+msgstr ""
+
+#: ../ggzboard/module_madn.py:179
 msgid "Ludo"
 msgstr ""
 
-#: ../ggzboard/module_reversi.py:42
+#: ../ggzboard/module_reversi.py:45
 msgid "Reversi"
 msgstr ""
