@@ -42,7 +42,11 @@ You might want to start with the <a href="http://www.ggzgamingzone.org/docs/api/
 Examples of usage include more or less all game servers which are part of the ggz-server package,
 but also those which are part of the python package.
 The communication protocol between ggzdmod and the GGZ server ggzd is standardized in the
-<a href="http://www.ggzgamingzone.org/docs/spec/serverspec/">server-server specification</a>.
+<a href="http://www.ggzgamingzone.org/docs/design/serverspec/serverspec-html/">server-server specification</a>.
+Recommended documentation includes the
+<a href="http://www.ggzgamingzone.org/docs/games/modules/">Game Modules</a> document and the list of
+features that GGZ provides, in the <a href="http://www.ggzgamingzone.org/docs/games/ggzfeatures.html">GGZ Features</a>
+document.
 
 </td>
 </tr>

@@ -44,7 +44,11 @@ You might want to start with the <a href="http://www.ggzgamingzone.org/docs/api/
 Examples of usage include most game clients in the packages kde-games, gtk-games, sdl-games and python.
 It is however also used in tttxt (part of txt-client) and the guru games (part of grubby).
 The communication protocol between ggzmod and ggzmod-ggz is standardized in the
-<a href="http://www.ggzgamingzone.org/docs/spec/clientspec/">client-client specification</a>.
+<a href="http://www.ggzgamingzone.org/docs/design/clientspec/clientspec-html/">client-client specification</a>.
+Recommended documentation includes the
+<a href="http://www.ggzgamingzone.org/docs/games/modules/">Game Modules</a> document and the list of
+features that GGZ provides, in the <a href="http://www.ggzgamingzone.org/docs/games/ggzfeatures.html">GGZ Features</a>
+document.
 
 </td>
 </tr>
