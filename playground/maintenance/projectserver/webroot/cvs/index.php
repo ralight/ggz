@@ -13,6 +13,10 @@ GGZ Gaming Zone CVS Repository (cvs.ggzgamingzone.org)
 </tr></table>
 <br><br>
 
+The GGZ Repository has been switched to Subversion (SVN).
+You'll find the new web view on <a href="http://svn.ggzgamingzone.org/">svn.ggzgamingzone.org</a>.
+
+<!--
 The master source repository for the GGZ Gaming Zone can be found on this server.<br>
 <a href="/cgi-bin/viewcvs.cgi">ViewCVS</a><br>
 <a href="/lxr/">LXR</a><br>
@@ -30,6 +34,7 @@ CVS commit notifications are sent to the ggz-cvs mailing list.
 <br>
 They are also tracked by the <a href="http://cia.navi.cx/stats/project/ggz">CIA bot</a>.
 <br><br>
+-->
 
 </body>
 </html>
