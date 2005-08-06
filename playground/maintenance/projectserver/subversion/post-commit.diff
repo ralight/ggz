@@ -1,0 +1,10 @@
+--- templates/post-commit.tmpl	2005-08-05 07:49:43.000000000 +0100
++++ post-commit	2005-08-06 10:27:47.000000000 +0100
+@@ -35,4 +35,6 @@
+ REPOS="$1"
+ REV="$2"
+ 
+-/usr/lib/subversion/hook-scripts/commit-email.pl "$REPOS" "$REV" commit-watchers@example.org
++/usr/lib/subversion/hook-scripts/commit-email.pl "$REPOS" "$REV" ggz-svn@mail.ggzgamingzone.org
++/usr/local/bin/ciabot_svn.sh "$REPOS" "$REV"
++

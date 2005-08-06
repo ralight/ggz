@@ -1,0 +1,8 @@
+--- templates/post-revprop-change.tmpl	2005-08-05 07:49:43.000000000 +0100
++++ post-revprop-change	2005-08-05 08:35:02.000000000 +0100
+@@ -37,4 +37,4 @@
+ USER="$3"
+ PROPNAME="$4"
+ 
+-/usr/lib/subversion/hook-scripts/propchange-email.pl "$REPOS" "$REV" "$USER" "$PROPNAME" watchers@example.org
++/usr/lib/subversion/hook-scripts/propchange-email.pl "$REPOS" "$REV" "$USER" "$PROPNAME" ggz-svn@mail.ggzgamingzone.org

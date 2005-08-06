@@ -1,0 +1,72 @@
+--- commit-email.pl.orig	2005-05-13 06:27:29.000000000 +0100
++++ commit-email.pl	2005-08-06 10:23:06.000000000 +0100
+@@ -52,6 +52,9 @@
+ # $no_diff_deleted to 1.
+ my $no_diff_deleted = 0;
+ 
++# This controls the size of the commit email.
++my $max_email_body_size = 20_000;   # characters
++
+ # Since the path to svnlook depends upon the local installation
+ # preferences, check that the required programs exist to insure that
+ # the administrator has set up the script properly.
+@@ -360,6 +363,8 @@
+ push(@body, @log);
+ push(@body, "\n");
+ push(@body, map { /[\r\n]+$/ ? $_ : "$_\n" } @difflines);
++&check_binary (\@body);
++&check_truncate (\@body, $max_email_body_size);
+ 
+ # Go through each project and see if there are any matches for this
+ # project.  If so, send the log out.
+@@ -590,3 +595,50 @@
+       return @output;
+     }
+ }
++
++# This truncates @{$r_array} if the cumulative length of strings in
++# @{$r_array} exceeds $max_size. The array is truncated at the line
++# whose string length would cause this to happen.
++sub check_truncate
++{
++  my ($r_array, $max_size) = @_;
++
++  for (my ($line, $size) = (0, 0); $line <= $#{$r_array}; $line++)
++    {
++      if (($size + length $r_array->[$line]) > $max_size)
++        {
++	  splice(@{$r_array}, $line);
++	  push(@{$r_array}, "[truncated - reached $max_size ...]\n");
++          last;
++        }
++      $size += length($r_array->[$line]);
++    }
++}
++
++# For each committed file, check if it contains binary data. Whenever
++# this is the case, replace all following data with a comment line
++# telling about this fact.
++sub check_binary{
++  my $r_array = shift(@_);
++  my $binary = 0;
++
++  for(my $line = 0; $line <= $#{$r_array}; $line++){
++    my $l = $r_array->[$line];
++    if($binary == 1){
++      if($l eq "\n" and $r_array->[$line + 1] =~ /^Modified:/){
++        $binary = 0;
++      }else{
++        splice(@{$r_array}, $line, 1);
++	$line--;
++      }
++    }else{
++      for(my $i = 0; $i < length $l; $i++){
++        my $c = ord(substr($l, $i, 1));
++        if($c < 32 and $c != 10 and $c != 13 and $c != 9){
++          $binary = 1;
++          $r_array->[$line] = "[binary data detected]\n";
++        }
++      }
++    }
++  }
++}
