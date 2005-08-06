@@ -23,6 +23,8 @@ dnl
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
+dnl AC_GGZ_INIT - initialization and paths/options setup
+dnl AC_GGZ_VERSION - ensure a minimum version of GGZ
 dnl AC_GGZ_LIBGGZ - find the libggz headers and libraries
 dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
 dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
@@ -37,7 +39,6 @@ dnl   2.  Action-if-not-found (or empty for error, or "ignore" to ignore).
 dnl ------------------------------------------------------------------------
 dnl Internal functions:
 dnl ------------------------------------------------------------------------
-dnl AC_GGZ_INIT - initialization
 dnl AC_GGZ_ERROR - user-friendly error messages
 dnl AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
 dnl AC_GGZ_REMOVEDUPS - eliminate duplicate list elements
@@ -149,6 +150,34 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	 save_cxxflags="$save_cxxflags -fsigned-char"])
 CFLAGS=$save_cflags
 CXXFLAGS=$save_cxxflags
+])
+
+dnl ------------------------------------------------------------------------
+dnl Ensure that a minimum version of GGZ is present
+dnl Synopsis: AC_GGZ_VERSION(major, minor, micro)
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN([AC_GGZ_VERSION],
+[
+	major=$1
+	minor=$2
+	micro=$3
+
+	testprologue="#include <ggz.h>"
+	testbody=""
+	testbody="$testbody if(LIBGGZ_VERSION_MAJOR > $major) return 0;"
+	testbody="$testbody if(LIBGGZ_VERSION_MAJOR < $major) return -1;"
+	testbody="$testbody if(LIBGGZ_VERSION_MINOR > $minor) return 0;"
+	testbody="$testbody if(LIBGGZ_VERSION_MINOR < $minor) return -1;"
+	testbody="$testbody if(LIBGGZ_VERSION_MICRO > $micro) return 0;"
+	testbody="$testbody if(LIBGGZ_VERSION_MICRO < $micro) return -1;"
+	testbody="$testbody return 0;"
+
+	AC_RUN_IFELSE(
+		[AC_LANG_PROGRAM([[$testprologue]], [[$testbody]])],
+		[],
+		[AC_MSG_ERROR([The GGZ version is too old. Version $major.$minor.$micro is required.])]
+	)
 ])
 
 dnl ------------------------------------------------------------------------
@@ -386,10 +415,12 @@ eval "$ac_cv_have_ggz_config"
 if test "$have_ggz_config" != yes; then
   if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggz_config (intentionally ignored)])
-    GGZ_CONFIG="/bin/true"
-    AC_SUBST(GGZ_CONFIG)
+    GGZ_CONFIG="true"
     ggzexecmoddir="\${prefix}/lib/ggz"
     ggzdatadir="\${prefix}/share/ggz"
+    AC_SUBST(GGZ_CONFIG)
+    AC_SUBST(ggzexecmoddir)
+    AC_SUBST(ggzdatadir)
     AC_DEFINE_UNQUOTED(GAMEDIR, "${prefix}/lib/ggz", [Path where to install the games])
     AC_DEFINE_UNQUOTED(GGZDATADIR, "${prefix}/share/ggz", [Path where the games should look for their data files])
   else
@@ -402,33 +433,47 @@ if test "$have_ggz_config" != yes; then
     $2
   fi
 else
-  ac_cv_have_ggz_config="have_ggz_config=yes \
-    ac_ggz_config=$ac_ggz_config"
-  AC_MSG_RESULT([$ac_ggz_config/ggz-config])
+  pathto_app=`echo $prefix/bin/ | tr -s "/"`
+  pathto_ggz=`echo $ac_ggz_config/ | tr -s "/"`
 
-  ggz_config="$ac_ggz_config"
+  if test "x$pathto_app" != "x$pathto_ggz"; then
+    AC_MSG_RESULT([$have_ggz_config (dismissed due to different prefix)])
+    GGZ_CONFIG="true"
+    ggzexecmoddir="\${prefix}/lib/ggz"
+    ggzdatadir="\${prefix}/share/ggz"
+    AC_SUBST(GGZ_CONFIG)
+    AC_SUBST(ggzexecmoddir)
+    AC_SUBST(ggzdatadir)
+    AC_DEFINE_UNQUOTED(GAMEDIR, "${prefix}/lib/ggz", [Path where to install the games])
+    AC_DEFINE_UNQUOTED(GGZDATADIR, "${prefix}/share/ggz", [Path where the games should look for their data files])
+  else
+    ac_cv_have_ggz_config="have_ggz_config=yes \
+      ac_ggz_config=$ac_ggz_config"
+    AC_MSG_RESULT([$ac_ggz_config/ggz-config])
 
-  AC_SUBST(ggz_config)
+    ggz_config="$ac_ggz_config"
+    AC_SUBST(ggz_config)
 
-  GGZ_CONFIG="${ggz_config}/ggz-config"
-  AC_SUBST(GGZ_CONFIG)
+    GGZ_CONFIG="${ggz_config}/ggz-config"
+    AC_SUBST(GGZ_CONFIG)
 
-  ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
-  AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
-  ggzexecmoddir=`$GGZ_CONFIG --gamedir`
-  AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
-  ggzdatadir=`$GGZ_CONFIG --datadir`
-  AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
-  packagesrcdir=`cd $srcdir && pwd`
-  AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
+    ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
+    AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
+    ggzexecmoddir=`$GGZ_CONFIG --gamedir`
+    AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
+    ggzdatadir=`$GGZ_CONFIG --datadir`
+    AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
+    packagesrcdir=`cd $srcdir && pwd`
+    AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
 
-  AC_SUBST(ggzmoduleconfdir)
-  AC_SUBST(ggzexecmoddir)
-  AC_SUBST(ggzdatadir)
-  AC_SUBST(packagesrcdir)
+    AC_SUBST(ggzmoduleconfdir)
+    AC_SUBST(ggzexecmoddir)
+    AC_SUBST(ggzdatadir)
+    AC_SUBST(packagesrcdir)
 
-  # Perform actions given by argument 1.
-  $1
+    # Perform actions given by argument 1.
+    $1
+  fi
 fi
 
 ])
