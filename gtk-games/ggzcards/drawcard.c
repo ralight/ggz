@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: drawcard.c 7401 2005-08-13 21:34:23Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -76,16 +76,22 @@ static GdkPixbuf *load_pixmap(const char *name)
 static void load_french_cardset(void)
 {
 	int i;
+	GdkPixbufRotation rotate[4] = {
+	  GDK_PIXBUF_ROTATE_NONE,
+	  GDK_PIXBUF_ROTATE_CLOCKWISE,
+	  GDK_PIXBUF_ROTATE_UPSIDEDOWN,
+	  GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE
+	};
+
+	cards[0].front = load_pixmap("cards-1.png");
+	cards[0].back = load_pixmap("cards-b1.png");
 
 	/* build pixmaps from the images */
-	for (i = 0; i < 4 /* 4 orientations */ ; i++) {
-		char fronts[32], backs[32];
-
-		snprintf(fronts, sizeof(fronts), "cards-%d.png", i + 1);
-		snprintf(backs, sizeof(backs), "cards-b%d.png", i + 1);
-
-		cards[i].front = load_pixmap(fronts);
-		cards[i].back = load_pixmap(backs);
+	for (i = 1; i < 4 /* 4 orientations */ ; i++) {
+		cards[i].front = gdk_pixbuf_rotate_simple(cards[0].front,
+							  rotate[i]);
+		cards[i].back = gdk_pixbuf_rotate_simple(cards[0].back,
+							  rotate[i]);
 	}
 }
 
