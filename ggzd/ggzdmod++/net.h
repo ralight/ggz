@@ -26,6 +26,7 @@
 #include <hash_map>
 #endif
 
+/* Internally used per-connection buffer class */
 class Queue
 {
 	public:
@@ -36,12 +37,27 @@ class Queue
 		int receivepos;
 };
 
+/* Base networking class
+ * Usually, a file descriptor is assigned first, and then the data is
+ * read and written.
+ * *net << Net::channel << fd;
+ * *net << Net::begin << 42 << Net::end << Net::flush;
+ * *net << Net::input;
+ * *net >> mynumber;
+ */
 class Net
 {
 	public:
 		Net();
 		~Net();
 
+		/* If these opcodes are injected, the object behaviour changes:
+		 * begin - start a buffered write operation
+		 * end - end a buffered write operation (but do not flush)
+		 * flush - flush the output buffer (also implicitly if buffer is full)
+		 * channel - assign a file descriptor, which must follow as integer
+		 * input - explicit reading of more bytes from network layer
+		 */
 		enum SpecialOpcodes
 		{
 			begin = -1001,
@@ -51,13 +67,19 @@ class Net
 			input = -1005
 		};
 
+		/* Inject one of the special opcodes declared above */
 		Net &operator<<(SpecialOpcodes value);
+		/* Inject an integer value */
 		Net &operator<<(int value);
+		/* Inject a string */
 		Net &operator<<(const char* value);
 
+		/* Read an integer value */
 		Net &operator>>(int* value);
+		/* Read a string */
 		Net &operator>>(char** value);
 
+		/* Returns 1 if read buffer is empty, 0 if it contains data */
 		int empty();
 
 	private:

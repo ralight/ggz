@@ -23,44 +23,63 @@
 // GGZdMod includes
 #include <ggzdmod.h>
 
-#define GGZSPECTATORS
-
-// General virtual game server class (similar to Zone)
-class GGZGameServer {
+/* Class representing a game server module.
+ * It is used by reimplementing the virtual methods, and then calling
+ * connect().
+ */
+class GGZGameServer
+{
 	public:
-		GGZGameServer ();
-		virtual ~GGZGameServer ();
-		void connect ( bool async );
+		/* Constructor */
+		GGZGameServer();
+		/* Destructor */
+		virtual ~GGZGameServer();
+		/* Connect to the GGZ server:
+		 * async=false: object goes into a loop
+		 * async=true: idleEvent gets called regularly
+		 */
+		void connect(bool async);
 
 	protected:
-		virtual void idleEvent ();
-		virtual void stateEvent ();
-		virtual void joinEvent  ( int player );
-		virtual void leaveEvent ( int player );
-		virtual void dataEvent  ( int player );
-#ifdef GGZSPECTATORS
-		virtual void spectatorJoinEvent  ( int spectator );
-		virtual void spectatorLeaveEvent ( int spectator );
-		virtual void spectatorDataEvent ( int spectator );
-#endif
-		virtual void errorEvent ();
-		int fd ( int player );
+		/* Callback for idle events (only in async mode) */
+		virtual void idleEvent();
+		/* Callback for state change */
+		virtual void stateEvent();
+		/* A player has joined the given seat */
+		virtual void joinEvent(int player);
+		/* A player has left the given seat */
+		virtual void leaveEvent(int player);
+		/* The player on the given seat has sent some data */
+		virtual void dataEvent(int player);
+		/* A spectator has joined the given spectator seat */
+		virtual void spectatorJoinEvent(int spectator);
+		/* A spectator has left the given spectator seat */
+		virtual void spectatorLeaveEvent(int spectator);
+		/* The spectator on the given spectator seat has sent some data */
+		virtual void spectatorDataEvent(int spectator);
+		/* An error occurred */
+		virtual void errorEvent();
+
+		/* Returns file descriptor for the given seat number */
+		int fd(int player);
+		/* Returns number of available seats, independent of their status */
 		int players();
-		int spectatorfd ( int spectator );
-		int spectators ();
+		/* Returns file descriptor for the given spectator seat number */
+		int spectatorfd(int spectator);
+		/* Returns number of available spectators */
+		int spectators();
+		/* Returns the number of open seats */
 		int open();
 
 	private:
-		static void handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
-		static void handle_join  ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
-		static void handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
-		static void handle_data  ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
-		static void handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
-#ifdef GGZSPECTATORS
-		static void handle_spectator_join  ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
-		static void handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
-		static void handle_spectator_data ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
-#endif
+		static void handle_state(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
+		static void handle_join(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
+		static void handle_leave(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
+		static void handle_data(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
+		static void handle_error(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
+		static void handle_spectator_join(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
+		static void handle_spectator_leave(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
+		static void handle_spectator_data(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
 		int m_connected;
 };
 

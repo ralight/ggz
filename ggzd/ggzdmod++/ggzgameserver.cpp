@@ -38,11 +38,9 @@ GGZGameServer::GGZGameServer () {
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_LEAVE, &handle_leave );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &handle_data );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_ERROR, &handle_error );
-#ifdef GGZSPECTATORS
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, &handle_spectator_join );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &handle_spectator_data );
-#endif
 	m_connected = 0;
 }
 
@@ -87,7 +85,6 @@ void GGZGameServer::leaveEvent ( int player ) {
 void GGZGameServer::idleEvent () {
 }
 
-#ifdef GGZSPECTATORS
 // Virtual spectator join hook
 void GGZGameServer::spectatorJoinEvent ( int player ) {
 }
@@ -99,7 +96,6 @@ void GGZGameServer::spectatorLeaveEvent ( int player ) {
 // Virtual spectator data hook
 void GGZGameServer::spectatorDataEvent ( int player ) {
 }
-#endif
 
 // Virtual game data hook
 void GGZGameServer::dataEvent ( int player ) {
@@ -141,7 +137,6 @@ void GGZGameServer::handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, const v
 	self->errorEvent ();
 }
 
-#ifdef GGZSPECTATORS
 // Callback for the spectator join hook
 void GGZGameServer::handle_spectator_join ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
 	int spectator = ((GGZSpectator*)data)->num;
@@ -162,7 +157,6 @@ void GGZGameServer::handle_spectator_data ( GGZdMod* ggzdmod, GGZdModEvent event
 	std::cout << "GGZGameServer: spectatorDataEvent" << std::endl;
 	self->spectatorDataEvent ( spectator );
 }
-#endif
 
 int GGZGameServer::fd ( int player ) {
 	return ggzdmod_get_seat ( ggzdmod, player ).fd;
@@ -173,19 +167,11 @@ int GGZGameServer::players () {
 }
 
 int GGZGameServer::spectatorfd ( int spectator ) {
-#ifdef GGZSPECTATORS
 	return ggzdmod_get_spectator ( ggzdmod, spectator ).fd;
-#else
-	return -1;
-#endif
 }
 
 int GGZGameServer::spectators () {
-#ifdef GGZSPECTATORS
 	return ggzdmod_count_spectators ( ggzdmod );
-#else
-	return 0;
-#endif
 }
 
 int GGZGameServer::open () {
