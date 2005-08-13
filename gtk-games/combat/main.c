@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
- * $Id: main.c 6662 2005-01-14 03:18:49Z jdorje $
+ * $Id: main.c 7400 2005-08-13 21:23:11Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -47,7 +47,6 @@
 #include "support.h"
 
 #define DEFAULTINSTALLEDDIR GGZDATADIR "/combat/pixmaps/default/"
-#define DEFAULTSOURCEDIR PACKAGE_SOURCE_DIR "/combat/pixmaps/default"
 
 /* main window widget */
 extern GtkWidget *main_win;
@@ -79,7 +78,6 @@ int main(int argc, char *argv[])
 	// TODO: Check for directory the user wants
 	add_pixmap_directory("tiles/default");
 	add_pixmap_directory(DEFAULTINSTALLEDDIR);
-	add_pixmap_directory(DEFAULTSOURCEDIR);
 
 	main_win = create_main_window();
 	gtk_widget_show(main_win);
