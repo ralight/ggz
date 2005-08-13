@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 7268 2005-06-10 12:28:19Z josef $
+ * $Id: game.c 7386 2005-08-13 17:39:23Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -411,7 +411,11 @@ int game_send_gameover(char winner)
 	int i, fd;
 	GGZGameResult results[2];
 
-	game_save("player%i winner", winner + 1);
+	if (winner == 2) {
+		game_save("tie game");
+	} else {
+		game_save("player%i winner", winner + 1);
+	}
 
 	/* Report game to GGZ. */
 	if (winner == 2) {
@@ -450,7 +454,12 @@ int game_move(void)
 		else
 			game_update(DOTS_EVENT_MOVE_H, &x, &y);
 
-		game_save("player%i move %u %u", (dots_game.turn + 1) % 2 + 1, x, y);
+		/* Break out of recursion here */
+		if(dots_game.state == DOTS_STATE_INIT) return 0;
+
+		game_save("player%i move %u %u %s",
+			(dots_game.turn + 1) % 2 + 1, x, y,
+			(dir == 0 ? "vertical" : "horizontal"));
 	} else
 		game_req_move(num);
 
@@ -560,7 +569,9 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 	if(status < 0)
 		return 1;
 
-	game_save("player%i move %u %u", dots_game.turn + 1, *x, *y);
+	game_save("player%i move %u %u %s",
+		dots_game.turn + 1, *x, *y,
+		(dir == 0 ? "vertical" : "horizontal"));
 	
 	/* We make a note who our opponent is, easier on the update func */
 	dots_game.opponent = (num + 1) % 2;
