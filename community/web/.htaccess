@@ -1,6 +1,14 @@
+# setup: adapt to site path
+php_value include_path ".:/home/ggznew/svn-version/community/web:/home/ggznew/svn-version/community/web/common"
+
+# some sanity values
 AddDefaultCharset utf-8
+DirectoryIndex index.php
+Options +MultiViews
+php_value allow_url_fopen off
 
-php_value include_path ".:/home/ggz/cvs-version/community/web:/home/ggz/cvs-version/community/web/common"
-
-php_value error_reporting E_ALL
+# debugging:
+#php_value error_reporting E_ALL
+#php_value display_errors on
+#php_value display_startup_errors on
 
