@@ -1,0 +1,97 @@
+<div id="main">
+	<h1>
+		<span class="itemleader">:: </span>
+		Extending the Community platform
+		<span class="itemleader"> :: </span>
+		<a name="extending"></a>
+	</h1>
+	<div class="text">
+		The GGZ Community portal is being extended so it can be used more easily
+		by other projects as well. This includes custom stylesheets, internationalization
+		and a template and configuration system.
+		If anyone wants to help with the translation, the current message catalog is
+		as usually available
+		<a href="http://dev.ggzgamingzone.org/i18n/" title="GGZ Internationalization">on our i18n page</a>, and takes up about 100 strings out of 2200 which GGZ has in total.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		GGZ 0.0.11 and Packaging article
+		<span class="itemleader"> :: </span>
+		<a name="0011"></a>
+	</h1>
+	<div class="text">
+		<div style="float:left">
+		<img src="images/packagesarticle.png" alt="GGZ package overview">
+		</div>
+		You can now <a href="http://www.ggzgamingzone.org/">download</a>
+		GGZ 0.0.11 from the project site, and if you're a packager,
+		do not miss our new article:
+		<a href="/articles/packaging/" title="GGZ packaging">GGZ packaging</a>.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Server move and updates
+		<span class="itemleader"> :: </span>
+		<a name="servermove"></a>
+	</h1>
+	<div class="text">
+		The GGZ Community has moved off the project server and to another
+		dedicated server located in France. We're using the chance on upgrading
+		it to the current CVS version. This brings along with it longitude/latitude
+		configuration in the personal settings (for the world map), a karma
+		system, and preparations for the upcoming GGZ release's savegames.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		GGZ Gaming Zone 0.0.10 released
+		<span class="itemleader"> :: </span>
+		<a name="0010"></a>
+	</h1>
+	<div class="text">
+		Version 0.0.10 of the GGZ project had been released last night (24.01.2005).
+		Information about it can be found at the release announcement
+		<a href="http://www.ggzgamingzone.org/releases/0.0.10/release.php">page</a>.
+		A couple of new games have been installed and are now moving into the
+		database of already played games
+		(<a href="/db/games/?lookup=Hnefatafl" title="Hnefatafl">Hnefatafl</a>,
+		<a href="/db/games/?lookup=Checkers" title="Dame">Checkers</a>,
+		<a href="/db/games/?lookup=Krosswater" title="Krosswater">Krosswater</a>).
+		Do not forget to add your blogs to the
+		<a href="/blogs/" title="Planet GGZ Community">Blog collection</a>.
+		Have fun :)
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Jubilee: 5 Years of GGZ Gaming Zone!
+		<span class="itemleader"> :: </span>
+		<a name="5years"></a>
+	</h1>
+	<div class="text">
+		<div style="float:right">
+		<img src="images/grubbyparty.png" alt="Grubby invites you!">
+		</div>
+		It's unbelieveable - the project turned 5 years old today!
+		Have a look at the dedicated
+		<a href="/5years/" title="GGZ 5th birthday">GGZ Birthday</a> party page.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		New GGZ Community Portal
+		<span class="itemleader"> ::</span>
+		<a name="newportal"></a>
+	</h1>
+	<div class="text">
+		Replacing the old <a href="http://www.ggzgamingzone.org/backend/web/" title="">Rankings</a>
+		pages, the GGZ Community portal aims at much more:
+		Statistics about every gaming particle on GGZ, player-contributed levels and themes,
+		communication via forums and blogs, game reviews, tournament organization and some little
+		fun web games.
+		GGZ server hosters can use the ggz-community package to create their own web interfaces.
+	</div>
+
+</div>

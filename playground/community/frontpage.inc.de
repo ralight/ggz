@@ -1,0 +1,105 @@
+<div id="main">
+	<h1>
+		<span class="itemleader">:: </span>
+		Erweiterung der Community-Plattform
+		<span class="itemleader"> :: </span>
+		<a name="extending"></a>
+	</h1>
+	<div class="text">
+		Das GGZ Community-Portal wird momentan erweitert und verbessert, so dass es
+		einfacher von anderen Spieleprojekten eingesetzt werden kann.
+		Dies beinhaltet angepasste Stylesheets, Internationalisierung und ein Template-
+		und Konfigurationssystem.
+		Wer bei der Übersetzung mithelfen möchte, kann sich den aktuellen Katalog
+		mit den Zeichenketten wie immer von
+		<a href="http://dev.ggzgamingzone.org/i18n/" title="GGZ Internationalization">unserer i18n-Seite</a>
+		herunterladen, es sind etwa 100 Zeichenketten von den 2200, die GGZ insgesamt
+		enthält.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		GGZ 0.0.11 und Artikel über Paketbau
+		<span class="itemleader"> :: </span>
+		<a name="0011"></a>
+	</h1>
+	<div class="text">
+		<div style="float:left">
+		<img src="images/packagesarticle.png" alt="GGZ package overview">
+		</div>
+		GGZ 0.0.11 kann ab sofort von der Projektseite
+		<a href="http://www.ggzgamingzone.org/">heruntergeladen</a> werden,
+		und wenn du ein Mitarbeiter einer Distribution bist,
+		schau dir den neuen Artikel über
+		<a href="/articles/packaging/" title="GGZ packaging">GGZ-Pakete bauen</a>
+		(auf Englisch) an.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Serverumzug und Aktualisierungen
+		<span class="itemleader"> :: </span>
+		<a name="servermove"></a>
+	</h1>
+	<div class="text">
+		Die GGZ Community ist auf einen neuen dedizierten Server in Frankreich
+		umgezogen, so dass der Projektserver entlastet werden kann. Wir haben
+		die Chance auch genutzt, um die Komponenten auf ihre aktuelle CVS-Version
+		zu aktualisieren. Es gibt jetzt beispielsweise Einstellungen für
+		Längen- und Breitengrade (für die Weltkarte), ein Karma-System
+		und Vorbereitungen für die mit der nächsten GGZ-Version verfügbaren Savegames.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		GGZ Gaming Zone 0.0.10 veröffentlicht
+		<span class="itemleader"> :: </span>
+		<a name="0010"></a>
+	</h1>
+	<div class="text">
+		Die Version 0.0.10 des GGZ-Projektes wurde heute Nacht (24.01.2005)
+		veröffentlicht. Informationen darüber gibt es auf der
+		<a href="http://www.de.ggzgamingzone.org/releases/0.0.10/release.php" title="GGZ 0.0.10 Release Announcement">Ankündigungsseite</a>.
+		Jede Menge neue Spiele wurden installiert und tauchen nach und nach
+		in der Datenbank der gespielten Partien auf
+		(<a href="/db/games/?lookup=Hnefatafl" title="Hnefatafl">Hnefatafl</a>,
+		<a href="/db/games/?lookup=Checkers" title="Dame">Dame</a>,
+		<a href="/db/games/?lookup=Krosswater" title="Krosswater">Krosswater</a>).
+		Vergesst nicht, eure Blogs zur
+		<a href="/blogs/" title="Planet GGZ Community">Blogsammlung</a>
+		hinzuzufügen.
+		Viel Spaß :)
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Jubiläum: 5 Jahre GGZ Gaming Zone!
+		<span class="itemleader"> :: </span>
+		<a name="5years"></a>
+	</h1>
+	<div class="text">
+		<div style="float:right">
+		<img src="images/grubbyparty.png" alt="Grubby lädt dich ein!">
+		</div>
+		Es ist unglaublich - das Projekt wurde heute 5 Jahre alt!
+		Schaue dazu auf die extra dafür gebastelte
+		<a href="/5years/" title="GGZs 5. Geburtstag">GGZ-Geburtstagspartyseite</a>.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Neues GGZ-Community-Portal
+		<span class="itemleader"> ::</span>
+		<a name="newportal"></a>
+	</h1>
+	<div class="text">
+		Sie ersetzt die alten <a href="http://www.ggzgamingzone.org/backend/web/" title="">Rankings</a>-
+		Seiten und möchte noch viel mehr: Die GGZ Community.
+		Statistiken über jeden Spiele-Partikel in GGZ, von Spielern beigetragene Levels und Themes,
+		Kommunikation über Foren und Blogs, Spiele-Reviews, die Organisation von Tournaments sowie
+		kleinere lustige Webspiele.
+		Diejenigen, welche selbst einen GGZ-Server betreiben möchten, können das Paket
+		ggz-community verwenden, um dafür eine Webschnittstelle bereitzuhalten.
+	</div>
+
+</div>
