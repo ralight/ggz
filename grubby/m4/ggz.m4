@@ -136,8 +136,8 @@ if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdetc="$ac_ggz_stdetc/ggzd /usr/local/etc/ggzd /etc/ggzd"
 fi
 if test "x$1" = "xexport" || test "x$2" = "xexport"; then
-  CPPFLAGS="$CPPFLAGS -isystem ${ac_ggz_prefix_incdir}"
-  LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir}"
+  CPPFLAGS="$CPPFLAGS -isystem ${ac_ggz_prefix_incdir} -isystem /usr/local/include"
+  LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir} -L/usr/local/lib"
 fi
 
 save_cflags=$CFLAGS
@@ -454,7 +454,14 @@ else
     ggz_config="$ac_ggz_config"
     AC_SUBST(ggz_config)
 
+    AC_ARG_ENABLE([noregistry],
+      AC_HELP_STRING([--enable-noregistry], [Do not register game modules.]),
+      [enable_noregistry=yes], [enable_noregistry=no])
+
     GGZ_CONFIG="${ggz_config}/ggz-config"
+    if test "$enable_noregistry" = yes; then
+      GGZ_CONFIG="$GGZ_CONFIG --noregistry=$enableval"
+    fi
     AC_SUBST(GGZ_CONFIG)
 
     ggzmoduleconfdir=`$GGZ_CONFIG --configdir`

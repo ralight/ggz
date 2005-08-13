@@ -24,7 +24,7 @@ AM_PROG_LIBTOOL
 
 dnl GGZ checks
 dnl ==========
-AC_GGZ_INIT(defaults)
+AC_GGZ_INIT(defaults, export)
 AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZCORE
