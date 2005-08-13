@@ -79,7 +79,7 @@ fi
 dnl Check for GGZ requirements
 dnl ==========================
 
-AC_GGZ_INIT(defaults)
+AC_GGZ_INIT(defaults, export)
 AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
