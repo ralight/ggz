@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7199 2005-05-16 21:52:57Z josef $
+ * $Id: ggz-config.c 7377 2005-08-13 10:27:52Z josef $
  *
  * Configuration query and module install program.
  *
@@ -60,6 +60,7 @@ static char *modicon = NULL;
 static char *modhelp = NULL;
 static char *modfile = NULL;
 static char *iconfile = NULL;
+static char *copyfile = NULL;
 static char *managediconfile = NULL;
 static int modforce = 0;
 static int moddest = 0;
@@ -82,6 +83,7 @@ static struct option options[] =
 	{"check", no_argument, 0, 'C'},
 	{"modfile", required_argument, 0, 'm'},
 	{"iconfile", required_argument, 0, 'I'},
+	{"noregistry", required_argument, 0, 'n'},
 	{"force", no_argument, 0, 'f'},
 	{"destdir", no_argument, 0, 'D'},
 	{"help", no_argument, 0, 'h'},
@@ -101,6 +103,7 @@ static char *options_help[] = {
 	 N_("Check/repair module installation file"),
 	 N_("Specifies module installation file (needs argument)"),
 	 N_("Specifies icon file to use for the game (needs argument)"),
+	 N_("Copies files to directory instead of registering them (needs argument)"),
 	 N_("Install over an existing module"),
 	 N_("Use $DESTDIR as offset to ggz.modules file"),
 	 N_("Display help"),
@@ -349,11 +352,65 @@ static int open_conffile(void)
 }
 
 
+/* taken from ggzd/util.c: make_path() */
+/* should go into libggz, along with filecopy()? */
+static int mkdirectory(const char* full, mode_t mode)
+{
+	const char* slash = "/";
+	char *dir, *copy;
+	struct stat stats;
+	char file[strlen(full) + 1];
+	char path[strlen(full) + 1];
+
+	strcpy(file, full);
+	copy = file;
+	path[0] = 0;
+
+	if (copy[0] == '/')
+		copy++;
+
+	while ((dir = strsep(&copy, slash))) {
+		strcat(strcat(path, "/"), dir);
+		if (mkdir(path, mode) < 0 && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
+			fprintf(stderr, _("Directory cannot be created (%s)\n"), path);
+			return -1;
+		}
+	}
+
+	return 0;
+}
+
+
+static int filecopy(const char *src, const char *dst)
+{
+	FILE *fin, *fout;
+	int ch;
+
+	fin = fopen(src, "r");
+	if(!fin) {
+		fprintf(stderr, _("File cannot be read (%s)\n"), src);
+		return -1;
+	}
+	fout = fopen(dst, "w");
+	if(!fout) {
+		fprintf(stderr, _("File cannot be written to (%s)\n"), dst);
+		fclose(fin);
+		return -1;
+	}
+	while((ch = fgetc(fin)) != EOF) {
+		fputc(ch, fout);
+	}
+	fclose(fout);
+	fclose(fin);
+
+	return 0;
+}
+
+
 static void handle_icon(void)
 {
 	char *path;
-	FILE *fin, *fout;
-	int ch;
+	int ret;
 
 	if(install_mod) {
 		if(!iconfile) return;
@@ -367,25 +424,8 @@ static void handle_icon(void)
 		strcat(path, "/ggz-config/");
 		mkdir(path, 0700);
 		strcat(path, modicon);
-		/* ggz_filecopy(iconfile, path) */
-		fin = fopen(iconfile, "r");
-		if(!fin) {
-			fprintf(stderr, _("Icon file cannot be read (%s)\n"), iconfile);
-			modicon = NULL;
-			return;
-		}
-		fout = fopen(path, "w");
-		if(!fout) {
-			fprintf(stderr, _("Icon file cannot be written to (%s)\n"), path);
-			fclose(fin);
-			modicon = NULL;
-			return;
-		}
-		while((ch = fgetc(fin)) != EOF) {
-			fputc(ch, fout);
-		}
-		fclose(fout);
-		fclose(fin);
+		ret = filecopy(iconfile, path);
+		if(ret != 0) modicon = NULL;
 		ggz_free(path);
 	} else if(remove_mod) {
 		modicon = managediconfile;
@@ -433,6 +473,37 @@ static int remove_module(void)
 	ggz_conf_cleanup();
 
 	return rc;
+}
+
+
+static int noregister_module(void)
+{
+	char *global_pathname;
+	char *suffix = ".module.dsc";
+	int ret;
+
+	if(moddest)
+		global_pathname = ggz_malloc(strlen(destdir) +
+					     strlen(copyfile) +
+						 strlen(modname) +
+					     strlen(suffix) + 3);
+	else
+		global_pathname = ggz_malloc(strlen(copyfile) +
+					     strlen(modname) +
+					     strlen(suffix) + 2);
+
+	if(moddest)
+		sprintf(global_pathname, "%s/%s", destdir, copyfile);
+	else
+		sprintf(global_pathname, "%s", copyfile);
+
+	ret = mkdirectory(global_pathname, S_IRWXU);
+	if(ret != 0) return -1;
+
+	sprintf(global_pathname, "%s/%s%s", global_pathname, modname, suffix);
+
+	printf(_("Preserving %s as %s...\n"), modfile, global_pathname);
+	return filecopy(modfile, global_pathname);
 }
 
 
@@ -915,7 +986,7 @@ int main(int argc, char *argv[])
 	/* Parse the command line options */
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "cgdvpirCm:I:fDhu", options, &optindex);
+		opt = getopt_long(argc, argv, "cgdvpirCm:I:n:fDhu", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
@@ -947,6 +1018,9 @@ int main(int argc, char *argv[])
 				break;
 			case 'I':
 				iconfile = optarg;
+				break;
+			case 'n':
+				copyfile = optarg;
 				break;
 			case 'f':
 				modforce = 1;
@@ -1015,9 +1089,13 @@ int main(int argc, char *argv[])
 			moddest = 0;
 	}
 
-	if(install_mod)
-		rc = install_module();
-	else if(remove_mod)
+	if(install_mod) {
+		if(copyfile) {
+			rc = noregister_module();
+		} else {
+			rc = install_module();
+		}
+	} else if(remove_mod)
 		rc = remove_module();
 	else
 		rc = -1;
