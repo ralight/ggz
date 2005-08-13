@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 	if(mode == MODE_GGZ)
 	{
 		Geekgame *geek = new Geekgame();
-		geek->connect();
+		geek->connect(false);
 		delete geek;
 	}
 	else
