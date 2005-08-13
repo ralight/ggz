@@ -454,7 +454,14 @@ else
     ggz_config="$ac_ggz_config"
     AC_SUBST(ggz_config)
 
+    AC_ARG_ENABLE([noregistry],
+      AC_HELP_STRING([--enable-noregistry], [Do not register game modules.]),
+      [enable_noregistry=yes], [enable_noregistry=no])
+
     GGZ_CONFIG="${ggz_config}/ggz-config"
+    if test "$enable_noregistry" = yes; then
+      GGZ_CONFIG="$GGZ_CONFIG --noregistry=$enableval"
+    fi
     AC_SUBST(GGZ_CONFIG)
 
     ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
