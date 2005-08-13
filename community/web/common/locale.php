@@ -23,7 +23,7 @@ class Locale
 		return $ending;
 	}
 
-	function detect($lang)
+	function detect($lang = null)
 	{
 		global $community_locale_lang;
 

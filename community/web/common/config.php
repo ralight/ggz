@@ -6,6 +6,7 @@ class Config
 {
 	var $config;
 	var $theme;
+	var $unconfigured;
 	
 	function Config($file)
 	{
@@ -31,7 +32,13 @@ class Config
 
 		global $communitytheme;
 
-		require_once($file);
+		$ret = @include_once($file);
+		if (!$ret) :
+			$this->config = array();
+			$this->theme = "default";
+			$this->unconfigured = 1;
+			return;
+		endif;
 
 		$this->config = array();
 

@@ -27,4 +27,16 @@ if ($active) :
 	endif;
 endif;
 
+if ($config_object->unconfigured) :
+	echo "GGZ Community is not configured yet.";
+	include("bottom.inc");
+	exit;
+endif;
+
+if (!$database->id) :
+	echo "GGZ Community database access is not possible.";
+	include("bottom.inc");
+	exit;
+endif;
+
 ?>
