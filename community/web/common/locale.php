@@ -72,6 +72,9 @@ class Locale
 			$ret = @include($file);
 			$contents = ob_get_contents(); 
 			ob_end_clean(); 
+			if (!$ret) :
+				return null;
+			endif;
 		endif;
 
 		$contents = preg_replace_callback("/\_\([^\)]*\)\([^\)]*\)|\_\([^\)]*\)/",

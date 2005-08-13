@@ -1,0 +1,12 @@
+<div id="main">
+	<h1>
+		<span class="itemleader">:: </span>
+		Welcome to GGZ Community!
+		<span class="itemleader"> :: </span>
+		<a name="extending"></a>
+	</h1>
+	<div class="text">
+		This is the default frontpage. You might want to edit it.
+		It can be used for news entries, announcements and so forth.
+	</div>
+</div>
