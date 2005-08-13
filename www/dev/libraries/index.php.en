@@ -1,5 +1,23 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+GGZ Libraries:
+|
+<a href="/libraries/libggz/">libggz</a>
+|
+<a href="/libraries/ggzcore/">ggzcore</a>
+|
+<a href="/libraries/ggzmod/">ggzmod</a>
+|
+<a href="/libraries/ggzdmod/">ggzdmod</a>
+</font>
+</td>
+</tr>
+</table>
+
 <table class="content" width="100%">
 <tr>
 <td>
