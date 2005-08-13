@@ -1,0 +1,12 @@
+About ggzdmod++
+===============
+
+From GGZ 0.0.12 on, ggzdmod++ provides the functionality of both ggzdmod
+and the networking part of libggz to C++ game servers.
+
+Classes
+=======
+Net: reading and writing of strings and numbers over the network
+MNet: communication with a group of selected peers
+GGZGameServer: player/spectator/bot handling, startup/shutdown, events
+

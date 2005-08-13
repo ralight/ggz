@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 7289 2005-06-18 13:42:21Z josef $
+dnl $Id: configure.ac 7381 2005-08-13 14:23:32Z josef $
 
 AC_INIT([GGZ server], [0.0.11], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -41,6 +41,7 @@ AC_ARG_WITH([database],
 # Check for GGZ Requirements
 # ==========================
 AC_GGZ_INIT(defaults, export)
+AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 
 # Check for header files
@@ -225,7 +226,7 @@ AC_DEFINE_UNQUOTED([PACKAGE_SOURCE_DIR], "${packagesrcdir}",
 dnl Which progs to compile
 dnl ======================
 
-COMPILE_SUBDIRS="man ggzdmod"
+COMPILE_SUBDIRS="man ggzdmod ggzdmod++"
 
 if test "$enable_server" = yes; then
     COMPILE_SUBDIRS="$COMPILE_SUBDIRS ggzd"
@@ -256,6 +257,7 @@ AC_DEFINE([_GNU_SOURCE], 1,
 
 AC_CONFIG_FILES([Makefile
 	ggzdmod/Makefile
+	ggzdmod++/Makefile
 	ggzd/Makefile 
 	ggzd/database/Makefile
 	ggzd/ggzd.conf
