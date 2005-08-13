@@ -94,7 +94,7 @@
 		Estadísticas sobre cada partícula de cada juego en GGZ, contribuciones de jugadores en niveles y temas,
 		comunicación vía foros y blogs, resumen de juegos, 
 		organizaciones de torneos y muchas pequeñas divertidas páginas sobre juegos.
-		Los hosters del servidor de GGZ pueden utilizar el paquete de la ggz-community para crear sus propios interfaces web.
+		Los que alojan el servidor de GGZ pueden utilizar el paquete de la ggz-community para crear sus propios interfaces web.
 	</div>
 
 </div>
