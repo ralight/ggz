@@ -47,9 +47,6 @@ endif;
 <?php
 
 if ($savegamehandler) :
-	$starttime = date("d.m.Y H:i:s", $savegame->starttime);
-	$endtime = date("d.m.Y H:i:s", $savegame->endtime);
-
 	if ($savegame->winner) :
 		$winner = $match->link($savegame->winner);
 	else :
@@ -57,8 +54,13 @@ if ($savegamehandler) :
 	endif;
 
 	echo "Board size: $savegame->width x $savegame->height<br>\n";
-	echo "Started: $starttime<br>\n";
-	echo "Finished: $endtime<br>\n";
+	if (($savegame->starttime) || ($savegame->endtime)) :
+		$starttime = date("d.m.Y H:i:s", $savegame->starttime);
+		$endtime = date("d.m.Y H:i:s", $savegame->endtime);
+
+		echo "Started: $starttime<br>\n";
+		echo "Finished: $endtime<br>\n";
+	endif;
 	echo "Winner: $winner<br>\n";
 	echo "<br>\n";
 
