@@ -82,6 +82,16 @@ class GGZCoreGametype
 		int isSpectatorsValid(unsigned int number);
 
 		/**
+		 * Get the number of named bots */
+		int namedBots();
+		/**
+		 * Get the name of a named bot */
+		const char *namedBotName(unsigned int number);
+		/**
+		 * Get the class of a named bot */
+		const char *namedBotClass(unsigned int number);
+
+		/**
 		 * Retrieve the wrapped ggzcore object for this game type. */
 		const GGZGameType *gametype();
 

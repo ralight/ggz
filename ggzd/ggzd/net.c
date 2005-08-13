@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 7123 2005-04-23 11:31:46Z josef $
+ * $Id: net.c 7402 2005-08-13 22:24:02Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -422,6 +422,7 @@ GGZReturn net_send_type_list_count(GGZNetIO *net, int count)
 GGZReturn net_send_type(GGZNetIO *net, int index,
 			GameInfo *type, bool verbose)
 {
+	int i;
 	char *players = ggz_numberlist_write(&type->player_allow_list);
 	char *bots = ggz_numberlist_write(&type->bot_allow_list);
 	char *spectators = bool_to_str(type->allow_spectators);
@@ -435,6 +436,14 @@ GGZReturn net_send_type(GGZNetIO *net, int index,
 
 	ggz_free(players);
 	ggz_free(bots);
+
+	if (type->named_bots) {
+		for (i = 0; type->named_bots[i]; i++) {
+			_net_send_line(net, "<BOT NAME='%s' CLASS='%s'/>",
+				type->named_bots[i][0],
+				type->named_bots[i][1]);
+		}
+	}
 	
 	if (verbose) {
 		_net_send_line(net, "<ABOUT AUTHOR='%s' URL='%s'/>",

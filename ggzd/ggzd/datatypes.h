@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 7085 2005-04-08 12:51:50Z josef $
+ * $Id: datatypes.h 7402 2005-08-13 22:24:02Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -128,6 +128,9 @@ typedef struct GameInfo {
 	   command-line arguments for the program.  The first argument
 	   is the executable itself. */
 	char **exec_args;/* cleanup() */
+
+	/* NULL-terminated list of (botname, botclass) entries */
+	char ***named_bots;
 } GameInfo;
 
 

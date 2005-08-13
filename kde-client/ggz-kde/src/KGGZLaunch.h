@@ -72,6 +72,9 @@ class KGGZLaunch : public QWidget
 		// Return the reservation name
 		QString reservation(int seat);
 
+		// Add a named bot
+		void addBot(QString botname, QString botclass);
+
 		// All possible seat types
 		enum SeatTypes
 		{
@@ -81,7 +84,8 @@ class KGGZLaunch : public QWidget
 			seatplayer = -5,
 			seatunused = -4,
 			seatspectator = -6,
-			seatunknown = -7
+			seatunknown = -7,
+			seatbotlist = -1000
 		};
 
 	public slots:
@@ -134,6 +138,8 @@ class KGGZLaunch : public QWidget
 		int m_curbots;
 		// Reservation input dialog
 		KGGZInput *m_input;
+		// Named bots
+		QPopupMenu *m_namedbots;
 };
 
 #endif

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 7191 2005-05-16 21:11:37Z josef $
+ * $Id: parse_opt.c 7402 2005-08-13 22:24:02Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -427,6 +427,9 @@ static void parse_game(char *name, char *dir)
 	GameInfo game_info;
 	int len, num_args;
 	char *tmp;
+	int argcp;
+	char **argvp;
+	int ret, i;
 
 	/* Check to see if we are allocating too many games */
 	if(state.types == MAX_GAME_TYPES) {
@@ -518,6 +521,26 @@ static void parse_game(char *name, char *dir)
 
 	game_info.allow_spectators = ggz_conf_read_int(ch, "TableOptions",
 						       "AllowSpectators", 0);
+
+	/* Named bots */
+	game_info.named_bots = NULL;
+
+	ret = ggz_conf_get_keys(ch, "NamedBots", &argcp, &argvp);
+	if(ret == 0) {
+		printf("** %i named bots... (%i) (%p) [%s]\n", argcp, ret, argvp, name);
+		game_info.named_bots = (char***)ggz_malloc((argcp + 1) * sizeof(char**));
+		for (i = 0; i < argcp; i++) {
+			printf("** NamedBot: %s\n", argvp[i]);
+			tmp = ggz_conf_read_string(ch, "NamedBots", argvp[i], NULL);
+			game_info.named_bots[i] = (char**)ggz_malloc(2 * sizeof(char*));
+			game_info.named_bots[i][0] = ggz_strdup(argvp[i]);
+			game_info.named_bots[i][1] = ggz_strdup(tmp);
+			ggz_free(tmp);
+			ggz_free(argvp[i]);
+		}
+		game_info.named_bots[argcp] = NULL;
+		ggz_free(argvp);
+	}
 
 	/* Set up data_dir. */
 	len = strlen(opt.data_dir) + strlen("/gamedata/")

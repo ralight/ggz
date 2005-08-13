@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.c 6761 2005-01-20 06:05:40Z jdorje $
+ * $Id: gametype.c 7402 2005-08-13 22:24:02Z josef $
  *
  * This file contains functions for hadiling game types.
  *
@@ -71,6 +71,9 @@ struct _GGZGameType {
 	
 	/* ID of this game on the server */
 	unsigned int id;
+
+	/* Array of named bots, in name-class pairs */
+	char ***named_bots;
 };
 
 
@@ -115,11 +118,29 @@ void _ggzcore_gametype_init(GGZGameType *gametype,
 	gametype->desc = ggz_strdup(desc);
 	gametype->author = ggz_strdup(author);
 	gametype->url = ggz_strdup(url);
+
+	gametype->named_bots = NULL;
+}
+
+
+void _ggzcore_gametype_add_namedbot(GGZGameType *gametype,
+			    const char *botname,
+			    const char *botclass)
+{
+	int size = ggzcore_gametype_get_num_namedbots(gametype);
+	gametype->named_bots = (char***)ggz_realloc(gametype->named_bots,
+		(size + 2) * sizeof(char**));
+	gametype->named_bots[size] = (char**)ggz_malloc(2 * sizeof(char*));
+	gametype->named_bots[size][0] = strdup(botname);
+	gametype->named_bots[size][1] = strdup(botclass);
+	gametype->named_bots[size + 1] = NULL;
 }
 
 
 void _ggzcore_gametype_free(GGZGameType *type)
 {
+	int size, i;
+
 	if (type->name)
 		ggz_free(type->name);
 	if (type->prot_engine)
@@ -134,6 +155,17 @@ void _ggzcore_gametype_free(GGZGameType *type)
 		ggz_free(type->author);
 	if (type->url)
 		ggz_free(type->url);
+
+	if (type->named_bots) {
+		size = ggzcore_gametype_get_num_namedbots(type);
+		for (i = 0; i < size; i++)
+		{
+			ggz_free(type->named_bots[i][0]);
+			ggz_free(type->named_bots[i][1]);
+			ggz_free(type->named_bots[i]);
+		}
+		ggz_free(type->named_bots);
+	}
 
 	ggz_free(type);
 }
@@ -250,6 +282,25 @@ void* _ggzcore_gametype_create(void* p)
 void  _ggzcore_gametype_destroy(void* p)
 {
 	_ggzcore_gametype_free(p);
+}
+
+
+int _ggzcore_gametype_get_num_namedbots(const GGZGameType *type)
+{
+	int i = 0;
+	if (!type->named_bots) return 0;
+	while (type->named_bots[i]) i++;
+	return i;
+}
+
+const char* _ggzcore_gametype_get_namedbot_name(const GGZGameType *type, unsigned int num)
+{
+	return type->named_bots[num][0];
+}
+
+const char* _ggzcore_gametype_get_namedbot_class(const GGZGameType *type, unsigned int num)
+{
+	return type->named_bots[num][1];
 }
 
 
@@ -374,3 +425,28 @@ int ggzcore_gametype_num_bots_is_valid(const GGZGameType *type,
 
 	return _ggzcore_gametype_num_bots_is_valid(type, num);
 }
+
+int ggzcore_gametype_get_num_namedbots(const GGZGameType *type)
+{
+	if (!type)
+		return 0;
+
+	return _ggzcore_gametype_get_num_namedbots(type);
+}
+
+const char* ggzcore_gametype_get_namedbot_name(const GGZGameType *type, unsigned int num)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_namedbot_name(type, num);
+}
+
+const char* ggzcore_gametype_get_namedbot_class(const GGZGameType *type, unsigned int num)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_namedbot_class(type, num);
+}
+

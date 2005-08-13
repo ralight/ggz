@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 7203 2005-05-21 09:29:01Z josef $
+ * $Id: ggzcore.h 7402 2005-08-13 22:24:02Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -1271,6 +1271,11 @@ int ggzcore_gametype_num_players_is_valid(const GGZGameType *type,
 /** @brief Return TRUE iff the given number of bots is valid. */
 int ggzcore_gametype_num_bots_is_valid(const GGZGameType *type,
 				       unsigned int num);
+
+/** @brief Return the number of named bots for this gametype. */
+int ggzcore_gametype_get_num_namedbots(const GGZGameType *type);
+const char* ggzcore_gametype_get_namedbot_name(const GGZGameType *type, unsigned int num);
+const char* ggzcore_gametype_get_namedbot_class(const GGZGameType *type, unsigned int num);
 
 
 /* Group of configuration functions */

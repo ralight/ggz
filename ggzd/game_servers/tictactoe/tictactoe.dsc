@@ -1,4 +1,4 @@
-# $Id: tictactoe.dsc 7227 2005-05-21 11:48:51Z josef $
+# $Id: tictactoe.dsc 7402 2005-08-13 22:24:02Z josef $
 
 [GameInfo]
 Author = Brent Hendricks
@@ -22,3 +22,8 @@ AllowSpectators = 1
 
 [Statistics]
 Records = 1
+
+[NamedBots]
+Alfred=easy
+Tarantula=hard
+

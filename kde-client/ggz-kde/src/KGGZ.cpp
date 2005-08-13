@@ -1565,6 +1565,11 @@ void KGGZ::slotGamePrepare(int frontend)
 			KGGZDEBUG("Assignment: %i is %i\n", i, gametype->isPlayersValid(i + 1));
 			m_launch->setSeatAssignment(i, gametype->isPlayersValid(i + 1));
 		}
+		KGGZDEBUG("*** %i named bots\n", gametype->namedBots());
+		for(int i = 0; i < gametype->namedBots(); i++)
+		{
+			m_launch->addBot(gametype->namedBotName(i), gametype->namedBotClass(i));
+		}
 		m_launch->show();
 		connect(m_launch, SIGNAL(signalLaunch()), SLOT(slotGameStart()));
 	}

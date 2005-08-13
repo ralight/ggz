@@ -128,3 +128,18 @@ const char* GGZCoreGametype::rating()
 #endif
 }
 
+int GGZCoreGametype::namedBots()
+{
+	return ggzcore_gametype_get_num_namedbots(m_gametype);
+}
+
+const char *GGZCoreGametype::namedBotName(unsigned int number)
+{
+	return ggzcore_gametype_get_namedbot_name(m_gametype, number);
+}
+
+const char *GGZCoreGametype::namedBotClass(unsigned int number)
+{
+	return ggzcore_gametype_get_namedbot_class(m_gametype, number);
+}
+

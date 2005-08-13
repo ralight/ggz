@@ -63,6 +63,7 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	m_array = NULL;
 	m_assignment = NULL;
 	m_input = NULL;
+	m_namedbots = NULL;
 
 	m_slider = new QSlider(this);
 	m_slider->setOrientation(QSlider::Horizontal);
@@ -132,6 +133,11 @@ void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int 
 		m_popup->insertItem(typeName(seatbot), -seatbot);
 	m_popup->insertItem(typeName(seatopen), -seatopen);
 	m_popup->insertItem(typeName(seatreserved), -seatreserved);
+	if(m_namedbots)
+	{
+		m_popup->insertSeparator();
+		m_popup->insertItem(i18n("Individual bots"), m_namedbots);
+	}
 	m_popup->popup(point);
 
 	connect(m_popup, SIGNAL(activated(int)), SLOT(slotActivated(int)));
@@ -297,6 +303,7 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 	else if(seattype == seatopen) pixmap = "guest.png";
 	else if(seattype == seatbot) pixmap = "bot.png";
 	else if(seattype == seatreserved) pixmap = "player.png";
+	else if(seattype <= seatbotlist) pixmap = "bot.png";
 	QPixmap pix = QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap);
 	tmp->setPixmap(1, pix);
 
@@ -322,6 +329,11 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 QString KGGZLaunch::typeName(int seattype)
 {
 	QString ret;
+
+	if(seattype <= seatbotlist)
+	{
+		return i18n("Named Bot");
+	}
 
 	switch(seattype)
 	{
@@ -374,5 +386,17 @@ QString KGGZLaunch::reservation(int seat)
 
 	if(!tmp) return QString::null;
 	return tmp->text(2);
+}
+
+void KGGZLaunch::addBot(QString botname, QString botclass)
+{
+	if(!m_namedbots)
+	{
+		m_namedbots = new QPopupMenu();
+		connect(m_namedbots, SIGNAL(activated(int)), SLOT(slotActivated(int)));
+	}
+	int id = -seatbotlist + m_namedbots->count();
+	QPixmap pix = QPixmap(KGGZ_DIRECTORY "/images/icons/players/bot.png");
+	m_namedbots->insertItem(pix, QString("%1 (%1)").arg(botname).arg(botclass), id);
 }
 

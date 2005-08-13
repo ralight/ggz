@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 7203 2005-05-21 09:29:01Z josef $
+ * $Id: netxml.c 7402 2005-08-13 22:24:02Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -112,6 +112,7 @@ typedef struct {
 	const char *desc;
 	const char *author;
 	const char *url;
+	char ***named_bots;
 } GGZGameData;
 
 /* Table data structure */
@@ -142,6 +143,7 @@ static void _ggzcore_net_handle_game(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_protocol(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_allow(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_about(GGZNet *, GGZXMLElement *);
+static void _ggzcore_net_handle_bot(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_desc(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_room(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_player(GGZNet *, GGZXMLElement *);
@@ -167,6 +169,8 @@ static void _ggzcore_net_game_set_allowed(GGZXMLElement *,
 					  GGZNumberList, GGZNumberList,
 					  int);
 static void _ggzcore_net_game_set_info(GGZXMLElement *, const char *,
+				       const char *);
+static void _ggzcore_net_game_add_bot(GGZXMLElement *, const char *,
 				       const char *);
 static void _ggzcore_net_game_set_desc(GGZXMLElement *, char *);
 static void _ggzcore_net_table_add_seat(GGZXMLElement *, GGZTableSeat *,
@@ -896,6 +900,8 @@ static GGZXMLElement *_ggzcore_net_new_element(const char *tag,
 		process_func = _ggzcore_net_handle_allow;
 	else if (strcasecmp(tag, "ABOUT") == 0)
 		process_func = _ggzcore_net_handle_about;
+	else if (strcasecmp(tag, "BOT") == 0)
+		process_func = _ggzcore_net_handle_bot;
 	else if (strcasecmp(tag, "ROOM") == 0)
 		process_func = _ggzcore_net_handle_room;
 	else if (strcasecmp(tag, "PLAYER") == 0)
@@ -1502,6 +1508,7 @@ static void _ggzcore_net_handle_game(GGZNet * net, GGZXMLElement * element)
 	const char *desc = NULL;
 	const char *author = NULL;
 	const char *url = NULL;
+	int i;
 
 	if (!element)
 		return;
@@ -1529,6 +1536,14 @@ static void _ggzcore_net_handle_game(GGZNet * net, GGZXMLElement * element)
 			       player_allow_list, bot_allow_list,
 			       spectators_allow, desc, author, url);
 
+	if (data->named_bots) {
+		for (i = 0; data->named_bots[i]; i++) {
+			_ggzcore_gametype_add_namedbot(type,
+				data->named_bots[i][0],
+				data->named_bots[i][1]);
+		}
+	}
+
 	/* Get parent off top of stack */
 	parent = ggz_stack_top(net->stack);
 	parent_tag = ggz_xmlelement_get_tag(parent);
@@ -1553,6 +1568,15 @@ static void _ggzcore_net_handle_game(GGZNet * net, GGZXMLElement * element)
 			ggz_free(data->url);
 		if (data->desc)
 			ggz_free(data->desc);
+
+		if (data->named_bots) {
+			for (i = 0; data->named_bots[i]; i++) {
+				ggz_free(data->named_bots[i][0]);
+				ggz_free(data->named_bots[i][1]);
+				ggz_free(data->named_bots[i]);
+			}
+			ggz_free(data->named_bots);
+		}
 
 		ggz_free(data);
 	}
@@ -1610,6 +1634,23 @@ static void _ggzcore_net_game_set_info(GGZXMLElement * game,
 		data->author = ggz_strdup(author);
 	if (!data->url)
 		data->url = ggz_strdup(url);
+}
+
+
+static void _ggzcore_net_game_add_bot(GGZXMLElement * game,
+				       const char *botname, const char *botclass)
+{
+	GGZGameData *data = _ggzcore_net_game_get_data(game);
+	int size = 0;
+
+	if (data->named_bots) {
+		while (data->named_bots[size]) size++;
+	}
+	data->named_bots = (char***)ggz_realloc(data->named_bots, (size + 2) * sizeof(char**));
+	data->named_bots[size] = (char**)ggz_malloc(2 * sizeof(char**));
+	data->named_bots[size][0] = ggz_strdup(botname);
+	data->named_bots[size][1] = ggz_strdup(botclass);
+	data->named_bots[size + 1] = NULL;
 }
 
 
@@ -1698,6 +1739,31 @@ static void _ggzcore_net_handle_about(GGZNet * net,
 	_ggzcore_net_game_set_info(parent,
 				   ATTR(element, "AUTHOR"),
 				   ATTR(element, "URL"));
+}
+
+
+/* Functions for <BOT> tag */
+static void _ggzcore_net_handle_bot(GGZNet * net,
+				    GGZXMLElement * element)
+{
+	GGZXMLElement *parent;
+	const char *parent_tag;
+
+	if (!element)
+		return;
+
+	/* Get parent off top of stack */
+	parent = ggz_stack_top(net->stack);
+	if (!parent)
+		return;
+
+	parent_tag = ggz_xmlelement_get_tag(parent);
+	if (strcasecmp(parent_tag, "GAME") != 0)
+		return;
+
+	_ggzcore_net_game_add_bot(parent,
+				  ATTR(element, "NAME"),
+				  ATTR(element, "CLASS"));
 }
 
 
