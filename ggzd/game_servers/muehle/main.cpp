@@ -66,7 +66,7 @@ main ( int argc, char** argv) {
 
 	if ( mode == MODE_GGZ ) {
 		MuehleServer *serv = new MuehleServer ();
-		serv->connect ();
+		serv->connect ( false );
 		delete serv;
 	} else {
 		std::cout << "Currently only GGZ mode is supported." << std::endl;

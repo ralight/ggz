@@ -8,12 +8,11 @@ EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
 ggzdexecmod_PROGRAMS = geekgameserver
 geekgameserver_SOURCES = main.cpp geekgame.cpp
 geekgameserver_LDADD = $(LDADD) \
-	$(top_builddir)/game_servers/muehle/ggz/libggzgameserver.a \
-	$(top_builddir)/ggzdmod/libggzdmod.la
+	$(top_builddir)/ggzdmod++/libggzdmodpp.la
 
 noinst_HEADERS = geekgame.h protocol.h
 
-AM_CPPFLAGS = -I$(top_srcdir)/game_servers/muehle/ggz \
+AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod++ \
 	-I$(top_srcdir)/ggzdmod \
 	$(LIBGGZ_INCLUDES)
 
