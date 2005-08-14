@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 7283 2005-06-18 07:18:33Z josef $
+ * $Id: ggzdmod.c 7407 2005-08-14 10:16:49Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1381,7 +1381,8 @@ void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat)
 	case GGZ_SEAT_BOT:
 		/* Eventually ggzd may give us AI player names.  In the
 		   meantime there's just a placeholder. */
-		seat.name = "AI";
+		if(!seat.name)
+			seat.name = "AI";
 #if 0		
 		len = strlen(rand_bot_names[bots]) + 4;
 		seat.name = ggz_malloc(len);

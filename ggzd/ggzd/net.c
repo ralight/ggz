@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 7402 2005-08-13 22:24:02Z josef $
+ * $Id: net.c 7407 2005-08-14 10:16:49Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1679,8 +1679,13 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 
 		switch (seat_type) {
 		case GGZ_SEAT_OPEN:
-		case GGZ_SEAT_BOT:
 		case GGZ_SEAT_NONE:
+			break;
+		case GGZ_SEAT_BOT:
+			if (seat->name) {
+				strcpy(table->seat_names[seat->index],
+				       seat->name);
+			}
 			break;
 		case GGZ_SEAT_RESERVED:
 			/* We verify that this is a real,

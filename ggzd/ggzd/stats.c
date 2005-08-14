@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: stats.c 7407 2005-08-14 10:16:49Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -309,8 +309,10 @@ void report_statistics(int room, int gametype,
 			snprintf(stats[i].player, sizeof(stats[i].player),
 				 report->names[i]);
 		} else if (report->types[i] == GGZ_SEAT_BOT) {
-			snprintf(stats[i].player, sizeof(stats[i].player),
-				 "%d|%s", i, report->names[i]);
+			if(!ggz_strcmp(report->names[i], "AI")) {
+				snprintf(stats[i].player, sizeof(stats[i].player),
+					 "%d|%s", i, report->names[i]);
+			}
 		}
 
 		if (stats_lookup(&stats[i]) != GGZ_OK)
