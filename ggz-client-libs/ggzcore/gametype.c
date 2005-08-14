@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.c 7402 2005-08-13 22:24:02Z josef $
+ * $Id: gametype.c 7403 2005-08-14 07:09:44Z josef $
  *
  * This file contains functions for hadiling game types.
  *
@@ -131,8 +131,8 @@ void _ggzcore_gametype_add_namedbot(GGZGameType *gametype,
 	gametype->named_bots = (char***)ggz_realloc(gametype->named_bots,
 		(size + 2) * sizeof(char**));
 	gametype->named_bots[size] = (char**)ggz_malloc(2 * sizeof(char*));
-	gametype->named_bots[size][0] = strdup(botname);
-	gametype->named_bots[size][1] = strdup(botclass);
+	gametype->named_bots[size][0] = ggz_strdup(botname);
+	gametype->named_bots[size][1] = ggz_strdup(botclass);
 	gametype->named_bots[size + 1] = NULL;
 }
 
