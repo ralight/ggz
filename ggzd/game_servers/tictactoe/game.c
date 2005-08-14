@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 7198 2005-05-16 21:44:24Z josef $
+ * $Id: game.c 7411 2005-08-14 11:59:36Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -60,6 +60,8 @@
 #define GGZBOTPLAYERS /* do not undefine */
 /* The game supports savegames */
 #define GGZSAVEDGAMES /* do not undefine */
+/* The game supports distinguishable named bots */
+#define GGZBOTHASNAME /* do not undefine */
 
 /* Tic-Tac-Toe protocol */
 /* Messages from server */
@@ -618,6 +620,19 @@ static int game_bot_move(int me)
 	int him = 1 - me;
 	char board[9];
 	int c;
+	int difficulty = 1;
+
+#ifdef GGZBOTHASNAME
+	GGZSeat seat;
+
+	seat = ggzdmod_get_seat(ttt_game.ggz, me);
+	char *botclass = ggzdmod_get_bot_class(ttt_game.ggz, seat.name);
+	if (!ggz_strcmp(botclass, "easy"))
+		difficulty = 0;
+	if (!ggz_strcmp(botclass, "hard"))
+		difficulty = 1;
+	ggz_free(botclass);
+#endif
 
 	/* Local copy of the boaard to rotate*/
 	for (i = 0; i < 9; i++)
@@ -712,19 +727,21 @@ static int game_bot_move(int me)
 	}
 
 	/* Avoid 'holy cow' weakness */
-	c = board[4];
-	if(c != -1)
-	{
-		for (i = 0; i < 9; i += 2) {
-			if (i == 4) continue;
-			if ((board[i] == c)
-			&& (board[8 - i] != c)
-			&& (board[8 - i] != -1)) {
-				/*printf("holy cow! at: %i\n", i);*/
-				if (board[abs(i - 6)] == -1) {
-					return abs(i - 6);
-				} else if (board[abs(i - 2)] == -1) {
-					return abs(i - 2);
+	if (difficulty == 1) {
+		c = board[4];
+		if (c != -1)
+		{
+			for (i = 0; i < 9; i += 2) {
+				if (i == 4) continue;
+				if ((board[i] == c)
+				&& (board[8 - i] != c)
+				&& (board[8 - i] != -1)) {
+					/*printf("holy cow! at: %i\n", i);*/
+					if (board[abs(i - 6)] == -1) {
+						return abs(i - 6);
+					} else if (board[abs(i - 2)] == -1) {
+						return abs(i - 2);
+					}
 				}
 			}
 		}
