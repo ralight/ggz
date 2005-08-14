@@ -188,6 +188,6 @@ install-ggzboard:
 dist:
 	rm -rf ../ggz-python-$(version)
 	cp -r ../python ../ggz-python-$(version)
-	find ../ggz-python-$(version) -name CVS | xargs rm -rf
+	find ../ggz-python-$(version) -name .svn | xargs rm -rf
 	cd .. && tar cvzf ggz-python-$(version).tar.gz ggz-python-$(version)
 
