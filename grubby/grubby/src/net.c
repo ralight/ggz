@@ -45,6 +45,7 @@ static GGZHookReturn net_hook_chatfail(unsigned int id, const void *event_data, 
 static GGZHookReturn net_hook_typelist(unsigned int id, const void *event_data, const void *user_data);
 
 static GGZHookReturn net_hook_table(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_tableupdate(unsigned int id, const void *event_data, const void *user_data);
 static GGZHookReturn net_hook_launched(unsigned int id, const void *event_data, const void *user_data);
 static GGZHookReturn net_hook_negotiated(unsigned int id, const void *event_data, const void *user_data);
 static GGZHookReturn net_hook_playing(unsigned int id, const void *event_data, const void *user_data);
@@ -52,7 +53,7 @@ static GGZHookReturn net_hook_playing(unsigned int id, const void *event_data, c
 static GGZHookReturn net_hook_channel(unsigned int id, const void *event_data, const void *user_data);
 static GGZHookReturn net_hook_ready(unsigned int id, const void *event_data, const void *user_data);
 
-static void net_internal_game(GGZPlayer *player);
+static void net_internal_game(GGZPlayer *player, int tableid);
 static void net_internal_gameprepare(const char *playername);
 
 /* Initialize the net functions */
@@ -364,6 +365,7 @@ GGZHookReturn net_hook_enter(unsigned int id, const void *event_data, const void
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
 	ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, net_hook_chat);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_JOINED, net_hook_table);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, net_hook_tableupdate);
 
 	status = NET_GOTREADY;
 	return GGZ_HOOK_OK;
@@ -406,7 +408,7 @@ GGZHookReturn net_hook_roomleave(unsigned int id, const void *event_data, const 
 }
 
 /* Let grubby launch a game */
-void net_internal_game(GGZPlayer *player)
+void net_internal_game(GGZPlayer *player, int tableid)
 {
 	GGZTable *table;
 	GGZModule *module;
@@ -414,7 +416,15 @@ void net_internal_game(GGZPlayer *player)
 	const char *name, *engine, *version;
 	int j;
 
-	table = ggzcore_player_get_table(player);
+	if(player)
+	{
+		table = ggzcore_player_get_table(player);
+	}
+	else
+	{
+		table = ggzcore_room_get_nth_table(room, tableid);
+	}
+	
 	if(table)
 	{
 		tableid = ggzcore_table_get_id(table);
@@ -481,7 +491,7 @@ void net_internal_gameprepare(const char *playername)
 		printf("got %s (%s)\n", playername, playertmp);
 		if(!strcmp(playername, playertmp))
 		{
-			net_internal_game(player);
+			net_internal_game(player, -1);
 			break;
 		}
 	}
@@ -534,6 +544,44 @@ GGZHookReturn net_hook_table(unsigned int id, const void *event_data, const void
 	//ggzcore_game_launch(game);
 
 	//ggzcore_module_launch(module);
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_tableupdate(unsigned int id, const void *event_data, const void *user_data)
+{
+	unsigned int i, j;
+	GGZTable *table;
+	GGZSeatType type;
+	const char *name;
+	unsigned int jointable = -1;
+
+	printf("-- tables were updated\n");
+
+	if(game) return GGZ_HOOK_OK;
+
+	for(i = 0; i < ggzcore_room_get_num_tables(room); i++)
+	{
+		table = ggzcore_room_get_nth_table(room, i);
+		for(j = 0; j < ggzcore_table_get_num_seats(table); j++)
+		{
+			type = ggzcore_table_get_nth_player_type(table, j);
+			if(type == GGZ_SEAT_RESERVED)
+			{
+				name = ggzcore_table_get_nth_player_name(table, j);
+				if(!strcmp(name, guruname))
+				{
+					printf("-- grubby is invited to a game!\n");
+					jointable = i;
+				}
+			}
+		}
+	}
+
+	if(jointable != -1)
+	{
+		net_internal_game(NULL, jointable);
+	}
 
 	return GGZ_HOOK_OK;
 }
