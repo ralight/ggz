@@ -1393,6 +1393,7 @@
 	    <listitem>
 	      <para>
 		Player name in case the type is either 'player' or 'reserved'.
+		It is also included if a 'bot' seat is reserved for a named bot.
 	      </para>
 	    </listitem>
 	  </varlistentry>

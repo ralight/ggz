@@ -23,8 +23,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 7284 $</revnumber>
-	<date>$Date: 2005-06-18 00:37:37 -0700 (Sat, 18 Jun 2005) $</date>
+	<revnumber>$Revision: 7412 $</revnumber>
+	<date>$Date: 2005-08-14 05:10:02 -0700 (Sun, 14 Aug 2005) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -298,7 +298,8 @@
         <para>
           Sent on game startup to configure the game server according to
           the table configuration as performed by the client of the game host.
-          The player name is only sent for seats of type GGZ_SEAT_RESERVED.
+          The player name is only sent for seats of type GGZ_SEAT_RESERVED
+          or GGZ_SEAT_BOT, and may be empty ("") for anonymous bots.
         </para>
       </refsect2>
     </refsect1>
