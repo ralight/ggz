@@ -13,5 +13,6 @@ EXTRA_DIST = \
 	dots.protocol \
 	ggzcards.protocol \
 	hastings.protocol \
-	muehle.protocol
+	muehle.protocol \
+	ggzcommgen
 
