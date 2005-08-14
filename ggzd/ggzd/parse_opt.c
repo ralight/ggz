@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 7402 2005-08-13 22:24:02Z josef $
+ * $Id: parse_opt.c 7404 2005-08-14 07:43:34Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -430,6 +430,8 @@ static void parse_game(char *name, char *dir)
 	int argcp;
 	char **argvp;
 	int ret, i;
+	ggzdbPlayerEntry db_pe;
+	GGZDBResult db_status;
 
 	/* Check to see if we are allocating too many games */
 	if(state.types == MAX_GAME_TYPES) {
@@ -527,10 +529,11 @@ static void parse_game(char *name, char *dir)
 
 	ret = ggz_conf_get_keys(ch, "NamedBots", &argcp, &argvp);
 	if(ret == 0) {
-		printf("** %i named bots... (%i) (%p) [%s]\n", argcp, ret, argvp, name);
 		game_info.named_bots = (char***)ggz_malloc((argcp + 1) * sizeof(char**));
 		for (i = 0; i < argcp; i++) {
-			printf("** NamedBot: %s\n", argvp[i]);
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Found amed bot <%s>.",
+				argvp[i]);
 			tmp = ggz_conf_read_string(ch, "NamedBots", argvp[i], NULL);
 			game_info.named_bots[i] = (char**)ggz_malloc(2 * sizeof(char*));
 			game_info.named_bots[i][0] = ggz_strdup(argvp[i]);
@@ -540,6 +543,38 @@ static void parse_game(char *name, char *dir)
 		}
 		game_info.named_bots[argcp] = NULL;
 		ggz_free(argvp);
+	}
+
+	if (game_info.named_bots) {
+		for (i = 0; game_info.named_bots[i]; i++) {
+			snprintf(db_pe.handle, sizeof(db_pe.handle), "%s",
+				game_info.named_bots[i][0]);
+			db_status = ggzdb_player_get(&db_pe);
+			if ((db_pe.perms & PERMS_CHAT_BOT)
+			&& (db_status != GGZDB_ERR_NOTFOUND)) {
+				dbg_msg(GGZ_DBG_CONFIGURATION,
+					"named_bot <%s> registered already.",
+					game_info.named_bots[i][0]);
+				continue;
+			}
+
+			db_pe.user_id = ggzdb_player_next_uid();
+			db_pe.perms = PERMS_DEFAULT_SETTINGS | PERMS_CHAT_BOT;
+			db_pe.last_login = time(NULL);
+			snprintf(db_pe.handle, sizeof(db_pe.handle), "%s",
+				game_info.named_bots[i][0]);
+			strncpy(db_pe.password, "", sizeof(db_pe.password));
+			strncpy(db_pe.email, "", sizeof(db_pe.email));
+			strncpy(db_pe.name, "", sizeof(db_pe.name));
+
+			if (ggzdb_player_add(&db_pe) == GGZDB_ERR_DUPKEY) {
+				err_msg("Could not register named bot <%s>.",
+					game_info.named_bots[i][0]);
+			} else {
+				log_msg(GGZ_LOG_SECURITY, "NEWACCT (%u) (named bot) for %s",
+					db_pe.user_id, game_info.named_bots[i][0]);
+			}
+		}
 	}
 
 	/* Set up data_dir. */
