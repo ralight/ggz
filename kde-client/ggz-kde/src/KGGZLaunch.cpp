@@ -40,6 +40,7 @@
 
 // KDE includes
 #include <klocale.h>
+#include <kmessagebox.h>
 
 // Qt includes
 #include <qlayout.h>
@@ -66,6 +67,7 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	m_input = NULL;
 	m_namedbots = NULL;
 	m_buddies = NULL;
+	m_seat = -1;
 
 	m_slider = new QSlider(this);
 	m_slider->setOrientation(QSlider::Horizontal);
@@ -122,6 +124,8 @@ void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int 
 {
 	int seat;
 
+	Q_UNUSED(column);
+
 	if(!selected) return;
 	if(!selected->isSelectable()) return;
 	if(selected == m_listbox->firstChild()) return;
@@ -135,7 +139,7 @@ void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int 
 	if((m_curbots < m_maxbots) || ((m_curbots = m_maxbots) && (m_maxbots > 0)))
 		m_popup->insertItem(i18n("Add some bot"), -seatbot);
 	m_popup->insertSeparator();
-	m_popup->insertItem(i18n("Reserve..."), -seatreserved);
+	m_popup->insertItem(i18n("Reserve..."), -seatprereserved);
 	if(m_namedbots)
 	{
 		m_popup->insertItem(i18n("Individual bots"), m_namedbots);
@@ -301,6 +305,21 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 		}
 	}
 
+	if(seattype == seatprereserved)
+	{
+		if(!m_input)
+		{
+			m_input = new KGGZInput(NULL, NULL, i18n("Reservation"),
+				i18n("Name of the player whom the seat is reserved for"));
+			connect(m_input, SIGNAL(signalText(QString)),
+				SLOT(slotReservation(QString)));
+		}
+		m_seat = seat;
+		m_listbox->setEnabled(false);
+		m_input->show();
+		return;
+	}
+
 	oldtype = seatType(seat);
 
 	tmp->setText(1, typeName(seattype));
@@ -339,22 +358,17 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 		tmp->setPixmap(1, pix3);
 	}
 
-	if(seattype == seatreserved)
+	if(seattype != seatreserved)
 	{
-		if(!m_input)
-		{
-			m_input = new KGGZInput(NULL, NULL, i18n("Reservation"),
-				i18n("Name of the player whom the seat is reserved for"));
-		}
-		m_listbox->setEnabled(false);
-		m_input->show();
-		connect(m_input, SIGNAL(signalText(QString)), SLOT(slotReservation(QString)));
-	}
-	else
-	{
+		freeReservation(tmp->text(2));
 		if(m_reservations.contains(-seattype))
 		{
 			tmp->setText(2, m_reservations[-seattype]);
+			addReservation(-seattype);
+		}
+		else if(seattype == seatplayer)
+		{
+			tmp->setText(2, m_playername);
 		}
 		else
 		{
@@ -382,6 +396,29 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 	m_array->at(seat) = seattype;
 }
 
+void KGGZLaunch::addReservation(int id)
+{
+	if(m_buddies) m_buddies->setItemEnabled(id, false);
+	if(m_namedbots) m_namedbots->setItemEnabled(id, false);
+}
+
+void KGGZLaunch::freeReservation(QString name)
+{
+	if(name.isNull()) return;
+
+	QMap<int, QString>::Iterator it;
+	for(it = m_reservations.begin(); it != m_reservations.end(); it++)
+	{
+		if(it.data() == name)
+		{
+			int id = it.key();
+			if(m_buddies) m_buddies->setItemEnabled(id, true);
+			if(m_namedbots) m_namedbots->setItemEnabled(id, true);
+			return;
+		}
+	}
+}
+
 QString KGGZLaunch::typeName(int seattype)
 {
 	QString ret;
@@ -398,7 +435,7 @@ QString KGGZLaunch::typeName(int seattype)
 	switch(seattype)
 	{
 		case seatplayer:
-			ret.append(m_playername);
+			ret.append(i18n("(Yourself)"));
 			break;
 		case seatopen:
 			ret.append(i18n("Open"));
@@ -424,10 +461,38 @@ void KGGZLaunch::slotReservation(QString player)
 {
 	QListViewItem *tmp;
 
+	for(int i = 0; i < seats(); i++)
+	{
+		if(player == reservation(i))
+		{
+			KMessageBox::error(this,
+				i18n("The player %1 is already on a seat.").arg(player),
+				i18n("Double assignment"));
+			m_listbox->setEnabled(true);
+			return;
+		}
+	}
+
 	tmp = m_listbox->selectedItem();
 	if(tmp)
 	{
+		freeReservation(tmp->text(2));
+
+		int id = seatreserved;
+
+		QMap<int, QString>::Iterator it;
+		for(it = m_reservations.begin(); it != m_reservations.end(); it++)
+		{
+			if(it.data() == player)
+			{
+				id = -(it.key());
+				if(m_buddies) m_buddies->setItemEnabled(id, false);
+				if(m_namedbots) m_namedbots->setItemEnabled(id, false);
+			}
+		}
+
 		tmp->setText(2, player);
+		setSeatType(m_seat, id);
 	}
 	m_listbox->setEnabled(true);
 }

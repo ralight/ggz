@@ -81,12 +81,13 @@ class KGGZLaunch : public QWidget
 		enum SeatTypes
 		{
 			seatopen = -1,
-			seatreserved = -3,
-			seatbot = -2,
+			seatreserved = -2,
+			seatprereserved = -3,
+			seatbot = -4,
 			seatplayer = -5,
-			seatunused = -4,
-			seatspectator = -6,
-			seatunknown = -7,
+			seatunused = -6,
+			seatspectator = -7,
+			seatunknown = -8,
 			seatbotlist = -1000,
 			seatbuddylist = -2000
 		};
@@ -114,6 +115,10 @@ class KGGZLaunch : public QWidget
 		QString typeName(int seattype);
 		// Composite pixmaps (FIXME: taken from KGGZUsers)
 		QPixmap composite(QPixmap bottom, QPixmap top);
+		// Prevent a name from being used again
+		void addReservation(int id);
+		// Liberate a name for usage again
+		void freeReservation(QString name);
 
 		// Widget holding all seat entries
 		KListView *m_listbox;
@@ -151,6 +156,8 @@ class KGGZLaunch : public QWidget
 		QMap<QString, int> m_grubbies;
 		// Reservation names
 		QMap<int, QString> m_reservations;
+		// Currently edited seat
+		int m_seat;
 };
 
 #endif
