@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 7208 2005-05-21 10:24:40Z josef $
+ * $Id: ggzdmod.h 7410 2005-08-14 11:56:29Z josef $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -452,6 +452,13 @@ int ggzdmod_get_num_seats(GGZdMod * ggzdmod);
  *  @return A valid GGZSeat structure, if seat is a valid seat.
  */
 GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int seat);
+
+/** @brief Return class for named bot.
+ *  @param ggzdmod The GGZdMod object.
+ *  @param name Name of the bot.
+ *  @return The bot's class, or NULL for anonymous bots.
+ */
+char * ggzdmod_get_bot_class(GGZdMod * ggzdmod, const char * name);
 
 /** @brief Return gamedata pointer
  *

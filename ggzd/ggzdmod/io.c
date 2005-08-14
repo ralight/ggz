@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 7268 2005-06-10 12:28:19Z josef $
+ * $Id: io.c 7410 2005-08-14 11:56:29Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -136,8 +136,8 @@ int _io_send_seat(int fd, const GGZSeat *seat)
 	if (ggz_write_int(fd, seat->type) < 0)
 		return -1;
 	
-	if (seat->type == GGZ_SEAT_RESERVED) {
-		if (ggz_write_string(fd, seat->name) < 0)
+	if (seat->type == GGZ_SEAT_RESERVED || seat->type == GGZ_SEAT_BOT) {
+		if (ggz_write_string(fd, (seat->name ? seat->name : "")) < 0)
 			return -1;
 	}
 
@@ -437,9 +437,12 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 		if (ggz_read_int(ggzdmod->fd, (int*)&seat.type) < 0)
 			return -1;
 
-		if (seat.type == GGZ_SEAT_RESERVED)
+		if (seat.type == GGZ_SEAT_RESERVED || seat.type == GGZ_SEAT_BOT) {
 			if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
 				return -1;
+			if (name[0] == '\0')
+				name = NULL;
+		}
 		seat.name = name;
 		
 		_ggzdmod_handle_launch_seat(ggzdmod, seat);
