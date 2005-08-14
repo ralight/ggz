@@ -15,6 +15,8 @@
 #include <ggz.h>
 #include <unistd.h>
 #include <time.h>
+#include <fcntl.h>
+#include <errno.h>
 
 #include "gurumod.h"
 #include "i18n.h"
@@ -32,7 +34,11 @@ void gurumod_init(const char *datadir)
 	{
 		printf("Warning: Game communication channel inactive\n");
 	}
-	listen(channel, 1);
+	else
+	{
+		fcntl(channel, F_SETFL, O_NONBLOCK);
+		listen(channel, 1);
+	}
 	cchannel = -1;
 	channeldelay = 0;
 }
@@ -69,16 +75,20 @@ static Guru *game(Guru *message)
 	socklen_t addrlen;
 	char buffer[1024];
 
+	if(channel == -1) return NULL;
 	if(cchannel == -1)
 	{
 		addrlen = sizeof(addr);
 		cchannel = accept(channel, (struct sockaddr*)&addr, &addrlen);
 		if(cchannel == -1)
 		{
-			printf("'Warning: Game communication channel unaccepted\n");
+			if(errno != EAGAIN)
+			{
+				printf("'Warning: Game communication channel unaccepted\n");
+			}
+			return;
 		}
 	}
-	if(channel == -1) return NULL;
 	if(!network()) return NULL;
 
 	if(!ggz_read_int(cchannel, &opcode))
