@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 7117 2005-04-21 17:18:08Z josef $
+ * $Id: table.c 7409 2005-08-14 11:55:16Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -459,7 +459,7 @@ static GGZReturn table_start_game(GGZTable *table)
         for (i = 0; i < num_seats; i++) {
 		seat.num = i;
 		seat.type = seats_type(table, i);
-		if (seat.type == GGZ_SEAT_RESERVED)
+		if (seat.type == GGZ_SEAT_RESERVED || seat.type == GGZ_SEAT_BOT)
 			seat.name = table->seat_names[i];
 		else
 			seat.name = NULL;
