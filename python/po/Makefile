@@ -12,3 +12,5 @@ POSOURCES = ../lib/sdlnewstuff.py ../ggzboard/ggzboard ../ggzboard/module_*.py
 POFLAGS = -LPython
 
 include i18n.mk
+
+install: install-data-local
