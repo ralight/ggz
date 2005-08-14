@@ -86,7 +86,7 @@ static Guru *game(Guru *message)
 			{
 				printf("'Warning: Game communication channel unaccepted\n");
 			}
-			return;
+			return NULL;
 		}
 	}
 	if(!network()) return NULL;
