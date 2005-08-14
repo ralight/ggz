@@ -55,10 +55,12 @@
 #include <klineeditdlg.h>
 #include <kwallet.h>
 #endif
+#include <ksimpleconfig.h>
 
 // Qt includes
 #include <qiconview.h>
 #include <qlayout.h>
+#include <qdir.h>
 
 // System includes
 #include <stdio.h>
@@ -686,18 +688,21 @@ void KGGZ::gameCollector(unsigned int id, const void* data)
 							KGGZDEBUG("* %i: open\n", i);
 							break;
 						case KGGZLaunch::seatbot:
-							KGGZDEBUG("* %i: bot\n", i);
-							m_table->addBot(NULL, i);
+							KGGZDEBUG("* %i: bot (%s)\n", i, m_launch->reservation(i).latin1());
+							if(m_launch->reservation(i).isNull())
+								m_table->addBot(NULL, i);
+							else
+								m_table->addBot((char*)m_launch->reservation(i).latin1(), i);
 							break;
 						case KGGZLaunch::seatreserved:
-							KGGZDEBUG("* %i: reserved\n", i);
+							KGGZDEBUG("* %i: reserved (%s)\n", i, m_launch->reservation(i).latin1());
 							m_table->addReserved((char*)m_launch->reservation(i).latin1(), i);
 							break;
 						case KGGZLaunch::seatunused:
 							KGGZDEBUG("* %i: unused.\n", i);
 							break;
 						case KGGZLaunch::seatunknown:
-							default:
+						default:
 							KGGZDEBUG("* %i: unknown!\n", i);
 					}
 				}
@@ -1570,8 +1575,30 @@ void KGGZ::slotGamePrepare(int frontend)
 		{
 			m_launch->addBot(gametype->namedBotName(i), gametype->namedBotClass(i));
 		}
-m_launch->addBot("DumbBot", "grubby");
-m_launch->addBuddy("Your Buddy");
+
+		KSimpleConfig conf(QDir::home().path() + "/.ggz/kggz.rc");
+		QMap<QString, QString> credits = conf.entryMap("Credits");
+		QMap<QString, QString>::Iterator it;
+		for(it = credits.begin(); it != credits.end(); it++)
+		{
+			int credit = it.data().toInt();
+			if(credit == 1) // KGGZUsers::creditbuddy
+			{
+				m_launch->addBuddy(it.key());
+			}
+		}
+
+		int number = kggzroom->countPlayers();
+		for(int i = 0; i < number; i++)
+		{
+			GGZCorePlayer *player = kggzroom->player(i);
+			QString playername = player->name();
+			if(player->type() == KGGZUsers::assignbot)
+			{
+				m_launch->addBot(playername, "grubby");
+			}
+		}
+
 		m_launch->show();
 		connect(m_launch, SIGNAL(signalLaunch()), SLOT(slotGameStart()));
 	}

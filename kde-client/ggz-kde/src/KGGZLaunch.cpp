@@ -66,7 +66,6 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	m_input = NULL;
 	m_namedbots = NULL;
 	m_buddies = NULL;
-	m_grubbies = false;
 
 	m_slider = new QSlider(this);
 	m_slider->setOrientation(QSlider::Horizontal);
@@ -84,7 +83,7 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	m_edit = new QLineEdit(this);
 
 	m_label = new QLabel("", this);
-	label2 = new QLabel(i18n("Seat assignments:"), this);
+	label2 = new QLabel(i18n("Seat assignments (right-click to change):"), this);
 	label3 = new QLabel(i18n("Game description:"), this);
 
 	m_ok = new QPushButton("OK", this);
@@ -306,13 +305,39 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 
 	tmp->setText(1, typeName(seattype));
 
-	if(seattype == seatplayer) pixmap = "player.png";
-	else if(seattype == seatopen) pixmap = "guest.png";
+	if(seattype == seatopen) pixmap = "guest.png";
 	else if(seattype == seatbot) pixmap = "bot.png";
 	else if(seattype == seatreserved) pixmap = "player.png";
-	else if(seattype <= seatbotlist) pixmap = "bot.png";
+	if(seattype <= seatbotlist)
+	{
+		pixmap = "bot.png";
+		if(m_reservations.contains(-seattype))
+		{
+			if(m_grubbies.contains(m_reservations[-seattype]))
+			{
+				pixmap = "botgrubby.png";
+				tmp->setText(1, i18n("Chat bot"));
+			}
+		}
+	}
 	QPixmap pix = QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap);
 	tmp->setPixmap(1, pix);
+
+	if(seattype == seatplayer)
+	{
+		QPixmap pix1 = QPixmap(KGGZ_DIRECTORY "/images/icons/players/player.png");
+		QPixmap pix2 = QPixmap(KGGZ_DIRECTORY "/images/icons/players/you.png");
+		QPixmap pix3 = composite(pix1, pix2);
+		tmp->setPixmap(1, pix3);
+	}
+
+	if(seattype <= seatbuddylist)
+	{
+		QPixmap pix1 = QPixmap(KGGZ_DIRECTORY "/images/icons/players/player.png");
+		QPixmap pix2 = QPixmap(KGGZ_DIRECTORY "/images/icons/players/buddy.png");
+		QPixmap pix3 = composite(pix1, pix2);
+		tmp->setPixmap(1, pix3);
+	}
 
 	if(seattype == seatreserved)
 	{
@@ -325,7 +350,31 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 		m_input->show();
 		connect(m_input, SIGNAL(signalText(QString)), SLOT(slotReservation(QString)));
 	}
-	else tmp->setText(2, QString::null);
+	else
+	{
+		if(m_reservations.contains(-seattype))
+		{
+			tmp->setText(2, m_reservations[-seattype]);
+		}
+		else
+		{
+			tmp->setText(2, QString::null);
+		}
+	}
+
+	if(seattype <= seatbuddylist) seattype = seatreserved;
+	else if(seattype <= seatbotlist)
+	{
+		int orig = seattype;
+		seattype = seatbot;
+		if(m_reservations.contains(-orig))
+		{
+			if(m_grubbies.contains(m_reservations[-orig]))
+			{
+				seattype = seatreserved;
+			}
+		}
+	}
 
 	if((seattype == seatbot) && (oldtype != seatbot)) m_curbots++;
 	else if((oldtype == seatbot) && (seattype != seatbot)) m_curbots--;
@@ -409,11 +458,11 @@ void KGGZLaunch::addBot(QString botname, QString botclass)
 	int id = -seatbotlist + m_namedbots->count();
 	if(botclass == "grubby")
 	{
-		if(!m_grubbies)
+		if(m_grubbies.count() == 0)
 		{
-			m_grubbies = true;
 			m_namedbots->insertSeparator(0);
 		}
+		m_grubbies[botname] = 1;
 		QPixmap pix = QPixmap(KGGZ_DIRECTORY "/images/icons/players/botgrubby.png");
 		m_namedbots->insertItem(pix, QString("%1 (Grubby)").arg(botname), id, 0);
 	}
@@ -422,6 +471,7 @@ void KGGZLaunch::addBot(QString botname, QString botclass)
 		QPixmap pix = QPixmap(KGGZ_DIRECTORY "/images/icons/players/bot.png");
 		m_namedbots->insertItem(pix, QString("%1 (%1)").arg(botname).arg(botclass), id);
 	}
+	m_reservations[id] = botname;
 }
 
 void KGGZLaunch::addBuddy(QString buddyname)
@@ -436,6 +486,7 @@ void KGGZLaunch::addBuddy(QString buddyname)
 	QPixmap pix2 = QPixmap(KGGZ_DIRECTORY "/images/icons/players/buddy.png");
 	QPixmap pix3 = composite(pix, pix2);
 	m_buddies->insertItem(pix3, QString("%1").arg(buddyname), id);
+	m_reservations[id] = buddyname;
 }
 
 // FIXME: taken from KGGZUsers

@@ -224,7 +224,7 @@ void KGGZUsers::display(QString playername)
 			pixmap = "guest.png";
 			break;
 		case assignbot:
-			pixmap = "bot.png";
+			pixmap = "botgrubby.png";
 			break;
 		case assignadmin:
 			pixmap = "admin.png";

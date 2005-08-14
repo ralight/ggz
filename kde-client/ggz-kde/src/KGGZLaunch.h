@@ -148,7 +148,9 @@ class KGGZLaunch : public QWidget
 		// Buddies
 		QPopupMenu *m_buddies;
 		// Grubbies have been added
-		bool m_grubbies;
+		QMap<QString, int> m_grubbies;
+		// Reservation names
+		QMap<int, QString> m_reservations;
 };
 
 #endif
