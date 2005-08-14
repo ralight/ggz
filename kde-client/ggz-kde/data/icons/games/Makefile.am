@@ -24,6 +24,7 @@ pix_DATA = \
 	Hnefatafl.png \
 	Checkers.png \
 	Widelands.png \
+	Freelords.png \
 	notinstalled.png \
 	lounge.png
 
