@@ -74,6 +74,8 @@ class KGGZLaunch : public QWidget
 
 		// Add a named bot
 		void addBot(QString botname, QString botclass);
+		// Add a buddy
+		void addBuddy(QString buddyname);
 
 		// All possible seat types
 		enum SeatTypes
@@ -85,7 +87,8 @@ class KGGZLaunch : public QWidget
 			seatunused = -4,
 			seatspectator = -6,
 			seatunknown = -7,
-			seatbotlist = -1000
+			seatbotlist = -1000,
+			seatbuddylist = -2000
 		};
 
 	public slots:
@@ -109,6 +112,8 @@ class KGGZLaunch : public QWidget
 		void setSeatType(int seat, int seattype);
 		// Return the i18n'd name of a seat type
 		QString typeName(int seattype);
+		// Composite pixmaps (FIXME: taken from KGGZUsers)
+		QPixmap composite(QPixmap bottom, QPixmap top);
 
 		// Widget holding all seat entries
 		KListView *m_listbox;
@@ -140,6 +145,10 @@ class KGGZLaunch : public QWidget
 		KGGZInput *m_input;
 		// Named bots
 		QPopupMenu *m_namedbots;
+		// Buddies
+		QPopupMenu *m_buddies;
+		// Grubbies have been added
+		bool m_grubbies;
 };
 
 #endif

@@ -8,6 +8,7 @@ pix_DATA = \
 	player.png \
 	guest.png \
 	bot.png \
+	botgrubby.png \
 	lag0.png \
 	lag1.png \
 	lag2.png \

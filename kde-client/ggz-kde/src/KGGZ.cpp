@@ -1570,6 +1570,8 @@ void KGGZ::slotGamePrepare(int frontend)
 		{
 			m_launch->addBot(gametype->namedBotName(i), gametype->namedBotClass(i));
 		}
+m_launch->addBot("DumbBot", "grubby");
+m_launch->addBuddy("Your Buddy");
 		m_launch->show();
 		connect(m_launch, SIGNAL(signalLaunch()), SLOT(slotGameStart()));
 	}
