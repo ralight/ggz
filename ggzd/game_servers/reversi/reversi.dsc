@@ -1,9 +1,9 @@
-# $Id: reversi.dsc 5544 2003-05-10 23:15:02Z dr_maux $
+# $Id: reversi.dsc 7433 2005-08-15 09:55:03Z josef $
 
 [GameInfo]
 Author = Ismael Orenstein
 Description = Simple GGZ game module for playing Reversi
-Homepage = http://ggz.sourceforge.net/games/reversi/
+Homepage = http://www.ggzgamingzone.org/games/reversi/
 Name = Reversi
 Version = 0.0.7
 

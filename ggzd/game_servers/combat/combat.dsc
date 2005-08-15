@@ -1,9 +1,9 @@
-# $Id: combat.dsc 4757 2002-09-29 11:53:43Z dr_maux $
+# $Id: combat.dsc 7433 2005-08-15 09:55:03Z josef $
 
 [GameInfo]
 Author = Ismael Orenstein
 Description = Stratego(tm) like game for GGZ
-Homepage = http://ggz.sourceforge.net/games/combat/
+Homepage = http://www.ggzgamingzone.org/games/combat/
 Name = Combat
 Version = 1.1
 

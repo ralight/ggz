@@ -1,9 +1,9 @@
-# $Id: krosswater.dsc 6773 2005-01-20 19:09:45Z josef $
+# $Id: krosswater.dsc 7433 2005-08-15 09:55:03Z josef $
 
 [GameInfo]
 Author = Josef Spillner
 Description = Try to cross the water first.
-Homepage = http://ggz.sourceforge.net/games/krosswater/
+Homepage = http://www.ggzgamingzone.org/games/krosswater/
 Name = Krosswater
 Version = 0.0.7
 
