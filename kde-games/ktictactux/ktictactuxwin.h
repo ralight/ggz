@@ -37,7 +37,8 @@ class KTicTacTuxWin : public KMainWindow
 			menuscore = 2,
 			menutheme = 3,
 			menuquit = 4,
-			menuthemes = 10
+			menuggzplayers = 5,
+			menuthemes = 100
 		};
 		// Enable network functionality
 		void enableNetwork(bool enabled);
@@ -64,7 +65,7 @@ class KTicTacTuxWin : public KMainWindow
 		// The game itself
 		KTicTacTux *m_tux;
 		// The menus;
-		KPopupMenu *mgame, *mtheme;
+		KPopupMenu *mgame, *mtheme, *mggz;
 		// Game network status
 		bool m_networked;
 		// List of themes

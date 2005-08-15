@@ -7,6 +7,8 @@
 // KTicTacTux includes
 #include "ktictactuxwin.h"
 
+#include "kggzseatsdialog.h"
+
 // KDE includes
 #include <kpopupmenu.h>
 #include <kmenubar.h>
@@ -49,9 +51,13 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 #endif
 	mgame->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIcon::Small), i18n("Quit"), menuquit);
 
+	mggz = new KPopupMenu(this);
+	mggz->insertItem(KGlobal::iconLoader()->loadIcon("ggz", KIcon::Small), i18n("Seats && Spectators"), menuggzplayers);
+
 	mtheme = new KPopupMenu(this);
 
 	menuBar()->insertItem(i18n("Game"), mgame);
+	menuBar()->insertItem(i18n("GGZ"), mggz);
 	menuBar()->insertItem(i18n("Theme"), mtheme);
 	menuBar()->insertItem(i18n("Help"), helpMenu());
 
@@ -63,6 +69,7 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	connect(m_tux, SIGNAL(signalNetworkScore(int, int, int)), SLOT(slotNetworkScore(int, int, int)));
 	connect(m_tux, SIGNAL(signalGameOver()), SLOT(slotGameOver()));
 	connect(mgame, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	connect(mggz, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(mtheme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
 	enableNetwork(false);
@@ -133,6 +140,7 @@ void KTicTacTuxWin::slotMenu(int id)
 {
 	KConfig *conf;
 	QDir d;
+	KGGZSeatsDialog *seats;
 
 	// Standard menu entries
 	switch(id)
@@ -151,6 +159,10 @@ void KTicTacTuxWin::slotMenu(int id)
 			KNS::DownloadDialog::open("ktictactux/theme");
 			break;
 #endif
+		case menuggzplayers:
+			seats = new KGGZSeatsDialog();
+			seats->setMod(m_tux->getMod());
+			break;
 		case menuquit:
 			close();
 			break;
@@ -171,6 +183,8 @@ void KTicTacTuxWin::enableNetwork(bool enabled)
 {
 	mgame->setItemEnabled(menusync, enabled);
 	m_networked = enabled;
+
+	mggz->setEnabled(enabled);
 }
 
 // Display scores

@@ -48,6 +48,8 @@ class KTicTacTux : public QWidget
 		// Network operation
 		void network();
 
+		GGZMod *getMod();
+
 	public slots:
 		// Evaluate user input
 		void slotSelected(QWidget *widget);

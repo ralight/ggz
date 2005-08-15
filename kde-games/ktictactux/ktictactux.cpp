@@ -477,3 +477,8 @@ void KTicTacTux::slotDispatch()
 	proto->dispatch();
 }
 
+GGZMod *KTicTacTux::getMod()
+{
+	return proto->mod;
+}
+
