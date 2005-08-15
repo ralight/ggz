@@ -143,3 +143,8 @@ const char *GGZCoreGametype::namedBotClass(unsigned int number)
 	return ggzcore_gametype_get_namedbot_class(m_gametype, number);
 }
 
+int GGZCoreGametype::allowPeers()
+{
+	return ggzcore_gametype_get_peers_allowed(m_gametype);
+}
+

@@ -92,6 +92,10 @@ class GGZCoreGametype
 		const char *namedBotClass(unsigned int number);
 
 		/**
+		 * Check for peer information disclosure policy */
+		int allowPeers();
+
+		/**
 		 * Retrieve the wrapped ggzcore object for this game type. */
 		const GGZGameType *gametype();
 

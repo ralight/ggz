@@ -1496,6 +1496,7 @@ void KGGZ::slotGameFrontend()
 	GGZCoreGametype *gametype;
 	int modules;
 	int env;
+	int ret;
 
 	if((!kggzroom) || (!m_gameinfo))
 	{
@@ -1527,6 +1528,20 @@ void KGGZ::slotGameFrontend()
 		delete m_module;
 		m_module = NULL;
 		return;
+	}
+
+	if(gametype->allowPeers())
+	{
+		ret = KMessageBox::questionYesNo(this,
+			i18n("The selected game might reveal your IP address or hostname "
+				"to other players. Do you still want to continue?"),
+			i18n("Player Privacy"));
+		if(ret != KMessageBox::Yes)
+		{
+			delete m_module;
+			m_module = NULL;
+			return;
+		}
 	}
 
 	if(modules == 1) slotGamePrepare(0);
