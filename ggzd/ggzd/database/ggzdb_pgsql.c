@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 7091 2005-04-08 14:10:51Z josef $
+ * $Id: ggzdb_pgsql.c 7424 2005-08-15 09:00:27Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -421,6 +421,48 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	res = PQexec(conn, query);
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
 		err_msg("Couldn't update player.");
+		rc = GGZDB_ERR_DB;
+	}
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	return rc;
+}
+
+
+/* Function to retrieve an extended player record */
+GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
+{
+	GGZDBResult rc;
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("_ggzdb_player_add: couldn't claim connection");
+		return GGZDB_ERR_DB;
+	}
+
+	snprintf(query, sizeof(query),
+		 "SELECT "
+		 "id, photo "
+		 "FROM userinfo WHERE lower(handle) = lower('%s')",
+		 pe->handle);
+
+	res = PQexec(conn, query);
+
+	if (PQresultStatus(res) == PGRES_TUPLES_OK) {
+		if(PQntuples(res) == 1)	{
+			pe->user_id = atol(PQgetvalue(res, 0, 0));
+			strncpy(pe->photo, PQgetvalue(res, 0, 1), sizeof(pe->photo));
+			rc = GGZDB_NO_ERROR;
+		} else	{
+			rc = GGZDB_ERR_NOTFOUND;
+		}
+	} else {
+		err_msg("Couldn't lookup player.");
 		rc = GGZDB_ERR_DB;
 	}
 	PQclear(res);

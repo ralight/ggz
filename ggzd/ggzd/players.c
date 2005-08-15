@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 6729 2005-01-18 18:23:46Z jdorje $
+ * $Id: players.c 7424 2005-08-15 09:00:27Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -912,6 +912,118 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 	return GGZ_REQ_OK;
 }
 #endif
+
+
+/* FIXME: move to libggz? */
+char *ggzdgetpeername(int fd) {
+	struct sockaddr *addr;
+	socklen_t addrsize;
+	int ret;
+	char *ip;
+
+	addrsize = 256;
+	addr = (struct sockaddr*)malloc(addrsize);
+	ret = getpeername(fd, addr, &addrsize);
+
+	// FIXME: IPv4 compatibility?
+	if(addr->sa_family == AF_INET6)
+	{
+		ip = (char*)ggz_malloc(INET6_ADDRSTRLEN);
+		inet_ntop(AF_INET6, (void*)&(((struct sockaddr_in6*)addr)->sin6_addr),
+			ip, INET6_ADDRSTRLEN);
+	}
+	else if(addr->sa_family == AF_INET)
+	{
+		ip = (char*)ggz_malloc(INET_ADDRSTRLEN);
+		inet_ntop(AF_INET, (void*)&(((struct sockaddr_in*)addr)->sin_addr),
+			ip, INET_ADDRSTRLEN);
+	}
+	else ip = NULL;
+
+	return ip;
+}
+
+
+GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
+{
+	GGZTable *table;
+	GameInfo gametype;
+	int i, do_send;
+	int first, last;
+	char *realname, *photo, *host;
+	int allow_hostname;
+	ggzdbPlayerEntry entry;
+	ggzdbPlayerExtendedEntry extentry;
+	GGZDBResult status;
+
+	table = table_lookup(player->room, player->table);
+	if (!table) {
+		dbg_msg(GGZ_DBG_TABLE,
+			"%s tried to get player info about non-existing table %d:%d.",
+			player->name, player->room, player->table);
+		return GGZ_REQ_FAIL;
+	}
+
+	first = 0;
+	last = table->num_seats;
+	if (seat_num > -1) {
+		first = seat_num;
+		last = seat_num + 1;
+	}
+
+	net_send_info_list_begin(player->client->net);
+
+	for (i = first; i < last; i++) {
+		if (table->seat_types[i] == GGZ_SEAT_PLAYER) {
+			snprintf(entry.handle, sizeof(entry.handle), player->name);
+			status = ggzdb_player_get(&entry);
+
+			do_send = 1;
+			realname = NULL;
+			photo = NULL;
+			host = NULL;
+
+			if (status == GGZDB_NO_ERROR) {
+				realname = ggz_strdup(entry.name);
+
+				status = ggzdb_player_get_extended(&extentry);
+				if (status == GGZDB_NO_ERROR) {
+					photo = ggz_strdup(extentry.photo);
+				}
+			} else {
+				do_send = 0;
+			}
+
+			allow_hostname = 0;
+
+			pthread_rwlock_rdlock(&game_types[i].lock);
+			gametype = game_types[table->type];
+			allow_hostname = gametype.allow_peers;
+			pthread_rwlock_unlock(&game_types[i].lock);
+
+			if (allow_hostname) {
+				host = ggzdgetpeername(net_get_fd(player->client->net));
+				do_send = 1;
+			}
+
+			if (do_send) {
+				net_send_info(player->client->net, i,
+					realname, photo, host);
+
+			}
+
+			ggz_free(realname);
+			ggz_free(photo);
+			ggz_free(host);
+		}
+	}
+	
+	net_send_info_list_end(player->client->net);
+
+	pthread_rwlock_unlock(&table->lock);
+
+	return GGZ_REQ_OK;
+}
 
 
 static void find_player_at_table(GGZPlayer *player,

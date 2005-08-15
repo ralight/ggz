@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 7402 2005-08-13 22:24:02Z josef $
+ * $Id: datatypes.h 7424 2005-08-15 09:00:27Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -131,6 +131,9 @@ typedef struct GameInfo {
 
 	/* NULL-terminated list of (botname, botclass) entries */
 	char ***named_bots;
+
+	/* Can players request each other's hostnames? */
+	bool allow_peers;
 } GameInfo;
 
 

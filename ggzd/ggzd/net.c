@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 7408 2005-08-14 10:20:27Z josef $
+ * $Id: net.c 7424 2005-08-15 09:00:27Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -137,6 +137,7 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_ping(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_info(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
@@ -1069,6 +1070,8 @@ static GGZXMLElement* _net_new_element(const char *tag,
 		process_func = _net_handle_enter;
 	else if (strcasecmp(tag, "CHAT") == 0)
 		process_func = _net_handle_chat;
+	else if (strcasecmp(tag, "INFO") == 0)
+		process_func = _net_handle_info;
 	else if (strcasecmp(tag, "JOIN") == 0)
 		process_func = _net_handle_join;
 	else if (strcasecmp(tag, "LEAVE") == 0)
@@ -1501,6 +1504,19 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element)
 		type = ggz_string_to_chattype(type_str);
 
 	player_chat(net->client->data, type, to, msg);
+}
+
+
+/* Functions for <INFO> tag */
+static void _net_handle_info(GGZNetIO *net, GGZXMLElement *element)
+{
+	int seat_num;
+
+	if (!element) return;
+
+	seat_num = str_to_int(ggz_xmlelement_get_attr(element, "SEAT"), -1);
+
+	player_table_info(net->client->data, seat_num);
 }
 
 
@@ -2049,6 +2065,25 @@ static GGZReturn _net_send_pong(GGZNetIO *net, const char *id)
 		return _net_send_line(net, "<PONG ID='%s'/>", id);
 	else
 		return _net_send_line(net, "<PONG/>");
+}
+
+
+/* Send <INFO> tag. */
+GGZReturn net_send_info_list_begin(GGZNetIO *net)
+{
+	return _net_send_line(net, "<INFO>");
+}
+
+GGZReturn net_send_info(GGZNetIO *net, int num, const char *realname,
+			const char *photo, const char *host)
+{
+	return _net_send_line(net, "<PLAYERINFO SEAT='%d' REALNAME='%s' PHOTO='%s' HOST='%s'/>",
+		num, (realname ? realname : ""), (photo ? photo : ""), (host ? host : ""));
+}
+
+GGZReturn net_send_info_list_end(GGZNetIO *net)
+{
+	return _net_send_line(net, "</INFO>");
 }
 
 

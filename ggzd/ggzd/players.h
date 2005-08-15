@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 6416 2004-11-17 22:02:24Z jdorje $
+ * $Id: players.h 7424 2005-08-15 09:00:27Z josef $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -149,6 +149,8 @@ GGZPlayerHandlerStatus player_table_seat_update(GGZPlayer *player,
 GGZPlayerHandlerStatus player_table_boot_update(GGZPlayer *player,
 						int room_id, int table_id,
 						const char *name);
+
+GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num);
 
 GGZPlayerHandlerStatus player_list_players(GGZPlayer* player);
 GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose);

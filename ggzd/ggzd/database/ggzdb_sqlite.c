@@ -282,3 +282,9 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 	/* Not implemented, but do not return error */
 	return GGZDB_NO_ERROR;
 }
+
+GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
+{
+	/* Do return error here so we can clear out the values! */
+	return GGZDB_ERR_DB;
+}

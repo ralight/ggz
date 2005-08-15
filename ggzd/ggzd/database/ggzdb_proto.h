@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/08/2002
  * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 7067 2005-03-28 19:30:35Z josef $
+ * $Id: ggzdb_proto.h 7424 2005-08-15 09:00:27Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -87,6 +87,16 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry * player);
  *  @note The function does not have to be threadsafe or reentrant.
  */
 GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry * player);
+
+/** @brief Try to retrieve more info about a player by name.
+ *
+ *  This function is given a player name (in the extended player entry),
+ *  and returns additional information which might be available in the
+ *  database.
+ *  If the player does not exist it should return NOTFOUND.
+ *  @return GGZDB_NO_ERROR, GGZDB_ERR_NOTFOUND, or GGZDB_ERR_DB
+ */
+GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry * player);
 
 /** @brief Drop the current cursor used in retrieving all players.
  *

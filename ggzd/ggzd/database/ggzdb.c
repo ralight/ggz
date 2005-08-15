@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 7268 2005-06-10 12:28:19Z josef $
+ * $Id: ggzdb.c 7424 2005-08-15 09:00:27Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -219,6 +219,27 @@ unsigned int ggzdb_player_next_uid(void)
 {
 	/* Just link to the db specific code */
 	return _ggzdb_player_next_uid();
+}
+
+
+/* Function to retrieve additional player information */
+GGZDBResult ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	dbg_msg(GGZ_DBG_CONNECTION, "Getting player %s's extended info.", pe->handle);
+	
+	_ggzdb_enter();
+	if(player_needs_init)
+		rc = ggzdb_player_init();
+
+	if(rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_player_get_extended(pe);
+
+	dbg_msg(GGZ_DBG_CONNECTION, "result was %d", rc);
+
+	_ggzdb_exit();
+	return rc;
 }
 
 

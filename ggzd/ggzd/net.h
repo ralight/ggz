@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 6729 2005-01-18 18:23:46Z jdorje $
+ * $Id: net.h 7424 2005-08-15 09:00:27Z josef $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -107,6 +107,11 @@ GGZReturn net_send_update_result(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_logout(GGZNetIO *net, GGZClientReqError status);
 
 GGZReturn net_send_ping(GGZNetIO *net);
+
+GGZReturn net_send_info_list_begin(GGZNetIO *net);
+GGZReturn net_send_info(GGZNetIO *net, int num, const char *realname,
+			const char *photo, const char *host);
+GGZReturn net_send_info_list_end(GGZNetIO *net);
 
 
 #endif /* _GGZ_NET_H */
