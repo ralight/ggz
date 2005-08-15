@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7427 2005-08-15 09:04:07Z josef $
+ * $Id: ggzmod.c 7444 2005-08-15 22:34:32Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -575,24 +575,25 @@ void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
 void _ggzmod_handle_info(GGZMod * ggzmod, int seat_num, const char *realname,
 			 const char *photo, const char *host, int finish)
 {
-	//GGZListEntry *entry;
-	GGZPlayerInfo info;
+	GGZPlayerInfo *info = (GGZPlayerInfo*)ggz_malloc(sizeof(GGZPlayerInfo));
+
+	info->num = seat_num;
+	info->realname = ggz_strdup(realname);
+	info->photo = ggz_strdup(photo);
+	info->host = ggz_strdup(host);
+
+	if(seat_num != -1) {
+		ggz_list_insert(ggzmod->infos, info);
+	}
 
 	if(finish) {
 		if(seat_num == -1) {
 			call_handler(ggzmod, GGZMOD_EVENT_INFO, NULL);
 		} else {
-			call_handler(ggzmod, GGZMOD_EVENT_INFO, &info);
+			call_handler(ggzmod, GGZMOD_EVENT_INFO, info);
 		}
-		return;
 	}
 
-	info.num = seat_num;
-	info.realname = realname;
-	info.photo = photo;
-	info.host = host;
-	
-	ggz_list_insert(ggzmod->infos, &info);
 }
 
 
@@ -981,7 +982,6 @@ GGZPlayerInfo* ggzmod_player_get_info(GGZMod *ggzmod, int seat)
 	GGZListEntry *entry = ggz_list_search(ggzmod->infos, &search_info);
 	GGZPlayerInfo *info = ggz_list_get_data(entry);
 
-	if(!info) return NULL;
 	return info;
 }
 
