@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 7282 2005-06-18 07:13:21Z josef $
+ * $Id: ggzmod-ggz.c 7426 2005-08-15 09:03:04Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -98,6 +98,13 @@ static int stats_compare(const void *p, const void *q)
 	return s_p->number - s_q->number;
 }
 
+static int infos_compare(const void *p, const void *q)
+{
+	const GGZPlayerInfo *s_p = p, *s_q = q;
+
+	return s_p->num - s_q->num;
+}
+
 /*
  * How a game is launched (incomplete): see ggzmod.c.
  */
@@ -143,6 +150,9 @@ GGZMod *ggzmod_ggz_new(GGZModType type)
 					GGZ_LIST_ALLOW_DUPS);
 	ggzmod->spectator_stats = ggz_list_create(stats_compare, NULL, NULL,
 						  GGZ_LIST_ALLOW_DUPS);
+
+	ggzmod->infos = ggz_list_create(infos_compare, NULL, NULL,
+					GGZ_LIST_ALLOW_DUPS);
 
 #ifdef HAVE_FORK
 	ggzmod->pid = -1;
@@ -996,6 +1006,11 @@ void _ggzmod_ggz_handle_chat_request(GGZMod *ggzmod, char *chat_msg)
 	call_transaction(ggzmod, GGZMOD_TRANSACTION_CHAT, chat_msg);
 }
 
+void _ggzmod_ggz_handle_info_request(GGZMod *ggzmod, int seat_num)
+{
+	call_transaction(ggzmod, GGZMOD_TRANSACTION_INFO, &seat_num);
+}
+
 int ggzmod_ggz_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
 		     GGZStat *spectator_stats)
 {
@@ -1009,5 +1024,15 @@ int ggzmod_ggz_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
 
 	return _io_ggz_send_stats(ggzmod->fd, ggzmod->num_seats, player_stats,
 			      ggzmod->num_spectator_seats, spectator_stats);
+}
+
+int ggzmod_ggz_set_info(GGZMod *ggzmod, int num,
+		        GGZList *infos)
+{
+	if (!ggzmod) {
+		return -1;
+	}
+
+	return _io_ggz_send_msg_info(ggzmod->fd, num, infos);
 }
 

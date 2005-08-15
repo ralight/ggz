@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules, GGZ side
- * $Id: io-ggz.c 7186 2005-05-07 16:45:13Z josef $
+ * $Id: io-ggz.c 7426 2005-08-15 09:03:04Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -51,6 +51,7 @@ static int _io_ggz_read_req_boot(GGZMod *ggzmod);
 static int _io_ggz_read_req_bot(GGZMod *ggzmod);
 static int _io_ggz_read_req_open(GGZMod *ggzmod);
 static int _io_ggz_read_req_chat(GGZMod *ggzmod);
+static int _io_ggz_read_req_info(GGZMod *ggzmod);
 
 /* Functions for sending IO messages */
 int _io_ggz_send_launch(int fd)
@@ -159,6 +160,26 @@ int _io_ggz_send_stats(int fd, int num_players, GGZStat *player_stats,
 	return 0;
 }
 
+int _io_ggz_send_msg_info(int fd, int num, GGZList *infos)
+{
+	GGZListEntry *entry;
+
+	if (ggz_write_int(fd, MSG_GAME_INFO) < 0
+	    || ggz_write_int(fd, num) < 0)
+		return -1;
+
+	for (entry = ggz_list_head(infos); entry; entry = ggz_list_next(entry)) {
+		GGZPlayerInfo *info = ggz_list_get_data(entry);
+		if (ggz_write_int(fd, info->num) < 0
+		    || ggz_write_string(fd, info->realname) < 0
+		    || ggz_write_string(fd, info->photo) < 0
+		    || ggz_write_string(fd, info->host) < 0)
+			return -1;
+	}
+
+	return 0;
+}
+
 
 /* Functions for reading messages */
 int _io_ggz_read_data(GGZMod *ggzmod)
@@ -184,6 +205,8 @@ int _io_ggz_read_data(GGZMod *ggzmod)
 			return _io_ggz_read_req_open(ggzmod);
 		case REQ_CHAT:
 			return _io_ggz_read_req_chat(ggzmod);
+		case REQ_INFO:
+			return _io_ggz_read_req_info(ggzmod);
 		}
 	}
 
@@ -258,6 +281,16 @@ static int _io_ggz_read_req_chat(GGZMod *ggzmod)
 		return -1;
 	_ggzmod_ggz_handle_chat_request(ggzmod, chat_msg);
 	ggz_free(chat_msg);
+	return 0;
+}
+
+static int _io_ggz_read_req_info(GGZMod *ggzmod)
+{
+	int seat_num;
+
+	if (ggz_read_int(ggzmod->fd, &seat_num) < 0)
+		return -1;
+	_ggzmod_ggz_handle_info_request(ggzmod, seat_num);
 	return 0;
 }
 

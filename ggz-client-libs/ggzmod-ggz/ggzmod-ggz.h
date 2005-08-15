@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 7186 2005-05-07 16:45:13Z josef $
+ * $Id: ggzmod-ggz.h 7426 2005-08-15 09:03:04Z josef $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -78,6 +78,13 @@ typedef struct {
 	const char *message;
 } GGZChat;
 
+typedef struct {
+	int num;
+	const char *realname;
+	const char *photo;
+	const char *host;
+} GGZPlayerInfo;
+
 typedef struct GGZMod GGZMod;
 
 typedef void (*GGZModHandler) (GGZMod * mod, GGZModEvent e, const void *data);
@@ -130,6 +137,10 @@ typedef enum {
 	/* Put a bot into an open seat
 	 * Data: seat number (int*)*/
 	GGZMOD_TRANSACTION_BOT,
+
+	/* Information about one or more players
+	 * Data: seat number (int*) */
+	GGZMOD_TRANSACTION_INFO,
 
 	/* A chat originating from the game client.
 	 * Data: message (const char*) */
@@ -202,5 +213,7 @@ int ggzmod_ggz_inform_chat(GGZMod * ggzmod, const char *player, const char *msg)
 
 int ggzmod_ggz_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
 		     GGZStat *spectator_stats);
+
+int ggzmod_ggz_set_info(GGZMod *ggzmod, int num, GGZList *infos);
 
 #endif /* __GGZMOD_GGZ_H__ */

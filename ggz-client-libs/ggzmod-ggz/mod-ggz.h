@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules, GGZ side
- * $Id: mod-ggz.h 7186 2005-05-07 16:45:13Z josef $
+ * $Id: mod-ggz.h 7426 2005-08-15 09:03:04Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -66,6 +66,7 @@ struct GGZMod {
 	int num_seats;
 	GGZList *seats;
 	GGZList *stats;
+	GGZList *infos;
 	int num_spectator_seats;
 	GGZList *spectator_seats;
 	GGZList *spectator_stats;
@@ -96,5 +97,6 @@ void _ggzmod_ggz_handle_boot_request(GGZMod *ggzmod, char *name);
 void _ggzmod_ggz_handle_bot_request(GGZMod *ggzmod, int seat_num);
 void _ggzmod_ggz_handle_open_request(GGZMod *ggzmod, int seat_num);
 void _ggzmod_ggz_handle_chat_request(GGZMod *ggzmod, char *chat_msg);
+void _ggzmod_ggz_handle_info_request(GGZMod *ggzmod, int seat_num);
 
 #endif /* __GGZ_MOD_GGZ_H__ */
