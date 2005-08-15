@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 7186 2005-05-07 16:45:13Z josef $
+ * $Id: game.c 7425 2005-08-15 09:01:50Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -129,6 +129,8 @@ static void _ggzcore_game_handle_seatchange(GGZMod * mod,
 					    GGZModTransaction t,
 					    const void *data);
 static void _ggzcore_game_handle_chat(GGZMod * mod, GGZModTransaction t,
+				      const void *data);
+static void _ggzcore_game_handle_info(GGZMod * mod, GGZModTransaction t,
 				      const void *data);
 
 
@@ -316,6 +318,9 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	ggzmod_ggz_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_CHAT,
 				       _ggzcore_game_handle_chat);
+	ggzmod_ggz_set_transaction_handler(game->client,
+				       GGZMOD_TRANSACTION_INFO,
+				       _ggzcore_game_handle_info);
 	ggzmod_ggz_set_player(game->client,
 			  _ggzcore_server_get_handle(server), 0, -1);
 
@@ -477,6 +482,16 @@ static void _ggzcore_game_handle_chat(GGZMod * mod, GGZModTransaction t,
 	_ggzcore_room_chat(room, GGZ_CHAT_TABLE, NULL, chat);
 }
 
+static void _ggzcore_game_handle_info(GGZMod * mod, GGZModTransaction t,
+				      const void *data)
+{
+	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
+	const int *seat_num = data;
+
+	_ggzcore_net_send_player_info(net, *seat_num);
+}
+
 void _ggzcore_game_free(struct _GGZGame *game)
 {
 	int i;
@@ -558,6 +573,11 @@ void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
 			      _ggzcore_server_get_handle(game->server),
 			      is_spectator, seat_num) < 0)
 		assert(0);
+}
+
+void _ggzcore_game_set_info(GGZGame * game, int num, GGZList *infos)
+{
+	ggzmod_ggz_set_info(game->client, num, infos);
 }
 
 void _ggzcore_game_inform_chat(GGZGame * game,

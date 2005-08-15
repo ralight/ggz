@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.h 6879 2005-01-24 07:28:38Z jdorje $
+ * $Id: game.h 7425 2005-08-15 09:01:50Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -51,6 +51,8 @@ int _ggzcore_game_is_spectator(GGZGame * game);
 int _ggzcore_game_get_seat_num(GGZGame * game);
 int _ggzcore_game_get_room_id(GGZGame * game);
 int _ggzcore_game_get_table_id(GGZGame * game);
+
+void _ggzcore_game_set_info(GGZGame * game, int num, GGZList *infos);
 
 /* Functions for attaching hooks to struct _GGZGame events */
 int _ggzcore_game_add_event_hook_full(struct _GGZGame *game,

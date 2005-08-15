@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 7402 2005-08-13 22:24:02Z josef $
+ * $Id: netxml.c 7425 2005-08-15 09:01:50Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -54,6 +54,7 @@
 #include "room.h"
 #include "state.h"
 #include "table.h"
+#include "game.h"
 #include "gametype.h"
 
 /* For convenience */
@@ -115,6 +116,17 @@ typedef struct {
 	char ***named_bots;
 } GGZGameData;
 
+/* Player information structure */
+typedef struct {
+	int num;
+	const char *realname;
+	const char *photo;
+	const char *host;
+} GGZPlayerInfo;
+typedef struct {
+	GGZList *infos;
+} GGZPlayerInfoData;
+
 /* Table data structure */
 typedef struct {
 	const char *desc;
@@ -152,6 +164,8 @@ static void _ggzcore_net_handle_seat(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_spectator_seat(GGZNet * net,
 					       GGZXMLElement * seat);
 static void _ggzcore_net_handle_chat(GGZNet *, GGZXMLElement *);
+static void _ggzcore_net_handle_info(GGZNet *, GGZXMLElement *);
+static void _ggzcore_net_handle_playerinfo(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_leave(GGZNet * net,
 				      GGZXMLElement * element);
 static void _ggzcore_net_handle_join(GGZNet * net,
@@ -188,6 +202,10 @@ static GGZTableData *_ggzcore_net_tabledata_new(void);
 static void _ggzcore_net_tabledata_free(GGZTableData *);
 static GGZTableSeat *_ggzcore_net_seat_copy(GGZTableSeat * orig);
 static void _ggzcore_net_seat_free(GGZTableSeat *);
+
+static GGZPlayerInfoData *_ggzcore_net_playerinfo_get_data(GGZXMLElement * game);
+static void _ggzcore_net_playerinfo_add_seat(GGZXMLElement *, int,
+				       const char *, const char *, const char *);
 
 /* Trigger network error event */
 static void _ggzcore_net_error(GGZNet * net, char *message);
@@ -540,6 +558,25 @@ int _ggzcore_net_send_chat(GGZNet * net, const GGZChatType type,
 
 	if (my_text) {
 		ggz_free(my_text);
+	}
+
+	return result;
+}
+
+
+int _ggzcore_net_send_player_info(GGZNet * net, int seat_num)
+{
+	int result;
+
+	ggz_debug(GGZCORE_DBG_NET, "Sending player info request");
+
+	if (seat_num == -1) {
+		result = _ggzcore_net_send_line(net,
+			"<INFO/>");
+	} else {
+		result = _ggzcore_net_send_line(net,
+			"<INFO SEAT='%d'/>",
+			seat_num);
 	}
 
 	return result;
@@ -918,6 +955,10 @@ static GGZXMLElement *_ggzcore_net_new_element(const char *tag,
 		process_func = _ggzcore_net_handle_join;
 	else if (strcasecmp(tag, "CHAT") == 0)
 		process_func = _ggzcore_net_handle_chat;
+	else if (strcasecmp(tag, "INFO") == 0)
+		process_func = _ggzcore_net_handle_info;
+	else if (strcasecmp(tag, "PLAYERINFO") == 0)
+		process_func = _ggzcore_net_handle_playerinfo;
 	else if (strcasecmp(tag, "DESC") == 0)
 		process_func = _ggzcore_net_handle_desc;
 	else if (strcasecmp(tag, "PASSWORD") == 0)
@@ -1599,6 +1640,27 @@ static GGZGameData *_ggzcore_net_game_get_data(GGZXMLElement * game)
 }
 
 
+static GGZPlayerInfoData *_ggzcore_net_playerinfo_get_data(GGZXMLElement * info)
+{
+	GGZPlayerInfoData *data = ggz_xmlelement_get_data(info);
+
+	/* If data doesn't already exist, create it */
+	if (!data) {
+		data = ggz_malloc(sizeof(GGZPlayerInfoData));
+		ggz_xmlelement_set_data(info, data);
+
+		data->infos = ggz_list_create(NULL,
+			/*(ggzEntryCreate)_ggzcore_net_seat_copy*/
+			NULL,
+			/*(ggzEntryDestroy)_ggzcore_net_seat_free*/
+			NULL,
+			GGZ_LIST_ALLOW_DUPS);
+	}
+
+	return data;
+}
+
+
 static void _ggzcore_net_game_set_protocol(GGZXMLElement * game,
 					   const char *engine,
 					   const char *version)
@@ -1651,6 +1713,21 @@ static void _ggzcore_net_game_add_bot(GGZXMLElement * game,
 	data->named_bots[size][0] = ggz_strdup(botname);
 	data->named_bots[size][1] = ggz_strdup(botclass);
 	data->named_bots[size + 1] = NULL;
+}
+
+
+static void _ggzcore_net_playerinfo_add_seat(GGZXMLElement * info, int num,
+	const char *realname, const char *photo, const char *host)
+{
+	GGZPlayerInfoData *data = _ggzcore_net_playerinfo_get_data(info);
+	GGZPlayerInfo *tmp = (GGZPlayerInfo*)ggz_malloc(sizeof(GGZPlayerInfo));
+
+	tmp->num = num;
+	tmp->realname = ggz_strdup(realname);
+	tmp->photo = ggz_strdup(photo);
+	tmp->host = ggz_strdup(host);
+
+	ggz_list_insert(data->infos, tmp);
 }
 
 
@@ -2204,6 +2281,42 @@ static void _ggzcore_net_handle_chat(GGZNet * net, GGZXMLElement * element)
 
 	room = ggzcore_server_get_cur_room(net->server);
 	_ggzcore_room_add_chat(room, type, from, msg);
+}
+
+
+/* Functions for <INFO> tag */
+static void _ggzcore_net_handle_info(GGZNet * net, GGZXMLElement * element)
+{
+	GGZPlayerInfoData *data = _ggzcore_net_playerinfo_get_data(element);
+
+	GGZGame *game = ggzcore_server_get_cur_game(net->server);
+	_ggzcore_game_set_info(game, ggz_list_count(data->infos), data->infos);
+}
+
+
+/* Functions for <PLAYERINFO> tag */
+static void _ggzcore_net_handle_playerinfo(GGZNet * net, GGZXMLElement * element)
+{
+	GGZXMLElement *parent;
+	const char *parent_tag;
+
+	if (!element)
+		return;
+
+	/* Get parent off top of stack */
+	parent = ggz_stack_top(net->stack);
+	if (!parent)
+		return;
+
+	parent_tag = ggz_xmlelement_get_tag(parent);
+	if (strcasecmp(parent_tag, "INFO") != 0)
+		return;
+
+	_ggzcore_net_playerinfo_add_seat(parent,
+				  str_to_int(ATTR(element, "SEAT"), -1),
+				  ATTR(element, "REALNAME"),
+				  ATTR(element, "PHOTO"),
+				  ATTR(element, "HOST"));
 }
 
 
