@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 7267 2005-06-10 11:59:51Z josef $
+ * $Id: io.c 7427 2005-08-15 09:04:07Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -51,6 +51,7 @@ static int _io_read_msg_seat(GGZMod *ggzmod);
 static int _io_read_msg_spectator_seat(GGZMod *ggzmod);
 static int _io_read_msg_chat(GGZMod *ggzmod);
 static int _io_read_stats(GGZMod *ggzmod);
+static int _io_read_info(GGZMod *ggzmod);
 
 /* Functions for sending IO messages */
 int _io_send_state(int fd, GGZModState state)
@@ -110,6 +111,14 @@ int _io_send_request_chat(int fd, const char *chat_msg)
 	return 0;
 }
 
+int _io_send_req_info(int fd, int seat_num)
+{
+	if (ggz_write_int(fd, REQ_INFO) < 0
+	    || ggz_write_int(fd, seat_num) < 0)
+		return -1;
+	return 0;
+}
+
 
 /* Functions for reading messages */
 int _io_read_data(GGZMod *ggzmod)
@@ -135,6 +144,8 @@ int _io_read_data(GGZMod *ggzmod)
 			return _io_read_msg_chat(ggzmod);
 		case MSG_GAME_STATS:
 			return _io_read_stats(ggzmod);
+		case MSG_GAME_INFO:
+			return _io_read_info(ggzmod);
 		}
 	}
 
@@ -288,3 +299,28 @@ static int _io_read_stats(GGZMod *ggzmod)
 	return 0;
 }
 
+static int _io_read_info(GGZMod *ggzmod)
+{
+	int i, num;
+	int seat_num;
+	char *realname, *photo, *host;
+
+	if (ggz_read_int(ggzmod->fd, &num) < 0)
+		return -1;
+
+	for (i = 0; i < num; i++) {
+		if (ggz_read_int(ggzmod->fd, &seat_num) < 0
+		    || ggz_read_string_alloc(ggzmod->fd, &realname) < 0
+		    || ggz_read_string_alloc(ggzmod->fd, &photo) < 0
+		    || ggz_read_string_alloc(ggzmod->fd, &host) < 0) {
+			return -1;
+		}
+	  
+		_ggzmod_handle_info(ggzmod, seat_num, realname, photo, host, 0);
+	}
+
+	if(num != 1) seat_num = -1;
+	_ggzmod_handle_info(ggzmod, seat_num, realname, photo, host, 1);
+
+	return 0;
+}

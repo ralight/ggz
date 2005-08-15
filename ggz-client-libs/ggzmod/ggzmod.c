@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7282 2005-06-18 07:13:21Z josef $
+ * $Id: ggzmod.c 7427 2005-08-15 09:04:07Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -93,6 +93,13 @@ static int stats_compare(const void *p, const void *q)
 	return s_p->number - s_q->number;
 }
 
+static int infos_compare(const void *p, const void *q)
+{
+	const GGZPlayerInfo *s_p = p, *s_q = q;
+
+	return s_p->num - s_q->num;
+}
+
 /*
  * How a game is launched (incomplete):
  *
@@ -170,6 +177,9 @@ GGZMod *ggzmod_new(GGZModType type)
 					GGZ_LIST_ALLOW_DUPS);
 	ggzmod->spectator_stats = ggz_list_create(stats_compare, NULL, NULL,
 						  GGZ_LIST_ALLOW_DUPS);
+
+	ggzmod->infos = ggz_list_create(infos_compare, NULL, NULL,
+					GGZ_LIST_REPLACE_DUPS);
 
 	/* GGZ-side only initialization code was here*/
 
@@ -562,6 +572,29 @@ void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
 	}
 }
 
+void _ggzmod_handle_info(GGZMod * ggzmod, int seat_num, const char *realname,
+			 const char *photo, const char *host, int finish)
+{
+	//GGZListEntry *entry;
+	GGZPlayerInfo info;
+
+	if(finish) {
+		if(seat_num == -1) {
+			call_handler(ggzmod, GGZMOD_EVENT_INFO, NULL);
+		} else {
+			call_handler(ggzmod, GGZMOD_EVENT_INFO, &info);
+		}
+		return;
+	}
+
+	info.num = seat_num;
+	info.realname = realname;
+	info.photo = photo;
+	info.host = host;
+	
+	ggz_list_insert(ggzmod->infos, &info);
+}
+
 
 /* 
  * GGZmod actions
@@ -928,3 +961,27 @@ int ggzmod_spectator_get_highscore(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *
 	*highscore = stat->highscore;
 	return 1;
 }
+
+int ggzmod_player_request_info(GGZMod *ggzmod, int seat_num)
+{
+	GGZSeat seat;
+	if(seat_num != -1) {
+		if(seat_num < -1) return 0;
+		if(seat_num >= ggzmod_get_num_seats(ggzmod)) return 0;
+		seat = ggzmod_get_seat(ggzmod, seat_num);
+		if(seat.type != GGZ_SEAT_PLAYER) return 0;
+	}
+	_io_send_req_info(ggzmod->fd, seat_num);
+	return 1;
+}
+
+GGZPlayerInfo* ggzmod_player_get_info(GGZMod *ggzmod, int seat)
+{
+	GGZPlayerInfo search_info = {.num = seat};
+	GGZListEntry *entry = ggz_list_search(ggzmod->infos, &search_info);
+	GGZPlayerInfo *info = ggz_list_get_data(entry);
+
+	if(!info) return NULL;
+	return info;
+}
+

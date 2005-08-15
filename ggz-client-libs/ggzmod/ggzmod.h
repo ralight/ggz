@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 7206 2005-05-21 10:15:34Z josef $
+ * $Id: ggzmod.h 7427 2005-08-15 09:04:07Z josef $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -195,7 +195,14 @@ typedef enum {
 	 *  GGZMod may attempt to recover from the error, but it is
 	 *  not guaranteed that the GGZ connection will continue to
 	 *  work after an error has happened. */
-	GGZMOD_EVENT_ERROR		
+	GGZMOD_EVENT_ERROR,
+
+	/** @brief Player information has arrived.
+	 *
+	 *  Information has been requested about one or more players and
+	 *  it has now arrived. The event data is a GGZPlayerInfo*
+	 *  structure or NULL if info about all players was requested. */
+	GGZMOD_EVENT_INFO
 } GGZModEvent;
 
 /** @brief The "type" of ggzmod.
@@ -232,6 +239,13 @@ typedef struct {
 	const char *player;
 	const char *message;    /**< Chat message (in UTF-8). */
 } GGZChat;
+
+typedef struct {
+	unsigned int num;	/**< Player's seat index */
+	const char *realname;	/**< Player's real name (NULL => not given). */
+	const char *photo;	/**< Photo URL (NULL => no photo). */
+	const char *host;	/**< Hostname or IP address (NULL for C/S games). */
+} GGZPlayerInfo;
 
 /** @brief A GGZmod object, used for tracking a ggz<->table connection.
  *
@@ -509,6 +523,25 @@ int ggzmod_spectator_get_ranking(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *ra
  *  @return TRUE if there is a highscore; FALSE if not or on error.
  */
 int ggzmod_spectator_get_highscore(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *highscore);
+
+
+/** @brief Request extended player information for one or more players
+ *
+ *  Depending on the seat parameter (-1 or valid number), this function
+ *  asynchronously requests information about player(s), which will arrive
+ *  with a GGZMOD_EVENT_INFO event.
+ *  @param ggzmod The ggzmod object.
+ *  @param seat_num The seat number to request info for, or -1 to select all.
+ *  @return TRUE if seat is -1 or valid number, FALSE for non-player seats.
+ */
+int ggzmod_player_request_info(GGZMod *ggzmod, int seat_num);
+
+/** @brief Get the extended information for the specified seat.
+ *  @param ggzmod The GGZMod object.
+ *  @param seat The seat number (0..(number of seats - 1)).
+ *  @return A valid GGZPlayerInfo structure, if seat is valid and has info.
+ */
+GGZPlayerInfo* ggzmod_player_get_info(GGZMod *ggzmod, int seat);
 
 #ifdef __cplusplus
 }
