@@ -39,10 +39,10 @@ int main(int argc, char **argv)
 		"Copyright (C) 2001, 2002 Josef Spillner\n"
 		"The MindX Open Source Project",
 		I18N_NOOP("ShadowBridge"),
-		"http://ggz.sourceforge.net",
-		"dr_maux@users.sourceforge.net");
+		"http://www.ggzgamingzone.org/",
+		"josef@ggzgamingzone.org");
 
-	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Author"), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
+	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Author"), "josef@ggzgamingzone.org");
 
 	KCmdLineArgs::init(argc, argv, aboutData);
 
