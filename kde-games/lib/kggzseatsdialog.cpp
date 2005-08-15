@@ -14,6 +14,8 @@
 #include <kcombobox.h>
 #include <kio/job.h>
 
+#include <math.h>
+
 static KGGZSeatsDialog *obj = NULL;
 
 KGGZSeatsDialog::KGGZSeatsDialog(QWidget *parent, const char *name)
