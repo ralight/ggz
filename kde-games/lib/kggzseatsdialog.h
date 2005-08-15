@@ -45,6 +45,7 @@ class KGGZSeatsDialog : public QWidget
 		};
 
 		void displaySeats();
+		void displaySpectators();
 		void infos();
 		static void handle_info(GGZMod *mod, GGZModEvent e, const void *data);
 };

@@ -34,8 +34,8 @@ KGGZSeatsDialog::KGGZSeatsDialog(QWidget *parent, const char *name)
 	QLabel *label = new QLabel(i18n("Display:"), this);
 
 	KComboBox *combo = new KComboBox(this);
-	combo->insertItem(i18n("Involved players and bots"));
-	combo->insertItem(i18n("Spectators"));
+	combo->insertItem(i18n("Involved players and bots"), displayseats);
+	combo->insertItem(i18n("Spectators"), displayspectators);
 
 	QPushButton *ok = new QPushButton(i18n("Close"), this);
 
@@ -53,7 +53,7 @@ KGGZSeatsDialog::KGGZSeatsDialog(QWidget *parent, const char *name)
 	connect(ok, SIGNAL(clicked()), SLOT(close()));
 
 	setCaption(i18n("Players, Bots and Spectators"));
-//	show();
+	show();
 }
 
 KGGZSeatsDialog::~KGGZSeatsDialog()
@@ -72,7 +72,6 @@ void KGGZSeatsDialog::setMod(GGZMod *mod)
 
 void KGGZSeatsDialog::displaySeats()
 {
-kdDebug() << "DISPLAY!" << endl;
 	int count = ggzmod_get_num_seats(m_mod);
 	int digits = (int)(log(count) / log(10) + 1);
 
@@ -172,12 +171,69 @@ kdDebug() << "DISPLAY!" << endl;
 
 	vboxmain->addStretch(1);
 
-	show();
+	m_root->show();
+
+	infos();
+}
+
+void KGGZSeatsDialog::displaySpectators()
+{
+	int count = ggzmod_get_num_spectator_seats(m_mod);
+	int digits = (int)(log(count) / log(10) + 1);
+
+	if(m_root)
+	{
+		m_view->removeChild(m_root);
+		delete m_root;
+	}
+	m_root = new QWidget(m_view->viewport());
+	m_view->addChild(m_root);
+	QVBoxLayout *vboxmain = new QVBoxLayout(m_root);
+
+	for(int i = 0; i < count; i++)
+	{
+		GGZSpectatorSeat seat = ggzmod_get_spectator_seat(m_mod, i);
+
+		QFrame *w = new QFrame(m_root);
+		w->setFrameStyle(QFrame::Panel | QFrame::Raised);
+		vboxmain->add(w);
+
+		QLCDNumber *numberframe = new QLCDNumber(w);
+		numberframe->setNumDigits(digits);
+		numberframe->display(i + 1);
+
+		QString type = i18n("Spectator");
+		QLabel *typelabel = new QLabel(i18n("Type: %1").arg(type), w);
+
+		QString name = seat.name;
+	       	if(name.isNull()) name = i18n("(unnamed)");
+		QLabel *namelabel = new QLabel("<b><i>" + name + "</i></b>", w);
+		namelabel->setBackgroundColor(QColor(255, 255, 255));
+		namelabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+		namelabel->setMinimumWidth(150);
+
+		QVBoxLayout *box = new QVBoxLayout(w, 5);
+		QHBoxLayout *box2 = new QHBoxLayout(box);
+		box2->addSpacing(5);
+		QVBoxLayout *box5 = new QVBoxLayout(box2);
+		box5->add(numberframe);
+		box5->addStretch(1);
+		box2->addSpacing(5);
+		QVBoxLayout *box3 = new QVBoxLayout(box2);
+		box3->add(namelabel);
+		box3->addSpacing(5);
+		box3->add(typelabel);
+		box3->addStretch(1);
+		box2->addStretch(1);
+	}
+
+	vboxmain->addStretch(1);
+
+	m_root->show();
 }
 
 void KGGZSeatsDialog::handle_info(GGZMod *mod, GGZModEvent e, const void *data)
 {
-kdDebug() << "INFO IS HERE!" << endl;
 	obj->infos();
 }
 
@@ -217,7 +273,8 @@ void KGGZSeatsDialog::infos()
 
 void KGGZSeatsDialog::slotDisplay(int id)
 {
-	displaySeats();
+	if(id == displayseats) displaySeats();
+	else if(id == displayspectators) displaySpectators();
 }
 
 void KGGZSeatsDialog::slotTaskData(KIO::Job *job, const QByteArray& data)
