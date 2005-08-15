@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.h 7402 2005-08-13 22:24:02Z josef $
+ * $Id: gametype.h 7431 2005-08-15 09:50:01Z josef $
  *
  * This file contains functions for handling game types.
  *
@@ -45,6 +45,7 @@ void _ggzcore_gametype_init(GGZGameType *gametype,
 			    const GGZNumberList player_allow_list,
 			    const GGZNumberList bot_allow_list,
 			    unsigned int spectators_allowed,
+			    unsigned int peers_allowed,
 			    const char* desc,
 			    const char* author, 
 			    const char *url);

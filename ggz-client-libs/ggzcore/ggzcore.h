@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 7402 2005-08-13 22:24:02Z josef $
+ * $Id: ggzcore.h 7431 2005-08-15 09:50:01Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -1276,6 +1276,9 @@ int ggzcore_gametype_num_bots_is_valid(const GGZGameType *type,
 int ggzcore_gametype_get_num_namedbots(const GGZGameType *type);
 const char* ggzcore_gametype_get_namedbot_name(const GGZGameType *type, unsigned int num);
 const char* ggzcore_gametype_get_namedbot_class(const GGZGameType *type, unsigned int num);
+
+/** @brief Return TRUE iff this game may disclose the player's hostname. */
+int ggzcore_gametype_get_peers_allowed(const GGZGameType *type);
 
 
 /* Group of configuration functions */

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 7425 2005-08-15 09:01:50Z josef $
+ * $Id: netxml.c 7431 2005-08-15 09:50:01Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -110,6 +110,7 @@ typedef struct {
 	GGZNumberList player_allow_list;
 	GGZNumberList bot_allow_list;
 	int spectators_allow;
+	int peers_allow;
 	const char *desc;
 	const char *author;
 	const char *url;
@@ -181,7 +182,7 @@ static void _ggzcore_net_game_set_protocol(GGZXMLElement * game,
 					   const char *version);
 static void _ggzcore_net_game_set_allowed(GGZXMLElement *,
 					  GGZNumberList, GGZNumberList,
-					  int);
+					  int, int);
 static void _ggzcore_net_game_set_info(GGZXMLElement *, const char *,
 				       const char *);
 static void _ggzcore_net_game_add_bot(GGZXMLElement *, const char *,
@@ -1546,6 +1547,7 @@ static void _ggzcore_net_handle_game(GGZNet * net, GGZXMLElement * element)
 	GGZNumberList player_allow_list = ggz_numberlist_new();
 	GGZNumberList bot_allow_list = ggz_numberlist_new();
 	int spectators_allow = 0;
+	int peers_allow = 0;
 	const char *desc = NULL;
 	const char *author = NULL;
 	const char *url = NULL;
@@ -1566,6 +1568,7 @@ static void _ggzcore_net_handle_game(GGZNet * net, GGZXMLElement * element)
 		player_allow_list = data->player_allow_list;
 		bot_allow_list = data->bot_allow_list;
 		spectators_allow = data->spectators_allow;
+		peers_allow = data->peers_allow;
 		desc = data->desc;
 		author = data->author;
 		url = data->url;
@@ -1575,7 +1578,8 @@ static void _ggzcore_net_handle_game(GGZNet * net, GGZXMLElement * element)
 	_ggzcore_gametype_init(type, id, name, version, prot_engine,
 			       prot_version,
 			       player_allow_list, bot_allow_list,
-			       spectators_allow, desc, author, url);
+			       spectators_allow, peers_allow,
+			       desc, author, url);
 
 	if (data->named_bots) {
 		for (i = 0; data->named_bots[i]; i++) {
@@ -1677,13 +1681,15 @@ static void _ggzcore_net_game_set_protocol(GGZXMLElement * game,
 static void _ggzcore_net_game_set_allowed(GGZXMLElement * game,
 					  GGZNumberList players,
 					  GGZNumberList bots,
-					  int spectators)
+					  int spectators,
+					  int peers)
 {
 	GGZGameData *data = _ggzcore_net_game_get_data(game);
 
 	data->player_allow_list = players;
 	data->bot_allow_list = bots;
 	data->spectators_allow = spectators;
+	data->peers_allow = peers;
 }
 
 
@@ -1772,7 +1778,7 @@ static void _ggzcore_net_handle_allow(GGZNet * net,
 	GGZXMLElement *parent;
 	const char *parent_tag;
 	GGZNumberList players, bots;
-	int spectators;
+	int spectators, peers;
 
 	if (!element)
 		return;
@@ -1789,8 +1795,9 @@ static void _ggzcore_net_handle_allow(GGZNet * net,
 	players = ggz_numberlist_read(ATTR(element, "PLAYERS"));
 	bots = ggz_numberlist_read(ATTR(element, "BOTS"));
 	spectators = str_to_bool(ATTR(element, "SPECTATORS"), 0);
+	peers = str_to_bool(ATTR(element, "PEERS"), 0);
 
-	_ggzcore_net_game_set_allowed(parent, players, bots, spectators);
+	_ggzcore_net_game_set_allowed(parent, players, bots, spectators, peers);
 }
 
 

@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.c 7403 2005-08-14 07:09:44Z josef $
+ * $Id: gametype.c 7431 2005-08-15 09:50:01Z josef $
  *
  * This file contains functions for hadiling game types.
  *
@@ -74,6 +74,9 @@ struct _GGZGameType {
 
 	/* Array of named bots, in name-class pairs */
 	char ***named_bots;
+
+	/* Whether peer hostname disclosure is allowed or not */
+	unsigned int peers_allowed;
 };
 
 
@@ -102,6 +105,7 @@ void _ggzcore_gametype_init(GGZGameType *gametype,
 			    const GGZNumberList player_allow_list,
 			    const GGZNumberList bot_allow_list,
 			    const unsigned int spectators_allowed,
+			    const unsigned int peers_allowed,
 			    const char* desc,
 			    const char* author,
 			    const char *url)
@@ -110,6 +114,7 @@ void _ggzcore_gametype_init(GGZGameType *gametype,
 	gametype->player_allow_list = player_allow_list;
 	gametype->bot_allow_list = bot_allow_list;
 	gametype->spectators_allowed = spectators_allowed;
+	gametype->peers_allowed = peers_allowed;
 	
 	gametype->name = ggz_strdup(name);
 	gametype->version = ggz_strdup(version);
@@ -238,6 +243,12 @@ static unsigned int _ggzcore_gametype_get_spectators_allowed(const GGZGameType
 	return type->spectators_allowed;
 }
 
+
+static unsigned int _ggzcore_gametype_get_peers_allowed(const GGZGameType *type)
+{
+	return type->peers_allowed;
+}
+
 /* Verify that a paticular number of players/bots is valid */
 static int _ggzcore_gametype_num_players_is_valid(const GGZGameType *type,
 						  unsigned int num)
@@ -272,7 +283,7 @@ void* _ggzcore_gametype_create(void* p)
 	_ggzcore_gametype_init(new, src->id, src->name, src->version,
 			       src->prot_engine, src->prot_version,
 			       src->player_allow_list, src->bot_allow_list,
-			       src->spectators_allowed,
+			       src->spectators_allowed, src->peers_allowed,
 			       src->desc, src->author, src->url);
 	
 	return new;
@@ -403,6 +414,15 @@ int ggzcore_gametype_get_spectators_allowed(const GGZGameType *type)
 		return 0;
 
 	return _ggzcore_gametype_get_spectators_allowed(type);
+}
+
+
+int ggzcore_gametype_get_peers_allowed(const GGZGameType *type)
+{
+	if (!type)
+		return 0;
+
+	return _ggzcore_gametype_get_peers_allowed(type);
 }
 
 
