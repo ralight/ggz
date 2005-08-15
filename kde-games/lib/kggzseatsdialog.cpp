@@ -1,4 +1,4 @@
-#include "kpfgallery.h"
+#include "kggzseatsdialog.h"
 
 #include <qlayout.h>
 #include <qframe.h>
@@ -184,11 +184,7 @@ void KGGZSeatsDialog::infos()
 	int count = ggzmod_get_num_seats(m_mod);
 	for(int i = 0; i < count; i++)
 	{
-//		GGZPlayerInfo *info = ggzmod_player_get_info(m_mod, i);
-GGZPlayerInfo *info = (GGZPlayerInfo*)ggz_malloc(sizeof(GGZPlayerInfo));
-info->host = "foo";
-info->realname = "bar";
-info->photo = "http://www.ggzgamingzone.org/~josef/cestmoi2.png";
+		GGZPlayerInfo *info = ggzmod_player_get_info(m_mod, i);
 		if(info)
 		{
 			if(info->host)
@@ -224,12 +220,11 @@ void KGGZSeatsDialog::slotDisplay(int id)
 
 void KGGZSeatsDialog::slotTaskData(KIO::Job *job, const QByteArray& data)
 {
-kdDebug() << "TRANSFER(data)" << endl;
 	QByteArray data2 = m_photodata[job];
 	int origsize = data2.size();
 
 	data2.resize(data2.size() + data.size());
-	for(int i = 0; i < data.size(); i++)
+	for(unsigned int i = 0; i < data.size(); i++)
 	{
 		data2[origsize + i] = data[i];
 	}
@@ -238,7 +233,6 @@ kdDebug() << "TRANSFER(data)" << endl;
 
 void KGGZSeatsDialog::slotTaskResult(KIO::Job *job)
 {
-kdDebug() << "TRANSFER(result)" << endl;
 	if(!job->error())
 	{
 		int i = m_phototasks[job];
