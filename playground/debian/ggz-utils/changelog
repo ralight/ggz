@@ -1,0 +1,66 @@
+ggz-utils (0.0.11-1) unstable; urgency=low
+
+  * New upstream version.
+  * Many changes to the packaging to ease maintenance.
+  * Updated URLs and other reflections on current upstream goals.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sat, 20 Aug 2005 12:49:35 +0200
+
+ggz-utils (0.0.7-2.1) unstable; urgency=low
+
+  * NMU.
+  * Add dependency on libgnutls11-dev to block linking against older
+    gnutls. Closes: #264749.
+
+ -- Matthias Urlichs <smurf@debian.org>  Mon, 27 Sep 2004 05:29:19 +0200
+
+ggz-utils (0.0.7-2) unstable; urgency=low
+
+  * Fix typo in Build-Depends:, ggz-utils is a GNOME application not a
+    GNOME2 application,
+  Closes: #231258
+
+ -- Stephen Zander <gibreel@debian.org>  Wed, 11 Feb 2004 20:48:42 -0800
+
+ggz-utils (0.0.7-1) unstable; urgency=low
+
+  * New upstream release,
+  Closes: #199453
+
+ -- Stephen Zander <gibreel@debian.org>  Mon, 01 Dec 2003 00:00:00 +0000
+
+ggz-utils (0.0.6-2) unstable; urgency=low
+
+  * Fix incorrect use of char because getopt_long returns int,
+  Closes: #169449
+
+ -- Stephen Zander <gibreel@debian.org>  Fri, 25 Apr 2003 02:50:32 -0700
+
+ggz-utils (0.0.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Stephen Zander <gibreel@debian.org>  Tue,  5 Nov 2002 23:24:13 -0800
+
+ggz-utils (0.0.5.0-1) unstable; urgency=low
+
+  * Official Debian package.  Appended .0 to the version to have this
+    package be prefered to upstream's unofficial packages,
+  Closes: #164544
+
+ -- Stephen Zander <gibreel@debian.org>  Wed, 16 Oct 2002 19:29:59 -0700
+
+ggz-utils (0.0.5-1) unstable; urgency=low
+
+  * New GGZ release
+  * The utils package has been cleaned up.
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Sun,  7 Apr 2002 12:40:15 +0200
+
+ggz-utils (0.0.4-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Tue, 29 May 2001 00:22:36 +0200
+
+

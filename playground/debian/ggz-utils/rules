@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+# debian/rules file for ggz-utils
+
+RULES_CONFIGURE := --disable-debug
+# --disable-ggzcomm
+# (for 0.0.11 only)
+
+include debian/rules.common.mk
+

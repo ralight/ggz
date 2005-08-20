@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+# debian/rules file for ggz-grubby
+
+RULES_CONFIGURE :=
+
+include debian/rules.common.mk
+
