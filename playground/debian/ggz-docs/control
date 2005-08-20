@@ -1,0 +1,25 @@
+Source: ggz-docs
+Section: doc
+Priority: optional
+Maintainer: Josef Spillner <josef@ggzgamingzone.org>
+Standards-Version: 3.6.2.1
+Build-Depends-Indep: autotools-dev, debhelper (>> 4.8), texinfo, tetex-bin, texi2html, lynx, docbook-dsssl, sgml2x
+
+Package: ggz-docs
+Architecture: all
+Description: GGZ Gaming Zone: documentation
+ Contains documentation for developers, users and administrators
+ of GGZ software. Included are the formal protocol specifications
+ used by the infrastructure and those of some games, a server
+ hosting guide, a game development guide, feature matrices,
+ technical overview documentation about the server, its database
+ and the metaserver, and finally some presentation slides of
+ already given talks about GGZ.
+ .
+ The documentation comes in different formats, such as HTML,
+ PDF, PostScript and plain text files.
+ .
+ This package is part of the GGZ Gaming Zone, a multiuser
+ networked gaming environment.
+ More information can be found at the GGZ web site
+ http://www.ggzgamingzone.org/
