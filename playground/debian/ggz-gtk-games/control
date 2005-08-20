@@ -1,0 +1,51 @@
+Source: ggz-gtk-games
+Section: games
+Priority: optional
+Maintainer: Josef Spillner <josef@ggzgamingzone.org>
+Standards-Version: 3.6.2.1
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>> 0.0.11), libggzmod-dev (>> 0.0.11), ggzcore-bin (>> 0.0.11), gettext, libgtk2.0-dev
+
+Package: ggz-gtk-games
+Architecture: any
+Depends: ${shlibs:Depends}, ggz-gtk-game-data (= ${Source-Version})
+Recommends: ggz-gtk-client | ggz-core-client
+Description: GGZ Gaming Zone: game clients collection for Gtk+
+ GGZ games are games that can be played online against other people
+ while all having some features in common, like table chat, seats
+ configuration, bot players, game spectators, savegames, statistics
+ and others. Some games also work in single-player mode.
+ .
+ This package provides the complete collection of GGZ game frontends
+ that make use of the Gtk+ toolkit. It includes:
+  * Chess
+  * Chinese Checkers
+  * Combat
+  * Connect-the-Dots
+  * GGZCards (engine for La Pocha, Hearts, Bridge, FortyTwo etc.)
+  * Hastings1066
+  * Reversi
+  * Spades
+  * TicTacToe
+ and much more!
+ .
+ This package is part of the GGZ Gaming Zone, a multiuser
+ networked gaming environment.
+ More information can be found at the GGZ web site
+ http://www.ggzgamingzone.org/
+
+Package: ggz-gtk-game-data
+Architecture: all
+Depends: ggz-gtk-games (= ${Source-Version})
+Description: GGZ Gaming Zone: multimedia data for game clients for Gtk+
+ GGZ games are games that can be played online against other people
+ while all having some features in common, like table chat, seats
+ configuration, bot players, game spectators, savegames, statistics
+ and others. Some games also work in single-player mode.
+ .
+ This package provides the data files for the complete collection
+ of GGZ game frontends that make use of the Gtk+ toolkit.
+ .
+ This package is part of the GGZ Gaming Zone, a multiuser
+ networked gaming environment.
+ More information can be found at the GGZ web site
+ http://www.ggzgamingzone.org/

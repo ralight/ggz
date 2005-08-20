@@ -1,0 +1,15 @@
+This is the Debian GNU/Linux prepackaged version of ggz-gtk-games,
+a collection of GGZ games based of the Gtk toolkit.
+
+This software was first packaged for Debian by Stephen Zander
+<gibreel@debian.org> Sat, 31 Aug 2002 10:40:00 -0700 using upstream
+sources obtained from http://ggz.sourceforge.net/.
+
+Copyright:
+    The GGZ Gaming Zone
+    Copyright (C) 1999-2005  The GGZ Gaming Zone Development Team
+
+Contact the upstream authors at <ggz-dev@mail.ggzgamingzone.org>
+
+ggz-gtk-games is licenced under the GNU Public Licence.  See
+/usr/share/common-licenses/GPL for details.

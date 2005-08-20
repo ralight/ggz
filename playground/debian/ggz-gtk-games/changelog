@@ -1,0 +1,70 @@
+ggz-gtk-games (0.0.11-1) unstable; urgency=low
+
+  * New upstream version.
+  * Many changes to the packaging to ease maintenance.
+  * Updated URLs and other reflections on current upstream goals.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sat, 20 Aug 2005 19:04:29 +0200
+
+ggz-gtk-games (0.0.7-2) unstable; urgency=low
+
+  * Split the architecture independent files into their own package to
+    lower the archive space this package consumes,
+  Closes: #233357
+
+ -- Stephen Zander <gibreel@debian.org>  Wed, 18 Feb 2004 08:13:37 -0800
+
+ggz-gtk-games (0.0.7-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Stephen Zander <gibreel@debian.org>  Mon, 01 Dec 2003 00:00:00 +0000
+
+ggz-gtk-games (0.0.6-3) unstable; urgency=low
+
+  * Update the minimum acceptable version of libggzcore-utils that we
+    depend on to prevent people from upgrading & breaking things,
+  Closes: #184263
+
+ -- Stephen Zander <gibreel@debian.org>  Thu, 20 Mar 2003 01:16:29 -0800
+
+ggz-gtk-games (0.0.6-2) unstable; urgency=low
+
+  * Finish replacing ggzexecmoddir with gzzlibdir in the module.dsc files,
+  Closes: #168027
+  * Remove older files from .diff.gz that are no longer in the upstream
+    release,
+  Closes: #168044
+
+ -- Stephen Zander <gibreel@debian.org>  Wed,  6 Nov 2002 22:33:45 -0800
+
+ggz-gtk-games (0.0.6-1) unstable; urgency=low
+
+  * New upstream release.
+  * Remove implicit assumptions about signed nature of char,
+  Closes: #164169
+
+ -- Stephen Zander <gibreel@debian.org>  Thu, 31 Oct 2002 00:33:31 -0800
+
+ggz-gtk-games (0.0.5.0-1) unstable; urgency=low
+
+  * Official Debian package.  Appended .0 to the version to have this
+    package be prefered to upstream's unofficial packages,
+  Closes: #146560
+
+ -- Stephen Zander <gibreel@debian.org>  Sat, 31 Aug 2002 10:40:00 -0700
+
+ggz-gtk-games (0.0.5-1) unstable; urgency=low
+
+  * New release of GGZ
+  * Contains new game client: GGZCards
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Sun,  7 Apr 2002 11:33:05 +0200
+
+ggz-gtk-games (0.0.4-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Tue, 29 May 2001 20:43:30 +0200
+
+
