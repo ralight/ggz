@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+#for i in /etc/ggz/clients/sdl-*; do \
+#    echo register $i; \
+#    ggz-config --install --modfile=$i --force; \
+#done
+
+#DEBHELPER#
+
+exit 0

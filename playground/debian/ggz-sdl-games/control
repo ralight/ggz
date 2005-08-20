@@ -1,32 +1,25 @@
-Source: ggz-kde-games
+Source: ggz-sdl-games
 Section: games
 Priority: optional
 Maintainer: Josef Spillner <josef@ggzgamingzone.org>
 Standards-Version: 3.6.2.1
-Build-Depends: autotools-dev, debhelper (>> 4.8), libggzmod-dev (>= 0.0.11), ggzcore-bin (>> 0.0.11), kdelibs4-dev, libqt3-mt-dev, gettext
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggzmod-dev (>= 0.0.11), ggzcore-bin (>> 0.0.11), gettext, libsdl1.2-dev, libsdl-image1.2-dev, libsdl-ttf2.0-dev
 
-Package: ggz-kde-games
+Package: ggz-sdl-games
 Architecture: any
 Section: games
-Depends: ${shlibs:Depends}, ggz-kde-game-data (= ${Source-Version})
-Recommends: ggz-kde-client | ggz-core-client
-Description: GGZ Gaming Zone: game clients collection for KDE
+Depends: ${shlibs:Depends}, ggz-sdl-game-data (= ${Source-Version})
+Recommends: ggz-core-client
+Description: GGZ Gaming Zone: game clients collection for SDL
  GGZ games are games that can be played online against other people
  while all having some features in common, like table chat, seats
  configuration, bot players, game spectators, savegames, statistics
  and others. Some games also work in single-player mode.
  .
- This package provides a complete collection of GGZ game frontends
- that make use of the KDE/Qt3 toolkit. It includes:
-  * Connect-the-Dots
-  * Koenig (chess game)
-  * Krosswater
-  * Muehle (Nine Men's Morris)
-  * Reversi
-  * TicTacToe
-  * Fyrdman (Hastings1066)
-  * KCC (Chinese Checkers)
-  * Keepalive (role-playing game)
+ This package provides games which have been developed using
+ the SDL toolkit. It includes:
+  * Geekgame
+  * Tic-Tac-Toe 3D (needs OpenGL)
  and much more!
  .
  This package is part of the GGZ Gaming Zone, a multiuser
@@ -34,18 +27,18 @@ Description: GGZ Gaming Zone: game clients collection for KDE
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org
 
-Package: ggz-kde-game-data
+Package: ggz-sdl-game-data
 Architecture: all
 Section: games
-Depends: ggz-kde-games (= ${Source-Version})
-Description: GGZ Gaming Zone: game clients collection for KDE
+Depends: ggz-sdl-games (= ${Source-Version})
+Description: GGZ Gaming Zone: game clients collection for SDL
  GGZ games are games that can be played online against other people
  while all having some features in common, like table chat, seats
  configuration, bot players, game spectators, savegames, statistics
  and others. Some games also work in single-player mode.
  .
  This package provides the data files for the complete collection
- of GGZ game frontends that make use of the KDE/Qt3 toolkit.
+ of GGZ game frontends that make use of the SDL toolkit.
  .
  This package is part of the GGZ Gaming Zone, a multiuser
  networked gaming environment.

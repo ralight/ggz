@@ -1,0 +1,7 @@
+ggz-sdl-games (0.0.11-1) unstable; urgency=low
+
+  * New debian package: SDL games for the GGZ Gaming Zone.
+  * New upstream release.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sat, 20 Aug 2005 20:26:01 +0200
+

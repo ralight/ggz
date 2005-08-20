@@ -1,0 +1,8 @@
+ggz-python (0.0.11-1) unstable; urgency=low
+
+  * New debian package: SDL/python games, game servers, wrappers and a
+    core client for the GGZ Gaming Zone.
+  * New upstream release.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sat, 20 Aug 2005 20:41:05 +0200
+

@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-# debian/rules file for ggz-kde-client
+# debian/rules file for ggz-kde-games
 
 RULES_CONFIGURE := --disable-rpath
 
