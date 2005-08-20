@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-lib_LIBRARIES = libggzdb.a
+noinst_LIBRARIES = libggzdb.a
 libggzdb_a_SOURCES = \
 	ggzdb.c \
 	ggzdb.h \
