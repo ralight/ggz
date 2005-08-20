@@ -1,0 +1,39 @@
+Source: libggz
+Section: libs
+Priority: optional
+Maintainer: Josef Spillner <josef@ggzgamingzone.org>
+Standards-Version: 3.6.2.1
+Build-Depends: autotools-dev, debhelper (>> 4.8), libgnutls11-dev
+
+Package: libggz2
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: GGZ Gaming Zone: common utilities library
+ The libggz library handles network, configuration file and
+ data structure management functions as well as several convenience
+ wrappers around glibc functions.
+ .
+ This package provides the runtime library of base functions
+ common to several GGZ clients and servers.
+ .
+ This package is part of the GGZ Gaming Zone, a multiuser
+ networked gaming environment.
+ More information can be found at the GGZ web site
+ http://www.ggzgamingzone.org/
+
+Package: libggz-dev
+Architecture: any
+Section: libdevel
+Depends: libggz2 (= ${Source-Version}), libgnutls11-dev
+Description: GGZ Gaming Zone: common utilities library - development files
+ The libggz library handles network, configuration file and
+ data structure management functions as well as several convenience
+ wrappers around glibc functions.
+ .
+ This package provides the header files and static libraries
+ needed for development with libggz in the C programming language.
+ .
+ This package is part of the GGZ Gaming Zone, a multiuser
+ networked gaming environment.
+ More information can be found at the GGZ web site
+ http://www.ggzgamingzone.org/

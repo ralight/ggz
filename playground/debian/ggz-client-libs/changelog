@@ -1,0 +1,77 @@
+ggz-client-libs (0.0.11-1) unstable; urgency=low
+
+  * New upstream version.
+  * Many changes to the packaging to easy maintenance.
+  * Updated URLs and other reflections on current upstream goals.
+  * No longer depends on popt.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sat, 20 Aug 2005 10:05:04 +0200
+
+ggz-client-libs (0.0.7-1.1) unstable; urgency=low
+
+  * NMU.
+  * Depend on libggz-dev 0.0.7-1.1 in order to pick up its dependency on
+    gcrypt11. Closes: #264759.
+
+ -- Matthias Urlichs <smurf@debian.org>  Sun, 26 Sep 2004 13:39:13 +0200
+
+ggz-client-libs (0.0.7-1) unstable; urgency=low
+
+  * New upstream release
+  * The libggzcore2 package has been renamed libggzcore3 due to a SONAME
+    bump upstream.
+  * Remove the Build-Conflict: on libggzmod-dev, libtool seems to be
+    behaving
+
+ -- Stephen Zander <gibreel@debian.org>  Mon, 01 Dec 2003 00:00:00 +0000
+
+ggz-client-libs (0.0.6-2) unstable; urgency=low
+
+  * Fix missing Depends on libggzmod-dev in libggzcore-dev,
+  Closes: #168028, #168040
+
+ -- Stephen Zander <gibreel@debian.org>  Mon, 11 Nov 2002 12:48:40 -0800
+
+ggz-client-libs (0.0.6-1) unstable; urgency=low
+
+  * New upstream release.
+  * The libggzcore1 package has been renamed libggzcore2 due to a SONAME
+    bump upstream.
+  * The libggzmod0 package has been renamed libggzmod1 due to a SONAME
+    bump upstream.
+  * Add a Build-Conflicts: against libggzmod-dev to prevent libtool from
+    borking libggzcore.so by linking against an earlier version of
+    libggzmod.so.  Good thing this package gets built in a chroot.
+  * Create a dummy /etc/ggz/ggz.modules when installing libggzcore-utils and
+    remove it when the package is purged,
+  Closes: #163578
+
+ -- Stephen Zander <gibreel@debian.org>  Wed, 30 Oct 2002 19:38:38 -0800
+
+ggz-client-libs (0.0.5.0-1) unstable; urgency=low
+
+  * Official Debian package.  Appended .0 to the version to have this
+    package be prefered to upstream's unofficial packages,
+  Closes: #146558
+
+ -- Stephen Zander <gibreel@debian.org>  Sat, 31 Aug 2002 10:40:00 -0700
+
+ggz-client-libs (0.0.5-2) unstable; urgency=low
+
+  * Maintainance build: fix buffer overflow in ggzcore
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Mon,  6 May 2002 09:22:52 +0200
+
+ggz-client-libs (0.0.5-1) unstable; urgency=low
+
+  * New version of GGZ client libraries
+  * Does now contain ggzmod library
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Sat,  6 Apr 2002 21:44:18 +0200
+
+ggz-client-libs (0.0.4-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Tue, 22 May 2001 23:28:10 +0200
+

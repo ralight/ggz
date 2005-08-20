@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+# debian/rules file for libggz
+
+RULES_CONFIGURE := --with-tls --with-gcrypt --disable-debug
+
+include debian/rules.common.mk
+

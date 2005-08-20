@@ -1,0 +1,5 @@
+debian/tmp/usr/include/ggzmod.h
+debian/tmp/usr/lib/libggzmod.a
+debian/tmp/usr/lib/libggzmod.la
+debian/tmp/usr/lib/libggzmod.so
+debian/tmp/usr/share/man/man3/ggzmod_h.3

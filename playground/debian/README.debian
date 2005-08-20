@@ -1,0 +1,17 @@
+As the GGZ packages in Debian (and its derivates)
+are horribly outdated, this is an attempt to bring
+them up to date.
+
+They're currently be built with GGZ 0.0.11, but
+shall use GGZ 0.0.12(pre) before being used anywhere
+due to the easier packaging routines.
+
+Open questions:
+---------------
+* should ggzmod-dev build-depend on ggzcore-bin?
+* should ggzcore-bin really not be named libggzcore-bin?
+* how to package ggzmod++ and ggzdmod++?
+* concept of using rules.common.mk
+* always install all documentation for all packages?
+* replacement policies for library packages?
+
