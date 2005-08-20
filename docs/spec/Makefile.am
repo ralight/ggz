@@ -3,7 +3,7 @@ SUBDIRS = serverspec clientspec
 SGML_FILES = appendix.sgml design.sgml overview.sgml client-server.sgml \
 		modules.sgml requirements.sgml
 
-EXTRA_DIST = $(SGML_FILES) design.dsl design-txt.dsl
+EXTRA_DIST = $(SGML_FILES) design.dsl design-txt.dsl server_arch.fig
 
 all: design-html design.pdf design.txt
 
