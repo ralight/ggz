@@ -1,7 +1,7 @@
 prefix = @prefix@
 version = 0.0.11
 
-ggz-config = @GGZ_CONFIG@
+ggz-config = @GGZ_CONFIG@ -D
 
 ggzmod = @enable_ggzmod@
 ggzdmod = @enable_ggzdmod@

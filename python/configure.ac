@@ -21,7 +21,7 @@ AC_PROG_MAKE_SET
 
 dnl GGZ checks
 dnl ==========
-AC_GGZ_INIT([defaults])
+AC_GGZ_INIT([defaults], [export])
 AC_GGZ_LIBGGZ(["true"], [disable_wrappers=true])
 if test "x$disable_wrappers" != "xtrue"; then
 	AC_GGZ_GGZMOD(["true"], [enable_ggzmod=no])
@@ -118,7 +118,7 @@ if test "$pygame_found" = "no"; then
 	echo "The wrappers will be compiled, but no game can be run."
 	echo ""
 fi
-if test "x$GGZ_CONFIG" = "x/bin/true"; then
+if test "x$GGZ_CONFIG" = "xtrue"; then
 	echo "Warning: game information files will not be installed."
 	echo "This should only happen during binary package creation."
 	echo "Packages must install the .dsc files upon installation."
