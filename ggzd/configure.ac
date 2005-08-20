@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 7382 2005-08-13 14:48:54Z josef $
+dnl $Id: configure.ac 7453 2005-08-20 12:55:32Z josef $
 
 AC_INIT([GGZ server], [0.0.11], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -197,9 +197,9 @@ AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdexecmoddir}",
 
 if test "x${localstatedir}" = 'x${prefix}/var'; then
   if test "x${prefix}" = "xNONE"; then
-    ggzdstatedir="${ac_default_prefix}/var/ggzd"
+    ggzdstatedir="${ac_default_prefix}/var/lib/ggzd"
   else
-    ggzdstatedir="${prefix}/var/ggzd"
+    ggzdstatedir="${prefix}/var/lib/ggzd"
   fi
 else
   ggzdstatedir="${localstatedir}/ggzd"
