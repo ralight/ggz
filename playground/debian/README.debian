@@ -6,6 +6,16 @@ They're currently be built with GGZ 0.0.11, but
 shall use GGZ 0.0.12(pre) before being used anywhere
 due to the easier packaging routines.
 
+Concepts:
+---------
+The rules files are intentionally kept small. They include
+a common template which is shared among all GGZ packages.
+Only the configuration and some actions after make install
+should normally influence the package behaviour.
+For the first, RULES_CONFIGURE can be set. For the second,
+a double-colon rule (RULES_MAKE::) can be inserted before
+or after the include statement.
+
 Open questions:
 ---------------
 * should ggzmod-dev build-depend on ggzcore-bin?

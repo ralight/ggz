@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+# debian/rules file for ggz-grubby
+
+RULES_CONFIGURE := --disable-debug
+
+RULES_MAKE::
+	echo "[debian] nothing to do after make install."
+
+include debian/rules.common.mk
+

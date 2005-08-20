@@ -59,7 +59,7 @@ clean:	checkroot
 
 binary-indep:	checkroot build
 
-binary-arch:	checkroot build
+binary-arch::	checkroot build
 	dh_clean
 	dh_installdirs
 

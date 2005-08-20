@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+var=/var/lib/ggzd
+
+case "$1" in
+purge)
+    rm -rf $var
+    ;;
+
+esac
+
+#DEBHELPER#
+
+exit 0
+
