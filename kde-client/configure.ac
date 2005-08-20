@@ -192,6 +192,7 @@ AC_CONFIG_FILES([Makefile
 	po/kcm_ggz/Makefile
 	po/compcal/Makefile
 	po/kgrubby/Makefile
+	man/Makefile
 	])
 AC_OUTPUT
 
