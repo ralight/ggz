@@ -1,0 +1,52 @@
+ggz-gtk-client (0.0.11-1) unstable; urgency=low
+
+  * New upstream release.
+  * Many changes to the packaging to ease maintenance.
+  * Updated URLs and other reflections on current upstream goals.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sat, 20 Aug 2005 16:15:26 +0200
+
+ggz-gtk-client (0.0.7-1) unstable; urgency=low
+
+  * New upstream release
+  * Adjust menu file to use approved menu locations,
+  Closes: #201137
+
+ -- Stephen Zander <gibreel@debian.org>  Mon, 01 Dec 2003 00:00:00 +0000
+
+ggz-gtk-client (0.0.6-1) unstable; urgency=low
+
+  * New upstream release.
+  * Now recommend ggz-gtk-games & ggz-kde-games instead of just suggesting
+    them,
+  Closes: #163577
+
+ -- Stephen Zander <gibreel@debian.org>  Tue, 29 Oct 2002 08:58:55 -0800
+
+ggz-gtk-client (0.0.5.0-1) unstable; urgency=low
+
+  * Official Debian package.  Appended .0 to the version to have this
+    package be prefered to upstream's unofficial packages,
+  Closes: #146559
+
+ -- Stephen Zander <gibreel@debian.org>  Sat, 31 Aug 2002 10:40:00 -0700
+
+ggz-gtk-client (0.0.5-2) unstable; urgency=low
+
+  * Maintainance build: have icon in Apps/Net as suggested
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Mon,  6 May 2002 09:26:56 +0200
+
+ggz-gtk-client (0.0.5-1) unstable; urgency=low
+
+  * New GGZ release
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Sun,  7 Apr 2002 10:02:00 +0200
+
+ggz-gtk-client (0.0.4-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Tue, 29 May 2001 20:14:28 +0200
+
+

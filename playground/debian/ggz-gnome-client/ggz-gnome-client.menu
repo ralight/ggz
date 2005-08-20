@@ -1,0 +1,4 @@
+?package(ggz-gnome-client):command="/usr/bin/ggz-gnome" \
+	needs="X11" \
+	section="Games" \
+	title="GGZ Gaming Zone Client (GNOME2)"

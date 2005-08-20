@@ -1,0 +1,25 @@
+Source: ggz-gnome-client
+Section: games
+Priority: optional
+Maintainer: Josef Spillner <josef@ggzgamingzone.org>
+Standards-Version: 3.6.2.1
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>> 0.0.11), libggzcore-dev (>> 0.0.11), libgnomeui-dev
+
+Package: ggz-gnome-client
+Architecture: any
+Depends: ${shlibs:Depends}
+Recommends: ggz-gtk-games (>> 0.0.11), ggz-kde-games (>> 0.0.11), ggz-sdl-games (>> 0.0.11), ggz-python (>> 0.0.11)
+Provides: ggz-core-client
+Description: GGZ Gaming Zone: core client for the GNOME2 desktop
+ GGZ core clients enable players to access the GGZ server to chat,
+ meet other people in the game lobbies, play with them, watch
+ their scores and spectator other people's games.
+ .
+ The core client for GNOME has been intentionally kept simple to
+ use. It does however not provide all GGZ features.
+ .
+ This package is part of the GGZ Gaming Zone, a multiuser
+ networked gaming environment.
+ More information can be found at the GGZ web site
+ http://www.ggzgamingzone.org/
+
