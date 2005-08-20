@@ -6,5 +6,5 @@ all:
 dist:
 	rm -rf ../ggz-community-$(version)
 	cp -r ../community ../ggz-community-$(version)
-	find ../ggz-community-$(version) -name CVS | xargs rm -rf
+	find ../ggz-community-$(version) -name .svn | xargs rm -rf
 	cd .. && tar cvzf ggz-community-$(version).tar.gz ggz-community-$(version)
