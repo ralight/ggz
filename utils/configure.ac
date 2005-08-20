@@ -1,6 +1,7 @@
-dnl Process this file with autoconf to produce a configure script.
+dnl Configuration for the utilities package
+dnl =======================================
 
-AC_INIT([GGZ utilities], [0.0.11], [ggz-dev@mail.ggzgamingzone.org], [ggz-utils])
+AC_INIT([GGZ utilities], [0.0.12pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-utils])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

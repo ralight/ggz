@@ -1,7 +1,7 @@
 dnl Configuration for GGZ-KDE-Games
 dnl ===============================
 
-AC_INIT([GGZ KDE games], [0.0.11], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-games])
+AC_INIT([GGZ KDE games], [0.0.12pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-games])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -113,7 +113,7 @@ echo "Generic installation prefix: $prefix (for libraries etc.)"
 echo "Game executable directory: $ggzexecmoddir"
 echo "Game data directory: $ggzdatadir"
 echo ""
-if test "x$GGZ_CONFIG" = "x/bin/true"; then
+if test "x$GGZ_CONFIG" = "xtrue"; then
 	echo "Warning: game information files will not be installed."
 	echo "This should only happen during binary package creation."
 	echo "Packages must install the .dsc files upon installation."

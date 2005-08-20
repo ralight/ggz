@@ -1,19 +1,15 @@
-dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 7214 2005-05-21 10:46:02Z josef $
+dnl Configuration for the Gtk+ games collection
+dnl ===========================================
 
-AC_INIT([GGZ GTK games], [0.0.11], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
+AC_INIT([GGZ GTK games], [0.0.12pre], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
 
-if test -r $srcdir/package; then
-   . $srcdir/package
-fi
+dnl Options available when calling configure
+dnl ========================================
 
-DEFAULT_PACKAGE="ggz-gtk-games"
-DEFAULT_VERSION="0.0.10"
-DEFAULT_SUBDIRS="chess chinese-checkers combat dots ggzcards hastings reversi spades tictactoe"
-
-dnl If an override is present, use it
-dnl =================================
 AC_ARG_WITH(game, AC_HELP_STRING([--with-game=DIR],[Dir for game module]),
             game="$withval", game="")
 
@@ -22,30 +18,6 @@ AC_ARG_WITH(game-wrapper,
                            [Wrapper for running games (e.g., "valgrind")]),
             GAME_WRAPPER="$withval", GAME_WRAPPER="")
 AC_SUBST(GAME_WRAPPER)
-
-dnl Order of precedence: command-line > OVERRIDE_XXX > DEFAULT_XXX
-dnl ==============================================================
-
-if test "$game" != ""; then
-   subdirs=$game
-   version=`cat $game/module.dsc | grep Version | grep -v ProtocolVersion | sed 's/Version = //'`
-   game=`cat $game/module.dsc | grep Name | sed 's/Name = //' | tr [A-Z] [a-z]`
-   package=ggz-gtk-$game
-elif test "$OVERRIDE_PACKAGE" != ""; then 
-   package=$OVERRIDE_PACKAGE
-   version=$OVERRIDE_VERSION
-   subdirs=$OVERRIDE_SUBDIRS
-else
-   package=$DEFAULT_PACKAGE
-   version=$DEFAULT_VERSION
-   subdirs=$DEFAULT_SUBDIRS
-fi
-
-allsubdirs="common $subdirs po"
-
-AM_INIT_AUTOMAKE($package, $version)
-AM_CONFIG_HEADER([config.h])
-AM_MAINTAINER_MODE
 
 dnl Check for standard build environment
 dnl ====================================
@@ -152,14 +124,7 @@ AC_SUBST(EXTRA_GAME_PARAMETERS)
 dnl Various dirs
 dnl ============
 
-SUBDIRS=$allsubdirs
-
-AC_SUBST(LDADD)
-AC_SUBST(subdirs)
-AC_SUBST(SUBDIRS)
-
 AC_CONFIG_FILES([Makefile 
-	   package
 	   common/Makefile
 	   common/cardsets/Makefile
 	   spades/Makefile
@@ -221,7 +186,7 @@ echo "At the prompt type \"make\" to compile the game modules and"
 echo "When complete, su to root and type \"make install\" to"
 echo "install the client software."
 echo ""
-if test "x$GGZ_CONFIG" = "x/bin/true"; then
+if test "x$GGZ_CONFIG" = "xtrue"; then
 	echo "Warning: game information files will not be installed."
 	echo "This should only happen during binary package creation."
 	echo "Packages must install the .dsc files upon installation."
