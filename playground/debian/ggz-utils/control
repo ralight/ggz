@@ -25,3 +25,4 @@ Description: GGZ Gaming Zone: utilities
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, interface::commandline, role::sw-utility

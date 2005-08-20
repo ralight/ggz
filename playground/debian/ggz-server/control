@@ -23,6 +23,7 @@ Description: GGZ Gaming Zone: main server
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, interface::daemon, role::sw-server
 
 Package: ggz-game-servers
 Architecture: any
@@ -53,6 +54,7 @@ Description: GGZ Gaming Zone: game servers collection
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz
 
 Package: libggzdmod4
 Architecture: any
@@ -71,6 +73,7 @@ Description: GGZ Gaming Zone: game backend library
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, devel::library
 
 Package: libggzdmod-dev
 Architecture: any
@@ -89,3 +92,4 @@ Description: GGZ Gaming Zone: game backend library - development files
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, devel::library

@@ -20,6 +20,7 @@ Description: GGZ Gaming Zone: core client frontend library
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, devel::library
 
 Package: libggzcore-dev
 Architecture: any
@@ -37,12 +38,14 @@ Description: GGZ Gaming Zone: core client frontend library - development files
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, devel::library
 
 Package: ggzcore-bin
 Architecture: any
 Section: utils
 Depends: ${shlibs:Depends}
 Replaces: libggzcore-utils
+Conflicts: libggzcore-utils
 Description: GGZ Gaming Zone: various command-line helper programs
  There are two helper tools provided with GGZ:
  .
@@ -57,6 +60,7 @@ Description: GGZ Gaming Zone: various command-line helper programs
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, interface::commandline, role::sw-utility
 
 Package: libggzmod2
 Architecture: any
@@ -73,6 +77,7 @@ Description: GGZ Gaming Zone: game frontend library
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, devel::library
 
 Package: libggzmod-dev
 Architecture: any
@@ -90,3 +95,4 @@ Description: GGZ Gaming Zone: game frontend library - development files
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, devel::library

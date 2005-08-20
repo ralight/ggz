@@ -1,0 +1,33 @@
+This is how the debian package tags should be used for GGZ.
+As sometimes a package provides multiple "ggz roles", a combination
+of tags will occur.
+Note that tags are given independent of the maintainer decision,
+but right now many tags are wrong and a consistent base should be
+created.
+
+All packages:
+- suite::ggz
+
+Most applications (except grubby, ggzd, utils):
+- uitoolkit::*
+- interface::*
+
+Core clients (including grubby):
+- game::special
+- use::chatting
+
+Games:
+- use::game
+
+Game data packages:
+- role::aux-data
+
+Libraries:
+- devel::library
+
+Utilities and tools:
+- role::sw-utility
+
+Server:
+- role::sw-server
+

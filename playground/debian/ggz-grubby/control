@@ -26,3 +26,4 @@ Description: GGZ Gaming Zone: chat bot with the ability to play games
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, interface::daemon, game::special, use::chatting

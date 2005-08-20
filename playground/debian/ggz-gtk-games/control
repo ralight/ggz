@@ -32,6 +32,7 @@ Description: GGZ Gaming Zone: game clients collection for Gtk+
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, uitoolkit::gtk, use::game
 
 Package: ggz-gtk-game-data
 Architecture: all
@@ -49,3 +50,4 @@ Description: GGZ Gaming Zone: multimedia data for game clients for Gtk+
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+Tag: suite::ggz, role::aux-data
