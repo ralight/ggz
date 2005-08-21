@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # debian/rules file for ggz-python-games
 
-RULES_CONFIGURE :=
+RULES_CONFIGURE := --enable-noregistry=/usr/share/ggz/modules/ggz-python-games
 
 include debian/rules.common.mk
 

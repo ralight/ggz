@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+ggz-config --remove --noregistry=/usr/share/ggz/modules/ggz-python-games
+
+#DEBHELPER#
+
+exit 0
