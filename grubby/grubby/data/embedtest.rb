@@ -1,3 +1,5 @@
+#!/usr/bin/ruby
+#
 # Test program simulating the capabilities of grubby's mod_embed
 
 #puts "Hello World."
