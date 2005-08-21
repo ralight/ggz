@@ -1,4 +1,4 @@
-SUBDIRS = src motd-editor pixmaps po
+SUBDIRS = src motd-editor pixmaps po man
 
 desktopdir = $(datadir)/applications
 desktop_DATA = ggz-gnome.desktop motd-editor.desktop

@@ -49,6 +49,7 @@ AC_CONFIG_FILES([
 	motd-editor/Makefile
 	src/Makefile
 	po/Makefile
+	man/Makefile
 ])
 AC_OUTPUT
 
