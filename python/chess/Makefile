@@ -1,5 +1,5 @@
 all:
-	gcc -Wall -O2 -c ai.c
+	gcc -Wall -O2 -fPIC -c ai.c
 	ar cru libggzchess.a ai.o
 	ranlib libggzchess.a
 
