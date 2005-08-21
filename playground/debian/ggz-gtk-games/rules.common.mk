@@ -12,6 +12,7 @@ DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 config_flags	:= --prefix=/usr \
 	--sysconfdir=/etc \
+	--localstatedir=/var/lib \
 	--mandir=$(share)/man \
 	--build $(DEB_HOST_GNU_TYPE)
 ifneq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
@@ -51,6 +52,7 @@ clean:	checkroot
 	dh_clean
 	rm -f *-stamp
 	rm -f config.log
+	rm -f config.status
 	rm -f debian/files
 	-$(MAKE) distclean
 
