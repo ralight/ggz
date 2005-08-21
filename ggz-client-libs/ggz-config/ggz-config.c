@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7377 2005-08-13 10:27:52Z josef $
+ * $Id: ggz-config.c 7471 2005-08-21 08:38:24Z josef $
  *
  * Configuration query and module install program.
  *
@@ -35,6 +35,7 @@
 #include <getopt.h>
 
 #include <sys/stat.h>
+#include <dirent.h>
 
 #include <ggz.h>
 
@@ -60,7 +61,7 @@ static char *modicon = NULL;
 static char *modhelp = NULL;
 static char *modfile = NULL;
 static char *iconfile = NULL;
-static char *copyfile = NULL;
+static char *copydir = NULL;
 static char *managediconfile = NULL;
 static int modforce = 0;
 static int moddest = 0;
@@ -103,7 +104,7 @@ static char *options_help[] = {
 	 N_("Check/repair module installation file"),
 	 N_("Specifies module installation file (needs argument)"),
 	 N_("Specifies icon file to use for the game (needs argument)"),
-	 N_("Copies files to directory instead of registering them (needs argument)"),
+	 N_("Use auxiliary directory instead of ggz.modules (needs argument)"),
 	 N_("Install over an existing module"),
 	 N_("Use $DESTDIR as offset to ggz.modules file"),
 	 N_("Display help"),
@@ -484,18 +485,18 @@ static int noregister_module(void)
 
 	if(moddest)
 		global_pathname = ggz_malloc(strlen(destdir) +
-					     strlen(copyfile) +
+					     strlen(copydir) +
 						 strlen(modname) +
 					     strlen(suffix) + 3);
 	else
-		global_pathname = ggz_malloc(strlen(copyfile) +
+		global_pathname = ggz_malloc(strlen(copydir) +
 					     strlen(modname) +
 					     strlen(suffix) + 2);
 
 	if(moddest)
-		sprintf(global_pathname, "%s/%s", destdir, copyfile);
+		sprintf(global_pathname, "%s/%s", destdir, copydir);
 	else
-		sprintf(global_pathname, "%s", copyfile);
+		sprintf(global_pathname, "%s", copydir);
 
 	ret = mkdirectory(global_pathname, S_IRWXU);
 	if(ret != 0) return -1;
@@ -601,6 +602,45 @@ static int install_module(void)
 	ggz_conf_cleanup();
 
 	return rc;
+}
+
+
+static int noregister_all()
+{
+	DIR *d;
+	struct dirent *e;
+	int ret;
+	
+	d = opendir(copydir);
+	if(!d) {
+		fprintf(stderr, _("Could not open auxiliary directory\n"));
+		return -1;
+	}
+	while((e = readdir(d)) != NULL) {
+		if(e->d_type != DT_REG) continue;
+		modfile = (char*)ggz_malloc(strlen(copydir) + strlen(e->d_name) + 2);
+		sprintf(modfile, "%s/%s", copydir, e->d_name);
+		printf("FILE(2): %s\n", modfile);
+		if(load_modfile()) {
+			if(install_mod) {
+				printf("- register %s\n", e->d_name);
+				ret = install_module();
+			} else if(remove_mod) {
+				printf("- unregister %s\n", e->d_name);
+				ret = remove_module();
+			} else ret = -1;
+		} else {
+			ret = -1;
+		}
+		ggz_free(modfile);
+		modfile = NULL;
+		if(ret != 0) {
+			fprintf(stderr, _("An error occured, which is ignored.\n"));
+		}
+	}
+	closedir(d);
+
+	return 0;
 }
 
 
@@ -1020,7 +1060,7 @@ int main(int argc, char *argv[])
 				iconfile = optarg;
 				break;
 			case 'n':
-				copyfile = optarg;
+				copydir = optarg;
 				break;
 			case 'f':
 				modforce = 1;
@@ -1074,11 +1114,13 @@ int main(int argc, char *argv[])
 		return check_module_file();
 
 	if(modfile == NULL) {
-		fprintf(stderr, _("Must specify module installation file.\n"));
-		return 1;
-	}
-
-	if(!load_modfile()) {
+		if(copydir) {
+			printf(_("Using auxiliary directory to proceed...\n"));
+		} else {
+			fprintf(stderr, _("Must specify module installation file.\n"));
+			return 1;
+		}
+	} else if(!load_modfile()) {
 		fprintf(stderr, _("Required installation file entries missing\n"));
 		return 1;
 	}
@@ -1089,16 +1131,20 @@ int main(int argc, char *argv[])
 			moddest = 0;
 	}
 
-	if(install_mod) {
-		if(copyfile) {
-			rc = noregister_module();
-		} else {
-			rc = install_module();
-		}
-	} else if(remove_mod)
-		rc = remove_module();
-	else
-		rc = -1;
+	if(modfile) {
+		if(install_mod) {
+			if(copydir) {
+				rc = noregister_module();
+			} else {
+				rc = install_module();
+			}
+		} else if(remove_mod)
+			rc = remove_module();
+		else
+			rc = -1;
+	} else {
+			rc = noregister_all();
+	}
 
 	return rc;
 }
