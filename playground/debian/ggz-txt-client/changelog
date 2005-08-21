@@ -1,3 +1,10 @@
+ggz-txt-client (0.0.11+svn20050821-1) unstable; urgency=low
+
+  * New snapshot.
+  * Now includes game installation via ggz-config's "noregistry".
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sun, 21 Aug 2005 09:56:55 +0200
+
 ggz-txt-client (0.0.11-1) unstable; urgency=low
 
   * New upstream version.
