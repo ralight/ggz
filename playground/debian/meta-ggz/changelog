@@ -1,0 +1,9 @@
+meta-ggz (0.0.11) unstable; urgency=low
+
+  * Completely new meta package so an 'apt-get install ggz' will suffice.
+  * New upstream version.
+  * Many changes to the packaging to ease maintenance.
+  * Updated URLs and other reflections on current upstream goals.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sun, 21 Aug 2005 08:26:38 +0200
+
