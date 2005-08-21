@@ -56,10 +56,9 @@ clean:	checkroot
 
 ### misc rules
 
-binary-indep:	checkroot build
-
 RULES_MAKE::
-	@echo ""
+
+binary-indep:	checkroot build
 
 binary-arch::	checkroot build
 	dh_clean

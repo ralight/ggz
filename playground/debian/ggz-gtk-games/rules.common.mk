@@ -1,6 +1,5 @@
 # Common debian rules
-# imports: RULES_CONFIGURE
-# sets for make: prefix, share, config_flags
+# imports: RULES_CONFIGURE (and optionally RULES_MAKE)
 # sets for shell: CFLAGS, CXXFLAGS
 
 prefix	:= $(PWD)/debian/tmp
@@ -57,6 +56,8 @@ clean:	checkroot
 
 ### misc rules
 
+RULES_MAKE::
+
 binary-indep:	checkroot build
 
 binary-arch::	checkroot build
@@ -64,6 +65,7 @@ binary-arch::	checkroot build
 	dh_installdirs
 
 	$(MAKE) install DESTDIR=$(prefix)
+	$(MAKE) -f debian/rules RULES_MAKE
 
 	dh_install
 
