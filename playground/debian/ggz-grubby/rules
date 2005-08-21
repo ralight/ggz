@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # debian/rules file for ggz-grubby
 
-RULES_CONFIGURE :=
+RULES_CONFIGURE := --enable-noregistry=/usr/share/ggz/modules/ggz-grubby
 
 include debian/rules.common.mk
 

@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+ggz-config --install --force --noregistry=/usr/share/ggz/modules/ggz-grubby
+
+#DEBHELPER#
+
+exit 0

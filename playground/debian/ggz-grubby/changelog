@@ -1,3 +1,9 @@
+ggz-grubby (0.0.11+svn20050821-1) unstable; urgency=low
+
+  * New snapshot.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sun, 21 Aug 2005 10:44:42 +0200
+
 ggz-grubby (0.0.11-1) unstable; urgency=low
 
   * New upstream version.
