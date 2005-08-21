@@ -1,3 +1,10 @@
+ggz-kde-games (0.0.11+svn20050821-1) unstable; urgency=low
+
+  * New snapshot.
+  * Do not install manpages into -data package anymore.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sun, 21 Aug 2005 11:53:53 +0200
+
 ggz-kde-games (0.0.11-1) unstable; urgency=low
 
   * New upstream release.

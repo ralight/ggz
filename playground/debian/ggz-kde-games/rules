@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # debian/rules file for ggz-kde-games
 
-RULES_CONFIGURE := --disable-rpath
+RULES_CONFIGURE := --disable-rpath --enable-noregistry=/usr/share/ggz/modules/ggz-kde-games
 
 include debian/rules.common.mk
 
