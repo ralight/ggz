@@ -136,8 +136,8 @@ if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdetc="$ac_ggz_stdetc/ggzd /usr/local/etc/ggzd /etc/ggzd"
 fi
 if test "x$1" = "xexport" || test "x$2" = "xexport"; then
-  CPPFLAGS="$CPPFLAGS -isystem ${ac_ggz_prefix_incdir}"
-  LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir}"
+  CPPFLAGS="$CPPFLAGS -isystem ${ac_ggz_prefix_incdir} -isystem /usr/local/include"
+  LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir} -L/usr/local/lib"
 fi
 
 save_cflags=$CFLAGS
@@ -415,7 +415,7 @@ eval "$ac_cv_have_ggz_config"
 if test "$have_ggz_config" != yes; then
   if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggz_config (intentionally ignored)])
-    GGZ_CONFIG="/bin/true"
+    GGZ_CONFIG="true"
     ggzexecmoddir="\${prefix}/lib/ggz"
     ggzdatadir="\${prefix}/share/ggz"
     AC_SUBST(GGZ_CONFIG)
@@ -438,7 +438,7 @@ else
 
   if test "x$pathto_app" != "x$pathto_ggz"; then
     AC_MSG_RESULT([$have_ggz_config (dismissed due to different prefix)])
-    GGZ_CONFIG="/bin/true"
+    GGZ_CONFIG="true"
     ggzexecmoddir="\${prefix}/lib/ggz"
     ggzdatadir="\${prefix}/share/ggz"
     AC_SUBST(GGZ_CONFIG)
@@ -454,7 +454,14 @@ else
     ggz_config="$ac_ggz_config"
     AC_SUBST(ggz_config)
 
+    AC_ARG_ENABLE([noregistry],
+      AC_HELP_STRING([--enable-noregistry], [Do not register game modules.]),
+      [enable_noregistry=yes], [enable_noregistry=no])
+
     GGZ_CONFIG="${ggz_config}/ggz-config"
+    if test "$enable_noregistry" = yes; then
+      GGZ_CONFIG="$GGZ_CONFIG --noregistry=$enableval"
+    fi
     AC_SUBST(GGZ_CONFIG)
 
     ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
@@ -801,7 +808,6 @@ intl=1
 if test "x$GETTEXT" = "x"; then intl=0; fi
 if test "x$MSGFMT" = "x"; then intl=0; fi
 if test "x$MSGMERGE" = "x"; then intl=0; fi
-LIBS="$LIBICONV $LIBS"
 AC_CHECK_LIB(intl, gettext, [LIBS="-lintl $LIBS"])
 AC_CHECK_FUNCS([gettext ngettext], [], [intl=0])
 AC_CHECK_HEADERS([libintl.h locale.h])
