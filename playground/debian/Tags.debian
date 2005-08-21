@@ -31,3 +31,47 @@ Utilities and tools:
 Server:
 - role::sw-server
 
+Hence, the following tags are being given:
+
+libggzcore7: suite::ggz, devel::library
+libggzcore-dev: suite::ggz, devel::library
+ggzcore-bin: suite::ggz, interface::commandline, role::sw-utility
+libggzmod2: suite::ggz, devel::library
+libggzmod-dev: suite::ggz, devel::library
+
+ggz-docs: suite::ggz, devel::doc
+
+ggz-gnome-client: suite::ggz, uitoolkit::gtk, game::special, use::chatting
+
+ggz-grubby: suite::ggz, interface::daemon, game::special, use::chatting
+
+ggz-gtk-client: suite::ggz, uitoolkit::gtk, game::special, use::chatting
+
+ggz-gtk-games: suite::ggz, uitoolkit::gtk, use::game
+ggz-gtk-game-data: suite::ggz, role::aux-data
+
+ggz-kde-client: suite::ggz, uitoolkit::qt, game::special, use::chatting
+
+ggz-kde-games: suite::ggz, uitoolkit::qt, use::game
+ggz-kde-game-data: suite::ggz, role::aux-data
+
+ggz-python-games: suite::ggz, uitoolkit::sdl, game::special, use::game, use::chatting
+ggz-python-game-data: suite::ggz, role::aux-data
+
+ggz-sdl-games: suite::ggz, uitoolkit::sdl, use::game
+ggz-sdl-game-data: suite::ggz, role::aux-data
+
+ggzd: suite::ggz, interface::daemon, role::sw-server
+ggz-game-servers: suite::ggz
+libggzdmod4: suite::ggz, devel::library
+libggzdmod-dev: suite::ggz, devel::library
+
+ggz-txt-client: suite::ggz, uitoolkit::ncurses, game::special, use::chatting
+
+ggz-utils: suite::ggz, interface::commandline, role::sw-utility
+
+libggz2: suite::ggz, devel::library
+libggz-dev: suite::ggz, devel::library
+
+meta-ggz: suite::ggz, use::game
+

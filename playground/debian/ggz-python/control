@@ -33,7 +33,6 @@ Description: GGZ Gaming Zone: game clients collection for SDL
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org
-Tag: suite::ggz, uitoolkit::sdl, game::special, use::game, use::chatting
 
 Package: ggz-python-game-data
 Architecture: all
@@ -52,4 +51,3 @@ Description: GGZ Gaming Zone: game clients collection for SDL
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org
-Tag: suite::ggz, role::aux-data

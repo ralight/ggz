@@ -28,4 +28,3 @@ Description: GGZ Gaming Zone: advanced core client for Gtk+ environments
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
-Tag: suite::ggz, uitoolkit::gtk, game::special, use::chatting

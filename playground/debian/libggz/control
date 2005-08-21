@@ -20,7 +20,6 @@ Description: GGZ Gaming Zone: common utilities library
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
-Tags: suite::ggz, devel::library
 
 Package: libggz-dev
 Architecture: any
@@ -38,4 +37,3 @@ Description: GGZ Gaming Zone: common utilities library - development files
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
-Tags: suite::ggz, devel::library
