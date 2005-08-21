@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7471 2005-08-21 08:38:24Z josef $
+ * $Id: ggz-config.c 7475 2005-08-21 13:22:31Z josef $
  *
  * Configuration query and module install program.
  *
@@ -481,7 +481,8 @@ static int noregister_module(void)
 {
 	char *global_pathname;
 	char *suffix = ".module.dsc";
-	int ret;
+	char *fixedmodname;
+	int ret, i;
 
 	if(moddest)
 		global_pathname = ggz_malloc(strlen(destdir) +
@@ -501,7 +502,13 @@ static int noregister_module(void)
 	ret = mkdirectory(global_pathname, S_IRWXU);
 	if(ret != 0) return -1;
 
-	sprintf(global_pathname, "%s/%s%s", global_pathname, modname, suffix);
+	fixedmodname = (char*)ggz_malloc(strlen(modname) + 1);
+	strcpy(fixedmodname, modname);
+	for(i = 0; i < strlen(fixedmodname); i++) {
+		if(fixedmodname[i] == '/') fixedmodname[i] = '_';
+	}
+	sprintf(global_pathname, "%s/%s%s", global_pathname, fixedmodname, suffix);
+	ggz_free(fixedmodname);
 
 	printf(_("Preserving %s as %s...\n"), modfile, global_pathname);
 	return filecopy(modfile, global_pathname);
@@ -620,7 +627,6 @@ static int noregister_all()
 		if(e->d_type != DT_REG) continue;
 		modfile = (char*)ggz_malloc(strlen(copydir) + strlen(e->d_name) + 2);
 		sprintf(modfile, "%s/%s", copydir, e->d_name);
-		printf("FILE(2): %s\n", modfile);
 		if(load_modfile()) {
 			if(install_mod) {
 				printf("- register %s\n", e->d_name);
