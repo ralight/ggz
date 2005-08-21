@@ -6,7 +6,7 @@
 
 set -e
 
-DAEMON=/usr/bin/ggzd
+DAEMON=/usr/sbin/ggzd
 NAME=ggzd
 DESC="GGZ Gaming Zone Main Server"
 

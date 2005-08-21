@@ -1,10 +1,14 @@
 #!/usr/bin/make -f
-# debian/rules file for ggz-grubby
+# debian/rules file for ggz-server
 
 RULES_CONFIGURE := --disable-debug
 
 RULES_MAKE::
-	echo "[debian] nothing to do after make install."
+	echo "[debian] installing init file..."
+	dh_installinit
+	echo "[debian] moving entry room (lounge) file..."
+	mkdir -p debian/ggzd/etc/ggzd/rooms
+	mv debian/tmp/etc/ggzd/rooms/entry.room debian/ggzd/etc/ggzd/rooms
 
 include debian/rules.common.mk
 
