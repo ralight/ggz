@@ -89,3 +89,40 @@ Description: GGZ Gaming Zone: game backend library - development files
  networked gaming environment.
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
+
+Package: libggzdmod++0
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}
+Description: GGZ Gaming Zone: game backend class library
+ The ggzdmod library implements the communication between the main
+ GGZ server (ggzd) and the game servers. Games use it to receive
+ information about themselves, to report back results and savegames,
+ and to control other run-time aspects.
+ .
+ This package provides the C++ version of the runtime library used
+ by most of the GGZ game servers. It also includes a network
+ transport class.
+ .
+ This package is part of the GGZ Gaming Zone, a multiuser
+ networked gaming environment.
+ More information can be found at the GGZ web site
+ http://www.ggzgamingzone.org/
+
+Package: libggzdmod++-dev
+Architecture: any
+Section: devel
+Depends: libggzdmod++0 (= ${Source-Version}), libggzdmod-dev (= ${Source-Version}), libggz-dev (>> 0.0.11)
+Description: GGZ Gaming Zone: game backend class library - development files
+ The ggzdmod library implements the communication between the main
+ GGZ server (ggzd) and the game servers. Games use it to receive
+ information about themselves, to report back results and savegames,
+ and to control other run-time aspects.
+ .
+ This package provides the header files and static libraries
+ needed for development with ggzdmod++ in the C++ programming language.
+ .
+ This package is part of the GGZ Gaming Zone, a multiuser
+ networked gaming environment.
+ More information can be found at the GGZ web site
+ http://www.ggzgamingzone.org/

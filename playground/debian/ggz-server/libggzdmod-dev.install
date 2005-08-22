@@ -1,4 +1,4 @@
-debian/tmp/usr/include
+debian/tmp/usr/include/ggzdmod.h
 debian/tmp/usr/lib/libggzdmod.a
 debian/tmp/usr/lib/libggzdmod.la
 debian/tmp/usr/lib/libggzdmod.so

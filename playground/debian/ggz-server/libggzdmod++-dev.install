@@ -1,0 +1,4 @@
+debian/tmp/usr/include/ggzdmod++
+debian/tmp/usr/lib/libggzdmodpp.a
+debian/tmp/usr/lib/libggzdmodpp.la
+debian/tmp/usr/lib/libggzdmodpp.so
