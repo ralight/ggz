@@ -301,7 +301,7 @@ QIconSet KGGZBase::kggzGetIcon(int menuid)
 	if(menuid >= MENU_ROOMS_SLOTS)
 	{
 		icon = QString("games/%1.png").arg(m_lastgame); //"unknown.png";
-		KGGZDEBUG("gameicon: %s", icon.latin1());
+		KGGZDEBUG("gameicon: %s", icon.utf8().data());
 	}
 
 	iconset = QIconSet(QPixmap(QString(KGGZ_DIRECTORY "/images/icons/") + icon));

@@ -211,7 +211,8 @@ void KGGZLaunch::initLauncher(QString playername, int maxplayers, int maxbots)
 {
 	QString str;
 
-	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i, %i)\n", playername.latin1(), maxplayers, maxbots);
+	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i, %i)\n", playername.utf8().data(),
+		maxplayers, maxbots);
 	if(m_array)
 	{
 		KGGZDEBUG("Critical: array initialized twice!\n");
@@ -453,7 +454,7 @@ QString KGGZLaunch::typeName(int seattype)
 			ret.append(i18n("unknown"));
 	}
 
-	KGGZDEBUG("return: %s for %i\n", ret.latin1(), seattype);
+	KGGZDEBUG("return: %s for %i\n", ret.utf8().data(), seattype);
 	return ret;
 }
 

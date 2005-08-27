@@ -121,7 +121,7 @@ void KGGZMeta::slotConnected()
 	QString s;
 
 	s = QString("<?xml version=\"1.0\"?><query class=\"ggz\" type=\"connection\">%1</query>\n").arg(KGGZVERSION);
-	m_sock->writeBlock(s.latin1(), s.length());
+	m_sock->writeBlock(s.utf8(), s.length());
 	m_sock->flush();
 }
 

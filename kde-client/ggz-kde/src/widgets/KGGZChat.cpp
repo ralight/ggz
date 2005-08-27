@@ -47,6 +47,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qregexp.h>
+#include <qdir.h>
 
 // System includes
 //#include <X11/Xlib.h>
@@ -329,13 +330,13 @@ void KGGZChat::logChat(QString text)
 
 	if(!m_log) return;
 
-	s.append(getenv("HOME"));
+	s.append(QDir::homeDirPath());
 	s.append("/.ggz/kggzlog.html");
 
-	f = fopen(s.latin1(), "a");
+	f = fopen(s.utf8(), "a");
 	if(f)
 	{
-		fprintf(f, "%s\n", text.ascii());
+		fprintf(f, "%s\n", text.utf8().data());
 		fclose(f);
 	}
 }
@@ -392,7 +393,7 @@ void KGGZChat::receive(QString player, QString message, ReceiveMode mode)
 	if(m_speech)
 	{
 		KProcess *proc = new KProcess();
-		*proc << "say" << msg.latin1();
+		*proc << "say" << msg.utf8();
 		proc->start();
 	}
 
@@ -404,7 +405,7 @@ void KGGZChat::receive(QString player, QString message, ReceiveMode mode)
 	}
 	else timestring[0] = 0;
 
-	KGGZDEBUG("Receiving: %s (%i)\n", msg.ascii(), mode);
+	KGGZDEBUG("Receiving: %s (%i)\n", msg.utf8().data(), mode);
 	switch(mode)
 	{
 		case RECEIVE_CHAT:

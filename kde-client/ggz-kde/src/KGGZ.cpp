@@ -156,7 +156,8 @@ void KGGZ::readConfiguration(bool immediate)
 	if(m_config) delete m_config;
 	m_config = new GGZCoreConf();
 
-	result = m_config->init(KGGZ_DIRECTORY "/kggzrc", QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1());
+	result = m_config->init(KGGZ_DIRECTORY "/kggzrc",
+			(QDir::homeDirPath() + "/.ggz/kggz.rc").utf8());
 	if(result == -1)
 	{
 		KGGZDEBUG("Critical: Could not open configuration file!\n");
@@ -242,7 +243,7 @@ void KGGZ::slotConnected(QString host, int port, QString username, QString passw
 			if((p) && (w))
 				w->writePassword(entry, p);
 		}
-		password = p.latin1();
+		password = p;
 
 	}
 #endif
@@ -262,7 +263,8 @@ void KGGZ::slotConnected(QString host, int port, QString username, QString passw
 	}
 
 	KGGZDEBUG("Connect with: host=%s port=%i username=%s password=%s mode=%i encryption=%i\n",
-		host.latin1(), port, username.latin1(), password.latin1(), mode, m_connect->optionSecure());
+		host.utf8().data(), port, username.utf8().data(),
+		password.utf8().data(), mode, m_connect->optionSecure());
 
 	if(m_dns) delete m_dns;
 	m_dns = new QDns(host, QDns::A);
@@ -292,11 +294,11 @@ void KGGZ::slotConnectedStart()
 	list = m_dns->addresses();
 	addr = (*list.at(0));
 	m_save_host = addr.toString();
-	KGGZDEBUG("Host resolved to: %s\n", m_save_host.latin1());
+	KGGZDEBUG("Host resolved to: %s\n", m_save_host.utf8().data());
 
 	kggzserver = new GGZCoreServer();
 	attachServerCallbacks();
-	kggzserver->logSession(QString("%1/.ggz/kggz.xml-log").arg(getenv("HOME")).latin1());
+	kggzserver->logSession(QString("%1/.ggz/kggz.xml-log").arg(QDir::homeDirPath()).utf8());
 
 	kggzserver->setHost(m_save_host, m_save_port, m_save_encryption);
 	result = kggzserver->connect();
@@ -341,7 +343,8 @@ void KGGZ::menuServerLaunch()
 	GGZCoreConfio *config;
 	char *process;
 
-	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readwrite | GGZCoreConfio::create);
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(QDir::homeDirPath()).utf8(),
+		GGZCoreConfio::readwrite | GGZCoreConfio::create);
 	process = config->read("Environment", "Server", "/usr/bin/ggzd");
 	delete config;
 
@@ -498,8 +501,8 @@ void KGGZ::listTables()
 	GGZCoreTable *table;
 	GGZCoreGametype *gametype;
 	int tableseats, tableseatsopen;
-	const char *tabledescription;
-	const char *playername;
+	QString playername, tabledescription;
+	QString name;
 
 	if(!kggzroom)
 	{
@@ -552,22 +555,23 @@ void KGGZ::listTables()
 			}
 
 			if(table->playerType(j) == GGZ_SEAT_OPEN
-			   || table->playerType(j) == GGZ_SEAT_RESERVED) tableseatsopen++;
+				|| table->playerType(j) == GGZ_SEAT_RESERVED) tableseatsopen++;
 			else
 			{
 				if(table->playerType(j) == GGZ_SEAT_PLAYER)
 				{
 					playername = table->playerName(j);
-					if(strlen(playername) == 0)
+					if(playername.isEmpty())
 					{
-						playername = i18n("(unknown)").latin1();
+						playername = i18n("(unknown)");
 						tableseatsopen++;
 					}
 					m_workspace->widgetUsers()->addTablePlayer(i, playername);
 				}
 			}
 		}
-		m_workspace->widgetTables()->add(gametype->name(), tabledescription, tableseats - tableseatsopen, tableseats);
+		m_workspace->widgetTables()->add(gametype->name(),
+			QString::fromUtf8(tabledescription), tableseats - tableseatsopen, tableseats);
 	}
 }
 
@@ -635,7 +639,7 @@ void KGGZ::gameCollector(unsigned int id, const void* data)
 {
 	int result;
 	int seats;
-	const char *description;
+	QString description;
 	GGZCoreGametype *gametype;
 
 	switch(id)
@@ -674,11 +678,11 @@ void KGGZ::gameCollector(unsigned int id, const void* data)
 					return;
 				}
 				if(m_launch->description().isEmpty()) description = "";
-				else description = m_launch->description().latin1();
+				else description = m_launch->description();
 				seats = m_launch->seats();
 
 				m_table = new GGZCoreTable();
-				m_table->init(gametype->gametype(), strdup(description), seats); // bad strdup
+				m_table->init(gametype->gametype(), description.utf8(), seats);
 				for(int i = 0; i < seats; i++)
 				{
 					switch(m_launch->seatType(i))
@@ -690,15 +694,15 @@ void KGGZ::gameCollector(unsigned int id, const void* data)
 							KGGZDEBUG("* %i: open\n", i);
 							break;
 						case KGGZLaunch::seatbot:
-							KGGZDEBUG("* %i: bot (%s)\n", i, m_launch->reservation(i).latin1());
+							KGGZDEBUG("* %i: bot (%s)\n", i, m_launch->reservation(i).utf8().data());
 							if(m_launch->reservation(i).isNull())
 								m_table->addBot(NULL, i);
 							else
-								m_table->addBot((char*)m_launch->reservation(i).latin1(), i);
+								m_table->addBot(m_launch->reservation(i).utf8(), i);
 							break;
 						case KGGZLaunch::seatreserved:
-							KGGZDEBUG("* %i: reserved (%s)\n", i, m_launch->reservation(i).latin1());
-							m_table->addReserved((char*)m_launch->reservation(i).latin1(), i);
+							KGGZDEBUG("* %i: reserved (%s)\n", i, m_launch->reservation(i).utf8().data());
+							m_table->addReserved(m_launch->reservation(i).utf8(), i);
 							break;
 						case KGGZLaunch::seatunused:
 							KGGZDEBUG("* %i: unused.\n", i);
@@ -774,7 +778,8 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 			chattype = ((GGZChatEventData*)data)->type;
 			chatsender = ((GGZChatEventData*)data)->sender;
 			chatmessage = ((GGZChatEventData*)data)->message;
-			KGGZDEBUG("Chat receives: %s from %s\n", chatmessage.latin1(), chatsender.latin1());
+			KGGZDEBUG("Chat receives: %s from %s\n",
+				chatmessage.utf8().data(), chatsender.utf8().data());
 			if((!m_workspace) || (!m_workspace->widgetChat()))
 			{
 				KGGZDEBUG("Critical: Workspace/Chat absent!\n");
@@ -814,7 +819,8 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 							m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_OWN);
 						else
 						{
-							KGGZDEBUG("%s != %s\n", chatsender.latin1(), m_save_username.latin1());
+							KGGZDEBUG("%s != %s\n", chatsender.utf8().data(),
+								m_save_username.utf8().data());
 							m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_CHAT);
 						}
 					}
@@ -967,7 +973,8 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			if(!kggzserver) return;
 			m_sn_server = new QSocketNotifier(kggzserver->fd(), QSocketNotifier::Read, this);
 			connect(m_sn_server, SIGNAL(activated(int)), SLOT(slotServerData()));
-			kggzserver->setLogin(m_save_loginmode, m_save_username.latin1(), m_save_password.latin1());
+			kggzserver->setLogin(m_save_loginmode,
+				m_save_username.utf8(), m_save_password.utf8());
 			break;
 		case GGZCoreServer::connectfail:
 			KGGZDEBUG("connectfail\n");
@@ -1220,7 +1227,7 @@ void KGGZ::slotChat(QString text, QString player, int mode)
 {
 	if((kggzserver) && (kggzroom))
 	{
-		KGGZDEBUG("Chat sends: %s\n", text.latin1());
+		KGGZDEBUG("Chat sends: %s\n", text.utf8().data());
 		switch(mode)
 		{
 			case KGGZChat::RECEIVE_CHAT:

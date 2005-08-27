@@ -37,6 +37,9 @@
 // KGGZ includes
 #include "KGGZCommon.h"
 
+// KDE includes
+#include <klocale.h>
+
 // Qt includes
 #include <qstring.h>
 
@@ -55,13 +58,15 @@ void KGGZTables::reset()
 	clear();
 }
 
-void KGGZTables::add(const char *gametype, const char *name, int used, int total)
+void KGGZTables::add(QString gametype, QString name, int used, int total)
 {
 	QIconViewItem *tmp;
 	QString buffer;
 
-	buffer.sprintf("(%s) %s\n(%i seats, %i open)", gametype, name, total, total - used);
-	tmp = new QIconViewItem(this, buffer.latin1(), QPixmap(KGGZ_DIRECTORY "/images/icons/ggz.png"));
+	buffer = i18n("(%1) %2\n(%3 seats, %4 open)").arg(
+		gametype).arg(name).arg(total).arg(total - used);
+	tmp = new QIconViewItem(this, buffer,
+		QPixmap(KGGZ_DIRECTORY "/images/icons/ggz.png"));
 }
 
 int KGGZTables::tablenum()

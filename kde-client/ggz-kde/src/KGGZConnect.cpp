@@ -57,6 +57,7 @@
 #include <qbuttongroup.h>
 #include <qsocket.h>
 #include <qeventloop.h>
+#include <qdir.h>
 
 // System includes
 #include <stdlib.h>
@@ -224,12 +225,13 @@ KGGZConnect::~KGGZConnect()
 void KGGZConnect::slotSaveProfile()
 {
 	GGZCoreConfio *config;
-	const char *current;
+	QCString current;
 
-	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readwrite | GGZCoreConfio::create);
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(QDir::homeDirPath()).utf8(),
+		GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
 	// Save previous profile and make new one the default (although it's empty)
-	current = m_current.latin1();
+	current = m_current.utf8();
 	config->write(current, "Host", input_host->text());
 	config->write(current, "Port", input_port->text());
 	config->write(current, "Login", input_name->text());
@@ -261,7 +263,8 @@ void KGGZConnect::slotLoadProfile(int profile)
 		slotSaveProfile();
 	m_nosafe = 0;
 
-	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readonly);
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(QDir::homeDirPath()).utf8(),
+		GGZCoreConfio::readonly);
 
 	// setup entries; try to find suitable first entry
 	if(profile == -1)
@@ -450,7 +453,7 @@ void KGGZConnect::slotProfileMetaProcess(QString host, QString port)
 
 void KGGZConnect::slotProfileDelete()
 {
-	modifyServerList(m_current.latin1(), 2);
+	modifyServerList(m_current, 2);
 	profile_select->removeItem(profile_select->currentItem());
 	m_nosafe = 1;
 	slotLoadProfile(profile_select->currentItem());
@@ -491,7 +494,7 @@ void KGGZConnect::modifyServerList(QString server, int mode)
 
 	server = server.replace(" ", "\\ ");
 
-	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(),
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(QDir::homeDirPath()).utf8(),
 		GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
 	// Update the list of available servers
@@ -505,10 +508,10 @@ void KGGZConnect::modifyServerList(QString server, int mode)
 	}
 	if(mode == 1) servers << server;
 
-	config->write("Servers", "Servers", servers.join(" ").latin1());
+	config->write("Servers", "Servers", servers.join(" ").utf8());
 	if(mode == 2)
 	{
-		config->removeSection(server.latin1());
+		config->removeSection(server.utf8());
 		if(i < 2) config->removeKey("Servers", "Servers");
 	}
 
@@ -578,7 +581,7 @@ void KGGZConnect::slotWrite()
 	QString s;
 
 	s = QString("query://ggz/connection/%1\n").arg(KGGZVERSION);
-	m_sock->writeBlock(s.latin1(), s.length());
+	m_sock->writeBlock(s.utf8(), s.length());
 	m_sock->flush();
 }
 

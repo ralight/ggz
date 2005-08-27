@@ -46,9 +46,7 @@
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qlayout.h>
-
-// System includes
-#include <sys/stat.h>
+#include <qfile.h>
 
 KGGZLogo::KGGZLogo(QWidget *parent, const char *name)
 : QFrame(parent, name)
@@ -78,25 +76,22 @@ KGGZLogo::~KGGZLogo()
 void KGGZLogo::setLogo(const char *logo, const char *name, bool enabled)
 {
 	QPixmap pix;
-	QString buffer;
-	struct stat st;
-	const char *uselogo;
+	QString uselogo;
 
 	KGGZDEBUG("Found module icon: %s\n", logo);
 	uselogo = logo;
 
 	//if(!enabled) name = "notinstalled";
 
-	if(!uselogo)
+	if(uselogo.isEmpty())
 	{
-		buffer = KGGZ_DIRECTORY "/images/icons/games/";
-		buffer.append(name);
-		buffer.append(".png");
-		uselogo = buffer.latin1();
-		KGGZDEBUG("Retrieve Icon from: %s\n", uselogo);
-		if((stat(uselogo, &st) < 0) || (!S_ISREG(st.st_mode))) uselogo = NULL;
+		uselogo = KGGZ_DIRECTORY "/images/icons/games/";
+		uselogo.append(name);
+		uselogo.append(".png");
+		KGGZDEBUG("Retrieve Icon from: %s\n", uselogo.utf8().data());
+		if(!QFile::exists(uselogo)) uselogo = QString();
 	}
-	if(!uselogo) uselogo = KGGZ_DIRECTORY "/images/icons/module.png";
+	if(uselogo.isEmpty()) uselogo = KGGZ_DIRECTORY "/images/icons/module.png";
 
 	pix = QPixmap(uselogo);
 	if(!enabled)

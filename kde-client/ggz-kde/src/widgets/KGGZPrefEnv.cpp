@@ -57,6 +57,7 @@
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qpixmap.h>
+#include <qdir.h>
 
 // System includes
 #include <stdlib.h>
@@ -162,18 +163,19 @@ void KGGZPrefEnv::slotAccept()
 {
 	GGZCoreConfio *config;
 
-	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(QDir::homeDirPath()),
+		GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
-	config->write("Environment", "Server", m_server->text().latin1());
+	config->write("Environment", "Server", m_server->text().utf8());
 	config->write("Preferences", "Showdialog", m_startup->isChecked());
 	config->write("Preferences", "Chatlog", m_chatlog->isChecked());
 	config->write("Preferences", "Timestamps", m_timestamps->isChecked());
 	config->write("Preferences", "Speech", m_speech->isChecked());
 	config->write("Preferences", "MOTD", m_motd->isChecked());
-	config->write("Personal", "Country", countrybox->currentText().latin1());
-	config->write("Personal", "Name", m_playername->text().latin1());
-	config->write("Personal", "Email", m_email->text().latin1());
-	config->write("Personal", "Homepage", m_homepage->text().latin1());
+	config->write("Personal", "Country", countrybox->currentText().utf8());
+	config->write("Personal", "Name", m_playername->text().utf8());
+	config->write("Personal", "Email", m_email->text().utf8());
+	config->write("Personal", "Homepage", m_homepage->text().utf8());
 	config->commit();
 
 	delete config;
@@ -189,7 +191,8 @@ void KGGZPrefEnv::loadSettings()
 	int startup, chatlog, speech, motd, timestamps;
 	char *homepage, *email, *name, *country;
 
-	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(QDir::homeDirPath()),
+		GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
 	server = config->read("Environment", "Server", "/usr/bin/ggzd");
 	startup = config->read("Preferences", "Showdialog", 0);

@@ -279,13 +279,13 @@ void KGGZUsers::credit(QString playername, int credit)
 	{
 		save = 0;
 		config = new GGZCoreConfio(QDir::home().path() + "/.ggz/kggz.rc", GGZCoreConfio::readonly);
-		credit = config->read("Credits", playername.latin1(), creditnone);
+		credit = config->read("Credits", playername.utf8(), creditnone);
 		delete config;
 	}
 	else if(credit != credityou)
 	{
 		config = new GGZCoreConfio(QDir::home().path() + "/.ggz/kggz.rc", GGZCoreConfio::readwrite | GGZCoreConfio::create);
-		config->write("Credits", playername.latin1(), credit);
+		config->write("Credits", playername.utf8(), credit);
 		config->commit();
 		delete config;
 	}

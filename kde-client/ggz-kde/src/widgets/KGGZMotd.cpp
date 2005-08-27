@@ -114,30 +114,26 @@ void KGGZMotd::append(QString text)
 	{
 		if(text[i] != '%')
 		{
-			switch(text[i].latin1())
-			{
-				case ' ':
+			if(text[i] == ' ')
 					buffer.append("&nbsp;");
-					break;
-				case '<':
+			else if(text[i] == '<')
 					buffer.append("&lt;");
-					break;
-				case '>':
+			else if(text[i] == '>')
 					buffer.append("&gt;");
-					break;
-				case '\n':
+			else if(text[i] == '\n')
+			{
 					buffer.append("<br>\n");
 					count = 0;
-					break;
-				default:
-					buffer.append(text[i]);
 			}
+			else
+					buffer.append(text[i]);
+
 			count++;
 		}
 		else
 		{
 			i += 2;
-			j = text[i].latin1() - 48;
+			j = text[i].digitValue();
 			if((j >= 0) && (j <= 9))
 			{
 				buffer.append("<font color=#");
@@ -153,7 +149,7 @@ void KGGZMotd::append(QString text)
 
 void KGGZMotd::setWebpage(QString url)
 {
-	KGGZDEBUG("MOTD Webpage: %s!\n", url.latin1());
+	KGGZDEBUG("MOTD Webpage: %s!\n", url.utf8().data());
 	if(url.isNull()) return;
 
 	m_textmotd->hide();
