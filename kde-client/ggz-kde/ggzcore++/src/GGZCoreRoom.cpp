@@ -81,17 +81,17 @@ int GGZCoreRoom::init(GGZServer* server, const unsigned int id, const char* name
 #endif
 }
 
-char* GGZCoreRoom::name()
+const char* GGZCoreRoom::name()
 {
 	return ggzcore_room_get_name(m_room);
 }
 
-char* GGZCoreRoom::description()
+const char* GGZCoreRoom::description()
 {
 	return ggzcore_room_get_desc(m_room);
 }
 
-char* GGZCoreRoom::category()
+const char* GGZCoreRoom::category()
 {
 #ifdef KGGZ_PATCH_C_AND_R
 	return ggzcore_room_get_category(m_room);

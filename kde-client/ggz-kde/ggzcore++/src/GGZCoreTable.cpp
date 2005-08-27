@@ -35,27 +35,27 @@ GGZCoreTable::~GGZCoreTable()
 	if(m_destructive) ggzcore_table_free(m_table);
 }
 
-int GGZCoreTable::init(const GGZGameType* gametype, char* description, const unsigned int seats)
+int GGZCoreTable::init(const GGZGameType* gametype, const char* description, const unsigned int seats)
 {
 	return ggzcore_table_init(m_table, gametype, description, seats);
 }
 
-int GGZCoreTable::addPlayer(char* name, const unsigned int seat)
+int GGZCoreTable::addPlayer(const char* name, const unsigned int seat)
 {
 	return ggzcore_table_set_seat(m_table, seat, GGZ_SEAT_PLAYER, name);
 }
 
-int GGZCoreTable::addBot(char* name, const unsigned int seat)
+int GGZCoreTable::addBot(const char* name, const unsigned int seat)
 {
 	return ggzcore_table_set_seat(m_table, seat, GGZ_SEAT_BOT, name);
 }
 
-int GGZCoreTable::addReserved(char* name, const unsigned int seat)
+int GGZCoreTable::addReserved(const char* name, const unsigned int seat)
 {
 	return ggzcore_table_set_seat(m_table, seat, GGZ_SEAT_RESERVED, name);
 }
 
-int GGZCoreTable::removePlayer(char* name)
+int GGZCoreTable::removePlayer(const char* name)
 {
 	return ggzcore_table_remove_player(m_table, name);
 }
@@ -126,7 +126,7 @@ GGZTable *GGZCoreTable::table()
 }
 
 #ifdef KGGZ_PATCH_SPECTATORS
-int GGZCoreTable::addSpectator(char *name, const unsigned int seat)
+int GGZCoreTable::addSpectator(const char *name, const unsigned int seat)
 {
 	/*return ggzcore_table_add_spectator(m_table, name, seat);*/
 	return 0;

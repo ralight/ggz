@@ -92,13 +92,13 @@ class GGZCoreRoom
 
 		/**
 		 * Return the name of the room. */
-		char* name();
+		const char* name();
 		/**
 		 * Return its description. */
-		char* description();
+		const char* description();
 		/**
 		 * Return its category */
-		char* category();
+		const char* category();
 		/**
 		 * Return the associated game type. */
 		GGZCoreGametype* gametype();

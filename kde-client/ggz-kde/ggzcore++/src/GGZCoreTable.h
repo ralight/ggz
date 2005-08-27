@@ -39,25 +39,25 @@ class GGZCoreTable
 
 		/**
 		 * Initialize a table. Set a game type and the maximum number of seats. */
-		int init(const GGZGameType* gametype, char* description, const unsigned int seats);
+		int init(const GGZGameType* gametype, const char* description, const unsigned int seats);
 
 		/**
 		 * Add a player to the table. */
-		int addPlayer(char* name, const unsigned int seat);
+		int addPlayer(const char* name, const unsigned int seat);
 		/**
 		 * Add a bot to the table. */
-		int addBot(char* name, const unsigned int seat);
+		int addBot(const char* name, const unsigned int seat);
 		/**
 		 * Add a reserved seat. This one can then be accessed by other players. */
-		int addReserved(char* name, const unsigned int seat);
+		int addReserved(const char* name, const unsigned int seat);
 #ifdef KGGZ_PATCH_SPECTATORS
 		/**
 		 * Add a game spectator */
-		int addSpectator(char *name, const unsigned int seat);
+		int addSpectator(const char *name, const unsigned int seat);
 #endif
 		/**
 		 * Remove a player from the table. */
-		int removePlayer(char* name);
+		int removePlayer(const char* name);
 
 		/**
 		 * Return the id of the table. */
