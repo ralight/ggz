@@ -229,19 +229,21 @@ void KGGZ::slotConnected(QString host, int port, QString username, QString passw
 			w->setFolder("passwords");
 			w->readPassword(entry, p);
 
-			if(p.isEmpty())
-			{
-				p = KLineEditDlg::getText(i18n("Password"),
-					i18n("Password not found, please input:"), NULL, NULL);
-				if(p) w->writePassword(entry, p);
-			}
-			password = p.latin1();
-
 			/*KMessageBox::information(this,
 				i18n("Wallet password: %1").arg(password), i18n("debug"));*/
 		}
 		else KMessageBox::error(this,
 			i18n("The wallet could not be opened."), i18n("Connection"));
+
+		if(p.isEmpty())
+		{
+			p = KLineEditDlg::getText(i18n("Password"),
+				i18n("Password not found, please input:"), NULL, NULL);
+			if((p) && (w))
+				w->writePassword(entry, p);
+		}
+		password = p.latin1();
+
 	}
 #endif
 

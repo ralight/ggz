@@ -106,6 +106,14 @@ class KGGZConnect : public QWidget
 		// start a zeroconf query
 		void zeroconfQuery();
 
+		// Login modes
+		enum LoginModes
+		{
+			mode_normal,
+			mode_guest,
+			mode_firsttime
+		};
+
 		// The login mode (guest, with password, first time)
 		int m_loginmode;
 		// Whether to start server locally or not

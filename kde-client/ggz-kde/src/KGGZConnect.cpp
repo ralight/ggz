@@ -79,7 +79,7 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	QVBoxLayout *vbox1, *vbox2;
 	QHBoxLayout *hbox1, *hbox2, *hbox3, *hbox4;
 	QLabel *label_host, *label_port, *label_name, *label_password;
-	QRadioButton *mode_normal, *mode_guest, *mode_firsttime;
+	QRadioButton *radio_normal, *radio_guest, *radio_firsttime;
 	QLabel *label_mode;
 	QIntValidator *valid;
 	KGGZLineSeparator *sep1, *sep2;
@@ -122,7 +122,6 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	input_password = new QLineEdit(m_pane);
 
 #ifdef KGGZ_WALLET
-	input_password->setText(i18n("Using KWallet"));
 	input_password->setEnabled(false);
 #else
 	input_password->setEchoMode(QLineEdit::Password);
@@ -134,13 +133,13 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	label_mode = new QLabel(i18n("Log in as:"), m_pane);
 	group_mode = new QButtonGroup(m_pane);
 	group_mode->hide();
-	mode_normal = new QRadioButton(i18n("normal"), m_pane);
-	mode_guest = new QRadioButton(i18n("guest"), m_pane);
-	mode_firsttime = new QRadioButton(i18n("starter"), m_pane);
-	group_mode->insert(mode_normal);
-	group_mode->insert(mode_guest);
-	group_mode->insert(mode_firsttime);
-	mode_normal->setChecked(true);
+	radio_normal = new QRadioButton(i18n("normal"), m_pane);
+	radio_guest = new QRadioButton(i18n("guest"), m_pane);
+	radio_firsttime = new QRadioButton(i18n("starter"), m_pane);
+	group_mode->insert(radio_normal, mode_normal);
+	group_mode->insert(radio_guest, mode_guest);
+	group_mode->insert(radio_firsttime, mode_firsttime);
+	radio_normal->setChecked(true);
 
 	option_server = new QCheckBox(i18n("Start ggzd server locally"), this);
 
@@ -180,9 +179,9 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 
 	hbox3 = new QHBoxLayout(vbox2, 5);
 	hbox3->add(label_mode);
-	hbox3->add(mode_normal);
-	hbox3->add(mode_guest);
-	hbox3->add(mode_firsttime);
+	hbox3->add(radio_normal);
+	hbox3->add(radio_guest);
+	hbox3->add(radio_firsttime);
 
 	vbox2->add(sep2);
 
@@ -208,11 +207,12 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	connect(button_select, SIGNAL(clicked()), SLOT(slotProfileMeta()));
 
 	m_connected = -1;
-	m_loginmode = 0;
+	m_loginmode = mode_normal;
 	m_nosafe = 0;
 
 	setCaption(i18n("Connect to server"));
 
+	slotModes(m_loginmode);
 	slotLoadProfile(-1);
 }
 
@@ -233,7 +233,9 @@ void KGGZConnect::slotSaveProfile()
 	config->write(current, "Host", input_host->text());
 	config->write(current, "Port", input_port->text());
 	config->write(current, "Login", input_name->text());
+#ifndef KGGZ_WALLET
 	config->write(current, "Password", input_password->text());
+#endif
 	config->write(current, "Type", m_loginmode);
 #ifdef KGGZ_PATCH_ENCRYPTION
 	config->write(current, "Encryption", option_tls->isChecked());
@@ -385,12 +387,23 @@ void KGGZConnect::slotModes(int loginmode)
 {
 	m_loginmode = loginmode;
 	group_mode->setButton(loginmode);
-#ifndef KGGZ_WALLET
-	if(loginmode == 0)
+
+	if(loginmode == mode_normal)
+	{
+#ifdef KGGZ_WALLET
+		input_password->setText(i18n("Using KWallet"));
+#else
 		input_password->setEnabled(true);
+#endif
+	}
 	else
+	{
+#ifdef KGGZ_WALLET
+		input_password->setText("");
+#else
 		input_password->setEnabled(false);
 #endif
+	}
 }
 
 void KGGZConnect::slotInvoke()
