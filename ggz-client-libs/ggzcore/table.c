@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: table.c 6785 2005-01-21 18:48:01Z jdorje $
+ * $Id: table.c 7500 2005-08-27 12:13:54Z josef $
  *
  * This fils contains functions for handling tables
  *
@@ -288,7 +288,7 @@ int ggzcore_table_set_desc(GGZTable *table, const char *desc)
 }
 
 
-int ggzcore_table_remove_player(GGZTable *table, char *name)
+int ggzcore_table_remove_player(GGZTable *table, const char *name)
 {
 	int i, status = -1;
 

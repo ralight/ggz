@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 7431 2005-08-15 09:50:01Z josef $
+ * $Id: ggzcore.h 7500 2005-08-27 12:13:54Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -959,10 +959,10 @@ GGZServer *ggzcore_room_get_server(GGZRoom *room);
 int ggzcore_room_get_id(const GGZRoom *room);
 
 /** @brief Return the name of the room (or NULL on error). */
-char* ggzcore_room_get_name(GGZRoom *room);
+const char* ggzcore_room_get_name(GGZRoom *room);
 
 /** @brief Return the description of the room (or NULL on error). */
-char* ggzcore_room_get_desc(GGZRoom *room);
+const char* ggzcore_room_get_desc(GGZRoom *room);
 
 /** @brief Return the type of game played in this room (or NULL on error). */
 GGZGameType* ggzcore_room_get_gametype(GGZRoom *room);
@@ -1177,7 +1177,7 @@ int ggzcore_table_set_seat(GGZTable *table,
 			   const char *name);
 
 /** @brief Find and remove the player from the table. */
-int ggzcore_table_remove_player(GGZTable *table, char *name);
+int ggzcore_table_remove_player(GGZTable *table, const char *name);
 
 /** @brief Return the ID of the table. */
 int ggzcore_table_get_id(const GGZTable *table);

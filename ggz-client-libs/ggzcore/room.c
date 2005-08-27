@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6891 2005-01-25 01:49:39Z jdorje $
+ * $Id: room.c 7500 2005-08-27 12:13:54Z josef $
  *
  * This fils contains functions for handling rooms
  *
@@ -132,7 +132,7 @@ static unsigned int _ggzcore_room_get_id(const GGZRoom * room)
 	return room->id;
 }
 
-static char *_ggzcore_room_get_name(GGZRoom * room)
+static const char *_ggzcore_room_get_name(GGZRoom * room)
 {
 	return room->name;
 }
@@ -144,7 +144,7 @@ static struct _GGZGameType *_ggzcore_room_get_game(GGZRoom * room)
 }
 
 
-static char *_ggzcore_room_get_desc(GGZRoom * room)
+static const char *_ggzcore_room_get_desc(GGZRoom * room)
 {
 	return room->desc;
 }
@@ -288,7 +288,7 @@ int ggzcore_room_get_id(const GGZRoom * room)
 		return -1;
 }
 
-char *ggzcore_room_get_name(GGZRoom * room)
+const char *ggzcore_room_get_name(GGZRoom * room)
 {
 	if (room)
 		return _ggzcore_room_get_name(room);
@@ -297,7 +297,7 @@ char *ggzcore_room_get_name(GGZRoom * room)
 }
 
 
-char *ggzcore_room_get_desc(GGZRoom * room)
+const char *ggzcore_room_get_desc(GGZRoom * room)
 {
 	if (room)
 		return _ggzcore_room_get_desc(room);
