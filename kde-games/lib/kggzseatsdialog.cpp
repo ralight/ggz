@@ -24,6 +24,7 @@ KGGZSeatsDialog::KGGZSeatsDialog(QWidget *parent, const char *name)
 	obj = this;
 
 	m_root = NULL;
+	m_oldmode = displayseats;
 
 	m_view = new QScrollView(this);
 	m_view->setResizePolicy(QScrollView::AutoOneFit);
@@ -273,6 +274,9 @@ void KGGZSeatsDialog::infos()
 
 void KGGZSeatsDialog::slotDisplay(int id)
 {
+	if(id == m_oldmode) return;
+	m_oldmode = id;
+
 	if(id == displayseats) displaySeats();
 	else if(id == displayspectators) displaySpectators();
 }

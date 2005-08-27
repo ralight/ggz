@@ -37,6 +37,7 @@ class KGGZSeatsDialog : public QWidget
 		QMap<int, QFrame*> m_photos;
 		QMap<KIO::Job*, int> m_phototasks;
 		QMap<KIO::Job*, QByteArray> m_photodata;
+		int m_oldmode;
 
 		enum DisplayModes
 		{
