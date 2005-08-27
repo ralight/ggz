@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 7424 2005-08-15 09:00:27Z josef $
+ * $Id: players.c 7498 2005-08-27 08:45:46Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -986,6 +986,7 @@ GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
 			if (status == GGZDB_NO_ERROR) {
 				realname = ggz_strdup(entry.name);
 
+				snprintf(extentry.handle, sizeof(extentry.handle), player->name);
 				status = ggzdb_player_get_extended(&extentry);
 				if (status == GGZDB_NO_ERROR) {
 					photo = ggz_strdup(extentry.photo);

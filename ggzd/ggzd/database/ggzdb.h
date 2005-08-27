@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 7424 2005-08-15 09:00:27Z josef $
+ * $Id: ggzdb.h 7498 2005-08-27 08:45:46Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,7 +50,7 @@ typedef struct {
 typedef struct {
 	unsigned int user_id;			/* Numeric UID */
 	char handle[MAX_USER_NAME_LEN+1];	/* Players nickname/handle */
-	char photo[33];				/* Player photo URL */
+	char photo[65];				/* Player photo URL */
 	/* TODO: add country etc. */
 } ggzdbPlayerExtendedEntry;
 
