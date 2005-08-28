@@ -916,6 +916,13 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 			delete m_sn_game;
 			m_sn_game = NULL;
 			m_gamefd = -1;
+			if(kggzgame)
+			{
+				// XXX: what about eventLeaveGame?
+				detachGameCallbacks();
+				delete kggzgame;
+				kggzgame = NULL;
+			}
 			eventLeaveTable(0); /* was 1 in GGZCoreGame::over */
 			m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetChat()->receive(NULL, i18n("Left table"), KGGZChat::RECEIVE_ADMIN);
