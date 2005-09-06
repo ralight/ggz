@@ -24,7 +24,7 @@
 <?php
 include_once("map/mundomap.map");
 ?>
-	<img src="mundomap.large.png" usemap="#ggzmap">
+	<img src="mundomap.large.png" usemap="#ggzmap" border="0">
 	</div>
 </div>
 
