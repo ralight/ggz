@@ -1,0 +1,19 @@
+# libggz
+
+sources = [
+	"conf.c",
+	"easysock.c",
+	"ggz_common.c",
+	"list.c",
+	"memory.c",
+	"misc.c",
+	"msg.c",
+	"numberlist.c",
+	"stack.c",
+	"xmlelement.c"
+]
+
+Import("env")
+
+env.SharedLibrary('ggz', sources)
+

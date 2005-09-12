@@ -1,0 +1,41 @@
+# libggz
+
+env = Environment()
+conf = Configure(env)
+
+if conf.CheckHeader("arpa/inet.h"):
+	conf.env.Append(CCFLAGS = "-DHAVE_ARPA_INET_H")
+if conf.CheckHeader("netdb.h"):
+	conf.env.Append(CCFLAGS = "-DHAVE_NETDB_H")
+if conf.CheckHeader("netinet/in.h"):
+	conf.env.Append(CCFLAGS = "-DHAVE_NETINET_IN_H")
+if conf.CheckHeader("sys/shm.h"):
+	conf.env.Append(CCFLAGS = "-DHAVE_SYS_SHM_H")
+if conf.CheckHeader("sys/socket.h"):
+	conf.env.Append(CCFLAGS = "-DHAVE_SYS_SOCKET_H")
+if conf.CheckHeader("sys/uio.h"):
+	conf.env.Append(CCFLAGS = "-DHAVE_SYS_UIO_H")
+if conf.CheckHeader("sys/un.h"):
+	conf.env.Append(CCFLAGS = "-DHAVE_SYS_UN_H")
+if conf.CheckHeader("sys/wait.h"):
+	conf.env.Append(CCFLAGS = "-DHAVE_SYS_WAIT_H")
+if conf.CheckHeader("winsock2.h"):
+	conf.env.Append(CCFLAGS = "-DHAVE_WINSOCK2_H")
+
+if conf.CheckHeader("syslog.h"):
+	conf.env.Append(CCFLAGS = "-DGGZ_HAVE_SYSLOG_H")
+if conf.CheckFunc("sendmsg"):
+	conf.env.Append(CCFLAGS = "-DGGZ_HAVE_SENDMSG")
+
+conf.env.Append(CCFLAGS = "-DGGZ_HAVE_PF_LOCAL")
+conf.env.Append(CCFLAGS = "-DHAVE_MSGHDR_MSG_CONTROL")
+
+conf.env.Append(CCFLAGS = "-DHAVE_SUN_LEN")
+conf.env.Append(CCFLAGS = "-DHAVE_CMSG_ALIGN")
+
+env = conf.Finish()
+
+Export("env")
+
+SConscript(["src/SConscript"])
+
