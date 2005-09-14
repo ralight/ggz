@@ -113,6 +113,10 @@ LDADD/LIBADD:
 It is generally discouraged to use autoconf-style variables (@VAR@).
 Instead, automake-style variables ($(VAR)) are recommended.
 
+The automake variables for the flags are prog_XXFLAGS, or AM_XXFLAGS for global
+scope. The variables for the libraries are prog_LDADD, or LD_ADD (without the
+AM!) for global scope.
+
 Notes
 -----
 
