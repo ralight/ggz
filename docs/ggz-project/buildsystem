@@ -95,8 +95,13 @@ libggz_includes, libggz_libraries
 Makefile options
 ----------------
 
-CFLAGS/CXXFLAGS and LDFLAGS:
+CFLAGS/CXXFLAGS, CPPFLAGS and LDFLAGS:
   If set before configure is run, they're picked up automatically.
+
+  For both CPPFLAGS and LDFLAGS, the appropriate variables from the configure
+  run should be used, which are named $(FOO_INCLUDES) and $(FOO_LDFLAGS).
+  The CFLAGS and CXXFLAGS variables should not be used in the makefiles for
+  externally determined options - use config.h instead.
 
 LDADD/LIBADD:
   If set before configure is run, they're read in, but NOT used automatically.
