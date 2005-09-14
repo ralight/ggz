@@ -106,6 +106,10 @@ CFLAGS/CXXFLAGS, CPPFLAGS and LDFLAGS:
 LDADD/LIBADD:
   If set before configure is run, they're read in, but NOT used automatically.
   Instead, $(LDADD) must be used in the appropriate lines.
+  There are 3 ways to accomplish this:
+  - for libraries, use libfoo_LIBADD = $(LDADD) ...
+  - for single binaries, use foo_LDADD = $(LDADD) ...
+  - for multiple binaries, use LDADD += ... (as using $(LDADD) would recurse)
   Modifications in configure.ac are done by appending to this variable and
   substituting it via AC_SUBST again.
 
