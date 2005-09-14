@@ -1,14 +1,17 @@
-#!/bin/sh
-# GGZ Gaming Zone bootstrap script
-# To be used for CVS checkouts
+#!/usr/bin/env bash
+#
+# GGZ Gaming Zone bootstrap script for developers.
+# To be used for SVN checkouts. Needs bash and perl installed.
 
 srcdir=`dirname $0`
 
 if test -z "$*"; then
-  echo "** Warning: I am going to run 'configure' with no arguments."
-  echo "** If you wish to pass any to it, please specify them on the"
-  echo "** '$0' command line."
-  echo
+  if test -z "$NOCONFIGURE"; then
+    echo "** Warning: I am going to run 'configure' with no arguments."
+    echo "** If you wish to pass any to it, please specify them on the"
+    echo "** '$0' command line."
+    echo
+  fi
 fi
 
 echo -n "Bootstrapping GGZ... "
@@ -86,7 +89,7 @@ echo -n "[aclocal]"
 echo -n "[autoheader]"
 autoheader -I $srcdir || { echo "autoheader failed."; exit; }
 echo -n "[automake]"
-(cd $srcdir && automake --add-missing --gnu) || { echo "automake failed."; exit; }
+(set -o pipefail && cd $srcdir && automake --add-missing --gnu 2>&1 | (grep -v installing || true)) || { echo "automake failed."; exit; }
 if test -f $srcdir/am_edit; then
 	echo -n "[am_edit]"
 	perl $srcdir/am_edit --foreign-libtool || { echo "am_edit failed."; exit; }
@@ -97,10 +100,10 @@ echo ""
 
 # Run configuration
 
-if test x$NOCONFIGURE = x; then
+if test -z "$NOCONFIGURE"; then
   echo Running $srcdir/configure $conf_flags "$@" ...
   $srcdir/configure $conf_flags "$@"
 else
-  echo Skipping configure process.
+  echo Skipping configure process as requested.
 fi
 
