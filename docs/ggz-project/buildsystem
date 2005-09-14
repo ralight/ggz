@@ -13,7 +13,7 @@ Other components which are almost always needed are:
 - perl
 - gettext
 
-To easy the life for the GGZ developers, the file ggz.m4 (formerly
+To ease the life for the GGZ developers, the file ggz.m4 (formerly
 acinclude.ggz) has been written which checks for a proper environment for both
 GGZ programs and external programs using GGZ libraries.
 
@@ -38,9 +38,9 @@ AC_GGZ_INIT
   It takes no arguments by default, but understands two of them:
   * defaults
     Adds a bunch standard paths for headers, libraries and binaries to the
-    search path
+    search path. Currently, these are /usr and /usr/local.
   * export
-    The default search path is made available to external checks
+    The default search path is made available to external checks.
 
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZCORE
@@ -92,6 +92,27 @@ libggz_includes, libggz_libraries
   -> "lowercase" variables intended to be used in configure.in.
      They're also empty when a check failed, but can be catched thereafter.
 
+Makefile options
+----------------
+
+CFLAGS/CXXFLAGS and LDFLAGS:
+  If set before configure is run, they're picked up automatically.
+
+LDADD/LIBADD:
+  If set before configure is run, they're read in, but NOT used automatically.
+  Instead, $(LDADD) must be used in the appropriate lines.
+  Modifications in configure.ac are done by appending to this variable and
+  substituting it via AC_SUBST again.
+
+  Note that only platform-specific libraries should be added here,
+  if they're not part of libc, like -liconv, -lgettext, -lnsl or -lmath.
+  They're all supposed to reside in the default search path for the linker,
+  so that no additional CFLAGS, LDFLAGS etc. should be needed.
+  All other libraries should be given explicitely in $(LIB_FOO) notation.
+
+It is generally discouraged to use autoconf-style variables (@VAR@).
+Instead, automake-style variables ($(VAR)) are recommended.
+
 Notes
 -----
 
@@ -101,4 +122,5 @@ On Windows, static libraries are built. Only .a and .la files are installed.
 
 Josef, 25.09.2002
 Update: 04.02.2005
+Update: 14.09.2005
 
