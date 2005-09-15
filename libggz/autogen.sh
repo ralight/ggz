@@ -58,7 +58,8 @@ log=""
 bailout=0
 need_libtool=0
 
-(grep "\bAM_PROG_LIBTOOL" $srcdir/configure.ac >/dev/null) && need_libtool=1
+(grep "\bAC_PROG_LIBTOOL" $srcdir/configure.ac >/dev/null) && need_libtool=1
+(grep "\bAC_GGZ_PLATFORM" $srcdir/configure.ac >/dev/null) && need_libtool=1
 
 version_check "autoconf" "2.57"
 version_check "automake" "1.7"

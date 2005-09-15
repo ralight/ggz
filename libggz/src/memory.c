@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/15/01
- * $Id: memory.c 5905 2004-02-11 04:14:40Z jdorje $
+ * $Id: memory.c 7514 2005-09-15 17:49:48Z josef $
  *
  * This is the code for handling memory allocation for ggzcore
  *
@@ -24,9 +24,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include "config.h"
 
 #include <stdlib.h>
 #include <string.h>

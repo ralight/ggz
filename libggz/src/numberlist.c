@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: numberlist.c 6760 2005-01-20 05:51:06Z jdorje $
+ * $Id: numberlist.c 7514 2005-09-15 17:49:48Z josef $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -26,9 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif
+#include "config.h"
 
 #include <ctype.h>
 #include <stdio.h>

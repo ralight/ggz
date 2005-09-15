@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 6977 2005-03-11 07:08:53Z jdorje $
+ * $Id: msg.c 7514 2005-09-15 17:49:48Z josef $
  *
  * Debug and error messages
  *
@@ -24,9 +24,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include "config.h"
 
 #include <errno.h>
 #include <stdarg.h>

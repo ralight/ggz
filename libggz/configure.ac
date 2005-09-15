@@ -7,198 +7,23 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
-
 # Checks for build environment
 # ============================
-AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_INSTALL
-AC_PROG_LN_S
-AC_PROG_CPP
-AC_LIBTOOL_WIN32_DLL
+
+AC_GGZ_PLATFORM_BASE
 AC_PROG_LIBTOOL
-AC_PROG_RANLIB
-AC_PROG_MAKE_SET
-
-
-# Special case for compiling on windows
-case $host_os in
-  *mingw32* ) MINGW32=yes;;
-          * ) MINGW32=no;;
-esac
+AC_GGZ_PLATFORM
 
 # Compiling Options
 # =================
 AC_ARG_WITH([gcrypt],
-	    AC_HELP_STRING([--with-gcrypt], [Add encryption support]),
-	    [enable_gcrypt=$enableval], [enable_gcrypt=no])
+  AC_HELP_STRING([--with-gcrypt], [Add encryption support]),
+  [enable_gcrypt=$enableval],
+  [enable_gcrypt=no])
 AC_ARG_ENABLE([threading],
-              AC_HELP_STRING([--disable-threading],
-                             [Don't build in threading support]),
-              [enable_threading=$enableval], [enable_threading=yes])
-
-
-# Check for header files
-# ======================
-AC_CHECK_HEADERS([fcntl.h sys/param.h], [],
-                 [AC_MSG_ERROR([cannot find required header file])])
-AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h sys/shm.h sys/socket.h \
-                  sys/uio.h sys/un.h sys/wait.h winsock2.h])
-
-
-# Check for typedefs, structures, and compiler characteristics
-# ============================================================
-AC_C_CONST
-AC_TYPE_MODE_T
-AC_TYPE_PID_T
-AC_TYPE_SIGNAL
-AC_TYPE_SIZE_T
-AC_C99_VARIABLE_ARRAYS
-
-
-# Signedness overrides
-# ====================
-save_cflags=$CFLAGS
-CFLAGS="-Wall -Werror"
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
-	[[void signedness(void){char c;if(c==-1)c=0;}]])],
-	[],
-	[save_cflags="$save_cflags -fsigned-char"])
-CFLAGS=$save_cflags
-
-
-# Check for debug types in syslog.h
-# =================================
-# If syslog is present, we take the log types from it.
-# If not, define our own enumeration.
-AC_CHECK_HEADER([syslog.h], [
-	AC_DEFINE([GGZ_HAVE_SYSLOG_H], 1, [Check if syslog is present])
-], [])
-
-
-# Check for sendmsg
-# =================
-# If sendmsg() is present, we can send file descriptors over a local socket
-# via ggz_write_fd.  If not we disable this functionality.
-AC_CHECK_FUNC([sendmsg], [
-	AC_DEFINE([GGZ_HAVE_SENDMSG], 1, [Check if file descriptors can be sent])
-], [])
-
-
-# Check for PF_LOCAL/PF_UNIX
-# ==========================
-# There should be an autoconf macro to check this???
-AC_MSG_CHECKING([for PF_LOCAL])
-AC_EGREP_CPP(PF_LOCAL,
-             [#include <sys/socket.h>
-              PF_LOCAL ],
-             [AC_MSG_RESULT(no)
-              AC_MSG_CHECKING([for PF_UNIX])
-              AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
-				      PF_UNIX ],
-                           [AC_MSG_RESULT(no)],
-                           [AC_MSG_RESULT(yes)
-                            AC_DEFINE([PF_LOCAL], PF_UNIX,
-				      [PF_UNIX is available])
-			    AC_DEFINE([AF_LOCAL], AF_UNIX,
-				      [AF_UNIX is available])
-				AC_DEFINE([GGZ_HAVE_PF_LOCAL], 1, [Check if unix sockets are supported])
-                            ])], 
-             [AC_MSG_RESULT(yes)
-			  AC_DEFINE([GGZ_HAVE_PF_LOCAL], 1, [Check if unix sockets are supported])
-			  ])
-
-
-# Check for SUN_LEN
-# =================
-AC_MSG_CHECKING([for SUN_LEN])
-AC_LINK_IFELSE([
-	AC_LANG_PROGRAM([[
-		#include<sys/types.h>
-		#include<sys/un.h>
-		]],
-		[[struct sockaddr_un su; int i = SUN_LEN(&su);]])
-	],
-	[AC_MSG_RESULT(yes)
-	 AC_DEFINE([HAVE_SUN_LEN], 1, [Define if the SUN_LEN macro exists])],
-	[AC_MSG_RESULT(no)])
-
-
-# Check for msghdr member msg_controllen
-# ======================================
-AC_EGREP_HEADER(msg_controllen, sys/socket.h,
-		AC_DEFINE([HAVE_MSGHDR_MSG_CONTROL], 1,
-			  [Define if msghdr has a msg_controllen member])
-			AC_MSG_CHECKING([for CMSG_ALIGN])
-			AC_LINK_IFELSE([
-				AC_LANG_PROGRAM([[
-					#include<sys/types.h>
-					#include<sys/socket.h>
-					]],
-					[[int i = CMSG_ALIGN(0);]])
-				],
-				[AC_MSG_RESULT(yes)
-				 AC_DEFINE([HAVE_CMSG_ALIGN], 1,
-					  [Define if CMSG_ALIGN is available])],
-				[AC_MSG_RESULT(no)])
-
-			AC_MSG_CHECKING([for CMSG_LEN])
-			AC_LINK_IFELSE([
-				AC_LANG_PROGRAM([[
-					#include<sys/types.h>
-					#include<sys/socket.h>
-					]],
-					[[int i = CMSG_LEN(0);]])
-				],
-				[AC_MSG_RESULT(yes)
-				 AC_DEFINE([HAVE_CMSG_LEN], 1,
-					  [Define if CMSG_LEN is available])],
-				[AC_MSG_RESULT(no)])
-
-			AC_MSG_CHECKING([for CMSG_SPACE])
-			AC_LINK_IFELSE([
-				IF_LANG_PROGRAM([[
-					#include<sys/types.h>
-					#include<sys/socket.h>
-					]],
-					[[int i = CMSG_SPACE(0);]])
-				],
-				[AC_MSG_RESULT(yes)
-				 AC_DEFINE([HAVE_CMSG_SPACE], 1,
-					  [Define if CMSG_SPACE is available])],
-				[AC_MSG_RESULT(no)])
-)
-
-# Add DLL build support
-# =====================
-
-if test "$MINGW32" = "yes"; then
-	LDFLAGS="$LDFLAGS -no-undefined"
-fi
-
-# Check for library functions
-# ===========================
-# On some systems additional libraries may be needed.  Simply include them
-# if they're there.
-AC_CHECK_LIB(socket, socket, [LDADD="$LDADD -lsocket"])
-AC_CHECK_LIB(nsl, gethostbyname, [LDADD="$LDADD -lnsl"])
-if test "$MINGW32" = "yes"; then
-  LDADD="$LDADD -lws2_32"
-fi
-
-AC_CHECK_FUNCS([getpagesize memmove memset mkdir \
-                stat strcasecmp strerror strstr strchr], [],
-               [AC_MSG_ERROR([cannot find required function])])
-AC_CHECK_FUNCS([gethostbyname socket]) # These fail; dunno why
-AC_CHECK_FUNCS([alarm getuid inet_pton])
-AC_FUNC_FORK
-# We don't support AC_FUNC_MALLOC yet.  Don't try to malloc(0).  See manual.
-#AC_FUNC_MALLOC
-AC_FUNC_MEMCMP
-AC_FUNC_REALLOC
-AC_FUNC_STAT
-FUNC_MKDIR_TAKES_ONE_ARG
-
+  AC_HELP_STRING([--disable-threading], [Don't build in threading support]),
+  [enable_threading=$enableval],
+  [enable_threading=yes])
 
 # Find pthread library
 # ====================
@@ -242,24 +67,21 @@ fi
 # Encryption: TLS library
 # =======================
 AC_GGZ_TLS
-LDADD="$LDADD $GGZTLS_LDFLAGS $GGZTLS_LIB"
-CFLAGS="$CFLAGS $GGZTLS_INCLUDES"
-
 
 # Debug modes
 # ===========
 AC_GGZ_DEBUG
 
-
+# Makefile creation
+# =================
 AC_SUBST(LDADD)
 
 AC_CONFIG_FILES([Makefile 
-	   src/Makefile
-	   src/security/Makefile
-	   tests/Makefile
-	   man/Makefile])
+  src/Makefile
+  src/security/Makefile
+  tests/Makefile
+  man/Makefile])
 AC_OUTPUT
-
 
 # Status Output
 # =============

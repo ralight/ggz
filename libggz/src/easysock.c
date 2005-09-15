@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7266 2005-06-10 11:54:33Z josef $
+ * $Id: easysock.c 7514 2005-09-15 17:49:48Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -25,34 +25,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+/*
+ * actually used definitions:
+HAVE_WINSOCK2_H
+GGZ_HAVE_PF_LOCAL
+SUN_LEN (local substitute)
+  -> also in support.h!, therefore deleted
+GGZ_HAVE_SENDMSG
+HAVE_MSGHDR_MSG_CONTROL
+  HAVE_CMSG_* -> support.h
+  CMSG_* -> support.h
+DEBUG_MEM
+*/
+
+#include "config.h"
 
 #ifdef DEBUG_MEM
-# include <dmalloc.h>
+#include <dmalloc.h>
 #endif
 
 #include <sys/types.h>
-#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
-#endif
-#ifdef HAVE_SYS_UIO_H
 #include <sys/uio.h>
-#endif
-#ifdef HAVE_SYS_UN_H
 #include <sys/un.h>
-#endif
 #include <sys/param.h>
-#ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
-#endif
-#ifdef HAVE_NETDB_H
 #include <netdb.h>
-#endif
+
 #ifdef HAVE_WINSOCK2_H
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -277,14 +277,7 @@ int ggz_make_socket_or_die(const GGZSockType type, const unsigned short port,
 	return sock;
 }
 
-/* A fallback SUN_LEN (this macro isn't entirely portable).  Taken from
- * the GNU C library. */
-#ifndef SUN_LEN
-#  define SUN_LEN(ptr) \
-  ((size_t) (((struct sockaddr_un *) 0)->sun_path) + strlen((ptr)->sun_path))
-#endif
-
-int ggz_make_unix_socket(const GGZSockType type, const char* name) 
+int ggz_make_unix_socket(const GGZSockType type, const char* name)
 {
 #if GGZ_HAVE_PF_LOCAL
 	int sock;

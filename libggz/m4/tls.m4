@@ -2,7 +2,7 @@ dnl ======================================
 dnl GGZ Gaming Zone - Configuration Macros
 dnl ======================================
 dnl
-dnl Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
+dnl Copyright (C) 2001 - 2005 Josef Spillner, josef@ggzgamingzone.org
 dnl This file has heavily been inspired by KDE's acinclude :)
 dnl It is published under the conditions of the GNU General Public License.
 dnl
@@ -16,6 +16,7 @@ dnl
 dnl History:
 dnl 2002-02-10: lookup TLS libraries; taken code from acinclude.ggz
 dnl 2002-02-24: default to GnuTLS; create conditional compile vars
+dnl 2005-09-14: several cleanups due to newer autotools
 
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
@@ -49,8 +50,7 @@ done
 
 dnl ------------------------------------------------------------------------
 dnl Try to find the SSL headers and libraries.
-dnl $(SSL_LDFLAGS) will be -Lsslliblocation (if needed)
-dnl and $(SSL_INCLUDES) will be -Isslhdrlocation (if needed)
+dnl Exported are $(ssl_includes), $(ssl_libraries) and $(ssl_lib).
 dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_PATH_SSL],
@@ -60,13 +60,13 @@ LIBSSL="-lssl -lcrypto"
 ac_ssl_includes=NO ac_ssl_libraries=NO
 ssl_libraries=""
 ssl_includes=""
-AC_ARG_WITH(ssl-dir,
-    [  --with-ssl-dir=DIR      where the root of OpenSSL is installed],
-    [  ac_ssl_includes="$withval"/include
-       ac_ssl_libraries="$withval"/lib
-    ])
-
-dnl AC_MSG_CHECKING(for OpenSSL)
+AC_ARG_WITH([ssl-dir],
+  AC_HELP_STRING([--with-ssl-dir=DIR], [where the root of OpenSSL is installed]),
+  [
+    ac_ssl_includes="$withval"/include
+    ac_ssl_libraries="$withval"/lib
+  ],
+  [])
 
 AC_CACHE_VAL(ac_cv_have_ssl,
 [#try to guess OpenSSL locations
@@ -123,16 +123,7 @@ AC_CACHE_VAL(ac_cv_have_ssl,
 
 eval "$ac_cv_have_ssl"
 
-dnl AC_MSG_RESULT([libraries $ac_ssl_libraries, headers $ac_ssl_includes])
-
-dnl AC_MSG_CHECKING([whether OpenSSL uses rsaref])
-dnl AC_MSG_RESULT($ac_ssl_rsaref)
-
-dnl AC_MSG_CHECKING([for easter eggs])
-dnl AC_MSG_RESULT([none found])
-
 if test "$have_ssl" = yes; then
-  dnl AC_MSG_CHECKING(for OpenSSL version)
   dnl Check for SSL version
   AC_CACHE_VAL(ac_cv_ssl_version,
   [
@@ -161,26 +152,18 @@ EOF
 
       if eval `./conftest 2>&5`; then
         if test $ssl_version = error; then
-          dnl AC_MSG_WARN([$ssl_incdir/openssl/opensslv.h doesn't define OPENSSL_VERSION_NUMBER !])
 		  have_ssl=no
         else
           if test $ssl_version = old; then
-            dnl AC_MSG_WARN([OpenSSL version too old. Upgrade to 0.9.6 at least, see http://www.openssl.org. SSL support disabled.])
             have_ssl=no
           fi
         fi
         ac_cv_ssl_version="ssl_version=$ssl_version"
       else
-        dnl AC_MSG_WARN([Your system couldn't run a small SSL test program.
-        dnl Check config.log, and if you can't figure it out, send a mail to 
-        dnl the GGZ development list <ggz-dev@lists.sourceforge.net>, attaching your config.log])
 		have_ssl=no
       fi
 
     else
-      dnl AC_MSG_WARN([Your system couldn't link a small SSL test program.
-      dnl Check config.log, and if you can't figure it out, send a mail to 
-      dnl the GGZ development list <ggz-dev@lists.sourceforge.net>, attaching your config.log])
 	  have_ssl=no
     fi 
 
@@ -189,7 +172,6 @@ EOF
   ])
 
   eval "$ac_cv_ssl_version"
-  dnl AC_MSG_RESULT($ssl_version)
 fi
 
 if test "$have_ssl" != yes; then
@@ -212,50 +194,43 @@ else
   fi
 fi
 
-dnl if test "$ssl_includes" = "/usr/include" || test  "$ssl_includes" = "/usr/local/include" || test -z "$ssl_includes"; then
-dnl SSL_INCLUDES="";
-dnl else
- SSL_INCLUDES="-I $ssl_includes"
-dnl fi
+# got ssl_includes
+# got ssl_libraries
+ssl_lib=$LIBSSL
 
-dnl if test "$ssl_libraries" = "/usr/lib" || test "$ssl_libraries" = "/usr/local/lib" || test -z "$ssl_libraries"; then
-dnl  SSL_LDFLAGS=""
-dnl else
- SSL_LDFLAGS="$ssl_libraries -R$ssl_libraries"
-dnl fi
-
-AC_SUBST(SSL_INCLUDES)
-AC_SUBST(SSL_LDFLAGS)
-AC_SUBST(LIBSSL)
 ])
 
 dnl ------------------------------------------------------------------------
 dnl Try to find the GNUTLS headers and libraries.
-dnl $(GNUTLS_LDFLAGS) will be -L ... (if needed)
-dnl and $(GNUTLS_INCLUDES) will be -I ... (if needed)
+dnl Exported are $(gnutls_includes), $(gnutls_libraries) and $(gnutls_lib).
 dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_GNUTLS],
 [
-dnl AC_MSG_CHECKING([for GNUTLS])
-
 ac_gnutls_includes=NO ac_gnutls_libraries=NO
 gnutls_libraries=""
 gnutls_includes=""
+gnutls_lib=""
 
-AC_ARG_WITH(gnutls-dir,
-    [  --with-gnutls-dir=DIR       gnutls installation prefix ],
-    [  ac_gnutls_includes="$withval"/include/gnutls
-       ac_gnutls_libraries="$withval"/lib
-    ])
-AC_ARG_WITH(gnutls-includes,
-    [  --with-gnutls-includes=DIR  where the gnutls includes are. ],
-    [  ac_gnutls_includes="$withval"
-    ])
-AC_ARG_WITH(gnutls-libraries,
-    [  --with-gnutls-libraries=DIR where the gnutls libs are. ],
-    [  ac_gnutls_libraries="$withval"
-    ])
+AC_ARG_WITH([gnutls-dir],
+  AC_HELP_STRING([--with-gnutls-dir=DIR], [gnutls installation prefix]),
+  [
+    ac_gnutls_includes="$withval"/include/gnutls
+    ac_gnutls_libraries="$withval"/lib
+  ],
+  [])
+AC_ARG_WITH([gnutls-includes],
+    AC_HELP_STRING([--with-gnutls-includes=DIR], [where the gnutls includes are.]),
+    [
+      ac_gnutls_includes="$withval"
+    ],
+    [])
+AC_ARG_WITH([gnutls-libraries],
+    AC_HELP_STRING([--with-gnutls-libraries=DIR], [where the gnutls libs are.]),
+    [
+      ac_gnutls_libraries="$withval"
+    ],
+    [])
 
 AC_CACHE_VAL(ac_cv_have_gnutls,
 [
@@ -285,9 +260,6 @@ ac_gnutls_libraries="$gnutls_libdir"
 
 if test "$ac_gnutls_includes" = NO || test "$ac_gnutls_libraries" = NO; then
   ac_cv_have_gnutls="have_gnutls=no"
-  ac_gnutls_notfound=""
-
-  dnl AC_MSG_ERROR([gnutls not found. Please check your installation! ]);
 else
   have_gnutls="yes"
 fi
@@ -296,28 +268,15 @@ fi
 eval "$ac_cv_have_gnutls"
 
 if test "$have_gnutls" != yes; then
-  dnl AC_MSG_RESULT([$have_gnutls]);
   have_gnutls=no
 else
   ac_cv_have_gnutls="have_gnutls=yes \
     ac_gnutls_includes=$ac_gnutls_includes ac_gnutls_libraries=$ac_gnutls_libraries"
-  dnl AC_MSG_RESULT([libraries $ac_gnutls_libraries, headers $ac_gnutls_includes])
 
   gnutls_libraries="$ac_gnutls_libraries"
   gnutls_includes="$ac_gnutls_includes"
+  gnutls_lib="-lgnutls"
 fi
-
-AC_SUBST(gnutls_libraries)
-AC_SUBST(gnutls_includes)
-
-GNUTLS_INCLUDES="-I$gnutls_includes"
-GNUTLS_LDFLAGS="-L$gnutls_libraries -lgnutls -lgcrypt"
-
-AC_SUBST(GNUTLS_INCLUDES)
-AC_SUBST(GNUTLS_LDFLAGS)
-
-LIB_GGZ='-lggz'
-AC_SUBST(LIB_GGZ)
 
 ])
 
@@ -333,24 +292,24 @@ AC_DEFUN([AC_GGZ_TLS],
 [
 AC_MSG_CHECKING([for GGZ TLS implementation])
 
-AC_ARG_WITH(tls,
-     [  --with-tls[=ARG]        GnuTLS or OpenSSL - Auto if no ARG],
-     tls_type=$withval, tls_type=no)
+AC_ARG_WITH([tls],
+  AC_HELP_STRING([--with-tls@<:@=ARG@:>@], [GnuTLS or OpenSSL - auto if no ARG]),
+  [tls_type=$withval],
+  [tls_type=no])
 
 dnl None (defaults)
 GGZTLS_INCLUDES=""
 GGZTLS_LDFLAGS=""
 LIB_GGZTLS=""
-GGZTLS_SOURCES="none.c"
 TLS_TYPE="no"
 
 if test "$tls_type" = yes -o "$tls_type" = GnuTLS; then
   dnl GNUTLS check
   AC_GGZ_GNUTLS
   if test "$have_gnutls" = yes; then
-    GGZTLS_INCLUDES=$GNUTLS_INCLUDES
-    GGZTLS_LDFLAGS=$GNUTLS_LDFLAGS
-    GGZTLS_SOURCES="gnutls.c"
+    GGZTLS_INCLUDES="-I $gnutls_includes"
+    GGZTLS_LDFLAGS="-L $gnutls_libraries"
+    LIB_GGZTLS=$gnutls_lib
     AC_MSG_RESULT([using GnuTLS])
     AC_DEFINE_UNQUOTED([GGZ_TLS_GNUTLS], 1,
 		       [Define if GNUTLS is to be used])
@@ -363,9 +322,9 @@ then
   dnl OpenSSL check
   AC_PATH_SSL
   if test "$have_ssl" = yes; then
-    GGZTLS_INCLUDES=$SSL_INCLUDES
-    GGZTLS_LDFLAGS=$LIBSSL
-    GGZTLS_SOURCES="openssl.c list.c list.h"
+    GGZTLS_INCLUDES="-I $ssl_includes"
+    GGZTLS_LDFLAGS="-L $ssl_libraries"
+    LIB_GGZTLS=$ssl_lib
     AC_MSG_RESULT([using OpenSSL])
     AC_DEFINE_UNQUOTED([GGZ_TLS_OPENSSL], 1,
 		      [Define if OpenSSL is to be used])
@@ -387,12 +346,6 @@ fi
 AC_SUBST(GGZTLS_INCLUDES)
 AC_SUBST(GGZTLS_LDFLAGS)
 AC_SUBST(LIB_GGZTLS)
-AC_SUBST(GGZTLS_SOURCES)
-AC_SUBST(GGZTLS_LIB)
-
-AM_CONDITIONAL(TLS_NONE, [test x$TLS_TYPE = xno])
-AM_CONDITIONAL(TLS_OPENSSL, [test x$TLS_TYPE = xOpenSSL])
-AM_CONDITIONAL(TLS_GNUTLS, [test x$TLS_TYPE = xGnuTLS])
 
 ])
 

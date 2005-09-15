@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 7266 2005-06-10 11:54:33Z josef $
+ * $Id: conf.c 7514 2005-09-15 17:49:48Z josef $
  *
  * Internal functions for handling configuration files
  *
@@ -25,9 +25,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include "config.h"
 
 #include <stdlib.h>
 #include <string.h>
