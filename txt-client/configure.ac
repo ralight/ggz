@@ -10,7 +10,6 @@ AM_MAINTAINER_MODE
 dnl Check for standard build environment
 dnl ====================================
 AC_PROG_CC
-AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 

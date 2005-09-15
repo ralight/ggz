@@ -19,12 +19,10 @@ AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by defau
 dnl Check for standard build environment
 dnl ====================================
 AC_PROG_CC
-AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_CPP
-AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 AC_PROG_RANLIB
 
 dnl Check for GGZ libraries

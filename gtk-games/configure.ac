@@ -24,8 +24,6 @@ dnl ====================================
 
 AC_PROG_CC
 AC_PROG_CPP
-AC_ISC_POSIX
-AM_PROG_CC_STDC
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET

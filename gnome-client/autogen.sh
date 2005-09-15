@@ -1,14 +1,17 @@
-#!/bin/sh
-# GGZ Gaming Zone bootstrap script
-# To be used for CVS checkouts
+#!/usr/bin/env bash
+#
+# GGZ Gaming Zone bootstrap script for developers.
+# To be used for SVN checkouts. Needs bash and perl installed.
 
 srcdir=`dirname $0`
 
 if test -z "$*"; then
-  echo "** Warning: I am going to run 'configure' with no arguments."
-  echo "** If you wish to pass any to it, please specify them on the"
-  echo "** '$0' command line."
-  echo
+  if test -z "$NOCONFIGURE"; then
+    echo "** Warning: I am going to run 'configure' with no arguments."
+    echo "** If you wish to pass any to it, please specify them on the"
+    echo "** '$0' command line."
+    echo
+  fi
 fi
 
 echo -n "Bootstrapping GGZ... "
@@ -55,12 +58,13 @@ log=""
 bailout=0
 need_libtool=0
 
-(grep "\bAM_PROG_LIBTOOL" $srcdir/configure.ac >/dev/null) && need_libtool=1
+(grep "\bAC_PROG_LIBTOOL" $srcdir/configure.ac >/dev/null) && need_libtool=1
+(grep "\bAC_GGZ_PLATFORM" $srcdir/configure.ac >/dev/null) && need_libtool=1
 
 version_check "autoconf" "2.57"
 version_check "automake" "1.7"
 if test "x$need_libtool" = "x1"; then
-	version_check "libtool" "1.4.2"
+	version_check "libtool" "1.4.4"
 fi
 version_check "gettext" "0.10.40"
 
@@ -86,7 +90,7 @@ echo -n "[aclocal]"
 echo -n "[autoheader]"
 autoheader -I $srcdir || { echo "autoheader failed."; exit; }
 echo -n "[automake]"
-(cd $srcdir && automake --add-missing --gnu) || { echo "automake failed."; exit; }
+(set -o pipefail && cd $srcdir && automake --add-missing --gnu 2>&1 | (grep -v installing || true)) || { echo "automake failed."; exit; }
 if test -f $srcdir/am_edit; then
 	echo -n "[am_edit]"
 	perl $srcdir/am_edit --foreign-libtool || { echo "am_edit failed."; exit; }
@@ -97,10 +101,10 @@ echo ""
 
 # Run configuration
 
-if test x$NOCONFIGURE = x; then
+if test -z "$NOCONFIGURE"; then
   echo Running $srcdir/configure $conf_flags "$@" ...
   $srcdir/configure $conf_flags "$@"
 else
-  echo Skipping configure process.
+  echo Skipping configure process as requested.
 fi
 

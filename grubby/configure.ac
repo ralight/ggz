@@ -17,11 +17,9 @@ AC_ARG_ENABLE(silc,  [  --disable-silc        Exclude SILC network module],, ena
 dnl Check for standard build environment
 dnl ====================================
 AC_PROG_CC
-AC_ISC_POSIX
 AC_PROG_INSTALL
-AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
 dnl GGZ checks
 dnl ==========
