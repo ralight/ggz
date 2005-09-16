@@ -1,7 +1,6 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [ 
 
 <!ENTITY ggz "GGZ Gaming Zone">
-<!ENTITY protonum "7">
 ]>
 
 <book id="index">
@@ -23,14 +22,14 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 7520 $</revnumber>
-	<date>$Date: 2005-09-16 13:14:26 -0700 (Fri, 16 Sep 2005) $</date>
+	<revnumber>$Revision: 7521 $</revnumber>
+	<date>$Date: 2005-09-16 14:43:09 -0700 (Fri, 16 Sep 2005) $</date>
       </revision>
     </revhistory>
     <abstract>
       <para>
         Module protocol specification for &ggz; game clients.
-        This document covers the communication between the GGZ core client
+        This document covers the communication between the GGZ core clients
         and the game client modules.
       </para>
     </abstract>
@@ -61,9 +60,23 @@
 </para>
 
 <para>
+  At each point in time, a game client happens to be in a specific state.
+  Messages received from the core client may lead to state changes, as may
+  some explicit transitions being executed by the game client itself.
+  A list of all states can be found in the <link linkend="ggzmodstate">
+  appendix of states</link>.
+</para>
+
+<para>
+  Several actions refer to seats on the table the game is being played on.
+  Each seat can be either empty or have an assignment. A full list can be
+  found in the <link linkend="ggzseattype">appendix of seat assignments</link>.
+</para>
+
+<para>
   Interactions are presented here categorically. For a complete
   reference of game client/core client interactions, please see the
-  <link linkend="appendix">appendix</link>.
+  <link linkend="appendix">appendix of messages</link>.
 </para>
 
 <section id="startup">
@@ -72,8 +85,8 @@
   <para>
     Each game client starts up in CREATED mode. In this step there is
     no information about seats or players yet. The only useful action
-    is to wait for a LAUNCH message so the transition to the CONNECTED
-    state can happen.
+    is to wait for a GAME_LAUNCH message so the transition to the
+    CONNECTED state can happen.
     Games can query whether they run on GGZ or not via the environment
     variable GGZMODE.
   </para>
@@ -96,10 +109,12 @@
     When in CONNECTED state, a game client still isn't operable. There
     is another mandatory transition it has to do, namely to the WAITING
     state. This happens once the core client tells it where to connect
-    to, and that connections could be established without problems.
+    to with a GAME_SERVER message, and that connections could be
+    established without problems.
     Alternatively, depending on the operating system, the core client
     will establish the connection to the game server and pass it to the
-    game client, so it can be used from the start on.
+    game client with a GAME_SERVER_FD message, so it can be used from the
+    start on.
   </para>
 
 </section>
@@ -121,9 +136,17 @@
 
   <para>
     The PLAYING state is fully under the control of the game client.
-    In case of a leaving player, it can change the state back to WAITING,
-    and then forward to PLAYING again at any time. Once the game is finished,
-    the (last) transition is done and leads to the DONE state.
+    Messages to request seat changes might be sent from it to the core client,
+    as might chat messages which are then sent to all other players on the table.
+    Likewise, more information about the other players can be requested with
+    an INFO request, upon a GAME_INFO message informs about those details.
+    Not tied to a specific request but rather sent implicitely is the GAME_STATS
+    message which contains statistical information about all registered players.
+  </para>
+  <para>
+    In case of a leaving player, the game client can change the state back to
+    WAITING, and then forward to PLAYING again at any time. Once the game is
+    finished, the (last) transition is done and leads to the DONE state.
   </para>
 
 </section>
@@ -156,7 +179,7 @@
 
     <refnamediv>
       <refname>GAME_LAUNCH</refname>
-      <refpurpose>Initializes the game with its seat data</refpurpose>
+      <refpurpose>Initializes the game client</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -191,7 +214,10 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Initializes the game with its seat data</para>
+      <para>
+        This message is always the first one sent to the game client in order to
+        initialize it. It will cause the transition from CREATED to CONNECTED state.
+      </para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -201,7 +227,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message only appears during the CREATED state.
         </para>
       </refsect2>
     </refsect1>
@@ -275,6 +301,7 @@
         does not establish the connection (channel) to the game server first,
         as it would send a <link linkend="msg.gameserverfd">GAME_SERVER_FD</link>
         in this case.
+        The message causes a transition from CONNECTED to WAITING state.
       </para>
       <refsect2>
         <title>Message Data</title>
@@ -285,7 +312,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message only appears during the CONNECTED state.
         </para>
       </refsect2>
     </refsect1>
@@ -348,6 +375,7 @@
         once they're started and in the CONNECTED phase.
         Otherwise, <link linkend="msg.gameserver">GAME_SERVER</link> will be sent
         to let the game client establish the connection.
+        The message causes a transition from CONNECTED to WAITING state.
       </para>
       <refsect2>
         <title>Message Data</title>
@@ -358,7 +386,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message only appears during the CONNECTED state.
         </para>
       </refsect2>
     </refsect1>
@@ -427,7 +455,12 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Assigns the player's seat on the table</para>
+      <para>
+        Assigns the player's seat on the table.
+        While usually GAME_SEAT and GAME_SPECTATOR_SEAT messages inform about
+        seat assignments, this special message informs about the player's own
+        seat so that the game can already arrange its settings early on.
+      </para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -437,7 +470,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message only appears during the WAITING state.
         </para>
       </refsect2>
     </refsect1>
@@ -506,7 +539,10 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Assigns one single seat on the table</para>
+      <para>
+        A single seat assignment or a change thereof is communicated by this
+        message.
+      </para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -516,7 +552,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -579,7 +615,11 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Assigns one single spectator seat on the table</para>
+      <para>
+        A single spectator seat assignment or a change thereof is communicated
+        by this message. The only difference to GAME_SEAT is that no seat type
+        is sent.
+      </para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -589,7 +629,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -662,7 +702,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -800,7 +840,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -910,7 +950,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -963,7 +1003,7 @@
             <row rowsep="1">
               <entry>State</entry>
               <entry><link linkend="ggzmodstate">GGZModState</link></entry>
-              <entry>STATE_CONNECTED</entry>
+              <entry>STATE_WAITING</entry>
             </row>
 
           </tbody>
@@ -983,7 +1023,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -1044,7 +1084,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -1111,7 +1151,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -1178,7 +1218,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -1245,7 +1285,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -1312,7 +1352,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -1379,7 +1419,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -1449,7 +1489,7 @@
       <refsect2>
         <title>Usage</title>
         <para>
-          blah...
+          This message appears during the WAITING or PLAYING state.
         </para>
       </refsect2>
     </refsect1>
@@ -1528,7 +1568,7 @@
     </refsynopsisdiv>
     <refsect1>
       <title>Description</title>
-      <para>XXX</para>
+      <para>All opcodes are of type integer.</para>
     </refsect1>
   </refentry>
 
@@ -1596,7 +1636,7 @@
     </refsynopsisdiv>
     <refsect1>
       <title>Description</title>
-      <para>XXX</para>
+      <para>All opcodes are of type integer.</para>
     </refsect1>
   </refentry>
 
@@ -1649,7 +1689,7 @@
     </refsynopsisdiv>
     <refsect1>
       <title>Description</title>
-      <para>XXX</para>
+      <para>All seat types are of type integer.</para>
     </refsect1>
   </refentry>
 
@@ -1702,7 +1742,7 @@
     </refsynopsisdiv>
     <refsect1>
       <title>Description</title>
-      <para>XXX</para>
+      <para>All states are of type integer.</para>
     </refsect1>
   </refentry>
 
