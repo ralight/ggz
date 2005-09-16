@@ -23,8 +23,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 7412 $</revnumber>
-	<date>$Date: 2005-08-14 05:10:02 -0700 (Sun, 14 Aug 2005) $</date>
+	<revnumber>$Revision: 7522 $</revnumber>
+	<date>$Date: 2005-09-16 14:43:58 -0700 (Fri, 16 Sep 2005) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -57,6 +57,20 @@
   tokens (opcodes), which are of type integer, followed by zero or more
   opcode-specific variables which can be of type integer, character,
   or string.
+</para>
+
+<para>
+  At each point in time, a game server happens to be in a specific state.
+  Messages received from the server may lead to state changes, as may
+  some explicit transitions being executed by the game server itself.
+  A list of all states can be found in the <link linkend="ggztablestate">
+  appendix of states</link>.
+</para>
+
+<para>
+  Several actions refer to seats on the table the game is being played on.
+  Each seat can be either empty or have an assignment. A full list can be
+  found in the <link linkend="ggzseattype">appendix of seat assignments</link>.
 </para>
 
 <para>
@@ -1334,7 +1348,7 @@
     </refsynopsisdiv>
     <refsect1>
       <title>Description</title>
-      <para>XXX</para>
+      <para>All opcodes are of type integer.</para>
     </refsect1>
   </refentry>
 
@@ -1402,7 +1416,7 @@
     </refsynopsisdiv>
     <refsect1>
       <title>Description</title>
-      <para>XXX</para>
+      <para>All opcodes are of type integer.</para>
     </refsect1>
   </refentry>
 
@@ -1455,7 +1469,7 @@
     </refsynopsisdiv>
     <refsect1>
       <title>Description</title>
-      <para>XXX</para>
+      <para>All seat types are of type integer.</para>
     </refsect1>
   </refentry>
 
@@ -1503,7 +1517,7 @@
     </refsynopsisdiv>
     <refsect1>
       <title>Description</title>
-      <para>XXX</para>
+      <para>All states are of type integer.</para>
     </refsect1>
   </refentry>
 
