@@ -57,7 +57,8 @@ int GGZCoreModule::add(const char* game, const char* version, const char* protoc
 
 int GGZCoreModule::launch()
 {
-	return ggzcore_module_launch(m_module);
+	// deprecated
+	return 0;
 }
 
 const char* GGZCoreModule::game()
