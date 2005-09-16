@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 7519 2005-09-16 19:44:09Z josef $
+ * $Id: server.c 7524 2005-09-16 22:25:39Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -596,11 +596,11 @@ int ggzcore_server_read_data(GGZServer * server, int fd)
 		if (server->channel
 		&& fd == _ggzcore_net_get_fd(server->channel)) {
 			status = _ggzcore_net_read_data(server->channel);
+			return 0;
 		}
-		return 0;
 	}
 
-	if (!server || !server->net
+	if (!server->net
 	    || (fd = _ggzcore_net_get_fd(server->net)) < 0)
 		return -1;
 
@@ -1273,8 +1273,10 @@ void _ggzcore_server_clear(GGZServer * server)
 		server->net = NULL;
 	}
 
-	if (server->channel && !server->is_channel) {
-		_ggzcore_net_free(server->channel);
+	if (server->channel) {
+		if (!server->is_channel) {
+			_ggzcore_net_free(server->channel);
+		}
 		server->channel = NULL;
 	}
 
