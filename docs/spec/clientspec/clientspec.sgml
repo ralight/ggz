@@ -23,8 +23,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 7285 $</revnumber>
-	<date>$Date: 2005-06-18 00:49:33 -0700 (Sat, 18 Jun 2005) $</date>
+	<revnumber>$Revision: 7520 $</revnumber>
+	<date>$Date: 2005-09-16 13:14:26 -0700 (Fri, 16 Sep 2005) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -96,7 +96,10 @@
     When in CONNECTED state, a game client still isn't operable. There
     is another mandatory transition it has to do, namely to the WAITING
     state. This happens once the core client tells it where to connect
-    to, and this connections could be established without problems.
+    to, and that connections could be established without problems.
+    Alternatively, depending on the operating system, the core client
+    will establish the connection to the game server and pass it to the
+    game client, so it can be used from the start on.
   </para>
 
 </section>
@@ -267,7 +270,85 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Tells the game where to connect to</para>
+      <para>
+        Tells the game where to connect to. This happens when the core client
+        does not establish the connection (channel) to the game server first,
+        as it would send a <link linkend="msg.gameserverfd">GAME_SERVER_FD</link>
+        in this case.
+      </para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="msg.gameserverfd">
+    <refmeta>
+      <indexterm>
+        <primary>GAME_SERVER_FD</primary>
+      </indexterm>
+      <refentrytitle>GAME_SERVER_FD</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>GAME_SERVER_FD</refname>
+      <refpurpose>Informs the game client about its connection to the game server</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                GAME_SERVER_FD ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="controltotable">ControlToTable</link></entry>
+              <entry>GAME_SERVER_FD</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>File descriptor</entry>
+              <entry>integer</entry>
+              <entry>3</entry>
+            </row>
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>
+        Depending on the operating system support, core clients can establish the
+        connection to the game servers and pass this connection to the game clients
+        once they're started and in the CONNECTED phase.
+        Otherwise, <link linkend="msg.gameserver">GAME_SERVER</link> will be sent
+        to let the game client establish the connection.
+      </para>
       <refsect2>
         <title>Message Data</title>
         <para>
@@ -725,6 +806,115 @@
     </refsect1>
   </refentry>
 
+  <refentry id="msg.info">
+    <refmeta>
+      <indexterm>
+        <primary>GAME_INFO</primary>
+      </indexterm>
+      <refentrytitle>GAME_INFO</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>GAME_INFO</refname>
+      <refpurpose>Information about a seat</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                GAME_INFO ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="controltotable">ControlToTable</link></entry>
+              <entry>GAME_INFO</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Number of seats</entry>
+              <entry>integer</entry>
+              <entry>1</entry>
+            </row>
+
+            <row rowsep="1">
+              <entrytbl namest="C1" nameend="C3" cols="3">
+                <colspec colnum="1" colname="C1" align="left">
+                <colspec colnum="2" colname="C2">
+                <colspec colnum="3" colname="C3">
+                <tbody>
+                  <row rowsep="0">
+                    <entry namest="C1" nameend="C3">
+                      Loop (depending on number of seats, or number of spectator seats)
+                    </entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry><emphasis role="bold">Data</emphasis></entry>
+                    <entry><emphasis role="bold">Type</emphasis></entry>
+                    <entry><emphasis role="bold">Example</emphasis></entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>Realname</entry>
+                    <entry>string</entry>
+                    <entry>Grand Player</entry>
+                  </row>
+                  <row rowsep="1">
+                    <entry>Photo</entry>
+                    <entry>string</entry>
+                    <entry>http://www.ggzcommunity.org/db/players/foo.png</entry>
+                  </row>
+                  <row rowsep="1">
+                    <entry>Hostname</entry>
+                    <entry>string</entry>
+                    <entry>::1</entry>
+                  </row>
+                </tbody>
+              </entrytbl>
+            </row>
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>
+        Detail information about a seat or about all seats is available.
+        For registered players, photo URL and realname might be known to the
+        server and are reported here. The hostname can be reported for
+        all players and spectators, but in most cases will require their
+        agreement to publish this data.
+      </para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
 
 </section>
 
@@ -1195,6 +1385,76 @@
     </refsect1>
   </refentry>
 
+  <refentry id="req.info">
+    <refmeta>
+      <indexterm>
+        <primary>INFO</primary>
+      </indexterm>
+      <refentrytitle>INFO</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>INFO</refname>
+      <refpurpose>Request seat or player information</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                INFO ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="tabletocontrol">TableToControl</link></entry>
+              <entry>INFO</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Seat number</entry>
+              <entry>integer</entry>
+              <entry>-1</entry>
+            </row>
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>
+        Request information about a specific seat, or about all seats.
+        (All seats are returned if the seat number is -1.)
+      </para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
 </section>
 
 <section id="protocol-enums"><title>Symbolic identifiers and their values</title>
@@ -1228,28 +1488,38 @@
           <entry>message</entry>
         </row>
         <row rowsep="1">
-          <entry>GAME_PLAYER</entry>
+          <entry>GAME_SERVER_FD</entry>
           <entry>2</entry>
           <entry>message</entry>
         </row>
         <row rowsep="1">
-          <entry>GAME_SEAT</entry>
+          <entry>GAME_PLAYER</entry>
           <entry>3</entry>
           <entry>message</entry>
         </row>
         <row rowsep="1">
-          <entry>GAME_SPECTATOR_SEAT</entry>
+          <entry>GAME_SEAT</entry>
           <entry>4</entry>
           <entry>message</entry>
         </row>
         <row rowsep="1">
-          <entry>GAME_CHAT</entry>
+          <entry>GAME_SPECTATOR_SEAT</entry>
           <entry>5</entry>
           <entry>message</entry>
         </row>
         <row rowsep="1">
-          <entry>GAME_STATS</entry>
+          <entry>GAME_CHAT</entry>
           <entry>6</entry>
+          <entry>message</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GAME_STATS</entry>
+          <entry>7</entry>
+          <entry>message</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GAME_INFO</entry>
+          <entry>8</entry>
           <entry>message</entry>
         </row>
       </tbody>
@@ -1313,6 +1583,11 @@
         <row rowsep="1">
           <entry>CHAT</entry>
           <entry>6</entry>
+          <entry>request</entry>
+        </row>
+        <row rowsep="1">
+          <entry>INFO</entry>
+          <entry>7</entry>
           <entry>request</entry>
         </row>
       </tbody>
