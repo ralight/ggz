@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 7444 2005-08-15 22:34:32Z josef $
+ * $Id: io.c 7519 2005-09-16 19:44:09Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -46,6 +46,7 @@
 
 static int _io_read_msg_launch(GGZMod *ggzmod);
 static int _io_read_msg_server(GGZMod *ggzmod);
+static int _io_read_msg_server_fd(GGZMod *ggzmod);
 static int _io_read_msg_player(GGZMod *ggzmod);
 static int _io_read_msg_seat(GGZMod *ggzmod);
 static int _io_read_msg_spectator_seat(GGZMod *ggzmod);
@@ -134,6 +135,8 @@ int _io_read_data(GGZMod *ggzmod)
 			return _io_read_msg_launch(ggzmod);
 		case MSG_GAME_SERVER:
 			return _io_read_msg_server(ggzmod);
+		case MSG_GAME_SERVER_FD:
+			return _io_read_msg_server_fd(ggzmod);
 		case MSG_GAME_PLAYER:
 			return _io_read_msg_player(ggzmod);
 		case MSG_GAME_SEAT:
@@ -177,6 +180,18 @@ static int _io_read_msg_server(GGZMod *ggzmod)
 	_ggzmod_handle_server(ggzmod, host, port, handle);
 	ggz_free(host);
 	ggz_free(handle);
+	return 0;
+}
+
+static int _io_read_msg_server_fd(GGZMod *ggzmod)
+{
+	int fd;
+
+	if (ggz_read_fd(ggzmod->fd, &fd) < 0)
+		return -1;
+	else
+		_ggzmod_handle_server_fd(ggzmod, fd);
+
 	return 0;
 }
 

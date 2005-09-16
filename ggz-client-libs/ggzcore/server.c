@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 7203 2005-05-21 09:29:01Z josef $
+ * $Id: server.c 7519 2005-09-16 19:44:09Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -124,6 +124,9 @@ struct _GGZServer {
 
 	/* Current game on game server */
 	GGZGame *game;
+
+	/* Game communications channel */
+	GGZNet *channel;
 
 	/* Whether this is a primary ggzcore server connection or a
 	 * channel. */
@@ -479,6 +482,16 @@ int ggzcore_server_connect(GGZServer * server)
 }
 
 
+int ggzcore_server_create_channel(GGZServer *server)
+{
+	if (server && server->net && server->state == GGZ_STATE_IN_ROOM) {
+		return _ggzcore_server_create_channel(server);
+	}
+	else
+		return -1;
+}
+
+
 int ggzcore_server_login(GGZServer * server)
 {
 	/* Return nothing if we didn't get the necessary info */
@@ -576,6 +589,17 @@ int ggzcore_server_read_data(GGZServer * server, int fd)
 {
 	int status = -1;
 
+	if (!server)
+		return -1;
+
+	if (!server->is_channel) {
+		if (server->channel
+		&& fd == _ggzcore_net_get_fd(server->channel)) {
+			status = _ggzcore_net_read_data(server->channel);
+		}
+		return 0;
+	}
+
 	if (!server || !server->net
 	    || (fd = _ggzcore_net_get_fd(server->net)) < 0)
 		return -1;
@@ -637,6 +661,15 @@ const char *_ggzcore_server_get_handle(const GGZServer * server)
 const char *_ggzcore_server_get_password(const GGZServer * server)
 {
 	return server->password;
+}
+
+
+int ggzcore_server_get_channel(GGZServer *server)
+{
+	if (server && server->channel)
+		return _ggzcore_net_get_fd(server->channel);
+	else
+		return -1;
 }
 
 
@@ -808,10 +841,14 @@ void _ggzcore_server_set_cur_room(GGZServer * server, GGZRoom * room)
 void _ggzcore_server_set_negotiate_status(GGZServer * server, GGZNet * net,
 					  GGZClientReqError status)
 {
-	if (net != server->net) {
+	if (net != server->net && net != server->channel) {
 		_ggzcore_server_net_error(server, "Unknown negotation");
 	} else if (server->is_channel == 0) {
-		_ggzcore_server_main_negotiate_status(server, status);
+		if (net == server->channel) {
+			_ggzcore_server_channel_negotiate_status(server, status);
+		} else {
+			_ggzcore_server_main_negotiate_status(server, status);
+		}
 	} else {
 		_ggzcore_server_channel_negotiate_status(server, status);
 	}
@@ -947,15 +984,21 @@ void _ggzcore_server_set_table_leave_status(GGZServer * server,
 
 void _ggzcore_server_session_over(GGZServer * server, GGZNet * net)
 {
-	if (net != server->net)
+	if (net != server->net && net != server->channel)
 		return;
+
 	if (server->is_channel == 0) {
-		/* Server is ending session */
-		_ggzcore_net_disconnect(net);
-		_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_OK);
-		_ggzcore_server_event(server, GGZ_LOGOUT, NULL);
+		if (net == server->channel) {
+			/* Channel (requested by ggzcore) is ready! */
+			_ggzcore_server_event(server, GGZ_CHANNEL_READY, NULL);
+		} else {
+			/* Server is ending session */
+			_ggzcore_net_disconnect(net);
+			_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_OK);
+			_ggzcore_server_event(server, GGZ_LOGOUT, NULL);
+		}
 	} else {
-		/* Channel is ready! */
+		/* Channel (requested by ggzmod) is ready! */
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_OK);
 		server->channel_complete = 1;
 	}
@@ -1016,6 +1059,43 @@ int _ggzcore_server_connect(GGZServer * server)
 }
 
 
+int _ggzcore_server_create_channel(GGZServer *server)
+{
+	int status;
+	const char *host;
+	unsigned int port;
+	char *errmsg;
+
+	/* FIXME: make sure we don't already have a channel */
+
+	server->channel = _ggzcore_net_new();
+	host = _ggzcore_net_get_host(server->net);
+	port = _ggzcore_net_get_port(server->net);
+	_ggzcore_net_init(server->channel, server, host, port, 0);
+	status = _ggzcore_net_connect(server->channel);
+	
+	if (status < 0) {
+		ggz_debug(GGZCORE_DBG_SERVER, "Channel creation failed");
+		if(status == -1) errmsg = strerror(errno);
+		else {
+#ifdef HAVE_HSTRERROR
+			errmsg = (char*)hstrerror(h_errno);
+#else
+			/* Not all systems have hstrerror. */
+			errmsg = "Unable to connect";
+#endif
+		}
+		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, errmsg);
+ 	}
+	else {
+		ggz_debug(GGZCORE_DBG_SERVER, "Channel created");
+		_ggzcore_server_event(server, GGZ_CHANNEL_CONNECTED, NULL);
+ 	}
+
+	return status;
+}
+
+
 int ggzcore_channel_connect(const char *host, unsigned int port,
 			    const char *handle)
 {
@@ -1027,6 +1107,7 @@ int ggzcore_channel_connect(const char *host, unsigned int port,
 	 * whole time while the connection is being made. */
 	server = ggzcore_server_new();
 	server->is_channel = 1;
+	server->channel = server->net;
 	server->channel_complete = server->channel_failed = 0;
 	if (ggzcore_server_set_hostinfo(server, host, port, 0) < 0
 	    || ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST,
@@ -1192,6 +1273,11 @@ void _ggzcore_server_clear(GGZServer * server)
 		server->net = NULL;
 	}
 
+	if (server->channel && !server->is_channel) {
+		_ggzcore_net_free(server->channel);
+		server->channel = NULL;
+	}
+
 	if (server->handle) {
 		ggz_free(server->handle);
 		server->handle = NULL;
@@ -1255,11 +1341,14 @@ static void _ggzcore_server_channel_negotiate_status(GGZServer * server,
 	int fd;
 
 	if (status == E_OK) {
-		fd = _ggzcore_net_get_fd(server->net);
-		_ggzcore_net_send_channel(server->net, server->handle);
-		_ggzcore_net_send_logout(server->net);
+		fd = _ggzcore_net_get_fd(server->channel);
+		_ggzcore_net_send_channel(server->channel, server->handle);
+		_ggzcore_net_send_logout(server->channel);
 	} else {
 		server->channel_failed = 1;
+		if (!server->is_channel) {
+			_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, "Protocol mismatch");
+		}
 	}
 }
 

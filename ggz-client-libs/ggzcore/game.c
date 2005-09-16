@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 7425 2005-08-15 09:01:50Z josef $
+ * $Id: game.c 7519 2005-09-16 19:44:09Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -237,6 +237,13 @@ int ggzcore_game_read_data(GGZGame * game)
 }
 
 
+void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd)
+{
+	if (game)
+		return _ggzcore_game_set_server_fd(game, fd);
+}
+
+
 GGZModule *ggzcore_game_get_module(GGZGame * game)
 {
 	if (game)
@@ -294,10 +301,12 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	/* Setup client module connection */
 	game->client = ggzmod_ggz_new(GGZMOD_GGZ);
 	ggzmod_ggz_set_gamedata(game->client, game);
+#ifdef HAVE_WINSOCK2_H
 	ggzmod_ggz_set_server_host(game->client,
 			       ggzcore_server_get_host(server),
 			       ggzcore_server_get_port(server),
 			       ggzcore_server_get_handle(server));
+#endif
 	ggzmod_ggz_set_handler(game->client, GGZMOD_EVENT_STATE,
 			   &_ggzcore_game_handle_state);
 	ggzmod_ggz_set_transaction_handler(game->client,
@@ -690,6 +699,12 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 	}
 
 	return status;
+}
+
+
+void _ggzcore_game_set_server_fd(struct _GGZGame *game, int fd)
+{
+	ggzmod_ggz_set_server_fd(game->client, fd);
 }
 
 

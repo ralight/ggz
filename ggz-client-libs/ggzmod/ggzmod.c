@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7444 2005-08-15 22:34:32Z josef $
+ * $Id: ggzmod.c 7519 2005-09-16 19:44:09Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -851,11 +851,23 @@ void _ggzmod_handle_server(GGZMod * ggzmod, const char *host,
 	ggzmod->server_host = ggz_strdup(host);
 	ggzmod->server_port = port;
 	ggzmod->server_handle = ggz_strdup(handle);
+
+	/* In the case of game clients connecting themselves, do it here. */
 	ggzmod->server_fd = ggzcore_channel_connect(host, port, handle);
 	if (ggzmod->server_fd < 0) {
 		_ggzmod_error(ggzmod, "Could not create channel.");
 		return;
 	}
+	_ggzmod_set_state(ggzmod, GGZMOD_STATE_WAITING);
+	call_handler(ggzmod, GGZMOD_EVENT_SERVER, &ggzmod->server_fd);
+}
+
+
+void _ggzmod_handle_server_fd(GGZMod * ggzmod, int fd)
+{
+	ggzmod->server_fd = fd;
+
+	/* Everything's done now, so we move into the waiting state. */
 	_ggzmod_set_state(ggzmod, GGZMOD_STATE_WAITING);
 	call_handler(ggzmod, GGZMOD_EVENT_SERVER, &ggzmod->server_fd);
 }

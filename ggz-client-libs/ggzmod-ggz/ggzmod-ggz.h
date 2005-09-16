@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 7426 2005-08-15 09:03:04Z josef $
+ * $Id: ggzmod-ggz.h 7519 2005-09-16 19:44:09Z josef $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -49,12 +49,14 @@ typedef enum {
 typedef enum {
 	GGZMOD_EVENT_STATE,
 	GGZMOD_EVENT_SERVER,
+	GGZMOD_EVENT_SERVER_FD,
 	GGZMOD_EVENT_PLAYER,
 	GGZMOD_EVENT_SEAT,
 	GGZMOD_EVENT_SPECTATOR_SEAT,
 	GGZMOD_EVENT_CHAT,
 	GGZMOD_EVENT_STATS,
-	GGZMOD_EVENT_ERROR		
+	GGZMOD_EVENT_PLAYERINFO,
+	GGZMOD_EVENT_ERROR
 } GGZModEvent;
 
 typedef enum {
@@ -179,6 +181,12 @@ void ggzmod_ggz_set_module(GGZMod * ggzmod, const char *pwd, char **args);
 void ggzmod_ggz_set_server_host(GGZMod * ggzmod,
 			    const char *host, unsigned int port,
 			    const char *handle);
+
+/** @brief Set the fd of the game server connection
+ *  @param ggzmod The GGZMod object.
+ *  @return The server connection fd
+ */
+void ggzmod_ggz_set_server_fd(GGZMod * ggzmod, int fd);
 
 /** @brief Set data about which seat at which this ggzmod is sitting.
  *

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 7427 2005-08-15 09:04:07Z josef $
+ * $Id: ggzmod.h 7519 2005-09-16 19:44:09Z josef $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -143,9 +143,15 @@ typedef enum {
 	GGZMOD_EVENT_STATE,
 
 	/** @brief A new server connection has been made 
+	 * This event occurs when the game client has to establish
+	 * the connection on its own. The host name, port number and
+	 * player handle are passed as the event's data. */
+	GGZMOD_EVENT_SERVER,
+
+	/** @brief A new server connection has been made 
 	 * This event occurs when a new connection to the game server
 	 * has been made.  The fd is passed as the event's data. */
-	GGZMOD_EVENT_SERVER,
+	GGZMOD_EVENT_SERVER_FD,
 
 	/** @brief The player's seat status has changed.
 	 *
@@ -188,6 +194,13 @@ typedef enum {
 	 *  @see ggzmod_player_get_highscore
 	 *  @param data The name of the player whose stats have changed. */
 	GGZMOD_EVENT_STATS,
+
+	/** @brief Player information has arrived.
+	 *
+	 *  Information has been requested about one or more players and
+	 *  it has now arrived. The event data is a GGZPlayerInfo*
+	 *  structure or NULL if info about all players was requested. */
+	GGZMOD_EVENT_INFO,
 	
 	/** @brief An error has occurred
 	 *  This event occurs when a GGZMod error has occurred.  An
@@ -195,14 +208,7 @@ typedef enum {
 	 *  GGZMod may attempt to recover from the error, but it is
 	 *  not guaranteed that the GGZ connection will continue to
 	 *  work after an error has happened. */
-	GGZMOD_EVENT_ERROR,
-
-	/** @brief Player information has arrived.
-	 *
-	 *  Information has been requested about one or more players and
-	 *  it has now arrived. The event data is a GGZPlayerInfo*
-	 *  structure or NULL if info about all players was requested. */
-	GGZMOD_EVENT_INFO
+	GGZMOD_EVENT_ERROR
 } GGZModEvent;
 
 /** @brief The "type" of ggzmod.

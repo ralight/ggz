@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 7427 2005-08-15 09:04:07Z josef $
+ * $Id: protocol.h 7519 2005-09-16 19:44:09Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -50,6 +50,7 @@ typedef enum {
 typedef enum {
 	MSG_GAME_LAUNCH,
 	MSG_GAME_SERVER,
+	MSG_GAME_SERVER_FD,
 
 	/* Info about this player (us). */
 	MSG_GAME_PLAYER,

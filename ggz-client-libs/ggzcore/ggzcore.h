@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 7500 2005-08-27 12:13:54Z josef $
+ * $Id: ggzcore.h 7519 2005-09-16 19:44:09Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -320,7 +320,6 @@ typedef enum {
 	 *  @see ggzcore_server_get_state */
 	GGZ_STATE_CHANGE,
 
-#ifndef GGZ_DISABLE_DEPRECATED
 	/** Status event: a requested direct game connection has been
 	 *  established.  To start a game (table), a channel must be
 	 *  created.  This event will alert that the channel has been
@@ -350,7 +349,6 @@ typedef enum {
 	 *  @note This event is deprecated and should not be used.
 	 *  @see ggzcore_server_read_data */
 	GGZ_CHANNEL_FAIL,
-#endif
 
 	/** Terminator.  Do not use. */
 	GGZ_NUM_SERVER_EVENTS
@@ -776,10 +774,18 @@ const char* ggzcore_server_get_password(const GGZServer *server);
  */
 int ggzcore_server_get_fd(const GGZServer *server);
 
-#ifndef GGZ_DISABLE_DEPRECATED
-/** @brief Deprecated function.  Do not use. */
-#define ggzcore_server_get_channel(server) (-1)
-#endif
+/** @brief Get the socket used for direct gane connections
+ *
+ *  This returns the file descriptor of the socket for
+ *  the TCP game connection.  This will be handed off to a game module 
+ *  when it is ready.
+ *  Needed only for channels set up by ggzcore.
+ *
+ *  @param server The GGZ server object.
+ *  @return The file descriptor of the connection socket.
+ *  @see ggzcore_server_create_channel
+ */
+int ggzcore_server_get_channel(GGZServer *server);
 
 /** @brief Get the state of the server connection.
  *
@@ -862,10 +868,17 @@ int ggzcore_server_is_at_table(const GGZServer *server);
  */
 int ggzcore_server_connect(GGZServer *server);
 
-#ifndef GGZ_DISABLE_DEPRECATED
-/** @brief Deprecated function.  Do not use. */
-#define ggzcore_server_create_channel(server) (void)0
-#endif
+/** @brief Establish a direct connection.
+ *
+ *  Direct connections are requested for games. They are similar to
+ *  connections, instead of that no login takes place, but a channel for
+ *  arbitrary game data is created.
+ *  Needed only for channels set up by ggzcore.
+ *
+ *  @param server The GGZ server object.
+ *  @return 0 on success, -1 on failure.
+ */
+int ggzcore_server_create_channel(GGZServer *server);
 
 /** @brief Log in to the server.
  *
@@ -1442,13 +1455,6 @@ GGZModule* ggzcore_module_get_nth_by_type(const char *game,
 					  const char *version,
 					  const unsigned int num);
 
-
-#ifndef GGZ_DISABLE_DEPRECATED
-/** This attempts to launch the specified module and returns 0 if
-    successful or -1 on error. */
-#define ggzcore_module_launch(m) ((int)(-1))
-#endif
-
 /** @brief Return the name of the module. */
 const char * ggzcore_module_get_name(GGZModule *module);
 
@@ -1531,10 +1537,8 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 /** @brief Return the control (ggzmod) socket for the game. */
 int  ggzcore_game_get_control_fd(GGZGame *game);
 
-#ifndef GGZ_DISABLE_DEPRECATED
-/** @brief Deprecated function.  Do not use. */
-#define ggzcore_game_set_server_fd(game, fd) (void)0
-#endif
+/** @brief Return the game's server socket. Needed only for channels set up by ggzcore. */
+void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd);
 
 /** @brief Return the module set for the game. */
 GGZModule* ggzcore_game_get_module(GGZGame *game);
