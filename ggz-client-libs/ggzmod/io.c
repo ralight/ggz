@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 7519 2005-09-16 19:44:09Z josef $
+ * $Id: io.c 7525 2005-09-16 22:53:54Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -329,7 +329,7 @@ static int _io_read_info(GGZMod *ggzmod)
 		    || ggz_read_string_alloc(ggzmod->fd, &photo) < 0
 		    || ggz_read_string_alloc(ggzmod->fd, &host) < 0) {
 			return -1;
-	}
+		}
 
 		/* if we receive empty values, they should be NULL'd (discarded) */
 		_ggzmod_handle_info(ggzmod, seat_num,

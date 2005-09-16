@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7519 2005-09-16 19:44:09Z josef $
+ * $Id: ggzmod.c 7525 2005-09-16 22:53:54Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -109,19 +109,20 @@ static int infos_compare(const void *p, const void *q)
  *
  * 2.  A game launch packet is sent from the GGZ client to the game client.
  *
- * 3.  The game client sets its state to connected (from created)..
+ * 3.  The game client sets its state to CONNECTED (from created)..
  *
  * 4.  GGZ-client is informed of the game state change.
  *
- * 5.  GGZ_GAME_NEGOTIATED ggzcore event is triggered.
+ * 5a. ggzmod_set_server informs the game client about where to connect to.
+ *     A "server" packet is sent GGZ -> game.
  *
- * 6.  ...the GGZ core client (not ggzcore) creates a socket and connects
+ * 6ab.The GGZ core client (or the game client) creates a socket and connects
  *     to GGZ...
  *
- * 7.  ggzcore_set_server_fd is called by the GGZ core client...
- *     ...it calls ggzmod_set_server_fd
+ * 7b. ...GGZ_GAME_NEGOTIATED ggzcore event is triggered...
  *
- * 8.  "server" packet is sent GGZ -> game (originally via ggz_write_fd).
+ * 8b. ggzcore_set_server_fd is called by the GGZ core client...
+ *     ...it calls ggzmod_set_server_fd
  *
  * 9.  the game client sets its state to WAITING
  *
@@ -817,10 +818,11 @@ void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state)
 	case GGZMOD_STATE_DONE:
 		/* In contradiction to what I say above, the game
 		   actually _is_ allowed to change its state from
-		   CREATED to WAITING.  When ggzmod-ggz sends a
+		   CREATED to CONNECTED and subsequently to WAITING.
+		   or PLAYING.  When ggzmod-ggz sends a
 		   launch packet to ggzmod-game, ggzmod-game
 		   automatically changes the state from CREATED
-		   to WAITING.  When this happens, it tells
+		   to CONNECTED.  When this happens, it tells
 		   ggzmod-ggz of this change and we end up back
 		   here.  So, although it's a bit unsafe, we have
 		   to allow this for now.  The alternative would
