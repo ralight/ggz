@@ -24,6 +24,8 @@ QWhiteFrame::~QWhiteFrame()
 // Return self-pointer when user clicks with a mouse
 void QWhiteFrame::mousePressEvent(QMouseEvent *event)
 {
+	Q_UNUSED(event);
+
 	emit signalSelected(this);
 }
 
