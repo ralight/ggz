@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7525 2005-09-16 22:53:54Z josef $
+ * $Id: ggzmod.c 7526 2005-09-17 19:31:17Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -287,7 +287,7 @@ int ggzmod_set_state(GGZMod * ggzmod, GGZModState state)
 {
 	if (!ggzmod)
 		return -1;
-	
+
 	if (ggzmod->type == GGZMOD_GAME) {
 		/* The game may only change the state from one of
 		   these two states. */
@@ -664,7 +664,7 @@ int ggzmod_dispatch(GGZMod * ggzmod)
 	FD_SET(ggzmod->fd, &read_fd_set);
 
 	timeout.tv_sec = timeout.tv_usec = 0;	/* is this really portable? */
-	
+
 	status = select(ggzmod->fd + 1, &read_fd_set, NULL, NULL, &timeout);
 
 	if (status == 0) {
@@ -675,7 +675,7 @@ int ggzmod_dispatch(GGZMod * ggzmod)
 			return 0;
 		return -1;
 	}
-	
+
 	return _ggzmod_handle_event(ggzmod, read_fd_set);
 }
 
@@ -694,12 +694,12 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 
 	if (ggzmod->type == GGZMOD_GAME) {
 		/* For client the game side we send a game over message */
-		
+
 		/* First warn the server of halt (if we haven't already) */
 		_ggzmod_set_state(ggzmod, GGZMOD_STATE_DONE);
 		ggz_debug("GGZMOD", "Disconnected from GGZ server.");
 	}
-	
+
 	/* We no longer free the seat data here.  It will stick around until
 	   ggzmod_free is called or it is used again. */
 
