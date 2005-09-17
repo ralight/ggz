@@ -434,7 +434,7 @@ void KGGZ::dispatcher()
 
 void KGGZ::timerEvent(QTimerEvent *e)
 {
-	//static int lag = 0;
+	Q_UNUSED(e);
 
 	if(m_connect)
 		if(m_connfront)
@@ -470,18 +470,6 @@ void KGGZ::timerEvent(QTimerEvent *e)
 		m_killserver = 0;
 	}
 	if(!kggzserver) return;
-
-	//lag++;
-	//if(lag == 20)
-	//{
-	//	lag = 0;
-	//	lagPlayers();
-	//}
-
-	//if(kggzserver)
-	//{
-	//	if(kggzserver->dataPending()) kggzserver->dataRead();
-	//}
 }
 
 void KGGZ::slotServerData()
@@ -641,6 +629,8 @@ void KGGZ::gameCollector(unsigned int id, const void* data)
 	int seats;
 	QString description;
 	GGZCoreGametype *gametype;
+
+	Q_UNUSED(data);
 
 	switch(id)
 	{
@@ -1733,6 +1723,9 @@ void KGGZ::menuGameInfo()
 		module->setActive(i);
 		buffer.append(QString("<b>%1</b>").arg(i18n("Game client")));
 		buffer.append("<br>");
+		buffer.append(i18n("Name: "));
+		buffer.append(module->game());
+		buffer.append("<br>");
 		buffer.append(i18n("Frontend: "));
 		buffer.append(module->frontend());
 		buffer.append("<br>");
@@ -1924,6 +1917,8 @@ void KGGZ::menuGameTeam()
 
 void KGGZ::showEvent(QShowEvent *e)
 {
+	Q_UNUSED(e);
+
 	emit signalActivity(ACTIVITY_NONE);
 }
 

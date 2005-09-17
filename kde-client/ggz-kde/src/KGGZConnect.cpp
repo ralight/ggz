@@ -70,7 +70,9 @@
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
 
+#ifdef WITH_HOWL
 static KGGZConnect *connectobj = NULL;
+#endif
 static QString connectstr = QString::null;
 
 /* Constructor: set up a small dialog for connections; provide server profile list */
@@ -587,6 +589,8 @@ void KGGZConnect::slotWrite()
 
 void KGGZConnect::showEvent(QShowEvent *e)
 {
+	Q_UNUSED(e);
+
 	button_ok->setEnabled(true);
 }
 
