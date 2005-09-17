@@ -67,6 +67,8 @@ QString KDotsAbout::measure(QString s)
 
 void KDotsAbout::mousePressEvent(QMouseEvent *e)
 {
+	Q_UNUSED(e);
+
 	if(m_highlight)
 	{
 		kapp->invokeBrowser("http://www.ggzgamingzone.org/games/kdots/");
@@ -97,6 +99,8 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 	QPainter p;
 	QPen pen;
 	const QPixmap *pix;
+
+	Q_UNUSED(e);
 
 	if(m_repaint == -1) return;
 

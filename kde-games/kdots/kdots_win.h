@@ -33,7 +33,8 @@ class KDotsWin : public KMainWindow
 			menuabout,
 			menuquit,
 			menusync,
-			menureplay
+			menureplay,
+			menuseats
 		};
 	
 	public slots:

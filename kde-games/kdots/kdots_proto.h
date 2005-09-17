@@ -94,6 +94,8 @@ class KDotsProto
 		int getSyncMove();
 		int getSyncScore();
 		void getOppMove(int direction);
+
+		GGZMod *getMod();
 		
 		int state;
 		int fd;

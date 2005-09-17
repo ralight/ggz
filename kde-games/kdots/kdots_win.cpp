@@ -15,6 +15,9 @@
 #include "kdots_help.h"
 #include "kdots_replay.h"
 
+#include "kdots_proto.h"
+#include "kggzseatsdialog.h"
+
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <kstatusbar.h>
@@ -34,6 +37,7 @@ KDotsWin::KDotsWin(bool ggzmode)
 
 	menu_game = new KPopupMenu(this);
 	menu_game->insertItem(i18n("Synchronize"), menusync);
+	menu_game->insertItem(i18n("Seats..."), menuseats);
 	menu_game->insertSeparator();
 	menu_game->insertItem(i18n("Replay games..."), menureplay);
 	menu_game->insertSeparator();
@@ -62,6 +66,7 @@ KDotsWin::KDotsWin(bool ggzmode)
 	{
 		slotStatus(i18n("Replay-only mode"));
 		menu_game->setItemEnabled(menusync, false);
+		menu_game->setItemEnabled(menuseats, false);
 	}
 
 	setFixedSize(400, 400);
@@ -75,6 +80,8 @@ KDotsWin::~KDotsWin()
 
 void KDotsWin::slotMenu(int id)
 {
+	KGGZSeatsDialog *seats;
+
 	switch(id)
 	{
 		case menuabout:
@@ -94,6 +101,10 @@ void KDotsWin::slotMenu(int id)
 		case menureplay:
 			if(!kdots_replay) kdots_replay = new KDotsReplay(NULL, "KDotsReplay");
 			kdots_replay->show();
+			break;
+		case menuseats:
+			seats = new KGGZSeatsDialog();
+			seats->setMod(m_dots->getProto()->getMod());
 			break;
 	}
 }

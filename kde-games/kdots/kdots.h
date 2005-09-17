@@ -29,6 +29,8 @@ class KDots : public QWidget
 		void gamesync();
 		void input();
 
+		KDotsProto *getProto();
+
 	public slots:
 		void slotOptions();
 		void slotStart(int horizontal, int vertical);

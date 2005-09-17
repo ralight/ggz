@@ -19,6 +19,7 @@
 #include <qpushbutton.h>
 
 KDotsReplay::KDotsReplay(QWidget *parent, const char *name)
+: QWidget(parent, name)
 {
 	QVBoxLayout *vbox, *vbox2;
 	QHBoxLayout *hbox;

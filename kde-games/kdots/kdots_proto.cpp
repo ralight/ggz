@@ -156,6 +156,8 @@ void KDotsProto::getOppMove(int direction)
 {
 	char s, x, y, nx, ny;
 
+	Q_UNUSED(direction);
+
 	if(state == stateopponent) state = statewait;
 
 	ggz_read_char(fd, &nx);
@@ -181,8 +183,15 @@ void KDotsProto::dispatch()
 void KDotsProto::handle_server(GGZMod *mod, GGZModEvent e,
 			       const void *data)
 {
+	Q_UNUSED(e);
+
 	self->fd = *(const int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	self->gameobject->input();
+}
+
+GGZMod *KDotsProto::getMod()
+{
+	return mod;
 }
 

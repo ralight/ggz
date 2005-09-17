@@ -101,6 +101,8 @@ void QDots::resizeEvent(QResizeEvent *e)
 
 void QDots::paintEvent(QPaintEvent *e)
 {
+	Q_UNUSED(e);
+
 	int tilewidth, tileheight;
 	QRgb rgb;
 	int bluepart;

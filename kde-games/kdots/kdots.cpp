@@ -69,6 +69,11 @@ KDots::~KDots()
 	}
 }
 
+KDotsProto *KDots::getProto()
+{
+	return proto;
+}
+
 void KDots::slotOptions()
 {
 	emit signalStatus(i18n("Requesting game options"));
