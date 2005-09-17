@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules, GGZ side
- * $Id: io-ggz.c 7519 2005-09-16 19:44:09Z josef $
+ * $Id: io-ggz.c 7527 2005-09-17 19:31:46Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -78,7 +78,7 @@ int _io_ggz_send_server(int fd, const char *host, unsigned int port,
 int _io_ggz_send_server_fd(int fd, int server_fd)
 {
 	if (ggz_write_int(fd, MSG_GAME_SERVER_FD) < 0
-	    || ggz_write_int(fd, server_fd) < 0)
+	    || ggz_write_fd(fd, server_fd) < 0)
 		return -1;
 	else
 		return 0;
