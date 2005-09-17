@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7204 2005-05-21 09:31:23Z josef $
+ * $Id: ggzclient.c 7528 2005-09-17 19:45:53Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -52,13 +52,8 @@
 #include "xtext.h"
 
 
-#ifdef GGZ_ENABLE_DEPRECATED
 static guint server_tag, channel_tag;
 static gboolean is_server, is_channel;
-#else
-static guint server_tag;
-static gboolean is_server;
-#endif
 
 gint numrooms;
 
@@ -96,7 +91,6 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 					ggz_input_removed);
 		g_io_channel_unref(channel);
 		is_server = TRUE;
-#ifdef GGZ_ENABLE_DEPRECATED
 	} else if (id == GGZ_CHANNEL_CONNECTED) {
 		GIOChannel *channel;
 
@@ -110,7 +104,6 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 					     GINT_TO_POINTER(fd));
 		g_io_channel_unref(channel);
 		is_channel = TRUE;
-#endif
 	}
 
 	return GGZ_HOOK_OK;
@@ -146,7 +139,6 @@ static GGZHookReturn ggz_negotiated(GGZServerEvent id,
 }
 
 
-#ifdef GGZ_ENABLE_DEPRECATED
 static GGZHookReturn ggz_channel_ready(GGZGameEvent id,
 				       const void *event_data,
 				       const void *user_data)
@@ -163,7 +155,6 @@ static GGZHookReturn ggz_channel_ready(GGZGameEvent id,
 }
 
 
-#endif
 static GGZHookReturn ggz_auto_join(GGZServerEvent id,
 				   const void *event_data,
 				   const void *user_data)
@@ -1151,12 +1142,10 @@ void ggz_event_init(GGZServer * Server)
 				      ggz_state_change);
 	ggzcore_server_add_event_hook(Server, GGZ_STATE_CHANGE,
 				      ggz_state_sensitivity);
-#ifdef GGZ_ENABLE_DEPRECATED
 	ggzcore_server_add_event_hook(Server, GGZ_CHANNEL_CONNECTED,
 				      ggz_connected);
 	ggzcore_server_add_event_hook(Server, GGZ_CHANNEL_READY,
 				      ggz_channel_ready);
 	ggzcore_server_add_event_hook(Server, GGZ_CHANNEL_FAIL,
 				      ggz_connect_fail);
-#endif
 }

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.h 6908 2005-01-28 04:58:49Z jdorje $
+ * $Id: game.h 7528 2005-09-17 19:45:53Z josef $
  *
  * Functions for handling game events
  *
@@ -35,10 +35,8 @@ int game_init(int spectating);
 
 int game_launch(void);
 
-#ifdef GGZ_ENABLE_DEPRECATED
 void game_channel_ready(void);
 
-#endif
 void game_quit(void);
 
 void game_destroy(void);
