@@ -187,6 +187,8 @@ void MainWindow::gameInformation()
 	Level *l;
 
 	l = map->level();
+	if(!l) return;
+
 	territory1 = 0;
 	territory2 = 0;
 	soldiers1 = 0;
@@ -286,6 +288,17 @@ void MainWindow::levelSelector()
 	ret = l.exec();
 	if(ret == QDialog::Accepted)
 	{
+		for(Level *le = m_levels.first(); le; le = m_levels.next())
+			if(le->title() == l.level()) map->setupMap(le);
+
+		if(!map->level())
+		{
+			KMessageBox::error(this,
+				i18n("Level data for this map could not be found."),
+				i18n("Level error"));
+			return;
+		}
+
 		statusBar()->changeItem(i18n("Level: %1").arg(l.level()), status_level);
 		gamemenu->setItemEnabled(game_info, true);
 		gamemenu->setItemEnabled(game_unitinfo, true);
@@ -304,9 +317,6 @@ void MainWindow::levelSelector()
 			statusBar()->changeItem(i18n("Game started"), status_state);
 			statusBar()->changeItem(i18n("Select a knight"), status_task);
 		}
-
-		for(Level *le = m_levels.first(); le; le = m_levels.next())
-			if(le->title() == l.level()) map->setupMap(le);
 
 		if(!network)
 			unitInformation(m_self);

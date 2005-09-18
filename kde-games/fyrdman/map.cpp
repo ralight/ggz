@@ -33,6 +33,7 @@ Map::~Map()
 
 void Map::paintEvent(QPaintEvent *e)
 {
+	Q_UNUSED(e);
 }
 
 void Map::mousePressEvent(QMouseEvent *e)
@@ -119,7 +120,17 @@ void Map::setupMap(Level *level)
 	if(QFile::exists(filename))
 		setBackgroundPixmap(QPixmap(filename));
 	else
-		level = NULL;
+	{
+		kdDebug() << "Background pixmap" << filename << "not found, use default" << endl;
+		filename = QString("%1/fyrdman/map.png").arg(GGZDATADIR);
+		if (QFile::exists(filename))
+			setBackgroundPixmap(QPixmap(filename));
+		else
+		{
+			kdDebug() << "Default pixmap" << filename << "also not found!" << endl;
+			level = NULL;
+		}
+	}
 
 	m_level = level;
 	if(!level)
