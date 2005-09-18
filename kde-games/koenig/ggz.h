@@ -1,5 +1,5 @@
 // Koenig - KDE client for the GGZ chess game
-// Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
+// Copyright (C) 2001 Tobias KÃ¶nig, tokoe82@yahoo.de
 // Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
@@ -45,6 +45,8 @@ class GGZ : public QObject
 		char *getString(void);
 		QString getString(int maxlength);
 		void putString(const QString&);
+
+		GGZMod *getMod();
 	
 	public slots:
 		void recvControl();

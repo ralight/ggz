@@ -1,5 +1,5 @@
 // Koenig - KDE client for the GGZ chess game
-// Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
+// Copyright (C) 2001 Tobias KÃ¶nig, tokoe82@yahoo.de
 // Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 //
 // This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,9 @@ public:
 	TopLevel(const char *name = 0);
 	~TopLevel();
 	void initNetwork();
+	void initNetworkPreGui();
 	void initLocal();
+	void initLocalPreGui();
 	void initGui();
 
 public slots:
@@ -65,6 +67,7 @@ public slots:
 	void slotChessBoard();
 	void slotNewstuff();
 	void slotThemeSelector();
+	void slotSeats();
 
 private:
 	//void initGameSocket(void);

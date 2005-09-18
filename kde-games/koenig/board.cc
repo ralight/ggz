@@ -1,5 +1,5 @@
 // Koenig - KDE client for the GGZ chess game
-// Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
+// Copyright (C) 2001 Tobias KÃ¶nig, tokoe82@yahoo.de
 // Copyright (C) 2001 - 2004 Josef Spillner <josef@ggzgamingzone.org>
 //
 // This program is free software; you can redistribute it and/or modify
@@ -241,6 +241,8 @@ void ChessBoard::mouseMoveEvent(QMouseEvent *e)
 {
 	int x, y;
 
+	Q_UNUSED(e);
+
 	if(activeColor == color_inactive) return;
 
 	if (mouseDrag)
@@ -268,6 +270,8 @@ void ChessBoard::mouseMoveEvent(QMouseEvent *e)
 void ChessBoard::dropEvent(QDropEvent *e)
 {
 	int x, y;
+
+	Q_UNUSED(e);
 
 	QPoint point = mapFromGlobal(QCursor::pos()) / (width() / 8);
 	x = point.x();

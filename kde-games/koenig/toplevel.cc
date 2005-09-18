@@ -1,5 +1,5 @@
 // Koenig - KDE client for the GGZ chess game
-// Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
+// Copyright (C) 2001 Tobias KÃ¶nig, tokoe82@yahoo.de
 // Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 //
 // This program is free software; you can redistribute it and/or modify
@@ -42,6 +42,8 @@
 #include "game.h"
 #include "kexttabctl.h"
 #include "themes.h"
+
+#include "kggzseatsdialog.h"
 
 #ifdef HAVE_KNEWSTUFF
 #include <knewstuff/downloaddialog.h>
@@ -166,7 +168,17 @@ void TopLevel::initNetwork()
 	connect(chessBoard->root(), SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
 }
 
+void TopLevel::initNetworkPreGui()
+{
+	(void)new KAction(i18n("Seats && Spectators"),
+		"thumbnail", 0, this, SLOT(slotSeats()), actionCollection(), "gameseats");
+}
+
 void TopLevel::initLocal()
+{
+}
+
+void TopLevel::initLocalPreGui()
 {
 	KStdAction::openNew(this, SLOT(newGame()), actionCollection());
 }
@@ -306,6 +318,14 @@ void TopLevel::slotNewstuff()
 		proc2 << QString(basedir + "/" + dirname + "/" + (*it)).latin1();
 		proc2.start(KProcess::Block);
 	}
+}
+
+void TopLevel::slotSeats()
+{
+	KGGZSeatsDialog *seats;
+
+	seats = new KGGZSeatsDialog();
+	seats->setMod(game->getGGZ()->getMod());
 }
 
 bool TopLevel::queryClose()

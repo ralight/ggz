@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6994 2005-03-11 22:19:41Z josef $
-
 SUBDIRS = libcgc pics pieces
 
 ggzexecmod_PROGRAMS = koenig
@@ -28,11 +25,11 @@ noinst_HEADERS = \
 	ai.h \
 	themes.h
 
-AM_CPPFLAGS = -I$(top_srcdir)/koenig/libcgc \
+AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)/koenig/libcgc \
 	$(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) $(all_includes) $(RSVG_INCLUDES)
 
 koenig_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries) $(RSVG_LDFLAGS)
-koenig_LDADD = $(top_builddir)/koenig/libcgc/libcgc.a \
+koenig_LDADD = $(top_builddir)/lib/libkggzgames.la $(top_builddir)/koenig/libcgc/libcgc.a \
 	$(LIB_GGZ) $(LIB_GGZMOD) $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF)
 
 METASOURCES = AUTO

@@ -1,5 +1,5 @@
 // Koenig - KDE client for the GGZ chess game
-// Copyright (C) 2001 Tobias K�nig, tokoe82@yahoo.de
+// Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
 // Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 		"http://www.ggzgamingzone.org/games/koenig/",
 		"josef@ggzgamingzone.org");
 
-	aboutData.addAuthor("Tobias König", "Creator", "tokoe@kde.org");
+	aboutData.addAuthor("Tobias KÃ¶nig", "Creator", "tokoe@kde.org");
 	aboutData.addAuthor("Josef Spillner", "Maintainer", "josef@ggzgamingzone.org");
 	aboutData.setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
 
@@ -52,9 +52,11 @@ int main(int argc, char **argv)
 
 	KApplication app;
 	TopLevel *toplevel = new TopLevel;
+	if(args->isSet("ggz")) toplevel->initNetworkPreGui();
+	else toplevel->initLocalPreGui();
+	toplevel->initGui();
 	if(args->isSet("ggz")) toplevel->initNetwork();
 	else toplevel->initLocal();
-	toplevel->initGui();
 	toplevel->show();
 	app.setMainWidget(toplevel);
 	return app.exec();

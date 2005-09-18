@@ -2,6 +2,7 @@
   <kpartgui name="Koenig" version="1">
   <MenuBar>
     <Menu name="file"><text>&amp;File</text>
+      <Action name="gameseats"/>
       <Action name="gamenewstuff"/>
       <Action name="gamequit"/>
     </Menu>
