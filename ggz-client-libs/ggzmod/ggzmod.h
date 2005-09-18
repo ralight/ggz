@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 7519 2005-09-16 19:44:09Z josef $
+ * $Id: ggzmod.h 7540 2005-09-18 13:00:08Z josef $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -31,9 +31,9 @@
 #include <ggz.h> /* libggz */
 
 /** @file ggzmod.h
- *  @brief Common functions for interfacing a game server and GGZ.
+ *  @brief Common functions for interfacing a game client and GGZ.
  *
- * This file contains all libggzmod functions used by game servers to
+ * This file contains all libggzmod functions used by game clients to
  * interface with GGZ (and vice versa).  Just include ggzmod.h and make sure
  * your program is linked with libggzmod.  Then use the functions below as
  * appropriate.
@@ -44,13 +44,12 @@
  * program should not read/write data from/to the GGZ socket unless it really
  * knows what it is doing.
  *
- * That this does not apply to the client sockets: ggzmod provides
- * one file desriptor for communicating (TCP) to each client.  If data
- * is ready to be read by one of these file descriptors ggzmod may
- * invoke the appropriate handler (see below), but will never actually
- * read any data.
+ * That this does not apply to the game server sockets: ggzmod provides
+ * one file desriptor for communicating (TCP) to the game server.  If data
+ * is ready to be read this file descriptor, ggzmod may invoke the appropriate
+ * handler (see below), but will never actually read any data.
  *
- * For more information, see the documentation at http://ggz.sf.net/.
+ * For more information, see the documentation at http://www.ggzgamingzone.org/.
  */
 
 
@@ -143,15 +142,11 @@ typedef enum {
 	GGZMOD_EVENT_STATE,
 
 	/** @brief A new server connection has been made 
-	 * This event occurs when the game client has to establish
-	 * the connection on its own. The host name, port number and
-	 * player handle are passed as the event's data. */
-	GGZMOD_EVENT_SERVER,
-
-	/** @brief A new server connection has been made 
 	 * This event occurs when a new connection to the game server
-	 * has been made.  The fd is passed as the event's data. */
-	GGZMOD_EVENT_SERVER_FD,
+	 * has been made, either by the core client or by the game client
+	 * itself.  The fd is passed as the event's data.
+	 * @see ggzmod_connect */
+	GGZMOD_EVENT_SERVER,
 
 	/** @brief The player's seat status has changed.
 	 *
@@ -433,11 +428,8 @@ int ggzmod_set_state(GGZMod * ggzmod, GGZModState state);
 
 /** @brief Connect to ggz.
  *
- *  Call this function to make an initial GGZ <-> game connection.
- *  - When called by the game server, this function makes the
- *    physical connection to ggz.
- *  - When called by ggz, it will launch a table and connect
- *    to it.
+ *  Call this function to make an initial GGZ core client <-> game
+ *  client connection. Afterwards
  *  @param ggzmod The ggzmod object.
  *  @return 0 on success, -1 on failure.
  */
@@ -445,11 +437,8 @@ int ggzmod_connect(GGZMod * ggzmod);
 
 /** @brief Disconnect from ggz.
  *
- *  - When called by the game server, this function stops
- *    the connection to GGZ.  It should only be called
- *    when the table is ready to exit.
- *  - When called by the GGZ server, this function will
- *    kill and clean up after the table.
+ *  This terminates the link between the game client and the
+ *  GGZ core client.
  *  @param ggzmod The ggzmod object.
  *  @return 0 on success, -1 on failure.
  */
