@@ -51,6 +51,7 @@ class MainWindow : public KMainWindow, public FyrdmanDcop
 			game_unitinfo,
 			game_gameinfo,
 			game_sync,
+			game_seats,
 			game_newlevels,
 			game_quit,
 			option_map,

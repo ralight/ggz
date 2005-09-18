@@ -1,7 +1,7 @@
 #include "network.h"
 
-Network *Network::me;
-GGZMod *Network::mod;
+Network *Network::me = NULL;
+GGZMod *Network::mod = NULL;
 
 Network::Network()
 : QObject()
@@ -29,6 +29,8 @@ void Network::shutdown()
 
 void Network::handle(GGZMod *mod, GGZModEvent e, const void *data)
 {
+	Q_UNUSED(e);
+
 	me->m_fd = *(const int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	emit me->signalData();
@@ -47,5 +49,10 @@ int Network::fd()
 int Network::cfd()
 {
 	return m_cfd;
+}
+
+GGZMod *Network::getMod()
+{
+	return mod;
 }
 

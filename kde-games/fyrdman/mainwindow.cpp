@@ -6,6 +6,8 @@
 #include "level.h"
 #include "unitinfo.h"
 
+#include "kggzseatsdialog.h"
+
 #include <kmenubar.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
@@ -49,6 +51,8 @@ MainWindow::MainWindow()
 	gamemenu->insertItem(i18n("Game information"), game_gameinfo);
 	gamemenu->insertItem(i18n("Synchronize"), game_sync);
 	gamemenu->insertSeparator();
+	gamemenu->insertItem(i18n("Seats..."), game_seats);
+	gamemenu->insertSeparator();
 #ifdef HAVE_KNEWSTUFF
 	gamemenu->insertItem(KGlobal::iconLoader()->loadIcon("knewstuff", KIcon::Small), i18n("Get levels"), game_newlevels);
 	gamemenu->insertSeparator();
@@ -59,6 +63,7 @@ MainWindow::MainWindow()
 	gamemenu->setItemEnabled(game_unitinfo, false);
 	gamemenu->setItemEnabled(game_gameinfo, false);
 	gamemenu->setItemEnabled(game_sync, false);
+	gamemenu->setItemEnabled(game_seats, false);
 
 	backgroundmenu = new KPopupMenu(this);
 	backgroundmenu->insertItem(i18n("Bayeux"), option_map_bayeux);
@@ -106,6 +111,7 @@ MainWindow::~MainWindow()
 void MainWindow::slotMenu(int id)
 {
 	QDir d;
+	KGGZSeatsDialog *seats;
 
 	switch(id)
 	{
@@ -123,6 +129,10 @@ void MainWindow::slotMenu(int id)
 			break;
 		case game_sync:
 			synchronize();
+			break;
+		case game_seats:
+			seats = new KGGZSeatsDialog();
+			seats->setMod(network->getMod());
 			break;
 #ifdef HAVE_KNEWSTUFF
 		case game_newlevels:
@@ -335,6 +345,7 @@ void MainWindow::enableNetwork()
 
 	gamemenu->setItemEnabled(game_new, false);
 	gamemenu->setItemEnabled(game_sync, true);
+	gamemenu->setItemEnabled(game_seats, true);
 
 	statusBar()->insertItem(i18n("Wait..."), status_task, 0);
 }

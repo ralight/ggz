@@ -18,6 +18,8 @@ class Network : public QObject
 		int fd();
 		int cfd();
 
+		GGZMod *getMod();
+
 		enum ServerToClient
 		{
 			msgseat = 0,
