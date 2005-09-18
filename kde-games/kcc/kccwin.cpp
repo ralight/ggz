@@ -7,6 +7,8 @@
 // KCC includes
 #include "kccwin.h"
 
+#include "kggzseatsdialog.h"
+
 // Configuration
 #include "config.h"
 
@@ -41,6 +43,7 @@ KCCWin::KCCWin(QWidget *parent, const char *name)
 	mgame = new KPopupMenu(this);
 	mgame->insertItem(KGlobal::iconLoader()->loadIcon("reload", KIcon::Small), i18n("Synchronize"), menusync);
 	mgame->insertItem(KGlobal::iconLoader()->loadIcon("history", KIcon::Small), i18n("View score"), menuscore);
+	mgame->insertItem(KGlobal::iconLoader()->loadIcon("thumbnail", KIcon::Small), i18n("Seats..."), menuseats);
 	mgame->insertSeparator();
 #ifdef HAVE_KNEWSTUFF
 	mgame->insertItem(KGlobal::iconLoader()->loadIcon("knewstuff", KIcon::Small), i18n("Get themes"), menutheme);
@@ -184,6 +187,7 @@ KCC *KCCWin::kcc()
 void KCCWin::slotMenu(int id)
 {
 	QDir d;
+	KGGZSeatsDialog *seats;
 
 	// Standard menu entries
 	switch(id)
@@ -193,6 +197,10 @@ void KCCWin::slotMenu(int id)
 			break;
 		case menuscore:
 			score();
+			break;
+		case menuseats:
+			seats = new KGGZSeatsDialog();
+			seats->setMod(m_kcc->getProto()->mod);
 			break;
 #ifdef HAVE_KNEWSTUFF
 		case menutheme:
@@ -218,6 +226,7 @@ void KCCWin::slotMenu(int id)
 void KCCWin::enableNetwork(bool enabled)
 {
 	mgame->setItemEnabled(menusync, enabled);
+	mgame->setItemEnabled(menuseats, enabled);
 	m_networked = enabled;
 }
 
@@ -253,6 +262,7 @@ void KCCWin::slotNetworkScore(int wins, int losses)
 void KCCWin::slotGameOver()
 {
 	mgame->setItemEnabled(menusync, false);
+	mgame->setItemEnabled(menuseats, false);
 	if(m_networked) mgame->setItemEnabled(menuscore, false);
 }
 

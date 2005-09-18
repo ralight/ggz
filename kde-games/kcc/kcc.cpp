@@ -74,6 +74,7 @@ void KCC::setTheme(QString theme, QString type)
 // Evaluate your turn (after click)
 void KCC::slotSelected(QWidget *widget)
 {
+	Q_UNUSED(widget);
 }
 
 // Prepare your turn
@@ -493,6 +494,8 @@ QWidget *KCC::widget()
 
 void KCC::paintEvent(QPaintEvent *e)
 {
+	Q_UNUSED(e);
+
 	drawBoard();
 }
 
@@ -725,5 +728,10 @@ void KCC::mouseReleaseEvent(QMouseEvent *e)
 		else
 			m_fx = -1;
 	}
+}
+
+KCCProto *KCC::getProto()
+{
+	return proto;
 }
 

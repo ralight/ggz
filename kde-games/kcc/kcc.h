@@ -46,6 +46,9 @@ class KCC : public QWidget
 		// Parent central widget
 		QWidget *widget();
 
+		// Return internal protocol object
+		KCCProto *getProto();
+
 	public slots:
 		// Evaluate user input
 		void slotSelected(QWidget *widget);

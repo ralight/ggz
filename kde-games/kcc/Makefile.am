@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6948 2005-02-27 21:54:15Z josef $
-
 SUBDIRS = themes
 
 ggzexecmod_PROGRAMS = kcc
@@ -16,10 +13,10 @@ noinst_HEADERS = \
 	kccwin.h \
 	kccproto.h
 
-AM_CPPFLAGS = $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
+AM_CPPFLAGS = -I $(top_srcdir)/lib $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
 
 kcc_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS)
-kcc_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF) $(LIB_GGZ) $(LIB_GGZMOD)
+kcc_LDADD = $(top_builddir)/lib/libkggzgames.la $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF) $(LIB_GGZ) $(LIB_GGZMOD)
 
 METASOURCES = AUTO
 

@@ -35,8 +35,9 @@ class KCCWin : public KMainWindow
 		{
 			menusync = 1,
 			menuscore = 2,
-			menutheme = 3,
-			menuquit = 4,
+			menuseats = 3,
+			menutheme = 4,
+			menuquit = 5,
 			menuthemes = 10
 		};
 		// Enable network functionality
