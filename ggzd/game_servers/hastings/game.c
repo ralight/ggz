@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 7268 2005-06-10 12:28:19Z josef $
+ * $Id: game.c 7535 2005-09-18 11:27:24Z josef $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -170,6 +170,7 @@ static void game_loadmap(const char *file)
 		hastings_maps[mapcount].title = map.title;
 		hastings_maps[mapcount].author = map.author;
 		hastings_maps[mapcount].version = map.version;
+		hastings_maps[mapcount].graphics = map.graphics;
 		hastings_maps[mapcount].height = map.height;
 		hastings_maps[mapcount].width = map.width;
 		for(i = 0; i < map.height; i++)
