@@ -214,6 +214,8 @@ void Canvas::slotInput()
 // Timer period
 void Canvas::timerEvent(QTimerEvent *e)
 {
+	Q_UNUSED(e);
+
 	if(m_player) moves();
 }
 

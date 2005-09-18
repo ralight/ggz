@@ -235,6 +235,10 @@ void KGGZSeatsDialog::displaySpectators()
 
 void KGGZSeatsDialog::handle_info(GGZMod *mod, GGZModEvent e, const void *data)
 {
+	Q_UNUSED(mod);
+	Q_UNUSED(e);
+	Q_UNUSED(data);
+
 	obj->infos();
 }
 

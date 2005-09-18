@@ -78,6 +78,8 @@ void Network::callback(GGZMod *mod, const void *data)
 
 void Network::callbackwrap(GGZMod *mod, GGZModEvent e, const void *data)
 {
+	Q_UNUSED(e);
+
 	self->callback(mod, data);
 }
 

@@ -346,6 +346,8 @@ void Krosswater::showStatus(QString state)
 // Draw the map
 void Krosswater::paintEvent(QPaintEvent *e)
 {
+	Q_UNUSED(e);
+
 	showStatus(m_currentstate);
 }
 
@@ -372,6 +374,8 @@ void Krosswater::slotZoneBroadcast()
 void Krosswater::timerEvent(QTimerEvent *e)
 {
 	KrosswaterMove *m;
+
+	Q_UNUSED(e);
 
 	showStatus(m_currentstate);
 

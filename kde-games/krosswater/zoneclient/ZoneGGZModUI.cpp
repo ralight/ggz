@@ -69,6 +69,7 @@ ZoneGGZModUI::~ZoneGGZModUI()
 int ZoneGGZModUI::zoneCreateFd(char *modulename)
 {
 	/*zone_fd = 3;*/
+	Q_UNUSED(modulename);
 
 	mod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_server);
@@ -261,6 +262,8 @@ int ZoneGGZModUI::zonePlayers()
 
 void ZoneGGZModUI::handle_server(GGZMod *mod, GGZModEvent e, const void *data)
 {
+	Q_UNUSED(e);
+
 	self->zone_fd = *(const int *)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 
