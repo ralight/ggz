@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 7207 2005-05-21 10:19:22Z josef $
+ * $Id: ggz.h 7543 2005-09-18 16:04:24Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -797,8 +797,8 @@ struct _GGZXMLElement {
 	char *text;          /**< Text content of an element */
 	GGZList *attributes; /**< List of attributes on the element */
 	void *data;          /**< Extra data associated with tag (usually gleaned from children) */
-	void (*free)();      /**< Function to free allocated memory */
-	void (*process)();   /**< Function to "process" tag */
+	void (*free)(struct _GGZXMLElement*); /**< Function to free allocated memory */
+	void (*process)(void);                /**< Function to "process" tag */
 };
 
 
@@ -819,7 +819,7 @@ typedef struct _GGZXMLElement GGZXMLElement;
  * @return Pointer to a newly allocated ::GGZXMLElement object 
  */
 GGZXMLElement* ggz_xmlelement_new(const char *tag, const char * const *attrs,
-				  void (*process)(), void (*free)());
+				  void (*process)(void), void (*free)(GGZXMLElement*));
 
 
 /** @brief Initialize a ::GGZXMLElement.
@@ -836,7 +836,7 @@ GGZXMLElement* ggz_xmlelement_new(const char *tag, const char * const *attrs,
  */
 void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
 			 const char * const *attrs,
-			 void (*process)(), void (*free)());
+			 void (*process)(void), void (*free)(GGZXMLElement*));
 
 
 /** @brief Set ancillary data on a ::GGZXMLElement object.
