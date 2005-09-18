@@ -37,7 +37,7 @@ static void ggz_xmlelement_do_free(GGZXMLElement *element);
 
 
 GGZXMLElement *ggz_xmlelement_new(const char *tag, const char * const *attrs,
-				  void (*process)(void), void (*free)(GGZXMLElement*))
+	void (*process)(void*, GGZXMLElement*), void (*free)(GGZXMLElement*))
 {
 	GGZXMLElement *element;
 
@@ -50,8 +50,8 @@ GGZXMLElement *ggz_xmlelement_new(const char *tag, const char * const *attrs,
 
 
 void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
-			 const char * const *attrs,
-			 void (*process)(void), void (*free)(GGZXMLElement*))
+	const char * const *attrs,
+	void (*process)(void*, GGZXMLElement*), void (*free)(GGZXMLElement*))
 {
 	int i;
 
