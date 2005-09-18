@@ -82,6 +82,8 @@ KGGZBrowser::~KGGZBrowser()
 
 void KGGZBrowser::slotRequest(const KURL& url, const KParts::URLArgs& args)
 {
+	Q_UNUSED(args);
+
 	m_edit->setText(url.url());
 	m_part->openURL(url.url());
 }

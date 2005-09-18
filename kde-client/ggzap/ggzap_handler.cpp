@@ -165,6 +165,8 @@ GGZHookReturn GGZapHandler::hookServer(unsigned int id, const void *event_data, 
 {
 	GGZapHandler *handler;
 
+	Q_UNUSED(event_data);
+
 /*cout << "server " << id << endl;*/
 	handler = (GGZapHandler*)user_data;
 
@@ -309,6 +311,8 @@ void GGZapHandler::hookRoomActive(unsigned int id, const void *data)
 	int join;
 	int ret;
 
+	Q_UNUSED(data);
+
 /*cout << "hookRoomActive!" << endl;*/
 
 	switch(id)
@@ -392,6 +396,8 @@ void GGZapHandler::hookRoomActive(unsigned int id, const void *data)
 
 void GGZapHandler::hookGameActive(unsigned int id, const void *data)
 {
+	Q_UNUSED(data);
+
 /*cout << "hookGameActive!" << endl;*/
 	switch(id)
 	{

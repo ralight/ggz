@@ -170,6 +170,8 @@ void Eventdisplay::slotUrl(const QString& url)
 
 void Eventdisplay::slotProcess(KProcess *proc)
 {
+	Q_UNUSED(proc);
+
 	kdDebug() << "fini" << endl;
 }
 

@@ -196,6 +196,8 @@ void App::slotSelected(QListViewItem *item, const QPoint& point, int column)
 {
 	if(!item) return;
 
+	Q_UNUSED(column);
+
 	if(popup) delete popup;
 	popup = new QPopupMenu(this);
 

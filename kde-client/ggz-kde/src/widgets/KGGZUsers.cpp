@@ -167,6 +167,8 @@ QListViewItem *KGGZUsers::player(QString player)
 // Click on a player
 void KGGZUsers::slotClicked(QListViewItem *item, const QPoint& point, int column)
 {
+	Q_UNUSED(column);
+
 	if(!item) return;
 	if(!item->parent()) return;
 
@@ -315,6 +317,8 @@ void KGGZUsers::slotInformation(int id)
 	int rating, ranking, highscore;
 	QString playername, text;
 	GGZCorePlayer *player, *tmpplayer;
+
+	Q_UNUSED(id);
 
 	if(!m_room) return;
 

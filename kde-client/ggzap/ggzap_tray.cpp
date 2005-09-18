@@ -70,6 +70,8 @@ void GGZapTray::contextMenuAboutToShow(KPopupMenu *menu)
 {
 	QIconSet iconset = KGlobal::iconLoader()->loadIcon("1uparrow", KIcon::Small);
 
+	Q_UNUSED(menu);
+
 	m_menu->clear();
 
 	m_game->clear();

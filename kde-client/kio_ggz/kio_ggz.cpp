@@ -119,6 +119,10 @@ void GGZProtocol::stat(const KURL& url)
 
 GGZHookReturn GGZProtocol::hook_server_connect(unsigned int id, const void *event, const void *data)
 {
+	Q_UNUSED(id);
+	Q_UNUSED(event);
+	Q_UNUSED(data);
+
 	me->debug("=> connect");
 
 	while(!(me->server()->isOnline())) me->server()->dataRead(); // still that bug? oh my :)
@@ -133,6 +137,10 @@ GGZHookReturn GGZProtocol::hook_server_connect(unsigned int id, const void *even
 
 GGZHookReturn GGZProtocol::hook_server_negotiated(unsigned int id, const void *event, const void *data)
 {
+	Q_UNUSED(id);
+	Q_UNUSED(event);
+	Q_UNUSED(data);
+
 	me->debug("=> negotiated");
 
 	return GGZ_HOOK_OK;
@@ -140,6 +148,10 @@ GGZHookReturn GGZProtocol::hook_server_negotiated(unsigned int id, const void *e
 
 GGZHookReturn GGZProtocol::hook_server_login(unsigned int id, const void *event, const void *data)
 {
+	Q_UNUSED(id);
+	Q_UNUSED(event);
+	Q_UNUSED(data);
+
 	me->debug("=> login");
 	me->server()->listRooms(-1, 0);
 
@@ -148,6 +160,10 @@ GGZHookReturn GGZProtocol::hook_server_login(unsigned int id, const void *event,
 
 GGZHookReturn GGZProtocol::hook_server_roomlist(unsigned int id, const void *event, const void *data)
 {
+	Q_UNUSED(id);
+	Q_UNUSED(event);
+	Q_UNUSED(data);
+
 	me->debug("=> roomlist");
 	for(int i = 0; i < me->server()->countRooms(); i++)
 	{
@@ -172,6 +188,9 @@ GGZHookReturn GGZProtocol::hook_server_motd(unsigned int id, const void *event, 
 {
 	const GGZMotdEventData *motd;
 
+	Q_UNUSED(id);
+	Q_UNUSED(data);
+
 	me->debug("=> motd");
 
 	motd = (GGZMotdEventData*)event;
@@ -182,6 +201,9 @@ GGZHookReturn GGZProtocol::hook_server_motd(unsigned int id, const void *event, 
 
 GGZHookReturn GGZProtocol::hook_server_error(unsigned int id, const void *event, const void *data)
 {
+	Q_UNUSED(event);
+	Q_UNUSED(data);
+
 	me->errormessage(i18n("Server error: %1").arg(id));
 
 	return GGZ_HOOK_OK;

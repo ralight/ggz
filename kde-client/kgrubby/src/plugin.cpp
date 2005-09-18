@@ -79,6 +79,9 @@ QStringList Plugin::getRow(int number)
 void Plugin::slotChanged(int row, int col)
 {
 	bool empty = true;
+
+	Q_UNUSED(col);
+
 	for(int i = 0; i < m_settings->numCols(); i++)
 		if(!(m_settings->text(row, i).isEmpty()))
 			empty = false;

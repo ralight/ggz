@@ -65,12 +65,16 @@ void GGZapGui::mousePressEvent(QMouseEvent *e)
 
 void GGZapGui::mouseReleaseEvent(QMouseEvent *e)
 {
+	Q_UNUSED(e);
+
 	m_x = -1;
 	m_y = -1;
 }
 
 void GGZapGui::paintEvent(QPaintEvent *e)
 {
+	Q_UNUSED(e);
+
 	QPainter p;
 
 	p.begin(this);
@@ -117,6 +121,9 @@ void GGZapGui::setGame(QString game)
 void GGZapGui::timerEvent(QTimerEvent *e)
 {
 	static int a = 0;
+
+	Q_UNUSED(e);
+
 	a++;
 	setPaletteBackgroundColor(QColor(30, 20 + a, 140));
 

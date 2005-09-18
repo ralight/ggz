@@ -209,6 +209,9 @@ void KCMGGZMetaserver::slotAdded(QString uri, QString proto)
 
 void KCMGGZMetaserver::slotAddedServer(QString uri, QString type, QString location, QString speed, QString comment)
 {
+	Q_UNUSED(location);
+	Q_UNUSED(speed);
+
 	addServerURI(uri, type, "100", QString::null, QString::null, comment);
 }
 
@@ -243,6 +246,10 @@ void KCMGGZMetaserver::addServerURI(QString uri, QString type, QString preferenc
 void KCMGGZMetaserver::slotSelected(QListViewItem *item, const QPoint& point, int column)
 {
 	if(!item) return;
+
+	Q_UNUSED(point);
+	Q_UNUSED(column);
+
 	/*if(!popup)
 	{
 		popup = new QPopupMenu(this);

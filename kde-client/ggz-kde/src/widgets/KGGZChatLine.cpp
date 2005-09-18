@@ -113,6 +113,8 @@ void KGGZChatLine::focusOutEvent(QFocusEvent *e)
 {
 	QString ret;
 
+	Q_UNUSED(e);
+
 	if(!m_complete.isNull())
 	{
 		setFocus();

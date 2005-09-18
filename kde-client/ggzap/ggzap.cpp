@@ -38,6 +38,9 @@ GGZap::GGZap(QWidget *parent, const char *name)
 	KConfig *conf;
 	QString gui;
 
+	Q_UNUSED(parent);
+	Q_UNUSED(name);
+
 	conf = kapp->config();
 	conf->setGroup("GUI");
 	gui = conf->readEntry("Type");

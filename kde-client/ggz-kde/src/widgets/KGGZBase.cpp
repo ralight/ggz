@@ -487,6 +487,8 @@ void KGGZBase::slotRoom(const char *roomname, const char *protocolname, const ch
 #ifdef KGGZ_PATCH_C_AND_R
 	caption = QString("%1 (%2)").arg(roomname).arg(category);
 #else
+	Q_UNUSED(category);
+
 	caption = roomname;
 	if(numplayers > 0) caption = QString("%1 (%2)").arg(roomname).arg(numplayers);
 #endif

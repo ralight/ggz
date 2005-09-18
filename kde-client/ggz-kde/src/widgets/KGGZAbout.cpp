@@ -81,11 +81,15 @@ KGGZAbout::~KGGZAbout()
 
 void KGGZAbout::timerEvent(QTimerEvent *e)
 {
+	Q_UNUSED(e);
+
 	repaint();
 }
 
 void KGGZAbout::resizeEvent(QResizeEvent *e)
 {
+	Q_UNUSED(e);
+
 	m_font.setPointSize(width() / 20);
 	m_repaint = 1;
 	repaint();
@@ -115,6 +119,8 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	const QString developers = QString("Brian Cox - Brent Hendricks - Doug Hudson - Rich Gade - "
 		"Ismael Orenstein - Dan Papasian - Ricardo Quesada - Jason Short - Josef Spillner - Justin Zaun - ") +
 		i18n("and many supporters...");
+
+	Q_UNUSED(e);
 
 	pix = new QPixmap(m_frame->width(), m_frame->height());
 

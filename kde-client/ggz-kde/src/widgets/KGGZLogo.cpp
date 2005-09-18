@@ -112,6 +112,8 @@ void KGGZLogo::setLogo(const char *logo, const char *name, bool enabled)
 
 void KGGZLogo::mousePressEvent(QMouseEvent *e)
 {
+	Q_UNUSED(e);
+
 	emit signalInfo();
 }
 

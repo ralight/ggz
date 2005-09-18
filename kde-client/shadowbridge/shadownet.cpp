@@ -134,6 +134,8 @@ void ShadowNet::slotRead(int sock)
 	QDataStream *s;
 	Q_INT8 transmit = '\0';
 
+	Q_UNUSED(sock);
+
 	//cout << "game -> ggzcore: " << sock << endl;
 
 	s = list.at(m_activated);
@@ -154,6 +156,8 @@ void ShadowNet::slotWrite(int sock)
 {
 	QDataStream *s;
 	Q_INT8 transmit = '\0';
+
+	Q_UNUSED(sock);
 
 	//cout << "ggzcore -> game " << sock << endl;
 

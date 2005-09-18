@@ -90,6 +90,8 @@ void GGZapGuiAlt::mousePressEvent(QMouseEvent *e)
 
 void GGZapGuiAlt::mouseReleaseEvent(QMouseEvent *e)
 {
+	Q_UNUSED(e);
+
 	m_x = -1;
 	m_y = -1;
 }
@@ -97,6 +99,8 @@ void GGZapGuiAlt::mouseReleaseEvent(QMouseEvent *e)
 void GGZapGuiAlt::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
+
+	Q_UNUSED(e);
 
 	p.begin(this);
 	p.setFont(QFont("arial", 24, QFont::Bold));

@@ -198,6 +198,8 @@ void KCMGGZGames::slotSelected(QListViewItem *item, const QPoint& point, int col
 	if(!item) return;
 	if(item->text(1) == QString::null) return;
 
+	Q_UNUSED(column);
+
 	if(!popup)
 	{
 		popup = new QPopupMenu(this);

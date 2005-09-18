@@ -58,6 +58,8 @@ void KGGZSplash::paintEvent(QPaintEvent *e)
 	QPainter p;
 	int x, y;
 
+	Q_UNUSED(e);
+
 	x = (width() - splash.width()) / 2;
 	y = (height() - splash.height()) / 2;
 

@@ -91,6 +91,8 @@ void GGZMetaProtocol::about()
 // Result slot for async copy operations
 void GGZMetaProtocol::slotResult(KIO::Job *job)
 {
+	Q_UNUSED(job);
+
 	debug("** result **");
 	debug(QString("ggz -> slotResult: %1").arg(m_class));
 
@@ -547,6 +549,7 @@ void GGZMetaProtocol::stat(const KURL& url)
 // Initialization
 void GGZMetaProtocol::init(const KURL& url)
 {
+	Q_UNUSED(url);
 }
 
 // Entry point
