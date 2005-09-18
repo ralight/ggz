@@ -1162,7 +1162,19 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			m_channelfd = -1;
 
 			//game_channel_ready();
-			kggzgame->setFd(kggzserver->channel());
+			if(kggzgame)
+			{
+				kggzgame->setFd(kggzserver->channel());
+			}
+			else
+			{
+				// in case of table leave due to problem, kggzgame might be NULL
+				delete m_launch;
+				m_launch = NULL;
+				KMessageBox::error(this,
+					i18n("Could not establish channel due to failed launch!"),
+					i18n("Table launch error!"));
+			}
 
 			break;
 		case GGZCoreServer::channelfail:
