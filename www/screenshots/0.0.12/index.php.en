@@ -1,0 +1,50 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+
+<b>GGZ 0.0.12 Screenshots</b><br>
+
+These screenshots have been made for release 0.0.12.
+The previous ones of version 0.0.7 up to 0.0.11 are still available
+<a href="/screenshots/">here</a>.
+<br><br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="kggz-namedbots.png"><img src="kggz-namedbots.small.png" alt="KGGZ and Named Bots" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="kde-games-seats.png"><img src="kde-games-seats.small.png" alt="Common seats dialog" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Individual bot players can be chosen to be played against
+</td><td bgcolor="#ffffa0">
+A common seat assignments dialog is available to all KDE games of GGZ
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="community-themes.png"><img src="community-themes.small.png" alt="GGZ Community portal" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="kamikaze.png"><img src="kamikaze.small.png" alt="Kamikaze game" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+The GGZ Community portal now supports themes and translations
+</td><td bgcolor="#ffffa0">
+Kamikaze can run on GGZ, too
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="ggzcards.png"><img src="ggzcards.small.png" alt="GGZCards" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="widelands-ggz.png"><img src="widelands-ggz.small.png" alt="Widelands" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+GGZCards, the versatile card game engine, can load SVG card decks
+</td><td bgcolor="#ffffa0">
+Multiplayer (GGZ) configuration in Widelands
+</td></tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
