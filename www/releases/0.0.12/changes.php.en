@@ -1,0 +1,146 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="index.php">GGZ 0.0.12 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+Changelog
+|
+<a href="download.php">Download</a>
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+<a href="play.php">Go play!</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Comprehensive overview about the GGZ Gaming Zone 0.0.12 Release (Changes)</i>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+KDE Client
+</td><td bgcolor="#ffd000" valign="top">
+Launch dialog supports named bots and buddies<br>
+Privacy protection dialog for peer-connected games<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Gtk+ Client
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GNOME Client
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+KDE Games
+</td><td bgcolor="#ffd000" valign="top">
+New common Qt-based dialog and class library<br>
+Usage of the new seats/spectators dialog in most games<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Gtk+ Games
+</td><td bgcolor="#ffd000" valign="top">
+SVG card set for GGZCards<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+SDL Games
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ server (ggzd, libggzdmod)
+</td><td bgcolor="#ffd000" valign="top">
+Support for SQlite database backends<br>
+Bot players can be named and registered<br>
+New C++ library wrapper ggzdmod++ (consolidated)<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ Base Library (libggz)
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ Client Libs (libggzcore, libggzmod)
+</td><td bgcolor="#ffd000" valign="top">
+Support for extended player information retrieval<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Game servers
+</td><td bgcolor="#ffd000" valign="top">
+Savegame support for Connect the Dots<br>
+Named bots support for Tic-Tac-Toe<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Grubby
+</td><td bgcolor="#ffd000" valign="top">
+Automatic joining of reserved seats<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Text client
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Utilities
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Documentation
+</td><td bgcolor="#ffd000" valign="top">
+Slides from the GGZ talk on LinuxTag 2005<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Python stuff
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Community Web Interface
+</td><td bgcolor="#ffd000" valign="top">
+New template and configuration system, including 'Widelands' theme<br>
+Full internationalization<br>
+Savegame handlers for Freelords and Connect the Dots<br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Goals for 0.0.13</i><br>
+Nothing has been decided yet. Some ideas were floating around:
+<ul>
+<li>GGZ Collector: fire-and-forget game result submissions from everywhere
+<li>Qt-based ggzmod and ggzcore abstractions
+<li>Arimaa support in GGZBoard
+<li>Skat and other games for GGZCards
+</ul>
+There is a Playground SVN module where very unstable development takes place.
+Every game and game-related developer is encouraged to use this module.
+<br><br>
+</td></tr>
+
+</table>
+
+<?php include_once("../../site/footer.php"); ?>

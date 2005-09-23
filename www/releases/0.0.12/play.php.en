@@ -1,0 +1,43 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="index.php">GGZ 0.0.12 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+<a href="changes.php">Changelog</a>
+|
+<a href="download.php">Download</a>
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+Go play!
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<b>Playing games over GGZ</b><br>
+<br>
+<i>How to start playing</i><br>
+A complete GGZ installation (main server, game servers, 3rd party games, web
+interface and chatbot) is available at
+<a href="https://www.ggzcommunity.org/">GGZ Community</a>.
+Start a GGZ core client, register during the login process (or on the website itself)
+and then use desktop applications and the website to manage your games.
+More information is available in the <a href="/docs.php">player guide</a>.
+<br><br>
+</td></tr>
+
+</table>
+
+<?php include_once("../../site/footer.php"); ?>

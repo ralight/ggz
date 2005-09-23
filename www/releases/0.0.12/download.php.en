@@ -1,0 +1,189 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="index.php">GGZ 0.0.12 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+<a href="changes.php">Changelog</a>
+|
+Download
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+<a href="play.php">Go play!</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<b>GGZ 0.0.12 Downloads</b><br>
+<br>
+<i>Source code release</i><br>
+The GGZ Gaming Zone project releases its components as source code, which
+can be downloaded here.
+These components have mostly been developed on GNU/Linux systems.
+They should however compile and run on many similar operating systems.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Distributors</i><br>
+A number of distributors provide GGZ packages, either in the base
+distribution, or as contributions. These packages will certainly be updated
+in the near future. Please always use the latest version; bug the distributor
+if necessary.
+<ul>
+<li><a href="http://lunar-linux.org/?q=node/view/7">Lunar Linux</a>
+<li><a href="http://sorcerer.wox.org/grimoire/grimoire.html.gz">Sorcerer</a>
+<li><a href="http://fink.sourceforge.net/pdb/search.php?summary=ggz">Fink</a>
+<li><a href="http://www.fnux.org/">Fnux</a>
+<li><a href="http://codex.sourcemage.org/listing.html">SourceMage</a>
+
+<li><a href="http://packages.gentoo.org/search/?sstring=ggz">Gentoo</a> (very outdated - fresh ones available in SVN!)
+<li><a href="http://packages.debian.org/cgi-bin/search_packages.pl?keywords=GGZ&searchon=all&version=all&release=all">Debian</a> (very outdated - fresh ones available in SVN!)
+
+<li><a href="http://rpms.mandrivaclub.com/linux/rpm2html/search.php?query=ggz&submit=Search+...&arch=">Mandrake</a> (very outdated)
+
+<li><a href="http://www.archlinux.org/packages.php?s_repo=all&s_category=all&s_keyword=ggz&s_lastupdate=&pp=50">ArchLinux</a> (only libs)
+<li><a href="http://www.freshports.org/search.php?query=ggz&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive">FreeBSD</a> (only libs)
+</ul>
+Distributors and packagers are encouraged to subscribe to the
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-servers">ggz-servers list</a>,
+as release pre-announcements are sent there.
+Users and other interested people should definitely subscribe to the low-traffic
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-announce">ggz-announce list</a>.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Source code packages</i>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+<img src="/pics/site/flags/flag-be.png">
+Belnet Mirror, Belgium:<br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/">http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/</a><br>
+<a href="ftp://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/">ftp://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/</a>
+<br><br>
+Make sure to check the source file integrity using the
+<br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/MD5SUMS.asc">digital signature</a>
+<br>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+<br><br>
+Thanks to <a href="http://www.belnet.be/">Belnet</a> for providing the mirror!
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/libggz-0.0.12.tar.gz">libggz-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-client-libs-0.0.12.tar.gz">ggz-client-libs-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-server-0.0.12.tar.gz">ggz-server-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-txt-client-0.0.12.tar.gz">ggz-txt-client-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-gtk-client-0.0.12.tar.gz">ggz-gtk-client-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-kde-client-0.0.12.tar.gz">ggz-kde-client-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-gnome-client-0.0.12.tar.gz">ggz-gnome-client-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-gtk-games-0.0.12.tar.gz">ggz-gtk-games-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-kde-games-0.0.12.tar.gz">ggz-kde-games-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-sdl-games-0.0.12.tar.gz">ggz-sdl-games-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-python-0.0.12.tar.gz">ggz-python-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-utils-0.0.12.tar.gz">ggz-utils-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-grubby-0.0.12.tar.gz">ggz-grubby-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-docs-0.0.12.tar.gz">ggz-docs-0.0.12.tar.gz</a><br>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.12/ggz-community-0.0.12.tar.gz">ggz-community-0.0.12.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+<img src="/pics/site/flags/flag-dk.png">
+Dotsrc Mirror, Denmark:<br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/">http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/</a><br>
+<a href="ftp://mirrors.dotsrc.org/mirrors/ggzgamingzone/ggz/0.0.12/">ftp://mirrors.dotsrc.org/mirrors/ggzgamingzone/ggz/0.0.12/</a>
+<br><br>
+Make sure to check the source file integrity using the
+<br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/MD5SUMS.asc">digital signature</a>
+<br>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+<br><br>
+Thanks to <a href="http://www.dotsrc.org/">Dotsrc</a> for providing the mirror!
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/libggz-0.0.12.tar.gz">libggz-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-client-libs-0.0.12.tar.gz">ggz-client-libs-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-server-0.0.12.tar.gz">ggz-server-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-txt-client-0.0.12.tar.gz">ggz-txt-client-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-gtk-client-0.0.12.tar.gz">ggz-gtk-client-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-kde-client-0.0.12.tar.gz">ggz-kde-client-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-gnome-client-0.0.12.tar.gz">ggz-gnome-client-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-gtk-games-0.0.12.tar.gz">ggz-gtk-games-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-kde-games-0.0.12.tar.gz">ggz-kde-games-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-sdl-games-0.0.12.tar.gz">ggz-sdl-games-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-python-0.0.12.tar.gz">ggz-python-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-utils-0.0.12.tar.gz">ggz-utils-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-grubby-0.0.12.tar.gz">ggz-grubby-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-docs-0.0.12.tar.gz">ggz-docs-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.12/ggz-community-0.0.12.tar.gz">ggz-community-0.0.12.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+<img src="/pics/site/flags/flag-us.png">
+ibiblio Mirror, USA:<br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/">http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/</a><br>
+<a href="ftp://mirrors.ibiblio.org/mirrors/ggzgamingzone/ggz/0.0.12/">ftp://mirrors.ibiblio.org/mirrors/ggzgamingzone/ggz/0.0.12/</a>
+<br><br>
+Make sure to check the source file integrity using the
+<br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/MD5SUMS.asc">digital signature</a>
+<br>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+<br><br>
+Thanks to <a href="http://www.ibiblio.org/">ibiblio</a> for providing the mirror!
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/libggz-0.0.12.tar.gz">libggz-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-client-libs-0.0.12.tar.gz">ggz-client-libs-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-server-0.0.12.tar.gz">ggz-server-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-txt-client-0.0.12.tar.gz">ggz-txt-client-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-gtk-client-0.0.12.tar.gz">ggz-gtk-client-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-kde-client-0.0.12.tar.gz">ggz-kde-client-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-gnome-client-0.0.12.tar.gz">ggz-gnome-client-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-gtk-games-0.0.12.tar.gz">ggz-gtk-games-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-kde-games-0.0.12.tar.gz">ggz-kde-games-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-sdl-games-0.0.12.tar.gz">ggz-sdl-games-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-python-0.0.12.tar.gz">ggz-python-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-utils-0.0.12.tar.gz">ggz-utils-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-grubby-0.0.12.tar.gz">ggz-grubby-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-docs-0.0.12.tar.gz">ggz-docs-0.0.12.tar.gz</a><br>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.12/ggz-community-0.0.12.tar.gz">ggz-community-0.0.12.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Mirrors?
+</td><td bgcolor="#ffd000" valign="top">
+We do now have enough FTP mirrors. If you have a dedicated
+spare server, we'd use it to host our developer services
+like mail, source repository and bug tracker.
+on. We could also make use of a (static) WWW mirror.
+Please write a mail to the
+<a href="mailto:hostmaster@ggzgamingzone.org">hostmaster</a>
+if you are kind enough to provide such a server.
+</td></tr>
+
+</table>
+
+<?php include_once("../../site/footer.php"); ?>

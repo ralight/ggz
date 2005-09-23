@@ -1,0 +1,140 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="index.php">GGZ 0.0.12 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+<a href="changes.php">Changelog</a>
+|
+<a href="download.php">Download</a>
+|
+Installation
+|
+<a href="credits.php">Credits</a>
+|
+<a href="play.php">Go play!</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="3">
+<font size="3">
+<b>GGZ 0.0.12 Installation</b><br>
+<br>
+<i>Installation from source</i><br>
+The following instructions apply to people who want to install the client-side
+packages of GGZ from source. It also explains some software dependencies.
+In any case, please consult the file QuickStart.GGZ in each of the client tarballs.
+For a general overview, please read README.GGZ, which is part of every tarball.
+For Windows and Linux tips, see below.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="3">
+<font size="3">
+<i>Dependencies</i>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+libggz
+</td><td bgcolor="#ffd000" valign="top">
+Required.
+</td><td bgcolor="#ffd000" valign="top">
+Optional support for gcrypt, gnutls and openssl (development files).
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+ggz-client-libs
+</td><td bgcolor="#ffd000" valign="top">
+Required.
+</td><td bgcolor="#ffd000" valign="top">
+Needs <s>popt and</s> expat (development files).
+Popt has not been needed anymore since GGZ 0.0.11.
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+ggz-*-client
+</td><td bgcolor="#ffd000" valign="top">
+At least one required.
+</td><td bgcolor="#ffd000" valign="top">
+Needs either libgtk or kdelibs or ncurses (development files).
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+ggz-*-games
+</td><td bgcolor="#ffd000" valign="top">
+At least one required. More recommended.
+</td><td bgcolor="#ffd000" valign="top">
+Needs either libgtk or kdelibs or libsdl or ncurses (development files).
+</td></tr>
+
+<tr>
+<td colspan="3">
+<font size="3">
+<i>How to install</i>
+<br>
+Just run configure, make, make install in every package.
+Start with libggz. If you want a prefix different from /usr/local,
+specify this prefix with each package so GGZ is always found.
+For desktop integration, the prefix should equal the one of either
+KDE or GNOME (using $KDEDIRS also works).
+<br><br>
+If even this is too hard, the GGZ contrib directory provides a
+<a href="http://ftp.ggzgamingzone.org/pub/contrib/getggz.sh">script</a>
+which does the job interactively.
+It installs GGZ into the home directory (no root access required).
+</td></tr>
+
+<tr>
+<td colspan="3">
+<font size="3">
+<i>Fedora Core 3 (and comparables)</i>
+<br>
+Fedora/Redhat users often ask how to install GGZ. First of all,
+the following packages are not included and must be retrieved from
+rpmfind.net:
+<ul>
+<li>SDL_ttf
+<li>pygame
+<li>smpeg
+<li>Numeric
+<li>fam-devel
+</ul>
+KDE programs and games must be configured using
+--with-qt-includes=/usr/lib/qt-3.3/include and
+--with-qt-libraries=/usr/lib/qt-3.3/lib.
+</td></tr>
+
+<tr>
+<td colspan="3">
+<font size="3">
+<i>Windows users</i>
+<br>
+Parts of GGZ (libraries, Gtk+ programs and games) can
+be cross-compiled using MinGW and Msys.
+Static libraries can be found on our
+<a href="http://ftp.ggzgamingzone.org/pub/contrib/win32/">FTP server</a>.
+</td></tr>
+
+<tr>
+<td colspan="3">
+<font size="3">
+<i>Packagers</i>
+<br>
+If you want to provide GGZ packages for a distribution, have a look at
+the new --enable-noregistry switch to vastly ease the packaging of the games.
+It is recommended to speak to us about the packages - it's a lot easier
+to do that way.
+</td></tr>
+
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
