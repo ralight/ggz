@@ -1,1714 +1,2931 @@
-2005-01-23 14:20   Josef Spillner <josef@ggzgamingzone.org>
+2005-09-25 10:11:25  Rev 7551   josef
 
-	* NEWS: - news update
+	* configure.ac:
+	  - more version string changes in the build system
 
-2005-01-23 14:12   Josef Spillner <josef@ggzgamingzone.org>
 
-	* README, README.GGZ: - updated common files
+2005-09-25 09:54:30  Rev 7550   josef
 
-2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+	* README NEWS README.GGZ:
+	  - version updates in common files
+	  - news and release-specific changes
 
-	* m4/ggz.m4: Search for .la files instead of .so.
 
-2005-01-22 16:34   Josef Spillner <josef@ggzgamingzone.org>
+2005-09-23 21:54:25  Rev 7547   josef
 
-	* man/: ggz-cmd.1, metaserv.1, telggz.1: - updated version numbers
+	* COPYING:
+	  - add copyright files for gnome-client and sdl-games to SVN
+	  - update all copyright files with current version, including the 
+	  new FSF address in Boston
 
-2005-01-22 16:28   Josef Spillner <josef@ggzgamingzone.org>
 
-	* configure.ac: - version number bump
+2005-09-15 18:00:53  Rev 7516   josef
 
-2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+	* configure.ac autogen.sh:
+	  - synchronisation of all autogen.sh files
+	  - quick fixes in configure.ac's (but they really need a cleanup 
+	  also)
 
-	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
-	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
-	  non-glibc systems.
 
-2005-01-13 19:35   Jason Short <jdorje@ggzgamingzone.org>
+2005-08-20 21:41:45  Rev 7464   josef
 
-	* configure.ac: Greatly improve configure checks.
+	* configure.ac:
+	  - bump version to 0.0.12pre to not create *-0.0.11.tar.gz files
+	  - remove the gtk-games override stuff
 
-2005-01-13 19:35   Jason Short <jdorje@ggzgamingzone.org>
 
-	* metaserv/metaserv/metaserv.c: Check if headers are present before
-	  including them.
+2005-08-15 09:57:30  Rev 7434   josef
 
-2005-01-13 19:34   Jason Short <jdorje@ggzgamingzone.org>
+	* metaserv/metaserv/README.metaserv metaserv/README.ggz-metaserver:
+	  - homepage updates
 
-	* cmd-client/main.c: Include winsock if needed.
 
-2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+2005-08-14 14:27:21  Rev 7419   josef
 
-	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+	* ggzcomm/Makefile.am:
+	  - add the script to EXTRA_DIST
 
-2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
 
-	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
-	  standard, even though it's not helpful for most packages since
-	  NLS is manditory.
+2005-08-13 17:44:31  Rev 7387   josef
 
-2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+	* configure.ac m4/ggz.m4:
+	  - build system synchronisation
 
-	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
-	  available.  It also checks for the header files but doesn't fail
-	  if they're not present.
 
-2004-11-05 00:00   Jason Short <jdorje@ggzgamingzone.org>
+2005-08-06 08:32:26  Rev 7367   josef
 
-	* cmd-client/Makefile.am, ggzcomm/Makefile.am,
-	  metaserv/metaserv/Makefile.am, telggz/Makefile.am: Change
-	  INCLUDES to AM_CPPFLAGS.
+	* m4/ggz.m4:
+	  - global m4 file synchronisation (now that is fun with subversion)
+	  - also a test for the changed commit script which crops at 20 kB 
+	  diff size
 
-2004-07-18 02:37   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ChangeLog: - changelog update
+2005-05-21 11:13:11  Rev 7216   josef
 
-2004-07-17 05:59   Josef Spillner <josef@ggzgamingzone.org>
+	* README AUTHORS NEWS README.GGZ:
+	  - common files synchronisation and README update for 0.0.11
 
-	* Makefile.am: - fix libtool.m4 inclusion
 
-2004-07-17 02:39   Josef Spillner <josef@ggzgamingzone.org>
+2005-05-21 10:46:02  Rev 7214   josef
 
-	* metaserv/metaserv/metaserv.c: - version update for the metaserver
+	* configure.ac:
+	  - LET version = 0.0.11
 
-2004-07-16 21:08   Josef Spillner <josef@ggzgamingzone.org>
 
-	* AUTHORS, NEWS, README, README.GGZ, configure.ac: - 0.0.9 updates
-	  propagation
+2005-05-21 10:32:40  Rev 7211   josef
 
-2004-07-13 16:56   Josef Spillner <josef@ggzgamingzone.org>
+	* telggz/main.c:
+	  - version bumped to 0.4 due to some small changes
 
-	* m4/libtool.m4: - remove libtool macros
 
-2004-07-10 19:45   Jason Short <jdorje@ggzgamingzone.org>
+2005-05-21 10:30:36  Rev 7210   josef
 
-	* m4/libtool.m4: Update libtool.m4.
+	* ggzcomm/ggzcommgen ggzcomm/ggzcommgen.rb ggzcomm/Makefile.am:
+	  - drop .rb prefix from ggzcommgen
 
-2004-06-10 16:06   Josef Spillner <josef@ggzgamingzone.org>
 
-	* metaserv/metaserv/metaserv.c: - emergency fix for NULL attributes
+2005-05-06 21:19:56  Rev 7182   josef
 
-	  I don't know yet what is causing these, but with a bit of luck it
-	  seems to be the only source of the segfaults. At least it runs
-	  stable now for more than 1500 operations.
+	* m4/ggz.m4:
+	  - synchronization of ggz.m4 files
+	  - fixes typo: use ggzdconfdir instead of ggzconfdir
+	  - fixes compiler problems: use -isystem X instead of -isystemX
+	  - fixes ggzcore linkage force in ggzmod problem
 
+
+2005-04-24 14:43:14  Rev 7151   josef
+
+	* ggzcomm/ggzcommgen.rb ggzcomm/tictactoe.protocol:
+	  - make it produce the exact same code as needed for TTT
+
+
+2005-04-23 11:31:46  Rev 7123   josef
+
+	* telggz/net.c cmd-client/main.c:
+	  - protocol enhancement:
+	   * allow users to give initial password when registering
+	   * allow users to give email address
+
+
+2005-04-21 15:29:23  Rev 7116   josef
+
+	* ggzcomm/ggzcommgen.rb ggzcomm/Makefile.am:
+	  - fix resulting compilation errors
+
+
+2005-04-08 13:18:08  Rev 7090   josef
+
+	* telggz/net.c:
+	  - fix MOTD loading
+
+
+2005-04-02 20:14:52  Rev 7076   josef
+
+	* metaserv/metaserv/metaservconf.xml:
+	  - prepare next version on new live server
+
+
+2005-03-13 22:56:30  Rev 7003   josef
+
+	* ggzcomm/ggzcommgen.rb:
+	  - basic support for C++ with Qt signals and slots
+
+
+2005-03-13 21:27:22  Rev 7002   josef
+
+	* ggzcomm/ggzcommgen.rb:
+	  - dummy support for python/socket output
+
+
+2005-03-13 20:47:13  Rev 7001   josef
+
+	* ggzcomm/ggzcommgen.rb ggzcomm/tictactoe.protocol:
+	  - allow for nested sequences
+	  - make TTT example compile (needs a workaround but this is ok for 
+	  now)
+
+
+2005-03-13 17:47:42  Rev 7000   josef
+
+	* ggzcomm/ggzcommgen.rb:
+	  - support for comparison operators: = != < >
+
+
+2005-03-13 17:43:35  Rev 6999   josef
+
+	* ggzcomm/ggzcommgen.c ggzcomm/ggzcommgen.h ggzcomm/main.c 
+	  ggzcomm/Makefile.am:
+	  - install ggzcommgen.rb
+	  - delete old C implementation
+
+
+2005-03-13 17:16:09  Rev 6998   josef
+
+	* ggzcomm/ggzcommgen.rb:
+	  - support for (simple) conditions
+	  This should make the first games like TTT work!
+
+
+2005-03-13 16:31:02  Rev 6997   josef
+
+	* ggzcomm/ggzcommgen.rb ggzcomm/tictactoe.protocol 
+	  ggzcomm/protocol-format.txt:
+	  - support for sequences
+
+
+2005-03-13 15:13:35  Rev 6996   josef
+
+	* ggzcomm/helloworld.protocol ggzcomm/ggzcommgen.rb 
+	  ggzcomm/tictactoe.protocol ggzcomm/hastings.protocol 
+	  ggzcomm/ggzcards.protocol ggzcomm/chess.protocol 
+	  ggzcomm/protocol-format.txt ggzcomm/DESIGN ggzcomm/dots.protocol:
+	  - fix all protocol definitions
+	  - add new simple helloworld protocol
+	    * client sends greet request
+	    * server sends greeting
+	  - fix ruby script to produce valid C code for use with 
+	  libggz/easysock
+	    * the C sources are to be deprecated, they cannot be maintained
+
+
+2005-03-11 21:18:01  Rev 6992   josef
+
+	* telggz/meta.c:
+	  - do not crash on empty server list
+
+
+2005-03-11 07:58:18  Rev 6984   jdorje
+
+	* cmd-client/main.c:
+	  Portability fixes:
+	  1.  Add "#include <strings.h>" as needed for strcasecmp.
+	  2.  Use ggz_strdup not strdup.
+
+
+2005-02-04 15:59:43  Rev 6918   josef
+
+	* m4/ggz.m4:
+	  - synchronize
+
+
+2005-01-24 03:23:21  Rev 6870   jdorje
+
+	* telggz/net.c cmd-client/main.c telggz/net.h:
+	  Make hook functions take const pointers.
+
+
+2005-01-24 01:39:48  Rev 6866   jdorje
+
+	* m4/ggz.m4:
+	  Change the way channels are created at the client side.  The GGZ 
+	  client
+	  does not create the channel.  Instead the channel connection data 
+	  is sent
+	  to the game which makes the connection itself.  This means ggzmod 
+	  needs
+	  to call the channel-creation function from within ggzcore, adding 
+	  a new
+	  library dependency.  This is solved by linking ggzcore in along with
+	  ggzmod inside AC_GGZ_GGZMOD.
+
+
+2005-01-23 21:23:07  Rev 6856   josef
+
+	* AUTHORS ChangeLog:
+	  - authors and changelog
+
+
+2005-01-23 13:20:29  Rev 6844   josef
+
+	* NEWS:
+	  - news update
+
+
+2005-01-23 13:12:48  Rev 6843   josef
+
+	* README README.GGZ:
+	  - updated common files
+
+
+2005-01-22 19:22:53  Rev 6824   jdorje
+
+	* m4/ggz.m4:
+	  Search for .la files instead of .so.
+
+
+2005-01-22 15:38:16  Rev 6813   josef
+
+	* man/metaserv.1 man/ggz-cmd.1 man/telggz.1:
+	  - updated version numbers
+
+
+2005-01-22 15:28:57  Rev 6812   josef
+
+	* configure.ac:
+	  - version number bump
+
+
+2005-01-14 07:01:43  Rev 6675   jdorje
+
+	* Makefile.am m4/iconv.m4 m4/ggz.m4:
+	  Add support for libintl and libiconv to AC_GGZ_INTL.  This is 
+	  needed to
+	  compile at all on non-glibc systems.
+
+
+2005-01-13 18:35:43  Rev 6650   jdorje
+
+	* configure.ac:
+	  Greatly improve configure checks.
+
+
+2005-01-13 18:35:01  Rev 6649   jdorje
+
+	* metaserv/metaserv/metaserv.c:
+	  Check if headers are present before including them.
+
+
+2005-01-13 18:34:04  Rev 6648   jdorje
+
+	* cmd-client/main.c:
+	  Include winsock if needed.
+
+
+2005-01-13 02:23:59  Rev 6643   jdorje
+
+	* m4/ggz.m4:
+	  Fix a typo in checking for libintl.h and locale.h.
+
+
+2005-01-13 01:45:15  Rev 6641   jdorje
+
+	* m4/ggz.m4:
+	  Define ENABLE_NLS if NLS is present.  This is standard, even 
+	  though it's
+	  not helpful for most packages since NLS is manditory.
+
+
+2005-01-11 17:36:35  Rev 6638   jdorje
+
+	* m4/ggz.m4:
+	  Make AC_GGZ_INTL fail if the gettext functions are not available.  
+	  It also
+	  checks for the header files but doesn't fail if they're not present.
+
+
+2004-11-04 23:00:59  Rev 6258   jdorje
+
+	* telggz/Makefile.am cmd-client/Makefile.am ggzcomm/Makefile.am 
+	  metaserv/metaserv/Makefile.am:
+	  Change INCLUDES to AM_CPPFLAGS.
+
+
+2004-07-18 00:37:08  Rev 6153   josef
+
+	* ChangeLog:
+	  - changelog update
+
+
+2004-07-17 03:59:30  Rev 6135   josef
+
+	* Makefile.am:
+	  - fix libtool.m4 inclusion
+
+
+2004-07-17 00:39:32  Rev 6121   josef
+
+	* metaserv/metaserv/metaserv.c:
+	  - version update for the metaserver
+
+
+2004-07-16 19:08:39  Rev 6117   josef
+
+	* AUTHORS README.GGZ README configure.ac NEWS:
+	  - 0.0.9 updates propagation
+
+
+2004-07-13 14:56:49  Rev 6098   josef
+
+	* m4/libtool.m4:
+	  - remove libtool macros
+
+
+2004-07-10 17:45:53  Rev 6074   jdorje
+
+	* m4/libtool.m4:
+	  Update libtool.m4.
+
+
+2004-06-10 14:06:10  Rev 6010   josef
+
+	* metaserv/metaserv/metaserv.c:
+	  - emergency fix for NULL attributes
+	  I don't know yet what is causing these, but with a bit of luck it 
+	  seems
+	  to be the only source of the segfaults. At least it runs stable 
+	  now for
+	  more than 1500 operations.
 	  Oh and the CVS server is now patched too :)
 
-2004-05-17 16:31   Josef Spillner <josef@ggzgamingzone.org>
 
-	* metaserv/metaserv/metaserv.c: - pthread fix: if thread cannot be
-	  created, close connection, don't hang
+2004-05-17 14:31:39  Rev 6004   josef
 
+	* metaserv/metaserv/metaserv.c:
+	  - pthread fix: if thread cannot be created, close connection, 
+	  don't hang
 	  There's still one other grave bug in the source :(
 
-2004-05-17 16:30   Josef Spillner <josef@ggzgamingzone.org>
 
-	* metaserv/gui-perl/ggzserver-register.pl: - add script to register
-	  GGZ server with the metaserver
+2004-05-17 14:30:49  Rev 6003   josef
 
-2004-02-28 02:58   Jason Short <jdorje@ggzgamingzone.org>
+	* metaserv/gui-perl/ggzserver-register.pl:
+	  - add script to register GGZ server with the metaserver
 
-	* Makefile.am, m4/libtool.m4: Add libtool.m4 to CVS.
 
-2004-02-21 09:51   Jason Short <jdorje@ggzgamingzone.org>
+2004-02-28 01:58:10  Rev 5961   jdorje
 
-	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
-	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
-	  - Replace the history section (which was getting really big) with
-	  a   reference to CVS.  - Propogate the changes back into all
-	  modules.
+	* m4/libtool.m4 Makefile.am:
+	  Add libtool.m4 to CVS.
 
-2004-02-07 10:40   Josef Spillner <josef@ggzgamingzone.org>
 
-	* metaserv/metaserv/metaserv.c: - version bump: 0.2 -> 0.3
+2004-02-21 08:51:32  Rev 5956   jdorje
 
-2004-02-05 23:12   Josef Spillner <josef@ggzgamingzone.org>
+	* m4/ggz.m4:
+	  - Copy ggz.m4 into libggz.
+	  - Declare the libggz copy to be the master copy.
+	  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with a
+	    reference to CVS.
+	  - Propogate the changes back into all modules.
 
-	* metaserv/metaserv/helper.c: - include header file to prototype
-	  functions
 
-	  Does this fix it? Otherwise I don't know.
+2004-02-10 08:01:45  Rev 5882   josef
 
-2004-02-05 13:16   Josef Spillner <josef@ggzgamingzone.org>
+	* debian:
+	  - fourth round of removals of distribution files
 
-	* metaserv/metaserv/metaservconf.xml: - changed metaserver target
-	  URIs
 
-2004-02-05 12:53   Josef Spillner <josef@ggzgamingzone.org>
+2004-02-07 09:40:50  Rev 5815   josef
 
-	* man/: ggz-cmd.1, ggzcommgen.1, metaserv.1, telggz.1: - version
-	  updates - mention Nagios in ggz-cmd manpage
+	* metaserv/metaserv/metaserv.c:
+	  - version bump: 0.2 -> 0.3
 
-2004-02-05 11:45   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ChangeLog, NEWS, README, README.GGZ, configure.ac: - synchronized
-	  NEWS, README.GGZ and QuickStart.GGZ from docs - updated README
-	  * new URLs for developers, bugs, website   * no more per-package
-	  maintainer mention (it was never valid anyway) - updated
-	  configure.ac to indicate final version 0.0.8 - ChangeLog updates
+2004-02-05 22:12:18  Rev 5804   josef
 
-2004-01-31 11:54   Josef Spillner <josef@ggzgamingzone.org>
+	* metaserv/metaserv/helper.c:
+	  - include header file to prototype functions
+	  Does this fix it?
+	  Otherwise I don't know.
 
-	* m4/ggz.m4, autogen.sh: - sync common files
 
-2004-01-17 19:46  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-02-05 12:16:29  Rev 5803   josef
 
-	* autogen.sh: - sync
+	* metaserv/metaserv/metaservconf.xml:
+	  - changed metaserver target URIs
 
-2004-01-02 18:44  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/metaserv.c: - removals of entries
+2004-02-05 11:53:34  Rev 5797   josef
 
-2003-12-31 17:59  Josef Spillner <dr_maux@users.sourceforge.net>
+	* man/metaserv.1 man/ggz-cmd.1 man/telggz.1 man/ggzcommgen.1:
+	  - version updates
+	  - mention Nagios in ggz-cmd manpage
 
-	* configure.ac: - use new-style AC_INIT
 
-2003-12-16 15:58  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-02-05 10:46:53  Rev 5790   josef
 
-	* metaserv/metaserv/metaserv.c: - closing the socket once is
-	enough: after accept() and fdopen(), close()   suffices, the odd
-	fclose() would prevent multi-query sessions anyway
+	* README.GGZ ChangeLog README configure.ac NEWS:
+	  - synchronized NEWS, README.GGZ and QuickStart.GGZ from docs
+	  - updated README
+	    * new URLs for developers, bugs, website
+	    * no more per-package maintainer mention (it was never valid 
+	  anyway)
+	  - updated configure.ac to indicate final version 0.0.8
+	  - ChangeLog updates
 
-2003-12-16 10:09  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/metaserv.c: - don't leak file descriptors
-	
-	That reminds me of ggzd again ;)
+2004-01-31 10:54:44  Rev 5770   josef
 
-2003-12-13 15:09  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh m4/ggz.m4:
+	  - sync common files
 
-	* metaserv/metaserv/metaserv.c: - convert &s to &amp;s
-	automatically when receiving data - in verbose mode, set logfile to
-	stdout if not set
 
-2003-12-09 15:11  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-01-17 18:46:28  Rev 5740   dr_maux
 
-	* cmd-client/main.c: - addition of a modified 'checkonline'
-	command: 'checknagios'
-	
-	This makes ggz-cmd compatible to plugins for Nagios
-	(http://www.nagios.org).  People running Nagios (and many ISPs and
-	companies do) can now seamlessly integrate checks for running GGZ
-	servers.
-	
-	For the predecessor netsaint, it might look like:
-	command[check_ggz]=/usr/lib/netsaint/plugins/ggz_cmd $HOSTNAME
-	guestuser pass
-	
-	Josef
+	* autogen.sh:
+	  - sync
 
-2003-09-20 15:36  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* motd-editor/macros/.cvsignore: - forgot to remove this beast
+2004-01-02 17:44:17  Rev 5732   dr_maux
 
-2003-08-30 20:24  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c:
+	  - removals of entries
 
-	* configure.ac: - don't include motd-editor in makefile creation
-	list
 
-2003-08-30 20:20  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-12-31 17:02:57  Rev 5727   dr_maux
 
-	* motd-editor/macros/Makefile.am,
-	motd-editor/macros/aclocal-include.m4,
-	motd-editor/macros/autogen.sh,
-	motd-editor/macros/compiler-flags.m4, motd-editor/macros/curses.m4,
-	motd-editor/macros/gnome-bonobo-check.m4,
-	motd-editor/macros/gnome-common.m4,
-	motd-editor/macros/gnome-fileutils.m4,
-	motd-editor/macros/gnome-ghttp-check.m4,
-	motd-editor/macros/gnome-gnorba-check.m4,
-	motd-editor/macros/gnome-guile-checks.m4,
-	motd-editor/macros/gnome-libgtop-check.m4,
-	motd-editor/macros/gnome-objc-checks.m4,
-	motd-editor/macros/gnome-orbit-check.m4,
-	motd-editor/macros/gnome-print-check.m4,
-	motd-editor/macros/gnome-pthread-check.m4,
-	motd-editor/macros/gnome-support.m4,
-	motd-editor/macros/gnome-undelfs.m4,
-	motd-editor/macros/gnome-vfs.m4,
-	motd-editor/macros/gnome-x-checks.m4,
-	motd-editor/macros/gnome-xml-check.m4, motd-editor/macros/gnome.m4,
-	motd-editor/macros/gperf-check.m4, motd-editor/macros/linger.m4,
-	motd-editor/macros/need-declaration.m4, m4/gnome.m4: - remove
-	obsolete gnome macros
+	* configure.ac:
+	  - use new-style AC_INIT
 
-2003-08-28 03:42  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ggzcomm/ccheckers.protocol: - preliminary protocol formalization
-	for chinese checkers
+2003-12-16 14:58:05  Rev 5717   dr_maux
 
-2003-07-26 09:49  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c:
+	  - closing the socket once is enough: after accept() and fdopen(), 
+	  close()
+	    suffices, the odd fclose() would prevent multi-query sessions 
+	  anyway
 
-	* metaserv/metaserv/metaserv.c: - add 'ggzmeta:update'/'delta' to
-	enable incremental update, which should   reduce the traffic quite
-	a lot - also use 'ggzmeta:version' instead of version
-	(implementation is backward   compatible)
 
-2003-07-26 00:08  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-12-16 09:09:13  Rev 5716   dr_maux
 
-	* metaserv/metaserv/metaserv.c: - ignore sigpipe
+	* metaserv/metaserv/metaserv.c:
+	  - don't leak file descriptors
+	  That reminds me of ggzd again ;)
 
-2003-07-25 22:27  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/metaserv.c: - use a mutex to avoid race
-	conditions - prohibit updates when not running in daemon mode
+2003-12-13 14:09:22  Rev 5714   dr_maux
 
-2003-07-25 21:25  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c:
+	  - convert &s to &amp;s automatically when receiving data
+	  - in verbose mode, set logfile to stdout if not set
 
-	* metaserv/metaserv/metaserv.c: - new command line option -p to
-	specify alternative port - new command line option -V to log with
-	high verbosity - assign session ids and log them so usage can be
-	traced
 
-2003-07-25 21:24  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-12-09 14:11:35  Rev 5712   dr_maux
 
-	* metaserv/minidom/minidom.c: - support for XML comments
-	
-	Up until now, they had to be written as <!-- foo --/>.	Just 4
-	lines of C fixed that issue.
+	* cmd-client/main.c:
+	  - addition of a modified 'checkonline' command: 'checknagios'
+	  This makes ggz-cmd compatible to plugins for Nagios (http://www.
+	  nagios.org).
+	  People running Nagios (and many ISPs and companies do) can now 
+	  seamlessly
+	  integrate checks for running GGZ servers.
+	  For the predecessor netsaint, it might look like:
+	  command[check_ggz]=/usr/lib/netsaint/plugins/ggz_cmd $HOSTNAME 
+	  guestuser pass
+	  Josef
 
-2003-06-28 11:09  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/metaservconf.xml: - no more snafu
+2003-09-20 13:36:23  Rev 5648   dr_maux
 
-2003-06-27 19:48  Josef Spillner <dr_maux@users.sourceforge.net>
+	* motd-editor:
+	  - forgot to remove this beast
 
-	* metaserv/metaserv/metaserv.c: - don't crash on SIGPIPE if fd has
-	become invalid
 
-2003-06-26 21:34  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-08-30 18:24:13  Rev 5641   dr_maux
 
-	* metaserv/README.ggz-metaserver: - mention kderadiostation as a
-	usage example
+	* configure.ac:
+	  - don't include motd-editor in makefile creation list
 
-2003-06-26 11:25  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am, configure.ac, metaserv/metaserv/metaserv.c,
-	motd-editor/.cvsignore, motd-editor/Makefile.am,
-	motd-editor/callbacks.c, motd-editor/callbacks.h,
-	motd-editor/interface.c, motd-editor/interface.h,
-	motd-editor/main.c, motd-editor/motd-editor.glade,
-	motd-editor/support.c, motd-editor/support.h: - move MOTD editor
-	out of utils into gnome-client
+2003-08-30 18:21:03  Rev 5640   dr_maux
 
-2003-05-29 19:33  Josef Spillner <dr_maux@users.sourceforge.net>
+	* motd-editor/macros/gnome-fileutils.m4 
+	  motd-editor/macros/gnome-undelfs.m4 
+	  motd-editor/macros/gnome-ghttp-check.m4 motd-editor/macros/curses.
+	  m4 motd-editor/macros/compiler-flags.m4 
+	  motd-editor/macros/gnome-pthread-check.m4 motd-editor/macros/gnome.
+	  m4 motd-editor/macros/gnome-guile-checks.m4 
+	  motd-editor/macros/gnome-x-checks.m4 
+	  motd-editor/macros/gnome-print-check.m4 m4/gnome.m4 
+	  motd-editor/macros/gperf-check.m4 
+	  motd-editor/macros/gnome-xml-check.m4 
+	  motd-editor/macros/gnome-libgtop-check.m4 
+	  motd-editor/macros/gnome-objc-checks.m4 
+	  motd-editor/macros/aclocal-include.m4 
+	  motd-editor/macros/gnome-support.m4 motd-editor/macros/linger.m4 
+	  motd-editor/macros/gnome-gnorba-check.m4 
+	  motd-editor/macros/Makefile.am motd-editor/macros/gnome-common.m4 
+	  motd-editor/macros/autogen.sh 
+	  motd-editor/macros/gnome-bonobo-check.m4 
+	  motd-editor/macros/gnome-orbit-check.m4 
+	  motd-editor/macros/need-declaration.m4 
+	  motd-editor/macros/gnome-vfs.m4:
+	  - remove obsolete gnome macros
 
-	* metaserv/metaserv/metaserv.c: - don't crash if preference
-	attribute is missing
-	
-	It isn't missing in GGZ entries, but e.g. in metasound entries,
-	which are to be used for the KDE Radio Station program.
 
-2003-05-17 10:10  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-08-28 01:42:59  Rev 5638   dr_maux
 
-	* ChangeLog: - update changelog
+	* ggzcomm/ccheckers.protocol:
+	  - preliminary protocol formalization for chinese checkers
 
-2003-05-16 20:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - apply autogen.sh changes from libggz
+2003-07-26 07:49:19  Rev 5628   dr_maux
 
-2003-05-11 11:23  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c:
+	  - add 'ggzmeta:update'/'delta' to enable incremental update, which 
+	  should
+	    reduce the traffic quite a lot
+	  - also use 'ggzmeta:version' instead of version (implementation is 
+	  backward
+	    compatible)
 
-	* metaserv/metaserv/metaservconf.xml: - update the metaserver
-	configuration to reflect the new server versions
 
-2003-05-11 01:52  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-07-25 22:08:27  Rev 5627   dr_maux
 
-	* configure.ac: - set the package version number (via configure.ac)
-	to 0.0.7
+	* metaserv/metaserv/metaserv.c:
+	  - ignore sigpipe
 
-2003-05-11 01:42  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* README: - version update
+2003-07-25 20:27:07  Rev 5626   dr_maux
 
-2003-05-11 01:25  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c:
+	  - use a mutex to avoid race conditions
+	  - prohibit updates when not running in daemon mode
 
-	* man/: ggz-cmd.1, metaserv.1, telggz.1: - (slight) manpage updates
-	
-	Some are a bit out of date, this should be fixed for 0.0.8.
 
-2003-05-11 01:17  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-07-25 19:25:53  Rev 5625   dr_maux
 
-	* NEWS, README.GGZ, autogen.sh: - update common files for 0.0.7 in
-	utils
+	* metaserv/metaserv/metaserv.c:
+	  - new command line option -p to specify alternative port
+	  - new command line option -V to log with high verbosity
+	  - assign session ids and log them so usage can be traced
 
-2003-05-10 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - sync autogen.sh
+2003-07-25 19:24:08  Rev 5624   dr_maux
 
-2003-05-10 13:31  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/minidom/minidom.c:
+	  - support for XML comments
+	  Up until now, they had to be written as <!-- foo --/>.
+	  Just 4 lines of C fixed that issue.
 
-	* metaserv/: Makefile.am, metaserv/Makefile.am: - fix 'make
-	distcheck' - also, exclude gui-* from the distribution again
 
-2003-05-10 09:02  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-06-28 09:09:12  Rev 5619   dr_maux
 
-	* telggz/: chat.c, main.c, net.c: - setup room handlers only once -
-	announce if line is buffered - version bump
+	* metaserv/metaserv/metaservconf.xml:
+	  - no more snafu
 
-2003-05-10 08:31  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/metaserv.c: - remove odd square bracket
+2003-06-27 17:48:20  Rev 5616   dr_maux
 
-2003-05-10 07:50  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c:
+	  - don't crash on SIGPIPE if fd has become invalid
 
-	* metaserv/metaserv/: helper.c, helper.h, metaserv.c: - compiler
-	warning fixes
 
-2003-05-05 15:03  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-06-26 19:34:59  Rev 5615   dr_maux
 
-	* m4/ggz.m4: - add -fsigned-char
+	* metaserv/README.ggz-metaserver:
+	  - mention kderadiostation as a usage example
 
-2003-03-30 17:36  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/minidom/minidom.c: - strip leading and trailing
-	whitespace in values, so input -> output chains   should now be
-	idempotent
+2003-06-26 09:25:46  Rev 5614   dr_maux
 
-2003-03-30 17:11  Josef Spillner <dr_maux@users.sourceforge.net>
+	* motd-editor/interface.h motd-editor/Makefile.am configure.ac 
+	  metaserv/metaserv/metaserv.c motd-editor/.cvsignore 
+	  motd-editor/support.c motd-editor/callbacks.c 
+	  motd-editor/interface.c Makefile.am motd-editor/motd-editor.glade 
+	  motd-editor/support.h motd-editor/callbacks.h motd-editor/main.c:
+	  - move MOTD editor out of utils into gnome-client
 
-	* metaserv/: metaserv/Makefile.am, metaserv/helper.c,
-	metaserv/metaserv.c, minidom/minidom.c, minidom/minidom.h: - more
-	flexible dump function for minidom so the DOM tree can now be
-	dumped to   a file, too - add daemon mode (-d) to the metaserver -
-	add cache file support (-C) to the metaserver
-	
-	Running as follows:  metaserv -c /etc/metaservconf.xml -C
-	/var/cache/metaserv/cache.xml -d will now allow for permanent
-	updates of the configuration.  This is the first step towards
-	real-time updates, with a few bugs removed it should already be
-	possible to export server stats etc. to it.
-	
-	There will eventually be two main modes: - as daemon with XML cache
-	file - as non-daemon (via xinetd and friends) with a database
-	backend
 
-2003-03-29 11:44  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-29 17:33:39  Rev 5609   dr_maux
 
-	* metaserv/: Makefile.am, gui-qt/Makefile.gui-qt,
-	gui-qt/qmetagui.cpp: - update metaserver stuff - include various
-	GUIs in distribution tarballs
+	* metaserv/metaserv/metaserv.c:
+	  - don't crash if preference attribute is missing
+	  It isn't missing in GGZ entries, but e.g. in metasound entries, 
+	  which are to be
+	  used for the KDE Radio Station program.
 
-2003-03-29 11:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - apply improverished autogen globally
+2003-05-17 08:10:42  Rev 5588   dr_maux
 
-2003-03-29 11:27  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ChangeLog:
+	  - update changelog
 
-	* m4/ggz.m4: - update GGZ macro file
 
-2003-02-19 23:53  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-16 18:34:45  Rev 5583   dr_maux
 
-	* metaserv/metaserv/: Makefile.am, README.metaserv, helper.c,
-	helper.h, metaserv.c, metaservconf.xml: - add --configuration
-	option to specify an alternative configuration file - more clever
-	balancing of entries according to their priority (so entries with  
-	low priority appear seldomly, but do not starve) - in a result,
-	return all attributes found, possibly including server location  
-	and speed - new class: help to get some basic help in plain text
-	format	  help:// (in URI notation)    <help/> (in XML notation) -
-	update examples
+	* autogen.sh:
+	  - apply autogen.sh changes from libggz
 
-2003-02-18 22:31  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* telggz/: chat.c, chat.h, main.c, meta.c, meta.h, net.c, net.h: -
-	don't crash if user enters number larger than number of entries in
-	the server   list - don't hardcode port number, use retrieved value
-	instead - show MOTD upon login - use location and speed parameters,
-	once the metaserver transmits them - obvious bugfix: use
-	ggzcore_server_get_fd() instead of _channel() - print correct error
-	messages, not just their numbers
+2003-05-11 09:23:30  Rev 5571   dr_maux
 
-2003-02-18 22:28  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/metaservconf.xml:
+	  - update the metaserver configuration to reflect the new server 
+	  versions
 
-	* metaserv/minidom/minidom.c: - fix for successive MD_query calls:
-	reset result list
-	
-	This is more like a dirty workaround, hopefully nothing will break.
 
-2003-02-16 16:13  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-10 23:54:28  Rev 5563   dr_maux
 
-	* cmd-client/main.c, telggz/net.c: - don't use TLS for now
+	* configure.ac:
+	  - set the package version number (via configure.ac) to 0.0.7
 
-2003-02-16 16:12  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* acconfig.h, configure.ac: - remove obsolete acconfig.h, modify
-	configure.ac accordingly - check for ggzcore if only telggz is
-	selected - remove check for popt because it was only used by grubby
-	once upon a time
-	
-	There is a problem left: If only GNOME 2.x is installed, the macro
-	INSIDE_GNOME_COMMON is not defined, which will always abort the
-	configuration (no matter whether motd-editor is included).  My
-	guess is that motd-editor should be ported to GNOME 2.x so we can
-	drop 1.x support entirely, and have less problems.
+2003-05-10 23:46:58  Rev 5561   dr_maux
 
-2003-02-16 14:00  Josef Spillner <dr_maux@users.sourceforge.net>
+	* README:
+	  - version update
 
-	* autogen.sh: - new autogen.sh
 
-2003-02-04 20:06  Jason Short <jdorje@users.sourceforge.net>
+2003-05-10 23:25:43  Rev 5555   dr_maux
 
-	* configure.ac: Run autoupdate over configure.ac.
+	* man/metaserv.1 man/ggz-cmd.1 man/telggz.1:
+	  - (slight) manpage updates
+	  Some are a bit out of date, this should be fixed for 0.0.8.
 
-2003-02-04 20:04  Jason Short <jdorje@users.sourceforge.net>
 
-	* m4/gnome.m4: I couldn't find an autoconf2.5x-compatible gnome
-	macro file (!), so I just made a quick change to the existing one.
+2003-05-10 23:17:00  Rev 5550   dr_maux
 
-2003-02-04 03:02  Jason Short <jdorje@users.sourceforge.net>
+	* README.GGZ autogen.sh NEWS:
+	  - update common files for 0.0.7 in utils
 
-	* autogen.sh, configure.ac, configure.in: Step 1 of
-	autoconf2.5x-only support: rename configure.in as configure.ac.
 
-2003-01-18 01:58  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-10 14:38:57  Rev 5539   dr_maux
 
-	* telggz/: main.c, meta.c: - terminate strings read from the
-	network correctly - for queries, use GGZ version number, not TelGGZ
-	version
+	* autogen.sh:
+	  - sync autogen.sh
 
-2003-01-12 12:40  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/metaserv.c, ggzcomm/main.c: [powerpc]
-	
-	- getopt returns int, not char
+2003-05-10 11:31:06  Rev 5533   dr_maux
 
-2002-12-20 05:59  Jason Short <jdorje@users.sourceforge.net>
+	* metaserv/Makefile.am metaserv/metaserv/Makefile.am:
+	  - fix 'make distcheck'
+	  - also, exclude gui-* from the distribution again
 
-	* Makefile.am, acinclude.ggz, acinclude.gnome, autogen.sh,
-	m4/ggz.m4, m4/gnome.m4: Move acinclude.* to m4/*.m4.
 
-2002-12-15 13:04  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-10 07:02:27  Rev 5522   dr_maux
 
-	* cmd-client/main.c: - add batch processing feature, mostly to
-	avoid sniffing passwords, but also to	allow for saving common
-	broadcast texts etc.
+	* telggz/main.c telggz/net.c telggz/chat.c:
+	  - setup room handlers only once
+	  - announce if line is buffered
+	  - version bump
 
-2002-12-09 14:09  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* cmd-client/main.c: - include sys/time.h for old libc
-	compatibility
+2003-05-10 06:31:44  Rev 5518   dr_maux
 
-2002-11-23 19:16  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c:
+	  - remove odd square bracket
 
-	* .cvsignore: - update cvsignore
 
-2002-11-20 23:34  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-10 05:50:57  Rev 5516   dr_maux
 
-	* cmd-client/main.c: - add 'checkonline' command to ggz-cmd
+	* metaserv/metaserv/helper.h metaserv/metaserv/metaserv.c 
+	  metaserv/metaserv/helper.c:
+	  - compiler warning fixes
 
-2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
 
-	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
-	each GGZ check takes two optional parameters.  For instance:
-	
-	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
-	
-	'action-if-found' will be evaluated if the specified module was
-	found.	'action-if-not-found' will be evaluated if the module is
-	not found.  This is consistent with other autoconf macros.  If
-	'action-is-not-found' is empty, then an error will be emitted if
-	the module isn't found.  If 'action-if-not-found' is "ignore", then
-	the module will simply be ignored if it's not found.
-	
-	This is not entirely backwards-compatible, since "ignore" used to
-	be the first parameter to the macro.  But this way is more
-	consistent, in my opinion.
+2003-05-05 13:03:41  Rev 5500   dr_maux
 
-2002-10-10 01:37  Jason Short <jdorje@users.sourceforge.net>
+	* m4/ggz.m4:
+	  - add -fsigned-char
 
-	* telggz/net.c: Modify telggz to use the new ggzcore interface. 
-	This is rather straightforward and likely to work, but it has not
-	been tested since telggz doesn't work right now.
 
-2002-10-08 02:03  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-03-30 15:36:32  Rev 5489   dr_maux
 
-	* README: - s/0.0.5/0.0.6
+	* metaserv/minidom/minidom.c:
+	  - strip leading and trailing whitespace in values, so input -> 
+	  output chains
+	    should now be idempotent
 
-2002-10-08 00:06  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* cmd-client/Makefile.am, telggz/Makefile.am: - fix makefiles:
-	include $(GGZCORE_LDFLAGS)
+2003-03-30 15:11:23  Rev 5488   dr_maux
 
-2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+	* metaserv/minidom/minidom.c metaserv/metaserv/metaserv.c 
+	  metaserv/minidom/minidom.h metaserv/metaserv/Makefile.am 
+	  metaserv/metaserv/helper.c:
+	  - more flexible dump function for minidom so the DOM tree can now 
+	  be dumped to
+	    a file, too
+	  - add daemon mode (-d) to the metaserver
+	  - add cache file support (-C) to the metaserver
+	  Running as follows:
+	   metaserv -c /etc/metaservconf.xml -C /var/cache/metaserv/cache.
+	  xml -d
+	  will now allow for permanent updates of the configuration.
+	  This is the first step towards real-time updates, with a few bugs 
+	  removed it
+	  should already be possible to export server stats etc. to it.
+	  There will eventually be two main modes:
+	  - as daemon with XML cache file
+	  - as non-daemon (via xinetd and friends) with a database backend
 
-	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
-2002-10-07 23:16  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-03-29 10:45:00  Rev 5482   dr_maux
 
-	* ChangeLog: - update changelog for 0.0.6
+	* metaserv/gui-qt/Makefile.gui-qt metaserv/Makefile.am 
+	  metaserv/gui-qt/qmetagui.cpp:
+	  - update metaserver stuff
+	  - include various GUIs in distribution tarballs
 
-2002-10-01 23:28  Jason Short <jdorje@users.sourceforge.net>
 
-	* motd-editor/callbacks.c: #if 0...#endif to disable an unused
-	function.
+2003-03-29 10:33:32  Rev 5476   dr_maux
 
-2002-10-01 20:52  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh:
+	  - apply improverished autogen globally
 
-	* configure.in: - use configure.in for AC_INIT
 
-2002-09-29 15:58  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-03-29 10:27:44  Rev 5475   dr_maux
 
-	* configure.in: [gentoo] - fix brackets for configure.in checks
-	(this was not yet synced)
+	* m4/ggz.m4:
+	  - update GGZ macro file
 
-2002-09-29 15:52  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* acconfig.h, acinclude.gnome: [gentoo] - acinclude.gnome updates -
-	predefine HAVE_LIBSM (needed for Gnome)
-	
-	This comment written in nano. Ugh.
+2003-02-19 22:53:11  Rev 5432   dr_maux
 
-2002-09-29 14:35  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/README.metaserv metaserv/metaserv/helper.h 
+	  metaserv/metaserv/metaserv.c metaserv/metaserv/Makefile.am 
+	  metaserv/metaserv/metaservconf.xml metaserv/metaserv/helper.c:
+	  - add --configuration option to specify an alternative 
+	  configuration file
+	  - more clever balancing of entries according to their priority (so 
+	  entries with
+	    low priority appear seldomly, but do not starve)
+	  - in a result, return all attributes found, possibly including 
+	  server location
+	    and speed
+	  - new class: help to get some basic help in plain text format
+	     help:// (in URI notation)
+	     <help/> (in XML notation)
+	  - update examples
 
-	* man/ggz-cmd.1, man/metaserv.1, man/telggz.1, acinclude.gnome,
-	autogen.sh, configure.in: - new: acinclude.gnome for GNOME
-	configuration - bump version numbers
 
-2002-09-27 10:58  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-02-18 21:31:14  Rev 5428   dr_maux
 
-	* autogen.sh: - new autogen
+	* telggz/chat.h telggz/main.c telggz/meta.c telggz/net.c telggz/meta.
+	  h telggz/net.h telggz/chat.c:
+	  - don't crash if user enters number larger than number of entries 
+	  in the server
+	    list
+	  - don't hardcode port number, use retrieved value instead
+	  - show MOTD upon login
+	  - use location and speed parameters, once the metaserver transmits 
+	  them
+	  - obvious bugfix: use ggzcore_server_get_fd() instead of _channel()
+	  - print correct error messages, not just their numbers
 
-2002-09-26 13:28  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* acinclude.ggz, configure.in: - deploy new acinclude.ggz
+2003-02-18 21:28:28  Rev 5427   dr_maux
 
-2002-09-24 09:33  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/minidom/minidom.c:
+	  - fix for successive MD_query calls: reset result list
+	  This is more like a dirty workaround, hopefully nothing will break.
 
-	* QuickStart.GGZ, README.GGZ: - update intro docs
 
-2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+2003-02-16 15:14:16  Rev 5419   dr_maux
 
-	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
-	acinclude.ggz as being included in txt-client.
+	* telggz/net.c cmd-client/main.c:
+	  - don't use TLS for now
 
-2002-09-19 18:41  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/gui-qt/Makefile.gui-qt: - use qt-mt instead of qt
+2003-02-16 15:12:01  Rev 5418   dr_maux
 
-2002-09-19 18:17  Jason Short <jdorje@users.sourceforge.net>
+	* acconfig.h configure.ac:
+	  - remove obsolete acconfig.h, modify configure.ac accordingly
+	  - check for ggzcore if only telggz is selected
+	  - remove check for popt because it was only used by grubby once 
+	  upon a time
+	  There is a problem left:
+	  If only GNOME 2.x is installed, the macro INSIDE_GNOME_COMMON is 
+	  not defined,
+	  which will always abort the configuration (no matter whether 
+	  motd-editor is
+	  included).
+	  My guess is that motd-editor should be ported to GNOME 2.x so we 
+	  can drop 1.x
+	  support entirely, and have less problems.
 
-	* acinclude.ggz: Include gnome-client on the list of modules that
-	use acinclude.ggz.
 
-2002-09-17 05:37  Jason Short <jdorje@users.sourceforge.net>
+2003-02-16 13:02:09  Rev 5413   dr_maux
 
-	* Makefile.am, configure.in, motd-editor/.cvsignore,
-	motd-editor/AUTHORS, motd-editor/COPYING, motd-editor/ChangeLog,
-	motd-editor/INSTALL, motd-editor/Makefile, motd-editor/Makefile.am,
-	motd-editor/NEWS, motd-editor/README, motd-editor/acconfig.h,
-	motd-editor/autogen.sh, motd-editor/callbacks.c,
-	motd-editor/callbacks.h, motd-editor/config.cache,
-	motd-editor/config.h, motd-editor/configure.in,
-	motd-editor/interface.c, motd-editor/interface.h,
-	motd-editor/main.c, motd-editor/stamp-h, motd-editor/stamp-h.in,
-	motd-editor/support.c, motd-editor/support.h,
-	motd-editor/intl/.cvsignore, motd-editor/po/.cvsignore,
-	motd-editor/po/Makefile, motd-editor/po/POTFILES,
-	motd-editor/po/POTFILES.in, motd-editor/src/.cvsignore,
-	motd-editor/src/Makefile.am, motd-editor/src/callbacks.c,
-	motd-editor/src/callbacks.h, motd-editor/src/interface.c,
-	motd-editor/src/interface.h, motd-editor/src/main.c,
-	motd-editor/src/support.c, motd-editor/src/support.h: Remove
-	configure.in and associated stuff from the motd-editor directory. 
-	Change configure.in and Makefile.am so that the motd-editor is
-	compile.
+	* autogen.sh:
+	  - new autogen.sh
 
-2002-09-17 02:44  Jason Short <jdorje@users.sourceforge.net>
 
-	* cmd-client/main.c: One final fix: use the server FD we track
-	instead of ggzcore_server_get_channel (which means something
-	different now) as the GGZCore server FD.
+2003-02-04 19:06:28  Rev 5390   jdorje
 
-2002-09-17 02:15  Jason Short <jdorje@users.sourceforge.net>
+	* configure.ac:
+	  Run autoupdate over configure.ac.
 
-	* cmd-client/main.c: - Put a 10-second timeout on the connection to
-	the server.  - Make sure the server reads data from the correct FD.
-	 A change to   ggzcore made the old code pass an invalid FD, thus
-	totally breaking the   program.  - Removing trailing \n from
-	ggz_debug lines.
 
-2002-09-17 01:59  Jason Short <jdorje@users.sourceforge.net>
+2003-02-04 19:04:48  Rev 5389   jdorje
 
-	* cmd-client/main.c: - Replaced most stderr debugging output with
-	ggz_debug.  - Enable ggz_debug types when DEBUG is defined.  -
-	#include "config.h"
+	* m4/gnome.m4:
+	  I couldn't find an autoconf2.5x-compatible gnome macro file (!), 
+	  so I
+	  just made a quick change to the existing one.
 
-2002-09-14 23:21  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* telggz/: chat.c, chat.h, main.c, meta.c, meta.h, net.c, net.h: -
-	source code cleanups - support for room join/leave events
+2003-02-04 02:02:20  Rev 5360   jdorje
 
-2002-09-09 07:54  Jason Short <jdorje@users.sourceforge.net>
+	* configure.ac configure.in autogen.sh:
+	  Step 1 of autoconf2.5x-only support: rename configure.in as 
+	  configure.ac.
 
-	* ggzcomm/ggzcommgen.c: Added missing #include "ggzcommgen.h".
 
-2002-09-09 07:53  Jason Short <jdorje@users.sourceforge.net>
+2003-01-18 00:58:42  Rev 5338   dr_maux
 
-	* telggz/: chat.c, chat.h, main.c, meta.h, net.h: - Added missing
-	#include "chat.h" to chat.c.  - Marked some functions as static.  -
-	Mark function parameter lists as "void" in prototypes to avoid a  
-	compiler warning, and enable stricter parameter checking by the  
-	compiler.  - Rename VERSION macro as TELGGZ_VERSION, to avoid
-	conflict with the   VERSION that's #defined in config.h.
+	* telggz/main.c telggz/meta.c:
+	  - terminate strings read from the network correctly
+	  - for queries, use GGZ version number, not TelGGZ version
 
-2002-09-09 07:46  Jason Short <jdorje@users.sourceforge.net>
 
-	* metaserv/metaserv/metaserv.c: Marked some functions as static.
+2003-01-12 11:41:37  Rev 5316   dr_maux
 
-2002-09-09 07:41  Jason Short <jdorje@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c ggzcomm/main.c:
+	  [powerpc]
+	  - getopt returns int, not char
 
-	* cmd-client/main.c, metaserv/minidom/minidom.c: Mark some
-	functions as static.
 
-2002-08-20 22:45  Jason Short <jdorje@users.sourceforge.net>
+2002-12-20 04:59:26  Rev 5305   jdorje
 
-	* acinclude.ggz: Changed -I<directory> to -isystem<directory> to
-	avoid warnings in gcc3.
+	* m4/gnome.m4 Makefile.am autogen.sh acinclude.ggz m4 m4/ggz.m4 
+	  acinclude.gnome:
+	  Move acinclude.* to m4/*.m4.
 
-2002-08-12 20:01  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ggzcomm/tictactoe.protocol: - updated the TTT protocol
-	description
+2002-12-15 12:04:23  Rev 5288   dr_maux
 
-2002-06-16 14:26  Josef Spillner <dr_maux@users.sourceforge.net>
+	* cmd-client/main.c:
+	  - add batch processing feature, mostly to avoid sniffing passwords,
+	  but also to
+	    allow for saving common broadcast texts etc.
 
-	* cmd-client/main.c, telggz/meta.c, telggz/net.c: - fix cmd-client
-	and telggz: add ggzcore_server_read_data channel parameter - fix
-	segfault in TelGGZ's meta server handling
 
-2002-05-25 19:08  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-12-09 13:09:17  Rev 5278   dr_maux
 
-	* ggzcomm/: chess.protocol, dots.protocol, ggzcommgen.c,
-	hastings.protocol, muehle.protocol: - fix: generate missing bracket
-	for opcode read statement - add 4 more protocol description files
-	
-	It seems that none of our games has a static protocol.	A
-	reconsideration of the 'eval' statement would however make some of
-	them usable, so I'm going to think over it again.  Of special
-	interest is chess, which evaluates a non-protocol variable.
+	* cmd-client/main.c:
+	  - include sys/time.h for old libc compatibility
 
-2002-05-05 09:13  Jason Short <jdorje@users.sourceforge.net>
 
-	* cmd-client/main.c: Added support for different server ports to
-	cmd-client.
+2002-11-23 18:16:16  Rev 5257   dr_maux
 
-2002-05-01 09:53  Josef Spillner <dr_maux@users.sourceforge.net>
+	* .cvsignore:
+	  - update cvsignore
 
-	* ggzcomm/: ggzcommgen.rb, tictactoe.protocol: - add GGZCommEvent
-	class - some more implementation done
 
-2002-05-01 00:09  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-11-20 22:34:25  Rev 5255   dr_maux
 
-	* ggzcomm/: .cvsignore, Makefile.am, ggzcards.protocol,
-	ggzcommgen.c, ggzcommgen.rb, protocol-format.txt,
-	tictactoe.protocol: - started alternative implementation for
-	ggzcomm source generator
+	* cmd-client/main.c:
+	  - add 'checkonline' command to ggz-cmd
 
-2002-04-27 09:14  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/metaserv.c: - treat EOF correctly (disconnect)
+2002-10-16 00:07:30  Rev 4929   jdorje
 
-2002-04-24 17:15  Josef Spillner <dr_maux@users.sourceforge.net>
+	* acinclude.ggz:
+	  Improvement (hopefully :-) to acinclude.ggz.  Now each GGZ check 
+	  takes
+	  two optional parameters.  For instance:
+	    AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	  'action-if-found' will be evaluated if the specified module was 
+	  found.
+	  'action-if-not-found' will be evaluated if the module is not found.
+	  This
+	  is consistent with other autoconf macros.  If 
+	  'action-is-not-found' is
+	  empty, then an error will be emitted if the module isn't found.  If
+	  'action-if-not-found' is "ignore", then the module will simply be 
+	  ignored
+	  if it's not found.
+	  This is not entirely backwards-compatible, since "ignore" used to be
+	  the first parameter to the macro.  But this way is more consistent,
+	  in
+	  my opinion.
 
-	* Makefile.am, configure.in: - build ggzcomm stuff correctly
-	(depends on minidom for XML parsing)
 
-2002-04-24 17:15  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-09 23:37:11  Rev 4830   jdorje
 
-	* ggzcomm/.cvsignore, ggzcomm/DESIGN, ggzcomm/Makefile.am,
-	ggzcomm/ggzcommgen.c, ggzcomm/ggzcommgen.h, ggzcomm/main.c,
-	ggzcomm/tictactoe.protocol, man/Makefile.am, man/ggzcommgen.1: -
-	move the not yet complete ggzcommgen to the utils module
+	* telggz/net.c:
+	  Modify telggz to use the new ggzcore interface.  This is rather
+	  straightforward and likely to work, but it has not been tested since
+	  telggz doesn't work right now.
 
-2002-04-14 14:53  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* telggz/main.c: - use correct version (not 0.0.5pre hardcoded)
+2002-10-08 00:03:12  Rev 4806   dr_maux
 
-2002-04-13 09:15  Brent Hendricks <bmh@users.sourceforge.net>
+	* README:
+	  - s/0.0.5/0.0.6
 
-	* ChangeLog: 
-	- Updated for 0.0.5 release
 
-2002-04-13 06:44  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-07 22:06:59  Rev 4797   dr_maux
 
-	* configure.in: - bump version to 0.0.5
+	* telggz/Makefile.am cmd-client/Makefile.am:
+	  - fix makefiles: include $(GGZCORE_LDFLAGS)
 
-2002-04-13 06:06  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ: 
-	- Doc file updates
+2002-10-07 21:28:18  Rev 4795   jdorje
 
-2002-04-13 02:45  Josef Spillner <dr_maux@users.sourceforge.net>
+	* NEWS:
+	  Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
-	* Makefile.am: - remove local make clean rule again
 
-2002-04-12 23:06  Brent Hendricks <bmh@users.sourceforge.net>
+2002-10-07 21:16:10  Rev 4794   dr_maux
 
-	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ: 
-	- Doc file updates
+	* ChangeLog:
+	  - update changelog for 0.0.6
 
-2002-04-12 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am: - remove local make clean rule again
+2002-10-01 21:28:16  Rev 4786   jdorje
 
-2002-04-10 09:01  Josef Spillner <dr_maux@users.sourceforge.net>
+	* motd-editor/callbacks.c:
+	  #if 0...#endif to disable an unused function.
 
-	* telggz/Makefile.am: - fix telggz includes
 
-2002-04-10 08:59  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-01 18:53:52  Rev 4783   dr_maux
 
-	* cmd-client/Makefile.am: - fix cmd-client includes
+	* configure.in:
+	  - use configure.in for AC_INIT
 
-2002-04-10 08:22  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* acconfig.h, configure.in: - define PREFIX for use in C source
-	files
+2002-09-29 13:58:08  Rev 4770   dr_maux
 
-2002-04-10 08:22  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.in:
+	  [gentoo]
+	  - fix brackets for configure.in checks
+	  (this was not yet synced)
 
-	* metaserv/metaserv/: metaserv.c, metaservconf.xml: - update
-	metaserver configuration file to reflect all upcoming 0.0.5 servers
-	- don't log trailing line breaks
 
-2002-04-09 15:40  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-29 13:52:00  Rev 4769   dr_maux
 
-	* debian/: control, rules: - finalize utils
+	* acconfig.h acinclude.gnome:
+	  [gentoo]
+	  - acinclude.gnome updates
+	  - predefine HAVE_LIBSM (needed for Gnome)
+	  This comment written in nano. Ugh.
 
-2002-04-07 05:59  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* debian/.cvsignore: - update cvsignore file
+2002-09-29 12:35:46  Rev 4762   dr_maux
 
-2002-04-07 05:58  Josef Spillner <dr_maux@users.sourceforge.net>
+	* man/metaserv.1 man/ggz-cmd.1 configure.in man/telggz.1 acinclude.
+	  gnome autogen.sh:
+	  - new: acinclude.gnome for GNOME configuration
+	  - bump version numbers
 
-	* debian/: changelog, control, copyright, rules: - debianize
-	utilies package
 
-2002-04-07 05:53  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-27 08:58:31  Rev 4746   dr_maux
 
-	* man/ggz-cmd.1: - forgot the new one :)
+	* autogen.sh:
+	  - new autogen
 
-2002-04-07 05:52  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* man/: Makefile.am, cmd-client.1, metaserv.1, telggz.1: - add more
-	manpages, and rename the one for the cmd-client
+2002-09-26 11:28:14  Rev 4725   dr_maux
 
-2002-04-07 05:48  Josef Spillner <dr_maux@users.sourceforge.net>
+	* acinclude.ggz configure.in:
+	  - deploy new acinclude.ggz
 
-	* Makefile.am: - make clean rule
 
-2002-04-07 05:47  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-24 07:36:20  Rev 4679   dr_maux
 
-	* metaserv/minidom/Makefile.am: - don't install minidom test
-	program
+	* QuickStart.GGZ README.GGZ:
+	  - update intro docs
 
-2002-04-07 05:38  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* .cvsignore: - update cvsignore file
+2002-09-23 22:45:37  Rev 4674   jdorje
 
-2002-04-06 09:39  Josef Spillner <dr_maux@users.sourceforge.net>
+	* acinclude.ggz:
+	  Update acinclude.ggz in the txt-client, and label acinclude.ggz as 
+	  being
+	  included in txt-client.
 
-	* acinclude.ggz: - sync acinclude.ggz
 
-2002-04-06 02:02  Jason Short <jdorje@users.sourceforge.net>
+2002-09-19 16:41:53  Rev 4635   dr_maux
 
-	* telggz/Makefile.am: Change telggz_LDADD:   - Remove
-	-L/usr/local/lib   - Add $(LDADD)   - Change -lggzcore to
-	$(LIB_GGZCORE)	 - Change $(top_srcdir)/... to $(top_builddir)/... 
-	With these changes (specifically the last one), a "make distcheck"
-	should now succeed for the utils module.
+	* metaserv/gui-qt/Makefile.gui-qt:
+	  - use qt-mt instead of qt
 
-2002-04-06 01:50  Jason Short <jdorje@users.sourceforge.net>
 
-	* telggz/Makefile.am: Added *.h files to telggz_SOURCES.
+2002-09-19 16:18:33  Rev 4631   jdorje
 
-2002-04-06 01:43  Jason Short <jdorje@users.sourceforge.net>
+	* acinclude.ggz:
+	  Include gnome-client on the list of modules that use acinclude.ggz.
 
-	* metaserv/minidom/Makefile.am: - Added minidom.h to
-	libminidom_a_SOURCES, so that it's distrbiuted with   "make dist". 
-	- Just for good measure, added README.minidom and metasrv.xml to  
-	EXTRA_DIST.
 
-2002-04-06 01:35  Jason Short <jdorje@users.sourceforge.net>
+2002-09-17 03:37:40  Rev 4601   jdorje
 
-	* Makefile.am, configure.in: - Added cmd-client to DIST_SUBDIRS in
-	Makefile.am.  - Added some explanatory comments to Makefile.am.  -
-	Changed the ending output of configure slightly.
+	* motd-editor/INSTALL motd-editor/intl motd-editor/config.cache 
+	  motd-editor/COPYING motd-editor/stamp-h motd-editor/Makefile.am 
+	  motd-editor/autogen.sh motd-editor/NEWS motd-editor/Makefile 
+	  motd-editor/.cvsignore motd-editor/stamp-h.in motd-editor/po 
+	  motd-editor/interface.c Makefile.am motd-editor/AUTHORS 
+	  motd-editor/configure.in motd-editor/interface.h 
+	  motd-editor/ChangeLog motd-editor/src motd-editor/config.h 
+	  motd-editor/support.c motd-editor/README configure.in 
+	  motd-editor/acconfig.h motd-editor/callbacks.c motd-editor 
+	  motd-editor/support.h motd-editor/main.c motd-editor/callbacks.h:
+	  Remove configure.in and associated stuff from the motd-editor 
+	  directory.
+	  Change configure.in and Makefile.am so that the motd-editor is 
+	  compile.
 
-2002-04-06 01:00  Jason Short <jdorje@users.sourceforge.net>
 
-	* man/Makefile.am: Change "SUBDIRS =" to "SUBDIRS = ." so that
-	"make dist" will work properly.
+2002-09-17 00:44:14  Rev 4593   jdorje
 
-2002-04-05 16:23  Josef Spillner <dr_maux@users.sourceforge.net>
+	* cmd-client/main.c:
+	  One final fix: use the server FD we track instead of
+	  ggzcore_server_get_channel (which means something different now) 
+	  as the
+	  GGZCore server FD.
 
-	* README: - update package information
 
-2002-04-05 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-17 00:15:20  Rev 4592   jdorje
 
-	* README.GGZ: - update installation instructions and overview
+	* cmd-client/main.c:
+	  - Put a 10-second timeout on the connection to the server.
+	  - Make sure the server reads data from the correct FD.  A change to
+	    ggzcore made the old code pass an invalid FD, thus totally 
+	  breaking the
+	    program.
+	  - Removing trailing \n from ggz_debug lines.
 
-2002-03-25 14:19  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/.cvsignore: - another .cvsignore
+2002-09-16 23:59:31  Rev 4591   jdorje
 
-2002-03-25 14:18  Josef Spillner <dr_maux@users.sourceforge.net>
+	* cmd-client/main.c:
+	  - Replaced most stderr debugging output with ggz_debug.
+	  - Enable ggz_debug types when DEBUG is defined.
+	  - #include "config.h"
 
-	* man/: Makefile.am, cmd-client.1: - add (alibi) man page for
-	cmd-client
 
-2002-03-25 14:13  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-14 21:21:16  Rev 4565   dr_maux
 
-	* gensecure/.cvsignore: - forgot a .cvsignore file
+	* telggz/chat.h telggz/main.c telggz/meta.c telggz/net.c telggz/meta.
+	  h telggz/net.h telggz/chat.c:
+	  - source code cleanups
+	  - support for room join/leave events
 
-2002-03-25 14:11  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am, configure.in: - don't build (re)moved projects
+2002-09-09 05:54:08  Rev 4496   jdorje
 
-2002-03-25 14:10  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ggzcomm/ggzcommgen.c:
+	  Added missing #include "ggzcommgen.h".
 
-	* gensecure/: GGZ-TLS, Makefile.am, Preparation, README.gensecure,
-	TODO, example.cert: - some more stuff
 
-2002-03-25 14:08  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-09 05:53:05  Rev 4495   jdorje
 
-	* agrue/.cvsignore, agrue/Makefile.am, agrue/agrue.c,
-	agrue/launch_grues, agrue/protocols.h, gensecure/io/.cvsignore,
-	gensecure/io/Makefile.am, gensecure/io/main.c,
-	gensecure/src/.cvsignore, gensecure/src/Makefile.am,
-	gensecure/src/client.c, gensecure/src/configuration.h,
-	gensecure/src/gensecure.h, gensecure/src/gensocket.c,
-	gensecure/src/gensocket.h, gensecure/src/list.c,
-	gensecure/src/list.h, gensecure/src/server.c, gensecure/src/tls.c,
-	gensecure/src/tls.h, grubby/Makefile.am, grubby/agrub.c,
-	grubby/agrub_popt.h, grubby/chat.c, grubby/chat.h,
-	grubby/commands.c, grubby/commands.h, grubby/datatypes.h,
-	grubby/grubby-config.pl, grubby/init.c, grubby/init.h,
-	grubby/log.c, grubby/log.h, grubby/loop.c, grubby/loop.h,
-	grubby/messages.h, grubby/net.c, grubby/net.h, grubby/popt.c,
-	grubby/protocols.h, grubby/support.c, grubby/support.h,
-	man/agrub.6, man/agrue.6, man/grubby.6: - remove stuff which has
-	been either moved to the Playground or has been   deprecated
+	* telggz/chat.h telggz/main.c telggz/meta.h telggz/net.h telggz/chat.
+	  c:
+	  - Added missing #include "chat.h" to chat.c.
+	  - Marked some functions as static.
+	  - Mark function parameter lists as "void" in prototypes to avoid a
+	    compiler warning, and enable stricter parameter checking by the
+	    compiler.
+	  - Rename VERSION macro as TELGGZ_VERSION, to avoid conflict with the
+	    VERSION that's #defined in config.h.
 
-2002-03-16 12:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* telggz/main.c: - someone forgot to adapt this to the latest
-	ggzcore changes
+2002-09-09 05:46:44  Rev 4494   jdorje
 
-2002-02-25 21:33  Jason Short <jdorje@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c:
+	  Marked some functions as static.
 
-	* motd-editor/po/.cvsignore: Dammit!  One final file that I missed.
 
-2002-02-25 21:29  Jason Short <jdorje@users.sourceforge.net>
+2002-09-09 05:43:00  Rev 4493   jdorje
 
-	* motd-editor/: .cvsignore, config.status, intl/.cvsignore,
-	macros/.cvsignore, macros/Makefile, po/.cvsignore, po/ChangeLog,
-	po/Makefile.in, src/.cvsignore, src/Makefile: Remove still more
-	files from the repoitory (including some I'd missed before...with
-	such a long list of files it's hard to catch them all), and added
-	extra auto-generated files to the .cvsignore files.
-	
-	I'm still doubtful that this is actually useful, but I'm really
-	tired of seeing several pages of ignored or modified files on every
-	update.
+	* metaserv/minidom/minidom.c cmd-client/main.c:
+	  Mark some functions as static.
 
-2002-02-25 21:20  Jason Short <jdorje@users.sourceforge.net>
 
-	* motd-editor/: .cvsignore, Makefile, aclocal.m4, confdefs.h,
-	config.h, config.h.in, config.log, config.status, configure:
-	Removed additional automatically-generated files from the
-	repository.
+2002-08-20 20:49:40  Rev 4376   jdorje
 
-2002-02-25 21:07  Jason Short <jdorje@users.sourceforge.net>
+	* acinclude.ggz:
+	  Changed -I<directory> to -isystem<directory> to avoid warnings in 
+	  gcc3.
 
-	* motd-editor/: .cvsignore, Makefile.in, macros/.cvsignore,
-	macros/Makefile.in, src/.cvsignore, src/Makefile.in: Removed
-	Makefile.in files from CVS repository.
-	
-	I'm not quite sure what's up with the motd-editor directory.  It's
-	a subdir of the utils module, but seems to be its own separate
-	unit, complete with autogen.sh and all other autoconf files.  Is
-	this code still relevant?
 
-2002-02-25 20:56  Jason Short <jdorje@users.sourceforge.net>
+2002-08-12 18:01:19  Rev 4361   dr_maux
 
-	* acconfig.h, configure.in: Change autoconf system so that if DEBUG
-	is not defined (--enable-debug, currently on by default) we'll get
-	NDEBUG defined instead.
+	* ggzcomm/tictactoe.protocol:
+	  - updated the TTT protocol description
 
-2002-02-11 09:58  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/minidom/: .cvsignore, minidom.c: - fix gcc3 + -Wall on
-	libminidom - don't commit the scheduler, rather put it in
-	.cvsignore
-	
-	If anybody is really interested in this iPaq stuff I can take it
-	in, but it's not developed in our CVS, and not very functional yet.
-	 I wish I actually had a handheld.... but Linux + FBdev work quite
-	well.
+2002-06-16 12:26:45  Rev 4258   dr_maux
 
-2002-02-11 08:50  Josef Spillner <dr_maux@users.sourceforge.net>
+	* telggz/meta.c telggz/net.c cmd-client/main.c:
+	  - fix cmd-client and telggz: add ggzcore_server_read_data channel 
+	  parameter
+	  - fix segfault in TelGGZ's meta server handling
 
-	* metaserv/minidom/: README.minidom, minidom.c: - fix
-	!DOCTYPE-related dangling pointer bug
-	
-	I never intended to support those advanced tags, but the possible
-	use on an iPaq makes me fix bugs right away :)
-	http://desk.crynwr.com/scap/toipaq.cgi?fn=port.25096.png
-	
-	I don't understand why Qt/embedded doesn't include their QDom
-	classes, but anyway...
 
-2002-02-11 03:57  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-05-25 17:08:19  Rev 4232   dr_maux
 
-	* metaserv/gui-custom/: Information, freeciv-index.php: - Let's
-	break freeciv's monopoly on freeciv metaserver entry pages :)
-	
-	Once both querying and updating works, we should be able to support
-	all kind of meta entries, because freeciv's already require a bit
-	of flexibility.
+	* ggzcomm/ggzcommgen.c ggzcomm/muehle.protocol ggzcomm/hastings.
+	  protocol ggzcomm/chess.protocol ggzcomm/dots.protocol:
+	  - fix: generate missing bracket for opcode read statement
+	  - add 4 more protocol description files
+	  It seems that none of our games has a static protocol.
+	  A reconsideration of the 'eval' statement would however make some 
+	  of them
+	  usable, so I'm going to think over it again.
+	  Of special interest is chess, which evaluates a non-protocol 
+	  variable.
 
-2002-02-11 03:52  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/metaservconf.xml: - add freeciv dummy entry
+2002-05-05 07:13:20  Rev 4160   jdorje
 
-2002-02-03 15:02  Jason Short <jdorje@users.sourceforge.net>
+	* cmd-client/main.c:
+	  Added support for different server ports to cmd-client.
 
-	* agrue/Makefile.am: Oops: removed $(LIB_EASYSOCK) from LDADD.
 
-2002-02-03 15:01  Jason Short <jdorje@users.sourceforge.net>
+2002-05-01 07:53:06  Rev 4129   dr_maux
 
-	* acinclude.ggz: Updated acinclude.ggz from changes made in ggzd.
+	* ggzcomm/ggzcommgen.rb ggzcomm/tictactoe.protocol:
+	  - add GGZCommEvent class
+	  - some more implementation done
 
-2002-02-03 15:01  Jason Short <jdorje@users.sourceforge.net>
 
-	* configure.in, agrue/Makefile.am, agrue/agrue.c: - Changed
-	configure check for easysock to one for libggz.  - Make sure agrue
-	is linked with libggz.	- Change all es_*** function calls to
-	ggz_*** ones.
+2002-04-30 22:09:17  Rev 4124   dr_maux
 
-2002-02-03 14:58  Jason Short <jdorje@users.sourceforge.net>
+	* ggzcomm/.cvsignore ggzcomm/ggzcommgen.c ggzcomm/ggzcommgen.rb 
+	  ggzcomm/tictactoe.protocol ggzcomm ggzcomm/ggzcards.protocol 
+	  ggzcomm/protocol-format.txt ggzcomm/Makefile.am:
+	  - started alternative implementation for ggzcomm source generator
 
-	* grubby/: chat.c, net.c: Removed unneeded "#include <easysock.h>"
-	directives.
 
-2002-01-19 13:36  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-27 07:14:05  Rev 4088   dr_maux
 
-	* telggz/net.c: - tell id on hook error
+	* metaserv/metaserv/metaserv.c:
+	  - treat EOF correctly (disconnect)
 
-2002-01-16 05:58  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/Makefile.am: - build only one binary
+2002-04-24 15:15:34  Rev 4076   dr_maux
 
-2002-01-16 05:56  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.in Makefile.am:
+	  - build ggzcomm stuff correctly (depends on minidom for XML parsing)
 
-	* metaserv/metaserv/: configuration.h, gensocket.c, gensocket.h,
-	server.c: - remove unneeded files (metaserv handles connections on
-	its own)
 
-2002-01-16 05:53  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-24 15:15:11  Rev 4075   dr_maux
 
-	* metaserv/metaserv/metaserv.c: - add getopt command line options -
-	add logging - one step further now: peer notifications
+	* ggzcomm/.cvsignore ggzcomm/ggzcommgen.c ggzcomm/tictactoe.protocol 
+	  ggzcomm man/Makefile.am ggzcomm/ggzcommgen.h man/ggzcommgen.1 
+	  ggzcomm/main.c ggzcomm/DESIGN ggzcomm/Makefile.am:
+	  - move the not yet complete ggzcommgen to the utils module
 
-2002-01-12 04:13  Jason Short <jdorje@users.sourceforge.net>
 
-	* acinclude.ggz: Added acinclude.ggz to ggzd and ggz-client-libs.
+2002-04-14 12:53:12  Rev 3979   dr_maux
 
-2002-01-12 04:05  Jason Short <jdorje@users.sourceforge.net>
+	* telggz/main.c:
+	  - use correct version (not 0.0.5pre hardcoded)
 
-	* acinclude.ggz: Added libggz support to acinclude.ggz.
 
-2002-01-08 05:13  Jason Short <jdorje@users.sourceforge.net>
+2002-04-13 07:15:03  Rev 3970   bmh
 
-	* agrue/Makefile.am: Oops!  Add easysock lib to LDADD.
+	* ChangeLog:
+	  - Updated for 0.0.5 release
 
-2002-01-08 04:04  Jason Short <jdorje@users.sourceforge.net>
 
-	* cmd-client/main.c: Doh!  Updated dates to 2002 instead of 2001.
+2002-04-13 04:44:49  Rev 3955   dr_maux
 
-2002-01-08 04:03  Jason Short <jdorje@users.sourceforge.net>
+	* configure.in:
+	  - bump version to 0.0.5
 
-	* .cvsignore, autogen.sh, configure.in, cmd-client/.cvsignore,
-	cmd-client/Makefile.am, cmd-client/main.c: Added cmd-client
-	command-line GGZ client-like program.	 - Updated configure.in,
-	autogen.sh, and acinclude.m4 to use	 acinclude.ggz.    - Added
-	the configure and build process for ggz-cmd: we check for     
-	ggzcore, etc.	 - Added the ggz-cmd sources.
 
-2002-01-08 03:21  Jason Short <jdorje@users.sourceforge.net>
+2002-04-13 04:06:57  Rev 3949   bmh
 
-	* acinclude.ggz: Added acinclude to utils/ module, and updated the
-	years on the copyright notice.
+	* QuickStart.GGZ README.GGZ AUTHORS NEWS:
+	  - Doc file updates
 
-2001-12-22 13:02  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/metaservconf.xml: - T.E.G. entry in the
-	metaserver configuration file
+2002-04-13 00:45:42  Rev 3929   dr_maux
 
-2001-12-22 11:23  Josef Spillner <dr_maux@users.sourceforge.net>
+	* Makefile.am:
+	  - remove local make clean rule again
 
-	* telggz/: README.telggz, xinetd.conf: - Replace inetd with xinetd,
-	and provide configuration file for that.  - This works perfectly :)
-	  The TelGGZ on mindx.dyndns.org will now be installed permanently
-	again. Logging into jzaun.com works too again, maybe the server
-	just hung yesterday.
 
-2001-12-22 10:59  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-10 14:01:02  Rev 3882   dr_maux
 
-	* telggz/meta.c: - stupid me: fixed segfault in meta_sync in case
-	cache file is not present - the underlying problem is a more nasty
-	one: either one can run inetd as normal user, or someone codes a
-	substitute, or there already exists a substitute
+	* telggz/Makefile.am:
+	  - fix telggz includes
 
-2001-12-21 17:42  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* telggz/: Makefile.am, chat.c, chat.h, main.c, meta.c, meta.h,
-	net.c, net.h: - make TelGGZ usable again - it does now work on
-	localhost, but it won't connect to jzaun.com although I don't have
-	problems using a normal client there :( - new commands: /list
-	(shows room list) and /who (shows player list) - inetd support is
-	somewhat broken, I don't know why
+2002-04-10 13:59:31  Rev 3881   dr_maux
 
-2001-12-16 19:59  Josef Spillner <dr_maux@users.sourceforge.net>
+	* cmd-client/Makefile.am:
+	  - fix cmd-client includes
 
-	* metaserv/metaserv/Makefile.am: - link to local libgensecure, not
-	global one, until this has moved to libggz
 
-2001-12-16 19:58  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-10 13:22:43  Rev 3878   dr_maux
 
-	* telggz/: main.c, net.c: - assume non-TLS enabled libggzcore as
-	default - include stdlib.h
+	* acconfig.h configure.in:
+	  - define PREFIX for use in C source files
 
-2001-12-12 08:39  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* telggz/: README.telggz, main.c, meta.c: - Implement meta server
-	URI cache (aka 'the dynamic connection database') - Using file
-	$HOME/.ggz/metaserver.cache (intended to be used by other  
-	components as well) - Sync cache contents before any queries so the
-	list is always up to date
+2002-04-10 13:22:18  Rev 3877   dr_maux
 
-2001-12-12 04:43  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/metaserv/metaserv.c metaserv/metaserv/metaservconf.xml:
+	  - update metaserver configuration file to reflect all upcoming 0.0.
+	  5 servers
+	  - don't log trailing line breaks
 
-	* Makefile.am, configure.in: - ensure metaserv/minidom is available
-	before telggz is compiled - this will be obsolete once minidom is
-	is libggz (if we decide so)
 
-2001-12-12 04:40  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-09 20:40:42  Rev 3863   dr_maux
 
-	* telggz/: Makefile.am, chat.c, chat.h, main.c, meta.c, meta.h,
-	net.c: - add meta server interface to TelGGZ - actually select
-	0.0.5pre entries now - note: somehow I broke something, it doesn't
-	want to connect right now. Must   be a bad day today...  - note 2:
-	TelGGZ does now require libminidom as XML parser, so I must place  
-	that before telggz in makefile.am and configure.in as SUBDIRS is
-	created   automatically.
+	* debian/control debian/rules:
+	  - finalize utils
 
-2001-12-09 14:27  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/metaserv/: .cvsignore, configuration.h, gensocket.c,
-	gensocket.h, server.c: - prepare daemon mode, TLS and all that
-	stuff
+2002-04-07 10:59:18  Rev 3830   dr_maux
 
-2001-12-09 14:25  Josef Spillner <dr_maux@users.sourceforge.net>
+	* debian/.cvsignore debian:
+	  - update cvsignore file
 
-	* metaserv/metaserv/: Makefile.am, metaserv.c, metaservconf.xml,
-	tests.txt: - make meta server silent - update configuration to
-	contain one meta server entry
 
-2001-12-09 14:24  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-07 10:58:35  Rev 3829   dr_maux
 
-	* metaserv/gui-qt/: qmetagui.cpp, qmetagui.h: - XML template for
-	updates... just change username and password - note: all read-only
-	functionality here will be wiped soon as it's in kcm_ggz   now
+	* debian/control debian/changelog debian/copyright debian/rules:
+	  - debianize utilies package
 
-2001-12-09 11:18  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/gui-perl/metaconf.pl: - perl script for the humble meta
-	server operators - note: it may currently incompatible with the
-	latest changes
+2002-04-07 10:53:24  Rev 3828   dr_maux
 
-2001-12-09 11:16  Josef Spillner <dr_maux@users.sourceforge.net>
+	* man/ggz-cmd.1:
+	  - forgot the new one :)
 
-	* metaserv/: metaserv/Update-Protocol, metaserv/metaserv.c,
-	metaserv/metaservconf.xml, metaserv/tests.txt, minidom/minidom.c,
-	minidom/minidom.h: - introduce 'realms', a.k.a. simple Access
-	Control Lists to avoid that e.g.    someone who is allowed to
-	update Atlantik entries updates GGZ as well  - improve format of
-	configuration file and update protocol - include some test cases -
-	split code into 'optimized' and 'non-optimized' code, separated by
-	an #ifdef.    If speed will not be an issue, optimization should
-	stay at 1, for better code    however clearing it is recommended
 
-2001-12-08 18:26  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-07 10:52:55  Rev 3827   dr_maux
 
-	* metaserv/metaserv/: Configuration, metaserv.c, metaservconf.xml:
-	- added detailed configuration manual for the meta server -
-	prepared notification of peer servers
-	
-	... and from this day on, the GGZ Gaming Zone could span multiple
-	hosts...
+	* man/metaserv.1 man/Makefile.am man/telggz.1 man/cmd-client.1:
+	  - add more manpages, and rename the one for the cmd-client
 
-2001-12-08 17:42  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/: gui-qt/qmetagui.cpp, gui-qt/qmetagui.h,
-	metaserv/README.metaserv, metaserv/Update-Protocol,
-	metaserv/metaserv.c, metaserv/metaservconf.xml, minidom/minidom.c:
-	- fix a memory bug in libminidom - make our meta server dynamic: it
-	does now accept updates from other meta   servers or individuals -
-	enhance GUI a bit, but it's still only a preparation for tomorrow's
-	commits   :)
+2002-04-07 10:48:03  Rev 3826   dr_maux
 
-2001-11-23 16:01  Josef Spillner <dr_maux@users.sourceforge.net>
+	* Makefile.am:
+	  - make clean rule
 
-	* gensecure/src/: gensecure.h, server.c, tls.c: Remove 3 bugs: -
-	don't fail when linked into C++ applications - recognize read and
-	write errors - when no TLS is in use, say so (-1 wasn't interpreted
-	as 0)
 
-2001-10-26 14:32  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-07 10:47:10  Rev 3825   dr_maux
 
-	* metaserv/minidom/: main.c, minidom.c, minidom.h: - merging back
-	the changes from Copenhagen's CVS module  
-	(MindX/copenhagen/server/minidom) - does now allow spaces in
-	attributes - some more minor fixes
+	* metaserv/minidom/Makefile.am:
+	  - don't install minidom test program
 
-2001-10-14 17:15  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* gensecure/src/: client.c, server.c, tls.c: - when encryption is
-	not present, always fall back to normal read(2)/write(2)  
-	operation without issuing an error - this obsoletes the old macros
-	and the gensockwrap.h file
+2002-04-07 10:38:51  Rev 3823   dr_maux
 
-2001-10-14 16:18  Josef Spillner <dr_maux@users.sourceforge.net>
+	* .cvsignore:
+	  - update cvsignore file
 
-	* gensecure/src/: list.c, list.h: - double-linked list which stores
-	TLS objects with their fd and state
 
-2001-10-14 16:16  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-06 15:39:12  Rev 3778   dr_maux
 
-	* gensecure/src/: Makefile.am, tls.c, tls.h: - separate context
-	object from connection object - gensecure is now able to handle
-	more than one connection
-	
-	Note: the example programs are broken now, but the ggzd/ggzcore
-	patches still work the same as before (i.e. only until the login
-	message)
+	* acinclude.ggz:
+	  - sync acinclude.ggz
 
-2001-10-13 19:11  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* gensecure/src/: .cvsignore, gensecure.h: - new global header file
+2002-04-06 08:02:03  Rev 3769   jdorje
 
-2001-10-13 19:10  Josef Spillner <dr_maux@users.sourceforge.net>
+	* telggz/Makefile.am:
+	  Change telggz_LDADD:
+	    - Remove -L/usr/local/lib
+	    - Add $(LDADD)
+	    - Change -lggzcore to $(LIB_GGZCORE)
+	    - Change $(top_srcdir)/... to $(top_builddir)/...
+	  With these changes (specifically the last one), a "make distcheck" 
+	  should
+	  now succeed for the utils module.
 
-	* gensecure/src/: Makefile.am, client.c, gensocket.c, server.c,
-	tls.c, tls.h: - add better interface which can quickly be placed
-	into clients and servers - handle errors etc. better - just fake
-	for now: thread-safety by referencing _tls on filedescriptor basis
 
-2001-10-07 13:02  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-06 07:50:08  Rev 3767   jdorje
 
-	* gensecure/src/: configuration.h, tls.c: - improve gensecure
-	functions - gensecure is nearly finished for its first use, however
-	the code needs a   cleanup before any usage - OPENSSLCHECK() macro
-	introduced for not so common features which may not be	 present in
-	older OpenSSL versions - personal note: I learned about GNU-TLS
-	today, as an alternative for OpenSSL,	we should keep an eye on
-	that.
+	* telggz/Makefile.am:
+	  Added *.h files to telggz_SOURCES.
 
-2001-10-03 08:09  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* gensecure/src/: client.c, server.c, tls.c, tls.h: - verify
-	certificate, but verification is currently always true - show all
-	available crypto ciphers - on error try to show internal TLS errors
-	as well
+2002-04-06 07:43:25  Rev 3766   jdorje
 
-2001-09-05 13:46  Justin Zaun <jzaun@users.sourceforge.net>
+	* metaserv/minidom/Makefile.am:
+	  - Added minidom.h to libminidom_a_SOURCES, so that it's 
+	  distrbiuted with
+	    "make dist".
+	  - Just for good measure, added README.minidom and metasrv.xml to
+	    EXTRA_DIST.
 
-	* configure.in: 
-	- check for openssl/ssl.h, if its not there don't try to build
-	GenSecure - output what is going to be built
 
-2001-09-04 13:44  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-06 07:35:54  Rev 3764   jdorje
 
-	* Makefile.am, configure.in: - now it should work: guru removal
+	* configure.in Makefile.am:
+	  - Added cmd-client to DIST_SUBDIRS in Makefile.am.
+	  - Added some explanatory comments to Makefile.am.
+	  - Changed the ending output of configure slightly.
 
-2001-09-04 13:41  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* gensecure/: io/.cvsignore, src/.cvsignore: - remove guru from
-	configure.in and Makefile.am - put .libs in some .cvsignore files
+2002-04-06 07:00:33  Rev 3763   jdorje
 
-2001-08-12 11:06  Josef Spillner <dr_maux@users.sourceforge.net>
+	* man/Makefile.am:
+	  Change "SUBDIRS =" to "SUBDIRS = ." so that "make dist" will work
+	  properly.
 
-	* metaserv/: README.ggz-metaserver, gui-qt/main.cpp,
-	gui-qt/qmetagui.cpp, gui-qt/qmetagui.h, metaserv/metaserv.c,
-	minidom/main.c, minidom/minidom.c, minidom/minidom.h: - added
-	Copyrights - changed c++ comments to c comments
 
-2001-08-12 10:59  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-05 22:23:41  Rev 3760   dr_maux
 
-	* metaserv/README.ggz-metaserver: - actually add the global readme
-	file for metaserv
+	* README:
+	  - update package information
 
-2001-08-12 10:59  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/: gui-qt/.cvsignore, gui-qt/Makefile.gui-qt,
-	gui-qt/main.cpp, gui-qt/qmetagui.cpp, gui-qt/qmetagui.h,
-	metaserv/Makefile.am, metaserv/README.metaserv,
-	metaserv/metaserv.c, minidom/minidom.c: - add non-blocking GUI for
-	Qt (nice for debugging) - fixed a little malloc bug - ready for
-	inetd use
+2002-04-05 22:03:05  Rev 3758   dr_maux
 
-2001-08-12 08:43  Josef Spillner <dr_maux@users.sourceforge.net>
+	* README.GGZ:
+	  - update installation instructions and overview
 
-	* metaserv/minidom/main.c: - minidom is now a library - add
-	convenience test program
 
-2001-08-12 08:42  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-03-25 20:19:07  Rev 3684   dr_maux
 
-	* metaserv/: metaserv/Makefile.am, metaserv/README.metaserv,
-	metaserv/metaserv.c, metaserv/metaservconf.xml, minidom/.cvsignore,
-	minidom/Makefile.am, minidom/minidom.c, minidom/minidom.h: - add
-	configuration file - replace ggzcore_confio functions with minidom
-	XML configuration - handle both query types correctly - on
-	URI-based queries, select by priority
+	* grubby:
+	  - another .cvsignore
 
-2001-08-12 06:06  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/minidom/: README.minidom, example.xml, metasrv.xml,
-	minidom.c, minidom.h: - add meta server example file - find out
-	another limitation - much prettier dump output: now in XML format
-	for reuse - fix a null-terminated string bug on attribute
-	assignment - simple query/querylist function
+2002-03-25 20:18:24  Rev 3683   dr_maux
 
-2001-08-12 05:15  Josef Spillner <dr_maux@users.sourceforge.net>
+	* man/Makefile.am man/cmd-client.1:
+	  - add (alibi) man page for cmd-client
 
-	* metaserv/minidom/: README.minidom, example.xml, minidom.c: -
-	handle line breaks in values correctly (transform to spaces) -
-	handle self-closing tags like <foo/> - accept file name on command
-	line (optional) - exclude quotation marks from values - don't throw
-	away spaces in values
 
-2001-08-10 12:45  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-03-25 20:13:46  Rev 3681   dr_maux
 
-	* Makefile.am, configure.in: - update build so metaserv is includes
+	* gensecure:
+	  - forgot a .cvsignore file
 
-2001-08-10 12:45  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* metaserv/: .cvsignore, Makefile.am, metaserv/.cvsignore,
-	metaserv/Makefile.am, metaserv/README.metaserv,
-	metaserv/metaserv.c, minidom/.cvsignore, minidom/Makefile.am,
-	minidom/README.minidom, minidom/example.xml, minidom/minidom.c,
-	minidom/minidom.h: - Add first sources for the meta-server - this
-	is meant as a stand-alone server until the merging - support for
-	URI's and XML information files - includes own DOM implementation
+2002-03-25 20:11:22  Rev 3680   dr_maux
 
-2001-08-09 11:37  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.in Makefile.am:
+	  - don't build (re)moved projects
 
-	* Makefile.am, configure.in: - update build system to include
-	telggz
 
-2001-08-09 11:36  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-03-25 20:10:47  Rev 3679   dr_maux
 
-	* telggz/: .cvsignore, Makefile.am, README.telggz, chat.c, chat.h,
-	main.c, net.c, net.h: - Add GGZ telnet wrapper: TelGGZ
+	* gensecure/Preparation pyggzdmod gensecure/TODO gensecure/GGZ-TLS 
+	  gensecure/example.cert gensecure/Makefile.am gensecure/README.
+	  gensecure:
+	  - some more stuff
 
-2001-08-02 10:02  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am, configure.in: - version bump to 0.0.5 - include
-	libtool in build system
+2002-03-25 20:08:27  Rev 3678   dr_maux
 
-2001-08-02 09:57  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/popt.c grubby/grubby-config.pl ruggzdmod grubby/protocols.h 
+	  gensecure/src man/grubby.6 grubby/agrub.c grubby/datatypes.h 
+	  grubby/agrub_popt.h grubby/loop.c grubby/messages.h patches 
+	  grubby/loop.h grubby/chat.c pyggzdmod/src grubby/log.c grubby/chat.
+	  h grubby/log.h grubby/net.c agrue grubby/Makefile.am grubby/net.h 
+	  pyggzdmod/civil grubby/commands.c gnutls grubby/init.c man/agrub.6 
+	  grubby/commands.h pygenclient man/agrue.6 grubby/init.h 
+	  pyggzdmod/tictactoe gensecure/io grubby/support.c grubby/support.h:
+	  - remove stuff which has been either moved to the Playground or 
+	  has been
+	    deprecated
 
-	* motd-editor/: Makefile.in, config.h.in, configure,
-	macros/Makefile.in, src/Makefile.in: - modified build system to
-	include libtool - version bump to 0.0.5pre
 
-2001-07-14 15:43  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-03-16 18:33:29  Rev 3580   dr_maux
 
-	* motd-editor/intl/: Makefile, po2tbl.sed: - those files are
-	automatically created by Gnome
+	* telggz/main.c:
+	  - someone forgot to adapt this to the latest ggzcore changes
 
-2001-06-24 14:02  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.in: - updated configure.in to include gensecure
+2002-02-26 03:33:42  Rev 3478   jdorje
 
-2001-06-24 14:01  Josef Spillner <dr_maux@users.sourceforge.net>
+	* motd-editor/po/.cvsignore motd-editor/po:
+	  Dammit!  One final file that I missed.
 
-	* gensecure/: .cvsignore, GGZ-TLS, Makefile.am, Preparation,
-	README.gensecure, TODO, example.cert, io/.cvsignore,
-	io/Makefile.am, io/main.c, src/.cvsignore, src/Makefile.am,
-	src/client.c, src/configuration.h, src/gensocket.c,
-	src/gensocket.h, src/server.c, src/tls.c, src/tls.h: - add generic
-	security server and client - to be used for GGZ TLS encryption and
-	authentication
 
-2001-06-18 17:39  Ricardo Quesada <riq@users.sourceforge.net>
+2002-02-26 03:29:39  Rev 3477   jdorje
 
-	* motd-editor/: AUTHORS, ChangeLog, Makefile.am, NEWS, README,
-	acconfig.h, autogen.sh, configure.in, motd-editor.glade,
-	stamp-h.in, COPYING, INSTALL, Makefile.in, aclocal.m4, config.h.in,
-	config.cache, config.h, config.log, configure, Makefile,
-	confdefs.h, config.status, stamp-h, src/Makefile, src/Makefile.am,
-	src/Makefile.in, src/callbacks.h, src/interface.c, src/interface.h,
-	src/main.c, src/support.c, src/support.h, macros/Makefile.am,
-	macros/aclocal-include.m4, macros/autogen.sh,
-	macros/compiler-flags.m4, macros/curses.m4, src/callbacks.c,
-	intl/Makefile, intl/po2tbl.sed, macros/Makefile,
-	macros/Makefile.in, macros/gnome-bonobo-check.m4,
-	macros/gnome-common.m4, macros/gnome-fileutils.m4,
-	macros/gnome-ghttp-check.m4, macros/gnome-gnorba-check.m4,
-	macros/gnome-guile-checks.m4, macros/gnome-libgtop-check.m4,
-	macros/gnome-objc-checks.m4, macros/gnome-orbit-check.m4,
-	macros/gnome-print-check.m4, macros/gnome-pthread-check.m4,
-	macros/gnome-support.m4, macros/gnome-undelfs.m4,
-	macros/gnome-vfs.m4, macros/gnome-x-checks.m4,
-	macros/gnome-xml-check.m4, macros/gnome.m4, macros/gperf-check.m4,
-	macros/linger.m4, macros/need-declaration.m4, po/ChangeLog,
-	po/Makefile, po/Makefile.in, po/POTFILES, po/POTFILES.in: Initial
-	revision
+	* motd-editor/intl motd-editor/src motd-editor/config.status 
+	  motd-editor/po/.cvsignore motd-editor/.cvsignore motd-editor/po 
+	  motd-editor motd-editor/po/Makefile.in motd-editor/macros/.
+	  cvsignore motd-editor/macros/Makefile motd-editor/intl/.cvsignore 
+	  motd-editor/macros motd-editor/src/.cvsignore 
+	  motd-editor/src/Makefile motd-editor/po/ChangeLog:
+	  Remove still more files from the repoitory (including some I'd 
+	  missed
+	  before...with such a long list of files it's hard to catch them 
+	  all), and
+	  added extra auto-generated files to the .cvsignore files.
+	  I'm still doubtful that this is actually useful, but I'm really 
+	  tired of
+	  seeing several pages of ignored or modified files on every update.
 
-2001-06-18 17:39  Ricardo Quesada <riq@users.sourceforge.net>
 
-	* motd-editor/: AUTHORS, ChangeLog, Makefile.am, NEWS, README,
-	acconfig.h, autogen.sh, configure.in, motd-editor.glade,
-	stamp-h.in, COPYING, INSTALL, Makefile.in, aclocal.m4, config.h.in,
-	config.cache, config.h, config.log, configure, Makefile,
-	confdefs.h, config.status, stamp-h, src/Makefile, src/Makefile.am,
-	src/Makefile.in, src/callbacks.h, src/interface.c, src/interface.h,
-	src/main.c, src/support.c, src/support.h, macros/Makefile.am,
-	macros/aclocal-include.m4, macros/autogen.sh,
-	macros/compiler-flags.m4, macros/curses.m4, src/callbacks.c,
-	intl/Makefile, intl/po2tbl.sed, macros/Makefile,
-	macros/Makefile.in, macros/gnome-bonobo-check.m4,
-	macros/gnome-common.m4, macros/gnome-fileutils.m4,
-	macros/gnome-ghttp-check.m4, macros/gnome-gnorba-check.m4,
-	macros/gnome-guile-checks.m4, macros/gnome-libgtop-check.m4,
-	macros/gnome-objc-checks.m4, macros/gnome-orbit-check.m4,
-	macros/gnome-print-check.m4, macros/gnome-pthread-check.m4,
-	macros/gnome-support.m4, macros/gnome-undelfs.m4,
-	macros/gnome-vfs.m4, macros/gnome-x-checks.m4,
-	macros/gnome-xml-check.m4, macros/gnome.m4, macros/gperf-check.m4,
-	macros/linger.m4, macros/need-declaration.m4, po/ChangeLog,
-	po/Makefile, po/Makefile.in, po/POTFILES, po/POTFILES.in: justin's
-	MOTD editor
+2002-02-26 03:20:15  Rev 3476   jdorje
 
-2001-06-18 17:16  Ricardo Quesada <riq@users.sourceforge.net>
+	* motd-editor/config.status motd-editor/config.h motd-editor/.
+	  cvsignore motd-editor/Makefile motd-editor/aclocal.m4 
+	  motd-editor/confdefs.h motd-editor motd-editor/config.h.in 
+	  motd-editor/configure motd-editor/config.log:
+	  Removed additional automatically-generated files from the 
+	  repository.
 
-	* motds/: Car1, Castle, City, Design1, Devel1, Devel2, Devel3, Dog,
-	Dog2, Dragon1, Dragon2, Dragon3, Eagle, Earth, Flamingo, Halloween,
-	Halloween2, Halloween5, Knight, Knight2, Knightmare, Lady,
-	Outhouse, Plane1, Rip, Skull, Statue, Stork, Texas, Troll: justin's
-	motd collections
 
-2001-06-17 17:03  Rich Gade <rgade@users.sourceforge.net>
+2002-02-26 03:07:02  Rev 3475   jdorje
 
-	* configure.in, agrue/Makefile.am, grubby/Makefile.am,
-	man/Makefile.am: - Last minute fixes to get distributed files
-	correct
+	* motd-editor/macros/Makefile.in motd-editor/src 
+	  motd-editor/src/Makefile.in motd-editor/.cvsignore motd-editor 
+	  motd-editor/macros/.cvsignore motd-editor/Makefile.in 
+	  motd-editor/macros motd-editor/src/.cvsignore:
+	  Removed Makefile.in files from CVS repository.
+	  I'm not quite sure what's up with the motd-editor directory.  It's a
+	  subdir of the utils module, but seems to be its own separate unit, 
+	  complete
+	  with autogen.sh and all other autoconf files.  Is this code still
+	  relevant?
 
-2001-06-17 15:56  Rich Gade <rgade@users.sourceforge.net>
 
-	* ChangeLog: - Updated ChangeLog
+2002-02-26 02:57:27  Rev 3473   jdorje
 
-2001-06-08 18:08  Justin Zaun <jzaun@users.sourceforge.net>
+	* acconfig.h configure.in:
+	  Change autoconf system so that if DEBUG is not defined 
+	  (--enable-debug,
+	  currently on by default) we'll get NDEBUG defined instead.
 
-	* grubby/chat.c: 
-	- removed debug code
 
-2001-06-08 18:06  Justin Zaun <jzaun@users.sourceforge.net>
+2002-02-23 02:31:02  Rev 3441   dr_maux
 
-	* grubby/: chat.c, commands.c: 
-	- Fixed the : and , problem
+	* patches/ggz-0.0.5pre-gensecure.ggz-client-libs.patch patches/ggz-0.
+	  0.5pre-gensecure.ggzd.patch patches/ggz-0.0.5pre-gensecure.libggz.
+	  patch:
+	  - new gensecure patches
+	  - they work in theory but not in practice :(
 
-2001-06-08 17:28  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* .cvsignore: - add build-stamp here too
+2002-02-11 15:58:44  Rev 3332   dr_maux
 
-2001-06-08 17:24  Justin Zaun <jzaun@users.sourceforge.net>
+	* metaserv/minidom/.cvsignore metaserv/minidom/minidom.c 
+	  metaserv/minidom:
+	  - fix gcc3 + -Wall on libminidom
+	  - don't commit the scheduler, rather put it in .cvsignore
+	  If anybody is really interested in this iPaq stuff I can take it 
+	  in, but it's
+	  not developed in our CVS, and not very functional yet.
+	  I wish I actually had a handheld.... but Linux + FBdev work quite 
+	  well.
 
-	* grubby/commands.c: 
-	- Fixed a segfault in the tell command
 
-2001-06-08 13:03  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-02-11 14:50:15  Rev 3331   dr_maux
 
-	* man/: Makefile.am, agrub.6, agrue.6: - add aGRUE man page -
-	shadow grubby to agrub manpage
+	* metaserv/minidom/minidom.c metaserv/minidom/README.minidom:
+	  - fix !DOCTYPE-related dangling pointer bug
+	  I never intended to support those advanced tags, but the possible 
+	  use on an
+	  iPaq makes me fix bugs right away :)
+	  http://desk.crynwr.com/scap/toipaq.cgi?fn=port.25096.png
+	  I don't understand why Qt/embedded doesn't include their QDom 
+	  classes, but
+	  anyway...
 
-2001-06-08 12:07  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* README.GGZ: - actually add readme.ggz
+2002-02-11 09:57:26  Rev 3327   dr_maux
 
-2001-06-08 12:01  Josef Spillner <dr_maux@users.sourceforge.net>
+	* metaserv/gui-custom/freeciv-index.php metaserv/gui-custom 
+	  metaserv/gui-custom/Information:
+	  - Let's break freeciv's monopoly on freeciv metaserver entry pages 
+	  :)
+	  Once both querying and updating works, we should be able to 
+	  support all kind of
+	  meta entries, because freeciv's already require a bit of 
+	  flexibility.
 
-	* configure.in: - forgot man/ in configure.in
 
-2001-06-08 12:00  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-02-11 09:52:55  Rev 3326   dr_maux
 
-	* Makefile.am, configure.in: - also build man page
+	* metaserv/metaserv/metaservconf.xml:
+	  - add freeciv dummy entry
 
-2001-06-08 12:00  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* man/: .cvsignore, Makefile.am, grubby.6: - create simple man page
-	for grubby
+2002-02-10 05:31:35  Rev 3294   rgade
 
-2001-06-08 09:45  Josef Spillner <dr_maux@users.sourceforge.net>
+	* gnutls/tls.c gnutls/ggz-client-libs.patch gnutls/ggzd.patch 
+	  gnutls/libggz.patch gnutls/README gnutls:
+	  - Patch to support GnuTLS
 
-	* AUTHORS, ChangeLog, NEWS: - added standard files for finalizing
-	this module
 
-2001-06-07 16:26  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-02-03 21:02:54  Rev 3232   jdorje
 
-	* debian/docs: - adding project-wide readme file
+	* agrue/Makefile.am:
+	  Oops: removed $(LIB_EASYSOCK) from LDADD.
 
-2001-05-30 08:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* COPYING, INSTALL: - added standard files
+2002-02-03 21:01:35  Rev 3231   jdorje
 
-2001-05-30 08:34  Josef Spillner <dr_maux@users.sourceforge.net>
+	* acinclude.ggz:
+	  Updated acinclude.ggz from changes made in ggzd.
 
-	* debian/: .cvsignore, README.Debian, changelog, control,
-	copyright, docs, postinst, prerm, rules: - debianized source tree -
-	added standard files
 
-2001-05-22 14:38  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-02-03 21:01:03  Rev 3230   jdorje
 
-	* grubby/: .cvsignore, Makefile.am, agrub.c, agrub_popt.h, chat.c,
-	chat.h, commands.c, commands.h, datatypes.h, grubby-config.pl,
-	init.c, init.h, log.c, log.h, loop.c, loop.h, messages.h, net.c,
-	net.h, popt.c, protocols.h, support.c, support.h: - reintroduces
-	grubby in the utils/ module - ported him to the new ggzcore API
+	* configure.in agrue/agrue.c agrue/Makefile.am:
+	  - Changed configure check for easysock to one for libggz.
+	  - Make sure agrue is linked with libggz.
+	  - Change all es_*** function calls to ggz_*** ones.
 
-2001-01-06 12:19  Ismael Orenstein <perdig@users.sourceforge.net>
 
-	* README: 
-	- Added the Python generic client, some little utility to
-	communicate with   the game server without any hassle (ie, just
-	like a regular game client).	I found it really useful to test
-	the chess server, but maybe anyone may	  find another use for
-	it... :)  - Instructions of use are in the pygenclient/README file
+2002-02-03 20:58:59  Rev 3229   jdorje
 
-2000-12-29 20:22  Justin Zaun <jzaun@users.sourceforge.net>
+	* grubby/net.c grubby/chat.c:
+	  Removed unneeded "#include <easysock.h>" directives.
 
-	* grubby/: .cvsignore, Makefile.am, agrub.c, agrub.old,
-	agrub_popt.h, chat.c, chat.h, commands.c, commands.h, datatypes.h,
-	init.c, init.h, log.c, log.h, loop.c, loop.h, messages.h, net.c,
-	net.h, popt.c, protocols.h, rc.c, rc.h, support.c, support.h: 
-	- Removeing old out of date grubby files
 
-2000-09-08 20:26  bugg
+2002-01-20 12:36:43  Rev 3173   dr_maux
 
-	* grubby/loop.c: Include unistd.h for select().
+	* patches/ggz-0.0.5pre-spectators.ggz-client-libs.patch 
+	  patches/ggz-0.0.5pre-spectators.ggzd.patch:
+	  - update spectator patches: they should now work, except for ggzdmod
 
-2000-09-07 17:55  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/: commands.c, loop.c, support.c: 
-	- Added owner command goto <room number> so grubby can now change
-	rooms - Made help a little easier to read
+2002-01-19 19:36:00  Rev 3150   dr_maux
 
-2000-09-07 17:21  Justin Zaun <jzaun@users.sourceforge.net>
+	* telggz/net.c:
+	  - tell id on hook error
 
-	* grubby/: loop.c, net.c: 
-	- Updated for protocol version 3
 
-2000-09-07 16:18  Rich Gade <rgade@users.sourceforge.net>
+2002-01-16 11:58:23  Rev 3121   dr_maux
 
-	* agrue/: agrue.c, protocols.h: - Updated agrue.c to work with ggz
-	protocol 3 - GRUEs are less random now, doing one thing every five
-	seconds always
+	* metaserv/metaserv/Makefile.am:
+	  - build only one binary
 
-2000-06-14 18:34  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/: commands.c, init.c: 
-	- Grubby saves on exit.    I'm catching SIGINT, SIGQUIT, and
-	SIGTERM
+2002-01-16 11:56:08  Rev 3120   dr_maux
 
-2000-06-14 18:18  Justin Zaun <jzaun@users.sourceforge.net>
+	* metaserv/metaserv/gensocket.c metaserv/metaserv/server.c 
+	  metaserv/metaserv/gensocket.h metaserv/metaserv/configuration.h:
+	  - remove unneeded files (metaserv handles connections on its own)
 
-	* grubby/: Makefile.am, chat.c, commands.c, init.c, rc.c, rc.h: 
-	- Grubby now saves his memory between sessions. Everything is in
-	rc.[ch].
 
-2000-06-11 14:46  Justin Zaun <jzaun@users.sourceforge.net>
+2002-01-16 11:53:40  Rev 3119   dr_maux
 
-	* grubby/: chat.c, commands.c, datatypes.h, init.c, support.c: 
-	- Fixed a spelling mistake s/memmory/memory/
+	* metaserv/metaserv/metaserv.c:
+	  - add getopt command line options
+	  - add logging
+	  - one step further now: peer notifications
 
-2000-06-11 14:34  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/: chat.c, chat.h, commands.c: 
-	- Grubby now accepts commands give thew a personal message (/msg)
-	as well.
+2002-01-14 18:36:20  Rev 3117   dr_maux
 
-2000-06-11 12:03  Justin Zaun <jzaun@users.sourceforge.net>
+	* patches/ggz-0.0.5pre-spectators.ggz-client-libs.patch 
+	  patches/ggz-0.0.5pre-spectators.ggzd.patch patches/ggz-0.0.
+	  5pre-spectators.libggz.patch patches/README:
+	  - Only the brave ones will try them... and they don't work yet :P
 
-	* grubby/: chat.c, commands.c, datatypes.h, log.c: 
-	- Added the 'tell <username> <message>' command back in.
 
-2000-06-10 21:27  Justin Zaun <jzaun@users.sourceforge.net>
+2002-01-12 10:13:19  Rev 3087   jdorje
 
-	* grubby/: chat.c, commands.c, commands.h: 
-	- Added a bit more flexibility to the command recognition system
+	* acinclude.ggz:
+	  Added acinclude.ggz to ggzd and ggz-client-libs.
 
-2000-06-10 18:38  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/: chat.c, chat.h, commands.c, messages.h, support.c: 
-	- Added the about command back in
+2002-01-12 10:05:20  Rev 3086   jdorje
 
-2000-06-10 17:40  Justin Zaun <jzaun@users.sourceforge.net>
+	* acinclude.ggz:
+	  Added libggz support to acinclude.ggz.
 
-	* grubby/: chat.c, commands.c, support.c: 
-	- Everything in Grubby is fully working, thanks in part to Jason.
 
-2000-06-10 17:06  Justin Zaun <jzaun@users.sourceforge.net>
+2002-01-11 22:25:30  Rev 3069   dr_maux
 
-	* grubby/: commands.c, log.c: 
-	- the command 'my name is <real name>' now works correctly thank to
-	Jason - Also fixed in one of the log functions (had not happed yet,
-	but could of).
+	* pyggzdmod/tictactoe/ggzd.tictactoe:
+	  - fix example so far
 
-2000-06-10 15:58  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/: Makefile.am, agrub.c, agrub.old, agrub_popt.h, chat.c,
-	chat.h, commands.c, commands.h, datatypes.h, init.c, init.h, log.c,
-	log.h, loop.c, loop.h, messages.h, net.c, net.h, popt.c,
-	protocols.h, support.c, support.h: 
-	- Big rewrite to grubby
+2002-01-11 21:57:57  Rev 3068   dr_maux
 
-2000-05-08 19:18  Justin Zaun <jzaun@users.sourceforge.net>
+	* pyggzdmod/src/test.py pyggzdmod/src/pyggzdmod_init.c:
+	  - make python wrapper for ggzdmod compile again
+	  - this does not really work yet (same here: the Seat structure), 
+	  but when
+	    starting from the command line it's the same experience as with 
+	  plain C/C++
+	    :-)
 
-	* grubby/: agrub.c, protocols.h: 
-	- Grubby now works with the new chat protocol - Grubby can teke
-	command by grubby: or /msg grubby
 
-2000-05-05 23:16  Rich Gade <rgade@users.sourceforge.net>
+2002-01-11 21:02:57  Rev 3066   dr_maux
 
-	* grubby/agrub.c: - Don't free room_list strings until just before
-	exit
+	* ruggzdmod/.cvsignore ruggzdmod/README.ruggzdmod ruggzdmod 
+	  ruggzdmod/ruggzdmod.c ruggzdmod/testserver.rb:
+	  - make ruby wrapper compile again
+	  - note: it doesn't work yet due to some problems on the ruby side 
+	  of life
 
-2000-05-04 20:46  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/agrub.c: 
-	- Fixed the random crashes caused by not freeing string in all
-	cases
+2002-01-08 11:13:26  Rev 3014   jdorje
 
-2000-05-02 17:02  Justin Zaun <jzaun@users.sourceforge.net>
+	* agrue/Makefile.am:
+	  Oops!  Add easysock lib to LDADD.
 
-	* grubby/agrub.c: 
-	- stay here command actualy works now - logging is in html format
-	for posting to our web site. looks nicer too.
 
-2000-04-28 13:34  Brent Hendricks <bmh@users.sourceforge.net>
+2002-01-08 10:04:17  Rev 3013   jdorje
 
-	* .cvsignore, Makefile.am, acconfig.h, autogen.sh, configure.in,
-	agrue/.cvsignore, agrue/Makefile, agrue/Makefile.am,
-	agrue/protocols.h, grubby/.cvsignore, grubby/Makefile,
-	grubby/Makefile.am, grubby/protocols.h: 
-	- Make grie and grubby use autoconf/automake
+	* cmd-client/main.c:
+	  Doh!  Updated dates to 2002 instead of 2001.
 
-2000-04-26 17:30  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/agrub.c: 
-	- Upped the room change timeout - addedd stay/move commands for
-	owners only
+2002-01-08 10:03:00  Rev 3012   jdorje
 
-2000-04-19 17:01  Justin Zaun <jzaun@users.sourceforge.net>
+	* .cvsignore cmd-client cmd-client/main.c configure.in 
+	  cmd-client/Makefile.am autogen.sh cmd-client/.cvsignore:
+	  Added cmd-client command-line GGZ client-like program.
+	    - Updated configure.in, autogen.sh, and acinclude.m4 to use
+	      acinclude.ggz.
+	    - Added the configure and build process for ggz-cmd: we check for
+	      ggzcore, etc.
+	    - Added the ggz-cmd sources.
 
-	* grubby/agrub.c: 
-	- s/memmory/memory - added the ability to have random greatings.
 
-2000-04-19 12:23  Justin Zaun <jzaun@users.sourceforge.net>
+2002-01-08 09:21:08  Rev 3011   jdorje
 
-	* grubby/agrub.c: 
-	- Added command 'save memmory' as a owner only wich forces a update
-	of ~/.agrub
+	* acinclude.ggz:
+	  Added acinclude to utils/ module, and updated the years on the
+	  copyright notice.
 
-2000-04-18 16:55  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/agrub.c: 
-	- Grubby can now log a room.  - grubby: log on <FULL PATH> -
-	grubby: log off
-	
-	You _must_ be owner for the command to work
+2001-12-22 19:02:10  Rev 2982   dr_maux
 
-2000-04-17 20:39  Justin Zaun <jzaun@users.sourceforge.net>
+	* metaserv/metaserv/metaservconf.xml:
+	  - T.E.G. entry in the metaserver configuration file
 
-	* grubby/agrub.c: 
-	- Grubby can now rember an arbatrary number of messages to tell a
-	person.    the default is set to 4 in a #define. This REALY break
-	the data file format	you should remove your old one before
-	trying this out.
 
-2000-04-16 16:04  Justin Zaun <jzaun@users.sourceforge.net>
+2001-12-22 17:23:44  Rev 2981   dr_maux
 
-	* grubby/agrub.c: 
-	- Forgot to add the help item. (sorry)
+	* telggz/README.telggz telggz/xinetd.conf:
+	  - Replace inetd with xinetd, and provide configuration file for 
+	  that.
+	  - This works perfectly :)
+	    The TelGGZ on mindx.dyndns.org will now be installed permanently 
+	  again. Logging into jzaun.com works too again, maybe the server 
+	  just hung yesterday.
 
-2000-04-16 16:00  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/agrub.c: 
-	- ok I've added the ability to story your bday.    this has changed
-	the file format a bit,but don't worrie, it    auto-updates for you.
-	The bday won't be displayed anywhere yet,    and not sure if it
-	should, I'm planing of Grubby saying 'Happy Brithday' to    you on
-	your brithday.
-	
-	- I've made the unknown user message a little bigger, and my human
-	like (I hope...)
+2001-12-22 16:59:14  Rev 2980   dr_maux
 
-2000-04-16 15:36  Justin Zaun <jzaun@users.sourceforge.net>
+	* telggz/meta.c:
+	  - stupid me: fixed segfault in meta_sync in case cache file is not 
+	  present
+	  - the underlying problem is a more nasty one: either one can run 
+	  inetd as normal user, or someone codes a substitute, or there 
+	  already exists a substitute
 
-	* grubby/agrub.c: 
-	- Updated Grubby's about text.
-	
-		I removed the 2 paragraph, as Grubby can now remember
-	things from a past lifetime.
 
-2000-04-16 13:16  Rich Gade <rgade@users.sourceforge.net>
+2001-12-21 23:42:00  Rev 2978   dr_maux
 
-	* grubby/agrub.c: Various enhancements to Grubby:   - Now dumps his
-	information database if he is killed by a signal   - Reports time
-	since having last seen a user in a sensible format   - Correctly
-	tests for url and info values when reporting whois
+	* telggz/chat.h telggz/main.c telggz/meta.c telggz/net.c 
+	  telggz/Makefile.am telggz/meta.h telggz/net.h telggz/chat.c:
+	  - make TelGGZ usable again
+	  - it does now work on localhost, but it won't connect to jzaun.com 
+	  although I don't have problems using a normal client there :(
+	  - new commands: /list (shows room list) and /who (shows player list)
+	  - inetd support is somewhat broken, I don't know why
 
-2000-04-15 04:08  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/agrub.c: 
-	- Grubby now shows all known information entered when he recieves
-	the whois command
+2001-12-17 01:59:27  Rev 2911   dr_maux
 
-2000-04-15 03:50  Justin Zaun <jzaun@users.sourceforge.net>
+	* metaserv/metaserv/Makefile.am:
+	  - link to local libgensecure, not global one, until this has moved 
+	  to libggz
 
-	* grubby/agrub.c: 
-	- Storing of email, url and info
 
-2000-04-15 03:07  Justin Zaun <jzaun@users.sourceforge.net>
+2001-12-17 01:58:46  Rev 2910   dr_maux
 
-	* grubby/agrub.c: 
-	- Added a whois command
+	* telggz/main.c telggz/net.c:
+	  - assume non-TLS enabled libggzcore as default
+	  - include stdlib.h
 
-2000-04-15 02:12  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* grubby/agrub.c: 
-	- Now load information back in at startup. This means that a grub
-	can remember between sesions
+2001-12-12 14:39:47  Rev 2885   dr_maux
 
-2000-04-15 01:10  Justin Zaun <jzaun@users.sourceforge.net>
+	* telggz/main.c telggz/meta.c telggz/README.telggz:
+	  - Implement meta server URI cache (aka 'the dynamic connection 
+	  database')
+	  - Using file $HOME/.ggz/metaserver.cache (intended to be used by 
+	  other
+	    components as well)
+	  - Sync cache contents before any queries so the list is always up 
+	  to date
 
-	* grubby/agrub.c: 
-	- now saves known information to ~/.agrub in the following
-	structure
-	
-	Version Number Number Known (repeated Number Known times) the known
-	struct
 
-2000-04-14 23:58  Rich Gade <rgade@users.sourceforge.net>
+2001-12-12 10:43:43  Rev 2884   dr_maux
 
-	* README: - Some notes for AGRUE and AGRUB
+	* configure.in Makefile.am:
+	  - ensure metaserv/minidom is available before telggz is compiled
+	  - this will be obsolete once minidom is is libggz (if we decide so)
 
-2000-04-14 23:48  Rich Gade <rgade@users.sourceforge.net>
 
-	* agrue/Makefile, agrue/agrue.c, agrue/launch_grues,
-	grubby/Makefile, grubby/agrub.c: Initial checkins for AGRUE and
-	AGRUB
+2001-12-12 10:40:02  Rev 2883   dr_maux
+
+	* telggz/chat.h telggz/main.c telggz/meta.c telggz/net.c 
+	  telggz/Makefile.am telggz/meta.h telggz/chat.c:
+	  - add meta server interface to TelGGZ
+	  - actually select 0.0.5pre entries now
+	  - note: somehow I broke something, it doesn't want to connect 
+	  right now. Must
+	    be a bad day today...
+	  - note 2: TelGGZ does now require libminidom as XML parser, so I 
+	  must place
+	    that before telggz in makefile.am and configure.in as SUBDIRS is 
+	  created
+	    automatically.
+
+
+2001-12-09 20:27:08  Rev 2831   dr_maux
+
+	* metaserv/metaserv/gensocket.c metaserv/metaserv/server.c 
+	  metaserv/metaserv/gensocket.h metaserv/metaserv/.cvsignore 
+	  metaserv/metaserv/configuration.h metaserv/metaserv:
+	  - prepare daemon mode, TLS and all that stuff
+
+
+2001-12-09 20:25:30  Rev 2830   dr_maux
+
+	* metaserv/metaserv/metaserv.c metaserv/metaserv/Makefile.am 
+	  metaserv/metaserv/metaservconf.xml metaserv/metaserv/tests.txt:
+	  - make meta server silent
+	  - update configuration to contain one meta server entry
+
+
+2001-12-09 20:24:41  Rev 2829   dr_maux
+
+	* metaserv/gui-qt/qmetagui.h metaserv/gui-qt/qmetagui.cpp:
+	  - XML template for updates... just change username and password
+	  - note: all read-only functionality here will be wiped soon as 
+	  it's in kcm_ggz
+	    now
+
+
+2001-12-09 17:18:10  Rev 2826   dr_maux
+
+	* metaserv/gui-perl/metaconf.pl metaserv/gui-perl:
+	  - perl script for the humble meta server operators
+	  - note: it may currently incompatible with the latest changes
+
+
+2001-12-09 17:16:53  Rev 2825   dr_maux
+
+	* metaserv/metaserv/Update-Protocol metaserv/minidom/minidom.c 
+	  metaserv/metaserv/metaserv.c metaserv/minidom/minidom.h 
+	  metaserv/metaserv/metaservconf.xml metaserv/metaserv/tests.txt:
+	  - introduce 'realms', a.k.a. simple Access Control Lists to avoid 
+	  that e.g.
+	    someone who is allowed to update Atlantik entries updates GGZ as 
+	  well
+	  - improve format of configuration file and update protocol
+	  - include some test cases
+	  - split code into 'optimized' and 'non-optimized' code, separated 
+	  by an #ifdef.
+	    If speed will not be an issue, optimization should stay at 1, 
+	  for better code
+	    however clearing it is recommended
+
+
+2001-12-09 00:26:26  Rev 2809   dr_maux
+
+	* metaserv/metaserv/Configuration metaserv/metaserv/metaserv.c 
+	  metaserv/metaserv/metaservconf.xml:
+	  - added detailed configuration manual for the meta server
+	  - prepared notification of peer servers
+	  ... and from this day on, the GGZ Gaming Zone could span multiple 
+	  hosts...
+
+
+2001-12-08 23:42:49  Rev 2808   dr_maux
+
+	* metaserv/metaserv/Update-Protocol metaserv/gui-qt/qmetagui.h 
+	  metaserv/metaserv/README.metaserv metaserv/minidom/minidom.c 
+	  metaserv/metaserv/metaserv.c metaserv/metaserv/metaservconf.xml 
+	  metaserv/gui-qt/qmetagui.cpp:
+	  - fix a memory bug in libminidom
+	  - make our meta server dynamic: it does now accept updates from 
+	  other meta
+	    servers or individuals
+	  - enhance GUI a bit, but it's still only a preparation for 
+	  tomorrow's commits
+	    :)
+
+
+2001-11-23 22:01:25  Rev 2761   dr_maux
+
+	* gensecure/src/gensecure.h gensecure/src/server.c gensecure/src/tls.
+	  c:
+	  Remove 3 bugs:
+	  - don't fail when linked into C++ applications
+	  - recognize read and write errors
+	  - when no TLS is in use, say so (-1 wasn't interpreted as 0)
+
+
+2001-11-07 08:06:56  Rev 2688   dr_maux
+
+	* patches/ggz-0.0.5pre-gensecure.libggz.patch:
+	  - should be much easier now
+	  - contains the AC_PATH_SSL macro in acinclude.m4
+	  - now include gensecure in configure.in
+
+
+2001-11-07 07:27:38  Rev 2684   dr_maux
+
+	* patches/ggz-0.0.5pre-gensecure.ggz-client-libs.patch patches/ggz-0.
+	  0.5pre-gensecure.ggzd.patch patches/ggz-0.0.5pre-gensecure.libggz.
+	  patch:
+	  - patches against most recent version of GGZ
+	  - does now contain ggzcore_server_get_encryption again
+
+
+2001-11-06 00:12:35  Rev 2681   dr_maux
+
+	* patches/README patches patches/ggz-0.0.5pre-gensecure.
+	  ggz-client-libs.patch patches/ggz-0.0.5pre-gensecure.ggzd.patch 
+	  patches/ggz-0.0.5pre-gensecure.libggz.patch:
+	  - add patches for new libgensecure
+	  - whether to use TLS or not is now determined by the presence of 
+	  OpenSSL during
+	    compile time
+
+
+2001-10-26 19:32:28  Rev 2617   dr_maux
+
+	* metaserv/minidom/minidom.c metaserv/minidom/minidom.h 
+	  metaserv/minidom/main.c:
+	  - merging back the changes from Copenhagen's CVS module
+	    (MindX/copenhagen/server/minidom)
+	  - does now allow spaces in attributes
+	  - some more minor fixes
+
+
+2001-10-26 09:17:38  Rev 2616   dr_maux
+
+	* ruggzdmod/.cvsignore ruggzdmod/README.ruggzdmod ruggzdmod 
+	  ruggzdmod/ruggzdmod.c ruggzdmod/extconf.rb ruggzdmod/testserver.rb:
+	  - add yet another language wrapper: ruby bindings for ggzdmod
+	  - note: it uses the deprecated API so currently it isn't of much use
+
+
+2001-10-17 20:00:19  Rev 2577   dr_maux
+
+	* pyggzdmod/civil/README.civil:
+	  - ooops, forgot the readme
+
+
+2001-10-17 19:59:45  Rev 2576   dr_maux
+
+	* pyggzdmod/.cvsignore pyggzdmod/src/test.py 
+	  pyggzdmod/src/pyggzdmod_init.c pyggzdmod/tictactoe pyggzdmod 
+	  pyggzdmod/README.pyggzdmod pyggzdmod/civil/civil.diff 
+	  pyggzdmod/civil/module.dsc pyggzdmod/civil/civil.dsc 
+	  pyggzdmod/civil pyggzdmod/civil/civil.room pyggzdmod/setup.py 
+	  pyggzdmod/src pyggzdmod/tictactoe/ggzd.tictactoe:
+	  - add python wrapper to ggzdmod (nearly the same as in the tarball 
+	  I published
+	    some time ago)
+	  - should compile on both Linux and Windows (and other OS's too), 
+	  but ggzdmod
+	    must be installed there first which might be the tricky part
+	  - note: Civil 0.5 will be released tonight IMO, so there is some 
+	  work needed
+	  - note 2: we need a unified python build environment as makefiles 
+	  aren't used
+	    by it
+
+
+2001-10-14 22:15:40  Rev 2567   dr_maux
+
+	* gensecure/src/server.c gensecure/src/client.c gensecure/src/tls.c:
+	  - when encryption is not present, always fall back to normal 
+	  read(2)/write(2)
+	    operation without issuing an error
+	  - this obsoletes the old macros and the gensockwrap.h file
+
+
+2001-10-14 21:18:06  Rev 2566   dr_maux
+
+	* gensecure/src/list.c gensecure/src/list.h:
+	  - double-linked list which stores TLS objects with their fd and 
+	  state
+
+
+2001-10-14 21:16:54  Rev 2565   dr_maux
+
+	* gensecure/src/tls.h gensecure/src/Makefile.am gensecure/src/tls.c:
+	  - separate context object from connection object
+	  - gensecure is now able to handle more than one connection
+	  Note:
+	  the example programs are broken now, but the ggzd/ggzcore patches 
+	  still work the
+	  same as before (i.e. only until the login message)
+
+
+2001-10-14 00:11:33  Rev 2560   dr_maux
+
+	* gensecure/src/gensecure.h gensecure/src/.cvsignore gensecure/src:
+	  - new global header file
+
+
+2001-10-14 00:10:46  Rev 2559   dr_maux
+
+	* gensecure/src/server.c gensecure/src/tls.h gensecure/src/Makefile.
+	  am gensecure/src/client.c gensecure/src/gensocket.c 
+	  gensecure/src/tls.c:
+	  - add better interface which can quickly be placed into clients 
+	  and servers
+	  - handle errors etc. better
+	  - just fake for now: thread-safety by referencing _tls on 
+	  filedescriptor basis
+
+
+2001-10-07 18:02:19  Rev 2543   dr_maux
+
+	* gensecure/src/configuration.h gensecure/src/tls.c:
+	  - improve gensecure functions
+	  - gensecure is nearly finished for its first use, however the code 
+	  needs a
+	    cleanup before any usage
+	  - OPENSSLCHECK() macro introduced for not so common features which 
+	  may not be
+	    present in older OpenSSL versions
+	  - personal note: I learned about GNU-TLS today, as an alternative 
+	  for OpenSSL,
+	    we should keep an eye on that.
+
+
+2001-10-03 13:09:21  Rev 2531   dr_maux
+
+	* gensecure/src/server.c gensecure/src/tls.h gensecure/src/client.c 
+	  gensecure/src/tls.c:
+	  - verify certificate, but verification is currently always true
+	  - show all available crypto ciphers
+	  - on error try to show internal TLS errors as well
+
+
+2001-09-05 18:46:06  Rev 2375   jzaun
+
+	* configure.in:
+	  - check for openssl/ssl.h, if its not there don't try to build 
+	  GenSecure
+	  - output what is going to be built
+
+
+2001-09-04 18:44:56  Rev 2355   dr_maux
+
+	* configure.in Makefile.am:
+	  - now it should work: guru removal
+
+
+2001-09-04 18:41:01  Rev 2354   dr_maux
+
+	* gensecure/io/.cvsignore gensecure/src/.cvsignore gensecure/io 
+	  gensecure/src:
+	  - remove guru from configure.in and Makefile.am
+	  - put .libs in some .cvsignore files
+
+
+2001-09-04 18:25:34  Rev 2353   dr_maux
+
+	* guru:
+	  - these got not deleted last time
+
+
+2001-09-01 20:06:19  Rev 2339   dr_maux
+
+	* guru/modules/badword.c guru/modules/programming.c guru/.cvsignore 
+	  guru/modules/people.c guru/README.guru guru/modules/Makefile.am 
+	  guru/modules/self.c guru/modules/simplereturn.c guru/modules/.
+	  cvsignore guru/modules/player.c guru/src/i18n.c guru/src/guru.c 
+	  guru/src/i18n.h guru/src/main.c guru/src/guru.h guru/src/gurumod.h 
+	  guru/src/Makefile.am guru/src/.cvsignore guru/doc guru/Makefile.am 
+	  guru/data:
+	  - bye-bye old guru source directory
+
+
+2001-09-01 18:26:15  Rev 2335   dr_maux
+
+	* guru/src/main.c guru/modules/people.c guru/src/module.c 
+	  guru/src/net.c guru/src/module.h guru/src/net.h guru/doc/Setup:
+	  - handle seen/firstseen
+	  - admin commands: goto <roomname> and logging (on | off)
+	  - improved log format, syslog-like
+
+
+2001-09-01 15:32:26  Rev 2332   dr_maux
+
+	* guru/modules/exec.c guru/data/de.po guru/data/funky.pl 
+	  guru/data/Makefile.am guru/modules/self.c guru/src/i18n.c 
+	  guru/data/guru.pot guru/src/i18n.h guru/src/main.c guru/data/fr.po 
+	  guru/src/module.c guru/src/net.c guru/data/rdf.pl 
+	  guru/src/Makefile.am guru/src/module.h guru/data/meeting.rb 
+	  guru/data/dict.pl guru/Makefile.am:
+	  - implement translation stuff (for some parts)
+	  - multi-line answers
+
+
+2001-08-19 13:54:40  Rev 2173   dr_maux
+
+	* guru/modules/people.c:
+	  - here it comes :-)
+
+
+2001-08-19 13:54:10  Rev 2172   dr_maux
+
+	* guru/src/main.c guru/src/module.c guru/src/net.c 
+	  guru/modules/Makefile.am guru/src/module.h guru/src/net.h 
+	  guru/src/player.c guru/doc/Setup guru/modules/player.c 
+	  guru/src/player.h:
+	  - add player shadow file
+	  - first player functionality: add realname and contact info
+	  - query last seen status
+
+
+2001-08-19 12:36:36  Rev 2171   dr_maux
+
+	* guru/modules/badword.c guru/modules/programming.c 
+	  guru/modules/exec.c guru/README.guru guru/modules/self.c 
+	  guru/src/i18n.c guru/src/guru.c guru/src/i18n.h guru/src/main.c 
+	  guru/src/module.c guru/src/net.c guru/doc/Migration guru/src/guru.
+	  h guru/src/gurumod.h guru/src/module.h guru/src/net.h 
+	  guru/src/player.c guru/doc/Setup guru/doc/Tutorial guru/src/player.
+	  h:
+	  - added tutorial file
+	  - include credits in copyrights
+	  - let it appear as grubby rather than as guru on startup etc.
+
+
+2001-08-19 10:53:53  Rev 2170   dr_maux
+
+	* guru/src/Makefile.am guru/src/test_player.c guru/src/player.c 
+	  guru/src/player.h:
+	  - update player database
+	  - save into $HOME/.ggz/guru/playerdb
+
+
+2001-08-19 09:39:54  Rev 2169   dr_maux
+
+	* guru/data/.cvsignore guru/data:
+	  - update cvsignore
+
+
+2001-08-19 09:39:30  Rev 2168   dr_maux
+
+	* guru/modules/exec.c guru/data/rdf.pl guru/data/Makefile.am 
+	  guru/data/meeting.rb guru/data/dict.pl:
+	  - install scripts with executable-flags
+	  - hopefully eliminate race condition
+	  - reading from stdin is now essential for modexec
+
+
+2001-08-17 23:33:24  Rev 2166   dr_maux
+
+	* guru/src/main.c guru/src/module.c guru/src/net.c guru/src/module.h 
+	  guru/src/net.h:
+	  - little fixes, but race condition still remains!
+
+
+2001-08-17 22:20:46  Rev 2165   dr_maux
+
+	* guru/src/net.c:
+	  - log to /tmp/guruchatlog
+
+
+2001-08-17 22:10:33  Rev 2164   dr_maux
+
+	* guru/src/main.c guru/src/module.c guru/src/module.h:
+	  - read host from configuration
+
+
+2001-08-17 22:08:00  Rev 2163   dr_maux
+
+	* guru/src/module.c:
+	  - fix little bug: allow empty module list
+
+
+2001-08-17 15:57:55  Rev 2162   dr_maux
+
+	* guru/doc/Setup:
+	  - added sample setup for guru
+
+
+2001-08-17 15:33:07  Rev 2161   dr_maux
+
+	* guru/src/main.c guru/src/module.c guru/src/module.h:
+	  - recognize owner
+	  - recognize autojoin
+	  - Linux sucks, Grubby rocks: implemented insmod and rmmod
+
+
+2001-08-17 12:42:48  Rev 2160   dr_maux
+
+	* guru/src/main.c guru/modules/exec.c guru/src/module.c guru/src/net.
+	  c guru/src/module.h guru/src/net.h:
+	  - let grubby recognize his name
+	  - internal module listing
+	  - fixed bug in exec.c, maybe there's still a race condition
+
+
+2001-08-16 19:52:00  Rev 2158   dr_maux
+
+	* guru/data/Makefile.am guru/data/.cvsignore guru/data:
+	  - install data files
+
+
+2001-08-16 19:50:41  Rev 2157   dr_maux
+
+	* guru/modules/exec.c guru/src/module.c:
+	  - fixed a few bugs
+	  - introduced some new ones - proper child process handling needed
+
+
+2001-08-16 18:38:49  Rev 2156   dr_maux
+
+	* guru/src/main.c guru/src/module.c guru/src/test_net.c 
+	  guru/src/guru.h guru/src/Makefile.am guru/src/module.h 
+	  guru/src/net.h guru/src/player.c guru/src/guru.c:
+	  - start mergin of all sources
+	  - the very basics work already
+	  - still need to take care about memory issues
+
+
+2001-08-16 10:49:51  Rev 2155   dr_maux
+
+	* guru/src/.cvsignore guru/src:
+	  - updated cvsignore
+
+
+2001-08-16 10:49:16  Rev 2154   dr_maux
+
+	* guru/src/test_net.c guru/src/Makefile.am:
+	  - changed net functions: now a library
+	  - this allows to connect to BOTH 0.0.4 and 0.0.5 servers
+	  - can be replaced later to support other chat protocols
+	  - introduced concept of core and external modules
+
+
+2001-08-16 06:57:42  Rev 2153   dr_maux
+
+	* guru/src/test_net.c guru/src/net.c guru/src/net.h:
+	  - add basic chat queue
+	  - add event for chat or player actions
+
+
+2001-08-15 19:29:08  Rev 2152   dr_maux
+
+	* guru/src/module.c:
+	  - fixed one of these stupid malloc() bugs I never learn....
+
+
+2001-08-15 18:11:38  Rev 2151   dr_maux
+
+	* guru/src/test_net.c:
+	  - forgot test file
+
+
+2001-08-15 18:11:06  Rev 2150   dr_maux
+
+	* guru/src/net.c guru/src/gurumod.h guru/src/Makefile.am 
+	  guru/modules/Makefile.am guru/modules/self.c guru/src/net.h 
+	  guru/src/.cvsignore guru/src:
+	  - add "self" module (stub only)
+	  - gathering ideas for multi-line answers
+	  - add easy-to-use-but-rather-limited net functions
+
+
+2001-08-14 12:12:24  Rev 2149   dr_maux
+
+	* guru/src/test_player.c guru/src/.cvsignore guru/src:
+	  - add test program for the player interface
+
+
+2001-08-14 12:11:24  Rev 2148   dr_maux
+
+	* guru/modules/badword.c guru/modules/exec.c guru/src/module.c 
+	  guru/src/Makefile.am guru/modules/Makefile.am guru/src/player.c 
+	  guru/src/player.h:
+	  - started badword module
+	  - implemented common player interface
+
+
+2001-08-14 08:12:47  Rev 2147   dr_maux
+
+	* guru/doc/Migration guru/doc/players:
+	  - add plans and documentation of the new grubby structure
+
+
+2001-08-14 07:40:46  Rev 2145   dr_maux
+
+	* guru/modules/exec.h:
+	  - forgot header file
+
+
+2001-08-14 07:39:49  Rev 2144   dr_maux
+
+	* guru/data/rdf.pl guru/data/meeting.rb guru/data/dict.pl:
+	  - simplify the usage of the grubby modules
+
+
+2001-08-12 16:06:31  Rev 2138   dr_maux
+
+	* metaserv/gui-qt/qmetagui.h metaserv/minidom/minidom.c 
+	  metaserv/gui-qt/main.cpp metaserv/metaserv/metaserv.c 
+	  metaserv/README.ggz-metaserver metaserv/minidom/minidom.h 
+	  metaserv/minidom/main.c metaserv/gui-qt/qmetagui.cpp:
+	  - added Copyrights
+	  - changed c++ comments to c comments
+
+
+2001-08-12 15:59:48  Rev 2137   dr_maux
+
+	* metaserv/README.ggz-metaserver:
+	  - actually add the global readme file for metaserv
+
+
+2001-08-12 15:59:03  Rev 2136   dr_maux
+
+	* metaserv/gui-qt/Makefile.gui-qt metaserv/gui-qt/qmetagui.h 
+	  metaserv/metaserv/README.metaserv metaserv/minidom/minidom.c 
+	  metaserv/gui-qt/main.cpp metaserv/metaserv/metaserv.c 
+	  metaserv/metaserv/Makefile.am metaserv/gui-qt/.cvsignore 
+	  metaserv/gui-qt/qmetagui.cpp metaserv/gui-qt:
+	  - add non-blocking GUI for Qt (nice for debugging)
+	  - fixed a little malloc bug
+	  - ready for inetd use
+
+
+2001-08-12 13:43:08  Rev 2135   dr_maux
+
+	* metaserv/minidom/main.c:
+	  - minidom is now a library
+	  - add convenience test program
+
+
+2001-08-12 13:42:23  Rev 2134   dr_maux
+
+	* metaserv/metaserv/README.metaserv metaserv/minidom/.cvsignore 
+	  metaserv/minidom/minidom.c metaserv/minidom 
+	  metaserv/metaserv/metaserv.c metaserv/minidom/minidom.h 
+	  metaserv/metaserv/Makefile.am metaserv/metaserv/metaservconf.xml 
+	  metaserv/minidom/Makefile.am:
+	  - add configuration file
+	  - replace ggzcore_confio functions with minidom XML configuration
+	  - handle both query types correctly
+	  - on URI-based queries, select by priority
+
+
+2001-08-12 11:06:40  Rev 2133   dr_maux
+
+	* metaserv/minidom/minidom.c metaserv/minidom/metasrv.xml 
+	  metaserv/minidom/minidom.h metaserv/minidom/README.minidom 
+	  metaserv/minidom/example.xml:
+	  - add meta server example file
+	  - find out another limitation
+	  - much prettier dump output: now in XML format for reuse
+	  - fix a null-terminated string bug on attribute assignment
+	  - simple query/querylist function
+
+
+2001-08-12 10:15:52  Rev 2132   dr_maux
+
+	* metaserv/minidom/minidom.c metaserv/minidom/README.minidom 
+	  metaserv/minidom/example.xml:
+	  - handle line breaks in values correctly (transform to spaces)
+	  - handle self-closing tags like <foo/>
+	  - accept file name on command line (optional)
+	  - exclude quotation marks from values
+	  - don't throw away spaces in values
+
+
+2001-08-10 17:45:38  Rev 2130   dr_maux
+
+	* configure.in Makefile.am:
+	  - update build so metaserv is includes
+
+
+2001-08-10 17:45:12  Rev 2129   dr_maux
+
+	* metaserv/metaserv/README.metaserv metaserv/Makefile.am 
+	  metaserv/minidom/.cvsignore metaserv/minidom/minidom.c 
+	  metaserv/minidom metaserv/.cvsignore metaserv/metaserv/metaserv.c 
+	  metaserv/minidom/minidom.h metaserv/metaserv/Makefile.am metaserv 
+	  metaserv/metaserv/.cvsignore metaserv/minidom/README.minidom 
+	  metaserv/minidom/Makefile.am metaserv/metaserv 
+	  metaserv/minidom/example.xml:
+	  - Add first sources for the meta-server
+	  - this is meant as a stand-alone server until the merging
+	  - support for URI's and XML information files
+	  - includes own DOM implementation
+
+
+2001-08-09 19:20:28  Rev 2128   dr_maux
+
+	* guru/modules/programming.c guru/modules/exec.c guru/src/module.c 
+	  guru/modules/Makefile.am guru/modules/simplereturn.c 
+	  guru/data/guru_setup.pl:
+	  - start with setup script (to be merged with grubby's)
+	  - improve execution of external programs in modexec
+
+
+2001-08-09 17:56:40  Rev 2127   dr_maux
+
+	* guru/data/meeting.rb:
+	  - Ruby rulez the world
+	  - add meeting module
+
+
+2001-08-09 16:37:32  Rev 2126   dr_maux
+
+	* configure.in Makefile.am:
+	  - update build system to include telggz
+
+
+2001-08-09 16:36:44  Rev 2125   dr_maux
+
+	* telggz/chat.h telggz/main.c telggz/net.c telggz/README.telggz 
+	  telggz/Makefile.am telggz/net.h telggz/.cvsignore telggz 
+	  telggz/chat.c:
+	  - Add GGZ telnet wrapper: TelGGZ
+
+
+2001-08-04 17:41:20  Rev 2109   dr_maux
+
+	* guru/data/dict.pl guru/data/trans_convert.pl:
+	  - added converter for IDP (Internet Dictionary Project) data files
+	  - allow short names like de for german
+	  - support for spanish, portuguese and italian
+
+
+2001-08-04 12:26:06  Rev 2106   dr_maux
+
+	* guru/data/dict.pl:
+	  - New grubby stuff: dictionary
+	  - translation english/german and back is possible
+	  - supports fuzzy search
+
+
+2001-08-04 03:03:01  Rev 2105   dr_maux
+
+	* guru/data/rdf.pl guru/data/slashdot.rdf:
+	  - autodownload XML files off the web
+
+
+2001-08-04 00:13:21  Rev 2104   dr_maux
+
+	* guru/modules/exec.c guru/data/rdf.pl guru/modules/Makefile.am 
+	  guru/data/slashdot.rdf:
+	  - added new perl module: Get news from slashdot
+	  - can be queried later by "Grubby news"
+
+
+2001-08-02 15:02:13  Rev 2103   dr_maux
+
+	* configure.in Makefile.am:
+	  - version bump to 0.0.5
+	  - include libtool in build system
+
+
+2001-08-02 14:57:16  Rev 2102   dr_maux
+
+	* motd-editor/macros/Makefile.in motd-editor/src/Makefile.in 
+	  motd-editor/config.h.in motd-editor/configure motd-editor/Makefile.
+	  in:
+	  - modified build system to include libtool
+	  - version bump to 0.0.5pre
+
+
+2001-08-02 14:54:42  Rev 2101   dr_maux
+
+	* guru/modules/programming.c guru/.cvsignore guru/doc/SCORING_SYSTEM 
+	  guru/modules/exec.c guru/README.guru guru/data/de.po 
+	  guru/data/funky.pl guru/modules/Makefile.am 
+	  guru/modules/simplereturn.c guru/modules/.cvsignore 
+	  guru/src/test_i18n.c guru/src/i18n.c guru/src guru/src/guru.c 
+	  guru/src/i18n.h guru/data/guru.pot guru/src/main.c guru/data/fr.po 
+	  guru/src/module.c guru/src/guru.h guru/src/gurumod.h guru 
+	  guru/src/Makefile.am guru/src/module.h guru/src/.cvsignore 
+	  guru/doc/INTERFACE guru/doc guru/modules guru/data guru/Makefile.am:
+	  - imported Guru into the utils module
+
+
+2001-07-14 20:43:18  Rev 2023   dr_maux
+
+	* motd-editor/intl:
+	  - those files are automatically created by Gnome
+
+
+2001-06-24 19:02:19  Rev 1822   dr_maux
+
+	* configure.in:
+	  - updated configure.in to include gensecure
+
+
+2001-06-24 19:01:31  Rev 1821   dr_maux
+
+	* gensecure/.cvsignore gensecure/src/server.c gensecure/src/tls.h 
+	  gensecure/io/Makefile.am gensecure/src/configuration.h 
+	  gensecure/Preparation gensecure/io/.cvsignore gensecure/src/client.
+	  c gensecure/GGZ-TLS gensecure/example.cert gensecure/src 
+	  gensecure/src/gensocket.c gensecure/src/gensocket.h gensecure 
+	  gensecure/src/Makefile.am gensecure/src/.cvsignore gensecure/TODO 
+	  gensecure/io gensecure/Makefile.am gensecure/src/tls.c 
+	  gensecure/io/main.c gensecure/README.gensecure:
+	  - add generic security server and client
+	  - to be used for GGZ TLS encryption and authentication
+
+
+2001-06-18 22:41:04  Rev 1755   riq
+
+	* motd-editor/src/.deps:
+	  removed dependencies (oops)
+
+
+2001-06-18 22:39:08  Rev 1751   riq
+
+	* motd-editor/macros/curses.m4 motd-editor/macros/compiler-flags.m4 
+	  motd-editor/stamp-h motd-editor/Makefile.am 
+	  motd-editor/macros/gnome-guile-checks.m4 motd-editor/configure 
+	  motd-editor/macros/gnome-libgtop-check.m4 motd-editor/intl/po2tbl.
+	  sed motd-editor/Makefile.in motd-editor/intl/Makefile 
+	  motd-editor/macros/linger.m4 motd-editor/macros 
+	  motd-editor/AUTHORS motd-editor/po/Makefile motd-editor/src/main.c 
+	  motd-editor/macros/gnome-common.m4 motd-editor/macros/autogen.sh 
+	  motd-editor/po/Makefile.in motd-editor/src/Makefile.am 
+	  motd-editor/macros/Makefile motd-editor/motd-editor.glade 
+	  motd-editor/po/POTFILES motd-editor/po/POTFILES.in 
+	  motd-editor/COPYING motd-editor/src/interface.c 
+	  motd-editor/src/Makefile.in motd-editor/confdefs.h 
+	  motd-editor/src/interface.h motd-editor/macros/gnome-support.m4 
+	  motd-editor/src/support.c motd-editor/config.log 
+	  motd-editor/src/support.h motd-editor/macros/gnome-gnorba-check.m4 
+	  motd-editor/config.h motd-editor/macros/gnome-bonobo-check.m4 
+	  motd-editor/config.h.in motd-editor motd-editor/src/.deps 
+	  motd-editor/src/Makefile motd-editor/intl 
+	  motd-editor/macros/gnome-fileutils.m4 
+	  motd-editor/macros/gnome-undelfs.m4 motd-editor/src/.deps/support.
+	  P motd-editor/autogen.sh motd-editor/macros/gnome-x-checks.m4 
+	  motd-editor/NEWS motd-editor/Makefile motd-editor/src/.
+	  deps/callbacks.P motd-editor/stamp-h.in motd-editor/po 
+	  motd-editor/macros/gnome-objc-checks.m4 
+	  motd-editor/macros/gperf-check.m4 
+	  motd-editor/macros/aclocal-include.m4 motd-editor/src/.deps/main.P 
+	  motd-editor/configure.in motd-editor/src 
+	  motd-editor/macros/Makefile.am motd-editor/README 
+	  motd-editor/acconfig.h motd-editor/macros/gnome-orbit-check.m4 
+	  motd-editor/macros/Makefile.in motd-editor/INSTALL 
+	  motd-editor/config.cache motd-editor/macros/gnome-ghttp-check.m4 
+	  motd-editor/macros/gnome.m4 motd-editor/macros/gnome-pthread-check.
+	  m4 motd-editor/macros/gnome-print-check.m4 motd-editor/aclocal.m4 
+	  motd-editor/macros/gnome-xml-check.m4 motd-editor/ChangeLog 
+	  motd-editor/config.status motd-editor/src/callbacks.c 
+	  motd-editor/src/callbacks.h motd-editor/src/.deps/interface.P 
+	  motd-editor/macros/need-declaration.m4 
+	  motd-editor/macros/gnome-vfs.m4 motd-editor/po/ChangeLog:
+	  Initial revision
+
+
+2001-06-18 22:16:31  Rev 1747   riq
+
+	* motds/City motds/Dog motds/Outhouse motds/Castle motds/Eagle 
+	  motds/Halloween motds/Plane1 motds/Devel1 motds/Devel2 
+	  motds/Devel3 motds/Texas motds/Knight motds/Car1 motds/Lady 
+	  motds/Knightmare motds/Design1 motds/Rip motds/Skull motds/Dragon1 
+	  motds/Dog2 motds/Flamingo motds/Dragon2 motds/Troll motds/Dragon3 
+	  motds motds/Halloween2 motds/Stork motds/Earth motds/Halloween5 
+	  motds/Statue motds/Knight2:
+	  justin's motd collections
+
+
+2001-06-17 22:03:21  Rev 1738   rgade
+
+	* grubby/Makefile.am man/Makefile.am configure.in agrue/Makefile.am:
+	  - Last minute fixes to get distributed files correct
+
+
+2001-06-17 20:56:23  Rev 1733   rgade
+
+	* ChangeLog:
+	  - Updated ChangeLog
+
+
+2001-06-08 23:08:35  Rev 1688   jzaun
+
+	* grubby/chat.c:
+	  - removed debug code
+
+
+2001-06-08 23:06:55  Rev 1687   jzaun
+
+	* grubby/chat.c grubby/commands.c:
+	  - Fixed the : and , problem
+
+
+2001-06-08 22:28:30  Rev 1686   dr_maux
+
+	* .cvsignore:
+	  - add build-stamp here too
+
+
+2001-06-08 22:24:56  Rev 1685   jzaun
+
+	* grubby/commands.c:
+	  - Fixed a segfault in the tell command
+
+
+2001-06-08 18:03:52  Rev 1680   dr_maux
+
+	* man/agrub.6 man/agrue.6 man/Makefile.am:
+	  - add aGRUE man page
+	  - shadow grubby to agrub manpage
+
+
+2001-06-08 17:07:53  Rev 1677   dr_maux
+
+	* README.GGZ:
+	  - actually add readme.ggz
+
+
+2001-06-08 17:01:42  Rev 1676   dr_maux
+
+	* configure.in:
+	  - forgot man/ in configure.in
+
+
+2001-06-08 17:00:50  Rev 1675   dr_maux
+
+	* configure.in Makefile.am:
+	  - also build man page
+
+
+2001-06-08 17:00:28  Rev 1674   dr_maux
+
+	* man/Makefile.am man/.cvsignore man/grubby.6 man:
+	  - create simple man page for grubby
+
+
+2001-06-08 14:45:42  Rev 1668   dr_maux
+
+	* AUTHORS ChangeLog NEWS:
+	  - added standard files for finalizing this module
+
+
+2001-06-07 21:26:56  Rev 1663   dr_maux
+
+	* debian/docs:
+	  - adding project-wide readme file
+
+
+2001-05-30 13:34:42  Rev 1584   dr_maux
+
+	* INSTALL COPYING:
+	  - added standard files
+
+
+2001-05-30 13:34:08  Rev 1583   dr_maux
+
+	* debian/.cvsignore debian/README.Debian debian debian/control 
+	  debian/postinst debian/prerm debian/changelog debian/copyright 
+	  debian/docs debian/rules:
+	  - debianized source tree
+	  - added standard files
+
+
+2001-05-22 19:38:37  Rev 1556   dr_maux
+
+	* grubby/popt.c grubby/chat.h grubby/net.c grubby/grubby-config.pl 
+	  grubby/log.h grubby/Makefile.am grubby/protocols.h grubby/net.h 
+	  grubby/.cvsignore grubby/agrub.c grubby/commands.c 
+	  grubby/datatypes.h grubby/init.c grubby/commands.h 
+	  grubby/agrub_popt.h grubby/init.h grubby/loop.c grubby/messages.h 
+	  grubby/support.c grubby/loop.h grubby/chat.c grubby grubby/log.c 
+	  grubby/support.h:
+	  - reintroduces grubby in the utils/ module
+	  - ported him to the new ggzcore API
+
+
+2001-04-30 16:55:19  Rev 1476   perdig
+
+	* pygenclient/pygenclient.py:
+	  - Limited support for sending strings over the socket (just type a 
+	  string and it should be sent)
+
+
+2001-04-15 16:33:24  Rev 1417   perdig
+
+	* pygenclient/pygenclient.py:
+	  - Get the module name from the argument (ie: "pygenclient.py 
+	  Chess" would connect to the Chess module)
+
+
+2001-01-10 16:28:52  Rev 1013   perdig
+
+	* pygenclient/pygenclient.py:
+	  - Everything that you send will also show in the main screen, but 
+	  in red color
+	  - It now uses python's "eval" to evaluate expressions before 
+	  sending them. So
+	    you can type (1<<24)+100 and it will send 16777316
+	  - If you type anything bigger then 255, it will send it as a 
+	  4-byte integer, in
+	    network byte order
+	  - You can also force it to send a small number using 4-bytes, 
+	  appending a "i"
+	    to the end of the number (por example, "40i" sends 0, 0, 0, 40)
+
+
+2001-01-06 18:19:56  Rev 995    perdig
+
+	* README pygenclient/README pygenclient pygenclient/pygenclient.py:
+	  - Added the Python generic client, some little utility to 
+	  communicate with
+	    the game server without any hassle (ie, just like a regular game 
+	  client).
+	    I found it really useful to test the chess server, but maybe 
+	  anyone may
+	    find another use for it... :)
+	  - Instructions of use are in the pygenclient/README file
+
+
+2000-12-30 02:22:22  Rev 955    jzaun
+
+	* grubby:
+	  - Removeing old out of date grubby files
+
+
+2000-09-09 01:26:22  Rev 716    bugg
+
+	* grubby/loop.c:
+	  Include unistd.h for select().
+
+
+2000-09-07 22:55:02  Rev 715    jzaun
+
+	* grubby/loop.c grubby/support.c grubby/commands.c:
+	  - Added owner command goto <room number> so grubby can now change 
+	  rooms
+	  - Made help a little easier to read
+
+
+2000-09-07 22:21:33  Rev 714    jzaun
+
+	* grubby/net.c grubby/loop.c:
+	  - Updated for protocol version 3
+
+
+2000-09-07 21:18:24  Rev 710    rgade
+
+	* agrue/protocols.h agrue/agrue.c:
+	  - Updated agrue.c to work with ggz protocol 3
+	  - GRUEs are less random now, doing one thing every five seconds 
+	  always
+
+
+2000-06-14 23:34:41  Rev 583    jzaun
+
+	* grubby/init.c grubby/commands.c:
+	  - Grubby saves on exit.
+	    I'm catching SIGINT, SIGQUIT, and SIGTERM
+
+
+2000-06-14 23:18:50  Rev 582    jzaun
+
+	* grubby/init.c grubby/rc.c grubby/Makefile.am grubby/rc.h 
+	  grubby/chat.c grubby/commands.c:
+	  - Grubby now saves his memory between sessions. Everything is in 
+	  rc.[ch].
+
+
+2000-06-11 19:46:27  Rev 563    jzaun
+
+	* grubby/datatypes.h grubby/init.c grubby/support.c grubby/chat.c 
+	  grubby/commands.c:
+	  - Fixed a spelling mistake s/memmory/memory/
+
+
+2000-06-11 19:34:13  Rev 562    jzaun
+
+	* grubby/chat.h grubby/chat.c grubby/commands.c:
+	  - Grubby now accepts commands give thew a personal message (/msg) 
+	  as well.
+
+
+2000-06-11 17:03:33  Rev 559    jzaun
+
+	* grubby/datatypes.h grubby/chat.c grubby/commands.c grubby/log.c:
+	  - Added the 'tell <username> <message>' command back in.
+
+
+2000-06-11 02:27:12  Rev 557    jzaun
+
+	* grubby/commands.h grubby/chat.c grubby/commands.c:
+	  - Added a bit more flexibility to the command recognition system
+
+
+2000-06-10 23:38:12  Rev 556    jzaun
+
+	* grubby/chat.h grubby/messages.h grubby/support.c grubby/chat.c 
+	  grubby/commands.c:
+	  - Added the about command back in
+
+
+2000-06-10 22:40:10  Rev 555    jzaun
+
+	* grubby/support.c grubby/chat.c grubby/commands.c:
+	  - Everything in Grubby is fully working, thanks in part to Jason.
+
+
+2000-06-10 22:06:43  Rev 554    jzaun
+
+	* grubby/commands.c grubby/log.c:
+	  - the command 'my name is <real name>' now works correctly thank 
+	  to Jason
+	  - Also fixed in one of the log functions (had not happed yet, but 
+	  could of).
+
+
+2000-06-10 20:58:31  Rev 553    jzaun
+
+	* grubby/popt.c grubby/chat.h grubby/net.c grubby/log.h 
+	  grubby/Makefile.am grubby/protocols.h grubby/net.h grubby/agrub.
+	  old grubby/agrub.c grubby/commands.c grubby/datatypes.h 
+	  grubby/init.c grubby/commands.h grubby/agrub_popt.h grubby/init.h 
+	  grubby/loop.c grubby/messages.h grubby/support.c grubby/loop.h 
+	  grubby/chat.c grubby/log.c grubby/support.h:
+	  - Big rewrite to grubby
+
+
+2000-05-09 00:18:50  Rev 502    jzaun
+
+	* grubby/protocols.h grubby/agrub.c:
+	  - Grubby now works with the new chat protocol
+	  - Grubby can teke command by grubby: or /msg grubby
+
+
+2000-05-06 04:16:49  Rev 489    rgade
+
+	* grubby/agrub.c:
+	  - Don't free room_list strings until just before exit
+
+
+2000-05-05 01:46:45  Rev 485    jzaun
+
+	* grubby/agrub.c:
+	  - Fixed the random crashes caused by not freeing string in all cases
+
+
+2000-05-02 22:02:03  Rev 483    jzaun
+
+	* grubby/agrub.c:
+	  - stay here command actualy works now
+	  - logging is in html format for posting to our web site. looks 
+	  nicer too.
+
+
+2000-04-28 18:34:16  Rev 474    bmh
+
+	* acconfig.h agrue grubby/Makefile.am grubby/protocols.h grubby/.
+	  cvsignore grubby/Makefile Makefile.am autogen.sh agrue/Makefile.am 
+	  .cvsignore agrue/protocols.h agrue/.cvsignore agrue/Makefile 
+	  configure.in grubby:
+	  - Make grie and grubby use autoconf/automake
+
+
+2000-04-26 22:30:46  Rev 464    jzaun
+
+	* grubby/agrub.c:
+	  - Upped the room change timeout
+	  - addedd stay/move commands for owners only
+
+
+2000-04-19 22:01:42  Rev 437    jzaun
+
+	* grubby/agrub.c:
+	  - s/memmory/memory
+	  - added the ability to have random greatings.
+
+
+2000-04-19 17:23:16  Rev 436    jzaun
+
+	* grubby/agrub.c:
+	  - Added command 'save memmory' as a owner only wich forces a 
+	  update of ~/.agrub
+
+
+2000-04-18 21:55:38  Rev 434    jzaun
+
+	* grubby/agrub.c:
+	  - Grubby can now log a room.
+	  - grubby: log on <FULL PATH>
+	  - grubby: log off
+	  You _must_ be owner for the command to work
+
+
+2000-04-18 01:39:21  Rev 432    jzaun
+
+	* grubby/agrub.c:
+	  - Grubby can now rember an arbatrary number of messages to tell a 
+	  person.
+	    the default is set to 4 in a #define. This REALY break the data 
+	  file format
+	    you should remove your old one before trying this out.
+
+
+2000-04-16 21:04:53  Rev 431    jzaun
+
+	* grubby/agrub.c:
+	  - Forgot to add the help item. (sorry)
+
+
+2000-04-16 21:00:31  Rev 430    jzaun
+
+	* grubby/agrub.c:
+	  - ok I've added the ability to story your bday.
+	    this has changed the file format a bit,but don't worrie, it
+	    auto-updates for you. The bday won't be displayed anywhere yet,
+	    and not sure if it should, I'm planing of Grubby saying 'Happy 
+	  Brithday' to
+	    you on your brithday.
+	  - I've made the unknown user message a little bigger, and my human 
+	  like (I hope...)
+
+
+2000-04-16 20:36:37  Rev 429    jzaun
+
+	* grubby/agrub.c:
+	  - Updated Grubby's about text.
+	  	I removed the 2 paragraph, as Grubby can now remember things from 
+	  a past lifetime.
+
+
+2000-04-16 18:16:26  Rev 428    rgade
+
+	* grubby/agrub.c:
+	  Various enhancements to Grubby:
+	    - Now dumps his information database if he is killed by a signal
+	    - Reports time since having last seen a user in a sensible format
+	    - Correctly tests for url and info values when reporting whois
+
+
+2000-04-15 09:08:08  Rev 426    jzaun
+
+	* grubby/agrub.c:
+	  - Grubby now shows all known information entered when he recieves 
+	  the whois command
+
+
+2000-04-15 08:50:32  Rev 425    jzaun
+
+	* grubby/agrub.c:
+	  - Storing of email, url and info
+
+
+2000-04-15 08:07:24  Rev 424    jzaun
+
+	* grubby/agrub.c:
+	  - Added a whois command
+
+
+2000-04-15 07:12:42  Rev 423    jzaun
+
+	* grubby/agrub.c:
+	  - Now load information back in at startup. This means that a grub 
+	  can remember between sesions
+
+
+2000-04-15 06:10:03  Rev 422    jzaun
+
+	* grubby/agrub.c:
+	  - now saves known information to ~/.agrub in the following structure
+	  Version Number
+	  Number Known
+	  (repeated Number Known times)
+	  the known struct
+
+
+2000-04-15 04:58:49  Rev 420    rgade
+
+	* README:
+	  - Some notes for AGRUE and AGRUB
+
+
+2000-04-15 04:48:40  Rev 419    rgade
+
+	* agrue/Makefile agrue/launch_grues agrue agrue/agrue.c 
+	  grubby/Makefile grubby grubby/agrub.c:
+	  Initial checkins for AGRUE and AGRUB
+
 

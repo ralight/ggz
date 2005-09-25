@@ -1,1249 +1,1827 @@
-2005-05-06 23:17  josef
+2005-09-25 17:27:00  Rev 7585   josef
 
-	* m4/ggz.m4: - synchronization of ggz.m4 files - fixes typo: use
-	  ggzdconfdir instead of ggzconfdir - fixes compiler problems: use
-	  -isystem X instead of -isystemX - fixes ggzcore linkage force in
-	  ggzmod problem
+	* configure.ac:
+	  - correct quoting of square brackets
 
-2005-04-23 13:25  josef
 
-	* grubby/src/net.c: - protocol enhancement:  * allow users to give
-	  initial password when registering  * allow users to give email
-	  address
+2005-09-25 11:33:51  Rev 7558   josef
 
-2005-03-26 19:56  josef
+	* grubby/src/main.c:
+	  - version bump due to added features
 
-	* grubby/src/netsilc.c: - do not hardcode room
 
-2005-03-26 19:42  josef
+2005-09-25 10:11:25  Rev 7551   josef
 
-	* grubby/src/netsilc.c: - make SILC plugin work (more or less)
+	* configure.ac:
+	  - more version string changes in the build system
 
-2005-03-25 22:16  josef
 
-	* configure.ac, grubby/src/Makefile.am, grubby/src/netsilc.c: - net
-	  core network plugin: SILC
+2005-09-25 09:54:30  Rev 7550   josef
 
+	* NEWS README.GGZ README:
+	  - version updates in common files
+	  - news and release-specific changes
+
+
+2005-09-23 21:54:25  Rev 7547   josef
+
+	* COPYING:
+	  - add copyright files for gnome-client and sdl-games to SVN
+	  - update all copyright files with current version, including the 
+	  new FSF address in Boston
+
+
+2005-09-15 18:00:53  Rev 7516   josef
+
+	* configure.ac autogen.sh:
+	  - synchronisation of all autogen.sh files
+	  - quick fixes in configure.ac's (but they really need a cleanup 
+	  also)
+
+
+2005-08-21 09:35:31  Rev 7473   josef
+
+	* configure.ac:
+	  - remove DynaLoader from perl ldflags - they cause trouble and 
+	  seem unneeded
+
+
+2005-08-21 09:25:35  Rev 7472   josef
+
+	* grubby/data/embedtest.rb:
+	  - include hash-bang line
+
+
+2005-08-20 21:41:45  Rev 7464   josef
+
+	* configure.ac:
+	  - bump version to 0.0.12pre to not create *-0.0.11.tar.gz files
+	  - remove the gtk-games override stuff
+
+
+2005-08-20 10:48:33  Rev 7451   josef
+
+	* man/de/grubby-config.1 man/de/grubby.6:
+	  - convert encoding to utf-8
+
+
+2005-08-20 10:47:30  Rev 7450   josef
+
+	* grubby/data/embedtest.rb:
+	  - make embedtest.rb executable
+	  Hm, actually none of the scripts here should be executable.
+	  But for now it's at least consistent.
+
+
+2005-08-20 10:22:49  Rev 7448   josef
+
+	* Makefile.am:
+	  - distribute README.GGZ (oops)
+	  I think we can now safely remove all RCS headers because with
+	  SVN there's always "svn blame" available.
+
+
+2005-08-15 09:46:23  Rev 7428   josef
+
+	* games/guru-ttt/module.dsc.in:
+	  - homepage update (the old one seems to snuck in everywhere)
+
+
+2005-08-14 12:47:15  Rev 7416   josef
+
+	* grubby/modules/game.c:
+	  - return NULL
+
+
+2005-08-14 12:44:29  Rev 7415   josef
+
+	* grubby/src/net.c:
+	  - grubby shall now join his reserved seat automatically
+	  Unfortunately playing games doesn't work at all for some reason :(
+
+
+2005-08-14 12:42:47  Rev 7414   josef
+
+	* games/guru-ttt/module.dsc.in:
+	  - oh my! forgot to increase the guru-ttt protocol number last time
+
+
+2005-08-14 12:26:56  Rev 7413   josef
+
+	* grubby/modules/game.c:
+	  - make local socket non-blocking so that grubby will never lock up
+
+
+2005-08-13 17:46:34  Rev 7394   josef
+
+	* configure.ac m4/ggz.m4:
+	  - build system synchronisation
+
+
+2005-08-06 08:32:26  Rev 7367   josef
+
+	* m4/ggz.m4:
+	  - global m4 file synchronisation (now that is fun with subversion)
+	  - also a test for the changed commit script which crops at 20 kB 
+	  diff size
+
+
+2005-06-10 12:37:56  Rev 7269   josef
+
+	* grubby/src/netsilc.c ChangeLog games/guru-chess/ai.c 
+	  grubby/modules/embed.c:
+	  - GCC4 fixes
+	  - changelog was missing
+
+
+2005-05-21 11:13:11  Rev 7216   josef
+
+	* NEWS README.GGZ README AUTHORS:
+	  - common files synchronisation and README update for 0.0.11
+
+
+2005-05-21 10:46:02  Rev 7214   josef
+
+	* configure.ac:
+	  - LET version = 0.0.11
+
+
+2005-05-21 10:26:34  Rev 7209   josef
+
+	* grubby/src/main.c:
+	  - version bumped to 0.8 (SILC plugin, literal room names allowed, 
+	  more changes)
+
+
+2005-05-06 21:19:56  Rev 7182   josef
+
+	* m4/ggz.m4:
+	  - synchronization of ggz.m4 files
+	  - fixes typo: use ggzdconfdir instead of ggzconfdir
+	  - fixes compiler problems: use -isystem X instead of -isystemX
+	  - fixes ggzcore linkage force in ggzmod problem
+
+
+2005-04-23 11:31:46  Rev 7123   josef
+
+	* grubby/src/net.c:
+	  - protocol enhancement:
+	   * allow users to give initial password when registering
+	   * allow users to give email address
+
+
+2005-03-26 18:56:06  Rev 7057   josef
+
+	* grubby/src/netsilc.c:
+	  - do not hardcode room
+
+
+2005-03-26 18:42:30  Rev 7056   josef
+
+	* grubby/src/netsilc.c:
+	  - make SILC plugin work (more or less)
+
+
+2005-03-25 21:16:40  Rev 7042   josef
+
+	* configure.ac grubby/src/netsilc.c grubby/src/Makefile.am:
+	  - net core network plugin: SILC
 	  It does NOT work yet, it crashes with an illegal instruction.
 	  But most of the work is done already.
 
-2005-03-18 15:07  josef
 
-	* grubby/src/: Makefile.am, net.c: - do not version core plugins
-	  (this was already the case with the others) - allow room names
-	  too in addition to room numbers
+2005-03-18 14:07:30  Rev 7014   josef
 
-2005-02-04 16:58  josef
+	* grubby/src/net.c grubby/src/Makefile.am:
+	  - do not version core plugins (this was already the case with the 
+	  others)
+	  - allow room names too in addition to room numbers
 
-	* m4/ggz.m4: - synchronize
 
-2005-01-25 19:57  jdorje
+2005-02-04 15:59:43  Rev 6918   josef
 
-	* games/lib/ggzpassive.c: Change ggzmod event handler functions to
-	  take a const data parameter.
+	* m4/ggz.m4:
+	  - synchronize
 
-2005-01-25 19:43  jdorje
 
-	* grubby/src/net.c: Const-pointer fixes.
+2005-01-25 18:57:38  Rev 6903   jdorje
 
-2005-01-24 07:09  jdorje
+	* games/lib/ggzpassive.c:
+	  Change ggzmod event handler functions to take a const data 
+	  parameter.
 
-	* grubby/src/net.c: Make hook functions take const pointers.
 
-2005-01-24 02:39  jdorje
+2005-01-25 18:43:06  Rev 6902   jdorje
 
-	* m4/ggz.m4: Change the way channels are created at the client
-	  side.  The GGZ client does not create the channel.  Instead the
-	  channel connection data is sent to the game which makes the
-	  connection itself.  This means ggzmod needs to call the
-	  channel-creation function from within ggzcore, adding a new
-	  library dependency.  This is solved by linking ggzcore in along
-	  with ggzmod inside AC_GGZ_GGZMOD.
+	* grubby/src/net.c:
+	  Const-pointer fixes.
 
-2005-01-23 22:21  josef
 
-	* AUTHORS, ChangeLog: - authors and changelog
+2005-01-24 06:09:35  Rev 6876   jdorje
 
-2005-01-23 14:18  josef
+	* grubby/src/net.c:
+	  Make hook functions take const pointers.
 
-	* NEWS: - news update
 
-2005-01-23 14:11   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-24 01:39:48  Rev 6866   jdorje
 
-	* README, README.GGZ: - updated common files
+	* m4/ggz.m4:
+	  Change the way channels are created at the client side.  The GGZ 
+	  client
+	  does not create the channel.  Instead the channel connection data 
+	  is sent
+	  to the game which makes the connection itself.  This means ggzmod 
+	  needs
+	  to call the channel-creation function from within ggzcore, adding 
+	  a new
+	  library dependency.  This is solved by linking ggzcore in along with
+	  ggzmod inside AC_GGZ_GGZMOD.
 
-2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
 
-	* m4/ggz.m4: Search for .la files instead of .so.
+2005-01-23 21:23:07  Rev 6856   josef
 
-2005-01-22 17:06   Josef Spillner <josef@ggzgamingzone.org>
+	* AUTHORS ChangeLog:
+	  - authors and changelog
 
-	* grubby/src/main.c: - version bump: 0.7
 
-2005-01-22 16:37   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-23 13:20:29  Rev 6844   josef
 
-	* man/: grubby-config.1, grubby.6: - updated version numbers
+	* NEWS:
+	  - news update
 
-2005-01-22 16:25   Josef Spillner <josef@ggzgamingzone.org>
 
-	* configure.ac: - version number bump
+2005-01-23 13:12:48  Rev 6843   josef
 
-2005-01-21 00:43   Josef Spillner <josef@ggzgamingzone.org>
+	* README.GGZ README:
+	  - updated common files
 
-	* games/guru-chess/ai.c: - disable rule exception: force pawns to
-	  capture if possible
 
-2005-01-20 18:14   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-22 19:22:53  Rev 6824   jdorje
 
-	* grubby/po/.cvsignore: - shut it up!
+	* m4/ggz.m4:
+	  Search for .la files instead of .so.
 
-2005-01-18 17:28   Josef Spillner <josef@ggzgamingzone.org>
 
-	* grubby/src/: main.c, module.c, module.h, net.c, net.h,
-	  netconsole.c, netirc.c: - eliminate old (G) guest handling code -
-	  conveniently replace parameter with new one: password, for
+2005-01-22 16:06:45  Rev 6817   josef
+
+	* grubby/src/main.c:
+	  - version bump: 0.7
+
+
+2005-01-22 15:38:16  Rev 6813   josef
+
+	* man/grubby-config.1 man/grubby.6:
+	  - updated version numbers
+
+
+2005-01-22 15:28:57  Rev 6812   josef
+
+	* configure.ac:
+	  - version number bump
+
+
+2005-01-20 23:44:14  Rev 6776   josef
+
+	* games/guru-chess/ai.c:
+	  - disable rule exception: force pawns to capture if possible
+
+
+2005-01-20 17:14:07  Rev 6765   josef
+
+	* grubby/po/.cvsignore grubby/po:
+	  - shut it up!
+
+
+2005-01-18 16:28:48  Rev 6726   josef
+
+	* grubby/src/main.c grubby/src/netirc.c grubby/src/module.c 
+	  grubby/src/net.c grubby/src/netconsole.c grubby/src/module.h 
+	  grubby/src/net.h:
+	  - eliminate old (G) guest handling code
+	  - conveniently replace parameter with new one: password, for 
 	  registered grubbies
 
-2005-01-15 00:06   Josef Spillner <josef@ggzgamingzone.org>
 
-	* configure.ac: - fix for python checks
+2005-01-14 23:06:54  Rev 6679   josef
 
-2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+	* configure.ac:
+	  - fix for python checks
 
-	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
-	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
-	  non-glibc systems.
 
-2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+2005-01-14 07:01:43  Rev 6675   jdorje
 
-	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+	* m4/iconv.m4 m4/ggz.m4 Makefile.am:
+	  Add support for libintl and libiconv to AC_GGZ_INTL.  This is 
+	  needed to
+	  compile at all on non-glibc systems.
 
-2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
 
-	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
-	  standard, even though it's not helpful for most packages since
-	  NLS is manditory.
+2005-01-13 02:23:59  Rev 6643   jdorje
 
-2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+	* m4/ggz.m4:
+	  Fix a typo in checking for libintl.h and locale.h.
 
-	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
-	  available.  It also checks for the header files but doesn't fail
-	  if they're not present.
 
-2005-01-11 04:14   Jason Short <jdorje@ggzgamingzone.org>
+2005-01-13 01:45:15  Rev 6641   jdorje
 
-	* games/guru-chess/Makefile.am, games/guru-ttt/Makefile.am,
-	  games/lib/Makefile.am, grubby/modules/Makefile.am,
-	  grubby/src/Makefile.am: Replace deprated INCLUDES directive with
-	  AM_CPPFLAGS.
+	* m4/ggz.m4:
+	  Define ENABLE_NLS if NLS is present.  This is standard, even 
+	  though it's
+	  not helpful for most packages since NLS is manditory.
 
-2004-12-22 10:30   Josef Spillner <josef@ggzgamingzone.org>
 
-	* games/guru-chess/ai.c: - pawn fix: if pawn can beat opponent,
-	  he's forced to do so
+2005-01-11 17:36:35  Rev 6638   jdorje
 
-2004-12-21 18:21   Josef Spillner <josef@ggzgamingzone.org>
+	* m4/ggz.m4:
+	  Make AC_GGZ_INTL fail if the gettext functions are not available.  
+	  It also
+	  checks for the header files but doesn't fail if they're not present.
 
-	* m4/i18n.mk: - new i18n infrastructure
 
-2004-12-21 18:19   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-11 03:14:32  Rev 6636   jdorje
 
-	* grubby/po/Makefile.am: - use new i18n infrastructure
+	* grubby/src/Makefile.am games/guru-ttt/Makefile.am 
+	  grubby/modules/Makefile.am games/lib/Makefile.am 
+	  games/guru-chess/Makefile.am:
+	  Replace deprated INCLUDES directive with AM_CPPFLAGS.
 
-2004-12-15 23:11   Josef Spillner <josef@ggzgamingzone.org>
 
-	* grubby/modules/Makefile.am: - install guru modules as actual
-	  plugins
+2004-12-22 09:30:58  Rev 6552   josef
 
-2004-12-15 23:09   Josef Spillner <josef@ggzgamingzone.org>
+	* games/guru-chess/ai.c:
+	  - pawn fix: if pawn can beat opponent, he's forced to do so
 
-	* configure.ac: - include python 2.4 in checks
 
-2004-12-15 01:13   Josef Spillner <josef@ggzgamingzone.org>
+2004-12-21 17:21:11  Rev 6547   josef
 
-	* grubby/src/module.c: - mark more strings for translation
+	* m4/i18n.mk:
+	  - new i18n infrastructure
 
-2004-12-15 01:10   Josef Spillner <josef@ggzgamingzone.org>
 
-	* grubby/po/: Makefile.am, pt_BR.po: - pt_BR translation for grubby
-	  (source part, the data part had this already) - consistency
-	  checks
+2004-12-21 17:19:01  Rev 6546   josef
 
-2004-11-14 18:52   Josef Spillner <josef@ggzgamingzone.org>
+	* grubby/po/Makefile.am:
+	  - use new i18n infrastructure
 
-	* grubby/po/: de.po, grubby.pot: - update message catalog and
-	  German translation of grubby (program part)
 
-2004-11-14 14:03   Josef Spillner <josef@ggzgamingzone.org>
+2004-12-15 22:11:20  Rev 6499   josef
 
-	* grubby/src/: net.c, netconsole.c, netirc.c: - exclude hyphen (-)
-	  from list of separator chars
+	* grubby/modules/Makefile.am:
+	  - install guru modules as actual plugins
 
+
+2004-12-15 22:09:31  Rev 6498   josef
+
+	* configure.ac:
+	  - include python 2.4 in checks
+
+
+2004-12-15 00:13:06  Rev 6477   josef
+
+	* grubby/src/module.c:
+	  - mark more strings for translation
+
+
+2004-12-15 00:10:42  Rev 6476   josef
+
+	* grubby/po/pt_BR.po grubby/po/Makefile.am:
+	  - pt_BR translation for grubby (source part, the data part had 
+	  this already)
+	  - consistency checks
+
+
+2004-11-14 17:52:25  Rev 6372   josef
+
+	* grubby/po/grubby.pot grubby/po/de.po:
+	  - update message catalog and German translation of grubby (program 
+	  part)
+
+
+2004-11-14 13:03:40  Rev 6366   josef
+
+	* grubby/src/netirc.c grubby/src/net.c grubby/src/netconsole.c:
+	  - exclude hyphen (-) from list of separator chars
 	  This character is often used in names.
 
-2004-11-14 00:58   Josef Spillner <josef@ggzgamingzone.org>
 
-	* grubby/data/: de.po, pt_BR.po: - update the German and Portuguese
-	  grubby (module) translations
+2004-11-13 23:58:33  Rev 6360   josef
 
-2004-11-14 00:05   Josef Spillner <josef@ggzgamingzone.org>
+	* grubby/data/pt_BR.po grubby/data/de.po:
+	  - update the German and Portuguese grubby (module) translations
 
-	* grubby/modules/learning.c: - fix memory corruption when learning
+
+2004-11-13 23:05:16  Rev 6358   josef
+
+	* grubby/modules/learning.c:
+	  - fix memory corruption when learning
 	  - discard all messages generated from server
 
-2004-11-13 23:46   Josef Spillner <josef@ggzgamingzone.org>
 
-	* grubby/modules/learning.c: - make modlearning more efficient:
-	  load everything into hash structure - this causes less disk
-	  usage, but increases memory requirements (neglectable)
+2004-11-13 22:46:10  Rev 6357   josef
 
-2004-11-10 23:49   Jason Short <jdorje@ggzgamingzone.org>
+	* grubby/modules/learning.c:
+	  - make modlearning more efficient: load everything into hash 
+	  structure
+	  - this causes less disk usage, but increases memory requirements 
+	  (neglectable)
 
-	* grubby/src/i18n.h: Add a missing #include.
 
-2004-11-09 14:57   Josef Spillner <josef@ggzgamingzone.org>
+2004-11-10 22:49:30  Rev 6316   jdorje
 
-	* games/guru-chess/: ai.c, ai.h: - give king 5000 points so it will
-	  always surpass all other combinations - checkmate() function
-	  (works, although not following the chess rules)
+	* grubby/src/i18n.h:
+	  Add a missing #include.
 
-2004-11-04 17:56   Josef Spillner <josef@ggzgamingzone.org>
 
-	* games/guru-chess/: ai.c, ai.h: - let king go diagonally (oops) -
-	  handle left-side rochade (another oops... never did that)
+2004-11-09 13:57:30  Rev 6309   josef
 
-2004-11-01 15:28   Josef Spillner <josef@ggzgamingzone.org>
+	* games/guru-chess/ai.c games/guru-chess/ai.h:
+	  - give king 5000 points so it will always surpass all other 
+	  combinations
+	  - checkmate() function (works, although not following the chess 
+	  rules)
 
-	* games/guru-chess/: TROUBLE.ai, ai.c, ai.h: - handle rochade -
-	  handle pawn exchange
 
-2004-10-21 18:01   Josef Spillner <josef@ggzgamingzone.org>
+2004-11-04 16:56:21  Rev 6253   josef
 
-	* games/guru-chess/: TROUBLE.ai, ai.c: - merge move exception
-	  handling into one (static) function	(which is used by move
-	  checking and move finding) - prevent kings from standing next to
-	  each other - allow pawns to move twice at the beginning
+	* games/guru-chess/ai.c games/guru-chess/ai.h:
+	  - let king go diagonally (oops)
+	  - handle left-side rochade (another oops... never did that)
 
-2004-07-18 02:34   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ChangeLog: - changelog update
+2004-11-01 14:28:16  Rev 6233   josef
 
-2004-07-17 19:53   Josef Spillner <josef@ggzgamingzone.org>
+	* games/guru-chess/TROUBLE.ai games/guru-chess/ai.c 
+	  games/guru-chess/ai.h:
+	  - handle rochade
+	  - handle pawn exchange
 
-	* grubby/src/net.c: - prevent grubby from crashing: use chat event
-	  data instead of old char   pointer (duh, this is old)
 
-2004-07-17 05:57   Josef Spillner <josef@ggzgamingzone.org>
+2004-10-21 16:01:13  Rev 6204   josef
 
-	* Makefile.am: - fix libtool.m4 inclusion
+	* games/guru-chess/TROUBLE.ai games/guru-chess/ai.c:
+	  - merge move exception handling into one (static) function
+	    (which is used by move checking and move finding)
+	  - prevent kings from standing next to each other
+	  - allow pawns to move twice at the beginning
 
-2004-07-17 02:40   Josef Spillner <josef@ggzgamingzone.org>
 
-	* grubby/src/main.c: - grubby can now comment on games, this
-	  justifies a new version for him also
+2004-07-18 00:37:08  Rev 6153   josef
 
-2004-07-16 21:05   Josef Spillner <josef@ggzgamingzone.org>
+	* ChangeLog:
+	  - changelog update
 
-	* AUTHORS, NEWS, README, README.GGZ, configure.ac: - 0.0.9 updates
-	  propagation
 
-2004-07-13 16:55   Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 17:53:21  Rev 6148   josef
 
-	* m4/libtool.m4: - remove libtool macros
+	* grubby/src/net.c:
+	  - prevent grubby from crashing: use chat event data instead of old 
+	  char
+	    pointer (duh, this is old)
 
-2004-07-10 19:45   Jason Short <jdorje@ggzgamingzone.org>
 
-	* m4/libtool.m4: Update libtool.m4.
+2004-07-17 03:59:30  Rev 6135   josef
 
-2004-07-09 13:16   Josef Spillner <josef@ggzgamingzone.org>
+	* Makefile.am:
+	  - fix libtool.m4 inclusion
 
-	* games/guru-chess/: TROUBLE.ai, ai.c, ai.h, main.c, test.c: - fix
-	  chess AI to always use the maximum calculated points in each
-	  level - add some AI explanations
 
-2004-06-28 16:06   Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 00:40:16  Rev 6122   josef
 
-	* games/guru-chess/ai.c: - minor fix: do not allow switching sides
-	  (due to the 64 byte representation   of the 8x8 board)
+	* grubby/src/main.c:
+	  - grubby can now comment on games, this justifies a new version 
+	  for him also
 
-2004-06-27 21:32   Josef Spillner <josef@ggzgamingzone.org>
 
-	* games/guru-chess/: DESIGN.ai, ai.c, ai.h, main.c, test.c: - some
-	  smaller AI fixes - design document about alpha-beta and
-	  minimax/negamax implementation
+2004-07-16 19:08:39  Rev 6117   josef
 
-2004-03-22 18:00   Josef Spillner <josef@ggzgamingzone.org>
+	* configure.ac NEWS README.GGZ README AUTHORS:
+	  - 0.0.9 updates propagation
 
-	* games/guru-chess/Makefile.am, games/guru-chess/ai.c,
-	  games/guru-chess/ai.h, games/guru-chess/main.c,
-	  games/guru-chess/module.dsc.in, games/guru-chess/test.c,
-	  games/guru-ttt/module.dsc.in, grubby/data/Makefile.am,
-	  grubby/data/de.po, grubby/data/dict.pl, grubby/data/fr.po,
-	  grubby/data/guru.pot, grubby/data/pt_BR.po, grubby/doc/INTERFACE,
-	  grubby/doc/Migration, grubby/doc/Tutorial,
-	  grubby/modules/Makefile.am, grubby/modules/badword.c,
-	  grubby/modules/extra.c, grubby/modules/game.c,
-	  grubby/modules/game.h, grubby/modules/learning.c,
-	  grubby/modules/people.c, grubby/modules/player.c,
-	  grubby/modules/programming.c, grubby/modules/self.c,
-	  grubby/modules/simplereturn.c, grubby/po/de.po,
-	  grubby/po/grubby.pot, grubby/src/gurumod.h, grubby/src/i18n.c,
-	  grubby/src/i18n.h, grubby/src/main.c, grubby/src/module.c,
-	  grubby/src/module.h, grubby/src/net.c: The big grubby update:
 
-	  - add AI for chess, to be used in the chess server as well   (not
-	  fully alpha-beta-nullmove yet, but close) - add
-	  brazilian-portuguese translation for grubby chat texts - add game
-	  communication protocol so grubby can comment on game events -
-	  much improved i18n handler: differentiate between grubby and guru
-	  message   catalogs, and only extract the relevant strings (using
-	  __(x) and _(x)) - update documentation to match current
-	  implementation - better handling for direct messages using
-	  GURU_DIRECT (in addition to	GURU_CHAT and GURU_PRIVMSG) -
-	  timer-based GURU_TICK events, independent of messages
+2004-07-13 14:56:49  Rev 6098   josef
 
-2004-03-08 17:38   Josef Spillner <josef@ggzgamingzone.org>
+	* m4/libtool.m4:
+	  - remove libtool macros
 
-	* configure.ac, games/Makefile.am, games/guru-chess/.cvsignore,
-	  games/guru-chess/Makefile.am, games/guru-chess/main.c,
-	  games/guru-chess/module.dsc.in, games/guru-chess/proto.h,
-	  games/guru-ttt/Makefile.am, games/guru-ttt/main.c,
-	  games/lib/.cvsignore, games/lib/Makefile.am,
-	  games/lib/ggzpassive.c, games/lib/ggzpassive.h, grubby/src/net.c:
-	  - add chess game skeleton module (not implemented yet) - add
-	  little static library ggzpassive.a which contains grubby game
-	  handling code   (can be reused for any non-interactive game
-	  frontends)
 
-	  The chess module should get a little AI (alpha-beta algorithm
-	  with null-move optimizations) which should then also be used for
-	  the server and optionally the clients.  Thus it will probably
-	  become libcgc-compatible.
+2004-07-10 17:45:53  Rev 6074   jdorje
 
-2004-02-28 02:57   Jason Short <jdorje@ggzgamingzone.org>
+	* m4/libtool.m4:
+	  Update libtool.m4.
 
-	* Makefile.am, m4/libtool.m4: Add libtool.m4 to CVS.
 
-2004-02-21 09:50   Jason Short <jdorje@ggzgamingzone.org>
+2004-07-09 11:16:35  Rev 6064   josef
 
-	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
-	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
-	  - Replace the history section (which was getting really big) with
-	  a   reference to CVS.  - Propogate the changes back into all
-	  modules.
+	* games/guru-chess/TROUBLE.ai games/guru-chess/main.c 
+	  games/guru-chess/ai.c games/guru-chess/ai.h games/guru-chess/test.c:
+	  - fix chess AI to always use the maximum calculated points in each 
+	  level
+	  - add some AI explanations
+
+
+2004-06-28 14:06:38  Rev 6062   josef
+
+	* games/guru-chess/ai.c:
+	  - minor fix: do not allow switching sides (due to the 64 byte 
+	  representation
+	    of the 8x8 board)
+
+
+2004-06-27 19:32:30  Rev 6060   josef
 
-2004-02-09 10:19   Josef Spillner <josef@ggzgamingzone.org>
+	* games/guru-chess/main.c games/guru-chess/ai.c games/guru-chess/ai.
+	  h games/guru-chess/test.c games/guru-chess/DESIGN.ai:
+	  - some smaller AI fixes
+	  - design document about alpha-beta and minimax/negamax 
+	  implementation
 
-	* games/guru-ttt/main.c, grubby/src/net.c: - leave table correctly
-	  after game is over - in the game itself, exit after gameover
-	  message arrives
 
-	  Now playing many consecutive games work.  However there's a race
-	  condition when leaving the game, which results in a broken pipe
-	  which makes grubby crash.  This will have to be fixed.
+2004-03-22 17:01:02  Rev 5971   josef
 
-2004-02-09 09:53   Josef Spillner <josef@ggzgamingzone.org>
+	* grubby/modules/programming.c grubby/modules/self.c 
+	  grubby/modules/player.c games/guru-chess/test.c 
+	  games/guru-chess/module.dsc.in games/guru-chess/main.c 
+	  grubby/data/guru.pot grubby/data/pt_BR.po grubby/data/fr.po 
+	  grubby/doc/Migration grubby/src/net.c grubby/src/gurumod.h 
+	  games/guru-chess/ai.c grubby/modules/game.c games/guru-chess/ai.h 
+	  grubby/modules/game.h grubby/po/grubby.pot grubby/modules/badword.
+	  c grubby/modules/extra.c grubby/modules/people.c grubby/data/de.po 
+	  grubby/modules/Makefile.am grubby/data/Makefile.am 
+	  grubby/modules/simplereturn.c grubby/po/de.po grubby/src/i18n.c 
+	  grubby/modules/learning.c grubby/src/main.c grubby/src/i18n.h 
+	  grubby/src/module.c games/guru-ttt/module.dsc.in 
+	  games/guru-chess/Makefile.am grubby/src/module.h 
+	  grubby/doc/INTERFACE grubby/data/dict.pl grubby/doc/Tutorial:
+	  The big grubby update:
+	  - add AI for chess, to be used in the chess server as well
+	    (not fully alpha-beta-nullmove yet, but close)
+	  - add brazilian-portuguese translation for grubby chat texts
+	  - add game communication protocol so grubby can comment on game 
+	  events
+	  - much improved i18n handler: differentiate between grubby and 
+	  guru message
+	    catalogs, and only extract the relevant strings (using __(x) and 
+	  _(x))
+	  - update documentation to match current implementation
+	  - better handling for direct messages using GURU_DIRECT (in 
+	  addition to
+	    GURU_CHAT and GURU_PRIVMSG)
+	  - timer-based GURU_TICK events, independent of messages
 
-	* grubby/modules/extra.c: - make grubby shut up if he's told so
 
-2004-02-07 10:44   Josef Spillner <josef@ggzgamingzone.org>
+2004-03-08 16:38:34  Rev 5964   josef
 
-	* grubby/src/main.c: - grubby gets a new version too
+	* configure.ac games/Makefile.am games/lib/ggzpassive.c 
+	  games/guru-chess/proto.h games/lib/ggzpassive.h games/lib/Makefile.
+	  am games/lib/.cvsignore games/guru-chess games/guru-chess/module.
+	  dsc.in games/guru-chess/main.c grubby/src/net.c 
+	  games/guru-chess/Makefile.am games/guru-ttt/main.c 
+	  games/guru-chess/.cvsignore games/guru-ttt/Makefile.am games/lib:
+	  - add chess game skeleton module (not implemented yet)
+	  - add little static library ggzpassive.a which contains grubby 
+	  game handling code
+	    (can be reused for any non-interactive game frontends)
+	  The chess module should get a little AI (alpha-beta algorithm with 
+	  null-move
+	  optimizations) which should then also be used for the server and 
+	  optionally the clients.
+	  Thus it will probably become libcgc-compatible.
 
-2004-02-06 21:42   Josef Spillner <josef@ggzgamingzone.org>
 
-	* grubby/po/Makefile.am: - uninstall po files
+2004-02-28 01:58:10  Rev 5961   jdorje
 
-2004-02-06 21:14   Josef Spillner <josef@ggzgamingzone.org>
+	* m4/libtool.m4 Makefile.am:
+	  Add libtool.m4 to CVS.
 
-	* configure.ac, games/guru-ttt/Makefile.am: - handle module.dsc
-	  file correctly
 
-2004-02-06 11:12   Josef Spillner <josef@ggzgamingzone.org>
+2004-02-21 08:51:32  Rev 5956   jdorje
 
-	* configure.ac: - fix display of python check result
+	* m4/ggz.m4:
+	  - Copy ggz.m4 into libggz.
+	  - Declare the libggz copy to be the master copy.
+	  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with a
+	    reference to CVS.
+	  - Propogate the changes back into all modules.
 
-2004-02-05 13:07   Josef Spillner <josef@ggzgamingzone.org>
 
-	* man/de/: grubby-config.1, grubby.6: - forgot German manpages
+2004-02-10 08:29:30  Rev 5883   josef
 
-2004-02-05 12:46   Josef Spillner <josef@ggzgamingzone.org>
+	* debian:
+	  - fifth round of removals of distribution files
 
-	* man/: grubby-config.1, grubby.6: - man pages updates:   * new dev
-	  list	 * grubby can play games   * version bump
 
-2004-02-05 11:41   Josef Spillner <josef@ggzgamingzone.org>
+2004-02-09 09:19:23  Rev 5867   josef
 
-	* ChangeLog, NEWS, README, README.GGZ, configure.ac: - synchronized
-	  NEWS, README.GGZ and QuickStart.GGZ from docs - updated README
-	  * new URLs for developers, bugs, website   * no more per-package
-	  maintainer mention (it was never valid anyway) - updated
-	  configure.ac to indicate final version 0.0.8 - ChangeLog updates
+	* grubby/src/net.c games/guru-ttt/main.c:
+	  - leave table correctly after game is over
+	  - in the game itself, exit after gameover message arrives
+	  Now playing many consecutive games work.
+	  However there's a race condition when leaving the game, which 
+	  results in a
+	  broken pipe which makes grubby crash.
+	  This will have to be fixed.
 
-2004-01-31 11:49   Josef Spillner <josef@ggzgamingzone.org>
 
-	* m4/ggz.m4, autogen.sh: - sync common files
+2004-02-09 08:53:36  Rev 5866   josef
 
-2004-01-17 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/modules/extra.c:
+	  - make grubby shut up if he's told so
 
-	* autogen.sh: - sync
 
-2003-12-31 17:57  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-02-07 09:44:07  Rev 5816   josef
 
-	* configure.ac: - use new-style AC_INIT
+	* grubby/src/main.c:
+	  - grubby gets a new version too
 
-2003-11-06 19:16  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/modules/self.c: - make grubby report its uptime on request
-	
-	This is certainly platform-specific.  The Linux process accounting
-	functions are horrible.
+2004-02-06 20:42:41  Rev 5812   josef
 
-2003-11-06 18:53  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/po/Makefile.am:
+	  - uninstall po files
 
-	* configure.ac: - detect perl includes correctly
 
-2003-10-25 15:08  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-02-06 20:14:28  Rev 5810   josef
 
-	* configure.ac: - damn typo
+	* configure.ac games/guru-ttt/Makefile.am:
+	  - handle module.dsc file correctly
 
-2003-10-25 15:07  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.ac: - python 2.3 is now supported too
+2004-02-06 10:12:06  Rev 5805   josef
 
-2003-09-27 15:31  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac:
+	  - fix display of python check result
 
-	* Makefile.am, configure.ac, games/.cvsignore, games/Makefile.am,
-	games/guru-ttt/.cvsignore, games/guru-ttt/Makefile.am,
-	games/guru-ttt/main.c, games/guru-ttt/module.dsc.in,
-	grubby/modules/Makefile.am, grubby/modules/game.c,
-	grubby/src/gurumod.h, grubby/src/net.c: - game module to let grubby
-	join a game - network module support for games - add sample ttt
-	game with stupid AI
 
-2003-09-27 12:25  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-02-05 12:07:09  Rev 5801   josef
 
-	* grubby/modules/self.c: - only react to about and help commands if
-	people speak with grubby directly
+	* man/de/grubby-config.1 man/de/grubby.6:
+	  - forgot German manpages
 
-2003-09-10 12:07  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.ac: - suppress errors if the binary 'ruby' is not found
+2004-02-05 11:46:52  Rev 5793   josef
 
-2003-09-09 21:16  Josef Spillner <dr_maux@users.sourceforge.net>
+	* man/grubby-config.1 man/grubby.6:
+	  - man pages updates:
+	    * new dev list
+	    * grubby can play games
+	    * version bump
 
-	* configure.ac: - much more robust check for ruby
 
-2003-05-17 10:08  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-02-05 10:46:53  Rev 5790   josef
 
-	* ChangeLog: - update changelog
+	* configure.ac NEWS ChangeLog README.GGZ README:
+	  - synchronized NEWS, README.GGZ and QuickStart.GGZ from docs
+	  - updated README
+	    * new URLs for developers, bugs, website
+	    * no more per-package maintainer mention (it was never valid 
+	  anyway)
+	  - updated configure.ac to indicate final version 0.0.8
+	  - ChangeLog updates
 
-2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - apply autogen.sh changes from libggz
+2004-01-31 10:54:44  Rev 5770   josef
 
-2003-05-11 17:28  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh m4/ggz.m4:
+	  - sync common files
 
-	* grubby/po/Makefile.am: - fix installation of translation
 
-2003-05-11 01:52  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-01-17 18:46:28  Rev 5740   dr_maux
 
-	* configure.ac: - set the package version number (via configure.ac)
-	to 0.0.7
+	* autogen.sh:
+	  - sync
 
-2003-05-11 01:46  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* README: - version update
+2003-12-31 17:02:57  Rev 5727   dr_maux
 
-2003-05-11 01:27  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac:
+	  - use new-style AC_INIT
 
-	* man/: grubby-config.1, grubby.6, de/grubby-config.1, de/grubby.6:
-	- grubby manpage version update
 
-2003-05-11 01:16  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-11-06 18:16:17  Rev 5671   dr_maux
 
-	* NEWS, README.GGZ, autogen.sh: - update common files for 0.0.7 in
-	grubby
+	* grubby/modules/self.c:
+	  - make grubby report its uptime on request
+	  This is certainly platform-specific.
+	  The Linux process accounting functions are horrible.
 
-2003-05-10 16:37  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - sync autogen.sh
+2003-11-06 17:53:01  Rev 5670   dr_maux
 
-2003-05-10 12:30  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac:
+	  - detect perl includes correctly
 
-	* grubby/po/Makefile.am: - fix 'make distcheck'
 
-2003-05-10 11:42  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-10-25 13:08:40  Rev 5669   dr_maux
 
-	* grubby/Makefile.am: - add po/ directory to SUBDIRS
+	* configure.ac:
+	  - damn typo
 
-2003-05-10 08:32  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/src/main.c: - grubby application version bump
+2003-10-25 13:07:34  Rev 5668   dr_maux
 
-2003-05-05 15:02  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac:
+	  - python 2.3 is now supported too
 
-	* m4/ggz.m4: - add -fsigned-char
 
-2003-04-28 08:55  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-09-27 13:31:23  Rev 5653   dr_maux
 
-	* configure.ac, man/Makefile.am, man/grubby.6, man/de/.cvsignore,
-	man/de/Makefile.am, man/de/grubby-config.1, man/de/grubby.6: - more
-	i18n: add German man pages for grubby and grubby-config
+	* configure.ac games/guru-ttt/.cvsignore games/Makefile.am 
+	  games/guru-ttt grubby/src/net.c Makefile.am games/.cvsignore 
+	  games/guru-ttt/module.dsc.in grubby/src/gurumod.h 
+	  grubby/modules/Makefile.am games games/guru-ttt/main.c 
+	  grubby/modules/game.c games/guru-ttt/Makefile.am:
+	  - game module to let grubby join a game
+	  - network module support for games
+	  - add sample ttt game with stupid AI
 
-2003-04-28 08:54  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/: po/.cvsignore, po/Makefile.am, po/de.po, po/grubby.pot,
-	src/main.c, src/module.c, src/net.c: - i18n'ize grubby
+2003-09-27 10:25:52  Rev 5652   dr_maux
 
-2003-03-30 20:40  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/modules/self.c:
+	  - only react to about and help commands if people speak with 
+	  grubby directly
 
-	* grubby/modules/embed.c: - finish embedding for python and perl
 
-2003-03-29 11:32  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-09-10 10:07:06  Rev 5644   dr_maux
 
-	* autogen.sh: - apply improverished autogen globally
+	* configure.ac:
+	  - suppress errors if the binary 'ruby' is not found
 
-2003-03-29 11:26  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* m4/ggz.m4: - update GGZ macro file
+2003-09-09 19:16:08  Rev 5643   dr_maux
 
-2003-02-16 14:00  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac:
+	  - much more robust check for ruby
 
-	* autogen.sh: - new autogen.sh
 
-2003-02-04 20:12  Jason Short <jdorje@users.sourceforge.net>
+2003-05-17 08:10:42  Rev 5588   dr_maux
 
-	* acconfig.h, configure.ac: Various updates for autoconf2.5x usage.
+	* ChangeLog:
+	  - update changelog
 
-2003-02-04 20:11  Jason Short <jdorje@users.sourceforge.net>
 
-	* grubby/src/net.c: Disable TLS in the call to
-	ggzcore_server_set_hostinfo.
+2003-05-16 18:34:45  Rev 5583   dr_maux
 
-2003-02-04 09:45  Jason Short <jdorje@users.sourceforge.net>
+	* autogen.sh:
+	  - apply autogen.sh changes from libggz
 
-	* grubby/: modules/embed.c, src/net.c: Mark one function as static,
-	and comment out an unused static function.
 
-2003-02-04 09:37  Jason Short <jdorje@users.sourceforge.net>
+2003-05-11 15:28:37  Rev 5577   dr_maux
 
-	* autogen.sh, configure.ac, configure.in: Step 1 of
-	autoconf2.5x-only support: rename configure.in as configure.ac.
+	* grubby/po/Makefile.am:
+	  - fix installation of translation
 
-2003-01-12 22:20  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.in: [powerpc]
-	
-	- add 'powerpc' as additional architecture for ruby
-	
-	The problem is that there's not automatic way to determine the
-	architecture.  Uname -m/-p gives either 'ppc' or '750FX', both are
-	not really of use to us.
+2003-05-10 23:54:28  Rev 5563   dr_maux
 
-2003-01-12 12:36  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac:
+	  - set the package version number (via configure.ac) to 0.0.7
 
-	* grubby/src/: main.c, module.h: [powerpc]
-	
-	- getopt returns int, not char - function pointer for joining rooms
-	takes char* as argument (needed for IRC),   only the GGZ net plugin
-	does an atoi() on it
 
-2003-01-06 21:29  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-10 23:46:58  Rev 5561   dr_maux
 
-	* m4/ggz.m4: - fix typo: s/text/test/
-	
-	We should compare all of our m4 files before the release to find
-	differences, it wouldn't make much sense to synchronize them right
-	now (more changes will come).
+	* README:
+	  - version update
 
-2002-12-20 05:48  Jason Short <jdorje@users.sourceforge.net>
 
-	* Makefile.am, acinclude.ggz, autogen.sh, m4/ggz.m4: Move
-	acinclude.ggz to m4/ggz.m4.
+2003-05-10 23:27:19  Rev 5556   dr_maux
 
-2002-11-25 16:14  Josef Spillner <dr_maux@users.sourceforge.net>
+	* man/grubby-config.1 man/grubby.6 man/de/grubby-config.1 
+	  man/de/grubby.6:
+	  - grubby manpage version update
 
-	* TODO: - update TODO for grubby
 
-2002-11-25 15:59  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-10 23:16:42  Rev 5549   dr_maux
 
-	* autogen.sh, configure.in: - autoconf, autoheader: replace -I with
-	-l - better ruby check: find both 1.6 and 1.7 on i{3,4,5,6}86
-	
-	We can obviously not include all combinations, but at least the
-	mainstream systems should be supported without --look-there and
-	--look-there-too.  For all others such strings should be added
-	though.
+	* README.GGZ autogen.sh NEWS:
+	  - update common files for 0.0.7 in grubby
 
-2002-11-04 20:13  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/: modules/extra.c, src/netirc.c: - More or less finished
-	IRC plugin  * understand private messages (both via dedicated
-	channel and via directing    message at grubby's name)	*
-	understand channel enter and leave actions
+2003-05-10 14:38:57  Rev 5539   dr_maux
 
-2002-11-03 21:27  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh:
+	  - sync autogen.sh
 
-	* grubby/: modules/badword.c, src/Makefile.am, src/main.c,
-	src/module.c, src/module.h, src/net.c, src/net.h, src/netconsole.c,
-	src/netirc.c: - add IRC net plugin for grubby - change API so that
-	room can be non-numeric (such as #ggz) - fix some potential
-	segfaults: never assume that messages are from non-NULL   players
-	(though they always should be)
 
-2002-11-03 20:04  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-10 10:30:28  Rev 5530   dr_maux
 
-	* acconfig.h, configure.in: - check for python 2.2
-	
-	Support for 2.1 could be added but this is rather obsolete now.
+	* grubby/po/Makefile.am:
+	  - fix 'make distcheck'
 
-2002-11-03 20:02  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/modules/: Makefile.am, embed.c: - add MIME parser which
-	recognizes python, ruby, perl scripts - add skeleton python support
-	
-	Python seems to be difficult - it should be flexible enough to
-	allow parameters (Py_Main() is too simple), but not as complex as
-	the code used in GGZSH.
+2003-05-10 09:42:46  Rev 5528   dr_maux
 
-2002-11-01 23:27  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/Makefile.am:
+	  - add po/ directory to SUBDIRS
 
-	* grubby/modules/Makefile.am, grubby/modules/embed.c, acconfig.h,
-	configure.in: - start with perl support
 
-2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+2003-05-10 06:32:28  Rev 5519   dr_maux
 
-	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
-	each GGZ check takes two optional parameters.  For instance:
-	
-	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
-	
-	'action-if-found' will be evaluated if the specified module was
-	found.	'action-if-not-found' will be evaluated if the module is
-	not found.  This is consistent with other autoconf macros.  If
-	'action-is-not-found' is empty, then an error will be emitted if
-	the module isn't found.  If 'action-if-not-found' is "ignore", then
-	the module will simply be ignored if it's not found.
-	
-	This is not entirely backwards-compatible, since "ignore" used to
-	be the first parameter to the macro.  But this way is more
-	consistent, in my opinion.
+	* grubby/src/main.c:
+	  - grubby application version bump
 
-2002-10-10 02:29  Jason Short <jdorje@users.sourceforge.net>
 
-	* grubby/src/net.c: Update grubby to use the new ggzcore interface.
+2003-05-05 13:03:41  Rev 5500   dr_maux
 
-2002-10-09 22:05  Jason Short <jdorje@users.sourceforge.net>
+	* m4/ggz.m4:
+	  - add -fsigned-char
 
-	* grubby/: modules/Makefile.am, modules/badword.c, modules/exec.c,
-	modules/exec.h, modules/learning.c, modules/people.c,
-	src/gurumod.h, src/i18n.c, src/module.c, src/module.h,
-	src/netconsole.c, src/player.c, src/player.h: Fix compiler warnings
-	for grubby:   - Mark some functions as static.	  - Give some
-	function prototypes parameter lists.  (If you just say	    "void
-	foo();" that's not a parameter list - it can match any function.   
-	  It needs "void foo(void);".)	  - Add prototypes for
-	gurumod_exec() and gurumod_init() to gurumod.h.    - Remove exec.h
-	(contents are effectively moved into gurumod.h).
 
-2002-10-09 21:13  Jason Short <jdorje@users.sourceforge.net>
+2003-04-28 06:55:58  Rev 5494   dr_maux
 
-	* grubby/src/net.c: Don't segfault if we can't connect to the
-	server.  Just exit gracefully.
+	* configure.ac man/de man/Makefile.am man/grubby.6 man/de/Makefile.
+	  am man/de/grubby-config.1 man/de/.cvsignore man/de/grubby.6:
+	  - more i18n: add German man pages for grubby and grubby-config
 
-2002-10-08 02:02  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* README: - s/0.0.5/0.0.6/
+2003-04-28 06:54:52  Rev 5493   dr_maux
 
-2002-10-08 01:58  Jason Short <jdorje@users.sourceforge.net>
+	* grubby/po/grubby.pot grubby/po/.cvsignore grubby/src/main.c 
+	  grubby/src/module.c grubby/po grubby/src/net.c grubby/po/de.po 
+	  grubby/po/Makefile.am:
+	  - i18n'ize grubby
 
-	* grubby/modules/embed.c: Undo an earlier (foolish) commit, so that
-	the embed module will actually work.
 
-2002-10-08 01:31  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-03-30 18:40:20  Rev 5490   dr_maux
 
-	* grubby/modules/embed.c: - don't comment out status variable;
-	rather, move it into ruby-specific part
+	* grubby/modules/embed.c:
+	  - finish embedding for python and perl
 
-2002-10-08 00:53  Jason Short <jdorje@users.sourceforge.net>
 
-	* grubby/: modules/embed.c, src/main.c, src/net.c, src/net.h: Fixed
-	some trivial compiler warnings:   - Marked some functions as
-	static.    - Gave specific prototypes to some functions.
+2003-03-29 10:33:32  Rev 5476   dr_maux
 
-2002-10-08 00:30  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh:
+	  - apply improverished autogen globally
 
-	* grubby/src/net.c: - shut up debug messages for player leave/join
-	events
 
-2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+2003-03-29 10:27:44  Rev 5475   dr_maux
 
-	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+	* m4/ggz.m4:
+	  - update GGZ macro file
 
-2002-10-07 23:13  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ChangeLog: - update changelog for 0.0.6
+2003-02-16 13:02:09  Rev 5413   dr_maux
 
-2002-09-29 14:17  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh:
+	  - new autogen.sh
 
-	* grubby/src/main.c, man/grubby-config.1, man/grubby.6,
-	configure.in: - grubby version number bumping
 
-2002-09-27 10:58  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-02-04 19:12:03  Rev 5392   jdorje
 
-	* autogen.sh: - new autogen
+	* configure.ac acconfig.h:
+	  Various updates for autoconf2.5x usage.
 
-2002-09-26 20:42  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am, configure.in: - ugh! as it turned out, using
-	acinclude.ggz as AC_INIT file didn't turn out to   be good - use
-	configure.in now - stupid build system: put conftest* into
-	DISTCLEANFILES - grubby does now pass 'make distcheck'
+2003-02-04 19:11:20  Rev 5391   jdorje
 
-2002-09-26 20:41  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/src/net.c:
+	  Disable TLS in the call to ggzcore_server_set_hostinfo.
 
-	* grubby/data/Makefile.am: - include embedtest.rb into EXTRA_DIST
 
-2002-09-26 20:23  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-02-04 08:45:04  Rev 5367   jdorje
 
-	* grubby/doc/: Setup, Tutorial: - update internal grubby docs a bit
+	* grubby/src/net.c grubby/modules/embed.c:
+	  Mark one function as static, and comment out an unused static 
+	  function.
 
-2002-09-26 20:19  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/modules/embed.c: - don't crash in NULL messages (e.g. if
-	players enter the room)
+2003-02-04 08:42:05  Rev 5365   jdorje
 
-2002-09-26 20:17  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac configure.in autogen.sh:
+	  Step 1 of autoconf2.5x-only support: rename configure.in as 
+	  configure.ac.
 
-	* grubby/data/embedtest.rb: - shut up debug information in
-	mod_embed test script
 
-2002-09-26 12:12  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-01-12 21:20:53  Rev 5328   dr_maux
 
-	* acinclude.ggz: - some fixes for acinclude.ggz, now allowing for
-	conditional AC_GGZ_SERVER,   AC_GGZ_CONFIG and AC_GGZ_INTL too
+	* configure.in:
+	  [powerpc]
+	  - add 'powerpc' as additional architecture for ruby
+	  The problem is that there's not automatic way to determine the 
+	  architecture.
+	  Uname -m/-p gives either 'ppc' or '750FX', both are not really of 
+	  use to us.
 
-2002-09-25 17:46  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* acinclude.ggz: - only accept <libname>.so as library.
-	
-	This prevents the macros from "finding" a library if the devel
-	package is not installed.  Otherwise, a header could be found in
-	the right directory while the library is chosen from the wrong one.
+2003-01-12 11:36:43  Rev 5315   dr_maux
 
-2002-09-25 17:08  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/src/main.c grubby/src/module.h:
+	  [powerpc]
+	  - getopt returns int, not char
+	  - function pointer for joining rooms takes char* as argument 
+	  (needed for IRC),
+	    only the GGZ net plugin does an atoi() on it
 
-	* acinclude.ggz, configure.in: - update build files * new macro
-	AC_GGZ_INIT[([export], [defaults])] * new internal macro
-	AC_GGZ_ERROR(name, incdirs, libdirs) * new internal macro
-	AC_GGZ_REMOVEDUPS(list, <retlist>)
 
-2002-09-25 16:09  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-01-06 20:29:18  Rev 5310   dr_maux
 
-	* acinclude.ggz, autogen.sh, configure.in: - more updates "for a
-	better build system": * include space after -isystem. Otherwise gcc
-	2.95.3 will not work * initialize AC_INIT with a file from the
-	source tree, so I'd vote for   acinclude.ggz (to be consistent
-	across modules) * in autogen, take acinclude.ggz from $srcdir
-	explicitely
+	* m4/ggz.m4:
+	  - fix typo:
+	  s/text/test/
+	  We should compare all of our m4 files before the release to find 
+	  differences,
+	  it wouldn't make much sense to synchronize them right now (more 
+	  changes will
+	  come).
 
-2002-09-25 12:36  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* acinclude.ggz, configure.in: - add AC_GGZ_INTL to check for i18n
-	stuff
-	
-	Note that this is not yet the final version, which will also take a
-	condition parameter. It should be tested here first however.
+2002-12-20 04:48:32  Rev 5304   jdorje
 
-2002-09-25 12:34  Josef Spillner <dr_maux@users.sourceforge.net>
+	* m4/ggz.m4 Makefile.am autogen.sh acinclude.ggz m4:
+	  Move acinclude.ggz to m4/ggz.m4.
 
-	* grubby/data/: Makefile.am, de.po, fr.po: - update French and
-	German translation
-	
-	Too bad my Spanish skills are still in their infancy...
 
-2002-09-24 10:40  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-11-25 15:14:55  Rev 5264   dr_maux
 
-	* grubby/src/net.c: - use select() instead of polling
-	
-	Old grubby ate 95% CPU.  New grubby is dieting.
+	* TODO:
+	  - update TODO for grubby
 
-2002-09-24 09:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* QuickStart.GGZ, README.GGZ: - update intro docs
+2002-11-25 14:59:32  Rev 5263   dr_maux
 
-2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+	* configure.in autogen.sh:
+	  - autoconf, autoheader: replace -I with -l
+	  - better ruby check: find both 1.6 and 1.7 on i{3,4,5,6}86
+	  We can obviously not include all combinations, but at least the 
+	  mainstream
+	  systems should be supported without --look-there and 
+	  --look-there-too.
+	  For all others such strings should be added though.
 
-	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
-	acinclude.ggz as being included in txt-client.
 
-2002-09-19 18:17  Jason Short <jdorje@users.sourceforge.net>
+2002-11-04 19:13:13  Rev 5221   dr_maux
 
-	* acinclude.ggz: Include gnome-client on the list of modules that
-	use acinclude.ggz.
+	* grubby/modules/extra.c grubby/src/netirc.c:
+	  - More or less finished IRC plugin
+	   * understand private messages (both via dedicated channel and via 
+	  directing
+	     message at grubby's name)
+	   * understand channel enter and leave actions
 
-2002-09-14 09:46  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* man/grubby.6: - add command line options to grubby's man page
+2002-11-03 20:27:39  Rev 5181   dr_maux
 
-2002-09-05 21:52  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/modules/badword.c grubby/src/main.c grubby/src/netirc.c 
+	  grubby/src/module.c grubby/src/net.c grubby/src/Makefile.am 
+	  grubby/src/netconsole.c grubby/src/module.h grubby/src/net.h:
+	  - add IRC net plugin for grubby
+	  - change API so that room can be non-numeric (such as #ggz)
+	  - fix some potential segfaults: never assume that messages are 
+	  from non-NULL
+	    players (though they always should be)
 
-	* grubby/data/: dict.pl, rdf.pl: - Perl cleanups:  * 'use strict'
-	syntax	* check for Perl 5.8 compatibility  * add Worldforge to RDF
-	news feeds  * when requesting news via HTTP, send out compliant
-	HTTP/1.0 header
 
-2002-08-20 22:44  Jason Short <jdorje@users.sourceforge.net>
+2002-11-03 19:04:31  Rev 5170   dr_maux
 
-	* acinclude.ggz: Changed -I<directory> to -isystem<directory> to
-	avoid warnings in gcc3.
+	* configure.in acconfig.h:
+	  - check for python 2.2
+	  Support for 2.1 could be added but this is rather obsolete now.
 
-2002-08-18 09:53  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/data/webtranslator.sh: - swapped argument order, since the
-	message to be has a variable length, we put   it at the last
-	position - read input line instead of using command line arguments
-	
-	The script can now be used in a pipe: echo "grubby translate de-fr
-	was ist ein fisch" | ./webtranslator.sh -> yields: ce qui est un
-	poisson (Grubby is less than 3 years old - nobody expects that a
-	3yo can speak French perfectly, n'est-ce pas?)
+2002-11-03 19:02:39  Rev 5169   dr_maux
 
-2002-08-13 07:35  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/modules/Makefile.am grubby/modules/embed.c:
+	  - add MIME parser which recognizes python, ruby, perl scripts
+	  - add skeleton python support
+	  Python seems to be difficult - it should be flexible enough to 
+	  allow parameters
+	  (Py_Main() is too simple), but not as complex as the code used in 
+	  GGZSH.
 
-	* grubby/data/webtranslator.sh: - fix cache: only accept a
-	translation if it was stored with the very same   language
-	combination   (I guess it's a bug in grep? It doesn't accept \t in
-	an expression) - store cache in ~/.ggz/grubby/google instead of
-	~/google
 
-2002-08-12 22:44  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-11-01 22:27:32  Rev 5137   dr_maux
 
-	* grubby/data/: Makefile.am, webtranslator.sh: - Powerful
-	translation backend for grubby using google's translation service. 
-	- Initial code written by chimera
-	
-	It is intended to work like	grubby translate "oh my god this is
-	a whole sentence" en-es
-	
-	All translations are cached (there's a bug but this is fixed soon).
-	 The only thing left to do is to recognize quotes from the input.
-	On the command line, this works already.
-	
-	For single words, the traditional translator will still be faster I
-	guess.
+	* configure.in grubby/modules/Makefile.am acconfig.h 
+	  grubby/modules/embed.c:
+	  - start with perl support
 
-2002-05-24 20:56  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* .cvsignore, configure.in: - if ruby is not found, reset the
-	variables for it Another Hurd-powered bug reports - and we do now
-	have experimental Debian GNU/Hurd packages if they're ever needed
-	:) (Using a stripped-down version of libggz because the pthreads
-	are experimental there.) - add autom4te.cache to .cvsignore
+2002-10-16 00:07:30  Rev 4929   jdorje
 
-2002-05-22 11:33  Josef Spillner <dr_maux@users.sourceforge.net>
+	* acinclude.ggz:
+	  Improvement (hopefully :-) to acinclude.ggz.  Now each GGZ check 
+	  takes
+	  two optional parameters.  For instance:
+	    AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	  'action-if-found' will be evaluated if the specified module was 
+	  found.
+	  'action-if-not-found' will be evaluated if the module is not found.
+	  This
+	  is consistent with other autoconf macros.  If 
+	  'action-is-not-found' is
+	  empty, then an error will be emitted if the module isn't found.  If
+	  'action-if-not-found' is "ignore", then the module will simply be 
+	  ignored
+	  if it's not found.
+	  This is not entirely backwards-compatible, since "ignore" used to be
+	  the first parameter to the macro.  But this way is more consistent,
+	  in
+	  my opinion.
 
-	* grubby/data/Makefile.am: - add embedtest.rb to makefile.am - to
-	test this, add to .ggz/grubby/modembed.rc
-	
-	[scripts] = test test = /usr/local/.../embedtest.rb
 
-2002-05-22 11:31  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-10 00:29:28  Rev 4831   jdorje
 
-	* grubby/: data/embedtest.rb, modules/embed.c, src/net.c: -
-	implement embedded scripts interpreter for ruby - add test script  
-	=> The script gets the chat messages properly, but when changing it
-	to return   the results, the original content reappears in the
-	module, and so grubby acts   like a repeater. This is odd.  - fix
-	ggzcore_read_data
+	* grubby/src/net.c:
+	  Update grubby to use the new ggzcore interface.
 
-2002-04-18 22:02  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* acconfig.h, configure.in: - add check for ruby so it can be setup
-	correctly - if it's not there, 'embed' turns into an empty module
+2002-10-09 20:05:47  Rev 4825   jdorje
 
-2002-04-18 22:01  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/src/player.h grubby/modules/badword.c grubby/modules/exec.c 
+	  grubby/modules/people.c grubby/src/module.c grubby/src/gurumod.h 
+	  grubby/modules/Makefile.am grubby/src/netconsole.c 
+	  grubby/modules/exec.h grubby/src/module.h grubby/src/player.c 
+	  grubby/src/i18n.c grubby/modules/learning.c:
+	  Fix compiler warnings for grubby:
+	    - Mark some functions as static.
+	    - Give some function prototypes parameter lists.  (If you just say
+	      "void foo();" that's not a parameter list - it can match any 
+	  function.
+	      It needs "void foo(void);".)
+	    - Add prototypes for gurumod_exec() and gurumod_init() to 
+	  gurumod.h.
+	    - Remove exec.h (contents are effectively moved into gurumod.h).
 
-	* grubby/modules/: Makefile.am, embed.c: - prepare embedded
-	scripting in grubby: new module 'embed' - this can use the same
-	modules as 'exec', but is faster and can provide more	advantages
-	in the future
 
-2002-04-18 21:30  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-09 19:13:15  Rev 4824   jdorje
 
-	* configure.in: - go up to 0.0.6pre - output some text after
-	running configure
+	* grubby/src/net.c:
+	  Don't segfault if we can't connect to the server.  Just exit 
+	  gracefully.
 
-2002-04-13 09:16  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* AUTHORS, ChangeLog, NEWS, QuickStart.GGZ, README.GGZ: 
-	- Updated docs for 0.0.5
+2002-10-08 00:02:33  Rev 4804   dr_maux
 
-2002-04-13 06:45  Josef Spillner <dr_maux@users.sourceforge.net>
+	* README:
+	  - s/0.0.5/0.0.6/
 
-	* configure.in: - bump grubby to 0.0.5
 
-2002-04-13 02:45  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-07 23:58:26  Rev 4803   jdorje
 
-	* Makefile.am: - remove local make clean rule again
+	* grubby/modules/embed.c:
+	  Undo an earlier (foolish) commit, so that the embed module will 
+	  actually
+	  work.
 
-2002-04-12 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am: - remove local make clean rule again
+2002-10-07 23:31:06  Rev 4802   dr_maux
 
-2002-04-09 15:33  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/modules/embed.c:
+	  - don't comment out status variable; rather, move it into 
+	  ruby-specific part
 
-	* debian/: control, rules: - update build information
 
-2002-04-06 15:22  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-07 22:53:48  Rev 4799   jdorje
 
-	* debian/: .cvsignore, changelog, control, postinst, prerm, rules:
-	- debianize grubby
+	* grubby/src/main.c grubby/src/net.c grubby/src/net.h 
+	  grubby/modules/embed.c:
+	  Fixed some trivial compiler warnings:
+	    - Marked some functions as static.
+	    - Gave specific prototypes to some functions.
 
-2002-04-06 15:13  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am: - config status deletion rule
+2002-10-07 22:30:44  Rev 4798   dr_maux
 
-2002-04-06 09:39  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/src/net.c:
+	  - shut up debug messages for player leave/join events
 
-	* acinclude.ggz: - sync acinclude.ggz
 
-2002-04-05 16:18  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-07 21:28:18  Rev 4795   jdorje
 
-	* README: - update package information
+	* NEWS:
+	  Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
-2002-04-05 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* README.GGZ: - update installation instructions and overview
+2002-10-07 21:16:10  Rev 4794   dr_maux
 
-2002-03-22 16:30  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ChangeLog:
+	  - update changelog for 0.0.6
 
-	* grubby/src/: i18n.c, net.c: - adopt to new ggzconf stuff - check
-	for NULL pointer (yeah, you see how important this is... it hit me 
-	 twice today...)
 
-2002-03-06 15:19  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-29 12:17:42  Rev 4761   dr_maux
 
-	* grubby/data/de.po: - fix missing %s in translation
+	* configure.in grubby/src/main.c man/grubby-config.1 man/grubby.6:
+	  - grubby version number bumping
 
-2002-03-02 10:22  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/src/net.c: - omit TLS argument until tls-branch is merged
-	with HEAD
+2002-09-27 08:58:31  Rev 4746   dr_maux
 
-2002-03-02 10:10  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh:
+	  - new autogen
 
-	* TODO: - update todo file
 
-2002-03-02 10:08  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-26 18:42:43  Rev 4739   dr_maux
 
-	* grubby/: data/de.po, data/fr.po, data/grubby-config.in,
-	data/guru.pot, doc/INTERFACE, doc/Setup, modules/badword.c,
-	modules/extra.c, modules/people.c, src/i18n.c, src/i18n.h,
-	src/main.c, src/module.c, src/module.h: - handle 'player
-	translation' and 'default translation' - enhance grubby-config to
-	include default language
+	* configure.in Makefile.am:
+	  - ugh! as it turned out, using acinclude.ggz as AC_INIT file 
+	  didn't turn out to
+	    be good - use configure.in now
+	  - stupid build system: put conftest* into DISTCLEANFILES
+	  - grubby does now pass 'make distcheck'
 
-2002-03-02 08:50  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/: data/de.po, data/fr.po, data/guru.pot, modules/people.c,
-	modules/self.c, src/i18n.c, src/i18n.h, src/main.c, src/module.h,
-	src/net.c: - i18n updates:  + notify a player if he changes his
-	language (ideally, the bot would tell him  whether a translation is
-	present at all)  + fix some of the modules, BUT: the whole
-	translation system will have to be  altered in order to work
-	properly for combined strings
+2002-09-26 18:41:31  Rev 4738   dr_maux
 
-2002-03-02 07:04  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/data/Makefile.am:
+	  - include embedtest.rb into EXTRA_DIST
 
-	* .cvsignore: - put new auto-generated automake1.5 files into
-	.cvsignore
 
-2002-03-02 06:49  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-26 18:23:39  Rev 4737   dr_maux
 
-	* man/grubby-config.1: - fix grubby-config manpage (section 1, not
-	6, and verbose++)
+	* grubby/doc/Setup grubby/doc/Tutorial:
+	  - update internal grubby docs a bit
 
-2002-02-03 15:13  Jason Short <jdorje@users.sourceforge.net>
 
-	* acinclude.ggz: Updated acinclude.ggz from changes made in ggzd.
+2002-09-26 18:19:42  Rev 4736   dr_maux
 
-2002-01-24 14:04  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/modules/embed.c:
+	  - don't crash in NULL messages (e.g. if players enter the room)
 
-	* autogen.sh: - don't generate player.c anymore as it's not used
-	anyway (we use RTLD_GLOBAL)
 
-2002-01-24 14:03  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-26 18:17:47  Rev 4735   dr_maux
 
-	* grubby/: modules/exec.c, modules/extra.c, modules/learning.c,
-	modules/programming.c, modules/self.c, modules/simplereturn.c,
-	src/guru.c, src/guru.h, src/gurumod.h, src/main.c, src/module.c,
-	src/module.h, src/net.c, src/player.c, src/player.h: - add
-	--datadir command line switch - this needed some API changes and
-	doesn't work for external scripts yet
+	* grubby/data/embedtest.rb:
+	  - shut up debug information in mod_embed test script
 
-2002-01-19 13:49  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/modules/people.c: - don't be so loud in modpeople
+2002-09-26 10:12:19  Rev 4714   dr_maux
 
-2002-01-19 12:15  Josef Spillner <dr_maux@users.sourceforge.net>
+	* acinclude.ggz:
+	  - some fixes for acinclude.ggz, now allowing for conditional 
+	  AC_GGZ_SERVER,
+	    AC_GGZ_CONFIG and AC_GGZ_INTL too
 
-	* debian/: .cvsignore, README.Debian, changelog, control,
-	copyright, docs, postinst, prerm, rules: - debianize grubby
 
-2002-01-19 11:54  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-25 15:46:21  Rev 4698   dr_maux
 
-	* man/: Makefile.am, grubby-config.1: - add minimalistic man page
-	for grubby-config
+	* acinclude.ggz:
+	  - only accept <libname>.so as library.
+	  This prevents the macros from "finding" a library if the devel 
+	  package is not
+	  installed.
+	  Otherwise, a header could be found in the right directory while 
+	  the library is
+	  chosen from the wrong one.
 
-2002-01-19 11:54  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/src/main.c: - give hint to grubby-config if not configured
-	yet
+2002-09-25 15:08:17  Rev 4695   dr_maux
 
-2002-01-19 11:46  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.in acinclude.ggz:
+	  - update build files
+	  * new macro AC_GGZ_INIT[([export], [defaults])]
+	  * new internal macro AC_GGZ_ERROR(name, incdirs, libdirs)
+	  * new internal macro AC_GGZ_REMOVEDUPS(list, <retlist>)
 
-	* configure.in: - don't check for easysock (it was never needed
-	anyway)
 
-2002-01-19 11:46  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-25 14:09:01  Rev 4694   dr_maux
 
-	* grubby/data/: meeting.rb, messages.rb: - correct path to ruby
+	* configure.in autogen.sh acinclude.ggz:
+	  - more updates "for a better build system":
+	  * include space after -isystem. Otherwise gcc 2.95.3 will not work
+	  * initialize AC_INIT with a file from the source tree, so I'd vote 
+	  for
+	    acinclude.ggz (to be consistent across modules)
+	  * in autogen, take acinclude.ggz from $srcdir explicitely
 
-2002-01-12 04:13  Jason Short <jdorje@users.sourceforge.net>
 
-	* acinclude.ggz: Added acinclude.ggz to ggzd and ggz-client-libs.
+2002-09-25 10:36:13  Rev 4693   dr_maux
 
-2002-01-12 04:05  Jason Short <jdorje@users.sourceforge.net>
+	* configure.in acinclude.ggz:
+	  - add AC_GGZ_INTL to check for i18n stuff
+	  Note that this is not yet the final version, which will also take 
+	  a condition
+	  parameter. It should be tested here first however.
 
-	* acinclude.ggz: Added libggz support to acinclude.ggz.
 
-2002-01-11 07:11  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-25 10:34:47  Rev 4692   dr_maux
 
-	* configure.in: - create grubby-config during configure step
+	* grubby/data/fr.po grubby/data/de.po grubby/data/Makefile.am:
+	  - update French and German translation
+	  Too bad my Spanish skills are still in their infancy...
 
-2002-01-11 07:10  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/: data/.cvsignore, data/Makefile.am, data/grubby-config,
-	data/grubby-config.in, modules/player.c: - make path entries in
-	grubby-config dynamic so it works in local installations   too
-	(like /home/ggz/usr/lib...)
+2002-09-24 08:40:15  Rev 4683   dr_maux
 
-2002-01-09 06:51  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/src/net.c:
+	  - use select() instead of polling
+	  Old grubby ate 95% CPU.
+	  New grubby is dieting.
 
-	* TODO: - missed TODO file from earlier commit
 
-2002-01-09 06:51  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-24 07:36:20  Rev 4679   dr_maux
 
-	* grubby/data/Makefile.am: - update todo file: should be ready for
-	0.0.5 now - fix typo in makefile.am, but make distcheck STILL won't
-	work :(
+	* QuickStart.GGZ README.GGZ:
+	  - update intro docs
 
-2002-01-09 05:08  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/: modules/badword.c, modules/exec.c, modules/player.c,
-	src/module.c, src/player.c: - move all configuration over to new
-	ggz_conf_* - this expects libggz in the same place where ggzcore
-	is, which is ok for now - actually a very wise decision, now grubby
-	is independent of GGZ's protocol   stuff except for netggz; after
-	netconsole I expect a netirc module for 0.0.6
+2002-09-23 22:45:37  Rev 4674   jdorje
 
-2002-01-09 04:56  Josef Spillner <dr_maux@users.sourceforge.net>
+	* acinclude.ggz:
+	  Update acinclude.ggz in the txt-client, and label acinclude.ggz as 
+	  being
+	  included in txt-client.
 
-	* grubby/: data/dict.pl, data/meeting.rb, data/messages.rb,
-	data/rdf.pl, modules/badword.c, modules/exec.c, modules/extra.c,
-	modules/learning.c, modules/people.c, modules/player.c,
-	modules/programming.c, modules/self.c, modules/simplereturn.c,
-	src/Makefile.am, src/guru.c, src/guru.h, src/gurumod.h, src/i18n.c,
-	src/i18n.h, src/main.c, src/module.c, src/module.h, src/net.c,
-	src/net.h, src/netconsole.c, src/player.c, src/player.h: - add new
-	net module: netconsole (useful for grubby debugging) - suppress
-	most debug messages - update copyrights
 
-2002-01-08 03:20  Jason Short <jdorje@users.sourceforge.net>
+2002-09-19 16:18:33  Rev 4631   jdorje
 
-	* acinclude.ggz: Added acinclude to utils/ module, and updated the
-	years on the copyright notice.
+	* acinclude.ggz:
+	  Include gnome-client on the list of modules that use acinclude.ggz.
 
-2002-01-07 09:31  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* .cvsignore: - put acinclude.m4 into .cvsignore
+2002-09-14 07:46:34  Rev 4561   dr_maux
 
-2002-01-07 09:30  Josef Spillner <dr_maux@users.sourceforge.net>
+	* man/grubby.6:
+	  - add command line options to grubby's man page
 
-	* grubby/data/grubby-config, grubby/modules/Makefile.am,
-	grubby/src/Makefile.am, man/grubby.6: - install all plugins in
-	$(libdir)/grubby instead of just $(libdir), this saves	 us
-	ldconfig and policy complaints - improve grubby-config: now
-	pressing enter all the time leads to nice default   values, only
-	name and owner must be given - update manpage
 
-2001-12-22 17:54  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-05 19:52:47  Rev 4410   dr_maux
 
-	* grubby/modules/: people.c, player.c, self.c: - more fixes
-	
-	i
+	* grubby/data/rdf.pl grubby/data/dict.pl:
+	  - Perl cleanups:
+	   * 'use strict' syntax
+	   * check for Perl 5.8 compatibility
+	   * add Worldforge to RDF news feeds
+	   * when requesting news via HTTP, send out compliant HTTP/1.0 header
 
-2001-12-22 17:14  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/modules/self.c: - actually let him say '$name help' rather
-	than 'guru help'
+2002-08-20 20:49:40  Rev 4376   jdorje
 
-2001-12-22 17:06  Josef Spillner <dr_maux@users.sourceforge.net>
+	* acinclude.ggz:
+	  Changed -I<directory> to -isystem<directory> to avoid warnings in 
+	  gcc3.
 
-	* grubby/src/main.c: - recognize command line options, e.g. for
-	hostname or grubby's name - requires getopt, but this is standard
-	nowadays.
 
-2001-12-17 02:13  Jason Short <jdorje@users.sourceforge.net>
+2002-08-18 07:53:02  Rev 4368   dr_maux
 
-	* acinclude.ggz: Updated acinclude.ggz to check for new ggzmod;
-	added it to gtk-games and gtk-client.
+	* grubby/data/webtranslator.sh:
+	  - swapped argument order, since the message to be has a variable 
+	  length, we put
+	    it at the last position
+	  - read input line instead of using command line arguments
+	  The script can now be used in a pipe:
+	  echo "grubby translate de-fr was ist ein fisch" | ./webtranslator.sh
+	  -> yields: ce qui est un poisson
+	  (Grubby is less than 3 years old - nobody expects that a 3yo can 
+	  speak French
+	  perfectly, n'est-ce pas?)
 
-2001-12-13 07:53  Jason Short <jdorje@users.sourceforge.net>
 
-	* acinclude.ggz: Added documentation to the file explaining how it
-	has to be kept synced between different modules.  Also updated the
-	file, which appeared to be very out of date.
+2002-08-13 05:35:49  Rev 4365   dr_maux
 
-2001-11-05 05:57  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/data/webtranslator.sh:
+	  - fix cache: only accept a translation if it was stored with the 
+	  very same
+	    language combination
+	    (I guess it's a bug in grep? It doesn't accept \t in an 
+	  expression)
+	  - store cache in ~/.ggz/grubby/google instead of ~/google
 
-	* grubby/: data/Makefile.am, modules/badword.c, src/main.c,
-	src/net.c: - fix modbadword (is now NULL safe) - include a /wall
-	command (announce) for admins - install translation correctly in a
-	fakeroot environment
 
-2001-10-13 16:48  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-08-12 20:44:31  Rev 4364   dr_maux
 
-	* grubby/data/: de.po, fr.po, guru.pot: - update german and french
-	translation of what grubby may speak and what he   better keeps for
-	himself :)
+	* grubby/data/webtranslator.sh grubby/data/Makefile.am:
+	  - Powerful translation backend for grubby using google's 
+	  translation service.
+	  - Initial code written by chimera
+	  It is intended to work like
+	  	grubby translate "oh my god this is a whole sentence" en-es
+	  All translations are cached (there's a bug but this is fixed soon).
+	  The only thing left to do is to recognize quotes from the input. 
+	  On the command
+	  line, this works already.
+	  For single words, the traditional translator will still be faster 
+	  I guess.
 
-2001-10-13 16:28  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/: data/rdf.pl, modules/badword.c, modules/extra.c,
-	modules/learning.c, src/module.c, src/net.c: - some more cleanups -
-	enhance plugins 'badword' and 'extra'
+2002-05-24 18:56:14  Rev 4231   dr_maux
 
-2001-10-12 19:42  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.in .cvsignore:
+	  - if ruby is not found, reset the variables for it
+	  Another Hurd-powered bug reports - and we do now have experimental 
+	  Debian
+	  GNU/Hurd packages if they're ever needed :)
+	  (Using a stripped-down version of libggz because the pthreads are
+	  experimental there.)
+	  - add autom4te.cache to .cvsignore
 
-	* grubby/modules/: Makefile.am, extra.c: - add extra module: handle
-	'grubby say xxx' commands and reactions on greeting   messages
 
-2001-10-12 05:50  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-05-22 09:33:18  Rev 4228   dr_maux
 
-	* grubby/: modules/learning.c, modules/people.c,
-	modules/simplereturn.c, src/module.c: - make modlearning NULL-safe
-	- lower the priorities of modsimplereturn and modlearning so they
-	don't speak   up all the time
+	* grubby/data/Makefile.am:
+	  - add embedtest.rb to makefile.am
+	  - to test this, add to .ggz/grubby/modembed.rc
+	  [scripts] = test
+	  test = /usr/local/.../embedtest.rb
 
-2001-10-12 05:23  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/data/Makefile.am: - put grubby-config into scripts, not
-	data
+2002-05-22 09:31:39  Rev 4227   dr_maux
 
-2001-10-12 04:57  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/src/net.c grubby/modules/embed.c grubby/data/embedtest.rb:
+	  - implement embedded scripts interpreter for ruby
+	  - add test script
+	    => The script gets the chat messages properly, but when changing 
+	  it to return
+	    the results, the original content reappears in the module, and 
+	  so grubby acts
+	    like a repeater. This is odd.
+	  - fix ggzcore_read_data
 
-	* grubby/data/: Makefile.am, grubby-config: - let grubby-config be
-	useful (i.e. it works now)
 
-2001-10-12 03:30  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-18 20:02:54  Rev 4019   dr_maux
 
-	* grubby/src/module.c: - fix memory issues in module.c - forgot to
-	dlclose() when unloading, fixed now - provide new admin command:
-	reload <plugin> is useful for development
+	* configure.in acconfig.h:
+	  - add check for ruby so it can be setup correctly
+	  - if it's not there, 'embed' turns into an empty module
 
-2001-10-12 02:04  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/: doc/Setup, modules/badword.c, modules/exec.c,
-	modules/learning.c, modules/people.c, modules/player.c,
-	modules/programming.c, modules/self.c, modules/simplereturn.c,
-	src/guru.c, src/guru.h, src/gurumod.h, src/i18n.c, src/i18n.h,
-	src/main.c, src/module.c, src/module.h, src/net.c, src/net.h,
-	src/player.c, src/player.h: - more code cleanup - put comments into
-	sources to ease life for hackers - marked critical sections which
-	are to be fixed
+2002-04-18 20:01:59  Rev 4018   dr_maux
 
-2001-10-05 22:14  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/modules/Makefile.am grubby/modules/embed.c:
+	  - prepare embedded scripting in grubby: new module 'embed'
+	  - this can use the same modules as 'exec', but is faster and can 
+	  provide more
+	    advantages in the future
 
-	* grubby/modules/: Makefile.am, learning.c: - add dynamic learning
-	module - warning: it carries a memory leak
 
-2001-09-09 14:03  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-18 19:30:05  Rev 4016   dr_maux
 
-	* grubby/: data/messages.rb, doc/Setup: - add messages.rb file -
-	put message and meeting databases into $HOME/... instead of /tmp -
-	update Setup file
+	* configure.in:
+	  - go up to 0.0.6pre
+	  - output some text after running configure
 
-2001-09-09 14:01  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/: data/Makefile.am, data/de.po, data/fr.po, data/guru.pot,
-	data/meeting.rb, modules/exec.c, modules/people.c, src/i18n.c: -
-	add new module: messages (for private messages and alerts) - enable
-	multiline translation - actually pass player as argv[1] to external
-	programs
+2002-04-13 07:16:27  Rev 3971   bmh
 
-2001-09-09 11:44  Josef Spillner <dr_maux@users.sourceforge.net>
+	* README.GGZ AUTHORS ChangeLog NEWS QuickStart.GGZ:
+	  - Updated docs for 0.0.5
 
-	* grubby/: modules/Makefile.am, modules/player.c, src/Makefile.am,
-	src/module.c, src/net.c, src/player.c: - preloading of player
-	database library to make it globally accessible - changed
-	ggzcore_list_room call
 
-2001-09-02 06:30  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-13 04:45:37  Rev 3956   dr_maux
 
-	* grubby/: modules/.cvsignore, modules/Makefile.am,
-	modules/people.c, modules/self.c, src/.cvsignore, src/Makefile.am,
-	src/gurumod.h, src/i18n.c, src/i18n.h, src/main.c, src/module.c,
-	src/module.h, src/player.c: - implemented dynamic translation
-	("grubby i am from de") - b0rked all code - warning! - because
-	there's no shared instance of player.c - nicer output and
-	recognization of own name
+	* configure.in:
+	  - bump grubby to 0.0.5
 
-2001-09-01 14:56  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* .cvsignore, AUTHORS, TODO, COPYING, README, INSTALL, Makefile.am,
-	NEWS, README.GGZ, autogen.sh, configure.in, ChangeLog, acconfig.h,
-	acinclude.ggz, grubby/.cvsignore, grubby/Makefile.am,
-	grubby/doc/INTERFACE, grubby/doc/Migration,
-	grubby/doc/SCORING_SYSTEM, grubby/doc/Setup, grubby/doc/Tutorial,
-	grubby/doc/players, grubby/modules/.cvsignore,
-	grubby/modules/Makefile.am, grubby/modules/exec.c,
-	grubby/modules/exec.h, grubby/modules/programming.c,
-	grubby/modules/simplereturn.c, grubby/modules/badword.c,
-	grubby/modules/people.c, grubby/modules/player.c,
-	grubby/modules/self.c, grubby/src/guru.c, grubby/src/guru.h,
-	grubby/src/i18n.h, grubby/src/main.c, grubby/src/.cvsignore,
-	grubby/src/Makefile.am, grubby/src/gurumod.h, grubby/src/i18n.c,
-	grubby/src/module.c, grubby/src/module.h, grubby/src/net.c,
-	grubby/src/net.h, grubby/src/player.c, grubby/src/player.h,
-	grubby/data/.cvsignore, grubby/data/Makefile.am, grubby/data/de.po,
-	grubby/data/dict.pl, grubby/data/fr.po, grubby/data/grubby-config,
-	grubby/data/guru.pot, grubby/data/meeting.rb, grubby/data/rdf.pl,
-	grubby/data/trans_convert.pl, man/.cvsignore, man/Makefile.am,
-	man/grubby.6: Initial revision
+2002-04-13 00:45:42  Rev 3929   dr_maux
 
-2001-09-01 14:56  Josef Spillner <dr_maux@users.sourceforge.net>
+	* Makefile.am:
+	  - remove local make clean rule again
 
-	* .cvsignore, AUTHORS, TODO, COPYING, README, INSTALL, Makefile.am,
-	NEWS, README.GGZ, autogen.sh, configure.in, ChangeLog, acconfig.h,
-	acinclude.ggz, grubby/.cvsignore, grubby/Makefile.am,
-	grubby/doc/INTERFACE, grubby/doc/Migration,
-	grubby/doc/SCORING_SYSTEM, grubby/doc/Setup, grubby/doc/Tutorial,
-	grubby/doc/players, grubby/modules/.cvsignore,
-	grubby/modules/Makefile.am, grubby/modules/exec.c,
-	grubby/modules/exec.h, grubby/modules/programming.c,
-	grubby/modules/simplereturn.c, grubby/modules/badword.c,
-	grubby/modules/people.c, grubby/modules/player.c,
-	grubby/modules/self.c, grubby/src/guru.c, grubby/src/guru.h,
-	grubby/src/i18n.h, grubby/src/main.c, grubby/src/.cvsignore,
-	grubby/src/Makefile.am, grubby/src/gurumod.h, grubby/src/i18n.c,
-	grubby/src/module.c, grubby/src/module.h, grubby/src/net.c,
-	grubby/src/net.h, grubby/src/player.c, grubby/src/player.h,
-	grubby/data/.cvsignore, grubby/data/Makefile.am, grubby/data/de.po,
-	grubby/data/dict.pl, grubby/data/fr.po, grubby/data/grubby-config,
-	grubby/data/guru.pot, grubby/data/meeting.rb, grubby/data/rdf.pl,
-	grubby/data/trans_convert.pl, man/.cvsignore, man/Makefile.am,
-	man/grubby.6: - push grubby into his very own directory
+
+2002-04-09 20:33:42  Rev 3862   dr_maux
+
+	* debian/rules debian/control:
+	  - update build information
+
+
+2002-04-06 21:22:03  Rev 3793   dr_maux
+
+	* debian/postinst debian/prerm debian/changelog debian/rules debian/.
+	  cvsignore debian debian/control:
+	  - debianize grubby
+
+
+2002-04-06 21:13:57  Rev 3792   dr_maux
+
+	* Makefile.am:
+	  - config status deletion rule
+
+
+2002-04-06 15:39:12  Rev 3778   dr_maux
+
+	* acinclude.ggz:
+	  - sync acinclude.ggz
+
+
+2002-04-05 22:18:14  Rev 3759   dr_maux
+
+	* README:
+	  - update package information
+
+
+2002-04-05 22:03:05  Rev 3758   dr_maux
+
+	* README.GGZ:
+	  - update installation instructions and overview
+
+
+2002-03-22 22:30:10  Rev 3620   dr_maux
+
+	* grubby/src/net.c grubby/src/i18n.c:
+	  - adopt to new ggzconf stuff
+	  - check for NULL pointer (yeah, you see how important this is... 
+	  it hit me
+	    twice today...)
+
+
+2002-03-06 21:19:37  Rev 3549   dr_maux
+
+	* grubby/data/de.po:
+	  - fix missing %s in translation
+
+
+2002-03-02 16:22:16  Rev 3510   dr_maux
+
+	* grubby/src/net.c:
+	  - omit TLS argument until tls-branch is merged with HEAD
+
+
+2002-03-02 16:10:11  Rev 3509   dr_maux
+
+	* TODO:
+	  - update todo file
+
+
+2002-03-02 16:08:56  Rev 3508   dr_maux
+
+	* grubby/data/grubby-config.in grubby/modules/badword.c 
+	  grubby/data/guru.pot grubby/modules/extra.c grubby/src/i18n.h 
+	  grubby/src/main.c grubby/data/fr.po grubby/modules/people.c 
+	  grubby/src/module.c grubby/data/de.po grubby/src/module.h 
+	  grubby/doc/INTERFACE grubby/doc/Setup grubby/src/i18n.c:
+	  - handle 'player translation' and 'default translation'
+	  - enhance grubby-config to include default language
+
+
+2002-03-02 14:50:48  Rev 3507   dr_maux
+
+	* grubby/data/guru.pot grubby/src/i18n.h grubby/src/main.c 
+	  grubby/data/fr.po grubby/modules/people.c grubby/data/de.po 
+	  grubby/src/net.c grubby/modules/self.c grubby/src/module.h 
+	  grubby/src/i18n.c:
+	  - i18n updates:
+	   + notify a player if he changes his language (ideally, the bot 
+	  would tell him
+	   whether a translation is present at all)
+	   + fix some of the modules, BUT: the whole translation system will 
+	  have to be
+	   altered in order to work properly for combined strings
+
+
+2002-03-02 13:04:23  Rev 3506   dr_maux
+
+	* .cvsignore:
+	  - put new auto-generated automake1.5 files into .cvsignore
+
+
+2002-03-02 12:49:13  Rev 3505   dr_maux
+
+	* man/grubby-config.1:
+	  - fix grubby-config manpage (section 1, not 6, and verbose++)
+
+
+2002-02-03 21:13:20  Rev 3233   jdorje
+
+	* acinclude.ggz:
+	  Updated acinclude.ggz from changes made in ggzd.
+
+
+2002-01-24 20:04:13  Rev 3190   dr_maux
+
+	* autogen.sh:
+	  - don't generate player.c anymore as it's not used anyway (we use 
+	  RTLD_GLOBAL)
+
+
+2002-01-24 20:03:25  Rev 3189   dr_maux
+
+	* grubby/src/player.h grubby/src/guru.c grubby/modules/programming.c 
+	  grubby/modules/extra.c grubby/src/main.c grubby/modules/exec.c 
+	  grubby/src/module.c grubby/src/net.c grubby/src/guru.h 
+	  grubby/src/gurumod.h grubby/modules/self.c 
+	  grubby/modules/simplereturn.c grubby/src/module.h 
+	  grubby/src/player.c grubby/modules/learning.c:
+	  - add --datadir command line switch
+	  - this needed some API changes and doesn't work for external 
+	  scripts yet
+
+
+2002-01-19 19:49:27  Rev 3151   dr_maux
+
+	* grubby/modules/people.c:
+	  - don't be so loud in modpeople
+
+
+2002-01-19 18:15:50  Rev 3148   dr_maux
+
+	* debian/postinst debian/prerm debian/changelog debian/copyright 
+	  debian/docs debian/rules debian/.cvsignore debian/README.Debian 
+	  debian debian/control:
+	  - debianize grubby
+
+
+2002-01-19 17:54:37  Rev 3147   dr_maux
+
+	* man/Makefile.am man/grubby-config.1:
+	  - add minimalistic man page for grubby-config
+
+
+2002-01-19 17:54:01  Rev 3146   dr_maux
+
+	* grubby/src/main.c:
+	  - give hint to grubby-config if not configured yet
+
+
+2002-01-19 17:46:36  Rev 3145   dr_maux
+
+	* configure.in:
+	  - don't check for easysock (it was never needed anyway)
+
+
+2002-01-19 17:46:03  Rev 3144   dr_maux
+
+	* grubby/data/messages.rb grubby/data/meeting.rb:
+	  - correct path to ruby
+
+
+2002-01-12 10:13:19  Rev 3087   jdorje
+
+	* acinclude.ggz:
+	  Added acinclude.ggz to ggzd and ggz-client-libs.
+
+
+2002-01-12 10:05:20  Rev 3086   jdorje
+
+	* acinclude.ggz:
+	  Added libggz support to acinclude.ggz.
+
+
+2002-01-11 13:11:05  Rev 3055   dr_maux
+
+	* configure.in:
+	  - create grubby-config during configure step
+
+
+2002-01-11 13:10:34  Rev 3054   dr_maux
+
+	* grubby/data grubby/data/grubby-config.in grubby/data/Makefile.am 
+	  grubby/modules/player.c grubby/data/.cvsignore 
+	  grubby/data/grubby-config:
+	  - make path entries in grubby-config dynamic so it works in local 
+	  installations
+	    too (like /home/ggz/usr/lib...)
+
+
+2002-01-09 12:51:47  Rev 3035   dr_maux
+
+	* TODO:
+	  - missed TODO file from earlier commit
+
+
+2002-01-09 12:51:20  Rev 3034   dr_maux
+
+	* grubby/data/Makefile.am:
+	  - update todo file: should be ready for 0.0.5 now
+	  - fix typo in makefile.am, but make distcheck STILL won't work :(
+
+
+2002-01-09 11:08:17  Rev 3028   dr_maux
+
+	* grubby/modules/badword.c grubby/modules/exec.c grubby/src/module.c 
+	  grubby/src/player.c grubby/modules/player.c:
+	  - move all configuration over to new ggz_conf_*
+	  - this expects libggz in the same place where ggzcore is, which is 
+	  ok for now
+	  - actually a very wise decision, now grubby is independent of 
+	  GGZ's protocol
+	    stuff except for netggz; after netconsole I expect a netirc 
+	  module for 0.0.6
+
+
+2002-01-09 10:56:20  Rev 3027   dr_maux
+
+	* grubby/src/player.h grubby/modules/badword.c 
+	  grubby/modules/programming.c grubby/modules/extra.c 
+	  grubby/modules/exec.c grubby/modules/people.c 
+	  grubby/src/netconsole.c grubby/data/messages.rb 
+	  grubby/modules/self.c grubby/modules/simplereturn.c 
+	  grubby/modules/player.c grubby/src/i18n.c grubby/modules/learning.
+	  c grubby/src/guru.c grubby/src/main.c grubby/src/i18n.h 
+	  grubby/src/module.c grubby/data/rdf.pl grubby/src/net.c 
+	  grubby/src/guru.h grubby/src/gurumod.h grubby/src/Makefile.am 
+	  grubby/src/module.h grubby/data/meeting.rb grubby/src/net.h 
+	  grubby/src/player.c grubby/data/dict.pl:
+	  - add new net module: netconsole (useful for grubby debugging)
+	  - suppress most debug messages
+	  - update copyrights
+
+
+2002-01-08 09:21:08  Rev 3011   jdorje
+
+	* acinclude.ggz:
+	  Added acinclude to utils/ module, and updated the years on the
+	  copyright notice.
+
+
+2002-01-07 15:31:08  Rev 3010   dr_maux
+
+	* .cvsignore:
+	  - put acinclude.m4 into .cvsignore
+
+
+2002-01-07 15:30:12  Rev 3009   dr_maux
+
+	* man/grubby.6 grubby/src/Makefile.am grubby/modules/Makefile.am 
+	  grubby/data/grubby-config:
+	  - install all plugins in $(libdir)/grubby instead of just 
+	  $(libdir), this saves
+	    us ldconfig and policy complaints
+	  - improve grubby-config: now pressing enter all the time leads to 
+	  nice default
+	    values, only name and owner must be given
+	  - update manpage
+
+
+2001-12-22 23:54:14  Rev 2985   dr_maux
+
+	* grubby/modules/people.c grubby/modules/self.c 
+	  grubby/modules/player.c:
+	  - more fixes
+	  i
+
+
+2001-12-22 23:14:37  Rev 2984   dr_maux
+
+	* grubby/modules/self.c:
+	  - actually let him say '$name help' rather than 'guru help'
+
+
+2001-12-22 23:06:47  Rev 2983   dr_maux
+
+	* grubby/src/main.c:
+	  - recognize command line options, e.g. for hostname or grubby's name
+	  - requires getopt, but this is standard nowadays.
+
+
+2001-12-17 08:14:12  Rev 2917   jdorje
+
+	* acinclude.ggz:
+	  Updated acinclude.ggz to check for new ggzmod; added it to 
+	  gtk-games and
+	  gtk-client.
+
+
+2001-12-13 13:53:50  Rev 2889   jdorje
+
+	* acinclude.ggz:
+	  Added documentation to the file explaining how it has to be kept 
+	  synced
+	  between different modules.  Also updated the file, which appeared 
+	  to be
+	  very out of date.
+
+
+2001-11-05 11:57:52  Rev 2673   dr_maux
+
+	* grubby/modules/badword.c grubby/src/main.c grubby/src/net.c 
+	  grubby/data/Makefile.am:
+	  - fix modbadword (is now NULL safe)
+	  - include a /wall command (announce) for admins
+	  - install translation correctly in a fakeroot environment
+
+
+2001-10-13 21:48:51  Rev 2558   dr_maux
+
+	* grubby/data/guru.pot grubby/data/fr.po grubby/data/de.po:
+	  - update german and french translation of what grubby may speak 
+	  and what he
+	    better keeps for himself :)
+
+
+2001-10-13 21:28:41  Rev 2557   dr_maux
+
+	* grubby/modules/badword.c grubby/modules/extra.c grubby/src/module.
+	  c grubby/data/rdf.pl grubby/src/net.c grubby/modules/learning.c:
+	  - some more cleanups
+	  - enhance plugins 'badword' and 'extra'
+
+
+2001-10-13 00:42:14  Rev 2555   dr_maux
+
+	* grubby/modules/extra.c grubby/modules/Makefile.am:
+	  - add extra module: handle 'grubby say xxx' commands and reactions 
+	  on greeting
+	    messages
+
+
+2001-10-12 10:50:20  Rev 2554   dr_maux
+
+	* grubby/modules/people.c grubby/src/module.c 
+	  grubby/modules/simplereturn.c grubby/modules/learning.c:
+	  - make modlearning NULL-safe
+	  - lower the priorities of modsimplereturn and modlearning so they 
+	  don't speak
+	    up all the time
+
+
+2001-10-12 10:23:40  Rev 2550   dr_maux
+
+	* grubby/data/Makefile.am:
+	  - put grubby-config into scripts, not data
+
+
+2001-10-12 09:57:43  Rev 2549   dr_maux
+
+	* grubby/data/Makefile.am grubby/data/grubby-config:
+	  - let grubby-config be useful (i.e. it works now)
+
+
+2001-10-12 08:30:57  Rev 2548   dr_maux
+
+	* grubby/src/module.c:
+	  - fix memory issues in module.c
+	  - forgot to dlclose() when unloading, fixed now
+	  - provide new admin command: reload <plugin> is useful for 
+	  development
+
+
+2001-10-12 07:04:22  Rev 2547   dr_maux
+
+	* grubby/src/player.h grubby/modules/badword.c 
+	  grubby/modules/programming.c grubby/modules/exec.c 
+	  grubby/modules/people.c grubby/modules/self.c 
+	  grubby/modules/simplereturn.c grubby/modules/player.c 
+	  grubby/src/i18n.c grubby/modules/learning.c grubby/src/guru.c 
+	  grubby/src/i18n.h grubby/src/main.c grubby/src/module.c 
+	  grubby/src/net.c grubby/src/gurumod.h grubby/src/guru.h 
+	  grubby/src/module.h grubby/src/net.h grubby/src/player.c 
+	  grubby/doc/Setup:
+	  - more code cleanup
+	  - put comments into sources to ease life for hackers
+	  - marked critical sections which are to be fixed
+
+
+2001-10-06 03:14:50  Rev 2540   dr_maux
+
+	* grubby/modules/Makefile.am grubby/modules/learning.c:
+	  - add dynamic learning module
+	  - warning: it carries a memory leak
+
+
+2001-09-09 19:03:35  Rev 2431   dr_maux
+
+	* grubby/data/messages.rb grubby/doc/Setup:
+	  - add messages.rb file
+	  - put message and meeting databases into $HOME/... instead of /tmp
+	  - update Setup file
+
+
+2001-09-09 19:01:30  Rev 2430   dr_maux
+
+	* grubby/data/guru.pot grubby/data/fr.po grubby/modules/exec.c 
+	  grubby/modules/people.c grubby/data/de.po grubby/data/Makefile.am 
+	  grubby/data/meeting.rb grubby/src/i18n.c:
+	  - add new module: messages (for private messages and alerts)
+	  - enable multiline translation
+	  - actually pass player as argv[1] to external programs
+
+
+2001-09-09 16:44:36  Rev 2428   dr_maux
+
+	* grubby/src/module.c grubby/src/net.c grubby/src/Makefile.am 
+	  grubby/modules/Makefile.am grubby/src/player.c 
+	  grubby/modules/player.c:
+	  - preloading of player database library to make it globally 
+	  accessible
+	  - changed ggzcore_list_room call
+
+
+2001-09-02 11:30:06  Rev 2342   dr_maux
+
+	* grubby/src/i18n.h grubby/src/main.c grubby/modules/people.c 
+	  grubby/src/module.c grubby/src/gurumod.h grubby/src/Makefile.am 
+	  grubby/modules/Makefile.am grubby/modules/self.c grubby/src/module.
+	  h grubby/src/.cvsignore grubby/src/player.c grubby/modules/.
+	  cvsignore grubby/src grubby/src/i18n.c grubby/modules:
+	  - implemented dynamic translation ("grubby i am from de")
+	  - b0rked all code - warning! - because there's no shared instance 
+	  of player.c
+	  - nicer output and recognization of own name
+
+
+2001-09-01 19:56:13  Rev 2336   dr_maux
+
+	* COPYING man NEWS .cvsignore grubby/doc/players grubby/modules/.
+	  cvsignore grubby/src grubby/data/guru.pot configure.in 
+	  grubby/data/fr.po ChangeLog grubby/doc/Migration grubby/data/rdf.
+	  pl grubby/src/net.c man/.cvsignore grubby/src/gurumod.h 
+	  grubby/src/net.h grubby/modules/people.c grubby/modules/exec.c 
+	  grubby/.cvsignore grubby/data/de.po man/grubby.6 
+	  grubby/modules/Makefile.am grubby/modules/exec.h 
+	  grubby/data/Makefile.am grubby/src/guru.c grubby/src/main.c 
+	  grubby/src/module.c grubby/src/guru.h grubby/src/module.h 
+	  grubby/data/meeting.rb grubby/doc/INTERFACE 
+	  grubby/data/grubby-config grubby/doc/Tutorial grubby/Makefile.am 
+	  grubby/modules/programming.c INSTALL grubby/doc/SCORING_SYSTEM 
+	  autogen.sh grubby/modules/self.c acinclude.ggz 
+	  grubby/modules/player.c README.GGZ man/Makefile.am 
+	  grubby/src/Makefile.am README grubby/src/.cvsignore 
+	  grubby/src/player.c grubby/doc acconfig.h grubby/modules 
+	  grubby/data grubby/src/player.h grubby/data/trans_convert.pl TODO 
+	  grubby/modules/badword.c Makefile.am grubby/modules/simplereturn.c 
+	  grubby/data/.cvsignore grubby/src/i18n.c AUTHORS grubby/src/i18n.h 
+	  grubby grubby/doc/Setup grubby/data/dict.pl:
+	  Initial revision
+
 

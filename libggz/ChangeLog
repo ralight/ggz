@@ -1,1822 +1,2513 @@
-2005-05-14 21:51  josef
+2005-09-25 13:22:07  Rev 7565   josef
 
-	* src/easysock.c: - improve the ipv6 patch (fixing bugs actually)
+	* Makefile.am:
+	  - remove libtool.m4, add platform.m4
 
-2005-05-06 23:19  josef
 
-	* m4/ggz.m4: - synchronization of ggz.m4 files - fixes typo: use
-	  ggzdconfdir instead of ggzconfdir - fixes compiler problems: use
-	  -isystem X instead of -isystemX - fixes ggzcore linkage force in
-	  ggzmod problem
+2005-09-25 13:20:08  Rev 7564   josef
 
-2005-05-02 20:03  oojah
+	* Doxyfile:
+	  - doxygen version bump
 
-	* configure.ac, src/easysock.c, src/security/ggz_tls_gnutls.c,
-	  src/security/ggz_tls_none.c, src/security/ggz_tls_openssl.c:
-	  Recent changes to easysock do not appear to be supported under
-	  winsock on Win32. This means winsock2 must be used. This update
+
+2005-09-25 11:14:09  Rev 7554   josef
+
+	* src/Makefile.am src/ggz.h:
+	  - library version bump: only implementation changes in libggz
+
+
+2005-09-25 10:11:25  Rev 7551   josef
+
+	* configure.ac:
+	  - more version string changes in the build system
+
+
+2005-09-25 09:54:30  Rev 7550   josef
+
+	* NEWS README.GGZ:
+	  - version updates in common files
+	  - news and release-specific changes
+
+
+2005-09-23 21:54:25  Rev 7547   josef
+
+	* COPYING:
+	  - add copyright files for gnome-client and sdl-games to SVN
+	  - update all copyright files with current version, including the 
+	  new FSF address in Boston
+
+
+2005-09-18 18:46:58  Rev 7546   josef
+
+	* src/xmlelement.c src/ggz.h:
+	  - specify correct explicit process parameters
+
+
+2005-09-18 16:04:24  Rev 7543   josef
+
+	* src/xmlelement.c src/ggz.h:
+	  - use fully qualified function prototypes
+
+
+2005-09-15 17:50:59  Rev 7515   josef
+
+	* m4/libtool.m4 m4/platform.m4:
+	  - remove local libtool copy as the system file should be used
+	  - add platform.m4 for OS-level and build environment checks
+
+
+2005-09-15 17:49:48  Rev 7514   josef
+
+	* src/memory.c m4/tls.m4 src/xmlelement.c configure.ac src/list.c 
+	  src/misc.c src/ggz_common.c src/security/Makefile.am src/easysock.
+	  c autogen.sh src/numberlist.c src/conf.c src/stack.c src/msg.c:
+	  - commit the whole shebang of changes
+	  See https://mail.ggzgamingzone.
+	  org/pipermail/ggz-dev/2005-September/000538.html.
+	  The changes to autogen.sh and probably also platform.m4 should be 
+	  synchronised.
+
+
+2005-09-14 11:00:24  Rev 7513   josef
+
+	* src/Makefile.am man/Makefile.am src/security/Makefile.am Makefile.
+	  am tests/Makefile.am:
+	  - big libggz makefile cleanup
+	  - remove all RCS ids, as they're superfluous with SVN
+	  - remove all empty SUBDIRS to prevent double-entry (I think they 
+	  only existed due to an
+	  automake bug)
+	  - handle LDFLAGS better
+
+
+2005-09-14 09:27:13  Rev 7508   josef
+
+	* configure.ac:
+	  - start cleaning up the configure scripts
+	  - AM_PROG_LIBTOOL is now AC_PROG_LIBTOOL
+	  - drop AM_PROG_CC_STD, it's included in AC_PROG_CC now
+	  - drop AC_ISC_POSIX, as this was only in for some weird old Sun 
+	  Unix variant
+	  What about others like AC_PROG_LN? Also all the windows-specific 
+	  checks should
+	  go into their own macro.
+
+
+2005-09-14 09:02:59  Rev 7507   josef
+
+	* autogen.sh:
+	  - several convenience improvements to autogen.sh
+
+
+2005-08-20 21:41:45  Rev 7464   josef
+
+	* configure.ac:
+	  - bump version to 0.0.12pre to not create *-0.0.11.tar.gz files
+	  - remove the gtk-games override stuff
+
+
+2005-08-13 17:45:03  Rev 7389   josef
+
+	* m4/ggz.m4:
+	  - build system synchronisation
+
+
+2005-08-05 22:17:17  Rev 7366   josef
+
+	* m4/ggz.m4:
+	  - use 'true' instead of '/bin/true'
+	  Not that it matters much because it should be prefixed with - in a 
+	  makefile,
+	  but on freebsd there's no /bin/true
+
+
+2005-06-18 08:14:03  Rev 7286   josef
+
+	* m4/ggz.m4:
+	  - new macro: AC_GGZ_VERSION
+	  This can be called as AC_GGZ_VERSION(0, 0, 11).
+	  It will bail out if the version (currently that of libggz) is too 
+	  old.
+	  Since it needs the headers, it should only be called after 
+	  AC_GGZ_LIBGGZ.
+	  This macro is very useful for external games.
+
+
+2005-06-10 11:54:33  Rev 7266   josef
+
+	* src/security/base64.c ChangeLog src/easysock.c src/conf.c 
+	  src/security/hashfunc.c:
+	  - GCC4 fixes
+	  - the changelog was not committed yet
+
+
+2005-06-02 14:52:21  Rev 7264   josef
+
+	* tests/tls.c:
+	  - sleep 5 seconds instead of just 1
+	  Actually this is bad and the TLS handshake code should be improved 
+	  to not
+	  sleep(1) anymore. This is why the bug report has to stay open for 
+	  a while.
+
+
+2005-05-28 08:15:25  Rev 7252   josef
+
+	* m4/ggz.m4:
+	  - another change from freelords: honour prefix for ggz-config
+	  Now the following happens: If a game is installed into a prefix 
+	  different
+	  from the one of GGZ (say GGZ is in /usr/local and the game goes to 
+	  $HOME),
+	  then while all GGZ data files are copied, no GGZ-related tools are 
+	  run.
+	  They wouldn't have any effect anyway... neither GGZ integration 
+	  nor desktop
+	  integration can be achieved by using a different prefix, even 
+	  though some
+	  desktops can be configured to look up this extra directories, but 
+	  this is
+	  not yet possible with GGZ and also would unnecessarily complicate 
+	  it at
+	  this point of time.
+	  Josef
+
+
+2005-05-25 21:17:08  Rev 7251   josef
+
+	* m4/ggz.m4:
+	  - first small fix: AC_GGZ_INIT is a public macro, not a private one
+	  - second small fix: in ignore mode, substitute ggz dirs correctly
+	  Still AM_CONDITIONAL() should be used for all GGZ data handling, 
+	  whereas
+	  #ifdef WITH_GGZ should be used in the source code.
+
+
+2005-05-21 11:19:41  Rev 7218   josef
+
+	* man/ggz.h.3:
+	  - update of doxygen-derived manpage
+
+
+2005-05-21 11:16:53  Rev 7217   josef
+
+	* Doxyfile:
+	  - doxygen file update
+
+
+2005-05-21 11:13:11  Rev 7216   josef
+
+	* README:
+	  - common files synchronisation and README update for 0.0.11
+
+
+2005-05-21 11:00:20  Rev 7215   josef
+
+	* QuickStart.GGZ README.GGZ AUTHORS NEWS:
+	  - common files update
+
+
+2005-05-21 10:46:02  Rev 7214   josef
+
+	* configure.ac:
+	  - LET version = 0.0.11
+
+
+2005-05-21 10:19:22  Rev 7207   josef
+
+	* src/Makefile.am src/ggz.h:
+	  - make version info 3:1:1 also (no header changes through ipv6, 
+	  abandoned seats)
+
+
+2005-05-14 19:51:48  Rev 7187   josef
+
+	* src/easysock.c:
+	  - improve the ipv6 patch (fixing bugs actually)
+
+
+2005-05-06 21:19:56  Rev 7182   josef
+
+	* m4/ggz.m4:
+	  - synchronization of ggz.m4 files
+	  - fixes typo: use ggzdconfdir instead of ggzconfdir
+	  - fixes compiler problems: use -isystem X instead of -isystemX
+	  - fixes ggzcore linkage force in ggzmod problem
+
+
+2005-05-02 18:03:11  Rev 7171   oojah
+
+	* configure.ac src/security/ggz_tls_gnutls.c 
+	  src/security/ggz_tls_none.c src/easysock.c 
+	  src/security/ggz_tls_openssl.c:
+	  Recent changes to easysock do not appear to be supported under 
+	  winsock on Win32. This means winsock2 must be used. This update 
 	  changes libggz to use winsock2.
-
-	  easysock.c includes an extra header file, ws2tcpip.h, which I
-	  have not checked for in configure.ac on the reasoning that it is
-	  part of the winsock2 package and so HAVE_WINSOCK2_H should imply
+	  easysock.c includes an extra header file, ws2tcpip.h, which I have 
+	  not checked for in configure.ac on the reasoning that it is part 
+	  of the winsock2 package and so HAVE_WINSOCK2_H should imply 
 	  ws2tcpip.h exists as well. Shout at me for this if you want.
+	  easysock.c makes use of the gai_strerror() function which is not 
+	  implemented in current mingw builds. See bug 1188891 at mingw or 
+	  this url: https://sourceforge.
+	  net/tracker/?func=detail&atid=102435&aid=1188891&group_id=2435 It 
+	  has been fixed in CVS so should appear in a release soon hopefully.
 
-	  easysock.c makes use of the gai_strerror() function which is not
-	  implemented in current mingw builds. See bug 1188891 at mingw or
-	  this url:
-	  https://sourceforge.net/tracker/?func=detail&atid=102435&aid=1188891&group_id=2435
-	  It has been fixed in CVS so should appear in a release soon
-	  hopefully.
 
-2005-04-24 18:31  josef
+2005-04-24 16:31:37  Rev 7152   josef
 
-	* m4/ggz.m4: - typo: ggzdconfdir, not ggzconfdir!
+	* m4/ggz.m4:
+	  - typo: ggzdconfdir, not ggzconfdir!
 
-2005-04-15 19:54  jdorje
 
-	* src/: ggz_common.c, ggz_common.h: Preliminary abandoned-seats
-	  patch.
+2005-04-15 17:54:31  Rev 7107   jdorje
 
-	  In principle when a player leaves a running game, his seat
-	  becomes abandoned.  He may later rejoin and reclaim his seat, or
-	  after a while he may be given a forfeit.  For the most part this
-	  should be controlled by the game or by ggzd according to the
-	  game's options.
+	* src/ggz_common.c src/ggz_common.h:
+	  Preliminary abandoned-seats patch.
+	  In principle when a player leaves a running game, his seat becomes
+	  abandoned.  He may later rejoin and reclaim his seat, or after a 
+	  while
+	  he may be given a forfeit.  For the most part this should be 
+	  controlled
+	  by the game or by ggzd according to the game's options.
+	  This patch introduces the preliminary changes for this.  A new 
+	  seat type
+	  GGZ_SEAT_ABANDONED is added, and basic changes are made to support 
+	  it.
+	  What is missing is ggzd and ggzdmod support for toggling between 
+	  player,
+	  abandoned, and open seats.  There's also no forfeit mechanism yet 
+	  (although
+	  the game may do this by hand if desired).
+	  This patch came from the playground; see patches/abandoned.diff 
+	  for its
+	  history.
 
-	  This patch introduces the preliminary changes for this.  A new
-	  seat type GGZ_SEAT_ABANDONED is added, and basic changes are made
-	  to support it.  What is missing is ggzd and ggzdmod support for
-	  toggling between player, abandoned, and open seats.  There's also
-	  no forfeit mechanism yet (although the game may do this by hand
-	  if desired).
 
-	  This patch came from the playground; see patches/abandoned.diff
-	  for its history.
+2005-04-10 00:13:46  Rev 7100   josef
 
-2005-04-10 02:13  josef
+	* m4/ggz.m4:
+	  - a space after -isystem is mandatory, there are stupid GCCs out 
+	  there
 
-	* m4/ggz.m4: - a space after -isystem is mandatory, there are
-	  stupid GCCs out there
 
-2005-04-03 19:24  josef
+2005-04-03 17:24:02  Rev 7078   josef
 
-	* src/easysock.c: - Support for IPv6
+	* src/easysock.c:
+	  - Support for IPv6
+	  This is riq's old patch (4 years! oh my!) with some slight changes 
+	  to make
+	  it work, including static methods so we don't have to bump the 
+	  interface.
+	  Since ggzcommunity.org is accessible via IPv6, and it works, this 
+	  should
+	  be made available to all users.
+	  Of course, IP ban protection in ggzd (from clients using IPv6) is a
+	  different matter.
 
-	  This is riq's old patch (4 years! oh my!) with some slight
-	  changes to make it work, including static methods so we don't
-	  have to bump the interface.  Since ggzcommunity.org is accessible
-	  via IPv6, and it works, this should be made available to all
-	  users.
 
-	  Of course, IP ban protection in ggzd (from clients using IPv6) is
-	  a different matter.
+2005-03-11 07:11:26  Rev 6978   jdorje
 
-2005-03-11 08:11  jdorje
+	* src/easysock.c:
+	  Portability fix: add a fallback SUN_LEN macro if it isn't already 
+	  defined.
 
-	* src/easysock.c: Portability fix: add a fallback SUN_LEN macro if
-	  it isn't already defined.
 
-2005-03-11 08:08  jdorje
+2005-03-11 07:08:53  Rev 6977   jdorje
 
-	* src/: ggz_common.c, misc.c, msg.c: Portability fix: add "#include
-	  <strings.h>" as needed for strcasecmp.
+	* src/misc.c src/ggz_common.c src/msg.c:
+	  Portability fix: add "#include <strings.h>" as needed for 
+	  strcasecmp.
 
-2005-03-10 16:44  josef
 
-	* src/ggz.h: - style, consistancy and spelling fixes
+2005-03-10 15:44:33  Rev 6971   josef
 
-	  This has improved the quality a lot already.	But still more can
-	  be done, e.g. improved group descriptions.
+	* src/ggz.h:
+	  - style, consistancy and spelling fixes
+	  This has improved the quality a lot already.
+	  But still more can be done, e.g. improved group descriptions.
 
-2005-03-10 13:27  josef
 
-	* src/ggz.h: - the usual corrections
+2005-03-10 12:27:03  Rev 6969   josef
 
-2005-03-10 11:36  josef
+	* src/ggz.h:
+	  - the usual corrections
 
-	* src/ggz.h: - more consistency and spelling corrections, now also
-	  for the lists group
 
-2005-03-09 19:17  josef
+2005-03-10 10:36:49  Rev 6965   josef
 
-	* src/ggz.h: - more consistent documentation: line endings etc.  -
-	  correction to English spelling
+	* src/ggz.h:
+	  - more consistency and spelling corrections, now also for the 
+	  lists group
 
-2005-02-04 16:59  josef
 
-	* m4/ggz.m4: - synchronize
+2005-03-09 18:17:58  Rev 6964   josef
 
-2005-01-30 09:32  jdorje
+	* src/ggz.h:
+	  - more consistent documentation: line endings etc.
+	  - correction to English spelling
 
-	* configure.ac, m4/c99.m4: Update c99.m4.
 
-2005-01-24 07:03  jdorje
+2005-02-04 15:59:43  Rev 6918   josef
 
-	* src/ggz_common.c: Avoid duplicating strings.
+	* m4/ggz.m4:
+	  - synchronize
 
-2005-01-24 02:39  jdorje
 
-	* m4/ggz.m4: Change the way channels are created at the client
-	  side.  The GGZ client does not create the channel.  Instead the
-	  channel connection data is sent to the game which makes the
-	  connection itself.  This means ggzmod needs to call the
-	  channel-creation function from within ggzcore, adding a new
-	  library dependency.  This is solved by linking ggzcore in along
-	  with ggzmod inside AC_GGZ_GGZMOD.
+2005-01-30 08:32:10  Rev 6909   jdorje
 
-2005-01-23 22:22  josef
+	* configure.ac m4/c99.m4:
+	  Update c99.m4.
 
-	* AUTHORS, ChangeLog: - authors and changelog
 
-2005-01-23 14:19  josef
+2005-01-24 06:03:21  Rev 6875   jdorje
 
-	* NEWS: - news update
+	* src/ggz_common.c:
+	  Avoid duplicating strings.
 
-2005-01-23 14:12   Josef Spillner <josef@ggzgamingzone.org>
 
-	* QuickStart.GGZ, README.GGZ: - updated common files
+2005-01-24 01:39:48  Rev 6866   jdorje
 
-2005-01-23 11:30   Josef Spillner <josef@ggzgamingzone.org>
+	* m4/ggz.m4:
+	  Change the way channels are created at the client side.  The GGZ 
+	  client
+	  does not create the channel.  Instead the channel connection data 
+	  is sent
+	  to the game which makes the connection itself.  This means ggzmod 
+	  needs
+	  to call the channel-creation function from within ggzcore, adding 
+	  a new
+	  library dependency.  This is solved by linking ggzcore in along with
+	  ggzmod inside AC_GGZ_GGZMOD.
 
-	* Doxyfile, man/ggz.h.3: - doxy updates
 
-2005-01-23 11:29   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-23 21:23:07  Rev 6856   josef
 
-	* src/: Makefile.am, ggz.h: - bump interface version since
-	  ggz_init_network was introduced
+	* AUTHORS ChangeLog:
+	  - authors and changelog
 
-2005-01-23 10:04   Jason Short <jdorje@ggzgamingzone.org>
 
-	* src/easysock.c: Zero out the message in ggz_write_fd before using
-	  it.  This silences (but may not fix) some valgrind warnings.
+2005-01-23 13:20:29  Rev 6844   josef
 
-2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+	* NEWS:
+	  - news update
 
-	* m4/ggz.m4: Search for .la files instead of .so.
 
-2005-01-22 16:27   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-23 13:12:48  Rev 6843   josef
 
-	* configure.ac: - version number bump
+	* QuickStart.GGZ README.GGZ:
+	  - updated common files
 
-2005-01-21 19:38   Jason Short <jdorje@ggzgamingzone.org>
 
-	* src/: conf.c, ggz.h, msg.c: Make ggz_list comparison functions
-	  take const values.  Comment the hack in ggz_conf's section list
-	  usage.
+2005-01-23 10:30:36  Rev 6830   josef
 
-2005-01-21 11:49   Josef Spillner <josef@ggzgamingzone.org>
+	* Doxyfile man/ggz.h.3:
+	  - doxy updates
 
-	* src/security/ggz_tls_gnutls.c: - sleep() one second in client
-	  before doing the handshake
 
+2005-01-23 10:29:31  Rev 6829   josef
+
+	* src/Makefile.am src/ggz.h:
+	  - bump interface version since ggz_init_network was introduced
+
+
+2005-01-23 09:04:26  Rev 6827   jdorje
+
+	* src/easysock.c:
+	  Zero out the message in ggz_write_fd before using it.  This 
+	  silences (but
+	  may not fix) some valgrind warnings.
+
+
+2005-01-22 19:22:53  Rev 6824   jdorje
+
+	* m4/ggz.m4:
+	  Search for .la files instead of .so.
+
+
+2005-01-22 15:28:57  Rev 6812   josef
+
+	* configure.ac:
+	  - version number bump
+
+
+2005-01-21 18:38:38  Rev 6784   jdorje
+
+	* src/ggz.h src/conf.c src/msg.c:
+	  Make ggz_list comparison functions take const values.  Comment the 
+	  hack
+	  in ggz_conf's section list usage.
+
+
+2005-01-21 10:49:07  Rev 6783   josef
+
+	* src/security/ggz_tls_gnutls.c:
+	  - sleep() one second in client before doing the handshake
 	  I think there's a bug in ggzd in that it tries to read TLS data
-	  even when it shouldn't (while doing handshake). Using sleep() is
-	  a quick hack but seems to work.
+	  even when it shouldn't (while doing handshake). Using sleep() is a 
+	  quick hack
+	  but seems to work.
 
-2005-01-21 10:14   Josef Spillner <josef@ggzgamingzone.org>
 
-	* src/security/hashfunc.c: - fix error handling
+2005-01-21 09:14:31  Rev 6780   josef
 
-2005-01-20 06:51   Jason Short <jdorje@ggzgamingzone.org>
+	* src/security/hashfunc.c:
+	  - fix error handling
 
-	* src/: ggz_common.h, numberlist.c: Add const to several
-	  GGZNumberList parameters.
 
-2005-01-19 01:34   Jason Short <jdorje@ggzgamingzone.org>
+2005-01-20 05:51:06  Rev 6760   jdorje
 
-	* src/msg.c: Don't append the strerror string on
-	  ggz_error_msg_exit.
+	* src/ggz_common.h src/numberlist.c:
+	  Add const to several GGZNumberList parameters.
 
-2005-01-19 00:58   Roger Light <oojah@ggzgamingzone.org>
 
-	* src/: easysock.c, ggz.h: Added Jason's ggz_init_network() and
-	  ggz_shutdown_network() code with the appropriate winsock code.
+2005-01-19 00:34:26  Rev 6733   jdorje
 
-	  ggz_init_network() is called from ggz_make_socket(),
+	* src/msg.c:
+	  Don't append the strerror string on ggz_error_msg_exit.
+
+
+2005-01-18 23:58:25  Rev 6732   oojah
+
+	* src/ggz.h src/easysock.c:
+	  Added Jason's ggz_init_network() and ggz_shutdown_network() code 
+	  with the appropriate winsock code.
+	  ggz_init_network() is called from ggz_make_socket(), 
 	  ggz_shutdown_network() is called upon exit.
 
-2005-01-17 22:36   Jason Short <jdorje@ggzgamingzone.org>
 
-	* m4/libtool.m4: Get a better libtool.m4
+2005-01-17 21:41:10  Rev 6720   jdorje
 
-2005-01-17 04:52   Jason Short <jdorje@ggzgamingzone.org>
+	* m4/libtool.m4:
+	  Get a better libtool.m4
 
-	* Makefile.am, m4/libtool.m4: Add libtool.m4 (needed for
-	  AC_LIBTOOL_WIN32_DLL).
 
-2005-01-17 01:16   Roger Light <oojah@ggzgamingzone.org>
+2005-01-17 03:52:11  Rev 6719   jdorje
 
-	* Makefile.msys.in, configure.ac, src/Makefile.msys.in: Removed
-	  misguided Makefiles for building dlls on win32.
+	* m4/libtool.m4 Makefile.am:
+	  Add libtool.m4 (needed for AC_LIBTOOL_WIN32_DLL).
 
-	  configure.ac now natively builds dlls with libtool. If you get
-	  errors about wsock32 and pthread not being available as shared
+
+2005-01-17 00:16:27  Rev 6716   oojah
+
+	* configure.ac src/Makefile.msys.in Makefile.msys.in:
+	  Removed misguided Makefiles for building dlls on win32.
+	  configure.ac now natively builds dlls with libtool. If you get 
+	  errors about wsock32 and pthread not being available as shared 
 	  libraries, you need to update libtool.
 
-2005-01-16 18:13   Roger Light <oojah@ggzgamingzone.org>
 
-	* Makefile.msys.in, configure.ac, src/Makefile.msys.in: Added new
-	  Makefiles for compiling/linking on win32.
+2005-01-16 17:13:52  Rev 6710   oojah
 
+	* configure.ac src/Makefile.msys.in Makefile.msys.in:
+	  Added new Makefiles for compiling/linking on win32.
 	  Use
-
-	  make -f Makefile.msys make -f Makefile.msys install
-
+	  make -f Makefile.msys
+	  make -f Makefile.msys install
 	  etc.
-
 	  This will produce a .dll file and a .a file for linking against.
 
-2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
 
-	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
-	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
-	  non-glibc systems.
+2005-01-14 07:01:43  Rev 6675   jdorje
 
-2005-01-14 03:29   Jason Short <jdorje@ggzgamingzone.org>
+	* m4/iconv.m4 m4/ggz.m4 Makefile.am:
+	  Add support for libintl and libiconv to AC_GGZ_INTL.  This is 
+	  needed to
+	  compile at all on non-glibc systems.
 
-	* src/: easysock.c, security/ggz_tls_gnutls.c,
-	  security/ggz_tls_none.c, security/ggz_tls_openssl.c: In winsock,
-	  use send and recv instead of write and read.
 
-2005-01-13 05:32   Jason Short <jdorje@ggzgamingzone.org>
+2005-01-14 02:29:52  Rev 6657   jdorje
 
-	* configure.ac: Link against libwsock32 when building for windows.
+	* src/security/ggz_tls_gnutls.c src/security/ggz_tls_none.c 
+	  src/easysock.c src/security/ggz_tls_openssl.c:
+	  In winsock, use send and recv instead of write and read.
 
-2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
 
-	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+2005-01-13 04:32:33  Rev 6644   jdorje
 
-2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+	* configure.ac:
+	  Link against libwsock32 when building for windows.
 
-	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
-	  standard, even though it's not helpful for most packages since
-	  NLS is manditory.
 
-2005-01-13 01:36   Jason Short <jdorje@ggzgamingzone.org>
+2005-01-13 02:23:59  Rev 6643   jdorje
 
-	* configure.ac, m4/c99.m4, src/conf.c, src/support.h: Rewrite
-	  make_path.  The new make_path does not use strsep.  It also
-	  doesn't use allocated strings (which were buggy) but instead uses
-	  variable-sized stack arrays.	A configure check is added for
-	  variable-sized stack arrays.	The configure check for strsep is
-	  removed and a check for strchr is added.
+	* m4/ggz.m4:
+	  Fix a typo in checking for libintl.h and locale.h.
 
-2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
 
-	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
-	  available.  It also checks for the header files but doesn't fail
-	  if they're not present.
+2005-01-13 01:45:15  Rev 6641   jdorje
 
-2004-12-22 17:31   Josef Spillner <josef@ggzgamingzone.org>
+	* m4/ggz.m4:
+	  Define ENABLE_NLS if NLS is present.  This is standard, even 
+	  though it's
+	  not helpful for most packages since NLS is manditory.
 
-	* configure.ac: - typo!
 
-2004-12-15 18:51   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-13 00:36:29  Rev 6639   jdorje
 
-	* src/ggz_common.h: - remove comma from end of enum list
+	* configure.ac m4/c99.m4 src/support.h src/conf.c:
+	  Rewrite make_path.  The new make_path does not use strsep.  It 
+	  also doesn't
+	  use allocated strings (which were buggy) but instead uses 
+	  variable-sized
+	  stack arrays.  A configure check is added for variable-sized stack 
+	  arrays.
+	  The configure check for strsep is removed and a check for strchr 
+	  is added.
 
-2004-12-15 00:28   Roger Light <oojah@ggzgamingzone.org>
 
-	* src/security/: ggz_tls_gnutls.c, ggz_tls_none.c,
-	  ggz_tls_openssl.c, hashfunc.c: Changed all
+2005-01-11 17:36:35  Rev 6638   jdorje
 
+	* m4/ggz.m4:
+	  Make AC_GGZ_INTL fail if the gettext functions are not available.  
+	  It also
+	  checks for the header files but doesn't fail if they're not present.
+
+
+2004-12-22 16:31:06  Rev 6555   josef
+
+	* configure.ac:
+	  - typo!
+
+
+2004-12-15 17:51:35  Rev 6484   josef
+
+	* src/ggz_common.h:
+	  - remove comma from end of enum list
+
+
+2004-12-14 23:28:07  Rev 6474   oojah
+
+	* src/security/ggz_tls_gnutls.c src/security/ggz_tls_none.c 
+	  src/security/ggz_tls_openssl.c src/security/hashfunc.c:
+	  Changed all
 	  #include <config.h>
-
 	  lines to
-
-	  #ifdef HAVE_CONFIG_H #  include <config.h> #endif
-
+	  #ifdef HAVE_CONFIG_H
+	  #  include <config.h>
+	  #endif
 	  where they are missing.
 
-2004-11-14 15:53   Josef Spillner <josef@ggzgamingzone.org>
 
-	* src/conf.c: - fix libggz SEGFAULT: do not allow ggz_conf_parse on
-	  anything but	 regular files (specifically, directories)
+2004-11-14 14:53:43  Rev 6369   josef
 
-2004-11-04 23:52   Jason Short <jdorje@ggzgamingzone.org>
+	* src/conf.c:
+	  - fix libggz SEGFAULT: do not allow ggz_conf_parse on anything but
+	    regular files (specifically, directories)
 
-	* src/security/Makefile.am, tests/Makefile.am: Change INCLUDES to
-	  AM_CPPFLAGS.
 
-2004-09-04 09:09   Jason Short <jdorje@ggzgamingzone.org>
+2004-11-04 22:53:36  Rev 6257   jdorje
 
-	* tests/Makefile.am: Rename noinst_PROGRAMS as check_PROGRAMS.
+	* src/security/Makefile.am tests/Makefile.am:
+	  Change INCLUDES to AM_CPPFLAGS.
 
-2004-08-17 16:38   Josef Spillner <josef@ggzgamingzone.org>
 
-	* configure.ac: - use $enableval instead of yes
+2004-09-04 07:09:37  Rev 6175   jdorje
 
-2004-08-17 15:50   Josef Spillner <josef@ggzgamingzone.org>
+	* tests/Makefile.am:
+	  Rename noinst_PROGRAMS as check_PROGRAMS.
 
-	* src/security/: ggz_tls_gnutls.c, hashfunc.c: - API updates to
-	  gnutls and gcrypt
 
+2004-08-17 14:38:15  Rev 6167   josef
+
+	* configure.ac:
+	  - use $enableval instead of yes
+
+
+2004-08-17 13:50:15  Rev 6166   josef
+
+	* src/security/ggz_tls_gnutls.c src/security/hashfunc.c:
+	  - API updates to gnutls and gcrypt
 	  This does NOT yet work for some reason.
 
-2004-07-18 02:36   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ChangeLog: - changelog update
+2004-07-18 00:37:08  Rev 6153   josef
 
-2004-07-17 16:09   Josef Spillner <josef@ggzgamingzone.org>
+	* ChangeLog:
+	  - changelog update
 
-	* Makefile.am: - re-prepend accidentally removed m4 directory
 
-2004-07-17 05:58   Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 14:09:21  Rev 6138   josef
 
-	* Makefile.am: - fix libtool.m4 inclusion
+	* Makefile.am:
+	  - re-prepend accidentally removed m4 directory
 
-2004-07-17 03:47   Josef Spillner <josef@ggzgamingzone.org>
 
-	* man/ggz.h.3, Doxyfile: - manpage updates
+2004-07-17 03:59:30  Rev 6135   josef
 
-2004-07-17 02:59   Josef Spillner <josef@ggzgamingzone.org>
+	* Makefile.am:
+	  - fix libtool.m4 inclusion
 
-	* configure.ac: - do not generate ggz.h from ggz.h.in anymore
 
-2004-07-17 02:58   Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 01:53:27  Rev 6127   josef
 
-	* src/: Makefile.am, easysock.c, ggz.h, ggz.h.in, msg.c: -
-	  increment library interface number - put back platform-specific
-	  changes into the implementation
+	* Doxyfile man/ggz.h.3:
+	  - manpage updates
 
-2004-07-16 21:07   Josef Spillner <josef@ggzgamingzone.org>
 
-	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ, configure.ac: - 0.0.9
-	  updates propagation
+2004-07-17 00:59:24  Rev 6126   josef
 
-2004-07-13 16:53   Josef Spillner <josef@ggzgamingzone.org>
+	* configure.ac:
+	  - do not generate ggz.h from ggz.h.in anymore
 
-	* m4/libtool.m4: - remove libtool macros
 
-2004-07-10 19:37   Jason Short <jdorje@ggzgamingzone.org>
+2004-07-17 00:58:43  Rev 6125   josef
 
-	* m4/libtool.m4: Update libtool.m4.
+	* src/Makefile.am src/ggz.h src/easysock.c src/ggz.h.in src/msg.c:
+	  - increment library interface number
+	  - put back platform-specific changes into the implementation
 
-2004-03-08 22:33   Josef Spillner <josef@ggzgamingzone.org>
 
-	* autogen.sh: - require libtool 1.4.4
+2004-07-16 19:08:39  Rev 6117   josef
 
-	  In 1.4.3 there was a bug which caused files such as	libggz.1
-	  libggz.1.1.0 instead of   libggz.so.1   libggz.so.1.1.0
+	* README.GGZ AUTHORS configure.ac NEWS QuickStart.GGZ:
+	  - 0.0.9 updates propagation
 
-2004-03-08 21:05   Josef Spillner <josef@ggzgamingzone.org>
 
-	* configure.ac: - cosmetic change of lines so TLS and encryption
-	  are not split apart
+2004-07-13 14:56:49  Rev 6098   josef
 
-2004-02-25 08:53   Jason Short <jdorje@ggzgamingzone.org>
+	* m4/libtool.m4:
+	  - remove libtool macros
 
-	* Makefile.am, m4/libtool.m4: Add libtool.m4 to cvs.
 
-2004-02-21 09:51   Jason Short <jdorje@ggzgamingzone.org>
+2004-07-10 17:37:08  Rev 6073   jdorje
 
-	* Makefile.am, m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the
-	  libggz copy to be the master copy.  - Use AC_HELP_STRING inside
-	  AC_ARG_WITH.	- Replace the history section (which was getting
-	  really big) with a   reference to CVS.  - Propogate the changes
-	  back into all modules.
+	* m4/libtool.m4:
+	  Update libtool.m4.
 
-2004-02-16 06:11   Jason Short <jdorje@ggzgamingzone.org>
 
-	* src/: ggz_common.c, ggz_common.h: Add new error code E_TOO_LONG
-	  (attribute "too long").
+2004-03-08 21:33:49  Rev 5967   josef
 
-2004-02-15 03:44   Jason Short <jdorje@ggzgamingzone.org>
+	* autogen.sh:
+	  - require libtool 1.4.4
+	  In 1.4.3 there was a bug which caused files such as
+	    libggz.1
+	    libggz.1.1.0
+	  instead of
+	    libggz.so.1
+	    libggz.so.1.1.0
 
-	* src/: ggz_common.h, numberlist.c: ggz_numberlist_read takes a
-	  constant string.
 
-2004-02-15 02:23   Jason Short <jdorje@ggzgamingzone.org>
+2004-03-08 20:05:03  Rev 5966   josef
 
-	* src/: ggz.h.in, xmlelement.c: Label some strings as constant.
+	* configure.ac:
+	  - cosmetic change of lines so TLS and encryption are not split apart
 
-2004-02-15 01:31   Jason Short <jdorje@ggzgamingzone.org>
 
-	* src/: ggz.h.in, misc.c: The parameter of ggz_xml_escape and
-	  ggz_xml_unescape should be a const.
+2004-02-25 07:53:34  Rev 5960   jdorje
 
-2004-02-13 08:31   Jason Short <jdorje@ggzgamingzone.org>
+	* m4/libtool.m4 Makefile.am:
+	  Add libtool.m4 to cvs.
 
-	* src/: ggz_common.c, ggz_common.h: Move GGZPlayerType into
-	  ggz_common.[ch] in libggz.
 
-2004-02-11 05:14   Jason Short <jdorje@ggzgamingzone.org>
+2004-02-21 08:51:32  Rev 5956   jdorje
 
-	* src/: conf.c, ggz.h.in, memory.c, misc.h, msg.c: Remove
-	  "internal" debugging function.  Do libggz debugging using normal
-	  ggz_debug and ggz_log functions, with a log type defined in the
-	  header file.	Callers can now enable this on their own.
+	* m4/ggz.m4 Makefile.am:
+	  - Copy ggz.m4 into libggz.
+	  - Declare the libggz copy to be the master copy.
+	  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with a
+	    reference to CVS.
+	  - Propogate the changes back into all modules.
 
-2004-02-11 04:50   Jason Short <jdorje@ggzgamingzone.org>
 
-	* src/msg.c: Fix a bug causing (LIBGGZ) debugging messages to
-	  always be output.
+2004-02-16 05:11:21  Rev 5935   jdorje
 
-2004-02-10 08:54   Josef Spillner <josef@ggzgamingzone.org>
+	* src/ggz_common.c src/ggz_common.h:
+	  Add new error code E_TOO_LONG (attribute "too long").
 
-	* libggz.spec: - second round of removals of distribution files
 
-2004-02-09 02:38   Jason Short <jdorje@ggzgamingzone.org>
+2004-02-15 02:44:04  Rev 5929   jdorje
 
-	* Makefile.am, configure.ac, m4/mkdir.m4, src/conf.c: Add a new
-	  macro FUNC_MKDIR_TAKES_ONE_ARG.  If mkdir does take only one
+	* src/ggz_common.h src/numberlist.c:
+	  ggz_numberlist_read takes a constant string.
+
+
+2004-02-15 01:23:56  Rev 5926   jdorje
+
+	* src/xmlelement.c src/ggz.h.in:
+	  Label some strings as constant.
+
+
+2004-02-15 00:31:25  Rev 5925   jdorje
+
+	* src/misc.c src/ggz.h.in:
+	  The parameter of ggz_xml_escape and ggz_xml_unescape should be a 
+	  const.
+
+
+2004-02-13 07:31:26  Rev 5918   jdorje
+
+	* src/ggz_common.c src/ggz_common.h:
+	  Move GGZPlayerType into ggz_common.[ch] in libggz.
+
+
+2004-02-11 04:14:40  Rev 5905   jdorje
+
+	* src/memory.c src/misc.h src/ggz.h.in src/conf.c src/msg.c:
+	  Remove "internal" debugging function.  Do libggz debugging using 
+	  normal
+	  ggz_debug and ggz_log functions, with a log type defined in the 
+	  header
+	  file.  Callers can now enable this on their own.
+
+
+2004-02-11 03:50:04  Rev 5904   jdorje
+
+	* src/msg.c:
+	  Fix a bug causing (LIBGGZ) debugging messages to always be output.
+
+
+2004-02-10 07:54:22  Rev 5880   josef
+
+	* debian libggz.spec:
+	  - second round of removals of distribution files
+
+
+2004-02-09 01:38:22  Rev 5859   jdorje
+
+	* configure.ac m4/mkdir.m4 Makefile.am src/conf.c:
+	  Add a new macro FUNC_MKDIR_TAKES_ONE_ARG.  If mkdir does take only 
+	  one
 	  argument, don't give it two.
 
-2004-02-09 01:34   Jason Short <jdorje@ggzgamingzone.org>
 
-	* configure.ac, tests/tls.c: - Check for sys/shm.h presence.  -
-	  Make checks for gethostbyname() and socket() non-fatal.  These
-	  checks   fail for unknown reason.  - Don't use AC_FUNC_MALLOC,
-	  since we don't support it.  See comment.  - Add lots of
-	  preprocessor checks to test/tls.c:   * Header file checks.	*
-	  If we don't have TLS support just compile a placeholder program.
+2004-02-09 00:34:29  Rev 5858   jdorje
 
-2004-02-09 01:02   Jason Short <jdorje@ggzgamingzone.org>
+	* configure.ac tests/tls.c:
+	  - Check for sys/shm.h presence.
+	  - Make checks for gethostbyname() and socket() non-fatal.  These 
+	  checks
+	    fail for unknown reason.
+	  - Don't use AC_FUNC_MALLOC, since we don't support it.  See comment.
+	  - Add lots of preprocessor checks to test/tls.c:
+	    * Header file checks.
+	    * If we don't have TLS support just compile a placeholder program.
 
-	* configure.ac, src/easysock.c, src/ggz.h.in: If PF_LOCAL (or
-	  PF_UNIX) not present, compile libggz without ggz_make_unix_socket
-	  and ggz_make_unix_socket_or_die.  It is left up to the users to
-	  find a way around this problem; GGZ_HAVE_PF_LOCAL is provided to
-	  help with this.  Note that these functions currently have no
+
+2004-02-09 00:02:31  Rev 5857   jdorje
+
+	* configure.ac src/easysock.c src/ggz.h.in:
+	  If PF_LOCAL (or PF_UNIX) not present, compile libggz without
+	  ggz_make_unix_socket and ggz_make_unix_socket_or_die.  It is left 
+	  up to
+	  the users to find a way around this problem; GGZ_HAVE_PF_LOCAL is 
+	  provided
+	  to help with this.  Note that these functions currently have no 
 	  users.
 
-2004-02-09 00:46   Jason Short <jdorje@ggzgamingzone.org>
 
-	* configure.ac, src/easysock.c, src/ggz.h.in: If sendmsg() is not
-	  present, compile libggz without ggz_write_fd and ggz_read_fd.
-	  Note that sendmsg() is POSIX and should be present on most
-	  systems.  Note also that it is left up to the users to find a way
-	  around this problem; GGZ_HAVE_SENDMSG is provided to help with
-	  this.
+2004-02-08 23:46:09  Rev 5856   jdorje
 
-2004-02-09 00:25   Jason Short <jdorje@ggzgamingzone.org>
+	* configure.ac src/easysock.c src/ggz.h.in:
+	  If sendmsg() is not present, compile libggz without ggz_write_fd and
+	  ggz_read_fd.  Note that sendmsg() is POSIX and should be present 
+	  on most
+	  systems.  Note also that it is left up to the users to find a way 
+	  around
+	  this problem; GGZ_HAVE_SENDMSG is provided to help with this.
 
-	* tests/read_line.c: Use rand() and srand() instead of random() and
-	  srandom().  The latter are not portable.
 
-2004-02-08 23:56   Jason Short <jdorje@ggzgamingzone.org>
+2004-02-08 23:25:57  Rev 5855   jdorje
 
-	* configure.ac, tests/cfgtest.c: Check for the existance of the
-	  getuid function.
+	* tests/read_line.c:
+	  Use rand() and srand() instead of random() and srandom().  The 
+	  latter are
+	  not portable.
 
-2004-02-08 23:10   Jason Short <jdorje@ggzgamingzone.org>
 
-	* configure.ac, src/msg.c: Don't use sys/wait.h - it's not needed.
+2004-02-08 22:56:38  Rev 5854   jdorje
 
-2004-02-08 22:30   Jason Short <jdorje@ggzgamingzone.org>
+	* tests/cfgtest.c configure.ac:
+	  Check for the existance of the getuid function.
 
-	* configure.ac, src/.cvsignore, src/ggz.h, src/ggz.h.in, src/msg.c:
-	  Allow libggz to compile and be used on systems that don't have
+
+2004-02-08 22:10:26  Rev 5852   jdorje
+
+	* configure.ac src/msg.c:
+	  Don't use sys/wait.h - it's not needed.
+
+
+2004-02-08 21:30:50  Rev 5850   jdorje
+
+	* configure.ac src/.cvsignore src/ggz.h src src/ggz.h.in src/msg.c:
+	  Allow libggz to compile and be used on systems that don't have 
 	  syslog.h
+	  A configure-time check is done for syslog.h.  If present, we just 
+	  #include
+	  it.  If it's not present, an enumeration containing the log types is
+	  declared.  This must be done at configure-time so that the installed
+	  ggz.h file can be entirely self-contained: we can't rely on the 
+	  library
+	  user following "good" autoconf practices.
 
-	  A configure-time check is done for syslog.h.	If present, we just
-	  #include it.	If it's not present, an enumeration containing the
-	  log types is declared.  This must be done at configure-time so
-	  that the installed ggz.h file can be entirely self-contained: we
-	  can't rely on the library user following "good" autoconf
-	  practices.
 
-2004-02-08 09:16   Jason Short <jdorje@ggzgamingzone.org>
+2004-02-08 08:16:42  Rev 5844   jdorje
 
-	* configure.ac: Fix the obvious bug with --enable-threading.
+	* configure.ac:
+	  Fix the obvious bug with --enable-threading.
 
-2004-02-08 09:06   Jason Short <jdorje@ggzgamingzone.org>
 
-	* configure.ac, src/memory.c: Add a new compile directive
-	  --disable-threading.	If given, this will remove threading
-	  (pthread) support from GGZ.  This means the library won't be
-	  thread-safe and should not be used in ggzd.
+2004-02-08 08:06:50  Rev 5843   jdorje
 
-2004-02-08 08:40   Jason Short <jdorje@ggzgamingzone.org>
+	* src/memory.c configure.ac:
+	  Add a new compile directive --disable-threading.  If given, this 
+	  will
+	  remove threading (pthread) support from GGZ.  This means the 
+	  library won't
+	  be thread-safe and should not be used in ggzd.
 
-	* tests/: cfgtest.c, debugmsg.c, ggzcommon.c, misc.c, read_line.c,
-	  strcmp.c, tls.c: - #include <config.h> from all files.  - Fix a
-	  bug in the #ifndef HAVE_ALARM case.
 
-2004-02-08 07:01   Jason Short <jdorje@ggzgamingzone.org>
+2004-02-08 07:40:08  Rev 5842   jdorje
 
-	* configure.ac, tests/tls.c: If the alarm() function is not
-	  present, skip the TLS test that requires it.
+	* tests/debugmsg.c tests/cfgtest.c tests/ggzcommon.c tests/read_line.
+	  c tests/tls.c tests/strcmp.c tests/misc.c:
+	  - #include <config.h> from all files.
+	  - Fix a bug in the #ifndef HAVE_ALARM case.
 
-2004-02-08 06:50   Jason Short <jdorje@ggzgamingzone.org>
 
-	* configure.ac, src/easysock.c: Provide inet_addr as a backup to
-	  inet_pton.
+2004-02-08 06:01:24  Rev 5841   jdorje
 
-2004-02-08 06:09   Jason Short <jdorje@ggzgamingzone.org>
+	* configure.ac tests/tls.c:
+	  If the alarm() function is not present, skip the TLS test that 
+	  requires
+	  it.
 
-	* configure.ac, src/easysock.c: - Add some header checks.
-	  Generally these are like     autoconf.ac:
-	  AC_CHECK_HEADERS([xxx.h])	source code:	   #ifdef
-	  HAVE_XXX_H	   #include <xxx.h>	  #endif - #include
-	  <winsock.h> in easysock.c.
 
-2004-02-08 05:34   Jason Short <jdorje@ggzgamingzone.org>
+2004-02-08 05:50:10  Rev 5840   jdorje
 
-	* configure.ac, src/support.h: Check for strtok and strtok_r
-	  functions.  If strsep isn't present and there's no strtok_r, use
-	  strtok as a fallback.  Note that strtok is probably not
-	  threadsafe.
+	* configure.ac src/easysock.c:
+	  Provide inet_addr as a backup to inet_pton.
 
-2004-02-08 05:30   Jason Short <jdorje@ggzgamingzone.org>
 
-	* src/.cvsignore: Add *.loT to .cvsignore.
+2004-02-08 05:09:25  Rev 5839   jdorje
 
-2004-02-07 14:34   Josef Spillner <josef@ggzgamingzone.org>
+	* configure.ac src/easysock.c:
+	  - Add some header checks.  Generally these are like
+	      autoconf.ac:  AC_CHECK_HEADERS([xxx.h])
+	      source code:
+	        #ifdef HAVE_XXX_H
+	        #include <xxx.h>
+	        #endif
+	  - #include <winsock.h> in easysock.c.
 
-	* man/ggz.h.3: - doxygen'd manpage update
 
-2004-02-07 10:48   Josef Spillner <josef@ggzgamingzone.org>
+2004-02-08 04:34:49  Rev 5838   jdorje
 
-	* src/: Makefile.am, ggz.h: - upgrade libggz library interface
-	  number
+	* configure.ac src/support.h:
+	  Check for strtok and strtok_r functions.  If strsep isn't present 
+	  and
+	  there's no strtok_r, use strtok as a fallback.  Note that strtok is
+	  probably not threadsafe.
 
-	  This was pointed out by Stephen.  It didn't change now, but from
-	  0.0.6 to 0.0.7 new functions were added, without increasing the
-	  'current' part of the interface version.  To increase
-	  compatibility with older GGZs, it is bumped now.
 
-2004-02-05 12:37   Josef Spillner <josef@ggzgamingzone.org>
+2004-02-08 04:30:27  Rev 5837   jdorje
 
-	* Doxyfile: - doxy version bump
+	* src/.cvsignore src:
+	  Add *.loT to .cvsignore.
 
-2004-02-05 11:44   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
-	  configure.ac: - synchronized NEWS, README.GGZ and QuickStart.GGZ
-	  from docs - updated README   * new URLs for developers, bugs,
-	  website   * no more per-package maintainer mention (it was never
-	  valid anyway) - updated configure.ac to indicate final version
-	  0.0.8 - ChangeLog updates
+2004-02-07 13:37:56  Rev 5824   josef
 
-2004-01-27 23:28   Josef Spillner <josef@ggzgamingzone.org>
+	* man/ggz.h.3:
+	  - doxygen'd manpage update
 
-	* autogen.sh: - new perl-based autotools versioning checks (no more
-	  sed)
 
-2004-01-27 09:44  Josef Spillner <josef@ggzgamingzone.org>
+2004-02-07 09:48:18  Rev 5817   josef
 
-	* m4/: ggz-debug.m4, tls.m4: - prevent aclocal macros from being
-	underquoted
-	
-	This is necessary for aclocal 1.8.
+	* src/Makefile.am src/ggz.h:
+	  - upgrade libggz library interface number
+	  This was pointed out by Stephen.
+	  It didn't change now, but from 0.0.6 to 0.0.7 new functions were 
+	  added,
+	  without increasing the 'current' part of the interface version.
+	  To increase compatibility with older GGZs, it is bumped now.
 
-2004-01-24 23:10  Josef Spillner <josef@ggzgamingzone.org>
 
-	* configure.ac, src/easysock.c, src/ggz.h: [cvs test stage]
-	
-	- use AC_LANG_PROGRAM instead of AC_LANG_SOURCE - use server
-	variable in ggz_make_socket() in server mode too,   to indicate the
-	interface to listen to
+2004-02-05 11:38:16  Rev 5792   josef
 
-2004-01-17 19:46  Josef Spillner <dr_maux@users.sourceforge.net>
+	* Doxyfile:
+	  - doxy version bump
 
-	* autogen.sh: - sync
 
-2003-12-31 17:45  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-02-05 10:46:53  Rev 5790   josef
 
-	* configure.ac: - convert obsolete AC_TRY_LINK macros to
-	AC_LINK_IFELSE - use the AC_INIT style used in the Debian packages
+	* README.GGZ README configure.ac NEWS QuickStart.GGZ ChangeLog:
+	  - synchronized NEWS, README.GGZ and QuickStart.GGZ from docs
+	  - updated README
+	    * new URLs for developers, bugs, website
+	    * no more per-package maintainer mention (it was never valid 
+	  anyway)
+	  - updated configure.ac to indicate final version 0.0.8
+	  - ChangeLog updates
 
-2003-12-05 00:29  Jason Short <jdorje@users.sourceforge.net>
 
-	* configure.ac: Rewrite large parts of the autoconf file to satisfy
-	autoscan and make it prettier.
+2004-01-27 22:28:23  Rev 5761   josef
 
-2003-12-05 00:05  Jason Short <jdorje@users.sourceforge.net>
+	* autogen.sh:
+	  - new perl-based autotools versioning checks (no more sed)
 
-	* configure.ac, m4/ggz-debug.m4: Move the -Wall test into the
-	AC_GGZ_DEBUG macro.
 
-2003-10-25 14:30  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-01-27 08:44:46  Rev 5748   josef
 
-	* tests/Makefile.am: - use same LDADD settings as in the src/
-	directory
+	* m4/tls.m4 m4/ggz-debug.m4:
+	  - prevent aclocal macros from being underquoted
+	  This is necessary for aclocal 1.8.
 
-2003-10-05 22:18  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* src/security/ggz_tls_gnutls.c: - slightly better compatibility
-	fix
+2004-01-24 22:12:23  Rev 5745   josef
 
-2003-06-28 09:08  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac src/ggz.h src/easysock.c:
+	  [cvs test stage]
+	  - use AC_LANG_PROGRAM instead of AC_LANG_SOURCE
+	  - use server variable in ggz_make_socket() in server mode too,
+	    to indicate the interface to listen to
 
-	* src/security/: ggz_tls_gnutls.c, hashfunc.c: - compatibility with
-	older gcrypt and gnutls libraries
 
-2003-05-17 10:10  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-01-17 18:46:28  Rev 5740   dr_maux
 
-	* ChangeLog: - update changelog
+	* autogen.sh:
+	  - sync
 
-2003-05-13 22:06  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - fix sed incompatibility: a-zA-z becomes A-Za-z now
-	- also, if a program is not found, return immediately
-	
-	This has been tested on:  * Debian GNU/Linux "sid", sed 4.0.7  *
-	Debian GNU/Linux 3.0 "woody", sed 3.0.2  * Debian GNU/Linux 2.2
-	"potato", sed 3.0.2  * RedHat 7.3 "valhalla", sed 3.0.2  * RedHat
-	7.2 "enigma", sed 3.0.2  * Darwin 6.5, sed 4.0.5
-	
-	So it should work :) Note that libtool still isn't found on Darwin,
-	but there's no --version either, so people who want to use it as
-	their primary development platform must fix this.  Also, the 3rd
-	part makes trouble on Solaris, but then again the current setup
-	will not very likely build there anyway.
+2003-12-31 16:45:29  Rev 5726   dr_maux
 
-2003-05-11 11:08  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac:
+	  - convert obsolete AC_TRY_LINK macros to AC_LINK_IFELSE
+	  - use the AC_INIT style used in the Debian packages
 
-	* Doxyfile, man/ggz.h.3, src/Makefile.am, src/ggz.h,
-	src/security/hashfunc.h: - complete ggz.h documentation
-	(security-related functions) - new man page generated from the
-	header file
 
-2003-05-11 01:53  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-12-04 23:29:31  Rev 5701   jdorje
 
-	* configure.ac: - set the package version number (via configure.ac)
-	to 0.0.7
+	* configure.ac:
+	  Rewrite large parts of the autoconf file to satisfy autoscan and 
+	  make it
+	  prettier.
 
-2003-05-11 01:14  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh: - update common
-	files for 0.0.7 in libggz
+2003-12-04 23:05:10  Rev 5700   jdorje
 
-2003-05-10 16:35  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac m4/ggz-debug.m4:
+	  Move the -Wall test into the AC_GGZ_DEBUG macro.
 
-	* autogen.sh: - another small update to autogen.sh. Fix autoconf
-	2.5 -> autoconf 2.50   (otherwise it would think 2.13 is enough). 
-	- lower the restrictions for libtool and gettext, to be more
-	friendly to   existing distributions.
 
-2003-05-10 16:32  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-10-25 12:30:12  Rev 5667   dr_maux
 
-	* src/easysock.c: - debugging values of type ssize_t requires %zX
-	as argument, not just %X
+	* tests/Makefile.am:
+	  - use same LDADD settings as in the src/ directory
 
-2003-05-10 01:04  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* src/security/hashfunc.c: - signedness comparison fix
+2003-10-05 20:18:39  Rev 5662   dr_maux
 
-2003-05-05 15:05  Josef Spillner <dr_maux@users.sourceforge.net>
+	* src/security/ggz_tls_gnutls.c:
+	  - slightly better compatibility fix
 
-	* configure.ac: - detect -fsigned-char for CFLAGS in libggz
 
-2003-03-29 21:36  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-06-28 07:08:52  Rev 5617   dr_maux
 
-	* src/: easysock.c, ggz.h: - distinguish between host lookup
-	failures and connection failures in   ggz_make_socket() - the
-	former error returns -2 now!
+	* src/security/ggz_tls_gnutls.c src/security/hashfunc.c:
+	  - compatibility with older gcrypt and gnutls libraries
 
-2003-02-26 14:39  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: Some improvements to autogen.sh: - cut away appended
-	revision letters from version numbers (such as libtool	 1.4.2a) -
-	run libtoolize if AM_PROG_LIBTOOL is found somewhere in
-	configure.ac with   either none or a bit of whitespace in front of
-	it - shut up libtoolize debug messages
-	
-	Should work even better now.
+2003-05-17 08:10:42  Rev 5588   dr_maux
 
-2003-02-16 19:39  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ChangeLog:
+	  - update changelog
 
-	* src/security/base64.c: - fix base64 encoding
-	
-	This didn't seem to bother ggzd (since it used encoding only), but
-	the web frontend decodes as well, and there it shows...
 
-2003-02-16 15:44  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-13 20:06:31  Rev 5581   dr_maux
 
-	* configure.ac: - include memory debugging in configuration status
-	output
+	* autogen.sh:
+	  - fix sed incompatibility: a-zA-z becomes A-Za-z now
+	  - also, if a program is not found, return immediately
+	  This has been tested on:
+	   * Debian GNU/Linux "sid", sed 4.0.7
+	   * Debian GNU/Linux 3.0 "woody", sed 3.0.2
+	   * Debian GNU/Linux 2.2 "potato", sed 3.0.2
+	   * RedHat 7.3 "valhalla", sed 3.0.2
+	   * RedHat 7.2 "enigma", sed 3.0.2
+	   * Darwin 6.5, sed 4.0.5
+	  So it should work :)
+	  Note that libtool still isn't found on Darwin, but there's no 
+	  --version either,
+	  so people who want to use it as their primary development platform 
+	  must fix
+	  this.
+	  Also, the 3rd part makes trouble on Solaris, but then again the 
+	  current setup
+	  will not very likely build there anyway.
 
-2003-02-16 13:58  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - new autogen.sh
+2003-05-11 09:08:52  Rev 5565   dr_maux
 
-2003-02-04 21:57  Jason Short <jdorje@users.sourceforge.net>
+	* src/Makefile.am Doxyfile src/security/hashfunc.h src/ggz.h man/ggz.
+	  h.3:
+	  - complete ggz.h documentation (security-related functions)
+	  - new man page generated from the header file
 
-	* configure.ac: Fix typo in previous commit.
 
-2003-02-04 21:49  Jason Short <jdorje@users.sourceforge.net>
+2003-05-10 23:54:28  Rev 5563   dr_maux
 
-	* Makefile.am, configure.ac, m4/ggz-debug.m4: Move debug checking
-	into ggz-debug.m4, and also clean up some other parts of
-	configure.ac.
+	* configure.ac:
+	  - set the package version number (via configure.ac) to 0.0.7
 
-2003-02-04 10:31  Jason Short <jdorje@users.sourceforge.net>
 
-	* tests/tls.c: Mark local functions as static.
+2003-05-10 23:14:05  Rev 5543   dr_maux
 
-2003-02-04 10:30  Jason Short <jdorje@users.sourceforge.net>
+	* QuickStart.GGZ README.GGZ autogen.sh NEWS:
+	  - update common files for 0.0.7 in libggz
 
-	* src/security/base64.c: Add some missing #includes.
 
-2003-02-04 02:38  Jason Short <jdorje@users.sourceforge.net>
+2003-05-10 14:35:34  Rev 5538   dr_maux
 
-	* acconfig.h, configure.ac, m4/tls.m4: Make sure all AC_DEFINE and
-	AC_DEFINE_UNQUOTED macro calls have three parameters.  Remove
-	acconfig.h, which is no longer needed.
+	* autogen.sh:
+	  - another small update to autogen.sh. Fix autoconf 2.5 -> autoconf 
+	  2.50
+	    (otherwise it would think 2.13 is enough).
+	  - lower the restrictions for libtool and gettext, to be more 
+	  friendly to
+	    existing distributions.
 
-2003-02-04 02:15  Jason Short <jdorje@users.sourceforge.net>
 
-	* m4/tls.m4: Give AC_DEFINE and AC_DEFINE_UNQUOTED three arguments.
-	 Add quotes to some macro parameters.
+2003-05-10 14:32:19  Rev 5537   dr_maux
 
-2003-02-04 01:53  Jason Short <jdorje@users.sourceforge.net>
+	* src/easysock.c:
+	  - debugging values of type ssize_t requires %zX as argument, not 
+	  just %X
 
-	* acconfig.h, autogen.sh, configure.ac, configure.in,
-	src/Makefile.am, src/conf.c, src/easysock.c, src/ggz_common.c,
-	src/list.c, src/memory.c, src/misc.c, src/msg.c, src/numberlist.c,
-	src/stack.c, src/support.c, src/support.h, src/xmlelement.c: Make
-	some bootstrap changes for autoconf2.5x:
-	
-	- Rename configure.in as configure.ac.	- Move some information out
-	of acconfig.h (since this file will eventually	 go away).  These
-	defines go into support.h.  - Remove support.c since it is
-	unneeded; move its contents into support.h.  - Make sure support.h
-	and config.h are included from all .c files.
 
-2003-01-23 18:08  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-09 23:04:19  Rev 5514   dr_maux
 
-	* src/ggz.h: - add versioning information to the header file for
-	libggz
+	* src/security/hashfunc.c:
+	  - signedness comparison fix
 
-2003-01-22 14:49  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* tests/.cvsignore, tests/tls.c, .cvsignore, Makefile.am,
-	acconfig.h, autogen.sh, configure.in: - Add Transport Layer
-	Security support
+2003-05-05 13:05:20  Rev 5501   dr_maux
 
-2003-01-22 14:48  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac:
+	  - detect -fsigned-char for CFLAGS in libggz
 
-	* m4/tls.m4, src/ggz.h, src/security/DESIGN,
-	src/security/Makefile.am, src/security/ggz_tls_gnutls.c,
-	src/security/ggz_tls_none.c, src/security/ggz_tls_openssl.c,
-	tests/Makefile.am: - add Transport Layer Security support
 
-2003-01-16 23:10  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-03-29 20:36:50  Rev 5483   dr_maux
 
-	* Makefile.am, acconfig.h, autogen.sh, configure.in: - try to find
-	libgcrypt (but only if --with-gcrypt has been specified)
+	* src/ggz.h src/easysock.c:
+	  - distinguish between host lookup failures and connection failures 
+	  in
+	    ggz_make_socket()
+	  - the former error returns -2 now!
 
-2003-01-16 23:10  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* src/: Makefile.am, ggz.h: - export 4 security functions to libggz
-	interface
+2003-02-26 13:39:35  Rev 5459   dr_maux
 
-2003-01-16 23:09  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh:
+	  Some improvements to autogen.sh:
+	  - cut away appended revision letters from version numbers (such as 
+	  libtool
+	    1.4.2a)
+	  - run libtoolize if AM_PROG_LIBTOOL is found somewhere in 
+	  configure.ac with
+	    either none or a bit of whitespace in front of it
+	  - shut up libtoolize debug messages
+	  Should work even better now.
 
-	* src/security/: .cvsignore, Makefile.am, base64.c, base64.h,
-	hashfunc.c, hashfunc.h: - add directory with security-related
-	source code
 
-2002-12-07 06:50  Jason Short <jdorje@users.sourceforge.net>
+2003-02-16 18:39:59  Rev 5423   dr_maux
 
-	* src/: ggz_common.c, ggz_common.h: Add new error type
-	E_NO_CHANNEL, "no channel", that occurrs when you try to join a
-	table without first forming a channel (direct connection).
+	* src/security/base64.c:
+	  - fix base64 encoding
+	  This didn't seem to bother ggzd (since it used encoding only), but 
+	  the web
+	  frontend decodes as well, and there it shows...
 
-2002-11-25 13:19  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* tests/cfgtest.c: - change ggz_conf test: when being root, allow
-	write access to read-only file
+2003-02-16 14:44:55  Rev 5417   dr_maux
 
-2002-11-03 20:48  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.ac:
+	  - include memory debugging in configuration status output
 
-	* src/ggz.h: - ggz_make_socket() returns fd on success, not zero
 
-2002-10-30 02:02  Jason Short <jdorje@users.sourceforge.net>
+2003-02-16 13:02:09  Rev 5413   dr_maux
 
-	* src/ggz_common.c: Remove a spurious _.
+	* autogen.sh:
+	  - new autogen.sh
 
-2002-10-29 12:29  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/: ggz_common.c, ggz_common.h: Added functions
-	ggz_error_to_string() and ggz_string_to_error() to convert between
-	a GGZClientReqError and an XML-compatible string.
-	
-	In converting from a string to an error, if no string is given
-	(NULL) we assume E_OK.	If a string is given but it could not be
-	matched, we return E_UNKNOWN (an unknown error).
+2003-02-04 20:57:42  Rev 5396   jdorje
 
-2002-10-29 11:46  Jason Short <jdorje@users.sourceforge.net>
+	* configure.ac:
+	  Fix typo in previous commit.
 
-	* src/: ggz.h, misc.c, xmlelement.c: - Add ggz_strcasecmp.  - Use
-	in ggz_xmlelement_get_attr, look for the attribute with  
-	case-insensitivity.
 
-2002-10-28 04:50  Jason Short <jdorje@users.sourceforge.net>
+2003-02-04 20:50:00  Rev 5395   jdorje
 
-	* src/msg.c: Make GGZ debug types case-insensitive.
+	* configure.ac Makefile.am m4/ggz-debug.m4:
+	  Move debug checking into ggz-debug.m4, and also clean up some other
+	  parts of configure.ac.
 
-2002-10-27 00:28  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/: ggz_common.c, ggz_common.h: - Added E_NO_STATUS as a
-	placeholder for an event that has no client   status.  - Added
-	GGZLeaveType enumeration, and functions to convert it to   and from
-	a string.
+2003-02-04 09:31:08  Rev 5375   jdorje
 
-2002-10-20 00:19  Jason Short <jdorje@users.sourceforge.net>
+	* tests/tls.c:
+	  Mark local functions as static.
 
-	* src/: ggz_common.c, ggz_common.h: Rename GGZ_CHAT_NONE as
-	GGZ_CHAT_UNKNOWN, and give a better explanation of what it is (and
-	why it exists).
 
-2002-10-17 23:14  Jason Short <jdorje@users.sourceforge.net>
+2003-02-04 09:30:49  Rev 5374   jdorje
 
-	* src/: Makefile.am, strsep.c, support.c: - Get strsep() support
-	function to work on systems that don't have it.    * Compile the
-	support file always.	* Encase the function in #ifndef
-	HAVE_STRSEP.  - Rename the support file as support.c instead of
-	strsep.c.  Perhaps   other support code will be needed in future.
+	* src/security/base64.c:
+	  Add some missing #includes.
 
-2002-10-17 23:04  Jason Short <jdorje@users.sourceforge.net>
 
-	* tests/misc.c: Double-check sizeof(char) in tests.
+2003-02-04 01:38:55  Rev 5357   jdorje
 
-2002-10-17 23:01  Jason Short <jdorje@users.sourceforge.net>
+	* acconfig.h m4/tls.m4 configure.ac:
+	  Make sure all AC_DEFINE and AC_DEFINE_UNQUOTED macro calls have 
+	  three
+	  parameters.  Remove acconfig.h, which is no longer needed.
 
-	* src/memory.c: Do pointer arithmetic with char*, not void*.
 
-2002-10-10 22:54  Jason Short <jdorje@users.sourceforge.net>
+2003-02-04 01:15:47  Rev 5356   jdorje
 
-	* src/: ggz_common.c, ggz_common.h: Add the GGZ_CHAT_TABLE chat
-	type to the GGZChatType enumeration.
+	* m4/tls.m4:
+	  Give AC_DEFINE and AC_DEFINE_UNQUOTED three arguments.  Add quotes 
+	  to
+	  some macro parameters.
 
-2002-10-10 19:13  Jason Short <jdorje@users.sourceforge.net>
 
-	* Doxyfile, configure.in: libggz changed -> bump version number to
-	0.0.7pre.
+2003-02-04 00:53:21  Rev 5355   jdorje
 
-2002-10-10 14:40  Josef Spillner <dr_maux@users.sourceforge.net>
+	* src/memory.c src/xmlelement.c src/list.c src/support.c configure.
+	  in src/easysock.c src/support.h src/numberlist.c src/conf.c 
+	  src/msg.c acconfig.h src/Makefile.am configure.ac src/misc.c 
+	  src/ggz_common.c autogen.sh src/stack.c:
+	  Make some bootstrap changes for autoconf2.5x:
+	  - Rename configure.in as configure.ac.
+	  - Move some information out of acconfig.h (since this file will 
+	  eventually
+	    go away).  These defines go into support.h.
+	  - Remove support.c since it is unneeded; move its contents into 
+	  support.h.
+	  - Make sure support.h and config.h are included from all .c files.
 
-	* src/: conf.c, ggz.h: - new libggz function: ggz_conf_close(int
-	handle)
 
-2002-10-09 01:32  Jason Short <jdorje@users.sourceforge.net>
+2003-01-23 17:08:28  Rev 5345   dr_maux
 
-	* src/: ggz_common.c, ggz_common.h: - Move GGZChatType enum into
-	ggz_common.  - Add ggz_chattype_to_string() and
-	ggz_string_to_chattype functions to   ggz_common.  - Change
-	existing code to use the above two instead of their own custom	
-	code.  - Don't accept invalid and dangerous chat messages (sent
-	across the   network).	But do accept invalid and non-dangerous
-	chat messages: to   improve backward-compatability if new chat
-	types are added.
+	* src/ggz.h:
+	  - add versioning information to the header file for libggz
 
-2002-10-08 05:29  Jason Short <jdorje@users.sourceforge.net>
 
-	* Doxyfile: Change the PROJECT_NUMBER to 0.0.6.
+2003-01-22 13:50:38  Rev 5340   dr_maux
 
-2002-10-08 02:11  Jason Short <jdorje@users.sourceforge.net>
+	* tests/.cvsignore tests/tls.c configure.in acconfig.h tests 
+	  Makefile.am autogen.sh .cvsignore:
+	  - Add Transport Layer Security support
 
-	* libggz.spec: Put doc files in alphabetical order.
 
-2002-10-08 02:08  Jason Short <jdorje@users.sourceforge.net>
+2003-01-22 13:48:12  Rev 5339   dr_maux
 
-	* libggz.spec: Update .spec file for libggz.
-	
-	This is hard to test, since nobody uses an RPM-based distro...
+	* m4 m4/tls.m4 src/ggz.h src/security/ggz_tls_gnutls.c 
+	  src/security/DESIGN src/security/Makefile.am 
+	  src/security/ggz_tls_none.c src/security/ggz_tls_openssl.c 
+	  tests/Makefile.am:
+	  - add Transport Layer Security support
 
-2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
 
-	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+2003-01-16 22:10:45  Rev 5333   dr_maux
 
-2002-10-07 23:15  Josef Spillner <dr_maux@users.sourceforge.net>
+	* acconfig.h configure.in Makefile.am autogen.sh:
+	  - try to find libgcrypt (but only if --with-gcrypt has been 
+	  specified)
 
-	* ChangeLog: - update changelog for 0.0.6
 
-2002-10-01 17:55  Jason Short <jdorje@users.sourceforge.net>
+2003-01-16 22:10:10  Rev 5332   dr_maux
 
-	* Makefile.am, configure.in, man/.cvsignore, man/Makefile.am,
-	man/ggz.h.3: Added man page for libggz.
-	
-	Unfortunately, the man page does not include the entire
-	documentation.	Since ggz.h defines different Doxygen "groups",
-	these are put into their own manual pages (list.3, easysock.3,
-	etc.), which are currently not included (because who would know to
-	look for them?).  A better solution is needed.
+	* src/Makefile.am src/ggz.h:
+	  - export 4 security functions to libggz interface
 
-2002-09-29 15:08  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* src/Makefile.am, configure.in: - don't touch LIBOBJS or LTLIBOBJS
-	- autoconf 2.50 doesn't like it anyway
+2003-01-16 22:09:43  Rev 5331   dr_maux
 
-2002-09-29 14:43  Josef Spillner <dr_maux@users.sourceforge.net>
+	* src/security/base64.c src/security/hashfunc.h 
+	  src/security/Makefile.am src/security/base64.h src/security/.
+	  cvsignore src/security src/security/hashfunc.c:
+	  - add directory with security-related source code
 
-	* configure.in: - libggz goes 0.0.6
 
-2002-09-27 17:42  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-12-07 05:50:49  Rev 5274   jdorje
 
-	* src/Makefile.am: - increase libggz interface version number
-	
-	In libggz's case this is questionable, because only one function
-	really changed.  But there were some obscure macro changes as well.
-	Instead of writing wrapper functions, we better chose the safe way.
-	
-	This is also a candidate which I expect to become stable.
+	* src/ggz_common.c src/ggz_common.h:
+	  Add new error type E_NO_CHANNEL, "no channel", that occurrs when you
+	  try to join a table without first forming a channel (direct 
+	  connection).
 
-2002-09-27 10:56  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - new autogen
+2002-11-25 12:19:55  Rev 5262   dr_maux
 
-2002-09-25 21:17  Jason Short <jdorje@users.sourceforge.net>
+	* tests/cfgtest.c:
+	  - change ggz_conf test: when being root, allow write access to 
+	  read-only file
 
-	* src/: conf.c, ggz.h: Fix a bug in libggz: interface documentation
-	for ggz_conf_read_list was wrong.
-	
-	When ggz_conf_read_list is called and no list is present, don't
-	allocate space for an empty, NULL-terminated list of strings. 
-	Instead just set the list to NULL.  The interface ducumentation is
-	changed to match.
 
-2002-09-24 09:36  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-11-03 19:48:00  Rev 5177   dr_maux
 
-	* QuickStart.GGZ, README.GGZ: - update intro docs
+	* src/ggz.h:
+	  - ggz_make_socket() returns fd on success, not zero
 
-2002-09-22 16:56  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/msg.c: Disable the fork-and-abort feature of ggz_error_msg
-	and ggz_error_sys.
+2002-10-30 01:02:02  Rev 5108   jdorje
 
-2002-09-22 16:50  Josef Spillner <dr_maux@users.sourceforge.net>
+	* src/ggz_common.c:
+	  Remove a spurious _.
 
-	* src/ggz.h: - commit fix for FUNCTION macro in c++ apps
 
-2002-09-18 20:55  Jason Short <jdorje@users.sourceforge.net>
+2002-10-29 11:29:45  Rev 5104   jdorje
 
-	* src/ggz.h: Add attributes to ggz_error_msg_exit and
-	ggz_error_sys_exit marking them as noreturn.
+	* src/ggz_common.c src/ggz_common.h:
+	  Added functions ggz_error_to_string() and ggz_string_to_error() to 
+	  convert
+	  between a GGZClientReqError and an XML-compatible string.
+	  In converting from a string to an error, if no string is given 
+	  (NULL) we
+	  assume E_OK.  If a string is given but it could not be matched, we
+	  return E_UNKNOWN (an unknown error).
 
-2002-09-18 20:50  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/: misc.h, msg.c: Declare _ggz_debug only when DEBUG is
-	defined.  This prevents an unused-variable warning (spurious) and
-	also makes compiled code more streamlined.
+2002-10-29 10:46:30  Rev 5103   jdorje
 
-2002-09-18 20:41  Jason Short <jdorje@users.sourceforge.net>
+	* src/xmlelement.c src/misc.c src/ggz.h:
+	  - Add ggz_strcasecmp.
+	  - Use in ggz_xmlelement_get_attr, look for the attribute with
+	    case-insensitivity.
 
-	* src/easysock.c: Cast the "status" variable (an integer) to
-	(unsigned) in several places, just to avoid a spurious warning
-	(status was previously checked to see if it was negative).
 
-2002-09-18 20:40  Jason Short <jdorje@users.sourceforge.net>
+2002-10-28 03:50:43  Rev 5077   jdorje
 
-	* src/misc.c: s/int/size_t/ in two places.
+	* src/msg.c:
+	  Make GGZ debug types case-insensitive.
 
-2002-09-17 20:11  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/ggz_common.h: Remove the now-unused GGZ_CHAT_M_MESSAGE and
-	GGZ_CHAT_M_PLAYER.
+2002-10-26 22:28:26  Rev 5053   jdorje
 
-2002-09-17 04:32  Jason Short <jdorje@users.sourceforge.net>
+	* src/ggz_common.c src/ggz_common.h:
+	  - Added E_NO_STATUS as a placeholder for an event that has no client
+	    status.
+	  - Added GGZLeaveType enumeration, and functions to convert it to
+	    and from a string.
 
-	* tests/Makefile.am: Added the strcmp program to TESTS.
 
-2002-09-13 19:19  Jason Short <jdorje@users.sourceforge.net>
+2002-10-19 22:19:29  Rev 4955   jdorje
 
-	* src/ggz_common.h: Added E_OK to the GGZClientReqError
-	enumeration.  This allows more explicit use of the enumeration.
+	* src/ggz_common.c src/ggz_common.h:
+	  Rename GGZ_CHAT_NONE as GGZ_CHAT_UNKNOWN, and give a better 
+	  explanation
+	  of what it is (and why it exists).
 
-2002-09-13 18:11  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/numberlist.c, tests/ggzcommon.c: Let numberlists be empty or
-	use arbitrary whitespace.
+2002-10-17 21:14:59  Rev 4939   jdorje
 
-2002-09-13 17:43  Jason Short <jdorje@users.sourceforge.net>
+	* src/Makefile.am src/support.c src/strsep.c:
+	  - Get strsep() support function to work on systems that don't have 
+	  it.
+	    * Compile the support file always.
+	    * Encase the function in #ifndef HAVE_STRSEP.
+	  - Rename the support file as support.c instead of strsep.c.  Perhaps
+	    other support code will be needed in future.
 
-	* src/msg.c: To help in debugging: ggz_error_msg_exit and
-	ggz_error_sys_exit abort(), instead of just exiting.  ggz_error_msg
-	and ggz_error_sys fork and abort, to leave core while the original
-	process continues.
-	
-	If core is disabled "ulimit -c 0", no core will be left and the
-	behavior will be virtually unchanged (at least on my platform).
-	
-	Eventually something slightly more complicated may be better: we
-	can attach the core to gdb (if it exists) and mail a backtrace to
-	ggz-dev.  THere's probably some tool out there for automating this.
 
-2002-09-11 05:37  Jason Short <jdorje@users.sourceforge.net>
+2002-10-17 21:04:45  Rev 4938   jdorje
 
-	* src/ggz_common.h, src/numberlist.c, tests/ggzcommon.c: Added a
-	function to return the max of a numberlist.
+	* tests/misc.c:
+	  Double-check sizeof(char) in tests.
 
-2002-09-11 05:25  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/Makefile.am, src/ggz_common.c, src/ggz_common.h,
-	src/numberlist.c, tests/.cvsignore, tests/Makefile.am,
-	tests/ggzcommon.c: Added numberlist code to ggz_common.h, and some
-	boolean conversion helper functions.
+2002-10-17 21:01:01  Rev 4937   jdorje
 
-2002-08-20 23:12  Jason Short <jdorje@users.sourceforge.net>
+	* src/memory.c:
+	  Do pointer arithmetic with char*, not void*.
 
-	* src/msg.c, tests/debugmsg.c: Fix some (probably harmless)
-	compiler warnings:   - msg.c: #if 0...#endif around the unused
-	ggz_debug_debug().    - debugmsg.c: debug_suite() is static.
 
-2002-08-07 18:44  Jason Short <jdorje@users.sourceforge.net>
+2002-10-10 20:54:03  Rev 4855   jdorje
 
-	* .cvsignore: Change "doc" to "api" to match the doxygen change.
+	* src/ggz_common.c src/ggz_common.h:
+	  Add the GGZ_CHAT_TABLE chat type to the GGZChatType enumeration.
 
-2002-08-07 18:39  Jason Short <jdorje@users.sourceforge.net>
 
-	* Doxyfile: Updated Doxyfile:	- Name: GGZ Gaming Zone -> LibGGZ  
-	- Version: (empty) -> 0.0.6pre	 - Output directory: doc -> api
-	(conforms with other modules)
+2002-10-10 17:13:26  Rev 4845   jdorje
 
-2002-08-07 18:16  Jason Short <jdorje@users.sourceforge.net>
+	* Doxyfile configure.in:
+	  libggz changed -> bump version number to 0.0.7pre.
 
-	* src/: ggz.h, msg.c: Add ggz_log() function.  This will be of
-	future use in ggzd.
 
-2002-06-25 22:32  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-10 12:40:29  Rev 4841   dr_maux
 
-	* configure.in: - solving a digital problem: I fixed a bug after
-	copying the affected lines.  I only fixed it in the original.  Ergo
-	I have to fix it in the copy too.
+	* src/ggz.h src/conf.c:
+	  - new libggz function: ggz_conf_close(int handle)
 
-2002-06-23 21:50  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.in: - remove unnecessary extra paths from configure.in
-	
-	(hell, why does CVS force me to do a second commit for the
-	top-level directory...)
+2002-10-08 23:32:22  Rev 4819   jdorje
 
-2002-06-23 21:49  Josef Spillner <dr_maux@users.sourceforge.net>
+	* src/ggz_common.c src/ggz_common.h:
+	  - Move GGZChatType enum into ggz_common.
+	  - Add ggz_chattype_to_string() and ggz_string_to_chattype 
+	  functions to
+	    ggz_common.
+	  - Change existing code to use the above two instead of their own 
+	  custom
+	    code.
+	  - Don't accept invalid and dangerous chat messages (sent across the
+	    network).  But do accept invalid and non-dangerous chat messages:
+	  to
+	    improve backward-compatability if new chat types are added.
 
-	* src/ggz.h: - when detecting gcc >= 3 is in use, don't use
-	__FUNCTION__, because this is	incompatible with the latest C
-	standard and will vanish in gcc 3.2 (at least	the gcc developers
-	say so)   For gcc 2.95 this macro will still be used.  - remove
-	unnecessary extra path from configure.in
 
-2002-05-23 22:26  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-08 03:29:33  Rev 4810   jdorje
 
-	* configure.in: - check for pthread in libggz already, not only in
-	ggzd
-	
-	This bug fix is proudly presented by the GNU/Hurd which doesn't
-	have pthread installed by default :-)
+	* Doxyfile:
+	  Change the PROJECT_NUMBER to 0.0.6.
 
-2002-05-16 01:30  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* .cvsignore, configure.in: - more M4 macro fixes
+2002-10-08 00:11:33  Rev 4808   jdorje
 
-2002-05-11 18:02  Brent Hendricks <bmh@users.sourceforge.net>
+	* libggz.spec:
+	  Put doc files in alphabetical order.
 
-	* src/ggz_common.h: 
-	- Remove protocol version since protocol isn't actually implemented
-	  here
 
-2002-05-11 08:02  Rich Gade <rgade@users.sourceforge.net>
+2002-10-08 00:08:24  Rev 4807   jdorje
 
-	* src/: conf.c, ggz.h: - ggz-config --check option written to
-	check/repair a ggz.modules file - ggz_conf_get_sections() added to
-	retrieve a list of all sections in a config - ggz_conf_get_keys()
-	added to retrieve a list of all keys in a config section
+	* libggz.spec:
+	  Update .spec file for libggz.
+	  This is hard to test, since nobody uses an RPM-based distro...
 
-2002-05-11 07:43  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* src/: ggz_common.c, list.c, xmlelement.c: 
-	- Use ggz_strcmp() in several places
+2002-10-07 21:28:18  Rev 4795   jdorje
 
-2002-05-11 07:20  Brent Hendricks <bmh@users.sourceforge.net>
+	* NEWS:
+	  Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
-	* src/ggz.h, src/misc.c, tests/.cvsignore, tests/Makefile.am,
-	tests/strcmp.c: 
-	- Added ggz_strcmp() function that accepts NULL strings
 
-2002-05-06 01:47  Jason Short <jdorje@users.sourceforge.net>
+2002-10-07 21:16:10  Rev 4794   dr_maux
 
-	* src/ggz_common.h: Bumped up GGZ_CS_PROTO_VERSION to 7 (from 6). 
-	This should force people to upgrade their ggzcore, without which
-	things will fail badly for anyone who tries to launch a game table.
-	
-	Brent wants to move this definition back into ggzcore/ggzd, but for
-	now I've only bumped it up.
+	* ChangeLog:
+	  - update changelog for 0.0.6
 
-2002-05-03 09:54  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/: ggz.h, msg.c: Changed the debug callback handler function
-	to accept a syslog-style priority as well:   typedef void
-	(*GGZDebugHandlerFunc)(int priority, const char *msg);
-	
-	This is the only change to the interface, although some changes to
-	msg.c were needed as well, of course.  The priority associated with
-	the message depends on how the message was generated:	ggz_debug
-	and _ggz_debug => LOG_DEBUG   _ggz_msg => LOG_NOTICE (?)  
-	ggz_error_sys and ggz_error_msg => LOG_ERR   ggz_error_sys_exit and
-	ggz_error_msg_exit => LOG_CRIT
-	
-	Libggz is not capable of providing nearly all of the features
-	currently used by ggzd for logging/debugging.  The only thing extra
-	feature ggzd uses is a separation of "logging" and "debugging"
-	messages.
+2002-10-01 15:55:17  Rev 4781   jdorje
 
-2002-05-02 19:07  Jason Short <jdorje@users.sourceforge.net>
+	* man/Makefile.am configure.in man/.cvsignore Makefile.am man/ggz.h.
+	  3 man:
+	  Added man page for libggz.
+	  Unfortunately, the man page does not include the entire 
+	  documentation.
+	  Since ggz.h defines different Doxygen "groups", these are put into 
+	  their
+	  own manual pages (list.3, easysock.3, etc.), which are currently not
+	  included (because who would know to look for them?).  A better 
+	  solution is
+	  needed.
 
-	* src/: ggz.h, msg.c: Added a new typedef, GGZDebugHandlerFunc, to
-	ggz.h, along with a function to set the debug handler function,
-	ggz_debug_set_func().  Added code in msg.c to have the debug
-	handler (if present) be called to handle debugging output instead
-	of writing it to a file/stderr.
 
-2002-05-01 08:35  Jason Short <jdorje@users.sourceforge.net>
+2002-09-29 13:08:19  Rev 4767   dr_maux
 
-	* src/: easysock.c, ggz.h: Add the FD of the offending socket to
-	the parameters of the socket error callback function
-	
-	  -typedef void (*ggzIOError) (const char * msg, const GGZIOType
-	type,
-	  +typedef void (*ggzIOError) (const char * msg,
-	  +			       const GGZIOType type,
-	  +			       const int fd,
-				       const GGZDataType data);
-	
-	and change the interal code to pass this parameter along with the
-	others.  -1 is passed if there is no applicable FD.
-	
-	I believe no code currently uses this callback except ggzcards (and
-	that not much, yet), so nothing should be disrupted by this change.
-	 The advantage is that the callee is now able to tell what socket
-	the problem occurred on, so action can be taken to correct it.	See
-	ggz-dev for more.
+	* src/Makefile.am configure.in:
+	  - don't touch LIBOBJS or LTLIBOBJS - autoconf 2.50 doesn't like it 
+	  anyway
 
-2002-04-27 11:29  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.in: - fix for configure process on 4.5BSD
+2002-09-29 12:43:03  Rev 4766   dr_maux
 
-2002-04-22 21:40  Jason Short <jdorje@users.sourceforge.net>
+	* configure.in:
+	  - libggz goes 0.0.6
 
-	* src/ggz_common.h: Moved the list of protocol opcodes out of
-	ggzcore and ggzd and into ggz_common.h in libggz.  This may not be
-	their final resting place, but it is at least an improvement over
-	having duplicated code.
 
-2002-04-13 07:27  Brent Hendricks <bmh@users.sourceforge.net>
+2002-09-27 15:42:09  Rev 4750   dr_maux
 
-	* ChangeLog: 
-	- Updated changelog entries for 0.0.5 release
+	* src/Makefile.am:
+	  - increase libggz interface version number
+	  In libggz's case this is questionable, because only one function 
+	  really
+	  changed.
+	  But there were some obscure macro changes as well. Instead of 
+	  writing wrapper
+	  functions, we better chose the safe way.
+	  This is also a candidate which I expect to become stable.
 
-2002-04-13 05:40  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* NEWS: 
-	- Add reservation support to NEWS
+2002-09-27 08:58:31  Rev 4746   dr_maux
 
-2002-04-13 05:40  Rich Gade <rgade@users.sourceforge.net>
+	* autogen.sh:
+	  - new autogen
 
-	* libggz.spec: - RPM Spec file for libggz
 
-2002-04-13 05:35  Brent Hendricks <bmh@users.sourceforge.net>
+2002-09-25 19:17:21  Rev 4701   jdorje
 
-	* Makefile.am: 
-	- Include README.GGZ and QuickStart.GGZ in dist
+	* src/ggz.h src/conf.c:
+	  Fix a bug in libggz: interface documentation for 
+	  ggz_conf_read_list was
+	  wrong.
+	  When ggz_conf_read_list is called and no list is present, don't 
+	  allocate
+	  space for an empty, NULL-terminated list of strings.  Instead just 
+	  set
+	  the list to NULL.  The interface ducumentation is changed to match.
 
-2002-04-13 05:32  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* AUTHORS, INSTALL, NEWS, QuickStart.GGZ, README, README.GGZ: 
-	- Doc updates for 0.0.5 release
+2002-09-24 07:36:20  Rev 4679   dr_maux
 
-2002-04-13 03:41  Brent Hendricks <bmh@users.sourceforge.net>
+	* QuickStart.GGZ README.GGZ:
+	  - update intro docs
 
-	* configure.in: 
-	- Set version number to 0.0.5
 
-2002-04-13 03:32  Jason Short <jdorje@users.sourceforge.net>
+2002-09-22 14:56:50  Rev 4651   jdorje
 
-	* src/ggz.h: Fixed doxygen (documentation) syntax error:
-	s/@code/@endcode/.
+	* src/msg.c:
+	  Disable the fork-and-abort feature of ggz_error_msg and 
+	  ggz_error_sys.
 
-2002-04-13 03:29  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* src/ggz.h: 
-	- Document XML element objects/functions
+2002-09-22 14:50:45  Rev 4650   dr_maux
 
-2002-04-13 02:31  Josef Spillner <dr_maux@users.sourceforge.net>
+	* src/ggz.h:
+	  - commit fix for FUNCTION macro in c++ apps
 
-	* Makefile.am: - addon
 
-2002-04-13 02:31  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-18 18:55:10  Rev 4624   jdorje
 
-	* debian/rules: - move clean rule to debian/rules
+	* src/ggz.h:
+	  Add attributes to ggz_error_msg_exit and ggz_error_sys_exit 
+	  marking them
+	  as noreturn.
 
-2002-04-12 22:40  Rich Gade <rgade@users.sourceforge.net>
 
-	* libggz.spec: - RPM Spec file for libggz
+2002-09-18 18:50:40  Rev 4623   jdorje
 
-2002-04-12 22:35  Brent Hendricks <bmh@users.sourceforge.net>
+	* src/misc.h src/msg.c:
+	  Declare _ggz_debug only when DEBUG is defined.  This prevents an
+	  unused-variable warning (spurious) and also makes compiled code more
+	  streamlined.
 
-	* Makefile.am: 
-	- Include README.GGZ and QuickStart.GGZ in dist
 
-2002-04-12 22:32  Brent Hendricks <bmh@users.sourceforge.net>
+2002-09-18 18:41:06  Rev 4622   jdorje
 
-	* AUTHORS, INSTALL, NEWS, QuickStart.GGZ, README, README.GGZ: 
-	- Doc updates for 0.0.5 release
+	* src/easysock.c:
+	  Cast the "status" variable (an integer) to (unsigned) in several 
+	  places,
+	  just to avoid a spurious warning (status was previously checked to 
+	  see if
+	  it was negative).
 
-2002-04-12 20:41  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* configure.in: 
-	- Set version number to 0.0.5
+2002-09-18 18:40:05  Rev 4621   jdorje
 
-2002-04-12 20:32  Jason Short <jdorje@users.sourceforge.net>
+	* src/misc.c:
+	  s/int/size_t/ in two places.
 
-	* src/ggz.h: Fixed doxygen (documentation) syntax error:
-	s/@code/@endcode/.
 
-2002-04-12 20:29  Brent Hendricks <bmh@users.sourceforge.net>
+2002-09-17 18:11:43  Rev 4607   jdorje
 
-	* src/ggz.h: 
-	- Document XML element objects/functions
+	* src/ggz_common.h:
+	  Remove the now-unused GGZ_CHAT_M_MESSAGE and GGZ_CHAT_M_PLAYER.
 
-2002-04-12 19:31  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am: - addon
+2002-09-17 02:32:26  Rev 4596   jdorje
 
-2002-04-12 19:31  Josef Spillner <dr_maux@users.sourceforge.net>
+	* tests/Makefile.am:
+	  Added the strcmp program to TESTS.
 
-	* debian/rules: - move clean rule to debian/rules
 
-2002-04-10 22:04  Brent Hendricks <bmh@users.sourceforge.net>
+2002-09-13 17:19:22  Rev 4550   jdorje
 
-	* src/ggz.h: 
-	- Added documentation for list and stack functions
+	* src/ggz_common.h:
+	  Added E_OK to the GGZClientReqError enumeration.  This allows more
+	  explicit use of the enumeration.
 
-2002-04-09 15:07  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* debian/: control, rules: - finalize libggz packages
+2002-09-13 16:11:40  Rev 4547   jdorje
 
-2002-04-07 18:00  Jason Short <jdorje@users.sourceforge.net>
+	* tests/ggzcommon.c src/numberlist.c:
+	  Let numberlists be empty or use arbitrary whitespace.
 
-	* Makefile.am: Add Doxyfile to EXTRA_DIST.
 
-2002-04-07 07:37  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-13 15:43:04  Rev 4545   jdorje
 
-	* debian/: .cvsignore, files: - remove generated file 'files' -
-	update .cvsignore
+	* src/msg.c:
+	  To help in debugging: ggz_error_msg_exit and ggz_error_sys_exit 
+	  abort(),
+	  instead of just exiting.  ggz_error_msg and ggz_error_sys fork and 
+	  abort,
+	  to leave core while the original process continues.
+	  If core is disabled "ulimit -c 0", no core will be left and the 
+	  behavior
+	  will be virtually unchanged (at least on my platform).
+	  Eventually something slightly more complicated may be better: we can
+	  attach the core to gdb (if it exists) and mail a backtrace to 
+	  ggz-dev.
+	  THere's probably some tool out there for automating this.
 
-2002-04-07 07:36  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* debian/control: [no log message]
+2002-09-11 03:37:21  Rev 4507   jdorje
 
-2002-04-07 06:26  Josef Spillner <dr_maux@users.sourceforge.net>
+	* tests/ggzcommon.c src/ggz_common.h src/numberlist.c:
+	  Added a function to return the max of a numberlist.
 
-	* debian/rules: - don't install our ChangeLog into the debian doc
-	dir
 
-2002-04-07 06:22  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-11 03:25:20  Rev 4506   jdorje
 
-	* debian/control: - replaces old 0.0.4 package easysock to be
-	deinstalled
+	* tests/.cvsignore src/Makefile.am tests tests/ggzcommon.c 
+	  src/ggz_common.c tests/Makefile.am src/ggz_common.h src/numberlist.
+	  c:
+	  Added numberlist code to ggz_common.h, and some boolean conversion
+	  helper functions.
 
-2002-04-06 13:06  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* debian/: .cvsignore, README.Debian, changelog, control,
-	copyright, files, libggz-dev.docs, libggz-dev.files, libggz0.docs,
-	libggz0.files, rules: - debianize libggz
+2002-08-20 21:12:36  Rev 4377   jdorje
 
-2002-04-06 13:04  Josef Spillner <dr_maux@users.sourceforge.net>
+	* tests/debugmsg.c src/msg.c:
+	  Fix some (probably harmless) compiler warnings:
+	    - msg.c: #if 0...#endif around the unused ggz_debug_debug().
+	    - debugmsg.c: debug_suite() is static.
 
-	* Makefile.am, NEWS, README: - include rule to erase config.status
-	during 'make clean'   (could this affect anything in a negative
-	way?) - provide simple readme file, and a dummy NEWS (everything
-	which makes the file   larger than 0 bytes counts ;)
 
-2002-04-06 12:00  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-08-07 16:44:11  Rev 4353   jdorje
 
-	* tests/Makefile.am: - create a local 'clean' rule to erase the
-	debug.log file - wel,, make distcheck works now here :)
+	* .cvsignore:
+	  Change "doc" to "api" to match the doxygen change.
 
-2002-04-05 16:02  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* QuickStart.GGZ, README.GGZ: - add installation instructions and
-	overview to libggz
+2002-08-07 16:39:13  Rev 4351   jdorje
 
-2002-03-28 14:42  Jason Short <jdorje@users.sourceforge.net>
+	* Doxyfile:
+	  Updated Doxyfile:
+	    - Name: GGZ Gaming Zone -> LibGGZ
+	    - Version: (empty) -> 0.0.6pre
+	    - Output directory: doc -> api (conforms with other modules)
 
-	* src/: conf.c, memory.c, msg.c: Complete the previous change:
-	actually remove msg.h and change code to match.
 
-2002-03-28 14:33  Jason Short <jdorje@users.sourceforge.net>
+2002-08-07 16:16:54  Rev 4346   jdorje
 
-	* src/Makefile.am, src/ggz.h, src/misc.c, src/misc.h, src/msg.h,
-	tests/read_line.c: - Move the definition of struct _GGZFile into an
-	internal header file,	so that people won't be tempted to access
-	it directly.  - Rename msg.h as misc.h, so that it serves as a
-	global internal header	 file (and contains struct _GGZFile).
+	* src/ggz.h src/msg.c:
+	  Add ggz_log() function.  This will be of future use in ggzd.
 
-2002-03-28 14:19  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/ggz.h: More libggz documentation.
+2002-06-25 20:32:31  Rev 4276   dr_maux
 
-2002-03-27 17:08  Jason Short <jdorje@users.sourceforge.net>
+	* configure.in:
+	  - solving a digital problem:
+	  I fixed a bug after copying the affected lines.
+	  I only fixed it in the original.
+	  Ergo I have to fix it in the copy too.
 
-	* Doxyfile: Generate man pages for libggz documentation.
 
-2002-03-26 03:15  Jason Short <jdorje@users.sourceforge.net>
+2002-06-23 19:50:15  Rev 4275   dr_maux
 
-	* src/ggz.h: Comment some more libggz socket functions.
+	* configure.in:
+	  - remove unnecessary extra paths from configure.in
+	  (hell, why does CVS force me to do a second commit for the 
+	  top-level directory...)
 
-2002-03-26 02:38  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/conf.c: Slight improvement to ggz_conf_parse() option
-	checking:   - Do everything in one if() check.	  - If there are
-	invalid parameters, log it as an error not just a      debugging
-	message.  I made these changes because GGZCards client config stuff
-	wasn't properly working.  Then when I couldn't save the conf.c, I
-	realized that it was because my partition was entirely full.  But
-	the changes seem good anyway.
+2002-06-23 19:49:15  Rev 4274   dr_maux
 
-2002-03-22 14:46  Jason Short <jdorje@users.sourceforge.net>
+	* src/ggz.h:
+	  - when detecting gcc >= 3 is in use, don't use __FUNCTION__, 
+	  because this is
+	    incompatible with the latest C standard and will vanish in gcc 3.
+	  2 (at least
+	    the gcc developers say so)
+	    For gcc 2.95 this macro will still be used.
+	  - remove unnecessary extra path from configure.in
 
-	* src/conf.c: Fixed bug in previous commit.
 
-2002-03-21 13:01  Jason Short <jdorje@users.sourceforge.net>
+2002-05-23 20:26:33  Rev 4229   dr_maux
 
-	* src/conf.c: Manually null-terminate list in ggz_conf_read_list().
+	* configure.in:
+	  - check for pthread in libggz already, not only in ggzd
+	  This bug fix is proudly presented by the GNU/Hurd which doesn't 
+	  have pthread
+	  installed by default :-)
 
-2002-03-02 15:17  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* src/conf.c: 
-	- Fixed ggz_conf_read_list() to always allocate argv even if it's
-	just   a single array consisting of NULL.  that way the caller can
-	always	 deal with it the same way
+2002-05-15 23:30:10  Rev 4205   dr_maux
 
-2002-02-25 20:57  Jason Short <jdorje@users.sourceforge.net>
+	* configure.in .cvsignore:
+	  - more M4 macro fixes
 
-	* acconfig.h, configure.in: Change autoconf system so that if DEBUG
-	is not defined (--enable-debug, currently off by default) we'll get
-	NDEBUG defined instead.
 
-2002-02-25 07:56  Jason Short <jdorje@users.sourceforge.net>
+2002-05-11 16:02:38  Rev 4187   bmh
 
-	* acconfig.h, configure.in: Removed --enable-debug-socket and the
-	DEBUG_SOCKET #definition from the autoconf process.
+	* src/ggz_common.h:
+	  - Remove protocol version since protocol isn't actually implemented
+	    here
 
-2002-02-25 07:53  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/: easysock.c, ggz.h: - Changed easysock ggz_debug debugging
-	type from "easysock" to "socket"   (well, really GGZ_SOCKET_DEBUG
-	which is "socket").  - Added a #definition of GGZ_SOCKET_DEBUG as
-	"socket" to ggz.h, along   with an explanation for doing socket
-	debugging.
+2002-05-11 06:02:27  Rev 4186   rgade
 
-2002-02-24 13:48  Rich Gade <rgade@users.sourceforge.net>
+	* src/ggz.h src/conf.c:
+	  - ggz-config --check option written to check/repair a ggz.modules 
+	  file
+	  - ggz_conf_get_sections() added to retrieve a list of all sections 
+	  in a config
+	  - ggz_conf_get_keys() added to retrieve a list of all keys in a 
+	  config section
 
-	* acinclude.tls, configure.in: - Implement --with-tls[=ARG] -
-	defaults to no if not specified, or   auto if no argument - Use
-	$LIBSSL for OpenSSL's GGZTLS_LDFLAGS - Added chosen SSL
-	implementation to configure's final summary
 
-2002-02-24 12:40  Jason Short <jdorje@users.sourceforge.net>
+2002-05-11 05:43:27  Rev 4185   bmh
 
-	* src/: easysock.c, ggz.h: Removed the use of DEBUG_SOCKET, which
-	was only used to control debugging output.  Instead, this debugging
-	output goes through ggz_debug with type "easysock".  This means the
-	calling program can control the output no matter how the library
-	was compiled.
-	
-	--enable-debug-socket is still left as a part of the configure
-	process, and DEBUG_SOCKET is still in acconfig.h.  If there is no
-	other use for this macro, perhaps it should be removed from these
-	files.
-	
-	I also added information about this to the ggz.h documentation.
+	* src/xmlelement.c src/list.c src/ggz_common.c:
+	  - Use ggz_strcmp() in several places
 
-2002-02-24 03:26  Rich Gade <rgade@users.sourceforge.net>
 
-	* .cvsignore, acconfig.h, acinclude.tls, autogen.sh, configure.in,
-	src/Makefile.am, src/ggz.h: - Moved tls/ files to src/tls -
-	Conditionally compile src/tls/*.c based on which TLS lib to use -
-	Create a convenience lib in src/tls - libtls.la - Statically link
-	libtls.la into libggz.la - GnuTLS should be working okay - OpenSSL
-	definitely needs fixes - none might - Retained old tls/ directory
-	(for now) in case I screwed something up bad
+2002-05-11 05:20:57  Rev 4184   bmh
 
-2002-02-23 01:34  Rich Gade <rgade@users.sourceforge.net>
+	* tests/.cvsignore tests src/misc.c src/ggz.h tests/Makefile.am 
+	  tests/strcmp.c:
+	  - Added ggz_strcmp() function that accepts NULL strings
 
-	* acinclude.tls: file acinclude.tls was initially added on branch
-	tls-branch.
 
-2002-02-23 01:34  Rich Gade <rgade@users.sourceforge.net>
+2002-05-05 23:47:00  Rev 4171   jdorje
 
-	* acinclude.tls, configure.in: - Initial checkin of tls patches to
-	tls-branch
+	* src/ggz_common.h:
+	  Bumped up GGZ_CS_PROTO_VERSION to 7 (from 6).  This should force 
+	  people to
+	  upgrade their ggzcore, without which things will fail badly for 
+	  anyone who
+	  tries to launch a game table.
+	  Brent wants to move this definition back into ggzcore/ggzd, but 
+	  for now
+	  I've only bumped it up.
 
-2002-02-15 21:04  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* src/ggz_common.h: 
-	- Add GGZTableState to common header
+2002-05-03 07:54:20  Rev 4145   jdorje
 
-2002-02-10 04:38  Jason Short <jdorje@users.sourceforge.net>
+	* src/ggz.h src/msg.c:
+	  Changed the debug callback handler function to accept a syslog-style
+	  priority as well:
+	    typedef void (*GGZDebugHandlerFunc)(int priority, const char 
+	  *msg);
+	  This is the only change to the interface, although some changes to 
+	  msg.c
+	  were needed as well, of course.  The priority associated with the 
+	  message
+	  depends on how the message was generated:
+	    ggz_debug and _ggz_debug => LOG_DEBUG
+	    _ggz_msg => LOG_NOTICE (?)
+	    ggz_error_sys and ggz_error_msg => LOG_ERR
+	    ggz_error_sys_exit and ggz_error_msg_exit => LOG_CRIT
+	  Libggz is not capable of providing nearly all of the features 
+	  currently
+	  used by ggzd for logging/debugging.  The only thing extra feature 
+	  ggzd
+	  uses is a separation of "logging" and "debugging" messages.
 
-	* src/: ggz.h, memory.c: A few assorted cleanups to libggz/memory: 
-	 - Changed size parameter of _ggz_malloc and _ggz_realloc from an  
-	  unsigned int to a size_t (which is what malloc uses).    - Added
-	parameter names into the prototypes in ggz.h.	 - Changed the
-	documentation in ggz.h to use the real parameter names.    -
-	Changed the "tag" parameter from a char* to a const char* in all   
-	  functions (and the struct).
-	
-	I wonder why it is that the size parameter is a "const" but other
-	scalar parameters are not?  Is there a reason for this?
 
-2002-02-09 22:35  Jason Short <jdorje@users.sourceforge.net>
+2002-05-02 17:07:51  Rev 4137   jdorje
 
-	* src/easysock.c: Changed two uses of vsprintf to vsnprintf, thus
-	avoiding a potential buffer overflow.
+	* src/ggz.h src/msg.c:
+	  Added a new typedef, GGZDebugHandlerFunc, to ggz.h, along with a 
+	  function
+	  to set the debug handler function, ggz_debug_set_func().  Added 
+	  code in
+	  msg.c to have the debug handler (if present) be called to handle 
+	  debugging
+	  output instead of writing it to a file/stderr.
 
-2002-02-06 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* .cvsignore: - put annoying configure-stamp into .cvsignore
+2002-05-01 06:35:14  Rev 4128   jdorje
 
-2002-02-03 13:19  Jason Short <jdorje@users.sourceforge.net>
+	* src/ggz.h src/easysock.c:
+	  Add the FD of the offending socket to the parameters of the socket 
+	  error
+	  callback function
+	    -typedef void (*ggzIOError) (const char * msg, const GGZIOType 
+	  type,
+	    +typedef void (*ggzIOError) (const char * msg,
+	    +                            const GGZIOType type,
+	    +                            const int fd,
+	                                 const GGZDataType data);
+	  and change the interal code to pass this parameter along with the 
+	  others.
+	  -1 is passed if there is no applicable FD.
+	  I believe no code currently uses this callback except ggzcards 
+	  (and that
+	  not much, yet), so nothing should be disrupted by this change.  The
+	  advantage is that the callee is now able to tell what socket the 
+	  problem
+	  occurred on, so action can be taken to correct it.  See ggz-dev 
+	  for more.
 
-	* src/ggz_common.h: Removed explicit numbering from GGZSeatType
-	enumeration.
-	
-	Note this will break compatibility of most games that implicitly
-	use the numbering in their communication protocol (this can be
-	dealt with by upping the protocol version numbers, coming shortly).
-	 But it _does_ make things more readible, and it should be a
-	one-time change, so it's worth it IMO.
 
-2002-01-24 01:09  Jason Short <jdorje@users.sourceforge.net>
+2002-04-27 09:29:40  Rev 4089   dr_maux
 
-	* src/: easysock.c, ggz.h: - Renamed ggz_remove_exit_func as
-	ggz_io_remove_exit_func in easysock.c	(it was already called this
-	in ggz.h).  - Added more documentation to ggz.h.
+	* configure.in:
+	  - fix for configure process on 4.5BSD
 
-2002-01-22 22:59  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/easysock.c: Fixed bug in last commit.
+2002-04-22 19:40:12  Rev 4051   jdorje
 
-2002-01-20 02:36  Jason Short <jdorje@users.sourceforge.net>
+	* src/ggz_common.h:
+	  Moved the list of protocol opcodes out of ggzcore and ggzd and into
+	  ggz_common.h in libggz.  This may not be their final resting place,
+	  but it
+	  is at least an improvement over having duplicated code.
 
-	* src/: easysock.c, ggz.h: Changed ggz_read_string_alloc to
-	allocate memory with ggz_malloc.
-	
-	This will break all code that currently uses this function, but is
-	nonetheless clearly the right thing to do - and should be done ASAP
-	so the calling code has more time to adjust.  IMO.
-	
-	The internal implementation leaves a bit to be desired.  Previously
-	if the malloc failed we just returned an error, but ggz_malloc will
-	(I think) exit by default.  This is a bit of a security risk, as a
-	malicious program at the other end of the socket could send us lots
-	of large strings and perhaps force us to exit.	OTOH, we do have
-	the alloc_limit so there is some safety.
 
-2002-01-20 01:48  Jason Short <jdorje@users.sourceforge.net>
+2002-04-13 05:27:40  Rev 3957   bmh
 
-	* src/ggz.h: Doxygenated a few easysock function comments.
-	
-	This is pretty tedious stuff, I could only do a few before I got
-	bored :-).
+	* ChangeLog:
+	  - Updated changelog entries for 0.0.5 release
 
-2002-01-19 21:52  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* acconfig.h, configure.in, src/Makefile.am, src/strsep.c: 
-	- Include replacement strsep function for platforms that don't have
-	it   **cough** Solaris **cough** - Check for strsep function in
-	configure
+2002-04-13 03:40:53  Rev 3939   bmh
 
-2002-01-19 21:50  Brent Hendricks <bmh@users.sourceforge.net>
+	* NEWS:
+	  - Add reservation support to NEWS
 
-	* src/easysock.c: 
-	- Fixes in ggz_read_fd (the accrights stuff has been messed up for
-	a   while now.	How come no one noticed?)
 
-2002-01-19 00:54  Brent Hendricks <bmh@users.sourceforge.net>
+2002-04-13 03:40:45  Rev 3938   rgade
 
-	* Makefile.am: 
-	- Added tests to SUBDIRS so the proper files get distributed
+	* libggz.spec:
+	  - RPM Spec file for libggz
 
-2002-01-19 00:53  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* acconfig.h: 
-	- include SUN_LEN, CMSG_ALIGN, CMSG_SPACE, CMSG_LEN macros for	
-	platforms that don't have them
+2002-04-13 03:35:04  Rev 3937   bmh
 
-2002-01-19 00:17  Brent Hendricks <bmh@users.sourceforge.net>
+	* Makefile.am:
+	  - Include README.GGZ and QuickStart.GGZ in dist
 
-	* .cvsignore: 
-	- Ignore stamp-h1 file
 
-2002-01-18 23:30  Brent Hendricks <bmh@users.sourceforge.net>
+2002-04-13 03:32:29  Rev 3936   bmh
 
-	* acconfig.h, configure.in, src/Makefile.am, src/easysock.c,
-	src/ggz.h: 
-	- Absorbed easysock functionality into libggz
+	* QuickStart.GGZ README.GGZ AUTHORS INSTALL NEWS README:
+	  - Doc updates for 0.0.5 release
 
-2002-01-18 21:21  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* configure.in: 
-	- Use older AM_PROG_LIBTOOL, since not everyone has the latest	
-	autoconf/automake yet
+2002-04-13 01:41:03  Rev 3932   bmh
 
-2002-01-14 01:04  Jason Short <jdorje@users.sourceforge.net>
+	* configure.in:
+	  - Set version number to 0.0.5
 
-	* src/: Makefile.am, ggz_common.c, ggz_common.h: Added
-	ggz_common.c, along with a pair of functions from converting a
-	GGZSeatType to and from a string.  They should be of use to any
-	game that uses a text-based protocol and wishes to communicate this
-	data, or to any program that wants to do debugging output with this
-	data, or to GGZ itself (which uses the aforementioned text-based
-	protocol).
 
-2002-01-13 23:48  Jason Short <jdorje@users.sourceforge.net>
+2002-04-13 01:32:57  Rev 3931   jdorje
 
-	* src/: Makefile.am, ggz_common.h: Moved GGZSeatType definition
-	into libggz.
-	
-	I've created a new file for this, ggz_common.h.  This separates the
-	GGZ-specific code from the support code.
+	* src/ggz.h:
+	  Fixed doxygen (documentation) syntax error: s/@code/@endcode/.
 
-2002-01-12 02:45  Jason Short <jdorje@users.sourceforge.net>
 
-	* src/misc.c, tests/misc.c: Fixed two compiler warnings.
+2002-04-13 01:29:54  Rev 3930   bmh
 
-2002-01-12 02:42  Jason Short <jdorje@users.sourceforge.net>
+	* src/ggz.h:
+	  - Document XML element objects/functions
 
-	* src/ggz.h: Fixed small spacing problem.
 
-2002-01-12 02:42  Jason Short <jdorje@users.sourceforge.net>
+2002-04-13 00:31:13  Rev 3926   dr_maux
 
-	* src/conf.c, src/ggz.h, src/memory.c, tests/cfgtest.c: Changed all
-	internal memory management to use ggz_* functions.
-	
-	This means allocated pointers that are returned should be freed
-	with ggz_free.	Until the user code does this, they will get
-	spurious memory leak messages.
+	* Makefile.am:
+	  - addon
 
-2002-01-09 07:08  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* src/ggz.h: - here we go again: c++ compatibility
+2002-04-13 00:31:01  Rev 3925   dr_maux
 
-2002-01-08 16:30  Brent Hendricks <bmh@users.sourceforge.net>
+	* debian/rules:
+	  - move clean rule to debian/rules
 
-	* tests/cfgtest.c: 
-	- Fix conf file tests to use GGZ_ prefixes
 
-2002-01-08 16:29  Brent Hendricks <bmh@users.sourceforge.net>
+2002-04-11 03:04:16  Rev 3889   bmh
 
-	* src/: conf.c, ggz.h: 
-	- Use enum for config-file open params, and prefix with GGZ_
+	* src/ggz.h:
+	  - Added documentation for list and stack functions
 
-2002-01-08 12:20  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* tests/misc.c: 
-	- Correct test to match new behavior of ggz_xml_[un]escape
+2002-04-09 20:07:40  Rev 3858   dr_maux
 
-2002-01-06 15:59  Rich Gade <rgade@users.sourceforge.net>
+	* debian/control debian/rules:
+	  - finalize libggz packages
 
-	* tests/: .cvsignore, Makefile.am, read_line.c: Program to test
-	ggz_read_line() feature - Tests lines that span the buffer boundary
-	(left shift required) - Tests lines that occur at end of buffer
-	(read fresh buffer) - Tests lines that cause buffer expansion -
-	Large line lengths test successfully (appx 128KB)
 
-2002-01-06 03:43  Rich Gade <rgade@users.sourceforge.net>
+2002-04-07 23:00:37  Rev 3847   jdorje
 
-	* src/: conf.c, ggz.h, misc.c: - Added ggz_free_file_struct() to
-	properly deallocate a GGZFile structure   and it's buffer
+	* Makefile.am:
+	  Add Doxyfile to EXTRA_DIST.
 
-2002-01-06 03:28  Rich Gade <rgade@users.sourceforge.net>
 
-	* src/: conf.c, ggz.h, misc.c: misc.c - ggz_get_file_struct()
-	obtains a struct to use to access ggz_read_line() - ggz_read_line()
-	reads lines of arbitrary length from an open file
-	
-	conf.c - use ggz_read_line() to read configuration lines with no
-	1024 char limit
-	
-	ggz.h - comment new functions
+2002-04-07 12:37:55  Rev 3837   dr_maux
 
-2002-01-05 04:23  Rich Gade <rgade@users.sourceforge.net>
+	* debian/.cvsignore debian debian/files:
+	  - remove generated file 'files'
+	  - update .cvsignore
 
-	* src/: ggz.h, misc.c: - ggz_(un)escape functions always allocate
-	memory (except on error)   to ease end-user coding
 
-2002-01-05 04:11  Rich Gade <rgade@users.sourceforge.net>
+2002-04-07 12:36:29  Rev 3836   dr_maux
 
-	* src/memory.c: - Rewrote _ggz_allocate() so it doesn't require a
-	recursive mutex but must   now be sent an additional parameter
-	which should be SET_LOCK if a lock is	required, or GOT_LOCK if
-	the mutex is already held.
+	* debian/control:
+	  *** empty log message ***
 
-2001-12-18 08:01  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* .cvsignore: 
-	- Added doc dir
+2002-04-07 11:26:46  Rev 3834   dr_maux
 
-2001-12-18 08:00  Brent Hendricks <bmh@users.sourceforge.net>
+	* debian/rules:
+	  - don't install our ChangeLog into the debian doc dir
 
-	* tests/.cvsignore: 
-	- Added misc and debug.log
 
-2001-12-18 07:59  Brent Hendricks <bmh@users.sourceforge.net>
+2002-04-07 11:22:27  Rev 3833   dr_maux
 
-	* configure.in: 
-	- Clean and freshen up configure.in
+	* debian/control:
+	  - replaces old 0.0.4 package easysock to be deinstalled
 
-2001-12-18 07:59  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* src/memory.c: 
-	- Remove error message code if src == NULL
+2002-04-06 19:06:16  Rev 3787   dr_maux
 
-2001-12-18 00:56  Jason Short <jdorje@users.sourceforge.net>
+	* debian/.cvsignore debian/README.Debian debian/libggz0.files debian 
+	  debian/control debian/libggz-dev.docs debian/files debian/libggz0.
+	  docs debian/changelog debian/copyright debian/rules 
+	  debian/libggz-dev.files:
+	  - debianize libggz
 
-	* src/ggz.h: Added the very convenient ggz__attribute macro to
-	libggz:
-	
-	  #ifdef __GNUC__
-	  #  define ggz__attribute(att)  __attribute__(att)
-	  #else
-	  #  define ggz__attribute(att)
-	  #endif
-	
-	and use it down below:
-	
-	  void ggz_debug(const char *type, const char *fmt, ...)
-			 ggz__attribute((format(printf, 2, 3)));
-	  /* ...etc... */
-	
-	This macro should be of use to GGZ programs as well.  It needs
-	documentation, though - I'll need to test how Doxygen handles the
-	#ifdef part of the statement.
 
-2001-12-17 16:45  Jason Short <jdorje@users.sourceforge.net>
+2002-04-06 19:04:18  Rev 3786   dr_maux
 
-	* src/Makefile.am: Added missing source files to the automake list.
-	 Without them, make dist[check] will fail.
+	* Makefile.am NEWS README:
+	  - include rule to erase config.status during 'make clean'
+	    (could this affect anything in a negative way?)
+	  - provide simple readme file, and a dummy NEWS (everything which 
+	  makes the file
+	    larger than 0 bytes counts ;)
 
-2001-12-16 17:26  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* tests/Makefile.am: - use automake's magic to create a test suite
-	- call with 'make check'
+2002-04-06 18:00:16  Rev 3784   dr_maux
 
-2001-12-09 20:49  Jason Short <jdorje@users.sourceforge.net>
+	* tests/Makefile.am:
+	  - create a local 'clean' rule to erase the debug.log file
+	  - wel,, make distcheck works now here :)
 
-	* src/ggz.h: Added some comments (doxygen-style) to some of the msg
-	routines (the ones I had to look up in msg.c to see what they did
-	:-).
 
-2001-12-09 19:50  Jason Short <jdorje@users.sourceforge.net>
+2002-04-05 22:02:09  Rev 3757   dr_maux
 
-	* src/memory.c: Finally removed the error message when ggz_strdup
-	is given a NULL pointer.  It will not just happily return NULL in
-	this case.
+	* QuickStart.GGZ README.GGZ:
+	  - add installation instructions and overview to libggz
 
-2001-11-13 20:01  Rich Gade <rgade@users.sourceforge.net>
 
-	* src/memory.c: - Fixed a problem with the recursive mutex
-	algorithm - threads that waited on   the mutex did not follow up by
-	setting themselves as the mutex owner
+2002-03-28 20:42:04  Rev 3714   jdorje
 
-2001-11-12 20:27  Rich Gade <rgade@users.sourceforge.net>
+	* src/memory.c src/conf.c src/msg.c:
+	  Complete the previous change: actually remove msg.h and change 
+	  code to
+	  match.
 
-	* src/memory.c: - Fixed one of those "it could never occur" bugs
-	with thread locking
 
-2001-11-12 20:04  Rich Gade <rgade@users.sourceforge.net>
+2002-03-28 20:33:43  Rev 3713   jdorje
 
-	* src/memory.c: - Added locks to critical sections of memory
-	functions
+	* src/Makefile.am src/misc.c src/msg.h src/ggz.h tests/read_line.c 
+	  src/misc.h:
+	  - Move the definition of struct _GGZFile into an internal header 
+	  file,
+	    so that people won't be tempted to access it directly.
+	  - Rename msg.h as misc.h, so that it serves as a global internal 
+	  header
+	    file (and contains struct _GGZFile).
 
-2001-11-11 12:07  Rich Gade <rgade@users.sourceforge.net>
 
-	* src/memory.c: Some sanity checks for memory.c: - Check for NULL
-	tag and replace with <unknown> Best guess behaviors for apps asking
-	for 0 bytes: - Don't store any pointers to 0 length memory buffers,
-	just return NULL   and generate an error - On realloc, if new size
-	is 0 additionally call _ggz_free()
+2002-03-28 20:19:48  Rev 3712   jdorje
 
-2001-11-09 22:36  Brent Hendricks <bmh@users.sourceforge.net>
+	* src/ggz.h:
+	  More libggz documentation.
 
-	* tests/: debug.log.correct, debugmsg.correct: 
-	- Added "correct" output of debugmsg so we have something to
-	compare   it to
 
-2001-11-09 22:32  Brent Hendricks <bmh@users.sourceforge.net>
+2002-03-27 23:08:23  Rev 3696   jdorje
 
-	* src/msg.c: 
-	- Don't check for debug_enabled when enabling and disabling types  
-	(since this prevents us from setting things up in ggz_debug_init)
+	* Doxyfile:
+	  Generate man pages for libggz documentation.
 
-2001-11-09 09:52  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* libggz.txt: 
-	- Removed old description of functions (now that we're using
-	doxygen)
+2002-03-26 09:15:10  Rev 3690   jdorje
 
-2001-11-09 09:50  Brent Hendricks <bmh@users.sourceforge.net>
+	* src/ggz.h:
+	  Comment some more libggz socket functions.
 
-	* tests/debugmsg.c: 
-	- Much enhanced testsuite for debugging messages
 
-2001-11-09 09:46  Brent Hendricks <bmh@users.sourceforge.net>
+2002-03-26 08:38:01  Rev 3689   jdorje
 
-	* src/: conf.c, ggz.h, memory.c, msg.c, msg.h: 
-	- Rethought debugging messages: - New libggz internal function
-	_ggz_debug() only outputs if libggz was   compiled with
-	--enable-debug - Switched all internal messages to use _ggz_debug()
-	- Change exported ggz_debug() to always output so programs linked
-	to   libggz can decided for themselves whether or not to use
-	debugging - New internal function _ggz_msg() always outputs -
-	Change ggz_memory_check() to use _ggz_msg() - Change
-	ggz_debug_cleanup() to take an argument, either GGZ_CHECK_NONE	 or
-	GGZ_CHECK_MEM (but open for future expansion) - In
-	ggz_debug_cleanup, if GGZ_CHECK_MEM is passed, call  
-	ggz_memory_check() *after* freeing internallly using memory, but  
-	*before* closing the debug file
+	* src/conf.c:
+	  Slight improvement to ggz_conf_parse() option checking:
+	    - Do everything in one if() check.
+	    - If there are invalid parameters, log it as an error not just a
+	      debugging message.
+	  I made these changes because GGZCards client config stuff wasn't 
+	  properly
+	  working.  Then when I couldn't save the conf.c, I realized that it 
+	  was
+	  because my partition was entirely full.  But the changes seem good
+	  anyway.
 
-2001-11-06 15:25  Rich Gade <rgade@users.sourceforge.net>
 
-	* src/Makefile.am, src/ggz.h, src/misc.c, tests/Makefile.am,
-	tests/misc.c: - Added misc.c - contains ggz_xml_escape and
-	ggz_xml_unescape currently - Wrote test routines for ggz_xml_escape
-	and ggz_xml_unescape
+2002-03-22 20:46:29  Rev 3619   jdorje
 
-2001-11-04 16:56  Brent Hendricks <bmh@users.sourceforge.net>
+	* src/conf.c:
+	  Fixed bug in previous commit.
 
-	* src/memory.c: 
-	- Change behavior of ggz_relloc to better match libc relloc(): if
-	you   pass in a NULL ptr, it treats it as a call to malloc.  (This
-	was   causing a segfault in libggzdmod)
 
-2001-11-04 02:50  Rich Gade <rgade@users.sourceforge.net>
+2002-03-21 19:01:28  Rev 3616   jdorje
 
-	* src/ggz.h: - Added detailed documentation for ggz_conf routines
+	* src/conf.c:
+	  Manually null-terminate list in ggz_conf_read_list().
 
-2001-11-03 00:33  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* Doxyfile, src/ggz.h: 
-	- Add doxygen config file - Add doxygen documentation to ggz.h for
-	memory handling functions
+2002-03-02 21:17:21  Rev 3515   bmh
 
-2001-10-29 01:11  Rich Gade <rgade@users.sourceforge.net>
+	* src/conf.c:
+	  - Fixed ggz_conf_read_list() to always allocate argv even if it's 
+	  just
+	    a single array consisting of NULL.  that way the caller can always
+	    deal with it the same way
 
-	* src/conf.c, src/confio.c, src/confio.h, tests/.cvsignore,
-	tests/Makefile.am, tests/cfgtest.c: - Renamed conf_remove_section()
-	to ggz_conf_remove_section() - Wrote configuration test facility -
-	Removed confio* files
 
-2001-10-22 23:31  Brent Hendricks <bmh@users.sourceforge.net>
+2002-02-26 02:57:36  Rev 3474   jdorje
 
-	* tests/.cvsignore: - Added .cvsignore
+	* acconfig.h configure.in:
+	  Change autoconf system so that if DEBUG is not defined 
+	  (--enable-debug,
+	  currently off by default) we'll get NDEBUG defined instead.
 
-2001-10-22 23:30  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* src/: Makefile.am, conf.c: 
-	- Remove (apparently) duplicate confio.* - Rename functions in
-	conf.c to ggz_conf* - Note: this is completely untested and should
-	be checked thoroughly	before use
+2002-02-25 13:56:14  Rev 3468   jdorje
 
-2001-10-22 23:12  Brent Hendricks <bmh@users.sourceforge.net>
+	* acconfig.h configure.in:
+	  Removed --enable-debug-socket and the DEBUG_SOCKET #definition 
+	  from the
+	  autoconf process.
 
-	* configure.in, src/ggz.h, src/msg.c, tests/debugmsg.c: [no log
-	message]
 
-2001-10-22 23:07  Brent Hendricks <bmh@users.sourceforge.net>
+2002-02-25 13:53:31  Rev 3467   jdorje
 
-	* tests/: Makefile.am, debugmsg.c: 
-	- Added test program for debug/messages
+	* src/ggz.h src/easysock.c:
+	  - Changed easysock ggz_debug debugging type from "easysock" to 
+	  "socket"
+	    (well, really GGZ_SOCKET_DEBUG which is "socket").
+	  - Added a #definition of GGZ_SOCKET_DEBUG as "socket" to ggz.h, 
+	  along
+	    with an explanation for doing socket debugging.
 
-2001-10-22 23:06  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* src/: .cvsignore, Makefile.am, conf.c, confio.c, ggz.h, memory.c,
-	msg.c, msg.h, xmlelement.c: 
-	- Added .cvsignore file - Moved debug/erro message function
-	declarations into ggz.h, removing   '_' prefix - Removed
-	unnecessary msg.h file - Rather than hard code a list of debug
-	types, accept a string as the	debug type - Have debug_init()
-	accept a NULL-terminated array of strings to   specify the enabled
-	debugging types - New functions ggz_debug_enable_type() and
-	ggz_debug_disable_type()   to turn on/off debugging of specific
-	types - If debug_init() hasn't been called yet, then allow deug
-	messages to   go through - new function ggz_debug_debug() for
-	testing purposed only
+2002-02-24 18:40:46  Rev 3454   jdorje
 
-2001-10-21 19:27  Brent Hendricks <bmh@users.sourceforge.net>
+	* src/ggz.h src/easysock.c:
+	  Removed the use of DEBUG_SOCKET, which was only used to control
+	  debugging output.  Instead, this debugging output goes through 
+	  ggz_debug
+	  with type "easysock".  This means the calling program can control 
+	  the
+	  output no matter how the library was compiled.
+	  --enable-debug-socket is still left as a part of the configure 
+	  process,
+	  and DEBUG_SOCKET is still in acconfig.h.  If there is no other use 
+	  for
+	  this macro, perhaps it should be removed from these files.
+	  I also added information about this to the ggz.h documentation.
 
-	* .cvsignore: 
-	- Added .cvsignore file
 
-2001-10-21 19:24  Brent Hendricks <bmh@users.sourceforge.net>
+2002-02-16 03:04:36  Rev 3367   bmh
 
-	* AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am, NEWS, README,
-	acconfig.h, autogen.sh, configure.in, libggz.txt, src/Makefile.am,
-	src/conf.c, src/confio.c, src/confio.h, src/ggz.h, src/list.c,
-	src/memory.c, src/msg.c, src/msg.h, src/stack.c, src/xmlelement.c:
-	Initial revision
+	* src/ggz_common.h:
+	  - Add GGZTableState to common header
 
-2001-10-21 19:24  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am, NEWS, README,
-	acconfig.h, autogen.sh, configure.in, libggz.txt, src/Makefile.am,
-	src/conf.c, src/confio.c, src/confio.h, src/ggz.h, src/list.c,
-	src/memory.c, src/msg.c, src/msg.h, src/stack.c, src/xmlelement.c: 
-	- Import sources for new GGZ common utilities lib
+2002-02-10 10:38:33  Rev 3299   jdorje
+
+	* src/memory.c src/ggz.h:
+	  A few assorted cleanups to libggz/memory:
+	    - Changed size parameter of _ggz_malloc and _ggz_realloc from an
+	      unsigned int to a size_t (which is what malloc uses).
+	    - Added parameter names into the prototypes in ggz.h.
+	    - Changed the documentation in ggz.h to use the real parameter 
+	  names.
+	    - Changed the "tag" parameter from a char* to a const char* in all
+	      functions (and the struct).
+	  I wonder why it is that the size parameter is a "const" but other 
+	  scalar
+	  parameters are not?  Is there a reason for this?
+
+
+2002-02-10 04:35:21  Rev 3293   jdorje
+
+	* src/easysock.c:
+	  Changed two uses of vsprintf to vsnprintf, thus avoiding a potential
+	  buffer overflow.
+
+
+2002-02-06 22:38:30  Rev 3263   dr_maux
+
+	* .cvsignore:
+	  - put annoying configure-stamp into .cvsignore
+
+
+2002-02-03 19:19:15  Rev 3227   jdorje
+
+	* src/ggz_common.h:
+	  Removed explicit numbering from GGZSeatType enumeration.
+	  Note this will break compatibility of most games that implicitly 
+	  use the
+	  numbering in their communication protocol (this can be dealt with by
+	  upping the protocol version numbers, coming shortly).  But it 
+	  _does_ make
+	  things more readible, and it should be a one-time change, so it's 
+	  worth it
+	  IMO.
+
+
+2002-01-24 07:09:51  Rev 3184   jdorje
+
+	* src/ggz.h src/easysock.c:
+	  - Renamed ggz_remove_exit_func as ggz_io_remove_exit_func in 
+	  easysock.c
+	    (it was already called this in ggz.h).
+	  - Added more documentation to ggz.h.
+
+
+2002-01-23 04:59:24  Rev 3176   jdorje
+
+	* src/easysock.c:
+	  Fixed bug in last commit.
+
+
+2002-01-20 08:36:46  Rev 3159   jdorje
+
+	* src/ggz.h src/easysock.c:
+	  Changed ggz_read_string_alloc to allocate memory with ggz_malloc.
+	  This will break all code that currently uses this function, but is
+	  nonetheless clearly the right thing to do - and should be done 
+	  ASAP so
+	  the calling code has more time to adjust.  IMO.
+	  The internal implementation leaves a bit to be desired.  
+	  Previously if
+	  the malloc failed we just returned an error, but ggz_malloc will 
+	  (I think)
+	  exit by default.  This is a bit of a security risk, as a malicious 
+	  program
+	  at the other end of the socket could send us lots of large strings 
+	  and
+	  perhaps force us to exit.  OTOH, we do have the alloc_limit so 
+	  there is
+	  some safety.
+
+
+2002-01-20 07:48:58  Rev 3158   jdorje
+
+	* src/ggz.h:
+	  Doxygenated a few easysock function comments.
+	  This is pretty tedious stuff, I could only do a few before I got 
+	  bored :-).
+
+
+2002-01-20 03:52:48  Rev 3154   bmh
+
+	* acconfig.h src/Makefile.am configure.in src/strsep.c:
+	  - Include replacement strsep function for platforms that don't 
+	  have it
+	    **cough** Solaris **cough**
+	  - Check for strsep function in configure
+
+
+2002-01-20 03:50:40  Rev 3153   bmh
+
+	* src/easysock.c:
+	  - Fixes in ggz_read_fd (the accrights stuff has been messed up for a
+	    while now.  How come no one noticed?)
+
+
+2002-01-19 06:54:16  Rev 3134   bmh
+
+	* Makefile.am:
+	  - Added tests to SUBDIRS so the proper files get distributed
+
+
+2002-01-19 06:53:43  Rev 3133   bmh
+
+	* acconfig.h:
+	  - include SUN_LEN, CMSG_ALIGN, CMSG_SPACE, CMSG_LEN macros for
+	    platforms that don't have them
+
+
+2002-01-19 06:17:24  Rev 3132   bmh
+
+	* .cvsignore:
+	  - Ignore stamp-h1 file
+
+
+2002-01-19 05:30:40  Rev 3130   bmh
+
+	* acconfig.h src/Makefile.am src/ggz.h configure.in src/easysock.c:
+	  - Absorbed easysock functionality into libggz
+
+
+2002-01-19 03:21:08  Rev 3129   bmh
+
+	* configure.in:
+	  - Use older AM_PROG_LIBTOOL, since not everyone has the latest
+	    autoconf/automake yet
+
+
+2002-01-14 07:04:06  Rev 3113   jdorje
+
+	* src/Makefile.am src/ggz_common.c src/ggz_common.h:
+	  Added ggz_common.c, along with a pair of functions from converting a
+	  GGZSeatType to and from a string.  They should be of use to any game
+	  that uses a text-based protocol and wishes to communicate this 
+	  data, or
+	  to any program that wants to do debugging output with this data, 
+	  or to
+	  GGZ itself (which uses the aforementioned text-based protocol).
+
+
+2002-01-14 05:48:31  Rev 3110   jdorje
+
+	* src/Makefile.am src/ggz_common.h:
+	  Moved GGZSeatType definition into libggz.
+	  I've created a new file for this, ggz_common.h.  This separates the
+	  GGZ-specific code from the support code.
+
+
+2002-01-12 08:45:51  Rev 3083   jdorje
+
+	* src/misc.c tests/misc.c:
+	  Fixed two compiler warnings.
+
+
+2002-01-12 08:42:57  Rev 3082   jdorje
+
+	* src/ggz.h:
+	  Fixed small spacing problem.
+
+
+2002-01-12 08:42:06  Rev 3081   jdorje
+
+	* src/memory.c tests/cfgtest.c src/ggz.h src/conf.c:
+	  Changed all internal memory management to use ggz_* functions.
+	  This means allocated pointers that are returned should be freed with
+	  ggz_free.  Until the user code does this, they will get spurious 
+	  memory
+	  leak messages.
+
+
+2002-01-09 13:08:38  Rev 3038   dr_maux
+
+	* src/ggz.h:
+	  - here we go again: c++ compatibility
+
+
+2002-01-08 22:30:47  Rev 3024   bmh
+
+	* tests/cfgtest.c:
+	  - Fix conf file tests to use GGZ_ prefixes
+
+
+2002-01-08 22:29:52  Rev 3023   bmh
+
+	* src/ggz.h src/conf.c:
+	  - Use enum for config-file open params, and prefix with GGZ_
+
+
+2002-01-08 18:20:13  Rev 3015   bmh
+
+	* tests/misc.c:
+	  - Correct test to match new behavior of ggz_xml_[un]escape
+
+
+2002-01-06 21:59:23  Rev 3007   rgade
+
+	* tests/.cvsignore tests tests/read_line.c tests/Makefile.am:
+	  Program to test ggz_read_line() feature
+	  - Tests lines that span the buffer boundary (left shift required)
+	  - Tests lines that occur at end of buffer (read fresh buffer)
+	  - Tests lines that cause buffer expansion
+	  - Large line lengths test successfully (appx 128KB)
+
+
+2002-01-06 09:43:56  Rev 3005   rgade
+
+	* src/misc.c src/ggz.h src/conf.c:
+	  - Added ggz_free_file_struct() to properly deallocate a GGZFile 
+	  structure
+	    and it's buffer
+
+
+2002-01-06 09:28:50  Rev 3004   rgade
+
+	* src/misc.c src/ggz.h src/conf.c:
+	  misc.c
+	  - ggz_get_file_struct() obtains a struct to use to access 
+	  ggz_read_line()
+	  - ggz_read_line() reads lines of arbitrary length from an open file
+	  conf.c
+	  - use ggz_read_line() to read configuration lines with no 1024 
+	  char limit
+	  ggz.h
+	  - comment new functions
+
+
+2002-01-05 10:23:17  Rev 2999   rgade
+
+	* src/misc.c src/ggz.h:
+	  - ggz_(un)escape functions always allocate memory (except on error)
+	    to ease end-user coding
+
+
+2002-01-05 10:11:09  Rev 2998   rgade
+
+	* src/memory.c:
+	  - Rewrote _ggz_allocate() so it doesn't require a recursive mutex 
+	  but must
+	    now be sent an additional parameter which should be SET_LOCK if 
+	  a lock is
+	    required, or GOT_LOCK if the mutex is already held.
+
+
+2001-12-18 14:01:31  Rev 2938   bmh
+
+	* .cvsignore:
+	  - Added doc dir
+
+
+2001-12-18 14:00:34  Rev 2937   bmh
+
+	* tests/.cvsignore tests:
+	  - Added misc and debug.log
+
+
+2001-12-18 13:59:42  Rev 2936   bmh
+
+	* configure.in:
+	  - Clean and freshen up configure.in
+
+
+2001-12-18 13:59:05  Rev 2935   bmh
+
+	* src/memory.c:
+	  - Remove error message code if src == NULL
+
+
+2001-12-18 06:56:09  Rev 2930   jdorje
+
+	* src/ggz.h:
+	  Added the very convenient ggz__attribute macro to libggz:
+	    #ifdef __GNUC__
+	    #  define ggz__attribute(att)  __attribute__(att)
+	    #else
+	    #  define ggz__attribute(att)
+	    #endif
+	  and use it down below:
+	    void ggz_debug(const char *type, const char *fmt, ...)
+	                   ggz__attribute((format(printf, 2, 3)));
+	    /* ...etc... */
+	  This macro should be of use to GGZ programs as well.  It needs
+	  documentation, though - I'll need to test how Doxygen handles the
+	  #ifdef part of the statement.
+
+
+2001-12-17 22:45:28  Rev 2924   jdorje
+
+	* src/Makefile.am:
+	  Added missing source files to the automake list.  Without them,
+	  make dist[check] will fail.
+
+
+2001-12-16 23:26:41  Rev 2900   dr_maux
+
+	* tests/Makefile.am:
+	  - use automake's magic to create a test suite
+	  - call with 'make check'
+
+
+2001-12-10 02:49:03  Rev 2844   jdorje
+
+	* src/ggz.h:
+	  Added some comments (doxygen-style) to some of the msg routines (the
+	  ones I had to look up in msg.c to see what they did :-).
+
+
+2001-12-10 01:50:49  Rev 2842   jdorje
+
+	* src/memory.c:
+	  Finally removed the error message when ggz_strdup is given a NULL
+	  pointer.  It will not just happily return NULL in this case.
+
+
+2001-11-14 02:01:36  Rev 2745   rgade
+
+	* src/memory.c:
+	  - Fixed a problem with the recursive mutex algorithm - threads 
+	  that waited on
+	    the mutex did not follow up by setting themselves as the mutex 
+	  owner
+
+
+2001-11-13 02:27:09  Rev 2729   rgade
+
+	* src/memory.c:
+	  - Fixed one of those "it could never occur" bugs with thread locking
+
+
+2001-11-13 02:04:58  Rev 2727   rgade
+
+	* src/memory.c:
+	  - Added locks to critical sections of memory functions
+
+
+2001-11-11 18:07:25  Rev 2722   rgade
+
+	* src/memory.c:
+	  Some sanity checks for memory.c:
+	  - Check for NULL tag and replace with <unknown>
+	  Best guess behaviors for apps asking for 0 bytes:
+	  - Don't store any pointers to 0 length memory buffers, just return 
+	  NULL
+	    and generate an error
+	  - On realloc, if new size is 0 additionally call _ggz_free()
+
+
+2001-11-10 04:36:08  Rev 2720   bmh
+
+	* tests/debugmsg.correct tests/debug.log.correct:
+	  - Added "correct" output of debugmsg so we have something to compare
+	    it to
+
+
+2001-11-10 04:32:36  Rev 2719   bmh
+
+	* src/msg.c:
+	  - Don't check for debug_enabled when enabling and disabling types
+	    (since this prevents us from setting things up in ggz_debug_init)
+
+
+2001-11-09 15:52:27  Rev 2712   bmh
+
+	* libggz.txt:
+	  - Removed old description of functions (now that we're using 
+	  doxygen)
+
+
+2001-11-09 15:50:34  Rev 2711   bmh
+
+	* tests/debugmsg.c:
+	  - Much enhanced testsuite for debugging messages
+
+
+2001-11-09 15:46:29  Rev 2710   bmh
+
+	* src/memory.c src/msg.h src/ggz.h src/conf.c src/msg.c:
+	  - Rethought debugging messages:
+	  - New libggz internal function _ggz_debug() only outputs if libggz 
+	  was
+	    compiled with --enable-debug
+	  - Switched all internal messages to use _ggz_debug()
+	  - Change exported ggz_debug() to always output so programs linked to
+	    libggz can decided for themselves whether or not to use debugging
+	  - New internal function _ggz_msg() always outputs
+	  - Change ggz_memory_check() to use _ggz_msg()
+	  - Change ggz_debug_cleanup() to take an argument, either 
+	  GGZ_CHECK_NONE
+	    or GGZ_CHECK_MEM (but open for future expansion)
+	  - In ggz_debug_cleanup, if GGZ_CHECK_MEM is passed, call
+	    ggz_memory_check() *after* freeing internallly using memory, but
+	    *before* closing the debug file
+
+
+2001-11-06 21:25:43  Rev 2682   rgade
+
+	* src/Makefile.am src/misc.c src/ggz.h tests/Makefile.am tests/misc.c:
+	  - Added misc.c - contains ggz_xml_escape and ggz_xml_unescape 
+	  currently
+	  - Wrote test routines for ggz_xml_escape and ggz_xml_unescape
+
+
+2001-11-04 22:56:41  Rev 2660   bmh
+
+	* src/memory.c:
+	  - Change behavior of ggz_relloc to better match libc relloc(): if 
+	  you
+	    pass in a NULL ptr, it treats it as a call to malloc.  (This was
+	    causing a segfault in libggzdmod)
+
+
+2001-11-04 08:50:08  Rev 2648   rgade
+
+	* src/ggz.h:
+	  - Added detailed documentation for ggz_conf routines
+
+
+2001-11-03 06:33:45  Rev 2633   bmh
+
+	* Doxyfile src/ggz.h:
+	  - Add doxygen config file
+	  - Add doxygen documentation to ggz.h for memory handling functions
+
+
+2001-10-29 07:11:39  Rev 2629   rgade
+
+	* tests/.cvsignore tests tests/cfgtest.c src/confio.c src/confio.h 
+	  tests/Makefile.am src/conf.c:
+	  - Renamed conf_remove_section() to ggz_conf_remove_section()
+	  - Wrote configuration test facility
+	  - Removed confio* files
+
+
+2001-10-23 04:31:50  Rev 2596   bmh
+
+	* tests/.cvsignore tests:
+	  - Added .cvsignore
+
+
+2001-10-23 04:30:20  Rev 2595   bmh
+
+	* src/Makefile.am src/conf.c:
+	  - Remove (apparently) duplicate confio.*
+	  - Rename functions in conf.c to ggz_conf*
+	  - Note: this is completely untested and should be checked thoroughly
+	    before use
+
+
+2001-10-23 04:12:02  Rev 2594   bmh
+
+	* tests/debugmsg.c src/ggz.h configure.in src/msg.c:
+	  *** empty log message ***
+
+
+2001-10-23 04:07:02  Rev 2593   bmh
+
+	* tests/debugmsg.c tests tests/Makefile.am:
+	  - Added test program for debug/messages
+
+
+2001-10-23 04:06:14  Rev 2592   bmh
+
+	* src/Makefile.am src/memory.c src/xmlelement.c src/msg.h src/.
+	  cvsignore src/ggz.h src/confio.c src src/conf.c src/msg.c:
+	  - Added .cvsignore file
+	  - Moved debug/erro message function declarations into ggz.h, 
+	  removing
+	    '_' prefix
+	  - Removed unnecessary msg.h file
+	  - Rather than hard code a list of debug types, accept a string as 
+	  the
+	    debug type
+	  - Have debug_init() accept a NULL-terminated array of strings to
+	    specify the enabled debugging types
+	  - New functions ggz_debug_enable_type() and ggz_debug_disable_type()
+	    to turn on/off debugging of specific types
+	  - If debug_init() hasn't been called yet, then allow deug messages 
+	  to
+	    go through
+	  - new function ggz_debug_debug() for testing purposed only
+
+
+2001-10-22 00:27:51  Rev 2587   bmh
+
+	* .cvsignore:
+	  - Added .cvsignore file
+
+
+2001-10-22 00:24:18  Rev 2583   bmh
+
+	* src/memory.c src/xmlelement.c src/list.c AUTHORS src/confio.c 
+	  configure.in ChangeLog src src/confio.h libggz.txt README src/conf.
+	  c src/msg.c acconfig.h src/Makefile.am src/msg.h src/ggz.h INSTALL 
+	  COPYING Makefile.am autogen.sh NEWS src/stack.c:
+	  Initial revision
+
 

@@ -1,1225 +1,781 @@
-2005-01-23 14:20   Josef Spillner <josef@ggzgamingzone.org>
+2005-09-25 10:11:25  Rev 7551   josef
 
-	* NEWS: - news update
+	* configure.ac:
+	  - more version string changes in the build system
 
-2005-01-23 14:12   Josef Spillner <josef@ggzgamingzone.org>
 
-	* QuickStart.GGZ, README.GGZ: - updated common files
+2005-09-25 09:54:30  Rev 7550   josef
 
-2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+	* NEWS README.GGZ:
+	  - version updates in common files
+	  - news and release-specific changes
 
-	* m4/ggz.m4: Search for .la files instead of .so.
 
-2005-01-22 16:35   Josef Spillner <josef@ggzgamingzone.org>
+2005-09-23 21:54:25  Rev 7547   josef
 
-	* man/ggz-txt.6: - updated version numbers
+	* COPYING:
+	  - add copyright files for gnome-client and sdl-games to SVN
+	  - update all copyright files with current version, including the 
+	  new FSF address in Boston
 
-2005-01-22 16:28   Josef Spillner <josef@ggzgamingzone.org>
 
-	* configure.ac: - version number bump
+2005-09-15 18:00:53  Rev 7516   josef
 
-2005-01-16 08:10   Jason Short <jdorje@ggzgamingzone.org>
+	* configure.ac autogen.sh:
+	  - synchronisation of all autogen.sh files
+	  - quick fixes in configure.ac's (but they really need a cleanup 
+	  also)
 
-	* configure.ac, ggz-txt/Makefile.am, ggz-txt/strsep.c,
-	  ggz-txt/support.h: Strsep portability fixes.
 
-2005-01-16 07:54   Jason Short <jdorje@ggzgamingzone.org>
+2005-08-20 21:41:45  Rev 7464   josef
 
-	* configure.ac, ggz-txt/loop.c, ggz-txt/output.c: Portability
-	  improvements for ggz-txt.
+	* configure.ac:
+	  - bump version to 0.0.12pre to not create *-0.0.11.tar.gz files
+	  - remove the gtk-games override stuff
 
-2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
 
-	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
-	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
-	  non-glibc systems.
+2005-08-13 17:44:43  Rev 7388   josef
 
-2005-01-14 07:47   Jason Short <jdorje@ggzgamingzone.org>
+	* m4/ggz.m4:
+	  - build system synchronisation
 
-	* po/.cvsignore: Update cvsignore file.
 
-2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+2005-08-06 08:32:26  Rev 7367   josef
 
-	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+	* m4/ggz.m4:
+	  - global m4 file synchronisation (now that is fun with subversion)
+	  - also a test for the changed commit script which crops at 20 kB 
+	  diff size
 
-2005-01-13 02:55   Jason Short <jdorje@ggzgamingzone.org>
 
-	* configure.ac, ggz-txt/Makefile.am, ggz-txt/input.c,
-	  ggz-txt/main.c, ggz-txt/output.c, ggz-txt/support.h: Allow
-	  txt-client to compile without NLS.  However configure will still
+2005-08-03 13:57:20  Rev 7354   josef
+
+	* configure.ac:
+	  - output readline availability
+	  - do not use AM_PROG_CC_STDC anymore, as AC_PROG_CC does it already
+
+
+2005-08-02 20:55:14  Rev 7332   josef
+
+	* ggz-txt:
+	  ++ Reorganisation ++
+	  - deprecation of old 'ggz' module
+	  - move core client subdirectories (from former frontend dir)
+
+
+2005-08-02 20:45:15  Rev 7328   josef
+
+	* :
+	  ++ Reorganisation ++
+	  - rename ggz-txt-client to txt-client to match other clients
+
+
+2005-05-21 11:13:11  Rev 7216   josef
+
+	* :
+	  - common files synchronisation and README update for 0.0.11
+
+
+2005-05-21 10:46:02  Rev 7214   josef
+
+	* :
+	  - LET version = 0.0.11
+
+
+2005-05-06 21:19:56  Rev 7182   josef
+
+	* :
+	  - synchronization of ggz.m4 files
+	  - fixes typo: use ggzdconfdir instead of ggzconfdir
+	  - fixes compiler problems: use -isystem X instead of -isystemX
+	  - fixes ggzcore linkage force in ggzmod problem
+
+
+2005-03-18 10:21:04  Rev 7011   josef
+
+	* :
+	  - translations for all server messages
+
+
+2005-02-27 18:18:07  Rev 6944   josef
+
+	* :
+	  - xdg desktop file for ggz-txt (without icon)
+	  - copyright and translation updates
+
+
+2005-02-04 15:59:43  Rev 6918   josef
+
+	* :
+	  - synchronize
+
+
+2005-01-25 18:57:38  Rev 6903   jdorje
+
+	* :
+	  Change ggzmod event handler functions to take a const data 
+	  parameter.
+
+
+2005-01-24 03:08:12  Rev 6869   jdorje
+
+	* :
+	  Make hook functions take const pointers.
+
+
+2005-01-24 01:39:48  Rev 6866   jdorje
+
+	* :
+	  Change the way channels are created at the client side.  The GGZ 
+	  client
+	  does not create the channel.  Instead the channel connection data 
+	  is sent
+	  to the game which makes the connection itself.  This means ggzmod 
+	  needs
+	  to call the channel-creation function from within ggzcore, adding 
+	  a new
+	  library dependency.  This is solved by linking ggzcore in along with
+	  ggzmod inside AC_GGZ_GGZMOD.
+
+
+2005-01-23 21:23:07  Rev 6856   josef
+
+	* :
+	  - authors and changelog
+
+
+2005-01-23 13:20:29  Rev 6844   josef
+
+	* :
+	  - news update
+
+
+2005-01-23 13:12:48  Rev 6843   josef
+
+	* :
+	  - updated common files
+
+
+2005-01-22 19:22:53  Rev 6824   jdorje
+
+	* :
+	  Search for .la files instead of .so.
+
+
+2005-01-22 15:38:16  Rev 6813   josef
+
+	* :
+	  - updated version numbers
+
+
+2005-01-22 15:28:57  Rev 6812   josef
+
+	* :
+	  - version number bump
+
+
+2005-01-16 07:10:13  Rev 6696   jdorje
+
+	* :
+	  Strsep portability fixes.
+
+
+2005-01-16 06:54:26  Rev 6695   jdorje
+
+	* :
+	  Portability improvements for ggz-txt.
+
+
+2005-01-14 07:01:43  Rev 6675   jdorje
+
+	* :
+	  Add support for libintl and libiconv to AC_GGZ_INTL.  This is 
+	  needed to
+	  compile at all on non-glibc systems.
+
+
+2005-01-14 06:47:14  Rev 6674   jdorje
+
+	* :
+	  Update cvsignore file.
+
+
+2005-01-13 02:23:59  Rev 6643   jdorje
+
+	* :
+	  Fix a typo in checking for libintl.h and locale.h.
+
+
+2005-01-13 01:55:40  Rev 6642   jdorje
+
+	* :
+	  Allow txt-client to compile without NLS.  However configure will 
+	  still
 	  fail if it's not present.
 
-2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
 
-	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
-	  standard, even though it's not helpful for most packages since
-	  NLS is manditory.
+2005-01-13 01:45:15  Rev 6641   jdorje
 
-2005-01-13 02:01   Jason Short <jdorje@ggzgamingzone.org>
+	* :
+	  Define ENABLE_NLS if NLS is present.  This is standard, even 
+	  though it's
+	  not helpful for most packages since NLS is manditory.
 
-	* ggz-txt/loop.c: Add missing #include config.h.
 
-2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+2005-01-11 17:36:35  Rev 6638   jdorje
 
-	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
-	  available.  It also checks for the header files but doesn't fail
-	  if they're not present.
+	* :
+	  Make AC_GGZ_INTL fail if the gettext functions are not available.  
+	  It also
+	  checks for the header files but doesn't fail if they're not present.
 
-2005-01-11 04:14   Jason Short <jdorje@ggzgamingzone.org>
 
-	* ggz-txt/Makefile.am, tttxt/Makefile.am: Replace deprated INCLUDES
-	  directive with AM_CPPFLAGS.
+2005-01-11 03:14:32  Rev 6636   jdorje
 
-2005-01-02 16:30   Josef Spillner <josef@ggzgamingzone.org>
+	* :
+	  Replace deprated INCLUDES directive with AM_CPPFLAGS.
 
-	* ggz-txt/: main.c, output.c, server.c, server.h: - display room
-	  and player counts, respectively
 
-2004-12-21 15:47   Josef Spillner <josef@ggzgamingzone.org>
+2004-12-21 14:47:17  Rev 6541   josef
 
-	* po/Makefile.am: - simplify the makefile - this incidentally fixes
-	  as well the issue with having translation-stamp   prevent the
-	  changed *.po files to be reprocessed
+	* :
+	  - simplify the makefile
+	  - this incidentally fixes as well the issue with having 
+	  translation-stamp
+	    prevent the changed *.po files to be reprocessed
 
-2004-12-21 15:45   Josef Spillner <josef@ggzgamingzone.org>
 
-	* m4/i18n.mk: - common i18n rules
+2004-12-21 14:45:50  Rev 6540   josef
 
-2004-12-21 01:19   Roger Light <oojah@ggzgamingzone.org>
+	* :
+	  - common i18n rules
 
-	* po/Makefile.am: Prepended installation paths with ${DESTDIR} to
-	  fix sandbox installation problems on gentoo.
 
-	  Can someone verify this is correct (specifically for other
-	  systems!)
+2004-12-21 00:19:05  Rev 6538   oojah
 
-2004-12-15 21:36   Josef Spillner <josef@ggzgamingzone.org>
+	* :
+	  Prepended installation paths with ${DESTDIR} to fix sandbox 
+	  installation problems on gentoo.
+	  Can someone verify this is correct (specifically for other systems!)
 
-	* tttxt/main.c: - do not scroll when only pressing enter
 
-2004-12-11 22:26   Jason Short <jdorje@ggzgamingzone.org>
+2004-12-15 20:36:29  Rev 6491   josef
 
-	* ggz-txt/main.c: Include <locale.h>.
+	* :
+	  - do not scroll when only pressing enter
 
-2004-11-14 01:28   Josef Spillner <josef@ggzgamingzone.org>
 
-	* po/.cvsignore: - more cvsignore files
+2004-11-14 00:28:54  Rev 6362   josef
 
-2004-11-14 01:28   Josef Spillner <josef@ggzgamingzone.org>
+	* :
+	  - more cvsignore files
 
-	* po/: de.po, ggz-txt.pot, pt_BR.po: - update German translation
-	  and message catalog - add pt_BR translation
 
-2004-07-18 02:36   Josef Spillner <josef@ggzgamingzone.org>
+2004-11-14 00:28:18  Rev 6361   josef
 
-	* ChangeLog: - changelog update
+	* :
+	  - update German translation and message catalog
+	  - add pt_BR translation
 
-2004-07-17 16:10   Josef Spillner <josef@ggzgamingzone.org>
 
-	* po/Makefile.am: - implement same mechanism like in gtk-client
-	  (that is, the mo file is built   during make now as opposed to
-	  make install)
+2004-07-18 00:37:08  Rev 6153   josef
 
-2004-07-17 04:29   Josef Spillner <josef@ggzgamingzone.org>
+	* :
+	  - changelog update
 
-	* tttxt/module.dsc.in: - TTT protocol bump
 
-2004-07-16 21:08   Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 14:10:08  Rev 6139   josef
 
-	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ, configure.ac: - 0.0.9
-	  updates propagation
+	* :
+	  - implement same mechanism like in gtk-client (that is, the mo 
+	  file is built
+	    during make now as opposed to make install)
 
-2004-06-25 15:32   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ggz-txt/: input.c, output.c, server.c: - implementation of
-	  timestamps, which are currently always enabled - fix bug in
-	  command synchronization: remove pending events on error - fix
-	  bugs in command inputs: do not allow chat or list before logged
+2004-07-17 02:29:24  Rev 6131   josef
+
+	* :
+	  - TTT protocol bump
+
+
+2004-07-16 19:08:39  Rev 6117   josef
+
+	* :
+	  - 0.0.9 updates propagation
+
+
+2004-05-17 14:21:31  Rev 5999   josef
+
+	* :
+	  - build tttxt and check for ggz-config
+
+
+2004-05-17 14:21:10  Rev 5998   josef
+
+	* :
+	  - add TTTXT, a tictactoe client for the console
+
+
+2004-02-21 08:51:32  Rev 5956   jdorje
+
+	* :
+	  - Copy ggz.m4 into libggz.
+	  - Declare the libggz copy to be the master copy.
+	  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with a
+	    reference to CVS.
+	  - Propogate the changes back into all modules.
+
+
+2004-02-10 08:45:46  Rev 5885   josef
+
+	* :
+	  - seventh round of removals of distribution files
+
+
+2004-02-05 11:49:49  Rev 5795   josef
+
+	* :
+	  - new version
+
+
+2004-02-05 10:46:53  Rev 5790   josef
+
+	* :
+	  - synchronized NEWS, README.GGZ and QuickStart.GGZ from docs
+	  - updated README
+	    * new URLs for developers, bugs, website
+	    * no more per-package maintainer mention (it was never valid 
+	  anyway)
+	  - updated configure.ac to indicate final version 0.0.8
+	  - ChangeLog updates
+
+
+2004-01-31 10:54:44  Rev 5770   josef
+
+	* :
+	  - sync common files
+
+
+2004-01-27 18:27:09  Rev 5757   josef
+
+	* :
+	  - link against ggzmod
+
+
+2004-01-17 18:46:28  Rev 5740   dr_maux
+
+	* :
+	  - sync
+
+
+2003-12-31 17:02:57  Rev 5727   dr_maux
+
+	* :
+	  - use new-style AC_INIT
+
+
+2003-05-19 20:27:49  Rev 5601   dr_maux
+
+	* :
+	  - blindly add -lncurses as curses library to fix obnoxious linker 
+	  errors
+
+
+2003-05-17 08:10:42  Rev 5588   dr_maux
+
+	* :
+	  - update changelog
+
+
+2003-05-16 18:34:45  Rev 5583   dr_maux
+
+	* :
+	  - apply autogen.sh changes from libggz
+
+
+2003-05-11 15:25:09  Rev 5576   dr_maux
+
+	* :
+	  - fix installation of translated files
+
+
+2003-05-11 15:16:25  Rev 5575   dr_maux
+
+	* :
+	  - don't translate command opcodes (yet)
+
+
+2003-05-10 23:54:28  Rev 5563   dr_maux
+
+	* :
+	  - set the package version number (via configure.ac) to 0.0.7
+
+
+2003-05-10 23:28:13  Rev 5557   dr_maux
+
+	* :
+	  - man page version update for txt-client
+
+
+2003-05-10 23:15:41  Rev 5546   dr_maux
+
+	* :
+	  - update common files for 0.0.7 in txt-client
+
+
+2003-05-10 14:38:57  Rev 5539   dr_maux
+
+	* :
+	  - sync autogen.sh
+
+
+2003-05-10 11:08:30  Rev 5532   dr_maux
+
+	* :
+	  - fix 'make distcheck'
+
+
+2003-05-05 13:03:41  Rev 5500   dr_maux
+
+	* :
+	  - add -fsigned-char
+
+
+2003-05-05 12:59:15  Rev 5498   dr_maux
+
+	* :
+	  - add po/ directory to SUBDIRS
+
+
+2003-04-28 06:53:29  Rev 5492   dr_maux
+
+	* :
+	  - i18n'ize ggz-txt
+
+
+2003-03-29 10:33:32  Rev 5476   dr_maux
+
+	* :
+	  - apply improverished autogen globally
+
+
+2003-03-29 10:27:44  Rev 5475   dr_maux
+
+	* :
+	  - update GGZ macro file
+
+
+2003-02-16 13:02:09  Rev 5413   dr_maux
+
+	* :
+	  - new autogen.sh
+
+
+2003-02-04 12:48:49  Rev 5378   dr_maux
+
+	* :
+	  - add asynchronous readline/history support for the ggz-txt 
+	  command line
+	  - bugfix: strip ggz:// from URIs when recognized
+	  - fix ggzcore_set_hostinfo call: add parameter zero (no TLS right 
+	  now)
+	  - some minor cleanups
+	  There is one issue left: When ggz-txt shuts down with the readline 
+	  interface
+	  enabled, the console goes fubar.
+
+
+2003-02-04 09:24:26  Rev 5372   jdorje
+
+	* :
+	  Various updates for autoconf2.5x usage.
+
+
+2003-02-04 02:01:10  Rev 5359   jdorje
+
+	* :
+	  Step 1 of autoconf2.5x-only support: rename configure.in as 
+	  configure.ac.
+	  Also move acinclude.ggz to m4/ggz.m4.
+
+
+2003-01-18 00:48:34  Rev 5337   dr_maux
+
+	* :
+	  - update manpage
+
+
+2002-10-16 00:07:30  Rev 4929   jdorje
+
+	* :
+	  Improvement (hopefully :-) to acinclude.ggz.  Now each GGZ check 
+	  takes
+	  two optional parameters.  For instance:
+	    AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	  'action-if-found' will be evaluated if the specified module was 
+	  found.
+	  'action-if-not-found' will be evaluated if the module is not found.
+	  This
+	  is consistent with other autoconf macros.  If 
+	  'action-is-not-found' is
+	  empty, then an error will be emitted if the module isn't found.  If
+	  'action-if-not-found' is "ignore", then the module will simply be 
+	  ignored
+	  if it's not found.
+	  This is not entirely backwards-compatible, since "ignore" used to be
+	  the first parameter to the macro.  But this way is more consistent,
 	  in
+	  my opinion.
 
-2004-05-17 16:21   Josef Spillner <josef@ggzgamingzone.org>
 
-	* Makefile.am, configure.ac: - build tttxt and check for ggz-config
+2002-10-11 17:02:10  Rev 4865   jdorje
 
-2004-05-17 16:21   Josef Spillner <josef@ggzgamingzone.org>
+	* :
+	  Enable debugging by default in txt-client.
 
-	* tttxt/: .cvsignore, Makefile.am, main.c, module.dsc.in: - add
-	  TTTXT, a tictactoe client for the console
 
-2004-05-17 16:20   Josef Spillner <josef@ggzgamingzone.org>
+2002-10-10 17:36:46  Rev 4850   jdorje
 
-	* ggz-txt/: input.c, input.h, loop.c, main.c, output.c, output.h,
-	  server.c, server.h: - add ability to turn off all output, used
-	  for console games - implement synchronized ggzcore operations -
-	  add startup script support, which requires synchronized
-	  operations - fix loop code (loop_remove_fd is somewhat strange
-	  still), needed to   temporarily turn off all input, needed for
-	  console games as well
+	* :
+	  Bumped txt-client version to 0.0.7pre.
 
-2004-03-22 18:06   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ggz-txt/input.c: - unify game launch and join events to save code
-	  - implement support for game module environments:   only console,
-	  plus x11 if $DISPLAY is defined
+2002-10-07 21:28:18  Rev 4795   jdorje
 
-2004-02-21 09:51   Jason Short <jdorje@ggzgamingzone.org>
+	* :
+	  Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
-	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
-	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
-	  - Replace the history section (which was getting really big) with
-	  a   reference to CVS.  - Propogate the changes back into all
-	  modules.
 
-2004-02-13 08:27   Jason Short <jdorje@ggzgamingzone.org>
+2002-10-07 21:16:10  Rev 4794   dr_maux
 
-	* ggz-txt/game.c: Remove game_over function.
+	* :
+	  - update changelog for 0.0.6
 
-2004-02-11 17:14   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ggz-txt/: game.c, output.c: - when displaying player list,
-	  mention their roles (admin, bot, guest) - disable game over event
-	  for now, this will have to be fixed properly later   (Together
-	  with general launch/join/spectate fixes)
+2002-10-01 19:05:44  Rev 4785   dr_maux
 
-2004-02-05 12:49   Josef Spillner <josef@ggzgamingzone.org>
+	* :
+	  - use configure.in for AC_INIT
 
-	* man/ggz-txt.6: - new version
 
-2004-02-05 11:45   Josef Spillner <josef@ggzgamingzone.org>
+2002-09-29 12:08:31  Rev 4759   dr_maux
 
-	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
-	  configure.ac: - synchronized NEWS, README.GGZ and QuickStart.GGZ
-	  from docs - updated README   * new URLs for developers, bugs,
-	  website   * no more per-package maintainer mention (it was never
-	  valid anyway) - updated configure.ac to indicate final version
-	  0.0.8 - ChangeLog updates
+	* :
+	  - finalize ggz-txt version numbers
 
-2004-01-31 11:54   Josef Spillner <josef@ggzgamingzone.org>
 
-	* autogen.sh: - sync common files
+2002-09-27 08:58:31  Rev 4746   dr_maux
 
-2004-01-27 19:27  Josef Spillner <josef@ggzgamingzone.org>
+	* :
+	  - new autogen
 
-	* configure.ac, ggz-txt/Makefile.am, m4/ggz.m4: - link against
-	ggzmod
 
-2004-01-17 19:46  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-26 11:24:10  Rev 4724   dr_maux
 
-	* autogen.sh: - sync
+	* :
+	  - deploy new acinclude.ggz for txt client
 
-2003-12-31 17:54  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.ac: - use new-style AC_INIT
+2002-09-24 07:36:20  Rev 4679   dr_maux
 
-2003-05-19 22:27  Josef Spillner <dr_maux@users.sourceforge.net>
+	* :
+	  - update intro docs
 
-	* configure.ac, ggz-txt/Makefile.am: - blindly add -lncurses as
-	curses library to fix obnoxious linker errors
 
-2003-05-17 10:10  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-23 22:49:15  Rev 4675   jdorje
 
-	* ChangeLog: - update changelog
+	* :
+	  Change -I to -isystem when adding ${prefix}/include to the C flags.
 
-2003-05-16 20:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - apply autogen.sh changes from libggz
+2002-09-23 22:45:37  Rev 4674   jdorje
 
-2003-05-11 17:25  Josef Spillner <dr_maux@users.sourceforge.net>
+	* :
+	  Update acinclude.ggz in the txt-client, and label acinclude.ggz as 
+	  being
+	  included in txt-client.
 
-	* po/Makefile.am: - fix installation of translated files
 
-2003-05-11 17:16  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-01 17:02:03  Rev 4393   dr_maux
 
-	* po/de.po: - don't translate command opcodes (yet)
+	* :
+	  - improve ggz-txt man page a bit
 
-2003-05-11 01:53  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.ac: - set the package version number (via configure.ac)
-	to 0.0.7
+2002-07-29 18:27:07  Rev 4314   dr_maux
 
-2003-05-11 01:28  Josef Spillner <dr_maux@users.sourceforge.net>
+	* :
+	  - shut up cvs
 
-	* man/ggz-txt.6: - man page version update for txt-client
 
-2003-05-11 01:15  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-13 05:36:17  Rev 3960   bmh
 
-	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh: - update common
-	files for 0.0.7 in txt-client
+	* :
+	  - Updated ChangeLog for 0.0.5 release
 
-2003-05-10 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - sync autogen.sh
+2002-04-13 04:04:50  Rev 3948   bmh
 
-2003-05-10 13:08  Josef Spillner <dr_maux@users.sourceforge.net>
+	* :
+	  - Updated doc files
 
-	* po/Makefile.am: - fix 'make distcheck'
 
-2003-05-05 15:03  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-13 00:44:18  Rev 3928   dr_maux
 
-	* m4/ggz.m4: - add -fsigned-char
+	* :
+	  - remove make clean rule
 
-2003-05-05 14:59  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am: - add po/ directory to SUBDIRS
+2002-04-10 08:24:51  Rev 3871   dr_maux
 
-2003-04-28 08:53  Josef Spillner <dr_maux@users.sourceforge.net>
+	* :
+	  - let ggz-txt use acinclude.ggz to unify the build system a bit more
+	  - bump all occurences of 0.0.4/0.0.5pre to 0.0.5
 
-	* configure.ac, po/.cvsignore, po/Makefile.am, po/de.po,
-	po/ggz-txt.pot: - i18n'ize ggz-txt
 
-2003-04-28 08:52  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-09 20:28:49  Rev 3861   dr_maux
 
-	* ggz-txt/: input.c, loop.c, main.c, output.c: - i18n'ize ggz-txt -
-	fix segfault: don't crash if /table doesn't get an argument
+	* :
+	  - update .cvsignore
 
-2003-03-29 21:39  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ggz-txt/main.c: - use optind, and not our own optindex, when
-	determining which argument is the   first non-option one
-	
-	POSIX 1003.2 stuff...
+2002-04-09 20:28:29  Rev 3860   dr_maux
 
-2003-03-29 11:33  Josef Spillner <dr_maux@users.sourceforge.net>
+	* :
+	  - finalize txt-client
 
-	* autogen.sh: - apply improverished autogen globally
 
-2003-03-29 11:27  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-06 21:45:03  Rev 3797   dr_maux
 
-	* m4/ggz.m4: - update GGZ macro file
+	* :
+	  - update .cvsignore
 
-2003-02-16 14:00  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - new autogen.sh
+2002-04-06 21:44:38  Rev 3796   dr_maux
 
-2003-02-04 20:42  Josef Spillner <dr_maux@users.sourceforge.net>
+	* :
+	  - make clean rule for config.status
 
-	* ggz-txt/: input.c, main.c: - Reset the terminal before quitting
-	the application
 
-2003-02-04 13:48  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-06 21:44:23  Rev 3795   dr_maux
 
-	* ggz-txt/Makefile.am, ggz-txt/input.c, ggz-txt/input.h,
-	ggz-txt/main.c, ggz-txt/output.c, ggz-txt/server.c, configure.ac: -
-	add asynchronous readline/history support for the ggz-txt command
-	line - bugfix: strip ggz:// from URIs when recognized - fix
-	ggzcore_set_hostinfo call: add parameter zero (no TLS right now) -
-	some minor cleanups
-	
-	There is one issue left: When ggz-txt shuts down with the readline
-	interface enabled, the console goes fubar.
+	* :
+	  - debianize txt-client
 
-2003-02-04 10:24  Jason Short <jdorje@users.sourceforge.net>
 
-	* acconfig.h, configure.ac: Various updates for autoconf2.5x usage.
+2002-04-05 22:03:05  Rev 3758   dr_maux
 
-2003-02-04 03:01  Jason Short <jdorje@users.sourceforge.net>
+	* :
+	  - update installation instructions and overview
 
-	* Makefile.am, acinclude.ggz, autogen.sh, configure.ac,
-	configure.in, m4/ggz.m4: Step 1 of autoconf2.5x-only support:
-	rename configure.in as configure.ac.
-	
-	Also move acinclude.ggz to m4/ggz.m4.
 
-2003-01-18 01:48  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-03-24 18:45:10  Rev 3660   dr_maux
 
-	* man/ggz-txt.6: - update manpage
+	* :
+	  - my wishlist :-)
 
-2003-01-18 01:39  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ggz-txt/: input.c, input.h, main.c: - accept /quit as an alias
-	for /exit - autoconnect if URI is given on the commandline:
-	
-	ggz-txt hostname ggz-txt hostname:port ggz-txt
-	username@hostname:port
+2002-02-26 02:55:29  Rev 3472   jdorje
 
-2003-01-12 12:39  Josef Spillner <dr_maux@users.sourceforge.net>
+	* :
+	  Change autoconf system so that if DEBUG is not defined 
+	  (--enable-debug)
+	  we'll get NDEBUG defined instead.
 
-	* ggz-txt/main.c: [powerpc]
-	
-	- getopt returns int, not char
 
-2002-11-03 23:09  Jason Short <jdorje@users.sourceforge.net>
+2002-01-19 07:47:27  Rev 3138   bmh
 
-	* ggz-txt/input.c: Add 'const' qualifiers to some char* pointers to
-	match what ggzcore has.
+	* :
+	  - Ignore stamp-h1
 
-2002-10-31 00:04  Jason Short <jdorje@users.sourceforge.net>
 
-	* ggz-txt/output.c: s/char */const char */ to comply with
-	ggzcore_server_get_host()'s return value.
+2001-07-14 03:57:38  Rev 2015   bmh
 
-2002-10-22 03:19  Jason Short <jdorje@users.sourceforge.net>
+	* :
+	  - Bumped version to 0.0.5pre
+	  - Work with new ggzcore changes (protocol -> engine, version)
 
-	* ggz-txt/game.c: Don't let a player join/launch a table if they're
-	already playing a game.
 
-2002-10-22 03:16  Jason Short <jdorje@users.sourceforge.net>
+2001-06-17 20:56:23  Rev 1733   rgade
 
-	* ggz-txt/input.c: Give slightly more helpful error messages.
+	* :
+	  - Updated ChangeLog
 
-2002-10-22 03:09  Jason Short <jdorje@users.sourceforge.net>
 
-	* ggz-txt/input.c: Make sure a table exists before we try to join
-	it.  Otherwise bad behavior can result.
+2001-06-14 21:58:12  Rev 1720   bmh
 
-2002-10-20 01:13  Jason Short <jdorje@users.sourceforge.net>
+	* :
+	  - Updated NEWS for 0.0.4 release
 
-	* ggz-txt/output.c: Adjust for the GGZ_CHAT_NONE ->
-	GGZ_CHAT_UNKNOWN change.
 
-2002-10-17 08:26  Jason Short <jdorje@users.sourceforge.net>
+2001-06-14 08:30:39  Rev 1713   bmh
 
-	* ggz-txt/game.c: Change ggz-txt to match the ggzcore change.
+	* :
+	  - Updated docs
+	  - Bump version to 0.0.4
 
-2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
 
-	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
-	each GGZ check takes two optional parameters.  For instance:
-	
-	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
-	
-	'action-if-found' will be evaluated if the specified module was
-	found.	'action-if-not-found' will be evaluated if the module is
-	not found.  This is consistent with other autoconf macros.  If
-	'action-is-not-found' is empty, then an error will be emitted if
-	the module isn't found.  If 'action-if-not-found' is "ignore", then
-	the module will simply be ignored if it's not found.
-	
-	This is not entirely backwards-compatible, since "ignore" used to
-	be the first parameter to the macro.  But this way is more
-	consistent, in my opinion.
+2001-06-14 06:17:01  Rev 1704   bmh
 
-2002-10-11 21:35  Jason Short <jdorje@users.sourceforge.net>
+	* :
+	  - Use SUBDiRS = . or 'make dist' will choke
+	  - Set EXTRA_DIST = $(man_MANS) or the manpages won't get included in
+	    the tarball file
 
-	* ggz-txt/: game.c, input.c, loop.c, main.c, output.c, server.c,
-	server.h, state.c: Clean up ggz-txt's memory handling: avoid
-	freeing NULL pointers, and free data when the program quits.
 
-2002-10-11 21:09  Jason Short <jdorje@users.sourceforge.net>
+2001-06-08 18:37:34  Rev 1682   dr_maux
 
-	* ggz-txt/server.c: Fix output_text parameters when compiling with
-	DEBUG.
+	* :
+	  - modified build
 
-2002-10-11 20:03  Jason Short <jdorje@users.sourceforge.net>
 
-	* ggz-txt/main.c: Enable init_debug() when DEBUG is defined,
-	instead of never.
+2001-06-08 18:36:55  Rev 1681   dr_maux
 
-2002-10-11 19:02  Jason Short <jdorje@users.sourceforge.net>
+	* :
+	  - add man pages for ggz-txt (twice?)
 
-	* configure.in: Enable debugging by default in txt-client.
 
-2002-10-11 18:57  Jason Short <jdorje@users.sourceforge.net>
+2001-06-07 21:25:34  Rev 1662   dr_maux
 
-	* ggz-txt/: input.c, output.c: Change txt-client to use entirely
-	libggz memory management routines.
+	* :
+	  - install readme.ggz in debian package
 
-2002-10-10 23:18  Jason Short <jdorje@users.sourceforge.net>
 
-	* ggz-txt/: input.c, output.c: Add handling for sending and
-	receiving of table chats.
+2001-06-07 21:19:36  Rev 1661   dr_maux
 
-2002-10-10 20:09  Jason Short <jdorje@users.sourceforge.net>
+	* :
+	  - add missing project-wide readme files
 
-	* ggz-txt/motd.c: Change the MOTD code even more.  It's now shorter
-	and more clearly correct (IMO).
-	
-	One problem remains: it will crash if a MOTD *line* is longer than
-	1024 characters.
 
-2002-10-10 19:42  Jason Short <jdorje@users.sourceforge.net>
+2001-05-30 21:27:29  Rev 1593   jzaun
 
-	* ggz-txt/: input.c, motd.c: Avoid passing random string pointers
-	to output_text, since they could point to a string that is not
-	printf-safe.  Instead pass "%s" to output_text, with the string
-	variable as a variadic parameter.
+	* :
+	  - Fixed spelling
 
-2002-10-10 19:36  Jason Short <jdorje@users.sourceforge.net>
 
-	* configure.in: Bumped txt-client version to 0.0.7pre.
+2001-05-30 13:32:09  Rev 1582   dr_maux
 
-2002-10-10 03:37  Jason Short <jdorje@users.sourceforge.net>
+	* :
+	  - added readme file
 
-	* ggz-txt/: output.h, server.c: Add a ggz__attribute so gcc knows
-	output_text takes printf-style parameters.
-	
-	Fix the callers who give warnings - even though the warnings are
-	spurious (passing a void* instead of a char*).
 
-2002-10-10 03:30  Jason Short <jdorje@users.sourceforge.net>
+2001-05-30 13:31:45  Rev 1581   dr_maux
 
-	* ggz-txt/: motd.c, motd.h: A massive restructuring of
-	motd_print_line():   - Make the color sequences an array of
-	strings.    - Output the text after every line.
+	* :
+	  - debianized source tree
+	  - added readme file
 
-2002-10-10 02:55  Jason Short <jdorje@users.sourceforge.net>
 
-	* ggz-txt/output.c: Change vsprintf to vsnprintf to prevent any
-	possible buffer overflows in output_text().
+2001-03-31 02:16:33  Rev 1355   bmh
 
-2002-10-10 02:53  Jason Short <jdorje@users.sourceforge.net>
+	* :
+	  - Added .cvsignore file for text client
 
-	* ggz-txt/: output.c, output.h, server.c: Convert txt-client to use
-	the new ggzcore interface.
 
-2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+2001-03-31 02:00:09  Rev 1354   bmh
 
-	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+	* :
+	  - Added autoconf/make stuff and other boilerplate
 
-2002-10-07 23:15  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* ChangeLog: - update changelog for 0.0.6
-
-2002-10-01 21:05  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* configure.in: - use configure.in for AC_INIT
-
-2002-09-29 14:08  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* man/ggz-txt.6, configure.in: - finalize ggz-txt version numbers
-
-2002-09-27 10:57  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* autogen.sh: - new autogen
-
-2002-09-26 13:23  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* ggz-txt/Makefile.am, acinclude.ggz, configure.in: - deploy new
-	acinclude.ggz for txt client
-
-2002-09-24 10:09  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* ggz-txt/: game.c, server.c: - enclose socket process debugging
-	messages within DEBUG
-
-2002-09-24 09:36  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* QuickStart.GGZ, README.GGZ: - update intro docs
-
-2002-09-24 07:03  Jason Short <jdorje@users.sourceforge.net>
-
-	* ggz-txt/: game.c, game.h, server.c: Add handling of
-	GGZ_CHANNEL_CONNECTED - watch the FD and handle data that comes on
-	it, until we get a GGZ_CHANNEL_READY.
-
-2002-09-24 00:54  Jason Short <jdorje@users.sourceforge.net>
-
-	* ggz-txt/: main.c, state.c: Fix compile warnings:   - Marked
-	several functions as static;   - #if 0'd out one unused function.  
-	 - Added in a missing #include.
-
-2002-09-24 00:49  Jason Short <jdorje@users.sourceforge.net>
-
-	* configure.in: Change -I to -isystem when adding ${prefix}/include
-	to the C flags.
-
-2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
-
-	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
-	acinclude.ggz as being included in txt-client.
-
-2002-09-24 00:22  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* ggz-txt/: game.c, game.h, server.c: - deal with channel request:
-	setup ggzcore handler for GGZ_CHANNEL_READY.	But this event
-	never arrives :(
-
-2002-09-23 17:49  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* ggz-txt/: game.c, game.h, input.c, output.c: - (almost) bring
-	back game launch/join functionality
-	
-	One thing is still broken: The GGZ_GAME_PLAYING event does never
-	arrive the client, which renders the whole thing useless... until
-	this bug is fixed.
-
-2002-09-23 17:05  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* ggz-txt/: input.c, server.c: - preinitialize server object to
-	NULL - only disconnect when still online, so the clueless user can
-	now type /connect   and /disconnect as long as he wants, without
-	causing a client freeze - warn about unknown commands
-
-2002-09-08 07:58  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* ggz-txt/input.c: - add spectator parameter (zero)
-
-2002-09-01 19:02  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* man/ggz-txt.6: - improve ggz-txt man page a bit
-
-2002-07-29 20:27  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* .cvsignore: - shut up cvs
-
-2002-07-29 20:24  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* ggz-txt/: game.c, input.c, main.c, output.c, output.h, server.c:
-	- commit the 'reverse' display and the compile fixes, it doesn't
-	seem to harm
-
-2002-04-13 07:36  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ChangeLog: 
-	- Updated ChangeLog for 0.0.5 release
-
-2002-04-13 06:04  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ: 
-	- Updated doc files
-
-2002-04-13 02:44  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* Makefile.am: - remove make clean rule
-
-2002-04-12 19:44  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* Makefile.am: - remove make clean rule
-
-2002-04-10 03:23  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* man/ggz-txt.6, .cvsignore, acinclude.ggz, autogen.sh,
-	configure.in: - let ggz-txt use acinclude.ggz to unify the build
-	system a bit more - bump all occurences of 0.0.4/0.0.5pre to 0.0.5
-
-2002-04-09 15:28  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* debian/.cvsignore: - update .cvsignore
-
-2002-04-09 15:28  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* debian/: control, rules: - finalize txt-client
-
-2002-04-06 15:45  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* debian/.cvsignore: - update .cvsignore
-
-2002-04-06 15:44  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* Makefile.am: - make clean rule for config.status
-
-2002-04-06 15:44  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* debian/: .cvsignore, changelog, control, docs, postinst, prerm,
-	rules: - debianize txt-client
-
-2002-04-06 13:12  Jason Short <jdorje@users.sourceforge.net>
-
-	* ggz-txt/game.c: Added a "force" parameter (0) to
-	ggzcore_room_leave_table.
-
-2002-04-05 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* QuickStart.GGZ, README.GGZ: - update installation instructions
-	and overview
-
-2002-03-24 12:45  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* TODO: - my wishlist :-)
-
-2002-03-02 15:20  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: loop.c, main.c, server.c: 
-	- Use libggz's memory management function - Use libggz's debugging
-	funtions
-
-2002-02-25 20:55  Jason Short <jdorje@users.sourceforge.net>
-
-	* acconfig.h, configure.in: Change autoconf system so that if DEBUG
-	is not defined (--enable-debug) we'll get NDEBUG defined instead.
-
-2002-02-08 15:44  Jason Short <jdorje@users.sourceforge.net>
-
-	* ggz-txt/input.c: Changed one call of ggzcore_table_add_bot to
-	ggzcore_table_set_seat.
-
-2002-01-19 01:47  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* .cvsignore: 
-	- Ignore stamp-h1
-
-2002-01-19 01:24  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Call ggz_free on result from ggz_conf_read
-
-2001-12-16 19:53  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* ggz-txt/motd.c: - exclude unused variable
-
-2001-10-05 16:30  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/server.c: 
-	- Removed the autojoining of room 0
-
-2001-10-05 12:56  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c, server.c: 
-	- Auto join room 0 on login - Ability to log in as a registered
-	account - /wall <message> added
-
-2001-10-04 14:19  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Fixed missing / in /* for the comments
-
-2001-09-23 21:29  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c, server.c, server.h: 
-	- New command "/logout" to logout without explicitly disconnecting
-	- Make /disconnect call ggzcore_server_disconnect() to do explicit 
-	 disconnect and then clean up
-
-2001-09-10 19:43  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/server.c: 
-	- Log session with file specified in SessionLog Key of [Debug]
-	session
-
-2001-07-13 22:57  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* configure.in, ggz-txt/input.c: 
-	- Bumped version to 0.0.5pre - Work with new ggzcore changes
-	(protocol -> engine, version)
-
-2001-06-17 15:53  Rich Gade <rgade@users.sourceforge.net>
-
-	* ChangeLog: - Updated ChangeLog
-
-2001-06-14 16:58  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* NEWS: 
-	- Updated NEWS for 0.0.4 release
-
-2001-06-14 03:30  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* Makefile.am, QuickStart.GGZ, README.GGZ, configure.in: 
-	- Updated docs - Bump version to 0.0.4
-
-2001-06-14 01:17  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* man/Makefile.am: 
-	- Use SUBDiRS = . or 'make dist' will choke - Set EXTRA_DIST =
-	$(man_MANS) or the manpages won't get included in   the tarball
-	file
-
-2001-06-14 01:15  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/output.c: 
-	- Updated /help message
-
-2001-06-08 13:37  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* .cvsignore, Makefile.am, configure.in: - modified build
-
-2001-06-08 13:36  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* man/: .cvsignore, Makefile.am, ggz-txt.6: - add man pages for
-	ggz-txt (twice?)
-
-2001-06-07 16:25  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* debian/docs: - install readme.ggz in debian package
-
-2001-06-07 16:19  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* README.GGZ: - add missing project-wide readme files
-
-2001-06-03 21:26  Brian Cox <bcox@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- Segfault fixes: Added checks for NULL in input_handle_list(),  
-	input_handle_desc(), input_handle_join_room(),
-	input_handle_join_table(),   input_handle_msg(), and
-	input_handle_beep().
-
-2001-05-30 16:27  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* configure.in: 
-	- Fixed spelling
-
-2001-05-30 08:32  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* README: - added readme file
-
-2001-05-30 08:31  Josef Spillner <dr_maux@users.sourceforge.net>
-
-	* debian/: .cvsignore, README.Debian, changelog, control,
-	copyright, docs, postinst, prerm, rules: - debianized source tree -
-	added readme file
-
-2001-03-30 20:16  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* .cvsignore: 
-	- Added .cvsignore file for text client
-
-2001-03-30 20:00  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am, NEWS, README,
-	TODO, acconfig.h, autogen.sh, configure.in: 
-	- Added autoconf/make stuff and other boilerplate
-
-2001-03-30 19:53  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: Makefile.am, main.c: 
-	- Removed references to ggzcore from Makefile.am since we link it  
-	externally now
-
-2001-03-17 00:09  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/Makefile.am: 
-	- Converted libggzcore into a libtool shared library - Converted
-	the included libeasysock into a non-installed libtool	convenience
-	library - Various Makefile changes to support the above
-
-2001-03-16 21:16  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- Don't output path to executable anymore
-
-2001-03-15 19:09  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/server.c: 
-	- Kill the running game module if launch or join fails
-
-2001-03-15 18:50  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: server.c, state.c: 
-	- New callbacks for table-related room events
-
-2001-03-09 21:42  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- Check for valid room, type, and game module before launching or
-	joining
-
-2001-03-09 17:57  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- Basic support for joining tables - Changed syntax of /join
-	command to allow for joining rooms and	 tables: "/join room num"
-	and "/join table num"
-
-2001-03-09 10:17  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/server.c: 
-	- beep only once not for every text after a beep   (removed the
-	\007 from the que)
-
-2001-03-08 09:25  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- Remove unnecessary call to game_destroy() in input.c.  It will
-	get   called when the loop removes the fd
-
-2001-03-07 10:00  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: loop.c, output.c, output.h: 
-	- resizing of the terminal now resizes GGZ-txt
-
-2001-03-06 09:20  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- Free table after launching
-
-2001-03-05 22:39  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: game.c, input.c, main.c, server.c: 
-	- Handlers for GGZ_GAME_DATA, GGZ_GAME_OVER, GGZ_TABLE_DATA,  
-	GGZ_TABLE_LEFT - Default to GGZ_DBG_MEMDETAIL off again
-
-2001-03-04 16:18  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c, output.c, output.h, server.c: 
-	- New function input_is_command() - New function
-	server_list_tables() to handle GGZ_TABLE_LIST event - New functions
-	output_tables() and output_table_info() to output the	list of
-	tables - Temporarily reenable MEMDETAIL debugging
-
-2001-03-01 23:06  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: Makefile.am, game.c, game.h, input.c: 
-	- Moved game module functions into game.[ch] - Added callbacks for
-	GGZ_GAME_LAUNCHED, GGZ_GAME_NEGOTIATED, and the   failed versions
-	of those
-
-2001-03-01 18:29  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/motd.c: 
-	- Fixed up the displaying of the MOTD
-
-2001-03-01 18:18  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/output.c: 
-	- Redid chat buffer code after talking with Justin
-
-2001-02-23 22:17  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: main.c, server.c: 
-	- Updated to work with new ggzcore functions: -
-	ggzcore_server_set_{hostinfo,logininfo} - Turn off MEMDETAIL
-	debugging by default
-
-2001-02-23 11:53  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/output.c: 
-	- Fixed prompt problem
-
-2001-02-22 17:18  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/output.c: 
-	- New output_text code in preperation for up and down scrolling
-
-2001-02-22 15:18  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: Makefile.am, motd.c, motd.h, output.c, server.c: 
-	- Added a help line for /list - Added the display of the MOTD at
-	login
-
-2001-02-21 22:48  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/server.c: 
-	- Callbacks for GGZ_NET_ERROR and GGZ_PROTOCOL_ERROR
-
-2001-02-20 19:56  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Default to not displaying MEMDETAIL debug messages
-
-2001-02-20 19:32  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/output.c: 
-	- Show gametype for each room if types are loaded - Show table
-	player is at if tables are loaded
-
-2001-02-19 16:47  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/output.c: 
-	- Reimplemented output_rooms() and output_text() to avoid  
-	ggzcore_server_get_XXX_names()
-
-2001-02-18 00:27  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, loop.c, server.c, server.h: 
-	- Made server_destroy() a public function - If the server object
-	still exists when the user exits, destroy it
-
-2001-02-18 00:02  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: output.c, output.h, server.c: 
-	- Hooked up a callback to GGZ_LIST_TYPES and created output_types()
-	so   that "/list types" will work.
-
-2001-02-16 20:59  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, server.c: 
-	- work with latest ggzcore changes: - rename
-	ggzcore_server_get_room() to ggzcore_server_get_nth_room()
-
-2001-02-16 19:00  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c: 
-	- Use latest ggzcore changes: - ggzcore_server_list_types() and
-	ggzcore_room_list_tables() - Remove all references to ggzcore_event
-	functions
-
-2001-02-15 22:11  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, loop.c, loop.h, main.c: 
-	- Some loop cleanups: - Make timeout value a parameter of
-	loop_init() - Actually remove removed fds from array - Call
-	loop_quit() after /exit rather than calling exit() directly
-
-2001-02-15 20:36  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c, server.c: 
-	- Work with latest ggzcore changes: - Use GGZRoom object for player
-	lists and updates - Don't register any more events under the old
-	system
-
-2001-02-15 01:29  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c, server.c: 
-	- Simple changes to work with GGZRoom objects from ggzcore (really 
-	 should put this into a separate room.c)
-
-2001-02-05 23:14  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- Support temporary hack ggzcore_server_chat()
-
-2001-01-30 21:31  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: loop.c, main.c, server.c, state.c, state.h: 
-	- New method for handling states as GGZServer event
-	GGZ_STATE_CHANGE
-
-2001-01-28 23:55  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: Makefile.am, input.c, input.h, loop.c, loop.h, main.c,
-	output.c, server.c, server.h: 
-	- Put event loop handling code in loop.c - Generalized method for
-	adding/removing fds to event loop - Re-done for latest ggzcore
-	changes
-
-2001-01-19 20:30  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: server.c, state.c: 
-	- Updated to ggzcore changes: - s/callback/hook - hook functions
-	have a return value
-
-2001-01-19 19:14  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Added .pid to the debug file so the client can be run multible
-	times on the   same system by different users
-
-2001-01-13 15:06  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Modified to work with latest ggzcore chsnges: - Call
-	ggzcore_conf_initilize() directly - Read conf file for debugging
-	file - Pass debug file and levels to ggzcore_init()
-
-2001-01-13 14:25  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Use GGZCONFDIR for localtion of global conf file - Use
-	ggz-text.rc as name of user conf file
-
-2001-01-13 11:25  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Fixed SEGV due to the config file using ~/.ggz/ggz-txt.rc rather
-	than the   full path
-
-2000-12-01 20:04  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Removed reference to local conf file
-
-2000-11-11 01:10  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c: 
-	- Added /desc command to get room descriptions
-
-2000-11-09 22:37  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: Makefile.am, main.c, output.c, server.c, server.h,
-	state.c, state.h: 
-	- Simple example of using ggzcore's state callbacks in the text and
-	  gtk frontends
-
-2000-11-04 23:17  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c, output.c, server.c: 
-	- s/ggzcore_event_trigger/ggzcore_event_enqueue -
-	s/ggzcore_event_connect/ggzcore_event_add_callback - Handle new
-	state case of GGZ_STATE_BETWEEN_ROOMS
-
-2000-10-14 02:19  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- New function ggzcore_event_poll() works as a replacement for
-	poll()	 except it tacks on the ggzcore fds and handles them
-	automatically.	  This function can easily be used in FE event
-	loops  - Remove ggzcore_event_ispending() - Rename
-	_ggzcore_event_ispending_actual() to ggzcore_event_ispending() -
-	Don't check for net input in ggzcore_event_ispending() - New
-	functions ggzcore_event_get_fd() and ggzcore_net_get_fd() allow  
-	access to ggzcore fds in case FE needs to add them to event loop -
-	Use ggzcore_event_poll() in text and gtk frontends - remove
-	ggz_loop() from gtk FE
-
-2000-10-12 01:21  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/Makefile.am: 
-	- Bunch of autoconf/automake changes to accomodate easysock
-	detection   and build it internally if not found
-
-2000-10-09 17:57  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c, output.c, output.h: 
-	- added output_label - removed varible from output_prompt
-
-2000-10-09 17:16  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c: 
-	- Added /exit /version /who	/exit - Exting the client cleanly  
-	    /version - Display current client version	    /who - and
-	alias that calls /list players	 (IRC like)
-	
-	- Updated /help with above commands
-
-2000-10-07 22:14  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c, output.c, output.h, server.c,
-	server.h: 
-	- Added ggzcore functions to return room and player names -
-	Actually list player and room names when user issues command
-
-2000-10-07 14:15  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Fixed the missnaming of an event I commited last night.
-
-2000-10-06 22:41  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: main.c, server.c, server.h: 
-	- Added join and part events - Display join and part messages
-
-2000-10-06 18:26  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c: 
-	- Fixed up currentstatus in output_status() - /connect can now take
-	a port and username too
-
-2000-10-06 15:42  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: output.c, server.c: 
-	- Full status listing - Auto get rooms on login
-
-2000-10-06 15:10  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: output.c, output.h, server.c: 
-	- Use ChatTypes enum as argument for output_chat() - Wrap some
-	debugging stuff in #ifdef DEBUG
-
-2000-10-06 14:58  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/server.c: 
-	- Display error messages for failed connections and failed logins
-
-2000-10-06 12:58  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c, output.h, server.c: 
-	- Big cleanup of output.c - Added Status: to the status bar
-
-2000-10-06 00:17  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c, output.h, server.c: 
-	- Correct logic on _ggzcore_room_compare() Return 0 if equal, doh!
-	- New exported function ggzcore_room_get_name() - Display room name
-	in status if in a room and list had been gotten
-
-2000-10-05 18:01  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c, output.h, server.c: 
-	- Added functions to get at current profile name, login, host, and 
-	 room - Use those on the client status line
-
-2000-10-05 17:26  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- Pass room number to GGZ_USER_ROOM_JOIN as a tyecasted int
-
-2000-10-05 17:11  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- Strip \n from input strings - Use strsep() instead of strtok() -
-	Don't bother parsing token for commands that just use the rest of  
-	the line
-
-2000-10-05 00:36  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c: 
-	- New commands /msg and /beep - New events GGZ_USER_CHAT_PRVMSG and
-	GGZ_USER_CHAT_BEEP - Don't bother initializing NULL pointers in
-	GGZEvent structure - Check for ID mismatch when initializing events
-	- Allow new GGZ_USER_CHAT_XXX events from GGZ_STATE_IN_ROOM
-
-2000-10-04 21:33  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: main.c, output.c, output.h, server.c, server.h: 
-	- Chat now works with all subop codes
-
-2000-10-02 22:31  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: main.c, server.c, server.h: 
-	- Renamed GGZ_EVENT_LOGIN_OK to GGZ_EVENT_LOGIN - Renamed
-	GGZ_EVENT_CHAT_STATUS to GGZ_EVENT_CHAT - New event
-	GGZ_EVENT_ROOM_JOIN_FAIL - New event GGZ_EVENT_CHAT_FAIL - New
-	event GGZ_SERVER_ERROR - New event GGZ_NET_ERROR - Trigger network
-	error event from easysock error handler - Move global socket
-	variable out of state var - New function
-	ggzcore_event_remove_func() to delete specific callback - Keep
-	track of state - Better handling of error messages from server - Do
-	simple user event validity checking based on state - Have client
-	handle GGZ_CONNECT_FAIL
-
-2000-10-02 17:17  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c, output.c, server.c: 
-	- Added a output_status to the main loop, and removed all other
-	occuances of   output_status from the application.  - Added the
-	display of the current date and time
-
-2000-10-01 15:59  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: input.c, output.c, output.h, server.c: 
-	- Made the colors look a little better in the status line - added a
-	/help command
-
-2000-10-01 10:30  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c, output.c, output.h, server.c: 
-	- Lots of UI improvments.    - Better status lines    - Added some
-	color	 - Fix a problem with current input	 being removed on
-	incoming chat
-
-2000-09-29 23:56  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c, output.c, output.h, server.c,
-	server.h: 
-	- fixed up the UI alot.
-	
-	Note: at this point there is one known bug. If you chat while not
-	connected, it distorts the command line, press enter to clear it
-	up.
-
-2000-09-29 20:51  Justin Zaun <jzaun@users.sourceforge.net>
-
-	* ggz-txt/input.c: 
-	- commands are prefixed with / - if not a command then assume a
-	chat
-
-2000-09-29 17:37  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: input.c, main.c, output.c, output.h, server.c,
-	server.h: 
-	- Abstracted messages from server into a datatype with the opcode,
-	the   name as a string and a pointer to the handler - Added events
-	for listing rooms, joining a room and basic chatting - Added code
-	to support the added events - Make chat protocol subops an enum -
-	Added "list", "join", and "chat" commands to text frontend to take 
-	 advantage of newly added events
-
-2000-09-29 01:07  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: Makefile.am, input.c, input.h, main.c, output.c,
-	output.h, server.c, server.h: 
-	- Split logic into separate files for input, output and server	
-	callbacks - More intelligent command parsing (still needs work) -
-	Display error message if connection fails
-
-2000-09-23 03:06  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/main.c: 
-	- Rudimentary main loop polls stdin with a timeout to check for  
-	pending events - If user issues "connect" command, trigger
-	GGZ_USER_LOGIN with   hardcoded values
-
-2000-09-16 23:48  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: .cvsignore, main.c: 
-	- First revision of event system - Basic callback handling
-	(connect, remove, process) - Some testing of event queue in text
-	frontend
-
-2000-09-15 18:46  Brent Hendricks <bmh@users.sourceforge.net>
-
-	* ggz-txt/: .cvsignore, Makefile.am, main.c: 
-	- Added new directories for core client and frontends - Modified
-	build system to work with new source layout - Skeletal libggzcore
-	and text frontend
 

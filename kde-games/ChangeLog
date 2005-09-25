@@ -1,3 +1,26 @@
+2005-09-25 15:30:38  Rev 7572   josef
+
+	* keepalive/src/animdialog.cpp krosswater/dlg_person.cpp 
+	  krosswater/dlg_help.cpp krosswater/dlg_about.cpp ChangeLog 
+	  keepalive/src/intro.cpp fyrdman/levelselector.cpp 
+	  krosswater/dlg_again.cpp muehle/src/board.cpp krosswater/qcw.cpp:
+	  - much more Q_UNUSED
+
+
+2005-09-25 15:10:20  Rev 7571   josef
+
+	* fyrdman/Makefile.am:
+	  - s/top_srcdir/top_builddir/
+
+
+2005-09-25 12:50:18  Rev 7562   josef
+
+	* fyrdman/module.dsc.in kcc/module.dsc.in koenig/main.cc 
+	  fyrdman/main.cpp kcc/main.cpp ktictactux/module.dsc.in 
+	  kdots/module.dsc.in ktictactux/main.cpp koenig/module.dsc.in:
+	  - version bump due to new features (usage of seats dialog)
+
+
 2005-09-25 10:11:25  Rev 7551   josef
 
 	* configure.ac:

@@ -1,1017 +1,1951 @@
-2005-01-23 19:58   Josef Spillner <josef@ggzgamingzone.org>
+2005-09-25 17:50:35  Rev 7587   josef
 
-	* server/database/: ggzdb-modular.xmi, ggzdb.xmi: - backup of
-	  database schema files
+	* spec/Makefile.am:
+	  - allow sgml2pdf to fail here (it complains about a too large 
+	  bounding box)
 
-2005-01-23 19:55   Josef Spillner <josef@ggzgamingzone.org>
 
-	* server/hosting/ggz-hosting-guide.texi: - slight update for 0.0.10
+2005-09-25 13:34:35  Rev 7567   josef
 
-2005-01-23 19:52   Josef Spillner <josef@ggzgamingzone.org>
+	* ggz-project/release-procedure:
+	  - CVS -> SVN
 
-	* games/game-development/: Makefile.am,
-	  ggz-game-development-guide.sxw: - OOo version of gamedev guide
-	  (for PDF generation)
 
-2005-01-23 19:47   Josef Spillner <josef@ggzgamingzone.org>
+2005-09-25 12:54:12  Rev 7563   josef
 
-	* games/game-development/: features.html,
-	  ggz-game-development-guide.texi: - krosswater supports statistics
+	* games/game-development/games.html:
+	  - columns for the 0.0.12 release in the game/protocol version matrix
+
+
+2005-09-25 11:35:16  Rev 7559   josef
+
+	* ggz-project/Versioning:
+	  - document the current version numbers
+
+
+2005-09-25 11:09:16  Rev 7553   josef
+
+	* games/game-development/ggz-game-development-guide.texi COPYING 
+	  server/hosting/ggz-hosting-guide.texi:
+	  - switch from GFDL to GPL
+	  - this mainly affects the hosting and gamedev guides
+	  - but also (implicitely) the other docs
+
+
+2005-09-25 10:11:25  Rev 7551   josef
+
+	* configure.ac:
+	  - more version string changes in the build system
+
+
+2005-09-25 09:54:30  Rev 7550   josef
+
+	* NEWS README.GGZ:
+	  - version updates in common files
+	  - news and release-specific changes
+
+
+2005-09-16 21:43:58  Rev 7522   josef
+
+	* spec/serverspec/serverspec.sgml:
+	  - inclusion of some of the improvements from the clientspec
+
+
+2005-09-16 21:43:09  Rev 7521   josef
+
+	* spec/clientspec/clientspec.sgml:
+	  - several documentation improvements (actually filling gaps in 
+	  most cases)
+
+
+2005-09-16 20:14:26  Rev 7520   josef
+
+	* spec/clientspec/clientspec.sgml:
+	  - inclusion of INFO and GAME_INFO messages
+	  - inclusion of GAME_SERVER_FD message
+
+
+2005-09-15 18:00:53  Rev 7516   josef
+
+	* autogen.sh:
+	  - synchronisation of all autogen.sh files
+	  - quick fixes in configure.ac's (but they really need a cleanup 
+	  also)
+
+
+2005-09-14 10:48:25  Rev 7512   josef
+
+	* ggz-project/buildsystem:
+	  - one more look at LDFLAGS (they're really nasty)
+
+
+2005-09-14 10:28:02  Rev 7511   josef
+
+	* ggz-project/buildsystem:
+	  - more clarification on the flags (which mostly applies to the 
+	  kde-* modules which
+	  currently (ab)use CXXFLAGS, but also some others like gnome-client
+
+
+2005-09-14 10:05:38  Rev 7510   josef
+
+	* ggz-project/buildsystem:
+	  - small clarification of compiler/linker flags
+
+
+2005-09-14 09:55:20  Rev 7509   josef
+
+	* ggz-project/buildsystem:
+	  - how to deal with platform-specific libraries
+	  (And now we should actually improve the build system to follow 
+	  this guideline)
+
+
+2005-08-20 21:41:45  Rev 7464   josef
+
+	* configure.ac:
+	  - bump version to 0.0.12pre to not create *-0.0.11.tar.gz files
+	  - remove the gtk-games override stuff
+
+
+2005-08-20 16:45:32  Rev 7458   josef
+
+	* spec/Makefile.am:
+	  - put server_arch.fig into EXTRA_DIST
+
+
+2005-08-15 10:02:49  Rev 7438   josef
+
+	* spec/appendix.sgml:
+	  - replace this old URL too
+
+
+2005-08-14 12:10:02  Rev 7412   josef
+
+	* spec/serverspec/serverspec.sgml spec/appendix.sgml:
+	  - protocol updates
+
+
+2005-08-06 09:24:18  Rev 7369   josef
+
+	* presentation/chemnitz2003/ggz-presentation.de.sxi 
+	  presentation/chemnitz2003/ggz-presentation.en.sxi:
+	  - and again two OpenOffice.org files
+	  - now, test the binary file detection algorithm also :-)
+
+
+2005-08-06 08:52:56  Rev 7368   josef
+
+	* presentation/linuxtag2005/paper/ggzpaper-lt2k5.sxw:
+	  - another corrupted OpenOffice.org file
+	  - and another test for the (fixed) diff size limit :-)
+
+
+2005-08-05 17:35:21  Rev 7364   josef
+
+	* games/game-development/ggz-game-development-guide.sxw:
+	  - another garbled file (might apply to the presentation files also)
+
+
+2005-08-03 14:23:33  Rev 7356   josef
+
+	* server/database intro server/ggzd server/metaserver/pics 
+	  server/metaserver:
+	  - svn:ignore's
+
+
+2005-08-03 14:20:27  Rev 7355   josef
+
+	* configure.ac:
+	  - display $(GGZDOCDIR) as absolute path
+
+
+2005-08-03 10:02:54  Rev 7348   josef
+
+	* games/modules/seats.png overview/tictactoe.200.png 
+	  presentation/linuxtag2005/widelands.png 
+	  presentation/linuxtag2005/splash1.png 
+	  presentation/linuxtag2005/talklogo.png 
+	  presentation/linuxtag2005/splash2.png 
+	  presentation/linuxtag2005/splash3.png overview/community.200.png 
+	  presentation/linuxtag2005/splash4.png server/ggzd/ggzd.png 
+	  presentation/linuxtag2005/teg.png 
+	  presentation/linuxtag2005/splash5.png 
+	  presentation/linuxtag2005/splash6.png 
+	  overview/architecture/communication.png overview/coreclient.200.
+	  png presentation/linuxtag2005/splash7.png grubby/grubby-arch.png 
+	  coreclients/ggzcore_server.png overview/fyrdman.200.png 
+	  coreclients/ggzcore_room.png games/modules/states.png 
+	  overview/architecture/client-server.png 
+	  presentation/linuxtag2005/talktitle.png 
+	  presentation/linuxtag2005/ggzboard.png coreclients/playing.png 
+	  overview/architecture/dependencies.png 
+	  presentation/linuxtag2005/ggzcards.png games/modules/transitions.
+	  png:
+	  - fixing all images
+
+
+2005-06-28 08:37:49  Rev 7323   josef
+
+	* presentation/README.talks 
+	  presentation/linuxtag2005/paper/ggzpaper-lt2k5.sxw 
+	  presentation/linuxtag2005/paper:
+	  - inclusion of submitted paper
+	  - readme with information about exporting slides
+
+
+2005-06-28 08:24:33  Rev 7322   josef
+
+	* presentation/chemnitz2003/ggz-presentation.de.sxi 
+	  presentation/chemnitz2003 
+	  presentation/chemnitz2003/ggz-presentation.en.sxi:
+	  - saving the old talk material of 2003, just for the archives
+
+
+2005-06-28 08:22:43  Rev 7321   josef
+
+	* presentation/linuxtag2005/widelands.png 
+	  presentation/linuxtag2005/ggzgamingzone.mgp.in presentation 
+	  presentation/linuxtag2005/ggzgamingzone.mgp.in.en 
+	  presentation/linuxtag2005/mgp-create.pl 
+	  presentation/linuxtag2005/splash1.png 
+	  presentation/linuxtag2005/talklogo.png 
+	  presentation/linuxtag2005/splash2.png presentation/linuxtag2005 
+	  presentation/linuxtag2005/nointro.inc 
+	  presentation/linuxtag2005/splash3.png 
+	  presentation/linuxtag2005/splash4.png 
+	  presentation/linuxtag2005/teg.png 
+	  presentation/linuxtag2005/splash5.png 
+	  presentation/linuxtag2005/splash6.png 
+	  presentation/linuxtag2005/splash7.png 
+	  presentation/linuxtag2005/Makefile 
+	  presentation/linuxtag2005/talktitle.png 
+	  presentation/linuxtag2005/ggzboard.png 
+	  presentation/linuxtag2005/page.inc 
+	  presentation/linuxtag2005/ggzcards.png:
+	  - magicpoint slides material for the LinuxTag 2005 talk
+
+
+2005-06-18 18:13:45  Rev 7293   josef
+
+	* ggz-project/GGZ-contributions:
+	  - mention widelands graphics
+
+
+2005-06-18 07:49:33  Rev 7285   josef
+
+	* spec/clientspec/clientspec.sgml:
+	  - mention GGZMODE and GGZSOCKET
+
+
+2005-06-18 07:37:37  Rev 7284   josef
+
+	* spec/serverspec/serverspec.sgml:
+	  - mention GGZMOD and GGZSOCKET
+
+
+2005-05-21 11:54:24  Rev 7230   josef
+
+	* server/hosting/ggz-hosting-guide.texi:
+	  - hosting guide for 0.0.11
+
+
+2005-05-21 11:53:34  Rev 7229   josef
+
+	* games/game-development/ggz-game-development-guide.texi:
+	  - gamedev guide for 0.0.11
+
+
+2005-05-21 11:50:35  Rev 7228   josef
+
+	* games/game-development/features.html games/game-development/games.
+	  html:
+	  - updated game versioning matrix
+	  Ludo is the first GGZ game ever without network support. Ooops :-)
+	  Therefore, there's no protocol engine assigned and also no 
+	  protocol version.
+
+
+2005-05-21 11:28:15  Rev 7221   josef
+
+	* ggz-project/Internationalization:
+	  - update i18n status a bit
+
+
+2005-05-21 11:13:11  Rev 7216   josef
+
+	* NEWS QuickStart.GGZ README.GGZ AUTHORS:
+	  - common files synchronisation and README update for 0.0.11
+
+
+2005-05-21 10:46:02  Rev 7214   josef
+
+	* configure.ac:
+	  - LET version = 0.0.11
+
+
+2005-05-21 10:36:27  Rev 7213   josef
+
+	* ggz-project/Versioning:
+	  - GGZ 0.0.11 application and library versions: all done :-)
+
+
+2005-05-21 09:27:56  Rev 7202   josef
+
+	* intro/index.html:
+	  - link to kggz and ggz-gtk documentation (might not work on all 
+	  installations)
+
+
+2005-05-07 11:11:10  Rev 7184   josef
+
+	* ggz-project/ggz-dependencies:
+	  - updated dependency information (and now it's finally in cvs)
+
+
+2005-05-05 08:50:40  Rev 7176   josef
+
+	* ggz-project/Versioning:
+	  - add note about inter-library dependencies
+
+
+2005-04-23 12:00:06  Rev 7124   josef
+
+	* spec/appendix.sgml:
+	  - document new tag
+
+
+2005-04-09 09:44:36  Rev 7097   josef
+
+	* spec/clientspec/clientspec.sgml:
+	  - some minor additions (still no individual events descriptions)
+
+
+2005-04-09 09:39:59  Rev 7096   josef
+
+	* intro/index.html:
+	  - link to new game module document and slight reordering of game 
+	  development docs
+
+
+2005-04-09 09:39:27  Rev 7095   josef
+
+	* configure.ac:
+	  - create makefile for new game modules document
+
+
+2005-04-09 09:39:02  Rev 7094   josef
+
+	* games/Makefile.am games/modules/seats.png 
+	  games/modules/transitions.flw games/modules/seats.flw 
+	  games/modules/states.png games/modules/Makefile.am 
+	  games/modules/index.html games/modules/states.flw games/modules/.
+	  cvsignore games/modules games/modules/transitions.png:
+	  - new document: game modules internals (ggzmod-centric)
+	  - includes diagrams for states, seats and seat transitions
+
+
+2005-04-08 20:17:51  Rev 7093   josef
+
+	* spec/serverspec/serverspec.sgml:
+	  - more complete documentation
+	  - including all the message data and their purpose
+
+
+2005-04-08 18:21:07  Rev 7092   josef
+
+	* spec/appendix.sgml:
+	  - documentation of URL parameter to MOTD tag
+
+
+2005-03-27 16:07:52  Rev 7064   josef
+
+	* intro/index.html:
+	  - sub-divided developer documentation section
+	  - inclusion of ggzd architecture document
+
+
+2005-03-27 15:53:12  Rev 7063   josef
+
+	* configure.ac:
+	  - create ggzd directory
+
+
+2005-03-27 15:52:55  Rev 7062   josef
+
+	* server/Makefile.am:
+	  - descend into ggzd directory
+
+
+2005-03-27 15:52:29  Rev 7061   josef
+
+	* server/ggzd/Makefile.am server/ggzd/index.html server/ggzd/ggzd.
+	  png server/ggzd server/ggzd/ggzd.flw:
+	  - new documentation: GGZ server (ggzd)
+	  - is still lacking many details but it's better than none at all :-)
+
+
+2005-03-27 15:05:26  Rev 7060   josef
+
+	* overview/architecture/communication.png 
+	  overview/architecture/Makefile.am overview/architecture/index.html 
+	  overview/architecture/communication.flw:
+	  - additional paragraph about the 4 communication channels:
+	    * game client <-> game server (up to game authors, no spec, can 
+	  be TCP or UDP)
+	    * game client <-> core client
+	    * game server <-> ggzd
+	    * core client <-> ggzd
+	  - includes a visualization and refers to the respective 
+	  documentation for
+	    further reading
+
+
+2005-03-27 00:36:45  Rev 7059   josef
+
+	* intro/index.html:
+	  - reference new documentation
+
+
+2005-03-27 00:30:45  Rev 7058   josef
+
+	* grubby/grubby-arch.flw grubby/user-manual.en.html 
+	  grubby/user-manual.de.html grubby/architecture.html 
+	  grubby/admin-manual.html grubby/grubby-arch.png grubby/Makefile.am:
+	  - change HTML layout of grubby admin and user manuals to match 
+	  other new docs
+	  - addition of grubby architecture manual to explain how core 
+	  clients work
+	    (and deprecating some text files in grubby's doc/ directory)
+
+
+2005-03-26 10:39:08  Rev 7049   josef
+
+	* configure.ac:
+	  - create client spec makefile
+
+
+2005-03-26 10:38:51  Rev 7048   josef
+
+	* spec/clientspec/design-txt.dsl spec/clientspec/Makefile.am 
+	  spec/clientspec/clientspec.sgml spec/clientspec/.cvsignore 
+	  spec/Makefile.am spec/clientspec spec/serverspec/Makefile.am:
+	  - new spec: communication between core client and game clients
+	  - this is only a stub for now, all the real documentation is missing
+
+
+2005-03-25 16:44:56  Rev 7040   josef
+
+	* configure.ac:
+	  - create makefile for serverspec
+
+
+2005-03-25 16:44:34  Rev 7039   josef
+
+	* spec/serverspec/.cvsignore spec/serverspec 
+	  spec/serverspec/serverspec.sgml spec/serverspec/design-txt.dsl 
+	  spec/Makefile.am spec/serverspec/Makefile.am:
+	  - new protocol specification for ggzd <-> game server interaction
+	  - will replace the current opcode descriptions in the main 
+	  protocol spec
+	  - there will also be a similar spec for core client <-> game 
+	  client interaction
+
+
+2005-03-14 19:19:17  Rev 7004   josef
+
+	* games/protocols/helloworld.xhtml games/protocols 
+	  games/protocols/ggzcommgen.xsl:
+	  - XSL file which, when applied to a XML protocol spec, produces a 
+	  nice HTML doc
+
+
+2005-03-11 11:03:16  Rev 6987   josef
+
+	* intro/index.html:
+	  - refer to external KGGZ handbook in docs list
+
+
+2005-03-11 09:32:13  Rev 6985   josef
+
+	* intro/index.html coreclients/ggz-txt-handbook.de.html 
+	  coreclients/Makefile.am:
+	  - German translation of ggz-txt handbook
+	  - now all user docs are available in two languages (but it's not 
+	  like if
+	    we had plenty of them...)
+
+
+2005-03-11 00:19:37  Rev 6976   josef
+
+	* overview/index.de.html overview/Makefile.am:
+	  - German translation of GGZ overview documentation
+
+
+2005-03-10 23:48:14  Rev 6975   josef
+
+	* intro/index.html Makefile.am intro configure.ac intro/Makefile.am:
+	  - index file for all locally installed documentation
+	  - this is like on www.g.o/docs.php, but is missing API docs, and 
+	  instead
+	    has some more docs (the new ones)
+	  - still lots of docs need an update
+
+
+2005-03-10 23:14:34  Rev 6974   josef
+
+	* server/metaserver/pics/Makefile.am server/metaserver/Makefile.am 
+	  overview/Makefile.am server/Makefile.am configure.ac 
+	  server/database/Makefile.am:
+	  - install server database and metaserver documentation
+	    (even though the latter one is outdated a bit)
+
+
+2005-03-10 23:03:04  Rev 6973   josef
+
+	* spec/overview.sgml spec/Makefile.am:
+	  - some build and installation fixes (now uses spec/ subdirectory)
+
+
+2005-03-10 18:22:18  Rev 6972   josef
+
+	* coreclients/coreclients.html coreclients/ggzcore_room.png 
+	  coreclients/ggzcore.png coreclients/gameflow.png 
+	  coreclients/playing.png coreclients/ggzcore.flw 
+	  coreclients/Makefile.am coreclients/ggzcore_server.png 
+	  coreclients/playing.flw:
+	  - complete overhaul of the core client documentation
+	  - using the new-style HTML format and some explanation charts
+
+
+2005-02-27 01:27:18  Rev 6937   josef
+
+	* configure.ac:
+	  - create makefile for new architecture documentation
+
+
+2005-02-27 01:26:34  Rev 6936   josef
+
+	* overview/architecture/.cvsignore 
+	  overview/architecture/dependencies.flw overview/architecture 
+	  overview/architecture/client-server.png 
+	  overview/architecture/Makefile.am 
+	  overview/architecture/client-server.flw 
+	  overview/architecture/dependencies.png overview/architecture/index.
+	  html:
+	  - preliminary architecture documentation
+
+
+2005-02-26 23:09:19  Rev 6935   josef
+
+	* games/external-games/Makefile.am games/external-games/ggzfeatures.
+	  html:
+	  - game development features document (why to use GGZ...)
+	  I assembled a list of 12 points. Maybe there are more.
+
+
+2005-02-26 22:32:23  Rev 6934   josef
+
+	* overview/tictactoe.200.png overview/fyrdman.200.png 
+	  overview/ggz-big-legend.png overview/ggz-big-0.0.4.png 
+	  overview/community.200.png overview/ggz-big-0.0.5.png 
+	  overview/Makefile.am overview/coreclient.200.png overview/index.
+	  html overview/ggzbig.html:
+	  - new overview documentation! (targeted at newbies)
+	  - the architecture pictures have been removed, the new ones will 
+	  show up
+	    in some developer docs.
+
+
+2005-02-04 16:09:06  Rev 6919   josef
+
+	* ggz-project/buildsystem:
+	  - update documentation about using GGZ macros
+
+
+2005-01-23 22:31:03  Rev 6860   josef
+
+	* games/game-development/Makefile.am:
+	  - use extra dist
+
+
+2005-01-23 21:23:07  Rev 6856   josef
+
+	* AUTHORS ChangeLog:
+	  - authors and changelog
+
+
+2005-01-23 18:58:42  Rev 6853   josef
+
+	* server/database/ggzdb.xmi server/database/ggzdb-modular.xmi:
+	  - backup of database schema files
+
+
+2005-01-23 18:55:40  Rev 6852   josef
+
+	* server/hosting/ggz-hosting-guide.texi:
+	  - slight update for 0.0.10
+
+
+2005-01-23 18:52:22  Rev 6851   josef
+
+	* games/game-development/Makefile.am 
+	  games/game-development/ggz-game-development-guide.sxw:
+	  - OOo version of gamedev guide (for PDF generation)
+
+
+2005-01-23 18:47:57  Rev 6850   josef
+
+	* games/game-development/features.html 
+	  games/game-development/ggz-game-development-guide.texi:
+	  - krosswater supports statistics
 	  - synchronize guide updates from PDF document
 
-2005-01-23 19:33   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ggz-project/Versioning: - libggz bump was not yet included
+2005-01-23 18:33:59  Rev 6849   josef
 
-2005-01-23 14:17   Josef Spillner <josef@ggzgamingzone.org>
+	* ggz-project/Versioning:
+	  - libggz bump was not yet included
 
-	* NEWS: - news update
 
-2005-01-23 14:10   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-23 13:20:29  Rev 6844   josef
 
-	* QuickStart.GGZ, README.GGZ: - updated common files
+	* NEWS:
+	  - news update
 
-2005-01-22 17:20   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ggz-project/Internationalization: - i18n docs updated
+2005-01-23 13:12:48  Rev 6843   josef
 
-2005-01-22 17:14   Josef Spillner <josef@ggzgamingzone.org>
+	* QuickStart.GGZ README.GGZ:
+	  - updated common files
 
-	* ggz-project/Versioning: - version number updates everywhere
 
-2005-01-22 16:23   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-22 16:20:19  Rev 6819   josef
 
-	* configure.ac,
-	  games/game-development/ggz-game-development-guide.texi,
-	  ggz-project/GGZ-contributions: - version number bump
+	* ggz-project/Internationalization:
+	  - i18n docs updated
 
-2005-01-21 22:50   Josef Spillner <josef@ggzgamingzone.org>
 
-	* games/game-development/features.html: - Checkers and Hnefatafl
-	  have statistics
+2005-01-22 16:14:42  Rev 6818   josef
 
-2005-01-16 20:05   Josef Spillner <josef@ggzgamingzone.org>
+	* ggz-project/Versioning:
+	  - version number updates everywhere
 
-	* spec/.cvsignore: - some more files that are generated
 
-2005-01-16 20:04   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-22 15:28:57  Rev 6812   josef
 
-	* spec/: Makefile.am, design.sgml, overview.sgml, server_arch.fig:
-	  - include the server overview graphics again (but it needs an
-	  update) - build PDF version too - copyright update, so nobody
-	  thinks the doc is 5 years old
+	* games/game-development/ggz-game-development-guide.texi 
+	  ggz-project/GGZ-contributions configure.ac:
+	  - version number bump
 
-2005-01-16 13:12   Josef Spillner <josef@ggzgamingzone.org>
 
-	* games/game-development/: features.html, games.html: - add go
-	  client and server
+2005-01-21 21:50:01  Rev 6794   josef
 
-2005-01-15 00:31   Josef Spillner <josef@ggzgamingzone.org>
+	* games/game-development/features.html:
+	  - Checkers and Hnefatafl have statistics
 
-	* spec/Makefile.am: - blur the difference between docbook2html and
-	  docbook-2-html
 
-2005-01-15 00:29   Josef Spillner <josef@ggzgamingzone.org>
+2005-01-16 19:05:06  Rev 6712   josef
 
-	* configure.ac: - fix looking for tools - recognize both
-	  docbook-2-html and docbook2html
+	* spec/.cvsignore spec:
+	  - some more files that are generated
 
-2004-12-19 23:29   Josef Spillner <josef@ggzgamingzone.org>
 
-	* games/game-development/: features.html, games.html: - inclusion
-	  of new ggzboard games into the games and features comparison
-	  table
+2005-01-16 19:04:18  Rev 6711   josef
 
-	  At one point in the future the whole documentation should be
-	  overhauled.  Among others, these tables should take game
-	  collections like GGZCards and GGZBoard better into account.
+	* spec/overview.sgml spec/server_arch.fig spec/Makefile.am 
+	  spec/design.sgml:
+	  - include the server overview graphics again (but it needs an 
+	  update)
+	  - build PDF version too
+	  - copyright update, so nobody thinks the doc is 5 years old
 
-2004-12-12 15:42   Josef Spillner <josef@ggzgamingzone.org>
 
-	* server/database/: ggzdb-modular.png, ggzdb.png, index.html: -
-	  documentation for the server database - includes schema graphics
-	  - include source code structure graphics (backend modules) - ...
-	  and a description of the tables and fields
+2005-01-16 12:12:29  Rev 6699   josef
 
-2004-12-05 21:03   Josef Spillner <josef@ggzgamingzone.org>
+	* games/game-development/features.html games/game-development/games.
+	  html:
+	  - add go client and server
 
-	* ggz-project/GGZ-contributions: - list the background image and
-	  chess SVG pieces in python module
 
-2004-11-10 23:42   Jason Short <jdorje@ggzgamingzone.org>
+2005-01-14 23:31:28  Rev 6681   josef
 
-	* ggz-project/GGZ-contributions: Update file names.
+	* spec/Makefile.am:
+	  - blur the difference between docbook2html and docbook-2-html
 
-2004-10-22 11:21   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ggz-project/GGZ-contributions: - first attempt to classify all
-	  external contributions to GGZ
+2005-01-14 23:29:21  Rev 6680   josef
 
-2004-07-18 02:30   Josef Spillner <josef@ggzgamingzone.org>
+	* configure.ac:
+	  - fix looking for tools
+	  - recognize both docbook-2-html and docbook2html
 
-	* ChangeLog: - changelog update
 
-2004-07-17 04:28   Josef Spillner <josef@ggzgamingzone.org>
+2004-12-19 22:29:00  Rev 6533   josef
 
-	* games/game-development/games.html: - game version matrix update
+	* games/game-development/features.html games/game-development/games.
+	  html:
+	  - inclusion of new ggzboard games into the games and features 
+	  comparison table
+	  At one point in the future the whole documentation should be 
+	  overhauled.
+	  Among others, these tables should take game collections like 
+	  GGZCards and GGZBoard
+	  better into account.
 
-2004-07-17 02:41   Josef Spillner <josef@ggzgamingzone.org>
 
-	* ggz-project/Versioning: - new release versioning information
+2004-12-12 14:42:27  Rev 6453   josef
 
-	  In particular, - grubby and metaserv were improved - libggz was
-	  modified without interface changes - ggzmod had some additions -
-	  ggzdmod and ggzcore had additions, changes and removals
+	* server/database server/database/ggzdb.png 
+	  server/database/ggzdb-modular.png server/database/index.html:
+	  - documentation for the server database
+	  - includes schema graphics
+	  - include source code structure graphics (backend modules)
+	  - ... and a description of the tables and fields
 
-2004-07-16 21:03   Josef Spillner <josef@ggzgamingzone.org>
 
-	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ, configure.ac: - 0.0.9
-	  updates propagation
+2004-12-05 20:03:49  Rev 6436   josef
 
-2004-07-13 16:46   Josef Spillner <josef@ggzgamingzone.org>
+	* ggz-project/GGZ-contributions:
+	  - list the background image and chess SVG pieces in python module
 
-	* games/game-development/features.html: - game feature matrix
-	  update
 
-2004-06-21 16:18   Josef Spillner <josef@ggzgamingzone.org>
+2004-11-10 22:42:06  Rev 6315   jdorje
 
-	* games/game-development/: games.html,
-	  ggz-game-development-guide.texi: - more doc updates - includes
-	  xadrez-chines in games list
+	* ggz-project/GGZ-contributions:
+	  Update file names.
 
-2004-06-21 16:17   Josef Spillner <josef@ggzgamingzone.org>
 
-	* server/hosting/ggz-hosting-guide.texi: - further doc updates
+2004-10-22 09:21:38  Rev 6211   josef
 
-2004-05-17 16:33   Josef Spillner <josef@ggzgamingzone.org>
+	* ggz-project/GGZ-contributions:
+	  - first attempt to classify all external contributions to GGZ
 
-	* coreclients/: Makefile.am, ggz-txt-handbook.html: - add manual
-	  for ggz-txt
 
-	  The whole documentation module is a big mess.  There are lots of
-	  old files from 2001 etc. which need updates.	Ideally, manuals
-	  would be produced from SGML pages, which also would be the source
-	  for man pages then.
+2004-07-18 00:37:08  Rev 6153   josef
 
-2004-02-16 07:29   Jason Short <jdorje@ggzgamingzone.org>
+	* ChangeLog:
+	  - changelog update
 
-	* spec/appendix.sgml: Improve documentation on the RESULT tag.
 
-2004-02-11 18:11   Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 02:28:40  Rev 6130   josef
 
-	* server/hosting/ggz-hosting-guide.texi: - update to hosting guide:
-	  more detailed description of ggzduedit - in the SQL setup, take
-	  care of the tables 'stats' and 'control' as well - some minor
-	  bits like URL changes and game server additions
+	* games/game-development/games.html:
+	  - game version matrix update
 
-2004-02-11 14:19   Josef Spillner <josef@ggzgamingzone.org>
 
-	* spec/appendix.sgml: - add type 'bot' to the player types
+2004-07-17 00:41:48  Rev 6123   josef
 
-2004-02-11 02:27   Jason Short <jdorje@ggzgamingzone.org>
+	* ggz-project/Versioning:
+	  - new release versioning information
+	  In particular,
+	  - grubby and metaserv were improved
+	  - libggz was modified without interface changes
+	  - ggzmod had some additions
+	  - ggzdmod and ggzcore had additions, changes and removals
 
-	* spec/appendix.sgml: Document additions to the protocol:   -
-	  PLAYERS attribute to ROOM tag.    - Room UPDATEs.
 
+2004-07-16 19:08:39  Rev 6117   josef
+
+	* NEWS QuickStart.GGZ AUTHORS README.GGZ configure.ac:
+	  - 0.0.9 updates propagation
+
+
+2004-07-13 14:46:52  Rev 6097   josef
+
+	* games/game-development/features.html:
+	  - game feature matrix update
+
+
+2004-06-21 14:18:56  Rev 6048   josef
+
+	* games/game-development/ggz-game-development-guide.texi 
+	  games/game-development/games.html:
+	  - more doc updates
+	  - includes xadrez-chines in games list
+
+
+2004-06-21 14:17:57  Rev 6047   josef
+
+	* server/hosting/ggz-hosting-guide.texi:
+	  - further doc updates
+
+
+2004-05-17 14:33:01  Rev 6005   josef
+
+	* coreclients/Makefile.am coreclients/ggz-txt-handbook.html:
+	  - add manual for ggz-txt
+	  The whole documentation module is a big mess.
+	  There are lots of old files from 2001 etc. which need updates.
+	  Ideally, manuals would be produced from SGML pages, which also 
+	  would be
+	  the source for man pages then.
+
+
+2004-02-16 06:29:00  Rev 5937   jdorje
+
+	* spec/appendix.sgml:
+	  Improve documentation on the RESULT tag.
+
+
+2004-02-11 17:11:23  Rev 5914   josef
+
+	* server/hosting/ggz-hosting-guide.texi:
+	  - update to hosting guide: more detailed description of ggzduedit
+	  - in the SQL setup, take care of the tables 'stats' and 'control' 
+	  as well
+	  - some minor bits like URL changes and game server additions
+
+
+2004-02-11 13:19:26  Rev 5907   josef
+
+	* spec/appendix.sgml:
+	  - add type 'bot' to the player types
+
+
+2004-02-11 01:27:30  Rev 5898   jdorje
+
+	* spec/appendix.sgml:
+	  Document additions to the protocol:
+	    - PLAYERS attribute to ROOM tag.
+	    - Room UPDATEs.
 	  Also improve the explanation of the UPDATE tag.
 
-2004-02-09 22:35   Jason Short <jdorje@ggzgamingzone.org>
 
-	* spec/appendix.sgml: Document the addition of the FROMROOM and
-	  TOROOM labels.
+2004-02-10 08:31:45  Rev 5884   josef
 
-2004-02-07 10:58   Josef Spillner <josef@ggzgamingzone.org>
+	* debian:
+	  - sixth round of removals of distribution files
 
-	* ggz-project/Versioning: - updated versioning information
 
-2004-02-05 11:38   Josef Spillner <josef@ggzgamingzone.org>
+2004-02-09 21:35:13  Rev 5871   jdorje
 
-	* ChangeLog: - synchronized NEWS, README.GGZ and QuickStart.GGZ
-	  from docs - updated README   * new URLs for developers, bugs,
-	  website   * no more per-package maintainer mention (it was never
-	  valid anyway) - updated configure.ac to indicate final version
-	  0.0.8 - ChangeLog updates
+	* spec/appendix.sgml:
+	  Document the addition of the FROMROOM and TOROOM labels.
 
-2004-02-04 10:17   Josef Spillner <josef@ggzgamingzone.org>
 
-	* NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac: - upgrade
-	  everything to 0.0.8 - includes prototype for global release files
+2004-02-07 09:58:48  Rev 5821   josef
 
-2004-02-04 10:15  Josef Spillner <josef@ggzgamingzone.org>
+	* ggz-project/Versioning:
+	  - updated versioning information
 
-	* games/game-development/ggz-game-development-guide.texi: - mention
-	ggz-python
 
-2004-02-04 10:13  Josef Spillner <josef@ggzgamingzone.org>
+2004-02-05 10:46:53  Rev 5790   josef
 
-	* server/hosting/ggz-hosting-guide.texi: - URL updates - mentioning
-	the Interface config option for ggzd
+	* ChangeLog:
+	  - synchronized NEWS, README.GGZ and QuickStart.GGZ from docs
+	  - updated README
+	    * new URLs for developers, bugs, website
+	    * no more per-package maintainer mention (it was never valid 
+	  anyway)
+	  - updated configure.ac to indicate final version 0.0.8
+	  - ChangeLog updates
 
-2004-02-04 10:08  Josef Spillner <josef@ggzgamingzone.org>
 
-	* ggz-project/: Internationalization, Roadmap, cvs-modules.txt: -
-	lists.sourceforge.net -> mail.ggzgamingzone.org
+2004-02-04 09:17:08  Rev 5785   josef
 
-2004-02-01 15:54  Josef Spillner <josef@ggzgamingzone.org>
+	* NEWS README QuickStart.GGZ README.GGZ configure.ac:
+	  - upgrade everything to 0.0.8
+	  - includes prototype for global release files
 
-	* games/game-development/: features.html, games.html: - preliminary
-	game comparison updates
 
-2004-01-31 11:46  Josef Spillner <josef@ggzgamingzone.org>
+2004-02-04 09:15:40  Rev 5784   josef
 
-	* autogen.sh: - sync common files
+	* games/game-development/ggz-game-development-guide.texi:
+	  - mention ggz-python
 
-2004-01-17 19:44  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - sync
+2004-02-04 09:13:52  Rev 5783   josef
 
-2003-12-31 18:07  Josef Spillner <dr_maux@users.sourceforge.net>
+	* server/hosting/ggz-hosting-guide.texi:
+	  - URL updates
+	  - mentioning the Interface config option for ggzd
 
-	* configure.ac: - use new-style AC_INIT - use new-style AC_OUTPUT
 
-2003-12-09 15:22  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-02-04 09:08:17  Rev 5782   josef
 
-	* server/hosting/ggz-hosting-guide.texi: - mention checknagios
-	stuff in the hosting guide
+	* ggz-project/cvs-modules.txt ggz-project/Roadmap 
+	  ggz-project/Internationalization:
+	  - lists.sourceforge.net -> mail.ggzgamingzone.org
 
-2003-11-22 13:59  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.ac,
-	games/game-development/ggz-game-development-guide.texi,
-	server/hosting/ggz-hosting-guide.texi: - minor versioning updates -
-	mention the python Network class
+2004-02-01 14:54:27  Rev 5780   josef
 
-2003-09-28 11:30  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/features.html games/game-development/games.
+	  html:
+	  - preliminary game comparison updates
 
-	* spec/dtd/: ggz_client.dtd, ggzd.dtd: - add Roger's DTD files to
-	the specification
 
-2003-09-28 11:24  Josef Spillner <dr_maux@users.sourceforge.net>
+2004-01-31 10:54:44  Rev 5770   josef
 
-	* grubby/: admin-manual.html, user-manual.de.html,
-	user-manual.en.html: - document the grubby games plugin
+	* autogen.sh:
+	  - sync common files
 
-2003-06-28 11:07  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ggz-project/release-procedure,
-	server/hosting/ggz-hosting-guide.texi: - no more snafu
+2004-01-17 18:46:28  Rev 5740   dr_maux
 
-2003-06-10 09:27  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh:
+	  - sync
 
-	* ggz-project/release-procedure: - and another distro (Sorcerer)
-	
-	They have a nice 'ggz' meta package which installs all GGZ stuff
 
-2003-05-17 10:06  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-12-31 17:07:01  Rev 5728   dr_maux
 
-	* ChangeLog: - update changelog to reflect our lazyness^Whard work
+	* configure.ac:
+	  - use new-style AC_INIT
+	  - use new-style AC_OUTPUT
 
-2003-05-16 20:32  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - apply autogen.sh changes from libggz
+2003-12-09 14:22:31  Rev 5713   dr_maux
 
-2003-05-11 11:02  Josef Spillner <dr_maux@users.sourceforge.net>
+	* server/hosting/ggz-hosting-guide.texi:
+	  - mention checknagios stuff in the hosting guide
 
-	* ggz-project/Versioning: - add library interface versioning to
-	this document
 
-2003-05-11 01:13  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-11-22 12:59:56  Rev 5676   dr_maux
 
-	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh, configure.ac,
-	games/game-development/features.html,
-	games/game-development/games.html,
-	games/game-development/ggz-game-development-guide.texi,
-	server/hosting/ggz-hosting-guide.texi: - update documentation for
-	0.0.7
+	* games/game-development/ggz-game-development-guide.texi configure.
+	  ac server/hosting/ggz-hosting-guide.texi:
+	  - minor versioning updates
+	  - mention the python Network class
 
-2003-05-10 16:37  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - sync autogen.sh
+2003-09-28 09:30:02  Rev 5660   dr_maux
 
-2003-05-10 11:08  Josef Spillner <dr_maux@users.sourceforge.net>
+	* spec/dtd spec/dtd/ggzd.dtd spec/dtd/ggz_client.dtd:
+	  - add Roger's DTD files to the specification
 
-	* Makefile.am, games/game-development/Makefile.am,
-	server/hosting/Makefile.am: - make 'make dist' work again, using
-	the dist_data_DATA feature
 
-2003-05-10 08:34  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-09-28 09:24:52  Rev 5659   dr_maux
 
-	* ggz-project/Versioning: - add versioning documentation
-	
-	This is a suggestion, modifications can be done of course.
+	* grubby/user-manual.en.html grubby/user-manual.de.html 
+	  grubby/admin-manual.html:
+	  - document the grubby games plugin
 
-2003-04-28 09:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* games/game-development/features.html: - add a new column to the
-	features document: single player mode
+2003-06-28 09:09:12  Rev 5619   dr_maux
 
-2003-04-28 09:02  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ggz-project/release-procedure server/hosting/ggz-hosting-guide.texi:
+	  - no more snafu
 
-	* ggz-project/: Internationalization, release-procedure: - add
-	translation table to i18n document - add Mandrake to the list of
-	distros (even though we're only in contrib yet)
 
-2003-03-29 11:42  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-06-10 07:27:26  Rev 5611   dr_maux
 
-	* games/game-development/.cvsignore: - add HTML output directory to
-	cvsignore
+	* ggz-project/release-procedure:
+	  - and another distro (Sorcerer)
+	  They have a nice 'ggz' meta package which installs all GGZ stuff
 
-2003-03-29 11:31  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* autogen.sh: - apply improverished autogen globally
+2003-05-17 08:06:54  Rev 5587   dr_maux
 
-2003-02-26 14:53  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ChangeLog:
+	  - update changelog to reflect our lazyness^Whard work
 
-	* spec/overview.sgml: - fix typos (this word has been a curse)
 
-2003-02-16 21:55  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-16 18:34:45  Rev 5583   dr_maux
 
-	* games/game-development/ggz-game-development-guide.texi: - update
-	gamedev guide:	* include small code snippets for easysock, minidom
-	and ggz_conf  * update games in frontend toolkits descriptions	*
-	add [Statistics] in .dsc files
+	* autogen.sh:
+	  - apply autogen.sh changes from libggz
 
-2003-02-16 21:22  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* games/game-development/: features.html, games.html: - prepare
-	games overview documentation for 0.0.7:  * add column 'statistics
-	support' to features list  * add column for 0.0.7 to games list  *
-	add new game servers and game clients to both lists
+2003-05-11 09:02:48  Rev 5564   dr_maux
 
-2003-02-16 13:58  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ggz-project/Versioning:
+	  - add library interface versioning to this document
 
-	* autogen.sh: - new autogen.sh with versioned autotools checks -
-	improved handling of both m4 directory and am_edit presence - works
-	with {bash, dash, omsh, zsh} but not yet with {csh, tcsh}
 
-2003-02-15 01:43  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-10 23:13:24  Rev 5542   dr_maux
 
-	* ggz-project/release-procedure: - add SourceMage to linux
-	distributors shipping GGZ
-	
-	If this continues we'll end up having 200 commits to this file. 
-	But in the end it ain't bad at all...
+	* games/game-development/features.html 
+	  games/game-development/ggz-game-development-guide.texi autogen.sh 
+	  NEWS QuickStart.GGZ README.GGZ configure.ac 
+	  games/game-development/games.html server/hosting/ggz-hosting-guide.
+	  texi:
+	  - update documentation for 0.0.7
 
-2003-02-04 15:55  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* server/hosting/ggz-hosting-guide.texi: - many smaller updates to
-	the server documentation:  * mention DatabaseHashing  * mention
-	EncryptionXXX  * mention DumpFile  * new parameters for ggzduedit
-	and ggz-cmd
+2003-05-10 14:38:57  Rev 5539   dr_maux
 
-2003-02-04 03:07  Jason Short <jdorje@users.sourceforge.net>
+	* autogen.sh:
+	  - sync autogen.sh
 
-	* autogen.sh, configure.ac, configure.in: Step 1 of
-	autoconf2.5x-only support: rename configure.in as configure.ac.
 
-2003-01-23 18:14  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-05-10 09:08:27  Rev 5527   dr_maux
 
-	* ggz-project/release-procedure: - add note about version
-	information in header files to release checklist
+	* Makefile.am server/hosting/Makefile.am 
+	  games/game-development/Makefile.am:
+	  - make 'make dist' work again, using the dist_data_DATA feature
 
-2003-01-03 22:51  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* server/hosting/ggz-hosting-guide.texi: - move kamikaze from
-	planned internal games section to the external games   section -
-	also, fix typos: s/Gnome/GNOME/   (This should be done elsewhere
-	too)
+2003-05-10 06:34:06  Rev 5520   dr_maux
 
-2003-01-03 22:44  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ggz-project/Versioning:
+	  - add versioning documentation
+	  This is a suggestion, modifications can be done of course.
 
-	* games/game-development/ggz-game-development-guide.texi: - mention
-	Net and MNet in the server networking section
 
-2002-12-06 07:19  Jason Short <jdorje@users.sourceforge.net>
+2003-04-28 07:34:05  Rev 5496   dr_maux
 
-	* spec/appendix.sgml: Fix two broken links.
+	* games/game-development/features.html:
+	  - add a new column to the features document: single player mode
 
-2002-12-06 07:18  Jason Short <jdorje@users.sourceforge.net>
 
-	* spec/appendix.sgml: Document the JOIN and LEAVE server tags.
+2003-04-28 07:02:23  Rev 5495   dr_maux
 
-2002-11-06 08:45  Jason Short <jdorje@users.sourceforge.net>
+	* ggz-project/Internationalization ggz-project/release-procedure:
+	  - add translation table to i18n document
+	  - add Mandrake to the list of distros (even though we're only in 
+	  contrib yet)
 
-	* spec/appendix.sgml: Document the client-sent PING.
 
-2002-11-06 08:23  Jason Short <jdorje@users.sourceforge.net>
+2003-03-29 10:42:00  Rev 5481   dr_maux
 
-	* spec/appendix.sgml: Document the ID attribute of the PING and
-	PONG tags.
+	* games/game-development games/game-development/.cvsignore:
+	  - add HTML output directory to cvsignore
 
-2002-11-04 17:25  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/admin-manual.html: - update the grubby admin manual
+2003-03-29 10:33:32  Rev 5476   dr_maux
 
-2002-11-04 16:29  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh:
+	  - apply improverished autogen globally
 
-	* .cvsignore: - update cvsignore
 
-2002-11-04 16:29  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-02-26 13:53:27  Rev 5460   dr_maux
 
-	* configure.in: - add AC_CONFIG_HEADER(config.h) - bump version to
-	0.0.7pre
+	* spec/overview.sgml:
+	  - fix typos (this word has been a curse)
 
-2002-10-30 02:02  Jason Short <jdorje@users.sourceforge.net>
 
-	* spec/appendix.sgml: Change the entry for <RESULT>:   - CODE is a
-	string now, not an int.    - List the possible error codes.
+2003-02-16 20:55:08  Rev 5425   dr_maux
 
-2002-10-29 10:14  Jason Short <jdorje@users.sourceforge.net>
+	* games/game-development/ggz-game-development-guide.texi:
+	  - update gamedev guide:
+	   * include small code snippets for easysock, minidom and ggz_conf
+	   * update games in frontend toolkits descriptions
+	   * add [Statistics] in .dsc files
 
-	* spec/appendix.sgml: Update some information about the XML
-	protocol.
-	
-	It is a virtual certainty that this is incomplete.  Perhaps we
-	should think about a more formal definition?
 
-2002-10-22 19:07  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-02-16 20:22:20  Rev 5424   dr_maux
 
-	* ggz-project/release-procedure: - update release procedure docs
-	with knowledge recently gained - this is mostly a merge with
-	playground/docs/release-guide.txt
-	
-	Also, all asterisks have turned into checkboxes, so it can be
-	printed out as a checklist.
+	* games/game-development/features.html games/game-development/games.
+	  html:
+	  - prepare games overview documentation for 0.0.7:
+	   * add column 'statistics support' to features list
+	   * add column for 0.0.7 to games list
+	   * add new game servers and game clients to both lists
 
-2002-10-10 13:13  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* .cvsignore: - another autom4te.cache case
+2003-02-16 12:58:20  Rev 5412   dr_maux
 
-2002-10-08 01:16  Josef Spillner <dr_maux@users.sourceforge.net>
+	* autogen.sh:
+	  - new autogen.sh with versioned autotools checks
+	  - improved handling of both m4 directory and am_edit presence
+	  - works with {bash, dash, omsh, zsh} but not yet with {csh, tcsh}
 
-	* games/game-development/games.html: - include release date
 
-2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+2003-02-15 00:43:56  Rev 5404   dr_maux
 
-	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+	* ggz-project/release-procedure:
+	  - add SourceMage to linux distributors shipping GGZ
+	  If this continues we'll end up having 200 commits to this file.
+	  But in the end it ain't bad at all...
 
-2002-10-07 23:10  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ChangeLog: - update changelog for 0.0.6
+2003-02-04 14:55:47  Rev 5379   dr_maux
 
-2002-09-29 17:58  Josef Spillner <dr_maux@users.sourceforge.net>
+	* server/hosting/ggz-hosting-guide.texi:
+	  - many smaller updates to the server documentation:
+	   * mention DatabaseHashing
+	   * mention EncryptionXXX
+	   * mention DumpFile
+	   * new parameters for ggzduedit and ggz-cmd
 
-	* .cvsignore: - put config.h.in into cvsignore
 
-2002-09-29 14:40  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-02-04 02:07:36  Rev 5361   jdorje
 
-	* configure.in: - docs go 0.0.6 too
+	* configure.in autogen.sh configure.ac:
+	  Step 1 of autoconf2.5x-only support: rename configure.in as 
+	  configure.ac.
 
-2002-09-29 13:43  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* games/game-development/games.html: - update game versioning
-	document
+2003-01-23 17:14:15  Rev 5349   dr_maux
 
-2002-09-27 18:33  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ggz-project/release-procedure:
+	  - add note about version information in header files to release 
+	  checklist
 
-	* games/game-development/games.html: - finish first round of
-	version bumping: kde-games
 
-2002-09-27 10:56  Josef Spillner <dr_maux@users.sourceforge.net>
+2003-01-03 21:51:46  Rev 5309   dr_maux
 
-	* autogen.sh: - new autogen
+	* server/hosting/ggz-hosting-guide.texi:
+	  - move kamikaze from planned internal games section to the 
+	  external games
+	    section
+	  - also, fix typos: s/Gnome/GNOME/
+	    (This should be done elsewhere too)
 
-2002-09-26 12:32  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ggz-project/buildsystem: - updated build system docs: Included
-	hints on how to use the 'ignore' keyword which is useful for 3rd
-	party game authors.
+2003-01-03 21:44:37  Rev 5308   dr_maux
 
-2002-09-25 17:19  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/ggz-game-development-guide.texi:
+	  - mention Net and MNet in the server networking section
 
-	* ggz-project/Makefile.am: - argh! add 'buildsystem' to list of
-	to-be-installed files
 
-2002-09-25 17:18  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-12-06 06:19:44  Rev 5273   jdorje
 
-	* ggz-project/buildsystem: - build documentation, mostly for
-	acinclude.ggz as of now
+	* spec/appendix.sgml:
+	  Fix two broken links.
 
-2002-09-24 09:59  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ggz-project/Makefile.am: - put new file into EXTRA_DIST, and
-	align filenames in one column
+2002-12-06 06:18:03  Rev 5272   jdorje
 
-2002-09-24 09:57  Josef Spillner <dr_maux@users.sourceforge.net>
+	* spec/appendix.sgml:
+	  Document the JOIN and LEAVE server tags.
 
-	* ggz-project/release-procedure: - documentation on how to do a
-	release
 
-2002-09-24 09:30  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-11-06 07:45:00  Rev 5229   jdorje
 
-	* QuickStart.GGZ, README.GGZ: - update intro docs
+	* spec/appendix.sgml:
+	  Document the client-sent PING.
 
-2002-09-21 18:47  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* games/game-development/features.html: - hastings can handle
-	spectators now
+2002-11-06 07:23:13  Rev 5228   jdorje
 
-2002-09-21 12:11  Josef Spillner <dr_maux@users.sourceforge.net>
+	* spec/appendix.sgml:
+	  Document the ID attribute of the PING and PONG tags.
 
-	* games/game-development/Makefile.am: - install features.html
 
-2002-09-21 11:56  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-11-04 16:25:27  Rev 5220   dr_maux
 
-	* games/game-development/: features.html, games.html: - add
-	features table to compare all of our games - extend compatibility
-	list for 0.0.6, but the entries are simply copied from	 0.0.5,
-	this needs to be updated when all game protocols are finalized for 
-	 release.
+	* grubby/admin-manual.html:
+	  - update the grubby admin manual
 
-2002-09-17 23:54  Jason Short <jdorje@users.sourceforge.net>
 
-	* configure.in, spec/.cvsignore, spec/Makefile.am,
-	spec/design-txt.dsl: - Add files to EXTRA_DIST, so they'll be
-	distributed.  - Add dependencies.  - Add $(srcdir) in seemingly
-	appropriate places.  - Generate a text design document, using
-	design-txt.dsl, jade, and lynx.
+2002-11-04 15:29:39  Rev 5219   dr_maux
 
-2002-09-17 05:15  Jason Short <jdorje@users.sourceforge.net>
+	* .cvsignore:
+	  - update cvsignore
 
-	* games/game-development/Makefile.am: Added $(doc_DATA)
-	(games.html) to EXTRA_DIST.
 
-2002-09-16 23:32  Jason Short <jdorje@users.sourceforge.net>
+2002-11-04 15:29:09  Rev 5218   dr_maux
 
-	* spec/appendix.sgml: A few fixes to the XML specification portion
-	of the design document:   - In <ALLOW PLAYERS="..." BOTS="..."
-	SPECTATORS="...">, correct the	   descriptions of the PLAYERS,
-	BOTS, and SPECTATORS tags.    - The <RESULT CODE="..."/> tag does
-	not contain any data.	 - Specify the types of login explicitly.
+	* configure.in:
+	  - add AC_CONFIG_HEADER(config.h)
+	  - bump version to 0.0.7pre
 
-2002-09-13 18:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* spec/.cvsignore, spec/Makefile, spec/Makefile.am, Makefile.am,
-	configure.in: - integrate specification into build system - off by
-	default
+2002-10-30 01:02:50  Rev 5109   jdorje
 
-2002-09-12 10:11  Josef Spillner <dr_maux@users.sourceforge.net>
+	* spec/appendix.sgml:
+	  Change the entry for <RESULT>:
+	    - CODE is a string now, not an int.
+	    - List the possible error codes.
 
-	* spec/modules.sgml: - add bulk information from ggzdmod's
-	protocol.h file
 
-2002-09-11 08:56  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-29 09:14:48  Rev 5100   jdorje
 
-	* spec/modules.sgml: - new file modules.sgml since appendix.sgml is
-	way too large already
+	* spec/appendix.sgml:
+	  Update some information about the XML protocol.
+	  It is a virtual certainty that this is incomplete.  Perhaps we 
+	  should
+	  think about a more formal definition?
 
-2002-09-11 08:55  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* spec/: appendix.sgml, client-server.sgml, design.sgml: - convert
-	remaining opcodes - the GGZ protocol spec should now be roughly
-	complete - prepare server/module protocol (i.e. ggzdmod opcodes)
+2002-10-22 17:07:43  Rev 4993   dr_maux
 
-2002-09-11 08:27  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ggz-project/release-procedure:
+	  - update release procedure docs with knowledge recently gained
+	  - this is mostly a merge with playground/docs/release-guide.txt
+	  Also, all asterisks have turned into checkboxes, so it can be 
+	  printed out as a
+	  checklist.
 
-	* spec/: appendix.sgml, client-server.sgml: - convert UPDATE for
-	types 'room' and 'game' (although ggzd doesn't support it   yet) -
-	drop REQ_GAME/RSP_GAME in favor of new CHANNEL tag - convert LAUNCH
 
-2002-09-11 07:42  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-10 11:13:24  Rev 4837   dr_maux
 
-	* spec/: appendix.sgml, client-server.sgml: - add PING and PONG -
-	convert UPDATE (for tables and players) - convert TABLE, PLAYER and
-	SEAT tags
+	* .cvsignore:
+	  - another autom4te.cache case
 
-2002-09-10 19:44  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* spec/: Makefile, appendix.sgml, client-server.sgml, design.dsl,
-	design.sgml, overview.sgml, requirements.sgml: - add GGZ protocol
-	specification - about half of it is ported from version 3 to
-	version 7 already - this stuff takes more time than one would have
-	expected
+2002-10-07 23:16:18  Rev 4801   dr_maux
 
-2002-09-10 19:40  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/games.html:
+	  - include release date
 
-	* spec/: .cvsignore, Makefile.am, bodytags1.cnxml, spec.cnxml,
-	spec.css, spec.xml, spec.xsl: - The 'spec' directory sounds like a
-	cool place to put the specification into - therefore, remove the
-	non-GGZ content to make place for the really important	 stuff :)
 
-2002-09-08 07:48  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-07 21:28:18  Rev 4795   jdorje
 
-	* configure.in, texi2text.pl: - fix texi2text: skip until we reach
-	title section - produce both info and text guides by default
+	* NEWS:
+	  Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
-2002-09-08 07:47  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* grubby/Makefile.am, server/hosting/.cvsignore: - fix texi2text:
-	skip until we reach the title section - produce both info and text
-	guides per default
+2002-10-07 21:16:10  Rev 4794   dr_maux
 
-2002-09-08 07:46  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ChangeLog:
+	  - update changelog for 0.0.6
 
-	* games/game-development/.cvsignore: - ignore generated text file
 
-2002-09-08 07:46  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-29 15:58:10  Rev 4775   dr_maux
 
-	* games/game-development/: Makefile.am,
-	ggz-game-development-guide.texi: - build text version of gamedev
-	guide too - add spectator events to documentation
+	* .cvsignore:
+	  - put config.h.in into cvsignore
 
-2002-09-07 23:31  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* texi2text.pl, Makefile.am: - texi2text converter - perl already
-	is a build dependency, so it doesn't hurt - later on this script
-	should probably move to the texi2html project but right   now we
-	keep it here
+2002-09-29 12:40:57  Rev 4764   dr_maux
 
-2002-09-07 23:29  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.in:
+	  - docs go 0.0.6 too
 
-	* server/hosting/: Makefile.am, ggz-hosting-guide.texi: - add
-	contents from admin-guide.txt - use custom text format converter,
-	since text2html -> lynx doesn't look good,   and neither does
-	html2text
 
-2002-08-18 10:35  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-29 11:43:21  Rev 4756   dr_maux
 
-	* grubby/: admin-manual.html, user-manual.de.html,
-	user-manual.en.html, user-manual.html: - updated admin manual -
-	updated user manual - translated user manual into german (On decent
-	web servers, content negotiation will refer a link to
-	user-manual.html to the right language automatically, I think.)
+	* games/game-development/games.html:
+	  - update game versioning document
 
-2002-08-10 20:38  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* games/game-development/ggz-game-development-guide.texi: - two
-	functions were duplicated somehow - remove the empty ones
+2002-09-27 16:33:02  Rev 4754   dr_maux
 
-2002-07-29 22:22  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/games.html:
+	  - finish first round of version bumping: kde-games
 
-	* games/game-development/ggz-game-development-guide.texi: - add
-	section about GGZ statistics - add small code samples for ggzmod,
-	ggzdmod, ggzstats
 
-2002-07-13 15:28  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-27 08:58:31  Rev 4746   dr_maux
 
-	* server/hosting/ggz-hosting-guide.texi: - explain MySQL setup
+	* autogen.sh:
+	  - new autogen
 
-2002-07-13 13:18  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* server/hosting/ggz-hosting-guide.texi: - describe a typical
-	PostgreSQL server setup so it can be used for ggzd
+2002-09-26 10:32:31  Rev 4717   dr_maux
 
-2002-05-21 09:52  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ggz-project/buildsystem:
+	  - updated build system docs:
+	  Included hints on how to use the 'ignore' keyword which is useful 
+	  for 3rd party
+	  game authors.
 
-	* server/hosting/ggz-hosting-guide.texi: Update of the hosting
-	guide: - s/0.0.5/0.0.6 everywhere - SQL databases setup, and db
-	format - GGZCards has a fortytwo game now - The colorsniff utily -
-	Variable game directories
 
-2002-05-06 09:59  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-25 15:19:30  Rev 4697   dr_maux
 
-	* games/game-development/Makefile.am: - don't mix up generated and
-	present HTML files
+	* ggz-project/Makefile.am:
+	  - argh! add 'buildsystem' to list of to-be-installed files
 
-2002-04-14 17:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* server/hosting/ggz-hosting-guide.texi: - update external games
-	info in hosting guide (after installing them on GGZe1)
+2002-09-25 15:18:32  Rev 4696   dr_maux
 
-2002-04-14 15:00  Josef Spillner <dr_maux@users.sourceforge.net>
+	* ggz-project/buildsystem:
+	  - build documentation, mostly for acinclude.ggz as of now
 
-	* Makefile.am, configure.in: - build and install articles
 
-2002-04-14 15:00  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-24 07:59:04  Rev 4681   dr_maux
 
-	* articles/: .cvsignore, Makefile.am, instantgaming.html: - add new
-	article directory to documentation
+	* ggz-project/Makefile.am:
+	  - put new file into EXTRA_DIST, and align filenames in one column
 
-2002-04-14 14:56  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* debian/control: - texi2html is an extra package
+2002-09-24 07:57:25  Rev 4680   dr_maux
 
-2002-04-13 09:18  Brent Hendricks <bmh@users.sourceforge.net>
+	* ggz-project/release-procedure:
+	  - documentation on how to do a release
 
-	* ChangeLog: 
-	- Update for 0.0.5 release
 
-2002-04-13 06:06  Brent Hendricks <bmh@users.sourceforge.net>
+2002-09-24 07:36:20  Rev 4679   dr_maux
 
-	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ: 
-	- Doc file updates
+	* QuickStart.GGZ README.GGZ:
+	  - update intro docs
 
-2002-04-12 23:22  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* games/game-development/: Makefile.am, games.html: - add games
-	compatibility/version page and install it into $ggzdocdir/games
+2002-09-21 16:47:41  Rev 4648   dr_maux
 
-2002-04-12 16:22  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/features.html:
+	  - hastings can handle spectators now
 
-	* games/game-development/: Makefile.am, games.html: - add games
-	compatibility/version page and install it into $ggzdocdir/games
 
-2002-04-11 07:20  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-21 10:11:00  Rev 4646   dr_maux
 
-	* server/hosting/ggz-hosting-guide.texi: - fix typo: Batalla Naval
+	* games/game-development/Makefile.am:
+	  - install features.html
 
-2002-04-11 07:09  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* server/hosting/ggz-hosting-guide.texi: - pointer to premade MOTDs
+2002-09-21 09:56:18  Rev 4645   dr_maux
 
-2002-04-11 07:06  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/features.html games/game-development/games.
+	  html:
+	  - add features table to compare all of our games
+	  - extend compatibility list for 0.0.6, but the entries are simply 
+	  copied from
+	    0.0.5, this needs to be updated when all game protocols are 
+	  finalized for
+	    release.
 
-	* games/game-development/ggz-game-development-guide.texi: - remove
-	email address again (texinfo doesn't like it)
 
-2002-04-11 07:04  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-17 21:54:48  Rev 4613   jdorje
 
-	* games/game-development/: .cvsignore, Makefile.am,
-	ggz-game-development-guide.texi: - update game development guide
+	* configure.in spec/.cvsignore spec spec/design-txt.dsl 
+	  spec/Makefile.am:
+	  - Add files to EXTRA_DIST, so they'll be distributed.
+	  - Add dependencies.
+	  - Add $(srcdir) in seemingly appropriate places.
+	  - Generate a text design document, using design-txt.dsl, jade, and 
+	  lynx.
 
-2002-04-11 06:37  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* server/hosting/: .cvsignore, Makefile.am, ggz-hosting-guide.texi:
-	- extend the hosting guide
+2002-09-17 03:15:49  Rev 4598   jdorje
 
-2002-04-11 05:55  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/Makefile.am:
+	  Added $(doc_DATA) (games.html) to EXTRA_DIST.
 
-	* Makefile.am, configure.in: - addon
 
-2002-04-11 05:55  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-16 21:32:04  Rev 4588   jdorje
 
-	* overview/Makefile.am: - let 'make distcheck' work
+	* spec/appendix.sgml:
+	  A few fixes to the XML specification portion of the design document:
+	    - In <ALLOW PLAYERS="..." BOTS="..." SPECTATORS="...">, correct 
+	  the
+	      descriptions of the PLAYERS, BOTS, and SPECTATORS tags.
+	    - The <RESULT CODE="..."/> tag does not contain any data.
+	    - Specify the types of login explicitly.
 
-2002-04-11 05:41  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.in: - version number goes up to 0.0.5 - generate HTML
-	pages too with --enable-guides
+2002-09-13 16:34:19  Rev 4549   dr_maux
 
-2002-04-11 05:38  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.in spec/.cvsignore spec/Makefile Makefile.am spec 
+	  spec/Makefile.am:
+	  - integrate specification into build system
+	  - off by default
 
-	* games/game-development/Makefile.am: - add rules for HTML
-	documentation
 
-2002-04-11 05:38  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-12 08:11:49  Rev 4524   dr_maux
 
-	* server/hosting/Makefile.am: - add rules for HTML generation
+	* spec/modules.sgml:
+	  - add bulk information from ggzdmod's protocol.h file
 
-2002-04-09 15:00  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* debian/: control, rules: - update documentation rules - run
-	autogen.sh automatically if not configure is present
+2002-09-11 06:56:18  Rev 4513   dr_maux
 
-2002-04-09 13:35  Josef Spillner <dr_maux@users.sourceforge.net>
+	* spec/modules.sgml:
+	  - new file modules.sgml since appendix.sgml is way too large already
 
-	* NEWS, configure.in: - addon
 
-2002-04-09 13:35  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-11 06:55:41  Rev 4512   dr_maux
 
-	* debian/control, debian/rules, games/game-development/Makefile.am,
-	server/hosting/Makefile.am: - GGZ documentation does now ship with
-	2 nice PostScript guides when telling	--enable-guides - Debian
-	packages include guides by default
+	* spec/client-server.sgml spec/appendix.sgml spec/design.sgml:
+	  - convert remaining opcodes
+	  - the GGZ protocol spec should now be roughly complete
+	  - prepare server/module protocol (i.e. ggzdmod opcodes)
 
-2002-04-07 03:00  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* debian/.cvsignore: - update .cvsignore
+2002-09-11 06:27:48  Rev 4511   dr_maux
 
-2002-04-07 01:59  Josef Spillner <dr_maux@users.sourceforge.net>
+	* spec/client-server.sgml spec/appendix.sgml:
+	  - convert UPDATE for types 'room' and 'game' (although ggzd 
+	  doesn't support it
+	    yet)
+	  - drop REQ_GAME/RSP_GAME in favor of new CHANNEL tag
+	  - convert LAUNCH
 
-	* debian/: .cvsignore, changelog, control, copyright, postinst,
-	prerm, rules: - debianize our documentation Note: a rule to
-	generate all "hardcopy" stuff (PDF's and the like) will yet have to
-	be adjusted.
 
-2002-04-05 16:31  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-11 05:42:41  Rev 4510   dr_maux
 
-	* server/hosting/ggz-hosting-guide.texi: - add a section about
-	ggzduedit - some minor updates
+	* spec/client-server.sgml spec/appendix.sgml:
+	  - add PING and PONG
+	  - convert UPDATE (for tables and players)
+	  - convert TABLE, PLAYER and SEAT tags
 
-2002-04-05 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* README.GGZ: - update installation instructions and overview
+2002-09-10 17:44:17  Rev 4503   dr_maux
 
-2002-03-21 05:08  Josef Spillner <dr_maux@users.sourceforge.net>
+	* spec/Makefile spec/client-server.sgml spec/requirements.sgml 
+	  spec/overview.sgml spec/appendix.sgml spec/design.dsl spec/design.
+	  sgml:
+	  - add GGZ protocol specification
+	  - about half of it is ported from version 3 to version 7 already
+	  - this stuff takes more time than one would have expected
 
-	* games/game-development/ggz-game-development-guide.texi,
-	ggz-project/Internationalization, ggz-project/cvs-modules.txt: -
-	the Speck Hack commits - see mail to ggz-dev for the details
 
-2002-02-03 05:49  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-10 17:40:59  Rev 4502   dr_maux
 
-	* configure.in: - create makefile for gamedev guide
+	* spec/.cvsignore spec/bodytags1.cnxml spec/spec.xsl spec spec/spec.
+	  css spec/Makefile.am spec/spec.xml spec/spec.cnxml:
+	  - The 'spec' directory sounds like a cool place to put the 
+	  specification into
+	  - therefore, remove the non-GGZ content to make place for the 
+	  really important
+	    stuff :)
 
-2002-02-03 05:49  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* games/Makefile.am: - include gamedev guide
+2002-09-08 05:48:18  Rev 4461   dr_maux
 
-2002-02-03 05:48  Josef Spillner <dr_maux@users.sourceforge.net>
+	* configure.in texi2text.pl:
+	  - fix texi2text: skip until we reach title section
+	  - produce both info and text guides by default
 
-	* games/game-development/: .cvsignore, Makefile.am,
-	ggz-game-development-guide.texi: - add first example of a game
-	development guide
 
-2002-01-20 03:01  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-08 05:47:25  Rev 4460   dr_maux
 
-	* server/hosting/ggz-hosting-guide.texi: - add keepalive -
-	encourage server hosters to subscribe to ggz-servers
+	* server/hosting/.cvsignore server/hosting grubby/Makefile.am:
+	  - fix texi2text: skip until we reach the title section
+	  - produce both info and text guides per default
 
-2002-01-09 07:21  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* server/hosting/ggz-hosting-guide.texi: - include cmd-client into
-	the GGZ hosting guide
+2002-09-08 05:46:42  Rev 4459   dr_maux
 
-2001-12-21 18:26  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development games/game-development/.cvsignore:
+	  - ignore generated text file
 
-	* server/hosting/ggz-hosting-guide.texi: - one more chapter for our
-	'hosting guide'
 
-2001-12-16 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-08 05:46:22  Rev 4458   dr_maux
 
-	* Makefile.am, configure.in: - top-level updates: include server
-	directory into build process
+	* games/game-development/ggz-game-development-guide.texi 
+	  games/game-development/Makefile.am:
+	  - build text version of gamedev guide too
+	  - add spectator events to documentation
 
-2001-12-16 16:02  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* server/.cvsignore: - write .cvsignore file for server directory
+2002-09-07 21:31:26  Rev 4446   dr_maux
 
-2001-12-16 16:02  Josef Spillner <dr_maux@users.sourceforge.net>
+	* Makefile.am texi2text.pl:
+	  - texi2text converter
+	  - perl already is a build dependency, so it doesn't hurt
+	  - later on this script should probably move to the texi2html 
+	  project but right
+	    now we keep it here
 
-	* server/: Makefile.am, hosting/.cvsignore, hosting/Makefile.am,
-	hosting/ggz-hosting-guide.texi: - add GGZ Gaming Zone Hosting Guide
-	- default installation produces an info file, but HTML and
-	Postscript   generation is easily doable and should be done before
-	the release (dist-hook	 maybe?)
 
-2001-12-09 11:21  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-07 21:29:43  Rev 4445   dr_maux
 
-	* server/metaserver/: index.html, spec.html, spec.txt,
-	pics/about.png, pics/back.png, pics/clients.png, pics/servers.png,
-	pics/spec.png, pics/title.png, pics/web.png: - Voila: Started
-	documentation directory for the server, and put in the	 metaserver
-	as the first component - includes Official (tm) specification of
-	our meta server protocol
+	* server/hosting/Makefile.am server/hosting/ggz-hosting-guide.texi:
+	  - add contents from admin-guide.txt
+	  - use custom text format converter, since text2html -> lynx 
+	  doesn't look good,
+	    and neither does html2text
 
-2001-10-22 03:11  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am, configure.in: - install overview docs
+2002-08-18 08:35:24  Rev 4369   dr_maux
 
-2001-10-22 03:11  Josef Spillner <dr_maux@users.sourceforge.net>
+	* grubby/user-manual.html grubby/user-manual.en.html 
+	  grubby/user-manual.de.html grubby/admin-manual.html:
+	  - updated admin manual
+	  - updated user manual
+	  - translated user manual into german
+	  (On decent web servers, content negotiation will refer a link to
+	  user-manual.html to the right language automatically, I think.)
 
-	* overview/: .cvsignore, Makefile.am, ggz-big-0.0.4.png,
-	ggz-big-0.0.5.png, ggz-big-legend.png, ggzbig.html: - add overview
-	documentation - includes graphical representation of the source
-	code
 
-2001-10-12 05:24  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-08-10 18:38:22  Rev 4354   dr_maux
 
-	* grubby/: admin-manual.html, user-manual.html: - update grubby
-	user and admin manual
+	* games/game-development/ggz-game-development-guide.texi:
+	  - two functions were duplicated somehow - remove the empty ones
 
-2001-09-09 10:17  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* configure.in: - updated configure.in to place makefile for
-	ggzcards
+2002-07-29 20:22:12  Rev 4315   dr_maux
 
-2001-09-09 10:17  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/ggz-game-development-guide.texi:
+	  - add section about GGZ statistics
+	  - add small code samples for ggzmod, ggzdmod, ggzstats
 
-	* games/ggzcards/.cvsignore, games/ggzcards/Makefile.am,
-	ggz-project/Roadmap, ggz-project/security-and-privacy: - the new
-	files come here
 
-2001-09-09 10:16  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-07-13 13:28:32  Rev 4301   dr_maux
 
-	* games/Makefile.am, ggz-project/Internationalization,
-	ggz-project/Makefile.am, ggz-project/cvs-modules.txt,
-	spec/Makefile.am: - include ggzcards docs in installation - fix bug
-	in the spec directory (if that's needed at all, but it's cool) -
-	some additions everywhere
+	* server/hosting/ggz-hosting-guide.texi:
+	  - explain MySQL setup
 
-2001-08-23 00:52  Jason Short <jdorje@users.sourceforge.net>
 
-	* games/external-games/ggz-support-howto.txt: Added short blurb
-	about libggzmod/libggzdmod to the readme on interfacing with GGZ.
-	
-	More should be written about this soon.
+2002-07-13 11:18:07  Rev 4300   dr_maux
 
-2001-08-17 02:15  Josef Spillner <dr_maux@users.sourceforge.net>
+	* server/hosting/ggz-hosting-guide.texi:
+	  - describe a typical PostgreSQL server setup so it can be used for 
+	  ggzd
 
-	* grubby/user-manual.html: - user documentation update
 
-2001-08-14 02:41  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-05-21 07:52:21  Rev 4225   dr_maux
 
-	* grubby/: admin-manual.html, user-manual.html: - grubby docs
-	update
+	* server/hosting/ggz-hosting-guide.texi:
+	  Update of the hosting guide:
+	  - s/0.0.5/0.0.6 everywhere
+	  - SQL databases setup, and db format
+	  - GGZCards has a fortytwo game now
+	  - The colorsniff utily
+	  - Variable game directories
 
-2001-08-04 08:41  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am, configure.in: - update build system
+2002-05-06 07:59:53  Rev 4174   dr_maux
 
-2001-08-04 08:41  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/Makefile.am:
+	  - don't mix up generated and present HTML files
 
-	* grubby/: .cvsignore, Makefile.am, admin-manual.html,
-	user-manual.html: - add a bit of grubby documentation - currently
-	covers only the latest guru stuff
 
-2001-07-08 16:01  Jason Short <jdorje@users.sourceforge.net>
+2002-04-14 15:33:41  Rev 3984   dr_maux
 
-	* games/ggzcards/adding_games.txt: Updated the adding-games
-	document for the new server structure.
-	
-	I started to add adding-AI informaiton to it, but didn't do very
-	much of it.
+	* server/hosting/ggz-hosting-guide.texi:
+	  - update external games info in hosting guide (after installing 
+	  them on GGZe1)
 
-2001-06-26 03:09  Jason Short <jdorje@users.sourceforge.net>
 
-	* games/ggzcards/adding_games.txt: Wrote a simple howto for adding
-	games.
+2002-04-14 13:00:48  Rev 3983   dr_maux
 
-2001-06-26 01:22  Jason Short <jdorje@users.sourceforge.net>
+	* configure.in Makefile.am:
+	  - build and install articles
 
-	* games/ggzcards/adding_games.txt: Added new documentation file.
 
-2001-06-17 17:14  Rich Gade <rgade@users.sourceforge.net>
+2002-04-14 13:00:24  Rev 3982   dr_maux
 
-	* ChangeLog: - Updated ChangeLog
+	* articles articles/instantgaming.html articles/Makefile.am 
+	  articles/.cvsignore:
+	  - add new article directory to documentation
 
-2001-06-17 17:13  Rich Gade <rgade@users.sourceforge.net>
 
-	* coreclients/Makefile.am, games/external-games/Makefile.am,
-	games/hastings/Makefile.am, ggz-project/Makefile.am: - None of the
-	files were included in the distribution :(   Fixed...
+2002-04-14 12:56:26  Rev 3981   dr_maux
 
-2001-06-08 12:05  Josef Spillner <dr_maux@users.sourceforge.net>
+	* debian/control:
+	  - texi2html is an extra package
 
-	* README.GGZ: - actually add readme.ggz
 
-2001-06-08 11:27  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-13 07:18:08  Rev 3972   bmh
 
-	* ggz-project/: Makefile.am, cvs-modules.txt: - more docs
+	* ChangeLog:
+	  - Update for 0.0.5 release
 
-2001-06-07 16:28  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* debian/docs: - add project-wide readme file
+2002-04-13 04:06:57  Rev 3949   bmh
 
-2001-06-03 15:23  Josef Spillner <dr_maux@users.sourceforge.net>
+	* AUTHORS NEWS QuickStart.GGZ README.GGZ:
+	  - Doc file updates
 
-	* Makefile.am, configure.in: - build updates
 
-2001-06-03 15:23  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-12 21:22:17  Rev 3924   dr_maux
 
-	* ggz-project/: .cvsignore, Makefile.am: - install
-	Internationalization file
+	* games/game-development/Makefile.am games/game-development/games.
+	  html:
+	  - add games compatibility/version page and install it into 
+	  $ggzdocdir/games
 
-2001-06-03 15:22  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* coreclients/: .cvsignore, Makefile.am, coreclients.html,
-	gameflow.png, ggzcore.png: - add core client documentation skeleton
+2002-04-11 12:20:21  Rev 3903   dr_maux
 
-2001-06-02 15:22  Josef Spillner <dr_maux@users.sourceforge.net>
+	* server/hosting/ggz-hosting-guide.texi:
+	  - fix typo: Batalla Naval
 
-	* Makefile.am: - add ggz-project dir to subdirs
 
-2001-06-01 22:18  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-11 12:09:23  Rev 3902   dr_maux
 
-	* ggz-project/Internationalization: - new rules
+	* server/hosting/ggz-hosting-guide.texi:
+	  - pointer to premade MOTDs
 
-2001-06-01 19:09  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ggz-project/Internationalization: - little update
+2002-04-11 12:06:49  Rev 3901   dr_maux
 
-2001-06-01 18:31  Josef Spillner <dr_maux@users.sourceforge.net>
+	* games/game-development/ggz-game-development-guide.texi:
+	  - remove email address again (texinfo doesn't like it)
 
-	* ggz-project/Internationalization: - added small
-	localization/internationalization help
 
-2001-05-30 12:11  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-11 12:04:07  Rev 3900   dr_maux
 
-	* .cvsignore, AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am,
-	NEWS, README, autogen.sh, configure.in: - more files
+	* games/game-development 
+	  games/game-development/ggz-game-development-guide.texi 
+	  games/game-development/Makefile.am games/game-development/.
+	  cvsignore:
+	  - update game development guide
 
-2001-05-30 12:10  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* games/.cvsignore, games/hastings/.cvsignore, spec/.cvsignore,
-	spec/Makefile.am: - added some more files
+2002-04-11 11:37:14  Rev 3899   dr_maux
 
-2001-05-30 12:08  Josef Spillner <dr_maux@users.sourceforge.net>
+	* server/hosting/Makefile.am server/hosting/.cvsignore 
+	  server/hosting server/hosting/ggz-hosting-guide.texi:
+	  - extend the hosting guide
 
-	* debian/.cvsignore, debian/README.Debian, debian/changelog,
-	debian/control, debian/copyright, debian/docs, debian/postinst,
-	debian/prerm, debian/rules, games/Makefile.am,
-	games/external-games/.cvsignore, games/external-games/Makefile.am,
-	games/external-games/ggz-kde-preview.html,
-	games/external-games/ggz-support-howto.txt,
-	games/hastings/Makefile.am: - debianized documentation tree - added
-	docs for external and kde games
 
-2001-05-30 08:18  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-04-11 10:55:18  Rev 3898   dr_maux
 
-	* README: - add readme for documentation
+	* configure.in Makefile.am:
+	  - addon
 
-2001-05-30 08:17  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* games/hastings/: description.txt, hastings0.png, hastings1.png,
-	hastings2.png, hastings3.png, module_writing.html: - add hastings
-	documentation in doc module
+2002-04-11 10:55:08  Rev 3897   dr_maux
 
-2000-11-20 11:53  Brent Hendricks <bmh@users.sourceforge.net>
+	* overview/Makefile.am:
+	  - let 'make distcheck' work
 
-	* spec/: bodytags1.cnxml, spec.cnxml, spec.css, spec.xml, spec.xsl:
-	Initial revision
 
-2000-11-20 11:53  Brent Hendricks <bmh@users.sourceforge.net>
+2002-04-11 10:41:20  Rev 3896   dr_maux
 
-	* spec/: bodytags1.cnxml, spec.cnxml, spec.css, spec.xml, spec.xsl:
-	Imported files
+	* configure.in:
+	  - version number goes up to 0.0.5
+	  - generate HTML pages too with --enable-guides
+
+
+2002-04-11 10:38:49  Rev 3895   dr_maux
+
+	* games/game-development/Makefile.am:
+	  - add rules for HTML documentation
+
+
+2002-04-11 10:38:25  Rev 3894   dr_maux
+
+	* server/hosting/Makefile.am:
+	  - add rules for HTML generation
+
+
+2002-04-09 20:00:14  Rev 3857   dr_maux
+
+	* debian/rules debian/control:
+	  - update documentation rules
+	  - run autogen.sh automatically if not configure is present
+
+
+2002-04-09 18:35:50  Rev 3856   dr_maux
+
+	* configure.in NEWS:
+	  - addon
+
+
+2002-04-09 18:35:38  Rev 3855   dr_maux
+
+	* server/hosting/Makefile.am debian/rules 
+	  games/game-development/Makefile.am debian/control:
+	  - GGZ documentation does now ship with 2 nice PostScript guides 
+	  when telling
+	    --enable-guides
+	  - Debian packages include guides by default
+
+
+2002-04-07 08:00:07  Rev 3806   dr_maux
+
+	* debian/.cvsignore debian:
+	  - update .cvsignore
+
+
+2002-04-07 07:59:36  Rev 3805   dr_maux
+
+	* debian/postinst debian/prerm debian/changelog debian/copyright 
+	  debian/rules debian/.cvsignore debian debian/control:
+	  - debianize our documentation
+	  Note: a rule to generate all "hardcopy" stuff (PDF's and the like) 
+	  will yet
+	  have to be adjusted.
+
+
+2002-04-05 22:31:54  Rev 3761   dr_maux
+
+	* server/hosting/ggz-hosting-guide.texi:
+	  - add a section about ggzduedit
+	  - some minor updates
+
+
+2002-04-05 22:03:05  Rev 3758   dr_maux
+
+	* README.GGZ:
+	  - update installation instructions and overview
+
+
+2002-03-21 11:10:29  Rev 3609   dr_maux
+
+	* ggz-project/cvs-modules.txt 
+	  games/game-development/ggz-game-development-guide.texi 
+	  ggz-project/Internationalization:
+	  - the Speck Hack commits
+	  - see mail to ggz-dev for the details
+
+
+2002-02-03 11:49:32  Rev 3226   dr_maux
+
+	* configure.in:
+	  - create makefile for gamedev guide
+
+
+2002-02-03 11:49:12  Rev 3225   dr_maux
+
+	* games/Makefile.am:
+	  - include gamedev guide
+
+
+2002-02-03 11:48:44  Rev 3224   dr_maux
+
+	* games/game-development 
+	  games/game-development/ggz-game-development-guide.texi 
+	  games/game-development/Makefile.am games/game-development/.
+	  cvsignore:
+	  - add first example of a game development guide
+
+
+2002-01-20 09:01:27  Rev 3162   dr_maux
+
+	* server/hosting/ggz-hosting-guide.texi:
+	  - add keepalive
+	  - encourage server hosters to subscribe to ggz-servers
+
+
+2002-01-09 13:21:04  Rev 3040   dr_maux
+
+	* server/hosting/ggz-hosting-guide.texi:
+	  - include cmd-client into the GGZ hosting guide
+
+
+2001-12-22 00:26:08  Rev 2979   dr_maux
+
+	* server/hosting/ggz-hosting-guide.texi:
+	  - one more chapter for our 'hosting guide'
+
+
+2001-12-16 22:03:23  Rev 2899   dr_maux
+
+	* configure.in Makefile.am:
+	  - top-level updates: include server directory into build process
+
+
+2001-12-16 22:02:57  Rev 2898   dr_maux
+
+	* server server/.cvsignore:
+	  - write .cvsignore file for server directory
+
+
+2001-12-16 22:02:09  Rev 2897   dr_maux
+
+	* server/hosting/Makefile.am server/hosting/.cvsignore 
+	  server/Makefile.am server/hosting server/hosting/ggz-hosting-guide.
+	  texi:
+	  - add GGZ Gaming Zone Hosting Guide
+	  - default installation produces an info file, but HTML and 
+	  Postscript
+	    generation is easily doable and should be done before the 
+	  release (dist-hook
+	    maybe?)
+
+
+2001-12-09 17:21:02  Rev 2827   dr_maux
+
+	* server/metaserver/pics/clients.png server/metaserver/pics/title.
+	  png server server/metaserver/spec.txt server/metaserver/index.html 
+	  server/metaserver/pics/servers.png server/metaserver/pics/about.
+	  png server/metaserver/pics/spec.png server/metaserver/spec.html 
+	  server/metaserver/pics server/metaserver/pics/web.png 
+	  server/metaserver server/metaserver/pics/back.png:
+	  - Voila: Started documentation directory for the server, and put 
+	  in the
+	    metaserver as the first component
+	  - includes Official (tm) specification of our meta server protocol
+
+
+2001-10-22 08:11:27  Rev 2589   dr_maux
+
+	* configure.in Makefile.am:
+	  - install overview docs
+
+
+2001-10-22 08:11:08  Rev 2588   dr_maux
+
+	* overview overview/ggz-big-legend.png overview/ggz-big-0.0.4.png 
+	  overview/ggz-big-0.0.5.png overview/Makefile.am overview/ggzbig.
+	  html overview/.cvsignore:
+	  - add overview documentation
+	  - includes graphical representation of the source code
+
+
+2001-10-12 10:24:07  Rev 2551   dr_maux
+
+	* grubby/user-manual.html grubby/admin-manual.html:
+	  - update grubby user and admin manual
+
+
+2001-09-09 15:17:54  Rev 2426   dr_maux
+
+	* configure.in:
+	  - updated configure.in to place makefile for ggzcards
+
+
+2001-09-09 15:17:31  Rev 2425   dr_maux
+
+	* games/ggzcards/Makefile.am games/ggzcards/.cvsignore 
+	  ggz-project/security-and-privacy ggz-project/Roadmap games/ggzcards:
+	  - the new files come here
+
+
+2001-09-09 15:16:44  Rev 2424   dr_maux
+
+	* games/Makefile.am ggz-project/cvs-modules.txt 
+	  ggz-project/Internationalization spec/Makefile.am 
+	  ggz-project/Makefile.am:
+	  - include ggzcards docs in installation
+	  - fix bug in the spec directory (if that's needed at all, but it's 
+	  cool)
+	  - some additions everywhere
+
+
+2001-08-23 05:52:29  Rev 2186   jdorje
+
+	* games/external-games/ggz-support-howto.txt:
+	  Added short blurb about libggzmod/libggzdmod to the readme on 
+	  interfacing
+	  with GGZ.
+	  More should be written about this soon.
+
+
+2001-08-17 07:15:20  Rev 2159   dr_maux
+
+	* grubby/user-manual.html:
+	  - user documentation update
+
+
+2001-08-14 07:41:09  Rev 2146   dr_maux
+
+	* grubby/user-manual.html grubby/admin-manual.html:
+	  - grubby docs update
+
+
+2001-08-04 13:41:20  Rev 2108   dr_maux
+
+	* configure.in Makefile.am:
+	  - update build system
+
+
+2001-08-04 13:41:00  Rev 2107   dr_maux
+
+	* grubby/user-manual.html grubby/.cvsignore grubby 
+	  grubby/admin-manual.html grubby/Makefile.am:
+	  - add a bit of grubby documentation
+	  - currently covers only the latest guru stuff
+
+
+2001-07-08 21:01:40  Rev 1943   jdorje
+
+	* games/ggzcards/adding_games.txt:
+	  Updated the adding-games document for the new server structure.
+	  I started to add adding-AI informaiton to it, but didn't do very 
+	  much of it.
+
+
+2001-06-26 08:09:26  Rev 1843   jdorje
+
+	* games/ggzcards/adding_games.txt:
+	  Wrote a simple howto for adding games.
+
+
+2001-06-26 06:22:55  Rev 1842   jdorje
+
+	* games/ggzcards games/ggzcards/adding_games.txt:
+	  Added new documentation file.
+
+
+2001-06-17 22:14:15  Rev 1740   rgade
+
+	* ChangeLog:
+	  - Updated ChangeLog
+
+
+2001-06-17 22:13:31  Rev 1739   rgade
+
+	* games/hastings/Makefile.am games/external-games/Makefile.am 
+	  coreclients/Makefile.am ggz-project/Makefile.am:
+	  - None of the files were included in the distribution :(
+	    Fixed...
+
+
+2001-06-08 17:07:53  Rev 1677   dr_maux
+
+	* README.GGZ:
+	  - actually add readme.ggz
+
+
+2001-06-08 16:27:20  Rev 1670   dr_maux
+
+	* ggz-project/cvs-modules.txt ggz-project/Makefile.am:
+	  - more docs
+
+
+2001-06-07 21:28:55  Rev 1664   dr_maux
+
+	* debian/docs:
+	  - add project-wide readme file
+
+
+2001-06-03 20:23:40  Rev 1647   dr_maux
+
+	* configure.in Makefile.am:
+	  - build updates
+
+
+2001-06-03 20:23:24  Rev 1646   dr_maux
+
+	* ggz-project/.cvsignore ggz-project ggz-project/Makefile.am:
+	  - install Internationalization file
+
+
+2001-06-03 20:22:36  Rev 1645   dr_maux
+
+	* coreclients/.cvsignore coreclients/coreclients.html coreclients 
+	  coreclients/ggzcore.png coreclients/gameflow.png 
+	  coreclients/Makefile.am:
+	  - add core client documentation skeleton
+
+
+2001-06-02 20:22:18  Rev 1633   dr_maux
+
+	* Makefile.am:
+	  - add ggz-project dir to subdirs
+
+
+2001-06-02 03:18:10  Rev 1618   dr_maux
+
+	* ggz-project/Internationalization:
+	  - new rules
+
+
+2001-06-02 00:09:30  Rev 1611   dr_maux
+
+	* ggz-project/Internationalization:
+	  - little update
+
+
+2001-06-01 23:31:38  Rev 1607   dr_maux
+
+	* ggz-project ggz-project/Internationalization:
+	  - added small localization/internationalization help
+
+
+2001-05-30 17:11:33  Rev 1587   dr_maux
+
+	* AUTHORS INSTALL configure.in ChangeLog COPYING Makefile.am autogen.
+	  sh NEWS .cvsignore README:
+	  - more files
+
+
+2001-05-30 17:10:45  Rev 1586   dr_maux
+
+	* spec/.cvsignore games/.cvsignore games/hastings/.cvsignore spec 
+	  games games/hastings spec/Makefile.am:
+	  - added some more files
+
+
+2001-05-30 17:08:59  Rev 1585   dr_maux
+
+	* debian/postinst games/Makefile.am debian/prerm 
+	  games/external-games debian/changelog debian/docs debian/rules 
+	  games/external-games/Makefile.am debian 
+	  games/external-games/ggz-kde-preview.html games/hastings/Makefile.
+	  am games/external-games/.cvsignore 
+	  games/external-games/ggz-support-howto.txt debian/copyright 
+	  debian/.cvsignore debian/README.Debian debian/control:
+	  - debianized documentation tree
+	  - added docs for external and kde games
+
+
+2001-05-30 13:18:40  Rev 1572   dr_maux
+
+	* README:
+	  - add readme for documentation
+
+
+2001-05-30 13:17:41  Rev 1571   dr_maux
+
+	* games/hastings/module_writing.html games games/hastings 
+	  games/hastings/description.txt games/hastings/hastings0.png 
+	  games/hastings/hastings1.png games/hastings/hastings2.png 
+	  games/hastings/hastings3.png:
+	  - add hastings documentation in doc module
+
+
+2000-11-20 17:53:49  Rev 872    bmh
+
+	* spec/bodytags1.cnxml spec/spec.xsl spec spec/spec.css spec/spec.
+	  xml spec/spec.cnxml:
+	  Initial revision
+
 
