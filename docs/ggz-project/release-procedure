@@ -20,6 +20,7 @@ Directly before release
    Affected files are README.GGZ and QuickStart.GGZ.
    Does 'make distcheck' work?
    (For gtk-games and kde-games you'll need "make DESTDIR=~/ggz distcheck".)
+   (There's also DISTCHECK_CONFIGURE_FLAGS to add a prefix or the like.)
 [] update RPM and Debian scripts if possible
 [] update NEWS and README
 [] bump version numbers
@@ -29,8 +30,9 @@ Directly before release
 [] decide which library interface versions must be bumped
    (libtool only - see info libtool for the concept)
 [] update version definitions in header files accordingly
-[] update toplevel ChangeLog files with CVS history
-   cvs2cl --accum --usermap usertable-for-changelog
+[] update toplevel ChangeLog files with CVS/SVN history
+   (cvs2cl --accum --usermap usertable-for-changelog)
+   svn2cl > ChangeLog (from playground/maintenance/projectserver/subversion/)
 [] inform distributors
    (currently: Debian, Gentoo, Slackware, SourceMage, Arch Linux, Lunar Linux,
    Mandrake, Sorcerer)
