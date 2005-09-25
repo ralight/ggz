@@ -1,4 +1,4 @@
-version = 0.0.12pre
+version = 0.0.12
 
 all:
 	echo "Please read setup/setup.txt."

@@ -1,7 +1,7 @@
 dnl Configuration for the Gtk+ games collection
 dnl ===========================================
 
-AC_INIT([GGZ GTK games], [0.0.12pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-games])
+AC_INIT([GGZ GTK games], [0.0.12], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

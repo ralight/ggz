@@ -1,7 +1,7 @@
 dnl Configuration for the Gtk+ core client
 dnl ======================================
 
-AC_INIT([GGZ Gtk+ client], [0.0.12pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
+AC_INIT([GGZ Gtk+ client], [0.0.12], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

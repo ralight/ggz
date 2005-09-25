@@ -12,7 +12,7 @@ $dbtype = "postgresql";
 $ggzhost = "localhost";
 $ggzurl = "ggz://localhost:5688";
 $ggzname = "Local Zone";
-$ggzversion = "0.0.12pre";
+$ggzversion = "0.0.12";
 
 $ggzgamedir = "/...../var/ggzd/gamedata/";
 
