@@ -1,0 +1,1312 @@
+2005-09-25 10:11:25  Rev 7551   josef
+
+	* Makefile web/common/htconf-dist:
+	  - more version string changes in the build system
+
+
+2005-09-25 09:54:30  Rev 7550   josef
+
+	* NEWS README.GGZ:
+	  - version updates in common files
+	  - news and release-specific changes
+
+
+2005-09-23 21:54:25  Rev 7547   josef
+
+	* COPYING:
+	  - add copyright files for gnome-client and sdl-games to SVN
+	  - update all copyright files with current version, including the 
+	  new FSF address in Boston
+
+
+2005-09-06 12:01:26  Rev 7505   josef
+
+	* web/common/default.rightbar web/common/default.rightbar.sv 
+	  web/map/index.php web/.htaccess:
+	  - display map without border (gawd this looked ugly in firefox - 
+	  and nobody noticed?)
+
+
+2005-08-20 22:51:14  Rev 7467   josef
+
+	* Makefile:
+	  - remove .svn dirs and not CVS any longer when calling make dist
+
+
+2005-08-20 22:16:09  Rev 7465   josef
+
+	* Makefile:
+	  - two more versions
+
+
+2005-08-14 16:22:37  Rev 7423   josef
+
+	* web/db/ggzicons/games/Freelords.png:
+	  - copy freelords icon to community
+
+
+2005-08-13 18:50:46  Rev 7397   josef
+
+	* web/db/matches/savegame_dots.php web/db/matches/image_dots.php 
+	  web/db/matches/replay.php:
+	  - super-sweet connect-the-dots replay support
+	  - do not display start time/end time if unsupported by the handler
+
+
+2005-08-13 08:24:37  Rev 7376   josef
+
+	* web/common/locale.php web/index.php.en web/articles/frontpage.inc.
+	  en web/index.php.de web/index.php.sv:
+	  - move frontpage content to extra includes, so other sites don't 
+	  have to carry our news
+
+
+2005-08-13 08:02:57  Rev 7374   josef
+
+	* web/common/locale.php web/common/access.php web/common/config.php:
+	  - special handling for situation where configuration cannot be found
+	  - and the same for failed database access
+
+
+2005-08-13 07:49:25  Rev 7373   josef
+
+	* web/.htaccess:
+	  - improved ordering of directives to make editing them easier
+
+
+2005-08-03 10:12:20  Rev 7352   josef
+
+	* web/db/matches/chess/50.knight_w.svg.png web/db/matches/chess/50.
+	  bishop_w.svg.png web/articles/packaging/pkg-utils.png 
+	  web/images/widelands/strand_00.png web/db/matches/chess/50.rook_b.
+	  svg.png web/articles/packaging/pkg-gtk-client.png 
+	  web/db/matches/chess/50.queen_b.svg.png web/db/matches/chess/50.
+	  king_w.svg.png web/map/mundomap.large.png 
+	  web/images/default/pagehead.png web/db/matches/chess/50.pawn_w.svg.
+	  png web/articles/packaging/pkg-python.png 
+	  web/db/ggzicons/misc/karma_medium.png web/db/matches/chess/50.
+	  rook_w.svg.png web/images/widelands/mundomap.png 
+	  web/articles/packaging/all.png web/db/matches/chess/50.queen_w.svg.
+	  png web/articles/packaging/pkg-grubby.png 
+	  web/articles/packaging/pkg-txt-client.png 
+	  web/articles/packaging/pkg-ggzd.png 
+	  web/articles/packaging/pkg-kde-games.png 
+	  setup/scripts/mundomap/map.png web/images/default/mundomap.png 
+	  web/images/widelands/pagelogo.png web/images/widelands/wiese4_00.
+	  png web/db/ggzicons/players/guest.png 
+	  web/images/widelands/berg2_00.png web/db/matches/chess/50.bishop_b.
+	  svg.png web/db/matches/chess/50.knight_b.svg.png 
+	  web/articles/packaging/pkg-sdl-games.png 
+	  web/images/default/pagelogo.png web/articles/packaging/pkg-libggz.
+	  png web/images/packagesarticle.png web/db/matches/chess/50.king_b.
+	  svg.png web/articles/packaging/pkg-gtk-games.png 
+	  web/articles/packaging/pkg-kde-client.png 
+	  web/articles/packaging/pkg-gnome-client.png 
+	  web/articles/packaging/pkg-ggz-client-libs.png 
+	  web/db/ggzicons/misc/karma_bad.png web/db/matches/chess/50.pawn_b.
+	  svg.png web/db/ggzicons/misc/karma_good.png 
+	  web/images/widelands/sumpf_00.png:
+	  - fixing all images
+
+
+2005-06-19 12:37:29  Rev 7307   josef
+
+	* web/index.php.en web/index.php.de web/index.php.sv:
+	  - news entry about i18n
+
+
+2005-06-19 12:25:05  Rev 7306   josef
+
+	* web/common/config.php web/db/index.php.en web/db/index.php.de 
+	  web/common/htconf-dist:
+	  - display information about the GGZ server
+
+
+2005-06-19 12:12:50  Rev 7305   josef
+
+	* setup/custom.txt:
+	  - some more documentation about how to hack the community
+
+
+2005-06-19 11:53:50  Rev 7304   josef
+
+	* web/common/negotiation.php:
+	  - autonegotiation script which works either directly or indirectly
+
+
+2005-06-19 11:52:52  Rev 7303   josef
+
+	* web/my/change.php web/db/tournaments/index.php 
+	  web/db/players/index.php web/common/top.inc 
+	  web/common/po/ggzcommunity.pot web/db/teams/index.rightbar 
+	  web/db/matches/index.php web/teams/teams.php web/db/index.php.de 
+	  web/my/settings.php web/common/po/de.po web/my/leftbar.inc 
+	  web/db/tournaments/index.rightbar web/db/players/index.rightbar 
+	  web/common/locale.php web/db/games/index.php 
+	  web/db/players/playerfinder.php web/common/po/extract-php.pl 
+	  web/common/auth.php web/common/access.php web/db/players/details.
+	  php web/db/live/index.php web/db/matches/index.rightbar 
+	  web/common/database.php web/db/index.php.en web/common/po/Makefile 
+	  web/karma/index.php web/db/games/index.rightbar 
+	  web/common/po/extract.pl web/db/matches/replay.php 
+	  web/db/teams/index.php:
+	  - always include database class so not every file has to do this
+	  - allow translations in PHP files also, using __(x)
+	  - user settings for the preferred language (using a cookie)
+	  - overriding Apache in case a preferred language is set
+
+
+2005-06-18 23:33:32  Rev 7302   josef
+
+	* setup/setup.txt setup/custom.txt:
+	  - documentation for the new PHP template/configuration system
+
+
+2005-06-18 23:24:28  Rev 7301   josef
+
+	* web/db/players/index.rightbar web/db/tournaments/index.rightbar 
+	  web/db/matches/index.rightbar web/db/teams/index.rightbar 
+	  web/db/games/index.rightbar:
+	  - fix static reference to Statistics object
+
+
+2005-06-18 23:14:22  Rev 7300   josef
+
+	* web/db/index.rightbar web/images/widelands/full.css:
+	  - smaller fixes
+
+
+2005-06-18 23:09:43  Rev 7299   josef
+
+	* web/common/locale.php web/db/index.rightbar web/common/statsclass.
+	  php web/common/po/Makefile web/common/po/ggzcommunity.pot 
+	  web/common/bottom.inc web/db/index.rightbar.de 
+	  web/images/widelands/full.css web/common/po/de.po:
+	  - support for rightbars/leftbars
+
+
+2005-06-18 22:46:14  Rev 7298   josef
+
+	* web/common/locale.php:
+	  - fix: handle tagged strings in original language well
+
+
+2005-06-18 22:31:03  Rev 7297   josef
+
+	* web/common/locale.php web/common/config.php web/common/pagehead.
+	  inc.de:
+	  - support for internationalised configuration
+	  This is easy. Instead of
+	  	$communityname = "Widelands Community";
+	  one writes:
+	  	$communityname[''] = "Widelands Community";
+	  	$communityname['de'] = "Widelands-Gesellschaft";
+
+
+2005-06-18 22:17:56  Rev 7296   josef
+
+	* web/common/acknowledgements.inc.de web/common/po/ggzcommunity.pot 
+	  web/common/acknowledgements.inc web/common/po/de.po:
+	  - even more translations
+
+
+2005-06-18 22:04:58  Rev 7295   josef
+
+	* web/common/default.rightbar web/common/locale.php 
+	  web/common/default.leftbar.de web/common/config.php 
+	  web/common/po/Makefile web/common/po/ggzcommunity.pot 
+	  web/common/default.rightbar.de web/common/default.leftbar 
+	  web/common/po/extract.pl web/common/po/de.po:
+	  - support for tagged translations
+	  - more German translations for leftbar and rightbar
+	  _(x) is untagged, becomes "x"
+	  _(x)(tag) is tagged, becomes "x)(tag"
+	  This can certainly be done prettier but it works and produces nice 
+	  scary
+	  regular expressions.
+
+
+2005-06-18 20:48:09  Rev 7294   josef
+
+	* web/common/locale.php web/common/navbar.inc.de 
+	  web/common/po/Makefile web/common/po/ggzcommunity.pot 
+	  web/common/po web/common/navbar.inc web/common/po/extract.pl 
+	  web/common/po/de.po:
+	  - internationalisation using a template system
+	  Now there are 2 ways to add translations:
+	  - use foo.php.xx or foo.inc.xx
+	    -> more individual design possible
+	    -> but maintenance is horrible because of diverging PHP code
+	  - translate xx.po
+
+
+2005-06-18 18:12:13  Rev 7292   josef
+
+	* web/images/default/mundomap.png web/images/widelands/strand_00.png 
+	  web/images/full.css web/images/widelands/pagelogo.png 
+	  web/images/mundomap.map web/images/widelands/wiese4_00.png 
+	  web/images/widelands/berg2_00.png web/images/mundomap.png 
+	  web/images/widelands/full.css web/images/default/pagelogo.png 
+	  web/images/default/pagehead.png web/images/widelands/mundomap.map 
+	  web/images/widelands web/images/default/full.css 
+	  web/images/widelands/mundomap.png web/images/default/mundomap.map 
+	  web/images/pagelogo.png web/images/pagehead.png web/images/default 
+	  web/images/widelands/sumpf_00.png:
+	  - move graphics into 'default' theme folder
+	  - new theme: widelands (with original game graphics)
+
+
+2005-06-18 18:09:43  Rev 7291   josef
+
+	* web/common/default.rightbar web/common/pagehead.inc web/common/top.
+	  inc web/common/config.php web/common/default.rightbar.de 
+	  web/common/default.rightbar.sv web/common/pagehead.inc.de 
+	  web/common/pagehead.inc.sv web/common/htconf-dist:
+	  - support for different themesets
+
+
+2005-06-18 17:55:18  Rev 7290   josef
+
+	* web/common/pagehead.inc web/common/navbar.inc.sv web/common/navbar.
+	  inc.de web/common/top.inc web/common/tls.inc web/common/bottom.inc 
+	  web/common/default.rightbar.de web/common/default.rightbar.sv 
+	  web/common/navbar.inc web/common/htconf-dist web/common/default.
+	  rightbar web/common/locale.php web/common/auth.php 
+	  web/common/acknowledgements.inc.sv web/common/default.leftbar.de 
+	  web/common/default.leftbar.sv web/common/acknowledgements.inc.de 
+	  web/common/database.php web/common/config.php web/common/pagehead.
+	  inc.de web/common/pagehead.inc.sv web/common/navbar.php 
+	  web/common/default.leftbar web/common/acknowledgements.inc:
+	  - introduction of configuration class (e.g. Config::put("url"))
+	  - better configurability of the texts
+	  - reformat all files with unix line endings and as utf-8 encoded
+
+
+2005-06-18 12:25:38  Rev 7288   josef
+
+	* setup/scripts/ggzblogs.pl setup/scripts/ggz2phpbb.pl:
+	  - abort immediately if the database connection did not succeed
+
+
+2005-06-13 22:09:29  Rev 7277   josef
+
+	* web/db/matches/savegame_freelords.php 
+	  web/db/matches/image_freelords.php:
+	  - improved savegame handling for freelords: handle cities and army 
+	  stacks
+
+
+2005-05-29 16:21:00  Rev 7262   josef
+
+	* web/db/matches/savegame_freelords.php 
+	  web/db/matches/image_freelords.php:
+	  - basic support for Freelords savegames (maps only, no units yet)
+
+
+2005-05-29 14:54:06  Rev 7261   josef
+
+	* web/db/matches/teg/TEG.savegames web/db/matches/teg:
+	  - placeholder for TEG theme data
+
+
+2005-05-21 18:47:04  Rev 7246   josef
+
+	* web/index.php.en web/articles/index.php web/index.php.de web/index.
+	  php.sv web/images/packagesarticle.png:
+	  - news entry about GGZ 0.0.11 and link to article
+
+
+2005-05-21 18:46:07  Rev 7245   josef
+
+	* web/articles/packaging/pkg-utils.png 
+	  web/articles/packaging/pkg-gtk-client.png 
+	  web/articles/packaging/pkg-sdl-games.png 
+	  web/articles/packaging/pkg-libggz.png 
+	  web/articles/packaging/pkg-gtk-games.png 
+	  web/articles/packaging/pkg-kde-client.png 
+	  web/articles/packaging/pkg-gnome-client.png 
+	  web/articles/packaging/pkg-python.png web/articles/packaging/all.
+	  png web/articles/packaging/pkg-ggz-client-libs.png 
+	  web/articles/packaging/pkg-grubby.png web/articles/packaging/index.
+	  php web/articles/packaging/pkg-ggzd.png 
+	  web/articles/packaging/pkg-txt-client.png 
+	  web/articles/packaging/pkg-kde-games.png web/articles/packaging:
+	  - a new article for GGZ community!
+
+
+2005-05-21 13:49:32  Rev 7235   josef
+
+	* NEWS Makefile README.GGZ:
+	  - preparation of community package
+
+
+2005-04-23 19:36:43  Rev 7143   josef
+
+	* web/common/bottom.inc:
+	  - fix detection of localized rightbars/leftbars
+
+
+2005-04-23 19:35:57  Rev 7142   josef
+
+	* web/db/index.rightbar.de web/db/index.php.de:
+	  - German translation for database rightbar
+
+
+2005-04-23 19:27:59  Rev 7141   josef
+
+	* web/common/locale.php:
+	  - swap strstr arguments (oops!)
+
+
+2005-04-23 19:08:52  Rev 7140   josef
+
+	* web/common/locale.php:
+	  - display default language name if no *.php.$lang files are 
+	  available
+
+
+2005-04-23 19:05:33  Rev 7139   josef
+
+	* web/teams/teams.php:
+	  - do not allow to join an empty team (that is, when the combobox 
+	  has no entries)
+
+
+2005-04-23 19:00:38  Rev 7138   josef
+
+	* web/db/players/rankings.php:
+	  - more links in the display
+
+
+2005-04-23 18:34:39  Rev 7137   josef
+
+	* web/common/stats.php web/common/player.php:
+	  - display guest players as such (and don't place links on them on 
+	  the games page)
+	  - special-case non-registered bot players (well that's a hack)
+	  - use gender information for "him", "her", "him/her" phrases
+
+
+2005-04-23 18:11:07  Rev 7136   josef
+
+	* web/db/ggzicons/players/guest.png:
+	  - icon to indicate guest players, stolen from kggz
+	  This would mean all *|AI players show up as guests also. They 
+	  should probably
+	  be special-cased until this is solved correctly (using the match 
+	  data which
+	  already has the player type).
+
+
+2005-04-23 17:53:43  Rev 7135   josef
+
+	* web/my/leftbar.inc:
+	  - link to change settings in the left navigation bar
+
+
+2005-04-23 17:26:35  Rev 7134   josef
+
+	* web/db/players/finderresults.inc:
+	  - fix karma search
+
+
+2005-04-23 16:58:32  Rev 7133   josef
+
+	* web/db/players/information.inc:
+	  - display overall karma value with pixmap
+
+
+2005-04-23 16:54:29  Rev 7132   josef
+
+	* web/db/ggzicons/misc/karma_medium.png 
+	  web/db/ggzicons/misc/karma_bad.png web/db/ggzicons/misc/karma_good.
+	  png:
+	  - karma pixmaps for good, bad and medium karma
+
+
+2005-04-23 16:20:03  Rev 7131   josef
+
+	* web/common/intro.php web/common/player.php:
+	  - improved display of matches intro page
+
+
+2005-04-23 16:06:26  Rev 7130   josef
+
+	* web/images/mundomap.map:
+	  - dummy coordinate file for the worldmap
+
+
+2005-04-23 16:03:34  Rev 7129   josef
+
+	* web/common/default.rightbar web/common/default.rightbar.de 
+	  web/common/default.rightbar.sv:
+	  - the worldmap stuff
+
+
+2005-04-23 16:02:15  Rev 7128   josef
+
+	* web/common/top.inc:
+	  - the /karma/ area is only available to logged in users
+
+
+2005-04-23 15:56:37  Rev 7127   josef
+
+	* setup/sql/rankings.sql:
+	  - password alteration needs another column in the database
+
+
+2005-04-23 15:39:18  Rev 7126   josef
+
+	* web/login/reactivate.inc:
+	  - reactivation page
+
+
+2005-04-23 15:38:46  Rev 7125   josef
+
+	* web/common/auth.php web/login/index.php:
+	  - support for password regeneration and activation (via email)
+
+
+2005-04-23 10:11:32  Rev 7122   josef
+
+	* web/images/full.css:
+	  - base dropdown menu positioning on current font size
+
+
+2005-04-16 21:30:19  Rev 7112   josef
+
+	* setup/scripts/mundomap/ggz-htmlmap 
+	  setup/scripts/mundomap/ggz-clusters:
+	  - synchronize with current version which supports the large map too
+
+
+2005-04-16 21:14:05  Rev 7111   josef
+
+	* web/map web/map/mundomap.large.png web/map/index.php:
+	  - large version of the map
+
+
+2005-04-16 19:41:33  Rev 7110   josef
+
+	* setup/scripts/mundomap/ggz-htmlmap:
+	  - script to generate HTML map for the worldmap
+
+
+2005-04-10 09:42:48  Rev 7103   josef
+
+	* web/db/index.rightbar web/db/teams/intro.inc 
+	  web/db/tournaments/index.php web/db/tournaments/information.inc 
+	  web/common/statsclass.php web/db/matches/index.php 
+	  web/db/matches/information.inc web/db/tournaments/intro.inc 
+	  web/common/intro.php web/common/match.php web/common/player.php 
+	  web/.htaccess web/common/stats.php web/db/matches/intro.inc 
+	  web/tournaments/show2.inc web/db/teams/information.inc 
+	  web/db/teams/index.php:
+	  - addition of index pages for those database pages which didn't 
+	  have one yet
+	  - improved display of member names, permissions etc.
+
+
+2005-04-10 08:52:47  Rev 7102   josef
+
+	* web/common/statsclass.php:
+	  - randomize display of teams, players and games, so everyone gets 
+	  his share
+
+
+2005-04-10 08:42:00  Rev 7101   josef
+
+	* web/common/locale.php:
+	  - do not include .rightbar/.leftbar files as language variants
+
+
+2005-04-09 15:59:08  Rev 7098   josef
+
+	* web/db/matches/helper_teg.php web/db/matches/image_teg.php 
+	  web/db/matches/savegame_teg.php web/db/matches/replay.php:
+	  - support for TEG savegames
+
+
+2005-04-08 12:34:49  Rev 7084   josef
+
+	* web/motd/index.html web/motd:
+	  - MOTD webpage
+
+
+2005-04-02 13:56:26  Rev 7074   josef
+
+	* web/index.php.en web/index.php.de web/index.php.sv web/.htaccess:
+	  - news entry about the server move
+
+
+2005-04-02 12:59:43  Rev 7073   josef
+
+	* setup/sql/rankings.sql setup/sql/tournaments.sql setup/sql/ggz.sql:
+	  - SQL schema file cleanup
+
+
+2005-03-27 22:36:20  Rev 7066   josef
+
+	* web/db/matches/chess/50.bishop_w.svg.png web/db/matches/chess/50.
+	  knight_w.svg.png web/db/matches/chess/50.rook_b.svg.png 
+	  web/db/matches/chess/50.king_w.svg.png web/db/matches/chess/50.
+	  queen_b.svg.png web/db/matches/image_chess.php 
+	  web/db/matches/chess/50.bishop_b.svg.png web/db/matches/chess/50.
+	  knight_b.svg.png web/db/matches/chess/50.king_b.svg.png 
+	  web/db/matches/savegame_chess.php web/db/matches/chess/50.pawn_w.
+	  svg.png web/db/matches/chess web/db/matches/image_tictactoe.php 
+	  web/db/matches/image.php web/db/matches/chess/50.rook_w.svg.png 
+	  web/db/matches/chess/50.queen_w.svg.png 
+	  web/db/matches/savegame_tictactoe.php web/db/matches/savegame.php 
+	  web/db/matches/chess/50.pawn_b.svg.png web/db/matches/replay.php:
+	  - make savegame/replay classes dependent on currently selected 
+	  gametype
+	  - implement PGN format parser for chess savegame handling
+
+
+2005-03-27 18:57:57  Rev 7065   josef
+
+	* setup/sql/ggz.sql:
+	  - new table to hold temporary savegames (aka logs for games in 
+	  progress)
+
+
+2005-03-19 09:31:28  Rev 7023   josef
+
+	* web/db/matches/replay.php:
+	  - link to savegame, if available
+
+
+2005-03-19 09:31:14  Rev 7022   josef
+
+	* web/common/stats.php web/common/htconf-dist web/common/match.php:
+	  - introduce $ggzgamedir variable
+	  - use savegame property of matches
+
+
+2005-03-19 09:22:47  Rev 7021   josef
+
+	* setup/sql/ggz.sql:
+	  - new column 'savegame' for each match
+
+
+2005-03-19 09:15:48  Rev 7020   josef
+
+	* web/common/stats.php:
+	  - use new match class, cut down stats code size
+
+
+2005-03-19 09:12:04  Rev 7019   josef
+
+	* web/db/matches/image.php web/db/matches/savegame.php 
+	  web/db/matches/replay.php:
+	  - complete match history for TTT
+	  - use new match class
+
+
+2005-03-19 09:11:39  Rev 7018   josef
+
+	* web/common/match.php:
+	  - new PHP class for match abstraction
+
+
+2005-03-19 00:23:29  Rev 7017   josef
+
+	* web/db/matches/image.php web/db/matches/savegame.php 
+	  web/db/matches/replay.php:
+	  - new feature: visualization of savegames, and their description
+	  - requires GD2, has some hardcoded TTT savegame, is not yet 
+	  integrated
+
+
+2005-02-26 15:21:36  Rev 6930   josef
+
+	* web/db/players/playerfinder.php web/my/change.php 
+	  web/db/players/finderresults.inc web/db/players/finderform.inc 
+	  web/db/players/intro.inc:
+	  - new: player finder
+	  - already handles status, country and gender search
+	  - todo: karma and rankings search
+
+
+2005-02-26 14:05:30  Rev 6929   josef
+
+	* setup/scripts/mundomap/ggz-clusters setup/scripts/mundomap/mundo.
+	  cluster.reference setup/scripts/mundomap 
+	  setup/scripts/mundomap/map.png setup/scripts/mundomap/mundomap:
+	  - adding mundomap, the script which displays player locations on a 
+	  world map
+	  - instead of creating the clusters from a logfile, they're read 
+	  from the db
+
+
+2005-02-26 13:13:57  Rev 6928   josef
+
+	* web/my/leftbar.inc web/my/change.php web/my/settings.php:
+	  - setting the coordinates is now possible
+	  - link to player's public page in left navigation bar
+
+
+2005-02-26 12:58:28  Rev 6927   josef
+
+	* setup/sql/rankings.sql:
+	  - add longitude and latitude to userinfo table
+	  Getting location information for specific IP addresses is very 
+	  error-prone.
+	  Thus the default world map will instead only show the locations of 
+	  registered
+	  players who add this information.
+	  This has the additional advantage of being able to produce large 
+	  world maps
+	  with the player names on them.
+
+
+2005-02-17 23:01:59  Rev 6925   josef
+
+	* web/active/karma.php web/common/navbar.inc.de web/common/navbar.
+	  inc.sv web/db/players/information.inc web/karma/index.php 
+	  web/common/navbar.inc web/karma:
+	  - first implementation of karma system
+
+
+2005-01-31 09:23:24  Rev 6912   josef
+
+	* web/tournaments/new3.inc:
+	  - drop the '$conn' parameter
+
+
+2005-01-24 01:46:19  Rev 6867   josef
+
+	* web/index.php.en web/index.php.de web/index.php.sv:
+	  - announce new release (for swedish, this is currently in english)
+
+
+2005-01-23 15:22:50  Rev 6847   josef
+
+	* web/common/stats.php:
+	  - exclude non-ranked positions from players' public page too
+
+
+2005-01-23 13:12:48  Rev 6843   josef
+
+	* NEWS:
+	  - updated common files
+
+
+2005-01-23 12:51:08  Rev 6842   josef
+
+	* README.GGZ:
+	  - new readme.ggz
+
+
+2005-01-23 12:37:29  Rev 6841   josef
+
+	* Makefile:
+	  - a makefile is always good (especially for 'make dist')
+
+
+2005-01-20 23:46:24  Rev 6777   josef
+
+	* web/articles/ggzboard/thumb.ggzboard.chess.jpg:
+	  - fix thumbnail file
+
+
+2005-01-13 12:29:11  Rev 6647   josef
+
+	* web/images/mundomap.png:
+	  - the generated worldmap (still empty)
+
+
+2005-01-13 12:28:42  Rev 6646   josef
+
+	* web/common/default.rightbar web/common/default.rightbar.de 
+	  web/common/default.rightbar.sv:
+	  - include world map
+
+
+2005-01-10 18:18:39  Rev 6631   josef
+
+	* web/common/latest.php:
+	  - use thread id, not post id in the link
+
+
+2005-01-09 16:32:55  Rev 6627   josef
+
+	* web/5years/thumb.ktictactux.png web/5years/thumb.netspades-console.
+	  png web/5years/chess.png web/5years/ggzlogo.png 
+	  web/5years/netspades-main.png web/5years/client-mockup.png 
+	  web/5years/index.php web/5years/launch.png web/5years/ggznow.png 
+	  web/5years web/5years/netspades-connect.png 
+	  web/5years/netspades-options.png web/5years/ktictactux.png 
+	  web/5years/thumb.chess.png web/5years/netspades-console.png 
+	  web/5years/thumb.ggzlogo.png web/5years/thumb.netspades-main.png 
+	  web/5years/thumb.client-mockup.png web/5years/thumb.launch.png 
+	  web/5years/thumb.netspades-connect.png web/5years/thumb.
+	  netspades-options.png:
+	  - jubilee page with a galore of history
+
+
+2005-01-09 13:53:21  Rev 6626   josef
+
+	* web/games/index.php:
+	  - adding widelands
+
+
+2005-01-09 13:26:57  Rev 6625   josef
+
+	* setup/scripts/ggz2phpbb.pl:
+	  - include registration date
+	  - set user level to 0 (previously all users were board admins ;)
+
+
+2005-01-09 12:33:28  Rev 6624   josef
+
+	* web/db/live/index.php:
+	  - fix page caption
+
+
+2005-01-09 12:32:44  Rev 6623   josef
+
+	* web/common/live.php:
+	  - fix display of hostname in live script
+
+
+2005-01-09 12:28:42  Rev 6622   josef
+
+	* web/common/auth.php web/common/default.leftbar.de 
+	  web/common/default.leftbar.sv web/login/index.php 
+	  web/common/default.leftbar:
+	  - errors and notices about failed or succeeded login actions:
+	    login, registration, password resend
+
+
+2005-01-09 00:05:35  Rev 6621   senko
+
+	* web/common/default.rightbar.sv:
+	  changed "Senaste ��ndringar" into "Nyheter"
+
+
+2005-01-08 23:35:24  Rev 6620   senko
+
+	* web/common/acknowledgements.inc.sv:
+	  add file: web/common/acknowledgements.inc.sv
+
+
+2005-01-08 22:38:38  Rev 6619   josef
+
+	* web/common/locale.php:
+	  - fix for file-as-directory URLs
+
+
+2005-01-08 22:37:47  Rev 6618   josef
+
+	* web/common/navbar.inc.sv web/common/default.leftbar.sv 
+	  web/common/default.rightbar.sv web/common/pagehead.inc.sv:
+	  - more swedish translations by kettil
+
+
+2005-01-08 21:43:22  Rev 6617   josef
+
+	* web/blogs/planet.rightbar:
+	  - this file is not used
+
+
+2005-01-08 21:41:46  Rev 6616   josef
+
+	* web/index.php.sv web/contact.php.sv:
+	  - translations done by kettil
+
+
+2005-01-08 21:33:46  Rev 6615   josef
+
+	* web/common/locale.php web/common/acknowledgements.inc.de 
+	  web/common/acknowledgements.inc:
+	  - display list of available page languages at the bottom
+
+
+2005-01-06 22:56:33  Rev 6608   josef
+
+	* web/common/stats.php web/my/index.php web/tournaments/show2.inc 
+	  web/common/player.php:
+	  - fix tournament display in database pages
+	  - fix item list in player's personal page
+
+
+2005-01-06 22:55:53  Rev 6607   josef
+
+	* README:
+	  - list database independency as additional feature
+
+
+2005-01-06 21:20:13  Rev 6606   josef
+
+	* web/tournaments/index.php web/teams/join.php web/teams/roles.php 
+	  web/tournaments/tournaments.php web/teams/applications.php 
+	  web/teams/index.php web/teams/new.php web/tournaments/show2.inc:
+	  - remove many occurences of include("database.php") since it is 
+	  always
+	    included for logged-in players
+
+
+2005-01-06 19:43:29  Rev 6605   josef
+
+	* web/common/intro.php:
+	  - use new icon code in player page
+
+
+2005-01-06 19:41:47  Rev 6604   josef
+
+	* web/common/stats.php web/db/players/information.inc 
+	  web/common/player.php:
+	  - display user icon on user's public page
+	  - common icon() method in player class for (registered, bot, 
+	  admin) users
+	    and the viewer in case he is logged in
+
+
+2005-01-06 19:22:50  Rev 6603   josef
+
+	* web/db/games/index.php web/db/games/information.inc 
+	  web/db/players/index.php web/db/games/intro.inc 
+	  web/db/players/intro.inc web/common/intro.php:
+	  - on the player and games database pages, if no game or player is 
+	  selected,
+	    display an introductory information
+	  - this includes the most popular game and the most active player
+	    (congrats Reversi and jdorje)
+
+
+2005-01-06 18:51:56  Rev 6602   josef
+
+	* web/common/latest.php:
+	  - jump to forums directly from latest-list
+
+
+2005-01-06 18:27:11  Rev 6601   josef
+
+	* setup/blogs/config.ini setup/blogs/index.html.tmpl 
+	  setup/blogs/rightbar.html.tmpl:
+	  - new planet templates
+
+
+2005-01-06 18:24:52  Rev 6600   josef
+
+	* web/blogs/planet.inc:
+	  - remove generated file from CVS
+
+
+2005-01-06 18:23:59  Rev 6599   josef
+
+	* web/blogs/index.rightbar web/blogs/planet.inc web/blogs/index.php:
+	  - use planet sidebar (displaying blog subscriptions)
+
+
+2005-01-06 17:39:39  Rev 6598   josef
+
+	* web/teams/join.php web/my/change.php web/db/players/information.
+	  inc web/db/tournaments/index.php web/common/statsclass.php 
+	  web/tournaments/new3.inc web/db/matches/index.php 
+	  web/db/players/rankings.php web/tournaments/show.inc 
+	  web/teams/teams.php web/common/latest.php web/common/player.php 
+	  web/my/settings.php web/common/stats.php web/db/games/index.php 
+	  web/common/auth.php web/tournaments/new.inc web/common/database.
+	  php web/teams/roles.php web/teams/applications.php 
+	  web/tournaments/show2.inc web/db/teams/index.php:
+	  - big database commit: use generic wrapper for postgresql/mysql 
+	  unification
+
+
+2005-01-06 15:51:52  Rev 6597   josef
+
+	* web/db/players/details.php web/db/players/details.inc 
+	  web/common/player.php:
+	  - first try: list player permissions and explain them
+
+
+2005-01-06 15:05:37  Rev 6596   josef
+
+	* web/common/stats.php web/db/games/index.php 
+	  web/common/acknowledgements.inc.de web/common/acknowledgements.inc:
+	  - when listing game types, include game name and icon
+	  - acknowledgement: bump copyright to 2005, and link to GGZ homepage
+
+
+2005-01-06 14:55:53  Rev 6595   josef
+
+	* setup/setup.txt:
+	  - some more words on how to setup GGZ Community
+
+
+2005-01-06 14:51:41  Rev 6594   josef
+
+	* setup/forum/overall_header.tpl:
+	  - the original file was missing the logout hyperlink
+
+
+2005-01-06 14:48:11  Rev 6593   josef
+
+	* setup/scripts/ggz2phpbb.pl:
+	  - export extended user attributes too (for now this is only the 
+	  country)
+
+
+2005-01-06 14:21:42  Rev 6592   josef
+
+	* setup/forum/agreement.tpl setup/forum:
+	  - patched registration page for phpBB2 (Chrome_ex theme) which 
+	  tells people
+	    to get a GGZ login first (since forum and GGZ logins are the same)
+
+
+2005-01-05 18:40:17  Rev 6590   josef
+
+	* web/db/ggzicons/games/Checkers.png web/db/ggzicons/games/Hnefatafl.
+	  png web/db/ggzicons/games/Widelands.png:
+	  - synchronize game icons with kggz
+
+
+2005-01-02 11:38:08  Rev 6582   josef
+
+	* web/common/stats.php web/images/full.css web/common/latest.php:
+	  - new CSS class: 'linklike', to make non-link text appear similar 
+	  to link text
+	  - do not link to guest or bot players in match tables
+	    (unless we decide to have named AIs one day)
+
+
+2005-01-02 11:14:53  Rev 6579   josef
+
+	* setup/scripts/calcrankings/main.c:
+	  - handle long options correctly
+	  - free SQL result sets after reading them out
+	  - new feature: ranking policies string (--type="bot,registered,
+	  guest")
+	    * defaults to all available entries
+	    * can be used to restrict appearance of ranking lists
+
+
+2005-01-02 01:30:04  Rev 6578   josef
+
+	* web/common/stats.php web/common/player.php:
+	  - exclude pending team members from being shown
+
+
+2005-01-02 01:20:34  Rev 6577   josef
+
+	* setup/sql/ggz.sql:
+	  - restrict the permissions mask to 32 bits
+	   * this is the case anyway with the libdb backends
+	   * and it is needed for logical SQL operations (bitmask views)
+
+
+2005-01-02 01:04:04  Rev 6576   josef
+
+	* setup/sql/ggz.sql:
+	  - include playertype into SQL schema for matchplayers table
+
+
+2005-01-02 00:40:09  Rev 6575   josef
+
+	* web/common/stats.php:
+	  - say 3rd instead of 3nd
+	  - use rounded values for ratings... hey this was fixed already for 
+	  the
+	    rankings pages but I used outdated files for the community
+	    migration
+
+
+2005-01-02 00:30:51  Rev 6574   josef
+
+	* web/common/stats.php web/common/database.php:
+	  - exclude players ranked 0 in stats database
+	    * does not apply to changed rankings, so those might be set to 
+	  zero by ggzd?
+	  - rename .htconf to htconf to prevent problems with old Apaches
+	    * the file is protected anyway since it resides in the 'common' 
+	  directory
+
+
+2005-01-01 19:12:43  Rev 6572   josef
+
+	* web/common/latest.php:
+	  - missing implementation of 'latest stuff...' functions
+
+
+2005-01-01 19:12:00  Rev 6571   josef
+
+	* web/common/default.rightbar web/forums/htconf-dist 
+	  web/common/default.rightbar.de:
+	  - replace fake data in rightbar as well with actual recent blog 
+	  entries,
+	    forum posts and played game matches/tournaments
+
+
+2005-01-01 18:29:32  Rev 6570   josef
+
+	* web/my/leftbar.inc web/common/player.php:
+	  - use player's "real" items (teams, tournaments, game data) in 
+	  leftbar when
+	    logged in
+
+
+2005-01-01 16:48:50  Rev 6569   josef
+
+	* setup/blogs/config.ini setup/sql/rankings.sql web/my/change.php 
+	  setup/scripts/ggzblogs.pl web/my/settings.php:
+	  - ability to specify blog feed URL (*.rss feeds) in the user 
+	  settings
+	  - use user-configured blog feeds for Planet configuration
+
+
+2004-12-31 16:47:47  Rev 6567   josef
+
+	* web/common/auth.php web/login/resend.inc web/login/index.php:
+	  - implement encrypted email to notify players of their passwords
+
+
+2004-12-31 15:38:38  Rev 6566   josef
+
+	* setup/sql/rankings.sql web/my/change.php web/my/settings.php:
+	  - support OpenPGP public key upload (so emails can be sent 
+	  encrypted)
+
+
+2004-12-18 22:11:22  Rev 6527   josef
+
+	* web/calendar/index.xml.php:
+	  - send a <game> tag alongside the tournament so compcal can 
+	  recognize it
+
+
+2004-12-18 21:10:55  Rev 6525   josef
+
+	* web/calendar/index.xml.php web/calendar:
+	  - new competition calendar
+	  - does not use dummy data anymore but actual tournament database
+	  - but does not yet include match results and upcoming/past games
+
+
+2004-12-18 15:23:35  Rev 6519   josef
+
+	* web/teams/join.php web/common/top.inc web/teams/roles.php 
+	  web/login/index.php web/teams/applications.php web/teams/new.php 
+	  web/teams/teams.php:
+	  - fix team management
+	  Team policies are not supported yet.
+	  Ideally, the following would happen in a default case:
+	  * Team leader: can approve new members, and change status (member, 
+	  vice, leader)
+	    and can modify the public team information
+	  * Vice leader: can approve too, and change status (member, vice)
+	  * Members: can't do anything :)
+
+
+2004-12-18 14:14:10  Rev 6518   josef
+
+	* web/common/stats.php:
+	  - team members: display and sort by entry date
+
+
+2004-12-18 14:10:05  Rev 6517   josef
+
+	* setup/sql/rankings.sql:
+	  - new team attribute: founder
+	  - new teammember attribute: entrydate
+
+
+2004-12-18 14:08:12  Rev 6516   josef
+
+	* web/common/stats.php:
+	  - display team founder and icon
+
+
+2004-12-18 12:48:32  Rev 6515   josef
+
+	* web/common/countrylist.php web/common/genderlist.php 
+	  setup/sql/tournaments.sql web/db/ggzicons/misc/female.png 
+	  web/my/change.php setup/setup.txt web/db/players/information.inc 
+	  web/db/ggzicons/misc web/db/ggzicons/misc/male.png 
+	  web/common/player.php:
+	  - country flags
+	  - gender graphics
+	  - some additional setup information
+
+
+2004-12-18 11:32:07  Rev 6514   josef
+
+	* web/db/players/index.php web/db/players/information.inc 
+	  web/common/top.inc web/my/index.php web/db/players/rankings.php 
+	  web/common/player.php:
+	  - overhaul of players' public information pages
+	  - common PHP class 'Player' to retrieve and display information
+
+
+2004-12-17 17:51:38  Rev 6513   josef
+
+	* web/my/change.php web/db/players/index.php web/my/index.php 
+	  web/db/players/rankings.php web/my/settings.php:
+	  - improved 'my community' and public player pages
+	  - old functionality is now more or less migrated
+
+
+2004-12-17 17:16:59  Rev 6512   josef
+
+	* web/common/database.php web/common/tls.inc web/common/top.inc 
+	  web/tournaments/new3.inc web/common/bottom.inc web/login/index.php 
+	  web/index.leftbar web/teams/teams.php web/tournaments/show2.inc:
+	  - improved tournaments and teams management (to be continued...)
+
+
+2004-12-17 01:00:59  Rev 6510   josef
+
+	* web/tournaments/new.inc web/tournaments/show.inc 
+	  web/tournaments/show2.inc:
+	  - link player and games pages back to their respective database 
+	  entries
+
+
+2004-12-17 00:51:32  Rev 6509   josef
+
+	* web/common/navbar.inc.de web/common/top.inc web/common/navbar.inc:
+	  - enforce authorization on /teams/ and /tournaments/
+
+
+2004-12-17 00:36:48  Rev 6508   josef
+
+	* web/active/tournaments.php web/active/hotstuff.php 
+	  web/active/teams.php web/active:
+	  - do not link to 'active contents' anymore; instead preswitch 
+	  dummy pages
+	  - the real pages will require authorization while the above do not
+
+
+2004-12-17 00:01:54  Rev 6507   josef
+
+	* web/common/tls.inc:
+	  - the missing TLS snippet
+
+
+2004-12-17 00:01:31  Rev 6506   josef
+
+	* web/common/pagehead.inc web/common/navbar.inc.de web/common/top.
+	  inc web/common/pagehead.inc.de web/common/navbar.php 
+	  web/common/navbar.inc:
+	  - more flexible navigation bar
+	  - if user does not use TLS, gently notify him/her of his/her mistake
+
+
+2004-12-16 23:40:52  Rev 6505   josef
+
+	* web/common/navbar.inc.de web/common/acknowledgements.inc.de 
+	  web/common/default.leftbar.de web/contact.php web/contact.php.en 
+	  web/db/index.php web/db/index.php.en web/common/default.rightbar.
+	  de web/contact.php.de web/db/index.php.de web/.htaccess:
+	  - two more translated pages
+	  - some style fixes
+	  - "fix" .htaccess (but everyone else will have to modify this again)
+
+
+2004-12-13 15:51:21  Rev 6458   josef
+
+	* COPYING:
+	  - licence file
+
+
+2004-12-13 15:46:32  Rev 6454   josef
+
+	* web/games web/db/ggzicons/players/lag0.png 
+	  web/db/ggzicons/games/LaPocha.png web/db/ggzicons/players/lag2.png 
+	  setup/sql/tournaments.sql web/common/navbar.inc.de 
+	  web/db/ggzicons/players/lag4.png web/db/ggzicons/players/banned.
+	  png setup/setup.txt setup/hotstuff/stuff.xml.php web/login/index.
+	  php web/db/ggzicons/rankings/cupsilvert.png setup/sql/ggz.sql 
+	  web/forums/index.php web/teams setup/scripts web/forums web/.
+	  htaccess web/common/live.php setup/sql/views.sql 
+	  setup/scripts/calcrankings/main.c web/db/ggzicons/rankings/golds.
+	  png web/db/live/index.php web/my/index.php 
+	  web/db/ggzicons/rankings/cupsilver.png web/teams/applications.php 
+	  web/db/ggzicons/games/GGZCards.png web/db/ggzicons/games/Dots.png 
+	  web/images/grubbyparty.png web/common/top.inc 
+	  web/db/ggzicons/players/admin.png web/blogs/index.php 
+	  web/db/ggzicons/games web/db/matches/index.php web/common/navbar.
+	  inc web/common/htconf-dist web/db/ggzicons/rankings/cupbronze.png 
+	  setup/sql web/hotstuff/htconf-dist web/index.php.de 
+	  web/tournaments/tournaments.php web/index.leftbar 
+	  setup/scripts/calcrankings/Makefile web/webgames/index.php 
+	  web/db/games/index.rightbar web/games/index.php web/db/teams/index.
+	  php web/db/ggzicons/rankings/silvers.png web/images/full.css 
+	  web/db/ggzicons/games/CChess.png web/hotstuff/index.php 
+	  web/db/ggzicons/rankings/cupgolda.png web/articles/ggzboard 
+	  web/db/ggzicons/games/GGZCards-Spades.png 
+	  web/db/ggzicons/rankings/cupgoldg.png web/tournaments/index.php 
+	  web/tournaments web/db/ggzicons/games/lounge.png 
+	  web/db/ggzicons/rankings Community.features 
+	  web/db/ggzicons/games/GGZCards-Bridge.png 
+	  setup/hotstuff/hotstufflocal.png web/db web/images/pagehead.png 
+	  web/db/ggzicons/games/Escape.png web/tournaments/show2.inc 
+	  web/db/ggzicons/games/GGZCards-Sueca.png 
+	  web/db/ggzicons/games/Geekgame.png web/index.php.en 
+	  web/tournaments/new2.inc web/hotstuff/nopreview.png 
+	  web/db/ggzicons/players/team-member.png web/blogs 
+	  web/db/ggzicons/games/TEG.png web/db/ggzicons/games/Hastings.png 
+	  web/hotstuff/rating.png web/common/default.rightbar 
+	  web/db/ggzicons/games/NetSpades.png setup/scripts/tracker.pl 
+	  web/db/matches/index.rightbar web/db/games 
+	  web/hotstuff/cr32-action-knewstuff.png 
+	  web/db/ggzicons/rankings/cupsilvera.png 
+	  web/db/ggzicons/rankings/rubin.png 
+	  web/db/ggzicons/games/notinstalled.png web/teams/new.php 
+	  web/common web/webgames web/common/default.leftbar 
+	  web/db/ggzicons/rankings/cupsilverg.png 
+	  web/db/ggzicons/rankings/gold.png web/db/teams 
+	  web/db/ggzicons/players/lag1.png web/db/ggzicons/players/lag3.png 
+	  web/db/ggzicons/rankings/goldd.png web/hotstuff 
+	  web/db/ggzicons/players/lag5.png 
+	  web/db/ggzicons/rankings/cupbronzet.png web/articles/index.php 
+	  web/db/tournaments web/db/players web/teams/index.php 
+	  web/blogs/planet.png web/blogs/index.rightbar setup/blogs/index.
+	  html.tmpl web/db/ggzicons/games/Kamikaze.png web/my 
+	  web/db/ggzicons/games/GGZCards-FortyTwo.png 
+	  web/db/ggzicons/games/GGZCards-Whist.png 
+	  web/common/acknowledgements.inc web/tournaments/menu.inc 
+	  web/articles/ggzboard/thumb.ggzboard.intro.jpg setup/sql/rankings.
+	  sql web/db/index.rightbar web/db/ggzicons/games/Copenhagen.png web 
+	  web/common/statsclass.php web/login/register.inc 
+	  web/articles/ggzboard/thumb.ggzboard.chess.jpg 
+	  web/db/ggzicons/rankings/coingold.png web/db/teams/index.rightbar 
+	  web/db/ggzicons/games/Reversi.png web/db/ggzicons/games/TicTacToe.
+	  png web/db/matches web/my/leftbar.inc web/common/stats.php 
+	  web/db/ggzicons/rankings/silverd.png web/common/auth.php README 
+	  web/tournaments/new.inc web/db/ggzicons/players/buddy.png 
+	  web/common/default.leftbar.de web/common/database.php setup 
+	  web/images/pagelogo.png web/db/ggzicons/players/you.png 
+	  setup/blogs web/blogs/planet.rightbar web/db/ggzicons/games/Combat.
+	  png web/db/ggzicons/games/Chess.png 
+	  web/db/ggzicons/players/team-founder.png 
+	  web/db/ggzicons/games/GGZCards-LaPocha.png web/login/resend.inc 
+	  setup/hotstuff/providers.xml web/blogs/planet.inc 
+	  web/db/players/index.php web/db/tournaments/index.php 
+	  web/articles/ggzboard/index.php web/db/ggzicons/rankings/cupgold.
+	  png web/common/bottom.inc web/common/default.rightbar.de 
+	  web/db/ggzicons/players/player.png web/articles 
+	  web/tournaments/show.inc web/db/ggzicons web/login 
+	  setup/scripts/calcrankings web/db/ggzicons/rankings/silver.png 
+	  web/db/ggzicons/games/GGZCards-Hearts.png 
+	  web/common/acknowledgements.inc.de web/contact.php 
+	  web/db/ggzicons/games/GGZCards-Suaro.png web/db/index.php 
+	  web/db/live web/db/ggzicons/rankings/cupgoldt.png 
+	  web/db/ggzicons/games/Krosswater.png 
+	  web/db/ggzicons/games/Keepalive.png web/db/ggzicons/players/bot.
+	  png web/teams/join.php web/common/.htaccess web/tournaments/new3.
+	  inc web/images web/db/ggzicons/games/Muehle.png web/teams/teams.
+	  php setup/scripts/ggz2phpbb.pl web/hotstuff/hotstuffweb.inc 
+	  setup/blogs/config.ini web/db/players/index.rightbar 
+	  web/db/tournaments/index.rightbar web/articles/ggzboard/ggzboard.
+	  intro.jpg web/common/locale.php web/db/games/index.php 
+	  web/db/ggzicons/rankings/cupbronzea.png 
+	  web/db/ggzicons/games/CCheckers.png web/teams/roles.php 
+	  web/db/ggzicons/rankings/cupbronzeg.png setup/hotstuff 
+	  web/db/ggzicons/players web/articles/ggzboard/ggzboard.chess.jpg:
+	  Initial revision
+
+
