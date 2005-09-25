@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 	KCmdLineArgs *args;
 	KAboutData data("fyrdman",
 		I18N_NOOP("Fyrdman"),
-		"0.1",
+		"0.0.8",
 		I18N_NOOP("KDE client for the Hastings1066 game."),
 		KAboutData::License_GPL,
 		I18N_NOOP("Copyright (C) 2002, 2003 Josef Spillner"),

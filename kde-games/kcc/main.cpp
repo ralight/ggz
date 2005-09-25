@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 
 	aboutData = new KAboutData("kcc",
 		I18N_NOOP("KCC"),
-		"0.2",
+		"0.3",
 		I18N_NOOP("This is a Chinese Checkers game for KDE."),
 		KAboutData::License_GPL,
 		"Copyright (C) 2003 - 2005 Josef Spillner",
