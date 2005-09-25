@@ -6,7 +6,7 @@ include_HEADERS = ggz.h ggz_common.h
 
 libggz_la_LIBADD = $(LDADD) $(top_builddir)/src/security/libggzsecurity.la
 
-libggz_la_LDFLAGS = -version-info 3:1:1
+libggz_la_LDFLAGS = -version-info 3:2:1
 
 libggz_la_SOURCES = \
 	conf.c \
