@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Josef Spillner <josef@ggzgamingzone.org>
 Standards-Version: 3.6.2.1
-Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>= 0.0.11), libexpat1-dev (>> 1.95.6)
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>= 0.0.12), libexpat1-dev (>> 1.95.6)
 
 Package: libggzcore7
 Architecture: any
@@ -24,7 +24,7 @@ Description: GGZ Gaming Zone: core client frontend library
 Package: libggzcore-dev
 Architecture: any
 Section: libdevel
-Depends: libggzcore7 (= ${Source-Version}), libggz-dev (>> 0.0.11), libexpat1-dev (>> 1.95.6)
+Depends: libggzcore7 (= ${Source-Version}), libggz-dev (>> 0.0.12), libexpat1-dev (>> 1.95.6)
 Description: GGZ Gaming Zone: core client frontend library - development files
  The ggzcore library is an event/state-based library which allows
  programs to connect to a GGZ server, handle game rooms, chat
@@ -59,7 +59,7 @@ Description: GGZ Gaming Zone: various command-line helper programs
  More information can be found at the GGZ web site
  http://www.ggzgamingzone.org/
 
-Package: libggzmod2
+Package: libggzmod4
 Architecture: any
 Depends: ${shlibs:Depends}
 Description: GGZ Gaming Zone: game frontend library
@@ -78,7 +78,7 @@ Description: GGZ Gaming Zone: game frontend library
 Package: libggzmod-dev
 Architecture: any
 Section: libdevel
-Depends: libggzmod2 (= ${Source-Version}), libggzcore-dev (= ${Source-Version}), libggz-dev (>> 0.0.11)
+Depends: libggzmod4 (= ${Source-Version}), libggzcore-dev (= ${Source-Version}), libggz-dev (>> 0.0.12)
 Description: GGZ Gaming Zone: game frontend library - development files
  The ggzmod library allows games to communicate with a GGZ core client
  and thereby establishing a connection to the GGZ server and its

@@ -6,7 +6,7 @@ Standards-Version: 3.6.2.1
 
 Package: ggz
 Architecture: all
-Depends: ggz-kde-client | ggz-gtk-client | ggz-core-client, ggz-kde-games, ggz-gtk-games, ggz-sdl-games, ggz-python
+Depends: ggz-kde-client (= 0.0.12) | ggz-gtk-client (= 0.0.12) | ggz-core-client, ggz-kde-games (= 0.0.12), ggz-gtk-games (= 0.0.12), ggz-sdl-games (= 0.0.12), ggz-python (= 0.0.12)
 Recommends: ggz-docs
 Description: GGZ Gaming Zone: the complete GGZ environment for gamers
  People addicted to games might wish to install this package which

@@ -3,7 +3,7 @@ Section: games
 Priority: optional
 Maintainer: Josef Spillner <josef@ggzgamingzone.org>
 Standards-Version: 3.6.2.1
-Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>= 0.0.11), libexpat1-dev (>> 1.95.6), libdb4.3-dev | libdb4.2-dev
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>= 0.0.12), libexpat1-dev (>> 1.95.6), libdb4.3-dev | libdb4.2-dev
 
 Package: ggzd
 Architecture: any
@@ -75,7 +75,7 @@ Description: GGZ Gaming Zone: game backend library
 Package: libggzdmod-dev
 Architecture: any
 Section: devel
-Depends: libggzdmod4 (= ${Source-Version}), libggz-dev (>> 0.0.11)
+Depends: libggzdmod4 (= ${Source-Version}), libggz-dev (>> 0.0.12)
 Description: GGZ Gaming Zone: game backend library - development files
  The ggzdmod library implements the communication between the main
  GGZ server (ggzd) and the game servers. Games use it to receive
@@ -112,7 +112,7 @@ Description: GGZ Gaming Zone: game backend class library
 Package: libggzdmod++-dev
 Architecture: any
 Section: devel
-Depends: libggzdmod++0 (= ${Source-Version}), libggzdmod-dev (= ${Source-Version}), libggz-dev (>> 0.0.11)
+Depends: libggzdmod++0 (= ${Source-Version}), libggzdmod-dev (= ${Source-Version}), libggz-dev (>> 0.0.12)
 Description: GGZ Gaming Zone: game backend class library - development files
  The ggzdmod library implements the communication between the main
  GGZ server (ggzd) and the game servers. Games use it to receive

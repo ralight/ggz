@@ -1,3 +1,9 @@
+ggz-server (0.0.12-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sun, 25 Sep 2005 16:11:21 +0200
+
 ggz-server (0.0.11+svn20050821-1) unstable; urgency=low
 
   * New snapshot.

@@ -1,3 +1,9 @@
+ggz-client-libs (0.0.12-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Josef Spillner <josef@ggzgamingzone.org>  Sun, 25 Sep 2005 15:59:45 +0200
+
 ggz-client-libs (0.0.11+svn20050821-1) unstable; urgency=low
 
   * New snapshot.
