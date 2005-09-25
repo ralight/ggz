@@ -54,6 +54,8 @@ void DlgAbout::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
 
+	Q_UNUSED(e);
+
 	p.begin(this);
 	p.drawTiledPixmap(0, 0, 350, 300, QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	p.drawPixmap(90, 30, QPixmap(GGZDATADIR "/krosswater/gfx/title.png"));

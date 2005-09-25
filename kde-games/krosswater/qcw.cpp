@@ -70,6 +70,8 @@ void QCw::paintEvent(QPaintEvent *e)
 	char *playerpixmap;
 	int dark;
 
+	Q_UNUSED(e);
+
 	if(!m_update) return;
 	if(!m_allupdate) return;
 	if((m_width < 0) || (m_height < 0)) return;
@@ -228,6 +230,8 @@ void QCw::mousePressEvent(QMouseEvent *e)
 
 void QCw::timerEvent(QTimerEvent *e)
 {
+	Q_UNUSED(e);
+
 	m_update = 1;
 	repaint();
 }

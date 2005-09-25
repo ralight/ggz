@@ -86,6 +86,8 @@ void DlgPerson::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
 
+	Q_UNUSED(e);
+
 	p.begin(this);
 	p.setFont(QFont("arial", 10));
 	p.setPen(QPen(QColor(255, 255, 0)));

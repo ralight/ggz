@@ -119,6 +119,8 @@ Intro::~Intro()
 
 void Intro::timerEvent(QTimerEvent *e)
 {
+	Q_UNUSED(e);
+
 	if(screen == screenmain) drawall();
 	if(screen == screenlogin) drawalllogin();
 	if(screen == screenlogin2) drawalllogin2();
@@ -633,6 +635,8 @@ void Intro::drawall()
 
 void Intro::paintEvent(QPaintEvent *e)
 {
+	Q_UNUSED(e);
+
 	bitBlt(this, 0, 0, &imbuf, 0, 0, width(), height());
 }
 

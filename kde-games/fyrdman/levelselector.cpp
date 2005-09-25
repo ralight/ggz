@@ -58,6 +58,8 @@ void LevelSelector::slotActivated(int id)
 	int width, height, players;
 	QString text;
 
+	Q_UNUSED(id);
+
 	level = combo->currentText();
 	author = "unknown";
 	version = "unknown";

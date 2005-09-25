@@ -56,6 +56,8 @@ void AnimDialog::setText(QString text)
 
 void AnimDialog::timerEvent(QTimerEvent *e)
 {
+	Q_UNUSED(e);
+
 	if(m_a)
 	{
 		m_counter = (m_counter + 1) % m_a->count();

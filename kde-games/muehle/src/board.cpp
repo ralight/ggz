@@ -94,6 +94,8 @@ void Board::init()
 // Check network
 void Board::timerEvent(QTimerEvent *e)
 {
+	Q_UNUSED(e);
+
 	net->poll();
 }
 
@@ -106,6 +108,8 @@ void Board::paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner)
 	QRgb rgba;
 	/*QRgb rgba2;
 	int r2, g2, b2;*/
+
+	Q_UNUSED(tmp);
 
 	if((owner == Stone::white) || (owner == Stone::whiteactive) || (owner == Stone::whitemuehle))
 		pix = *white;
@@ -158,6 +162,8 @@ void Board::paintEvent(QPaintEvent *e)
 	QPixmap tmp;
 	int smaller;
 
+	Q_UNUSED(e);
+
 	if(width() != height())
 	{
 		smaller = width();
@@ -191,6 +197,8 @@ void Board::paintEvent(QPaintEvent *e)
 // Resize the board properly
 void Board::resizeEvent(QResizeEvent *e)
 {
+	Q_UNUSED(e);
+
 	if(width() == height())	
 	{
 		m_repaint = 1;
