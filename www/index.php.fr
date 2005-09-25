@@ -15,8 +15,9 @@ Service de jeu en ligne libre pour tout le monde.
 <td valign="top" colspan="2">
 
 <i>Qu'est-ce que GGZ?<!--What is GGZ?--></i><br>
-GGZ (qui est un acronyme récursif pour GGZ Gaming Zone) a pour but de développer des jeux
-et des applications en raports avec ceux jeux pour jouer en ligne sur le principe de client/serveur.
+GGZ (qui est un acronyme récursif pour GGZ Gaming Zone) a pour but de développer
+des bibliothèques, des jeux et des applications en raports avec ceux jeux pour jouer
+en ligne sur le principe de client/serveur.
 Classements de joueurs, spéctateurs des jeux, joueurs artificiels et un robot parleur <!-- Ouch --> font parti de ce projet.
 
 </td></tr>
@@ -27,14 +28,14 @@ Classements de joueurs, spéctateurs des jeux, joueurs artificiels et un robot p
 <br><br>
 
 <i>Télécharger la version courante</i><br>
-La version 0.0.11 de GGZ Gaming Zone est sortie le 21 Mai 2005.<br/>
-<a href="/releases/0.0.11/release.php">Anonce de la sorite</a><br>
-<a href="/releases/0.0.11/download.php">Aller à la page de téléchargements</a><br>
-<a href="/releases/0.0.11/installation.php">Notes d'installation</a>
+La version 0.0.12 de GGZ Gaming Zone est sortie le 25 Septembre 2005.<br/>
+<a href="/releases/0.0.12/release.php">Anonce de la sorite</a><br>
+<a href="/releases/0.0.12/download.php">Aller à la page de téléchargements</a><br>
+<a href="/releases/0.0.12/installation.php">Notes d'installation</a>
 
 </td><td valign="top">
 
-<a href="/releases/0.0.11/"><img src="/pics/splash/splash-0.0.11.png" border="0"></a>
+<a href="/releases/0.0.12/"><img src="/pics/splash/splash-0.0.12.png" border="0"></a>
 
 </td>
 </tr>

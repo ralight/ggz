@@ -14,7 +14,7 @@ Free online gaming for everyone.
 <td valign="top" colspan="2">
 
 <i>What is GGZ?</i><br>
-GGZ (which is a recursive acronym for GGZ Gaming Zone) develops games and game-related
+GGZ (which is a recursive acronym for GGZ Gaming Zone) develops libraries, games and game-related
 applications for client-server online gaming. Player rankings, game spectators, AI players
 and a chat bot are part of this effort.
 
@@ -26,14 +26,14 @@ and a chat bot are part of this effort.
 <br><br>
 
 <i>Download the current version</i><br>
-The GGZ Gaming Zone 0.0.11 has been released on May 21 2005.<br>
-<a href="/releases/0.0.11/release.php">Release announcement</a><br>
-<a href="/releases/0.0.11/download.php">Go to the download page</a><br>
-<a href="/releases/0.0.11/installation.php">Installation notes</a>
+The GGZ Gaming Zone 0.0.12 has been released on Sep 25 2005.<br>
+<a href="/releases/0.0.12/release.php">Release announcement</a><br>
+<a href="/releases/0.0.12/download.php">Go to the download page</a><br>
+<a href="/releases/0.0.12/installation.php">Installation notes</a>
 
 </td><td valign="top">
 
-<a href="/releases/0.0.11/"><img src="/pics/splash/splash-0.0.11.png" border="0"></a>
+<a href="/releases/0.0.12/"><img src="/pics/splash/splash-0.0.12.png" border="0"></a>
 
 </td>
 </tr>
