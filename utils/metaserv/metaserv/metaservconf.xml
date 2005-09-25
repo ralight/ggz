@@ -2,6 +2,7 @@
 <metaserver>
 	<entrylist class="ggz">
 		<connection version="current" preference="100" location="nottingham/uk" speed="2048">ggz://uk.ggzgamingzone.org:5688</connection>
+		<connection version="0.0.12" preference="100" location="lorraine/france" speed="1000">ggz://live.ggzgamingzone.org:5688</connection>
 		<connection version="0.0.11" preference="100" location="lorraine/france" speed="1000">ggz://live.ggzgamingzone.org:5688</connection>
 		<meta version="0.1" preference="100">ggzmeta://live.ggzgamingzone.org:15689</meta>
 	</entrylist>
