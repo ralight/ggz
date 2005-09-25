@@ -1,4 +1,4 @@
-Announcing the release of The GGZ Gaming Zone v0.0.11!
+Announcing the release of The GGZ Gaming Zone v0.0.12!
 
 The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
 Similar to other online gaming sites, players login and sit at tables
@@ -9,21 +9,22 @@ statistics so you can see how you match up against other players,
 and even review past games.
 A web interface allows for tournament, team and rankings tracking,
 and includes a karma and matchmaking system.
+GGZ support can be added to existing multiplayer games easily.
 
 Features in this release:
 
-- Reworked kde-client applications and improved desktop integration
-- Lots of Spanish translations
-- Graphical configurator for the chatbot grubby
-- Many ggzcore enhancements like initial password or auto-reconnection
-- Games: new game Ludo and single player mode for Koenig
-- Support for IPv6, server-side savegames, abandoned seats in the server
-- Documentation overhaul with a dozen new documents
+- Common seat assignments dialog for the KDE games
+- SQlite database support for the server
+- Templates and internationalization for the GGZ Community web interface
+- Build system and compiler compatibility updates
+- More savegame handlers, e.g. for Connect the Dots and Freelords
+- Consolidated C++ interface for the game server library (ggzdmod++)
+- Overhauled package files for Debian
 - and many more!
 
-See README.GGZ for an overview, or QuickStart.GGZ to get started with the
-GGZ client.
+See README.GGZ for an overview, or QuickStart.GGZ to get started with one
+of the GGZ core clients.
 
 Additional information:
-http://www.ggzgamingzone.org/releases/0.0.11/
+http://www.ggzgamingzone.org/releases/0.0.12/
 

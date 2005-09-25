@@ -6,7 +6,7 @@ The GGZ Gaming Zone GTK+ Client provides a GTK+ 1.2 or GTK+ 2.x user
 interface for logging into a GGZ server, chatting with other players,
 and locating and launching game tables.
 
-This version of the GTK+ Client (0.0.11) requires version 0.0.11 of the
+This version of the GTK+ Client (0.0.12) requires version 0.0.12 of the
 ggz-client-libs.
 
 The GTK+ Client module is only one part of the GGZ Gaming Zone client

@@ -1,4 +1,4 @@
-The GGZ Gaming Zone - Release 0.0.11
+The GGZ Gaming Zone - Release 0.0.12
 ====================================
 
 Welcome to the GGZ Gaming Zone, a multiuser networked gaming
@@ -35,7 +35,7 @@ Downloading
 ===========
 You can always download the latest released version of GGZ from our
 homepage at http://ggzgamingzone.org/, or for the absolute bleeding
-edge you can check out the sources via anonymous CVS (instructions are
+edge you can check out the sources via anonymous SVN (instructions are
 at the aforementioned homepage).  GGZ is comprised of several
 components, each of which is packaged separately for maximum
 flexibility.  The components are:
@@ -52,8 +52,9 @@ flexibility.  The components are:
   This is the set of libraries common to all clients.  The source is
   available as ggz-client-libs-X.X.X.tar.gz where X.X.X is the
   version number.  This includes ggzcore and ggzmod.
+  The C++ wrapper for ggzmod, named ggzmod++, is also included now.
 
-- GGZ client
+- GGZ clients
 
   This is the core client program that lets you log into a GGZ server,
   chat with friends, move between rooms and launch tables (the actual
@@ -75,7 +76,7 @@ flexibility.  The components are:
   games are distributed as ggz-YYY-games-X.X.X.tar.gz where YYY is kde
   or gtk or sdl, and X.X.X is the version number.
   Some SDL games are available in the ggz-python-X.X.X.tar.gz package.
-  One text game is included in the text client.
+  One text game is included in the text client package.
 
 - Python module
 
@@ -127,7 +128,7 @@ You must have access to a running server for the client to be of any
 use to you.  The server does not have to be running on your machine,
 however, if you have no (or slow!) network access, you may want to run
 both the client and the server locally.  If you choose to install the
-GGZ server, you may launch it simply by running the command 'ggzd'
+GGZ server, you may launch it simply by running the command 'ggzd -F'.
 This will start the server listening on port of 5688 (ggz).
 You can find a list of GGZ servers on our homepage, or query to GGZ
 metaserver to get this information.
@@ -143,7 +144,7 @@ installed some games as well).
 Bugs
 ====
 Bugs in our code?  Never! :)  But if you do happen to find one, you
-can report it at http://bugs.ggzgamingzone.org/ or feel
+can report it at https://bugs.ggzgamingzone.org/ or feel
 free to contact us at the email address below.
 
 
