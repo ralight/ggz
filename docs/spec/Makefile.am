@@ -16,7 +16,7 @@ design-html: $(SGML_FILES)
 
 design.pdf: $(SGML_FILES)
 	$(FIG2DEV) -Ljpeg server_arch.fig > server_arch.jpg
-	$(SGML2PDF) $(srcdir)/design.sgml
+	-$(SGML2PDF) $(srcdir)/design.sgml
 
 design.txt: design-txt.dsl $(SGML_FILES)
 	$(JADE) -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx design.sgml > tmp.html
