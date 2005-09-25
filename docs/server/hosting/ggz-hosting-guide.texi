@@ -26,7 +26,7 @@ Copyright (C) 2001 - 2005 Josef Spillner
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 2001 - 2005 Josef Spillner.
-Published under the GNU Free Documentation License.
+Published under the GNU General Public License.
 @end titlepage
 
 @c Index (Top)
