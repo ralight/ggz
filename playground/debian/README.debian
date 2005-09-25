@@ -25,6 +25,10 @@ For debian build-deps, (>> x.y.z) should be used.
 The meta-ggz package is an exception, it also uses an
 equal (=) relationship.
 
+TODO
+----
+- manpages for ggz-python
+
 Open questions:
 ---------------
 * should ggzmod-dev build-depend on ggzcore-bin?
