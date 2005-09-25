@@ -75,7 +75,7 @@ if test "$enable_perl" = yes; then
 		#perl_includes="-I $perl_includes"
 		#perl_libraries="-L $perl_libraries -lperl"
 		perl_includes=`perl -MExtUtils::Embed -e ccopts`
-		perl_libraries=`perl -MExtUtils::Embed -e ldopts | sed 's/\([^ ]*DynaLoader.a\)//'`
+		perl_libraries=`perl -MExtUtils::Embed -e ldopts | sed 's/\(@<:@^ @:>@*DynaLoader.a\)//'`
 		AC_MSG_RESULT(ok.)
 		AC_SUBST(perl_includes)
 		AC_SUBST(perl_libraries)
