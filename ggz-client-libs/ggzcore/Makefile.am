@@ -11,7 +11,7 @@ include_HEADERS = ggzcore.h
 libggzcore_la_LIBADD = $(top_builddir)/ggzmod-ggz/libggzmod-ggz.la \
 		       $(LIB_GGZ) $(LIBEXPAT)
 
-libggzcore_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 7:0:0
+libggzcore_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 8:0:1
 
 libggzcore_la_SOURCES =	conf.c \
 			conf.h \
