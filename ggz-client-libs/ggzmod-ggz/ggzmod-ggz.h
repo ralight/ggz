@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 7519 2005-09-16 19:44:09Z josef $
+ * $Id: ggzmod-ggz.h 7566 2005-09-25 13:33:44Z josef $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -35,6 +35,7 @@
 /* Common GGZ definitions */
 
 #include <ggz_common.h>
+#include <ggz.h>
 
 /* Structures duplicated from ggzmod.h */
 
