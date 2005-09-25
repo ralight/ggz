@@ -3,7 +3,7 @@
 # Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
-version=0.0.11
+version=0.0.12
 tmp=$HOME/.ggz/getggz-$version
 log=$tmp/getggz.log
 prefix=$HOME/ggz
@@ -21,16 +21,16 @@ fi
 echo "*** Note: Log file will be written to $log"
 
 echo "Please select a download mirror:"
-echo "Germany, via KGT new media (1)"
+#echo "Germany, via KGT new media (1)"
 echo "USA, via ibiblio           (2)"
 echo "Denmark, via dotsrc        (3)"
 echo "Belgium, via Belnet        (4)"
 read -p "? " mirror
 
 case $mirror in
-	1)
-	mirror="ftp://ftp2.kgt.org/pub/ggzgamingzone.org"
-	;;
+#	1)
+#	mirror="ftp://ftp2.kgt.org/pub/ggzgamingzone.org"
+#	;;
 	2)
 	mirror="ftp://ftp.ibiblio.org/pub/mirrors/ggzgamingzone"
 	;;
