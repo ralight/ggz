@@ -17,7 +17,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#define GRUBBY_VERSION "0.8"
+#define GRUBBY_VERSION "0.9"
 
 /* Execute administrative commands */
 /* FIXME: Log admin commands */
