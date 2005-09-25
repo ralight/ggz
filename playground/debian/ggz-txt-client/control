@@ -3,12 +3,12 @@ Section: games
 Priority: optional
 Maintainer: Josef Spillner <josef@ggzgamingzone.org>
 Standards-Version: 3.6.2.1
-Build-Depends: autotools-dev, debhelper (>> 4.8), libggzcore-dev (>> 0.0.11), libggzmod-dev (>> 0.0.11)
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggzcore-dev (>= 0.0.12), libncurses5-dev, libreadline5-dev, ggzcore-bin (>= 0.0.12)
 
 Package: ggz-txt-client
 Architecture: any
 Section: net
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ggzcore-bin (>= 0.0.12)
 Provides: ggz-core-client
 Description: GGZ Gaming Zone: client for the command line
  GGZ core clients enable players to access the GGZ server to chat,
