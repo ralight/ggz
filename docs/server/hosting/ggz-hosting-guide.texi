@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-hosting-guide.info
-@settitle The GGZ Gaming Zone 0.0.11 - Hosting Guide
+@settitle The GGZ Gaming Zone 0.0.12 - Hosting Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -18,7 +18,7 @@ Copyright (C) 2001 - 2005 Josef Spillner
 
 @c Frontpage
 @titlepage
-@title The GGZ Gaming Zone 0.0.11 - Hosting Guide
+@title The GGZ Gaming Zone 0.0.12 - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
 @author GGZ Development Team
 
@@ -91,7 +91,7 @@ section about the game Keepalive below.
 
 @section Overview
 
-This describes a typical setup for GGZ 0.0.11.
+This describes a typical setup for GGZ 0.0.12.
 All following versions will certainly require other tools or other versions of
 the present one, but the main concept hasn't changed for a while.
 Before installing GGZ on a server, make sure that the following conditions are
@@ -144,7 +144,7 @@ package; this replaces the 'easysock' package which was used up to version 0.0.4
 After libggz is installed, the server packages 'ggzd', which is the main
 server, and 'ggz-game-servers' including many game servers, should follow.
 Both need the library package 'libggzdmod' as well.
-When installing from source, all of those can be found in the 'ggzd' CVS
+When installing from source, all of those can be found in the 'ggzd' SVN
 module.
 Upon installation, lots of files and directories are created under the
 chosen prefix (usually /usr/local when installing from source and /usr
@@ -211,7 +211,7 @@ C-style variables place holders can be used, they are currently defined like:
 @end itemize
 
 You can use premade MOTDs which are available from the motds directory of the
-GGZ utils CVS module.
+GGZ utils SVN module.
 
 @subsection Widely used terms
 
@@ -262,7 +262,7 @@ section later on.
 
 The GGZ Rankings pages allow for web access to statistics, player lists,
 password reminders and more. They're not finished yet but can be fetched from
-the playground CVS module. They are designed to work with a PostgreSQL database
+the playground SVN module. They are designed to work with a PostgreSQL database
 backend, and require Apache and PHP set up on the same or any different host.
 
 Have a look at the next chapter on how to set up GGZ with enhanced database
@@ -748,7 +748,7 @@ PERMS_CHAT_BOT set).
 
 The 'colorsniff' program can be used to track problems if there are GGZ
 connection or communication problems. It is currently available via the
-playground CVS module.
+playground SVN module.
 The tool 'ngrep' must be installed to make it work:
 
 @command{ngrep -d lo | colorsniff --noping}
@@ -886,7 +886,7 @@ can be filled with either a file name or a virtual file name such as stderr.
 
 @appendix Local GGZ server installation
 
-These instructions apply to a vanilla 0.0.11 installation if one doesn't have
+These instructions apply to a vanilla 0.0.12 installation if one doesn't have
 system privileges.
 You may have to modify some details though.
 
@@ -895,11 +895,10 @@ cd ~
 mkdir localsys
 mkdir localsys/usr
 mkdir localsys/etc
-mkdir ggz-0.0.11
-cd ggz-0.0.11
-export CVSROOT=:pserver:anonymous@cvs.ggzgamingzone.org:/ggz
-cvs login
-cvs -z3 co -rggz-0-0-11 libggz ggzd
+mkdir ggz-0.0.12
+cd ggz-0.0.12
+svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-12/libggz
+svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-12/ggzd
 cd libggz
 ./autogen.sh --prefix=$HOME/localsys/usr
 make

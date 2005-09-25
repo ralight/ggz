@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.11 - Game Development Guide
+@settitle The GGZ Gaming Zone 0.0.12 - Game Development Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -15,7 +15,7 @@ Copyright (C) 2002 - 2005 Josef Spillner
 @c Frontpage
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.11
+@subtitle Development of games for the GGZ Gaming Zone 0.0.12
 @author GGZ Development Team
 
 @c Copyright page
