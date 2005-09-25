@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Josef Spillner <josef@ggzgamingzone.org>
 Standards-Version: 3.6.2.1
-Build-Depends: autotools-dev, debhelper (>> 4.8), libggzcore-dev (>> 0.0.11)
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>= 0.0.12), libggzcore-dev (>= 0.0.12)
 
 Package: ggz-utils
 Architecture: any
