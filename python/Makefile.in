@@ -1,5 +1,5 @@
 prefix = @prefix@
-version = 0.0.12pre
+version = 0.0.12
 
 ggz-config = @GGZ_CONFIG@ -D
 
