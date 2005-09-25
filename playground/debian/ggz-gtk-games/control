@@ -3,11 +3,11 @@ Section: games
 Priority: optional
 Maintainer: Josef Spillner <josef@ggzgamingzone.org>
 Standards-Version: 3.6.2.1
-Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>> 0.0.11), libggzmod-dev (>> 0.0.11), ggzcore-bin (>> 0.0.11), gettext, libgtk2.0-dev
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>= 0.0.12), libggzmod-dev (>= 0.0.12), ggzcore-bin (>= 0.0.12), gettext, libgtk2.0-dev
 
 Package: ggz-gtk-games
 Architecture: any
-Depends: ${shlibs:Depends}, ggz-gtk-game-data (= ${Source-Version})
+Depends: ${shlibs:Depends}, ggz-gtk-game-data (= ${Source-Version}), ggzcore-bin (>= 0.0.12)
 Recommends: ggz-gtk-client | ggz-core-client
 Description: GGZ Gaming Zone: game clients collection for Gtk+
  GGZ games are games that can be played online against other people
