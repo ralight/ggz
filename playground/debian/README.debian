@@ -16,6 +16,15 @@ For the first, RULES_CONFIGURE can be set. For the second,
 a double-colon rule (RULES_MAKE::) can be inserted before
 or after the include statement.
 
+Versions
+--------
+For binary packages from the same source package, a tight
+automated dependency (= ${Source-Version}) should be used.
+For other GGZ packages, (>= x.y.z) should be used.
+For debian build-deps, (>> x.y.z) should be used.
+The meta-ggz package is an exception, it also uses an
+equal (=) relationship.
+
 Open questions:
 ---------------
 * should ggzmod-dev build-depend on ggzcore-bin?
