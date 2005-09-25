@@ -3,12 +3,12 @@ Section: games
 Priority: optional
 Maintainer: Josef Spillner <josef@ggzgamingzone.org>
 Standards-Version: 3.6.2.1
-Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>> 0.0.11), libggzcore-dev (>> 0.0.11), libgnomeui-dev
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggz-dev (>= 0.0.12), libggzcore-dev (>= 0.0.12), libgnomeui-dev
 
 Package: ggz-gnome-client
 Architecture: any
 Depends: ${shlibs:Depends}
-Recommends: ggz-gtk-games (>> 0.0.11), ggz-kde-games (>> 0.0.11), ggz-sdl-games (>> 0.0.11), ggz-python (>> 0.0.11)
+Recommends: ggz-gtk-games (>= 0.0.12), ggz-kde-games (>= 0.0.12), ggz-sdl-games (>= 0.0.12), ggz-python-games (>= 0.0.12)
 Provides: ggz-core-client
 Description: GGZ Gaming Zone: core client for the GNOME2 desktop
  GGZ core clients enable players to access the GGZ server to chat,
