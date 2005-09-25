@@ -3,7 +3,7 @@ Author = Josef Spillner
 Description = Widelands server!
 Homepage = http://widelands.sourceforge.net/
 Name = Widelands
-Version = build-8
+Version = build-9
 
 [LaunchInfo]
 ExecutablePath = widelands_server --ggz
