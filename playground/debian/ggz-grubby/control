@@ -3,11 +3,11 @@ Section: games
 Priority: optional
 Maintainer: Josef Spillner <josef@ggzgamingzone.org>
 Standards-Version: 3.6.2.1
-Build-Depends: autotools-dev, debhelper (>> 4.8), libggzcore-dev (>= 0.0.11), libggzmod-dev (>= 0.0.11), libperl-dev, ruby1.8-dev, python2.3-dev | python2.4-dev, libsilc-dev
+Build-Depends: autotools-dev, debhelper (>> 4.8), libggzcore-dev (>= 0.0.12), libggzmod-dev (>= 0.0.12), libperl-dev, ruby1.8-dev, python2.3-dev | python2.4-dev, libsilc-dev, ggzcore-bin (>= 0.0.12)
 
 Package: ggz-grubby
 Architecture: any
-Depends: ${shlibs:Depends}, perl
+Depends: ${shlibs:Depends}, perl, ggzcore-bin (>= 0.0.12)
 Recommends: python, ruby
 Suggests: ggz-kde-client
 Description: GGZ Gaming Zone: chat bot with the ability to play games
