@@ -163,11 +163,7 @@ dnl Various dirs
 dnl ============
 
 if test "x${sysconfdir}" = 'x${prefix}/etc'; then
-  if test "x${prefix}" = "xNONE"; then
-    ggzdconfdir="${ac_default_prefix}/etc/ggzd"
-  else
-    ggzdconfdir="${prefix}/etc/ggzd"
-  fi
+  ggzdconfdir="${prefix}/etc/ggzd"
 else
   ggzdconfdir="${sysconfdir}/ggzd"
 fi
@@ -179,11 +175,7 @@ ggzdgamedir="${ggzdconfdir}/games"
 
 if test "x${libdir}" = 'x${exec_prefix}/lib'; then
   if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      ggzdexecmoddir="${ac_default_prefix}/lib/ggzd"
-    else
-      ggzdexecmoddir="${prefix}/lib/ggzd"
-    fi
+    ggzdexecmoddir="${prefix}/lib/ggzd"
   else
     ggzdexecmoddir="${exec_prefix}/lib/ggzd"
   fi
@@ -194,11 +186,7 @@ AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdexecmoddir}",
 		   [Directory containing GGZd game module executables])
 
 if test "x${localstatedir}" = 'x${prefix}/var'; then
-  if test "x${prefix}" = "xNONE"; then
-    ggzdstatedir="${ac_default_prefix}/var/lib/ggzd"
-  else
-    ggzdstatedir="${prefix}/var/lib/ggzd"
-  fi
+  ggzdstatedir="${prefix}/var/lib/ggzd"
 else
   ggzdstatedir="${localstatedir}/ggzd"
 fi
@@ -208,11 +196,7 @@ AC_DEFINE_UNQUOTED([DATADIR], "${ggzdstatedir}",
 AC_DEFINE_UNQUOTED([TMPDIR], "${tmpdir}",
 		   [Directory used for temporary storage])
 
-if test "x${prefix}" = "xNONE"; then
-  ggzddatadir="${ac_default_prefix}/share/ggzd"
-else
-  ggzddatadir="${prefix}/share/ggzd"
-fi
+ggzddatadir="${prefix}/share/ggzd"
 AC_DEFINE_UNQUOTED([GGZDDATADIR], "${ggzddatadir}",
 		   [Location of GGZd module data])
 

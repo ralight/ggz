@@ -114,6 +114,11 @@ dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_INIT],
 [
+if test "x$prefix" = "xNONE"; then
+  prefix="${ac_default_prefix}"
+fi
+AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
+
 if test "x${prefix}" = "xNONE"; then
    ac_ggz_prefix_incdir="${ac_default_prefix}/include"
    ac_ggz_prefix_libdir="${ac_default_prefix}/lib"

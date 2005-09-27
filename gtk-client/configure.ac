@@ -55,9 +55,6 @@ AC_FUNC_STAT
 dnl Check for NLS
 dnl ============================================================
 AM_WITH_NLS
-if test "${prefix}" = "NONE"; then
-	prefix=${ac_default_prefix}
-fi
 AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR], ["${prefix}/share/locale"],
                    [The location to put message catalogs])
 
@@ -91,15 +88,10 @@ dnl Various dirs
 dnl ============
 
 if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    ggzdatadir="${ac_default_prefix}/share/ggz/ggz-gtk"
-  else
-    ggzdatadir="${prefix}/share/ggz/ggz-gtk"
-  fi
+  ggzdatadir="${prefix}/share/ggz/ggz-gtk"
 else
   ggzdatadir=${datadir}
 fi
-
 
 AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Location of GGZ module data])
 

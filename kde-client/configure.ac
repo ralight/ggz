@@ -127,11 +127,7 @@ if test "$enable_ggzfinal" = yes; then
 fi
 
 #AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${kde_datadir}/kggz")
-if test "x${prefix}" = "xNONE"; then
-	prefix=/usr/local
-fi
 AC_DEFINE_UNQUOTED([KGGZ_DIRECTORY], "${prefix}/share/apps/kggz", [Data directory])
-AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [Prefix directory])
 
 dnl Be a bit more strict
 dnl ====================

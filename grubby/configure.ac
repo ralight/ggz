@@ -180,15 +180,10 @@ AM_CONDITIONAL([GRUBBY_SILC], [test "$enable_silc" = "yes"])
 dnl Create files
 dnl ============
 
-if test "x$prefix" = "xNONE"; then
-	prefix="/usr/local"
-fi
-
 grubbydir="${prefix}/share/grubby"
 grubbymoddir="${prefix}/lib/grubby"
 
 AC_DEFINE_UNQUOTED([GRUBBYDIR], "${grubbydir}", [Grubby's directory])
-AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
 AC_SUBST(grubbymoddir)
 AC_SUBST(grubbydir)

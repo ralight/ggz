@@ -14,15 +14,9 @@ AC_SUBST(GGZ_LIBS)
 AC_PROG_CC
 AC_PROG_INSTALL
 
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
-		     "${ac_default_prefix}/share/locale",
-                     [The location to put message catalogs])
-else
-  AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
-		     "${prefix}/share/locale",
-                     [The location to put message catalogs])
-fi
+AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
+  "${prefix}/share/locale",
+  [The location to put message catalogs])
 
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_INTL([], [])

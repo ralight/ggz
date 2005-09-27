@@ -98,12 +98,6 @@ fi
 dnl Various dirs
 dnl ============
 
-if test "x$prefix" = "xNONE"; then
-	prefix="/usr/local"
-fi
-
-AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
-
 AC_CONFIG_FILES([Makefile
 		ggz-txt/Makefile
 		tttxt/Makefile

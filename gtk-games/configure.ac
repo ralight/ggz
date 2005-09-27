@@ -41,9 +41,6 @@ dnl =================
 
 dnl Check for GGZ requirements
 dnl ==========================
-if test "${prefix}" = "NONE"; then
-	prefix=${ac_default_prefix}
-fi
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD

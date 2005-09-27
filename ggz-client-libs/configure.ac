@@ -114,11 +114,7 @@ AC_GGZ_DEBUG
 # Various dirs
 # ============
 if test "x${sysconfdir}" = 'x${prefix}/etc'; then
-  if test "x${prefix}" = "xNONE"; then
-    ggzconfdir="${ac_default_prefix}/etc"  
-  else
-    ggzconfdir="${prefix}/etc"
-  fi
+  ggzconfdir="${prefix}/etc"
 else
   ggzconfdir="${sysconfdir}"
 fi
@@ -128,11 +124,7 @@ AC_DEFINE_UNQUOTED([GGZCONFDIR], "${ggzconfdir}",
 
 if test "x${libdir}" = 'x${exec_prefix}/lib'; then
   if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      ggzexecmoddir="${ac_default_prefix}/lib/ggz"
-    else
-      ggzexecmoddir="${prefix}/lib/ggz"
-    fi
+    ggzexecmoddir="${prefix}/lib/ggz"
   else
     ggzexecmoddir="${exec_prefix}/lib/ggz"
   fi
@@ -144,22 +136,12 @@ AC_DEFINE_UNQUOTED([GAMEDIR], "${ggzexecmoddir}",
 
 
 if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    ggzdatadir="${ac_default_prefix}/share/ggz"
-  else
-    ggzdatadir="${prefix}/share/ggz"
-  fi
+  ggzdatadir="${prefix}/share/ggz"
 else
   ggzdatadir="${datadir}/ggz"
 fi
 AC_DEFINE_UNQUOTED([GGZDATADIR], "${ggzdatadir}",
 		   [Directory containing GGZ shared data])
-
-if test "x$prefix" = "xNONE"; then
-	prefix="${ac_default_prefix}"
-fi
-
-AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
 AC_SUBST(ggzconfdir)
 AC_SUBST(ggzexecmoddir)

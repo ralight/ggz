@@ -122,12 +122,6 @@ fi
 AC_SUBST(LDADD)
 AC_SUBST(SUBDIRS)
 
-prefix="${prefix}"
-if test "x$prefix" = "xNONE"; then
-	prefix="${ac_default_prefix}"
-fi
-AC_DEFINE_UNQUOTED([PREFIX], "$prefix", [Set to installation prefix])
-
 AC_CONFIG_FILES([Makefile
 		cmd-client/Makefile
 		telggz/Makefile
