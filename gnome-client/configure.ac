@@ -14,10 +14,6 @@ AC_SUBST(GGZ_LIBS)
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
-  "${prefix}/share/locale",
-  [The location to put message catalogs])
-
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_INTL([], [])
 AC_GGZ_LIBGGZ
@@ -32,7 +28,11 @@ else
 fi
 
 AC_DEFINE_UNQUOTED([ENABLE_NLS], $nls_enabled,
-		   [Define if your system supports NLS])
+	[Define if your system supports NLS])
+
+AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
+	"${prefix}/share/locale",
+	[The location to put message catalogs])
 
 LDADD="$LDADD $LIB_GGZCORE $LIB_GGZ"
 AC_SUBST(LDADD)
