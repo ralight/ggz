@@ -155,6 +155,10 @@ fi
 AC_DEFINE_UNQUOTED([GGZDATADIR], "${ggzdatadir}",
 		   [Directory containing GGZ shared data])
 
+if test "x$prefix" = "xNONE"; then
+	prefix="${ac_default_prefix}"
+fi
+
 AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
 AC_SUBST(ggzconfdir)
