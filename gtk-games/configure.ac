@@ -41,6 +41,9 @@ dnl =================
 
 dnl Check for GGZ requirements
 dnl ==========================
+if test "${prefix}" = "NONE"; then
+	prefix=${ac_default_prefix}
+fi
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
@@ -84,9 +87,6 @@ AC_CHECK_FUNCS([socket gethostbyname gettimeofday])
 dnl Check for gettext support
 dnl =========================
 AM_WITH_NLS
-if test "${prefix}" = "NONE"; then
-	prefix=${ac_default_prefix}
-fi
 AC_DEFINE_UNQUOTED([LOCALEDIR], ["${prefix}/share/locale"],
 		   [The location to put message catalogs])
 
