@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.c 7431 2005-08-15 09:50:01Z josef $
+ * $Id: gametype.c 7597 2005-09-27 02:54:00Z jdorje $
  *
  * This file contains functions for hadiling game types.
  *
@@ -296,7 +296,7 @@ void  _ggzcore_gametype_destroy(void* p)
 }
 
 
-int _ggzcore_gametype_get_num_namedbots(const GGZGameType *type)
+static int _ggzcore_gametype_get_num_namedbots(const GGZGameType *type)
 {
 	int i = 0;
 	if (!type->named_bots) return 0;
@@ -304,12 +304,12 @@ int _ggzcore_gametype_get_num_namedbots(const GGZGameType *type)
 	return i;
 }
 
-const char* _ggzcore_gametype_get_namedbot_name(const GGZGameType *type, unsigned int num)
+static const char* _ggzcore_gametype_get_namedbot_name(const GGZGameType *type, unsigned int num)
 {
 	return type->named_bots[num][0];
 }
 
-const char* _ggzcore_gametype_get_namedbot_class(const GGZGameType *type, unsigned int num)
+static const char* _ggzcore_gametype_get_namedbot_class(const GGZGameType *type, unsigned int num)
 {
 	return type->named_bots[num][1];
 }
