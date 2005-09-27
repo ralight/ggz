@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 6282 2004-11-06 04:22:21Z jdorje $
+ * $Id: roomlist.c 7598 2005-09-27 04:47:13Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -262,7 +262,7 @@ void select_room(GGZRoom *room)
 void update_one_room(GGZRoom *room)
 {
 	int players, id, i;
-	char *name;
+	const char *name;
 	GtkListStore *store;
 	GtkTreeIter iter;
 
@@ -304,7 +304,7 @@ void update_room_list(void)
 
 	for (i = 0; i < numrooms; i++) {
 		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
-		gchar *name = ggzcore_room_get_name(room);
+		const char *name = ggzcore_room_get_name(room);
 		gint players = ggzcore_room_get_num_players(room);
 		GtkTreeIter iter;
 
