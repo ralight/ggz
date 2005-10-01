@@ -2,7 +2,7 @@
  "http://www.freedesktop.org/standards/menu-spec/menu-0.8.dtd">
 
 <Menu>
- <Name>GGZ</Name>
+ <Name>GGZ Gaming Zone</Name>
  <Directory>ggz.directory</Directory>
  <Include>
   <Category>X-GGZ</Category>
