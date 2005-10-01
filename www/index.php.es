@@ -26,7 +26,7 @@ y robots de chat son parte de este esfuerzo.
 <br><br>
 
 <i>Descarga la versión actual</i><br>
-La versión 0.0.12 de GGZ Gaming Zone ha sido lanzada el 25 de Septiembre del 2005.<br>
+La versión 0.0.12 de GGZ Gaming Zone ha sido lanzada el 01 de Octubre del 2005.<br>
 <a href="/releases/0.0.12/release.php">Anuncios del lanzamiento</a><br>
 <a href="/releases/0.0.12/download.php">Ir a la página de descargas</a><br>
 <a href="/releases/0.0.12/installation.php">Notas de Instalación</a>
