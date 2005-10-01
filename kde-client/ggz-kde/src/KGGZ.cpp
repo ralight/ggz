@@ -56,6 +56,7 @@
 #include <kwallet.h>
 #endif
 #include <ksimpleconfig.h>
+#include <kapplication.h>
 
 // Qt includes
 #include <qiconview.h>
@@ -1097,10 +1098,14 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			m_workspace->widgetUsers()->setRoom(kggzroom);
 			emit signalLocation(i18n("Room: ") + kggzroom->name());
 			emit signalMenu(MENUSIG_ROOMENTER);
+
 			gametype = kggzroom->gametype();
 			KGGZDEBUG("Spectators allowed here? %i\n", gametype->maxSpectators());
 			if(gametype->maxSpectators()) emit signalMenu(MENUSIG_SPECTATORS);
 			else emit signalMenu(MENUSIG_NOSPECTATORS);
+
+			if(gamerulesurl()) emit signalMenu(MENUSIG_RULES);
+			else emit signalMenu(MENUSIG_NORULES);
 
 			roomnumber = m_roommap[kggzroom->gametype()->protocolEngine()];
 			emit signalRoomChanged(kggzroom->name(), kggzroom->gametype()->protocolEngine(),
@@ -1754,6 +1759,36 @@ void KGGZ::menuGameInfo()
 	if(!m_gameinfodialog) m_gameinfodialog = new KGGZGameInfoDialog(NULL);
 	m_gameinfodialog->setInformation(buffer);
 	m_gameinfodialog->show();
+}
+
+QString KGGZ::gamerulesurl()
+{
+	GGZCoreGametype *gametype = kggzroom->gametype();
+	kapp->config()->setGroup("Rules");
+	QString rulesurl = kapp->config()->readEntry(gametype->name());
+	return rulesurl;
+}
+
+void KGGZ::menuGameRules()
+{
+	GGZCoreGametype *gametype;
+	if(!kggzserver)
+		return;
+	if(!kggzroom)
+	{
+		KMessageBox::sorry(this, i18n("Please join a room first."), i18n("Game information failure"));
+		return;
+	}
+	gametype = kggzroom->gametype();
+	if(!gametype)
+		return;
+
+#ifdef KGGZ_BROWSER
+	m_browser->request(gamerulesurl());
+	menuView(VIEW_BROWSER);
+#else
+	kapp->invokeBrowser(gamerulesurl());
+#endif
 }
 
 void KGGZ::menuRoom(int room)

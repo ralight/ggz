@@ -52,6 +52,8 @@ class KGGZBrowser : public QWidget
 		KGGZBrowser(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZBrowser();
+		// Load a web page
+		void request(QString url);
 
 	public slots:
 		// Invoked by clicking on an URL

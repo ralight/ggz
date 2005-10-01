@@ -98,3 +98,10 @@ void KGGZBrowser::slotRequestHome()
 	m_edit->setText(KGGZ_DIRECTORY "/help/index.html");
 	slotRequestExplicit();
 }
+
+void KGGZBrowser::request(QString url)
+{
+	m_edit->setText(url);
+	m_part->openURL(url);
+}
+

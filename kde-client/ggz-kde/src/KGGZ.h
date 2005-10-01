@@ -115,7 +115,9 @@ class KGGZ : public QWidget
 			MENUSIG_GAMESTART,
 			MENUSIG_GAMEOVER,
 			MENUSIG_SPECTATORS,
-			MENUSIG_NOSPECTATORS
+			MENUSIG_NOSPECTATORS,
+			MENUSIG_RULES,
+			MENUSIG_NORULES
 		};
 
 		// Activity signals
@@ -165,6 +167,8 @@ class KGGZ : public QWidget
 		void menuGameSpectator();
 		// Display game type information
 		void menuGameInfo();
+		// Display game rules and history
+		void menuGameRules();
 		// Change into the given room
 		void menuRoom(int room);
 		// Display the grubby dialog
@@ -253,6 +257,9 @@ class KGGZ : public QWidget
 		void slotGameFrontend();
 		// Advices logo widget to load game logo
 		void slotLoadLogo();
+
+		// Return URL for a page with the rules for the current game
+		QString gamerulesurl();
 
 		// The commonly used workspace
 		KGGZWorkspace *m_workspace;

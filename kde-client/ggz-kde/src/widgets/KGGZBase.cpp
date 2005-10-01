@@ -115,6 +115,7 @@ KGGZBase::KGGZBase()
 
 	m_menu_game = new KPopupMenu(this, "menu_games");
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_INFO), i18n("&Information"), MENU_GAME_INFO);
+	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_RULES), i18n("&Rules of the game"), MENU_GAME_RULES);
 	m_menu_game->insertSeparator();
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_LAUNCH), i18n("&Launch new game"), MENU_GAME_LAUNCH);
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_JOIN), i18n("&Join game"), MENU_GAME_JOIN);
@@ -216,6 +217,9 @@ QIconSet KGGZBase::kggzGetIcon(int menuid)
 			break;
 		case MENU_GAME_INFO:
 			return KGlobal::iconLoader()->loadIcon("info", KIcon::Small);
+			break;
+		case MENU_GAME_RULES:
+			return KGlobal::iconLoader()->loadIcon("contents", KIcon::Small);
 			break;
 		case MENU_GAME_CANCEL:
 			return KGlobal::iconLoader()->loadIcon("cancel", KIcon::Small);
@@ -396,6 +400,9 @@ void KGGZBase::slotMenu(int id)
 		case MENU_GAME_INFO:
 			kggz->menuGameInfo();
 			break;
+		case MENU_GAME_RULES:
+			kggz->menuGameRules();
+			break;
 		case MENU_GAME_TEAM:
 			kggz->menuGameTeam();
 			break;
@@ -473,6 +480,12 @@ void KGGZBase::slotMenuSignal(int signal)
 #ifdef KGGZ_PATCH_SPECTATORS
 			m_menu_game->setItemEnabled(MENU_GAME_SPECTATOR, FALSE);
 #endif
+			break;
+		case KGGZ::MENUSIG_RULES:
+			m_menu_game->setItemEnabled(MENU_GAME_RULES, TRUE);
+			break;
+		case KGGZ::MENUSIG_NORULES:
+			m_menu_game->setItemEnabled(MENU_GAME_RULES, FALSE);
 			break;
 		default:
 			KGGZDEBUG("Unknown signal for menu handling: %i!\n", signal);
