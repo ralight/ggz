@@ -21,6 +21,7 @@ class Game:
 		self.turnplayer = 0
 
 		self.boardstyle = None
+		self.boardhints = None
 
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))

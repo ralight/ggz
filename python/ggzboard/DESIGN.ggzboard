@@ -82,9 +82,19 @@ game.autoscaletiles (int): fit board cells to display size (recommended for larg
 game.setonly (int): game does not allow move of pieces
 game.intersections (int): pieces are put at intersections of cells, not inside them
 game.board ((string, string)[][]): the entire game board (implementation dependent)
+game.boardstyle ((colour)[][]): colourised cells
+game.boardhints ((int)[][]): highlighted destinations when clicking on originating piece
+game.players (int): number of participating players
+game.turnplayer (int): current player
+game.noemptytiles (int): discard empty tiles in the selection
+game.dice ((int)[]): tuple of zero to many dice values
+game.playercolours ((colour)[]): colourisation for each player
+game.winner (int): winning player
+game.help ((string)[]): text to be displayed in the help window
 
 game.name(): returns the full name of the game module
 game.figure(string): returns the filename to represent a board cell state
+game.initmove(int, int): fills out the destination hints table based on piece selection
 game.validatemove((int, int), (int, int)): returns whether a move is correct or not
 game.trymove((int, int), (int, int)): tries to execute a move (will be validated first)
 game.aimove(): tries to find a AI move

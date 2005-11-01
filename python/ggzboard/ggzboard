@@ -633,6 +633,8 @@ class GGZBoard:
 						else:
 							oldx = x
 							oldy = y
+							if game.boardhints:
+								game.initmove(x, y)
 						updatescreen = 1
 					else:
 						frompos = (oldx, oldy)
@@ -703,6 +705,10 @@ class GGZBoard:
 						sy = j * height + conf.marginheight
 						if not game.intersections or (j != game.height - 1 and i != game.width - 1):
 							self.rect(ui.backgroundarea, (255, 255, 255), sx, sy, conf.cellwidth, conf.cellheight, color)
+							if game.boardhints:
+								hint = game.boardhints[j][i]
+								if hint == 1:
+									self.rect(ui.backgroundarea, (255, 255, 255), sx + 2, sy + 2, conf.cellwidth - 4, conf.cellheight - 4, color)
 						if board[j][i]:
 							img = self.svgsurface(game.figure(board[j][i]), conf.cellwidth, conf.cellheight)
 							if game.intersections:

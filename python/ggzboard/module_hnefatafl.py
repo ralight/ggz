@@ -18,6 +18,8 @@ class Game:
 		self.players = 2
 		self.turnplayer = 0
 
+		self.boardhints = None
+
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))
 

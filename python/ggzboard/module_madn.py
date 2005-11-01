@@ -130,6 +130,9 @@ class Game:
 		self.boardstyle[5][0] = (110, 110, 110)
 		self.boardstyle[5][10] = (110, 110, 110)
 
+		self.boardhints = (None)
+		self.boardhints = resize(self.boardstyle, (self.width, self.height))
+
 		self.isover = 0
 		self.lastmove = ""
 
@@ -263,6 +266,9 @@ class Game:
 		return (cx, cy)
 
 	def trymove(self, frompos, topos):
+		self.boardhints = (None)
+		self.boardhints = resize(self.boardstyle, (self.width, self.height))
+
 		print "trymove --", frompos, topos, "using last dice", self.lastdice
 		turncolours = ("y", "b", "r", "g")
 		turncolour = turncolours[self.turnplayer]
@@ -406,5 +412,24 @@ class Game:
 			#	return 0
 
 		return 0
+
+	def initmove(self, x, y):
+		turncolours = ("y", "b", "r", "g")
+		turncolour = turncolours[self.turnplayer]
+
+		self.boardhints = (None)
+		self.boardhints = resize(self.boardstyle, (self.width, self.height))
+
+		field = self.board[y][x]
+		if field:
+			(gfx, color) = field
+			if color == turncolour:
+				print "FIND target", x, y
+				ret = self.find_and_validate((x, y), None, self.lastdice)
+				print " =>", ret
+				if ret is not None:
+					print "TARGET", ret
+					(x2, y2) = ret
+					self.boardhints[y2][x2] = 1
 
 ggzboardgame = Game()
