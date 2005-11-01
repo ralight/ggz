@@ -1,0 +1,52 @@
+.TH "ggzboard" "6" "0.0.12" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP
+ggzboard \- Board games container for the GGZ Gaming Zone
+.SH "DESCRIPTION"
+.LP
+The GGZBoard games collection, invoked with the \fBggzboard\fP command,
+contains various board games which can be either played against local
+AI players or against network opponents, or even both.
+When running without options, a selection menu for local games will
+appear. Otherwise, a game name might be given to directly launch a
+specific game.
+.SH "GAMES"
+.LP
+\fICheckers\fP
+is a 2 player game in which the players have to jump over their
+opponents' pieces on a chess-like board in order to win.
+Call \fBggzboard checkers\fP to run it directly.
+.LP
+\fIChess\fP
+is a 2 player game with complex strategy rules. The 8x8 squares
+board is basically the same as used for Checkers.
+Call \fBggzboard chess\fP to run it directly.
+Note: This implementation uses the GGZ Chess AI engine.
+.LP
+\fIGo\fP
+is a 2 player game played on boards of various sizes. It does
+remotely resemble the Reversi game.
+Call \fBggzboard go\fP to run it directly.
+Note: This implementation uses the GNU Go AI engine.
+.LP
+\fIHnefatafl\fP
+is a 2 player game with asymmetric roles: One player is the
+defender, the other one the attacker.
+Call \fBggzboard hnefatafl\fP to run it directly.
+.LP
+\fIReversi\fP
+is a 2 player game played on a board not dissimilar to the one
+of Go.
+Call \fBggzboard reversi\fP to run it directly.
+.LP
+\fILudo\fP
+is a 2-4 player game. The game board is shaped so that each of the
+four pieces of each player must traverse one path around the center
+in order to reach its destination. Moves are determined by throwing
+dice.
+Call \fBggzboard ludo\fP to run it directly.
+Note that Ludo is currently only supported in single-player mode.
+.SH "AUTHORS"
+.LP
+The GGZ Development Team
+<ggz\-dev@mail.ggzgamingzone.org>
