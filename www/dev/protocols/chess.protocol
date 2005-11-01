@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<ggzcomm engine="Chess" version="2">
+	<client>
+		<event name="rsptime">
+			<data name="time" type="int"/>
+		</event>
+		<event name="reqmove">
+			<data name="length" type="int"/>
+			<data name="x" type="byte"/>
+			<data name="y" type="byte"/>
+			<data name="x2" type="byte"/>
+			<data name="y2" type="byte"/>
+			<data name="promote" type="byte"/>
+			<data name="unknown" type="byte"/>
+		</event>
+		<event name="reqdraw"/>
+	</client>
+	<server>
+		<event name="msgseat">
+			<data name="seat" type="byte"/>
+			<data name="version" type="byte"/>
+		</event>
+		<event name="msgplayers">
+			<sequence count="2">
+				<data name="assign" type="byte"/>
+				<eval>
+					<condition name="assign" result="ggz_seat_player"/>
+					<data name="name" type="string"/>
+				</eval>
+			</sequence>
+		</event>
+		<event name="reqtime"/>
+		<event name="rsptime">
+			<data name="time" type="int"/>
+		</event>
+		<event name="msgstart"/>
+		<event name="msgmove">
+			<data name="length" type="int"/>
+			<data name="x" type="byte"/>
+			<data name="y" type="byte"/>
+			<data name="x2" type="byte"/>
+			<data name="y2" type="byte"/>
+			<data name="cval" type="byte"/>
+			<eval>
+				<condition name="clocktype" result="???"/>
+				<data name="time" type="int"/>
+			</eval>
+		</event>
+		<event name="msggameover">
+			<data name="cval" type="byte"/>
+		</event>
+		<event name="reqdraw"/>
+		<event name="rspupdate">
+			<data name="value" type="int"/>
+			<data name="value2" type="int"/>
+		</event>
+	</server>
+</ggzcomm>
+

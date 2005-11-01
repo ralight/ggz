@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<ggzcomm engine="tictactoe" version="4">
+	<definitions>
+		<def name="ggz_seat_open" value="1"/>
+		<def name="msgseat" value="0"/>
+		<def name="msgplayers" value="1"/>
+		<def name="msgmove" value="2"/>
+		<def name="msggameover" value="3"/>
+		<def name="reqmove" value="4"/>
+		<def name="rspmove" value="5"/>
+		<def name="sndsync" value="6"/>
+		<def name="sndmove" value="0"/>
+		<def name="reqsync" value="1"/>
+	</definitions>
+	<client>
+		<event name="sndmove">
+			<data name="move_c" type="int"/>
+		</event>
+		<event name="reqsync"/>
+	</client>
+	<server>
+		<event name="msgseat">
+			<data name="num" type="int"/>
+		</event>
+		<event name="msgplayers">
+			<sequence count="2">
+				<data name="seat" type="int"/>
+				<eval>
+					<condition name="seat" result="ggz_seat_open" type="unequal"/>
+					<data name="name" type="string"/>
+				</eval>
+			</sequence>
+		</event>
+		<event name="reqmove"/>
+		<event name="rspmove">
+			<data name="status" type="byte"/>
+		</event>
+		<event name="msgmove">
+			<data name="player" type="int"/>
+			<data name="move" type="int"/>
+		</event>
+		<event name="sndsync">
+			<data name="turn" type="byte"/>
+			<sequence count="9">
+				<data name="space" type="byte"/>
+			</sequence>
+		</event>
+		<event name="msggameover">
+			<data name="winner" type="byte"/>
+		</event>
+	</server>
+	<protocol>
+<!--		<link server="msgseat" followup="msgplayers"/> -->
+		<link client="reqsync" server="sndsync"/>
+		<link server="reqmove" client="sndmove"/>
+		<link client="sndmove" server="rspmove"/>
+	</protocol>
+</ggzcomm>
+

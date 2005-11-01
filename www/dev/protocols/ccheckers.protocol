@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<ggzcomm engine="Chinese Checkers" version="3">
+	<client>
+		<event name="cc_req_newgame"/>
+		<event name="cc_snd_move">
+			<data name="ro" type="char"/>
+			<data name="co" type="char"/>
+			<data name="rd" type="char"/>
+			<data name="cd" type="char"/>
+		</event>
+		<event name="cc_req_sync"/>
+	</client>
+	<server>
+		<event name="cc_msg_seat">
+			<data name="num_seats" type="int"/>
+			<data name="seat" type="int"/>
+		</event>
+		<event name="cc_msg_players">
+			<data name="num_seats" type="int"/>
+			<data name="seat_type" type="int"/>
+			<data name="seat_name" type="string"/>
+		</event>
+		<event name="cc_msg_sync">
+			<data name="game_board(i,j)" type="char"/>
+		</event>
+		<event name="cc_msg_gameover">
+			<data name="winner" type="char"/>
+		</event>
+		<event name="cc_req_move"/>
+		<event name="cc_rsp_move">
+			<data name="CC_ERR_STATE" type="char"/>
+		</event>
+	</server>
+</ggzcomm>
+

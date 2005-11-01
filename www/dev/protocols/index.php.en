@@ -1,0 +1,53 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Protocols</b><br>
+...
+blah blubb
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Protocol XML files</i><br>
+
+The following list of games does already have a formal
+protocol description by means of a ggzcommgen file.
+<br><br>
+
+<a href="helloworld.protocol">Hello World</a>
+<br>
+<a href="ccheckers.protocol">Chinese Checkers</a>
+<br>
+<a href="chess.protocol">Chess</a>
+<br>
+<a href="dots.protocol">Connect The Dots</a>
+<br>
+<a href="ggzcards.protocol">GGZCards</a>
+<br>
+<a href="hastings.protocol">Hastings</a>
+<br>
+<a href="muehle.protocol">Muehle</a>
+<br>
+<a href="tictactoe.protocol">TicTacToe</a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>

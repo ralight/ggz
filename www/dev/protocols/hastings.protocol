@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<ggzcomm engine="Hastings" version="2">
+	<client>
+		<event name="snd_move">
+			<data name="move_src_x" type="int"/>
+			<data name="move_src_y" type="int"/>
+			<data name="move_dst_x" type="int"/>
+			<data name="move_dst_y" type="int"/>
+		</event>
+		<event name="req_init"/>
+		<event name="req_sync"/>
+	</client>
+	<server>
+		<event name="rsp_move">
+			<data name="status" type="byte"/>
+		</event>
+		<event name="msg_move">
+			<data name="num" type="int"/>
+			<data name="move_src_x" type="int"/>
+			<data name="move_src_y" type="int"/>
+			<data name="move_dst_x" type="int"/>
+			<data name="move_dst_y" type="int"/>
+		</event>
+		<event name="snd_sync">
+			<data name="turn" type="int"/>
+			<sequence count="6">
+				<sequence count="19">
+					<data name="knight" type="byte"/>
+				</sequence>
+			</sequence>
+			<sequence count="6">
+				<sequence count="19">
+					<data name="map" type="byte"/>
+				</sequence>
+			</sequence>
+		</event>
+		<event name="msg_gameover">
+			<data name="winner" type="byte"/>
+		</event>
+		<event name="req_move"/>
+		<event name="msg_seat">
+			<data name="seat" type="int"/>
+		</event>
+		<event name="msg_players"/>
+			<data name="playernum" type="int"/>
+			<sequence count="playernum">
+				<data name="type" type="int"/>
+				<eval>
+					<condition name="type" result="ggz_seat_player"/>
+					<condition name="type" result="ggz_seat_bot"/>
+					<data name="name" type="string"/>
+				</eval>
+			</sequence>
+		</event>
+	</server>
+</ggzcomm>
+

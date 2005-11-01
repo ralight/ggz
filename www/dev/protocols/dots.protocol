@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<ggzcomm engine="Dots" version="0.2">
+	<client>
+		<event name="reqsync"/>
+		<event name="reqnewgame"/>
+		<event name="msgmove">
+			<data name="x" type="byte"/>
+			<data name="y" type="byte"/>
+		</event>
+		<event name="sndoptions">
+			<data name="width" type="byte"/>
+			<data name="height" type="byte"/>
+		</event>
+	</client>
+	<server>
+		<event name="msgstatus">
+			<data name="status" type="byte"/>
+		</event>
+		<event name="msgsyncmove">
+			<data name="move" type="byte"/>
+		</event>
+		<event name="msgsyncscore">
+			<data name="score" type="int"/>
+		</event>
+		<event name="msgseat">
+			<data name="seat" type="int"/>
+		</event>
+		<event name="msgplayers">
+			<sequence count="2">
+				<data name="seattmp" type="int"/>
+				<eval>
+					<condition name="seat" result="ggz_seat_player"/>
+					<condition name="seat" result="ggz_seat_bot"/>
+					<data name="player" type="string"/>
+				</eval>
+			</sequence>
+		</event>
+		<event name="msgoptions">
+			<data name="width" type="byte"/>
+			<data name="height" type="byte"/>
+		</event>
+		<event name="msgmove">
+			<data name="status" type="byte"/>
+			<data name="s" type="byte"/>
+			<sequence count="s">
+				<data name="x" type="byte"/>
+				<data name="y" type="byte"/>
+			</sequence>
+		</event>
+		<event name="oppmove">
+			<date name="nx" type="byte"/>
+			<date name="ny" type="byte"/>
+			<date name="s" type="byte"/>
+			<sequence count="s">
+				<data name="x" type="byte"/>
+				<data name="y" type="byte"/>
+			</sequence>
+		</event>
+	</server>
+</ggzcomm>
+
