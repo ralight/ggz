@@ -15,9 +15,9 @@ on.
 <tr>
 <td valign="top" colspan="2">
 
-<i>GCC (3.4)</i><br>
+<i>GCC (4.0)</i><br>
 <a href="http://gcc.gnu.org">Website</a>,
-<a href="http://gcc.gnu.org/gcc-3.4/changes.html">Upgrading</a>
+<a href="http://gcc.gnu.org/gcc-4.0/changes.html">Upgrading</a>
 
 </td></tr>
 <tr><td valign="top">
@@ -52,10 +52,9 @@ on.
 </td></tr>
 <tr><td valign="top">
 
-<i>CVS (0.12.x)</i><br>
-<a href="https://www.cvshome.org/">Website</a>,
-<a href="https://www.cvshome.org/docs/manual/cvs-1.12.9/cvs.html">Manual</a>,
-<a href="https://www.cvshome.org/docs/manual/cvs-1.12.9/cvs_20.html">Upgrading</a>
+<i>Subversion (1.2.x)</i><br>
+<a href="https://subversion.tigris.org/">Website</a>,
+<a href="https://subversion.red-bean.com/">Manual</a>
 
 </td>
 </tr>

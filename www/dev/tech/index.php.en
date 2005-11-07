@@ -22,12 +22,19 @@ general networking tasks, multiplayer support for other games and interfacing th
 login and player system which sits at the heart of GGZ.
 <br><br>
 
+<i>Game frameworks</i><br>
+
+Card games and board game development is a lot easier when using an existing framework
+to be able to concentrate on the game logic, protocol and AI players.
+GGZCards and GGZBoard are providing such a framework, respectively.
+<br><br>
+
 <i>Get Hot New Stuff integration</i><br>
 
 Sharing levels, themes, savegames or avatars among players has never been easier.
 With client implementations for SDL and KDE, this framework allows to upload
 and download data of all kind, including ratings, a download counter and more.
-Have a look at the official <a href="http://www.kstuff.org/?p=ghns">GHNS homepage</a>
+Have a look at the official <a href="http://ghns.freedesktop.org/">GHNS homepage</a>
 for more details.
 <br><br>
 
