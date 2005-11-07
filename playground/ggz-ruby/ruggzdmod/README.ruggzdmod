@@ -17,9 +17,9 @@ a ruby extension if you type in the following as root:
 	% make install
 
 ATTENTION! The ruby bindings don't work yet, because:
- - name error on constants definition
- - no callbacks implemented yet (ruby can do it better, but this requires some
-   more work)
+ (fixed) - name error on constants definition
+ (fixed) - no callbacks implemented yet (ruby can do it better, but this
+           requires some more work)
 
 Josef
 

@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require "GGZDMod"
+
+puts "## RubyToe ##"
+
+class TTT
+	::MSG_SEAT = 0
+	::MSG_PLAYERS = 1
+end
+
+def ggzdmod_handler(id, data)
+	puts "** Callback called!"
+
+	if id == GGZDMod::EVENTSTATE then
+		puts "# state event"
+	elsif id == GGZDMod::EVENTJOIN then
+		puts "# join event"
+		num = data
+		puts "Seat: " + num.to_s
+		puts "Name: " + $server.get_seat_name(num)
+	elsif id == GGZDMod::EVENTLEAVE then
+		puts "# leave event"
+	elsif id == GGZDMod::EVENTSEAT then
+		puts "# seat event"
+	elsif id == GGZDMod::EVENTDATA then
+		puts "# data event"
+	elsif id == GGZDMod::EVENTLOG then
+		puts "# log event"
+	elsif id == GGZDMod::EVENTERROR then
+		puts "# error event"
+	else
+		puts "* unknown event"
+	end
+end
+
+def ttt_handler(id)
+	if id == TTT::MSG_SEAT then
+		puts "* seat"
+	elsif id == TTT::MSG_PLAYERS then
+		puts "* players"
+	else
+		puts "* unknown opcode"
+	end
+end
+
+$server = GGZDMod.new
+$server.connect
+$server.loop
+
+puts "## Bye ##"
+
