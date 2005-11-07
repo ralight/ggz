@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 7409 2005-08-14 11:55:16Z josef $
+ * $Id: table.c 7612 2005-11-07 10:39:49Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -394,7 +394,8 @@ static void* table_new_thread(void *index_ptr)
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Table %d failed to start game module", 
 			table->index);
-		table_launch_event(table->owner, E_LAUNCH_FAIL, 0);
+		/* ggzdmod already does that */
+		/*table_launch_event(table->owner, E_LAUNCH_FAIL, 0);*/
 	}
 	
 	table_remove(table);
@@ -819,6 +820,7 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 	const GGZdModState *prev = data;
 #endif
 	GGZdModState cur = ggzdmod_get_state(mod);
+	GGZTableState origstate;
 
 	switch (cur) {
 	case GGZDMOD_STATE_WAITING:
@@ -844,7 +846,7 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 		pthread_rwlock_wrlock(&table->lock);
 		table->state = GGZ_TABLE_PLAYING;
 		pthread_rwlock_unlock(&table->lock);
-		
+
 		table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
 		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now full/playing",
 			table->index, table->room);
@@ -857,9 +859,12 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 
 		/* Mark table as done, so people don't attempt transits */
 		pthread_rwlock_wrlock(&table->lock);
-		table->state = GGZ_TABLE_DONE;
+		origstate = table->state;
+		if (origstate != GGZ_TABLE_CREATED)
+			table->state = GGZ_TABLE_DONE;
 		pthread_rwlock_unlock(&table->lock);
-		table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
+		if (origstate != GGZ_TABLE_CREATED)
+			table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
 		return;
 
 	case GGZDMOD_STATE_CREATED:
@@ -1177,6 +1182,7 @@ static void table_remove(GGZTable* table)
 {
 	int room, count, index, i;
 	GGZLeaveType reason;
+	GGZTableState origstate;
 
 	/* Disconnect from the game server */
 	(void)ggzdmod_disconnect(table->ggzdmod);
@@ -1234,11 +1240,12 @@ static void table_remove(GGZTable* table)
 
 	pthread_rwlock_wrlock(&table->lock);
 	table->type = -1;
+	origstate = table->state;
 	table->state = GGZ_TABLE_ERROR;
 	pthread_rwlock_unlock(&table->lock);
 
-	table_event_enqueue(table, GGZ_TABLE_UPDATE_DELETE);
-
+	if (origstate != GGZ_TABLE_CREATED)
+		table_event_enqueue(table, GGZ_TABLE_UPDATE_DELETE);
 
 	/* Process any remaining events */
 	event_table_handle(table);

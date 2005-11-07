@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 7498 2005-08-27 08:45:46Z josef $
+ * $Id: players.c 7612 2005-11-07 10:39:49Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -1480,8 +1480,12 @@ GGZPlayerHandlerStatus player_send_room_update(GGZPlayer *player)
 
 GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player)
 {
+	/* Do not send ping if frequency is set to 0 */
+	if (opt.ping_freq <= 0)
+		return GGZ_REQ_OK;
+
 	/* Send a ping and mark send time */
-	if(net_send_ping(player->client->net) < 0)
+	if (net_send_ping(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	player->sent_ping_time = get_current_time();
