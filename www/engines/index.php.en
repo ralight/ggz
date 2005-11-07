@@ -1,0 +1,485 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="/software.php">Software:</a>
+|
+Engines
+|
+<a href="/games/">Game clients</a>
+|
+<a href="/gameservers/">Game servers</a>
+|
+<a href="/clients/">Core clients</a>
+|
+<a href="/utils/">Utilities</a>
+|
+<a href="/backend/">Backends</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Engines Pages</b><br>
+Game engines determine the game rules and communication protocols between
+game clients and game servers.
+Whereever possible, GGZ tries to adhere to existing game engine standards
+or at least support them optionally.
+The following game engines are currently playable on GGZ:
+<br><br>
+
+<table class="inner">
+<tr><td>
+
+<i>Board games:</i><br>
+
+<table class="listnorm">
+<tr>
+<td><i>Engine</i></td>
+<td><i>Corresponding clients</i></td>
+<td><i>Corresponding servers</i></td>
+</tr>
+
+<tr>
+<td><a href="/engines/tictactoe/">TicTacToe</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/tictactoe/">TicTacToe (Gtk+)</a><br>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/ktictactux/">KTicTacTux (KDE)</a><br>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ttt3d/">TTT3D (SDL)</a><br>
+<img src="/pics/icons/game_grubby.png">
+<a href="/games/guruttt/">Guru-TTT (Grubby)</a><br>
+<img src="/pics/icons/game_console.png">
+<a href="/games/tttxt/">TTTXT (Console)</a>
+</td>
+<td><a href="/gameservers/tictactoe/">TicTacToe server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/dots/">Connect The Dots</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/dots/">Dots (Gtk+)</a><br>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/kdots/">KDots (KDE)</a><br>
+</td>
+<td><a href="/gameservers/dots/">Dots server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/hastings/">Hastings1066</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/hastings/">Hastings1066 (Gtk+)</a><br>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/fyrdman/">Fyrdman (KDE)</a><br>
+</td>
+<td><a href="/gameservers/hastings/">Hastings server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/reversi/">Reversi</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/reversi/">Reversi (Gtk+)</a><br>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/kreversi/">KReversi (KDE)</a><br>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+</td>
+<td><a href="/gameservers/reversi/">Reversi server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/combat/">Combat</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/combat/">Combat (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/combat/">Combat server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/chess/">Chess</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/chess/">Chess (Gtk+)</a><br>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/koenig/">Koenig (KDE)</a><br>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<img src="/pics/icons/game_grubby.png">
+<a href="/games/guruchess/">Guru-Chess (Grubby)</a><br>
+</td>
+<td><a href="/gameservers/chess/">Chess server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/cchess/">Chinese Chess</a></td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/cchess/">Chinese Chess (SDL)</a><br>
+</td>
+<td><a href="/gameservers/cchess/">Chinese Chess server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/ccheckers/">Chinese Checkers</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/ccheckers/">Chinese Checkers (Gtk+)</a><br>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/kcc/">KCC (KDE)</a><br>
+</td>
+<td><a href="/gameservers/ccheckers/">Chinese Checkers server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/krosswater/">Krosswater</a></td>
+<td>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/krosswater/">Krosswater (KDE)</a><br>
+</td>
+<td><a href="/gameservers/krosswater/">Krosswater server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/muehle/">Mühle</a></td>
+<td>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/muehle/">Mühle (KDE)</a><br>
+</td>
+<td><a href="/gameservers/muehle/">Muehle server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/escape/">Escape</a></td>
+<td>
+<img src="/pics/icons/game_windows.png">
+<a href="/games/escape/">Escape (Windows)</a><br>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/escape-sdl/">Escape/SDL (SDL)</a><br>
+</td>
+<td><a href="/gameservers/escape/">Escape server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/connectx/">ConnectX</a></td>
+<td>
+<img src="/pics/icons/game_windows.png">
+<a href="/games/connectx/">ConnectX (Windows)</a><br>
+</td>
+<td><a href="/gameservers/connectx/">ConnectX server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/checkers/">Checkers</a></td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+</td>
+<td><a href="/gameservers/checkers/">Checkers server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/hnefatafl/">Hnefatafl</a></td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+</td>
+<td><a href="/gameservers/hnefatafl/">Hnefatafl server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/go/">Go/GMP</a></td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+</td>
+<td><a href="/gameservers/goserver/">Go server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/ludo/">Ludo</a></td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+</td>
+<td>(no GGZ support yet)</td>
+</tr>
+
+</table>
+
+<br>
+
+<i>Card games:</i><br>
+
+<table class="listnorm">
+<tr>
+<td><i>Engine</i></td>
+<td><i>Corresponding clients</i></td>
+<td><i>Corresponding servers</i></td>
+</tr>
+
+<tr>
+<td><a href="/engines/spades/">NetSpades</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/spades/">NetSpades (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/spades/">NetSpades server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/lapocha/">LaPocha</a></td>
+<td>
+<img src="/pics/icons/game_rip.png">
+LaPocha (Gtk+) - R.I.P.<br>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/bridge/">Bridge</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/fortytwo/">FortyTwo</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/hearts/">Hearts</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/suaro/">Suaro</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/sueco/">Sueco</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/hearts/">Whist</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
+</tr>
+
+</table>
+
+<br>
+
+<i>Other games:</i><br>
+
+<table class="listnorm">
+<tr>
+<td><i>Engine</i></td>
+<td><i>Corresponding clients</i></td>
+<td><i>Corresponding servers</i></td>
+</tr>
+
+<tr>
+<td><a href="/engines/keepalive/">Keepalive</a></td>
+<td>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/ggzcards/">Keepalive (KDE)</a><br>
+</td>
+<td><a href="/gameservers/keepalive/">Keepalive server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/geekgame/">Geekgame</a></td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/geekgame/">Geekgame (SDL)</a><br>
+</td>
+<td><a href="/gameservers/geekgame/">Geekgame server</a></td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+<br>
+
+There's also a number of games not being part of GGZ, which do however provide
+support for GGZ so they're nicely integrated into the system using spectators,
+statistics and so on.
+
+<table class="inner">
+<tr><td>
+
+<i>External games:</i><br>
+
+
+<table class="listnorm">
+<tr>
+<td><i>Engine</i></td>
+<td><i>Corresponding clients</i></td>
+<td><i>Corresponding servers</i></td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/kamikaze.png">
+<a href="/engines/kamikaze/">Kamikaze</a>
+</td>
+<td>
+<img src="/pics/icons/game_kde.png">
+<a href="/games/kamikaze/">Kamikaze (KDE)</a><br>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/pykamikaze/">PyKamikaze (SDL)</a><br>
+</td>
+<td><a href="/gameservers/kamikaze/">Kamikaze server</a></td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/tuxman.png">
+<a href="/engines/tuxman/">Tuxman</a>
+</td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/tuxman/">Tuxman (SDL)</a><br>
+</td>
+<td><a href="/gameservers/tuxman/">Tuxman server</a></td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/teg.png">
+<a href="/engines/teg/">T.E.G.</a>
+</td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/teg/">T.E.G. (GNOME)</a><br>
+</td>
+<td><a href="/gameservers/teg/">T.E.G. server</a></td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/widelands.png">
+<a href="/engines/widelands/">Widelands</a>
+</td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/widelands/">Widelands (SDL)</a><br>
+</td>
+<td>(no dedicated server)</td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/freeciv.png">
+<a href="/engines/freeciv/">Freeciv</a>
+</td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/freeciv/">Freeciv (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/freeciv/">Freeciv server</a></td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/freelords.png">
+<a href="/engines/freelords/">Freelords</a>
+</td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/freelords/">Freelords (SDL)</a><br>
+</td>
+<td><a href="/gameservers/freelords/">Freelords server</a></td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/game_rip.png">
+Batalla Naval
+</td>
+<td>
+<img src="/pics/icons/game_rip.png">
+Batalla Naval (GNOME) - R.I.P.<br>
+</td>
+<td>Batalla Naval server</td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/game_rip.png">
+XTux Arena
+</td>
+<td>
+<img src="/pics/icons/game_rip.png">
+XTux Arena (SDL) - R.I.P.<br>
+</td>
+<td>XTux Arena server</td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/cgoban.png">
+<a href="/engines/go/">Go/GMP</a>
+</td>
+<td>
+<img src="/pics/icons/game_x11.png">
+<a href="/games/cgoban/">CGoBan (X11)</a><br>
+</td>
+<td><a href="/gameservers/goserver/">Go Server</a></td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

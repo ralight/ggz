@@ -1,0 +1,63 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Escape</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Escape features</i><br>
+<ul>
+<li>2 game clients available: Windows, SDL
+<li>supports statistics
+<li>supports game spectators
+<li>AI opponent available
+<li>single-player mode (SDL client)
+</ul>
+<br>
+
+<i>Escape rules</i><br>
+The game board is a grid of dots, not disimilar to the Connect-the-Dots board.
+The board is entirely enclosed with "walls" with the exception of the two ends where a section
+(the "goal") is designated as the place where each player wants to escape to.
+
+Both players control a single blob which moves between the dots.
+The player can move in one of eight directions to a dot directly next to them.
+
+The same move between two identical dots can only be made once.
+So when a move is made, a line is drawn showing where the move was - this line can then not be used again.
+
+If a move is made that ends on a dot which is either part of the wall or on a dot which has
+already been moved to, the player which made that move gets to move again.
+
+Moves that result in no further moves being made (ie. moving into a corner) are either forbidden
+or else result in a draw.
+
+Moving along a wall is not allowed.
+
+</td><td valign="top">
+
+<i>Windows client:</i><br>
+<img src="/games/pics/escape.png"><br>
+
+<i>SDL client:</i><br>
+<img src="/games/pics/escape-sdl.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

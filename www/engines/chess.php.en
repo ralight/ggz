@@ -1,0 +1,45 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Chess</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Chess features</i><br>
+<ul>
+<li>Gtk+ and KDE game clients
+<li>supports statistics
+</ul>
+<br>
+
+<i>Chess rules</i><br>
+On game startup, the clock option is selected by the game host.
+Afterwards, the normal chess rules apply.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="/games/pics/chess.png"><br>
+
+<i>KDE client:</i><br>
+<img src="/games/pics/koenig.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

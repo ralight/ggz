@@ -1,0 +1,64 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Go/GMP</b><br>
+Board game for 2 players.
+<br>
+<table class="listnorm">
+<tr><td>
+Neither the game server nor the game client are GGZ projects but they do provide GGZ support.
+The project homepage is:
+<br>
+<a href=" http://www.gnu.org/software/gnugo/">gnu.org/software/gnugo</a>.
+</td></tr>
+</table>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Go/GMP features</i><br>
+<ul>
+<li>2 game clients available: CGoBan (X11), GGZBoard (SDL)
+<li>AI opponent available
+</ul>
+
+<i>Go rules</i><br>
+The usual Go rules apply.
+It should be noted that the GGZ integration merely forwards moves executed
+by either human players or the local AI, which requires a GNU Go installation.
+In later versions, move tracking and statistics will be handled as well.
+A custom client will probably also be developed.
+
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
+</td><td valign="top">
+
+<i>X11 client: CGoBan</i><br>
+<a href="/games/gnugo/"><img src="/games/pics/gnugo.png"></a>
+<br>
+
+<br>
+
+<i>SDL client: GGZBoard</i><br>
+<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

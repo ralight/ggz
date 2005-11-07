@@ -1,0 +1,64 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Dots Server</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/dots/">Connect The Dots</a> engine
+<li>Supports AI players
+<li>Implemented in C
+<li>GGZ is required (no standalone mode)
+</ul>
+
+The Dots server is a simple implementation of the Connect The Dots game.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+</table>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/dots/"><i>Engine: Connect The Dots</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Dots</i><br>
+<a href="/games/dots/"><img src="/games/pics/dots.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KDots</i><br>
+<a href="/games/kdots/"><img src="/games/pics/kdots.png"></a>
+<br><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

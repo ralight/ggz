@@ -1,0 +1,54 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Hastings 1066</b><br>
+Board game for 2 to 8 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Hastings 1066 features</i><br>
+<ul>
+<li>Gtk+ and KDE game clients
+<li>AI opponents available
+<li>supports game spectators
+<li>multiple maps available
+</ul>
+<br>
+
+<i>Hastings 1066 rules</i><br>
+In 1066, England was taken by William the Conqueror and his Normans.
+In this game, each player belongs to one of the nations involved (normally
+there are just two nations), and has to fight the other one. A number of
+knights are waiting to do this task.
+
+In each turn, one knight per player is allowed to move exactly one field
+away. If it captures an opposite knight, the victim is taken out of the game.
+
+The game ends if all but one nations have been destroyed.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="/games/pics/hastings.png"><br>
+
+<i>KDE client:</i><br>
+<img src="/games/pics/fyrdman.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

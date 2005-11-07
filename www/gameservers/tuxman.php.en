@@ -1,0 +1,62 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Tuxman Server</b><br>
+Arcade game for one player.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/tuxman/">Tuxman</a> engine
+<li>Supports AI players
+<li>Implemented in C++ (GGZGameServer class)
+<li>GGZ is required (no standalone operation)
+</ul>
+
+The Tuxman server implements the logic for the Tuxman game.
+It provides very basic GGZ support.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
+
+<br>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/tuxman/"><i>Engine: Tuxman</i></a>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: Tuxman</i><br>
+<a href="/games/tuxman/"><img src="/games/pics/tuxman.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

@@ -1,0 +1,120 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="/software.php">Software:</a>
+|
+<a href="/engines/">Engines</a>
+|
+<a href="/games/">Game clients</a>
+|
+Game servers
+|
+<a href="/clients/">Core clients</a>
+|
+<a href="/utils/">Utilities</a>
+|
+<a href="/backend/">Backends</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Gameserver Pages</b><br>
+The following game servers have been created by the GGZ Gaming Zone developers:
+<br><br>
+
+<table class="inner">
+<tr><td>
+
+<i>Board game servers:</i><br>
+<a href="/gameservers/tictactoe/">TicTacToe</a>
+<br>
+<a href="/gameservers/dots/">Connect The Dots</a>
+<br>
+<a href="/gameservers/hastings/">Hastings1066</a>
+<br>
+<a href="/gameservers/reversi/">Reversi</a>
+<br>
+<a href="/gameservers/combat/">Combat</a>
+<br>
+<a href="/gameservers/chess/">Chess</a>
+<br>
+<a href="/gameservers/cchess/">Chinese Chess</a>
+<br>
+<a href="/gameservers/ccheckers/">Chinese Checkers</a>
+<br>
+<a href="/gameservers/krosswater/">Krosswater</a>
+<br>
+<a href="/gameservers/muehle/">Mühle</a>
+<br>
+<a href="/gameservers/escape/">Escape</a>
+<br>
+<a href="/gameservers/connectx/">ConnectX</a>
+<br>
+<a href="/gameservers/go/">Go</a>
+<br>
+<a href="/gameservers/checkers/">Checkers</a>
+<br>
+<a href="/gameservers/hnefatafl/">Hnefatafl</a>
+<br>
+<br>
+
+<i>Card game servers:</i><br>
+<a href="/gameservers/spades/">NetSpades</a>
+<br>
+<a href="/gameservers/ggzcards/">GGZCards</a> (LaPocha, Bridge, FortyTwo, Hearts, Suaro, Sueco, Whist)
+<br>
+<br>
+
+<i>Other GGZ game servers:</i><br>
+<a href="/gameservers/keepalive/">Keepalive</a>
+<br>
+<a href="/gameservers/geekgame/">Geekgame</a>
+
+</td>
+</tr>
+</table>
+
+The following game servers are not part of GGZ, they're developed externally,
+or they're part of GGZ but external clients are needed.
+
+<table class="inner">
+<tr><td>
+
+<i>External game servers:</i><br>
+<a href="/gameservers/kamikaze/">Kamikaze</a>
+<br>
+<a href="/gameservers/tuxman/">Tuxman Server</a> (part of GGZ)
+<br>
+<a href="/gameservers/teg/">T.E.G.</a>
+<br>
+<a href="/gameservers/goserver/">Go Server</a> (part of GGZ)
+<br>
+<a href="/gameservers/freeciv/">Freeciv</a>
+<br>
+<a href="/gameservers/freelords/">Freelords</a>
+<br>
+Batalla Naval (unmaintained)
+<br>
+XTux Arena (unmaintained)
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

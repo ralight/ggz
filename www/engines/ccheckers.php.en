@@ -1,0 +1,49 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Chinese Checkers</b><br>
+Board game for 2 to 6 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Chinese Checkers features</i><br>
+<ul>
+<li>Gtk+ and KDE game clients
+<li>AI opponents available
+<li>supports statistics
+</ul>
+<br>
+
+<i>Chinese Checkers rules</i><br>
+The classic Chinese Checkers rules apply.
+Each turn, a player selects a route from one of his points to a hole,
+by either going to a hole next to the point, or jumping over other
+points if necessary. The goal is to place all points into the holes
+in the opposite edge of the star.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="/games/pics/ccheckers.png"><br>
+
+<i>KDE client:</i><br>
+<img src="/games/pics/kcc.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

@@ -1,0 +1,73 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Tic-Tac-Toe Server</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/tictactoe/">TicTacToe</a> engine
+<li>Supports AI players (with configurable difficulty level)
+<li>Implemented in C
+<li>GGZ is required (no standalone mode)
+</ul>
+
+The TicTacToe server is designed to be the entry point for GGZ developers.
+As such, it supports basically all of GGZ's server-side features,
+which are highlighted accordingly in the server source code.
+
+The network code is generated from the XML protocol description automatically.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+</table>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/tictactoe/"><i>Engine: TicTacToe</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: TicTacToe</i><br>
+<a href="/games/tictactoe/"><img src="/games/pics/tictactoe.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KTicTacTux</i><br>
+<a href="/games/ktictactux/"><img src="/games/pics/ktictactux.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL/OpenGL client: TTT3D</i><br>
+<a href="/games/ttt3d/"><img src="/games/pics/ttt3d.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

@@ -1,0 +1,46 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Krosswater</b><br>
+Board game for 2 to 4 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Krosswater features</i><br>
+<ul>
+<li>KDE game client
+<li>AI opponents available
+</ul>
+<br>
+
+<i>Krosswater rules</i><br>
+The goal is to cross the water from the left to the right.
+To achieve it, stones in the water must be reordered that a path leads
+from the player in horizontal or vertical steps to the right side.
+
+Nasty opponents are going to try to take stones from your way to insert
+them into theirs...
+
+</td><td valign="top">
+
+<i>KDE client:</i><br>
+<img src="/games/pics/krosswater.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

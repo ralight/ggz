@@ -1,0 +1,44 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Geekgame</b><br>
+Board game for 2-5 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Geekgame features</i><br>
+<ul>
+<li>SDL game client
+<li>AI opponents available
+<li>Single player mode
+</ul>
+<br>
+
+<i>Geekgame rules</i><br>
+The game supports 4 modes of varying difficulty: easy, matrix, havoc and hax0r.
+Depending on their rules, 0s and 1s have to be rearranged on the game board.
+Each player tries to disturb the others while arranging the numbers to his advantage.
+
+</td><td valign="top">
+
+<i>SDL client:</i><br>
+<img src="/games/pics/geekgame.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

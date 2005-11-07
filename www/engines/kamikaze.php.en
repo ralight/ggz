@@ -1,0 +1,72 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Kamikaze</b><br>
+Action game for 2-8 players.
+<br>
+<table class="listnorm">
+<tr><td>
+Neither the game server nor the game client are GGZ projects but they do provide GGZ support.
+The project homepage is:
+<br>
+<a href="http://kamikaze.coolprojects.org/">kamikaze.coolprojects.org</a>.
+</td></tr>
+</table>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Kamikaze features</i><br>
+<ul>
+<li>2 game clients available: Kamikaze (KDE), PyKamikaze (SDL)
+<li>AI opponents available
+</ul>
+<br>
+
+<i>Kamikaze rules</i><br>
+Basically, the rules of bomberman-like games apply.
+The player must place bombs so that they harm the opponents, but not the player
+itself.
+Various items like Life, Power or Bomb have to be collected. Sometimes, rare items
+such as flash bomb effects, double speed or the holy grail can be found.
+There are two sorts of walls: Stone walls (which cannot be bombed away) and wood walls.
+And then there are holes in the ground at times, beware!
+
+<br><br>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/kamikaze/"><i>Server: Kamikaze</i></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: Kamikaze</i><br>
+<a href="/games/kamikaze/"><img src="/games/pics/kamikaze.png"></a>
+<br>
+
+<br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: PyKamikaze</i><br>
+<a href="/games/pykamikaze/"><img src="/games/pics/pykamikaze.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

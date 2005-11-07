@@ -1,0 +1,49 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Combat</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Combat features</i><br>
+<ul>
+<li>Gtk+ game client
+</ul>
+<br>
+
+<i>Combat rules</i><br>
+Both players have an equipe of bombs, spies, generals and so forth.
+All characters must be placed on the map before the game begins. The
+opponent's characters can not be seen, but their positions are available
+to the player.
+
+Now, in each turn one character is moved, and may hit an opponent. In such
+a case, the hightest-ranked character wins.
+
+The goal is to find the opponent's flag, optimally without hitting the bombs
+which are set up as obstacles.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="/games/pics/combat.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

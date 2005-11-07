@@ -1,0 +1,80 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZCards Server</b><br>
+Multiple card games for 2-6 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/lapocha/">LaPocha</a>, <a href="/engines/bridge/">Bridge</a>, <a href="/engines/fortytwo/">FortyTwo</a>, <a href="/engines/hearts/">Hearts</a>, <a href="/engines/suaro/">Suaro</a>, <a href="/engines/sueco/">Sueco</a> and <a href="/engines/whist/">Whist</a> engines
+<li>Supports AI players
+<li>Implemented in C (GGZCards framework)
+<li>GGZ is required (no standalone mode)
+</ul>
+
+The GGZCards game server implements many games at once.
+For LaPocha, this is the GGZCards variant of the LaPocha game server, succeeding the
+original LaPocha server which is since no longer part of GGZ.
+In all these GGZCards games, many GGZ features are supported.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+</table>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/lapocha/"><i>Engine: LaPocha</i></a>
+<br><br>
+
+<a href="/engines/bridge/"><i>Engine: Bridge</i></a>
+<br><br>
+
+<a href="/engines/fortytwo/"><i>Engine: FortyTwo</i></a>
+<br><br>
+
+<a href="/engines/hearts/"><i>Engine: Hearts</i></a>
+<br><br>
+
+<a href="/engines/suaro/"><i>Engine: Suaro</i></a>
+<br><br>
+
+<a href="/engines/sueco/"><i>Engine: Sueco</i></a>
+<br><br>
+
+<a href="/engines/whist/"><i>Engine: Whist</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: GGZCards</i><br>
+<a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
+<br><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

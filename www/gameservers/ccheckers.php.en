@@ -1,0 +1,65 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Chinese Checkers Server</b><br>
+Board game for 2-6 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/ccheckers/">Chinese Checkers</a> engine
+<li>Supports AI players
+<li>Implemented in C
+<li>GGZ is required (no standalone mode)
+</ul>
+
+The Chinese Checkers server implements the game for GGZ, including
+recording statistics and allowing for rejoining a running game.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+</table>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/ccheckers/"><i>Engine: Chinese Checkers</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Chinese Checkers</i><br>
+<a href="/games/ccheckers/"><img src="/games/pics/ccheckers.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KCC</i><br>
+<a href="/games/kcc/"><img src="/games/pics/kcc.png"></a>
+<br><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

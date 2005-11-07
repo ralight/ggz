@@ -1,0 +1,70 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Chess Server</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/chess/">Chess</a> engine
+<li>Supports AI players, using the GGZ chess AI library
+<li>Implemented in C, using the libcgc move verification library
+<li>GGZ is required (no standalone mode)
+</ul>
+
+The chess server was heavily influenced by the chessd project during
+its initial development. The AI was added in a later version.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/chess/"><i>Engine: Chess</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Chess</i><br>
+<a href="/games/chess/"><img src="/games/pics/chess.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: Koenig</i><br>
+<a href="/games/koenig/"><img src="/games/pics/koenig.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: GGZBoard</i><br>
+<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
+<br><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

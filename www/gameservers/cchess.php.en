@@ -1,0 +1,60 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Chinese Chess Server</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/cchess/">Chinese Chess</a> engine
+<li>Supports an AI player
+<li>Implemented in Python
+<li>GGZ is required (no standalone mode)
+</ul>
+
+This is the server for the Xadrez Chinês client. It does a very basic
+job of verifying the moves and playing the AI side if requested.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/cchess/"><i>Engine: Chinese Chess</i></a>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: Xadrez Chinês</i><br>
+<a href="/games/cchess/"><img src="/games/pics/xadrez-chines.png"></a>
+<br><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

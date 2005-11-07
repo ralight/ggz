@@ -1,0 +1,73 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>T.E.G. (Tenes Empanadas Graciela) Server</b><br>
+Strategy game for 2-6 players.
+<br>
+<table class="listnorm">
+<tr><td>
+This game server is not a GGZ project but it does provide GGZ support.
+The project homepage is:
+<br>
+<a href="http://teg.sourceforge.net/">teg.sourceforge.net</a>.
+</td></tr>
+</table>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/teg/">T.E.G.</a> engine
+<li>Supports AI players (external client-side robots)
+<li>Implemented in C
+<li>GGZ is optional (standalone operation possible)
+</ul>
+
+The T.E.G. server can run in GGZ mode to allow for playing games online.
+It provides moderate GGZ support, including statistics and spectators.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
+
+<br>
+
+<i>Homepage of the T.E.G. server</i><br>
+<a href="http://teg.sourceforge.net/" target="blank">http://teg.sourceforge.net/</a>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/teg/"><i>Engine: T.E.G.</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>GNOME client: T.E.G.</i><br>
+<a href="/games/teg/"><img src="/games/pics/teg.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

@@ -1,0 +1,44 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Chinese Chess</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Chinese Chess features</i><br>
+<ul>
+<li>SDL game client
+<li>supports statistics
+<li>supports game spectators
+<li>AI opponent available
+<li>single-player mode
+</ul>
+<br>
+
+<i>Chinese Chess rules</i><br>
+Not yet written down.
+
+</td><td valign="top">
+
+<i>SDL client:</i><br>
+<img src="/games/pics/xadrez-chines.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

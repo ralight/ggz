@@ -1,0 +1,79 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Kamikaze Server</b><br>
+Action game for 2-8 players.
+<br>
+<table class="listnorm">
+<tr><td>
+This game server is not a GGZ project but it does provide GGZ support.
+The project homepage is:
+<br>
+<a href="http://kamikaze.coolprojects.org/">kamikaze.coolprojects.org</a>.
+</td></tr>
+</table>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/kamikaze/">Kamikaze</a> engine
+<li>Supports AI players
+<li>Implemented in C++
+<li>GGZ is required (no standalone operation)
+</ul>
+
+The Kamikaze server allows users of the Kamikaze
+game clients to play online against each other.
+It provides very basic GGZ support.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+</table>
+
+<br>
+
+<i>Homepage of the Kamikaze server</i><br>
+<a href="http://kamikaze.coolprojects.org/" target="blank">http://kamikaze.coolprojects.org/</a>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/kamikaze/"><i>Engine: Kamikaze</i></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: Kamikaze</i><br>
+<a href="/games/kamikaze/"><img src="/games/pics/kamikaze.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: PyKamikaze</i><br>
+<a href="/games/pykamikaze/"><img src="/games/pics/pykamikaze.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

@@ -1,0 +1,54 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class='pane' width='100%'>
+<tr>
+<td>
+<font size='3'>
+<font color='#ff0000'>Warning:</font>
+This application is not maintained anymore.
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>La Pocha</b><br>
+Card game for 4 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>La Pocha features</i><br>
+<ul>
+<li>Gtk+ game client
+</ul>
+<br>
+
+<i>La Pocha rules</i><br>
+Before each turn, all players consecutively bid and then play their decks.
+Initially, the deck consists of one card only, but more cards are added over
+time starting in the 4th turn.
+The best bidder wins the game.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="/games/pics/lapocha.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

@@ -1,0 +1,42 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZBoard</b><br>
+Board game framework for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>GGZBoard features</i><br>
+<ul>
+<li>SDL/python game client
+<li>AI opponents available
+<li>multi-protocol game container: Chess, Checkers, Reversi, Go, Hnefatafl
+</ul>
+<br>
+
+<i>GGZBoard rules</i><br>
+Each GGZBoard game has its own rules.
+
+</td><td valign="top">
+
+<i>SDL client:</i><br>
+<img src="/games/pics/ggzboard.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
