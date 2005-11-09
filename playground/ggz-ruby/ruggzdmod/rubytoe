@@ -1,48 +1,236 @@
 #!/usr/bin/env ruby
 
 require "GGZDMod"
+require "socket"
 
 puts "## RubyToe ##"
 
-class TTT
+class GGZSocket < Socket
+	def puti(n)
+		n1 = (n >> 24) & 0xff
+		n2 = (n >> 16) & 0xff
+		n3 = (n >> 8) & 0xff
+		n4 = (n >> 0) & 0xff
+		self.putc(n1)
+		self.putc(n2)
+		self.putc(n3)
+		self.putc(n4)
+	end
+
+	def geti()
+		n1 = self.getc
+		n2 = self.getc
+		n3 = self.getc
+		n4 = self.getc
+		n = (n1 << 24) + (n2 << 16) + (n3 << 8) + n4
+		return n
+	end
+
+	def putb(n)
+		self.putc(n)
+	end
+
+	def getb()
+		n = self.getc
+		return n
+	end
+
+	def puts(s)
+		self.puti(s.length)
+		self.write(s)
+	end
+
+	def gets()
+		length = self.geti()
+		s = self.read(length)
+		return s
+	end
+end
+
+class TTTProto
+	::SND_MOVE = 0
+	::REQ_SYNC = 1
 	::MSG_SEAT = 0
 	::MSG_PLAYERS = 1
+	::MSG_MOVE = 2
+	::MSG_GAMEOVER = 3
+	::REQ_MOVE = 4
+	::RSP_MOVE = 5
+	::SND_SYNC = 6
+
+	::MOVE_OK = 0
+	::MOVE_ERR_STATE = -1
+	::MOVE_ERR_TURN = -2
+	::MOVE_ERR_BOUND = -3
+	::MOVE_ERR_FULL = -4
+
+	def send_seat(p)
+		s = GGZSocket.for_fd($server.get_seat_fd(p))
+		s.puti(::MSG_SEAT)
+		s.puti(p)
+	end
+
+	def send_players(p)
+		s = GGZSocket.for_fd($server.get_seat_fd(p))
+		s.puti(::MSG_PLAYERS)
+		num = $server.get_num_seats
+		for i in 0..num - 1
+			type = $server.get_seat_type(i)
+			s.puti(type)
+			if type != GGZDMod::SEATOPEN then
+				name = $server.get_seat_name(i)
+				s.puts(name)
+			end
+		end
+	end
+
+	def send_movestatus(p, status)
+		s = GGZSocket.for_fd($server.get_seat_fd(p))
+		s.puti(::RSP_MOVE)
+		s.putb(status)
+	end
+
+	def send_move(p, move)
+		s = GGZSocket.for_fd($server.get_seat_fd(p))
+		s.puti(::MSG_MOVE)
+		s.puti(1 - p) # use turn!
+		s.puti(move)
+	end
+
+	def broadcast_players
+		num = $server.get_num_seats
+		for i in 0..num - 1
+			fd = $server.get_seat_fd(i)
+			if fd != -1 then
+				send_players(i)
+			end
+		end
+	end
+
+	def request_move(p)
+		s = GGZSocket.for_fd($server.get_seat_fd(p))
+		s.puti(::REQ_MOVE)
+	end
+
+	def event(id, data)
+		if id == GGZDMod::EVENTSTATE then
+			puts "# state event"
+		elsif id == GGZDMod::EVENTJOIN then
+			puts "# join event"
+			num = data
+			puts "# Seat: " + num.to_s
+			puts "# Name: " + $server.get_seat_name(num)
+		elsif id == GGZDMod::EVENTLEAVE then
+			puts "# leave event"
+		elsif id == GGZDMod::EVENTSEAT then
+			puts "# seat event"
+		elsif id == GGZDMod::EVENTDATA then
+			puts "# data event"
+		elsif id == GGZDMod::EVENTLOG then
+			puts "# log event"
+		elsif id == GGZDMod::EVENTERROR then
+			puts "# error event"
+		else
+			puts "# unknown event"
+		end
+	end
+end
+
+class TTT < TTTProto
+	def initialize
+		@turn = 0
+	end
+
+	def input(p)
+		s = GGZSocket.for_fd($server.get_seat_fd(p))
+
+		op = s.geti()
+
+		if op == ::SND_MOVE then
+			puts "* move"
+			moveval = s.geti()
+			puts "MOVE TO " + moveval.to_s
+			# send rsp_move to player and msg_move to opponent
+			# optionally followed by msg_gameover
+			status = ::MOVE_OK
+			send_movestatus(p, status)
+			if status == ::MOVE_OK
+				@turn = 1 - @turn
+			else
+				return
+			end
+			if $server.get_seat_fd(@turn) != -1
+				send_move(@turn, moveval)
+				# change turn and request_move?
+			elsif $server.get_seat_type(@turn) == GGZDMod::SEATBOT
+				puts "ROBOT"
+				# do AI here
+				# BUT, could be player who has left.. check for 'elseif type == ...'
+				moveval = 7 # FIXME
+				p = 1 - @turn
+				send_move(p, moveval)
+				@turn = 1 - @turn
+				request_move(@turn)
+			else
+				# opponent has left - switch state to WAITING? (should already be... hm)
+			end
+		elsif op == ::REQ_SYNC then
+			puts "* sync"
+			# discard for now (would result in snd_sync)
+		else
+			puts "* unknown opcode"
+		end
+	end
+
+	def event(id, data)
+		super(id, data)
+
+		if id == GGZDMod::EVENTSTATE then
+			puts ""
+		elsif id == GGZDMod::EVENTJOIN then
+			num = data
+			broadcast_players
+			send_seat(num)
+			trystart
+		elsif id == GGZDMod::EVENTLEAVE then
+			broadcast_players
+		elsif id == GGZDMod::EVENTSEAT then
+			puts ""
+		elsif id == GGZDMod::EVENTDATA then
+			num = data
+			input(num)
+		#elsif id == GGZDMod::EVENTLOG then
+		#	puts ""
+		elsif id == GGZDMod::EVENTERROR then
+			puts ""
+			#exit...
+		end
+	end
+
+	def trystart()
+		num = $server.get_num_seats
+		empty = 0
+		for i in 0..num -1
+			if $server.get_seat_type(i) == GGZDMod::SEATOPEN then
+				empty += 1
+			end
+		end
+
+		puts "empty seats: " + empty.to_s
+		puts "i: " + i.to_s
+
+		if empty == 0 then
+			request_move(@turn)
+		end
+	end
 end
 
 def ggzdmod_handler(id, data)
 	puts "** Callback called!"
-
-	if id == GGZDMod::EVENTSTATE then
-		puts "# state event"
-	elsif id == GGZDMod::EVENTJOIN then
-		puts "# join event"
-		num = data
-		puts "Seat: " + num.to_s
-		puts "Name: " + $server.get_seat_name(num)
-	elsif id == GGZDMod::EVENTLEAVE then
-		puts "# leave event"
-	elsif id == GGZDMod::EVENTSEAT then
-		puts "# seat event"
-	elsif id == GGZDMod::EVENTDATA then
-		puts "# data event"
-	elsif id == GGZDMod::EVENTLOG then
-		puts "# log event"
-	elsif id == GGZDMod::EVENTERROR then
-		puts "# error event"
-	else
-		puts "* unknown event"
-	end
+	$ttt.event(id, data)
 end
 
-def ttt_handler(id)
-	if id == TTT::MSG_SEAT then
-		puts "* seat"
-	elsif id == TTT::MSG_PLAYERS then
-		puts "* players"
-	else
-		puts "* unknown opcode"
-	end
-end
+$ttt = TTT.new
 
 $server = GGZDMod.new
 $server.connect

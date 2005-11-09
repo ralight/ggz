@@ -29,6 +29,12 @@ void cb_handler ( GGZdMod *mod, GGZdModEvent event, const void *data )
 		dataval = INT2FIX ( oldseat->num );
 	}
 
+	if ( event == GGZDMOD_EVENT_PLAYER_DATA )
+	{
+		int seatnum = * ( int * ) data;
+		dataval = INT2FIX ( seatnum );
+	}
+
 	rb_funcall( cTEST, rb_intern("ggzdmod_handler"), 2, INT2FIX ( event ), dataval );
 }
 
@@ -96,7 +102,14 @@ static VALUE t_get_num_seats ( VALUE self )
 static VALUE t_get_seat_name ( VALUE self, VALUE seat )
 {
 	rets = ggzdmod_get_seat ( ggzdmod, FIX2INT ( seat ) ).name;
-	retv = rb_str_new2 ( rets );
+	if ( ! rets )
+	{
+		retv = Qnil;
+	}
+	else
+	{
+		retv = rb_str_new2 ( rets );
+	}
 
 	return retv;
 }
