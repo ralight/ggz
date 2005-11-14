@@ -5,6 +5,14 @@ require "socket"
 
 puts "## RubyToe ##"
 
+begin
+	require "TTTAI"
+	$ai = TTTAI.new
+rescue LoadError
+	puts "## Warning: TTT-AI not found, using internal random AI ##"
+	$ai = nil
+end
+
 class GGZSocket < Socket
 	def puti(n)
 		n1 = (n >> 24) & 0xff
@@ -85,15 +93,18 @@ class TTTProto
 	end
 
 	def send_movestatus(p, status)
-		s = GGZSocket.for_fd($server.get_seat_fd(p))
-		s.puti(::RSP_MOVE)
-		s.putb(status)
+		fd = $server.get_seat_fd(p)
+		if fd != -1 then
+			s = GGZSocket.for_fd($server.get_seat_fd(p))
+			s.puti(::RSP_MOVE)
+			s.putb(status)
+		end
 	end
 
 	def send_move(p, move)
 		s = GGZSocket.for_fd($server.get_seat_fd(p))
 		s.puti(::MSG_MOVE)
-		s.puti(1 - p) # use turn!
+		s.puti(1 - p)
 		s.puti(move)
 	end
 
@@ -103,6 +114,22 @@ class TTTProto
 			fd = $server.get_seat_fd(i)
 			if fd != -1 then
 				send_players(i)
+			end
+		end
+	end
+
+	def send_gameover(p, winner)
+		s = GGZSocket.for_fd($server.get_seat_fd(p))
+		s.puti(::MSG_GAMEOVER)
+		s.putb(winner)
+	end
+
+	def broadcast_gameover(winner)
+		num = $server.get_num_seats
+		for i in 0..num - 1
+			fd = $server.get_seat_fd(i)
+			if fd != -1 then
+				send_gameover(i, winner)
 			end
 		end
 	end
@@ -139,6 +166,7 @@ end
 class TTT < TTTProto
 	def initialize
 		@turn = 0
+		@board = Array.new(9)
 	end
 
 	def input(p)
@@ -150,29 +178,10 @@ class TTT < TTTProto
 			puts "* move"
 			moveval = s.geti()
 			puts "MOVE TO " + moveval.to_s
-			# send rsp_move to player and msg_move to opponent
-			# optionally followed by msg_gameover
-			status = ::MOVE_OK
-			send_movestatus(p, status)
-			if status == ::MOVE_OK
-				@turn = 1 - @turn
+			if handle_move(p, moveval) then
+				handle_next_move()
 			else
-				return
-			end
-			if $server.get_seat_fd(@turn) != -1
-				send_move(@turn, moveval)
-				# change turn and request_move?
-			elsif $server.get_seat_type(@turn) == GGZDMod::SEATBOT
-				puts "ROBOT"
-				# do AI here
-				# BUT, could be player who has left.. check for 'elseif type == ...'
-				moveval = 7 # FIXME
-				p = 1 - @turn
-				send_move(p, moveval)
-				@turn = 1 - @turn
 				request_move(@turn)
-			else
-				# opponent has left - switch state to WAITING? (should already be... hm)
 			end
 		elsif op == ::REQ_SYNC then
 			puts "* sync"
@@ -180,6 +189,111 @@ class TTT < TTTProto
 		else
 			puts "* unknown opcode"
 		end
+	end
+
+	def handle_move(p, moveval)
+		puts "MOVE OF TURN " + @turn.to_s + " IS " + moveval.to_s
+		status = evaluate_move(p, moveval)
+		send_movestatus(p, status)
+		if status != ::MOVE_OK then
+			return false
+		end
+	
+		do_move(@turn, moveval)
+		if $server.get_seat_fd(1 - @turn) != -1 then
+			send_move(1 - @turn, moveval)
+		end
+
+		return true
+	end
+
+	def handle_next_move
+		if check_gameover() == true then
+			broadcast_gameover(@turn)
+			return
+		else
+			@turn = 1 - @turn
+		end
+
+		if $server.get_seat_type(@turn) == GGZDMod::SEATBOT then
+			puts "# ROBOT"
+			moveval = find_move(@turn)
+			if moveval >= 0 then
+				if handle_move(@turn, moveval) then
+					handle_next_move()
+				end
+			else
+				broadcast_gameover(-1)
+			end
+		else
+			request_move(@turn)
+		#else
+		#	# opponent has left - switch state to WAITING? (should already be... hm)
+		end
+	end
+
+	def find_move(p)
+		if $ai then
+			return $ai.ai_findmove(p, 1, @board)
+		end
+
+		for i in 0..100
+			move = rand(9)
+			if evaluate_move(p, move) == ::MOVE_OK then
+				return move
+			end
+		end
+		return -1
+	end
+
+	def triple_equal(a, b, c)
+		if a == b and b == c then
+			return true
+		end
+		return false
+	end
+
+	def check_gameover
+		for i in 0..2
+			if triple_equal(@board[i * 3], @board[i * 3 + 1], @board[i * 3 + 2]) then
+				if @board[i * 3] != nil then
+					return true
+				end
+			end
+			if triple_equal(@board[i], @board[i + 3], @board[i + 6]) then
+				if @board[i] != nil then
+					return true
+				end
+			end
+		end
+		if triple_equal(@board[0], @board[4], @board[8]) then
+			if @board[4] != nil then
+				return true
+			end
+		end
+		if triple_equal(@board[2], @board[4], @board[6]) then
+			if @board[4] != nil then
+				return true
+			end
+		end
+		return false
+	end
+
+	def evaluate_move(p, moveval)
+		#MOVE_ERR_STATE
+		if p != @turn then
+			return ::MOVE_ERR_TURN
+		elsif moveval < 0 or moveval >= 9 then
+			return ::MOVE_ERR_BOUND
+		elsif @board[moveval] then
+			return ::MOVE_ERR_FULL
+		end
+		return ::MOVE_OK
+	end
+
+	def do_move(p, moveval)
+		@board[moveval] = p
+		puts "--- set " + moveval.to_s + " to " + p.to_s
 	end
 
 	def event(id, data)
