@@ -15,6 +15,18 @@
 	</div>
 	<h2>
 		<span class="itemleader">:: </span>
+		GGZ and Ruby
+		<span class="itemleader"> :: </span>
+		<a name="database"></a>
+	</h2>
+	<div class="text">
+	An article for people interesting in doing game development
+	for GGZ, using the Ruby programming language.
+	<br>
+	<a href="ruby/">Read article</a>
+	</div>
+	<h2>
+		<span class="itemleader">:: </span>
 		GGZ Packaging
 		<span class="itemleader"> :: </span>
 		<a name="database"></a>
