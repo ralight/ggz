@@ -1,5 +1,27 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="/software.php">Software:</a>
+|
+<a href="/engines/">Engines</a>
+|
+<a href="/games/">Game clients</a>
+|
+<a href="/gameservers/">Game servers</a>
+|
+<a href="/clients/">Core clients</a>
+|
+<a href="/utils/">Utilities</a>
+|
+Backends
+</font>
+</td>
+</tr>
+</table>
+
 <table class="content" width="100%">
 <tr>
 <td>
@@ -13,19 +35,24 @@ The following components comprise a full-featured GGZ server.
 <tr><td>
 
 <i>Main Server:</i><br>
+<img src="/pics/icons/ggzd.png">
 <a href="/backend/server/">GGZ Server</a>
 <br>
 <i>Metaserver:</i><br>
+<img src="/pics/icons/metaserver.png">
 <a href="/backend/metaserver/">Metaserver</a>
 <br>
 <i>Command and control client:</i><br>
+<img src="/pics/icons/ggzcmd.png">
 <a href="/backend/cmd/">ggz-cmd</a>
 <br>
 <i>Chatbot:</i><br>
+<img src="/pics/icons/grubby.png">
 <a href="/backend/grubby/">Grubby</a>
 <br>
-<i>Rankings and Tournaments:</i><br>
-<a href="/backend/web/">Web Interface</a>
+<i>Community Web Portal:</i><br>
+<img src="/pics/icons/community.png">
+<a href="/backend/web/">GGZ Community</a>
 <br>
 
 

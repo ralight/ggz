@@ -5,8 +5,8 @@
 <td>
 <font size="3">
 
-<b>Webschnittstelle</b><br>
-Anzeige der GGZ-Statistiken in Webbrowsern.
+<b>GGZ Community</b><br>
+Webportal für GGZ-Server mit Anzeige der Statistiken in Webbrowsern.
 <br>
 
 <table class="inner">
@@ -15,15 +15,20 @@ Anzeige der GGZ-Statistiken in Webbrowsern.
 
 <i>Die wichtigsten Merkmale</i><br>
 <ul>
+<li>Anpassbares, internationalisiertes Webportal
 <li>Nimmt Spieler-Registrierungen vor
 <li>Zeigt Statistiken von Spielern und Spielen an
 <li>Spieler-Bewertungen
+<li>Erstellung von Tournaments
+<li>Verwaltung von Teams/Clubs
+<li>Einbindung von Foren- und Blogsoftware, und eine Weltkarte
+<li>Geschrieben in PHP
+<li>Etwa 4000 Zeilen Code
 </ul>
-<br>
 
 <i>Detaillierte Informationen</i><br>
 Die Webschnittstelle kann online unter
-<a href="http://rankings.ggzgamingzone.org">http://rankings.ggzgamingzone.org</a>
+<a href="http://www.ggzcommunity.org">http://www.ggzcommunity.org</a>
 aufgerufen werden.
 Sie ist auf den GGZ-Server von <a href="ggz://live.ggzgamingzone.org">live.ggzgamingzone.org</a>
 konfiguriert.
