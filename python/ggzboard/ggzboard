@@ -133,6 +133,8 @@ class GGZBoard:
 			surface.fill(color, ((x1 + w, y1), (1, h)))
 
 	def svgsurface(self, filename, width, height):
+		if filename[-4:] == ".png":
+			return pygame.image.load(filename)
 		svg = rsvgsdl.render(filename, width, height)
 		rawdata = svg.data()
 		if rawdata:
@@ -685,17 +687,28 @@ class GGZBoard:
 						caption = ui.smallfont.render(_("The winner is %s") % game.winner, 1, (255, 200, 0))
 						ui.backgroundarea.blit(caption, (w - caption.get_width() - conf.marginwidth, y + 20))
 
+				if game.boardstyle:
+					# FIXME: implicit linking of board images to board size variables
+					conf.cellwidth = game.boardwidth
+					conf.cellheight = game.boardheight
+					width = (conf.cellwidth + conf.cellspace)
+					height = (conf.cellheight + conf.cellspace)
+
 				for j in range(0, game.height):
 					for i in range(0, game.width):
 						color = conf.tilecolor
+						tilepicture = None
 						if game.swaptiles and (i + j) % 2:
 							color = conf.darktilecolor
 						if game.boardstyle:
 							style = game.boardstyle[j][i]
 							if style:
-								(r, g, b) = color
-								(rd, gd, bd) = style
-								color = (min(r + rd, 255), min(g + gd, 255), min(b + bd, 255))
+								if len(style) == 3:
+									(r, g, b) = color
+									(rd, gd, bd) = style
+									color = (min(r + rd, 255), min(g + gd, 255), min(b + bd, 255))
+								else:
+									tilepicture = pygame.image.load(style)
 							elif game.noemptytiles:
 								continue
 						if j == oldy and i == oldx:
@@ -705,6 +718,8 @@ class GGZBoard:
 						sy = j * height + conf.marginheight
 						if not game.intersections or (j != game.height - 1 and i != game.width - 1):
 							self.rect(ui.backgroundarea, (255, 255, 255), sx, sy, conf.cellwidth, conf.cellheight, color)
+							if tilepicture:
+								ui.backgroundarea.blit(tilepicture, (sx, sy))
 							if game.boardhints:
 								hint = game.boardhints[j][i]
 								if hint == 1:
