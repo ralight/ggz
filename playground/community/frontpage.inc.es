@@ -1,6 +1,28 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		Desarrollamento para GGZ en Ruby
+		<span class="itemleader"> :: </span>
+		<a name="ruby"></a>
+	</h1>
+	<div class="text">
+		<div style="float:right">
+		<img src="images/ruby.png" alt="Ruby logo">
+		</div>
+El texto en ingles:
+<i>
+		While development in C, C++ and Python has been possible for a long time
+		already, some progress has recently been experienced with reviving the old
+		Ruby bindings of GGZ.
+		For the time being, a simple GGZdMod wrapper exists, which has been used
+		to implement an alternative Tic-Tac-Toe server, sharing the AI routines
+		with the original one. Read about it in our article:
+		<a href="/articles/ruby/" title="GGZ and Ruby">GGZ and Ruby</a>.
+</i>
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		Extendiendo la plataforma de la Comunidad
 		<span class="itemleader"> :: </span>
 		<a name="extending"></a>
