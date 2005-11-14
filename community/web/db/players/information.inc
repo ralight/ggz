@@ -62,6 +62,9 @@ endif;
 	</div>
 	<div class="text">
 <?php
+if ($overall_ratings == 0) :
+	$overall_ratings = 1;
+endif;
 $karma = 10 * (1 - ($bad_ratings / $overall_ratings));
 if ($karma >= 8) :
 	$karmapic = "karma_good";
