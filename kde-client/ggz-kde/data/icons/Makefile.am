@@ -1,7 +1,7 @@
 SUBDIRS = games players
 
 pixdir = $(kde_datadir)/kggz/images/icons
-pix_DATA = \
+dist_pix_DATA = \
 	browser.png \
 	cancel.png \
 	chat.png \

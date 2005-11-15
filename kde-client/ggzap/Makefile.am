@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
 ggzcorepp_libraries = $(top_builddir)/ggz-kde/ggzcore++/src/libggzcorepp.la
 
@@ -35,13 +33,13 @@ METASOURCES = AUTO
 
 AM_CPPFLAGS = $(ggzcorepp_includes) $(all_includes)
 
-EXTRA_DIST = README
-
-pix_DATA = tray.png trayradar.mng redgear.png redgearmask.png
-pixdir = $(kde_datadir)/kggz/ggzap
+EXTRA_DIST = README hi16-app-ggzap.png hi32-app-ggzap.png
 
 KDE_ICON = ggzap
 
+pixdir = $(kde_datadir)/kggz/ggzap
+dist_pix_DATA = tray.png trayradar.mng redgear.png redgearmask.png
+
 desktopdir = $(datadir)/applications
-desktop_DATA = ggzap.desktop
+dist_desktop_DATA = ggzap.desktop
 

@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 bin_PROGRAMS = kgrubby
 
 kgrubby_SOURCES = main.cpp toplevel.cpp app.cpp plugin.cpp

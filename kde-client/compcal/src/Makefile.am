@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
-
 SUBDIRS = lib
 
 bin_PROGRAMS = compcal
@@ -15,5 +12,5 @@ noinst_HEADERS = toplevel.h app.h display.h parser.h conf.h
 METASOURCES = AUTO
 
 compcaldatadir = $(kde_confdir)
-compcaldata_DATA = compcalrc
+dist_compcaldata_DATA = compcalrc
 

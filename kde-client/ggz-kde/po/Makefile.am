@@ -1,9 +1,9 @@
-SUBDIRS = .
-
 # fake package name
 PACKAGE = kggz
 
 POFILES = de.po pt_BR.po es.po
+
+EXTRA_DIST = $(POFILES) kggz.pot
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
 messages:

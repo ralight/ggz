@@ -1,9 +1,9 @@
-SUBDIRS = .
-
 PACKAGE = ggzap
 POTFILE = ggzap.pot
 POFILES = de.po fr.po
 LOCATIONS = $(top_srcdir)/ggzap/*.cpp
+
+EXTRA_DIST = $(POTFILE) $(POFILES)
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
 messages:

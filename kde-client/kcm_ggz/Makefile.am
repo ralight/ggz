@@ -1,7 +1,4 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6951 2005-02-27 23:09:44Z josef $
-
-SUBDIRS = . modules
+SUBDIRS = modules
 
 kde_module_LTLIBRARIES = libkcm_ggz.la
 libkcm_ggz_la_SOURCES = kcm_ggz.cpp
@@ -19,6 +16,6 @@ noinst_HEADERS = kcm_ggz.h kcm_ggz_pane.h
 
 METASOURCES = AUTO
 
-desktop_DATA = kcmggz.desktop
 desktopdir = $(datadir)/applications
+dist_desktop_DATA = kcmggz.desktop
 

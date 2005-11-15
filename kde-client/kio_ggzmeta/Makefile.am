@@ -1,7 +1,4 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
-
-SUBDIRS = kioslave .
+SUBDIRS = kioslave
 
 kde_module_LTLIBRARIES = libkio_ggzmeta.la
 
@@ -17,7 +14,6 @@ AM_CXXFLAGS = @COMPILEOPTIONS@
 
 METASOURCES = AUTO
 
-kdelnk_DATA = ggzmeta.protocol
-kdelnkdir = $(kde_servicesdir)
+dist_kde_services_DATA = ggzmeta.protocol
 
 

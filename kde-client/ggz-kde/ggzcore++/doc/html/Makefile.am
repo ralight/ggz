@@ -1,7 +1,5 @@
-SUBDIRS = .
-
 ggzcoreppdocdir = $(prefix)/share/doc/ggzcore++/html
-ggzcoreppdoc_DATA = \
+dist_ggzcoreppdoc_DATA = \
 GGZCore.html \
 GGZCoreCommon_h.html \
 GGZCoreConf.html \

@@ -1,9 +1,9 @@
-SUBDIRS = .
-
 PACKAGE = compcal
 POTFILE = compcal.pot
 POFILES = de.po
 LOCATIONS = $(top_srcdir)/compcal/src/*.cpp
+
+EXTRA_DIST = $(POTFILE) $(POFILES)
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
 messages:

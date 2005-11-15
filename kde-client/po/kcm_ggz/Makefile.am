@@ -1,9 +1,9 @@
-SUBDIRS = .
-
 PACKAGE = kcmggz
 POTFILE = kcm_ggz.pot
 POFILES = de.po
 LOCATIONS = $(top_srcdir)/kcm_ggz/*.cpp $(top_srcdir)/kcm_ggz/modules/*.cpp
+
+EXTRA_DIST = $(POTFILE) $(POFILES)
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
 messages:

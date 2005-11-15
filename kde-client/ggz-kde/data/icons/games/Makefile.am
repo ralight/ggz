@@ -1,7 +1,5 @@
-SUBDIRS = .
-
 pixdir = $(kde_datadir)/kggz/images/icons/games
-pix_DATA = \
+dist_pix_DATA = \
 	CCheckers.png \
 	Chess.png \
 	Combat.png \

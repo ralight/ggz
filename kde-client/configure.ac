@@ -10,9 +10,15 @@ AM_MAINTAINER_MODE
 dnl Options for building KGGZ
 dnl =========================
 
-AC_ARG_ENABLE(ggzcorepp, [  --disable-ggzcorepp  don't build GGZCore++              ], enable_ggzcorepp=no, enable_ggzcorepp=yes)
-AC_ARG_ENABLE(browser,   [  --disable-browser    include KHTML browser [default=yes]], enable_browser=no, enable_browser=yes)
-AC_ARG_ENABLE(ggzfinal,  [  --enable-ggzfinal    perform compile tests  [default=no]], enable_ggzfinal=yes, enable_ggzfinal=no)
+AC_ARG_ENABLE([ggzcorepp],
+	AC_HELP_STRING([--disable-ggzcorepp], [don't build GGZCore++]),
+	[enable_ggzcorepp=no], [enable_ggzcorepp=yes])
+AC_ARG_ENABLE([browser],
+	AC_HELP_STRING([--disable-browser], [include KHTML browser @<:@default=yes@:>@]),
+	[enable_browser=no], [enable_browser=yes])
+AC_ARG_ENABLE([ggzfinal],
+	AC_HELP_STRING([--enable-ggzfinal], [perform compile tests @<:@default=no@:>@]),
+	[enable_ggzfinal=yes], [enable_ggzfinal=no])
 
 dnl Check for Qt and KDE
 dnl ====================
@@ -25,9 +31,6 @@ AC_ENABLE_STATIC(no)
 AC_PROG_LIBTOOL
 AC_PATH_KDE
 
-SUBDIRS="src data po doc"
-COMPILEOPTIONS=""
-
 dnl Check for easysock and ggzcore
 dnl ==============================
 
@@ -37,9 +40,7 @@ AC_GGZ_LIBGGZ
 AC_GGZ_GGZCORE
 AC_GGZ_CONFIG
 
-if test "$enable_ggzcorepp" = yes; then
-	SUBDIRS="ggzcore++ $SUBDIRS"
-fi
+AM_CONDITIONAL([COMPILE_GGZCOREPP], [test "$enable_ggzcorepp" = "yes"])
 
 dnl Find temporary categories_and_ratings patch
 func=ggzcore_gametype_get_category
@@ -77,6 +78,7 @@ AC_DEFINE_UNQUOTED([KGGZ_PATCH_SPECTATORS], 1, [Spectators patch to ggzcore])
 
 dnl Check for zeroconf implementation Howl
 dnl ======================================
+
 AC_CHECK_LIB(howl, sw_discovery_init,
 [
 	AC_CHECK_HEADERS([howl/howl_config.h],
@@ -99,19 +101,15 @@ AC_CHECK_LIB(howl, sw_discovery_init,
 dnl Set up variables for KGGZ
 dnl =========================
 
+AM_CONDITIONAL([COMPILE_BROWSER], [test "$enable_browser" = "yes"])
 if test "$enable_browser" = yes; then
-	kggzbrowservar=1;
-	BROWSERSUBDIR="more";
-	BROWSERLIB="\$(top_builddir)/ggz-kde/src/widgets/more/libkggzuimore.a -L\$(kde_libraries) \$(LIB_KHTML)";
-	AC_DEFINE_UNQUOTED([KGGZ_BROWSER], ${kggzbrowservar}, [Build embedded browser])
-else
-	kggzbrowservar=;
-	BROWSERSUBDIR="";
-	BROWSERLIB="";
+	AC_DEFINE_UNQUOTED([KGGZ_BROWSER], 1, [Build embedded browser])
 fi
 
 dnl Test for compilation options
 dnl ============================
+
+COMPILEOPTIONS=""
 
 if test "$enable_final" = yes; then
 	enable_final=yes
@@ -131,14 +129,12 @@ AC_DEFINE_UNQUOTED([KGGZ_DIRECTORY], "${prefix}/share/apps/kggz", [Data director
 
 dnl Be a bit more strict
 dnl ====================
+
 CXXFLAGS="$CXXFLAGS -DKDE_NO_COMPAT -DQT_NO_COMPAT -Wall"
 COMPILEOPTIONS="$COMPILEOPTIONS $CXXFLAGS"
 
 AC_SUBST(CXXFLAGS)
-AC_SUBST(SUBDIRS)
 AC_SUBST(COMPILEOPTIONS)
-AC_SUBST(BROWSERSUBDIR)
-AC_SUBST(BROWSERLIB)
 
 dnl Create Makefiles
 dnl ================

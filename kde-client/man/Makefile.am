@@ -1,6 +1,4 @@
-SUBDIRS =
-
-man_MANS = \
+dist_man_MANS = \
 	ggzap.6 \
 	kggz.6 \
 	keepalivecontrol.6 \

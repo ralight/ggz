@@ -1,9 +1,9 @@
-SUBDIRS = .
-
 PACKAGE = shadowbridge
 POTFILE = shadowbridge.pot
 POFILES = de.po
 LOCATIONS = $(top_srcdir)/shadowbridge/*.cpp
+
+EXTRA_DIST = $(POTFILE) $(POFILES)
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
 messages:

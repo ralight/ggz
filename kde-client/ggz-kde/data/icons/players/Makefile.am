@@ -1,6 +1,5 @@
-SUBDIRS = .
-
-pix_DATA = \
+pixdir = $(kde_datadir)/kggz/images/icons/players
+dist_pix_DATA = \
 	you.png \
 	buddy.png \
 	banned.png \
@@ -17,6 +16,4 @@ pix_DATA = \
 	lag5.png \
 	team-founder.png \
 	team-member.png
-
-pixdir = $(kde_datadir)/kggz/images/icons/players
 
