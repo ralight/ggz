@@ -3,7 +3,10 @@
 <?php
 	$ret = Locale::includefile("articles/frontpage.inc");
 	if (!$ret) :
-		echo "Welcome! No frontpage has been created yet.";
+		$ret = Locale::includefile("articles/default.frontpage.inc");
+		if (!$ret) :
+			echo "Welcome! No frontpage has been created yet.";
+		endif;
 	endif;
 ?>
 

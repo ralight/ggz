@@ -11,7 +11,8 @@
 	<div class="text">
 	Your personal settings can be done here.
 	To find out your coordinates (decimal longitude and latitude), you can check out
-	<a href="http://www.getty.edu/research/conducting_research/vocabularies/tgn/index.html">TGN</a>.
+	<a href="http://www.getty.edu/research/conducting_research/vocabularies/tgn/index.html">TGN</a>
+	or change them <a href="/map/change.php">interactively</a>.
 	</div>
 	<div class="text">
 
