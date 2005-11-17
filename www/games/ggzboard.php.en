@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>GGZBoard</b><br>
-Board game framework for 2 players.
+Board game framework for 2-4 players.
 <br>
 
 <table class="inner">
@@ -20,7 +20,7 @@ Board game framework for 2 players.
 
 <i>Fact sheet</i><br>
 <ul>
-<li>SDL/python game client, based on Python
+<li>SDL/python game client, based on Pygame
 <li>AI opponents available
 <li>multi-protocol game container: Chess, Checkers, Reversi, Go, Hnefatafl
 <li>single-player game engines: Ludo, Arimaa
