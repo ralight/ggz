@@ -49,6 +49,24 @@
 	text-align: center;
 	line-height: 1em;
 }
+.listnorm hr {
+	margin: 2px;
+}
+.listnorm {
+	line-height: 0px;
+	border-spacing: 0px;
+}
+.listnorm td {
+	background-color: #eeeeee;
+	background-image: url(/pics/site/bar.png);
+	background-repeat: no-repeat;
+	border-width: 1px;
+	border-color: #000000;
+	border-style: solid;
+
+	/*text-align: center;*/
+	line-height: 1em;
+}
 .flag {
 	background-color: #ffffff;
 	vertical-align: center;

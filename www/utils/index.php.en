@@ -1,5 +1,27 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="/software.php">Software:</a>
+|
+<a href="/engines/">Engines</a>
+|
+<a href="/games/">Game clients</a>
+|
+<a href="/gameservers/">Game servers</a>
+|
+<a href="/clients/">Core clients</a>
+|
+Utilities
+|
+<a href="/backend/">Backends</a>
+</font>
+</td>
+</tr>
+</table>
+
 <table class="content" width="100%">
 <tr>
 <td>
@@ -13,18 +35,21 @@ The following tools and utilities have been created by the GGZ Gaming Zone devel
 <tr><td>
 
 <i>Quickstart client:</i><br>
+<img src="/pics/icons/ggzap.png">
 <a href="/utils/ggzap/">GGZap</a>
 <br>
 <i>MOTD Editor:</i><br>
+<img src="/pics/icons/motd-editor.png">
 <a href="/utils/motdeditor/">MOTD Editor</a>
 <br>
 <i>Tournament tracking:</i><br>
+<img src="/pics/icons/compcal.png">
 <a href="/utils/compcal/">Competition Calendar</a>
 <br>
 <i>Chatbot configuration:</i><br>
+<img src="/pics/icons/kgrubby.png">
 <a href="/utils/kgrubby/">KGrubby</a>
 <br>
-
 
 </td>
 </tr>

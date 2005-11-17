@@ -1,5 +1,27 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="/software.php">Software:</a>
+|
+<a href="/engines/">Engines</a>
+|
+<a href="/games/">Game clients</a>
+|
+<a href="/gameservers/">Game servers</a>
+|
+Core clients
+|
+<a href="/utils/">Utilities</a>
+|
+<a href="/backend/">Backends</a>
+</font>
+</td>
+</tr>
+</table>
+
 <table class="content" width="100%">
 <tr>
 <td>
@@ -13,24 +35,31 @@ The following core clients have been created by the GGZ Gaming Zone developers:
 <tr><td>
 
 <i>KDE client:</i><br>
+<img src="/pics/icons/kggz.png">
 <a href="/clients/kde/">KGGZ</a>
 <br>
 <i>Gtk+ client:</i><br>
+<img src="/pics/icons/game_gnome.png">
 <a href="/clients/gtk/">GGZ-Gtk</a>
 <br>
 <i>GNOME client:</i><br>
+<img src="/pics/icons/game_gnome.png">
 <a href="/clients/gnome/">GGZ-Gnome</a>
 <br>
 <i>Console client:</i><br>
+<img src="/pics/icons/game_console.png">
 <a href="/clients/console/">ggz-txt</a>
 <br>
 <i>Telnet client:</i><br>
+<img src="/pics/icons/game_console.png">
 <a href="/clients/telnet/">TelGGZ</a>
 <br>
 <i>Windows client:</i><br>
+<img src="/pics/icons/game_windows.png">
 <a href="/clients/windows/">WGGZ</a>
 <br>
 <i>SDL client:</i><br>
+<img src="/pics/icons/game_sdl.png">
 <a href="/clients/sdl/">Víbora</a>
 <br>
 

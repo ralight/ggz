@@ -1,22 +1,52 @@
 <?php include_once("site/header.php"); ?>
 
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+Software:
+|
+<a href="/engines/">Engines</a>
+|
+<a href="/games/">Game clients</a>
+|
+<a href="/gameservers/">Game servers</a>
+|
+<a href="/clients/">Core clients</a>
+|
+<a href="/utils/">Utilities</a>
+|
+<a href="/backend/">Backends</a>
+</font>
+</td>
+</tr>
+</table>
+
 <table class="content" width="100%">
 <tr>
 <td>
 <font size="3">
 
 <b>Games and Applications</b><br>
-The GGZ Gaming Zone lets you play more than 20 games already, and many more
-might be added over time.
+The GGZ Gaming Zone lets you play more than 30 games already, and many more
+might be added over time. Many games are even available in multiple variants
+with varying user interfaces.
 To be able to play these games, a bunch of central applications and various
 utilities are available.
 <br><br>
 
 There are individual category pages for
-<a href="/games/">games</a>,
-<a href="/clients/">clients</a>,
+<a href="/engines/">game engines</a>,
+<a href="/games/">game clients</a> and
+<a href="/gameservers/">game servers</a>,
+as well as for
+<a href="/clients/">core clients</a>,
 <a href="/utils/">utilities</a> and the
 <a href="/backend/">backends</a>.
+<br><br>
+
+To get an overview on all the games available, the new
+<a href="/engines/">engines</a> page is the recommended start.
 <br><br>
 
 <table class="inner">
@@ -79,6 +109,8 @@ There are individual category pages for
 <a href="/games/freeciv/">Freeciv</a>
 <hr>
 <a href="/games/widelands/">Widelands</a>
+<hr>
+<a href="/games/freelords/">Freelords</a>
 </td></tr>
 </table>
 

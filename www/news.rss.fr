@@ -10,6 +10,17 @@
 <language>fr-fr</language>
 
 <item>
+<title><i>16.11.2005: New games information pages</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+The <a href="/software.php">software</a> section has been restructured a bit
+to make a cleaner separation between game engines, game clients and game servers.
+Additional entries like Arimaa or RubyToe are already hinting at the next
+release of GGZ, although there is still a lot of work to do before it can happen.
+</full>
+</item>
+
+<item>
 <title><i>01.10.2005: GGZ 0.0.12</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
