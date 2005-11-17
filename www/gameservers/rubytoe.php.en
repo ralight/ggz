@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Tic-Tac-Toe Server</b><br>
+<b>RubyToe Server</b><br>
 Board game for 2 players.
 <br>
 
@@ -16,25 +16,27 @@ Board game for 2 players.
 <i>Fact sheet</i><br>
 <ul>
 <li>Supports the <a href="/engines/tictactoe/">TicTacToe</a> engine
-<li>Supports AI players (with configurable difficulty level)
-<li>Implemented in C
+<li>Supports AI players (either random or by using the TTTAI module)
+<li>Implemented in Ruby
 <li>GGZ is required (no standalone mode)
 </ul>
 
-The TicTacToe server is designed to be the entry point for GGZ developers.
-As such, it supports basically all of GGZ's server-side features,
-which are highlighted accordingly in the server source code.
-
-The network code is generated from the XML protocol description automatically.
+The RubyToe server is the Ruby reimplementation of the
+<a href="/gameservers/tictactoe/">TicTacToe</a>
+server. It does probably not support all of its options, but serves as a functional
+test case of implementing GGZ game servers in Ruby.
+If the ruby wrapper has been installed completely, it will be able to load and use
+the TTTAI module, thus gaining access to the same AI routines that the original
+TicTacToe server uses.
 
 <br><br>
 
 <i>GGZ game server support</i><br>
 <table class="listnorm">
-<tr><td><i>Spectators</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Named Bots</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
 </td><td valign="top">
@@ -45,7 +47,7 @@ The network code is generated from the XML protocol description automatically.
 <a href="/engines/tictactoe/"><i>Engine: TicTacToe</i></a>
 <br><br>
 
-<a href="/gameservers/rubytoe/"><i>Game server: RubyToe</i></a>
+<a href="/gameservers/tictactoe/"><i>Game server: TicTacToe</i></a>
 <br><br>
 
 <img src="/pics/icons/game_gnome.png">
