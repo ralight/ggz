@@ -5,15 +5,15 @@
 <td>
 <font size="3">
 
-<b>Tuxman</b><br>
-Arcade game for one player.
+<b>PyKamikaze</b><br>
+Action game for 2-8 players.
 <br>
 <table class="listnorm">
 <tr><td>
 This game client is not a GGZ project but it does provide GGZ support.
 The project homepage is:
 <br>
-<a href=" http://dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php">dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php</a>.
+<a href="http://kamikaze.coolprojects.org/">kamikaze.coolprojects.org</a>.
 </td></tr>
 </table>
 
@@ -22,20 +22,22 @@ The project homepage is:
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/tuxman.png">
+<img src="/games/pics/pykamikaze.png">
 <br clear="all">
 <br>
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Single player mode (local AI)
+<li>Written in Python
+<li>Requires GGZ
 </ul>
-<br>
 
-Tuxman is basically an implementation of Pacman.
-You have to munch through each level (room) without being eaten by monsters.
+PyKamikaze is the pygame-based equivalent to Kamikaze, a bomberman-like
+action game for 2-8 players. The PyKamikaze client is not intended to
+be used standalone, but only when playing on GGZ.
 
 <br><br>
+
 
 <i>GGZ game client support</i><br>
 <table class="listnorm">
@@ -46,19 +48,24 @@ You have to munch through each level (room) without being eaten by monsters.
 
 <br>
 
-<i>Homepage of Tuxman</i><br>
-<a href="http://dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php" target="blank">http://dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php</a>
+<i>Homepage of PyKamikaze</i><br>
+<a href="http://kamikaze.coolprojects.org/" target="blank">http://kamikaze.coolprojects.org/</a>
 
 </td><td valign="top">
 
 <i>Related pages:</i>
 <br><br>
 
-<a href="/engines/tuxman/"><i>Engine: Tuxman</i></a>
+<a href="/engines/kamikaze/"><i>Engine: Kamikaze</i></a>
 <br><br>
 
-<a href="/gameservers/tuxman/"><i>Server: Tuxman</i></a>
+<a href="/gameservers/kamikaze/"><i>Server: Kamikaze</i></a>
 <br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: Kamikaze</i><br>
+<a href="/games/kamikaze/"><img src="/games/pics/kamikaze.png"></a>
+<br>
 
 </td>
 </tr>

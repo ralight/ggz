@@ -13,21 +13,74 @@ Board game framework for 2 players.
 <tr>
 <td valign="top">
 
-<i>GGZBoard features</i><br>
-<ul>
-<li>SDL/python game client
-<li>AI opponents available
-<li>multi-protocol game container: Chess, Checkers, Reversi, Go, Hnefatafl
-</ul>
+<i>Screenshot</i><br>
+<img src="/games/pics/ggzboard.png">
+<br clear="all">
 <br>
 
-<i>GGZBoard rules</i><br>
-Each GGZBoard game has its own rules.
+<i>Fact sheet</i><br>
+<ul>
+<li>SDL/python game client, based on Python
+<li>AI opponents available
+<li>multi-protocol game container: Chess, Checkers, Reversi, Go, Hnefatafl
+<li>single-player game engines: Ludo, Arimaa
+<li>supports move hints, dice, piece selection and more!
+</ul>
+
+GGZBoards unifies several board games under one hood. Each game is a separate
+python module for the game logic, and either a local AI module or a network
+adapter module, or even both. The game servers for Checkers and Hnefatafl are also
+part of the GGZBoard source.
+
+<br><br>
+
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+</table>
 
 </td><td valign="top">
 
-<i>SDL client:</i><br>
-<img src="/games/pics/ggzboard.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/chess/"><i>Engine: Chess</i></a>
+<br><br>
+
+<a href="/engines/checkers/"><i>Engine: Checkers</i></a>
+<br><br>
+
+<a href="/engines/reversi/"><i>Engine: Reversi</i></a>
+<br><br>
+
+<a href="/engines/go/"><i>Engine: Go/GMP</i></a>
+<br><br>
+
+<a href="/engines/hnefatafl/"><i>Engine: Hnefatafl</i></a>
+<br><br>
+
+<a href="/engines/ludo/"><i>Engine: Ludo</i></a>
+<br><br>
+
+<a href="/engines/arimaa/"><i>Engine: Arimaa</i></a>
+<br><br>
+
+<a href="/gameservers/chess/"><i>Server: Chess</i></a>
+<br><br>
+
+<a href="/gameservers/checkers/"><i>Server: Checkers</i></a>
+<br><br>
+
+<a href="/gameservers/reversi/"><i>Server: Reversi</i></a>
+<br><br>
+
+<a href="/gameservers/goserver/"><i>Server: Goserver</i></a>
+<br><br>
+
+<a href="/gameservers/hnefatafl/"><i>Server: Hnefatafl</i></a>
+<br><br>
 
 </td>
 </tr>

@@ -13,42 +13,42 @@ Board game for 2 players.
 <tr>
 <td valign="top">
 
-<i>Escape features</i><br>
-<ul>
-<li>2 game clients available: Windows, SDL
-<li>supports statistics
-<li>supports game spectators
-<li>AI opponent available
-<li>single-player mode (SDL client)
-</ul>
+<i>Screenshot</i><br>
+<img src="/games/pics/escape.png">
+<br clear="all">
 <br>
 
-<i>Escape rules</i><br>
-The game board is a grid of dots, not disimilar to the Connect-the-Dots board.
-The board is entirely enclosed with "walls" with the exception of the two ends where a section
-(the "goal") is designated as the place where each player wants to escape to.
+<i>Fact sheet</i><br>
+<ul>
+<li>runs on Windows
+</ul>
 
-Both players control a single blob which moves between the dots.
-The player can move in one of eight directions to a dot directly next to them.
+This is one of the two clients to the Escape game.
 
-The same move between two identical dots can only be made once.
-So when a move is made, a line is drawn showing where the move was - this line can then not be used again.
+<br><br>
 
-If a move is made that ends on a dot which is either part of the wall or on a dot which has
-already been moved to, the player which made that move gets to move again.
-
-Moves that result in no further moves being made (ie. moving into a corner) are either forbidden
-or else result in a draw.
-
-Moving along a wall is not allowed.
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
 
 </td><td valign="top">
 
-<i>Windows client:</i><br>
-<img src="/games/pics/escape.png"><br>
+<i>Related pages:</i>
+<br><br>
 
-<i>SDL client:</i><br>
-<img src="/games/pics/escape-sdl.png"><br>
+<a href="/engines/escape/"><i>Engine: Escape</i></a>
+<br><br>
+
+<a href="/gameservers/escape/"><i>Server: Escape</i></a>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>Escape client: Escape/SDL</i><br>
+<a href="/games/escape-sdl/"><img src="/games/pics/escape-sdl.png"></a>
+<br><br>
 
 </td>
 </tr>

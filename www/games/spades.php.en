@@ -13,25 +13,41 @@ Card game for 4 players.
 <tr>
 <td valign="top">
 
-<i>NetSpades features</i><br>
-<ul>
-<li>Gtk+ game client
-<li>AI opponents available
-</ul>
+<i>Screenshot</i><br>
+<img src="/games/pics/netspades.png">
+<br clear="all">
 <br>
 
-<i>NetSpades rules</i><br>
-The first player (game host) is given the privilege to choose the minimum
-bid and the score needed to win a game.
-Each player then selects a bid and submits it.
-This marks the start of the turns, in which all players clock-wise propose
-a card. The one with the highest card and color wins the trick.
-Since the game is named NetSpades, one can assume that Spades is trump.
+<i>Fact sheet</i><br>
+<ul>
+<li>Special old-style GGZ game client
+<li>derived from the original NetSpades project
+</ul>
+
+NetSpades is an old online cards game client. This is the (remaining)
+Gtk+ version, while there also was a Curses version available before the
+port to GGZ.
+
+<br><br>
+
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
 
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/netspades.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/spades/"><i>Engine: Spades</i></a>
+<br><br>
+
+<a href="/gameservers/spades/"><i>Server: NetSpades</i></a>
+<br><br>
+
 
 </td>
 </tr>

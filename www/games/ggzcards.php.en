@@ -6,29 +6,65 @@
 <font size="3">
 
 <b>GGZCards</b><br>
-Card game for 2 to 6 players.
+Card game framework for 2 to 6 players.
 <br>
 
 <table class="inner">
 <tr>
 <td valign="top">
 
-<i>GGZCards features</i><br>
-<ul>
-<li>Gtk+ game client
-<li>AI opponents available
-<li>supports statistics
-<li>multi-protocol game engine: Bridge, FortyTwo, Hearts, LaPocha, Spades, Suaro, Sueca, Whist
-</ul>
+<i>Screenshot</i><br>
+<img src="/games/pics/ggzcards.png">
+<br clear="all">
 <br>
 
-<i>GGZCards rules</i><br>
-Each GGZCards engine has its own rules.
+<i>Fact sheet</i><br>
+<ul>
+<li>Gtk+ game client
+<li>supports statistics
+<li>multi-protocol game client: Bridge, FortyTwo, Hearts, LaPocha, Spades, Suaro, Sueca, Whist
+</ul>
+
+GGZCards is implemented in Gtk+ and supports game selection as well as running one specific
+game engine directly.
+
+<br><br>
+
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
 
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/ggzcards.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/lapocha/"><i>Engine: LaPocha</i></a>
+<br><br>
+
+<a href="/engines/bridge/"><i>Engine: Bridge</i></a>
+<br><br>
+
+<a href="/engines/fortytwo/"><i>Engine: FortyTwo</i></a>
+<br><br>
+
+<a href="/engines/hearts/"><i>Engine: Hearts</i></a>
+<br><br>
+
+<a href="/engines/suaro/"><i>Engine: Suaro</i></a>
+<br><br>
+
+<a href="/engines/sueco/"><i>Engine: Sueco</i></a>
+<br><br>
+
+<a href="/engines/whist/"><i>Engine: Whist</i></a>
+<br><br>
+
+<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
+<br><br>
 
 </td>
 </tr>

@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Chess</b><br>
+<b>Koenig</b><br>
 Board game for 2 players.
 <br>
 
@@ -14,7 +14,7 @@ Board game for 2 players.
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/chess.png">
+<img src="/games/pics/koenig.png">
 <br clear="all">
 <br>
 
@@ -22,18 +22,21 @@ Board game for 2 players.
 <ul>
 <li>support for different clock options
 <li>keeps history of moves
+<li>supports Knights themesets
 </ul>
 
-This Gtk+ chess client, like all GGZ chess clients, implements a custom chessd-derived protocol.
+This KDE chess client, like all GGZ chess clients, implements a custom chessd-derived protocol.
 It supports move verification by using the libcgc library.
+Additional piece graphics can be downloaded via KNewStuff, there are several sets available
+since the theme loader is compatible with Knights themesets.
 
 <br><br>
 
 <i>GGZ game client support</i><br>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
 </td><td valign="top">
@@ -44,9 +47,9 @@ It supports move verification by using the libcgc library.
 <a href="/gameservers/chess/"><i>Server: Chess</i></a>
 <br><br>
 
-<img src="/pics/icons/game_kde.png">
-<i>KDE client: Koenig</i><br>
-<a href="/games/koenig/"><img src="/games/pics/koenig.png"></a>
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Chess</i><br>
+<a href="/games/chess/"><img src="/games/pics/chess.png"></a>
 <br><br>
 
 <img src="/pics/icons/game_sdl.png">

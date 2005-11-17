@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Hastings 1066</b><br>
+<b>Fyrdman</b><br>
 Board game for 2 to 8 players.
 <br>
 
@@ -14,7 +14,7 @@ Board game for 2 to 8 players.
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/hastings.png">
+<img src="/games/pics/fyrdman.png">
 <br clear="all">
 <br>
 
@@ -22,19 +22,21 @@ Board game for 2 to 8 players.
 <ul>
 <li>Supports game spectators
 <li>Multiple maps available
+<li>Single player mode
+<li>Theme selection
 </ul>
 
-This is the Gtk+ client for the Hastings1066 strategy game.
-It provides the level selection dialog just like the KDE client does,
-but it does not fully support themes.
+The KDE client for the Hastings1066 strategy game is quite advanced.
+It can be used to play one of the available levels against the AI, or remote
+via GGZ. New levels can be downloaded from within the game.
 
 <br><br>
 
 <i>GGZ game client support</i><br>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
 </td><td valign="top">
@@ -48,9 +50,9 @@ but it does not fully support themes.
 <a href="/gameservers/hastings/"><i>Server: Hastings</i></a>
 <br><br>
 
-<img src="/pics/icons/game_kde.png">
-<i>KDE client: Fyrdman</i><br>
-<a href="/games/fyrdman/"><img src="/games/pics/fyrdman.png"></a>
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Hastings</i><br>
+<a href="/games/hastings/"><img src="/games/pics/hastings.png"></a>
 <br><br>
 
 </td>

@@ -5,8 +5,8 @@
 <td>
 <font size="3">
 
-<b>Krosswater</b><br>
-Board game for 2 to 4 players.
+<b>Escape/SDL</b><br>
+Board game for 2 players.
 <br>
 
 <table class="inner">
@@ -14,17 +14,18 @@ Board game for 2 to 4 players.
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/krosswater.png">
+<img src="/games/pics/escape-sdl.png">
 <br clear="all">
 <br>
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Character selection at the beginning
+<li>implemented using the Pygame toolkit
+<li>supports single player mode
 </ul>
 
-This is the KDE reimplementation of the original Java game
-Cross the Water.
+The Escape/SDL client is a python-based version of the existing Escape game.
+Local games are also possible with this client.
 
 <br><br>
 
@@ -40,10 +41,15 @@ Cross the Water.
 <i>Related pages:</i>
 <br><br>
 
-<a href="/engines/krosswater/"><i>Engine: Krosswater</i></a>
+<a href="/engines/escape/"><i>Engine: Escape</i></a>
 <br><br>
 
-<a href="/gameservers/krosswater/"><i>Server: Krosswater</i></a>
+<a href="/gameservers/escape/"><i>Server: Escape</i></a>
+<br><br>
+
+<img src="/pics/icons/game_windows.png">
+<i>Windows client: Escape</i><br>
+<a href="/games/escape/"><img src="/games/pics/escape.png"></a>
 <br><br>
 
 </td>

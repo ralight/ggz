@@ -13,23 +13,41 @@ Board game for 2-5 players.
 <tr>
 <td valign="top">
 
-<i>Geekgame features</i><br>
+<i>Screenshot</i><br>
+<img src="/games/pics/geekgame.png">
+<br clear="all">
+<br>
+
+<i>Fact sheet</i><br>
 <ul>
 <li>SDL game client
 <li>AI opponents available
 <li>Single player mode
+<li>Player photo can be used within the game
 </ul>
-<br>
 
-<i>Geekgame rules</i><br>
-The game supports 4 modes of varying difficulty: easy, matrix, havoc and hax0r.
-Depending on their rules, 0s and 1s have to be rearranged on the game board.
-Each player tries to disturb the others while arranging the numbers to his advantage.
+Geekgame is a mind game which requires strong mathematical skills.
+It is mostly only played and understood by real geeks.
+
+<br><br>
+
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
 
 </td><td valign="top">
 
-<i>SDL client:</i><br>
-<img src="/games/pics/geekgame.png">
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/geekgame/"><i>Engine: Geekgame</i></a>
+<br><br>
+
+<a href="/gameservers/geekgame/"><i>Server: Geekgame</i></a>
+<br><br>
 
 </td>
 </tr>

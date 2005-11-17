@@ -5,8 +5,8 @@
 <td>
 <font size="3">
 
-<b>Krosswater</b><br>
-Board game for 2 to 4 players.
+<b>TTT3D</b><br>
+Board game for 2 players.
 <br>
 
 <table class="inner">
@@ -14,17 +14,18 @@ Board game for 2 to 4 players.
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/krosswater.png">
+<img src="/games/pics/ttt3d.png">
 <br clear="all">
 <br>
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Character selection at the beginning
+<li>Simple TTT client
+<li>Requires OpenGL acceleration
 </ul>
 
-This is the KDE reimplementation of the original Java game
-Cross the Water.
+A 3D client based on the SDL and Mesa 3D libraries.
+Controlling the game board happens via key presses only.
 
 <br><br>
 
@@ -40,10 +41,20 @@ Cross the Water.
 <i>Related pages:</i>
 <br><br>
 
-<a href="/engines/krosswater/"><i>Engine: Krosswater</i></a>
+<a href="/engines/tictactoe/"><i>Engine: TicTacToe</i></a>
 <br><br>
 
-<a href="/gameservers/krosswater/"><i>Server: Krosswater</i></a>
+<a href="/gameservers/tictactoe/"><i>Server: TicTacToe</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: TicTacToe</i><br>
+<a href="/games/tictactoe/"><img src="/games/pics/tictactoe.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KTicTacTux</i><br>
+<a href="/games/ktictactux/"><img src="/games/pics/ktictactux.png"></a>
 <br><br>
 
 </td>

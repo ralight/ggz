@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Reversi</b><br>
+<b>KReversi</b><br>
 Board game for 2 players.
 <br>
 
@@ -14,25 +14,27 @@ Board game for 2 players.
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/reversi.png">
+<img src="/games/pics/kreversi.png">
 <br clear="all">
 <br>
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Simple Gtk+ client for Reversi
+<li>KDE client for Reversi
+<li>Supports theme selection
 </ul>
 <br>
 
-This is the Gtk+ client for the Reversi board game.
-Some options can be configured from within the game client.
+This is the KDE client for the Reversi board game, not to be
+confused with the KReversi game from KDE's kde-games package.
+It is comparable to the Gtk+ variant.
 
 <br><br>
 
 <i>GGZ game client support</i><br>
 <table class="listnorm">
-<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
@@ -47,9 +49,9 @@ Some options can be configured from within the game client.
 <a href="/gameservers/reversi/"><i>Server: Reversi</i></a>
 <br><br>
 
-<img src="/pics/icons/game_kde.png">
-<i>KDE client: KReversi</i><br>
-<a href="/games/kreversi/"><img src="/games/pics/kreversi.png"></a>
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Reversi</i><br>
+<a href="/games/reversi/"><img src="/games/pics/reversi.png"></a>
 <br><br>
 
 <img src="/pics/icons/game_sdl.png">

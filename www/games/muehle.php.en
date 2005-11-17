@@ -13,23 +13,39 @@ Board game for 2 players.
 <tr>
 <td valign="top">
 
-<i>Muehle features</i><br>
-<ul>
-<li>KDE game client
-<li>supports statistics
-<li>support for game spectators
-</ul>
+<i>Screenshot</i><br>
+<img src="/games/pics/muehle.png">
+<br clear="all">
 <br>
 
-<i>Muehle rules</i><br>
-Muehle (or Nine Man's Morris) is a game family where nodes are connected
-by edges. Three or more edges in a row must be owned by a player to be
-able to take one stone away from the opponent.
+<i>Fact sheet</i><br>
+<ul>
+<li>supports themes
+<li>supports different board layouts
+</ul>
+
+The Muehle client can play regular Muehle games (Nine Men's Morris)
+as well as Roman and other variants. New board layouts can easily be added.
+
+<br><br>
+
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
 
 </td><td valign="top">
 
-<i>KDE client:</i><br>
-<img src="/games/pics/muehle.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/muehle/"><i>Engine: Muehle</i></a>
+<br><br>
+
+<a href="/gameservers/muehle/"><i>Server: Muehle</i></a>
+<br><br>
 
 </td>
 </tr>

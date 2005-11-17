@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Chinese Checkers</b><br>
+<b>KCC</b><br>
 Board game for 2 to 6 players.
 <br>
 
@@ -14,26 +14,28 @@ Board game for 2 to 6 players.
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/ccheckers.png">
+<img src="/games/pics/kcc.png">
 <br clear="all">
 <br>
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Gtk+ client implementation
+<li>KDE client implementation
 <li>supports statistics
 <li>supports themes
+<li>frameless shaped window mode
 </ul>
 
 The Chinese Checkers game is sometimes also known as Halma.
+This KDE client can use the same themes as the Gtk+ client.
 
 <br><br>
 
 <i>GGZ game client support</i><br>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
 </td><td valign="top">
@@ -50,8 +52,8 @@ The Chinese Checkers game is sometimes also known as Halma.
 <br><br>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: KCC</i><br>
-<a href="/games/kcc/"><img src="/games/pics/kcc.png"></a>
+<i>Gtk+ client: Chinese Checkers</i><br>
+<a href="/games/ccheckers/"><img src="/games/pics/ccheckers.png"></a>
 <br><br>
 
 </td>

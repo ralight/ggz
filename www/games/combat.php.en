@@ -13,28 +13,38 @@ Board game for 2 players.
 <tr>
 <td valign="top">
 
-<i>Combat features</i><br>
+<i>Screenshot</i><br>
+<img src="/games/pics/combat.png">
+<br clear="all">
+<br>
+
+<i>Fact sheet</i><br>
 <ul>
-<li>Gtk+ game client
+<li>Different maps available
+<li>Level editor included
 </ul>
 <br>
 
-<i>Combat rules</i><br>
-Both players have an equipe of bombs, spies, generals and so forth.
-All characters must be placed on the map before the game begins. The
-opponent's characters can not be seen, but their positions are available
-to the player.
+This is the unique Combat client for GGZ. It is implemented in the Gtk+ toolkit.
 
-Now, in each turn one character is moved, and may hit an opponent. In such
-a case, the hightest-ranked character wins.
+<br><br>
 
-The goal is to find the opponent's flag, optimally without hitting the bombs
-which are set up as obstacles.
-
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/combat.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/combat/"><i>Engine: Combat</i></a>
+<br><br>
+
+<a href="/gameservers/combat/"><i>Server: Combat</i></a>
+<br><br>
 
 </td>
 </tr>

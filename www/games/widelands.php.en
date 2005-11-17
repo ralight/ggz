@@ -8,9 +8,12 @@
 <b>Widelands</b><br>
 Strategy game for 2-8 players.
 <br>
-<table class="list">
+<table class="listnorm">
 <tr><td>
-The game client is not a GGZ project but can be used on GGZ.
+This game client is not a GGZ project but it does provide GGZ support.
+The project homepage is:
+<br>
+<a href="http://www.widelands.org/">widelands.org</a>.
 </td></tr>
 </table>
 
@@ -18,28 +21,47 @@ The game client is not a GGZ project but can be used on GGZ.
 <tr>
 <td valign="top">
 
-<i>Widelands features</i><br>
-<ul>
-<li>SDL game client
-<li>client-side server
-<li>can act as GGZ core client
-</ul>
+<i>Screenshot</i><br>
+<img src="/games/pics/widelands.png">
+<br clear="all">
 <br>
 
-<i>Widelands rules</i><br>
-In Widelands, the player leads a tribe from a single headquarter
-to a prosporous nation. Construction, expansion, economy and battles
-are the main elements of this game.
+<i>Fact sheet</i><br>
+<ul>
+<li>Single player mode (local AI)
+<li>Level editor included
+<li>Support for campaigns and themes
+<li>Written in C++ using the SDL toolkit
+<li>Can act as GGZ core client
+</ul>
+
+The Widelands game client implements a fully-featured strategy game,
+which is best described on its own homepage.
+One of the clients can act as a server for each game, therefore no
+dedicated Widelands game server is needed, but instead a minimal
+GGZ game server is used to initiate the game.
 
 <br><br>
 
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
+
+<br>
+
 <i>Homepage of Widelands</i><br>
-<a href="http://widelands.sourceforge.net/" target="blank">http://widelands.sourceforge.net/</a>
+<a href="http://www.widelands.org/" target="blank">http://www.widelands.org/</a>
 
 </td><td valign="top">
 
-<i>SDL client:</i><br>
-<img src="/games/pics/widelands.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/widelands/"><i>Engine: Widelands</i></a>
+<br><br>
 
 </td>
 </tr>

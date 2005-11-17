@@ -5,26 +5,36 @@
 <td>
 <font size="3">
 
-<b>Krosswater</b><br>
-Board game for 2 to 4 players.
+<b>Freelords</b><br>
+Strategy game for 2-8 players.
 <br>
+<table class="listnorm">
+<tr><td>
+This game client is not a GGZ project but it does provide GGZ support.
+The project homepage is:
+<br>
+<a href="http://www.freelords.org/">freelords.org</a>.
+</td></tr>
+</table>
 
 <table class="inner">
 <tr>
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/krosswater.png">
+<img src="/games/pics/freelords.png">
 <br clear="all">
 <br>
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Character selection at the beginning
+<li>Single player mode (local AIs)
+<li>GGZ support is optional
 </ul>
 
-This is the KDE reimplementation of the original Java game
-Cross the Water.
+Freelords is a strategy game.
+The client can be compiled with GGZ support in order to allow for games
+on GGZ servers.
 
 <br><br>
 
@@ -35,15 +45,20 @@ Cross the Water.
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
+<br>
+
+<i>Homepage of Freelords</i><br>
+<a href="http://www.freelords.org/" target="blank">http://www.freelords.org/</a>
+
 </td><td valign="top">
 
 <i>Related pages:</i>
 <br><br>
 
-<a href="/engines/krosswater/"><i>Engine: Krosswater</i></a>
+<a href="/engines/freelords/"><i>Engine: Freelords</i></a>
 <br><br>
 
-<a href="/gameservers/krosswater/"><i>Server: Krosswater</i></a>
+<a href="/gameservers/freelords/"><i>Server: Freelords</i></a>
 <br><br>
 
 </td>

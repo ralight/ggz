@@ -13,23 +13,41 @@ Role play game for 2-1000 players.
 <tr>
 <td valign="top">
 
-<i>Keepalive features</i><br>
+<i>Screenshot</i><br>
+<img src="/games/pics/keepalive.png">
+<br clear="all">
+<br>
+
+<i>Fact sheet</i><br>
 <ul>
 <li>KDE game client
 <li>Real-time movements
 <li>Eternal game, can always be rejoined
 <li>Intro menu with avatar and world selection
 </ul>
-<br>
 
-<i>Keepalive rules</i><br>
-So far, Keepalive is an experimental game.
-The player can only move around and die at one day.
+Keepalive is a somewhat experimental game in which the player joins one of the available
+worlds. The gameplay is thought to be RPG-like.
+
+<br><br>
+
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
 
 </td><td valign="top">
 
-<i>KDE client:</i><br>
-<img src="/games/pics/keepalive.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/keepalive/"><i>Engine: Keepalive</i></a>
+<br><br>
+
+<a href="/gameservers/keepalive/"><i>Server: Keepalive</i></a>
+<br><br>
 
 </td>
 </tr>

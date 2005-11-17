@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Chinese Chess</b><br>
+<b>Xadrez Chinês</b><br>
 Board game for 2 players.
 <br>
 
@@ -13,23 +13,41 @@ Board game for 2 players.
 <tr>
 <td valign="top">
 
-<i>Chinese Chess features</i><br>
+<i>Screenshot</i><br>
+<img src="/games/pics/xadrez-chines.png">
+<br clear="all">
+<br>
+
+<i>Fact sheet</i><br>
 <ul>
-<li>SDL game client
-<li>supports statistics
 <li>supports game spectators
 <li>AI opponent available
 <li>single-player mode
 </ul>
 <br>
 
-<i>Chinese Chess rules</i><br>
-Not yet written down.
+The Chinese Chess game for GGZ has been implemented using the Pygame toolkit.
+It is part of the ggz-python package, but separate from GGZBoard.
+
+<br><br>
+
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
 
 </td><td valign="top">
 
-<i>SDL client:</i><br>
-<img src="/games/pics/xadrez-chines.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/cchess/"><i>Engine: Chinese Chess</i></a>
+<br><br>
+
+<a href="/gameservers/cchess/"><i>Server: Chinese Chess</i></a>
+<br><br>
 
 </td>
 </tr>

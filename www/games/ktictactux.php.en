@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>TicTacToe</b><br>
+<b>KTicTacTux</b><br>
 Board game for 2 players.
 <br>
 
@@ -14,26 +14,30 @@ Board game for 2 players.
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/tictactoe.png">
+<img src="/games/pics/ktictactux.png">
 <br clear="all">
 <br>
 
 <i>Fact sheet</i><br>
 <ul>
 <li>Simple TTT client
+<li>Support for an AI player
+<li>Different themes
 </ul>
 
-This is the Gtk+ client for the Tic-Tac-Toe game.
+This is the KDE client for the Tic-Tac-Toe game.
 It is equipped with the common dialog for viewing and editing
 the seat configuration.
+Additionally, one of the available themes can be selected,
+and new themes can be downloaded.
 
 <br><br>
 
 <i>GGZ game client support</i><br>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
-<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
 </td><td valign="top">
@@ -47,9 +51,9 @@ the seat configuration.
 <a href="/gameservers/tictactoe/"><i>Server: TicTacToe</i></a>
 <br><br>
 
-<img src="/pics/icons/game_kde.png">
-<i>KDE client: KTicTactux</i><br>
-<a href="/games/ktictactux/"><img src="/games/pics/ktictactux.png"></a>
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: TicTacToe</i><br>
+<a href="/games/tictactoe/"><img src="/games/pics/tictactoe.png"></a>
 <br><br>
 
 <img src="/pics/icons/game_sdl.png">
