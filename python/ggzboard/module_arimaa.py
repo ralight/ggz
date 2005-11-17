@@ -32,45 +32,11 @@ class Game:
 		self.boardstyle[5][2] = "arimaa/celltrap.png"
 		self.boardstyle[5][5] = "arimaa/celltrap.png"
 
-		self.boardwidth = 59
-		self.boardheight = 59
+		self.boardwidth = 58
+		self.boardheight = 58
 
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))
-
-		self.board[0][0] = ("cat", "gold")
-		self.board[0][1] = ("dog", "gold")
-		self.board[0][2] = ("horse", "gold")
-		self.board[0][3] = ("camel", "gold")
-		self.board[0][4] = ("elephant", "gold")
-		self.board[0][5] = ("horse", "gold")
-		self.board[0][6] = ("dog", "gold")
-		self.board[0][7] = ("cat", "gold")
-		self.board[1][0] = ("rabbit", "gold")
-		self.board[1][1] = ("rabbit", "gold")
-		self.board[1][2] = ("rabbit", "gold")
-		self.board[1][3] = ("rabbit", "gold")
-		self.board[1][4] = ("rabbit", "gold")
-		self.board[1][5] = ("rabbit", "gold")
-		self.board[1][6] = ("rabbit", "gold")
-		self.board[1][7] = ("rabbit", "gold")
-
-		self.board[7][0] = ("cat", "silver")
-		self.board[7][1] = ("dog", "silver")
-		self.board[7][2] = ("horse", "silver")
-		self.board[7][3] = ("camel", "silver")
-		self.board[7][4] = ("elephant", "silver")
-		self.board[7][5] = ("horse", "silver")
-		self.board[7][6] = ("dog", "silver")
-		self.board[7][7] = ("cat", "silver")
-		self.board[6][0] = ("rabbit", "silver")
-		self.board[6][1] = ("rabbit", "silver")
-		self.board[6][2] = ("rabbit", "silver")
-		self.board[6][3] = ("rabbit", "silver")
-		self.board[6][4] = ("rabbit", "silver")
-		self.board[6][5] = ("rabbit", "silver")
-		self.board[6][6] = ("rabbit", "silver")
-		self.board[6][7] = ("rabbit", "silver")
 
 		self.isover = 0
 
@@ -80,6 +46,43 @@ class Game:
 		self.playercolours = None
 		self.winner = None
 		self.help = None
+
+		# ...
+		self.placements = 1
+		self.selection = None
+		self.setonly = 1
+		self.selected = None
+
+		piecelist = []
+		for i in range(8):
+			piecelist.append("rabbit")
+		for i in range(2):
+			piecelist.append("cat")
+		for i in range(2):
+			piecelist.append("dog")
+		for i in range(2):
+			piecelist.append("horse")
+		piecelist.append("camel")
+		piecelist.append("elephant")
+
+		pl1 = piecelist[:]
+		pl2 = piecelist[:]
+		for i in range(len(piecelist)):
+			pl1[i] = (pl1[i], "silver")
+			pl2[i] = (pl2[i], "gold")
+
+		self.piecelist = {}
+		self.piecelist["silver"] = pl1
+		self.piecelist["gold"] = pl2
+
+	def selectpiece(self, placepos):
+		if not self.placements:
+			return
+		print "..."
+		self.selection = []
+		for piece in self.piecelist["gold"]:
+			if piece:
+				self.selection.append(piece)
 
 	def init(self, path):
 		self.datapath = path
@@ -94,8 +97,12 @@ class Game:
 		return self.datapath + "arimaa/" + piecestr + "_" + colorstr + ".png"
 
 	def validatemove(self, fromcolor, frompos, topos):
-		(oldx, oldy) = frompos
+		if frompos:
+			(oldx, oldy) = frompos
 		(x, y) = topos
+
+		# XXX
+		return 1
 
 		valid = 1
 		reason = ""
@@ -127,20 +134,27 @@ class Game:
 
 	def trymove(self, frompos, topos):
 		ret = 0
+		valid = 0
 
-		(oldx, oldy) = frompos
-		(x, y) = topos
-		valid = self.validatemove("gold", frompos, topos)
+		if not self.placements:
+			(oldx, oldy) = frompos
+			(x, y) = topos
+			valid = self.validatemove("gold", frompos, topos)
+		else:
+			if self.selected:
+				if self.selected in self.piecelist["gold"]:
+					valid = 1
 
 		if valid:
-			(figure, color) = self.board[oldy][oldx]
+			#(figure, color) = self.board[oldy][oldx]
 			print "TRYMOVE", frompos, topos
 			ret = 1
+
 		return ret
 
 	def aimove(self):
 		# FIXME: find???
-		self.isover = 1
+		#self.isover = 1
 		return (0, 0, 0)
 
 		frompos = (fromval % 8, fromval / 8)
@@ -153,10 +167,31 @@ class Game:
 		return (ret, frompos, topos) 
 
 	def domove(self, frompos, topos):
-		(oldx, oldy) = frompos
-		(x, y) = topos
-		self.board[y][x] = self.board[oldy][oldx]
-		self.board[oldy][oldx] = None
+		if not self.placements:
+			(oldx, oldy) = frompos
+			(x, y) = topos
+			self.board[y][x] = self.board[oldy][oldx]
+			self.board[oldy][oldx] = None
+		else:
+			if self.selected:
+				for i in range(len(self.piecelist["gold"])):
+					if self.piecelist["gold"][i] == self.selected:
+						self.piecelist["gold"][i] = None
+						break
+				(x, y) = topos
+				self.board[y][x] = self.selected
+				self.selected = None
+
+				switchstate = 1
+				for piece in self.piecelist["gold"]:
+					if piece:
+						switchstate = 0
+				#for piece in self.piecelist["silver"]:
+				#	if piece:
+				#		switchstate = 0
+				if switchstate:
+					self.placements = 0
+					self.setonly = 0
 
 	def over(self):
 		return self.isover

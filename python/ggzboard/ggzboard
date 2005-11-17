@@ -212,6 +212,110 @@ class GGZBoard:
 			elif not self.shutdown:
 				self.about()
 
+	def selectscreen(self):
+		ui = self.ui
+		conf = self.conf
+		game = self.game
+
+		title = ui.font.render(_("GGZBoard: piece selection"), 1, (255, 200, 0))
+
+		pygame.event.clear()
+
+		updatescreen = 1
+
+		x = -1
+		y = -1
+		selected = -1
+		quit = 0
+
+		(posx, posy) = pygame.mouse.get_pos()
+
+		while quit == 0:
+			pygame.event.pump()
+			if updatescreen:
+				event = pygame.event.poll()
+			else:
+				event = pygame.event.wait()
+
+			if event.type == KEYDOWN:
+				key = event.key
+				if key == K_ESCAPE or pygame.event.peek(QUIT):
+					break
+				if key == K_f:
+					self.ui.togglefullscreen()
+					updatescreen = 1
+
+			if event.type == MOUSEMOTION:
+				(posx, posy) = event.pos
+
+			if event.type == MOUSEBUTTONDOWN:
+				w = ui.backgroundarea.get_width()
+				h = ui.backgroundarea.get_height()
+				x = conf.marginwidth
+				y = h - 25 #h - conf.marginheight + 40
+				if posx > x and posx < x + 150 and posy > y and posy < y + 20:
+					updatescreen = 1
+					selected = 1
+					quit = 1
+				#bx = 20 + i * conf.cellwidth + i * 10
+				#by=200
+				# i * c + i * 10 = i * (c + 10)
+				if posy > 200 and posy < 200 + conf.cellheight:
+					px = posx - 20
+					if px > 0:
+						i = int(px / (conf.cellwidth + 10))
+						if px > i * conf.cellwidth + 10:
+							if i < len(game.selection):
+								print "I", i
+								print game.selection
+								return game.selection[i]
+
+			if updatescreen:
+				ui.backgroundarea = ui.deepcopy(ui.surface)
+				ui.backgroundarea.blit(title, (20, 30))
+
+				text = []
+				text.append(_("Please select one of the following pieces:"))
+				if game.help:
+					for line in game.help:
+						text.append(line)
+				i = 0
+				for line in text:
+					img = ui.smallfont.render(line, 1, (255, 200, 0))
+					ui.backgroundarea.blit(img, (30, i * 20 + 100 + 10))
+					i += 1
+
+				w = ui.backgroundarea.get_width()
+				h = ui.backgroundarea.get_height()
+				x = conf.marginwidth
+				y = h - 25 #h - conf.marginheight + 40
+
+				color = conf.tilecolor
+				if selected == 1:
+					(r, g, b) = color
+					color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
+				self.rect(ui.backgroundarea, (255, 255, 255), x, y, 150, 20, color)
+				img = ui.smallfont.render(_("Cancel selection"), 1, (255, 200, 0))
+				ui.backgroundarea.blit(img, (x + 10, y + 1))
+
+				i = 0
+				for piece in game.selection:
+					img = self.svgsurface(game.figure(piece), conf.cellwidth, conf.cellheight)
+					bx = 20 + i * conf.cellwidth + i * 10
+					by = 200
+					i += 1
+					ui.backgroundarea.blit(img, (bx, by))
+					#if j == oldy and i == oldx:
+					#	overlay = pygame.Surface(tilepicture.get_size())
+					#	overlay.fill((255, 255, 255))
+					#	overlay.set_alpha(70)
+					#	ui.backgroundarea.blit(overlay, (bx, by))
+
+				ui.screen.blit(ui.backgroundarea, (0, 0))
+				updatescreen = 0
+
+				pygame.display.flip()
+
 	def helpscreen(self):
 		ui = self.ui
 		conf = self.conf
@@ -519,6 +623,8 @@ class GGZBoard:
 		sleep = 0
 		skipplayer = 0
 		selected = -1
+		savex = -1
+		savey = -1
 
 		thinking = 0
 		inputallowed = 1
@@ -623,15 +729,21 @@ class GGZBoard:
 				if considered:
 					if oldx == -1:
 						if game.setonly:
-							ret = game.trymove(None, (x, y))
-							if ret:
-								if self.ggzmode:
-									net.domove(None, (x, y))
-								else:
-									game.toggleplayer()
-									game.domove(None, (x, y))
-									aiturn = 1
-									thinking = 1
+							# XXX: sync
+							game.selectpiece((x, y))
+							if not game.selection:
+								ret = game.trymove(None, (x, y))
+								if ret:
+									if self.ggzmode:
+										net.domove(None, (x, y))
+									else:
+										game.toggleplayer()
+										game.domove(None, (x, y))
+										aiturn = 1
+										thinking = 1
+							else:
+								savex = x
+								savey = y
 						else:
 							oldx = x
 							oldy = y
@@ -726,10 +838,17 @@ class GGZBoard:
 									self.rect(ui.backgroundarea, (255, 255, 255), sx + 2, sy + 2, conf.cellwidth - 4, conf.cellheight - 4, color)
 						if board[j][i]:
 							img = self.svgsurface(game.figure(board[j][i]), conf.cellwidth, conf.cellheight)
+							bx = sx
+							by = sy
 							if game.intersections:
-								ui.backgroundarea.blit(img, (sx - conf.cellwidth / 2, sy - conf.cellwidth / 2))
-							else:
-								ui.backgroundarea.blit(img, (sx, sy))
+								bx = sx - conf.cellwidth / 2
+								by = sy - conf.cellwidth / 2
+							ui.backgroundarea.blit(img, (bx, by))
+							if j == oldy and i == oldx:
+								overlay = pygame.Surface(tilepicture.get_size())
+								overlay.fill((255, 255, 255))
+								overlay.set_alpha(70)
+								ui.backgroundarea.blit(overlay, (bx, by))
 
 				playernames = None
 				if self.ggzsuccess:
@@ -844,6 +963,26 @@ class GGZBoard:
 				game.toggleplayer()
 				skipplayer = 0
 				updatescreen = 1
+
+			if game.selection:
+				sel = self.selectscreen()
+				print "SEL", sel
+				updatescreen = 1
+				game.selection = None
+				if sel:
+					x = savex
+					y = savey
+					game.selected = sel
+					# FIXME: merge with mouse-press stuff
+					ret = game.trymove(None, (x, y))
+					if ret:
+						if self.ggzmode:
+							net.domove(None, (x, y))
+						else:
+							game.toggleplayer()
+							game.domove(None, (x, y))
+							aiturn = 1
+							thinking = 1
 
 			if selected == 0:
 				sdlnewstuff.gethotnewstuff(game.name())
