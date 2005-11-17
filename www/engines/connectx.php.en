@@ -1,0 +1,54 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>ConnectX</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>ConnectX features</i><br>
+<ul>
+<li>Windows game client available
+<li>AI opponent available
+</ul>
+<br>
+
+<i>ConnectX rules</i><br>
+Yet to be written down.
+
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/connectx/"><i>Server: ConnectX</i></a>
+<br><br>
+
+<img src="/pics/icons/game_windows.png">
+<i>Windows client: ConnectX</i><br>
+<a href="/games/connectx/"><img src="/games/pics/connectx.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

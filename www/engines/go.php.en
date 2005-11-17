@@ -41,12 +41,21 @@ No further information present.
 
 </td><td valign="top">
 
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/goserver/"><i>Server: Goserver</i></a>
+<br><br>
+
+
+<img src="/pics/icons/game_x11.png">
 <i>X11 client: CGoBan</i><br>
 <a href="/games/gnugo/"><img src="/games/pics/gnugo.png"></a>
 <br>
 
 <br>
 
+<img src="/pics/icons/game_sdl.png">
 <i>SDL client: GGZBoard</i><br>
 <a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
 <br>

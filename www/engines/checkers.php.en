@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Chinese Chess</b><br>
+<b>Checkers</b><br>
 Board game for 2 players.
 <br>
 
@@ -13,20 +13,17 @@ Board game for 2 players.
 <tr>
 <td valign="top">
 
-<i>Chinese Chess features</i><br>
+<i>Checkers features</i><br>
 <ul>
-<li>SDL game client
-<li>supports statistics
-<li>supports game spectators
+<li>SDL game client available
 <li>AI opponent available
-<li>single-player mode
 </ul>
 <br>
 
-<i>Chinese Chess rules</i><br>
-Not yet written down.
-Basically, Chinese Chess is a more complex and asymmetric variant of Chess
-with a more individual movement of the pieces.
+<i>Checkers rules</i><br>
+Yet to be written down.
+The Checkers game is sometimes also known under the name Draughts,
+and sometimes as Dame.
 
 <br><br>
 
@@ -38,12 +35,12 @@ No further information present.
 <i>Related pages:</i>
 <br><br>
 
-<a href="/gameservers/cchess/"><i>Server: Chinese Chess</i></a>
+<a href="/gameservers/checkers/"><i>Server: Checkers</i></a>
 <br><br>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: Xadrez Chinês</i><br>
-<a href="/games/cchess/"><img src="/games/pics/xadrez-chines.png"></a>
+<i>SDL client: GGZBoard</i><br>
+<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
 <br>
 
 </td>

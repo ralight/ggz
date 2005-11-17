@@ -15,7 +15,7 @@ Board game for 2 players.
 
 <i>TicTacToe features</i><br>
 <ul>
-<li>5 game clients available: Gtk+, KDE, SDL/OpenGL, Console, Grubby
+<li>5 game clients available: TicTacToe (Gtk+), KTicTacTux (KDE), SDL/OpenGL (TTT3D), Console (TTTXT), Grubby (Guru-TTT)
 <li>supports statistics
 <li>supports game spectators
 <li>AI opponent available
@@ -34,14 +34,32 @@ or diagonally) by putting a symbol on a free field in each turn.
 
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/tictactoe.png"><br>
+<i>Related pages:</i>
+<br><br>
 
-<i>KDE client:</i><br>
-<img src="/games/pics/ktictactux.png"><br>
+<a href="/gameservers/tictactoe/"><i>Server: TicTacToe</i></a>
+<br><br>
 
-<i>SDL/OpenGL client:</i><br>
-<img src="/games/pics/ttt3d.png">
+<a href="/gameservers/rubytoe/"><i>Server: RubyToe</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: TicTacTux</i><br>
+<a href="/games/tictactoe/"><img src="/games/pics/tictactoe.png"></a>
+<br>
+
+<br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KTicTacTux</i><br>
+<a href="/games/tictactoe/"><img src="/games/pics/ktictactux.png"></a>
+<br>
+
+<br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL/OpenGL client: TTT3D</i><br>
+<a href="/games/tictactoe/"><img src="/games/pics/ttt3d.png"></a>
 
 </td>
 </tr>

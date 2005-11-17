@@ -8,9 +8,11 @@
 <b>Freeciv</b><br>
 Strategy game for 2-30 players.
 <br>
-<table class="list">
+<table class="listnorm">
 <tr><td>
-The game client and server are not GGZ projects but can be used on GGZ.  You will need to patch your version of Freeciv; you can get the patch from <a href="ftp://ftp.freeciv.org/freeciv/contrib/development/misc/ggz/">here</a>.  Freeciv 2.0.2 or later is supported, with the GTK+-2.0 client only.  After applying the patch, run "./autogen.sh --with-ggz-server --with-ggz-client --with-readline".
+Neither the game server nor the game client are GGZ projects but they do provide GGZ support.
+The project homepage is:
+<a href="http://www.freeciv.org/">freeciv.org</a>.
 </td></tr>
 </table>
 
@@ -33,13 +35,21 @@ A detailed manual is available at
 
 <br><br>
 
-<i>Homepage of Freeciv</i><br>
-<a href="http://www.freeciv.org/" target="blank">http://www.freeciv.org/</a>
+<i>Protocol and documentation</i><br>
+No further information present.
 
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/freeciv.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/freeciv/"><i>Server: Freeciv</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Freeciv</i><br>
+<a href="/games/freeciv/"><img src="/games/pics/freeciv.png"></a>
+<br>
 
 </td>
 </tr>

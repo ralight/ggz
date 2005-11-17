@@ -1,0 +1,63 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Freelords</b><br>
+Strategy game for 2-8 players.
+<br>
+<table class="listnorm">
+<tr><td>
+Neither the game server nor the game client are GGZ projects but they do provide GGZ support.
+The project homepage is:
+<a href="http://www.freelords.org/">freelords.org</a>.
+<br>
+</td></tr>
+</table>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Freelords features</i><br>
+<ul>
+<li>SDL game client
+</ul>
+
+<i>Freelords rules</i><br>
+Freelords has been inspired by the gameplay of the game Warlords.
+It is a turnbased game in which each player has to conquer cities
+on a map. The more cities are conquered, the more money is earned
+to buy armies or (at times) heroes.
+
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/freelords/"><i>Server: Freelords</i></a>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: Freelords</i><br>
+<a href="/games/freelords/"><img src="/games/pics/freelords.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

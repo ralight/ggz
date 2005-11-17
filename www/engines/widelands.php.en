@@ -25,7 +25,6 @@ The project homepage is:
 <ul>
 <li>SDL game client
 <li>client-side server
-<li>can act as GGZ core client
 </ul>
 
 <i>Widelands rules</i><br>
@@ -43,6 +42,7 @@ No further information present.
 <i>Related pages:</i>
 <br><br>
 
+<img src="/pics/icons/game_sdl.png">
 <i>SDL client:</i><br>
 <a href="/games/widelands/"><img src="/games/pics/widelands.png"></a>
 <br>

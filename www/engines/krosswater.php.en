@@ -28,10 +28,23 @@ from the player in horizontal or vertical steps to the right side.
 Nasty opponents are going to try to take stones from your way to insert
 them into theirs...
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>KDE client:</i><br>
-<img src="/games/pics/krosswater.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/krosswater/"><i>Server: Krosswater</i></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: Krosswater</i><br>
+<a href="/games/krosswater/"><img src="/games/pics/krosswater.png"></a>
+<br>
 
 </td>
 </tr>

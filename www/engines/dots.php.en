@@ -15,7 +15,7 @@ Board game for 2 players.
 
 <i>Connect The Dots features</i><br>
 <ul>
-<li>Gtk+ and KDE game clients
+<li>2 game clients available: Dots (Gtk+) and KDots (KDE)
 <li>AI opponents available
 <li>supports statistics
 <li>supports game spectators
@@ -33,13 +33,30 @@ further cell can be marked anymore.
 The game ends if all cells are marked. The winner is the one who got most cells
 to be marked with his colour.
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/dots.png"><br>
+<i>Related pages:</i>
+<br><br>
 
-<i>KDE client:</i><br>
-<img src="/games/pics/kdots.png"><br>
+<a href="/gameservers/dots/"><i>Server: Connect The Dots</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Dots</i><br>
+<a href="/games/dots/"><img src="/games/pics/dots.png"></a>
+<br>
+
+<br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KDots</i><br>
+<a href="/games/kdots/"><img src="/games/pics/kdots.png"></a>
+<br>
 
 </td>
 </tr>

@@ -26,10 +26,23 @@ Muehle (or Nine Man's Morris) is a game family where nodes are connected
 by edges. Three or more edges in a row must be owned by a player to be
 able to take one stone away from the opponent.
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>KDE client:</i><br>
-<img src="/games/pics/muehle.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/muehle/"><i>Server: Muehle</i></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: Muehle</i><br>
+<a href="/games/muehle/"><img src="/games/pics/muehle.png"></a>
+<br>
 
 </td>
 </tr>

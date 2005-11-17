@@ -15,7 +15,7 @@ Board game for 2 players.
 
 <i>Escape features</i><br>
 <ul>
-<li>2 game clients available: Windows, SDL
+<li>2 game clients available: Escape (Windows), Escape/SDL (SDL)
 <li>supports statistics
 <li>supports game spectators
 <li>AI opponent available
@@ -42,13 +42,30 @@ or else result in a draw.
 
 Moving along a wall is not allowed.
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>Windows client:</i><br>
-<img src="/games/pics/escape.png"><br>
+<i>Related pages:</i>
+<br><br>
 
-<i>SDL client:</i><br>
-<img src="/games/pics/escape-sdl.png"><br>
+<a href="/gameservers/escape/"><i>Server: Escape</i></a>
+<br><br>
+
+<img src="/pics/icons/game_windows.png">
+<i>Windows client: Escape</i><br>
+<a href="/games/escape/"><img src="/games/pics/escape.png"></a>
+<br>
+
+<br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: Escape/SDL</i><br>
+<a href="/games/escape-sdl/"><img src="/games/pics/escape-sdl.png"></a>
+<br>
 
 </td>
 </tr>

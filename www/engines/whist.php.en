@@ -5,25 +5,23 @@
 <td>
 <font size="3">
 
-<b>La Pocha</b><br>
-Card game for 4 players.
+<b>Whist</b><br>
+Card game for ??? players.
 <br>
 
 <table class="inner">
 <tr>
 <td valign="top">
 
-<i>La Pocha features</i><br>
+<i>Whist features</i><br>
 <ul>
 <li>Gtk+ game client
 </ul>
 <br>
 
-<i>La Pocha rules</i><br>
-Before each turn, all players consecutively bid and then play their decks.
-Initially, the deck consists of one card only, but more cards are added over
-time starting in the 4th turn.
-The best bidder wins the game.
+<i>Whist rules</i><br>
+This card game is not documented here yet.
+Like all GGZCards game, Bridge belongs to the class of bid-taking card games.
 
 <br><br>
 

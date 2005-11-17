@@ -32,6 +32,10 @@ Game engines determine the game rules and communication protocols between
 game clients and game servers.
 Whereever possible, GGZ tries to adhere to existing game engine standards
 or at least support them optionally.
+Note that some of the games listed here are not part of the GGZ project,
+however some of them provide GGZ support, while others got a client reimplementation
+for GGZ. The <a href="/games/">games page</a> lists game clients categorically
+(by package), rather than by engine.
 The following game engines are currently playable on GGZ:
 <br><br>
 
@@ -61,7 +65,10 @@ The following game engines are currently playable on GGZ:
 <img src="/pics/icons/game_console.png">
 <a href="/games/tttxt/">TTTXT (Console)</a>
 </td>
-<td><a href="/gameservers/tictactoe/">TicTacToe server</a></td>
+<td>
+<a href="/gameservers/tictactoe/">TicTacToe server</a><br>
+<a href="/gameservers/rubytoe/">RubyToe server</a>
+</td>
 </tr>
 
 <tr>
@@ -127,7 +134,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/cchess/">Chinese Chess</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/cchess/">Chinese Chess (SDL)</a><br>
+<a href="/games/cchess/">Xadrez Chinês (SDL)</a><br>
 </td>
 <td><a href="/gameservers/cchess/">Chinese Chess server</a></td>
 </tr>
@@ -200,8 +207,13 @@ The following game engines are currently playable on GGZ:
 </tr>
 
 <tr>
-<td><a href="/engines/go/">Go/GMP</a></td>
 <td>
+<img src="/pics/icons/cgoban.png">
+<a href="/engines/go/">Go/GMP</a>
+</td>
+<td>
+<img src="/pics/icons/game_x11.png">
+<a href="/games/cgoban/">CGoBan (X11)</a><br>
 <img src="/pics/icons/game_sdl.png">
 <a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
 </td>
@@ -215,6 +227,27 @@ The following game engines are currently playable on GGZ:
 <a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
 </td>
 <td>(no GGZ support yet)</td>
+</tr>
+
+<tr>
+<td><a href="/engines/arimaa/">Arimaa</a></td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+</td>
+<td>(no GGZ support yet)</td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/game_rip.png">
+Batalla Naval
+</td>
+<td>
+<img src="/pics/icons/game_rip.png">
+Batalla Naval (GNOME) - R.I.P.<br>
+</td>
+<td>Batalla Naval server</td>
 </tr>
 
 </table>
@@ -296,7 +329,7 @@ LaPocha (Gtk+) - R.I.P.<br>
 </tr>
 
 <tr>
-<td><a href="/engines/hearts/">Whist</a></td>
+<td><a href="/engines/whist/">Whist</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
 <a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
@@ -321,7 +354,7 @@ LaPocha (Gtk+) - R.I.P.<br>
 <td><a href="/engines/keepalive/">Keepalive</a></td>
 <td>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/ggzcards/">Keepalive (KDE)</a><br>
+<a href="/games/keepalive/">Keepalive (KDE)</a><br>
 </td>
 <td><a href="/gameservers/keepalive/">Keepalive server</a></td>
 </tr>
@@ -337,21 +370,9 @@ LaPocha (Gtk+) - R.I.P.<br>
 
 </table>
 
-</td>
-</tr>
-</table>
-
 <br>
 
-There's also a number of games not being part of GGZ, which do however provide
-support for GGZ so they're nicely integrated into the system using spectators,
-statistics and so on.
-
-<table class="inner">
-<tr><td>
-
-<i>External games:</i><br>
-
+<i>Arcade games:</i><br>
 
 <table class="listnorm">
 <tr>
@@ -384,6 +405,31 @@ statistics and so on.
 <a href="/games/tuxman/">Tuxman (SDL)</a><br>
 </td>
 <td><a href="/gameservers/tuxman/">Tuxman server</a></td>
+</tr>
+
+<tr>
+<td>
+<img src="/pics/icons/game_rip.png">
+XTux Arena
+</td>
+<td>
+<img src="/pics/icons/game_rip.png">
+XTux Arena (SDL) - R.I.P.<br>
+</td>
+<td>XTux Arena server</td>
+</tr>
+
+</table>
+
+<br>
+
+<i>Strategy games:</i><br>
+
+<table class="listnorm">
+<tr>
+<td><i>Engine</i></td>
+<td><i>Corresponding clients</i></td>
+<td><i>Corresponding servers</i></td>
 </tr>
 
 <tr>
@@ -434,46 +480,6 @@ statistics and so on.
 <td><a href="/gameservers/freelords/">Freelords server</a></td>
 </tr>
 
-<tr>
-<td>
-<img src="/pics/icons/game_rip.png">
-Batalla Naval
-</td>
-<td>
-<img src="/pics/icons/game_rip.png">
-Batalla Naval (GNOME) - R.I.P.<br>
-</td>
-<td>Batalla Naval server</td>
-</tr>
-
-<tr>
-<td>
-<img src="/pics/icons/game_rip.png">
-XTux Arena
-</td>
-<td>
-<img src="/pics/icons/game_rip.png">
-XTux Arena (SDL) - R.I.P.<br>
-</td>
-<td>XTux Arena server</td>
-</tr>
-
-<tr>
-<td>
-<img src="/pics/icons/cgoban.png">
-<a href="/engines/go/">Go/GMP</a>
-</td>
-<td>
-<img src="/pics/icons/game_x11.png">
-<a href="/games/cgoban/">CGoBan (X11)</a><br>
-</td>
-<td><a href="/gameservers/goserver/">Go Server</a></td>
-</tr>
-
-</table>
-
-</td>
-</tr>
 </table>
 
 </font>

@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>NetSpades</b><br>
+<b>Spades</b><br>
 Card game for 4 players.
 <br>
 
@@ -13,14 +13,14 @@ Card game for 4 players.
 <tr>
 <td valign="top">
 
-<i>NetSpades features</i><br>
+<i>Spades features</i><br>
 <ul>
 <li>Gtk+ game client
 <li>AI opponents available
 </ul>
 <br>
 
-<i>NetSpades rules</i><br>
+<i>Spades rules</i><br>
 The first player (game host) is given the privilege to choose the minimum
 bid and the score needed to win a game.
 Each player then selects a bid and submits it.
@@ -28,10 +28,23 @@ This marks the start of the turns, in which all players clock-wise propose
 a card. The one with the highest card and color wins the trick.
 Since the game is named NetSpades, one can assume that Spades is trump.
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/netspades.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/spades/"><i>Server: NetSpades</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: NetSpades</i><br>
+<a href="/games/spades/"><img src="/games/pics/netspades.png"></a>
+<br>
 
 </td>
 </tr>

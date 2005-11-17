@@ -31,10 +31,23 @@ a case, the hightest-ranked character wins.
 The goal is to find the opponent's flag, optimally without hitting the bombs
 which are set up as obstacles.
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/combat.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/combat/"><i>Server: Combat</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Combat</i><br>
+<a href="/games/combat/"><img src="/games/pics/combat.png"></a>
+<br>
 
 </td>
 </tr>

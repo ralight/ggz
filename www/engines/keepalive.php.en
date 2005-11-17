@@ -26,10 +26,23 @@ Role play game for 2-1000 players.
 So far, Keepalive is an experimental game.
 The player can only move around and die at one day.
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>KDE client:</i><br>
-<img src="/games/pics/keepalive.png"><br>
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/keepalive/"><i>Server: Keepalive</i></a>
+<br><br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: Keepalive</i><br>
+<a href="/games/keepalive/"><img src="/games/pics/keepalive.png"></a>
+<br>
 
 </td>
 </tr>

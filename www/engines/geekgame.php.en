@@ -26,10 +26,22 @@ The game supports 4 modes of varying difficulty: easy, matrix, havoc and hax0r.
 Depending on their rules, 0s and 1s have to be rearranged on the game board.
 Each player tries to disturb the others while arranging the numbers to his advantage.
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>SDL client:</i><br>
-<img src="/games/pics/geekgame.png">
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/geekgame/"><i>Server: Geekgame</i></a>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: Geekgame</i><br>
+<a href="/games/geekgame/"><img src="/games/pics/geekgame.png"></a>
 
 </td>
 </tr>

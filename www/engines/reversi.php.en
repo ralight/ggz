@@ -15,7 +15,7 @@ Board game for 2 players.
 
 <i>Reversi features</i><br>
 <ul>
-<li>Gtk+ and KDE game clients
+<li>3 game clients available: Reversi (Gtk+), KReversi (KDE), GGZBoard (SDL)
 <li>AI opponents available
 <li>supports statistics
 </ul>
@@ -29,13 +29,37 @@ between the new one and any other own one, so they can get converted.
 The game ends if no stones can be set anymore. The player with the most
 stones wins the game.
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/reversi.png"><br>
+<i>Related pages:</i>
+<br><br>
 
-<i>KDE client:</i><br>
-<img src="/games/pics/kreversi.png"><br>
+<a href="/gameservers/reversi/"><i>Server: Reversi</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Reversi</i><br>
+<a href="/games/reversi/"><img src="/games/pics/reversi.png"></a>
+<br>
+
+<br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KReversi</i><br>
+<a href="/games/kreversi/"><img src="/games/pics/kreversi.png"></a>
+<br>
+
+<br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: GGZBoard</i><br>
+<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
+<br>
 
 </td>
 </tr>

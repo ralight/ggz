@@ -15,7 +15,7 @@ Board game for 2 players.
 
 <i>Chess features</i><br>
 <ul>
-<li>Gtk+ and KDE game clients
+<li>4 game clients available: Chess (Gtk+), Koenig (KDE), GGZBoard (SDL) and Guru-Chess (Grubby)
 <li>supports statistics
 </ul>
 <br>
@@ -24,13 +24,37 @@ Board game for 2 players.
 On game startup, the clock option is selected by the game host.
 Afterwards, the normal chess rules apply.
 
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/chess.png"><br>
+<i>Related pages:</i>
+<br><br>
 
-<i>KDE client:</i><br>
-<img src="/games/pics/koenig.png"><br>
+<a href="/gameservers/chess/"><i>Server: Chess</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Chess</i><br>
+<a href="/games/chess/"><img src="/games/pics/chess.png"></a>
+<br>
+
+<br>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: Koenig</i><br>
+<a href="/games/koenig/"><img src="/games/pics/koenig.png"></a>
+<br>
+
+<br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: GGZBoard</i><br>
+<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
+<br>
 
 </td>
 </tr>
