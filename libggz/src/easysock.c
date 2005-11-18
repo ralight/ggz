@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7514 2005-09-15 17:49:48Z josef $
+ * $Id: easysock.c 7634 2005-11-18 21:51:26Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -45,17 +45,19 @@ DEBUG_MEM
 #endif
 
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/uio.h>
-#include <sys/un.h>
 #include <sys/param.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netdb.h>
 
 #ifdef HAVE_WINSOCK2_H
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#else
+#include <sys/socket.h>
+#include <sys/uio.h>
+#include <sys/un.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
 #endif
 
 #include <stdio.h>
@@ -160,7 +162,7 @@ static int es_bind(const char *host, int port)
 
 	snprintf(serv, sizeof(serv), "%d", (unsigned int)port);
 
-	bzero(&hints, sizeof(struct addrinfo));
+	memset(&hints, 0, sizeof(struct addrinfo));
 	hints.ai_flags = AI_PASSIVE;
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
@@ -202,7 +204,7 @@ static int es_connect(const char *host, int port)
 
 	snprintf(serv, sizeof(serv), "%d", (unsigned int)port);
 
-	bzero(&hints, sizeof(struct addrinfo));
+	memset(&hints, 0, sizeof(struct addrinfo));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 

@@ -13,6 +13,7 @@ AM_MAINTAINER_MODE
 AC_GGZ_PLATFORM_BASE
 AC_PROG_LIBTOOL
 AC_GGZ_PLATFORM
+AC_CHECK_HEADERS([winsock2.h])
 
 # Compiling Options
 # =================
