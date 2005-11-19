@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_main.c 6670 2005-01-14 03:48:51Z jdorje $
+ * $Id: client_main.c 7635 2005-11-19 01:38:11Z jdorje $
  *
  * This file contains the client function which is responsible for
  * handling the particulars of playing spades on the client side.  I
@@ -74,10 +74,12 @@ int main(int argc, char *argv[])
 
 	AppInit();
 
-	if (ParseOptions(argc, argv) < 0)
-		return -1;
-
 	gtk_init(&argc, &argv);
+	if (ParseOptions(argc, argv) < 0) {
+		ggz_debug("main", "Invalid options given.");
+		return -1;
+	}
+
 	initialize_about_dialog();
 
 
