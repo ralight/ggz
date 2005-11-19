@@ -298,7 +298,7 @@ void DisplayCard(Card card, int y, int x)
 			GDK_RGB_DITHER_NONE, 0, 0);
 
 #ifdef DEBUG
-	g_printerr("%s\n", card_name(card, LONG_NAME));
+	ggz_debug("main", "%s\n", card_name(card, LONG_NAME));
 #endif
 
 }
@@ -349,7 +349,7 @@ void DisplayPlayedCard(Card card, int player, int id)
 	gtk_widget_queue_draw(playArea->table);
 
 #ifdef DEBUG
-	g_printerr("%s\n", card_name(card, LONG_NAME));
+	ggz_debug("main", "%s\n", card_name(card, LONG_NAME));
 #endif
 
 }
@@ -494,7 +494,7 @@ void DisplayCleanup(void)
 {
 
 #ifdef DEBUG
-	g_printerr("I'm dying\n");
+	ggz_debug("main", "I'm dying\n");
 #endif
 
 }

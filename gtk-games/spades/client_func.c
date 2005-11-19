@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 6903 2005-01-25 18:57:38Z jdorje $
+ * $Id: client_func.c 7637 2005-11-19 02:53:43Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -350,12 +350,12 @@ int GetPlayerId(void)
 {
 
 	int status;
-	g_printerr("Getting my ID\n");
+	ggz_debug("main", "Getting my ID\n");
 
 	if ((status =
 	     CheckReadInt(gameState.spadesSock,
 			  &gameState.playerId) == NET_OK))
-		g_printerr("My ID is %d\n", gameState.playerId);
+		ggz_debug("main", "My ID is %d\n", gameState.playerId);
 
 	/* If we're player 0, read in game options */
 	if (gameState.playerId == 0)
@@ -755,7 +755,7 @@ void UpdateGame(void)
 
 void NetClose(void)
 {
-	g_printerr("I'm dying 2\n");
+	ggz_debug("main", "I'm dying 2\n");
 	g_source_remove(spadesHandle);
 	if (ggzmod_disconnect(ggzmod) < 0)
 		exit(-2);	/* is this the desired behavior? */

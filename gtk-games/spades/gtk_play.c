@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_play.c 6340 2004-11-12 17:31:36Z jdorje $
+ * $Id: gtk_play.c 7637 2005-11-19 02:53:43Z jdorje $
  *
  * This fils contains functions for creating and handling the playing area
  *
@@ -35,6 +35,8 @@
 #include <gtk_play.h>
 #include <client.h>
 #include <display.h>
+
+#include <ggz.h>
 
 #include "ggzintl.h"
 
@@ -474,7 +476,7 @@ void ReadBid(GtkWidget * widget)
 	    gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
 
 #ifdef DEBUG
-	g_printerr("%d is my bid\n", bid);
+	ggz_debug("main", "%d is my bid\n", bid);
 #endif
 
 	if (gameState.gameSegment == ST_GET_BIDS &&

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_main.c 7635 2005-11-19 01:38:11Z jdorje $
+ * $Id: client_main.c 7637 2005-11-19 02:53:43Z jdorje $
  *
  * This file contains the client function which is responsible for
  * handling the particulars of playing spades on the client side.  I
@@ -118,6 +118,7 @@ int main(int argc, char *argv[])
 
 	cleanup_debugging();
 
+	ggz_debug("main", "Exiting normally.");
 	return (0);
 
 }
