@@ -106,7 +106,6 @@ dnl Debug modes
 dnl ===========
 AC_GGZ_DEBUG
 if test "$enable_debug" = yes; then
-  EXTRA_GAME_PARAMETERS="$EXTRA_GAME_PARAMETERS --g-fatal-errors"
   EXTRA_GAME_PARAMETERS="$EXTRA_GAME_PARAMETERS --g-fatal-warnings"
   AC_DEFINE([G_DISABLE_DEPRECATED], 1, [Disable deprecated glib functions])
   AC_DEFINE([GDK_DISABLE_DEPRACATED], 1, [Disable deprecated GDK functions])
