@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 7519 2005-09-16 19:44:09Z josef $
+ * $Id: ggzmod-ggz.c 7639 2005-11-24 18:11:41Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -735,6 +735,9 @@ static int game_prepare(int fd_pair[2], int *sock)
 	setenv("GGZSOCKET", "103", 1);
 	setenv("GGZMODE", "true", 1);
 #else
+	int port;
+	char buf[100];
+
 	/* Winsock implementation: see ggzmod_ggz_connect. */
 	port = 5898;
 	do {
@@ -767,9 +770,8 @@ static int game_prepare(int fd_pair[2], int *sock)
 static int game_fork(GGZMod * ggzmod)
 {
 	int sock;
-#ifdef HAVE_SOCKETPAIR
-	int fd_pair[2];		/* socketpair */
-#else
+	int fd_pair[2];		/* socketpair, always needs to be declared */
+#ifndef HAVE_SOCKETPAIR
 	int sock2, port;
 	char buf[100];
 #endif
@@ -881,9 +883,8 @@ static int game_fork(GGZMod * ggzmod)
 static int game_embedded(GGZMod * ggzmod)
 {
 	int sock;
-#ifdef HAVE_SOCKETPAIR
-	int fd_pair[2];		/* socketpair */
-#else
+	int fd_pair[2];		/* socketpair, always needs to be declared */
+#ifndef HAVE_SOCKETPAIR
 	int sock2, port;
 	char buf[100];
 #endif
