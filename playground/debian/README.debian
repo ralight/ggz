@@ -24,10 +24,12 @@ For other GGZ packages, (>= x.y.z) should be used.
 For debian build-deps, (>> x.y.z) should be used.
 The meta-ggz package is an exception, it also uses an
 equal (=) relationship.
+Data packages should declare a recommends (= ${Source-Version})
+on their binary counterpart, and be set to architecture:all.
 
 TODO
 ----
-- manpages for ggz-python
+- manpages for ggz-python (partially fixed for 0.0.13!)
 
 Open questions:
 ---------------
