@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 7524 2005-09-16 22:25:39Z josef $
+ * $Id: server.c 7643 2005-11-25 19:36:11Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -1436,7 +1436,9 @@ static void reconnect_alarm(int signal)
 {
 	if (_ggzcore_net_connect(reconnect_server->net) < 0) {
 		reconnect_server->state = GGZ_STATE_RECONNECTING;
+#ifndef HAVE_WINSOCK2_H
 		alarm(reconnect_timeout);
+#endif
 	} else {
 		reconnect_server->state = GGZ_STATE_ONLINE;
 		_ggzcore_server_event(reconnect_server, GGZ_CONNECTED, NULL);
@@ -1464,8 +1466,10 @@ void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans)
 			server->state = GGZ_STATE_RECONNECTING;
 			_ggzcore_server_event(server, GGZ_STATE_CHANGE, NULL);
 
+#ifndef HAVE_WINSOCK2_H
 			signal(SIGALRM, reconnect_alarm);
 			alarm(reconnect_timeout);
+#endif
 			return;
 		}
 	}
@@ -1521,6 +1525,8 @@ void _ggzcore_server_protocol_error(GGZServer * server, char *message)
 
 void _ggzcore_server_set_reconnect(void)
 {
+#ifndef HAVE_WINSOCK2_H
 	reconnect_policy = 1;
+#endif
 }
 
