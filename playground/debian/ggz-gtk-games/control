@@ -35,7 +35,7 @@ Description: GGZ Gaming Zone: game clients collection for Gtk+
 
 Package: ggz-gtk-game-data
 Architecture: all
-Depends: ggz-gtk-games (= ${Source-Version})
+Recommends: ggz-gtk-games (= ${Source-Version})
 Description: GGZ Gaming Zone: multimedia data for game clients for Gtk+
  GGZ games are games that can be played online against other people
  while all having some features in common, like table chat, seats

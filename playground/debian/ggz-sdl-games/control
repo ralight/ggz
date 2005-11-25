@@ -30,7 +30,7 @@ Description: GGZ Gaming Zone: game clients collection for SDL
 Package: ggz-sdl-game-data
 Architecture: all
 Section: games
-Depends: ggz-sdl-games (= ${Source-Version})
+Recommends: ggz-sdl-games (= ${Source-Version})
 Description: GGZ Gaming Zone: game clients collection for SDL
  GGZ games are games that can be played online against other people
  while all having some features in common, like table chat, seats

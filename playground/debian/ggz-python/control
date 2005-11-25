@@ -37,7 +37,7 @@ Description: GGZ Gaming Zone: game clients collection for SDL
 Package: ggz-python-game-data
 Architecture: all
 Section: games
-Depends: ggz-python-games (= ${Source-Version})
+Recommends: ggz-python-games (= ${Source-Version})
 Description: GGZ Gaming Zone: game clients collection for SDL
  GGZ games are games that can be played online against other people
  while all having some features in common, like table chat, seats

@@ -37,7 +37,7 @@ Description: GGZ Gaming Zone: game clients collection for KDE
 Package: ggz-kde-game-data
 Architecture: all
 Section: games
-Depends: ggz-kde-games (= ${Source-Version})
+Recommends: ggz-kde-games (= ${Source-Version})
 Description: GGZ Gaming Zone: game clients collection for KDE
  GGZ games are games that can be played online against other people
  while all having some features in common, like table chat, seats
