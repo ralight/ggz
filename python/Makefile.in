@@ -87,7 +87,7 @@ ggzchess-install:
 
 po-build:
 	@echo Building internationalization files
-	cd po && make prefix=$(DESTDIR)$(prefix)
+	cd po && make all-local prefix=$(DESTDIR)$(prefix)
 
 po-install:
 	@echo Installing internationalization files
