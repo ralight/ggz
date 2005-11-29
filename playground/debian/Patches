@@ -1,0 +1,8 @@
+The following revisions consist of changes needed or at least worth
+for backporting and using the diffs for packages:
+
+- 7644 (python/po makefile rule error)
+
+To get the diffs, use the revision and the one before like this:
+svn diff -r7643:7644 svn://svn.ggzgamingzone.org/svn/trunk/
+
