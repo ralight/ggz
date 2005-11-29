@@ -3,7 +3,7 @@ Section: doc
 Priority: optional
 Maintainer: Josef Spillner <josef@ggzgamingzone.org>
 Standards-Version: 3.6.2.1
-Build-Depends-Indep: autotools-dev, debhelper (>> 4.8), texinfo, tetex-bin, texi2html, lynx, docbook-dsssl, sgml2x
+Build-Depends-Indep: autotools-dev, debhelper (>> 4.8), texinfo, tetex-bin, texi2html, lynx, docbook-dsssl, sgml2x, transfig, jade, gs
 
 Package: ggz-docs
 Architecture: all
