@@ -1,7 +1,0 @@
-#!/usr/bin/make -f
-# debian/rules file for ggz-gtk-games
-
-RULES_CONFIGURE := --disable-debug --enable-noregistry=/usr/share/ggz/modules/ggz-gtk-games
-
-include debian/rules.common.mk
-

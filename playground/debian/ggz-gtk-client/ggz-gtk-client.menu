@@ -1,4 +1,0 @@
-?package(ggz-gtk-client):command="/usr/bin/ggz-gtk" \
-	needs="X11" \
-	section="Games" \
-	title="GGZ Gaming Zone Client (Gtk+)"

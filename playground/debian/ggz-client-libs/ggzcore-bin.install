@@ -1,8 +1,0 @@
-debian/tmp/usr/bin/ggz-config
-debian/tmp/usr/bin/ggz-wrapper
-debian/tmp/usr/share/man/man6/ggz-config.6
-debian/tmp/usr/share/man/man6/ggz-wrapper.6
-debian/tmp/usr/share/man/man5/ggz.modules.5
-debian/tmp/usr/share/desktop-directories
-debian/tmp/usr/share/locale
-debian/tmp/etc/xdg

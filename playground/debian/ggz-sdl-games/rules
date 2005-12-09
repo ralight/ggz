@@ -1,7 +1,0 @@
-#!/usr/bin/make -f
-# debian/rules file for ggz-sdl-games
-
-RULES_CONFIGURE := --enable-noregistry=/usr/share/ggz/modules/ggz-sdl-games
-
-include debian/rules.common.mk
-

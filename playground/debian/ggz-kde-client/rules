@@ -1,7 +1,0 @@
-#!/usr/bin/make -f
-# debian/rules file for ggz-kde-client
-
-RULES_CONFIGURE := --disable-rpath
-
-include debian/rules.common.mk
-

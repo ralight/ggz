@@ -1,7 +1,0 @@
-#!/bin/sh -e
-
-ggz-config --install --force --noregistry=/usr/share/ggz/modules/ggz-sdl-games
-
-#DEBHELPER#
-
-exit 0

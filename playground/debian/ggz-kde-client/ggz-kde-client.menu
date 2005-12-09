@@ -1,4 +1,0 @@
-?package(ggz-kde-client):command="/usr/bin/kggz" \
-	needs="X11" \
-	section="Games" \
-	title="GGZ Gaming Zone Client (KDE)"

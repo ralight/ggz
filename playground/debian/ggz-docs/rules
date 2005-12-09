@@ -1,7 +1,0 @@
-#!/usr/bin/make -f
-# debian/rules file for ggz-docs
-
-RULES_CONFIGURE := --enable-spec --enable-guides
-
-include debian/rules.common.mk
-

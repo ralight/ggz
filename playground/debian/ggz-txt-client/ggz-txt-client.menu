@@ -1,4 +1,0 @@
-?package(ggz-txt-client):command="/usr/bin/ggz-txt" \
-	needs="text" \
-	section="Games" \
-	title="GGZ Gaming Zone Client (Text)"

@@ -1,7 +1,0 @@
-#!/usr/bin/make -f
-# debian/rules file for ggz-txt-client
-
-RULES_CONFIGURE := --disable-debug --enable-noregistry=/usr/share/ggz/modules/ggz-txt-client
-
-include debian/rules.common.mk
-
