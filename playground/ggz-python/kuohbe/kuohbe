@@ -1,0 +1,191 @@
+#!/usr/bin/env python
+
+import sys
+#import re
+#import select
+#import os
+import imp
+import gettext
+
+import qt
+import qtcanvas
+import kdecore
+import kdeui
+import kfile
+
+import rsvgsdl
+
+from kdecore import i18n
+
+path = sys.argv[0]
+if path[0] == ".":
+	DATAPATH = "./"
+	MODULEPATH = "./"
+	I18NPATH = "./"
+else:
+	path = os.path.abspath(path)
+	basepath = str("/").join(path.split("/")[:-2])
+	DATAPATH = basepath + "/share/ggz/ggzboard/"
+	MODULEPATH = basepath + "/lib/site-python/"
+	I18NPATH = basepath + "/share/locale"
+
+gettext.install("ggzpython", I18NPATH, 1)
+
+i18n_noop = lambda s: s
+
+about = kdecore.KAboutData("kuohbe",
+	i18n_noop("Kuohbe"),
+	"0.1",
+	i18n_noop("Board games container framework"),
+	kdecore.KAboutData.License_GPL,
+	"(C) 2005 Josef Spillner <spillner@kde.org>")
+
+class BoardWidget(qtcanvas.QCanvasView):
+	def __init__(self, canvas, parent):
+		qtcanvas.QCanvasView.__init__(self, canvas, parent)
+
+		pass
+
+class MainWin(kdeui.KMainWindow):
+	def __init__(self, *args):
+		apply(kdeui.KMainWindow.__init__, (self,) + args)
+
+		self.game = None
+		self.net = None
+		self.ggzmode = 0
+		self.ggzsuccess = 0
+
+		self.menuitems = {}
+		self.canvas = None
+		self.sprites = []
+		self.arrays = []
+
+		canvas = qtcanvas.QCanvas(self)
+		canvas.resize(500, 500)
+		#canvas.setFixedSize(500, 500)
+		self.canvas = canvas
+
+		area = BoardWidget(canvas, self)
+		area.show()
+		area.viewport().resize(500, 500)
+		#area.viewport().setFixedSize(500, 500)
+
+		#self.openAction = kdeui.KStdAction.open(self.slotOpen, self.actionCollection())
+		self.quitAction = kdeui.KStdAction.quit(self.slotQuit, self.actionCollection())
+
+		dir = "kuohbedata/"
+
+		games = qt.QPopupMenu(self)
+		ret = games.insertItem(qt.QIconSet(qt.QPixmap(dir + "chess.png")), "Chess")
+		self.menuitems[ret] = "chess"
+		ret = games.insertItem(qt.QIconSet(qt.QPixmap(dir + "reversi.png")), "Reversi")
+		self.menuitems[ret] = "reversi"
+		ret = games.insertItem(qt.QIconSet(qt.QPixmap(dir + "ludo.png")), "Ludo")
+		self.menuitems[ret] = "madn"
+		ret = games.insertItem(qt.QIconSet(qt.QPixmap(dir + "checkers.png")), "Checkers")
+		self.menuitems[ret] = "checkers"
+		ret = games.insertItem(qt.QIconSet(qt.QPixmap(dir + "hnefatafl.png")), "Hnefatafl")
+		self.menuitems[ret] = "hnefatafl"
+		ret = games.insertItem(qt.QIconSet(qt.QPixmap(dir + "arimaa.png")), "Arimaa")
+		self.menuitems[ret] = "arimaa"
+		ret = games.insertItem(qt.QIconSet(qt.QPixmap(dir + "go.png")), "Go")
+		self.menuitems[ret] = "go"
+
+		self.connect(games, qt.SIGNAL("activated(int)"), self.newgame)
+
+		filemenu = qt.QPopupMenu(self)
+		filemenu.insertItem(i18n("&New game"), games)
+		filemenu.insertSeparator()
+		self.quitAction.plug(filemenu)
+		self.menuBar().insertItem(i18n("&Game"), filemenu)
+
+		optionmenu = qt.QPopupMenu(self)
+		optionmenu.insertItem(i18n("&Configuration..."))
+
+		self.menuBar().insertItem(i18n("&Options"), optionmenu)
+
+		helpmenu = self.helpMenu()
+		self.menuBar().insertItem(i18n("&Help"), helpmenu)
+
+		self.setCentralWidget(area)
+
+		self.resize(600, 600)
+
+	def svgpixmap(self, filename, width, height):
+		svg = rsvgsdl.render(filename, width, height)
+		rawdata = svg.data()
+		if rawdata:
+			p = qt.QPixmap(width, height)
+		return qt.QPixmap(width, height)
+
+	def newgame(self, id):
+		print "NEW GAME", id
+		print self.menuitems[id]
+		gamename = self.menuitems[id]
+
+		try:
+			(fileobj, filename, desc) = imp.find_module("module_" + gamename, None)
+		except:
+			# kmessagebox?
+			return
+
+		mod = imp.load_module("ggzboardgame", fileobj, filename, desc)
+		fileobj.close()
+		self.game = mod.ggzboardgame
+
+		if self.ggzmode:
+			try:
+				(fileobj, filename, desc) = imp.find_module("net_" + gamename, None)
+				mod = imp.load_module("ggzboardnet", fileobj, filename, desc)
+				fileobj.close()
+				self.net = mod.ggzboardnet
+				self.ggzsuccess = 1
+			except:
+				self.net = None
+				self.ggzsuccess = 0
+
+		self.setCaption(self.game.name())
+
+		# fake!!
+		self.game.board[0][0] = ("dog", "gold")
+		self.game.board[1][1] = ("rabbit", "silver")
+		self.game.board[1][0] = ("elephant", "gold")
+		self.game.board[0][1] = ("camel", "silver")
+
+		for j in range(self.game.height):
+			for i in range(self.game.width):
+				f = self.game.board[j][i]
+				if f:
+					print "got figure!", f
+					figure = self.game.figure(f)
+					print figure
+					if figure[-4:] == ".svg":
+						p = qt.QPixmap()
+					else:
+						p = qt.QPixmap(figure)
+					a = qtcanvas.QCanvasPixmapArray(p)
+					print "ok-1", a
+					if a.count() > 0:
+						s = qtcanvas.QCanvasSprite(a, self.canvas)
+						print "ok-2", s
+						s.move(i * 50 + 15, j * 50 + 15)
+						print "ok-3"
+						s.show()
+						print "ok-4"
+						self.sprites.append(s)
+					self.arrays.append(a)
+
+		self.canvas.update()
+		print "done!"
+
+	def slotQuit(self):
+		self.close()
+
+args = kdecore.KCmdLineArgs
+args.init(sys.argv, about)
+
+a = kdecore.KApplication()
+w = MainWin()
+w.show()
+a.exec_loop()
+
