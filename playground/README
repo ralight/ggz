@@ -28,7 +28,7 @@
 		Simulates high load on servers. Needs porting to the new GGZ protocol.
 
 	Colorsniff:
-		Debug utily which colorizes network traffic.
+		Debug utility which colorizes network traffic.
 
 	GGZ-Java:
 	GGZ-Python:

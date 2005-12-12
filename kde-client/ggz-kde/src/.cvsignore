@@ -1,8 +1,0 @@
-Makefile
-Makefile.in
-*.o
-*.moc.cpp
-kggz_meta_unload.*
-kggz
-.libs
-.deps

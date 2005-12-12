@@ -1,9 +1,0 @@
-Makefile
-Makefile.in
-*.o
-kdots_client
-kdots_client_meta_unload*
-*.moc.cpp
-.deps
-.libs
-module.dsc

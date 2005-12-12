@@ -1,9 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-*.o
-*.moc.cpp
-shadowbridge
-*meta_unload.cpp
-

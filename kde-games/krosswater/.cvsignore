@@ -1,8 +1,0 @@
-krosswater_client*
-*.o
-*.moc.cpp
-.libs
-.deps
-Makefile
-Makefile.in
-module.dsc

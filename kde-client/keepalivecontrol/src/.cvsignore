@@ -1,9 +1,0 @@
-Makefile
-Makefile.in
-.deps
-.libs
-*.o
-*.moc.cpp
-keepalivecontrol_meta_unload.cpp
-keepalivecontrol
-

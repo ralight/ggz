@@ -1,8 +1,0 @@
-interface.h
-interface.c
-callbacks.h
-callbacks.c
-dlg_about.h
-dlg_about.c
-callbacks_about.h
-callbacks_about.c

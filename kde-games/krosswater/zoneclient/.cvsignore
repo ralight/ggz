@@ -1,9 +1,0 @@
-Makefile
-Makefile.in
-.libs
-.deps
-*.lo
-*.a
-*.la
-*.moc.cpp
-libzoneclient_la_meta_unload*

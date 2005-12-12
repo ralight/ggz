@@ -1,6 +1,0 @@
-Makefile.in
-Makefile
-ggzd.escape
-.libs
-.deps
-*.o

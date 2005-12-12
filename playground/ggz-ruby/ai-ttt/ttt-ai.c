@@ -1,5 +1,9 @@
 /* AI for Tic-Tac-Toe based on the TTT server 'ggzd.tictactoe' */
 
+#include "ttt-ai.h"
+
+#include <stdlib.h>
+
 /*static int ai_findmove(int num);*/
 static void game_rotate_board(char b[9]);
 
@@ -12,7 +16,7 @@ int ai_findmove(int player, int difficulty, char b[9])
 	char board[9];
 	int c;
 
-	/* Local copy of the boaard to rotate*/
+	/* Local copy of the board to rotate*/
 	for (i = 0; i < 9; i++)
 		board[i] = b[i];
 

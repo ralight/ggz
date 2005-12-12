@@ -1,6 +1,0 @@
-*.o
-.deps
-.libs
-Makefile
-Makefile.in
-krosswater_server

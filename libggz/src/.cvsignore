@@ -1,9 +1,0 @@
-*.o
-*.lo
-*.loT
-.deps
-.libs
-Makefile
-Makefile.in
-libggz.la
-ggz.h

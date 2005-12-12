@@ -1,8 +1,0 @@
-.deps
-.libs
-*.o
-Makefile.in
-Makefile
-basic
-ggzdtest
-logmod

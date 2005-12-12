@@ -1,8 +1,0 @@
-ggz.kreversi
-ggz_kreversi_meta_unload*
-.deps
-Makefile
-Makefile.in
-.libs
-module.dsc
-*.moc.cpp

@@ -1,7 +1,0 @@
-*.o
-ggzcommgen
-Makefile
-Makefile.in
-.deps
-.libs
-*_generated.*
