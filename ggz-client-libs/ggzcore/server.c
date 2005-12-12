@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 7643 2005-11-25 19:36:11Z josef $
+ * $Id: server.c 7664 2005-12-12 23:45:48Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -146,8 +146,10 @@ struct _GGZServer {
 	} queued_events;
 };
 
+#ifndef HAVE_WINSOCK2_H
 static int reconnect_policy = 0;
 static GGZServer *reconnect_server = NULL;
+#endif
 const int reconnect_timeout = 15;
 
 static void _ggzcore_server_main_negotiate_status(GGZServer * server,
@@ -1432,26 +1434,27 @@ void _ggzcore_server_add_type(GGZServer * server, GGZGameType * type)
 	}
 }
 
+#ifndef HAVE_WINSOCK2_H
 static void reconnect_alarm(int signal)
 {
 	if (_ggzcore_net_connect(reconnect_server->net) < 0) {
 		reconnect_server->state = GGZ_STATE_RECONNECTING;
-#ifndef HAVE_WINSOCK2_H
 		alarm(reconnect_timeout);
-#endif
 	} else {
 		reconnect_server->state = GGZ_STATE_ONLINE;
 		_ggzcore_server_event(reconnect_server, GGZ_CONNECTED, NULL);
 	}
 }
+#endif
 
 void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans)
 {
-	char *host;
-	int port, use_tls;
-
 	if (trans == GGZ_TRANS_NET_ERROR || trans == GGZ_TRANS_PROTO_ERROR) {
+#ifndef HAVE_WINSOCK2_H
 		if (reconnect_policy) {
+			char *host;
+			int port, use_tls;
+
 			reconnect_server = server;
 			host = ggz_strdup(_ggzcore_net_get_host(server->net));
 			port = _ggzcore_net_get_port(server->net);
@@ -1466,12 +1469,11 @@ void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans)
 			server->state = GGZ_STATE_RECONNECTING;
 			_ggzcore_server_event(server, GGZ_STATE_CHANGE, NULL);
 
-#ifndef HAVE_WINSOCK2_H
 			signal(SIGALRM, reconnect_alarm);
 			alarm(reconnect_timeout);
-#endif
 			return;
 		}
+#endif
 	}
 
 	_ggzcore_state_transition(trans, &server->state);
