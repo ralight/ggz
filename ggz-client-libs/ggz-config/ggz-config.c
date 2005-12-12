@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7475 2005-08-21 13:22:31Z josef $
+ * $Id: ggz-config.c 7662 2005-12-12 23:37:08Z jdorje $
  *
  * Configuration query and module install program.
  *
@@ -372,7 +372,14 @@ static int mkdirectory(const char* full, mode_t mode)
 
 	while ((dir = strsep(&copy, slash))) {
 		strcat(strcat(path, "/"), dir);
-		if (mkdir(path, mode) < 0 && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
+		if (
+#ifdef MKDIR_TAKES_ONE_ARG
+		    mkdir(path) < 0
+#else
+		    mkdir(path, mode) < 0
+#endif
+		    && (stat(path, &stats) < 0
+			|| !S_ISDIR(stats.st_mode))) {
 			fprintf(stderr, _("Directory cannot be created (%s)\n"), path);
 			return -1;
 		}
@@ -423,7 +430,11 @@ static void handle_icon(void)
 		path = ggz_malloc(strlen(GGZDATADIR) + strlen(modicon) + 30);
 		strcpy(path, GGZDATADIR);
 		strcat(path, "/ggz-config/");
+#ifdef MKDIR_TAKES_ONE_ARG
+		mkdir(path);
+#else
 		mkdir(path, 0700);
+#endif
 		strcat(path, modicon);
 		ret = filecopy(iconfile, path);
 		if(ret != 0) modicon = NULL;
@@ -624,7 +635,11 @@ static int noregister_all()
 		return -1;
 	}
 	while((e = readdir(d)) != NULL) {
+#ifdef _DIRENT_HAVE_D_TYPE
+		/* _DIRENT_HAVE_D_TYPE is defined in dirent.h...but this
+		 * should be replaced by a configure check. */
 		if(e->d_type != DT_REG) continue;
+#endif
 		modfile = (char*)ggz_malloc(strlen(copydir) + strlen(e->d_name) + 2);
 		sprintf(modfile, "%s/%s", copydir, e->d_name);
 		if(load_modfile()) {

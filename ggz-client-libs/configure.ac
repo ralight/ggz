@@ -92,6 +92,7 @@ AC_FUNC_FORK
 #AC_FUNC_MALLOC <- this doesn't do what you think it does
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_VPRINTF
+FUNC_MKDIR_TAKES_ONE_ARG
 if test "$MINGW32" = "yes"; then
 	LIBS="$LIBS -lws2_32"
 fi
