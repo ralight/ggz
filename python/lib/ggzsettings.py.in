@@ -1,0 +1,29 @@
+# Python library for site-specific configuration
+# Copyright (C) 2005 Josef Spillner <josef@ggzgamingzone.org>
+# Published under GNU GPL conditions
+
+import sys
+
+def unquote(s):
+	x = s.replace("${prefix}", "@prefix@")
+	return x
+
+DATAPATH = None
+MODULEPATH = None
+I18NPATH = None
+
+path = sys.argv[0]
+if len(path) > 0:
+	if path[0] == ".":
+		DATAPATH = "./"
+		MODULEPATH = "./"
+		I18NPATH = "./"
+	else:
+		DATAPATH = unquote("@datadir@/ggz")
+		MODULEPATH = unquote("@prefix@/lib/site-python")
+		I18NPATH = unquote("@datadir@/locale")
+
+del unquote
+del path
+del sys
+
