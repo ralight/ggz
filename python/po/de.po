@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-05 16:18+0200\n"
+"POT-Creation-Date: 2005-12-12 13:38+0100\n"
 "PO-Revision-Date: 2005-04-10 15:02+0200\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -15,268 +15,284 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lib/sdlnewstuff.py:181
+#: ../lib/sdlnewstuff.py:180
 msgid "not installed"
 msgstr "nicht installiert"
 
-#: ../lib/sdlnewstuff.py:182 ../lib/sdlnewstuff.py:231
-#: ../lib/sdlnewstuff.py:288 ../lib/sdlnewstuff.py:305
+#: ../lib/sdlnewstuff.py:181 ../lib/sdlnewstuff.py:230
+#: ../lib/sdlnewstuff.py:287 ../lib/sdlnewstuff.py:304
 msgid "installed"
 msgstr "installiert"
 
-#: ../lib/sdlnewstuff.py:307
+#: ../lib/sdlnewstuff.py:306
 msgid "error"
 msgstr "fehler"
 
-#: ../ggzboard/ggzboard:165
+#: ../ggzboard/ggzboard:164
 #, python-format
 msgid "GGZBoard game %s not found"
 msgstr "GGZBoard-Spiel %s nicht gefunden"
 
-#: ../ggzboard/ggzboard:190
+#: ../ggzboard/ggzboard:189
 msgid "GGZBoard"
 msgstr "GGZBoard"
 
-#: ../ggzboard/ggzboard:218 ../ggzboard/ggzboard:220
+#: ../ggzboard/ggzboard:217
+msgid "GGZBoard: piece selection"
+msgstr "GGZBoard: Spielfigur-Auswahl"
+
+#: ../ggzboard/ggzboard:275
+msgid "Please select one of the following pieces:"
+msgstr "Bitte wähle eine der folgenden Figuren aus:"
+
+#: ../ggzboard/ggzboard:295
+msgid "Cancel selection"
+msgstr "Auswahl abbrechen"
+
+#: ../ggzboard/ggzboard:321 ../ggzboard/ggzboard:323
 msgid "GGZBoard: help screen"
 msgstr "GGZBoard: Hilfe"
 
-#: ../ggzboard/ggzboard:266
+#: ../ggzboard/ggzboard:369
 msgid "Common GGZBoard functions:"
 msgstr "Gemeinsame GGZBoard-Funktionen:"
 
-#: ../ggzboard/ggzboard:267
+#: ../ggzboard/ggzboard:370
 msgid "u: download new games, levels, themes"
 msgstr "u: Lade neue Spiele, Level und Themes herunter"
 
-#: ../ggzboard/ggzboard:268
+#: ../ggzboard/ggzboard:371
 msgid "p: display the player list"
 msgstr "p: Zeige die Liste der Spieler an"
 
-#: ../ggzboard/ggzboard:269
+#: ../ggzboard/ggzboard:372
 msgid "s: produce a screen shot"
 msgstr "s: Erstelle einen Screenshot"
 
-#: ../ggzboard/ggzboard:270
+#: ../ggzboard/ggzboard:373
 msgid "f: toggle fullscreen display"
 msgstr "f: Schalte zwischen Vollbild- und Fensterdarstellung um"
 
-#: ../ggzboard/ggzboard:271
+#: ../ggzboard/ggzboard:374
 msgid "ESC: quit a running game"
 msgstr "ESC: Verlasse ein laufendes Spiel"
 
-#: ../ggzboard/ggzboard:273
+#: ../ggzboard/ggzboard:376
 msgid "Game-specific help:"
 msgstr "Spiel-spezifische Hilfe:"
 
-#: ../ggzboard/ggzboard:293
+#: ../ggzboard/ggzboard:396
 msgid "Return to game"
 msgstr "Zurück zum Spiel"
 
-#: ../ggzboard/ggzboard:305 ../ggzboard/ggzboard:307
+#: ../ggzboard/ggzboard:408 ../ggzboard/ggzboard:410
 msgid "GGZBoard: about screen"
 msgstr "GGZBoard: Über das Programm"
 
-#: ../ggzboard/ggzboard:353
+#: ../ggzboard/ggzboard:456
 msgid "GGZBoard: A multi-engine game container"
 msgstr "GGZBoard: Eine Mehrfach-Spiel-Umgebung"
 
-#: ../ggzboard/ggzboard:354
+#: ../ggzboard/ggzboard:457
 msgid "Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>"
 msgstr "Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>"
 
-#: ../ggzboard/ggzboard:356
+#: ../ggzboard/ggzboard:459
 msgid "GGZBoard contains several board games, each of which can be played"
 msgstr "GGZBoard enthält etliche Brettspiele, von denen jedes entweder"
 
-#: ../ggzboard/ggzboard:357
+#: ../ggzboard/ggzboard:460
 msgid "either alone against the artificial intelligence (AI) or against"
 msgstr ""
 "allein gegen die mit KI (Künstliche Intelligenz) ausgestatteten "
 "Computerspieler"
 
-#: ../ggzboard/ggzboard:358
+#: ../ggzboard/ggzboard:461
 msgid "other humans or AIs over the network, using the GGZ Gaming Zone system."
 msgstr ""
 "oder gegen andere Menschen über die GGZ Gaming Zone gespielt werden kann."
 
-#: ../ggzboard/ggzboard:359
+#: ../ggzboard/ggzboard:462
 msgid "Each of the games provides an in-game helpscreen."
 msgstr "Jedes dieser Spiele bietet einen Hilfebildschirm an."
 
-#: ../ggzboard/ggzboard:361
+#: ../ggzboard/ggzboard:464
 msgid "More information can be found on the GGZBoard homepage:"
 msgstr "Mehr Informationen kann man auf der GGZBoard-Homepage finden:"
 
-#: ../ggzboard/ggzboard:362
+#: ../ggzboard/ggzboard:465
 msgid "http://www.ggzgamingzone.org/games/ggzboard/"
 msgstr "http://www.ggzgamingzone.org/games/ggzboard/"
 
-#: ../ggzboard/ggzboard:375
+#: ../ggzboard/ggzboard:478
 msgid "Return to main screen"
 msgstr "Zurück zum Eingangsbildschirm"
 
-#: ../ggzboard/ggzboard:387 ../ggzboard/ggzboard:389
+#: ../ggzboard/ggzboard:490 ../ggzboard/ggzboard:492
 msgid "GGZBoard: game selection"
 msgstr "GGZBoard: Spielauswahl"
 
-#: ../ggzboard/ggzboard:458
+#: ../ggzboard/ggzboard:561
 msgid "About..."
 msgstr "Über..."
 
-#: ../ggzboard/ggzboard:467
+#: ../ggzboard/ggzboard:570
 msgid "Quit..."
 msgstr "Verlassen..."
 
-#: ../ggzboard/ggzboard:496 ../ggzboard/ggzboard:503 ../ggzboard/ggzboard:535
+#: ../ggzboard/ggzboard:599 ../ggzboard/ggzboard:606 ../ggzboard/ggzboard:640
 msgid "GGZBoard: "
 msgstr "GGZBoard: "
 
-#: ../ggzboard/ggzboard:500 ../ggzboard/ggzboard:533
+#: ../ggzboard/ggzboard:603 ../ggzboard/ggzboard:638
 msgid " (running on GGZ)"
 msgstr " (über GGZ spielend)"
 
-#: ../ggzboard/ggzboard:502 ../ggzboard/ggzboard:534
+#: ../ggzboard/ggzboard:605 ../ggzboard/ggzboard:639
 msgid " (unavailable)"
 msgstr " (nicht verfügbar)"
 
-#: ../ggzboard/ggzboard:680
+#: ../ggzboard/ggzboard:793
 msgid "Game over!"
 msgstr "Spiel vorbei!"
 
-#: ../ggzboard/ggzboard:683
+#: ../ggzboard/ggzboard:796
 #, python-format
 msgid "The winner is %s"
 msgstr "Der Gewinner ist %s"
 
-#: ../ggzboard/ggzboard:721
+#: ../ggzboard/ggzboard:859
 #, python-format
 msgid "AI #%s"
 msgstr "KI #%s"
 
-#: ../ggzboard/ggzboard:729
+#: ../ggzboard/ggzboard:867
 #, python-format
 msgid "Player %s:"
 msgstr "Spieler %s:"
 
-#: ../ggzboard/ggzboard:748
+#: ../ggzboard/ggzboard:886
 msgid "Dice: "
 msgstr "Würfel: "
 
-#: ../ggzboard/ggzboard:761
+#: ../ggzboard/ggzboard:899
 msgid "Thinking..."
 msgstr "Nachdenken..."
 
-#: ../ggzboard/ggzboard:770
+#: ../ggzboard/ggzboard:908
 msgid "Themes & games"
 msgstr "Themes & Spiele"
 
-#: ../ggzboard/ggzboard:770
+#: ../ggzboard/ggzboard:908
 msgid "Player list"
 msgstr "Spielerliste"
 
-#: ../ggzboard/ggzboard:770
+#: ../ggzboard/ggzboard:908
 msgid "Game help"
 msgstr "Hilfe zum Spiel"
 
-#: ../ggzboard/ggzboard:770
+#: ../ggzboard/ggzboard:908
 msgid "Main menu"
 msgstr "Hauptmenü"
 
-#: ../ggzboard/ggzboard:861
+#: ../ggzboard/ggzboard:1019
 #, python-format
 msgid "Argument required for %s."
 msgstr "Argument für %s benötigt."
 
-#: ../ggzboard/ggzboard:867
+#: ../ggzboard/ggzboard:1025
 #, python-format
 msgid "Unknown option: %s"
 msgstr "Unbekannte Option: %s"
 
-#: ../ggzboard/ggzboard:871
+#: ../ggzboard/ggzboard:1029
 msgid "GGZBoard - common board game client for GGZ"
 msgstr "GGZBoard - gemeinsamer Brettspieleclient für GGZ"
 
-#: ../ggzboard/ggzboard:872
+#: ../ggzboard/ggzboard:1030
 msgid "Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>"
 msgstr "Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>"
 
-#: ../ggzboard/ggzboard:873
+#: ../ggzboard/ggzboard:1031
 msgid "Published under GNU GPL conditions"
 msgstr "Unter den Bedingungen der GNU GPL veröffentlicht"
 
-#: ../ggzboard/ggzboard:875
+#: ../ggzboard/ggzboard:1033
 msgid "Options:"
 msgstr "Optionen:"
 
-#: ../ggzboard/ggzboard:876
+#: ../ggzboard/ggzboard:1034
 msgid "[-h | --help           ] Display this game help"
 msgstr "[-h | --help           ] Diesen Hilfebildschirm anzeigen"
 
-#: ../ggzboard/ggzboard:877
+#: ../ggzboard/ggzboard:1035
 msgid "[-v | --version        ] Show version information"
 msgstr "[-v | --version        ] Versionsinformationen anzeigen"
 
-#: ../ggzboard/ggzboard:878
+#: ../ggzboard/ggzboard:1036
 msgid "[-g | --ggz            ] Request game in GGZ mode"
 msgstr "[-g | --ggz            ] Spiel im GGZ-Modus starten"
 
-#: ../ggzboard/ggzboard:879
+#: ../ggzboard/ggzboard:1037
 msgid "[-G | --game <gamename>] Skip intro screen and launch game directly"
 msgstr ""
 "[-G | --game <gamename>] Einführungsbildschirm überspringen und Spiel starten"
 
-#: ../ggzboard/ggzboard:880
+#: ../ggzboard/ggzboard:1038
 msgid "[-f | --fullscreen     ] Start in fullscreen mode"
 msgstr "[-f | --fullscreen     ] Spiel im Vollbildmodus starten"
 
-#: ../ggzboard/module_checkers.py:65
+#: ../ggzboard/module_arimaa.py:91
+msgid "Arimaa"
+msgstr ""
+
+#: ../ggzboard/module_checkers.py:68
 msgid "Checkers/Draughts"
 msgstr "Dame"
 
-#: ../ggzboard/module_chess.py:77
+#: ../ggzboard/module_chess.py:80
 msgid "Chess"
 msgstr "Schach"
 
-#: ../ggzboard/module_go.py:40
+#: ../ggzboard/module_go.py:47
 msgid "Go"
 msgstr "Go"
 
-#: ../ggzboard/module_hnefatafl.py:76
+#: ../ggzboard/module_hnefatafl.py:82
 msgid "Hnefatafl"
 msgstr "Hnefatafl"
 
-#: ../ggzboard/module_madn.py:168
+#: ../ggzboard/module_madn.py:171
 msgid "Ludo is a game for up to four players."
 msgstr "Ludo ist ein Spiel für bis zu vier Spielern."
 
-#: ../ggzboard/module_madn.py:169
+#: ../ggzboard/module_madn.py:172
 msgid "After rolling dice, each player can either move a piece"
 msgstr "Nach dem Würfeln kann jeder Spieler entweder eine Figure"
 
-#: ../ggzboard/module_madn.py:170
+#: ../ggzboard/module_madn.py:173
 msgid "out of the depot, onto the start field, or move a piece"
 msgstr "aus dem Depot heraus auf das Startfeld stellen, oder eine bereits"
 
-#: ../ggzboard/module_madn.py:171
+#: ../ggzboard/module_madn.py:174
 msgid "already outside clock-wise until it reaches the end field."
 msgstr ""
 "außerhalb befindliche Figure entgegen dem Uhrzeigersinn bis ins Ziel führen."
 
-#: ../ggzboard/module_madn.py:172
+#: ../ggzboard/module_madn.py:175
 msgid "Opponent pieces can be beaten and are put back into the depot."
 msgstr ""
 "Gegnerische Figuren können geschlagen werden und werden dann zurück ins "
 "Depot befördert."
 
-#: ../ggzboard/module_madn.py:173
+#: ../ggzboard/module_madn.py:176
 msgid "To come out of a depot, a die must show a 1."
 msgstr "Um aus einem Depot herauszukommen, muss der Würfel eine 1 anzeigen."
 
-#: ../ggzboard/module_madn.py:179
+#: ../ggzboard/module_madn.py:186
 msgid "Ludo"
 msgstr "Mensch ärgere dich nicht"
 
-#: ../ggzboard/module_reversi.py:45
+#: ../ggzboard/module_reversi.py:52
 msgid "Reversi"
 msgstr "Reversi"

@@ -9,6 +9,8 @@ POFILES = $(srcdir)/*.po
 MOFILES = $(builddir)/*.mo
 STAMP = $(builddir)/translation.stamp
 
+all-local: $(STAMP)
+
 messages:
 	@echo "updating catalog $(CATALOG)"
 	@$(XGETTEXT) -k_ -kN_ $(POFLAGS) $(POSOURCES) -o $(CATALOG).pot;
@@ -17,8 +19,6 @@ messages:
 		$(MSGMERGE) $$j $(CATALOG).pot > .$$j 2>/dev/null; \
 		mv .$$j $$j; \
 	done
-
-all-local: $(STAMP)
 
 $(STAMP): $(POFILES)
 	@for j in $(POFILES); do \
