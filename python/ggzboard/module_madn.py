@@ -175,6 +175,10 @@ class Game:
 		self.help.append(_("Opponent pieces can be beaten and are put back into the depot."))
 		self.help.append(_("To come out of a depot, a die must show a 1."))
 
+		self.selection = None
+		self.boardwidth = 50 # !!!
+		self.boardheight = 50 # !!!
+
 	def init(self, path):
 		self.datapath = path
 

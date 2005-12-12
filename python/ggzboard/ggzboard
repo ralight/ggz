@@ -8,7 +8,6 @@ from pygame.locals import *
 from Numeric import *
 import sys
 import time
-import random
 import os, pwd
 import imp
 import re
@@ -18,17 +17,15 @@ import rsvgsdl
 import sdlnewstuff
 import playertable
 
-path = sys.argv[0]
-if path[0] == ".":
+try:
+	import ggzsettings
+	DATAPATH = ggzsettings.DATAPATH + "/ggzboard/"
+	MODULEPATH = ggzsettings.MODULEPATH
+	I18NPATH = ggzsettings.I18NPATH
+except:
 	DATAPATH = "./"
 	MODULEPATH = "./"
 	I18NPATH = "./"
-else:
-	path = os.path.abspath(path)
-	basepath = str("/").join(path.split("/")[:-2])
-	DATAPATH = basepath + "/share/ggz/ggzboard/"
-	MODULEPATH = basepath + "/lib/site-python/"
-	I18NPATH = basepath + "/share/locale"
 
 gettext.install("ggzpython", I18NPATH, 1)
 
@@ -845,10 +842,11 @@ class GGZBoard:
 								by = sy - conf.cellwidth / 2
 							ui.backgroundarea.blit(img, (bx, by))
 							if j == oldy and i == oldx:
-								overlay = pygame.Surface(tilepicture.get_size())
-								overlay.fill((255, 255, 255))
-								overlay.set_alpha(70)
-								ui.backgroundarea.blit(overlay, (bx, by))
+								if tilepicture:
+									overlay = pygame.Surface(tilepicture.get_size())
+									overlay.fill((255, 255, 255))
+									overlay.set_alpha(70)
+									ui.backgroundarea.blit(overlay, (bx, by))
 
 				playernames = None
 				if self.ggzsuccess:

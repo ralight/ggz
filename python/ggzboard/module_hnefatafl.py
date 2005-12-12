@@ -71,6 +71,10 @@ class Game:
 		self.winner = None
 		self.help = None
 
+		self.selection = None
+		self.boardwidth = 50 # !!!
+		self.boardheight = 50 # !!!
+
 	def init(self, path):
 		self.datapath = path
 

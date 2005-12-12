@@ -34,6 +34,12 @@ class Game:
 		self.winner = None
 		self.help = None
 
+		self.selection = None
+
+	# !!!
+	def selectpiece(self, placepos):
+		return
+
 	def init(self, path):
 		self.datapath = path
 

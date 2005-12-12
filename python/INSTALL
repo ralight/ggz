@@ -19,7 +19,7 @@ make install prefix=/home/ggz/build
 Afterwards, the variable PYTHONPATH must point to this directory
 unless it's already in Python's default search path.
 
-export PYTHONPATH=/home/ggz/build/lib/site-python:/home/ggz/build/lib/python2.3/site-packages
+export PYTHONPATH=/home/ggz/build/lib/site-python:/home/ggz/build/lib/python2.4/site-packages
 
 That's it, basically.
 

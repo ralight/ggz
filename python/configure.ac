@@ -68,11 +68,20 @@ fi
 dnl Create files
 dnl ============
 
-if test "x$prefix" = "xNONE"; then
-	prefix="/usr/local"
+if test "x$xdg_datadir" = "x"; then
+	xdg_datadir="\${prefix}/share/applications"
+fi
+
+if test "x$ggzd_confdir" = "x"; then
+	ggzd_confdir="\${sysconfdir}/ggzd"
 fi
 
 AC_SUBST(prefix)
+AC_SUBST(bindir)
+AC_SUBST(datadir)
+AC_SUBST(xdg_datadir)
+AC_SUBST(ggzd_confdir)
+
 AC_SUBST(enable_ggzmod)
 AC_SUBST(enable_ggzdmod)
 AC_SUBST(enable_ggzcore)
@@ -81,6 +90,7 @@ AC_SUBST(enable_rsvgsdl)
 
 AC_CONFIG_FILES([
 	Makefile
+	lib/ggzsettings.py
 	escape-sdl/escape-sdl.desktop
 	escape-sdl/module.dsc
 	xadrez-chines/xadrez-chines.desktop

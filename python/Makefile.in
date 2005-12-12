@@ -1,8 +1,29 @@
-prefix = @prefix@
+# GGZ Gaming Zone Python Package
+# Makefile.in for use with autoconf (but not automake)
+
+# Release version number
 version = 0.0.12
 
+# prefix: All-purpose prefix (/usr)
+prefix = @prefix@
+# bindir: For executable programs (/usr/bin)
+bindir = @bindir@
+# datadir: For game data files (/usr/share)
+datadir = @datadir@
+
+# xdg_datadir: For desktop integration files (/usr/share/applications)
+xdg_datadir = @xdg_datadir@
+# ggzd_confdir: For GGZ integration files (/etc/ggzd)
+ggzd_confdir = @ggzd_confdir@
+
+# ggz-config: either ggz-config or 'true' if disabled
 ggz-config = @GGZ_CONFIG@ -D
 
+# some default autoconf variables
+exec_prefix = ${prefix}
+sysconfdir = ${prefix}/etc
+
+# Start of ggz-python configuration
 ggzmod = @enable_ggzmod@
 ggzdmod = @enable_ggzdmod@
 ggzcore = @enable_ggzcore@
@@ -36,8 +57,10 @@ endif
 all: $(wrappers) po-build
 	@echo "ready with building ggz-python"
 
-install: $(instwrappers) po-install install-ggzboard install-rest
+install: $(instwrappers) po-install man-install install-ggzboard install-rest
 	@echo "ready with installation of ggz-python"
+	@echo
+	@echo "Please read INSTALL to find out about setting PYTHONPATH!"
 
 ggzmod-build:
 	@echo Building library PyGGZMod
@@ -93,80 +116,88 @@ po-install:
 	@echo Installing internationalization files
 	cd po && make install prefix=$(DESTDIR)$(prefix)
 
+man-install:
+	@echo Installing manual pages
+	mkdir -p $(DESTDIR)$(prefix)/share
+	mkdir -p $(DESTDIR)$(prefix)/share/man
+	mkdir -p $(DESTDIR)$(prefix)/share/man/man6
+	cp man/*.6 $(DESTDIR)$(prefix)/share/man/man6
+
 install-rest:
 	@echo Installing game Dresden
-	mkdir -p $(DESTDIR)$(prefix)/bin/
-	cp dresden/dresden.py $(DESTDIR)$(prefix)/bin
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/dresden/
-	cp dresden/*.png $(DESTDIR)$(prefix)/share/ggz/dresden
+	mkdir -p $(DESTDIR)$(bindir)
+	cp dresden/dresden.py $(DESTDIR)$(bindir)
+	mkdir -p $(DESTDIR)$(datadir)/ggz/dresden/
+	cp dresden/*.png $(DESTDIR)$(datadir)/ggz/dresden
 
 	@echo Installing game Escape/SDL
-	mkdir -p $(DESTDIR)$(prefix)/bin/
-	cp escape-sdl/escape-sdl $(DESTDIR)$(prefix)/bin
+	mkdir -p $(DESTDIR)$(bindir)
+	cp escape-sdl/escape-sdl $(DESTDIR)$(bindir)
 	$(ggz-config) --install --force --modfile=escape-sdl/module.dsc
-	mkdir -p $(DESTDIR)$(prefix)/share/applications/
-	cp escape-sdl/escape-sdl.desktop $(DESTDIR)$(prefix)/share/applications
+	mkdir -p $(DESTDIR)$(xdg_datadir)
+	cp escape-sdl/escape-sdl.desktop $(DESTDIR)$(xdg_datadir)
 
 	@echo Installing game Xadrez Chines
-	mkdir -p $(DESTDIR)$(prefix)/bin/
-	cp xadrez-chines/xadrez-chines $(DESTDIR)$(prefix)/bin
-	cp xadrez-chines/xadrez-chines-server $(DESTDIR)$(prefix)/bin
+	mkdir -p $(DESTDIR)$(bindir)
+	cp xadrez-chines/xadrez-chines $(DESTDIR)$(bindir)
+	cp xadrez-chines/xadrez-chines-server $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
 	cp xadrez-chines/xadrezlib.py $(DESTDIR)$(prefix)/lib/site-python
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/dark/
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/orig/
-	cp xadrez-chines/themes/dark/*.png $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/dark
-	cp xadrez-chines/themes/orig/*.png $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/orig
+	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/
+	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/
+	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/dark/
+	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/orig/
+	cp xadrez-chines/themes/dark/*.png $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/dark
+	cp xadrez-chines/themes/orig/*.png $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/orig
 	$(ggz-config) --install --force --modfile=xadrez-chines/module.dsc
-	cp xadrez-chines/xadrez-chines-server.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
-	cp xadrez-chines/xadrez-chines-server.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
-	mkdir -p $(DESTDIR)$(prefix)/share/applications/
-	cp xadrez-chines/xadrez-chines.desktop $(DESTDIR)$(prefix)/share/applications
+	cp xadrez-chines/xadrez-chines-server.dsc $(DESTDIR)$(ggzd_confdir)/games
+	cp xadrez-chines/xadrez-chines-server.room $(DESTDIR)$(ggzd_confdir)/rooms
+	mkdir -p $(DESTDIR)$(xdg_datadir)
+	cp xadrez-chines/xadrez-chines.desktop $(DESTDIR)$(xdg_datadir)
 
 	@echo Installing external game GNU Go support files
-	mkdir -p $(DESTDIR)$(prefix)/bin/
-	cp go/goclient $(DESTDIR)$(prefix)/bin
-	cp go/goserver $(DESTDIR)$(prefix)/bin
-	cp go/goclient.helper $(DESTDIR)$(prefix)/bin
+	mkdir -p $(DESTDIR)$(bindir)
+	cp go/goclient $(DESTDIR)$(bindir)
+	cp go/goserver $(DESTDIR)$(bindir)
+	cp go/goclient.helper $(DESTDIR)$(bindir)
 	$(ggz-config) --install --force --modfile=go/module.dsc
-	cp go/goserver.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
-	cp go/goserver.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
+	cp go/goserver.dsc $(DESTDIR)$(ggzd_confdir)/games
+	cp go/goserver.room $(DESTDIR)$(ggzd_confdir)/rooms
 
 	@echo Installing core client Vibora
-	mkdir -p $(DESTDIR)$(prefix)/bin/
-	cp vibora/vibora $(DESTDIR)$(prefix)/bin
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/vibora/
-	cp vibora/*.png $(DESTDIR)$(prefix)/share/ggz/vibora
+	mkdir -p $(DESTDIR)$(bindir)
+	cp vibora/vibora $(DESTDIR)$(bindir)
+	mkdir -p $(DESTDIR)$(datadir)/ggz/vibora/
+	cp vibora/*.png $(DESTDIR)$(datadir)/ggz/vibora
 
 	@echo Installing SDL newstuff dialog and player table dialog
 	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
 	cp lib/sdlnewstuff.py $(DESTDIR)$(prefix)/lib/site-python
 	cp lib/playertable.py $(DESTDIR)$(prefix)/lib/site-python
+	cp lib/ggzsettings.py $(DESTDIR)$(prefix)/lib/site-python
 
 install-ggzboard:
 	@echo Installing GGZBoard framework and games
-	mkdir -p $(DESTDIR)$(prefix)/bin/
-	cp ggzboard/ggzboard $(DESTDIR)$(prefix)/bin
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/
-	cp ggzboard/*.jpg $(DESTDIR)$(prefix)/share/ggz/ggzboard
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/common/
-	cp ggzboard/common/*.png $(DESTDIR)$(prefix)/share/ggz/ggzboard/common
-	mkdir -p $(DESTDIR)$(prefix)/share/applications/
-	cp ggzboard/ggzboard.desktop $(DESTDIR)$(prefix)/share/applications
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/checkers
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/chess
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/go
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/hnefatafl
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/reversi
-	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/madn
-	cp ggzboard/checkers/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/checkers
-	cp ggzboard/chess/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/chess
-	cp ggzboard/go/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/go
-	cp ggzboard/hnefatafl/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/hnefatafl
-	cp ggzboard/reversi/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/reversi
-	cp ggzboard/madn/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/madn
+	mkdir -p $(DESTDIR)$(bindir)
+	cp ggzboard/ggzboard $(DESTDIR)$(bindir)
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/
+	cp ggzboard/*.jpg $(DESTDIR)$(datadir)/ggz/ggzboard
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/common/
+	cp ggzboard/common/*.png $(DESTDIR)$(datadir)/ggz/ggzboard/common
+	mkdir -p $(DESTDIR)$(xdg_datadir)
+	cp ggzboard/ggzboard.desktop $(DESTDIR)$(xdg_datadir)
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/checkers
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/chess
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/go
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/hnefatafl
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/madn
+	cp ggzboard/checkers/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/checkers
+	cp ggzboard/chess/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/chess
+	cp ggzboard/go/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/go
+	cp ggzboard/hnefatafl/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/hnefatafl
+	cp ggzboard/reversi/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
+	cp ggzboard/madn/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
 	cp ggzboard/ggzboard_net.py $(DESTDIR)$(prefix)/lib/site-python
 	cp ggzboard/module_*.py $(DESTDIR)$(prefix)/lib/site-python
@@ -178,12 +209,12 @@ install-ggzboard:
 	$(ggz-config) --install --force --modfile=ggzboard/module_go.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_hnefatafl.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_reversi.dsc
-	mkdir -p $(DESTDIR)$(prefix)/etc/ggzd/games
-	mkdir -p $(DESTDIR)$(prefix)/etc/ggzd/rooms
-	cp ggzboard/server_hnefatafl.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
-	cp ggzboard/server_checkers.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
-	cp ggzboard/server_hnefatafl.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
-	cp ggzboard/server_checkers.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
+	mkdir -p $(DESTDIR)$(ggzd_confdir)/games
+	mkdir -p $(DESTDIR)$(ggzd_confdir)/rooms
+	cp ggzboard/server_hnefatafl.dsc $(DESTDIR)$(ggzd_confdir)/games
+	cp ggzboard/server_checkers.dsc $(DESTDIR)$(ggzd_confdir)/games
+	cp ggzboard/server_hnefatafl.room $(DESTDIR)$(ggzd_confdir)/rooms
+	cp ggzboard/server_checkers.room $(DESTDIR)$(ggzd_confdir)/rooms
 
 dist:
 	rm -rf ../ggz-python-$(version)

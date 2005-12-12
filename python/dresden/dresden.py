@@ -15,14 +15,10 @@ from pygame.locals import *
 from Numeric import *
 import os, sys
 
-path = sys.argv[0]
-path = os.path.abspath(path)
-
-if path.startswith("/usr/local"):
-	DATAPATH = "/usr/local/share/ggz/dresden/"
-elif path.startswith("/usr"):
-	DATAPATH = "/usr/share/ggz/dresden/"
-else:
+try:
+	import ggzsettings
+	DATAPATH = ggzsettings.DATAPATH + "/dresden/"
+except:
 	DATAPATH = "./"
 
 RES = array((800, 600))

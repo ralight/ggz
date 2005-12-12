@@ -17,17 +17,12 @@ import ggzmod
 import sdlnewstuff
 from xadrezlib import *
 
-path = sys.argv[0]
-path = os.path.abspath(path)
-
-if path.startswith("/usr/local"):
-	DATAPATH = "/usr/local/share/ggz/xadrez-chines/"
-elif path.startswith("/usr"):
-	DATAPATH = "/usr/share/ggz/xadrez-chines/"
-else:
+try:
+	import ggzsettings
+	DATAPATH = ggzsettings.DATAPATH + "/xadrez-chines/"
+except:
 	DATAPATH = "./"
 
-#DATAPATH = str("/").join(path.split("/")[:-2]) + "/share/ggz/xadrez-chines/"
 print "Xadrez Chines: Using data path", DATAPATH
 
 def homedir():
