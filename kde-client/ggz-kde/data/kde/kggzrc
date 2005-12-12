@@ -1,4 +1,34 @@
 [Rules]
-TicTacToe=http://en.wikipedia.org/wiki/Tic-Tac-Toe
+
+# TTT
+TicTacToe=http://en.wikipedia.org/wiki/Tic-tac-toe
 TicTacToe[de]=http://de.wikipedia.org/wiki/Tic-Tac-Toe
+TicTacToe[pt]=http://de.wikipedia.org/wiki/Jogo_da_velha
+
+# Spades (de is wrong!)
+Spades=http://en.wikipedia.org/wiki/Spades
+#Spades[de]=http://de.wikipedia.org/wiki/Pik
+
+# Connect the Dots
+Dots=http://en.wikipedia.org/wiki/Connect_the_dots
+
+# Chess
+Chess=http://en.wikipedia.org/wiki/Chess
+Chess[de]=http://en.wikipedia.org/wiki/Schach
+Chess[pt]=http://en.wikipedia.org/wiki/Xadrez
+
+# Reversi
+Reversi=http://en.wikipedia.org/wiki/Reversi
+Reversi[de]=http://en.wikipedia.org/wiki/Othello_(Spiel)
+
+# Muehle
+Muehle=http://en.wikipedia.org/wiki/Nine_Men's_Morris
+Muehle[de]=http://en.wikipedia.org/wiki/Mühlespiel
+
+# Go (unverified)
+Go=http://en.wikipedia.org/wiki/Go
+
+# Skat (UNUSED)
+Skat=http://en.wikipedia.org/wiki/Skat
+Skat[de]=http://de.wikipedia.org/wiki/Skat
 
