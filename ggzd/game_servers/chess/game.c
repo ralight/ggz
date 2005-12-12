@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: game.c 7661 2005-12-12 23:21:44Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -749,7 +749,7 @@ static void game_send_gameover(char code)
   /* Write PGN savegame headers */
   event = "some game...";
   site = "GGZ";
-  date = (char*)ggz_malloc(32);
+  date = ggz_malloc(32);
   strftime(date, 32, "%Y.%m.%d", localtime(&t));
   round = "1";
   white = ggz_strdup(ggzdmod_get_seat(game_info.ggz, 0).name);
