@@ -17,17 +17,15 @@ import rsvgsdl
 
 from kdecore import i18n
 
-path = sys.argv[0]
-if path[0] == ".":
+try:
+	import ggzsettings
+	DATAPATH = ggzsettings.DATAPATH + "/ggzboard/"
+	MODULEPATH = ggzsettings.MODULEPATH
+	I18NPATH = ggzsettings.I18NPATH
+except:
 	DATAPATH = "./"
 	MODULEPATH = "./"
 	I18NPATH = "./"
-else:
-	path = os.path.abspath(path)
-	basepath = str("/").join(path.split("/")[:-2])
-	DATAPATH = basepath + "/share/ggz/ggzboard/"
-	MODULEPATH = basepath + "/lib/site-python/"
-	I18NPATH = basepath + "/share/locale"
 
 gettext.install("ggzpython", I18NPATH, 1)
 
@@ -44,7 +42,47 @@ class BoardWidget(qtcanvas.QCanvasView):
 	def __init__(self, canvas, parent):
 		qtcanvas.QCanvasView.__init__(self, canvas, parent)
 
-		pass
+		#self.viewport().setPaletteBackgroundPixmap(qt.QPixmap("sunset.jpg"))
+		self.sprites_copy = None
+		self.canvas_copy = canvas
+		self.current = None
+
+	def contentsMousePressEvent(self, event):
+		#print "event!"
+		#print event
+		#print event.x(), event.y()
+		for index in range(len(self.sprites_copy)):
+			spriteentry = self.sprites_copy[index]
+			(s, smetadata) = spriteentry
+			if not smetadata:
+				continue
+
+			if event.x() >= s.x() and event.y() >= s.y():
+				if event.x() <= s.x() + s.width() and event.y() <= s.y() + s.height():
+					#print "Sprite!", s
+					#print "Meta", smetadata
+					(i, j, type) = smetadata
+
+					if self.current:
+						(olds, oldsmetadata) = self.sprites_copy[self.current]
+						(oldi, oldj, oldtype) = oldsmetadata
+						print "Move", oldsmetadata, smetadata
+						olds.move(s.x(), s.y())
+						oldsmetadata = (i, j, oldtype)
+						self.sprites_copy[self.current] = (olds, oldsmetadata)
+						self.current = None
+						break
+					else:
+						if type != "board":
+							print "Pick", smetadata
+							self.current = index
+							#spriteentry
+							break
+
+		self.canvas_copy.update()
+
+	def setSprites(self, sprites):
+		self.sprites_copy = sprites
 
 class MainWin(kdeui.KMainWindow):
 	def __init__(self, *args):
@@ -61,14 +99,16 @@ class MainWin(kdeui.KMainWindow):
 		self.arrays = []
 
 		canvas = qtcanvas.QCanvas(self)
-		canvas.resize(500, 500)
+		canvas.resize(1200, 1200)
 		#canvas.setFixedSize(500, 500)
 		self.canvas = canvas
+		canvas.setBackgroundPixmap(qt.QPixmap("sunset.jpg"))
 
 		area = BoardWidget(canvas, self)
 		area.show()
 		area.viewport().resize(500, 500)
 		#area.viewport().setFixedSize(500, 500)
+		area.setSprites(self.sprites)
 
 		#self.openAction = kdeui.KStdAction.open(self.slotOpen, self.actionCollection())
 		self.quitAction = kdeui.KStdAction.quit(self.slotQuit, self.actionCollection())
@@ -115,8 +155,21 @@ class MainWin(kdeui.KMainWindow):
 		svg = rsvgsdl.render(filename, width, height)
 		rawdata = svg.data()
 		if rawdata:
+			svg.qtconversion()
+			rawdata = svg.data()
+			#print "raw!"
+			im = qt.QImage(rawdata, svg.width(), svg.height(),
+				32, None, 0, qt.QImage.IgnoreEndian)
+			#print "img", im
+			im.setAlphaBuffer(True)
+			p = qt.QPixmap()
+			p.convertFromImage(im)
+			#print "pix", p
+			#print "pix-width", p.width()
+		else:
 			p = qt.QPixmap(width, height)
-		return qt.QPixmap(width, height)
+			p.fill(qt.QColor(255, 200, 0))
+		return p
 
 	def newgame(self, id):
 		print "NEW GAME", id
@@ -147,32 +200,87 @@ class MainWin(kdeui.KMainWindow):
 		self.setCaption(self.game.name())
 
 		# fake!!
-		self.game.board[0][0] = ("dog", "gold")
-		self.game.board[1][1] = ("rabbit", "silver")
-		self.game.board[1][0] = ("elephant", "gold")
-		self.game.board[0][1] = ("camel", "silver")
+		#self.game.board[0][0] = ("dog", "gold")
+		#self.game.board[1][1] = ("rabbit", "silver")
+		#self.game.board[1][0] = ("elephant", "gold")
+		#self.game.board[0][1] = ("camel", "silver")
+
+		# FIXME: must be deleted?!
+		for spriteentry in self.sprites:
+			(s, smetadata) = spriteentry
+			s.hide()
+		self.sprites.__delslice__(0, len(self.sprites))
+		#for s in self.sprites:
+			#del s
+		#self.sprites = []
+		#for a in self.arrays:
+			#del a
+		#self.arrays = []
 
 		for j in range(self.game.height):
 			for i in range(self.game.width):
+				style = None
+				if not self.game.boardstyle:
+					if not self.game.noemptytiles:
+						style = (255, 255, 255)
+					if self.game.swaptiles:
+						if (i + j) % 2:
+							style = (255, 255, 255)
+						else:
+							style = (255, 255, 200)
+				else:
+					style = self.game.boardstyle[j][i]
+
+				if style:
+					color = style
+					p = qt.QPixmap(64, 64)
+					if len(color) == 3:
+						p.fill(qt.QColor(color[0], color[1], color[2]))
+					else:
+						p.load(color)
+					painter = qt.QPainter()
+					painter.begin(p)
+					painter.setBrush(qt.QColor(0, 0, 0))
+					painter.drawLine(0, 0, 0, 63)
+					painter.drawLine(0, 0, 63, 0)
+					painter.drawLine(0, 63, 63, 63)
+					painter.drawLine(63, 0, 63, 63)
+					painter.end()
+					l = []
+					l.append(p)
+					a = qtcanvas.QCanvasPixmapArray(l)
+					s = qtcanvas.QCanvasSprite(a, self.canvas)
+					s.move(i * 64 + 15, j * 64 + 15)
+					s.setZ(-2)
+					s.show()
+					smetadata = (i, j, "board")
+					self.sprites.append((s, smetadata))
+					self.arrays.append(a)
+
 				f = self.game.board[j][i]
 				if f:
-					print "got figure!", f
+					#print "got figure!", f
 					figure = self.game.figure(f)
 					print figure
 					if figure[-4:] == ".svg":
-						p = qt.QPixmap()
+						#p = qt.QPixmap()
+						p = self.svgpixmap(figure, 64, 64)
 					else:
 						p = qt.QPixmap(figure)
-					a = qtcanvas.QCanvasPixmapArray(p)
-					print "ok-1", a
+					l = []
+					l.append(p)
+					#qt.QValueList
+					a = qtcanvas.QCanvasPixmapArray(l)
+					#print "ok-1", a
 					if a.count() > 0:
 						s = qtcanvas.QCanvasSprite(a, self.canvas)
-						print "ok-2", s
-						s.move(i * 50 + 15, j * 50 + 15)
-						print "ok-3"
+						#print "ok-2", s
+						s.move(i * 64 + 15, j * 64 + 15)
+						#print "ok-3"
 						s.show()
-						print "ok-4"
-						self.sprites.append(s)
+						#print "ok-4"
+						smetadata = (i, j, "figure")
+						self.sprites.append((s, smetadata))
 					self.arrays.append(a)
 
 		self.canvas.update()
