@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 7411 2005-08-14 11:59:36Z josef $
+ * $Id: game.c 7658 2005-12-12 11:47:24Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -128,15 +128,12 @@ static int game_read_move(int num, int* move);
 /* TTT-move function prototypes */
 static int game_next_move(void);
 static int game_req_move(int num);
-#ifdef GGZBOTPLAYERS
-static int game_bot_move(int num);
-#endif
 static int game_do_move(int move);
+#ifdef GGZBOTPLAYERS
+#include "ttt-ai.h"
+#endif
 
 /* Local utility function prototypes */
-#ifdef GGZBOTPLAYERS
-static void game_rotate_board(char b[9]);
-#endif
 static char game_check_move(int num, int move);
 static char game_check_win(void);
 #ifdef GGZSAVEDGAMES
@@ -532,7 +529,20 @@ static int game_next_move(void)
 	
 #ifdef GGZBOTPLAYERS
 	if (seat.type == GGZ_SEAT_BOT) {
-		move = game_bot_move(variables.turn);
+#ifdef GGZBOTHASNAME
+		GGZSeat seat;
+		int difficulty;
+
+		difficulty = 1;
+		seat = ggzdmod_get_seat(ttt_game.ggz, variables.turn);
+		char *botclass = ggzdmod_get_bot_class(ttt_game.ggz, seat.name);
+		if (!ggz_strcmp(botclass, "easy"))
+			difficulty = 0;
+		if (!ggz_strcmp(botclass, "hard"))
+			difficulty = 1;
+		ggz_free(botclass);
+#endif
+		move = ai_findmove(variables.turn, difficulty, variables.space);
 		game_do_move(move);
 	}
 	else
@@ -612,209 +622,6 @@ static int game_do_move(int move)
 }
 
 
-#ifdef GGZBOTPLAYERS
-/* Do bot moves */
-static int game_bot_move(int me)
-{
-	int i, move = -1;
-	int him = 1 - me;
-	char board[9];
-	int c;
-	int difficulty = 1;
-
-#ifdef GGZBOTHASNAME
-	GGZSeat seat;
-
-	seat = ggzdmod_get_seat(ttt_game.ggz, me);
-	char *botclass = ggzdmod_get_bot_class(ttt_game.ggz, seat.name);
-	if (!ggz_strcmp(botclass, "easy"))
-		difficulty = 0;
-	if (!ggz_strcmp(botclass, "hard"))
-		difficulty = 1;
-	ggz_free(botclass);
-#endif
-
-	/* Local copy of the boaard to rotate*/
-	for (i = 0; i < 9; i++)
-		board[i] = variables.space[i];
-
-	/* Checking for win */
-	/* Four possible board rotations to check */
-	for (i = 3; i >= 0; i--) {
-		
-		game_rotate_board(board);
-		
-		/* If three squares of interest filled, try again */
-		if (board[0] != -1 && board[1] != -1 && board[3] != -1)
-			continue;
-		
-		/* 5 patterns to check for win */
-		if (board[0] == -1 && board[1] == me && board[2] == me) {
-			move = 0;
-			break;
-		}
-			
-		if (board[0] == -1 && board[3] == me && board[6] == me) {
-			move = 0;
-			break;
-		}
-
-		if (board[0] == -1 && board[4] == me && board[8] == me) {
-			move = 0;
-			break;
-		}
-
-		if (board[0] == me && board[1] == -1 && board[2] == me) {
-			move = 1;
-			break;
-		}
-
-		if (board[1] == -1 && board[4] == me && board[7] == me) {
-			move = 1;
-			break;
-		}
-	}
-	
-	/* We found a move.  Now "unrotate" it */
-	if (move != -1) {
-		while (i-- > 0)
-			move = 2 + 3 * (move % 3) - move / 3;
-		return move;
-	}
-
-	/* Checking for immediate block */
-	for (i = 3; i >= 0; i--) {
-
-		game_rotate_board(board);
-
-		/* If three squares of interest filled, try again */
-		if (board[0] != -1 && board[1] != -1 && board[3] != -1)
-			continue;
-		
-		/* 5 patterns to check for immediate block */
-		if (board[0] == -1 && board[1] == him && board[2] == him) {
-			move = 0;
-			break;
-		}
-
-		if (board[0] == -1 && board[3] == him && board[6] == him) {
-			move = 0;
-			break;
-		}
-
-		if (board[0] == -1 && board[4] == him && board[8] == him) {
-			move = 0;
-			break;
-		}
-
-		if (board[0] == him && board[1] == -1 && board[2] == him) {
-			move = 1;
-			break;
-		}
-		
-		if (board[1] == -1 && board[4] == him && board[7] == him) {
-			move = 1;
-			break;
-		}
-	}
-
-	/* FIXME: If not playing perfect, move here */
-	/* We found a move.  Now "unrotate" it */
-	if (move != -1) {
-		while (i-- > 0)
-			move = 2 + 3 * (move % 3) - move / 3;
-		return move;
-	}
-
-	/* Avoid 'holy cow' weakness */
-	if (difficulty == 1) {
-		c = board[4];
-		if (c != -1)
-		{
-			for (i = 0; i < 9; i += 2) {
-				if (i == 4) continue;
-				if ((board[i] == c)
-				&& (board[8 - i] != c)
-				&& (board[8 - i] != -1)) {
-					/*printf("holy cow! at: %i\n", i);*/
-					if (board[abs(i - 6)] == -1) {
-						return abs(i - 6);
-					} else if (board[abs(i - 2)] == -1) {
-						return abs(i - 2);
-					}
-				}
-			}
-		}
-	}
-
-	/* Checking for future block */
-	for (i = 3; i >= 0; i--) {
-
-		game_rotate_board(board);
-
-		/* If three squares of interest filled, try again */
-		if (board[0] != -1 && board[1] != -1 && board[3] != -1)
-			continue;
-		
-		/* 6 patterns to check for future block */
-		if (board[0] == -1 && board[1] == -1 && board[2] == him
-		    && board[3] == -1 && board[4] == me && board[5] == -1
-		    && board[6] == him && board[7] == -1 && board[8] == -1) {
-			move = 1;
-			break;
-		}
-
-		if (board[0] == -1 && board[1] == him && board[2] == -1
-		    && board[3] == him && board[4] == me && board[6] == -1) {
-			move = 0;
-			break;
-		}
-
-		if (board[0] == -1 && board[1] == -1 && board[2] == him
-		    && board[3] == him && board[4] == me && board[6] == -1) {
-			move = 0;
-			break;
-		}
-
-		if (board[0] == -1 && board[1] == -1 && board[2] == him
-		    && board[3] == -1 && board[4] == me && board[6] == him) {
-			move = 0;
-			break;
-		}
-
-		if (board[0] == -1 && board[4] == him && board[8] == -1) {
-			move = 0;
-			break;
-		}
-
-		if (board[1] == -1 && board[4] == him && board[7] == -1) {
-			move = 1;
-			break;
-		}
-	}
-	
-	/* We found a move.  Now "unrotate" it */
-	if (move != -1) {
-		while (i-- > 0)
-			move = 2 + 3 * (move % 3) - move / 3;
-	} else {
-		/* If we didn't match a pattern, just pick something*/
-		if (board[4] == -1) {
-			move = 4;
-		}
-		else
-			for (i = 0; i < 9; i++)
-				if (board[i] == -1) {
-					move = i;
-					break;
-				}
-	}
-
-	return move;
-}
-#endif
-
-
 /* Check for valid move */
 static char game_check_move(int num, int move)
 {
@@ -890,22 +697,6 @@ static char game_check_win(void)
 
 	return -1;
 }
-
-
-#ifdef GGZBOTPLAYERS
-static void game_rotate_board(char b[9])
-{
-	int i, j;
-	char tmp[9];
-	
-	for (i = 0; i < 9; i++)
-		tmp[i] = b[i];
-	for (i = 0; i < 3; i++)
-		for (j = 0; j < 3; j++)
-			b[3*i+j] = tmp[3*(2-j)+i];
-}
-#endif
-
 
 #ifdef GGZSAVEDGAMES
 #define TEMPLATE "savegame.XXXXXX"
