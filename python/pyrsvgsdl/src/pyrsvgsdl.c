@@ -145,6 +145,45 @@ static PyObject *pyrsvgsdl_surface_data(pyrsvgsdl_SurfaceObject *self, PyObject 
 		gdk_pixbuf_get_width(buf) * gdk_pixbuf_get_height(buf) * 4);
 }
 
+static PyObject *pyrsvgsdl_surface_qtconversion(pyrsvgsdl_SurfaceObject *self, PyObject *args)
+{
+	GdkPixbuf *buf;
+	unsigned char *pixelbuf;
+	int littleendian;
+	int i, j;
+	int w, h;
+	unsigned int pixel;
+	int a, r, g, b;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+
+	buf = self->buf;
+	pixelbuf = gdk_pixbuf_get_pixels(buf);
+
+	littleendian = 1;
+	if(!(*(char*)&littleendian & 0xFF)) littleendian = 0;
+	if(!littleendian)
+	{
+		w = gdk_pixbuf_get_width(buf);
+		h = gdk_pixbuf_get_height(buf);
+		for(i = 0; i < w; i++)
+		{
+			for(j = 0; j < h; j++)
+			{
+				pixel = *(unsigned int*)(pixelbuf + (j * w + i) * 4);
+				r = (pixel >> 24) & 0xFF;
+				g = (pixel >> 16) & 0xFF;
+				b = (pixel >> 8) & 0xFF;
+				a = (pixel >> 0) & 0xFF;
+				pixel = (a << 24) + (r << 16) + (g << 8) + (b << 0);
+				*(unsigned int*)(pixelbuf + (j * w + i) * 4) = pixel;
+			}
+		}
+	}
+
+	return Py_None;
+}
+
 /**********************************************/
 /* Function lookup table                      */
 /**********************************************/
@@ -160,6 +199,7 @@ static PyMethodDef pyrsvgsdl_surface_methods[] =
 	{"data", pyrsvgsdl_surface_data, METH_VARARGS},
 	{"width", pyrsvgsdl_surface_width, METH_VARARGS},
 	{"height", pyrsvgsdl_surface_height, METH_VARARGS},
+	{"qtconversion", pyrsvgsdl_surface_qtconversion, METH_VARARGS},
 	{NULL, NULL, 0}
 };
 
