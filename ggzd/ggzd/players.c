@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 7612 2005-11-07 10:39:49Z josef $
+ * $Id: players.c 7663 2005-12-12 23:41:08Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -915,7 +915,7 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 
 
 /* FIXME: move to libggz? */
-char *ggzdgetpeername(int fd) {
+static char *ggzdgetpeername(int fd) {
 	struct sockaddr *addr;
 	socklen_t addrsize;
 	int ret;
