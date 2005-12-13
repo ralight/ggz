@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 7554 2005-09-25 11:14:09Z josef $
+ * $Id: ggz.h 7665 2005-12-13 00:35:51Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -1103,6 +1103,14 @@ typedef struct _GGZFile GGZFile;
  * cleanup this struct using ggz_free_file_struct().
  */
 GGZFile * ggz_get_file_struct(int fdes);
+
+/**
+ * Create directories to fill out a path.  New directories are created with
+ * permissions 700 (S_IRWXU).
+ * @param full The full path to be created.
+ * @return 0 on success; -1 on failure
+ */
+int ggz_make_path(const char *full);
 
 /**
  * Read a line of arbitrary length from a file.

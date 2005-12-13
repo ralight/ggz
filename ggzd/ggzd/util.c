@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 05/04/2002 (code moved from control.c)
  * Desc: General utility functions for ggzd
- * $Id: util.c 6416 2004-11-17 22:02:24Z jdorje $
+ * $Id: util.c 7665 2005-12-13 00:35:51Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -38,40 +38,6 @@
 #include "err_func.h"
 #include "util.h"
 
-static GGZReturn make_path(const char* full, mode_t mode);
-
-/*
- * Given a path and a mode, we create the given directory.  This
- * is called only if we've determined the directory doesn't
- * already exist.
- */
-static GGZReturn make_path(const char* full, mode_t mode)
-{
-	const char* slash = "/";
-	char *dir, *copy;
-	struct stat stats;
-	char file[strlen(full) + 1];
-	char path[strlen(full) + 1];
-
-	strcpy(file, full);
-	copy = file;
-	path[0] = 0;
-
-	/* Skip preceding / */
-	if (copy[0] == '/')
-		copy++;
-
-	while ((dir = strsep(&copy, slash))) {
-		strcat(strcat(path, "/"), dir);
-		if (mkdir(path, mode) < 0
-		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode)))
-			return GGZ_ERROR;
-	}
-
-	return GGZ_OK;
-}
-
-
 /*
  * Given a path for a directory, we check to see if that directory
  * exists.  If it doesn't, we create it.
@@ -88,7 +54,7 @@ void check_path(const char* full_path)
 	if ( (dir = opendir(full_path)) == NULL) {
 		dbg_msg(GGZ_DBG_CONFIGURATION,
 			"Couldn't open %s -- trying to create", full_path);
-		if (make_path(full_path, S_IRWXU) != GGZ_OK)
+		if (ggz_make_path(full_path) < 0)
 			err_sys_exit("Couldn't create %s", full_path);
 	} else /* Everything eas OK, so close it */
 		closedir(dir);

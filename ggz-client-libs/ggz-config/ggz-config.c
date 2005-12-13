@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7662 2005-12-12 23:37:08Z jdorje $
+ * $Id: ggz-config.c 7665 2005-12-13 00:35:51Z jdorje $
  *
  * Configuration query and module install program.
  *
@@ -353,42 +353,6 @@ static int open_conffile(void)
 }
 
 
-/* taken from ggzd/util.c: make_path() */
-/* should go into libggz, along with filecopy()? */
-static int mkdirectory(const char* full, mode_t mode)
-{
-	const char* slash = "/";
-	char *dir, *copy;
-	struct stat stats;
-	char file[strlen(full) + 1];
-	char path[strlen(full) + 1];
-
-	strcpy(file, full);
-	copy = file;
-	path[0] = 0;
-
-	if (copy[0] == '/')
-		copy++;
-
-	while ((dir = strsep(&copy, slash))) {
-		strcat(strcat(path, "/"), dir);
-		if (
-#ifdef MKDIR_TAKES_ONE_ARG
-		    mkdir(path) < 0
-#else
-		    mkdir(path, mode) < 0
-#endif
-		    && (stat(path, &stats) < 0
-			|| !S_ISDIR(stats.st_mode))) {
-			fprintf(stderr, _("Directory cannot be created (%s)\n"), path);
-			return -1;
-		}
-	}
-
-	return 0;
-}
-
-
 static int filecopy(const char *src, const char *dst)
 {
 	FILE *fin, *fout;
@@ -493,7 +457,7 @@ static int noregister_module(void)
 	char *global_pathname;
 	char *suffix = ".module.dsc";
 	char *fixedmodname;
-	int ret, i;
+	int i;
 
 	if(moddest)
 		global_pathname = ggz_malloc(strlen(destdir) +
@@ -510,8 +474,11 @@ static int noregister_module(void)
 	else
 		sprintf(global_pathname, "%s", copydir);
 
-	ret = mkdirectory(global_pathname, S_IRWXU);
-	if(ret != 0) return -1;
+	if (ggz_make_path(global_pathname) != 0) {
+		fprintf(stderr, _("Directory cannot be created (%s)\n"),
+			global_pathname);
+		return -1;
+	}
 
 	fixedmodname = (char*)ggz_malloc(strlen(modname) + 1);
 	strcpy(fixedmodname, modname);

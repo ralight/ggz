@@ -28,6 +28,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <strings.h> /* For strcasecmp */
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include "ggz.h"
@@ -179,6 +181,42 @@ GGZFile * ggz_get_file_struct(int fdes)
 	return new;
 }
 
+/*
+ * Given a path and a mode, we create the given directory.  This
+ * is called only if we've determined the directory doesn't
+ * already exist.
+ */
+int ggz_make_path(const char* full)
+{
+	const char* slash = "/";
+	char *dir, *copy;
+	struct stat stats;
+	char file[strlen(full) + 1];
+	char path[strlen(full) + 1];
+
+	strcpy(file, full);
+	copy = file;
+	path[0] = 0;
+
+	/* Skip preceding / */
+	if (copy[0] == '/')
+		copy++;
+
+	while ((dir = strsep(&copy, slash))) {
+		strcat(strcat(path, "/"), dir);
+		if (
+#ifdef MKDIR_TAKES_ONE_ARG
+		    mkdir(path) < 0
+#else
+		    mkdir(path, S_IRWXU) < 0
+#endif
+		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
+			return -1;
+		}
+	}
+
+	return 0;
+}
 
 char * ggz_read_line(GGZFile *file)
 {
