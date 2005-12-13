@@ -188,21 +188,29 @@ GGZFile * ggz_get_file_struct(int fdes)
  */
 int ggz_make_path(const char* full)
 {
-	const char* slash = "/";
-	char *dir, *copy;
+	char *sep, *copy;
 	struct stat stats;
 	char file[strlen(full) + 1];
 	char path[strlen(full) + 1];
 
 	strcpy(file, full);
 	copy = file;
-	path[0] = 0;
+	path[0] = '\0';
 
 	/* Skip preceding / */
 	if (copy[0] == '/')
 		copy++;
 
-	while ((dir = strsep(&copy, slash))) {
+	/* We used to use strsep() here, but this was changed because
+	 * that function is not portable. */
+	do {
+		char *dir = copy;
+
+		sep = strchr(copy, '/');
+		if (sep) {
+			*sep = '\0';
+			copy = sep + 1;
+		}
 		strcat(strcat(path, "/"), dir);
 		if (
 #ifdef MKDIR_TAKES_ONE_ARG
@@ -213,7 +221,10 @@ int ggz_make_path(const char* full)
 		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
 			return -1;
 		}
-	}
+		if (sep) {
+			*sep = '/';
+		}
+	} while (sep);
 
 	return 0;
 }
