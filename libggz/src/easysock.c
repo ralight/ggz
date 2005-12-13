@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7634 2005-11-18 21:51:26Z jdorje $
+ * $Id: easysock.c 7666 2005-12-13 00:41:37Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -168,8 +168,15 @@ static int es_bind(const char *host, int port)
 	hints.ai_socktype = SOCK_STREAM;
 
 	if ((n = getaddrinfo(host, serv, &hints, &res)) != 0) {
-		if (_err_func)
-			(*_err_func) (gai_strerror(n), GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		if (_err_func) {
+#ifdef HAVE_WINSOCK2_H
+			char *msg = "Unknown error"; /* FIXME */
+#else
+			char *msg = gai_strerror(n);
+#endif
+
+			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		}
 		return -1;
 	}
 
@@ -209,8 +216,15 @@ static int es_connect(const char *host, int port)
 	hints.ai_socktype = SOCK_STREAM;
 
 	if ((n = getaddrinfo(host, serv, &hints, &res)) != 0) {
-		if (_err_func)
-			(*_err_func) (gai_strerror(n), GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		if (_err_func) {
+#ifdef HAVE_WINSOCK2_H
+			char *msg = "Unknown error"; /* FIXME */
+#else
+			char *msg = gai_strerror(n);
+#endif
+
+			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		}
 		return -1;
 	}
 
