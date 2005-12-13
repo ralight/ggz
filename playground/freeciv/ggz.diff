@@ -1,581 +1,7 @@
-Index: configure.ac
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/configure.ac,v
-retrieving revision 1.80.2.10
-diff -u -r1.80.2.10 configure.ac
---- configure.ac	19 Jan 2005 23:58:33 -0000	1.80.2.10
-+++ configure.ac	23 Jun 2005 16:53:03 -0000
-@@ -33,6 +33,8 @@
- AC_DEFINE_UNQUOTED(VERSION_STRING, "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}${VERSION_LABEL}", [Version string])
- AC_DEFINE_UNQUOTED(IS_DEVEL_VERSION, $IS_DEVEL_VERSION, [Is this a devel version])
- AC_DEFINE_UNQUOTED(IS_BETA_VERSION, $IS_BETA_VERSION, [Is this a beta veersion])
-+AC_SUBST(MAJOR_VERSION)
-+AC_SUBST(MINOR_VERSION)
- 
- dnl Initialize automake stuff
- AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
-@@ -413,6 +415,49 @@
-   gui_sources="gui-$client"
- fi
- 
-+dnl Check for GGZ
-+AC_GGZ_INIT
-+AC_GGZ_LIBGGZ([try_ggz="yes"], [try_ggz="no"])
-+ggz_server="no"
-+ggz_client="no"
-+AC_ARG_WITH(ggz-server,
-+            AC_HELP_STRING([--with-ggz-server], [Force GGZ server support]),
-+            [try_ggz_server=$withval])
-+AC_ARG_WITH(ggz-client,
-+            AC_HELP_STRING([--with-ggz-client], [Force GGZ client support]),
-+            [try_ggz_client=$withval])
-+if test "x$server" != "xno" && test "x$try_ggz_server" != "xno"; then
-+  if test "$try_ggz" = "yes"; then
-+    # Must pass something as the action-if-failed, or the macro will exit
-+    AC_GGZ_GGZDMOD([ggz_server="yes"], [ggz_server="no"]])
-+  fi
-+  if test "$ggz_server" = "yes"; then
-+    GGZ_SERVER_FILES="civserver.dsc civserver.room"
-+    AC_DEFINE(GGZ_SERVER, 1, [Server support for GGZ])
-+  else
-+    if test "$try_ggz_server" = "yes"; then
-+      AC_MSG_ERROR([Could not configure GGZ server support. See above messages.])
-+    fi
-+  fi
-+fi
-+if test "x$client" != "xno" && test "x$try_ggz_client" != "xno"; then
-+  if test "$try_ggz" = "yes"; then
-+    # Must pass something as the action-if-failed, or the macro will exit
-+    AC_GGZ_GGZMOD([AC_GGZ_CONFIG([ggz_client="yes"], [ggz_client="no"])],
-+                  [ggz_client="no"])
-+  fi
-+  if test "$ggz_client" = "yes"; then
-+    GGZ_CLIENT_FILES="civclient.dsc"
-+    AC_DEFINE(GGZ_CLIENT, 1, [Client support for GGZ])
-+  else
-+    if test "$try_ggz_client" = "yes"; then
-+      AC_MSG_ERROR([Could not configure GGZ client support. See above messages.])
-+    fi
-+  fi
-+fi
-+AM_CONDITIONAL(GGZ_CLIENT, test "$ggz_client" = "yes")
-+AM_CONDITIONAL(GGZ_SERVER, test "$ggz_server" = "yes")
-+
- AC_SUBST(gui_sources)
- AC_SUBST(CLIENT_CFLAGS)
- AC_SUBST(CLIENT_LIBS)
-@@ -642,6 +687,8 @@
- 
- AC_CONFIG_FILES([Makefile
-           data/Makefile 
-+          data/civserver.dsc
-+          data/civclient.dsc
- 	  data/flags/Makefile
- 	  data/misc/Makefile 
- 	  data/trident/Makefile 
-Index: client/Makefile.am
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/client/Makefile.am,v
-retrieving revision 1.61
-diff -u -r1.61 Makefile.am
---- client/Makefile.am	24 Sep 2004 15:33:31 -0000	1.61
-+++ client/Makefile.am	23 Jun 2005 16:53:03 -0000
-@@ -138,7 +138,7 @@
- 
- bin_PROGRAMS = civclient
- 
--AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/include -I$(top_srcdir)/common -I$(top_srcdir)/common/aicore -I../intl -I$(srcdir)/agents @SOUND_CFLAGS@
-+AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/include -I$(top_srcdir)/common -I$(top_srcdir)/common/aicore -I../intl -I$(srcdir)/agents @SOUND_CFLAGS@ @LIBGGZ_INCLUDES@ @GGZMOD_INCLUDES@
- 
- ## Above, note -I../intl instead of -I$(top_srdir/intl) is deliberate.
- 
-@@ -163,6 +163,8 @@
- 	clinet.h	\
- 	control.c	\
- 	control.h	\
-+	ggzclient.c	\
-+	ggzclient.h	\
- 	goto.c		\
- 	goto.h		\
- 	helpdata.c	\
-@@ -192,7 +194,7 @@
- 	audio_none.c    \
- 	audio_none.h
- 
--civclient_LDFLAGS = @CLIENT_LDFLAGS@
-+civclient_LDFLAGS = @CLIENT_LDFLAGS@ @GGZMOD_LDFLAGS@
- fc_civclient_libs =	../utility/libcivutility.a	\
- 			$(LIBFTWL)			\
- 			../common/libcivcommon.a	\
-@@ -201,7 +203,7 @@
- 		 	@gui_sources@/libguiclient.a
- civclient_DEPENDENCIES = $(fc_civclient_libs)
- civclient_LDADD        = $(fc_civclient_libs) $(fc_civclient_libs) \
--	@INTLLIBS@ @CLIENT_LIBS@ @SOUND_LIBS@
-+	@INTLLIBS@ @CLIENT_LIBS@ @SOUND_LIBS@ @LIB_GGZMOD@
- desktopfiledir = $(prefix)/share/applications
- desktopfile_DATA = \
- 	freeciv.desktop
-Index: client/civclient.c
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/client/civclient.c,v
-retrieving revision 1.197.2.9
-diff -u -r1.197.2.9 civclient.c
---- client/civclient.c	22 Feb 2005 00:00:32 -0000	1.197.2.9
-+++ client/civclient.c	23 Jun 2005 16:53:04 -0000
-@@ -53,6 +53,7 @@
- #include "control.h" 
- #include "dialogs_g.h"
- #include "diplodlg_g.h"
-+#include "ggzclient.h"
- #include "goto.h"
- #include "gui_main_g.h"
- #include "helpdata.h"		/* boot_help_texts() */
-@@ -218,6 +219,9 @@
-     fc_fprintf(stderr, _("  -t, --tiles FILE\t"
- 		      "Use data file FILE.tilespec for tiles\n"));
-     fc_fprintf(stderr, _("  -v, --version\t\tPrint the version number\n"));
-+#ifdef GGZ_CLIENT
-+    fc_fprintf(stderr, _("  -z, --zone\t\tEnable GGZ mode\n"));
-+#endif
-     fc_fprintf(stderr, _("      --\t\t"
- 		      "Pass any following options to the UI.\n"
- 		      "\t\t\tTry \"%s -- --help\" for more.\n"), argv[0]);
-@@ -260,6 +264,10 @@
-       }
-    } else if ((option = get_option("--tiles", argv, &i, argc)))
-       sz_strlcpy(tileset_name, option);
-+#ifdef GGZ_CLIENT
-+   else if (is_option("--zone", argv[i]))
-+     with_ggz = TRUE;
-+#endif
-    else if (is_option("--", argv[i])) {
-      ui_separator = TRUE;
-    } else { 
-@@ -339,6 +347,8 @@
-   audio_real_init(sound_set_name, sound_plugin_name);
-   audio_play_music("music_start", NULL);
- 
-+  ggz_initialize();
-+
-   /* run gui-specific client */
-   ui_main(argc, argv);
- 
-Index: client/clinet.c
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/client/clinet.c,v
-retrieving revision 1.102.2.9
-diff -u -r1.102.2.9 clinet.c
---- client/clinet.c	15 Apr 2005 20:24:44 -0000	1.102.2.9
-+++ client/clinet.c	23 Jun 2005 16:53:04 -0000
-@@ -78,6 +78,7 @@
- #include "connectdlg_common.h"
- #include "connectdlg_g.h"
- #include "dialogs_g.h"		/* popdown_races_dialog() */
-+#include "ggzclient.h"
- #include "gui_main_g.h"		/* add_net_input(), remove_net_input() */
- #include "mapview_common.h"	/* unqueue_mapview_update */
- #include "menu_g.h"
-@@ -125,6 +126,9 @@
-   client_kill_server();
-   append_output_window(_("Lost connection to server!"));
-   freelog(LOG_NORMAL, "lost connection to server");
-+  if (with_ggz) {
-+    ui_exit();
-+  }
- }
- 
- /**************************************************************************
-@@ -183,8 +187,6 @@
- **************************************************************************/
- int try_to_connect(const char *username, char *errbuf, int errbufsize)
- {
--  struct packet_server_join_req req;
--
-   close_socket_set_callback(close_socket_callback);
- 
-   /* connection in progress? wait. */
-@@ -210,7 +212,20 @@
- #endif
-   }
- 
-+  make_connection(aconnection.sock, username);
-+
-+  return 0;
-+}
-+
-+/**************************************************************************
-+  Called after a connection is completed (e.g., in try_to_connect).
-+**************************************************************************/
-+void make_connection(int socket, const char *username)
-+{
-+  struct packet_server_join_req req;
-+
-   connection_common_init(&aconnection);
-+  aconnection.sock = socket;
-   aconnection.client.last_request_id_used = 0;
-   aconnection.client.last_processed_request_id_seen = 0;
-   aconnection.client.request_id_of_currently_handled_packet = 0;
-@@ -230,8 +245,6 @@
-   sz_strlcpy(req.username, username);
-   
-   send_packet_server_join_req(&aconnection, &req);
--
--  return 0;
- }
- 
- /**************************************************************************
-@@ -244,6 +257,9 @@
-    * We assume that we are always connected to the internal server  */
-   client_kill_server();
-   append_output_window(_("Disconnected from server."));
-+  if (with_ggz) {
-+    ui_exit();
-+  }
- }  
- 
- /**************************************************************************
-Index: client/clinet.h
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/client/clinet.h,v
-retrieving revision 1.20
-diff -u -r1.20 clinet.h
---- client/clinet.h	4 Oct 2004 04:37:32 -0000	1.20
-+++ client/clinet.h	23 Jun 2005 16:53:04 -0000
-@@ -33,6 +33,8 @@
- int get_server_address(const char *hostname, int port, char *errbuf,
- 		       int errbufsize);
- int try_to_connect(const char *username, char *errbuf, int errbufsize);
-+void make_connection(int socket, const char *username);
-+
- void input_from_server(int fd);
- void input_from_server_till_request_got_processed(int fd,
- 						  int expected_request_id);
-Index: client/ggzclient.c
-===================================================================
-RCS file: client/ggzclient.c
-diff -N client/ggzclient.c
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ client/ggzclient.c	23 Jun 2005 16:53:04 -0000
-@@ -0,0 +1,84 @@
-+/********************************************************************** 
-+ Freeciv - Copyright (C) 2005 - Freeciv Development Team
-+   This program is free software; you can redistribute it and/or modify
-+   it under the terms of the GNU General Public License as published by
-+   the Free Software Foundation; either version 2, or (at your option)
-+   any later version.
-+
-+   This program is distributed in the hope that it will be useful,
-+   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+   GNU General Public License for more details.
-+***********************************************************************/
-+
-+#ifdef HAVE_CONFIG_H
-+#include <config.h>
-+#endif
-+
-+#ifdef GGZ_CLIENT
-+
-+#include <ggzmod.h>
-+
-+#include "fciconv.h"
-+#include "fcintl.h"
-+
-+#include "gui_main_g.h"
-+
-+#include "clinet.h"
-+#include "ggzclient.h"
-+
-+
-+bool with_ggz = FALSE;
-+
-+static GGZMod *ggzmod;
-+
-+/**************************************************************************
-+  A callback that GGZ calls when we are connected to the freeciv
-+  server.
-+**************************************************************************/
-+static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
-+				 const void *data)
-+{
-+  const int *socket = data;
-+  const char *username = ggzmod_get_player(ggzmod, NULL, NULL);
-+
-+  if (!username) {
-+    username = "NONE";
-+  }
-+  make_connection(*socket, username);
-+}
-+
-+/**************************************************************************
-+  Connect to the GGZ client, if GGZ is being used.
-+**************************************************************************/
-+void ggz_initialize(void)
-+{
-+  if (with_ggz) {
-+    int ggz_socket;
-+
-+    /* We're in GGZ mode */
-+    printf("ggz initialize\n");
-+    ggzmod = ggzmod_new(GGZMOD_GAME);
-+    ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
-+    if (ggzmod_connect(ggzmod) < 0) {
-+      exit(EXIT_FAILURE);
-+    }
-+    ggz_socket = ggzmod_get_fd(ggzmod);
-+    if (ggz_socket < 0) {
-+      fc_fprintf(stderr, _("Only the GGZ client must call civclient"
-+			   " in ggz mode!\n"));
-+      exit(EXIT_FAILURE);
-+    }
-+    add_ggz_input(ggz_socket);
-+  }
-+}
-+
-+/**************************************************************************
-+  Called when the ggz socket has data pending.
-+**************************************************************************/
-+void input_from_ggz(int socket)
-+{
-+  ggzmod_dispatch(ggzmod);
-+}
-+
-+#endif
-Index: client/ggzclient.h
-===================================================================
-RCS file: client/ggzclient.h
-diff -N client/ggzclient.h
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ client/ggzclient.h	23 Jun 2005 16:53:04 -0000
-@@ -0,0 +1,33 @@
-+/********************************************************************** 
-+ Freeciv - Copyright (C) 2005 - Freeciv Development Team
-+   This program is free software; you can redistribute it and/or modify
-+   it under the terms of the GNU General Public License as published by
-+   the Free Software Foundation; either version 2, or (at your option)
-+   any later version.
-+
-+   This program is distributed in the hope that it will be useful,
-+   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+   GNU General Public License for more details.
-+***********************************************************************/
-+#ifndef FC__GGZCLIENT_H
-+#define FC__GGZCLIENT_H
-+
-+#ifdef GGZ_CLIENT
-+
-+#include "shared.h"
-+
-+extern bool with_ggz;
-+
-+void ggz_initialize(void);
-+void input_from_ggz(int socket);
-+
-+#else
-+
-+#  define with_ggz FALSE
-+#  define ggz_initialize() (void)0
-+#  define input_from_ggz(socket) (void)0
-+
-+#endif
-+
-+#endif  /* FC__GGZCLIENT_H */
-Index: client/gui-gtk-2.0/gui_main.c
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/client/gui-gtk-2.0/gui_main.c,v
-retrieving revision 1.81.2.16
-diff -u -r1.81.2.16 gui_main.c
---- client/gui-gtk-2.0/gui_main.c	15 Apr 2005 04:57:10 -0000	1.81.2.16
-+++ client/gui-gtk-2.0/gui_main.c	23 Jun 2005 16:53:07 -0000
-@@ -53,6 +53,7 @@
- #include "control.h"
- #include "dialogs.h"
- #include "gotodlg.h"
-+#include "ggzclient.h"
- #include "graphics.h"
- #include "gui_main.h"
- #include "gui_stuff.h"
-@@ -1427,6 +1428,14 @@
- }
- 
- /**************************************************************************
-+  Callback for when the GGZ socket has data pending.
-+**************************************************************************/
-+static void get_ggz_input(gpointer data, gint fid, GdkInputCondition condition)
-+{
-+  input_from_ggz(fid);
-+}
-+
-+/**************************************************************************
- ...
- **************************************************************************/
- static void set_wait_for_writable_socket(struct connection *pc,
-@@ -1469,6 +1478,15 @@
-   gdk_window_set_cursor(root_window, NULL);
- }
- 
-+/**************************************************************************
-+  Called to monitor a GGZ socket.
-+**************************************************************************/
-+void add_ggz_input(int sock)
-+{
-+  (void) gtk_input_add_full(sock, GDK_INPUT_READ, get_ggz_input,
-+			    NULL, NULL, NULL);
-+}
-+
- /****************************************************************
-   This is the response callback for the dialog with the message:
-   Are you sure you want to quit?
-Index: client/include/gui_main_g.h
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/client/include/gui_main_g.h,v
-retrieving revision 1.10
-diff -u -r1.10 gui_main_g.h
---- client/include/gui_main_g.h	3 Sep 2004 04:22:36 -0000	1.10
-+++ client/include/gui_main_g.h	23 Jun 2005 16:53:07 -0000
-@@ -23,6 +23,7 @@
- void sound_bell(void);
- void add_net_input(int);
- void remove_net_input(void);
-+void add_ggz_input(int socket);
- 
- void set_unit_icon(int idx, struct unit *punit);
- void set_unit_icons_more_arrow(bool onoff);
-Index: data/.cvsignore
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/data/.cvsignore,v
-retrieving revision 1.4
-diff -u -r1.4 .cvsignore
---- data/.cvsignore	4 Oct 2004 17:33:08 -0000	1.4
-+++ data/.cvsignore	23 Jun 2005 16:53:07 -0000
-@@ -1,4 +1,6 @@
- Freeciv
- Makefile
- Makefile.in
-+civserver.dsc
-+civclient.dsc
- .deps
-Index: data/Makefile.am
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/data/Makefile.am,v
-retrieving revision 1.26.2.1
-diff -u -r1.26.2.1 Makefile.am
---- data/Makefile.am	20 Oct 2004 03:45:21 -0000	1.26.2.1
-+++ data/Makefile.am	23 Jun 2005 16:53:07 -0000
-@@ -36,6 +36,9 @@
- 	Freeciv	\
- 	freeciv.rc	\
- 	freeciv.rc-2.0	\
-+	civserver.dsc.in	\
-+	civclient.dsc.in	\
-+	civserver.room		\
- 	isophex.tilespec	\
- 	isotrident.tilespec \
- 	trident.tilespec	\
-@@ -58,3 +61,19 @@
- endif
- 
- SUBDIRS = $(CLIENTDATADIRS) $(SERVERDATADIRS)
-+
-+if GGZ_CLIENT
-+install-data-local:
-+	$(GGZ_CONFIG) -D --install --modfile=civclient.dsc --force
-+
-+uninstall-local:
-+	$(GGZ_CONFIG) -D --remove --modfile=civclient.dsc
-+endif
-+
-+if GGZ_SERVER
-+ggzroom_DATA = civserver.room
-+ggzroomdir = ${prefix}/etc/ggzd/rooms/
-+
-+ggzgame_DATA = civserver.dsc
-+ggzgamedir = ${prefix}/etc/ggzd/games/
-+endif
-Index: data/civclient.dsc.in
-===================================================================
-RCS file: data/civclient.dsc.in
-diff -N data/civclient.dsc.in
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ data/civclient.dsc.in	23 Jun 2005 16:53:07 -0000
-@@ -0,0 +1,11 @@
-+# GGZ client game description file for Freeciv
-+
-+[ModuleInfo]
-+Author = See http://www.freeciv.org/people.phtml
-+CommandLine = @prefix@/bin/civclient --zone
-+Frontend = any
-+Homepage = http://www.freeciv.org/
-+Name = Freeciv
-+ProtocolEngine = Freeciv
-+ProtocolVersion = @MAJOR_VERSION@.@MINOR_VERSION@
-+Version = @VERSION@
-Index: data/civserver.dsc.in
-===================================================================
-RCS file: data/civserver.dsc.in
-diff -N data/civserver.dsc.in
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ data/civserver.dsc.in	23 Jun 2005 16:53:07 -0000
-@@ -0,0 +1,28 @@
-+# GGZ Server game description file for Freeciv
-+
-+[GameInfo]
-+Author = See http://www.freeciv.org/people.phtml
-+Description = Freeciv strategy game
-+Homepage = http://www.freeciv.org/
-+Name = Freeciv
-+Version = @VERSION@
-+
-+[LaunchInfo]
-+ExecutablePath = @prefix@/bin/civserver -z -q 180 -e
-+
-+[Protocol]
-+Engine = Freeciv
-+Version = @MAJOR_VERSION@.@MINOR_VERSION@
-+
-+[TableOptions]
-+AllowLeave = 1
-+# Freeciv bots are handled internally, but aren't visible to GGZ
-+#BotsAllowed = 
-+PlayersAllowed = 1..30
-+# This should be 0, but civserver doesn't exit correctly in pregame
-+KillWhenEmpty = 1
-+AllowSpectators = 0
-+
-+[Statistics]
-+Records = 1
-+Ratings = 1
-Index: data/civserver.room
-===================================================================
-RCS file: data/civserver.room
-diff -N data/civserver.room
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ data/civserver.room	23 Jun 2005 16:53:07 -0000
-@@ -0,0 +1,16 @@
-+# GGZ Server room description file for Freeciv
-+[RoomInfo]
-+
-+# This is the short name for the room
-+Name = Freeciv
-+
-+# This is the long descriptive name for the room.  Make sure it's updated
-+# when new games are added.
-+Description = Freeciv multiplayer strategy game
-+
-+# The gametype should match up to the Name of an added game
-+GameType = Freeciv
-+
-+# These set maximum values for this room
-+MaxPlayers = 150
-+MaxTables = 45
 Index: m4/ggz.m4
 ===================================================================
-RCS file: m4/ggz.m4
-diff -N m4/ggz.m4
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ m4/ggz.m4	23 Jun 2005 16:53:09 -0000
+--- m4/ggz.m4	(revision 0)
++++ m4/ggz.m4	(revision 0)
 @@ -0,0 +1,795 @@
 +dnl ======================================
 +dnl GGZ Gaming Zone - Configuration Macros
@@ -1372,72 +798,82 @@ diff -N m4/ggz.m4
 +fi
 +
 +])
-Index: manual/Makefile.am
+Index: configure.ac
 ===================================================================
-RCS file: /home/freeciv/CVS/freeciv/manual/Makefile.am,v
-retrieving revision 1.4
-diff -u -r1.4 Makefile.am
---- manual/Makefile.am	12 Sep 2004 21:19:36 -0000	1.4
-+++ manual/Makefile.am	23 Jun 2005 16:53:09 -0000
-@@ -15,6 +15,7 @@
-       ../utility/libcivutility.a ../common/aicore/libaicore.a \
-       ../server/userdb/libuserdb.a ../client/helpdata.o \
-       ../server/generator/libgenerator.a
-+civmanual_LDFLAGS = @GGZDMOD_LDFLAGS@
- civmanual_LDADD        = ../utility/libcivutility.a ../common/libcivcommon.a \
-       ../ai/libcivai.a ../utility/libcivutility.a ../server/libcivserver.a \
-       @INTLLIBS@ ../client/helpdata.o \
-@@ -24,4 +25,4 @@
-       ../utility/libcivutility.a \
-       ../common/aicore/libaicore.a \
-       ../server/generator/libgenerator.a \
--      $(SERVER_LIBS)
-+      $(SERVER_LIBS) @LIB_GGZDMOD@
-Index: server/Makefile.am
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/server/Makefile.am,v
-retrieving revision 1.38
-diff -u -r1.38 Makefile.am
---- server/Makefile.am	12 Sep 2004 21:19:36 -0000	1.38
-+++ server/Makefile.am	23 Jun 2005 16:53:09 -0000
-@@ -4,7 +4,7 @@
+--- configure.ac	(revision 11346)
++++ configure.ac	(working copy)
+@@ -33,6 +33,8 @@
+ AC_DEFINE_UNQUOTED(VERSION_STRING, "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}${VERSION_LABEL}", [Version string])
+ AC_DEFINE_UNQUOTED(IS_DEVEL_VERSION, $IS_DEVEL_VERSION, [Is this a devel version])
+ AC_DEFINE_UNQUOTED(IS_BETA_VERSION, $IS_BETA_VERSION, [Is this a beta veersion])
++AC_SUBST(MAJOR_VERSION)
++AC_SUBST(MINOR_VERSION)
  
- bin_PROGRAMS = civserver
- noinst_LIBRARIES = libcivserver.a
--AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/../common -I$(srcdir)/../ai -I../intl -I$(top_srcdir)/common/aicore -I$(srcdir)/userdb -I$(srcdir)/generator
-+AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/../common -I$(srcdir)/../ai -I../intl -I$(top_srcdir)/common/aicore -I$(srcdir)/userdb -I$(srcdir)/generator @LIBGGZ_INCLUDES@ @GGZDMOD_INCLUDES@
+ dnl Initialize automake stuff
+ AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
+@@ -413,6 +415,49 @@
+   gui_sources="gui-$client"
+ fi
  
++dnl Check for GGZ
++AC_GGZ_INIT
++AC_GGZ_LIBGGZ([try_ggz="yes"], [try_ggz="no"])
++ggz_server="no"
++ggz_client="no"
++AC_ARG_WITH(ggz-server,
++            AC_HELP_STRING([--with-ggz-server], [Force GGZ server support]),
++            [try_ggz_server=$withval])
++AC_ARG_WITH(ggz-client,
++            AC_HELP_STRING([--with-ggz-client], [Force GGZ client support]),
++            [try_ggz_client=$withval])
++if test "x$server" != "xno" && test "x$try_ggz_server" != "xno"; then
++  if test "$try_ggz" = "yes"; then
++    # Must pass something as the action-if-failed, or the macro will exit
++    AC_GGZ_GGZDMOD([ggz_server="yes"], [ggz_server="no"]])
++  fi
++  if test "$ggz_server" = "yes"; then
++    GGZ_SERVER_FILES="civserver.dsc civserver.room"
++    AC_DEFINE(GGZ_SERVER, 1, [Server support for GGZ])
++  else
++    if test "$try_ggz_server" = "yes"; then
++      AC_MSG_ERROR([Could not configure GGZ server support. See above messages.])
++    fi
++  fi
++fi
++if test "x$client" != "xno" && test "x$try_ggz_client" != "xno"; then
++  if test "$try_ggz" = "yes"; then
++    # Must pass something as the action-if-failed, or the macro will exit
++    AC_GGZ_GGZMOD([AC_GGZ_CONFIG([ggz_client="yes"], [ggz_client="no"])],
++                  [ggz_client="no"])
++  fi
++  if test "$ggz_client" = "yes"; then
++    GGZ_CLIENT_FILES="civclient.dsc"
++    AC_DEFINE(GGZ_CLIENT, 1, [Client support for GGZ])
++  else
++    if test "$try_ggz_client" = "yes"; then
++      AC_MSG_ERROR([Could not configure GGZ client support. See above messages.])
++    fi
++  fi
++fi
++AM_CONDITIONAL(GGZ_CLIENT, test "$ggz_client" = "yes")
++AM_CONDITIONAL(GGZ_SERVER, test "$ggz_server" = "yes")
++
+ AC_SUBST(gui_sources)
+ AC_SUBST(CLIENT_CFLAGS)
+ AC_SUBST(CLIENT_LIBS)
+@@ -642,6 +687,8 @@
  
- ## Above, note -I../intl instead of -I$(top_srdir/intl) is deliberate.
-@@ -42,6 +42,8 @@
- 		gamelog.h	\
- 		gotohand.c	\
- 		gotohand.h	\
-+		ggzserver.c	\
-+		ggzserver.h	\
- 		handchat.c	\
- 		handchat.h	\
- 		hand_gen.h	\
-@@ -84,10 +86,11 @@
-       ../ai/libcivai.a ../utility/libcivutility.a ./libcivserver.a \
-       ../utility/libcivutility.a ../common/aicore/libaicore.a \
-       ./generator/libgenerator.a $(USER_DB_DEP)
-+civserver_LDFLAGS = @GGZDMOD_LDFLAGS@
- civserver_LDADD        = ../utility/libcivutility.a ../common/libcivcommon.a \
-       ../ai/libcivai.a ../utility/libcivutility.a ./libcivserver.a @INTLLIBS@ \
-       ../utility/libcivutility.a ../common/libcivcommon.a ../ai/libcivai.a \
-       ../utility/libcivutility.a ./libcivserver.a ../utility/libcivutility.a \
-       ../common/aicore/libaicore.a ./generator/libgenerator.a \
--      $(USER_DB_LIB) $(SERVER_LIBS)
-+      $(USER_DB_LIB) $(SERVER_LIBS) @LIB_GGZDMOD@
- 
+ AC_CONFIG_FILES([Makefile
+           data/Makefile 
++          data/civserver.dsc
++          data/civclient.dsc
+ 	  data/flags/Makefile
+ 	  data/misc/Makefile 
+ 	  data/trident/Makefile 
 Index: server/civserver.c
 ===================================================================
-RCS file: /home/freeciv/CVS/freeciv/server/civserver.c,v
-retrieving revision 1.222.2.6
-diff -u -r1.222.2.6 civserver.c
---- server/civserver.c	3 Feb 2005 08:04:55 -0000	1.222.2.6
-+++ server/civserver.c	23 Jun 2005 16:53:09 -0000
+--- server/civserver.c	(revision 11346)
++++ server/civserver.c	(working copy)
 @@ -36,6 +36,7 @@
  #include "version.h"
  
@@ -1476,60 +912,136 @@ diff -u -r1.222.2.6 civserver.c
    /* have arguments, call the main server loop... */
    srv_main();
  
-Index: server/gamelog.c
+Index: server/srv_main.c
 ===================================================================
-RCS file: /home/freeciv/CVS/freeciv/server/gamelog.c,v
-retrieving revision 1.38.2.4
-diff -u -r1.38.2.4 gamelog.c
---- server/gamelog.c	16 Jan 2005 02:36:35 -0000	1.38.2.4
-+++ server/gamelog.c	23 Jun 2005 16:53:09 -0000
-@@ -30,6 +30,7 @@
- #include "support.h"
+--- server/srv_main.c	(revision 11346)
++++ server/srv_main.c	(working copy)
+@@ -78,6 +78,7 @@
+ #include "diplhand.h"
+ #include "gamehand.h"
+ #include "gamelog.h"
++#include "ggzserver.h"
+ #include "handchat.h"
+ #include "maphand.h"
+ #include "meta.h"
+@@ -220,6 +221,7 @@
+   if (game.year > game.end_year) {
+     notify_conn_ex(&game.est_connections, NULL, E_GAME_END, 
+ 		   _("Game ended in a draw as end year exceeded"));
++    ggz_report_victory();
+     gamelog(GAMELOG_JUDGE, GL_DRAW, 
+             "Game ended in a draw as end year exceeded");
+     return TRUE;
+@@ -253,6 +255,12 @@
+     if (team_count_members_alive(pteam->id) == alive) {
+       notify_conn_ex(&game.est_connections, NULL, E_GAME_END,
+ 		     _("Team victory to %s"), pteam->name);
++      players_iterate(pplayer) {
++	if (pplayer->team == pteam->id) {
++	  ggz_report_victor(pplayer);
++	}
++      } players_iterate_end;
++      ggz_report_victory();
+       gamelog(GAMELOG_JUDGE, GL_TEAMWIN, pteam);
+       return TRUE;
+     }
+@@ -262,11 +270,14 @@
+   if (alive == 1) {
+     notify_conn_ex(&game.est_connections, NULL, E_GAME_END,
+ 		   _("Game ended in victory for %s"), victor->name);
++    ggz_report_victor(victor);
++    ggz_report_victory();
+     gamelog(GAMELOG_JUDGE, GL_LONEWIN, victor);
+     return TRUE;
+   } else if (alive == 0) {
+     notify_conn_ex(&game.est_connections, NULL, E_GAME_END, 
+ 		   _("Game ended in a draw"));
++    ggz_report_victory();
+     gamelog(GAMELOG_JUDGE, GL_DRAW);
+     return TRUE;
+   }
+@@ -290,6 +301,12 @@
+   if (all_allied) {
+     notify_conn_ex(&game.est_connections, NULL, E_GAME_END, 
+ 		   _("Game ended in allied victory"));
++    players_iterate(pplayer) {
++      if (pplayer->is_alive) {
++	ggz_report_victor(pplayer);
++      }
++    } players_iterate_end;
++    ggz_report_victory();
+     gamelog(GAMELOG_JUDGE, GL_ALLIEDWIN);
+     return TRUE;
+   }
+@@ -1624,7 +1641,9 @@
+ 
+   /* init network */  
+   init_connections(); 
+-  server_open_socket();
++  if (!with_ggz) {
++    server_open_socket();
++  }
+ 
+   /* load a saved game */
+   if (srvarg.load_filename[0] != '\0') {
+Index: server/settings.c
+===================================================================
+--- server/settings.c	(revision 11346)
++++ server/settings.c	(working copy)
+@@ -20,6 +20,7 @@
+ #include "map.h"
  
  #include "gamelog.h"
 +#include "ggzserver.h"
+ #include "report.h"
+ #include "settings.h"
  #include "stdinhand.h"
- 
- int gamelog_level;		/* also accessed from stdinhand.c */
-@@ -532,15 +533,19 @@
-                   ? "The %s spaceship has arrived at Alpha Centauri."
-                   : "Game ended in victory for the %s",
-                   get_nation_name_plural(pplayer->nation));
-+      ggz_report_victor(pplayer);
-+      ggz_report_victory();
-       break;
-     case GL_ALLIEDWIN:
-       my_snprintf(buf, sizeof(buf), "<type>%s</type>", endgame_strings[num]);
-       players_iterate(aplayer) {
-         if (aplayer->is_alive) {
-           cat_snprintf(buf, sizeof(buf), "<n>%d</n>", aplayer->player_no);
-+	  ggz_report_victor(aplayer);
-         }
-       } players_iterate_end;
-       my_snprintf(msg, sizeof(msg), "Game ended in allied victory");
-+      ggz_report_victory();
-       break;
-     case GL_TEAMWIN:
-       pteam = va_arg(args, struct team *);
-@@ -548,9 +553,11 @@
-       players_iterate(aplayer) {
-         if (aplayer->team == pteam->id) {
-           cat_snprintf(buf, sizeof(buf), "<n>%d</n>", aplayer->player_no);
-+	  ggz_report_victor(aplayer);
-         }
-       } players_iterate_end;
+@@ -148,6 +149,15 @@
+ *************************************************************************/
+ static bool maxplayers_callback(int value, const char **error_string)
+ {
++#ifdef GGZ_SERVER
++  if (with_ggz) {
++    /* In GGZ mode the maxplayers is the number of actual players - set
++     * when the game is lauched and not changed thereafter.  This may be
++     * changed in future. */
++    *error_string = _("Cannot change maxplayers in GGZ mode.");
++    return FALSE;
++  }
++#endif
+   if (value < game.nplayers) {
+     *error_string =_("Number of players is higher than requested value; "
+ 		     "Keeping old value.");
+Index: server/spacerace.c
+===================================================================
+--- server/spacerace.c	(revision 11346)
++++ server/spacerace.c	(working copy)
+@@ -367,6 +367,8 @@
+ 		     _("Game: The %s spaceship has arrived "
+ 		       "at Alpha Centauri."),
+ 		     get_nation_name(best_pplayer->nation));
++    ggz_report_victor(best_pplayer);
++    ggz_report_victory();
+     gamelog(GAMELOG_JUDGE, GL_LONEWIN, best_pplayer);
+   }
+ }
+Index: server/gamelog.c
+===================================================================
+--- server/gamelog.c	(revision 11346)
++++ server/gamelog.c	(working copy)
+@@ -553,6 +553,7 @@
        my_snprintf(msg, sizeof(msg), "Team victory to %s", pteam->name);
-+      ggz_report_victory();
        break;
      default:
++      assert(0);
        break;
+     }
+     cat_snprintf(buf, sizeof(buf), "<m>%s</m>", msg);
 Index: server/ggzserver.c
 ===================================================================
-RCS file: server/ggzserver.c
-diff -N server/ggzserver.c
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ server/ggzserver.c	23 Jun 2005 16:53:09 -0000
-@@ -0,0 +1,309 @@
+--- server/ggzserver.c	(revision 0)
++++ server/ggzserver.c	(revision 0)
+@@ -0,0 +1,314 @@
 +/********************************************************************** 
 + Freeciv - Copyright (C) 2005 - Freeciv Development Team
 +   This program is free software; you can redistribute it and/or modify
@@ -1553,6 +1065,7 @@ diff -N server/ggzserver.c
 +
 +#include "fciconv.h"
 +#include "fcintl.h"
++#include "log.h"
 +#include "support.h"
 +
 +#include "game.h"
@@ -1752,6 +1265,8 @@ diff -N server/ggzserver.c
 +**************************************************************************/
 +void ggz_report_victor(const struct player *winner)
 +{
++  freelog(LOG_NORMAL, "Victor: %s", winner->name);
++
 +  if (!with_ggz) {
 +    return;
 +  }
@@ -1769,6 +1284,8 @@ diff -N server/ggzserver.c
 +  int num_players = ggzdmod_get_num_seats(ggzdmod), i;
 +  int teams[num_players], num_teams = 0, scores[num_players];
 +  GGZGameResult results[num_players], default_result;
++
++  freelog(LOG_NORMAL, "Victory...");
 +
 +  if (!with_ggz) {
 +    return;
@@ -1841,10 +1358,8 @@ diff -N server/ggzserver.c
 +#endif
 Index: server/ggzserver.h
 ===================================================================
-RCS file: server/ggzserver.h
-diff -N server/ggzserver.h
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ server/ggzserver.h	23 Jun 2005 16:53:09 -0000
+--- server/ggzserver.h	(revision 0)
++++ server/ggzserver.h	(revision 0)
 @@ -0,0 +1,40 @@
 +/********************************************************************** 
 + Freeciv - Copyright (C) 2005 - Freeciv Development Team
@@ -1888,11 +1403,8 @@ diff -N server/ggzserver.h
 +#endif  /* FC__GGZSERVER_H */
 Index: server/sernet.c
 ===================================================================
-RCS file: /home/freeciv/CVS/freeciv/server/sernet.c,v
-retrieving revision 1.123.2.6
-diff -u -r1.123.2.6 sernet.c
---- server/sernet.c	16 Dec 2004 23:27:34 -0000	1.123.2.6
-+++ server/sernet.c	23 Jun 2005 16:53:09 -0000
+--- server/sernet.c	(revision 11346)
++++ server/sernet.c	(working copy)
 @@ -76,6 +76,7 @@
  
  #include "connecthand.h"
@@ -1901,7 +1413,7 @@ diff -u -r1.123.2.6 sernet.c
  #include "meta.h"
  #include "plrhand.h"
  #include "srv_main.h"
-@@ -487,9 +488,18 @@
+@@ -495,10 +496,19 @@
  #endif
      }
  
@@ -1911,7 +1423,7 @@ diff -u -r1.123.2.6 sernet.c
 +    if (with_ggz) {
 +#ifdef GGZ_SERVER
 +      int ggz_sock = get_ggz_socket();
-+
+ 
 +      FD_SET(ggz_sock, &readfs);
 +      max_desc = MAX(sock, ggz_sock);
 +#endif
@@ -1920,10 +1432,11 @@ diff -u -r1.123.2.6 sernet.c
 +      FD_SET(sock, &exceptfs);
 +      max_desc=sock;
 +    }
- 
++
      for(i=0; i<MAX_NUM_CONNECTIONS; i++) {
        if(connections[i].used) {
-@@ -537,13 +547,15 @@
+ 	FD_SET(connections[i].sock, &readfs);
+@@ -545,14 +555,16 @@
        game.turn_start = time(NULL);
      }
  
@@ -1937,16 +1450,17 @@ diff -u -r1.123.2.6 sernet.c
 +    if (!with_ggz) { /* No listening socket when using GGZ. */
 +      if (FD_ISSET(sock, &exceptfs)) {	     /* handle Ctrl-Z suspend/resume */
 +	continue;
-+      }
+       }
 +      if(FD_ISSET(sock, &readfs)) {	     /* new players connects */
 +	freelog(LOG_VERBOSE, "got new connection");
 +	if(server_accept_connection(sock)==-1) {
 +	  freelog(LOG_ERROR, "failed accepting connection");
 +	}
-       }
++      }
      }
      for(i=0; i<MAX_NUM_CONNECTIONS; i++) {   /* check for freaky players */
-@@ -554,6 +566,17 @@
+       struct connection *pconn = &connections[i];
+@@ -562,6 +574,17 @@
  	close_socket_callback(pconn);
        }
      }
@@ -1964,7 +1478,7 @@ diff -u -r1.123.2.6 sernet.c
      
  #ifdef SOCKET_ZERO_ISNT_STDIN
      if (!no_input && (bufptr = my_read_console())) {
-@@ -730,7 +753,6 @@
+@@ -736,7 +759,6 @@
    int new_sock;
    union my_sockaddr fromend;
    struct hostent *from;
@@ -1972,7 +1486,7 @@ diff -u -r1.123.2.6 sernet.c
  
    fromlen = sizeof(fromend);
  
-@@ -739,12 +761,28 @@
+@@ -745,12 +767,28 @@
      return -1;
    }
  
@@ -2003,7 +1517,7 @@ diff -u -r1.123.2.6 sernet.c
    for(i=0; i<MAX_NUM_CONNECTIONS; i++) {
      struct connection *pconn = &connections[i];
      if (!pconn->used) {
-@@ -769,11 +807,8 @@
+@@ -775,11 +813,8 @@
        pconn->outgoing_packet_notify = NULL;
  
        sz_strlcpy(pconn->username, makeup_connection_name(&pconn->id));
@@ -2017,7 +1531,7 @@ diff -u -r1.123.2.6 sernet.c
  
        conn_list_insert_back(&game.all_connections, pconn);
    
-@@ -999,6 +1034,10 @@
+@@ -1005,6 +1040,10 @@
    fd_set readfs, exceptfs;
    struct timeval tv;
  
@@ -2030,11 +1544,8 @@ diff -u -r1.123.2.6 sernet.c
    FD_SET(socklan, &exceptfs);
 Index: server/sernet.h
 ===================================================================
-RCS file: /home/freeciv/CVS/freeciv/server/sernet.h,v
-retrieving revision 1.10.2.1
-diff -u -r1.10.2.1 sernet.h
---- server/sernet.h	21 Oct 2004 20:26:59 -0000	1.10.2.1
-+++ server/sernet.h	23 Jun 2005 16:53:09 -0000
+--- server/sernet.h	(revision 11346)
++++ server/sernet.h	(working copy)
 @@ -27,6 +27,8 @@
  int sniff_packets(void);
  void close_connections_and_socket(void);
@@ -2044,60 +1555,531 @@ diff -u -r1.10.2.1 sernet.h
  void close_connection(struct connection *pconn);
  void handle_conn_pong(struct connection *pconn);
  
-Index: server/settings.c
+Index: server/stdinhand.c
 ===================================================================
-RCS file: /home/freeciv/CVS/freeciv/server/settings.c,v
-retrieving revision 1.5.2.9
-diff -u -r1.5.2.9 settings.c
---- server/settings.c	3 May 2005 03:21:36 -0000	1.5.2.9
-+++ server/settings.c	23 Jun 2005 16:53:10 -0000
-@@ -20,6 +20,7 @@
- #include "map.h"
- 
- #include "gamelog.h"
-+#include "ggzserver.h"
- #include "report.h"
- #include "settings.h"
- #include "stdinhand.h"
-@@ -148,6 +149,15 @@
- *************************************************************************/
- static bool maxplayers_callback(int value, const char **error_string)
+--- server/stdinhand.c	(revision 11346)
++++ server/stdinhand.c	(working copy)
+@@ -3294,6 +3294,7 @@
  {
-+#ifdef GGZ_SERVER
-+  if (with_ggz) {
-+    /* In GGZ mode the maxplayers is the number of actual players - set
-+     * when the game is lauched and not changed thereafter.  This may be
-+     * changed in future. */
-+    *error_string = _("Cannot change maxplayers in GGZ mode.");
-+    return FALSE;
-+  }
-+#endif
-   if (value < game.nplayers) {
-     *error_string =_("Number of players is higher than requested value; "
- 		     "Keeping old value.");
-Index: server/srv_main.c
+   if (!check) {
+     cmd_reply(CMD_QUIT, caller, C_OK, _("Goodbye."));
++    ggz_report_victory();
+     gamelog(GAMELOG_JUDGE, GL_NONE);
+     gamelog(GAMELOG_END);
+     server_quit();
+Index: server/Makefile.am
 ===================================================================
-RCS file: /home/freeciv/CVS/freeciv/server/srv_main.c,v
-retrieving revision 1.201.2.10
-diff -u -r1.201.2.10 srv_main.c
---- server/srv_main.c	16 Jan 2005 02:36:35 -0000	1.201.2.10
-+++ server/srv_main.c	23 Jun 2005 16:53:10 -0000
-@@ -78,6 +78,7 @@
- #include "diplhand.h"
- #include "gamehand.h"
- #include "gamelog.h"
-+#include "ggzserver.h"
- #include "handchat.h"
- #include "maphand.h"
- #include "meta.h"
-@@ -1619,7 +1620,9 @@
+--- server/Makefile.am	(revision 11346)
++++ server/Makefile.am	(working copy)
+@@ -4,7 +4,7 @@
  
-   /* init network */  
-   init_connections(); 
--  server_open_socket();
-+  if (!with_ggz) {
-+    server_open_socket();
+ bin_PROGRAMS = civserver
+ noinst_LIBRARIES = libcivserver.a
+-AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/../common -I$(srcdir)/../ai -I../intl -I$(top_srcdir)/common/aicore -I$(srcdir)/userdb -I$(srcdir)/generator
++AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/../common -I$(srcdir)/../ai -I../intl -I$(top_srcdir)/common/aicore -I$(srcdir)/userdb -I$(srcdir)/generator @LIBGGZ_INCLUDES@ @GGZDMOD_INCLUDES@
+ 
+ 
+ ## Above, note -I../intl instead of -I$(top_srdir/intl) is deliberate.
+@@ -42,6 +42,8 @@
+ 		gamelog.h	\
+ 		gotohand.c	\
+ 		gotohand.h	\
++		ggzserver.c	\
++		ggzserver.h	\
+ 		handchat.c	\
+ 		handchat.h	\
+ 		hand_gen.h	\
+@@ -84,10 +86,11 @@
+       ../ai/libcivai.a ../utility/libcivutility.a ./libcivserver.a \
+       ../utility/libcivutility.a ../common/aicore/libaicore.a \
+       ./generator/libgenerator.a $(USER_DB_DEP)
++civserver_LDFLAGS = @GGZDMOD_LDFLAGS@
+ civserver_LDADD        = ../utility/libcivutility.a ../common/libcivcommon.a \
+       ../ai/libcivai.a ../utility/libcivutility.a ./libcivserver.a @INTLLIBS@ \
+       ../utility/libcivutility.a ../common/libcivcommon.a ../ai/libcivai.a \
+       ../utility/libcivutility.a ./libcivserver.a ../utility/libcivutility.a \
+       ../common/aicore/libaicore.a ./generator/libgenerator.a \
+-      $(USER_DB_LIB) $(SERVER_LIBS)
++      $(USER_DB_LIB) $(SERVER_LIBS) @LIB_GGZDMOD@
+ 
+Index: data/civserver.room
+===================================================================
+--- data/civserver.room	(revision 0)
++++ data/civserver.room	(revision 0)
+@@ -0,0 +1,16 @@
++# GGZ Server room description file for Freeciv
++[RoomInfo]
++
++# This is the short name for the room
++Name = Freeciv
++
++# This is the long descriptive name for the room.  Make sure it's updated
++# when new games are added.
++Description = Freeciv multiplayer strategy game
++
++# The gametype should match up to the Name of an added game
++GameType = Freeciv
++
++# These set maximum values for this room
++MaxPlayers = 150
++MaxTables = 45
+Index: data/civserver.dsc.in
+===================================================================
+--- data/civserver.dsc.in	(revision 0)
++++ data/civserver.dsc.in	(revision 0)
+@@ -0,0 +1,28 @@
++# GGZ Server game description file for Freeciv
++
++[GameInfo]
++Author = See http://www.freeciv.org/people.phtml
++Description = Freeciv strategy game
++Homepage = http://www.freeciv.org/
++Name = Freeciv
++Version = @VERSION@
++
++[LaunchInfo]
++ExecutablePath = @prefix@/bin/civserver -z -q 180 -e
++
++[Protocol]
++Engine = Freeciv
++Version = @MAJOR_VERSION@.@MINOR_VERSION@
++
++[TableOptions]
++AllowLeave = 1
++# Freeciv bots are handled internally, but aren't visible to GGZ
++#BotsAllowed = 
++PlayersAllowed = 1..30
++# This should be 0, but civserver doesn't exit correctly in pregame
++KillWhenEmpty = 1
++AllowSpectators = 0
++
++[Statistics]
++Records = 1
++Ratings = 1
+Index: data/civclient.dsc.in
+===================================================================
+--- data/civclient.dsc.in	(revision 0)
++++ data/civclient.dsc.in	(revision 0)
+@@ -0,0 +1,11 @@
++# GGZ client game description file for Freeciv
++
++[ModuleInfo]
++Author = See http://www.freeciv.org/people.phtml
++CommandLine = @prefix@/bin/civclient --zone
++Frontend = any
++Homepage = http://www.freeciv.org/
++Name = Freeciv
++ProtocolEngine = Freeciv
++ProtocolVersion = @MAJOR_VERSION@.@MINOR_VERSION@
++Version = @VERSION@
+Index: data/Makefile.am
+===================================================================
+--- data/Makefile.am	(revision 11346)
++++ data/Makefile.am	(working copy)
+@@ -36,6 +36,9 @@
+ 	Freeciv	\
+ 	freeciv.rc	\
+ 	freeciv.rc-2.0	\
++	civserver.dsc.in	\
++	civclient.dsc.in	\
++	civserver.room		\
+ 	isophex.tilespec	\
+ 	isotrident.tilespec \
+ 	trident.tilespec	\
+@@ -58,3 +61,19 @@
+ endif
+ 
+ SUBDIRS = $(CLIENTDATADIRS) $(SERVERDATADIRS)
++
++if GGZ_CLIENT
++install-data-local:
++	$(GGZ_CONFIG) -D --install --modfile=civclient.dsc --force
++
++uninstall-local:
++	$(GGZ_CONFIG) -D --remove --modfile=civclient.dsc
++endif
++
++if GGZ_SERVER
++ggzroom_DATA = civserver.room
++ggzroomdir = ${prefix}/etc/ggzd/rooms/
++
++ggzgame_DATA = civserver.dsc
++ggzgamedir = ${prefix}/etc/ggzd/games/
++endif
+Index: data/.cvsignore
+===================================================================
+--- data/.cvsignore	(revision 11346)
++++ data/.cvsignore	(working copy)
+@@ -1,4 +1,6 @@
+ Freeciv
+ Makefile
+ Makefile.in
++civserver.dsc
++civclient.dsc
+ .deps
+Index: manual/Makefile.am
+===================================================================
+--- manual/Makefile.am	(revision 11346)
++++ manual/Makefile.am	(working copy)
+@@ -15,6 +15,7 @@
+       ../utility/libcivutility.a ../common/aicore/libaicore.a \
+       ../server/userdb/libuserdb.a ../client/helpdata.o \
+       ../server/generator/libgenerator.a
++civmanual_LDFLAGS = @GGZDMOD_LDFLAGS@
+ civmanual_LDADD        = ../utility/libcivutility.a ../common/libcivcommon.a \
+       ../ai/libcivai.a ../utility/libcivutility.a ../server/libcivserver.a \
+       @INTLLIBS@ ../client/helpdata.o \
+@@ -24,4 +25,4 @@
+       ../utility/libcivutility.a \
+       ../common/aicore/libaicore.a \
+       ../server/generator/libgenerator.a \
+-      $(SERVER_LIBS)
++      $(SERVER_LIBS) @LIB_GGZDMOD@
+Index: client/gui-gtk-2.0/gui_main.c
+===================================================================
+--- client/gui-gtk-2.0/gui_main.c	(revision 11346)
++++ client/gui-gtk-2.0/gui_main.c	(working copy)
+@@ -53,6 +53,7 @@
+ #include "control.h"
+ #include "dialogs.h"
+ #include "gotodlg.h"
++#include "ggzclient.h"
+ #include "graphics.h"
+ #include "gui_main.h"
+ #include "gui_stuff.h"
+@@ -1437,6 +1438,14 @@
+ }
+ 
+ /**************************************************************************
++  Callback for when the GGZ socket has data pending.
++**************************************************************************/
++static void get_ggz_input(gpointer data, gint fid, GdkInputCondition condition)
++{
++  input_from_ggz(fid);
++}
++
++/**************************************************************************
+ ...
+ **************************************************************************/
+ static void set_wait_for_writable_socket(struct connection *pc,
+@@ -1479,6 +1488,15 @@
+   gdk_window_set_cursor(root_window, NULL);
+ }
+ 
++/**************************************************************************
++  Called to monitor a GGZ socket.
++**************************************************************************/
++void add_ggz_input(int sock)
++{
++  (void) gtk_input_add_full(sock, GDK_INPUT_READ, get_ggz_input,
++			    NULL, NULL, NULL);
++}
++
+ /****************************************************************
+   This is the response callback for the dialog with the message:
+   Are you sure you want to quit?
+Index: client/include/gui_main_g.h
+===================================================================
+--- client/include/gui_main_g.h	(revision 11346)
++++ client/include/gui_main_g.h	(working copy)
+@@ -23,6 +23,7 @@
+ void sound_bell(void);
+ void add_net_input(int);
+ void remove_net_input(void);
++void add_ggz_input(int socket);
+ 
+ void set_unit_icon(int idx, struct unit *punit);
+ void set_unit_icons_more_arrow(bool onoff);
+Index: client/ggzclient.c
+===================================================================
+--- client/ggzclient.c	(revision 0)
++++ client/ggzclient.c	(revision 0)
+@@ -0,0 +1,84 @@
++/********************************************************************** 
++ Freeciv - Copyright (C) 2005 - Freeciv Development Team
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 2, or (at your option)
++   any later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++***********************************************************************/
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++
++#ifdef GGZ_CLIENT
++
++#include <ggzmod.h>
++
++#include "fciconv.h"
++#include "fcintl.h"
++
++#include "gui_main_g.h"
++
++#include "clinet.h"
++#include "ggzclient.h"
++
++
++bool with_ggz = FALSE;
++
++static GGZMod *ggzmod;
++
++/**************************************************************************
++  A callback that GGZ calls when we are connected to the freeciv
++  server.
++**************************************************************************/
++static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
++				 const void *data)
++{
++  const int *socket = data;
++  const char *username = ggzmod_get_player(ggzmod, NULL, NULL);
++
++  if (!username) {
++    username = "NONE";
 +  }
++  make_connection(*socket, username);
++}
++
++/**************************************************************************
++  Connect to the GGZ client, if GGZ is being used.
++**************************************************************************/
++void ggz_initialize(void)
++{
++  if (with_ggz) {
++    int ggz_socket;
++
++    /* We're in GGZ mode */
++    printf("ggz initialize\n");
++    ggzmod = ggzmod_new(GGZMOD_GAME);
++    ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
++    if (ggzmod_connect(ggzmod) < 0) {
++      exit(EXIT_FAILURE);
++    }
++    ggz_socket = ggzmod_get_fd(ggzmod);
++    if (ggz_socket < 0) {
++      fc_fprintf(stderr, _("Only the GGZ client must call civclient"
++			   " in ggz mode!\n"));
++      exit(EXIT_FAILURE);
++    }
++    add_ggz_input(ggz_socket);
++  }
++}
++
++/**************************************************************************
++  Called when the ggz socket has data pending.
++**************************************************************************/
++void input_from_ggz(int socket)
++{
++  ggzmod_dispatch(ggzmod);
++}
++
++#endif
+Index: client/ggzclient.h
+===================================================================
+--- client/ggzclient.h	(revision 0)
++++ client/ggzclient.h	(revision 0)
+@@ -0,0 +1,33 @@
++/********************************************************************** 
++ Freeciv - Copyright (C) 2005 - Freeciv Development Team
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 2, or (at your option)
++   any later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++***********************************************************************/
++#ifndef FC__GGZCLIENT_H
++#define FC__GGZCLIENT_H
++
++#ifdef GGZ_CLIENT
++
++#include "shared.h"
++
++extern bool with_ggz;
++
++void ggz_initialize(void);
++void input_from_ggz(int socket);
++
++#else
++
++#  define with_ggz FALSE
++#  define ggz_initialize() (void)0
++#  define input_from_ggz(socket) (void)0
++
++#endif
++
++#endif  /* FC__GGZCLIENT_H */
+Index: client/clinet.c
+===================================================================
+--- client/clinet.c	(revision 11346)
++++ client/clinet.c	(working copy)
+@@ -79,6 +79,7 @@
+ #include "connectdlg_common.h"
+ #include "connectdlg_g.h"
+ #include "dialogs_g.h"		/* popdown_races_dialog() */
++#include "ggzclient.h"
+ #include "gui_main_g.h"		/* add_net_input(), remove_net_input() */
+ #include "mapview_common.h"	/* unqueue_mapview_update */
+ #include "menu_g.h"
+@@ -126,6 +127,9 @@
+   client_kill_server(TRUE);
+   append_output_window(_("Lost connection to server!"));
+   freelog(LOG_NORMAL, "lost connection to server");
++  if (with_ggz) {
++    ui_exit();
++  }
+ }
  
-   /* load a saved game */
-   if (srvarg.load_filename[0] != '\0') {
+ /**************************************************************************
+@@ -184,8 +188,6 @@
+ **************************************************************************/
+ int try_to_connect(const char *username, char *errbuf, int errbufsize)
+ {
+-  struct packet_server_join_req req;
+-
+   close_socket_set_callback(close_socket_callback);
+ 
+   /* connection in progress? wait. */
+@@ -211,7 +213,20 @@
+ #endif
+   }
+ 
++  make_connection(aconnection.sock, username);
++
++  return 0;
++}
++
++/**************************************************************************
++  Called after a connection is completed (e.g., in try_to_connect).
++**************************************************************************/
++void make_connection(int socket, const char *username)
++{
++  struct packet_server_join_req req;
++
+   connection_common_init(&aconnection);
++  aconnection.sock = socket;
+   aconnection.client.last_request_id_used = 0;
+   aconnection.client.last_processed_request_id_seen = 0;
+   aconnection.client.request_id_of_currently_handled_packet = 0;
+@@ -231,8 +246,6 @@
+   sz_strlcpy(req.username, username);
+   
+   send_packet_server_join_req(&aconnection, &req);
+-
+-  return 0;
+ }
+ 
+ /**************************************************************************
+@@ -253,6 +266,9 @@
+     client_kill_server(TRUE);
+   }
+   append_output_window(_("Disconnected from server."));
++  if (with_ggz) {
++    ui_exit();
++  }
+ }  
+ 
+ /**************************************************************************
+Index: client/civclient.c
+===================================================================
+--- client/civclient.c	(revision 11346)
++++ client/civclient.c	(working copy)
+@@ -53,6 +53,7 @@
+ #include "control.h" 
+ #include "dialogs_g.h"
+ #include "diplodlg_g.h"
++#include "ggzclient.h"
+ #include "goto.h"
+ #include "gui_main_g.h"
+ #include "helpdata.h"		/* boot_help_texts() */
+@@ -218,6 +219,9 @@
+     fc_fprintf(stderr, _("  -t, --tiles FILE\t"
+ 		      "Use data file FILE.tilespec for tiles\n"));
+     fc_fprintf(stderr, _("  -v, --version\t\tPrint the version number\n"));
++#ifdef GGZ_CLIENT
++    fc_fprintf(stderr, _("  -z, --zone\t\tEnable GGZ mode\n"));
++#endif
+     fc_fprintf(stderr, _("      --\t\t"
+ 		      "Pass any following options to the UI.\n"
+ 		      "\t\t\tTry \"%s -- --help\" for more.\n"), argv[0]);
+@@ -260,6 +264,10 @@
+       }
+    } else if ((option = get_option("--tiles", argv, &i, argc)))
+       sz_strlcpy(tileset_name, option);
++#ifdef GGZ_CLIENT
++   else if (is_option("--zone", argv[i]))
++     with_ggz = TRUE;
++#endif
+    else if (is_option("--", argv[i])) {
+      ui_separator = TRUE;
+    } else { 
+@@ -339,6 +347,8 @@
+   audio_real_init(sound_set_name, sound_plugin_name);
+   audio_play_music("music_start", NULL);
+ 
++  ggz_initialize();
++
+   /* run gui-specific client */
+   ui_main(argc, argv);
+ 
+Index: client/clinet.h
+===================================================================
+--- client/clinet.h	(revision 11346)
++++ client/clinet.h	(working copy)
+@@ -33,6 +33,8 @@
+ int get_server_address(const char *hostname, int port, char *errbuf,
+ 		       int errbufsize);
+ int try_to_connect(const char *username, char *errbuf, int errbufsize);
++void make_connection(int socket, const char *username);
++
+ void input_from_server(int fd);
+ void input_from_server_till_request_got_processed(int fd,
+ 						  int expected_request_id);
+Index: client/Makefile.am
+===================================================================
+--- client/Makefile.am	(revision 11346)
++++ client/Makefile.am	(working copy)
+@@ -138,7 +138,7 @@
+ 
+ bin_PROGRAMS = civclient
+ 
+-AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/include -I$(top_srcdir)/common -I$(top_srcdir)/common/aicore -I../intl -I$(srcdir)/agents @SOUND_CFLAGS@
++AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/include -I$(top_srcdir)/common -I$(top_srcdir)/common/aicore -I../intl -I$(srcdir)/agents @SOUND_CFLAGS@ @LIBGGZ_INCLUDES@ @GGZMOD_INCLUDES@
+ 
+ ## Above, note -I../intl instead of -I$(top_srdir/intl) is deliberate.
+ 
+@@ -163,6 +163,8 @@
+ 	clinet.h	\
+ 	control.c	\
+ 	control.h	\
++	ggzclient.c	\
++	ggzclient.h	\
+ 	goto.c		\
+ 	goto.h		\
+ 	helpdata.c	\
+@@ -192,7 +194,7 @@
+ 	audio_none.c    \
+ 	audio_none.h
+ 
+-civclient_LDFLAGS = @CLIENT_LDFLAGS@
++civclient_LDFLAGS = @CLIENT_LDFLAGS@ @GGZMOD_LDFLAGS@
+ fc_civclient_libs =	../utility/libcivutility.a	\
+ 			$(LIBFTWL)			\
+ 			../common/libcivcommon.a	\
+@@ -201,7 +203,7 @@
+ 		 	@gui_sources@/libguiclient.a
+ civclient_DEPENDENCIES = $(fc_civclient_libs)
+ civclient_LDADD        = $(fc_civclient_libs) $(fc_civclient_libs) \
+-	@INTLLIBS@ @CLIENT_LIBS@ @SOUND_LIBS@
++	@INTLLIBS@ @CLIENT_LIBS@ @SOUND_LIBS@ @LIB_GGZMOD@
+ desktopfiledir = $(prefix)/share/applications
+ desktopfile_DATA = \
+ 	freeciv.desktop
