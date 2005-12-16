@@ -1,8 +1,7 @@
 ggzexecmod_PROGRAMS = ggzwrap
 
 ggzwrap_SOURCES = ggzwrap.c
-ggzwrap_LDADD = $(LIB_GGZMOD)
-ggzwrap_LDFLAGS = $(GGZMOD_LDFLAGS)
+ggzwrap_LDADD = $(top_builddir)/ggzmod/libggzmod.la
 
-AM_CPPFLAGS = $(GGZMOD_INCLUDES)
+AM_CPPFLAGS = -I $(top_srcdir)/ggzmod
 

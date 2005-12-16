@@ -155,6 +155,7 @@ AC_CONFIG_FILES([Makefile
 	   ggzmod-ggz/Makefile
 	   ggz-config/Makefile
 	   ggz-wrapper/Makefile
+	   ggzwrap/Makefile
 	   man/Makefile
 	   man/ggz-config.6
 	   man/ggz.modules.5
