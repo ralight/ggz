@@ -23,25 +23,33 @@ dnl
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
-dnl AC_GGZ_INIT - initialization and paths/options setup
-dnl AC_GGZ_VERSION - ensure a minimum version of GGZ
-dnl AC_GGZ_LIBGGZ - find the libggz headers and libraries
-dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
-dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
-dnl AC_GGZ_GGZMOD - find the ggzmod library
-dnl AC_GGZ_GGZDMOD - find the ggzdmod library
-dnl AC_GGZ_SERVER - set up game and room path for ggzd game servers
-dnl AC_GGZ_INTL - ensure proper i18n tools installation
+dnl High-level macros:
+dnl   AC_GGZ_CHECK - Checks for presence of GGZ client and server libraries.
+dnl                  GGZ users can call this macro to determine at compile
+dnl                  time whether to include GGZ support.  Server and client
+dnl                  are checked separately.  GGZ_SERVER and GGZ_CLIENT are
+dnl                  defined in config.h, and created as conditionals in
+dnl                  the Makefiles.
 dnl
-dnl Each macro takes two arguments:
-dnl   1.  Action-if-found (or empty for no action).
-dnl   2.  Action-if-not-found (or empty for error, or "ignore" to ignore).
-dnl ------------------------------------------------------------------------
+dnl Low-level macros:
+dnl   AC_GGZ_INIT - initialization and paths/options setup
+dnl   AC_GGZ_VERSION - ensure a minimum version of GGZ
+dnl   AC_GGZ_LIBGGZ - find the libggz headers and libraries
+dnl   AC_GGZ_GGZCORE - find the ggzcore headers and libraries
+dnl   AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
+dnl   AC_GGZ_GGZMOD - find the ggzmod library
+dnl   AC_GGZ_GGZDMOD - find the ggzdmod library
+dnl   AC_GGZ_SERVER - set up game and room path for ggzd game servers
+dnl   AC_GGZ_INTL - ensure proper i18n tools installation
+dnl
+dnl   Each macro takes two arguments:
+dnl     1.  Action-if-found (or empty for no action).
+dnl     2.  Action-if-not-found (or empty for error, or "ignore" to ignore).
+dnl
 dnl Internal functions:
-dnl ------------------------------------------------------------------------
-dnl AC_GGZ_ERROR - user-friendly error messages
-dnl AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
-dnl AC_GGZ_REMOVEDUPS - eliminate duplicate list elements
+dnl   AC_GGZ_ERROR - user-friendly error messages
+dnl   AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
+dnl   AC_GGZ_REMOVEDUPS - eliminate duplicate list elements
 dnl
 
 dnl ------------------------------------------------------------------------
@@ -848,4 +856,59 @@ else
   $1
 fi
 
+])
+
+# AC_GGZ_CHECK
+#   Check for presence of GGZ client and server libraries.
+#
+#   Simply call this function in programs that use GGZ.  GGZ_SERVER and
+#   GGZ_CLIENT will be #defined in config.h, and created as conditionals
+#   in Makefile.am files.
+AC_DEFUN([AC_GGZ_CHECK],
+[
+  AC_GGZ_INIT
+  AC_GGZ_LIBGGZ([try_ggz="yes"], [try_ggz="no"])
+
+  ggz_server="no"
+  ggz_client="no"
+  AC_ARG_WITH(ggz-server,
+              AC_HELP_STRING([--with-ggz-server], [Force GGZ server support]),
+              [try_ggz_server=$withval])
+  AC_ARG_WITH(ggz-client,
+              AC_HELP_STRING([--with-ggz-client], [Force GGZ client support]),
+              [try_ggz_client=$withval])
+
+  if test "x$try_ggz_server" != "xno"; then
+    if test "$try_ggz" = "yes"; then
+      # Must pass something as the action-if-failed, or the macro will exit
+      AC_GGZ_GGZDMOD([ggz_server="yes"], [ggz_server="no"])
+    fi
+    if test "$ggz_server" = "yes"; then
+      GGZ_SERVER_FILES="civserver.dsc civserver.room"
+      AC_DEFINE(GGZ_SERVER, 1, [Server support for GGZ])
+    else
+      if test "$try_ggz_server" = "yes"; then
+        AC_MSG_ERROR([Could not configure GGZ server support. See above messages.])
+      fi
+    fi
+  fi
+
+  if test "x$try_ggz_client" != "xno"; then
+    if test "$try_ggz" = "yes"; then
+      # Must pass something as the action-if-failed, or the macro will exit
+      AC_GGZ_GGZMOD([AC_GGZ_CONFIG([ggz_client="yes"], [ggz_client="no"])],
+                    [ggz_client="no"])
+    fi
+    if test "$ggz_client" = "yes"; then
+      GGZ_CLIENT_FILES="civclient.dsc"
+      AC_DEFINE(GGZ_CLIENT, 1, [Client support for GGZ])
+    else
+      if test "$try_ggz_client" = "yes"; then
+        AC_MSG_ERROR([Could not configure GGZ client support. See above messages.])
+      fi
+    fi
+  fi
+
+  AM_CONDITIONAL(GGZ_CLIENT, test "$ggz_client" = "yes")
+  AM_CONDITIONAL(GGZ_SERVER, test "$ggz_server" = "yes")
 ])
