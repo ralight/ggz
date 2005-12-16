@@ -884,7 +884,6 @@ AC_DEFUN([AC_GGZ_CHECK],
       AC_GGZ_GGZDMOD([ggz_server="yes"], [ggz_server="no"])
     fi
     if test "$ggz_server" = "yes"; then
-      GGZ_SERVER_FILES="civserver.dsc civserver.room"
       AC_DEFINE(GGZ_SERVER, 1, [Server support for GGZ])
     else
       if test "$try_ggz_server" = "yes"; then
@@ -900,7 +899,6 @@ AC_DEFUN([AC_GGZ_CHECK],
                     [ggz_client="no"])
     fi
     if test "$ggz_client" = "yes"; then
-      GGZ_CLIENT_FILES="civclient.dsc"
       AC_DEFINE(GGZ_CLIENT, 1, [Client support for GGZ])
     else
       if test "$try_ggz_client" = "yes"; then
