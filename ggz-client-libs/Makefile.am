@@ -1,6 +1,4 @@
-## Process this file with automake to produce Makefile.in
-
-SUBDIRS = ggzmod-ggz ggzcore ggzmod ggz-config ggz-wrapper man tests desktop po
+SUBDIRS = ggzmod-ggz ggzcore ggzmod ggz-config ggz-wrapper ggzwrap man tests desktop po
 
 EXTRA_DIST = TODO HACKING README.GGZ QuickStart.GGZ \
 	indent.pro \
