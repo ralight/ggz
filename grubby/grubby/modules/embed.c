@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2005 Josef Spillner <josef@ggzgamingzone.org>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -27,6 +27,9 @@
 #ifdef EMBED_PYTHON
 #include <Python.h>
 #endif
+#ifdef EMBED_TCL
+#include <tcl.h>
+#endif
 
 #define EMBEDCONF "/grubby/modembed.rc"
 
@@ -40,11 +43,15 @@ static PerlInterpreter *my_perl;
 #ifdef EMBED_PYTHON
 PyObject *pxDict;
 #endif
+#ifdef EMBED_TCL
+Tcl_Interp *inter;
+#endif
 
-#define TYPE_RUBY 1
-#define TYPE_PERL 2
-#define TYPE_PYTHON 3
-#define TYPE_UNKNOWN 4
+#define TYPE_UNKNOWN 1
+#define TYPE_RUBY 2
+#define TYPE_PERL 3
+#define TYPE_PYTHON 4
+#define TYPE_TCL 5
 
 /* Determine mime type of a file */
 static int mimetype(const char *file)
@@ -64,6 +71,7 @@ static int mimetype(const char *file)
 			if(strstr(buffer, "perl")) type = TYPE_PERL;
 			if(strstr(buffer, "ruby")) type = TYPE_RUBY;
 			if(strstr(buffer, "python")) type = TYPE_PYTHON;
+			if(strstr(buffer, "tcl")) type = TYPE_TCL;
 		}
 		fclose(f);
 	}
@@ -91,6 +99,11 @@ void gurumod_init(const char *datadir)
 #ifdef EMBED_PYTHON
 	pxDict = NULL;
 	Py_Initialize();
+#endif
+#ifdef EMBED_TCL
+	/*Tcl_FindExecutable();*/
+	inter = Tcl_CreateInterp();
+	Tcl_Init(inter);
 #endif
 
 	path = (char*)malloc(strlen(datadir) + strlen(EMBEDCONF) + 1);
@@ -226,6 +239,16 @@ Guru *gurumod_exec(Guru *message)
 				return message;
 			}
 #endif
+
+#ifdef EMBED_TCL
+			if(type == TYPE_TCL)
+			{
+				Tcl_EvalFile(inter, script);
+
+				message->message = "tcl-ok";
+				return message;
+			}
+#endif
 		}
 	}
 
@@ -241,6 +264,9 @@ perl_free(perl);
 #endif
 #ifdef EMBED_PYTHON
 Py_Finalize();
+#endif
+#ifdef EMBED_TCL
+Tcl_DeleteInterp(inter);
 #endif
 }
 */

@@ -501,7 +501,7 @@ void net_internal_gameprepare(const char *playername)
 GGZHookReturn net_hook_chat(unsigned int id, const void *event_data, const void *user_data)
 {
 	int type;
-	char *roomname;
+	const char *roomname;
 	time_t t;
 	char *ts;
 	const GGZChatEventData *chat = event_data;

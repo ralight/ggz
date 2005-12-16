@@ -12,6 +12,7 @@ dnl =====================
 AC_ARG_ENABLE(perl,  [  --disable-perl        Exclude perl modules],, enable_perl=yes)
 AC_ARG_ENABLE(ruby,  [  --disable-ruby        Exclude ruby modules],, enable_ruby=yes)
 AC_ARG_ENABLE(python,[  --disable-python      Exclude python modules],, enable_python=yes)
+AC_ARG_ENABLE(tcl,   [  --disable-tcl         Exclude tcl modules],, enable_tcl=yes)
 AC_ARG_ENABLE(silc,  [  --disable-silc        Exclude SILC network module],, enable_silc=yes)
 
 dnl Check for standard build environment
@@ -145,6 +146,32 @@ if test "$enable_python" = yes; then
 		AC_SUBST(python_includes)
 		AC_SUBST(python_libraries)
 		AC_DEFINE([EMBED_PYTHON], 1, [Define to use embedded Python])
+	fi
+fi
+
+if test "$enable_tcl" = yes; then
+	echo -n "Extra check: tcl... "
+
+	incs="/usr/include/tcl8.4"
+	AC_GGZ_FIND_FILE("tcl.h", $incs, tcl_incdir)
+	tcl_includes="$tcl_incdir"
+
+	libs="/usr/lib"
+	AC_GGZ_FIND_FILE("libtcl8.4.so", $libs, tcl_libdir)
+	tcl_libraries="$tcl_libdir"
+
+	if test "x$tcl_includes" = "xNO" || test "x$tcl_libraries" = "xNO"; then
+		AC_MSG_RESULT(no.)
+		tcl_includes=""
+		tcl_libraries=""
+		enable_tcl=no
+	else
+		AC_MSG_RESULT(ok.)
+		tcl_includes="-I $tcl_includes"
+		tcl_libraries="-L $tcl_libraries -ltcl8.4"
+		AC_SUBST(tcl_includes)
+		AC_SUBST(tcl_libraries)
+		AC_DEFINE([EMBED_TCL], 1, [Define to use embedded Tcl])
 	fi
 fi
 
