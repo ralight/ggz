@@ -6,7 +6,8 @@ gurudata_SCRIPTS = dict.pl rdf.pl meeting.rb messages.rb embedtest.rb
 guruconfigdir = $(prefix)/bin
 guruconfig_SCRIPTS = grubby-config
 
-EXTRA_DIST = dict.pl rdf.pl meeting.rb messages.rb grubby-config.in webtranslator.sh embedtest.rb
+EXTRA_DIST = dict.pl rdf.pl meeting.rb messages.rb grubby-config.in webtranslator.sh \
+	embedtest.rb test.tcl
 
 messages:
 	touch guru.pot

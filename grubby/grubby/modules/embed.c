@@ -243,9 +243,11 @@ Guru *gurumod_exec(Guru *message)
 #ifdef EMBED_TCL
 			if(type == TYPE_TCL)
 			{
+				Tcl_SetVar(inter, "answer", message->message, 0);
+
 				Tcl_EvalFile(inter, script);
 
-				message->message = "tcl-ok";
+				message->message = Tcl_GetVar(inter, "answer", 0);
 				return message;
 			}
 #endif
