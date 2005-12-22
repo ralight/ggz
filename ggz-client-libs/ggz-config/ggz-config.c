@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7665 2005-12-13 00:35:51Z jdorje $
+ * $Id: ggz-config.c 7678 2005-12-22 17:28:06Z jdorje $
  *
  * Configuration query and module install program.
  *
@@ -315,17 +315,11 @@ static void purge_engine_id(int global, char *engine_id)
 
 static int open_conffile(void)
 {
-	char	*global_pathname;
 	char	*global_filename = "ggz.modules";
+	char global_pathname[(moddest ? strlen(destdir) : 0)
+			     + strlen(GGZCONFDIR)
+			     + strlen(global_filename) + 3];
 	int	global;
-
-	if(moddest)
-		global_pathname = ggz_malloc(strlen(destdir) +
-					     strlen(GGZCONFDIR) +
-					     strlen(global_filename) + 3);
-	else
-		global_pathname = ggz_malloc(strlen(GGZCONFDIR) +
-					     strlen(global_filename) + 2);
 
 	if(moddest)
 		sprintf(global_pathname, "%s/%s/%s", destdir,
@@ -381,7 +375,6 @@ static int filecopy(const char *src, const char *dst)
 
 static void handle_icon(void)
 {
-	char *path;
 	int ret;
 
 	if(install_mod) {
@@ -391,28 +384,31 @@ static void handle_icon(void)
 		while(strchr(modicon, '/')) {
 			modicon = strchr(modicon, '/') + 1;
 		}
-		path = ggz_malloc(strlen(GGZDATADIR) + strlen(modicon) + 30);
-		strcpy(path, GGZDATADIR);
-		strcat(path, "/ggz-config/");
+
+		{
+			char path[strlen(GGZDATADIR) + strlen(modicon) + 30];
+
+			strcpy(path, GGZDATADIR);
+			strcat(path, "/ggz-config/");
 #ifdef MKDIR_TAKES_ONE_ARG
-		mkdir(path);
+			mkdir(path);
 #else
-		mkdir(path, 0700);
+			mkdir(path, 0700);
 #endif
-		strcat(path, modicon);
-		ret = filecopy(iconfile, path);
-		if(ret != 0) modicon = NULL;
-		ggz_free(path);
+			strcat(path, modicon);
+			ret = filecopy(iconfile, path);
+			if(ret != 0) modicon = NULL;
+		}
 	} else if(remove_mod) {
 		modicon = managediconfile;
-		if(!modicon) return;
-		if(modicon[0] == '/') return;
-		path = ggz_malloc(strlen(GGZDATADIR) + strlen(modicon) + 30);
-		strcpy(path, GGZDATADIR);
-		strcat(path, "/ggz-config/");
-		strcat(path, modicon);
-		unlink(path);
-		ggz_free(path);
+		if (modicon && modicon[0] != '/') {
+			char path[strlen(GGZDATADIR) + strlen(modicon) + 30];
+
+			strcpy(path, GGZDATADIR);
+			strcat(path, "/ggz-config/");
+			strcat(path, modicon);
+			unlink(path);
+		}
 	}
 }
 
@@ -454,20 +450,13 @@ static int remove_module(void)
 
 static int noregister_module(void)
 {
-	char *global_pathname;
 	char *suffix = ".module.dsc";
-	char *fixedmodname;
+	char global_pathname[(moddest ? strlen(destdir) : 0)
+			     + strlen(copydir)
+			     + strlen(modname)
+			     + strlen(suffix) + 3];
+	char fixedmodname[strlen(modname) + 1];
 	int i;
-
-	if(moddest)
-		global_pathname = ggz_malloc(strlen(destdir) +
-					     strlen(copydir) +
-						 strlen(modname) +
-					     strlen(suffix) + 3);
-	else
-		global_pathname = ggz_malloc(strlen(copydir) +
-					     strlen(modname) +
-					     strlen(suffix) + 2);
 
 	if(moddest)
 		sprintf(global_pathname, "%s/%s", destdir, copydir);
@@ -480,13 +469,11 @@ static int noregister_module(void)
 		return -1;
 	}
 
-	fixedmodname = (char*)ggz_malloc(strlen(modname) + 1);
 	strcpy(fixedmodname, modname);
 	for(i = 0; i < strlen(fixedmodname); i++) {
 		if(fixedmodname[i] == '/') fixedmodname[i] = '_';
 	}
 	sprintf(global_pathname, "%s/%s%s", global_pathname, fixedmodname, suffix);
-	ggz_free(fixedmodname);
 
 	printf(_("Preserving %s as %s...\n"), modfile, global_pathname);
 	return filecopy(modfile, global_pathname);
