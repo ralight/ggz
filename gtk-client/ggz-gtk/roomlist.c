@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 7679 2005-12-27 21:37:52Z jdorje $
+ * $Id: roomlist.c 7680 2005-12-27 21:42:26Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -118,8 +118,9 @@ static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	/* Display room's info in a nice dialog */
 	GGZRoom *room = data;
+	GtkWidget *parent = lookup_widget(room_list, "parent_win");
 
-	room_info_create_or_raise(room);		
+	room_info_create_or_raise(parent, room);
 }
 
 static GtkWidget *create_mnu_room(GGZRoom *room)
@@ -352,6 +353,7 @@ GtkWidget *create_room_list(GtkWidget *window)
 			       tree,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	g_object_set_data(G_OBJECT(tree), "room_list_store", store);
+	g_object_set_data(G_OBJECT(tree), "parent_win", window);
 	g_object_set_data(G_OBJECT(window), "room_list_store", store);
 	gtk_widget_show(tree);
 	gtk_widget_set_sensitive(tree, FALSE);

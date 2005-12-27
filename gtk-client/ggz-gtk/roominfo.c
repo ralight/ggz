@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.c 6382 2004-11-16 03:37:51Z jdorje $
+ * $Id: roominfo.c 7680 2005-12-27 21:42:26Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -37,69 +37,14 @@
 #include <gtk/gtk.h>
 #include <ggzcore.h>
 
-#include "client.h"
 #include "roominfo.h"
 #include "support.h"
 
 
 static GtkWidget *dialog;
-static GtkWidget *create_dlg_info(void);
 
 
-/* info_create_or_raise() - Displays the dialog or updates current dialog
- *                          with new room's information
- *
- * Recieves:
- * gint		room	: Room number to display info about
- *
- * Returns:
- */
-
-void room_info_create_or_raise(GGZRoom * room)
-{
-	GtkWidget *tmp;
-	GGZGameType *gt = ggzcore_room_get_gametype(room);
-	const char *text;
-
-	if (!dialog) {
-		dialog = create_dlg_info();
-		gtk_widget_show(dialog);
-	} else {
-		gdk_window_show(dialog->window);
-		gdk_window_raise(dialog->window);
-	}
-
-	tmp = g_object_get_data(G_OBJECT(dialog), "name");
-	if (gt)
-		text = ggzcore_gametype_get_name(gt);
-	else
-		text = _("This room has no game");
-	gtk_label_set_text(GTK_LABEL(tmp), text);
-
-	tmp = g_object_get_data(G_OBJECT(dialog), "author");
-	if (gt)
-		text = ggzcore_gametype_get_author(gt);
-	else
-		text = _("N/A");
-	gtk_label_set_text(GTK_LABEL(tmp), text);
-
-	tmp = g_object_get_data(G_OBJECT(dialog), "www");
-	if (gt)
-		text = ggzcore_gametype_get_url(gt);
-	else
-		text = _("N/A");
-	gtk_label_set_text(GTK_LABEL(tmp), text);
-
-	tmp = g_object_get_data(G_OBJECT(dialog), "desc");
-	text = ggzcore_room_get_name(room);
-	if (!text)
-		text = _("Unknown room");
-	gtk_label_set_text(GTK_LABEL(tmp), text);
-}
-
-
-
-GtkWidget *create_dlg_info(void)
+static GtkWidget *create_dlg_info(GtkWidget *parent)
 {
 	GtkWidget *dlg_info;
 	GtkWidget *dialog_vbox;
@@ -115,7 +60,7 @@ GtkWidget *create_dlg_info(void)
 	GtkWidget *desc;
 
 	dlg_info = gtk_dialog_new_with_buttons(_("Room Information"),
-					       GTK_WINDOW(win_main), 0,
+					       GTK_WINDOW(parent), 0,
 					       GTK_STOCK_CLOSE,
 					       GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dlg_info), "dlg_info", dlg_info);
@@ -220,4 +165,56 @@ GtkWidget *create_dlg_info(void)
 			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
 
 	return dlg_info;
+}
+
+
+/* info_create_or_raise() - Displays the dialog or updates current dialog
+ *                          with new room's information
+ *
+ * Recieves:
+ * gint		room	: Room number to display info about
+ *
+ * Returns:
+ */
+
+void room_info_create_or_raise(GtkWidget *parent, GGZRoom * room)
+{
+	GtkWidget *tmp;
+	GGZGameType *gt = ggzcore_room_get_gametype(room);
+	const char *text;
+
+	if (!dialog) {
+		dialog = create_dlg_info(parent);
+		gtk_widget_show(dialog);
+	} else {
+		gdk_window_show(dialog->window);
+		gdk_window_raise(dialog->window);
+	}
+
+	tmp = g_object_get_data(G_OBJECT(dialog), "name");
+	if (gt)
+		text = ggzcore_gametype_get_name(gt);
+	else
+		text = _("This room has no game");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
+
+	tmp = g_object_get_data(G_OBJECT(dialog), "author");
+	if (gt)
+		text = ggzcore_gametype_get_author(gt);
+	else
+		text = _("N/A");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
+
+	tmp = g_object_get_data(G_OBJECT(dialog), "www");
+	if (gt)
+		text = ggzcore_gametype_get_url(gt);
+	else
+		text = _("N/A");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
+
+	tmp = g_object_get_data(G_OBJECT(dialog), "desc");
+	text = ggzcore_room_get_name(room);
+	if (!text)
+		text = _("Unknown room");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
 }
