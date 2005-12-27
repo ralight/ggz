@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 7598 2005-09-27 04:47:13Z jdorje $
+ * $Id: roomlist.c 7679 2005-12-27 21:37:52Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -35,11 +35,9 @@
 #include <ggz.h>
 #include <ggzcore.h>
 
-#include "client.h"
 #include "msgbox.h"
 #include "roominfo.h"
 #include "roomlist.h"
-#include "server.h"
 #include "support.h"
 
 enum {
@@ -49,12 +47,14 @@ enum {
 	ROOM_COLUMNS
 };
 
+static GtkWidget *room_list;
+
 static void client_join_room(GGZRoom *room)
 {
 	gchar *err_msg = NULL;
 	gint singleclick, status = -1;
-	GGZRoom *ggzroom;
 	int id = ggzcore_room_get_id(room);
+	GGZServer *server = ggzcore_room_get_server(room);
 
 	switch (ggzcore_server_get_state(server)) {
 	case GGZ_STATE_OFFLINE:
@@ -62,7 +62,7 @@ static void client_join_room(GGZRoom *room)
 	case GGZ_STATE_ONLINE:
 	case GGZ_STATE_LOGGING_IN:
 	case GGZ_STATE_LOGGING_OUT:
-		err_msg = _("You can't join a room, you're not logged int");
+		err_msg = _("You can't join a room; you're not logged in");
 		break;
 	case GGZ_STATE_BETWEEN_ROOMS:
 	case GGZ_STATE_ENTERING_ROOM:
@@ -83,8 +83,7 @@ static void client_join_room(GGZRoom *room)
 	}
 
 	if (status == 0) {
-		ggzroom = ggzcore_server_get_cur_room(server);
-			if (ggzcore_server_join_room(server, id) == 0) {
+		if (ggzcore_server_join_room(server, id) == 0) {
 	
 			/* Only desensitize with single click, dues to
 	                some weird bug that freezes the mouse if we
@@ -221,7 +220,7 @@ static gboolean room_list_event(GtkWidget *widget, GdkEvent *event,
 
 void sensitize_room_list(gboolean sensitive)
 {
-	GtkWidget *tree = lookup_widget(win_main, "room_list");
+	GtkWidget *tree = room_list;
 
 	gtk_widget_set_sensitive(tree, sensitive);
 }
@@ -231,7 +230,7 @@ void clear_room_list(void)
 	/* Clear current list of rooms */
 	GtkListStore *store;
 
-	store = GTK_LIST_STORE(lookup_widget(win_main, "room_list_store"));
+	store = GTK_LIST_STORE(lookup_widget(room_list, "room_list_store"));
 	gtk_list_store_clear(store);
 }
 
@@ -243,7 +242,7 @@ void select_room(GGZRoom *room)
 	GtkTreeIter iter;
 	int id = ggzcore_room_get_id(room), i;
 
-	tree = GTK_TREE_VIEW(lookup_widget(win_main, "room_list"));
+	tree = GTK_TREE_VIEW(room_list);
 	store = GTK_LIST_STORE(gtk_tree_view_get_model(tree));
 	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 
@@ -267,7 +266,7 @@ void update_one_room(GGZRoom *room)
 	GtkTreeIter iter;
 
 	/* Retrieve the player list widget. */
-	store = GTK_LIST_STORE(lookup_widget(win_main, "room_list_store"));
+	store = GTK_LIST_STORE(lookup_widget(room_list, "room_list_store"));
 
 	name = ggzcore_room_get_name(room);
 	id = ggzcore_room_get_id(room);
@@ -291,14 +290,14 @@ void update_one_room(GGZRoom *room)
 	}
 }
 
-void update_room_list(void)
+void update_room_list(GGZServer *server)
 {
 	GtkListStore *store;
 	int i;
 	const int numrooms = ggzcore_server_get_num_rooms(server);
 
 	/* Retrieve the player list widget. */
-	store = GTK_LIST_STORE(lookup_widget(win_main, "room_list_store"));
+	store = GTK_LIST_STORE(lookup_widget(room_list, "room_list_store"));
 
 	gtk_list_store_clear(store);
 
@@ -352,6 +351,7 @@ GtkWidget *create_room_list(GtkWidget *window)
 	g_object_set_data_full(G_OBJECT(window), "room_list",
 			       tree,
 			       (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data(G_OBJECT(tree), "room_list_store", store);
 	g_object_set_data(G_OBJECT(window), "room_list_store", store);
 	gtk_widget_show(tree);
 	gtk_widget_set_sensitive(tree, FALSE);
@@ -363,5 +363,6 @@ GtkWidget *create_room_list(GtkWidget *window)
 	g_signal_connect(tree, "button-press-event",
 			 GTK_SIGNAL_FUNC(room_list_event), NULL);
 
+	room_list = tree;
 	return tree;
 }

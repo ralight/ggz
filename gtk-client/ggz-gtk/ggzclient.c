@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7528 2005-09-17 19:45:53Z josef $
+ * $Id: ggzclient.c 7679 2005-12-27 21:37:52Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -604,7 +604,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id,
 	/* Display current list of rooms */
 	numrooms = ggzcore_server_get_num_rooms(server);
 
-	update_room_list();
+	update_room_list(server);
 
 	for (i = 0; i < numrooms; i++) {
 		room = ggzcore_server_get_nth_room(server, i);
