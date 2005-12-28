@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 6755 2005-01-20 02:46:06Z jdorje $
+ * $Id: launch.c 7681 2005-12-28 00:47:17Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -276,7 +276,8 @@ void launch_table(void)
 	ggzcore_table_free(table);
 
 	if (status < 0) {
-		msgbox(_("Failed to launch table.\n Launch aborted."),
+		msgbox(win_main,
+		       _("Failed to launch table.\n Launch aborted."),
 		       _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP,
 		       MSGBOX_NORMAL);
 		game_destroy();
@@ -312,7 +313,8 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 	gt = ggzcore_room_get_gametype(room);
 
 	if (!ggzcore_gametype_num_bots_is_valid(gt, bots)) {
-		msgbox(_("Invalid number of bots specified"), _("Error"),
+		msgbox(win_main,
+		       _("Invalid number of bots specified"), _("Error"),
 		       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 
 		return;
@@ -321,7 +323,7 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 	/* Create new game object */
 	if (game_init(0) == 0) {
 		if (game_launch() < 0) {
-			msgbox(_("Error launching game module."),
+			msgbox(win_main, _("Error launching game module."),
 			       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO,
 			       MSGBOX_NORMAL);
 			game_destroy();

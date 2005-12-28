@@ -60,4 +60,6 @@ typedef enum {
 	MSGBOX_MODAL	= 2,
 }	MBModal;
 
-MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MBModal modal);
+MBReturn msgbox(GtkWidget *parent,
+		gchar *textmessage, gchar *title, MBType type,
+		MBIcon itype, MBModal modal);

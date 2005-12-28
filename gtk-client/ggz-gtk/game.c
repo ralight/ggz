@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 7528 2005-09-17 19:45:53Z josef $
+ * $Id: game.c 7681 2005-12-28 00:47:17Z jdorje $
  *
  * Functions for handling game events
  *
@@ -73,7 +73,8 @@ static GGZModule *pick_module(GGZGameType * gt)
 					    "installed. You can download\n"
 					    "it from %s."),
 					  ggzcore_gametype_get_url(gt));
-		msgbox(message, _("Launch Error"), MSGBOX_OKONLY,
+		msgbox(win_main,
+		       message, _("Launch Error"), MSGBOX_OKONLY,
 		       MSGBOX_STOP, MSGBOX_NORMAL);
 		g_free(message);
 
@@ -145,8 +146,8 @@ int game_launch(void)
 
 	/* Launch game */
 	if ((status = ggzcore_game_launch(game) < 0)) {
-		msgbox(_
-		       ("Failed to execute game module.\n Launch aborted."),
+		msgbox(win_main,
+		       _("Failed to execute game module.\n Launch aborted."),
 		       _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP,
 		       MSGBOX_NORMAL);
 		game_destroy();
@@ -288,7 +289,7 @@ int game_init(int spectate)
 
 	/* Make sure we aren't already in a game */
 	if (game) {
-		msgbox(_("You can only play one game at a time."),
+		msgbox(win_main, _("You can only play one game at a time."),
 		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO,
 		       MSGBOX_NORMAL);
 		return -1;
@@ -296,7 +297,7 @@ int game_init(int spectate)
 
 	/* Make sure we're actually in a room and not already at a table */
 	if (ggzcore_server_get_state(server) != GGZ_STATE_IN_ROOM) {
-		msgbox(_("You're still at a table."),
+		msgbox(win_main, _("You're still at a table."),
 		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO,
 		       MSGBOX_NORMAL);
 		return -1;
@@ -305,8 +306,9 @@ int game_init(int spectate)
 	/* Make sure we're in a room */
 	room = ggzcore_server_get_cur_room(server);
 	if (!room) {
-		msgbox(_
-		       ("You must be in a room to launch a game.\nLaunch aborted"),
+		msgbox(win_main,
+		       _("You must be in a room to launch a game.\n"
+			 "Launch aborted"),
 		       _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP,
 		       MSGBOX_NORMAL);
 		return -1;
@@ -315,8 +317,9 @@ int game_init(int spectate)
 	/* Get game type for this room */
 	gt = ggzcore_room_get_gametype(room);
 	if (!gt) {
-		msgbox(_
-		       ("No game types defined for this server.\nLaunch aborted."),
+		msgbox(win_main, _
+		       ("No game types defined for this server.\n"
+			"Launch aborted."),
 		       _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP,
 		       MSGBOX_NORMAL);
 		return -1;
@@ -325,7 +328,7 @@ int game_init(int spectate)
 	/* In principle this should have been checked earlier, but we didn't
 	   know the game type then. */
 	if (spectate && !ggzcore_gametype_get_spectators_allowed(gt)) {
-		msgbox(_("This game doesn't support spectators."),
+		msgbox(win_main, _("This game doesn't support spectators."),
 		       _("Launch Error"),
 		       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 		return -1;

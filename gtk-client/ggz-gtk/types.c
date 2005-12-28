@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 6861 2005-01-23 22:41:02Z oojah $
+ * $Id: types.c 7681 2005-12-28 00:47:17Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -141,9 +141,12 @@ static void types_URL(GtkMenuItem * menuitem, gpointer data)
 
 static void types_filter_button(GtkWidget * widget, gpointer data)
 {
-	msgbox
-	    ("Room filtering is not implemented yet. If\nyou would like to help head over to\nhttp://www.ggzgamingzone.org/",
-	     "Not Implemented", MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
+	msgbox(win_main,
+	       _("Room filtering is not implemented yet. If\n"
+		 "you would like to help head over to\n"
+		 "http://www.ggzgamingzone.org/"),
+	       _("Not Implemented"),
+	       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 
 }
 

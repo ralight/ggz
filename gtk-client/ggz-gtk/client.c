@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7313 2005-06-21 19:06:36Z jdorje $
+ * $Id: client.c 7681 2005-12-28 00:47:17Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -135,7 +135,8 @@ static void
 try_to_quit			(void)
 {
 	if (ggz_connection_query() == 0
-            || msgbox(_("Are you sure you want to quit?"), _("Quit?"),
+            || msgbox(win_main,
+		      _("Are you sure you want to quit?"), _("Quit?"),
                       MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) ==MSGBOX_YES)
 	{
 		gtk_main_quit();
@@ -227,10 +228,11 @@ static void
 client_server_stats_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	msgbox(_("Server stats are not implemented yet. If\n"
-		"you would like to help head over to\n"
-		"http://www.ggzgamingzone.org/"), _("Not Implemented"),
-		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
+	msgbox(win_main,
+	       _("Server stats are not implemented yet. If\n"
+		 "you would like to help head over to\n"
+		 "http://www.ggzgamingzone.org/"), _("Not Implemented"),
+	       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
 
 
@@ -238,10 +240,11 @@ static void
 client_player_stats_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	msgbox(_("Player stats are not implemented yet. If\n"
-			"you would like to help head over to\n"
-			"http://www.ggzgamingzone.org/"), _("Not Implemented"),
-		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
+	msgbox(win_main, _("Player stats are not implemented yet. If\n"
+			   "you would like to help head over to\n"
+			   "http://www.ggzgamingzone.org/"),
+	       _("Not Implemented"),
+	       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
 
 
@@ -282,9 +285,12 @@ client_ggz_help_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
 	if(!support_goto_url(GGZDATADIR "/help/ggz-gtk-handbook.html")) {
-		msgbox(_("GGZ Gaming Zone help needs a browser to be configured.\n"
-			"The configuration dialog will be invoked now."), "Help configuration",
-			MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
+		msgbox(win_main,
+		       _("GGZ Gaming Zone help needs a browser to be "
+			 "configured.\n"
+			 "The configuration dialog will be invoked now."),
+		       "Help configuration",
+		       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 		props_create_or_raise();
 	}
 }
@@ -294,11 +300,12 @@ static void
 client_game_help_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	msgbox(_("Inline game help is not implemented yet. Help\n"
-		"is on our website. If\n"
-		"you would like to help head over to\n"
-		"http://www.ggzgamingzone.org/"), _("Not Implemented"),
-		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
+	msgbox(win_main,
+	       _("Inline game help is not implemented yet. Help\n"
+		 "is on our website. If\n"
+		 "you would like to help head over to\n"
+		 "http://www.ggzgamingzone.org/"), _("Not Implemented"),
+	       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
 
 
@@ -539,10 +546,11 @@ static void
 client_stats_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	msgbox(_("Player stats are not implemented yet. If\n"
-		"you would like to help head over to\n"
-		"http://www.ggzgamingzone.org/"), _("Not Implemented"),
-		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
+	msgbox(win_main,
+	       _("Player stats are not implemented yet. If\n"
+		 "you would like to help head over to\n"
+		 "http://www.ggzgamingzone.org/"), _("Not Implemented"),
+	       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
 
 static void
@@ -559,7 +567,8 @@ void client_start_table_join(void)
 
 	/* Make sure a table is selected */
 	if (!table) {
-		msgbox(_("You must highlight a table before you can join it."),
+		msgbox(win_main,
+		       _("You must highlight a table before you can join it."),
 		       _("Error Joining"), MSGBOX_OKONLY, MSGBOX_INFO, 
 		       MSGBOX_NORMAL);
 		return;
@@ -569,7 +578,7 @@ void client_start_table_join(void)
 	/* Make sure table has open seats */
 	if (ggzcore_table_get_seat_count(table, GGZ_SEAT_OPEN)
 	    + ggzcore_table_get_seat_count(table, GGZ_SEAT_RESERVED) == 0) {
-		msgbox(_("That table is full."), _("Error Joining"),
+		msgbox(win_main, _("That table is full."), _("Error Joining"),
 		       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
 		return;
 	}
@@ -578,8 +587,10 @@ void client_start_table_join(void)
 	spectating = 0;
 	if (game_init(0) == 0) {
 		if (game_launch() < 0) {
-			msgbox(_("Error launching game module."), _("Game Error"),
-				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+			msgbox(win_main,
+			       _("Error launching game module."),
+			       _("Game Error"),
+			       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 			game_destroy();
 		}
 	}
@@ -592,7 +603,9 @@ static void client_start_table_watch(void)
 
 	/* Make sure a table is selected */
 	if (!table) {
-		msgbox(_("You must highlight a table before you can watch it."), 
+		msgbox(win_main,
+		       _("You must highlight a table before "
+			 "you can watch it."), 
 		       _("Error Spectating"), MSGBOX_OKONLY, MSGBOX_INFO, 
 		       MSGBOX_NORMAL);
 		return;
@@ -605,8 +618,9 @@ static void client_start_table_watch(void)
 	{
 		/* Make sure table has open seats */
 		if (!client_get_table_open(tablerow)) {
-			msgbox("That table is full.", "Error Joining",
-				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
+			msgbox(win_main,
+			       "That table is full.", "Error Joining",
+			       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
 			return;
 		}
 	}
@@ -616,8 +630,10 @@ static void client_start_table_watch(void)
 	spectating = 1;
 	if (game_init(1) == 0) {
 		if (game_launch() < 0) {
-			msgbox(_("Error launching game module."), _("Game Error"),
-				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+			msgbox(win_main,
+			       _("Error launching game module."),
+			       _("Game Error"),
+			       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 			game_destroy();
 		}
 	}
@@ -636,8 +652,10 @@ void client_join_table(void)
 					 spectating);
 	
 	if (status < 0) {
-		msgbox(_("Failed to join table.\nJoin aborted."), _("Join Error"),
-			MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		msgbox(win_main,
+		       _("Failed to join table.\nJoin aborted."),
+		       _("Join Error"),
+		       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 		game_destroy();
 	}
 }
