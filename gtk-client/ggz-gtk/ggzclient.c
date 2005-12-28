@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7681 2005-12-28 00:47:17Z jdorje $
+ * $Id: ggzclient.c 7682 2005-12-28 04:13:31Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -419,7 +419,7 @@ static GGZHookReturn ggz_list_players(GGZRoomEvent id,
 {
 	const int *room = event_data;
 
-	update_player_list();
+	update_player_list(server);
 	if (room)
 		client_update_one_room(*room);
 	return GGZ_HOOK_OK;
@@ -443,7 +443,7 @@ static GGZHookReturn ggz_room_enter(GGZRoomEvent id,
 
 	client_update_one_room(data->to_room);
 	client_update_one_room(data->from_room);
-	update_player_list();
+	update_player_list(server);
 	chat_enter(data->player_name, data->from_room);
 
 	return GGZ_HOOK_OK;
@@ -458,7 +458,7 @@ static GGZHookReturn ggz_room_leave(GGZRoomEvent id,
 
 	client_update_one_room(data->to_room);
 	client_update_one_room(data->from_room);
-	update_player_list();
+	update_player_list(server);
 	chat_part(data->player_name, data->to_room);
 
 	return GGZ_HOOK_OK;
@@ -479,7 +479,7 @@ static GGZHookReturn ggz_table_update(GGZRoomEvent id,
 				      const void *user_data)
 {
 	update_table_list();
-	update_player_list();
+	update_player_list(server);
 	return GGZ_HOOK_OK;
 }
 

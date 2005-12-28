@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 6981 2005-03-11 07:35:03Z jdorje $
+ * $Id: chat.c 7682 2005-12-28 04:13:31Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -755,10 +755,10 @@ static const gchar *chat_get_color(const gchar *name, const gchar *msg)
  * Returns:
  */
 
-void chat_add_friend(const gchar *name, gint display)
+void chat_add_friend(GGZPlayer *player, gint display)
 {
 	gchar *out;
-	char *name_copy;
+	char *name_copy, *name = ggzcore_player_get_name(player);
 
 	name_copy = ggz_strdup(name);
 	g_array_append_val(chatinfo.friends, name_copy);
@@ -779,11 +779,12 @@ void chat_add_friend(const gchar *name, gint display)
  * Returns:
  */
 
-void chat_remove_friend(const gchar *name)
+void chat_remove_friend(GGZPlayer *player)
 {
 	int i;
 	char *p;
 	char *out;
+	char *name = ggzcore_player_get_name(player);
 
 	for(i=0; i<friend_count; i++) {
 		p = g_array_index(chatinfo.friends, char *, i);
@@ -810,10 +811,11 @@ void chat_remove_friend(const gchar *name)
  * Returns:
  */
 
-void chat_add_ignore(const gchar *name, gint display)
+void chat_add_ignore(GGZPlayer *player, gint display)
 {
 	gchar *out;
 	char *name_copy;
+	char *name = ggzcore_player_get_name(player);
 
 	name_copy = ggz_strdup(name);
 	g_array_append_val(chatinfo.ignore, name_copy);
@@ -834,12 +836,12 @@ void chat_add_ignore(const gchar *name, gint display)
  *
  * Returns:
  */
-
-void chat_remove_ignore(const gchar *name)
+void chat_remove_ignore(GGZPlayer *player)
 {
 	int i;
 	char *p;
 	char *out;
+	char *name = ggzcore_player_get_name(player);
 
 	for(i=0; i<ignore_count; i++) {
 		p = g_array_index(chatinfo.ignore, char *, i);
@@ -994,9 +996,10 @@ gchar *chat_complete_name(const gchar *name, int *perfect)
 	return returnname;
 }
 
-gint chat_is_friend(const gchar *name)
+gint chat_is_friend(GGZPlayer *player)
 {
 	int i;
+	char *name = ggzcore_player_get_name(player);
 
 	for(i=0; i<friend_count; i++)
 		if(!strcasecmp(g_array_index(chatinfo.friends, char *, i),
@@ -1006,9 +1009,10 @@ gint chat_is_friend(const gchar *name)
 	return FALSE;
 }
 
-gint chat_is_ignore(const gchar *name)
+gint chat_is_ignore(GGZPlayer *player)
 {
 	int i;
+	char *name = ggzcore_player_get_name(player);
 
 	for(i=0; i<ignore_count; i++)
 		if(!strcasecmp(g_array_index(chatinfo.ignore, char *, i),

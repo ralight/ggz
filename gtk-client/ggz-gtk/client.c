@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7681 2005-12-28 00:47:17Z jdorje $
+ * $Id: client.c 7682 2005-12-28 04:13:31Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1322,7 +1322,7 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (lists_vbox), player_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (player_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  player_tree = create_player_list(win_main);
+  player_tree = create_player_list(win_main, server);
   gtk_container_add(GTK_CONTAINER(player_scrolledwindow), player_tree);
 
   table_vpaned = gtk_vpaned_new ();

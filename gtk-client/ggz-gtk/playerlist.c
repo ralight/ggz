@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6981 2005-03-11 07:35:03Z jdorje $
+ * $Id: playerlist.c 7682 2005-12-28 04:13:31Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -36,62 +36,51 @@
 #include <ggzcore.h>
 
 #include "chat.h"
-#include "client.h"
 #include "playerinfo.h"
 #include "playerlist.h"
-#include "server.h"
 #include "support.h"
 
 enum {
-  PLAYER_COLUMN_TYPE,
-  PLAYER_COLUMN_LAG,
-  PLAYER_COLUMN_TABLE,
-  PLAYER_COLUMN_STATS,
-  PLAYER_COLUMN_NAME,
-  PLAYER_COLUMNS
+	PLAYER_COLUMN_TYPE,
+	PLAYER_COLUMN_LAG,
+	PLAYER_COLUMN_TABLE,
+	PLAYER_COLUMN_STATS,
+	PLAYER_COLUMN_NAME,
+	PLAYER_COLUMNS
 };
+
+GtkWidget *player_list;
+GGZServer *server;
 
 static void client_player_info_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	/* Pop up an info dialog about the player */
-	char *name = data;
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	int count, i;
+	GGZPlayer *player = data;
 
-	count = ggzcore_room_get_num_players(room);
-	for (i = 0; i < count; i++) {
-		GGZPlayer *player = ggzcore_room_get_nth_player(room, i);
-
-		if (strcasecmp(ggzcore_player_get_name(player), name) == 0) {
-			player_info_create_or_raise(player);
-			break;
-		}
-	}
-
-	/* We can reach here in some cases. */
+	player_info_create_or_raise(player);
 }
 
 static void client_player_friends_click(GtkMenuItem * menuitem, gpointer data)
 {
-	char *pname = data;
+	GGZPlayer *player = data;
 
 	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-		chat_add_friend(pname, TRUE);
+		chat_add_friend(player, TRUE);
 	else
-		chat_remove_friend(pname);
+		chat_remove_friend(player);
 }
 
 static void client_player_ignore_click(GtkMenuItem * menuitem, gpointer data)
 {
-	char *pname = data;
+	GGZPlayer *player = data;
 
 	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-		chat_add_ignore(pname, TRUE);
+		chat_add_ignore(player, TRUE);
 	else
-		chat_remove_ignore(pname);
+		chat_remove_ignore(player);
 }
 
-static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
+static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
 				    gboolean is_ignore)
 {
 	GtkWidget *mnu_player;
@@ -138,14 +127,14 @@ static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
 				       is_ignore);
 
 	g_signal_connect(GTK_OBJECT(info), "activate",
-			   GTK_SIGNAL_FUNC(client_player_info_activate),
-			   name);
+			 GTK_SIGNAL_FUNC(client_player_info_activate),
+			 player);
 	g_signal_connect(GTK_OBJECT(friends), "activate",
-			   GTK_SIGNAL_FUNC(client_player_friends_click),
-			   name);
+			 GTK_SIGNAL_FUNC(client_player_friends_click),
+			 player);
 	g_signal_connect(GTK_OBJECT(ignore), "activate",
-			   GTK_SIGNAL_FUNC(client_player_ignore_click),
-			   name);
+			 GTK_SIGNAL_FUNC(client_player_ignore_click),
+			 player);
 
 	return mnu_player;
 }
@@ -157,7 +146,8 @@ static gboolean player_list_event(GtkWidget *widget,
 	GtkTreeView *tree = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model = gtk_tree_view_get_model(tree);
 	GtkTreeIter iter;
-	static gchar *player = NULL;
+	GGZPlayer *player = NULL;
+	char *name;
 	GtkTreePath *path = NULL;
 
 	if (!gtk_tree_view_get_path_at_pos(tree,
@@ -167,10 +157,12 @@ static gboolean player_list_event(GtkWidget *widget,
 	}
 	gtk_tree_model_get_iter(model, &iter, path);
 
-	if (player) g_free(player); /* Free the last invocation. */
-	gtk_tree_model_get(model, &iter, PLAYER_COLUMN_NAME, &player, -1);
+	gtk_tree_model_get(model, &iter, PLAYER_COLUMN_NAME, &name, -1);
+	player = ggzcore_server_get_player(server, name);
+	g_free(name);
 	if (event->type == GDK_BUTTON_PRESS
-	    && buttonevent->button == 3) {
+	    && buttonevent->button == 3
+	    && player) {
 		/* Right mouse button:
 		 * Create and display the menu */
 		int is_friend = chat_is_friend(player);
@@ -187,7 +179,7 @@ static gboolean player_list_event(GtkWidget *widget,
 
 void sensitize_player_list(gboolean sensitive)
 {
-	GtkWidget *tree = lookup_widget(win_main, "player_list");
+	GtkWidget *tree = player_list;
 
 	gtk_widget_set_sensitive(tree, sensitive);
 }
@@ -195,7 +187,7 @@ void sensitize_player_list(gboolean sensitive)
 /* Clear current list of players */
 void clear_player_list(void)
 {
-	GtkWidget *store = lookup_widget(win_main, "player_list_store");
+	GtkWidget *store = lookup_widget(player_list, "player_list_store");
 
         gtk_list_store_clear(GTK_LIST_STORE(store));
 }
@@ -204,7 +196,7 @@ void clear_player_list(void)
 gboolean pixmaps_initted = FALSE;
 GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin, *bot;
 
-void update_player_list(void)
+void update_player_list(GGZServer *server)
 {
 	GtkListStore *store;
 	gint i, num, l;
@@ -217,7 +209,8 @@ void update_player_list(void)
 	char stats[512];
 
 	/* Retrieve the player list widget. */
-	store = GTK_LIST_STORE(lookup_widget(win_main, "player_list_store"));
+	store = GTK_LIST_STORE(lookup_widget(player_list,
+					     "player_list_store"));
 
 	/* Clear current list of players */
 	gtk_list_store_clear(GTK_LIST_STORE(store));
@@ -323,7 +316,7 @@ void update_player_list(void)
 	}
 }
 
-GtkWidget *create_player_list(GtkWidget *window)
+GtkWidget *create_player_list(GtkWidget *parent, GGZServer *server)
 {
 	GtkListStore *store;
 	GtkWidget *tree;
@@ -368,10 +361,11 @@ GtkWidget *create_player_list(GtkWidget *window)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	gtk_widget_ref(tree);
-	g_object_set_data_full(G_OBJECT(window), "player_list",
-				 tree,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	g_object_set_data(G_OBJECT(window), "player_list_store", store);
+	g_object_set_data_full(G_OBJECT(parent), "player_list",
+			       tree,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data(G_OBJECT(tree), "player_list_store", store);
+	g_object_set_data(G_OBJECT(parent), "player_list_store", store);
 	gtk_widget_show(tree);
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
@@ -382,5 +376,6 @@ GtkWidget *create_player_list(GtkWidget *window)
 	g_signal_connect(tree, "button-press-event",
 			 GTK_SIGNAL_FUNC(player_list_event), NULL);
 
+	player_list = tree;
 	return tree;
 }

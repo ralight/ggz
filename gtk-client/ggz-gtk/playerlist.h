@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.h 6275 2004-11-05 22:45:00Z jdorje $
+ * $Id: playerlist.h 7682 2005-12-28 04:13:31Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -28,6 +28,6 @@
 
 void sensitize_player_list(gboolean sensitive);
 void clear_player_list(void);
-void update_player_list(void);
+void update_player_list(GGZServer *server);
 
-GtkWidget *create_player_list(GtkWidget * window);
+GtkWidget *create_player_list(GtkWidget *window, GGZServer *server);
