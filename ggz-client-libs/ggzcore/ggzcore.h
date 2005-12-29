@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 7556 2005-09-25 11:25:49Z josef $
+ * $Id: ggzcore.h 7683 2005-12-29 01:35:10Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -818,6 +818,11 @@ GGZRoom* ggzcore_server_get_cur_room(const GGZServer *server);
 /** @brief Return the nth room on the server, or NULL on error. */
 GGZRoom* ggzcore_server_get_nth_room(const GGZServer *server, 
 				     const unsigned int num);
+
+/** @brief Find the player, by name (or NULL).
+ *  @note Only players in the current room can currently be found.
+ *  @note This function is inefficient. */
+GGZPlayer* ggzcore_server_get_player(GGZServer *server, const char *name);
 
 /** @brief Return the overall number of game types on the server.
  *

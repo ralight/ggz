@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 7203 2005-05-21 09:29:01Z josef $
+ * $Id: server.h 7683 2005-12-29 01:35:10Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -44,6 +44,7 @@ GGZStateID _ggzcore_server_get_state(const GGZServer * server);
 int _ggzcore_server_get_tls(const GGZServer * server);
 
 int _ggzcore_server_get_num_players(const GGZServer * server);
+GGZPlayer* _ggzcore_server_get_player(GGZServer *server, const char *name);
 
 int _ggzcore_server_get_num_rooms(const GGZServer * server);
 GGZRoom *_ggzcore_server_get_cur_room(const GGZServer * server);
