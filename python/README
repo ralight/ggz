@@ -23,11 +23,14 @@ Content of GGZ-Python:
 	- Xadrez Chinês, a chinese chess game client, server and AI module
 	- Goserver, a GGZ-enabled gnugo program, and Goclient, a CGoBan wrapper
 	- GGZBoard, generic board game framework
-	  - Go (client, network)
+	  - Go (client, ai-wrapper(gnugo), network)
 	  - Chess (client, ai, network)
 	  - Reversi (client, ai, network)
 	  - Checkers (client, ai, network, server)
 	  - Hnefatafl (client, ai, network, server)
+	  - Ludo (client, ai, network, server)
+	  - Arimaa (client, ai, network, server)
+	  - ConnectX (client, ai, network)
 
 	- Víbora, fullscreen core client
 
