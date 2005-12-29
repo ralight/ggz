@@ -93,7 +93,7 @@ echo -n "[automake]"
 (set -o pipefail && cd $srcdir && automake --add-missing --gnu 2>&1 | (grep -v installing || true)) || { echo "automake failed."; exit; }
 if test -f $srcdir/am_edit; then
 	echo -n "[am_edit]"
-	perl $srcdir/am_edit --foreign-libtool || { echo "am_edit failed."; exit; }
+	perl $srcdir/am_edit --foreign-libtool --no-autodist || { echo "am_edit failed."; exit; }
 fi
 echo -n "[autoconf]"
 autoconf -I $srcdir $srcdir/configure.ac > $srcdir/configure && chmod +x $srcdir/configure || { echo "autoconf failed."; exit; }

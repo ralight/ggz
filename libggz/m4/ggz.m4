@@ -459,6 +459,7 @@ else
     AC_SUBST(ggzdatadir)
     AC_DEFINE_UNQUOTED(GAMEDIR, "${prefix}/lib/ggz", [Path where to install the games])
     AC_DEFINE_UNQUOTED(GGZDATADIR, "${prefix}/share/ggz", [Path where the games should look for their data files])
+    AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${prefix}/etc", [Path where the game registry is located])
   else
     ac_cv_have_ggz_config="have_ggz_config=yes \
       ac_ggz_config=$ac_ggz_config"
