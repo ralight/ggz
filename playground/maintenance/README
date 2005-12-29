@@ -23,6 +23,10 @@ getggz.sh:
  Downloads a set of GGZ client or server packages and installs them locally.
  Is always available from ftp://ftp.ggzgamingzone.org/pub/contrib/getggz.sh.
 
+synchroniser.sh:
+ For developers.
+ Checks whether all files which need to be synchronised actually are so.
+
 projectserver/:
  For hostmasters.
  Comes with separate documentation.
