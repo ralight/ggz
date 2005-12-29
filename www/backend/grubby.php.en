@@ -17,8 +17,9 @@ The GGZ Gaming Zone chat bot.
 <ul>
 <li>Modular design
 <li>Support for internationalization (i18n) and player properties
-<li>Network core plugins for GGZ, IRC and the console
+<li>Network core plugins for GGZ, IRC, SILC and the console
 <li>About a dozen modules which react to explicit or implicit commands
+<li>Scriptable via Python, Perl, Ruby and Tcl
 <li>Can play some admin on invitation
 </ul>
 <br>

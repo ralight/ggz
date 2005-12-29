@@ -28,11 +28,17 @@ The game is known as Mensch Ärgere Dich Nicht in the German-speaking countries.
 <br><br>
 
 <i>Protocol and documentation</i><br>
-No further information present.
+Ludo networking adheres to the <a href="http://dev.ggzgamingzone.org/protocols/">Bogaprot</a>
+protocol which is shared by many board games.
+The <a href="http://dev.ggzgamingzone.org/protocols/bogaprot.protocol">XML protocol file</a>
+can also be examined directly.
 
 </td><td valign="top">
 
 <i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/ludo/"><i>Server: Ludo</i></a>
 <br><br>
 
 <img src="/pics/icons/game_sdl.png">

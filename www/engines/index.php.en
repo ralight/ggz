@@ -184,6 +184,8 @@ The following game engines are currently playable on GGZ:
 <td>
 <img src="/pics/icons/game_windows.png">
 <a href="/games/connectx/">ConnectX (Windows)</a><br>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
 </td>
 <td><a href="/gameservers/connectx/">ConnectX server</a></td>
 </tr>
@@ -221,21 +223,21 @@ The following game engines are currently playable on GGZ:
 </tr>
 
 <tr>
-<td><a href="/engines/ludo/">Ludo</a></td>
+<td><a href="/engines/ludo/">Ludo/Bogaprot</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
 <a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
 </td>
-<td>(no GGZ support yet)</td>
+<td><a href="/gameservers/ludo/">Ludo server</a></td>
 </tr>
 
 <tr>
-<td><a href="/engines/arimaa/">Arimaa</a></td>
+<td><a href="/engines/arimaa/">Arimaa/Bogaprot</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
 <a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
 </td>
-<td>(no GGZ support yet)</td>
+<td><a href="/gameservers/arimaa/">Arimaa server</a></td>
 </tr>
 
 <tr>
@@ -480,6 +482,10 @@ XTux Arena (SDL) - R.I.P.<br>
 <td><a href="/gameservers/freelords/">Freelords server</a></td>
 </tr>
 
+</table>
+
+</td>
+</tr>
 </table>
 
 </font>

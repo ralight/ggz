@@ -17,8 +17,9 @@ Der Chatbot der GGZ Gaming Zone.
 <ul>
 <li>Modularer Aufbau
 <li>Unterstützung für Internationalisierung (i18n) und Spielereigenschaften
-<li>Netzwerk-Hauptplugins für GGZ, IRC und die Kommandozeile
+<li>Netzwerk-Hauptplugins für GGZ, IRC, SILC und die Kommandozeile
 <li>Etwa ein Dutzend Module, welche auf explizite oder implizite Kommandos reagieren
+<li>Script-fähig via Python, Perl, Ruby und Tcl
 <li>Kann ein paar spiele spielen (nach Einladung)
 </ul>
 <br>

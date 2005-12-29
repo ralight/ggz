@@ -15,13 +15,13 @@ Board game for 2 players.
 
 <i>ConnectX features</i><br>
 <ul>
-<li>Windows game client available
+<li>2 game clients available: ConnectX (Windows), GGZBoard (SDL)
 <li>AI opponent available
 </ul>
 <br>
 
 <i>ConnectX rules</i><br>
-Yet to be written down.
+ConnectX resembles the well-known 4-in-a-row game.
 
 <br><br>
 
@@ -38,8 +38,16 @@ No further information present.
 
 <img src="/pics/icons/game_windows.png">
 <i>Windows client: ConnectX</i><br>
+<a href="/games/connectx/"><i>No screenshot available</i></a>
+<!--
 <a href="/games/connectx/"><img src="/games/pics/connectx.png"></a>
-<br>
+-->
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: GGZBoard</i><br>
+<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
+<br><br>
 
 </td>
 </tr>

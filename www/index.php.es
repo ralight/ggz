@@ -33,7 +33,7 @@ La versión 0.0.12 de GGZ Gaming Zone ha sido lanzada el 01 de Octubre del 2005.
 
 </td><td valign="top">
 
-<a href="/releases/0.0.12/"><img src="/pics/splash/splash-0.0.12.png" border="0"></a>
+<a href="http://dev.ggzgamingzone.org/external.php"><img src="/pics/splash/yourgame.png" border="0"></a>
 
 </td>
 </tr>

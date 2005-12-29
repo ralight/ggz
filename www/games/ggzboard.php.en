@@ -22,15 +22,19 @@ Board game framework for 2-4 players.
 <ul>
 <li>SDL/python game client, based on Pygame
 <li>AI opponents available
-<li>multi-protocol game container: Chess, Checkers, Reversi, Go, Hnefatafl
-<li>single-player game engines: Ludo, Arimaa
+<li>multi-protocol game container: Chess, Checkers, Reversi, Go, Hnefatafl, ConnectX, Ludo, Arimaa
+<li>single-player mode for most of the games
+<li>user interface can be adapted with custom themes and background images
 <li>supports move hints, dice, piece selection and more!
 </ul>
 
 GGZBoards unifies several board games under one hood. Each game is a separate
 python module for the game logic, and either a local AI module or a network
-adapter module, or even both. The game servers for Checkers and Hnefatafl are also
-part of the GGZBoard source.
+adapter module, or even both.
+The game servers for Checkers, Hnefatafl, Ludo and Arimaa are also
+part of the GGZBoard source, all sharing a common Bogaprot core.
+The chess AI is shared with the GGZ chess server, and for Go the GNU Go engine is
+used locally.
 
 <br><br>
 
@@ -61,10 +65,13 @@ part of the GGZBoard source.
 <a href="/engines/hnefatafl/"><i>Engine: Hnefatafl</i></a>
 <br><br>
 
-<a href="/engines/ludo/"><i>Engine: Ludo</i></a>
+<a href="/engines/ludo/"><i>Engine: Ludo/Bogaprot</i></a>
 <br><br>
 
-<a href="/engines/arimaa/"><i>Engine: Arimaa</i></a>
+<a href="/engines/arimaa/"><i>Engine: Arimaa/Bogaprot</i></a>
+<br><br>
+
+<a href="/engines/connectx/"><i>Engine: ConnectX</i></a>
 <br><br>
 
 <a href="/gameservers/chess/"><i>Server: Chess</i></a>
@@ -80,6 +87,15 @@ part of the GGZBoard source.
 <br><br>
 
 <a href="/gameservers/hnefatafl/"><i>Server: Hnefatafl</i></a>
+<br><br>
+
+<a href="/gameservers/connectx/"><i>Server: ConnectX</i></a>
+<br><br>
+
+<a href="/gameservers/ludo/"><i>Server: Ludo</i></a>
+<br><br>
+
+<a href="/gameservers/arimaa/"><i>Server: Arimaa</i></a>
 <br><br>
 
 </td>

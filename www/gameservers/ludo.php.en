@@ -5,8 +5,8 @@
 <td>
 <font size="3">
 
-<b>ConnectX Server</b><br>
-Board game for 2 players.
+<b>Ludo Server</b><br>
+Board game for 2-4 players.
 <br>
 
 <table class="inner">
@@ -15,22 +15,24 @@ Board game for 2 players.
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Supports the <a href="/engines/connectx/">ConnectX</a> engine
+<li>Supports the <a href="/engines/ludo/">Ludo/Bogaprot</a> engine
 <li>Supports an AI player
-<li>Implemented in C
+<li>Implemented in Python (GGZBoard server)
 <li>GGZ is required (no standalone mode)
 </ul>
 
-A server implementing the ConnectX game, which provides basic GGZ support.
+This server makes use of the GGZBoard framework. It implements the Ludo
+game including an AI player.
+The Ludo server shares its protocol (Bogaprot) with other board game servers.
 
 <br><br>
 
 <i>GGZ game server support</i><br>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
-<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
-<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
 </td><td valign="top">
@@ -38,15 +40,7 @@ A server implementing the ConnectX game, which provides basic GGZ support.
 <i>Related pages:</i>
 <br><br>
 
-<a href="/engines/connectx/"><i>Engine: ConnectX</i></a>
-<br><br>
-
-<img src="/pics/icons/game_windows.png">
-<i>Windows client: ConnectX</i><br>
-<a href="/games/connectx/"><i>No screenshot available</i></a>
-<!--
-<a href="/games/connectx/"><img src="/games/pics/connectx.png"></a>
--->
+<a href="/engines/ludo/"><i>Engine: Ludo/Bogaprot</i></a>
 <br><br>
 
 <img src="/pics/icons/game_sdl.png">
