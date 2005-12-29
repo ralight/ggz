@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 7658 2005-12-12 11:47:24Z josef $
+ * $Id: game.c 7705 2005-12-29 11:53:14Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -31,6 +31,8 @@
  * A simple game can do without them, but their usage is strongly encouraged.
  */
 
+/* === Include files === */
+
 /* Site-specific configuration */
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -48,7 +50,11 @@
 
 /* Header including ggzdmod.h */
 #include "game.h"
+
+/* Auto-generated networking layer */
 #include "net.h"
+
+/* === Configuration of features === */
 
 /* The game supports people not on the table watching the game */
 #define GGZSPECTATORS /* do not undefine! */
@@ -63,18 +69,9 @@
 /* The game supports distinguishable named bots */
 #define GGZBOTHASNAME /* do not undefine */
 
-/* Tic-Tac-Toe protocol */
-/* Messages from server */
-#define TTT_MSG_SEAT     0
-#define TTT_MSG_PLAYERS  1
-#define TTT_MSG_MOVE     2
-#define TTT_MSG_GAMEOVER 3
-#define TTT_REQ_MOVE     4
-#define TTT_RSP_MOVE     5
-#define TTT_SND_SYNC     6
+/* === Tic-Tac-Toe protocol (otherwise now defined in net.h) === */
 
 /* Messages from client */
-#define TTT_SND_MOVE     0
 #define TTT_REQ_SYNC     1
 
 /* Move errors */
@@ -82,6 +79,8 @@
 #define TTT_ERR_TURN    -2
 #define TTT_ERR_BOUND   -3
 #define TTT_ERR_FULL    -4
+
+/* === Variables, types and functions === */
 
 /* Data structure for Tic-Tac-Toe-Game */
 struct ttt_game_t {
@@ -139,6 +138,8 @@ static char game_check_win(void);
 #ifdef GGZSAVEDGAMES
 static void game_save(char *fmt, ...);
 #endif
+
+/* === Implementation part === */
 
 /* Setup game state and board */
 void game_init(GGZdMod *ggzdmod)
@@ -198,12 +199,14 @@ static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event,
 		}
 #endif
 		game_next_move();
+		break;
 	default:
 		break;
 	}
 }
 
 
+/* Convenience function: returns whether all seats are full */
 static int seats_full(void)
 {
 	/* This calculation is a bit inefficient, but that's OK */
@@ -212,6 +215,8 @@ static int seats_full(void)
 	  && ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_ABANDONED) == 0;
 }
 
+
+/* Convenience function: returns whether all seats are empty */
 static int seats_empty(void)
 {
 	/* This calculation is a bit inefficient, but that's OK */
@@ -219,7 +224,9 @@ static int seats_empty(void)
 		&& ggzdmod_count_spectators(ttt_game.ggz) == 0;
 }
 
+
 #ifdef GGZSPECTATORS
+/* Callback for joining spectators */
 static void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event,
 					   const void *data)
 {
@@ -242,6 +249,7 @@ static void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event,
 	game_send_sync(spectator.fd);
 }
 
+/* Callback for leaving spectators */
 static void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event,
 					    const void *data)
 {
@@ -292,7 +300,7 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
 }
 
 
-/* Handle message from player */
+/* Handle message from player (via ggzcomm) */
 static void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event,
 				   const void *data)
 {
@@ -305,6 +313,7 @@ static void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event,
 	ggzcomm_network_main();
 }
 
+/* Callback for network messages (via ggzcomm) */
 static void game_network_data(int opcode)
 {
 	int num, fd;
@@ -326,6 +335,7 @@ static void game_network_data(int opcode)
 	}
 }
 
+/* Callback for network errors (via ggzcomm) */
 static void game_network_error(void)	
 {
 	ggzdmod_log(ttt_game.ggz, "Network error!");
@@ -411,11 +421,11 @@ static int game_send_move(int num, int move)
 		ggzdmod_log(ttt_game.ggz, "Sending player %d's move to player %d", num,
 			    opponent);
 
-			variables.player = num;
-			variables.move = move;
+		variables.player = num;
+		variables.move = move;
 
-			ggzcomm_set_fd(seat.fd);
-			ggzcomm_msgmove();
+		ggzcomm_set_fd(seat.fd);
+		ggzcomm_msgmove();
 	}
 	return 0;
 }
@@ -544,10 +554,12 @@ static int game_next_move(void)
 #endif
 		move = ai_findmove(variables.turn, difficulty, variables.space);
 		game_do_move(move);
-	}
-	else
-#endif
+	} else {
 		game_req_move(variables.turn);
+	}
+#else
+	game_req_move(variables.turn);
+#endif
 
 	return 0;
 }
@@ -567,6 +579,7 @@ static int game_req_move(int num)
 }
 
 
+/* Applying a move */
 static int game_do_move(int move)
 {
 	char victor;
@@ -603,12 +616,11 @@ static int game_do_move(int move)
 #ifdef GGZSAVEDGAMES
 	game_save("player%i move %i %i", variables.turn + 1, move / 3, move % 3);
 #endif
-	
+
 	if ( (victor = game_check_win()) < 0) {
 		variables.turn = (variables.turn + 1) % 2;
 		game_next_move();
-	}
-	else {
+	} else {
 		game_send_gameover(victor);
 		/* Notify GGZ server of game over */
 #ifdef GGZGAMERESUME
@@ -701,6 +713,7 @@ static char game_check_win(void)
 #ifdef GGZSAVEDGAMES
 #define TEMPLATE "savegame.XXXXXX"
 
+/* Saves the progress of a game */
 static void game_save(char *fmt, ...)
 {
 	int fd;

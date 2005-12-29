@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: game.c 7705 2005-12-29 11:53:14Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,7 +47,7 @@ struct connectx_game_t {
 	int optionsseat;
 };
 
-/* Escape protocol */
+/* ConnectX protocol */
 /* Messages from server */
 #define CONNECTX_MSG_SEAT     0
 #define CONNECTX_MSG_PLAYERS  1
@@ -73,7 +73,7 @@ struct connectx_game_t {
 #define CONNECTX_ERR_BOUND   -3
 #define CONNECTX_ERR_FULL    -4
 
-/* Escape game states */
+/* ConnectX game states */
 #define CONNECTX_STATE_INIT        0 /* Table has been started, no players joined */
 #define CONNECTX_STATE_OPTIONS     1 /* Options have been requested */
 #define CONNECTX_STATE_WAITING     2 /* Waiting for all players to join, options have been received */

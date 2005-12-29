@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 28th June 2001
  * Desc: Game functions
- * $Id: game.h 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.h 7705 2005-12-29 11:53:14Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,12 +44,12 @@ void game_handle_ggz_spectator(GGZdMod *ggz,
 void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, const void *data);
 
 
-/* Escape game events */
+/* ConnectX game events */
 #define CONNECTX_EVENT_LAUNCH      0
 #define CONNECTX_EVENT_JOIN        1
 #define CONNECTX_EVENT_LEAVE       2
 #define CONNECTX_EVENT_OPTIONS     3
-#define CONNECTX_EVENT_MOVE	   4
+#define CONNECTX_EVENT_MOVE	       4
 
 #define	dtEmpty    1
 #define	dtPlayer1  2

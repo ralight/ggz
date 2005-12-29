@@ -5,9 +5,7 @@
 #include <stdlib.h>
 #include <ggz.h>
 
-#define ggz_seat_bot 2
-#define ggz_seat_player 3
-#define ggz_seat_open 1 /* NEW */
+#define ggz__seat_open 1
 
 static notifier_func_type notifier_func = NULL;
 static error_func_type error_func = NULL;
@@ -44,13 +42,11 @@ void ggzcomm_msgplayers(void)
 
 	ret = ggz_write_int(fd, msgplayers);
 	if(ret < 0) ggzcomm_error();
-	/*if(2 > 0) ggzcomm_error();*/
 	for(i1 = 0; i1 < 2; i1++)
 	{
 		ret = ggz_write_int(fd, variables.seat[i1]);
 		if(ret < 0) ggzcomm_error();
-		if(variables.seat[i1] != ggz_seat_open)
-		/*if((variables.seat[i1] == ggz_seat_player) || (variables.seat[i1] == ggz_seat_bot))*/
+		if((variables.seat[i1] != ggz__seat_open))
 		{
 			ret = ggz_write_string(fd, variables.name[i1]);
 			if(ret < 0) ggzcomm_error();
@@ -96,7 +92,6 @@ void ggzcomm_sndsync(void)
 	if(ret < 0) ggzcomm_error();
 	ret = ggz_write_char(fd, variables.turn);
 	if(ret < 0) ggzcomm_error();
-	/*if(9 > 0) ggzcomm_error();*/
 	for(i1 = 0; i1 < 9; i1++)
 	{
 		ret = ggz_write_char(fd, variables.space[i1]);

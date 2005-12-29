@@ -47,7 +47,7 @@ int main(void)
 	(void) ggzdmod_loop(ggz);
 	(void) ggzdmod_disconnect(ggz);
 	ggzdmod_free(ggz);
-	
+
 	return 0;
 }
 
