@@ -1,14 +1,31 @@
 <?xml version="1.0"?>
-<ggzcomm engine="Hastings" version="2">
+<ggzcomm engine="Hastings" version="4">
+	<definitions>
+		<def name="snd_move" value="0"/>
+		<def name="req_sync" value="1"/>
+		<def name="req_init" value="2"/>
+		<def name="snd_map" value="3"/>
+		<def name="msg_seat" value="0"/>
+		<def name="msg_players" value="1"/>
+		<def name="msg_move" value="2"/>
+		<def name="msg_gameover" value="3"/>
+		<def name="req_move" value="4"/>
+		<def name="rsp_move" value="5"/>
+		<def name="snd_sync" value="6"/>
+		<def name="msg_maps" value="7"/>
+	</definitions>
 	<client>
 		<event name="snd_move">
-			<data name="move_src_x" type="int"/>
-			<data name="move_src_y" type="int"/>
-			<data name="move_dst_x" type="int"/>
-			<data name="move_dst_y" type="int"/>
+			<data name="snd_move_src_x" type="int"/>
+			<data name="snd_move_src_y" type="int"/>
+			<data name="snd_move_dst_x" type="int"/>
+			<data name="snd_move_dst_y" type="int"/>
 		</event>
 		<event name="req_init"/>
 		<event name="req_sync"/>
+		<event name="snd_map">
+			<data name="snd_map_map" type="string"/>
+		</event>
 	</client>
 	<server>
 		<event name="rsp_move">
@@ -41,15 +58,36 @@
 		<event name="msg_seat">
 			<data name="seat" type="int"/>
 		</event>
-		<event name="msg_players"/>
+		<event name="msg_players">
 			<data name="playernum" type="int"/>
 			<sequence count="playernum">
 				<data name="type" type="int"/>
 				<eval>
-					<condition name="type" result="ggz_seat_player"/>
-					<condition name="type" result="ggz_seat_bot"/>
+					<condition name="type" result="ggz:seat_player"/>
+					<condition name="type" result="ggz:seat_bot"/>
 					<data name="name" type="string"/>
 				</eval>
+			</sequence>
+		</event>
+		<event name="msg_maps">
+			<data name="count" type="int"/>
+			<sequence count="count">
+				<data name="title" type="string"/>
+				<data name="author" type="string"/>
+				<data name="version" type="string"/>
+				<data name="graphics" type="string"/>
+				<data name="width" type="int"/>
+				<data name="height" type="int"/>
+				<sequence count="height">
+					<sequence count="30">
+						<data name="map_map" type="byte"/>
+					</sequence>
+				</sequence>
+				<sequence count="height">
+					<sequence count="30">
+						<data name="map_boardmap" type="byte"/>
+					</sequence>
+				</sequence>
 			</sequence>
 		</event>
 	</server>

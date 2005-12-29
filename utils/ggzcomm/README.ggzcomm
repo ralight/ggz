@@ -1,0 +1,28 @@
+GGZComm - GGZ communication protocol generator
+----------------------------------------------
+
+GGZComm uses XML protocol descriptions (PDL files) to generate
+source code for a variety of programming languages and networking
+libraries in order to produce code which integrates the game network
+protocol with the programming language in procedural or object-oriented
+style.
+PDL files are similar to IDL (interface description language) files, except
+that server->client communication is part of it also, and it is generally
+more friendly towards GGZ game developers.
+
+The ggzcommgen executable is written in Ruby, so the interpreter is needed
+for source code generation, however it's not needed for using the generated
+source code.
+
+Read DESIGN to find out about the initial design document, and
+protocol-format.txt for an up-to-date format description.
+Furthermore, read the protocols section in the GGZ documentation, which is
+also available online at:
+
+http://www.ggzgamingzone.org/docs/games/protocols/
+
+To generate the source code, you might start with the process which is
+currently in use with the Tic-Tac-Toe game server:
+
+./ggzcommgen -i easysock -l c -r server tictactoe
+

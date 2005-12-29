@@ -5,10 +5,15 @@
 # Published under GNU GPL conditions
 
 # Version number
-$version = 0.2
+$version = 0.3
 
 # Use xml parsing library
 require 'xmlparser'
+
+# Helper method to return canonical (mangled) variable names
+def varname(s)
+	return s.sub(":", "__")
+end
 
 # Storage class for a single <event> and its contents
 # Contains a tree of data definitions, sequences and conditions
@@ -54,6 +59,10 @@ class GGZCommEvent
 
 	def datalist
 		return @datalist
+	end
+
+	def evallist
+		return @evallist
 	end
 
 	def decl(definition)
@@ -162,7 +171,7 @@ class GGZCommEvent
 					x = x + indent + "\t{\n"
 					index = "[" + vname + "]"
 				when "%ENDSEQ"
-					seq -= 0
+					seq -= 1
 					count = 0
 					x = x + indent + "}\n"
 					index = ""
@@ -183,7 +192,7 @@ class GGZCommEvent
 						if i > 0 then
 							x = x + " || "
 						end
-						x = x + "(variables." + name + index + " " + type + " " + result + ")"
+						x = x + "(variables." + name + index + " " + type + " " + varname(result) + ")"
 						i += 1
 					end
 					x = x + ")\n"
@@ -256,7 +265,7 @@ class GGZCommEvent
 					x = x + indent + "\t{\n"
 					index = "[" + vname + "]"
 				when "%ENDSEQ"
-					seq -= 0
+					seq -= 1
 					count = 0
 					x = x + indent + "}\n"
 					index = ""
@@ -277,7 +286,7 @@ class GGZCommEvent
 						if i > 0 then
 							x = x + " || "
 						end
-						x = x + "(" + name + index + " " + type + " " + result + ")"
+						x = x + "(" + name + index + " " + type + " " + result(result) + ")"
 						i += 1
 					end
 					x = x + ")\n"
@@ -307,12 +316,10 @@ class GGZCommEvent
 		x = ""
 		seq = 0
 
-		esname = "int"
 		data = @name
 		if @section == role then
-			x += "\t\tret = ggz_write_" + esname + "(fd, " + data + ")\n"
-			x += "\t\tif ret < 0:\n"
-			x += "\t\t\traise Exception()\n"
+			x += "\t\t# assign fd??\n"
+			x += "\t\tself.sendbyte(" + data + ")\n"
 		end
 
 		myvars = Hash.new
@@ -336,11 +343,11 @@ class GGZCommEvent
 					end
 					vname = "i" + seq.to_s
 					#x = x + indent + "\tif " + count.to_s + " > " + maxcount.to_s + ":\n"
-					x = x + indent + "\t\traise Exception()\n"
+					#x = x + indent + "\t\traise Exception()\n"
 					x = x + indent + "\tfor " + vname + " in range(0, " + count.to_s + "):\n"
 					index = "[" + vname + "]"
 				when "%ENDSEQ"
-					seq -= 0
+					seq -= 1
 					count = 0
 					index = ""
 				when "%EVAL"
@@ -360,7 +367,7 @@ class GGZCommEvent
 						if i > 0 then
 							x = x + " or "
 						end
-						x = x + "(self." + name + index + " " + type + " " + result + ")"
+						x = x + "(self." + name + index + " " + type + " " + varname(result) + ")"
 						i += 1
 					end
 					x = x + ":\n"
@@ -368,14 +375,28 @@ class GGZCommEvent
 					seq -= 1
 				else
 					myvars[data] = 1
-					esname = type
+					#esname = type
 					if @section == role then
-						x += indent + "\tret = ggz_write_" + esname + "(fd, self." + data + index + ")\n"
+						x += indent + "\t# assign fd???\n"
+						case type
+							when "string"
+								x += indent + "\tself.sendstring(self." + data + index + ")\n"
+							when "byte"
+								x += indent + "\tself.sendchar(self." + data + index + ")\n"
+							when "int"
+								x += indent + "\tself.sendbyte(self." + data + index + ")\n"
+						end
 					else
-						x += indent + "\tret = ggz_read_" + esname + "(fd, self." + data + index + ")\n"
+						x += indent + "\t# assign fd???\n"
+						case type
+							when "string"
+								x += indent + "\tself." + data + index + " = self.getstring()\n"
+							when "byte"
+								x += indent + "\tself." + data + index + " = self.getchar()\n"
+							when "int"
+								x += indent + "\tself." + data + index + " = self.getbyte()\n"
+						end
 					end
-					x += indent + "\tif ret < 0:\n"
-					x += indent + "\t\traise Exception()\n"
 			end
 		end
 
@@ -399,6 +420,12 @@ class GGZComm
 		@clientlinks = Hash.new
 		@serverlinks = Hash.new
 		@verbose = false
+
+		@constants["ggz:seat_open"] = "1"
+		@constants["ggz:seat_bot"] = "2"
+		@constants["ggz:seat_player"] = "3"
+		@constants["ggz:seat_reserved"] = "4"
+		@constants["ggz:seat_abandoned"] = "5"
 	end
 
 	def handle_toplevel(data)
@@ -676,13 +703,46 @@ class GGZComm
 		end
 	end
 
+	# Convenience method: returns whether a string is a number or not
+	def isnum(s)
+		if s == "0" or s.to_i != 0 then
+			return true
+		else
+			return false
+		end
+	end
+
 	# Output all internal structures in a certain format
 	def output(format, library, role)
+		refconstants = Hash.new
+
 		@eventlist.each do |event|
+			if isnum(event.name) then
+				next
+			end
 			if not @constants[event.name] then
 				error "Missing value definition for '" + event.name + "'"
+			else
+				refconstants[event.name] = @constants[event.name]
+			end
+
+			evallist = event.evallist
+			if not evallist then
+				next
+			end
+			evallist.each do |name, result, type|
+				if isnum(result) then
+					next
+				end
+				if not @constants[result] then
+					error "Missing value definition for '" + result + "'"
+				else
+					refconstants[result] = @constants[result]
+				end
 			end
 		end
+
+		@constants = refconstants
 
 		if role == "client" then
 			links = @clientlinks
@@ -698,6 +758,7 @@ class GGZComm
 		@eventlist.each do |event|
 			event.datalist.each do |name, type|
 				next if name == '%SEQ'
+				next if name == '%EVAL'
 				#if checkvars[name] and checkvars[name] != type then
 				if checkvars[name] then
 					error "Variable of name '" + name + "' is already in use."
@@ -773,7 +834,7 @@ class GGZComm
 				f.puts ""
 				@constants.each do |name, value|
 					next if not value
-					f.puts "#define " + name + " " + value
+					f.puts "#define " + varname(name) + " " + value
 				end
 			end
 			f.puts ""
@@ -941,7 +1002,7 @@ class GGZComm
 				f.puts ""
 				@constants.each do |name, value|
 					next if not value
-					f.puts "#define " + name + " " + value
+					f.puts "#define " + varname(name) + " " + value
 				end
 			end
 			f.puts ""
@@ -1005,61 +1066,92 @@ class GGZComm
 			f.puts "### Generated by GGZComm/ruby version " + $version.to_s
 			f.puts "### Protocol '" + @engine + "', version '" + @version + "'"
 			f.puts ""
+			f.puts "import socket"
+			f.puts ""
 			f.puts "class " + @engine + ":"
 			if @constants.length > 0 then
-				f.puts ""
+				f.puts "\tdef __init__(self):"
 				@constants.each do |name, value|
 					next if not value
-					f.puts "\t" + name + " = " + value
+					f.puts "\t\tself." + varname(name) + " = " + value
 				end
 			end
 			f.puts ""
-			f.puts "\tnotifier = None"
-			f.puts "\tfd = -1"
-			f.puts "\tret = 0"
-			f.puts "\trequirelink = 0"
-			f.puts "\tnextlink = 0"
+			@eventlist.each do |event|
+				event.datalist.each do |data, type, option|
+					next if data == '%SEQ'
+					next if data == '%ENDSEQ'
+					next if data == '%EVAL'
+					next if data == '%ENDEVAL'
+					f.puts "\t\tself." + data + " = None"
+				end
+			end
+			f.puts ""
+			f.puts "\t\tself.notifier = None"
+			f.puts "\t\tself.fd = -1"
+			f.puts "\t\tself.socket = -1"
+			f.puts "\t\tself.ret = 0"
+			f.puts "\t\tself.requirelink = 0"
+			f.puts "\t\tself.nextlink = 0"
 			f.puts ""
 			@eventlist.each do |event|
 				if event.section != role then
 					#f.print "static "
 				end
-				f.puts "\tdef ggzcomm_" + event.name + "():"
+				f.puts "\tdef ggzcomm_" + event.name + "(self):"
 				f.puts event.network_python(role)
 				if links[event.name] then
 					f.puts ""
-					f.puts "\t\trequirelink = 1"
-					f.puts "\t\tnextlink = " + links[event.name]
+					f.puts "\t\tself.requirelink = 1"
+					f.puts "\t\tself.nextlink = " + links[event.name]
 				end
 				f.puts ""
 			end
-			f.puts "\tdef ggzcomm_network_main():"
-			f.puts "\t\topcode = 0"
-			f.puts "\t\t#ggz_read_int(&opcode)"
+			f.puts "\tdef getbyte(self):"
+			f.puts "\t\topstr = self.socket.recv(4)"
+			f.puts "\t\tif len(opstr) < 4:"
+			f.puts "\t\t\traise Exception()"
+			f.puts "\t\tc1 = ord(opstr[0])"
+			f.puts "\t\tc2 = ord(opstr[1])"
+			f.puts "\t\tc3 = ord(opstr[2])"
+			f.puts "\t\tc4 = ord(opstr[3])"
+			f.puts "\t\top = c1 * 256 * 256 * 256 + c2 * 256 * 256 + c3 * 256 + c4"
+			f.puts "\t\treturn socket.ntohl(op)"
 			f.puts ""
-			f.puts "\t\tif(requirelink):"
-			f.puts "\t\t\tif opcode != nextlink:"
+			f.puts "\tdef getstring(self):"
+			f.puts "\t\tlength = self.getbyte()"
+			f.puts "\t\topstr = self.socket.recv(length)"
+			f.puts "\t\tif len(opstr) < length:"
+			f.puts "\t\t\traise Exception()"
+			f.puts "\t\treturn opstr"
+			f.puts ""
+			f.puts "\tdef ggzcomm_network_main(self):"
+			f.puts "\t\topcode = self.getbyte()"
+			f.puts ""
+			f.puts "\t\tif(self.requirelink):"
+			f.puts "\t\t\tif opcode != self.nextlink:"
 			f.puts "\t\t\t\traise Exception()"
-			f.puts "\t\t\trequirelink = 0"
+			f.puts "\t\t\tself.requirelink = 0"
 			f.puts ""
 			@eventlist.each do |event|
 				if event.section != role
 					f.puts "\t\tif opcode == " + event.name + ":\n"
-					f.puts "\t\t\tggzcomm_" + event.name() + "()\n"
+					f.puts "\t\t\tself.ggzcomm_" + event.name() + "()\n"
 				end
 			end
 			f.puts ""
-			f.puts "\tdef ggzcomm_set_notifier_callback(cb):"
-			f.puts "\t\tnotifier = cb"
+			f.puts "\tdef ggzcomm_set_notifier_callback(self, notifier):"
+			f.puts "\t\tself.notifier = notifier"
 			f.puts ""
-			f.puts "\tdef ggzcomm_set_fd(usefd):"
-			f.puts "\t\tfd = usefd"
+			f.puts "\tdef ggzcomm_set_fd(self, fd):"
+			f.puts "\t\tself.fd = fd"
+			f.puts "\t\tself.socket = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)"
 			f.puts ""
 			f.close
 		else
 			str = "Unknown output format and library combination" + "\n"
-			str += "Format was: '" + format + "', only 'c' and 'c++' are allowed" + "\n"
-			str += "Library was: '" + library + "', only 'easysock' and 'qt' are allowed"
+			str += "Format was: '" + format + "', only 'c' and 'c++' and 'python' are allowed" + "\n"
+			str += "Library was: '" + library + "', only 'easysock' and 'qt' and 'socket' are allowed"
 			error str
 		end
 	end
