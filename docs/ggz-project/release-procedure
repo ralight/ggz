@@ -9,6 +9,7 @@ Quite some time before release
    individual program documentation, and also generated docs (doxygen).
 [] check TODO files
 [] regression tests: anything gotten worse since last release?
+[] check shared file consistency (run synchroniser.py)
 [] update translations (i18n), see separate document 'Internationalization'
 [] inform 3rd party game authors
 [] hunt bugs, keep the number of new ones low

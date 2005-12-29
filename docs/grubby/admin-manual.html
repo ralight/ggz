@@ -20,8 +20,8 @@ th {text-align: left}
 <h2>Grubby Administration Manual</h2>
 
 <small>
-<i>Revision: 0.5</i><br>
-<i>Date: 26.03.2005</i><br>
+<i>Revision: 0.6</i><br>
+<i>Date: 28.12.2005</i><br>
 <i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
 </small>
 
@@ -62,6 +62,7 @@ optional.
 <pre>
 [preferences]
 name = Grubby # Bot name
+#password = XXX # Password for registered grubby names
 language = en # Bot default language
 autojoin = 0  # Channel/room to join after login
 owner = you   # Owner nickname
@@ -104,16 +105,21 @@ features, which are ignored by the other implementations.
 
 <p>
 The owner of grubby, as specified in the configuration, may issue some more commands
-than the other players. Here's a list of what the admin can do:
+than the other players. Here's a list of what the admin can do in relation to the
+loadable modules:
 <ul>
 <li>grubby insmod (modulename) - Inserts a plugin, like <tt>self</tt> or <tt>badword</tt>
 <li>grubby rmmod (modulename) - Unloads a plugin
 <li>grubby reload (modulename) - A combination of the above
 <li>grubby modules - List all loaded plugins
-<li>grubby goto (roomnumber/channelname) - Let grubby join the given room
-<li>grubby log (on|off) - Control whether the bot should log messages or not
 </ul>
 The reload command ensures that the latest version of a module is in memory.
+In addition, the following administrative commands are available:
+<ul>
+<li>grubby goto (roomnumber/channelname) - Let grubby join the given room
+<li>grubby logging (on|off) - Control whether the bot should log messages or not
+<li>grubby announce (message) - Announce an administrative message
+</ul>
 </p>
 
 <h3>Log files</h3>
@@ -141,13 +147,38 @@ Whereever available, execution via the <tt>embed</tt> module or even a native pl
 (shared library) should be preferred.
 </p>
 
+<p>
+The configuration of the exec module happens through the file
+$HOME/.ggz/grubby/modexec.rc.
+<blockquote>
+<pre>
+[programs]
+programs = translate
+translate = /usr/bin/mytranslator --mode=grubby
+</pre>
+</blockquote>
+</p>
+
 <h4>Embed module</h4>
 
 <p>
-Similar to <tt>exec</tt>, save it embeds the scripts directly. This works for python,
-perl and ruby so far and requires that support for those languages has been enabled
-at compile time.
+Similar to <tt>exec</tt>, save it embeds the scripts directly. This works for
+Python, Perl, Ruby and Tcl so far and requires that support for those languages
+has been enabled at compile time.
 One advantage is that all commands are executed much faster.
+</p>
+
+<p>
+The configuration of the embed module happens through the file
+$HOME/.ggz/grubby/modembed.rc, similar to the <tt>exec</tt> module, but with the
+identifier being scripts instead of programs.
+<blockquote>
+<pre>
+[scripts]
+scripts = test
+test = /tmp/test.tcl
+</pre>
+</blockquote>
 </p>
 
 <h4>Games module</h4>
@@ -162,7 +193,9 @@ except that their frontend is set to 'guru'.
 
 <p>
 The following scripts are distributed along with grubby (but others can easily
-be added). The corresponding interpreters should be installed.
+be added). The corresponding interpreters should be installed to use them in
+<tt>exec</tt>, or the embedded interpreter support should be compiled in to use
+them in the <tt>embed</tt> module.
 </p>
 
 <h4>News module script (rdf.pl)</h4>
