@@ -5,6 +5,7 @@
 
 from Numeric import *
 import random
+import os
 
 class Game:
 	def __init__(self):
@@ -36,12 +37,24 @@ class Game:
 
 		self.selection = None
 
+		self.runninggo = None
+		self.pin = None
+		self.pout = None
+
 	# !!!
 	def selectpiece(self, placepos):
 		return
 
 	def init(self, path):
 		self.datapath = path
+
+		if not self.runninggo:
+			print "Launch local AI!"
+			self.runninggo = 1
+			(self.pout, self.pin) = os.popen2("gnugo --mode gtp")
+			#print pin
+			#print pout
+			# FIXME: detect errors and reset self.runninggo to None then
 
 	def name(self):
 		return _("Go")
@@ -82,6 +95,30 @@ class Game:
 		valid = self.validatemove("w", topos)
 
 		if valid:
+			if self.runninggo:
+				print "<<< (write)"
+				movestr = chr(x + 65) + str(y)
+				self.pout.write("play white " + movestr + "\n")
+				self.pout.flush()
+				print "---"
+				answer = None
+				accepted = 0
+				while not answer:
+					s = self.pin.readline()
+					print ">>>", s
+					s = s.strip()
+					if len(s) > 0:
+						if s[0] == "=":
+							answer = 1
+							accepted = 1
+						elif s[0] == "?":
+							answer = 1
+							accepted = 0
+				print "done!"
+				print "Move accepted?", accepted
+				valid = accepted
+
+		if valid:
 			print "TRYMOVE", topos
 			ret = 1
 			self.lastmove = "w"
@@ -89,12 +126,37 @@ class Game:
 
 	def aimove(self):
 		ret = 0
+		move = None
+
+		if self.runninggo:
+			print "<<< (write)"
+			self.pout.write("genmove black\n")
+			self.pout.flush()
+			print "---"
+			answer = None
+			while not answer:
+				s = self.pin.readline()
+				print ">>>", s
+				s = s.strip()
+				if len(s) > 0:
+					if s[0] == "=":
+						w = ord(s[2]) - 65
+						h = int(s[3:])
+						move = (w, h)
+						answer = 1
+						ret = 1
+					elif s[0] == "?":
+						answer = 1
+						ret = 0
+			print "done!"
+			print "AI successful?", ret
 
 		if ret == 0:
 			self.isover = 1
 		else:
+			print "AI moves to", move
 			self.lastmove = "b"
-		return (ret, None, None)
+		return (ret, None, move)
 
 	def domove(self, frompos, topos):
 		if self.lastmove == "":
@@ -160,7 +222,7 @@ class Game:
 		return self.isover
 
 	def toggleplayer(self):
-		pass
+		self.turnplayer = (self.turnplayer + 1) % self.players
 
 ggzboardgame = Game()
 

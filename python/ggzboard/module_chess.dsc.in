@@ -2,7 +2,7 @@
 [ModuleInfo]
 Name = GGZBoard Chess
 Author = Josef Spillner
-Version = 0.0.2
+Version = 0.0.3
 ProtocolEngine = Chess
 ProtocolVersion = 3
 CommandLine = @prefix@/bin/ggzboard --ggz --game chess

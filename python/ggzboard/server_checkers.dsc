@@ -3,13 +3,14 @@ Author = Josef Spillner
 Description = Checkers Server
 Homepage = http://www.ggzgamingzone.org/games/checkers/
 Name = Checkers
-Version = 0.0.1
+Version = 0.0.2
 
 [LaunchInfo]
 ExecutablePath = server_checkers.py --ggz
 
 [Protocol]
 Engine = Checkers
+#Engine = Bogaprot-Checkers
 Version = 1
 
 [TableOptions]

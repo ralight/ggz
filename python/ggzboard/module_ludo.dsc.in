@@ -1,0 +1,10 @@
+# GGZBoard game client description file
+[ModuleInfo]
+Name = GGZBoard Ludo
+Author = Josef Spillner
+Version = 0.0.3
+ProtocolEngine = Bogaprot-Ludo
+ProtocolVersion = 1
+CommandLine = @prefix@/bin/ggzboard --ggz --game madn
+Frontend = sdl
+Homepage = http://www.ggzgamingzone.org/games/ludo/

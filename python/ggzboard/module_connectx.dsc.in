@@ -1,0 +1,10 @@
+# GGZBoard game client description file
+[ModuleInfo]
+Name = GGZBoard ConnectX
+Author = Josef Spillner
+Version = 0.0.3
+ProtocolEngine = ConnectX
+ProtocolVersion = 2
+CommandLine = @prefix@/bin/ggzboard --ggz --game connectx
+Frontend = sdl
+Homepage = http://www.ggzgamingzone.org/games/ggzboard/

@@ -2,8 +2,9 @@
 [ModuleInfo]
 Name = GGZBoard Checkers
 Author = Josef Spillner
-Version = 0.0.2
+Version = 0.0.3
 ProtocolEngine = Checkers
+#ProtocolEngine = Bogaprot-Checkers
 ProtocolVersion = 1
 CommandLine = @prefix@/bin/ggzboard --ggz --game checkers
 Frontend = sdl

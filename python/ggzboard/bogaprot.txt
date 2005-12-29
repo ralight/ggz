@@ -1,0 +1,162 @@
+Bogaprot: a unified board game protocol
+---------------------------------------
+
+Since GGZBoard supports so many board games which are similar in nature,
+it is only logical to try a unified approach on the network communication
+protocol between the board game servers and clients, unless there are
+specialised protocols available already (i.e. xboard for Chess, GMP for Go).
+
+Bogaprot is therefore to be used for Hnefatafl, Checkers, Ludo and Arimaa,
+whereas Chess, Go, ConnectX and Reversi implement existing protocols used
+throughout GGZ.
+
+Bogaprot is an opcode-based protocol, which is fully defined using a GGZComm
+protocol definition file in XML format, so that the source code can be created
+automatically using ggzcommgen, and debugging might be enabled using an
+automatic conversion to text mode in the future.
+
+Structure
+---------
+
+Bogaprot consists of messages, each of which is defined by an opcode, and
+followed by zero or more fields of data. For simplicity reason, the data types
+in use are integer and string only, where string is a null-terminated array
+prepended by an integer containing the string's length (including the null
+byte). The string format is considered to be encoded in utf-8 by default.
+
+The handshake contains the game module name and a compatibility version
+number. It is always performed before a game starts. When running on GGZ,
+the handshake can be omitted, as this information is already present.
+
+Messages
+--------
+
+[REQ_HANDSHAKE] (client->server)
+  - string: game/protocol/engine name
+  - int: protocol version
+
+  The client sends a handshake to the server.
+
+[RSP_HANDSHAKE] (server->client)
+  - int: status
+  - (string: message)
+
+  The server replies to the handshake message.
+  If status is zero, then the session was opened successfully.
+  Otherwise, the error message tells about the problem.
+
+[MSG_SEAT] (server->client)
+  - int: seat number
+
+  The server informs the client about its own seat number.
+  Usually this is sent only at the beginning of a game.
+
+[MSG_PLAYERS] (server->client)
+  - int: number of seats
+  - loop over all seats:
+    - int: type
+    - (string: name)
+
+  For each seat, the assignment is sent. Unless the seat is
+  still open, the name of the occupying player or bot is also
+  sent.
+
+[MSG_START] (server->client)
+
+  Indicates that the game can start.
+  For GGZ games, this means transitioning from the WAITING to the PLAYING
+  state.
+
+[REQ_MOVE] (server->client)
+  - int: seat
+
+  Indicates that the client at the specified seat should move a piece.
+  A client should compare this with the seat number received in the beginning
+  of the game.
+
+[RSP_MOVE] (server->client)
+  - int: status
+  - (string: message)
+
+  Tells about the success of the move, and in case that the status is
+  not equal to zero, an error message is made available.
+  This command is sent until a valid move was received.
+
+[MSG_MOVE] (both directions)
+  - int: source position
+  - int: destination position
+  - (string: type)
+
+  Refers to a move of a piece.
+  The position numbers are calculated by the formula y * width + x,
+  where (x, y) is the position and width is the board width.
+  A client's own move is also echoed back using this message.
+  If no destination position is given, the piece is taken away from the
+  board. If however no source position is given, a string containing
+  information about the type of the piece is added, and the piece is
+  put onto the board.
+  A negative position value means that the position is not given.
+
+[MSG_DICE] (server->client)
+  - int: value
+
+  Indicates that a dice has been rolled which had the given value.
+  If multiple such messages arrive during one turn, multiple dice are in
+  use or a dice is rolled multiple times.
+
+[MSG_GAMEOVER] (server->client)
+  - int: winner
+
+  Indicates that the game is over and a winner has been determined.
+  In the case of a draw, the winner variable carries a negative value.
+
+Appendix: values
+----------------
+
+REQ_HANDSHAKE: 101
+RSP_HANDSHAKE: 102
+MSG_SEAT:      103
+MSG_PLAYERS:   104
+MSG_START:     105
+REQ_MOVE:      106
+RSP_MOVE:      107
+MSG_MOVE:      108
+MSG_DICE:      109
+MSG_GAMEOVER:  110
+
+Appendix: error messages
+------------------------
+
+Possible error messages for the server responses are listed here:
+
+[RSP_HANDSHAKE]:
+ - "game engine not supported"
+ - "version out of date"/"version too new"
+ - "server overload, try again later"
+
+[RSP_MOVE]:
+ - "piece of type 'rook' is not available for placement"
+ - "movement out of bounds"
+ - "cannot move to field which is occupied by another piece of yours"
+ - "cannot move, must finish placements first"
+ - "not your piece"
+
+Appendix: GGZBoard architecture
+-------------------------------
+
+For GGZBoard, Bogaprot implementations exist for both the client and the
+server side. They are designed so that they could be auto-generated in the
+future using GGZComm. They are, however, tied to ggz(d)mod instead of just
+providing send/receive functions, so another abstraction layer may be
+introduced.
+Also, NetworkBase depends on ggzmod right now, parts of which should move
+into the BogaprotClient class (but then the non-bogaprot clients need an
+alternative).
+
+NetworkBase (based on python sockets)
+  -> BogaprotServer (with ggzdmod)
+     -> LudoServer server
+  -> BogaprotClient (with ggzmod)
+     -> Network object
+	    -> GGZBoard client
+

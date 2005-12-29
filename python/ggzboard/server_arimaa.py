@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# Server for the Checkers game
-# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Server for the Arimaa game
+# Copyright (C) 2005 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 from Numeric import *
@@ -14,7 +14,7 @@ import gettext
 gettext.install("ggzpython", None, 1)
 
 import ggzdmod
-from module_checkers import *
+from module_arimaa import *
 from ggzboard_net import *
 
 class Server(NetworkBase):
@@ -89,8 +89,8 @@ def hook_data (num, type, name, fd):
 		print " + ", fromposval, toposval
 		# TODO: move validity check
 		# TODO: send to all players
-		frompos = (fromposval % 8, fromposval / 8)
-		topos = (toposval % 8, toposval / 8)
+		frompos = (fromposval % 9, fromposval / 9)
+		topos = (toposval % 9, toposval / 9)
 		if ggzboardgame.validatemove("w", frompos, topos):
 			ggzboardgame.domove(frompos, topos)
 			net.sendbyte(net.MSG_MOVE)
@@ -102,8 +102,8 @@ def hook_data (num, type, name, fd):
 			if ret:
 				(x, y) = frompos
 				(x2, y2) = topos
-				fromposval = y * 8 + x
-				toposval = y2 * 8 + x2
+				fromposval = y * 9 + x
+				toposval = y2 * 9 + x2
 				ggzboardgame.domove(frompos, topos)
 				net.sendbyte(net.MSG_MOVE)
 				net.sendbyte(fromposval)

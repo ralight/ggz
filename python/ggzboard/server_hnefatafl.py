@@ -10,6 +10,9 @@ import random
 import os, pwd
 import re
 
+import gettext
+gettext.install("ggzpython", None, 1)
+
 import ggzdmod
 from module_hnefatafl import *
 from ggzboard_net import *

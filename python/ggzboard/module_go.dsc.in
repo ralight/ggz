@@ -2,7 +2,7 @@
 [ModuleInfo]
 Name = GGZBoard Go
 Author = Josef Spillner
-Version = 0.0.2
+Version = 0.0.3
 ProtocolEngine = GMP
 ProtocolVersion = 1
 CommandLine = @prefix@/bin/ggzboard --ggz --game go

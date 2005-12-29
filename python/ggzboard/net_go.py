@@ -15,7 +15,6 @@ class NetworkInfo:
 		self.playerturn = -1
 		self.playernames = None
 		self.modified = 0
-		self.playernum = -1
 
 class Network(NetworkBase, NetworkInfo):
 	def __init__(self):

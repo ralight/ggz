@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = Ludo
+Description = Traditional four-player game with dice
+GameType = Ludo
+MaxPlayers = 50
+MaxTables = 10
+

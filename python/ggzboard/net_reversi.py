@@ -14,7 +14,6 @@ class NetworkInfo:
 		self.playerturn = -1
 		self.playernames = None
 		self.modified = 0
-		self.playernum = -1
 
 #		self.state = None
 #		self.returnvalue = -1

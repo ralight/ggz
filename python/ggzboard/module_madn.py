@@ -317,6 +317,12 @@ class Game:
 		print "####################################### AI MOVE dice=", self.lastdice
 		turncolours = ("y", "b", "r", "g")
 		turncolour = turncolours[self.turnplayer]
+
+		if not self.lastdice:
+			print "ERROR - no dice has been rolled, using value 1"
+			self.lastdice = 1
+			# FIXME: receive from network, and disallow otherwise
+
 		if self.lastdice == 1:
 			for depot in self.depots[turncolour]:
 				ret = self.trymove(depot, self.starts[turncolour])
@@ -423,6 +429,11 @@ class Game:
 
 		self.boardhints = (None)
 		self.boardhints = resize(self.boardstyle, (self.width, self.height))
+
+		if not self.lastdice:
+			print "ERROR - no dice has been rolled, using value 1"
+			self.lastdice = 1
+			# FIXME: receive from network, and disallow otherwise
 
 		field = self.board[y][x]
 		if field:

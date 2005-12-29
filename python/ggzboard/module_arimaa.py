@@ -143,7 +143,9 @@ class Game:
 		else:
 			if self.selected:
 				if self.selected in self.piecelist["gold"]:
-					valid = 1
+					(x, y) = topos
+					if self.board[y][x] is None:
+						valid = 1
 
 		if valid:
 			#(figure, color) = self.board[oldy][oldx]
