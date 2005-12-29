@@ -66,10 +66,7 @@ class BoardWidget(qtcanvas.QCanvasView):
 					if self.current:
 						(olds, oldsmetadata) = self.sprites_copy[self.current]
 						(oldi, oldj, oldtype) = oldsmetadata
-						print "Move", oldsmetadata, smetadata
-						olds.move(s.x(), s.y())
-						oldsmetadata = (i, j, oldtype)
-						self.sprites_copy[self.current] = (olds, oldsmetadata)
+						self.emit(qt.PYSIGNAL("human"), ((oldi, oldj), (i, j), self.current))
 						self.current = None
 						break
 					else:
@@ -150,6 +147,94 @@ class MainWin(kdeui.KMainWindow):
 		self.setCentralWidget(area)
 
 		self.resize(600, 600)
+
+		#self.connect(area, qt.SIGNAL("ai()"), self.aimove)
+		self.connect(self, qt.PYSIGNAL("ai"), self.aimove)
+		self.connect(area, qt.PYSIGNAL("human"), self.humanmove)
+
+#	# signal!
+#	def ai(self):
+#		pass
+#
+#
+#	# signal!
+#	def human(self):
+#		pass
+
+	def coordinates(self, pos):
+			for index in range(len(self.sprites)):
+				spriteentry = self.sprites[index]
+				(s, smetadata) = spriteentry
+				if not smetadata:
+					continue
+				(i, j, type) = smetadata
+
+				if (i, j) == pos:
+					return (s.x(), s.y())
+
+	def humanmove(self, frompos, topos, current):
+		(oldi, oldj) = frompos
+		(i, j) = topos
+
+		ret = self.game.trymove(frompos, topos)
+		if ret:
+			#self.game.toggleplayer()
+			self.game.domove(frompos, topos)
+
+			(olds, oldsmetadata) = self.sprites[current]
+			(oldi, oldj, oldtype) = oldsmetadata
+			print "Move", oldsmetadata
+			#, smetadata
+			(x, y) = self.coordinates((i, j))
+			olds.move(x, y)
+			oldsmetadata = (i, j, oldtype)
+			self.sprites[current] = (olds, oldsmetadata)
+			#self.ai()
+			self.emit(qt.PYSIGNAL("ai"), ())
+
+			self.canvas.update()
+		else:
+			kdeui.KMessageBox.error(self, "This move is not allowed", "Human error")
+
+	def aimove(self):
+		print "AI move slot!"
+		(ret, frompos, topos) = self.game.aimove()
+		print "RET(find)", ret, frompos, topos
+		if ret:
+			self.game.toggleplayer()
+			self.game.domove(frompos, topos)
+
+			current = None
+			fromij = None
+			toij = None
+			for index in range(len(self.sprites)):
+				spriteentry = self.sprites[index]
+				(s, smetadata) = spriteentry
+				if not smetadata:
+					continue
+				(i, j, type) = smetadata
+				#print "check", i, j
+
+				if (i, j) == frompos:
+					fromij = (s.x(), s.y())
+					current = index
+				if (i, j) == topos:
+					toij = (s.x(), s.y())
+
+			if fromij and toij:
+				(olds, oldsmetadata) = self.sprites[current]
+				(oldi, oldj, oldtype) = oldsmetadata
+				print "AI Move", oldsmetadata, smetadata
+				(x, y) = toij
+				olds.move(x, y)
+				(i, j) = topos
+				oldsmetadata = (i, j, oldtype)
+				self.sprites[current] = (olds, oldsmetadata)
+
+				self.canvas.update()
+		else:
+			kdeui.KMessageBox.error(self, "The AI was unable to move", "AI error")
+			self.game.toggleplayer()
 
 	def svgpixmap(self, filename, width, height):
 		svg = rsvgsdl.render(filename, width, height)
