@@ -1,0 +1,106 @@
+<html>
+<head>
+<title>
+Tic-Tac-Toe explained
+</title>
+</head>
+<body>
+
+<h2>Tic-Tac-Toe explained</h2>
+
+<i>
+Tic-Tac-Toe is the most simple game for GGZ. The protocol is simple, the
+server is well documented and allows for disabling most features at compile
+time, and the corresponding clients exist for each toolkit and programming
+language.
+An alternative server written in Ruby emerged in addition to the default one
+written in C.
+Hence, Tic-Tac-Toe is the ideal game for learning GGZ game module development.
+</i>
+
+<h3>The protocol</h3>
+
+The TTT protocol consists of 7 messages from the server to the client and 2
+messages for the other direction. It is formally documented in an XML file
+named
+<a href="http://dev.ggzgamingzone.org/protocols/tictactoe.protocol">tictactoe.protocol</a>
+for use with GGZComm.
+
+<br><br>
+
+The server sends the seat number and the assignments of all seats to each
+joining player. It then requests a move from the player whose turn is active,
+and waits for the move message. The move is then responded at by the server
+again, and broadcasted as a move message in case it was successful. During the
+game, the client might request the board synchronisation, for which a
+corresponding server message exists. Finally, a game over message can be
+broadcasted by the server.
+
+<h3>The server</h3>
+
+All in all, the TTT server consists of 675 lines of C code. But how much of an
+effort does it really involve?
+The server is made up of four components: The initialisation code, the game
+logic, the network interface and the artificial intelligence (AI).
+
+<br><br>
+<b>Initialisation code</b>
+<br><br>
+
+The main() function, defined in the file main.c, already handles the game
+startup including GGZ initialisation. Among other things, it calls game_init()
+which is defined in game.c and handles some more internal variables.
+
+Depending on the compile-time configuration, the TTT server might or might
+not support the following in addition to a basic two-player TTT game:
+unlimited number of game spectators, a bot player (replacing a human),
+resuming interrupted games, player statistics, savegames, and individual
+bot players, meaning that they are assigned a name and will have certain
+unique properties and difficulty levels.
+
+<br><br>
+<b>Game logic</b>
+<br><br>
+This term covers a lot of small actions. Whenever someone joins a game,
+some data is sent and/or internal variables are modified. When a move message
+is read, it is evaluated and the server acts according to the result.
+Similar in nature, after each move the game state is evaluated, as each move
+might lead to the game-over status.
+The selection of the next player depending on the current turn is part of the
+game logic, too.
+All of it is contained within the file game.c.
+
+<br><br>
+<b>Network interface</b>
+<br><br>
+All network handling is abstracted away in the auto-generated file net.c.
+Some functions of it (ggzcomm_*) are called from game.c, and in return
+some callback handlers are invoked from it whenever network data has been
+read or an error occurred.
+Using ggzcommgen, the network support can be updated easily.
+
+<br><br>
+<b>AI player</b>
+<br><br>
+The file ttt-ai.c contains a single exported function, ai_findmove(), which
+is all that is needed to let the AI determine its next move.
+Having the AI separated is useful for other game server implementations which
+do however share the AI routines to avoid code duplication.
+
+<h3>The client</h3>
+
+There are five clients so far: for the command line (TTTXT), for SDL with
+OpenGL (TTT3D), and desktop-affine ones for Gtk+ and KDE. The last one is a
+client without any GUI, which is used by Grubby, the GGZ chat bot, and is
+named Guru-TTT.
+
+Depending on the preference for toolkit and programming language, studying
+one or more of the above will help into getting into the client side of
+GGZ game module development, using the simple TTT game as example.
+
+<hr>
+
+Josef Spillner, 27.12.2005
+
+</body>
+</html>

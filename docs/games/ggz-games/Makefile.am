@@ -1,0 +1,2 @@
+SUBDIRS = ggzcards hastings tictactoe
+
