@@ -2,7 +2,7 @@
  * File: chat.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.h 7682 2005-12-28 04:13:31Z jdorje $
+ * $Id: chat.h 7684 2005-12-29 01:59:00Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -48,14 +48,14 @@ void chat_part(const gchar *player, int to_room);
 int chat_checkurl(GtkXText *xtext, char *word);
 void chat_word_clicked(GtkXText *xtext, char *word,
 	GdkEventButton *event);
-void chat_add_friend(GGZPlayer *player, gint display);
-void chat_remove_friend(GGZPlayer *player);
-void chat_add_ignore(GGZPlayer *player, gint display);
-void chat_remove_ignore(GGZPlayer *player);
+void chat_add_friend(const gchar *name, gint display);
+void chat_remove_friend(const gchar *name);
+void chat_add_ignore(const gchar *name, gint display);
+void chat_remove_ignore(const gchar *name);
 void chat_save_lists(void);
 gchar *chat_complete_name(const gchar *name, int *perfect);
-gint chat_is_friend(GGZPlayer *player);
-gint chat_is_ignore(GGZPlayer *player);
+gint chat_is_friend(const gchar *name);
+gint chat_is_ignore(const gchar *name);
 void chat_lists_cleanup(void);
 
 /* Array of colors used for chat, motd, 'about' dialog, etc. */

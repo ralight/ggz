@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 7682 2005-12-28 04:13:31Z jdorje $
+ * $Id: playerlist.c 7684 2005-12-29 01:59:00Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -65,9 +65,9 @@ static void client_player_friends_click(GtkMenuItem * menuitem, gpointer data)
 	GGZPlayer *player = data;
 
 	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-		chat_add_friend(player, TRUE);
+		chat_add_friend(ggzcore_player_get_name(player), TRUE);
 	else
-		chat_remove_friend(player);
+		chat_remove_friend(ggzcore_player_get_name(player));
 }
 
 static void client_player_ignore_click(GtkMenuItem * menuitem, gpointer data)
@@ -75,9 +75,9 @@ static void client_player_ignore_click(GtkMenuItem * menuitem, gpointer data)
 	GGZPlayer *player = data;
 
 	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-		chat_add_ignore(player, TRUE);
+		chat_add_ignore(ggzcore_player_get_name(player), TRUE);
 	else
-		chat_remove_ignore(player);
+		chat_remove_ignore(ggzcore_player_get_name(player));
 }
 
 static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
@@ -165,8 +165,9 @@ static gboolean player_list_event(GtkWidget *widget,
 	    && player) {
 		/* Right mouse button:
 		 * Create and display the menu */
-		int is_friend = chat_is_friend(player);
-		int is_ignore = chat_is_ignore(player);
+		char *name = ggzcore_player_get_name(player);
+		int is_friend = chat_is_friend(name);
+		int is_ignore = chat_is_ignore(name);
 		GtkWidget *menu;
 
 		menu = create_mnu_player(player, is_friend, is_ignore);
