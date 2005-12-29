@@ -18,7 +18,8 @@ noinst_HEADERS = \
 	levelselector.h \
 	network.h \
 	level.h \
-	unitinfo.h
+	unitinfo.h \
+	fyrdman.h
 
 AM_CPPFLAGS = -I $(top_srcdir)/lib $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
 
@@ -27,7 +28,7 @@ fyrdman_LDADD = $(top_builddir)/lib/libkggzgames.la $(LIB_KDECORE) $(LIB_KDEUI) 
 
 METASOURCES = AUTO
 
-kde_conf_DATA = fyrdmanrc
+dist_kde_conf_DATA = fyrdmanrc
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

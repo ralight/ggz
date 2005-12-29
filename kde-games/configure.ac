@@ -1,7 +1,7 @@
 dnl Configuration for GGZ-KDE-Games
 dnl ===============================
 
-AC_INIT([GGZ KDE games], [0.0.12], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-games])
+AC_INIT([GGZ KDE games], [0.0.13pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-games])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -69,7 +69,6 @@ AC_CONFIG_FILES([Makefile
 	muehle/module.dsc
 	muehle/src/Makefile
 	muehle/src/ai/Makefile
-	muehle/src/ggzwrap/Makefile
 	muehle/pics/Makefile
 	muehle/pics/muehle.desktop
 	muehle/pics/standard/Makefile

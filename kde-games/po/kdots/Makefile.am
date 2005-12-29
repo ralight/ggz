@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
 GMSGFMT = msgfmt
@@ -8,6 +6,8 @@ PACKAGE = kdots
 POTFILE = kdots.pot
 POFILES = de.po es.po
 LOCATIONS = $(top_srcdir)/kdots/*.cpp
+
+EXTRA_DIST = $(POTFILE) $(POFILES)
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
 messages:

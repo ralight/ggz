@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
-
 SUBDIRS = pixmaps
 
 ggzexecmod_PROGRAMS = ggz.kreversi
@@ -20,7 +17,7 @@ ggz_kreversi_SOURCES = \
 	network.cpp
 
 EXTRA_DIST = \
-	ggz.kreversiui.rc
+	THEME.HOWTO
 
 noinst_HEADERS = \
 	reversiprotocol.h\
@@ -29,7 +26,7 @@ noinst_HEADERS = \
 	network.h
 
 rcdir = $(kde_datadir)/ggz.kreversi
-rc_DATA = ggz.kreversiui.rc
+dist_rc_DATA = ggz.kreversiui.rc
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

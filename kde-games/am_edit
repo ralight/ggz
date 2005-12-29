@@ -83,6 +83,7 @@ $cleantarget = "clean";
 $dryrun     = 0;
 $pathoption = 0;
 $foreign_libtool = 0;
+$no_autodist = 0;
 
 while (defined ($ARGV[0]))
 {
@@ -138,6 +139,11 @@ while (defined ($ARGV[0]))
     {
         $foreign_libtool = 1;
         $thisProg .= " --foreign-libtool";
+    }
+    elsif (/^--no-autodist$/)
+    {
+        $no_autodist = 1;
+        $thisProg .= " --no-autodist";
     }
     elsif (/^-n$/)
     {
@@ -491,7 +497,7 @@ sub initialise ()
     %kdeopts = ();
     $kdeopts{"foreign"} = 0;
     $kdeopts{"qtonly"} = 0;
-    $kdeopts{"noautodist"} = 0;
+    $kdeopts{"noautodist"} = $no_autodist;
     $kdeopts{"foreign-libtool"} = $foreign_libtool;
     $kdeopts{"nofinal"} = !$use_final; # default
 
@@ -1926,7 +1932,7 @@ sub updateMakefile ()
     open (FILEOUT, "> $makefile")
                         || die "Could not create $makefile: $!\n";
 
-    print FILEOUT "\# $progId - " . '$Revision: 4010 $ '  . "\n";
+    print FILEOUT "\# $progId - " . '$Revision: 7701 $ '  . "\n";
     $MakefileData =~ s/\034/\\\n\t/g;    # Restore continuation lines
     print FILEOUT $MakefileData;
     close FILEOUT;

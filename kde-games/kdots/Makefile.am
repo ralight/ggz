@@ -31,7 +31,10 @@ METASOURCES = AUTO
 KDE_ICON = kdots
 
 gfxdir = $(ggzdatadir)/kdots
-gfx_DATA = dragon.png firedragon.png hi32-app-kdots.png snowdragon.png
+dist_gfx_DATA = dragon.png firedragon.png hi32-app-kdots.png snowdragon.png
+
+EXTRA_DIST = \
+	hi32-app-kdots.png
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

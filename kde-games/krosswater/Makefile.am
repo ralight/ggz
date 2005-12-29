@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6948 2005-02-27 21:54:15Z josef $
-
 SUBDIRS = zoneclient gfx
 
 ggzexecmod_PROGRAMS = krosswater_client
@@ -32,6 +29,9 @@ noinst_HEADERS = \
 METASOURCES = AUTO
 
 KDE_ICON = krosswater
+
+EXTRA_DIST = \
+	hi32-app-krosswater.png
 
 DISTCLEANFILES = $(METASOURCES)
 

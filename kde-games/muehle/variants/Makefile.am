@@ -1,3 +1,5 @@
 muehledir = $(ggzdatadir)/muehle
-muehle_DATA = rc roman classic twelvemensmorris
+dist_muehle_DATA = rc roman classic twelvemensmorris
+
+EXTRA_DIST = calculateur.pl
 

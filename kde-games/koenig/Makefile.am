@@ -34,12 +34,10 @@ koenig_LDADD = $(top_builddir)/lib/libkggzgames.la $(top_builddir)/koenig/libcgc
 
 METASOURCES = AUTO
 
-EXTRA_DIST = koenigui.rc
-
 rcdir = $(kde_datadir)/koenig
-rc_DATA = koenigui.rc
+dist_rc_DATA = koenigui.rc
 
-kde_conf_DATA = koenigrc
+dist_kde_conf_DATA = koenigrc
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

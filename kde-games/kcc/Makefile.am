@@ -25,7 +25,12 @@ KDE_ICON = kcc
 desktopdir = $(datadir)/applications
 desktop_DATA = kcc.desktop
 
-kde_conf_DATA = kccrc
+dist_kde_conf_DATA = kccrc
+
+EXTRA_DIST = \
+	hi16-app-kcc.png \
+	hi32-app-kcc.png \
+	hi48-app-kcc.png
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

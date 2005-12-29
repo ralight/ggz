@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 noinst_LTLIBRARIES = libkggzgames.la
 libkggzgames_la_SOURCES = kggzseatsdialog.cpp kggzmodule.cpp
 libkggzgames_la_LDFLAGS = $(GGZMOD_LDFLAGS) $(all_libraries)

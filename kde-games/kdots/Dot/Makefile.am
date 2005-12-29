@@ -1,8 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
-
-SUBDIRS = .
-
 noinst_LIBRARIES = libdot.a
 
 libdot_a_SOURCES = \
@@ -10,11 +5,18 @@ libdot_a_SOURCES = \
 	vdots.cpp \
 	qdots.cpp
 
-AM_CPPFLAGS = -I$(qt_includes) -I$(kde_includes)
+noinst_HEADERS = \
+	dots.h \
+	vdots.h \
+	qdots.h
+
+AM_CPPFLAGS = $(all_includes)
 
 libdot_a_METASOURCES = AUTO
 
 DISTCLEANFILES = $(libdot_a_METASOURCES)
+
+EXTRA_DIST = test.cpp
 
 test:
 	-g++ -Wall -c test.cpp

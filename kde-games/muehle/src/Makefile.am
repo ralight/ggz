@@ -11,5 +11,5 @@ noinst_HEADERS = toplevel.h board.h stone.h qweb.h qextpainter.h net.h qwebpath.
 
 METASOURCES = AUTO
 
-kde_conf_DATA = muehlerc
+dist_kde_conf_DATA = muehlerc
 

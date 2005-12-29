@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 7497 2005-08-22 07:21:51Z josef $
-
 SUBDIRS = themes
 
 ggzexecmod_PROGRAMS = ktictactux_client
@@ -25,15 +22,20 @@ ktictactux_client_LDADD = $(top_builddir)/lib/libkggzgames.la $(LIB_KDECORE) $(L
 
 METASOURCES = AUTO
 
-pixmapdir = @ggzdatadir@/ktictactux
-pixmap_DATA = bg.png
-
-KDE_ICON = ktictactux
+pixmapdir = $(ggzdatadir)/ktictactux
+dist_pixmap_DATA = bg.png
 
 desktopdir = $(datadir)/applications
 desktop_DATA = ktictactux.desktop
 
-kde_conf_DATA = ktictactuxrc
+dist_kde_conf_DATA = ktictactuxrc
+
+KDE_ICON = ktictactux
+
+EXTRA_DIST = \
+	hi16-app-ktictactux.png \
+	hi32-app-ktictactux.png \
+	hi48-app-ktictactux.png
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
