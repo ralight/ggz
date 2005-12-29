@@ -18,7 +18,7 @@ If you are new to GGZ and want to know where you can contribute,
 consult the <a href="contribute.php">contributions page</a>.
 If you are a game developer who is not so much interested in GGZ itself but in
 using the GGZ libraries for your game, consult the
-<a href="libraries/">libraries page</a>.
+<a href="external.php">external games development page</a>.
 
 </td></tr>
 <tr><td valign="top">
@@ -40,6 +40,10 @@ The following pages are organized as subsections of the developer area.
 <a href="art/">art: Artwork</a>
 <br>
 <a href="tech/">tech: Technologies from the GGZ project</a>
+<br>
+<a href="libraries/">libraries: Shared libraries provided by GGZ</a>
+<br>
+<a href="protocols/">protocols: Game protocol description files</a>
 <br>
 
 </td></tr>

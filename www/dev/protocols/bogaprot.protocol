@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<ggzcomm engine="bogaprot" version="1">
+	<definitions>
+		<def name="REQ_HANDSHAKE" value="101"/>
+		<def name="RSP_HANDSHAKE" value="102"/>
+		<def name="MSG_SEAT" value="103"/>
+		<def name="MSG_PLAYERS" value="104"/>
+		<def name="MSG_START" value="105"/>
+		<def name="REQ_MOVE" value="106"/>
+		<def name="RSP_MOVE" value="107"/>
+		<def name="MSG_MOVE" value="108"/>
+		<def name="MSG_DICE" value="109"/>
+		<def name="MSG_GAMEOVER" value="110"/>
+	</definitions>
+	<client>
+		<event name="REQ_HANDSHAKE">
+			<data name="protocol_name" type="string"/>
+			<data name="protocol_version" type="int"/>
+		</event>
+		<event name="MSG_MOVE">
+			<data name="source_position" type="int"/>
+			<data name="destination_position" type="int"/>
+			<eval>
+				<condition name="source_position" result="0" type="smaller"/>
+				<data name="type" type="string"/>
+			</eval>
+		</event>
+	</client>
+	<server>
+		<event name="RSP_HANDSHAKE">
+			<data name="status" type="int"/>
+			<eval>
+				<condition name="status" result="0" type="unequal"/>
+				<data name="message" type="string"/>
+			</eval>
+		</event>
+		<event name="MSG_SEAT">
+			<data name="clientseat" type="int"/>
+		</event>
+		<event name="MSG_PLAYERS">
+			<data name="seats_count" type="int"/>
+			<sequence count="seats_count">
+				<data name="seattype" type="int"/>
+				<eval>
+					<condition name="seattype" result="ggz:seat_open" type="unequal"/>
+					<data name="name" type="string"/>
+				</eval>
+			</sequence>
+		</event>
+		<event name="MSG_START"/>
+		<event name="REQ_MOVE">
+			<data name="seat" type="int"/>
+		</event>
+		<event name="RSP_MOVE">
+			<data name="move_status" type="int"/>
+			<eval>
+				<condition name="move_status" result="0" type="unequal"/>
+				<data name="move_message" type="string"/>
+			</eval>
+		</event>
+		<event name="MSG_MOVE">
+			<data name="server_source_position" type="int"/>
+			<data name="server_destination_position" type="int"/>
+			<eval>
+				<condition name="server_source_position" result="0" type="smaller"/>
+				<data name="server_type" type="string"/>
+			</eval>
+		</event>
+		<event name="MSG_DICE">
+			<data name="value" type="int"/>
+		</event>
+		<event name="MSG_GAMEOVER">
+			<data name="winner" type="int"/>
+		</event>
+	</server>
+	<protocol>
+		<link client="REQ_HANDSHAKE" server="RSP_HANDSHAKE"/>
+		<link server="REQ_MOVE" client="MSG_MOVE"/>
+		<link client="MSG_MOVE" server="RSP_MOVE"/>
+	</protocol>
+</ggzcomm>
+

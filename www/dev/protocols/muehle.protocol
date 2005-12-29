@@ -18,7 +18,7 @@
 		<event name="send_color">
 			<data name="color" type="string"/>
 		</event>
-		<event name="rsp_remis"/>
+		<event name="rsp_remis">
 			<data name="answer" type="string"/>
 		</event>
 	</server>

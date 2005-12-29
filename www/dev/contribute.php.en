@@ -46,6 +46,7 @@ backends for it exist for various formats.
 The GGZ Game Development Guide and other documents help in how to create new
 game servers and clients in C, C++ and Python, using toolkits such as
 SDL, KDE/Qt or Gtk+.
+Learn more on the <a href="external.php">external games</a> starter page.
 
 <br><br>
 

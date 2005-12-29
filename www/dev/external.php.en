@@ -1,0 +1,79 @@
+<?php include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>External games development</b><br>
+For historic reasons, the term external game refers to a game which is not part of
+GGZ but does provide (conditional) GGZ support.
+This page serves as a central resource for adding GGZ support to existing games.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Success stories ;)</i><br>
+There is a lot of effort being put into existing projects so that they can be played
+on GGZ. Before going into the details, the current list should be kept in mind:
+
+<table class="list">
+<tr><td>T.E.G.</td><td>good support</td><td><a href="http://www.ggzgamingzone.org/games/teg/">info page</a></td></tr>
+<tr><td>Kamikaze</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/games/kamikaze/">info page</a></td></tr>
+<tr><td>Tuxman</td><td>unknown</td><td><a href="http://www.ggzgamingzone.org/games/tuxman/">info page</a></td></tr>
+<tr><td>CGoBan</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/games/cgoban/">info page</a></td></tr>
+<tr><td>Widelands</td><td>alpha</td><td><a href="http://www.ggzgamingzone.org/games/widelands/">info page</a></td></tr>
+<tr><td>Freelords</td><td>alpha</td><td><a href="http://www.ggzgamingzone.org/games/freelords/">info page</a></td></tr>
+<tr><td>Freeciv</td><td>good support</td><td><a href="http://www.ggzgamingzone.org/games/freeciv/">info page</a></td></tr>
+</table>
+
+Of note is that Widelands implements a whole client including game lobby, and CGoBan runs totally
+unmodified using a helper script binding it to GGZ. Do not hesitate to speak to GGZ developers to find
+out which of the above games (or a game from GGZ) is similar to yours.
+<br><br>
+
+<i>Documentation</i><br>
+For people who are totally unfamiliar with GGZ, the
+<a href="http://www.ggzgamingzone.org/docs/overview/">user intro</a>
+as well as the
+<a href="http://www.ggzgamingzone.org/docs/overview/architecture/">developer intro</a>
+are a must-read.
+If you're still not convinced that GGZ support is a plus for your game, read the
+<a href="http://www.ggzgamingzone.org/docs/games/ggzfeatures.html">list of features</a>.
+
+Then, it is recommended to start with the conceptual documentation on how a
+<a href="http://www.ggzgamingzone.org/docs/games/modules/">GGZ game module</a>
+works.
+<br><br>
+
+To make the implementation of this model very easy, the
+<a href="/libraries/ggzmod/">ggzmod</a>
+and
+<a href="/libraries/ggzdmod/">ggzdmod</a>
+library can be used in your game client and server, respectively.
+
+For packaging and distribution of the game including GGZ support, as well as some
+other aspects, the rather complete
+<a href="http://www.ggzgamingzone.org/docs/guides/gamedev/">game development guide</a>
+is a reliable reference. It explains the file formats, gives some hints etc.
+
+The above links should be everything that is needed. For even more information,
+check out the ggz-docs package, preferably using SVN, to read the old
+external games HOWTO and the documentation written for the GGZ games Hastings,
+GGZCards and Tic-Tac-Toe.
+
+<br><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("site/footer.php"); ?>
+
