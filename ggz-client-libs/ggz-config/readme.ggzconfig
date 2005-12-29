@@ -31,6 +31,10 @@ Some additional options may also be specified:
                     directory, as specified by the DESTDIR environment
                     variable.
 
+    --noregistry    Copies the whole module description file to the
+	                GGZ registration directory to facilitate registration
+                    after installation from binary packages.
+
 ggz-config Game Module Uninstall 
 --------------------------------
 When a game module is removed, ggz-config should be run to remove the
@@ -87,13 +91,20 @@ A module.dsc file should be formatted as follows:
     ProtocolEngine = <protocol engine>
     ProrocolVersion = <protocol version>
     Version = <game module version>
+	Environment = <environment code>
+	IconPath = /pathname/to/game.icon
+	HelpPath = /pathname/to/game/help.html
 
-The current <fe code>s which are understood are 'gtk', 'kde' and 'sdl'
-and should describe the native environment for this game.  This field
-is simply to give the various GGZ clients an idea of what toolkit a
-game was compiled with.  All game clients should always work with any
-client frontend (assuming the user has the required GUI environment
-installed).
+The current <fe code>s which are understood are 'gtk', 'kde', 'sdl',
+'x11' and 'console' and should describe the native toolkit used for this
+game.  This field is simply to give the various GGZ clients an idea of
+what toolkit a game was compiled with.  All game clients should always
+work with any client frontend (assuming the user has the required GUI
+environment installed).
+A related field is Environment. The <environment code>s are
+'xwindow', 'xfullscreen', 'framebuffer', 'console' and 'passive', where
+passive means a game without any user interface. The environment defaults
+to 'xwindow'.
 
 The <game name> should match the game name as used by the ggzd server.
 The actual displayed name for the game will be set by the server.
@@ -106,4 +117,16 @@ The <game module version> is used internally to identify which game
 version to be used.  This allows multiple clients to be installed as
 long as their game version is different - obviously (or perhaps not)
 these would need to have different CommandLine entries.
+
+When the IconPath field shall be used, an icon can be specified by adding
+--iconpath which is then automatically copied to the GGZ registration data
+directory upon installation, so that it can be displayed by all GGZ tools,
+including the core clients.
+Otherwise, there are some generic gametype icons shipped with GGZ, but it
+is recommended to use the IconPath feature.
+Likewise, the HelpPath field should refer to a viewable text or HTML document
+which documents the game.
+Both IconPath and HelpPath are not modified, if they are absolute paths,
+making it possible to configure the location as part of the auto-configuration
+process.
 
