@@ -29,5 +29,5 @@ AM_LDFLAGS = $(all_libraries) $(KDE_PLUGIN) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT
 noinst_HEADERS = kcm_ggz_default.h kcm_ggz_metaserver.h kcm_ggz_drs.h kcm_ggz_ggzd.h kcm_ggz_games.h metaserver_add.h metaserver_add_server.h
 
 gamedir = $(kde_datadir)/kggz/kcmggz/icons
-dist_game_DATA = game.png game_kde.png game_gnome.png game_sdl.png game_console.png game_grubby.png game_x11.png gear.png
+dist_game_DATA = game.png game_kde.png game_gnome.png game_sdl.png game_console.png game_grubby.png game_x11.png game_java.png gear.png
 
