@@ -19,8 +19,8 @@ th {text-align: left}
 <h2>GGZ Gaming Zone Server Documentation</h2>
 
 <small>
-<i>Revision: 0.1</i><br>
-<i>Date: 27.03.2005</i><br>
+<i>Revision: 0.2</i><br>
+<i>Date: 01.01.2006</i><br>
 <i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
 </small>
 
@@ -46,9 +46,9 @@ which are also used by other programmes: the database abstraction library,
 used by <tt>ggzduedit</tt> to manually manipulate player entries, and the
 game server communication library <tt>ggzdmod</tt>, used also by the games
 themselves. Further dependencies are <tt>libggz</tt>, <tt>expat</tt> for
-the XML protocol handling, and <tt>popt</tt> to handle command line arguments.
+the XML protocol handling, and <tt>gettext</tt> to display translated messages.
 Optionally, <tt>howl</tt> can be included to announce its service on a local
-network, where it can be detected by a GGZ core client.
+network, where it can be detected by a GGZ core client (Zeroconf broadcast).
 </p>
 
 <p style="text-align:center">
@@ -57,8 +57,13 @@ network, where it can be detected by a GGZ core client.
 
 <p>
 The database can either be embedded or running as an external process, even
-on another host. The connections to the clients and to the game servers are
-always using TCP/IP.
+on another host. Supported databases include <tt>DB4</tt>, <tt>SQlite</tt>,
+<tt>MySQL</tt> and <tt>PostgreSQL</tt>.
+</p>
+
+<p>
+The connections to the clients and to the game servers are always using
+TCP/IP, although the latter ones are restricted to local connections.
 </p>
 
 <h3>Initialization</h3>
@@ -74,6 +79,19 @@ wrapper (optional), and binds to the configured port.
 From then on, clients are able to connect.
 </p>
 
+<p>
+The server will run in the foreground if the <i>--foreground</i> option has
+been given to it, which is very useful for debugging.
+Logging can happen to a configured log file, and (in addition) some log types
+can be given on the command line to appear on stdout, like
+<i>ggzd -F --log=all</i>. The types are all documented in the configuration
+file.
+The server compile-time configuration can be shown with <i>--specs</i>.
+Additional settings are internal to the source code and include the hard
+limits on the maximum number of game types, the maximum length of user names
+and the like.
+</p>
+
 <h3>Work model</h3>
 
 <p>
@@ -84,6 +102,24 @@ changes and chat messages. The third is to handle games, which means launching
 a game server, putting the player (and all those who join) at the table,
 and receive the game result afterwards, which might involve storing them
 into the database.
+</p>
+
+<p>
+In addition to the database, which is under complete control of ggzd,
+each game is assigned a private data directory which can be used to save game
+information. This includes savegames, to which only the path is stored in the
+ggzd database.
+</p>
+
+<h3>Permissions</h3>
+
+<p>
+The GGZ server is aware of the concept of privileges. Depending on the status
+of a player (anonymous, registered or administrator), actions might or might
+not be possible. In general, only administrators may broadcast messages to all
+rooms and enter restricted rooms, and only registered users (including admins)
+may get entries in the statistics database, although anonymous users are
+registered there in the participation list.
 </p>
 
 </div>

@@ -19,8 +19,8 @@ th {text-align: left}
 <h2>GGZ Gaming Zone Core Clients</h2>
 
 <small>
-<i>Revision: 0.1</i><br>
-<i>Date: 10.03.2005</i><br>
+<i>Revision: 0.2</i><br>
+<i>Date: 31.12.2005</i><br>
 <i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
 </small>
 
@@ -75,10 +75,31 @@ PyGGZCoreSimple).
 </p>
 
 <p>
+Initialising ggzcore is always the first step and performed with
+<tt>ggzcore_init</tt>. There are a few options which can be combined
+to tune the library behaviour:
+<ul>
+<li>GGZ_OPT_PARSER activates the configuration file parser. This option is
+not used right now but might be so in the future.
+<li>GGZ_OPT_MODULES loads the game module database, which in most cases
+is desired.
+<li>GGZ_OPT_THREADED_IO enables asynchronous hostname lookups for the
+initial server connection, to ensure that no single operation in ggzcore
+blocks the application.
+<li>GGZ_OPT_EMBEDDED is for core clients which shall only start a single
+game, and do so without launching an external process but consider themselves
+the game. Put the other way around, it is a game which comes with an integrated
+core client. An example for this is Widelands.
+<li>GGZ_OPT_RECONNECT enables automatic reconnection in case the connection
+breaks.
+</ul>
+</p>
+
+<p>
 The way ggzcore works is that it maps the entities to
-object-orientated structures and functions. Thus, after initializing
+object-orientated structures and functions. Thus, after initialising
 the library with <tt>ggzcore_init</tt>, the first action will always
-be to initialize a server "object" by calling <tt>ggzcore_server_new</tt>.
+be to initialise a server "object" by calling <tt>ggzcore_server_new</tt>.
 Afterwards, some variables may be set, like the hostname, but
 before actually connecting, callbacks must be set up because ggzcore
 works callback-based all the way. This can be done with

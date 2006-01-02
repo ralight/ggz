@@ -104,12 +104,12 @@ according to the requirements given in the release information; at present,
 this is:
 
 @itemize
-@item libdb 2 or 3 or 4, optionally mysql or postgresql or sqlite
+@item libdb 2 or 3 or 4, or mysql or postgresql or sqlite
 @item gettext and getopt (should be part of glibc on most systems)
 @item libexpat
-@item perl
-@item libgcrypt (optional)
-@item libgnutls or libopenssl (optional)
+@item howl (optional, for LAN zeroconf broadcasts)
+@item libgcrypt (optional, via libggz, to handle encrypted database passwords)
+@item libgnutls or libopenssl (optional, via libggz, to handle encrypted connections)
 @end itemize
 
 @item Depending on the support of external games or scripting plugins,
@@ -119,6 +119,7 @@ the following is also recommended:
 @item gnugo
 @item libxml
 @item python
+@item perl
 @end itemize
 @end itemize
 
@@ -857,6 +858,10 @@ player database should be intact, and the transmitted network data, consisting
 mostly of the session protocol, chat texts and game data, should be checked for
 flooding or similar.
 
+A great aid will be to check the server compile-time configuration with the
+option @command{ggzd --specs}, and to check the log messages using
+@command{ggzd -F --log=all} and using the DumpFile option in ggzd.conf.
+
 @section Adding rooms
 
 @c verbatim quote from admin-guide.txt
@@ -942,10 +947,10 @@ cd ~
 mkdir localsys
 mkdir localsys/usr
 mkdir localsys/etc
-mkdir ggz-0.0.12
-cd ggz-0.0.12
-svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-12/libggz
-svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-12/ggzd
+mkdir ggz-0.0.13
+cd ggz-0.0.13
+svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-13/libggz
+svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-13/ggzd
 cd libggz
 ./autogen.sh --prefix=$HOME/localsys/usr
 make
