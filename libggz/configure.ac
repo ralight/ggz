@@ -1,7 +1,7 @@
 # Configuration for libggz
 # ========================
 
-AC_INIT([GGZ common libraries], [0.0.12], [ggz-dev@mail.ggzgamingzone.org], [libggz])
+AC_INIT([GGZ common libraries], [0.0.13pre], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -26,8 +26,8 @@ AC_ARG_ENABLE([threading],
   [enable_threading=$enableval],
   [enable_threading=yes])
 
-# Find pthread library
-# ====================
+# Find pthread library & libanl
+# =============================
 if test $enable_threading != "no"; then
   # Threading support is not available on all platforms.  It's dangerous
   # to disable it so this must be done explicitly.
@@ -40,8 +40,16 @@ if test $enable_threading != "no"; then
                              [LDADD="$LDADD -pthread"
                               CFLAGS="$CFLAGS -D_THREAD_SAFE"],
                AC_MSG_ERROR([*** Cannot find pthread library]))])
+
+  # If threading is available, maybe asynchronous hostname lookups
+  # are as well, using libanl from glibc >= 2.3.
+  AC_CHECK_LIB(anl, getaddrinfo_a,
+    [AC_DEFINE([GAI_A], 1, [Support for asynchronous hostname lookups])
+	 enable_anl=yes LDADD="$LDADD -lanl"],
+	[enable_anl=no])
 else
   AC_DEFINE([NO_THREADING], 1, [Define if threading support is disabled])
+  enable_anl=no
 fi
 
 # Encryption library: libgcrypt
@@ -96,6 +104,9 @@ if test "$enable_gcrypt" = yes; then
 	echo "      TLS library support: $TLS_TYPE"
 fi
 echo "    Threading support..$enable_threading"
+if test "$enable_threading" = yes; then
+	echo "      GAI asynchronous resolver: $enable_anl"
+fi
 echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to compile libggz."

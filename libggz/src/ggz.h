@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 7665 2005-12-13 00:35:51Z jdorje $
+ * $Id: ggz.h 7711 2006-01-02 16:44:21Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1297,7 +1297,39 @@ unsigned int ggz_set_io_alloc_limit(const unsigned int limit);
  *  @return 0 on success, negative on failure
  */
 int ggz_init_network(void);
-			      
+
+
+/** @brief A network resolver function type.
+ *
+ *  This function type will be called whenever a hostname has been resolved
+ *  or a socket has been created asynchronously.
+ *  @param status The IP address of the host name
+ *  @param socket File descriptor or error code like in ggz_make_socket
+ */
+typedef void (*ggzNetworkNotify) (const char *address, int socket);
+
+/** @brief Set the ggz/easysock resolver notification function.
+ *
+ *  This function will be called whenever a resolving task submitted
+ *  to ggz_resolvename() or ggz_make_socket() has finished.
+ *  @param func The newly set resolver notification function
+ *  @return 0
+ *  @todo Shouldn't this return a void?
+ */
+int ggz_set_network_notify_func(ggzNetworkNotify func);
+
+/** @brief Resolve a host name.
+ *
+ *  In order to prevent blocking GUIs, this function can handle
+ *  resolving a hostname into a numerical address asynchronously.
+ *  The notification function will be called whenever it finishes.
+ *  It receives as its argument the address, which might still be the
+ *  same hostname in the case of errors. The result should be passed
+ *  to gethostbyname() to receive the network data structures.
+ *  @param name Hostname to resolve
+ */
+void ggz_resolvename(const char *name);
+
 
 /****************************************************************************
  * Creating a socket.
@@ -1327,11 +1359,14 @@ typedef enum {
  *    - For a client socket, we'll connect to a server that is (hopefully)
  *      listening at the given port and hostname.
  *
+ *  Note that when a ggzNetworkNotify callback has been set up, this function
+ *  returns immediately and creates the socket later on.
+ *
  *  @param type The type of socket (server or client)
  *  @param port The port to listen/connect to
  *  @param server The server hostname for clients, the interface address else
  *  @return File descriptor on success, -1 on creation error, -2 on lookup
- *  error
+ *  error, -3 when using asynchronous creation
  */
 int ggz_make_socket(const GGZSockType type, 
 		    const unsigned short port, 

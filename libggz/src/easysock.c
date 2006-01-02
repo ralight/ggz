@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7667 2005-12-13 00:57:25Z jdorje $
+ * $Id: easysock.c 7711 2006-01-02 16:44:21Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -40,6 +40,10 @@ DEBUG_MEM
 
 #include "config.h"
 
+#ifdef GAI_A
+#define _GNU_SOURCE
+#endif
+
 #ifdef DEBUG_MEM
 #include <dmalloc.h>
 #endif
@@ -57,7 +61,6 @@ DEBUG_MEM
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netdb.h>
-
 #endif
 
 #include <stdio.h>
@@ -75,7 +78,10 @@ DEBUG_MEM
 
 static ggzIOError _err_func = NULL;
 static ggzIOExit _exit_func = exit;
+static ggzNetworkNotify _notify_func = NULL;
 static unsigned int ggz_alloc_limit = 32768;
+static unsigned int ggz_socketcreation = 0;
+static unsigned int ggz_socketport = 0;
 
 
 int ggz_set_io_error_func(ggzIOError func)
@@ -260,7 +266,7 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 	switch (type) {
 
 	case GGZ_SOCK_SERVER:
-		if( (sock = es_bind(server, port)) < 0) {
+		if ( (sock = es_bind(server, port)) < 0) {
 			if (_err_func)
 				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
 					      sock, GGZ_DATA_NONE);
@@ -269,7 +275,13 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 		break;
 
 	case GGZ_SOCK_CLIENT:
-		if( (sock = es_connect(server, port)) < 0) {
+		if ((_notify_func) && (!ggz_socketcreation)) {
+			ggz_socketcreation = 1;
+			ggz_socketport = port;
+			ggz_resolvename(server);
+			return -3;
+		}
+		if ( (sock = es_connect(server, port)) < 0) {
 			if (_err_func)
 				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
 					      sock, GGZ_DATA_NONE);
@@ -839,3 +851,72 @@ int ggz_read_fd(int sock, int *recvfd)
 	return -1;
 #endif
 }
+
+int ggz_set_network_notify_func(ggzNetworkNotify func)
+{
+	_notify_func = func;
+	return 0;
+}
+
+#ifdef GAI_A
+static struct gaicb *global_req = NULL;
+
+static void ggz_resolved(sigval_t arg)
+{
+	char hostname[64];
+	struct addrinfo *res;
+	int ret;
+	struct gaicb *req;
+
+	req = global_req;
+	if(gai_error(req)) {
+		(*_notify_func)(req->ar_name, -2);
+		return;
+	}
+	res = req->ar_result;
+	ret = getnameinfo(res->ai_addr, res->ai_addrlen,
+		hostname, sizeof(hostname), NULL, 0, NI_NUMERICHOST);
+	if(ret) {
+		(*_notify_func)(req->ar_name, -1);
+		return;
+	}
+	if(!ggz_socketcreation) {
+		(*_notify_func)(hostname, -1);
+	} else {
+		ret = ggz_make_socket(GGZ_SOCK_CLIENT, ggz_socketport, hostname);
+		ggz_socketcreation = 0;
+		(*_notify_func)(hostname, ret);
+	}
+}
+#endif
+
+void ggz_resolvename(const char *name)
+{
+	if(!_notify_func)
+		return;
+
+#ifdef GAI_A
+	/* Start asynchronous lookup */
+	struct sigevent sigev;
+	struct gaicb *req;
+	int ret;
+
+	req = (struct gaicb*)ggz_malloc(sizeof(struct gaicb));
+	req->ar_name = name;
+	req->ar_service = NULL;
+	req->ar_request = NULL;
+	sigev.sigev_notify = SIGEV_THREAD;
+	sigev.sigev_value.sival_ptr = NULL;
+	sigev.sigev_notify_function = ggz_resolved;
+	sigev.sigev_notify_attributes = NULL;
+	global_req = req;
+	ret = getaddrinfo_a(GAI_NOWAIT, &req, 1, &sigev);
+	if(ret) {
+		(*_notify_func)(name, -2);
+	}
+#else
+	/* Pass back unresolved name */
+	(*_notify_func)(name);
+#endif
+}
+
