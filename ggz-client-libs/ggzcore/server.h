@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 7683 2005-12-29 01:35:10Z jdorje $
+ * $Id: server.h 7712 2006-01-02 16:45:48Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -114,9 +114,6 @@ void _ggzcore_server_clear_reconnect(GGZServer * server);
 
 void _ggzcore_server_free(GGZServer * server);
 
-
-
-
 /* Functions for manipulating list of rooms */
 void _ggzcore_server_init_roomlist(GGZServer * server, const int num);
 void _ggzcore_server_free_roomlist(GGZServer * server);
@@ -127,13 +124,14 @@ void _ggzcore_server_init_typelist(GGZServer * server, const int num);
 void _ggzcore_server_free_typelist(GGZServer * server);
 void _ggzcore_server_add_type(GGZServer * server, GGZGameType * type);
 
-
+/* Various event functions */
 int _ggzcore_server_event_is_valid(GGZServerEvent event);
 void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans);
 GGZHookReturn _ggzcore_server_event(GGZServer *, GGZServerEvent, void *);
 void _ggzcore_server_queue_players_changed(GGZServer * server);
 
-
+/* Options enabled for ggzcore */
 void _ggzcore_server_set_reconnect(void);
+void _ggzcore_server_set_threaded_io(void);
 
 #endif /* __SERVER_H__ */

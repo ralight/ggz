@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 7683 2005-12-29 01:35:10Z jdorje $
+ * $Id: server.c 7712 2006-01-02 16:45:48Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -54,6 +54,12 @@
 #include "protocol.h"
 #include "state.h"
 #include "server.h"
+
+#include <locale.h>
+#include <libintl.h>
+
+#define N_(x) (x)
+#define _(x) dgettext("ggzcore", x)
 
 #if 0
 /* Array of GGZServerEvent messages.  This is now unused, but could be used
@@ -148,8 +154,9 @@ struct _GGZServer {
 
 #ifndef HAVE_WINSOCK2_H
 static int reconnect_policy = 0;
-static GGZServer *reconnect_server = NULL;
 #endif
+static int thread_policy = 0;
+static GGZServer *reconnect_server = NULL;
 const int reconnect_timeout = 15;
 
 static void _ggzcore_server_main_negotiate_status(GGZServer * server,
@@ -861,7 +868,7 @@ void _ggzcore_server_set_negotiate_status(GGZServer * server, GGZNet * net,
 					  GGZClientReqError status)
 {
 	if (net != server->net && net != server->channel) {
-		_ggzcore_server_net_error(server, "Unknown negotation");
+		_ggzcore_server_net_error(server, _("Unknown negotation"));
 	} else if (server->is_channel == 0) {
 		if (net == server->channel) {
 			_ggzcore_server_channel_negotiate_status(server, status);
@@ -888,19 +895,19 @@ void _ggzcore_server_set_login_status(GGZServer * server,
 		switch (status) {
 		case E_ALREADY_LOGGED_IN:
 			snprintf(error.message, sizeof(error.message),
-				 "Already logged in");
+				_("Already logged in"));
 			break;
 		case E_USR_LOOKUP:
 			snprintf(error.message, sizeof(error.message),
-				 "Name taken");
+				_("Name taken"));
 			break;
 		case E_TOO_LONG:
 			snprintf(error.message, sizeof(error.message),
-				 "Name too long");
+				_("Name too long"));
 			break;
 		default:
 			snprintf(error.message, sizeof(error.message),
-				 "Unknown login error");
+				_("Unknown login error"));
 			break;
 		}
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
@@ -923,24 +930,28 @@ void _ggzcore_server_set_room_join_status(GGZServer * server,
 		switch (status) {
 		case E_ROOM_FULL:
 			snprintf(error.message, sizeof(error.message),
-				 "Room full");
+				_("Room full"));
 			break;
 		case E_AT_TABLE:
 			snprintf(error.message, sizeof(error.message),
-				 "Can't change rooms while at a table");
+				_("Can't change rooms while at a table"));
 			break;
 		case E_IN_TRANSIT:
 			snprintf(error.message, sizeof(error.message),
-				 "Can't change rooms while "
-				 "joining/leaving a table");
+				_("Can't change rooms while "
+				"joining/leaving a table"));
 			break;
 		case E_BAD_OPTIONS:
 			snprintf(error.message, sizeof(error.message),
-				 "Bad room number");
+				_("Bad room number"));
+			break;
+		case E_NO_PERMISSION:
+			snprintf(error.message, sizeof(error.message),
+				_("Insufficient permissions, room access is restricted"));
 			break;
 		default:
 			snprintf(error.message, sizeof(error.message),
-				 "Unknown room-joining error");
+				 _("Unknown room-joining error"));
 			break;
 		}
 
@@ -1050,13 +1061,40 @@ void _ggzcore_server_reset(GGZServer * server)
 }
 
 
+static void connection_callback(const char *address, int socket)
+{
+	/*printf("<gai> called back! [%s][%i]\n", address, socket);*/
+	_ggzcore_net_set_fd(reconnect_server->net, socket);
+	_ggzcore_server_connect(NULL);
+}
+
+
 int _ggzcore_server_connect(GGZServer * server)
 {
 	int status;
 	char *errmsg;
 
-	_ggzcore_server_change_state(server, GGZ_TRANS_CONN_TRY);
-	status = _ggzcore_net_connect(server->net);
+	if (server) {
+		if (thread_policy) {
+			ggz_set_network_notify_func(connection_callback);
+			reconnect_server = server;
+		}
+
+		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_TRY);
+		status = _ggzcore_net_connect(server->net);
+	} else {
+		ggz_set_network_notify_func(NULL);
+		server = reconnect_server;
+		reconnect_server = NULL;
+
+		status = _ggzcore_net_get_fd(server->net);
+	}
+
+	if (status == -3) {
+		/* Asynchronous lookup */
+		/*printf("<gai> start lookup\n");*/
+		return 0;
+	}
 
 	if (status < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
@@ -1073,6 +1111,9 @@ int _ggzcore_server_connect(GGZServer * server)
 		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, errmsg);
 	} else
 		_ggzcore_server_event(server, GGZ_CONNECTED, NULL);
+	if (thread_policy) {
+		/*printf("<gai> return %i\n", status);*/
+	}
 
 	return status;
 }
@@ -1101,7 +1142,7 @@ int _ggzcore_server_create_channel(GGZServer *server)
 			errmsg = (char*)hstrerror(h_errno);
 #else
 			/* Not all systems have hstrerror. */
-			errmsg = "Unable to connect";
+			errmsg = _("Unable to connect");
 #endif
 		}
 		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, errmsg);
@@ -1351,7 +1392,7 @@ static void _ggzcore_server_main_negotiate_status(GGZServer * server,
 	} else {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
 		_ggzcore_server_event(server, GGZ_NEGOTIATE_FAIL,
-				      "Protocol mismatch");
+				      _("Protocol mismatch"));
 	}
 }
 
@@ -1368,7 +1409,7 @@ static void _ggzcore_server_channel_negotiate_status(GGZServer * server,
 	} else {
 		server->channel_failed = 1;
 		if (!server->is_channel) {
-			_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, "Protocol mismatch");
+			_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, _("Protocol mismatch"));
 		}
 	}
 }
@@ -1547,5 +1588,10 @@ void _ggzcore_server_set_reconnect(void)
 #ifndef HAVE_WINSOCK2_H
 	reconnect_policy = 1;
 #endif
+}
+
+void _ggzcore_server_set_threaded_io(void)
+{
+	thread_policy = 1;
 }
 

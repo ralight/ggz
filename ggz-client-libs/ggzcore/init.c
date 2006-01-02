@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 7203 2005-05-21 09:29:01Z josef $
+ * $Id: init.c 7712 2006-01-02 16:45:48Z josef $
  *
  * Initialization code
  *
@@ -39,6 +39,9 @@
 #include "net.h"
 #include "state.h"
 
+#include <locale.h>
+#include <libintl.h>
+
 int ggzcore_init(GGZOptions options)
 {
 #if 0
@@ -52,6 +55,7 @@ int ggzcore_init(GGZOptions options)
 	}
 #endif
 
+	bindtextdomain("ggzcore", PREFIX "/share/locale");
 
 	/* Initialize various systems */
 	if (options.flags & GGZ_OPT_MODULES)
@@ -62,6 +66,9 @@ int ggzcore_init(GGZOptions options)
 
 	if (options.flags & GGZ_OPT_RECONNECT)
 		_ggzcore_server_set_reconnect();
+
+	if (options.flags & GGZ_OPT_THREADED_IO)
+		_ggzcore_server_set_threaded_io();
 
 	return 0;
 }

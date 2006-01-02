@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 7683 2005-12-29 01:35:10Z jdorje $
+ * $Id: ggzcore.h 7712 2006-01-02 16:45:48Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -86,7 +86,7 @@ extern "C" {
 typedef enum {
 	GGZ_OPT_PARSER      = 0x0001, /* %0000 0000 */ /**< Load the default configuration file (unused). */
 	GGZ_OPT_MODULES     = 0x0002, /* %0000 0010 */ /**< Load the game module list. */
-	GGZ_OPT_THREADED_IO = 0x0004, /* %0000 0100 */ /**< Provide multi-threaded network IO (unused). */
+	GGZ_OPT_THREADED_IO = 0x0004, /* %0000 0100 */ /**< Provide multi-threaded network IO (for asynchronous lookups). */
 	GGZ_OPT_EMBEDDED    = 0x0008, /* %0000 1000 */ /**< Run game with integrated core client. */
 	GGZ_OPT_RECONNECT   = 0x0010  /* %0001 0000 */ /**< Reconnect automatically after connection loss. */
 } GGZOptionFlags;

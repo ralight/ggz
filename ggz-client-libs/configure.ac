@@ -164,6 +164,8 @@ AC_CONFIG_FILES([Makefile
 	   tests/Makefile
 	   desktop/Makefile
 	   po/Makefile
+	   po/ggzcore/Makefile
+	   po/ggz-config/Makefile
 	   ])
 AC_OUTPUT
 

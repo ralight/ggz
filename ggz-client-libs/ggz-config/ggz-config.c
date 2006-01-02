@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7678 2005-12-22 17:28:06Z jdorje $
+ * $Id: ggz-config.c 7712 2006-01-02 16:45:48Z josef $
  *
  * Configuration query and module install program.
  *
@@ -456,7 +456,7 @@ static int noregister_module(void)
 			     + strlen(modname)
 			     + strlen(suffix) + 3];
 	char fixedmodname[strlen(modname) + 1];
-	int i;
+	unsigned int i;
 
 	if(moddest)
 		sprintf(global_pathname, "%s/%s", destdir, copydir);

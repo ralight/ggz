@@ -1,0 +1,78 @@
+# Deutsche Übersetzung von ggzcore
+# Copyright (C) 2006 Josef Spillner
+# This file is distributed under the same license as the ggz-client-libs package.
+# Josef Spillner <josef@ggzgamingzone.org>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.0.13\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-01-01 13:29+0100\n"
+"PO-Revision-Date: 2006-01-01 13:29+0100\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../ggzcore/server.c:854
+msgid "Unknown negotation"
+msgstr "Unbekannte Verbindungsaufnahme"
+
+#: ../../ggzcore/server.c:881
+#, c-format
+msgid "Already logged in"
+msgstr "Bereits eingeloggt"
+
+#: ../../ggzcore/server.c:885
+#, c-format
+msgid "Name taken"
+msgstr "Name ist schon vergeben"
+
+#: ../../ggzcore/server.c:889
+#, c-format
+msgid "Name too long"
+msgstr "Name ist zu lang"
+
+#: ../../ggzcore/server.c:893
+#, c-format
+msgid "Unknown login error"
+msgstr "Unbekannter Login-Fehler"
+
+#: ../../ggzcore/server.c:916
+#, c-format
+msgid "Room full"
+msgstr "Raum ist bereits voll"
+
+#: ../../ggzcore/server.c:920
+#, c-format
+msgid "Can't change rooms while at a table"
+msgstr "Man kann den Raum nicht wechseln, während man an einem Tisch sitzt"
+
+#: ../../ggzcore/server.c:924
+#, c-format
+msgid "Can't change rooms while joining/leaving a table"
+msgstr "Man kann den Raum nicht wechseln, während man sich hinsetzt oder aufsteht"
+
+#: ../../ggzcore/server.c:929
+#, c-format
+msgid "Bad room number"
+msgstr "Ungültige Raumnummer"
+
+#: ../../ggzcore/server.c:933
+#, c-format
+msgid "Insufficient permissions, room access is restricted"
+msgstr "Ungenügende Berechtigung, der Raumzutritt ist eingeschränkt"
+
+#: ../../ggzcore/server.c:937
+#, c-format
+msgid "Unknown room-joining error"
+msgstr "Unbekannter Fehler beim Betreten eines Raumes"
+
+#: ../../ggzcore/server.c:1128
+msgid "Unable to connect"
+msgstr "Es ist nicht möglich, eine Verbindung herzustellen"
+
+#: ../../ggzcore/server.c:1378 ../../ggzcore/server.c:1395
+msgid "Protocol mismatch"
+msgstr "Protokollversionen stimmen nicht überein"

@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 EXTRA_DIST = ggz-config.pot de.po
 
 CATALOG = ggz-config
