@@ -22,6 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef _GGZ_PERMS_H
+#define _GGZ_PERMS_H
+
 #include "ggzdb.h"
 #include "players.h"
 
@@ -34,21 +37,27 @@
 #define PERMS_ROOMS_LOGIN	0x00000004	/* Can enter login-only rooms */
 #define PERMS_ROOMS_ADMIN	0x00000008	/* Can enter admin-only rooms */
 #define PERMS_CHAT_ANNOUNCE	0x00000010	/* Can make announcements */
-#define PERMS_CHAT_BOT          0x00000020	/* Player is a known bot */
-#define PERMS_NO_STATS          0x00000040	/* No stats for this player. */
-#define PERMS_EDIT_TABLES       0x00000080      /* Can edit tables. */
+#define PERMS_CHAT_BOT      0x00000020	/* Player is a known bot */
+#define PERMS_NO_STATS      0x00000040	/* No stats for this player. */
+#define PERMS_EDIT_TABLES   0x00000080	/* Can edit tables. */
 
 /* Set all admin type bits */
-#define PERMS_ADMIN_MASK (PERMS_ROOMS_ADMIN | PERMS_CHAT_ANNOUNCE \
-                          | PERMS_EDIT_TABLES)
+#define PERMS_ADMIN_MASK ( \
+	PERMS_ROOMS_ADMIN | \
+	PERMS_CHAT_ANNOUNCE | \
+	PERMS_EDIT_TABLES)
 
 /* Default permissions for guest users. */
-#define PERMS_DEFAULT_ANON (PERMS_JOIN_TABLE | PERMS_LAUNCH_TABLE \
-			    | PERMS_NO_STATS)
+#define PERMS_DEFAULT_ANON ( \
+	PERMS_JOIN_TABLE | \
+	PERMS_LAUNCH_TABLE | \
+	PERMS_NO_STATS)
 
 /* Permissions for newly-registered user. */
-#define PERMS_DEFAULT_SETTINGS (PERMS_JOIN_TABLE | PERMS_LAUNCH_TABLE \
-				| PERMS_ROOMS_LOGIN)
+#define PERMS_DEFAULT_SETTINGS ( \
+	PERMS_JOIN_TABLE | \
+	PERMS_LAUNCH_TABLE | \
+	PERMS_ROOMS_LOGIN)
 
 /* This function will acquire a read-lock on the player. */
 bool perms_check(GGZPlayer *player, unsigned int perm);
@@ -66,7 +75,7 @@ char perms_str_table[32][21] = {
 	"PERMS_ROOMS_ADMIN   ",
 	"PERMS_CHAT_ANNOUNCE ",		/* 00000010 */
 	"PERMS_CHAT_BOT      ",
-	"PERMS_HAVE_STATS    ",
+	"PERMS_NO_STATS      ",
 	"PERMS_EDIT_TABLES   ",
 	"undefined 0x00000100",		/* 00000100 */
 	"undefined 0x00000200",
@@ -93,4 +102,6 @@ char perms_str_table[32][21] = {
 	"undefined 0x40000000",
 	"undefined 0x80000000"
 };
+#endif
+
 #endif

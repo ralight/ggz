@@ -1,4 +1,4 @@
-.TH "ggzd" "6" "0.0.11" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggzd" "6" "0.0.13" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP 
 ggzd \- GGZ Gaming Zone Main Server
@@ -8,43 +8,53 @@ ggzd \- GGZ Gaming Zone Main Server
 [\fIOPTIONS\fB]
 .SH "DESCRIPTION"
 .LP
-The main GGZ server ggzd is a multi-threaded multi-process daemon which
-handles rooms, games, players and tables.
-It forks a child server for every launched game. It listens on port 5688
-by default for incoming connections from GGZ core clients (or other
+The main GGZ Gaming Zone server \fBggzd\fR implements a centralized facility
+for multiplayer gaming.
+It is a multi-threaded multi-process daemon which handles rooms, games,
+players and tables, and is connected to a database to handle player permissions
+and game statistics.
+The server forks a child server for every launched game. It listens on port
+5688 by default for incoming connections from GGZ core clients (or other
 clients like the chatbot grubby).
+.LP
+Most of its options are configured in \fIggzd.conf\fR, although some command
+line options are available as well.
+It is recommended that the \fIGGZ Server Hosting Guide\fR be read before
+running the server.
 .SH "OPTIONS"
 .TP
 \fB-F\fR, \fB--foreground\fR
 Stay in the foreground instead of daemonizing away from the terminal
 .TP
 \fB-f\fR, \fB--file\fR=file
-Use the specified file instead of the default one
+Use the specified configuration file instead of the default one
 .TP
 \fB-l\fR, \fB--log\fR=level
-Start with the given log level
+Start with the given log levels for messages to the console
 .TP
 \fB-p\fR, \fB--port\fR=port
 Use this port number instead of 5688
 .TP
+\fB-s\fR, \fB--specs\fR
+Display the compile-time configuration of ggzd
+.TP
 \fB-v\fR, \fB--version\fR
 Display ggzd version information
 .TP
-\fB-?\fR, \fB--help\fR
+\fB-h\fR, \fB--help\fR
 Display the options help menu
-.TP
-\fB--usage\fR
-Display short usage information
 .LP
 .SH "FILES"
 .LP
-\fI/etc/ggzd/ggzd.motd\fP - message of the day
-.LP
 \fI/etc/ggzd/ggzd.conf\fP - main server configuration
+.LP
+\fI/etc/ggzd/ggzd.motd\fP - message of the day
 .LP
 \fI/etc/ggzd/games/*\fP - description files for the game servers
 .LP
 \fI/etc/ggzd/rooms/*\fP - room description files
+.LP
+\fI/var/lib/ggzd/*\fP - dynamic game data files and savegames (if any)
 .SH "AUTHORS"
 .LP
 The GGZ Development Team

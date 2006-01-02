@@ -68,10 +68,13 @@
 
 [Logs]
 
-# DumpFile = stderr
+# DumpFile
+#   Dumps the complete network protocol traffic
+#   DumpFile can be either a filename, or 'stdout'/'stderr'
+#DumpFile = stderr
 
 # Logfile
-#   Logfile can be either a filename, or 'syslogd'
+#   Logfile can be either a filename, or 'syslogd', or 'stdout'/'stderr'
 #   syslogd is the default
 #LogFile = /var/log/ggzd/ggzd.log
 
@@ -87,7 +90,7 @@
 LogTypes = Notices Connections
 
 # Debug logfile
-#   Logfile can be either a filename, or 'syslogd'
+#   Logfile can be either a filename, or 'syslogd', or 'stdout'/'stderr'
 #   syslogd is the default
 #DebugFile = /var/log/ggzd/ggzd.debug
 
@@ -106,8 +109,8 @@ LogTypes = Notices Connections
 #                 Misc
 #                 Room
 #                 Lists
-#		  Game_Msg
-#		  XML
+#                 Game_Msg
+#                 XML
 DebugTypes = All
 
 # Syslogd facility
@@ -169,6 +172,7 @@ DebugTypes = All
 # MOTD File
 #   File in ConfDir containing MOTD to be sent to clients.  If the
 #   file doesn't exist, no message of the day will be sent.
+#   WebMOTD can be used in addition for clients which can display it.
 MOTD = ggzd.motd
 #WebMOTD = http://...
 

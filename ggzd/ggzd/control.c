@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 7276 2005-06-10 15:20:37Z josef $
+ * $Id: control.c 7714 2006-01-02 16:53:31Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -197,11 +197,17 @@ static int zeroconf_publish(const char *name, const char *protocol, int port)
 		return -1;
 	}
 
-	ret = sw_discovery_publish(session, 0, name, protocol, NULL, NULL, port, NULL, 0, NULL, NULL, &oid);
+	ret = sw_discovery_publish(session, 0, name, protocol, NULL, NULL,
+		port, NULL, 0, NULL, NULL, &oid);
 	if(ret != SW_OKAY)
 	{
 		fprintf(stderr, "Zeroconf: Error: could not publish\n");
 		return -1;
+	}
+	else
+	{
+		log_msg(GGZ_LOG_NOTICE,
+			"Zeroconf: GGZ server is now known to the LAN");
 	}
 
 	return 0;
@@ -224,12 +230,12 @@ int main(int argc, char *argv[])
 	parse_args(argc, argv);
 	parse_conf_file();
 	motd_read_file(opt.motd_file);
-	
+
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Conf file: %s", opt.local_conf);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Main Port: %d", opt.main_port);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Encryption in use: %d", opt.tls_use);
-	
+
 	init_dirs();
 	init_data();
 	parse_game_files();
@@ -239,7 +245,7 @@ int main(int argc, char *argv[])
 
 	if (!opt.foreground)
 		daemon_init();
-	
+
 	/* FIXME: use sigaction() */
 	signal(SIGTERM, term_handle);
 	signal(SIGINT, term_handle);
@@ -364,6 +370,8 @@ int main(int argc, char *argv[])
 	if (!opt.foreground) {
 		/* This must come AFTER ggzdb_close but BEFORE cleanup_data. */
 		daemon_cleanup();
+	} else {
+		printf("GGZ Server: terminating...\n");
 	}
 
 	cleanup_data(); /* FIXME: must destroy all threads first */

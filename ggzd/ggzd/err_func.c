@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 7191 2005-05-16 21:11:37Z josef $
+ * $Id: err_func.c 7714 2006-01-02 16:53:31Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -54,7 +54,8 @@ LogInfo log_info = {
 		       | GGZ_DBGOPT_USE_SYSLOG ),
 	log_fname: NULL,
 	logfile: NULL,
-	log_types: 0
+	log_types: 0,
+	log_types_console: 0
 #ifdef DEBUG
 	,
 	dbg_fname: NULL,
@@ -92,7 +93,7 @@ static void send_debug_output(int priority,
                               const char *msg)
 {
 	FILE *f;
-	
+
 	/* If logs not yet initialized, send to stderr */
 	if(!log_info.log_initialized) {
 		fflush(stdout);
@@ -160,7 +161,7 @@ static void debug_handler(int priority, const char *msg)
 	}
 
 	send_debug_output(priority, hdr, msg);
-	
+
 	if (kill_me) {
 		send_debug_output(LOG_CRIT, "", "localtime_r failed in err_func.c, aborting");
 		/* cleanup() */
@@ -173,15 +174,15 @@ static void debug_handler(int priority, const char *msg)
 void log_msg(const unsigned log_type, const char *fmt, ...)
 {
 	va_list ap;
+	char msg[4096];
 	
 	va_start(ap, fmt);
-	
+
 	if((log_type == 0) || (log_type & log_info.log_types)) {
 		int priority;
-		char msg[4096];
 
 		vsnprintf(msg, sizeof(msg), fmt, ap);
-	
+
 		switch(log_type) {
 			case GGZ_LOG_ALWAYS:
 				priority = LOG_WARNING;
@@ -195,7 +196,12 @@ void log_msg(const unsigned log_type, const char *fmt, ...)
 		}
 		debug_handler(priority, msg);
 	}
-	
+
+	if(log_type & log_info.log_types_console) {
+		vsnprintf(msg, sizeof(msg), fmt, ap);
+		printf("[LOG] %s\n", msg);
+	}
+
 	va_end(ap);
 }
 
@@ -291,15 +297,21 @@ void logfile_initialize(void)
 /* Open a logfile and return a FILE pointer */
 static FILE *log_open_logfile(char *fname)
 {
-	char *f=fname;
+	char *f = fname;
 	char pidname[strlen(fname) + 9];
+
+	if(!strcmp("stderr", fname)) {
+			return stderr;
+	} else if(!strcmp("stdout", fname)) {
+			return stdout;
+	}
 
 	if(log_info.options & GGZ_LOGOPT_THREAD_LOGS) {
 		snprintf(pidname, sizeof(pidname), "%s_%u", fname, getpid());
 		f = pidname;
 	}
 
-	return( fopen(f, "a") );
+	return (fopen(f, "a"));
 }
 
 

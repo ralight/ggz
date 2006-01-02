@@ -404,6 +404,8 @@ fi
 dnl Make sure a database was configured
 if test "$database" = yes; then
 	AC_MSG_ERROR([no usable database library found.  See above messages for more.])
+else
+	AC_DEFINE_UNQUOTED([DATABASE_TYPE], "${database}", [Database backend type])
 fi
 
 AC_SUBST(LIB_DATABASE)

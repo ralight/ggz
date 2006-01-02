@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 5383 2003-02-04 17:09:50Z jdorje $
+ * $Id: ggzduedit.c 7714 2006-01-02 16:53:31Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -53,11 +53,6 @@ static void add_player(void);
 static void edit_player(int edit);
 static int main_menu(void);
 
-#if 0 /* Not used */
-static void err_sys(const char *fmt, ...);
-static void err_sys_exit(const char *fmt, ...);
-#endif
-
 
 static void getnextline(void)
 {
@@ -103,6 +98,17 @@ static void list_players(void)
 }
 
 
+static void show_all_perms(void)
+{
+	int i;
+
+	printf("Available permissions:\n");
+	for(i=0; i<8; i++) {
+		printf(" [%s] (bit %i)\n", perms_str_table[i], i);
+	}
+}
+
+
 static void show_perms(unsigned int perms, int add_spaces)
 {
 	int i;
@@ -132,6 +138,17 @@ static void show_perms(unsigned int perms, int add_spaces)
 		printf("no permissions set\n");
 	else if(col)
 		printf("\n");
+
+	printf("               -> roles: ");
+	if((perms & PERMS_ADMIN_MASK) == PERMS_ADMIN_MASK)
+		printf("[admin]");
+	if((perms & PERMS_DEFAULT_SETTINGS) == PERMS_DEFAULT_SETTINGS)
+		printf("[registered]");
+	if((perms & PERMS_DEFAULT_ANON) == PERMS_DEFAULT_ANON)
+		printf("[guest]");
+	if(perms & PERMS_CHAT_BOT)
+		printf("[chatbot]");
+	printf("\n");
 }
 
 
@@ -170,6 +187,7 @@ static void add_player(void)
 	strncpy(pe.password, lb, 16);
 	pe.password[16] = '\0';
 
+	show_all_perms();
 	printf("Permissions:   0x");
 	getnextline();
 	sscanf(lb, "%x", &pe.perms);
@@ -293,6 +311,7 @@ static void edit_player(int edit)
 				printf("Password:      [%s]\n", pe.password);
 				break;
 			case '5':
+				show_all_perms();
 				printf("[0x%08X] >0x", pe.perms);
 				getnextline();
 				if(!lb[0])
@@ -408,6 +427,10 @@ int main(int argc, char **argv)
 
 	conn.datadir = NULL;
 	conn.database = NULL;
+	conn.host = NULL;
+	conn.username = NULL;
+	conn.password = NULL;
+	conn.hashing = ggz_strdup("plain");
 
 	while(1)
 	{
@@ -435,6 +458,7 @@ int main(int argc, char **argv)
 					echomode(0);
 					fgets(password, sizeof(password), stdin);
 					echomode(1);
+					printf("\n");
 					optarg = password;
 				}
 				conn.password = optarg;
@@ -449,7 +473,7 @@ int main(int argc, char **argv)
 				printf("[-D | --dbname   <dbname>  ] Name of the database\n");
 				printf("[-H | --host     <hostname>] Host of the database\n");
 				printf("[-u | --username <username>] Database user\n");
-				printf("[-p | --password [password]] Database password\n");
+				printf("[-p | --password=[password]] Database password\n");
 				printf("[-h | --help               ] Display this help\n");
 				printf("[-v | --version            ] Display version number only\n");
 				exit(0);
@@ -460,16 +484,52 @@ int main(int argc, char **argv)
 		}
 	}
 
+	if((!conn.database) || (!conn.host) || (!conn.username) || (!conn.password)) {
+		rc = ggz_conf_parse(GGZDCONFDIR "/ggzd.conf", GGZ_CONF_RDONLY);
+		if(!conn.database)
+			conn.database = ggz_conf_read_string(rc, "General", "DatabaseName", NULL);
+		if(!conn.host)
+			conn.host = ggz_conf_read_string(rc, "General", "DatabaseHost", NULL);
+		if(!conn.username)
+			conn.username = ggz_conf_read_string(rc, "General", "DatabaseUsername", NULL);
+		if(!conn.password)
+			conn.password = ggz_conf_read_string(rc, "General", "DatabasePassword", NULL);
+		ggz_conf_close(rc);
+	}
+
 	if(!conn.datadir) {
 		if(!conn.database) {
 			conn.datadir = DATADIR;
 		}
 	}
 
+	if((!strcmp(DATABASE_TYPE, "db2"))
+	|| (!strcmp(DATABASE_TYPE, "db3"))
+	|| (!strcmp(DATABASE_TYPE, "db4"))) {
+		if(!conn.datadir) {
+			fprintf(stderr, "Database type '%s' needs data directory\n",
+				DATABASE_TYPE);
+			exit(-1);
+		}
+	}
+
+	if((!strcmp(DATABASE_TYPE, "mysql"))
+	|| (!strcmp(DATABASE_TYPE, "pgsql"))
+	|| (!strcmp(DATABASE_TYPE, "sqlite"))) {
+		if((!conn.database) || (!conn.host) || (!conn.username) || (!conn.password)) {
+			fprintf(stderr, "Database type '%s' needs database access parameters\n",
+				DATABASE_TYPE);
+			exit(-1);
+		} else {
+			conn.datadir = NULL;
+		}
+	}
+
 	if(conn.datadir) {
-		printf("Using '%s' for data directory\n", conn.datadir);
+		printf("Using data directory '%s'\n", conn.datadir);
 	} else {
-		printf("Using '%s' for database access\n", conn.database);
+		printf("Using database '%s' as '%s' on '%s'\n",
+			conn.database, conn.username, conn.host);
 	}
 
 	if((rc = _ggzdb_init(conn, 1)) != 0) {
@@ -488,28 +548,3 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-
-#if 0
-/* err_sys functionalities */
-static void err_sys(const char *fmt, ...)
-{
-	va_list ap;
-
-	va_start(ap, fmt);
-	fprintf(stderr, fmt, ap);
-	putc('\n', stderr);
-	va_end(ap);
-}
-
-static void err_sys_exit(const char *fmt, ...)
-{
-	va_list ap;
-
-	va_start(ap, fmt);
-	fprintf(stderr, fmt, ap);
-	putc('\n', stderr);
-	va_end(ap);
-
-	exit(1);
-}
-#endif

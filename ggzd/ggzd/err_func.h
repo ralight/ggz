@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error function prototypes
- * $Id: err_func.h 7191 2005-05-16 21:11:37Z josef $
+ * $Id: err_func.h 7714 2006-01-02 16:53:31Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -73,6 +73,7 @@ typedef struct {
 	char *log_fname;			/* cleanup() */
 	FILE *logfile;
 	unsigned log_types;
+	unsigned log_types_console;
 #ifdef DEBUG
 	char *dbg_fname;			/* cleanup() */
 	FILE *dbgfile;

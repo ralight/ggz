@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 7424 2005-08-15 09:00:27Z josef $
+ * $Id: parse_opt.c 7714 2006-01-02 16:53:31Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -66,12 +66,12 @@ struct LogTypes {
 	unsigned type;
 };
 static const struct LogTypes log_types[] = {
-	{ "all",		GGZ_LOG_ALL },
+	{ "all",			GGZ_LOG_ALL },
 	{ "notices",		GGZ_LOG_NOTICE },
 	{ "connections",	GGZ_LOG_CONNECTION_INFO },
 	{ "security",		GGZ_LOG_SECURITY },
-	{ "update",		GGZ_LOG_UPDATE },
-	{ "tables",		GGZ_LOG_TABLES }
+	{ "update",			GGZ_LOG_UPDATE },
+	{ "tables",			GGZ_LOG_TABLES }
 };
 static int num_log_types = sizeof(log_types) / sizeof(log_types[0]);
 
@@ -113,17 +113,66 @@ static struct option options[] = {
 	{"port", required_argument, 0, 'p'},
 	{"help", no_argument, 0, 'h'},
 	{"version", no_argument, 0, 'v'},
+	{"specs", no_argument, 0, 's'},
 	{0, 0, 0, 0}
 };
+
+/* Convert a string into a list */
+/* FIXME: should be made available from ggz_read_list() */
+static char **_ggz_string_to_list(const char *s, const char *sep)
+{
+	char *sc = ggz_strdup(s);
+	char **list = NULL;
+	int count = 0;
+	char *tok;
+
+	tok = strtok(sc, sep);
+	while(tok)
+	{
+		count++;
+		list = (char**)ggz_realloc(list, (count + 1) * sizeof(char**));
+		list[count - 1] = ggz_strdup(tok);
+		list[count] = NULL;
+		tok = strtok(NULL, sep);
+	}
+	ggz_free(sc);
+
+	return list;
+}
+
+#ifdef DEBUG
+#define SPEC_DEBUG 1
+#else
+#define SPEC_DEBUG 0
+#endif
+#define SPEC_DB DATABASE_TYPE
+#ifdef WITH_HOWL
+#define SPEC_HOWL 1
+#else
+#define SPEC_HOWL 0
+#endif
+
+static void dump_specs(void)
+{
+	printf("GGZ Gaming Zone server (ggzd) specifications\n");
+	printf("Version: %s\n", VERSION);
+	printf("Protocol version: %i\n", GGZ_CS_PROTO_VERSION);
+	printf("Configuration: %s/ggzd.conf\n", GGZDCONFDIR);
+	printf("Debugging: %s\n", (SPEC_DEBUG ? "yes" : "no"));
+	printf("Database backend: %s\n", SPEC_DB);
+	printf("Zeroconf support: %s\n", (SPEC_HOWL ? "yes" : "no"));
+}
 
 /* Parse command-line options */
 void parse_args(int argc, char *argv[])
 {
 	int sopt, optindex;
+	int t_count;
+	char **t_list;
 
 	while(1)
 	{
-		sopt = getopt_long(argc, argv, "vhFf:l:p:", options, &optindex);
+		sopt = getopt_long(argc, argv, "vhsFf:l:p:", options, &optindex);
 		if(sopt == -1) break;
 		switch(sopt)
 		{
@@ -134,7 +183,12 @@ void parse_args(int argc, char *argv[])
 				opt.local_conf = optarg;
 				break;
 			case 'l':
-				log_info.log_types = atoi(optarg);
+				/*log_info.log_types = atoi(optarg);*/
+				t_list = _ggz_string_to_list(optarg, ",");
+				t_count = 0;
+				while((t_list) && (t_list[t_count]))
+					t_count++;
+				log_info.log_types_console = parse_log_types(t_count, t_list);
 				break;
 			case 'p':
 				opt.main_port = atoi(optarg);
@@ -142,18 +196,23 @@ void parse_args(int argc, char *argv[])
 			case 'h':
 	 			printf("GGZD - The main server of the GGZ Gaming Zone\n"),
 	 			printf("Copyright (C) 1999 - 2002 Brent Hendricks\n"),
-	 			printf("Copyright (C) 2003 - 2005 The GGZ Gaming Zone developers\n"),
+	 			printf("Copyright (C) 2003 - 2006 The GGZ Gaming Zone developers\n"),
 	 			printf("\n"),
 	 			printf("[-F | --foreground ] Tells ggzd to run in the foreground\n"),
 				printf("[-f | --file <file>] Configuration file\n"),
-				printf("[-l | --log <types>] Types of logging to perform\n"),
+				printf("[-l | --log <types>] Types of logging to the console to perform\n"),
 				printf("[-p | --port <port>] GGZ port number\n"),
+				printf("[-s | --specs      ] Display compilation specifications\n"),
 				printf("[-v | --version    ] Display version number\n"),
 				printf("[-h | --help       ] Display this help screen\n"),
 				exit(0);
 				break;
 			case 'v':
-				printf("GGZ Gaming Zone server: version %s\n", VERSION);
+				printf("%s\n", VERSION);
+				exit(0);
+				break;
+			case 's':
+				dump_specs();
 				exit(0);
 				break;
 			default:
@@ -299,7 +358,7 @@ static void get_config_options(int ch)
 	log_info.log_fname = ggz_conf_read_string(ch, "Logs", "LogFile", NULL);
 	ggz_conf_read_list(ch, "Logs", "LogTypes", &t_count, &t_list);
 	if(t_count > 0)
-		log_info.log_types |= parse_log_types(t_count, t_list);
+		log_info.log_types = parse_log_types(t_count, t_list);
 #ifdef DEBUG
 	log_info.dbg_fname = ggz_conf_read_string(ch, "Logs", "DebugFile", NULL);
 	t_count = 0;
@@ -784,9 +843,13 @@ static unsigned parse_log_types(int num, char **entry)
 		for(j=0; j<num_log_types; j++)
 			if(!strcasecmp(entry[i], log_types[j].name))
 				break;
-		if(j == num_log_types)
+		if(j == num_log_types) {
 			err_msg("Config: Invalid log type '%s' specified",
 				entry[i]);
+			err_msg("Possible types are:");
+			for(j = 0; j < num_log_types; j++)
+				err_msg("- %s", log_types[j].name);
+		}
 		else {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
 				"%s added to log types", log_types[j].name);
@@ -818,9 +881,13 @@ static void parse_dbg_types(int num, char **entry)
 				/* Enable all debugging types */
 				for (j = 0; dbg_types[j]; j++)
 					ggz_debug_enable(dbg_types[j]);
-			} else
+			} else {
 				err_msg("Config: Invalid debug type '%s' specified",
 					entry[i]);
+				err_msg("Possible types are:");
+				for(j = 0; dbg_types[j]; j++)
+					err_msg("- %s", dbg_types[j]);
+			}
 		} else {
 			/* FIXME: how does this work if debugging isn't set up
 			   yet??? */
