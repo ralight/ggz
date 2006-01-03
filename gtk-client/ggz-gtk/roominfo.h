@@ -2,7 +2,7 @@
  * File: roominfo.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.h 7680 2005-12-27 21:42:26Z jdorje $
+ * $Id: roominfo.h 7718 2006-01-03 06:48:59Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -26,4 +26,4 @@
 
 #include <ggzcore.h>
 
-void room_info_create_or_raise(GtkWidget *parent, GGZRoom * room);
+void room_info_create_or_raise(GGZRoom * room);

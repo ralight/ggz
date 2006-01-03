@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 7681 2005-12-28 00:47:17Z jdorje $
+ * $Id: roomlist.c 7718 2006-01-03 06:48:59Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -103,8 +103,7 @@ static void client_join_room(GGZRoom *room)
 	}
 
 	/* If we get here, there was an error */
-	msgbox(lookup_widget(room_list, "parent_win"),
-	       err_msg, _("Error joining room"), MSGBOX_OKONLY, MSGBOX_STOP, 
+	msgbox(err_msg, _("Error joining room"), MSGBOX_OKONLY, MSGBOX_STOP, 
 	       MSGBOX_NORMAL);
 }
 
@@ -119,9 +118,8 @@ static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	/* Display room's info in a nice dialog */
 	GGZRoom *room = data;
-	GtkWidget *parent = lookup_widget(room_list, "parent_win");
 
-	room_info_create_or_raise(parent, room);
+	room_info_create_or_raise(room);
 }
 
 static GtkWidget *create_mnu_room(GGZRoom *room)

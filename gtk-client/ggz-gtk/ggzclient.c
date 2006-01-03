@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7682 2005-12-28 04:13:31Z jdorje $
+ * $Id: ggzclient.c 7718 2006-01-03 06:48:59Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -120,7 +120,7 @@ static GGZHookReturn ggz_connect_fail(GGZServerEvent id,
 	msg =
 	    g_strdup_printf(_("Error connecting to server: %s"),
 			    event_message);
-	msgbox(win_main, msg, _("Error"),
+	msgbox(msg, _("Error"),
 	       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
@@ -196,7 +196,7 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id,
 		message =
 		    g_strdup_printf(_("Your new password is %s"),
 				    password);
-		msgbox(win_main, message, _("New password"), MSGBOX_OKONLY,
+		msgbox(message, _("New password"), MSGBOX_OKONLY,
 		       MSGBOX_INFO, MSGBOX_NORMAL);
 		g_free(message);
 	}
@@ -332,7 +332,7 @@ static GGZHookReturn ggz_entered_fail(GGZServerEvent id,
 	msg =
 	    g_strdup_printf(_("Error joining room: %s"),
 			    event_message);
-	msgbox(win_main, msg, _("Error"),
+	msgbox(msg, _("Error"),
 	       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
@@ -503,7 +503,7 @@ static GGZHookReturn ggz_table_launch_fail(GGZRoomEvent id,
 	msg =
 	    g_strdup_printf(_("Error launching table: %s"),
 			    event_message);
-	msgbox(win_main, msg, _("Error"),
+	msgbox(msg, _("Error"),
 	       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
@@ -538,7 +538,7 @@ static GGZHookReturn ggz_table_join_fail(GGZRoomEvent id,
 	msg =
 	    g_strdup_printf(_("Error joining table: %s"),
 			    event_message);
-	msgbox(win_main, msg, _("Error"),
+	msgbox(msg, _("Error"),
 	       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
@@ -591,7 +591,7 @@ static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id,
 	msg =
 	    g_strdup_printf(_("Error leaving table: %s"),
 			    event_message);
-	msgbox(win_main, msg, _("Error"),
+	msgbox(msg, _("Error"),
 	       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
@@ -1021,7 +1021,7 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id,
 
 	if (ggzcore_server_get_state(server) != GGZ_STATE_RECONNECTING) {
 		msg = g_strdup_printf(_("Server error: %s"), event_message);
-		msgbox(win_main, msg, _("Error"),
+		msgbox(msg, _("Error"),
 		       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 		g_free(msg);
 	}

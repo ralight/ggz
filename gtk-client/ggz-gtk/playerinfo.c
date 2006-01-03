@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 7717 2006-01-03 06:14:23Z jdorje $
+ * $Id: playerinfo.c 7718 2006-01-03 06:48:59Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -99,7 +99,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 	GtkWidget *chat;
 
 	dlg_info = gtk_dialog_new_with_buttons(_("Player Information"),
-					       NULL, 0,
+					       GTK_WINDOW(win_main), 0,
 					       GTK_STOCK_CLOSE,
 					       GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dlg_info), "dlg_info", dlg_info);
