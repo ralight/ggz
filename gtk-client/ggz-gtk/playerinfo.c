@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 6382 2004-11-16 03:37:51Z jdorje $
+ * $Id: playerinfo.c 7717 2006-01-03 06:14:23Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -39,158 +39,12 @@
 #include <ggzcore.h>
 
 #include "chat.h"
-#include "client.h"
 #include "playerinfo.h"
-#include "server.h"
 #include "support.h"
 
 
 static GtkWidget *dialog;
-static GtkWidget *create_dlg_info(void);
 static char *player_name;
-
-
-/* player_info_create_or_raise() - Displays the dialog or updates current
- *                          dialog with new room's information
- *
- * Recieves:
- * GGZPlayer*	: Player to display info about
- *
- * Returns:
- */
-
-void player_info_create_or_raise(GGZPlayer * player)
-{
-	GtkWidget *tmp;
-	GGZTable *table = ggzcore_player_get_table(player);
-	char text[128];
-	char *ptype = _("Unknown");
-	int wins, losses, ties, forfeits;
-	int rating, ranking;
-	int highscore;
-
-	if (!dialog) {
-		dialog = create_dlg_info();
-		gtk_widget_show(dialog);
-	} else {
-		gdk_window_show(dialog->window);
-		gdk_window_raise(dialog->window);
-	}
-
-	tmp = g_object_get_data(G_OBJECT(dialog), "handle");
-	gtk_label_set_text(GTK_LABEL(tmp),
-			   ggzcore_player_get_name(player));
-	if (player_name)
-		g_free(player_name);
-	player_name = g_strdup(ggzcore_player_get_name(player));
-
-	tmp = g_object_get_data(G_OBJECT(dialog), "table");
-	if (table)
-		snprintf(text, sizeof(text), "%d",
-			 ggzcore_table_get_id(table));
-	else
-		snprintf(text, sizeof(text), "-");
-	gtk_label_set_text(GTK_LABEL(tmp), text);
-
-
-	tmp = g_object_get_data(G_OBJECT(dialog), "type");
-	switch (ggzcore_player_get_type(player)) {
-	case GGZ_PLAYER_UNKNOWN:
-		ptype = _("Unknown");
-		break;
-	case GGZ_PLAYER_NORMAL:
-		ptype = _("Registered");
-		break;
-	case GGZ_PLAYER_GUEST:
-		ptype = _("Guest");
-		break;
-	case GGZ_PLAYER_ADMIN:
-		ptype = _("Administrator");
-		break;
-	case GGZ_PLAYER_BOT:
-		ptype = _("Bot");
-		break;
-	}
-	gtk_label_set_text(GTK_LABEL(tmp), ptype);
-
-	/* The only thing we don't show is lag. */
-
-	if (ggzcore_player_get_record(player, &wins,
-				      &losses, &ties, &forfeits)) {
-		tmp = g_object_get_data(G_OBJECT(dialog), "record_label");
-		gtk_widget_show(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "record");
-		gtk_widget_show(tmp);
-
-		snprintf(text, sizeof(text), "%d-%d", wins, losses);
-		if (ties > 0) {
-			snprintf(text + strlen(text),
-				 sizeof(text) - strlen(text), "-%d", ties);
-		}
-		if (forfeits > 0) {
-			snprintf(text + strlen(text),
-				 sizeof(text) - strlen(text),
-				 " (%d)", forfeits);
-		}
-
-		gtk_label_set_text(GTK_LABEL(tmp), text);
-	} else {
-		tmp = g_object_get_data(G_OBJECT(dialog), "record_label");
-		gtk_widget_hide(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "record");
-		gtk_widget_hide(tmp);
-	}
-
-	if (ggzcore_player_get_rating(player, &rating)) {
-		tmp = g_object_get_data(G_OBJECT(dialog), "rating_label");
-		gtk_widget_show(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "rating");
-		gtk_widget_show(tmp);
-
-		snprintf(text, sizeof(text), "%d", rating);
-
-		gtk_label_set_text(GTK_LABEL(tmp), text);
-	} else {
-		tmp = g_object_get_data(G_OBJECT(dialog), "rating_label");
-		gtk_widget_hide(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "rating");
-		gtk_widget_hide(tmp);
-	}
-
-	if (ggzcore_player_get_ranking(player, &ranking)) {
-		tmp = g_object_get_data(G_OBJECT(dialog), "ranking_label");
-		gtk_widget_show(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "ranking");
-		gtk_widget_show(tmp);
-
-		snprintf(text, sizeof(text), "#%d", ranking);
-
-		gtk_label_set_text(GTK_LABEL(tmp), text);
-	} else {
-		tmp = g_object_get_data(G_OBJECT(dialog), "ranking_label");
-		gtk_widget_hide(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "ranking");
-		gtk_widget_hide(tmp);
-	}
-
-	if (ggzcore_player_get_highscore(player, &highscore)) {
-		tmp = g_object_get_data(G_OBJECT(dialog),
-					"highscore_label");
-		gtk_widget_show(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "highscore");
-		gtk_widget_show(tmp);
-
-		snprintf(text, sizeof(text), "%d", highscore);
-
-		gtk_label_set_text(GTK_LABEL(tmp), text);
-	} else {
-		tmp = g_object_get_data(G_OBJECT(dialog),
-					"highscore_label");
-		gtk_widget_hide(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "highscore");
-		gtk_widget_hide(tmp);
-	}
-}
 
 
 static void chat_activate(GtkEditable * editable, gpointer data)
@@ -199,6 +53,7 @@ static void chat_activate(GtkEditable * editable, gpointer data)
 	GtkLabel *handle;
 	const char *text;
 	gchar *name;
+	GGZServer *server = data;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
 	entry = g_object_get_data(G_OBJECT(dialog), "chat");
@@ -220,7 +75,7 @@ static void chat_activate(GtkEditable * editable, gpointer data)
 }
 
 
-GtkWidget *create_dlg_info(void)
+static GtkWidget *create_dlg_info(GGZServer *server)
 {
 	GtkWidget *dlg_info;
 	GtkWidget *dialog_vbox;
@@ -244,7 +99,7 @@ GtkWidget *create_dlg_info(void)
 	GtkWidget *chat;
 
 	dlg_info = gtk_dialog_new_with_buttons(_("Player Information"),
-					       GTK_WINDOW(win_main), 0,
+					       NULL, 0,
 					       GTK_STOCK_CLOSE,
 					       GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dlg_info), "dlg_info", dlg_info);
@@ -417,7 +272,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_table_attach(GTK_TABLE(display_table), chat,
 			 2, 3, 7, 8, GTK_EXPAND, 0, 0, 0);
 	g_signal_connect(chat, "activate",
-			 GTK_SIGNAL_FUNC(chat_activate), NULL);
+			 GTK_SIGNAL_FUNC(chat_activate), server);
 
 	g_signal_connect(dlg_info, "destroy",
 			 GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dialog);
@@ -425,4 +280,148 @@ GtkWidget *create_dlg_info(void)
 			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
 
 	return dlg_info;
+}
+
+
+/* player_info_create_or_raise() - Displays the dialog or updates current
+ *                          dialog with new room's information
+ *
+ * Recieves:
+ * GGZPlayer*	: Player to display info about
+ *
+ * Returns:
+ */
+void player_info_create_or_raise(GGZPlayer *player)
+{
+	GtkWidget *tmp;
+	GGZRoom *room = ggzcore_player_get_room(player);
+	GGZTable *table = ggzcore_player_get_table(player);
+	GGZServer *server = ggzcore_room_get_server(room);
+	char text[128];
+	char *ptype = _("Unknown");
+	int wins, losses, ties, forfeits;
+	int rating, ranking;
+	int highscore;
+
+	if (!dialog) {
+		dialog = create_dlg_info(server);
+		gtk_widget_show(dialog);
+	} else {
+		gdk_window_show(dialog->window);
+		gdk_window_raise(dialog->window);
+	}
+
+	tmp = g_object_get_data(G_OBJECT(dialog), "handle");
+	gtk_label_set_text(GTK_LABEL(tmp),
+			   ggzcore_player_get_name(player));
+	if (player_name)
+		g_free(player_name);
+	player_name = g_strdup(ggzcore_player_get_name(player));
+
+	tmp = g_object_get_data(G_OBJECT(dialog), "table");
+	if (table)
+		snprintf(text, sizeof(text), "%d",
+			 ggzcore_table_get_id(table));
+	else
+		snprintf(text, sizeof(text), "-");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
+
+
+	tmp = g_object_get_data(G_OBJECT(dialog), "type");
+	switch (ggzcore_player_get_type(player)) {
+	case GGZ_PLAYER_UNKNOWN:
+		ptype = _("Unknown");
+		break;
+	case GGZ_PLAYER_NORMAL:
+		ptype = _("Registered");
+		break;
+	case GGZ_PLAYER_GUEST:
+		ptype = _("Guest");
+		break;
+	case GGZ_PLAYER_ADMIN:
+		ptype = _("Administrator");
+		break;
+	case GGZ_PLAYER_BOT:
+		ptype = _("Bot");
+		break;
+	}
+	gtk_label_set_text(GTK_LABEL(tmp), ptype);
+
+	/* The only thing we don't show is lag. */
+
+	if (ggzcore_player_get_record(player, &wins,
+				      &losses, &ties, &forfeits)) {
+		tmp = g_object_get_data(G_OBJECT(dialog), "record_label");
+		gtk_widget_show(tmp);
+		tmp = g_object_get_data(G_OBJECT(dialog), "record");
+		gtk_widget_show(tmp);
+
+		snprintf(text, sizeof(text), "%d-%d", wins, losses);
+		if (ties > 0) {
+			snprintf(text + strlen(text),
+				 sizeof(text) - strlen(text), "-%d", ties);
+		}
+		if (forfeits > 0) {
+			snprintf(text + strlen(text),
+				 sizeof(text) - strlen(text),
+				 " (%d)", forfeits);
+		}
+
+		gtk_label_set_text(GTK_LABEL(tmp), text);
+	} else {
+		tmp = g_object_get_data(G_OBJECT(dialog), "record_label");
+		gtk_widget_hide(tmp);
+		tmp = g_object_get_data(G_OBJECT(dialog), "record");
+		gtk_widget_hide(tmp);
+	}
+
+	if (ggzcore_player_get_rating(player, &rating)) {
+		tmp = g_object_get_data(G_OBJECT(dialog), "rating_label");
+		gtk_widget_show(tmp);
+		tmp = g_object_get_data(G_OBJECT(dialog), "rating");
+		gtk_widget_show(tmp);
+
+		snprintf(text, sizeof(text), "%d", rating);
+
+		gtk_label_set_text(GTK_LABEL(tmp), text);
+	} else {
+		tmp = g_object_get_data(G_OBJECT(dialog), "rating_label");
+		gtk_widget_hide(tmp);
+		tmp = g_object_get_data(G_OBJECT(dialog), "rating");
+		gtk_widget_hide(tmp);
+	}
+
+	if (ggzcore_player_get_ranking(player, &ranking)) {
+		tmp = g_object_get_data(G_OBJECT(dialog), "ranking_label");
+		gtk_widget_show(tmp);
+		tmp = g_object_get_data(G_OBJECT(dialog), "ranking");
+		gtk_widget_show(tmp);
+
+		snprintf(text, sizeof(text), "#%d", ranking);
+
+		gtk_label_set_text(GTK_LABEL(tmp), text);
+	} else {
+		tmp = g_object_get_data(G_OBJECT(dialog), "ranking_label");
+		gtk_widget_hide(tmp);
+		tmp = g_object_get_data(G_OBJECT(dialog), "ranking");
+		gtk_widget_hide(tmp);
+	}
+
+	if (ggzcore_player_get_highscore(player, &highscore)) {
+		tmp = g_object_get_data(G_OBJECT(dialog),
+					"highscore_label");
+		gtk_widget_show(tmp);
+		tmp = g_object_get_data(G_OBJECT(dialog), "highscore");
+		gtk_widget_show(tmp);
+
+		snprintf(text, sizeof(text), "%d", highscore);
+
+		gtk_label_set_text(GTK_LABEL(tmp), text);
+	} else {
+		tmp = g_object_get_data(G_OBJECT(dialog),
+					"highscore_label");
+		gtk_widget_hide(tmp);
+		tmp = g_object_get_data(G_OBJECT(dialog), "highscore");
+		gtk_widget_hide(tmp);
+	}
 }
