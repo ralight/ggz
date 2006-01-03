@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7718 2006-01-03 06:48:59Z jdorje $
+ * $Id: client.c 7719 2006-01-03 06:55:00Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -758,7 +758,6 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 GtkWidget*
 create_win_main (void)
 {
-  GtkWidget *win_main;
   GtkWidget *main_vbox;
   GtkWidget *menubar;
   GtkWidget *ggz;
@@ -1301,7 +1300,7 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (lists_vbox), room_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (room_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  room_list = create_room_list(win_main);
+  room_list = create_room_list();
   gtk_container_add (GTK_CONTAINER (room_scrolledwindow), room_list);
 
   player_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);

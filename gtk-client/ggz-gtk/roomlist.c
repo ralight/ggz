@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 7718 2006-01-03 06:48:59Z jdorje $
+ * $Id: roomlist.c 7719 2006-01-03 06:55:00Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -319,7 +319,7 @@ void update_room_list(GGZServer *server)
 	}
 }
 
-GtkWidget *create_room_list(GtkWidget *window)
+GtkWidget *create_room_list(void)
 {
 	GtkListStore *store;
 	GtkWidget *tree;
@@ -348,12 +348,11 @@ GtkWidget *create_room_list(GtkWidget *window)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	gtk_widget_ref(tree);
-	g_object_set_data_full(G_OBJECT(window), "room_list",
+	g_object_set_data_full(G_OBJECT(win_main), "room_list",
 			       tree,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	g_object_set_data(G_OBJECT(tree), "room_list_store", store);
-	g_object_set_data(G_OBJECT(tree), "parent_win", window);
-	g_object_set_data(G_OBJECT(window), "room_list_store", store);
+	g_object_set_data(G_OBJECT(win_main), "room_list_store", store);
 	gtk_widget_show(tree);
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
