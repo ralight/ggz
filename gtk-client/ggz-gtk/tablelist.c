@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 6738 2005-01-19 06:48:08Z jdorje $
+ * $Id: tablelist.c 7722 2006-01-03 20:31:25Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -38,7 +38,6 @@
 
 #include "client.h"
 #include "tablelist.h"
-#include "server.h"
 #include "support.h"
 
 enum {
@@ -47,6 +46,9 @@ enum {
 	TABLE_COLUMN_DESC,
 	TABLE_COLUMNS
 };
+
+static GtkWidget *table_list;
+static GGZServer *server;
 
 static gboolean table_list_event(GtkWidget *widget, GdkEvent *event,
 				 gpointer data)
@@ -117,7 +119,7 @@ static GtkWidget *create_mnu_table(void)
 
 GGZTable *get_selected_table(void)
 {
-	GtkWidget *tree = lookup_widget(win_main, "table_list");
+	GtkWidget *tree = table_list;
 	GtkTreeSelection *select
 	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
@@ -137,27 +139,27 @@ GGZTable *get_selected_table(void)
 
 void clear_table_list(void)
 {
-	GtkWidget *store;
+	GtkWidget *store = lookup_widget(table_list, "table_list_store");
 
-	store = lookup_widget(win_main, "table_list_store");
 	gtk_list_store_clear(GTK_LIST_STORE(store));
 }
 
 void sensitize_table_list(gboolean sensitive)
 {
-	GtkWidget *tmp = lookup_widget(win_main, "table_list");
-	gtk_widget_set_sensitive(tmp, sensitive);
+	gtk_widget_set_sensitive(table_list, sensitive);
 }
 
-void update_table_list(void)
+void update_table_list(GGZServer *new_server)
 {
 	GtkListStore *store;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	int i;
 	const int num = ggzcore_room_get_num_tables(room);
 
+	server = new_server;
+
 	/* Retrieve the player list widget. */
-	store = GTK_LIST_STORE(lookup_widget(win_main, "table_list_store"));
+	store = GTK_LIST_STORE(lookup_widget(table_list, "table_list_store"));
 
 	gtk_list_store_clear(store);
 
@@ -226,6 +228,7 @@ GtkWidget *create_table_list(GtkWidget * window)
 				 tree,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	g_object_set_data(G_OBJECT(window), "table_list_store", store);
+	g_object_set_data(G_OBJECT(tree), "table_list_store", store);
 	gtk_widget_show(tree);
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
@@ -235,6 +238,9 @@ GtkWidget *create_table_list(GtkWidget * window)
 
 	g_signal_connect(tree, "button-press-event",
 			 GTK_SIGNAL_FUNC(table_list_event), NULL);
+
+	table_list = tree;
+	server = NULL;
 
 	return tree;
 }

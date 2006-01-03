@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7718 2006-01-03 06:48:59Z jdorje $
+ * $Id: ggzclient.c 7722 2006-01-03 20:31:25Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -469,7 +469,7 @@ static GGZHookReturn ggz_list_tables(GGZRoomEvent id,
 				     const void *event_data,
 				     const void *user_data)
 {
-	update_table_list();
+	update_table_list(server);
 	return GGZ_HOOK_OK;
 }
 
@@ -478,7 +478,7 @@ static GGZHookReturn ggz_table_update(GGZRoomEvent id,
 				      const void *event_data,
 				      const void *user_data)
 {
-	update_table_list();
+	update_table_list(server);
 	update_player_list(server);
 	return GGZ_HOOK_OK;
 }

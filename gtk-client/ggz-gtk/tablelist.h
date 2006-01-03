@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.h 6278 2004-11-06 00:16:45Z jdorje $
+ * $Id: tablelist.h 7722 2006-01-03 20:31:25Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -33,7 +33,7 @@ void sensitize_table_list(gboolean sensitive);
 GGZTable *get_selected_table(void);
 
 /* Update the table list. */
-void update_table_list(void);
+void update_table_list(GGZServer *server);
 
 /* Create the table list.  Pass it the main window. */
 GtkWidget *create_table_list(GtkWidget * window);
