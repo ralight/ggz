@@ -1,0 +1,1 @@
+SUBDIRS = ggz-config ggzcore
