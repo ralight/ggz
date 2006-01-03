@@ -90,7 +90,7 @@ echo -n "[aclocal]"
 echo -n "[autoheader]"
 autoheader -I $srcdir || { echo "autoheader failed."; exit; }
 echo -n "[automake]"
-(set -o pipefail && cd $srcdir && automake --add-missing --gnu 2>&1 | (grep -v installing || true)) || { echo "automake failed."; exit; }
+set -o pipefail 2>/dev/null && { ((cd $srcdir && automake --add-missing --gnu 2>&1) | (grep -v installing || true)) || { echo "automake failed." ; exit; } } || { (cd $srcdir && automake --add-missing --gnu) || { echo "automake failed." ; exit; } }
 if test -f $srcdir/am_edit; then
 	echo -n "[am_edit]"
 	perl $srcdir/am_edit --foreign-libtool --no-autodist || { echo "am_edit failed."; exit; }
