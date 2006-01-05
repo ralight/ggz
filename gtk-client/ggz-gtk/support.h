@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.h 7718 2006-01-03 06:48:59Z jdorje $
+ * $Id: support.h 7723 2006-01-05 22:21:02Z jdorje $
  *
  * Support code
  *
@@ -53,16 +53,24 @@
 #endif
 */
 #ifdef ENABLE_NLS
-#include <libintl.h>
-#ifdef gettext_noop
-#define N_(x) gettext_noop(x)
+#  include <libintl.h>
+#  ifndef N_
+#    ifdef gettext_noop
+#      define N_(x) gettext_noop(x)
+#    else
+#      define N_(x) x
+#    endif
+#  endif
+#  ifndef _
+#    define _(x) gettext(x)
+#  endif
 #else
-#define N_(x) x
-#endif
-#define _(x) gettext(x)
-#else
-#define N_(x) x
-#define _(x) x
+#  ifndef N_
+#    define N_(x) x
+#  endif
+#  ifndef _
+#    define _(x) x
+#  endif
 #endif
 
 
