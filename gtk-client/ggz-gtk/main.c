@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 7725 2006-01-06 00:56:55Z jdorje $
+ * $Id: main.c 7727 2006-01-06 01:21:19Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -90,8 +90,7 @@ static void init_debug(void)
 
 int main (int argc, char *argv[])
 {
-	GGZOptions opt;
-	char *global_conf, *user_conf, *init_version;
+	char *init_version;
 	gboolean ret;
 	
 #ifdef ENABLE_NLS
@@ -102,24 +101,13 @@ int main (int argc, char *argv[])
 	textdomain("ggz-gtk");
 	setlocale(LC_ALL, "");
 #endif
-	
-	/*global_conf = "/etc/ggz/ggz.conf";*/
-	/* We don't support this quite yet */
-	global_conf = NULL;
-	user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));
-	ggzcore_conf_initialize(global_conf, user_conf);
-	g_free(user_conf);
 
-	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES | GGZ_OPT_RECONNECT;
-	
-	ggzcore_init(opt);
+	client_initialize();
 
 #ifdef DEBUG
 	init_debug();
 #endif
 
-	server_profiles_load();
-	
 #if GTK_CHECK_VERSION(2, 6, 0)
 	/* Support for command line options since Gtk+ 2.6 */
 

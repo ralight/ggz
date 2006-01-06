@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7726 2006-01-06 01:08:10Z jdorje $
+ * $Id: client.c 7727 2006-01-06 01:21:19Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -754,6 +754,26 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 		gtk_paned_set_position(GTK_PANED(tmp), 0);
 }
 
+
+/* Call this to load ggzcore configuration, and do other initializations. */
+void client_initialize(void)
+{
+	GGZOptions opt;
+	char *global_conf, *user_conf;
+
+	/*global_conf = "/etc/ggz/ggz.conf";*/
+	/* We don't support this quite yet */
+	global_conf = NULL;
+	user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));
+	ggzcore_conf_initialize(global_conf, user_conf);
+	g_free(user_conf);
+
+	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES | GGZ_OPT_RECONNECT;
+
+	ggzcore_init(opt);
+
+	server_profiles_load();	
+}
 
 GtkWidget*
 create_win_main (void)
