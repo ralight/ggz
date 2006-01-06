@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Client
  * Date: 6/19/00
- * $Id: server.h 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: server.h 7724 2006-01-06 00:15:10Z jdorje $
  *
  * This file contains functions for handling server connection profiles
  *
@@ -34,6 +34,8 @@
  */
 
 #include <glib.h>
+
+#include <ggzcore.h>
 
 typedef struct Server {
 	
