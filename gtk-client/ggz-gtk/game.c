@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 7726 2006-01-06 01:08:10Z jdorje $
+ * $Id: game.c 7735 2006-01-06 08:27:50Z jdorje $
  *
  * Functions for handling game events
  *
@@ -330,9 +330,26 @@ int game_initialize(int spectate)
 		return -1;
 	}
 
-	module = pick_module(gt);
-	if (!module)
-		return -1;
+	if (embedded_protocol_engine && embedded_protocol_version) {
+		const char *engine = ggzcore_gametype_get_prot_engine(gt);
+		const char *version = ggzcore_gametype_get_prot_version(gt);
+
+		module = NULL;
+		if (strcmp(engine, embedded_protocol_engine) != 0
+		    || strcmp(version, embedded_protocol_version) != 0) {
+		  printf("%s %s vs %s %s\n", engine, version,
+			 embedded_protocol_engine, embedded_protocol_version);
+			msgbox(_("You need to launch the GGZ client directly\n"
+				 "to be able to play this game."),
+			       _("Launch Error"),
+			       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+			return -1;
+		}
+	} else {
+		module = pick_module(gt);
+		if (!module)
+			return -1;
+	}
 
 	/* Create new game using this module */
 	game = ggzcore_game_new();
@@ -340,6 +357,10 @@ int game_initialize(int spectate)
 
 	/* Register callbacks */
 	game_register(game);
+
+	if (launched_cb) {
+		launched_cb();
+	}
 
 	return 0;
 }

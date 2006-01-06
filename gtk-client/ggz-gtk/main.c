@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 7734 2006-01-06 07:00:42Z jdorje $
+ * $Id: main.c 7735 2006-01-06 08:27:50Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -102,7 +102,7 @@ int main (int argc, char *argv[])
 	setlocale(LC_ALL, "");
 #endif
 
-	client_initialize(NULL);
+	client_initialize(NULL, NULL, NULL, NULL);
 
 #ifdef DEBUG
 	init_debug();

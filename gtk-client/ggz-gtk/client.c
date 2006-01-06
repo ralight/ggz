@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7734 2006-01-06 07:00:42Z jdorje $
+ * $Id: client.c 7735 2006-01-06 08:27:50Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -61,6 +61,8 @@
 
 GtkWidget *win_main;
 void (*connected_cb)(GGZServer *server);
+void (*launched_cb)(void);
+char *embedded_protocol_engine, *embedded_protocol_version;
 
 static gint spectating = -1;
 
@@ -759,7 +761,10 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 
 
 /* Call this to load ggzcore configuration, and do other initializations. */
-void client_initialize(void (*connected)(GGZServer *server))
+void client_initialize(void (*connected)(GGZServer *server),
+		       void (*launched)(void),
+		       char *protocol_engine,
+		       char *protocol_version)
 {
 	GGZOptions opt;
 	char *global_conf, *user_conf;
@@ -772,12 +777,22 @@ void client_initialize(void (*connected)(GGZServer *server))
 	g_free(user_conf);
 
 	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES | GGZ_OPT_RECONNECT;
+	if (protocol_engine && protocol_version) {
+		/* If an engine+version are passed in, we use those as the
+		 * embedded module. */
+		opt.flags |= GGZ_OPT_EMBEDDED;
+	}
 
 	ggzcore_init(opt);
 
 	server_profiles_load();	
 
 	connected_cb = connected;
+	launched_cb = launched;
+	if (embedded_protocol_engine) ggz_free(embedded_protocol_engine);
+	if (embedded_protocol_version) ggz_free(embedded_protocol_version);
+	embedded_protocol_engine = ggz_strdup(protocol_engine);
+	embedded_protocol_version = ggz_strdup(protocol_version);
 }
 
 GtkWidget *create_main_area(GtkWidget *main_win)
