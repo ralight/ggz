@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 7730 2006-01-06 05:31:52Z jdorje $
+#  $Id: Makefile.am 7736 2006-01-06 08:28:12Z jdorje $
 
 SUBDIRS = .
 
@@ -7,6 +7,7 @@ AM_CPPFLAGS = @GTK_CFLAGS@ -I$(top_srcdir)/intl \
 	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
 
 bin_PROGRAMS = ggz-gtk
+noinst_LIBRARIES = libggz-gtk.a
 
 ggzdata_DATA =		about_bg.png		\
 			ggz_gtk_admin.svg 	\
@@ -20,8 +21,7 @@ ggzdata_DATA =		about_bg.png		\
 			ggz_gtk_lag4.svg	\
 			ggz_gtk_lag5.svg
 
-ggz_gtk_SOURCES =	main.c \
-			about.c \
+libggz_gtk_a_SOURCES =	about.c \
 			about.h \
 			chat.c \
 			chat.h \
@@ -67,7 +67,10 @@ ggz_gtk_SOURCES =	main.c \
 			xtext.h \
 			xtext-ggz.h
 
-ggz_gtk_LDADD = @GTK_LIBS@ $(LDADD) @LIBS@ @INTLLIBS@ \
+ggz_gtk_SOURCES = 	main.c
+
+ggz_gtk_DEPENDENCIES = libggz-gtk.a
+ggz_gtk_LDADD = libggz-gtk.a @GTK_LIBS@ $(LDADD) @LIBS@ @INTLLIBS@ \
 		$(LIB_GGZCORE) $(LIB_GGZ)
 ggz_gtk_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
