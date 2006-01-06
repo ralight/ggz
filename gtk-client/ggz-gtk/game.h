@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.h 7528 2005-09-17 19:45:53Z josef $
+ * $Id: game.h 7726 2006-01-06 01:08:10Z jdorje $
  *
  * Functions for handling game events
  *
@@ -31,7 +31,7 @@
  *
  *  @param spectating 1 if we're spectating, 0 if we're joining
  */
-int game_init(int spectating);
+int game_initialize(int spectating);
 
 int game_launch(void);
 

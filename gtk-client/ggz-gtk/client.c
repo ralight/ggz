@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7720 2006-01-03 06:56:57Z jdorje $
+ * $Id: client.c 7726 2006-01-06 01:08:10Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -579,7 +579,7 @@ void client_start_table_join(void)
 
 	/* Initialize a game module */
 	spectating = 0;
-	if (game_init(0) == 0) {
+	if (game_initialize(0) == 0) {
 		if (game_launch() < 0) {
 			msgbox(_("Error launching game module."),
 			       _("Game Error"),
@@ -620,7 +620,7 @@ static void client_start_table_watch(void)
 
 	/* Initialize a game module */
 	spectating = 1;
-	if (game_init(1) == 0) {
+	if (game_initialize(1) == 0) {
 		if (game_launch() < 0) {
 			msgbox(_("Error launching game module."),
 			       _("Game Error"),

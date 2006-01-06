@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 7718 2006-01-03 06:48:59Z jdorje $
+ * $Id: game.c 7726 2006-01-06 01:08:10Z jdorje $
  *
  * Functions for handling game events
  *
@@ -279,7 +279,7 @@ static void game_register(GGZGame * game)
 
 
 /* Spectate is 1 if we're spectating; 0 if we're playing. */
-int game_init(int spectate)
+int game_initialize(int spectate)
 {
 	GGZRoom *room;
 	GGZGameType *gt;
