@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7733 2006-01-06 06:32:07Z jdorje $
+ * $Id: client.c 7734 2006-01-06 07:00:42Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -60,6 +60,7 @@
 #include "xtext.h"
 
 GtkWidget *win_main;
+void (*connected_cb)(GGZServer *server);
 
 static gint spectating = -1;
 
@@ -660,6 +661,8 @@ client_realize                    (GtkWidget       *widget,
 	char *buf;
 	char *font_str;
 
+	chat_init();
+
 	/* setup Tooltips */
 	client_window_tips = gtk_tooltips_new();
 
@@ -756,7 +759,7 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 
 
 /* Call this to load ggzcore configuration, and do other initializations. */
-void client_initialize(void)
+void client_initialize(void (*connected)(GGZServer *server))
 {
 	GGZOptions opt;
 	char *global_conf, *user_conf;
@@ -773,6 +776,8 @@ void client_initialize(void)
 	ggzcore_init(opt);
 
 	server_profiles_load();	
+
+	connected_cb = connected;
 }
 
 GtkWidget *create_main_area(GtkWidget *main_win)
@@ -1353,6 +1358,10 @@ GtkWidget *create_main_area(GtkWidget *main_win)
                       GTK_SIGNAL_FUNC (client_send_button_clicked),
                       NULL);
 
+  g_signal_connect(GTK_OBJECT(main_vbox), "realize",
+		   GTK_SIGNAL_FUNC (client_realize),
+		   NULL);
+
   gtk_widget_grab_focus (chat_entry);
   gtk_window_add_accel_group (GTK_WINDOW (win_main), accel_group);
 
@@ -1372,9 +1381,6 @@ GtkWidget *create_win_main(void)
   main_vbox = create_main_area(win_main);
   gtk_container_add (GTK_CONTAINER (win_main), main_vbox);
 
-  g_signal_connect (GTK_OBJECT (win_main), "realize",
-                      GTK_SIGNAL_FUNC (client_realize),
-                      NULL);
   g_signal_connect (GTK_OBJECT (win_main), "delete_event",
                       GTK_SIGNAL_FUNC (client_exit_activate),
                       NULL);

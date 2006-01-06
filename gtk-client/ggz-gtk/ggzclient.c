@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7722 2006-01-03 20:31:25Z jdorje $
+ * $Id: ggzclient.c 7734 2006-01-06 07:00:42Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -175,6 +175,9 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id,
 	gchar *message;
 	gchar *title;
 
+	if (connected_cb) {
+		connected_cb(server);
+	}
 
 	/* Set title */
 	title = g_strdup_printf("GGZ Gaming Zone - [%s:%d]",
@@ -200,7 +203,6 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id,
 		       MSGBOX_INFO, MSGBOX_NORMAL);
 		g_free(message);
 	}
-
 
 	return GGZ_HOOK_OK;
 }
@@ -1109,6 +1111,9 @@ void server_disconnect(void)
 
 	chat_display_local(CHAT_LOCAL_HIGH, NULL,
 			   _("Disconnected from server."));
+	if (connected_cb) {
+		connected_cb(NULL);
+	}
 }
 
 

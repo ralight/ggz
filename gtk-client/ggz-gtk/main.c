@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 7728 2006-01-06 04:55:08Z jdorje $
+ * $Id: main.c 7734 2006-01-06 07:00:42Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -102,7 +102,7 @@ int main (int argc, char *argv[])
 	setlocale(LC_ALL, "");
 #endif
 
-	client_initialize();
+	client_initialize(NULL);
 
 #ifdef DEBUG
 	init_debug();
@@ -137,8 +137,6 @@ int main (int argc, char *argv[])
 #else
 	gtk_init(&argc, &argv);
 #endif
-
-	chat_init();
 
 	init_version = ggzcore_conf_read_string("INIT", "VERSION", VERSION);
 	if (ggzcore_conf_read_int("INIT", "FIRST", 0) == 0 ||
