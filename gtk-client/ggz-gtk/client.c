@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7731 2006-01-06 05:45:55Z jdorje $
+ * $Id: client.c 7732 2006-01-06 06:18:19Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1071,7 +1071,6 @@ create_win_main (void)
 		     GTK_TOOL_ITEM(launch_button), -1);
   g_object_set_data(G_OBJECT(win_main), "launch_button", launch_button);
   gtk_widget_set_sensitive(GTK_WIDGET(launch_button), FALSE);
-  gtk_widget_show(GTK_WIDGET(launch_button));
 
   join_button = gtk_tool_button_new(NULL, _("Join"));
   gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(join_button),
@@ -1080,7 +1079,6 @@ create_win_main (void)
 		     GTK_TOOL_ITEM(join_button), -1);
   g_object_set_data(G_OBJECT(win_main), "join_button", join_button);
   gtk_widget_set_sensitive(GTK_WIDGET(join_button), FALSE);
-  gtk_widget_show(GTK_WIDGET(join_button));
 
   watch_button = gtk_tool_button_new(NULL, _("Watch"));
   gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(watch_button),
@@ -1089,7 +1087,6 @@ create_win_main (void)
 		     GTK_TOOL_ITEM(watch_button), -1);
   g_object_set_data(G_OBJECT(win_main), "watch_button", watch_button);
   gtk_widget_set_sensitive(GTK_WIDGET(watch_button), FALSE);
-  gtk_widget_show(GTK_WIDGET(watch_button));
 
   leave_button = gtk_tool_button_new(NULL, _("Leave"));
   gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(leave_button),
@@ -1098,24 +1095,17 @@ create_win_main (void)
 		     GTK_TOOL_ITEM(leave_button), -1);
   g_object_set_data(G_OBJECT(win_main), "leave_button", leave_button);
   gtk_widget_set_sensitive(GTK_WIDGET(leave_button), FALSE);
-  gtk_widget_show(GTK_WIDGET(leave_button));
 
   props_button = gtk_tool_button_new_from_stock(GTK_STOCK_PREFERENCES);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(props_button), -1);
   g_object_set_data(G_OBJECT(win_main), "props_button", props_button);
-  gtk_widget_show(GTK_WIDGET(props_button));
 
   stats_button = gtk_tool_button_new(NULL, _("Stats"));
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(stats_button), -1);
   g_object_set_data(G_OBJECT(win_main), "stats_button", stats_button);
   gtk_widget_set_sensitive(GTK_WIDGET(stats_button), FALSE);
-#if 0
-  /* There's no stats dialog, but stats are handled
-     through the player list. */
-  gtk_widget_show(GTK_WIDGET(stats_button));
-#endif
 
   /* We should use gtk_tool_button_new_from_stock but for some reason
    * the connect and disconnect stock items don't have text included. */
@@ -1127,7 +1117,6 @@ create_win_main (void)
 			       GTK_STOCK_CONNECT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(connect_button), -1);
   g_object_set_data(G_OBJECT(win_main), "connect_button", connect_button);
-  gtk_widget_show(GTK_WIDGET(connect_button));
 
   /* We should use gtk_tool_button_new_from_stock but for some reason
    * the connect and disconnect stock items don't have text included. */
@@ -1141,13 +1130,11 @@ create_win_main (void)
   g_object_set_data(G_OBJECT(win_main), "disconnect_button",
 		    disconnect_button);
   gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button), FALSE);
-  gtk_widget_show(GTK_WIDGET(disconnect_button));
 
   exit_button = gtk_tool_button_new_from_stock(GTK_STOCK_QUIT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(exit_button), -1);
   g_object_set_data(G_OBJECT(win_main), "exit_button", exit_button);
-  gtk_widget_show(GTK_WIDGET(exit_button));
 
   Current_room_label = gtk_label_new (_("Current Room:"));
   g_object_set_data(G_OBJECT (win_main), "Current_room_label",
@@ -1262,7 +1249,6 @@ create_win_main (void)
   serverbar = gtk_statusbar_new ();
   g_object_set_data(G_OBJECT (win_main), "serverbar", serverbar);
   gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR (serverbar), FALSE);
-  gtk_widget_show(serverbar);
   gtk_box_pack_start(GTK_BOX (status_box), serverbar, TRUE, TRUE, 0);
 
   statusbar = gtk_statusbar_new ();
