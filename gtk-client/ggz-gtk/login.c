@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 7204 2005-05-21 09:31:23Z josef $
+ * $Id: login.c 7725 2006-01-06 00:56:55Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -54,6 +54,10 @@
 
 GtkWidget *login_dialog;
 gint entries_update;
+
+/* Global command line option */
+gchar *option_log = NULL;
+
 static GtkWidget *create_dlg_login(void);
 
 /* Callbacks login dialog box */

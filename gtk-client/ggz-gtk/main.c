@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 7204 2005-05-21 09:31:23Z josef $
+ * $Id: main.c 7725 2006-01-06 00:56:55Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -53,8 +53,8 @@
 #include "server.h"
 #include "support.h"
 
-/* Global command line options */
-gchar *option_log = NULL, *option_url = NULL;
+/* Global command line option */
+static gchar *option_url = NULL;
 
 static void init_debug(void)
 {
