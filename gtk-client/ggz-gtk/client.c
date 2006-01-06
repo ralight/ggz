@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7735 2006-01-06 08:27:50Z jdorje $
+ * $Id: client.c 7737 2006-01-06 22:34:17Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -45,6 +45,7 @@
 #include "chat.h"
 #include "game.h"
 #include "ggzclient.h"
+#include "ggz-gtk.h"
 #include "playerlist.h"
 #include "roominfo.h"
 #include "launch.h"
@@ -113,7 +114,7 @@ static void
 client_connect_activate			(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	login_create_or_raise();
+	ggz_gtk_login_raise();
 }
 
 
@@ -331,7 +332,7 @@ static void
 client_connect_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	login_create_or_raise();
+	ggz_gtk_login_raise();
 }
 
 
@@ -761,10 +762,10 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 
 
 /* Call this to load ggzcore configuration, and do other initializations. */
-void client_initialize(void (*connected)(GGZServer *server),
-		       void (*launched)(void),
-		       char *protocol_engine,
-		       char *protocol_version)
+void ggz_gtk_initialize(void (*connected)(GGZServer *server),
+			void (*launched)(void),
+			char *protocol_engine,
+			char *protocol_version)
 {
 	GGZOptions opt;
 	char *global_conf, *user_conf;
@@ -795,7 +796,7 @@ void client_initialize(void (*connected)(GGZServer *server),
 	embedded_protocol_version = ggz_strdup(protocol_version);
 }
 
-GtkWidget *create_main_area(GtkWidget *main_win)
+GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 {
   GtkWidget *main_vbox;
   GtkWidget *menubar;
@@ -1393,7 +1394,7 @@ GtkWidget *create_win_main(void)
   gtk_window_set_title (GTK_WINDOW (win_main), _("GGZ Gaming Zone"));
   gtk_window_set_resizable(GTK_WINDOW(win_main), TRUE);
 
-  main_vbox = create_main_area(win_main);
+  main_vbox = ggz_gtk_create_main_area(win_main);
   gtk_container_add (GTK_CONTAINER (win_main), main_vbox);
 
   g_signal_connect (GTK_OBJECT (win_main), "delete_event",

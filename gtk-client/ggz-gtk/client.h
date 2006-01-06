@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 7735 2006-01-06 08:27:50Z jdorje $
+ * $Id: client.h 7737 2006-01-06 22:34:17Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -29,12 +29,6 @@ void client_join_table(void);
 
 void client_start_table_join(void);
 
-void client_initialize(void (*connected)(GGZServer *server),
-		       void (*launched)(void),
-		       char *protocol_engine,
-		       char *protocol_version);
-
-GtkWidget *create_main_area(GtkWidget *main_win);
 GtkWidget* create_win_main (void);
 
 /* Default font */

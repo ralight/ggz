@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 6645 2005-01-13 06:42:30Z jdorje $
+ * $Id: first.c 7737 2006-01-06 22:34:17Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -34,13 +34,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
 #include <ggz.h>
+
 #include "client.h"
 #include "first.h"
 #include "ggzclient.h"
+#include "ggz-gtk.h"
 #include "ggzcore.h"
 #include "login.h"
 #include "server.h"
@@ -140,7 +143,7 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 	win_main = create_win_main();
 	ggz_sensitivity_init();
 	gtk_widget_show(win_main);
-	login_create_or_raise();
+	ggz_gtk_login_raise();
 }
 
 
@@ -151,7 +154,7 @@ static void first_button_no_activate(GtkButton *button, gpointer data)
 	win_main = create_win_main();
 	ggz_sensitivity_init();
 	gtk_widget_show(win_main);
-	login_create_or_raise();
+	ggz_gtk_login_raise();
 }
 
 static void first_generate_password(char *pw)   

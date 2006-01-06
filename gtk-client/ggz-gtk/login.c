@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 7725 2006-01-06 00:56:55Z jdorje $
+ * $Id: login.c 7737 2006-01-06 22:34:17Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -43,6 +43,7 @@
 
 #include "client.h"
 #include "ggzclient.h"
+#include "ggz-gtk.h"
 #include "login.h"
 #include "msgbox.h"
 #include "playerlist.h"
@@ -81,7 +82,7 @@ static GGZHookReturn login_reconnect(GGZServerEvent id, void *event_data,
 				     void *user_data);
 #endif
 
-void login_create_or_raise(void)
+void ggz_gtk_login_raise(void)
 {
 	if (!login_dialog) {
 		login_dialog = create_dlg_login();
@@ -159,7 +160,7 @@ void login_goto_server(const gchar * server_url)
 {
 	GtkWidget *tmp;
 
-	login_create_or_raise();
+	ggz_gtk_login_raise();
 	tmp = lookup_widget(GTK_WIDGET(login_dialog), "host_entry");
 	if (!strncasecmp(server_url, "ggz://", 6))
 		gtk_entry_set_text(GTK_ENTRY(tmp), server_url + 6);

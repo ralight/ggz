@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 7736 2006-01-06 08:28:12Z jdorje $
+#  $Id: Makefile.am 7737 2006-01-06 22:34:17Z jdorje $
 
 SUBDIRS = .
 
@@ -7,7 +7,7 @@ AM_CPPFLAGS = @GTK_CFLAGS@ -I$(top_srcdir)/intl \
 	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
 
 bin_PROGRAMS = ggz-gtk
-noinst_LIBRARIES = libggz-gtk.a
+lib_LTLIBRARIES = libggz-gtk.la
 
 ggzdata_DATA =		about_bg.png		\
 			ggz_gtk_admin.svg 	\
@@ -21,7 +21,8 @@ ggzdata_DATA =		about_bg.png		\
 			ggz_gtk_lag4.svg	\
 			ggz_gtk_lag5.svg
 
-libggz_gtk_a_SOURCES =	about.c \
+include_HEADERS = ggz-gtk.h
+libggz_gtk_la_SOURCES =	about.c \
 			about.h \
 			chat.c \
 			chat.h \
@@ -33,6 +34,7 @@ libggz_gtk_a_SOURCES =	about.c \
 			game.h \
 			ggzclient.c \
 			ggzclient.h \
+			ggz-gtk.h		\
 			launch.c \
 			launch.h \
 			license.c \
@@ -66,12 +68,13 @@ libggz_gtk_a_SOURCES =	about.c \
 			xtext.c \
 			xtext.h \
 			xtext-ggz.h
+libggz_gtk_la_LIBADD = @GTK_LIBS@ $(LDADD) @LIBS@ @INTLLIBS@ \
+			$(LIB_GGZCORE) $(LIB_GGZ)
+libggz_gtk_la_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 ggz_gtk_SOURCES = 	main.c
 
-ggz_gtk_DEPENDENCIES = libggz-gtk.a
-ggz_gtk_LDADD = libggz-gtk.a @GTK_LIBS@ $(LDADD) @LIBS@ @INTLLIBS@ \
-		$(LIB_GGZCORE) $(LIB_GGZ)
-ggz_gtk_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
+ggz_gtk_DEPENDENCIES = libggz-gtk.la
+ggz_gtk_LDADD = libggz-gtk.la
 
 EXTRA_DIST = $(ggzdata_DATA)

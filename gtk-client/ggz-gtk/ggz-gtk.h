@@ -1,12 +1,13 @@
 /*
- * File: client.c
- * Author: Justin Zaun
- * Project: GGZ GTK Client
- * $Id: login.h 7737 2006-01-06 22:34:17Z jdorje $
+ * File: ggz-gtk.h
+ * Author: Jason Short
+ * Project: GGZ GTK Client Library
+ * $Id: client.h 7735 2006-01-06 08:27:50Z jdorje $
  *
- * This is the main program body for the GGZ client
+ * This library provides interface functions so external programs can embed
+ * GGZ via a GTK interface
  *
- * Copyright (C) 2000 Justin Zaun.
+ * Copyright (C) 2000-2006 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,15 +24,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "server.h"
+#include <gtk/gtk.h>
 
-void login_connect_failed(void);
-void login_failed(const GGZErrorEventData * error);
-void login_destroy(void);
-void login_goto_server(const gchar * server_url);
+#include <ggzcore.h>
 
-void login_set_entries(Server server);
+void ggz_gtk_initialize(void (*connected)(GGZServer *server),
+		       void (*launched)(void),
+		       char *protocol_engine,
+		       char *protocol_version);
 
-extern GtkWidget *login_dialog;
-extern gchar *option_log;
+void ggz_gtk_login_raise(void);
 
+GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win);

@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 7735 2006-01-06 08:27:50Z jdorje $
+ * $Id: main.c 7737 2006-01-06 22:34:17Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -48,6 +48,7 @@
 #include "client.h"
 #include "first.h"
 #include "ggzclient.h"
+#include "ggz-gtk.h"
 #include "license.h"
 #include "login.h"
 #include "server.h"
@@ -102,7 +103,7 @@ int main (int argc, char *argv[])
 	setlocale(LC_ALL, "");
 #endif
 
-	client_initialize(NULL, NULL, NULL, NULL);
+	ggz_gtk_initialize(NULL, NULL, NULL, NULL);
 
 #ifdef DEBUG
 	init_debug();
@@ -147,7 +148,7 @@ int main (int argc, char *argv[])
 		win_main = create_win_main();
 		ggz_sensitivity_init();
 		gtk_widget_show_all(win_main);
-		login_create_or_raise();
+		ggz_gtk_login_raise();
 
 		/* Auto-connect to GGZ URI */
 		if (option_url) {
