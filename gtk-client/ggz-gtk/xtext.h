@@ -20,21 +20,24 @@
 #define GTK_IS_XTEXT_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_XTEXT))
 #define GTK_XTEXT_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_XTEXT, GtkXTextClass))
 
-#define ATTR_BOLD '\002'
-#define ATTR_COLOR '\003'
-#define ATTR_BEEP '\007'
-#define ATTR_RESET '\017'
-#define ATTR_REVERSE '\026'
-#define ATTR_UNDERLINE '\037'
+#define ATTR_BOLD			'\002'
+#define ATTR_COLOR		'\003'
+#define ATTR_BLINK		'\006'
+#define ATTR_BEEP			'\007'
+#define ATTR_ITALICS2	'\011'
+#define ATTR_RESET		'\017'
+#define ATTR_REVERSE		'\026'
+#define ATTR_ITALICS		'\035'
+#define ATTR_UNDERLINE	'\037'
 
-/* these match colors[] in chat.c */
-#define XTEXT_MIRC_COLS 20
-#define XTEXT_COLS 20		/* 32 plus 5 for extra stuff below */
-#define XTEXT_MARK_FG 18	/* for marking text */
-#define XTEXT_MARK_BG 14
-#define XTEXT_FG 18
-#define XTEXT_BG 19
-#define XTEXT_MARKER 5		/* for marker line */
+/* these match palette.h */
+#define XTEXT_MIRC_COLS 32
+#define XTEXT_COLS 37		/* 32 plus 5 for extra stuff below */
+#define XTEXT_MARK_FG 32	/* for marking text */
+#define XTEXT_MARK_BG 33
+#define XTEXT_FG 34
+#define XTEXT_BG 35
+#define XTEXT_MARKER 36		/* for marker line */
 
 typedef struct _GtkXText GtkXText;
 typedef struct _GtkXTextClass GtkXTextClass;
@@ -145,10 +148,12 @@ struct _GtkXText
 	XftColor *xft_bg;				/* both point into color[20] */
 	XftDraw *xftdraw;
 	XftFont *font;
+	XftFont *ifont;				/* italics */
 #else
-	struct
+	struct pangofont
 	{
 		PangoFontDescription *font;
+		PangoFontDescription *ifont;	/* italics */
 		int ascent;
 		int descent;
 	} *font, pango_font;
@@ -163,7 +168,7 @@ struct _GtkXText
 	unsigned char scratch_buffer[4096];
 
 	void (*error_function) (int type);
-	int (*urlcheck_function) (GtkWidget * xtext, char *word);
+	int (*urlcheck_function) (GtkWidget * xtext, char *word, int len);
 
 	int jump_out_offset;	/* point at which to stop rendering */
 	int jump_in_offset;	/* "" start rendering */
@@ -186,8 +191,10 @@ struct _GtkXText
 	unsigned int parsing_color:1;
 	unsigned int backcolor:1;
 	unsigned int button_down:1;
+	unsigned int hilighting:1;
 	unsigned int bold:1;
 	unsigned int underline:1;
+	unsigned int italics:1;
 	unsigned int transparent:1;
 	unsigned int marker:1;
 	unsigned int separator:1;
@@ -221,8 +228,7 @@ void gtk_xtext_append_indent (xtext_buffer *buf,
 										unsigned char *left_text, int left_len,
 										unsigned char *right_text, int right_len);
 int gtk_xtext_set_font (GtkXText *xtext, char *name);
-void gtk_xtext_set_background (GtkXText * xtext, GdkPixmap * pixmap,
-			       int trans, int shaded);
+void gtk_xtext_set_background (GtkXText * xtext, GdkPixmap * pixmap, gboolean trans);
 void gtk_xtext_set_palette (GtkXText * xtext, GdkColor palette[]);
 void gtk_xtext_clear (xtext_buffer *buf);
 void gtk_xtext_save (GtkXText * xtext, int fh);
@@ -244,12 +250,14 @@ void gtk_xtext_set_show_separator (GtkXText *xtext, gboolean show_separator);
 void gtk_xtext_set_thin_separator (GtkXText *xtext, gboolean thin_separator);
 void gtk_xtext_set_time_stamp (xtext_buffer *buf, gboolean timestamp);
 void gtk_xtext_set_tint (GtkXText *xtext, int tint_red, int tint_green, int tint_blue);
-void gtk_xtext_set_urlcheck_function (GtkXText *xtext, int (*urlcheck_function) (GtkWidget *, char *));
+void gtk_xtext_set_urlcheck_function (GtkXText *xtext, int (*urlcheck_function) (GtkWidget *, char *, int));
 void gtk_xtext_set_wordwrap (GtkXText *xtext, gboolean word_wrap);
 
 xtext_buffer *gtk_xtext_buffer_new (GtkXText *xtext);
 void gtk_xtext_buffer_free (xtext_buffer *buf);
 void gtk_xtext_buffer_show (GtkXText *xtext, xtext_buffer *buf, int render);
 GtkType gtk_xtext_get_type (void);
+
+#include "xtext-ggz.h"
 
 #endif

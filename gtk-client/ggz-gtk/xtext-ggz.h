@@ -2,7 +2,7 @@
  * File: xtext-ggz.h
  * Author: Jason Short
  * Project: GGZ GTK Client
- * $Id: xtext-ggz.h 6981 2005-03-11 07:35:03Z jdorje $
+ * $Id: xtext-ggz.h 7730 2006-01-06 05:31:52Z jdorje $
  *
  * This file is included from xtext.c to add additional ggz-specific
  * directives.
@@ -26,20 +26,17 @@
 
 
 /*
- * xtext.c and xtext.h was taken from xchat-2.4.1.  I then made the following
+ * xtext.c and xtext.h was taken from xchat-2.6.0.  I then made the following
  * modifications to xtext.c:
  *
- * - Remove old code:
+ * - Remove the following code from xtext.c
  *     #ifdef XCHAT
  *     #include "../../config.h"
  *     #else
  *     #define USE_XLIB
  *     #endif
- * - Add #include "xtext-ggz.h" in its place.
- * - Some quick fixes to avoid compiler warnings.
- * - Change the colors (XTEXT_BG, etc.) in xtext.h to match the colors[]
- *   array in chat.c (in future maybe palette.[ch] could be included as
- *   well).
+ *   and add #include "xtext-ggz.h" in its place.
+ * - Add #include "xtext-ggz.h" at the *bottom* of xtext.h.
  *
  * This file therefore contains extra code that xtext.c and xtext.h will
  * need.  It's contained here so that large changes to xtext.c aren't
@@ -54,5 +51,17 @@
 #ifndef WIN32
 #define USE_XLIB
 #endif
+
+#undef XTEXT_MARK_FG
+#undef XTEXT_MARK_BG
+#undef XTEXT_FG
+#undef XTEXT_BG
+#undef XTEXT_MARKER
+
+#define XTEXT_MARK_FG 18       /* for marking text */
+#define XTEXT_MARK_BG 14
+#define XTEXT_FG 18
+#define XTEXT_BG 19
+#define XTEXT_MARKER 5         /* for marker line */
 
 #include <strings.h> /* For strcasecmp */

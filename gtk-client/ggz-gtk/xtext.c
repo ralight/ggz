@@ -27,6 +27,10 @@
 #define SMOOTH_SCROLL				/* line-by-line or pixel scroll? */
 #define SCROLL_HACK					/* use XCopyArea scroll, or full redraw? */
 #undef COLOR_HILIGHT				/* Color instead of underline? */
+/* Italic is buggy because it assumes drawing an italic string will have
+   identical extents to the normal font. This is only true some of the
+   time, so we can't use this hack yet. */
+#undef ITALIC							/* support Italic? */
 #define GDK_MULTIHEAD_SAFE
 #define USE_DB							/* double buffer */
 
@@ -74,7 +78,7 @@
 
 #ifdef SCROLL_HACK
 /* force scrolling off */
-#define dontscroll(buf) (buf)->last_pixel_pos = 2147483647
+#define dontscroll(buf) (buf)->last_pixel_pos = 0x7fffffff
 #else
 #define dontscroll(buf)
 #endif
@@ -134,9 +138,7 @@ static int gtk_xtext_render_ents (GtkXText * xtext, textentry *, textentry *);
 static void gtk_xtext_recalc_widths (xtext_buffer *buf, int);
 static void gtk_xtext_fix_indent (xtext_buffer *buf);
 static int gtk_xtext_find_subline (GtkXText *xtext, textentry *ent, int line);
-#if 0
 static char *gtk_xtext_conv_color (unsigned char *text, int len, int *newlen);
-#endif
 static unsigned char *
 gtk_xtext_strip_color (unsigned char *text, int len, unsigned char *outbuf,
 							  int *newlen, int *mb_ret);
@@ -228,7 +230,14 @@ xtext_draw_bg (GtkXText *xtext, int x, int y, int width, int height)
 
 #ifdef USE_XFT
 
-#define backend_font_close(d,f) XftFontClose(d,f)
+static void
+backend_font_close (GtkXText *xtext)
+{
+	XftFontClose (GDK_WINDOW_XDISPLAY (xtext->draw_buf), xtext->font);
+#ifdef ITALIC
+	XftFontClose (GDK_WINDOW_XDISPLAY (xtext->draw_buf), xtext->ifont);
+#endif
+}
 
 static void
 backend_init (GtkXText *xtext)
@@ -254,20 +263,12 @@ backend_deinit (GtkXText *xtext)
 	}
 }
 
-static void
-backend_font_open (GtkXText *xtext, char *name)
+static XftFont *
+backend_font_open_real (Display *xdisplay, char *name, gboolean italics)
 {
 	XftFont *font = NULL;
 	PangoFontDescription *fontd;
-	Display *xdisplay = GDK_WINDOW_XDISPLAY (xtext->draw_buf);
 	int weight, slant, screen = DefaultScreen (xdisplay);
-
-	if (*name == '-')
-	{
-		xtext->font = XftFontOpenXlfd (xdisplay, screen, name);
-		if (xtext->font)
-			return;
-	}
 
 	fontd = pango_font_description_from_string (name);
 
@@ -296,11 +297,10 @@ backend_font_open (GtkXText *xtext, char *name)
 
 		font = XftFontOpen (xdisplay, screen,
 						XFT_FAMILY, XftTypeString, pango_font_description_get_family (fontd),
-						/*XFT_ENCODING, XftTypeString, "glyphs-fontspecific",*/
 						XFT_CORE, XftTypeBool, False,
 						XFT_SIZE, XftTypeDouble, (double)pango_font_description_get_size (fontd)/PANGO_SCALE,
 						XFT_WEIGHT, XftTypeInteger, weight,
-						XFT_SLANT, XftTypeInteger, slant,
+						XFT_SLANT, XftTypeInteger, italics ? XFT_SLANT_ITALIC : slant,
 						NULL);
 	}
 	pango_font_description_free (fontd);
@@ -309,10 +309,21 @@ backend_font_open (GtkXText *xtext, char *name)
 	{
 		font = XftFontOpenName (xdisplay, screen, name);
 		if (font == NULL)
-			font = XftFontOpenName (xdisplay, screen, "sans-12");
+			font = XftFontOpenName (xdisplay, screen, "sans-11");
 	}
 
-	xtext->font = font;
+	return font;
+}
+
+static void
+backend_font_open (GtkXText *xtext, char *name)
+{
+	Display *dis = GDK_WINDOW_XDISPLAY (xtext->draw_buf);
+
+	xtext->font = backend_font_open_real (dis, name, FALSE);
+#ifdef ITALIC
+	xtext->ifont = backend_font_open_real (dis, name, TRUE);
+#endif
 }
 
 inline static int
@@ -333,7 +344,7 @@ backend_get_char_width (GtkXText *xtext, unsigned char *str, int *mbl_ret)
 }
 
 static int
-backend_get_text_width (GtkXText *xtext, char *str, int len, int is_mb)
+backend_get_text_width (GtkXText *xtext, guchar *str, int len, int is_mb)
 {
 	XGlyphInfo ext;
 
@@ -350,6 +361,7 @@ backend_draw_text (GtkXText *xtext, int dofill, GdkGC *gc, int x, int y,
 {
 	/*Display *xdisplay = GDK_WINDOW_XDISPLAY (xtext->draw_buf);*/
 	void (*draw_func) (XftDraw *, XftColor *, XftFont *, int, int, XftChar8 *, int) = (void *)XftDrawString8;
+	XftFont *font;
 
 	/* if all ascii, use String8 to avoid the conversion penalty */
 	if (is_mb)
@@ -365,12 +377,19 @@ backend_draw_text (GtkXText *xtext, int dofill, GdkGC *gc, int x, int y,
 						 y - xtext->font->ascent, str_width, xtext->fontsize);
 	}
 
-	draw_func (xtext->xftdraw, xtext->xft_fg, xtext->font, x, y, str, len);
+	font = xtext->font;
+#ifdef ITALIC
+	if (xtext->italics)
+		font = xtext->ifont;
+#endif
+
+	draw_func (xtext->xftdraw, xtext->xft_fg, font, x, y, str, len);
+
 	if (xtext->overdraw)
-		draw_func (xtext->xftdraw, xtext->xft_fg, xtext->font, x, y, str, len);
+		draw_func (xtext->xftdraw, xtext->xft_fg, font, x, y, str, len);
 
 	if (xtext->bold)
-		draw_func (xtext->xftdraw, xtext->xft_fg, xtext->font, x + 1, y, str, len);
+		draw_func (xtext->xftdraw, xtext->xft_fg, font, x + 1, y, str, len);
 }
 
 /*static void
@@ -419,7 +438,14 @@ backend_clear_clip (GtkXText *xtext)
 /* ============ PANGO BACKEND ============ */
 /* ======================================= */
 
-#define backend_font_close(d,f) pango_font_description_free(f->font)
+static void
+backend_font_close (GtkXText *xtext)
+{
+	pango_font_description_free (xtext->font->font);
+#ifdef ITALIC
+	pango_font_description_free (xtext->font->ifont);
+#endif
+}
 
 static void
 backend_init (GtkXText *xtext)
@@ -442,6 +468,23 @@ backend_deinit (GtkXText *xtext)
 	}
 }
 
+static PangoFontDescription *
+backend_font_open_real (char *name)
+{
+	PangoFontDescription *font;
+
+	font = pango_font_description_from_string (name);
+	if (font && pango_font_description_get_size (font) == 0)
+	{
+		pango_font_description_free (font);
+		font = pango_font_description_from_string ("sans 11");
+	}
+	if (!font)
+		font = pango_font_description_from_string ("sans 11");
+
+	return font;
+}
+
 static void
 backend_font_open (GtkXText *xtext, char *name)
 {
@@ -450,25 +493,16 @@ backend_font_open (GtkXText *xtext, char *name)
 	PangoFontMetrics *metrics;
 
 	xtext->font = &xtext->pango_font;
-
-	xtext->font->font = pango_font_description_from_string (name);
-	if (!xtext->font->font)
-		xtext->font->font = pango_font_description_from_string ("sans 11");
-
-	if (xtext->font->font)
-	{
-		if (pango_font_description_get_size (xtext->font->font) == 0)
-		{
-			pango_font_description_free (xtext->font->font);
-			xtext->font->font = pango_font_description_from_string ("sans 11");
-		}
-	}
-
+	xtext->font->font = backend_font_open_real (name);
 	if (!xtext->font->font)
 	{
 		xtext->font = NULL;
 		return;
 	}
+#ifdef ITALIC
+	xtext->font->ifont = backend_font_open_real (name);
+	pango_font_description_set_style (xtext->font->ifont, PANGO_STYLE_ITALIC);
+#endif
 
 	backend_init (xtext);
 	pango_layout_set_font_description (xtext->layout, xtext->font->font);
@@ -483,7 +517,7 @@ backend_font_open (GtkXText *xtext, char *name)
 }
 
 static int
-backend_get_text_width (GtkXText *xtext, char *str, int len, int is_mb)
+backend_get_text_width (GtkXText *xtext, guchar *str, int len, int is_mb)
 {
 	int width;
 
@@ -553,6 +587,11 @@ backend_draw_text (GtkXText *xtext, int dofill, GdkGC *gc, int x, int y,
 	GdkColor col;
 	PangoLayoutLine *line;
 
+#ifdef ITALIC
+	if (xtext->italics)
+		pango_layout_set_font_description (xtext->layout, xtext->font->ifont);
+#endif
+
 	pango_layout_set_text (xtext->layout, str, len);
 
 	if (dofill)
@@ -576,22 +615,17 @@ backend_draw_text (GtkXText *xtext, int dofill, GdkGC *gc, int x, int y,
 
 	line = pango_layout_get_lines (xtext->layout)->data;
 
-#if 1
 	xtext_draw_layout_line (xtext->draw_buf, gc, x, y, line);
+
 	if (xtext->overdraw)
 		xtext_draw_layout_line (xtext->draw_buf, gc, x, y, line);
 
 	if (xtext->bold)
 		xtext_draw_layout_line (xtext->draw_buf, gc, x + 1, y, line);
 
-#else
-	gdk_draw_layout_line_with_colors (xtext->draw_buf, gc, x, y, line, 0, 0);
-	if (xtext->overdraw)
-		gdk_draw_layout_line_with_colors (xtext->draw_buf, gc, x, y, line, 0, 0);
-
-	if (xtext->bold)
-		gdk_draw_layout_line_with_colors (xtext->draw_buf, gc, x + 1, y, line,
-													 0, 0);
+#ifdef ITALIC
+	if (xtext->italics)
+		pango_layout_set_font_description (xtext->layout, xtext->font->font);
 #endif
 }
 
@@ -658,6 +692,7 @@ gtk_xtext_init (GtkXText * xtext)
 	xtext->pixel_offset = 0;
 	xtext->bold = FALSE;
 	xtext->underline = FALSE;
+	xtext->italics = FALSE;
 	xtext->font = NULL;
 #ifdef USE_XFT
 	xtext->xftdraw = NULL;
@@ -833,7 +868,7 @@ gtk_xtext_destroy (GtkObject * object)
 
 	if (xtext->font)
 	{
-		backend_font_close (GDK_WINDOW_XDISPLAY (xtext->draw_buf), xtext->font);
+		backend_font_close (xtext);
 		xtext->font = NULL;
 	}
 
@@ -908,6 +943,9 @@ static void
 gtk_xtext_unrealize (GtkWidget * widget)
 {
 	backend_deinit (GTK_XTEXT (widget));
+
+	/* if there are still events in the queue, this'll avoid segfault */
+	gdk_window_set_user_data (widget->window, NULL);
 
 	if (parent_class->unrealize)
 		(* GTK_WIDGET_CLASS (parent_class)->unrealize) (widget);
@@ -1016,6 +1054,7 @@ gtk_xtext_realize (GtkWidget * widget)
 #endif
 
 	gdk_window_set_back_pixmap (widget->window, NULL, FALSE);
+	widget->style = gtk_style_attach (widget->style, widget->window);
 
 	backend_init (xtext);
 }
@@ -1126,6 +1165,7 @@ find_x (GtkXText *xtext, textentry *ent, unsigned char *text, int x, int indent)
 			case ATTR_REVERSE:
 			case ATTR_BOLD:
 			case ATTR_UNDERLINE:
+			case ATTR_ITALICS:
 				text++;
 				break;
 			default:
@@ -1880,6 +1920,7 @@ gtk_xtext_motion_notify (GtkWidget * widget, GdkEventMotion * event)
 		xtext->select_end_x = x;
 		xtext->select_end_y = y;
 		gtk_xtext_selection_update (xtext, event, y);
+		xtext->hilighting = TRUE;
 		return FALSE;
 	}
 #ifdef MOTION_MONITOR
@@ -1905,7 +1946,7 @@ gtk_xtext_motion_notify (GtkWidget * widget, GdkEventMotion * event)
 	word = gtk_xtext_get_word (xtext, x, y, &word_ent, &offset, &len);
 	if (word)
 	{
-		if (xtext->urlcheck_function (GTK_WIDGET (xtext), word) > 0)
+		if (xtext->urlcheck_function (GTK_WIDGET (xtext), word, len) > 0)
 		{
 			if (!xtext->cursor_hand ||
 				 xtext->hilight_ent != word_ent ||
@@ -2054,10 +2095,17 @@ gtk_xtext_button_release (GtkWidget * widget, GdkEventButton * event)
 			gtk_xtext_unselect (xtext);
 			return FALSE;
 		}
-		word = gtk_xtext_get_word (xtext, event->x, event->y, 0, 0, 0);
-		g_signal_emit (G_OBJECT (xtext), xtext_signals[WORD_CLICK], 0,
-							word ? word : NULL, event);
+
+		if (!xtext->hilighting)
+		{
+			word = gtk_xtext_get_word (xtext, event->x, event->y, 0, 0, 0);
+			g_signal_emit (G_OBJECT (xtext), xtext_signals[WORD_CLICK], 0, word ? word : NULL, event);
+		} else
+		{
+			xtext->hilighting = FALSE;
+		}
 	}
+
 
 	return FALSE;
 }
@@ -2385,7 +2433,6 @@ gtk_xtext_strip_color (unsigned char *text, int len, unsigned char *outbuf,
 	int i = 0;
 	int col = FALSE;
 	unsigned char *new_str;
-	int mbl;
 	int mb = FALSE;
 
 	if (outbuf == NULL)
@@ -2418,29 +2465,11 @@ gtk_xtext_strip_color (unsigned char *text, int len, unsigned char *outbuf,
 			case ATTR_REVERSE:
 			case ATTR_BOLD:
 			case ATTR_UNDERLINE:
+			case ATTR_ITALICS:
 				break;
 			default:
-				mbl = charlen (text);
-				if (mbl == 1)
-				{
-					new_str[i] = *text;
-					i++;
-					text++;
-					len--;
-				} else
-				{
-					mb = TRUE;
-
-					len -= mbl;
-					/* safe-guard against invalid utf8 */
-					if (len < 0)
-						/* avoid memcpy beyond buffer */
-						mbl += len;
-					memcpy (&new_str[i], text, mbl);
-					i += mbl;
-					text += mbl;
-				}
-				continue;
+				new_str[i] = *text;
+				i++;
 			}
 		}
 		text++;
@@ -2460,7 +2489,6 @@ gtk_xtext_strip_color (unsigned char *text, int len, unsigned char *outbuf,
 
 /* GeEkMaN: converts mIRC control codes to literal control codes */
 
-#if 0
 static char *
 gtk_xtext_conv_color (unsigned char *text, int len, int *newlen)
 {
@@ -2478,6 +2506,7 @@ gtk_xtext_conv_color (unsigned char *text, int len, int *newlen)
 		case ATTR_REVERSE:
 		case ATTR_BOLD:
 		case ATTR_UNDERLINE:
+		case ATTR_ITALICS:
 			j += 3;
 			i++;
 			break;
@@ -2509,6 +2538,9 @@ gtk_xtext_conv_color (unsigned char *text, int len, int *newlen)
 			break;
 		case ATTR_UNDERLINE:
 			cchar = 'U';
+			break;
+		case ATTR_ITALICS:
+			cchar = 'I';
 			break;
 		case ATTR_BEEP:
 			break;
@@ -2543,7 +2575,6 @@ gtk_xtext_conv_color (unsigned char *text, int len, int *newlen)
 
 	return new_str;
 }
-#endif
 
 /* gives width of a string, excluding the mIRC codes */
 
@@ -2571,7 +2602,7 @@ gtk_xtext_render_flush (GtkXText * xtext, int x, int y, unsigned char *str,
 {
 	int str_width, dofill;
 	GdkDrawable *pix = NULL;
-	int dest_x = 0, dest_y = 0;
+	int dest_x, dest_y;
 
 	if (xtext->dont_render || len < 1)
 		return 0;
@@ -2703,6 +2734,7 @@ gtk_xtext_reset (GtkXText * xtext, int mark, int attribs)
 	{
 		xtext->underline = FALSE;
 		xtext->bold = FALSE;
+		xtext->italics = FALSE;
 	}
 	if (!mark)
 	{
@@ -2915,6 +2947,12 @@ gtk_xtext_render_str (GtkXText * xtext, int y, textentry * ent,
 			case ATTR_UNDERLINE:
 				x += gtk_xtext_render_flush (xtext, x, y, pstr, j, gc, ent->mb);
 				xtext->underline = !xtext->underline;
+				pstr += j + 1;
+				j = 0;
+				break;
+			case ATTR_ITALICS:
+				x += gtk_xtext_render_flush (xtext, x, y, pstr, j, gc, ent->mb);
+				xtext->italics = !xtext->italics;
 				pstr += j + 1;
 				j = 0;
 				break;
@@ -3750,6 +3788,7 @@ find_next_wrap (GtkXText * xtext, textentry * ent, unsigned char *str,
 			case ATTR_REVERSE:
 			case ATTR_BOLD:
 			case ATTR_UNDERLINE:
+			case ATTR_ITALICS:
 				limit_offset++;
 				str++;
 				break;
@@ -4022,7 +4061,7 @@ gtk_xtext_set_font (GtkXText *xtext, char *name)
 	unsigned char c;
 
 	if (xtext->font)
-		backend_font_close (GDK_WINDOW_XDISPLAY (xtext->draw_buf), xtext->font);
+		backend_font_close (xtext);
 
 	/* realize now, so that font_open has a XDisplay */
 	gtk_widget_realize (GTK_WIDGET (xtext));
@@ -4059,10 +4098,13 @@ gtk_xtext_set_font (GtkXText *xtext, char *name)
 }
 
 void
-gtk_xtext_set_background (GtkXText * xtext, GdkPixmap * pixmap, int trans,
-								  int shaded)
+gtk_xtext_set_background (GtkXText * xtext, GdkPixmap * pixmap, gboolean trans)
 {
 	GdkGCValues val;
+	gboolean shaded = FALSE;
+
+	if (trans && (xtext->tint_red != 255 || xtext->tint_green != 255 || xtext->tint_blue != 255))
+		shaded = TRUE;
 
 #if !defined(USE_XLIB) && !defined(WIN32)
 	shaded = FALSE;
@@ -4694,7 +4736,7 @@ gtk_xtext_append_entry (xtext_buffer *buf, textentry * ent)
 	{
 		if (ent->str[i] == '\t')
 			ent->str[i] = ' ';
-		i += charlen (ent->str + i);
+		i++;
 	}
 
 	ent->stamp = time (0);
@@ -4932,10 +4974,13 @@ gtk_xtext_set_tint (GtkXText *xtext, int tint_red, int tint_green, int tint_blue
 	xtext->tint_red = tint_red;
 	xtext->tint_green = tint_green;
 	xtext->tint_blue = tint_blue;
+
+	/*if (xtext->tint_red != 255 || xtext->tint_green != 255 || xtext->tint_blue != 255)
+		shaded = TRUE;*/
 }
 
 void
-gtk_xtext_set_urlcheck_function (GtkXText *xtext, int (*urlcheck_function) (GtkWidget *, char *))
+gtk_xtext_set_urlcheck_function (GtkXText *xtext, int (*urlcheck_function) (GtkWidget *, char *, int))
 {
 	xtext->urlcheck_function = urlcheck_function;
 }
