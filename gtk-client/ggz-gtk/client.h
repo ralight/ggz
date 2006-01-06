@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 7727 2006-01-06 01:21:19Z jdorje $
+ * $Id: client.h 7733 2006-01-06 06:32:07Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -29,6 +29,7 @@ void client_start_table_join(void);
 
 void client_initialize(void);
 
+GtkWidget *create_main_area(GtkWidget *main_win);
 GtkWidget* create_win_main (void);
 
 /* Default font */

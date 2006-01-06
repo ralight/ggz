@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7732 2006-01-06 06:18:19Z jdorje $
+ * $Id: client.c 7733 2006-01-06 06:32:07Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -775,10 +775,8 @@ void client_initialize(void)
 	server_profiles_load();	
 }
 
-GtkWidget*
-create_win_main (void)
+GtkWidget *create_main_area(GtkWidget *main_win)
 {
-  GtkWidget *win_main;
   GtkWidget *main_vbox;
   GtkWidget *menubar;
   GtkWidget *ggz;
@@ -851,17 +849,13 @@ create_win_main (void)
   /* List for storing last messages */
   GGZList *last_list;
 
-  accel_group = gtk_accel_group_new ();
+  /* Set global value. */
+  win_main = main_win;
 
-  win_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  g_object_set_data(G_OBJECT (win_main), "win_main", win_main);
-  gtk_widget_set_size_request(win_main, 620, 400);
-  gtk_window_set_title (GTK_WINDOW (win_main), _("GGZ Gaming Zone"));
-  gtk_window_set_resizable(GTK_WINDOW(win_main), TRUE);
+  accel_group = gtk_accel_group_new ();
 
   main_vbox = gtk_vbox_new (FALSE, 0);
   g_object_set_data(G_OBJECT (win_main), "main_vbox", main_vbox);
-  gtk_container_add (GTK_CONTAINER (win_main), main_vbox);
 
   menubar = gtk_menu_bar_new ();
   g_object_set_data(G_OBJECT (win_main), "menubar", menubar);
@@ -1262,12 +1256,6 @@ create_win_main (void)
   gtk_widget_set_size_request(GTK_WIDGET (statebar), 150, -1);
   gtk_box_pack_start (GTK_BOX (status_box), statebar, FALSE, TRUE, 0);
 
-  g_signal_connect (GTK_OBJECT (win_main), "realize",
-                      GTK_SIGNAL_FUNC (client_realize),
-                      NULL);
-  g_signal_connect (GTK_OBJECT (win_main), "delete_event",
-                      GTK_SIGNAL_FUNC (client_exit_activate),
-                      NULL);
   g_signal_connect (GTK_OBJECT (connect), "activate",
                       GTK_SIGNAL_FUNC (client_connect_activate),
                       NULL);
@@ -1368,5 +1356,27 @@ create_win_main (void)
   gtk_widget_grab_focus (chat_entry);
   gtk_window_add_accel_group (GTK_WINDOW (win_main), accel_group);
 
+  return main_vbox;
+}
+
+GtkWidget *create_win_main(void)
+{
+  GtkWidget *win_main, *main_vbox;
+
+  win_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  g_object_set_data(G_OBJECT (win_main), "win_main", win_main);
+  gtk_widget_set_size_request(win_main, 620, 400);
+  gtk_window_set_title (GTK_WINDOW (win_main), _("GGZ Gaming Zone"));
+  gtk_window_set_resizable(GTK_WINDOW(win_main), TRUE);
+
+  main_vbox = create_main_area(win_main);
+  gtk_container_add (GTK_CONTAINER (win_main), main_vbox);
+
+  g_signal_connect (GTK_OBJECT (win_main), "realize",
+                      GTK_SIGNAL_FUNC (client_realize),
+                      NULL);
+  g_signal_connect (GTK_OBJECT (win_main), "delete_event",
+                      GTK_SIGNAL_FUNC (client_exit_activate),
+                      NULL);
   return win_main;
 }
