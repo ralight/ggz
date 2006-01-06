@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7728 2006-01-06 04:55:08Z jdorje $
+ * $Id: client.c 7731 2006-01-06 05:45:55Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -860,42 +860,30 @@ create_win_main (void)
   gtk_window_set_resizable(GTK_WINDOW(win_main), TRUE);
 
   main_vbox = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (main_vbox);
-  g_object_set_data_full(G_OBJECT (win_main), "main_vbox", main_vbox,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "main_vbox", main_vbox);
   gtk_container_add (GTK_CONTAINER (win_main), main_vbox);
 
   menubar = gtk_menu_bar_new ();
-  gtk_widget_ref (menubar);
-  g_object_set_data_full(G_OBJECT (win_main), "menubar", menubar,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "menubar", menubar);
   gtk_box_pack_start (GTK_BOX (main_vbox), menubar, FALSE, FALSE, 0);
 
   ggz = gtk_menu_item_new_with_label(_("GGZ"));
-  gtk_widget_ref (ggz);
-  g_object_set_data_full(G_OBJECT (win_main), "ggz", ggz,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "ggz", ggz);
   gtk_container_add (GTK_CONTAINER (menubar), ggz);
 
   ggz_menu = gtk_menu_new ();
-  gtk_widget_ref (ggz_menu);
-  g_object_set_data_full(G_OBJECT (win_main), "ggz_menu", ggz_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "ggz_menu", ggz_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (ggz), ggz_menu);
 
   connect = gtk_menu_item_new_with_label(_("Connect"));
-  gtk_widget_ref (connect);
-  g_object_set_data_full(G_OBJECT (win_main), "connect", connect,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "connect", connect);
   gtk_container_add (GTK_CONTAINER (ggz_menu), connect);
   gtk_widget_add_accelerator (connect, "activate", accel_group,
                               GDK_C, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   disconnect = gtk_menu_item_new_with_label(_("Disconnect"));
-  gtk_widget_ref (disconnect);
-  g_object_set_data_full(G_OBJECT (win_main), "disconnect", disconnect,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "disconnect", disconnect);
   gtk_container_add (GTK_CONTAINER (ggz_menu), disconnect);
   gtk_widget_set_sensitive (disconnect, FALSE);
   gtk_widget_add_accelerator (disconnect, "activate", accel_group,
@@ -903,244 +891,177 @@ create_win_main (void)
                               GTK_ACCEL_VISIBLE);
 
   separator1 = gtk_menu_item_new ();
-  gtk_widget_ref (separator1);
-  g_object_set_data_full(G_OBJECT (win_main), "separator1", separator1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "separator1", separator1);
   gtk_container_add (GTK_CONTAINER (ggz_menu), separator1);
   gtk_widget_set_sensitive (separator1, FALSE);
 
   exit = gtk_menu_item_new_with_label(_("Quit"));
-  gtk_widget_ref (exit);
-  g_object_set_data_full(G_OBJECT (win_main), "exit", exit,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "exit", exit);
   gtk_container_add (GTK_CONTAINER (ggz_menu), exit);
   gtk_widget_add_accelerator (exit, "activate", accel_group,
                               GDK_X, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   game = gtk_menu_item_new_with_label(_("Game"));
-  gtk_widget_ref (game);
-  g_object_set_data_full(G_OBJECT (win_main), "game", game,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "game", game);
   gtk_container_add (GTK_CONTAINER (menubar), game);
   gtk_widget_set_sensitive (game, FALSE);
 
   game_menu = gtk_menu_new ();
-  gtk_widget_ref (game_menu);
-  g_object_set_data_full(G_OBJECT (win_main), "game_menu", game_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "game_menu", game_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (game), game_menu);
 
   launch = gtk_menu_item_new_with_label(_("Launch"));
-  gtk_widget_ref (launch);
-  g_object_set_data_full(G_OBJECT (win_main), "launch", launch,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "launch", launch);
   gtk_container_add (GTK_CONTAINER (game_menu), launch);
   gtk_widget_add_accelerator (launch, "activate", accel_group,
                               GDK_L, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   join = gtk_menu_item_new_with_label(_("Join"));
-  gtk_widget_ref (join);
-  g_object_set_data_full(G_OBJECT (win_main), "join", join,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "join", join);
   gtk_container_add (GTK_CONTAINER (game_menu), join);
   gtk_widget_add_accelerator (join, "activate", accel_group,
                               GDK_J, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   watch = gtk_menu_item_new_with_label(_("Watch"));
-  gtk_widget_ref (watch);
-  g_object_set_data_full(G_OBJECT (win_main), "watch", watch,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "watch", watch);
   gtk_container_add (GTK_CONTAINER (game_menu), watch);
   gtk_widget_add_accelerator (watch, "activate", accel_group,
                               GDK_W, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   separator2 = gtk_menu_item_new ();
-  gtk_widget_ref (separator2);
-  g_object_set_data_full(G_OBJECT (win_main), "separator2", separator2,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "separator2", separator2);
   gtk_container_add (GTK_CONTAINER (game_menu), separator2);
   gtk_widget_set_sensitive (separator2, FALSE);
 
   leave = gtk_menu_item_new_with_label(_("Leave"));
-  gtk_widget_ref (leave);
-  g_object_set_data_full(G_OBJECT (win_main), "leave", leave,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "leave", leave);
   gtk_container_add (GTK_CONTAINER (game_menu), leave);
   gtk_widget_add_accelerator (leave, "activate", accel_group,
                               GDK_V, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   edit = gtk_menu_item_new_with_label(_("Edit"));
-  gtk_widget_ref (edit);
-  g_object_set_data_full(G_OBJECT (win_main), "edit", edit,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "edit", edit);
   gtk_container_add (GTK_CONTAINER (menubar), edit);
 
   edit_menu = gtk_menu_new ();
-  gtk_widget_ref (edit_menu);
-  g_object_set_data_full(G_OBJECT (win_main), "edit_menu", edit_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "edit_menu", edit_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (edit), edit_menu);
 
   properties = gtk_menu_item_new_with_label(_("Properties"));
-  gtk_widget_ref (properties);
-  g_object_set_data_full(G_OBJECT (win_main), "properties", properties,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "properties", properties);
   gtk_container_add (GTK_CONTAINER (edit_menu), properties);
   gtk_widget_add_accelerator (properties, "activate", accel_group,
                               GDK_P, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   view = gtk_menu_item_new_with_label(_("View"));
-  gtk_widget_ref (view);
-  g_object_set_data_full(G_OBJECT (win_main), "view", view,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "view", view);
   gtk_container_add (GTK_CONTAINER (menubar), view);
   gtk_widget_set_sensitive (view, FALSE);
 
   view_menu = gtk_menu_new ();
-  gtk_widget_ref (view_menu);
-  g_object_set_data_full(G_OBJECT (win_main), "view_menu", view_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "view_menu", view_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (view), view_menu);
 
   room_toggle = gtk_check_menu_item_new_with_label(_("Room List"));
-  gtk_widget_ref (room_toggle);
-  g_object_set_data_full(G_OBJECT (win_main), "room_toggle",
-			 room_toggle,
-			 (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "room_toggle", room_toggle);
   gtk_container_add (GTK_CONTAINER (view_menu), room_toggle);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (room_toggle),
 				  TRUE);
 
   player_toggle = gtk_check_menu_item_new_with_label(_("Player List"));
-  gtk_widget_ref(player_toggle);
-  g_object_set_data_full(G_OBJECT (win_main), "player_toggle",
-			    player_toggle,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "player_toggle",
+		    player_toggle);
   gtk_container_add (GTK_CONTAINER (view_menu), player_toggle);
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM (player_toggle), TRUE);
 
   separator8 = gtk_menu_item_new ();
-  gtk_widget_ref (separator8);
-  g_object_set_data_full(G_OBJECT (win_main), "separator8", separator8,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "separator8", separator8);
   gtk_container_add (GTK_CONTAINER (view_menu), separator8);
   gtk_widget_set_sensitive (separator8, FALSE);
 
   server_stats = gtk_menu_item_new_with_label(_("Server Stats"));
-  gtk_widget_ref (server_stats);
-  g_object_set_data_full(G_OBJECT (win_main), "server_stats", server_stats,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "server_stats", server_stats);
   gtk_container_add (GTK_CONTAINER (view_menu), server_stats);
 
   player_stats = gtk_menu_item_new_with_label(_("Player Stats"));
-  gtk_widget_ref (player_stats);
-  g_object_set_data_full(G_OBJECT (win_main), "player_stats", player_stats,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "player_stats", player_stats);
   gtk_container_add (GTK_CONTAINER (view_menu), player_stats);
   gtk_widget_add_accelerator (player_stats, "activate", accel_group,
                               GDK_S, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   game_types = gtk_menu_item_new_with_label(_("Game Types"));
-  gtk_widget_ref (game_types);
-  g_object_set_data_full(G_OBJECT (win_main), "game_types", game_types,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "game_types", game_types);
   gtk_container_add (GTK_CONTAINER (view_menu), game_types);
 
   separator3 = gtk_menu_item_new ();
-  gtk_widget_ref (separator3);
-  g_object_set_data_full(G_OBJECT (win_main), "separator3", separator3,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "separator3", separator3);
   gtk_container_add (GTK_CONTAINER (view_menu), separator3);
   gtk_widget_set_sensitive (separator3, FALSE);
 
   motd = gtk_menu_item_new_with_label(_("MOTD"));
-  gtk_widget_ref (motd);
-  g_object_set_data_full(G_OBJECT (win_main), "motd", motd,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "motd", motd);
   gtk_container_add (GTK_CONTAINER (view_menu), motd);
   gtk_widget_add_accelerator (motd, "activate", accel_group,
                               GDK_M, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   help = gtk_menu_item_new_with_label(_("Help"));
-  gtk_widget_ref (help);
-  g_object_set_data_full(G_OBJECT (win_main), "help", help,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "help", help);
   gtk_container_add (GTK_CONTAINER (menubar), help);
 
   help_menu = gtk_menu_new ();
-  gtk_widget_ref (help_menu);
-  g_object_set_data_full(G_OBJECT (win_main), "help_menu", help_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "help_menu", help_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (help), help_menu);
 
   about = gtk_menu_item_new_with_label(_("About"));
-  gtk_widget_ref (about);
-  g_object_set_data_full(G_OBJECT (win_main), "about", about,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "about", about);
   gtk_container_add (GTK_CONTAINER (help_menu), about);
   gtk_widget_add_accelerator (about, "activate", accel_group,
                               GDK_A, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   license = gtk_menu_item_new_with_label(_("Copyright"));
-  gtk_widget_ref (license);
-  g_object_set_data_full(G_OBJECT (win_main), "license", license,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "license", license);
   gtk_container_add (GTK_CONTAINER (help_menu), license);
 
   separator6 = gtk_menu_item_new ();
-  gtk_widget_ref (separator6);
-  g_object_set_data_full(G_OBJECT (win_main), "separator6", separator6,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "separator6", separator6);
   gtk_container_add (GTK_CONTAINER (help_menu), separator6);
   gtk_widget_set_sensitive (separator6, FALSE);
 
   ggz_help = gtk_menu_item_new_with_label(_("GGZ Help"));
-  gtk_widget_ref (ggz_help);
-  g_object_set_data_full(G_OBJECT (win_main), "ggz_help", ggz_help,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "ggz_help", ggz_help);
   gtk_container_add (GTK_CONTAINER (help_menu), ggz_help);
   gtk_widget_add_accelerator (ggz_help, "activate", accel_group,
                               GDK_F1, 0,
                               GTK_ACCEL_VISIBLE);
 
   game_help = gtk_menu_item_new_with_label(_("Game Help"));
-  gtk_widget_ref (game_help);
-  g_object_set_data_full(G_OBJECT (win_main), "game_help", game_help,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "game_help", game_help);
   gtk_container_add (GTK_CONTAINER (help_menu), game_help);
 
   separator7 = gtk_menu_item_new ();
-  gtk_widget_ref (separator7);
-  g_object_set_data_full(G_OBJECT (win_main), "separator7", separator7,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "separator7", separator7);
   gtk_container_add (GTK_CONTAINER (help_menu), separator7);
   gtk_widget_set_sensitive (separator7, FALSE);
 
   goto_web1 = gtk_menu_item_new_with_label(_("Goto Web"));
-  gtk_widget_ref (goto_web1);
-  g_object_set_data_full(G_OBJECT (win_main), "goto_web1", goto_web1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "goto_web1", goto_web1);
   gtk_container_add (GTK_CONTAINER (help_menu), goto_web1);
 
   handlebox1 = gtk_handle_box_new ();
-  gtk_widget_ref (handlebox1);
-  g_object_set_data_full(G_OBJECT (win_main), "handlebox1", handlebox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "handlebox1", handlebox1);
   gtk_box_pack_start (GTK_BOX (main_vbox), handlebox1, FALSE, TRUE, 0);
 
   toolbar = gtk_toolbar_new();
-  gtk_widget_ref (toolbar);
-  g_object_set_data_full(G_OBJECT (win_main), "toolbar", toolbar,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "toolbar", toolbar);
   gtk_container_add (GTK_CONTAINER (handlebox1), toolbar);
 
   launch_button = gtk_tool_button_new(NULL, _("Launch"));
@@ -1148,9 +1069,7 @@ create_win_main (void)
 			       GTK_STOCK_NEW);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(launch_button), -1);
-  gtk_widget_ref(GTK_WIDGET(launch_button));
-  g_object_set_data_full(G_OBJECT(win_main), "launch_button",
-			 launch_button, (GtkDestroyNotify)gtk_widget_unref);
+  g_object_set_data(G_OBJECT(win_main), "launch_button", launch_button);
   gtk_widget_set_sensitive(GTK_WIDGET(launch_button), FALSE);
   gtk_widget_show(GTK_WIDGET(launch_button));
 
@@ -1159,9 +1078,7 @@ create_win_main (void)
 			       GTK_STOCK_OPEN);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(join_button), -1);
-  gtk_widget_ref(GTK_WIDGET(join_button));
-  g_object_set_data_full(G_OBJECT(win_main), "join_button",
-			 join_button, (GtkDestroyNotify)gtk_widget_unref);
+  g_object_set_data(G_OBJECT(win_main), "join_button", join_button);
   gtk_widget_set_sensitive(GTK_WIDGET(join_button), FALSE);
   gtk_widget_show(GTK_WIDGET(join_button));
 
@@ -1170,9 +1087,7 @@ create_win_main (void)
 			       GTK_STOCK_ZOOM_FIT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(watch_button), -1);
-  gtk_widget_ref(GTK_WIDGET(watch_button));
-  g_object_set_data_full(G_OBJECT(win_main), "watch_button",
-			 watch_button, (GtkDestroyNotify)gtk_widget_unref);
+  g_object_set_data(G_OBJECT(win_main), "watch_button", watch_button);
   gtk_widget_set_sensitive(GTK_WIDGET(watch_button), FALSE);
   gtk_widget_show(GTK_WIDGET(watch_button));
 
@@ -1181,26 +1096,20 @@ create_win_main (void)
 			       GTK_STOCK_CLOSE);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(leave_button), -1);
-  gtk_widget_ref(GTK_WIDGET(leave_button));
-  g_object_set_data_full(G_OBJECT(win_main), "leave_button",
-			 leave_button, (GtkDestroyNotify)gtk_widget_unref);
+  g_object_set_data(G_OBJECT(win_main), "leave_button", leave_button);
   gtk_widget_set_sensitive(GTK_WIDGET(leave_button), FALSE);
   gtk_widget_show(GTK_WIDGET(leave_button));
 
   props_button = gtk_tool_button_new_from_stock(GTK_STOCK_PREFERENCES);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(props_button), -1);
-  gtk_widget_ref(GTK_WIDGET(props_button));
-  g_object_set_data_full(G_OBJECT(win_main), "props_button",
-			 props_button, (GtkDestroyNotify)gtk_widget_unref);
+  g_object_set_data(G_OBJECT(win_main), "props_button", props_button);
   gtk_widget_show(GTK_WIDGET(props_button));
 
   stats_button = gtk_tool_button_new(NULL, _("Stats"));
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(stats_button), -1);
-  gtk_widget_ref(GTK_WIDGET(stats_button));
-  g_object_set_data_full(G_OBJECT(win_main), "stats_button",
-			 stats_button, (GtkDestroyNotify)gtk_widget_unref);
+  g_object_set_data(G_OBJECT(win_main), "stats_button", stats_button);
   gtk_widget_set_sensitive(GTK_WIDGET(stats_button), FALSE);
 #if 0
   /* There's no stats dialog, but stats are handled
@@ -1217,9 +1126,7 @@ create_win_main (void)
   gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(connect_button),
 			       GTK_STOCK_CONNECT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(connect_button), -1);
-  gtk_widget_ref(GTK_WIDGET(connect_button));
-  g_object_set_data_full(G_OBJECT(win_main), "connect_button",
-			 connect_button, (GtkDestroyNotify)gtk_widget_unref);
+  g_object_set_data(G_OBJECT(win_main), "connect_button", connect_button);
   gtk_widget_show(GTK_WIDGET(connect_button));
 
   /* We should use gtk_tool_button_new_from_stock but for some reason
@@ -1231,54 +1138,42 @@ create_win_main (void)
 #endif
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(disconnect_button), -1);
-  gtk_widget_ref(GTK_WIDGET(disconnect_button));
-  g_object_set_data_full(G_OBJECT(win_main), "disconnect_button",
-			 disconnect_button,
-			 (GtkDestroyNotify)gtk_widget_unref);
+  g_object_set_data(G_OBJECT(win_main), "disconnect_button",
+		    disconnect_button);
   gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button), FALSE);
   gtk_widget_show(GTK_WIDGET(disconnect_button));
 
   exit_button = gtk_tool_button_new_from_stock(GTK_STOCK_QUIT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(exit_button), -1);
-  gtk_widget_ref(GTK_WIDGET(exit_button));
-  g_object_set_data_full(G_OBJECT(win_main), "exit_button",
-			 exit_button, (GtkDestroyNotify)gtk_widget_unref);
+  g_object_set_data(G_OBJECT(win_main), "exit_button", exit_button);
   gtk_widget_show(GTK_WIDGET(exit_button));
 
   Current_room_label = gtk_label_new (_("Current Room:"));
-  gtk_widget_ref (Current_room_label);
-  g_object_set_data_full(G_OBJECT (win_main), "Current_room_label", Current_room_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "Current_room_label",
+		    Current_room_label);
   gtk_box_pack_start (GTK_BOX (main_vbox), Current_room_label, FALSE, FALSE, 0);
   gtk_misc_set_alignment (GTK_MISC (Current_room_label), 7.45058e-09, 0.5);
   gtk_misc_set_padding (GTK_MISC (Current_room_label), 8, 5);
 
   client_hbox = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (client_hbox);
-  g_object_set_data_full(G_OBJECT (win_main), "client_hbox", client_hbox,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "client_hbox", client_hbox);
   gtk_box_pack_start (GTK_BOX (main_vbox), client_hbox, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (client_hbox), 3);
 
   client_hpaned = gtk_hpaned_new ();
-  gtk_widget_ref (client_hpaned);
-  g_object_set_data_full(G_OBJECT (win_main), "client_hpaned", client_hpaned,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "client_hpaned", client_hpaned);
   gtk_box_pack_start (GTK_BOX (client_hbox), client_hpaned, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (client_hpaned), 3);
   gtk_paned_set_position (GTK_PANED (client_hpaned), 220);
 
   lists_vbox = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (lists_vbox);
-  g_object_set_data_full(G_OBJECT (win_main), "lists_vbox", lists_vbox,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "lists_vbox", lists_vbox);
   gtk_paned_pack1 (GTK_PANED (client_hpaned), lists_vbox, FALSE, TRUE);
 
   room_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (room_scrolledwindow);
-  g_object_set_data_full(G_OBJECT (win_main), "room_scrolledwindow", room_scrolledwindow,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "room_scrolledwindow",
+		    room_scrolledwindow);
   gtk_box_pack_start (GTK_BOX (lists_vbox), room_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (room_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
@@ -1286,9 +1181,8 @@ create_win_main (void)
   gtk_container_add (GTK_CONTAINER (room_scrolledwindow), room_list);
 
   player_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (player_scrolledwindow);
-  g_object_set_data_full(G_OBJECT (win_main), "player_scrolledwindow", player_scrolledwindow,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "player_scrolledwindow",
+		    player_scrolledwindow);
   gtk_box_pack_start (GTK_BOX (lists_vbox), player_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (player_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
@@ -1296,16 +1190,12 @@ create_win_main (void)
   gtk_container_add(GTK_CONTAINER(player_scrolledwindow), player_tree);
 
   table_vpaned = gtk_vpaned_new ();
-  gtk_widget_ref (table_vpaned);
-  g_object_set_data_full(G_OBJECT (win_main), "table_vpaned", table_vpaned,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "table_vpaned", table_vpaned);
   gtk_paned_pack2 (GTK_PANED (client_hpaned), table_vpaned, TRUE, TRUE);
   gtk_paned_set_position (GTK_PANED (table_vpaned), 125);
 
   scrolledwindow3 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow3);
-  g_object_set_data_full(G_OBJECT (win_main), "scrolledwindow3", scrolledwindow3,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "scrolledwindow3", scrolledwindow3);
   gtk_paned_pack1 (GTK_PANED (table_vpaned), scrolledwindow3, FALSE, TRUE);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
@@ -1313,103 +1203,76 @@ create_win_main (void)
   gtk_container_add(GTK_CONTAINER(scrolledwindow3), table_list);
 
   chat_vbox = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (chat_vbox);
-  g_object_set_data_full(G_OBJECT (win_main), "chat_vbox", chat_vbox,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "chat_vbox", chat_vbox);
   gtk_paned_pack2 (GTK_PANED (table_vpaned), chat_vbox, TRUE, TRUE);
 
   chatdisplay_hbox = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (chatdisplay_hbox);
-  g_object_set_data_full(G_OBJECT (win_main), "chatdisplay_hbox", chatdisplay_hbox,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "chatdisplay_hbox",
+		    chatdisplay_hbox);
   gtk_box_pack_start (GTK_BOX (chat_vbox), chatdisplay_hbox, TRUE, TRUE, 0);
 
   chat_frame = gtk_frame_new (NULL);
-  gtk_widget_ref (chat_frame);
-  g_object_set_data_full(G_OBJECT (win_main), "chat_frame", chat_frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "chat_frame", chat_frame);
   gtk_box_pack_start (GTK_BOX (chatdisplay_hbox), chat_frame, TRUE, TRUE, 0);
   gtk_frame_set_shadow_type (GTK_FRAME (chat_frame), GTK_SHADOW_IN);
 
   xtext_custom = main_xtext_chat_create ("xtext_custom", NULL, NULL, 0, 0);
-  gtk_widget_ref (xtext_custom);
-  g_object_set_data_full(G_OBJECT (win_main), "xtext_custom", xtext_custom,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "xtext_custom", xtext_custom);
   gtk_container_add (GTK_CONTAINER (chat_frame), xtext_custom);
   GTK_WIDGET_UNSET_FLAGS (xtext_custom, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS (xtext_custom, GTK_CAN_DEFAULT);
 
   chat_vscrollbar = gtk_vscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
-  gtk_widget_ref (chat_vscrollbar);
-  g_object_set_data_full(G_OBJECT (win_main), "chat_vscrollbar", chat_vscrollbar,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "chat_vscrollbar", chat_vscrollbar);
   gtk_box_pack_start (GTK_BOX (chatdisplay_hbox), chat_vscrollbar, FALSE, TRUE, 0);
 
   newchat_hbox = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (newchat_hbox);
-  g_object_set_data_full(G_OBJECT (win_main), "newchat_hbox", newchat_hbox,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "newchat_hbox", newchat_hbox);
   gtk_box_pack_start (GTK_BOX (chat_vbox), newchat_hbox, FALSE, FALSE, 0);
 
   chat_label = gtk_label_new (_("Message:"));
-  gtk_widget_ref (chat_label);
-  g_object_set_data_full(G_OBJECT (win_main), "chat_label", chat_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "chat_label", chat_label);
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_label, FALSE, FALSE, 0);
   gtk_misc_set_padding (GTK_MISC (chat_label), 3, 0);
 
   chat_entry = gtk_entry_new ();
-  gtk_widget_ref (chat_entry);
-  g_object_set_data_full(G_OBJECT (win_main), "chat_entry", chat_entry,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "chat_entry", chat_entry);
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_entry, TRUE, TRUE, 0);
   gtk_widget_set_sensitive (chat_entry, FALSE);
 
   /* List for last entries */
   last_list = ggz_list_create(NULL, ggz_list_create_str, ggz_list_destroy_str, GGZ_LIST_ALLOW_DUPS);
-  g_object_set_data(G_OBJECT(chat_entry), "last_list", last_list );
+  g_object_set_data(G_OBJECT(chat_entry), "last_list", last_list);
 
   chat_hbuttonbox = gtk_hbutton_box_new ();
-  gtk_widget_ref (chat_hbuttonbox);
-  g_object_set_data_full(G_OBJECT (win_main), "chat_hbuttonbox", chat_hbuttonbox,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "chat_hbuttonbox", chat_hbuttonbox);
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_hbuttonbox, FALSE, FALSE, 0);
 
   send_button = stockbutton_new(GTK_STOCK_EXECUTE, _("Send"));
-  gtk_widget_ref (send_button);
-  g_object_set_data_full(G_OBJECT (win_main), "send_button", send_button,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "send_button", send_button);
   gtk_container_add (GTK_CONTAINER (chat_hbuttonbox), send_button);
   gtk_widget_set_sensitive (send_button, FALSE);
   GTK_WIDGET_UNSET_FLAGS (send_button, GTK_CAN_FOCUS);
   GTK_WIDGET_SET_FLAGS (send_button, GTK_CAN_DEFAULT);
 
   status_box = gtk_hbox_new (FALSE, 5);
-  gtk_widget_ref (status_box);
-  g_object_set_data_full(G_OBJECT (win_main), "status_box", status_box,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "status_box", status_box);
   gtk_box_pack_start (GTK_BOX (main_vbox), status_box, FALSE, FALSE, 0);
 
   serverbar = gtk_statusbar_new ();
-  gtk_widget_ref(serverbar);
-  g_object_set_data_full(G_OBJECT (win_main), "serverbar", serverbar,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "serverbar", serverbar);
   gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR (serverbar), FALSE);
   gtk_widget_show(serverbar);
   gtk_box_pack_start(GTK_BOX (status_box), serverbar, TRUE, TRUE, 0);
 
   statusbar = gtk_statusbar_new ();
-  gtk_widget_ref (statusbar);
-  g_object_set_data_full(G_OBJECT (win_main), "statusbar", statusbar,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "statusbar", statusbar);
   gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR (statusbar), FALSE);
   gtk_widget_set_size_request(GTK_WIDGET (statusbar), 150, -1);
   gtk_box_pack_start (GTK_BOX (status_box), statusbar, FALSE, TRUE, 0);
 
   statebar = gtk_statusbar_new ();
-  gtk_widget_ref (statebar);
-  g_object_set_data_full(G_OBJECT (win_main), "statebar", statebar,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (win_main), "statebar", statebar);
   gtk_widget_set_size_request(GTK_WIDGET (statebar), 150, -1);
   gtk_box_pack_start (GTK_BOX (status_box), statebar, FALSE, TRUE, 0);
 
