@@ -1,0 +1,197 @@
+Index: configure.ac
+===================================================================
+--- configure.ac	(revision 11417)
++++ configure.ac	(working copy)
+@@ -443,6 +443,10 @@
+ 
+ dnl Check for GGZ
+ AC_GGZ_CHECK
++if test "x$client" = "xgtk-2.0" ; then
++  AC_CHECK_LIB(ggz-gtk, ggz_gtk_create_main_area,
++               CLIENT_LIBS="-lggz-gtk $CLIENT_LIBS")
++fi
+ 
+ AC_SUBST(gui_sources)
+ AC_SUBST(CLIENT_CFLAGS)
+Index: client/gui-gtk-2.0/gui_main.c
+===================================================================
+--- client/gui-gtk-2.0/gui_main.c	(revision 11417)
++++ client/gui-gtk-2.0/gui_main.c	(working copy)
+@@ -32,6 +32,8 @@
+ #include <gtk/gtk.h>
+ #include <gdk/gdkkeysyms.h>
+ 
++#include <ggz-gtk.h>
++
+ #include "dataio.h"
+ #include "fciconv.h"
+ #include "fcintl.h"
+@@ -807,6 +809,8 @@
+       create_network_page(), NULL);
+   gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+       create_nation_page(), NULL);
++  gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
++			   ggz_gtk_create_main_area(toplevel), NULL);
+ 
+   main_tips = gtk_tooltips_new();
+ 
+@@ -1136,11 +1140,35 @@
+   }
+ }
+ 
++static void ggz_connected(GGZServer *server)
++{
++  if (server) {
++    set_client_page(PAGE_GGZ);
++  } else {
++    set_client_page(PAGE_MAIN);
++  }
++}
++
++static void ggz_game_launched(void)
++{
++  set_client_page(PAGE_START);
++  ggz_initialize();
++}
++
+ /**************************************************************************
+  called from main().
+ **************************************************************************/
+ void ui_init(void)
+ {
++  char protocol_version[128];
++
++  /* Engine and version match what is provided in civclient.dsc.in and
++   * civserver.dsc.in. */
++  my_snprintf(protocol_version, sizeof(protocol_version),
++	      "%d.%d", MAJOR_VERSION, MINOR_VERSION);
++  ggz_gtk_initialize(ggz_connected, ggz_game_launched,
++		     "Freeciv", protocol_version);
++
+   log_set_callback(log_callback_utf8);
+ }
+ 
+Index: client/gui-gtk-2.0/pages.c
+===================================================================
+--- client/gui-gtk-2.0/pages.c	(revision 11417)
++++ client/gui-gtk-2.0/pages.c	(working copy)
+@@ -22,6 +22,8 @@
+ 
+ #include <gtk/gtk.h>
+ 
++#include <ggz-gtk.h>
++
+ #include "dataio.h"
+ #include "fcintl.h"
+ #include "game.h"
+@@ -218,6 +220,12 @@
+   g_signal_connect(button, "clicked",
+       G_CALLBACK(set_page_callback), GUINT_TO_POINTER(PAGE_NETWORK));
+ 
++  button = gtk_button_new_with_mnemonic(_("Connect to Gaming _Zone"));
++  gtk_size_group_add_widget(size, button);
++  gtk_container_add(GTK_CONTAINER(bbox), button);
++  g_signal_connect(button, "clicked",
++		   G_CALLBACK(ggz_gtk_login_raise), NULL);
++
+   bbox = gtk_vbox_new(FALSE, 6);
+   gtk_container_add(GTK_CONTAINER(sbox), bbox);
+ 
+@@ -1880,6 +1888,7 @@
+ 
+   switch (new_page) {
+   case PAGE_MAIN:
++  case PAGE_GGZ:
+     break;
+   case PAGE_START:
+     if (is_server_running()) {
+@@ -1923,6 +1932,7 @@
+   switch (new_page) {
+   case PAGE_MAIN:
+   case PAGE_START:
++  case PAGE_GGZ:
+     break;
+   case PAGE_NATION:
+     gtk_tree_view_focus(gtk_tree_selection_get_tree_view(nation_selection));
+Index: client/include/pages_g.h
+===================================================================
+--- client/include/pages_g.h	(revision 11417)
++++ client/include/pages_g.h	(working copy)
+@@ -23,6 +23,7 @@
+   PAGE_LOAD,		/* Load saved game page. */
+   PAGE_NETWORK,		/* Connect to network page.  */
+   PAGE_NATION,		/* Select a nation page.  */
++  PAGE_GGZ,
+   PAGE_GAME		/* In game page. */
+ };
+ 
+Index: client/ggzclient.c
+===================================================================
+--- client/ggzclient.c	(revision 11417)
++++ client/ggzclient.c	(working copy)
+@@ -53,23 +53,21 @@
+ ****************************************************************************/
+ void ggz_initialize(void)
+ {
+-  if (with_ggz) {
+-    int ggz_socket;
++  int ggz_socket;
+ 
+-    /* We're in GGZ mode */
+-    ggzmod = ggzmod_new(GGZMOD_GAME);
+-    ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+-    if (ggzmod_connect(ggzmod) < 0) {
+-      exit(EXIT_FAILURE);
+-    }
+-    ggz_socket = ggzmod_get_fd(ggzmod);
+-    if (ggz_socket < 0) {
+-      fc_fprintf(stderr, _("Only the GGZ client must call civclient"
+-			   " in ggz mode!\n"));
+-      exit(EXIT_FAILURE);
+-    }
+-    add_ggz_input(ggz_socket);
++  /* We're in GGZ mode */
++  ggzmod = ggzmod_new(GGZMOD_GAME);
++  ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
++  if (ggzmod_connect(ggzmod) < 0) {
++    exit(EXIT_FAILURE);
+   }
++  ggz_socket = ggzmod_get_fd(ggzmod);
++  if (ggz_socket < 0) {
++    fc_fprintf(stderr, _("Only the GGZ client must call civclient"
++			 " in ggz mode!\n"));
++    exit(EXIT_FAILURE);
++  }
++  add_ggz_input(ggz_socket);
+ }
+ 
+ /****************************************************************************
+Index: client/civclient.c
+===================================================================
+--- client/civclient.c	(revision 11417)
++++ client/civclient.c	(working copy)
+@@ -355,7 +355,9 @@
+   audio_real_init(sound_set_name, sound_plugin_name);
+   audio_play_music("music_start", NULL);
+ 
+-  ggz_initialize();
++  if (with_ggz) {
++    ggz_initialize();
++  }
+ 
+   /* run gui-specific client */
+   ui_main(argc, argv);
+Index: client/Makefile.am
+===================================================================
+--- client/Makefile.am	(revision 11417)
++++ client/Makefile.am	(working copy)
+@@ -190,7 +190,8 @@
+ 			../common/libcivcommon.a	\
+ 			../common/aicore/libaicore.a	\
+ 			agents/libagents.a		\
+-		 	@gui_sources@/libguiclient.a
++		 	@gui_sources@/libguiclient.a	\
++			@gui_sources@/ggz-gtk/libggz-gtk.a
+ civclient_DEPENDENCIES = $(fc_civclient_libs)
+ civclient_LDADD        = $(fc_civclient_libs) $(fc_civclient_libs) \
+ 	@INTLLIBS@ @CLIENT_LIBS@ @SOUND_LIBS@ @LIB_GGZMOD@
