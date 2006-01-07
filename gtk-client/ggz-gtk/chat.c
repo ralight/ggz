@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 7684 2005-12-29 01:59:00Z jdorje $
+ * $Id: chat.c 7740 2006-01-07 04:03:54Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -76,7 +76,7 @@ static void chat_help(GGZServer *server, const gchar *message);
 static void chat_list_friend(GGZServer *server, const gchar *message);
 static void chat_list_ignore(GGZServer *server, const gchar *message);
 
-struct {
+static struct {
 	const char *cmd;
 	void (*func)(GGZServer *server, const gchar *message);
 	const char *help;
@@ -135,10 +135,10 @@ GdkColor ColorBlack = {0, 0x0000, 0x0000, 0x0000};
  * color in chat and ingnored people's chats don't show
  * up at all.
  */
-struct chatinfo {
+static struct chatinfo {
 	GArray *friends;
 	GArray *ignore;
-}chatinfo;
+} chatinfo;
 
 /* chat_init() - setup chatinfo and allocates colors
  *
