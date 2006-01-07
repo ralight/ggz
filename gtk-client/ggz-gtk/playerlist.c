@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 7684 2005-12-29 01:59:00Z jdorje $
+ * $Id: playerlist.c 7744 2006-01-07 20:05:33Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -90,38 +90,20 @@ static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
 	GtkWidget *ignore;
 
 	mnu_player = gtk_menu_new();
-	g_object_set_data(G_OBJECT(mnu_player), "mnu_player", mnu_player);
 
 	info = gtk_menu_item_new_with_label(_("Info"));
-	gtk_widget_ref(info);
-	g_object_set_data_full(G_OBJECT(mnu_player), "info", info,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(info);
 	gtk_container_add(GTK_CONTAINER(mnu_player), info);
 
 	separator9 = gtk_menu_item_new();
-	gtk_widget_ref(separator9);
-	g_object_set_data_full(G_OBJECT(mnu_player), "separator9",
-				 separator9,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(separator9);
 	gtk_container_add(GTK_CONTAINER(mnu_player), separator9);
 	gtk_widget_set_sensitive(separator9, FALSE);
 
 	friends = gtk_check_menu_item_new_with_label(_("Friends"));
-	gtk_widget_ref(friends);
-	g_object_set_data_full(G_OBJECT(mnu_player), "friends", friends,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(friends);
 	gtk_container_add(GTK_CONTAINER(mnu_player), friends);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(friends),
 				       is_friend);
 
 	ignore = gtk_check_menu_item_new_with_label(_("Ignore"));
-	gtk_widget_ref(ignore);
-	g_object_set_data_full(G_OBJECT(mnu_player), "ignore", ignore,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(ignore);
 	gtk_container_add(GTK_CONTAINER(mnu_player), ignore);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ignore),
 				       is_ignore);
@@ -361,13 +343,8 @@ GtkWidget *create_player_list(GtkWidget *parent, GGZServer *server)
 				"text", PLAYER_COLUMN_NAME, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
-	gtk_widget_ref(tree);
-	g_object_set_data_full(G_OBJECT(parent), "player_list",
-			       tree,
-			       (GtkDestroyNotify) gtk_widget_unref);
 	g_object_set_data(G_OBJECT(tree), "player_list_store", store);
 	g_object_set_data(G_OBJECT(parent), "player_list_store", store);
-	gtk_widget_show(tree);
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 

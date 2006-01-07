@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 7720 2006-01-03 06:56:57Z jdorje $
+ * $Id: roomlist.c 7744 2006-01-07 20:05:33Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -132,23 +132,14 @@ static GtkWidget *create_mnu_room(GGZRoom *room)
 	accel_group = gtk_accel_group_new ();
 
 	mnu_room = gtk_menu_new ();
-	g_object_set_data(G_OBJECT (mnu_room), "mnu_room", mnu_room);
 
 	info = gtk_menu_item_new_with_label (_("Info"));
-	gtk_widget_ref (info);
-	g_object_set_data_full(G_OBJECT (mnu_room), "info", info,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (info);
 	gtk_container_add (GTK_CONTAINER (mnu_room), info);
 	gtk_widget_add_accelerator (info, "activate", accel_group,
 				    GDK_I, GDK_CONTROL_MASK,
 				    GTK_ACCEL_VISIBLE);
 
 	join = gtk_menu_item_new_with_label (_("Join"));
-	gtk_widget_ref (join);
-	g_object_set_data_full(G_OBJECT (mnu_room), "join", join,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (join);
 	gtk_container_add (GTK_CONTAINER (mnu_room), join);
 	gtk_widget_add_accelerator (join, "activate", accel_group,
 				    GDK_J, GDK_CONTROL_MASK,
@@ -347,14 +338,8 @@ GtkWidget *create_room_list(GtkWidget *window)
 				"text", ROOM_COLUMN_PLAYERS, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
-	gtk_widget_ref(tree);
-	g_object_set_data_full(G_OBJECT(window), "room_list",
-			       tree,
-			       (GtkDestroyNotify) gtk_widget_unref);
 	g_object_set_data(G_OBJECT(tree), "room_list_store", store);
-	g_object_set_data(G_OBJECT(tree), "parent_win", window);
 	g_object_set_data(G_OBJECT(window), "room_list_store", store);
-	gtk_widget_show(tree);
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 

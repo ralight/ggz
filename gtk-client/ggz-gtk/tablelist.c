@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 7722 2006-01-03 20:31:25Z jdorje $
+ * $Id: tablelist.c 7744 2006-01-07 20:05:33Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -70,36 +70,18 @@ static GtkWidget *create_mnu_table(void)
 	GtkWidget *info;
 
 	mnu_table = gtk_menu_new();
-	g_object_set_data(G_OBJECT(mnu_table), "mnu_table", mnu_table);
 
 	join = gtk_menu_item_new_with_label(_("Join"));
-	gtk_widget_ref(join);
-	g_object_set_data_full(G_OBJECT(mnu_table), "join", join,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(join);
 	gtk_container_add(GTK_CONTAINER(mnu_table), join);
 
 	leave = gtk_menu_item_new_with_label(_("Leave"));
-	gtk_widget_ref(leave);
-	g_object_set_data_full(G_OBJECT(mnu_table), "leave", leave,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(leave);
 	gtk_container_add(GTK_CONTAINER(mnu_table), leave);
 
 	menuitem3 = gtk_menu_item_new();
-	gtk_widget_ref(menuitem3);
-	g_object_set_data_full(G_OBJECT(mnu_table), "menuitem3",
-				 menuitem3,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(menuitem3);
 	gtk_container_add(GTK_CONTAINER(mnu_table), menuitem3);
 	gtk_widget_set_sensitive(menuitem3, FALSE);
 
 	info = gtk_menu_item_new_with_label(_("Info"));
-	gtk_widget_ref(info);
-	g_object_set_data_full(G_OBJECT(mnu_table), "info", info,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(info);
 	gtk_container_add(GTK_CONTAINER(mnu_table), info);
 
 #if 0				/* not implemented */
@@ -223,13 +205,8 @@ GtkWidget *create_table_list(GtkWidget * window)
 				"text", TABLE_COLUMN_DESC, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
-	gtk_widget_ref(tree);
-	g_object_set_data_full(G_OBJECT(window), "table_list",
-				 tree,
-				 (GtkDestroyNotify) gtk_widget_unref);
 	g_object_set_data(G_OBJECT(window), "table_list_store", store);
 	g_object_set_data(G_OBJECT(tree), "table_list_store", store);
-	gtk_widget_show(tree);
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 
