@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7711 2006-01-02 16:44:21Z josef $
+ * $Id: easysock.c 7745 2006-01-07 21:44:45Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -892,31 +892,30 @@ static void ggz_resolved(sigval_t arg)
 
 void ggz_resolvename(const char *name)
 {
-	if(!_notify_func)
-		return;
-
+	if (_notify_func) {
 #ifdef GAI_A
-	/* Start asynchronous lookup */
-	struct sigevent sigev;
-	struct gaicb *req;
-	int ret;
+	  	/* Start asynchronous lookup */
+	  	struct sigevent sigev;
+		struct gaicb *req;
+		int ret;
 
-	req = (struct gaicb*)ggz_malloc(sizeof(struct gaicb));
-	req->ar_name = name;
-	req->ar_service = NULL;
-	req->ar_request = NULL;
-	sigev.sigev_notify = SIGEV_THREAD;
-	sigev.sigev_value.sival_ptr = NULL;
-	sigev.sigev_notify_function = ggz_resolved;
-	sigev.sigev_notify_attributes = NULL;
-	global_req = req;
-	ret = getaddrinfo_a(GAI_NOWAIT, &req, 1, &sigev);
-	if(ret) {
-		(*_notify_func)(name, -2);
-	}
+		req = ggz_malloc(sizeof(*req));
+		req->ar_name = name;
+		req->ar_service = NULL;
+		req->ar_request = NULL;
+		sigev.sigev_notify = SIGEV_THREAD;
+		sigev.sigev_value.sival_ptr = NULL;
+		sigev.sigev_notify_function = ggz_resolved;
+		sigev.sigev_notify_attributes = NULL;
+		global_req = req;
+		ret = getaddrinfo_a(GAI_NOWAIT, &req, 1, &sigev);
+		if (ret) {
+		  	(*_notify_func)(name, -2);
+		}
 #else
-	/* Pass back unresolved name */
-	(*_notify_func)(name);
+		/* Pass back unresolved name */
+		(*_notify_func)(name);
 #endif
+	}
 }
 
