@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7734 2006-01-06 07:00:42Z jdorje $
+ * $Id: ggzclient.c 7739 2006-01-07 03:29:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -55,7 +55,7 @@
 static guint server_tag, channel_tag;
 static gboolean is_server, is_channel;
 
-gint numrooms;
+static gint numrooms;
 
 /* Gdk input callbacks */
 static void ggz_input_removed(gpointer data);
