@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 7735 2006-01-06 08:27:50Z jdorje $
+ * $Id: game.c 7738 2006-01-07 03:13:54Z jdorje $
  *
  * Functions for handling game events
  *
@@ -46,7 +46,7 @@
 
 #include <ggz.h>	/* libggz */
 
-GGZGame *game;
+static GGZGame *game;
 static int fd = -1;
 static guint game_tag;
 
