@@ -35,22 +35,19 @@ Index: client/gui-gtk-2.0/gui_main.c
  
    main_tips = gtk_tooltips_new();
  
-@@ -1136,11 +1140,35 @@
+@@ -1136,11 +1140,32 @@
    }
  }
  
 +static void ggz_connected(GGZServer *server)
 +{
-+  if (server) {
-+    set_client_page(PAGE_GGZ);
-+  } else {
-+    set_client_page(PAGE_MAIN);
-+  }
++  in_ggz = (server != NULL);
++  set_client_page(in_ggz ? PAGE_GGZ : PAGE_MAIN);
 +}
 +
 +static void ggz_game_launched(void)
 +{
-+  set_client_page(PAGE_START);
++  //  set_client_page(PAGE_START);
 +  ggz_initialize();
 +}
 +
@@ -84,6 +81,15 @@ Index: client/gui-gtk-2.0/pages.c
  #include "dataio.h"
  #include "fcintl.h"
  #include "game.h"
+@@ -120,7 +122,7 @@
+   if (aconnection.used) {
+     disconnect_from_server();
+   } else {
+-    set_client_page(PAGE_MAIN);
++    set_client_page(in_ggz ? PAGE_GGZ : PAGE_MAIN);
+   }
+ }
+ 
 @@ -218,6 +220,12 @@
    g_signal_connect(button, "clicked",
        G_CALLBACK(set_page_callback), GUINT_TO_POINTER(PAGE_NETWORK));
@@ -125,3 +131,73 @@ Index: client/include/pages_g.h
    PAGE_GAME		/* In game page. */
  };
  
+Index: client/packhand.c
+===================================================================
+--- client/packhand.c	(revision 11421)
++++ client/packhand.c	(working copy)
+@@ -184,7 +184,9 @@
+     update_menus();
+     
+     
+-    if (get_client_page() == PAGE_MAIN || get_client_page() == PAGE_NETWORK) {
++    if (get_client_page() == PAGE_MAIN
++	|| get_client_page() == PAGE_NETWORK
++	|| get_client_page() == PAGE_GGZ) {
+       set_client_page(PAGE_START);
+     }
+ 
+@@ -199,7 +201,7 @@
+       freelog(LOG_NORMAL, "%s", msg);
+     }
+     gui_server_connect();
+-    set_client_page(PAGE_MAIN);
++    set_client_page(in_ggz ? PAGE_MAIN : PAGE_GGZ);
+   }
+   if (strcmp(s_capability, our_capability) == 0) {
+     return;
+Index: client/clinet.c
+===================================================================
+--- client/clinet.c	(revision 11421)
++++ client/clinet.c	(working copy)
+@@ -105,7 +105,7 @@
+   remove_net_input();
+   popdown_races_dialog(); 
+   close_connection_dialog();
+-  set_client_page(PAGE_MAIN);
++  set_client_page(in_ggz ? PAGE_GGZ : PAGE_MAIN);
+ 
+   reports_force_thaw();
+   
+Index: client/civclient.c
+===================================================================
+--- client/civclient.c	(revision 11423)
++++ client/civclient.c	(working copy)
+@@ -88,6 +88,7 @@
+ char metaserver[512] = "\0";
+ int  server_port = -1;
+ bool auto_connect = FALSE; /* TRUE = skip "Connect to Freeciv Server" dialog */
++bool in_ggz = FALSE;
+ 
+ static enum client_states client_state = CLIENT_BOOT_STATE;
+ 
+@@ -541,7 +542,7 @@
+       }
+       client_game_init();
+       if (!aconnection.established) {
+-	set_client_page(PAGE_MAIN);
++	set_client_page(in_ggz ? PAGE_GGZ : PAGE_MAIN);
+       } else {
+ 	set_client_page(PAGE_START);
+       }
+Index: client/civclient.h
+===================================================================
+--- client/civclient.h	(revision 11421)
++++ client/civclient.h	(working copy)
+@@ -50,6 +50,7 @@
+ extern bool auto_connect;
+ extern bool waiting_for_end_turn;
+ extern bool turn_done_sent;
++extern bool in_ggz;
+ 
+ void wait_till_request_got_processed(int request_id);
+ bool client_is_observer(void);
