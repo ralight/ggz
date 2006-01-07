@@ -1,6 +1,6 @@
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 11417)
+--- configure.ac	(revision 11421)
 +++ configure.ac	(working copy)
 @@ -443,6 +443,10 @@
  
@@ -15,7 +15,7 @@ Index: configure.ac
  AC_SUBST(CLIENT_CFLAGS)
 Index: client/gui-gtk-2.0/gui_main.c
 ===================================================================
---- client/gui-gtk-2.0/gui_main.c	(revision 11417)
+--- client/gui-gtk-2.0/gui_main.c	(revision 11421)
 +++ client/gui-gtk-2.0/gui_main.c	(working copy)
 @@ -32,6 +32,8 @@
  #include <gtk/gtk.h>
@@ -73,7 +73,7 @@ Index: client/gui-gtk-2.0/gui_main.c
  
 Index: client/gui-gtk-2.0/pages.c
 ===================================================================
---- client/gui-gtk-2.0/pages.c	(revision 11417)
+--- client/gui-gtk-2.0/pages.c	(revision 11421)
 +++ client/gui-gtk-2.0/pages.c	(working copy)
 @@ -22,6 +22,8 @@
  
@@ -115,7 +115,7 @@ Index: client/gui-gtk-2.0/pages.c
      gtk_tree_view_focus(gtk_tree_selection_get_tree_view(nation_selection));
 Index: client/include/pages_g.h
 ===================================================================
---- client/include/pages_g.h	(revision 11417)
+--- client/include/pages_g.h	(revision 11421)
 +++ client/include/pages_g.h	(working copy)
 @@ -23,6 +23,7 @@
    PAGE_LOAD,		/* Load saved game page. */
@@ -125,73 +125,3 @@ Index: client/include/pages_g.h
    PAGE_GAME		/* In game page. */
  };
  
-Index: client/ggzclient.c
-===================================================================
---- client/ggzclient.c	(revision 11417)
-+++ client/ggzclient.c	(working copy)
-@@ -53,23 +53,21 @@
- ****************************************************************************/
- void ggz_initialize(void)
- {
--  if (with_ggz) {
--    int ggz_socket;
-+  int ggz_socket;
- 
--    /* We're in GGZ mode */
--    ggzmod = ggzmod_new(GGZMOD_GAME);
--    ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
--    if (ggzmod_connect(ggzmod) < 0) {
--      exit(EXIT_FAILURE);
--    }
--    ggz_socket = ggzmod_get_fd(ggzmod);
--    if (ggz_socket < 0) {
--      fc_fprintf(stderr, _("Only the GGZ client must call civclient"
--			   " in ggz mode!\n"));
--      exit(EXIT_FAILURE);
--    }
--    add_ggz_input(ggz_socket);
-+  /* We're in GGZ mode */
-+  ggzmod = ggzmod_new(GGZMOD_GAME);
-+  ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
-+  if (ggzmod_connect(ggzmod) < 0) {
-+    exit(EXIT_FAILURE);
-   }
-+  ggz_socket = ggzmod_get_fd(ggzmod);
-+  if (ggz_socket < 0) {
-+    fc_fprintf(stderr, _("Only the GGZ client must call civclient"
-+			 " in ggz mode!\n"));
-+    exit(EXIT_FAILURE);
-+  }
-+  add_ggz_input(ggz_socket);
- }
- 
- /****************************************************************************
-Index: client/civclient.c
-===================================================================
---- client/civclient.c	(revision 11417)
-+++ client/civclient.c	(working copy)
-@@ -355,7 +355,9 @@
-   audio_real_init(sound_set_name, sound_plugin_name);
-   audio_play_music("music_start", NULL);
- 
--  ggz_initialize();
-+  if (with_ggz) {
-+    ggz_initialize();
-+  }
- 
-   /* run gui-specific client */
-   ui_main(argc, argv);
-Index: client/Makefile.am
-===================================================================
---- client/Makefile.am	(revision 11417)
-+++ client/Makefile.am	(working copy)
-@@ -190,7 +190,8 @@
- 			../common/libcivcommon.a	\
- 			../common/aicore/libaicore.a	\
- 			agents/libagents.a		\
--		 	@gui_sources@/libguiclient.a
-+		 	@gui_sources@/libguiclient.a	\
-+			@gui_sources@/ggz-gtk/libggz-gtk.a
- civclient_DEPENDENCIES = $(fc_civclient_libs)
- civclient_LDADD        = $(fc_civclient_libs) $(fc_civclient_libs) \
- 	@INTLLIBS@ @CLIENT_LIBS@ @SOUND_LIBS@ @LIB_GGZMOD@
