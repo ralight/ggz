@@ -26,7 +26,16 @@ AC_DEFUN([AC_GGZ_DATABASE_DB3],
 	db3inc=""
 
 	dnl Check for db3 libraries
-	dnl Version priority: db3.2, db3
+	dnl Version priority: db3.3, db3.2, db3
+
+	if test "$db3lib" = ""; then
+		AC_CHECK_LIB(db-3.3, db_env_create,
+		[
+			db3lib="-ldb-3.3"
+			database=db3
+		],
+		[])
+	fi
 
 	if test "$db3lib" = ""; then
 		AC_CHECK_LIB(db-3.2, db_env_create,
