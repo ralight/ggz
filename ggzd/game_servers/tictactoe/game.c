@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 7705 2005-12-29 11:53:14Z josef $
+ * $Id: game.c 7748 2006-01-07 22:02:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -542,10 +542,11 @@ static int game_next_move(void)
 #ifdef GGZBOTHASNAME
 		GGZSeat seat;
 		int difficulty;
+		char *botclass;
 
 		difficulty = 1;
 		seat = ggzdmod_get_seat(ttt_game.ggz, variables.turn);
-		char *botclass = ggzdmod_get_bot_class(ttt_game.ggz, seat.name);
+		botclass = ggzdmod_get_bot_class(ttt_game.ggz, seat.name);
 		if (!ggz_strcmp(botclass, "easy"))
 			difficulty = 0;
 		if (!ggz_strcmp(botclass, "hard"))
@@ -719,6 +720,7 @@ static void game_save(char *fmt, ...)
 	int fd;
 	char *savegamepath, *savegamename;
 	char buffer[1024];
+	va_list ap;
 
 	if(!ttt_game.savegame) {
 		savegamepath = strdup(DATADIR "/gamedata/TicTacToe/" TEMPLATE);
@@ -733,7 +735,6 @@ static void game_save(char *fmt, ...)
 		free(savegamename);
 	}
 
-	va_list ap;
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	va_end(ap);

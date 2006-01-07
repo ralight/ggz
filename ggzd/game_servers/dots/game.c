@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 7386 2005-08-13 17:39:23Z josef $
+ * $Id: game.c 7748 2006-01-07 22:02:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -84,9 +84,10 @@ void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, const void *data)
 void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	const GGZSeat *old_seat = data;
+	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+
 	game_update(DOTS_EVENT_JOIN, &old_seat->num, NULL);
 
-	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 	game_save("player%i join %s", new_seat.num + 1, new_seat.name);
 }
 
@@ -772,6 +773,7 @@ static void game_save(char *fmt, ...)
 	int fd;
 	char *savegamepath, *savegamename;
 	char buffer[1024];
+	va_list ap;
 
 	if(!fmt) {
 		if(savegame) {
@@ -793,7 +795,6 @@ static void game_save(char *fmt, ...)
 		ggz_free(savegamepath);
 	}
 
-	va_list ap;
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	va_end(ap);
