@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7737 2006-01-06 22:34:17Z jdorje $
+ * $Id: client.c 7752 2006-01-09 01:13:11Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -762,7 +762,8 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 
 
 /* Call this to load ggzcore configuration, and do other initializations. */
-void ggz_gtk_initialize(void (*connected)(GGZServer *server),
+void ggz_gtk_initialize(gboolean reconnect,
+			void (*connected)(GGZServer *server),
 			void (*launched)(void),
 			char *protocol_engine,
 			char *protocol_version)
@@ -777,7 +778,10 @@ void ggz_gtk_initialize(void (*connected)(GGZServer *server),
 	ggzcore_conf_initialize(global_conf, user_conf);
 	g_free(user_conf);
 
-	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES | GGZ_OPT_RECONNECT;
+	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
+	if (reconnect) {
+	  opt.flags |= GGZ_OPT_RECONNECT;
+	}
 	if (protocol_engine && protocol_version) {
 		/* If an engine+version are passed in, we use those as the
 		 * embedded module. */

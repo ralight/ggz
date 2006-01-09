@@ -28,10 +28,11 @@
 
 #include <ggzcore.h>
 
-void ggz_gtk_initialize(void (*connected)(GGZServer *server),
-		       void (*launched)(void),
-		       char *protocol_engine,
-		       char *protocol_version);
+void ggz_gtk_initialize(gboolean reconnect,
+			void (*connected)(GGZServer *server),
+			void (*launched)(void),
+			char *protocol_engine,
+			char *protocol_version);
 
 void ggz_gtk_login_raise(void);
 
