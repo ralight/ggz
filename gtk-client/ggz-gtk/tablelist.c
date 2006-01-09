@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 7744 2006-01-07 20:05:33Z jdorje $
+ * $Id: tablelist.c 7757 2006-01-09 18:03:06Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -38,6 +38,7 @@
 
 #include "client.h"
 #include "tablelist.h"
+#include "server.h"
 #include "support.h"
 
 enum {
@@ -48,7 +49,6 @@ enum {
 };
 
 static GtkWidget *table_list;
-static GGZServer *server;
 
 static gboolean table_list_event(GtkWidget *widget, GdkEvent *event,
 				 gpointer data)
@@ -131,14 +131,12 @@ void sensitize_table_list(gboolean sensitive)
 	gtk_widget_set_sensitive(table_list, sensitive);
 }
 
-void update_table_list(GGZServer *new_server)
+void update_table_list(void)
 {
 	GtkListStore *store;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	int i;
 	const int num = ggzcore_room_get_num_tables(room);
-
-	server = new_server;
 
 	/* Retrieve the player list widget. */
 	store = GTK_LIST_STORE(lookup_widget(table_list, "table_list_store"));
@@ -217,7 +215,6 @@ GtkWidget *create_table_list(GtkWidget * window)
 			 GTK_SIGNAL_FUNC(table_list_event), NULL);
 
 	table_list = tree;
-	server = NULL;
 
 	return tree;
 }

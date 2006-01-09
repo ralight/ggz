@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7739 2006-01-07 03:29:34Z jdorje $
+ * $Id: ggzclient.c 7757 2006-01-09 18:03:06Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -421,7 +421,7 @@ static GGZHookReturn ggz_list_players(GGZRoomEvent id,
 {
 	const int *room = event_data;
 
-	update_player_list(server);
+	update_player_list();
 	if (room)
 		client_update_one_room(*room);
 	return GGZ_HOOK_OK;
@@ -445,7 +445,7 @@ static GGZHookReturn ggz_room_enter(GGZRoomEvent id,
 
 	client_update_one_room(data->to_room);
 	client_update_one_room(data->from_room);
-	update_player_list(server);
+	update_player_list();
 	chat_enter(data->player_name, data->from_room);
 
 	return GGZ_HOOK_OK;
@@ -460,7 +460,7 @@ static GGZHookReturn ggz_room_leave(GGZRoomEvent id,
 
 	client_update_one_room(data->to_room);
 	client_update_one_room(data->from_room);
-	update_player_list(server);
+	update_player_list();
 	chat_part(data->player_name, data->to_room);
 
 	return GGZ_HOOK_OK;
@@ -471,7 +471,7 @@ static GGZHookReturn ggz_list_tables(GGZRoomEvent id,
 				     const void *event_data,
 				     const void *user_data)
 {
-	update_table_list(server);
+	update_table_list();
 	return GGZ_HOOK_OK;
 }
 
@@ -480,8 +480,8 @@ static GGZHookReturn ggz_table_update(GGZRoomEvent id,
 				      const void *event_data,
 				      const void *user_data)
 {
-	update_table_list(server);
-	update_player_list(server);
+	update_table_list();
+	update_player_list();
 	return GGZ_HOOK_OK;
 }
 
@@ -611,7 +611,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id,
 	/* Display current list of rooms */
 	numrooms = ggzcore_server_get_num_rooms(server);
 
-	update_room_list(server);
+	update_room_list();
 
 	for (i = 0; i < numrooms; i++) {
 		room = ggzcore_server_get_nth_room(server, i);

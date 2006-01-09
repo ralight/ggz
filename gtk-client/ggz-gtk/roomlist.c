@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 7756 2006-01-09 05:47:25Z jdorje $
+ * $Id: roomlist.c 7757 2006-01-09 18:03:06Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -38,6 +38,7 @@
 #include "msgbox.h"
 #include "roominfo.h"
 #include "roomlist.h"
+#include "server.h"
 #include "support.h"
 
 enum {
@@ -54,7 +55,6 @@ static void client_join_room(GGZRoom *room)
 	gchar *err_msg = NULL;
 	gint singleclick, status = -1;
 	int id = ggzcore_room_get_id(room);
-	GGZServer *server = ggzcore_room_get_server(room);
 
 	switch (ggzcore_server_get_state(server)) {
 	case GGZ_STATE_OFFLINE:
@@ -282,7 +282,7 @@ void update_one_room(GGZRoom *room)
 	}
 }
 
-void update_room_list(GGZServer *server)
+void update_room_list(void)
 {
 	GtkListStore *store;
 	int i;

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 7756 2006-01-09 05:47:25Z jdorje $
+ * $Id: playerlist.c 7757 2006-01-09 18:03:06Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -38,6 +38,7 @@
 #include "chat.h"
 #include "playerinfo.h"
 #include "playerlist.h"
+#include "server.h"
 #include "support.h"
 
 enum {
@@ -50,7 +51,6 @@ enum {
 };
 
 GtkWidget *player_list;
-GGZServer *server;
 
 static void client_player_info_activate(GtkMenuItem * menuitem, gpointer data)
 {
@@ -180,7 +180,7 @@ void clear_player_list(void)
 gboolean pixmaps_initted = FALSE;
 GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin, *bot;
 
-void update_player_list(GGZServer *server)
+void update_player_list(void)
 {
 	GtkListStore *store;
 	gint i, num, l;
@@ -300,7 +300,7 @@ void update_player_list(GGZServer *server)
 	}
 }
 
-GtkWidget *create_player_list(GtkWidget *parent, GGZServer *server)
+GtkWidget *create_player_list(GtkWidget *parent)
 {
 	GtkListStore *store;
 	GtkWidget *tree;
