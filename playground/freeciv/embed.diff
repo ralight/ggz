@@ -26,6 +26,15 @@ Index: client/gui-gtk-2.0/gui_main.c
  #include "dataio.h"
  #include "fciconv.h"
  #include "fcintl.h"
+@@ -194,7 +196,7 @@
+ 
+ static enum Display_color_type display_color_type;  /* practically unused */
+ static gint timer_id;                               /*       ditto        */
+-static guint input_id;
++static guint input_id, ggz_input_id;
+ 
+ 
+ static gboolean show_info_button_release(GtkWidget *w, GdkEventButton *ev, gpointer data);
 @@ -807,6 +809,8 @@
        create_network_page(), NULL);
    gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
@@ -69,6 +78,24 @@ Index: client/gui-gtk-2.0/gui_main.c
    log_set_callback(log_callback_utf8);
  }
  
+@@ -1699,10 +1725,15 @@
+ **************************************************************************/
+ void add_ggz_input(int sock)
+ {
+-  (void) gtk_input_add_full(sock, GDK_INPUT_READ, get_ggz_input,
+-			    NULL, NULL, NULL);
++  ggz_input_id = gtk_input_add_full(sock, GDK_INPUT_READ, get_ggz_input,
++				    NULL, NULL, NULL);
+ }
+ 
++void remove_ggz_input(void)
++{
++  gtk_input_remove(ggz_input_id);
++}
++
+ /****************************************************************
+   This is the response callback for the dialog with the message:
+   Are you sure you want to quit?
 Index: client/gui-gtk-2.0/pages.c
 ===================================================================
 --- client/gui-gtk-2.0/pages.c	(revision 11429)
@@ -120,6 +147,18 @@ Index: client/gui-gtk-2.0/pages.c
      break;
    case PAGE_NATION:
      gtk_tree_view_focus(gtk_tree_selection_get_tree_view(nation_selection));
+Index: client/include/gui_main_g.h
+===================================================================
+--- client/include/gui_main_g.h	(revision 11429)
++++ client/include/gui_main_g.h	(working copy)
+@@ -28,6 +28,7 @@
+ void add_net_input(int);
+ void remove_net_input(void);
+ void add_ggz_input(int socket);
++void remove_ggz_input(void);
+ 
+ void set_unit_icon(int idx, struct unit *punit);
+ void set_unit_icons_more_arrow(bool onoff);
 Index: client/include/pages_g.h
 ===================================================================
 --- client/include/pages_g.h	(revision 11429)
@@ -160,7 +199,26 @@ Index: client/clinet.c
 ===================================================================
 --- client/clinet.c	(revision 11429)
 +++ client/clinet.c	(working copy)
-@@ -105,7 +105,7 @@
+@@ -58,6 +58,8 @@
+ #include <winsock.h>
+ #endif
+ 
++#include <ggz-embed.h>
++
+ #include "capstr.h"
+ #include "dataio.h"
+ #include "fcintl.h"
+@@ -101,11 +103,17 @@
+ **************************************************************************/
+ static void close_socket_nomessage(struct connection *pc)
+ {
++  if (in_ggz || with_ggz) {
++    remove_ggz_input();
++  }
++  if (in_ggz) {
++    ggz_embed_leave_table();
++  }
+   connection_common_close(pc);
    remove_net_input();
    popdown_races_dialog(); 
    close_connection_dialog();
