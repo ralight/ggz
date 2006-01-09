@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 7737 2006-01-06 22:34:17Z jdorje $
+#  $Id: Makefile.am 7754 2006-01-09 02:43:39Z jdorje $
 
 SUBDIRS = .
 
@@ -21,7 +21,7 @@ ggzdata_DATA =		about_bg.png		\
 			ggz_gtk_lag4.svg	\
 			ggz_gtk_lag5.svg
 
-include_HEADERS = ggz-gtk.h
+include_HEADERS = ggz-embed.h ggz-gtk.h
 libggz_gtk_la_SOURCES =	about.c \
 			about.h \
 			chat.c \
@@ -34,6 +34,7 @@ libggz_gtk_la_SOURCES =	about.c \
 			game.h \
 			ggzclient.c \
 			ggzclient.h \
+			ggz-embed.h		\
 			ggz-gtk.h		\
 			launch.c \
 			launch.h \

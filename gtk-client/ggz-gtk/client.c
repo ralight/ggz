@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7752 2006-01-09 01:13:11Z jdorje $
+ * $Id: client.c 7754 2006-01-09 02:43:39Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -45,6 +45,7 @@
 #include "chat.h"
 #include "game.h"
 #include "ggzclient.h"
+#include "ggz-embed.h"
 #include "ggz-gtk.h"
 #include "playerlist.h"
 #include "roominfo.h"
@@ -182,7 +183,7 @@ static void
 client_leave_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server), 0);
+	ggz_embed_leave_table();
 }
 
 
@@ -530,7 +531,7 @@ client_leave_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
 	/*game_quit();*/
-	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server), 0);
+	ggz_embed_leave_table();
 }
 
 
@@ -758,6 +759,18 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 			     GTK_PANED(tmp)->child1_size, NULL);
 	if(ggzcore_gametype_get_name(gt) == NULL && GTK_PANED(tmp)->child1_size != 0 )
 		gtk_paned_set_position(GTK_PANED(tmp), 0);
+}
+
+
+void ggz_embed_leave_table(void)
+{
+	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server), 0);
+}
+
+
+GGZServer *ggz_embed_get_server(void)
+{
+	return server;
 }
 
 
