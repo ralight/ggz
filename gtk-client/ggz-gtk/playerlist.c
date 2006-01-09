@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 7744 2006-01-07 20:05:33Z jdorje $
+ * $Id: playerlist.c 7756 2006-01-09 05:47:25Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -153,6 +153,7 @@ static gboolean player_list_event(GtkWidget *widget,
 		GtkWidget *menu;
 
 		menu = create_mnu_player(player, is_friend, is_ignore);
+		gtk_widget_show_all(menu);
 		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL,
 			       NULL, buttonevent->button, 0);
 	}

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 7744 2006-01-07 20:05:33Z jdorje $
+ * $Id: roomlist.c 7756 2006-01-09 05:47:25Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -197,6 +197,7 @@ static gboolean room_list_event(GtkWidget *widget, GdkEvent *event,
 			/* Right mouse button */
 			/* Create and display the menu */
 			menu = create_mnu_room(room);
+			gtk_widget_show_all(menu);
 			gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL,
 				       NULL, buttonevent->button, 0);
 		}
