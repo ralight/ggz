@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - This Ant build file is designed to work the Ant 1.6.x. 
+  -->
+<project name="kmdm8" default="build_distribution" basedir=".">
+	<!-- set global properties for this build -->
+	<property environment="env"/>
+	<property name="src" value="src"/>
+	<property name="src_test" value="test"/>
+	<property name="bin" value="bin"/>
+	<property name="javadoc" value="javadoc"/>
+	<property name="jarfile" value="ggz-java.jar"/>
+	<property name="manifest" value="manifest/manifest.txt"/>
+
+	<!-- Non class files that need to be copied with the classes. -->
+	<fileset id="project.resources" dir="${src}" includes="**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.xslt"/>
+	<fileset id="test.resources" dir="${src_test}" includes="**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.txt"/>
+
+	<target name="init">
+		<tstamp/>
+		<mkdir dir="${bin}"/>
+	</target>
+	
+	<target name="compile" 
+			depends="init" 
+			description="Compile the java code from ${src} into ${bin}">
+		<javac srcdir="${src}" 
+			   destdir="${bin}" 
+			   deprecation="true" 
+			   debug="false" 
+			   optimize="true" 
+			   source="1.5">
+		</javac>
+		<copy todir="${bin}">
+			<fileset refid="project.resources"/>
+		</copy>
+	</target>
+	
+	<target name="jar" 
+		    depends="compile" 
+		    description="Creates a separate JAR file that contains the classes.">
+		<jar jarfile="${jarfile}" manifest="${manifest}">
+			<fileset dir="${bin}">
+				<exclude name="**/*Test*"/>
+				<exclude name="**/thumbs.db"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="javadoc" 
+		    description="Creates API documentation.">
+		<mkdir dir="${javadoc}"/>
+		<javadoc sourcepath="${src}" destdir="${javadoc}">
+			<package name="ggz.*"/>
+		</javadoc>
+	</target>
+	
+	<target name="build_distribution" 
+		    depends="clean,sign_jar,javadoc" 
+		    description="Does a clean and rebuilds everything">
+		<!-- Simply causes all dependencies to be built. -->
+	</target>
+	
+	<target name="clean" 
+		    description="Deletes all output files.">
+		<delete dir="${bin}"/>
+		<delete dir="${javadoc}"/>
+	</target>
+
+	<target name="sign_jar" 
+		    depends="jar" 
+		    description="sign the applet jar">
+		<signjar alias="ggz_self_cert" storepass="kalido" keystore="${basedir}/signing/ggz_selfcert.keystore">
+			<fileset dir="${basedir}">
+				<include name="*.jar"/>
+			</fileset>
+		</signjar>
+	</target>
+	
+</project>
