@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 7204 2005-05-21 09:31:23Z josef $
+ * $Id: props.c 7770 2006-01-11 23:46:01Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -201,7 +201,7 @@ static void props_update(void)
 	tmp = lookup_widget((props_dialog), "chat_font");
 
 	gtk_xtext_set_font(xtext,
-			   (char *)gtk_entry_get_text(GTK_ENTRY(xtext)));
+			   (char *)gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	/* Auto-Indent */
 	tmp = lookup_widget((props_dialog), "indent_check");
