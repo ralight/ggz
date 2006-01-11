@@ -1,12 +1,12 @@
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 11429)
+--- configure.ac	(revision 11432)
 +++ configure.ac	(working copy)
 @@ -443,6 +443,10 @@
  
  dnl Check for GGZ
  AC_GGZ_CHECK
-+if test "x$client" = "xgtk-2.0" ; then
++if test "$client" = "gtk-2.0" ; then
 +  AC_CHECK_LIB(ggz-gtk, ggz_gtk_create_main_area,
 +               CLIENT_LIBS="-lggz-gtk $CLIENT_LIBS")
 +fi
@@ -15,7 +15,7 @@ Index: configure.ac
  AC_SUBST(CLIENT_CFLAGS)
 Index: client/gui-gtk-2.0/gui_main.c
 ===================================================================
---- client/gui-gtk-2.0/gui_main.c	(revision 11429)
+--- client/gui-gtk-2.0/gui_main.c	(revision 11434)
 +++ client/gui-gtk-2.0/gui_main.c	(working copy)
 @@ -32,6 +32,8 @@
  #include <gtk/gtk.h>
@@ -26,15 +26,6 @@ Index: client/gui-gtk-2.0/gui_main.c
  #include "dataio.h"
  #include "fciconv.h"
  #include "fcintl.h"
-@@ -194,7 +196,7 @@
- 
- static enum Display_color_type display_color_type;  /* practically unused */
- static gint timer_id;                               /*       ditto        */
--static guint input_id;
-+static guint input_id, ggz_input_id;
- 
- 
- static gboolean show_info_button_release(GtkWidget *w, GdkEventButton *ev, gpointer data);
 @@ -807,6 +809,8 @@
        create_network_page(), NULL);
    gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
@@ -78,27 +69,9 @@ Index: client/gui-gtk-2.0/gui_main.c
    log_set_callback(log_callback_utf8);
  }
  
-@@ -1699,10 +1725,15 @@
- **************************************************************************/
- void add_ggz_input(int sock)
- {
--  (void) gtk_input_add_full(sock, GDK_INPUT_READ, get_ggz_input,
--			    NULL, NULL, NULL);
-+  ggz_input_id = gtk_input_add_full(sock, GDK_INPUT_READ, get_ggz_input,
-+				    NULL, NULL, NULL);
- }
- 
-+void remove_ggz_input(void)
-+{
-+  gtk_input_remove(ggz_input_id);
-+}
-+
- /****************************************************************
-   This is the response callback for the dialog with the message:
-   Are you sure you want to quit?
 Index: client/gui-gtk-2.0/pages.c
 ===================================================================
---- client/gui-gtk-2.0/pages.c	(revision 11429)
+--- client/gui-gtk-2.0/pages.c	(revision 11432)
 +++ client/gui-gtk-2.0/pages.c	(working copy)
 @@ -22,6 +22,8 @@
  
@@ -147,21 +120,9 @@ Index: client/gui-gtk-2.0/pages.c
      break;
    case PAGE_NATION:
      gtk_tree_view_focus(gtk_tree_selection_get_tree_view(nation_selection));
-Index: client/include/gui_main_g.h
-===================================================================
---- client/include/gui_main_g.h	(revision 11429)
-+++ client/include/gui_main_g.h	(working copy)
-@@ -28,6 +28,7 @@
- void add_net_input(int);
- void remove_net_input(void);
- void add_ggz_input(int socket);
-+void remove_ggz_input(void);
- 
- void set_unit_icon(int idx, struct unit *punit);
- void set_unit_icons_more_arrow(bool onoff);
 Index: client/include/pages_g.h
 ===================================================================
---- client/include/pages_g.h	(revision 11429)
+--- client/include/pages_g.h	(revision 11432)
 +++ client/include/pages_g.h	(working copy)
 @@ -23,6 +23,7 @@
    PAGE_LOAD,		/* Load saved game page. */
@@ -173,7 +134,7 @@ Index: client/include/pages_g.h
  
 Index: client/packhand.c
 ===================================================================
---- client/packhand.c	(revision 11429)
+--- client/packhand.c	(revision 11432)
 +++ client/packhand.c	(working copy)
 @@ -184,7 +184,9 @@
      update_menus();
@@ -197,7 +158,7 @@ Index: client/packhand.c
      return;
 Index: client/clinet.c
 ===================================================================
---- client/clinet.c	(revision 11429)
+--- client/clinet.c	(revision 11434)
 +++ client/clinet.c	(working copy)
 @@ -58,6 +58,8 @@
  #include <winsock.h>
@@ -208,13 +169,14 @@ Index: client/clinet.c
  #include "capstr.h"
  #include "dataio.h"
  #include "fcintl.h"
-@@ -101,11 +103,17 @@
+@@ -101,14 +103,17 @@
  **************************************************************************/
  static void close_socket_nomessage(struct connection *pc)
  {
-+  if (in_ggz || with_ggz) {
-+    remove_ggz_input();
-+  }
+-  if (with_ggz) {
++  if (with_ggz || with_ggz) {
+     remove_ggz_input();
+   }
 +  if (in_ggz) {
 +    ggz_embed_leave_table();
 +  }
@@ -229,7 +191,7 @@ Index: client/clinet.c
    
 Index: client/civclient.c
 ===================================================================
---- client/civclient.c	(revision 11429)
+--- client/civclient.c	(revision 11432)
 +++ client/civclient.c	(working copy)
 @@ -88,6 +88,7 @@
  char metaserver[512] = "\0";
@@ -250,7 +212,7 @@ Index: client/civclient.c
        }
 Index: client/civclient.h
 ===================================================================
---- client/civclient.h	(revision 11429)
+--- client/civclient.h	(revision 11432)
 +++ client/civclient.h	(working copy)
 @@ -50,6 +50,7 @@
  extern bool auto_connect;
