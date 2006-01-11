@@ -1,14 +1,152 @@
+Index: m4/ggz.m4
+===================================================================
+--- m4/ggz.m4	(revision 11432)
++++ m4/ggz.m4	(working copy)
+@@ -695,6 +695,103 @@
+ ])
+ 
+ dnl ------------------------------------------------------------------------
++dnl Try to find the ggz-gtk headers and libraries.
++dnl $(GGZGTK_LDFLAGS) will be -L ... (if needed)
++dnl and $(GGZGTK_INCLUDES) will be -I ... (if needed)
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_GTK],
++[
++AC_MSG_CHECKING([for GGZ library: ggz-gtk])
++
++ac_ggz_gtk_includes=NO ac_ggz_gtk_libraries=NO
++ggz_gtk_libraries=""
++ggz_gtk_includes=""
++
++AC_ARG_WITH(ggz-gtk-dir,
++    AC_HELP_STRING([--with-ggz-gtk-dir=DIR], [ggz-gtk installation prefix]),
++    [  ac_ggz_gtk_includes="$withval"/include
++       ac_ggz_gtk_libraries="$withval"/lib
++    ])
++AC_ARG_WITH(ggz-gtk-includes,
++    AC_HELP_STRING([--with-ggz-gtk-includes=DIR], 
++                   [where the ggz-gtk includes are]),
++    [  ac_ggz_gtk_includes="$withval"
++    ])
++AC_ARG_WITH(ggz-gtk-libraries,
++    AC_HELP_STRING([--with-ggz-gtk-libraries=DIR],
++                   [where the ggz-gtk libs are]),
++    [  ac_ggz_gtk_libraries="$withval"
++    ])
++
++AC_CACHE_VAL(ac_cv_have_ggz_gtk,
++[
++ggz_gtk_incdirs="$ac_ggz_gtk_includes $ac_ggz_stdinc"
++AC_GGZ_REMOVEDUPS($ggz_gtk_incdirs, ggz_gtk_incdirs)
++ggz_gtk_header=ggz-gtk.h
++
++AC_GGZ_FIND_FILE($ggz_gtk_header, $ggz_gtk_incdirs, ggz_gtk_incdir)
++ac_ggz_gtk_includes="$ggz_gtk_incdir"
++
++ggz_gtk_libdirs="$ac_ggz_gtk_libraries $ac_ggz_stdlib"
++AC_GGZ_REMOVEDUPS($ggz_gtk_libdirs, ggz_gtk_libdirs)
++
++ggz_gtk_libdir=NO
++for dir in $ggz_gtk_libdirs; do
++  try="ls -1 $dir/libggz-gtk.la $dir/libggz-gtk.so"
++  if test -n "`$try 2> /dev/null`"; then ggz_gtk_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
++done
++
++ac_ggz_gtk_libraries="$ggz_gtk_libdir"
++
++if test "$ac_ggz_gtk_includes" = NO || test "$ac_ggz_gtk_libraries" = NO; then
++  ac_cv_have_ggz_gtk="have_ggz_gtk=no"
++  ac_ggz_gtk_notfound=""
++else
++  have_ggz_gtk="yes"
++fi
++])
++
++eval "$ac_cv_have_ggz_gtk"
++
++if test "$have_ggz_gtk" != yes; then
++  if test "x$2" = "xignore"; then
++    AC_MSG_RESULT([$have_ggz_gtk (intentionally ignored)])
++  else
++    AC_MSG_RESULT([$have_ggz_gtk])
++    if test "x$2" = "x"; then
++      AC_GGZ_ERROR(ggz-gtk, $ggz_gtk_incdirs, $ggz_gtk_libdirs)
++    fi
++
++    # Perform actions given by argument 2.
++    $2
++  fi
++else
++  ac_cv_have_ggz_gtk="have_ggz_gtk=yes \
++    ac_ggz_gtk_includes=$ac_ggz_gtk_includes ac_ggz_gtk_libraries=$ac_ggz_gtk_libraries"
++  AC_MSG_RESULT([$have_ggz_gtk (libraries $ac_ggz_gtk_libraries, headers $ac_ggz_gtk_includes)])
++
++  ggz_gtk_libraries="$ac_ggz_gtk_libraries"
++  ggz_gtk_includes="$ac_ggz_gtk_includes"
++
++  AC_SUBST(ggz_gtk_libraries)
++  AC_SUBST(ggz_gtk_includes)
++
++  GGZ_GTK_INCLUDES="-isystem $ggz_gtk_includes"
++  GGZ_GTK_LDFLAGS="-L$ggz_gtk_libraries"
++
++  AC_SUBST(GGZ_GTK_INCLUDES)
++  AC_SUBST(GGZ_GTK_LDFLAGS)
++
++  LIB_GGZ_GTK='-lggz-gtk'
++  AC_SUBST(LIB_GGZ_GTK)
++
++  # Perform actions given by argument 1.
++  $1
++fi
++])
++
++dnl ------------------------------------------------------------------------
+ dnl Setup the game server configuration.
+ dnl Sets ggzdconfdir (ggzd configuration).
+ dnl Sets ggzddatadir (for game server data).
+@@ -864,6 +961,9 @@
+ #   Simply call this function in programs that use GGZ.  GGZ_SERVER and
+ #   GGZ_CLIENT will be #defined in config.h, and created as conditionals
+ #   in Makefile.am files.
++#
++#   The only argument accepted gives the frontend for client embedding:
++#      "gtk" => means the libggz-gtk library will be checked
+ AC_DEFUN([AC_GGZ_CHECK],
+ [
+   AC_GGZ_INIT
+@@ -907,6 +1007,16 @@
+     fi
+   fi
+ 
++  if test "$ggz_client" = "yes"; then
++    if test "x$1" = "xgtk"; then
++      AC_GGZ_GTK([ggz_gtk="yes"], [ggz_gtk="no"])
++      if test $ggz_gtk = "yes"; then
++        AC_DEFINE(GGZ_GTK, 1, [Support for embedded GGZ through libggz-gtk])
++      fi
++      AM_CONDITIONAL(GGZ_GTK, test "$ggz_gtk" = "yes")
++    fi
++  fi
++
+   AM_CONDITIONAL(GGZ_CLIENT, test "$ggz_client" = "yes")
+   AM_CONDITIONAL(GGZ_SERVER, test "$ggz_server" = "yes")
+ ])
 Index: configure.ac
 ===================================================================
 --- configure.ac	(revision 11432)
 +++ configure.ac	(working copy)
-@@ -443,6 +443,10 @@
+@@ -442,7 +442,12 @@
+ fi
  
  dnl Check for GGZ
- AC_GGZ_CHECK
+-AC_GGZ_CHECK
 +if test "$client" = "gtk-2.0" ; then
-+  AC_CHECK_LIB(ggz-gtk, ggz_gtk_create_main_area,
-+               CLIENT_LIBS="-lggz-gtk $CLIENT_LIBS")
++  AC_GGZ_CHECK("gtk")
++  CLIENT_LIBS="$CLIENT_LIBS $LIB_GGZ_GTK"
++else
++  AC_GGZ_CHECK
 +fi
  
  AC_SUBST(gui_sources)
@@ -17,45 +155,62 @@ Index: client/gui-gtk-2.0/gui_main.c
 ===================================================================
 --- client/gui-gtk-2.0/gui_main.c	(revision 11434)
 +++ client/gui-gtk-2.0/gui_main.c	(working copy)
-@@ -32,6 +32,8 @@
+@@ -32,6 +32,10 @@
  #include <gtk/gtk.h>
  #include <gdk/gdkkeysyms.h>
  
-+#include <ggz-gtk.h>
++#ifdef GGZ_GTK
++#  include <ggz-gtk.h>
++#endif
 +
  #include "dataio.h"
  #include "fciconv.h"
  #include "fcintl.h"
-@@ -807,6 +809,8 @@
-       create_network_page(), NULL);
+@@ -815,6 +819,11 @@
    gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
-       create_nation_page(), NULL);
+       paned, NULL);
+ 
++#ifdef GGZ_GTK
 +  gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
 +			   ggz_gtk_create_main_area(toplevel), NULL);
++#endif
++
+   /* *** everything in the top *** */
  
-   main_tips = gtk_tooltips_new();
- 
-@@ -1136,11 +1140,33 @@
+   top_vbox = gtk_vbox_new(FALSE, 5);
+@@ -1136,11 +1145,46 @@
    }
  }
  
++#ifdef GGZ_GTK
++/****************************************************************************
++  Callback function that's called by the library when a connection is
++  established (or lost) to the GGZ server.  The server parameter gives
++  the server (or NULL).
++****************************************************************************/
 +static void ggz_connected(GGZServer *server)
 +{
 +  in_ggz = (server != NULL);
 +  set_client_page(in_ggz ? PAGE_GGZ : PAGE_MAIN);
 +}
 +
++/****************************************************************************
++  Callback function that's called by the library when we launch a game.  This
++  means we now have a connection to a freeciv server so handling can be given
++  back to the regular freeciv code.
++****************************************************************************/
 +static void ggz_game_launched(void)
 +{
-+  //  set_client_page(PAGE_START);
 +  ggz_initialize();
 +}
++#endif
 +
  /**************************************************************************
   called from main().
  **************************************************************************/
  void ui_init(void)
  {
++#ifdef GGZ_GTK
 +  char protocol_version[128];
 +
 +  /* Engine and version match what is provided in civclient.dsc.in and
@@ -65,6 +220,7 @@ Index: client/gui-gtk-2.0/gui_main.c
 +  ggz_gtk_initialize(FALSE,
 +		     ggz_connected, ggz_game_launched,
 +		     "Freeciv", protocol_version);
++#endif
 +
    log_set_callback(log_callback_utf8);
  }
@@ -73,16 +229,18 @@ Index: client/gui-gtk-2.0/pages.c
 ===================================================================
 --- client/gui-gtk-2.0/pages.c	(revision 11432)
 +++ client/gui-gtk-2.0/pages.c	(working copy)
-@@ -22,6 +22,8 @@
+@@ -22,6 +22,10 @@
  
  #include <gtk/gtk.h>
  
-+#include <ggz-gtk.h>
++#ifdef GGZ_GTK
++#  include <ggz-gtk.h>
++#endif
 +
  #include "dataio.h"
  #include "fcintl.h"
  #include "game.h"
-@@ -120,7 +122,7 @@
+@@ -120,7 +124,7 @@
    if (aconnection.used) {
      disconnect_from_server();
    } else {
@@ -91,20 +249,22 @@ Index: client/gui-gtk-2.0/pages.c
    }
  }
  
-@@ -218,6 +220,12 @@
+@@ -218,6 +222,14 @@
    g_signal_connect(button, "clicked",
        G_CALLBACK(set_page_callback), GUINT_TO_POINTER(PAGE_NETWORK));
  
++#ifdef GGZ_GTK
 +  button = gtk_button_new_with_mnemonic(_("Connect to Gaming _Zone"));
 +  gtk_size_group_add_widget(size, button);
 +  gtk_container_add(GTK_CONTAINER(bbox), button);
 +  g_signal_connect(button, "clicked",
 +		   G_CALLBACK(ggz_gtk_login_raise), NULL);
++#endif
 +
    bbox = gtk_vbox_new(FALSE, 6);
    gtk_container_add(GTK_CONTAINER(sbox), bbox);
  
-@@ -1880,6 +1888,7 @@
+@@ -1880,6 +1892,7 @@
  
    switch (new_page) {
    case PAGE_MAIN:
@@ -112,7 +272,7 @@ Index: client/gui-gtk-2.0/pages.c
      break;
    case PAGE_START:
      if (is_server_running()) {
-@@ -1923,6 +1932,7 @@
+@@ -1923,6 +1936,7 @@
    switch (new_page) {
    case PAGE_MAIN:
    case PAGE_START:
@@ -124,14 +284,16 @@ Index: client/include/pages_g.h
 ===================================================================
 --- client/include/pages_g.h	(revision 11432)
 +++ client/include/pages_g.h	(working copy)
-@@ -23,6 +23,7 @@
+@@ -23,7 +23,8 @@
    PAGE_LOAD,		/* Load saved game page. */
    PAGE_NETWORK,		/* Connect to network page.  */
    PAGE_NATION,		/* Select a nation page.  */
-+  PAGE_GGZ,
-   PAGE_GAME		/* In game page. */
+-  PAGE_GAME		/* In game page. */
++  PAGE_GAME,		/* In game page. */
++  PAGE_GGZ		/* In game page.  This one must be last. */
  };
  
+ void set_client_page(enum client_pages page);
 Index: client/packhand.c
 ===================================================================
 --- client/packhand.c	(revision 11432)
@@ -160,16 +322,18 @@ Index: client/clinet.c
 ===================================================================
 --- client/clinet.c	(revision 11434)
 +++ client/clinet.c	(working copy)
-@@ -58,6 +58,8 @@
+@@ -58,6 +58,10 @@
  #include <winsock.h>
  #endif
  
-+#include <ggz-embed.h>
++#ifdef GGZ_GTK
++#  include <ggz-embed.h>
++#endif
 +
  #include "capstr.h"
  #include "dataio.h"
  #include "fcintl.h"
-@@ -101,14 +103,17 @@
+@@ -101,14 +105,19 @@
  **************************************************************************/
  static void close_socket_nomessage(struct connection *pc)
  {
@@ -178,7 +342,9 @@ Index: client/clinet.c
      remove_ggz_input();
    }
 +  if (in_ggz) {
++#ifdef GGZ_GTK
 +    ggz_embed_leave_table();
++#endif
 +  }
    connection_common_close(pc);
    remove_net_input();
