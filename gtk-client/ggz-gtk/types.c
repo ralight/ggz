@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 7768 2006-01-11 23:35:09Z jdorje $
+ * $Id: types.c 7769 2006-01-11 23:38:33Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -67,7 +67,6 @@ static void update_dlg_types(void)
 		GGZGameType *gt =
 		    ggzcore_server_get_nth_gametype(server, i);
 		GtkTreeIter iter;
-		GtkWidget *tmp, *menu, *menuitem;
 		const gchar *name = ggzcore_gametype_get_name(gt);
 		const gchar *author = ggzcore_gametype_get_author(gt);
 		const gchar *url = ggzcore_gametype_get_url(gt);
@@ -80,10 +79,14 @@ static void update_dlg_types(void)
 				   TYPE_COLUMN_WEB, url,
 				   TYPE_COLUMN_DESC, desc, -1);
 
+#ifdef FILTER
+		GtkWidget *tmp, *menu, *menuitem;
+
 		tmp = lookup_widget(types_dialog, "filter_optionmenu");
 		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(tmp));
 		menuitem = gtk_menu_item_new_with_label(name);
 		gtk_menu_append(GTK_MENU(menu), menuitem);
+#endif
 	}
 }
 
@@ -97,17 +100,19 @@ static void update_dlg_types(void)
 
 void types_create_or_raise(void)
 {
-	GtkWidget *tmp, *menu;
-	GtkWidget *menuitem;
-
 	if (!types_dialog) {
 		types_dialog = create_dlg_types();
 		update_dlg_types();
+
+#ifdef FILTER
+		GtkWidget *tmp, *menu;
+		GtkWidget *menuitem;
 
 		tmp = lookup_widget(types_dialog, "filter_optionmenu");
 		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(tmp));
 		menuitem = gtk_menu_item_new_with_label(_("None"));
 		gtk_menu_append(GTK_MENU(menu), menuitem);
+#endif
 
 		gtk_widget_show_all(types_dialog);
 	} else {
@@ -137,6 +142,7 @@ static void types_URL(GtkMenuItem * menuitem, gpointer data)
 #endif
 
 
+#ifdef FILTER
 static void types_filter_button(GtkWidget * widget, gpointer data)
 {
 	msgbox(_("Room filtering is not implemented yet. If\n"
@@ -146,7 +152,7 @@ static void types_filter_button(GtkWidget * widget, gpointer data)
 	       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 
 }
-
+#endif
 
 
 static GtkWidget *tree_new(GtkWidget * parent)
@@ -214,11 +220,13 @@ GtkWidget *create_dlg_types(void)
 	GtkWidget *vbox;
 	GtkWidget *scrolledwindow;
 	GtkWidget *types_list;
+#ifdef FILTER
 	GtkWidget *hbox;
 	GtkWidget *filter_label;
 	GtkWidget *filter_optionmenu;
 	GtkWidget *filter_optionmenu_menu;
 	GtkWidget *filter_button;
+#endif
 	GtkWidget *action_area, *button_box, *close_button;
 
 	dlg_types = gtk_dialog_new();
@@ -239,6 +247,7 @@ GtkWidget *create_dlg_types(void)
 	types_list = tree_new(dlg_types);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow), types_list);
 
+#ifdef FILTER
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -256,6 +265,7 @@ GtkWidget *create_dlg_types(void)
 
 	filter_button = gtk_button_new_with_label(_("Set"));
 	gtk_box_pack_start(GTK_BOX(hbox), filter_button, FALSE, FALSE, 0);
+#endif
 
 	action_area = GTK_DIALOG(dlg_types)->action_area;
 
@@ -270,8 +280,10 @@ GtkWidget *create_dlg_types(void)
 	g_signal_connect(dlg_types, "destroy",
 			 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 			 &types_dialog);
+#ifdef FILTER
 	g_signal_connect(filter_button, "clicked",
 			 GTK_SIGNAL_FUNC(types_filter_button), NULL);
+#endif
 	g_signal_connect_swapped(close_button, "clicked",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				 dlg_types);
