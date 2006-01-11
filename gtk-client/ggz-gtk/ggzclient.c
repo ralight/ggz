@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7766 2006-01-11 18:05:06Z jdorje $
+ * $Id: ggzclient.c 7767 2006-01-11 18:15:47Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -791,8 +791,10 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		tmp = lookup_widget(win_main, "leave_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
+#ifdef STATS_BUTTON
 		tmp = lookup_widget(win_main, "stats_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
+#endif
 
 		/* Client area */
 		sensitize_room_list(FALSE);
@@ -846,8 +848,10 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		gtk_widget_set_sensitive(tmp, TRUE);
 
 		/* Tool bar */
+#ifdef STATS_BUTTON
 		tmp = lookup_widget(win_main, "stats_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
+#endif
 
 		/* Client area */
 		sensitize_room_list(TRUE);
@@ -980,8 +984,10 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		tmp = lookup_widget(win_main, "leave_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
+#ifdef STATS_BUTTON
 		tmp = lookup_widget(win_main, "stats_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
+#endif
 
 		/* Client area */
 		sensitize_room_list(FALSE);

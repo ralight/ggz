@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7766 2006-01-11 18:05:06Z jdorje $
+ * $Id: client.c 7767 2006-01-11 18:15:47Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -98,7 +98,6 @@ static void client_join_button_clicked(GtkButton *button, gpointer data);
 static void client_watch_button_clicked(GtkButton *button, gpointer data);
 static void client_leave_button_clicked(GtkButton *button, gpointer data);
 static void client_props_button_clicked(GtkButton *button, gpointer data);
-static void client_stats_button_clicked(GtkButton *button, gpointer data);
 
 static void client_chat_entry_activate(GtkEditable *editable, gpointer data);
 gboolean client_chat_entry_key_press_event(GtkWidget *widget, 
@@ -534,7 +533,7 @@ client_props_button_clicked		(GtkButton	*button,
 	props_create_or_raise();
 }
 
-
+#ifdef STATS_BUTTON
 static void
 client_stats_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
@@ -544,6 +543,7 @@ client_stats_button_clicked		(GtkButton	*button,
 		 "http://www.ggzgamingzone.org/"), _("Not Implemented"),
 	       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
+#endif
 
 static void
 client_exit_button_clicked		(GtkButton	*button,
@@ -684,8 +684,10 @@ client_realize                    (GtkWidget       *widget,
 	tooltip("props_button",
 		_("Show the properties dialog to change "
 		  "the client settings"));
+#ifdef STATS_BUTTON
 	tooltip("stats_button",
 		_("Show the game stats for the current room's game type"));
+#endif
 	tooltip("exit_button",
 		_("Exit the GGZ client application."));
 
@@ -851,7 +853,10 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   GtkWidget *toolbar;
   GtkToolItem *disconnect_button, *exit_button;
   GtkToolItem *launch_button, *join_button, *watch_button, *leave_button;
-  GtkToolItem *props_button, *stats_button;
+  GtkToolItem *props_button;
+#ifdef STATS_BUTTON
+  GtkTOolItem *stats_button;
+#endif
   GtkWidget *Current_room_label;
   GtkWidget *client_hbox;
   GtkWidget *client_hpaned;
@@ -1128,11 +1133,13 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 		     GTK_TOOL_ITEM(props_button), -1);
   g_object_set_data(G_OBJECT(win_main), "props_button", props_button);
 
+#ifdef STATS_BUTTON
   stats_button = gtk_tool_button_new(NULL, _("Stats"));
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(stats_button), -1);
   g_object_set_data(G_OBJECT(win_main), "stats_button", stats_button);
   gtk_widget_set_sensitive(GTK_WIDGET(stats_button), FALSE);
+#endif
 
   /* We should use gtk_tool_button_new_from_stock but for some reason
    * the connect and disconnect stock items don't have text included. */
@@ -1353,9 +1360,11 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   g_signal_connect (GTK_OBJECT (props_button), "clicked",
                       GTK_SIGNAL_FUNC (client_props_button_clicked),
                       NULL);
+#ifdef STATS_BUTTON
   g_signal_connect (GTK_OBJECT (stats_button), "clicked",
                       GTK_SIGNAL_FUNC (client_stats_button_clicked),
                       NULL);
+#endif
   g_signal_connect (GTK_OBJECT (exit_button), "clicked",
                       GTK_SIGNAL_FUNC (client_exit_button_clicked),
                       NULL);
