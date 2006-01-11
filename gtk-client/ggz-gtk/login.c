@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 7737 2006-01-06 22:34:17Z jdorje $
+ * $Id: login.c 7764 2006-01-11 16:39:22Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -86,7 +86,7 @@ void ggz_gtk_login_raise(void)
 {
 	if (!login_dialog) {
 		login_dialog = create_dlg_login();
-		gtk_widget_show(login_dialog);
+		gtk_widget_show_all(login_dialog);
 	} else {
 		gdk_window_show(login_dialog->window);
 		gdk_window_raise(login_dialog->window);
@@ -364,31 +364,31 @@ static void login_start_session(void)
 	   gtk_widget_set_sensitive(tmp, FALSE); */
 
 	/* Get connection and login data */
-	tmp = g_object_get_data(G_OBJECT(login_dialog), "host_entry");
+	tmp = lookup_widget(login_dialog, "host_entry");
 	host = gtk_entry_get_text(GTK_ENTRY(tmp));
 
-	tmp = g_object_get_data(G_OBJECT(login_dialog), "port_entry");
+	tmp = lookup_widget(login_dialog, "port_entry");
 	port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
-	tmp = g_object_get_data(G_OBJECT(login_dialog), "name_entry");
+	tmp = lookup_widget(login_dialog, "name_entry");
 	login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
-	tmp = g_object_get_data(G_OBJECT(login_dialog), "normal_radio");
+	tmp = lookup_widget(login_dialog, "normal_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active) 
 		type = GGZ_LOGIN;
-	tmp = g_object_get_data(G_OBJECT(login_dialog), "guest_radio");
+	tmp = lookup_widget(login_dialog, "guest_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_GUEST;
 	if (!GTK_TOGGLE_BUTTON(tmp)->active) {
-		tmp = g_object_get_data(G_OBJECT(login_dialog),
+		tmp = lookup_widget(login_dialog,
 				      "pass_entry");
 		password = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
-	tmp = g_object_get_data(G_OBJECT(login_dialog), "first_radio");
+	tmp = lookup_widget(login_dialog, "first_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_NEW;
 	if (GTK_TOGGLE_BUTTON(tmp)->active) {
-		tmp = g_object_get_data(G_OBJECT(login_dialog),
+		tmp = lookup_widget(login_dialog,
 				      "email_entry");
 		email = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
@@ -443,19 +443,18 @@ static void login_relogin(void)
 	tmp = lookup_widget(login_dialog, "normal_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN;
-	tmp = g_object_get_data(G_OBJECT(login_dialog), "guest_radio");
+	tmp = lookup_widget(login_dialog, "guest_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_GUEST;
 	if (!GTK_TOGGLE_BUTTON(tmp)->active) {
-		tmp = g_object_get_data(G_OBJECT(login_dialog),
-				      "pass_entry");
+		tmp = lookup_widget(login_dialog, "pass_entry");
 		password = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
-	tmp = g_object_get_data(G_OBJECT(login_dialog), "first_radio");
+	tmp = lookup_widget(login_dialog, "first_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_NEW;
 	if (GTK_TOGGLE_BUTTON(tmp)->active) {
-		tmp = g_object_get_data(G_OBJECT(login_dialog),
+		tmp = lookup_widget(login_dialog,
 				      "email_entry");
 		email = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
@@ -573,291 +572,155 @@ GtkWidget *create_dlg_login(void)
 	dlg_login = gtk_dialog_new();
 	gtk_window_set_transient_for(GTK_WINDOW(dlg_login),
 				     GTK_WINDOW(win_main));
-	g_object_set_data(G_OBJECT(dlg_login), "dlg_login", dlg_login);
 	gtk_window_set_title(GTK_WINDOW(dlg_login),
 			     _("Connect and Login"));
 	gtk_window_set_resizable(GTK_WINDOW(dlg_login), TRUE);
 
 	dialog_vbox1 = GTK_DIALOG(dlg_login)->vbox;
-	g_object_set_data(G_OBJECT(dlg_login), "dialog_vbox1",
-			  dialog_vbox1);
-	gtk_widget_show(dialog_vbox1);
 
 	profile_frame = gtk_frame_new(_("Server Profile"));
-	gtk_widget_ref(profile_frame);
-	g_object_set_data_full(G_OBJECT(dlg_login), "profile_frame",
-			       profile_frame,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(profile_frame);
+	g_object_set_data(G_OBJECT(dlg_login), "profile_frame", profile_frame);
 	gtk_box_pack_start(GTK_BOX(dialog_vbox1), profile_frame, TRUE,
 			   TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(profile_frame), 10);
 
 	entries_box = gtk_vbox_new(FALSE, 0);
-	gtk_widget_ref(entries_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "entries_box",
-			       entries_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(entries_box);
 	gtk_container_add(GTK_CONTAINER(profile_frame), entries_box);
 	gtk_container_set_border_width(GTK_CONTAINER(entries_box), 5);
 
 	top_panel = gtk_notebook_new();
-	gtk_widget_ref(top_panel);
-	g_object_set_data_full(G_OBJECT(dlg_login), "top_panel", top_panel,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(top_panel);
+	g_object_set_data(G_OBJECT(dlg_login), "top_panel", top_panel);
 	gtk_box_pack_start(GTK_BOX(entries_box), top_panel, TRUE, TRUE, 3);
 	GTK_WIDGET_UNSET_FLAGS(top_panel, GTK_CAN_FOCUS);
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(top_panel), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(top_panel), FALSE);
 
 	top_box = gtk_vbox_new(FALSE, 3);
-	gtk_widget_ref(top_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "top_box", top_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(top_box);
 	gtk_container_add(GTK_CONTAINER(top_panel), top_box);
 	gtk_container_set_border_width(GTK_CONTAINER(top_box), 3);
 
 	profile_box = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(profile_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "profile_box",
-			       profile_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(profile_box);
 	gtk_box_pack_start(GTK_BOX(top_box), profile_box, TRUE, TRUE, 0);
 
 	profile_label = gtk_label_new(_("Profile:"));
-	gtk_widget_ref(profile_label);
-	g_object_set_data_full(G_OBJECT(dlg_login), "profile_label",
-			       profile_label,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(profile_label);
 	gtk_box_pack_start(GTK_BOX(profile_box), profile_label, FALSE,
 			   TRUE, 0);
 	gtk_misc_set_alignment(GTK_MISC(profile_label), 1, 0.5);
 
 	profile_combo = gtk_combo_new();
-	gtk_widget_ref(profile_combo);
-	g_object_set_data_full(G_OBJECT(dlg_login), "profile_combo",
-			       profile_combo,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(profile_combo);
+	g_object_set_data(G_OBJECT(dlg_login), "profile_combo", profile_combo);
 	gtk_box_pack_start(GTK_BOX(profile_box), profile_combo, FALSE,
 			   TRUE, 5);
 	gtk_combo_set_value_in_list(GTK_COMBO(profile_combo), TRUE, FALSE);
 
 	profile_entry = GTK_COMBO(profile_combo)->entry;
-	gtk_widget_ref(profile_entry);
-	g_object_set_data_full(G_OBJECT(dlg_login), "profile_entry",
-			       profile_entry,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(profile_entry);
+	g_object_set_data(G_OBJECT(dlg_login), "profile_entry", profile_entry);
 	gtk_editable_set_editable(GTK_EDITABLE(profile_entry), FALSE);
 
 	profile_button_box = gtk_hbutton_box_new();
-	gtk_widget_ref(profile_button_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "profile_button_box",
-			       profile_button_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(profile_button_box);
 	gtk_box_pack_start(GTK_BOX(profile_box), profile_button_box, FALSE,
 			   FALSE, 5);
 
 	edit_profiles_button = stockbutton_new(GTK_STOCK_PREFERENCES,
 					       _("Edit Profiles..."));
-	gtk_widget_ref(edit_profiles_button);
-	g_object_set_data_full(G_OBJECT(dlg_login), "edit_profiles_button",
-			       edit_profiles_button,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(edit_profiles_button);
 	gtk_container_add(GTK_CONTAINER(profile_button_box),
 			  edit_profiles_button);
 	GTK_WIDGET_SET_FLAGS(edit_profiles_button, GTK_CAN_DEFAULT);
 
 	server_box = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(server_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "server_box",
-			       server_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(server_box);
 	gtk_box_pack_start(GTK_BOX(top_box), server_box, TRUE, TRUE, 0);
 
 	server_label = gtk_label_new(_("Server:"));
-	gtk_widget_ref(server_label);
-	g_object_set_data_full(G_OBJECT(dlg_login), "server_label",
-			       server_label,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(server_label);
 	gtk_box_pack_start(GTK_BOX(server_box), server_label, FALSE, TRUE,
 			   0);
 	gtk_misc_set_alignment(GTK_MISC(server_label), 1, 0.5);
 
 	host_entry = gtk_entry_new();
+	g_object_set_data(G_OBJECT(dlg_login), "host_entry", host_entry);
 	gtk_entry_set_max_length(GTK_ENTRY(host_entry), 256);
-	gtk_widget_ref(host_entry);
-	g_object_set_data_full(G_OBJECT(dlg_login), "host_entry",
-			       host_entry,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(host_entry);
 	gtk_box_pack_start(GTK_BOX(server_box), host_entry, FALSE, FALSE,
 			   5);
 	gtk_entry_set_text(GTK_ENTRY(host_entry), _("localhost"));
 
 	port_label = gtk_label_new(_("Port:"));
-	gtk_widget_ref(port_label);
-	g_object_set_data_full(G_OBJECT(dlg_login), "port_label",
-			       port_label,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(port_label);
 	gtk_box_pack_start(GTK_BOX(server_box), port_label, FALSE, TRUE,
 			   2);
 	gtk_misc_set_alignment(GTK_MISC(port_label), 1, 0.5);
 
 	port_entry = gtk_entry_new();
+	g_object_set_data(G_OBJECT(dlg_login), "port_entry", port_entry);
 	gtk_entry_set_max_length(GTK_ENTRY(port_entry), 5);
-	gtk_widget_ref(port_entry);
-	g_object_set_data_full(G_OBJECT(dlg_login), "port_entry",
-			       port_entry,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(port_entry);
 	gtk_box_pack_start(GTK_BOX(server_box), port_entry, FALSE, FALSE,
 			   0);
 	gtk_entry_set_text(GTK_ENTRY(port_entry), _("5688"));
 
 	msg_label = gtk_label_new("");
-	gtk_widget_ref(msg_label);
-	g_object_set_data_full(G_OBJECT(dlg_login), "msg_label", msg_label,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(msg_label);
+	g_object_set_data(G_OBJECT(dlg_login), "msg_label", msg_label);
 	gtk_container_add(GTK_CONTAINER(top_panel), msg_label);
 
 	hseparator = gtk_hseparator_new();
-	gtk_widget_ref(hseparator);
-	g_object_set_data_full(G_OBJECT(dlg_login), "hseparator",
-			       hseparator,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(hseparator);
 	gtk_box_pack_start(GTK_BOX(entries_box), hseparator, TRUE, TRUE,
 			   7);
 
 	login_box = gtk_hbox_new(FALSE, 10);
-	gtk_widget_ref(login_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "login_box", login_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(login_box);
 	gtk_box_pack_start(GTK_BOX(entries_box), login_box, FALSE, FALSE,
 			   1);
 
 	user_box = gtk_vbox_new(TRUE, 5);
-	gtk_widget_ref(user_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "user_box", user_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(user_box);
 	gtk_box_pack_start(GTK_BOX(login_box), user_box, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(user_box), 10);
 
 	username_box = gtk_hbox_new(FALSE, 5);
-	gtk_widget_ref(username_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "username_box",
-			       username_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(username_box);
 	gtk_box_pack_start(GTK_BOX(user_box), username_box, TRUE, TRUE, 0);
 
 	user_label = gtk_label_new(_("Username:"));
-	gtk_widget_ref(user_label);
-	g_object_set_data_full(G_OBJECT(dlg_login), "user_label",
-			       user_label,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(user_label);
 	gtk_box_pack_start(GTK_BOX(username_box), user_label, TRUE, TRUE,
 			   0);
 	gtk_misc_set_alignment(GTK_MISC(user_label), 1, 0.5);
 
 	name_entry = gtk_entry_new();
+	g_object_set_data(G_OBJECT(dlg_login), "name_entry", name_entry);
 	gtk_entry_set_max_length(GTK_ENTRY(name_entry), 16);
-	gtk_widget_ref(name_entry);
-	g_object_set_data_full(G_OBJECT(dlg_login), "name_entry",
-			       name_entry,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(name_entry);
 	gtk_box_pack_start(GTK_BOX(username_box), name_entry, FALSE, TRUE,
 			   0);
 
 	password_box = gtk_hbox_new(FALSE, 5);
-	gtk_widget_ref(password_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "password_box",
-			       password_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(password_box);
+	g_object_set_data(G_OBJECT(dlg_login), "password_box", password_box);
 	gtk_box_pack_start(GTK_BOX(user_box), password_box, TRUE, TRUE, 0);
 
 	pass_label = gtk_label_new(_("Password:"));
-	gtk_widget_ref(pass_label);
-	g_object_set_data_full(G_OBJECT(dlg_login), "pass_label",
-			       pass_label,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(pass_label);
 	gtk_box_pack_start(GTK_BOX(password_box), pass_label, TRUE, TRUE,
 			   0);
 	gtk_misc_set_alignment(GTK_MISC(pass_label), 1, 0.5);
 
 	pass_entry = gtk_entry_new();
-	gtk_widget_ref(pass_entry);
-	g_object_set_data_full(G_OBJECT(dlg_login), "pass_entry",
-			       pass_entry,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(pass_entry);
+	g_object_set_data(G_OBJECT(dlg_login), "pass_entry", pass_entry);
 	gtk_box_pack_start(GTK_BOX(password_box), pass_entry, FALSE, TRUE,
 			   0);
 	gtk_entry_set_visibility(GTK_ENTRY(pass_entry), FALSE);
 
 	email_box = gtk_hbox_new(FALSE, 5);
-	gtk_widget_ref(email_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "email_box",
-			       email_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(email_box);
+	g_object_set_data(G_OBJECT(dlg_login), "email_box", email_box);
 	gtk_box_pack_start(GTK_BOX(user_box), email_box, TRUE, TRUE, 0);
 
 	email_label = gtk_label_new(_("Email:"));
-	gtk_widget_ref(email_label);
-	g_object_set_data_full(G_OBJECT(dlg_login), "email_label",
-			       email_label,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(email_label);
 	gtk_box_pack_start(GTK_BOX(email_box), email_label, TRUE, TRUE,
 			   0);
 	gtk_misc_set_alignment(GTK_MISC(email_label), 1, 0.5);
 
 	email_entry = gtk_entry_new();
-	gtk_widget_ref(email_entry);
-	g_object_set_data_full(G_OBJECT(dlg_login), "email_entry",
-			       email_entry,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(email_entry);
 	gtk_box_pack_start(GTK_BOX(email_box), email_entry, FALSE, TRUE,
 			   0);
 
 	radio_box = gtk_vbox_new(FALSE, 0);
-	gtk_widget_ref(radio_box);
-	g_object_set_data_full(G_OBJECT(dlg_login), "radio_box", radio_box,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(radio_box);
 	gtk_box_pack_start(GTK_BOX(login_box), radio_box, FALSE, FALSE, 0);
 
 	normal_radio =
 	    gtk_radio_button_new_with_label(login_type_group,
 					    _("Normal Login"));
+	g_object_set_data(G_OBJECT(dlg_login), "normal_radio", normal_radio);
 	login_type_group =
 	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(normal_radio));
-	gtk_widget_ref(normal_radio);
-	g_object_set_data_full(G_OBJECT(dlg_login), "normal_radio",
-			       normal_radio,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(normal_radio);
 	gtk_box_pack_start(GTK_BOX(radio_box), normal_radio, TRUE, TRUE,
 			   0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(normal_radio),
@@ -866,25 +729,17 @@ GtkWidget *create_dlg_login(void)
 	guest_radio =
 	    gtk_radio_button_new_with_label(login_type_group,
 					    _("Guest Login"));
+	g_object_set_data(G_OBJECT(dlg_login), "guest_radio", guest_radio);
 	login_type_group =
 	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(guest_radio));
-	gtk_widget_ref(guest_radio);
-	g_object_set_data_full(G_OBJECT(dlg_login), "guest_radio",
-			       guest_radio,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(guest_radio);
 	gtk_box_pack_start(GTK_BOX(radio_box), guest_radio, TRUE, TRUE, 0);
 
 	first_radio =
 	    gtk_radio_button_new_with_label(login_type_group,
 					    _("First-time Login"));
+	g_object_set_data(G_OBJECT(dlg_login), "first_radio", first_radio);
 	login_type_group =
 	    gtk_radio_button_get_group(GTK_RADIO_BUTTON(first_radio));
-	gtk_widget_ref(first_radio);
-	g_object_set_data_full(G_OBJECT(dlg_login), "first_radio",
-			       first_radio,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(first_radio);
 	gtk_box_pack_start(GTK_BOX(radio_box), first_radio, TRUE, TRUE, 0);
 
 	dialog_action_area1 = GTK_DIALOG(dlg_login)->action_area;
@@ -895,30 +750,17 @@ GtkWidget *create_dlg_login(void)
 				       10);
 
 	hbuttonbox = gtk_hbutton_box_new();
-	gtk_widget_ref(hbuttonbox);
-	g_object_set_data_full(G_OBJECT(dlg_login), "hbuttonbox",
-			       hbuttonbox,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(hbuttonbox);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), hbuttonbox, TRUE,
 			   TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbuttonbox), 5);
 
 	connect_button = stockbutton_new(GTK_STOCK_JUMP_TO, _("Connect"));
-	gtk_widget_ref(connect_button);
-	g_object_set_data_full(G_OBJECT(dlg_login), "connect_button",
-			       connect_button,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(connect_button);
+	g_object_set_data(G_OBJECT(dlg_login),
+			  "connect_button", connect_button);
 	gtk_container_add(GTK_CONTAINER(hbuttonbox), connect_button);
 	GTK_WIDGET_SET_FLAGS(connect_button, GTK_CAN_DEFAULT);
 
 	cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-	gtk_widget_ref(cancel_button);
-	g_object_set_data_full(G_OBJECT(dlg_login), "cancel_button",
-			       cancel_button,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(cancel_button);
 	gtk_container_add(GTK_CONTAINER(hbuttonbox), cancel_button);
 	GTK_WIDGET_SET_FLAGS(cancel_button, GTK_CAN_DEFAULT);
 
