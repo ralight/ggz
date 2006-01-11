@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7763 2006-01-11 16:22:24Z jdorje $
+ * $Id: client.c 7766 2006-01-11 18:05:06Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -328,14 +328,6 @@ main_xtext_chat_create			(gchar		*widget_name,
         chat_text = gtk_xtext_new (colors, TRUE);
         return chat_text;
 }
-
-static void
-client_connect_button_clicked		(GtkButton	*button,
-					 gpointer	 data)
-{
-	ggz_gtk_login_raise();
-}
-
 
 static void
 client_disconnect_button_clicked	(GtkButton	*button,
@@ -678,8 +670,6 @@ client_realize                    (GtkWidget       *widget,
 					  tip, NULL);			\
 	} while (0)
 
-	tooltip("connect_button", 
-		_("Connect to a GGZ Gaming Zone server"));
 	tooltip("disconnect_button",
 		_("Disconnect from the GGZ Gaming Zone server"));
 	tooltip("launch_button",
@@ -859,7 +849,7 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   GtkWidget *goto_web1;
   GtkWidget *handlebox1;
   GtkWidget *toolbar;
-  GtkToolItem *connect_button, *disconnect_button, *exit_button;
+  GtkToolItem *disconnect_button, *exit_button;
   GtkToolItem *launch_button, *join_button, *watch_button, *leave_button;
   GtkToolItem *props_button, *stats_button;
   GtkWidget *Current_room_label;
@@ -1146,17 +1136,6 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 
   /* We should use gtk_tool_button_new_from_stock but for some reason
    * the connect and disconnect stock items don't have text included. */
-  connect_button = gtk_tool_button_new(NULL, _("Connect"));
-#ifndef GTK_STOCK_CONNECT
-#  define GTK_STOCK_CONNECT GTK_STOCK_JUMP_TO
-#endif
-  gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(connect_button),
-			       GTK_STOCK_CONNECT);
-  gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(connect_button), -1);
-  g_object_set_data(G_OBJECT(win_main), "connect_button", connect_button);
-
-  /* We should use gtk_tool_button_new_from_stock but for some reason
-   * the connect and disconnect stock items don't have text included. */
   disconnect_button = gtk_tool_button_new(NULL, _("Disconnect"));
 #ifdef GTK_STOCK_DISCONNECT
   gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(disconnect_button),
@@ -1355,9 +1334,6 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
                       NULL);
   g_signal_connect (GTK_OBJECT (goto_web1), "activate",
                       GTK_SIGNAL_FUNC (client_goto_web1_activate),
-                      NULL);
-  g_signal_connect (GTK_OBJECT (connect_button), "clicked",
-                      GTK_SIGNAL_FUNC (client_connect_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (disconnect_button), "clicked",
                       GTK_SIGNAL_FUNC (client_disconnect_button_clicked),

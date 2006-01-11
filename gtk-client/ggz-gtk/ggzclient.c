@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7765 2006-01-11 17:21:58Z jdorje $
+ * $Id: ggzclient.c 7766 2006-01-11 18:05:06Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -776,9 +776,6 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		/* Tool bar */
-		tmp = lookup_widget(win_main, "connect_button");
-		gtk_widget_set_sensitive(tmp, TRUE);
-
 		tmp = lookup_widget(win_main, "disconnect_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
@@ -825,9 +822,6 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		gtk_widget_set_sensitive(tmp, TRUE);
 
 		/* Tool bar */
-		tmp = lookup_widget(win_main, "connect_button");
-		gtk_widget_set_sensitive(tmp, FALSE);
-
 		tmp = lookup_widget(win_main, "disconnect_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		break;
