@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7767 2006-01-11 18:15:47Z jdorje $
+ * $Id: client.c 7772 2006-01-12 03:49:44Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -84,8 +84,6 @@ static void client_properties_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_room_toggle_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_player_toggle_activate(GtkMenuItem *menuitem,
 					  gpointer data);
-static void client_server_stats_activate(GtkMenuItem *menuitem, gpointer data);
-static void client_player_stats_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_game_types_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_motd_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_about_activate(GtkMenuItem *menuitem, gpointer data);
@@ -227,6 +225,7 @@ static void client_player_toggle_activate(GtkMenuItem *menuitem,
 }
 
 
+#ifdef STATS
 static void
 client_server_stats_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
@@ -248,6 +247,7 @@ client_player_stats_activate		(GtkMenuItem	*menuitem,
 	       _("Not Implemented"),
 	       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
+#endif
 
 
 static void
@@ -533,7 +533,7 @@ client_props_button_clicked		(GtkButton	*button,
 	props_create_or_raise();
 }
 
-#ifdef STATS_BUTTON
+#ifdef STATS
 static void
 client_stats_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
@@ -684,7 +684,7 @@ client_realize                    (GtkWidget       *widget,
 	tooltip("props_button",
 		_("Show the properties dialog to change "
 		  "the client settings"));
-#ifdef STATS_BUTTON
+#ifdef STATS
 	tooltip("stats_button",
 		_("Show the game stats for the current room's game type"));
 #endif
@@ -835,8 +835,10 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   GtkWidget *room_toggle;
   GtkWidget *player_toggle;
   GtkWidget *separator8;
+#ifdef STATS
   GtkWidget *server_stats;
   GtkWidget *player_stats;
+#endif
   GtkWidget *game_types;
   GtkWidget *separator3;
   GtkWidget *motd;
@@ -854,7 +856,7 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   GtkToolItem *disconnect_button, *exit_button;
   GtkToolItem *launch_button, *join_button, *watch_button, *leave_button;
   GtkToolItem *props_button;
-#ifdef STATS_BUTTON
+#ifdef STATS
   GtkTOolItem *stats_button;
 #endif
   GtkWidget *Current_room_label;
@@ -1017,6 +1019,7 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   gtk_container_add (GTK_CONTAINER (view_menu), separator8);
   gtk_widget_set_sensitive (separator8, FALSE);
 
+#ifdef STATS
   server_stats = gtk_menu_item_new_with_label(_("Server Stats"));
   g_object_set_data(G_OBJECT (win_main), "server_stats", server_stats);
   gtk_container_add (GTK_CONTAINER (view_menu), server_stats);
@@ -1027,6 +1030,7 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   gtk_widget_add_accelerator (player_stats, "activate", accel_group,
                               GDK_S, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
+#endif
 
   game_types = gtk_menu_item_new_with_label(_("Game Types"));
   g_object_set_data(G_OBJECT (win_main), "game_types", game_types);
@@ -1133,7 +1137,7 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 		     GTK_TOOL_ITEM(props_button), -1);
   g_object_set_data(G_OBJECT(win_main), "props_button", props_button);
 
-#ifdef STATS_BUTTON
+#ifdef STATS
   stats_button = gtk_tool_button_new(NULL, _("Stats"));
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(stats_button), -1);
@@ -1315,12 +1319,14 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   g_signal_connect (GTK_OBJECT(player_toggle), "activate",
                       GTK_SIGNAL_FUNC(client_player_toggle_activate),
                       NULL);
+#ifdef STATS
   g_signal_connect (GTK_OBJECT (server_stats), "activate",
                       GTK_SIGNAL_FUNC (client_server_stats_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (player_stats), "activate",
                       GTK_SIGNAL_FUNC (client_player_stats_activate),
                       NULL);
+#endif
   g_signal_connect (GTK_OBJECT (game_types), "activate",
                       GTK_SIGNAL_FUNC (client_game_types_activate),
                       NULL);
@@ -1360,7 +1366,7 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   g_signal_connect (GTK_OBJECT (props_button), "clicked",
                       GTK_SIGNAL_FUNC (client_props_button_clicked),
                       NULL);
-#ifdef STATS_BUTTON
+#ifdef STATS
   g_signal_connect (GTK_OBJECT (stats_button), "clicked",
                       GTK_SIGNAL_FUNC (client_stats_button_clicked),
                       NULL);
