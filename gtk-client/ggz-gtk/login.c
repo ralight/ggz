@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 7764 2006-01-11 16:39:22Z jdorje $
+ * $Id: login.c 7773 2006-01-13 05:14:42Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -59,7 +59,7 @@ gint entries_update;
 /* Global command line option */
 gchar *option_log = NULL;
 
-static GtkWidget *create_dlg_login(void);
+static GtkWidget *create_dlg_login(const char *default_profile);
 
 /* Callbacks login dialog box */
 static void login_fill_defaults(GtkWidget * widget, gpointer data);
@@ -82,10 +82,10 @@ static GGZHookReturn login_reconnect(GGZServerEvent id, void *event_data,
 				     void *user_data);
 #endif
 
-void ggz_gtk_login_raise(void)
+void ggz_gtk_login_raise(const char *default_profile)
 {
 	if (!login_dialog) {
-		login_dialog = create_dlg_login();
+		login_dialog = create_dlg_login(default_profile);
 		gtk_widget_show_all(login_dialog);
 	} else {
 		gdk_window_show(login_dialog->window);
@@ -160,7 +160,7 @@ void login_goto_server(const gchar * server_url)
 {
 	GtkWidget *tmp;
 
-	ggz_gtk_login_raise();
+	ggz_gtk_login_raise(NULL);
 	tmp = lookup_widget(GTK_WIDGET(login_dialog), "host_entry");
 	if (!strncasecmp(server_url, "ggz://", 6))
 		gtk_entry_set_text(GTK_ENTRY(tmp), server_url + 6);
@@ -180,6 +180,7 @@ static void login_fill_defaults(GtkWidget * widget, gpointer user_data)
 	GtkWidget *tmp;
 	GList *items;
 	char *last;
+	char *profile = user_data;
 
 	tmp = lookup_widget(login_dialog, "profile_combo");
 
@@ -190,12 +191,22 @@ static void login_fill_defaults(GtkWidget * widget, gpointer user_data)
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 	/* Set to last server connected to */
-	last = ggzcore_conf_read_string("OPTIONS", "LASTPROFILE", "NONE");
+	if (profile) {
+		last = profile;
+	} else {
+		last = ggzcore_conf_read_string("OPTIONS", "LASTPROFILE",
+						"NONE");
+	}
+	printf("Setting to %s.\n", last);
 	if (strcmp(last, "NONE")) {
 		tmp = lookup_widget(login_dialog, "profile_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), last);
 	}
-	ggz_free(last);
+	if (profile) {
+		ggz_free(profile);
+	} else {
+		ggz_free(last);
+	}
 }
 
 
@@ -527,7 +538,7 @@ void login_set_entries(Server server)
 
 
 
-GtkWidget *create_dlg_login(void)
+GtkWidget *create_dlg_login(const char *default_profile)
 {
 	GtkWidget *dlg_login;
 	GtkWidget *dialog_vbox1;
@@ -765,7 +776,8 @@ GtkWidget *create_dlg_login(void)
 	GTK_WIDGET_SET_FLAGS(cancel_button, GTK_CAN_DEFAULT);
 
 	g_signal_connect(GTK_OBJECT(dlg_login), "realize",
-			 GTK_SIGNAL_FUNC(login_fill_defaults), NULL);
+			 GTK_SIGNAL_FUNC(login_fill_defaults),
+			 ggz_strdup(default_profile));
 	g_signal_connect(GTK_OBJECT(dlg_login), "destroy",
 			 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 			 &login_dialog);

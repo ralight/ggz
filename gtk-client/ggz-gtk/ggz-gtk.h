@@ -34,6 +34,6 @@ void ggz_gtk_initialize(gboolean reconnect,
 			char *protocol_engine,
 			char *protocol_version);
 
-void ggz_gtk_login_raise(void);
+void ggz_gtk_login_raise(const char *default_profile);
 
 GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win);

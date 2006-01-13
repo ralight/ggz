@@ -30,5 +30,9 @@
 /* Actions */
 void ggz_embed_leave_table(void);
 
+void ggz_embed_ensure_server(const char *profile_name,
+			     const char *host, unsigned int port,
+			     const char *username);
+
 /* Query functions */
 GGZServer *ggz_embed_get_server(void);

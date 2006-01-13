@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7772 2006-01-12 03:49:44Z jdorje $
+ * $Id: client.c 7773 2006-01-13 05:14:42Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -112,7 +112,7 @@ static void
 client_connect_activate			(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	ggz_gtk_login_raise();
+	ggz_gtk_login_raise(NULL);
 }
 
 
@@ -765,6 +765,25 @@ GGZServer *ggz_embed_get_server(void)
 	return server;
 }
 
+void ggz_embed_ensure_server(const char *profile_name,
+			     const char *host, unsigned int port,
+			     const char *username)
+{
+	if (!server_get(profile_name)) {
+		Server *my_server = g_malloc(sizeof(*my_server));
+
+		my_server->name = g_strdup(profile_name);
+		my_server->host = g_strdup(host);
+		my_server->port = port;
+		my_server->type = GGZ_LOGIN_GUEST;
+		my_server->login = g_strdup(username);
+		my_server->password = NULL;
+
+		server_list_add(my_server);
+		server_profiles_save();
+		ggzcore_conf_commit();
+	}
+}
 
 /* Call this to load ggzcore configuration, and do other initializations. */
 void ggz_gtk_initialize(gboolean reconnect,
