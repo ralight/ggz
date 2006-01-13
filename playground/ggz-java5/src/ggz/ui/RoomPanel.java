@@ -10,12 +10,14 @@ import ggz.client.core.Room;
 import ggz.client.core.RoomChangeEventData;
 import ggz.client.core.RoomListener;
 import ggz.client.core.Server;
+import ggz.client.core.StateID;
 import ggz.client.core.Table;
 import ggz.client.core.TableLeaveEventData;
 import ggz.common.SeatType;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -35,7 +37,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
-public class RoomPanel extends JPanel implements RoomListener, ListSelectionListener {
+public class RoomPanel extends JPanel implements RoomListener,
+        ListSelectionListener {
     protected Server server;
 
     protected Room room;
@@ -98,6 +101,9 @@ public class RoomPanel extends JPanel implements RoomListener, ListSelectionList
         tablePanel.add(tableButtonPanel, BorderLayout.SOUTH);
         add(tablePanel, BorderLayout.CENTER);
         chatPanel = new RoomChatPanel();
+        // Set a preferred size to stop it from growing out of control,
+        // we want it to stay one size.
+        chatPanel.setPreferredSize(new Dimension(500, 200));
         add(chatPanel, BorderLayout.SOUTH);
 
         headerPanel.add(titleLabel, BorderLayout.WEST);
@@ -141,9 +147,9 @@ public class RoomPanel extends JPanel implements RoomListener, ListSelectionList
                 case 1:
                     return "Game";
                 case 2:
-                    return "Seats";
+                    return "Max Players";
                 case 3:
-                    return "Spectator Seats";
+                    return "Max Spectators";
                 default:
                     return null;
                 }
@@ -173,9 +179,9 @@ public class RoomPanel extends JPanel implements RoomListener, ListSelectionList
                     return gameType == null ? null : table.get_type()
                             .get_name();
                 case 2:
-                    return table.get_num_seats();
+                    return new Integer(table.get_num_seats());
                 case 3:
-                    return table.get_num_spectator_seats();
+                    return new Integer(table.get_num_spectator_seats());
                 default:
                     return null;
                 }
@@ -208,7 +214,7 @@ public class RoomPanel extends JPanel implements RoomListener, ListSelectionList
     }
 
     public void player_count(int room_id) {
-
+        // Ignore
     }
 
     public void player_lag(String player) {
@@ -220,19 +226,20 @@ public class RoomPanel extends JPanel implements RoomListener, ListSelectionList
     }
 
     public void player_stats(String player) {
-
+        // Ignore
     }
 
     public void room_enter(RoomChangeEventData data) {
-
+        // Ignore
     }
 
     public void room_leave(RoomChangeEventData data) {
-
+        // Ignore
     }
 
     public void table_join_fail(String error) {
         ((AbstractTableModel) tableTable.getModel()).fireTableDataChanged();
+        JOptionPane.showMessageDialog(this, error);
     }
 
     public void table_joined(int table_index) {
@@ -293,12 +300,14 @@ public class RoomPanel extends JPanel implements RoomListener, ListSelectionList
 
     /**
      * Called when selection in table changes.
+     * 
      * @param e
      */
     public void valueChanged(ListSelectionEvent e) {
-        joinTableButton.setEnabled(tableTable.getSelectedRowCount() > 0);
+        joinTableButton.setEnabled(tableTable.getSelectedRowCount() > 0
+                && server.get_state() == StateID.GGZ_STATE_IN_ROOM);
     }
-    
+
     private abstract class PlayGameAction extends AbstractAction implements
             GameEventListener {
 
@@ -325,6 +334,7 @@ public class RoomPanel extends JPanel implements RoomListener, ListSelectionList
         }
 
         public void game_launched() {
+            // Ignore
         }
 
         public void game_negotiate_fail() {
@@ -348,13 +358,13 @@ public class RoomPanel extends JPanel implements RoomListener, ListSelectionList
 
         public void game_playing() {
             try {
+                int max_players = Math.min(4, room.get_gametype()
+                        .get_max_players());
                 Table table = new Table(room.get_gametype(), "Join me!",
-                        4);
-                table.set_seat(0, SeatType.GGZ_SEAT_RESERVED, server
-                        .get_handle());
-                table.set_seat(1, SeatType.GGZ_SEAT_OPEN, null);
-                table.set_seat(2, SeatType.GGZ_SEAT_OPEN, null);
-                table.set_seat(3, SeatType.GGZ_SEAT_OPEN, null);
+                        max_players);
+                for (int seat_num = 0; seat_num < max_players; seat_num++) {
+                    table.set_seat(seat_num, SeatType.GGZ_SEAT_OPEN, null);
+                }
                 room.launch_table(table);
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -392,13 +402,13 @@ public class RoomPanel extends JPanel implements RoomListener, ListSelectionList
 
         public void game_playing() {
             try {
+                int max_bots = Math.min(3, room.get_gametype().get_max_bots());
                 Table table = new Table(room.get_gametype(), "I play alone...",
-                        4);
-                table.set_seat(0, SeatType.GGZ_SEAT_RESERVED, server
-                        .get_handle());
-                table.set_seat(1, SeatType.GGZ_SEAT_BOT, null);
-                table.set_seat(2, SeatType.GGZ_SEAT_BOT, null);
-                table.set_seat(3, SeatType.GGZ_SEAT_BOT, null);
+                        max_bots + 1);
+                table.set_seat(0, SeatType.GGZ_SEAT_OPEN, null);
+                for (int seat_num = 1; seat_num <= max_bots; seat_num++) {
+                    table.set_seat(seat_num, SeatType.GGZ_SEAT_BOT, null);
+                }
                 room.launch_table(table);
             } catch (IOException ex) {
                 ex.printStackTrace();

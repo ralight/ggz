@@ -23,6 +23,9 @@ public class GGZCardOutputStream extends DataOutputStream {
         case JOKER2:
             face = 1;
             break;
+        case ACE_LOW:
+            face = 1;
+            break;
         case DEUCE:
             face = 2;
             break;
@@ -59,10 +62,7 @@ public class GGZCardOutputStream extends DataOutputStream {
         case KING:
             face = 13;
             break;
-        case ACE:
-            // TODO We've lost ACE_HIGH in the port to Java, not sure if this is
-            // going to cause problems when we write a different ace back to the
-            // server.
+        case ACE_HIGH:
             face = 14;
             break;
         default:
@@ -85,7 +85,7 @@ public class GGZCardOutputStream extends DataOutputStream {
      */
     public void write_bid(Bid bid) throws IOException {
         write(bid.val);
-        write(encode_suit(bid.suit));
+        write(bid.suit);
         write(bid.spec);
         write(bid.spec2);
     }

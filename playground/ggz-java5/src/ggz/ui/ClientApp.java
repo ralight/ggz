@@ -17,6 +17,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class ClientApp {
+    protected static String sendLog;
+
+    protected static String receiveLog;
+    
+    protected static String host;
+    
+    protected static String port;
 
     private ClientApp() {
         super();
@@ -26,6 +33,10 @@ public class ClientApp {
      * @param args
      */
     public static void main(String[] args) throws Exception {
+        if (!parseArgs(args)) {
+            printUsage();
+            return;
+        }
         // Applet needs to be created first if we want antialiasing
         // since it sets it up in the static initialiser.
         final ClientApplet applet = new ClientApplet();
@@ -45,6 +56,15 @@ public class ClientApp {
             }
 
             public String getParameter(String name) {
+                if ("sendLog".equals(name)) {
+                    return sendLog;
+                } else if ("receiveLog".equals(name)) {
+                    return receiveLog;
+                } else if ("host".equals(name)) {
+                    return host;
+                } else if ("port".equals(name)) {
+                    return port;
+                }
                 return null;
             }
 
@@ -87,13 +107,11 @@ public class ClientApp {
                     }
 
                     public void showDocument(URL url, String target) {
-                        // TODO Auto-generated method stub
-
+                        // TODO Open platform specific browser
                     }
 
                     public void showDocument(URL url) {
-                        // TODO Auto-generated method stub
-
+                        // TODO Open platform specific browser
                     }
 
                     public void showStatus(String status) {
@@ -120,5 +138,42 @@ public class ClientApp {
         applet.init();
         applet.start();
         applet.server_state_changed();
+    }
+
+    private static boolean parseArgs(String[] argv) {
+        try {
+            for (int argPos = 0; argPos < argv.length; argPos++) {
+                if ("--xmlOut".equals(argv[argPos])) {
+                    argPos++;
+                    sendLog = argv[argPos];
+                } else if ("--xmlIn".equals(argv[argPos])) {
+                    argPos++;
+                    receiveLog = argv[argPos];
+                } else if ("--port".equals(argv[argPos])) {
+                    argPos++;
+                    port = argv[argPos];
+                } else if ("--host".equals(argv[argPos])) {
+                    argPos++;
+                    host = argv[argPos];
+                }
+            }
+            return true;
+        } catch (IndexOutOfBoundsException ex) {
+            return false;
+        }
+    }
+
+    private static void printUsage() {
+        System.err
+                .println("Usage: java ggz.ui.ClientApp [--host host] [--port port] [--xmlOut file] [--xmlIn file]");
+        System.err.println(" --host host    GGZ server to connect to.");
+        System.err.println(" --port port    Port on GGZ server to connect to.");
+        System.err
+                .println(" --xmlOut file  Write XML sent to the server to this file.");
+        System.err
+                .println(" --xmlIn file   Write XML received from the server to this file.");
+        System.err.println();
+        System.err
+                .println("--xmlOut and --xmlIn can be tha same file and the special values 'stderr' and 'stdout' can be used.");
     }
 }

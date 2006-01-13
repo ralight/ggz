@@ -20,29 +20,43 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.JApplet;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
-public class ClientApplet extends JApplet implements ServerListener {
+public class ClientApplet extends JApplet implements ServerListener,
+        HyperlinkListener {
     protected Server server;
 
     protected LoginPanel loginPanel;
 
     protected LoungePanel loungePanel;
 
+    protected JLabel busyPanel;
+
     protected RoomPanel roomPanel;
+
+    private ErrorEventData loginFailData;
 
     static {
         // Get Swing to use Antialiased text.
         System.setProperty("swing.aatext", "true");
+
+        // Make tooltips appear without a delay, this is currently because the
+        // options in force for a card game are shown by hovering over a label
+        // and the delay makes the interface unintuitive.
+        // ToolTipManager.sharedInstance().setInitialDelay(0);
     }
 
     public ClientApplet() throws IOException {
         // TODO Make watermark URL and background color applet parameters.
-        URL imageUrl = getClass().getResource("/ggz/cards/images/cards/j.gif");
+        URL imageUrl = getClass().getResource("/ggz/ui/images/rose.gif");
         final Image watermark = ImageIO.read(imageUrl);
         final Composite alphaComposite = AlphaComposite.getInstance(
                 AlphaComposite.SRC_OVER, 0.3f);
@@ -78,13 +92,15 @@ public class ClientApplet extends JApplet implements ServerListener {
             // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             String host = getParameter("host", "live.ggzgamingzone.org");
             int port = Integer.parseInt(getParameter("port", "5688"));
+            String sendLogFile = getParameter("sendLog");
+            String receiveLogFile = getParameter("receiveLog");
             server = new Server();
-            server.log_session("stderr");
+            server.log_session(sendLogFile, receiveLogFile);
             server.set_hostinfo(host, port, false);
             server.add_event_hook(this);
-             getContentPane().setBackground(new Color(0, 128, 255));
+            getContentPane().setBackground(new Color(0, 128, 255));
             // getContentPane().setBackground(new Color(204, 153, 153));
-//            getContentPane().setBackground(new Color(155, 203, 154));
+            // getContentPane().setBackground(new Color(155, 203, 154));
             getContentPane().setLayout(new CardLayout());
             loginPanel = new LoginPanel(server);
             getContentPane().add(loginPanel, "login");
@@ -93,6 +109,9 @@ public class ClientApplet extends JApplet implements ServerListener {
             getContentPane().add(loungePanel, "lounge");
             roomPanel = new RoomPanel(server);
             getContentPane().add(roomPanel, "room");
+            busyPanel = new JLabel("Please wait...", SwingConstants.CENTER);
+            getContentPane().add(busyPanel, "busy");
+            HyperlinkLabel.setGlobalHyperlinkListener(this);
         } catch (Exception e) {
             handleException(e);
         }
@@ -127,7 +146,7 @@ public class ClientApplet extends JApplet implements ServerListener {
     }
 
     public void server_channel_connected() {
-        System.out.println("channel_connected");
+        // Nothing to do here.
     }
 
     public void server_channel_fail(String error) {
@@ -135,7 +154,6 @@ public class ClientApplet extends JApplet implements ServerListener {
     }
 
     public void server_channel_ready() {
-        System.out.println("channel_ready");
         try {
             server.get_cur_game().set_server_fd(server.get_channel());
         } catch (Exception e) {
@@ -149,7 +167,7 @@ public class ClientApplet extends JApplet implements ServerListener {
 
     public void server_connect_fail(String error) {
         JOptionPane.showMessageDialog(this, error);
-        loginPanel.resetLogin();
+        resetLogin();
     }
 
     public void server_connected() {
@@ -158,6 +176,9 @@ public class ClientApplet extends JApplet implements ServerListener {
 
     public void server_enter_fail(ErrorEventData data) {
         JOptionPane.showMessageDialog(this, data.message);
+        // Do the same logic as when enter succeeded so that we show the
+        // appropriate panel.
+        server_enter_ok();
     }
 
     public void server_enter_ok() {
@@ -189,8 +210,7 @@ public class ClientApplet extends JApplet implements ServerListener {
     }
 
     public void server_login_fail(ErrorEventData data) {
-        JOptionPane.showMessageDialog(this, data.message);
-        loginPanel.resetLogin();
+        loginFailData = data;
         try {
             server.logout();
         } catch (Exception e) {
@@ -199,17 +219,10 @@ public class ClientApplet extends JApplet implements ServerListener {
     }
 
     public void server_logged_out() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                CardLayout layout = (CardLayout) getContentPane().getLayout();
-                try {
-                    layout.show(getContentPane(), "login");
-                    loginPanel.resetLogin();
-                } catch (Exception e) {
-                    handleException(e);
-                }
-            }
-        });
+        resetLogin();
+        if (loginFailData != null) {
+            JOptionPane.showMessageDialog(this, loginFailData.message);
+        }
     }
 
     public void server_motd_loaded(MotdEventData data) {
@@ -230,7 +243,7 @@ public class ClientApplet extends JApplet implements ServerListener {
 
     public void server_negotiate_fail(String error) {
         JOptionPane.showMessageDialog(this, error);
-        loginPanel.resetLogin();
+        resetLogin();
     }
 
     public void server_negotiated() {
@@ -247,12 +260,12 @@ public class ClientApplet extends JApplet implements ServerListener {
 
     public void server_net_error(String error) {
         JOptionPane.showMessageDialog(this, error);
-        loginPanel.resetLogin();
+        resetLogin();
     }
 
     public void server_protocol_error(String error) {
         JOptionPane.showMessageDialog(this, error);
-        loginPanel.resetLogin();
+        resetLogin();
     }
 
     public void server_list_rooms() {
@@ -274,12 +287,16 @@ public class ClientApplet extends JApplet implements ServerListener {
 
     public void server_state_changed() {
         String statusText;
+        CardLayout layout = (CardLayout) getContentPane().getLayout();
+
         switch (server.get_state()) {
         case GGZ_STATE_OFFLINE:
             statusText = "Not logged in";
             break;
         /** In the process of connecting. */
         case GGZ_STATE_CONNECTING:
+            loginFailData = null;
+            layout.show(getContentPane(), "busy");
             statusText = "Connecting";
             break;
         /** Continuous reconnection attempts. */
@@ -300,14 +317,13 @@ public class ClientApplet extends JApplet implements ServerListener {
             break;
         /** Moving into a room. */
         case GGZ_STATE_ENTERING_ROOM:
+        /** Moving between rooms. */
+        case GGZ_STATE_BETWEEN_ROOMS:
+            layout.show(getContentPane(), "busy");
             statusText = "Loading";
             break;
         /** Online, logged in, and in a room. */
         case GGZ_STATE_IN_ROOM:
-            statusText = "Logged in";
-            break;
-        /** Moving between rooms. */
-        case GGZ_STATE_BETWEEN_ROOMS:
             statusText = "Logged in";
             break;
         /** Trying to launch a table. */
@@ -357,5 +373,36 @@ public class ClientApplet extends JApplet implements ServerListener {
     protected void handleException(Throwable e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(this, e.getMessage());
+    }
+
+    protected void resetLogin() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                CardLayout layout = (CardLayout) getContentPane().getLayout();
+                try {
+                    layout.show(getContentPane(), "login");
+                    loginPanel.resetLogin();
+                } catch (Exception e) {
+                    handleException(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Called when a HyperlinkLabel in the application is clicked.
+     * 
+     * @param e
+     */
+    public void hyperlinkUpdate(HyperlinkEvent e) {
+        getAppletContext().showDocument(e.getURL(), "ggz_rules");
+    }
+
+    public void invokeAndWait(Runnable doRun) {
+        try {
+            SwingUtilities.invokeAndWait(doRun);
+        } catch (Exception e) {
+            handleException(e);
+        }
     }
 }

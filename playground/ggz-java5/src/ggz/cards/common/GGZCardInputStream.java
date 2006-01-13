@@ -11,6 +11,18 @@ public class GGZCardInputStream extends DataInputStream {
         super(in);
     }
 
+    public CardSetType read_cardset_type() throws IOException {
+        int cardset = readInt();
+        CardSetType cardset_type = CardSetType.valueOf(cardset);
+
+        if (cardset_type != CardSetType.CARDSET_FRENCH) {
+            throw new UnsupportedOperationException(
+                    "Unsupported card set type: " + cardset_type);
+        }
+
+        return cardset_type;
+    }
+
     public Card read_card() throws IOException {
         byte[] b = new byte[3];
         read(b);
@@ -29,7 +41,7 @@ public class GGZCardInputStream extends DataInputStream {
             face = Face.JOKER1;
             break;
         case 1:
-            face = (suit == Suit.NO_SUIT) ? Face.JOKER2 : Face.ACE;
+            face = (suit == Suit.NO_SUIT) ? Face.JOKER2 : Face.ACE_LOW;
             break;
         case 2:
             face = Face.DEUCE;
@@ -68,7 +80,7 @@ public class GGZCardInputStream extends DataInputStream {
             face = Face.KING;
             break;
         case 14:
-            face = Face.ACE;
+            face = Face.ACE_HIGH;
             break;
         default:
             throw new IllegalStateException(
@@ -81,7 +93,7 @@ public class GGZCardInputStream extends DataInputStream {
     public Bid read_bid() throws IOException {
         byte[] b = new byte[4];
         read(b);
-        return new Bid(b[0], decode_suit(b[1]), b[2], b[3]);
+        return new Bid(b[0], b[1], b[2], b[3]);
     }
 
     public ServerOpCode read_opcode() throws IOException {
@@ -102,7 +114,8 @@ public class GGZCardInputStream extends DataInputStream {
     }
 
     /**
-     * This only supports suit in a French deck at the moment. 
+     * This only supports suit in a French deck at the moment.
+     * 
      * @param b
      * @return
      */
@@ -128,8 +141,8 @@ public class GGZCardInputStream extends DataInputStream {
             suit = Suit.NO_SUIT;
             break;
         default:
-            throw new IllegalStateException(
-                    "Read invalid value for card suit: " + b);
+            throw new UnsupportedOperationException(
+                    "Read unknown value for card suit: " + b);
         }
         return suit;
     }

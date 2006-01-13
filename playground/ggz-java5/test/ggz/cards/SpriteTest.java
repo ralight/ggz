@@ -23,7 +23,7 @@ public class SpriteTest {
         Sprite sprite = null;
 
         for (int suit = Suit.CLUBS.ordinal(); suit <= Suit.SPADES.ordinal(); suit++) {
-            for (int face = Face.ACE.ordinal(); face <= Face.KING.ordinal(); face++) {
+            for (int face = Face.ACE_LOW.ordinal(); face <= Face.ACE_HIGH.ordinal(); face++) {
                 sprite = new Sprite(new Card(Face.values()[face],
                         Suit.values()[suit]));
                 sprite.setEnabled(true);
@@ -43,7 +43,7 @@ public class SpriteTest {
 
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.getContentPane().setPreferredSize(
-                new Dimension(sprite.getWidth() * 13, sprite.getHeight() * 4));
+                new Dimension(sprite.getWidth() * 14, sprite.getHeight() * 4));
         frame.pack();
         frame.setVisible(true);
     }

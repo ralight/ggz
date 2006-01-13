@@ -6,10 +6,7 @@ import ggz.client.core.Room;
 import ggz.client.core.Server;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.GridLayout;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,13 +14,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
 
 public class LoungePanel extends JPanel {
     protected Server server;
@@ -101,21 +93,21 @@ public class LoungePanel extends JPanel {
         chatPanel.setRoom(room);
     }
 
-    private static class SortByGameType implements Comparator {
-        public int compare(Object o1, Object o2) {
-            GameType g1 = ((Room) o1).get_gametype();
-            GameType g2 = ((Room) o2).get_gametype();
-            if (g1 == null && g2 == null) {
-                return 0;
-            } else if (g1 == null && g2 != null) {
-                return -1;
-            } else if (g1 == null && g2 != null) {
-                return 1;
-            } else {
-                return g1.get_name().compareTo(g2.get_name());
-            }
-        }
-    }
+//    private static class SortByGameType implements Comparator {
+//        public int compare(Object o1, Object o2) {
+//            GameType g1 = ((Room) o1).get_gametype();
+//            GameType g2 = ((Room) o2).get_gametype();
+//            if (g1 == null && g2 == null) {
+//                return 0;
+//            } else if (g1 == null && g2 != null) {
+//                return -1;
+//            } else if (g1 == null && g2 != null) {
+//                return 1;
+//            } else {
+//                return g1.get_name().compareTo(g2.get_name());
+//            }
+//        }
+//    }
 
     private static class SortByRoomName implements Comparator {
         public int compare(Object o1, Object o2) {
@@ -153,41 +145,41 @@ public class LoungePanel extends JPanel {
         }
     }
 
-    private class RoomCellRenderer extends JPanel implements ListCellRenderer {
-        private JLabel nameLabel = new JLabel();
-
-        private JLabel playerCountLabel = new JLabel((String) null,
-                SwingConstants.RIGHT);
-
-        private Room room;
-
-        RoomCellRenderer() {
-            this.setLayout(new BorderLayout(5, 5));
-            this.add(nameLabel, BorderLayout.CENTER);
-            this.add(playerCountLabel, BorderLayout.EAST);
-            this.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-        }
-
-        public Component getListCellRendererComponent(JList list, Object value,
-                int index, boolean isSelected, boolean cellHasFocus) {
-            this.room = (Room) value;
-            if (isSelected && list.hasFocus()) {
-                setBackground(SystemColor.textHighlight);
-                nameLabel.setForeground(SystemColor.textHighlightText);
-                playerCountLabel.setForeground(SystemColor.textHighlightText);
-            } else {
-                setBackground(SystemColor.window);
-                nameLabel.setForeground(Color.BLUE);
-                playerCountLabel.setForeground(SystemColor.textText);
-            }
-            nameLabel.setText(room.get_name());
-            playerCountLabel.setText(String.valueOf(room.get_num_players()));
-            return this;
-        }
-
-        public String getToolTipText() {
-            return room.get_gametype().get_desc();
-
-        }
-    }
+//    private class RoomCellRenderer extends JPanel implements ListCellRenderer {
+//        private JLabel nameLabel = new JLabel();
+//
+//        private JLabel playerCountLabel = new JLabel((String) null,
+//                SwingConstants.RIGHT);
+//
+//        private Room room;
+//
+//        RoomCellRenderer() {
+//            this.setLayout(new BorderLayout(5, 5));
+//            this.add(nameLabel, BorderLayout.CENTER);
+//            this.add(playerCountLabel, BorderLayout.EAST);
+//            this.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+//        }
+//
+//        public Component getListCellRendererComponent(JList list, Object value,
+//                int index, boolean isSelected, boolean cellHasFocus) {
+//            this.room = (Room) value;
+//            if (isSelected && list.hasFocus()) {
+//                setBackground(SystemColor.textHighlight);
+//                nameLabel.setForeground(SystemColor.textHighlightText);
+//                playerCountLabel.setForeground(SystemColor.textHighlightText);
+//            } else {
+//                setBackground(SystemColor.window);
+//                nameLabel.setForeground(Color.BLUE);
+//                playerCountLabel.setForeground(SystemColor.textText);
+//            }
+//            nameLabel.setText(room.get_name());
+//            playerCountLabel.setText(String.valueOf(room.get_num_players()));
+//            return this;
+//        }
+//
+//        public String getToolTipText() {
+//            return room.get_gametype().get_desc();
+//
+//        }
+//    }
 }

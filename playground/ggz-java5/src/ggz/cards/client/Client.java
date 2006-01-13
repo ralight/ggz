@@ -14,7 +14,7 @@ import ggz.common.SeatType;
 public class Client implements ModEventHandler {
     private static final Logger log = Logger.getLogger(Client.class.getName());
 
-    private Socket fd;
+    protected Socket fd;
 
     private GGZCardInputStream fd_in;
 
@@ -43,16 +43,16 @@ public class Client implements ModEventHandler {
      */
     private int play_hand;
 
-    private CardGameHandler game;
+    protected CardGameHandler game;
 
     ModGame get_ggzmod() {
         return this.mod;
     }
-    
+
     public int get_num_players() {
         return this.num_players;
     }
-    
+
     public CardSeat get_nth_player(int n) {
         return this.players[n];
     }
@@ -90,16 +90,14 @@ public class Client implements ModEventHandler {
         this.game = l;
     }
 
-     public void quit() throws IOException
-     {
-     /* Disconnect */
-         mod.set_state(ModState.GGZMOD_STATE_DONE);
-//     mod.disconnect();
-     //ggz_error_msg_exit("Couldn't disconnect from ggz.");
-    
-    
-     log.fine( "Client disconnected.");
-     }
+    public void quit() throws IOException {
+        /* Disconnect */
+        mod.set_state(ModState.GGZMOD_STATE_DONE);
+        // mod.disconnect();
+        // ggz_error_msg_exit("Couldn't disconnect from ggz.");
+
+        log.fine("Client disconnected.");
+    }
 
     // Socket get_fd()
     // {
@@ -178,10 +176,11 @@ public class Client implements ModEventHandler {
          * Note: "size" refers to the size of the data block, not including the
          * headers above.
          */
-        log.fine("Received game message of size " + size + " for game " + game_name);
+        log.fine("Received game message of size " + size + " for game "
+                + game_name);
 
-        num_bytes_handled = this.game.handle_game_message(this.fd_in, game_name,
-                size);
+        num_bytes_handled = this.game.handle_game_message(this.fd_in,
+                game_name, size);
         if (num_bytes_handled < 0) {
             throw new IllegalStateException();
         }
@@ -226,19 +225,9 @@ public class Client implements ModEventHandler {
     }
 
     private void handle_msg_newgame() throws IOException {
-        fd_in.readInt();
-        game.alert_newgame();
-        // int cardset;
-        // cardset_type_t cardset_type;
-        //
-        // if (ggz_read_int(this.fd, &cardset) < 0)
-        // return -1;
-        // cardset_type = cardset;
-        //
-        // assert(cardset_type != UNKNOWN_CARDSET);
-        // set_cardset_type(cardset_type);
-        // game.alert_newgame(cardset_type);
-        // return 0;
+         CardSetType cardset_type = fd_in.read_cardset_type();
+        
+         game.alert_newgame(cardset_type);
     }
 
     /* A gameover message tells you the game is over, and who won. */
@@ -340,8 +329,8 @@ public class Client implements ModEventHandler {
     /* Possibly increase the maximum hand size we can sustain. */
     private void increase_max_hand_size(int new_max_hand_size) {
         if (new_max_hand_size <= this.max_hand_size) /*
-                                                     * no problem
-                                                     */
+                                                         * no problem
+                                                         */
             return;
 
         log.fine("Expanding max_hand_size to allow for " + new_max_hand_size
@@ -856,7 +845,19 @@ public class Client implements ModEventHandler {
                     // Ignore, end of input.
                 } catch (Throwable e) {
                     e.printStackTrace();
+                    try {
+                        quit();
+                    } catch (IOException e2) {
+                        // ignore.
+                    }
+                } finally {
+                    try {
+                        fd.close();
+                    } catch (IOException e2) {
+                        // ignore.
+                    }
                 }
+                game.handle_disconnect();
             }
         }).start();
     }
@@ -870,11 +871,20 @@ public class Client implements ModEventHandler {
         // TODO Auto-generated method stub
 
     }
-    
+
     public void request_chat(String message) throws IOException {
         mod.request_chat(message);
     }
 
+    public void request_boot(String name) throws IOException {
+        mod.request_boot(name);
+    }
+    public void request_bot(int seat_num) throws IOException {
+        mod.request_bot(seat_num);
+    }
+    public void request_open(int seat_num) throws IOException {
+        mod.request_open(seat_num);
+    }
     /**
      * GGZCards client game states
      * 

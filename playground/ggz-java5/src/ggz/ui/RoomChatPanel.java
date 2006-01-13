@@ -8,21 +8,22 @@ import ggz.client.core.RoomChangeEventData;
 import ggz.client.core.RoomListener;
 import ggz.client.core.TableLeaveEventData;
 import ggz.common.ChatType;
+import ggz.common.PlayerType;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 
-import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -43,9 +44,9 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     public RoomChatPanel() {
         super(new BorderLayout());
 
-        chatPanel = new ChatPanel(new ChatAction());
+        chatPanel = new ChatPanel(new RoomChatAction());
         add(chatPanel, BorderLayout.CENTER);
-        
+
         // The list of players.
         players = new PlayersTableModel();
         playerList = new JTable(players);
@@ -59,7 +60,10 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         setOpaque(false);
         playerList.setOpaque(false);
         playerList.setPreferredScrollableViewportSize(new Dimension(150, 100));
+        playerList.setDefaultRenderer(PlayerType.class,
+                new PlayerTypeCellRenderer());
         playerList.setDefaultRenderer(Integer.class, new LagCellRenderer());
+        playerList.setRowHeight(16);
         playerScrollPane = new JScrollPane();
         playerScrollPane.setOpaque(false);
         playerScrollPane.getViewport().add(playerList);
@@ -68,24 +72,28 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     }
 
     public void setRoom(Room r) throws IOException {
-        room = r;
-        handle = room.get_server().get_handle();
-        room.add_event_hook(this);
+        if (r != room) {
+            if (room != null) {
+                room.remove_event_hook(this);
+            }
+            room = r;
+            handle = room.get_server().get_handle();
+            room.add_event_hook(this);
+            chatPanel.clearChat();
+        }
         room.list_players();
-        chatPanel.setEnabled(true);
     }
 
     public void chat_event(final ChatEventData data) {
         // Ignore chat messages from ourselves since we append the text on send
         // without waiting for the server to make the app feel more responsive.
         if (!handle.equals(data.sender)) {
-            chatPanel.handle_chat(data.sender, data.message);
+            chatPanel.appendChat(data.type, data.sender, data.message);
         }
     }
 
     public void player_count(int room_id) {
-        // TODO will this fix the count display errors I've noticed?
-        // textArea.append("player_count: "+room_id);
+        // Seems a pretty redundant message.
     }
 
     public void player_lag(String player) {
@@ -110,6 +118,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     }
 
     public void player_stats(String player) {
+        // Ignore
     }
 
     public void room_enter(RoomChangeEventData data) {
@@ -121,27 +130,35 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     }
 
     public void table_join_fail(String error) {
+        // Ignore
     }
 
     public void table_joined(int table_index) {
+        // Ignore
     }
 
     public void table_launch_fail(ErrorEventData data) {
+        // Ignore
     }
 
     public void table_launched() {
+        // Ignore
     }
 
     public void table_leave_fail(String error) {
+        // Ignore
     }
 
     public void table_left(TableLeaveEventData data) {
+        // Ignore
     }
 
     public void table_list() {
+        // Ignore
     }
 
     public void table_update() {
+        // Ignore
     }
 
     private class PlayersTableModel extends AbstractTableModel {
@@ -168,10 +185,14 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
 
         public Class<?> getColumnClass(int columnIndex) {
-            if (columnIndex == 2) {
+            switch (columnIndex) {
+            case 0:
+                return PlayerType.class;
+            case 2:
                 return Integer.class;
+            default:
+                return super.getColumnClass(columnIndex);
             }
-            return super.getColumnClass(columnIndex);
         }
 
         public Object getValueAt(int rowIndex, int columnIndex) {
@@ -189,7 +210,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 1:
                 return player.get_name();
             case 2:
-                return player.get_lag(); // seems to range from 1-5
+                return new Integer(player.get_lag()); // seems to range from
+            // 1-5
             default:
                 return null;
             }
@@ -197,27 +219,71 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
     }
 
-    private class ChatAction extends AbstractAction {
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return "Send";
-            }
-            return super.getValue(key);
+    private class RoomChatAction extends ChatAction {
+        protected void sendChat(ChatType chatType, String target, String message)
+                throws IOException {
+            room.chat(chatType, target, message);
         }
 
-        public void actionPerformed(ActionEvent e) {
-            try {
-                String message = chatPanel.getMessage();
-                if (message != null && !"".equals(message.trim())) {
-                    room.chat(ChatType.GGZ_CHAT_NORMAL, null, message);
-                    chatPanel.clearMessage();
-                    chatPanel.handle_chat(handle, message);
+        protected void chat_display_local(ChatType type, String message) {
+            chatPanel.appendChat(type, handle, message);
+        }
+
+        protected ChatType getDefaultChatType() {
+            return ChatType.GGZ_CHAT_NORMAL;
+        }
+    }
+
+    private class PlayerTypeCellRenderer extends JLabel implements
+            TableCellRenderer {
+        private PlayerType type;
+
+        private PlayerTypeCellRenderer() {
+            setBackground(Color.WHITE);
+            setOpaque(true);
+            setHorizontalAlignment(SwingConstants.CENTER);
+        }
+
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int column) {
+
+            type = (PlayerType) value;
+            if (type == null) {
+                setIcon(null);
+            } else {
+                switch (type) {
+                case GGZ_PLAYER_ADMIN:
+                    setIcon(new ImageIcon(getClass().getResource(
+                            "images/p21.gif")));
+                    break;
+                case GGZ_PLAYER_BOT:
+                    setIcon(new ImageIcon(getClass().getResource(
+                            "images/p17.gif")));
+                    break;
+                case GGZ_PLAYER_GUEST:
+                    setIcon(new ImageIcon(getClass().getResource(
+                            "images/p29.gif")));
+                    break;
+                case GGZ_PLAYER_NORMAL:
+                    setIcon(new ImageIcon(getClass().getResource(
+                            "images/p25.gif")));
+                    break;
+                case GGZ_PLAYER_UNKNOWN:
+                default:
+                    setIcon(new ImageIcon(getClass().getResource(
+                            "images/p13.gif")));
+                    break;
                 }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog((Component) e.getSource(), ex
-                        .getMessage());
             }
+            return this;
+        }
+
+        public String getToolTipText() {
+            if (type == null) {
+                return null;
+            }
+            return type.toString();
         }
     }
 

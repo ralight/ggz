@@ -62,8 +62,9 @@ public class Module {
                 "Java", "url", "ggz.cards.GamePanel", "/ggz/ui/images/bridge.gif", "help_path"));
         _add(new Module("GGZCards-Sueca", "0.0.7", "GGZCards", "3", "Author",
                 "Java", "url", "ggz.cards.GamePanel", "/ggz/ui/images/sueca.gif", "help_path"));
+        // Suaro uses an unknown card set...
         _add(new Module("GGZCards-Suaro", "0.0.7", "GGZCards", "3", "Author",
-                "Java", "url", "ggz.cards.GamePanel", "/ggz/ui/images/suaro.gif", "help_path"));
+                "Java", "url", "ggz.cards.SuaroPanel", "/ggz/ui/images/suaro.gif", "help_path"));
         _add(new Module("GGZCards-Whist", "0.0.7", "GGZCards", "3", "Author",
                 "Java", "url", "ggz.cards.GamePanel", "/ggz/ui/images/whist.gif", "help_path"));
         _add(new Module("GGZCards-Hearts", "0.0.7", "GGZCards", "3", "Author",

@@ -9,11 +9,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class Mod implements ModGGZ, ModGame {
-    private static final Logger log = Logger.getLogger(Mod.class.getName());
-
     /** The state of the game. */
     private ModState state = ModState.GGZMOD_STATE_CREATED;
 
@@ -149,7 +146,8 @@ public class Mod implements ModGGZ, ModGame {
     }
 
     public void disconnect() {
-        // set_state(ModState.GGZMOD_STATE_DONE);
+        // // Let the game know we're disconnecting.
+        // ehandler.handle_disconnect();
     }
 
     public void inform_chat(String player, String msg) {
@@ -335,35 +333,35 @@ public class Mod implements ModGGZ, ModGame {
             ehandler.handle_server_fd(fd);
     }
 
-    public void send_state(ModState new_state) throws IOException {
-        /*
-         * There's only certain ones the game is allowed to set it to, and they
-         * can only change it if the state is currently WAITING or PLAYING.
-         */
-        switch (new_state) {
-        case GGZMOD_STATE_CREATED:
-        case GGZMOD_STATE_CONNECTED:
-        case GGZMOD_STATE_WAITING:
-        case GGZMOD_STATE_PLAYING:
-        case GGZMOD_STATE_DONE:
-            /*
-             * In contradiction to what I say above, the game actually _is_
-             * allowed to change its state from CREATED to WAITING. When
-             * ggzmod-ggz sends a launch packet to ggzmod-game, ggzmod-game
-             * automatically changes the state from CREATED to WAITING. When
-             * this happens, it tells ggzmod-ggz of this change and we end up
-             * back here. So, although it's a bit unsafe, we have to allow this
-             * for now. The alternative would be to have ggzmod-ggz and
-             * ggzmod-game both separately change states when the launch packet
-             * is sent.
-             */
-            set_state(new_state);
-            return;
-        }
-        log.severe("Game requested incorrect state value");
-
-        /* Is this right? has the gameover happened yet? */
-    }
+    // public void send_state(ModState new_state) throws IOException {
+    // /*
+    // * There's only certain ones the game is allowed to set it to, and they
+    // * can only change it if the state is currently WAITING or PLAYING.
+    // */
+    // switch (new_state) {
+    // case GGZMOD_STATE_CREATED:
+    // case GGZMOD_STATE_CONNECTED:
+    // case GGZMOD_STATE_WAITING:
+    // case GGZMOD_STATE_PLAYING:
+    // case GGZMOD_STATE_DONE:
+    // /*
+    // * In contradiction to what I say above, the game actually _is_
+    // * allowed to change its state from CREATED to WAITING. When
+    // * ggzmod-ggz sends a launch packet to ggzmod-game, ggzmod-game
+    // * automatically changes the state from CREATED to WAITING. When
+    // * this happens, it tells ggzmod-ggz of this change and we end up
+    // * back here. So, although it's a bit unsafe, we have to allow this
+    // * for now. The alternative would be to have ggzmod-ggz and
+    // * ggzmod-game both separately change states when the launch packet
+    // * is sent.
+    // */
+    // set_state(new_state);
+    // return;
+    // }
+    // log.severe("Game requested incorrect state value");
+    //
+    // /* Is this right? has the gameover happened yet? */
+    // }
 
     /*
      * Sends a game launch packet to ggzmod-game.

@@ -18,7 +18,7 @@ public interface ModGGZ {
             IllegalAccessException, InvocationTargetException,
             NoSuchMethodException, ClassNotFoundException, IOException;
 
-    public void disconnect();
+    public void disconnect() throws IOException;
 
     public void inform_chat(String player, String msg);
 

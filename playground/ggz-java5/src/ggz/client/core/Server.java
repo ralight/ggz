@@ -59,9 +59,9 @@ public class Server {
      */
     private boolean is_channel;
 
-    private boolean channel_complete;
+//    private boolean channel_complete;
 
-    private boolean channel_failed;
+//    private boolean channel_failed;
 
     /*
      * Callbacks for server events. Every time an event happens all the hooks in
@@ -685,12 +685,12 @@ public class Server {
         } else {
             /* Channel (requested by ggzmod) is ready! */
             change_state(TransID.GGZ_TRANS_LOGOUT_OK);
-            this.channel_complete = true;
+//            this.channel_complete = true;
         }
     }
 
-    public void log_session(String filename) throws IOException {
-        net.set_dump_file(filename);
+    public void log_session(String sendFile, String receiveFile) throws IOException {
+        net.set_dump_files(sendFile, receiveFile);
     }
 
     void reset() {
@@ -848,7 +848,7 @@ public class Server {
             this.channel.send_channel(this.handle);
             this.channel.send_logout();
         } else {
-            this.channel_failed = true;
+//            this.channel_failed = true;
             if (!this.is_channel) {
                 event(ServerEvent.GGZ_CHANNEL_FAIL, "Protocol mismatch");
             }
@@ -1024,9 +1024,9 @@ public class Server {
     void net_error(String message) {
         change_state(TransID.GGZ_TRANS_NET_ERROR);
         event(ServerEvent.GGZ_NET_ERROR, message);
-        if (this.is_channel) {
-            this.channel_failed = true;
-        }
+//        if (this.is_channel) {
+//            this.channel_failed = true;
+//        }
     }
 
     void protocol_error(String message) {
@@ -1034,9 +1034,9 @@ public class Server {
         net.disconnect();
         change_state(TransID.GGZ_TRANS_PROTO_ERROR);
         event(ServerEvent.GGZ_PROTOCOL_ERROR, message);
-        if (this.is_channel) {
-            this.channel_failed = true;
-        }
+//        if (this.is_channel) {
+//            this.channel_failed = true;
+//        }
     }
 
     static void set_reconnect() {

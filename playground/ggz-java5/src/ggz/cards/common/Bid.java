@@ -10,7 +10,7 @@ public class Bid {
     byte val;
 
     /* the suit of the bid (generally trump) */
-    Suit suit;
+    int suit;
 
     /* specialty bids (defined per-game) */
     byte spec;
@@ -18,7 +18,7 @@ public class Bid {
     /* More specialty bids (just to round things out) */
     byte spec2;
 
-    Bid(byte value, Suit suit, byte spec, byte spec2) {
+    Bid(byte value, int suit, byte spec, byte spec2) {
         this.val = value;
         this.suit = suit;
         this.spec = spec;

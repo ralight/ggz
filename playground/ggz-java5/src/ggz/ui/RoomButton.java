@@ -74,7 +74,7 @@ public class RoomButton extends JLabel implements RoomListener {
     }
 
     public void chat_event(ChatEventData data) {
-
+        // Not needed
     }
 
     public void player_count(int room_id) {
@@ -82,54 +82,54 @@ public class RoomButton extends JLabel implements RoomListener {
     }
 
     public void player_lag(String player) {
-
+        // Not needed
     }
 
     public void player_list(int room_id) {
-
+        // Not needed
     }
 
     public void player_stats(String player) {
-
+        // Not needed
     }
 
     public void room_enter(RoomChangeEventData data) {
-
+        // Not needed
     }
 
     public void room_leave(RoomChangeEventData data) {
-
+        // Not needed
     }
 
     public void table_join_fail(String error) {
-
+        // Not needed
     }
 
     public void table_joined(int table_index) {
-
+        // Not needed
     }
 
     public void table_launch_fail(ErrorEventData data) {
-
+        // Not needed
     }
 
     public void table_launched() {
-
+        // Not needed
     }
 
     public void table_leave_fail(String error) {
-
+        // Not needed
     }
 
     public void table_left(TableLeaveEventData data) {
-
+        // Not needed
     }
 
     public void table_list() {
-
+        // Not needed
     }
 
     public void table_update() {
-
+        // Not needed
     }
 }

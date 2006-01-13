@@ -68,8 +68,10 @@ public class Net implements Runnable {
      */
     boolean is_session_over = false;
 
-    /* File to dump protocol session */
-    private Writer dump_file;
+    /* Files to dump protocol session */
+    private Writer send_dump_file;
+
+    private Writer receive_dump_file;
 
     /* Whether to use TLS or not */
     private boolean use_tls;
@@ -131,17 +133,18 @@ public class Net implements Runnable {
             /* Put element on stack so we can process its children */
             stack.push(element);
 
-            dump_data("<" + localName);
+            dump_receive_data("<" + localName);
             for (int i = 0; i < attributes.getLength(); i++) {
                 String name = attributes.getQName(i);
-                dump_data(" " + name + "='" + attributes.getValue(name) + "'");
+                dump_receive_data(" " + name + "='" + attributes.getValue(name)
+                        + "'");
             }
-            dump_data(">");
+            dump_receive_data(">");
         }
 
         public void characters(char[] ch, int start, int length) {
             stack.peek().add_text(ch, start, length);
-            dump_data(new String(ch, start, length));
+            dump_receive_data(new String(ch, start, length));
         }
 
         public void endElement(String uri, String localName, String gName) {
@@ -210,7 +213,7 @@ public class Net implements Runnable {
             // if (element.get_text() == null) {
             // dump_data(" />");
             // } else {
-            dump_data("</" + localName + ">");
+            dump_receive_data("</" + localName + ">");
             // }
         }
 
@@ -222,7 +225,8 @@ public class Net implements Runnable {
     Net() {
         /* Set fd to invalid value */
         this.fd = null;
-        this.dump_file = null;
+        this.send_dump_file = null;
+        this.receive_dump_file = null;
         this.use_tls = false;
     }
 
@@ -249,23 +253,45 @@ public class Net implements Runnable {
     }
 
     /**
-     * Sets the file to output to. 'stderr' output to System.err
+     * Sets the files to output to. 'stderr' output to System.err 'stdout'
+     * output to System.out
      * 
      * @param filename
      */
-    void set_dump_file(String filename) throws IOException {
-        if (filename == null)
-            throw new IllegalArgumentException("filename cannot be null");
-
-        if ("stderr".equals(filename))
-            this.dump_file = new OutputStreamWriter(System.err);
-        else {
+    void set_dump_files(String sendFilename, String receiveFilename)
+            throws IOException {
+        if (sendFilename == null) {
+            this.send_dump_file = null;
+        } else if ("stdout".equals(sendFilename)) {
+            this.send_dump_file = new OutputStreamWriter(System.out);
+        } else if ("stderr".equals(sendFilename)) {
+            this.send_dump_file = new OutputStreamWriter(System.err);
+        } else {
             try {
-                this.dump_file = new OutputStreamWriter(new FileOutputStream(
-                        filename), "UTF-8");
+                this.send_dump_file = new OutputStreamWriter(
+                        new FileOutputStream(sendFilename), "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                this.dump_file = new OutputStreamWriter(new FileOutputStream(
-                        filename));
+                this.send_dump_file = new OutputStreamWriter(
+                        new FileOutputStream(sendFilename));
+            }
+        }
+
+        if (receiveFilename == null) {
+            this.receive_dump_file = null;
+        } else if (receiveFilename.equals(sendFilename)) {
+            // Output both to same file.
+            this.receive_dump_file = this.send_dump_file;
+        } else if ("stdout".equals(receiveFilename)) {
+            this.receive_dump_file = new OutputStreamWriter(System.out);
+        } else if ("stderr".equals(receiveFilename)) {
+            this.receive_dump_file = new OutputStreamWriter(System.err);
+        } else {
+            try {
+                this.receive_dump_file = new OutputStreamWriter(
+                        new FileOutputStream(receiveFilename), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                this.receive_dump_file = new OutputStreamWriter(
+                        new FileOutputStream(receiveFilename));
             }
         }
     }
@@ -418,15 +444,15 @@ public class Net implements Runnable {
         case GGZ_CHAT_NORMAL:
         case GGZ_CHAT_ANNOUNCE:
         case GGZ_CHAT_TABLE:
-            send_line("<CHAT TYPE='" + type_str + "'>"
-                    + xml_escape(chat_text) + "</CHAT>");
+            send_line("<CHAT TYPE='" + type_str + "'>" + xml_escape(chat_text)
+                    + "</CHAT>");
             break;
         case GGZ_CHAT_BEEP:
             send_line("<CHAT TYPE='" + type_str + "' TO='" + player + "'/>");
             break;
         case GGZ_CHAT_PERSONAL:
-            send_line("<CHAT TYPE='" + type_str + "' TO='" + player
-                    + "'>" + xml_escape(chat_text) + "</CHAT>");
+            send_line("<CHAT TYPE='" + type_str + "' TO='" + player + "'>"
+                    + xml_escape(chat_text) + "</CHAT>");
             break;
         case GGZ_CHAT_UNKNOWN:
         default:
@@ -584,11 +610,24 @@ public class Net implements Runnable {
         send_line("</SESSION>");
     }
 
-    protected void dump_data(String data) {
-        if (dump_file != null) {
+    protected void dump_receive_data(String data) {
+        if (receive_dump_file != null) {
             try {
-                dump_file.write(data);
-                dump_file.flush();
+                receive_dump_file.write(data);
+                receive_dump_file.flush();
+            } catch (IOException e) {
+                // Not a big deal if we can't write to the dump file but alert
+                // the user anyway.
+                log.warning(e.getMessage());
+            }
+        }
+    }
+
+    protected void dump_send_data(String data) {
+        if (send_dump_file != null) {
+            try {
+                send_dump_file.write(data);
+                send_dump_file.flush();
             } catch (IOException e) {
                 // Not a big deal if we can't write to the dump file but alert
                 // the user anyway.
@@ -1006,16 +1045,9 @@ public class Net implements Runnable {
 
         if ("add".equals(action)) {
             room.add_table(table_data);
-            /*
-             * Set table_data to null so it doesn't get freed at the end of this
-             * function. You would think this wouldn't be necessary (since the
-             * table is inserted into a list, which should copy it), but it
-             * appears as though it is.
-             */
-            table_data = null;
-        } else if ("delete".equals(action))
+        } else if ("delete".equals(action)) {
             room.remove_table(table_id);
-        else if ("join".equals(action)) {
+        } else if ("join".equals(action)) {
             /* Loop over both seats and spectators. */
             for (i = 0; i < table_data.get_num_seats(); i++) {
                 TableSeat seat = table_data.get_nth_seat(i);
@@ -1453,7 +1485,7 @@ public class Net implements Runnable {
         List<TableSeat> seats = null;
         List<TableSeat> spectatorseats = null;
         Iterator<TableSeat> iter;
-        int id, game, num_seats, num_spectators, i;
+        int id, game, num_seats;
         TableState status;
         String desc = null;
         XMLElement parent;
@@ -1467,7 +1499,6 @@ public class Net implements Runnable {
         game = str_to_int(element.get_attr("GAME"), -1);
         status = TableState.valueOf(str_to_int(element.get_attr("STATUS"), 0));
         num_seats = str_to_int(element.get_attr("SEATS"), 0);
-        num_spectators = str_to_int(element.get_attr("SPECTATORS"), -1);
         data = (TableData) element.get_data();
         if (data != null) {
             desc = data.desc;
@@ -1480,15 +1511,6 @@ public class Net implements Runnable {
         type = this.server.get_type_by_id(game);
         // table_obj.init(type, desc, num_seats, status, id);
         table_obj = new Table(type, desc, num_seats, status, id);
-
-        /* Initialize seats to none */
-        /* FIXME: perhaps tables should come this way? */
-        for (i = 0; i < num_seats; i++) {
-            TableSeat seat = table_obj.get_nth_seat(i);
-
-            seat.type = SeatType.GGZ_SEAT_NONE;
-            table_obj.set_seat(seat);
-        }
 
         if (seats != null) {
             /* Add seats */
@@ -1752,7 +1774,8 @@ public class Net implements Runnable {
         out.write(line);
         out.write("\n");
         out.flush();
-        System.out.println(line);
+        dump_send_data(line);
+        dump_send_data("\n");
     }
 
     static int str_to_int(String str, int dflt) {
@@ -1778,12 +1801,12 @@ public class Net implements Runnable {
      * @author Helg Bredow
      */
     static String xml_escape(String text) {
-//        return text
-//        .replaceAll("&", "&amp;")
-//        .replaceAll("<", "&lt;")
-//        .replaceAll(">", "&gt;")
-//        .replaceAll("\"", "&quot;");
-//
+        // return text
+        // .replaceAll("&", "&amp;")
+        // .replaceAll("<", "&lt;")
+        // .replaceAll(">", "&gt;")
+        // .replaceAll("\"", "&quot;");
+        //
         int splitPos = text.indexOf("]]>");
 
         if (splitPos > -1) {
@@ -1800,8 +1823,8 @@ public class Net implements Runnable {
             buffer.append(text);
             buffer.append("]]>");
             return buffer.toString();
-        } 
-            return "<![CDATA[" + text + "]]>";
+        }
+        return "<![CDATA[" + text + "]]>";
     }
 
     /**
@@ -1824,7 +1847,7 @@ public class Net implements Runnable {
                                 if (Net.this.is_session_over) {
                                     return -1;
                                 }
-                                    return super.read(b, off, len);
+                                return super.read(b, off, len);
                             }
 
                             public void close() throws IOException {
@@ -1839,9 +1862,9 @@ public class Net implements Runnable {
                 saxParser.setContentHandler(parser);
                 saxParser.setErrorHandler(parser);
                 saxParser.parse(input);
-//            } catch (SocketException e) {
-//                // Assume socket closed by remote host.
-//                e.printStackTrace();
+                // } catch (SocketException e) {
+                // // Assume socket closed by remote host.
+                // e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
                 this.server.protocol_error("Server disconnected");

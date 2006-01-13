@@ -2,6 +2,7 @@ package ggz.cards.client;
 
 import ggz.cards.common.Bid;
 import ggz.cards.common.Card;
+import ggz.cards.common.CardSetType;
 import ggz.cards.common.GGZCardInputStream;
 import ggz.client.mod.ModEventHandler;
 import ggz.common.SeatType;
@@ -21,7 +22,7 @@ public interface CardGameHandler extends ModEventHandler {
 
     public int handle_game_message(GGZCardInputStream in, String game, int size);
 
-    public void alert_newgame();
+    public void alert_newgame(CardSetType cardset_type);
 
     public void handle_gameover(int[] winners);
 
@@ -64,4 +65,8 @@ public interface CardGameHandler extends ModEventHandler {
     public void get_newgame();
 
     public void alert_newhand();
+
+    /** Called when the socket disconnects. */
+    public void handle_disconnect();
+
 }

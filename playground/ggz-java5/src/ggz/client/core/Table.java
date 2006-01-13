@@ -74,14 +74,7 @@ public class Table {
         if (num_seats > 0)
             this.seats = new TableSeat[num_seats];
         for (int i = 0; i < num_seats; i++) {
-            /*
-             * FIXME: We should probably initialize seats to GGZ_SEAT_NONE. Some
-             * code in netxml has to reset it manually.
-             */
-            this.seats[i] = new TableSeat(i, SeatType.GGZ_SEAT_OPEN, null);
-            // this.seats[i].index = i;
-            // this.seats[i].type = SeatType.GGZ_SEAT_OPEN;
-            // this.seats[i].name = null;
+            this.seats[i] = new TableSeat(i, SeatType.GGZ_SEAT_NONE, null);
         }
 
         /* Allocated on demand later */
@@ -205,7 +198,7 @@ public class Table {
 
         /* Sanity check */
         if (seat.index >= this.num_seats) {
-            log.fine("Attempt to set seat " + seat.index
+            log.warning("Attempt to set seat " + seat.index
                     + " on table with only " + this.num_seats + " seats");
         }
 
@@ -239,7 +232,7 @@ public class Table {
 
             if (this.id == game_table)
                 game.set_seat(seat);
-            if (seat.type == SeatType.GGZ_SEAT_PLAYER && !me.equals(seat.name)) {
+            if (seat.type == SeatType.GGZ_SEAT_PLAYER && me.equals(seat.name)) {
                 game.set_player(false, seat.index);
                 if (game_table < 0) {
                     game.set_table(game.get_room_id(), this.id);

@@ -5,11 +5,14 @@ import ggz.cards.client.CardSeat;
 import ggz.cards.client.Client;
 import ggz.cards.common.Bid;
 import ggz.cards.common.Card;
+import ggz.cards.common.CardSetType;
 import ggz.cards.common.GGZCardInputStream;
 import ggz.client.mod.ModGame;
 import ggz.client.mod.Seat;
 import ggz.client.mod.SpectatorSeat;
+import ggz.common.ChatType;
 import ggz.common.SeatType;
+import ggz.ui.ChatAction;
 import ggz.ui.ChatPanel;
 
 import java.awt.BorderLayout;
@@ -22,12 +25,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -48,13 +52,11 @@ public class GamePanel extends JPanel implements CardGameHandler,
 
     protected TablePanel table;
 
-    protected String options_summary;
-
     public GamePanel(ModGame mod) {
         super(new BorderLayout());
         card_client = new Client(mod);
         card_client.add_listener(this);
-        chat_panel = new ChatPanel(new ChatAction());
+        chat_panel = new ChatPanel(new TableChatAction());
         add(chat_panel, BorderLayout.CENTER);
         table = new TablePanel();
         table.setBackground(new Color(0, 128, 0));
@@ -67,7 +69,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void alert_bid(int bidder, Bid bid) {
-        chat_panel.handle_chat("alert_bid", bidder + ": " + bid);
+        // chat_panel.appendChat("alert_bid", bidder + ": " + bid);
     }
 
     public void alert_hand_size(int max_hand_size) {
@@ -76,23 +78,23 @@ public class GamePanel extends JPanel implements CardGameHandler,
             if (sprites[i] == null) {
                 sprites[i] = new Sprite[max_hand_size];
             } else if (sprites[i].length < max_hand_size) {
-                throw new UnsupportedOperationException(
-                        "Changing hand size not supported yet.");
+                Sprite[] temp = sprites[i];
+                sprites[i] = new Sprite[max_hand_size];
+                System.arraycopy(temp, 0, sprites[i], 0, temp.length);
             }
         }
     }
 
-    public void alert_newgame() {
-        chat_panel.handle_chat("alert_newgame", null);
+    public void alert_newgame(CardSetType cardset_type) {
+        // chat_panel.handle_chat("alert_newgame", null);
+        table.setStatus(null);
     }
 
     public void alert_newhand() {
-        chat_panel.handle_chat("alert_newhand", null);
+        // chat_panel.handle_chat("alert_newhand", null);
     }
 
     public void alert_num_players(int numplayers, int old_numplayers) {
-        System.out.println("alert_num_players: numplayers=" + numplayers
-                + " old_numplayers=" + old_numplayers);
 
         if (player_labels == null) {
             player_labels = new JLabel[numplayers];
@@ -122,14 +124,33 @@ public class GamePanel extends JPanel implements CardGameHandler,
                 label.setVerticalAlignment(SwingConstants.BOTTOM);
                 break;
             case 1: // West
-                label.setLocation(0, table.getHeight() / 2);
+                if (card_client.get_nth_player(i).get_seat_type() != SeatType.GGZ_SEAT_NONE) {
+                    label.setIcon(new ImageIcon(getClass().getResource(
+                            "images/p15.gif")));
+                }
+                label.setVerticalTextPosition(SwingConstants.BOTTOM);
+                label.setHorizontalTextPosition(SwingConstants.CENTER);
+                label.setHorizontalAlignment(SwingConstants.LEFT);
+                label.setLocation(0, table.getHeight() / 3);
                 break;
             case 2: // North
+                if (card_client.get_nth_player(i).get_seat_type() != SeatType.GGZ_SEAT_NONE) {
+                    label.setIcon(new ImageIcon(getClass().getResource(
+                            "images/p19.gif")));
+                }
+                label.setVerticalAlignment(SwingConstants.TOP);
                 label.setLocation(table.getWidth() / 2, 0);
                 break;
             case 3: // East
-                label.setLocation(table.getWidth() - 70, table.getHeight() / 2);
+                if (card_client.get_nth_player(i).get_seat_type() != SeatType.GGZ_SEAT_NONE) {
+                    label.setIcon(new ImageIcon(getClass().getResource(
+                            "images/p27.gif")));
+                }
+                label.setVerticalTextPosition(SwingConstants.BOTTOM);
+                label.setHorizontalTextPosition(SwingConstants.CENTER);
                 label.setHorizontalAlignment(SwingConstants.RIGHT);
+                label.setLocation(table.getWidth() - 70,
+                        (table.getHeight() / 2) - 20);
                 break;
             default:
                 throw new UnsupportedOperationException(
@@ -138,6 +159,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
             label.setSize(label.getPreferredSize());
         }
 
+        // Initialise the array that holds the card sprites for each player.
         if (sprites == null) {
             sprites = new Sprite[numplayers][];
         } else if (sprites.length != numplayers) {
@@ -146,234 +168,295 @@ public class GamePanel extends JPanel implements CardGameHandler,
         }
     }
 
-    public void alert_play(int player_num, Card card, int card_pos) {
-        chat_panel.handle_chat("alert_play", "player=" + player_num + " card="
-                + card + " card_pos=" + card_pos);
+    public void alert_play(final int player_num, final Card card,
+            final int card_pos) {
+        invokeAndWait(new Runnable() {
+            public void run() {
+                Point center = new Point(table.getWidth() / 2, table
+                        .getHeight() / 2);
+                Point trickPos;
 
-        Point center = new Point(table.getWidth() / 2, table.getHeight() / 2);
-        Point trickPos;
-
-        // We only know the cards in our hand.
-        // TODO handle bridge where cards are played from partners hand
-        if (player_num == 0) {
-            // Find the sprite at card_pos that is still in the players hand.
-            // in the array so we need to search forward to find the new card
-            // at that position. We could also resize the array every time but
-            // this is just as easy.
-            // CardSeat player = card_client.get_nth_player(player_num);
-            // Collection<Card> hand = player.get_hand();
-            // for (; card_pos < sprites[player_num].length; card_pos++) {
-            // if (sprites[player_num][card_pos].card().equals(card)) {
-            // break;
-            // }
-            // }
-            // trickPos = new Point(center.x
-            // - (sprites[player_num][card_pos].getWidth() / 2), center.y);
-            //
-            // table.animate(sprites[player_num][card_pos], trickPos, .2);
-            // table.setComponentZOrder(sprites[player_num][card_pos], 0);
-        } else {
-            try {
-                // // Cards won't match since they are face down.
-                // for (int i = 0; i < sprites[player].length; i++) {
-                // if (sprites[player][i].card().equals(Card.UNKNOWN_CARD)) {
-                // Sprite newSprite = new Sprite(card);
-                // newSprite.setLocation(sprites[player][i].getLocation());
-                // table.remove(sprites[player][i]);
-                // sprites[player][i] = newSprite;
-                // table.add(newSprite);
-                // table.animate(newSprite, new Point(
-                // table.getWidth() / 2, table.getHeight() / 2),
-                // .5);
-                // break;
-                // }
-                // }
-                Sprite newSprite = new Sprite(card);
-                Point startLocation = table.getPlayerCardPos(player_num);
-                int zOrder;
-
-                if (card_client.get_nth_player(0).get_table_card() == Card.UNKNOWN_CARD) {
-                    // We have not played a card yet so play the card underneath
-                    // ours.
-                    int num_players = card_client.get_num_players();
-                    int player_on_right = (player_num - 1) % num_players;
-                    if (card_client.get_nth_player(player_on_right)
-                            .get_table_card() == Card.UNKNOWN_CARD) {
-                        // The first card in the trick not played by us goes on
-                        // the bottom.
-                        zOrder = -1;
-                    } else {
-                        // Put the card on top of the one played by the previous
-                        // player.
-                        zOrder = table
-                                .getComponentZOrder(sprites[player_on_right][0]);
-                    }
+                // We only know the cards in our hand.
+                // TODO handle bridge where cards are played from partners hand
+                if (player_num == 0) {
+                    // Find the sprite at card_pos that is still in the players
+                    // hand.
+                    // in the array so we need to search forward to find the new
+                    // card
+                    // at that position. We could also resize the array every
+                    // time but
+                    // this is just as easy.
+                    // CardSeat player = card_client.get_nth_player(player_num);
+                    // Collection<Card> hand = player.get_hand();
+                    // for (; card_pos < sprites[player_num].length; card_pos++)
+                    // {
+                    // if (sprites[player_num][card_pos].card().equals(card)) {
+                    // break;
+                    // }
+                    // }
+                    // trickPos = new Point(center.x
+                    // - (sprites[player_num][card_pos].getWidth() / 2),
+                    // center.y);
+                    //
+                    // table.animate(sprites[player_num][card_pos], trickPos,
+                    // .2);
+                    // table.setComponentZOrder(sprites[player_num][card_pos],
+                    // 0);
                 } else {
-                    // We have played a card so put it on top of ours.
-                    zOrder = 0;
-                }
+                    try {
+                        // // Cards won't match since they are face down.
+                        // for (int i = 0; i < sprites[player].length; i++) {
+                        // if
+                        // (sprites[player][i].card().equals(Card.UNKNOWN_CARD))
+                        // {
+                        // Sprite newSprite = new Sprite(card);
+                        // newSprite.setLocation(sprites[player][i].getLocation());
+                        // table.remove(sprites[player][i]);
+                        // sprites[player][i] = newSprite;
+                        // table.add(newSprite);
+                        // table.animate(newSprite, new Point(
+                        // table.getWidth() / 2, table.getHeight() / 2),
+                        // .5);
+                        // break;
+                        // }
+                        // }
+                        Sprite newSprite = new Sprite(card);
+                        Point startLocation = table
+                                .getPlayerCardPos(player_num);
+                        int zOrder;
 
-                switch (player_num) {
-                case 1: // West
-                    trickPos = new Point(center.x
-                            - ((newSprite.getWidth() * 3) / 4), center.y
-                            - (newSprite.getHeight() * 3) / 4);
-                    break;
-                case 2: // North
-                    trickPos = new Point(center.x - (newSprite.getWidth() / 2),
-                            center.y - newSprite.getHeight());
-                    break;
-                case 3: // East
-                    trickPos = new Point(center.x - (newSprite.getWidth() / 4),
-                            center.y - ((newSprite.getHeight() * 2) / 4));
-                    break;
-                default:
-                    throw new UnsupportedOperationException(
-                            "More than 4 players not supported yet.");
+                        if (card_client.get_nth_player(0).get_table_card() == Card.UNKNOWN_CARD) {
+                            // We have not played a card yet so play the card
+                            // underneath
+                            // ours.
+                            int num_players = card_client.get_num_players();
+                            int player_on_right = (player_num - 1)
+                                    % num_players;
+                            if (card_client.get_nth_player(player_on_right)
+                                    .get_table_card() == Card.UNKNOWN_CARD) {
+                                // The first card in the trick not played by us
+                                // goes on
+                                // the bottom.
+                                zOrder = -1;
+                            } else {
+                                // Put the card on top of the one played by the
+                                // previous
+                                // player.
+                                zOrder = table
+                                        .getComponentZOrder(sprites[player_on_right][0]);
+                            }
+                        } else {
+                            // We have played a card so put it on top of ours.
+                            zOrder = 0;
+                        }
+
+                        switch (player_num) {
+                        case 1: // West
+                            trickPos = new Point(center.x
+                                    - newSprite.getWidth(), center.y
+                                    - (newSprite.getHeight() * 3) / 4);
+                            break;
+                        case 2: // North
+                            trickPos = new Point(center.x
+                                    - (newSprite.getWidth() / 2), center.y
+                                    - newSprite.getHeight());
+                            break;
+                        case 3: // East
+                            trickPos = new Point(center.x, center.y
+                                    - ((newSprite.getHeight() * 2) / 4));
+                            break;
+                        default:
+                            throw new UnsupportedOperationException(
+                                    "More than 4 players not supported yet.");
+                        }
+                        newSprite.setLocation(startLocation);
+                        sprites[player_num][0] = newSprite;
+                        table.add(newSprite, zOrder);
+                        table.validate();
+                        table.animate(newSprite, trickPos, .3);
+                    } catch (IOException e) {
+                        handleException(e);
+                    }
                 }
-                newSprite.setLocation(startLocation);
-                sprites[player_num][0] = newSprite;
-                table.add(newSprite, zOrder);
-                table.validate();
-                table.animate(newSprite, trickPos, .3);
-            } catch (IOException e) {
-                handleException(e);
             }
-        }
+        });
     }
 
     public void alert_player(int i, SeatType old_type, String old_name) {
-        chat_panel.handle_chat("alert_player", "alert_player: i=" + i
-                + " old_type=" + old_type + " old_name=" + old_name);
+        // Players joining are handled in alert_num_players().
     }
 
     public void alert_server(Socket fd) {
-        chat_panel.handle_chat("alert_server", null);
+        // Don't need the socket so ignore.
+        table.setStatus("Waiting for other players to join...");
     }
 
     public void alert_table() {
-        chat_panel.handle_chat("alert_table", null);
+        // chat_panel.handle_chat("alert_table", null);
     }
 
-    public void alert_trick(int winner) {
-        chat_panel.handle_chat("alert_trick", null);
+    public void alert_trick(final int winner) {
+        invokeAndWait(new Runnable() {
+            public void run() {
+                Sprite[] sprites_to_animate = new Sprite[card_client
+                        .get_num_players()];
+                Point[] endPos = new Point[card_client.get_num_players()];
+                int num_sprites_to_animate = 0;
 
-        // Remove all the sprites that are on the table.
-        for (int p = 0; p < card_client.get_num_players(); p++) {
-            Card card_in_trick = card_client.get_nth_player(p).get_table_card();
-            Sprite[] players_card_sprites = sprites[p];
-            for (int s = 0; s < players_card_sprites.length; s++) {
-                if (players_card_sprites[s] != null
-                        && players_card_sprites[s].card().equals(card_in_trick)) {
-                    table.animate(players_card_sprites[s], table
-                            .getPlayerCardPos(winner), 0.3);
-                    table.remove(players_card_sprites[s]);
-                    break;
+                for (int p = 0; p < card_client.get_num_players(); p++) {
+                    Card card_in_trick = card_client.get_nth_player(p)
+                            .get_table_card();
+                    if (card_in_trick != null) {
+                        Sprite[] players_card_sprites = sprites[p];
+                        for (int s = 0; s < players_card_sprites.length; s++) {
+                            if (players_card_sprites[s] != null
+                                    && players_card_sprites[s].card().equals(
+                                            card_in_trick)) {
+                                sprites_to_animate[num_sprites_to_animate] = players_card_sprites[s];
+                                endPos[num_sprites_to_animate] = table
+                                        .getPlayerCardPos(winner);
+                                num_sprites_to_animate++;
+                                break;
+                            }
+                        }
+                    }
                 }
+                table.animate(num_sprites_to_animate, sprites_to_animate,
+                        endPos, 0.3);
+                for (int s = 0; s < num_sprites_to_animate; s++) {
+                    table.remove(sprites_to_animate[s]);
+                }
+                repaint();
             }
-        }
-        repaint();
+        });
     }
 
     public void display_hand(final int player_num) {
-        // System.out.println("display_hand: " + player_num);
+        invokeAndWait(new Runnable() {
+            public void run() {
+                display_hand_impl(player_num);
+            }
+        });
+    }
+
+    /**
+     * This method is run on a separate thread in display_hand() above.
+     * 
+     * @param player_num
+     */
+    protected void display_hand_impl(int player_num) {
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    try {
-                        CardSeat player = card_client
-                                .get_nth_player(player_num);
-                        Collection<Card> hand = player.get_hand();
-                        Iterator<Card> iter = hand.iterator();
+            CardSeat player = card_client.get_nth_player(player_num);
+            Collection<Card> hand = player.get_hand();
+            Iterator<Card> iter = hand.iterator();
 
-                        // Remove all existing sprites
-                        for (int i = 0; i < sprites[player_num].length; i++) {
-                            if (sprites[player_num][i] != null) {
-                                table.remove(sprites[player_num][i]);
-                                sprites[player_num][i] = null;
-                            }
-                        }
-
-                        if (player_num == 0) {
-                            double increment = 0.15;
-                            double radians = (hand.size() / 2) * increment;
-                            int i = 0;
-
-                            while (iter.hasNext()) {
-                                Sprite card = new Sprite(iter.next());
-                                Point dealerPos = new Point(
-                                        (table.getWidth() / 2)
-                                                - (card.getWidth() / 2), (table
-                                                .getHeight() / 2)
-                                                - (card.getWidth() / 2));
-                                int y = table.getHeight()
-                                        - (card.getHeight() - 30);// (int)
-                                Point endPos = new Point(100 + (i * 15), y /*
-                                                                             * +
-                                                                             * (i*5)
-                                                                             */);
-                                // Math.round(.5
-                                // *
-                                // card.getHeight());
-                                card.setLocation(dealerPos);
-                                table.add(card, 0);
-                                table.animate(card, endPos, 0.1);
-                                // card.setLocation(endPos);
-                                card.setEnabled(false);
-                                // card.setSelectable(true);
-                                // card.fanAtAngle(radians);
-                                card.addActionListener(GamePanel.this);
-                                card.addMouseListener(new MouseAdapter() {
-                                    public void mouseEntered(MouseEvent e) {
-                                        Sprite sprite = ((Sprite) e.getSource());
-                                        if (sprite.isSelectable()
-                                                && sprite.isEnabled()) {
-                                            sprite.setSelected(true);
-                                        }
-                                    }
-
-                                    public void mouseExited(MouseEvent e) {
-                                        Sprite sprite = ((Sprite) e.getSource());
-                                        sprite.setSelected(false);
-                                    }
-                                });
-                                sprites[player_num][i] = card;
-                                radians -= increment;
-                                i++;
-                            }
-                            // } else {
-                            // // int i = 0;
-                            // //
-                            // Sprite card = new Sprite(Card.UNKNOWN_CARD);
-                            // Point dealerPos = new Point((table.getWidth() /
-                            // 2)
-                            // - (card.getWidth() / 2), (table.getHeight() / 2)
-                            // - (card.getWidth() / 2));
-                            // Point endPos =
-                            // table.getPlayerCardPos(player_num);
-                            // table.setSpriteDimensions(card.getWidth(),
-                            // card.getHeight());
-                            // for (;iter.hasNext(); iter.next()) {
-                            // card.setLocation(dealerPos);
-                            // table.add(card);
-                            // table.animate(card, endPos, 0.1);
-                            // table.remove(card);
-                            // // sprites[player_num][i] = card;
-                            // // i++;
-                            // }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    invalidate();
-                    validate();
-                    repaint();
-
+            // Remove all existing sprites
+            for (int i = 0; i < sprites[player_num].length; i++) {
+                if (sprites[player_num][i] != null) {
+                    table.remove(sprites[player_num][i]);
+                    sprites[player_num][i] = null;
                 }
-            });
-        } catch (Exception e) {
+            }
+
+            if (player_num == 0) {
+                int i = 0;
+                Sprite card = null;
+
+                while (iter.hasNext()) {
+                    card = new Sprite(iter.next());
+                    Point dealerPos = new Point((table.getWidth() / 2)
+                            - (card.getWidth() / 2), (table.getHeight() / 2)
+                            - (card.getWidth() / 2));
+                    int y = table.getHeight() - (card.getHeight() - 30);
+                    Point endPos = new Point(120 + (i * 15), y);
+
+                    card.setLocation(dealerPos);
+                    table.add(card, 0);
+                    table.animate(card, endPos, 0.1);
+                    card.setEnabled(false);
+                    card.addActionListener(GamePanel.this);
+                    card.addMouseListener(new MouseAdapter() {
+                        public void mouseEntered(MouseEvent e) {
+                            Sprite sprite = ((Sprite) e.getSource());
+                            if (sprite.isSelectable() && sprite.isEnabled()) {
+                                sprite.setSelected(true);
+                            }
+                        }
+
+                        public void mouseExited(MouseEvent e) {
+                            Sprite sprite = ((Sprite) e.getSource());
+                            sprite.setSelected(false);
+                        }
+                    });
+                    sprites[player_num][i] = card;
+                    i++;
+                }
+                table.setSpriteDimensions(card.getWidth(), card.getHeight());
+            } else if (player_num == 1) {
+                // West
+                int i = 0;
+
+                while (iter.hasNext()) {
+                    Card c = iter.next();
+                    if (!c.equals(Card.UNKNOWN_CARD)) {
+                        Sprite card = new Sprite(c);
+                        int x = player_labels[player_num].getWidth();
+                        Point endPos = new Point(x, 80 + (i * 15));
+
+                        card.setLocation(endPos);
+                        table.add(card, 0);
+                        card.setEnabled(false);
+                        sprites[player_num][i] = card;
+                        i++;
+                    }
+                }
+            } else if (player_num == 2) {
+                // North
+                int i = 0;
+
+                while (iter.hasNext()) {
+                    Card c = iter.next();
+                    if (!c.equals(Card.UNKNOWN_CARD)) {
+                        Sprite card = new Sprite(c);
+                        int y = player_labels[player_num].getHeight();
+                        Point endPos = new Point((getWidth() - 250) - (i * 15),
+                                y);
+
+                        card.setLocation(endPos);
+                        table.add(card, 0);
+                        card.setEnabled(false);
+                        sprites[player_num][i] = card;
+                        i++;
+                    }
+                }
+            } else if (player_num == 3) {
+                // East
+                int i = 0;
+
+                while (iter.hasNext()) {
+                    Card c = iter.next();
+                    if (!c.equals(Card.UNKNOWN_CARD)) {
+                        Sprite card = new Sprite(c);
+                        int x = getWidth()
+                                - player_labels[player_num].getWidth()
+                                - card.getWidth();
+                        Point endPos = new Point(x, getHeight() - 300
+                                - (i * 15));
+
+                        card.setLocation(endPos);
+                        table.add(card, 0);
+                        card.setEnabled(false);
+                        sprites[player_num][i] = card;
+                        i++;
+                    }
+                }
+            }
+        } catch (IOException e) {
             handleException(e);
         }
+        invalidate();
+        validate();
+        repaint();
     }
 
     public void get_bid(final Bid[] bid_choices, final String[] bid_texts,
@@ -382,9 +465,13 @@ public class GamePanel extends JPanel implements CardGameHandler,
             public void run() {
                 for (int i = 0; i < bid_choices.length; i++) {
                     JButton bid_button = new JButton(bid_texts[i]);
+                    if (!bid_texts[i].equals(bid_descs[i])) {
+                        // No point showing a tooltip if it's exactly the
+                        // same as the text on the button.
+                        bid_button.setToolTipText(bid_descs[i]);
+                    }
                     bid_button.addActionListener(new BidAction(i));
                     table.addButton(bid_button);
-                    chat_panel.handle_chat("get_bid", bid_descs[i]);
                 }
                 table.showButtons();
                 invalidate();
@@ -412,7 +499,8 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void get_newgame() {
-        JButton startButton = new JButton("Start");
+        table.setStatus("<HTML>Press <EM>Ready</EM> to start the game.<BR>Once all players are ready the game will begin.</HTML>");
+        JButton startButton = new JButton("Ready");
         table.addButton(startButton);
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -420,6 +508,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
                     card_client.send_newgame();
                     table.removeAllButtons();
                     table.hideButtons();
+                    table.setStatus("Waiting for other players to be ready...");
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -430,6 +519,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
 
     public boolean get_options(String[] descs, int[] defaults,
             String[][] option_choices) throws IOException {
+        table.setStatus(null);
         boolean okClicked = OptionDialog.show(this, descs, defaults,
                 option_choices);
         if (okClicked) {
@@ -444,18 +534,25 @@ public class GamePanel extends JPanel implements CardGameHandler,
         // chat_panel.handle_chat("get_play", valid_cards[i].toString());
         // }
 
+        if (play_hand != 0) {
+            throw new UnsupportedOperationException(
+                    "Playing from other cards not supported yet.");
+        }
+
         // Enable and disable cards as appropriate.
         Sprite[] player_cards = sprites[play_hand];
         for (int c = 0; c < player_cards.length; c++) {
-            boolean isFound = false;
-            for (int i = 0; i < valid_cards.length; i++) {
-                if (player_cards[c].card().equals(valid_cards[i])) {
-                    isFound = true;
-                    break;
+            if (player_cards[c] != null) {
+                boolean isFound = false;
+                for (int i = 0; i < valid_cards.length; i++) {
+                    if (player_cards[c].card().equals(valid_cards[i])) {
+                        isFound = true;
+                        break;
+                    }
                 }
+                player_cards[c].setEnabled(isFound);
+                player_cards[c].setSelectable(isFound);
             }
-            player_cards[c].setEnabled(isFound);
-            player_cards[c].setSelectable(isFound);
         }
     }
 
@@ -467,15 +564,20 @@ public class GamePanel extends JPanel implements CardGameHandler,
                 card_client.send_play(sprite.card());
                 int card_pos;
                 for (card_pos = 0; card_pos < sprites[0].length; card_pos++) {
-                    sprites[0][card_pos].setSelectable(true);
-                    sprites[0][card_pos].setEnabled(false);
+                    if (sprites[0][card_pos] != null) {
+                        sprites[0][card_pos].setSelectable(true);
+                        sprites[0][card_pos].setEnabled(false);
+                    }
                 }
                 Point center = new Point(table.getWidth() / 2, table
                         .getHeight() / 2);
-                Point trickPos = new Point(center.x - (sprite.getWidth() / 2),
-                        center.y);
+                Point trickPos = new Point(center.x
+                        - (sprite.getWidth() * 3 / 4), center.y
+                        - (sprite.getHeight() / 4));
 
                 sprite.setSelected(false);
+                sprite.setLocation(sprite.getLocation().x,
+                        sprite.getLocation().y - (sprite.getHeight() / 2));
                 table.animate(sprite, trickPos, 0.3);
                 // TODO remove sprite from array as well so it can be garbage
                 // collected.
@@ -487,7 +589,8 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public int handle_game_message(GGZCardInputStream in, String game, int size) {
-        System.out.println("handle_game_message");
+        chat_panel.appendChat("handle_game_message", game + " bytes to read="
+                + size);
         return 0;
     }
 
@@ -502,15 +605,15 @@ public class GamePanel extends JPanel implements CardGameHandler,
      * held at the bigging of the hand.
      */
     public void set_cardlist_message(String mark, List<Card[]> cardlist) {
-        chat_panel.handle_chat("set_cardlist_message", "mark=" + mark);
-        for (int i = 0; i < cardlist.size(); i++) {
-            chat_panel.handle_chat("set_cardlist_message", "Player " + i
-                    + " cards: ");
-            for (int j = 0; j < cardlist.get(i).length; j++) {
-                chat_panel.handle_chat("set_cardlist_message",
-                        cardlist.get(i)[j].toString());
-            }
-        }
+        // chat_panel.appendChat("set_cardlist_message", "mark=" + mark);
+        // for (int i = 0; i < cardlist.size(); i++) {
+        // chat_panel.appendChat("set_cardlist_message", "Player " + i
+        // + " cards: ");
+        // for (int j = 0; j < cardlist.get(i).length; j++) {
+        // chat_panel.appendChat("set_cardlist_message",
+        // cardlist.get(i)[j].toString());
+        // }
+        // }
     }
 
     public void set_player_message(int player_num, String message) {
@@ -548,6 +651,24 @@ public class GamePanel extends JPanel implements CardGameHandler,
                 + "</B><BR><EM><SPAN style='font-weight:normal'>" + message
                 + "</span></EM></HTML>");
         label.setSize(label.getPreferredSize());
+        // Position the label.
+        Point loc = label.getLocation();
+        switch (player_num) {
+        case 0: // Me - south
+            loc.y = Math.min(loc.y, table.getHeight() - label.getHeight());
+            break;
+        case 1: // West
+            break;
+        case 2: // North
+            break;
+        case 3: // East
+            loc.x = Math.min(loc.x, table.getWidth() - label.getWidth());
+            break;
+        default:
+            throw new UnsupportedOperationException(
+                    "More than 4 players not supported yet.");
+        }
+        label.setLocation(loc);
         // }
     }
 
@@ -555,33 +676,48 @@ public class GamePanel extends JPanel implements CardGameHandler,
         if ("game".equals(mark)) {
             JOptionPane.getFrameForComponent(this).setTitle(message);
         } else if ("Options".equals(mark)) {
-            options_summary = message;
+            table.setOptionsSummary(message);
+        } else if ("Scores".equals(mark)) {
+            // Ignore for now, player messages already show scores.
+        } else if ("Bid History".equals(mark)) {
+            // Ignore for now, player messages already show bids.
+        } else if ("Trump".equals(mark)) {
+            // TODO, show an icon to indicate trumps
+            chat_panel.appendInfo(message);
         } else if ("Rules".equals(mark)) {
-            chat_panel.handle_chat(null, message);
+            try {
+                table.setRulesURL(message);
+            } catch (MalformedURLException ex) {
+                // Ignore but dump the stack trace for posterity.
+                ex.printStackTrace();
+            }
+        } else if ("".equals(mark) && !"".equals(message)) {
+            chat_panel.appendInfo(message);
         } else if ("".equals(mark) && "".equals(message)) {
             // Do nothing, not sure why the server sends this.
         } else {
-            chat_panel.handle_chat("set_text_message", "mark=" + mark
+            chat_panel.appendChat("set_text_message", "mark=" + mark
                     + " message=" + message);
         }
     }
 
     public void handle_chat(String player, String msg) {
-        String handle = card_client.get_nth_player(0).get_name();
-        if (!handle.equals(player)) {
-            chat_panel.handle_chat(player, msg);
-        }
+        // Can't ignore messages because we need to handle the /table command,
+        // which can be sent from the table or room.
+        // String handle = card_client.get_nth_player(0).get_name();
+        // if (!handle.equals(player)) {
+        chat_panel.appendChat(player, msg);
+        // }
     }
 
     public void handle_info(int num, List infos) {
         // TODO Auto-generated method stub
-        System.out.println("handle_info");
+        chat_panel.appendChat("handle_info", null);
     }
 
     public void handle_launch() {
         JFrame frame = new JFrame();
         frame.getContentPane().add(this, BorderLayout.CENTER);
-        // frame.add(this, BorderLayout.CENTER);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 try {
@@ -592,30 +728,34 @@ public class GamePanel extends JPanel implements CardGameHandler,
                 e.getWindow().dispose();
             }
         });
-        // frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(640, 600);
         frame.setResizable(false);
         frame.setVisible(true);
+        table.setStatus("Connecting...");
     }
 
     public void handle_player(String name, boolean is_spectator, int seat_num) {
-        // TODO Auto-generated method stub
-        System.out.println("handle_player: name=" + name + " is_spectator="
-                + is_spectator + " seat_num=" + seat_num);
+        // chat_panel.handle_chat("handle_player", "name=" + name
+        // + " is_spectator=" + is_spectator + " seat_num=" + seat_num);
     }
 
     public void handle_seat(Seat seat) {
-        // TODO Auto-generated method stub
-        System.out.println("handle_seat: " + seat);
+        chat_panel.appendChat("handle_seat", seat.toString());
     }
 
     public void handle_server_fd(Socket fd) {
-        System.out.println("handle_server_fd");
+        // Don't need the socket so ignore
+    }
+
+    /**
+     * Called when the core client disconnects.
+     */
+    public void handle_disconnect() {
+        JOptionPane.getFrameForComponent(this).dispose();
     }
 
     public void handle_spectator_seat(SpectatorSeat seat) {
-        // TODO Auto-generated method stub
-        System.out.println("handle_spectator_seat");
+        chat_panel.appendChat("handle_spectator_seat", null);
     }
 
     public void handleException(Throwable e) {
@@ -623,24 +763,33 @@ public class GamePanel extends JPanel implements CardGameHandler,
         JOptionPane.showMessageDialog(this, e);
     }
 
-    private class ChatAction extends AbstractAction {
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return "Send";
+    public void invokeAndWait(Runnable doRun) {
+        try {
+            SwingUtilities.invokeAndWait(doRun);
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+
+    private class TableChatAction extends ChatAction {
+
+        public void sendChat(ChatType type, String target, String message)
+                throws IOException {
+            if (type != ChatType.GGZ_CHAT_TABLE) {
+                chatPanel.appendInfo("This is not supported while at a table.");
             }
-            return super.getValue(key);
+            card_client.request_chat(message);
         }
 
-        public void actionPerformed(ActionEvent e) {
-            try {
-                String message = chat_panel.getMessage();
-                String handle = card_client.get_nth_player(0).get_name();
-                card_client.request_chat(message);
-                chat_panel.clearMessage();
-                chat_panel.handle_chat(handle, message);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+        protected void chat_display_local(ChatType type, String message) {
+            // Never display local text because of the /table command. See
+            // handle_chat above.
+            // String handle = card_client.get_nth_player(0).get_name();
+            // chatPanel.appendChat(type, handle, message);
+        }
+        
+        protected ChatType getDefaultChatType() {
+            return ChatType.GGZ_CHAT_TABLE;
         }
     }
 }

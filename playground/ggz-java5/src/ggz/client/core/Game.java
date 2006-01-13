@@ -1,14 +1,13 @@
 package ggz.client.core;
 
-import ggz.client.mod.ModGGZ;
 import ggz.client.mod.Mod;
+import ggz.client.mod.ModGGZ;
 import ggz.client.mod.ModState;
 import ggz.client.mod.ModTransaction;
 import ggz.client.mod.ModTransactionHandler;
 import ggz.client.mod.Seat;
 import ggz.client.mod.SpectatorSeat;
 import ggz.common.ChatType;
-import ggz.common.LeaveType;
 import ggz.common.SeatType;
 
 import java.io.IOException;
@@ -83,7 +82,7 @@ public class Game implements ModTransactionHandler {
         // server.get_handle());
         // #endif
         this.client.add_mod_listener(this);
-        this.client.set_player(server.get_handle(), false, -1);
+        //this.client.set_player(server.get_handle(), false, -1);
 
         if (!Module.is_embedded())
             this.client.set_module(null, module.get_class_name());
@@ -323,8 +322,8 @@ public class Game implements ModTransactionHandler {
      * Make sure ggzd knows we've left the table.
      */
     private void abort_game() throws IOException {
-        TableLeaveEventData event_data = new TableLeaveEventData(
-                LeaveType.GGZ_LEAVE_NORMAL, null);
+//        TableLeaveEventData event_data = new TableLeaveEventData(
+//                LeaveType.GGZ_LEAVE_NORMAL, null);
         Room room = server.get_cur_room();
 
         /*
@@ -333,9 +332,11 @@ public class Game implements ModTransactionHandler {
          */
         this.client.disconnect();
 
-        if (room != null) {
-            room.table_event(RoomEvent.GGZ_TABLE_LEFT, event_data);
-        }
+        // This is fired when Net parses the table leave response so don't fire
+        // it prematurely here.
+        //if (room != null) {
+        //    room.table_event(RoomEvent.GGZ_TABLE_LEFT, event_data);
+        //}
 
         if (room != null && server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
             room.leave_table(true);
@@ -343,6 +344,10 @@ public class Game implements ModTransactionHandler {
 
         server.set_cur_game(null);
     }
+    
+//    public void disconnect() throws IOException{
+//        client.disconnect();
+//    }
 
     public void set_server_fd(Socket fd) throws IOException {
         this.client.set_server_fd(fd);
@@ -388,7 +393,11 @@ public class Game implements ModTransactionHandler {
                 event(GameEvent.GGZ_GAME_LAUNCHED, null);
             } catch (Exception e) {
                 log.severe("Failed to connect to game module");
-                server.set_cur_game(null);
+                try {
+                abort_game();
+                } catch (IOException e2) {
+                    // Ignore.
+                }
                 event(GameEvent.GGZ_GAME_LAUNCH_FAIL, e);
             }
         }

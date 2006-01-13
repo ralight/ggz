@@ -69,4 +69,8 @@ public class CardSeat {
     public Card get_table_card() {
         return table_card;
     }
+    
+    public SeatType get_seat_type () {
+        return status;
+    }
 }

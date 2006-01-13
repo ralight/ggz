@@ -6,17 +6,20 @@ import ggz.cards.common.Suit;
 
 import java.awt.AWTEvent;
 import java.awt.AWTEventMulticaster;
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.io.IOException;
@@ -26,6 +29,8 @@ import javax.imageio.ImageIO;
 
 public class Sprite extends Component {
     private static String basePath = "/ggz/cards/images/cards/";
+
+    private static int dropShadowWidth = 2;
 
     private Card card;
 
@@ -41,9 +46,9 @@ public class Sprite extends Component {
 
     private double angle;
 
-    private Shape originalHitRect;
-
-    private Shape rotatedHitRect;
+//    private Shape originalHitRect;
+//
+//    private Shape rotatedHitRect;
 
     private Point unselectedLocation;
 
@@ -59,10 +64,18 @@ public class Sprite extends Component {
         URL url = getClass().getResource(getImageName(card, isFaceUp));
         originalImage = ImageIO.read(url);
         createRotatedImage();
-        createHitRect();
-        setSize(getPreferredSize());
+//        createHitRect();
+        resetSize();
         setEnabled(false);
         fanAtAngle(0);
+    }
+
+    private void resetSize() {
+        // Set the size to take into consideration the drop shadow.
+        Dimension size = getPreferredSize();
+        size.width += dropShadowWidth;
+        size.height += dropShadowWidth;
+        setSize(size);
     }
 
     public void fanAtAngle(double radians) {
@@ -90,32 +103,56 @@ public class Sprite extends Component {
         // op.filter(unselectableImage, rotatedImage);
         // }
         // rotatedHitRect = xform.createTransformedShape(originalHitRect);
-        // angle = radians;
+        angle = radians;
+        if (angle == 0) {
+            resetSize();
+        }
+    }
+    public void startRotation() {
+        int rw = rotatedImage.getWidth();
+        int rh = rotatedImage.getHeight();
+        int ow = originalImage.getWidth();
+        int oh = originalImage.getHeight();
+        Point location = getLocation();
+        setSize(rw, rh);
+        setLocation(location.x - ((rw - ow) / 2), location.y - ((rh - oh) / 2));
+    }
+    public void endRotation() {
+        int rw = rotatedImage.getWidth();
+        int rh = rotatedImage.getHeight();
+        int ow = originalImage.getWidth();
+        int oh = originalImage.getHeight();
+        Point location = getLocation();
+        resetSize();
+        setLocation(location.x + ((rw - ow) / 2), location.y + ((rh - oh) / 2));
     }
 
-    public synchronized void rotate(double radians) {
-        // angle += radians;
-        // int rw = rotatedImage.getWidth();
-        // int rh = rotatedImage.getHeight();
-        // int ow = originalImage.getWidth();
-        // int oh = originalImage.getHeight();
-        // AffineTransform xform = new AffineTransform();
-        // // xform.translate((rw / 2) - (ow / 2), (rh / 2) - (oh / 2));
+    // TODO optimise by having the TablePanel create the image and handle
+    // the rotation
+    public synchronized void rotate(double radians, boolean updateImage) {
+        angle += radians;
+        if (updateImage) {
+        int rw = rotatedImage.getWidth();
+        int rh = rotatedImage.getHeight();
+        int ow = originalImage.getWidth();
+        int oh = originalImage.getHeight();
+        AffineTransform xform = new AffineTransform();
+         xform.translate((rw / 2) - (ow / 2), (rh / 2) - (oh / 2));
         // xform.translate((rw / 2) - (ow / 2), (rh - (oh + ow / 2)));
         // // xform.rotate(radians, ow / 2, oh / 2);
-        // xform.rotate(angle, ow / 2, oh / 2);
-        // AffineTransformOp op = new AffineTransformOp(xform,
-        // AffineTransformOp.TYPE_BILINEAR);
-        //
-        // // Clear the background;
-        // Graphics2D g2d = rotatedImage.createGraphics();
-        // g2d.setComposite(AlphaComposite.Clear);
-        // g2d.fillRect(0, 0, rw, rh);
-        // g2d.dispose();
-        //
-        // op.filter(originalImage, rotatedImage);
-        // rotatedHitRect = xform.createTransformedShape(originalHitRect);
-        // repaint();
+        xform.rotate(angle, ow / 2, oh / 2);
+        AffineTransformOp op = new AffineTransformOp(xform,
+                AffineTransformOp.TYPE_BILINEAR);
+
+        // Clear the background;
+        Graphics2D g2d = rotatedImage.createGraphics();
+        g2d.setComposite(AlphaComposite.Clear);
+        g2d.fillRect(0, 0, rw, rh);
+        g2d.dispose();
+
+        op.filter(originalImage, rotatedImage);
+//        rotatedHitRect = xform.createTransformedShape(originalHitRect);
+        }
     }
 
     /**
@@ -123,24 +160,24 @@ public class Sprite extends Component {
      */
     private void createRotatedImage() {
         // Only useful for rotating around center
-        // int hypotenuse = (int)
-        // Math.round(Math.hypot(originalImage.getWidth(),
-        // originalImage.getHeight()));
-        // int w = hypotenuse;
-        // int h = hypotenuse;
+         int hypotenuse = (int)
+         Math.round(Math.hypot(originalImage.getWidth(),
+         originalImage.getHeight()));
+         int w = hypotenuse;
+         int h = hypotenuse;
         // rotatedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        int hypotenuse = (int) Math.round(Math.hypot(
-                originalImage.getWidth() / 2, originalImage.getHeight()));
-        int w = hypotenuse * 2;
-        int h = hypotenuse + originalImage.getWidth() / 2;
+//        int hypotenuse = (int) Math.round(Math.hypot(
+//                originalImage.getWidth() / 2, originalImage.getHeight()));
+//        int w = hypotenuse * 2;
+//        int h = hypotenuse + originalImage.getWidth() / 2;
         rotatedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
     }
 
-    private void createHitRect() {
-        originalHitRect = new Rectangle(originalImage.getWidth(), originalImage
-                .getHeight());
-        rotatedHitRect = originalHitRect;
-    }
+//    private void createHitRect() {
+//        originalHitRect = new Rectangle(originalImage.getWidth(), originalImage
+//                .getHeight());
+//        rotatedHitRect = originalHitRect;
+//    }
 
     public Card card() {
         return card;
@@ -148,6 +185,19 @@ public class Sprite extends Component {
 
     public synchronized void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
+
+        if (angle == 0) {
+            // Don't draw a drop shadow when rotating
+            Composite oldComposite = g2d.getComposite();
+            Composite alphaComposite = AlphaComposite.getInstance(
+                    AlphaComposite.SRC_OVER, 0.3f);
+            g2d.setComposite(alphaComposite);
+            g2d.setColor(Color.BLACK);
+            g2d.fillRoundRect(0, dropShadowWidth, getWidth() - 1,
+                    getHeight() - 1, 2, 2);
+            g2d.setComposite(oldComposite);
+        }
+
         if (isSelectable) {
             // g2d.drawImage(rotatedImage, 0, 0, this);
             // g2d.drawImage(rotatedImage, null, 0, 0);
@@ -157,18 +207,22 @@ public class Sprite extends Component {
             // BufferedImage clippedImage = rotatedImage.getSubimage(clip.x,
             // clip.y, clip.width, clip.height);
             // g2d.drawImage(clippedImage, null, clip.x, clip.y);
-            g2d.drawImage(originalImage, null, 0, 0);
+            if (angle == 0) {
+                g2d.drawImage(originalImage, null, dropShadowWidth, 0);
+            } else {
+                g2d.drawImage(rotatedImage, null, dropShadowWidth, 0);
+            }
             // g2d.drawRect(clip.x, clip.y, clip.width-1, clip.height-1);
         } else {
             if (unselectableImage == null)
                 throw new NullPointerException("greyed out image is null");
-            g2d.drawImage(unselectableImage, 0, 0, this);
+            g2d.drawImage(unselectableImage, dropShadowWidth, 0, this);
         }
     }
 
-    public boolean contains(int x, int y) {
-        return rotatedHitRect.contains(x, y);
-    }
+//    public boolean contains(int x, int y) {
+//        return rotatedHitRect.contains(x, y);
+//    }
 
     public Dimension getPreferredSize() {
         // return new Dimension(rotatedImage.getWidth(this), rotatedImage
@@ -247,7 +301,7 @@ public class Sprite extends Component {
     public static String getImageName(Card card, boolean isFaceUp) {
         final String[] suits = new String[] { "c", "d", "h", "s" };
         final String[] ranks = new String[] { "a", "2", "3", "4", "5", "6",
-                "7", "8", "9", "t", "j", "q", "k", "j" };
+                "7", "8", "9", "t", "j", "q", "k", "a" };
         String path = basePath;
 
         if (card == null || !isFaceUp || card.get_suit() == Suit.UNKNOWN_SUIT
@@ -257,7 +311,6 @@ public class Sprite extends Component {
                 || card.get_face() == Face.JOKER2) {
             path += "j.gif";
         } else {
-            System.out.println(card);
             path += ranks[card.get_face().ordinal() - 1]
                     + suits[card.get_suit().ordinal() - 1] + ".gif";
         }
