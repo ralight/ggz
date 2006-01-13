@@ -249,10 +249,11 @@ Index: client/gui-gtk-2.0/pages.c
    }
  }
  
-@@ -154,6 +158,15 @@
+@@ -154,6 +158,17 @@
    return TRUE;
  }
  
++#ifdef GGZ_GTK
 +/****************************************************************************
 +  Callback to raise the login dialog when the gaming zone login button is
 +  clicked.
@@ -261,11 +262,12 @@ Index: client/gui-gtk-2.0/pages.c
 +{
 +  ggz_gtk_login_raise("Pubserver");
 +}
++#endif
 +
  /**************************************************************************
    create the main page.
  **************************************************************************/
-@@ -218,6 +231,13 @@
+@@ -218,6 +233,13 @@
    g_signal_connect(button, "clicked",
        G_CALLBACK(set_page_callback), GUINT_TO_POINTER(PAGE_NETWORK));
  
@@ -279,7 +281,7 @@ Index: client/gui-gtk-2.0/pages.c
    bbox = gtk_vbox_new(FALSE, 6);
    gtk_container_add(GTK_CONTAINER(sbox), bbox);
  
-@@ -1880,6 +1900,7 @@
+@@ -1880,6 +1902,7 @@
  
    switch (new_page) {
    case PAGE_MAIN:
@@ -287,7 +289,7 @@ Index: client/gui-gtk-2.0/pages.c
      break;
    case PAGE_START:
      if (is_server_running()) {
-@@ -1923,6 +1944,7 @@
+@@ -1923,6 +1946,7 @@
    switch (new_page) {
    case PAGE_MAIN:
    case PAGE_START:
