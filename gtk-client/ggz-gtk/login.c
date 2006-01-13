@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 7773 2006-01-13 05:14:42Z jdorje $
+ * $Id: login.c 7774 2006-01-13 05:15:46Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -197,7 +197,6 @@ static void login_fill_defaults(GtkWidget * widget, gpointer user_data)
 		last = ggzcore_conf_read_string("OPTIONS", "LASTPROFILE",
 						"NONE");
 	}
-	printf("Setting to %s.\n", last);
 	if (strcmp(last, "NONE")) {
 		tmp = lookup_widget(login_dialog, "profile_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), last);
