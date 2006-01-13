@@ -1,6 +1,6 @@
 Index: m4/ggz.m4
 ===================================================================
---- m4/ggz.m4	(revision 11432)
+--- m4/ggz.m4	(revision 11434)
 +++ m4/ggz.m4	(working copy)
 @@ -695,6 +695,103 @@
  ])
@@ -135,7 +135,7 @@ Index: m4/ggz.m4
  ])
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 11432)
+--- configure.ac	(revision 11434)
 +++ configure.ac	(working copy)
 @@ -442,7 +442,12 @@
  fi
@@ -227,7 +227,7 @@ Index: client/gui-gtk-2.0/gui_main.c
  
 Index: client/gui-gtk-2.0/pages.c
 ===================================================================
---- client/gui-gtk-2.0/pages.c	(revision 11432)
+--- client/gui-gtk-2.0/pages.c	(revision 11434)
 +++ client/gui-gtk-2.0/pages.c	(working copy)
 @@ -22,6 +22,10 @@
  
@@ -249,7 +249,23 @@ Index: client/gui-gtk-2.0/pages.c
    }
  }
  
-@@ -218,6 +222,14 @@
+@@ -154,6 +158,15 @@
+   return TRUE;
+ }
+ 
++/****************************************************************************
++  Callback to raise the login dialog when the gaming zone login button is
++  clicked.
++****************************************************************************/
++static void ggz_login(void)
++{
++  ggz_gtk_login_raise("Pubserver");
++}
++
+ /**************************************************************************
+   create the main page.
+ **************************************************************************/
+@@ -218,6 +231,13 @@
    g_signal_connect(button, "clicked",
        G_CALLBACK(set_page_callback), GUINT_TO_POINTER(PAGE_NETWORK));
  
@@ -257,14 +273,13 @@ Index: client/gui-gtk-2.0/pages.c
 +  button = gtk_button_new_with_mnemonic(_("Connect to Gaming _Zone"));
 +  gtk_size_group_add_widget(size, button);
 +  gtk_container_add(GTK_CONTAINER(bbox), button);
-+  g_signal_connect(button, "clicked",
-+		   G_CALLBACK(ggz_gtk_login_raise), NULL);
++  g_signal_connect(button, "clicked", ggz_login, NULL);
 +#endif
 +
    bbox = gtk_vbox_new(FALSE, 6);
    gtk_container_add(GTK_CONTAINER(sbox), bbox);
  
-@@ -1880,6 +1892,7 @@
+@@ -1880,6 +1900,7 @@
  
    switch (new_page) {
    case PAGE_MAIN:
@@ -272,7 +287,7 @@ Index: client/gui-gtk-2.0/pages.c
      break;
    case PAGE_START:
      if (is_server_running()) {
-@@ -1923,6 +1936,7 @@
+@@ -1923,6 +1944,7 @@
    switch (new_page) {
    case PAGE_MAIN:
    case PAGE_START:
@@ -282,7 +297,7 @@ Index: client/gui-gtk-2.0/pages.c
      gtk_tree_view_focus(gtk_tree_selection_get_tree_view(nation_selection));
 Index: client/include/pages_g.h
 ===================================================================
---- client/include/pages_g.h	(revision 11432)
+--- client/include/pages_g.h	(revision 11434)
 +++ client/include/pages_g.h	(working copy)
 @@ -23,7 +23,8 @@
    PAGE_LOAD,		/* Load saved game page. */
@@ -296,7 +311,7 @@ Index: client/include/pages_g.h
  void set_client_page(enum client_pages page);
 Index: client/packhand.c
 ===================================================================
---- client/packhand.c	(revision 11432)
+--- client/packhand.c	(revision 11434)
 +++ client/packhand.c	(working copy)
 @@ -184,7 +184,9 @@
      update_menus();
@@ -338,7 +353,7 @@ Index: client/clinet.c
  static void close_socket_nomessage(struct connection *pc)
  {
 -  if (with_ggz) {
-+  if (with_ggz || with_ggz) {
++  if (with_ggz || in_ggz) {
      remove_ggz_input();
    }
 +  if (in_ggz) {
@@ -357,9 +372,20 @@ Index: client/clinet.c
    
 Index: client/civclient.c
 ===================================================================
---- client/civclient.c	(revision 11432)
+--- client/civclient.c	(revision 11434)
 +++ client/civclient.c	(working copy)
-@@ -88,6 +88,7 @@
+@@ -25,6 +25,10 @@
+ #include <stdlib.h>
+ #include <time.h>
+ 
++#ifdef GGZ_GTK
++#  include <ggz-embed.h>
++#endif
++
+ #include "capstr.h"
+ #include "dataio.h"
+ #include "diptreaty.h"
+@@ -88,6 +92,7 @@
  char metaserver[512] = "\0";
  int  server_port = -1;
  bool auto_connect = FALSE; /* TRUE = skip "Connect to Freeciv Server" dialog */
@@ -367,7 +393,25 @@ Index: client/civclient.c
  
  static enum client_states client_state = CLIENT_BOOT_STATE;
  
-@@ -545,7 +546,7 @@
+@@ -358,7 +363,17 @@
+   if (with_ggz) {
+     ggz_initialize();
+   }
++#ifdef GGZ_GTK
++  {
++    char buf[128];
+ 
++    user_username(buf, sizeof(buf));
++    cat_snprintf(buf, sizeof(buf), "%d", myrand(100));
++    ggz_embed_ensure_server("Pubserver", "pubserver.freeciv.org",
++			    5688, buf);
++  }
++#endif
++
+   /* run gui-specific client */
+   ui_main(argc, argv);
+ 
+@@ -545,7 +560,7 @@
        }
        client_game_init();
        if (!aconnection.established) {
@@ -378,7 +422,7 @@ Index: client/civclient.c
        }
 Index: client/civclient.h
 ===================================================================
---- client/civclient.h	(revision 11432)
+--- client/civclient.h	(revision 11434)
 +++ client/civclient.h	(working copy)
 @@ -50,6 +50,7 @@
  extern bool auto_connect;
