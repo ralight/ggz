@@ -2,9 +2,8 @@
 <!--
   - This Ant build file is designed to work the Ant 1.6.x. 
   -->
-<project name="kmdm8" default="build_distribution" basedir=".">
+<project name="ggz-java" default="build_distribution" basedir=".">
 	<!-- set global properties for this build -->
-	<property environment="env"/>
 	<property name="src" value="src"/>
 	<property name="src_test" value="test"/>
 	<property name="bin" value="bin"/>
@@ -65,6 +64,7 @@
 		    description="Deletes all output files.">
 		<delete dir="${bin}"/>
 		<delete dir="${javadoc}"/>
+		<delete file="${jarfile}"/>
 	</target>
 
 	<target name="sign_jar" 
