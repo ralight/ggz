@@ -1007,16 +1007,17 @@ AC_DEFUN([AC_GGZ_CHECK],
     fi
   fi
 
+  ggz_gtk="no"
   if test "$ggz_client" = "yes"; then
     if test "x$1" = "xgtk"; then
-      AC_GGZ_GTK([ggz_gtk="yes"], [ggz_gtk="no"])
+      AC_GGZ_GTK([ggz_gtk="yes"])
       if test $ggz_gtk = "yes"; then
         AC_DEFINE(GGZ_GTK, 1, [Support for embedded GGZ through libggz-gtk])
       fi
-      AM_CONDITIONAL(GGZ_GTK, test "$ggz_gtk" = "yes")
     fi
   fi
 
   AM_CONDITIONAL(GGZ_CLIENT, test "$ggz_client" = "yes")
   AM_CONDITIONAL(GGZ_SERVER, test "$ggz_server" = "yes")
+  AM_CONDITIONAL(GGZ_GTK, test "$ggz_gtk" = "yes")
 ])
