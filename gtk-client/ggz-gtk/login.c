@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 7774 2006-01-13 05:15:46Z jdorje $
+ * $Id: login.c 7785 2006-01-16 19:17:14Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -719,6 +719,7 @@ GtkWidget *create_dlg_login(const char *default_profile)
 	gtk_misc_set_alignment(GTK_MISC(email_label), 1, 0.5);
 
 	email_entry = gtk_entry_new();
+	g_object_set_data(G_OBJECT(dlg_login), "email_entry", email_entry);
 	gtk_box_pack_start(GTK_BOX(email_box), email_entry, FALSE, TRUE,
 			   0);
 
