@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 7519 2005-09-16 19:44:09Z josef $
+ * $Id: game.c 7784 2006-01-16 08:25:55Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -110,10 +110,10 @@ struct _GGZGame {
 	int seat_num;
 
 	/* Which room this game is in. */
-	int room_id;
+	GGZRoom *room;
 
 	/* The table ID for this game. */
-	int table_id;
+	GGZTable *table;
 };
 
 
@@ -285,8 +285,8 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	GGZRoom *room = _ggzcore_server_get_cur_room(server);
 
 	game->server = server;
-	game->room_id = ggzcore_room_get_id(room);
-	game->table_id = -1;
+	game->room = room;
+	game->table = NULL;
 
 	_ggzcore_server_set_cur_game(server, game);
 
@@ -427,10 +427,7 @@ static void _ggzcore_game_handle_boot(GGZMod * mod, GGZModTransaction t,
 {
 	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
 	GGZNet *net = _ggzcore_server_get_net(game->server);
-	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
-						     game->room_id);
-	GGZTable *table =
-	    ggzcore_room_get_table_by_id(room, game->table_id);
+	GGZTable *table = game->table;
 	const char *name = data;
 	int i;
 
@@ -468,10 +465,7 @@ static void _ggzcore_game_handle_seatchange(GGZMod * mod,
 	GGZNet *net = _ggzcore_server_get_net(game->server);
 	const int *seat_num = data;
 	GGZTableSeat seat = { .index = *seat_num, .name = NULL };
-	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
-						     game->room_id);
-	GGZTable *table =
-	    ggzcore_room_get_table_by_id(room, game->table_id);
+	GGZTable *table = game->table;
 
 	if (t == GGZMOD_TRANSACTION_OPEN)
 		seat.type = GGZ_SEAT_OPEN;
@@ -518,22 +512,14 @@ void _ggzcore_game_free(struct _GGZGame *game)
 	ggz_free(game);
 }
 
-void _ggzcore_game_set_table(GGZGame * game, int room_id, int table_id)
+void _ggzcore_game_set_table(GGZGame * game, GGZTable *table)
 {
-	GGZRoom *room;
-	GGZTable *table;
 	int num_seats, i;
 
 	/* FIXME */
-	assert(game->room_id == room_id);
-	assert(game->table_id < 0 || game->table_id == table_id);
+	assert(table != NULL);
 
-	room = ggzcore_server_get_cur_room(game->server);
-	assert(ggzcore_room_get_id(room) == room_id);
-
-	game->table_id = table_id;
-	table = ggzcore_room_get_table_by_id(room, table_id);
-	assert(table && ggzcore_table_get_id(table) == table_id);
+	game->table = table;
 
 	num_seats = ggzcore_table_get_num_seats(table);
 	for (i = 0; i < num_seats; i++) {
@@ -609,15 +595,15 @@ int _ggzcore_game_get_seat_num(GGZGame * game)
 }
 
 
-int _ggzcore_game_get_room_id(GGZGame * game)
+GGZRoom *_ggzcore_game_get_room(GGZGame * game)
 {
-	return game->room_id;
+	return game->room;
 }
 
 
-int _ggzcore_game_get_table_id(GGZGame * game)
+GGZTable *_ggzcore_game_get_table(GGZGame * game)
 {
-	return game->table_id;
+	return game->table;
 }
 
 

@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: table.c 7500 2005-08-27 12:13:54Z josef $
+ * $Id: table.c 7784 2006-01-16 08:25:55Z jdorje $
  *
  * This fils contains functions for handling tables
  *
@@ -570,20 +570,17 @@ void _ggzcore_table_set_seat(GGZTable *table, GGZTableSeat *seat)
 	if (table->room
 	    && (server = ggzcore_room_get_server(table->room))
 	    && (game = ggzcore_server_get_cur_game(server))
-	    && ggzcore_room_get_id(table->room)
-		== _ggzcore_game_get_room_id(game)) {
+	    && table->room == _ggzcore_game_get_room(game)) {
 		const char *me = _ggzcore_server_get_handle(server);
-		int game_table = _ggzcore_game_get_table_id(game);
+		GGZTable *game_table = _ggzcore_game_get_table(game);
 
-		if (table->id == game_table)
+		if (table == game_table)
 			_ggzcore_game_set_seat(game, seat);
 		if (seat->type == GGZ_SEAT_PLAYER
 		    && !ggz_strcmp(seat->name, me)) {
 			_ggzcore_game_set_player(game, 0, seat->index);
 			if (game_table < 0) {
-				_ggzcore_game_set_table(game,
-					_ggzcore_game_get_room_id(game),
-					table->id);
+				_ggzcore_game_set_table(game, table);
 			}
 		}
 	}
@@ -649,19 +646,16 @@ void _ggzcore_table_set_spectator_seat(GGZTable *table,
 	if (table->room
 	    && (server = ggzcore_room_get_server(table->room))
 	    && (game = _ggzcore_server_get_cur_game(server))
-	    && (ggzcore_room_get_id(table->room)
-		== _ggzcore_game_get_room_id(game))) {
+	    && table->room == _ggzcore_game_get_room(game)) {
 		const char *me = _ggzcore_server_get_handle(server);
-		int game_table = _ggzcore_game_get_table_id(game);
+		GGZTable *game_table = _ggzcore_game_get_table(game);
 
-		if (table->id == game_table)
+		if (table == game_table)
 			_ggzcore_game_set_spectator_seat(game, seat);
 		if (!ggz_strcmp(seat->name, me)) {
 			_ggzcore_game_set_player(game, 1, seat->index);
 			if (game_table < 0) {
-				_ggzcore_game_set_table(game,
-					_ggzcore_game_get_room_id(game),
-					table->id);
+				_ggzcore_game_set_table(game, table);
 			}
 		}
 	}

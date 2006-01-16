@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.h 7425 2005-08-15 09:01:50Z josef $
+ * $Id: game.h 7784 2006-01-16 08:25:55Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -39,7 +39,7 @@ void _ggzcore_game_init(struct _GGZGame *game, GGZServer * server,
 			GGZModule * module);
 void _ggzcore_game_free(struct _GGZGame *game);
 
-void _ggzcore_game_set_table(GGZGame * game, int room_id, int table_id);
+void _ggzcore_game_set_table(GGZGame *game, GGZTable *table);
 void _ggzcore_game_set_seat(GGZGame * game, GGZTableSeat * seat);
 void _ggzcore_game_set_spectator_seat(GGZGame * game, GGZTableSeat * seat);
 void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
@@ -49,8 +49,8 @@ void _ggzcore_game_inform_chat(GGZGame * game, const char *player,
 
 int _ggzcore_game_is_spectator(GGZGame * game);
 int _ggzcore_game_get_seat_num(GGZGame * game);
-int _ggzcore_game_get_room_id(GGZGame * game);
-int _ggzcore_game_get_table_id(GGZGame * game);
+GGZRoom *_ggzcore_game_get_room(GGZGame * game);
+GGZTable *_ggzcore_game_get_table(GGZGame * game);
 
 void _ggzcore_game_set_info(GGZGame * game, int num, GGZList *infos);
 
