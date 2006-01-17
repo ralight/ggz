@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7786 2006-01-17 18:08:54Z jdorje $
+ * $Id: ggzmod.c 7787 2006-01-17 18:15:48Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -117,6 +117,29 @@ static int infos_compare(const void *p, const void *q)
 	return s_p->num - s_q->num;
 }
 
+static void *infos_copy(void *porig)
+{
+	GGZPlayerInfo *info, *orig = porig;
+
+	info = ggz_malloc(sizeof(*info));
+	*info = *orig;
+	info->realname = ggz_strdup(info->realname);
+	info->photo = ggz_strdup(info->photo);
+	info->host = ggz_strdup(info->host);
+
+	return info;
+}
+
+static void infos_free(void *pstat)
+{
+	GGZPlayerInfo *info = pstat;
+
+	ggz_free(info->realname);
+	ggz_free(info->photo);
+	ggz_free(info->host);
+	ggz_free(info);
+}
+
 /*
  * How a game is launched (incomplete):
  *
@@ -198,7 +221,7 @@ GGZMod *ggzmod_new(GGZModType type)
 						  stats_free,
 						  GGZ_LIST_REPLACE_DUPS);
 
-	ggzmod->infos = ggz_list_create(infos_compare, NULL, NULL,
+	ggzmod->infos = ggz_list_create(infos_compare, infos_copy, infos_free,
 					GGZ_LIST_REPLACE_DUPS);
 
 	/* GGZ-side only initialization code was here*/
@@ -595,22 +618,22 @@ void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
 void _ggzmod_handle_info(GGZMod * ggzmod, int seat_num, const char *realname,
 			 const char *photo, const char *host, int finish)
 {
-	GGZPlayerInfo *info = (GGZPlayerInfo*)ggz_malloc(sizeof(GGZPlayerInfo));
-
-	info->num = seat_num;
-	info->realname = ggz_strdup(realname);
-	info->photo = ggz_strdup(photo);
-	info->host = ggz_strdup(host);
+	GGZPlayerInfo info = {
+		.num = seat_num,
+		.realname = realname,
+		.photo = photo,
+		.host = host
+	};
 
 	if(seat_num != -1) {
-		ggz_list_insert(ggzmod->infos, info);
+		ggz_list_insert(ggzmod->infos, &info);
 	}
 
 	if(finish) {
 		if(seat_num == -1) {
 			call_handler(ggzmod, GGZMOD_EVENT_INFO, NULL);
 		} else {
-			call_handler(ggzmod, GGZMOD_EVENT_INFO, info);
+			call_handler(ggzmod, GGZMOD_EVENT_INFO, &info);
 		}
 	}
 
@@ -1013,8 +1036,6 @@ GGZPlayerInfo* ggzmod_player_get_info(GGZMod *ggzmod, int seat)
 {
 	GGZPlayerInfo search_info = {.num = seat};
 	GGZListEntry *entry = ggz_list_search(ggzmod->infos, &search_info);
-	GGZPlayerInfo *info = ggz_list_get_data(entry);
 
-	return info;
+	return entry ?  ggz_list_get_data(entry) : NULL;
 }
-
