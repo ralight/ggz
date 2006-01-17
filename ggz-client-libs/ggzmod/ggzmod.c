@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7526 2005-09-17 19:31:17Z josef $
+ * $Id: ggzmod.c 7786 2006-01-17 18:08:54Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -93,6 +93,23 @@ static int stats_compare(const void *p, const void *q)
 	return s_p->number - s_q->number;
 }
 
+static void *stats_copy(void *porig)
+{
+	GGZStat *stat, *orig = porig;
+
+	stat = ggz_malloc(sizeof(*stat));
+	*stat = *orig;
+
+	return stat;
+}
+
+static void stats_free(void *pstat)
+{
+	GGZStat *stat = pstat;
+
+	ggz_free(stat);
+}
+
 static int infos_compare(const void *p, const void *q)
 {
 	const GGZPlayerInfo *s_p = p, *s_q = q;
@@ -174,10 +191,12 @@ GGZMod *ggzmod_new(GGZModType type)
 				GGZ_LIST_REPLACE_DUPS);
 	ggzmod->num_seats = ggzmod->num_spectator_seats = 0;
 
-	ggzmod->stats = ggz_list_create(stats_compare, NULL, NULL,
-					GGZ_LIST_ALLOW_DUPS);
-	ggzmod->spectator_stats = ggz_list_create(stats_compare, NULL, NULL,
-						  GGZ_LIST_ALLOW_DUPS);
+	ggzmod->stats = ggz_list_create(stats_compare, stats_copy, stats_free,
+					GGZ_LIST_REPLACE_DUPS);
+	ggzmod->spectator_stats = ggz_list_create(stats_compare,
+						  stats_copy,
+						  stats_free,
+						  GGZ_LIST_REPLACE_DUPS);
 
 	ggzmod->infos = ggz_list_create(infos_compare, NULL, NULL,
 					GGZ_LIST_REPLACE_DUPS);
