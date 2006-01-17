@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 7642 2005-11-25 19:32:01Z josef $
+ * $Id: ggzmod-ggz.c 7790 2006-01-17 21:26:35Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -1031,7 +1031,7 @@ int ggzmod_ggz_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
 	    || !ggzmod
 	    || (!spectator_stats && ggzmod->num_spectator_seats > 0)
 	    || ggzmod->type != GGZMOD_GGZ
-	    || ggzmod->state != GGZMOD_STATE_CREATED) {
+	    || ggzmod->state == GGZMOD_STATE_CREATED) {
 		return -1;
 	}
 
