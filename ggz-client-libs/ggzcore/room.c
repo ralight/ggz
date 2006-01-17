@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 7784 2006-01-16 08:25:55Z jdorje $
+ * $Id: room.c 7789 2006-01-17 18:27:45Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -1081,7 +1081,7 @@ int _ggzcore_room_join_table(GGZRoom * room,
 	status = _ggzcore_net_send_table_join(net, num, spectator);
 
 	if (status == 0) {
-		_ggzcore_game_set_table(game, table);
+		_ggzcore_game_set_table(game, room->id, num);
 		_ggzcore_game_set_player(game, spectator, -1);
 
 		_ggzcore_server_set_table_joining(room->server);
