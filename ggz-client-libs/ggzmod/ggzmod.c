@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7788 2006-01-17 18:19:37Z jdorje $
+ * $Id: ggzmod.c 7791 2006-01-17 21:28:15Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -613,6 +613,8 @@ void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
 		ggz_list_insert(ggzmod->spectator_stats, &stat);
 		i++;
 	}
+
+	call_handler(ggzmod, GGZMOD_EVENT_STATS, NULL);
 }
 
 void _ggzmod_handle_info(GGZMod * ggzmod, int seat_num, const char *realname,

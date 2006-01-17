@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 7555 2005-09-25 11:16:05Z josef $
+ * $Id: ggzmod.h 7791 2006-01-17 21:28:15Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -182,12 +182,11 @@ typedef enum {
 	 *  us. */
 	GGZMOD_EVENT_CHAT,
 
-	/** A player's stats have been updated.
+	/** A players' stats have been updated.
 	 *  @see ggzmod_player_get_record
 	 *  @see ggzmod_player_get_rating
 	 *  @see ggzmod_player_get_ranking
-	 *  @see ggzmod_player_get_highscore
-	 *  @param data The name of the player whose stats have changed. */
+	 *  @see ggzmod_player_get_highscore */
 	GGZMOD_EVENT_STATS,
 
 	/** @brief Player information has arrived.
