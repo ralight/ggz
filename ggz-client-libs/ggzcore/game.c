@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 7789 2006-01-17 18:27:45Z jdorje $
+ * $Id: game.c 7792 2006-01-17 21:53:50Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -338,6 +338,85 @@ void _ggzcore_game_init(struct _GGZGame *game,
 				  _ggzcore_module_get_argv(game->module));
 }
 
+static void _ggzcore_game_send_player_stats(GGZGame *game)
+{
+	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
+						     game->room_id);
+	GGZTable *table = ggzcore_room_get_table_by_id(room, game->table_id);
+	const int num_players = ggzcore_table_get_num_seats(table);
+	const int num_spectators
+	  = ggzcore_table_get_num_spectator_seats(table);
+	int i;
+	GGZStat stats[num_players < 0 ? 0 : num_players];
+	GGZStat sstats[num_spectators < 0 ? 0 : num_spectators];
+
+	memset(stats, 0, sizeof(stats));
+	memset(sstats, 0, sizeof(sstats));
+
+	/* FIXME: this is inefficient in that it has to resend all stats
+	 * every time.  As long as tables aren't too big this is
+	 * fine.  But it won't scale. */
+	for (i = 0; i < num_players; i++) {
+		GGZTableSeat seat = _ggzcore_table_get_nth_seat(table, i);
+		GGZPlayer *player;
+
+		/* TODO: What about RESERVED/ABANDONED? */
+		if (seat.type == GGZ_SEAT_PLAYER
+		    && (player
+			= _ggzcore_room_get_player_by_name(room, seat.name))) {
+			if (_ggzcore_player_get_record(player, &stats[i].wins,
+						       &stats[i].losses,
+						       &stats[i].ties,
+						       &stats[i].forfeits)) {
+				stats[i].have_record = 1;
+			}
+			if (_ggzcore_player_get_rating(player,
+						       &stats[i].rating)) {
+				stats[i].have_rating = 1;
+			}
+			if (_ggzcore_player_get_ranking(player,
+							&stats[i].ranking)) {
+				stats[i].have_ranking = 1;
+			}
+			if (_ggzcore_player_get_highscore(player,
+						&stats[i].highscore)) {
+				stats[i].have_highscore = 1;
+			}
+		}
+	}
+
+	for (i = 0; i < num_spectators; i++) {
+		const char *name
+		  = ggzcore_table_get_nth_spectator_name(table, i);
+		GGZPlayer *player
+		  = _ggzcore_room_get_player_by_name(room, name);
+
+		/* TODO: What about RESERVED/ABANDONED? */
+		if (player) {
+			if (_ggzcore_player_get_record(player, &sstats[i].wins,
+						       &sstats[i].losses,
+						       &sstats[i].ties,
+						       &sstats[i].forfeits)) {
+				sstats[i].have_record = 1;
+			}
+			if (_ggzcore_player_get_rating(player,
+						       &sstats[i].rating)) {
+				sstats[i].have_rating = 1;
+			}
+			if (_ggzcore_player_get_ranking(player,
+							&sstats[i].ranking)) {
+				sstats[i].have_ranking = 1;
+			}
+			if (_ggzcore_player_get_highscore(player,
+							  &sstats[i].highscore)) {
+				sstats[i].have_highscore = 1;
+			}
+		}
+	}
+
+	ggzmod_ggz_set_stats(game->client, stats, sstats);
+}
+
 
 /* This function is called by ggzmod when the game state is changed.
  *
@@ -357,6 +436,7 @@ static void _ggzcore_game_handle_state(GGZMod * mod, GGZModEvent event,
 	switch (*prev) {
 	case GGZMOD_STATE_CREATED:
 		ggz_debug(GGZCORE_DBG_GAME, "game negotiated");
+		_ggzcore_game_send_player_stats(game);
 		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
 		if (new != GGZMOD_STATE_CONNECTED) {
 			ggz_error_msg("Game changed state from created"
@@ -554,19 +634,24 @@ void _ggzcore_game_set_table(GGZGame * game, int room_id, int table_id)
 
 void _ggzcore_game_set_seat(GGZGame * game, GGZTableSeat * seat)
 {
-      GGZSeat mseat = { num:seat->index,
-	      type:seat->type,
-	      name:seat->name
+	GGZSeat mseat = {
+		.num = seat->index,
+		.type = seat->type,
+		.name = seat->name
 	};
+
 	ggzmod_ggz_set_seat(game->client, &mseat);
+	_ggzcore_game_send_player_stats(game);
 }
 
 void _ggzcore_game_set_spectator_seat(GGZGame * game, GGZTableSeat * seat)
 {
-      GGZSpectatorSeat mseat = { num:seat->index,
-	      name:seat->name
+	GGZSpectatorSeat mseat = {
+		.num = seat->index,
+		.name = seat->name
 	};
 	ggzmod_ggz_set_spectator_seat(game->client, &mseat);
+	_ggzcore_game_send_player_stats(game);
 }
 
 void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
