@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7787 2006-01-17 18:15:48Z jdorje $
+ * $Id: ggzmod.c 7788 2006-01-17 18:19:37Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -925,7 +925,8 @@ int ggzmod_player_get_record(GGZMod *ggzmod, GGZSeat *seat,
 	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
 
-	if(!stat) return 0;
+	if (!stat || !stat->have_record) return 0;
+
 	*wins = stat->wins;
 	*losses = stat->losses;
 	*ties = stat->ties;
@@ -939,7 +940,8 @@ int ggzmod_player_get_rating(GGZMod *ggzmod, GGZSeat *seat, int *rating)
 	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
 
-	if(!stat) return 0;
+	if (!stat || !stat->have_rating) return 0;
+
 	*rating = stat->rating;
 	return 1;
 }
@@ -950,7 +952,8 @@ int ggzmod_player_get_ranking(GGZMod *ggzmod, GGZSeat *seat, int *ranking)
 	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
 
-	if(!stat) return 0;
+	if (!stat || !stat->have_ranking) return 0;
+
 	*ranking = stat->ranking;
 	return 1;
 }
@@ -961,7 +964,8 @@ int ggzmod_player_get_highscore(GGZMod *ggzmod, GGZSeat *seat, int *highscore)
 	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
 
-	if(!stat) return 0;
+	if (!stat || !stat->have_highscore) return 0;
+
 	*highscore = stat->highscore;
 	return 1;
 }
