@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7745 2006-01-07 21:44:45Z jdorje $
+ * $Id: easysock.c 7793 2006-01-18 01:37:34Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -914,7 +914,7 @@ void ggz_resolvename(const char *name)
 		}
 #else
 		/* Pass back unresolved name */
-		(*_notify_func)(name);
+		(*_notify_func)(name, -2);
 #endif
 	}
 }
