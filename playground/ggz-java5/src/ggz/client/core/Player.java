@@ -31,7 +31,7 @@ public class Player {
     private int lag;
 
     /* Record of the player (or NO_RECORD). */
-    private int wins, losses, ties, forfeits;
+    public int wins, losses, ties, forfeits;
 
     /* Rating of the player (or NO_RATING) */
     private int rating;
@@ -42,27 +42,37 @@ public class Player {
     /* Player's highest score (or NO_HIGHSCORE) */
     private int highscore;
 
-    /* Publicly exported functions */
-
     public String get_name() {
         return this.name;
     }
 
-    /*
-     * int get_record( int *wins, int *losses, int *ties, int *forfeits) { if
-     * (!player || !wins || !losses || !ties || !forfeits) return 0; return
-     * _get_record(player, wins, losses, ties, forfeits); }
-     * 
-     * int get_rating( int *rating) { if (!player || !rating) return 0; return
-     * _get_rating(player, rating); }
-     * 
-     * int get_ranking( int *ranking) { if (!player || !ranking) return 0;
-     * return _get_ranking(player, ranking); }
-     * 
-     * int get_highscore( int *highscore) { if (!highscore) return 0; if
-     * (this.highscore == NO_HIGHSCORE) { highscore = NO_HIGHSCORE; return 0; }
-     * highscore = this.highscore; return 1; }
-     */
+    public int get_rating() {
+        return this.rating;
+    }
+
+    public int get_ranking() {
+        return this.ranking;
+    }
+
+    public int get_highscore() {
+        return this.highscore;
+    }
+
+    public int get_wins() {
+        return this.wins;
+    }
+
+    public int get_losses() {
+        return this.losses;
+    }
+
+    public int get_ties() {
+        return this.ties;
+    }
+
+    public int get_forfeits() {
+        return this.forfeits;
+    }
 
     /*
      * Internal library functions (prototypes in player.h) NOTE:All of these
@@ -70,22 +80,13 @@ public class Player {
      */
 
     Player(String name, Room room, int table, PlayerType type, int lag) {
-
-        /* Set to invalid table */
-        this.table = -1;
-
-        /* Assume no lag */
-        this.lag = -1;
-
         this.wins = NO_RECORD;
         this.losses = NO_RECORD;
-        this.ties = NO_RECORD;
         this.forfeits = NO_RECORD;
+        this.ties = NO_RECORD;
         this.rating = NO_RATING;
         this.ranking = NO_RANKING;
         this.highscore = NO_HIGHSCORE;
-
-        // from C init() function
         this.name = name;
         this.room = room;
         this.table = table;
@@ -93,15 +94,15 @@ public class Player {
         this.lag = lag;
     }
 
-    void init_stats(int wins, int losses, int ties, int forfeits, int rating,
-            int ranking, int highscore) {
-        this.wins = wins;
-        this.losses = losses;
-        this.ties = ties;
-        this.forfeits = forfeits;
-        this.rating = rating;
-        this.ranking = ranking;
-        this.highscore = highscore;
+    void init_stats(int new_wins, int new_losses, int new_ties,
+            int new_forfeits, int new_rating, int new_ranking, int new_highscore) {
+        this.wins = new_wins;
+        this.losses = new_losses;
+        this.ties = new_ties;
+        this.forfeits = new_forfeits;
+        this.rating = new_rating;
+        this.ranking = new_ranking;
+        this.highscore = new_highscore;
     }
 
     void set_table(int table) {
@@ -131,38 +132,6 @@ public class Player {
         return this.lag;
     }
 
-    /*
-     * int _get_record( int *wins, int *losses, int *ties, int *forfeits) { if
-     * (this.wins == NO_RECORD && this.losses == NO_RECORD && this.ties ==
-     * NO_RECORD && this.forfeits == NO_RECORD) { wins = NO_RECORD; losses =
-     * NO_RECORD; ties = NO_RECORD; forfeits = NO_RECORD; return 0; } #ifndef
-     * MAX # define MAX(a, b) ((a) > (b) ? (a) : (b)) #endif
-     *  /* NO_RECORD is -1. If we have a stat for anything, we should return all
-     * stats and assume 0 for any we don't know.
-     */
-
-    /*
-     * wins = MAX(this.wins, 0); losses = MAX(this.losses, 0); ties =
-     * MAX(this.ties, 0); forfeits = MAX(this.forfeits, 0);
-     * 
-     * return 1; }
-     * 
-     * 
-     * int _get_rating( int *rating) { if (this.rating == NO_RATING) { rating =
-     * NO_RATING; return 0; } rating = this.rating; return 1; }
-     * 
-     * 
-     * int _get_ranking( int *ranking) { if (this.ranking == NO_RANKING) {
-     * ranking = NO_RANKING; return 0; } ranking = this.ranking; return 1; }
-     */
-
-    // int _compare( void *p, void *q)
-    // {
-    // GGZPlayer *s_p = p;
-    // GGZPlayer *s_q = q;
-    //
-    // return strcmp(s_p->name, s_q->name);
-    // }
     public boolean equals(Object o) {
         return (o != null) && (o instanceof Player)
                 && this.name.equals(((Player) o).name);
@@ -175,16 +144,4 @@ public class Player {
     public int hashCode() {
         return this.name.hashCode();
     }
-
-    // void *_create(void *p)
-    // {
-    // GGZPlayer *new, *src = p;
-    //
-    // new = _new();
-    // _init(new, src->name, src->room, src->table,
-    // src->type, src->lag);
-    //
-    // return (void *)new;
-    // }
-
 }

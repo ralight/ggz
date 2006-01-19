@@ -35,6 +35,7 @@ public class SpriteTest {
                     public void actionPerformed(ActionEvent event) {
                         Sprite source = (Sprite)event.getSource();
                         source.setSelectable(!source.isSelectable());
+                        //source.setSelected(!source.isSelected());
                         System.out.println(source.card());
                     }
                 });

@@ -52,9 +52,6 @@ public class Room {
     /* Number of players we suspect are in the room */
     private int player_count;
 
-    /* Number of tables (current room only) */
-    private int num_tables;
-
     /* List of tables in the room (current room only) */
     private List<Table> tables;
 
@@ -87,20 +84,21 @@ public class Room {
     private int _get_num_players() {
         if (this.server.get_cur_room() == this) {
             return this.num_players;
-        } 
-            return this.player_count;
+        }
+        return this.player_count;
     }
 
     private Player _get_nth_player(int num) {
         return this.players.get(num);
     }
 
-    Player get_player_by_name(String player_name) {
+    public Player get_player_by_name(String player_name) {
         int entry;
         Player player, found = null;
 
         if (this.players != null) {
-            player = new Player(player_name, null, -1, PlayerType.values()[0], 0);
+            player = new Player(player_name, null, -1, PlayerType.values()[0],
+                    0);
             entry = this.players.indexOf(player);
 
             if (entry > -1)
@@ -157,11 +155,7 @@ public class Room {
     }
 
     public int get_num_tables() {
-        /*
-         * FIXME: we should let the list track this instead of doing it
-         * ourselves
-         */
-        return this.num_tables;
+        return this.tables == null ? 0 : this.tables.size();
     }
 
     public Player get_nth_player(int num) {
@@ -172,7 +166,7 @@ public class Room {
     }
 
     public Table get_nth_table(int num) {
-        if (num < this.num_tables) {
+        if (num < get_num_tables()) {
             return _get_nth_table(num);
         }
         return null;
@@ -394,42 +388,29 @@ public class Room {
 
     void set_player_stats(Player pdata) {
         /* FIXME: This should be sending a player "class-based" event */
-        throw new UnsupportedOperationException();
-        // Player player;
-        //
-        // log.fine( "Setting stats for %s: %d-%d-%d",
-        // pdata.get_name(), pdata.wins,
-        // pdata.losses, pdata.ties);
-        //
-        // player = get_player_by_name( pdata.get_name());
-        //
-        // /* make sure they're still in room */
-        // if (player == null)
-        // return;
-        //
-        // player.init_stats(
-        // pdata.wins,
-        // pdata.losses,
-        // pdata.ties,
-        // pdata.forfeits,
-        // pdata.rating,
-        // pdata.ranking, pdata.highscore);
-        // event(RoomEvent.GGZ_PLAYER_STATS, this.name);
+        Player player;
+
+        log.fine("Setting stats for " + pdata.get_name());
+
+        player = get_player_by_name(pdata.get_name());
+
+        /* make sure they're still in room */
+        if (player == null) {
+            return;
+        }
+
+        player.init_stats(pdata.get_wins(), pdata.get_losses(), pdata
+                .get_ties(), pdata.get_forfeits(), pdata.get_rating(), pdata
+                .get_ranking(), pdata.get_highscore());
+        event(RoomEvent.GGZ_PLAYER_STATS, this.name);
     }
 
-    void set_table_list(int count, List<Table> list) {
-        // GGZListEntry *cur;
-        Table table;
-
-        /* Get rid of old list */
-        // ggz_list_free(this.tables);
-        this.num_tables = count;
+    void set_table_list(List<Table> list) {
         this.tables = list;
 
         /* Sanity check: make sure these tables point to us */
-        // for (cur = ggz_list_head(list); cur; cur = ggz_list_next(cur)) {
-        for (Iterator iter = list.iterator(); iter.hasNext();) {
-            table = (Table) iter.next();
+        for (Iterator<Table> iter = list.iterator(); iter.hasNext();) {
+            Table table = iter.next();
             table.set_room(this);
         }
 
@@ -440,11 +421,7 @@ public class Room {
         /* If turning off monitoring, clear lists */
         if (!monitor) {
             this.num_players = 0;
-            // ggz_list_free(this.players);
             this.players = null;
-
-            this.num_tables = 0;
-            // ggz_list_free(this.tables);
             this.tables = null;
         }
     }
@@ -452,7 +429,6 @@ public class Room {
     void add_player(Player pdata, int from_room) {
         Player player;
         RoomChangeEventData data = new RoomChangeEventData();
-        int wins, losses, ties, forfeits, rating, ranking, highscore;
 
         log.fine("Adding player " + pdata.get_name());
 
@@ -461,20 +437,11 @@ public class Room {
             this.players = new ArrayList<Player>();
 
         /* Default new people in room to no table (-1) */
-        player = pdata;
-        player.set_table(-1);
-        // player = new Player(pdata.get_name(),
-        // pdata.get_room(),
-        // -1,
-        // pdata.get_type(),
-        // pdata.get_lag());
-        // _ggzcore_player_get_record(pdata, &wins, &losses, &ties,
-        // &forfeits);
-        // _ggzcore_player_get_rating(player, &rating);
-        // _ggzcore_player_get_ranking(player, &ranking);
-        // _ggzcore_player_get_highscore(player, &highscore);
-        // _ggzcore_player_init_stats(player, wins, losses, ties, forfeits,
-        // rating, ranking, highscore);
+        player = new Player(pdata.get_name(), pdata.get_room(), -1, pdata
+                .get_type(), pdata.get_lag());
+        player.init_stats(pdata.get_wins(), pdata.get_losses(), pdata
+                .get_ties(), pdata.get_forfeits(), pdata.get_rating(), pdata
+                .get_ranking(), pdata.get_highscore());
 
         this.players.add(player);
         this.num_players++;
@@ -500,8 +467,8 @@ public class Room {
 
         /* Only try to delete if the list exists */
         if (this.players != null) {
-            Player player = new Player(player_name, null, -1, PlayerType.values()[0],
-                    0);
+            Player player = new Player(player_name, null, -1, PlayerType
+                    .values()[0], 0);
             entry = this.players.indexOf(player);
             if (entry > -1) {
                 this.players.remove(entry);
@@ -530,11 +497,11 @@ public class Room {
         table.set_room(this);
 
         /* Create the list if it doesn't exist yet */
-        if (this.tables == null)
+        if (this.tables == null) {
             this.tables = new ArrayList<Table>();
+        }
 
         this.tables.add(table);
-        this.num_tables++;
         event(RoomEvent.GGZ_TABLE_UPDATE, null);
     }
 
@@ -549,7 +516,6 @@ public class Room {
             entry = this.tables.indexOf(search_table);
             if (entry > -1) {
                 this.tables.remove(entry);
-                this.num_tables--;
                 event(RoomEvent.GGZ_TABLE_UPDATE, null);
             }
 
@@ -752,12 +718,20 @@ public class Room {
         Game game = this.server.get_cur_game();
 
         /*
-         * Make sure we're actually in a room (FIXME: should probably make sure
-         * we're in *this* room) and not already playing a game
+         * Make sure we're actually in a room.
          */
-        if (this.server.get_state() != StateID.GGZ_STATE_IN_ROOM
-                || game == null)
-            throw new IllegalStateException();
+        if (this.server.get_state() != StateID.GGZ_STATE_IN_ROOM) {
+            throw new IllegalStateException("Server is not in state: "
+                    + StateID.GGZ_STATE_IN_ROOM);
+        }
+        if (game == null) {
+            throw new IllegalStateException(
+                    "Cannot launch table until the game has been launched.");
+        }
+        if (this.server.get_cur_room() != this) {
+            throw new IllegalStateException(
+                    "Can only launch table for current room.");
+        }
 
         net = this.server.get_net();
         net.send_table_launch(table);
@@ -797,11 +771,15 @@ public class Room {
         /* Game may be null if the game client has already exited. */
 
         /*
-         * Make sure we're at a table. (FIXME: should probably make sure we're
-         * in *this* room)
+         * Make sure we're at a table.
          */
         if (this.server.get_state() != StateID.GGZ_STATE_AT_TABLE) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("State is not currently "
+                    + StateID.GGZ_STATE_AT_TABLE);
+        }
+        if (this.server.get_cur_room() != this) {
+            throw new IllegalStateException(
+                    "Not at table in current room. How did that happen?");
         }
 
         net = this.server.get_net();
@@ -940,7 +918,8 @@ public class Room {
             event_hooks.fire_player_count(((Integer) data).intValue());
             break;
         default:
-            throw new IllegalArgumentException("Unhandled RoomEvent: " + event_id);
+            throw new IllegalArgumentException("Unhandled RoomEvent: "
+                    + event_id);
         }
     }
 

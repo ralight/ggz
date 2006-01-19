@@ -94,9 +94,8 @@ public class ClientApplet extends JApplet implements ServerListener,
             int port = Integer.parseInt(getParameter("port", "5688"));
             String sendLogFile = getParameter("sendLog");
             String receiveLogFile = getParameter("receiveLog");
-            server = new Server();
+            server = new Server(host, port, false);
             server.log_session(sendLogFile, receiveLogFile);
-            server.set_hostinfo(host, port, false);
             server.add_event_hook(this);
             getContentPane().setBackground(new Color(0, 128, 255));
             // getContentPane().setBackground(new Color(204, 153, 153));
@@ -239,6 +238,7 @@ public class ClientApplet extends JApplet implements ServerListener,
             dialog.pack();
             dialog.setVisible(true);
         }
+        loungePanel.setMotD(data.motd);
     }
 
     public void server_negotiate_fail(String error) {

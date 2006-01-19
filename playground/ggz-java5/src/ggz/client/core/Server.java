@@ -85,17 +85,14 @@ public class Server {
 
     static final int reconnect_timeout = 15;
 
-    /* Publicly exported functions */
-    public Server() {
-        reset();
-    }
-
-    public void set_hostinfo(String host, int port, boolean use_tls) {
+    public Server(String host, int port, boolean use_tls) {
         /* Check for valid arguments */
-        if (host != null && this.state == StateID.GGZ_STATE_OFFLINE) {
-            this.net.init(this, host, port, use_tls);
-        } else
-            throw new IllegalArgumentException();
+        if (host == null) {
+            throw new IllegalArgumentException("host cannot be null");
+        }
+        /* Set initial state */
+        this.state = StateID.GGZ_STATE_OFFLINE;
+        this.net = new Net(this, host, port, use_tls);   
     }
 
     public void set_logininfo(LoginType type, String handle, String password,
@@ -275,10 +272,9 @@ public class Server {
 
             /* FIXME: make sure we don't already have a channel */
 
-            this.channel = new Net();
             host = this.net.get_host();
             port = this.net.get_port();
-            this.channel.init(this, host, port, false);
+            this.channel = new Net(this, host, port, false);
 
             try {
                 this.channel.connect();
@@ -698,9 +694,7 @@ public class Server {
 
         /* Set initial state */
         this.state = StateID.GGZ_STATE_OFFLINE;
-
-        /* Allocate network object */
-        this.net = new Net();
+        this.net = new Net(this, this.net.get_host(), this.net.get_port(), this.net.get_tls());
         this.is_channel = false;
     }
 
@@ -919,8 +913,7 @@ public class Server {
                 host = this.net.get_host();
                 port = this.net.get_port();
                 use_tls = this.net.get_tls();
-                this.net = new Net();
-                this.net.init(this, host, port, use_tls);
+                this.net = new Net(this, host, port, use_tls);
 
                 clear_reconnect();
 

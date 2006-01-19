@@ -22,9 +22,26 @@ public class Seat {
         this.type = type;
         this.name = name;
     }
+    
+    public int get_num() {
+        return num;
+    }
+    
+    public String get_name() {
+        return name;
+    }
+    
+    public SeatType get_type() {
+        return type;
+    }
 
     public boolean equals(Object o) {
-        return (o != null) && (o instanceof Seat) && this.num == ((Seat) o).num;
+        return (o != null)
+                && (o instanceof Seat)
+                && this.num == ((Seat) o).num
+                && this.type == ((Seat) o).type
+                && (this.name == ((Seat) o).name || (this.name != null && this.name
+                        .equals(((Seat) o).name)));
     }
 
     /**

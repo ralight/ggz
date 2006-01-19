@@ -8,7 +8,7 @@
 	<property name="src_test" value="test"/>
 	<property name="bin" value="bin"/>
 	<property name="javadoc" value="javadoc"/>
-	<property name="jarfile" value="ggz-java.jar"/>
+	<property name="jarfile" value="ggz-java-client.jar"/>
 	<property name="manifest" value="manifest/manifest.txt"/>
 
 	<!-- Non class files that need to be copied with the classes. -->
@@ -55,7 +55,7 @@
 	</target>
 	
 	<target name="build_distribution" 
-		    depends="clean,sign_jar,javadoc" 
+		    depends="clean,sign_jar" 
 		    description="Does a clean and rebuilds everything">
 		<!-- Simply causes all dependencies to be built. -->
 	</target>

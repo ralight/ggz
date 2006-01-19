@@ -101,7 +101,6 @@ public class Module {
     /* Returns n-th module that supports this game and protocol */
     public static Module get_nth_by_type(String game, String engine,
             String version, int num) {
-        /* FIXME: should check bounds on num */
         if (game == null || engine == null || version == null)
             return null;
 

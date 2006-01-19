@@ -41,19 +41,22 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
     private PlayersTableModel players;
 
-    public RoomChatPanel() {
+    public RoomChatPanel(boolean showTableNumber) {
         super(new BorderLayout());
 
         chatPanel = new ChatPanel(new RoomChatAction());
         add(chatPanel, BorderLayout.CENTER);
 
         // The list of players.
-        players = new PlayersTableModel();
+        players = new PlayersTableModel(showTableNumber);
         playerList = new JTable(players);
         // playerList.setRowHeight(20);
         playerList.getColumn("Lag").setMaxWidth(20);
         playerList.getColumn("Lag").setHeaderValue("");
         playerList.getColumn("Type").setMaxWidth(40);
+        if (showTableNumber) {
+            playerList.getColumn("T#").setMaxWidth(20);
+        }
         playerList.setRowSelectionAllowed(false);
         playerList.setGridColor(playerList.getBackground());
         // playerList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -87,7 +90,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     public void chat_event(final ChatEventData data) {
         // Ignore chat messages from ourselves since we append the text on send
         // without waiting for the server to make the app feel more responsive.
-        if (!handle.equals(data.sender)) {
+        if (!handle.equals(data.sender) && data.type != ChatType.GGZ_CHAT_TABLE) {
             chatPanel.appendChat(data.type, data.sender, data.message);
         }
     }
@@ -96,25 +99,13 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         // Seems a pretty redundant message.
     }
 
-    public void player_lag(String player) {
+    public void player_lag(String player_name) {
         // TODO only notify row for player.
         players.fireTableDataChanged();
     }
 
     public void player_list(int room_id) {
         players.fireTableDataChanged();
-        // All handlers are called from the socket thread so we need to do
-        // this crazy stuff.
-        // SwingUtilities.invokeLater(new Runnable() {
-        // public void run() {
-        // DefaultListModel model = (DefaultListModel) playerList
-        // .getModel();
-        // model.removeAllElements();
-        // for (int i = 0; i < room.get_num_players(); i++) {
-        // model.addElement(room.get_nth_player(i).get_name());
-        // }
-        // }
-        // });
     }
 
     public void player_stats(String player) {
@@ -158,13 +149,18 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     }
 
     public void table_update() {
-        // Ignore
+        repaint();
     }
 
     private class PlayersTableModel extends AbstractTableModel {
+        private boolean showTableNumber;
+
+        public PlayersTableModel(boolean showTableNumber) {
+            this.showTableNumber = showTableNumber;
+        }
 
         public int getColumnCount() {
-            return 3;
+            return showTableNumber ? 4 : 3;
         }
 
         public int getRowCount() {
@@ -178,6 +174,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 1:
                 return "Nickname";
             case 2:
+                return showTableNumber ? "T#" : "Lag";
+            case 3:
                 return "Lag";
             default:
                 return null;
@@ -189,6 +187,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 0:
                 return PlayerType.class;
             case 2:
+                return showTableNumber ? String.class : Integer.class;
+            case 3:
                 return Integer.class;
             default:
                 return super.getColumnClass(columnIndex);
@@ -210,8 +210,12 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 1:
                 return player.get_name();
             case 2:
-                return new Integer(player.get_lag()); // seems to range from
-            // 1-5
+                if (showTableNumber) {
+                    return player.get_table() == null ? null : new Integer(
+                            player.get_table().get_id());
+                }
+            case 3:
+                return new Integer(player.get_lag());
             default:
                 return null;
             }
@@ -238,10 +242,13 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             TableCellRenderer {
         private PlayerType type;
 
+        private ImageIcon[] icons;
+
         private PlayerTypeCellRenderer() {
             setBackground(Color.WHITE);
             setOpaque(true);
             setHorizontalAlignment(SwingConstants.CENTER);
+            icons = new ImageIcon[PlayerType.values().length];
         }
 
         public Component getTableCellRendererComponent(JTable table,
@@ -252,29 +259,34 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             if (type == null) {
                 setIcon(null);
             } else {
-                switch (type) {
-                case GGZ_PLAYER_ADMIN:
-                    setIcon(new ImageIcon(getClass().getResource(
-                            "images/p21.gif")));
-                    break;
-                case GGZ_PLAYER_BOT:
-                    setIcon(new ImageIcon(getClass().getResource(
-                            "images/p17.gif")));
-                    break;
-                case GGZ_PLAYER_GUEST:
-                    setIcon(new ImageIcon(getClass().getResource(
-                            "images/p29.gif")));
-                    break;
-                case GGZ_PLAYER_NORMAL:
-                    setIcon(new ImageIcon(getClass().getResource(
-                            "images/p25.gif")));
-                    break;
-                case GGZ_PLAYER_UNKNOWN:
-                default:
-                    setIcon(new ImageIcon(getClass().getResource(
-                            "images/p13.gif")));
-                    break;
+                ImageIcon icon = icons[type.ordinal()];
+                if (icon == null) {
+                    switch (type) {
+                    case GGZ_PLAYER_ADMIN:
+                        icon = new ImageIcon(getClass().getResource(
+                                "images/p21.gif"));
+                        break;
+                    case GGZ_PLAYER_BOT:
+                        icon = new ImageIcon(getClass().getResource(
+                                "images/p17.gif"));
+                        break;
+                    case GGZ_PLAYER_GUEST:
+                        icon = new ImageIcon(getClass().getResource(
+                                "images/p29.gif"));
+                        break;
+                    case GGZ_PLAYER_NORMAL:
+                        icon = new ImageIcon(getClass().getResource(
+                                "images/p25.gif"));
+                        break;
+                    case GGZ_PLAYER_UNKNOWN:
+                    default:
+                        icon = new ImageIcon(getClass().getResource(
+                                "images/p13.gif"));
+                        break;
+                    }
+                    icons[type.ordinal()] = icon;
                 }
+                setIcon(icon);
             }
             return this;
         }

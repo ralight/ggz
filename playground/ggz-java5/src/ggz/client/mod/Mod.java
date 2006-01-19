@@ -1,7 +1,5 @@
 package ggz.client.mod;
 
-import ggz.common.SeatType;
-
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -167,9 +165,21 @@ public class Mod implements ModGGZ, ModGame {
 
         oldseat = get_seat(seat.num);
 
-        if (oldseat != null && oldseat.type == seat.type
-                && oldseat.name.equals(seat.name)) {
+        if (oldseat != null && oldseat.equals(seat)) {
             return;
+        }
+
+        if (seat.num >= this.num_seats) {
+            this.num_seats = seat.num + 1;
+            assert (seat.num == this.num_seats - 1);
+
+            if (this.seats == null) {
+                this.seats = new ArrayList<Seat>();
+            }
+
+            this.seats.add(seat);
+        } else {
+            this.seats.set(seat.num, seat);
         }
 
         if (this.state != ModState.GGZMOD_STATE_CREATED) {
@@ -177,16 +187,6 @@ public class Mod implements ModGGZ, ModGame {
             // if (_io_ggz_send_seat(this.fd, seat) < 0)
             // _error("Error writing to game");
         }
-
-        if (seat.num >= this.num_seats)
-            this.num_seats = seat.num + 1;
-        assert (seat.num == this.num_seats - 1);
-
-        if (this.seats == null) {
-            this.seats = new ArrayList<Seat>();
-        }
-
-        this.seats.add(seat);
     }
 
     public void set_spectator_seat(SpectatorSeat seat) {
@@ -217,30 +217,28 @@ public class Mod implements ModGGZ, ModGame {
         } else {
             /* Non-occupied seats are just empty entries in the list. */
             int entry = this.spectator_seats.indexOf(seat);
-            this.spectator_seats.remove(entry);
-
-            /* FIXME: reduce num_spectator_seats */
+            if (entry > -1) {
+                this.spectator_seats.remove(entry);
+                this.num_spectator_seats--;
+            }
         }
     }
 
     /**
-     * @brief Get all data for the specified seat.
-     * @param ggzmod
-     *            The GGZMod object.
-     * @param seat
+     * Get all data for the specified seat.
+     * @param num
      *            The seat number (0..(number of seats - 1)).
      * @return A valid GGZSeat structure, if seat is a valid seat.
      */
     public Seat get_seat(int num) {
-        Seat seat = new Seat(num, SeatType.GGZ_SEAT_NONE, null);
-
         if (num >= 0 && num < this.num_seats) {
-            int entry;
-            entry = this.seats.indexOf(seat);
-            if (entry > -1)
-                return this.seats.get(entry);
+            for (int seat_num = 0; seat_num < this.seats.size(); seat_num++) {
+                Seat seat = this.seats.get(seat_num);
+                if (num == seat.num) {
+                    return seat;
+                }
+            }
         }
-
         return null;
     }
 

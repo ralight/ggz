@@ -863,8 +863,7 @@ public class Client implements ModEventHandler {
     }
 
     public void handle_seat(Seat seat) {
-        // TODO Auto-generated method stub
-
+        game.handle_seat(seat);
     }
 
     public void handle_spectator_seat(SpectatorSeat seat) {

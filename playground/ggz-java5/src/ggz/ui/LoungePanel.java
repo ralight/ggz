@@ -6,16 +6,26 @@ import ggz.client.core.Room;
 import ggz.client.core.Server;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 public class LoungePanel extends JPanel {
     protected Server server;
@@ -31,6 +41,8 @@ public class LoungePanel extends JPanel {
     private JPanel headerPanel;
 
     private JButton logoutButton;
+    
+    private String motd;
 
     private Comparator sortAlgorithm = new SortByRoomName();
 
@@ -38,7 +50,7 @@ public class LoungePanel extends JPanel {
         super(new BorderLayout(4, 4));
         this.server = server;
         contentPanel = new JPanel(new BorderLayout(4, 4));
-        chatPanel = new RoomChatPanel();
+        chatPanel = new RoomChatPanel(false);
         contentPanel.add(chatPanel, BorderLayout.CENTER);
 
         roomPanel = new JPanel(new GridLayout());
@@ -76,38 +88,42 @@ public class LoungePanel extends JPanel {
         }
 
         // Sort on the game associated with the room.
-        // Collections.sort(rooms, new SortByGameType());
         Collections.sort(rooms, sortAlgorithm);
 
         // Add a button for each room, the button handles click events and joins
         // the associated room automatically.
         roomPanel.removeAll();
+        CategoryPanel cardGamesPanel = new CategoryPanel("Card Games");
         for (int i = 0; i < rooms.size(); i++) {
             Room room = rooms.get(i);
-            roomPanel.add(new RoomButton(room));
+            //roomPanel.add(new RoomButton(room));
+            cardGamesPanel.addRoom(room);
         }
-
+        roomPanel.add(cardGamesPanel);
+//        CategoryPanel boardGamesPanel = new CategoryPanel("Board Games");
+//        boardGamesPanel.addRoom(server.get_nth_room(2));
+//        roomPanel.add(boardGamesPanel);
+        JScrollPane motdScroll = new JScrollPane();
+        JTextArea motdText = new JTextArea(motd);
+        motdText.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        motdText.setEditable(false);
+        motdScroll.setPreferredSize(cardGamesPanel.getPreferredSize());
+        motdText.setOpaque(false);
+        motdScroll.setOpaque(false);
+        motdScroll.getViewport().setOpaque(false);
+        motdScroll.setBorder(null);
+        motdScroll.setBorder(BorderFactory.createTitledBorder("Message of the Day"));
+        motdScroll.getViewport().add(motdText);
+        roomPanel.add(motdScroll);
+    }
+    
+    public void setMotD(String motd) {
+        this.motd = motd;
     }
 
     public void setRoom(Room room) throws IOException {
         chatPanel.setRoom(room);
     }
-
-//    private static class SortByGameType implements Comparator {
-//        public int compare(Object o1, Object o2) {
-//            GameType g1 = ((Room) o1).get_gametype();
-//            GameType g2 = ((Room) o2).get_gametype();
-//            if (g1 == null && g2 == null) {
-//                return 0;
-//            } else if (g1 == null && g2 != null) {
-//                return -1;
-//            } else if (g1 == null && g2 != null) {
-//                return 1;
-//            } else {
-//                return g1.get_name().compareTo(g2.get_name());
-//            }
-//        }
-//    }
 
     private static class SortByRoomName implements Comparator {
         public int compare(Object o1, Object o2) {
@@ -145,41 +161,48 @@ public class LoungePanel extends JPanel {
         }
     }
 
-//    private class RoomCellRenderer extends JPanel implements ListCellRenderer {
-//        private JLabel nameLabel = new JLabel();
-//
-//        private JLabel playerCountLabel = new JLabel((String) null,
-//                SwingConstants.RIGHT);
-//
-//        private Room room;
-//
-//        RoomCellRenderer() {
-//            this.setLayout(new BorderLayout(5, 5));
-//            this.add(nameLabel, BorderLayout.CENTER);
-//            this.add(playerCountLabel, BorderLayout.EAST);
-//            this.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-//        }
-//
-//        public Component getListCellRendererComponent(JList list, Object value,
-//                int index, boolean isSelected, boolean cellHasFocus) {
-//            this.room = (Room) value;
-//            if (isSelected && list.hasFocus()) {
-//                setBackground(SystemColor.textHighlight);
-//                nameLabel.setForeground(SystemColor.textHighlightText);
-//                playerCountLabel.setForeground(SystemColor.textHighlightText);
-//            } else {
-//                setBackground(SystemColor.window);
-//                nameLabel.setForeground(Color.BLUE);
-//                playerCountLabel.setForeground(SystemColor.textText);
-//            }
-//            nameLabel.setText(room.get_name());
-//            playerCountLabel.setText(String.valueOf(room.get_num_players()));
-//            return this;
-//        }
-//
-//        public String getToolTipText() {
-//            return room.get_gametype().get_desc();
-//
-//        }
-//    }
+    private class CategoryPanel extends JPanel {
+        JPanel listPanel;
+        protected CategoryPanel(String categoryName) {
+            setBorder(BorderFactory.createTitledBorder(categoryName));
+            listPanel = new JPanel(new GridLayout(0, 1));
+            listPanel.setOpaque(false);
+            setLayout(new BorderLayout());
+            add(listPanel, BorderLayout.NORTH);
+            setOpaque(false);
+        }
+        
+        protected void addRoom(final Room room) {
+            JPanel listCellPanel = new JPanel(new BorderLayout());
+            JLabel nameLabel = new JLabel("<HTML><U>"+room.get_name()+"</U></HTML>");
+            final JLabel populationLabel = new JLabel((String)null, SwingConstants.RIGHT){
+                public String getText() {
+                    return String.valueOf(room.get_num_players());
+                }
+            };
+            listCellPanel.setOpaque(false);
+            nameLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            nameLabel.setToolTipText(room.get_desc());
+            nameLabel.setFont(nameLabel.getFont().deriveFont(Font.PLAIN));
+            populationLabel.setFont(populationLabel.getFont().deriveFont(Font.PLAIN));
+            listCellPanel.add(nameLabel, BorderLayout.WEST);
+            listCellPanel.add(populationLabel, BorderLayout.CENTER);
+            listPanel.add(listCellPanel);
+            nameLabel.addMouseListener( new MouseAdapter() {
+                public void mouseClicked(MouseEvent event) {
+                    // Find the index of the room and then join the room
+                    try {
+                        for (int i = 0; i < server.get_num_rooms(); i++) {
+                            if (server.get_nth_room(i) == room) {
+                                server.join_room(i);
+                            }
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(CategoryPanel.this, ex.getMessage());
+                    }
+                }
+            });
+        }
+    }
 }

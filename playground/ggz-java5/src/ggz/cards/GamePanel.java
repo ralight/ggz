@@ -31,14 +31,17 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.border.CompoundBorder;
 
 public class GamePanel extends JPanel implements CardGameHandler,
         ActionListener {
@@ -51,6 +54,13 @@ public class GamePanel extends JPanel implements CardGameHandler,
     protected Sprite[][] sprites;
 
     protected TablePanel table;
+
+    /** Delay 2 seconds at the end of every trick. */
+    private static long TRICK_DELAY = 2000;
+
+    private long timeLastPlay;
+
+    private int lastPlayerInTrick;
 
     public GamePanel(ModGame mod) {
         super(new BorderLayout());
@@ -91,7 +101,26 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void alert_newhand() {
-        // chat_panel.handle_chat("alert_newhand", null);
+        invokeAndWait(new Runnable() {
+            public void run() {
+                // Remove any existing sprites in case the hand was passed in.
+                // The sprites would be removed on display_hand but this looks
+                // nicer.
+                for (int player_num = 0; player_num < card_client
+                        .get_num_players(); player_num++) {
+                    if (sprites[player_num] != null) {
+                        for (int i = 0; i < sprites[player_num].length; i++) {
+                            if (sprites[player_num][i] != null) {
+                                table.remove(sprites[player_num][i]);
+                                sprites[player_num][i] = null;
+                            }
+                        }
+                    }
+                }
+                validate();
+                repaint();
+            }
+        });
     }
 
     public void alert_num_players(int numplayers, int old_numplayers) {
@@ -103,49 +132,49 @@ public class GamePanel extends JPanel implements CardGameHandler,
                     "Dynamic number of players not supported yet.");
         }
 
-        for (int i = 0; i < numplayers; i++) {
-            JLabel label = player_labels[i];
+        for (int seat_num = 0; seat_num < numplayers; seat_num++) {
+            JLabel label = player_labels[seat_num];
             if (label == null) {
                 label = new JLabel("<HTML><B>"
-                        + card_client.get_nth_player(i).get_name()
+                        + card_client.get_nth_player(seat_num).get_name()
                         + "</B></HTML>");
                 label.setForeground(Color.WHITE);
                 table.add(label);
-                player_labels[i] = label;
+                player_labels[seat_num] = label;
+
+                if (seat_num != 0) {
+                    initPopupMenu(seat_num);
+
+                    // Listen for click events to pop up a menu that allows
+                    // users to do things to this seat.
+                    label.addMouseListener(new PopupListener());
+                }
             } else {
-                label.setText(card_client.get_nth_player(i).get_name());
+                label.setText(card_client.get_nth_player(seat_num).get_name());
             }
 
             // Position the labels.
-            switch (i) {
+            SeatType seat_type = card_client.get_nth_player(seat_num).get_seat_type();
+            switch (seat_num) {
             case 0: // Me - south
                 label.setLocation(table.getWidth() - 200,
                         table.getHeight() - 70);
                 label.setVerticalAlignment(SwingConstants.BOTTOM);
                 break;
             case 1: // West
-                if (card_client.get_nth_player(i).get_seat_type() != SeatType.GGZ_SEAT_NONE) {
-                    label.setIcon(new ImageIcon(getClass().getResource(
-                            "images/p15.gif")));
-                }
+                label.setIcon(getPlayerIcon(seat_type));
                 label.setVerticalTextPosition(SwingConstants.BOTTOM);
                 label.setHorizontalTextPosition(SwingConstants.CENTER);
                 label.setHorizontalAlignment(SwingConstants.LEFT);
                 label.setLocation(0, table.getHeight() / 3);
                 break;
             case 2: // North
-                if (card_client.get_nth_player(i).get_seat_type() != SeatType.GGZ_SEAT_NONE) {
-                    label.setIcon(new ImageIcon(getClass().getResource(
-                            "images/p19.gif")));
-                }
+                label.setIcon(getPlayerIcon(seat_type));
                 label.setVerticalAlignment(SwingConstants.TOP);
                 label.setLocation(table.getWidth() / 2, 0);
                 break;
             case 3: // East
-                if (card_client.get_nth_player(i).get_seat_type() != SeatType.GGZ_SEAT_NONE) {
-                    label.setIcon(new ImageIcon(getClass().getResource(
-                            "images/p27.gif")));
-                }
+                label.setIcon(getPlayerIcon(seat_type));
                 label.setVerticalTextPosition(SwingConstants.BOTTOM);
                 label.setHorizontalTextPosition(SwingConstants.CENTER);
                 label.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -168,8 +197,70 @@ public class GamePanel extends JPanel implements CardGameHandler,
         }
     }
 
+    private ImageIcon getPlayerIcon(SeatType type) {
+        switch (type) {
+        /** This seat does not exist. */
+        case GGZ_SEAT_NONE:
+            return null;
+        /** The seat is open (unoccupied). */
+        case GGZ_SEAT_OPEN:
+            return null;
+        /** The seat has a bot (AI) in it. */
+        case GGZ_SEAT_BOT:
+            return new ImageIcon(getClass().getResource("images/p19.gif"));
+        /** The seat has a regular player in it. */
+        case GGZ_SEAT_PLAYER:
+            return new ImageIcon(getClass().getResource("images/p31.gif"));
+        /** The seat is reserved for a player. */
+        case GGZ_SEAT_RESERVED:
+            return null;
+        /** The seat is abandoned by a player. */
+        case GGZ_SEAT_ABANDONED:
+            return null;
+        default:
+            return null;
+        }
+    }
+
+    private void initPopupMenu(int seat_num) {
+        JPopupMenu menu = null;
+        SeatType type = card_client.get_nth_player(seat_num).get_seat_type();
+
+        switch (type) {
+        case GGZ_SEAT_NONE:
+            break;
+        /** The seat is open (unoccupied). */
+        case GGZ_SEAT_OPEN:
+            menu = new JPopupMenu("Player");
+            menu.add(new SeatBotAction(seat_num));
+            break;
+        /** The seat has a bot (AI) in it. */
+        case GGZ_SEAT_BOT:
+            menu = new JPopupMenu("Player");
+            menu.add(new SeatOpenAction(seat_num));
+            break;
+        /** The seat has a regular player in it. */
+        case GGZ_SEAT_PLAYER:
+        /** The seat is reserved for a player. */
+        case GGZ_SEAT_RESERVED:
+            menu = new JPopupMenu("Player");
+            menu.add(new SeatBotAction(seat_num));
+            menu.add(new SeatBootAction(seat_num));
+            menu.add(new SeatOpenAction(seat_num));
+            break;
+        /** The seat is abandoned by a player. */
+        case GGZ_SEAT_ABANDONED:
+            menu = new JPopupMenu("Player");
+            menu.add(new SeatBotAction(seat_num));
+        }
+        player_labels[seat_num].putClientProperty("ggz.cards.popupMenu", menu);
+    }
+
     public void alert_play(final int player_num, final Card card,
             final int card_pos) {
+        timeLastPlay = System.currentTimeMillis();
+        lastPlayerInTrick = player_num;
+
         invokeAndWait(new Runnable() {
             public void run() {
                 Point center = new Point(table.getWidth() / 2, table
@@ -225,18 +316,18 @@ public class GamePanel extends JPanel implements CardGameHandler,
                                 .getPlayerCardPos(player_num);
                         int zOrder;
 
-                        if (card_client.get_nth_player(0).get_table_card() == Card.UNKNOWN_CARD) {
+                        if (Card.UNKNOWN_CARD.equals(card_client
+                                .get_nth_player(0).get_table_card())) {
                             // We have not played a card yet so play the card
-                            // underneath
-                            // ours.
+                            // underneath ours.
                             int num_players = card_client.get_num_players();
                             int player_on_right = (player_num - 1)
                                     % num_players;
-                            if (card_client.get_nth_player(player_on_right)
-                                    .get_table_card() == Card.UNKNOWN_CARD) {
+                            if (Card.UNKNOWN_CARD.equals(card_client
+                                    .get_nth_player(player_on_right)
+                                    .get_table_card())) {
                                 // The first card in the trick not played by us
-                                // goes on
-                                // the bottom.
+                                // goes on the bottom.
                                 zOrder = -1;
                             } else {
                                 // Put the card on top of the one played by the
@@ -296,6 +387,18 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void alert_trick(final int winner) {
+        // Delay so the user gets to see the cards in the trick.
+        if (lastPlayerInTrick != 0) {
+            try {
+                long timeTrickOnScreen = System.currentTimeMillis()
+                        - timeLastPlay;
+                Thread.sleep(TRICK_DELAY - timeTrickOnScreen);
+            } catch (InterruptedException ex) {
+                // Ignore.
+                ex.printStackTrace();
+            }
+        }
+
         invokeAndWait(new Runnable() {
             public void run() {
                 Sprite[] sprites_to_animate = new Sprite[card_client
@@ -306,7 +409,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
                 for (int p = 0; p < card_client.get_num_players(); p++) {
                     Card card_in_trick = card_client.get_nth_player(p)
                             .get_table_card();
-                    if (card_in_trick != null) {
+                    if (!Card.UNKNOWN_CARD.equals(card_in_trick)) {
                         Sprite[] players_card_sprites = sprites[p];
                         for (int s = 0; s < players_card_sprites.length; s++) {
                             if (players_card_sprites[s] != null
@@ -401,7 +504,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
                     if (!c.equals(Card.UNKNOWN_CARD)) {
                         Sprite card = new Sprite(c);
                         int x = player_labels[player_num].getWidth();
-                        Point endPos = new Point(x, 80 + (i * 15));
+                        Point endPos = new Point(x, 80 + (i * 17));
 
                         card.setLocation(endPos);
                         table.add(card, 0);
@@ -470,6 +573,11 @@ public class GamePanel extends JPanel implements CardGameHandler,
                         // same as the text on the button.
                         bid_button.setToolTipText(bid_descs[i]);
                     }
+                    // Get rid of the margin insets on the Ocean buttons to make
+                    // the buttons smaller.
+                    CompoundBorder old_border = (CompoundBorder) bid_button
+                            .getBorder();
+                    bid_button.setBorder(old_border.getOutsideBorder());
                     bid_button.addActionListener(new BidAction(i));
                     table.addButton(bid_button);
                 }
@@ -499,8 +607,10 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void get_newgame() {
-        table.setStatus("<HTML>Press <EM>Ready</EM> to start the game.<BR>Once all players are ready the game will begin.</HTML>");
+        table
+                .setStatus("<HTML>Press <EM>Ready</EM> to start the game.<BR>Once all players are ready the game will begin.</HTML>");
         JButton startButton = new JButton("Ready");
+        table.removeAllButtons();
         table.addButton(startButton);
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -534,10 +644,10 @@ public class GamePanel extends JPanel implements CardGameHandler,
         // chat_panel.handle_chat("get_play", valid_cards[i].toString());
         // }
 
-        if (play_hand != 0) {
-            throw new UnsupportedOperationException(
-                    "Playing from other cards not supported yet.");
-        }
+//        if (play_hand != 0) {
+//            throw new UnsupportedOperationException(
+//                    "Playing from other cards not supported yet.");
+//        }
 
         // Enable and disable cards as appropriate.
         Sprite[] player_cards = sprites[play_hand];
@@ -617,34 +727,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void set_player_message(int player_num, String message) {
-        // chat_panel.handle_chat("set_player_message", "player=" + player_num
-        // + " message=" + message);
         JLabel label = player_labels[player_num];
-        // Label label = message_labels[player_num];
-        // if (label == null) {
-        // label = new Label(message);
-        // label.setForeground(Color.WHITE);
-        //
-        // // Position the label.
-        // Point loc = player_labels[player_num].getLocation();
-        // switch (player_num) {
-        // case 0: // Me - south
-        // loc.x += player_labels[player_num].getWidth();
-        // break;
-        // case 1: // West
-        // case 2: // North
-        // case 3: // East
-        // loc.y += player_labels[player_num].getHeight();
-        // break;
-        // default:
-        // throw new UnsupportedOperationException(
-        // "More than 4 players not supported yet.");
-        // }
-        // label.setLocation(loc);
-        // table.add(label);
-        // label.setSize(label.getPreferredSize());
-        // message_labels[player_num] = label;
-        // } else {
         message = message.replace("\n", "<BR>");
         label.setText("<HTML><B>"
                 + card_client.get_nth_player(player_num).get_name()
@@ -669,7 +752,6 @@ public class GamePanel extends JPanel implements CardGameHandler,
                     "More than 4 players not supported yet.");
         }
         label.setLocation(loc);
-        // }
     }
 
     public void set_text_message(String mark, String message) {
@@ -731,7 +813,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
         frame.setSize(640, 600);
         frame.setResizable(false);
         frame.setVisible(true);
-        table.setStatus("Connecting...");
+        table.setStatus("Connecting to game server...");
     }
 
     public void handle_player(String name, boolean is_spectator, int seat_num) {
@@ -740,7 +822,15 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void handle_seat(Seat seat) {
-        chat_panel.appendChat("handle_seat", seat.toString());
+        int seat_num = seat.get_num();
+        if (seat_num > 0 && player_labels != null) {
+            if (player_labels[seat_num] != null) {
+                player_labels[seat_num].setIcon(getPlayerIcon(seat.get_type()));
+                player_labels[seat_num].setSize(player_labels[seat_num]
+                        .getPreferredSize());
+                initPopupMenu(seat_num);
+            }
+        }
     }
 
     public void handle_server_fd(Socket fd) {
@@ -787,9 +877,91 @@ public class GamePanel extends JPanel implements CardGameHandler,
             // String handle = card_client.get_nth_player(0).get_name();
             // chatPanel.appendChat(type, handle, message);
         }
-        
+
         protected ChatType getDefaultChatType() {
             return ChatType.GGZ_CHAT_TABLE;
+        }
+    }
+
+    private class SeatBotAction extends AbstractAction {
+        private int seat_num;
+
+        public SeatBotAction(int seat_num) {
+            this.seat_num = seat_num;
+        }
+
+        public Object getValue(String key) {
+            if (NAME.equals(key)) {
+                return "Put computer player here";
+            }
+            return super.getValue(key);
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                card_client.request_bot(seat_num);
+            } catch (IOException e) {
+                handleException(e);
+            }
+        }
+    }
+
+    private class SeatBootAction extends AbstractAction {
+        private int seat_num;
+
+        public SeatBootAction(int seat_num) {
+            this.seat_num = seat_num;
+        }
+
+        public Object getValue(String key) {
+            if (NAME.equals(key)) {
+                return "Boot this player from the game";
+            }
+            return super.getValue(key);
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                String player_name = card_client.get_nth_player(seat_num)
+                        .get_name();
+                card_client.request_boot(player_name);
+            } catch (IOException e) {
+                handleException(e);
+            }
+        }
+    }
+
+    private class SeatOpenAction extends AbstractAction {
+        private int seat_num;
+
+        public SeatOpenAction(int seat_num) {
+            this.seat_num = seat_num;
+        }
+
+        public Object getValue(String key) {
+            if (NAME.equals(key)) {
+                return "Make this seat available for a human to play";
+            }
+            return super.getValue(key);
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                card_client.request_open(seat_num);
+            } catch (IOException e) {
+                handleException(e);
+            }
+        }
+    }
+
+    private class PopupListener extends MouseAdapter {
+        public void mouseClicked(MouseEvent event) {
+            JLabel component = (JLabel) event.getComponent();
+            JPopupMenu popup = (JPopupMenu) component
+                    .getClientProperty("ggz.cards.popupMenu");
+            if (popup != null) {
+                popup.show(component, event.getX(), event.getY());
+            }
         }
     }
 }

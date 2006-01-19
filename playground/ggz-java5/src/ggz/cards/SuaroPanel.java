@@ -50,17 +50,17 @@ public class SuaroPanel extends GamePanel {
 
                 while (iter.hasNext()) {
                     Card c = iter.next();
-                    if (!c.equals(Card.UNKNOWN_CARD)) {
+                    //if (!c.equals(Card.UNKNOWN_CARD)) {
                         Sprite card = new Sprite(c);
                         int x = player_labels[player_num].getWidth();
-                        Point endPos = new Point(x, 100 + (i * 15));
+                        Point endPos = new Point(x, 100 + (i * 17));
 
                         card.setLocation(endPos);
                         table.add(card, 0);
                         card.setEnabled(false);
                         sprites[player_num][i] = card;
                         i++;
-                    }
+                    //}
                 }
             } else if (player_num == 3) {
                 // Up-card

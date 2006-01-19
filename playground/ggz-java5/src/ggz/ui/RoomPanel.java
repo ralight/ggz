@@ -4,7 +4,6 @@ import ggz.client.core.ChatEventData;
 import ggz.client.core.ErrorEventData;
 import ggz.client.core.Game;
 import ggz.client.core.GameEventListener;
-import ggz.client.core.GameType;
 import ggz.client.core.Module;
 import ggz.client.core.Room;
 import ggz.client.core.RoomChangeEventData;
@@ -32,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
@@ -69,6 +67,8 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     private RoomChatPanel chatPanel;
 
+    private TablesTableModel tables;
+
     public RoomPanel(Server server) {
         super(new BorderLayout(4, 4));
         this.server = server;
@@ -86,7 +86,9 @@ public class RoomPanel extends JPanel implements RoomListener,
         joinTableButton = new JButton(new JoinTableAction());
         joinTableButton.setEnabled(false);
         playSoloButton = new JButton(new PlaySoloAction());
-        tableTable = new JTable();
+        tables = new TablesTableModel();
+        tableTable = new JTable(tables);
+        tableTable.setRowHeight(tableTable.getRowHeight() * 4);
         tableTable.getSelectionModel().setSelectionMode(
                 ListSelectionModel.SINGLE_SELECTION);
         tableTable.getSelectionModel().addListSelectionListener(this);
@@ -100,7 +102,7 @@ public class RoomPanel extends JPanel implements RoomListener,
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
         tablePanel.add(tableButtonPanel, BorderLayout.SOUTH);
         add(tablePanel, BorderLayout.CENTER);
-        chatPanel = new RoomChatPanel();
+        chatPanel = new RoomChatPanel(true);
         // Set a preferred size to stop it from growing out of control,
         // we want it to stay one size.
         chatPanel.setPreferredSize(new Dimension(500, 200));
@@ -115,79 +117,6 @@ public class RoomPanel extends JPanel implements RoomListener,
         setOpaque(false);
         headerPanel.setOpaque(false);
         headerButtonPanel.setOpaque(false);
-    }
-
-    public void refreshTableList() {
-        // Maintain our own list rather than use the server's so that we can
-        // sort it according to our own needs.
-        // if (tables == null) {
-        // // First time we allocate an array of the appropriate size.
-        // tables = new ArrayList<Table>(room.get_num_tables());
-        // } else {
-        // tables.clear();
-        // }
-        //
-        // for (int i = 0; i < room.get_num_tables(); i++) {
-        // tables.add(room.get_nth_table(i));
-        // }
-
-        // Sort on the game associated with the room.
-        // Collections.sort(tables, new SortByGameType());
-        // Collections.sort(tables, sortAlgorithm);
-
-        // TODO register PropertyChangeListener for all rooms and then
-        // get the model to fire model changed when a room's property changes.
-
-        tableTable.setModel(new AbstractTableModel() {
-
-            public String getColumnName(int columnIndex) {
-                switch (columnIndex) {
-                case 0:
-                    return "Description";
-                case 1:
-                    return "Game";
-                case 2:
-                    return "Max Players";
-                case 3:
-                    return "Max Spectators";
-                default:
-                    return null;
-                }
-            }
-
-            public int getColumnCount() {
-                return 4;
-            }
-
-            public int getRowCount() {
-                return room.get_num_tables();
-                // return tables.size();
-            }
-
-            public Object getValueAt(int rowIndex, int columnIndex) {
-                Table table = room.get_nth_table(rowIndex);
-                // Table table = tables.get(rowIndex);
-
-                if (table == null)
-                    return null;
-
-                switch (columnIndex) {
-                case 0:
-                    return table.get_desc();
-                case 1:
-                    GameType gameType = table.get_type();
-                    return gameType == null ? null : table.get_type()
-                            .get_name();
-                case 2:
-                    return new Integer(table.get_num_seats());
-                case 3:
-                    return new Integer(table.get_num_spectator_seats());
-                default:
-                    return null;
-                }
-            }
-        });
-
     }
 
     public void setRoom(Room room) throws IOException {
@@ -207,6 +136,9 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         boolean isSoloPlayPossible = room.get_gametype().get_max_bots() > 0;
         playSoloButton.setVisible(isSoloPlayPossible);
+        playSoloButton.setEnabled(isSoloPlayPossible);
+        joinTableButton.setEnabled(false);
+        newTableButton.setEnabled(true);
     }
 
     public void chat_event(ChatEventData data) {
@@ -238,12 +170,12 @@ public class RoomPanel extends JPanel implements RoomListener,
     }
 
     public void table_join_fail(String error) {
-        ((AbstractTableModel) tableTable.getModel()).fireTableDataChanged();
+        tables.fireTableDataChanged();
         JOptionPane.showMessageDialog(this, error);
     }
 
     public void table_joined(int table_index) {
-        ((AbstractTableModel) tableTable.getModel()).fireTableDataChanged();
+        tables.fireTableDataChanged();
     }
 
     public void table_launch_fail(ErrorEventData data) {
@@ -251,7 +183,7 @@ public class RoomPanel extends JPanel implements RoomListener,
     }
 
     public void table_launched() {
-        ((AbstractTableModel) tableTable.getModel()).fireTableDataChanged();
+        tables.fireTableDataChanged();
         playSoloButton.setEnabled(false);
         joinTableButton.setEnabled(false);
         newTableButton.setEnabled(false);
@@ -262,21 +194,17 @@ public class RoomPanel extends JPanel implements RoomListener,
     }
 
     public void table_left(TableLeaveEventData data) {
-        ((AbstractTableModel) tableTable.getModel()).fireTableDataChanged();
+        tables.fireTableDataChanged();
         playSoloButton.setEnabled(true);
         newTableButton.setEnabled(true);
     }
 
     public void table_list() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                refreshTableList();
-            }
-        });
+        tables.fireTableDataChanged();
     }
 
     public void table_update() {
-        ((AbstractTableModel) tableTable.getModel()).fireTableDataChanged();
+        tables.fireTableDataChanged();
     }
 
     private class BackToLobbyAction extends AbstractAction {
@@ -395,7 +323,7 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "Play against the computer";
+                return "Play against Computer";
             }
             return super.getValue(key);
         }
@@ -434,4 +362,103 @@ public class RoomPanel extends JPanel implements RoomListener,
         }
     }
 
+    private class TablesTableModel extends AbstractTableModel {
+
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+            case 0:
+                return "Description";
+            case 1:
+                return "Players";
+            case 2:
+                return "Spectators";
+            default:
+                return null;
+            }
+        }
+
+        public int getColumnCount() {
+            return 3;
+        }
+
+        public int getRowCount() {
+            return room == null ? 0 : room.get_num_tables();
+        }
+
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            try {
+                Table table = room.get_nth_table(rowIndex);
+                StringBuffer buffer;
+
+                if (table == null)
+                    return null;
+
+                switch (columnIndex) {
+                case 0:
+                    return "<HTML><B>Table " + table.get_id() + "</B><BR><I>"
+                            + table.get_desc();
+                case 1:
+                    buffer = new StringBuffer("<HTML><OL>");
+                    for (int player_num = 0; player_num < table.get_num_seats(); player_num++) {
+                        buffer.append("<LI>");
+                        switch (table.get_nth_player_type(player_num)) {
+                        case GGZ_SEAT_ABANDONED:
+                            buffer.append("Abandoned");
+                            break;
+                        case GGZ_SEAT_BOT:
+                            buffer.append("AI");
+                            break;
+                        case GGZ_SEAT_NONE:
+                        case GGZ_SEAT_PLAYER:
+                            buffer
+                                    .append(table
+                                            .get_nth_player_name(player_num));
+                            break;
+                        case GGZ_SEAT_OPEN:
+                            buffer.append("Empty Seat");
+                            break;
+                        case GGZ_SEAT_RESERVED:
+                            buffer.append("Reserved for ");
+                            break;
+                        }
+                    }
+                    buffer.append("</OL></HTML>");
+                    return buffer.toString();
+                case 2:
+                    buffer = new StringBuffer("<HTML><OL>");
+                    for (int spectator_num = 0; spectator_num < table
+                            .get_num_spectator_seats(); spectator_num++) {
+                        buffer.append("<LI>");
+                        switch (table.get_nth_spectator_seat(spectator_num).type) {
+                        case GGZ_SEAT_ABANDONED:
+                            buffer.append("Abandoned");
+                            break;
+                        case GGZ_SEAT_BOT:
+                            buffer.append("AI");
+                            break;
+                        case GGZ_SEAT_NONE:
+                        case GGZ_SEAT_PLAYER:
+                            buffer.append(table
+                                    .get_nth_spectator_name(spectator_num));
+                            break;
+                        case GGZ_SEAT_OPEN:
+                            buffer.append("Empty Seat");
+                            break;
+                        case GGZ_SEAT_RESERVED:
+                            buffer.append("Reserved for ");
+                            break;
+                        }
+                    }
+                    buffer.append("</OL></HTML>");
+                    return buffer.toString();
+                default:
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                // This can sometimes happen due to a race condition but
+                // it's OK.
+                return null;
+            }
+        }
+    }
 }

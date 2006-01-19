@@ -111,7 +111,7 @@ public class Net implements Runnable {
     }
 
     private static class PlayerInfoData {
-        List infos;
+        List<PlayerInfo> infos;
     }
 
     /* Table data structure */
@@ -222,34 +222,15 @@ public class Net implements Runnable {
         }
     }
 
-    Net() {
+    Net(Server server, String host, int port, boolean use_tls) {
         /* Set fd to invalid value */
         this.fd = null;
         this.send_dump_file = null;
         this.receive_dump_file = null;
-        this.use_tls = false;
-    }
-
-    void init(Server server, String host, int port, boolean use_tls) {
         this.server = server;
         this.host = host;
         this.port = port;
-        this.fd = null;
         this.use_tls = use_tls;
-        // this.dump_file = null;
-
-        /* Init parser */
-        // if (!(net->parser = XML_ParserCreate("UTF-8")))
-        // ggz_error_sys_exit
-        // ("Couldn't allocate memory for XML parser");
-        //
-        // /* Setup handlers for tags */
-        // XML_SetElementHandler(net->parser, (XML_StartElementHandler)
-        // _ggzcore_net_parse_start_tag,
-        // (XML_EndElementHandler)
-        // _ggzcore_net_parse_end_tag);
-        // XML_SetCharacterDataHandler(net->parser, _ggzcore_net_parse_text);
-        // XML_SetUserData(net->parser, net);
     }
 
     /**
@@ -848,14 +829,10 @@ public class Net implements Runnable {
         room_num = str_to_int(element.get_attr("ROOM"), -1);
 
         /* Get length of list */
-        /* FIXME: we should be able to get this from the list itself */
-        // count = 0;
-        // for (entry = ggz_list_head(list);
-        // entry; entry = ggz_list_next(entry))
-        // count++;
-        if (list == null)
-            list = new ArrayList(0); // HB Added to prevent
-        // NullPointerException
+        if (list == null) {
+            // HB Added to prevent NullPointerException
+            list = new ArrayList(0);
+        }
         count = list.size();
 
         if ("room".equals(type)) {
@@ -872,14 +849,7 @@ public class Net implements Runnable {
             }
             this.server.event(ServerEvent.GGZ_ROOM_LIST, null);
         } else if ("game".equals(type)) {
-            /* Free previous list of types */
-            // if (this.server.get_num_gametypes() > 0)
-            // this.server.free_typelist(this.server);
             this.server.init_typelist(count);
-            // for (entry = ggz_list_head(list);
-            // entry; entry = ggz_list_next(entry)) {
-            // this.server.add_type(ggz_list_get_data(entry));
-            // }
             for (iter = list.iterator(); iter.hasNext();) {
                 this.server.add_type((GameType) iter.next());
             }
@@ -890,7 +860,7 @@ public class Net implements Runnable {
             list = null; /* avoid freeing list */
         } else if ("table".equals(type)) {
             room = this.server.get_room_by_id(room_num);
-            room.set_table_list(count, list);
+            room.set_table_list(list);
             list = null; /* avoid freeing list */
         }
     }
@@ -1192,7 +1162,7 @@ public class Net implements Runnable {
             data = new PlayerInfoData();
             info.set_data(data);
 
-            data.infos = new ArrayList<PlayerInfoData>();
+            data.infos = new ArrayList<PlayerInfo>();
         }
 
         return data;
