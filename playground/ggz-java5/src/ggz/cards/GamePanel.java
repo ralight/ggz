@@ -132,62 +132,6 @@ public class GamePanel extends JPanel implements CardGameHandler,
                     "Dynamic number of players not supported yet.");
         }
 
-        for (int seat_num = 0; seat_num < numplayers; seat_num++) {
-            JLabel label = player_labels[seat_num];
-            if (label == null) {
-                label = new JLabel("<HTML><B>"
-                        + card_client.get_nth_player(seat_num).get_name()
-                        + "</B></HTML>");
-                label.setForeground(Color.WHITE);
-                table.add(label);
-                player_labels[seat_num] = label;
-
-                if (seat_num != 0) {
-                    initPopupMenu(seat_num);
-
-                    // Listen for click events to pop up a menu that allows
-                    // users to do things to this seat.
-                    label.addMouseListener(new PopupListener());
-                }
-            } else {
-                label.setText(card_client.get_nth_player(seat_num).get_name());
-            }
-
-            // Position the labels.
-            SeatType seat_type = card_client.get_nth_player(seat_num).get_seat_type();
-            switch (seat_num) {
-            case 0: // Me - south
-                label.setLocation(table.getWidth() - 200,
-                        table.getHeight() - 70);
-                label.setVerticalAlignment(SwingConstants.BOTTOM);
-                break;
-            case 1: // West
-                label.setIcon(getPlayerIcon(seat_type));
-                label.setVerticalTextPosition(SwingConstants.BOTTOM);
-                label.setHorizontalTextPosition(SwingConstants.CENTER);
-                label.setHorizontalAlignment(SwingConstants.LEFT);
-                label.setLocation(0, table.getHeight() / 3);
-                break;
-            case 2: // North
-                label.setIcon(getPlayerIcon(seat_type));
-                label.setVerticalAlignment(SwingConstants.TOP);
-                label.setLocation(table.getWidth() / 2, 0);
-                break;
-            case 3: // East
-                label.setIcon(getPlayerIcon(seat_type));
-                label.setVerticalTextPosition(SwingConstants.BOTTOM);
-                label.setHorizontalTextPosition(SwingConstants.CENTER);
-                label.setHorizontalAlignment(SwingConstants.RIGHT);
-                label.setLocation(table.getWidth() - 70,
-                        (table.getHeight() / 2) - 20);
-                break;
-            default:
-                throw new UnsupportedOperationException(
-                        "More than 4 players not supported yet.");
-            }
-            label.setSize(label.getPreferredSize());
-        }
-
         // Initialise the array that holds the card sprites for each player.
         if (sprites == null) {
             sprites = new Sprite[numplayers][];
@@ -195,6 +139,61 @@ public class GamePanel extends JPanel implements CardGameHandler,
             throw new UnsupportedOperationException(
                     "Dynamic number of players not supported yet.");
         }
+    }
+
+    public void alert_player(int seat_num, SeatType old_type, String old_name) {
+        JLabel label = player_labels[seat_num];
+        if (label == null) {
+            label = new JLabel(card_client.get_nth_player(seat_num).get_name());
+            label.setForeground(Color.WHITE);
+            table.add(label);
+            player_labels[seat_num] = label;
+
+            if (seat_num != 0) {
+                // Listen for click events to pop up a menu that allows
+                // users to do things to this seat.
+                label.addMouseListener(new PopupListener());
+            }
+        } else {
+            label.setText(card_client.get_nth_player(seat_num).get_name());
+        }
+
+        // Position the labels.
+        SeatType seat_type = card_client.get_nth_player(seat_num)
+                .get_seat_type();
+        switch (seat_num) {
+        case 0: // Me - south
+            label.setLocation(table.getWidth() - 200, table.getHeight() - 70);
+            label.setVerticalAlignment(SwingConstants.BOTTOM);
+            break;
+        case 1: // West
+            label.setIcon(getPlayerIcon(seat_type));
+            label.setVerticalTextPosition(SwingConstants.BOTTOM);
+            label.setHorizontalTextPosition(SwingConstants.CENTER);
+            label.setHorizontalAlignment(SwingConstants.LEFT);
+            label.setLocation(0, table.getHeight() / 3);
+            initPopupMenu(seat_num);
+            break;
+        case 2: // North
+            label.setIcon(getPlayerIcon(seat_type));
+            label.setVerticalAlignment(SwingConstants.TOP);
+            label.setLocation(table.getWidth() / 2, 0);
+            initPopupMenu(seat_num);
+            break;
+        case 3: // East
+            label.setIcon(getPlayerIcon(seat_type));
+            label.setVerticalTextPosition(SwingConstants.BOTTOM);
+            label.setHorizontalTextPosition(SwingConstants.CENTER);
+            label.setHorizontalAlignment(SwingConstants.RIGHT);
+            label.setLocation(table.getWidth() - 70,
+                    (table.getHeight() / 2) - 20);
+            initPopupMenu(seat_num);
+            break;
+        default:
+            throw new UnsupportedOperationException(
+                    "More than 4 players not supported yet.");
+        }
+        label.setSize(label.getPreferredSize());
     }
 
     private ImageIcon getPlayerIcon(SeatType type) {
@@ -371,10 +370,6 @@ public class GamePanel extends JPanel implements CardGameHandler,
                 }
             }
         });
-    }
-
-    public void alert_player(int i, SeatType old_type, String old_name) {
-        // Players joining are handled in alert_num_players().
     }
 
     public void alert_server(Socket fd) {
@@ -644,10 +639,10 @@ public class GamePanel extends JPanel implements CardGameHandler,
         // chat_panel.handle_chat("get_play", valid_cards[i].toString());
         // }
 
-//        if (play_hand != 0) {
-//            throw new UnsupportedOperationException(
-//                    "Playing from other cards not supported yet.");
-//        }
+        // if (play_hand != 0) {
+        // throw new UnsupportedOperationException(
+        // "Playing from other cards not supported yet.");
+        // }
 
         // Enable and disable cards as appropriate.
         Sprite[] player_cards = sprites[play_hand];
@@ -821,16 +816,21 @@ public class GamePanel extends JPanel implements CardGameHandler,
         // + " is_spectator=" + is_spectator + " seat_num=" + seat_num);
     }
 
+    /**
+     * This is invoked when a message arrives from the core client. We
+     * handle player messages in alert_player() above, which is invoked
+     * when a message arrives from the game client.
+     */
     public void handle_seat(Seat seat) {
-        int seat_num = seat.get_num();
-        if (seat_num > 0 && player_labels != null) {
-            if (player_labels[seat_num] != null) {
-                player_labels[seat_num].setIcon(getPlayerIcon(seat.get_type()));
-                player_labels[seat_num].setSize(player_labels[seat_num]
-                        .getPreferredSize());
-                initPopupMenu(seat_num);
-            }
-        }
+        // int seat_num = seat.get_num();
+        // if (seat_num > 0 && player_labels != null) {
+        // if (player_labels[seat_num] != null) {
+        // player_labels[seat_num].setIcon(getPlayerIcon(seat.get_type()));
+        // player_labels[seat_num].setSize(player_labels[seat_num]
+        // .getPreferredSize());
+        // initPopupMenu(seat_num);
+        // }
+        // }
     }
 
     public void handle_server_fd(Socket fd) {

@@ -50,9 +50,16 @@ public class Game implements ModTransactionHandler {
     /* Publicly exported functions */
 
     public Game(Server server, Module module) {
-        if (server == null || server.get_cur_room() == null
-                || server.get_cur_game() != null)
-            throw new IllegalArgumentException();
+        if (server == null) {
+            throw new IllegalArgumentException("server cannot be null");
+        }
+        if (server.get_cur_room() == null) {
+            throw new IllegalStateException(
+                    "server does not have a current room");
+        }
+        if (server.get_cur_game() != null) {
+            throw new IllegalStateException("server already has a current game");
+        }
 
         if (module == null && !Module.is_embedded())
             throw new IllegalArgumentException();
@@ -82,7 +89,7 @@ public class Game implements ModTransactionHandler {
         // server.get_handle());
         // #endif
         this.client.add_mod_listener(this);
-        //this.client.set_player(server.get_handle(), false, -1);
+        // this.client.set_player(server.get_handle(), false, -1);
 
         if (!Module.is_embedded())
             this.client.set_module(null, module.get_class_name());
@@ -94,7 +101,8 @@ public class Game implements ModTransactionHandler {
     // const HookFunc func)
     {
         if (this.event_hooks != null && listener != this.event_hooks) {
-            throw new UnsupportedOperationException("Multiple listeners not supported yet.");
+            throw new UnsupportedOperationException(
+                    "Multiple listeners not supported yet.");
         }
         this.event_hooks = listener;
     }
@@ -322,8 +330,8 @@ public class Game implements ModTransactionHandler {
      * Make sure ggzd knows we've left the table.
      */
     private void abort_game() throws IOException {
-//        TableLeaveEventData event_data = new TableLeaveEventData(
-//                LeaveType.GGZ_LEAVE_NORMAL, null);
+        // TableLeaveEventData event_data = new TableLeaveEventData(
+        // LeaveType.GGZ_LEAVE_NORMAL, null);
         Room room = server.get_cur_room();
 
         /*
@@ -334,9 +342,9 @@ public class Game implements ModTransactionHandler {
 
         // This is fired when Net parses the table leave response so don't fire
         // it prematurely here.
-        //if (room != null) {
-        //    room.table_event(RoomEvent.GGZ_TABLE_LEFT, event_data);
-        //}
+        // if (room != null) {
+        // room.table_event(RoomEvent.GGZ_TABLE_LEFT, event_data);
+        // }
 
         if (room != null && server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
             room.leave_table(true);
@@ -344,10 +352,10 @@ public class Game implements ModTransactionHandler {
 
         server.set_cur_game(null);
     }
-    
-//    public void disconnect() throws IOException{
-//        client.disconnect();
-//    }
+
+    // public void disconnect() throws IOException{
+    // client.disconnect();
+    // }
 
     public void set_server_fd(Socket fd) throws IOException {
         this.client.set_server_fd(fd);
@@ -360,7 +368,7 @@ public class Game implements ModTransactionHandler {
     private void event(GameEvent event, Object data) {
         if (event_hooks == null)
             return;
-        
+
         switch (event) {
         case GGZ_GAME_LAUNCH_FAIL:
             event_hooks.game_launch_fail((Exception) data);
@@ -394,7 +402,7 @@ public class Game implements ModTransactionHandler {
             } catch (Exception e) {
                 log.severe("Failed to connect to game module");
                 try {
-                abort_game();
+                    abort_game();
                 } catch (IOException e2) {
                     // Ignore.
                 }

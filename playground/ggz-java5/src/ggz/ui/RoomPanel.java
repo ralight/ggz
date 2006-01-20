@@ -12,6 +12,7 @@ import ggz.client.core.Server;
 import ggz.client.core.StateID;
 import ggz.client.core.Table;
 import ggz.client.core.TableLeaveEventData;
+import ggz.common.LeaveType;
 import ggz.common.SeatType;
 
 import java.awt.BorderLayout;
@@ -194,6 +195,20 @@ public class RoomPanel extends JPanel implements RoomListener,
     }
 
     public void table_left(TableLeaveEventData data) {
+        switch (data.get_reason()) {
+        case GGZ_LEAVE_BOOT:
+            JOptionPane.showMessageDialog(this,
+                    "You have been booted from the game by "
+                            + data.get_booter());
+            break;
+        case GGZ_LEAVE_GAMEERROR:
+            JOptionPane.showMessageDialog(this,
+                    "Sorry, there has been an error in the game.");
+            break;
+        case GGZ_LEAVE_GAMEOVER:
+            JOptionPane.showMessageDialog(this, "GAME OVER");
+            break;
+        }
         tables.fireTableDataChanged();
         playSoloButton.setEnabled(true);
         newTableButton.setEnabled(true);
@@ -395,8 +410,13 @@ public class RoomPanel extends JPanel implements RoomListener,
 
                 switch (columnIndex) {
                 case 0:
-                    return "<HTML><B>Table " + table.get_id() + "</B><BR><I>"
-                            + table.get_desc();
+                    buffer = new StringBuffer("<HTML><B>Table ");
+                    buffer.append(table.get_id());
+                    if (table.get_desc() != null) {
+                        buffer.append("</B><BR><I>");
+                        buffer.append(table.get_desc());
+                    }
+                    return buffer.toString();
                 case 1:
                     buffer = new StringBuffer("<HTML><OL>");
                     for (int player_num = 0; player_num < table.get_num_seats(); player_num++) {

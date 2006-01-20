@@ -225,9 +225,9 @@ public class Client implements ModEventHandler {
     }
 
     private void handle_msg_newgame() throws IOException {
-         CardSetType cardset_type = fd_in.read_cardset_type();
-        
-         game.alert_newgame(cardset_type);
+        CardSetType cardset_type = fd_in.read_cardset_type();
+
+        game.alert_newgame(cardset_type);
     }
 
     /* A gameover message tells you the game is over, and who won. */
@@ -287,9 +287,12 @@ public class Client implements ModEventHandler {
 
             /* this forces reallocating later */
             this.max_hand_size = 0;
-        }
 
-        /* TODO: support for changing the number of players */
+            this.num_players = numplayers;
+
+            /* Redesign the table, if necessary. */
+            game.alert_num_players(numplayers, old_numplayers);
+        }
 
         /* read in data about the players */
         for (int i = 0; i < numplayers; i++) {
@@ -313,14 +316,6 @@ public class Client implements ModEventHandler {
                     || !old_name.equals(new_name)) {
                 game.alert_player(i, old_type, old_name);
             }
-        }
-
-        this.num_players = numplayers;
-
-        /* Redesign the table, if necessary. */
-        if (different) {
-            assert (numplayers != old_numplayers);
-            game.alert_num_players(numplayers, old_numplayers);
         }
 
         /* TODO: should we need to enter a waiting state if players leave? */
@@ -843,6 +838,11 @@ public class Client implements ModEventHandler {
                     }
                 } catch (EOFException e) {
                     // Ignore, end of input.
+                    try {
+                        quit();
+                    } catch (IOException e2) {
+                        // ignore.
+                    }
                 } catch (Throwable e) {
                     e.printStackTrace();
                     try {
@@ -852,12 +852,12 @@ public class Client implements ModEventHandler {
                     }
                 } finally {
                     try {
+                        game.handle_disconnect();
                         fd.close();
                     } catch (IOException e2) {
                         // ignore.
                     }
                 }
-                game.handle_disconnect();
             }
         }).start();
     }
@@ -878,12 +878,15 @@ public class Client implements ModEventHandler {
     public void request_boot(String name) throws IOException {
         mod.request_boot(name);
     }
+
     public void request_bot(int seat_num) throws IOException {
         mod.request_bot(seat_num);
     }
+
     public void request_open(int seat_num) throws IOException {
         mod.request_open(seat_num);
     }
+
     /**
      * GGZCards client game states
      * 
