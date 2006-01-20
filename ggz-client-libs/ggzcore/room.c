@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 7789 2006-01-17 18:27:45Z jdorje $
+ * $Id: room.c 7799 2006-01-20 08:45:48Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -633,17 +633,18 @@ void _ggzcore_room_add_player(GGZRoom * room, GGZPlayer * pdata,
 						_ggzcore_player_destroy,
 						0);
 
+	_ggzcore_player_get_record(pdata, &wins, &losses, &ties,
+				   &forfeits);
+	_ggzcore_player_get_rating(pdata, &rating);
+	_ggzcore_player_get_ranking(pdata, &ranking);
+	_ggzcore_player_get_highscore(pdata, &highscore);
+
 	/* Default new people in room to no table (-1) */
 	player = _ggzcore_player_new();
 	_ggzcore_player_init(player, ggzcore_player_get_name(pdata),
 			     _ggzcore_player_get_room(pdata),
 			     -1, ggzcore_player_get_type(pdata),
 			     ggzcore_player_get_lag(pdata));
-	_ggzcore_player_get_record(pdata, &wins, &losses, &ties,
-				   &forfeits);
-	_ggzcore_player_get_rating(player, &rating);
-	_ggzcore_player_get_ranking(player, &ranking);
-	_ggzcore_player_get_highscore(player, &highscore);
 	_ggzcore_player_init_stats(player, wins, losses, ties, forfeits,
 				   rating, ranking, highscore);
 
