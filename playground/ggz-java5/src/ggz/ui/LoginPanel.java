@@ -47,9 +47,11 @@ public class LoginPanel extends JPanel {
 
         // Create all the components
         handleLabel = new JLabel(
-                "<HTML>Nickname<FONT color=red>*</FONT></HTML>", SwingConstants.RIGHT);
+                "<HTML>Nickname<FONT color=red>*</FONT></HTML>",
+                SwingConstants.RIGHT);
         passwordLabel = new JLabel(
-                "<HTML>Password<FONT color=red>*</FONT></HTML>", SwingConstants.RIGHT);
+                "<HTML>Password<FONT color=red>*</FONT></HTML>",
+                SwingConstants.RIGHT);
         emailLabel = new JLabel("Email", SwingConstants.RIGHT);
         handleTextField = new JTextField(20);
         passwordField = new JPasswordField(20);
@@ -115,9 +117,26 @@ public class LoginPanel extends JPanel {
      * We need an init() method since we can't get the root pane in the
      * constructor, this panel needs to added to a container first.
      */
-    public void init() {
+    public void init(String userInfo) {
         getRootPane().setDefaultButton(loginButton);
         handleTextField.requestFocus();
+        
+        // If we have userInfo then log in automatically.
+        if (userInfo != null) {
+            int indexOfColon = userInfo.indexOf(':');
+            if (indexOfColon > -1 && indexOfColon < userInfo.length()) {
+                // We have a password.
+                handleTextField.setText(userInfo.substring(0, indexOfColon));
+                passwordField.setText(userInfo.substring(indexOfColon + 1));
+                // Simulate radion selection to initialise radio buttons' hidden
+                // state.
+                normalLoginRadio.setSelected(true);
+                normalLoginRadio.getAction().actionPerformed(null);
+            } else {
+                handleTextField.setText(userInfo);
+            }
+            connect();
+        }
     }
 
     protected void connect() {
@@ -132,8 +151,7 @@ public class LoginPanel extends JPanel {
                         .getText(), null, null);
             } else {
                 server.set_logininfo(LoginType.GGZ_LOGIN_NEW, handleTextField
-                        .getText(), password, emailTextField
-                        .getText());
+                        .getText(), password, emailTextField.getText());
             }
             server.connect();
         } catch (RuntimeException e) {
@@ -150,6 +168,7 @@ public class LoginPanel extends JPanel {
         setAllEnabled(true);
         handleTextField.selectAll();
         handleTextField.requestFocus();
+        passwordField.setText(null);
     }
 
     private void setAllEnabled(boolean enabled) {

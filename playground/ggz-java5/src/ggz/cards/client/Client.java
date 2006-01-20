@@ -867,8 +867,7 @@ public class Client implements ModEventHandler {
     }
 
     public void handle_spectator_seat(SpectatorSeat seat) {
-        // TODO Auto-generated method stub
-
+        game.handle_spectator_seat(seat);
     }
 
     public void request_chat(String message) throws IOException {

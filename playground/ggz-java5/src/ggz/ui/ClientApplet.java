@@ -2,6 +2,7 @@ package ggz.ui;
 
 import ggz.client.core.ErrorEventData;
 import ggz.client.core.MotdEventData;
+import ggz.client.core.Room;
 import ggz.client.core.Server;
 import ggz.client.core.ServerListener;
 import ggz.client.core.StateID;
@@ -15,6 +16,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -43,6 +45,8 @@ public class ClientApplet extends JApplet implements ServerListener,
     protected RoomPanel roomPanel;
 
     private ErrorEventData loginFailData;
+    
+    private String uriPath;
 
     static {
         // Get Swing to use Antialiased text.
@@ -61,6 +65,7 @@ public class ClientApplet extends JApplet implements ServerListener,
         final Composite alphaComposite = AlphaComposite.getInstance(
                 AlphaComposite.SRC_OVER, 0.3f);
 
+        // Create a custom content pane that does fancy painting.
         setContentPane(new JPanel() {
 
             public void paintComponent(Graphics g) {
@@ -68,8 +73,10 @@ public class ClientApplet extends JApplet implements ServerListener,
                     Graphics2D g2d = (Graphics2D) g;
 
                     // Fille the background with a gradient.
-                    g2d.setPaint(new GradientPaint(0, 0, Color.WHITE, 0,
-                            getHeight() / 2, getBackground(), true));
+//                    g2d.setPaint(new GradientPaint(0, 0, Color.WHITE, 0,
+//                            getHeight() / 2, getBackground(), true));
+                    g2d.setPaint(new GradientPaint(0, 0, new Color(0xce, 0xfa, 0xdf), 0,
+                            getHeight() / 2, new Color(0x7c, 0xaf, 0x68), true));
                     g2d.fillRect(0, 0, getWidth(), getHeight());
 
                     if (watermark != null) {
@@ -90,20 +97,24 @@ public class ClientApplet extends JApplet implements ServerListener,
     public void init() {
         try {
             // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            String host = getParameter("host", "live.ggzgamingzone.org");
-            int port = Integer.parseInt(getParameter("port", "5688"));
+            URI uri = new URI(getParameter("uri",
+                    "ggz://live.ggzgamingzone.org:5688/Entry%20Room"));
+            String host = uri.getHost();
+            int port = uri.getPort();
+            uriPath = uri.getPath();
             String sendLogFile = getParameter("sendLog");
             String receiveLogFile = getParameter("receiveLog");
             server = new Server(host, port, false);
             server.log_session(sendLogFile, receiveLogFile);
             server.add_event_hook(this);
-            getContentPane().setBackground(new Color(0, 128, 255));
-            // getContentPane().setBackground(new Color(204, 153, 153));
+            //getContentPane().setBackground(new Color(0, 128, 255));
+            getContentPane().setBackground(new Color(0x7c, 0xaf, 0x68));
+            getContentPane().setBackground(new Color(0xce, 0xfa, 0xdf));
             // getContentPane().setBackground(new Color(155, 203, 154));
             getContentPane().setLayout(new CardLayout());
             loginPanel = new LoginPanel(server);
             getContentPane().add(loginPanel, "login");
-            loginPanel.init();
+            loginPanel.init(uri.getUserInfo());
             loungePanel = new LoungePanel(server);
             getContentPane().add(loungePanel, "lounge");
             roomPanel = new RoomPanel(server);
@@ -363,7 +374,19 @@ public class ClientApplet extends JApplet implements ServerListener,
             }
         });
         try {
-            // Move directly into the lounge.
+            if (uriPath != null && uriPath.length() > 1) {
+                String roomToEnter = uriPath.substring(1);
+                // Move directly into the room specified by the URI.
+                for (int room_num = 0; room_num < server.get_num_rooms(); room_num++) {
+                    Room room = server.get_nth_room(room_num);
+                    if (roomToEnter.equals(room.get_name())) {
+                        server.join_room(room.get_id());
+                        return;
+                    }
+                }
+            }
+            
+            // If we got this far then either there was no room specified or no room with that name was found.
             server.join_room(0);
         } catch (Exception e) {
             handleException(e);

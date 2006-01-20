@@ -847,7 +847,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void handle_spectator_seat(SpectatorSeat seat) {
-        chat_panel.appendChat("handle_spectator_seat", null);
+        chat_panel.appendChat("handle_spectator_seat", "num="+ seat.get_num() + " name="+seat.get_name());
     }
 
     public void handleException(Throwable e) {

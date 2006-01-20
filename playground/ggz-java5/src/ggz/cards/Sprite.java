@@ -27,7 +27,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 public class Sprite extends Component {
-    private static String basePath = "/ggz/cards/images/cards/";
+    private static String basePath = "/ggz/cards/images/";
 
     protected static int DROP_SHADOW_WIDTH = 2;
 
@@ -198,7 +198,7 @@ public class Sprite extends Component {
             return image;
         }
         if (cardFronts == null) {
-            URL url = getClass().getResource("images/cards-1.png");
+            URL url = getClass().getResource(basePath + "cards-1.png");
             cardFronts = ImageIO.read(url);
         }
         int cardWidth = cardFronts.getWidth() / 4;

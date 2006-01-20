@@ -192,13 +192,13 @@ public class Mod implements ModGGZ, ModGame {
     public void set_spectator_seat(SpectatorSeat seat) {
         if (seat == null)
             throw new IllegalArgumentException("seat cannot be null");
-        if (seat.num < 0)
+        if (seat.get_num() < 0)
             throw new IllegalArgumentException("seat.num cannot be less than 0");
 
         if (this.state != ModState.GGZMOD_STATE_CREATED) {
             SpectatorSeat old_seat;
-            old_seat = get_spectator_seat(seat.num);
-            if (!seat.name.equals(old_seat.name)) {
+            old_seat = get_spectator_seat(seat.get_num());
+            if (old_seat == null || !seat.get_name().equals(old_seat.get_name())) {
                 ehandler.handle_spectator_seat(seat);
                 // _io_ggz_send_spectator_seat(ggzmod->fd, seat) < 0) {
                 // _ggzmod_ggz_error(ggzmod, "Error writing to game");
@@ -206,9 +206,9 @@ public class Mod implements ModGGZ, ModGame {
             }
         }
 
-        if (seat.name != null) {
-            if (seat.num >= this.num_spectator_seats) {
-                this.num_spectator_seats = seat.num + 1;
+        if (seat.get_name() != null) {
+            if (seat.get_num() >= this.num_spectator_seats) {
+                this.num_spectator_seats = seat.get_num() + 1;
             }
             if (this.spectator_seats == null) {
                 this.spectator_seats = new ArrayList<SpectatorSeat>();

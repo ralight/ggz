@@ -78,7 +78,7 @@ public class Table {
         }
 
         /* Allocated on demand later */
-        this.num_spectator_seats = 0;
+        this.num_spectator_seats = -1;
         this.spectator_seats = null;
     }
 
@@ -247,14 +247,15 @@ public class Table {
         Game game;
 
         if (seat.index >= this.num_spectator_seats) {
-            int new_ = this.num_spectator_seats, i;
+            int new_ = this.num_spectator_seats;
 
             /*
              * Grow the array geometrically to keep a constant ammortized
              * overhead.
              */
-            while (seat.index >= new_)
-                new_ = new_ != 0 ? new_ * 2 : 1;
+            while (seat.index >= new_) {
+                new_ = new_ > 0 ? new_ * 2 : 1;
+            }
 
             log.fine("Increasing number of spectator seats to " + new_ + ".");
 
@@ -262,12 +263,15 @@ public class Table {
             // new_ * sizeof(*this.spectator_seats));
             TableSeat[] oldArray = this.spectator_seats;
             this.spectator_seats = new TableSeat[new_];
-            System.arraycopy(oldArray, 0, this.spectator_seats, 0,
-                    oldArray.length);
+            if (oldArray != null) {
+                System.arraycopy(oldArray, 0, this.spectator_seats, 0,
+                        oldArray.length);
+            }
 
-            for (i = this.num_spectator_seats + 1; i < new_; i++) {
-                this.spectator_seats[i].index = i;
-                this.spectator_seats[i].name = null;
+            for (int i = this.num_spectator_seats + 1; i < new_; i++) {
+                this.spectator_seats[i] = new TableSeat(i, SeatType.GGZ_SEAT_NONE, null);
+//                this.spectator_seats[i].index = i;
+//                this.spectator_seats[i].name = null;
             }
             this.num_spectator_seats = new_;
         }

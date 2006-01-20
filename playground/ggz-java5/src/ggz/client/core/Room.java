@@ -134,7 +134,7 @@ public class Room {
         return _get_server();
     }
 
-    int get_id() {
+    public int get_id() {
         return this.id;
     }
 

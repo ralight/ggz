@@ -8,14 +8,22 @@ package ggz.client.mod;
  */
 public class SpectatorSeat {
     /** Spectator seat index */
-    int num;
+    private int num;
 
     /** The spectator's name (NULL => empty) */
-    String name;
+    private String name;
 
     public SpectatorSeat(int num, String name) {
         this.num = num;
         this.name = name;
+    }
+    
+    public int get_num() {
+        return num;
+    }
+    
+    public String get_name() {
+        return name;
     }
 
     public boolean equals(Object o) {

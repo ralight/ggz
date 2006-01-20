@@ -21,9 +21,7 @@ public class ClientApp {
 
     protected static String receiveLog;
     
-    protected static String host;
-    
-    protected static String port;
+    protected static String uri;
 
     private ClientApp() {
         super();
@@ -60,10 +58,8 @@ public class ClientApp {
                     return sendLog;
                 } else if ("receiveLog".equals(name)) {
                     return receiveLog;
-                } else if ("host".equals(name)) {
-                    return host;
-                } else if ("port".equals(name)) {
-                    return port;
+                } else if ("uri".equals(name)) {
+                    return uri;
                 }
                 return null;
             }
@@ -149,12 +145,9 @@ public class ClientApp {
                 } else if ("--xmlIn".equals(argv[argPos])) {
                     argPos++;
                     receiveLog = argv[argPos];
-                } else if ("--port".equals(argv[argPos])) {
+                } else if ("--uri".equals(argv[argPos])) {
                     argPos++;
-                    port = argv[argPos];
-                } else if ("--host".equals(argv[argPos])) {
-                    argPos++;
-                    host = argv[argPos];
+                    uri = argv[argPos];
                 }
             }
             return true;
@@ -165,9 +158,8 @@ public class ClientApp {
 
     private static void printUsage() {
         System.err
-                .println("Usage: java ggz.ui.ClientApp [--host host] [--port port] [--xmlOut file] [--xmlIn file]");
-        System.err.println(" --host host    GGZ server to connect to.");
-        System.err.println(" --port port    Port on GGZ server to connect to.");
+                .println("Usage: java ggz.ui.ClientApp [--uri uri] [--xmlOut file] [--xmlIn file]");
+        System.err.println(" --uri uri      GGZ server to connect to.");
         System.err
                 .println(" --xmlOut file  Write XML sent to the server to this file.");
         System.err
