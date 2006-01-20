@@ -267,7 +267,7 @@ public class TablePanel extends JPanel {
         validate();
         repaint();
 
-        double totalSeconds = ((System.currentTimeMillis() - start) / 1000.0);
+//        double totalSeconds = ((System.currentTimeMillis() - start) / 1000.0);
 //        System.out.println(paintCount / totalSeconds + " paint() calls/s ("
 //                + totalSeconds + "s), dropped " + droppedFrameCount + " of "
 //                + frames + " frames");
@@ -351,7 +351,7 @@ public class TablePanel extends JPanel {
             sprite[s].repaint();
         }
 
-        double totalSeconds = ((System.currentTimeMillis() - start) / 1000.0);
+//        double totalSeconds = ((System.currentTimeMillis() - start) / 1000.0);
 //        System.out.println(paintCount / totalSeconds + " fps");
 
         if (graphics != null) {

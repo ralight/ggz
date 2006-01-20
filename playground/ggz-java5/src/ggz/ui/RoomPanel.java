@@ -12,7 +12,6 @@ import ggz.client.core.Server;
 import ggz.client.core.StateID;
 import ggz.client.core.Table;
 import ggz.client.core.TableLeaveEventData;
-import ggz.common.LeaveType;
 import ggz.common.SeatType;
 
 import java.awt.BorderLayout;

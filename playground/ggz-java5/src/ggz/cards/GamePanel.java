@@ -141,26 +141,29 @@ public class GamePanel extends JPanel implements CardGameHandler,
         }
     }
 
+    /**
+     * Invoked when seat information changes or is first received for a given seat.
+     */
     public void alert_player(int seat_num, SeatType old_type, String old_name) {
         JLabel label = player_labels[seat_num];
+        CardSeat player = card_client.get_nth_player(seat_num);
         if (label == null) {
-            label = new JLabel(card_client.get_nth_player(seat_num).get_name());
+            label = new JLabel(player.get_name());
             label.setForeground(Color.WHITE);
             table.add(label);
             player_labels[seat_num] = label;
 
             if (seat_num != 0) {
-                // Listen for click events to pop up a menu that allows
+                // Listen for click events so as to pop up a menu that allows
                 // users to do things to this seat.
                 label.addMouseListener(new PopupListener());
             }
         } else {
-            label.setText(card_client.get_nth_player(seat_num).get_name());
+            label.setText(player.get_name());
         }
 
         // Position the labels.
-        SeatType seat_type = card_client.get_nth_player(seat_num)
-                .get_seat_type();
+        SeatType seat_type = player.get_seat_type();
         switch (seat_num) {
         case 0: // Me - south
             label.setLocation(table.getWidth() - 200, table.getHeight() - 70);
@@ -172,13 +175,13 @@ public class GamePanel extends JPanel implements CardGameHandler,
             label.setHorizontalTextPosition(SwingConstants.CENTER);
             label.setHorizontalAlignment(SwingConstants.LEFT);
             label.setLocation(0, table.getHeight() / 3);
-            initPopupMenu(seat_num);
+            initPopupMenu(seat_num, seat_type);
             break;
         case 2: // North
             label.setIcon(getPlayerIcon(seat_type));
             label.setVerticalAlignment(SwingConstants.TOP);
             label.setLocation(table.getWidth() / 2, 0);
-            initPopupMenu(seat_num);
+            initPopupMenu(seat_num, seat_type);
             break;
         case 3: // East
             label.setIcon(getPlayerIcon(seat_type));
@@ -187,7 +190,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
             label.setHorizontalAlignment(SwingConstants.RIGHT);
             label.setLocation(table.getWidth() - 70,
                     (table.getHeight() / 2) - 20);
-            initPopupMenu(seat_num);
+            initPopupMenu(seat_num, seat_type);
             break;
         default:
             throw new UnsupportedOperationException(
@@ -221,9 +224,8 @@ public class GamePanel extends JPanel implements CardGameHandler,
         }
     }
 
-    private void initPopupMenu(int seat_num) {
+    private void initPopupMenu(int seat_num, SeatType type) {
         JPopupMenu menu = null;
-        SeatType type = card_client.get_nth_player(seat_num).get_seat_type();
 
         switch (type) {
         case GGZ_SEAT_NONE:
