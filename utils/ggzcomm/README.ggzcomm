@@ -19,6 +19,7 @@ protocol-format.txt for an up-to-date format description.
 Furthermore, read the protocols section in the GGZ documentation, which is
 also available online at:
 
+http://dev.ggzgamingzone.org/protocols/
 http://www.ggzgamingzone.org/docs/games/protocols/
 
 To generate the source code, you might start with the process which is
