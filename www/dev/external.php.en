@@ -30,8 +30,11 @@ on GGZ. Before going into the details, the current list should be kept in mind:
 </table>
 
 Of note is that Widelands implements a whole client including game lobby, and CGoBan runs totally
-unmodified using a helper script binding it to GGZ. Do not hesitate to speak to GGZ developers to find
-out which of the above games (or a game from GGZ) is similar to yours.
+unmodified using a helper script binding it to GGZ. Freeciv can experimentally embed ggz-gtk
+as a widget.
+
+Do not hesitate to speak to GGZ developers to find out which of the above games
+(or a game from GGZ) is similar to yours.
 <br><br>
 
 <i>Documentation</i><br>

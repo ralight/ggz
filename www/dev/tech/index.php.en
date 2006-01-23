@@ -27,6 +27,7 @@ login and player system which sits at the heart of GGZ.
 Card games and board game development is a lot easier when using an existing framework
 to be able to concentrate on the game logic, protocol and AI players.
 GGZCards and GGZBoard are providing such a framework, respectively.
+For Java game development, GGZ-Java can integrate games of all genres.
 <br><br>
 
 <i>Get Hot New Stuff integration</i><br>

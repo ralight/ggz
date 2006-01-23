@@ -1,0 +1,42 @@
+<?php include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Developers</b><br>
+The following people are currently working on improving GGZ and produce game
+after game. Please refer to the
+<a href="http://www.ggzgamingzone.org/releases/latest/credits.php">release credits page</a>
+for a full listing of people who contributed to the project.
+<br><br>
+
+Some of the developers are also too shy to appear here.
+<a href="http://www.ggzgamingzone.org/backend/grubby/">Grubby</a> knows
+everything about them though - ask him!
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Josef Spillner</i><br>
+Long-time student from Germany. Can't tell Spades from Bridge but pretends to
+be the ultimate Tic-Tac-Toe killer player.
+Hacks mostly on GGZ Python these days, and cares more about version interface
+numbers than about readable web pages (hah!).
+
+<br><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("site/footer.php"); ?>
+

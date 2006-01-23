@@ -79,6 +79,12 @@ Wrappers exist for C++ and Python.
 </tr>
 </table>
 
+<br>
+In addition to these four, specialised libraries exist for embedding a GGZ
+core client with chat window into a Gtk+ game (libggzgtk), for encapsulating
+artificial intelligence routines (libcgc, chess-ai, ttt-ai) and maybe others.
+<br><br>
+
 </td>
 </tr>
 </table>
