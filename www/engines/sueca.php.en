@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Sueco</b><br>
+<b>Sueca</b><br>
 Card game for ??? players.
 <br>
 
@@ -13,13 +13,13 @@ Card game for ??? players.
 <tr>
 <td valign="top">
 
-<i>Sueco features</i><br>
+<i>Sueca features</i><br>
 <ul>
-<li>Gtk+ game client
+<li>Gtk+ and Java game clients
 </ul>
 <br>
 
-<i>Sueco rules</i><br>
+<i>Sueca rules</i><br>
 This card game is not documented here yet.
 Like all GGZCards game, Bridge belongs to the class of bid-taking card games.
 
@@ -39,7 +39,12 @@ No further information present.
 <img src="/pics/icons/game_gnome.png">
 <i>Gtk+ client: GGZCards</i><br>
 <a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
-<br>
+<br><br>
+
+<img src="/pics/icons/game_java.png">
+<i>Java client: GGZ-Java</i><br>
+<a href="/games/ggzjava/"><img src="/games/pics/ggzjava.png"></a>
+<br><br>
 
 </td>
 </tr>

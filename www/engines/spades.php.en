@@ -15,7 +15,7 @@ Card game for 4 players.
 
 <i>Spades features</i><br>
 <ul>
-<li>Gtk+ game client
+<li>Gtk+ and Java game clients
 <li>AI opponents available
 </ul>
 <br>
@@ -44,7 +44,12 @@ No further information present.
 <img src="/pics/icons/game_gnome.png">
 <i>Gtk+ client: NetSpades</i><br>
 <a href="/games/spades/"><img src="/games/pics/netspades.png"></a>
-<br>
+<br><br>
+
+<img src="/pics/icons/game_java.png">
+<i>Java client: GGZ-Java</i><br>
+<a href="/games/ggzjava/"><img src="/games/pics/ggzjava.png"></a>
+<br><br>
 
 </td>
 </tr>

@@ -15,7 +15,7 @@ Card game for ??? players.
 
 <i>Bridge features</i><br>
 <ul>
-<li>Gtk+ game client
+<li>Gtk+ and Java game clients
 </ul>
 <br>
 
@@ -39,7 +39,12 @@ No further information present.
 <img src="/pics/icons/game_gnome.png">
 <i>Gtk+ client: GGZCards</i><br>
 <a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
-<br>
+<br><br>
+
+<img src="/pics/icons/game_java.png">
+<i>Java client: GGZ-Java</i><br>
+<a href="/games/ggzjava/"><img src="/games/pics/ggzjava.png"></a>
+<br><br>
 
 </td>
 </tr>
