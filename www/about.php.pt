@@ -24,11 +24,15 @@ ainda.
 <ul>
 <li>15 pacotes (módules CSVN disponível, mais uma versão para o Windows
 <li>19 jogos independentes e 27 clientes para nuncar parar jogar
-<li>Mais de 150 000 linhas de código fonte em C, C++ e Python
+<li>Apoio para KDE/Qt, GNOME/Gtk+, SDL e jogos do navegador
+<li>Mais de 160 000 linhas de código fonte em C, C++, Python e Java
 </ul>
 
 </td>
 </table>
+
+O artículo <a href="http://www.ggzcommunity.org/5years/">5 anos de GGZ</a>
+contem umas histórias muito engraçadas sobre o passado do projeto GGZ.
 
 </font>
 </td>

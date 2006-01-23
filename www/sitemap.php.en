@@ -16,8 +16,10 @@ to find the right page more easily.
 
 <a href="/software.php">Software Overview</a>
 <u>
-<li><a href="/games/">Games</a>
-<li><a href="/clients/">Clients</a>
+<li><a href="/engines/">Game engines (types/protocols)</a>
+<li><a href="/games/">Game clients</a>
+<li><a href="/gameservers/">Game servers</a>
+<li><a href="/clients/">Core clients</a>
 <li><a href="/utils/">Utilities</a>
 <li><a href="/backend/">Backend</a>
 </u>
@@ -36,14 +38,14 @@ to find the right page more easily.
 
 <a href="/releases/">Release Information Overview</a>
 <u>
-<li><a href="/releases/0.0.9/">Current release</a>
+<li><a href="/releases/0.0.12/">Current release</a>
 </u>
 
 <br>
 
 <a href="/screenshots/">Screenshots Overview</a>
 <u>
-<li><a href="/screenshots/0.0.9/">Current screenshots</a>
+<li><a href="/screenshots/0.0.12/">Current screenshots</a>
 </u>
 
 </td>

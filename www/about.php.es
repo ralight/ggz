@@ -21,11 +21,15 @@ Con su sistema de clasificación del jugador y las características tales como e
 <ul>
 <li>15 paquetes (módulos CSVN disponibles, además de una exportación a Windows
 <li>19 protocolos para juegos y 27 clientes pueden darnos horas de diversión
-<li>Más de 150.000 lineas de código en C, C++, Python
+<li>Apoio para KDE/Qt, GNOME/Gtk+, SDL y juegos de navegador
+<li>Más de 160.000 lineas de código en C, C++, Python y Java
 </ul>
 
 </td>
 </table>
+
+El artículo <a href="http://www.ggzcommunity.org/5years/">5 años de GGZ</a>
+contiene unas cuotaciones engraçados sobre la histórica de GGZ.
 
 </font>
 </td>

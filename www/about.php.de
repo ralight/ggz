@@ -23,11 +23,15 @@ den vorhandenen unterstützenden Bibliotheken.
 <ul>
 <li>15 Pakete (SVN-Module) verfügbar, plus einer Windows-Portierung
 <li>19 Spiele-Engines und 27 Spiele-Clients für endlosen Spielspaß
-<li>Mehr als 150 000 Zeilen Code in C, C++, Python
+<li>Unterstützung für KDE/Qt, GNOME/Gtk+, SDL und Browserspiele
+<li>Mehr als 160 000 Zeilen Code in C, C++, Python und Java
 </ul>
 
 </td>
 </table>
+
+Der Artikel <a href="http://www.ggzcommunity.org/5years/">5 Jahre GGZ</a>
+enthält ein paar witzige Anekdoten aus der Geschichte von GGZ.
 
 </font>
 </td>

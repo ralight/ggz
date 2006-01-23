@@ -21,11 +21,15 @@ an easy task. Even more so since several game support libraries have been writte
 <ul>
 <li>15 packages (SVN modules) available, plus a Windows port
 <li>19 game engines and 27 game clients can provide hours of fun
-<li>More than 150.000 lines of code in C, C++, Python
+<li>Support for KDE/Qt, GNOME/Gtk+, SDL and browser games
+<li>More than 160,000 lines of code in C, C++, Python and Java
 </ul>
 
 </td>
 </table>
+
+The article <a href="http://www.ggzcommunity.org/5years/">5 years of GGZ</a>
+contains a few funny stories about the history of GGZ.
 
 </font>
 </td>
