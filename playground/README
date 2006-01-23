@@ -27,46 +27,79 @@
 		A GGZ Real User Emulator
 		Simulates high load on servers. Needs porting to the new GGZ protocol.
 
+	Chess-Pieces:
+		Metafont files (scalable) for free chess figures.
+
 	Colorsniff:
 		Debug utility which colorizes network traffic.
 
+	Community:
+		Frontpage news and articles for "our" instance of ggzcommunity.org,
+		since GGZ Community can be deployed by other projects as well.
+
+	Db2Web:
+		Old (probably deprecated) stuff from the ancestor of GGZ Community.
+
+	Doc-i18n:
+		Translation of Doxygen API documentation. Very work-intensive but
+		a good idea to attract more developers.
+
+	Freeciv:
+		Patches for GGZ integration into the freeciv game.
+
+	Gamedata:
+		Add-on packages containing levels, themes and so on.
+		This will be moved to a dedicated download server later (via GHNS).
+
+	Gentoo:
+		Ebuild files for the gentoo distribution.
+
+	GGZCollector:
+		Fire-'n-forget highscore collecting server for games with GGZ support
+		without running in GGZ mode (e.g. possible for Frozen Bubble).
+
 	GGZ-Java:
+	GGZ-Java5:
 	GGZ-Python:
 	GGZ-Ruby:
 		Language bindings for GGZ and some apps/games programmed in these
 		languages.
 		If you don't like C or C++, this is your chance!
+		Note that GGZ-Python is already a package on its own, and only some
+		experimental extensions are here in playground.
+		Likewise, GGZ-Java5 is rather complete, whereas GGZ-Java is quite old.
 
-	GGZWars:
-		A Gtk+/SDL game. Needs to be cleaned up, and before any release
-		the sounds and graphics have to get rid of any copyright/trademark
-		issues.
+	Kopete-GGZ:
+		GGZ plugin for the Kopete IM client. Should be moved to kde-client
+		actually.
+
+	Maintenance:
+		Server and repository maintenance scripts for GGZ developers.
+		Also some website tools and documentation.
+
+	MingW:
+		Information on how to compile GGZ on windows.
 
 	Patches:
 		Non-structured, partly non-working patches.
 		If you have a good one just add it here.
 
-	SDL-Games:
-		Games which will eventually make up the ggz-sdl-games package.
+	POVray:
+		Original POVray sources of the GGZ project logo.
+
+	Scons:
+		Experimental scons build system files for libggz, as alternative to the
+		autotools.
 
 	XMLGettext:
 		An xgettext variant to extract textual information from xml files.
 
-	Gaim-Plugin:
-		Being able to play GGZ games on IRC, from Gaim.
+	-------------------------------------------------------------------------
+	Graveyard:
+	The following directories existed here but were either moved out of
+	playground (grown-ups) or deleted for other reason.
 
-	Kopete-GGZ:
-		Being able to play GGZ games with Kopete, the IM client for KDE.
-
-	Freeciv:
-		Patches for GGZ integration into the freeciv game.
-
-	Gentoo:
-		Ebuild files for the gentoo distribution.
-
-	Chess-Pieces:
-		Metafont files (scalable) for free chess figures.
-
-	MingW:
-		Information on how to compile GGZ on windows.
+	- Gaim-Plugin
+	- GGZWars
+	- SDL-Games
 

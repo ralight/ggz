@@ -1,3 +1,9 @@
+*** NOTE:
+*** This Java directory is mostly obsolete!
+*** There's a new (much more complete) effort available known as GGZ-Java.
+*** It is currently located in playground/ggz-java5, but might soon be
+*** released as a package of its own
+
 
  The GGZ Gaming Zone - Java Implementation
  =========================================

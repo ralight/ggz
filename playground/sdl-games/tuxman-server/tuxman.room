@@ -1,7 +1,0 @@
-[RoomInfo]
-Name = Tuxman
-Description = Pacman stuff...
-GameType = Tuxman
-MaxPlayers = 150
-MaxTables = 45
-
