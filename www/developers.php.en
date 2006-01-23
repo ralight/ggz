@@ -7,7 +7,7 @@
 
 <b>Developers</b><br>
 The GGZ project is always in need of developers, artists, server administrators
-and power users. As a community projects, everyone can help to make the project
+and power users. As a community project, everyone can help to make the project
 succeed.
 Development takes place world-wide, and fresh ideas are welcome.
 <br><br>
@@ -32,15 +32,19 @@ please go to<br>
 <table class="list">
 <tr><td>
 <nobr>
+<a href="http://dev.ggzgamingzone.org/">Developer Area</a>
+<hr>
 <a href="https://bugs.ggzgamingzone.org/">Bug Tracker</a>
 <hr>
 <a href="https://mail.ggzgamingzone.org/">Mailing lists</a>
 <hr>
 <a href="http://svn.ggzgamingzone.org/">SVN Repository</a>
 <hr>
-<a href="http://dev.ggzgamingzone.org/">Documents</a>
+<a href="http://dev.ggzgamingzone.org/i18n/">Translations</a>
 <hr>
-<a href="http://dev.ggzgamingzone.org/">Gallery</a>
+<a href="http://dev.ggzgamingzone.org/art/">Artwork</a>
+<hr>
+<a href="http://dev.ggzgamingzone.org/gallery.php">Gallery</a>
 </nobr>
 </td></tr>
 </table>
