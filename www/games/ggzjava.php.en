@@ -1,0 +1,82 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZJava</b><br>
+Multi-game framework for 2 to 6 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Screenshot</i><br>
+<img src="/games/pics/ggzjava.png">
+<br clear="all">
+<br>
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Java game client
+<li>multi-protocol game client: supports all kinds of GGZ games under a Java/Swing/AWT umbrella
+</ul>
+
+GGZJava is a Java package aimed at making GGZ games available to browser users.
+As such, it contains multiple game clients and a corresponding core client in the form of a
+Java applet.
+
+<br><br>
+
+<i>GGZ game client support</i><br>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/spades/"><i>Engine: Spades</i></a>
+<br><br>
+
+<a href="/engines/bridge/"><i>Engine: Bridge</i></a>
+<br><br>
+
+<a href="/engines/hearts/"><i>Engine: Hearts</i></a>
+<br><br>
+
+<a href="/engines/sueco/"><i>Engine: Sueco</i></a>
+<br><br>
+
+<a href="/engines/whist/"><i>Engine: Whist</i></a>
+<br><br>
+
+<a href="/engines/suaro/"><i>Engine: Suaro</i></a>
+<br><br>
+
+<a href="/engines/lapocha/"><i>Engine: LaPocha</i></a>
+<br><br>
+
+<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
+<br><br>
+
+<a href="/gameservers/spades/"><i>Server: NetSpades</i></a>
+<br><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
