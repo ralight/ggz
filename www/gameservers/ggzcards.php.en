@@ -15,7 +15,7 @@ Multiple card games for 2-6 players.
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Supports the <a href="/engines/lapocha/">LaPocha</a>, <a href="/engines/bridge/">Bridge</a>, <a href="/engines/fortytwo/">FortyTwo</a>, <a href="/engines/hearts/">Hearts</a>, <a href="/engines/suaro/">Suaro</a>, <a href="/engines/sueco/">Sueco</a> and <a href="/engines/whist/">Whist</a> engines
+<li>Supports the <a href="/engines/lapocha/">LaPocha</a>, <a href="/engines/bridge/">Bridge</a>, <a href="/engines/fortytwo/">FortyTwo</a>, <a href="/engines/hearts/">Hearts</a>, <a href="/engines/suaro/">Suaro</a>, <a href="/engines/sueco/">Sueca</a> and <a href="/engines/whist/">Whist</a> engines
 <li>Supports AI players
 <li>Implemented in C (GGZCards framework)
 <li>GGZ is required (no standalone mode)
@@ -56,7 +56,7 @@ In all these GGZCards games, many GGZ features are supported.
 <a href="/engines/suaro/"><i>Engine: Suaro</i></a>
 <br><br>
 
-<a href="/engines/sueco/"><i>Engine: Sueco</i></a>
+<a href="/engines/sueca/"><i>Engine: Sueca</i></a>
 <br><br>
 
 <a href="/engines/whist/"><i>Engine: Whist</i></a>
@@ -65,6 +65,11 @@ In all these GGZCards games, many GGZ features are supported.
 <img src="/pics/icons/game_gnome.png">
 <i>Gtk+ client: GGZCards</i><br>
 <a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_java.png">
+<i>Java client: GGZ-Java</i><br>
+<a href="/games/ggzjava/"><img src="/games/pics/ggzjava.png"></a>
 <br><br>
 
 </td>
