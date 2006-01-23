@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7793 2006-01-18 01:37:34Z jdorje $
+ * $Id: easysock.c 7801 2006-01-23 10:34:40Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -161,8 +161,39 @@ int ggz_init_network(void)
 
 static int es_bind(const char *host, int port)
 {
-	int sockfd, n;
+	int sockfd;
 	const int on = 1;
+	/* FIXME: better test on getaddrinfo() directly */
+#ifdef HAVE_WINSOCK2_H
+	struct sockaddr_in name;
+
+	sockfd = socket(PF_INET, SOCK_STREAM, 0);
+
+	if (sockfd < 0) {
+		if (_err_func) {
+			const char *msg = hstrerror(h_errno);
+			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		}
+		return -1;
+	}
+
+	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (void*)&on, sizeof(on));
+
+	memset(&name, 0, sizeof(name));
+	name.sin_family = AF_INET;
+	name.sin_port = port;
+	name.sin_addr.s_addr = htonl(INADDR_ANY);
+
+	if (bind(sockfd, &name, sizeof(name)) != 0) {
+		if (_err_func) {
+			const char *msg = strerror(errno);
+			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		}
+		close(sockfd);
+		sockfd = -1;
+	}
+#else
+	int n;
 	struct addrinfo hints, *res, *ressave;
 	char serv[30];
 
@@ -175,12 +206,7 @@ static int es_bind(const char *host, int port)
 
 	if ((n = getaddrinfo(host, serv, &hints, &res)) != 0) {
 		if (_err_func) {
-#ifdef HAVE_WINSOCK2_H
-			const char *msg = "Unknown error"; /* FIXME */
-#else
 			const char *msg = gai_strerror(n);
-#endif
-
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
 		}
 		return -1;
@@ -204,6 +230,7 @@ static int es_bind(const char *host, int port)
 	} while ( (res = res->ai_next) != NULL);
 
 	freeaddrinfo(ressave);
+#endif
 
 	return(sockfd);
 }
@@ -211,7 +238,45 @@ static int es_bind(const char *host, int port)
 
 static int es_connect(const char *host, int port)
 {
-	int sockfd, n;
+	int sockfd;
+#ifdef HAVE_WINSOCK2_H
+	struct hostent *h;
+	struct sockaddr_in name;
+
+	sockfd = socket(PF_INET, SOCK_STREAM, 0);
+
+	if (sockfd < 0) {
+		if (_err_func) {
+			const char *msg = hstrerror(h_errno);
+			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		}
+		return -1;
+	}
+
+	h = gethostbyname(host);
+	if (!h) {
+		if (_err_func) {
+			const char *msg = hstrerror(h_errno);
+			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		}
+		return -1;
+	}
+
+	memset(&name, 0, sizeof(name));
+	name.sin_family = AF_INET;
+	name.sin_port = port;
+	memcpy(&name.sin_addr, h->h_addr, h->h_length);
+
+	if (connect(sockfd, &name, sizeof(name)) != 0) {
+		if (_err_func) {
+			const char *msg = strerror(errno);
+			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		}
+		close(sockfd);
+		sockfd = -1;
+	}
+#else
+	int n;
 	struct addrinfo hints, *res, *ressave;
 	char serv[30];
 
@@ -223,11 +288,7 @@ static int es_connect(const char *host, int port)
 
 	if ((n = getaddrinfo(host, serv, &hints, &res)) != 0) {
 		if (_err_func) {
-#ifdef HAVE_WINSOCK2_H
-			const char *msg = "Unknown error"; /* FIXME */
-#else
 			const char *msg = gai_strerror(n);
-#endif
 
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
 		}
@@ -249,6 +310,7 @@ static int es_connect(const char *host, int port)
 	} while ( (res = res->ai_next) != NULL);
 
 	freeaddrinfo(ressave);
+#endif
 
 	return(sockfd);
 }
@@ -917,5 +979,33 @@ void ggz_resolvename(const char *name)
 		(*_notify_func)(name, -2);
 #endif
 	}
+}
+
+const char *ggz_getpeername(int fd)
+{
+	struct sockaddr addr;
+	socklen_t addrsize;
+	int ret;
+	char *ip;
+
+	addrsize = sizeof(addr);
+	ret = getpeername(fd, &addr, &addrsize);
+
+	// FIXME: IPv4 compatibility?
+	if(addr.sa_family == AF_INET6)
+	{
+		ip = (char*)ggz_malloc(INET6_ADDRSTRLEN);
+		inet_ntop(AF_INET6, (void*)&(((struct sockaddr_in6*)&addr)->sin6_addr),
+			ip, INET6_ADDRSTRLEN);
+	}
+	else if(addr.sa_family == AF_INET)
+	{
+		ip = (char*)ggz_malloc(INET_ADDRSTRLEN);
+		inet_ntop(AF_INET, (void*)&(((struct sockaddr_in*)&addr)->sin_addr),
+			ip, INET_ADDRSTRLEN);
+	}
+	else ip = NULL;
+
+	return ip;
 }
 
