@@ -1,6 +1,6 @@
 <div id="acknowledgements">
 	<div class="note" style="float:left;">
-		&copy; 2005 <a href="http://www.ggzgamingzone.org/">GGZ Gaming Zone</a>
+		&copy; 2005, 2006 <a href="http://www.ggzgamingzone.org/">GGZ Gaming Zone</a>
 	</div>
 	<div class="note" style="float:right;">
 		Design baserad på Steel-n-Leather &copy; 2004 av

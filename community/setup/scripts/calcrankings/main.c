@@ -1,6 +1,6 @@
 /*
  * GGZ Rankings Calculator
- * Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+ * Copyright (C) 2004-2006 Josef Spillner <josef@ggzgamingzone.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,16 +100,20 @@ static int rankings_loadmodels(const char *path)
 		else if(ratings == 1) model = "rating";
 		else if(records == 1) model = "wins/losses";
 
-		rankingmodels = (char***)ggz_realloc(rankingmodels, (count + 2) * sizeof(char**));
-		rankingmodels[count] = (char**)ggz_malloc(2 * sizeof(char*));
-		rankingmodels[count][0] = ggz_strdup(name);
-		rankingmodels[count][1] = ggz_strdup(model);
-		rankingmodels[count + 1] = NULL;
+		if((name) && (model))
+		{
+			rankingmodels = (char***)ggz_realloc(rankingmodels, (count + 2) * sizeof(char**));
+			rankingmodels[count] = (char**)ggz_malloc(2 * sizeof(char*));
+			rankingmodels[count][0] = ggz_strdup(name);
+			rankingmodels[count][1] = ggz_strdup(model);
+			rankingmodels[count + 1] = NULL;
 
-		ggz_free(name);
+			count++;
+		}
+
+		if(name)
+			ggz_free(name);
 		ggz_conf_close(handle);
-
-		count++;
 	}
 	closedir(d);
 
@@ -175,13 +179,15 @@ static void rankings_calculate(const char *game, const char *mode, const char *t
 
 	if((!strcmp(mode, "highscore")) || (!strcmp(mode, "rating")))
 	{
-		snprintf(query, sizeof(query), "SELECT id, handle FROM stats WHERE game = '%s' ORDER BY %s DESC",
+		snprintf(query, sizeof(query), "SELECT id, handle FROM stats "
+			"WHERE game = '%s' ORDER BY %s DESC",
 			game, mode);
 	}
 	else if(!strcmp(mode, "wins/losses"))
 	{
 		snprintf(query, sizeof(query),
-			"SELECT id, handle FROM stats WHERE game = '%s' GROUP BY id, handle ORDER BY SUM(wins - losses) DESC",
+			"SELECT id, handle FROM stats WHERE game = '%s' "
+			"GROUP BY id, handle ORDER BY SUM(wins - losses) DESC",
 			game);
 	}
 	else return;
@@ -265,11 +271,21 @@ static void rankings_recalculate_all(const char *types)
 	if(newentries == 0)
 	{
 		printf("== No new players found for calculation.\n");
-		printf("== Proceeding to recalculate existing players.\n");
+		printf("== Proceeding to recalculate existing %i players.\n",
+			allentries);
 		/*exit(0);*/
 	}
-	else printf("== Calculate %i players, including %i new players.\n", allentries, newentries);
-	printf("== Calculation types: %s.\n", types);
+	else
+	{
+		printf("== Calculate %i players, including %i new players.\n",
+			allentries, newentries);
+	}
+
+	if(types)
+		printf("== Calculation types filter: %s.\n", types);
+
+	res = PQexec(conn, "BEGIN TRANSACTION");
+	PQclear(res);
 
 	res = PQexec(conn, "SELECT DISTINCT game FROM stats");
 	if(PQresultStatus(res) == PGRES_TUPLES_OK)
@@ -279,12 +295,15 @@ static void rankings_recalculate_all(const char *types)
 			game = PQgetvalue(res, i, 0);
 			mode = rankings_model(game);
 			printf("* %s (%s)\n", game, mode);
-			if(!mode)
+			if(!strcmp(mode, ""))
 				printf("* Error: game %s doesn't support statistics.\n", game);
 			else
 				rankings_calculate(game, mode, types);
 		}
 	}
+	PQclear(res);
+
+	res = PQexec(conn, "COMMIT");
 	PQclear(res);
 
 	printf("== All rankings calculated.\n");
@@ -296,35 +315,40 @@ int main(int argc, char *argv[])
 	int c, optindex;
 	int help;
 	char *host, *name, *user, *password, *dscpath, *types;
+	char *configpath;
 	int ret;
+	int rc;
+	char configbuffer[1024];
 	struct option options[] =
 	{
-		{"host", 1, 0, 'h'},
+		{"host", 1, 0, 'H'},
 		{"user", 1, 0, 'u'},
 		{"name", 1, 0, 'n'},
 		{"password", 1, 0, 'p'},
 		{"dscpath", 1, 0, 'd'},
 		{"types", 1, 0, 't'},
-		{"help", 0, 0, '?'},
+		{"help", 0, 0, 'h'},
+		{"config", 0, 0, 'c'},
 		{0, 0, 0, 0}
 	};
 
 	help = 0;
-	host = "localhost";
+	host = NULL;
 	name = NULL;
 	user = NULL;
 	password = NULL;
 	dscpath = NULL;
 	types = NULL;
+	configpath = NULL;
 
 	while(1)
 	{
-		c = getopt_long(argc, argv, "h:n:u:p:d:t:?", options, &optindex);
+		c = getopt_long(argc, argv, "H:n:u:p:d:t:hc:", options, &optindex);
 		if(c == -1) break;
 
 		switch(c)
 		{
-			case 'h':
+			case 'H':
 				host = optarg;
 				break;
 			case 'n':
@@ -342,8 +366,11 @@ int main(int argc, char *argv[])
 			case 't':
 				types = optarg;
 				break;
-			case '?':
+			case 'h':
 				help = 1;
+				break;
+			case 'c':
+				configpath = optarg;
 				break;
 			default:
 				help = 1;
@@ -353,20 +380,42 @@ int main(int argc, char *argv[])
 	if(help)
 	{
 		printf("GGZ Rankings Calculator\n");
-		printf("Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>\n");
+		printf("Copyright (C) 2004-2006 Josef Spillner <josef@ggzgamingzone.org>\n");
 		printf("\n");
 		printf("Options:\n");
-		printf("[-h | --host <host>         ] Database host\n");
+		printf("[-H | --host <host>         ] Database host\n");
 		printf("[-n | --name <name>         ] Database name\n");
 		printf("[-u | --user <user>         ] Database username\n");
 		printf("[-p | --password <password> ] Database password\n");
 #ifdef WITH_GGZ
+		printf("[-c | --config <path>       ] Configuration path of ggzd\n");
 		printf("[-d | --dscpath <path>      ] Game server description directory\n");
 #endif
 		printf("[-t | --types <type,type,..>] Consider only selected player types (guest, bot, registered)\n");
-		printf("[-? | --help                ] This help screen\n");
+		printf("[-h | --help                ] This help screen\n");
 		printf("\n");
 		return 0;
+	}
+
+	if(configpath)
+	{
+		snprintf(configbuffer, sizeof(configbuffer), "%s/ggzd.conf", configpath);
+		rc = ggz_conf_parse(configbuffer, GGZ_CONF_RDONLY);
+		if(!host)
+			host = ggz_conf_read_string(rc, "General", "DatabaseHost", NULL);
+		if(!name)
+			name = ggz_conf_read_string(rc, "General", "DatabaseName", NULL);
+		if(!user)
+			user = ggz_conf_read_string(rc, "General", "DatabaseUsername", NULL);
+		if(!password)
+			password = ggz_conf_read_string(rc, "General", "DatabasePassword", NULL);
+		ggz_conf_close(rc);
+
+		if(!dscpath)
+		{
+			snprintf(configbuffer, sizeof(configbuffer), "%s/games", configpath);
+			dscpath = strdup(configbuffer);
+		}
 	}
 
 	ret = rankings_loadmodels(dscpath);
