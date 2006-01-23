@@ -40,10 +40,6 @@ Thanks to Sunsite, we're able to use FTP space on a server in Denmark.
 <i>Download Mirror Belgium</i><br>
 Thanks to Belnet, we're able to use FTP space on a server in Belgium.
 <br><br>
-<img src="/pics/site/flags/flag-de.png">
-<i>Download Mirror Germany</i><br>
-Thanks to KGT new media, we're able to use FTP space on a server in Germany.
-This server also hosts wwwmirror.ggzgamingzone.org.
 </td>
 </tr>
 </table>
@@ -88,8 +84,23 @@ It used the j00k CMS. Most of the content was read from a database.
 </td>
 <td valign="top">
 The current site on www.ggzgamingzone.org went online in February 2004.
-It provides i18n capabilities and reflects the grown project structure much better.
-Maintained using CVS, it will last for quite a while...
+It provides i18n capabilities and a developer area,
+and reflects the grown project structure much better.
+Maintained using SVN, it will last for quite a while...
+</td>
+</tr>
+
+<tr>
+<td>
+<center>
+<a href="/pics/network/www.ggzcommunity.org"><img src="/pics/network/thumb.www.ggzcommunity.org" border="0"></a><br clear="all">
+</center>
+</td>
+<td colspan="2" valign="top">
+To celebrate the 5th birthday of GGZ, the GGZ Community portal went online in January 2005.
+From statistics to playing games online via Java applets, from articles to tournament organization
+- GGZ Community is king among the free gaming centers of this world (and beyond).
+Other projects can even host their own "Community" portal using GGZ Community.
 </td>
 </tr>
 

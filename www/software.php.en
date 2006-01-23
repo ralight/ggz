@@ -24,7 +24,7 @@ Software:
 
 <table class="content" width="100%">
 <tr>
-<td>
+<td colspan="2">
 <font size="3">
 
 <b>Games and Applications</b><br>
@@ -49,128 +49,76 @@ To get an overview on all the games available, the new
 <a href="/engines/">engines</a> page is the recommended start.
 <br><br>
 
-<table class="inner">
-<tr><td valign="bottom">
-
-<i>GGZ Games:</i><br>
-<table class="list">
-<tr><td>
-<a href="/games/tictactoe/">TicTacToe</a>
-<hr>
-<a href="/games/spades/">NetSpades</a>
-<hr>
-<a href="/games/dots/">Connect The Dots</a>
-<hr>
-<a href="/games/lapocha/">LaPocha</a>
-<hr>
-<a href="/games/hastings/">Hastings1066</a>
-<hr>
-<a href="/games/reversi/">Reversi</a>
-<hr>
-<a href="/games/combat/">Combat</a>
-<hr>
-<a href="/games/chess/">Chess</a>
-<hr>
-<a href="/games/ccheckers/">Chinese Checkers</a>
-<hr>
-<a href="/games/krosswater/">Krosswater</a>
-<hr>
-<a href="/games/ggzcards/">GGZCards</a>
-<hr>
-<a href="/games/muehle/">Mühle</a>
-<hr>
-<a href="/games/keepalive/">Keepalive</a>
-<hr>
-<a href="/games/escape/">Escape</a>
-<hr>
-<a href="/games/connectx/">ConnectX</a>
-<hr>
-<a href="/games/geekgame/">Geekgame</a>
-<hr>
-<a href="/games/cchess/">Chinese Chess</a>
-<hr>
-<a href="/games/ggzboard/">GGZBoard</a>
-</td></tr>
-</table>
-
-</td><td valign="bottom">
-
-<i>External Games:</i><br>
-<table class="list">
-<tr><td>
-<a href="/games/gnugo/">GNU Go</a>
-<hr>
-<a href="/games/teg/">T.E.G.</a>
-<hr>
-<a href="/games/kamikaze/">Kamikaze</a>
-<hr>
-<a href="/games/tuxman/">Tuxman</a>
-<hr>
-<a href="/games/freeciv/">Freeciv</a>
-<hr>
-<a href="/games/widelands/">Widelands</a>
-<hr>
-<a href="/games/freelords/">Freelords</a>
-</td></tr>
-</table>
-
-</td><td valign="bottom">
-
-<i>Core Clients:</i><br>
-<table class="list">
-<tr><td>
-<a href="/clients/kde/">KDE (KGGZ)</a>
-<hr>
-<a href="/clients/gnome/">GNOME (GGZ-Gnome)</a>
-<hr>
-<a href="/clients/gtk/">Gtk+ (GGZ-Gtk)</a>
-<hr>
-<a href="/clients/console/">Console (ggz-txt)</a>
-<hr>
-<a href="/clients/telnet/">Telnet (TelGGZ)</a>
-<hr>
-<a href="/clients/windows/">Windows (WGGZ)</a>
-<hr>
-<a href="/clients/sdl/">SDL (Víbora)</a>
-</td></tr>
-</table>
-
-</td><td valign="bottom">
-
-<i>Player Tools:</i><br>
-<table class="list">
-<tr><td>
-<a href="/utils/ggzap/">GGZap</a>
-<hr>
-<a href="/utils/motdeditor/">MOTD Editor</a>
-<hr>
-<a href="/utils/compcal/">Competition Calendar</a>
-<hr>
-<a href="/utils/modsniff/">ModSniffer</a>
-<hr>
-<a href="/utils/kgrubby/">KGrubby</a>
-</td></tr>
-</table>
-
-</td><td valign="bottom">
-
-<i>Backend and Admin Tools:</i><br>
-<table class="list">
-<tr><td>
-<a href="/backend/server/">GGZ Server</a>
-<hr>
-<a href="/backend/metaserver/">Metaserver</a>
-<hr>
-<a href="/backend/cmd/">Command Client</a>
-<hr>
-<a href="/backend/grubby/">Grubby</a>
-<hr>
-<a href="/backend/web/">Web Interface</a>
-</td></tr>
-</table>
-
 </td>
 </tr>
+
+<tr>
+<td colspan="2">
+<i>Highlights</i><br>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/backend/pics/db2web.png">
+</td>
+<td valign="top">
+<i>Online gaming integration</i>
+<br><br>
+GGZ provides the <a href="/backend/web/">GGZ Community</a> portal as a central
+point of handling player registration, display of statistics and rankings,
+organization of tournaments and other community activities.
+In its latest incarnation, playing games in the browser via
+<a href="/clients/java/">GGZ-Java</a> has been integrated.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/clients/pics/kggz-small.png">
+</td>
+<td valign="top">
+<i>Desktop integration</i>
+<br><br>
+Users of free desktops like KDE or GNOME enjoy: Chat and multiplayer gaming
+applications, called <a href="/clients/">core clients</a>, are available for
+many desktops, as are several <a href="/utils/">utilities</a> for
+configuration and creativity.
+Users of Mac OS X and Windows will also find ways of accessing GGZ with
+ported and cross-desktop software.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/games/pics/xadrez-chines.png">
+</td>
+<td valign="top">
+<i>Gaming experience</i>
+<br><br>
+GGZ not only ships with more than 30 game clients in series of consistent
+and yet unique user interfaces, but also provides multi-game clients for
+card games and board games.
+<a href="/docs/games/ggzfeatures.html">Features</a> such as game spectators,
+rankings and ratings, savegames, team play and AI player selection
+make GGZ the outstanding online gaming platform.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/games/pics/freeciv.png">
+</td>
+<td valign="top">
+<i>Free games community</i>
+<br><br>
+GGZ developers work together with other game authors to integrate GGZ features
+in everyone's favorite games. This combines convenient multiplayer features
+with games of
+<a href="http://dev.ggzgamingzone.org/external.php">fame and tradition</a>.
+</td>
+</tr>
+
 </table>
 
 </font>

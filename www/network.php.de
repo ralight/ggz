@@ -40,10 +40,6 @@ Dank Sunsite ist es uns möglich, FTP-Speicherplatz auf einem Server in Dänemar
 <i>Downloadserver Belgien</i><br>
 Dank Belnet ist es uns möglich, FTP-Speicherplatz auf einem Server in Belgien zu nutzen.
 <br><br>
-<img src="/pics/site/flags/flag-de.png">
-<i>Downloadserver Deutschland</i><br>
-Dank KGT new media ist es uns möglich, FTP-Speicherplatz auf einem Server in Deutschland zu nutzen.
-Dieser Server hostet auch wwwmirror.ggzgamingzone.org.
 </td>
 </tr>
 </table>
@@ -90,9 +86,26 @@ Datenbank gelesen.
 </td>
 <td valign="top">
 Die aktuelle Seite auf www.ggzgamingzone.org ging im Februar 2004 online.
-Sie bietet viele Möglichkeiten im Bereich i18n und reflektiert besser die
-gewachsenen Projektstrukturen. Durch die Pflege im CVS wird sie noch
+Sie bietet viele Möglichkeiten im Bereich i18n und eine Entwickler-Ecke,
+und reflektiert die gewachsenen Projektstrukturen besser.
+Durch die Pflege im SVN wird sie noch
 eine ganze Weile genutzt werden...
+</td>
+</tr>
+
+<tr>
+<td>
+<center>
+<a href="/pics/network/www.ggzcommunity.org"><img src="/pics/network/thumb.www.ggzcommunity.org" border="0"></a><br clear="all">
+</center>
+</td>
+<td colspan="2" valign="top">
+Um den 5. Geburtstag von GGZ zu feiern, ging im Januar 2005 das Portal GGZ Community ans Netz.
+Von Statistiken bis zu Onlinespielen über ein Java-Applet, von Artikeln zu der Organisation
+von Wettkämpfen - GGZ Community ist das beste freie Onlinespielezentrum auf dieser Welt
+(und darüber hinaus).
+Andere Projekte können sogar ihre eigenen "Community"-Seiten unter Verwendung von
+GGZ Community erstellen.
 </td>
 </tr>
 
