@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 7663 2005-12-12 23:41:08Z jdorje $
+ * $Id: players.c 7802 2006-01-23 10:37:14Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -914,43 +914,13 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 #endif
 
 
-/* FIXME: move to libggz? */
-static char *ggzdgetpeername(int fd) {
-	struct sockaddr *addr;
-	socklen_t addrsize;
-	int ret;
-	char *ip;
-
-	addrsize = 256;
-	addr = (struct sockaddr*)malloc(addrsize);
-	ret = getpeername(fd, addr, &addrsize);
-
-	// FIXME: IPv4 compatibility?
-	if(addr->sa_family == AF_INET6)
-	{
-		ip = (char*)ggz_malloc(INET6_ADDRSTRLEN);
-		inet_ntop(AF_INET6, (void*)&(((struct sockaddr_in6*)addr)->sin6_addr),
-			ip, INET6_ADDRSTRLEN);
-	}
-	else if(addr->sa_family == AF_INET)
-	{
-		ip = (char*)ggz_malloc(INET_ADDRSTRLEN);
-		inet_ntop(AF_INET, (void*)&(((struct sockaddr_in*)addr)->sin_addr),
-			ip, INET_ADDRSTRLEN);
-	}
-	else ip = NULL;
-
-	return ip;
-}
-
-
 GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
 {
 	GGZTable *table;
 	GameInfo gametype;
 	int i, do_send;
 	int first, last;
-	char *realname, *photo, *host;
+	const char *realname, *photo, *host;
 	int allow_hostname;
 	ggzdbPlayerEntry entry;
 	ggzdbPlayerExtendedEntry extentry;
@@ -1003,7 +973,7 @@ GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
 			pthread_rwlock_unlock(&game_types[i].lock);
 
 			if (allow_hostname) {
-				host = ggzdgetpeername(net_get_fd(player->client->net));
+				host = ggz_getpeername(net_get_fd(player->client->net));
 				do_send = 1;
 			}
 
@@ -1454,7 +1424,7 @@ GGZPlayerHandlerStatus player_send_room_update(GGZPlayer *player)
 	time_t curr_time = time(NULL);
 
 	if (opt.room_update_freq == 0) {
-		err_msg("Doing a room update even though they're disabled.");
+		/*err_msg("Doing a room update even though they're disabled.");*/
 		return GGZ_REQ_OK;
 	}
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 7714 2006-01-02 16:53:31Z josef $
+ * $Id: parse_opt.c 7802 2006-01-23 10:37:14Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -308,13 +308,6 @@ static void get_config_options(int ch)
 					  "<unconfigured>");
 	opt.server_name = ggz_conf_read_string(ch, "General", "ServerName",
 					   "An Unconfigured GGZ Server");
-	ggz_conf_read_list(ch, "General", "IPBanList", &t_count, &t_list);
-	client_set_ip_ban_list(t_count, t_list);
-	for (i = 0; i < t_count; i++)
-	  ggz_free(t_list[i]);
-	if (t_list)
-		ggz_free(t_list);
-	t_count = 0;
 
 	/* Encryption in [General] */
 	opt.tls_use = ggz_conf_read_int(ch, "General", "EncryptionUse", 0);

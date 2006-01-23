@@ -34,16 +34,6 @@
 #   It is possible to restrict access to one interface
 #Interface = 127.0.0.1
 
-# List of banned IP addresses
-#   Specify IP addresses to ignore connections from.  There should be
-#   one space between each entry.  Network addresses (ranges) should be
-#   specified with a slash and then a netmask.
-# Examples:
-#IPBanList = 159.205.65.35 159.205.65.36
-#  (bans the two specific address)
-#IPBanList = 208.137.159.0/255.255.255.0
-#  (bans all addresses from 208.137.159.0 - 208.137.159.255)
-
 # SQL database connection options
 #DatabaseHost = localhost
 #DatabaseName = ggz

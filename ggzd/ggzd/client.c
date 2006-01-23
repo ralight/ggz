@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 7268 2005-06-10 12:28:19Z josef $
+ * $Id: client.c 7802 2006-01-23 10:37:14Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -49,11 +49,6 @@
 #include "util.h"
 
 
-/* Used for banned IP addresses */
-static uint32_t *banned_nets_a;
-static uint32_t *banned_nets_m;
-static int banned_nets_c;
-static GGZReturn client_check_ip_ban_list(struct in_addr *sin);
 static void* client_thread_init(void *arg_ptr);
 static GGZClient* client_new(int fd);
 static void client_loop(GGZClient* client);
@@ -96,12 +91,15 @@ void client_handler_launch(int sock)
 static void* client_thread_init(void *arg_ptr)
 {
 	int sock, status;
-	struct sockaddr_in addr;
 	GGZClient *client;
-	unsigned int addrlen = sizeof(addr);
-	struct hostent hostbuf, *hp;
+//	struct hostent hostbuf, *hp;
 	char tmphstbuf[1024];
-	int rc, herr;
+	int rc;
+//	int herr;
+//	struct sockaddr_in addr;
+	struct sockaddr addr;
+	unsigned int addrlen;
+	const char *tmp;
 
 	/* Get our arguments out of the arg buffer */
 	sock = *((int *)arg_ptr);
@@ -116,31 +114,37 @@ static void* client_thread_init(void *arg_ptr)
 
 	/* Initialize client data */
 	client = client_new(sock);
-	
-	/* Get the client's IP address and store it */
-	getpeername(sock, (struct sockaddr*)&addr, &addrlen);
 
-	rc = -1;
+	/* Find out where the client comes from */
+	tmp = ggz_getpeername(sock);
+	if (!tmp) {
+		client->addr[0] = '\0';
+	} else {
+		strncpy(client->addr, tmp, sizeof(client->addr));
+	}
+	ggz_free(tmp);
+
+opt.perform_lookups = 1; // TODO: test only!
 	if (opt.perform_lookups) {
-		rc = gethostbyaddr_r(&addr.sin_addr, sizeof(struct in_addr),
-				     AF_INET, &hostbuf, tmphstbuf, 1024, &hp, &herr);
-		/* Note if we get an error we don't bother expanding the */
-		/* buffer or so forth. Is the hostname vs. IP that important? */
-		if(rc == 0) {
-			strncpy(client->addr, hostbuf.h_name, sizeof(client->addr));
-			client->addr[sizeof(client->addr)-1] = '\0';
+		//rc = inet_pton(AF_INET6, client->addr, (void*)&((struct sockaddr_in6*)&addr)->sin6_addr);
+		//printf("rc(inet_pton): %i\n", rc);
+		//((struct sockaddr*)&addr)->sa_family = AF_INET6;
+
+		/* FIXME: to be done in libggz? */
+		addrlen = sizeof(addr);
+		rc = getpeername(sock, &addr, &addrlen);
+		printf("getpeername: %i %i\n", rc, addrlen);
+
+		printf("old addr: %s\n", client->addr);
+		rc = getnameinfo(&addr, addrlen, tmphstbuf, sizeof(tmphstbuf), NULL, 0, NI_NAMEREQD);
+		printf("rc(gni): %i\n", rc);
+		if (rc == 0) {
+			strncpy(client->addr, tmphstbuf, sizeof(client->addr));
 		}
+		printf("new addr: %s\n", client->addr);
+		printf("tmp was: %s\n", tmphstbuf);
 	}
-	if (rc < 0)
-		inet_ntop(AF_INET, &addr.sin_addr, client->addr, sizeof(client->addr));
  
-	if (client_check_ip_ban_list(&addr.sin_addr) != GGZ_OK) {
-		log_msg(GGZ_LOG_SECURITY,"IPBAN Connection not allowed from %s",
-			client->addr);
-		client_free(client);
-		pthread_exit(NULL);
-	}
-	
 	/* Send server ID */
 	if (net_send_serverid(client->net, opt.server_name, opt.tls_use) < 0) {
 		client_free(client);
@@ -162,7 +166,7 @@ static void* client_thread_init(void *arg_ptr)
 
 	dbg_msg(GGZ_DBG_CONNECTION, "New client connected from %s", 
 		client->addr);
-	
+
 	/* FIXME: use a new file for each client */
 
 	net_set_dump_file(client->net, opt.dump_file);
@@ -189,7 +193,7 @@ static void* client_thread_init(void *arg_ptr)
 GGZClient* client_new(int fd)
 {
 	GGZClient *client;
-	
+
 	/* Allocate new client structure */
 	client = ggz_malloc(sizeof(GGZClient));
 
@@ -221,7 +225,7 @@ static void client_loop(GGZClient* client)
 
 	sigemptyset(&set);
 	sigaddset(&set, PLAYER_EVENT_SIGNAL);
-	
+
 	while (!client->session_over) {
 		fd_set read_fd_set = active_fd_set;
 		struct timeval timer, *select_tv;
@@ -324,7 +328,7 @@ static void client_loop(GGZClient* client)
 		player_logout(client->data);
 		net_disconnect(client->net);
 	}
-	
+
 	return;
 }
 
@@ -335,7 +339,7 @@ void client_create_channel(GGZClient *client)
 	int fd;
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Forming direct game connection");
-	
+
 	/* FIXME: this is just a proof of concept hack */
 	dbg_msg(GGZ_DBG_CONNECTION, "Direct ID: %s", (char*)client->data);
 	fd = net_get_fd(client->net);
@@ -401,51 +405,3 @@ static void client_free(GGZClient *client)
 	ggz_free(client);
 }
 
-
-void client_set_ip_ban_list(int count, char **list)
-{
-	int i;
-	char *addr, *mask;
-	struct in_addr sin;
-
-	if((banned_nets_c = count) == 0)
-		return;
-
-	banned_nets_a = ggz_malloc(count * sizeof(uint32_t));
-	banned_nets_m = ggz_malloc(count * sizeof(uint32_t));
-
-	/* Convert the list of IP/Mask specs to internal format */
-	/* If it's invalid, just make the address part all zeros */
-	for(i=0; i<count; i++) {
-		addr = list[i];
-		for(mask=addr; *mask!='\0' && *mask!='/'; mask++)
-			;
-		if(*mask == '\0')
-			mask = "255.255.255.255";
-		else {
-			*mask = '\0';
-			mask++;
-		}
-		if(inet_aton(addr, &sin) != 0) {
-			banned_nets_a[i] = sin.s_addr;
-			if(inet_aton(mask, &sin) != 0)
-				banned_nets_m[i] = sin.s_addr;
-			else
-				banned_nets_a[i] = 0;
-		} else
-			banned_nets_a[i] = 0;
-	}
-}
-
-
-static GGZReturn client_check_ip_ban_list(struct in_addr *sina)
-{
-	int i;
-	for(i=0; i<banned_nets_c; i++) {
-		if(banned_nets_a[i] != 0
-                   && (sina->s_addr & banned_nets_m[i]) == banned_nets_a[i])
-			return GGZ_ERROR;
-	}
-
-	return GGZ_OK;
-}
