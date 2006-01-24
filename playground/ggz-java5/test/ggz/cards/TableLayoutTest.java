@@ -4,19 +4,12 @@ import ggz.cards.common.Card;
 import ggz.cards.common.Face;
 import ggz.cards.common.Suit;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.LayoutManager2;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -66,11 +59,11 @@ public class TableLayoutTest {
             sprite.setSelectable(true);
             sprite.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    Sprite sprite = ((Sprite) event.getSource());
-                    sprite.removeActionListener(this);
-                    sprite.removeMouseListener(spriteHighlighter);
-                    table.animate(sprite, layout.getTrickPos(table, 0), 0.5);
-                    layout.setConstraints(sprite, new TableConstraints(
+                    Sprite clickedSprite = ((Sprite) event.getSource());
+                    clickedSprite.removeActionListener(this);
+                    clickedSprite.removeMouseListener(spriteHighlighter);
+                    table.animate(clickedSprite, layout.getTrickPos(table, 0), 0.5);
+                    layout.setConstraints(clickedSprite, new TableConstraints(
                             TableConstraints.CARD_IN_TRICK, 0));
                 }
             });
@@ -85,11 +78,11 @@ public class TableLayoutTest {
             sprite.setSelectable(true);
             sprite.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    Sprite sprite = ((Sprite) event.getSource());
-                    sprite.removeActionListener(this);
-                    sprite.removeMouseListener(spriteHighlighter);
-                    table.animate(sprite, layout.getTrickPos(table, 1), 0.5);
-                    layout.setConstraints(sprite, new TableConstraints(
+                    Sprite clickedSprite = ((Sprite) event.getSource());
+                    clickedSprite.removeActionListener(this);
+                    clickedSprite.removeMouseListener(spriteHighlighter);
+                    table.animate(clickedSprite, layout.getTrickPos(table, 1), 0.5);
+                    layout.setConstraints(clickedSprite, new TableConstraints(
                             TableConstraints.CARD_IN_TRICK, 1));
                 }
             });
@@ -104,11 +97,11 @@ public class TableLayoutTest {
             sprite.setSelectable(true);
             sprite.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    Sprite sprite = ((Sprite) event.getSource());
-                    sprite.removeActionListener(this);
-                    sprite.removeMouseListener(spriteHighlighter);
-                    table.animate(sprite, layout.getTrickPos(table, 2), 0.5);
-                    layout.setConstraints(sprite, new TableConstraints(
+                    Sprite clickedSprite = ((Sprite) event.getSource());
+                    clickedSprite.removeActionListener(this);
+                    clickedSprite.removeMouseListener(spriteHighlighter);
+                    table.animate(clickedSprite, layout.getTrickPos(table, 2), 0.5);
+                    layout.setConstraints(clickedSprite, new TableConstraints(
                             TableConstraints.CARD_IN_TRICK, 2));
                 }
             });
@@ -123,11 +116,11 @@ public class TableLayoutTest {
             sprite.setSelectable(true);
             sprite.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    Sprite sprite = ((Sprite) event.getSource());
-                    sprite.removeActionListener(this);
-                    sprite.removeMouseListener(spriteHighlighter);
-                    table.animate(sprite, layout.getTrickPos(table, 3), 0.5);
-                    layout.setConstraints(sprite, new TableConstraints(
+                    Sprite clickedSprite = ((Sprite) event.getSource());
+                    clickedSprite.removeActionListener(this);
+                    clickedSprite.removeMouseListener(spriteHighlighter);
+                    table.animate(clickedSprite, layout.getTrickPos(table, 3), 0.5);
+                    layout.setConstraints(clickedSprite, new TableConstraints(
                             TableConstraints.CARD_IN_TRICK, 3));
                 }
             });
@@ -144,5 +137,3 @@ public class TableLayoutTest {
     }
 
 }
-
-

@@ -43,7 +43,7 @@ public interface CardGameHandler extends ModEventHandler {
 
     public void alert_badplay(String err_msg);
 
-    public void alert_play(int player, Card card, int card_pos);
+    public void alert_play(int player, Card card);
 
     /**
      * A table message tells you all the cards on the table. Each player only

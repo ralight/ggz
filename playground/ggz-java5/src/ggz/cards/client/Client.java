@@ -560,19 +560,8 @@ public class Client implements ModEventHandler {
         /* Remove the card. */
         hand.remove(card_pos);
 
-        // /* Remove the card just by marking its meta category to FALSE.
-        // Note that we don't decrease hand_size in this case! */
-        // for (int card_pos_2 = 0, tc = card_pos;; card_pos_2++) {
-        // if (!this.players[p].u_hand[card_pos_2].is_valid)
-        // continue;
-        // if (tc <= 0)
-        // break;
-        // tc--;
-        // }
-        // this.players[p].u_hand[card_pos_2].is_valid = FALSE;
-
         /* Update the graphics */
-        game.alert_play(p, card, card_pos);
+        game.alert_play(p, card);
     }
 
     /*

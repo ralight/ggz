@@ -385,26 +385,6 @@ public class TablePanel extends JPanel {
         }
     }
 
-    public Point getPlayerTrickPos(int player) {
-        Point center = new Point(getWidth() / 2, getHeight() / 2);
-        switch (player) {
-        case 0: // South
-            return new Point(center.x - (spriteWidth * 3 / 4), center.y
-                    - (spriteHeight / 4));
-        case 1: // West
-            return new Point(center.x - spriteWidth, center.y
-                    - (spriteHeight * 3) / 4);
-        case 2: // North
-            return new Point(center.x - (spriteWidth / 2), center.y
-                    - spriteHeight);
-        case 3: // East
-            return new Point(center.x, center.y - ((spriteHeight * 2) / 4));
-        default:
-            throw new UnsupportedOperationException(
-                    "More than 4 players not supported yet.");
-        }
-    }
-
     private class RotatingSprite extends Component {
         private BufferedImage rotatedImage;
 

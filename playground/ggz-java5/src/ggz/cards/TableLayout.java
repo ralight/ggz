@@ -8,7 +8,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 public class TableLayout implements LayoutManager2 {
-    private int cardFanGap = 17;
+    private int cardFanGap = 15;
 
     private int cardWidth;
 
@@ -137,10 +137,12 @@ public class TableLayout implements LayoutManager2 {
             Component comp) {
         // Labels need to be able to grow and to stop them ping-ponging
         // we never shrink them once they have grown.
+        int saneWidth = 120;
+        int saneHeight = 120;
         Dimension preferredSize = comp.getPreferredSize();
         Dimension currentSize = comp.getSize();
-        comp.setSize(Math.max(preferredSize.width, currentSize.width), Math
-                .max(preferredSize.height, currentSize.height));
+        comp.setSize(Math.min(saneWidth, Math.max(preferredSize.width, currentSize.width)), 
+                Math.min(saneHeight, Math.max(preferredSize.height, currentSize.height)));
 
         Rectangle handRect = getMaxHandRect(parent, playerIndex);
         switch (playerIndex) {
@@ -169,7 +171,7 @@ public class TableLayout implements LayoutManager2 {
         if (cards != null) {
             switch (playerIndex) {
             case 0: // South
-                for (int cardIndex = cards.length - 1; cardIndex >= 0; cardIndex--) {
+                for (int cardIndex = maxHandSize - 1; cardIndex >= 0; cardIndex--) {
                     Component card = cards[cardIndex];
                     if (card != null) {
                         card.setLocation(x, y);
@@ -178,7 +180,7 @@ public class TableLayout implements LayoutManager2 {
                 }
                 break;
             case 1: // West
-                for (int cardIndex = cards.length - 1; cardIndex >= 0; cardIndex--) {
+                for (int cardIndex = maxHandSize - 1; cardIndex >= 0; cardIndex--) {
                     Component card = cards[cardIndex];
                     if (card != null) {
                         card.setLocation(x, y);
@@ -187,7 +189,7 @@ public class TableLayout implements LayoutManager2 {
                 }
                 break;
             case 2: // North
-                for (int cardIndex = 0; cardIndex < cards.length; cardIndex++) {
+                for (int cardIndex = 0; cardIndex < maxHandSize; cardIndex++) {
                     Component card = cards[cardIndex];
                     if (card != null) {
                         card.setLocation(x, y);
@@ -196,7 +198,7 @@ public class TableLayout implements LayoutManager2 {
                 }
                 break;
             case 3: // East
-                for (int cardIndex = 0; cardIndex < cards.length; cardIndex++) {
+                for (int cardIndex = 0; cardIndex < maxHandSize; cardIndex++) {
                     Component card = cards[cardIndex];
                     if (card != null) {
                         card.setLocation(x, y);
@@ -278,10 +280,10 @@ public class TableLayout implements LayoutManager2 {
         int y = handRect.y;
         switch (playerIndex) {
         case 0: // South
-            x += (cardFanGap * cardIndex);
+            x += (cardFanGap * (maxHandSize - cardIndex));
             break;
         case 1: // West
-            y += (cardFanGap * cardIndex);
+            y += (cardFanGap * (maxHandSize - cardIndex));
             break;
         case 2: // North
             x += (cardFanGap * cardIndex);

@@ -1,15 +1,10 @@
-REM #############################################################################
-REM # Kalido Development Java Signing Self - Certification script
-REM #
-REM # Pratik Pandya, September 2004
-REM #
+@echo off
 REM # Description:  This script produces a self-signed java signing certificate
 
 echo ###########################################################################
 echo # Note: This is NOT a 'pukka' certificate as issued by a 
 echo # trusted authority like Verisign and therefore it is 
-echo # intended for INTERNAL USE ONLY (e.g. for development, demos etc)
-echo # NOT for distributing signed content to Clients.
+echo # intended for DEMO USE ONLY (e.g. for development, demos etc)
 echo ########################################################################
 echo
 

@@ -3,6 +3,7 @@ package ggz.cards.client;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import ggz.cards.common.Card;
 import ggz.common.SeatType;
@@ -62,8 +63,8 @@ public class CardSeat {
         return this.name;
     }
 
-    public Collection<Card> get_hand() {
-        return Collections.unmodifiableCollection(this.hand);
+    public List<Card> get_hand() {
+        return Collections.unmodifiableList(this.hand);
     }
     
     public Card get_table_card() {

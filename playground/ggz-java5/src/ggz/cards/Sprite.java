@@ -102,47 +102,49 @@ public class Sprite extends Component {
     }
 
     private void maybeRotateOriginalImage() {
+        if (orientation == SwingConstants.BOTTOM) {
+            // Do nothing
+            return;
+        }
+
         if (orientation == SwingConstants.TOP) {
             // Flip the image.
-//            BufferedImage newImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = originalImage.createGraphics();
-            g2d.drawImage(originalImage, originalImage.getWidth(), originalImage.getHeight(), 0, 0,
-
-                    0, 0, originalImage.getWidth(), originalImage.getHeight(),
-
-                    this);
-            g2d.dispose();
-//            originalImage = newImage;
+            flipOriginalImage();
             return;
-    }
-        double angle;
+        }
+
+        double angle = Math.PI / 2;
         BufferedImage newImage;
         AffineTransform xform = new AffineTransform();
-       
-        xform.translate((originalImage.getHeight() / 2) - (originalImage.getWidth() / 2), (originalImage.getWidth() / 2) - (originalImage.getHeight() / 2));
-        newImage = new BufferedImage(originalImage.getHeight(), originalImage.getWidth(), BufferedImage.TYPE_INT_ARGB);
-        switch (orientation) {
-        case SwingConstants.BOTTOM:
-            // nothing to do
-            return;
-        case SwingConstants.LEFT:
-            angle = Math.PI/2;
-            break;
-        case SwingConstants.RIGHT:
-            //angle = Math.PI*3/2;
-            angle = -Math.PI/2;
-            break;
-        default:
-            throw new IllegalArgumentException(
-                    "orientation must be one of SwingConstants.TOP, LEFT, BOTTOM, RIGHT");
-        }
-        xform.rotate(angle, originalImage.getWidth() / 2, originalImage.getHeight() / 2);
+
+        xform.translate((originalImage.getHeight() / 2)
+                - (originalImage.getWidth() / 2),
+                (originalImage.getWidth() / 2)
+                        - (originalImage.getHeight() / 2));
+        newImage = new BufferedImage(originalImage.getHeight(), originalImage
+                .getWidth(), BufferedImage.TYPE_INT_ARGB);
+        xform.rotate(angle, originalImage.getWidth() / 2, originalImage
+                .getHeight() / 2);
         AffineTransformOp op = new AffineTransformOp(xform,
                 AffineTransformOp.TYPE_BILINEAR);
         op.filter(originalImage, newImage);
         originalImage = newImage;
+
+        if (orientation == SwingConstants.RIGHT) {
+            // We rotate 90 then flip rather than rotate 270 since the latter
+            // seems to lose pixels somehow.
+            flipOriginalImage();
+        }
     }
-    
+
+    private void flipOriginalImage() {
+        Graphics2D g2d = originalImage.createGraphics();
+        g2d.drawImage(originalImage, originalImage.getWidth(), originalImage
+                .getHeight(), 0, 0, 0, 0, originalImage.getWidth(),
+                originalImage.getHeight(), this);
+        g2d.dispose();
+    }
+
     /**
      * Creates a buffered image that has a drop shadow with the card image. The
      * card image is greyed out if the card is not selectable.
@@ -257,6 +259,10 @@ public class Sprite extends Component {
         this.orientation = orientation;
     }
 
+    public int getOrientation() {
+        return orientation;
+    }
+
     public static void setBasePath(String path) {
         basePath = path;
     }
@@ -299,25 +305,6 @@ public class Sprite extends Component {
         g2d.dispose();
         return image;
     }
-
-    // public static String getImageName(Card card) {
-    // final String[] suits = new String[] { "c", "d", "h", "s" };
-    // final String[] ranks = new String[] { "a", "2", "3", "4", "5", "6",
-    // "7", "8", "9", "t", "j", "q", "k", "a" };
-    // String path = basePath;
-    //
-    // if (card == null || card.get_suit() == Suit.UNKNOWN_SUIT
-    // || card.get_face() == Face.UNKNOWN_FACE) {
-    // path += "b.gif";
-    // } else if (card.get_face() == Face.JOKER1
-    // || card.get_face() == Face.JOKER2) {
-    // path += "j.gif";
-    // } else {
-    // path += ranks[card.get_face().ordinal() - 1]
-    // + suits[card.get_suit().ordinal() - 1] + ".gif";
-    // }
-    // return path;
-    // }
 
     public void processMouseEvent(MouseEvent e) {
         // when event occurs which causes "action" semantic

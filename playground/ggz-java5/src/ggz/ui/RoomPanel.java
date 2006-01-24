@@ -15,6 +15,7 @@ import ggz.client.core.TableLeaveEventData;
 import ggz.common.SeatType;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -88,6 +89,7 @@ public class RoomPanel extends JPanel implements RoomListener,
         playSoloButton = new JButton(new PlaySoloAction());
         tables = new TablesTableModel();
         tableTable = new JTable(tables);
+        tableTable.getTableHeader().setBackground(new Color(0xce, 0xfa, 0xdf));
         tableTable.setRowHeight(tableTable.getRowHeight() * 4);
         tableTable.getSelectionModel().setSelectionMode(
                 ListSelectionModel.SINGLE_SELECTION);
@@ -117,6 +119,10 @@ public class RoomPanel extends JPanel implements RoomListener,
         setOpaque(false);
         headerPanel.setOpaque(false);
         headerButtonPanel.setOpaque(false);
+        tableButtonPanel.setOpaque(false);
+        tablePanel.setOpaque(false);
+        tableScrollPane.setOpaque(false);
+        tableScrollPane.getViewport().setOpaque(false);
     }
 
     public void setRoom(Room room) throws IOException {

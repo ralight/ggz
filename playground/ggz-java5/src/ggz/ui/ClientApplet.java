@@ -108,9 +108,9 @@ public class ClientApplet extends JApplet implements ServerListener,
             server.log_session(sendLogFile, receiveLogFile);
             server.add_event_hook(this);
             //getContentPane().setBackground(new Color(0, 128, 255));
-            getContentPane().setBackground(new Color(0x7c, 0xaf, 0x68));
-            getContentPane().setBackground(new Color(0xce, 0xfa, 0xdf));
-            // getContentPane().setBackground(new Color(155, 203, 154));
+            //getContentPane().setBackground(new Color(0x7c, 0xaf, 0x68));
+            //getContentPane().setBackground(new Color(0xce, 0xfa, 0xdf));
+            //getContentPane().setBackground(new Color(155, 203, 154));
             getContentPane().setLayout(new CardLayout());
             loginPanel = new LoginPanel(server);
             getContentPane().add(loginPanel, "login");

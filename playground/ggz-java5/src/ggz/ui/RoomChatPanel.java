@@ -51,6 +51,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         players = new PlayersTableModel(showTableNumber);
         playerList = new JTable(players);
         // playerList.setRowHeight(20);
+        playerList.getTableHeader().setBackground(new Color(0xce, 0xfa, 0xdf));
         playerList.getColumn("Lag").setMaxWidth(20);
         playerList.getColumn("Lag").setHeaderValue("");
         playerList.getColumn("Type").setMaxWidth(40);
