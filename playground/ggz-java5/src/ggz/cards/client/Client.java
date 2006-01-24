@@ -34,15 +34,6 @@ public class Client implements ModEventHandler {
     /** The state the game is in */
     private ClientState state;
 
-    /**
-     * @brief The hand we're currently playing from.
-     * 
-     * This is the hand we're currently playing from, or -1 if we're not
-     * currently playing. Note when a play response is sent to the server, it's
-     * not reset to -1 until we get verification.
-     */
-    private int play_hand;
-
     protected CardGameHandler game;
 
     ModGame get_ggzmod() {
@@ -113,6 +104,10 @@ public class Client implements ModEventHandler {
                             + ".");
             this.state = state;
         }
+    }
+    
+    public ClientState get_game_state() {
+        return this.state;
     }
 
     private void handle_text_message() throws IOException {
@@ -440,9 +435,10 @@ public class Client implements ModEventHandler {
     private void handle_req_play() throws IOException {
         int num_valid_cards;
         Card[] valid_cards;
+        int play_hand;
 
         /* Determine which hand we're supposed to be playing from. */
-        this.play_hand = fd_in.read_seat();
+        play_hand = fd_in.read_seat();
         num_valid_cards = fd_in.readInt();
 
         valid_cards = new Card[num_valid_cards];
@@ -450,11 +446,11 @@ public class Client implements ModEventHandler {
             valid_cards[i] = fd_in.read_card();
         }
 
-        assert (this.play_hand >= 0 && this.play_hand < this.num_players);
+        assert (play_hand >= 0 && play_hand < this.num_players);
 
         /* Get the play. */
         set_game_state(ClientState.STATE_PLAY);
-        game.get_play(this.play_hand, valid_cards);
+        game.get_play(play_hand, valid_cards);
     }
 
     /* A badplay message indicates an invalid play, and requests a new one. */
@@ -532,24 +528,6 @@ public class Client implements ModEventHandler {
         p = fd_in.read_seat();
         card = fd_in.read_card();
 
-        assert (p >= 0 && p < this.num_players);
-
-        /* Reset the play_hand, just to be safe. */
-        if (p == this.play_hand) {
-            /*
-             * We assume that if the hand the card came from is the hand we're
-             * playing from, that it's our play. Thus there is an implicit
-             * assumption that two players can't simultaneously play from the
-             * same hand.
-             */
-            this.play_hand = -1;
-        } else {
-            /*
-             * Either we're not playing, or someone else played during our play.
-             * Both are possible.
-             */
-        }
-
         /*
          * Place the card on the table. Note, this contradicts what the table
          * code does, since that runs animation that may assume the card has not
@@ -561,9 +539,7 @@ public class Client implements ModEventHandler {
         this.players[p].table_card = card;
 
         /* Find the hand the card is to be removed from. */
-        assert (this.players != null);
         hand = this.players[p].hand;
-        assert (hand != null);
 
         /* Find a matching card to remove. */
         card_pos = match_card(card, hand);
@@ -577,7 +553,7 @@ public class Client implements ModEventHandler {
              * solved.
              */
             log
-                    .fine("Whoa!  We can't find a match for the card.  That's strange.");
+                    .warning("Whoa!  We can't find a match for the card.  That's strange.");
             send_sync_request();
         }
 
@@ -748,7 +724,6 @@ public class Client implements ModEventHandler {
         switch (opcode) {
         case REQ_NEWGAME:
             game.get_newgame();
-            this.play_hand = -1;
             break;
         case MSG_NEWGAME:
             /* TODO: don't make "new game" until here */
@@ -892,7 +867,7 @@ public class Client implements ModEventHandler {
      * @note Any additional state data should be stored separately, while
      *       maintaining the state here.
      */
-    private enum ClientState {
+    public enum ClientState {
         /** game hasn't started yet */
         STATE_INIT,
         /** waiting for others */

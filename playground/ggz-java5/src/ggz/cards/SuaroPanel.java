@@ -20,7 +20,7 @@ import javax.swing.JLabel;
  */
 public class SuaroPanel extends GamePanel {
 
-    public SuaroPanel(ModGame mod) {
+    public SuaroPanel(ModGame mod) throws IOException {
         super(mod);
     }
 

@@ -267,10 +267,11 @@ public class TablePanel extends JPanel {
         validate();
         repaint();
 
-//        double totalSeconds = ((System.currentTimeMillis() - start) / 1000.0);
-//        System.out.println(paintCount / totalSeconds + " paint() calls/s ("
-//                + totalSeconds + "s), dropped " + droppedFrameCount + " of "
-//                + frames + " frames");
+        // double totalSeconds = ((System.currentTimeMillis() - start) /
+        // 1000.0);
+        // System.out.println(paintCount / totalSeconds + " paint() calls/s ("
+        // + totalSeconds + "s), dropped " + droppedFrameCount + " of "
+        // + frames + " frames");
 
         if (graphics != null) {
             graphics.dispose();
@@ -328,13 +329,14 @@ public class TablePanel extends JPanel {
                 }
 
                 if (useActiveRendering) {
-                    // TODO Create a union of all the rectangles to create one big clip area.
-//                    Rectangle clip;
-//                    for (int s = 0; s < numSprites; s++) {
-//                        sprite[s].setLocation((int) Math.round(x[s]), (int) Math
-//                                .round(y[s]));
-//                    }
-//                    graphics.setClip(clip);
+                    // TODO Create a union of all the rectangles to create one
+                    // big clip area.
+                    // Rectangle clip;
+                    // for (int s = 0; s < numSprites; s++) {
+                    // sprite[s].setLocation((int) Math.round(x[s]), (int) Math
+                    // .round(y[s]));
+                    // }
+                    // graphics.setClip(clip);
                     paint(graphics);
                 }
 
@@ -351,8 +353,9 @@ public class TablePanel extends JPanel {
             sprite[s].repaint();
         }
 
-//        double totalSeconds = ((System.currentTimeMillis() - start) / 1000.0);
-//        System.out.println(paintCount / totalSeconds + " fps");
+        // double totalSeconds = ((System.currentTimeMillis() - start) /
+        // 1000.0);
+        // System.out.println(paintCount / totalSeconds + " fps");
 
         if (graphics != null) {
             graphics.dispose();
@@ -367,7 +370,6 @@ public class TablePanel extends JPanel {
      * @return
      */
     public Point getPlayerCardPos(int player) {
-
         switch (player) {
         case 0: // South
             return new Point(getWidth() / 2, getHeight());
@@ -377,6 +379,26 @@ public class TablePanel extends JPanel {
             return new Point(getWidth() / 2, -spriteHeight);
         case 3: // East
             return new Point(getWidth(), getHeight() / 2);
+        default:
+            throw new UnsupportedOperationException(
+                    "More than 4 players not supported yet.");
+        }
+    }
+
+    public Point getPlayerTrickPos(int player) {
+        Point center = new Point(getWidth() / 2, getHeight() / 2);
+        switch (player) {
+        case 0: // South
+            return new Point(center.x - (spriteWidth * 3 / 4), center.y
+                    - (spriteHeight / 4));
+        case 1: // West
+            return new Point(center.x - spriteWidth, center.y
+                    - (spriteHeight * 3) / 4);
+        case 2: // North
+            return new Point(center.x - (spriteWidth / 2), center.y
+                    - spriteHeight);
+        case 3: // East
+            return new Point(center.x, center.y - ((spriteHeight * 2) / 4));
         default:
             throw new UnsupportedOperationException(
                     "More than 4 players not supported yet.");

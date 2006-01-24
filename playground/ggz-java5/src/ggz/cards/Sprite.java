@@ -19,12 +19,15 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingConstants;
 
 public class Sprite extends Component {
     private static String basePath = "/ggz/cards/images/";
@@ -47,11 +50,19 @@ public class Sprite extends Component {
 
     private Point unselectedLocation;
 
+    private int orientation;
+
     transient private ActionListener actionListener;
 
     public Sprite(Card c) throws IOException {
+        this(c, SwingConstants.BOTTOM);
+    }
+
+    public Sprite(Card c, int orientation) throws IOException {
         card = c;
+        setOrientation(orientation);
         originalImage = loadImage();
+        maybeRotateOriginalImage();
         createDropShadowedImage();
         resetSize();
         setEnabled(false);
@@ -90,15 +101,56 @@ public class Sprite extends Component {
                 .getHeight());
     }
 
+    private void maybeRotateOriginalImage() {
+        if (orientation == SwingConstants.TOP) {
+            // Flip the image.
+//            BufferedImage newImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = originalImage.createGraphics();
+            g2d.drawImage(originalImage, originalImage.getWidth(), originalImage.getHeight(), 0, 0,
+
+                    0, 0, originalImage.getWidth(), originalImage.getHeight(),
+
+                    this);
+            g2d.dispose();
+//            originalImage = newImage;
+            return;
+    }
+        double angle;
+        BufferedImage newImage;
+        AffineTransform xform = new AffineTransform();
+       
+        xform.translate((originalImage.getHeight() / 2) - (originalImage.getWidth() / 2), (originalImage.getWidth() / 2) - (originalImage.getHeight() / 2));
+        newImage = new BufferedImage(originalImage.getHeight(), originalImage.getWidth(), BufferedImage.TYPE_INT_ARGB);
+        switch (orientation) {
+        case SwingConstants.BOTTOM:
+            // nothing to do
+            return;
+        case SwingConstants.LEFT:
+            angle = Math.PI/2;
+            break;
+        case SwingConstants.RIGHT:
+            //angle = Math.PI*3/2;
+            angle = -Math.PI/2;
+            break;
+        default:
+            throw new IllegalArgumentException(
+                    "orientation must be one of SwingConstants.TOP, LEFT, BOTTOM, RIGHT");
+        }
+        xform.rotate(angle, originalImage.getWidth() / 2, originalImage.getHeight() / 2);
+        AffineTransformOp op = new AffineTransformOp(xform,
+                AffineTransformOp.TYPE_BILINEAR);
+        op.filter(originalImage, newImage);
+        originalImage = newImage;
+    }
+    
     /**
      * Creates a buffered image that has a drop shadow with the card image. The
      * card image is greyed out if the card is not selectable.
      */
     private void createDropShadowedImage() {
-        int w = originalImage.getWidth();
-        int h = originalImage.getHeight();
         if (dropShadowedImage == null) {
-            dropShadowedImage = new BufferedImage(w + DROP_SHADOW_WIDTH, h
+            dropShadowedImage = new BufferedImage(originalImage.getWidth()
+                    + DROP_SHADOW_WIDTH, originalImage.getHeight()
                     + DROP_SHADOW_WIDTH, BufferedImage.TYPE_INT_ARGB);
         }
         Graphics2D g2d = dropShadowedImage.createGraphics();
@@ -116,6 +168,8 @@ public class Sprite extends Component {
         g2d.fillRoundRect(0, DROP_SHADOW_WIDTH, dropShadowedImage.getWidth()
                 - DROP_SHADOW_WIDTH, dropShadowedImage.getHeight()
                 - DROP_SHADOW_WIDTH, 4, 4);
+
+        // Draw the image, rotate it if we have a horizontal orientation.
         if (isSelectable) {
             g2d.drawImage(originalImage, DROP_SHADOW_WIDTH, 0, null);
         } else {
@@ -151,7 +205,23 @@ public class Sprite extends Component {
             isSelected = b;
             if (isSelected) {
                 unselectedLocation = (Point) loc.clone();
-                loc.y -= 10;
+                switch (orientation) {
+                case SwingConstants.BOTTOM:
+                    loc.y -= 10;
+                    break;
+                case SwingConstants.LEFT:
+                    loc.x += 10;
+                    break;
+                case SwingConstants.TOP:
+                    loc.y += 10;
+                    break;
+                case SwingConstants.RIGHT:
+                    loc.x -= 10;
+                    break;
+                default:
+                    throw new IllegalStateException(
+                            "orientation must be one of SwingConstants.TOP, LEFT, BOTTOM, RIGHT");
+                }
                 // loc.y += (int) Math.round(10 * -Math.cos(angle));
                 // loc.x += (int) Math.round(10 * Math.sin(angle));
             } else {
@@ -171,6 +241,20 @@ public class Sprite extends Component {
             return new Object[] { this };
         }
         return null;
+    }
+
+    private void setOrientation(int orientation) {
+        switch (orientation) {
+        case SwingConstants.BOTTOM:
+        case SwingConstants.LEFT:
+        case SwingConstants.TOP:
+        case SwingConstants.RIGHT:
+            break;
+        default:
+            throw new IllegalArgumentException(
+                    "orientation must be one of SwingConstants.TOP, LEFT, BOTTOM, RIGHT");
+        }
+        this.orientation = orientation;
     }
 
     public static void setBasePath(String path) {
