@@ -252,8 +252,22 @@ public class RoomPanel extends JPanel implements RoomListener,
      * @param e
      */
     public void valueChanged(ListSelectionEvent e) {
-        joinTableButton.setEnabled(tableTable.getSelectedRowCount() > 0
-                && server.get_state() == StateID.GGZ_STATE_IN_ROOM);
+        boolean canJoinTable = true;
+        if (tableTable.getSelectedRowCount() > 0
+                && server.get_state() == StateID.GGZ_STATE_IN_ROOM) {
+            Table selectedTable = room.get_nth_table(tableTable
+                    .getSelectedRow());
+            /* Make sure table has open seats */
+            canJoinTable = selectedTable.get_seat_count(SeatType.GGZ_SEAT_OPEN)
+                    + selectedTable.get_seat_count(SeatType.GGZ_SEAT_RESERVED) > 0;
+
+            // Temporary limitation because we don't support more than four
+            // players in card games.
+            canJoinTable = canJoinTable && (selectedTable.get_num_seats() <= 4);
+        } else {
+            canJoinTable = false;
+        }
+        joinTableButton.setEnabled(canJoinTable);
     }
 
     private abstract class PlayGameAction extends AbstractAction implements

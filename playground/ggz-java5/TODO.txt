@@ -1,0 +1,34 @@
+There are so many things left to do to make this a truly professional release. This file is a record of all the things that I can think of that need to be done.
+
+
+Core Client
+===========
+Add a private chat window so that two players can have a private conversation. Currently the only way to do this is to use the /msg command.
+
+
+
+All Card Games
+==============
+Don't show opponent cards unless they are face up, this will help with layout for more than four players and reduces visual clutter. It allows for more choices for embelishments etc.
+
+
+Bridge
+======
+Use specialised bid controls rather than buttons for bidding. The controls could have toggle buttons from 1-7 and toggle buttons for each of the strains.
+
+
+Hearts
+======
+Support more than four players
+
+Handle two decks layout a little better
+
+
+Suaro
+=====
+Create a custom bid panel similar to what is proposed for Bridge.
+
+
+Whist
+=====
+Display dealer up card in a visual way, either during the deal and/or with an icon during play. At the least, trump should be indicated with an icon during play.

@@ -14,7 +14,7 @@ public class TableLayout implements LayoutManager2 {
 
     private int cardHeight;
 
-    private int maxHandSize = 13;
+    private int maxHandSize = 0;
 
     private Dimension minimumSize = new Dimension(640, 480);
 
@@ -31,6 +31,9 @@ public class TableLayout implements LayoutManager2 {
 
     public void setMaxHandSize(int maxHandSize) {
         this.maxHandSize = maxHandSize;
+        for (int playerNum = 0; playerNum < cardsInHand.length; playerNum++) {
+            cardsInHand[playerNum] = arrayEnsureSize(cardsInHand[playerNum], maxHandSize);
+        }
     }
 
     /**
@@ -69,16 +72,21 @@ public class TableLayout implements LayoutManager2 {
         }
     }
 
-    protected static Component[] arrayPut(Component[] array, int index,
-            Component comp) {
+    protected static Component[] arrayEnsureSize(Component[] array, int size) {
         if (array == null) {
-            array = new Component[index + 1];
-        } else if (index > array.length - 1) {
+            array = new Component[size];
+        } else if (size > array.length) {
             // Need to grow the array.
             Component[] temp = array;
-            array = new Component[index + 1];
+            array = new Component[size];
             System.arraycopy(temp, 0, array, 0, temp.length);
         }
+        return array;
+    }
+    
+    protected static Component[] arrayPut(Component[] array, int index,
+            Component comp) {
+        array = arrayEnsureSize(array, index + 1);
         array[index] = comp;
         return array;
     }

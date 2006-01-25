@@ -1,12 +1,11 @@
 package ggz.cards.client;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import ggz.cards.common.Card;
 import ggz.common.SeatType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A "player" as seen by the client is really just a seat at the table, complete
@@ -66,12 +65,12 @@ public class CardSeat {
     public List<Card> get_hand() {
         return Collections.unmodifiableList(this.hand);
     }
-    
+
     public Card get_table_card() {
         return table_card;
     }
-    
-    public SeatType get_seat_type () {
+
+    public SeatType get_seat_type() {
         return status;
     }
 }

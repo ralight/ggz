@@ -307,7 +307,7 @@ public class Room {
 
     public void join_table(int num, boolean spectator) throws IOException {
         if (this.server == null || this.server.get_cur_game() == null)
-            throw new IllegalStateException();
+            throw new IllegalStateException("server or server.cur_game is null");
 
         _join_table(num, spectator);
     }

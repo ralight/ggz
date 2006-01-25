@@ -391,7 +391,20 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void alert_table() {
-        // chat_panel.handle_chat("alert_table", null);
+        try {
+            for (int playerNum = 0; playerNum < card_client.get_num_players(); playerNum++) {
+                Card serverTableCard = card_client.get_nth_player(playerNum).get_table_card();
+                if (!serverTableCard.equals(Card.UNKNOWN_CARD) && sprite_in_trick[playerNum] == null) {
+                    // We are out of sync with the server, most likely because we just joined.
+                    Sprite tableSprite = new Sprite(serverTableCard, getCardOrientation(playerNum));
+                    sprite_in_trick[playerNum] = tableSprite;
+                    table.add(tableSprite, new TableConstraints(TableConstraints.CARD_IN_TRICK, playerNum), 0);
+                    table.validate();
+                }
+            }
+        } catch (IOException ex) {
+            handleException(ex);
+        }
     }
 
     public void alert_trick(final int winner) {
@@ -469,30 +482,31 @@ public class GamePanel extends JPanel implements CardGameHandler,
             }
 
             int card_num = 0;
-            Sprite card = null;
+            Sprite sprite = null;
             int orientation = getCardOrientation(player_num);
             Point[] endPos = new Point[hand.size()];
 
             while (iter.hasNext()) {
-                card = new Sprite(iter.next(), orientation);
+                Card card = iter.next();
+                sprite = new Sprite(card, orientation);
                 Point dealerPos = new Point((table.getWidth() / 2)
-                        - (card.getWidth() / 2), (table.getHeight() / 2)
-                        - (card.getWidth() / 2));
+                        - (sprite.getWidth() / 2), (table.getHeight() / 2)
+                        - (sprite.getWidth() / 2));
                 endPos[card_num] = tableLayout.getCardInHandPos(table,
                         player_num, card_num);
 
-                card.setLocation(dealerPos);
-                table.add(card);
+                sprite.setLocation(dealerPos);
+                table.add(sprite);
 
-                card.setEnabled(false);
-                sprites[player_num][card_num] = card;
-                tableLayout.setConstraints(card, new TableConstraints(
+                sprite.setEnabled(false);
+                sprites[player_num][card_num] = sprite;
+                tableLayout.setConstraints(sprite, new TableConstraints(
                         TableConstraints.CARD_IN_HAND, player_num, card_num));
                 card_num++;
             }
             // Cards have just been dealt.
             table.animate(hand.size(), sprites[player_num], endPos, 0.3);
-            table.setSpriteDimensions(card.getWidth(), card.getHeight());
+            table.setSpriteDimensions(sprite.getWidth(), sprite.getHeight());
         } catch (IOException e) {
             handleException(e);
         }
