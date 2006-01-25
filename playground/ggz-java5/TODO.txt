@@ -5,11 +5,20 @@ Core Client
 ===========
 Add a private chat window so that two players can have a private conversation. Currently the only way to do this is to use the /msg command.
 
+Put a talking icon next to the chat send text field and rename the button to chat to make it more obvious that it's a chat control.
 
 
 All Card Games
 ==============
 Don't show opponent cards unless they are face up, this will help with layout for more than four players and reduces visual clutter. It allows for more choices for embelishments etc.
+
+Scale the cards and other widgets when the window is resized.
+
+The "How to Play" link doesn't work when a popup blocker is in effect. Find a way to get around this or alert the user to this fact.
+
+Consider a "Leave" button so that closing the window is not the only way to leave the game.
+
+Include a tutorial mode to help novice players learn how to play the game.
 
 
 Bridge
