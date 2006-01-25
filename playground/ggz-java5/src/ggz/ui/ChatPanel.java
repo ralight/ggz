@@ -9,7 +9,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -70,6 +72,7 @@ public class ChatPanel extends JPanel {
         textScrollPane.setOpaque(false);
         add(textScrollPane, BorderLayout.CENTER);
         messageLayout = new JPanel(new BorderLayout(4, 4));
+        messageLayout.add(new JLabel(new ImageIcon(getClass().getResource("images/chat.gif"))), BorderLayout.WEST);
         messageLayout.add(textField, BorderLayout.CENTER);
         messageLayout.add(sendButton, BorderLayout.EAST);
         add(messageLayout, BorderLayout.SOUTH);
