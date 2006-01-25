@@ -29,7 +29,7 @@ public abstract class ChatAction extends AbstractAction {
 
     public Object getValue(String key) {
         if (NAME.equals(key)) {
-            return "Send";
+            return "Chat";
         }
         return super.getValue(key);
     }
