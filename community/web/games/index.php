@@ -28,9 +28,12 @@
 	<div class="text">
 	Use this if you are on Windows to play on live.ggzgamingzone.org.
 	<br><br>
+	<!--
 	<a href="applet.php?room=GGZCards%20-%20Whist">Whist</a>
 	<br>
 	<a href="applet.php?room=GGZCards%20-%20Bridge">Bridge</a>
+	-->
+	<a href="applet.php">GGZ-Java page</a>
 	</div>
 	<h1>
 		<span class="itemleader">:: </span>
