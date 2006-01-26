@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7801 2006-01-23 10:34:40Z josef $
+ * $Id: easysock.c 7824 2006-01-26 18:25:08Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -171,7 +171,7 @@ static int es_bind(const char *host, int port)
 
 	if (sockfd < 0) {
 		if (_err_func) {
-			const char *msg = hstrerror(h_errno);
+			const char *msg = "could-not-create-socket-error";
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
 		}
 		return -1;
@@ -247,7 +247,7 @@ static int es_connect(const char *host, int port)
 
 	if (sockfd < 0) {
 		if (_err_func) {
-			const char *msg = hstrerror(h_errno);
+			const char *msg = "could-not-create-socket-error";
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
 		}
 		return -1;
@@ -256,7 +256,7 @@ static int es_connect(const char *host, int port)
 	h = gethostbyname(host);
 	if (!h) {
 		if (_err_func) {
-			const char *msg = hstrerror(h_errno);
+			const char *msg = "could-not-create-socket-error";
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
 		}
 		return -1;
@@ -983,10 +983,12 @@ void ggz_resolvename(const char *name)
 
 const char *ggz_getpeername(int fd)
 {
+	char *ip;
+
+#ifdef HAVE_WINSOCK2_H
 	struct sockaddr addr;
 	socklen_t addrsize;
 	int ret;
-	char *ip;
 
 	addrsize = sizeof(addr);
 	ret = getpeername(fd, &addr, &addrsize);
@@ -1005,6 +1007,9 @@ const char *ggz_getpeername(int fd)
 			ip, INET_ADDRSTRLEN);
 	}
 	else ip = NULL;
+#else
+	ip = NULL;
+#endif
 
 	return ip;
 }
