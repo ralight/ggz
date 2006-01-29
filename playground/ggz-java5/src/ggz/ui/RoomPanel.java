@@ -54,8 +54,6 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     private JButton joinTableButton;
 
-    private JButton playSoloButton;
-
     private JPanel headerPanel;
 
     private JPanel headerButtonPanel;
@@ -86,7 +84,6 @@ public class RoomPanel extends JPanel implements RoomListener,
         newTableButton = new JButton(new NewTableAction());
         joinTableButton = new JButton(new JoinTableAction());
         joinTableButton.setEnabled(false);
-        playSoloButton = new JButton(new PlaySoloAction());
         tables = new TablesTableModel();
         tableTable = new JTable(tables);
         tableTable.getTableHeader().setBackground(new Color(0xce, 0xfa, 0xdf));
@@ -98,8 +95,6 @@ public class RoomPanel extends JPanel implements RoomListener,
         tableScrollPane.getViewport().add(tableTable);
         tableButtonPanel.add(newTableButton);
         tableButtonPanel.add(joinTableButton);
-        tableButtonPanel.add(playSoloButton);
-        playSoloButton.setVisible(false);
 
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
         tablePanel.add(tableButtonPanel, BorderLayout.SOUTH);
@@ -140,9 +135,6 @@ public class RoomPanel extends JPanel implements RoomListener,
             titleLabel.setIcon(new ImageIcon(imageURL));
         }
 
-        boolean isSoloPlayPossible = room.get_gametype().get_max_bots() > 0;
-        playSoloButton.setVisible(isSoloPlayPossible);
-        playSoloButton.setEnabled(isSoloPlayPossible);
         joinTableButton.setEnabled(false);
         newTableButton.setEnabled(true);
     }
@@ -190,7 +182,6 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     public void table_launched() {
         tables.fireTableDataChanged();
-        playSoloButton.setEnabled(false);
         joinTableButton.setEnabled(false);
         newTableButton.setEnabled(false);
     }
@@ -215,7 +206,6 @@ public class RoomPanel extends JPanel implements RoomListener,
             break;
         }
         tables.fireTableDataChanged();
-        playSoloButton.setEnabled(true);
         newTableButton.setEnabled(true);
     }
 
@@ -274,11 +264,6 @@ public class RoomPanel extends JPanel implements RoomListener,
             GameEventListener {
 
         public void actionPerformed(ActionEvent e) {
-            // Probably need to create an instance of our game here so that it
-            // can be given the Mod.
-            // game.getModGame()
-            // Maybe use exec_path Module to include class name so that we can
-            // "fork" it like the C version does
             if (Module.get_num_by_type(room.get_gametype()) == 0) {
                 JOptionPane.showMessageDialog((Component) e.getSource(),
                         "Game is not supported yet");
@@ -310,6 +295,7 @@ public class RoomPanel extends JPanel implements RoomListener,
     }
 
     private class NewTableAction extends PlayGameAction {
+    	private Table table;
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
@@ -318,15 +304,30 @@ public class RoomPanel extends JPanel implements RoomListener,
             return super.getValue(key);
         }
 
+        public void actionPerformed(ActionEvent e) {
+            if (Module.get_num_by_type(room.get_gametype()) == 0) {
+                JOptionPane.showMessageDialog((Component) e.getSource(),
+                        "Game is not supported yet");
+            } else {
+            	table = SeatAllocationDialog.getTableSeatAllocation((Component) e.getSource(),room.get_gametype());
+            	if (table != null) {
+	                Module module = Module.get_nth_by_type(room.get_gametype(), 0);
+	                Game game = new Game(server, module);
+	                game.add_event_hook(this);
+	                game.launch();
+            	}
+            }
+        }
+
         public void game_playing() {
             try {
-                int max_players = Math.min(4, room.get_gametype()
-                        .get_max_players());
-                Table table = new Table(room.get_gametype(), "Join me!",
-                        max_players);
-                for (int seat_num = 0; seat_num < max_players; seat_num++) {
-                    table.set_seat(seat_num, SeatType.GGZ_SEAT_OPEN, null);
-                }
+//                int max_players = Math.min(4, room.get_gametype()
+//                        .get_max_players());
+//                Table table = new Table(room.get_gametype(), "Join me!",
+//                        max_players);
+//                for (int seat_num = 0; seat_num < max_players; seat_num++) {
+//                    table.set_seat(seat_num, SeatType.GGZ_SEAT_OPEN, null);
+//                }
                 room.launch_table(table);
             } catch (IOException ex) {
                 ex.printStackTrace();

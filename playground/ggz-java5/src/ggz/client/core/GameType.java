@@ -114,6 +114,10 @@ public class GameType {
     }
 
     /* Return the maximum number of allowed players/bots */
+    public int get_min_players() {
+        return this.player_allow_list.get_min();
+    }
+
     public int get_max_players() {
         return this.player_allow_list.get_max();
     }

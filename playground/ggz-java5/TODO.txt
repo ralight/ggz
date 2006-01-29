@@ -5,7 +5,13 @@ Core Client
 ===========
 Add a private chat window so that two players can have a private conversation. Currently the only way to do this is to use the /msg command.
 
-Put a talking icon next to the chat send text field and rename the button to chat to make it more obvious that it's a chat control.
+Add some board games, Reversi, Chess and Checkers are good candidates.
+
+Add support for multi-platform browser launching for hyperlinks like card game help.
+
+Add support for launching non-java games (i.e. implement new Mod that supports sockets)
+
+Add support for launching Java games from non-Java core client.
 
 
 All Card Games
@@ -19,6 +25,8 @@ The "How to Play" link doesn't work when a popup blocker is in effect. Find a wa
 Consider a "Leave" button so that closing the window is not the only way to leave the game.
 
 Include a tutorial mode to help novice players learn how to play the game.
+
+Consider a square layout at all times, place chat either below or to the side depending on which screen dimension is the largest. This will be needed when we implement scaling of cards.
 
 
 Bridge

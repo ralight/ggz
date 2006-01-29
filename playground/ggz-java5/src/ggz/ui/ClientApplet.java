@@ -60,8 +60,8 @@ public class ClientApplet extends JApplet implements ServerListener,
 
     public ClientApplet() throws IOException {
         // TODO Make watermark URL and background color applet parameters.
-        URL imageUrl = getClass().getResource("/ggz/ui/images/rose.gif");
-        final Image watermark = ImageIO.read(imageUrl);
+        //URL imageUrl = getClass().getResource("/ggz/ui/images/rose.gif");
+        final Image watermark = null; //ImageIO.read(imageUrl);
         final Composite alphaComposite = AlphaComposite.getInstance(
                 AlphaComposite.SRC_OVER, 0.3f);
 

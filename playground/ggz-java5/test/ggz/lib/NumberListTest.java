@@ -9,14 +9,17 @@ public class NumberListTest extends TestCase {
         NumberList list; 
         
         list = NumberList.read("");
+        assertEquals(0, list.get_min());
         assertEquals(0, list.get_max());
         assertFalse(list.isset(1));
 
         list = NumberList.read(null);
+        assertEquals(0, list.get_min());
         assertEquals(0, list.get_max());
         assertFalse(list.isset(1));
 
         list = NumberList.read("2 3 4");
+        assertEquals(2, list.get_min());
         assertEquals(4, list.get_max());
         assertFalse(list.isset(1));
         assertTrue(list.isset(2));
@@ -24,6 +27,7 @@ public class NumberListTest extends TestCase {
         assertTrue(list.isset(4));
         
         list = NumberList.read("2..4");
+        assertEquals(2, list.get_min());
         assertEquals(4, list.get_max());
         assertFalse(list.isset(1));
         assertTrue(list.isset(2));
@@ -31,6 +35,7 @@ public class NumberListTest extends TestCase {
         assertTrue(list.isset(4));
         
         list = NumberList.read("1..1000");
+        assertEquals(1, list.get_min());
         assertEquals(1000, list.get_max());
         assertTrue(list.isset(1));
         assertTrue(list.isset(2));
@@ -41,6 +46,7 @@ public class NumberListTest extends TestCase {
         assertFalse(list.isset(1001));
         
         list = NumberList.read("6 2..4");
+        assertEquals(2, list.get_min());
         assertEquals(6, list.get_max());
         assertFalse(list.isset(1));
         assertTrue(list.isset(2));

@@ -183,7 +183,22 @@ public class NumberList {
         return !!((this.values & (1 << (value - 1))) != 0);
     }
 
-    /** @brief Return the largest value in the set. */
+    /** Return the smallest value in the set. */
+    public int get_min() {
+        int result = this.min;
+
+        if (result <= 0)
+            result = 33;
+
+        /* FIXME: come up with a cool bit maniuplation to do this */
+        for (int i = 1; i < result; i++)
+            if ((this.values & (1 << (i - 1))) != 0)
+                return i;
+
+        return result == 33 ? 0 : result;
+    }
+
+    /** Return the largest value in the set. */
     public int get_max() {
         int result = this.max;
 

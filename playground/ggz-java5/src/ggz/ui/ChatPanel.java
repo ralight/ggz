@@ -34,6 +34,8 @@ public class ChatPanel extends JPanel {
     private JTextField textField;
 
     private JButton sendButton;
+    
+    private JLabel chatImage;
 
     protected SimpleAttributeSet senderText;
 
@@ -72,7 +74,9 @@ public class ChatPanel extends JPanel {
         textScrollPane.setOpaque(false);
         add(textScrollPane, BorderLayout.CENTER);
         messageLayout = new JPanel(new BorderLayout(4, 4));
-        messageLayout.add(new JLabel(new ImageIcon(getClass().getResource("images/chat.gif"))), BorderLayout.WEST);
+        chatImage = new JLabel(new ImageIcon(getClass().getResource("images/chat.gif")));
+        chatImage.setToolTipText("Type in the text box to the right to chat with other players.");
+        messageLayout.add(chatImage, BorderLayout.WEST);
         messageLayout.add(textField, BorderLayout.CENTER);
         messageLayout.add(sendButton, BorderLayout.EAST);
         add(messageLayout, BorderLayout.SOUTH);
