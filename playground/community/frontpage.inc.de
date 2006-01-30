@@ -1,6 +1,29 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		GGZ Online
+		<span class="itemleader"> :: </span>
+		<a name="ggzonline"></a>
+	</h1>
+	<div class="text">
+		In Kürze wird es möglich sein, eure Lieblings-GGZ-Kartenspiele komfortabel
+		im Webbrowser zu spielen. Eine Portierung des GGZ-Core-Clients und von
+		GGZCards nach Java ist nahezu abgeschlossen. Wir suchen momentan Betatester,
+		die uns ihr Feedback geben sowie die Fehler aufspüren, die wir noch nicht
+		gefunden haben.
+		<br>
+		Das Ziel dieser ersten Veröffentlichung ist die Unterstützung aller
+		Kartenspiele von GGZCards und ein nahezu kompletter Client. Das zweite Ziel
+		ist es, den Spielen ein tolles Aussehen und spaßiges Spielvermögen zu geben,
+		damit ihr wiederkommt und weiterspielen wollt. Wenn ihr andere Kartenspiele
+		kennt, die euch besser gefallen, dann erzählt uns was wir tun müssen,
+		um es zu verbessern, so dass ihr noch mehr spielen wollt.
+		<br>
+		Zu dem Java-Applet geht es <a href="/games/applet.php">hier entlang</a>!
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		Programmieren für GGZ in Ruby
 		<span class="itemleader"> :: </span>
 		<a name="ruby"></a>
