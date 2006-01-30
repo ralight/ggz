@@ -58,7 +58,7 @@ public class RoomButton extends JLabel implements RoomListener {
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.toString());
             }
             break;
         case MouseEvent.MOUSE_ENTERED:

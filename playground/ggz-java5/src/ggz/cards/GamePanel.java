@@ -758,6 +758,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
             }
         });
         frame.setSize(640, 600);
+        frame.setLocationByPlatform(true);
         frame.setVisible(true);
         table.setStatus("Connecting to game server...");
     }

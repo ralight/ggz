@@ -199,7 +199,7 @@ public class LoungePanel extends JPanel {
                         }
                     } catch (IOException ex) {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(CategoryPanel.this, ex.getMessage());
+                        JOptionPane.showMessageDialog(CategoryPanel.this, ex.toString());
                     }
                 }
             });

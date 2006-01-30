@@ -127,10 +127,10 @@ public class RoomPanel extends JPanel implements RoomListener,
         chatPanel.setRoom(room);
         titleLabel.setText("<HTML><B>" + room.get_name()
                 + "</B><BR><EM><SPAN style='font-weight:normal'>"
-                + room.get_desc() + "</SPAN></EM></HTML>");
+                + room.get_desc() +"</SPAN></EM></HTML>");
 
         Module module = Module.get_nth_by_type(room.get_gametype(), 0);
-        if (module.get_icon_path() != null) {
+        if (module != null && module.get_icon_path() != null) {
             URL imageURL = getClass().getResource(module.get_icon_path());
             titleLabel.setIcon(new ImageIcon(imageURL));
         }
@@ -277,7 +277,7 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         public void game_launch_fail(Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(RoomPanel.this, e.getMessage());
+            JOptionPane.showMessageDialog(RoomPanel.this, e.toString());
         }
 
         public void game_launched() {
@@ -321,13 +321,6 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         public void game_playing() {
             try {
-//                int max_players = Math.min(4, room.get_gametype()
-//                        .get_max_players());
-//                Table table = new Table(room.get_gametype(), "Join me!",
-//                        max_players);
-//                for (int seat_num = 0; seat_num < max_players; seat_num++) {
-//                    table.set_seat(seat_num, SeatType.GGZ_SEAT_OPEN, null);
-//                }
                 room.launch_table(table);
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -352,31 +345,6 @@ public class RoomPanel extends JPanel implements RoomListener,
             }
         }
 
-    }
-
-    private class PlaySoloAction extends PlayGameAction {
-
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return "Play against Computer";
-            }
-            return super.getValue(key);
-        }
-
-        public void game_playing() {
-            try {
-                int max_bots = Math.min(3, room.get_gametype().get_max_bots());
-                Table table = new Table(room.get_gametype(), "I play alone...",
-                        max_bots + 1);
-                table.set_seat(0, SeatType.GGZ_SEAT_OPEN, null);
-                for (int seat_num = 1; seat_num <= max_bots; seat_num++) {
-                    table.set_seat(seat_num, SeatType.GGZ_SEAT_BOT, null);
-                }
-                room.launch_table(table);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
     }
 
     private class LogoutAction extends AbstractAction {

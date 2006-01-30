@@ -1,5 +1,7 @@
 package ggz.ui;
 
+import edu.stanford.ejalbert.BrowserLauncher;
+
 import java.applet.Applet;
 import java.applet.AppletContext;
 import java.applet.AppletStub;
@@ -8,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
@@ -20,7 +23,7 @@ public class ClientApp {
     protected static String sendLog;
 
     protected static String receiveLog;
-    
+
     protected static String uri;
 
     private ClientApp() {
@@ -99,15 +102,18 @@ public class ClientApp {
 
                     public void setStream(String key, InputStream stream) {
                         // TODO Auto-generated method stub
-
                     }
 
                     public void showDocument(URL url, String target) {
-                        // TODO Open platform specific browser
+                        showDocument(url);
                     }
 
                     public void showDocument(URL url) {
-                        // TODO Open platform specific browser
+                        try {
+                            BrowserLauncher.openURL(url.toString());
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
                     }
 
                     public void showStatus(String status) {

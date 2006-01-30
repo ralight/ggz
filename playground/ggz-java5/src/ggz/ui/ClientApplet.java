@@ -8,13 +8,17 @@ import ggz.client.core.ServerListener;
 import ggz.client.core.StateID;
 
 import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Cursor;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -34,7 +38,13 @@ import javax.swing.event.HyperlinkListener;
 
 public class ClientApplet extends JApplet implements ServerListener,
         HyperlinkListener {
+    private static final int DEFAULT_PORT = 5688;
+
     protected Server server;
+
+    protected JLabel aboutLabel;
+
+    protected JPanel mainPanel;
 
     protected LoginPanel loginPanel;
 
@@ -45,23 +55,22 @@ public class ClientApplet extends JApplet implements ServerListener,
     protected RoomPanel roomPanel;
 
     private ErrorEventData loginFailData;
-    
+
     private String uriPath;
 
     static {
-        // Get Swing to use Antialiased text.
-        System.setProperty("swing.aatext", "true");
-
-        // Make tooltips appear without a delay, this is currently because the
-        // options in force for a card game are shown by hovering over a label
-        // and the delay makes the interface unintuitive.
-        // ToolTipManager.sharedInstance().setInitialDelay(0);
+        try {
+            // Get Swing to use Antialiased text.
+            System.setProperty("swing.aatext", "true");
+        } catch (Throwable ex) {
+            // Ignore, we don't have permission so just don't anti-alias text.
+        }
     }
 
     public ClientApplet() throws IOException {
         // TODO Make watermark URL and background color applet parameters.
-        //URL imageUrl = getClass().getResource("/ggz/ui/images/rose.gif");
-        final Image watermark = null; //ImageIO.read(imageUrl);
+        URL imageUrl = getClass().getResource("/ggz/ui/images/watermark.gif");
+        final Image watermark = ImageIO.read(imageUrl);
         final Composite alphaComposite = AlphaComposite.getInstance(
                 AlphaComposite.SRC_OVER, 0.3f);
 
@@ -73,10 +82,9 @@ public class ClientApplet extends JApplet implements ServerListener,
                     Graphics2D g2d = (Graphics2D) g;
 
                     // Fille the background with a gradient.
-//                    g2d.setPaint(new GradientPaint(0, 0, Color.WHITE, 0,
-//                            getHeight() / 2, getBackground(), true));
-                    g2d.setPaint(new GradientPaint(0, 0, new Color(0xce, 0xfa, 0xdf), 0,
-                            getHeight() / 2, new Color(0x7c, 0xaf, 0x68), true));
+                    g2d.setPaint(new GradientPaint(0, 0, new Color(0xce, 0xfa,
+                            0xdf), 0, getHeight() / 2, new Color(0x7c, 0xaf,
+                            0x68), true));
                     g2d.fillRect(0, 0, getWidth(), getHeight());
 
                     if (watermark != null) {
@@ -96,31 +104,46 @@ public class ClientApplet extends JApplet implements ServerListener,
 
     public void init() {
         try {
-            // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            // Parse URI parameter and set up server.
             URI uri = new URI(getParameter("uri",
                     "ggz://live.ggzgamingzone.org:5688/Entry%20Room"));
             String host = uri.getHost();
-            int port = uri.getPort();
+            int port = uri.getPort() == -1 ? DEFAULT_PORT : uri.getPort();
             uriPath = uri.getPath();
             String sendLogFile = getParameter("sendLog");
             String receiveLogFile = getParameter("receiveLog");
             server = new Server(host, port, false);
             server.log_session(sendLogFile, receiveLogFile);
             server.add_event_hook(this);
-            //getContentPane().setBackground(new Color(0, 128, 255));
-            //getContentPane().setBackground(new Color(0x7c, 0xaf, 0x68));
-            //getContentPane().setBackground(new Color(0xce, 0xfa, 0xdf));
-            //getContentPane().setBackground(new Color(155, 203, 154));
-            getContentPane().setLayout(new CardLayout());
+
+            // Init components
+            getContentPane().setLayout(new BorderLayout());
+            mainPanel = new JPanel(new CardLayout());
+            mainPanel.setOpaque(false);
+            getContentPane().add(mainPanel, BorderLayout.CENTER);
+            aboutLabel = new JLabel(
+                    "<HTML><A href='' style='font-weight:normal; font-size:smaller'>About</A></HTML>",
+                    SwingConstants.RIGHT);
+            aboutLabel
+                    .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            aboutLabel.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent event) {
+                    AboutDialog.showDialog(ClientApplet.this);
+                }
+            });
+            getContentPane().add(aboutLabel, BorderLayout.SOUTH);
             loginPanel = new LoginPanel(server);
-            getContentPane().add(loginPanel, "login");
+            mainPanel.add(loginPanel, "login");
             loginPanel.init(uri.getUserInfo());
             loungePanel = new LoungePanel(server);
-            getContentPane().add(loungePanel, "lounge");
+            mainPanel.add(loungePanel, "lounge");
             roomPanel = new RoomPanel(server);
-            getContentPane().add(roomPanel, "room");
+            mainPanel.add(roomPanel, "room");
             busyPanel = new JLabel("Please wait...", SwingConstants.CENTER);
-            getContentPane().add(busyPanel, "busy");
+            mainPanel.add(busyPanel, "busy");
+
+            // Register ourselves as the global hyperlink handler for our
+            // hyperlink label.
             HyperlinkLabel.setGlobalHyperlinkListener(this);
         } catch (Exception e) {
             handleException(e);
@@ -194,14 +217,14 @@ public class ClientApplet extends JApplet implements ServerListener,
     public void server_enter_ok() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                CardLayout layout = (CardLayout) getContentPane().getLayout();
+                CardLayout layout = (CardLayout) mainPanel.getLayout();
                 try {
                     if (server.get_cur_room().get_gametype() == null) {
                         loungePanel.setRoom(server.get_cur_room());
-                        layout.show(getContentPane(), "lounge");
+                        layout.show(mainPanel, "lounge");
                     } else {
                         roomPanel.setRoom(server.get_cur_room());
-                        layout.show(getContentPane(), "room");
+                        layout.show(mainPanel, "room");
                     }
                 } catch (Exception e) {
                     handleException(e);
@@ -212,7 +235,6 @@ public class ClientApplet extends JApplet implements ServerListener,
 
     public void server_login_ok() {
         try {
-            // server.list_gametypes(true);
             server.list_rooms(true);
         } catch (Exception e) {
             handleException(e);
@@ -258,8 +280,6 @@ public class ClientApplet extends JApplet implements ServerListener,
     }
 
     public void server_negotiated() {
-        // CardLayout layout = (CardLayout) getContentPane().getLayout();
-        // layout.show(getContentPane(), "login");
         // Now that we have negotiated the connection successfully send the
         // login info.
         try {
@@ -298,7 +318,7 @@ public class ClientApplet extends JApplet implements ServerListener,
 
     public void server_state_changed() {
         String statusText;
-        CardLayout layout = (CardLayout) getContentPane().getLayout();
+        CardLayout layout = (CardLayout) mainPanel.getLayout();
 
         switch (server.get_state()) {
         case GGZ_STATE_OFFLINE:
@@ -307,7 +327,7 @@ public class ClientApplet extends JApplet implements ServerListener,
         /** In the process of connecting. */
         case GGZ_STATE_CONNECTING:
             loginFailData = null;
-            layout.show(getContentPane(), "busy");
+            layout.show(mainPanel, "busy");
             statusText = "Connecting";
             break;
         /** Continuous reconnection attempts. */
@@ -330,7 +350,7 @@ public class ClientApplet extends JApplet implements ServerListener,
         case GGZ_STATE_ENTERING_ROOM:
         /** Moving between rooms. */
         case GGZ_STATE_BETWEEN_ROOMS:
-            layout.show(getContentPane(), "busy");
+            layout.show(mainPanel, "busy");
             statusText = "Loading";
             break;
         /** Online, logged in, and in a room. */
@@ -376,6 +396,11 @@ public class ClientApplet extends JApplet implements ServerListener,
         try {
             if (uriPath != null && uriPath.length() > 1) {
                 String roomToEnter = uriPath.substring(1);
+                // Strip any trailing slash.
+                if (roomToEnter.endsWith("/")) {
+                    roomToEnter = roomToEnter.substring(0,
+                            roomToEnter.length() - 1);
+                }
                 // Move directly into the room specified by the URI.
                 for (int room_num = 0; room_num < server.get_num_rooms(); room_num++) {
                     Room room = server.get_nth_room(room_num);
@@ -385,8 +410,9 @@ public class ClientApplet extends JApplet implements ServerListener,
                     }
                 }
             }
-            
-            // If we got this far then either there was no room specified or no room with that name was found.
+
+            // If we got this far then either there was no room specified or no
+            // room with that name was found.
             server.join_room(0);
         } catch (Exception e) {
             handleException(e);
@@ -395,15 +421,15 @@ public class ClientApplet extends JApplet implements ServerListener,
 
     protected void handleException(Throwable e) {
         e.printStackTrace();
-        JOptionPane.showMessageDialog(this, e.getMessage());
+        JOptionPane.showMessageDialog(this, e.toString());
     }
 
     protected void resetLogin() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                CardLayout layout = (CardLayout) getContentPane().getLayout();
+                CardLayout layout = (CardLayout) mainPanel.getLayout();
                 try {
-                    layout.show(getContentPane(), "login");
+                    layout.show(mainPanel, "login");
                     loginPanel.resetLogin();
                 } catch (Exception e) {
                     handleException(e);
@@ -415,10 +441,10 @@ public class ClientApplet extends JApplet implements ServerListener,
     /**
      * Called when a HyperlinkLabel in the application is clicked.
      * 
-     * @param e
+     * @param event
      */
-    public void hyperlinkUpdate(HyperlinkEvent e) {
-        getAppletContext().showDocument(e.getURL(), "ggz_rules");
+    public void hyperlinkUpdate(HyperlinkEvent event) {
+        getAppletContext().showDocument(event.getURL(), "ggz_url");
     }
 
     public void invokeAndWait(Runnable doRun) {

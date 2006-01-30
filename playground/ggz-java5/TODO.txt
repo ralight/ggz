@@ -7,11 +7,13 @@ Add a private chat window so that two players can have a private conversation. C
 
 Add some board games, Reversi, Chess and Checkers are good candidates.
 
-Add support for multi-platform browser launching for hyperlinks like card game help.
-
 Add support for launching non-java games (i.e. implement new Mod that supports sockets)
 
 Add support for launching Java games from non-Java core client.
+
+Add support for player stats and maybe a link to the world map.
+
+MegaGrub help message on first login is confusing. His welcome text is great but the bit about "type help to change this :)" is confusing. The Smiley makes it not obvious that he is a bot and is giving you instructions and some users don't recognise smiley's (my dad didn't). People are using the applet to play games, not type obtuse commands into a chat window so that they can register themselves. The web site does this adequately already; we don't need to remove the chat bot functionality, we just don't need to advertise it when you first log in. Maybe MegaGrub can chime in with a help tip if the user send "help" as chat.
 
 
 All Card Games
@@ -28,6 +30,24 @@ Include a tutorial mode to help novice players learn how to play the game.
 
 Consider a square layout at all times, place chat either below or to the side depending on which screen dimension is the largest. This will be needed when we implement scaling of cards.
 
+The applet currently does not fit well on a screen resolution of 800x600 but it needs to.
+
+Support named bots or change names from AI to Computer 1, Computer 2 etc.
+
+Hide chat when all opponents are AI players.
+
+Show lag indicator, when there is lag there is no indication why a computer player is not playing a card.
+
+Optimise animation when many cards are being animated at once (e.g. trick win and deal). It currently repaints the entire window instead of just the effected area.
+
+Show indicator or play sound when it's your turn. The "Playing..." text is not enough.
+
+Need "Exit" or "Leave Game" button; closing the window it not intuitive for all users.
+
+Find out why "Connection Reset" exception occurs, especially, when leaving the game "sitting" for a few minutes.
+
+Allow player to look at cards in last trick etc. (according to the rules of the game)
+
 
 Bridge
 ======
@@ -40,6 +60,17 @@ Support more than four players
 
 Handle two decks layout a little better
 
+Hand lost message only reports points taken by loser, this message is confusing and should be removed as there's no loser in a hand of hearts, the running totals are enough.
+
+La Pocha
+========
+How to Play URL points to old GGZ site.
+
+Spades
+======
+Why is there both a 0 and nil bid?
+
+The numbers in brackets are confusing. It's not obvious that the first number is the bid/number of tricks for the player and the second number in brackets is for the team.
 
 Suaro
 =====

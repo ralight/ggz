@@ -252,9 +252,9 @@ public class Server {
                 try {
                     this.net.connect();
                     event(ServerEvent.GGZ_CONNECTED, null);
-                } catch (IOException e) {
+                } catch (Throwable e) {
                     change_state(TransID.GGZ_TRANS_CONN_FAIL);
-                    errmsg = e.getMessage();
+                    errmsg = e.toString();
                     event(ServerEvent.GGZ_CONNECT_FAIL, errmsg);
                 }
 
@@ -282,7 +282,7 @@ public class Server {
                 event(ServerEvent.GGZ_CHANNEL_CONNECTED, null);
             } catch (IOException e) {
                 log.fine("Channel creation failed");
-                errmsg = e.getMessage();
+                errmsg = e.toString();
                 event(ServerEvent.GGZ_CHANNEL_FAIL, errmsg);
             }
 

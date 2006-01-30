@@ -2,17 +2,18 @@
 <!--
   - This Ant build file is designed to work the Ant 1.6.x. 
   -->
-<project name="ggz-java" default="build_distribution" basedir=".">
+<project name="ggz-java" default="build-distribution" basedir=".">
 	<!-- set global properties for this build -->
 	<property name="src" value="src"/>
 	<property name="src_test" value="test"/>
 	<property name="bin" value="bin"/>
 	<property name="javadoc" value="javadoc"/>
-	<property name="jarfile" value="ggz-java-client.jar"/>
+	<property name="applet_jarfile" value="ggz-java-applet.jar"/>
+	<property name="application_jarfile" value="ggz-java-client.jar"/>
 	<property name="manifest" value="manifest/manifest.txt"/>
 
 	<!-- Non class files that need to be copied with the classes. -->
-	<fileset id="project.resources" dir="${src}" includes="**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.xslt"/>
+	<fileset id="project.resources" dir="${src}" includes="**/LICENSE,**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.xslt"/>
 	<fileset id="test.resources" dir="${src_test}" includes="**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.txt"/>
 
 	<target name="init">
@@ -35,10 +36,24 @@
 		</copy>
 	</target>
 	
-	<target name="jar" 
+	<target name="applet-jar" 
 		    depends="compile" 
-		    description="Creates a separate JAR file that contains the classes.">
-		<jar jarfile="${jarfile}" manifest="${manifest}">
+		    description="Creates a separate JAR file that contains the classes needed for the applet.">
+		<jar jarfile="${applet_jarfile}">
+			<fileset dir="${bin}">
+				<exclude name="edu/stanford/ejalbert/*"/>
+				<exclude name="ggz/ui/ClientApp.class"/>
+				<exclude name="ggz/ui/ClientApp??.class"/>
+				<exclude name="**/*Test*"/>
+				<exclude name="**/thumbs.db"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="application-jar" 
+		    depends="compile" 
+		    description="Creates a separate JAR file that contains the classes needed for the application.">
+		<jar jarfile="${application_jarfile}" manifest="${manifest}">
 			<fileset dir="${bin}">
 				<exclude name="**/*Test*"/>
 				<exclude name="**/thumbs.db"/>
@@ -54,8 +69,8 @@
 		</javadoc>
 	</target>
 	
-	<target name="build_distribution" 
-		    depends="clean,sign_jar" 
+	<target name="build-distribution" 
+		    depends="clean,sign-applet-jar,application-jar" 
 		    description="Does a clean and rebuilds everything">
 		<!-- Simply causes all dependencies to be built. -->
 	</target>
@@ -64,15 +79,16 @@
 		    description="Deletes all output files.">
 		<delete dir="${bin}"/>
 		<delete dir="${javadoc}"/>
-		<delete file="${jarfile}"/>
+		<delete file="${applet_jarfile}"/>
+		<delete file="${application_jarfile}"/>
 	</target>
 
-	<target name="sign_jar" 
-		    depends="jar" 
+	<target name="sign-applet-jar" 
+		    depends="applet-jar" 
 		    description="sign the applet jar">
 		<signjar alias="ggz_self_cert" storepass="kalido" keystore="${basedir}/signing/ggz_selfcert.keystore">
 			<fileset dir="${basedir}">
-				<include name="*.jar"/>
+				<include name="${applet_jarfile}"/>
 			</fileset>
 		</signjar>
 	</target>

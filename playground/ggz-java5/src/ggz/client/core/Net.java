@@ -207,7 +207,7 @@ public class Net implements Runnable {
                 // else
                 // Ignore
             } catch (IOException e) {
-                log.warning(e.getMessage());
+                log.warning(e.toString());
             }
 
             // if (element.get_text() == null) {
@@ -299,7 +299,7 @@ public class Net implements Runnable {
         try {
             this.out = new OutputStreamWriter(fd.getOutputStream(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            log.warning(e.getMessage());
+            log.warning(e.toString());
             this.out = new OutputStreamWriter(fd.getOutputStream());
         }
     }
@@ -599,7 +599,7 @@ public class Net implements Runnable {
             } catch (IOException e) {
                 // Not a big deal if we can't write to the dump file but alert
                 // the user anyway.
-                log.warning(e.getMessage());
+                log.warning(e.toString());
             }
         }
     }
@@ -612,7 +612,7 @@ public class Net implements Runnable {
             } catch (IOException e) {
                 // Not a big deal if we can't write to the dump file but alert
                 // the user anyway.
-                log.warning(e.getMessage());
+                log.warning(e.toString());
             }
         }
     }

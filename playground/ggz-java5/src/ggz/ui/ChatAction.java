@@ -40,7 +40,7 @@ public abstract class ChatAction extends AbstractAction {
         } catch (IOException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog((Component) e.getSource(), ex
-                    .getMessage());
+                    .toString());
         }
     }
 

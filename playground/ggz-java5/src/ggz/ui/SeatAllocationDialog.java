@@ -74,7 +74,7 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 
 		// Set up the OK and Cancel buttons.
 		buttonSizePanel = new JPanel(new GridLayout(1, 2, 4, 4));
-		buttonFlowPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		buttonFlowPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -189,17 +189,6 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 		dispose();
 	}
 
-	public static Table getTableSeatAllocation(Component parent,
-			GameType gameType) {
-		Frame owner = JOptionPane.getFrameForComponent(parent);
-		SeatAllocationDialog dialog = new SeatAllocationDialog(owner,
-				"New Game", gameType);
-		dialog.pack();
-		dialog.setLocationRelativeTo(null);
-		dialog.setVisible(true);
-		return dialog.table;
-	}
-
 	public void itemStateChanged(ItemEvent e) {
 		// Only change the text if it hasn't changed.
 		String text = tableDescriptionTextField.getText();
@@ -211,4 +200,15 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 			}
 		}
 	}
+
+    public static Table getTableSeatAllocation(Component parent,
+            GameType gameType) {
+        Frame owner = JOptionPane.getFrameForComponent(parent);
+        SeatAllocationDialog dialog = new SeatAllocationDialog(owner,
+                "New Game", gameType);
+        dialog.pack();
+        dialog.setLocationRelativeTo(owner);
+        dialog.setVisible(true);
+        return dialog.table;
+    }
 }
