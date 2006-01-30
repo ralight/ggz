@@ -89,15 +89,15 @@ public class GamePanel extends JPanel implements CardGameHandler,
     private SpriteHighlighter spriteHighlighter = new SpriteHighlighter();
 
     public GamePanel(ModGame mod) throws IOException {
-        super(new BorderLayout());
+    	super(new SmartChatLayout());
         card_client = new Client(mod);
         card_client.add_listener(this);
         chat_panel = new ChatPanel(new TableChatAction());
-        chat_panel.setPreferredSize(new Dimension(100, 150));
-        add(chat_panel, BorderLayout.SOUTH);
+        chat_panel.setPreferredSize(new Dimension(200, 150));
+        add(chat_panel, SmartChatLayout.CHAT);
         table = new TablePanel();
         table.setBackground(new Color(0, 128, 0));
-        add(table, BorderLayout.CENTER);
+        add(table, SmartChatLayout.TABLE);
         setOpaque(true);
 
         // Calculate the size of the cards.
@@ -774,7 +774,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
                 e.getWindow().dispose();
             }
         });
-        frame.setSize(640, 600);
+        frame.setSize(800, 600);
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
         table.setStatus("Connecting to game server...");
