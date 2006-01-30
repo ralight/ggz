@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2006  Helg Bredow
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package ggz.ui;
 
 import java.awt.BorderLayout;
@@ -63,7 +80,13 @@ public class AboutDialog extends JDialog {
         readLicense();
 
         // Copyright
-        copyrightLabel = new JLabel("Copyright (c) Helg Bredow 2006");
+        copyrightLabel = new JLabel(
+                "<HTML>"
+                        + "ggz-java version 0.0.12<BR>Copyright (C) 2006 Helg Bredow<BR>"
+                        + " GGZ Gaming Zone comes with ABSOLUTELY NO WARRANTY.<BR>"
+                        + "  This is free software, and you are welcome to"
+                        + " redistribute it<BR>under certain conditions as"
+                        + " described in the license below.");
         copyrightLabel.setBorder(spacer);
         getContentPane().add(copyrightLabel, BorderLayout.NORTH);
     }
