@@ -10,6 +10,17 @@
 <language>fr-fr</language>
 
 <item>
+<title><i>30.01.2006: GGZ maintenant pour Java aussi!</i> (de josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Avec GGZ-Java, joueurs en tous les systèmes operatifs gagnent un applet pour
+les jeux direct dans le navigateur web.
+GGZ-Java c'est pas seulement l'applet, mais aussi des clients pour plus que six
+jeux GGZ, et plus encore dans le futur.
+</full>
+</item>
+
+<item>
 <title><i>16.11.2005: New games information pages</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
