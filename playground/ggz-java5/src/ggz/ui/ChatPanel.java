@@ -110,7 +110,7 @@ public class ChatPanel extends JPanel {
 
         friendlyText = new SimpleAttributeSet();
         friendlyText.addAttribute(StyleConstants.Foreground, Color.GREEN
-                .darker());
+                .darker().darker());
 
         infoText = new SimpleAttributeSet();
         infoText.addAttribute(StyleConstants.Foreground, Color.BLUE);
@@ -210,7 +210,8 @@ public class ChatPanel extends JPanel {
                     e.printStackTrace();
                 }
                 chatArea.scrollRectToVisible(new Rectangle(0, chatArea
-                        .getHeight() - 2, 1, 1));
+                        .getHeight(), 1, 1));
+//                .getHeight() - 2, 1, 1));
             }
         });
     }
