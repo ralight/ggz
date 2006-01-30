@@ -75,40 +75,6 @@ public class Room {
     /* Room events */
     private HookList event_hooks;
 
-    // GGZHookList *event_hooks[sizeof(events) /
-    // sizeof(events[0])];
-
-    /*
-     * Private functions
-     */
-
-    private Server _get_server() {
-        return this.server;
-    }
-
-    private String _get_name() {
-        return this.name;
-    }
-
-    private GameType _get_game() {
-        return this.server.get_type_by_id(this.game_type_id);
-    }
-
-    private String _get_desc() {
-        return this.desc;
-    }
-
-    private int _get_num_players() {
-        if (this.server.get_cur_room() == this) {
-            return this.num_players;
-        }
-        return this.player_count;
-    }
-
-    private Player _get_nth_player(int num) {
-        return this.players.get(num);
-    }
-
     public Player get_player_by_name(String player_name) {
         int entry;
         Player player, found = null;
@@ -125,30 +91,8 @@ public class Room {
         return found;
     }
 
-    private Table _get_nth_table(int num) {
-        return this.tables.get(num);
-    }
-
-    /*
-     * Publicly exported functions
-     */
-
-    // Room ()
-    // {
-    // }
-    /* Initialize room object */
-    // int init( Server server,
-    // int id, String name,
-    // int game, String desc)
-    // {
-    // if (room) {
-    // _init(room, server, id, name, game, desc, 0);
-    // return 0;
-    // } else
-    // return -1;
-    // }
     public Server get_server() {
-        return _get_server();
+        return this.server;
     }
 
     public int get_id() {
@@ -156,19 +100,22 @@ public class Room {
     }
 
     public String get_name() {
-        return _get_name();
+        return this.name;
     }
 
     public String get_desc() {
-        return _get_desc();
+        return this.desc;
     }
 
     public GameType get_gametype() {
-        return _get_game();
+        return this.server.get_type_by_id(this.game_type_id);
     }
 
     public int get_num_players() {
-        return _get_num_players();
+        if (this.server.get_cur_room() == this) {
+            return this.num_players;
+        }
+        return this.player_count;
     }
 
     public int get_num_tables() {
@@ -177,14 +124,14 @@ public class Room {
 
     public Player get_nth_player(int num) {
         if (num < this.num_players) {
-            return _get_nth_player(num);
+            return this.players.get(num);
         }
         return null;
     }
 
     public Table get_nth_table(int num) {
         if (num < get_num_tables()) {
-            return _get_nth_table(num);
+            return this.tables.get(num);
         }
         return null;
     }
@@ -251,13 +198,21 @@ public class Room {
     // return -1;
     // }
     public void list_players() throws IOException {
-        if (this.server != null)
-            _load_playerlist();
+        if (this.server != null) {
+            Net net = this.server.get_net();
+            if (net != null) {
+                net.send_list_players();
+            }
+        }
     }
 
     public void list_tables() throws IOException {
-        if (this.server != null)
-            _load_tablelist();
+        if (this.server != null) {
+            Net net = this.server.get_net();
+            if (net != null) {
+                net.send_list_tables();
+            }
+        }
     }
 
     public void chat(ChatType type, String player, String msg)
@@ -314,19 +269,62 @@ public class Room {
     }
 
     public void launch_table(Table table) throws IOException {
-        if (this.server != null && table != null)
-            _launch_table(table);
+        if (this.server != null && table != null) {
+            Net net;
+            Game game = this.server.get_cur_game();
 
-        else
+            /*
+             * Make sure we're actually in a room.
+             */
+            if (this.server.get_state() != StateID.GGZ_STATE_IN_ROOM) {
+                throw new IllegalStateException("Server is not in state: "
+                        + StateID.GGZ_STATE_IN_ROOM);
+            }
+            if (game == null) {
+                throw new IllegalStateException(
+                        "Cannot launch table until the game has been launched.");
+            }
+            if (this.server.get_cur_room() != this) {
+                throw new IllegalStateException(
+                        "Can only launch table for current room.");
+            }
+
+            net = this.server.get_net();
+            net.send_table_launch(table);
+            game.set_player(false, -1);
+            this.server.set_table_launching();
+        } else {
             throw new IllegalStateException(
                     "server is null or table parameter is null");
+        }
     }
 
     public void join_table(int num, boolean spectator) throws IOException {
-        if (this.server == null || this.server.get_cur_game() == null)
+        if (this.server == null || this.server.get_cur_game() == null) {
             throw new IllegalStateException("server or server.cur_game is null");
+        }
 
-        _join_table(num, spectator);
+        Net net;
+        Game game = this.server.get_cur_game();
+        Room cur_room = this.server.get_cur_room();
+
+        /*
+         * Make sure we're actually in this room, and a game object has been
+         * created, and that we know the table exists. FIXME: make sure the game
+         * isn't already launched...
+         */
+        if (this.server.get_state() != StateID.GGZ_STATE_IN_ROOM
+                || cur_room == null || this.id != cur_room.id || game == null
+                || get_table_by_id(num) == null)
+            throw new IllegalStateException();
+
+        net = this.server.get_net();
+        net.send_table_join(num, spectator);
+
+        game.set_table(this.id, num);
+        game.set_player(spectator, -1);
+
+        this.server.set_table_joining();
     }
 
     public void leave_table(boolean force) throws IOException {
@@ -553,20 +551,6 @@ public class Room {
         event(RoomEvent.GGZ_TABLE_UPDATE, null);
     }
 
-    private void _load_playerlist() throws IOException {
-        Net net;
-
-        net = this.server.get_net();
-        net.send_list_players();
-    }
-
-    private void _load_tablelist() throws IOException {
-        Net net;
-
-        net = this.server.get_net();
-        net.send_list_tables();
-    }
-
     void add_chat(ChatType type, String player_name, String msg) {
         ChatEventData data = new ChatEventData(type, player_name, msg);
 
@@ -728,56 +712,6 @@ public class Room {
 
     void table_event(RoomEvent event, Object data) {
         event(event, data);
-    }
-
-    private void _launch_table(Table table) throws IOException {
-        Net net;
-        Game game = this.server.get_cur_game();
-
-        /*
-         * Make sure we're actually in a room.
-         */
-        if (this.server.get_state() != StateID.GGZ_STATE_IN_ROOM) {
-            throw new IllegalStateException("Server is not in state: "
-                    + StateID.GGZ_STATE_IN_ROOM);
-        }
-        if (game == null) {
-            throw new IllegalStateException(
-                    "Cannot launch table until the game has been launched.");
-        }
-        if (this.server.get_cur_room() != this) {
-            throw new IllegalStateException(
-                    "Can only launch table for current room.");
-        }
-
-        net = this.server.get_net();
-        net.send_table_launch(table);
-        game.set_player(false, -1);
-        this.server.set_table_launching();
-    }
-
-    void _join_table(int num, boolean spectator) throws IOException {
-        Net net;
-        Game game = this.server.get_cur_game();
-        Room cur_room = this.server.get_cur_room();
-
-        /*
-         * Make sure we're actually in this room, and a game object has been
-         * created, and that we know the table exists. FIXME: make sure the game
-         * isn't already launched...
-         */
-        if (this.server.get_state() != StateID.GGZ_STATE_IN_ROOM
-                || cur_room == null || this.id != cur_room.id || game == null
-                || get_table_by_id(num) == null)
-            throw new IllegalStateException();
-
-        net = this.server.get_net();
-        net.send_table_join(num, spectator);
-
-        game.set_table(this.id, num);
-        game.set_player(spectator, -1);
-
-        this.server.set_table_joining();
     }
 
     void _leave_table(boolean force) throws IOException {

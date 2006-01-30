@@ -297,6 +297,8 @@ public class TablePanel extends JPanel {
 
     public void animate(int numSprites, Sprite[] sprite, Point[] endPos,
             double time) {
+        if (numSprites == 0)
+            return;
         long start = System.currentTimeMillis();
         long tm = start;
         int fps = 200;
@@ -308,6 +310,7 @@ public class TablePanel extends JPanel {
         double[] y = new double[numSprites];
         boolean useActiveRendering = EventQueue.isDispatchThread();
         Graphics graphics = null;
+        Rectangle[] oldBounds = new Rectangle[numSprites];
 
         // Set up.
         for (int s = 0; s < numSprites; s++) {
@@ -316,6 +319,7 @@ public class TablePanel extends JPanel {
             yDelta[s] = (endPos[s].y - startPos.y) / frames;
             x[s] = startPos.x;
             y[s] = startPos.y;
+            oldBounds[s] = sprite[s].getBounds();
         }
 
         if (useActiveRendering) {
@@ -340,20 +344,23 @@ public class TablePanel extends JPanel {
                 // painted. The paint events are placed on the event queue and
                 // handled whenever the system has time to process them.
                 for (int s = 0; s < numSprites; s++) {
-                    // sprite[s].rotate(angle, true);
                     sprite[s].setLocation((int) Math.round(x[s]), (int) Math
                             .round(y[s]));
                 }
 
                 if (useActiveRendering) {
-                    // TODO Create a union of all the rectangles to create one
-                    // big clip area.
-                    // Rectangle clip;
-                    // for (int s = 0; s < numSprites; s++) {
-                    // sprite[s].setLocation((int) Math.round(x[s]), (int) Math
-                    // .round(y[s]));
-                    // }
-                    // graphics.setClip(clip);
+                    // Create a union of all the rectangles to create one big
+                    // clip area.
+                    Rectangle clip = sprite[0].getBounds().union(oldBounds[0]);
+                    sprite[0].getBounds(oldBounds[0]);
+                    for (int s = 1; s < numSprites; s++) {
+                        Rectangle.union(clip, oldBounds[s], clip);
+                        // Now that we have used oldBounds we can update
+                        // oldBounds with the new location.
+                        sprite[s].getBounds(oldBounds[s]);
+                        Rectangle.union(clip, oldBounds[s], clip);
+                    }
+                    graphics.setClip(clip);
                     paint(graphics);
                 }
 

@@ -71,10 +71,18 @@ public enum ClientReqError {
             break;
         }
 
-        // ggz_error_msg("ggz_error_to_string: invalid error %d given.", err);
         return "[unknown]";
     }
 
+    /**
+     * Converts an error string to a ClientReqError object. The strings
+     * recognised by this function are those returned by the server as the CODE
+     * attribute of the &lt;RESULT&gt; tag.
+     * 
+     * @param str
+     * @return The equivalent ClientReqError or E_UNKNOWN if the code is not
+     *         recognised.
+     */
     public static ClientReqError string_to_error(String str) {
         if (str == null)
             return ClientReqError.E_OK;

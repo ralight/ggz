@@ -1,57 +1,76 @@
-There are so many things left to do to make this a truly professional release. This file is a record of all the things that I can think of that need to be done.
+There are so many things left to do to make this a truly professional release.
+This file is a record of all the things that I can think of that need to be done.
 
 
 Core Client
 ===========
-Add a private chat window so that two players can have a private conversation. Currently the only way to do this is to use the /msg command.
+Add a private chat window so that two players can have a private conversation.
+Currently the only way to do this is to use the /msg command.
 
 Add some board games, Reversi, Chess and Checkers are good candidates.
 
-Add support for launching non-java games (i.e. implement new Mod that supports sockets)
+Add support for launching non-java games (i.e. implement new Mod that supports
+sockets)
 
 Add support for launching Java games from non-Java core client.
 
-Add support for player stats and maybe a link to the world map.
-
-MegaGrub help message on first login is confusing. His welcome text is great but the bit about "type help to change this :)" is confusing. The Smiley makes it not obvious that he is a bot and is giving you instructions and some users don't recognise smiley's (my dad didn't). People are using the applet to play games, not type obtuse commands into a chat window so that they can register themselves. The web site does this adequately already; we don't need to remove the chat bot functionality, we just don't need to advertise it when you first log in. Maybe MegaGrub can chime in with a help tip if the user send "help" as chat.
+MegaGrub help message on first login is confusing. His welcome text is great
+but the bit about "type help to change this :)" is confusing. The Smiley
+makes it not obvious that he is a bot and is giving you instructions and
+some users don't recognise smiley's (my dad didn't). People are using the
+applet to play games, not type obtuse commands into a chat window so that
+they can register themselves. The web site does this adequately already; we
+don't need to remove the chat bot functionality, we just don't need to
+advertise it when you first log in. Maybe MegaGrub can chime in with a help
+tip if the user send "help" as chat.
 
 
 All Card Games
 ==============
-Don't show opponent cards unless they are face up, this will help with layout for more than four players and reduces visual clutter. It allows for more choices for embelishments etc.
+Don't show opponent cards unless they are face up, this will help with layout
+for more than four players and reduces visual clutter. It allows for more
+choices for embelishments etc.
 
 Scale the cards and other widgets when the window is resized.
 
-The "How to Play" link doesn't work when a popup blocker is in effect. Find a way to get around this or alert the user to this fact.
+The "How to Play" link doesn't work when a popup blocker is in effect. Find a
+way to get around this or alert the user to this fact. After researching this
+it appears that there is no way to get around the IE or Google pop-up
+blockers.
 
-Consider a "Leave" button so that closing the window is not the only way to leave the game.
+Consider a "Leave" button so that closing the window is not the only way to 
+leave the game; closing the window it not intuitive for all users.
 
 Include a tutorial mode to help novice players learn how to play the game.
 
-Consider a square layout at all times, place chat either below or to the side depending on which screen dimension is the largest. This will be needed when we implement scaling of cards.
+Consider a square layout at all times, place chat either below or to the side
+depending on which screen dimension is the largest. This will be needed when
+we implement scaling of cards.
 
-The applet currently does not fit well on a screen resolution of 800x600 but it needs to.
+The applet currently does not fit well on a screen resolution of 800x600 but
+it needs to.
 
 Support named bots or change names from AI to Computer 1, Computer 2 etc.
 
 Hide chat when all opponents are AI players.
 
-Show lag indicator, when there is lag there is no indication why a computer player is not playing a card.
+Show lag indicator, when there is lag there is no indication why a computer
+player is not playing a card.
 
-Optimise animation when many cards are being animated at once (e.g. trick win and deal). It currently repaints the entire window instead of just the effected area.
+Show indicator or play sound when it's your turn. The "Playing..." text is not
+enough.
 
-Show indicator or play sound when it's your turn. The "Playing..." text is not enough.
+Find out why "Connection Reset" exception occurs, especially, when leaving the
+game "sitting" for a few minutes.
 
-Need "Exit" or "Leave Game" button; closing the window it not intuitive for all users.
-
-Find out why "Connection Reset" exception occurs, especially, when leaving the game "sitting" for a few minutes.
-
-Allow player to look at cards in last trick etc. (according to the rules of the game)
+Allow player to look at cards in last trick etc. (according to the rules of
+the game)
 
 
 Bridge
 ======
-Use specialised bid controls rather than buttons for bidding. The controls could have toggle buttons from 1-7 and toggle buttons for each of the strains.
+Use specialised bid controls rather than buttons for bidding. The controls
+could have toggle buttons from 1-7 and toggle buttons for each of the strains.
 
 
 Hearts
@@ -60,7 +79,9 @@ Support more than four players
 
 Handle two decks layout a little better
 
-Hand lost message only reports points taken by loser, this message is confusing and should be removed as there's no loser in a hand of hearts, the running totals are enough.
+Hand lost message only reports points taken by loser, this message is 
+confusing and should be removed as there's no loser in a hand of hearts, the
+running totals are enough.
 
 La Pocha
 ========
@@ -70,7 +91,11 @@ Spades
 ======
 Why is there both a 0 and nil bid?
 
-The numbers in brackets are confusing. It's not obvious that the first number is the bid/number of tricks for the player and the second number in brackets is for the team.
+The numbers in brackets are confusing. It's not obvious that the first number
+is the bid/number of tricks for the player and the second number in brackets
+is for the team.
+
+GGZ-Cards version of Spades seems to have more options, what's going on?
 
 Suaro
 =====
@@ -79,4 +104,6 @@ Create a custom bid panel similar to what is proposed for Bridge.
 
 Whist
 =====
-Display dealer up card in a visual way, either during the deal and/or with an icon during play. At the least, trump should be indicated with an icon during play.
+Display dealer up card in a visual way, either during the deal and/or with an
+icon during play. At the least, trump should be indicated with an icon during
+play.

@@ -18,11 +18,8 @@
 package ggz.common;
 
 /**
- * @brief Chat types.
- * 
  * Each time we send a chat to the server, it will have one of these types
  * associated with it.
- * @see ggzcore_room_chat
  */
 public enum ChatType {
     /**
@@ -78,24 +75,20 @@ public enum ChatType {
             return PRIVATE_CHAT_NAME;
         case GGZ_CHAT_TABLE:
             return TABLE_CHAT_NAME;
-        case GGZ_CHAT_UNKNOWN:
-            break;
+        default:
+            return super.toString();
         }
-
-        // ggz_error_msg("ggz_chattype_to_string: invalid chattype "+type+"
-        // given.");
-        return ""; /* ? */
     }
 
+    /**
+     * Converts a string to a a ChatType. If the string doesn't match exactly
+     * then GGZ_CHAT_UNKOWN is returned. The recognised strings are normal,
+     * announce, beep, private and table.
+     * 
+     * @param type_str The string to convert.
+     * @return The chat type that corresponds to the given string.
+     */
     public static ChatType string_to_chattype(String type_str) {
-        /*
-         * If it doesn't match _exactly_ we return GGZ_CHAT_NONE. This is bad
-         * for, say, user input, but perfectly acceptable as an inverse to
-         * ggz_chattype_to_string().
-         */
-        if (type_str == null)
-            return GGZ_CHAT_UNKNOWN;
-
         if (NORMAL_CHAT_NAME.equals(type_str))
             return GGZ_CHAT_NORMAL;
         else if (ANNOUNCE_CHAT_NAME.equals(type_str))
