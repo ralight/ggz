@@ -89,7 +89,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
     private SpriteHighlighter spriteHighlighter = new SpriteHighlighter();
 
     public GamePanel(ModGame mod) throws IOException {
-    	super(new SmartChatLayout());
+        super(new SmartChatLayout());
         card_client = new Client(mod);
         card_client.add_listener(this);
         chat_panel = new ChatPanel(new TableChatAction());
@@ -129,8 +129,12 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void alert_newgame(CardSetType cardset_type) {
-        table.setStatus(null);
-        handILastPlayedFrom = -1;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                table.setStatus(null);
+                handILastPlayedFrom = -1;
+            }
+        });
     }
 
     public void alert_newhand() {
@@ -185,54 +189,60 @@ public class GamePanel extends JPanel implements CardGameHandler,
      * Invoked when seat information changes or is first received for a given
      * seat.
      */
-    public void alert_player(int seat_num, SeatType old_type, String old_name) {
-        JLabel label = player_labels[seat_num];
-        CardSeat player = card_client.get_nth_player(seat_num);
-        if (label == null) {
-            label = new JLabel(player.get_name());
-            label.setForeground(Color.WHITE);
-            table.add(label, new TableConstraints(
-                    TableConstraints.PLAYER_LABEL, seat_num));
-            player_labels[seat_num] = label;
+    public void alert_player(final int seat_num, final SeatType old_type,
+            final String old_name) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JLabel label = player_labels[seat_num];
+                CardSeat player = card_client.get_nth_player(seat_num);
+                if (label == null) {
+                    label = new JLabel(player.get_name());
+                    label.setForeground(Color.WHITE);
+                    table.add(label, new TableConstraints(
+                            TableConstraints.PLAYER_LABEL, seat_num));
+                    player_labels[seat_num] = label;
 
-            if (seat_num != 0) {
-                // Listen for click events so as to pop up a menu that allows
-                // users to do things to this seat.
-                label.addMouseListener(new PopupListener());
+                    if (seat_num != 0) {
+                        // Listen for click events so as to pop up a menu that
+                        // allows
+                        // users to do things to this seat.
+                        label.addMouseListener(new PopupListener());
+                    }
+                } else {
+                    label.setText(player.get_name());
+                }
+
+                // Position the labels.
+                SeatType seat_type = player.get_seat_type();
+                switch (seat_num) {
+                case 0: // Me - south
+                    label.setVerticalAlignment(SwingConstants.TOP);
+                    break;
+                case 1: // West
+                    label.setIcon(getPlayerIcon(seat_type));
+                    label.setVerticalTextPosition(SwingConstants.BOTTOM);
+                    label.setHorizontalTextPosition(SwingConstants.CENTER);
+                    label.setHorizontalAlignment(SwingConstants.LEFT);
+                    initPopupMenu(seat_num, seat_type);
+                    break;
+                case 2: // North
+                    label.setIcon(getPlayerIcon(seat_type));
+                    label.setVerticalAlignment(SwingConstants.TOP);
+                    initPopupMenu(seat_num, seat_type);
+                    break;
+                case 3: // East
+                    label.setIcon(getPlayerIcon(seat_type));
+                    label.setVerticalTextPosition(SwingConstants.BOTTOM);
+                    label.setHorizontalTextPosition(SwingConstants.CENTER);
+                    label.setHorizontalAlignment(SwingConstants.RIGHT);
+                    initPopupMenu(seat_num, seat_type);
+                    break;
+                default:
+                    throw new UnsupportedOperationException(
+                            "More than 4 players not supported yet.");
+                }
             }
-        } else {
-            label.setText(player.get_name());
-        }
-
-        // Position the labels.
-        SeatType seat_type = player.get_seat_type();
-        switch (seat_num) {
-        case 0: // Me - south
-            label.setVerticalAlignment(SwingConstants.TOP);
-            break;
-        case 1: // West
-            label.setIcon(getPlayerIcon(seat_type));
-            label.setVerticalTextPosition(SwingConstants.BOTTOM);
-            label.setHorizontalTextPosition(SwingConstants.CENTER);
-            label.setHorizontalAlignment(SwingConstants.LEFT);
-            initPopupMenu(seat_num, seat_type);
-            break;
-        case 2: // North
-            label.setIcon(getPlayerIcon(seat_type));
-            label.setVerticalAlignment(SwingConstants.TOP);
-            initPopupMenu(seat_num, seat_type);
-            break;
-        case 3: // East
-            label.setIcon(getPlayerIcon(seat_type));
-            label.setVerticalTextPosition(SwingConstants.BOTTOM);
-            label.setHorizontalTextPosition(SwingConstants.CENTER);
-            label.setHorizontalAlignment(SwingConstants.RIGHT);
-            initPopupMenu(seat_num, seat_type);
-            break;
-        default:
-            throw new UnsupportedOperationException(
-                    "More than 4 players not supported yet.");
-        }
+        });
     }
 
     private ImageIcon getPlayerIcon(SeatType type) {
@@ -350,7 +360,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
                         break;
                     }
                 }
-                
+
                 if (!found) {
                     try {
                         // Pick a random card, flip it over and play it.
@@ -386,14 +396,14 @@ public class GamePanel extends JPanel implements CardGameHandler,
             }
         });
     }
-    
+
     protected void putNextPlayersCardsOnTop(int player_num) {
         int num_players = card_client.get_num_players();
         int player_on_left = (player_num + 1) % num_players;
-        if (Card.UNKNOWN_CARD.equals(card_client
-                .get_nth_player(player_on_left).get_table_card())) {
+        if (Card.UNKNOWN_CARD.equals(card_client.get_nth_player(player_on_left)
+                .get_table_card())) {
             // Player has not played a card so put his cards on top
-            for (int card_num = sprites[player_on_left].length-1; card_num >=0 ; card_num--) {
+            for (int card_num = sprites[player_on_left].length - 1; card_num >= 0; card_num--) {
                 Sprite card = sprites[player_on_left][card_num];
                 if (card != null) {
                     table.setComponentZOrder(card, 0);
@@ -404,24 +414,40 @@ public class GamePanel extends JPanel implements CardGameHandler,
 
     public void alert_server(Socket fd) {
         // Don't need the socket so ignore.
-        table.setStatus("Waiting for other players to join...");
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                table.setStatus("Waiting for other players to join...");
+            }
+        });
     }
 
     public void alert_table() {
-        try {
-            for (int playerNum = 0; playerNum < card_client.get_num_players(); playerNum++) {
-                Card serverTableCard = card_client.get_nth_player(playerNum).get_table_card();
-                if (!serverTableCard.equals(Card.UNKNOWN_CARD) && sprite_in_trick[playerNum] == null) {
-                    // We are out of sync with the server, most likely because we just joined.
-                    Sprite tableSprite = new Sprite(serverTableCard, getCardOrientation(playerNum));
-                    sprite_in_trick[playerNum] = tableSprite;
-                    table.add(tableSprite, new TableConstraints(TableConstraints.CARD_IN_TRICK, playerNum), 0);
-                    table.validate();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    for (int playerNum = 0; playerNum < card_client
+                            .get_num_players(); playerNum++) {
+                        Card serverTableCard = card_client.get_nth_player(
+                                playerNum).get_table_card();
+                        if (!serverTableCard.equals(Card.UNKNOWN_CARD)
+                                && sprite_in_trick[playerNum] == null) {
+                            // We are out of sync with the server, most likely
+                            // because
+                            // we just joined.
+                            Sprite tableSprite = new Sprite(serverTableCard,
+                                    getCardOrientation(playerNum));
+                            sprite_in_trick[playerNum] = tableSprite;
+                            table.add(tableSprite, new TableConstraints(
+                                    TableConstraints.CARD_IN_TRICK, playerNum),
+                                    0);
+                            table.validate();
+                        }
+                    }
+                } catch (IOException ex) {
+                    handleException(ex);
                 }
             }
-        } catch (IOException ex) {
-            handleException(ex);
-        }
+        });
     }
 
     public void alert_trick(final int winner) {
@@ -577,24 +603,29 @@ public class GamePanel extends JPanel implements CardGameHandler,
     }
 
     public void get_newgame() {
-        table
-                .setStatus("<HTML>Press <EM>Ready</EM> to start the game.<BR>Once all players are ready the game will begin.</HTML>");
-        JButton startButton = new JButton("Ready");
-        table.removeAllButtons();
-        table.addButton(startButton);
-        startButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    card_client.send_newgame();
-                    table.removeAllButtons();
-                    table.hideButtons();
-                    table.setStatus("Waiting for other players to be ready...");
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                table
+                        .setStatus("<HTML>Press <EM>Ready</EM> to start the game.<BR>Once all players are ready the game will begin.");
+                JButton startButton = new JButton("Ready");
+                table.removeAllButtons();
+                table.addButton(startButton);
+                startButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            card_client.send_newgame();
+                            table.removeAllButtons();
+                            table.hideButtons();
+                            table
+                                    .setStatus("Waiting for other players to be ready...");
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                table.showButtons();
             }
         });
-        table.showButtons();
     }
 
     public boolean get_options(String[] descs, int[] defaults,
@@ -608,32 +639,43 @@ public class GamePanel extends JPanel implements CardGameHandler,
         return okClicked;
     }
 
-    public void get_play(int play_hand, Card[] valid_cards) {
+    public void get_play(final int play_hand, final Card[] valid_cards) {
         // Enable and disable cards as appropriate.
-        Sprite[] player_cards = sprites[play_hand];
-        for (int card_num = 0; card_num < player_cards.length; card_num++) {
-            if (player_cards[card_num] != null) {
-                boolean isFound = false;
-                for (int i = 0; i < valid_cards.length; i++) {
-                    if (player_cards[card_num].card().equals(valid_cards[i])) {
-                        isFound = true;
-                        break;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Sprite[] player_cards = sprites[play_hand];
+                for (int card_num = 0; card_num < player_cards.length; card_num++) {
+                    if (player_cards[card_num] != null) {
+                        boolean isFound = false;
+                        for (int i = 0; i < valid_cards.length; i++) {
+                            if (player_cards[card_num].card().equals(
+                                    valid_cards[i])) {
+                                isFound = true;
+                                break;
+                            }
+                        }
+                        player_cards[card_num].setEnabled(isFound);
+                        player_cards[card_num].setSelectable(isFound);
+                        if (isFound) {
+                            // Remove ourselves first to prevent receiving
+                            // multiple
+                            // notifications. This is safe to do even if we are
+                            // not
+                            // registered yet.
+                            player_cards[card_num]
+                                    .removeActionListener(GamePanel.this);
+                            player_cards[card_num]
+                                    .removeMouseListener(spriteHighlighter);
+                            player_cards[card_num]
+                                    .addActionListener(GamePanel.this);
+                            player_cards[card_num]
+                                    .addMouseListener(spriteHighlighter);
+                        }
                     }
                 }
-                player_cards[card_num].setEnabled(isFound);
-                player_cards[card_num].setSelectable(isFound);
-                if (isFound) {
-                    // Remove ourselves first to prevent receiving multiple
-                    // notifications. This is safe to do even if we are not
-                    // registered yet.
-                    player_cards[card_num].removeActionListener(GamePanel.this);
-                    player_cards[card_num].removeMouseListener(spriteHighlighter);
-                    player_cards[card_num].addActionListener(GamePanel.this);
-                    player_cards[card_num].addMouseListener(spriteHighlighter);
-                }
+                handILastPlayedFrom = play_hand;
             }
-        }
-        handILastPlayedFrom = play_hand;
+        });
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -704,64 +746,85 @@ public class GamePanel extends JPanel implements CardGameHandler,
         // }
     }
 
-    public void set_player_message(int player_num, String message) {
-        JLabel label = player_labels[player_num];
-        message = message.replace("\n", "<BR>");
-        label.setText("<HTML><B>"
-                + card_client.get_nth_player(player_num).get_name()
-                + "</B><BR><EM><SPAN style='font-weight:normal'>" + message
-                + "</span></EM></HTML>");
-        table.invalidate();
-        table.validate();
-    }
-
-    public void set_text_message(String mark, String message) {
-        if ("game".equals(mark)) {
-            JOptionPane.getFrameForComponent(this).setTitle(message);
-        } else if ("Options".equals(mark)) {
-            table.setOptionsSummary(message);
-        } else if ("Scores".equals(mark)) {
-            // Ignore for now, player messages already show scores.
-        } else if ("Bid History".equals(mark)) {
-            // Ignore for now, player messages already show bids.
-        } else if ("Trump".equals(mark)) {
-            // TODO, show an icon to indicate trumps
-            chat_panel.appendInfo(message);
-        } else if ("Up-Card".equals(mark)) {
-            chat_panel.appendInfo(message);
-        } else if ("Hand Score".equals(mark)) {
-            chat_panel.appendInfo(message);
-        } else if ("Rules".equals(mark)) {
-            try {
-                table.setRulesURL(message);
-            } catch (MalformedURLException ex) {
-                // Ignore but dump the stack trace for posterity.
-                ex.printStackTrace();
+    public void set_player_message(final int player_num, final String message) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JLabel label = player_labels[player_num];
+                label
+                        .setText("<HTML><B>"
+                                + card_client.get_nth_player(player_num)
+                                        .get_name()
+                                + "</B><BR><EM><SPAN style='font-weight:normal'>"
+                                + message.replace("\n", "<BR>")
+                                + "</span></EM></HTML>");
+                table.invalidate();
+                table.validate();
             }
-        } else if ("".equals(mark) && !"".equals(message)) {
-            chat_panel.appendInfo(message);
-        } else if ("".equals(mark) && "".equals(message)) {
-            // Do nothing, not sure why the server sends this.
-        } else {
-            chat_panel.appendChat("set_text_message", "mark=" + mark
-                    + " message=" + message);
-        }
+        });
     }
 
-    public void handle_chat(String player, String msg) {
+    public void set_text_message(final String mark, final String message) {
+        // All handlers are called from the socket thread so we need to do
+        // this crazy stuff. This method is usually invoked from a handler.
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if ("game".equals(mark)) {
+                    JOptionPane.getFrameForComponent(GamePanel.this).setTitle(
+                            message);
+                } else if ("Options".equals(mark)) {
+                    table.setOptionsSummary(message);
+                } else if ("Scores".equals(mark)) {
+                    // Ignore for now, player messages already show scores.
+                } else if ("Bid History".equals(mark)) {
+                    // Ignore for now, player messages already show bids.
+                } else if ("Trump".equals(mark)) {
+                    // TODO, show an icon to indicate trumps
+                    chat_panel.appendInfo(message);
+                } else if ("Up-Card".equals(mark)) {
+                    chat_panel.appendInfo(message);
+                } else if ("Hand Score".equals(mark)) {
+                    chat_panel.appendInfo(message);
+                } else if ("Rules".equals(mark)) {
+                    try {
+                        table.setRulesURL(message);
+                    } catch (MalformedURLException ex) {
+                        // Ignore but dump the stack trace for posterity.
+                        ex.printStackTrace();
+                    }
+                } else if ("".equals(mark) && !"".equals(message)) {
+                    chat_panel.appendInfo(message);
+                } else if ("".equals(mark) && "".equals(message)) {
+                    // Do nothing, not sure why the server sends this.
+                } else {
+                    chat_panel.appendChat("set_text_message", "mark=" + mark
+                            + " message=" + message);
+                }
+            }
+        });
+    }
+
+    public void handle_chat(final String player, final String msg) {
         // Can't ignore messages because we need to handle the /table command,
         // which can be sent from the table or room.
-        // String handle = card_client.get_nth_player(0).get_name();
-        // if (!handle.equals(player)) {
-        chat_panel.appendChat(player, msg);
-        // }
+        // All handlers are called from the socket thread so we need to do
+        // this crazy stuff. This method is usually invoked from a handler.
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                chat_panel.appendChat(player, msg);
+            }
+        });
     }
 
     public void handle_info(int num, List infos) {
-        chat_panel.appendChat("handle_info", null);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                chat_panel.appendChat("handle_info", null);
+            }
+        });
     }
 
     public void handle_launch() {
+        table.setStatus("Connecting to game server...");
         JFrame frame = new JFrame();
         frame.getContentPane().add(this, BorderLayout.CENTER);
         frame.addWindowListener(new WindowAdapter() {
@@ -777,7 +840,6 @@ public class GamePanel extends JPanel implements CardGameHandler,
         frame.setSize(720, 540);
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
-        table.setStatus("Connecting to game server...");
     }
 
     public void handle_player(String name, boolean is_spectator, int seat_num) {
@@ -805,9 +867,17 @@ public class GamePanel extends JPanel implements CardGameHandler,
         JOptionPane.getFrameForComponent(this).dispose();
     }
 
-    public void handle_spectator_seat(SpectatorSeat seat) {
-        chat_panel.appendChat("handle_spectator_seat", "num=" + seat.get_num()
-                + " name=" + seat.get_name());
+    public void handle_spectator_seat(final SpectatorSeat seat) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if (seat.get_name() == null) {
+                    chat_panel.appendInfo("A spectator has left.");
+                } else {
+                    chat_panel.appendInfo(seat.get_name()
+                            + " has joined as a spectator.");
+                }
+            }
+        });
     }
 
     public void handleException(Throwable e) {
@@ -828,7 +898,9 @@ public class GamePanel extends JPanel implements CardGameHandler,
         public void sendChat(ChatType type, String target, String message)
                 throws IOException {
             if (type != ChatType.GGZ_CHAT_TABLE) {
-                chatPanel.appendInfo("This is not supported while at a table.");
+                chatPanel
+                        .appendCommandText("Private messages are not allowed while at a table.");
+                return;
             }
             card_client.request_chat(message);
         }

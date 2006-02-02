@@ -231,7 +231,7 @@ public class Mod implements ModGGZ, ModGame {
                 this.spectator_seats = new ArrayList<SpectatorSeat>();
             }
             this.spectator_seats.add(seat);
-        } else {
+        } else if (this.spectator_seats != null) {
             /* Non-occupied seats are just empty entries in the list. */
             int entry = this.spectator_seats.indexOf(seat);
             if (entry > -1) {

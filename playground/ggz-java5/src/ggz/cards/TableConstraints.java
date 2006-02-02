@@ -36,9 +36,15 @@ public class TableConstraints {
     public static final int CARD_IN_HAND = 1;
 
     public static final int CARD_IN_TRICK = 2;
+    
+    public static final int STATUS_LABEL = 3;
 
-    public TableConstraints(int type, int playerIndex) {
+    public TableConstraints(int type) {
         this.type = type;
+    }
+    
+    public TableConstraints(int type, int playerIndex) {
+        this(type);
         this.playerIndex = playerIndex;
     }
 

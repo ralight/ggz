@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
@@ -110,7 +111,13 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         // Ignore chat messages from ourselves since we append the text on send
         // without waiting for the server to make the app feel more responsive.
         if (!handle.equals(data.sender) && data.type != ChatType.GGZ_CHAT_TABLE) {
-            chatPanel.appendChat(data.type, data.sender, data.message);
+            // All handlers are called from the socket thread so we need to do
+            // this crazy stuff. This method is usually invoked from a handler.
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    chatPanel.appendChat(data.type, data.sender, data.message);
+                }
+            });
         }
     }
 
@@ -259,8 +266,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
     }
 
-    private class PlayerTypeCellRenderer extends DefaultTableCellRenderer implements
-            TableCellRenderer {
+    private class PlayerTypeCellRenderer extends DefaultTableCellRenderer
+            implements TableCellRenderer {
         private PlayerType type;
 
         private ImageIcon[] icons;
@@ -341,13 +348,20 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
         public String getToolTipText() {
             String toolTipText = player == null ? null : "<HTML>"
-                    + (player.get_rating() == Player.NO_RATING ? "" : ("Rating: " + player.get_rating()))
-                    + (player.get_ranking() == Player.NO_RANKING ? "" : ("<BR>Ranking: " + player.get_ranking()))
-                    + (player.get_highscore() == Player.NO_HIGHSCORE ? "" : ("<BR>Highscore: " + player.get_highscore()))
-                    + (player.get_wins() == Player.NO_RECORD ? "" : ("<BR>Wins: " + player.get_wins()))
-                    + (player.get_losses() == Player.NO_RECORD ? "" : ("<BR>Losses: " + player.get_losses()))
-                    + (player.get_forfeits() == Player.NO_RECORD ? "" : ("<BR>Forfeits: " + player.get_forfeits()))
-                    + (player.get_ties() == Player.NO_RECORD ? "" : ("<BR>Ties: " + player.get_ties()));
+                    + (player.get_rating() == Player.NO_RATING ? ""
+                            : ("Rating: " + player.get_rating()))
+                    + (player.get_ranking() == Player.NO_RANKING ? ""
+                            : ("<BR>Ranking: " + player.get_ranking()))
+                    + (player.get_highscore() == Player.NO_HIGHSCORE ? ""
+                            : ("<BR>Highscore: " + player.get_highscore()))
+                    + (player.get_wins() == Player.NO_RECORD ? ""
+                            : ("<BR>Wins: " + player.get_wins()))
+                    + (player.get_losses() == Player.NO_RECORD ? ""
+                            : ("<BR>Losses: " + player.get_losses()))
+                    + (player.get_forfeits() == Player.NO_RECORD ? ""
+                            : ("<BR>Forfeits: " + player.get_forfeits()))
+                    + (player.get_ties() == Player.NO_RECORD ? ""
+                            : ("<BR>Ties: " + player.get_ties()));
             if ("<HTML>".equals(toolTipText.trim())) {
                 toolTipText = null;
             }

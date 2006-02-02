@@ -108,7 +108,7 @@ public abstract class ChatAction extends AbstractAction {
             int nameEnd = message.indexOf(' ');
             String target = message.substring(0, nameEnd);
             sendChat(ChatType.GGZ_CHAT_PERSONAL, target, message);
-            chatPanel.appendCommandText("Sent private message to " + target);
+            chatPanel.appendCommandText("Sending private message to " + target);
         } catch (IndexOutOfBoundsException ex) {
             /* Could not parse it. */
             chatPanel.appendCommandText("Usage: /msg <username> <message>");

@@ -21,6 +21,7 @@ import ggz.common.ChatType;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,7 +35,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -51,7 +51,7 @@ public class ChatPanel extends JPanel {
     private JTextField textField;
 
     private JButton sendButton;
-    
+
     private JLabel chatImage;
 
     protected SimpleAttributeSet senderText;
@@ -91,8 +91,10 @@ public class ChatPanel extends JPanel {
         textScrollPane.setOpaque(false);
         add(textScrollPane, BorderLayout.CENTER);
         messageLayout = new JPanel(new BorderLayout(4, 4));
-        chatImage = new JLabel(new ImageIcon(getClass().getResource("images/chat.gif")));
-        chatImage.setToolTipText("Type in the text box to the right to chat with other players.");
+        chatImage = new JLabel(new ImageIcon(getClass().getResource(
+                "images/chat.gif")));
+        chatImage
+                .setToolTipText("Type in the text box to the right to chat with other players.");
         messageLayout.add(chatImage, BorderLayout.WEST);
         messageLayout.add(textField, BorderLayout.CENTER);
         messageLayout.add(sendButton, BorderLayout.EAST);
@@ -122,41 +124,33 @@ public class ChatPanel extends JPanel {
     }
 
     public void appendInfo(final String message) {
-        // All handlers are called from the socket thread so we need to do
-        // this crazy stuff. This method is usually invoked from a handler.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Document doc = chatArea.getDocument();
-                try {
-                    doc.insertString(doc.getLength(), message, infoText);
-                    doc.insertString(doc.getLength(), "\n", null);
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
-                }
-                chatArea.scrollRectToVisible(new Rectangle(0, chatArea
-                        .getHeight() - 2, 1, 1));
-            }
-        });
+        assertOnEventDispatchThread();
+        Document doc = chatArea.getDocument();
+        try {
+            doc.insertString(doc.getLength(), message, infoText);
+            doc.insertString(doc.getLength(), "\n", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+        chatArea.scrollRectToVisible(new Rectangle(0, chatArea.getHeight() - 2,
+                1, 1));
     }
 
     public void appendCommandText(final String message) {
+        assertOnEventDispatchThread();
         // All handlers are called from the socket thread so we need to do
         // this crazy stuff. This method is usually invoked from a handler.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Document doc = chatArea.getDocument();
-                try {
-                    doc.insertString(doc.getLength(), message, commandText);
-                    doc.insertString(doc.getLength(), "\n", null);
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
-                }
-                chatArea.scrollRectToVisible(new Rectangle(0, chatArea
-                        .getHeight() - 2, 1, 1));
-                chatArea.scrollRectToVisible(new Rectangle(0, chatArea
-                        .getHeight() - 2, 1, 1));
-            }
-        });
+        Document doc = chatArea.getDocument();
+        try {
+            doc.insertString(doc.getLength(), message, commandText);
+            doc.insertString(doc.getLength(), "\n", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+        chatArea.scrollRectToVisible(new Rectangle(0, chatArea.getHeight() - 2,
+                1, 1));
+        chatArea.scrollRectToVisible(new Rectangle(0, chatArea.getHeight() - 2,
+                1, 1));
     }
 
     public void appendChat(final String sender, final String message) {
@@ -169,51 +163,46 @@ public class ChatPanel extends JPanel {
             // We are ignoring this person.
             return;
         }
-        // All handlers are called from the socket thread so we need to do
-        // this crazy stuff. This method is usually invoked from a handler.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Document doc = chatArea.getDocument();
-                String emote = null;
-                AttributeSet textStyle = null;
+        Document doc = chatArea.getDocument();
+        String emote = null;
+        AttributeSet textStyle = null;
 
-                // Handle the /me command.
-                if (message != null && message.length() >= 4
-                        && message.toLowerCase().startsWith("/me ")) {
-                    emote = message.substring(3);
-                }
+        assertOnEventDispatchThread();
 
-                switch (type) {
-                case GGZ_CHAT_BEEP:
-                    emote = " BEEPS!";
-                    break;
-                }
+        // Handle the /me command.
+        if (message != null && message.length() >= 4
+                && message.toLowerCase().startsWith("/me ")) {
+            emote = message.substring(3);
+        }
 
-                if ("MegaGrub".equals(sender)) {
-                    textStyle = senderText;
-                } else if (friendsList != null
-                        && friendsList.contains(sender.toLowerCase())) {
-                    textStyle = friendlyText;
-                }
+        switch (type) {
+        case GGZ_CHAT_BEEP:
+            emote = " BEEPS!";
+            break;
+        }
 
-                try {
-                    if (emote == null) {
-                        doc.insertString(doc.getLength(), sender + " says: ",
-                                senderText);
-                        doc.insertString(doc.getLength(), message, textStyle);
-                    } else {
-                        doc.insertString(doc.getLength(), sender + emote,
-                                senderText);
-                    }
-                    doc.insertString(doc.getLength(), "\n", null);
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
-                }
-                chatArea.scrollRectToVisible(new Rectangle(0, chatArea
-                        .getHeight(), 1, 1));
-//                .getHeight() - 2, 1, 1));
+        if ("MegaGrub".equals(sender)) {
+            textStyle = senderText;
+        } else if (friendsList != null
+                && friendsList.contains(sender.toLowerCase())) {
+            textStyle = friendlyText;
+        }
+
+        try {
+            if (emote == null) {
+                doc.insertString(doc.getLength(), sender + " says: ",
+                        senderText);
+                doc.insertString(doc.getLength(), message, textStyle);
+            } else {
+                doc.insertString(doc.getLength(), sender + emote, senderText);
             }
-        });
+            doc.insertString(doc.getLength(), "\n", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+        chatArea.scrollRectToVisible(new Rectangle(0, chatArea.getHeight(), 1,
+                1));
+        // .getHeight() - 2, 1, 1));
     }
 
     public String getMessage() {
@@ -225,17 +214,13 @@ public class ChatPanel extends JPanel {
     }
 
     public void clearChat() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Document doc = chatArea.getDocument();
-                try {
-                    doc.remove(doc.getStartPosition().getOffset(), doc
-                            .getLength());
-                } catch (BadLocationException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        assertOnEventDispatchThread();
+        Document doc = chatArea.getDocument();
+        try {
+            doc.remove(doc.getStartPosition().getOffset(), doc.getLength());
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void toggleIgnore(String handle) {
@@ -300,6 +285,13 @@ public class ChatPanel extends JPanel {
                 list.append(iter.next());
             }
             appendCommandText(list.toString());
+        }
+    }
+
+    private void assertOnEventDispatchThread() {
+        if (!EventQueue.isDispatchThread()) {
+            throw new IllegalStateException(
+                    "This method must be called using SwingUtilities.invokeLater() or SwingUtilities.invokeAndWait().");
         }
     }
 

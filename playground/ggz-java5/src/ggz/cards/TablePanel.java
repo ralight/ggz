@@ -84,8 +84,13 @@ public class TablePanel extends JPanel {
                     .deriveFont(Font.PLAIN).deriveFont(Font.ITALIC));
         }
         options = options.replace("\n", "<BR>");
-        optionsSummaryLabel.setToolTipText("<HTML>" + options + "</HTML>");
-        optionsSummaryLabel.setSize(optionsSummaryLabel.getPreferredSize());
+        optionsSummaryLabel.setToolTipText("<HTML>" + options);
+        Dimension preferredSize = optionsSummaryLabel.getPreferredSize();
+        // Sometimes the label is really, really big for some reason so
+        // resize it to a sane size if we have to.
+        // preferredSize.width = Math.min(100, preferredSize.width);
+        // preferredSize.height = Math.min(20, preferredSize.height);
+        optionsSummaryLabel.setSize(preferredSize);
         if (rulesLabel == null) {
             optionsSummaryLabel.setLocation(0, 0);
         } else {
@@ -117,7 +122,12 @@ public class TablePanel extends JPanel {
                 rulesURL = url.substring(beginURLSubstring);
             }
             rulesLabel.setText("How to play", rulesURL);
-            rulesLabel.setSize(rulesLabel.getPreferredSize());
+            Dimension preferredSize = rulesLabel.getPreferredSize();
+            // Sometimes the label is really, really big for some reason so
+            // resize it to a sane size if we have to.
+            // preferredSize.width = Math.min(100, preferredSize.width);
+            // preferredSize.height = Math.min(20, preferredSize.height);
+            rulesLabel.setSize(preferredSize);
             if (optionsSummaryLabel == null) {
                 rulesLabel.setLocation(0, 0);
             } else {
@@ -162,13 +172,10 @@ public class TablePanel extends JPanel {
                 statusLabel = new JLabel();
                 statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 statusLabel.setForeground(Color.white);
-                add(statusLabel);
+                add(statusLabel, new TableConstraints(
+                        TableConstraints.STATUS_LABEL));
             }
             statusLabel.setText(message);
-            statusLabel.setSize(statusLabel.getPreferredSize());
-            statusLabel.setLocation(
-                    getWidth() / 2 - statusLabel.getWidth() / 2, getHeight()
-                            / 2 - statusLabel.getHeight() / 2);
         } else if (statusLabel != null) {
             remove(statusLabel);
         }

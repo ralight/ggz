@@ -321,10 +321,10 @@ public class Net implements Runnable {
         }
     }
 
-    /* FIXME: set a timeout for connecting */
     void connect() throws IOException {
         log.fine("Connecting to " + this.host + ":" + this.port);
         this.fd = new Socket(this.host, this.port);
+        this.fd.setKeepAlive(true);
         this.out = new OutputStreamWriter(fd.getOutputStream(), "UTF-8");
         this.is_session_over = false;
         new Thread(this).start();

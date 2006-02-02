@@ -35,6 +35,8 @@ public class TableLayout implements LayoutManager2 {
 
     private Dimension minimumSize = new Dimension(640, 480);
 
+    private Component statusLabel;
+
     private Component[] playerLabels = new Component[4];
 
     private Component[][] cardsInHand = new Component[4][maxHandSize];
@@ -49,7 +51,8 @@ public class TableLayout implements LayoutManager2 {
     public void setMaxHandSize(int maxHandSize) {
         this.maxHandSize = maxHandSize;
         for (int playerNum = 0; playerNum < cardsInHand.length; playerNum++) {
-            cardsInHand[playerNum] = arrayEnsureSize(cardsInHand[playerNum], maxHandSize);
+            cardsInHand[playerNum] = arrayEnsureSize(cardsInHand[playerNum],
+                    maxHandSize);
         }
     }
 
@@ -82,6 +85,9 @@ public class TableLayout implements LayoutManager2 {
                 cardsInTrick = arrayPut(cardsInTrick, constraints.playerIndex,
                         comp);
                 break;
+            case TableConstraints.STATUS_LABEL:
+                statusLabel = comp;
+                break;
             default:
                 throw new IllegalArgumentException(
                         "invalid table constraint type");
@@ -100,7 +106,7 @@ public class TableLayout implements LayoutManager2 {
         }
         return array;
     }
-    
+
     protected static Component[] arrayPut(Component[] array, int index,
             Component comp) {
         array = arrayEnsureSize(array, index + 1);
@@ -156,6 +162,17 @@ public class TableLayout implements LayoutManager2 {
                 }
             }
         }
+
+        layoutStatusLabel(parent);
+    }
+
+    protected void layoutStatusLabel(Container parent) {
+        if (statusLabel != null) {
+            statusLabel.setSize(statusLabel.getPreferredSize());
+            statusLabel.setLocation(parent.getWidth() / 2
+                    - statusLabel.getWidth() / 2, parent.getHeight() / 2
+                    - statusLabel.getHeight() / 2);
+        }
     }
 
     protected void layoutPlayerLabel(Container parent, int playerIndex,
@@ -166,8 +183,12 @@ public class TableLayout implements LayoutManager2 {
         int saneHeight = 120;
         Dimension preferredSize = comp.getPreferredSize();
         Dimension currentSize = comp.getSize();
-        comp.setSize(Math.min(saneWidth, Math.max(preferredSize.width, currentSize.width)), 
-                Math.min(saneHeight, Math.max(preferredSize.height, currentSize.height)));
+        comp.setSize(Math.max(preferredSize.width, currentSize.width), Math
+                .max(preferredSize.height, currentSize.height));
+        // comp.setSize(Math.min(saneWidth, Math.max(preferredSize.width,
+        // currentSize.width)),
+        // Math.min(saneHeight, Math.max(preferredSize.height,
+        // currentSize.height)));
 
         Rectangle handRect = getMaxHandRect(parent, playerIndex);
         switch (playerIndex) {
@@ -247,7 +268,8 @@ public class TableLayout implements LayoutManager2 {
         case 2: // North
             rect.width = ((maxHandSize - 1) * cardFanGap) + cardWidth;
             rect.height = cardHeight;
-            int labelWidth = playerLabels[playerIndex] == null ? 0 : playerLabels[playerIndex].getWidth();
+            int labelWidth = playerLabels[playerIndex] == null ? 0
+                    : playerLabels[playerIndex].getWidth();
             int padding = (parent.getWidth() - (labelWidth + rect.width)) / 2;
 
             if (playerIndex == 0) {
@@ -262,7 +284,8 @@ public class TableLayout implements LayoutManager2 {
         case 3: // EAST
             rect.width = cardHeight;
             rect.height = ((maxHandSize - 1) * cardFanGap) + cardWidth;
-            int labelHeight = playerLabels[playerIndex] == null ? 0 : playerLabels[playerIndex].getHeight();
+            int labelHeight = playerLabels[playerIndex] == null ? 0
+                    : playerLabels[playerIndex].getHeight();
             padding = (parent.getHeight() - (labelHeight + rect.height)) / 2;
 
             if (playerIndex == 1) {
@@ -359,6 +382,11 @@ public class TableLayout implements LayoutManager2 {
                     playerLabels[playerIndex] = null;
                     removed = true;
                 }
+            }
+        }
+        if (!removed && statusLabel != null) {
+            if (statusLabel == comp) {
+                statusLabel = null;
             }
         }
     }

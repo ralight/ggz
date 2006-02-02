@@ -49,6 +49,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
@@ -70,6 +71,8 @@ public class RoomPanel extends JPanel implements RoomListener,
     private JButton newTableButton;
 
     private JButton joinTableButton;
+
+    private JButton spectateButton;
 
     private JPanel headerPanel;
 
@@ -101,6 +104,8 @@ public class RoomPanel extends JPanel implements RoomListener,
         newTableButton = new JButton(new NewTableAction());
         joinTableButton = new JButton(new JoinTableAction());
         joinTableButton.setEnabled(false);
+        spectateButton = new JButton(new SpectateAction());
+        spectateButton.setEnabled(false);
         tables = new TablesTableModel();
         tableTable = new JTable(tables);
         tableTable.getTableHeader().setBackground(new Color(0xce, 0xfa, 0xdf));
@@ -112,6 +117,7 @@ public class RoomPanel extends JPanel implements RoomListener,
         tableScrollPane.getViewport().add(tableTable);
         tableButtonPanel.add(newTableButton);
         tableButtonPanel.add(joinTableButton);
+        tableButtonPanel.add(spectateButton);
 
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
         tablePanel.add(tableButtonPanel, BorderLayout.SOUTH);
@@ -144,7 +150,7 @@ public class RoomPanel extends JPanel implements RoomListener,
         chatPanel.setRoom(room);
         titleLabel.setText("<HTML><B>" + room.get_name()
                 + "</B><BR><EM><SPAN style='font-weight:normal'>"
-                + room.get_desc() +"</SPAN></EM></HTML>");
+                + room.get_desc() + "</SPAN></EM></HTML>");
 
         Module module = Module.get_nth_by_type(room.get_gametype(), 0);
         if (module != null && module.get_icon_path() != null) {
@@ -152,8 +158,10 @@ public class RoomPanel extends JPanel implements RoomListener,
             titleLabel.setIcon(new ImageIcon(imageURL));
         }
 
-        joinTableButton.setEnabled(false);
         newTableButton.setEnabled(true);
+        joinTableButton.setEnabled(false);
+        spectateButton.setEnabled(false);
+        spectateButton.setVisible(room.get_gametype().get_spectators_allowed());
     }
 
     public void chat_event(ChatEventData data) {
@@ -199,8 +207,9 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     public void table_launched() {
         tables.fireTableDataChanged();
-        joinTableButton.setEnabled(false);
         newTableButton.setEnabled(false);
+        joinTableButton.setEnabled(false);
+        spectateButton.setEnabled(false);
     }
 
     public void table_leave_fail(String error) {
@@ -259,11 +268,14 @@ public class RoomPanel extends JPanel implements RoomListener,
      * @param e
      */
     public void valueChanged(ListSelectionEvent e) {
-        boolean canJoinTable = true;
+        boolean canJoinTable;
+        boolean canSpectate;
+
         if (tableTable.getSelectedRowCount() > 0
                 && server.get_state() == StateID.GGZ_STATE_IN_ROOM) {
             Table selectedTable = room.get_nth_table(tableTable
                     .getSelectedRow());
+
             /* Make sure table has open seats */
             canJoinTable = selectedTable.get_seat_count(SeatType.GGZ_SEAT_OPEN)
                     + selectedTable.get_seat_count(SeatType.GGZ_SEAT_RESERVED) > 0;
@@ -271,10 +283,14 @@ public class RoomPanel extends JPanel implements RoomListener,
             // Temporary limitation because we don't support more than four
             // players in card games.
             canJoinTable = canJoinTable && (selectedTable.get_num_seats() <= 4);
+            canSpectate = room.get_gametype().get_spectators_allowed();
         } else {
             canJoinTable = false;
+            canSpectate = false;
         }
+
         joinTableButton.setEnabled(canJoinTable);
+        spectateButton.setEnabled(canSpectate);
     }
 
     private abstract class PlayGameAction extends AbstractAction implements
@@ -312,7 +328,7 @@ public class RoomPanel extends JPanel implements RoomListener,
     }
 
     private class NewTableAction extends PlayGameAction {
-    	private Table table;
+        private Table table;
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
@@ -326,13 +342,24 @@ public class RoomPanel extends JPanel implements RoomListener,
                 JOptionPane.showMessageDialog((Component) e.getSource(),
                         "Game is not supported yet");
             } else {
-            	table = SeatAllocationDialog.getTableSeatAllocation((Component) e.getSource(),room.get_gametype());
-            	if (table != null) {
-	                Module module = Module.get_nth_by_type(room.get_gametype(), 0);
-	                Game game = new Game(server, module);
-	                game.add_event_hook(this);
-	                game.launch();
-            	}
+                table = SeatAllocationDialog.getTableSeatAllocation(
+                        (Component) e.getSource(), room.get_gametype());
+                if (table != null) {
+                    // The panel wasn't repainting between the dialog being
+                    // closed and the game window appearing. Forcing a repaint
+                    // and then launching the game afterwards seems to have
+                    // cured it.
+                    RoomPanel.this.repaint();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            Module module = Module.get_nth_by_type(room
+                                    .get_gametype(), 0);
+                            Game game = new Game(server, module);
+                            game.add_event_hook(NewTableAction.this);
+                            game.launch();
+                        }
+                    });
+                }
             }
         }
 
@@ -357,6 +384,25 @@ public class RoomPanel extends JPanel implements RoomListener,
         public void game_playing() {
             try {
                 room.join_table(tableTable.getSelectedRow(), false);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+    }
+
+    private class SpectateAction extends PlayGameAction {
+
+        public Object getValue(String key) {
+            if (NAME.equals(key)) {
+                return "Spectate";
+            }
+            return super.getValue(key);
+        }
+
+        public void game_playing() {
+            try {
+                room.join_table(tableTable.getSelectedRow(), true);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
