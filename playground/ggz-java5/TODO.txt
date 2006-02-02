@@ -29,14 +29,10 @@ Add i18n support.
 
 All Card Games
 ==============
-Don't show opponent cards unless they are face up, this will help with layout
-for more than four players and reduces visual clutter. It allows for more
-choices for embelishments etc.
-
 Scale the cards and other widgets when the window is resized.
 
 The "How to Play" link doesn't work when a popup blocker is in effect. Find a
-way to get around this or alert the user to this fact. After researching this
+way to get around this or alert the user to this fact...After researching this
 it appears that there is no way to get around the IE or Google pop-up
 blockers.
 
@@ -44,10 +40,6 @@ Consider a "Leave" button so that closing the window is not the only way to
 leave the game; closing the window it not intuitive for all users.
 
 Include a tutorial mode to help novice players learn how to play the game.
-
-Consider a square layout at all times, place chat either below or to the side
-depending on which screen dimension is the largest. This will be needed when
-we implement scaling of cards.
 
 The applet currently does not fit well on a screen resolution of 800x600 but
 it needs to.
@@ -63,7 +55,8 @@ Show indicator or play sound when it's your turn. The "Playing..." text is not
 enough.
 
 Find out why "Connection Reset" exception occurs, especially, when leaving the
-game "sitting" for a few minutes.
+game "sitting" for a few minutes...I've added Socket.setKeepAlive(true) so this
+should solve it.
 
 Allow player to look at cards in last trick etc. (according to the rules of
 the game)
