@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7824 2006-01-26 18:25:08Z josef $
+ * $Id: easysock.c 7836 2006-02-03 12:57:31Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -301,7 +301,7 @@ static int es_connect(const char *host, int port)
 		sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 		if (sockfd < 0)
 			continue;
-		if (connect(sockfd,res->ai_addr,res->ai_addrlen) == 0)
+		if (connect(sockfd, res->ai_addr, res->ai_addrlen) == 0)
 			break;
 
 		close(sockfd);
@@ -952,7 +952,7 @@ static void ggz_resolved(sigval_t arg)
 }
 #endif
 
-void ggz_resolvename(const char *name)
+const char *ggz_resolvename(const char *name)
 {
 	if (_notify_func) {
 #ifdef GAI_A
@@ -978,6 +978,9 @@ void ggz_resolvename(const char *name)
 		/* Pass back unresolved name */
 		(*_notify_func)(name, -2);
 #endif
+		return NULL;
+	} else {
+		return name;
 	}
 }
 
@@ -985,7 +988,7 @@ const char *ggz_getpeername(int fd)
 {
 	char *ip;
 
-#ifdef HAVE_WINSOCK2_H
+#ifndef HAVE_WINSOCK2_H
 	struct sockaddr addr;
 	socklen_t addrsize;
 	int ret;

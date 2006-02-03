@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 7801 2006-01-23 10:34:40Z josef $
+ * $Id: ggz.h 7836 2006-02-03 12:57:31Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1314,7 +1314,7 @@ typedef void (*ggzNetworkNotify) (const char *address, int socket);
  *  to ggz_resolvename() or ggz_make_socket() has finished.
  *  @param func The newly set resolver notification function
  *  @return 0
- *  @todo Shouldn't this return a void?
+ *  @todo Shouldn't this return a void? (from ggz_set_io_exit_func)
  */
 int ggz_set_network_notify_func(ggzNetworkNotify func);
 
@@ -1326,9 +1326,15 @@ int ggz_set_network_notify_func(ggzNetworkNotify func);
  *  It receives as its argument the address, which might still be the
  *  same hostname in the case of errors. The result should be passed
  *  to gethostbyname() to receive the network data structures.
+ *  If no notification function is set, this function returns the hostname
+ *  as it is, without any lookup. If no GAI support is available, but a
+ *  notification function is set, it is called with the unresolved hostname,
+ *  too.
  *  @param name Hostname to resolve
+ *  @return The hostname in case no notification function is set, or NULL
+ *  @todo Should this resolve synchronously in the special cases above?
  */
-void ggz_resolvename(const char *name);
+const char *ggz_resolvename(const char *name);
 
 
 /** @brief Get the IP address of a connected peer.

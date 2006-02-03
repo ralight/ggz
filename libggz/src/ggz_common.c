@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 7514 2005-09-15 17:49:48Z josef $
+ * $Id: ggz_common.c 7836 2006-02-03 12:57:31Z josef $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -295,6 +295,8 @@ const char *ggz_error_to_string(GGZClientReqError err)
 		return "no channel";
 	case E_TOO_LONG:
 		return "too long";
+	case E_BAD_USERNAME:
+		return "bad username";
 	case E_NO_STATUS:
 	case E_UNKNOWN:
 		break;
@@ -356,6 +358,8 @@ GGZClientReqError ggz_string_to_error(const char *str)
 		return E_NO_CHANNEL;
 	if (!strcasecmp(str, "too long"))
 		return E_TOO_LONG;
+	if (!strcasecmp(str, "bad username"))
+		return E_BAD_USERNAME;
 
 	return E_UNKNOWN;
 }
