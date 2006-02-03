@@ -68,6 +68,7 @@ autojoin = 0  # Channel/room to join after login
 owner = you   # Owner nickname
 host = localhost # Where to connect to
 #logfile = /tmp/guruchatlog
+#adminlevel = owner # Owner is the default; can be admin/registered/all too
 
 [guru]
 net = /path/to/libguru_netggz.so # or netsilc.so, netirc.so, netconsole.so
@@ -105,7 +106,7 @@ features, which are ignored by the other implementations.
 
 <p>
 The owner of grubby, as specified in the configuration, may issue some more commands
-than the other players. Here's a list of what the admin can do in relation to the
+than the other players. Here's a list of what the owner can do in relation to the
 loadable modules:
 <ul>
 <li>grubby insmod (modulename) - Inserts a plugin, like <tt>self</tt> or <tt>badword</tt>
@@ -120,6 +121,10 @@ In addition, the following administrative commands are available:
 <li>grubby logging (on|off) - Control whether the bot should log messages or not
 <li>grubby announce (message) - Announce an administrative message
 </ul>
+The latter group of commands is available only to the owner by default.
+By using the adminlevel configuration directive, this can be relaxed to all
+registered GGZ administrators or regular players, or even to everyone.
+This directive hence only works with the GGZ network module.
 </p>
 
 <h3>Log files</h3>
