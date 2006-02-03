@@ -13,7 +13,7 @@
 @c 'playing nice': metaservers, announce on ggz-servers list
 
 @ifinfo
-Copyright (C) 2001 - 2005 Josef Spillner
+Copyright (C) 2001 - 2006 Josef Spillner
 @end ifinfo
 
 @c Frontpage
@@ -25,7 +25,7 @@ Copyright (C) 2001 - 2005 Josef Spillner
 @c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001 - 2005 Josef Spillner.
+Copyright @copyright{} 2001 - 2006 Josef Spillner.
 Published under the GNU General Public License.
 @end titlepage
 
@@ -882,6 +882,12 @@ simply copy one of the existing room files to a new file and edit the
 values as you see fit.
 @c end quote
 
+Administrative action could be necessary for the values of MaxPlayers and
+MaxTables, if the server load gets too high, and EntryRestriction to
+disallow access to the room to guest players or additionally ordinary players,
+taking the values "registered" and "admin", respectively, with "none" being
+the default.
+
 @section Adding games
 
 @c verbatim quote from admin-guide.txt
@@ -979,7 +985,8 @@ tools.
 @end itemize
 
 The GGZ Community is a web-based portal which emerged from the former
-GGZ Rankings pages.
+GGZ Rankings pages. It also contains the Java applet for playing GGZ games
+via the browser.
 
 @url{http://www.ggzcommunity.org/}
 

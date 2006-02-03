@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.12 - Game Development Guide
+@settitle The GGZ Gaming Zone 0.0.13 - Game Development Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -9,19 +9,19 @@
 @c nothing
 
 @ifinfo
-Copyright (C) 2002 - 2005 Josef Spillner
+Copyright (C) 2002 - 2006 Josef Spillner
 @end ifinfo
 
 @c Frontpage
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.12
+@subtitle Development of games for the GGZ Gaming Zone 0.0.13
 @author GGZ Development Team
 
 @c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002 - 2005 Josef Spillner
+Copyright @copyright{} 2002 - 2006 Josef Spillner
 Published under the GNU General Public License.
 @end titlepage
 
@@ -357,6 +357,7 @@ Description = <description>
 GameType = <name of the game>
 MaxPlayers = <maximum of players>
 MaxTables = <maximum of tables>
+EntryRestriction = none|registered|admin
 @end verbatim
 
 Have a look at the current game server description files if there are open
