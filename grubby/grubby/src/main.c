@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 - 2005 Josef Spillner <josef@ggzgamingzone.org>
+* Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -30,7 +30,15 @@ static int admin(Guru *guru, Gurucore *core)
 	if(!guru) return 0;
 	if(!guru->message) return 0;
 	if(!core->owner) return 0;
-	if((guru->player) && (strcmp(guru->player, core->owner))) return 0;
+
+	/* Check for admin command permission */
+	/*printf("adminlevel: %i, player type of '%s': %i\n", core->adminlevel, guru->player, guru->playertype);*/
+	if(core->adminlevel == ADMINLEVEL_OWNER)
+		if((guru->player) && (strcmp(guru->player, core->owner))) return 0;
+	if(core->adminlevel == ADMINLEVEL_ADMIN)
+		if(guru->playertype != PLAYER_ADMIN) return 0;
+	if(core->adminlevel == ADMINLEVEL_REGISTERED)
+		if(guru->playertype != PLAYER_REGISTERED) return 0;
 
 	i = 0;
 	while((guru->list) && (guru->list[i])) i++;
@@ -118,7 +126,7 @@ int main(int argc, char *argv[])
 		{
 			case 'h':
 				printf(_("Grubby - the GGZ Gaming Zone Chat Bot\n"));
-				printf(_("Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org\n"));
+				printf(_("Copyright (C) 2001 - 2006 Josef Spillner, josef@ggzgamingzone.org\n"));
 				printf(_("Published under GNU GPL conditions\n\n"));
 				printf(_("Recognized options:\n"));
 				printf(_("[-h | --help]:    Show this help screen\n"));

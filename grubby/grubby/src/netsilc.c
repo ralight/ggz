@@ -115,6 +115,7 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 	guru->type = type;
 	if(player) guru->player = strdup(player);
 	else guru->player = NULL;
+	guru->playertype = PLAYER_UNKNOWN;
 	if(message)
 	{
 		guru->message = strdup(message);

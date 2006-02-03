@@ -42,6 +42,7 @@ Gurucore *guru_module_init(const char *datadir)
 	int count, i;
 	char *module;
 	char *home;
+	char *level;
 	playerinitfunc playerinit;
 
 	/* Find out grubby's data directory first */
@@ -77,6 +78,14 @@ Gurucore *guru_module_init(const char *datadir)
 	core->language = ggz_conf_read_string(handler, "preferences", "language", "en");
 	core->autojoin = ggz_conf_read_string(handler, "preferences", "autojoin", NULL);
 	core->logfile = ggz_conf_read_string(handler, "preferences", "logfile", NULL);
+
+	/* Admin level option */
+	level = ggz_conf_read_string(handler, "preferences", "adminlevel", NULL);
+	core->adminlevel = ADMINLEVEL_OWNER;
+	if(!ggz_strcmp(level, "owner")) core->adminlevel = ADMINLEVEL_OWNER;
+	if(!ggz_strcmp(level, "admin")) core->adminlevel = ADMINLEVEL_ADMIN;
+	if(!ggz_strcmp(level, "registered")) core->adminlevel = ADMINLEVEL_REGISTERED;
+	if(!ggz_strcmp(level, "all")) core->adminlevel = ADMINLEVEL_ALL;
 
 	/* Preload libraries shared among multiple plugins */
 	module = ggz_conf_read_string(handler, "guru", "player", NULL);

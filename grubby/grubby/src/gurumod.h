@@ -20,10 +20,17 @@
 #define GURU_GAME 7
 #define GURU_TICK 8
 
+/* Player types */
+#define PLAYER_UNKNOWN 0
+#define PLAYER_GUEST 1
+#define PLAYER_REGISTERED 2
+#define PLAYER_ADMIN 3
+
 /* Message structure to be passes around to the plugins */
 struct guru_t
 {
 	char *player;
+	int playertype;
 	char *message;
 	int type;
 	char **list;

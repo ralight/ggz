@@ -29,6 +29,12 @@ typedef char* (*i18ntransfunc)(char *player, char *messageset);
 typedef char* (*i18ncheckfunc)(char *player, char *message, int language);
 typedef char* (*i18ncatalogfunc)(int guru);
 
+/* Admin levels */
+#define ADMINLEVEL_OWNER 1
+#define ADMINLEVEL_ADMIN 2
+#define ADMINLEVEL_REGISTERED 3
+#define ADMINLEVEL_ALL 4
+
 /* Grubby's structure */
 struct gurucore_t
 {
@@ -43,6 +49,7 @@ struct gurucore_t
 	void *i18nhandle;
 	void *playerhandle;
 	char *autojoin;
+	int adminlevel;
 	netconnectfunc net_connect;
 	netjoinfunc net_join;
 	netstatusfunc net_status;

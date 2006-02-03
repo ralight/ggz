@@ -66,6 +66,7 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 	guru->type = type;
 	if(player) guru->player = strdup(player);
 	else guru->player = NULL;
+	guru->playertype = PLAYER_UNKNOWN;
 	if(message)
 	{
 		guru->message = strdup(message);
@@ -110,7 +111,7 @@ void net_connect(const char *host, int port, const char *name, const char *passw
 	buffer[strlen(buffer) - 1] = 0;
 	playername = strdup(buffer);
 
-	fcntl(0, F_SETFL, O_NONBLOCK);
+	/*fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);*/
 
 	status = NET_GOTREADY;
 }
@@ -127,7 +128,7 @@ int net_status()
 	int num;
 	char buffer[1024];
 
-	num = read(0, buffer, sizeof(buffer));
+	num = read(STDIN_FILENO, buffer, sizeof(buffer));
 	if(num > 0)
 	{
 		buffer[num - 1] = 0;

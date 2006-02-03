@@ -1,11 +1,12 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 - 2005 Josef Spillner <josef@ggzgamingzone.org>
+* Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
+//ggzcore_player_get_type!
 
 #include "net.h"
 #include "i18n.h"
@@ -85,7 +86,7 @@ void net_logfile(const char *logfile)
 
 /* Add a message to the incoming queue */
 /* FIXME: Provide real queue */
-static void net_internal_queueadd(const char *player, const char *message, int type)
+static void net_internal_queueadd(const char *player, const char *message, int type, int playertype)
 {
 	Guru *guru;
 	char *listtoken;
@@ -105,6 +106,7 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 	guru->type = type;
 	if(player) guru->player = strdup(player);
 	else guru->player = NULL;
+	guru->playertype = playertype;
 	if(message)
 	{
 		guru->message = strdup(message);
@@ -247,7 +249,7 @@ int net_status(void)
 		currenttick = time(NULL);
 		if(currenttick - lasttick > 1)
 		{
-			net_internal_queueadd(NULL, NULL, GURU_TICK);
+			net_internal_queueadd(NULL, NULL, GURU_TICK, PLAYER_UNKNOWN);
 			status = NET_INPUT;
 			lasttick = currenttick;
 		}
@@ -377,7 +379,8 @@ GGZHookReturn net_hook_fail(unsigned int id, const void *event_data, const void 
 	const char *msg = event_data;
 
 	printf(_("ERROR: %s\n"), msg);
-	status = NET_ERROR;
+	if((id != GGZ_ENTER_FAIL) || (!room))
+		status = NET_ERROR;
 	return GGZ_HOOK_OK;
 }
 
@@ -389,7 +392,7 @@ GGZHookReturn net_hook_roomenter(unsigned int id, const void *event_data, const 
 
 	player = data->player_name;
 	/*printf(">> ENTER: %s\n", player);*/
-	net_internal_queueadd(player, NULL, GURU_ENTER);
+	net_internal_queueadd(player, NULL, GURU_ENTER, PLAYER_UNKNOWN);
 	status = NET_INPUT;
 	return GGZ_HOOK_OK;
 }
@@ -402,7 +405,7 @@ GGZHookReturn net_hook_roomleave(unsigned int id, const void *event_data, const 
 
 	player = data->player_name;
 	/*printf("<< LEAVE: %s\n", player);*/
-	net_internal_queueadd(player, NULL, GURU_LEAVE);
+	net_internal_queueadd(player, NULL, GURU_LEAVE, PLAYER_UNKNOWN);
 	status = NET_INPUT;
 	return GGZ_HOOK_OK;
 }
@@ -504,14 +507,32 @@ GGZHookReturn net_hook_chat(unsigned int id, const void *event_data, const void 
 	const char *roomname;
 	time_t t;
 	char *ts;
+	int playertype;
+	int players, i, tmp;
+	GGZPlayer *player;
 	const GGZChatEventData *chat = event_data;
 
 	/* Ignore all self-generates messages */
 	if (strcmp(chat->sender, guruname))
 	{
+		playertype = PLAYER_UNKNOWN;
+		players = ggzcore_room_get_num_players(room);
+		for(i = 0; i < players; i++)
+		{
+			player = ggzcore_room_get_nth_player(room, i);
+			if(!strcmp(ggzcore_player_get_name(player), chat->sender))
+			{
+				tmp = ggzcore_player_get_type(player);
+				if(tmp == GGZ_PLAYER_GUEST) playertype = PLAYER_GUEST;
+				if(tmp == GGZ_PLAYER_NORMAL) playertype = PLAYER_REGISTERED;
+				if(tmp == GGZ_PLAYER_ADMIN) playertype = PLAYER_ADMIN;
+				break;
+			}
+		}
+
 		if (chat->type == GGZ_CHAT_PERSONAL) type = GURU_PRIVMSG;
 		else type = GURU_CHAT;
-		net_internal_queueadd(chat->sender, chat->message, type);
+		net_internal_queueadd(chat->sender, chat->message, type, playertype);
 		status = NET_INPUT;
 	}
 
