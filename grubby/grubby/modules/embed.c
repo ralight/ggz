@@ -98,7 +98,11 @@ void gurumod_init(const char *datadir)
 #endif
 #ifdef EMBED_PYTHON
 	pxDict = NULL;
+#if PY_MAJOR_VERSION > 2 || PY_MINOR_VERSION >= 4
+	Py_InitializeEx(0);
+#else
 	Py_Initialize();
+#endif
 #endif
 #ifdef EMBED_TCL
 	/*Tcl_FindExecutable();*/
