@@ -18,7 +18,7 @@
 package ggz.cards;
 
 import ggz.cards.client.CardGameHandler;
-import ggz.cards.client.CardSeat;
+import ggz.cards.client.Player;
 import ggz.cards.client.Client;
 import ggz.cards.common.Bid;
 import ggz.cards.common.Card;
@@ -194,7 +194,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JLabel label = player_labels[seat_num];
-                CardSeat player = card_client.get_nth_player(seat_num);
+                Player player = card_client.get_nth_player(seat_num);
                 if (label == null) {
                     label = new JLabel(player.get_name());
                     label.setForeground(Color.WHITE);
@@ -512,7 +512,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
      */
     protected void display_hand_impl(int player_num) {
         try {
-            CardSeat player = card_client.get_nth_player(player_num);
+            Player player = card_client.get_nth_player(player_num);
             List<Card> hand = player.get_hand();
             ListIterator<Card> iter = hand.listIterator();
 

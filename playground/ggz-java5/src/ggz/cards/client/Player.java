@@ -32,7 +32,7 @@ import java.util.List;
  * @note We are always player 0. The server will deal with all conversions.
  *       Contains all information about a seat at the table.
  */
-public class CardSeat {
+public class Player {
 
     /** ggz seating assignment info */
     SeatType status;

@@ -20,7 +20,7 @@ package ggz.common;
 public enum ClientReqError {
     E_NO_STATUS, /* internal placeholder; a statusless event */
     E_OK, /* No error */
-    E_USR_LOOKUP, E_BAD_OPTIONS, E_ROOM_FULL, E_TABLE_FULL, E_TABLE_EMPTY, E_LAUNCH_FAIL, E_JOIN_FAIL, E_NO_TABLE, E_LEAVE_FAIL, E_LEAVE_FORBIDDEN, E_ALREADY_LOGGED_IN, E_NOT_LOGGED_IN, E_NOT_IN_ROOM, E_AT_TABLE, E_IN_TRANSIT, E_NO_PERMISSION, E_BAD_XML, E_SEAT_ASSIGN_FAIL, E_NO_CHANNEL, E_TOO_LONG, E_UNKNOWN;
+    E_USR_LOOKUP, E_BAD_OPTIONS, E_ROOM_FULL, E_TABLE_FULL, E_TABLE_EMPTY, E_LAUNCH_FAIL, E_JOIN_FAIL, E_NO_TABLE, E_LEAVE_FAIL, E_LEAVE_FORBIDDEN, E_ALREADY_LOGGED_IN, E_NOT_LOGGED_IN, E_NOT_IN_ROOM, E_AT_TABLE, E_IN_TRANSIT, E_NO_PERMISSION, E_BAD_XML, E_SEAT_ASSIGN_FAIL, E_NO_CHANNEL, E_TOO_LONG, E_UNKNOWN, E_BAD_USERNAME;
 
     public String toString() {
         switch (this) {
@@ -28,6 +28,8 @@ public enum ClientReqError {
             return "ok";
         case E_USR_LOOKUP:
             return "usr lookup";
+        case E_BAD_USERNAME:
+        	return "bad username";
         case E_BAD_OPTIONS:
             return "bad options";
         case E_ROOM_FULL:
@@ -98,6 +100,8 @@ public enum ClientReqError {
         }
         if ("usr lookup".equals(str))
             return ClientReqError.E_USR_LOOKUP;
+        if ("bad username".equals(str))
+            return ClientReqError.E_BAD_USERNAME;
         if ("bad options".equals(str))
             return ClientReqError.E_BAD_OPTIONS;
         if ("room full".equals(str))

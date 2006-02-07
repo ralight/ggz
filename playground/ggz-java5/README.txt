@@ -20,4 +20,4 @@ e.g.
 java -Djava.util.logging.config.file=log.properties -jar ggz-java-client.jar
 
 
-If you have any questions feel free to email me at xx404@msn.com.
+If you have any questions feel free to email me at helg@ggzgamingzone.org.

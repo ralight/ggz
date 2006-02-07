@@ -46,7 +46,7 @@ public class Client implements ModEventHandler {
     private int num_players;
 
     /** Data about each player */
-    private CardSeat[] players;
+    private Player[] players;
 
     /** The state the game is in */
     private ClientState state;
@@ -61,7 +61,7 @@ public class Client implements ModEventHandler {
         return this.num_players;
     }
 
-    public CardSeat get_nth_player(int n) {
+    public Player get_nth_player(int n) {
         return this.players[n];
     }
 
@@ -284,14 +284,14 @@ public class Client implements ModEventHandler {
         /* reallocate the players, if necessary */
         if (different) {
             log.fine("get_players: (re)allocating this.players.");
-            this.players = new CardSeat[numplayers];
+            this.players = new Player[numplayers];
 
             for (int p = 0; p < numplayers; p++) {
                 /*
                  * At least for table_card, this initialization is very
                  * important.
                  */
-                this.players[p] = new CardSeat();
+                this.players[p] = new Player();
                 this.players[p].table_card = Card.UNKNOWN_CARD;
                 this.players[p].name = null;
                 this.players[p].hand = null;

@@ -17,7 +17,7 @@
  */
 package ggz.cards;
 
-import ggz.cards.client.CardSeat;
+import ggz.cards.client.Player;
 import ggz.cards.common.Card;
 import ggz.client.mod.ModGame;
 
@@ -49,7 +49,7 @@ public class SuaroPanel extends GamePanel {
         }
         
         try {
-            CardSeat player = card_client.get_nth_player(player_num);
+            Player player = card_client.get_nth_player(player_num);
             Collection<Card> hand = player.get_hand();
             Iterator<Card> iter = hand.iterator();
 

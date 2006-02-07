@@ -606,6 +606,9 @@ public class Server {
             case E_TOO_LONG:
                 error.message = "The nickname '" + handle + "' is too long, please pick a shorter one.";
                 break;
+            case E_BAD_USERNAME:
+                error.message = "The nickname '" + handle + "' contains invalid characters, only letters and numbers are allowed.";
+                break;
             default:
                 error.message = "Unknown login error.";
                 break;
