@@ -179,16 +179,10 @@ public class TableLayout implements LayoutManager2 {
             Component comp) {
         // Labels need to be able to grow and to stop them ping-ponging
         // we never shrink them once they have grown.
-        int saneWidth = 120;
-        int saneHeight = 120;
         Dimension preferredSize = comp.getPreferredSize();
         Dimension currentSize = comp.getSize();
         comp.setSize(Math.max(preferredSize.width, currentSize.width), Math
                 .max(preferredSize.height, currentSize.height));
-        // comp.setSize(Math.min(saneWidth, Math.max(preferredSize.width,
-        // currentSize.width)),
-        // Math.min(saneHeight, Math.max(preferredSize.height,
-        // currentSize.height)));
 
         Rectangle handRect = getMaxHandRect(parent, playerIndex);
         switch (playerIndex) {
