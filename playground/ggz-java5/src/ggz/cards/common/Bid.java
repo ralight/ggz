@@ -17,28 +17,69 @@
  */
 package ggz.cards.common;
 
-/* in different games, bids may have different meanings.  we'll just use this
- arbitrary data structure for it */
+/*
+ * in different games, bids may have different meanings. we'll just use this
+ * arbitrary data structure for it
+ */
 public class Bid {
     /*
      * the value of the bid this can be used for many different games that have
      * unusual but similar bidding. Different games may use it differently.
      */
-    byte val;
+    private byte val;
 
     /* the suit of the bid (generally trump) */
-    int suit;
+    private int suit;
 
     /* specialty bids (defined per-game) */
-    byte spec;
+    private byte spec;
 
     /* More specialty bids (just to round things out) */
-    byte spec2;
+    private byte spec2;
 
-    Bid(byte value, int suit, byte spec, byte spec2) {
+    public Bid(byte value, int suit) {
+        this(value, suit, (byte) 0, (byte) 0);
+    }
+
+    public Bid(byte value, int suit, byte spec, byte spec2) {
         this.val = value;
         this.suit = suit;
         this.spec = spec;
         this.spec2 = spec2;
+    }
+
+    public byte getVal() {
+        return val;
+    }
+
+    public int getSuit() {
+        return suit;
+    }
+
+    public byte getSpec() {
+        return spec;
+    }
+
+    public byte getSpec2() {
+        return spec2;
+    }
+
+    public String toString() {
+        return "val=" + val + ", suit=" + suit + ", spec=" + spec + ", spec2="
+                + spec2;
+    }
+
+    public boolean equals(Object o) {
+        return (o != null) && (o instanceof Bid) && this.val == ((Bid) o).val
+                && this.suit == ((Bid) o).suit && this.spec == ((Bid) o).spec
+                && this.spec2 == ((Bid) o).spec2;
+    }
+
+    /**
+     * This is here only because the Java API says we should implement
+     * hashCode() if we implement equals().
+     */
+    public int hashCode() {
+        return this.val;
     }
 }

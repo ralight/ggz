@@ -560,6 +560,9 @@ public class GamePanel extends JPanel implements CardGameHandler,
 
     public void get_bid(final Bid[] bid_choices, final String[] bid_texts,
             final String[] bid_descs) {
+        for (int i = 0; i < bid_choices.length; i++) {
+            System.out.println(bid_choices[i] + ", " + bid_texts[i] + ", " + bid_descs[i]);
+        }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 for (int i = 0; i < bid_choices.length; i++) {
@@ -584,10 +587,10 @@ public class GamePanel extends JPanel implements CardGameHandler,
         });
     }
 
-    private class BidAction implements ActionListener {
+    protected class BidAction implements ActionListener {
         private int bid;
 
-        private BidAction(int bidIndex) {
+        protected BidAction(int bidIndex) {
             this.bid = bidIndex;
         }
 

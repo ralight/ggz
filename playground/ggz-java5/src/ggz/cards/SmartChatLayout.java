@@ -43,7 +43,7 @@ public class SmartChatLayout implements LayoutManager {
 			table.setSize(parent.getWidth(), parent.getWidth());
 			chat.setLocation(0, parent.getWidth());
 			chat.setSize(parent
-					.getHeight(), parent.getHeight() - parent.getWidth());
+					.getWidth(), parent.getHeight() - parent.getWidth());
 		}
 	}
 

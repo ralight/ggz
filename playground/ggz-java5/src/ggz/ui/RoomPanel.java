@@ -158,6 +158,7 @@ public class RoomPanel extends JPanel implements RoomListener,
             titleLabel.setIcon(new ImageIcon(imageURL));
         }
 
+        lobbyButton.setEnabled(true);
         newTableButton.setEnabled(true);
         joinTableButton.setEnabled(false);
         spectateButton.setEnabled(false);
@@ -207,6 +208,7 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     public void table_launched() {
         tables.fireTableDataChanged();
+        lobbyButton.setEnabled(false);
         newTableButton.setEnabled(false);
         joinTableButton.setEnabled(false);
         spectateButton.setEnabled(false);
@@ -232,6 +234,7 @@ public class RoomPanel extends JPanel implements RoomListener,
             break;
         }
         tables.fireTableDataChanged();
+        lobbyButton.setEnabled(true);
         newTableButton.setEnabled(true);
     }
 

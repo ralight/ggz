@@ -101,10 +101,10 @@ public class GGZCardOutputStream extends DataOutputStream {
      * @return 0 on success, -1 on failure.
      */
     public void write_bid(Bid bid) throws IOException {
-        write(bid.val);
-        write(bid.suit);
-        write(bid.spec);
-        write(bid.spec2);
+        write(bid.getVal());
+        write(bid.getSuit());
+        write(bid.getSpec());
+        write(bid.getSpec2());
     }
 
     public void write_opcode(ClientOpCode opcode) throws IOException {

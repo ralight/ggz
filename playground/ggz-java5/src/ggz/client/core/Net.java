@@ -28,6 +28,7 @@ import ggz.common.XMLElement;
 
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
+import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -40,10 +41,17 @@ import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -69,7 +77,10 @@ public class Net implements Runnable {
     /* File descriptor for communication with server */
     private Socket fd; // TODO consider making fd a writer instead of socket.
 
-    private OutputStreamWriter out;
+    private Writer out;
+
+    /* SAX transformer used to send valid XML to the server. */
+    private TransformerHandler xmlOutput;
 
     /* Maximum chat size allowed */
     private int chat_size;
@@ -310,23 +321,41 @@ public class Net implements Runnable {
         return this.use_tls;
     }
 
-    /* For debugging purposes only! */
-    void set_fd(Socket fd) throws IOException {
-        this.fd = fd;
-        try {
-            this.out = new OutputStreamWriter(fd.getOutputStream(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            log.warning(e.toString());
-            this.out = new OutputStreamWriter(fd.getOutputStream());
-        }
-    }
-
     void connect() throws IOException {
         log.fine("Connecting to " + this.host + ":" + this.port);
         this.fd = new Socket(this.host, this.port);
         this.fd.setKeepAlive(true);
         this.out = new OutputStreamWriter(fd.getOutputStream(), "UTF-8");
         this.is_session_over = false;
+
+        if (this.send_dump_file != null) {
+            // We need to copy everything written to the server to the dump file
+            // as well. Rather than using a FilterWriter we could also create
+            // another transformer but this seems the most reliable way to do it
+            // but it does mean that if there are errors writing to the dump
+            // file then it will appear as if there was an error writing to the
+            // server.
+            this.out = new DumpWriter(this.out, this.send_dump_file);
+        }
+
+        try {
+            // Use SAX to write messages to the server. The initial
+            // implementation simply did String concatentation but this method
+            // ensures we always send valid XML.
+            StreamResult streamResult = new StreamResult(this.out);
+            SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory
+                    .newInstance();
+            // SAX2.0 ContentHandler.
+            this.xmlOutput = tf.newTransformerHandler();
+            Transformer serializer = xmlOutput.getTransformer();
+            serializer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+            xmlOutput.setResult(streamResult);
+        } catch (Throwable ex) {
+            throw new IOException(ex.toString());
+        }
+
+        // Start listening for server messages.
         new Thread(this).start();
     }
 
@@ -361,54 +390,73 @@ public class Net implements Runnable {
             break;
         }
 
-        send_line("<LANGUAGE>" + language + "</LANGUAGE>");
-        send_line("<LOGIN TYPE='" + type + "'>");
-        send_line("<NAME>" + handle + "</NAME>");
-
+        sendTextElement("LANGUAGE", language);
+        sendStartElement("LOGIN", "TYPE", type);
+        sendTextElement("NAME", handle);
         if ((login_type == LoginType.GGZ_LOGIN || (login_type == LoginType.GGZ_LOGIN_NEW))
-                && password != null)
-            send_line("<PASSWORD>" + password + "</PASSWORD>");
-        if (login_type == LoginType.GGZ_LOGIN_NEW && email != null)
-            send_line("<EMAIL>" + email + "</EMAIL>");
+                && password != null) {
+            sendTextElement("PASSWORD", password);
+        }
+        if (login_type == LoginType.GGZ_LOGIN_NEW && email != null) {
+            sendTextElement("EMAIL", email);
+        }
+        sendEndElement("LOGIN");
 
-        send_line("</LOGIN>");
+        // send_line("<LANGUAGE>" + language + "</LANGUAGE>");
+        // send_line("<LOGIN TYPE='" + type + "'>");
+        // send_line("<NAME>" + handle + "</NAME>");
+        //
+        // if ((login_type == LoginType.GGZ_LOGIN || (login_type ==
+        // LoginType.GGZ_LOGIN_NEW))
+        // && password != null)
+        // send_line("<PASSWORD>" + password + "</PASSWORD>");
+        // if (login_type == LoginType.GGZ_LOGIN_NEW && email != null)
+        // send_line("<EMAIL>" + email + "</EMAIL>");
+        //
+        // send_line("</LOGIN>");
 
     }
 
     void send_channel(String id) throws IOException {
-        send_line("<CHANNEL ID='" + id + "' />");
+        sendEmptyElement("CHANNEL", "ID", id);
     }
 
     void send_motd() throws IOException {
         log.fine("Sending MOTD request");
-        send_line("<MOTD/>");
+        sendEmptyElement("MOTD");
     }
 
     void send_list_types(boolean verbose) throws IOException {
         log.fine("Sending gametype list request");
 
-        send_line("<LIST TYPE='game' FULL='" + String.valueOf(verbose) + "'/>");
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "", "TYPE", "CDATA", "game");
+        atts.addAttribute("", "", "FULL", "CDATA", String.valueOf(verbose));
+        sendEmptyElement("LIST", atts);
     }
 
     void send_list_rooms(boolean verbose) throws IOException {
         log.fine("Sending room list request");
 
-        send_line("<LIST TYPE='room' FULL='" + String.valueOf(verbose) + "'/>");
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "", "TYPE", "CDATA", "room");
+        atts.addAttribute("", "", "FULL", "CDATA", String.valueOf(verbose));
+        sendEmptyElement("LIST", atts);
     }
 
     void send_join_room(int room_id) throws IOException {
         log.fine("Sending room " + room_id + " join request");
-        send_line("<ENTER ROOM='" + room_id + "'/>");
+        sendEmptyElement("ENTER", "ROOM", String.valueOf(room_id));
     }
 
     void send_list_players() throws IOException {
         log.fine("Sending player list request");
-        send_line("<LIST TYPE='player'/>");
+        sendEmptyElement("LIST", "TYPE", "player");
     }
 
     void send_list_tables() throws IOException {
         log.fine("Sending table list request");
-        send_line("<LIST TYPE='table'/>");
+        sendEmptyElement("LIST", "TYPE", "table");
     }
 
     /* Send a <CHAT> tag. */
@@ -438,19 +486,22 @@ public class Net implements Runnable {
             chat_text = msg;
         }
 
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "", "TYPE", "CDATA", type_str);
+
         switch (type) {
         case GGZ_CHAT_NORMAL:
         case GGZ_CHAT_ANNOUNCE:
         case GGZ_CHAT_TABLE:
-            send_line("<CHAT TYPE='" + type_str + "'>" + xml_escape(chat_text)
-                    + "</CHAT>");
+            sendTextElement("CHAT", atts, chat_text);
             break;
         case GGZ_CHAT_BEEP:
-            send_line("<CHAT TYPE='" + type_str + "' TO='" + player + "'/>");
+            atts.addAttribute("", "", "TO", "CDATA", player);
+            sendEmptyElement("CHAT", atts);
             break;
         case GGZ_CHAT_PERSONAL:
-            send_line("<CHAT TYPE='" + type_str + "' TO='" + player + "'>"
-                    + xml_escape(chat_text) + "</CHAT>");
+            atts.addAttribute("", "", "TO", "CDATA", player);
+            sendTextElement("CHAT", atts, chat_text);
             break;
         case GGZ_CHAT_UNKNOWN:
         default:
@@ -461,8 +512,6 @@ public class Net implements Runnable {
             log.warning("Unknown chat opcode " + type + " specified.");
             break;
         }
-
-        // log.warning("ggzcore_net_send_chat: unknown chat type given.");
     }
 
     void send_player_info(int seat_num) throws IOException {
@@ -470,9 +519,9 @@ public class Net implements Runnable {
         log.fine("Sending player info request");
 
         if (seat_num == -1) {
-            send_line("<INFO/>");
+            sendEmptyElement("INFO");
         } else {
-            send_line("<INFO SEAT='" + seat_num + "'/>");
+            sendEmptyElement("INFO", "SEAT", String.valueOf(seat_num));
         }
     }
 
@@ -486,19 +535,22 @@ public class Net implements Runnable {
         desc = table.get_desc();
         num_seats = table.get_num_seats();
 
-        send_line("<LAUNCH>");
-        send_line("<TABLE GAME='" + type + "' SEATS='" + num_seats + "'>");
-        if (desc != null)
-            send_line("<DESC>" + desc + "</DESC>");
-
+        sendStartElement("LAUNCH");
+        AttributesImpl tableAtts = new AttributesImpl();
+        tableAtts.addAttribute("", "", "GAME", "CDATA", String.valueOf(type));
+        tableAtts.addAttribute("", "", "SEATS", "CDATA", String
+                .valueOf(num_seats));
+        sendStartElement("TABLE", tableAtts);
+        if (desc != null) {
+            sendTextElement("DESC", desc);
+        }
         for (int i = 0; i < num_seats; i++) {
             TableSeat seat = table.get_nth_seat(i);
 
             send_table_seat(seat);
         }
-
-        send_line("</TABLE>");
-        send_line("</LAUNCH>");
+        sendEndElement("TABLE");
+        sendEndElement("LAUNCH");
     }
 
     void send_table_seat(TableSeat seat) throws IOException {
@@ -508,23 +560,32 @@ public class Net implements Runnable {
 
         type = seat.type.toString();
 
-        if (seat.name == null)
-            send_line("<SEAT NUM='" + seat.index + "' TYPE='" + type + "'/>");
-        else
-            send_line("<SEAT NUM='" + seat.index + "' TYPE='" + type + "'>"
-                    + seat.name + "</SEAT>");
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "", "NUM", "CDATA", String.valueOf(seat.index));
+        atts.addAttribute("", "", "TYPE", "CDATA", type);
+        if (seat.name == null) {
+            sendEmptyElement("SEAT", atts);
+        } else {
+            sendTextElement("SEAT", atts, seat.name);
+        }
     }
 
     void send_table_join(int num, boolean spectator) throws IOException {
         log.fine("Sending table join request");
-        send_line("<JOIN TABLE='" + num + "' SPECTATOR='"
-                + String.valueOf(spectator) + "'/>");
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "", "TABLE", "CDATA", String.valueOf(num));
+        atts.addAttribute("", "", "SPECTATOR", "CDATA", String
+                .valueOf(spectator));
+        sendEmptyElement("JOIN", atts);
     }
 
     void send_table_leave(boolean force, boolean spectator) throws IOException {
         log.fine("Sending table leave request");
-        send_line("<LEAVE FORCE='" + String.valueOf(force) + "' SPECTATOR='"
-                + String.valueOf(spectator) + "'/>");
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "", "FORCE", "CDATA", String.valueOf(force));
+        atts.addAttribute("", "", "SPECTATOR", "CDATA", String
+                .valueOf(spectator));
+        sendEmptyElement("LEAVE", atts);
     }
 
     void send_table_reseat(ReseatType opcode, int seat_num) throws IOException {
@@ -546,13 +607,18 @@ public class Net implements Runnable {
             break;
         }
 
-        if (action == null)
+        if (action == null) {
             throw new IllegalArgumentException("action cannot be null");
+        }
 
-        if (seat_num < 0)
-            send_line("<RESEAT ACTION='" + action + "'/>");
-
-        send_line("<RESEAT ACTION='" + action + "' SEAT='" + seat_num + "'/>");
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "", "ACTION", "CDATA", action);
+        if (seat_num >= 0) {
+            atts
+                    .addAttribute("", "", "SEAT", "CDATA", String
+                            .valueOf(seat_num));
+        }
+        sendEmptyElement("RESEAT", atts);
     }
 
     void send_table_seat_update(Table table, TableSeat seat) throws IOException {
@@ -562,11 +628,21 @@ public class Net implements Runnable {
         int num_seats = table.get_num_seats();
 
         log.fine("Sending table seat update request");
-        send_line("<UPDATE TYPE='table' ACTION='seat' ROOM='" + room_id + "'>");
-        send_line("<TABLE ID='" + id + "' SEATS='" + num_seats + "'>");
+
+        AttributesImpl updateAtts = new AttributesImpl();
+        updateAtts.addAttribute("", "", "TYPE", "CDATA", "table");
+        updateAtts.addAttribute("", "", "ACTION", "CDATA", "seat");
+        updateAtts.addAttribute("", "", "ROOM", "CDATA", String
+                .valueOf(room_id));
+        sendStartElement("UPDATE", updateAtts);
+        AttributesImpl tableAtts = new AttributesImpl();
+        tableAtts.addAttribute("", "", "ID", "CDATA", String.valueOf(id));
+        tableAtts.addAttribute("", "", "SEATS", "CDATA", String
+                .valueOf(num_seats));
+        sendStartElement("TABLE", tableAtts);
         send_table_seat(seat);
-        send_line("</TABLE>");
-        send_line("</UPDATE>");
+        sendEndElement("TABLE");
+        sendEndElement("UPDATE");
     }
 
     void send_table_desc_update(Table table, String desc) throws IOException {
@@ -575,11 +651,17 @@ public class Net implements Runnable {
         int id = table.get_id();
 
         log.fine("Sending table description update request");
-        send_line("<UPDATE TYPE='table' ACTION='desc' ROOM='" + room_id + "'>");
-        send_line("<TABLE ID='" + id + "'>");
-        send_line("<DESC>" + desc + "</DESC>");
-        send_line("</TABLE>");
-        send_line("</UPDATE>");
+
+        AttributesImpl updateAtts = new AttributesImpl();
+        updateAtts.addAttribute("", "", "TYPE", "CDATA", "table");
+        updateAtts.addAttribute("", "", "ACTION", "CDATA", "desc");
+        updateAtts.addAttribute("", "", "ROOM", "CDATA", String
+                .valueOf(room_id));
+        sendStartElement("UPDATE", updateAtts);
+        sendStartElement("TABLE", "ID", String.valueOf(id));
+        sendTextElement("DESC", desc);
+        sendEndElement("TABLE");
+        sendEndElement("UPDATE");
     }
 
     void send_table_boot_update(Table table, TableSeat seat) throws IOException {
@@ -589,23 +671,53 @@ public class Net implements Runnable {
 
         log.fine("Sending boot of player " + seat.name);
 
-        if (seat.name == null)
+        if (seat.name == null) {
             throw new IllegalArgumentException("Seat cannot have a null name");
+        }
         seat.type = SeatType.GGZ_SEAT_PLAYER;
         seat.index = 0;
 
-        send_line("<UPDATE TYPE='table' ACTION='boot' ROOM='" + room_id + "'>");
-
-        send_line("<TABLE ID='" + id + "' SEATS='1'>");
+        AttributesImpl updateAtts = new AttributesImpl();
+        updateAtts.addAttribute("", "", "TYPE", "CDATA", "table");
+        updateAtts.addAttribute("", "", "ACTION", "CDATA", "boot");
+        updateAtts.addAttribute("", "", "ROOM", "CDATA", String
+                .valueOf(room_id));
+        sendStartElement("UPDATE", updateAtts);
+        AttributesImpl tableAtts = new AttributesImpl();
+        tableAtts.addAttribute("", "", "ID", "CDATA", String.valueOf(id));
+        tableAtts.addAttribute("", "", "SEATS", "CDATA", "1");
+        sendStartElement("TABLE", tableAtts);
         send_table_seat(seat);
-        send_line("</TABLE>");
+        sendEndElement("TABLE");
+        sendEndElement("UPDATE");
+    }
 
-        send_line("</UPDATE>");
+    /* Send the session header */
+    private void send_header() throws IOException {
+        try {
+            xmlOutput.startDocument();
+        } catch (SAXException ex) {
+            throw new IOException(ex.toString());
+        }
+        sendStartElement("SESSION");
+    }
+
+    private void send_pong(String id) throws IOException {
+        if (id != null) {
+            sendEmptyElement("PONG", "ID", id);
+        } else {
+            sendEmptyElement("PONG");
+        }
     }
 
     void send_logout() throws IOException {
         log.fine("Sending LOGOUT");
-        send_line("</SESSION>");
+        sendEndElement("SESSION");
+        try {
+            xmlOutput.endDocument();
+        } catch (SAXException ex) {
+            throw new IOException(ex.toString());
+        }
     }
 
     protected void dump_receive_data(String data) {
@@ -613,19 +725,6 @@ public class Net implements Runnable {
             try {
                 receive_dump_file.write(data);
                 receive_dump_file.flush();
-            } catch (IOException e) {
-                // Not a big deal if we can't write to the dump file but alert
-                // the user anyway.
-                log.warning(e.toString());
-            }
-        }
-    }
-
-    protected void dump_send_data(String data) {
-        if (send_dump_file != null) {
-            try {
-                send_dump_file.write(data);
-                send_dump_file.flush();
             } catch (IOException e) {
                 // Not a big deal if we can't write to the dump file but alert
                 // the user anyway.
@@ -1728,19 +1827,6 @@ public class Net implements Runnable {
         this.is_session_over = true;
     }
 
-    /* Send the session header */
-    private void send_header() throws IOException {
-        send_line("<?xml version='1.0' encoding='UTF-8'?>");
-        send_line("<SESSION>");
-    }
-
-    private void send_pong(String id) throws IOException {
-        if (id != null)
-            send_line("<PONG ID='" + id + "'/>");
-        else
-            send_line("<PONG/>");
-    }
-
     /* Send a TLS_START notice and negotiate the handshake */
     void negotiate_tls() {
         throw new UnsupportedOperationException(
@@ -1757,12 +1843,79 @@ public class Net implements Runnable {
         // this.use_tls = false;
     }
 
-    private void send_line(String line) throws IOException {
-        out.write(line);
-        out.write("\n");
-        out.flush();
-        dump_send_data(line);
-        dump_send_data("\n");
+    private void sendStartElement(String qname) throws IOException {
+        sendStartElement(qname, new AttributesImpl());
+    }
+
+    private void sendStartElement(String qname, String attributeName,
+            String attributeValue) throws IOException {
+        AttributesImpl atts = new AttributesImpl();
+        if (attributeName != null) {
+            atts.addAttribute("", "", attributeName, "CDATA", attributeValue);
+        }
+        sendStartElement(qname, atts);
+    }
+
+    private void sendStartElement(String qname, Attributes atts)
+            throws IOException {
+        try {
+            xmlOutput.startElement("", "", qname, atts);
+        } catch (SAXException ex) {
+            throw new IOException(ex.toString());
+        }
+    }
+
+    private void sendEndElement(String qname) throws IOException {
+        try {
+            xmlOutput.endElement("", "", qname);
+            out.flush();
+        } catch (SAXException ex) {
+            throw new IOException(ex.toString());
+        }
+    }
+
+    private void sendTextElement(String qname, Attributes atts, String text)
+            throws IOException {
+        sendStartElement(qname, atts);
+        try {
+            xmlOutput.characters(text.toCharArray(), 0, text.length());
+        } catch (SAXException ex) {
+            throw new IOException(ex.toString());
+        }
+        sendEndElement(qname);
+    }
+
+    private void sendTextElement(String qname, String text) throws IOException {
+        sendStartElement(qname);
+        try {
+            xmlOutput.characters(text.toCharArray(), 0, text.length());
+        } catch (SAXException ex) {
+            throw new IOException(ex.toString());
+        }
+        sendEndElement(qname);
+    }
+
+    private void sendEmptyElement(String qname) throws IOException {
+        sendEmptyElement(qname, null, null);
+    }
+
+    /**
+     * Sends a single empty element that has one attribute;
+     * 
+     * @param qname
+     * @param attributeName
+     * @param attributeValue
+     */
+    private void sendEmptyElement(String qname, String attributeName,
+            String attributeValue) throws IOException {
+        sendStartElement(qname, attributeName, attributeValue);
+        sendEndElement(qname);
+    }
+
+    private void sendEmptyElement(String qname, AttributesImpl atts)
+            throws IOException {
+        sendStartElement(qname, atts);
+        sendEndElement(qname);
     }
 
     static int str_to_int(String str, int dflt) {
@@ -1776,42 +1929,6 @@ public class Net implements Runnable {
             return dflt;
         }
         return val;
-    }
-
-    /**
-     * If the the text contains the ]]> character sequence then the text is
-     * split into multiple CDATA sections, effectively escaping the sequence.
-     * e.g. some ]]> text is marshalled as <richText><![CDATA[some ]]]]><![CDATA[>
-     * text]]></richText>
-     * 
-     * @return
-     * @author Helg Bredow
-     */
-    static String xml_escape(String text) {
-        // return text
-        // .replaceAll("&", "&amp;")
-        // .replaceAll("<", "&lt;")
-        // .replaceAll(">", "&gt;")
-        // .replaceAll("\"", "&quot;");
-        //
-        int splitPos = text.indexOf("]]>");
-
-        if (splitPos > -1) {
-            // Only create buffer if we need it to reduce garbage.
-            StringBuffer buffer = new StringBuffer();
-            while (splitPos > -1) {
-                buffer.append("<![CDATA[");
-                buffer.append(text.substring(0, splitPos + 2));
-                buffer.append("]]>");
-                text = text.substring(splitPos + 2);
-                splitPos = text.indexOf("]]>");
-            }
-            buffer.append("<![CDATA[");
-            buffer.append(text);
-            buffer.append("]]>");
-            return buffer.toString();
-        }
-        return "<![CDATA[" + text + "]]>";
     }
 
     /**
@@ -1849,9 +1966,6 @@ public class Net implements Runnable {
                 saxParser.setContentHandler(parser);
                 saxParser.setErrorHandler(parser);
                 saxParser.parse(input);
-                // } catch (SocketException e) {
-                // // Assume socket closed by remote host.
-                // e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
                 this.server.protocol_error("Server disconnected");
@@ -1860,6 +1974,40 @@ public class Net implements Runnable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private class DumpWriter extends FilterWriter {
+        private Writer dump;
+
+        protected DumpWriter(Writer out, Writer dump) {
+            super(out);
+            this.dump = dump;
+        }
+
+        public void close() throws IOException {
+            super.close();
+            dump.close();
+        }
+
+        public void flush() throws IOException {
+            super.flush();
+            dump.flush();
+        }
+
+        public void write(char[] cbuf, int off, int len) throws IOException {
+            super.write(cbuf, off, len);
+            dump.write(cbuf, off, len);
+        }
+
+        public void write(int c) throws IOException {
+            super.write(c);
+            dump.write(c);
+        }
+
+        public void write(String str, int off, int len) throws IOException {
+            super.write(str, off, len);
+            dump.write(str, off, len);
         }
     }
 }
