@@ -1,59 +1,19 @@
-Todo for 0.0.6:
-- security (prevent running as root)
-- add Skat engine to GGZCards
-- add Escape & Keepalive games
-- Meta server stuff
-- (maybe) DB backend choice
-- split ggzd & game server CVS modules?
+Things to be done on the GGZ server side
+(larger tasks only, small bugs are on http://bugs.ggzgamingzone.org/):
 
+GGZ server (ggzd)
+-----------------
+* configuration realod on signal
+  (very difficult, and SIGUSR1/2 are already in use)
+* usage of a real XML library to send out XML
+  (expat can only parse - use libxml?)
 
-========================
-Old GGZ Roadmap:
+Libraries (ggzdmod, ggzdmod++)
+------------------------------
+* (nothing in particular)
 
-For v0.0.4
-==========
-Massive Client rewrite 
-More games 
-Game help 
+Game servers
+------------
+* unification of feature sets
+  (spectators, leave/rejoin, statistics, savegames, ...)
 
-
-For v0.0.5
-==========
-Dynamic port/fd/creation 
-8+ player games 
-Non turn-based game support (requires above two) 
-Libraries for game writers 
-Keep_alive added to protocol 
-Lag meter added to protocol 
-Query server for game options 
-
-
-First beta release: 0.1.0 
-=========================
-Player eservations
-Working Gnome client 
-10 games 
-Finalize protocol opcodes 
-Bug hunt (kill em all!) 
-
-
-First stable release: 1.0.0
-===========================
-15 games (some realtime, ie at least one) 
-Full options in games 
-Fully tested games QT client
-Player permissions/capabilities 
-Admin tool(s) 
-Full win95 support 
-Free-BSD, other *nix support (tested) 
-Player statistics Team/ladder support
-Multiple implementations of user database (SQL/libdb)
-
-
-1.2.X 
-=====
-Inter server communications 
-Meta server 
-Web server statistics in ggzd 
-Game spectators
-Supprt banner ads(?)
