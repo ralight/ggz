@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 7712 2006-01-02 16:45:48Z josef $
+ * $Id: server.c 7846 2006-02-08 17:49:09Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -899,11 +899,19 @@ void _ggzcore_server_set_login_status(GGZServer * server,
 			break;
 		case E_USR_LOOKUP:
 			snprintf(error.message, sizeof(error.message),
-				_("Name taken"));
+				_("Name taken or wrong password"));
 			break;
 		case E_TOO_LONG:
 			snprintf(error.message, sizeof(error.message),
 				_("Name too long"));
+			break;
+		case E_BAD_USERNAME:
+			snprintf(error.message, sizeof(error.message),
+				_("Name contains forbidden ASCII characters"));
+			break;
+		case E_BAD_OPTIONS:
+			snprintf(error.message, sizeof(error.message),
+				_("Missing password or other bad options."));
 			break;
 		default:
 			snprintf(error.message, sizeof(error.message),
