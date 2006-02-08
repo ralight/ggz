@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 7785 2006-01-16 19:17:14Z jdorje $
+ * $Id: login.c 7845 2006-02-08 17:48:35Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -130,12 +130,14 @@ void login_failed(const GGZErrorEventData * error)
 		break;
 	case E_USR_LOOKUP:
 		snprintf(msg, sizeof(msg),
-			 _("That username is already in usage,\nor not "
-			   "permitted on this server.\n\nPlease choose a "
-			   "different name"));
+			 _("Authentication has failed.\n"
+				"Please supply the correct password."));
 		break;
 	case E_TOO_LONG:
 		snprintf(msg, sizeof(msg), _("The username is too long!"));
+		break;
+	case E_BAD_USERNAME:
+		snprintf(msg, sizeof(msg), _("Invalid username, do not use special characters!"));
 		break;
 	default:
 		snprintf(msg, sizeof(msg),
