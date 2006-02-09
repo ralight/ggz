@@ -5,6 +5,7 @@ dynamic.sh:
 
 create-ggzpots.sh:
  Tarball with all *.pot file for download
+ (and the properties files for ggz-java)
 
 statistics-art.sh:
  What kind of graphics and how many of each do we have?
