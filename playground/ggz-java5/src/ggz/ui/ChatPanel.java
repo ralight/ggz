@@ -23,8 +23,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Rectangle;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -42,6 +44,9 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 public class ChatPanel extends JPanel {
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.ui.messages");
+
     private JScrollPane textScrollPane;
 
     private JPanel messageLayout;
@@ -93,8 +98,7 @@ public class ChatPanel extends JPanel {
         messageLayout = new JPanel(new BorderLayout(4, 4));
         chatImage = new JLabel(new ImageIcon(getClass().getResource(
                 "images/chat.gif")));
-        chatImage
-                .setToolTipText("Type in the text box to the right to chat with other players.");
+        chatImage.setToolTipText(messages.getString("ChatPanel.ToolTip.ChatImage"));
         messageLayout.add(chatImage, BorderLayout.WEST);
         messageLayout.add(textField, BorderLayout.CENTER);
         messageLayout.add(sendButton, BorderLayout.EAST);
@@ -172,12 +176,12 @@ public class ChatPanel extends JPanel {
         // Handle the /me command.
         if (message != null && message.length() >= 4
                 && message.toLowerCase().startsWith("/me ")) {
-            emote = message.substring(3);
+            emote = "{0}" + message.substring(3);
         }
 
         switch (type) {
         case GGZ_CHAT_BEEP:
-            emote = " BEEPS!";
+            emote = messages.getString("ChatPanel.Beep");
             break;
         }
 
@@ -190,11 +194,13 @@ public class ChatPanel extends JPanel {
 
         try {
             if (emote == null) {
-                doc.insertString(doc.getLength(), sender + " says: ",
+                doc.insertString(doc.getLength(), MessageFormat.format(messages
+                        .getString("ChatPanel.Says"), new Object[] { sender }),
                         senderText);
                 doc.insertString(doc.getLength(), message, textStyle);
             } else {
-                doc.insertString(doc.getLength(), sender + emote, senderText);
+                doc.insertString(doc.getLength(), MessageFormat.format(emote,
+                        new Object[] { sender }), senderText);
             }
             doc.insertString(doc.getLength(), "\n", null);
         } catch (BadLocationException e) {

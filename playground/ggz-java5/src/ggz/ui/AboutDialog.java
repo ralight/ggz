@@ -25,6 +25,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStreamReader;
+import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -38,6 +39,9 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 
 public class AboutDialog extends JDialog {
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.ui.messages");
+
     private JPanel buttonPanel;
 
     private JButton closeButton;
@@ -48,13 +52,16 @@ public class AboutDialog extends JDialog {
 
     private JLabel copyrightLabel;
 
+    private String title;
+
     public AboutDialog(Frame owner) {
-        super(owner, "About GGZ Gaming Zone", true);
+        super(owner, true);
+        setTitle(messages.getString("About.Title"));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         // Close button.
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        closeButton = new JButton("Close");
+        closeButton = new JButton(messages.getString("About.Button.Close"));
         closeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 close();

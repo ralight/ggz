@@ -39,6 +39,8 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -56,6 +58,9 @@ import javax.swing.table.AbstractTableModel;
 
 public class RoomPanel extends JPanel implements RoomListener,
         ListSelectionListener {
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.ui.messages");
+
     protected Server server;
 
     protected Room room;
@@ -95,7 +100,7 @@ public class RoomPanel extends JPanel implements RoomListener,
         // Set up title with room name and back to lobby button.
         headerPanel = new JPanel(new BorderLayout());
         headerButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        titleLabel = new JLabel("Room");
+        titleLabel = new JLabel();
         lobbyButton = new JButton(new BackToLobbyAction());
         logoutButton = new JButton(new LogoutAction());
 
@@ -221,16 +226,17 @@ public class RoomPanel extends JPanel implements RoomListener,
     public void table_left(TableLeaveEventData data) {
         switch (data.get_reason()) {
         case GGZ_LEAVE_BOOT:
-            JOptionPane.showMessageDialog(this,
-                    "You have been booted from the game by "
-                            + data.get_booter());
+            JOptionPane.showMessageDialog(this, MessageFormat.format(messages
+                    .getString("RoomPanel.Message.LeaveBoot"), new Object[] { data
+                    .get_booter() }));
             break;
         case GGZ_LEAVE_GAMEERROR:
-            JOptionPane.showMessageDialog(this,
-                    "Sorry, there has been an error in the game.");
+            JOptionPane.showMessageDialog(this, messages
+                    .getString("RoomPanel.Message.LeaveGameError"));
             break;
         case GGZ_LEAVE_GAMEOVER:
-            JOptionPane.showMessageDialog(this, "GAME OVER");
+            JOptionPane.showMessageDialog(this, messages
+                    .getString("RoomPanel.Message.GameOver"));
             break;
         }
         tables.fireTableDataChanged();
@@ -250,7 +256,7 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "Back to Games";
+                return messages.getString("RoomPanel.Button.BackToGames");
             }
             return super.getValue(key);
         }
@@ -302,7 +308,7 @@ public class RoomPanel extends JPanel implements RoomListener,
         public void actionPerformed(ActionEvent e) {
             if (Module.get_num_by_type(room.get_gametype()) == 0) {
                 JOptionPane.showMessageDialog((Component) e.getSource(),
-                        "Game is not supported yet");
+                        messages.getString("RoomPanel.Message.GameNotSupported"));
             } else {
                 Module module = Module.get_nth_by_type(room.get_gametype(), 0);
                 Game game = new Game(server, module);
@@ -335,7 +341,7 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "New Game";
+                return messages.getString("RoomPanel.Button.NewGame");
             }
             return super.getValue(key);
         }
@@ -343,7 +349,7 @@ public class RoomPanel extends JPanel implements RoomListener,
         public void actionPerformed(ActionEvent e) {
             if (Module.get_num_by_type(room.get_gametype()) == 0) {
                 JOptionPane.showMessageDialog((Component) e.getSource(),
-                        "Game is not supported yet");
+                        messages.getString("RoomPanel.Message.GameNotSupported"));
             } else {
                 table = SeatAllocationDialog.getTableSeatAllocation(
                         (Component) e.getSource(), room.get_gametype());
@@ -379,7 +385,7 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "Join Game";
+                return messages.getString("RoomPanel.Button.JoinGame");
             }
             return super.getValue(key);
         }
@@ -398,7 +404,7 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "Spectate";
+                return messages.getString("RoomPanel.Button.Spectate");
             }
             return super.getValue(key);
         }
@@ -417,7 +423,7 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "Logout";
+                return messages.getString("RoomPanel.Button.Logout");
             }
             return super.getValue(key);
         }
@@ -436,11 +442,11 @@ public class RoomPanel extends JPanel implements RoomListener,
         public String getColumnName(int columnIndex) {
             switch (columnIndex) {
             case 0:
-                return "Description";
+                return messages.getString("RoomPanel.ColumnHeader.TableDescription");
             case 1:
-                return "Players";
+                return messages.getString("RoomPanel.ColumnHeader.TablePlayers");
             case 2:
-                return "Spectators";
+                return messages.getString("RoomPanel.ColumnHeader.TableSpectators");
             default:
                 return null;
             }
@@ -464,8 +470,10 @@ public class RoomPanel extends JPanel implements RoomListener,
 
                 switch (columnIndex) {
                 case 0:
-                    buffer = new StringBuffer("<HTML><B>Table ");
-                    buffer.append(table.get_id());
+                    buffer = new StringBuffer("<HTML><B>");
+                    buffer.append(MessageFormat.format(messages
+                            .getString("RoomPanel.TableLabel"),
+                            new Object[] { table.get_id() }));
                     if (table.get_desc() != null) {
                         buffer.append("</B><BR><I>");
                         buffer.append(table.get_desc());
@@ -477,10 +485,12 @@ public class RoomPanel extends JPanel implements RoomListener,
                         buffer.append("<LI>");
                         switch (table.get_nth_player_type(player_num)) {
                         case GGZ_SEAT_ABANDONED:
-                            buffer.append("Abandoned");
+                            buffer.append(messages
+                                    .getString("RoomPanel.SeatAbandoned"));
                             break;
                         case GGZ_SEAT_BOT:
-                            buffer.append("AI");
+                            buffer.append(messages
+                                    .getString("RoomPanel.SeatBot"));
                             break;
                         case GGZ_SEAT_NONE:
                         case GGZ_SEAT_PLAYER:
@@ -489,10 +499,12 @@ public class RoomPanel extends JPanel implements RoomListener,
                                             .get_nth_player_name(player_num));
                             break;
                         case GGZ_SEAT_OPEN:
-                            buffer.append("Empty Seat");
+                            buffer.append(messages
+                                    .getString("RoomPanel.SeatOpen"));
                             break;
                         case GGZ_SEAT_RESERVED:
-                            buffer.append("Reserved for ");
+                            buffer.append(messages
+                                    .getString("RoomPanel.SeatReserved"));
                             break;
                         }
                     }
@@ -505,10 +517,12 @@ public class RoomPanel extends JPanel implements RoomListener,
                         buffer.append("<LI>");
                         switch (table.get_nth_spectator_seat(spectator_num).type) {
                         case GGZ_SEAT_ABANDONED:
-                            buffer.append("Abandoned");
+                            buffer.append(messages
+                                    .getString("RoomPanel.AbandonedSeat"));
                             break;
                         case GGZ_SEAT_BOT:
-                            buffer.append("AI");
+                            buffer.append(messages
+                                    .getString("RoomPanel.ComputerPlayer"));
                             break;
                         case GGZ_SEAT_NONE:
                         case GGZ_SEAT_PLAYER:
@@ -516,10 +530,12 @@ public class RoomPanel extends JPanel implements RoomListener,
                                     .get_nth_spectator_name(spectator_num));
                             break;
                         case GGZ_SEAT_OPEN:
-                            buffer.append("Empty Seat");
+                            buffer.append(messages
+                                    .getString("RoomPanel.EmptySeat"));
                             break;
                         case GGZ_SEAT_RESERVED:
-                            buffer.append("Reserved for ");
+                            buffer.append(messages
+                                    .getString("RoomPanel.ReservedSeat"));
                             break;
                         }
                     }

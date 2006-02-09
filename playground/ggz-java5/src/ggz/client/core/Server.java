@@ -76,10 +76,6 @@ public class Server {
      */
     private boolean is_channel;
 
-//    private boolean channel_complete;
-
-//    private boolean channel_failed;
-
     /*
      * Callbacks for server events. Every time an event happens all the hooks in
      * the list for that event are called.
@@ -91,10 +87,7 @@ public class Server {
      * times during a single network read may instead be queued and later popped
      * off the queue when we leave the network code.
      */
-    // struct {
     boolean queued_events_players_changed;
-
-    // } queued_events;
 
     static boolean reconnect_policy = false;
 
@@ -109,7 +102,7 @@ public class Server {
         }
         /* Set initial state */
         this.state = StateID.GGZ_STATE_OFFLINE;
-        this.net = new Net(this, host, port, use_tls);   
+        this.net = new Net(this, host, port, use_tls);
     }
 
     public void set_logininfo(LoginType type, String handle, String password,
@@ -139,14 +132,14 @@ public class Server {
         if (this.net != null) {
             return this.net.get_host();
         }
-            return null;
+        return null;
     }
 
     public int get_port() {
         if (this.net != null) {
             return this.net.get_port();
         }
-            return -1;
+        return -1;
     }
 
     /*
@@ -161,7 +154,7 @@ public class Server {
         if (this.net != null) {
             return this.net.get_fd();
         }
-            return null;
+        return null;
     }
 
     public Room get_nth_room(int num) {
@@ -169,7 +162,7 @@ public class Server {
         if (num < get_num_rooms()) {
             return this.rooms[num];
         }
-            return null;
+        return null;
     }
 
     public GameType get_nth_gametype(int num) {
@@ -177,7 +170,7 @@ public class Server {
         if (num < get_num_gametypes()) {
             return this.gametypes[num];
         }
-            return null;
+        return null;
     }
 
     public boolean is_online() {
@@ -189,7 +182,6 @@ public class Server {
         default:
             return true;
         }
-        // return (this.state >= StateID.GGZ_STATE_ONLINE);
     }
 
     public boolean is_logged_in() {
@@ -203,7 +195,6 @@ public class Server {
         default:
             return true;
         }
-        // return (this.state >= GGZ_STATE_LOGGED_IN);
     }
 
     public boolean is_in_room() {
@@ -228,8 +219,6 @@ public class Server {
         default:
             throw new IllegalStateException(this.state.toString());
         }
-        // return (this.state >= GGZ_STATE_IN_ROOM
-        // && this.state < GGZ_STATE_LOGGING_OUT);
     }
 
     public boolean is_at_table() {
@@ -254,9 +243,6 @@ public class Server {
         default:
             throw new IllegalStateException(this.state.toString());
         }
-
-        // return (this.state >= GGZ_STATE_AT_TABLE
-        // && this.state <= GGZ_STATE_LEAVING_TABLE);
     }
 
     public void connect() {
@@ -275,10 +261,12 @@ public class Server {
                     event(ServerEvent.GGZ_CONNECT_FAIL, errmsg);
                 }
 
-            } else
+            } else {
                 throw new IllegalStateException(this.state.toString());
-        } else
+            }
+        } else {
             throw new IllegalStateException("net is null");
+        }
     }
 
     public void create_channel() {
@@ -286,8 +274,6 @@ public class Server {
             String host;
             int port;
             String errmsg;
-
-            /* FIXME: make sure we don't already have a channel */
 
             host = this.net.get_host();
             port = this.net.get_port();
@@ -319,7 +305,7 @@ public class Server {
                 + this.password);
 
         net.send_login(this.login_type, this.handle, this.password, this.email,
-                Locale.getDefault().getLanguage());// getenv("LANG"));
+                Locale.getDefault().getLanguage());
 
         change_state(TransID.GGZ_TRANS_LOGIN_TRY);
     }
@@ -370,7 +356,6 @@ public class Server {
         if (this.state != StateID.GGZ_STATE_OFFLINE
                 && this.state != StateID.GGZ_STATE_RECONNECTING
                 && this.state != StateID.GGZ_STATE_LOGGING_OUT) {
-            // if (this.state != StateID.GGZ_STATE_LOGGING_OUT) {
             log.fine("Logging out");
             net.send_logout();
             change_state(TransID.GGZ_TRANS_LOGOUT_TRY);
@@ -392,53 +377,6 @@ public class Server {
             throw new IllegalStateException(this.state.toString());
     }
 
-    // boolean data_is_pending() {
-    // boolean pending = false;
-    //
-    // if (this.net != null && this.state != StateID.GGZ_STATE_OFFLINE
-    // && this.state != StateID.GGZ_STATE_RECONNECTING) {
-    // pending = this.net.data_is_pending();
-    // }
-    //
-    // return pending;
-    // }
-
-    // int read_data(Socket fd) {
-    // int status = -1;
-    //
-    // if (!this.is_channel) {
-    // if (this.channel != null && fd == this.channel.get_fd()) {
-    // status = this.channel.read_data();
-    // return 0;
-    // }
-    // }
-    //
-    // if (this.net == null || (fd = this.net.get_fd()) == null)
-    // return -1;
-    //
-    // if (this.state != StateID.GGZ_STATE_OFFLINE
-    // && this.state != StateID.GGZ_STATE_RECONNECTING) {
-    // status = this.net.read_data();
-    //
-    // /*
-    // * See comment in queue_players_changed.
-    // */
-    // if (this.queued_events_players_changed) {
-    // event(ServerEvent.GGZ_SERVER_PLAYERS_CHANGED, null);
-    // this.queued_events_players_changed = false;
-    // }
-    // } else {
-    // /*
-    // * If we *don't* return an error here, the caller is likely to just
-    // * keep calling this function again and again because no data will
-    // * ever be read.
-    // */
-    // return -1;
-    // }
-    //
-    // return 0;
-    // }
-
     Net get_net() {
         return this.net;
     }
@@ -459,7 +397,7 @@ public class Server {
         if (this.channel != null) {
             return this.channel.get_fd();
         }
-            return null;
+        return null;
     }
 
     public StateID get_state() {
@@ -601,13 +539,18 @@ public class Server {
                 error.message = "You are already logged in, possibly on another computer?";
                 break;
             case E_USR_LOOKUP:
-                error.message = "The nickname '" + handle + "' has already been taken by another user or is not permitted on this server. Please choose a different one.";
+                error.message = "The nickname '"
+                        + handle
+                        + "' has already been taken by another user or is not permitted on this server. Please choose a different one.";
                 break;
             case E_TOO_LONG:
-                error.message = "The nickname '" + handle + "' is too long, please pick a shorter one.";
+                error.message = "The nickname '" + handle
+                        + "' is too long, please pick a shorter one.";
                 break;
             case E_BAD_USERNAME:
-                error.message = "The nickname '" + handle + "' contains invalid characters, only letters and numbers are allowed.";
+                error.message = "The nickname '"
+                        + handle
+                        + "' contains invalid characters, only letters and numbers are allowed.";
                 break;
             default:
                 error.message = "Unknown login error.";
@@ -628,7 +571,8 @@ public class Server {
 
             switch (status) {
             case E_ROOM_FULL:
-                error.message = "The " + this.new_room.get_name() + " room is full.";
+                error.message = "The " + this.new_room.get_name()
+                        + " room is full.";
                 break;
             case E_AT_TABLE:
                 error.message = "You cannot change rooms while at a table.";
@@ -701,11 +645,11 @@ public class Server {
         } else {
             /* Channel (requested by ggzmod) is ready! */
             change_state(TransID.GGZ_TRANS_LOGOUT_OK);
-//            this.channel_complete = true;
         }
     }
 
-    public void log_session(String sendFile, String receiveFile) throws IOException {
+    public void log_session(String sendFile, String receiveFile)
+            throws IOException {
         net.set_dump_files(sendFile, receiveFile);
     }
 
@@ -714,7 +658,8 @@ public class Server {
 
         /* Set initial state */
         this.state = StateID.GGZ_STATE_OFFLINE;
-        this.net = new Net(this, this.net.get_host(), this.net.get_port(), this.net.get_tls());
+        this.net = new Net(this, this.net.get_host(), this.net.get_port(),
+                this.net.get_tls());
         this.is_channel = false;
     }
 
@@ -738,64 +683,6 @@ public class Server {
         event_hooks.removeServerListener(l);
     }
 
-    // static void channel_connect( String host, int port,
-    // String handle) throws IOException
-    // {
-    // Server server;
-    // Socket fd;
-    //
-    // /*
-    // * Hack, hack, hack. The below really needs to be fixed up with some
-    // * error handling. There's also a major problem that it blocks the
-    // * whole time while the connection is being made.
-    // */
-    // server = new Server();
-    // server.is_channel = true;
-    // server.channel = server.net;
-    // server.channel_complete = server.channel_failed = 0;
-    // server.set_hostinfo(host, port, 0);
-    // server.set_logininfo(LoginType.GGZ_LOGIN_GUEST,
-    // handle, null, null);
-    // server.connect();
-    // fd = server.net.get_fd();
-    //
-    // while (true) {
-    // fd_set active_fd_set;
-    // int status;
-    // struct timeval timeout = {.tv_sec = 30,.tv_usec = 0 };
-    //
-    // FD_ZERO(&active_fd_set);
-    // FD_SET(fd, &active_fd_set);
-    //
-    // status =
-    // select(fd + 1, &active_fd_set, null, null, &timeout);
-    // if (status < 0) {
-    // if (errno == EINTR)
-    // continue;
-    // free(server);
-    // return -1;
-    // } else if (status == 0) {
-    // /* Timed out. */
-    // return -1;
-    // } else if (status > 0 && FD_ISSET(fd, active_fd_set)) {
-    // if (read_data(server, fd) < 0) {
-    // return -1;
-    // }
-    // }
-    //
-    // if (this.channel_complete != 0) {
-    // /*
-    // * Set the socket to -1 so we don't accidentally close it.
-    // */
-    // net.set_fd(this.net, -1);
-    // free(server);
-    // return fd;
-    // } else if (this.channel_failed != 0) {
-    // free(server);
-    // return -1;
-    // }
-    // }
-    // }
     private void load_motd() throws IOException {
         net.send_motd();
     }
@@ -862,7 +749,6 @@ public class Server {
             this.channel.send_channel(this.handle);
             this.channel.send_logout();
         } else {
-//            this.channel_failed = true;
             if (!this.is_channel) {
                 event(ServerEvent.GGZ_CHANNEL_FAIL, "Protocol mismatch");
             }
@@ -1037,9 +923,6 @@ public class Server {
     void net_error(String message) {
         change_state(TransID.GGZ_TRANS_NET_ERROR);
         event(ServerEvent.GGZ_NET_ERROR, message);
-//        if (this.is_channel) {
-//            this.channel_failed = true;
-//        }
     }
 
     void protocol_error(String message) {
@@ -1047,9 +930,6 @@ public class Server {
         net.disconnect();
         change_state(TransID.GGZ_TRANS_PROTO_ERROR);
         event(ServerEvent.GGZ_PROTOCOL_ERROR, message);
-//        if (this.is_channel) {
-//            this.channel_failed = true;
-//        }
     }
 
     static void set_reconnect() {

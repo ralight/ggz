@@ -39,6 +39,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.JApplet;
@@ -55,6 +56,9 @@ import javax.swing.event.HyperlinkListener;
 
 public class ClientApplet extends JApplet implements ServerListener,
         HyperlinkListener {
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.ui.messages");
+
     private static final int DEFAULT_PORT = 5688;
 
     protected Server server;
@@ -77,7 +81,7 @@ public class ClientApplet extends JApplet implements ServerListener,
 
     static {
         try {
-            // Get Swing to use Antialiased text.
+            // Try and get Swing to use Antialiased text.
             System.setProperty("swing.aatext", "true");
         } catch (Throwable ex) {
             // Ignore, we don't have permission so just don't anti-alias text.
@@ -139,7 +143,8 @@ public class ClientApplet extends JApplet implements ServerListener,
             mainPanel.setOpaque(false);
             getContentPane().add(mainPanel, BorderLayout.CENTER);
             aboutLabel = new JLabel(
-                    "<HTML><A href='' style='font-weight:normal; font-size:smaller'>About</A></HTML>",
+                    "<HTML><A href='' style='font-weight:normal; font-size:smaller'>"
+                            + messages.getString("ClientApplet.Label.About") + "</A>",
                     SwingConstants.RIGHT);
             aboutLabel
                     .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -156,7 +161,9 @@ public class ClientApplet extends JApplet implements ServerListener,
             mainPanel.add(loungePanel, "lounge");
             roomPanel = new RoomPanel(server);
             mainPanel.add(roomPanel, "room");
-            busyPanel = new JLabel("Please wait...", SwingConstants.CENTER);
+            busyPanel = new JLabel(messages
+                    .getString("ClientApplet.Label.PleaseWait"),
+                    SwingConstants.CENTER);
             mainPanel.add(busyPanel, "busy");
 
             // Register ourselves as the global hyperlink handler for our
@@ -278,8 +285,8 @@ public class ClientApplet extends JApplet implements ServerListener,
         if (!"normal".equals(data.priority)) {
             // Assume it's a higher priority.
             JDialog dialog = new JDialog(
-                    JOptionPane.getFrameForComponent(this),
-                    "Message of the Day");
+                    JOptionPane.getFrameForComponent(this), messages
+                            .getString("ClientApplet.DialogTitle.MessageOfTheDay"));
             JTextArea textArea = new JTextArea(data.motd);
 
             textArea.setEditable(false);
@@ -339,60 +346,63 @@ public class ClientApplet extends JApplet implements ServerListener,
 
         switch (server.get_state()) {
         case GGZ_STATE_OFFLINE:
-            statusText = "Not logged in";
+            statusText = messages.getString("ClientApplet.StateOffline");
             break;
         /** In the process of connecting. */
         case GGZ_STATE_CONNECTING:
             loginFailData = null;
             layout.show(mainPanel, "busy");
-            statusText = "Connecting";
+            statusText = messages.getString("ClientApplet.StateConnecting");
             break;
         /** Continuous reconnection attempts. */
         case GGZ_STATE_RECONNECTING:
-            statusText = "Reconnecting";
+            statusText = messages.getString("ClientApplet.StateReconnecting");
             break;
         /** Connected, but not doing anything. */
         case GGZ_STATE_ONLINE:
-            statusText = "Connected";
+            statusText = messages.getString("ClientApplet.StateConnected");
             break;
         /** In the process of logging in. */
         case GGZ_STATE_LOGGING_IN:
-            statusText = "Logging in";
+            statusText = messages.getString("ClientApplet.StateLoggingIn");
             break;
         /** Online and logged in! */
         case GGZ_STATE_LOGGED_IN:
-            statusText = "Logged in";
+            statusText = messages.getString("ClientApplet.StateLoggedIn");
             break;
         /** Moving into a room. */
         case GGZ_STATE_ENTERING_ROOM:
+            layout.show(mainPanel, "busy");
+            statusText = messages.getString("ClientApplet.StateEnteringRoom");
+            break;
         /** Moving between rooms. */
         case GGZ_STATE_BETWEEN_ROOMS:
             layout.show(mainPanel, "busy");
-            statusText = "Loading";
+            statusText = messages.getString("ClientApplet.StateBetweenRooms");
             break;
         /** Online, logged in, and in a room. */
         case GGZ_STATE_IN_ROOM:
-            statusText = "Logged in";
+            statusText = messages.getString("ClientApplet.StateInRoom");
             break;
         /** Trying to launch a table. */
         case GGZ_STATE_LAUNCHING_TABLE:
-            statusText = "Launching game";
+            statusText = messages.getString("ClientApplet.StateLaunchingGame");
             break;
         /** Trying to join a table. */
         case GGZ_STATE_JOINING_TABLE:
-            statusText = "Joining game";
+            statusText = messages.getString("ClientApplet.StateJoiningGame");
             break;
         /** Online, loggied in, in a room, at a table. */
         case GGZ_STATE_AT_TABLE:
-            statusText = "Playing";
+            statusText = messages.getString("ClientApplet.StatePlaying");
             break;
         /** Waiting to leave a table. */
         case GGZ_STATE_LEAVING_TABLE:
-            statusText = "Leaving game";
+            statusText = messages.getString("ClientApplet.StateLeavingGame");
             break;
         /** In the process of logging out. */
         case GGZ_STATE_LOGGING_OUT:
-            statusText = "Disconnecting";
+            statusText = messages.getString("ClientApplet.StateLoggingOut");
             break;
         default:
             statusText = "";

@@ -24,6 +24,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
@@ -33,9 +34,11 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 public class LoginPanel extends JPanel {
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.ui.messages");
+
     private Server server;
 
     protected JTextField handleTextField;
@@ -63,13 +66,13 @@ public class LoginPanel extends JPanel {
         this.server = server;
 
         // Create all the components
-        handleLabel = new JLabel(
-                "<HTML>Nickname<FONT color=red>*</FONT></HTML>",
-                SwingConstants.RIGHT);
-        passwordLabel = new JLabel(
-                "<HTML>Password<FONT color=red>*</FONT></HTML>",
-                SwingConstants.RIGHT);
-        emailLabel = new JLabel("Email", SwingConstants.RIGHT);
+        handleLabel = new JLabel("<HTML>"
+                + messages.getString("LoginPanel.Label.Nickname")
+                + "<FONT color=red>*</FONT>");
+        passwordLabel = new JLabel("<HTML>"
+                + messages.getString("LoginPanel.Label.Password")
+                + "<FONT color=red>*</FONT>");
+        emailLabel = new JLabel(messages.getString("LoginPanel.Label.Email"));
         handleTextField = new JTextField(20);
         passwordField = new JPasswordField(20);
         emailTextField = new JTextField(null, 20);
@@ -137,7 +140,7 @@ public class LoginPanel extends JPanel {
     public void init(String userInfo) {
         getRootPane().setDefaultButton(loginButton);
         handleTextField.requestFocus();
-        
+
         // If we have userInfo then log in automatically.
         if (userInfo != null) {
             int indexOfColon = userInfo.indexOf(':');
@@ -198,7 +201,7 @@ public class LoginPanel extends JPanel {
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "Login";
+                return messages.getString("LoginPanel.Button.Login");
             }
             return super.getValue(key);
         }
@@ -213,7 +216,7 @@ public class LoginPanel extends JPanel {
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "Member login";
+                return messages.getString("LoginPanel.Radio.MemberLogin");
             }
             return super.getValue(key);
         }
@@ -231,7 +234,7 @@ public class LoginPanel extends JPanel {
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "Guest login";
+                return messages.getString("LoginPanel.Radio.GuestLogin");
             }
             return super.getValue(key);
         }
@@ -249,7 +252,7 @@ public class LoginPanel extends JPanel {
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "New user";
+                return messages.getString("LoginPanel.Radio.NewUser");
             }
             return super.getValue(key);
         }

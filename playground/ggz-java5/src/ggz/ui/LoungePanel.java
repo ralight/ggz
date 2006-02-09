@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -45,6 +46,9 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 public class LoungePanel extends JPanel {
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.ui.messages");
+
     protected Server server;
 
     private JPanel roomPanel;
@@ -58,7 +62,7 @@ public class LoungePanel extends JPanel {
     private JPanel headerPanel;
 
     private JButton logoutButton;
-    
+
     private String motd;
 
     private Comparator sortAlgorithm = new SortByRoomName();
@@ -75,7 +79,7 @@ public class LoungePanel extends JPanel {
 
         logoutButton = new JButton(new LogoutAction());
         headerPanel = new JPanel(new BorderLayout());
-        //headerPanel.add(new JLabel("Games"), BorderLayout.WEST);
+        // headerPanel.add(new JLabel("Games"), BorderLayout.WEST);
         headerPanel.add(logoutButton, BorderLayout.EAST);
         // Make everything transparent.
         headerPanel.setOpaque(false);
@@ -110,16 +114,17 @@ public class LoungePanel extends JPanel {
         // Add a button for each room, the button handles click events and joins
         // the associated room automatically.
         roomPanel.removeAll();
-        CategoryPanel cardGamesPanel = new CategoryPanel("Card Games");
+        CategoryPanel cardGamesPanel = new CategoryPanel(messages
+                .getString("LoungePanel.GroupHeader.CardGames"));
         for (int i = 0; i < rooms.size(); i++) {
             Room room = rooms.get(i);
-            //roomPanel.add(new RoomButton(room));
+            // roomPanel.add(new RoomButton(room));
             cardGamesPanel.addRoom(room);
         }
         roomPanel.add(cardGamesPanel);
-//        CategoryPanel boardGamesPanel = new CategoryPanel("Board Games");
-//        boardGamesPanel.addRoom(server.get_nth_room(2));
-//        roomPanel.add(boardGamesPanel);
+        // CategoryPanel boardGamesPanel = new CategoryPanel("Board Games");
+        // boardGamesPanel.addRoom(server.get_nth_room(2));
+        // roomPanel.add(boardGamesPanel);
         JScrollPane motdScroll = new JScrollPane();
         JTextArea motdText = new JTextArea(motd);
         motdText.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -129,11 +134,12 @@ public class LoungePanel extends JPanel {
         motdScroll.setOpaque(false);
         motdScroll.getViewport().setOpaque(false);
         motdScroll.setBorder(null);
-        motdScroll.setBorder(BorderFactory.createTitledBorder("Message of the Day"));
+        motdScroll.setBorder(BorderFactory.createTitledBorder(messages
+                .getString("LoungePanel.GroupHeader.MessageOfTheDay")));
         motdScroll.getViewport().add(motdText);
         roomPanel.add(motdScroll);
     }
-    
+
     public void setMotD(String motd) {
         this.motd = motd;
     }
@@ -164,7 +170,7 @@ public class LoungePanel extends JPanel {
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return "Logout";
+                return messages.getString("LoungePanel.Button.Logout");
             }
             return super.getValue(key);
         }
@@ -180,6 +186,7 @@ public class LoungePanel extends JPanel {
 
     private class CategoryPanel extends JPanel {
         JPanel listPanel;
+
         protected CategoryPanel(String categoryName) {
             setBorder(BorderFactory.createTitledBorder(categoryName));
             listPanel = new JPanel(new GridLayout(0, 1));
@@ -188,11 +195,13 @@ public class LoungePanel extends JPanel {
             add(listPanel, BorderLayout.NORTH);
             setOpaque(false);
         }
-        
+
         protected void addRoom(final Room room) {
             JPanel listCellPanel = new JPanel(new BorderLayout());
-            JLabel nameLabel = new JLabel("<HTML><U>"+room.get_name()+"</U></HTML>");
-            final JLabel populationLabel = new JLabel((String)null, SwingConstants.RIGHT){
+            JLabel nameLabel = new JLabel("<HTML><U>" + room.get_name()
+                    + "</U></HTML>");
+            final JLabel populationLabel = new JLabel((String) null,
+                    SwingConstants.RIGHT) {
                 public String getText() {
                     return String.valueOf(room.get_num_players());
                 }
@@ -201,11 +210,12 @@ public class LoungePanel extends JPanel {
             nameLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             nameLabel.setToolTipText(room.get_desc());
             nameLabel.setFont(nameLabel.getFont().deriveFont(Font.PLAIN));
-            populationLabel.setFont(populationLabel.getFont().deriveFont(Font.PLAIN));
+            populationLabel.setFont(populationLabel.getFont().deriveFont(
+                    Font.PLAIN));
             listCellPanel.add(nameLabel, BorderLayout.WEST);
             listCellPanel.add(populationLabel, BorderLayout.CENTER);
             listPanel.add(listCellPanel);
-            nameLabel.addMouseListener( new MouseAdapter() {
+            nameLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent event) {
                     // Find the index of the room and then join the room
                     try {
@@ -216,7 +226,8 @@ public class LoungePanel extends JPanel {
                         }
                     } catch (IOException ex) {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(CategoryPanel.this, ex.toString());
+                        JOptionPane.showMessageDialog(CategoryPanel.this, ex
+                                .toString());
                     }
                 }
             });

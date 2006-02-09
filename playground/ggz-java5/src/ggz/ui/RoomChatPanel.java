@@ -33,6 +33,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.IOException;
+import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -46,6 +48,12 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 public class RoomChatPanel extends JPanel implements RoomListener {
+    private static final Logger log = Logger.getLogger(RoomChatPanel.class
+            .getName());
+
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.ui.messages");
+
     protected Room room;
 
     /** Our nickname on server */
@@ -61,7 +69,6 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
     public RoomChatPanel(boolean showTableNumber) {
         super(new BorderLayout());
-
         chatPanel = new ChatPanel(new RoomChatAction());
         add(chatPanel, BorderLayout.CENTER);
 
@@ -70,11 +77,23 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         playerList = new JTable(players);
         // playerList.setRowHeight(20);
         playerList.getTableHeader().setBackground(new Color(0xce, 0xfa, 0xdf));
+        playerList
+                .getColumn("Nickname")
+                .setHeaderValue(
+                        messages
+                                .getString("RoomChatPanel.ColumnHeader.PlayerNickname"));
         playerList.getColumn("Lag").setMaxWidth(20);
         playerList.getColumn("Lag").setHeaderValue("");
         playerList.getColumn("Type").setMaxWidth(40);
+        playerList.getColumn("Type").setHeaderValue(
+                messages.getString("RoomChatPanel.ColumnHeader.PlayerType"));
         if (showTableNumber) {
             playerList.getColumn("T#").setMaxWidth(20);
+            playerList
+                    .getColumn("T#")
+                    .setHeaderValue(
+                            messages
+                                    .getString("RoomChatPanel.ColumnHeader.PlayerTableNumber"));
         }
         playerList.setRowSelectionAllowed(false);
         playerList.setGridColor(playerList.getBackground());
@@ -347,21 +366,42 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
 
         public String getToolTipText() {
-            String toolTipText = player == null ? null : "<HTML>"
-                    + (player.get_rating() == Player.NO_RATING ? ""
-                            : ("Rating: " + player.get_rating()))
-                    + (player.get_ranking() == Player.NO_RANKING ? ""
-                            : ("<BR>Ranking: " + player.get_ranking()))
-                    + (player.get_highscore() == Player.NO_HIGHSCORE ? ""
-                            : ("<BR>Highscore: " + player.get_highscore()))
-                    + (player.get_wins() == Player.NO_RECORD ? ""
-                            : ("<BR>Wins: " + player.get_wins()))
-                    + (player.get_losses() == Player.NO_RECORD ? ""
-                            : ("<BR>Losses: " + player.get_losses()))
-                    + (player.get_forfeits() == Player.NO_RECORD ? ""
-                            : ("<BR>Forfeits: " + player.get_forfeits()))
-                    + (player.get_ties() == Player.NO_RECORD ? ""
-                            : ("<BR>Ties: " + player.get_ties()));
+            String toolTipText = player == null ? null
+                    : "<HTML>"
+                            + (player.get_rating() == Player.NO_RATING ? ""
+                                    : (messages
+                                            .getString("RoomChatPanel.PlayerInfoRating")
+                                            + ": " + player.get_rating()))
+                            + (player.get_ranking() == Player.NO_RANKING ? ""
+                                    : ("<BR>"
+                                            + messages
+                                                    .getString("RoomChatPanel.PlayerInfoRanking")
+                                            + ": " + player.get_ranking()))
+                            + (player.get_highscore() == Player.NO_HIGHSCORE ? ""
+                                    : ("<BR>"
+                                            + messages
+                                                    .getString("RoomChatPanel.PlayerInfoHighscore")
+                                            + ": " + player.get_highscore()))
+                            + (player.get_wins() == Player.NO_RECORD ? ""
+                                    : ("<BR>"
+                                            + messages
+                                                    .getString("RoomChatPanel.PlayerInfoWins")
+                                            + ": " + player.get_wins()))
+                            + (player.get_losses() == Player.NO_RECORD ? ""
+                                    : ("<BR>"
+                                            + messages
+                                                    .getString("RoomChatPanel.PlayerInfoLosses")
+                                            + ": " + player.get_losses()))
+                            + (player.get_forfeits() == Player.NO_RECORD ? ""
+                                    : ("<BR>"
+                                            + messages
+                                                    .getString("RoomChatPanel.PlayerInfoForfeits")
+                                            + ": " + player.get_forfeits()))
+                            + (player.get_ties() == Player.NO_RECORD ? ""
+                                    : ("<BR>"
+                                            + messages
+                                                    .getString("RoomChatPanel.PlayerInfoTies")
+                                            + ": " + player.get_ties()));
             if ("<HTML>".equals(toolTipText.trim())) {
                 toolTipText = null;
             }
@@ -427,15 +467,18 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         public String getToolTipText() {
             switch (lag) {
             case 1:
-                return "This player has an excellent connection speed.";
+                return messages.getString("RoomChatPanel.ToolTip.Lag1");
             case 2:
-                return "This player has a good connection speed.";
+                return messages.getString("RoomChatPanel.ToolTip.Lag2");
             case 3:
-                return "This player has an acceptable connection speed.";
+                return messages.getString("RoomChatPanel.ToolTip.Lag3");
             case 4:
-                return "This player has a poor connection speed.";
+                return messages.getString("RoomChatPanel.ToolTip.Lag4");
+            case 5:
+                return messages.getString("RoomChatPanel.ToolTip.Lag5");
             default:
-                return "This player may take a long time to respond or take his/her turn.";
+                log.warning("Unrecognised lag value: " + lag);
+                return null;
             }
         }
     }

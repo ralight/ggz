@@ -19,23 +19,24 @@ package ggz.common;
 
 import org.xml.sax.Attributes;
 
-/** @brief Object representing a single XML element.
-*
-*  Except for "process", do not access these members directly.
-*  Instead use the provided accessor functions.  "process" is meant
-*  to be invoked as a method on instances of GGZXMLElement.
-*/
+/**
+ * Object representing a single XML element.
+ * 
+ * Except for "process", do not access these members directly. Instead use the
+ * provided accessor functions. "process" is meant to be invoked as a method on
+ * instances of GGZXMLElement.
+ */
 public class XMLElement {
-    /** < The name of the element */
+    /** The name of the element. */
     private String tag;
 
-    /** < Text content of an element */
+    /** Text content of an element. */
     private StringBuffer text;
 
-    /** < List of attributes on the element */
+    /** List of attributes on the element. */
     private String[][] attributes;
 
-    /** < Extra data associated with tag (usually gleaned from children) */
+    /** Extra data associated with tag (usually gleaned from children). */
     private Object data;
 
     public XMLElement(String tag, Attributes attrs) {

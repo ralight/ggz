@@ -22,16 +22,19 @@ import ggz.common.ChatType;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 public abstract class ChatAction extends AbstractAction {
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.ui.messages");
+
     protected ChatPanel chatPanel;
 
     private final String commands[][] = new String[][] {
-            { "/msg",
-                    "/msg <username> <message> . Private message a player" },
+            { "/msg", "/msg <username> <message> . Private message a player" },
             { "/table", "/table <message> .......... Message to your table" },
             { "/wall", "/wall <message> ........... Admin command" },
             { "/beep", "/beep <username> .......... Beep a player" },
@@ -46,7 +49,7 @@ public abstract class ChatAction extends AbstractAction {
 
     public Object getValue(String key) {
         if (NAME.equals(key)) {
-            return "Chat";
+            return messages.getString("ChatAction.Chat");
         }
         return super.getValue(key);
     }
@@ -62,8 +65,8 @@ public abstract class ChatAction extends AbstractAction {
     }
 
     /**
-     * Sends a chat message to the server, also parses commads within the
-     * chat message.
+     * Sends a chat message to the server, also parses commads within the chat
+     * message.
      * 
      * @param message
      *            The text to send to the server as a chat message
@@ -199,10 +202,9 @@ public abstract class ChatAction extends AbstractAction {
     private void chat_send_beep(String message) throws IOException {
         try {
             // Remove /beep command
-            String target = message.substring(commands[3][0].length())
-                    .trim();
+            String target = message.substring(commands[3][0].length()).trim();
             sendChat(ChatType.GGZ_CHAT_BEEP, target, null);
-            chatPanel.appendCommandText("Beep sent to " + target + ".");
+            chatPanel.appendCommandText("Sending beep to " + target + ".");
         } catch (IndexOutOfBoundsException ex) {
             /* Could not parse it. */
             chatPanel.appendCommandText("Usage: /beep <username>");
@@ -234,7 +236,7 @@ public abstract class ChatAction extends AbstractAction {
 
     protected abstract void sendChat(ChatType chatType, String target,
             String message) throws IOException;
-    
+
     protected abstract ChatType getDefaultChatType();
 
     private void doCommand(int commandIndex, String commandString)

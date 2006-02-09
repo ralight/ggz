@@ -25,15 +25,15 @@ package ggz.common;
  * libggzdmod
  */
 public enum TableState {
-    /** < There is some error with the table */
+    /** There is some error with the table. */
     GGZ_TABLE_ERROR, // = -1,
-    /** < Initial created state for the table. */
+    /** Initial created state for the table. */
     GGZ_TABLE_CREATED, // = 0,
-    /** < Waiting for enough players to join before playing */
+    /** Waiting for enough players to join before playing. */
     GGZ_TABLE_WAITING, // = 1,
-    /** < Playing a game */
+    /** Playing a game. */
     GGZ_TABLE_PLAYING, // = 2,
-    /** < The game session is finished and the table will soon exit */
+    /** The game session is finished and the table will soon exit. */
     GGZ_TABLE_DONE; // = 3
 
     public static TableState valueOf(int i) {
