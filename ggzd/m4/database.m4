@@ -93,7 +93,30 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 	db4inc=""
 
 	dnl Check for db4 libraries
-	dnl Version priority: db4.3, db4.2, db4.1, db4.0, db (unversioned)
+	dnl Version priority: db4.4, db4.3, db4.2, db4.1, db4.0, db (unversioned)
+
+	if test "$db4lib" = ""; then
+		AC_CHECK_LIB(db-4.4, db_env_create_4004,
+		[
+			db4lib="-ldb-4.4"
+			database=db4
+		],
+		[
+			AC_CHECK_LIB(db-4.4, db_env_create,
+			[
+				db4lib="-ldb-4.4"
+				database=db4
+			],
+			[
+				AC_CHECK_LIB(db, db_env_create_4004,
+				[
+					db4lib="-ldb"
+					database=db4
+				],
+				[])
+			])
+		])
+	fi
 
 	if test "$db4lib" = ""; then
 		AC_CHECK_LIB(db-4.3, db_env_create_4003,
