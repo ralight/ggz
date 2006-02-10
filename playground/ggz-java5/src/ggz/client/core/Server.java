@@ -543,13 +543,16 @@ public class Server {
                 error.message = messages.getString("Server.LoginError.AlreadyLoggedIn");
                 break;
             case E_USR_LOOKUP:
-                error.message = MessageFormat.format(messages.getString("Server.LoginError.UsrLookup"), new Object[]{handle}); 
+                error.message = MessageFormat.format(messages.getString("Server.LoginError.UsrLookup"), new String[]{handle}); 
                 break;
             case E_TOO_LONG:
-                error.message = MessageFormat.format(messages.getString("Server.LoginError.TooLong"), new Object[]{handle}); 
+                error.message = MessageFormat.format(messages.getString("Server.LoginError.TooLong"), new String[]{handle}); 
+                break;
+            case E_BAD_OPTIONS:
+                error.message = messages.getString("Server.LoginError.BadOptions"); 
                 break;
             case E_BAD_USERNAME:
-                error.message = MessageFormat.format(messages.getString("Server.LoginError.BadUsername"), new Object[]{handle}); 
+                error.message = MessageFormat.format(messages.getString("Server.LoginError.BadUsername"), new String[]{handle}); 
                 break;
             default:
                 error.message = messages.getString("Server.LoginError.Unknown");

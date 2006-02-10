@@ -98,7 +98,8 @@ public class ChatPanel extends JPanel {
         messageLayout = new JPanel(new BorderLayout(4, 4));
         chatImage = new JLabel(new ImageIcon(getClass().getResource(
                 "images/chat.gif")));
-        chatImage.setToolTipText(messages.getString("ChatPanel.ToolTip.ChatImage"));
+        chatImage.setToolTipText(messages
+                .getString("ChatPanel.ToolTip.ChatImage"));
         messageLayout.add(chatImage, BorderLayout.WEST);
         messageLayout.add(textField, BorderLayout.CENTER);
         messageLayout.add(sendButton, BorderLayout.EAST);
@@ -237,23 +238,25 @@ public class ChatPanel extends JPanel {
         // can easier test for equality.
         handle = handle.toLowerCase();
         if (ignoreList.remove(handle)) {
-            appendCommandText("You have removed "
-                    + handle
-                    + " from your ignore list. You will now see messages that he or she types.");
+            appendCommandText(MessageFormat.format(messages
+                    .getString("ChatPanel.Message.RemovedFromIngoreList"),
+                    new Object[] { handle }));
         } else {
             ignoreList.add(handle);
-            appendCommandText("You have added "
-                    + handle
-                    + " to your ignore list. You will no longer see messages that he or she types.");
+            appendCommandText(MessageFormat.format(messages
+                    .getString("ChatPanel.Message.AddedToIgnoreList"),
+                    new Object[] { handle }));
         }
     }
 
     public void appendIgnoreList() {
         if (ignoreList == null || ignoreList.size() == 0) {
-            appendCommandText("You are not ignoring anyone.");
+            appendCommandText(messages
+                    .getString("ChatPanel.Message.IgnoreListIsEmpty"));
         } else {
             StringBuffer list = new StringBuffer();
-            list.append("Your are ignoring the following people.");
+            list.append(messages
+                    .getString("ChatPanel.Message.IgnoreListHeader"));
             for (Iterator<String> iter = ignoreList.iterator(); iter.hasNext();) {
                 list.append("\n    ");
                 list.append(iter.next());
@@ -270,22 +273,25 @@ public class ChatPanel extends JPanel {
         // can easier test for equality.
         handle = handle.toLowerCase();
         if (friendsList.remove(handle)) {
-            appendCommandText("You have removed " + handle
-                    + " from your friends list.");
+            appendCommandText(MessageFormat.format(messages
+                    .getString("ChatPanel.Message.RemovedFromFriendsList"),
+                    new Object[] { handle }));
         } else {
             friendsList.add(handle);
-            appendCommandText("You have added "
-                    + handle
-                    + " to your friends list. You will now see messages that he or she types in green.");
+            appendCommandText(MessageFormat.format(messages
+                    .getString("ChatPanel.Message.AddedToFriendsList"),
+                    new Object[] { handle }));
         }
     }
 
     public void appendFriendsList() {
         if (friendsList == null || friendsList.size() == 0) {
-            appendCommandText("You have no friends.");
+            appendCommandText(messages
+                    .getString("ChatPanel.Message.FriendsListIsEmpty"));
         } else {
             StringBuffer list = new StringBuffer();
-            list.append("You consider the following players your friends.");
+            list.append(messages
+                    .getString("ChatPanel.Message.FriendsListHeader"));
             for (Iterator<String> iter = friendsList.iterator(); iter.hasNext();) {
                 list.append("\n    ");
                 list.append(iter.next());

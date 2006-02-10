@@ -22,6 +22,7 @@ import ggz.common.ChatType;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
@@ -34,14 +35,13 @@ public abstract class ChatAction extends AbstractAction {
     protected ChatPanel chatPanel;
 
     private final String commands[][] = new String[][] {
-            { "/msg", "/msg <username> <message> . Private message a player" },
-            { "/table", "/table <message> .......... Message to your table" },
-            { "/wall", "/wall <message> ........... Admin command" },
-            { "/beep", "/beep <username> .......... Beep a player" },
-            { "/help", "/help ..................... This help message" },
-            { "/friends",
-                    "/friends <username>........ Add player to your friends list" },
-            { "/ignore", "/ignore <username>......... Ignore a player" } };
+            { "/beep", messages.getString("ChatAction.Help.beep") },
+            { "/friends", messages.getString("ChatAction.Help.friends") },
+            { "/help", messages.getString("ChatAction.Help.help") },
+            { "/ignore", messages.getString("ChatAction.Help.ignore") },
+            { "/msg", messages.getString("ChatAction.Help.msg") },
+            { "/table", messages.getString("ChatAction.Help.table") },
+            { "/wall", messages.getString("ChatAction.Help.wall") } };
 
     void setChatPanel(ChatPanel chatPanel) {
         this.chatPanel = chatPanel;
@@ -103,20 +103,24 @@ public abstract class ChatAction extends AbstractAction {
      * @param message The text to send as a private message
      * 
      */
-    private void chat_send_prvmsg(String message) throws IOException {
+    private void chat_send_prvmsg(int commandIndex, String message)
+            throws IOException {
         try {
             // Remove /msg command
-            message = message.substring(commands[0][0].length()).trim();
+            message = message.substring(commands[commandIndex][0].length())
+                    .trim();
             // Assume that spaces are not allowed in names.
             int nameEnd = message.indexOf(' ');
             String target = message.substring(0, nameEnd);
+            message = message.substring(nameEnd + 1);
             sendChat(ChatType.GGZ_CHAT_PERSONAL, target, message);
-            chatPanel.appendCommandText("Sending private message to " + target);
+            chatPanel.appendCommandText(MessageFormat.format(messages
+                    .getString("ChatAction.Result.msg"),
+                    new Object[] { target }));
         } catch (IndexOutOfBoundsException ex) {
             /* Could not parse it. */
-            chatPanel.appendCommandText("Usage: /msg <username> <message>");
-            chatPanel
-                    .appendCommandText("    Sends a private message to a user on the network.");
+            chatPanel.appendCommandText(messages
+                    .getString("ChatAction.Usage.msg"));
         }
     }
 
@@ -126,18 +130,19 @@ public abstract class ChatAction extends AbstractAction {
      * @param message The text to send as a private message
      * 
      */
-    private void chat_send_tablemsg(String message) throws IOException {
+    private void chat_send_tablemsg(int commandIndex, String message)
+            throws IOException {
         try {
             // Remove /table command
-            message = message.substring(commands[1][0].length()).trim();
+            message = message.substring(commands[commandIndex][0].length())
+                    .trim();
             if (message.length() > 0) {
                 sendChat(ChatType.GGZ_CHAT_TABLE, null, message);
             }
         } catch (IndexOutOfBoundsException ex) {
             /* Could not parse it. */
-            chatPanel.appendCommandText("Usage: /table <message>");
-            chatPanel
-                    .appendCommandText("    Sends a message to the game you are currently playing.");
+            chatPanel.appendCommandText(messages
+                    .getString("ChatAction.Usage.table"));
         }
     }
 
@@ -149,12 +154,11 @@ public abstract class ChatAction extends AbstractAction {
      */
     private void chat_help() {
 
-        chatPanel.appendCommandText("Chat Commands");
-        chatPanel.appendCommandText("-------------");
+        chatPanel.appendCommandText(messages
+                .getString("ChatAction.Help.Heading"));
 
-        /* This one is hard-coded at the server end. */
-        chatPanel
-                .appendCommandText("/me <action> .............. Send an action");
+        /* This one is hard-coded into clients. */
+        chatPanel.appendCommandText(messages.getString("ChatAction.Help.me"));
 
         for (int i = 0; i < commands.length; i++) {
             chatPanel.appendCommandText(commands[i][1]);
@@ -167,9 +171,10 @@ public abstract class ChatAction extends AbstractAction {
      * @param name
      *            name to add
      */
-    private void chat_toggle_friends(String message) {
+    private void chat_toggle_friends(int commandIndex, String message) {
         // Remove /ignore command
-        String name = message.substring(commands[5][0].length()).trim();
+        String name = message.substring(commands[commandIndex][0].length())
+                .trim();
         if (name.length() == 0) {
             chatPanel.appendFriendsList();
         } else {
@@ -183,9 +188,10 @@ public abstract class ChatAction extends AbstractAction {
      * @param name
      *            name to add
      */
-    private void chat_toggle_ignore(String message) {
+    private void chat_toggle_ignore(int commandIndex, String message) {
         // Remove /ignore command
-        String name = message.substring(commands[6][0].length()).trim();
+        String name = message.substring(commands[commandIndex][0].length())
+                .trim();
         if (name.length() == 0) {
             chatPanel.appendIgnoreList();
         } else {
@@ -199,17 +205,20 @@ public abstract class ChatAction extends AbstractAction {
      * @param message
      *            The text to send as a beep message
      */
-    private void chat_send_beep(String message) throws IOException {
+    private void chat_send_beep(int commandIndex, String message)
+            throws IOException {
         try {
             // Remove /beep command
-            String target = message.substring(commands[3][0].length()).trim();
+            String target = message.substring(
+                    commands[commandIndex][0].length()).trim();
             sendChat(ChatType.GGZ_CHAT_BEEP, target, null);
-            chatPanel.appendCommandText("Sending beep to " + target + ".");
+            chatPanel.appendCommandText(MessageFormat.format(messages
+                    .getString("ChatAction.Result.beep"),
+                    new Object[] { target }));
         } catch (IndexOutOfBoundsException ex) {
             /* Could not parse it. */
-            chatPanel.appendCommandText("Usage: /beep <username>");
-            chatPanel
-                    .appendCommandText("    Sends a beep to a user on the network.");
+            chatPanel.appendCommandText(messages
+                    .getString("ChatAction.Usage.beep"));
         }
     }
 
@@ -220,17 +229,18 @@ public abstract class ChatAction extends AbstractAction {
      * 
      * Returns:
      */
-    private void chat_send_wall(String message) throws IOException {
+    private void chat_send_wall(int commandIndex, String message)
+            throws IOException {
         try {
             // Remove /wall command
-            message = message.substring(commands[2][0].length()).trim();
+            message = message.substring(commands[commandIndex][0].length())
+                    .trim();
             // Assume that spaces are not allowed in names.
             sendChat(ChatType.GGZ_CHAT_ANNOUNCE, null, message);
         } catch (IndexOutOfBoundsException ex) {
             /* Could not parse it. */
-            chatPanel.appendCommandText("Usage: /wall <message>");
-            chatPanel
-                    .appendCommandText("    Sends a message to all users on the network.");
+            chatPanel.appendCommandText(messages
+                    .getString("ChatAction.Usage.wall"));
         }
     }
 
@@ -243,22 +253,22 @@ public abstract class ChatAction extends AbstractAction {
             throws IOException {
         switch (commandIndex) {
         case 0:
-            chat_send_prvmsg(commandString);
+            chat_send_beep(commandIndex, commandString);
             break;
         case 1:
-            chat_send_tablemsg(commandString);
-            break;
-        case 2:
-            chat_send_wall(commandString);
+            chat_toggle_friends(commandIndex, commandString);
             break;
         case 3:
-            chat_send_beep(commandString);
+            chat_toggle_ignore(commandIndex, commandString);
+            break;
+        case 4:
+            chat_send_prvmsg(commandIndex, commandString);
             break;
         case 5:
-            chat_toggle_friends(commandString);
+            chat_send_tablemsg(commandIndex, commandString);
             break;
         case 6:
-            chat_toggle_ignore(commandString);
+            chat_send_wall(commandIndex, commandString);
             break;
         default:
             chat_help();

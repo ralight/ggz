@@ -129,7 +129,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     public void chat_event(final ChatEventData data) {
         // Ignore chat messages from ourselves since we append the text on send
         // without waiting for the server to make the app feel more responsive.
-        if (!handle.equals(data.sender) && data.type != ChatType.GGZ_CHAT_TABLE) {
+        if (!handle.equals(data.sender) || data.type != ChatType.GGZ_CHAT_NORMAL) {
             // All handlers are called from the socket thread so we need to do
             // this crazy stuff. This method is usually invoked from a handler.
             SwingUtilities.invokeLater(new Runnable() {

@@ -162,15 +162,17 @@ public class ClientApp {
     private static boolean parseArgs(String[] argv) {
         try {
             for (int argPos = 0; argPos < argv.length; argPos++) {
-                if ("--xmlOut".equals(argv[argPos])) {
+                if ("-xmlout".equals(argv[argPos])) {
                     argPos++;
                     sendLog = argv[argPos];
-                } else if ("--xmlIn".equals(argv[argPos])) {
+                } else if ("-xmlin".equals(argv[argPos])) {
                     argPos++;
                     receiveLog = argv[argPos];
-                } else if ("--uri".equals(argv[argPos])) {
+                } else if ("-uri".equals(argv[argPos])) {
                     argPos++;
                     uri = argv[argPos];
+                } else {
+                    return false;
                 }
             }
             return true;
@@ -180,15 +182,15 @@ public class ClientApp {
     }
 
     private static void printUsage() {
+        System.err.println("Usage: java ggz.ui.ClientApp [options]");
+        System.err.println("Options:");
+        System.err.println("  -uri <uri>      GGZ server to connect to.");
         System.err
-                .println("Usage: java ggz.ui.ClientApp [--uri uri] [--xmlOut file] [--xmlIn file]");
-        System.err.println(" --uri uri      GGZ server to connect to.");
+                .println("  -xmlout <file>  Write XML sent to the server to this file.");
         System.err
-                .println(" --xmlOut file  Write XML sent to the server to this file.");
-        System.err
-                .println(" --xmlIn file   Write XML received from the server to this file.");
+                .println("  -xmlin <file>   Write XML received from the server to this file.");
         System.err.println();
         System.err
-                .println("--xmlOut and --xmlIn can be tha same file and the special values 'stderr' and 'stdout' can be used.");
+                .println("-xmlout and -xmlin can be the same file and the special values 'stderr' and 'stdout' can be used.");
     }
 }
