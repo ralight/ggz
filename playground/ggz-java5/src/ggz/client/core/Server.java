@@ -21,13 +21,17 @@ import ggz.common.ClientReqError;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
 
 public class Server {
     private static final Logger log = Logger.getLogger(Server.class.getName());
+    
+    private static final ResourceBundle messages = ResourceBundle.getBundle("ggz.client.core.messages");
 
     /* Network object for doing net IO */
     private Net net;
@@ -536,24 +540,19 @@ public class Server {
 
             switch (status) {
             case E_ALREADY_LOGGED_IN:
-                error.message = "You are already logged in, possibly on another computer?";
+                error.message = messages.getString("Server.LoginError.AlreadyLoggedIn");
                 break;
             case E_USR_LOOKUP:
-                error.message = "The nickname '"
-                        + handle
-                        + "' has already been taken by another user or is not permitted on this server. Please choose a different one.";
+                error.message = MessageFormat.format(messages.getString("Server.LoginError.UsrLookup"), new Object[]{handle}); 
                 break;
             case E_TOO_LONG:
-                error.message = "The nickname '" + handle
-                        + "' is too long, please pick a shorter one.";
+                error.message = MessageFormat.format(messages.getString("Server.LoginError.TooLong"), new Object[]{handle}); 
                 break;
             case E_BAD_USERNAME:
-                error.message = "The nickname '"
-                        + handle
-                        + "' contains invalid characters, only letters and numbers are allowed.";
+                error.message = MessageFormat.format(messages.getString("Server.LoginError.BadUsername"), new Object[]{handle}); 
                 break;
             default:
-                error.message = "Unknown login error.";
+                error.message = messages.getString("Server.LoginError.Unknown");
                 break;
             }
             change_state(TransID.GGZ_TRANS_LOGIN_FAIL);
@@ -571,20 +570,19 @@ public class Server {
 
             switch (status) {
             case E_ROOM_FULL:
-                error.message = "The " + this.new_room.get_name()
-                        + " room is full.";
+                error.message = MessageFormat.format(messages.getString("Server.ClientReqError.RoomFull"), new Object[]{this.new_room.get_name()});
                 break;
             case E_AT_TABLE:
-                error.message = "You cannot change rooms while at a table.";
+                error.message = messages.getString("Server.RoomJoinError.AtTable");
                 break;
             case E_IN_TRANSIT:
-                error.message = "You cannot change rooms while joining or leaving a table.";
+                error.message = messages.getString("Server.RoomJoinError.InTransit");
                 break;
             case E_BAD_OPTIONS:
-                error.message = "Bad room number";
+                error.message = messages.getString("Server.RoomJoinError.BadOptions");
                 break;
             default:
-                error.message = "Unknown room-joining error";
+                error.message = messages.getString("Server.RoomJoinError.Unknown");
                 break;
             }
 
@@ -650,7 +648,7 @@ public class Server {
 
     public void log_session(String sendFile, String receiveFile)
             throws IOException {
-        net.set_dump_files(sendFile, receiveFile);
+        net.setSessionDumpFiles(sendFile, receiveFile);
     }
 
     void reset() {

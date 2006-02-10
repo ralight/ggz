@@ -24,9 +24,8 @@ don't need to remove the chat bot functionality, we just don't need to
 advertise it when you first log in. Maybe MegaGrub can chime in with a help
 tip if the user send "help" as chat.
 
-Support chat buffer size properly so that we don't send to big a message after encoding to UTF-8.
+Support chat buffer size properly so that we don't send too big a message after encoding to UTF-8.
 
-Add i18n support.
 
 
 All Card Games

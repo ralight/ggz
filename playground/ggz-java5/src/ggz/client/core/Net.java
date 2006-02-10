@@ -35,9 +35,11 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.Socket;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -57,6 +59,9 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 public class Net implements Runnable {
     protected static final Logger log = Logger.getLogger(Net.class.getName());
+
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.client.core.messages");
 
     /*
      * I thought of putting this into ggz_common (in libggz) along with the
@@ -97,9 +102,13 @@ public class Net implements Runnable {
     boolean is_session_over = false;
 
     /* Files to dump protocol session */
-    private Writer send_dump_file;
+    private OutputStreamWriter send_dump_file;
 
-    private Writer receive_dump_file;
+    /* Files to dump protocol session */
+    private OutputStreamWriter receive_dump_file;
+
+    /* SAX transformer used to trace XML received from the server. */
+    private TransformerHandler xmlInputDump;
 
     /* Whether to use TLS or not */
     private boolean use_tls;
@@ -155,33 +164,35 @@ public class Net implements Runnable {
 
         public void startElement(String uri, String localName, String qName,
                 Attributes attributes) {
-            /* Create new element object */
+            // Create new element object.
             XMLElement element = new XMLElement(localName, attributes);
 
-            /* Put element on stack so we can process its children */
+            // Put element on stack so we can process its children.
             stack.push(element);
 
-            dump_receive_data("<" + localName);
-            for (int i = 0; i < attributes.getLength(); i++) {
-                String name = attributes.getQName(i);
-                dump_receive_data(" " + name + "='" + attributes.getValue(name)
-                        + "'");
+            try {
+                xmlInputDump.startElement(uri, localName, qName, attributes);
+                receive_dump_file.flush();
+            } catch (Throwable ex) {
+                // Ignore
             }
-            dump_receive_data(">");
         }
 
         public void characters(char[] ch, int start, int length) {
             stack.peek().add_text(ch, start, length);
-            dump_receive_data(new String(ch, start, length));
+            try {
+                xmlInputDump.characters(ch, start, length);
+                receive_dump_file.flush();
+            } catch (Throwable ex) {
+                // Ignore
+            }
         }
 
-        public void endElement(String uri, String localName, String gName) {
-            /* Pop element off stack */
+        public void endElement(String uri, String localName, String qName) {
             XMLElement element = stack.pop();
             String tag = element.get_tag();
 
             try {
-                /* FIXME: Could we do this with a table lookup? */
                 if ("SERVER".equals(tag))
                     handle_server(element);
                 else if ("OPTIONS".equals(tag))
@@ -238,11 +249,12 @@ public class Net implements Runnable {
                 log.warning(e.toString());
             }
 
-            // if (element.get_text() == null) {
-            // dump_data(" />");
-            // } else {
-            dump_receive_data("</" + localName + ">");
-            // }
+            try {
+                xmlInputDump.endElement(uri, localName, qName);
+                receive_dump_file.flush();
+            } catch (Throwable ex) {
+                // Ignore
+            }
         }
 
         public void error(SAXException e) {
@@ -254,7 +266,7 @@ public class Net implements Runnable {
         /* Set fd to invalid value */
         this.fd = null;
         this.send_dump_file = null;
-        this.receive_dump_file = null;
+        this.xmlInputDump = null;
         this.server = server;
         this.host = host;
         this.port = port;
@@ -262,12 +274,17 @@ public class Net implements Runnable {
     }
 
     /**
-     * Sets the files to output to. 'stderr' output to System.err 'stdout'
-     * output to System.out
+     * Sets the files to output to. <CODE>stderr</CODE> outputs to System.err
+     * <CODE>stdout</CODE> outputs to System.out. This method should be called
+     * before calling connect().
      * 
-     * @param filename
+     * @param sendFilename
+     *            The file to which XML we send should be logged to.
+     * @param receiveFilename
+     *            The file to which XML received from the server should be
+     *            logged to.
      */
-    void set_dump_files(String sendFilename, String receiveFilename)
+    void setSessionDumpFiles(String sendFilename, String receiveFilename)
             throws IOException {
         if (sendFilename == null) {
             this.send_dump_file = null;
@@ -286,21 +303,43 @@ public class Net implements Runnable {
         }
 
         if (receiveFilename == null) {
-            this.receive_dump_file = null;
+            receive_dump_file = null;
         } else if (receiveFilename.equals(sendFilename)) {
             // Output both to same file.
-            this.receive_dump_file = this.send_dump_file;
+            receive_dump_file = this.send_dump_file;
         } else if ("stdout".equals(receiveFilename)) {
-            this.receive_dump_file = new OutputStreamWriter(System.out);
+            receive_dump_file = new OutputStreamWriter(System.out);
         } else if ("stderr".equals(receiveFilename)) {
-            this.receive_dump_file = new OutputStreamWriter(System.err);
+            receive_dump_file = new OutputStreamWriter(System.err);
         } else {
             try {
-                this.receive_dump_file = new OutputStreamWriter(
+                receive_dump_file = new OutputStreamWriter(
                         new FileOutputStream(receiveFilename), "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                this.receive_dump_file = new OutputStreamWriter(
+                receive_dump_file = new OutputStreamWriter(
                         new FileOutputStream(receiveFilename));
+            }
+        }
+
+        if (receive_dump_file != null) {
+            try {
+                // Use SAX to write XML to ensure our XML looks nice and more
+                // importantly, is valid. The XML written out will not be
+                // exactly the same as that recieved from the server since we
+                // are processing XML and not raw bytes received from the
+                // server.
+                StreamResult streamResult = new StreamResult(receive_dump_file);
+                SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory
+                        .newInstance();
+                // SAX2.0 ContentHandler.
+                this.xmlInputDump = tf.newTransformerHandler();
+                Transformer serializer = xmlInputDump.getTransformer();
+                serializer.setOutputProperty(OutputKeys.ENCODING,
+                        receive_dump_file.getEncoding());
+                serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+                xmlInputDump.setResult(streamResult);
+            } catch (Throwable ex) {
+                throw new IOException(ex.toString());
             }
         }
     }
@@ -720,19 +759,6 @@ public class Net implements Runnable {
         }
     }
 
-    protected void dump_receive_data(String data) {
-        if (receive_dump_file != null) {
-            try {
-                receive_dump_file.write(data);
-                receive_dump_file.flush();
-            } catch (IOException e) {
-                // Not a big deal if we can't write to the dump file but alert
-                // the user anyway.
-                log.warning(e.toString());
-            }
-        }
-    }
-
     /* Functions for <SERVER> tag */
     protected void handle_server(XMLElement element) throws IOException {
         String name, id, status, tls;
@@ -861,25 +887,29 @@ public class Net implements Runnable {
 
                 switch (code) {
                 case E_NOT_IN_ROOM:
-                    error.message = "Not in a room";
+                    error.message = messages
+                            .getString("Net.ChatError.NotInRoom");
                     break;
                 case E_BAD_OPTIONS:
-                    error.message = "Bad options";
+                    error.message = messages
+                            .getString("Net.ChatError.BadOptions");
                     break;
                 case E_NO_PERMISSION:
-                    error.message = "Prohibited";
+                    error.message = messages
+                            .getString("Net.ChatError.NoPermission");
                     break;
                 case E_USR_LOOKUP:
-                    error.message = "No such player";
+                    error.message = messages
+                            .getString("Net.ChatError.UsrLookup");
                     break;
                 case E_AT_TABLE:
-                    error.message = "Can't chat at table";
+                    error.message = messages.getString("Net.ChatError.AtTable");
                     break;
                 case E_NO_TABLE:
-                    error.message = "Must be at table";
+                    error.message = messages.getString("Net.ChatError.NoTable");
                     break;
                 default:
-                    error.message = "Unknown error";
+                    error.message = messages.getString("Net.ChatError.Unknown");
                     break;
                 }
                 this.server.event(ServerEvent.GGZ_CHAT_FAIL, error);
@@ -889,13 +919,13 @@ public class Net implements Runnable {
             String message;
             switch (code) {
             case E_BAD_OPTIONS:
-                message = "Server didn't recognize one of our commands";
+                message = messages.getString("Net.ProtocolError.BadOptions");
                 break;
             case E_BAD_XML:
-                message = "Server didn't like our XML";
+                message = messages.getString("Net.ProtocolError.BadXML");
                 break;
             default:
-                message = "Unknown protocol error";
+                message = messages.getString("Net.ProtocolError.Unknown");
             }
 
             this.server.protocol_error(message);
@@ -1112,9 +1142,9 @@ public class Net implements Runnable {
              * We could use the current room in this case too, but that would be
              * more dangerous.
              */
-            String msg = "Server specified non-existent room '" + room_str
-                    + "'";
-            this.server.protocol_error(msg);
+            this.server.protocol_error(MessageFormat.format(messages
+                    .getString("Net.ProtocolError.NonExistentRoom"),
+                    new Object[] { room_str }));
             return;
         }
 
@@ -1124,8 +1154,9 @@ public class Net implements Runnable {
 
         /* Table can only be null if we're adding it */
         if (table == null && !"add".equals(action)) {
-            String msg = "Server specified non-existent table " + table_id;
-            this.server.protocol_error(msg);
+            this.server.protocol_error(MessageFormat.format(messages
+                    .getString("Net.ProtocolError.NonExistentTable"),
+                    new Object[] { table_id }));
             return;
         }
 
@@ -1968,7 +1999,7 @@ public class Net implements Runnable {
                 saxParser.parse(input);
             } catch (Exception e) {
                 e.printStackTrace();
-                this.server.protocol_error("Server disconnected");
+                this.server.protocol_error(e.toString());
                 this.disconnect();
                 this.server.session_over(this);
             }
