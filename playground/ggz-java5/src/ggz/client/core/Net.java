@@ -31,6 +31,7 @@ import java.io.FilterInputStream;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -104,11 +105,8 @@ public class Net implements Runnable {
     /* Files to dump protocol session */
     private OutputStreamWriter send_dump_file;
 
-    /* Files to dump protocol session */
-    private OutputStreamWriter receive_dump_file;
-
-    /* SAX transformer used to trace XML received from the server. */
-    private TransformerHandler xmlInputDump;
+    /* File to trace server XML to. */
+    private OutputStream serverXMLTrace;
 
     /* Whether to use TLS or not */
     private boolean use_tls;
@@ -169,23 +167,10 @@ public class Net implements Runnable {
 
             // Put element on stack so we can process its children.
             stack.push(element);
-
-            try {
-                xmlInputDump.startElement(uri, localName, qName, attributes);
-                receive_dump_file.flush();
-            } catch (Throwable ex) {
-                // Ignore
-            }
         }
 
         public void characters(char[] ch, int start, int length) {
             stack.peek().add_text(ch, start, length);
-            try {
-                xmlInputDump.characters(ch, start, length);
-                receive_dump_file.flush();
-            } catch (Throwable ex) {
-                // Ignore
-            }
         }
 
         public void endElement(String uri, String localName, String qName) {
@@ -248,13 +233,6 @@ public class Net implements Runnable {
             } catch (IOException e) {
                 log.warning(e.toString());
             }
-
-            try {
-                xmlInputDump.endElement(uri, localName, qName);
-                receive_dump_file.flush();
-            } catch (Throwable ex) {
-                // Ignore
-            }
         }
 
         public void error(SAXException e) {
@@ -266,7 +244,7 @@ public class Net implements Runnable {
         /* Set fd to invalid value */
         this.fd = null;
         this.send_dump_file = null;
-        this.xmlInputDump = null;
+        this.serverXMLTrace = null;
         this.server = server;
         this.host = host;
         this.port = port;
@@ -303,44 +281,13 @@ public class Net implements Runnable {
         }
 
         if (receiveFilename == null) {
-            receive_dump_file = null;
-        } else if (receiveFilename.equals(sendFilename)) {
-            // Output both to same file.
-            receive_dump_file = this.send_dump_file;
+            this.serverXMLTrace = null;
         } else if ("stdout".equals(receiveFilename)) {
-            receive_dump_file = new OutputStreamWriter(System.out);
+            this.serverXMLTrace = System.out;
         } else if ("stderr".equals(receiveFilename)) {
-            receive_dump_file = new OutputStreamWriter(System.err);
+            this.serverXMLTrace = System.err;
         } else {
-            try {
-                receive_dump_file = new OutputStreamWriter(
-                        new FileOutputStream(receiveFilename), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                receive_dump_file = new OutputStreamWriter(
-                        new FileOutputStream(receiveFilename));
-            }
-        }
-
-        if (receive_dump_file != null) {
-            try {
-                // Use SAX to write XML to ensure our XML looks nice and more
-                // importantly, is valid. The XML written out will not be
-                // exactly the same as that recieved from the server since we
-                // are processing XML and not raw bytes received from the
-                // server.
-                StreamResult streamResult = new StreamResult(receive_dump_file);
-                SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory
-                        .newInstance();
-                // SAX2.0 ContentHandler.
-                this.xmlInputDump = tf.newTransformerHandler();
-                Transformer serializer = xmlInputDump.getTransformer();
-                serializer.setOutputProperty(OutputKeys.ENCODING,
-                        receive_dump_file.getEncoding());
-                serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-                xmlInputDump.setResult(streamResult);
-            } catch (Throwable ex) {
-                throw new IOException(ex.toString());
-            }
+            this.serverXMLTrace = new FileOutputStream(receiveFilename);
         }
     }
 
@@ -1982,7 +1929,12 @@ public class Net implements Runnable {
                                 if (Net.this.is_session_over) {
                                     return -1;
                                 }
-                                return super.read(b, off, len);
+                                len = super.read(b, off, len);
+                                if (serverXMLTrace != null) {
+                                    serverXMLTrace.write(b, off, len);
+                                    serverXMLTrace.flush();
+                                }
+                                return len;
                             }
 
                             public void close() throws IOException {
