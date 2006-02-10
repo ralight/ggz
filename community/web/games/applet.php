@@ -19,7 +19,7 @@
     height="480"
     >
     <PARAM NAME = CODE VALUE = "ggz.ui.ClientApplet" >
-    <PARAM NAME = ARCHIVE VALUE = "http://live.ggzgamingzone.org/ggz-java-client.jar" >
+    <PARAM NAME = ARCHIVE VALUE = "http://live.ggzgamingzone.org/ggz-java-applet.jar" >
     <param name = "type" value = "application/x-java-applet;version=1.5">
     <param name = "scriptable" value = "false">
     <PARAM NAME = "uri" VALUE="ggz://live.ggzgamingzone.org:5688/">
@@ -28,7 +28,7 @@
 	<embed
             type = "application/x-java-applet;version=1.5" \
             CODE = "ggz.ui.ClientApplet" \
-            ARCHIVE = "http://live.ggzgamingzone.org/ggz-java-client.jar" \
+            ARCHIVE = "http://live.ggzgamingzone.org/ggz-java-applet.jar" \
             uri ="ggz://live.ggzgamingzone.org:5688/"
             width="640"
             height="480"
