@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 7714 2006-01-02 16:53:31Z josef $
+ * $Id: control.c 7860 2006-02-13 07:01:08Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -263,6 +263,9 @@ int main(int argc, char *argv[])
 	/* Announce server if requested */
 	if(opt.announce_lan)
 		zeroconf_publish("GGZ Gaming Zone", "_ggz._tcp.", opt.main_port);
+
+	if(opt.announce_metaserver)
+		fprintf(stderr, "Metaserver announcements are not yet implemented!\n");
 
 	/* Create SERVER socket on main_port */
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
