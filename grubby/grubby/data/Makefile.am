@@ -7,7 +7,7 @@ guruconfigdir = $(prefix)/bin
 guruconfig_SCRIPTS = grubby-config
 
 EXTRA_DIST = dict.pl rdf.pl meeting.rb messages.rb grubby-config.in webtranslator.sh \
-	embedtest.rb test.tcl
+	embedtest.rb test.tcl fortune.py phrasecatcher.py statistics.py
 
 messages:
 	touch guru.pot
