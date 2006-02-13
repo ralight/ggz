@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 7123 2005-04-23 11:31:46Z josef $
+ * $Id: login.c 7864 2006-02-13 07:04:51Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -65,7 +65,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
                                     char *name, const char *password, const char *email)
 {
 	char *ip_addr;
-	bool name_ok;
+	bool name_ok, logged_in;
 	char new_pw[17];
 	ggzdbPlayerEntry db_pe;
 	char *login_type = NULL;
@@ -90,11 +90,10 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	/* Validate the username */
 	if(!is_valid_username(name)) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s",
+		dbg_msg(GGZ_DBG_CONNECTION, "Invalid login name of %s",
 			name);
-		/* FIXME: We should have a specific error code for this */
 		if (net_send_login(player->client->net, type,
-				   E_ALREADY_LOGGED_IN, NULL) < 0)
+				   E_BAD_USERNAME, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -102,6 +101,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	/* Start off assuming name is good */
 	name_ok = true;
+	logged_in = false;
 	
 	/* Check guest names vs. the database */
 	snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
@@ -118,6 +118,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		dbg_msg(GGZ_DBG_CONNECTION, "Could not add player %s to hash.",
 		        name);
 		name_ok = false;
+		logged_in = true;
 	}
 
 
@@ -126,7 +127,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful login of %s", name);
 		if (net_send_login(player->client->net, type,
-				   E_USR_LOOKUP, NULL) < 0)
+				   (logged_in ? E_ALREADY_LOGGED_IN : E_USR_LOOKUP), NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
