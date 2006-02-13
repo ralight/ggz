@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-22 15:46+0100\n"
+"POT-Creation-Date: 2006-02-03 23:13+0100\n"
 "PO-Revision-Date: 2005-05-16 09:19+0200\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -15,329 +15,330 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../ggz-config/ggz-config.c:97
+#: ../../ggz-config/ggz-config.c:97
 msgid "Query GGZCONFDIR - location of configuration directory"
 msgstr "Frage GGZCONFDIR ab - Position des Konfigurationsverzeichnisses"
 
-#: ../ggz-config/ggz-config.c:98
+#: ../../ggz-config/ggz-config.c:98
 msgid "Query GGZGAMEDIR - location of game modules directory"
 msgstr "Frage GGZGAMEDIR ab - Position des Verzeichnisses der Spielemodule"
 
-#: ../ggz-config/ggz-config.c:99
+#: ../../ggz-config/ggz-config.c:99
 msgid "Query GGZDATADIR - location of game data directory"
 msgstr "Frage GGZDATADIR ab - Position des Verzeichnisses der Spieldaten"
 
-#: ../ggz-config/ggz-config.c:100
+#: ../../ggz-config/ggz-config.c:100
 msgid "Query VERSION - version identifier of ggzcore files"
 msgstr "Frage VERSION ab - die Version von der Bibliothek ggzcore"
 
-#: ../ggz-config/ggz-config.c:101
+#: ../../ggz-config/ggz-config.c:101
 msgid "Query GGZ_CS_PROTO_VERSION - version of core protocol"
 msgstr "Frage GGZ_CS_PROTO_VERSION ab - die Version des GGZ-Protokolls"
 
-#: ../ggz-config/ggz-config.c:102
+#: ../../ggz-config/ggz-config.c:102
 msgid "Install a module"
 msgstr "Installiere ein Modul"
 
-#: ../ggz-config/ggz-config.c:103
+#: ../../ggz-config/ggz-config.c:103
 msgid "Remove a module"
 msgstr "Entferne ein Modul"
 
-#: ../ggz-config/ggz-config.c:104
+#: ../../ggz-config/ggz-config.c:104
 msgid "Check/repair module installation file"
 msgstr "Prüfe/repariere die Modul-Installationsdatenbank"
 
-#: ../ggz-config/ggz-config.c:105
+#: ../../ggz-config/ggz-config.c:105
 msgid "Specifies module installation file (needs argument)"
 msgstr "Gibt die Modul-Installationsdatei an (braucht Argument)"
 
-#: ../ggz-config/ggz-config.c:106
+#: ../../ggz-config/ggz-config.c:106
 msgid "Specifies icon file to use for the game (needs argument)"
 msgstr "Gibt die Icondatei für ein Spiel an (braucht Argument)"
 
-#: ../ggz-config/ggz-config.c:107
+#: ../../ggz-config/ggz-config.c:107
 msgid "Use auxiliary directory instead of ggz.modules (needs argument)"
-msgstr "Nutzt Sicherungsverzeichnis anstelle von ggz.modules (braucht Argument)"
+msgstr ""
+"Nutzt Sicherungsverzeichnis anstelle von ggz.modules (braucht Argument)"
 
-#: ../ggz-config/ggz-config.c:108
+#: ../../ggz-config/ggz-config.c:108
 msgid "Install over an existing module"
 msgstr "Überschreiben eines existierenden Modul-Eintrags"
 
-#: ../ggz-config/ggz-config.c:109
+#: ../../ggz-config/ggz-config.c:109
 msgid "Use $DESTDIR as offset to ggz.modules file"
 msgstr "Nutze $DESTDIR als Offset zur Datei ggz.modules"
 
-#: ../ggz-config/ggz-config.c:110
+#: ../../ggz-config/ggz-config.c:110
 msgid "Display help"
 msgstr "Zeige die Hilfe an"
 
-#: ../ggz-config/ggz-config.c:111
+#: ../../ggz-config/ggz-config.c:111
 msgid "Display usage"
 msgstr "Zeige die Nutzungsvarianten an"
 
-#: ../ggz-config/ggz-config.c:126
+#: ../../ggz-config/ggz-config.c:126
 #, c-format
 msgid "Critical: Module name not specified.\n"
 msgstr "Kritisch: Modulname nicht angegeben.\n"
 
-#: ../ggz-config/ggz-config.c:133
+#: ../../ggz-config/ggz-config.c:133
 #, c-format
 msgid "Critical: Module version not specified.\n"
 msgstr "Kritisch: Modulversion nicht angegeben.\n"
 
-#: ../ggz-config/ggz-config.c:140
+#: ../../ggz-config/ggz-config.c:140
 #, c-format
 msgid "Critical: Executable not specified.\n"
 msgstr "Kritisch: Ausführbares Programm nicht angegeben.\n"
 
-#: ../ggz-config/ggz-config.c:147
+#: ../../ggz-config/ggz-config.c:147
 #, c-format
 msgid "Critical: User interface not specified.\n"
 msgstr "Kritsich: Nutzerschnittstelle nicht angegeben.\n"
 
-#: ../ggz-config/ggz-config.c:154
+#: ../../ggz-config/ggz-config.c:154
 #, c-format
 msgid "Critical: Protocol engine not specified.\n"
 msgstr "Kritisch: Protokoll-Engine nicht angegeben.\n"
 
-#: ../ggz-config/ggz-config.c:161
+#: ../../ggz-config/ggz-config.c:161
 #, c-format
 msgid "Critical: Protocol version not specified.\n"
 msgstr "Kritisch: Protokollversion nicht angegeben.\n"
 
-#: ../ggz-config/ggz-config.c:168
+#: ../../ggz-config/ggz-config.c:168
 #, c-format
 msgid "Critical: Module author not specified.\n"
 msgstr "Kritisch: Autor des Moduls nicht angegeben.\n"
 
-#: ../ggz-config/ggz-config.c:175
+#: ../../ggz-config/ggz-config.c:175
 #, c-format
 msgid "Warning: Module homepage not specified.\n"
 msgstr "Kritisch. Homepage des Moduls nicht angegeben.\n"
 
-#: ../ggz-config/ggz-config.c:338
+#: ../../ggz-config/ggz-config.c:332
 #, c-format
 msgid "Setting up GGZ game modules configuration in %s\n"
 msgstr "Erstellung der GGZ-Spielmodul-Konfiguration in %s\n"
 
-#: ../ggz-config/ggz-config.c:343
+#: ../../ggz-config/ggz-config.c:336
 #, c-format
 msgid "Insufficient permission to install modules\n"
 msgstr "Ungenügende Berechtigungen zur Installation des Moduls\n"
 
-#: ../ggz-config/ggz-config.c:364
+#: ../../ggz-config/ggz-config.c:357
 #, c-format
 msgid "File cannot be read (%s)\n"
 msgstr "Datei kann nicht gelesen werden (%s)\n"
 
-#: ../ggz-config/ggz-config.c:369
+#: ../../ggz-config/ggz-config.c:362
 #, c-format
 msgid "File cannot be written to (%s)\n"
 msgstr "Datei kann nicht geschrieben werden (%s)\n"
 
-#: ../ggz-config/ggz-config.c:432
+#: ../../ggz-config/ggz-config.c:427
 #, c-format
 msgid "Warning: Tried to remove nonexistant module\n"
 msgstr "Warnung: Versuch, ein nicht existierendes Modul zu entfernen\n"
 
-#: ../ggz-config/ggz-config.c:446 ../ggz-config/ggz-config.c:587
+#: ../../ggz-config/ggz-config.c:441 ../../ggz-config/ggz-config.c:570
 #, c-format
 msgid "ggz.modules configuration may be corrupt\n"
 msgstr "Die Konfiguration ggz.modules kann korrumpiert sein\n"
 
-#: ../ggz-config/ggz-config.c:447
+#: ../../ggz-config/ggz-config.c:442
 #, c-format
 msgid "Module removal failed, see documentation\n"
 msgstr "Entfernen des Moduls fehlgeschlagen, siehe Dokumentation\n"
 
-#: ../ggz-config/ggz-config.c:479
+#: ../../ggz-config/ggz-config.c:467
 #, c-format
 msgid "Directory cannot be created (%s)\n"
 msgstr "Verzeichnis kann nicht erstellt werden (%s)\n"
 
-#: ../ggz-config/ggz-config.c:493
+#: ../../ggz-config/ggz-config.c:478
 #, c-format
 msgid "Preserving %s as %s...\n"
 msgstr "Sichere %s als %s...\n"
 
-#: ../ggz-config/ggz-config.c:514
+#: ../../ggz-config/ggz-config.c:497
 #, c-format
 msgid "Your configuration is broken - aborting\n"
 msgstr "Die Konfiguration ist kaputt - Abbruch\n"
 
-#: ../ggz-config/ggz-config.c:521
+#: ../../ggz-config/ggz-config.c:504
 #, c-format
 msgid "Cannot overwrite existing module\n"
 msgstr "Kann existierendes Modul nicht überschreiben\n"
 
-#: ../ggz-config/ggz-config.c:588
+#: ../../ggz-config/ggz-config.c:571
 #, c-format
 msgid "Module installation failed, see documentation\n"
 msgstr "Installation des Moduls fehlgeschlagen, siehe Dokumentation\n"
 
-#: ../ggz-config/ggz-config.c:605
+#: ../../ggz-config/ggz-config.c:588
 #, c-format
 msgid "Could not open auxiliary directory\n"
 msgstr "Konnte das Sicherungsverzeichnis nicht öffnen\n"
 
-#: ../ggz-config/ggz-config.c:630
+#: ../../ggz-config/ggz-config.c:613
 #, c-format
 msgid "An error occured, which is ignored.\n"
 msgstr "Ein Fehler ist aufgetreten, der ignoriert wurde.\n"
 
-#: ../ggz-config/ggz-config.c:689 ../ggz-config/ggz-config.c:748
-#: ../ggz-config/ggz-config.c:848
+#: ../../ggz-config/ggz-config.c:672 ../../ggz-config/ggz-config.c:731
+#: ../../ggz-config/ggz-config.c:831
 #, c-format
 msgid "Error getting config file sections list\n"
 msgstr "Fehler beim Erlangen der Sektionsliste der Konfigurationsdatei\n"
 
-#: ../ggz-config/ggz-config.c:690 ../ggz-config/ggz-config.c:755
+#: ../../ggz-config/ggz-config.c:673 ../../ggz-config/ggz-config.c:738
 #, c-format
 msgid "May be an empty config file?\n"
 msgstr "Ist die Konfigurationsdatei leer?\n"
 
-#: ../ggz-config/ggz-config.c:698
+#: ../../ggz-config/ggz-config.c:681
 #, c-format
 msgid "*** Checking game config section [%s]\n"
 msgstr "*** Prüfung der Sektion der Spielekonfiguration [%s]\n"
 
-#: ../ggz-config/ggz-config.c:705
+#: ../../ggz-config/ggz-config.c:688
 #, c-format
 msgid "ERR: missing required key '%s'\n"
 msgstr "ERR: fehlender benötigter Schlüssel '%s'\n"
 
-#: ../ggz-config/ggz-config.c:725
+#: ../../ggz-config/ggz-config.c:708
 #, c-format
 msgid "ERR: missing or invalid executable\n"
 msgstr "ERR: fehlendes oder ungültiges Programm\n"
 
-#: ../ggz-config/ggz-config.c:729
+#: ../../ggz-config/ggz-config.c:712
 #, c-format
 msgid "Removing section for '%s'\n"
 msgstr "Entferne Sektion für '%s'\n"
 
-#: ../ggz-config/ggz-config.c:754 ../ggz-config/ggz-config.c:890
-#: ../ggz-config/ggz-config.c:963
+#: ../../ggz-config/ggz-config.c:737 ../../ggz-config/ggz-config.c:873
+#: ../../ggz-config/ggz-config.c:946
 #, c-format
 msgid "Error getting config file [Games]:keys list\n"
 msgstr "Fehler beim Erlangen der Liste [Games]:keys der Konfiguration\n"
 
-#: ../ggz-config/ggz-config.c:758
+#: ../../ggz-config/ggz-config.c:741
 #, c-format
 msgid "*** Computing section cross references\n"
 msgstr "*** Berechnung der Querreferenzierung der Sektionen\n"
 
-#: ../ggz-config/ggz-config.c:786
+#: ../../ggz-config/ggz-config.c:769
 #, c-format
 msgid "ERR %s and %s references [%s], deleting %s reference\n"
 msgstr "ERR %s und %s referenzieren [%s], lösche die Referenz %s\n"
 
-#: ../ggz-config/ggz-config.c:821
+#: ../../ggz-config/ggz-config.c:804
 #, c-format
 msgid "*** Checking ProtocolEngine key for engine '%s'\n"
 msgstr "*** Prüfung des Schlüssels ProtocolEngine für '%s'\n"
 
-#: ../ggz-config/ggz-config.c:830
+#: ../../ggz-config/ggz-config.c:813
 #, c-format
 msgid "ERR Setting ProtocolEngine key [%s] to '%s'\n"
 msgstr "ERR Setze Schlüssel ProtocolEngine [%s] zu '%s'\n"
 
-#: ../ggz-config/ggz-config.c:846
+#: ../../ggz-config/ggz-config.c:829
 #, c-format
 msgid "*** Checking back references\n"
 msgstr "*** Prüfung der reversen Referenzen\n"
 
-#: ../ggz-config/ggz-config.c:868
+#: ../../ggz-config/ggz-config.c:851
 #, c-format
 msgid "ERR Adding [Games]:%s key pointing to [%s]\n"
 msgstr "ERR Hinzufügen des Schlüssels [Games]:%s auf [%s]\n"
 
-#: ../ggz-config/ggz-config.c:888
+#: ../../ggz-config/ggz-config.c:871
 #, c-format
 msgid "*** Checking forward references\n"
 msgstr "*** Prüfung der forwärtigen Referenzen\n"
 
-#: ../ggz-config/ggz-config.c:906
+#: ../../ggz-config/ggz-config.c:889
 #, c-format
 msgid "ERR Section %s doesn't exist in %s, removed reference\n"
 msgstr "ERR Sektion %s existiert nicht in %s, Referenz entfernt\n"
 
-#: ../ggz-config/ggz-config.c:928
+#: ../../ggz-config/ggz-config.c:911
 #, c-format
 msgid "*** Checking for spurious game engine entries\n"
 msgstr "*** Prüfung auf fehlerbehaftete Spiele-Engine-Einträge\n"
 
-#: ../ggz-config/ggz-config.c:936
+#: ../../ggz-config/ggz-config.c:919
 #, c-format
 msgid "ERR Game engine '%s' invalid, removing\n"
 msgstr "ERR Spiele-Engine '%s' ungültig, wird entfernt\n"
 
-#: ../ggz-config/ggz-config.c:961
+#: ../../ggz-config/ggz-config.c:944
 #, c-format
 msgid "*** Checking for missing game engine pointers\n"
 msgstr "*** Prüfung auf fehlende Zeiger auf Spiele-Engines\n"
 
-#: ../ggz-config/ggz-config.c:978
+#: ../../ggz-config/ggz-config.c:961
 #, c-format
 msgid "ERR Adding '%s' to game engine list\n"
 msgstr "ERR Füge '%s' zur Liste der Spiele-Engines hinzu\n"
 
-#: ../ggz-config/ggz-config.c:996
+#: ../../ggz-config/ggz-config.c:979
 #, c-format
 msgid "Finished - writing %d repairs\n"
 msgstr "Fertig - schreibe %d Reparaturen\n"
 
-#: ../ggz-config/ggz-config.c:998
+#: ../../ggz-config/ggz-config.c:981
 #, c-format
 msgid "Finished - no configuration errors detected\n"
 msgstr "Fertig - keine Konfigurationsfehler entdeckt\n"
 
-#: ../ggz-config/ggz-config.c:1026
+#: ../../ggz-config/ggz-config.c:1009
 #, c-format
 msgid "GGZ-Config - the GGZ Gaming Zone Configuration Utility\n"
 msgstr "GGZ-Config - das Konfigurationswerkzeug der GGZ Gaming Zone\n"
 
-#: ../ggz-config/ggz-config.c:1027
+#: ../../ggz-config/ggz-config.c:1010
 #, c-format
 msgid "Copyright (C) 2001 Rich Gade, rgade@users.sourceforge.net\n"
 msgstr "Copyright (C) 2001 Rich Gade, rgade@users.sourceforge.net\n"
 
-#: ../ggz-config/ggz-config.c:1028
+#: ../../ggz-config/ggz-config.c:1011
 #, c-format
 msgid "Copyright (C) 2002 - 2005 The GGZ Gaming Zone developers\n"
 msgstr "Copyright (C) 2002 - 2005 Die Entwickler der GGZ Gaming Zone\n"
 
-#: ../ggz-config/ggz-config.c:1029
+#: ../../ggz-config/ggz-config.c:1012
 #, c-format
 msgid "Published under GNU GPL conditions\n"
 msgstr "Veröffentlicht unter den Bedingungen der GNU GPL\n"
 
-#: ../ggz-config/ggz-config.c:1031
+#: ../../ggz-config/ggz-config.c:1014
 #, c-format
 msgid "Recognized options:\n"
 msgstr "Erkannte Optionen:\n"
 
-#: ../ggz-config/ggz-config.c:1042
+#: ../../ggz-config/ggz-config.c:1025
 #, c-format
 msgid "Usage:\n"
 msgstr "Nutzung:\n"
 
-#: ../ggz-config/ggz-config.c:1101
+#: ../../ggz-config/ggz-config.c:1084
 #, c-format
 msgid "No operation specified, try --help.\n"
 msgstr "Keine Operation angegeben, versuche --help.\n"
 
-#: ../ggz-config/ggz-config.c:1110
+#: ../../ggz-config/ggz-config.c:1093
 #, c-format
 msgid "Using auxiliary directory to proceed...\n"
 msgstr "Nutze das Sicherungsverzeichnis zum Fortfahren...\n"
 
-#: ../ggz-config/ggz-config.c:1112
+#: ../../ggz-config/ggz-config.c:1095
 #, c-format
 msgid "Must specify module installation file.\n"
 msgstr "Die Modul-Installationsdatei muss angegeben werden.\n"
 
-#: ../ggz-config/ggz-config.c:1116
+#: ../../ggz-config/ggz-config.c:1099
 #, c-format
 msgid "Required installation file entries missing\n"
 msgstr "Benötigte Einträge der Installationsdatei fehlen\n"

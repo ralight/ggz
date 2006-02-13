@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-01 13:29+0100\n"
+"POT-Creation-Date: 2006-02-03 23:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,64 +16,74 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../ggzcore/server.c:854
+#: ../../ggzcore/server.c:871
 msgid "Unknown negotation"
 msgstr ""
 
-#: ../../ggzcore/server.c:881
+#: ../../ggzcore/server.c:898
 #, c-format
 msgid "Already logged in"
 msgstr ""
 
-#: ../../ggzcore/server.c:885
+#: ../../ggzcore/server.c:902
 #, c-format
-msgid "Name taken"
+msgid "Name taken or wrong password"
 msgstr ""
 
-#: ../../ggzcore/server.c:889
+#: ../../ggzcore/server.c:906
 #, c-format
 msgid "Name too long"
 msgstr ""
 
-#: ../../ggzcore/server.c:893
+#: ../../ggzcore/server.c:910
+#, c-format
+msgid "Name contains forbidden ASCII characters"
+msgstr ""
+
+#: ../../ggzcore/server.c:914
+#, c-format
+msgid "Missing password or other bad options."
+msgstr ""
+
+#: ../../ggzcore/server.c:918
 #, c-format
 msgid "Unknown login error"
 msgstr ""
 
-#: ../../ggzcore/server.c:916
+#: ../../ggzcore/server.c:941
 #, c-format
 msgid "Room full"
 msgstr ""
 
-#: ../../ggzcore/server.c:920
+#: ../../ggzcore/server.c:945
 #, c-format
 msgid "Can't change rooms while at a table"
 msgstr ""
 
-#: ../../ggzcore/server.c:924
+#: ../../ggzcore/server.c:949
 #, c-format
 msgid "Can't change rooms while joining/leaving a table"
 msgstr ""
 
-#: ../../ggzcore/server.c:929
+#: ../../ggzcore/server.c:954
 #, c-format
 msgid "Bad room number"
 msgstr ""
 
-#: ../../ggzcore/server.c:933
+#: ../../ggzcore/server.c:958
 #, c-format
 msgid "Insufficient permissions, room access is restricted"
 msgstr ""
 
-#: ../../ggzcore/server.c:937
+#: ../../ggzcore/server.c:962
 #, c-format
 msgid "Unknown room-joining error"
 msgstr ""
 
-#: ../../ggzcore/server.c:1128
+#: ../../ggzcore/server.c:1153
 msgid "Unable to connect"
 msgstr ""
 
-#: ../../ggzcore/server.c:1378 ../../ggzcore/server.c:1395
+#: ../../ggzcore/server.c:1403 ../../ggzcore/server.c:1420
 msgid "Protocol mismatch"
 msgstr ""
