@@ -1,74 +1,34 @@
-The GGZ Gaming Zone
-===================
+==================================================================
+The GGZ Gaming Zone - GGZ Server and Game Servers - Version 0.0.13
+==================================================================
 
-Welcome to the GGZ Gaming Zone, a multiuser networked gaming
-environment.  This project is still in the development phase, and as
-such may have some bugs.  It may not even compile or run (although we
-do our best to make sure it does).  If you are interested in assisting
-with development or in writing server modules for you favorite game,
-please let us know at ggz-dev@mail.ggzgamingzone.org.
+This package ("ggz-server") contains the main GGZ server, some
+administrative utilities, a game server handling library and lots
+of game servers.
 
+Content of ggz-server:
+	- ggzd, the main multi-threaded multi-process server with support
+		for database backends, LAN/metaserver integration and more
+	- ggzduedit, an admin tool to handle the user management of ggzd
+	- ggzdmod, a library to make game server development easier, which
+		interfaces directly with ggzd
+	- ggzdmod++, a C++ variant of ggzdmod (which itself is written in C)
+	- game servers, plenty of servers which are all compiled by default,
+		18 servers right now with support for statistics, savegames,
+		game spectators, AI bots, and more!
 
-Downloading
-===========
-You can always download the latest released version of GGZ from our
-homepage at http://ggzgamingzone.org/, or for the absolute bleeding
-edge you can check out the sources via anonymous CVS (instructions are
-at the aforementioned homepage).  You should be aware that the client
-and the server are distributed separately.  Please see README.GGZ for
-more details on the other parts of GGZ.
+For a full server installation, it is recommended to add some more packages
+from GGZ and other projects. Please refer to the GGZ Hosting Guide for more
+information, which can be found in the ggz-docs package.
 
-Prior to the 1.0.0 release you can expect that backwards-compatibility
-with previous versions *will be broken* so please make sure you are
-using matching versions of client and server.
+Please read 'INSTALL' if you aren't experienced with the build yet.
+For an overall view on the GGZ setup procedures, please consult the file
+README.GGZ.
 
+If you encounter any bugs, please send them to the mailing list,
+	<ggz-dev@mail.ggzgamingzone.org>.
+Or use the bug tracker at http://bugs.ggzgamingzone.org/.
 
-Compiling and Installing
-========================
-Before you compile the GGZ server you must have the following
-installed on your system:
- 
- - pthreads (comes with most C libraries)
- - popt -> is no longer needed from GGZ 0.0.11 on!
- - expat (from http://prdownloads.sourceforge.net/expat/)
- - libdb4 (or 3 or 2)  (from http://www.sleepycat.com/products/db.shtml/)
-
-Most developers have these, or at least are capable of installing
-these.  Assuming you are unpacking the sources in a directory named
-~/sources, you can compile the server with the following:
-
-cd ~/sources/ggz_server-X.X.X; configure; make
-
-For more detailed instructions on comfiguring and installing the
-server, please read the INSTALL file.
-
-
-Running
-=======
-If you have already installed the client and server, you may start the
-server simply be running the command 'ggzd' This will start the server
-listening on port of 5688.
-
-If you would like to test the software before installing it, please
-use the following steps:  
-
-- execute a 'make test' in the ggz-server top level source directory
-- run the server with the command './ggzd/ggzd -f ggzd/ggzd.test'
-- Test with one of the GGZ clients
-
-
-Bugs
-====
-Bugs in our code?  Never! :)  But if you do happen to find one, you
-can report it at http://bugs.ggzgamingzone.org/ or feel
-free to contact us at the email address below.
-
-
-Please let us know if you have any problems, comments, feedback. etc.
-
-
-Enjoy!
---The GGZ Development Team
-<ggz-dev@mail.ggzgamingzone.org>
-
+Have fun!
+	The GGZ Gaming Zone Development Team
 

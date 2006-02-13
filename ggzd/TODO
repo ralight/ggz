@@ -5,8 +5,11 @@ GGZ server (ggzd)
 -----------------
 * configuration realod on signal
   (very difficult, and SIGUSR1/2 are already in use)
+  (SIGHUP currently leads to graceful shutdown)
 * usage of a real XML library to send out XML
   (expat can only parse - use libxml?)
+* connection upgrade to TLS at any time
+  (like STARTTLS for SMTP or RFC 2817(?) for HTTP)
 
 Libraries (ggzdmod, ggzdmod++)
 ------------------------------
@@ -14,6 +17,6 @@ Libraries (ggzdmod, ggzdmod++)
 
 Game servers
 ------------
-* unification of feature sets
+* unification of feature sets over all games
   (spectators, leave/rejoin, statistics, savegames, ...)
 
