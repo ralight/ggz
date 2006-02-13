@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 7802 2006-01-23 10:37:14Z josef $
+ * $Id: client.c 7859 2006-02-13 07:00:44Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -92,11 +92,8 @@ static void* client_thread_init(void *arg_ptr)
 {
 	int sock, status;
 	GGZClient *client;
-//	struct hostent hostbuf, *hp;
 	char tmphstbuf[1024];
 	int rc;
-//	int herr;
-//	struct sockaddr_in addr;
 	struct sockaddr addr;
 	unsigned int addrlen;
 	const char *tmp;
@@ -124,25 +121,20 @@ static void* client_thread_init(void *arg_ptr)
 	}
 	ggz_free(tmp);
 
-opt.perform_lookups = 1; // TODO: test only!
 	if (opt.perform_lookups) {
-		//rc = inet_pton(AF_INET6, client->addr, (void*)&((struct sockaddr_in6*)&addr)->sin6_addr);
-		//printf("rc(inet_pton): %i\n", rc);
-		//((struct sockaddr*)&addr)->sa_family = AF_INET6;
-
-		/* FIXME: to be done in libggz? */
+		/* FIXME: to be done in libggz! (parameter for ggz_getpeername?) */
 		addrlen = sizeof(addr);
 		rc = getpeername(sock, &addr, &addrlen);
-		printf("getpeername: %i %i\n", rc, addrlen);
+		/*printf("getpeername: rc=%i addrlen=%i\n", rc, addrlen);*/
 
-		printf("old addr: %s\n", client->addr);
+		/*printf("old addr: %s\n", client->addr);*/
 		rc = getnameinfo(&addr, addrlen, tmphstbuf, sizeof(tmphstbuf), NULL, 0, NI_NAMEREQD);
-		printf("rc(gni): %i\n", rc);
+		/*printf("rc(gni): %i\n", rc);*/
 		if (rc == 0) {
 			strncpy(client->addr, tmphstbuf, sizeof(client->addr));
 		}
-		printf("new addr: %s\n", client->addr);
-		printf("tmp was: %s\n", tmphstbuf);
+		/*printf("new addr: %s\n", client->addr);*/
+		/*printf("tmp was: %s\n", tmphstbuf);*/
 	}
  
 	/* Send server ID */
@@ -324,10 +316,11 @@ static void client_loop(GGZClient* client)
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Client loop finished");
 
+	/* Force disconnect, but log out players first */
 	if (client->type == GGZ_CLIENT_PLAYER) {
 		player_logout(client->data);
-		net_disconnect(client->net);
 	}
+	net_disconnect(client->net);
 
 	return;
 }
