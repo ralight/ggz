@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 7430 2005-08-15 09:49:23Z josef $
+ * $Id: net.c 7862 2006-02-13 07:03:28Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -933,7 +933,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 
 	/* Read in data from socket */
 	if ( (len = ggz_tls_read(net->fd, buf, BUFFSIZE)) < 0) {
-		
+
 		/* If it's a non-blocking socket and there isn't data,
                    we get EAGAIN.  It's safe to just return */
 		if (errno == EAGAIN) {
@@ -946,7 +946,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 	}
 
 	_net_dump_data(net, buf, len);
-	
+
 	/* If len == 0 then we've reached EOF */
 	done = (len == 0);
 
@@ -964,7 +964,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 		_net_send_result(net, "protocol", E_BAD_XML);
 		done = 1;
 	}
-	
+
 	/* If we saw any tags clear the byte counter, otherwise increment it*/
 	if (net->tag_seen) {
 		net->byte_count = 0;
@@ -975,12 +975,11 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 		/* If we haven't seen a tag in a while, it's an error */
 		if (net->byte_count > MAX_CHAT_LEN) {
 			dbg_msg(GGZ_DBG_XML, "Error: player overflowed XML buffer");
-			
+
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 			done = 1;
 		}
 	}
-	   
 
 	/* Clear the flag now that we've completed this round of parsing */
 	net->parsing = false;
@@ -997,7 +996,7 @@ static void _net_parse_start_tag(void *data, const char *el,
 	GGZXMLElement *element;
 
 	dbg_msg(GGZ_DBG_XML, "New %s element", el);
-	
+
 	/* Create new element object */
 	element = _net_new_element(el, attr);
 
@@ -1013,7 +1012,7 @@ static void _net_parse_end_tag(void *data, const char *el)
 {
 	GGZNetIO *net = (GGZNetIO*)data;
 	GGZXMLElement *element;
-	
+
 	/* Pop element off stack */
 	element = ggz_stack_pop(net->stack);
 
@@ -1097,7 +1096,7 @@ static GGZXMLElement* _net_new_element(const char *tag,
 		process_func = _net_handle_tls_start;
 	else
 		process_func = NULL;
-	
+
 	return ggz_xmlelement_new(tag, attrs, process_func, NULL);
 }
 
@@ -1192,11 +1191,11 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *element)
 static GGZAuthData* _net_authdata_new(void)
 {
 	GGZAuthData *data = ggz_malloc(sizeof(GGZAuthData));
-	
+
 	data->name = NULL;
 	data->password = NULL;
 	data->email = NULL;
-	
+
 	return data;
 }
 
@@ -1444,7 +1443,7 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *element)
 {
 	const char *type;
 	int verbose;
-	
+
 	if (!element) return;
 	if (!check_playerconn(net, "list")) return;
 
@@ -1489,7 +1488,7 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element)
 {
 	const char *type_str, *to, *msg;
         GGZChatType type;
-		
+
 	if (!element) return;
 	if (!check_playerconn(net, "chat")) return;
 
