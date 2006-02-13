@@ -74,9 +74,9 @@
 #   Valid types:  All
 #                 Notices
 #                 Connections
-#		  Security
-#		  Update
-#		  Tables
+#                 Security
+#                 Update
+#                 Tables
 LogTypes = Notices Connections
 
 # Debug logfile
@@ -198,15 +198,19 @@ MOTD = ggzd.motd
 
 [Miscellaneous]
 
+# Default ping frequency to determine the lag class (seconds)
+#   A PingFrequency of 0 means no pings are sent; default is 10 seconds
+#PingFrequency = 10
+
 # Default Lag Class Definitions
 #   Times are in msec
-#PingFrequency = 10
 #LagClass1 = 500
 #LagClass2 = 1000
 #LagClass3 = 2000
 #LagClass4 = 5000
 
 # Interval at which to send players room occupancy updates (seconds)
+#   A value of 0 means no updates are sent; default is 60 seconds
 #RoomUpdateFrequency = 60
 
 # Client hostname lookups
