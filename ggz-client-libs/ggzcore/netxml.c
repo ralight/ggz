@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 7431 2005-08-15 09:50:01Z josef $
+ * $Id: netxml.c 7867 2006-02-13 07:07:40Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -392,13 +392,13 @@ int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
 
 	_ggzcore_net_send_line(net, "<LANGUAGE>%s</LANGUAGE>", language);
 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
-	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle);
+	_ggzcore_net_send_line(net, "<NAME><![CDATA[%s]]></NAME>", handle);
 
 	if ((login_type == GGZ_LOGIN || (login_type == GGZ_LOGIN_NEW)) && password)
-		_ggzcore_net_send_line(net, "<PASSWORD>%s</PASSWORD>",
+		_ggzcore_net_send_line(net, "<PASSWORD><![CDATA[%s]]></PASSWORD>",
 				       password);
 	if (login_type == GGZ_LOGIN_NEW && email)
-		_ggzcore_net_send_line(net, "<EMAIL>%s</EMAIL>",
+		_ggzcore_net_send_line(net, "<EMAIL><![CDATA[%s]]></EMAIL>",
 				       email);
 
 	status = _ggzcore_net_send_line(net, "</LOGIN>");

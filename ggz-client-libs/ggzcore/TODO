@@ -1,3 +1,13 @@
+The following items are quite disruptive changes which might require
+design changes. All smaller wishes and bug reports should use
+http://bugs.ggzgamingzone.org/.
+
+- using an XML writer library like libxml2
+  (see ggzd for the complementary issue)
+
+++++++++++++++++++++++++++++
+old todo items (from 2003 or so) below which might still be valid:
+
 - Finish up redoing net handler functions
 
 - Fix the player/table pointing problem (is this done?)
