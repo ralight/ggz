@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 7802 2006-01-23 10:37:14Z josef $
+ * $Id: parse_opt.c 7861 2006-02-13 07:02:50Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -154,13 +154,24 @@ static char **_ggz_string_to_list(const char *s, const char *sep)
 
 static void dump_specs(void)
 {
+	int tls = ggz_tls_support_query();
+
+	parse_conf_file();
+
 	printf("GGZ Gaming Zone server (ggzd) specifications\n");
 	printf("Version: %s\n", VERSION);
 	printf("Protocol version: %i\n", GGZ_CS_PROTO_VERSION);
-	printf("Configuration: %s/ggzd.conf\n", GGZDCONFDIR);
+	printf("Configuration: %s/ggzd.conf [%s]\n",
+		GGZDCONFDIR,
+		(opt.conf_valid ? "ok" : "not ok"));
 	printf("Debugging: %s\n", (SPEC_DEBUG ? "yes" : "no"));
 	printf("Database backend: %s\n", SPEC_DB);
-	printf("Zeroconf support: %s\n", (SPEC_HOWL ? "yes" : "no"));
+	printf("Zeroconf support: %s [%s]\n",
+		(SPEC_HOWL ? "yes" : "no"),
+		(opt.conf_valid ? (opt.announce_lan ? "used" : "not used") : "unknown"));
+	printf("TLS support: %s [%s]\n",
+		(tls ? "yes" : "no"),
+		(opt.conf_valid ? (opt.tls_use ? "used" : "not used") : "unknown"));
 }
 
 /* Parse command-line options */
@@ -251,8 +262,11 @@ void parse_conf_file(void)
 	}
 
 	/* Get options from the file */
-	if(c_handle >= 0)
+	opt.conf_valid = false;
+	if(c_handle >= 0) {
 		get_config_options(c_handle);
+		opt.conf_valid = true;
+	}
 
 	/* Add any defaults which were not config'ed */
 
@@ -329,6 +343,7 @@ static void get_config_options(int ch)
 
 	/* Announcements in [General] */
 	opt.announce_lan = ggz_conf_read_int(ch, "General", "AnnounceLAN", 0);
+	opt.announce_metaserver = ggz_conf_read_int(ch, "General", "AnnounceMetaserver", 0);
 
 	/* [Games] */
 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);

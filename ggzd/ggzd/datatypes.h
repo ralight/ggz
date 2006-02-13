@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 7424 2005-08-15 09:00:27Z josef $
+ * $Id: datatypes.h 7861 2006-02-13 07:02:50Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 
 /* Datatypes for server options*/
 typedef struct {
+	bool conf_valid;
 	const char *local_conf;
 #if 0
 	bool remove_users;
@@ -71,6 +72,7 @@ typedef struct {
 	const char *tls_password;
 	const char *dump_file;
 	bool announce_lan;
+	bool announce_metaserver;
 } Options;
 
 
