@@ -74,11 +74,11 @@ public class OptionDialog extends JDialog implements ItemListener {
         });
         buttonSizePanel.add(okButton);
         buttonFlowPanel.add(buttonSizePanel);
-        add(buttonFlowPanel, BorderLayout.SOUTH);
+        getContentPane().add(buttonFlowPanel, BorderLayout.SOUTH);
         // Add options container in center, options controls get added in
         // init().
         optionPanel = new Panel(new GridBagLayout());
-        add(optionPanel, BorderLayout.CENTER);
+        getContentPane().add(optionPanel, BorderLayout.CENTER);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onOKClick();

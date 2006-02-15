@@ -24,6 +24,7 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ResourceBundle;
 
@@ -51,8 +52,6 @@ public class AboutDialog extends JDialog {
     private JTextArea licenseTextArea;
 
     private JLabel copyrightLabel;
-
-    private String title;
 
     public AboutDialog(Frame owner) {
         super(owner, true);
@@ -100,9 +99,16 @@ public class AboutDialog extends JDialog {
 
     private void readLicense() {
         try {
-            licenseTextArea.read(new InputStreamReader(getClass()
-                    .getResourceAsStream("LICENSE")),
-                    "GNU LESSER GENERAL PUBLIC LICENSE");
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(getClass()
+                  .getResourceAsStream("LICENSE"), "ASCII"));
+        	char[] buf = new char[1024];
+        	int numCharsRead;
+        	StringBuffer text = new StringBuffer();
+        	while ((numCharsRead = reader.read(buf)) != -1) {
+        		text.append(buf, 0, numCharsRead);
+        	}
+        	licenseTextArea.setText(text.toString());
+        	licenseTextArea.setCaretPosition(0);
         } catch (Throwable ex) {
             // Dump the stack trace for posterity but otherwise ignore the
             // error.

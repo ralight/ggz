@@ -108,7 +108,7 @@ public class HyperlinkLabel extends JLabel {
      * @since 1.4
      */
     public synchronized HyperlinkListener[] getHyperlinkListeners() {
-        return listenerList.getListeners(HyperlinkListener.class);
+        return (HyperlinkListener[]) listenerList.getListeners(HyperlinkListener.class);
     }
 
     /**

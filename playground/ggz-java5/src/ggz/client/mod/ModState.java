@@ -18,8 +18,6 @@
 package ggz.client.mod;
 
 /**
- * @brief Table states
- * 
  * Each table has a current "state" that is tracked by ggzmod. First the table
  * is executed and begins running. Then it receives a launch event from GGZ and
  * begins waiting for players. At some point a game will be started and played
@@ -40,12 +38,12 @@ package ggz.client.mod;
  * Each time the game state changes, a GGZMOD_EVENT_STATE event will be
  * propogated to the game server.
  */
-public enum ModState {
+public class ModState {
     /**
      * @brief Initial state. The game starts out in this state. Once the state
      *        is changed it should never be changed back.
      */
-    GGZMOD_STATE_CREATED,
+    public static final ModState GGZMOD_STATE_CREATED = new ModState();
 
     /**
      * @brief Connected state. After the GGZ client and game client get
@@ -53,7 +51,7 @@ public enum ModState {
      *        this happens messages may be sent between these two. Once the game
      *        leaves this state it should never be changed back.
      */
-    GGZMOD_STATE_CONNECTED,
+    public static final ModState GGZMOD_STATE_CONNECTED = new ModState();
 
     /**
      * @brief Waiting state. After the game client and game server are
@@ -61,7 +59,7 @@ public enum ModState {
      *        may now call ggzmod_set_state to change between WAITING, PLAYING,
      *        and DONE states.
      */
-    GGZMOD_STATE_WAITING,
+    public static final ModState GGZMOD_STATE_WAITING = new ModState();
 
     /**
      * @brief Playing state. This state is only entered after the game client
@@ -69,7 +67,7 @@ public enum ModState {
      *        back and forth between WAITING and PLAYING as many times as are
      *        wanted.
      */
-    GGZMOD_STATE_PLAYING,
+    public static final ModState GGZMOD_STATE_PLAYING = new ModState();
 
     /**
      * @brief Done state. Once the game client is done running, ggzmod_set_state
@@ -78,5 +76,7 @@ public enum ModState {
      *        However the game client will not be terminated by the GGZ client;
      *        GGZ just waits for it to exit of its own volition.
      */
-    GGZMOD_STATE_DONE
+    public static final ModState GGZMOD_STATE_DONE = new ModState();
+    
+    private ModState() {}
 }

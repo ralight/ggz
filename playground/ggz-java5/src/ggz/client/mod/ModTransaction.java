@@ -18,39 +18,41 @@
 package ggz.client.mod;
 
 /* Transactions between ggzmod-ggz and ggzmod-game */
-public enum ModTransaction {
+public class ModTransaction {
     /*
      * Sit down (stop spectatin; join a seat) Data: seat number (int*)
      */
-    GGZMOD_TRANSACTION_SIT,
+    public static final ModTransaction GGZMOD_TRANSACTION_SIT = new ModTransaction();
 
     /*
      * Stand up (leave your seat; become a spectator) Data: NULL
      */
-    GGZMOD_TRANSACTION_STAND,
+    public static final ModTransaction GGZMOD_TRANSACTION_STAND = new ModTransaction();
 
     /*
      * Boot a player Data: player name (const char*)
      */
-    GGZMOD_TRANSACTION_BOOT,
+    public static final ModTransaction GGZMOD_TRANSACTION_BOOT = new ModTransaction();
 
     /*
      * Replace a bot/reserved seat with an open one. Data: seat number (int*)
      */
-    GGZMOD_TRANSACTION_OPEN,
+    public static final ModTransaction GGZMOD_TRANSACTION_OPEN = new ModTransaction();
 
     /*
      * Put a bot into an open seat Data: seat number (int*)
      */
-    GGZMOD_TRANSACTION_BOT,
+    public static final ModTransaction GGZMOD_TRANSACTION_BOT = new ModTransaction();
 
     /*
      * Information about one or more players Data: seat number (int*)
      */
-    GGZMOD_TRANSACTION_INFO,
+    public static final ModTransaction GGZMOD_TRANSACTION_INFO = new ModTransaction();
 
     /*
      * A chat originating from the game client. Data: message (const char*)
      */
-    GGZMOD_TRANSACTION_CHAT;
+    public static final ModTransaction GGZMOD_TRANSACTION_CHAT = new ModTransaction();
+    
+    private ModTransaction() {}
 }

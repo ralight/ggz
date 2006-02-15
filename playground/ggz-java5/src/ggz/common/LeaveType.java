@@ -22,18 +22,18 @@ package ggz.common;
  * 
  * When a player leaves a table, this is a possible reason for the leave.
  */
-public enum LeaveType {
+public class LeaveType {
     /** A normal leave - at user request. */
-    GGZ_LEAVE_NORMAL,
+    public static final LeaveType GGZ_LEAVE_NORMAL = new LeaveType();
 
     /** The player has been booted from the table. */
-    GGZ_LEAVE_BOOT,
+    public static final LeaveType GGZ_LEAVE_BOOT = new LeaveType();
 
     /** The game is over; the server exited normally. */
-    GGZ_LEAVE_GAMEOVER,
+    public static final LeaveType GGZ_LEAVE_GAMEOVER = new LeaveType();
 
     /** There was an error in the game server and it was terminated. */
-    GGZ_LEAVE_GAMEERROR;
+    public static final LeaveType GGZ_LEAVE_GAMEERROR = new LeaveType();
 
     private static final String NORMAL_LEAVETYPE_NAME = "normal";
 
@@ -43,24 +43,23 @@ public enum LeaveType {
 
     private static final String GAMEERROR_LEAVETYPE_NAME = "gameerror";
 
+    private LeaveType() {}
+    
     public String toString() {
-        switch (this) {
-        case GGZ_LEAVE_NORMAL:
+        if (this == GGZ_LEAVE_NORMAL) {
             return NORMAL_LEAVETYPE_NAME;
-        case GGZ_LEAVE_BOOT:
+        } else if (this == GGZ_LEAVE_BOOT) {
             return BOOT_LEAVETYPE_NAME;
-        case GGZ_LEAVE_GAMEOVER:
+        } else if (this == GGZ_LEAVE_GAMEOVER) {
             return GAMEOVER_LEAVETYPE_NAME;
-        case GGZ_LEAVE_GAMEERROR:
+        } else if (this == GGZ_LEAVE_GAMEERROR) {
             return GAMEERROR_LEAVETYPE_NAME;
         }
 
-        // ggz_error_msg("ggz_leavetype_to_string: "
-        // "invalid leavetype %d given.", type);
-        return ""; /* ? */
+        throw new RuntimeException("Unrecognised leave type: " + this);
     }
 
-    public static LeaveType string_to_leavetype(String type_str) {
+    public static LeaveType valueOf(String type_str) {
         if (type_str == null)
             return GGZ_LEAVE_GAMEERROR;
 

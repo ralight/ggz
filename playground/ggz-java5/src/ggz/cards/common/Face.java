@@ -17,6 +17,8 @@
  */
 package ggz.cards.common;
 
+import java.util.ArrayList;
+
 /**
  * Regular values for card faces.
  * 
@@ -25,22 +27,65 @@ package ggz.cards.common;
  * @see card_t::face
  * @note This only applies for French (standard) decks.
  */
-public enum Face {
-    /** An unknown face on a card */
-    UNKNOWN_FACE, // = -1,
-    /** An "ace" (low) card face */
-    ACE_LOW, // = 1,
-    DEUCE, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN,
-    /** A "jack" card face */
-    JACK, // = 11,
-    /** A "queen" card face */
-    QUEEN, // = 12,
-    /** A "king" card face */
-    KING, // = 13,
-    /** An "ace" (high) card face */
-    ACE_HIGH, // = 14,
-    /** A "joker 1" card face */
-    JOKER1, // = 0,
-    /** A "joker 2" card face */
-    JOKER2; // = 1
+public class Face {
+
+	public static final ArrayList values = new ArrayList();
+
+	/** An unknown face on a card */
+	public static final Face UNKNOWN_FACE = new Face(); // = -1,
+
+	/** An "ace" (low) card face */
+	public static final Face ACE_LOW = new Face(); // = 1,
+
+	public static final Face DEUCE = new Face();
+
+	public static final Face THREE = new Face();
+
+	public static final Face FOUR = new Face();
+
+	public static final Face FIVE = new Face();
+
+	public static final Face SIX = new Face();
+
+	public static final Face SEVEN = new Face();
+
+	public static final Face EIGHT = new Face();
+
+	public static final Face NINE = new Face();
+
+	public static final Face TEN = new Face();
+
+	/** A "jack" card face */
+	public static final Face JACK = new Face(); // = 11,
+
+	/** A "queen" card face */
+	public static final Face QUEEN = new Face(); // = 12,
+
+	/** A "king" card face */
+	public static final Face KING = new Face(); // = 13,
+
+	/** An "ace" (high) card face */
+	public static final Face ACE_HIGH = new Face(); // = 14,
+
+	/** A "joker 1" card face */
+	public static final Face JOKER1 = new Face(); // = 0,
+
+	/** A "joker 2" card face */
+	public static final Face JOKER2 = new Face(); // = 1
+
+	private Face() {
+		values.add(this);
+	}
+
+	public int ordinal() {
+		return values.indexOf(this);
+	}
+	
+	public static Face[] values() {
+		return (Face[]) values.toArray(new Face[values.size()]);
+	}
+
+	public static Face valueOf(int ordinal) {
+		return (Face) values.get(ordinal);
+	}
 }

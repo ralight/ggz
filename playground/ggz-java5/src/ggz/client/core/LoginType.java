@@ -21,16 +21,29 @@ package ggz.client.core;
  * This controls the type of login a user chooses. A different value will
  * require different information to be sent to the server.
  */
-public enum LoginType {
-    /** Standard login; uname and correct passwd needed. */
-    GGZ_LOGIN,
+public class LoginType {
+	/** Standard login; uname and correct passwd needed. */
+	public static final LoginType GGZ_LOGIN = new LoginType();
 
-    /** Guest login; only a uname is required. */
-    GGZ_LOGIN_GUEST,
+	/** Guest login; only a uname is required. */
+	public static final LoginType GGZ_LOGIN_GUEST = new LoginType();
 
-    /**
-     * New user login; only a uname is required. Password will be assigned by
-     * the server (but can be passed along).
-     */
-    GGZ_LOGIN_NEW
+	/**
+	 * New user login; only a uname is required. Password will be assigned by
+	 * the server (but can be passed along).
+	 */
+	public static final LoginType GGZ_LOGIN_NEW = new LoginType();
+
+	public String toString() {
+		if (this == GGZ_LOGIN) {
+			return "normal";
+		} else if (this == GGZ_LOGIN_NEW) {
+			return "first";
+		} else if (this == GGZ_LOGIN_GUEST) {
+			return "guest";
+		}
+		throw new RuntimeException("Unrecognised LoginType: " + this);
+	}
+	
+	private LoginType() {}
 }

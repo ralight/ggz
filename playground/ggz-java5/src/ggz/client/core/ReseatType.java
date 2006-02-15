@@ -17,6 +17,12 @@
  */
 package ggz.client.core;
 
-public enum ReseatType {
-    GGZ_RESEAT_SIT, GGZ_RESEAT_STAND, GGZ_RESEAT_MOVE;
+public class ReseatType {
+	public static final ReseatType GGZ_RESEAT_SIT = new ReseatType();
+
+	public static final ReseatType GGZ_RESEAT_STAND = new ReseatType();
+
+	public static final ReseatType GGZ_RESEAT_MOVE = new ReseatType();
+	
+	private ReseatType() {}
 }

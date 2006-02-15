@@ -149,45 +149,29 @@ public class Game implements ModTransactionHandler {
 
         log.fine("Game changing from state " + prev + " to " + newState);
 
-        switch (prev) {
-        case GGZMOD_STATE_CREATED:
+        if (prev == ModState.GGZMOD_STATE_CREATED) {
             log.fine("game negotiated");
             event(GameEvent.GGZ_GAME_NEGOTIATED, null);
             if (newState != ModState.GGZMOD_STATE_CONNECTED) {
                 log.severe("Game changed state from created to " + newState);
             }
-            break;
-        case GGZMOD_STATE_CONNECTED:
+        } else if (prev == ModState.GGZMOD_STATE_CONNECTED) {
             log.fine("game playing");
             event(GameEvent.GGZ_GAME_PLAYING, null);
             if (newState != ModState.GGZMOD_STATE_WAITING
                     && newState != ModState.GGZMOD_STATE_PLAYING) {
                 log.severe("Game changed state from connected to " + newState);
             }
-            break;
-        case GGZMOD_STATE_WAITING:
-        case GGZMOD_STATE_PLAYING:
-        case GGZMOD_STATE_DONE:
-            break;
         }
 
-        switch (newState) {
-        case GGZMOD_STATE_CONNECTED:
-        case GGZMOD_STATE_WAITING:
-        case GGZMOD_STATE_PLAYING:
-            break;
-        case GGZMOD_STATE_DONE:
+        if (newState == ModState.GGZMOD_STATE_DONE) {
             abort_game();
-            break;
-
-        case GGZMOD_STATE_CREATED:
+        } else if (newState == ModState.GGZMOD_STATE_CREATED) {
             /*
              * Leave the game running. This should never happen since this is
              * the initial state and we never return to it after leaving it.
              */
-            log.severe("Game state changed to created!");
-            break;
-
+            log.severe("Game state changed to created. This should never happen!");
         }
     }
 
@@ -195,10 +179,11 @@ public class Game implements ModTransactionHandler {
         Net net = this.server.get_net();
         ReseatType op;
 
-        if (this.spectating)
+        if (this.spectating) {
             op = ReseatType.GGZ_RESEAT_SIT;
-        else
+        } else {
             op = ReseatType.GGZ_RESEAT_MOVE;
+        }
 
         net.send_table_reseat(op, seat_num);
     }
@@ -272,16 +257,10 @@ public class Game implements ModTransactionHandler {
         Table table;
         int num_seats, i;
 
-        /* FIXME */
-        assert (this.room_id == room_id);
-        assert (this.table_id < 0 || this.table_id == table_id);
-
         room = server.get_cur_room();
-        assert (room.get_id() == room_id);
 
         this.table_id = table_id;
         table = room.get_table_by_id(table_id);
-        assert (table != null && table.get_id() == table_id);
 
         num_seats = table.get_num_seats();
         for (i = 0; i < num_seats; i++) {
@@ -386,22 +365,16 @@ public class Game implements ModTransactionHandler {
         if (event_hooks == null)
             return;
 
-        switch (event) {
-        case GGZ_GAME_LAUNCH_FAIL:
+        if (event == GameEvent.GGZ_GAME_LAUNCH_FAIL) {
             event_hooks.game_launch_fail((Exception) data);
-            break;
-        case GGZ_GAME_LAUNCHED:
+        } else if (event == GameEvent.GGZ_GAME_LAUNCHED) {
             event_hooks.game_launched();
-            break;
-        case GGZ_GAME_NEGOTIATE_FAIL:
+        } else if (event == GameEvent.GGZ_GAME_NEGOTIATE_FAIL) {
             event_hooks.game_negotiate_fail();
-            break;
-        case GGZ_GAME_NEGOTIATED:
+        } else if (event == GameEvent.GGZ_GAME_NEGOTIATED) {
             event_hooks.game_negotiated();
-            break;
-        case GGZ_GAME_PLAYING:
+        } else if (event == GameEvent.GGZ_GAME_PLAYING) {
             event_hooks.game_playing();
-            break;
         }
     }
 

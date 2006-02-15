@@ -285,8 +285,8 @@ public class Sprite extends Component {
     }
 
     private BufferedImage loadImage() throws IOException {
-        if (card.get_suit() == Suit.UNKNOWN_SUIT
-                || card.get_face() == Face.UNKNOWN_FACE) {
+        if (card.suit() == Suit.UNKNOWN_SUIT
+                || card.face() == Face.UNKNOWN_FACE) {
             if (cardBacks == null) {
                 URL url = getClass().getResource(basePath + "cards-b1.png");
                 cardBacks = ImageIO.read(url);
@@ -310,8 +310,8 @@ public class Sprite extends Component {
         }
         int cardWidth = cardFronts.getWidth() / 4;
         int cardHeight = cardFronts.getHeight() / 13;
-        int xIndex = card.get_suit().ordinal() - 1;
-        int yIndex = card.get_face() == Face.ACE_HIGH ? 0 : card.get_face()
+        int xIndex = card.suit().ordinal() - 1;
+        int yIndex = card.face() == Face.ACE_HIGH ? 0 : card.face()
                 .ordinal() - 1;
         BufferedImage image = new BufferedImage(cardWidth, cardHeight,
                 BufferedImage.TYPE_INT_ARGB);

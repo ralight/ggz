@@ -55,31 +55,13 @@ public class Player {
     Card table_card;
 
     /** player's hand */
-    ArrayList<Card> hand;
-
-    // /** @brief The size of the uncompressed hand.
-    // *
-    // * The player's "hand" is stored in the hand structure, above.
-    // * But for the convenience of certain GUI clients, separate
-    // * hand data is also tracked. Here the u_hand_size is the
-    // * total number of entries in the u_hand array. Each entry
-    // * in the u_hand array is marked as either valid or invalid.
-    // * Valid ones correspond to cards in the hand, invalid ones
-    // * are cards that have already been played. (The "u" stands
-    // * for "uncollapsed", I suppose.) */
-    // int u_hand_size;
-    //
-    // /** @see u_hand_size */
-    // struct {
-    // bool is_valid;
-    // card_t card;
-    // } *u_hand;
+    ArrayList hand;
 
     public String get_name() {
         return this.name;
     }
 
-    public List<Card> get_hand() {
+    public List get_hand() {
         return Collections.unmodifiableList(this.hand);
     }
 

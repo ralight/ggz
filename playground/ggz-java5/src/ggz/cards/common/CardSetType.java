@@ -17,31 +17,40 @@
  */
 package ggz.cards.common;
 
+import java.util.ArrayList;
+
 /**
- * @brief The type of deck.
+ * The type of deck.
  * 
  * In theory, many different types of decks are possible. Currently only the
  * standard French deck is used.
  */
-public enum CardSetType {
-    UNKNOWN_CARDSET, // = -1,
+public class CardSetType {
+
+	public static final ArrayList values = new ArrayList();
+
+	public static final CardSetType UNKNOWN_CARDSET = new CardSetType(); // = -1,
 
     /** A standard (French) card deck (A/K/Q/J/10..2). */
-    CARDSET_FRENCH,
+    public static final CardSetType CARDSET_FRENCH = new CardSetType();
 
     /**
      * A set of dominoes. Here each domino has two sides, each of which has a
      * number. For storage purposes, the higher side will be considered the
      * "suit" and the lower side the "face".
      */
-    CARDSET_DOMINOES;
+    public static final CardSetType CARDSET_DOMINOES = new CardSetType();
+
+	private CardSetType() {
+		values.add(this);
+	}
 
     /**
      * Decodes the value sent from the server. C enum cardset_type.
      * @param i
      * @return
      */
-    public static CardSetType valueOf(int i) {
-        return values()[i + 1];
-    }
+	public static CardSetType valueOf(int i) {
+		return (CardSetType) values.get(i + 1);
+	}
 }

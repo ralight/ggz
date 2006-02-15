@@ -36,6 +36,8 @@ public class TableLayout implements LayoutManager2 {
     private Dimension minimumSize = new Dimension(640, 480);
 
     private Component statusLabel;
+    
+    private Component buttonPanel;
 
     private Component[] playerLabels = new Component[4];
 
@@ -87,6 +89,9 @@ public class TableLayout implements LayoutManager2 {
                 break;
             case TableConstraints.STATUS_LABEL:
                 statusLabel = comp;
+                break;
+            case TableConstraints.BUTTON_PANEL:
+                buttonPanel = comp;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -164,6 +169,7 @@ public class TableLayout implements LayoutManager2 {
         }
 
         layoutStatusLabel(parent);
+        layoutBidPanel(parent);
     }
 
     protected void layoutStatusLabel(Container parent) {
@@ -173,6 +179,18 @@ public class TableLayout implements LayoutManager2 {
                     - statusLabel.getWidth() / 2, parent.getHeight() / 2
                     - statusLabel.getHeight() / 2);
         }
+    }
+    
+    protected void layoutBidPanel(Container parent) {
+    	if (buttonPanel != null) {
+    		buttonPanel.setSize(buttonPanel.getPreferredSize());
+    		buttonPanel.setLocation(
+          (parent.getWidth() / 2) - (buttonPanel.getWidth() / 2), parent.getHeight()
+                  - (buttonPanel.getHeight() + 110));
+//    		bidPanel.setLocation(parent.getWidth() / 2
+//                    - bidPanel.getWidth() / 2, parent.getHeight() / 2
+//                    - bidPanel.getHeight() / 2);
+    	}
     }
 
     protected void layoutPlayerLabel(Container parent, int playerIndex,
@@ -381,6 +399,11 @@ public class TableLayout implements LayoutManager2 {
         if (!removed && statusLabel != null) {
             if (statusLabel == comp) {
                 statusLabel = null;
+            }
+        }
+        if (!removed && buttonPanel != null) {
+            if (buttonPanel == comp) {
+            	buttonPanel = null;
             }
         }
     }

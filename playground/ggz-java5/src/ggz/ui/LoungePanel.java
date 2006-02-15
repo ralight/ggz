@@ -55,7 +55,7 @@ public class LoungePanel extends JPanel {
 
     private RoomChatPanel chatPanel;
 
-    private ArrayList<Room> rooms;
+    private ArrayList rooms;
 
     private JPanel contentPanel;
 
@@ -95,7 +95,7 @@ public class LoungePanel extends JPanel {
     public void refreshRoomList() {
         if (rooms == null) {
             // First time we allocate an array of the appropriate size.
-            rooms = new ArrayList<Room>(server.get_num_rooms());
+            rooms = new ArrayList(server.get_num_rooms());
         }
         rooms.clear();
         // Maintain our own list rather than use the server's so that we can
@@ -117,7 +117,7 @@ public class LoungePanel extends JPanel {
         CategoryPanel cardGamesPanel = new CategoryPanel(messages
                 .getString("LoungePanel.GroupHeader.CardGames"));
         for (int i = 0; i < rooms.size(); i++) {
-            Room room = rooms.get(i);
+            Room room = (Room) rooms.get(i);
             // roomPanel.add(new RoomButton(room));
             cardGamesPanel.addRoom(room);
         }
@@ -203,7 +203,8 @@ public class LoungePanel extends JPanel {
             final JLabel populationLabel = new JLabel((String) null,
                     SwingConstants.RIGHT) {
                 public String getText() {
-                    return String.valueOf(room.get_num_players());
+                	// Room can be null during JLabel construction...not sure why...
+                    return room == null ? null : String.valueOf(room.get_num_players());
                 }
             };
             listCellPanel.setOpaque(false);

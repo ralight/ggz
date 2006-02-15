@@ -28,52 +28,54 @@ package ggz.client.core;
  * @see ggzcore_game_add_event_hook
  * @see ggzcore_server_read_data
  */
-public enum GameEvent {
-    /**
-     * A game was launched by the player (you). After this the core client
-     * should call ggzcore_game_get_control_fd, monitor the socket that function
-     * returns, and call ggzcore_game_read_data when there is data pending. This
-     * event is triggered inside of ggzcore_game_launch.
-     * 
-     * @param data
-     *            NULL
-     * @see ggzcore_game_launch
-     */
-    GGZ_GAME_LAUNCHED,
+public class GameEvent {
+	/**
+	 * A game was launched by the player (you). After this the core client
+	 * should call ggzcore_game_get_control_fd, monitor the socket that function
+	 * returns, and call ggzcore_game_read_data when there is data pending. This
+	 * event is triggered inside of ggzcore_game_launch.
+	 * 
+	 * @param data
+	 *            NULL
+	 * @see ggzcore_game_launch
+	 */
+	public static final GameEvent GGZ_GAME_LAUNCHED = new GameEvent();
 
-    /**
-     * Your game launch has failed. Triggered instead of GGZ_GAME_LAUNCHED when
-     * there's a failure somewhere.
-     * 
-     * @param data
-     *            NULL
-     * @see GGZ_GAME_LAUNCHED
-     */
-    GGZ_GAME_LAUNCH_FAIL,
+	/**
+	 * Your game launch has failed. Triggered instead of GGZ_GAME_LAUNCHED when
+	 * there's a failure somewhere.
+	 * 
+	 * @param data
+	 *            NULL
+	 * @see GGZ_GAME_LAUNCHED
+	 */
+	public static final GameEvent GGZ_GAME_LAUNCH_FAIL = new GameEvent();
 
-    /**
-     * Negotiation with server was successful. This should happen some time
-     * after the launch succeeds. The core client need do nothing at this point.
-     * 
-     * @param data
-     *            NULL
-     */
-    GGZ_GAME_NEGOTIATED,
+	/**
+	 * Negotiation with server was successful. This should happen some time
+	 * after the launch succeeds. The core client need do nothing at this point.
+	 * 
+	 * @param data
+	 *            NULL
+	 */
+	public static final GameEvent GGZ_GAME_NEGOTIATED = new GameEvent();
 
-    /**
-     * Negotiation was not successful, game launch failed.
-     * 
-     * @todo Currently this can't actually happen...
-     */
-    GGZ_GAME_NEGOTIATE_FAIL,
+	/**
+	 * Negotiation was not successful, game launch failed.
+	 * 
+	 * @todo Currently this can't actually happen...
+	 */
+	public static final GameEvent GGZ_GAME_NEGOTIATE_FAIL = new GameEvent();
 
-    /**
-     * Game reached the 'playing' state. When this happens the core client
-     * should call ggzcore_room_launch_table or ggzcore_room_join_table to
-     * finalize the game join.
-     * 
-     * @param data
-     *            NULL
-     */
-    GGZ_GAME_PLAYING
+	/**
+	 * Game reached the 'playing' state. When this happens the core client
+	 * should call ggzcore_room_launch_table or ggzcore_room_join_table to
+	 * finalize the game join.
+	 * 
+	 * @param data
+	 *            NULL
+	 */
+	public static final GameEvent GGZ_GAME_PLAYING = new GameEvent();
+	
+	private GameEvent() {}
 }

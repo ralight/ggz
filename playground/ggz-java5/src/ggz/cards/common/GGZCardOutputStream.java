@@ -23,131 +23,114 @@ import java.io.OutputStream;
 
 public class GGZCardOutputStream extends DataOutputStream {
 
-    public GGZCardOutputStream(OutputStream out) {
-        super(out);
-    }
+	public GGZCardOutputStream(OutputStream out) {
+		super(out);
+	}
 
-    public void write_card(Card card) throws IOException {
-        byte face;
-        // The face depends on the suit.
-        switch (card.get_face()) {
-        case UNKNOWN_FACE:
-            face = -1;
-            break;
-        case JOKER1:
-            face = 0;
-            break;
-        case JOKER2:
-            face = 1;
-            break;
-        case ACE_LOW:
-            face = 1;
-            break;
-        case DEUCE:
-            face = 2;
-            break;
-        case THREE:
-            face = 3;
-            break;
-        case FOUR:
-            face = 4;
-            break;
-        case FIVE:
-            face = 5;
-            break;
-        case SIX:
-            face = 6;
-            break;
-        case SEVEN:
-            face = 7;
-            break;
-        case EIGHT:
-            face = 8;
-            break;
-        case NINE:
-            face = 9;
-            break;
-        case TEN:
-            face = 10;
-            break;
-        case JACK:
-            face = 11;
-            break;
-        case QUEEN:
-            face = 12;
-            break;
-        case KING:
-            face = 13;
-            break;
-        case ACE_HIGH:
-            face = 14;
-            break;
-        default:
-            throw new IllegalArgumentException(
-                    "Attempt to write card with unrecognised card face: "
-                            + card.get_face());
-        }
-        write(face);
-        write(encode_suit(card.get_suit()));
-        write(card.deck);
-    }
+	public void write_card(Card card) throws IOException {
+		byte face;
+		// The face depends on the suit.
+		if (card.face() == Face.UNKNOWN_FACE) {
+			face = -1;
+		} else if (card.face() == Face.JOKER1) {
+			face = 0;
+		} else if (card.face() == Face.JOKER2) {
+			face = 1;
+		} else if (card.face() == Face.ACE_LOW) {
+			face = 1;
+		} else if (card.face() == Face.DEUCE) {
+			face = 2;
+		} else if (card.face() == Face.THREE) {
+			face = 3;
+		} else if (card.face() == Face.FOUR) {
+			face = 4;
+		} else if (card.face() == Face.FIVE) {
+			face = 5;
+		} else if (card.face() == Face.SIX) {
+			face = 6;
+		} else if (card.face() == Face.SEVEN) {
+			face = 7;
+		} else if (card.face() == Face.EIGHT) {
+			face = 8;
+		} else if (card.face() == Face.NINE) {
+			face = 9;
+		} else if (card.face() == Face.TEN) {
+			face = 10;
+		} else if (card.face() == Face.JACK) {
+			face = 11;
+		} else if (card.face() == Face.QUEEN) {
+			face = 12;
+		} else if (card.face() == Face.KING) {
+			face = 13;
+		} else if (card.face() == Face.ACE_HIGH) {
+			face = 14;
+		} else {
+			throw new IllegalArgumentException(
+					"Attempt to write card with unrecognised card face: "
+							+ card.face());
+		}
+		write(face);
+		write(encode_suit(card.suit()));
+		write(card.deck);
+	}
 
-    /**
-     * @brief Writes a bid to the socket.
-     * @param fd
-     *            The file descriptor to which to read.
-     * @param bid
-     *            A pointer to the bid data.
-     * @return 0 on success, -1 on failure.
-     */
-    public void write_bid(Bid bid) throws IOException {
-        write(bid.getVal());
-        write(bid.getSuit());
-        write(bid.getSpec());
-        write(bid.getSpec2());
-    }
+	/**
+	 * @brief Writes a bid to the socket.
+	 * @param fd
+	 *            The file descriptor to which to read.
+	 * @param bid
+	 *            A pointer to the bid data.
+	 * @return 0 on success, -1 on failure.
+	 */
+	public void write_bid(Bid bid) throws IOException {
+		write(bid.getVal());
+		write(bid.getSuit());
+		write(bid.getSpec());
+		write(bid.getSpec2());
+	}
 
-    public void write_opcode(ClientOpCode opcode) throws IOException {
-        write(opcode.ordinal());
-    }
+	public void write_opcode(ClientOpCode opcode) throws IOException {
+		write(opcode.ordinal());
+	}
 
-    public void write_seat(int seat) throws IOException {
-        assert (seat >= 0 && seat < 127);
-        write(seat);
-    }
+	public void write_seat(int seat) throws IOException {
+		if (seat < 0 || seat >= 127) {
+			throw new IllegalArgumentException("seat must be >= 0 and < 127");
+		}
+		write(seat);
+	}
 
-    /*
-     * Writes a char string to the given fd preceeded by its size. The string is
-     * encoded using ISO-8859-1.
-     */
-    public void write_string(String message) throws IOException {
-        byte[] bytes = message.getBytes("ISO-8859-1");
-        int size = bytes.length + 1;
+	/*
+	 * Writes a char string to the given fd preceeded by its size. The string is
+	 * encoded using ISO-8859-1.
+	 */
+	public void write_string(String message) throws IOException {
+		byte[] bytes = message.getBytes("ISO-8859-1");
+		int size = bytes.length + 1;
 
-        writeInt(size);
-        write(bytes);
-        // I think we need to write the null terminator, if not then adjust size
-        // above.
-        write(0);
-    }
+		writeInt(size);
+		write(bytes);
+		// I think we need to write the null terminator, if not then adjust size
+		// above.
+		write(0);
+	}
 
-    private static byte encode_suit(Suit suit) {
-        switch (suit) {
-        case UNKNOWN_SUIT:
-            return -1;
-        case CLUBS:
-            return 0;
-        case DIAMONDS:
-            return 1;
-        case HEARTS:
-            return 2;
-        case SPADES:
-            return 3;
-        case NO_SUIT:
-            return 4;
-        default:
-            throw new IllegalStateException(
-                    "Attempt to encode unrecognised card suit: " + suit);
-        }
-    }
+	private static byte encode_suit(Suit suit) {
+		if (suit == Suit.UNKNOWN_SUIT) {
+			return -1;
+		} else if (suit == Suit.CLUBS) {
+			return 0;
+		} else if (suit == Suit.DIAMONDS) {
+			return 1;
+		} else if (suit == Suit.HEARTS) {
+			return 2;
+		} else if (suit == Suit.SPADES) {
+			return 3;
+		} else if (suit == Suit.NO_SUIT) {
+			return 4;
+		} else {
+			throw new IllegalStateException(
+					"Attempt to encode unrecognised card suit: " + suit);
+		}
+	}
 }

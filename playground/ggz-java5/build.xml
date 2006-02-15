@@ -28,8 +28,8 @@
 			   destdir="${bin}" 
 			   deprecation="true" 
 			   debug="false" 
-			   optimize="true" 
-			   source="1.5">
+			   optimize="true"
+			   source="1.4">
 		</javac>
 		<copy todir="${bin}">
 			<fileset refid="project.resources"/>

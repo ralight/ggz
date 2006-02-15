@@ -121,7 +121,7 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 
         boolean isSoloPlayPossible = gameType.get_max_bots() > 0;
         GridBagConstraints constraints = new GridBagConstraints();
-        add(centerPanel, BorderLayout.CENTER);
+        getContentPane().add(centerPanel, BorderLayout.CENTER);
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.WEST;

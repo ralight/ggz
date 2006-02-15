@@ -41,7 +41,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -91,7 +91,8 @@ public class ClientApplet extends JApplet implements ServerListener,
     public ClientApplet() throws IOException {
         // TODO Make watermark URL and background color applet parameters.
         URL imageUrl = getClass().getResource("/ggz/ui/images/watermark.gif");
-        final Image watermark = ImageIO.read(imageUrl);
+        final Image watermark = new ImageIcon(imageUrl).getImage();
+        //final Image watermark = ImageIO.read(imageUrl);
         final Composite alphaComposite = AlphaComposite.getInstance(
                 AlphaComposite.SRC_OVER, 0.3f);
 
@@ -344,69 +345,53 @@ public class ClientApplet extends JApplet implements ServerListener,
         String statusText;
         CardLayout layout = (CardLayout) mainPanel.getLayout();
 
-        switch (server.get_state()) {
-        case GGZ_STATE_OFFLINE:
+        if (server.get_state() == StateID.GGZ_STATE_OFFLINE) {
             statusText = messages.getString("ClientApplet.StateOffline");
-            break;
         /** In the process of connecting. */
-        case GGZ_STATE_CONNECTING:
+        } else if (server.get_state() == StateID.GGZ_STATE_CONNECTING) {
             loginFailData = null;
             layout.show(mainPanel, "busy");
             statusText = messages.getString("ClientApplet.StateConnecting");
-            break;
         /** Continuous reconnection attempts. */
-        case GGZ_STATE_RECONNECTING:
+        } else if (server.get_state() == StateID.GGZ_STATE_RECONNECTING) {
             statusText = messages.getString("ClientApplet.StateReconnecting");
-            break;
         /** Connected, but not doing anything. */
-        case GGZ_STATE_ONLINE:
+        } else if (server.get_state() == StateID.GGZ_STATE_ONLINE) {
             statusText = messages.getString("ClientApplet.StateConnected");
-            break;
         /** In the process of logging in. */
-        case GGZ_STATE_LOGGING_IN:
+        } else if (server.get_state() == StateID.GGZ_STATE_LOGGING_IN) {
             statusText = messages.getString("ClientApplet.StateLoggingIn");
-            break;
         /** Online and logged in! */
-        case GGZ_STATE_LOGGED_IN:
+        } else if (server.get_state() == StateID.GGZ_STATE_LOGGED_IN) {
             statusText = messages.getString("ClientApplet.StateLoggedIn");
-            break;
         /** Moving into a room. */
-        case GGZ_STATE_ENTERING_ROOM:
+        } else if (server.get_state() == StateID.GGZ_STATE_ENTERING_ROOM) {
             layout.show(mainPanel, "busy");
             statusText = messages.getString("ClientApplet.StateEnteringRoom");
-            break;
         /** Moving between rooms. */
-        case GGZ_STATE_BETWEEN_ROOMS:
+        } else if (server.get_state() == StateID.GGZ_STATE_BETWEEN_ROOMS) {
             layout.show(mainPanel, "busy");
             statusText = messages.getString("ClientApplet.StateBetweenRooms");
-            break;
         /** Online, logged in, and in a room. */
-        case GGZ_STATE_IN_ROOM:
+        } else if (server.get_state() == StateID.GGZ_STATE_IN_ROOM) {
             statusText = messages.getString("ClientApplet.StateInRoom");
-            break;
         /** Trying to launch a table. */
-        case GGZ_STATE_LAUNCHING_TABLE:
+        } else if (server.get_state() == StateID.GGZ_STATE_LAUNCHING_TABLE) {
             statusText = messages.getString("ClientApplet.StateLaunchingGame");
-            break;
         /** Trying to join a table. */
-        case GGZ_STATE_JOINING_TABLE:
+        } else if (server.get_state() == StateID.GGZ_STATE_JOINING_TABLE) {
             statusText = messages.getString("ClientApplet.StateJoiningGame");
-            break;
         /** Online, loggied in, in a room, at a table. */
-        case GGZ_STATE_AT_TABLE:
+        } else if (server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
             statusText = messages.getString("ClientApplet.StatePlaying");
-            break;
         /** Waiting to leave a table. */
-        case GGZ_STATE_LEAVING_TABLE:
+        } else if (server.get_state() == StateID.GGZ_STATE_LEAVING_TABLE) {
             statusText = messages.getString("ClientApplet.StateLeavingGame");
-            break;
         /** In the process of logging out. */
-        case GGZ_STATE_LOGGING_OUT:
+        } else if (server.get_state() == StateID.GGZ_STATE_LOGGING_OUT) {
             statusText = messages.getString("ClientApplet.StateLoggingOut");
-            break;
-        default:
+        } else {
             statusText = "";
-            break;
         }
         getAppletContext().showStatus(statusText);
     }

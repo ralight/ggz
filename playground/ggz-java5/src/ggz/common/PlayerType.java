@@ -17,26 +17,31 @@
  */
 package ggz.common;
 
+import java.util.ArrayList;
+
 /**
- * @brief A player type.
+ * A player type.
  * 
  * The server will tell the client the type of each player.
  */
-public enum PlayerType {
-    /** A normal player is registered but has no special permission. */
-    GGZ_PLAYER_NORMAL,
+public class PlayerType {
+
+	public static final ArrayList values = new ArrayList();
+
+	/** A normal player is registered but has no special permission. */
+    public static final PlayerType GGZ_PLAYER_NORMAL = new PlayerType();
 
     /** A guest player is not registered. */
-    GGZ_PLAYER_GUEST,
+    public static final PlayerType GGZ_PLAYER_GUEST = new PlayerType();
 
     /** An admin player is registered and has some special permissions. */
-    GGZ_PLAYER_ADMIN,
+    public static final PlayerType GGZ_PLAYER_ADMIN = new PlayerType();
 
     /** A bot is a special type of player. */
-    GGZ_PLAYER_BOT,
+    public static final PlayerType GGZ_PLAYER_BOT = new PlayerType();
 
     /** This is an unknown type of player. */
-    GGZ_PLAYER_UNKNOWN;
+    public static final PlayerType GGZ_PLAYER_UNKNOWN = new PlayerType();
 
     private static final String GUEST_PLAYER_NAME = "guest";
 
@@ -48,31 +53,38 @@ public enum PlayerType {
 
     private static final String UNKNOWN_PLAYER_NAME = "unknown";
 
+    private PlayerType() {
+    	values.add(this);
+    }
+    
+    public int ordinal() {
+    	return values.indexOf(this);
+    }
+    
+    public static PlayerType[] values() {
+    	return (PlayerType[]) values.toArray(new PlayerType[values.size()]);
+    }
+    
     public String toString() {
-        switch (this) {
-        case GGZ_PLAYER_GUEST:
+        if (this == GGZ_PLAYER_GUEST) {
             return GUEST_PLAYER_NAME;
-        case GGZ_PLAYER_NORMAL:
+        } else if (this == GGZ_PLAYER_NORMAL) {
             return NORMAL_PLAYER_NAME;
-        case GGZ_PLAYER_ADMIN:
+        } else if (this == GGZ_PLAYER_ADMIN) {
             return ADMIN_PLAYER_NAME;
-        case GGZ_PLAYER_BOT:
+        } else if (this == GGZ_PLAYER_BOT) {
             return BOT_PLAYER_NAME;
-        case GGZ_PLAYER_UNKNOWN:
+        } else if (this == GGZ_PLAYER_UNKNOWN) {
             return UNKNOWN_PLAYER_NAME;
         }
 
-        // ggz_error_msg("ggz_playertype_to_string: "
-        // "invalid playertype %d given.", type);
-        return UNKNOWN_PLAYER_NAME; /* ? */
+        throw new RuntimeException("Unrecognised PlayerType: " + this);
     }
 
-    public static PlayerType string_to_playertype(String type_str) {
+    public static PlayerType valueOf(String type_str) {
         if (type_str == null) {
             return GGZ_PLAYER_UNKNOWN;
-        }
-
-        if (NORMAL_PLAYER_NAME.equalsIgnoreCase(type_str)) {
+        } else if (NORMAL_PLAYER_NAME.equalsIgnoreCase(type_str)) {
             return GGZ_PLAYER_NORMAL;
         } else if (GUEST_PLAYER_NAME.equalsIgnoreCase(type_str)) {
             return GGZ_PLAYER_GUEST;

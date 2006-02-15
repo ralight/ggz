@@ -28,7 +28,7 @@ package ggz.client.core;
  * @see ggzcore_room_add_event_hook
  * @see ggzcore_server_read_data
  */
-public enum RoomEvent {
+public class RoomEvent {
     /**
      * The list of players in a room has arrived.
      * 
@@ -37,7 +37,7 @@ public enum RoomEvent {
      * @note This will only be issued for the current room.
      * @see ggzcore_room_list_players
      */
-    GGZ_PLAYER_LIST,
+    public static final RoomEvent GGZ_PLAYER_LIST = new RoomEvent();
 
     /**
      * Received the list of active tables.
@@ -46,7 +46,7 @@ public enum RoomEvent {
      *            NULL
      * @see ggzcore_room_list_tables
      */
-    GGZ_TABLE_LIST,
+    public static final RoomEvent GGZ_TABLE_LIST = new RoomEvent();
 
     /**
      * Received a chat message of any kind. This can happen at any time when
@@ -56,7 +56,7 @@ public enum RoomEvent {
      *            The GGZChatEventData associated with the chat.
      * @see GGZChatEventData
      */
-    GGZ_CHAT_EVENT,
+    public static final RoomEvent GGZ_CHAT_EVENT = new RoomEvent();
 
     /**
      * A player has entered the room with you.
@@ -64,7 +64,7 @@ public enum RoomEvent {
      * @param data
      *            A GGZRoomChangeEventData structure.
      */
-    GGZ_ROOM_ENTER,
+    public static final RoomEvent GGZ_ROOM_ENTER = new RoomEvent();
 
     /**
      * A player has left your room.
@@ -72,7 +72,7 @@ public enum RoomEvent {
      * @param data
      *            A GGZRoomChangeEventData structure.
      */
-    GGZ_ROOM_LEAVE,
+    public static final RoomEvent GGZ_ROOM_LEAVE = new RoomEvent();
 
     /**
      * One of the tables in the current room has changed.
@@ -81,7 +81,7 @@ public enum RoomEvent {
      * @param data
      *            NULL
      */
-    GGZ_TABLE_UPDATE,
+    public static final RoomEvent GGZ_TABLE_UPDATE = new RoomEvent();
 
     /**
      * The table you tried to launch has launched!
@@ -90,7 +90,7 @@ public enum RoomEvent {
      * @param data
      *            NULL
      */
-    GGZ_TABLE_LAUNCHED,
+    public static final RoomEvent GGZ_TABLE_LAUNCHED = new RoomEvent();
 
     /**
      * The table you tried to launch couldn't be launched
@@ -99,7 +99,7 @@ public enum RoomEvent {
      * @param data
      *            A pointer to a GGZErrorEventData
      */
-    GGZ_TABLE_LAUNCH_FAIL,
+    public static final RoomEvent GGZ_TABLE_LAUNCH_FAIL = new RoomEvent();
 
     /**
      * Your table join attempt has succeeded.
@@ -108,7 +108,7 @@ public enum RoomEvent {
      * @param data
      *            The table index (int*) of the table we joined.
      */
-    GGZ_TABLE_JOINED,
+    public static final RoomEvent GGZ_TABLE_JOINED = new RoomEvent();
 
     /**
      * Joining a table did not succeed.
@@ -117,7 +117,7 @@ public enum RoomEvent {
      * @param data
      *            A helpful error string.
      */
-    GGZ_TABLE_JOIN_FAIL,
+    public static final RoomEvent GGZ_TABLE_JOIN_FAIL = new RoomEvent();
 
     /**
      * You have successfully left the table you were at.
@@ -127,7 +127,7 @@ public enum RoomEvent {
      *            The GGZTableLeaveEventData associated with the leave.
      * @see GGZTableLeaveEventData
      */
-    GGZ_TABLE_LEFT,
+    public static final RoomEvent GGZ_TABLE_LEFT = new RoomEvent();
 
     /**
      * Your attempt to leave the table has failed.
@@ -136,7 +136,7 @@ public enum RoomEvent {
      * @param data
      *            A helpful error string.
      */
-    GGZ_TABLE_LEAVE_FAIL,
+    public static final RoomEvent GGZ_TABLE_LEAVE_FAIL = new RoomEvent();
 
     /**
      * A player's lag (measure of connection speed) has been updated
@@ -145,7 +145,7 @@ public enum RoomEvent {
      * @param data
      *            The name of the player whose lag has changed.
      */
-    GGZ_PLAYER_LAG,
+    public static final RoomEvent GGZ_PLAYER_LAG = new RoomEvent();
 
     /**
      * A player's stats have been updated.
@@ -158,7 +158,7 @@ public enum RoomEvent {
      * @param data
      *            The name of the player whose stats have changed.
      */
-    GGZ_PLAYER_STATS,
+    public static final RoomEvent GGZ_PLAYER_STATS = new RoomEvent();
 
     /**
      * The number of players in a room has arrived.
@@ -166,5 +166,7 @@ public enum RoomEvent {
      * @param data
      *            The room id (int *)
      */
-    GGZ_PLAYER_COUNT;
+    public static final RoomEvent GGZ_PLAYER_COUNT = new RoomEvent();
+    
+    private RoomEvent() {}
 }

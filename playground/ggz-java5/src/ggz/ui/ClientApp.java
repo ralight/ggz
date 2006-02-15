@@ -51,6 +51,7 @@ public class ClientApp {
      * @param args
      */
     public static void main(String[] args) throws Exception {
+    	//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         if (!parseArgs(args)) {
             printUsage();
             return;
@@ -92,7 +93,7 @@ public class ClientApp {
                         return null;
                     }
 
-                    public Enumeration<Applet> getApplets() {
+                    public Enumeration getApplets() {
                         // TODO Auto-generated method stub
                         return null;
                     }
@@ -112,7 +113,7 @@ public class ClientApp {
                         return null;
                     }
 
-                    public Iterator<String> getStreamKeys() {
+                    public Iterator getStreamKeys() {
                         // TODO Auto-generated method stub
                         return null;
                     }

@@ -33,7 +33,7 @@ public interface CardGameHandler extends ModEventHandler {
 
     public void set_text_message(String mark, String message);
 
-    public void set_cardlist_message(String mark, List<Card[]> cardlist);
+    public void set_cardlist_message(String mark, List cardlist);
 
     public void set_player_message(int player, String message);
 

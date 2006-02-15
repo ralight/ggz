@@ -118,12 +118,12 @@ public class GGZCardInputStream extends DataInputStream {
         if (index < 0) {
             throw new EOFException();
         }
-        return ServerOpCode.values()[index];
+        return ServerOpCode.valueOf(index);
     }
 
     public GameMessage read_game_message() throws IOException {
         int index = read();
-        return GameMessage.values()[index];
+        return (GameMessage) GameMessage.valueOf(index);
     }
 
     public int read_seat() throws IOException {

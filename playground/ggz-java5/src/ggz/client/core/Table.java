@@ -396,11 +396,6 @@ public class Table {
         return this.spectator_seats[num].name;
     }
 
-    // public int compareTo(Object o)
-    // {
-    // return this.id - ((Table)o).id;
-    // }
-
     public boolean equals(Object o) {
         return (o != null) && (o instanceof Table) && this.id == ((Table) o).id;
     }

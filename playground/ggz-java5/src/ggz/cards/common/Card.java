@@ -54,11 +54,11 @@ public class Card {
         this.deck = deck;
     }
 
-    public Suit get_suit() {
+    public Suit suit() {
         return this.suit;
     }
 
-    public Face get_face() {
+    public Face face() {
         return this.face;
     }
 

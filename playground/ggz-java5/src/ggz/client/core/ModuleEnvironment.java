@@ -18,19 +18,25 @@
 package ggz.client.core;
 
 /**
- * @brief The environment a game frontend expects.
+ * The environment a game frontend expects.
  * 
  * Core clients should offer those game modules which fit their own environment.
  */
-public enum ModuleEnvironment {
-    /** < No GUI, no interaction with user */
-    GGZ_ENVIRONMENT_PASSIVE,
-    /** < Text console */
-    GGZ_ENVIRONMENT_CONSOLE,
-    /** < VESA or framebuffer */
-    GGZ_ENVIRONMENT_FRAMEBUFFER,
-    /** < X11 windowed mode (default) */
-    GGZ_ENVIRONMENT_XWINDOW,
-    /** < X11 fullscreen mode */
-    GGZ_ENVIRONMENT_XFULLSCREEN;
+public class ModuleEnvironment {
+	/** No GUI, no interaction with user */
+	public static final ModuleEnvironment GGZ_ENVIRONMENT_PASSIVE = new ModuleEnvironment();
+
+	/** Text console */
+	public static final ModuleEnvironment GGZ_ENVIRONMENT_CONSOLE = new ModuleEnvironment();
+
+	/** VESA or framebuffer */
+	public static final ModuleEnvironment GGZ_ENVIRONMENT_FRAMEBUFFER = new ModuleEnvironment();
+
+	/** X11 windowed mode (default) */
+	public static final ModuleEnvironment GGZ_ENVIRONMENT_XWINDOW = new ModuleEnvironment();
+
+	/** X11 fullscreen mode */
+	public static final ModuleEnvironment GGZ_ENVIRONMENT_XFULLSCREEN = new ModuleEnvironment();
+	
+	private ModuleEnvironment() {}
 }

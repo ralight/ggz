@@ -24,34 +24,59 @@ package ggz.client.core;
  * on. A game client should usually consult the current state when determining
  * what actions are possible.
  */
-public enum StateID {
-    /** Not connected (at all) */
-    GGZ_STATE_OFFLINE,
-    /** In the process of connecting. */
-    GGZ_STATE_CONNECTING,
-    /** Continuous reconnection attempts. */
-    GGZ_STATE_RECONNECTING,
-    /** Connected, but not doing anything. */
-    GGZ_STATE_ONLINE,
-    /** In the process of logging in. */
-    GGZ_STATE_LOGGING_IN,
-    /** Online and logged in! */
-    GGZ_STATE_LOGGED_IN,
-    /** Moving into a room. */
-    GGZ_STATE_ENTERING_ROOM,
-    /** Online, logged in, and in a room. */
-    GGZ_STATE_IN_ROOM,
-    /** Moving between rooms. */
-    GGZ_STATE_BETWEEN_ROOMS,
-    /** Trying to launch a table. */
-    GGZ_STATE_LAUNCHING_TABLE,
-    /** Trying to join a table. */
-    GGZ_STATE_JOINING_TABLE,
-    /** Online, loggied in, in a room, at a table. */
-    GGZ_STATE_AT_TABLE,
-    /** Waiting to leave a table. */
-    GGZ_STATE_LEAVING_TABLE,
-    /** In the process of logging out. */
-    GGZ_STATE_LOGGING_OUT
+public class StateID {
+	/** Not connected (at all) */
+	public static final StateID GGZ_STATE_OFFLINE = new StateID();
 
+	/** In the process of connecting. */
+	public static final StateID GGZ_STATE_CONNECTING = new StateID();
+
+	/** Continuous reconnection attempts. */
+	public static final StateID GGZ_STATE_RECONNECTING = new StateID();
+
+	/** Connected, but not doing anything. */
+	public static final StateID GGZ_STATE_ONLINE = new StateID();
+
+	/** In the process of logging in. */
+	public static final StateID GGZ_STATE_LOGGING_IN = new StateID();
+
+	/** Online and logged in! */
+	public static final StateID GGZ_STATE_LOGGED_IN = new StateID();
+
+	/** Moving into a room. */
+	public static final StateID GGZ_STATE_ENTERING_ROOM = new StateID();
+
+	/** Online, logged in, and in a room. */
+	public static final StateID GGZ_STATE_IN_ROOM = new StateID();
+
+	/** Moving between rooms. */
+	public static final StateID GGZ_STATE_BETWEEN_ROOMS = new StateID();
+
+	/** Trying to launch a table. */
+	public static final StateID GGZ_STATE_LAUNCHING_TABLE = new StateID();
+
+	/** Trying to join a table. */
+	public static final StateID GGZ_STATE_JOINING_TABLE = new StateID();
+
+	/** Online, loggied in, in a room, at a table. */
+	public static final StateID GGZ_STATE_AT_TABLE = new StateID();
+
+	/** Waiting to leave a table. */
+	public static final StateID GGZ_STATE_LEAVING_TABLE = new StateID();
+
+	/** In the process of logging out. */
+	public static final StateID GGZ_STATE_LOGGING_OUT = new StateID();
+
+	public static int nextOrdinal = 0;
+	
+	public int ordinal;
+	
+	private StateID() {
+		ordinal = nextOrdinal;
+		nextOrdinal++;
+	}
+	
+	public int ordinal() {
+		return ordinal;
+	}
 }
