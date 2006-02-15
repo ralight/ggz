@@ -292,6 +292,8 @@ public class BridgeBidPanel extends JPanel implements ItemListener {
 		}
 		bidHistoryTable.setValueAt(bid, bidHistoryTable.getRowCount() - 1,
 				bidder);
+		invalidate();
+		repaint();
 	}
 
 	public int getBidIndex() {
