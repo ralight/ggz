@@ -3,6 +3,12 @@ originate from other projects.
 It should be a goal to check for proper licences and encourage
 further data contributions at the same time.
 
+The 2nd section about reused code components is important for
+binary distributions. In their case, the separate copyright
+statements will have to be mentioned. Otherwise, each GGZ package
+is licenced under one licence, usually GPL or LGPL (for libggz,
+ggz-client-libs and ggz-java).
+
 Specific contributions
 ----------------------
 
@@ -50,10 +56,12 @@ Imported from other projects
 Code reuse
 ----------
 
-* XText (XChat text engine)
+* XText (XChat text engine) - licence: GPL
   - gtk-client/ggz-gtk/xtext.*
+  - gnome-client/src/xtext.*
 
-* Chessd libcgc
+* Chessd libcgc - licence: BSD (3-clause/revised)
   - ggzd/game_servers/chess/libcgc/*
   - gtk-games/chess/libcgc/*
+  - kde-games/koenig/libcgc/*
 
