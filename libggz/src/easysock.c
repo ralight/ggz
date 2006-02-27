@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7836 2006-02-03 12:57:31Z josef $
+ * $Id: easysock.c 7876 2006-02-27 11:55:48Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -22,7 +22,7 @@
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /*
@@ -989,21 +989,21 @@ const char *ggz_getpeername(int fd)
 	char *ip;
 
 #ifndef HAVE_WINSOCK2_H
-	struct sockaddr addr;
+	struct sockaddr_storage addr;
 	socklen_t addrsize;
 	int ret;
 
 	addrsize = sizeof(addr);
-	ret = getpeername(fd, &addr, &addrsize);
+	ret = getpeername(fd, (struct sockaddr*)&addr, &addrsize);
 
-	// FIXME: IPv4 compatibility?
-	if(addr.sa_family == AF_INET6)
+	/* FIXME: IPv4 compatibility? One could use getnameinfo() on addr... */
+	if(addr.ss_family == AF_INET6)
 	{
 		ip = (char*)ggz_malloc(INET6_ADDRSTRLEN);
 		inet_ntop(AF_INET6, (void*)&(((struct sockaddr_in6*)&addr)->sin6_addr),
 			ip, INET6_ADDRSTRLEN);
 	}
-	else if(addr.sa_family == AF_INET)
+	else if(addr.ss_family == AF_INET)
 	{
 		ip = (char*)ggz_malloc(INET_ADDRSTRLEN);
 		inet_ntop(AF_INET, (void*)&(((struct sockaddr_in*)&addr)->sin_addr),
