@@ -872,6 +872,11 @@ class GGZBoard:
 									overlay.fill((255, 255, 255))
 									overlay.set_alpha(70)
 									ui.backgroundarea.blit(overlay, (bx, by))
+							# FIXME: boardhints is used twice
+							if game.boardhints:
+								hint = game.boardhints[j][i]
+								if hint == 1:
+									self.rect(ui.backgroundarea, (255, 255, 255), sx + 2, sy + 2, conf.cellwidth - 4, conf.cellheight - 4, color)
 
 				playernames = self.playernames()
 				if playernames:
