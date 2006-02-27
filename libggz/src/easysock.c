@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7876 2006-02-27 11:55:48Z josef $
+ * $Id: easysock.c 7877 2006-02-27 12:15:43Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -75,6 +75,7 @@ DEBUG_MEM
 #include "support.h"
 
 #define SA struct sockaddr  
+#define HOSTNAMELEN 1024
 
 static ggzIOError _err_func = NULL;
 static ggzIOExit _exit_func = exit;
@@ -984,7 +985,7 @@ const char *ggz_resolvename(const char *name)
 	}
 }
 
-const char *ggz_getpeername(int fd)
+const char *ggz_getpeername(int fd, int resolve)
 {
 	char *ip;
 
@@ -995,6 +996,23 @@ const char *ggz_getpeername(int fd)
 
 	addrsize = sizeof(addr);
 	ret = getpeername(fd, (struct sockaddr*)&addr, &addrsize);
+	if(ret != 0)
+	{
+		return NULL;
+	}
+
+	if(resolve)
+	{
+		ip = (char*)ggz_malloc(HOSTNAMELEN);
+		ret = getnameinfo((struct sockaddr*)&addr, addrsize,
+			ip, HOSTNAMELEN, NULL, 0, NI_NUMERICHOST);
+		if(ret != 0)
+		{
+				ggz_free(ip);
+				return NULL;
+		}
+		return ip;
+	}
 
 	/* FIXME: IPv4 compatibility? One could use getnameinfo() on addr... */
 	if(addr.ss_family == AF_INET6)
