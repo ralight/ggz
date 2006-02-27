@@ -175,6 +175,7 @@ void KTicTacTuxWin::slotMenu(int id)
 		conf = kapp->config();
 		conf->setGroup("Settings");
 		conf->writeEntry("theme", m_themes[mtheme->text(id)]);
+		conf->sync();
 	}
 }
 

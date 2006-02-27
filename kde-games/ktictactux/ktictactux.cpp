@@ -194,6 +194,7 @@ int KTicTacTux::gameOver()
 					m_score_opp++;
 					if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanwon", conf->readNumEntry("humanwon") + 1);
 					else conf->writeEntry("aiwon", conf->readNumEntry("aiwon") + 1);
+					conf->sync();
 					announce(i18n("You lost the game."));
 				}
 				else
@@ -201,6 +202,7 @@ int KTicTacTux::gameOver()
 					m_score_you++;
 					if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanlost", conf->readNumEntry("humanlost") + 1);
 					else conf->writeEntry("ailost", conf->readNumEntry("ailost") + 1);
+					conf->sync();
 					announce(i18n("You are the winner!"));
 				}
 			}
@@ -215,6 +217,7 @@ int KTicTacTux::gameOver()
 
 		if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humantied", conf->readNumEntry("humantied") + 1);
 		else conf->writeEntry("aitied", conf->readNumEntry("aitied") + 1);
+		conf->sync();
 		announce(i18n("The game is over. There is no winner."));
 		emit signalGameOver();
 		return 1;
@@ -299,8 +302,17 @@ void KTicTacTux::getAI()
 			}
 	}
 
-	// Normal AI operations
 	m_seewinner = 0;
+
+	// Go straight for the middle if possible
+	if(c == proto->none)
+	{
+		m_x = 1;
+		m_y = 1;
+		m_seewinner = 1;
+	}
+
+	// Normal AI operations
 	getAIAt(0, 0, 1, 1);
 	getAIAt(2, 0, -1, 1);
 	for(int i = 0; i < 3; i++)
