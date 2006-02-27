@@ -1,0 +1,45 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ-Kopete</b><br>
+Game plugin for the KDE IM client Kopete
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>The main features</i><br>
+<ul>
+<li>Gameplay plugin for the multi-protocol IM client
+<li>Currently supports two-player games
+</ul>
+<br>
+
+<i>Detailed information</i><br>
+Similar to GGZ-Gaim, people who prefer to have a real chat client
+instead of using a GGZ core client, which obviously stresses more the
+game features instead of the chat features, can use Kopete to chat
+independent of the protocol in use, and play a GGZ game once in a while.
+
+</td><td valign="top">
+
+<i>Screenshot:</i><br>
+<!-- <img src="/utils/pics/ggz-kopete.png"> -->
+None yet.
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

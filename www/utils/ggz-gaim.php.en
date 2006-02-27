@@ -1,0 +1,44 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ-Gaim</b><br>
+Online gaming integration into the Gaim instant messenger
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>The main features</i><br>
+<ul>
+<li>Gaim plugin for playing games while chatting
+<li>Currently supports all two-player games
+</ul>
+<br>
+
+<i>Detailed information</i><br>
+As an alternative to using a GGZ core client for launching games, those
+who prefer a multi-protocol chat client can use Gaim, while still being
+able to connect to a GGZ server to launch games from it.
+
+</td><td valign="top">
+
+<i>Screenshot:</i><br>
+<!-- <img src="/utils/pics/ggz-gaim.png"> -->
+None yet.
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
