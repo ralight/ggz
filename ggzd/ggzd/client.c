@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 7859 2006-02-13 07:00:44Z josef $
+ * $Id: client.c 7878 2006-02-27 12:16:13Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -92,10 +92,6 @@ static void* client_thread_init(void *arg_ptr)
 {
 	int sock, status;
 	GGZClient *client;
-	char tmphstbuf[1024];
-	int rc;
-	struct sockaddr addr;
-	unsigned int addrlen;
 	const char *tmp;
 
 	/* Get our arguments out of the arg buffer */
@@ -113,7 +109,7 @@ static void* client_thread_init(void *arg_ptr)
 	client = client_new(sock);
 
 	/* Find out where the client comes from */
-	tmp = ggz_getpeername(sock);
+	tmp = ggz_getpeername(sock, opt.perform_lookups);
 	if (!tmp) {
 		client->addr[0] = '\0';
 	} else {
@@ -121,22 +117,6 @@ static void* client_thread_init(void *arg_ptr)
 	}
 	ggz_free(tmp);
 
-	if (opt.perform_lookups) {
-		/* FIXME: to be done in libggz! (parameter for ggz_getpeername?) */
-		addrlen = sizeof(addr);
-		rc = getpeername(sock, &addr, &addrlen);
-		/*printf("getpeername: rc=%i addrlen=%i\n", rc, addrlen);*/
-
-		/*printf("old addr: %s\n", client->addr);*/
-		rc = getnameinfo(&addr, addrlen, tmphstbuf, sizeof(tmphstbuf), NULL, 0, NI_NAMEREQD);
-		/*printf("rc(gni): %i\n", rc);*/
-		if (rc == 0) {
-			strncpy(client->addr, tmphstbuf, sizeof(client->addr));
-		}
-		/*printf("new addr: %s\n", client->addr);*/
-		/*printf("tmp was: %s\n", tmphstbuf);*/
-	}
- 
 	/* Send server ID */
 	if (net_send_serverid(client->net, opt.server_name, opt.tls_use) < 0) {
 		client_free(client);
