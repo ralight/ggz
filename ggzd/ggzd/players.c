@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 7802 2006-01-23 10:37:14Z josef $
+ * $Id: players.c 7879 2006-02-27 12:16:44Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -973,7 +973,7 @@ GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
 			pthread_rwlock_unlock(&game_types[i].lock);
 
 			if (allow_hostname) {
-				host = ggz_getpeername(net_get_fd(player->client->net));
+				host = ggz_getpeername(net_get_fd(player->client->net), 0);
 				do_send = 1;
 			}
 
