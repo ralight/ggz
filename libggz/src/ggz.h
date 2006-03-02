@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 7836 2006-02-03 12:57:31Z josef $
+ * $Id: ggz.h 7881 2006-03-02 19:55:05Z oojah $
  * 
  * Header file for ggz components lib
  *
@@ -1342,10 +1342,11 @@ const char *ggz_resolvename(const char *name);
  *  This function tells about the IP address of the peer which is
  *  connected to the specified socket.
  *  @param fd Local end file descriptor of the connection
+ *  @param resolve
  *  @return IP address of peer, or NULL on error
  *  @note The string must be ggz_free()d afterwards
  */
-const char *ggz_getpeername(int fd);
+const char *ggz_getpeername(int fd, int resolve);
 
 
 /****************************************************************************
