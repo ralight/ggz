@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 7881 2006-03-02 19:55:05Z oojah $
+ * $Id: ggz.h 7883 2006-03-03 11:11:55Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1337,13 +1337,15 @@ int ggz_set_network_notify_func(ggzNetworkNotify func);
 const char *ggz_resolvename(const char *name);
 
 
-/** @brief Get the IP address of a connected peer.
+/** @brief Get the IP address or host name of a connected peer.
  *
  *  This function tells about the IP address of the peer which is
- *  connected to the specified socket.
+ *  connected to the specified socket. If resolving is enabled, then
+ *  the hostname is returned instead. In this case, resolving will
+ *  be a blocking operation.
  *  @param fd Local end file descriptor of the connection
- *  @param resolve
- *  @return IP address of peer, or NULL on error
+ *  @param resolve Whether or not to resolve the host name
+ *  @return IP address or host name of peer, or NULL on error
  *  @note The string must be ggz_free()d afterwards
  */
 const char *ggz_getpeername(int fd, int resolve);
