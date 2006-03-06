@@ -1,7 +1,7 @@
 /*************************************************************************
 GenSecure - Transport Layer Security functionality for the GGZ Gaming Zone
-Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
-Published under GNU GPL conditions
+Copyright (C) 2001 - 2006 Josef Spillner, josef@ggzgamingzone.org
+Published under GNU LGPL conditions - see COPYING for details
 **************************************************************************/
 
 #ifdef HAVE_CONFIG_H
