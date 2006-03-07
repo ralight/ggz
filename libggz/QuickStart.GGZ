@@ -1,7 +1,7 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.11
+Installation Requirements for the release 0.0.13
 ------------------------------------------------
 
 The GGZ Gaming Zone client is built from three separate packages
@@ -28,6 +28,10 @@ some changes in order to work.  We will be glad to assist anyone who
 wishes to port the software to other platforms.
 Windows users can use either the native Windows client ports (might be
 outdated) or the newer Cygwin packages.
+
+For both Windows users and others, the GGZ Java efforts provide an applet
+which can be used to play GGZ games in the browser, without any installation
+at all! The Java package can still be installed locally however.
 
 The remainder of this document assumes that you are installing from
 source code.  If you are installing pre-compiled packages, please keep
@@ -96,6 +100,7 @@ The following important features exist:
 --disable-debug: omit debug code
 --with-gcrypt: enable hash functions
 --with-tls: enable encryptions functions
+--enable-anl: enable asynchronous resolver functions
 
 
 Installing ggz-client-libs
@@ -143,9 +148,9 @@ KDE Client Installation
 
 The KDE client requires that the KDE libraries 3.X be installed.
 These can be downloaded from http://www.kde.org.  We recommend the
-latest stable version, 3.4.0.  As KDE depends on Qt, you will need Qt
-version >= 3.0 (3.3.4 is recommended as it is the version which
-KDE 3.4 development was based on).
+latest stable version, 3.5.1.  As KDE depends on Qt, you will need Qt
+version >= 3.0 (3.3.5 is recommended as it is the version which
+KDE 3.5 development was based on).
 
 Unpack the ggz-kde-client sources.  They should extract into a
 directory named ggz-kde-client-X.X.X.  Enter that directory and run
