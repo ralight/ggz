@@ -115,6 +115,7 @@ class Game:
 							value = 1
 		if ret == 0:
 			self.isover = 1
+			###self.winner = self.turnplayer
 #		else:
 #			self.lastmove = "b"
 		return (ret, None, topos)
@@ -176,6 +177,7 @@ class Game:
 			self.lastmove = "b"
 		else:
 			self.lastmove = "w"
+		self.turnplayer = (self.turnplayer + 1) % self.players
 
 ggzboardgame = Game()
 
