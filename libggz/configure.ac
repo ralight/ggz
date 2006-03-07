@@ -43,10 +43,17 @@ if test $enable_threading != "no"; then
 
   # If threading is available, maybe asynchronous hostname lookups
   # are as well, using libanl from glibc >= 2.3.
-  AC_CHECK_LIB(anl, getaddrinfo_a,
-    [AC_DEFINE([GAI_A], 1, [Support for asynchronous hostname lookups])
-	 enable_anl=yes LDADD="$LDADD -lanl"],
-	[enable_anl=no])
+  AC_ARG_ENABLE([anl],
+    AC_HELP_STRING([--enable-anl], [Enable asynchronous hostname lookups]),
+    [enable_anl=$enableval],
+    [enable_anl=no])
+  if test $enable_anl != "no"; then
+    AC_CHECK_LIB(anl, getaddrinfo_a,
+      [AC_DEFINE([GAI_A], 1, [Support for asynchronous hostname lookups])
+       enable_anl=yes
+       LDADD="$LDADD -lanl"],
+      [enable_anl=no])
+  fi
 else
   AC_DEFINE([NO_THREADING], 1, [Define if threading support is disabled])
   enable_anl=no
