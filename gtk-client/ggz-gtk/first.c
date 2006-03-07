@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 7773 2006-01-13 05:14:42Z jdorje $
+ * $Id: first.c 7892 2006-03-07 10:04:43Z josef $
  *
  * Displayes information about the authors and the application.
  *
@@ -68,8 +68,8 @@ static struct {
 	int port;
 	int type;
 } hosts[] = { /* {"Morat.net (Fast)", "ggz.morat.net", 5688, 1}, */
-	      {"GGZ Europe (Fast)", "live.ggzgamingzone.org", 5688, 1},
-	      {"CVS Developer Server", "jzaun.com", 5689, 1} };
+	      {N_("GGZ Community (fast)"), "live.ggzgamingzone.org", 5688, 1},
+	      {N_("Local developer server"), "localhost", 5688, 1} };
 
 /* first_create_or_raise() - Displays the dialog or raises the
  *                           current dialog
@@ -127,7 +127,7 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 					     hosts[i].type);
 		ggzcore_conf_write_int(hosts[i].name, "Type", oldi);
 
-		profiles[num_profiles + i] = ggz_strdup(hosts[i].name);
+		profiles[num_profiles + i] = ggz_strdup(_(hosts[i].name));
 	}
 
 	num_profiles += num_hosts;

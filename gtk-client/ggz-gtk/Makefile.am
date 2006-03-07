@@ -1,8 +1,3 @@
-## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 7754 2006-01-09 02:43:39Z jdorje $
-
-SUBDIRS = .
-
 AM_CPPFLAGS = @GTK_CFLAGS@ -I$(top_srcdir)/intl \
 	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
 
@@ -69,11 +64,12 @@ libggz_gtk_la_SOURCES =	about.c \
 			xtext.c \
 			xtext.h \
 			xtext-ggz.h
+
 libggz_gtk_la_LIBADD = @GTK_LIBS@ $(LDADD) @LIBS@ @INTLLIBS@ \
 			$(LIB_GGZCORE) $(LIB_GGZ)
-libggz_gtk_la_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
+libggz_gtk_la_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS) -version-info 0:0:0
 
-ggz_gtk_SOURCES = 	main.c
+ggz_gtk_SOURCES = main.c
 
 ggz_gtk_DEPENDENCIES = libggz-gtk.la
 ggz_gtk_LDADD = libggz-gtk.la
