@@ -86,4 +86,5 @@ public interface CardGameHandler extends ModEventHandler {
     /** Called when the socket disconnects. */
     public void handle_disconnect();
 
+    public void alert_state(Client.GameState oldState, Client.GameState newState);
 }

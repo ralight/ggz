@@ -112,6 +112,21 @@ public class GamePanel extends JPanel implements CardGameHandler,
         table.setLayout(tableLayout);
     }
 
+    public void alert_state(Client.GameState oldState, Client.GameState newState) {
+        if (oldState == Client.STATE_BID) {
+            if (bridgeBidPanel != null) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        table.remove(bridgeBidPanel);
+                        table.invalidate();
+                        table.validate();
+                        bridgeBidPanel = null;
+                    }
+                });
+            }
+        }
+    }
+
     public void alert_badplay(String err_msg) {
         JOptionPane.showMessageDialog(this, err_msg);
     }
@@ -428,6 +443,8 @@ public class GamePanel extends JPanel implements CardGameHandler,
                     // table.setComponentZOrder(card, 0);
                     table.remove(card);
                     table.add(card, 0);
+                    tableLayout.setConstraints(card, new TableConstraints(
+                            TableConstraints.CARD_IN_HAND, player_on_left, card_num));
                 }
             }
         }
@@ -568,8 +585,17 @@ public class GamePanel extends JPanel implements CardGameHandler,
                         TableConstraints.CARD_IN_HAND, player_num, card_num));
                 card_num++;
             }
-            // Cards have just been dealt.
-            table.animate(hand.size(), sprites[player_num], endPos, 0.3);
+
+            // Don't do deal animation if we are playing, this usually means a
+            // player has shown the cards he/she already holds.
+            if (card_client.get_game_state() != Client.STATE_PLAY) {
+                table.animate(hand.size(), sprites[player_num], endPos, 0.3);
+            } else {
+                // Ensure this players cards are on top since in Bridge the
+                // player shows his cards and then immediately plays a card.
+                int num_players = card_client.get_num_players();
+                putNextPlayersCardsOnTop((player_num - 1) % num_players);
+            }
             table.setSpriteDimensions(sprite.getWidth(), sprite.getHeight());
         } catch (IOException e) {
             handleException(e);

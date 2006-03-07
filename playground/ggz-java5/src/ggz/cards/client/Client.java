@@ -41,7 +41,6 @@ public class Client implements ModEventHandler {
 
 	private int max_hand_size;
 
-	/** The game_t structure contains all global game data. */
 	/** The number of players in the game. */
 	private int num_players;
 
@@ -49,7 +48,7 @@ public class Client implements ModEventHandler {
 	private Player[] players;
 
 	/** The state the game is in */
-	private ClientState state;
+	private GameState state;
 
 	protected CardGameHandler game;
 
@@ -107,23 +106,20 @@ public class Client implements ModEventHandler {
 		log.fine("Client disconnected.");
 	}
 
-	// Socket get_fd()
-	// {
-	// return this.fd;
-	// }
-
-	private void set_game_state(ClientState state) {
+	private void set_game_state(GameState state) {
 		if (state == this.state) {
 			log.fine("Staying in state " + this.state + ".");
 		} else {
 			log
 					.fine("Changing state from " + this.state + " to " + state
 							+ ".");
+            GameState oldState = this.state;
 			this.state = state;
+            game.alert_state(oldState, state);
 		}
 	}
 
-	public ClientState get_game_state() {
+	public GameState get_game_state() {
 		return this.state;
 	}
 
@@ -232,6 +228,7 @@ public class Client implements ModEventHandler {
 	private void handle_msg_newgame() throws IOException {
 		CardSetType cardset_type = fd_in.read_cardset_type();
 
+        set_game_state(STATE_WAIT);
 		game.alert_newgame(cardset_type);
 	}
 
@@ -429,6 +426,7 @@ public class Client implements ModEventHandler {
 		int bidder = fd_in.read_seat();
 		Bid bid = fd_in.read_bid();
 
+        set_game_state(STATE_BID);
 		game.alert_bid(bidder, bid);
 	}
 
@@ -563,6 +561,7 @@ public class Client implements ModEventHandler {
 		hand.remove(card_pos);
 
 		/* Update the graphics */
+        set_game_state(STATE_PLAY);
 		game.alert_play(p, card);
 	}
 
@@ -582,7 +581,6 @@ public class Client implements ModEventHandler {
 		/*
 		 * TODO: verify that the table cards have been removed from the hands
 		 */
-
 		game.alert_table();
 	}
 
@@ -592,11 +590,13 @@ public class Client implements ModEventHandler {
 		int winner = fd_in.read_seat();
 
 		/* Update the graphics. */
+        set_game_state(STATE_PLAY);
 		game.alert_trick(winner);
 
 		/* Clear all cards off the table. */
-		for (int p = 0; p < this.num_players; p++)
+		for (int p = 0; p < this.num_players; p++) {
 			this.players[p].table_card = Card.UNKNOWN_CARD;
+        }
 	}
 
 	/*
@@ -671,7 +671,6 @@ public class Client implements ModEventHandler {
 
 	/* A bid message tells the server our choice for a bid. */
 	public void send_bid(int bid) throws IOException {
-		set_game_state(STATE_WAIT);
 		fd_out.write_opcode(ClientOpCode.RSP_BID);
 		fd_out.writeInt(bid);
 	}
@@ -684,13 +683,10 @@ public class Client implements ModEventHandler {
 		for (int i = 0; i < option_cnt; i++) {
 			fd_out.writeInt(options[i]);
 		}
-
-		set_game_state(STATE_WAIT);
 	}
 
 	/* A play message tells the server our choice for a play. */
 	public void send_play(Card card) throws IOException {
-		set_game_state(STATE_WAIT);
 		fd_out.write_opcode(ClientOpCode.RSP_PLAY);
 		fd_out.write_card(card);
 	}
@@ -838,27 +834,27 @@ public class Client implements ModEventHandler {
 	 * @note Any additional state data should be stored separately, while
 	 *       maintaining the state here.
 	 */
-	public static class ClientState {
-		private ClientState() {
+	public static class GameState {
+		private GameState() {
 		}
 	}
 
 	/** game hasn't started yet */
-	public static final ClientState STATE_INIT = new ClientState();
+	public static final GameState STATE_INIT = new GameState();
 
 	/** waiting for others */
-	public static final ClientState STATE_WAIT = new ClientState();
+	public static final GameState STATE_WAIT = new GameState();
 
 	/** our turn to play */
-	public static final ClientState STATE_PLAY = new ClientState();
+	public static final GameState STATE_PLAY = new GameState();
 
 	/** our turn to bid */
-	public static final ClientState STATE_BID = new ClientState();
+	public static final GameState STATE_BID = new GameState();
 
 	/** game's over */
-	public static final ClientState STATE_DONE = new ClientState();
+	public static final GameState STATE_DONE = new GameState();
 
 	/** determining options */
-	public static final ClientState STATE_OPTIONS = new ClientState();
+	public static final GameState STATE_OPTIONS = new GameState();
 
 }
