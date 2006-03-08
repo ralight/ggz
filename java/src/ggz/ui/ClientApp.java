@@ -37,9 +37,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class ClientApp {
-    protected static String sendLog;
+    protected static String xmlout;
 
-    protected static String receiveLog;
+    protected static String xmlin;
 
     protected static String uri;
 
@@ -75,10 +75,10 @@ public class ClientApp {
             }
 
             public String getParameter(String name) {
-                if ("sendLog".equals(name)) {
-                    return sendLog;
-                } else if ("receiveLog".equals(name)) {
-                    return receiveLog;
+                if ("xmlout".equals(name)) {
+                    return xmlout;
+                } else if ("xmlin".equals(name)) {
+                    return xmlin;
                 } else if ("uri".equals(name)) {
                     return uri;
                 }
@@ -165,10 +165,10 @@ public class ClientApp {
             for (int argPos = 0; argPos < argv.length; argPos++) {
                 if ("-xmlout".equals(argv[argPos])) {
                     argPos++;
-                    sendLog = argv[argPos];
+                    xmlout = argv[argPos];
                 } else if ("-xmlin".equals(argv[argPos])) {
                     argPos++;
-                    receiveLog = argv[argPos];
+                    xmlin = argv[argPos];
                 } else if ("-uri".equals(argv[argPos])) {
                     argPos++;
                     uri = argv[argPos];
