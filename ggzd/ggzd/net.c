@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 7862 2006-02-13 07:03:28Z josef $
+ * $Id: net.c 7901 2006-03-13 12:35:44Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -516,36 +516,61 @@ GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *player)
 	GGZPlayerType type = player_get_type(player);
 	const char *type_desc = ggz_playertype_to_string(type);
 	char stats[512];
+	char *player_name_quoted;
+	GGZReturn ret;
 
 	_net_get_player_stats_string(player, stats, sizeof(stats));
 
+	player_name_quoted = ggz_xml_escape(player->name);
+
 	/* The caller should ensure that these values are safe to access... */
-	return _net_send_line(net, 
+	ret = _net_send_line(net, 
 			      "<PLAYER ID='%s' TYPE='%s' TABLE='%d' "
 			      "LAG='%d'%s/>",
-			      player->name, type_desc, player->table,
+			      player_name_quoted, type_desc, player->table,
 			      player->lag_class, stats);
+
+	ggz_free(player_name_quoted);
+
+	return ret;
 }
 
 
 static GGZReturn _net_send_player_lag(GGZNetIO *net, GGZPlayer *player)
 {
+	char *player_name_quoted;
+	GGZReturn ret;
+
+	player_name_quoted = ggz_xml_escape(player->name);
+
 	/* The caller should ensure that these values are safe to access... */
-	return _net_send_line(net, 
+	ret = _net_send_line(net, 
 			      "<PLAYER ID='%s' LAG='%d'/>",
-			      player->name, player->lag_class);
+			      player_name_quoted, player->lag_class);
+
+	ggz_free(player_name_quoted);
+
+	return ret;
 }
 
 
 static GGZReturn _net_send_player_stats(GGZNetIO *net, GGZPlayer *player)
 {
 	char stats[512];
+	char *player_name_quoted;
+	GGZReturn ret;
 
 	_net_get_player_stats_string(player, stats, sizeof(stats));
 
-	return _net_send_line(net,
+	player_name_quoted = ggz_xml_escape(player->name);
+
+	ret = _net_send_line(net,
 			      "<PLAYER ID='%s'%s/>",
-			      player->name, stats);
+			      player_name_quoted, stats);
+
+	ggz_free(player_name_quoted);
+
+	return ret;
 }
 
 
@@ -573,12 +598,17 @@ GGZReturn net_send_table_list_count(GGZNetIO *net, int room_id, int count)
 GGZReturn net_send_table(GGZNetIO *net, GGZTable *table)
 {
 	int i;
+	char *description_quoted;
 
 	_net_send_line(net, "<TABLE ID='%d' GAME='%d' STATUS='%d' SEATS='%d'>",
 		       table->index, table->type, table->state, 
 		       seats_num(table));
 
-	_net_send_line(net, "<DESC>%s</DESC>", table->desc);
+	description_quoted = ggz_xml_escape(table->desc);
+
+	_net_send_line(net, "<DESC>%s</DESC>", description_quoted);
+
+	ggz_free(description_quoted);
 	
 	for (i = 0; i < seats_num(table); i++) {
 		GGZTableSeat seat = {.index = i,
@@ -615,6 +645,8 @@ GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
 			const char *sender, const char *msg)
 {
 	const char *type_str = ggz_chattype_to_string(type);
+	char *sender_quoted;
+	GGZReturn ret;
 
 	if (type == GGZ_CHAT_BEEP) {
 		/* A beep chat can't have a message. */
@@ -630,13 +662,19 @@ GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
 		}
 	}
 
+	sender_quoted = ggz_xml_escape(sender);
+
 	if (msg) {
-		return _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'>"
+		ret = _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'>"
 				      "<![CDATA[%s]]></CHAT>", 
-				      type_str, sender, msg);
+				      type_str, sender_quoted, msg);
 	} else 
-		return _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'/>",
-				      type_str, sender);
+		ret = _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'/>",
+				      type_str, sender_quoted);
+
+	ggz_free(sender_quoted);
+
+	return ret;
 }
 
 
@@ -702,13 +740,16 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 {
 	GGZPlayer *player;
 	GGZPlayer p2;
+	char *name_quoted;
 	
 	switch (opcode) {
 	case GGZ_PLAYER_UPDATE_DELETE:
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='delete' "
 			       "ROOM='%d' TOROOM='%d'>",
 			       room_id, other_room_id);
-		_net_send_line(net, "<PLAYER ID='%s'/>", name);
+		name_quoted = ggz_xml_escape(name);
+		_net_send_line(net, "<PLAYER ID='%s'/>", name_quoted);
+		ggz_free(name_quoted);
 		return _net_send_line(net, "</UPDATE>");
 
 	case GGZ_PLAYER_UPDATE_ADD:
@@ -1969,8 +2010,12 @@ static GGZReturn _net_send_table_spectator(GGZNetIO *net, GGZTable *table,
 
 static GGZReturn _net_send_table_desc(GGZNetIO *net, GGZTable *table)
 {
+	char *description_quoted;
+
 	_net_send_line(net, "<TABLE ID='%d'>", table->index);
-	_net_send_line(net, "<DESC>%s</DESC>", table->desc);
+	description_quoted = ggz_xml_escape(table->desc);
+	_net_send_line(net, "<DESC>%s</DESC>", description_quoted);
+	ggz_free(description_quoted);
 	return _net_send_line(net, "</TABLE>");
 }
 
