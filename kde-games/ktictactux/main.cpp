@@ -27,10 +27,10 @@ int main(int argc, char **argv)
 
 	aboutData = new KAboutData("ktictactux",
 		I18N_NOOP("KTicTacTux"),
-		"0.0.9",
+		"0.0.10",
 		I18N_NOOP("This is a TicTacToe game for KDE."),
 		KAboutData::License_GPL,
-		"Copyright (C) 2001 - 2005 Josef Spillner",
+		"Copyright (C) 2001 - 2006 Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
 		"http://www.ggzgamingzone.org/games/ktictactux/",
 		"josef@ggzgamingzone.org");

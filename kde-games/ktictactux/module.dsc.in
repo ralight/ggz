@@ -7,5 +7,5 @@ Homepage = http://www.ggzgamingzone.org/games/ktictactux/
 Name = KTicTacTux
 ProtocolEngine = TicTacToe
 ProtocolVersion = 4
-Version = 0.0.9
+Version = 0.0.10
 
