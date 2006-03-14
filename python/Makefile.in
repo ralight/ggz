@@ -2,7 +2,7 @@
 # Makefile.in for use with autoconf (but not automake)
 
 # Release version number
-version = 0.0.12
+version = 0.0.13
 
 # prefix: All-purpose prefix (/usr)
 prefix = @prefix@
@@ -193,6 +193,7 @@ install-ggzboard:
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/arimaa
 	cp ggzboard/checkers/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/checkers
 	cp ggzboard/chess/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/chess
 	cp ggzboard/go/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/go
@@ -200,6 +201,7 @@ install-ggzboard:
 	cp ggzboard/reversi/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
 	cp ggzboard/madn/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	cp ggzboard/connectx/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
+	cp ggzboard/arimaa/*.png $(DESTDIR)$(datadir)/ggz/ggzboard/arimaa
 	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
 	cp ggzboard/ggzboard_net.py $(DESTDIR)$(prefix)/lib/site-python
 	cp ggzboard/bogaprot.py $(DESTDIR)$(prefix)/lib/site-python
