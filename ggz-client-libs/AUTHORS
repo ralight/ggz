@@ -4,16 +4,15 @@ GGZ consists of many different packages, programs, tools and libraries.
 Each of them has been written by different developers.
 Please check the individual program credits for more information.
 
-# Current Developers as of 0.0.11
+# Current Developers as of 0.0.13
 #--------------------------------
 Josef Spillner <josef@ggzgamingzone.org>
 Jason Short <jdorje@ggzgamingzone.org>
 Roger Light <oojah@ggzgamingzone.org>
-Luis Pérez Meliá <perez@ggzgamingzone.org>
 Pierre Hugues Husson <phh@ggzgamingzone.org>
-Kettil Säther <senko@ggzgamingzone.org>
+Helg Bredow <helg@ggzgamingzone.org>
 
-# Past Developers up to 0.0.11
+# Past Developers up to 0.0.13
 #-----------------------------
 Rich Gade <rgade@users.sourceforge.net>
 Brent Hendricks <bmh@users.sourceforge.net>
@@ -22,4 +21,6 @@ Brian Cox <bcox@users.sourceforge.net>
 Douglas Hudson <djh@users.sourceforge.net>
 Ismael Orenstein <perdig@users.sourceforge.net>
 Ricardo Quesada <riq@users.sourceforge.net>
+Luis Pérez Meliá <perez@ggzgamingzone.org>
+Kettil Säther <senko@ggzgamingzone.org>
 

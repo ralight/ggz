@@ -27,7 +27,8 @@ homepage.
 The project homepage is located here:
 http://www.ggzgamingzone.org/
 
-An online player ranking system with tournaments is available here:
+An online player ranking system with tournaments, browser game access
+and other community tools is available here:
 https://www.ggzcommunity.org/
 
 Developers can find more information (SVN, mailing lists, i18n) at:
@@ -92,6 +93,13 @@ flexibility.  The components are:
   is the version number.
   It also contains a core client and serveral game clients and
   servers.
+
+- Java module
+
+  Both a core client and a game framework are contained in this package,
+  which has the primary purpose of being run as an applet.
+  The package is distributed as ggz-java-X.X.X.tar.gz where XXX
+  is the version number.
 
 - The GGZ server
 
