@@ -7,8 +7,8 @@ and utilities required to run the GGZ client and games.  The routines
 are shared by other modules in order to ease coding and promote
 compatibility and stability.
 
-This version of the client libraries (0.0.12) should provide
-compatibility with version 0.0.12 clients and servers.
+This version of the client libraries (0.0.13) should provide
+compatibility with version 0.0.13 clients and servers.
 
 The core client libraries is only one part of the GGZ Gaming Zone
 client setup.  The following additional packages are required:

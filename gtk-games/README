@@ -7,7 +7,7 @@ graphics, and data for a number of popular (and unique) network games.
 These games are coded for version 2.X of GTK+, but many of them are also
 available using different graphical interfaces.
 
-This version of the GTK+ Game Modules (0.0.12) requires version 0.0.12
+This version of the GTK+ Game Modules (0.0.13) requires version 0.0.13
 of the ggz-client-libs.
 
 The GTK+ Game Modules are only one part of the GGZ Gaming Zone
