@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 7899 2006-03-08 06:49:02Z josef $
+ * $Id: netxml.c 7909 2006-03-14 13:50:27Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -507,8 +507,14 @@ int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
 int _ggzcore_net_send_channel(GGZNet * net, const char *id)
 {
 	int status = 0;
+	char *id_quoted;
 
-	status = _ggzcore_net_send_line(net, "<CHANNEL ID='%s' />", id);
+	id_quoted = ggz_xml_escape(id);
+
+	status = _ggzcore_net_send_line(net, "<CHANNEL ID='%s' />", id_quoted);
+
+	ggz_free(id_quoted);
+
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending channel");
 
@@ -688,6 +694,7 @@ int _ggzcore_net_send_table_launch(GGZNet * net, GGZTable * table)
 {
 	int i, type, num_seats, status = 0;
 	const char *desc;
+	char *desc_quoted;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending table launch request");
 
@@ -698,8 +705,14 @@ int _ggzcore_net_send_table_launch(GGZNet * net, GGZTable * table)
 	_ggzcore_net_send_line(net, "<LAUNCH>");
 	_ggzcore_net_send_line(net, "<TABLE GAME='%d' SEATS='%d'>", type,
 			       num_seats);
+
+	desc_quoted = ggz_xml_escape(desc);
+
 	if (desc)
-		_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc);
+		_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc_quoted);
+
+	if (desc_quoted)
+		ggz_free(desc_quoted);
 
 	for (i = 0; i < num_seats; i++) {
 		GGZTableSeat seat = _ggzcore_table_get_nth_seat(table, i);
@@ -812,15 +825,22 @@ int _ggzcore_net_send_table_desc_update(GGZNet * net, GGZTable * table,
 	const GGZRoom *room = ggzcore_table_get_room(table);
 	int room_id = ggzcore_room_get_id(room);
 	int id = ggzcore_table_get_id(table);
+	char *desc_quoted;
 
 	ggz_debug(GGZCORE_DBG_NET,
 		  "Sending table description update request");
 	_ggzcore_net_send_line(net,
 			       "<UPDATE TYPE='table' ACTION='desc' ROOM='%d'>",
 			       room_id);
+
+	desc_quoted = ggz_xml_escape(desc);
+
 	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", id);
-	_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc);
+	_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc_quoted);
 	_ggzcore_net_send_line(net, "</TABLE>");
+
+	ggz_free(desc_quoted);
+
 	return _ggzcore_net_send_line(net, "</UPDATE>");
 }
 
