@@ -462,6 +462,9 @@ void KGGZLaunch::slotReservation(QString player)
 {
 	QListViewItem *tmp;
 
+	m_listbox->setEnabled(true);
+	if(player.isEmpty()) return;
+
 	for(int i = 0; i < seats(); i++)
 	{
 		if(player == reservation(i))
@@ -495,7 +498,6 @@ void KGGZLaunch::slotReservation(QString player)
 		tmp->setText(2, player);
 		setSeatType(m_seat, id);
 	}
-	m_listbox->setEnabled(true);
 }
 
 QString KGGZLaunch::reservation(int seat)

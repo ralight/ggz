@@ -67,7 +67,7 @@ KGGZInput::KGGZInput(QWidget *parent, const char *name, QString title, QString d
 
 	connect(m_edit, SIGNAL(textChanged(const QString&)), SLOT(slotChanged()));
 	connect(m_ok, SIGNAL(clicked()), SLOT(slotAccept()));
-	connect(cancel, SIGNAL(clicked()), SLOT(close()));
+	connect(cancel, SIGNAL(clicked()), SLOT(slotAccept()));
 
 	setFixedSize(200, 100);
 	setCaption(i18n("New Profile"));

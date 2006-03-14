@@ -134,9 +134,11 @@ void KGGZTeam::slotFound()
 	input_team->show();
 }
 
-void KGGZTeam::slotAdded(const char *name)
+void KGGZTeam::slotAdded(QString name)
 {
 	QListViewItem *tmp, *tmp2;
+
+	if(name.isEmpty()) return;
 	
 	tmp = list->currentItem();
 	if(!tmp) return;
@@ -154,8 +156,10 @@ void KGGZTeam::slotAdded(const char *name)
 	}
 }
 
-void KGGZTeam::slotFounded(const char *name)
+void KGGZTeam::slotFounded(QString name)
 {
+	if(name.isEmpty()) return;
+
 	(void)new QListViewItem(list, name, "", "0");
 }
 

@@ -61,9 +61,9 @@ class KGGZTeam : public QWidget
 			// Add a team member
 			void slotAdd();
 			// New team was founded
-			void slotFounded(const char *name);
+			void slotFounded(QString name);
 			// New member was added
-			void slotAdded(const char *name);
+			void slotAdded(QString name);
 
 		private:
 			// List view for the team members

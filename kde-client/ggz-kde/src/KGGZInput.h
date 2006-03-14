@@ -57,7 +57,7 @@ class KGGZInput : public QWidget
 		void slotChanged();
 
 	signals:
-		// Emitted when pressing OK
+		// Emitted when pressing OK (or cancel with null string)
 		void signalText(QString text);
 
 	private:

@@ -463,6 +463,8 @@ void KGGZConnect::slotProfileDelete()
 
 void KGGZConnect::slotProfileProcess(QString identifier)
 {
+	if(identifier.isEmpty()) return;
+
 	// Save current profile
 	slotSaveProfile();
 
