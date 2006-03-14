@@ -1,0 +1,39 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+
+<b>GGZ 0.0.13 Screenshots</b><br>
+
+These screenshots have been made for release 0.0.13.
+The previous ones of version 0.0.7 up to 0.0.12 are still available
+<a href="/screenshots/">here</a>.
+<br><br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="java-client.png"><img src="java-client.small.png" alt="GGZ Java core client" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="java-game.png"><img src="java-game.small.png" alt="GGZ Java cards game" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+The GGZ-Java applet runs in the Firefox browser
+</td><td bgcolor="#ffffa0">
+GGZ-Java does include some nifty games
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="freeciv-ggz-gtk.png"><img src="freeciv-ggz-gtk.small.png" alt="Freeciv embedding ggz-gtk" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="connectx.png"><img src="connectx.small.png" alt="ConnectX in GGZBoard" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+The GGZ support in Freeciv is increasing
+</td><td bgcolor="#ffffa0">
+ConnectX got one more game client with GGZBoard
+</td></tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
