@@ -88,7 +88,7 @@ public class AboutDialog extends JDialog {
         // Copyright
         copyrightLabel = new JLabel(
                 "<HTML>"
-                        + "ggz-java version 0.0.12<BR>Copyright (C) 2006 Helg Bredow<BR>"
+                        + "ggz-java version 0.0.13<BR>Copyright (C) 2006 Helg Bredow<BR>"
                         + " GGZ Gaming Zone comes with ABSOLUTELY NO WARRANTY.<BR>"
                         + "  This is free software, and you are welcome to"
                         + " redistribute it<BR>under certain conditions as"
