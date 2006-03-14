@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # GGZBoard: Board game client container application
-# Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 import pygame
@@ -463,7 +463,7 @@ class GGZBoard:
 
 				text = []
 				text.append(_("GGZBoard: A multi-engine game container"))
-				text.append(_("Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>"))
+				text.append(_("Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>"))
 				text.append("")
 				text.append(_("GGZBoard contains several board games, each of which can be played"))
 				text.append(_("either alone against the artificial intelligence (AI) or against"))
@@ -842,7 +842,7 @@ class GGZBoard:
 									(rd, gd, bd) = style
 									color = (min(r + rd, 255), min(g + gd, 255), min(b + bd, 255))
 								else:
-									tilepicture = pygame.image.load(style)
+									tilepicture = pygame.image.load(game.datapath + style)
 							elif game.noemptytiles:
 								continue
 						if j == oldy and i == oldx:
