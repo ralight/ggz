@@ -1,7 +1,7 @@
 dnl Configuration for the GNOME core client
 dnl =======================================
 
-AC_INIT([GGZ GNOME client], [0.0.12], [ggz-dev@mail.ggzgamingzone.org], [ggz-gnome-client])
+AC_INIT([GGZ GNOME client], [0.0.13], [ggz-dev@mail.ggzgamingzone.org], [ggz-gnome-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
