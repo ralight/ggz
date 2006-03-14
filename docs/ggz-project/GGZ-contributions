@@ -7,7 +7,8 @@ The 2nd section about reused code components is important for
 binary distributions. In their case, the separate copyright
 statements will have to be mentioned. Otherwise, each GGZ package
 is licenced under one licence, usually GPL or LGPL (for libggz,
-ggz-client-libs and ggz-java).
+ggz-client-libs and ggz-java), although parts of the packages can
+be under different licences.
 
 Specific contributions
 ----------------------
@@ -64,4 +65,7 @@ Code reuse
   - ggzd/game_servers/chess/libcgc/*
   - gtk-games/chess/libcgc/*
   - kde-games/koenig/libcgc/*
+
+* GGZ-Java browser launcher - licence: BSD-like
+  - java/src/edu/*
 

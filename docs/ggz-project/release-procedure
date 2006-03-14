@@ -28,6 +28,7 @@ Directly before release
    This includes configure.in, man pages, Doxygen files, and hard-coded values.
    Protocol version numbers should be controlled by
    /docs/games/game-development/games.html
+   In GGZ-Java, it must be changed in AboutDialog.java.
 [] decide which library interface versions must be bumped
    (libtool only - see info libtool for the concept)
 [] update version definitions in header files accordingly

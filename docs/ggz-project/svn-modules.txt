@@ -1,11 +1,11 @@
-The preferred format of CVS sources for GGZ
+The preferred format of SVN sources for GGZ
 -------------------------------------------
 
 This is not meant as a requirement, rather as a hint or guideline.
 
 In order to raise the quality of both source and binary packages,
-CVS modules (which mostly represent packages) should follow some
-rules.
+SVN modules (which mostly represent packages, and are named so due to modules
+being the top-level entities in CVS) should follow some rules.
 
 Documentation
 -------------
@@ -13,6 +13,8 @@ A common directory called "man" which contains man pages should be present.
 Build sources for both Debian and RPM backages, most likely in the form
 of a "debian" subdirectory and a "<packagename>.spec" file, enable that
 these packages can be built on-the-fly.
+However Debian and RPM files are best maintained outside of GGZ. The GGZ
+project only releases source tarballs.
 
 Documentation should not be contained in the modules themselves, because
 we have a documentation module. However, small texts and such can of course
@@ -23,6 +25,9 @@ In addition, each package must come with contact information, at least the GGZ
 development mailinglist <ggz-dev@mail.ggzgamingzone.org> should be mentioned
 prominently, but also the individual authors (for bug reporting purtpose) and
 on the server side maybe the ggz-servers mailing list.
+The file README.GGZ should be present in all packages (and even in external
+games), whereas QuickStart.GGZ does basically contain installation
+instructions for client-side packages.
 
 Some parts of the documentation also belongs online. For example, you find the
 API docs under http://www.ggzgamingzone.org/docs/api/.
@@ -32,6 +37,8 @@ Sources and configuration
 Sources should be used in a shared way. For example, the M4 macros to detect
 the GGZ libraries and tools, or the i18n stuff. If there are differences, it
 should be discussed which way to go, or one should find a compromise.
+The m4/ directory contains such files, including the file ggz.m4 which can
+and should be used by 3rd party projects to detect GGZ installations.
 
 We encourage everybody to contribute. If a directory contains really unstable
 sources, feel free to add it though (or let someone add it), because it can be
@@ -53,7 +60,7 @@ self-contained, which means they're later used to create the packages. Make
 sure you don't introduce new unnecessary dependencies when importing sources.
 
 Please don't include configure's in sub directories, this is known to cause
-problems. It's better to have one configure process per CVS module.
+problems. It's better to have one configure process per SVN module.
 
 Don't feel annoyed by these rules. They can be changed everytime if something
 is odd.
@@ -61,19 +68,21 @@ is odd.
 Files to keep synchronized
 --------------------------
 all: README.GGZ (contains general setup information), QuickStart
-all: acinclude.ggz
-kde: acinclude.kde, am_edit
+all: ggz.m4
+kde: kde.m4, am_edit
 games: libcgc files, protocol.h
+
+See playground/maintenance/synchroniser.py for a way to check this.
 
 How to determine the setup, directories etc.
 --------------------------------------------
-We have some macros which do all the work. They're included in acinclude.ggz,
+We have some macros which do all the work. They're included in m4/ggz.m4,
 and set up the include directories, library directories, library names, and
 other variables such as the configuration for client and server (ggzcore and
 ggzd).
 So please from now on use these macros, as they help to keep the configure.in
 files clean, and any problems can be solved in a centralized project-wide file.
-Their use is described in the file acinclude.ggz itself.
+Their use is described in the file ggz.m4 itself.
 
 How to test for (pre-)release quality
 -------------------------------------
@@ -92,4 +101,5 @@ Josef
 written: June 8, 2001
 updated: September 9, 2001
 updated: March 20, 2002
+updated: March 6, 2006 (SVN migration)
 

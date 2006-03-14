@@ -1,16 +1,8 @@
-docdir=$(GGZDOCDIR)/ggz-project
+docdir = $(GGZDOCDIR)/ggz-project
  
-doc_DATA = \
+dist_doc_DATA = \
 	Internationalization \
-	cvs-modules.txt \
-	security-and-privacy \
-	Roadmap \
-	release-procedure \
-	buildsystem
-
-EXTRA_DIST = \
-	Internationalization \
-	cvs-modules.txt \
+	svn-modules.txt \
 	security-and-privacy \
 	Roadmap \
 	release-procedure \

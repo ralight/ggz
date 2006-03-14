@@ -61,6 +61,7 @@ ggzcore++    | 1:0:0 | 2:0:0 | (none) | (none) | (none) | (none) | (none) | (non
 ggzdmod++    | --    | --    | --     | --     | --     | --     | --     | 0:0:0  | 0:0:0
 zoneclient   | 0:0:0 | 1:0:0 | (none) | (none) | (none) | (none) | (none) | (none) | (none)
 zoneserver   | 0:0:0 | 0:1:0 | (none) | (none) | (none) | (none) | (none) | (none) | (none)
+ggzgtk       | --    | --    | --     | --     | --     | --     | --     | --     | 0:0:0
 
 Inter-library dependencies should only be dealt with in the (depending) library
 itself, not the programme which uses the (depending) library without knowing
