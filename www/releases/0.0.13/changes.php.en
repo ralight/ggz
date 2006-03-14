@@ -1,0 +1,158 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="index.php">GGZ 0.0.13 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+Changelog
+|
+<a href="download.php">Download</a>
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+<a href="play.php">Go play!</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Comprehensive overview about the GGZ Gaming Zone 0.0.13 Release (Changes)</i>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+KDE Client
+</td><td bgcolor="#ffd000" valign="top">
+Improved game help integration via Wikipedia<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Gtk+ Client
+</td><td bgcolor="#ffd000" valign="top">
+Restructuring to allow embeddeding with games (e.g. Freeciv)<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GNOME Client
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+KDE Games
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Gtk+ Games
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+SDL Games
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ server (ggzd, libggzdmod)
+</td><td bgcolor="#ffd000" valign="top">
+More command line and configuration options in ggzd<br>
+Display of roles and available permissions in ggzduedit<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ Base Library (libggz)
+</td><td bgcolor="#ffd000" valign="top">
+Support for asynchronous hostname lookups<br>
+Easy to use wrapper for getpeername<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ Client Libs (libggzcore, libggzmod)
+</td><td bgcolor="#ffd000" valign="top">
+Relocation of ggzwrap from kde-games to this module<br>
+Support of asynchronous connections via GGZ_OPT_THREADED_IO<br>
+Internationalization of ggzcore messages and German translation<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Game servers
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Grubby
+</td><td bgcolor="#ffd000" valign="top">
+Support for Tcl scripts in modembed<br>
+New plugin scripts: player statistics and fortunes<br>
+Introduction of privileges system for admin commands<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Text client
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Utilities
+</td><td bgcolor="#ffd000" valign="top">
+Improved source code generation in ggzcommgen<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Documentation
+</td><td bgcolor="#ffd000" valign="top">
+Updated game development and server hosting guides<br>
+Description of Tic-Tac-Toe source code structure<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Python stuff
+</td><td bgcolor="#ffd000" valign="top">
+New GGZBoard game: Arimaa<br>
+New GGZBoard game: ConnectX<br>
+Network support for GGZBoard Ludo and others (Bogaprot protocol)<br>
+Local AI support (via GNU Go) for GGZBoard Go<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Community Web Interface
+</td><td bgcolor="#ffd000" valign="top">
+Point-and-click interface for the world map<br>
+Java applet integration<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ for Java
+</td><td bgcolor="#ffd000" valign="top">
+Completely new applet (experimental) for GGZ browser integration<br>
+Contains core client applet<br>
+Contains 6 game clients for Hearts, Sueco, Bridge, Spades and Whist<br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Goals for 0.0.14</i><br>
+Nothing has been decided yet. Some ideas were floating around:
+<ul>
+<li>RubyToe and other GGZ-Ruby efforts
+<li>Kuohbe, a KDE frontend to GGZBoard, written in Python
+<li>Improved GGZ-Java with more games (e.g. Skat)
+</ul>
+There is a Playground SVN module where very unstable development takes place.
+Every game and game-related developer is encouraged to use this module.
+<br><br>
+</td></tr>
+
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
