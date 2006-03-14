@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 7887 2006-03-07 09:56:51Z josef $
+ * $Id: ggzdmod.h 7910 2006-03-14 13:50:41Z josef $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -193,7 +193,7 @@
 
 #define GGZDMOD_VERSION_MAJOR 0
 #define GGZDMOD_VERSION_MINOR 0
-#define GGZDMOD_VERSION_MICRO 12
+#define GGZDMOD_VERSION_MICRO 13
 #define GGZDMOD_VERSION_IFACE "5:0:1"
 
 #ifdef __cplusplus
