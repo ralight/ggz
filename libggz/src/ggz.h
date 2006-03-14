@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 7885 2006-03-06 18:46:12Z josef $
+ * $Id: ggz.h 7907 2006-03-14 13:49:22Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -29,8 +29,8 @@
 
 #define LIBGGZ_VERSION_MAJOR 0
 #define LIBGGZ_VERSION_MINOR 0
-#define LIBGGZ_VERSION_MICRO 12
-#define LIBGGZ_VERSION_IFACE "3:2:1"
+#define LIBGGZ_VERSION_MICRO 13
+#define LIBGGZ_VERSION_IFACE "4:0:2"
 
 #include <sys/types.h>
 
