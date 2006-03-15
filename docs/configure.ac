@@ -70,9 +70,11 @@ dnl ====================
 AC_CONFIG_FILES([Makefile
 	intro/Makefile
 	games/Makefile
-	games/hastings/Makefile
 	games/external-games/Makefile
-	games/ggzcards/Makefile
+	games/ggz-games/Makefile
+	games/ggz-games/tictactoe/Makefile
+	games/ggz-games/hastings/Makefile
+	games/ggz-games/ggzcards/Makefile
 	games/game-development/Makefile
 	games/modules/Makefile
 	ggz-project/Makefile
