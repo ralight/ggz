@@ -19,8 +19,7 @@ Directly before release
 -----------------------
 [] update build instruction.
    Affected files are README.GGZ and QuickStart.GGZ.
-   Does 'make distcheck' work?
-   (For gtk-games and kde-games you'll need "make DESTDIR=~/ggz distcheck".)
+   Does 'make distcheck' work? (The ggzbuild tools might help)
    (There's also DISTCHECK_CONFIGURE_FLAGS to add a prefix or the like.)
 [] update RPM and Debian scripts if possible
 [] update NEWS and README
@@ -33,9 +32,8 @@ Directly before release
    (libtool only - see info libtool for the concept)
 [] update version definitions in header files accordingly
 [] update toplevel ChangeLog files with CVS/SVN history
-   (cvs2cl --accum --usermap usertable-for-changelog)
    svn2cl > ChangeLog (from playground/maintenance/projectserver/subversion/)
-[] inform distributors
+[] inform distributors, via ggz-servers list
    (currently: Debian, Gentoo, Slackware, SourceMage, Arch Linux, Lunar Linux,
    Mandrake, Sorcerer)
 [] update permanent stable game servers
@@ -46,8 +44,9 @@ Directly before release
 
 During release
 --------------
-[] tag CVS with symbolic tag 'ggz-x-y-z'
-[] create source tarballs, and upload them to the SF release manager section
+[] tag SVN with symbolic tag '/tags/ggz-x-y-z'
+[] create source tarballs, and upload them to the GGZ FTP server,
+   wait for mirrors
 [] web site synchronization - test success with md5 hash sums.
    The release announcement as well as several common files should be updated.
    This includes the QuickStart.GGZ and README.GGZ files, and everything under
@@ -56,7 +55,7 @@ During release
     - games.html and features.html
     - guides
     - user docs, grubby docs
-   The download page (dl.php) must be updated manually.
+   The release pages (/releases/latest/) must be updated manually.
 [] announce on various game-related websites
    Examples are happypenguin.org, linuxgames.com, SF games foundry, holarse.net,
    freshmeat, linuxgaming.co.uk.
