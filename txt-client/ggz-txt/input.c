@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 7013 2005-03-18 10:57:25Z josef $
+ * $Id: input.c 7930 2006-03-15 13:08:35Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -363,7 +363,7 @@ static void input_handle_join_room(char* line)
 static void input_handle_desc(char* line)
 {
 	int roomid;
-	char* desc;
+	const char* desc;
 
 	if (line) {
 		roomid = input_roomnumber(line);
