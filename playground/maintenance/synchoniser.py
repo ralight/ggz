@@ -10,7 +10,7 @@ pos_cc = ("kde-client", "gnome-client", "gtk-client", "txt-client")
 pos_games = ("gtk-games", "kde-games", "sdl-games")
 pos_other = ("libggz", "ggz-client-libs", "ggzd", "docs", "grubby", "python", "utils", "java")
 
-positions_readmeggz = pos_cc + pos_games + pos_other
+positions_readmeggz = pos_cc + pos_games + pos_other + ("community",)
 positions_quickstartggz = pos_cc + pos_games + ("libggz", "ggz-client-libs", "docs", "python")
 positions_ggzm4 = pos_cc + pos_games + ("libggz", "ggz-client-libs", "ggzd", "grubby", "utils")
 positions_autogensh = pos_cc + pos_games + ("libggz", "ggz-client-libs", "ggzd", "docs", "grubby", "utils")
@@ -18,7 +18,7 @@ positions_i18nmk = ("ggz-client-libs/m4", "gnome-client/m4", "grubby/m4", "gtk-c
 	"python/po", "txt-client/m4")
 positions_tttai = ("playground/ggz-ruby/ai-ttt", "ggzd/game_servers/tictactoe")
 positions_chessai = ("python/chess", "grubby/games/guru-chess", "ggzd/game_servers/chess")
-positions_news = pos_cc + pos_games + pos_other
+positions_news = pos_cc + pos_games + pos_other + ("community",)
 positions_authors = pos_cc + pos_games + pos_other
 
 files = {}

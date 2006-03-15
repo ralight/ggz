@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+#
+# GGZ Gaming Zone build tool
+
+import os
+import sys
+
+"""
+Create a file ~/.ggzbuildrc with per-module entries such as:
+libggz = --disable-debug
+(special module GLOBAL is appended to all modules)
+Then run ggzbuild in the current GGZ SVN module directory
+It will run autogen.sh, configure etc. automatically
+"""
+
+conf = None
+try:
+	conf = open(os.getenv("HOME") + "/.ggzbuildrc")
+except:
+	print "Create ~/.ggzbuildrc first!"
+	sys.exit(1)
+lines = conf.readlines()
+conf.close()
+
+config = {}
+
+for line in lines:
+	line = line.strip()
+	#print "*", line
+	(module, args) = line.split("=", 1)
+	module = module.strip()
+	args = args.strip()
+	#print (module, args)
+	config[module] = args
+
+module = os.getcwd().split("/")[-1]
+#print "current module:", module
+
+args = config.setdefault(module, "")
+args += " " + config.setdefault("GLOBAL", "")
+
+if not os.path.exists("configure"):
+	cmd = "./autogen.sh " + args
+else:
+	cmd = "./configure " + args
+
+#print "run", cmd
+os.system(cmd)
+

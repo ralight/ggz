@@ -27,6 +27,11 @@ synchroniser.sh:
  For developers.
  Checks whether all files which need to be synchronised actually are so.
 
+ggzbuild:
+ For developers.
+ Configures a tarball according to a certain configuration. Useful for
+ creating release tarballs (ggzbuild, make distcheck, ggzbuild, make install).
+
 projectserver/:
  For hostmasters.
  Comes with separate documentation.
