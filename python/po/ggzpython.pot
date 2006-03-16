@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-12 13:38+0100\n"
+"POT-Creation-Date: 2006-03-15 21:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,230 +16,246 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lib/sdlnewstuff.py:180
+#: ../lib/sdlnewstuff.py:193
 msgid "not installed"
 msgstr ""
 
-#: ../lib/sdlnewstuff.py:181 ../lib/sdlnewstuff.py:230
-#: ../lib/sdlnewstuff.py:287 ../lib/sdlnewstuff.py:304
+#: ../lib/sdlnewstuff.py:194 ../lib/sdlnewstuff.py:248
+#: ../lib/sdlnewstuff.py:308 ../lib/sdlnewstuff.py:326
 msgid "installed"
 msgstr ""
 
-#: ../lib/sdlnewstuff.py:306
+#: ../lib/sdlnewstuff.py:328 ../lib/sdlnewstuff.py:330
 msgid "error"
 msgstr ""
 
-#: ../ggzboard/ggzboard:164
+#: ../ggzboard/ggzboard:173
 #, python-format
 msgid "GGZBoard game %s not found"
 msgstr ""
 
-#: ../ggzboard/ggzboard:189
+#: ../ggzboard/ggzboard:200
 msgid "GGZBoard"
 msgstr ""
 
-#: ../ggzboard/ggzboard:217
+#: ../ggzboard/ggzboard:231
 msgid "GGZBoard: piece selection"
 msgstr ""
 
-#: ../ggzboard/ggzboard:275
+#: ../ggzboard/ggzboard:289
 msgid "Please select one of the following pieces:"
 msgstr ""
 
-#: ../ggzboard/ggzboard:295
+#: ../ggzboard/ggzboard:309
 msgid "Cancel selection"
 msgstr ""
 
-#: ../ggzboard/ggzboard:321 ../ggzboard/ggzboard:323
+#: ../ggzboard/ggzboard:335 ../ggzboard/ggzboard:337
 msgid "GGZBoard: help screen"
 msgstr ""
 
-#: ../ggzboard/ggzboard:369
+#: ../ggzboard/ggzboard:383
 msgid "Common GGZBoard functions:"
 msgstr ""
 
-#: ../ggzboard/ggzboard:370
+#: ../ggzboard/ggzboard:384
+msgid "a: restart a local game"
+msgstr ""
+
+#: ../ggzboard/ggzboard:385
 msgid "u: download new games, levels, themes"
 msgstr ""
 
-#: ../ggzboard/ggzboard:371
+#: ../ggzboard/ggzboard:386
 msgid "p: display the player list"
 msgstr ""
 
-#: ../ggzboard/ggzboard:372
+#: ../ggzboard/ggzboard:387
 msgid "s: produce a screen shot"
 msgstr ""
 
-#: ../ggzboard/ggzboard:373
+#: ../ggzboard/ggzboard:388
 msgid "f: toggle fullscreen display"
 msgstr ""
 
-#: ../ggzboard/ggzboard:374
+#: ../ggzboard/ggzboard:389
 msgid "ESC: quit a running game"
 msgstr ""
 
-#: ../ggzboard/ggzboard:376
+#: ../ggzboard/ggzboard:391
 msgid "Game-specific help:"
 msgstr ""
 
-#: ../ggzboard/ggzboard:396
+#: ../ggzboard/ggzboard:411
 msgid "Return to game"
 msgstr ""
 
-#: ../ggzboard/ggzboard:408 ../ggzboard/ggzboard:410
+#: ../ggzboard/ggzboard:423 ../ggzboard/ggzboard:425
 msgid "GGZBoard: about screen"
 msgstr ""
 
-#: ../ggzboard/ggzboard:456
+#: ../ggzboard/ggzboard:471
 msgid "GGZBoard: A multi-engine game container"
 msgstr ""
 
-#: ../ggzboard/ggzboard:457
-msgid "Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>"
+#: ../ggzboard/ggzboard:472 ../ggzboard/ggzboard:1172
+msgid "Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>"
 msgstr ""
 
-#: ../ggzboard/ggzboard:459
+#: ../ggzboard/ggzboard:474
 msgid "GGZBoard contains several board games, each of which can be played"
 msgstr ""
 
-#: ../ggzboard/ggzboard:460
+#: ../ggzboard/ggzboard:475
 msgid "either alone against the artificial intelligence (AI) or against"
 msgstr ""
 
-#: ../ggzboard/ggzboard:461
+#: ../ggzboard/ggzboard:476
 msgid "other humans or AIs over the network, using the GGZ Gaming Zone system."
 msgstr ""
 
-#: ../ggzboard/ggzboard:462
+#: ../ggzboard/ggzboard:477
 msgid "Each of the games provides an in-game helpscreen."
 msgstr ""
 
-#: ../ggzboard/ggzboard:464
+#: ../ggzboard/ggzboard:479
 msgid "More information can be found on the GGZBoard homepage:"
 msgstr ""
 
-#: ../ggzboard/ggzboard:465
+#: ../ggzboard/ggzboard:480
 msgid "http://www.ggzgamingzone.org/games/ggzboard/"
 msgstr ""
 
-#: ../ggzboard/ggzboard:478
+#: ../ggzboard/ggzboard:493
 msgid "Return to main screen"
 msgstr ""
 
-#: ../ggzboard/ggzboard:490 ../ggzboard/ggzboard:492
+#: ../ggzboard/ggzboard:505 ../ggzboard/ggzboard:507
 msgid "GGZBoard: game selection"
 msgstr ""
 
-#: ../ggzboard/ggzboard:561
+#: ../ggzboard/ggzboard:576
 msgid "About..."
 msgstr ""
 
-#: ../ggzboard/ggzboard:570
+#: ../ggzboard/ggzboard:585
 msgid "Quit..."
 msgstr ""
 
-#: ../ggzboard/ggzboard:599 ../ggzboard/ggzboard:606 ../ggzboard/ggzboard:640
-msgid "GGZBoard: "
+#: ../ggzboard/ggzboard:603 ../ggzboard/ggzboard:605
+msgid "GGZBoard: theme selection"
 msgstr ""
 
-#: ../ggzboard/ggzboard:603 ../ggzboard/ggzboard:638
-msgid " (running on GGZ)"
+#: ../ggzboard/ggzboard:672
+msgid "Back..."
 msgstr ""
 
-#: ../ggzboard/ggzboard:605 ../ggzboard/ggzboard:639
-msgid " (unavailable)"
-msgstr ""
-
-#: ../ggzboard/ggzboard:793
-msgid "Game over!"
-msgstr ""
-
-#: ../ggzboard/ggzboard:796
-#, python-format
-msgid "The winner is %s"
-msgstr ""
-
-#: ../ggzboard/ggzboard:859
+#: ../ggzboard/ggzboard:692
 #, python-format
 msgid "AI #%s"
 msgstr ""
 
-#: ../ggzboard/ggzboard:867
+#: ../ggzboard/ggzboard:710
+msgid "(Default GGZBoard)"
+msgstr ""
+
+#: ../ggzboard/ggzboard:724 ../ggzboard/ggzboard:731 ../ggzboard/ggzboard:765
+msgid "GGZBoard: "
+msgstr ""
+
+#: ../ggzboard/ggzboard:728 ../ggzboard/ggzboard:763
+msgid " (running on GGZ)"
+msgstr ""
+
+#: ../ggzboard/ggzboard:730 ../ggzboard/ggzboard:764
+msgid " (unavailable)"
+msgstr ""
+
+#: ../ggzboard/ggzboard:932
+msgid "Game over!"
+msgstr ""
+
+#: ../ggzboard/ggzboard:936
+#, python-format
+msgid "The winner is %s"
+msgstr ""
+
+#: ../ggzboard/ggzboard:1004
 #, python-format
 msgid "Player %s:"
 msgstr ""
 
-#: ../ggzboard/ggzboard:886
+#: ../ggzboard/ggzboard:1023
 msgid "Dice: "
 msgstr ""
 
-#: ../ggzboard/ggzboard:899
+#: ../ggzboard/ggzboard:1036
 msgid "Thinking..."
 msgstr ""
 
-#: ../ggzboard/ggzboard:908
+#: ../ggzboard/ggzboard:1045
 msgid "Themes & games"
 msgstr ""
 
-#: ../ggzboard/ggzboard:908
+#: ../ggzboard/ggzboard:1045
 msgid "Player list"
 msgstr ""
 
-#: ../ggzboard/ggzboard:908
+#: ../ggzboard/ggzboard:1045
 msgid "Game help"
 msgstr ""
 
-#: ../ggzboard/ggzboard:908
+#: ../ggzboard/ggzboard:1045
 msgid "Main menu"
 msgstr ""
 
-#: ../ggzboard/ggzboard:1019
+#: ../ggzboard/ggzboard:1159
 #, python-format
 msgid "Argument required for %s."
 msgstr ""
 
-#: ../ggzboard/ggzboard:1025
+#: ../ggzboard/ggzboard:1167
 #, python-format
 msgid "Unknown option: %s"
 msgstr ""
 
-#: ../ggzboard/ggzboard:1029
+#: ../ggzboard/ggzboard:1171
 msgid "GGZBoard - common board game client for GGZ"
 msgstr ""
 
-#: ../ggzboard/ggzboard:1030
-msgid "Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>"
-msgstr ""
-
-#: ../ggzboard/ggzboard:1031
+#: ../ggzboard/ggzboard:1173
 msgid "Published under GNU GPL conditions"
 msgstr ""
 
-#: ../ggzboard/ggzboard:1033
+#: ../ggzboard/ggzboard:1175
 msgid "Options:"
 msgstr ""
 
-#: ../ggzboard/ggzboard:1034
+#: ../ggzboard/ggzboard:1176
 msgid "[-h | --help           ] Display this game help"
 msgstr ""
 
-#: ../ggzboard/ggzboard:1035
+#: ../ggzboard/ggzboard:1177
 msgid "[-v | --version        ] Show version information"
 msgstr ""
 
-#: ../ggzboard/ggzboard:1036
+#: ../ggzboard/ggzboard:1178
 msgid "[-g | --ggz            ] Request game in GGZ mode"
 msgstr ""
 
-#: ../ggzboard/ggzboard:1037
+#: ../ggzboard/ggzboard:1179
 msgid "[-G | --game <gamename>] Skip intro screen and launch game directly"
 msgstr ""
 
-#: ../ggzboard/ggzboard:1038
+#: ../ggzboard/ggzboard:1180
+msgid "[-l | --list           ] List available games and their location"
+msgstr ""
+
+#: ../ggzboard/ggzboard:1181
 msgid "[-f | --fullscreen     ] Start in fullscreen mode"
 msgstr ""
 
-#: ../ggzboard/module_arimaa.py:91
+#: ../ggzboard/module_arimaa.py:117
 msgid "Arimaa"
 msgstr ""
 
@@ -251,7 +267,11 @@ msgstr ""
 msgid "Chess"
 msgstr ""
 
-#: ../ggzboard/module_go.py:47
+#: ../ggzboard/module_connectx.py:46
+msgid "ConnectX"
+msgstr ""
+
+#: ../ggzboard/module_go.py:60
 msgid "Go"
 msgstr ""
 
