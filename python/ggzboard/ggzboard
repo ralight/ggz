@@ -13,6 +13,7 @@ import os, pwd
 import imp
 import re
 import gettext
+import glob
 
 import rsvgsdl
 import sdlnewstuff
@@ -117,6 +118,7 @@ class GGZBoard:
 		self.shutdown = 0
 		self.currentgame = None
 		self.nextgame = None
+		self.gamedirs = {}
 
 	def ggzinit(self, ggzmode):
 		self.ggzmode = ggzmode
@@ -148,21 +150,30 @@ class GGZBoard:
 		for file in fnames:
 			m = ex.match(file)
 			if m:
+				self.gamedirs[m.group(1)] = dirname
 				self.loadgame(m.group(1))
 				if not self.ggzmode or self.ggzsuccess:
 					self.modulefilelist.append(m.group(1))
 					self.modulelist.append(self.game.name())
 		self.game = None
 
-	def load(self, gamename):
+	def load(self, gamename, list):
 		os.path.walk(MODULEPATH, self.walker, None)
+		os.path.walk(os.getenv("HOME") + "/.ggz/games/ggzboard", self.walker, None)
+
+		if list:
+			for (module, modulefile) in zip(self.modulelist, self.modulefilelist):
+				moduledir = self.gamedirs.setdefault(modulefile, None)
+				print "%-20s %s" % (module, "(" + moduledir + ")")
+			sys.exit(0)
 
 		if gamename:
 			self.loadgame(gamename)
 
 	def loadgame(self, gamename):
+		dir = self.gamedirs.setdefault(gamename, None)
 		try:
-			(fileobj, filename, desc) = imp.find_module("module_" + gamename, None)
+			(fileobj, filename, desc) = imp.find_module("module_" + gamename, [dir])
 		except:
 			print _("GGZBoard game %s not found") % gamename
 			sys.exit(1)
@@ -590,6 +601,90 @@ class GGZBoard:
 		if gamename:
 			self.loadgame(gamename)
 
+	def themeselection(self, themes):
+		ui = self.ui
+		conf = self.conf
+
+		pygame.display.set_caption(asciify(_("GGZBoard: theme selection")))
+
+		title = ui.font.render(_("GGZBoard: theme selection"), 1, (255, 200, 0))
+
+		pygame.event.clear()
+
+		updatescreen = 1
+
+		x = -1
+		y = -1
+		selected = -1
+		themename = None
+		back = 0
+
+		(posx, posy) = pygame.mouse.get_pos()
+
+		while not themename and not back:
+			pygame.event.pump()
+			if updatescreen:
+				event = pygame.event.poll()
+			else:
+				event = pygame.event.wait()
+
+			if event.type == KEYDOWN:
+				key = event.key
+				if key == K_ESCAPE or pygame.event.peek(QUIT):
+					self.shutdown = 1
+					updatescreen = 1
+				if key == K_f:
+					self.ui.togglefullscreen()
+					updatescreen = 1
+
+			if event.type == MOUSEMOTION:
+				(posx, posy) = event.pos
+
+			if event.type == MOUSEBUTTONDOWN:
+				x = posx
+				y = posy
+				if x > 20 and x < 300 + 20:
+					if ((y - 100) % 50) < 40:
+						selected = (y - 100) / 50
+						updatescreen = 1
+						if selected < len(themes.keys()):
+							themename = themes.keys()[selected]
+						elif selected == len(themes.keys()) + 1:
+							back = 1
+
+			if updatescreen:
+				ui.backgroundarea = ui.deepcopy(ui.surface)
+				ui.backgroundarea.blit(title, (20, 30))
+
+				i = 0
+				for theme in themes.keys():
+					color = conf.tilecolor
+					if i == selected:
+						(r, g, b) = color
+						color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
+					self.rect(ui.backgroundarea, (255, 255, 255), 20, i * 50 + 100, 300, 40, color)
+
+					img = ui.smallfont.render(theme, 1, (255, 200, 0))
+					ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
+					i += 1
+
+				i += 1
+				color = conf.tilecolor
+				if i == selected:
+					(r, g, b) = color
+					color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
+				self.rect(ui.backgroundarea, (255, 255, 255), 20, i * 50 + 100, 300, 40, color)
+				img = ui.smallfont.render(_("Back..."), 1, (255, 200, 0))
+				ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
+
+				ui.screen.blit(ui.backgroundarea, (0, 0))
+				updatescreen = 0
+
+				pygame.display.flip()
+
+		if themename:
+			return themes[themename]
+
 	def playernames(self):
 		playernames = None
 		if self.ggzsuccess:
@@ -608,7 +703,21 @@ class GGZBoard:
 		ui = self.ui
 		net = self.net
 
-		game.init(DATAPATH)
+		themes = {}
+		themedirs = glob.glob(os.getenv("HOME") + "/.ggz/games/ggzboard/*/" + self.currentgame)
+		for themedir in themedirs:
+			theme = themedir.split("/")[-2]
+			themes[theme] = themedir + "/../" # FIXME: hack!
+
+		if len(themes) == 0:
+			themepath = DATAPATH
+		else:
+			themes[_("(Default GGZBoard)")] = DATAPATH
+			themepath = self.themeselection(themes)
+			if not themepath:
+				return
+
+		game.init(themepath)
 
 		if self.ggzsuccess:
 			ret = net.connect()
@@ -702,7 +811,18 @@ class GGZBoard:
 				#if key == K_r:
 				#	updatescreen = 1
 				if key == K_u:
-					sdlnewstuff.gethotnewstuff(game.name())
+					#sdlnewstuff.gethotnewstuff(game.name())
+					engine = sdlnewstuff.ghnsengine()
+					engine.conf.providers = "http://dxsweb/ghns/ggz-providers.xml"
+					engine.conf.installdir = ".ggz/games/ggzboard"
+					engine.conf.alpha_darkness = 180
+					engine.conf.color_background = (50, 50, 150)
+					engine.conf.color_foreground = (255, 255, 255)
+					engine.conf.color_box = (100, 100, 100)
+					engine.conf.color_activebox = (200, 200, 200)
+					engine.conf.color_titlebox = (255, 200, 0)
+					engine.conf.color_action = (120, 255, 120)
+					files = engine.gethotnewstuff("ggzboard")
 				if key == K_p:
 					playertable.show()
 				if key == K_s:
@@ -1025,6 +1145,7 @@ if __name__ == "__main__":
 	gamename = None
 	param = 0
 	fullscreen = 0
+	list = 0
 
 	for i in range(1, len(sys.argv)):
 		if sys.argv[i] == "-g" or sys.argv[i] == "--ggz":
@@ -1042,6 +1163,8 @@ if __name__ == "__main__":
 			else:
 				print _("Argument required for %s.") % sys.argv[i]
 				sys.exit(1)
+		elif sys.argv[i] == "-l" or sys.argv[i] == "--list":
+			list = 1
 		else:
 			if param:
 				param = 0
@@ -1051,7 +1174,7 @@ if __name__ == "__main__":
 
 	if help:
 		print _("GGZBoard - common board game client for GGZ")
-		print _("Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>")
+		print _("Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>")
 		print _("Published under GNU GPL conditions")
 		print ""
 		print _("Options:")
@@ -1059,6 +1182,7 @@ if __name__ == "__main__":
 		print _("[-v | --version        ] Show version information")
 		print _("[-g | --ggz            ] Request game in GGZ mode")
 		print _("[-G | --game <gamename>] Skip intro screen and launch game directly")
+		print _("[-l | --list           ] List available games and their location")
 		print _("[-f | --fullscreen     ] Start in fullscreen mode")
 		sys.exit(0)
 
@@ -1071,6 +1195,6 @@ if __name__ == "__main__":
 
 	core = GGZBoard()
 	core.ggzinit(ggzmode)
-	core.load(gamename)
+	core.load(gamename, list)
 	core.main(fullscreen)
 
