@@ -1,4 +1,4 @@
-# Deutsche Ãœbersetzung von compcal
+# Deutsche ÃƒÂœbersetzung von compcal
 # Copyright(C) 2003 Josef Spillner
 # This file is distributed under the same license as the ggz-kde-client package.
 # Josef Spillner <josef@ggzgamingzone.org>, 2003.
@@ -26,7 +26,7 @@ msgstr "Chronologiquement"
 
 #: ../../compcal/src/main.cpp:32
 msgid "Competition Calendar"
-msgstr "Calendrier des compétitions"
+msgstr "Calendrier des compÃ©titions"
 
 #: ../../compcal/src/toplevel.cpp:37
 msgid "Configure"
@@ -34,7 +34,7 @@ msgstr "Configure"
 
 #: ../../compcal/src/app.cpp:92 ../../compcal/src/app.cpp:100
 msgid "Could not fetch event list."
-msgstr "Ne peut recevoir la liste des évenements."
+msgstr "Ne peut recevoir la liste des Ã©venements."
 
 #: ../../compcal/src/app.cpp:96
 msgid "Could not parse list."
@@ -50,15 +50,15 @@ msgstr "Developeur"
 
 #: ../../compcal/src/app.cpp:54
 msgid "Event"
-msgstr "Évenement"
+msgstr "Ã‰venement"
 
 #: ../../compcal/src/app.cpp:92 ../../compcal/src/app.cpp:100
 msgid "Fetch error"
-msgstr "Erreur de réception"
+msgstr "Erreur de rÃ©ception"
 
 #: ../../compcal/src/display.cpp:85
 msgid "GGZ Event"
-msgstr "Évenement GGZ"
+msgstr "Ã‰venement GGZ"
 
 #: ../../compcal/src/toplevel.cpp:45 ../../compcal/src/toplevel.cpp:47
 msgid "Help"
@@ -66,11 +66,11 @@ msgstr "Aide"
 
 #: ../../compcal/src/main.cpp:37
 msgid "Manages GGZ Gaming Zone tournaments and challenges"
-msgstr "Gère les dégis et les tournois GGZ"
+msgstr "GÃ¨re les dÃ©gis et les tournois GGZ"
 
 #: ../../compcal/src/main.cpp:34
 msgid "Online game scheduling system"
-msgstr "Système, en-ligne d'établissement des jeux."
+msgstr "SystÃ¨me, en-ligne d'Ã©tablissement des jeux."
 
 #: ../../compcal/src/app.cpp:96
 msgid "Parse error"
@@ -98,15 +98,15 @@ msgstr "Score"
 
 #: ../../compcal/src/toplevel.cpp:40 ../../compcal/src/toplevel.cpp:42
 msgid "Sorted"
-msgstr "Rangé"
+msgstr "RangÃ©"
 
 #: ../../compcal/src/display.cpp:47
 msgid "Teams/Players"
-msgstr "Équipes/Joueurs"
+msgstr "Ã‰quipes/Joueurs"
 
 #: ../../compcal/src/toplevel.cpp:36 ../../compcal/src/toplevel.cpp:38
 msgid "Update events"
-msgstr "Met à jour les évenements"
+msgstr "Met Ã  jour les Ã©venements"
 
 #: ../../compcal/src/toplevel.cpp:44 ../../compcal/src/toplevel.cpp:46
 msgid "View"
