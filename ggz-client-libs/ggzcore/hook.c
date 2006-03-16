@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/01/00
- * $Id: hook.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: hook.c 7939 2006-03-16 14:33:16Z josef $
  *
  * This is the code for handling hook functions
  *
@@ -250,6 +250,11 @@ GGZHookReturn _ggzcore_hook_list_invoke(GGZHookList * list,
 {
 	GGZHookReturn status, retval = GGZ_HOOK_OK;
 	GGZHook *cur, *next, *prev = NULL;
+
+	if (!list) {
+		/* This should never happen ?! */
+		return GGZ_HOOK_CRISIS;
+	}
 
 	cur = list->hooks;
 	while (cur != NULL) {
