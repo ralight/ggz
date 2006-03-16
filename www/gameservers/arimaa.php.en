@@ -8,6 +8,16 @@
 <b>Arimaa Server</b><br>
 Board game for 2 players.
 <br>
+<table class="listnorm">
+<tr><td>
+The Arimaa game name and rules belong to its inventor.
+The GGZ multi-board game GGZBoard understands the Arimaa game rules
+if the (currently external) Arimaa module is downloaded.
+The original game homepage is:
+<br>
+<a href="http://www.arimaa.com/">arimaa.com</a>.
+</td></tr>
+</table>
 
 <table class="inner">
 <tr>
@@ -16,7 +26,6 @@ Board game for 2 players.
 <i>Fact sheet</i><br>
 <ul>
 <li>Supports the <a href="/engines/arimaa/">Arimaa/Bogaprot</a> engine
-<li>Supports an AI player
 <li>Implemented in Python (GGZBoard server)
 <li>GGZ is required (no standalone mode)
 </ul>

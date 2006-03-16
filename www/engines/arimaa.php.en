@@ -12,7 +12,7 @@ Board game for 2 players.
 <tr><td>
 The Arimaa game name and rules belong to its inventor.
 The GGZ multi-board game GGZBoard understands the Arimaa game rules
-but is otherwise not connected to the original game.
+if the (currently external) Arimaa module is downloaded.
 The original game homepage is:
 <br>
 <a href="http://www.arimaa.com/">arimaa.com</a>.
@@ -26,7 +26,6 @@ The original game homepage is:
 <i>Arimaa features</i><br>
 <ul>
 <li>SDL game client available
-<li>AI opponent available
 </ul>
 <br>
 
