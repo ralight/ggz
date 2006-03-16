@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Server for the Arimaa game
-# Copyright (C) 2005 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2005, 2006 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 from Numeric import *
@@ -13,147 +13,102 @@ import re
 import gettext
 gettext.install("ggzpython", None, 1)
 
-import ggzdmod
+import bogaprot
 from module_arimaa import *
-from ggzboard_net import *
 
-class Server(NetworkBase):
+class ArimaaServer(bogaprot.BogaprotServer):
 	def __init__(self):
-		NetworkBase.__init__(self)
-		self.MSG_SEAT = 0
-		self.MSG_PLAYERS = 1
-		self.MSG_START = 5
-
-		self.MSG_MOVE = 2
-		self.MSG_GAMEOVER = 3
-		self.REQ_MOVE = 4
+		bogaprot.BogaprotServer.__init__(self)
 
 	def table_full(self):
 		full = 1
-		for i in range(ggzdmod.getNumSeats()):
-			name = ggzdmod.seatName(i)
-			type = ggzdmod.seatType(i)
-			fd = ggzdmod.seatFd(i)
-			if type != ggzdmod.SEAT_PLAYER and type != ggzdmod.SEAT_BOT:
+		for i in range(bogaprot.ggzdmod.getNumSeats()):
+			name = bogaprot.ggzdmod.seatName(i)
+			type = bogaprot.ggzdmod.seatType(i)
+			fd = bogaprot.ggzdmod.seatFd(i)
+			if type != bogaprot.ggzdmod.SEAT_PLAYER and type != bogaprot.ggzdmod.SEAT_BOT:
 				full = 0
 		return full
 
-	def send_players(self):
-		for i in range(ggzdmod.getNumSeats()):
-			fd = ggzdmod.seatFd(i)
-			if fd != -1:
-				net.init(fd)
-				net.sendbyte(self.MSG_SEAT)
-				net.sendbyte(i)
-				net.sendbyte(self.MSG_PLAYERS)
-				for j in range(ggzdmod.getNumSeats()):
-					type = ggzdmod.seatType(j)
-					print "TYPE", type
-					net.sendbyte(type)
-					if type != ggzdmod.SEAT_OPEN:
-						name = ggzdmod.seatName(j)
-						print "NAME", name
-						net.sendstring(name)
+	def hook_join(self, num, type, name, fd):
+		print "(arimaa) * join:", num, type, name, fd
+		self.send_seat(num)
+		self.send_players(num)
+		if self.table_full():
+			self.broadcast(self.send_start)
+			self.send_start(0)
+			self.vars["seat"] = 0
+			self.broadcast(self.send_reqmove)
 
-	def send_start(self):
-		for i in range(ggzdmod.getNumSeats()):
-			fd = ggzdmod.seatFd(i)
-			if fd != -1:
-				net.init(fd)
-				net.sendbyte(self.MSG_START)
+	def hook_data(self, num, type, name, fd):
+		print "(arimaa) * data:", num, type, name, fd
+		self.init(fd)
+		op = self.getbyte()
+		print "opcode", op
+		if op == self.MSG_MOVE:
+			print "- move"
+			self.receive_move(num)
+			fromposval = self.vars["source"]
+			toposval = self.vars["destination"]
+			print " + ", fromposval, toposval
+			type = None
+			if fromposval < 0:
+				type = self.vars["type"]
+				print " + ", type
 
-def hook_state (state):
-	print "* state:", str(state)
+			# TODO: move validity check
+			# TODO: send to all players
+			# FIXME: board size
+			frompos = (fromposval % 8, fromposval / 8)
+			topos = (toposval % 8, toposval / 8)
 
-def hook_join (num, type, name, fd):
-	print "* join:", num, type, name, fd
-	net.send_players()
-	if net.table_full():
-		net.send_start()
+			self.vars["status"] = 0
+			self.vars["message"] = ""
+			self.send_rspmove(num)
 
-def hook_leave (num, type, name, fd):
-	print "* leave:", num, type, name, fd
+			# FIXME: validation
+			#if self.game.validatemove("w", frompos, topos):
+			if 1 == 1:
+				self.game.domove(frompos, topos)
+				self.broadcast(self.send_move)
+				self.vars["source"] = fromposval
+				self.vars["destination"] = toposval
+				if fromposval < 0:
+					self.vars["type"] = type
 
-def hook_log (line):
-	print "* log:", line
+				(ret, frompos, topos) = self.game.aimove()
+				print "AI:", ret, frompos, topos
+				if ret:
+					(x, y) = frompos
+					(x2, y2) = topos
+					fromposval = y * 8 + x
+					toposval = y2 * 8 + x2
+					self.game.domove(frompos, topos)
 
-def hook_data (num, type, name, fd):
-	print "* data:", num, type, name, fd
-	net.init(fd)
-	op = net.getbyte()
-	print "READ(4bytes)", op
-	if op == net.REQ_MOVE:
-		print "- move"
-		fromposval = net.getbyte()
-		toposval = net.getbyte()
-		print " + ", fromposval, toposval
-		# TODO: move validity check
-		# TODO: send to all players
-		frompos = (fromposval % 9, fromposval / 9)
-		topos = (toposval % 9, toposval / 9)
-		if ggzboardgame.validatemove("w", frompos, topos):
-			ggzboardgame.domove(frompos, topos)
-			net.sendbyte(net.MSG_MOVE)
-			net.sendbyte(fromposval)
-			net.sendbyte(toposval)
+					self.vars["seat"] = 1
+					self.broadcast(self.send_reqmove)
 
-			(ret, frompos, topos) = ggzboardgame.aimove()
-			print "AI:", ret, frompos, topos
-			if ret:
-				(x, y) = frompos
-				(x2, y2) = topos
-				fromposval = y * 9 + x
-				toposval = y2 * 9 + x2
-				ggzboardgame.domove(frompos, topos)
-				net.sendbyte(net.MSG_MOVE)
-				net.sendbyte(fromposval)
-				net.sendbyte(toposval)
+					self.vars["source"] = fromposval
+					self.vars["destination"] = toposval
+					self.vars["type"] = 0
+					self.broadcast(self.send_move)
 
-		if ggzboardgame.over():
-			winner = 0 # FIXME!
-			net.sendbyte(net.MSG_GAMEOVER)
-			net.sendbyte(winner)
-			ggzdmod.reportStatistics(winner)
+			if self.game.over():
+				self.vars["winner"] = self.game.winner
+				self.broadcast(self.send_gameover)
+				bogaprot.ggzdmod.reportStatistics(self.vars["winner"])
+			else:
+				self.vars["seat"] = 0
+				self.broadcast(self.send_reqmove)
 
-	if net.error():
-		print "** network error! **"
-		sys.exit(-1)
-
-def hook_error (arg):
-	print "* error:", arg
-	sys.exit(-1)
-
-def initggz():
-	ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
-	ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
-	ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
-	ggzdmod.setHandler(ggzdmod.EVENT_LOG, hook_log)
-	ggzdmod.setHandler(ggzdmod.EVENT_DATA, hook_data)
-	ggzdmod.setHandler(ggzdmod.EVENT_ERROR, hook_error)
-
-def main():
-	global net
-	global ggzboardgame
-
-	print "### launched"
-
-	""" Setup """
-
-	print "### go init ggz"
-
-	initggz()
-	net = Server()
-
-	print "### now go loop"
-
-	ggzdmod.connect()
-	ggzdmod.mainLoop()
-
-	""" Main loop """
-
-	while 1:
-		pass
+		if self.error():
+			print "** network error! **"
+			sys.exit(-1)
 
 if __name__ == "__main__":
-	main()
+	print "### Arimaa (via Bogaprot) ###"
+
+	srv = ArimaaServer()
+	srv.game = ggzboardgame
+	srv.loop()
 
