@@ -29,7 +29,7 @@ Content of GGZ-Python:
 	  - Checkers (client, ai, network, server)
 	  - Hnefatafl (client, ai, network, server)
 	  - Ludo (client, ai, network, server)
-	  - Arimaa (client, ai, network, server)
+	  - Arimaa (client, network, server) [external module]
 	  - ConnectX (client, ai, network)
 
 	- Víbora, fullscreen core client

@@ -193,7 +193,6 @@ install-ggzboard:
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
-	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/arimaa
 	cp ggzboard/checkers/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/checkers
 	cp ggzboard/chess/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/chess
 	cp ggzboard/go/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/go
@@ -201,7 +200,6 @@ install-ggzboard:
 	cp ggzboard/reversi/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
 	cp ggzboard/madn/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	cp ggzboard/connectx/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
-	cp ggzboard/arimaa/*.png $(DESTDIR)$(datadir)/ggz/ggzboard/arimaa
 	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
 	cp ggzboard/ggzboard_net.py $(DESTDIR)$(prefix)/lib/site-python
 	cp ggzboard/bogaprot.py $(DESTDIR)$(prefix)/lib/site-python
@@ -217,17 +215,14 @@ install-ggzboard:
 	$(ggz-config) --install --force --modfile=ggzboard/module_reversi.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_connectx.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_ludo.dsc
-	$(ggz-config) --install --force --modfile=ggzboard/module_arimaa.dsc
 	mkdir -p $(DESTDIR)$(ggzd_confdir)/games
 	mkdir -p $(DESTDIR)$(ggzd_confdir)/rooms
 	cp ggzboard/server_hnefatafl.dsc $(DESTDIR)$(ggzd_confdir)/games
 	cp ggzboard/server_checkers.dsc $(DESTDIR)$(ggzd_confdir)/games
 	cp ggzboard/server_ludo.dsc $(DESTDIR)$(ggzd_confdir)/games
-	cp ggzboard/server_arimaa.dsc $(DESTDIR)$(ggzd_confdir)/games
 	cp ggzboard/server_hnefatafl.room $(DESTDIR)$(ggzd_confdir)/rooms
 	cp ggzboard/server_checkers.room $(DESTDIR)$(ggzd_confdir)/rooms
 	cp ggzboard/server_ludo.room $(DESTDIR)$(ggzd_confdir)/rooms
-	cp ggzboard/server_arimaa.room $(DESTDIR)$(ggzd_confdir)/rooms
 
 dist:
 	rm -rf ../ggz-python-$(version)

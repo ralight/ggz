@@ -1,7 +1,0 @@
-[RoomInfo]
-Name = Arimaa
-Description = Chess-like game invented at www.arimaa.com
-GameType = Arimaa
-MaxPlayers = 50
-MaxTables = 10
-
