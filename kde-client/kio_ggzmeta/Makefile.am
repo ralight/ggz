@@ -14,6 +14,8 @@ AM_CXXFLAGS = @COMPILEOPTIONS@
 
 METASOURCES = AUTO
 
+EXTRA_DIST = DESIGN
+
 dist_kde_services_DATA = ggzmeta.protocol
 
 
