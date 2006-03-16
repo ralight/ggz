@@ -1,5 +1,5 @@
-# Python library for Get Hot New Stuff access
-# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Python/SDL library for Get Hot New Stuff access
+# Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 import pygame
@@ -21,7 +21,7 @@ gettext.install("ggzpython", "/usr/local/share/locale", 1)
 class Stuff:
 	def __init__(self):
 		self.name = None
-		self.type = None
+		self.category = None
 		self.author = None
 		self.licence = None
 		self.summary = None
@@ -71,14 +71,14 @@ def element(stuff, key):
 			return child.nodeValue
 	return ""
 
-def downloaddata(conf):
+def downloaddata(conf, category):
 	stufflist = []
 
 	providers = conf.providers
 	try:
 		(filename, data) = urllib.urlretrieve(providers)
 	except:
-		return stufflist
+		return None
 	print "FILENAME", filename
 
 	dom = xml.dom.minidom.parse(filename)
@@ -109,7 +109,7 @@ def downloaddata(conf):
 		for stuff in stuffs:
 			s = Stuff()
 			s.name = element(stuff, "name")
-			s.type = element(stuff, "type")
+			s.category = stuff.getAttribute("category")
 			s.author = element(stuff, "author")
 			s.licence = element(stuff, "licence")
 			s.summary = element(stuff, "summary")
@@ -120,7 +120,10 @@ def downloaddata(conf):
 			s.payload = element(stuff, "payload")
 			s.rating = element(stuff, "rating")
 			s.downloads = element(stuff, "downloads")
-			print "stuff", s.name, s.type
+			print "stuff", s.name, s.category
+
+			if s.category != category:
+				continue
 
 			try:
 				(filename, data) = urllib.urlretrieve(s.preview)
@@ -148,6 +151,16 @@ def menurender(surface, stufflist, highlighted, conf):
 	font = pygame.font.SysFont("Vera Sans", 12)
 
 	surface.fill(conf.color_background)
+
+	if not stufflist:
+		i = 10
+		rect(surface, conf.color_foreground, 10, i, 780, 30, conf.color_titlebox)
+		if stufflist is None:
+			f = titlefont.render("Error: couldn't download GHNS feed", 1, (0, 0, 0))
+		else:
+			f = titlefont.render("GHNS feed contains no entries", 1, (0, 0, 0))
+		surface.blit(f, (15, i - 4))
+		return
 
 	i = 10
 	c = 0
@@ -193,131 +206,153 @@ def menurender(surface, stufflist, highlighted, conf):
 def homedir():
 	return pwd.getpwuid(os.geteuid())[5]
 
-def gethotnewstuff(gamename):
-	""" Prepare GHNS """
+class GHNSEngine:
+	def __init__(self):
+		self.conf = Configuration()
 
-	screen = pygame.display.get_surface()
+		os.system("mkdir -p " + homedir() + "/.sdlnewstuff")
 
-	screencopy = pygame.Surface((screen.get_width(), screen.get_height()))
-	screencopy.blit(screen, (0, 0))
+		try:
+			(fileobj, filename, desc) = imp.find_module(gamename, [homedir() + "/.sdlnewstuff/"])
+			config = imp.load_module("config", fileobj, filename, desc)
+			fileobj.close()
+			conf.parse(config.conf)
+		except:
+			pass
 
-	conf = Configuration()
+	def gethotnewstuff(self, category):
+		""" Prepare GHNS """
 
-	os.system("mkdir -p " + homedir() + "/.sdlnewstuff")
-	try:
-		(fileobj, filename, desc) = imp.find_module(gamename, [homedir() + "/.sdlnewstuff/"])
-		config = imp.load_module("config", fileobj, filename, desc)
-		fileobj.close()
-		conf.parse(config.conf)
-	except:
-		pass
+		screen = pygame.display.get_surface()
 
-	if conf.alpha_darkness:
-		dark = pygame.Surface((screen.get_width(), screen.get_height()))
-		dark.fill((0, 0, 0))
-		dark.set_alpha(conf.alpha_darkness)
-		screen.blit(dark, (0, 0))
+		screencopy = pygame.Surface((screen.get_width(), screen.get_height()))
+		screencopy.blit(screen, (0, 0))
 
-	stufflist = downloaddata(conf)
+		conf = self.conf
 
-	try:
-		f = file(homedir() + "/.sdlnewstuff/sdlnewstuff.install", "r")
-		lines = f.readlines()
-		f.close()
+		if conf.alpha_darkness:
+			dark = pygame.Surface((screen.get_width(), screen.get_height()))
+			dark.fill((0, 0, 0))
+			dark.set_alpha(conf.alpha_darkness)
+			screen.blit(dark, (0, 0))
 
-		for s in stufflist:
-			if s.name + "::" + s.version + "\n" in lines:
-				s.status = _("installed")
-	except:
-		pass
+		stufflist = downloaddata(conf, category)
 
-	surface = pygame.Surface((800, 600))
+		try:
+			f = file(homedir() + "/.sdlnewstuff/sdlnewstuff.install", "r")
+			lines = f.readlines()
+			f.close()
 
-	pygame.event.clear()
-
-	selection = 0
-	updatescreen = 1
-	install = -1
-
-	while 1:
-		""" Control """
-
-		pygame.event.pump()
-		event = pygame.event.poll()
-		if conf.keyboard and event.type == KEYDOWN:
-			key = event.key
-			if key == K_ESCAPE or pygame.event.peek(QUIT):
-				break
-			if key == K_UP:
-				if selection > 0:
-					selection -= 1
-					updatescreen = 1
-			if key == K_DOWN:
-				if selection < len(stufflist) - 1:
-					selection += 1
-					updatescreen = 1
-			if key == K_RETURN:
-				install = selection
-		if conf.mouse and event.type == MOUSEMOTION:
-			(posx, posy) = event.pos
-			left = (screen.get_width() - 800) / 2
-			up = (screen.get_height() - 600) / 2
-			if posx > left + 10 and posx < left + 800 - 10:
-				c = 0
-				i = 10
-				oldprovider = ""
-				for s in stufflist:
-					if s.provider is not oldprovider:
-						i += 40
-						oldprovider = s.provider
-					if posy > up + i and posy < up + i + 70:
-						if selection is not c:
-							selection = c
-							updatescreen = 1
-					i += 80
-					c += 1
-
-		if conf.mouse and event.type == MOUSEBUTTONDOWN:
-			install = selection
-
-		""" Logics """
-
-		if install >= 0 and len(stufflist) > 0:
-			s = stufflist[install]
-			if s.status is not _("installed"):
-				try:
-					(filename, data) = urllib.urlretrieve(s.payload)
-					if conf.installdir:
-						target = homedir() + "/" + conf.installdir
-					else:
-						target = homedir() + "/.ggz/games/" + gamename
-					os.system("mkdir -p " + target)
-					if conf.unpack:
-						os.system("tar -C " + target + " -xvzf " + filename)
-					else:
-						os.system("cp " + filename + " " + target)
-
-					f = file(homedir() + "/.sdlnewstuff/sdlnewstuff.install", "a")
-					f.write(s.name + "::" + s.version + "\n")
-					f.close()
-
+			for s in stufflist:
+				if s.name + "::" + s.version + "\n" in lines:
 					s.status = _("installed")
-				except:
-					s.status = _("error")
+		except:
+			pass
+
+		surface = pygame.Surface((800, 600))
+
+		pygame.event.clear()
+
+		selection = 0
+		updatescreen = 1
+		install = -1
+
+		while 1:
+			""" Control """
+
+			pygame.event.pump()
+			if updatescreen:
+				event = pygame.event.poll()
+			else:
+				event = pygame.event.wait()
+			if conf.keyboard and event.type == KEYDOWN:
+				key = event.key
+				if key == K_ESCAPE or pygame.event.peek(QUIT):
+					break
+				if key == K_UP:
+					if selection > 0:
+						selection -= 1
+						updatescreen = 1
+				if key == K_DOWN:
+					if selection < len(stufflist) - 1:
+						selection += 1
+						updatescreen = 1
+				if key == K_RETURN:
+					install = selection
+			if conf.mouse and event.type == MOUSEMOTION:
+				(posx, posy) = event.pos
+				left = (screen.get_width() - 800) / 2
+				up = (screen.get_height() - 600) / 2
+				if posx > left + 10 and posx < left + 800 - 10:
+					c = 0
+					i = 10
+					oldprovider = ""
+					for s in stufflist:
+						if s.provider is not oldprovider:
+							i += 40
+							oldprovider = s.provider
+						if posy > up + i and posy < up + i + 70:
+							if selection is not c:
+								selection = c
+								updatescreen = 1
+						i += 80
+						c += 1
+
+			if conf.mouse and event.type == MOUSEBUTTONDOWN:
+				install = selection
+
+			""" Logics """
+
+			if install >= 0 and len(stufflist) > 0:
+				s = stufflist[install]
+				if s.status != _("installed"):
+					try:
+						(filename, data) = urllib.urlretrieve(s.payload)
+						if conf.installdir:
+							target = homedir() + "/" + conf.installdir
+						else:
+							target = homedir() + "/.ggz/games/" + gamename
+						os.system("mkdir -p " + target)
+						if conf.unpack:
+							ret = os.system("tar -C " + target + " -xvzf " + filename)
+						else:
+							ret = os.system("cp " + filename + " " + target)
+
+						if ret == 0:
+							f = file(homedir() + "/.sdlnewstuff/sdlnewstuff.install", "a")
+							f.write(s.name + "::" + s.version + "\n")
+							f.close()
+
+							s.status = _("installed")
+						else:
+							s.status = _("error")
+					except:
+						s.status = _("error")
 					
-				install = -1
-				updatescreen = 1
+					install = -1
+					updatescreen = 1
 
-		""" Drawing """
+			""" Drawing """
 
-		if updatescreen:
-			menurender(surface, stufflist, selection, conf)
-			xpos = (screen.get_width() - 800) / 2
-			ypos = (screen.get_height() - 600) / 2
-			screen.blit(surface, (xpos, ypos))
-			updatescreen = 0
+			if updatescreen:
+				menurender(surface, stufflist, selection, conf)
+				xpos = (screen.get_width() - 800) / 2
+				ypos = (screen.get_height() - 600) / 2
+				screen.blit(surface, (xpos, ypos))
+				updatescreen = 0
+			pygame.display.flip()
+
+		screen.blit(screencopy, (0, 0))
 		pygame.display.flip()
 
-	screen.blit(screencopy, (0, 0))
-	pygame.display.flip()
+# Get a new engine
+
+def ghnsengine():
+	return GHNSEngine()
+
+# Legacy wrapper functions for compatibility
+
+def gethotnewstuff(category):
+	engine = GHNSEngine()
+	engine.gethotnewstuff(category)
 

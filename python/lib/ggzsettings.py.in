@@ -18,6 +18,7 @@ if len(path) > 0:
 		DATAPATH = "./"
 		MODULEPATH = "./"
 		I18NPATH = "./"
+		BREAK_HERE
 	else:
 		DATAPATH = unquote("@datadir@/ggz")
 		MODULEPATH = unquote("@prefix@/lib/site-python")
