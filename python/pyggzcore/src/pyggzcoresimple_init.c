@@ -308,7 +308,7 @@ static PyObject *pyggzcoresimple_server_join_room(PyObject *self, PyObject *args
 
 static PyObject *pyggzcoresimple_room_get_name(PyObject *self, PyObject *args)
 {
-	char *ret;
+	const char *ret;
 
 	if(!PyArg_ParseTuple(args, "")) return NULL;
 	ret = ggzcore_room_get_name(ggzroom);
@@ -317,7 +317,7 @@ static PyObject *pyggzcoresimple_room_get_name(PyObject *self, PyObject *args)
 
 static PyObject *pyggzcoresimple_room_get_desc(PyObject *self, PyObject *args)
 {
-	char *ret;
+	const char *ret;
 
 	if(!PyArg_ParseTuple(args, "")) return NULL;
 	ret = ggzcore_room_get_desc(ggzroom);
