@@ -1,0 +1,44 @@
+# GGZ Gaming Zone Python Package
+# Makefile.in for use with autoconf (but not automake)
+
+# This is a version only for the GGZBoard Arimaa module.
+# It cannot be used in this form and only servers as a reference.
+
+# Release version number
+version = 0.0.13
+
+# prefix: All-purpose prefix (/usr)
+prefix = @prefix@
+# bindir: For executable programs (/usr/bin)
+bindir = @bindir@
+# datadir: For game data files (/usr/share)
+datadir = @datadir@
+
+# xdg_datadir: For desktop integration files (/usr/share/applications)
+xdg_datadir = @xdg_datadir@
+# ggzd_confdir: For GGZ integration files (/etc/ggzd)
+ggzd_confdir = @ggzd_confdir@
+
+# ggz-config: either ggz-config or 'true' if disabled
+ggz-config = @GGZ_CONFIG@ -D
+
+# some default autoconf variables
+exec_prefix = ${prefix}
+sysconfdir = ${prefix}/etc
+
+all:
+	@echo Nothing to do
+
+clean:
+	@echo Nothing to do
+
+install:
+	@echo Installing Arimaa module for the GGZBoard framework
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/arimaa
+	cp ggzboard/arimaa/*.png $(DESTDIR)$(datadir)/ggz/ggzboard/arimaa
+	$(ggz-config) --install --force --modfile=ggzboard/module_arimaa.dsc
+	mkdir -p $(DESTDIR)$(ggzd_confdir)/games
+	mkdir -p $(DESTDIR)$(ggzd_confdir)/rooms
+	cp ggzboard/server_arimaa.dsc $(DESTDIR)$(ggzd_confdir)/games
+	cp ggzboard/server_arimaa.room $(DESTDIR)$(ggzd_confdir)/rooms
+
