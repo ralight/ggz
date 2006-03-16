@@ -82,10 +82,14 @@ class Game:
 
 		self.micromoves = 0
 
-		print "INIT!"
-		self.autoinit()
+	def mutate(self, list):
+		randomcmp = lambda x, y: random.randint(-1, 1)
+		list.sort(randomcmp)
 
 	def autoinit(self):
+		self.mutate(self.piecelist["gold"])
+		self.mutate(self.piecelist["silver"])
+
 		i = 0
 		for piece in self.piecelist["gold"]:
 			self.selected = piece
@@ -97,10 +101,10 @@ class Game:
 			self.domove(None, (i % 8, 1 - i / 8))
 			i += 1
 		###
-		self.domove((0, 1), (0, 2))
-		self.domove((0, 0), (0, 3))
-		self.domove((1, 0), (2, 3))
-		self.domove((0, 7), (4, 3))
+		#self.domove((0, 1), (0, 2))
+		#self.domove((0, 0), (0, 3))
+		#self.domove((1, 0), (2, 3))
+		#self.domove((0, 7), (4, 3))
 
 	def selectpiece(self, placepos):
 		if not self.placements:
@@ -113,6 +117,8 @@ class Game:
 
 	def init(self, path):
 		self.datapath = path
+		print "INIT!"
+		self.autoinit()
 
 	def name(self):
 		return _("Arimaa")
