@@ -1,7 +1,7 @@
 kioggzdocdir = $(kde_htmldir)/en/kioslave
 kioggzdoc_DATA = ggz.docbook ggz.html
 
-EXTRA_DIST = ggz.docbook
+EXTRA_DIST = ggz.docbook index.docbook
 
 ggz.html: $(top_srcdir)/kio_ggz/kioslave/index.docbook
 	$(MEINPROC) --stdout $< > $@

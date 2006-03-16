@@ -1,7 +1,7 @@
 kioggzmetadocdir = $(kde_htmldir)/en/kioslave
 kioggzmetadoc_DATA = ggzmeta.docbook ggzmeta.html
 
-EXTRA_DIST = ggzmeta.docbook
+EXTRA_DIST = ggzmeta.docbook index.docbook
 
 ggzmeta.html: $(top_srcdir)/kio_ggzmeta/kioslave/index.docbook
 	$(MEINPROC) --stdout $< > $@
