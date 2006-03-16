@@ -1,0 +1,307 @@
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* NEWS README.GGZ AUTHORS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:46:20  Rev 7904   josef
+
+	* src/ggz/ui/AboutDialog.java:
+	  - bump to 0.0.13 here too
+
+
+2006-03-08 01:31:17  Rev 7898   helg
+
+	* src/ggz/ui/ClientApplet.java src/ggz/ui/ClientApp.java README.txt:
+	  Updated README.txt and fixed applet parameter names for xmlin and 
+	  xmlout.
+
+
+2006-03-07 13:28:01  Rev 7896   josef
+
+	* :
+	  - ignore 'bin' directory
+
+
+2006-03-07 13:26:19  Rev 7895   josef
+
+	* :
+	  - move GGZ-Java to a module on its own
+
+
+2006-03-07 02:06:13  Rev 7886   helg
+
+	* :
+	  Fixed bug in Bridge where bidding UI was not being removed once 
+	  play started.
+
+
+2006-03-03 00:52:00  Rev 7882   helg
+
+	* :
+	  
+
+
+2006-02-15 00:58:07  Rev 7871   helg
+
+	* :
+	  Improved default browser detection under Unix when clicking on a 
+	  hyperlink (e.g. How to play) when running as an app. It's still 
+	  not very good but it's better than it was.
+
+
+2006-02-15 00:16:01  Rev 7870   helg
+
+	* :
+	  Made wholesale changes to enum classes to provide compatibility 
+	  with JDK1.4. Also removed generic collections for the same reason. 
+	  Added custom bid panel for Bridge so that you can more easily see 
+	  the other players bids and rather than having a large array of 
+	  buttons you now have specialised buttons just for bridge.
+
+
+2006-02-11 06:56:56  Rev 7858   helg
+
+	* :
+	  
+
+
+2006-02-10 12:56:12  Rev 7854   josef
+
+	* :
+	  - brazilian portuguese translation for the applet UI
+
+
+2006-02-10 10:24:50  Rev 7852   josef
+
+	* :
+	  - some corrections to the German translation
+
+
+2006-02-10 06:19:08  Rev 7851   helg
+
+	* :
+	  More localisation. Does it never end?
+
+
+2006-02-10 02:05:12  Rev 7850   helg
+
+	* :
+	  Changed the way Server XML is traced (yet again). Server XML is 
+	  not traced byte for byte rather than after XML parsing.
+
+
+2006-02-10 01:36:27  Rev 7849   helg
+
+	* :
+	  Added i18n support for Net and Server classes.
+
+
+2006-02-09 09:22:58  Rev 7847   helg
+
+	* :
+	  Added i18n support for core client. Current supported languages 
+	  are English and German.
+
+
+2006-02-07 06:23:07  Rev 7843   helg
+
+	* :
+	  
+
+
+2006-02-07 06:20:15  Rev 7842   helg
+
+	* :
+	  Added "bad username" result code.
+	  Renamed CardSeat to Player.
+
+
+2006-02-07 00:12:48  Rev 7841   helg
+
+	* :
+	  Modified Net to use SAX Transformer to generate XML instead of 
+	  concatenating strings. This guarantees that all XML sent to the 
+	  server by the Java client will be well formed.
+	  "Back to Lounge" button is not disabled while playing a game.
+
+
+2006-02-02 08:03:38  Rev 7835   helg
+
+	* :
+	  Forgot to update the TODO file.
+
+
+2006-02-02 07:55:17  Rev 7834   helg
+
+	* :
+	  Set socket keep alive to true so that games don't lose socket 
+	  connection if user doesn't do anything for a long time. There is 
+	  no application level heartbeat for GGZCards so hopefully this 
+	  fixes the "connection reset" problem.
+	  Added more SwingUtilities.invokeLater() to hopefully resolve some 
+	  Swing threading issues.
+	  Java clients can now spectate!
+
+
+2006-01-30 13:51:38  Rev 7833   helg
+
+	* :
+	  Minor size and color tweaks.
+
+
+2006-01-30 12:24:56  Rev 7830   helg
+
+	* :
+	  Created new layout for chat and card table.
+
+
+2006-01-30 09:28:01  Rev 7829   helg
+
+	* :
+	  Add tool tip to player list in game rooms that shows player stats. 
+	  Improved animation performance for deal and trick win.
+
+
+2006-01-30 06:48:15  Rev 7828   helg
+
+	* :
+	  Added LGPL terms to the top of each source file.
+
+
+2006-01-30 06:23:49  Rev 7827   helg
+
+	* :
+	  Added about box and new watermark. Added open source class that 
+	  launches platform browser when clicking game help when running as 
+	  application. Made a few other minor adjustments.
+
+
+2006-01-29 14:08:51  Rev 7826   helg
+
+	* :
+	  Add seat allocation dialog. Only thing is it doesn't ley you 
+	  allocate seats yet. The main reason I did it was to remove the 
+	  "play against computer" button since people were clicking on "new 
+	  game" instead and then couldn't work out how to play against the 
+	  computer. Seat allocation and named bot support is coming...
+
+
+2006-01-29 10:49:10  Rev 7825   helg
+
+	* :
+	  Removed rose from applet since it doesn't seem appropriate. I 
+	  haven't got a replacement at the moment but when I find something 
+	  I'll put a watermark back.
+
+
+2006-01-25 14:16:39  Rev 7822   helg
+
+	* :
+	  Added chat icon that I drew myself after some searching in free 
+	  icon libraries for inspiration.
+
+
+2006-01-25 13:32:33  Rev 7821   helg
+
+	* :
+	  
+
+
+2006-01-25 04:50:31  Rev 7820   helg
+
+	* :
+	  
+
+
+2006-01-25 04:19:09  Rev 7819   helg
+
+	* :
+	  
+
+
+2006-01-25 04:17:11  Rev 7818   helg
+
+	* :
+	  
+
+
+2006-01-24 06:01:25  Rev 7817   helg
+
+	* :
+	  
+
+
+2006-01-24 01:33:07  Rev 7816   helg
+
+	* :
+	  
+
+
+2006-01-20 11:08:29  Rev 7800   helg
+
+	* :
+	  
+
+
+2006-01-20 03:36:37  Rev 7797   helg
+
+	* :
+	  
+
+
+2006-01-20 00:19:19  Rev 7796   helg
+
+	* :
+	  Change made on laptop.
+
+
+2006-01-19 07:03:35  Rev 7794   helg
+
+	* :
+	  
+
+
+2006-01-13 06:50:01  Rev 7781   helg
+
+	* :
+	  Removed file/folder
+
+
+2006-01-13 06:45:37  Rev 7780   helg
+
+	* :
+	  Removed file/folder
+
+
+2006-01-13 06:31:44  Rev 7778   helg
+
+	* :
+	  Removed file/folder
+
+
+2006-01-13 06:26:27  Rev 7777   helg
+
+	* :
+	  
+
+
+2006-01-13 06:14:15  Rev 7776   helg
+
+	* :
+	  
+
+
+2006-01-10 02:49:28  Rev 7759   helg
+
+	* :
+	  Removed file/folder
+
+
+2006-01-10 02:42:42  Rev 7758   helg
+
+	* :
+	  
+
+
