@@ -121,6 +121,7 @@ New GGZBoard game: Arimaa<br>
 New GGZBoard game: ConnectX<br>
 Network support for GGZBoard Ludo and others (Bogaprot protocol)<br>
 Local AI support (via GNU Go) for GGZBoard Go<br>
+Ability to install themes and additional games in GGZBoard<br>
 </td></tr>
 
 <tr><td bgcolor="#ffd000" valign="top">
