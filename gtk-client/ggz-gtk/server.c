@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Client
  * Date: 6/19/00
- * $Id: server.c 7274 2005-06-10 12:56:50Z josef $
+ * $Id: server.c 7940 2006-03-16 14:34:24Z josef $
  *
  * This file contains functions for handling server client profiles
  *
@@ -96,7 +96,8 @@ void server_profiles_load(void)
 	}
 	server_list_print();
 
-	ggz_free(profiles);
+	if (profiles)
+		ggz_free(profiles);
 }
 
 

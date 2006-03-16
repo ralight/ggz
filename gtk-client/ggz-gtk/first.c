@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 7892 2006-03-07 10:04:43Z josef $
+ * $Id: first.c 7940 2006-03-16 14:34:24Z josef $
  *
  * Displayes information about the authors and the application.
  *
@@ -140,9 +140,10 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 	ggzcore_conf_commit();
 	gtk_widget_destroy(first_dialog);
 	server_profiles_load();
+
 	win_main = create_win_main();
 	ggz_sensitivity_init();
-	gtk_widget_show(win_main);
+	gtk_widget_show_all(win_main);
 	ggz_gtk_login_raise(NULL);
 }
 
