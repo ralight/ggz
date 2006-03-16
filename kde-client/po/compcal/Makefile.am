@@ -1,6 +1,6 @@
 PACKAGE = compcal
 POTFILE = compcal.pot
-POFILES = de.po
+POFILES = de.po fr.po
 LOCATIONS = $(top_srcdir)/compcal/src/*.cpp
 
 EXTRA_DIST = $(POTFILE) $(POFILES)
