@@ -813,7 +813,7 @@ class GGZBoard:
 				if key == K_u:
 					#sdlnewstuff.gethotnewstuff(game.name())
 					engine = sdlnewstuff.ghnsengine()
-					engine.conf.providers = "http://dxsweb/ghns/ggz-providers.xml"
+					engine.conf.providers = "http://www.ggzcommunity.org/hotstuff/providers.xml"
 					engine.conf.installdir = ".ggz/games/ggzboard"
 					engine.conf.alpha_darkness = 180
 					engine.conf.color_background = (50, 50, 150)
