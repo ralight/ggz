@@ -1,3 +1,142 @@
+2006-03-14 13:58:11  Rev 7916   josef
+
+	* ktictactux/module.dsc.in ktictactux/main.cpp:
+	  - version bump due to local AI improvements
+
+
+2006-03-14 13:54:27  Rev 7912   josef
+
+	* README:
+	  - version bumping in the README files
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* autogen.sh QuickStart.GGZ:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* NEWS README.GGZ AUTHORS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-02-27 12:35:37  Rev 7880   josef
+
+	* ktictactux/ktictactuxwin.cpp ktictactux/ktictactux.cpp:
+	  - always sync configuration files
+	  - prevent the opponent from winning by trying the middle field first
+	  Both bugs reported by Jo Laposte <jo.emeras@laposte.net> some time 
+	  ago.
+	  (Cannot find the original mail)
+
+
+2006-01-14 05:29:03  Rev 7782   jdorje
+
+	* m4/ggz.m4:
+	  Fix AM_CONDITIONAL problem.
+
+
+2006-01-11 07:00:16  Rev 7762   jdorje
+
+	* m4/ggz.m4:
+	  ggz-gtk support in ggz.m4.
+
+
+2005-12-29 11:49:56  Rev 7701   josef
+
+	* po/koenig/Makefile.am KReversi/Makefile.am 
+	  muehle/pics/alt/Makefile.am muehle/src/ai/Makefile.am 
+	  KReversi/pixmaps/default/Makefile.am kcc/Makefile.am 
+	  krosswater/Makefile.am keepalive/Makefile.am lib/Makefile.am 
+	  po/KReversi/Makefile.am man/Makefile.am KReversi/pixmaps/Makefile.
+	  am KReversi/pixmaps/gtk-client/Makefile.am 
+	  muehle/pics/standard/Makefile.am muehle/Makefile.am man/ggzwrap.1 
+	  po/krosswater/Makefile.am ktictactux/Makefile.am kdots/Makefile.am 
+	  koenig/pieces/Makefile.am krosswater/gfx/Makefile.am am_edit 
+	  configure.ac keepalive/src/Makefile.am po/muehle/Makefile.am 
+	  koenig/libcgc/Makefile.am KReversi/pixmaps/blend/Makefile.am 
+	  fyrdman/Makefile.am Makefile.am po/ktictactux/Makefile.am 
+	  po/kdots/Makefile.am keepalive/pics/Makefile.am 
+	  muehle/src/Makefile.am muehle/variants/Makefile.am 
+	  ktictactux/themes/Makefile.am kcc/themes/default/Makefile.am 
+	  fyrdman/data/Makefile.am koenig/pics/Makefile.am 
+	  kdots/Dot/Makefile.am koenig/Makefile.am muehle/pics/Makefile.am 
+	  po/fyrdman/Makefile.am krosswater/zoneclient/Makefile.am 
+	  muehle/doc/Makefile.am:
+	  - BIG build system update, like was previously done for kde-client
+	    (eliminating the reliance on autodist features for 'make dist')
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* m4/ggz.m4 autogen.sh README.GGZ:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-16 12:45:09  Rev 7673   josef
+
+	* muehle/src/ggzwrap muehle/src/ai/Makefile.am muehle/src/Makefile.am:
+	  - move ggzwrap away
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* keepalive/.cvsignore krosswater/zoneclient/.cvsignore muehle/doc/.
+	  cvsignore po/muehle/.cvsignore po/ktictactux/.cvsignore 
+	  krosswater/gfx/.cvsignore keepalive/src/.cvsignore po/kdots/.
+	  cvsignore keepalive/pics/.cvsignore muehle/pics/.cvsignore 
+	  po/krosswater/.cvsignore kcc/themes/.cvsignore muehle/src/ai/.
+	  cvsignore ktictactux/themes/.cvsignore koenig/.cvsignore 
+	  muehle/src/ggzwrap/.cvsignore lib/.cvsignore 
+	  KReversi/pixmaps/gtk-client/.cvsignore KReversi/pixmaps/default/.
+	  cvsignore man/.cvsignore muehle/pics/standard/.cvsignore 
+	  ktictactux/.cvsignore po/koenig/.cvsignore muehle/src/.cvsignore 
+	  muehle/variants/.cvsignore krosswater/.cvsignore po/KReversi/.
+	  cvsignore .cvsignore koenig/pics/.cvsignore po/.cvsignore 
+	  KReversi/.cvsignore koenig/libcgc/.cvsignore kcc/.cvsignore 
+	  fyrdman/data/.cvsignore kcc/themes/default/.cvsignore fyrdman/.
+	  cvsignore po/fyrdman/.cvsignore KReversi/pixmaps/blend/.cvsignore 
+	  koenig/pieces/.cvsignore kdots/.cvsignore muehle/pics/alt/.
+	  cvsignore kdots/Dot/.cvsignore KReversi/pixmaps/.cvsignore muehle/.
+	  cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-11-14 09:01:33  Rev 7621   josef
+
+	* keepalive/keepalive.desktop muehle/pics/muehle.desktop:
+	  Some random commits of what has been lurking around for some time:
+	  - update of the backend pages to reflect the rankings.g.o -> 
+	  ggzcommunity.org move
+	  - some desktop files for games that provide a single-player mode
+	  - beginnings of Arimaa game support for GGZBoard
+
+
+2005-09-27 23:37:04  Rev 7601   josef
+
+	* m4/ggz.m4:
+	  - move prefix sanitiser into AC_GGZ_INIT
+	  - remove all assumptions over prefix being NONE
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 15:30:38  Rev 7572   josef
 
 	* keepalive/src/animdialog.cpp krosswater/dlg_person.cpp 

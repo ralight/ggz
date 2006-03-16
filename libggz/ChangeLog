@@ -1,3 +1,232 @@
+2006-03-14 13:49:22  Rev 7907   josef
+
+	* src/ggz.h:
+	  - library interface version bump
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* NEWS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-03-07 10:02:50  Rev 7891   josef
+
+	* QuickStart.GGZ README.GGZ AUTHORS:
+	  - prototyping the shared files for the 0.0.13 release
+
+
+2006-03-07 10:02:14  Rev 7890   josef
+
+	* configure.ac:
+	  - do not enable anl (GAI_A) by default, use --enable-anl instead
+	  This could also be --with-anl but the idea is to have it 
+	  integrated into
+	  libc someday.
+
+
+2006-03-06 18:46:12  Rev 7885   josef
+
+	* src/memory.c src/xmlelement.c src/list.c 
+	  src/security/ggz_tls_gnutls.c src/support.h 
+	  src/security/ggz_tls_openssl.c src/numberlist.c src/conf.c src/msg.
+	  c src/misc.c src/ggz.h src/security/ggz_tls_none.c src/ggz_common.
+	  c src/misc.h src/ggz_common.h src/stack.c:
+	  - clarify all libggz library copyrights to be LGPL
+
+
+2006-03-03 11:11:55  Rev 7883   josef
+
+	* src/ggz.h:
+	  - improved API docs for new ggz_getpeername() behaviour
+
+
+2006-03-02 19:55:05  Rev 7881   oojah
+
+	* src/ggz.h:
+	  easysock.c rev 7877 introduced the int resolve parameter to 
+	  ggz_getpeername() but it wasn't added to ggz.h.
+
+
+2006-02-27 12:15:43  Rev 7877   josef
+
+	* src/easysock.c:
+	  - include resolving functionality into ggz_getpeername()
+
+
+2006-02-27 11:55:48  Rev 7876   josef
+
+	* src/easysock.c:
+	  - getpeername(): found that bugger!
+	  With IPv6, one must use struct sockaddr_storage instead of just 
+	  sockaddr.
+	  Of course, this is not documented anywhere, I found it in an old 
+	  diff of
+	  ipv6 support for rsync. The world sucks.
+
+
+2006-02-03 12:57:31  Rev 7836   josef
+
+	* src/ggz.h src/ggz_common.c src/easysock.c src/ggz_common.h:
+	  - addition of "bad username" error to ggz_common
+	  - let ggz_resolvename() return a const char* in case no notifier 
+	  is set
+	    [this does nothing for now but could do a synchronous lookup]
+
+
+2006-01-26 18:25:08  Rev 7824   josef
+
+	* src/easysock.c:
+	  - eliminating undefined references on windows (hopefully)
+
+
+2006-01-23 10:34:40  Rev 7801   josef
+
+	* src/ggz.h src/easysock.c:
+	  - attempt to fix compile problem ("more bad than right" - damn, 
+	  doesn't rhyme in English)
+	  - new function ggz_getpeername(), initially in ggzd
+
+
+2006-01-18 01:37:34  Rev 7793   jdorje
+
+	* src/easysock.c:
+	  Fix compile error (is this right?).
+
+
+2006-01-14 05:29:03  Rev 7782   jdorje
+
+	* m4/ggz.m4:
+	  Fix AM_CONDITIONAL problem.
+
+
+2006-01-11 07:00:16  Rev 7762   jdorje
+
+	* m4/ggz.m4:
+	  ggz-gtk support in ggz.m4.
+
+
+2006-01-07 22:20:47  Rev 7750   jdorje
+
+	* m4/c99.m4:
+	  Updated c99 file.
+
+
+2006-01-07 21:44:45  Rev 7745   jdorje
+
+	* src/easysock.c:
+	  Compile fix.
+
+
+2006-01-03 12:56:42  Rev 7721   josef
+
+	* autogen.sh:
+	  - fix pipefail usage
+	  The ultimate explanation:
+	  - automake messages are suppressed, only errors should get through
+	  - unfortunately, the "installing XXX..." messages are printed to 
+	  stderr
+	  - so we catch them away with grep
+	  - unfortunately, the exit status of automake is then ignored and 
+	  the one of grep is used
+	  - grep is complemented with "true" however just in case it is not 
+	  installed
+	  - therefore, the "pipefail" option is set to get the status of the 
+	  right-most *failing* command
+	  - unfortunately, pipefail is only available with bash >= 3.0
+	  - therefore, conditional branching of the check is done
+	  "Much ado about nothing", but autogen.sh is only used by hackers 
+	  anyway and therefore
+	  constructs with a high hacking factor shall be allowed in it ;-)
+
+
+2006-01-02 16:44:21  Rev 7711   josef
+
+	* src/Makefile.am configure.ac src/ggz.h src/easysock.c:
+	  - support for GAI_a (asynchronous host lookups) with a callback
+	    [EXPERIMENTAL!]
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* autogen.sh README.GGZ m4/ggz.m4:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-16 19:11:14  Rev 7676   jdorje
+
+	* m4/ggz.m4:
+	  Remove freeciv bits from AC_CHECK_GGZ.
+
+
+2005-12-16 02:25:10  Rev 7671   jdorje
+
+	* m4/ggz.m4:
+	  Add AC_GGZ_CHECK macro.
+
+
+2005-12-13 01:13:47  Rev 7668   jdorje
+
+	* src/misc.c:
+	  Rewrite ggz_make_path to use strchr instead of strsep (which is 
+	  not portable).
+
+
+2005-12-13 00:57:25  Rev 7667   jdorje
+
+	* src/easysock.c:
+	  Fix compile warning.
+
+
+2005-12-13 00:41:37  Rev 7666   jdorje
+
+	* src/easysock.c:
+	  gai_strerror is not available on win32, apparently.
+
+
+2005-12-13 00:35:51  Rev 7665   jdorje
+
+	* src/misc.c src/ggz.h:
+	  Move make_path and mkdirectory into libggz, and rename as 
+	  ggz_make_path.
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* src src/security/.cvsignore .cvsignore man/.cvsignore src/.
+	  cvsignore tests/.cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-11-18 21:51:26  Rev 7634   jdorje
+
+	* configure.ac src/easysock.c:
+	  Fixes for compiling with winsock2.
+
+
+2005-09-27 23:37:04  Rev 7601   josef
+
+	* m4/ggz.m4:
+	  - move prefix sanitiser into AC_GGZ_INIT
+	  - remove all assumptions over prefix being NONE
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 13:22:07  Rev 7565   josef
 
 	* Makefile.am:

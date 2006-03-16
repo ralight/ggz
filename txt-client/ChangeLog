@@ -1,3 +1,79 @@
+2006-03-15 13:08:35  Rev 7930   josef
+
+	* ggz-txt/input.c:
+	  - change from char* to const char*
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* autogen.sh QuickStart.GGZ:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* NEWS README.GGZ AUTHORS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-01-14 05:29:03  Rev 7782   jdorje
+
+	* m4/ggz.m4:
+	  Fix AM_CONDITIONAL problem.
+
+
+2006-01-11 07:00:16  Rev 7762   jdorje
+
+	* m4/ggz.m4:
+	  ggz-gtk support in ggz.m4.
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* m4/ggz.m4 m4/i18n.mk autogen.sh README.GGZ:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* ggz-txt/.cvsignore po/.cvsignore tttxt/.cvsignore .cvsignore man/.
+	  cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-11-14 09:01:33  Rev 7621   josef
+
+	* ggz-txt/game.h:
+	  Some random commits of what has been lurking around for some time:
+	  - update of the backend pages to reflect the rankings.g.o -> 
+	  ggzcommunity.org move
+	  - some desktop files for games that provide a single-player mode
+	  - beginnings of Arimaa game support for GGZBoard
+
+
+2005-09-27 23:37:04  Rev 7601   josef
+
+	* configure.ac m4/ggz.m4:
+	  - move prefix sanitiser into AC_GGZ_INIT
+	  - remove all assumptions over prefix being NONE
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 10:11:25  Rev 7551   josef
 
 	* configure.ac:

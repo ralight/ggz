@@ -1,3 +1,126 @@
+2006-03-15 13:07:48  Rev 7928   josef
+
+	* configure.ac:
+	  - output status of Tcl search
+
+
+2006-03-14 13:54:27  Rev 7912   josef
+
+	* README:
+	  - version bumping in the README files
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* autogen.sh:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* NEWS README.GGZ AUTHORS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-02-13 07:12:23  Rev 7869   josef
+
+	* grubby/data/statistics.py grubby/data/phrasecatcher.py 
+	  grubby/data/fortune.py grubby/data/Makefile.am:
+	  - distribute some new grubby modembed plugin scripts, still 
+	  without installation
+
+
+2006-02-03 13:00:33  Rev 7838   josef
+
+	* grubby/src/netsilc.c grubby/src/main.c grubby/src/netirc.c 
+	  grubby/src/module.c grubby/src/net.c grubby/src/gurumod.h 
+	  grubby/src/netconsole.c grubby/src/module.h:
+	  - addition of playertype attribute to all messages
+	  - implementation of said attribute for the netggz module, whereas 
+	  others can only report an unknown origin player type
+	  - usage of this attribute for an improved access checking for 
+	  administrative commands
+
+
+2006-02-03 12:58:52  Rev 7837   josef
+
+	* grubby/modules/embed.c:
+	  - optimisation for Python >= 2.4:
+	    do not enable signal handlers, so that grubby can as always be
+	    killed with Ctrl+C
+	  Was not easy to figure out the reason!
+
+
+2006-01-14 05:29:03  Rev 7782   jdorje
+
+	* m4/ggz.m4:
+	  Fix AM_CONDITIONAL problem.
+
+
+2006-01-11 07:00:16  Rev 7762   jdorje
+
+	* m4/ggz.m4:
+	  ggz-gtk support in ggz.m4.
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* m4/i18n.mk autogen.sh README.GGZ m4/ggz.m4:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-29 11:29:39  Rev 7689   josef
+
+	* grubby/src/main.c:
+	  - slight version bump
+
+
+2005-12-19 08:38:17  Rev 7677   josef
+
+	* grubby/data/test.tcl grubby/data/Makefile.am grubby/modules/embed.c:
+	  - use $answer as input/output variable for embedded Tcl scripts
+	  - sample script is now available
+
+
+2005-12-16 12:48:42  Rev 7674   josef
+
+	* configure.ac grubby/src/net.c grubby/modules/Makefile.am 
+	  grubby/modules/embed.c:
+	  - basic Tcl scripting support
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* grubby/.cvsignore man/de/.cvsignore games/guru-ttt/.cvsignore 
+	  grubby/data/.cvsignore games/lib/.cvsignore games/.cvsignore 
+	  grubby/po/.cvsignore .cvsignore grubby/modules/.cvsignore man/.
+	  cvsignore grubby/src/.cvsignore games/guru-chess/.cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-09-27 23:37:04  Rev 7601   josef
+
+	* configure.ac m4/ggz.m4:
+	  - move prefix sanitiser into AC_GGZ_INIT
+	  - remove all assumptions over prefix being NONE
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 17:27:00  Rev 7585   josef
 
 	* configure.ac:

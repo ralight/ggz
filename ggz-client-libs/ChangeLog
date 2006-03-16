@@ -1,3 +1,346 @@
+2006-03-16 14:33:16  Rev 7939   josef
+
+	* ggzcore/hook.c:
+	  [the 0.0.13 crash police]
+	  - do not crash if hook list is NULL
+	  It should never be NULL, I suspect ggz-gtk to handle disconnection 
+	  in the case
+	  of protocol errors wrong, but the fix prevents the crash at least.
+
+
+2006-03-15 13:07:26  Rev 7927   josef
+
+	* Makefile.am:
+	  - TODO and HACKING were no more
+
+
+2006-03-14 13:54:27  Rev 7912   josef
+
+	* README:
+	  - version bumping in the README files
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* autogen.sh QuickStart.GGZ:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:50:27  Rev 7909   josef
+
+	* ggzcore/ggzcore.h ggzcore/netxml.c:
+	  - library interface version bump
+	  - send all things xml-escaped
+
+
+2006-03-14 13:49:36  Rev 7908   josef
+
+	* ggzmod/ggzmod.h:
+	  - library interface version bump
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* AUTHORS NEWS README.GGZ:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-03-08 06:49:02  Rev 7899   josef
+
+	* ggzcore/netxml.c:
+	  - always quote CDATA strings, like chat text, user name, password 
+	  and email
+
+
+2006-03-07 09:57:32  Rev 7889   josef
+
+	* ggzcore/user.h ggzcore/state.h ggzcore/conf.c ggzcore/module.c 
+	  ggzcore/table.c ggzcore/conf.h ggzcore/ggzcore-ggz.h 
+	  ggzcore/module.h ggzcore/net.h ggzcore/table.h ggzcore/player.c 
+	  ggzcore/hook.c ggzcore/player.h ggzcore/init.c ggzcore/hook.h 
+	  ggzcore/ggzcore.h ggzcore/server.c ggzcore/protocol.h 
+	  ggzcore/netxml.c ggzcore/game.c ggzcore/server.h ggzcore/gametype.
+	  c ggzcore/room.c ggzcore/user.c ggzcore/game.h ggzcore/state.c 
+	  ggzcore/gametype.h ggzcore/room.h:
+	  - licence texts in sources clarified to be LGPL
+
+
+2006-03-07 09:57:17  Rev 7888   josef
+
+	* ggzmod/ggzmod.h ggzmod/io.h ggzmod/mod.h ggzmod/protocol.h 
+	  ggzmod/ggzmod.c ggzmod/io.c:
+	  - licence texts in sources clarified to be LGPL
+
+
+2006-02-13 07:09:22  Rev 7868   josef
+
+	* po/ggz-config/ggz-config.pot po/ggzcore/de.po po/ggz-config/de.po 
+	  po/ggzcore/ggzcore.pot:
+	  - translation update (mostly just line numbers that changes)
+
+
+2006-02-13 07:07:40  Rev 7867   josef
+
+	* ggzcore/TODO ggzcore/netxml.c:
+	  - always send login name, email address and password as CDATA
+	  Of course, this is still not a clean way of letting such data be
+	  automatically escaped! Using libxml or something such in the future
+	  is advisable.
+
+
+2006-02-13 07:06:33  Rev 7866   josef
+
+	* TODO:
+	  - remove TODO file, it only contained the roadmap
+
+
+2006-02-08 17:49:09  Rev 7846   josef
+
+	* ggzcore/server.c:
+	  - implement E_BAD_USERNAME (and E_BAD_OPTIONS was missing, too!)
+
+
+2006-01-20 08:45:48  Rev 7799   jdorje
+
+	* ggzcore/room.c:
+	  Fix a bug in _ggzcore_room_add_player causing player rating, 
+	  ranking, and
+	  highscore to be incorrectly initialized.  The end result is only 
+	  the record
+	  is correctly displayed after one player sees another enter a room.
+
+
+2006-01-17 21:53:50  Rev 7792   jdorje
+
+	* ggzcore/game.c:
+	  Send stats to ggzmod.
+
+
+2006-01-17 21:28:15  Rev 7791   jdorje
+
+	* ggzmod/ggzmod.h ggzmod/ggzmod.c:
+	  Fix triggering of GGZMOD_EVENT_STATS.
+
+
+2006-01-17 21:26:35  Rev 7790   jdorje
+
+	* ggzmod-ggz/ggzmod-ggz.c:
+	  Fix check in ggzmod_ggz_set_stats.
+
+
+2006-01-17 18:27:45  Rev 7789   jdorje
+
+	* ggzcore/table.c ggzcore/game.c ggzcore/room.c ggzcore/game.h:
+	  Revert r7784: "Change room and table data in the game structure into
+	  pointers."
+
+
+2006-01-17 18:19:37  Rev 7788   jdorje
+
+	* ggzmod/ggzmod.c:
+	  Fix bugs in stats query functions.
+
+
+2006-01-17 18:15:48  Rev 7787   jdorje
+
+	* ggzmod/ggzmod.c:
+	  Fix memory allocation problems with infos lists.
+
+
+2006-01-17 18:08:54  Rev 7786   jdorje
+
+	* ggzmod/ggzmod.c:
+	  Fix stats memory problems.
+
+
+2006-01-16 08:25:55  Rev 7784   jdorje
+
+	* ggzcore/table.c ggzcore/game.c ggzcore/room.c ggzcore/game.h:
+	  Change room and table data in the game structure into pointers.
+
+
+2006-01-14 05:29:03  Rev 7782   jdorje
+
+	* m4/ggz.m4:
+	  Fix AM_CONDITIONAL problem.
+
+
+2006-01-11 07:00:16  Rev 7762   jdorje
+
+	* m4/ggz.m4:
+	  ggz-gtk support in ggz.m4.
+
+
+2006-01-03 01:33:39  Rev 7716   jdorje
+
+	* po/ggz-config po/ggzcore:
+	  svn:ignore
+
+
+2006-01-03 01:32:15  Rev 7715   jdorje
+
+	* po/Makefile.am:
+	  Allow ggz-client-libs to compile again.
+
+
+2006-01-02 16:45:48  Rev 7712   josef
+
+	* po/ggz-config/ggz-config.pot configure.ac ggz-config/ggz-config.c 
+	  po/ggz-config ggzcore/Makefile.am po/ggz-config.pot 
+	  po/ggz-config/de.po po/ggzcore po/ggzcore/ggzcore.pot 
+	  po/ggz-config/Makefile.am po/de.po po/ggzcore/de.po ggzcore/init.c 
+	  ggzcore/ggzcore.h po/ggzcore/Makefile.am ggzcore/server.c 
+	  po/Makefile.am ggzcore/server.h:
+	  - support for GAI_a (asynchronous host lookups) with a callback
+	    [EXPERIMENTAL!]
+	  - support for translated ggzcore messages
+	    (happens automatically via catalog preloading in ggzcore_init())
+
+
+2005-12-29 11:54:12  Rev 7707   josef
+
+	* po/de.po po/ggz-config.pot:
+	  - translation updates
+
+
+2005-12-29 11:53:46  Rev 7706   josef
+
+	* HACKING:
+	  - remove obsolete HACKING file
+
+
+2005-12-29 11:51:15  Rev 7703   josef
+
+	* ggz-config/readme.ggzconfig:
+	  - improved ggz-config documentation
+
+
+2005-12-29 11:50:22  Rev 7702   josef
+
+	* man/Makefile.am man/ggzwrap.1:
+	  - ggzwrap manpage lives here now
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* m4/i18n.mk autogen.sh README.GGZ m4/ggz.m4:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-29 01:35:10  Rev 7683   jdorje
+
+	* ggzcore/ggzcore.h ggzcore/server.c ggzcore/server.h:
+	  Add missing ggzcore function ggzcore_server_get_player.
+
+
+2005-12-22 17:28:06  Rev 7678   jdorje
+
+	* ggz-config/ggz-config.c:
+	  Avoid some memory leaks and unnecessary allocation in ggz-config.
+
+
+2005-12-16 12:59:15  Rev 7675   josef
+
+	* configure.ac ggzwrap/Makefile.am:
+	  - make ggzwrap compile after the move
+
+
+2005-12-16 12:44:18  Rev 7672   josef
+
+	* Makefile.am ggzwrap/Makefile.am ggzwrap/.cvsignore ggzwrap:
+	  - moving ggzwrap to ggz-client-libs so Java games can easily 
+	  depend on it
+
+
+2005-12-13 00:35:51  Rev 7665   jdorje
+
+	* ggz-config/ggz-config.c:
+	  Move make_path and mkdirectory into libggz, and rename as 
+	  ggz_make_path.
+
+
+2005-12-12 23:45:48  Rev 7664   jdorje
+
+	* ggzcore/server.c:
+	  Fix problems with alarm.
+
+
+2005-12-12 23:37:08  Rev 7662   jdorje
+
+	* configure.ac m4/mkdir.m4 ggz-config/ggz-config.c Makefile.am:
+	  Fix problems with dirent and mkdir on windows.
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* tests/.cvsignore ggzmod-ggz/.cvsignore ggzmod/.cvsignore .
+	  cvsignore man/.cvsignore desktop/.cvsignore po/.cvsignore ggzcore/.
+	  cvsignore ggz-config/.cvsignore ggz-wrapper/.cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-11-25 19:36:11  Rev 7643   josef
+
+	* ggzcore/server.c:
+	  - trying to disable the alarm stuff
+	    (based on WINSOCK detection... well)
+
+
+2005-11-25 19:32:01  Rev 7642   josef
+
+	* ggzmod-ggz/ggzmod-ggz.c:
+	  - remove port and buf variables for non-socketpair compilation
+
+
+2005-11-24 18:11:41  Rev 7639   josef
+
+	* ggzmod-ggz/ggzmod-ggz.c:
+	  - trying to fix the case when no socketpair() is available (aka, 
+	  win32)
+
+
+2005-10-01 13:56:41  Rev 7604   josef
+
+	* desktop/ggz.menu:
+	  - use full GGZ name
+
+
+2005-09-27 23:37:04  Rev 7601   josef
+
+	* configure.ac m4/ggz.m4:
+	  - move prefix sanitiser into AC_GGZ_INIT
+	  - remove all assumptions over prefix being NONE
+
+
+2005-09-27 23:02:26  Rev 7599   josef
+
+	* configure.ac:
+	  - quick fix for the PREFIX = NONE problem
+	  The real fix (for after 0.0.12) is to move this into AC_GGZ_INIT
+
+
+2005-09-27 02:54:00  Rev 7597   jdorje
+
+	* ggzcore/gametype.c:
+	  Make local namedbots functions static.
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 13:33:44  Rev 7566   josef
 
 	* ggzmod-ggz/ggzmod-ggz.h:

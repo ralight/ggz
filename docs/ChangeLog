@@ -1,3 +1,206 @@
+2006-03-15 13:07:04  Rev 7926   josef
+
+	* configure.ac:
+	  - the ggz games documentation has been moved to a subdirectory
+
+
+2006-03-15 13:06:27  Rev 7925   josef
+
+	* ggz-project/release-procedure:
+	  - updates to the release procedures
+
+
+2006-03-14 13:58:51  Rev 7917   josef
+
+	* games/games.html:
+	  - target March 17
+	  - correct historic release date of GGZ 0.0.4, it was delayed by 
+	  one week :)
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* autogen.sh QuickStart.GGZ:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:48:56  Rev 7906   josef
+
+	* ggz-project/svn-modules.txt ggz-project/cvs-modules.txt 
+	  ggz-project/Versioning ggz-project/Internationalization 
+	  ggz-project/release-procedure ggz-project/GGZ-contributions 
+	  ggz-project/Makefile.am:
+	  - renaming cvs-modules.txt to svn-modules.txt
+	  - versioning checks for all libraries and apps
+	  - more documentation about synchroniser.py and the Java stuff
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* NEWS README.GGZ AUTHORS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-03-07 13:31:46  Rev 7897   josef
+
+	* presentation/README.talks:
+	  - slides are online now at the event site
+
+
+2006-03-06 17:48:55  Rev 7884   josef
+
+	* presentation/README.talks 
+	  presentation/chemnitz2006/ggz-clt2006-nopics.pyntor 
+	  presentation/chemnitz2006:
+	  - slides from my 30-minute talk at Chemnitzer Linux-Tage 2006
+	  (pictures omitted, were taken mostly from existing screenshots)
+
+
+2006-02-27 09:05:25  Rev 7872   josef
+
+	* ggz-project/GGZ-contributions:
+	  - more complete listing of xtext and libcgc usage in GGZ
+
+
+2006-02-03 13:02:09  Rev 7840   josef
+
+	* games/game-development/ggz-game-development-guide.texi 
+	  games/game-development/ggz-game-development-guide.sxw 
+	  server/hosting/ggz-hosting-guide.texi:
+	  - documentation of EntryRestriction options in the rooms files
+
+
+2006-02-03 13:01:20  Rev 7839   josef
+
+	* grubby/admin-manual.html:
+	  - document the adminlevel configuration option so that either the 
+	  owner or all admins or all registered players or simply everyone 
+	  can send grubby to other rooms and such
+
+
+2006-01-02 16:46:57  Rev 7713   josef
+
+	* games/game-development coreclients/coreclients.html 
+	  server/ggzd/index.html ggz-project/Versioning 
+	  server/hosting/ggz-hosting-guide.texi:
+	  - several documentation improvements, especially ggzcore usage and 
+	  ggzd privileges
+
+
+2005-12-29 11:36:51  Rev 7695   josef
+
+	* ggz-project/Versioning grubby/admin-manual.html 
+	  ggz-project/release-procedure ggz-project/GGZ-contributions 
+	  server/hosting/ggz-hosting-guide.texi:
+	  - more complete grubby admin manual
+	  - updated hosting guide
+	  - some updates to GGZ project docs
+
+
+2005-12-29 11:35:44  Rev 7694   josef
+
+	* games/Makefile.am games/ggz-games/tictactoe/Makefile.am 
+	  games/ggz-games/hastings/Makefile.am 
+	  games/game-development/features.html games/ggz-games/hastings/.
+	  cvsignore games/hastings games/features.html games/ggz-games 
+	  games/ggz-games/ggzcards games/ggz-games/tictactoe/ttt-explained.
+	  html games/game-development/games.html games/ggz-games/Makefile.am 
+	  games/ggz-games/ggzcards/Makefile.am games/games.html 
+	  games/ggz-games/tictactoe games/ggz-games/hastings 
+	  games/game-development/Makefile.am games/ggz-games/ggzcards/.
+	  cvsignore games/ggzcards:
+	  - moving all individual game docs to a ggz-games directory, analog 
+	  to external-games
+	  - moving games.html and features.html out of gamedev guide dir, 
+	  and preparing them for 0.0.13
+
+
+2005-12-29 11:34:01  Rev 7693   josef
+
+	* games/game-development/ggz-game-development-guide.sxw:
+	  - more up-to-date version of the game development guide
+
+
+2005-12-29 11:33:18  Rev 7692   josef
+
+	* games/protocols/index.xhtml:
+	  - index file is hand-written so we add it here
+
+
+2005-12-29 11:32:51  Rev 7691   josef
+
+	* games/protocols/helloworld.xhtml games/protocols/ggzcommgen.xsl 
+	  games/protocols/generate.sh:
+	  - improved XSL stylesheet to account for sequences and conditions 
+	  in game protocols
+	  - generator script so that if one becomes older, one doesn't have 
+	  to remember how to call the darn thing :)
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* autogen.sh README.GGZ:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* ggz-project/.cvsignore games/modules/.cvsignore server/.cvsignore 
+	  articles/.cvsignore spec grubby/.cvsignore spec/clientspec/.
+	  cvsignore games/external-games/.cvsignore spec/serverspec/.
+	  cvsignore spec/.cvsignore games/hastings/.cvsignore 
+	  server/hosting/.cvsignore overview/architecture/.cvsignore .
+	  cvsignore games/.cvsignore overview/.cvsignore games/ggzcards/.
+	  cvsignore games/game-development/.cvsignore coreclients/.cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-11-29 18:09:49  Rev 7647   josef
+
+	* games/game-development/Makefile.am:
+	  - workaround for new "strategy" of texi2html to create subdirectory
+
+
+2005-11-29 18:09:37  Rev 7646   josef
+
+	* server/hosting/Makefile.am:
+	  - workaround for new "strategy" of texi2html to create subdirectory
+
+
+2005-11-14 09:01:33  Rev 7621   josef
+
+	* games/game-development/features.html:
+	  Some random commits of what has been lurking around for some time:
+	  - update of the backend pages to reflect the rankings.g.o -> 
+	  ggzcommunity.org move
+	  - some desktop files for games that provide a single-player mode
+	  - beginnings of Arimaa game support for GGZBoard
+
+
+2005-09-25 20:43:32  Rev 7595   josef
+
+	* games/game-development/ggz-game-development-guide.texi 
+	  server/hosting/ggz-hosting-guide.texi:
+	  - more 0.0.11->0.0.12 changes
+	  - also, more CVS->SVN changes
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 17:50:35  Rev 7587   josef
 
 	* spec/Makefile.am:

@@ -1,3 +1,120 @@
+2006-03-14 13:54:27  Rev 7912   josef
+
+	* README:
+	  - version bumping in the README files
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* QuickStart.GGZ autogen.sh:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* README.GGZ AUTHORS NEWS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-01-14 05:29:03  Rev 7782   jdorje
+
+	* m4/ggz.m4:
+	  Fix AM_CONDITIONAL problem.
+
+
+2006-01-11 07:00:16  Rev 7762   jdorje
+
+	* m4/ggz.m4:
+	  ggz-gtk support in ggz.m4.
+
+
+2005-12-29 11:52:07  Rev 7704   josef
+
+	* tictactoe/module.dsc.in:
+	  - remove "Game" field
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* README.GGZ m4/ggz.m4 m4/i18n.mk autogen.sh:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* reversi/.cvsignore po/ggzcards/.cvsignore po/tictactoe/.cvsignore 
+	  combat/.cvsignore combat/glade/.cvsignore ggzcards/client/.
+	  cvsignore po/chess/.cvsignore chinese-checkers/pixmaps/.cvsignore .
+	  cvsignore common/.cvsignore po/reversi/.cvsignore chess/.cvsignore 
+	  spades/.cvsignore hastings/.cvsignore chess/glade/.cvsignore 
+	  chinese-checkers/.cvsignore chess/bitmaps/.cvsignore combat/maps/.
+	  cvsignore po/dots/.cvsignore ggzcards/common/.cvsignore 
+	  common/cardsets/.cvsignore po/combat/.cvsignore chess/libcgc/.
+	  cvsignore hastings/pixmaps/.cvsignore po/hastings/.cvsignore 
+	  ggzcards/.cvsignore dots/.cvsignore combat/pixmaps/default/.
+	  cvsignore po/.cvsignore chinese-checkers/glade/.cvsignore 
+	  po/chinese-checkers/.cvsignore combat/pixmaps/.cvsignore 
+	  reversi/glade/.cvsignore tictactoe/.cvsignore po/common/.cvsignore 
+	  po/spades/.cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-11-19 03:32:24  Rev 7638   jdorje
+
+	* ggzcards/client chess/libcgc common ggzcards/common:
+	  Propedit svn:ignore to add .a files.
+
+
+2005-11-19 02:53:43  Rev 7637   jdorje
+
+	* spades/callbacks.c spades/client_main.c spades/client_func.c 
+	  spades/gtk_play.c spades/gtk_io.c:
+	  Better logging.
+
+
+2005-11-19 01:38:45  Rev 7636   jdorje
+
+	* configure.ac:
+	  Seems --g-fatal-errors isn't actually a valid param.
+
+
+2005-11-19 01:38:11  Rev 7635   jdorje
+
+	* spades/client_main.c:
+	  Parse GTK options before parsing game options; otherwise 
+	  --g-fatal-warnings
+	  causes the client to exit.
+
+
+2005-09-27 23:37:04  Rev 7601   josef
+
+	* m4/ggz.m4 configure.ac:
+	  - move prefix sanitiser into AC_GGZ_INIT
+	  - remove all assumptions over prefix being NONE
+
+
+2005-09-27 23:09:06  Rev 7600   josef
+
+	* configure.ac:
+	  - moving up the PREFIX sanitiser
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 10:11:25  Rev 7551   josef
 
 	* configure.ac:
@@ -5763,7 +5880,7 @@
 2001-07-23 00:03:11  Rev 2070   jdorje
 
 	* :
-	  Added $Id: ChangeLog 7593 2005-09-25 18:25:14Z josef $ headers to all (well, almost all) files.
+	  Added $Id: ChangeLog 7942 2006-03-16 15:15:01Z josef $ headers to all (well, almost all) files.
 	  Note that the commit will in itself will make the last-modified 
 	  dates of
 	  all the files useless to begin with.
@@ -5772,7 +5889,7 @@
 2001-07-22 23:41:11  Rev 2069   jdorje
 
 	* :
-	  Test of CVS (RCS) keyword substitution for $Id: ChangeLog 7593 2005-09-25 18:25:14Z josef $.
+	  Test of CVS (RCS) keyword substitution for $Id: ChangeLog 7942 2006-03-16 15:15:01Z josef $.
 
 
 2001-07-22 23:38:42  Rev 2068   jdorje

@@ -1,3 +1,155 @@
+2006-03-14 14:01:51  Rev 7919   josef
+
+	* ggz-kde/src/widgets/KGGZTeam.cpp ggz-kde/src/KGGZInput.cpp 
+	  ggz-kde/src/widgets/KGGZTeam.h ggz-kde/src/KGGZInput.h 
+	  ggz-kde/src/KGGZConnect.cpp ggz-kde/src/KGGZLaunch.cpp:
+	  - some more QString porting (was never committed, hope it works)
+
+
+2006-03-14 13:54:27  Rev 7912   josef
+
+	* README:
+	  - version bumping in the README files
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* QuickStart.GGZ autogen.sh:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* README.GGZ AUTHORS NEWS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-01-14 05:29:03  Rev 7782   jdorje
+
+	* m4/ggz.m4:
+	  Fix AM_CONDITIONAL problem.
+
+
+2006-01-11 07:00:16  Rev 7762   jdorje
+
+	* m4/ggz.m4:
+	  ggz-gtk support in ggz.m4.
+
+
+2005-12-30 11:58:50  Rev 7710   josef
+
+	* kcm_ggz/modules/Makefile.am kcm_ggz/modules/game_java.png 
+	  kcm_ggz/modules/game_kde.png kcm_ggz/modules/game_gnome.png:
+	  - updated KDE/GNOME icons to current official versions
+	  - inclusion of Java duke icon to prepare for Java frontends
+	    (the official Java logo is subject to many restrictions so we 
+	  cannot use it)
+
+
+2005-12-29 11:49:04  Rev 7700   josef
+
+	* configure.ac Makefile.am ggz-kde/src/abstract/Makefile.am:
+	  - build system updates
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* README.GGZ m4/ggz.m4 autogen.sh:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* man/.cvsignore ggz-kde/src/widgets/more/.cvsignore 
+	  ggz-kde/ggzcore++/doc/html/.cvsignore kgrubby/src/.cvsignore 
+	  ggz-kde/src/widgets/more shadowbridge/.cvsignore po/.cvsignore 
+	  ggzap/.cvsignore ggz-kde/ggzcore++/doc/.cvsignore compcal/src/lib/.
+	  cvsignore kio_ggzmeta/kioslave/.cvsignore keepalivecontrol/data/.
+	  cvsignore ggz-kde/src/widgets/.cvsignore ggz-kde/data/splash/.
+	  cvsignore po/compcal/.cvsignore po/kcm_ggz/.cvsignore 
+	  ggz-kde/doc/de/.cvsignore kcm_ggz/modules/.cvsignore kgrubby/.
+	  cvsignore ggz-kde/doc/.cvsignore ggz-kde/po/.cvsignore 
+	  ggz-kde/data/browser/.cvsignore kio_ggzmeta/.cvsignore 
+	  kgrubby/data/.cvsignore ggz-kde/.cvsignore ggz-kde/data/kde/.
+	  cvsignore kio_ggz/kioslave/.cvsignore ggz-kde/src/abstract/.
+	  cvsignore ggz-kde/data/icons/players/.cvsignore ggz-kde/data/.
+	  cvsignore ggz-kde/ggzcore++/src/.cvsignore keepalivecontrol/src/.
+	  cvsignore .cvsignore ggz-kde/data/icons/.cvsignore compcal/src/.
+	  cvsignore ggz-kde/ggzcore++/.cvsignore po/kgrubby/.cvsignore 
+	  po/ggzap/.cvsignore kio_ggz/.cvsignore keepalivecontrol/.cvsignore 
+	  po/shadowbridge/.cvsignore compcal/data/.cvsignore 
+	  ggz-kde/data/icons/games/.cvsignore compcal/.cvsignore 
+	  ggz-kde/src/.cvsignore kcm_ggz/.cvsignore shadowbridge/pics/.
+	  cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-12-12 11:50:34  Rev 7659   josef
+
+	* ggz-kde/data/kde/kggzrc:
+	  - much more links to wikipedia games/game rules documentation
+
+
+2005-11-15 16:27:13  Rev 7624   josef
+
+	* ggz-kde/ggzcore++/src/Makefile.am compcal/src/Makefile.am 
+	  ggz-kde/po/Makefile.am kio_ggz/kioslave/Makefile.am 
+	  ggz-kde/data/icons/Makefile.am keepalivecontrol/data/Makefile.am 
+	  ggz-kde/src/Makefile.am po/shadowbridge/Makefile.am 
+	  kcm_ggz/Makefile.am ggz-kde/ggzcore++/doc/Makefile.am 
+	  po/kgrubby/Makefile.am ggz-kde/data/browser/Makefile.am 
+	  ggz-kde/src/widgets/Makefile.am kio_ggz/Makefile.am 
+	  ggz-kde/data/splash/Makefile.am kgrubby/src/Makefile.am 
+	  keepalivecontrol/src/Makefile.am ggz-kde/doc/Makefile.am 
+	  po/kcm_ggz/Makefile.am kio_ggzmeta/Makefile.am 
+	  ggz-kde/data/icons/games/Makefile.am ggzap/Makefile.am 
+	  compcal/src/lib/Makefile.am man/Makefile.am 
+	  kio_ggzmeta/kioslave/Makefile.am m4/ggz.m4 kgrubby/data/Makefile.
+	  am ggz-kde/doc/de/Makefile.am po/ggzap/Makefile.am 
+	  compcal/data/Makefile.am ggz-kde/ggzcore++/doc/html/Makefile.am 
+	  ggz-kde/src/widgets/more/Makefile.am ggz-kde/Makefile.am 
+	  kcm_ggz/modules/Makefile.am am_edit configure.ac 
+	  ggz-kde/data/icons/players/Makefile.am po/compcal/Makefile.am 
+	  Makefile.am shadowbridge/pics/Makefile.am ggz-kde/data/Makefile.am 
+	  shadowbridge/Makefile.am ggz-kde/data/kde/Makefile.am:
+	  - big makefile.am changes to support 'make dist' from builddirs
+	    (disabling the somewhat buggy 'autodist' feature)
+
+
+2005-10-01 13:05:45  Rev 7603   josef
+
+	* ggz-kde/src/widgets/more/KGGZBrowser.cpp ggz-kde/src/KGGZ.cpp 
+	  ggz-kde/src/widgets/KGGZBase.cpp 
+	  ggz-kde/src/widgets/more/KGGZBrowser.h ggz-kde/src/KGGZ.h 
+	  ggz-kde/src/widgets/KGGZBase.h ggz-kde/data/kde/kggzrc 
+	  ggz-kde/data/kde/Makefile.am:
+	  - wikipedia integration (dummy functionality, no real URLs added 
+	  yet)
+
+
+2005-09-27 23:37:04  Rev 7601   josef
+
+	* m4/ggz.m4 configure.ac:
+	  - move prefix sanitiser into AC_GGZ_INIT
+	  - remove all assumptions over prefix being NONE
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 10:11:25  Rev 7551   josef
 
 	* configure.ac:

@@ -1,3 +1,428 @@
+2006-03-16 14:34:24  Rev 7940   josef
+
+	* ggz-gtk/server.c ggz-gtk/first.c:
+	  [the 0.0.13 crash police]
+	  - show window fully for the first connection, otherwise it would 
+	  crash upon login
+	  This must be synchronised with the calls in main.c as far as I 
+	  could trace it.
+
+
+2006-03-14 13:54:27  Rev 7912   josef
+
+	* README:
+	  - version bumping in the README files
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* autogen.sh QuickStart.GGZ:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* NEWS README.GGZ AUTHORS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-03-07 10:17:50  Rev 7894   josef
+
+	* po/de.po po/ggz-gtk.pot:
+	  - updated message catalog and German translation
+
+
+2006-03-07 10:04:43  Rev 7892   josef
+
+	* ggz-gtk/first.c ggz-gtk/Makefile.am:
+	  - use -version-info 0:0:0 for the shared library to not forget to 
+	  bump it later
+	  - improved, and i18n'd, server selection list: only live.g.o and 
+	  localhost
+	    [FIXME: ggz-gtk still doesn't support metaservers]
+
+
+2006-02-08 17:48:35  Rev 7845   josef
+
+	* configure.ac ggz-gtk/login.c:
+	  - retry of the (now fixed) patch by Gilles J. Seguin <segg@infonet.
+	  ca> to set up the datadir
+	  - using the new 'bad username' codes in ggz-gtk (forgot to commit 
+	  this earlier)
+
+
+2006-01-20 06:50:40  Rev 7798   jdorje
+
+	* configure.ac:
+	  Revert to r7794: the last change breaks config.h.
+
+
+2006-01-19 19:45:05  Rev 7795   josef
+
+	* configure.ac:
+	  - datadir patch from "Gilles J. Seguin" <segg@infonet.ca>
+	    [FIXME: might need propagation to other modules]
+
+
+2006-01-16 19:17:14  Rev 7785   jdorje
+
+	* ggz-gtk/login.c:
+	  Fix email entry problem.
+
+
+2006-01-14 05:29:03  Rev 7782   jdorje
+
+	* m4/ggz.m4:
+	  Fix AM_CONDITIONAL problem.
+
+
+2006-01-13 05:15:46  Rev 7774   jdorje
+
+	* ggz-gtk/login.c:
+	  Remove spurious printf.
+
+
+2006-01-13 05:14:42  Rev 7773   jdorje
+
+	* ggz-gtk/main.c ggz-gtk/ggz-embed.h ggz-gtk/first.c ggz-gtk/login.c 
+	  ggz-gtk/client.c ggz-gtk/ggz-gtk.h:
+	  Allow setting of a default profile.
+
+
+2006-01-12 03:49:44  Rev 7772   jdorje
+
+	* ggz-gtk/client.c:
+	  Disable stats menu entries.
+
+
+2006-01-12 00:14:00  Rev 7771   jdorje
+
+	* ggz-gtk/roominfo.c:
+	  Minor cleanups.
+
+
+2006-01-11 23:46:01  Rev 7770   jdorje
+
+	* ggz-gtk/props.c:
+	  Fix long-standing typo bug.
+
+
+2006-01-11 23:38:33  Rev 7769   jdorje
+
+	* ggz-gtk/types.c:
+	  Remove stub filtering.
+
+
+2006-01-11 23:35:09  Rev 7768   jdorje
+
+	* ggz-gtk/types.c:
+	  Minor cleanups.
+
+
+2006-01-11 18:15:47  Rev 7767   jdorje
+
+	* ggz-gtk/ggzclient.c ggz-gtk/client.c:
+	  Remove stats button.
+
+
+2006-01-11 18:05:06  Rev 7766   jdorje
+
+	* ggz-gtk/ggzclient.c ggz-gtk/client.c:
+	  Remove connect button.
+
+
+2006-01-11 17:21:58  Rev 7765   jdorje
+
+	* ggz-gtk/ggzclient.c:
+	  Don't rename window in embedded mode.
+
+
+2006-01-11 16:39:22  Rev 7764   jdorje
+
+	* ggz-gtk/login.c:
+	  Minor cleanups.
+
+
+2006-01-11 16:22:24  Rev 7763   jdorje
+
+	* ggz-gtk/client.c:
+	  Disable reconnect: it takes over the whole client and tries to 
+	  reconnect; if
+	  you try to connect to a different server instead you cannot.
+
+
+2006-01-11 07:00:16  Rev 7762   jdorje
+
+	* m4/ggz.m4:
+	  ggz-gtk support in ggz.m4.
+
+
+2006-01-09 18:03:06  Rev 7757   jdorje
+
+	* ggz-gtk/tablelist.c ggz-gtk/ggzclient.c ggz-gtk/playerlist.c 
+	  ggz-gtk/roomlist.c ggz-gtk/tablelist.h ggz-gtk/playerlist.h 
+	  ggz-gtk/roomlist.h ggz-gtk/client.c:
+	  Remove duplicate server variables (two of them were non-static, 
+	  causing
+	  symbol conflicts and intermittent crashes - oops).
+
+
+2006-01-09 05:47:25  Rev 7756   jdorje
+
+	* ggz-gtk/playerlist.c ggz-gtk/roomlist.c:
+	  Show menus.
+
+
+2006-01-09 02:43:39  Rev 7754   jdorje
+
+	* ggz-gtk/ggz-embed.h ggz-gtk/Makefile.am ggz-gtk/client.c:
+	  Provide the needed functionality to leave a game when in embedded 
+	  mode.  This
+	  goes in a separate header file since it does not depend on GTK 
+	  presence (for
+	  instance, it is used in Freeciv in the common client code).
+
+
+2006-01-09 01:30:19  Rev 7753   jdorje
+
+	* ggz-gtk/game.c:
+	  Don't call the game-launched callback until ggzcore reports the 
+	  game was
+	  actually launched.
+
+
+2006-01-09 01:13:11  Rev 7752   jdorje
+
+	* ggz-gtk/main.c ggz-gtk/client.c ggz-gtk/ggz-gtk.h:
+	  Provide reconnect parameter.
+
+
+2006-01-07 20:05:33  Rev 7744   jdorje
+
+	* ggz-gtk/tablelist.c ggz-gtk/playerlist.c ggz-gtk/roomlist.c:
+	  Cleanups.
+
+
+2006-01-07 04:03:54  Rev 7740   jdorje
+
+	* ggz-gtk/chat.c:
+	  Make vars static.
+
+
+2006-01-07 03:29:34  Rev 7739   jdorje
+
+	* ggz-gtk/ggzclient.c ggz-gtk/ggzclient.h:
+	  Make numrooms static.
+
+
+2006-01-07 03:13:54  Rev 7738   jdorje
+
+	* ggz-gtk/game.c:
+	  Make game static.
+
+
+2006-01-06 22:34:17  Rev 7737   jdorje
+
+	* ggz-gtk/client.h ggz-gtk/main.c ggz-gtk/first.c ggz-gtk/Makefile.
+	  am ggz-gtk/login.c ggz-gtk/login.h ggz-gtk/client.c 
+	  ggz-gtk/ggz-gtk.h:
+	  Make it a real library.
+
+
+2006-01-06 08:28:12  Rev 7736   jdorje
+
+	* ggz-gtk/Makefile.am:
+	  Preliminary (static) library separation.
+
+
+2006-01-06 08:27:50  Rev 7735   jdorje
+
+	* ggz-gtk/client.h ggz-gtk/main.c ggz-gtk/game.c ggz-gtk/client.c:
+	  More embedding code.
+
+
+2006-01-06 07:00:42  Rev 7734   jdorje
+
+	* ggz-gtk/client.h ggz-gtk/main.c ggz-gtk/ggzclient.c ggz-gtk/client.
+	  c:
+	  Code for embedding GGZ.
+
+
+2006-01-06 06:32:07  Rev 7733   jdorje
+
+	* ggz-gtk/client.h ggz-gtk/client.c:
+	  Separate widget creation.
+
+
+2006-01-06 06:18:19  Rev 7732   jdorje
+
+	* ggz-gtk/client.c:
+	  Simplify gtk_widget_show some more.
+
+
+2006-01-06 05:45:55  Rev 7731   jdorje
+
+	* ggz-gtk/client.c:
+	  Remove unnecessary refs.
+
+
+2006-01-06 05:31:52  Rev 7730   jdorje
+
+	* ggz-gtk/xtext.h ggz-gtk/xtext-ggz.h ggz-gtk/xtext.README 
+	  ggz-gtk/Makefile.am ggz-gtk/xtext.c:
+	  Upgrade to xtext from 2.6.0.
+
+
+2006-01-06 05:14:03  Rev 7729   jdorje
+
+	* ggz-gtk/roominfo.c:
+	  Fix compiler warning.
+
+
+2006-01-06 04:55:08  Rev 7728   jdorje
+
+	* ggz-gtk/main.c ggz-gtk/client.c:
+	  Simplify gtk_widget_show.
+
+
+2006-01-06 01:21:19  Rev 7727   jdorje
+
+	* ggz-gtk/client.h ggz-gtk/main.c ggz-gtk/client.c:
+	  New function client_initialize.
+
+
+2006-01-06 01:08:10  Rev 7726   jdorje
+
+	* ggz-gtk/game.c ggz-gtk/launch.c ggz-gtk/client.c ggz-gtk/game.h:
+	  Rename function.
+
+
+2006-01-06 00:56:55  Rev 7725   jdorje
+
+	* ggz-gtk/main.c ggz-gtk/login.c:
+	  Move symbol into correct file.
+
+
+2006-01-06 00:15:10  Rev 7724   jdorje
+
+	* ggz-gtk/server.h:
+	  Missing include.
+
+
+2006-01-05 22:21:02  Rev 7723   jdorje
+
+	* ggz-gtk/support.h:
+	  Don't redefine intl symbols.
+
+
+2006-01-03 20:31:25  Rev 7722   jdorje
+
+	* ggz-gtk/tablelist.c ggz-gtk/ggzclient.c ggz-gtk/tablelist.h:
+	  Encapsulate tablelist slightly.
+
+
+2006-01-03 06:56:57  Rev 7720   jdorje
+
+	* ggz-gtk/roomlist.c ggz-gtk/roomlist.h ggz-gtk/client.c:
+	  Revert - other lists don't use the win_main.
+
+
+2006-01-03 06:55:00  Rev 7719   jdorje
+
+	* ggz-gtk/roomlist.c ggz-gtk/roomlist.h ggz-gtk/client.c:
+	  Use global win_main in roomlist.
+
+
+2006-01-03 06:48:59  Rev 7718   jdorje
+
+	* ggz-gtk/support.h ggz-gtk/msgbox.h ggz-gtk/types.c 
+	  ggz-gtk/ggzclient.c ggz-gtk/playerinfo.c ggz-gtk/roominfo.c 
+	  ggz-gtk/roomlist.c ggz-gtk/game.c ggz-gtk/launch.c 
+	  ggz-gtk/roominfo.h ggz-gtk/client.c ggz-gtk/msgbox.c:
+	  Move win_main into encapsulated section.
+
+
+2006-01-03 06:14:23  Rev 7717   jdorje
+
+	* ggz-gtk/playerinfo.c:
+	  Encapsulate playerinfo.
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* m4/i18n.mk autogen.sh README.GGZ m4/ggz.m4:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-29 01:59:00  Rev 7684   jdorje
+
+	* ggz-gtk/chat.h ggz-gtk/playerlist.c ggz-gtk/chat.c:
+	  Fix fatal errors in chat friend/ignore code.
+
+
+2005-12-28 04:13:31  Rev 7682   jdorje
+
+	* ggz-gtk/chat.h ggz-gtk/ggzclient.c ggz-gtk/playerlist.c 
+	  ggz-gtk/playerlist.h ggz-gtk/client.c ggz-gtk/chat.c:
+	  Encapsulate playerlist.c.
+
+
+2005-12-28 00:47:17  Rev 7681   jdorje
+
+	* ggz-gtk/msgbox.h ggz-gtk/types.c ggz-gtk/ggzclient.c 
+	  ggz-gtk/roomlist.c ggz-gtk/game.c ggz-gtk/launch.c ggz-gtk/client.
+	  c ggz-gtk/msgbox.c:
+	  Encapsulate msgbox more.
+
+
+2005-12-27 21:42:26  Rev 7680   jdorje
+
+	* ggz-gtk/roominfo.c ggz-gtk/roomlist.c ggz-gtk/roominfo.h:
+	  Encapsulate roominfo more.
+
+
+2005-12-27 21:37:52  Rev 7679   jdorje
+
+	* ggz-gtk/ggzclient.c ggz-gtk/roomlist.c ggz-gtk/roomlist.h:
+	  Encapsulate room_list more.
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* ggz-gtk/.cvsignore man/.cvsignore po/.cvsignore .cvsignore 
+	  gaim-plugin/.cvsignore doc/.cvsignore ggz-gtk/glade/.cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-09-27 23:37:04  Rev 7601   josef
+
+	* configure.ac m4/ggz.m4:
+	  - move prefix sanitiser into AC_GGZ_INIT
+	  - remove all assumptions over prefix being NONE
+
+
+2005-09-27 04:47:13  Rev 7598   jdorje
+
+	* ggz-gtk/roomlist.c:
+	  Treat the return value of ggzcore_room_get_name as a const.
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 16:09:32  Rev 7575   josef
 
 	* Makefile.am:

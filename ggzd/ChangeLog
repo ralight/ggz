@@ -1,3 +1,312 @@
+2006-03-15 13:08:08  Rev 7929   josef
+
+	* Makefile.am:
+	  - HACKING was no more
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* autogen.sh:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:50:41  Rev 7910   josef
+
+	* ggzdmod/ggzdmod.h:
+	  - library interface version bump
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* NEWS README.GGZ AUTHORS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:45:48  Rev 7903   josef
+
+	* configure.ac:
+	  - bump all package numbers to 0.0.13 already
+
+
+2006-03-13 12:35:44  Rev 7901   josef
+
+	* ggzd/net.c:
+	  - xml-escape all outgoing strings which could be under user control
+
+
+2006-03-13 12:34:50  Rev 7900   josef
+
+	* ggzd/database/ggzdb_pgsql.c:
+	  - quote all SQL statements properly
+	  I was told that there is a dedicated function to do this but even 
+	  this one
+	  had some issues with some encodings. Therefore, right now our 
+	  implementation
+	  is UTF-8 safe (and ASCII-safe), and assumes all input to be in 
+	  this format.
+
+
+2006-03-07 09:56:51  Rev 7887   josef
+
+	* ggzdmod/protocol.h ggzdmod/io.c ggzdmod/ggzdmod.c ggzdmod/io.h 
+	  ggzdmod/ggzdmod.h ggzdmod/mod.h ggzdmod/ggzdmod-ggz.h:
+	  - licence texts in sources clarified to be LGPL
+
+
+2006-02-27 12:16:44  Rev 7879   josef
+
+	* ggzd/players.c:
+	  - adapt to new ggz_getpeername() API
+
+
+2006-02-27 12:16:13  Rev 7878   josef
+
+	* ggzd/client.c:
+	  - remove all resolving code as libggz has it now
+
+
+2006-02-13 07:05:51  Rev 7865   josef
+
+	* doc TODO README:
+	  - finally, purge old documentation directory
+	  - overhauled README and TODO files
+
+
+2006-02-13 07:04:51  Rev 7864   josef
+
+	* ggzd/login.c:
+	  - the long-awaited changes to handle login errors less ambiguous
+
+
+2006-02-13 07:03:55  Rev 7863   josef
+
+	* ggzd/ggzd.conf.in:
+	  - improved documentation of the master config file
+
+
+2006-02-13 07:03:28  Rev 7862   josef
+
+	* ggzd/net.c:
+	  - less redundant white-space please!
+
+
+2006-02-13 07:02:50  Rev 7861   josef
+
+	* ggzd/parse_opt.c ggzd/datatypes.h:
+	  - in compile-time specs output, give some configuration info too
+	  - read metaserver announcement settings from the master config file
+	  - augment configuration structure with attribute to determine its 
+	  validity
+
+
+2006-02-13 07:01:08  Rev 7860   josef
+
+	* ggzd/control.c:
+	  - prepare for metaserver publishing support
+
+
+2006-02-13 07:00:44  Rev 7859   josef
+
+	* ggzd/client.c:
+	  - clean up the recently introduces debug mess for ggz_getpeername()
+	    [FIXME: but it still doesn't work as expected for IPv6!]
+	  - always disconnect client after client thread ends its loop
+
+
+2006-02-10 16:02:16  Rev 7856   josef
+
+	* m4/database.m4:
+	  - boilerplate support for libdb4.4 (not much has changed since 4.3 
+	  it seems)
+
+
+2006-02-08 17:29:43  Rev 7844   josef
+
+	* HACKING TODO:
+	  - remove old hacking file (as like in ggz-client-libs)
+	  - overhaul the long-term TODO tasks
+
+
+2006-01-23 10:37:14  Rev 7802   josef
+
+	* ggzd/parse_opt.c ggzd/client.c ggzd/players.c ggzd/ggzd.conf.in:
+	  - replacement of host-related functions with libggz functions
+	  - removal of IP ban functionality
+	    * never worked for IPv6
+	    * is better handled in external tools, firewalls, forwarders etc.
+	  There are still issues with it, but it's half-way through a code 
+	  cleanup for
+	  the relevant parts.
+
+
+2006-01-14 05:29:03  Rev 7782   jdorje
+
+	* m4/ggz.m4:
+	  Fix AM_CONDITIONAL problem.
+
+
+2006-01-11 07:00:16  Rev 7762   jdorje
+
+	* m4/ggz.m4:
+	  ggz-gtk support in ggz.m4.
+
+
+2006-01-07 22:18:43  Rev 7749   jdorje
+
+	* m4/c99.m4:
+	  Updated c99 file.
+
+
+2006-01-07 22:02:13  Rev 7748   jdorje
+
+	* game_servers/dots/game.c game_servers/tictactoe/game.c 
+	  game_servers/chess/game.c:
+	  Compile fixes.
+
+
+2006-01-07 21:46:54  Rev 7747   jdorje
+
+	* configure.ac:
+	  Bump version to 0.0.13pre.
+
+
+2006-01-07 21:46:21  Rev 7746   jdorje
+
+	* m4/database.m4:
+	  Detect libdb3.3.
+
+
+2006-01-02 16:53:31  Rev 7714   josef
+
+	* ggzd/ggzduedit.c m4/database.m4 ggzd/err_func.h ggzd/perms.h 
+	  ggzd/parse_opt.c man/ggzd.6 ggzd/control.c ggzd/err_func.c 
+	  ggzd/ggzd.conf.in:
+	  - always define the database type as string (e.g. "mysql") in 
+	  configure script
+	  - additional log types for the console (ggzd -F mode), for use 
+	  with --log
+	    (did the previous behaviour make any sense? IMO not)
+	  - these log types are now read in as strings, like in ggzd.conf (i.
+	  e. all,xml,tables)
+	  - streamlining special filename usage: stdout and stderr are now 
+	  possible for log/debug
+	  - new command line option --specs to dump compile-time 
+	  specifications
+	  - ggzduedit: helpful display of perms bitmask meaning
+	  - ggzduedit: display of aggregated roles, if applicable, e.g. 
+	  [guest], [admin]
+	  - ggzduedit: automatic usage of ggzd.conf database configuration
+	    -> should now work out of the box!
+	  - updated manpage and other small cosmetic fixes
+
+
+2005-12-29 12:10:36  Rev 7708   josef
+
+	* ggzd/ggzd.h:
+	  - w0000t! I did indeed hit the limit of 35 game types...
+
+
+2005-12-29 11:53:14  Rev 7705   josef
+
+	* game_servers/connectx/game.h game_servers/tictactoe/main.c 
+	  game_servers/tictactoe/net.c game_servers/tictactoe/tictactoe.dsc 
+	  game_servers/tictactoe/game.c game_servers/connectx/game.c:
+	  - some cosmetic fixes to TTT and ConnectX servers
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* m4/ggz.m4 autogen.sh README.GGZ:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-13 00:35:51  Rev 7665   jdorje
+
+	* ggzd/util.c:
+	  Move make_path and mkdirectory into libggz, and rename as 
+	  ggz_make_path.
+
+
+2005-12-12 23:41:08  Rev 7663   jdorje
+
+	* ggzd/players.c:
+	  Fix compile warning.
+
+
+2005-12-12 23:21:44  Rev 7661   jdorje
+
+	* game_servers/chess/game.c:
+	  Remove unnecessary cast.
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* game_servers/krosswater/.cvsignore ggzd/.cvsignore 
+	  game_servers/widelands/.cvsignore game_servers/tuxman/.cvsignore 
+	  game_servers/hastings/.cvsignore game_servers/keepalive/ggzsh/.
+	  cvsignore game_servers/.cvsignore game_servers/chinese-checkers/.
+	  cvsignore game_servers/ggzcards/config/.cvsignore 
+	  game_servers/geekgame/.cvsignore game_servers/ggzcards/common 
+	  game_servers/ggzcards/common/.cvsignore game_servers/spades/.
+	  cvsignore game_servers/hastings/maps/.cvsignore 
+	  game_servers/muehle/qtserv/.cvsignore game_servers/ggzcards/.
+	  cvsignore ggzd/database/.cvsignore game_servers/muehle/.cvsignore 
+	  game_servers/chess/.cvsignore game_servers/connectx/.cvsignore 
+	  game_servers/keepalive/.cvsignore game_servers/lapocha/.cvsignore 
+	  game_servers/chess/libcgc doc/.cvsignore 
+	  game_servers/krosswater/zoneserver/.cvsignore 
+	  game_servers/keepalive/src/.cvsignore .cvsignore 
+	  game_servers/ggzcards/client tests/.cvsignore 
+	  game_servers/ggzcards/ai/.cvsignore game_servers/reversi/.
+	  cvsignore game_servers/chess/libcgc/.cvsignore 
+	  game_servers/ggzcards/games/.cvsignore 
+	  game_servers/ggzcards/client/.cvsignore game_servers/dots/.
+	  cvsignore man/.cvsignore game_servers/combat/.cvsignore ggzdmod/.
+	  cvsignore ggzdmod++ game_servers/muehle/variants/.cvsignore 
+	  game_servers/ggzcards/ai game_servers/ggzcards/games 
+	  game_servers/krosswater/stackpath/.cvsignore game_servers/escape/.
+	  cvsignore:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-12-12 11:47:24  Rev 7658   josef
+
+	* game_servers/tictactoe/ttt-ai.c game_servers/tictactoe/ttt-ai.h 
+	  game_servers/tictactoe/Makefile.am game_servers/tictactoe/game.c 
+	  game_servers/tictactoe/.cvsignore:
+	  - include ttt-ai module so the source code gets even more modular
+
+
+2005-11-07 10:39:49  Rev 7612   josef
+
+	* ggzd/table.c ggzd/players.c:
+	  3 bugfixes for ggzd:
+	  - do not send pings if ping frequency is set to 0 (it did a ping 
+	  flood before!)
+	  - on table launch error, only send one failure event
+	  - after table launch error, do not send table status/delete events,
+	  otherwise
+	    ggzcore complains about the "invalid table" and throws a 
+	  protocol error
+
+
+2005-09-27 23:37:04  Rev 7601   josef
+
+	* configure.ac m4/ggz.m4:
+	  - move prefix sanitiser into AC_GGZ_INIT
+	  - remove all assumptions over prefix being NONE
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 13:20:08  Rev 7564   josef
 
 	* ggzdmod/Doxyfile:

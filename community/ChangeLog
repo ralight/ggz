@@ -1,3 +1,103 @@
+2006-03-15 13:04:46  Rev 7923   josef
+
+	* NEWS README.GGZ:
+	  - bad synchroniser.py didn't check for community files
+
+
+2006-02-27 09:10:03  Rev 7873   josef
+
+	* web/admin/.htaccess web/admin/index.php web/admin:
+	  - addition of admin directory
+	  It only contains one functionality right now, which is sending an 
+	  email
+	  to the admin's address, so one can see if sending mail from the 
+	  server
+	  in question works at all.
+
+
+2006-02-10 20:17:29  Rev 7857   josef
+
+	* setup/scripts/calcrankings/Makefile:
+	  - fix compilation on mandrake
+
+
+2006-02-10 11:15:30  Rev 7853   josef
+
+	* web/games/applet.php:
+	  - refer to applet jar, not client jar
+
+
+2006-01-26 17:30:41  Rev 7823   josef
+
+	* web/games/applet.php web/games/index.php:
+	  - include the applet jar from live.g.o (but there's no http access 
+	  yet)
+
+
+2006-01-23 10:57:24  Rev 7815   josef
+
+	* setup/scripts/calcrankings/main.c Makefile 
+	  web/common/acknowledgements.inc.sv 
+	  setup/scripts/calcrankings/Makefile web/games/applet.php 
+	  web/games/index.php web/common/acknowledgements.inc:
+	  - preparation of Java applet inclusion in Community
+	  - calcrankings: ability to read ggzd.conf for database parameters
+	  - calcrankings: use transaction around all operations (does it 
+	  help? *shrug*)
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* web/map web/common web/articles:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-11-17 07:55:23  Rev 7627   josef
+
+	* web/index.php.en web/my/change.php web/index.php.es 
+	  web/articles/frontpage.inc.en web/index.php.de web/index.php.sv 
+	  web/articles/default.frontpage.inc.en:
+	  - rename frontpage.php.en to default.frontpage.php.en for 
+	  coexistance with site-specific changes
+
+
+2005-11-15 08:10:19  Rev 7623   josef
+
+	* web/map/gencoords.php web/map/change.php web/map/mundomap.large.
+	  png web/map/genmap.php web/map/index.php:
+	  - finally, there is support for changing the coordinates simply by 
+	  clicking on the map!
+	    (requires JavaScript support in the browser)
+
+
+2005-11-14 08:06:45  Rev 7620   josef
+
+	* web/images/ruby.png:
+	  - picture for ruby (well, sort of...)
+
+
+2005-11-14 08:05:37  Rev 7618   josef
+
+	* web/index.php.es web/articles/index.php web/articles/ruby/index.
+	  php web/articles/ruby:
+	  - Spanish index page so the translations will show up
+	  - new article about GGZ+ruby
+
+
+2005-11-14 08:04:00  Rev 7617   josef
+
+	* web/db/players/information.inc:
+	  - handle the existance of 0 ratings gracefully
+
+
+2005-09-25 18:15:14  Rev 7592   josef
+
+	* ChangeLog:
+	  - addition of changelog file for the GGZ Community package
+
+
 2005-09-25 10:11:25  Rev 7551   josef
 
 	* Makefile web/common/htconf-dist:

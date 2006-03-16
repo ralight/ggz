@@ -1,3 +1,288 @@
+2006-03-16 14:31:58  Rev 7938   josef
+
+	* pyggzcore/src/pyggzcoresimple_init.c:
+	  char* -> const char*
+
+
+2006-03-16 14:31:35  Rev 7937   josef
+
+	* lib/sdlnewstuff.py lib/ggzsettings.py.in:
+	  - new GHNS format support in sdlnewstuff
+	  - in ggzsettings, fail hard for local invokations (./foo) because 
+	  only then the whole import fails
+
+
+2006-03-16 14:30:50  Rev 7936   josef
+
+	* po/de.po po/ggzpython.pot:
+	  - update of message catalog and German translation
+
+
+2006-03-16 14:30:26  Rev 7935   josef
+
+	* ggzboard/module_arimaa.py:
+	  - some initial figure placement cleanups for the release
+
+
+2006-03-16 14:30:00  Rev 7934   josef
+
+	* ggzboard/server_arimaa.py:
+	  - port Arimaa server to BogaProt core
+
+
+2006-03-16 14:29:35  Rev 7933   josef
+
+	* ggzboard/net_arimaa.py:
+	  - Arimaa needs network, too :)
+
+
+2006-03-16 14:29:21  Rev 7932   josef
+
+	* ggzboard/ggzboard:
+	  - ability to list games with --list
+	  - ability to load game modules from ~/.ggz/games/ggzboard
+	  - new sdlnewstuff API
+
+
+2006-03-14 14:00:17  Rev 7918   josef
+
+	* Makefile.in:
+	  - bump version
+	  - install arimaa SVN images
+
+
+2006-03-14 13:54:27  Rev 7912   josef
+
+	* README:
+	  - version bumping in the README files
+
+
+2006-03-14 13:53:58  Rev 7911   josef
+
+	* QuickStart.GGZ:
+	  - more synchronisation of common files (must be a boring day...)
+
+
+2006-03-14 13:47:11  Rev 7905   josef
+
+	* NEWS README.GGZ AUTHORS:
+	  - sync all common files from libggz (README.GGZ, AUTHORS)
+	  - updated NEWS file for the upcoming 0.0.13 release
+
+
+2006-03-14 13:44:59  Rev 7902   josef
+
+	* ggzboard/ggzboard:
+	  - honour game datapath if tile pixmap has been set
+
+
+2006-03-07 10:05:41  Rev 7893   josef
+
+	* ggzboard/module_reversi.py:
+	  - change turn after each turn (who'd had thought that!)
+
+
+2006-02-27 09:15:40  Rev 7874   josef
+
+	* ggzboard/ggzboard ggzboard/module_arimaa.py:
+	  A whole lot of Arimaa changes so this (complicated) game is nearly 
+	  working!
+	  - ability to skip first game phase (putting piece onto board) by 
+	  auto-init function
+	  - improved implementation of piece push and pull actions
+	  - rabbits mustn't move backwards
+	  - animals/pieces can get stuck if bordering a stronger animal
+	  - visual hints even when just clicking on a piece (ggzboard-wide 
+	  feature)
+	  - traps take away pieces, unless they border others of the same 
+	  colour
+	  So what is missing?
+	  - micro moves (1-4 moves per turn are possible)
+	  - extraordinary game over situations, like all rabbits are gone
+	  - not changing any pieces must lead to player losing after 3 turns
+
+
+2005-12-29 11:43:06  Rev 7697   josef
+
+	* README chess/ai.c Makefile.in configure.ac:
+	  - installation of the freshly added stuff
+
+
+2005-12-29 11:42:17  Rev 7696   josef
+
+	* ggzboard/module_connectx.py ggzboard/net_connectx.py 
+	  ggzboard/server_ludo.py ggzboard/connectx ggzboard/module_checkers.
+	  py ggzboard/net_checkers.py ggzboard/module_hnefatafl.py 
+	  ggzboard/module_arimaa.py ggzboard/module_chess.dsc.in 
+	  ggzboard/server_arimaa.dsc ggzboard/bogaprot.txt 
+	  ggzboard/module_go.py ggzboard/net_go.py ggzboard/net_chess.py 
+	  ggzboard/module_connectx.dsc.in ggzboard/bogaprot.py 
+	  ggzboard/server_hnefatafl.py ggzboard/module_checkers.dsc.in 
+	  ggzboard/module_hnefatafl.dsc.in ggzboard/module_madn.py 
+	  ggzboard/module_reversi.py ggzboard/module_arimaa.dsc.in 
+	  ggzboard/net_madn.py ggzboard/module_ludo.dsc.in 
+	  ggzboard/net_hnefatafl.py ggzboard/server_checkers.dsc 
+	  ggzboard/server_hnefatafl.dsc ggzboard/module_go.dsc.in 
+	  ggzboard/server_arimaa.room ggzboard/connectx/player1.svg 
+	  ggzboard/connectx/player2.svg ggzboard/ggzboard 
+	  ggzboard/server_ludo.dsc ggzboard/module_chess.py 
+	  ggzboard/module_reversi.dsc.in ggzboard/bogaprotclient.py 
+	  ggzboard/server_ludo.room ggzboard/server_checkers.py 
+	  ggzboard/server_arimaa.py ggzboard/net_reversi.py:
+	  - ConnectX client module for GGZBoard (includes network adapter 
+	  and pseudo-random AI)
+	  - Bogaprot client and server module for usage with board games 
+	  networking
+	  - Bogaprot design document
+	  - beginnings of networking support for Ludo and Arimaa
+	  - ability to restart finished game by pressing "a" ("again") in 
+	  ggzboard
+	  - display of name of winning player instead of just the seat number
+	  - local AI support for Go using the gnugo engine via popen()
+
+
+2005-12-29 11:31:27  Rev 7690   josef
+
+	* README.GGZ:
+	  - synchronisation of all globally used files
+	  - in the future, README.GGZ should be even more generic!
+
+
+2005-12-12 11:54:49  Rev 7660   josef
+
+	* escape-sdl/.cvsignore xadrez-chines po/.cvsignore pyggzchess/.
+	  cvsignore chess xadrez-chines/.cvsignore escape-sdl pyggzcore/.
+	  cvsignore pyrsvgsdl/.cvsignore .cvsignore go/.cvsignore lib 
+	  ggzboard/.cvsignore pyggzdmod/.cvsignore pyggzmod/.cvsignore 
+	  ggzboard:
+	  This week's XXL commit!
+	  - removal of all .cvsignore files
+	  - addition of *.a, *.os, ... to svn:ignore
+
+
+2005-12-12 11:44:08  Rev 7657   josef
+
+	* ggzboard/ggzboard dresden/dresden.py ggzboard/module_chess.py 
+	  ggzboard/module_go.py Makefile.in ggzboard/module_checkers.py 
+	  configure.ac ggzboard/module_hnefatafl.py INSTALL 
+	  xadrez-chines/xadrez-chines ggzboard/module_madn.py 
+	  ggzboard/module_reversi.py:
+	  - use ggzsettings everywhere
+	  - more overrideable variables in the Makefile
+	  - install manual pages
+	  - make all non-arimaa modules work again (quick fixes)
+
+
+2005-12-12 11:40:57  Rev 7656   josef
+
+	* po/de.po po/i18n.mk po/ggzpython.pot:
+	  - some translation updates
+	  - force 'all-local' to be the default rule in i18n.mk
+
+
+2005-12-12 11:38:18  Rev 7655   josef
+
+	* escape-sdl/escape-sdl.desktop:
+	  - do not keep desktop file in SVN (as *.desktop.in already is)
+
+
+2005-12-12 11:35:35  Rev 7654   josef
+
+	* pyrsvgsdl/src/pyrsvgsdl.c:
+	  - new method 'qtconversion' which handles the RGBA/ARGB conversion 
+	  on
+	  big/little endian arches so we don't have to care about that in 
+	  the games themselves
+
+
+2005-12-12 11:34:27  Rev 7653   josef
+
+	* lib/playertable.py lib/sdlnewstuff.py lib/ggzsettings.py.in:
+	  - ggzsettings: new configuration module to get the GGZ 
+	  installation paths right
+
+
+2005-11-29 17:48:54  Rev 7644   josef
+
+	* Makefile.in:
+	  - force 'make all-local' to be called instead of the default rule, 
+	  which could be something else
+
+
+2005-11-17 07:53:35  Rev 7626   josef
+
+	* ggzboard/ggzboard ggzboard/module_arimaa.py:
+	  - support for piece selection in GGZBoard
+	    (not only Arimaa should use this, but Chess also when exchanging 
+	  a pawn)
+	  - implementation of the first game phase of Arimaa
+	  Many of these changes will break the other games temporarily.
+
+
+2005-11-17 07:52:25  Rev 7625   josef
+
+	* ggzboard/arimaa/elephant_silver.png ggzboard/arimaa/horse_silver.
+	  png ggzboard/arimaa/camel_silver.png ggzboard/arimaa/elephant_gold.
+	  png ggzboard/arimaa/horse_gold.png ggzboard/arimaa/camel_gold.png 
+	  ggzboard/arimaa/celltrap.png ggzboard/arimaa/rabbit_silver.png 
+	  ggzboard/arimaa/rabbit_gold.png ggzboard/arimaa/cat_silver.png 
+	  ggzboard/arimaa/cat_gold.png ggzboard/arimaa/dog_silver.png 
+	  ggzboard/arimaa/dog_gold.png ggzboard/arimaa/cell.png:
+	  - hand-drawn animal pieces, now all 58x58 pixels large
+	  Hopefully some really nice ones will be contributed one day!
+
+
+2005-11-14 09:03:39  Rev 7622   josef
+
+	* ggzboard/arimaa/horse_silver.png ggzboard/arimaa/camel_silver.png 
+	  ggzboard/arimaa/elephant_gold.png ggzboard/arimaa/celltrap.png 
+	  ggzboard/arimaa/rabbit_gold.png ggzboard/arimaa/cat_gold.png 
+	  ggzboard/arimaa ggzboard/arimaa/dog_gold.png ggzboard/arimaa/cell.
+	  png ggzboard/ggzboard ggzboard/arimaa/elephant_silver.png 
+	  ggzboard/arimaa/horse_gold.png ggzboard/arimaa/camel_gold.png 
+	  ggzboard/arimaa/rabbit_silver.png ggzboard/arimaa/cat_silver.png 
+	  ggzboard/arimaa/dog_silver.png:
+	  - piece images for Arimaa - copyright unsure, might be replaced, 
+	  for now they're just modified a bit
+	  - GGZBoard support for tiles with background images (still a hack 
+	  though)
+
+
+2005-11-14 09:01:33  Rev 7621   josef
+
+	* ggzboard/module_arimaa.py escape-sdl/escape-sdl.desktop:
+	  Some random commits of what has been lurking around for some time:
+	  - update of the backend pages to reflect the rankings.g.o -> 
+	  ggzcommunity.org move
+	  - some desktop files for games that provide a single-player mode
+	  - beginnings of Arimaa game support for GGZBoard
+
+
+2005-11-01 13:34:10  Rev 7607   josef
+
+	* ggzboard/ggzboard ggzboard/module_chess.py ggzboard/module_go.py 
+	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
+	  ggzboard/DESIGN.ggzboard ggzboard/module_madn.py 
+	  ggzboard/module_reversi.py:
+	  - support for hints (used in Ludo only for now)
+	  - updated documentation
+	  Now all that is missing is piece animation support, and using
+	  all those nice new features in the other games beside Ludo.
+
+
+2005-11-01 13:32:40  Rev 7606   josef
+
+	* man/ggzboard.6 man/escape-sdl.6 man/vibora.6 man/xadrez-chines.6 
+	  man:
+	  - some man pages for the python apps and games (no installation yet)
+
+
+2005-09-25 18:25:14  Rev 7593   josef
+
+	* ChangeLog:
+	  - big changelog update (2.3 MB... due to new formatting)
+
+
 2005-09-25 17:27:41  Rev 7586   josef
 
 	* Makefile.in:
