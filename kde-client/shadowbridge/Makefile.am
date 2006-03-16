@@ -30,6 +30,7 @@ dist_desktop_DATA = shadowbridge.desktop
 KDE_ICON = shadowbridge
 
 EXTRA_DIST = \
+	README.shadowbridge \
 	hi16-app-shadowbridge.png \
 	hi32-app-shadowbridge.png \
 	hi48-app-shadowbridge.png
