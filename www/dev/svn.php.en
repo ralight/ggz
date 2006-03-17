@@ -32,6 +32,7 @@ i.e. other modules depending on them.
 <tr><td>sdl-games</td><td>SDL game clients</td><td>C</td><td>since 0.0.7</td></tr>
 <tr><td>python</td><td>Python library wrappers and game clients</td><td>Python, C</td><td>since 0.0.8</td></tr>
 <tr><td>community</td><td>Web application for players</td><td>PHP, Perl, Python, C</td><td>since 0.0.10</td></tr>
+<tr><td>java</td><td>Applet and games</td><td>Java</td><td>since 0.0.13</td></tr>
 <tr><td>docs</td><td>Documentation</td><td>Text, PS, HTML, DocBook</td><td></td></tr>
 <tr><td>playground</td><td>Work in progress</td><td>C, C++, Ruby, Python, ...</td><td>unreleased</td></tr>
 <tr><td>www</td><td>Webpages</td><td>HTML, PHP</td><td>unreleased</td></tr>
