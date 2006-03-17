@@ -10,6 +10,17 @@
 <language>fr-fr</language>
 
 <item>
+<title><i>17.03.2006: GGZ 0.0.13</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+After more than 5 months of work, the GGZ Gaming Zone 0.0.13 is now available.
+This release adds several new features, chief among them the GGZ Java package
+which contains the applet sources.
+Download GGZ now and have fun playing on it!
+</full>
+</item>
+
+<item>
 <title><i>30.01.2006: GGZ maintenant pour Java aussi!</i> (de josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
