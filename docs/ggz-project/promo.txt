@@ -1,0 +1,39 @@
+GGZ has matured a lot, yet very few people know about it. Apart from distro
+support, announcing the project and spreading the good news in articles is
+a very important task.
+The following collection tries to give an overview about what exists already.
+
+== Permanent project entries ==
+  [en] http://freshmeat.net/projects/ggz/
+  [en] http://www.happypenguin.org/show?GGZ%20Gaming%20Zone
+  [de] http://www.pro-linux.de/cgi-bin/DBApp/check.cgi?ShowApp..4072.100
+  [fr] http://jeuxlibres.net/showgame/ggz_gaming_zone.html
+  [de] http://polska.merseine.nu:8080/h2006/space/GGZ+Gaming+Zone
+       (holarse.net)
+
+  [fr] http://fr.wikipedia.org/wiki/GGZ_Gaming_Zone
+  [en] http://en.wikipedia.org/wiki/GGZ_Gaming_Zone
+
+== Permanent application/package entries
+  [en] http://www.gnomefiles.org/app.php?soft_id=1321
+  [en] http://www.gnomefiles.org/app.php?soft_id=1322
+  [en] http://www.kde-apps.org/content/show.php?content=24472
+  [en] http://www.kde-apps.org/content/show.php?content=24473
+  [en] http://www.pygame.org/projects/23/215/
+
+== News sites ==
+  [en] http://www.linuxgames.com/
+
+== Articles and extended news items ==
+  [pt] ??.??.2001 http://olinux.uol.com.br/artigos/381/1.html
+  [de] 18.06.2001 http://dot.kde.org/992875016/
+  [es] 03.05.2002 http://bulma.net/body.phtml?nIdNoticia=1297
+  [de] 09.02.2004 http://www.pro-linux.de/cgi-bin/NB2/nb2.cgi?show.6449.7010..
+  [pt] 01.01.2005 http://www.linuxit.com.br/section-viewarticle-715.html
+  [pt] 10.01.2005 http://br-linux.org/main/noticia-jogadores_ja_chegou_a_comunid.html
+  [en] 11.01.2005 http://newsvac.newsforge.com/newsvac/05/01/10/2236240.shtml
+  [es] 17.03.2006 http://www.cofradia.net/modules.php?name=News&file=article&sid=16867
+
+== Talks ==
+  See docs/presentations!
+
