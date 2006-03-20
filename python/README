@@ -1,5 +1,5 @@
 =================================================================
-The GGZ Gaming Zone - Python Libraries and Games - Version 0.0.13
+The GGZ Gaming Zone - Python Libraries and Games - Version 0.0.14pre
 =================================================================
 
 For people not liking C or C++, the GGZ Python package provides
@@ -24,13 +24,14 @@ Content of GGZ-Python:
 	- Goserver, a GGZ-enabled gnugo program, and Goclient, a CGoBan wrapper
 	- GGZBoard, generic board game framework
 	  - Go (client, ai-wrapper(gnugo), network)
-	  - Chess (client, ai, network)
+	  - Chess (client, ai-wrapper(ggzchess), network)
 	  - Reversi (client, ai, network)
 	  - Checkers (client, ai, network, server)
 	  - Hnefatafl (client, ai, network, server)
 	  - Ludo (client, ai, network, server)
 	  - Arimaa (client, network, server) [external module]
 	  - ConnectX (client, ai, network)
+	  - Shogi (client, ai-wrapper(gnushogi))
 
 	- Víbora, fullscreen core client
 
