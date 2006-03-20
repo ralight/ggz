@@ -1,6 +1,12 @@
 <?php
-$conf_host = "localhost";
-$conf_name = "hotstuff";
-$conf_user = "xxx";
-$conf_pass = "xxx";
+//$conf_host = "localhost";
+//$conf_name = "hotstuff";
+//$conf_user = "xxx";
+//$conf_pass = "xxx";
+
+$conf_feed = "http://new.kstuff.org/ggz/stuff.xml";
+$conf_category = "ggz";
+$conf_entriesperpage = 10;
+$conf_theme = ".";
+$conf_embedded = true;
 ?>
