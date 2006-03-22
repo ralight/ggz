@@ -1,4 +1,4 @@
-.TH "ggzboard" "6" "0.0.12" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggzboard" "6" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP
 ggzboard \- Board games container for the GGZ Gaming Zone
@@ -10,6 +10,35 @@ AI players or against network opponents, or even both.
 When running without options, a selection menu for local games will
 appear. Otherwise, a game name might be given to directly launch a
 specific game.
+Games and graphics themes may be updated over the Internet, using the
+Get Hot New Stuff functionality integrated into the games container.
+.SH "OPTIONS"
+.LP
+.TP
+\fB\-G\fR, \fB\-\-game=\fR\fIGAMENAME\fR
+Instead of providing the intro screen with the game selection dialog,
+launch a game directly, which is specified by GAMENAME.
+Games can be either installed with GGZBoard, or invoked from the
+dynamic updates directory in ~/.ggz/games/ggzboard.
+.TP
+\fB\-l\fR, \fB\-\-list\fR
+List all available GGZBoard games, including their installation positions,
+for further use with the --game option.
+.TP
+\fB\-f\fR, \fB\-\-fullscreen\fR
+Runs GGZBoard in fullscreen mode. Note that the mode can always be
+toggled during the run by pressing the F key.
+.TP
+\fB\-g\fR, \fB\-\-ggz\fR
+Runs GGZBoard in GGZ mode, meaning that it will try to connect to a
+GGZ core client and subsequently to the GGZ server. This is an internally
+used option!
+.TP
+\fB\-v\fR, \fB\-\-version\fR
+Displays the version number of GGZBoard.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Output of a summary of available command line options.
 .SH "GAMES"
 .LP
 \fICheckers\fP
@@ -46,6 +75,32 @@ in order to reach its destination. Moves are determined by throwing
 dice.
 Call \fBggzboard ludo\fP to run it directly.
 Note that Ludo is currently only supported in single-player mode.
+.LP
+\fIConnectX\fP
+is a game also known as 4 Wins. Pieces are dropped into columns of
+the board and will fall into the most bottom row possible of that
+column, that is, on top of all other pieces already in that column.
+The player who gets 4 pieces into one row, in either direction, wins.
+Call \fBggzboard connectx\fP to run it directly.
+.LP
+\fIArimaa\fP
+is a chess-like game with animals, and is known to be easy to play, yet
+hard to grok for computer players. As special features, it has four traps
+on the game board, and allows for push and pull operations on neighbouring
+animals depending on their strength.
+Call \fBggzboard arimaa\fP to run it directly.
+Note that the Arimaa game module is currently distributed as an external
+package, it can be installed via the dynamic game update button.
+.LP
+\fIShogi\fP
+is a Japanese chess game which is played on a 9x9 board. As opposed to chess,
+captured pieces change ownership and can be placed on free cells of the board
+later, which makes the game more fluid.
+Call \fBggzboard shogi\fP to run it directly.
+Note: This implementation uses the GNU Shogi AI engine.
+.SH "FILES"
+.LP
+\fI~/.ggz/games/ggzboard/\fP - dynamic game updates and theme packages
 .SH "AUTHORS"
 .LP
 The GGZ Development Team
