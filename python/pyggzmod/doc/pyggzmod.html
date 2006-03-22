@@ -1,0 +1,1203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>PyGGZMod: API documentation for the Python wrapper for GGZMod</title>
+<link href="doxygen.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="qindex">
+Quick links:
+<a class="qindex" href="index.html">GGZMod C API documentation</a>
+</div>
+<h1>ggzmod Python Module Reference</h1>
+Common functions for interfacing with the GGZ system from GGZ game clients.
+<a href="#_details">More...</a>
+
+<p>
+<code>import ggzmod</code><br>
+
+<p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td colspan="2">
+<br><h2>Enumerations</h2>
+</td>
+</tr>
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+GGZModState
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#STATE_CREATED">STATE_CREATED</a>,
+<a class="el" href="pyggzmod.html#STATE_CONNECTED">STATE_CONNECTED</a>,
+<a class="el" href="pyggzmod.html#STATE_WAITING">STATE_WAITING</a>,
+<a class="el" href="pyggzmod.html#STATE_PLAYING">STATE_PLAYING</a>,
+<a class="el" href="pyggzmod.html#STATE_DONE">STATE_DONE</a>
+<br>
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Table states.
+<a href="pyggzmod.html#GGZModState">More...</a><br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+GGZModEvent
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#EVENT_STATE">EVENT_STATE</a>,
+<a class="el" href="pyggzmod.html#EVENT_SERVER">EVENT_SERVER</a>,
+<a class="el" href="pyggzmod.html#EVENT_PLAYER">EVENT_PLAYER</a>, 
+<a class="el" href="pyggzmod.html#EVENT_SEAT">EVENT_SEAT</a>,
+<a class="el" href="pyggzmod.html#EVENT_SPECTATOR">EVENT_SPECTATOR</a>,
+<a class="el" href="pyggzmod.html#EVENT_CHAT">EVENT_CHAT</a>,
+<a class="el" href="pyggzmod.html#EVENT_STATS">EVENT_STATS</a>,
+<a class="el" href="pyggzmod.html#EVENT_INFO">EVENT_INFO</a>,
+<a class="el" href="pyggzmod.html#EVENT_ERROR">EVENT_ERROR</a>
+<br>
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Callback events from the GGZ core client.
+<a href="pyggzmod.html#GGZModEvent">More...</a><br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+GGZSeatType
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#SEAT_NONE">SEAT_NONE</a>,
+<a class="el" href="pyggzmod.html#SEAT_OPEN">SEAT_OPEN</a>,
+<a class="el" href="pyggzmod.html#SEAT_BOT">SEAT_BOT</a>,
+<a class="el" href="pyggzmod.html#SEAT_PLAYER">SEAT_PLAYER</a>,
+<a class="el" href="pyggzmod.html#SEAT_RESERVED">SEAT_RESERVED</a>,
+<a class="el" href="pyggzmod.html#SEAT_ABANDONED">SEAT_ABANDONED</a>
+<br>
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Possible types of each seat.
+<a href="pyggzmod.html#GGZSeatType">More...</a><br>
+</td>
+</tr>
+
+<!-- Functions -->
+
+<tr><td colspan="2"><br><h2>Functions</h2></td></tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+None
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#setHandler">setHandler</a>
+(<a class="el" href="pyggzmod.html#GGZModEvent">GGZModEvent</a> event, method)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Sets up a Python method callback for the given event.
+</td>
+</tr>
+
+<tr><td colspan="2"><br></td></tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+boolean
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#connect">connect</a> ()
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Connects to the GGZ core client.
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+boolean
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#disconnect">disconnect</a> ()
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Disconnects from the GGZ core client.
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+boolean
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#setState">setState</a>
+(<a class="el" href="pyggzmod.html#GGZModState">GGZModState</a> state)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Changes the table's state.
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+<a class="el" href="pyggzmod.html#GGZModState">GGZModState</a>
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getState">getState</a> ()
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get the current state of the table.
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+boolean
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#autonetwork">autonetwork</a> ()
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Checks for messages from the GGZ core client and the game server.
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+int/socket
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getFd">getFd</a> ()
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get the file descriptor of the game server connection.
+</td>
+</tr>
+
+<tr><td colspan="2"><br></td></tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+int
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getNumSpectators">getNumSeats</a> ()
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get the total number of seats at the table.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+int
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getNumSpectators">getNumSpectators</a> ()
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get the current number of spectators, which may change constantly.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+(int, <a class="el" href="pyggzmod.html#GGZModSeatType">GGZModSeatType</a>, string)
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getSeat">getSeat</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get all data for the specified seat.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+(int, string)
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getSpectator">getSpectator</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get a spectator's data.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+(string, boolean, int)
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getPlayer">getPlayer</a> ()
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get data about this player.<br>
+</td>
+</tr>
+
+<tr><td colspan="2"><br></td></tr>
+
+</table>
+
+<!-- finish -->
+
+<hr><a name="_details"></a><h2>Detailed Description</h2>
+Common functions for interfacing with the GGZ system from GGZ game clients.
+<p>
+This module contains wrappers for all libggzmod functions used by game clients
+to interface with GGZ server events as received by the GGZ core clients, and
+to get the connection to the game server.
+Just import the <b>ggzmod</b> module and use the module-level functions below as
+appropriate.
+<p>
+GGZmod currently provides an event-driven interface.
+Data from communication sockets is read in by the library, and a handler method
+(registered as a callback) is invoked to handle any events such as joining players,
+chat messages and statistics updates.
+<p>
+GGZMod provides one file desriptor for communicating (TCP) to each client.
+If data is ready to be read by one of these file descriptors ggzmod may invoke the
+appropriate handler (see below), but will never actually read any data.
+<p>
+In essence, a game client will check first whether it runs in GGZ mode at all.
+If this is the case, the environment variable <b>GGZMODE=true</b> is set, even
+though games might opt to use command line parameters to determine this.
+Then, the game will set up some event handlers using
+<a class="el" href="pyggzmod.html#setHandler">setHandler</a>.
+None of these is required, but
+<a class="el" href="pyggzmod.html#EVENT_SERVER">EVENT_SERVER</a>
+is recommended to know when the connection to the game server has been
+established. At some point, the game will invoke
+<a class="el" href="pyggzmod.html#connect">connect</a> to enter in contact
+with the GGZ core client, which in turn is connected to the GGZ server and
+will establish the game connection, as described above.
+The game client and server will then communicate over their protocol, and the
+game client needs to call
+<a class="el" href="pyggzmod.html#autonetwork">autonetwork</a> in order to
+know when new messages have arrived. Sending and receiving messages happens
+via a Python socket object on top of the game connection file descriptor,
+which is returned by
+<a class="el" href="pyggzmod.html#getFd">getFd</a>.
+A good game will also keep track of the game or table state, which can be set
+to <a class="el" href="pyggzmod.html#STATE_WAITING">STATE_WAITING</a>
+for the (optional) pregame phase, to
+<a class="el" href="pyggzmod.html#STATE_PLAYING">STATE_PLAYING</a>
+for the game itself, and finally to
+<a class="el" href="pyggzmod.html#STATE_DONE">STATE_DONE</a> to indicate that
+the game is over and no player wants to start another game on the same table.
+<p>
+For more information, see the documentation at
+<a href="http://www.ggzgamingzone.org/.">http://www.ggzgamingzone.org/</a>.
+
+<!-- enum docs -->
+
+<hr><h2>Enumeration Type Documentation</h2>
+<a class="anchor" name="GGZModEvent"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">
+<a class="el" href="pyggzmod.html#GGZModEvent_index">GGZModEvent</a>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>&nbsp;</td>
+<td>
+
+<p>
+Callback events. 
+<p>
+Each of these is a possible GGZmod event. For each event, the table may
+register a handler with GGZmod to handle that event.
+All callback handlers are Python methods which will receive a tuple with
+values or a single value depending on the event type.
+<dl compact>
+<dt><b>See also:</b></dt>
+<dd>
+<a class="el" href="pyggzmod.html#setHandler">setHandler</a>
+</dd>
+</dl>
+
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top">
+<em><a class="anchor" name="EVENT_STATE"></a>EVENT_STATE</em>
+</td>
+<td>
+Module status changed.
+This event occurs when the game's status changes.
+The old state (a <a class="el" href="pyggzmod.html#GGZModState">GGZModState</a>)
+is passed as the event's data. 
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="EVENT_SERVER"></a>EVENT_SERVER</em>
+</td>
+<td>
+A new server connection has been made.
+This event occurs when a new connection to the game server has been made.
+The file descriptor is passed as the event's data.
+It should be used to construct a Python socket object, but can otherwise be
+discarded since it can always be gotten by calling
+<a class="el" href="pyggzmod.html#getFd">getFd</a>.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="EVENT_PLAYER"></a>EVENT_PLAYER</em>
+</td>
+<td>
+The game client player's seat status has changed. 
+This event occurs when the player's seat status changes; i.e. he changes
+seats or starts/stops spectating.
+The event data is a tuple consisting of the old spectator status (either
+<b>True</b> if he was a spectator, or <b>False</b> otherwise)
+and the old seat number.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="EVENT_SEAT"></a>EVENT_SEAT</em>
+</td>
+<td>
+A seat change. 
+This event occurs when a seat change occurs.
+The old seat number is passed as the event's data.
+The seat information will be updated before the event is invoked.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="EVENT_SPECTATOR"></a>EVENT_SPECTATOR</em>
+</td>
+<td>
+A spectator seat change. 
+This event occurs when a spectator seat change occurs.
+The old spectator number is passed as the event's data.
+The spectator information will be updated before the event is invoked.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="EVENT_CHAT"></a>EVENT_CHAT</em>
+</td>
+<td>
+A chat message event. 
+This event occurs when we receive a chat.
+The chat may have originated in another game client or from the GGZ client;
+in either case it will be routed to us. The chat information, a tuple
+consisting of the sender name and message text, is passed as the event's data.
+Note that the chat may originate with a player or a spectator,
+and they may have changed seats or left the table by the time it gets to us.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="EVENT_STATS"></a>EVENT_STATS</em>
+</td>
+<td>
+The statistics of some or all players have been updated. An empty tuple is
+given as event data, and the game should use the statistics-related
+functions to get to know more about it.
+<dl compact>
+<dt><b>See also:</b></dt>
+<dd>
+<a class="el" href="pyggzmod.html#getPlayerRecord">getPlayerRecord</a><p>
+<a class="el" href="pyggzmod.html#getPlayerRating">getPlayerRating</a><p>
+<a class="el" href="pyggzmod.html#getPlayerRanking">getPlayerRanking</a><p>
+<a class="el" href="pyggzmod.html#getPlayerHighscore">getPlayerHighscore</a>
+</dd>
+</dl>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="EVENT_INFO"></a>EVENT_INFO</em>
+</td>
+<td>
+Information has been requested about one or more players and it has now
+arrived. Either an empty tuple is given as the event data in case information
+about all players was updated, or the seat number in case only one specific
+player was specified.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="EVENT_ERROR"></a>EVENT_ERROR</em>
+</td>
+<td>
+An error has occurred. This event occurs when a GGZMod error has occurred.
+An error message string will be passed as the event's data.
+GGZMod may attempt to recover from the error, but it is not guaranteed
+that the GGZ connection will continue to work after an error has happened.
+<p>
+</td>
+</tr>
+</table>
+
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="GGZModState"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">
+<a class="el" href="pyggzmod.html#GGZModState_index">GGZModState</a>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+
+<p>
+Table states. 
+<p>
+Each table has a current "state" that is tracked by ggzmod.
+First the table is executed and begins running. Then it receives a launch
+event from GGZ and begins waiting for players. At some point a game will be
+started and played at the table, after which it may return to waiting.
+Eventually the table will probably halt and then the program will exit.
+<p>
+More specifically, the game is in the CREATED state when it is first executed.
+It moves to the CONNECTED state after GGZ first communicates with it, and to
+WAITING after the connection is established with the game server.
+After this, the game server may use
+<a class="el" href="pyggzmod.html#setState">setState</a> to change between
+WAITING, PLAYING, and DONE states. A WAITING game is considered waiting for
+players (or whatever), while a PLAYING game is actively being played
+(this information may be, but currently is not, propogated back to GGZ for
+display purposes). Once the state is changed to DONE, the table is
+considered dead and will exit shortly thereafter.
+<p>
+Each time the game state changes, an <b>EVENT_STATE</b> event will be
+propogated to the game server.
+
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top">
+<em><a class="anchor" name="STATE_CREATED"></a>STATE_CREATED</em>
+</td>
+<td>
+Initial state. The game starts out in this state.
+Once the state is changed it should never be changed back.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="STATE_CONNECTED"></a>STATE_CONNECTED</em>
+</td>
+<td>
+Connected state. After the GGZ client and game client get connected,
+the game changes into this state automatically.
+Once this happens messages may be sent between these two.
+Once the game leaves this state it should never be changed back.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="STATE_WAITING"></a>STATE_WAITING</em>
+</td>
+<td>
+Waiting state. After the game client and game server are connected,
+the client enters the waiting state. The game client may now call
+<a class="el" href="pyggzmod.html#setState">setState</a> to change
+between WAITING, PLAYING, and DONE states.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="STATE_PLAYING"></a>STATE_PLAYING</em>
+</td>
+<td>
+Playing state. This state is only entered after the game client
+changes state to it via
+<a class="el" href="pyggzmod.html#setState">setState</a>.
+State may be changed back and forth between WAITING and PLAYING
+as many times as are wanted.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="STATE_DONE"></a>STATE_DONE</em>
+</td>
+<td>
+Done state. Once the game client is done running,
+<a class="el "href="pyggzmod.html#setState">setState</a> should be called
+to set the state to done. At this point nothing "new" can happen. The state
+cannot be changed again after this. However the game client will not be
+terminated by the GGZ client; GGZ just waits for it to exit of its own
+volition.
+</td>
+</tr>
+</table>
+
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="GGZSeatType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">
+<a class="el" href="pyggzmod.html#GGZSeatType_index">GGZSeatType</a>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+
+<p>
+Seat types.
+<p>
+Each "seat" at a table of a GGZ game can have one of these values.
+They are used by the GGZ client, GGZ server, and game servers; their
+use in game clients is completely optional.
+
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top">
+<em><a class="anchor" name="SEAT_NONE"></a>SEAT_NONE</em>
+</td>
+<td>
+This seat does not exist.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="SEAT_OPEN"></a>SEAT_OPEN</em>
+</td>
+<td>
+The seat is open (unoccupied).
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="SEAT_BOT"></a>SEAT_BOT</em>
+</td>
+<td>
+The seat has a bot (AI) in it.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="SEAT_PLAYER"></a>SEAT_PLAYER</em>
+</td>
+<td>
+The seat has a regular player in it.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="SEAT_RESERVED"></a>SEAT_RESERVED</em>
+</td>
+<td>
+The seat is reserved for a player.
+<p>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<em><a class="anchor" name="SEAT_ABANDONED"></a>SEAT_ABANDONED</em>
+</td>
+<td>
+The seat is abandoned by a player.
+</td>
+</tr>
+</table>
+
+</dl>
+</td>
+</tr>
+</table>
+
+<!-- function docs -->
+
+<hr><h2>Function Documentation</h2>
+
+<a class="anchor" name="connect"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">boolean connect ()</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+<p>
+Connect to GGZ. 
+<p>
+Call this function to make an initial GGZ &lt;-&gt; game connection.
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd><b>True</b> on success, <b>False</b> on failure.</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="disconnect"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">boolean disconnect ()</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+<p>
+Disconnect from ggz. 
+<p>
+When called by the game server, this function stops the connection to GGZ.
+It should only be called when the table is ready to exit.
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd><b>True</b> on success, <b>False</b> on failure.</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="setState"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">boolean setState</td>
+<td class="md" valign="top">&nbsp;(&nbsp;</td>
+<td class="md" nowrap valign="top">
+<a class="el" href="pyggzmod.html#GGZModState">GGZModState</a>
+</td>
+<td class="mdname" nowrap>&nbsp;<em>state</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+<p>
+Change the table's state. 
+<p>
+This function should be called to change the state of a table.
+A game can use this function to change state between WAITING and PLAYING,
+or to set it to DONE.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>state</em>&nbsp;</td>
+<td>The new state.</td></tr>
+</table>
+</dd>
+</dl>
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd><b>True</b> on success, <b>False</b> on failure/error.</dd></dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getFd"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">int getFd ()</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+<p>
+Get the file descriptor of the game server connection.
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>A valid file descriptor on success, <b>-1</b> on failure.</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getState"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">
+<a class="el" href="pyggzmod.html#GGZModState">GGZModState</a> getState ()
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+<p>
+Get the current state of the table. 
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>The state of the table.</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="autonetwork"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">boolean autonetwork ()</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+<p>
+Checks for messages from the GGZ core client and the game server.
+<p>
+Any GGZ events are processed first. If data from the game server is also
+available, it is left in place, and the functions returns <b>True</b> to
+indicate that the game client may read the data from the server using the
+file descriptor obtained by
+<a class="el" href="pyggzmod.html#getFd">getFd</a>.
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd><b>True</b> if data has arrived, <b>False</b> otherwise.</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<!-- finish/1 -->
+
+<a class="anchor" name="setHandler"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">setHandler</td>
+<td class="md" valign="top">(&nbsp;</td>
+<td class="md" nowrap valign="top">
+<a class="el" href="pyggzmod.html#GGZModEvent">GGZModEvent</a>
+</td>
+<td class="mdname" nowrap>&nbsp;<em>event</em>, </td>
+</tr>
+<tr>
+<td class="md" nowrap align="right"></td>
+<td class="md"></td>
+<td class="md" nowrap>python method &nbsp;</td>
+<td class="mdname" nowrap> <em>method</em></td>
+</tr>
+<tr>
+<td class="md"></td>
+<td class="md">)&nbsp;</td>
+<td class="md" colspan="2"></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+
+<p>
+Sets up a Python method callback for the given event. 
+<p>
+Whenever the event will occur, the callback will be invoked with
+parameters according to the documentation of
+<a class="el" href="pyggzmod.html#GGZModEvent">GGZModEvent</a>.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>event</em>&nbsp;</td>
+<td>The GGZMod event.</td>
+</tr>
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>method</em>&nbsp;</td>
+<td>The handler method being registered.</td>
+</tr>
+</table>
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<!-- finish/2 -->
+
+<a class="anchor" name="getNumSeats"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">int getNumSeats ()</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get the total number of seats at the table.
+<p>
+As long as the table is in the state
+<a class="el" href="pyggzmod.html#STATE_CREATED">STATE_CREATED</a>,
+the number of seats is not known, and hence <b>-1</b> is returned,
+just like in the case of other errors.
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>The number of seats, or <b>-1</b> on error.</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getNumSpectators"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">int getNumSpectators ()</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get the current number of spectators, which may change constantly.
+<p>
+This function returns the maximum number of spectator seats available.
+A game can use this to iterate over the spectator seats to look for
+spectators occupying them. Since spectators may come and go at any point
+and there is no limit on the number of spectators, you should consider
+this value to be dynamic and call this function again each time you're
+looking for spectators.
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>The current number of spectators, or <b>-1</b> on error.</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getSeat"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">(int, <a class="el" href="pyggzmod.html#GGZModSeatType">GGZModSeatType</a>, string) getSeat</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="mdname" nowrap>int&nbsp;<em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get all data for the specified seat.
+<p>
+The function returns information about a seat assignment, like the seat
+type (player, bot, empty...) and the name in the case of players,
+bots, reserved and abandoned seats.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number.</td></tr>
+</table>
+</dd>
+</dl>
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>
+A 3-element tuple (int num,
+<a class="el" href="pyggzmod.html#GGZSeatType">GGZSeatType</a>
+type, string name) containing the seat number which was given to the function,
+the seat type and the name of the player or bot, if applicable. The name is
+<b>None</b> in cases like open seats, and the whole result can be <b>None</b>
+if an invalid seat number was given.
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getSpectator"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">(int, string) getSpectator</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="mdname" nowrap>int&nbsp;<em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get a spectator's data.
+<p>
+This function can be used to look up the names of all spectating people.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The spectator seat number.</td></tr>
+</table>
+</dd>
+</dl>
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>
+A 2-element tuple (int num, string name) containing the seat number which was
+given to the function and the name of the spectator.
+The whole result can be <b>None</b> if an invalid spectator seat number was
+given.
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getPlayer"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">(string, boolean, int) getPlayer ()</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get data about this player.
+<p>
+Call this function to find out where at the table this player is
+sitting.
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>
+A 3-element tuple (string name, boolean isspectator, int num)
+containing the player's name, whether he is currently spectating or not,
+and the seat or spectator seat number.
+In the case of errors, <b>None</b> is returned instead.
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<!-- footer -->
+
+<hr size="1">
+<address style="align: right;">
+<small>Design based on output by
+<a href="http://www.doxygen.org/index.html">
+Doxygen</a> 1.4.2
+</small>
+</address>
+</body>
+</html>

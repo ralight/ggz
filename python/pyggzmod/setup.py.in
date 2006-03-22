@@ -7,7 +7,7 @@ from distutils.core import setup, Extension
 
 setup(
     name = "GGZMod",
-    version = "0.2",
+    version = "0.3",
     author = "Josef Spillner",
     author_email = "josef@ggzgamingzone.org",
     url = "http://www.ggzgamingzone.org",
