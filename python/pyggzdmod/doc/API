@@ -1,0 +1,40 @@
+getNumSeats () -> int
+getNumSpectators () -> int
+countSeats (GGZSeatType type) -> int
+countSpectators () -> int
+
+reportStatistics (int winner) -> None
+reportSavegame (string filepath) -> None
+
+getSeat (int number) -> tuple (int, GGZSeatType, string, int)
+	being (number, type, name, fd/socket)
+getSpectator (int number) -> tuple (int, string, int)
+	being (number, name, fd/socket)
+
+getBotClass(string name) -> string
+
+requestNumSeats (int number) -> None
+requestBoot (string name) -> None
+requestBot (int number) -> None
+requestOpen (int number) -> None
+
+connect () -> boolean
+disconnect () -> boolean
+dispatch () -> None
+loop () -> boolean
+getState () -> GGZModState
+setState (GGZModState state) -> boolean
+
+setHandler (GGZModEvent event, method) -> None
+
+--------------------
+
+Hooks:
+ EVENT_STATE -> old state
+ EVENT_JOIN -> seat tuple (number, type, name, fd)
+ EVENT_LEAVE -> seat tuple (number, type, name, fd)
+ EVENT_DATA -> seat tuple (number, type, name, fd)
+ EVENT_SPECTATOR_*: as in C version (improve!)
+ EVENT_LOG -> log string
+ EVENT_ERROR -> error string
+
