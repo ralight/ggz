@@ -1,5 +1,5 @@
 // Game server handler class for ggzdmod++ library
-// Copyright (C) 2003 - 2005 Josef Spillner <josef@ggzgamingzone.org>
+// Copyright (C) 2003 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 //
 // This library has its origin in ggzd/games_servers/muehle/ggz!
 //
@@ -20,8 +20,50 @@
 #ifndef GGZDMODPP_GAMESERVER_H
 #define GGZDMODPP_GAMESERVER_H
 
-// GGZdMod includes
-#include <ggzdmod.h>
+#include <string>
+
+/* Forward declarations of internal classes */
+class GGZGameServerPrivate;
+
+/* Class representing a player, who can be playing or spectating */
+class Client
+{
+	public:
+		std::string name;
+		int fd;
+		bool spectator;
+		int number;
+};
+
+/* Class representing a spectator seat.
+ * If player is NULL, the spectator seat is empty.
+ */
+class Spectator
+{
+	public:
+		int number;
+		Client *client;
+};
+
+/* Class representing a seat.
+ * Seats can be empty or filled with an active player or bot...
+ */
+class Seat : public Spectator
+{
+	public:
+		/* Seat types */
+		enum SeatType
+		{
+			none,
+			open,
+			bot,
+			player,
+			reserved,
+			abandoned
+		};
+
+		SeatType type;
+};
 
 /* Class representing a game server module.
  * It is used by reimplementing the virtual methods, and then calling
@@ -29,6 +71,8 @@
  */
 class GGZGameServer
 {
+	friend class GGZGameServerPrivate;
+
 	public:
 		/* Constructor */
 		GGZGameServer();
@@ -41,45 +85,64 @@ class GGZGameServer
 		void connect(bool async);
 
 	protected:
+		/* Possible game states */
+		enum State
+		{
+			created,
+			waiting,
+			playing,
+			done
+		};
+
 		/* Callback for idle events (only in async mode) */
 		virtual void idleEvent();
 		/* Callback for state change */
 		virtual void stateEvent();
-		/* A player has joined the given seat */
-		virtual void joinEvent(int player);
-		/* A player has left the given seat */
-		virtual void leaveEvent(int player);
-		/* The player on the given seat has sent some data */
-		virtual void dataEvent(int player);
-		/* A spectator has joined the given spectator seat */
-		virtual void spectatorJoinEvent(int spectator);
-		/* A spectator has left the given spectator seat */
-		virtual void spectatorLeaveEvent(int spectator);
-		/* The spectator on the given spectator seat has sent some data */
-		virtual void spectatorDataEvent(int spectator);
 		/* An error occurred */
 		virtual void errorEvent();
 
-		/* Returns file descriptor for the given seat number */
-		int fd(int player);
+		/* A player or spectator has joined the game */
+		virtual void joinEvent(Client *client);
+		/* A player or spectator has left game */
+		virtual void leaveEvent(Client *client);
+		/* The player or spectator has sent some data */
+		virtual void dataEvent(Client *client);
+
+		/* A seat change happened */
+		virtual void seatEvent(Seat *seat);
+		/* A spectator seat change happened */
+		virtual void spectatorEvent(Spectator *spectator);
+
+		/* Current game state */
+		State state();
+		/* Announce a state transition */
+		void changeState(State state);
+
 		/* Returns number of available seats, independent of their status */
 		int players();
-		/* Returns file descriptor for the given spectator seat number */
-		int spectatorfd(int spectator);
-		/* Returns number of available spectators */
+		/* Returns number of available spectator seats */
 		int spectators();
-		/* Returns the number of open seats */
-		int open();
+		/* Returns the number of seats of one type (convenience method) */
+		int playercount(Seat::SeatType type);
+		/* Returns the number of active spectators (convenience method) */
+		int spectatorcount();
+
+		/* Returns seat object for the given seat number */
+		Seat *seat(int number) const;
+		/* Returns spectator seat object for the given spectator seat number */
+		Spectator *spectator(int number) const;
+
+		/* More convenience methods */
+		int fd(int number)
+		{
+			Seat *s = seat(number);
+			if(!s) return -1;
+			if(!s->client) return -1;
+			return s->client->fd;
+		}
 
 	private:
-		static void handle_state(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
-		static void handle_join(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
-		static void handle_leave(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
-		static void handle_data(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
-		static void handle_error(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
-		static void handle_spectator_join(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
-		static void handle_spectator_leave(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
-		static void handle_spectator_data(GGZdMod* ggzdmod, GGZdModEvent event, const void *data);
+		GGZGameServerPrivate *m_private;
 		int m_connected;
 };
 

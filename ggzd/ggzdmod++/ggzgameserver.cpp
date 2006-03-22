@@ -1,5 +1,5 @@
 // Game server handler class for ggzdmod++ library
-// Copyright (C) 2003 - 2005 Josef Spillner <josef@ggzgamingzone.org>
+// Copyright (C) 2003 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 //
 // This library has its origin in ggzd/games_servers/muehle/ggz!
 //
@@ -20,161 +20,357 @@
 // Header file
 #include "ggzgameserver.h"
 
+// GGZ includes
+#include <ggzdmod.h>
+
 // System includes
 #include <iostream>
+#include <map>
 
-// Global singleton object
-GGZGameServer* self;
-
-// Globla ggzdmod object
-GGZdMod* ggzdmod;
+// Internal class for callback handling
+class GGZGameServerPrivate
+{
+		public:
+			GGZGameServerPrivate(GGZGameServer *parent);
+			~GGZGameServerPrivate();
+			inline GGZdMod *ggzdmod() const {return m_ggzdmod;}
+			static bool exists() {return (GGZGameServerPrivate::m_parent != NULL);}
+			std::map<int,Seat*> seatmap;
+			std::map<int,Spectator*> spectatormap;
+			std::map<int,Client*> clientmap;
+		private:
+			static void handle_state(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			static void handle_error(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			static void handle_join(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			static void handle_leave(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			static void handle_data(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			static void handle_seat(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			static void handle_spectator_join(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			static void handle_spectator_leave(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			static void handle_spectator_data(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			static void handle_spectator_seat(GGZdMod* ggzdmod,
+				GGZdModEvent event, const void *data);
+			void selfcheck();
+			// Parent object (which is a singleton in 'self')
+			static GGZGameServer *m_parent;
+			// Global ggzdmod object
+			GGZdMod *m_ggzdmod;
+};
 
 // Constructor: setup the server
-GGZGameServer::GGZGameServer () {
-	self = this;
-	ggzdmod = ggzdmod_new ( GGZDMOD_GAME );
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_STATE, &handle_state );
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_JOIN,  &handle_join  );
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_LEAVE, &handle_leave );
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &handle_data );
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_ERROR, &handle_error );
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, &handle_spectator_join );
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave );
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &handle_spectator_data );
+GGZGameServer::GGZGameServer()
+{
+	if(GGZGameServerPrivate::exists())
+	{
+		std::cerr << "GGZGameServer: Error: double initialization" << std::endl;
+	}
+
+	m_private = new GGZGameServerPrivate(this);
 	m_connected = 0;
 }
 
 // Destructor: cleanup server
-GGZGameServer::~GGZGameServer () {
-	if ( m_connected ) {
-		(void) ggzdmod_disconnect ( ggzdmod );
+GGZGameServer::~GGZGameServer()
+{
+	if(m_connected)
+	{
+		(void)ggzdmod_disconnect(m_private->ggzdmod());
 	}
-	ggzdmod_free ( ggzdmod );
+	delete m_private;
 }
 
 // Connect to the GGZ main server
-void GGZGameServer::connect ( bool async ) {
-	int ret = ggzdmod_connect ( ggzdmod );
-	if ( ret < 0 ) {
+void GGZGameServer::connect(bool async)
+{
+	int ret = ggzdmod_connect(m_private->ggzdmod());
+	if(ret < 0)
+	{
 		std::cout << "GGZGameServer: Error: Couldn't connect" << std::endl;
 		return;
 	}
 	m_connected = 1;
-	if(async) {
-		while ( ggzdmod_dispatch ( ggzdmod ) != -1 ) {
+	if(async)
+	{
+		while(ggzdmod_dispatch(m_private->ggzdmod()) != -1)
+		{
 			idleEvent();
 		}
-	} else {
-		(void) ggzdmod_loop ( ggzdmod );
+	}
+	else
+	{
+		(void)ggzdmod_loop(m_private->ggzdmod());
 	}
 }
 
 // Virtual state change hook
-void GGZGameServer::stateEvent () {
-}
-
-// Virtual player join hook
-void GGZGameServer::joinEvent ( int player ) {
-}
-
-// Virtual player leave hook
-void GGZGameServer::leaveEvent ( int player ) {
+void GGZGameServer::stateEvent()
+{
 }
 
 // Virtuel player special hook: idle method
-void GGZGameServer::idleEvent () {
-}
-
-// Virtual spectator join hook
-void GGZGameServer::spectatorJoinEvent ( int player ) {
-}
-
-// Virtual spectator leave hook
-void GGZGameServer::spectatorLeaveEvent ( int player ) {
-}
-
-// Virtual spectator data hook
-void GGZGameServer::spectatorDataEvent ( int player ) {
-}
-
-// Virtual game data hook
-void GGZGameServer::dataEvent ( int player ) {
+void GGZGameServer::idleEvent()
+{
 }
 
 // Virtual error handling hook
-void GGZGameServer::errorEvent () {
+void GGZGameServer::errorEvent()
+{
+}
+
+// Virtual player/spectator join hook
+void GGZGameServer::joinEvent(Client *client)
+{
+}
+
+// Virtual player/spectator leave hook
+void GGZGameServer::leaveEvent(Client *client)
+{
+}
+
+// Virtual player/spectator game data hook
+void GGZGameServer::dataEvent(Client *client)
+{
+}
+
+// Virtual seat change data hook
+void GGZGameServer::seatEvent(Seat *seat)
+{
+}
+
+// Virtual spectator seat change data hook
+void GGZGameServer::spectatorEvent(Spectator *spectator)
+{
+}
+
+int GGZGameServer::players()
+{
+	return ggzdmod_get_num_seats(m_private->ggzdmod());
+}
+
+int GGZGameServer::playercount(Seat::SeatType type)
+{
+	return ggzdmod_count_seats(m_private->ggzdmod(), (GGZSeatType)type);
+}
+
+int GGZGameServer::spectators()
+{
+	return ggzdmod_count_spectators(m_private->ggzdmod());
+}
+
+int GGZGameServer::spectatorcount()
+{
+	return ggzdmod_count_spectators(m_private->ggzdmod());
+}
+
+Seat *GGZGameServer::seat(int number) const
+{
+	GGZSeat s = ggzdmod_get_seat(m_private->ggzdmod(), number);
+	if(s.num == -1) return NULL;
+
+	Seat *seat;
+	seat = m_private->seatmap[s.num];
+	if(!seat)
+	{
+		seat = new Seat();
+		seat->number = s.num;
+		seat->type = (Seat::SeatType)s.type;
+		Client *client;
+		client = m_private->clientmap[s.fd];
+		if(!client)
+		{
+			client = new Client();
+			client->fd = s.fd;
+			client->name = s.name;
+			client->number = s.num;
+			client->spectator = false;
+		}
+		seat->client = client;
+		m_private->seatmap[s.num] = seat;
+	}
+
+	return seat;
+}
+
+Spectator *GGZGameServer::spectator(int number) const
+{
+	GGZSpectator s = ggzdmod_get_spectator(m_private->ggzdmod(), number);
+	if(s.num == -1) return NULL;
+
+	Spectator *spectator;
+	spectator = m_private->spectatormap[s.num];
+	if(!spectator)
+	{
+		spectator = new Spectator();
+		spectator->number = s.num;
+		Client *client;
+		client = m_private->clientmap[s.fd];
+		if(!client)
+		{
+			client = new Client();
+			client->fd = s.fd;
+			client->name = s.name;
+			client->number = s.num;
+			client->spectator = true;
+		}
+		spectator->client = client;
+		m_private->spectatormap[s.num] = spectator;
+	}
+
+	return spectator;
+}
+
+GGZGameServer::State GGZGameServer::state()
+{
+	return (State)ggzdmod_get_state(m_private->ggzdmod());
+}
+
+void GGZGameServer::changeState(State state)
+{
+	ggzdmod_set_state(m_private->ggzdmod(), (GGZdModState)state);
+}
+
+// Implementation of the internal class
+GGZGameServerPrivate::GGZGameServerPrivate(GGZGameServer *parent)
+{
+	m_parent = parent;
+
+	m_ggzdmod = ggzdmod_new(GGZDMOD_GAME);
+
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_STATE, &handle_state);
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_ERROR, &handle_error);
+
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_JOIN, &handle_join);
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_LEAVE, &handle_leave);
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &handle_data);
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SEAT, &handle_seat);
+
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, &handle_spectator_join);
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave);
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &handle_spectator_data);
+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT, &handle_spectator_seat);
+}
+
+// Destructor of the internal class
+GGZGameServerPrivate::~GGZGameServerPrivate()
+{
+	ggzdmod_free(m_ggzdmod);
+}
+
+// Prevent wrong ggzdmod libraries from being linked
+void GGZGameServerPrivate::selfcheck()
+{
+	bool error = false;
+
+	if((int)Seat::none != (int)GGZ_SEAT_NONE) error = true;
+	if((int)Seat::open != (int)GGZ_SEAT_OPEN) error = true;
+	if((int)Seat::bot != (int)GGZ_SEAT_BOT) error = true;
+	if((int)Seat::player != (int)GGZ_SEAT_PLAYER) error = true;
+	if((int)Seat::reserved != (int)GGZ_SEAT_RESERVED) error = true;
+	if((int)Seat::abandoned != (int)GGZ_SEAT_ABANDONED) error = true;
+
+	if((int)GGZGameServer::created != (int)GGZDMOD_STATE_CREATED) error = true;
+	if((int)GGZGameServer::waiting != (int)GGZDMOD_STATE_WAITING) error = true;
+	if((int)GGZGameServer::playing != (int)GGZDMOD_STATE_PLAYING) error = true;
+	if((int)GGZGameServer::done != (int)GGZDMOD_STATE_DONE) error = true;
+
+	if(error)
+	{
+		std::cerr << "GGZGameServer: Error: library mismatch" << std::endl;
+	}
 }
 
 // Callback for the state hook
-void GGZGameServer::handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
-	std::cout << "GGZGameServer: stateEvent" << std::endl;
-	self->stateEvent ();
-}
-
-// Callback for the player join hook
-void GGZGameServer::handle_join ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
-	int player = ((GGZSeat*)data)->num;
-	std::cout << "GGZGameServer: joinEvent" << std::endl;
-	self->joinEvent ( player );
-}
-
-// Callback for the player leave hook
-void GGZGameServer::handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
-	int player = ((GGZSeat*)data)->num;
-	std::cout << "GGZGameServer: leaveEvent" << std::endl;
-	self->leaveEvent ( player );
-}
-
-// Callback for the game data hook
-void GGZGameServer::handle_data ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
-	std::cout << "GGZGameServer: dataEvent" << std::endl;
-	self->dataEvent ( *(int* ) data);
+void GGZGameServerPrivate::handle_state(GGZdMod* ggzdmod, GGZdModEvent event, const void *data)
+{
+	std::cout << "GGZGameServer: state event" << std::endl;
+	m_parent->stateEvent();
 }
 
 // Callback for the error handling hook
-void GGZGameServer::handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
-	std::cout << "GGZGameServer: errorEvent" << std::endl;
-	self->errorEvent ();
+void GGZGameServerPrivate::handle_error(GGZdMod* ggzdmod, GGZdModEvent event, const void *data)
+{
+	std::cout << "GGZGameServer: error event" << std::endl;
+	m_parent->errorEvent();
+}
+
+// Callback for the player join hook
+void GGZGameServerPrivate::handle_join(GGZdMod* ggzdmod, GGZdModEvent event, const void *data)
+{
+	GGZSeat oldseat = *(GGZSeat*)data;
+	std::cout << "GGZGameServer: join event" << std::endl;
+	Seat *seat = m_parent->seat(oldseat.num);
+	m_parent->joinEvent(seat->client);
+}
+
+// Callback for the player leave hook
+void GGZGameServerPrivate::handle_leave(GGZdMod* ggzdmod, GGZdModEvent event, const void *data)
+{
+	GGZSeat oldseat = *(GGZSeat*)data;
+	std::cout << "GGZGameServer: leave event" << std::endl;
+	Seat *seat = m_parent->seat(oldseat.num);
+	m_parent->leaveEvent(seat->client);
+}
+
+// Callback for the game data hook
+void GGZGameServerPrivate::handle_data(GGZdMod* ggzdmod, GGZdModEvent event, const void *data)
+{
+	int num = *(int*)data;
+	std::cout << "GGZGameServer: data event" << std::endl;
+	Seat *seat = m_parent->seat(num);
+	m_parent->dataEvent(seat->client);
+}
+
+// Callback for the game seat change hook
+void GGZGameServerPrivate::handle_seat(GGZdMod* ggzdmod, GGZdModEvent event, const void *data)
+{
+	GGZSeat oldseat = *(GGZSeat*)data;
+	std::cout << "GGZGameServer: seat event" << std::endl;
+	Seat *seat = m_parent->seat(oldseat.num);
+	m_parent->seatEvent(seat);
 }
 
 // Callback for the spectator join hook
-void GGZGameServer::handle_spectator_join ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
-	int spectator = ((GGZSpectator*)data)->num;
-	std::cout << "GGZGameServer: spectatorJoinEvent" << std::endl;
-	self->spectatorJoinEvent ( spectator );
+void GGZGameServerPrivate::handle_spectator_join(GGZdMod* ggzdmod,GGZdModEvent event, const void *data)
+{
+	std::cout << "GGZGameServer: spectator join event" << std::endl;
+	GGZSpectator oldspectator = *(GGZSpectator*)data;
+	Spectator *spectator = m_parent->spectator(oldspectator.num);
+	m_parent->joinEvent(spectator->client);
 }
 
 // Callback for the spectator leave hook
-void GGZGameServer::handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
-	int spectator = ((GGZSpectator*)data)->num;
-	std::cout << "GGZGameServer: spectatorLeaveEvent" << std::endl;
-	self->spectatorLeaveEvent ( spectator );
+void GGZGameServerPrivate::handle_spectator_leave(GGZdMod* ggzdmod, GGZdModEvent event, const void *data)
+{
+	std::cout << "GGZGameServer: spectator leave event" << std::endl;
+	GGZSpectator oldspectator = *(GGZSpectator*)data;
+	Spectator *spectator = m_parent->spectator(oldspectator.num);
+	m_parent->leaveEvent(spectator->client);
 }
 
 // Callback for the spectator data hook
-void GGZGameServer::handle_spectator_data ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
-	int spectator = ((GGZSpectator*)data)->num;
-	std::cout << "GGZGameServer: spectatorDataEvent" << std::endl;
-	self->spectatorDataEvent ( spectator );
+void GGZGameServerPrivate::handle_spectator_data(GGZdMod* ggzdmod, GGZdModEvent event, const void *data)
+{
+	std::cout << "GGZGameServer: spectator data event" << std::endl;
+	int num = *(int*)data;
+	Spectator *spectator = m_parent->spectator(num);
+	m_parent->dataEvent(spectator->client);
 }
 
-int GGZGameServer::fd ( int player ) {
-	return ggzdmod_get_seat ( ggzdmod, player ).fd;
-}
-
-int GGZGameServer::players () {
-	return ggzdmod_get_num_seats ( ggzdmod );
-}
-
-int GGZGameServer::spectatorfd ( int spectator ) {
-	return ggzdmod_get_spectator ( ggzdmod, spectator ).fd;
-}
-
-int GGZGameServer::spectators () {
-	return ggzdmod_count_spectators ( ggzdmod );
-}
-
-int GGZGameServer::open () {
-	return ggzdmod_count_seats ( ggzdmod, GGZ_SEAT_OPEN );
+// Callback for the spectator seat change hook
+void GGZGameServerPrivate::handle_spectator_seat(GGZdMod* ggzdmod, GGZdModEvent event, const void *data)
+{
+	GGZSpectator oldspectator = *(GGZSpectator*)data;
+	std::cout << "GGZGameServer: spectator seat event" << std::endl;
+	Spectator *spectator = m_parent->spectator(oldspectator.num);
+	m_parent->spectatorEvent(spectator);
 }
 
