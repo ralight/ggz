@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/27/02
  * Desc: GGZ game module functions, GGZ-side only
- * $Id: ggzdmod-ggz.h 7887 2006-03-07 09:56:51Z josef $
+ * $Id: ggzdmod-ggz.h 7969 2006-03-22 11:17:16Z josef $
  *
  * This file contains the GGZ-only interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -93,6 +93,11 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 		   int old_seat, int was_spectator,
 		   int new_seat, int is_spectator);
 
+/** @brief Statistics structure as reported by a game.
+ *
+ *  Games which call ggzdmod_report_game() will submit scores for each
+ *  player. This structure will be used to transfer it to ggzd.
+ */
 typedef struct {
 	int num_players;
 	char **names;
@@ -101,5 +106,35 @@ typedef struct {
 	GGZGameResult *results;
 	int *scores;
 } GGZdModGameReportData;
+
+/** @brief Callback events (GGZ-side additions).
+ *
+ *  These events are triggered by the game server and delivered
+ *  to the GGZ server. The other events, those sent by ggzd to
+ *  the game server and those sent by the two to each other,
+ *  are held in GGZdModEvent in ggzdmod.h.
+ */
+typedef enum {
+	/** @brief For GGZ only.  Reports the results of a game. */
+	GGZDMOD_EVENT_GAMEREPORT = GGZDMOD_EVENT_ERROR + 1,
+
+	/** @brief For GGZ only.  Reports a savegame. */
+	GGZDMOD_EVENT_SAVEGAMEREPORT,
+
+	/* @brief GGZ-side only.  Requests a change in the number of seats. */
+	GGZDMOD_EVENT_REQ_NUM_SEATS,
+
+	/* @brief GGZ-side only.  Requests to boot a player. */
+	GGZDMOD_EVENT_REQ_BOOT,
+
+	/* @brief GGZ-side only.  Requests to fill in an AI player. */
+	GGZDMOD_EVENT_REQ_BOT,
+
+	/* @brief GGZ-side only.  Requests to open up a seat. */
+	GGZDMOD_EVENT_REQ_OPEN,
+
+	GGZDMOD_EVENT_ERROR_INTERNAL
+	/* GGZDMOD_EVENT_ERROR_INTERNAL must be the last one! */
+} GGZdModEventInternal;
 
 #endif /* __GGZDMOD_GGZ_H__ */

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 7887 2006-03-07 09:56:51Z josef $
+ * $Id: ggzdmod.c 7969 2006-03-22 11:17:16Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -412,10 +412,15 @@ char* ggzdmod_get_bot_class(GGZdMod *ggzdmod, const char *name)
 	char *conffile;
 	const char *game;
 	char *botclass;
+	int len;
 
+	/* FIXME: find out which game we play here */
+	/* FIXME: Named bots mapping should probably be preloaded before */
+	/* FIXME: launch, e.g. in set_module() */
 	game = "tictactoe";
-	conffile = (char*)ggz_malloc(strlen(GGZDCONFDIR) + strlen("games") + strlen(game) + 7);
-	sprintf(conffile, "%s/games/%s.dsc", GGZDCONFDIR, game);
+	len = strlen(GGZDCONFDIR) + strlen("games") + strlen(game) + 7;
+	conffile = (char*)ggz_malloc(len);
+	snprintf(conffile, len, "%s/games/%s.dsc", GGZDCONFDIR, game);
 	ch = ggz_conf_parse(conffile, GGZ_CONF_RDONLY);
 	if(ch < 0) return NULL;
 	ggz_free(conffile);
@@ -515,6 +520,11 @@ int ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
 	if (!CHECK_GGZDMOD(ggzdmod)) return -1;
 	if (e < 0) return -2;
 	if (e >= GGZDMOD_NUM_EVENTS) return -3;
+
+	/* Extra checks */
+	if (ggzdmod->type == GGZDMOD_GAME) {
+		if (e > GGZDMOD_EVENT_ERROR) return -4;
+	}
 
 	ggzdmod->handlers[e] = func;
 	return 0;

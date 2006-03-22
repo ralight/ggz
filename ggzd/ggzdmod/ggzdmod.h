@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 7910 2006-03-14 13:50:41Z josef $
+ * $Id: ggzdmod.h 7969 2006-03-22 11:17:16Z josef $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -184,7 +184,7 @@
  *     }
  * @endcode
  *
- * For more information, see the documentation at http://ggz.sf.net/.
+ * For more information, see the documentation at http://www.ggzgamingzone.org/.
  */
 
 
@@ -310,18 +310,6 @@ typedef enum {
 	 *  For games which support spectators, this indicates that one of them
 	 *  sent some data to the game server. */
 	GGZDMOD_EVENT_SPECTATOR_DATA,
-
-	/** @brief For GGZ only.  Reports the results of a game. */
-	GGZDMOD_EVENT_GAMEREPORT,
-
-	/** @brief For GGZ only.  Reports a savegame. */
-	GGZDMOD_EVENT_SAVEGAMEREPORT,
-
-	/* GGZ-side only.  These should be moved to ggzdmod-ggz.h. */
-	GGZDMOD_EVENT_REQ_NUM_SEATS,
-	GGZDMOD_EVENT_REQ_BOOT,
-	GGZDMOD_EVENT_REQ_BOT,
-	GGZDMOD_EVENT_REQ_OPEN,
 
 	/** @brief An error has occurred
 	 *  This event occurs when a GGZdMod error has occurred.  An

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 7887 2006-03-07 09:56:51Z josef $
+ * $Id: mod.h 7969 2006-03-22 11:17:16Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -35,10 +35,11 @@
 #include <ggz.h>
 
 #include "ggzdmod.h"
+#include "ggzdmod-ggz.h"
 
 /* The number of event handlers there are. */
 /* FIXME: hard-coding this is a sure way to get bugs! */
-#define GGZDMOD_NUM_EVENTS (GGZDMOD_EVENT_ERROR + 1)
+#define GGZDMOD_NUM_EVENTS (GGZDMOD_EVENT_ERROR_INTERNAL + 1)
 
 /* This is the actual structure, but it's only visible internally. */
 struct GGZdMod {
