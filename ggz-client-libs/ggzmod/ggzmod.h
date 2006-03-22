@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 7908 2006-03-14 13:49:36Z josef $
+ * $Id: ggzmod.h 7968 2006-03-22 11:13:29Z josef $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -34,7 +34,7 @@
  *  @brief Common functions for interfacing a game client and GGZ.
  *
  * This file contains all libggzmod functions used by game clients to
- * interface with GGZ (and vice versa).  Just include ggzmod.h and make sure
+ * interface with GGZ.  Just include ggzmod.h and make sure
  * your program is linked with libggzmod.  Then use the functions below as
  * appropriate.
  *
@@ -44,7 +44,7 @@
  * program should not read/write data from/to the GGZ socket unless it really
  * knows what it is doing.
  *
- * That this does not apply to the game server sockets: ggzmod provides
+ * This does not apply to the game server sockets: ggzmod provides
  * one file desriptor for communicating (TCP) to the game server.  If data
  * is ready to be read this file descriptor, ggzmod may invoke the appropriate
  * handler (see below), but will never actually read any data.
@@ -85,8 +85,7 @@ extern "C" {
  *  actively being played (this information may be, but currently is not,
  *  propogated back to GGZ for display purposes).  Once the state is changed
  *  to DONE, the table is considered dead and will exit shortly
- *  thereafter (ggzmod_loop will stop looping, etc.) (see the kill_on_exit
- *  game option).
+ *  thereafter.
  *
  *  Each time the game state changes, a GGZMOD_EVENT_STATE event will be
  *  propogated to the game server.
