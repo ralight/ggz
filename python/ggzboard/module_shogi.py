@@ -62,16 +62,25 @@ class Game:
 		self.help = None
 
 		self.selection = None
+		self.selected = None
+
+		self.capturedpieces = []
 
 		self.runningshogi = None
 		self.pin = None
 		self.pout = None
 
-		self.generatedmove = None
-
-	# !!!
 	def selectpiece(self, placepos):
-		return
+		print "PLACEPOS", placepos
+		self.selection = []
+		(x, y) = placepos
+		if not self.board[y][x]:
+			self.selection = self.capturedpieces
+			#self.selection.append(("pawn", "w"))
+			#self.selection.append(("pawn", "w"))
+			#self.selection.append(("lance", "w"))
+			#self.selection.append(("bishop", "w"))
+			#self.selection.append(("knight", "w"))
 
 	def init(self, path):
 		self.datapath = path
@@ -93,6 +102,9 @@ class Game:
 
 	def figure(self, piece):
 		(gfx, color) = piece
+		if gfx[-1] == "+":
+			# FIXME: extra graphics for promoted pieces
+			gfx = gfx[:-1]
 		if color == "w":
 			piecestr = gfx
 		else:
@@ -105,9 +117,13 @@ class Game:
 	# 3. 5c5d 241150
 	# 3. ... 7i7h 291210
 	def validatemove(self, fromcolor, frompos, topos):
-		if not frompos or not topos:
+		if not topos:
 			print "(validatemove: null arguments)"
 			return 0
+
+		if not frompos:
+			# always allow drops for now
+			return 1
 
 		(oldx, oldy) = frompos
 		(x, y) = topos
@@ -125,9 +141,13 @@ class Game:
 			valid = 0
 			reason = "no piece selected"
 		elif self.board[y][x] is not None:
-			#valid = 0
-			#reason = "cannot move to occupied square"
-			print "yo, capture him :-)"
+			(gfx, color) = self.board[oldy][oldx]
+			(gfx2, color2) = self.board[y][x]
+			if color != color2:
+				print "yo, capture him :-)"
+			else:
+				valid = 0
+				reason = "cannot move to occupied square"
 
 		if valid == 0:
 			print reason
@@ -139,14 +159,33 @@ class Game:
 		self.boardhints = (None)
 		self.boardhints = resize(self.boardstyle, (self.width, self.height))
 
-		(oldx, oldy) = frompos
+		if frompos:
+			(oldx, oldy) = frompos
 		(x, y) = topos
 		valid = self.validatemove("w", frompos, topos)
 
 		if valid:
 			if self.runningshogi:
 				print "<<< (write)"
-				movestr = str(oldx + 1) + chr(oldy + 97) + str(x + 1) + chr(y + 97)
+				if frompos:
+					movestr = str(oldx + 1) + chr(oldy + 97) + str(x + 1) + chr(y + 97)
+				else:
+					(gfx, color) = self.selected
+					if gfx == "pawn":
+						piecestr = "P"
+					elif gfx == "knight":
+						piecestr = "N"
+					elif gfx == "lance":
+						piecestr = "L"
+					elif gfx == "silver-general":
+						piecestr = "S"
+					elif gfx == "gold-general":
+						piecestr = "G"
+					elif gfx == "rook":
+						piecestr = "R"
+					elif gfx == "bishop":
+						piecestr = "B"
+					movestr = piecestr + "*" + str(x + 1) + chr(y + 97)
 				self.pout.write(movestr + "\n")
 				self.pout.flush()
 				print "---"
@@ -162,6 +201,7 @@ class Game:
 					elif "mates" in s:
 						answer = 1
 						accepted = 0
+						self.isover = 1
 					else:
 						accepted = 1
 						answer = 1
@@ -169,6 +209,9 @@ class Game:
 						# it is read in aimove()!
 				print "done!"
 				print "Move accepted?", accepted
+				if accepted:
+					if self.selected in self.capturedpieces:
+						self.capturedpieces.remove(self.selected)
 				valid = accepted
 
 		if valid:
@@ -191,9 +234,8 @@ class Game:
 		r_aidrop = re.compile("(\d+)\. \.\.\. (\S\*\d\w) \d+")
 		m_aidrop = r_aidrop.match(s)
 
-		# FIXME: is this piece promotion?
-		r_aicapt = re.compile("(\d+)\. \.\.\. (\d\w\d\w)\+ \d+")
-		m_aicapt = r_aicapt.match(s)
+		r_aiprom = re.compile("(\d+)\. \.\.\. (\d\w\d\w)\+ \d+")
+		m_aiprom = r_aiprom.match(s)
 
 		if m_ai:
 			gmove = m_ai.group(2)
@@ -213,7 +255,7 @@ class Game:
 			# FIXME: this is a quick piece dropping hack
 			if piece == "P":
 				piecestr = "pawn"
-			elif piece == "K":
+			elif piece == "N":
 				piecestr = "knight"
 			elif piece == "L":
 				piecestr = "lance"
@@ -230,15 +272,17 @@ class Game:
 				ret = 0
 			if ret == 1:
 				self.board[y][x] = (piecestr, "b")
-		elif m_aicapt:
-			gcapt = m_aicapt.group(2)
-			print "AI CAPTURE:", gcapt
-			oldx = int(gcapt[0]) - 1
-			oldy = ord(gcapt[1]) - 97
-			x = int(gcapt[2]) - 1
-			y = ord(gcapt[3]) - 97
+		elif m_aiprom:
+			gprom = m_aiprom.group(2)
+			print "AI PROMOTION:", gprom
+			oldx = int(gprom[0]) - 1
+			oldy = ord(gprom[1]) - 97
+			x = int(gprom[2]) - 1
+			y = ord(gprom[3]) - 97
 			frompos = (oldx, oldy)
 			topos = (x, y)
+			(gfx, color) = self.board[oldy][oldx]
+			self.board[oldy][oldx] = (gfx + "+", color)
 		else:
 			print "AI MOVE fubared!"
 			ret = 0
@@ -250,10 +294,23 @@ class Game:
 
 	def domove(self, frompos, topos):
 		if self.validatemove(self.lastmove, frompos, topos):
-			(oldx, oldy) = frompos
-			(x, y) = topos
-			self.board[y][x] = self.board[oldy][oldx]
-			self.board[oldy][oldx] = None
+			if frompos:
+				(oldx, oldy) = frompos
+				(x, y) = topos
+				if self.board[y][x]:
+					(gfx, color) = self.board[oldy][oldx]
+					(gfx2, color2) = self.board[y][x]
+					if color == "w" and color2 == "b":
+						if gfx[-1] == "+":
+							gfx = gfx[:-1]
+						self.capturedpieces.append((gfx2, color))
+				self.board[y][x] = self.board[oldy][oldx]
+				self.board[oldy][oldx] = None
+			else:
+				if self.selected:
+					(x, y) = topos
+					self.board[y][x] = self.selected
+					self.selected = None
 
 	def over(self):
 		return self.isover
@@ -269,18 +326,88 @@ class Game:
 		self.boardhints = (None)
 		self.boardhints = resize(self.boardstyle, (self.width, self.height))
 
+		# move format: ((yrel, xrel), restrictedsteps)
+		# if restrictedsteps is None, a long-distance move it is
+		# positive yrel means forward, and negative one backward
+		hints = {}
+		hints["king"] = (
+			((1, -1), 1),
+			((1, 0), 1),
+			((1, 1), 1),
+			((0, -1), 1),
+			((0, 1), 1),
+			((-1, -1), 1),
+			((-1, 0), 1),
+			((-1, 1), 1)
+		)
+		hints["rook"] = (
+			((1, 0), None),
+			((-1, 0), None),
+			((0, 1), None),
+			((0, -1), None)
+		)
+		hints["bishop"] = (
+			((1, 1), None),
+			((-1, 1), None),
+			((1, 1), None),
+			((1, -1), None)
+		)
+		hints["gold-general"] = (
+			((1, -1), 1),
+			((1, 0), 1),
+			((1, 1), 1),
+			((0, -1), 1),
+			((0, 1), 1),
+			((-1, 0), 1)
+		)
+		hints["silver-general"] = (
+			((1, -1), 1),
+			((1, 0), 1),
+			((1, 1), 1),
+			((-1, -1), 1),
+			((-1, 1), 1)
+		)
+		hints["knight"] = (
+			((2, -1), 1),
+			((2, 1), 1)
+		)
+		hints["lance"] = (
+			((1, 0), None),
+		)
+		hints["pawn"] = (
+			((1, 0), 1),
+		)
+
+		# now, the promoted pieces
+		# simple sequence additions - python is cool :)
+		hints["silver-general+"] = hints["gold-general"]
+		hints["knight+"] = hints["gold-general"]
+		hints["lance+"] = hints["gold-general"]
+		hints["pawn+"] = hints["gold-general"]
+		hints["rook+"] = hints["rook"] + hints["king"]
+		hints["bishop+"] = hints["bishop"] + hints["king"]
+
 		field = self.board[y][x]
 		if field:
 			(gfx, color) = field
 			if color == "w":
 				print "FIND targets for", gfx, "at", (x, y)
-				if gfx == "king":
-					for j in range(-1, 2):
-						for i in range(-1, 2):
+				if hints.has_key(gfx):
+					for hint in hints[gfx]:
+						print "(hint)", hint
+						(rel, steps) = hint
+						(yrel, xrel) = rel
+						i = 0
+						j = 0
+						step = 0
+						while 1:
+							i += xrel
+							j += yrel
+							step += 1
 							if x + i < 0 or x + i >= self.width:
-								continue
+								break
 							if y + j < 0 or y + j >= self.height:
-								continue
+								break
 							field = self.board[y + j][x + i]
 							if not field:
 								self.boardhints[y + j][x + i] = 1
@@ -288,7 +415,11 @@ class Game:
 								(gfx, color) = field
 								if color == "b":
 									self.boardhints[y + j][x + i] = 1
-					# FIXME: no overflows, and opponent pieces (done?)
+								break
+							if step == steps:
+								break
+				else:
+					print "Ooops - no hints table found :("
 
 ggzboardgame = Game()
 

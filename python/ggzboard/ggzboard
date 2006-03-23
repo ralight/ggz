@@ -869,19 +869,26 @@ class GGZBoard:
 							considered = 0
 				if considered:
 					if oldx == -1:
-						if game.setonly:
+						if game.setonly or "selectpiece" in dir(game):
 							# XXX: sync
 							game.selectpiece((x, y))
 							if not game.selection:
-								ret = game.trymove(None, (x, y))
-								if ret:
-									if self.ggzmode:
-										net.domove(None, (x, y))
-									else:
-										game.domove(None, (x, y))
-										game.toggleplayer()
-										aiturn = 1
-										thinking = 1
+								if game.setonly:
+									ret = game.trymove(None, (x, y))
+									if ret:
+										if self.ggzmode:
+											net.domove(None, (x, y))
+										else:
+											game.domove(None, (x, y))
+											game.toggleplayer()
+											aiturn = 1
+											thinking = 1
+								else:
+									# failed selectpiece() for normal games
+									oldx = x
+									oldy = y
+									if game.boardhints:
+										game.initmove(x, y)
 							else:
 								savex = x
 								savey = y
@@ -1168,9 +1175,11 @@ if __name__ == "__main__":
 		else:
 			if param:
 				param = 0
-			else:
+			elif gamename:
 				print _("Unknown option: %s") % sys.argv[i]
 				sys.exit(1)
+			else:
+				gamename = sys.argv[i]
 
 	if help:
 		print _("GGZBoard - common board game client for GGZ")
