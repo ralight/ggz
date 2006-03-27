@@ -2,18 +2,26 @@
 
 function xmlvalue($tag)
 {
-	if (!$tag->children) :
-		return "";
-	endif;
+	##if (!$tag->children) :
+	##	return "";
+	##endif;
 
-	foreach ($tag->children as $child)
-	{
-		if ($child->type == XML_TEXT_NODE) :
-			return $child->content;
-		endif;
-	}
+	return $tag->textContent;
+	
+	##foreach ($tag->children as $child)
+	##{
+	##	if ($child->type == XML_TEXT_NODE) :
+	##		return $child->content;
+	##	endif;
+	##}
 
-	return "";
+	##return "";
+}
+
+function xmlname($tag)
+{
+	##return $tag->tagname;
+	return $tag->tagName;
 }
 
 class CocodriloEntry
@@ -203,57 +211,67 @@ class CocodriloGHNS
 		#echo htmlspecialchars($text);
 		#echo "-------------<br>\n";
 
-		$tree = @domxml_xmltree($text);
-		if (!$tree) :
+		##$tree = @domxml_xmltree($text);
+		##if (!$tree) :
+		##	return false;
+		##endif;
+		$doc = new DomDocument();
+		$ret = $doc->loadXML($text);
+		if (!$ret) :
 			return false;
 		endif;
 
-		$root = $tree->children[1];
+		$list = $doc->getElementsByTagName("stuff");
+		##$root = $tree->children[1];
 		#print_r($root);
-		foreach ($root->children as $child)
+		foreach ($list as $child)
+		##foreach ($root->children as $child)
 		{
-			if ($child->type != XML_ELEMENT_NODE) :
-				continue;
-			endif;
+			##if ($child->type != XML_ELEMENT_NODE) :
+			##	continue;
+			##endif;
 
-			if ($child->tagname == "stuff") :
+			if(true) :
+			##if ($child->tagname == "stuff") :
 				#print_r($child);
 				#echo "<br>+++++<br>\n";
 				$e = new CocodriloEntry();
 				$e->id = -1;
 
-				foreach ($child->children as $tag)
+				$childlist = $child->getElementsByTagName("*");
+				foreach ($childlist as $tag)
+				##foreach ($child->children as $tag)
 				{
-					if ($tag->type != XML_ELEMENT_NODE) :
-						continue;
-					endif;
+					##if ($tag->type != XML_ELEMENT_NODE) :
+					##	continue;
+					##endif;
 
 					#print_r($tag);
 					#echo "<br>+++++<br>\n";
-					if ($tag->tagname == "name") :
+					if (xmlname($tag) == "name") :
 						$e->name = xmlvalue($tag);
-					elseif ($tag->tagname == "version") :
+					elseif (xmlname($tag) == "version") :
 						$e->version = xmlvalue($tag);
-					elseif ($tag->tagname == "author") :
+					elseif (xmlname($tag) == "author") :
 						$e->author = xmlvalue($tag);
-					elseif ($tag->tagname == "releasedate") :
+					elseif (xmlname($tag) == "releasedate") :
 						$e->releasedate = xmlvalue($tag);
-					elseif ($tag->tagname == "release") :
+					elseif (xmlname($tag) == "release") :
 						$e->release = xmlvalue($tag);
-					elseif ($tag->tagname == "licence") :
+					elseif (xmlname($tag) == "licence") :
 						$e->licence= xmlvalue($tag);
-					elseif ($tag->tagname == "rating") :
+					elseif (xmlname($tag) == "rating") :
 						$e->rating = xmlvalue($tag);
-					elseif ($tag->tagname == "downloads") :
+					elseif (xmlname($tag) == "downloads") :
 						$e->downloads = xmlvalue($tag);
-					elseif ($tag->tagname == "category") :
+					elseif (xmlname($tag) == "category") :
 						# FIXME: is attribute!
 						$e->category = xmlvalue($tag);
-					elseif ($tag->tagname == "summary") :
+					elseif (xmlname($tag) == "summary") :
 						$e->summary = xmlvalue($tag);
-					elseif ($tag->tagname == "payload") :
+					elseif (xmlname($tag) == "payload") :
 						$e->payload = xmlvalue($tag);
-					elseif ($tag->tagname == "preview") :
+					elseif (xmlname($tag) == "preview") :
 						$e->preview = xmlvalue($tag);
 					endif;
 				}

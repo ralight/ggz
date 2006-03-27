@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ghnsproviders SYSTEM "ghnsproviders.dtd">
+<ghnsproviders>
+  <provider downloadurl="http://new.kstuff.org/ggz/stuff.xml"
+            nouploadurl="http://www.ggzcommunity.org/hotstuff/">
+    <title>GGZ Community</title>
+  </provider>
+</ghnsproviders>
+
