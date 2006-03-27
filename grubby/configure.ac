@@ -1,7 +1,7 @@
 dnl Configuration for Grubby, the chatbot
 dnl =====================================
 
-AC_INIT([GGZ chat bot], [0.0.13], [ggz-dev@mail.ggzgamingzone.org], [ggz-grubby])
+AC_INIT([GGZ chat bot], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-grubby])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -13,6 +13,7 @@ AC_ARG_ENABLE(perl,  [  --disable-perl        Exclude perl modules],, enable_per
 AC_ARG_ENABLE(ruby,  [  --disable-ruby        Exclude ruby modules],, enable_ruby=yes)
 AC_ARG_ENABLE(python,[  --disable-python      Exclude python modules],, enable_python=yes)
 AC_ARG_ENABLE(tcl,   [  --disable-tcl         Exclude tcl modules],, enable_tcl=yes)
+AC_ARG_ENABLE(php,   [  --disable-php         Exclude php modules],, enable_php=yes)
 AC_ARG_ENABLE(silc,  [  --disable-silc        Exclude SILC network module],, enable_silc=yes)
 
 dnl Check for standard build environment
@@ -175,6 +176,38 @@ if test "$enable_tcl" = yes; then
 	fi
 fi
 
+if test "$enable_php" = yes; then
+	echo -n "Extra check: php... "
+
+	incs="/usr/include/php4"
+	AC_GGZ_FIND_FILE("acconfig.h", $incs, php_incdir)
+	php_includes="$php_incdir"
+
+	libs="/usr/lib/apache2/modules"
+	AC_GGZ_FIND_FILE("libphp4.so", $libs, php_libdir)
+	php_libraries="$php_libdir"
+
+	# force failure until issues are resolved
+	php_includes=NO
+
+	if test "x$php_includes" = "xNO" || test "x$php_libraries" = "xNO"; then
+		AC_MSG_RESULT(no.)
+		php_includes=""
+		php_libraries=""
+		enable_php=no
+	else
+		AC_MSG_RESULT(ok.)
+		php_includes="-I $php_includes/main -I $php_includes/Zend -I $php_includes/TSRM -I $php_includes"
+		php_libraries="-L$php_libraries -lphp4"
+		#php_includes=`php-config --includes`
+		#php_libraries=`php-config --libs`
+		#php_libraries="-L$php_libdir -lphp4 $php_libraries"
+		AC_SUBST(php_includes)
+		AC_SUBST(php_libraries)
+		AC_DEFINE([EMBED_PHP], 1, [Define to use embedded PHP])
+	fi
+fi
+
 if test "$enable_silc" = yes; then
 	echo -n "Extra check: SILC... "
 
@@ -243,6 +276,8 @@ echo "Python support: $enable_python"
 echo "Ruby support: $enable_ruby"
 echo "Perl support: $enable_perl"
 echo "Tcl support: $enable_tcl"
+echo "PHP support: $enable_php"
+echo ""
 echo "Game engines: $enable_games"
 echo "SILC network support: $enable_silc"
 echo ""

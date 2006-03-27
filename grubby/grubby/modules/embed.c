@@ -30,6 +30,9 @@
 #ifdef EMBED_TCL
 #include <tcl.h>
 #endif
+#ifdef EMBED_PHP
+#include <php_embed.h>
+#endif
 
 #define EMBEDCONF "/grubby/modembed.rc"
 
@@ -52,6 +55,7 @@ Tcl_Interp *inter;
 #define TYPE_PERL 3
 #define TYPE_PYTHON 4
 #define TYPE_TCL 5
+#define TYPE_PHP 6
 
 /* Determine mime type of a file */
 static int mimetype(const char *file)
@@ -72,6 +76,7 @@ static int mimetype(const char *file)
 			if(strstr(buffer, "ruby")) type = TYPE_RUBY;
 			if(strstr(buffer, "python")) type = TYPE_PYTHON;
 			if(strstr(buffer, "tcl")) type = TYPE_TCL;
+			if(strstr(buffer, "php")) type = TYPE_PHP;
 		}
 		fclose(f);
 	}
@@ -108,6 +113,12 @@ void gurumod_init(const char *datadir)
 	/*Tcl_FindExecutable();*/
 	inter = Tcl_CreateInterp();
 	Tcl_Init(inter);
+#endif
+#ifdef EMBED_PHP
+	char *xxx[2] = {"foo", NULL};
+	PHP_EMBED_START_BLOCK(1, xxx);
+	zend_eval_string("echo 'hello php-world';", NULL, "guru");
+	PHP_EMBED_END_BLOCK();
 #endif
 
 	path = (char*)malloc(strlen(datadir) + strlen(EMBEDCONF) + 1);

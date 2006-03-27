@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 7674 2005-12-16 12:48:42Z josef $
+# $Id: Makefile.am 7976 2006-03-27 08:29:41Z josef $
 
 SUBDIRS = .
 
@@ -17,7 +17,7 @@ grubby_LTLIBRARIES = \
 	libgurumod_game.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) \
-	$(ruby_includes) $(perl_includes) $(python_includes) $(tcl_includes)
+	$(ruby_includes) $(perl_includes) $(python_includes) $(tcl_includes) $(php_includes)
 
 noinst_HEADERS = game.h
 
@@ -39,7 +39,7 @@ libgurumod_self_la_SOURCES = self.c
 libgurumod_self_la_LDFLAGS = -module -avoid-version
 
 libgurumod_embed_la_SOURCES = embed.c
-libgurumod_embed_la_LIBADD = $(ruby_libraries) $(perl_libraries) $(python_libraries) $(tcl_libraries)
+libgurumod_embed_la_LIBADD = $(ruby_libraries) $(perl_libraries) $(python_libraries) $(tcl_libraries) $(php_libraries)
 libgurumod_embed_la_LDFLAGS = -module -avoid-version
 
 libgurumod_extra_la_SOURCES = extra.c
