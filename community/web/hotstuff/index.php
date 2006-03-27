@@ -11,9 +11,9 @@
 	<a name="hotstuff"></a>
 </h1>
 
-<!--
-<?php include("hotstuffweb.inc"); ?>
--->
+<?php
+//include("hotstuffweb.inc");
+?>
 <?php include("engine.php"); ?>
 
 </div>

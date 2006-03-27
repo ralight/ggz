@@ -276,17 +276,29 @@ class CocodriloGHNS
 class CocodriloTemplate
 {
 	var $theme;
+	var $feed;
 
-	function CocodriloTemplate()
+	function CocodriloTemplate($feed)
 	{
+		$this->feed = $feed;
 	}
 
 	function substitute_entry($contents, $e)
 	{
 		if ($e->preview) :
-			$previewfile = "directory/" . $e->category . "/" . $e->preview;
+			if (!$this->feed) :
+				$previewfile = "directory/" . $e->category . "/" . $e->preview;
+			else :
+				$previewfile = $e->preview;
+			endif;
 		else :
 			$previewfile = "";
+		endif;
+
+		if ($previewfile) :
+			$previewimage = "<img src='$previewfile'>";
+		else :
+			$previewimage = "";
 		endif;
 
 		if ($e->downloads) :
@@ -311,6 +323,7 @@ class CocodriloTemplate
 		$tmp = preg_replace("/%CATEGORY%/", $e->category, $tmp);
 		$tmp = preg_replace("/%DOWNLOAD%/", $e->payload, $tmp);
 		$tmp = preg_replace("/%PREVIEW%/", $previewfile, $tmp);
+		$tmp = preg_replace("/%PREVIEWIMAGE%/", $previewimage, $tmp);
 		$tmp = preg_replace("/%DOWNLOADS%/", $downloads, $tmp);
 		$tmp = preg_replace("/%RATING%/", $rating, $tmp);
 		$tmp = preg_replace("/%LICENCE%/", $e->licence, $tmp);

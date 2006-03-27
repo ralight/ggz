@@ -72,7 +72,11 @@ if (!$conf_feed) :
 	$c->load($filter_search, $filter_category, $filter_author, null, $entriesperpage);
 endif;
 
-$r = new CocodriloTemplate();
+if ($conf_feed) :
+	$r = new CocodriloTemplate(true);
+else :
+	$r = new CocodriloTemplate(false);
+endif;
 
 $list = $c->entries;
 if (sizeof($list) == 0) :
