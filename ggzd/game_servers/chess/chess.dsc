@@ -1,4 +1,4 @@
-# $Id: chess.dsc 7433 2005-08-15 09:55:03Z josef $
+# $Id: chess.dsc 7977 2006-03-27 08:31:51Z josef $
 
 [GameInfo]
 Author = Ismael Orenstein
@@ -22,3 +22,7 @@ PlayersAllowed = 2
 [Statistics]
 Records = 1
 Ratings = 1
+
+[NamedBots]
+GNU Chess AI (tricky)=gnuchess
+GGZ AI (easy)=ggzai

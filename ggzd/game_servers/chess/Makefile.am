@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
-
 EXTRA_DIST = chess.dsc chess.room
 
 SUBDIRS = libcgc
@@ -16,7 +13,9 @@ ggzd_chess_SOURCES = main.c \
 	game.h \
 	game.c \
 	ai.h \
-	ai.c
+	ai.c \
+	ai-gnuchess.h \
+	ai-gnuchess.c
 
 ggzd_chess_LDADD = $(LDADD) libcgc/libcgc.a $(top_builddir)/ggzdmod/libggzdmod.la
 

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 7748 2006-01-07 22:02:13Z jdorje $
+ * $Id: game.c 7977 2006-03-27 08:31:51Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -40,6 +40,7 @@
 #include "chess.h"
 #include "game.h"
 #include "ai.h"
+#include "ai-gnuchess.h"
 
 /* Game from cgc */
 game_t *game;
@@ -53,6 +54,8 @@ static FILE *savegame;
 /* Moves table */
 /*static char moves[1000][6];
 static int currentmove;*/
+/* Type of AI: 0 = ggzai, 1 = gnuchess */
+static int ai_type = 1;
 
 static void game_restart_chronometer(void);
 static int game_read_chronometer(void);
@@ -170,7 +173,16 @@ static int game_update(int event_id, const void *data)
         color = ((seatnum == 0) ? WHITE : BLACK);
         if (cgc_join_game(game, color) < 0)
           return -1;
-        chess_ai_init((color == BLACK ? C_BLACK : C_WHITE), 2);
+		if (ai_type == 0) {
+      	  chess_ai_init((color == BLACK ? C_BLACK : C_WHITE), 2);
+		} else {
+			gnuchess_ai_init((color == BLACK ? C_BLACK : C_WHITE), 2);
+			ret = gnuchess_launch();
+			if(!ret) {
+				ggzdmod_log(game_info.ggz, "error: gnuchess launch failed!");
+				return -1;
+			}
+		}
       }
       break;
     case CHESS_EVENT_JOIN:
@@ -240,7 +252,15 @@ static int game_update(int event_id, const void *data)
       seatnum = ((ggzdmod_get_seat(game_info.ggz, 0).type == GGZ_SEAT_BOT) ? 0 : 1);
       if ((ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1)
       && (game_info.turn % 2 == seatnum)) {
-        ret = chess_ai_find((seatnum == 0 ? C_WHITE : C_BLACK), &from, &to);
+		if (ai_type == 0) {
+        	ret = chess_ai_find((seatnum == 0 ? C_WHITE : C_BLACK), &from, &to);
+		} else {
+        	ret = gnuchess_ai_find((seatnum == 0 ? C_WHITE : C_BLACK), &from, &to);
+			if (!gnuchess_check()) {
+				ggzdmod_log(game_info.ggz, "error: gnuchess has died");
+				return -1;
+			}
+		}
         botmove[0] = from % 8 + 'A';
         botmove[1] = from / 8 + '1';
         botmove[2] = to % 8 + 'A';
@@ -269,9 +289,14 @@ static int game_update(int event_id, const void *data)
       from = ((char*)data)[0] - 65 + (((char*)data)[1] - 49) * 8;
       to = ((char*)data)[2] - 65 + (((char*)data)[3] - 49) * 8;
       ggz_debug(DEBUG_GAME, "** ai: execute %i->%i\n", from, to);
-      ret = chess_ai_move(from, to, 1);
+	  if (ai_type == 0) {
+     	 ret = chess_ai_move(from, to, 1);
+	  } else {
+     	 ret = gnuchess_ai_move(from, to, 1);
+	  }
       ggz_debug(DEBUG_GAME, "** ai: executed with result %i\n", ret);
-      chess_ai_output();
+	  if (ai_type == 0)
+    	  chess_ai_output();
 
       /* Move was valid */
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK)
@@ -336,7 +361,15 @@ static int game_update(int event_id, const void *data)
       if ((ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1)
       && (game_info.turn % 2 == seatnum)) {
         ggz_debug(DEBUG_GAME, "** now move chess bot!\n");
-        ret = chess_ai_find((seatnum == 0 ? C_WHITE : C_BLACK), &from, &to);
+		if (ai_type == 0) {
+       		ret = chess_ai_find((seatnum == 0 ? C_WHITE : C_BLACK), &from, &to);
+		} else {
+       		ret = gnuchess_ai_find((seatnum == 0 ? C_WHITE : C_BLACK), &from, &to);
+			if (!gnuchess_check()) {
+				ggzdmod_log(game_info.ggz, "error: gnuchess has died");
+				return -1;
+			}
+		}
         ggz_debug(DEBUG_GAME, "** would move from %i to %i! (valid: %i)\n", from, to, ret);
         botmove[0] = from % 8 + 'A';
         botmove[1] = from / 8 + '1';
@@ -729,6 +762,11 @@ static void game_send_gameover(char code)
   move_t *walker;
   int i;
   char movestr[8], movestr2[8];
+
+  /* Make sure to kill external AI player first */
+  if (ai_type == 1) {
+    gnuchess_shutdown();
+  }
 
   /* Report results to GGZ. */
   results[winner] = GGZ_GAME_WIN;
