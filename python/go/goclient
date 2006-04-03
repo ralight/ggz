@@ -62,15 +62,9 @@ def handle_server(fd):
 def handle_network():
 	global net
 
-	networked = 0
-	if net.gamefd != -1:
-		networked = 1
-
-	ret = ggzmod.autonetwork(networked, net.gamefd)
-	if ret == 1 or ret == 3:
+	ret = ggzmod.autonetwork()
+	if ret:
 		network()
-	if ret == 2 or ret == 3:
-		ggzmod.dispatch()
 
 def main(ggzmode):
 	global net
@@ -106,11 +100,8 @@ def main(ggzmode):
 	if ggzmode:
 		ggzmod.setHandler(ggzmod.EVENT_SERVER, handle_server)
 
-		ret = ggzmod.connect()
-		if ret < 0:
-			ggzsuccess = 0
-		else:
-			ggzsuccess = 1
+		ggzsuccess = ggzmod.connect()
+		if ggzsuccess:
 			net = Network()
 
 	child = Child()
