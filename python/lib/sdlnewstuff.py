@@ -156,9 +156,9 @@ def menurender(surface, stufflist, highlighted, conf):
 		i = 10
 		rect(surface, conf.color_foreground, 10, i, 780, 30, conf.color_titlebox)
 		if stufflist is None:
-			f = titlefont.render("Error: couldn't download GHNS feed", 1, (0, 0, 0))
+			f = titlefont.render(_("Error: couldn't download GHNS feed"), 1, (0, 0, 0))
 		else:
-			f = titlefont.render("GHNS feed contains no entries", 1, (0, 0, 0))
+			f = titlefont.render(_("GHNS feed contains no entries"), 1, (0, 0, 0))
 		surface.blit(f, (15, i - 4))
 		return
 
@@ -270,16 +270,16 @@ class GHNSEngine:
 				if key == K_ESCAPE or pygame.event.peek(QUIT):
 					break
 				if key == K_UP:
-					if selection > 0:
+					if stufflist and selection > 0:
 						selection -= 1
 						updatescreen = 1
 				if key == K_DOWN:
-					if selection < len(stufflist) - 1:
+					if stufflist and selection < len(stufflist) - 1:
 						selection += 1
 						updatescreen = 1
 				if key == K_RETURN:
 					install = selection
-			if conf.mouse and event.type == MOUSEMOTION:
+			if conf.mouse and event.type == MOUSEMOTION and stufflist:
 				(posx, posy) = event.pos
 				left = (screen.get_width() - 800) / 2
 				up = (screen.get_height() - 600) / 2
@@ -303,7 +303,7 @@ class GHNSEngine:
 
 			""" Logics """
 
-			if install >= 0 and len(stufflist) > 0:
+			if install >= 0 and stufflist and len(stufflist) > 0:
 				s = stufflist[install]
 				if s.status != _("installed"):
 					try:
