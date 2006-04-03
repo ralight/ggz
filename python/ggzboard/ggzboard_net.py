@@ -14,15 +14,9 @@ class NetworkBase:
 		self.inputthinking = 0
 
 	def handle_network(self):
-		networked = 0
-		if self.gamefd != -1:
-			networked = 1
-
-		ret = ggzmod.autonetwork(networked, self.gamefd)
-		if ret == 1 or ret == 3:
+		ret = ggzmod.autonetwork()
+		if ret:
 			self.network()
-		if ret == 2 or ret == 3:
-			ggzmod.dispatch()
 
 	def network(self):
 		print "ERROR: PURE VIRTUAL METHOD!"

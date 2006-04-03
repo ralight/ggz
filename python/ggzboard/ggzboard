@@ -38,6 +38,15 @@ def asciify(str):
 def username():
 	return pwd.getpwuid(os.geteuid())[0]
 
+def playsound(theme):
+	file = DATAPATH + "SOUNDS/" + theme + ".wav"
+	try:
+		sound = pygame.mixer.Sound(file)
+		sound.play()
+	except:
+		print "Sound error:", file
+		pass
+
 class Conf:
 	def __init__(self):
 		self.alpha = 120
@@ -135,6 +144,8 @@ class GGZBoard:
 			surface.fill(color, ((x1 + w, y1), (1, h)))
 
 	def svgsurface(self, filename, width, height):
+		if not filename:
+			return None
 		if filename[-4:] == ".png":
 			return pygame.image.load(filename)
 		svg = rsvgsdl.render(filename, width, height)
@@ -317,6 +328,8 @@ class GGZBoard:
 				i = 0
 				for piece in game.selection:
 					img = self.svgsurface(game.figure(piece), conf.cellwidth, conf.cellheight)
+					if not img:
+						img = game.figuregfx(piece)
 					bx = 20 + i * conf.cellwidth + i * 10
 					by = 200
 					i += 1
@@ -782,6 +795,7 @@ class GGZBoard:
 						(frompos, topos) = move
 						game.toggleplayer()
 						game.domove(frompos, topos)
+						playsound("oppmove")
 						updatescreen = 1
 
 			pygame.event.pump()
@@ -878,8 +892,10 @@ class GGZBoard:
 									if ret:
 										if self.ggzmode:
 											net.domove(None, (x, y))
+											playsound("move")
 										else:
 											game.domove(None, (x, y))
+											playsound("move")
 											game.toggleplayer()
 											aiturn = 1
 											thinking = 1
@@ -906,8 +922,10 @@ class GGZBoard:
 						if ret:
 							if self.ggzmode:
 								net.domove(frompos, topos)
+								playsound("move")
 							else:
 								game.domove(frompos, topos)
+								playsound("move")
 								game.toggleplayer()
 								aiturn = 1
 								thinking = 1
@@ -930,6 +948,7 @@ class GGZBoard:
 					lastturn = game.turnplayer
 					if game.dice and not self.ggzsuccess:
 						ret = game.rolldice()
+						playsound("dice")
 						sleep = 2
 						if ret == 0:
 							skipplayer = 1
@@ -944,6 +963,7 @@ class GGZBoard:
 					caption = ui.smallfont.render(_("Game over!"), 1, (255, 200, 0))
 					ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
 					if game.winner is not None:
+						playsound("winner")
 						winner = self.playernames()[game.winner]
 						caption = ui.smallfont.render(_("The winner is %s") % winner, 1, (255, 200, 0))
 						ui.backgroundarea.blit(caption, (w - caption.get_width() - conf.marginwidth, y + 20))
@@ -987,6 +1007,8 @@ class GGZBoard:
 									self.rect(ui.backgroundarea, (255, 255, 255), sx + 2, sy + 2, conf.cellwidth - 4, conf.cellheight - 4, color)
 						if board[j][i]:
 							img = self.svgsurface(game.figure(board[j][i]), conf.cellwidth, conf.cellheight)
+							if not img:
+								img = game.figuregfx(board[j][i])
 							bx = sx
 							by = sy
 							if game.intersections:
@@ -1087,6 +1109,7 @@ class GGZBoard:
 				print "RET(find)", ret
 				if ret:
 					game.domove(frompos, topos)
+					playsound("oppmove")
 					game.toggleplayer()
 				else:
 					game.toggleplayer()
@@ -1127,8 +1150,10 @@ class GGZBoard:
 					if ret:
 						if self.ggzmode:
 							net.domove(None, (x, y))
+							playsound("selmove")
 						else:
 							game.domove(None, (x, y))
+							playsound("selmove")
 							game.toggleplayer()
 							aiturn = 1
 							thinking = 1
