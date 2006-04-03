@@ -262,6 +262,13 @@ class Game:
 								transited = 1
 								performedsteps += 1
 								print "- transit to", (cx, cy)
+								piece = self.board[cy][cx]
+								if piece:
+									(gfx2, color2) = piece
+									if color == color2:
+										if steps == performedsteps:
+											print "- crash into own piece!"
+											performedsteps -= 1
 		print "arrived at", (cx, cy), "should be", topos
 		if not topos:
 			if performedsteps != steps:
@@ -445,6 +452,11 @@ class Game:
 				if ret is not None:
 					print "TARGET", ret
 					(x2, y2) = ret
+					self.boardhints[y2][x2] = 1
+
+			if self.lastdice == 1:
+				if (x, y) in self.depots[turncolour]:
+					(x2, y2) = self.starts[turncolour]
 					self.boardhints[y2][x2] = 1
 
 ggzboardgame = Game()
