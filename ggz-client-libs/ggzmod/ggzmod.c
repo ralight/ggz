@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7888 2006-03-07 09:57:17Z josef $
+ * $Id: ggzmod.c 7989 2006-04-03 12:42:56Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -638,7 +638,6 @@ void _ggzmod_handle_info(GGZMod * ggzmod, int seat_num, const char *realname,
 			call_handler(ggzmod, GGZMOD_EVENT_INFO, &info);
 		}
 	}
-
 }
 
 

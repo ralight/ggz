@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 7968 2006-03-22 11:13:29Z josef $
+ * $Id: ggzmod.h 7989 2006-04-03 12:42:56Z josef $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -457,7 +457,7 @@ void ggzmod_request_sit(GGZMod * ggzmod, int seat_num);
  *  @param name The name of the player to boot. */
 void ggzmod_request_boot(GGZMod * ggzmod, const char *name);
 
-/** @brief Change the requested seat from an opean seat to a bot.
+/** @brief Change the requested seat from an open seat to a bot.
  *  @param ggzmod The ggzmod object.
  *  @param seat_num The number of the seat to toggle. */
 void ggzmod_request_bot(GGZMod * ggzmod, int seat_num);
