@@ -241,6 +241,24 @@ The following game engines are currently playable on GGZ:
 </tr>
 
 <tr>
+<td><a href="/engines/shogi/">Shogi</a></td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+</td>
+<td>---</td>
+</tr>
+
+<tr>
+<td><a href="/engines/sudoku/">Sudoku</a></td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+</td>
+<td>---</td>
+</tr>
+
+<tr>
 <td>
 <img src="/pics/icons/game_rip.png">
 Batalla Naval

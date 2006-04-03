@@ -1,0 +1,53 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Sudoku</b><br>
+Board game for 1 player.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Sudoku features</i><br>
+<ul>
+<li>SDL game client available
+<li>True single-player game
+</ul>
+<br>
+
+<i>Sudoku rules</i><br>
+Yet to be written down.
+Playing Sudoku requires solving a puzzle which is similar to, but more complex than,
+the classic Magic Squares problem.
+
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: GGZBoard</i><br>
+<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

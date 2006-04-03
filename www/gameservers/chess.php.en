@@ -17,6 +17,7 @@ Board game for 2 players.
 <ul>
 <li>Supports the <a href="/engines/chess/">Chess</a> engine
 <li>Supports AI players, using the GGZ chess AI library
+<li>Optional support for GNU Chess using named bots
 <li>Implemented in C, using the libcgc move verification library
 <li>GGZ is required (no standalone mode)
 </ul>
