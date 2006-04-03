@@ -1,6 +1,7 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Client for the Chinese Chess game
-# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 import pygame
@@ -15,6 +16,7 @@ import re
 
 import ggzmod
 import sdlnewstuff
+import playertable
 from xadrezlib import *
 
 try:
@@ -23,7 +25,10 @@ try:
 except:
 	DATAPATH = "./"
 
-print "Xadrez Chines: Using data path", DATAPATH
+def unic(s):
+	return unicode(s, "utf-8")
+
+print unic("Xadrez Chinês: Using data path"), DATAPATH
 
 def homedir():
 	return pwd.getpwuid(os.geteuid())[5]
@@ -107,15 +112,9 @@ def handle_server(fd):
 def handle_network():
 	global net
 
-	networked = 0
-	if net.gamefd != -1:
-		networked = 1
-
-	ret = ggzmod.autonetwork(networked, net.gamefd)
-	if ret == 1 or ret == 3:
+	ret = ggzmod.autonetwork()
+	if ret:
 		network()
-	if ret == 2 or ret == 3:
-		ggzmod.dispatch()
 
 def main(ggzmode):
 	global net
@@ -163,7 +162,7 @@ def main(ggzmode):
 
 	font = pygame.font.Font(None, 44)
 	xadrezfont = font.render("XADREZ", 1, (165, 140, 0))
-	chinesfont = font.render("CHINES", 1, (165, 140, 0))
+	chinesfont = font.render(unic("CHINÊS"), 1, (165, 140, 0))
 	sdlfont = font.render("SDL", 1, (165, 140, 0))
 	font2 = pygame.font.Font(None, 70)
 	slashfont = font2.render("/", 1, (165, 140, 0))
@@ -289,23 +288,22 @@ def main(ggzmode):
 	if ggzmode:
 		ggzmod.setHandler(ggzmod.EVENT_SERVER, handle_server)
 
-		ret = ggzmod.connect()
-		if ret < 0:
-			ggzsuccess = 0
-		else:
-			ggzsuccess = 1
+		ggzsuccess = ggzmod.connect()
+		if ggzsuccess:
 			net = Network()
 
 	if ggzmode:
 		ggzfont = pygame.font.Font(None, 20)
 		if ggzsuccess:
 			ggz = ggzfont.render("Running on GGZ", 1, (165, 140, 0))
+			surface.blit(ggz, (580, 160))
+			hint = ggzfont.render("Press 'p' for player table", 1, (165, 140, 0))
+			surface.blit(hint, (580, 180))
 			madeturn = 1
 			initialization = 1
 		else:
 			ggz = ggzfont.render("GGZ unavailable", 1, (165, 140, 0))
-
-		surface.blit(ggz, (580, 160))
+			surface.blit(ggz, (580, 160))
 
 	""" Main loop """
 
@@ -337,6 +335,8 @@ def main(ggzmode):
 			break
 		if keyinput[K_n]:
 			sdlnewstuff.gethotnewstuff("xadrez-chines")
+		if keyinput[K_p]:
+			playertable.show()
 		if keyinput[K_f]:
 			pygame.display.toggle_fullscreen()
 
