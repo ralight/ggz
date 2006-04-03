@@ -6,12 +6,14 @@ import pygame
 import pygame.image
 from pygame.locals import *
 from Numeric import *
-import ggzmod
 import socket
 import sys
 import time
 import random
 import os, pwd
+
+import ggzmod
+import playertable
 
 def username():
 	return pwd.getpwuid(os.geteuid())[0]
@@ -137,14 +139,16 @@ class Network:
 
 	def sendbyte(self, byte):
 		nbyte = socket.htonl(byte)
-		c1 = (nbyte >> 0) & 0xFF
-		c2 = (nbyte >> 8) & 0xFF
-		c3 = (nbyte >> 16) & 0xFF
-		c4 = (nbyte >> 24) & 0xFF
-		self.sock.send(chr(c1))
-		self.sock.send(chr(c2))
-		self.sock.send(chr(c3))
-		self.sock.send(chr(c4))
+		c1 = (nbyte >> 24) & 0xFF
+		c2 = (nbyte >> 16) & 0xFF
+		c3 = (nbyte >> 8) & 0xFF
+		c4 = (nbyte >> 0) & 0xFF
+		#self.sock.send(chr(c1))
+		#self.sock.send(chr(c2))
+		#self.sock.send(chr(c3))
+		#self.sock.send(chr(c4))
+		s = chr(c1) + chr(c2) + chr(c3) + chr(c4)
+		self.sock.send(s)
 
 	def sendchar(self, char):
 		self.sock.send(chr(char))
@@ -257,15 +261,9 @@ def network():
 def handle_network():
 	global net
 
-	networked = 0
-	if net.gamefd != -1:
-		networked = 1
-
-	ret = ggzmod.autonetwork(networked, net.gamefd)
-	if ret == 1 or ret == 3:
+	ret = ggzmod.autonetwork()
+	if ret:
 		network()
-	if ret == 2 or ret == 3:
-		ggzmod.dispatch()
 
 def validate((blobpos, trail, x, y)):
 	global proto
@@ -373,7 +371,7 @@ def main(ggzmode):
 	surface.blit(slash, (540, 105))
 
 	if not ggzmode:
-		playernames(surface, username(), "opponent")
+		playernames(surface, username(), _("opponent"))
 
 	""" Points on the game board """
 
@@ -418,21 +416,20 @@ def main(ggzmode):
 	if ggzmode:
 		ggzmod.setHandler(ggzmod.EVENT_SERVER, handle_server)
 
-		ret = ggzmod.connect()
-		if ret < 0:
-			ggzsuccess = 0
-		else:
-			ggzsuccess = 1
+		ggzsuccess = ggzmod.connect()
+		if ggzsuccess:
 			net = Network()
 
 	if ggzmode:
 		ggzfont = pygame.font.Font(None, 20)
 		if ggzsuccess:
-			ggz = ggzfont.render("Running on GGZ", 1, (165, 140, 0))
+			ggz = ggzfont.render(_("Running on GGZ"), 1, (165, 140, 0))
+			surface.blit(ggz, (420, 140))
+			hint = ggzfont.render(_("Press 'p' for player table"), 1, (165, 140, 0))
+			surface.blit(hint, (420, 160))
 		else:
-			ggz = ggzfont.render("GGZ unavailable", 1, (165, 140, 0))
-
-		surface.blit(ggz, (420, 140))
+			ggz = ggzfont.render(_("GGZ unavailable"), 1, (165, 140, 0))
+			surface.blit(ggz, (420, 140))
 
 	""" Main loop """
 
@@ -460,6 +457,16 @@ def main(ggzmode):
 
 		if keyinput[K_ESCAPE] or pygame.event.peek(QUIT):
 			break
+
+		if keyinput[K_p]:
+			playertable.show()
+			# ??? eat escape key
+			#pygame.event.poll()
+			while 1:
+				pygame.event.pump()
+				keyinput = pygame.key.get_pressed()
+				if not keyinput[K_ESCAPE]:
+					break
 
 		(b1, b2, b3) = pygame.mouse.get_pressed()
 		if b1 and not pressed and not madeturn:
@@ -523,9 +530,9 @@ def main(ggzmode):
 		if winner:
 			font4 = pygame.font.Font(None, 24)
 			if winner == 2:
-				waiting = font4.render("Game over, you lost", 1, (165, 140, 0))
+				waiting = font4.render(_("Game over, you lost"), 1, (165, 140, 0))
 			else:
-				waiting = font4.render("Game over, you won", 1, (165, 140, 0))
+				waiting = font4.render(_("Game over, you won"), 1, (165, 140, 0))
 			screen.blit(waiting, (610 - waiting.get_width(), 400))
 			gameover = 1
 			madeturn = 1
@@ -533,18 +540,18 @@ def main(ggzmode):
 		if madeturn and not gameover:
 			font4 = pygame.font.Font(None, 24)
 			if aierror:
-				waiting = font4.render("AI error, game over", 1, (165, 140, 0))
+				waiting = font4.render(_("AI error, game over"), 1, (165, 140, 0))
 			else:
-				waiting = font4.render("Waiting for opponent", 1, (165, 140, 0))
+				waiting = font4.render(_("Waiting for opponent"), 1, (165, 140, 0))
 			screen.blit(waiting, (610 - waiting.get_width(), 400))
 
 		if humanerror:
 			font4 = pygame.font.Font(None, 24)
-			waiting = font4.render("Not allowed, try again", 1, (165, 140, 0))
+			waiting = font4.render(_("Not allowed, try again"), 1, (165, 140, 0))
 			screen.blit(waiting, (610 - waiting.get_width(), 400))
 		elif againturn:
 			font4 = pygame.font.Font(None, 24)
-			again = font4.render("Move again", 1, (165, 140, 0))
+			again = font4.render(_("Move again"), 1, (165, 140, 0))
 			screen.blit(again, (610 - again.get_width(), 400))
 
 		pygame.display.flip()
