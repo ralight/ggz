@@ -8,7 +8,7 @@ MSGMERGE = msgmerge
 MSGFMT = msgfmt
 
 CATALOG = ggzpython
-POSOURCES = ../lib/sdlnewstuff.py ../ggzboard/ggzboard ../ggzboard/module_*.py
+POSOURCES = ../lib/sdlnewstuff.py ../lib/playertable.py ../ggzboard/ggzboard ../ggzboard/module_*.py
 POFLAGS = -LPython
 
 include i18n.mk
