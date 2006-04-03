@@ -285,6 +285,190 @@ Get data about this player.<br>
 
 <tr><td colspan="2"><br></td></tr>
 
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+None
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#requestStand">requestStand</a> ()
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Stand up (move from your seat into a spectator seat).<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+None
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#requestSit">requestSit</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Sit down (move from a spectator seat into a player seat).<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+None
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#requestBoot">requestBoot</a> (string name)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Boot a player. Only the game host may do this.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+None
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#requestBot">requestBot</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Change the requested seat from an opean seat to a bot.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+None
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#requestOpen">requestOpen</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Change the requested seat from a bot to an open seat.<br>
+</td>
+</tr>
+
+<tr><td colspan="2"><br></td></tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+None
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#requestChat">requestChat</a> (string message)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Chat! This initiates a table chat.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+boolean
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#requestInfo">requestInfo</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Request extended player information for one or more players.<br>
+</td>
+</tr>
+
+<tr><td colspan="2"><br></td></tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+(int, string, string, string)
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getInfo">getInfo</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get the extended information for the specified seat.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+(int, int, int, int)
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getRecord">getRecord</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get the player's win-loss record.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+(int)
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getRating">getRating</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get the player's rating.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+(int)
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getRanking">getRanking</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get the player's ranking.<br>
+</td>
+</tr>
+
+<tr>
+<td class="memItemLeft" nowrap align="right" valign="top">
+(int)
+</td>
+<td class="memItemRight" valign="bottom">
+<a class="el" href="pyggzmod.html#getHighscore">getHighscore</a> (int number)
+</td>
+</tr>
+<tr>
+<td class="mdescLeft">&nbsp;</td>
+<td class="mdescRight">
+Get the player's highscore.<br>
+</td>
+</tr>
+
 </table>
 
 <!-- finish -->
@@ -365,8 +549,8 @@ Callback events.
 <p>
 Each of these is a possible GGZmod event. For each event, the table may
 register a handler with GGZmod to handle that event.
-All callback handlers are Python methods which will receive a tuple with
-values or a single value depending on the event type.
+All callback handlers are Python methods which will receive one or more
+values, or none at all, depending on the event type.
 <dl compact>
 <dt><b>See also:</b></dt>
 <dd>
@@ -410,7 +594,7 @@ discarded since it can always be gotten by calling
 The game client player's seat status has changed. 
 This event occurs when the player's seat status changes; i.e. he changes
 seats or starts/stops spectating.
-The event data is a tuple consisting of the old spectator status (either
+The event data is given as two variables, the old spectator status (either
 <b>True</b> if he was a spectator, or <b>False</b> otherwise)
 and the old seat number.
 <p>
@@ -448,8 +632,8 @@ The spectator information will be updated before the event is invoked.
 A chat message event. 
 This event occurs when we receive a chat.
 The chat may have originated in another game client or from the GGZ client;
-in either case it will be routed to us. The chat information, a tuple
-consisting of the sender name and message text, is passed as the event's data.
+in either case it will be routed to us. The chat information, two variables
+being the sender name and message text, is passed as the event's data.
 Note that the chat may originate with a player or a spectator,
 and they may have changed seats or left the table by the time it gets to us.
 <p>
@@ -460,9 +644,9 @@ and they may have changed seats or left the table by the time it gets to us.
 <em><a class="anchor" name="EVENT_STATS"></a>EVENT_STATS</em>
 </td>
 <td>
-The statistics of some or all players have been updated. An empty tuple is
-given as event data, and the game should use the statistics-related
-functions to get to know more about it.
+The statistics of some or all players have been updated.
+No values are given as data for this event, instead the game should use the
+statistics-related functions to get to know more about it.
 <dl compact>
 <dt><b>See also:</b></dt>
 <dd>
@@ -480,10 +664,14 @@ functions to get to know more about it.
 </td>
 <td>
 Information has been requested about one or more players and it has now
-arrived. Either an empty tuple is given as the event data in case information
-about all players was updated, or the seat number in case only one specific
-player was specified.
-<p>
+arrived. No values are given as data for this event, instead the game
+should use the player information functions to get to know more about it.
+<dl compact>
+<dt><b>See also:</b></dt>
+<dd>
+<a class="el" href="pyggzmod.html#getInfo">getInfo</a><p>
+</dd>
+</dl>
 </td>
 </tr>
 <tr>
@@ -737,6 +925,9 @@ The seat is abandoned by a player.
 Connect to GGZ. 
 <p>
 Call this function to make an initial GGZ &lt;-&gt; game connection.
+Note that as opposed to the C version, which always succeeds on some platforms,
+the Python version will require the environment variable <b>GGZMODE</b>
+to be set to disambiguate the launch in GGZ from other means.
 <dl compact>
 <dt><b>Returns:</b></dt>
 <dd><b>True</b> on success, <b>False</b> on failure.</dd>
@@ -1062,7 +1253,8 @@ looking for spectators.
 <tr>
 <td class="md" nowrap valign="top">(int, <a class="el" href="pyggzmod.html#GGZModSeatType">GGZModSeatType</a>, string) getSeat</td>
 <td class="md" nowrap>&nbsp;(&nbsp;</td>
-<td class="mdname" nowrap>int&nbsp;<em>number</em>&nbsp;)</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
 </tr>
 </table>
 </td>
@@ -1114,7 +1306,8 @@ if an invalid seat number was given.
 <tr>
 <td class="md" nowrap valign="top">(int, string) getSpectator</td>
 <td class="md" nowrap>&nbsp;(&nbsp;</td>
-<td class="mdname" nowrap>int&nbsp;<em>number</em>&nbsp;)</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
 </tr>
 </table>
 </td>
@@ -1173,7 +1366,7 @@ given.
 &nbsp;
 </td>
 <td>
-Get data about this player.
+Get data about the player who is represented by this game client.
 <p>
 Call this function to find out where at the table this player is
 sitting.
@@ -1184,6 +1377,534 @@ A 3-element tuple (string name, boolean isspectator, int num)
 containing the player's name, whether he is currently spectating or not,
 and the seat or spectator seat number.
 In the case of errors, <b>None</b> is returned instead.
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="requestStand"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">requestStand ()</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Stand up (move from your seat into a spectator seat).
+<p>
+The player of the game client itself will quit playing and becoming a spectator
+instead.
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="requestSit"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">requestSit</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Sit down (move from a spectator seat into a player seat).
+<p>
+The player of the game client itself will stop spectating and
+become a player again, in case a free seat is still available.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number where to sit down.</td></tr>
+</table>
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="requestBoot"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">requestBoot</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>string&nbsp;</td>
+<td class="mdname" nowrap><em>name</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Boot a player. Only the game host may do this.
+<p>
+Game host refers to the player who has initiated the game.
+The booted player will then be forced to leave the current table.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>name</em>&nbsp;</td>
+<td>The name of the player to boot.</td></tr>
+</table>
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="requestBot"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">requestBot</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Change the requested seat from an opean seat to a bot.
+<p>
+This is useful in case a game is stuck because one seat is not assigned
+to anybody yet. This methods creates an AI player who will then
+play in the given seat.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number where to place a bot.</td></tr>
+</table>
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="requestOpen"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">requestOpen</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Change the requested seat from a bot to an open seat.
+<p>
+This is comparable to booting a player, instead it works on
+AI players in this method.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number which should be opened.</td></tr>
+</table>
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="requestChat"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">requestChat</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>string&nbsp;</td>
+<td class="mdname" nowrap><em>message</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Chat! This initiates a table chat.
+<p>
+Table chat refers to messages which only the participants
+of the current game can send.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>message</em>&nbsp;</td>
+<td>The chat message.</td></tr>
+</table>
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="requestInfo"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">boolean requestInfo</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Request extended player information for one or more players.
+<p>
+Depending on the seat parameter (-1 or valid number), this function
+asynchronously requests information about player(s), which will arrive
+with a <a class="el" href="pyggzmod.html#EVENT_INFO">EVENT_INFO</a> event.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number to request info for, or -1 to select all.</td></tr>
+</table>
+</dd>
+</dl>
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>
+<b>True</b> if seat is -1 or valid number, <b>False</b> for non-player seats.
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getInfo"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">(int, string, string, string) getInfo</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get the extended information for the specified seat.
+<p>
+Calling this method might reveal player properties beyond the login name.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number.</td></tr>
+</table>
+</dd>
+</dl>
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>
+A tuple describing the player's properties, containing (seat number, realname, photo, host)
+if seat is valid and has info, <b>None</b> otherwise.
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getRecord"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">(int, int, int, int) getRecord</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get the player's win-loss record.
+<p>
+Tells about how the player performed so far for the current game type.
+The record consists of simple additions of the number of wins, losses,
+ties and forfeits achieved in the past.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number to </td></tr>
+</table>
+</dd>
+</dl>
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>
+A statistics tuple containing (wins, losses, ties, forfeits) for valid seats,
+or <b>None</b> otherwise.
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getRating"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">(int) getRating</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get the player's rating.
+<p>
+Tells about how the player performed so far for the current game type.
+Ratings are game-specific calculated values, which many times take into account
+the quality of play over many games.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number.</td></tr>
+</table>
+</dd>
+</dl>
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>
+The player's rating in a 1-element tuple,
+or <b>None</b> if the player doesn't have a rating yet
+or the present game type doesn't support ratings.
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getRanking"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">(int) getRanking</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get the player's ranking.
+<p>
+Tells about how the player performed so far for the current game type.
+Rankings range from number 1 (the best) to higher numbers (worse) and are
+calculated automatically based on the player's record, rating and highscore,
+depending on the game type. The ranking is guaranteed to be unique per game
+type.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number.</td></tr>
+</table>
+</dd>
+</dl>
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>
+The player's ranking in a 1-element tuple,
+or <b>None</b> if the player doesn't have a ranking yet
+or the present game type doesn't support rankings.
+</dd>
+</dl>
+</td>
+</tr>
+</table>
+
+<a class="anchor" name="getHighscore"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+<tr>
+<td class="mdRow">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="md" nowrap valign="top">(int) getHighscore</td>
+<td class="md" nowrap>&nbsp;(&nbsp;</td>
+<td class="md" nowrap>int&nbsp;</td>
+<td class="mdname" nowrap><em>number</em>&nbsp;)</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0">
+<tr>
+<td>
+&nbsp;
+</td>
+<td>
+Get the player's highscore.
+<p>
+Tells about how the player performed so far for the current game type.
+The highscore is a single number, the higher the better.
+<dl compact>
+<dt><b>Parameters:</b></dt>
+<dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td valign="top"></td>
+<td valign="top"><em>number</em>&nbsp;</td>
+<td>The seat number.</td></tr>
+</table>
+</dd>
+</dl>
+<dl compact>
+<dt><b>Returns:</b></dt>
+<dd>
+The player's highscore in a 1-element tuple,
+or <b>None</b> if the player doesn't have a highscore yet
+or the present game type doesn't support highscores.
 </dd>
 </dl>
 </td>

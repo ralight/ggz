@@ -134,6 +134,136 @@ static PyObject *pyggzmod_get_spectator_seat(PyObject *self, PyObject *args)
 	return Py_BuildValue("(is)", spectator.num, spectator.name);
 }
 
+static PyObject *pyggzmod_request_stand(PyObject *self, PyObject *args)
+{
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ggzmod_request_stand(ggzmod);
+	return Py_None;
+}
+
+static PyObject *pyggzmod_request_sit(PyObject *self, PyObject *args)
+{
+	int num;
+
+	if(!PyArg_ParseTuple(args, "i", &num)) return NULL;
+	ggzmod_request_sit(ggzmod, num);
+	return Py_None;
+}
+
+static PyObject *pyggzmod_request_boot(PyObject *self, PyObject *args)
+{
+	char *name;
+
+	if(!PyArg_ParseTuple(args, "s", &name)) return NULL;
+	ggzmod_request_boot(ggzmod, name);
+	return Py_None;
+}
+
+static PyObject *pyggzmod_request_bot(PyObject *self, PyObject *args)
+{
+	int num;
+
+	if(!PyArg_ParseTuple(args, "i", &num)) return NULL;
+	ggzmod_request_bot(ggzmod, num);
+	return Py_None;
+}
+
+static PyObject *pyggzmod_request_open(PyObject *self, PyObject *args)
+{
+	int num;
+
+	if(!PyArg_ParseTuple(args, "i", &num)) return NULL;
+	ggzmod_request_open(ggzmod, num);
+	return Py_None;
+}
+
+static PyObject *pyggzmod_request_chat(PyObject *self, PyObject *args)
+{
+	char *message;
+
+	if(!PyArg_ParseTuple(args, "s", &message)) return NULL;
+	ggzmod_request_chat(ggzmod, message);
+	return Py_None;
+}
+
+static PyObject *pyggzmod_get_record(PyObject *self, PyObject *args)
+{
+	int num;
+	int record;
+	int wins, losses, ties, forfeits;
+	GGZSeat seat;
+
+	if(!PyArg_ParseTuple(args, "i", &num)) return NULL;
+	seat.num = num;
+	record = ggzmod_player_get_record(ggzmod, &seat, &wins, &losses, &ties, &forfeits);
+	if(!record) return Py_None;
+	return Py_BuildValue("(iiii)", wins, losses, ties, forfeits);
+}
+
+static PyObject *pyggzmod_get_rating(PyObject *self, PyObject *args)
+{
+	int num;
+	int res;
+	int rating;
+	GGZSeat seat;
+
+	if(!PyArg_ParseTuple(args, "i", &num)) return NULL;
+	seat.num = num;
+	res = ggzmod_player_get_rating(ggzmod, &seat, &rating);
+	if(!res) return Py_None;
+	return Py_BuildValue("(i)", rating);
+}
+
+static PyObject *pyggzmod_get_ranking(PyObject *self, PyObject *args)
+{
+	int num;
+	int res;
+	int ranking;
+	GGZSeat seat;
+
+	if(!PyArg_ParseTuple(args, "i", &num)) return NULL;
+	seat.num = num;
+	res = ggzmod_player_get_ranking(ggzmod, &seat, &ranking);
+	if(!res) return Py_None;
+	return Py_BuildValue("(i)", ranking);
+}
+
+static PyObject *pyggzmod_get_highscore(PyObject *self, PyObject *args)
+{
+	int num;
+	int res;
+	int highscore;
+	GGZSeat seat;
+
+	if(!PyArg_ParseTuple(args, "i", &num)) return NULL;
+	seat.num = num;
+	res = ggzmod_player_get_highscore(ggzmod, &seat, &highscore);
+	if(!res) return Py_None;
+	return Py_BuildValue("(i)", highscore);
+}
+
+static PyObject *pyggzmod_request_info(PyObject *self, PyObject *args)
+{
+	int num;
+	int res;
+
+	if(!PyArg_ParseTuple(args, "i", &num)) return NULL;
+	res = ggzmod_player_request_info(ggzmod, num);
+	if(!res) return Py_None;
+	return Py_BuildValue("(i)", (res == 0 ? 1 : 0));
+}
+
+static PyObject *pyggzmod_get_info(PyObject *self, PyObject *args)
+{
+	int num;
+	GGZPlayerInfo *info;
+
+	if(!PyArg_ParseTuple(args, "i", &num)) return NULL;
+	info = ggzmod_player_get_info(ggzmod, num);
+	if(!info) return Py_None;
+	return Py_BuildValue("(isss)", info->num, info->realname, info->photo, info->host);
+}
+
 /***********************************************/
 /* Methods for controlling and querying GGZMod */
 /***********************************************/
@@ -145,7 +275,7 @@ static PyObject *pyggzmod_set_state(PyObject *self, PyObject *args)
 
 	if(!PyArg_ParseTuple(args, "i", &state)) return NULL;
 	ret = ggzmod_set_state(ggzmod, state);
-	return Py_BuildValue("i", ret);
+	return Py_BuildValue("i", (ret == 0 ? 1 : 0));
 }
 
 static PyObject *pyggzmod_get_state(PyObject *self, PyObject *args)
@@ -160,10 +290,17 @@ static PyObject *pyggzmod_get_state(PyObject *self, PyObject *args)
 static PyObject *pyggzmod_connect(PyObject *self, PyObject *args)
 {
 	int connect;
+	char *mode;
 
 	if(!PyArg_ParseTuple(args, "")) return NULL;
 	connect = ggzmod_connect(ggzmod);
-	return Py_BuildValue("i", connect);
+	if(connect == 0)
+	{
+		/* Force GGZMODE to be set */
+		mode = getenv("GGZMODE");
+		if(!mode) connect = -1;
+	}
+	return Py_BuildValue("i", (connect == 0 ? 1 : 0));
 }
 
 static PyObject *pyggzmod_disconnect(PyObject *self, PyObject *args)
@@ -172,7 +309,7 @@ static PyObject *pyggzmod_disconnect(PyObject *self, PyObject *args)
 
 	if(!PyArg_ParseTuple(args, "")) return NULL;
 	disconnect = ggzmod_disconnect(ggzmod);
-	return Py_BuildValue("i", disconnect);
+	return Py_BuildValue("i", (disconnect == 0 ? 1 : 0));
 }
 
 static PyObject *pyggzmod_get_server_fd(PyObject *self, PyObject *args)
@@ -307,6 +444,24 @@ static PyMethodDef pyggzmod_methods[] =
 	{"getSeat", pyggzmod_get_seat, METH_VARARGS},
 	{"getSpectator", pyggzmod_get_spectator_seat, METH_VARARGS},
 	{"getPlayer", pyggzmod_get_player, METH_VARARGS},
+
+	/* Seat change requests */
+	{"requestStand", pyggzmod_request_stand, METH_VARARGS},
+	{"requestSit", pyggzmod_request_sit, METH_VARARGS},
+	{"requestBoot", pyggzmod_request_boot, METH_VARARGS},
+	{"requestBot", pyggzmod_request_bot, METH_VARARGS},
+	{"requestOpen", pyggzmod_request_open, METH_VARARGS},
+
+	/* Other requests */
+	{"requestChat", pyggzmod_request_chat, METH_VARARGS},
+	{"requestInfo", pyggzmod_request_info, METH_VARARGS},
+
+	/* Statistics and information */
+	{"getInfo", pyggzmod_get_info, METH_VARARGS},
+	{"getRecord", pyggzmod_get_record, METH_VARARGS},
+	{"getRating", pyggzmod_get_rating, METH_VARARGS},
+	{"getRanking", pyggzmod_get_ranking, METH_VARARGS},
+	{"getHighscore", pyggzmod_get_highscore, METH_VARARGS},
 
 	/* Basic game handling */
 	{"connect", pyggzmod_connect, METH_VARARGS},
@@ -464,8 +619,9 @@ void pyggzmod_cb_stats_hook(GGZMod *ggzmod, GGZModEvent event, const void *handl
 void pyggzmod_cb_info_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
-	GGZPlayerInfo info;
+	/*GGZPlayerInfo info;*/
 
+	/*
 	if(handler_data)
 	{
 		info = *(GGZPlayerInfo*)handler_data;
@@ -475,6 +631,8 @@ void pyggzmod_cb_info_hook(GGZMod *ggzmod, GGZModEvent event, const void *handle
 	{
 		arg = Py_BuildValue("(isss)", -1, NULL, NULL, NULL);
 	}
+	*/
+	arg = Py_BuildValue("()");
 	res = PyEval_CallObject(pyggzmod_cb_info, arg);
 	if(res == NULL)
 	{
