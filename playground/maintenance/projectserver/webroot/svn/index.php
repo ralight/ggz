@@ -15,6 +15,7 @@ GGZ Gaming Zone SVN Repository (svn.ggzgamingzone.org)
 
 The master source repository for the GGZ Gaming Zone can be found on this server.<br>
 <a href="/websvn/">WebSVN</a><br>
+<a href="/cgi-bin/trac.cgi/browser/">Trac SVN browser</a> which is much faster than WebSVN<br>
 <!-- <a href="/lxr/">LXR</a><br> -->
 <br><br>
 
@@ -26,7 +27,9 @@ Developer SVN operations use SSH instead of svnserve:<br>
 <i>svn commit svn+ssh://username@svn.ggzgamingzone.org:/svn/trunk/...</i>
 <br><br>
 
-SVN commit notifications are sent to the ggz-cvs mailing list.
+SVN commit notifications are sent to the
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-svn">ggz-svn</a>
+mailing list.
 <br>
 They are also tracked by the <a href="http://cia.navi.cx/stats/project/ggz">CIA bot</a>.
 <br><br>
