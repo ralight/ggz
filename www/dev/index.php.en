@@ -45,6 +45,8 @@ The following pages are organized as subsections of the developer area.
 <br>
 <a href="protocols/">protocols: Game protocol description files</a>
 <br>
+<a href="ai/">ai: Game AI routines and integration of AI players</a>
+<br>
 
 </td></tr>
 <tr><td valign="top">

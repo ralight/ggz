@@ -1,0 +1,79 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>AI player and algorithm development</b><br>
+AI players are a standard feature of most GGZ games. Sometimes, they're available
+on the game client to allow for local games against the computer without depending
+on a network connection, but in most cases, AI players reside in the game server.
+Some AIs run as part of the server, while others run as external processes and are
+only managed by the game server.
+This page gives an overview about current AI players, their strengths and so on.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>AI players in GGZ games</i><br>
+
+<table class="list">
+<tr><td><i>Name</i></td><td><i>Game</i></td><td><i>Language</i></td><td><i>Type</i></td><td><i>Usage</i></td></tr>
+<tr><td>gnuchess</td><td>Chess</td><td>C</td><td>wrapper (xboard protocol)</td><td>Chess server</td></tr>
+<tr><td>gnushogi</td><td>Shogi</td><td>Python</td><td>wrapper (xboard protocol)</td><td>GGZBoard Shogi client</td></tr>
+<tr><td>gnugo</td><td>Go</td><td>Python</td><td>wrapper (gtp protocol)</td><td>GGZBoard Go client</td></tr>
+<tr><td>gnugo</td><td>Go</td><td>Python</td><td>wrapper (gmp protocol)</td><td>GGZ-Python Go server</td></tr>
+<tr><td>ggzttt</td><td>Tic-Tac-Toe</td><td>C</td><td>library</td><td>Tic-Tac-Toe server</td></tr>
+<tr><td>ggzchess</td><td>Chess</td><td>C, Python</td><td>library</td><td>Chess server, GGZBoard Chess client ...</td></tr>
+<tr><td></td><td></td><td></td><td></td><td>... Grubby (client), Koenig client</td></tr>
+</table>
+
+<br>
+All the other games which provide AI players have them included (and hardcoded)
+internally.
+The following game clients beside the ones mentioned above support AI players, so that
+they can be played locally against the computer:
+<br>
+<a href="http://www.ggzgamingzone.org/games/ggzboard/">GGZBoard</a> (for Ludo),
+<a href="http://www.ggzgamingzone.org/games/ktictactux/">KTicTacTux</a>,
+<a href="http://www.ggzgamingzone.org/games/fyrdman/">Fyrdman</a>,
+<a href="http://www.ggzgamingzone.org/games/kcc/">KCC</a>,
+<a href="http://www.ggzgamingzone.org/games/muehle/">Muehle</a> (external perl script),
+<a href="http://www.ggzgamingzone.org/games/geekgame/">Geekgame</a>
+<br>
+The following game clients provide some dummy AI players mostly based on random decisions
+so that they at least appear to be playable:
+<br>
+<a href="http://www.ggzgamingzone.org/games/escape-sdl/">Escape/SDL</a>,
+<a href="http://www.ggzgamingzone.org/games/cchess/">Xadrez Chinês</a>,
+<a href="http://www.ggzgamingzone.org/games/ggzboard/">GGZBoard</a>
+(for ConnectX, Hnefatafl, Checkers, Reversi)
+
+<br><br>
+Note that GGZBoard-Ludo is a dummy AI too but it plays really well for it.
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Contributing AI players</i><br>
+We'd like to offer good (specialised) AI players to our users. If someone develops
+an AI, it can for sure be integrated with GGZ. Most of the time, GGZ itself can only
+offer "just good enough" algorithms for the casual players, but we'd certainly like
+to see game geeks being attracted as well.
+The feature of Named Bots makes it possible for players to select against which
+kind of AI they want to play!
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
