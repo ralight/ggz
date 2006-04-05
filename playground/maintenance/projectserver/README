@@ -4,6 +4,8 @@ HTTP Structure:
 ggz                (redirect to www)
   +-www            (from www)
   |   +-games
+  |   +-gameclients
+  |   +-engines
   |   +-backend
   |   +-clients
   |   +-docs
@@ -20,14 +22,16 @@ ggz                (redirect to www)
   +-dev            (content from www/dev)
   | +-i18n
   | +-art
+  | +-...
   +-mail
     +-pipermail    (current archives, generated)
 	+-hypermail    (old archives, generated)
-  +-cvs
+  +-svn
+    +-viewsvn      (external)
+	+-trac         (includes svn cache)
   +-bugs
     +-mantis       (external, only conf)
   +-live
-  +-rankings       (deprecated, from playground/db2web)
   +-ftp
     +-pub
       +-ggz
@@ -35,23 +39,28 @@ ggz                (redirect to www)
       +-contrib
       +-data       (hotstuff repository)
 
+Previous, and now defunct:
+
+  +-cvs            (deprecated, replaced by svn)
+  +-rankings       (deprecated, from playground/db2web)
+
 Services (may be on different physical machines):
 
 http: htdig mail search (on mail)
       mailman subscription and archives (on mail)
-      webcvs access (on cvs)
-	  lxr access (on cvs)
+      websvn access (on svn)
+	  trac access (on svn)
 mail: address forwards and project mailing lists
-      ggz-announce, ggz-dev, ggz-cvs, ggz-bugs, ggz-servers
+      ggz-announce, ggz-dev, ggz-svn, ggz-bugs, ggz-servers
 live: permanent ggz server and database
       ggzd(5688), xinetd/telggz(15688), metaserv(15689), tracker(10000)
 bugs: bug database
-cvs:  cvs server
+svn:  svn server
 
 Service location:
-www, ftp, mail, bugs, cvs are on ggzgamingzone.org
+www, ftp, mail, bugs, svn are on ggzgamingzone.org
 live, ggzcommunity.org are on fr.ggzgamingzone.org
-wwwmirror is provided by ftp2.kgt.org
+(wwwmirror is provided by ftp2.kgt.org) - defunct!
 
 Redundancy:
 
@@ -62,7 +71,7 @@ http: redundancy through mirrors, via anonymous rsync:
       * fr.ggzgamingzone.org (www, ftp)
 	  * wwwmirror.ggzgamingzone.org (www)
       goal: trusted (dynamic) or untrusted (static) mirror
-      possible for mantis and rankings, not for webcvs and mailman interface
+      possible for mantis and rankings, not for websvn and mailman interface
 ftp:  redundancy through download mirrors, via anonymous rsync:
       * ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org (Belgium)
 	    http://ftp.belnet.be/mirror/ftp.ggzgamingzone.org/
@@ -79,17 +88,17 @@ live: provides no redundancy
       would use another database!
 bugs: provices no redundancy
       goal: not needed
-cvs:  provides no redundancy
+svn:  provides no redundancy
       goal: wait for distributed rcs
 
 Backups:
 
-http: none, maintained via cvs
+http: none, maintained via svn
 mail: user-defined for address forwards
       mailing lists: tarball (/var/lib/mailman)
 live: database: tarball (/var/lib/postgres)
 bugs: database: tarball (/var/lib/mysql)
-cvs:  repository: tarball (/var/lib/cvs)
+svn:  repository: tarball (/svn)
       unscheduled rsync backups
 system: tarballs (/etc, /home/ggz)
 
