@@ -27,7 +27,10 @@ Our bug tracking system is implemented using Mantis, where you can report bugs o
 <a href="/mantis/">Mantis</a><br>
 <br><br>
 
-Bug reports are sent to the ggz-bugs mailing list.
+Bug reports are forwarded by Mantis to the
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-bugs">ggz-bugs</a>
+mailing list, which is a read-only list
+for developers to keep track of new bugs and status changes.
 <br><br>
 
 </body>
