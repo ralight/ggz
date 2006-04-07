@@ -66,6 +66,8 @@ class GGZGameServerPrivate
 			GGZdMod *m_ggzdmod;
 };
 
+GGZGameServer *GGZGameServerPrivate::m_parent;
+
 // Constructor: setup the server
 GGZGameServer::GGZGameServer()
 {
