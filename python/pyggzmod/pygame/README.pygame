@@ -1,0 +1,48 @@
+Pygame integration for ggzmod
+=============================
+
+The python wrapper for ggzmod has existed for a long time.
+It is suitable for all game toolkits based on Python. However, a number
+of games are written using the popular Pygame library, which is based
+on SDL.
+
+Therefore, ggzmod is now available as a pygame extension, pygame.ggzmod!
+It works already, even though it has not been tested for thread-safety.
+Try it out and see if it works.
+For installation, copy ggzmodpygame.py to $prefix/lib/site-python.
+
+Using the code is simple:
+
+- first, import the module, and declare it to be a pygame extension
+import pygame
+import ggzmodpygame
+pygame.ggzmod = ggzmodpygame
+
+- next, initialise it, since pygame doesn't include such extensions in init()
+pygame.init()
+try:
+  pygame.ggzmod.init()
+except:
+  # handle error: game does not run as a GGZ module
+  # bail out for pure GGZ games, or disable GGZ mode for others
+
+- query the normal pygame event loop
+while 1:
+  pygame.event.pump()
+  event = pygame.event.wait()
+
+- wait for ggzmod or game server events
+if event.type == KEYDOWN:
+  # normal pygame events...
+if event.type == pygame.ggzmod.GGZMODEVENT:
+  # ggzmod state change, seat change etc.
+  # ggzmod event id is event.id
+if event.type == pygame.ggzmod.GGZMODDATA:
+  # data from the game server!
+  # socket object is pygame.ggzmod.channel
+
+- for ggzmod events, use pygame.ggzmod.ggzmod according to pyggzmod docs
+mod = pygame.ggzmod.ggzmod
+# shortcut :)
+print mod.getState()
+
