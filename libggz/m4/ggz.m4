@@ -127,6 +127,12 @@ if test "x$prefix" = "xNONE"; then
 fi
 AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
+ac_ggz_prefix=""
+AC_ARG_WITH(ggz-dir,
+    AC_HELP_STRING([--with-ggz-dir=DIR], [Path to GGZ Gaming Zone]),
+    [  ac_ggz_prefix="$withval"
+    ])
+
 if test "x${prefix}" = "xNONE"; then
    ac_ggz_prefix_incdir="${ac_default_prefix}/include"
    ac_ggz_prefix_libdir="${ac_default_prefix}/lib"
@@ -141,12 +147,18 @@ fi
 ac_ggz_stdinc="$ac_ggz_prefix_incdir"
 ac_ggz_stdlib="$ac_ggz_prefix_libdir"
 ac_ggz_stdbin="$ac_ggz_prefix_bindir"
-ac_ggz_stdetc="$ac_ggz_prefix_etcdir"
+ac_ggz_stdetc="$ac_ggz_prefix_etcdir/ggzd"
+if test "x$ac_ggz_prefix" != "x"; then
+  ac_ggz_stdinc="$ac_ggz_stdinc $ac_ggz_prefix/include"
+  ac_ggz_stdlib="$ac_ggz_stdlib $ac_ggz_prefix/lib"
+  ac_ggz_stdbin="$ac_ggz_stdbin $ac_ggz_prefix/bin"
+  ac_ggz_stdetc="$ac_ggz_stdetc $ac_ggz_prefix/etc/ggzd"
+fi
 if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdinc="$ac_ggz_stdinc /usr/local/include /usr/include"
   ac_ggz_stdlib="$ac_ggz_stdlib /usr/local/lib /usr/lib"
   ac_ggz_stdbin="$ac_ggz_stdbin /usr/local/bin /usr/bin"
-  ac_ggz_stdetc="$ac_ggz_stdetc/ggzd /usr/local/etc/ggzd /etc/ggzd"
+  ac_ggz_stdetc="$ac_ggz_stdetc /usr/local/etc/ggzd /etc/ggzd"
 fi
 if test "x$1" = "xexport" || test "x$2" = "xexport"; then
   CPPFLAGS="$CPPFLAGS -isystem ${ac_ggz_prefix_incdir} -isystem /usr/local/include"
