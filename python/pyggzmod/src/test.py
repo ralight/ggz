@@ -50,7 +50,7 @@ def hook_spectator (oldseat):
 	print " - {num:", num, ", name:", name, "}"
 
 def hook_chat (data):
-	(sender, message)
+	(sender, message) = data
 	print "* chat event; sender:", sender, ", message:", message
 
 def hook_stats ():
