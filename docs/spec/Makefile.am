@@ -5,7 +5,7 @@ SGML_FILES = appendix.sgml design.sgml overview.sgml client-server.sgml \
 
 EXTRA_DIST = $(SGML_FILES) design.dsl design-txt.dsl server_arch.fig
 
-all: design-html design.pdf design.txt
+all-local: design-html design.pdf design.txt
 
 design-html: $(SGML_FILES)
 	$(SGML2HTML) $(srcdir)/design.sgml
@@ -23,12 +23,12 @@ design.txt: design-txt.dsl $(SGML_FILES)
 	$(LYNX) -dump tmp.html -nolist > design.txt
 	-rm tmp.html
 
-clean:
+clean-local:
 	rm -rf design-html
 	rm -f design.txt tmp.html
 	rm -f design.aux design.jtex design.log design.out design.pdf
 
-install:
+install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(GGZDOCDIR)/spec
 	cp -r design-html $(DESTDIR)$(GGZDOCDIR)/spec
 	cp -r design.txt $(DESTDIR)$(GGZDOCDIR)/spec

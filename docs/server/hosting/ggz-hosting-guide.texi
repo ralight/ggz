@@ -1,11 +1,11 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-hosting-guide.info
-@settitle The GGZ Gaming Zone 0.0.13 - Hosting Guide
+@settitle The GGZ Gaming Zone 0.0.14 - Hosting Guide
 @setchapternewpage odd
 @c %**end of header
 
-@c TODO: 
+@c TODO:
 @c links to other documentation
 @c server log analysis
 @c web presentation of usage percentage etc.
@@ -18,7 +18,7 @@ Copyright (C) 2001 - 2006 Josef Spillner
 
 @c Frontpage
 @titlepage
-@title The GGZ Gaming Zone 0.0.13 - Hosting Guide
+@title The GGZ Gaming Zone 0.0.14 - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
 @author GGZ Development Team
 
@@ -91,7 +91,7 @@ section about the game Keepalive below.
 
 @section Overview
 
-This describes a typical setup for GGZ 0.0.13.
+This describes a typical setup for GGZ 0.0.14.
 All following versions will certainly require other tools or other versions of
 the present one, but the main concept hasn't changed for a while.
 Before installing GGZ on a server, make sure that the following conditions are
@@ -117,6 +117,8 @@ the following is also recommended:
 
 @itemize
 @item gnugo
+@item gnuchess
+@item gnushogi
 @item libxml
 @item python
 @item perl
@@ -132,9 +134,9 @@ Memory is normally not an issue, even old server hardware with only 32 MB of
 RAM should be sufficient. The same goes for the CPU - a GGZ server with less
 than 100 people on it can be handled by any Pentium-class or better CPU.
 Network bandwidth is difficult to estimate, as each game requires a different
-amount of it. But the GGZ development server, once connected by 56k, handled a few
-players and games at the same time quite well, so there's no need for high
-bandwidth under normal circumstances.
+amount of it. But the first GGZ development server, once connected by 56k,
+handled a few players and games at the same time quite well, so there's no need
+for high bandwidth under normal circumstances.
 More detailed calculations, including real-time games and measurement/control
 tools will follow later.
 
@@ -472,6 +474,9 @@ cgc library from @url{http://chessd.sourceforge.net}, like the chessd Fischer
 server. This library is a static one, just like the chess AI library, so no
 further dependencies are needed.
 
+If GNU Chess is installed, selecting its corresponding AI player personality
+enabled the users to play against it.
+
 @subsection Chinese Checkers
 
 A chinese checkers game for 2-6 players.
@@ -729,7 +734,8 @@ the Playground module in GGZ SVN.
 Admins are allowed to broadcast messages to all rooms via the /wall command.
 To do that from the command line, for example to announce that a server will go
 down in a few minutes, the utility ggz-cmd can be used.
-It is available from the utils/cmd-client directory.
+It is available from the utils/cmd-client directory, or as part of a ggz-utils
+package.
 
 An example on how to use ggz-cmd on a server (the specified user must be
 registered as administrator, using ggzduedit, see below):
@@ -765,7 +771,8 @@ An example session to such a server is initiated by calling:
 @command{ggzduedit -H localhost -D ggz -u ggzd -p}
 
 If not all of the parameters above are given, the standard mode (using a local
-database in libdb format) is entered.
+database in libdb format) is entered, unless the ggzd configuration file can be
+read - no parameters need to be given in this case.
 
 @itemize @bullet
 @item PERMS_JOIN_TABLE: Allows the player to join any games. This is normally
@@ -941,7 +948,7 @@ can be filled with either a file name or a virtual file name such as stderr.
 
 @appendix Local GGZ server installation
 
-These instructions apply to a vanilla 0.0.13 installation if one doesn't have
+These instructions apply to a vanilla 0.0.14 installation if one doesn't have
 system privileges.
 You may have to modify some details though.
 Note that the getggz.sh script usually handles many of the steps below.
@@ -950,23 +957,19 @@ Note that the getggz.sh script usually handles many of the steps below.
 
 @verbatim
 cd ~
-mkdir localsys
-mkdir localsys/usr
-mkdir localsys/etc
-mkdir ggz-0.0.13
-cd ggz-0.0.13
-svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-13/libggz
-svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-13/ggzd
+mkdir ggz-0.0.14
+cd ggz-0.0.14
+svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-14/libggz
+svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-14/ggzd
 cd libggz
 ./autogen.sh --prefix=$HOME/localsys/usr
 make
 make install
 cd ..
 cd ggzd
-export LD_RUN_PATH=$HOME/localsys/usr/lib
-export LD_LIBRARY_PATH=$LD_RUN_PATH
+export LD_LIBRARY_PATH=$HOME/localsys/usr/lib
 ./autogen.sh --prefix=$HOME/localsys/usr \
-	--with-database=db4 --with-libggz-dir=$HOME/localsys/usr
+	--with-database=db4
 make
 make install
 cd ..

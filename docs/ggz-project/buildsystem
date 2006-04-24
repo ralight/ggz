@@ -21,6 +21,17 @@ Also, other checks such as for POSIX compatibility, debugging options,
 package-specific checks (like ggzd databases) should be written as
 additional *.m4 files. This helps keeping configure.ac clean.
 
+Paths
+-----
+
+See AC_GGZ_INIT for information about which paths are searched for in order
+to find GGZ. Most importantly, all macros can be fine-tuned by adding
+--with-libfoo-dir or similar options. A global switch, --with-ggz-dir,
+can be given to save the work to configure all macros this way. This is useful
+if a GGZ-enabled game is installed into a prefix different from the one
+GGZ is installed to. Note that the game registry (ggz.modules) will then not
+be touched, so that a manual integration is necessary.
+
 Macro schema
 ------------
 
@@ -39,6 +50,8 @@ AC_GGZ_INIT
   * defaults
     Adds a bunch standard paths for headers, libraries and binaries to the
     search path. Currently, these are /usr and /usr/local.
+    In addition, if a dedicated GGZ prefix has been given, this one is added
+    also.
   * export
     The default search path is made available to external checks.
 
@@ -78,6 +91,8 @@ AC_GGZ_CONFIG
     Ignores missing ggz-config. In this case, no *.dsc files are installed.
 	This is useful for binary package creation which register the games
 	after the package has been installed.
+
+AC_GGZ_GTK, AC_GGZ_CHECK, AC_GGZ_VERSION: TODO
 
 How to use conditional macros:
 ------------------------------
@@ -136,4 +151,5 @@ On Windows, static libraries are built. Only .a and .la files are installed.
 Josef, 25.09.2002
 Update: 04.02.2005
 Update: 14.09.2005
+Update: 08.04.2006
 

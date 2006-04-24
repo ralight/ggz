@@ -4,7 +4,7 @@ SGML_FILES = serverspec.sgml
 
 EXTRA_DIST = $(SGML_FILES) design-txt.dsl
 
-all: serverspec-html serverspec.pdf serverspec.txt
+all-local: serverspec-html serverspec.pdf serverspec.txt
 
 serverspec-html: $(SGML_FILES)
 	$(SGML2HTML) $(srcdir)/serverspec.sgml
@@ -20,12 +20,12 @@ serverspec.txt: design-txt.dsl $(SGML_FILES)
 	$(LYNX) -dump tmp.html -nolist > serverspec.txt
 	-rm tmp.html
 
-clean:
+clean-local:
 	rm -rf serverspec-html
 	rm -f serverspec.txt tmp.html
 	rm -f serverspec.aux serverspec.jtex serverspec.log serverspec.out serverspec.pdf
 
-install:
+install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(GGZDOCDIR)/spec/serverspec
 	cp -r serverspec-html $(DESTDIR)$(GGZDOCDIR)/spec/serverspec
 	cp -r serverspec.txt $(DESTDIR)$(GGZDOCDIR)/spec/serverspec
