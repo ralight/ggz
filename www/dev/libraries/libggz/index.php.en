@@ -34,7 +34,7 @@ The libggz library wraps many common low-level functions which are often used in
 <i>Interfaces to libggz</i><br>
 
 <table class="list">
-<tr><td>libggz</td><td>Language: C</td><td>Location: libggz/src/ggz.h</td><td></td></tr>
+<tr><td>libggz</td><td>Language: C</td><td>Location: libggz/src/ggz.h</td></tr>
 </table>
 
 <br>
@@ -42,9 +42,9 @@ The libggz library wraps many common low-level functions which are often used in
 <i>Library configuration and dependencies</i><br>
 
 <table class="list">
-<tr><td>OpenSSL</td><td>optional</td><td>for network functions with TLS</td><td></td></tr>
-<tr><td>GnuTLS</td><td>optional</td><td>for network functions with TLS</td><td></td></tr>
-<tr><td>GCrypt</td><td>optional</td><td>for hash creation and validation</td><td></td></tr>
+<tr><td>OpenSSL</td><td>optional</td><td>for network functions with TLS</td></tr>
+<tr><td>GnuTLS</td><td>optional</td><td>for network functions with TLS</td></tr>
+<tr><td>GCrypt</td><td>optional</td><td>for hash creation and validation</td></tr>
 </table>
 
 </td></tr>

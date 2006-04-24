@@ -34,9 +34,9 @@ GGZ core clients and advanced games can use ggzcore to communicate with the GGZ 
 <i>Interfaces to ggzcore</i><br>
 
 <table class="list">
-<tr><td>ggzcore</td><td>Language: C</td><td>Location: ggz-client-libs/ggzcore/ggzcore.h</td><td></td></tr>
-<tr><td>ggzcore++</td><td>Language: C++</td><td>Location: kde-client/ggz-kde/ggzcore++</td><td></td></tr>
-<tr><td>pyggzcoresimple</td><td>Language: Python</td><td>Location: python/pyggzcore</td><td></td></tr>
+<tr><td>ggzcore</td><td>Language: C</td><td>Location: ggz-client-libs/ggzcore/ggzcore.h</td></tr>
+<tr><td>ggzcore++</td><td>Language: C++</td><td>Location: kde-client/ggz-kde/ggzcore++</td></tr>
+<tr><td>pyggzcoresimple</td><td>Language: Python</td><td>Location: python/pyggzcore</td></tr>
 </table>
 
 <br>
@@ -44,7 +44,7 @@ GGZ core clients and advanced games can use ggzcore to communicate with the GGZ 
 <i>Library configuration and dependencies</i><br>
 
 <table class="list">
-<tr><td>Expat</td><td>required</td><td>to handle the XML network protocol</td><td></td></tr>
+<tr><td>Expat</td><td>required</td><td>to handle the XML network protocol</td></tr>
 </table>
 
 </td></tr>
