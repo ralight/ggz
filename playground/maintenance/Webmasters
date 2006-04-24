@@ -1,7 +1,7 @@
 GGZ Gaming Zone Webmasters Reference
 ====================================
 
-The CVS module which keeps the web pages is called 'www'.
+The SVN module which keeps the web pages is called 'www'.
 Both the 'www' and the 'dev' subdomain rely on them.
 This reference explains some concepts.
 
@@ -39,7 +39,11 @@ Maintenance
 -----------
 The script missingtranslation.pl should be called from time to time,
 especially using the --defaults parameter, in /var/www/ggz/www.
-The generated files should not be added to CVS.
+The generated files should not be added to SVN.
+
+The script findmissingdocs.sh can be used to update the contents of the
+documentation directory in chunks after releases or whenever the content
+gets lost.
 
 Links
 -----
