@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 7861 2006-02-13 07:02:50Z josef $
+ * $Id: datatypes.h 8001 2006-04-24 07:17:07Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -91,6 +91,7 @@ typedef struct GameInfo {
 	pthread_rwlock_t lock; /* This lock is used though not needed. */
 	char name[MAX_GAME_NAME_LEN + 1];    /* Game name */
 	char *version; /* Game version; cleanup() */
+	char *game; /* Internal game name as per its .dsc file; cleanup() */
 	
 	/* Protocol data - the protocol engine is the name of the
 	   protocol, and the version is the protocol version.  These

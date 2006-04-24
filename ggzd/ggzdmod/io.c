@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 7887 2006-03-07 09:56:51Z josef $
+ * $Id: io.c 8001 2006-04-24 07:17:07Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -59,9 +59,10 @@ static int _io_read_msg_spectator_seat_change(GGZdMod *ggzdmod);
 
 
 /* Functions for sending IO messages */
-int _io_send_launch(int fd, int seats, int spectators)
+int _io_send_launch(int fd, const char *name, int seats, int spectators)
 {
 	if (ggz_write_int(fd, MSG_GAME_LAUNCH) < 0 
+	    || ggz_write_string(fd, name) < 0
 	    || ggz_write_int(fd, seats) < 0
 		|| ggz_write_int(fd, spectators) < 0)
 		return -1;
@@ -419,13 +420,16 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 {
 	int seats, spectators, i;
 	GGZSeat seat;
+	char *game;
 	
+	if (ggz_read_string_alloc(ggzdmod->fd, &game) < 0)
+		return -1;
 	if (ggz_read_int(ggzdmod->fd, &seats) < 0)
 		return -1;
 	if (ggz_read_int(ggzdmod->fd, &spectators) < 0)
 		return -1;
 
-	_ggzdmod_handle_launch_begin(ggzdmod, seats, spectators);
+	_ggzdmod_handle_launch_begin(ggzdmod, game, seats, spectators);
 
 	for (i = 0; i < seats; i++) {
 		char *name = NULL;
@@ -451,6 +455,8 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 		if (name)
 			ggz_free(name);
 	}
+
+	ggz_free(game);
 
 	_ggzdmod_handle_launch_end(ggzdmod);
 	

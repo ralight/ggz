@@ -165,12 +165,12 @@ static void examine(const char *buffer)
 	tok = strtok(orig, "\n");
 	while(tok)
 	{
-		printf("# %s\n", tok);
+		/*ggz_debug(DEBUG_AI, "# %s\n", tok);*/
 
 		ret = sscanf(tok, "%d. ... %s", &seq, answer);
 		if(ret == 2)
 		{
-			printf("** move! (%i, %s)\n", seq, answer);
+			/*ggz_debug(DEBUG_AI, "** move! (%i, %s)\n", seq, answer);*/
 			move[0] = answer[0];
 			move[1] = answer[1];
 			move[2] = answer[2];

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 7969 2006-03-22 11:17:16Z josef $
+ * $Id: ggzdmod.c 8001 2006-04-24 07:17:07Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -66,6 +66,7 @@
 static void call_handler(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static int get_fd_max(GGZdMod * ggzdmod);
 static fd_set get_active_fd_set(GGZdMod * ggzdmod);
+static void _ggzdmod_set_game(GGZdMod * ggzdmod, const char *game);
 static void _ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
 static void _ggzdmod_set_max_num_spectators(GGZdMod * ggzdmod,
 					    int num_spectators);
@@ -238,6 +239,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 
 	ggzdmod->pid = -1;
 	ggzdmod->argv = NULL;
+	ggzdmod->game = NULL;
 	/* Put any other necessary initialization here.  All fields
 	   should be initialized.  Note NULL may not necessarily be 0
 	   on all platforms. */
@@ -275,13 +277,16 @@ void ggzdmod_free(GGZdMod * ggzdmod)
 		ggz_free(ggzdmod->argv);
 	}
 
+	if(ggzdmod->game)
+		ggz_free(ggzdmod->game);
+
 	/* Free the object */
 	ggz_free(ggzdmod);
 }
 
 
 /* 
- * Accesor functions for GGZdMod
+ * Accessor functions for GGZdMod
  */
 
 /* The ggzdmod FD is the main ggzd<->game server communications socket. */
@@ -373,6 +378,11 @@ void* ggzdmod_get_gamedata(GGZdMod * ggzdmod)
 	return ggzdmod->gamedata;
 }
 
+static void _ggzdmod_set_game(GGZdMod *ggzdmod, const char *game)
+{
+	ggzdmod->game = ggz_strdup(game);
+}
+
 static void _ggzdmod_set_num_seats(GGZdMod *ggzdmod, int num_seats)
 {
 	int i, old_num;
@@ -417,7 +427,9 @@ char* ggzdmod_get_bot_class(GGZdMod *ggzdmod, const char *name)
 	/* FIXME: find out which game we play here */
 	/* FIXME: Named bots mapping should probably be preloaded before */
 	/* FIXME: launch, e.g. in set_module() */
-	game = "tictactoe";
+	game = ggzdmod->game;
+	if(!game) return NULL;
+
 	len = strlen(GGZDCONFDIR) + strlen("games") + strlen(game) + 7;
 	conffile = (char*)ggz_malloc(len);
 	snprintf(conffile, len, "%s/games/%s.dsc", GGZDCONFDIR, game);
@@ -470,7 +482,7 @@ int ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats)
 }
 
 void ggzdmod_set_module(GGZdMod * ggzdmod,
-                        const char *pwd, char **argv)
+                        const char *game, const char *pwd, char **argv)
 {
 	int i;
 
@@ -497,6 +509,7 @@ void ggzdmod_set_module(GGZdMod * ggzdmod,
 	
 	ggzdmod->argv = ggz_malloc(sizeof(char*)*(i+1));
 	ggzdmod->pwd = ggz_strdup(pwd);
+	ggzdmod->game = ggz_strdup(game);
 	
 	for (i = 0; argv[i]; i++) 
 		ggzdmod->argv[i] = ggz_strdup(argv[i]);
@@ -1079,7 +1092,7 @@ static int send_game_launch(GGZdMod * ggzdmod)
 	GGZSeat *seat;
 		
 
-	if (_io_send_launch(ggzdmod->fd, ggzdmod->num_seats,
+	if (_io_send_launch(ggzdmod->fd, ggzdmod->game, ggzdmod->num_seats,
 			    ggzdmod->max_num_spectators) < 0) {
 		_ggzdmod_error(ggzdmod, "Error writing to game");
 		return -1;
@@ -1375,7 +1388,7 @@ void _ggzdmod_handle_log(GGZdMod * ggzdmod, char *msg)
 
 
 /* Game-side event: launch event received from ggzd */
-void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats, int num_spectators)
+void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, const char *game, int num_seats, int num_spectators)
 {
 #if 0
 	int bots = 0;
@@ -1393,6 +1406,7 @@ void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats, int num_spec
 		return;
 	}
 
+	_ggzdmod_set_game(ggzdmod, game);
 	_ggzdmod_set_num_seats(ggzdmod, num_seats);
 	_ggzdmod_set_max_num_spectators(ggzdmod, num_spectators);
 }

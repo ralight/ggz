@@ -50,7 +50,6 @@ Keepalive::Keepalive()
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, hook_events);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, hook_events);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, hook_events);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LOG, hook_events);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, hook_data);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_ERROR, hook_events);
 #ifdef GGZSPECTATORS
@@ -148,12 +147,6 @@ void Keepalive::hookError(const void *data)
 	std::cerr << "An error occured: " << (char*)data << std::endl;
 }
 
-// Handler for logging events
-void Keepalive::hookLog(const void *data)
-{
-	std::cout << "(log) " << (char*)data << std::endl;
-}
-
 // Callback for events
 void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
 {
@@ -178,9 +171,6 @@ void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
 //std::cout << "Leave event number: " << player << std::endl;
 			//me->hookLeave(&player);
 			me->hookLeave(data);
-			break;
-		case GGZDMOD_EVENT_LOG:
-			me->hookLog(data);
 			break;
 		case GGZDMOD_EVENT_ERROR:
 			me->hookError(data);

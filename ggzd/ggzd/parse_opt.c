@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 7861 2006-02-13 07:02:50Z josef $
+ * $Id: parse_opt.c 8001 2006-04-24 07:17:07Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -519,6 +519,8 @@ static void parse_game(char *name, char *dir)
 	/* Initialize the basic data for the game info struct. */
 	memset(&game_info, 0, sizeof(GameInfo));
 	pthread_rwlock_init(&game_info.lock, NULL);	
+
+	game_info.game = ggz_strdup(name);
 
 	/* [GameInfo] */
 	/* FIXME: this data is never free'd.  This isn't really a problem,

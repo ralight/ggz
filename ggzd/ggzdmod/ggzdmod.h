@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 7969 2006-03-22 11:17:16Z josef $
+ * $Id: ggzdmod.h 8001 2006-04-24 07:17:07Z josef $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -193,7 +193,7 @@
 
 #define GGZDMOD_VERSION_MAJOR 0
 #define GGZDMOD_VERSION_MINOR 0
-#define GGZDMOD_VERSION_MICRO 13
+#define GGZDMOD_VERSION_MICRO 14
 #define GGZDMOD_VERSION_IFACE "5:0:1"
 
 #ifdef __cplusplus
@@ -293,12 +293,6 @@ typedef enum {
 	 *  which is passed as the event data.  This may someday replace
 	 *  both SPECTATOR_JOIN and SPECTATOR_LEAVE. */
 	GGZDMOD_EVENT_SPECTATOR_SEAT,
-
-	/** @brief Module log request
-	 *  This event occurs when a log request happens.  This will
-	 *  only be used by the GGZ server; the game server should
-	 *  use ggzdmod_log to generate the log. */
-	GGZDMOD_EVENT_LOG,
 
 	/** @brief Data available from player
 	 *  This event occurs when there is data ready to be read from

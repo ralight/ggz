@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 7887 2006-03-07 09:56:51Z josef $
+ * $Id: protocol.h 8001 2006-04-24 07:17:07Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -69,6 +69,7 @@ typedef enum {
 	 *
 	 *  The packet is composed of:
 	 *    - An integer containing MSG_GAME_LAUNCH.
+	 *    - A string containing the game's name
 	 *    - An integer containing the number of seats at the table.
 	 *    - An integer containing the number of spectators
 	 *    - Seat data for every seat at the table:

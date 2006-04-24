@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 7969 2006-03-22 11:17:16Z josef $
+ * $Id: mod.h 8001 2006-04-24 07:17:07Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -57,7 +57,8 @@ struct GGZdMod {
 	/* ggz-only data */
 	pid_t pid;		/* process ID of table */
 	char *pwd;		/* working directory for game */
-	char **argv;            /* command-line arguments for launching module */
+	char **argv;	/* command-line arguments for launching module */
+	char *game;		/* game name (e.g. tictactoe), from the .dsc file */
 
 	/* etc. */
 };
@@ -77,7 +78,7 @@ void _ggzdmod_handle_bot_request(GGZdMod *ggzdmod, int seat_num);
 void _ggzdmod_handle_open_request(GGZdMod *ggzdmod, int seat_num);
 
 /* Game side functions for handling various messages */
-void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats, int num_spectators);
+void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, const char *game, int num_seats, int num_spectators);
 void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat);
 void _ggzdmod_handle_launch_end(GGZdMod * ggzdmod);
 void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat *seat);

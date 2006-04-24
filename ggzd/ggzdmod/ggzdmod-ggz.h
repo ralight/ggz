@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/27/02
  * Desc: GGZ game module functions, GGZ-side only
- * $Id: ggzdmod-ggz.h 7969 2006-03-22 11:17:16Z josef $
+ * $Id: ggzdmod-ggz.h 8001 2006-04-24 07:17:07Z josef $
  *
  * This file contains the GGZ-only interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -44,13 +44,14 @@ int ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
  *  function allows ggzd to specify how this should be done.
  *  @note This should not be called by the table, only ggzd.
  *  @param ggzdmod The GGZdmod object.
+ *  @param game Name of the game as per its .dsc file
  *  @param pwd The working directory for the game, or NULL.
  *  @param args The arguments for the program, as needed by exec.
  *  @note The pwd directory must already exist.
  *  @note The executable must be an absolute path (or relative to pwd).
  */
 void ggzdmod_set_module(GGZdMod * ggzdmod,
-                        const char *pwd, char **args);
+                        const char *game, const char *pwd, char **args);
 
 /** @brief Set seat data.
  *
@@ -120,6 +121,12 @@ typedef enum {
 
 	/** @brief For GGZ only.  Reports a savegame. */
 	GGZDMOD_EVENT_SAVEGAMEREPORT,
+
+	/** @brief Module log request
+	 *  This event occurs when a log request happens.  This will
+	 *  only be used by the GGZ server; the game server should
+	 *  use ggzdmod_log to generate the log. */
+	GGZDMOD_EVENT_LOG,
 
 	/* @brief GGZ-side only.  Requests a change in the number of seats. */
 	GGZDMOD_EVENT_REQ_NUM_SEATS,

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 7612 2005-11-07 10:39:49Z josef $
+ * $Id: table.c 8001 2006-04-24 07:17:07Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -414,6 +414,7 @@ static GGZReturn table_start_game(GGZTable *table)
 #endif
 	char **args;
 	char *pwd;
+	char *game;
 	int type, i, num_seats;
 	GGZReturn status = GGZ_OK;
 	GGZSeat seat;
@@ -431,6 +432,7 @@ static GGZReturn table_start_game(GGZTable *table)
 	pthread_rwlock_rdlock(&game_types[type].lock);
 	pwd = game_types[type].data_dir;
 	args = game_types[type].exec_args;
+	game = game_types[type].game;
 	pthread_rwlock_unlock(&game_types[type].lock);
 
 	/* Set a pointer to the table so we can get it back in the
@@ -457,7 +459,7 @@ static GGZReturn table_start_game(GGZTable *table)
         /* Setup seats for game table */
 	num_seats = seats_num(table);
 	ggzdmod_set_num_seats(table->ggzdmod, num_seats);
-        for (i = 0; i < num_seats; i++) {
+	for (i = 0; i < num_seats; i++) {
 		seat.num = i;
 		seat.type = seats_type(table, i);
 		if (seat.type == GGZ_SEAT_RESERVED || seat.type == GGZ_SEAT_BOT)
@@ -467,10 +469,10 @@ static GGZReturn table_start_game(GGZTable *table)
 		seat.fd = -1;
 		if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
 			status = GGZ_ERROR;
-        }
+	}
 
 	/* And start the game */
-	ggzdmod_set_module(table->ggzdmod, pwd, args);
+	ggzdmod_set_module(table->ggzdmod, game, pwd, args);
 	if (ggzdmod_connect(table->ggzdmod) < 0)
 		status = GGZ_ERROR;
 
