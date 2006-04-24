@@ -22,6 +22,11 @@ GGZ-Übersicht:
 <a href="/docs/overview/index.de.html">HTML</a>
 <br>
 
+GGZ-Präsentation (Chemnitzer Linux-Tage 2006):
+<a href="/docs/presentation/chemnitz2006/">HTML</a>,
+<a href="/docs/presentation/chemnitz2006/ggz-clt2006-nopics.pyntor">Pyntor</a>
+<br>
+
 GGZ-Präsentation (LinuxTag Karlsruhe 2005):
 <a href="/docs/presentation/linuxtag2005/de/">HTML</a>
 <br>
@@ -53,8 +58,9 @@ und einige weitere als Teil der
 <tr><td>
 
 <i>Entwickler-Dokumentation</i><br>
-Entwickler-Dokumentation steht im Entwicklerbereich dieser Webseiten
-bereit.
+Entwickler-Dokumentation steht im
+<a href="http://dev.ggzgamingzone.org/">Entwicklerbereich</a>
+dieser Webseiten bereit.
 <br><br>
 
 Die Architektur von GGZ:
@@ -129,6 +135,10 @@ API der Bibliothek ggzmod:
 API der Bibliothek ggzdmod:
 <a href="/docs/api/ggzdmod/">HTML</a>
 <a href="/docs/api/ggzdmod.pdf">PDF</a>
+<br>
+
+API der Bibliothek ggzmod für Python (pyggzmod):
+<a href="/docs/api/pyggzmod/">HTML</a>
 <br><br>
 
 </td></tr>

@@ -31,14 +31,15 @@ The project homepage is:
 
 The Kamikaze server allows users of the Kamikaze
 game clients to play online against each other.
-It provides very basic GGZ support.
+It provides very basic GGZ support, including win/loss statistics from
+version 0.2.2 on.
 
 <br><br>
 
 <i>GGZ game server support</i><br>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
-<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
