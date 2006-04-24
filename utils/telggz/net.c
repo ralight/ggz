@@ -51,7 +51,6 @@ void net_login(const char *username, const char *password)
 	if(!port) port = 5688;
 	ggzcore_server_set_hostinfo(server, host, port, 0);
 	printf("Logging in as %s...\n", m_username);
-	fflush(NULL);
 	ggzcore_server_connect(server);
 }
 
@@ -74,7 +73,6 @@ void net_allow(int allow)
 	if(!allow)
 	{
 		printf("* Buffered input\n");
-		fflush(NULL);
 	}
 	m_allow = allow;
 }
@@ -87,7 +85,6 @@ void net_host(const char *hostname, int portnumber)
 	host = strdup(hostname);
 	port = portnumber;
 	printf("TelGGZ: Host is now %s:%i.\n", hostname, port);
-	fflush(NULL);
 }
 
 void net_join(int roomnum)
@@ -105,7 +102,6 @@ void net_list(void)
 		room = ggzcore_server_get_nth_room(server, i);
 		printf("%3i: %s\n", i, ggzcore_room_get_name(room));
 	}
-	fflush(NULL);
 }
 
 void net_who(void)
@@ -113,7 +109,6 @@ void net_who(void)
 	if(!room)
 	{
 		printf("Not in a room yet.\n");
-		fflush(NULL);
 		return;
 	}
 
@@ -132,7 +127,6 @@ static GGZHookReturn net_hook_players(unsigned int id,
 		player = ggzcore_room_get_nth_player(room, i);
 		printf(" * %s\n", ggzcore_player_get_name(player));
 	}
-	fflush(NULL);
 
 	return GGZ_HOOK_OK;
 }
@@ -164,7 +158,6 @@ static GGZHookReturn net_hook_failure(unsigned int id, const void *event_data,
 
 	error = *(GGZErrorEventData*)event_data;
 	printf("TelGGZ: Error %i: %s\n", id, error.message);
-	fflush(NULL);
 	exit(-1);
 
 	return GGZ_HOOK_OK;
@@ -195,7 +188,6 @@ static GGZHookReturn net_hook_roomlist(unsigned int id,
 				       const void *user_data)
 {
 	printf("TelGGZ: Logged in.\n");
-	fflush(NULL);
 
 	ggzcore_server_join_room(server, 0);
 
@@ -215,7 +207,6 @@ static GGZHookReturn net_hook_roomenter(unsigned int id,
 	{
 		flush_buffer();
 		printf("TelGGZ: %s has joined the room.\n", player);
-		fflush(NULL);
 	}
 	else
 	{
@@ -244,7 +235,6 @@ static GGZHookReturn net_hook_roomleave(unsigned int id,
 	{
 		flush_buffer();
 		printf("TelGGZ: %s has left the room.\n", player);
-		fflush(NULL);
 	}
 	else
 	{
@@ -274,7 +264,6 @@ static GGZHookReturn net_hook_chat(unsigned int id, const void *event_data,
 	{
 		flush_buffer();
 		printf("[%s]: %s\n", chat->sender, chat->message);
-		fflush(NULL);
 	}
 	else
 	{
@@ -305,7 +294,6 @@ static GGZHookReturn net_hook_prvmsg(unsigned int id, const void *event_data,
 	{
 		flush_buffer();
 		printf("[[%s]]: %s\n", player, message);
-		fflush(NULL);
 	}
 	else
 	{
@@ -329,7 +317,6 @@ static GGZHookReturn net_hook_enter(unsigned int id, const void *event_data,
 	room = ggzcore_server_get_cur_room(server);
 
 	printf("TelGGZ: Joined room %s.\n", ggzcore_room_get_name(room));
-	fflush(NULL);
 
 	if(room)
 	{

@@ -154,7 +154,6 @@ void chat_loop()
 						printf("\n");
 						printf("Before starting to enter a line, press Enter once to prevent your line\n");
 						printf("from being overwritten.\n");
-						fflush(NULL);
 						unknown = 0;
 					}
 					if(!strcmp(list[0], "/list"))
@@ -173,14 +172,12 @@ void chat_loop()
 						else
 						{
 							printf("Wrong arguments,\n");
-							fflush(NULL);
 						}
 						unknown = 0;
 					}
 					if(unknown)
 					{
 						printf("Unknown command!\n");
-						fflush(NULL);
 					}
 				}
 			}
@@ -191,14 +188,12 @@ void chat_loop()
 			if(errno != EAGAIN)
 			{
 				printf("TelGGZ: ERROR! Input error.\n");
-				fflush(NULL);
 				exit(-1);
 			}
 		}
 		else if(ret == 0)
 		{
 			printf("TelGGZ: ERROR! Input error noop.\n");
-			fflush(NULL);
 			exit(-1);
 		}
 	}

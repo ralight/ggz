@@ -56,7 +56,7 @@ static void pref_listservers()
 	if(!i)
 	{
 		printf("TelGGZ: Error! No servers are available.\n");
-		fflush(NULL);
+		printf("Please check ~/.metaserver.cache.\n");
 		exit(-1);
 	}
 }
@@ -68,6 +68,9 @@ int main(int argc, char *argv[])
 	int ret, i;
 	char hostname[128];
 	char *username, *password;
+
+	/* No output buffering. */
+	setbuf(stdout, NULL);
 
 	/* Meta server stuff */
 	meta_init();
@@ -82,14 +85,12 @@ int main(int argc, char *argv[])
 	printf("[TelGGZ: GGZ Gaming Zone Telnet Wrapper v%s]\n",
 	       TELGGZ_VERSION);
 	printf("You're connected to %s.\n", hostname);
-	fflush(NULL);
 
 	/* Make sure GGZ is actually available. */
 	ret = ggzcore_init(opt);
 	if(ret != 0)
 	{
 		printf("TelGGZ: Error! GGZ is currently unavailable. Please join back later.\n");
-		fflush(NULL);
 		exit(-1);
 	}
 
@@ -98,7 +99,6 @@ int main(int argc, char *argv[])
 	pref_listservers();
 	printf("\n");
 	printf("Your choice: ");
-	fflush(NULL);
 	ret = chat_getserver() - 1;
 
 	/* Check argument */
@@ -109,17 +109,13 @@ int main(int argc, char *argv[])
 	if(ret >= 0)
 	{
 		printf("Login with username: ");
-		fflush(NULL);
 		username = chat_getusername();
 		printf("Use password: ");
-		fflush(NULL);
 		password = chat_getpassword();
 		printf("Connecting to %s:%i...\n", preflist[ret]->host, preflist[ret]->port);
-		fflush(NULL);
 		chat_connect(preflist[ret]->host, preflist[ret]->port, username, password);
 
 		printf("Type '/help' to get the list of available commands.\n");
-		fflush(NULL);
 
 		/* Enter the chat loop */
 		chat_loop();
@@ -127,7 +123,6 @@ int main(int argc, char *argv[])
 	else
 	{
 		printf("Well, maybe next time...\n");
-		fflush(NULL);
 	}
 
 	/* Exit with humor */
