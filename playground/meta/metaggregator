@@ -1,0 +1,234 @@
+#!/usr/bin/env python
+#
+# MetAggregator - Aggregation of metaservers
+# Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
+# Published under GNU GPL conditions
+
+import xml.dom.minidom
+
+class MetaConf:
+	def __init__(self, configfile):
+		self.metaservers = {}
+
+		try:
+			f = file(configfile)
+		except:
+			print "Error: Could not load configuration file %s." % configfile
+			return
+
+		lines = f.readlines()
+		f.close()
+
+		for line in lines:
+			line = line.strip()
+
+			if not line or line[0] == "#":
+				continue
+
+			#print ">>>", line
+			entry = line.split("|")
+			if len(entry) != 2:
+				print "Warning: invalid entry %s." % line
+				continue
+
+			(service, url) = entry
+			self.metaservers[url] = service
+
+# FIXME: helper method wrapper class?
+def find(element, childname):
+	# FIXME: implement more efficient search (no recursive search needed!)
+	return element.getElementsByTagName(childname)
+
+def findone(element, childname):
+	children = find(element, childname)
+	if len(children) == 0:
+		return None
+	child = children[0]
+	return child
+
+def findone_value(element, childname):
+	child = findone(element, childname)
+	if not child:
+		return None
+	textparts = child.childNodes
+	for textpart in textparts:
+		if textpart.nodeType == textpart.TEXT_NODE:
+				text = textpart.nodeValue
+				return text
+
+	return None
+
+class MetaLoader:
+	def __init__(self, service, url):
+		if service == "freeciv":
+			self.gameservers = self.load_freeciv(url)
+		elif service == "liquidwar":
+			self.gameservers = self.load_liquidwar(url)
+		elif service == "teg":
+			self.gameservers = self.load_teg(url)
+		elif service == "worldforge":
+			self.gameservers = self.load_worldforge(url)
+		else:
+			print "Warning: no handler available for %s." % service
+			self.gameservers = None
+
+	def load_liquidwar(self, url):
+		list = []
+
+		try:
+			f = open(url)
+		except:
+			print "Error: Could not load resource %s." % url
+			return None
+
+		lines = f.readlines()
+		f.close()
+
+		for line in lines:
+			line = line.strip()
+			fields = line.split(",")
+			if len(fields) != 9:
+				continue
+
+			#host,port,game,version,uptime,busyplayers,maxplayers,password,comment
+			gameserver = {}
+			gameserver["gamename"] = "liquidwar"
+			gameserver["host"] = fields[0]
+			gameserver["port"] = fields[1]
+
+			list.append(gameserver)
+
+		return list
+
+	def load_worldforge(self, url):
+		list = []
+
+		try:
+			dom = xml.dom.minidom.parse(url)
+		except:
+			print "Error: Could not load resource %s." % url
+			return None
+
+		metaquery = dom.documentElement
+
+		# FIXME: status attribute handling needed! (but is child element too)
+
+		servers = find(metaquery, "server")
+		for server in servers:
+			address = findone_value(server, "address")
+			status = findone_value(server, "status")
+			name = findone_value(server, "name")
+			servertype = findone_value(server, "servertype")
+			ruleset = findone_value(server, "ruleset")
+			uptime = findone_value(server, "uptime")
+			ping = findone_value(server, "ping")
+			clients = findone_value(server, "clients")
+			builddate = findone_value(server, "builddate")
+			version = findone_value(server, "version")
+
+			gameserver = {}
+			gameserver["gamename"] = "worldforge"
+			gameserver["host"] = address
+			gameserver["port"] = 0
+			gameserver["version"] = version
+			gameserver["comment"] = "Uptime: " + str(uptime)
+
+			list.append(gameserver)
+
+		return list
+
+	def load_teg(self, url):
+		list = []
+
+		try:
+			dom = xml.dom.minidom.parse(url)
+		except:
+			print "Error: Could not load resource %s." % url
+			return None
+
+		teg = dom.documentElement
+
+		# FIXME: version attribute handling needed?
+
+		entries = find(teg, "entry")
+		for entry in entries:
+			name = findone_value(entry, "name")
+			port = findone_value(entry, "port")
+			version = findone_value(entry, "version")
+			comment = findone_value(entry, "comment")
+
+			gameserver = {}
+			gameserver["gamename"] = "teg"
+			gameserver["host"] = name
+			gameserver["port"] = port
+			gameserver["version"] = version
+			gameserver["comment"] = comment
+
+			list.append(gameserver)
+
+		return list
+
+	def load_freeciv(self, url):
+		list = []
+
+		try:
+			dom = xml.dom.minidom.parse(url)
+		except:
+			print "Error: Could not load resource %s." % url
+			return None
+
+		rss = dom.documentElement
+		#print "RSS", rss
+
+		channels = find(rss, "channel")
+		channel = channels[0]
+		#print "CHANNEL", channel
+
+		items = find(channel, "item")
+		for item in items:
+			descriptions = find(item, "description")
+			description = descriptions[0]
+
+			gameserver = {}
+			gameserver["gamename"] = "freeciv"
+
+			textparts = description.childNodes
+			for textpart in textparts:
+				if textpart.nodeType == textpart.TEXT_NODE:
+					text = textpart.nodeValue
+					item = text
+					item = item.strip()
+					#print "-item-", item
+
+					entry = item.split(":")
+					if len(entry) < 2:
+						continue
+					keyword = entry[0].strip()
+					value = ":".join(entry[1:]).strip()
+
+					#print "KEY", keyword, value
+					if keyword == "Host":
+						gameserver["host"] = value
+
+			#print "Gameserver", gameserver
+			list.append(gameserver)
+
+		return list
+
+class MetaMeta:
+	def __init__(self):
+		self.config = MetaConf("metaggregator.conf")
+
+		for url in self.config.metaservers:
+			#print ">>> check", url
+
+			service = self.config.metaservers[url]
+			loader = MetaLoader(service, url)
+
+			if loader.gameservers:
+				print "== list"
+				for g in loader.gameservers:
+					print g
+
+m = MetaMeta()
+

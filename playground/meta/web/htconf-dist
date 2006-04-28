@@ -1,0 +1,10 @@
+<?php
+
+// Fill out and rename the file to .htconf!
+
+$dbhost = "localhost";
+$dbname = "meta";
+$dbuser = "xxx";
+$dbpass = "xxx";
+
+?>

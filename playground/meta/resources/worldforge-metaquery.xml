@@ -1,0 +1,50 @@
+<metaquery>
+<server status="valid">
+<address>194.47.249.67</address>
+<status>valid</status>
+<name>folke.ostgota.lu.se</name>
+<servertype>cyphesis</servertype>
+<ruleset>mason</ruleset>
+<uptime>3.39 weeks</uptime>
+<ping>81</ping>
+<clients>2</clients>
+<builddate>00:03:36, Jan 23 2006</builddate>
+<version>0.5.6</version>
+</server>
+<server status="valid">
+<address>212.37.21.99</address>
+<status>valid</status>
+<name>amber</name>
+<servertype>cyphesis</servertype>
+<ruleset>mason</ruleset>
+<uptime>2.44 weeks</uptime>
+<ping>82</ping>
+<clients>2</clients>
+<builddate>21:39:21, Feb 16 2006</builddate>
+<version>0.5.6</version>
+</server>
+<server status="timeout">
+<address>165.95.161.246</address>
+</server>
+<server status="timeout">
+<address>87.113.84.252</address>
+</server>
+<server status="timeout">
+<address>212.169.96.218</address>
+</server>
+<server status="valid">
+<address>81.6.249.1</address>
+<status>valid</status>
+<name>black.worldforge.org</name>
+<servertype>cyphesis</servertype>
+<ruleset>mason</ruleset>
+<uptime>19.1 hours</uptime>
+<ping>67</ping>
+<clients>1</clients>
+<builddate>18:32:02, Apr 25 2006</builddate>
+<version>0.5.7</version>
+</server>
+<server status="failed">
+<address>152.78.64.9</address>
+</server>
+</metaquery>
