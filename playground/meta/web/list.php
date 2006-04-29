@@ -57,11 +57,42 @@ endif;
 		<b><?php echo $name; ?></b>:
 	</p>
 
+<?php
+	$res = pg_exec($conn, "SELECT * FROM gameservers WHERE key = '$gamekey'");
+	for ($i = 0; $i < pg_numrows($res); $i++)
+	{
+		$uri = pg_result($res, $i, "uri");
+		$version = pg_result($res, $i, "version");
+		$state = pg_result($res, $i, "state");
+		$topic = pg_result($res, $i, "topic");
+		$players = pg_result($res, $i, "players");
+		$available = pg_result($res, $i, "available");
+?>
 	<span class="contentBox">
-		Server URI: teg://teg.game-server.cc:2000<br/>
-		Players: 4 (out of 5)<br/>
+		Server URI: <?php echo $uri; ?><br/>
+		Server version: <?php echo $version; ?><br/>
+<?php
+if ($state) :
+?>
+		Server state: <?php echo $state; ?><br/>
+<?php
+endif;
+?>
+		Players: <?php echo $players; ?>
+<?php
+if ($available != -1) :
+?>
+		(<?php echo $available; ?> still available)
+<?php
+endif;
+?>
+		<br/>
 		Spectators: unknown<br/>
+		Comment: <?php echo $topic; ?><br/>
 	</span>
+<?php
+}
+?>
 
 </div>
 

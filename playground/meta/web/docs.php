@@ -16,12 +16,12 @@
 		MetAggegator support is also thought to be included with
 		XQF and KQF.
 		<br/><br/>
-		Q: Does MetAggregator waste metaserver bandwidth?
+		Q: Does Metacle waste metaserver bandwidth?
 		<br/>
 		A: No, it doesn't. In fact, while in the worst case the same bandwidth
 		is needed, in the best case it might even save bandwidth since results
 		are cached for some seconds. Right now, results are considered valid up
-		to 10 seconds for the MetAggregator service, and up to 60 seconds for
+		to 10 seconds for the Metacle service, and up to 60 seconds for
 		the web interface, which prevents query load should we ever be slashdotted
 		(hopefully not!), and in general the web view doesn't need to be as
 		up to date as the desktop application's query view, which is often

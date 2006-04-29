@@ -20,7 +20,7 @@ $num_gameservers = pg_result($res, 0, "count");
 	<h4>Statistics</h4>
 	<p>
 		You can find here some statistics about past and present game entries,
-		most active meta servers and number of queries performed at MetAggregator.
+		most active meta servers and number of queries performed at Metacle.
 		<br/><br/>
 		<span class="contentBox">
 			<form>

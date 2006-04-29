@@ -1,9 +1,9 @@
 <?php include_once("header.inc"); ?>
 
 <div id="content">
-	<h4>About MetAggregator</h4>
+	<h4>About Metacle</h4>
 	<p>
-		MetAggregator is a fundamental change of finding currently running
+		The Metacle is a fundamental change of finding currently running
 		online games. Instead of letting the client applications perform
 		the querying of game servers, the service aggregates the data and
 		provides it in a unified format.

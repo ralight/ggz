@@ -120,7 +120,7 @@ img.right{
 
 #content{
 	float:left;
-	width: 80%;
+	width: 75%;
 	padding: 4px;
 	margin: 2px;
 	background-color: #fefefb;
@@ -148,7 +148,7 @@ img.right{
 
 #rightNavigation{
 	float:left;
-	width:150px;
+	width:180px;
 	padding: 5px 0;
 	line-height:1.4em;
 	text-align:left;

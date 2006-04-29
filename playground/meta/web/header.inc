@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>MetAggregator</title>
+    <title>Metacle</title>
     <link rel="stylesheet" type="text/css" href="style.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
@@ -9,7 +9,7 @@
 <body>
 	<div id="container" >
 		<div id="header">
-			<h1>MetAggregator</h1>
+			<h1>The Metacle</h1>
 		</div>
 		<div id="topNavigation">
 			<ul>
