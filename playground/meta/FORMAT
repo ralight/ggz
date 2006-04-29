@@ -10,18 +10,18 @@ Current MetAggregator format (revision 0.1):
 Only uri is needed for the service being useful. The MetAggregator
 implementation will however always provide all tags.
 
-title {string} - human-readable string for display, will be auto-generated if missing
+//title {string} - human-readable string for display, will be auto-generated if missing
 uri {string} - connection information, containing the following components:
 - host {string} - hostname the server runs on (part of URI)
 - port {integer} - port number the server runs on (part of URI)
-- protocol {string} - game protocol name, if available
+- protocol {string} - game protocol name, if available (part of URI)
 version {string} - version number of the game server
 - patches {string} - modifications to a version, as attribute to the version tag
 state {string} - current game state (see CONSTANTS)
 topic {string} - game topic or description
 players {integer} - number of players in the game
 available {integer} - open seats
-serverid {integer} - unique identifier for this game server instance
+//serverid {integer} - unique identifier for this game server instance
 
 gameserver - top-level tag for each entry
 - gamename {string} - game name, as attribute to the gameserver tag

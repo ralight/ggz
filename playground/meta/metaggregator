@@ -5,6 +5,20 @@
 # Published under GNU GPL conditions
 
 import xml.dom.minidom
+import imp
+import glob
+
+try:
+	import pg
+	global_database = True
+except:
+	global_database = False
+
+global_verbose = True
+
+def status(s):
+	if global_verbose:
+		print "||", s
 
 class MetaConf:
 	def __init__(self, configfile):
@@ -34,201 +48,148 @@ class MetaConf:
 			(service, url) = entry
 			self.metaservers[url] = service
 
-# FIXME: helper method wrapper class?
-def find(element, childname):
-	# FIXME: implement more efficient search (no recursive search needed!)
-	return element.getElementsByTagName(childname)
-
-def findone(element, childname):
-	children = find(element, childname)
-	if len(children) == 0:
-		return None
-	child = children[0]
-	return child
-
-def findone_value(element, childname):
-	child = findone(element, childname)
-	if not child:
-		return None
-	textparts = child.childNodes
-	for textpart in textparts:
-		if textpart.nodeType == textpart.TEXT_NODE:
-				text = textpart.nodeValue
-				return text
-
-	return None
-
 class MetaLoader:
-	def __init__(self, service, url):
-		if service == "freeciv":
-			self.gameservers = self.load_freeciv(url)
-		elif service == "liquidwar":
-			self.gameservers = self.load_liquidwar(url)
-		elif service == "teg":
-			self.gameservers = self.load_teg(url)
-		elif service == "worldforge":
-			self.gameservers = self.load_worldforge(url)
-		else:
-			print "Warning: no handler available for %s." % service
-			self.gameservers = None
+	def __init__(self):
+		self.loaders = []
 
-	def load_liquidwar(self, url):
-		list = []
+		searchpaths = []
+		searchpaths.append("protocols")
 
-		try:
-			f = open(url)
-		except:
-			print "Error: Could not load resource %s." % url
-			return None
+		for path in searchpaths:
+			protocolfiles = glob.glob(path + "/*.py")
 
-		lines = f.readlines()
-		f.close()
+			for protocolfile in protocolfiles:
+				protocolfile = protocolfile.split("/")[-1]
+				protocolfile = protocolfile[:-3]
 
-		for line in lines:
-			line = line.strip()
-			fields = line.split(",")
-			if len(fields) != 9:
-				continue
+				(fileobj, filename, desc) = imp.find_module(protocolfile, [path])
+				mod = imp.load_module("protocol", fileobj, filename, desc)
+				fileobj.close()
 
-			#host,port,game,version,uptime,busyplayers,maxplayers,password,comment
-			gameserver = {}
-			gameserver["gamename"] = "liquidwar"
-			gameserver["host"] = fields[0]
-			gameserver["port"] = fields[1]
+				#print "MOD", mod
+				protocol = mod.MetaProtocol()
+				#print "->", protocol.services
+				self.loaders.append(protocol)
+	
+	def load(self, service, url):
+		for loader in self.loaders:
+			if service in loader.services:
+				return loader.load(url)
+		print "Warning: no handler available for %s." % service
+		return None
 
-			list.append(gameserver)
+def ghash(gameserver):
+	#s = gameserver["host"]
+	#s += str(gameserver["port"])
+	s = gameserver["uri"]
+	return hash(s)
 
-		return list
+class MetaBase:
+	def __init__(self):
+		self.conn = None
+		self.metaservers = {}
+		self.gameservers = {}
 
-	def load_worldforge(self, url):
-		list = []
+	def connect(self):
+		if not global_database:
+			return
+		status("using database persistence")
+		self.conn = pg.DB(host="localhost", dbname="meta", user="meta", passwd="meta")
 
-		try:
-			dom = xml.dom.minidom.parse(url)
-		except:
-			print "Error: Could not load resource %s." % url
-			return None
+		q = self.conn.query("SELECT key, url FROM metaservers")
+		for row in q.dictresult():
+			key = row['key']
+			url = row['url']
+			self.metaservers[url] = key
 
-		metaquery = dom.documentElement
+		query = "SELECT key, uri, title, version, state, topic, players, available "
+		query += "FROM gameservers"
+		q = self.conn.query(query)
+		for row in q.dictresult():
+			row["gamename"] = row["key"]
+			del row["key"]
+			gameserver = row
+			self.gameservers[ghash(gameserver)] = gameserver
 
-		# FIXME: status attribute handling needed! (but is child element too)
+		status("database persistence loaded")
 
-		servers = find(metaquery, "server")
-		for server in servers:
-			address = findone_value(server, "address")
-			status = findone_value(server, "status")
-			name = findone_value(server, "name")
-			servertype = findone_value(server, "servertype")
-			ruleset = findone_value(server, "ruleset")
-			uptime = findone_value(server, "uptime")
-			ping = findone_value(server, "ping")
-			clients = findone_value(server, "clients")
-			builddate = findone_value(server, "builddate")
-			version = findone_value(server, "version")
+	def store(self, gameserver):
+		if not self.conn:
+			return
+		if self.gameservers.has_key(ghash(gameserver)):
+			return
+		#print "*store*", gameserver
 
-			gameserver = {}
-			gameserver["gamename"] = "worldforge"
-			gameserver["host"] = address
-			gameserver["port"] = 0
-			gameserver["version"] = version
-			gameserver["comment"] = "Uptime: " + str(uptime)
+		if not gameserver.has_key("gamename"):
+			print "Warning: invalid game server entry found."
 
-			list.append(gameserver)
-
-		return list
-
-	def load_teg(self, url):
-		list = []
-
-		try:
-			dom = xml.dom.minidom.parse(url)
-		except:
-			print "Error: Could not load resource %s." % url
-			return None
-
-		teg = dom.documentElement
-
-		# FIXME: version attribute handling needed?
-
-		entries = find(teg, "entry")
-		for entry in entries:
-			name = findone_value(entry, "name")
-			port = findone_value(entry, "port")
-			version = findone_value(entry, "version")
-			comment = findone_value(entry, "comment")
-
-			gameserver = {}
-			gameserver["gamename"] = "teg"
-			gameserver["host"] = name
-			gameserver["port"] = port
-			gameserver["version"] = version
-			gameserver["comment"] = comment
-
-			list.append(gameserver)
-
-		return list
-
-	def load_freeciv(self, url):
-		list = []
+		key = gameserver.get("gamename")
+		uri = gameserver.get("uri", "")
+		version = gameserver.get("version", "")
+		state = gameserver.get("state", "")
+		topic = gameserver.get("topic", "")
+		players = gameserver.get("players", "0")
+		available = gameserver.get("available", "-1")
 
 		try:
-			dom = xml.dom.minidom.parse(url)
+			players = int(players)
 		except:
-			print "Error: Could not load resource %s." % url
-			return None
+			players = 0
+		try:
+			available = int(available)
+		except:
+			available = -1
 
-		rss = dom.documentElement
-		#print "RSS", rss
+		tuple = (key, uri, version, state, topic, players, available)
 
-		channels = find(rss, "channel")
-		channel = channels[0]
-		#print "CHANNEL", channel
+		query = "INSERT INTO gameservers "
+		query += "(key, uri, version, state, topic, players, available) VALUES "
+		query += "('%s', '%s', '%s', '%s', '%s', '%i', '%i')" % tuple
+		q = self.conn.query(query)
 
-		items = find(channel, "item")
-		for item in items:
-			descriptions = find(item, "description")
-			description = descriptions[0]
+	def storemeta(self, service, url):
+		if not self.conn:
+			return
+		if self.metaservers.has_key(url):
+			return
+		service = self.quote(service)
+		url = self.quote(url)
+		query = "INSERT INTO metaservers (key, url) VALUES ('%s', '%s')" % (service, url)
+		q = self.conn.query(query)
 
-			gameserver = {}
-			gameserver["gamename"] = "freeciv"
-
-			textparts = description.childNodes
-			for textpart in textparts:
-				if textpart.nodeType == textpart.TEXT_NODE:
-					text = textpart.nodeValue
-					item = text
-					item = item.strip()
-					#print "-item-", item
-
-					entry = item.split(":")
-					if len(entry) < 2:
-						continue
-					keyword = entry[0].strip()
-					value = ":".join(entry[1:]).strip()
-
-					#print "KEY", keyword, value
-					if keyword == "Host":
-						gameserver["host"] = value
-
-			#print "Gameserver", gameserver
-			list.append(gameserver)
-
-		return list
+	def quote(self, s):
+		return s.replace("'", "\\'")
 
 class MetaMeta:
 	def __init__(self):
 		self.config = MetaConf("metaggregator.conf")
+		self.base = MetaBase()
+		self.loader = MetaLoader()
 
-		for url in self.config.metaservers:
+		self.base.connect()
+
+		allgameservers = {}
+
+		status("start query")
+		for url, service in self.config.metaservers.iteritems():
 			#print ">>> check", url
 
-			service = self.config.metaservers[url]
-			loader = MetaLoader(service, url)
+			gameservers = self.loader.load(service, url)
 
-			if loader.gameservers:
-				print "== list"
-				for g in loader.gameservers:
-					print g
+			self.base.storemeta(service, url)
 
+			if gameservers:
+				#print "== list"
+				for g in gameservers:
+					#print g, "=>", ghash(g)
+					allgameservers[ghash(g)] = g
+
+		for h, g in allgameservers.iteritems():
+			print "##", h
+			self.base.store(g)
+
+		status("done")
+
+status("starting up")
 m = MetaMeta()
 
