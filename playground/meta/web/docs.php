@@ -7,13 +7,13 @@
 	</p>
 	<h4>FAQ</h4>
 	<p>
-		Q: Is there a desktop application which uses MetAggegator?
+		Q: Is there a desktop application which uses Metacle?
 		<br/>
 		A: Of course there is! The web view is only a convenience interface
 		which is there to be part of Web 3.0 or whatever the hype is called
 		right now. The first real application is <a href="">Metakel</a>,
 		a KDE client which lets you launch game clients or a GGZ core client.
-		MetAggegator support is also thought to be included with
+		Metacle support is also thought to be included with
 		XQF and KQF.
 		<br/><br/>
 		Q: Does Metacle waste metaserver bandwidth?
@@ -39,7 +39,7 @@
 		<br/>
 		A: Not true. We're not interested in Antarctica at the moment.
 		<br/><br/>
-		Q: Can I download MetAggegator as true Free Software?
+		Q: Can I download Metacle as true Free Software?
 		<br/>
 		A: Yes you can. Because we want to <a href="">take over the world</a>... oops!
 	</p>

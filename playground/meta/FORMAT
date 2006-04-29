@@ -1,13 +1,13 @@
-MetAggregator needs to support a superset of all of the information of the
+Metacle needs to support a superset of all of the information of the
 metaservers it aggregates. This can by definition not be a fixed format,
 since new metaservers might be added over time.
 The XML format has been designed so that adding new information tags
 will be possible.
 
-Current MetAggregator format (revision 0.1):
---------------------------------------------
+Current Metacle format (revision 0.1):
+--------------------------------------
 
-Only uri is needed for the service being useful. The MetAggregator
+Only uri is needed for the service being useful. The Metacle
 implementation will however always provide all tags.
 
 //title {string} - human-readable string for display, will be auto-generated if missing

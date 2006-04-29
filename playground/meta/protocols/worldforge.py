@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# MetAggregator - Aggregation of metaservers
+# Metacle - Aggregation of metaservers
 # Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
