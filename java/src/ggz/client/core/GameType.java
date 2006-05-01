@@ -92,7 +92,7 @@ public class GameType {
         this.named_bots = new String[size + 1][2];
         if (old_named_bots != null) {
             System.arraycopy(old_named_bots, 0, this.named_bots, 0,
-                    this.named_bots.length);
+                    old_named_bots.length);
         }
         this.named_bots[size][0] = botname;
         this.named_bots[size][1] = botclass;

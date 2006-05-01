@@ -1155,7 +1155,6 @@ public class Net implements Runnable {
 		String desc = null;
 		String author = null;
 		String url = null;
-		int i;
 
 		if (element == null)
 			return;
@@ -1183,7 +1182,7 @@ public class Net implements Runnable {
 				peers_allow, desc, author, url);
 
 		if (data.named_bots != null) {
-			for (i = 0; i < data.named_bots.length; i++) {
+			for (int i = 0; i < data.named_bots.length; i++) {
 				type.add_namedbot(data.named_bots[i][0], data.named_bots[i][1]);
 			}
 		}
@@ -1260,21 +1259,16 @@ public class Net implements Runnable {
 	private static void game_add_bot(XMLElement game, String botname,
 			String botclass) {
 		GameData data = game_get_data(game);
-		int size = 0;
-
-		if (data.named_bots != null) {
-			while (data.named_bots[size] != null)
-				size++;
-		}
-		// data.named_bots = (char***)ggz_realloc(data.named_bots, (size + 2) *
-		// sizeof(char**));
+		int size = (data.named_bots == null) ? 0 : data.named_bots.length;
 		String[][] old = data.named_bots;
-		data.named_bots = new String[size + 2][2];
-		System.arraycopy(old, 0, data.named_bots, 0, size);
-		// data.named_bots[size] = (char**)ggz_malloc(2 * sizeof(char**));
+		
+		data.named_bots = new String[size + 1][2];
+
+		if (old != null) {
+			System.arraycopy(old, 0, data.named_bots, 0, size);
+		}
 		data.named_bots[size][0] = botname;
 		data.named_bots[size][1] = botclass;
-		data.named_bots[size + 1] = null;
 	}
 
 	private static void playerinfo_add_seat(XMLElement info, int num,
