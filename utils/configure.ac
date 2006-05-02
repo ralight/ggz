@@ -1,7 +1,7 @@
 dnl Configuration for the utilities package
 dnl =======================================
 
-AC_INIT([GGZ utilities], [0.0.13], [ggz-dev@mail.ggzgamingzone.org], [ggz-utils])
+AC_INIT([GGZ utilities], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-utils])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -9,12 +9,21 @@ AM_MAINTAINER_MODE
 
 dnl Compiling Options
 dnl =====================
-AC_ARG_ENABLE(ggzcomm, [  --disable-ggzcomm       Dont' build GGZComm],, enable_ggzcomm=yes)
-AC_ARG_ENABLE(telggz, [  --disable-telggz       Dont' build TelGGZ],, enable_telggz=yes)
-AC_ARG_ENABLE(metaserv, [  --disable-metaserv     Dont' build MetaServ],, enable_metaserv=yes)
-AC_ARG_ENABLE(cmd_client, [  --disable-cmd-client Don't build command-line client],, enable_cmd_client=yes)
-AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
-
+AC_ARG_ENABLE([ggzcomm],
+	AC_HELP_STRING([--disable-ggzcomm], [Dont' build GGZComm]),,
+	enable_ggzcomm=yes)
+AC_ARG_ENABLE([telggz],
+	AC_HELP_STRING([--disable-telggz], [Dont' build TelGGZ]),,
+	enable_telggz=yes)
+AC_ARG_ENABLE([metaserv],
+	AC_HELP_STRING([--disable-metaserv], [Dont' build MetaServ]),,
+	enable_metaserv=yes)
+AC_ARG_ENABLE([cmd_client],
+	AC_HELP_STRING([--disable-cmd-client], [Don't build command-line client]),,
+	enable_cmd_client=yes)
+AC_ARG_ENABLE([debug],
+	AC_HELP_STRING([--disable-debug], [Turn off debugging (on by default)]),,
+	enable_debug=yes)
 
 dnl Check for standard build environment
 dnl ====================================
@@ -27,7 +36,7 @@ AC_PROG_RANLIB
 
 dnl Check for GGZ libraries
 dnl =======================
-AC_GGZ_INIT(defaults, export)
+AC_GGZ_INIT([defaults], [export])
 AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 
@@ -37,7 +46,7 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_HEADER_TIME
 AC_CHECK_HEADERS([sys/time.h unistd.h socket.h winsock.h arpa/inet.h fcntl.h \
-		  netdb.h netinet/in.h pthread.h])
+	netdb.h netinet/in.h pthread.h])
 
 
 dnl Check for typedefs, structures, and compiler characteristics
@@ -54,7 +63,7 @@ AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl")
 AC_FUNC_VPRINTF
 AC_FUNC_SELECT_ARGTYPES
 AC_CHECK_FUNCS([select socket gethostbyname inet_ntoa memmove strcasecmp \
-		strchr strdup malloc realloc gethostname])
+	strchr strdup malloc realloc gethostname])
 
 
 dnl Use -Wall if we have gcc.
@@ -100,36 +109,32 @@ fi
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS="man"
+if test "$enable_metaserv" = no; then
+	enable_telggz=no
+fi
 
 if test "$enable_cmd_client" = yes || test "$enable_telggz" = yes; then
 	AC_GGZ_GGZCORE
-	if test "$enable_cmd_client" = yes; then
-		SUBDIRS="$SUBDIRS cmd-client"
-	fi
 fi
 
-if test "$enable_metaserv" = yes; then
-	SUBDIRS="$SUBDIRS metaserv"
-	if test "$enable_telggz" = yes; then
-		SUBDIRS="$SUBDIRS telggz"
-	fi
-	if test "$enable_ggzcomm" = yes; then
-		SUBDIRS="$SUBDIRS ggzcomm"
-	fi
-fi
+AM_CONDITIONAL([COND_CMDCLIENT], [test "$enable_cmd_client" = yes])
+AM_CONDITIONAL([COND_METASERV], [test "$enable_metaserv" = yes])
+AM_CONDITIONAL([COND_GGZCOMM], [test "$enable_ggzcomm" = yes])
+AM_CONDITIONAL([COND_TELGGZ], [test "$enable_telggz" = yes])
 
 AC_SUBST(LDADD)
-AC_SUBST(SUBDIRS)
 
-AC_CONFIG_FILES([Makefile
-		cmd-client/Makefile
-		telggz/Makefile
-		metaserv/Makefile
-		metaserv/minidom/Makefile
-		metaserv/metaserv/Makefile
-		ggzcomm/Makefile
-		man/Makefile])
+AC_CONFIG_FILES([
+	Makefile
+	cmd-client/Makefile
+	telggz/Makefile
+	metaserv/Makefile
+	metaserv/minidom/Makefile
+	metaserv/libmeta/Makefile
+	metaserv/metaserv/Makefile
+	ggzcomm/Makefile
+	man/Makefile
+])
 AC_OUTPUT
 
 dnl Output Status
