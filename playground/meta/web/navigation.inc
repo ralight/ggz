@@ -35,7 +35,7 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 foreach ($zones as $key => $game)
 {
 ?>
-		<img src="logos/<?php echo $game['logo']; ?>">
+		<img src="/logos/<?php echo $game['logo']; ?>">
 		<a href="/<?php echo $key; ?>"><?php echo $game['name']; ?></a>
 <?php
 }
@@ -47,7 +47,7 @@ foreach ($zones as $key => $game)
 foreach ($games as $key => $game)
 {
 ?>
-		<img src="logos/<?php echo $game['logo']; ?>">
+		<img src="/logos/<?php echo $game['logo']; ?>">
 		<a href="/<?php echo $key; ?>"><?php echo $game['name']; ?></a>
 <?php
 }

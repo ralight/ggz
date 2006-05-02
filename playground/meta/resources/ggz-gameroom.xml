@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<resultset referer="query">
+<result uri="ggz://bizarre:5688/#Entry%20Room" class="ggz">
+  <option name="description">A place to meet and choose a game room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Tic-Tac-Toe" class="TicTacToe">
+  <option name="description">Example Tic-Tac-Toe Room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Reversi" class="Reversi">
+  <option name="description">Example Reversi Room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Chess" class="Chess">
+  <option name="description">Example Chess Room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Chinese%20Checkers" class="ccheckers">
+  <option name="description">Sample Chinese Checkers Room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Combat" class="Combat">
+  <option name="description">Example Combat Room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Connect%20The%20Dots" class="Dots">
+  <option name="description">Example Connect The Dots Room</option>
+</result>
+<result uri="ggz://bizarre:5688/#GGZ%20Cards" class="GGZCards">
+  <option name="description">GGZ trick-taking card game room: Bridge, Euchre, Forty-Two, Hearts, La Pocha, Spades, Suaro, Sueca, and Whist</option>
+</result>
+<result uri="ggz://bizarre:5688/#Bridge" class="GGZCards-Bridge">
+  <option name="description">GGZ Cards - Bridge room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Forty-Two" class="GGZCards-FortyTwo">
+  <option name="description">GGZ Cards - Forty-Two room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Hearts" class="GGZCards-Hearts">
+  <option name="description">GGZ Cards - Hearts room</option>
+</result>
+<result uri="ggz://bizarre:5688/#La%20Pocha" class="GGZCards-LaPocha">
+  <option name="description">GGZ Cards - La Pocha room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Spades" class="GGZCards-Spades">
+  <option name="description">GGZ Cards - Spades room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Suaro" class="GGZCards-Suaro">
+  <option name="description">GGZ Cards - Suaro room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Sueca" class="GGZCards-Sueca">
+  <option name="description">GGZ Cards - Sueca room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Whist" class="GGZCards-Whist">
+  <option name="description">GGZ Cards - Whist room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Hastings" class="Hastings">
+  <option name="description">Where to conquer ancient reigns</option>
+</result>
+<result uri="ggz://bizarre:5688/#Krosswater" class="Krosswater">
+  <option name="description">&quot;Cross the water!&quot; for KDE</option>
+</result>
+<result uri="ggz://bizarre:5688/#NetSpades" class="NetSpades">
+  <option name="description">Example NetSpades room</option>
+</result>
+<result uri="ggz://bizarre:5688/#Muehle" class="Muehle">
+  <option name="description">Digital Muehle (Nine men&apos;s morris) game</option>
+</result>
+<result uri="ggz://bizarre:5688/#Escape" class="Escape">
+  <option name="description">Escape from the room!</option>
+</result>
+<result uri="ggz://bizarre:5688/#ConnectX" class="ConnectX">
+  <option name="description">Connect X tiles in a row</option>
+</result>
+<result uri="ggz://bizarre:5688/#Keepalive" class="Keepalive">
+  <option name="description">Keep alive now!</option>
+</result>
+<result uri="ggz://bizarre:5688/#Geekgame" class="Geekgame">
+  <option name="description">A game only for true geeks and nerds</option>
+</result>
+<result uri="ggz://bizarre:5688/#Tuxman" class="Tuxman">
+  <option name="description">Pacman stuff...</option>
+</result>
+<result uri="ggz://bizarre:5688/#Widelands" class="Widelands">
+  <option name="description">An open source buildup strategy game</option>
+</result>
+<result uri="ggz://bizarre:5688/#Freelords%20(experimental)" class="Freelords">
+  <option name="description">Room where to play freelords</option>
+</result>
+<result uri="ggz://bizarre:5688/#Tenes%20Empanadas%20Graciela" class="TEG">
+  <option name="description">A clone of a Risk clone</option>
+</result>
+<result uri="ggz://bizarre:5688/#Kamikaze" class="Kamikaze">
+  <option name="description">Explode your enemies, but not yourself</option>
+</result>
+<result uri="ggz://bizarre:5688/#Hnefatafl" class="Hnefatafl">
+  <option name="description">Old nordic board game</option>
+</result>
+<result uri="ggz://bizarre:5688/#Checkers" class="Checkers">
+  <option name="description">Checkers</option>
+</result>
+<result uri="ggz://bizarre:5688/#Xadrez%20Chines" class="Chinese Chess">
+  <option name="description">Chinese version of chess</option>
+</result>
+<result uri="ggz://bizarre:5688/#GNU%20Go%20(CGoBan%20Client)" class="GNU Go">
+  <option name="description">The Japanese Go game</option>
+</result>
+<result uri="ggz://bizarre:5688/#RubyToe" class="RubyToe">
+  <option name="description">Tic-Tac-Toe room for Ruby fans</option>
+</result>
+<result uri="ggz://bizarre:5688/#Freeciv%202.1" class="Freeciv">
+  <option name="description">Freeciv multiplayer strategy game</option>
+</result>
+<result uri="ggz://bizarre:5688/#Ludo" class="Ludo">
+  <option name="description">Traditional four-player game with dice</option>
+</result>
+<result uri="ggz://bizarre:5688/#Arimaa" class="Arimaa">
+  <option name="description">Chess-like game invented at www.arimaa.com</option>
+</result>
+</resultset>

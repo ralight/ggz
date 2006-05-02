@@ -8,6 +8,9 @@ import xml.dom.minidom
 import imp
 import glob
 
+import socket
+import time
+
 try:
 	import pg
 	global_database = True
@@ -140,6 +143,12 @@ class MetaBase:
 		except:
 			available = -1
 
+		key = key.replace("\'", "\\\'")
+		uri = uri.replace("\'", "\\\'")
+		version = version.replace("\'", "\\\'")
+		state = state.replace("\'", "\\\'")
+		topic = topic.replace("\'", "\\\'")
+
 		tuple = (key, uri, version, state, topic, players, available)
 
 		query = "INSERT INTO gameservers "
@@ -190,6 +199,86 @@ class MetaMeta:
 
 		status("done")
 
+	def output(self):
+		s = ""
+		s += "<metacle>\n"
+		for h, gameserver in self.base.gameservers.iteritems():
+			s += "<gameserver gamename='" + gameserver["gamename"] + "'>\n"
+			s += "<uri>" + gameserver["uri"] + "</uri>\n";
+			if gameserver["version"]:
+				s += "<version>" + gameserver["version"] + "</version>\n";
+			if gameserver["state"]:
+				s += "<state>" + gameserver["state"] + "</state>\n";
+			if gameserver["topic"]:
+				s += "<topic>" + gameserver["topic"] + "</topic>\n";
+			if gameserver["players"] != 0:
+				s += "<players>" + str(gameserver["players"]) + "</players>\n";
+			if gameserver["available"] != -1:
+				s += "<available>" + str(gameserver["available"]) + "</available>\n";
+			s += "</gameserver>\n"
+
+		# FIXME:
+		# finish DOM either if no permanent connections are allowed
+		# or on error of some sort
+		# otherwise, leave open and publish updates
+		# attribute delete="true" for deletion of items (and only uri)
+
+		# FIXME 2:
+		# timestamps into gameserver entries?
+
+		s += "</metacle>\n"
+
+		return s
+
+	def run(self):
+		port = 12012
+
+		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		sock.bind((socket.gethostname(), port))
+		sock.listen(5)
+
+		while 1:
+			client = None
+			address = None
+			try:
+				(client, address) = sock.accept()
+			except:
+				print "Error: network error."
+				return
+
+			# FIXME: use threading
+
+			starttime = time.time()
+			client.setblocking(0)
+
+			while 1:
+				packet = None
+				try:
+					packet = client.recv(16384)
+				except:
+					nowtime = time.time()
+					if nowtime > starttime + 10:
+						break
+
+				if packet == "":
+					break
+				if packet is not None:
+					packet = packet.strip()
+
+					if packet == "<list />":
+						s = self.output()
+
+						try:
+							client.send(s)
+							# FIXME: register for incremental updates
+						except:
+							print "Warning: client interruption."
+					else:
+						client.close()
+						break
+
 status("starting up")
 m = MetaMeta()
+m.run()
 

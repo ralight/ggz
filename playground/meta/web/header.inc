@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>Metacle</title>
-    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <link rel="stylesheet" type="text/css" href="/style.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
 
@@ -20,20 +20,4 @@
 			</ul>
 		</div>
 
-<?php
-
-$ret = @include_once(".htconf");
-
-if ($ret) :
-	$conn = @pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
-else :
-	$conn = null;
-endif;
-
-if (!$conn) :
-	include_once("unconfigured.inc");
-	include_once("footer.inc");
-	exit;
-endif;
-
-?>
+<?php include_once("db.inc"); ?>

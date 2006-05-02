@@ -11,7 +11,8 @@
 		<br/>
 		A: Of course there is! The web view is only a convenience interface
 		which is there to be part of Web 3.0 or whatever the hype is called
-		right now. The first real application is <a href="">Metakel</a>,
+		right now. The first real application is
+		<a href="http://www.kde-apps.org/">Metakel</a>,
 		a KDE client which lets you launch game clients or a GGZ core client.
 		Metacle support is also thought to be included with
 		XQF and KQF.
@@ -41,7 +42,8 @@
 		<br/><br/>
 		Q: Can I download Metacle as true Free Software?
 		<br/>
-		A: Yes you can. Because we want to <a href="">take over the world</a>... oops!
+		A: Yes you can. Because we want to
+		<a href="http://svn.ggzgamingzone.org/">take over the world</a>... oops!
 	</p>
 
 </div>

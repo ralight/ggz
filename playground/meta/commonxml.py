@@ -16,10 +16,7 @@ def findone(element, childname):
 	child = children[0]
 	return child
 
-def findone_value(element, childname):
-	child = findone(element, childname)
-	if not child:
-		return None
+def value(child):
 	textparts = child.childNodes
 	for textpart in textparts:
 		if textpart.nodeType == textpart.TEXT_NODE:
@@ -27,4 +24,10 @@ def findone_value(element, childname):
 				return text
 
 	return None
+
+def findone_value(element, childname):
+	child = findone(element, childname)
+	if not child:
+		return None
+	return value(child)
 

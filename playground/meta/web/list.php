@@ -23,7 +23,7 @@ endif;
 	<h4>Game server listing</h4>
 	<p>
 		<a href="<?php echo $homepage; ?>"><?php echo $name; ?> <?php echo $text; ?></a>
-		<img src="logos/<?php echo $logo; ?>">
+		<img src="/logos/<?php echo $logo; ?>">
 		<br/><br/>
 <?php
 if ($zone) :
@@ -42,7 +42,7 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 		$name2 = pg_result($res2, $j, "name");
 		$logo2 = pg_result($res2, $j, "logo");
 ?>
-		<img src="logos/<?php echo $logo2; ?>">
+		<img src="/logos/<?php echo $logo2; ?>">
 		<a href="/<?php echo $key; ?>"><?php echo $name2; ?></a>
 		<br/>
 <?
@@ -69,7 +69,7 @@ endif;
 		$available = pg_result($res, $i, "available");
 ?>
 	<span class="contentBox">
-		Server URI: <?php echo $uri; ?><br/>
+		Server URI: <?php echo "<a href='$uri'>$uri</a>"; ?><br/>
 		Server version: <?php echo $version; ?><br/>
 <?php
 if ($state) :
