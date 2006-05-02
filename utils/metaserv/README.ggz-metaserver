@@ -1,31 +1,26 @@
-The GGZ Gaming Zone Meta Server Project
----------------------------------------
+The GGZ Gaming Zone Metaserver Project
+======================================
 
-The meta server will be available for the 0.0.5 release.
-However, other projects are free to use it. It consists of 'meta-server',
-'minidom' and some GUI's for testing purposes (or as reference implementations).
-It has no dependencies on any GGZ library, although it will be going to be
-integrated into ggzd (and be available as a separate package in parallel).
+The GGZ Metaserver, which was introduced in GGZ 0.0.5 and slightly updated
+over the years, received a major overhaul for GGZ 0.0.14 and the new
+Metacle service, which is a meta-metaserver.
 
-The GUI's will have to be compiled separately, they're not part of the autoconf
-process yet and will probably never be.
+Available documentation includes a presentation as part of the ggz-docs
+package, a protocol specification in the same package and some text file
+in the source code directory.
 
-The server itself should be installed on port 15689 and be located in
-/usr/local/bin (or change the path in metaserv.c).
+GGZ Metaserver is very flexible. It is used to announce GGZ servers to
+the internet, to announce game rooms and games on those servers, and
+also outside of the scope of GGZ to keep a directory of online radio
+streams. Other game projects are encouraged to use it, as it has been
+designed to be very generic and powerful.
 
-/etc/services:
-ggzm       15689/tcp            # GGZ Gaming Zone meta server
-/etc/inetd.conf:
-ggzm stream tcp nowait josef /usr/local/bin/metaserv
-
-
-----------------------------------------------
-Update 2003-06-26:
-An example of an application using the metaserver
-can be found here:
-http://kderadiostation.coolprojects.org/
-----------------------------------------------
+The following directories come with the metaserver:
+- metaserv, where the ggzmetaserv binary resides
+- minidom, a small XML library used by ggzmetaserv
+- libmeta, a client-side access library for easy use of metaserver features
+- tools, some random tools like GUI frontends, which must be compiled by hand
 
 Josef Spillner
-2001-08-12
+founded on 2001-08-12, overhauled on 2006-04-30
 

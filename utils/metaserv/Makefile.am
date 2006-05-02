@@ -1,4 +1,4 @@
-SUBDIRS = minidom metaserv
+SUBDIRS = minidom libmeta metaserv
 
-#DIST_SUBDIRS = gui-perl gui-qt gui-custom
+#DIST_SUBDIRS = tools
 
