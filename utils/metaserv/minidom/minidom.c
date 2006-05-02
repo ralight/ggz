@@ -12,18 +12,14 @@
 /* Remove all line breaks, spaces, tabs, and check/remove XML header */
 static char *minidom_cleanstream(const char *stream)
 {
-	static char *cs = NULL;
+	char *cs = NULL;
 	unsigned int i, j;
 	int inside;
 	int spaceprotect;
 	int spacesonly;
 
 	if(!stream) return NULL;
-	if(cs)
-	{
-		free(cs);
-		cs = NULL;
-	}
+
 	cs = (char*)malloc(strlen(stream) + 1);
 
 	j = 0;
@@ -267,6 +263,8 @@ DOM *minidom_parse(const char *stream)
 		}
 	}
 
+	free(cs);
+
 	dom->valid = !error;
 	dom->processed = 1;
 	dom->el = ele;
@@ -308,7 +306,8 @@ DOM *minidom_load(const char *file)
 	return dom;
 }
 
-void minidom_internal_dump(ELE *ele, FILE *file);	/* forward decl */
+/* forward decl */
+void minidom_internal_dump(ELE *ele, FILE *file, int indent, int start);
 
 /* Dump out the DOM in XML format */
 /* FIXME: return a char* and print this if dump is needed */
@@ -337,7 +336,7 @@ void minidom_dumpfile(DOM *dom, const char *file)
 		myfile = fopen(file, "w");
 	}
 	else myfile = stdout;
-	minidom_internal_dump(dom->el, myfile);
+	minidom_internal_dump(dom->el, myfile, 0, 0);
 	if(file) fclose(myfile);
 }
 
@@ -346,16 +345,13 @@ void minidom_dump(DOM *dom)
 	minidom_dumpfile(dom, NULL);
 }
 
-void minidom_internal_dump(ELE *ele, FILE *file)
+void minidom_internal_dump(ELE *ele, FILE *file, int indent, int start)
 {
 	int i;
-	static int indent = 0;
-	static int start = 0;
 
 	if(!ele) return;
 	if(!start)
 	{
-		start = 1;
 		fprintf(file, "<?xml version=\"1.0\"?>\n");
 	}
 	indent++;
@@ -385,7 +381,7 @@ void minidom_internal_dump(ELE *ele, FILE *file)
 	i = 0;
 	while((ele->el) && (ele->el[i]))
 	{
-		minidom_internal_dump(ele->el[i], file);
+		minidom_internal_dump(ele->el[i], file, indent, 1);
 		i++;
 	}
 
@@ -409,21 +405,11 @@ void minidom_free(DOM *dom)
 /* Query a list of elements */
 ELE **MD_querylist(ELE *parent, const char *name)
 {
-	static ELE **elelist = NULL;
+	ELE **elelist = NULL;
 	int i, j;
 
 	if(!parent) return NULL;
-	/*if(elelist)
-	{
-		i = 0;
-		while(elelist[i])
-		{
-			free(elelist[i]);
-			i++;
-		}
-		free(elelist);
-		elelist = NULL;
-	}*/						/* MEMORY HOLE !*/
+
 	elelist = NULL;
 
 	i = 0;
@@ -441,6 +427,24 @@ ELE **MD_querylist(ELE *parent, const char *name)
 	}
 
 	return elelist;
+}
+
+/* Clean up a query list */
+void MD_freelist(ELE **elelist)
+{
+	int i;
+
+	if(elelist)
+	{
+		i = 0;
+		while(elelist[i])
+		{
+			free(elelist[i]);
+			i++;
+		}
+		free(elelist);
+		elelist = NULL;
+	}
 }
 
 /* Query a single element */

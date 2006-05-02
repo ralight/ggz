@@ -47,6 +47,7 @@ void minidom_free(DOM *dom);
 
 ELE *MD_query(ELE *parent, const char *name);
 ELE **MD_querylist(ELE *parent, const char *name);
+void MD_freelist(ELE **elelist);
 
 char *MD_att(ELE *element, const char *name);
 
