@@ -48,9 +48,11 @@
 #EncryptionKey = /usr/local/ssl/certs/openssl-example.pem
 #EncryptionCert = /usr/local/ssl/certs/openssl-example.pem
 
-# Announcements
+# Announcements (none by default), metaserver must point to a GGZ metaserver
 #AnnounceLAN = 1
-#AnnounceMetaserver = 0
+#AnnounceMetaserver = localhost
+#AnnounceMetaserverUsername = ggzd
+#AnnounceMetaserverPassword = ggzd
 
 ############################################################################
 # Logging Options

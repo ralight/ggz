@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8001 2006-04-24 07:17:07Z josef $
+ * $Id: parse_opt.c 8021 2006-05-02 07:16:18Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -343,7 +343,9 @@ static void get_config_options(int ch)
 
 	/* Announcements in [General] */
 	opt.announce_lan = ggz_conf_read_int(ch, "General", "AnnounceLAN", 0);
-	opt.announce_metaserver = ggz_conf_read_int(ch, "General", "AnnounceMetaserver", 0);
+	opt.announce_metaserver = ggz_conf_read_string(ch, "General", "AnnounceMetaserver", NULL);
+	opt.metausername = ggz_conf_read_string(ch, "General", "AnnounceMetaserverUsername", NULL);
+	opt.metapassword = ggz_conf_read_string(ch, "General", "AnnounceMetaserverPassword", NULL);
 
 	/* [Games] */
 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);

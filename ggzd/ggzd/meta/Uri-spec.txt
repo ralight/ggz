@@ -1,0 +1,37 @@
+GGZ URIs
+--------
+
+Format:
+ggz://user@host:port/#room/table
+
+Everything beside the host is optional.
+If a table is given, the action is to join the game on it.
+If no table is given, but a room, a move into this room should occur.
+If neither is given, a simple connection (to the lobby) takes place.
+
+Protocol (ggz):
+- describes an URI to a GGZ server or a room or table therein
+
+User:
+- username to use for login, used by core clients and maybe Community
+
+Host:
+- hostname of the server ggzd runs on
+
+Port:
+- ggzd port number, or 5688 by default
+
+Room:
+- room name or number as per ggzcore numbering (name is better)
+
+Table:
+- table id in the specific room
+
+Examples include:
+ggz://live.ggzgamingzone.org/#Tic-Tac-Toe (join TTT room)
+ggz://you@live.ggzgamingzone.org/#Chess/0 (participate in Chess game)
+
+Of course, table ids can be very short-living, except for keepalive games.
+Room names should be valid for quite a while, while room numbers are less
+stable due to possible server reconfigurations.
+

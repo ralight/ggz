@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 7860 2006-02-13 07:01:08Z josef $
+ * $Id: control.c 8021 2006-05-02 07:16:18Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -58,6 +58,7 @@
 #include "room.h"
 #include "table.h"
 #include "util.h"
+#include "meta.h"
 
 
 /* Server options */
@@ -217,6 +218,81 @@ static int zeroconf_publish(const char *name, const char *protocol, int port)
 #endif
 }
 
+void meta_announce(const char *metaserveruri, const char *username, const char *password)
+{
+	URI uri;
+	ServerEntry *server;
+	char hostname[HOST_NAME_MAX + 1];
+	char roomname[128];
+	int ret;
+	int i;
+	int type;
+	char *game;
+	char *gameversion;
+
+	gethostname(hostname, sizeof(hostname));
+
+	uri.protocol = "ggz";
+	uri.host = hostname;
+	uri.user = NULL;
+	uri.port = 5688;
+	uri.path = NULL;
+
+	server = meta_server_new(uri);
+
+	meta_server_attribute(server, "version", VERSION);
+	meta_server_attribute(server, "preference", "100");
+	meta_server_attribute(server, "location", NULL);
+	meta_server_attribute(server, "speed", "0");
+
+	ret = meta_add(server, "ggz", "connection",
+		metaserveruri, username, password);
+	if(!ret) fprintf(stderr, "Metaserver: Error: publishing failed\n");
+	else log_msg(GGZ_LOG_NOTICE,
+		"Metaserver: GGZ server is now known to the metaserver");
+
+	meta_server_free(server);
+
+	for(i = 0; i < room_info.num_rooms; i++)
+	{
+		RoomStruct room = rooms[i];
+		type = room.game_type;
+		if(type != -1)
+		{
+			GameInfo gametype = game_types[type];
+			game = gametype.name;
+			gameversion = gametype.version;
+		}
+		else
+		{
+			game = "ggz";
+			gameversion = VERSION;
+		}
+
+		snprintf(roomname, sizeof(roomname), "/#%s", room.name);
+
+		uri.protocol = "ggz";
+		uri.host = hostname;
+		uri.user = NULL;
+		uri.port = 5688;
+		uri.path = roomname;
+
+		server = meta_server_new(uri);
+
+		meta_server_attribute(server, "description", room.description);
+		meta_server_attribute(server, "version", gameversion);
+
+		ret = meta_add(server, game, "gameroom",
+			metaserveruri, username, password);
+		if(!ret) fprintf(stderr,
+			"Metaserver: Error: publishing failed for room %s\n", room.name);
+
+		meta_server_free(server);
+	}
+	log_msg(GGZ_LOG_NOTICE,
+		"Metaserver: GGZ game rooms are now known to the metaserver");
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -265,7 +341,7 @@ int main(int argc, char *argv[])
 		zeroconf_publish("GGZ Gaming Zone", "_ggz._tcp.", opt.main_port);
 
 	if(opt.announce_metaserver)
-		fprintf(stderr, "Metaserver announcements are not yet implemented!\n");
+		meta_announce(opt.announce_metaserver, opt.metausername, opt.metapassword);
 
 	/* Create SERVER socket on main_port */
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
