@@ -1,39 +1,43 @@
-The GGZ Gaming Zone meta server
--------------------------------
+The GGZ Gaming Zone metaserver (ggzmetaserv)
+--------------------------------------------
 
-This component should be able to deal with two types of queries.
+The metaserver implementation is built using the two static libraries minidom
+and libggzmeta. The first library allows ggzmetaserv to read the configuration
+file and to process XML queries and update requests. The second library is
+actually a client application library used to contact metaservers, but of
+course ggzmetaserv could run in a cluster and thus needs it too.
+
+The metaserver is able to deal with two types of queries.
 The first one is the simple case: one passes an URI, and it returns another URI
 then.
 
-	c->s: query://ggz/connection/0.0.7pre
-	s->c: ggz://jzaun.com:5689
+	c->s: query://ggz/connection
+	s->c: ggz://live.ggzgamingzone.org:5688
 
-This implementation returns a NULL pointer if no entry could be found or the
-URI didn't have a valid format.
-For GGZ 0.0.7 all core clients should be able to deal with ggz:// URI's since
+This implementation returns a NULL pointer (visible as an empty line)
+if no entry could be found or the URI didn't have a valid format.
+
+For GGZ 0.0.7+ all core clients should be able to deal with ggz:// URI's since
 they're used in the chat, in the connection dialog, maybe in KDE io slaves
 (GnomeVFS the same?) and (hopefully) on web pages.
+The URI handling functions are part of libggzmeta.
+As of GGZ 0.0.14, only KGGZ supports this, although TelGGZ and Metacle make
+use of ggzmetaserv, too.
 
 For more complex queries, an extendable result set may be required. The format
 for that is therefore XML. The advantage is that multiple entries are allowed
-to be returned.
+to be returned, and filtering can be done.
 
 	c->s:	<?xml version="1.0"?>
-			<query class="ggz" type="connection">
-				0.0.7pre
+			<query class="ggz" type="connection" delta="100">
+				<option name="protocol">10</option>
 			</query>
 	s->c:	<?xml version="1.0"?>
 			<resultset referer="query">
-				<result preference="100">
-					<uri>
-						ggz://jzaun.com:5689
-					</uri>
-					<location>
-						pennsylvania, us
-					</location>
-					<speed>
-						768
-					</speed>
+				<result uri="ggz://live.ggzgamingzone.org:5688">
+					<option name="preference">100</option>
+					<option name="location">pennsylvania, us</option>
+					<option name="speed">768</option>
 				</result>
 			</resultset>
 
@@ -42,15 +46,18 @@ been moved from a ggzcore_confio format to an XML-based one, so one can pass
 native DOM subtrees to the client.
 
 The configuration file is metaservconf.xml, but can be specified via -c.
-Metaserv should be installed on port "ggzm" (15689), to be invoked by inetd.
+Metaserv should be installed on port "ggzmeta" (15689), to be invoked by inetd
+or (preferred) run as a daemon which will allow updates to take place.
 
 In XML, an empty resultset is returned if no entries are found.
 URI-based results are chosen by priority; the entry with the highest priority
-is returned; among equals, one is randomly chosen.
-
-Help can be obtained via the help:// protocol.
+is returned first; among equals, one is randomly chosen. Starting from version
+0.5, URI-based results can contain more than one URI.
 
 See http://www.ggzgamingzone.org/backend/metaserver/ for more details.
+
+The following entry might be added to /etc/services:
+ggzmeta   15689/tcp            # GGZ Gaming Zone meta server
 
 Josef
 

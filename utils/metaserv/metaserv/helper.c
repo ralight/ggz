@@ -1,6 +1,6 @@
 /*
  * The GGZ Gaming Zone Metaserver Project
- * Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org
+ * Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
  * Published under GNU GPL conditions.
  */
 
@@ -47,49 +47,90 @@ void logline(const char *fmt, ...)
 	}
 }
 
-char *meta_uri_host_internal(const char *uri)
+/* except for URL quoting, none of this should be necessary */
+/* but we still do it to prevent a nasty misconfiguration in the cache */
+/* also, in the metaserver updates, attributes and elements get swapped! */
+/* attributes need '/" quoted, elements need </>, and all need & */
+/* URL whitespace needs to become %20 but this is a semantic issue */
+char *xml_strdup(const char *s, int attribute, int url)
 {
-	char *s, *tmp;
-	char *host;
+	char *s2 = NULL;
+	int i;
+	int j = 0;
 
-	tmp = strdup(uri);
-	s = strtok(tmp, ":");
-	if(s)
+	if(!s) return s2;
+
+	s2 = (char*)malloc(j + 1);
+	s2[j] = 0;
+	j++;
+	for(i = 0; i < strlen(s); i++)
 	{
-		s = strtok(NULL, ":");
-		if(s)
+		if((s[i] == '&')
+		&& ((i > strlen(s) - 5)
+		   || (strncmp(s + i, "&amp;", 5))
+		   || (strncmp(s + i, "&lt;", 4))
+		   || (strncmp(s + i, "&gt;", 4))
+		   || (strncmp(s + i, "&quot;", 6))
+		   || (strncmp(s + i, "&apos;", 6))))
 		{
-			host = strdup(s + 2);
-			while(s) s = strtok(NULL, ":");
-			free(tmp);
-			return host;
+			s2 = (char*)realloc(s2, j + 5);
+			strcpy(s2 + j - 1, "&amp;");
+			s2[j + 4] = 0;
+			j += 5;
+			continue;
 		}
-	}
-	return NULL;
-}
 
-int meta_uri_port_internal(const char *uri)
-{
-	char *s, *tmp;
-	int port;
-
-	tmp = strdup(uri);
-	s = strtok(tmp, ":");
-	if(s)
-	{
-		s = strtok(NULL, ":");
-		if(s)
+		if((s[i] == '>') && (!attribute))
 		{
-			s = strtok(NULL, ":");
-			if(s)
-			{
-				port = atoi(s);
-				while(s) s = strtok(NULL, ":");
-				free(tmp);
-				return port;
-			}
+			s2 = (char*)realloc(s2, j + 4);
+			strcpy(s2 + j - 1, "&gt;");
+			s2[j + 3] = 0;
+			j += 4;
+			continue;
 		}
+
+		if((s[i] == '<') && (!attribute))
+		{
+			s2 = (char*)realloc(s2, j + 4);
+			strcpy(s2 + j - 1, "&lt;");
+			s2[j + 3] = 0;
+			j += 4;
+			continue;
+		}
+
+		if((s[i] == '\'') && (attribute))
+		{
+			s2 = (char*)realloc(s2, j + 6);
+			strcpy(s2 + j - 1, "&apos;");
+			s2[j + 5] = 0;
+			j += 6;
+			continue;
+		}
+
+		if((s[i] == '\"') && (attribute))
+		{
+			s2 = (char*)realloc(s2, j + 6);
+			strcpy(s2 + j - 1, "&quot;");
+			s2[j + 5] = 0;
+			j += 6;
+			continue;
+		}
+
+		if((s[i] == ' ') && (url))
+		{
+			s2 = (char*)realloc(s2, j + 3);
+			strcpy(s2 + j - 1, "%20");
+			s2[j + 2] = 0;
+			j += 3;
+			continue;
+		}
+
+		s2 = (char*)realloc(s2, j + 1);
+		s2[j - 1] = s[i];
+		s2[j] = 0;
+		j++;
 	}
-	return 0;
+
+	return s2;
 }
 

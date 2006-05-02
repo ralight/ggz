@@ -1,13 +1,15 @@
-SUBDIRS = .
+bin_PROGRAMS = ggzmetaserv
 
-bin_PROGRAMS = metaserv
-
-metaserv_SOURCES = metaserv.c helper.c
-metaserv_LDADD = $(top_builddir)/metaserv/minidom/libminidom.a -lpthread
+ggzmetaserv_SOURCES = metaserv.c helper.c
+ggzmetaserv_LDADD = \
+	$(top_builddir)/metaserv/minidom/libminidom.a \
+	$(top_builddir)/metaserv/libmeta/libggzmeta.a \
+	-lpthread
+ggzmetaserv_CPPFLAGS = \
+	-I $(top_srcdir)/metaserv/minidom \
+	-I $(top_srcdir)/metaserv/libmeta
 
 noinst_HEADERS = helper.h
-
-AM_CPPFLAGS = -I $(top_srcdir)/metaserv/minidom
 
 confdir = $(prefix)/share/metaserv
 dist_conf_DATA = metaservconf.xml

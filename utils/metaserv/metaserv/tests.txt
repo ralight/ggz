@@ -1,28 +1,16 @@
-!! IMPORTANT !!
-Only 'add' works currently, 'delete' and 'modify' are not implemented yet!!!
-
 Add an entry to GGZ:
 
-<?xml version="1.0"?><update class="ggz" type="connection" username="josef" password="ggzrocks"><option name="mode">add</option><option name="version">0.0.5pre</option><option name="preference">50</option><option name="uri">ggz://somehost.org:5688</option></update>
+<?xml version="1.0"?><update class="ggz" type="connection" username="josef" password="ggzrocks" mode="add" uri="ggz://somehost.org:5688"><option name="version">0.0.5pre</option><option name="preference">50</option></update>
 
 Remove an entry from GGZ:
 
-<?xml version="1.0"?><update class="ggz" type="connection" username="josef" password="ggzrocks"><option name="mode">delete</option><option name="version">0.0.5pre</option><option name="preference">50</option><option name="uri">ggz://somehost.org:5688</option></update>
-
-Add an entry to Atlantik:
-
-<?xml version="1.0"?><update class="atlantik" type="connection" username="capsi" password="whatever"><option name="mode">add</option><option name="version">0.0.5pre</option><option name="preference">50</option><option name="uri">atlantik://someotherhost.org:9999</option></update>
+<?xml version="1.0"?><update class="ggz" type="connection" username="josef" password="ggzrocks" mode="delete" uri="ggz://somehost.org:5688" />
 
 Query GGZ:
 
-<?xml version="1.0"?><query class="ggz" type="connection">0.0.5pre</query>
+<?xml version="1.0"?><query class="ggz" type="connection" />
 
-Query Altantik:
+Custom query:
 
-<?xml version="1.0"?><query class="atlantik" type="connection">0.1</query>
-
-
-Add a meta server entry to GGZ:
- 
-<?xml version="1.0"?><update class="ggz" type="meta" username="josef" password="ggzrocks"><option name="mode">add</option><option name="version">0.1</option><option name="preference">50</option><option name="uri">ggzmeta://somehost.org:15689</option><option name="class">ggz</option></update>
+<?xml version="1.0"?><query class="ggz" type="connection" delta="100"><option name="protocol">10</option></query>
 

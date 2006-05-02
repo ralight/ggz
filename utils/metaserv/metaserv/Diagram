@@ -1,0 +1,29 @@
+Some documentation on the usage of the functions in ggzmetaserv...
+
+In local query mode:
+ -> metaserv_init()
+ -> metaserv_work()
+ -> metaserv_shutdown()
+
+In daemon mode:
+ -> metaserv_init()
+ -> metaserv_daemon()
+    -> metaserv_worker()
+       -> metaserv_work()
+ -> metaserv_shutdown()
+
+From metaserv_work(), the process is dispatched:
+ -> metamagic()
+    -> metaserv_uri()
+	   -> metaserv_lookup()
+	      -> metaserver_lookup_class()
+    -> metaserv_xml()
+	   -> metaserv_lookup()
+	      -> metaserver_lookup_class()
+	   -> metaserv_list()
+	   -> metaserv_update()
+	      -> metaserv_auth()
+		  -> metaserv_cache()
+		  -> metaserv_peers()
+		     -> metaserv_notify()
+

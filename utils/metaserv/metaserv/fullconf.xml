@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<metaserver>
+	<entrylist class="ggz">
+		<connection version="current" preference="100" location="nottingham/uk" speed="2048">ggz://uk.ggzgamingzone.org:5688</connection>
+		<connection version="0.0.12" preference="100" location="lorraine/france" speed="1000">ggz://live.ggzgamingzone.org:5688</connection>
+		<connection version="0.0.11" preference="100" location="lorraine/france" speed="1000">ggz://live.ggzgamingzone.org:5688</connection>
+		<meta version="0.1" preference="100">ggzmeta://live.ggzgamingzone.org:15689</meta>
+	</entrylist>
+	<entrylist class="teg">
+		<connection version="5" preference="100">teg://ggz.homeip.net:2000</connection>
+		<connection version="5" preference="100">teg://mindx.dyndns.org:2000</connection>
+	</entrylist>
+	<entrylist class="atlantik">
+		<connection version="0.1" preference="100">atlantik://capsi.com:9999</connection>
+	</entrylist>
+	<entrylist class="freeciv">
+		<connection version="1.14.0" preference="100" status="running" players="1" message="(game 3435) players welcome" lastturn="2m" joinas="-">
+			freeciv://civserver.freeciv.org:5550
+		</connection>
+	</entrylist>
+	<configuration>
+		<authorization username="josef" password="ggzrocks" realm="ggz" update="1"/>
+		<peer username="node02" password="ggzrocks">ggz://jzaun.com:5688</peer>
+	</configuration>
+</metaserver>
+

@@ -11,21 +11,25 @@ Every meta server maintains (in metaserverconf.xml) a list of authorizations,
 beside the actual URIs. All people listed with the 'update' capability can
 submit updates. This does of course apply to servers as well once they're able
 to do so.
-Each autorization belongs to one realm (like 'ggz' or 'atlantik'), and only the
-configuration section containing this realm can be updated.
+Each autorization belongs to one realm, which corresponds to a class
+(like 'ggz' or 'atlantik'), and only the configuration section containing this
+realm can be updated.
+People with the 'create' capability might even create new realms (classes).
+
+Updates always regard the URI of an entry to be the primary key.
 
 	c->s:	<?xml version="1.0"?>
-			<update class="ggz" type="connection" username="heinz" password="*******">
-				<option name="mode">add</option>
-				<option name="version">0.0.5pre</option>
+			<update class="ggz" type="connection"
+				username="heinz" password="*******"
+				mode="add" uri="ggz://live.ggzgamingzone.org:5688">
+				<option name="protocol">10</option>
+				<option name="version">0.0.14</option>
 				<option name="preference">50</option>
-				<option name="uri">ggz://jzaun.com:5688</option>
 			</update>
+
 	s->c:	<?xml version="1.0"?>
 			<resultset referer="update">
-				<result>
-					<status>accepted</status>
-				</result>
+				<status>accepted</status>
 			</resultset>
 
 The following modes can be used:
@@ -37,6 +41,7 @@ The following status codes can occur:
 
 accepted: the update was completed successfully
 rejected: authorization failed
+readonly: the metaserver isn't writeable, it doesn't run as daemon
 wrong: wrong class/type/options
 error: internal error like disk full
 

@@ -8,28 +8,48 @@ It starts with the normal header:
 
 	<?xml version="1.0"?>
 
-and has one major section which specifies the class, in our case that is 'ggz':
+and has one root element:
 
-	<configuration class="ggz">
+	<metaserver>
 	...
-	</configuration>
+	</metaserver>
 
-Within this root element, all entries are simply listed one after the other,
-with no differentiation of the type of each line.
-There are basically 3 entry types: 'connection', 'authorization' and 'peer'.
+Within this root, one major section can be devoted to global configuration.
+There are basically 2 entry types in this section: 'authorization' and 'peer'.
+Those settings are described below.
+All other sectionss are entry lists which specify the class, in our case
+this is 'ggz':
 
-The connection entry
---------------------
-This entry specifies a valid GGZ server (ggzd) somewhere on the net. The URI of
-this server is the value of this entry.
-The attributes are the version of the specified server, and the preference. The
-higher (up to 100) a preference is, the more likely a client will connect to
-it. Slow servers should therefore get a low preference.
+	<entrylist class="ggz">
+	...
+	</entrylist>
+
+Within this class root element, all entries are simply listed one after the
+other, with no differentiation of the type of each line.
+Entry types are class specific, but usually are called 'connection', 'meta'
+or 'gameroom', depending on their content, and they refer to the 'type'
+attribute in queries.
+
+The basic entries
+-----------------
+Such entries specify a valid GGZ server (ggzd) somewhere on the net, or a
+running game, or a radio stream which is offered, or any other resource.
+The URI of this server is the value of this entry.
+(This differs from the GGZ Metaserver protocol, where uri is an attribute!)
+The attributes to each element are those which will appear as 'option' tags
+in query results, and can be for example the version of the specified server,
+its location and the preference. The higher (up to 100) a preference is,
+the more likely a GGZ client will connect to it.
+Slow servers should therefore get a low preference.
 This is like such an entry might look like:
 
-	<connection version="0.0.5pre" preference="50">
-		ggz://jzaun.com:5688
+	<connection protocol="10" version="0.0.14" preference="50">
+		ggz://live.ggzgamingzone.org:5688
 	</connection>
+
+	<stream style="Electronica" stream="You Electrobeat Station">
+		http://somewhere/beats.pls
+	</stream>
 
 The authorization entry
 -----------------------
@@ -38,12 +58,15 @@ among themselves automatically. Only trusted users and hosts are allowed to
 issue updates. Currently, every entity which provides a valid username and
 password is trusted.
 This entry has no value, but beside the username and password it requires
-capabilities to be specified in order to fine-tune the access rights. Currently
-only the 'update' capability is defined, and it makes no sense to set it to 0
-(which would make the whole entry obsolete), so it should be set to 1.
+capabilities to be specified in order to fine-tune the access rights.
+Currently only the 'update' and 'create' capabilities are defined, and it
+makes no sense to set it to 0 (which would make the whole entry obsolete), so
+it should be set to 1.
 Example:
 
-	<authorization username="josef" password="ggzrocks" update="1"/>
+	<authorization username="josef" password="ggzrocks" realm="*" create="1"/>
+
+The realm can either be fixed, or (in the case of create=1) it's a wildcard.
 
 The peer entry
 --------------
@@ -57,9 +80,9 @@ which consists of a username and a password.
 Example:
 
 	<peer username="node02" password="ggzrocks">
-		ggz://jzaun.com:5688
+		ggzmeta://live.ggzgamingzone.org:15689
 	</peer>
 
 Josef Spillner
-09.12.2001
+originally written 09.12.2001, overhauled 30.04.2006
 
