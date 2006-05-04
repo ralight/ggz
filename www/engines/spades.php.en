@@ -20,6 +20,13 @@ Card game for 4 players.
 </ul>
 <br>
 
+<i>Remark</i><br>
+NetSpades was the original Spades game in GGZ, ported from the original
+version which supported Gtk+ and Slang frontends, dating back to 1997.
+With GGZCards, a new server and (generic) client is available, but the
+game is kept in GGZ nevertheless.
+<br><br>
+
 <i>Spades rules</i><br>
 The first player (game host) is given the privilege to choose the minimum
 bid and the score needed to win a game.
@@ -27,7 +34,6 @@ Each player then selects a bid and submits it.
 This marks the start of the turns, in which all players clock-wise propose
 a card. The one with the highest card and color wins the trick.
 Since the game is named NetSpades, one can assume that Spades is trump.
-
 <br><br>
 
 <i>Protocol and documentation</i><br>
@@ -41,9 +47,17 @@ No further information present.
 <a href="/gameservers/spades/"><i>Server: NetSpades</i></a>
 <br><br>
 
+<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
+<br><br>
+
 <img src="/pics/icons/game_gnome.png">
 <i>Gtk+ client: NetSpades</i><br>
 <a href="/games/spades/"><img src="/games/pics/netspades.png"></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: GGZCards</i><br>
+<a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
 <br><br>
 
 <img src="/pics/icons/game_java.png">

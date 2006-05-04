@@ -15,7 +15,7 @@ Multiple card games for 2-6 players.
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Supports the <a href="/engines/lapocha/">LaPocha</a>, <a href="/engines/bridge/">Bridge</a>, <a href="/engines/fortytwo/">FortyTwo</a>, <a href="/engines/hearts/">Hearts</a>, <a href="/engines/suaro/">Suaro</a>, <a href="/engines/sueco/">Sueca</a> and <a href="/engines/whist/">Whist</a> engines
+<li>Supports the <a href="/engines/lapocha/">LaPocha</a>, <a href="/engines/bridge/">Bridge</a>, <a href="/engines/fortytwo/">FortyTwo</a>, <a href="/engines/hearts/">Hearts</a>, <a href="/engines/suaro/">Suaro</a>, <a href="/engines/sueca/">Sueca</a>, <a href="/engines/whist/">Whist</a> and <a href="/engines/spades/">Spades</a> engines
 <li>Supports AI players
 <li>Implemented in C (GGZCards framework)
 <li>GGZ is required (no standalone mode)
@@ -60,6 +60,9 @@ In all these GGZCards games, many GGZ features are supported.
 <br><br>
 
 <a href="/engines/whist/"><i>Engine: Whist</i></a>
+<br><br>
+
+<a href="/engines/spades/"><i>Engine: Spades</i></a>
 <br><br>
 
 <img src="/pics/icons/game_gnome.png">

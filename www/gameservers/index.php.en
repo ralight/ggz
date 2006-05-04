@@ -61,18 +61,22 @@ The following game servers have been created by the GGZ Gaming Zone developers:
 <br>
 <a href="/gameservers/connectx/">ConnectX</a>
 <br>
-<a href="/gameservers/go/">Go</a>
+<a href="/gameservers/goserver/">Go</a>
 <br>
 <a href="/gameservers/checkers/">Checkers</a>
 <br>
 <a href="/gameservers/hnefatafl/">Hnefatafl</a>
+<br>
+<a href="/gameservers/ludo/">Ludo</a>
+<br>
+<a href="/gameservers/arimaa/">Arimaa</a>
 <br>
 <br>
 
 <i>Card game servers:</i><br>
 <a href="/gameservers/spades/">NetSpades</a>
 <br>
-<a href="/gameservers/ggzcards/">GGZCards</a> (LaPocha, Bridge, FortyTwo, Hearts, Suaro, Sueco, Whist)
+<a href="/gameservers/ggzcards/">GGZCards</a> (LaPocha, Bridge, FortyTwo, Hearts, Suaro, Sueca, Whist, Spades)
 <br>
 <br>
 
@@ -97,8 +101,6 @@ or they're part of GGZ but external clients are needed.
 <a href="/gameservers/tuxman/">Tuxman Server</a> (part of GGZ)
 <br>
 <a href="/gameservers/teg/">T.E.G.</a>
-<br>
-<a href="/gameservers/goserver/">Go Server</a> (part of GGZ)
 <br>
 <a href="/gameservers/freeciv/">Freeciv</a>
 <br>

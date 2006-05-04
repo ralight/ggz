@@ -15,8 +15,15 @@ verbindet sich dann mit einem der GGZ-Server.
 <td valign="top">
 
 <i>Aktuelle stabile Server</i><br>
-<a href="ggz://live.ggzgamingzone.org">live.ggzgamingzone.org</a> (0.0.11+, Frankreich, schnell)<br>
+<a href="ggz://live.ggzgamingzone.org">live.ggzgamingzone.org</a> (0.0.13+, Frankreich, schnell)<br>
 <br>
+
+<i>Metacle-Dienst</i><br>
+Das <a href="http://metacle.ggzgamingzone.org/">Metacle</a> ist immer darüber
+informiert, welche Spiele gerade in der Welt laufen, sowohl für GGZ als auch für
+andere Onlinespiele!
+Es beinhaltet auch eine Liste von zusätzlichen GGZ-Servers, sofern jemand einen
+darüber registriert hat.
 
 </td>
 </table>

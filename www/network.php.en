@@ -97,10 +97,25 @@ Maintained using SVN, it will last for quite a while...
 </center>
 </td>
 <td colspan="2" valign="top">
-To celebrate the 5th birthday of GGZ, the GGZ Community portal went online in January 2005.
+To celebrate the 5th birthday of GGZ, the
+<a href="http://www.ggzcommunity.org/">GGZ Community</a> portal went online in January 2005.
 From statistics to playing games online via Java applets, from articles to tournament organization
 - GGZ Community is king among the free gaming centers of this world (and beyond).
 Other projects can even host their own "Community" portal using GGZ Community.
+</td>
+</tr>
+
+<tr>
+<td>
+<center>
+<a href="/pics/network/metacle.org"><img src="/pics/network/thumb.metacle.org" border="0"></a><br clear="all">
+</center>
+</td>
+<td colspan="2" valign="top">
+In mid-2006, the <a href="http://metacle.ggzgamingzone.org/">Metacle</a> service was
+launched to provide a unified look on metaservers, so that information about gaming
+activity both for GGZ and beyond is now possible.
+Metacle can be thought of as a search engine for online games.
 </td>
 </tr>
 

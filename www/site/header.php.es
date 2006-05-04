@@ -33,7 +33,7 @@ GGZ Gaming Zone
 |
 <a href="/developers.php">Desarrolladores</a>
 |
-<a href="/rankings.php">Clasificaci&oacute;n</a>
+<a href="/community.php">Comunidad</a>
 |
 <a href="/live.php">Juegos live</a>
 </font>

@@ -15,7 +15,8 @@
 <i>Features</i><br>
 <ul>
 <li>ideal for integration with web browsers (as a Java Applet)
-<li>contains a core client and several game clients at once!
+<li>can also be built as an application for desktop usage
+<li>contains a core client and several <a href="/games/ggzjava/">game clients</a> at once!
 </ul>
 <br>
 

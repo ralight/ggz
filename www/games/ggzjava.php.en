@@ -26,7 +26,7 @@ Multi-game framework for 2 to 6 players.
 
 GGZJava is a Java package aimed at making GGZ games available to browser users.
 As such, it contains multiple game clients and a corresponding core client in the form of a
-Java applet.
+<a href="/clients/java/">Java applet</a>.
 
 <br><br>
 
@@ -51,7 +51,7 @@ Java applet.
 <a href="/engines/hearts/"><i>Engine: Hearts</i></a>
 <br><br>
 
-<a href="/engines/sueco/"><i>Engine: Sueco</i></a>
+<a href="/engines/sueca/"><i>Engine: Sueca</i></a>
 <br><br>
 
 <a href="/engines/whist/"><i>Engine: Whist</i></a>

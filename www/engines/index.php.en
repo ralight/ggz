@@ -288,10 +288,19 @@ Batalla Naval (GNOME) - R.I.P.<br>
 <td>
 <img src="/pics/icons/game_gnome.png">
 <a href="/games/spades/">NetSpades (Gtk+)</a><br>
+</td>
+<td><a href="/gameservers/spades/">NetSpades server</a></td>
+</tr>
+
+<tr>
+<td><a href="/engines/spades/">Spades</a></td>
+<td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
 <img src="/pics/icons/game_java.png">
 <a href="/games/ggzjava/">GGZ-Java (Java)</a><br>
 </td>
-<td><a href="/gameservers/spades/">NetSpades server</a></td>
+<td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
 </tr>
 
 <tr>

@@ -27,15 +27,15 @@ GGZ Gaming Zone
 <tr>
 <td>
 <font size="3">
-<a href="/">Front page</a>
+<a href="/">Commencer</a>
 |
-<a href="/software.php">Games and Applications</a>
+<a href="/software.php">Jeux et Applications</a>
 |
-<a href="/developers.php">Developers</a>
+<a href="/developers.php">Développeurs</a>
 |
-<a href="/rankings.php">Rankings</a>
+<a href="/community.php">Communité</a>
 |
-<a href="/live.php">Live Games</a>
+<a href="/live.php">Jeux en air</a>
 </font>
 </td>
 </tr>
