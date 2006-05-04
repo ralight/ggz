@@ -1,161 +1,197 @@
-<HTML>
-<HEAD>
-<TITLE>
-The GGZ Gaming Zone Meta Server Project
-</TITLE>
-</HEAD>
-<BODY BGCOLOR="#334433" LINK="#ffffbb" ALINK="#ffffff" VLINK="#ffffbb">
-<FONT COLOR="#ffffff" SIZE="4" FACE="arial,helvetica">
-<B>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>
+GGZ Gaming Zone Metaserver
+</title>
+</head>
+<style type="text/css">
+tt {background-color: #e0e0ff}
+h2 {background-color: #e0e000}
+h3 {background-color: #e0e000}
+div {font-family: sans-serif}
+th {text-align: left}
+.code {font-size: -1; color: #777777;}
+</style>
+<body>
 
-<CENTER>
-<IMG SRC="pics/title.png">
-</CENTER>
+<div>
 
-<BR><BR>
-<IMG SRC="pics/about.png"><BR CLEAR="ALL">
+<h2>GGZ Gaming Zone Metaserver Documentation</h2>
 
-This project has been founded to allow GGZ client programs to connect
-dynamically to GGZ servers, without knowing their version numbers or host name.
-Meta servers store lists of GGZ servers and pass them to the client on request.
-Furthermore, they store lists of peer servers to distribute changes
-automatically world-wide.
+<small>
+<i>Revision: 0.2</i><br>
+<i>Date: 30.04.2006</i><br>
+<i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+</small>
 
-<BR><BR>
-<IMG SRC="pics/clients.png"><BR CLEAR="ALL">
+<p>
+With the introduction of the Metacle service and the necessary modifications
+of the GGZ metaserver and its protocol, this document replaces the
+old <a href="original.html">metaserver specification</a>.
+It does however only give an introduction, leaving the details to the
+text files which come with the metaserver source code, and the new protocol
+specification document.
+</p>
 
-GGZ Core Clients, such like KGGZ or GGZ-Gtk, can use the meta servers to
-allow random connections, or to update their list of available hosts to connect
-to. This ensures that servers with too old or too new versions of ggzd are
-excluded automatically.
-The GGZ Telnet Wrapper (TelGGZ) uses this functionality for a similar task.
-<BR><BR>
-There is only one mode the clients use (query connections), but there are two
-different modes of doing this: Either they do a simple query using the URI
-notation, or a more complex one using the XML protocol. For a detailed format
-definition, see the specification below. The following could be an example of
-such a query:
-<BR><BR>
+<h3>Metaserver Overview</h3>
 
-<CENTER>
-<TABLE BORDER="0">
-<TR>
-<TD BGCOLOR="#445544">
-<FONT COLOR="#ffffff" SIZE="4" FACE="arial,helvetica">
-Query Client -&gt; Server:<BR>
-<FONT COLOR="#ffffbb">
-query://ggz/connection/0.0.5pre<BR>
-</FONT>
-Result Server -&gt; Client:<BR>
-<FONT COLOR="#ffffbb">
-ggz://ggz.snafu.de:5688<BR>
-</FONT>
-</TD>
-</TR>
-</TABLE>
-</CENTER>
-<BR>
+<p>
+Metaservers have a long tradition in gaming infrastructures: They are public
+databases of game servers running on other hosts, and provide a reliable
+static point of information about the location of such dynamic game servers,
+often including other meta information such as the game server's location,
+connection speed and version number.
+</p>
 
-In the issued query, 'ggz' is the class and 'connection' the subclass (named
-'type') of the query, while '0.0.5pre' is the value. As one can see, other
-classes can be used as well, which ensures the usage of the meta server is not
-restricted to GGZ projects.
-The result simply returns an URI which is understood by the GGZ core clients.
-<BR><BR>
+<p>
+The GGZ Metaserver (<tt>ggzmetaserv</tt>) is a very generic species. It has
+been designed to be flexible enough to hold entries of various games at the
+same time, and offers both a simple query mode and an XML mode. Publication,
+modification and removal of entries is possible, and the server supports
+authorisation for added security and peer notification for redundant
+operation.
+</p>
 
-Using the XML format is not so easy but instead it provides a higher
-flexibility. Let's repeat the example from above using XML notation:
-<BR><BR>
+<p>
+Advanced features include incremental notifications about changes, to allow
+for real-time updates of interested applications (publish-subscribe method),
+and incremental querying based on a client-side provided time delta value.
+</p>
 
-<CENTER>
-<TABLE BORDER="0">
-<TR>
-<TD BGCOLOR="#445544">
-<FONT COLOR="#ffffff" SIZE="4" FACE="arial,helvetica">
-Query Client -&gt; Server:<BR>
-<FONT COLOR="#ffffbb">
+<h3>Entries</h3>
 
-&lt;?xml version="1.0"?&gt;<BR>
-&lt;query class="ggz" type="connection"&gt;<BR>
-0.0.5pre<BR>
-&lt;/query&gt;<BR>
+<p>
+Each entry is of a certain <tt>class</tt> and a subordinate <tt>subclass</tt>,
+also referred to as <tt>type</tt> or <tt>category</tt>. The class will almost
+always refer to the game server name, whereas the categories refer to the
+type of information one can retrieve. Therefore, categories commonly have a
+name such as <tt>connection</tt> to get connection information, or
+<tt>meta</tt> to find out other meta servers for this entry class.
+Categories could however also refer to resources only available under some
+classes, such as <tt>clubs</tt> to retrieve a list of web pages of
+online playing clubs attached to a game.
+</p>
 
-</FONT>
-Result Server -&gt; Client:<BR>
-<FONT COLOR="#ffffbb">
+<p>
+The way the server works is that an initial XML configuration file is loaded
+on startup, and the entries can be modified at runtime. A cache file can be
+given to store the modified configuration, so it will survive a server
+restart.
+</p>
 
-&lt;?xml version="1.0"?&gt;<BR>
-&lt;resultset referer="query"&gt;<BR>
-&lt;result preference="100"&gt;<BR>
-&lt;uri&gt;ggz://jzaun.com:5688&lt;/uri&gt;<BR>
-&lt;location&gt;pennsylvania, us&lt;/location&gt;<BR>
-&lt;/result&gt;<BR>
-&lt;/resultset&gt;<BR>
+<p>
+The server configuration not only contains lists of entries, one for each
+class, but also a global configuration section which lists user privileges and
+peer nodes. This section cannot be modified via the metaserver protocol, and
+it doesn't have to be present, but when it is, it allows to control the amount
+of modifications performed on the lists of entries.
+Normally, all operations are allowed, but as soon as a restriction appears
+in this section, it applies to some or all operations on the given class.
+</p>
 
-</FONT>
-</TD>
-</TR>
-</TABLE>
-</CENTER>
-<BR>
+<h3>Usage in GGZ</h3>
 
-It is now the client's task to build a list from this result set and either
-choose one host from it (preferably the one with the highest priority), or let
-the user select one.
+<p>
+The GGZ server, <tt>ggzd</tt>, is able to publish both itself and all games
+which run on it to the metaserver. The first kind of publishing takes place
+immediately on server startup, and it allows the GGZ core clients to get
+information about where to find a GGZ server on the net.
+The class <tt>ggz</tt> and the category <tt>connection</tt> are used in
+such a scenario, whereas the category <tt>meta</tt> will contain all
+other known GGZ metaservers.
+</p>
 
-<BR><BR>
-<IMG SRC="pics/servers.png"><BR CLEAR="ALL">
+<p>
+The second kind helps game authors to spread information about their games
+without having to run a metaserver on their own. GGZ publishes information
+about all game rooms, independent of running games, to a category named
+<tt>gameroom</tt> for each of the game classes. In addition, a
+<tt>connection</tt> category will dynamically contain all the running games.
+This information is the one which is used by the <tt>Metacle</tt> service
+which aggregates information harvested from many metaservers, the GGZ
+metaserver among them.
+</p>
 
-The role of meta servers among each other is to distribte changes they received
-from an administrator. The distribution follows several rules, and happens
-automatically, while incorrect configuration of one server in such a web of
-trust should leave most parts of the web intact.
-<BR><BR>
-Each meta server stores a list of peer servers which are to be notified when changes
-occur, and each entry has the login data needed to authenticate on the peer
-host. Logically each meta server does also store a list of logins, consisting
-of username and password, of persons or servers which are allowed to issue
-updates. The following illustration gives you an overview about the whole
-update process. Note that updates can be additions, deletions and
-modifications.
-<BR><BR>
+<h3>Protocol example</h3>
 
-<CENTER>
-<TABLE BORDER="0">
-<TR>
-<TD BGCOLOR="#445544">
-<FONT COLOR="#ffffff" SIZE="4" FACE="arial,helvetica">
-A typical web of GGZ meta servers<BR>
-<IMG SRC="pics/web.png">
-</TD>
-</TR>
-</TABLE>
-</CENTER>
-<BR>
+<p>
+The following is a query and update example. For more information, have a
+look at the dedicated GGZ Metaserver Protocol Specification.
+</p>
 
-In the example above, the green boxes are players, and the ones with the black
-point in them are administrators, who have direct access to the meta server
-configuration.
-The red disks are GGZ servers, and the blue disks represent meta servers, with
-blue lines for the updates and dotted black lines for queries.
-<BR><BR>
+<p>
+Wildcard query to find out the classes currently stored in the metaserver:
+</p>
 
-There exist currently two tools for administrators to update the meta servers:
-A perl script named metaconf.pl, and a Qt GUI named QMetaGUI. Both fulfil the
-task of avoiding typos and handling the XML embedding of the data.
+<p class="code">
+&lt;list /&gt;<br>
+</p>
 
-<BR><BR>
-<IMG SRC="pics/spec.png"><BR CLEAR="ALL">
+<p>
+The result will arrive promptly:
+</p>
 
-The complete specification is available in text format. It does however only
-describe the protocol, not the local configuration file format, so other meta
-server implementations supporting the same protocol may be written.
-A HTML page containing this specification is available
-<A HREF="spec.html">here</A>.
+<p class="code">
+&lt;resultset referer="list"&gt;<br>
+&lt;class&gt;ggz&lt;/class&gt;<br>
+&lt;class&gt;tictactoe&lt;/class&gt;<br>
+&lt;/resultset&gt;<br>
+</p>
 
-</B>
-<BR><BR>
-</FONT>
-</BODY>
-</HTML>
+<p>
+Query from the client to the server to return all GGZ servers which
+understand protocol version 10:
+</p>
 
+<p class="code">
+&lt;query class="ggz" type="connection"&gt;<br>
+&lt;option name="protocol"&gt;10&lt;/option&gt;<br>
+&lt;/query&gt;<br>
+</p>
+
+<p>
+The answer which contains the only server that does:
+</p>
+
+<p class="code">
+&lt;resultset referer="query"&gt;<br>
+&lt;result uri="ggz://somehost:5689" mode="add"&gt;<br>
+&lt;option name="preference"&gt;100&lt;/option&gt;<br>
+&lt;option name="location"&gt;pennsylvania, us&lt;/option&gt;<br>
+&lt;option name="speed"&gt;768&lt;/option&gt;<br>
+&lt;option name="protocol"&gt;10&lt;/option&gt;<br>
+&lt;/result&gt;<br>
+&lt;/resultset&gt;<br>
+</p>
+
+<p>
+Update request which then adds another server supporting this
+protocol version:
+</p>
+
+<p class="code">
+&lt;update class="ggz" type="connection" username="xxx" password="***"
+mode="add" uri="ggz://anotherhost:5688"&gt;<br>
+&lt;option name="version"&gt;0.0.14&lt;/option&gt;<br>
+&lt;option name="protocol"&gt;10&lt;/option&gt;<br>
+&lt;option name="preference"&gt;50&lt;/option&gt;<br>
+&lt;option name="location"&gt;lorraine/france&lt;/option&gt;<br>
+&lt;option name="speed"&gt;60 kB/s&lt;/option&gt;<br>
+&lt;/update&gt;<br>
+</p>
+
+<p>
+Apparently, the update went smooth:
+</p>
+
+<p class="code">
+&lt;resultset referer="update"&gt;<br>
+&lt;status&gt;accepted&lt;/status&gt;<br>
+&lt;/resultset&gt;<br>
+</p>
+
+</div>
+
+</body>
+</html>

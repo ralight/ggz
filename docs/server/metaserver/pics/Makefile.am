@@ -1,7 +1,5 @@
-SUBDIRS = .
-
 docdir = $(GGZDOCDIR)/server/metaserver/pics
-doc_DATA = \
+dist_doc_DATA = \
 	about.png \
 	back.png \
 	clients.png \
@@ -9,6 +7,4 @@ doc_DATA = \
 	spec.png \
 	title.png \
 	web.png
-
-EXTRA_DIST = $(doc_DATA)
 
