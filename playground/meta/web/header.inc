@@ -9,7 +9,8 @@
 <body>
 	<div id="container" >
 		<div id="header">
-			<h1>The Metacle</h1>
+			<img src="metacle.png" alt="The Metacle" style="position:static;float:left"/>
+			<h1 style="float:left;left:64px;">The Metacle</h1>
 		</div>
 		<div id="topNavigation">
 			<ul>
