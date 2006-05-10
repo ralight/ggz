@@ -7,7 +7,7 @@ GenericName[pt]=Centro de jogos em rede (Gtk+)
 Comment=GGZ Core Client
 Comment[de]=GGZ-Core-Client
 Comment[fr]=Core Client GGZ
-Comment[pt]=Cliente núcleo do GGZ
+Comment[pt]=Cliente nÃºcleo do GGZ
 
 Type=Application
 Exec=ggz-gtk
