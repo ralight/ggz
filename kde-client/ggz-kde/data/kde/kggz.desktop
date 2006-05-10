@@ -3,13 +3,13 @@ Encoding=UTF-8
 
 Name=KGGZ
 GenericName=Internet gaming center for KDE
-GenericName[de]=Internet-Spielezentrum für KDE
+GenericName[de]=Internet-Spielezentrum fÃ¼r KDE
 GenericName[fr]=Centre de jeux d'internet pour KDE
 GenericName[pt]=Centro de jogos em rede para KDE
 Comment=GGZ Core Client
 Comment[de]=GGZ-Core-Client
 Comment[fr]=Core Client GGZ
-Comment[pt]=Cliente núcleo do GGZ
+Comment[pt]=Cliente nÃºcleo do GGZ
 
 Type=Application
 Exec=kggz
