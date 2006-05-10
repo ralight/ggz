@@ -1,17 +1,17 @@
 <div id="content">
 	<h4>Search</h4>
-	<p>
+	<form action="/search">
+		<p>
 		Find a specific game by entering a game name or category expression.
 		You might also click on one of the links in the right navigation bar.
 		<br/><br/>
-		<span class="contentBox">
-			<form action="/search">
+			<span class="contentBox">
 				Game:
-				<input type="text" name="q">
-				<input type="submit" value="Search" class="button">
-			</form>
-		</span>
-	</p>
+				<input type="text" name="q" />
+				<input type="submit" value="Search" class="button" />
+			</span>
+		</p>
+	</form>
 <?php
 if ($q) :
 ?>
