@@ -2,7 +2,11 @@ dnl ======================================
 dnl Gaim Configuration
 dnl ======================================
 dnl
-dnl Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+dnl Call: AC_GAIM(major, minor, micro)
+dnl Returns: $have_gaim (= yes/no)
+dnl Sets: GAIMPLUGIN (for SUBDIRS)
+dnl
+dnl Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 dnl
 
 AC_DEFUN([AC_GAIM],
@@ -32,8 +36,31 @@ if test "$have_gaim" != yes; then
 else
   AC_MSG_RESULT([$have_gaim (headers $ac_gaim_includes)])
 
-  GAIMPLUGIN='gaim-plugin'
-  AC_SUBST(GAIMPLUGIN)
+  major=$1
+  minor=$2
+  micro=$3
+
+  testprologue="#include <gaim/version.h>"
+  testbody=""
+  testbody="$testbody if(GAIM_MAJOR_VERSION > $major) return 0;"
+  testbody="$testbody if(GAIM_MAJOR_VERSION < $major) return -1;"
+  testbody="$testbody if(GAIM_MINOR_VERSION > $minor) return 0;"
+  testbody="$testbody if(GAIM_MINOR_VERSION < $minor) return -1;"
+  testbody="$testbody if(GAIM_MICRO_VERSION > $micro) return 0;"
+  testbody="$testbody if(GAIM_MICRO_VERSION < $micro) return -1;"
+  testbody="$testbody return 0;"
+
+  AC_RUN_IFELSE(
+    [AC_LANG_PROGRAM([[$testprologue]], [[$testbody]])],
+    [
+      GAIMPLUGIN='gaim-plugin'
+      AC_SUBST(GAIMPLUGIN)
+    ],
+    [
+      AC_MSG_WARN([The Gaim version is too old. Version $major.$minor.$micro is required.])
+	  have_gaim=no
+	]
+  )
 fi
 
 ])

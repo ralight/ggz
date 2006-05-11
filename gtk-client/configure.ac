@@ -28,7 +28,7 @@ AC_GGZ_INTL
 
 dnl Gaim plugin check
 dnl =================
-AC_GAIM
+AC_GAIM(1, 5, 0)
 
 
 dnl Check for header files

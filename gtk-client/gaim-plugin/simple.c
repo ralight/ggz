@@ -27,7 +27,7 @@
 #define HEADER "*** Command from the gaim-ggz plugin:"
 #define FOOTER "***"
 #define GGZWRAPPER "ggz-wrapper"
-#define GGZMODULECONFIG "/usr/local/etc/ggz.modules"
+#define GGZMODULECONFIG PREFIX "/etc/ggz.modules"
 #define SERVER "live.ggzgamingzone.org"
 
 GtkWidget *pTable, *pLogin, *pPassword, *pCheckBox, *pServer;
@@ -57,7 +57,7 @@ GaimCmdRet commande(GaimConversation *conv, const gchar *cmd, gchar **args, gcha
 		 }
 		else
 		 {
-			parms[0]=gaim_prefs_get_string("/plugins/gtk/ggzgaim/login");
+			parms[0]=(char*)gaim_prefs_get_string("/plugins/gtk/ggzgaim/login");
 			parms[1]=jeu;
 			sys_parm=g_strdup_printf("%s -u %s -g %s -p %s -s %s", GGZWRAPPER, parms[0], parms[1], gaim_prefs_get_string("/plugins/gtk/ggzgaim/password"), gaim_prefs_get_string("/plugins/gtk/ggzgaim/server"));
 		 }
@@ -249,7 +249,7 @@ static void message_recu2(GaimAccount *acct,char **sender, char **buffer,int fla
 		 }
 		else
 		 {
-			parms[1]=gaim_prefs_get_string("/plugins/gtk/ggzgaim/login");
+			parms[1]=(char*)gaim_prefs_get_string("/plugins/gtk/ggzgaim/login");
 			parms[2]=joueur;
 			sys_parm=g_strdup_printf("%s -u %s -d %s -g %s -p %s -s %s", GGZWRAPPER, parms[1], parms[2], jeu, gaim_prefs_get_string("/plugins/gtk/ggzgaim/password"), gaim_prefs_get_string("/plugins/gtk/ggzgaim/server"));
 		 }
@@ -299,6 +299,8 @@ ggzgaim_entry_change_cb(GtkObject *obj, gchar *pref)
 {
 	gaim_prefs_set_string(pref,gtk_entry_get_text(GTK_ENTRY(obj)));
 }
+
+static void
 ggzgaim_checkbox_change_cb(GtkObject *obj, gchar *pref)
 {
 	gaim_prefs_set_bool(pref,gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(obj)));
