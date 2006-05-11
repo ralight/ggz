@@ -132,17 +132,18 @@ dnl Check database libs
 dnl ===================
 AC_GGZ_DATABASE
 
+dnl Zeroconf checks for Howl and Avahi
+dnl ==================================
+use_howl=0
+use_avahi=0
+
 dnl Check for zeroconf implementation Howl
 dnl ======================================
 AC_CHECK_LIB(howl, sw_discovery_init,
 [
 	AC_CHECK_HEADERS([howl/howl_config.h],
 	[
-		AC_DEFINE(WITH_HOWL, 1, [Use howl for zeroconf mechanism])
-		HOWL_INCLUDES="-I/usr/include/howl"
-		LIB_HOWL="-lhowl -lpthread"
-		AC_SUBST(HOWL_INCLUDES)
-		AC_SUBST(LIB_HOWL)
+		use_howl=1
 	],
 	[
 		AC_MSG_WARN([Zeroconf diabled, libhowl (headers) not found.])
@@ -153,6 +154,39 @@ AC_CHECK_LIB(howl, sw_discovery_init,
 ],
 [-lpthread])
 
+dnl Check for zeroconf implementation Avahi
+dnl =======================================
+AC_CHECK_LIB(avahi-client, avahi_entry_group_add_service,
+[
+	AC_CHECK_HEADERS([avahi-client/publish.h],
+	[
+		use_avahi=1
+		use_howl=0
+	],
+	[
+		AC_MSG_WARN([Zeroconf diabled, libhowl (headers) not found.])
+	])
+],
+[
+	AC_MSG_WARN([Zeroconf disabled, libhowl (libs) not found.])
+],
+[-lpthread])
+
+if test "$use_howl" = "1"; then
+	AC_DEFINE(WITH_HOWL, 1, [Use howl for zeroconf mechanism])
+	HOWL_INCLUDES="-I/usr/include/howl"
+	LIB_HOWL="-lhowl -lpthread"
+	AC_SUBST(HOWL_INCLUDES)
+	AC_SUBST(LIB_HOWL)
+fi
+
+if test "$use_avahi" = "1"; then
+	AC_DEFINE(WITH_AVAHI, 1, [Use avahi for zeroconf mechanism])
+	AVAHI_INCLUDES="-I/usr/include"
+	LIB_AVAHI="-lavahi-client"
+	AC_SUBST(AVAHI_INCLUDES)
+	AC_SUBST(LIB_AVAHI)
+fi
 
 dnl Debug modes
 dnl ===========

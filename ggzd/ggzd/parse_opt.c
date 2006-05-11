@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8021 2006-05-02 07:16:18Z josef $
+ * $Id: parse_opt.c 8034 2006-05-11 10:20:38Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -151,6 +151,11 @@ static char **_ggz_string_to_list(const char *s, const char *sep)
 #else
 #define SPEC_HOWL 0
 #endif
+#ifdef WITH_AVAHI
+#define SPEC_AVAHI 1
+#else
+#define SPEC_AVAHI 0
+#endif
 
 static void dump_specs(void)
 {
@@ -167,7 +172,7 @@ static void dump_specs(void)
 	printf("Debugging: %s\n", (SPEC_DEBUG ? "yes" : "no"));
 	printf("Database backend: %s\n", SPEC_DB);
 	printf("Zeroconf support: %s [%s]\n",
-		(SPEC_HOWL ? "yes" : "no"),
+		(SPEC_HOWL ? "yes (howl)" : (SPEC_AVAHI ? "yes (avahi)" : "no")),
 		(opt.conf_valid ? (opt.announce_lan ? "used" : "not used") : "unknown"));
 	printf("TLS support: %s [%s]\n",
 		(tls ? "yes" : "no"),

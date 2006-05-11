@@ -51,10 +51,10 @@ ggzd_SOURCES = \
 	util.c \
 	util.h
 
-AM_CPPFLAGS = -I$(top_srcdir)/ggzd/database -I$(top_srcdir)/ggzd/meta -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES) $(HOWL_INCLUDES)
+AM_CPPFLAGS = -I$(top_srcdir)/ggzd/database -I$(top_srcdir)/ggzd/meta -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES) $(HOWL_INCLUDES) $(AVAHI_INCLUDES)
 
 ggzd_LDFLAGS = $(LIBGGZ_LDFLAGS)
-ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(LIB_DATABASE) $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a $(top_builddir)/ggzd/meta/libggzmeta.a $(LIB_HOWL)
+ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(LIB_DATABASE) $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a $(top_builddir)/ggzd/meta/libggzmeta.a $(LIB_HOWL) $(LIB_AVAHI)
 
 ggzduedit_SOURCES = ggzduedit.c perms.h
 

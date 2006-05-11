@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8021 2006-05-02 07:16:18Z josef $
+ * $Id: control.c 8034 2006-05-11 10:20:38Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -42,6 +42,10 @@
 
 #ifdef WITH_HOWL
 #include <howl.h>
+#endif
+#ifdef WITH_AVAHI
+#include <avahi-common/simple-watch.h>
+#include <avahi-client/publish.h>
 #endif
 
 #include "client.h"
@@ -184,6 +188,13 @@ static void cleanup_data(void)
 #undef data_free
 }
 
+#ifdef WITH_AVAHI
+static void callback(AvahiEntryGroup *g, AvahiEntryGroupState state, void* userdata)
+{
+	fprintf(stderr, "CALLBACK!\n");
+}
+#endif
+
 static int zeroconf_publish(const char *name, const char *protocol, int port)
 {
 #ifdef WITH_HOWL
@@ -213,8 +224,50 @@ static int zeroconf_publish(const char *name, const char *protocol, int port)
 
 	return 0;
 #else
+#if WITH_AVAHI
+	AvahiClient *client;
+	AvahiEntryGroup *group;
+	AvahiSimplePoll *simplepoll;
+	const AvahiPoll *poll;
+
+	/*
+	poll.userdata = NULL;
+	poll.watch_new = NULL;
+	poll.watch_update = NULL;
+	poll.watch_get_events = NULL;
+	poll.watch_free = NULL;
+	poll.timeout_new = NULL;
+	poll.timeout_update = NULL;
+	poll.timeout_free = NULL;
+	*/
+
+	simplepoll = avahi_simple_poll_new();
+	poll = avahi_simple_poll_get(simplepoll);
+	fprintf(stderr, "DEBUG: POLL: %p\n", poll);
+
+	/* FIXME: avahi_simple_poll_free() */
+
+	client = avahi_client_new(poll, AVAHI_CLIENT_NO_FAIL, NULL, NULL, NULL);
+	if(!client)
+	{
+		fprintf(stderr, "Zeroconf: Error: could not initialize\n");
+		return -1;
+	}
+
+	fprintf(stderr, "DEBUG: CLIENT: %p\n", client);
+	group = avahi_entry_group_new(client, callback, NULL);
+	fprintf(stderr, "DEBUG: GROUP: %p\n", group);
+	avahi_entry_group_add_service(group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 0,
+		name, protocol, NULL, NULL, port, NULL);
+	avahi_entry_group_commit(group);
+	avahi_entry_group_free(group);
+	avahi_client_free(client);
+
+	return 0;
+#else
 	fprintf(stderr, "Zeroconf: Error: server does not support zeroconf\n");
 	return -1;
+#endif
 #endif
 }
 
