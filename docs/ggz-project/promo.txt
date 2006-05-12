@@ -20,9 +20,12 @@ The following collection tries to give an overview about what exists already.
   [en] http://www.kde-apps.org/content/show.php?content=24472
   [en] http://www.kde-apps.org/content/show.php?content=24473
   [en] http://www.pygame.org/projects/23/215/
+  [en] http://wiki.python.org/moin/PythonGames
+  pending: [en] http://www.oreillynet.com/pub/q/java_os_directory
 
 == News sites ==
   [en] http://www.linuxgames.com/
+  [de] http://www.holarse.net/
 
 == Articles and extended news items ==
   [pt] ??.??.2001 http://olinux.uol.com.br/artigos/381/1.html
