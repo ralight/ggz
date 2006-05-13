@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8034 2006-05-11 10:20:38Z josef $
+ * $Id: control.c 8037 2006-05-13 09:28:38Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -44,7 +44,7 @@
 #include <howl.h>
 #endif
 #ifdef WITH_AVAHI
-#include <avahi-common/simple-watch.h>
+#include <avahi-common/thread-watch.h>
 #include <avahi-client/publish.h>
 #endif
 
@@ -191,7 +191,8 @@ static void cleanup_data(void)
 #ifdef WITH_AVAHI
 static void callback(AvahiEntryGroup *g, AvahiEntryGroupState state, void* userdata)
 {
-	fprintf(stderr, "CALLBACK!\n");
+	/* FIXME: this is not used yet (link status changes etc.) */
+	fprintf(stderr, "Zeroconf CALLBACK!\n");
 }
 #endif
 
@@ -227,25 +228,11 @@ static int zeroconf_publish(const char *name, const char *protocol, int port)
 #if WITH_AVAHI
 	AvahiClient *client;
 	AvahiEntryGroup *group;
-	AvahiSimplePoll *simplepoll;
+	AvahiThreadedPoll *threadedpoll;
 	const AvahiPoll *poll;
 
-	/*
-	poll.userdata = NULL;
-	poll.watch_new = NULL;
-	poll.watch_update = NULL;
-	poll.watch_get_events = NULL;
-	poll.watch_free = NULL;
-	poll.timeout_new = NULL;
-	poll.timeout_update = NULL;
-	poll.timeout_free = NULL;
-	*/
-
-	simplepoll = avahi_simple_poll_new();
-	poll = avahi_simple_poll_get(simplepoll);
-	fprintf(stderr, "DEBUG: POLL: %p\n", poll);
-
-	/* FIXME: avahi_simple_poll_free() */
+	threadedpoll = avahi_threaded_poll_new();
+	poll = avahi_threaded_poll_get(threadedpoll);
 
 	client = avahi_client_new(poll, AVAHI_CLIENT_NO_FAIL, NULL, NULL, NULL);
 	if(!client)
@@ -254,14 +241,30 @@ static int zeroconf_publish(const char *name, const char *protocol, int port)
 		return -1;
 	}
 
-	fprintf(stderr, "DEBUG: CLIENT: %p\n", client);
 	group = avahi_entry_group_new(client, callback, NULL);
-	fprintf(stderr, "DEBUG: GROUP: %p\n", group);
+	if(!group)
+	{
+		fprintf(stderr, "Zeroconf: Error: could not publish\n");
+		return -1;
+	}
+
 	avahi_entry_group_add_service(group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 0,
 		name, protocol, NULL, NULL, port, NULL);
 	avahi_entry_group_commit(group);
+
+	log_msg(GGZ_LOG_NOTICE,
+		"Zeroconf: GGZ server is now known to the LAN");
+
+	/* ...this is needed to activate the callback, for advanced zeroconf... */
+	/*avahi_threaded_poll_start(threadedpoll);*/
+
+	/* FIXME: ...this must be done before shutting down ggzd... */
+	/*
+	avahi_threaded_poll_stop(threadedpoll); -- if poll_start() called above
 	avahi_entry_group_free(group);
 	avahi_client_free(client);
+	avahi_threaded_poll_free(threadedpoll);
+	*/
 
 	return 0;
 #else
