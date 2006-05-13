@@ -65,6 +65,8 @@
 #ifdef WITH_HOWL
 #include <sys/types.h>
 #include <howl.h>
+#else
+#include <dnssd/query.h>
 #endif
 
 // GGZCore++ includes
@@ -73,7 +75,7 @@
 #ifdef WITH_HOWL
 static KGGZConnect *connectobj = NULL;
 #endif
-static QString connectstr = QString::null;
+static QString connectstr;
 
 /* Constructor: set up a small dialog for connections; provide server profile list */
 KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
@@ -286,11 +288,11 @@ void KGGZConnect::slotLoadProfile(int profile)
 		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
 		if(defaultserver == i18n("GGZ Meta Server"))
 			profile_select->setCurrentItem(0);
-#ifdef WITH_HOWL
+//#ifdef WITH_HOWL
 		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/langame.png"), i18n("LAN Game"));
 		if(defaultserver == i18n("LAN Game"))
 			profile_select->setCurrentItem(1);
-#endif
+//#endif
 		if(defaultserver.isNull())
 		{
 			modifyServerList(i18n("Default Stable Server"), 1);
@@ -625,23 +627,39 @@ static sw_result breply(sw_discovery session, sw_discovery_oid oid,
 		if(ret)
 		{
 			KMessageBox::error(connectobj, i18n("Resolving failed."), i18n("Zeroconf error"));
+			button_ok->setEnabled(true);
+			connectstr = "";
 			return -1;
 		}
 	}
 
 	return SW_OKAY;
 }
+#else
+void KGGZConnect::slotService(DNSSD::RemoteService::Ptr ptr)
+{
+	ptr->resolve();
+	connectstr = QString("ggz://%1:%2").arg(ptr->hostName()).arg(ptr->port());
+}
+
+void KGGZConnect::slotServiceFinished()
+{
+	KMessageBox::error(this, i18n("Resolving failed."), i18n("Zeroconf error"));
+	button_ok->setEnabled(true);
+	connectstr = "";
+}
 #endif
 
 void KGGZConnect::zeroconfQuery()
 {
+	connectstr = QString::null;
+
 #ifdef WITH_HOWL
 	int ret;
 	sw_discovery session;
 	sw_discovery_oid oid;
 
 	connectobj = this;
-	connectstr = QString::null;
 
 	ret = sw_discovery_init(&session);
 	if(ret != SW_OKAY)
@@ -657,12 +675,31 @@ void KGGZConnect::zeroconfQuery()
 		sw_discovery_read_socket(session);
 		kapp->eventLoop()->processEvents(QEventLoop::AllEvents);
 	}
+#else
+	DNSSD::Query *query = new DNSSD::Query("_ggz._tcp", QString::null/*"local."*/);
+	connect(query,
+		SIGNAL(serviceAdded(DNSSD::RemoteService::Ptr)),
+		SLOT(slotService(DNSSD::RemoteService::Ptr)));
+	connect(query, SIGNAL(finished()), SLOT(slotServiceFinished()));
+	query->startQuery();
+
+	while(connectstr.isNull())
+	{
+		kapp->eventLoop()->processEvents(QEventLoop::AllEvents);
+	}
+
+	delete query;
+#endif
+
+	if(connectstr.isEmpty()) return;
 
 	KURL url(connectstr);
 
 	close();
-	KMessageBox::information(this, i18n("A GGZ server was found on %1.").arg(connectstr), i18n("Zeroconf success"));
-	emit signalConnect(url.host(), url.port(), input_name->text(), input_password->text(), m_loginmode);
-#endif
+	KMessageBox::information(this,
+		i18n("A GGZ server was found on %1.").arg(connectstr),
+		i18n("Zeroconf success"));
+	emit signalConnect(url.host(), url.port(), input_name->text(),
+		input_password->text(), m_loginmode);
 }
 

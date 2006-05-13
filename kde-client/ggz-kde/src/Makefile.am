@@ -35,7 +35,7 @@ AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 kggz_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLFAGS)
 kggz_LDADD = $(top_builddir)/ggz-kde/src/widgets/libkggzui.a \
 	$(top_builddir)/ggz-kde/src/abstract/libkggzabstract.a \
-	$(all_libraries) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT) \
+	$(all_libraries) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KDNSSD) $(LIB_QT) \
 	$(ggz_libraries) $(LIB_HOWL)
 
 if COMPILE_BROWSER
