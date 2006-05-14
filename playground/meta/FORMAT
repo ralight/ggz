@@ -6,12 +6,22 @@ since new metaservers might be added over time.
 The XML format has been designed so that adding new information tags
 will be possible.
 
-Queries
--------
+Queries performed by Metacle clients
+------------------------------------
 
 Right now, only a listing is supported:
 
 <list />
+
+To restrict the listing to a certain game type, the gamename
+parameter must be added:
+
+<list gamename="foo" />
+
+In addition, a timestamp can be given to signal to Metacle to not list
+all games, but to list the differences since this time:
+
+<list timestamp="1147589942" />
 
 Current Metacle format (revision 0.1):
 --------------------------------------
@@ -33,6 +43,7 @@ available {integer} - open seats
 
 gameserver - top-level tag for each entry
 - gamename {string} - game name, as attribute to the gameserver tag
+- timestamp {integer} - current time on the server, as attribute
 
 Constants
 ---------

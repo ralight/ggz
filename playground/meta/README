@@ -1,0 +1,65 @@
+The Metacle
+===========
+
+Metacle is a new online service offered by the GGZ Gaming Zone.
+It aggregates the data of all kinds of metaservers and makes it available
+to client applications in a unified format.
+When requesting a list of servers for a certain game type, Metacle
+will update its internal knowledge about this game by consulting the
+associated metaservers. However, queries are optimised so that fresh
+knowledge is reused immediately, which reduces network traffic.
+
+Metacle also offers a web interface, which gives a convenient way to
+explore its knowledge. Games and game centres alike are listed there.
+Graphical desktop frontends are planned, for example Metakel, as is
+integration with popular server finder tools such as xqf/qstat.
+
+Metacle got its name from the word 'meta' (as in metaserver) and either
+of 'tentacle' (it reaches everywhere), 'oracle' (it knows everything) and
+'spectacle' (it's about games and fun).
+
+Technical design
+----------------
+
+The service has been written in Python, and communicates via a XML protocol
+(as specified in the file FORMAT) to its clients, and via game-specific
+protocols to the metaservers of the games it supports. Right now, the GGZ
+metaserver is supported (of course!), along with those of several other
+popular games.
+
+Internally, the service is divided into a few parts:
+* the database part, which makes the knowledge persistent and available
+  to the web frontend
+* the configuration part, which is used for configuring the service on startup
+* the runner part, which runs in a separate thread and keeps the knowledge
+  up to date
+* the daemon part, which communicates with clients and informs the runner
+  about server listing requests
+* the protocol handlers, which reside in external python scripts and are
+  invoked by the runner
+
+Functionality
+-------------
+
+When a listing is requested by clients, i.e. when they send a <list/> command,
+metacle will see if the data it has about the requested games is up to date.
+If this is the case, this knowledge is returned, otherwise it requests the
+runner to update it and returns it afterwards.
+
+The internal threaded design makes it possible to trade-off accuracy versus
+responsiveness: a client query could be answered in time with slightly out
+of date information, while the runner is contacted in the meanwhile to update
+its knowledge in parallel, without having to block the client for this time.
+
+An internal timer can be configured to keep the listing up-to-date even when
+no requests are performed for a certain amount of time, which is useful for
+the web frontend, which by itself does not trigger any knowledge updates.
+
+After receiving the data, the client decide whether they disconnect or stay
+connected to the service. In the latter case, new or removed servers are
+reported to them in an efficient manner. The same kind of differential
+protocol is also used when a timestamp of the last update is specified,
+which in turn is always given to clients as part of the initial data
+transmission.
+
+

@@ -7,6 +7,7 @@
 import xml.dom.minidom
 import imp
 import glob
+import threading
 
 import socket
 import time
@@ -169,16 +170,33 @@ class MetaBase:
 	def quote(self, s):
 		return s.replace("'", "\\'")
 
+class MetaRunner(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self)
+		self.terminate = 0
+		self.lock = threading.Lock()
+
+	def check(self, gamename, timestamp):
+		print "--metarunner-- check", gamename, timestamp
+
+	def run(self):
+		print "--metarunner--"
+		#status("...")
+		while not self.terminate:
+			pass
+
 class MetaMeta:
 	def __init__(self):
 		self.config = MetaConf("metacle.conf")
 		self.base = MetaBase()
 		self.loader = MetaLoader()
+		self.runner = MetaRunner()
 
 		self.base.connect()
 
 		allgameservers = {}
 
+		# FIXME: use runner (especially since cache might still be hot)
 		status("start query")
 		for url, service in self.config.metaservers.iteritems():
 			#print ">>> check", url
@@ -199,10 +217,12 @@ class MetaMeta:
 
 		status("done")
 
-	def output(self):
+	def output(self, gamename):
 		s = ""
 		s += "<metacle>\n"
 		for h, gameserver in self.base.gameservers.iteritems():
+			if gamename and gamename != gameserver["gamename"]:
+				continue
 			s += "<gameserver gamename='" + gameserver["gamename"] + "'>\n"
 			s += "<uri>" + gameserver["uri"] + "</uri>\n";
 			if gameserver["version"]:
@@ -230,13 +250,19 @@ class MetaMeta:
 
 		return s
 
+	def cleanup(self):
+		self.runner.terminate = 1
+		self.runner.join()
+
 	def run(self):
 		port = 12012
 
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		sock.bind((socket.gethostname(), port))
+		sock.bind(("", port))
 		sock.listen(5)
+
+		self.runner.start()
 
 		while 1:
 			client = None
@@ -266,8 +292,34 @@ class MetaMeta:
 				if packet is not None:
 					packet = packet.strip()
 
-					if packet == "<list />":
-						s = self.output()
+					try:
+						dom = xml.dom.minidom.parseString(packet)
+					except:
+						print "Error: XML malformed."
+						client.close()
+						break
+
+					root = dom.documentElement
+
+					if root.tagName == "list":
+						gamename = root.getAttribute("gamename")
+						timestamp = root.getAttribute("timestamp")
+						if gamename == "":
+							gamename = None
+						if timestamp != "":
+							try:
+								timestamp = int(timestamp)
+							except:
+								print "Error: bogus timestamp option."
+								client.close()
+								break
+
+						self.runner.lock.acquire()
+						self.runner.check(gamename, timestamp)
+						self.runner.lock.release()
+
+						# FIXME: use data from runner
+						s = self.output(gamename)
 
 						try:
 							client.send(s)
@@ -275,10 +327,12 @@ class MetaMeta:
 						except:
 							print "Warning: client interruption."
 					else:
+						print "Unknown command '" + root.tagName + "'."
 						client.close()
 						break
 
 status("starting up")
 m = MetaMeta()
 m.run()
+m.cleanup()
 
