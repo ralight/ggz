@@ -1,0 +1,8 @@
+# Database connection parameters
+# Copy this file to passwd.py and fill out the values
+
+host = ""
+dbname = ""
+user = ""
+passwd = ""
+

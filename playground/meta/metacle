@@ -10,12 +10,21 @@ import glob
 import threading
 
 import socket
+import select
 import time
+import sys
+import atexit
 
 try:
 	import pg
-	global_database = True
+	try:
+		import passwd
+		global_database = True
+	except:
+		print "Error: database persistence requested but not configured"
+		global_database = False
 except:
+	print "Warning: no database persistence possible"
 	global_database = False
 
 global_verbose = True
@@ -98,7 +107,11 @@ class MetaBase:
 		if not global_database:
 			return
 		status("using database persistence")
-		self.conn = pg.DB(host="localhost", dbname="meta", user="meta", passwd="meta")
+		host = passwd.host
+		dbname = passwd.dbname
+		user = passwd.user
+		password = passwd.passwd
+		self.conn = pg.DB(host=host, dbname=dbname, user=user, passwd=password)
 
 		q = self.conn.query("SELECT key, url FROM metaservers")
 		for row in q.dictresult():
@@ -180,10 +193,17 @@ class MetaRunner(threading.Thread):
 		print "--metarunner-- check", gamename, timestamp
 
 	def run(self):
-		print "--metarunner--"
+		print "--metarunner-- startup"
 		#status("...")
 		while not self.terminate:
 			pass
+
+class Connection:
+	def __init__(self):
+		self.client = None
+		self.host = None
+		self.subscribed = False
+		self.starttime = 0
 
 class MetaMeta:
 	def __init__(self):
@@ -218,8 +238,10 @@ class MetaMeta:
 		status("done")
 
 	def output(self, gamename):
+		timestamp = int(time.time())
+
 		s = ""
-		s += "<metacle>\n"
+		s += "<metacle timestamp='" + str(timestamp) + "'>\n"
 		for h, gameserver in self.base.gameservers.iteritems():
 			if gamename and gamename != gameserver["gamename"]:
 				continue
@@ -251,88 +273,136 @@ class MetaMeta:
 		return s
 
 	def cleanup(self):
+		print "|| cleanup"
 		self.runner.terminate = 1
 		self.runner.join()
+		print "|| done"
 
 	def run(self):
 		port = 12012
+		connections = {}
+		fds = {}
+
+		self.runner.start()
 
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		sock.bind(("", port))
 		sock.listen(5)
+		sock.setblocking(0)
 
-		self.runner.start()
-
+		p = select.poll()
+		p.register(sock)
 		while 1:
-			client = None
-			address = None
-			try:
-				(client, address) = sock.accept()
-			except:
-				print "Error: network error."
-				return
+			actives = p.poll()
 
-			# FIXME: use threading
-
-			starttime = time.time()
-			client.setblocking(0)
-
-			while 1:
-				packet = None
-				try:
-					packet = client.recv(16384)
-				except:
-					nowtime = time.time()
-					if nowtime > starttime + 10:
-						break
-
-				if packet == "":
-					break
-				if packet is not None:
-					packet = packet.strip()
-
+			for active in actives:
+				(fd, event) = active
+				if fd == sock.fileno():
 					try:
-						dom = xml.dom.minidom.parseString(packet)
+						(client, address) = sock.accept()
 					except:
-						print "Error: XML malformed."
+						print "Error: network error."
+						return
+
+					(host, port) = address
+					print "// connection from", host
+
+					if connections.has_key(host):
+						print "Error: multiple connections from same host."
 						client.close()
-						break
+						continue
 
-					root = dom.documentElement
+					connection = Connection()
+					connection.starttime = time.time()
+					connection.subscribed = False
+					connection.client = client
+					connection.host = host
+					connections[host] = connection
 
-					if root.tagName == "list":
-						gamename = root.getAttribute("gamename")
-						timestamp = root.getAttribute("timestamp")
-						if gamename == "":
-							gamename = None
-						if timestamp != "":
-							try:
-								timestamp = int(timestamp)
-							except:
-								print "Error: bogus timestamp option."
-								client.close()
-								break
+					client.setblocking(0)
+					fds[client.fileno()] = connection
 
-						self.runner.lock.acquire()
-						self.runner.check(gamename, timestamp)
-						self.runner.lock.release()
+					mask = select.POLLIN
+					#mask += select.POLLHUP
+					#mask += select.POLLNVAL
+					#mask += select.POLLERR
+					p.register(client, mask)
+				else:
+					connection = fds[fd]
+					print "// data from client", host
 
-						# FIXME: use data from runner
-						s = self.output(gamename)
-
-						try:
-							client.send(s)
-							# FIXME: register for incremental updates
-						except:
-							print "Warning: client interruption."
+					if event == select.POLLIN:
+						ret = self.handle(connection)
+						if ret == -1:
+							print "// force client disconnection", connection.host
+							p.unregister(connection.client)
+							connection.client.close()
+							del fds[fd]
+							del connections[connection.host]
 					else:
-						print "Unknown command '" + root.tagName + "'."
-						client.close()
-						break
+						print "Error: unknown event on client connection."
+
+	def handle(self, connection):
+		client = connection.client
+
+		try:
+			packet = client.recv(16384)
+		except:
+			nowtime = time.time()
+			if nowtime > connection.starttime + 10:
+				if not connection.subscribed:
+					print "Warning: timeout exceeded."
+					return -1
+			return -1
+
+		if packet == "":
+			return -1
+		if packet is not None:
+			packet = packet.strip()
+
+			try:
+				dom = xml.dom.minidom.parseString(packet)
+			except:
+				print "Error: XML malformed."
+				return -1
+
+			root = dom.documentElement
+
+			if root.tagName == "list":
+				gamename = root.getAttribute("gamename")
+				timestamp = root.getAttribute("timestamp")
+				if gamename == "":
+					gamename = None
+				if timestamp != "":
+					try:
+						timestamp = int(timestamp)
+					except:
+						print "Error: bogus timestamp option."
+						return -1
+
+				self.runner.lock.acquire()
+				self.runner.check(gamename, timestamp)
+				self.runner.lock.release()
+
+				# FIXME: use data from runner
+				s = self.output(gamename)
+
+				try:
+					client.send(s)
+				except:
+					print "Warning: client interruption."
+					# FIXME: and now?
+
+				connection.subscribed = True
+			else:
+				print "Error: unknown command '" + root.tagName + "'."
+				return -1
+
+		return 0
 
 status("starting up")
 m = MetaMeta()
+atexit.register(m.cleanup)
 m.run()
-m.cleanup()
 

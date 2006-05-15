@@ -55,7 +55,7 @@ An internal timer can be configured to keep the listing up-to-date even when
 no requests are performed for a certain amount of time, which is useful for
 the web frontend, which by itself does not trigger any knowledge updates.
 
-After receiving the data, the client decide whether they disconnect or stay
+After receiving the data, the clients decide whether they disconnect or stay
 connected to the service. In the latter case, new or removed servers are
 reported to them in an efficient manner. The same kind of differential
 protocol is also used when a timestamp of the last update is specified,
