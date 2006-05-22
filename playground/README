@@ -13,9 +13,9 @@
 
 
 	-------------------------------------------------------------------------
-	This CVS module is not intended for distribution.
+	This SVN module is not intended for distribution.
 	Therefore it can be used for new projects which will eventually move into
-	another GGZ CVS module, or even found a new one.
+	another GGZ SVN module, or even found a new one.
 
 	Each sub directory will have its own configuration files, unless this
 	will not make sense anymore (right now it does).
@@ -59,7 +59,6 @@
 		without running in GGZ mode (e.g. possible for Frozen Bubble).
 
 	GGZ-Java:
-	GGZ-Java5:
 	GGZ-Python:
 	GGZ-Ruby:
 		Language bindings for GGZ and some apps/games programmed in these
@@ -76,6 +75,11 @@
 	Maintenance:
 		Server and repository maintenance scripts for GGZ developers.
 		Also some website tools and documentation.
+
+	Meta:
+		Metacle, the metaserver aggregator.
+		Will stay here for quite some time since it is intended to be run
+		on one server only.
 
 	MingW:
 		Information on how to compile GGZ on windows.
@@ -99,7 +103,8 @@
 	The following directories existed here but were either moved out of
 	playground (grown-ups) or deleted for other reason.
 
-	- Gaim-Plugin
-	- GGZWars
-	- SDL-Games
+	- Gaim-Plugin  (-> now in gtk-client/gaim-plugin)
+	- GGZWars      (removed)
+	- SDL-Games    (-> now sdl-games module)
+	- GGZ-Java5    (-> now java module)
 
