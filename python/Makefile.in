@@ -2,7 +2,7 @@
 # Makefile.in for use with autoconf (but not automake)
 
 # Release version number
-version = 0.0.13
+version = 0.0.14pre
 
 # prefix: All-purpose prefix (/usr)
 prefix = @prefix@

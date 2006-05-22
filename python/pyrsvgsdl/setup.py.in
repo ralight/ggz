@@ -16,12 +16,13 @@ setup(
         Extension('rsvgsdl',
         ['src/pyrsvgsdl.c'],
 		include_dirs = [
-			'/usr/include/librsvg-2',
-			'/usr/include/gtk-2.0',
-			'/usr/include/glib-2.0',
-			'/usr/lib/glib-2.0/include'
+			'@rsvg_includes@/librsvg-2',
+			'@rsvg_includes@/gtk-2.0',
+			'@rsvg_includes@/glib-2.0',
+			'@rsvg_libraries@/glib-2.0/include'
 		],
-        libraries = ['rsvg-2'])
+        libraries = ['rsvg-2'],
+        library_dirs = ["@rsvg_libraries@"])
     ]
 )
 

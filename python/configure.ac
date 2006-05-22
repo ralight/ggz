@@ -1,19 +1,25 @@
 dnl Configuration for the GGZ Python package
 dnl ========================================
 
-AC_INIT([GGZ python package], [0.0.12], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
+AC_INIT([GGZ python package], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
 AC_CONFIG_SRCDIR([configure.ac])
 #AC_CONFIG_HEADERS([config.h])
 #AM_INIT_AUTOMAKE
 #AM_MAINTAINER_MODE
 
-dnl Compiling Options
-dnl =====================
+dnl Compilation Options
+dnl ===================
 AC_ARG_ENABLE(ggzmod,   [  --disable-ggzmod   Exclude pyggzmod wrapper  ],, enable_ggzmod=yes)
 AC_ARG_ENABLE(ggzdmod,  [  --disable-ggzdmod  Exclude pyggzdmod wrapper ],, enable_ggzdmod=yes)
 AC_ARG_ENABLE(ggzcore,  [  --disable-ggzcore  Exclude pyggzcore wrapper ],, enable_ggzcore=yes)
 AC_ARG_ENABLE(ggzchess, [  --disable-ggzchess Exclude pyggzchess wrapper],, enable_ggzchess=yes)
 AC_ARG_ENABLE(rsvgsdl,  [  --disable-rsvgsdl  Exclude pyrsvgsdl wrapper ],, enable_rsvgsdl=yes)
+
+AC_ARG_WITH(rsvg-dir,
+	AS_HELP_STRING([--with-rsvg-dir], [prefix of the rsvg library (default is /usr)]),
+	[rsvgprefix=$withval],
+	[rsvgprefix=""]
+)
 
 dnl Check for standard build environment
 dnl ====================================
@@ -47,6 +53,25 @@ fi
 echo "checking for: pygame installation... $pygame_found"
 
 if test "$enable_rsvgsdl" = "yes"; then
+	#AC_CHECK_PROG([PKGCONFIG], ["pkg-config"], [pkgconfig=yes], [pkgconfig=no])
+	# FIXME: we cannot use pkg-config since it doesn't support python-distutils
+
+	if test "x$rsvgprefix" = "x"; then
+		rsvgprefix=/usr
+		rsvg_libraries="$rsvgprefix/lib"
+		rsvg_includes="$rsvgprefix/include"
+	else
+		rsvg_libraries="$rsvgprefix/lib"
+		rsvg_includes="$rsvgprefix/include"
+	fi
+	AC_SUBST(rsvg_libraries)
+	AC_SUBST(rsvg_includes)
+
+	save_cppflags=$CPPFLAGS
+	save_ldflags=$LDFLAGS
+	CPPFLAGS="$CPPFLAGS -I $rsvg_includes"
+	LDFLAGS="$LDFLAGS -L $rsvg_libraries"
+
 	AC_CHECK_LIB(
 		[rsvg-2],
 		[rsvg_pixbuf_from_file_at_size],
@@ -61,8 +86,11 @@ if test "$enable_rsvgsdl" = "yes"; then
 		)
 	fi
 	if test "$rsvg_found" = "no"; then
-		AC_MSG_ERROR("RSVG is not or incompletely installed.")
+		AC_MSG_ERROR([The RSVG library is not or incompletely installed.])
 	fi
+
+	CPPFLAGS=$save_cppflags
+	LDFLAGS=$save_ldflags
 fi
 
 dnl Create files
@@ -98,6 +126,7 @@ AC_CONFIG_FILES([
 	xadrez-chines/xadrez-chines-server.dsc
 	go/module.dsc
 	go/goserver.dsc
+	pyrsvgsdl/setup.py
 	pyggzmod/setup.py
 	pyggzdmod/setup.py
 	pyggzcore/setup.py
