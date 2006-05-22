@@ -15,6 +15,8 @@ import time
 import sys
 import atexit
 
+import commonuri
+
 try:
 	import pg
 	try:
@@ -64,6 +66,7 @@ class MetaConf:
 class MetaLoader:
 	def __init__(self):
 		self.loaders = []
+		self.transports = []
 
 		searchpaths = []
 		searchpaths.append("protocols")
@@ -83,11 +86,39 @@ class MetaLoader:
 				protocol = mod.MetaProtocol()
 				#print "->", protocol.services
 				self.loaders.append(protocol)
+
+		searchpaths = []
+		searchpaths.append("transports")
+
+		for path in searchpaths:
+			transportfiles = glob.glob(path + "/*.py")
+
+			for transportfile in transportfiles:
+				transportfile = transportfile.split("/")[-1]
+				transportfile = transportfile[:-3]
+
+				(fileobj, filename, desc) = imp.find_module(transportfile, [path])
+				mod = imp.load_module("transport", fileobj, filename, desc)
+				fileobj.close()
+
+				#print "MOD", mod
+				transport = mod.MetaTransport()
+				#print "->", transport.transports
+				self.transports.append(transport)
 	
 	def load(self, service, url):
+		uri = commonuri.Uri(url)
+		for transport in self.transports:
+			if uri.protocol in transport.transports:
+				content = transport.fetch(url)
+				return self.handle(service, content)
+		print "Warning: no transport available for %s." % url
+		return None
+
+	def handle(self, service, content):
 		for loader in self.loaders:
 			if service in loader.services:
-				return loader.load(url)
+				return loader.load(content)
 		print "Warning: no handler available for %s." % service
 		return None
 
@@ -170,6 +201,9 @@ class MetaBase:
 		query += "('%s', '%s', '%s', '%s', '%s', '%i', '%i')" % tuple
 		q = self.conn.query(query)
 
+		print "##", ghash(gameserver)
+		self.gameservers[ghash(gameserver)] = gameserver
+
 	def storemeta(self, service, url):
 		if not self.conn:
 			return
@@ -186,17 +220,93 @@ class MetaBase:
 class MetaRunner(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
-		self.terminate = 0
 		self.lock = threading.Lock()
+		self.loader = MetaLoader()
+		self.base = MetaBase()
+		self.terminate = 0
+		self.games = []
+		self.stamps = {}
+		self.checks = {}
+		self.gameservers = {}
+		self.allgameservers = {}
+
+		self.base.connect()
+
+	def add(self, service, url):
+		self.games.append((service, url))
+		self.base.storemeta(service, url)
+
+	def checkrequest(self, gamename, timestamp):
+		self.lock.acquire()
+		if gamename:
+			self.checks[gamename] = timestamp
+		else:
+			for game in self.games:
+				(service, url) = game
+				self.checks[service] = timestamp
+		self.lock.release()
 
 	def check(self, gamename, timestamp):
 		print "--metarunner-- check", gamename, timestamp
+		if self.stamps.has_key(gamename):
+			if self.stamps[gamename] > time.time() - 60:
+				print "--metarunner-- check done (cached)"
+				return self.gameservers[gamename]
+		servers = []
+		for game in self.games:
+			(service, url) = game
+			if service == gamename:
+				gameservers = self.loader.load(service, url)
+				servers.append(gameservers)
+		self.stamps[gamename] = time.time()
+		if servers == []:
+			print "--metarunner-- check aborted (no matching game found)"
+			return []
+		print "--metarunner-- check done"
+		return servers
 
 	def run(self):
 		print "--metarunner-- startup"
+		for game in self.games:
+			(service, url) = game
+			#self.loader.load(service, url)
+			#servers = self.check(service, 0)
+			self.checkrequest(service, 0)
+
+		print "--metarunner-- waiting for requests"
 		#status("...")
 		while not self.terminate:
-			pass
+			# FIXME: use condition variable from other thread!
+			checklist = {}
+			if len(self.checks) > 0:
+				self.lock.acquire()
+				for gamename in self.checks:
+					checklist[gamename] = 1
+					# FIXME: timestamp (delta) is lost here
+				self.lock.release()
+
+			for gamename in checklist:
+				servers = self.check(gamename, 0)
+				self.lock.acquire()
+				self.gameservers[gamename] = servers[:]
+				for gameservers in servers:
+					if gameservers:
+						#print "== list"
+						for g in gameservers:
+							#print g, "=>", ghash(g)
+							self.allgameservers[ghash(g)] = g
+
+							self.base.store(g)
+				#for h, g in allgameservers.iteritems():
+				#	print "##", h
+				#	self.base.store(g)
+				self.lock.release()
+
+			if len(checklist) > 0:
+				self.lock.acquire()
+				for gamename in checklist:
+					del self.checks[gamename]
+				self.lock.release()
 
 class Connection:
 	def __init__(self):
@@ -208,55 +318,41 @@ class Connection:
 class MetaMeta:
 	def __init__(self):
 		self.config = MetaConf("metacle.conf")
-		self.base = MetaBase()
-		self.loader = MetaLoader()
 		self.runner = MetaRunner()
 
-		self.base.connect()
-
-		allgameservers = {}
-
 		# FIXME: use runner (especially since cache might still be hot)
-		status("start query")
+		status("start configuration")
 		for url, service in self.config.metaservers.iteritems():
+			self.runner.add(service, url)
 			#print ">>> check", url
 
-			gameservers = self.loader.load(service, url)
-
-			self.base.storemeta(service, url)
-
-			if gameservers:
-				#print "== list"
-				for g in gameservers:
-					#print g, "=>", ghash(g)
-					allgameservers[ghash(g)] = g
-
-		for h, g in allgameservers.iteritems():
-			print "##", h
-			self.base.store(g)
-
-		status("done")
+		status("configuration done")
 
 	def output(self, gamename):
 		timestamp = int(time.time())
 
 		s = ""
 		s += "<metacle timestamp='" + str(timestamp) + "'>\n"
-		for h, gameserver in self.base.gameservers.iteritems():
+		# FIXME: locking?
+		serverinfo = self.runner.allgameservers.iteritems()
+		#serverinfo = self.base.gameservers.iteritems():
+		for h, gameserver in serverinfo:
 			if gamename and gamename != gameserver["gamename"]:
 				continue
 			s += "<gameserver gamename='" + gameserver["gamename"] + "'>\n"
 			s += "<uri>" + gameserver["uri"] + "</uri>\n";
-			if gameserver["version"]:
+			if gameserver.has_key("version"):
 				s += "<version>" + gameserver["version"] + "</version>\n";
-			if gameserver["state"]:
+			if gameserver.has_key("state"):
 				s += "<state>" + gameserver["state"] + "</state>\n";
-			if gameserver["topic"]:
+			if gameserver.has_key("topic"):
 				s += "<topic>" + gameserver["topic"] + "</topic>\n";
-			if gameserver["players"] != 0:
-				s += "<players>" + str(gameserver["players"]) + "</players>\n";
-			if gameserver["available"] != -1:
-				s += "<available>" + str(gameserver["available"]) + "</available>\n";
+			if gameserver.has_key("players"):
+				if gameserver["players"] != 0:
+					s += "<players>" + str(gameserver["players"]) + "</players>\n";
+			if gameserver.has_key("available"):
+				if gameserver["available"] != -1:
+					s += "<available>" + str(gameserver["available"]) + "</available>\n";
 			s += "</gameserver>\n"
 
 		# FIXME:
@@ -381,9 +477,8 @@ class MetaMeta:
 						print "Error: bogus timestamp option."
 						return -1
 
-				self.runner.lock.acquire()
-				self.runner.check(gamename, timestamp)
-				self.runner.lock.release()
+				self.runner.checkrequest(gamename, timestamp)
+				# FIXME: now wait, until request is ready!
 
 				# FIXME: use data from runner
 				s = self.output(gamename)
@@ -400,6 +495,20 @@ class MetaMeta:
 				return -1
 
 		return 0
+
+if len(sys.argv) > 1:
+	if sys.argv[1] in ("-h", "--help"):
+		print "Metacle metaserver aggregator"
+		print "Copyright (C) 2006 Josef Spillner"
+		print "Published under GNU GPL conditions"
+		print ""
+		print "See http://metacle.ggzgamingzone.org/ for more information."
+		sys.exit(0)
+	elif sys.argv[1] in ("-n", "--no-database"):
+		global_database = False
+	else:
+		print "Error: Unknown option; try --help."
+		sys.exit(1)
 
 status("starting up")
 m = MetaMeta()

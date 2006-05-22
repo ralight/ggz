@@ -11,13 +11,13 @@ class MetaProtocol:
 	def __init__(self):
 		self.services = ["monopd"]
 
-	def load(self, url):
+	def load(self, content):
 		list = []
 
 		try:
-			dom = xml.dom.minidom.parse(url)
+			dom = xml.dom.minidom.parseString(content)
 		except:
-			print "Error: Could not load resource %s." % url
+			print "Error: Could not parse content %s." % content
 			return None
 
 		monopigator = dom.documentElement

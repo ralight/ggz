@@ -37,6 +37,8 @@ Internally, the service is divided into a few parts:
   about server listing requests
 * the protocol handlers, which reside in external python scripts and are
   invoked by the runner
+* the transport handlers, which are used to retrieve the data for the protocol
+  handlers
 
 Functionality
 -------------

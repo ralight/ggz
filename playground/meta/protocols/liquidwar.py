@@ -8,17 +8,10 @@ class MetaProtocol:
 	def __init__(self):
 		self.services = ["liquidwar"]
 
-	def load(self, url):
+	def load(self, content):
 		list = []
 
-		try:
-			f = open(url)
-		except:
-			print "Error: Could not load resource %s." % url
-			return None
-
-		lines = f.readlines()
-		f.close()
+		lines = content.split("\n")
 
 		for line in lines:
 			line = line.strip()
