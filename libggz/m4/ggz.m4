@@ -140,9 +140,9 @@ if test "x${prefix}" = "xNONE"; then
    ac_ggz_prefix_etcdir="${ac_default_prefix}/etc"
 else
    ac_ggz_prefix_incdir="${prefix}/include"
-   ac_ggz_prefix_libdir="${prefix}/lib"
-   ac_ggz_prefix_bindir="${prefix}/bin"
-   ac_ggz_prefix_etcdir="${prefix}/etc"
+   ac_ggz_prefix_libdir="${libdir}"
+   ac_ggz_prefix_bindir="${bindir}"
+   ac_ggz_prefix_etcdir="${sysconfdir}"
 fi
 ac_ggz_stdinc="$ac_ggz_prefix_incdir"
 ac_ggz_stdlib="$ac_ggz_prefix_libdir"
@@ -150,13 +150,13 @@ ac_ggz_stdbin="$ac_ggz_prefix_bindir"
 ac_ggz_stdetc="$ac_ggz_prefix_etcdir/ggzd"
 if test "x$ac_ggz_prefix" != "x"; then
   ac_ggz_stdinc="$ac_ggz_stdinc $ac_ggz_prefix/include"
-  ac_ggz_stdlib="$ac_ggz_stdlib $ac_ggz_prefix/lib"
+  ac_ggz_stdlib="$ac_ggz_stdlib $ac_ggz_prefix/lib $ac_ggz_prefix/lib64"
   ac_ggz_stdbin="$ac_ggz_stdbin $ac_ggz_prefix/bin"
   ac_ggz_stdetc="$ac_ggz_stdetc $ac_ggz_prefix/etc/ggzd"
 fi
 if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdinc="$ac_ggz_stdinc /usr/local/include /usr/include"
-  ac_ggz_stdlib="$ac_ggz_stdlib /usr/local/lib /usr/lib"
+  ac_ggz_stdlib="$ac_ggz_stdlib /usr/local/lib /usr/local/lib64 /usr/lib /usr/lib64"
   ac_ggz_stdbin="$ac_ggz_stdbin /usr/local/bin /usr/bin"
   ac_ggz_stdetc="$ac_ggz_stdetc /usr/local/etc/ggzd /etc/ggzd"
 fi
@@ -469,6 +469,7 @@ else
     AC_SUBST(GGZ_CONFIG)
     AC_SUBST(ggzexecmoddir)
     AC_SUBST(ggzdatadir)
+    AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${prefix}/etc", [Path where the game registry is located])
     AC_DEFINE_UNQUOTED(GAMEDIR, "${prefix}/lib/ggz", [Path where to install the games])
     AC_DEFINE_UNQUOTED(GGZDATADIR, "${prefix}/share/ggz", [Path where the games should look for their data files])
   else
