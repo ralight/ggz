@@ -47,7 +47,7 @@
 #define METASERV_VERSION "0.5"
 
 /* The directory where metaservconf.xml resides */
-#define METASERV_DIR PREFIX "/share/metaserv"
+#define METASERV_DIR PREFIX "/share/ggzmetaserv"
 
 /* Optimized code is much faster, but not so readable */
 #define METASERV_OPTIMIZED 1

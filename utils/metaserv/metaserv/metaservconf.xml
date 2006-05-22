@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
 <metaserver>
 	<entrylist class="ggz">
-		<connection version="0.0.13" preference="100" location="lorraine/france" speed="1000" protocol="10">
+		<connection version="0.0.13" preference="100" location="lorraine/france" speed="1000" protocol="10" name="GGZ Community">
 		ggz://live.ggzgamingzone.org:5688
+		</connection>
+		<connection version="0.0.13" preference="100" location="atlanta/usa" speed="1000" protocol="10" name="OpenLadders.net">
+		ggz://ggz.openladders.net:5688
 		</connection>
 		<meta version="0.5" preference="100">
 		ggzmeta://live.ggzgamingzone.org:15689

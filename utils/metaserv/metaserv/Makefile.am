@@ -11,7 +11,7 @@ ggzmetaserv_CPPFLAGS = \
 
 noinst_HEADERS = helper.h
 
-confdir = $(prefix)/share/metaserv
+confdir = $(prefix)/share/ggzmetaserv
 dist_conf_DATA = metaservconf.xml
 
 EXTRA_DIST = README.metaserv
