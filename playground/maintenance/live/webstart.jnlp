@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<jnlp spec="1.0+" codebase="http://live.ggzgamingzone.org/">
+<information>
+  <title>GGZ Gaming Zone Java Client</title>
+  <vendor>GGZ Gaming Zone</vendor>
+  <homepage>http://www.ggzgamingzone.org/</homepage>
+  <description>
+   Core client with chat capability and games launcher
+  </description>
+</information>
+<resources>
+  <jar href="ggz-java-client.jar" />
+  <j2se version="1.4+" href="http://java.sun.com/products/autodl/j2se" />
+</resources>
+<application-desc main-class="ggz.ui.ClientApp" />
+</jnlp>

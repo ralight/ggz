@@ -1,0 +1,14 @@
+live.ggzgamingzone.org
+======================
+
+This server is primarily running ggzd on port 5688.
+But it also hosts the Java applet, since it needs to be downloaded
+from the same host it is going to connect to.
+
+The applet, as well as the application variant of it for usage
+with Java Web Start, can be built in ggz-java with the command:
+ ant applet-jar application-jar
+
+The two resulting JAR files can optionally be signed, but should
+rather not, and then must be placed into this directory.
+

@@ -40,3 +40,6 @@ repository/:
  For hostmasters.
  Comes with separate documentation.
 
+live/:
+ For GGZ site admins who want to run the Java applet.
+
