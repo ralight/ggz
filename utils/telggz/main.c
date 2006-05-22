@@ -56,7 +56,7 @@ static void pref_listservers()
 	if(!i)
 	{
 		printf("TelGGZ: Error! No servers are available.\n");
-		printf("Please check ~/.metaserver.cache.\n");
+		printf("Please check ~/.ggz/metaserver.cache.\n");
 		exit(-1);
 	}
 }
