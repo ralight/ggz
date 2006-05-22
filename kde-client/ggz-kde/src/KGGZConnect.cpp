@@ -65,9 +65,10 @@
 #ifdef WITH_HOWL
 #include <sys/types.h>
 #include <howl.h>
-#else
-#include <dnssd/query.h>
+//#else
 #endif
+// FIXME: always included even if not used (due to moc's #ifndef handling)
+#include <dnssd/query.h>
 
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
@@ -627,7 +628,8 @@ static sw_result breply(sw_discovery session, sw_discovery_oid oid,
 		if(ret)
 		{
 			KMessageBox::error(connectobj, i18n("Resolving failed."), i18n("Zeroconf error"));
-			button_ok->setEnabled(true);
+			//connectobj->button_ok->setEnabled(true);
+			connectobj->showEvent(NULL);
 			connectstr = "";
 			return -1;
 		}
@@ -635,20 +637,24 @@ static sw_result breply(sw_discovery session, sw_discovery_oid oid,
 
 	return SW_OKAY;
 }
-#else
+#endif
+
 void KGGZConnect::slotService(DNSSD::RemoteService::Ptr ptr)
 {
+#ifndef WITH_HOWL
 	ptr->resolve();
 	connectstr = QString("ggz://%1:%2").arg(ptr->hostName()).arg(ptr->port());
+#endif
 }
 
 void KGGZConnect::slotServiceFinished()
 {
+#ifndef WITH_HOWL
 	KMessageBox::error(this, i18n("Resolving failed."), i18n("Zeroconf error"));
 	button_ok->setEnabled(true);
 	connectstr = "";
-}
 #endif
+}
 
 void KGGZConnect::zeroconfQuery()
 {

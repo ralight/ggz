@@ -1,7 +1,7 @@
 dnl Configuration for KGGZ
 dnl ======================
 
-AC_INIT([GGZ KDE client], [0.0.13], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-client])
+AC_INIT([GGZ KDE client], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -88,6 +88,7 @@ AC_CHECK_LIB(howl, sw_discovery_init,
 		LIB_HOWL="-lhowl -lpthread"
 		AC_SUBST(HOWL_INCLUDES)
 		AC_SUBST(LIB_HOWL)
+		AC_C_BIGENDIAN
 	],
 	[
 		AC_MSG_WARN([Zeroconf diabled, libhowl (headers) not found.])

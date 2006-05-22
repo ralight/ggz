@@ -40,9 +40,9 @@
 #include "KGGZCommon.h"
 
 // KDE includes
-#ifndef WITH_HOWL
+//#ifndef WITH_HOWL
 #include <dnssd/remoteservice.h>
-#endif
+//#endif
 
 // Qt includes
 #include <qwidget.h>
@@ -70,7 +70,7 @@ class KGGZConnect : public QWidget
 		// secure connection?
 		int optionSecure();
 
-	protected:
+	//protected:
 		// Widget is about to be shown
 		void showEvent(QShowEvent *e);
 
@@ -101,12 +101,12 @@ class KGGZConnect : public QWidget
 		void slotWrite();
 		// Read from meta server
 		void slotRead();
-#ifndef WITH_HOWL
+//#ifndef WITH_HOWL
 		// Data from the DNSSD implementation
 		void slotService(DNSSD::RemoteService::Ptr ptr);
 		// Data from DNSSD finished
 		void slotServiceFinished();
-#endif
+//#endif
 
 	signals:
 		// Emitted if connection is wanted
