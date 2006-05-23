@@ -115,7 +115,7 @@ public class BridgeBidPanel extends JPanel implements ItemListener {
 		strainButtonSizePanel = new JPanel(new GridLayout(1, 5, 2, 0));
 		int strain = 0;
 		JToggleButton button = new JToggleButton(new ImageIcon(getClass()
-				.getResource("../images/club.gif")));
+				.getResource("/ggz/cards/images/club.gif")));
 
 		strainButtonPanel.add(strainButtonSizePanel);
 		strainButtons[strain] = button;
@@ -123,19 +123,19 @@ public class BridgeBidPanel extends JPanel implements ItemListener {
 		strainButtonSizePanel.add(button);
 		strain++;
 		button = new JToggleButton(new ImageIcon(getClass().getResource(
-				"../images/diamond.gif")));
+				"/ggz/cards/images/diamond.gif")));
 		strainButtons[strain] = button;
 		strainButtonGroup.add(button);
 		strainButtonSizePanel.add(button);
 		strain++;
 		button = new JToggleButton(new ImageIcon(getClass().getResource(
-				"../images/heart.gif")));
+				"/ggz/cards/images/heart.gif")));
 		strainButtons[strain] = button;
 		strainButtonGroup.add(button);
 		strainButtonSizePanel.add(button);
 		strain++;
 		button = new JToggleButton(new ImageIcon(getClass().getResource(
-				"../images/spade.gif")));
+				"/ggz/cards/images/spade.gif")));
 		strainButtons[strain] = button;
 		strainButtonGroup.add(button);
 		strainButtonSizePanel.add(button);
@@ -339,6 +339,9 @@ public class BridgeBidPanel extends JPanel implements ItemListener {
 	}
 
 	/**
+     * TODO: Test with all bids possible except double and redouble. Found bug 
+     * where initial state had no num tricks button selected, causes exception
+     * if bid button is clicked in this state.
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
@@ -433,19 +436,19 @@ public class BridgeBidPanel extends JPanel implements ItemListener {
 					switch (bid.getSuit()) {
 					case 0:
 						setIcon(new ImageIcon(getClass().getResource(
-								"../images/club.gif")));
+								"/ggz/cards/images/club.gif")));
 						break;
 					case 1:
 						setIcon(new ImageIcon(getClass().getResource(
-								"../images/diamond.gif")));
+								"/ggz/cards/images/diamond.gif")));
 						break;
 					case 2:
 						setIcon(new ImageIcon(getClass().getResource(
-								"../images/heart.gif")));
+								"/ggz/cards/images/heart.gif")));
 						break;
 					case 3:
 						setIcon(new ImageIcon(getClass().getResource(
-								"../images/spade.gif")));
+								"/ggz/cards/images/spade.gif")));
 						break;
 					default:
 						setIcon(null);
