@@ -1,6 +1,23 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		Article explaining GGZ
+		<span class="itemleader"> :: </span>
+		<a name="ggzonline"></a>
+	</h1>
+	<div class="text">
+		<div style="float:left">
+		<img src="images/chalk.png" alt="Blackboard">
+		</div>
+		Whoa, too much technical information on all those pages? We've written
+		a little fun article which explains GGZ in a short way, yet understandable
+		to anyone. Must-read for all switchers from other gaming zones!
+		<br>
+		<a href="/articles/ggz-explained/" title="GGZ explained">GGZ explained</a>.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		GGZ Online
 		<span class="itemleader"> :: </span>
 		<a name="ggzonline"></a>

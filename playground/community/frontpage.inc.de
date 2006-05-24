@@ -1,6 +1,24 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		Artikel zur Erläuterung von GGZ
+		<span class="itemleader"> :: </span>
+		<a name="ggzonline"></a>
+	</h1>
+	<div class="text">
+		<div style="float:left">
+		<img src="images/chalk.png" alt="Blackboard">
+		</div>
+		Uh, viel zu viel technische Informationen auf all diesen Seiten? Wir haben
+		einen kurzen lustigen Artikel geschrieben, der GGZ kurz und bündig erklärt,
+		aber vor allem so, dass er von jedermann/-frau verstanden werden kann.
+		Ein absolutes Muss für alle 'Switcher' von anderen Spieleseiten!
+		<br>
+		<a href="/articles/ggz-explained/" title="GGZ explained">GGZ explained</a>.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		GGZ Online
 		<span class="itemleader"> :: </span>
 		<a name="ggzonline"></a>
