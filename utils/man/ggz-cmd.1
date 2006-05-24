@@ -1,16 +1,48 @@
-.TH "cmd-client" "1" "0.0.10" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "cmd-client" "1" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP
-cmd-client \- Useful GGZ server control tool
+ggz-cmd \- Useful GGZ server control tool
 .SH "SYNOPSIS"
 .LP
-cmd-client HOST LOGIN PASSWORD COMMAND OPTIONS...
+\fBggz-cmd\fR \fIHOST\fR \fILOGIN\fR \fIPASSWORD\fR \fICOMMAND\fR [\fIOPTIONS\fR...]
 .SH "DESCRIPTION"
 .LP
-The current cmd-client is able to broadcast messages to all rooms of a GGZ
-server. It is launched straightforward from the command line.
+Connects to a GGZ server to execute some command or batch of commands.
+.LP
+The ggz-cmd tool is a command line client to servers of the GGZ Gaming Zone
+which is able to broadcast messages to all rooms of such a
+server. It expects a command and the login data to be given, and depending
+on the command some optional parameters might be needed as well.
+.LP
 It can also be used to check the GGZ server uptime, either by emitting error
-messages directly, or through Nagios.
+messages directly, or through \fINagios\fB.
+.SH "COMMANDS"
+.LP
+.TP
+\fBannounce\fR \fIMESSAGE\fR
+Broadcasts a message from the lobby to all other rooms. This requires
+administrative privileges for the GGZ account which is used for the login.
+.TP
+\fBcheckonline\fR
+Reports whether the specified server is currently up and running or not.
+The exit code (shell variable $?) is 0 in the case of success, or greater
+than 0 otherwise.
+.TP
+\fBchecknagios\fR
+This is similar to checkonline, but failure exit codes match those of
+the \fINagios\fR uptime control service. Also, the GGZ account to use
+must be a guest account.
+This command is only of interest if Nagios is actually used and the GGZ
+server should be supervised as part of the network.
+.TP
+\fBbatch\fR \fIBATCHFILE\fR
+This is a pseudo command which can be used to execute multiple commands
+one after the other. Each line in \fIBATCHFILE\fR corresponds to one
+invocation of \fBggz-cmd\fR, except that only the options are contained,
+not the command ggz-cmd itself.
+.SH "SEE ALSO"
+.LP
+nagios(8)
 .SH "AUTHORS"
 .LP
 The GGZ Development Team

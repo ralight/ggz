@@ -1,0 +1,72 @@
+.TH "ggzmetaserv" "1" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP
+ggzmetaserv \- The GGZ Gaming Zone Metaserver
+.SH "SYNOPSIS"
+.LP
+\fBggzmetaserv\fR [\fIOPTIONS\fR...]
+.SH "DESCRIPTION"
+.LP
+The metaserver \fBggzmetaserv\fR registers GGZ servers, available game rooms
+on them and running games of any type (even non-GGZ games) and makes this
+information available to interested clients or to aggregation services such
+as \fIMetacle\fR. It has been designed to be as flexible as possible, and
+allows to give arbitrary options to all entries.
+.LP
+The server listens to connections on port 15689, and responds to XML or URI
+queries with a list of servers of the requested type.
+It should be run by server administrators, for example by inetd or xinetd,
+or as a stand-alone daemon to allow updates to the internal database.
+.LP
+Features include authentication for parts of the internal directory structure,
+caching of the current contents for later use, and incremental updates.
+.LP
+For more information, especially on the protocol format, please have a look
+at \fIhttp://www.ggzgamingzone.org/backend/metaserver/\fR.
+.SH "OPTIONS"
+.TP
+\fB-c\fR, \fB--configuration\fR=\fIFILE\fR
+Use \fIFILE\fR as the configuration file instead of the default,
+\fImetaservconf.xml\fR.
+.TP
+\fB-C\fR, \fB--cache\fR=\fIFILE\fR
+After each update to the internal data, save all the data to this file. When
+the server restarts, this file is read in automatically and thus contains more
+recent data than the original configuration file.
+.TP
+\fB-d\fR, \fB--daemon\fR
+Runs in daemon mode. This is what is wanted in most cases, since without
+this option, only queries on the command line will be responded to.
+Also, updates to the data are only possible in daemon mode.
+.TP
+\fB-D\fR, \fB--debug\fR
+Output information about the connections, queries, results and disconnections.
+.TP
+\fB-h\fR, \fB--help\fR
+Shows a help screen with a command summary.
+.TP
+\fB-p\fR, \fB--port\fR=\fIPORT\fR
+Instead of the default port (15689), use \fIPORT\fR to accept connections.
+This option only makes sense in combination with --daemon.
+.TP
+\fB-v\fR, \fB--version\fR
+Displays the version number of \fBggzmetaserv\fR.
+.TP
+\fB-V\fR, \fB--verbose\fR
+Similar to --debug, however only some information is written out, not
+all the transmission content.
+.TP
+\fB-l\fR, \fB--logfile\fR=\fIFILE\fR
+Log messages into \fIFILE\fR instead of to the command line.
+Special values for \fIFILE\fR are 'stdout' and 'stderr'.
+This option only makes sense in combination with --debug or --verbose.
+.SH "FILES"
+.LP
+\fI/usr/share/ggzmetaserv/metaservconf.xml\fR
+.SH "SEE ALSO"
+.LP
+ggzd(6)
+.SH "AUTHORS"
+.LP
+The GGZ Development Team
+<ggz\-dev@mail.ggzgamingzone.org>

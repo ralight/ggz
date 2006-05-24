@@ -1,40 +1,37 @@
-.TH "ggzcommgen" "1" "0.1" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggzcommgen" "1" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP 
 ggzcommgen \- GGZ Communication Protocol Generator
 .SH "SYNOPSIS"
 .LP
-ggzcommgen FORMAT TASK PROTOCOL [OPTIONS...]
+\fBggzcommgen\fR [\fIOPTIONS\fR...] \fIPROTOCOL\fR
 .SH "DESCRIPTION"
 .LP
-The ggzcommgen tool allows game developers to create protocol implementations
-using XML source files.
+The ggzcommgen tool allows game and application developers to create
+client-server protocol implementations using XML source files.
+The protocol description is converted into source files for certain
+programming languages, and then be added the the source tree of the game
+or application. This saves a lot of work, since no networking code has
+to be written by hand.
+.LP
+The \fIPROTOCOL\fR file should be given without the .protocol file ending
+and will result in source files using this name as a base, plus
+language-specific file endings.
 .SH "OPTIONS"
-.LP
-\fI --format = (c | c++) \fP
-.LP
-The format of the files which are generated.
-.LP
-\fI --mode = (simple | logic | full) \fP
-.LP
-In simple mode (default), only convenience functions are provided. The next
-step is logic, which also checks whether the order of read and write operations
-using the appropriate opcodes is correct.
-In full mode, even physical errors are detected.
-.LP
-\fI --task = (client | server) \fP
-.LP
+.TP
+\fB-l\fR, \fB--language\fR=\fILANGUAGE\fR
+The programming language of the files which are generated.
+\fILANGUAGE\fR can be either 'c', 'c++' or 'python'.
+.TP
+\fB-i\fR, \fB--interface\fR=\fILIBRARY\fR
+The library to use for handling the network input/output operations.
+The choice of \fILIBRARY\fR mostly depends on the programming language,
+and is one of 'ggz' (libggz for C/C++), 'qt' (Qt library for C++), 'mnet'
+(C++ server library) and 'socket' (Python standard library).
+.TP
+\fB-r\fR, \fB--role\fR=\fIROLE\fR
 Whether the generated source file should be used in the server or in the
-client.
-.LP
-\fI --protocol = FILE \fP
-.LP
-Use FILE as the protocol description file. This file should be in XML format.
-.LP
-\fI --library = (libggz | qt) \fP
-.LP
-The library to use for networking operations. The default is libggz, although
-for C++ also qt can be used.
+client. The value of \fIROLE\fR is then 'client' or 'server', respectively.
 .SH "AUTHORS"
 .LP 
 The GGZ Development Team

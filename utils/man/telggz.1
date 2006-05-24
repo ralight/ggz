@@ -1,15 +1,35 @@
-.TH "telggz" "1" "0.0.10" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "telggz" "1" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP
 telggz \- GGZ Telnet Wrapper
 .SH "DESCRIPTION"
 .LP
 This is a very simple line-orientated core client for the GGZ Gaming Zone.
-It can be used over telnet connections, which makes it possible to chat in GGZ
-rooms from everywhere in the world.
+It can be used remotely over telnet/netcat connections, which makes it
+possible to chat in GGZ rooms from everywhere in the world.
+Just connect to port 15688 on a GGZ server, such as
+\fIlive.ggzgamingzone.org\fR.
+Playing games is not possible with \fBtelggz\fR, it merely resembles a
+basic chat program such as \fBchat(1)\fR.
+.LP
+TelGGZ doesn't support any command line argument, instead it is supposed
+to be run via inetd or xinetd. Please see the accompaigning documentation for
+invocation examples.
+.LP
 .SH "COMMANDS"
 .LP
-A list of possible commands can be obtain with the \fI/help\fR command.
+At first, a server must be selected, and a guest login is performed using
+a user name which is not registered yet.
+A list of possible commands can then be obtain with the \fI/help\fR command.
+For example, \fI/join <id>\fR joins another room, and \fI/who\fR lists
+all the people in the current room.
+All input starting with a slash (/) is considered to be a command, while
+all other input is sent as a chat message. It is recommended to press the
+Return key before writing a long message to prevent the message to be
+overwritten by others.
+.SH "SEE ALSO"
+.LP
+chat(1)
 .SH "AUTHORS"
 .LP
 The GGZ Development Team
