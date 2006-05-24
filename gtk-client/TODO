@@ -1,3 +1,17 @@
+* named bots selection for ggz-gtk
+  Named bots should be selectable in the game launch options dialog
+  (and maybe in the gtk-games common seats dialog as well?)
+
+* ggz-gtk needs to support metaservers
+  Listing of servers from which the user selects one
+
+* improved functionality for ggz-gaim
+  Games with >2 players aren't supported yet
+
+===============================
+The old TODO items follow below
+===============================
+
 -    Needs Done
 *    Done
 
