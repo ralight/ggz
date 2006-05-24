@@ -10,6 +10,18 @@
 <language>de-de</language>
 
 <item>
+<title><i>24.05.2006: GGZ bei OpenLadders</i> (von josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Der Anbieter <a href="http://openladders.net/">OpenLadders</a> betreibt eine
+brandneue GGZ-basierte Onlinespieleseite. Es kommt der GGZ-Server zum Einsatz,
+und Zugriff darauf wird über das GGZ-Java-Applet gewährt. Liga-Verwaltung und
+andere Anpassungen sind dabei enthalten. Dies ist das erste Mal, dass GGZ als
+Infrastrukturlösung für eine andere Spieleseite genutzt wird.
+</full>
+</item>
+
+<item>
 <title><i>17.03.2006: GGZ 0.0.13</i> (von josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>

@@ -20,6 +20,8 @@ The GGZ Gaming Zone Main Server (ggzd).
 <li>Chat in rooms, between users and on tables
 <li>Database backend for users and statistics
 <li>Speaks GGZ protocol (specified) on port 5688 (standardized)
+<li>Integration with Zeroconf systems like Avahi or Howl
+<li>IPv6 enabled
 </ul>
 <br>
 
