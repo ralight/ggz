@@ -178,6 +178,7 @@ if test "$use_howl" = "1"; then
 	LIB_HOWL="-lhowl -lpthread"
 	AC_SUBST(HOWL_INCLUDES)
 	AC_SUBST(LIB_HOWL)
+	AC_C_BIGENDIAN
 fi
 
 if test "$use_avahi" = "1"; then
