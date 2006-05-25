@@ -1,3 +1,0 @@
-Manifest-Version: 1.2
-Main-Class: ggz.ui.ClientApp
-Created-By: GGZ Gaming Zone

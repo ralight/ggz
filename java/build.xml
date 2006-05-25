@@ -17,8 +17,54 @@
 	<fileset id="test.resources" dir="${src_test}" includes="**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.txt"/>
 
 	<target name="init">
-		<tstamp/>
 		<mkdir dir="${bin}"/>
+		<mkdir dir="manifest"/>
+
+		<!-- Update the version.properties file -->
+		<tstamp>
+			<format property="TODAY" timezone="GMT" pattern="yyyy-MM-dd'T'hh:mm:ss.S'Z'"/>
+			<format property="DSTAMP" timezone="GMT" pattern="yyyy-MM-dd"/>
+			<format property="TSTAMP" timezone="GMT" pattern="hh:mm:ss"/>
+		</tstamp>
+		<buildnumber/>
+		<property environment="env"/>
+		
+		<!-- Read current values. -->
+		<property prefix="old" file="${src}/version.properties"/>
+		<property name="version.major" value="${old.version.major}"/>
+		<property name="version.minor" value="${old.version.minor}"/>
+		<property name="version.revision" value="${old.version.revision}"/>
+		<property name="version.string" value="${version.major}.${version.minor}.${version.revision}.${build.number}"/>
+		
+		<!-- Get OS specific environment variables. -->
+		<condition property="build.user" value="${env.USERNAME}" else="${env.USER}"><os family="windows"/></condition>
+		<condition property="build.host" value="${env.COMPUTERNAME}" else="${env.USER}"><os family="windows"/></condition>
+		<condition property="build.os" value="${env.OS}" else="${env.xxx}"><os family="windows"/></condition>
+
+		<!-- Update file values (retains unmodified properties). -->
+		<propertyfile file="${src}/version.properties">
+			<entry key="version.string" value="${version.string}"/>
+			<entry key="version.build" value="${build.number}"/>
+			<entry key="build.date" value="${TODAY}"/>
+			<entry key="build.user" value="${build.user}"/>
+			<entry key="build.host" value="${build.host}"/>
+			<entry key="build.os" value="${build.os}"/>
+		</propertyfile>
+		
+		<!-- Create the MANIFEST file and include package version information. -->
+		<echo file="manifest/manifest.txt">Manifest-Version: 1.2
+Main-Class: ggz.ui.ClientApp
+Created-By: GGZ Gaming Zone
+
+Name: ggz/ui/
+Specification-Title: GGZ Java Client
+Specification-Version: ${version.major}.${version.minor}.${version.revision}
+Specification-Vendor: GGZ Gaming Zone
+Implementation-Title: ggz-java
+Implementation-Version: Build # ${build.number}
+Implementation-Vendor: GGZ Gaming Zone</echo>
+		
+		<echo>Building Version ${version.string}</echo>
 	</target>
 	
 	<target name="compile" 
@@ -39,7 +85,7 @@
 	<target name="applet-jar" 
 		    depends="compile" 
 		    description="Creates a separate JAR file that contains the classes needed for the applet.">
-		<jar jarfile="${applet_jarfile}">
+		<jar jarfile="${applet_jarfile}" manifest="${manifest}">
 			<fileset dir="${bin}">
 				<exclude name="edu/stanford/ejalbert/*"/>
 				<exclude name="ggz/ui/ClientApp.class"/>
@@ -68,7 +114,7 @@
 			<package name="ggz.*"/>
 		</javadoc>
 	</target>
-	
+
 	<target name="build-distribution" 
 		    depends="clean,sign-applet-jar,application-jar" 
 		    description="Does a clean and rebuilds everything">

@@ -21,6 +21,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -78,6 +79,7 @@ public class AboutDialog extends JDialog {
             }
         };
         licenseTextArea.setEditable(false);
+        licenseTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         licenseScrollPane.getViewport().add(licenseTextArea);
         licenseScrollPane.setBorder(BorderFactory.createCompoundBorder(spacer,
                 licenseScrollPane.getBorder()));
@@ -86,9 +88,12 @@ public class AboutDialog extends JDialog {
         readLicense();
 
         // Copyright
+        // Note: Extra version information is also available in /version.properties.
+        Package pkg = getClass().getPackage();
+        String version = pkg.getSpecificationVersion() + " " + pkg.getImplementationVersion();
         copyrightLabel = new JLabel(
                 "<HTML>"
-                        + "ggz-java version 0.0.13<BR>Copyright (C) 2006 Helg Bredow<BR>"
+                        + "ggz-java version " + version + "<BR>Copyright (C) 2006 Helg Bredow<BR>"
                         + " GGZ Gaming Zone comes with ABSOLUTELY NO WARRANTY.<BR>"
                         + "  This is free software, and you are welcome to"
                         + " redistribute it<BR>under certain conditions as"
