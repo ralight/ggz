@@ -520,30 +520,10 @@ public class RoomPanel extends JPanel implements RoomListener,
 					buffer = new StringBuffer("<HTML><OL>");
 					for (int spectator_num = 0; spectator_num < table
 							.get_num_spectator_seats(); spectator_num++) {
-						buffer.append("<LI>");
-						SeatType type = table
-								.get_nth_spectator_seat(spectator_num).type;
-						if (type == SeatType.GGZ_SEAT_ABANDONED) {
-							buffer.append(messages
-									.getString("RoomPanel.AbandonedSeat"));
-							break;
-						} else if (type == SeatType.GGZ_SEAT_BOT) {
-							buffer.append(messages
-									.getString("RoomPanel.ComputerPlayer"));
-							break;
-						} else if (type == SeatType.GGZ_SEAT_NONE
-								|| type == SeatType.GGZ_SEAT_PLAYER) {
-							buffer.append(table
-									.get_nth_spectator_name(spectator_num));
-							break;
-						} else if (type == SeatType.GGZ_SEAT_OPEN) {
-							buffer.append(messages
-									.getString("RoomPanel.EmptySeat"));
-							break;
-						} else if (type == SeatType.GGZ_SEAT_RESERVED) {
-							buffer.append(messages
-									.getString("RoomPanel.ReservedSeat"));
-							break;
+						String name = table .get_nth_spectator_name(spectator_num);
+						if (name != null) {
+                            buffer.append("<LI>");
+							buffer.append(name);
 						}
 					}
 					buffer.append("</OL></HTML>");

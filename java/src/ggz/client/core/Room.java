@@ -489,8 +489,9 @@ public class Room {
 
 		if (this.players != null) {
 			/* make sure they're still in room */
-			if ((player = get_player_by_name(player_name)) != null)
+			if ((player = get_player_by_name(player_name)) != null) {
 				player.set_table(table);
+            }
 		}
 
 		event(RoomEvent.GGZ_TABLE_UPDATE, null);

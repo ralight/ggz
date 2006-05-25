@@ -22,7 +22,9 @@ applet to play games, not type obtuse commands into a chat window so that
 they can register themselves. The web site does this adequately already; we
 don't need to remove the chat bot functionality, we just don't need to
 advertise it when you first log in. Maybe MegaGrub can chime in with a help
-tip if the user send "help" as chat.
+tip if the user sends "help" as chat.
+
+
 
 Support chat buffer size properly so that we don't send too big a message after encoding to UTF-8.
 

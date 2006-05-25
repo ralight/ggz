@@ -125,6 +125,7 @@ Implementation-Vendor: GGZ Gaming Zone</echo>
 		    description="Deletes all output files.">
 		<delete dir="${bin}"/>
 		<delete dir="${javadoc}"/>
+		<delete dir="manifest"/>
 		<delete file="${applet_jarfile}"/>
 		<delete file="${application_jarfile}"/>
 	</target>

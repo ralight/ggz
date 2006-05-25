@@ -272,8 +272,10 @@ public class Game implements ModTransactionHandler {
         num_seats = table.get_num_spectator_seats();
         for (i = 0; i < num_seats; i++) {
             TableSeat seat = table.get_nth_spectator_seat(i);
-
-            set_spectator_seat(seat);
+            
+            if (seat.name != null) {
+                set_spectator_seat(seat);
+            }
         }
     }
 

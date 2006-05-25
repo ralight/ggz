@@ -48,10 +48,6 @@ public class Table {
     /* Seats */
     private TableSeat[] seats;
 
-    /* Total spectator seats */
-    // TODO consider using spectator_seats.length instead.
-    private int num_spectator_seats;
-
     /*
      * Spectator seats - "type" is unused; player name is NULL for empty seat.
      */
@@ -88,14 +84,15 @@ public class Table {
 
         this.num_seats = num_seats;
         log.fine("Allocating " + num_seats + " seats");
-        if (num_seats > 0)
+        if (num_seats > 0) {
             this.seats = new TableSeat[num_seats];
+        }
+
         for (int i = 0; i < num_seats; i++) {
             this.seats[i] = new TableSeat(i, SeatType.GGZ_SEAT_NONE, null);
         }
 
         /* Allocated on demand later */
-        this.num_spectator_seats = -1;
         this.spectator_seats = null;
     }
 
@@ -259,41 +256,38 @@ public class Table {
     }
 
     void set_spectator_seat(TableSeat seat) {
-        TableSeat oldseat;
+        String oldSeatName;
         Server server;
         Game game;
 
-        if (seat.index >= this.num_spectator_seats) {
-            int new_ = this.num_spectator_seats;
+        // Check if our array is big enough to hold the new seat.
+        if (seat.index >= get_num_spectator_seats()) {
+            int oldLength = get_num_spectator_seats();
+            int newLength = oldLength;
 
             /*
              * Grow the array geometrically to keep a constant ammortized
              * overhead.
              */
-            while (seat.index >= new_) {
-                new_ = new_ > 0 ? new_ * 2 : 1;
+            while (seat.index >= newLength) {
+                newLength = newLength > 0 ? newLength * 2 : 1;
             }
 
-            log.fine("Increasing number of spectator seats to " + new_ + ".");
+            log.fine("Increasing number of spectator seats to " + newLength + ".");
 
-            // ggz_realloc(this.spectator_seats,
-            // new_ * sizeof(*this.spectator_seats));
             TableSeat[] oldArray = this.spectator_seats;
-            this.spectator_seats = new TableSeat[new_];
+            this.spectator_seats = new TableSeat[newLength];
             if (oldArray != null) {
                 System.arraycopy(oldArray, 0, this.spectator_seats, 0,
                         oldArray.length);
             }
 
-            for (int i = this.num_spectator_seats + 1; i < new_; i++) {
+            for (int i = oldLength; i < newLength; i++) {
                 this.spectator_seats[i] = new TableSeat(i, SeatType.GGZ_SEAT_NONE, null);
-//                this.spectator_seats[i].index = i;
-//                this.spectator_seats[i].name = null;
             }
-            this.num_spectator_seats = new_;
         }
 
-        oldseat = this.spectator_seats[seat.index];
+        oldSeatName = this.spectator_seats[seat.index].name;
         this.spectator_seats[seat.index].index = seat.index;
         this.spectator_seats[seat.index].name = seat.name;
 
@@ -305,11 +299,11 @@ public class Table {
                 this.room.player_set_table(seat.name, this.id);
         }
 
-        if (oldseat.name != null) {
-            log.fine(oldseat.name + " stopped spectating seat " + oldseat.index
-                    + " at table" + this.id);
-            if (this.room != null)
-                this.room.player_set_table(oldseat.name, -1);
+        if (oldSeatName != null) {
+            log.fine(oldSeatName + " stopped spectating seat at table " + this.id);
+            if (this.room != null) {
+                this.room.player_set_table(oldSeatName, -1);
+            }
         }
 
         /* If this is our table, alert the game module. */
@@ -319,8 +313,10 @@ public class Table {
             String me = server.get_handle();
             int game_table = game.get_table_id();
 
-            if (this.id == game_table)
+            if (this.id == game_table) {
                 game.set_spectator_seat(seat);
+            }
+            
             if (!me.equals(seat.name)) {
                 game.set_player(true, seat.index);
                 if (game_table < 0) {
@@ -383,7 +379,7 @@ public class Table {
     }
 
     public int get_num_spectator_seats() {
-        return this.num_spectator_seats;
+        return this.spectator_seats == null ? 0 : this.spectator_seats.length;
     }
 
     public TableSeat get_nth_spectator_seat(int num) {
@@ -391,7 +387,7 @@ public class Table {
     }
 
     public String get_nth_spectator_name(int num) {
-        if (num >= this.num_spectator_seats)
+        if (num >= get_num_spectator_seats())
             return null;
         return this.spectator_seats[num].name;
     }
