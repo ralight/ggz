@@ -36,19 +36,14 @@
 		<property name="version.revision" value="${old.version.revision}"/>
 		<property name="version.string" value="${version.major}.${version.minor}.${version.revision}.${build.number}"/>
 		
-		<!-- Get OS specific environment variables. -->
-		<condition property="build.user" value="${env.USERNAME}" else="${env.USER}"><os family="windows"/></condition>
-		<condition property="build.host" value="${env.COMPUTERNAME}" else="${env.USER}"><os family="windows"/></condition>
-		<condition property="build.os" value="${env.OS}" else="${env.xxx}"><os family="windows"/></condition>
-
 		<!-- Update file values (retains unmodified properties). -->
 		<propertyfile file="${src}/version.properties">
 			<entry key="version.string" value="${version.string}"/>
 			<entry key="version.build" value="${build.number}"/>
 			<entry key="build.date" value="${TODAY}"/>
-			<entry key="build.user" value="${build.user}"/>
-			<entry key="build.host" value="${build.host}"/>
-			<entry key="build.os" value="${build.os}"/>
+			<entry key="build.user" value="${user.name}"/>
+			<entry key="build.os" value="${os.name}"/>
+			<entry key="build.vm" value="${java.vm.version}"/>
 		</propertyfile>
 		
 		<!-- Create the MANIFEST file and include package version information. -->
