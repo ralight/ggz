@@ -37,9 +37,11 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JApplet;
@@ -56,7 +58,10 @@ import javax.swing.event.HyperlinkListener;
 
 public class ClientApplet extends JApplet implements ServerListener,
         HyperlinkListener {
-    private static final ResourceBundle messages = ResourceBundle
+    protected static final Logger log = Logger.getLogger(ClientApplet.class
+            .getName());
+
+    protected static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
 
     private static final int DEFAULT_PORT = 5688;
@@ -88,43 +93,11 @@ public class ClientApplet extends JApplet implements ServerListener,
         }
     }
 
-    public ClientApplet() throws IOException {
-        // TODO Make watermark URL and background color applet parameters.
-        URL imageUrl = getClass().getResource("/ggz/ui/images/watermark.gif");
-        final Image watermark = new ImageIcon(imageUrl).getImage();
-        //final Image watermark = ImageIO.read(imageUrl);
-        final Composite alphaComposite = AlphaComposite.getInstance(
-                AlphaComposite.SRC_OVER, 0.3f);
-
-        // Create a custom content pane that does fancy painting.
-        setContentPane(new JPanel() {
-
-            public void paintComponent(Graphics g) {
-                if (isOpaque()) {
-                    Graphics2D g2d = (Graphics2D) g;
-
-                    // Fille the background with a gradient.
-                    g2d.setPaint(new GradientPaint(0, 0, new Color(0xce, 0xfa,
-                            0xdf), 0, getHeight() / 2, new Color(0x7c, 0xaf,
-                            0x68), true));
-                    g2d.fillRect(0, 0, getWidth(), getHeight());
-
-                    if (watermark != null) {
-                        // Paint the watermark.
-                        Composite originalComposite = g2d.getComposite();
-                        g2d.setComposite(alphaComposite);
-                        g2d.drawImage(watermark, getWidth() - 60
-                                - watermark.getWidth(this), getHeight() - 60
-                                - watermark.getHeight(this), this);
-                        g2d.setComposite(originalComposite);
-                    }
-                }
-            }
-
-        });
+    public ClientApplet() {
     }
 
     public void init() {
+        installCustomTheme();
         try {
             // Parse URI parameter and set up server.
             URI uri = new URI(getParameter("uri",
@@ -138,6 +111,8 @@ public class ClientApplet extends JApplet implements ServerListener,
             server.log_session(sendLogFile, receiveLogFile);
             server.add_event_hook(this);
 
+            initFancyBackground();
+
             // Init components
             getContentPane().setLayout(new BorderLayout());
             mainPanel = new JPanel(new CardLayout());
@@ -145,8 +120,8 @@ public class ClientApplet extends JApplet implements ServerListener,
             getContentPane().add(mainPanel, BorderLayout.CENTER);
             aboutLabel = new JLabel(
                     "<HTML><A href='' style='font-weight:normal; font-size:smaller'>"
-                            + messages.getString("ClientApplet.Label.About") + "</A>",
-                    SwingConstants.RIGHT);
+                            + messages.getString("ClientApplet.Label.About")
+                            + "</A>", SwingConstants.RIGHT);
             aboutLabel
                     .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             aboutLabel.addMouseListener(new MouseAdapter() {
@@ -190,6 +165,79 @@ public class ClientApplet extends JApplet implements ServerListener,
         }
     }
 
+    public String[][] getParameterInfo() {
+        return new String[][] {
+                { "uri", "URI",
+                        "e.g. ggz://live.ggzgamingzone.org:5688/A%20Room" },
+                { "xmlin", "stdout|stderr",
+                        "Where to log XML recieved from server." },
+                { "xmlout", "stdout|stderr",
+                        "Where to log XML sent to the server." },
+                { "background.image.url", "URL",
+                        "Location of image to use as the watermark." },
+                { "background.gradient.color1", "int",
+                        "RGB string to use for the gradient." },
+                { "background.gradient.color2", "int",
+                        "RGB string to use for the gradient." },
+                { "Black", "Color",
+                        "The color for things that are generally black like text." },
+                { "White", "Color",
+                        "The color for things that are generally white like text fields." },
+                { "Primary1", "Color", "" },
+                { "Primary2", "Color", "" },
+                { "Primary3", "Color", "" },
+                { "Secondary", "Color", "" },
+                { "Secondary2", "Color", "" },
+                { "Secondary3", "Color", "" },
+                { "ControlTextFont", "Font",
+                        "The font for controls; like buttons and labels." },
+                { "MenuTextFont", "Font", "The font for menus." },
+                { "SubTextFont", "Font", "" },
+                { "SystemTextFont", "Font", "" },
+                { "UserTextFont", "Font",
+                        "The font for controls that allow user input; like text fields." },
+                { "WindowTitleFont", "Font", "" }, };
+    }
+
+    private void installCustomTheme() {
+        CustomMetalTheme.install(this);
+    }
+
+    private void initFancyBackground() {
+        // Init backgound painting stuff.
+        final Image watermark = getWatermark();
+        final Color gradientColor1 = getGradientColor1();
+        final Color gradientColor2 = getGradientColor2();
+        final Composite alphaComposite = AlphaComposite.getInstance(
+                AlphaComposite.SRC_OVER, 0.3f);
+
+        // Create a custom content pane that does fancy painting.
+        setContentPane(new JPanel() {
+
+            public void paintComponent(Graphics g) {
+                if (isOpaque()) {
+                    Graphics2D g2d = (Graphics2D) g;
+
+                    // Fill the background with a gradient.
+                    g2d.setPaint(new GradientPaint(0, 0, gradientColor1, 0,
+                            getHeight() / 2, gradientColor2, true));
+                    g2d.fillRect(0, 0, getWidth(), getHeight());
+
+                    if (watermark != null) {
+                        // Paint the watermark.
+                        Composite originalComposite = g2d.getComposite();
+                        g2d.setComposite(alphaComposite);
+                        g2d.drawImage(watermark, getWidth() - 60
+                                - watermark.getWidth(this), getHeight() - 60
+                                - watermark.getHeight(this), this);
+                        g2d.setComposite(originalComposite);
+                    }
+                }
+            }
+
+        });
+    }
+
     /**
      * Utility method that wraps the Applet.getParameter() method supports
      * default values for parameters that don't have a value.
@@ -201,6 +249,54 @@ public class ClientApplet extends JApplet implements ServerListener,
     protected String getParameter(String name, String defaultValue) {
         String value = getParameter(name);
         return (value == null) ? defaultValue : value;
+    }
+
+    /**
+     * Reads integer string from applet parameter. See the Integer.decode()
+     * method for supported string formats.
+     * 
+     * @param name
+     * @param defaultValue
+     * @return
+     * @see Integer#decode(java.lang.String)
+     */
+    protected int getIntParameter(String name, int defaultValue) {
+        String rgbString = getParameter(name);
+
+        if (rgbString != null) {
+            try {
+                return Integer.decode(rgbString).intValue();
+            } catch (NumberFormatException e) {
+                log.warning(e.getMessage());
+            }
+        }
+
+        // Applet parameter was not present or invalid.
+        return defaultValue;
+    }
+
+    protected Color getGradientColor1() {
+        return new Color(
+                getIntParameter("background.gradient.color1", 0xCEFADF));
+    }
+
+    protected Color getGradientColor2() {
+        return new Color(
+                getIntParameter("background.gradient.color2", 0x7CAF68));
+    }
+
+    protected Image getWatermark() {
+        String customImageUrl = getParameter("background.image.url");
+
+        if (customImageUrl != null) {
+            try {
+                return new ImageIcon(new URL(customImageUrl)).getImage();
+            } catch (MalformedURLException e) {
+                log.warning(e.getMessage());
+            }
+        }
+        return new ImageIcon(getClass().getResource(
+                "/ggz/ui/images/watermark.gif")).getImage();
     }
 
     public void server_channel_connected() {
@@ -286,7 +382,8 @@ public class ClientApplet extends JApplet implements ServerListener,
         if (!"normal".equals(data.priority)) {
             // Assume it's a higher priority.
             JDialog dialog = new JDialog(
-                    JOptionPane.getFrameForComponent(this), messages
+                    JOptionPane.getFrameForComponent(this),
+                    messages
                             .getString("ClientApplet.DialogTitle.MessageOfTheDay"));
             JTextArea textArea = new JTextArea(data.motd);
 
@@ -347,47 +444,47 @@ public class ClientApplet extends JApplet implements ServerListener,
 
         if (server.get_state() == StateID.GGZ_STATE_OFFLINE) {
             statusText = messages.getString("ClientApplet.StateOffline");
-        /** In the process of connecting. */
+            /** In the process of connecting. */
         } else if (server.get_state() == StateID.GGZ_STATE_CONNECTING) {
             loginFailData = null;
             layout.show(mainPanel, "busy");
             statusText = messages.getString("ClientApplet.StateConnecting");
-        /** Continuous reconnection attempts. */
+            /** Continuous reconnection attempts. */
         } else if (server.get_state() == StateID.GGZ_STATE_RECONNECTING) {
             statusText = messages.getString("ClientApplet.StateReconnecting");
-        /** Connected, but not doing anything. */
+            /** Connected, but not doing anything. */
         } else if (server.get_state() == StateID.GGZ_STATE_ONLINE) {
             statusText = messages.getString("ClientApplet.StateConnected");
-        /** In the process of logging in. */
+            /** In the process of logging in. */
         } else if (server.get_state() == StateID.GGZ_STATE_LOGGING_IN) {
             statusText = messages.getString("ClientApplet.StateLoggingIn");
-        /** Online and logged in! */
+            /** Online and logged in! */
         } else if (server.get_state() == StateID.GGZ_STATE_LOGGED_IN) {
             statusText = messages.getString("ClientApplet.StateLoggedIn");
-        /** Moving into a room. */
+            /** Moving into a room. */
         } else if (server.get_state() == StateID.GGZ_STATE_ENTERING_ROOM) {
             layout.show(mainPanel, "busy");
             statusText = messages.getString("ClientApplet.StateEnteringRoom");
-        /** Moving between rooms. */
+            /** Moving between rooms. */
         } else if (server.get_state() == StateID.GGZ_STATE_BETWEEN_ROOMS) {
             layout.show(mainPanel, "busy");
             statusText = messages.getString("ClientApplet.StateBetweenRooms");
-        /** Online, logged in, and in a room. */
+            /** Online, logged in, and in a room. */
         } else if (server.get_state() == StateID.GGZ_STATE_IN_ROOM) {
             statusText = messages.getString("ClientApplet.StateInRoom");
-        /** Trying to launch a table. */
+            /** Trying to launch a table. */
         } else if (server.get_state() == StateID.GGZ_STATE_LAUNCHING_TABLE) {
             statusText = messages.getString("ClientApplet.StateLaunchingGame");
-        /** Trying to join a table. */
+            /** Trying to join a table. */
         } else if (server.get_state() == StateID.GGZ_STATE_JOINING_TABLE) {
             statusText = messages.getString("ClientApplet.StateJoiningGame");
-        /** Online, loggied in, in a room, at a table. */
+            /** Online, loggied in, in a room, at a table. */
         } else if (server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
             statusText = messages.getString("ClientApplet.StatePlaying");
-        /** Waiting to leave a table. */
+            /** Waiting to leave a table. */
         } else if (server.get_state() == StateID.GGZ_STATE_LEAVING_TABLE) {
             statusText = messages.getString("ClientApplet.StateLeavingGame");
-        /** In the process of logging out. */
+            /** In the process of logging out. */
         } else if (server.get_state() == StateID.GGZ_STATE_LOGGING_OUT) {
             statusText = messages.getString("ClientApplet.StateLoggingOut");
         } else {
@@ -466,4 +563,5 @@ public class ClientApplet extends JApplet implements ServerListener,
             handleException(e);
         }
     }
+
 }

@@ -1,20 +1,21 @@
 /*
- * Copyright (C) 2006  Helg Bredow
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * Copyright (C) 2006 Helg Bredow
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
 package ggz.ui;
 
 import edu.stanford.ejalbert.BrowserLauncher;
@@ -27,21 +28,38 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+/**
+ * Simply main that creates a simulated environment to run the applet in. As
+ * well as command line options, it supports all applet parameters via the
+ * appletparams.properties file in the current directory.
+ * 
+ * @author Helg.Bredow
+ * 
+ */
 public class ClientApp {
+    protected static final Logger log = Logger.getLogger(ClientApp.class
+            .getName());
+
     protected static String xmlout;
 
     protected static String xmlin;
 
     protected static String uri;
+
+    protected static Properties appletParameters;
 
     private ClientApp() {
         super();
@@ -51,16 +69,20 @@ public class ClientApp {
      * @param args
      */
     public static void main(String[] args) throws Exception {
-    	//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         if (!parseArgs(args)) {
             printUsage();
             return;
         }
+
+        loadProperties();
+
         // Applet needs to be created first if we want antialiasing
         // since it sets it up in the static initialiser.
         final ClientApplet applet = new ClientApplet();
         final JFrame frame = new JFrame("GGZ Gaming Zone");
         final JLabel statusLabel = new JLabel();
+
         applet.setStub(new AppletStub() {
             public boolean isActive() {
                 return true;
@@ -75,14 +97,19 @@ public class ClientApp {
             }
 
             public String getParameter(String name) {
+                String value = null;
                 if ("xmlout".equals(name)) {
-                    return xmlout;
+                    value = xmlout;
                 } else if ("xmlin".equals(name)) {
-                    return xmlin;
+                    value = xmlin;
                 } else if ("uri".equals(name)) {
-                    return uri;
+                    value = uri;
                 }
-                return null;
+
+                if (value == null && appletParameters != null) {
+                    value = appletParameters.getProperty(name);
+                }
+                return value;
             }
 
             public AppletContext getAppletContext() {
@@ -179,6 +206,19 @@ public class ClientApp {
             return true;
         } catch (IndexOutOfBoundsException ex) {
             return false;
+        }
+    }
+
+    protected static void loadProperties() {
+        try {
+            FileInputStream file = new FileInputStream(
+                    "appletparams.properties");
+            appletParameters = new Properties();
+            appletParameters.load(file);
+        } catch (FileNotFoundException e) {
+            // Ignore, applet will simply use defaults.
+        } catch (IOException e) {
+            log.warning(e.getMessage());
         }
     }
 
