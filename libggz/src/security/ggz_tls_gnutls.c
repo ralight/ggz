@@ -69,6 +69,11 @@ int ggz_tls_support_query(void)
 	return 1;
 }
 
+const char *ggz_tls_support_name(void)
+{
+	return "gnutls";
+}
+
 int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify)
 {
 	gnutls_session session;

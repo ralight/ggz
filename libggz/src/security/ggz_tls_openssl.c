@@ -428,6 +428,11 @@ int ggz_tls_support_query()
 	return 1;
 }
 
+const char *ggz_tls_support_name(void)
+{
+	return "openssl";
+}
+
 /* Initializes certification values */
 void ggz_tls_init(const char *certfile, const char *keyfile, const char *password)
 {

@@ -49,6 +49,11 @@ int ggz_tls_support_query(void)
 	return 0;
 }
 
+const char *ggz_tls_support_name(void)
+{
+	return NULL;
+}
+
 int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify)
 {
 	return 0;

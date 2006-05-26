@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 7907 2006-03-14 13:49:22Z josef $
+ * $Id: ggz.h 8068 2006-05-26 11:00:38Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1749,12 +1749,25 @@ void ggz_tls_init(const char *certfile, const char *keyfile, const char *passwor
 
 /** @brief Check TLS support.
  *
- *  Since handshakes can fail, this function checks whether TLS
- *  was actually successfully activated.
+ *  Checks if real TLS support is available or communication
+ *  will fall back to unencrypted connections.
+ *  Even in the case of support, individual connections might
+ *  still be unencrypted if the handshake fails.
  *
  *  @return 1 if TLS is supported, 0 if no support is present
+ *  @see ggz_tls_enable_fd
  */
 int ggz_tls_support_query(void);
+
+/** @brief Name of the TLS implementation.
+ *
+ *  Returns the name of the TLS layer implementation used
+ *  to encrypt connections.
+ *
+ *  @return TLS implementation name, or NULL if no TLS support is present
+ *  @see ggz_tls_support_query
+ */
+const char *ggz_tls_support_name(void);
 
 /** @brief Enable TLS for a file descriptor.
  *
