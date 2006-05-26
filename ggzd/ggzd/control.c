@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8037 2006-05-13 09:28:38Z josef $
+ * $Id: control.c 8066 2006-05-26 10:57:13Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <ggz.h>
 
@@ -64,6 +65,12 @@
 #include "util.h"
 #include "meta.h"
 
+#ifdef HAVE_INOTIFY
+#include "reconfiguration.h"
+#endif
+#ifdef WITH_FAM
+#include <fam.h>
+#endif
 
 /* Server options */
 Options opt;
@@ -75,6 +82,12 @@ struct GGZState state;
 /* Termination signal */
 static sig_atomic_t hup_signal;
 static sig_atomic_t term_signal;
+
+/* Reconfiguration watcher */
+static int reconfigure_fd;
+#ifdef WITH_FAM
+FAMConnection fc;
+#endif
 
 /* Hangup handler.  Eventually admins will be able to raise() this
    over the network. */
@@ -103,7 +116,8 @@ static RETSIGTYPE term_handle(int signum)
  */
 static void init_dirs(void)
 {
-	check_path(opt.tmp_dir);
+	/* not needed currently since anonymous sockets are used */
+	/*check_path(opt.tmp_dir);*/
 	check_path(opt.data_dir);
 }
 
@@ -162,7 +176,7 @@ static void cleanup_data(void)
 	}
 	data_free(rooms);
 
-	for (i = 0; game_types[i].name && i < MAX_GAME_TYPES; i++) {
+	for (i = 0; game_types[i].exec_args && i < MAX_GAME_TYPES; i++) {
 		char **args;
 		data_free(game_types[i].version);
 		data_free(game_types[i].p_engine);
@@ -349,10 +363,98 @@ void meta_announce(const char *metaserveruri, const char *username, const char *
 		"Metaserver: GGZ game rooms are now known to the metaserver");
 }
 
+static void reconfiguration_setup(void)
+{
+#ifdef HAVE_INOTIFY
+	reconfigure_fd = inotify_init();
+	if(reconfigure_fd <= 0)
+	{
+		fprintf(stderr, "Reconfiguration: Error: initialization failed\n");
+		return;
+	}
+
+	/* We don't want to inherit this to game servers! */
+	fcntl(reconfigure_fd, F_SETFD, FD_CLOEXEC);
+
+	/* Test - FIXME: add etc/ggzd/rooms? */
+	inotify_add_watch(reconfigure_fd, GGZDCONFDIR "/rooms", IN_CREATE);
+
+	log_msg(GGZ_LOG_NOTICE,
+		"Reconfiguration: watching rooms directory for changes");
+#else
+#ifdef WITH_FAM
+	FAMRequest fr;
+	if(FAMOpen(&fc) < 0)
+	{
+		fprintf(stderr, "Reconfiguration: Error: initialization failed\n");
+		reconfigure_fd = -1;
+		return;
+	}
+
+	reconfigure_fd = fc.fd;
+
+	if(FAMMonitorDirectory(&fc, GGZDCONFDIR "/rooms", &fr, NULL) < 0)
+	{
+		fprintf(stderr, "Reconfiguration: Error: monitoring failed\n");
+		return;
+	}
+
+	log_msg(GGZ_LOG_NOTICE,
+		"Reconfiguration: watching rooms directory for changes");
+#else
+	reconfigure_fd = -1;
+#endif
+#endif
+}
+
+static void reconfiguration_handle(void)
+{
+#ifdef HAVE_INOTIFY
+	/* FIXME: and now? need to read data! */
+#else
+#ifdef WITH_FAM
+	FAMEvent fe;
+	while(FAMPending(&fc))
+	{
+		if(FAMNextEvent(&fc, &fe) < 0)
+		{
+			fprintf(stderr, "Reconfiguration: Error: handling failed\n");
+			return;
+		}
+
+		dbg_msg(GGZ_DBG_MISC, "* fam: file %s code %i", fe.filename, fe.code);
+
+		if(strncmp(fe.filename + strlen(fe.filename) - 5, ".room", 5))
+		{
+			continue;
+		}
+
+		if(fe.code == FAMCreated)
+		{
+			log_msg(GGZ_LOG_NOTICE, "Reconfiguration: room addition %s",
+				fe.filename);
+			parse_room_change(fe.filename);
+		}
+		else if(fe.code == FAMDeleted)
+		{
+			log_msg(GGZ_LOG_NOTICE, "Reconfiguration: room removal %s",
+				fe.filename);
+			/*parse_room_change(fe.filename);*/ /* FIXME: removals not handled yet */
+		}
+		else
+		{
+			/* ignore */
+		}
+	}
+#endif
+#endif
+}
+
 
 int main(int argc, char *argv[])
 {
 	int main_sock, new_sock, status, flags;
+	int select_max;
 	socklen_t addrlen;
 	struct sockaddr_in addr;
 	fd_set active_fd_set, read_fd_set;
@@ -399,6 +501,12 @@ int main(int argc, char *argv[])
 	if(opt.announce_metaserver)
 		meta_announce(opt.announce_metaserver, opt.metausername, opt.metapassword);
 
+	/* Watch configuration changes */
+	if(1 == 1)
+		reconfiguration_setup();
+	else
+		reconfigure_fd = -1;
+
 	/* Create SERVER socket on main_port */
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
 	if (main_sock < 0) {
@@ -425,6 +533,11 @@ int main(int argc, char *argv[])
 
 	FD_ZERO(&active_fd_set);
 	FD_SET(main_sock, &active_fd_set);
+	select_max = main_sock;
+	if (reconfigure_fd > 0) {
+		FD_SET(reconfigure_fd, &active_fd_set);
+		select_max = MAX(select_max, reconfigure_fd);
+	}
 
 	/* Main loop */
 	while (!term_signal) {
@@ -457,7 +570,7 @@ int main(int argc, char *argv[])
 		read_fd_set = active_fd_set;
 		tv.tv_sec = log_next_update_sec();
 		tv.tv_usec = 0;
-		status = select((main_sock + 1), &read_fd_set, NULL, NULL, &tv);
+		status = select((select_max + 1), &read_fd_set, NULL, NULL, &tv);
 
 		if (status < 0) {
 			if (errno == EINTR) {
@@ -480,20 +593,27 @@ int main(int argc, char *argv[])
 			continue;
 		}
 
-		addrlen = sizeof(addr);
-		if ( (new_sock = accept(main_sock, (struct sockaddr*)&addr, &addrlen)) < 0) {
-			switch (errno) {
-			case EWOULDBLOCK:
-			case ECONNABORTED:
-			case EINTR:
-				continue;
-				break;
-			default:
-				err_sys_exit("Error accepting connection");
+		if(FD_ISSET(main_sock, &read_fd_set)) {
+			addrlen = sizeof(addr);
+			if ( (new_sock = accept(main_sock, (struct sockaddr*)&addr, &addrlen)) < 0) {
+				switch (errno) {
+				case EWOULDBLOCK:
+				case ECONNABORTED:
+				case EINTR:
+					continue;
+					break;
+				default:
+					err_sys_exit("Error accepting connection");
+				}
+			} else {
+				/* This is where to test for ignored IP addresses */
+				client_handler_launch(new_sock);
 			}
-		} else {
-			/* This is where to test for ignored IP addresses */
-			client_handler_launch(new_sock);
+		} else if(reconfigure_fd > 0) {
+			if(FD_ISSET(reconfigure_fd, &read_fd_set)) {
+				dbg_msg(GGZ_DBG_MISC, "reconfiguration monitor activated");
+				reconfiguration_handle();
+			}
 		}
 	}
 
@@ -501,6 +621,10 @@ int main(int argc, char *argv[])
 
 	/* FIXME: do we need to stop all of threads? */
 	ggzdb_close();
+
+#ifdef WITH_FAM
+	/*FAMClose(&fc);*/
+#endif
 
 	if (!opt.foreground) {
 		/* This must come AFTER ggzdb_close but BEFORE cleanup_data. */

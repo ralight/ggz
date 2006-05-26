@@ -54,6 +54,9 @@
 #AnnounceMetaserverUsername = ggzd
 #AnnounceMetaserverPassword = ggzd
 
+# Reconfiguration in case of room changes
+#ReconfigureRooms = 1
+
 ############################################################################
 # Logging Options
 ############################################################################

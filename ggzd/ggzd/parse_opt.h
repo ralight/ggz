@@ -34,3 +34,7 @@ void parse_game_files(void);
 
 /* Main entry point for parsing the room files */
 void parse_room_files(void);
+
+/* Dynamic room reconfiguration */
+void parse_room_change(const char *room);
+

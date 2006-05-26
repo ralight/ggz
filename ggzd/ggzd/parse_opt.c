@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8034 2006-05-11 10:20:38Z josef $
+ * $Id: parse_opt.c 8066 2006-05-26 10:57:13Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -156,12 +156,29 @@ static char **_ggz_string_to_list(const char *s, const char *sep)
 #else
 #define SPEC_AVAHI 0
 #endif
+#ifdef HAVE_INOTIFY
+#define SPEC_INOTIFY 1
+#else
+#define SPEC_INOTIFY 0
+#endif
+#ifdef WITH_FAM
+#define SPEC_FAM 1
+#else
+#define SPEC_FAM 0
+#endif
 
 static void dump_specs(void)
 {
 	int tls = ggz_tls_support_query();
+	const char *tlsname = ggz_tls_support_name();
+	char tlsstring[32];
 
 	parse_conf_file();
+
+	if(tls)
+	{
+		snprintf(tlsstring, sizeof(tlsstring), "yes (%s)", tlsname);
+	}
 
 	printf("GGZ Gaming Zone server (ggzd) specifications\n");
 	printf("Version: %s\n", VERSION);
@@ -175,8 +192,11 @@ static void dump_specs(void)
 		(SPEC_HOWL ? "yes (howl)" : (SPEC_AVAHI ? "yes (avahi)" : "no")),
 		(opt.conf_valid ? (opt.announce_lan ? "used" : "not used") : "unknown"));
 	printf("TLS support: %s [%s]\n",
-		(tls ? "yes" : "no"),
+		(tls ? tlsstring : "no"),
 		(opt.conf_valid ? (opt.tls_use ? "used" : "not used") : "unknown"));
+	printf("Reconfiguration support: %s [%s]\n",
+		(SPEC_INOTIFY ? "yes (inotify)" : (SPEC_FAM ? "yes (fam)" : "no")),
+		(opt.conf_valid ? (opt.reconfigure_rooms ? "used" : "not used") : "unknown" ));
 }
 
 /* Parse command-line options */
@@ -351,6 +371,9 @@ static void get_config_options(int ch)
 	opt.announce_metaserver = ggz_conf_read_string(ch, "General", "AnnounceMetaserver", NULL);
 	opt.metausername = ggz_conf_read_string(ch, "General", "AnnounceMetaserverUsername", NULL);
 	opt.metapassword = ggz_conf_read_string(ch, "General", "AnnounceMetaserverPassword", NULL);
+
+	/* Reconfiguration in [General] */
+	opt.reconfigure_rooms = ggz_conf_read_int(ch, "General", "ReconfigureRooms", 0);
 
 	/* [Games] */
 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);
@@ -829,6 +852,22 @@ static void parse_room(char *name, char *dir)
 					       * sizeof(GGZTable*));
 	else
 		rooms[num].tables = NULL;
+}
+
+
+void parse_room_change(const char *room)
+{
+	const char *suffix = "/rooms/";
+	char dir[strlen(opt.conf_dir) + strlen(suffix) + 1];
+	char roomname[strlen(room) + 1];
+
+	/* Setup our directory to "conf_dir/rooms/" */
+	snprintf(dir, sizeof(dir), "%s%s", opt.conf_dir, suffix);
+
+	snprintf(roomname, sizeof(roomname), "%s", room);
+	roomname[strlen(roomname) - 5] = '\0';
+
+	parse_room(roomname, dir);
 }
 
 
