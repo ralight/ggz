@@ -3,13 +3,15 @@ Things to be done on the GGZ server side
 
 GGZ server (ggzd)
 -----------------
-* configuration realod on signal
+* configuration reload on signal
   (very difficult, and SIGUSR1/2 are already in use)
   (SIGHUP currently leads to graceful shutdown)
+=> this is being worked on (reconfiguration monitoring with FAM/inotify)
 * usage of a real XML library to send out XML
   (expat can only parse - use libxml?)
 * connection upgrade to TLS at any time
   (like STARTTLS for SMTP or RFC 2817(?) for HTTP)
+* database hashing type should be added to the user table
 
 Libraries (ggzdmod, ggzdmod++)
 ------------------------------

@@ -26,10 +26,10 @@ AC_ARG_ENABLE([server],
 AC_ARG_ENABLE([games],
 	      AC_HELP_STRING([--disable-games],[Don't build ggzd games]),
 	      [enable_games=no], [enable_games=yes])
-AC_ARG_WITH([tmpdir],
-	    AC_HELP_STRING([--with-tmpdir=PATH],
-		[directory for temporary files (default=/tmp/ggzd)]),
-	    [tmpdir=$withval], [tmpdir="/tmp/ggzd"])
+#AC_ARG_WITH([tmpdir],
+#	    AC_HELP_STRING([--with-tmpdir=PATH],
+#		[directory for temporary files (default=/tmp/ggzd)]),
+#	    [tmpdir=$withval], [tmpdir="/tmp/ggzd"])
 AC_ARG_WITH([database],
 	    AC_HELP_STRING([--with-database=DB],
 		[type of database to use: db2, db3, db4, pgsql, mysql, sqlite]),
@@ -145,13 +145,9 @@ AC_CHECK_LIB(howl, sw_discovery_init,
 	[
 		use_howl=1
 	],
-	[
-		AC_MSG_WARN([Zeroconf diabled, libhowl (headers) not found.])
-	])
+	[])
 ],
-[
-	AC_MSG_WARN([Zeroconf disabled, libhowl (libs) not found.])
-],
+[],
 [-lpthread])
 
 dnl Check for zeroconf implementation Avahi
@@ -163,13 +159,9 @@ AC_CHECK_LIB(avahi-client, avahi_entry_group_add_service,
 		use_avahi=1
 		use_howl=0
 	],
-	[
-		AC_MSG_WARN([Zeroconf diabled, libhowl (headers) not found.])
-	])
+	[])
 ],
-[
-	AC_MSG_WARN([Zeroconf disabled, libhowl (libs) not found.])
-],
+[],
 [-lpthread])
 
 if test "$use_howl" = "1"; then
@@ -179,15 +171,63 @@ if test "$use_howl" = "1"; then
 	AC_SUBST(HOWL_INCLUDES)
 	AC_SUBST(LIB_HOWL)
 	AC_C_BIGENDIAN
-fi
-
-if test "$use_avahi" = "1"; then
+	zeroconf="howl"
+elif test "$use_avahi" = "1"; then
 	AC_DEFINE(WITH_AVAHI, 1, [Use avahi for zeroconf mechanism])
 	AVAHI_INCLUDES="-I/usr/include"
 	LIB_AVAHI="-lavahi-client"
 	AC_SUBST(AVAHI_INCLUDES)
 	AC_SUBST(LIB_AVAHI)
+	zeroconf="avahi"
+else
+	AC_MSG_WARN([Zeroconf disabled, neither howl nor avahi found.])
+	zeroconf="(none)"
 fi
+
+dnl Reconfiguration checks
+dnl ======================
+use_inotify=0
+use_fam=0
+
+dnl Reconfiguration support via FAM (x-platform, but slower)
+dnl ========================================================
+AC_CHECK_LIB(fam, FAMMonitorDirectory,
+[
+	AC_CHECK_HEADERS([fam.h],
+	[
+		use_fam=1
+	],
+	[])
+],
+[],
+[-lfam])
+
+dnl Reconfiguration support via inotify (Linux only)
+dnl ================================================
+AC_MSG_CHECKING([for inotify])
+AC_EGREP_HEADER([__NR_inotify_init], [/usr/include/bits/syscall.h],
+	[
+		AC_MSG_RESULT(yes)
+		use_inotify=1
+		use_fam=0
+	],
+	[AC_MSG_RESULT(no)])
+
+if test "$use_inotify" = "1"; then
+	AC_DEFINE_UNQUOTED(HAVE_INOTIFY, 1,
+		[Use inotify to monitor configuration changes])
+	reconfiguration="inotify"
+elif test "$use_fam" = "1"; then
+	AC_DEFINE_UNQUOTED(WITH_FAM, 1,
+		[Use fam to monitor configuration changes])
+	LIB_FAM="-lfam"
+	AC_SUBST(LIB_FAM)
+	reconfiguration="fam"
+else
+	AC_MSG_WARN([Reconfiguration disabled, neither inotify nor fam found.])
+	reconfiguration="(none)"
+fi
+
 
 dnl Debug modes
 dnl ===========
@@ -319,10 +359,15 @@ AC_OUTPUT
 dnl Status Output
 dnl =============
 
-echo "Options"  
+echo ""
+echo "Build options"  
 echo "    Build Server.........$enable_server" 
 echo "    Build Game Servers...$enable_games" 
+echo "Configuration options"
 echo "    Database Type........$database" 
+echo "    Zeroconf.............$zeroconf"
+echo "    Reconfiguration......$reconfiguration"
+echo "Debugging options"
 echo "    General Debuging.....$enable_debug" 
 echo "    GDB Debugging........$enable_debug_gdb" 
 echo "    Memory Debugging.....$enable_debug_mem" 
