@@ -76,7 +76,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 		players = new PlayersTableModel(showTableNumber);
 		playerList = new JTable(players);
 		// playerList.setRowHeight(20);
-		playerList.getTableHeader().setBackground(new Color(0xce, 0xfa, 0xdf));
+		//playerList.getTableHeader().setBackground(new Color(0xce, 0xfa, 0xdf));
 		playerList
 				.getColumn("Nickname")
 				.setHeaderValue(
@@ -296,8 +296,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 		private ImageIcon[] icons;
 
 		private PlayerTypeCellRenderer() {
-			setBackground(Color.WHITE);
-			setOpaque(true);
+			//setBackground(Color.WHITE);
+			//setOpaque(true);
 			setHorizontalAlignment(SwingConstants.CENTER);
 			icons = new ImageIcon[PlayerType.values().length];
 		}
@@ -411,7 +411,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 		private int lag;
 
 		private LagCellRenderer() {
-			setBackground(Color.WHITE);
+			//setBackground(Color.WHITE);
 			// setPreferredSize(new Dimension(20, 20));
 		}
 
@@ -419,7 +419,6 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 				Object value, boolean isSelected, boolean hasFocus, int row,
 				int column) {
 			if (value != null) {
-
 				this.lag = ((Integer) value).intValue();
 			} else {
 				// Assume great connection

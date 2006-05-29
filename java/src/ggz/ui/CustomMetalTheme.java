@@ -89,7 +89,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     protected ColorUIResource getBlack() {
         if (black == null) {
-            black = getColorUIResource("Black");
+            black = getColorUIResource("theme.black");
             if (black == null) {
                 black = super.getBlack();
             }
@@ -99,7 +99,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     protected ColorUIResource getWhite() {
         if (white == null) {
-            white = getColorUIResource("White");
+            white = getColorUIResource("theme.white");
             if (white == null) {
                 white = super.getWhite();
             }
@@ -109,7 +109,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     protected ColorUIResource getPrimary1() {
         if (primary1 == null) {
-            primary1 = getColorUIResource("Primary1");
+            primary1 = getColorUIResource("theme.primary1");
             if (primary1 == null) {
                 primary1 = super.getPrimary1();
             }
@@ -119,7 +119,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     protected ColorUIResource getPrimary2() {
         if (primary2 == null) {
-            primary2 = getColorUIResource("Primary2");
+            primary2 = getColorUIResource("theme.primary2");
             if (primary2 == null) {
                 primary2 = super.getPrimary2();
             }
@@ -129,7 +129,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     protected ColorUIResource getPrimary3() {
         if (primary3 == null) {
-            primary3 = getColorUIResource("Primary3");
+            primary3 = getColorUIResource("theme.primary3");
             if (primary3 == null) {
                 primary3 = super.getPrimary3();
             }
@@ -139,7 +139,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     protected ColorUIResource getSecondary1() {
         if (secondary1 == null) {
-            secondary1 = getColorUIResource("Secondary1");
+            secondary1 = getColorUIResource("theme.secondary1");
             if (secondary1 == null) {
                 secondary1 = super.getSecondary1();
             }
@@ -149,7 +149,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     protected ColorUIResource getSecondary2() {
         if (secondary2 == null) {
-            secondary2 = getColorUIResource("Secondary2");
+            secondary2 = getColorUIResource("theme.secondary2");
             if (secondary2 == null) {
                 secondary2 = super.getSecondary2();
             }
@@ -159,7 +159,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     protected ColorUIResource getSecondary3() {
         if (secondary3 == null) {
-            secondary3 = getColorUIResource("Secondary3");
+            secondary3 = getColorUIResource("theme.secondary3");
             if (secondary3 == null) {
                 secondary3 = super.getSecondary3();
             }
@@ -169,7 +169,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     public FontUIResource getMenuTextFont() {
         if (menuTextFont == null) {
-            menuTextFont = getFontUIResource("MenuTextFont");
+            menuTextFont = getFontUIResource("theme.menuTextFont");
             if (menuTextFont == null) {
                 menuTextFont = super.getMenuTextFont();
             }
@@ -179,7 +179,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     public FontUIResource getControlTextFont() {
         if (controlTextFont == null) {
-            controlTextFont = getFontUIResource("ControlTextFont");
+            controlTextFont = getFontUIResource("theme.controlTextFont");
             if (controlTextFont == null) {
                 controlTextFont = super.getControlTextFont();
             }
@@ -189,7 +189,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     public FontUIResource getSubTextFont() {
         if (subTextFont == null) {
-            subTextFont = getFontUIResource("SubTextFont");
+            subTextFont = getFontUIResource("theme.subTextFont");
             if (subTextFont == null) {
                 subTextFont = super.getSubTextFont();
             }
@@ -199,7 +199,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     public FontUIResource getSystemTextFont() {
         if (systemTextFont == null) {
-            systemTextFont = getFontUIResource("SystemTextFont");
+            systemTextFont = getFontUIResource("theme.systemTextFont");
             if (systemTextFont == null) {
                 systemTextFont = super.getSystemTextFont();
             }
@@ -209,7 +209,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     public FontUIResource getUserTextFont() {
         if (userTextFont == null) {
-            userTextFont = getFontUIResource("UserTextFont");
+            userTextFont = getFontUIResource("theme.userTextFont");
             if (userTextFont == null) {
                 userTextFont = super.getUserTextFont();
             }
@@ -219,7 +219,7 @@ public class CustomMetalTheme extends DefaultMetalTheme {
 
     public FontUIResource getWindowTitleFont() {
         if (windowTitleFont == null) {
-            windowTitleFont = getFontUIResource("WindowTitleFont");
+            windowTitleFont = getFontUIResource("theme.windowTitleFont");
             if (windowTitleFont == null) {
                 windowTitleFont = super.getWindowTitleFont();
             }

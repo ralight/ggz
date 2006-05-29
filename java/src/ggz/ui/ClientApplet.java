@@ -97,7 +97,10 @@ public class ClientApplet extends JApplet implements ServerListener,
     }
 
     public void init() {
-        installCustomTheme();
+        if (getBooleanParameter("theme.enabled", false)) {
+            installCustomTheme();
+        }
+
         try {
             // Parse URI parameter and set up server.
             URI uri = new URI(getParameter("uri",
@@ -173,30 +176,36 @@ public class ClientApplet extends JApplet implements ServerListener,
                         "Where to log XML recieved from server." },
                 { "xmlout", "stdout|stderr",
                         "Where to log XML sent to the server." },
+                { "background.image.enabled", "boolean",
+                        "Whether to draw the watermark image." },
                 { "background.image.url", "URL",
                         "Location of image to use as the watermark." },
+                { "background.gradient.enabled", "boolean",
+                        "Whether to enable gradient painting for the background." },
                 { "background.gradient.color1", "int",
                         "RGB string to use for the gradient." },
                 { "background.gradient.color2", "int",
                         "RGB string to use for the gradient." },
-                { "Black", "Color",
+                { "theme.enabled", "boolean",
+                        "Whether to enable theme support." },
+                { "theme.black", "Color",
                         "The color for things that are generally black like text." },
-                { "White", "Color",
+                { "theme.white", "Color",
                         "The color for things that are generally white like text fields." },
-                { "Primary1", "Color", "" },
-                { "Primary2", "Color", "" },
-                { "Primary3", "Color", "" },
-                { "Secondary", "Color", "" },
-                { "Secondary2", "Color", "" },
-                { "Secondary3", "Color", "" },
-                { "ControlTextFont", "Font",
+                { "theme.primary1", "Color", "" },
+                { "theme.primary2", "Color", "" },
+                { "theme.primary3", "Color", "" },
+                { "theme.secondary", "Color", "" },
+                { "theme.secondary2", "Color", "" },
+                { "theme.secondary3", "Color", "" },
+                { "theme.controlTextFont", "Font",
                         "The font for controls; like buttons and labels." },
-                { "MenuTextFont", "Font", "The font for menus." },
-                { "SubTextFont", "Font", "" },
-                { "SystemTextFont", "Font", "" },
-                { "UserTextFont", "Font",
+                { "theme.menuTextFont", "Font", "The font for menus." },
+                { "theme.subTextFont", "Font", "" },
+                { "theme.systemTextFont", "Font", "" },
+                { "theme.userTextFont", "Font",
                         "The font for controls that allow user input; like text fields." },
-                { "WindowTitleFont", "Font", "" }, };
+                { "theme.windowTitleFont", "Font", "" }, };
     }
 
     private void installCustomTheme() {
@@ -205,7 +214,10 @@ public class ClientApplet extends JApplet implements ServerListener,
 
     private void initFancyBackground() {
         // Init backgound painting stuff.
-        final Image watermark = getWatermark();
+        final boolean isGradientEnabled = getBooleanParameter(
+                "background.gradient.enable", true);
+        final Image watermark = getBooleanParameter("background.image.enabled",
+                true) ? getWatermark() : null;
         final Color gradientColor1 = getGradientColor1();
         final Color gradientColor2 = getGradientColor2();
         final Composite alphaComposite = AlphaComposite.getInstance(
@@ -218,9 +230,14 @@ public class ClientApplet extends JApplet implements ServerListener,
                 if (isOpaque()) {
                     Graphics2D g2d = (Graphics2D) g;
 
-                    // Fill the background with a gradient.
-                    g2d.setPaint(new GradientPaint(0, 0, gradientColor1, 0,
-                            getHeight() / 2, gradientColor2, true));
+                    if (isGradientEnabled) {
+                        // Fill the background with a gradient.
+                        g2d.setPaint(new GradientPaint(0, 0, gradientColor1, 0,
+                                getHeight() / 2, gradientColor2, true));
+                    } else {
+                        g2d.setPaintMode();
+                        g2d.setColor(getBackground());
+                    }
                     g2d.fillRect(0, 0, getWidth(), getHeight());
 
                     if (watermark != null) {
@@ -275,6 +292,14 @@ public class ClientApplet extends JApplet implements ServerListener,
         return defaultValue;
     }
 
+    protected boolean getBooleanParameter(String name, boolean defaultValue) {
+        String booleanString = getParameter(name);
+        if (booleanString == null) {
+            return defaultValue;
+        }
+        return Boolean.parseBoolean(booleanString);
+    }
+
     protected Color getGradientColor1() {
         return new Color(
                 getIntParameter("background.gradient.color1", 0xCEFADF));
@@ -288,13 +313,19 @@ public class ClientApplet extends JApplet implements ServerListener,
     protected Image getWatermark() {
         String customImageUrl = getParameter("background.image.url");
 
+        if ("".equals(customImageUrl.trim())) {
+            return null;
+        }
+
         if (customImageUrl != null) {
             try {
                 return new ImageIcon(new URL(customImageUrl)).getImage();
             } catch (MalformedURLException e) {
                 log.warning(e.getMessage());
+                return null;
             }
         }
+
         return new ImageIcon(getClass().getResource(
                 "/ggz/ui/images/watermark.gif")).getImage();
     }
