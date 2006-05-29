@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 7767 2006-01-11 18:15:47Z jdorje $
+ * $Id: ggzclient.c 8073 2006-05-29 07:37:27Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -246,6 +246,15 @@ static GGZHookReturn ggz_num_players_changed(GGZServerEvent id,
 	gtk_statusbar_pop(GTK_STATUSBAR(serverbar), context);
 	gtk_statusbar_push(GTK_STATUSBAR(serverbar), context, buf);
 
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_num_rooms_changed(GGZServerEvent id,
+					     const void *event_data,
+					     const void *user_data)
+{
+printf("***event*** rooms changed!\n");
+	update_room_list();
 	return GGZ_HOOK_OK;
 }
 
@@ -1142,6 +1151,8 @@ void ggz_event_init(GGZServer * Server)
 	/* Unused: GGZ_TYPE_LIST */
 	ggzcore_server_add_event_hook(Server, GGZ_SERVER_PLAYERS_CHANGED,
 				      ggz_num_players_changed);
+	ggzcore_server_add_event_hook(Server, GGZ_SERVER_ROOMS_CHANGED,
+				      ggz_num_rooms_changed);
 	ggzcore_server_add_event_hook(Server, GGZ_ENTERED, ggz_entered);
 	ggzcore_server_add_event_hook(Server,
 				      GGZ_ENTER_FAIL, ggz_entered_fail);
