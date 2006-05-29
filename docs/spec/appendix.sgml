@@ -289,7 +289,7 @@
 
 		  <row rowsep="1">
 		    <entry>ID</entry>
-		    <entry>string</entry>
+		    <entry>int</entry>
 		    <entry>0</entry>
 		  </row>
 
@@ -931,7 +931,7 @@
 		'stats' for players;
 		'add', 'delete', 'join', 'leave', 'status', 'desc', or 'seat'
 		for tables;
-		'players' for rooms.
+		'add, 'delete', 'close', or 'players' for rooms.
 		No game updates are possible at this time.
 	      </para>
 	    </listitem>
@@ -950,17 +950,17 @@
 	    <listitem>
 	      <para>
 		Room the player is coming from.
-		Only used for type 'add'.
+		Only used for type 'players' with action 'add'.
 		The room may be -1 indicating "no room".
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">ROOM</emphasis></term>
+	    <term><emphasis role="bold">TOROOM</emphasis></term>
 	    <listitem>
 	      <para>
 		Room the player is going to.
-		Only used for type 'delete'.
+		Only used for type 'players' with action 'delete'.
 		The room may be -1 indicating "no room".
 	      </para>
 	    </listitem>
