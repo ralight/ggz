@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8071 2006-05-29 07:34:31Z josef $
+ * $Id: control.c 8075 2006-05-29 16:10:10Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -67,6 +67,7 @@
 
 #ifdef HAVE_INOTIFY
 #include "reconfiguration.h"
+#include <sys/ioctl.h>
 #endif
 #ifdef WITH_FAM
 #include <fam.h>
@@ -379,7 +380,7 @@ static void reconfiguration_setup(void)
 	fcntl(reconfigure_fd, F_SETFD, FD_CLOEXEC);
 
 	/* Test - FIXME: add etc/ggzd/rooms? */
-	inotify_add_watch(reconfigure_fd, GGZDCONFDIR "/rooms", IN_CREATE);
+	inotify_add_watch(reconfigure_fd, GGZDCONFDIR "/rooms", IN_DELETE | IN_CLOSE_WRITE);
 
 	log_msg(GGZ_LOG_NOTICE,
 		"Reconfiguration: watching rooms directory for changes");
@@ -413,6 +414,55 @@ static void reconfiguration_handle(void)
 {
 #ifdef HAVE_INOTIFY
 	/* FIXME: and now? need to read data! */
+	int pending;
+	char buf[4096];
+	struct inotify_event ev;
+	int offset;
+	int diff;
+	char *filename;
+
+	offset = 0;
+
+	ioctl(reconfigure_fd, FIONREAD, &pending);
+	while(pending > 0)
+	{
+		if (pending > (int)sizeof(buf)) pending = sizeof(buf);
+		pending = read(reconfigure_fd, buf, pending);
+
+		while(pending > 0)
+		{
+			memcpy(&ev, &buf[offset], INOTIFY_EVENTSIZE);
+			filename = ggz_malloc(ev.len + 1);
+			memcpy(filename, &buf[offset + INOTIFY_EVENTSIZE], ev.len);
+
+			dbg_msg(GGZ_DBG_MISC, "* inotify: file %s mask %i", filename, ev.mask);
+
+			/* now we've got the filename (and we know the mode) */
+			if(ev.mask == IN_CLOSE_WRITE)
+			{
+				log_msg(GGZ_LOG_NOTICE,
+					"Reconfiguration: room addition %s",
+					filename);
+				parse_room_change(filename);
+			}
+			else if(ev.mask == IN_DELETE)
+			{
+				log_msg(GGZ_LOG_NOTICE,
+					"Reconfiguration: room deletion %s",
+					filename);
+				parse_room_change(filename);
+			}
+			else
+			{
+				/* ignore, we haven't ordered this */
+			}
+
+			ggz_free(filename);
+			diff = INOTIFY_EVENTSIZE + ev.len;
+			pending -= diff;
+			offset += diff;
+		}
+	}
 #else
 #ifdef WITH_FAM
 	FAMEvent fe;

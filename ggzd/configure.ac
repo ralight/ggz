@@ -205,7 +205,8 @@ AC_CHECK_LIB(fam, FAMMonitorDirectory,
 dnl Reconfiguration support via inotify (Linux only)
 dnl ================================================
 AC_MSG_CHECKING([for inotify])
-AC_EGREP_HEADER([__NR_inotify_init], [/usr/include/bits/syscall.h],
+#AC_EGREP_HEADER([__NR_inotify_init], [/usr/include/bits/syscall.h],
+AC_EGREP_HEADER([inotify_event], [/usr/include/linux/inotify.h],
 	[
 		AC_MSG_RESULT(yes)
 		use_inotify=1
