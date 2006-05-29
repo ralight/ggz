@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 5903 2004-02-11 03:27:12Z jdorje $
+ * $Id: room.h 8071 2006-05-29 07:34:31Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,6 +44,9 @@ typedef struct {
 	/* Room name */
 	char *name;			/* cleanup() */
 
+	/* Room file name (internal) */
+	char *room;			/* cleanup() */
+
 	/* Room description */
 	char *description;		/* cleanup() */
 
@@ -79,6 +82,12 @@ typedef struct {
 #ifdef DEBUG
 	GGZEvent *event_head;
 #endif
+
+	/* If set, room will be nuked when all players left (and then remains set!) */
+	int removal_pending;
+
+	/* If set, room is nuked (since we cannot really modify the rooms array) */
+	int removal_done;
 } RoomStruct;
 
 
@@ -87,7 +96,10 @@ typedef struct {
 #if 0
 	pthread_rwlock_t lock;	/* Not inititalized or used yet */
 #endif
+	/* All rooms including removal-pending and removal-done */
 	int num_rooms;
+	/* Number of active rooms */
+	int count_rooms;
 } RoomInfo;
 
 
@@ -96,6 +108,8 @@ extern RoomInfo room_info;
 
 void room_initialize(void);
 void room_create_additional(void);
+void room_add(int room);
+void room_remove(int room);
 GGZClientReqError room_join(GGZPlayer* player, const int);
 GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int game,
                                              char verbose);

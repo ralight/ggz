@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: chat.c 8071 2006-05-29 07:34:31Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -66,16 +66,18 @@ GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 				    GGZPlayer *sender, const char *msg)
 {
 	GGZChatEventData *data;
-	int i, rooms;
+	int i, roomnum;
 
 	/* A message to room -1 announces to all rooms */
 	if(room == -1) {
 		GGZClientReqError status = E_OK;
 		if(perms_check(sender, PERMS_CHAT_ANNOUNCE) != PERMS_ALLOW)
 			return E_NO_PERMISSION;
-		rooms = room_get_num_rooms();
-		for(i=0; i<rooms; i++) {
+		roomnum = room_get_num_rooms();
+		for(i=0; i<roomnum; i++) {
 			GGZClientReqError result;
+			if(rooms[i].removal_pending)
+				continue;
 			result = chat_room_enqueue(i, type, sender, msg);
 			if (result != E_OK)
 				status = result;
@@ -284,11 +286,14 @@ GGZReturn chat_server_2_player(const char *name, const char *msg)
 		return event_player_enqueue(name, chat_event_callback,
 					    sizeof(*data), data, chat_free);
 	} else {
-		int rooms = room_get_num_rooms(), i;
+		int roomnum = room_get_num_rooms(), i;
 		GGZReturn status = GGZ_OK;
 
-		for (i = 0; i < rooms; i++) {
+		for (i = 0; i < roomnum; i++) {
 			GGZChatEventData *data;
+
+			if(rooms[i].removal_pending)
+				continue;
 
 			data = chat_pack(GGZ_CHAT_ANNOUNCE, "[Server]", msg);
 

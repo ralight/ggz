@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 7901 2006-03-13 12:35:44Z josef $
+ * $Id: net.c 8071 2006-05-29 07:34:31Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -166,6 +166,8 @@ static GGZReturn _net_send_pong(GGZNetIO *net, const char *id);
 
 static GGZReturn _net_send_room_player_count(GGZNetIO *net,
 					     int index, int player_count);
+static GGZReturn _net_send_room_delete(GGZNetIO *net,
+					     int index);
 static GGZReturn _net_send_line(GGZNetIO *net, char *line, ...)
 				ggz__attribute((format(printf, 2, 3)));
 
@@ -884,14 +886,31 @@ GGZReturn _net_send_room_player_count(GGZNetIO *net,
 }
 
 
+GGZReturn _net_send_room_delete(GGZNetIO *net,
+				      int index)
+{
+	return _net_send_line(net, "<ROOM ID='%d'/>",
+			      index);
+}
+
+
 GGZReturn net_send_room_update(GGZNetIO *net, GGZRoomUpdateType opcode,
-			       int index, int player_count)
+			       int index, int player_count, RoomStruct *room)
 {
 	char *action = NULL;
 
 	switch (opcode) {
 	case GGZ_ROOM_UPDATE_PLAYER_COUNT:
 		action = "players";
+		break;
+	case GGZ_ROOM_UPDATE_ADD:
+		action = "add";
+		break;
+	case GGZ_ROOM_UPDATE_DELETE:
+		action = "delete";
+		break;
+	case GGZ_ROOM_UPDATE_CLOSE:
+		action = "close";
 		break;
 	}
 
@@ -900,6 +919,16 @@ GGZReturn net_send_room_update(GGZNetIO *net, GGZRoomUpdateType opcode,
 	switch (opcode) {
 	case GGZ_ROOM_UPDATE_PLAYER_COUNT:
 		_net_send_room_player_count(net, index, player_count);
+		break;
+	case GGZ_ROOM_UPDATE_ADD:
+		/* TODO: always send verbose? */
+		net_send_room(net, index, room, 1);
+		break;
+	case GGZ_ROOM_UPDATE_DELETE:
+		_net_send_room_delete(net, index);
+		break;
+	case GGZ_ROOM_UPDATE_CLOSE:
+		_net_send_room_delete(net, index);
 		break;
 	}
 

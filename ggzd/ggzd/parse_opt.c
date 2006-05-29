@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8066 2006-05-26 10:57:13Z josef $
+ * $Id: parse_opt.c 8071 2006-05-29 07:34:31Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -52,7 +52,7 @@
 /* Private file parsing functions */
 static void get_config_options(int);
 static void parse_game(char *, char *);
-static void parse_room(char *, char *);
+static void parse_room(char *, char *, int);
 static int parse_gselect(const struct dirent *);
 static int parse_rselect(const struct dirent *);
 static unsigned parse_log_types(int, char **);
@@ -704,7 +704,7 @@ void parse_room_files(void)
 	/* Setup our directory to "conf_dir/rooms/" */
 	snprintf(dir, sizeof(dir), "%s%s", opt.conf_dir, suffix);
 
-	parse_room("entry", dir);
+	parse_room("entry", dir, 0);
 
 	if(r_count > 0) {
 		/* Go through all rooms explicitly included in the add list */
@@ -712,7 +712,7 @@ void parse_room_files(void)
 		for(i=0; i<r_count; i++)
 			/* Add everything, but don't readd entry room */
 			if(strcmp(r_list[i], "entry"))
-				parse_room(r_list[i], dir);
+				parse_room(r_list[i], dir, 0);
 	} else {
 		/* Scan for all .room files in dir */
 		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding all rooms in %s", dir);
@@ -736,7 +736,7 @@ void parse_room_files(void)
 
 			/* Add it if it's not on the ignore list */
 			if(addit)
-				parse_room(name, dir);
+				parse_room(name, dir, 0);
 			else
 				dbg_msg(GGZ_DBG_CONFIGURATION,
 					"Ignoring room %s", name);
@@ -761,7 +761,7 @@ void parse_room_files(void)
 
 
 /* Parse a single room file, adding it's values to the room table */
-static void parse_room(char *name, char *dir)
+static void parse_room(char *name, char *dir, int announce)
 {
 	char fname[strlen(name) + strlen(dir) + 7];
 	char *strval;
@@ -785,6 +785,7 @@ static void parse_room(char *name, char *dir)
 	num = room_info.num_rooms - 1;
 	rooms[num].game_type = -2;
 	rooms[num].perms = 0;
+	rooms[num].room = ggz_strdup(name);
 
 	/* [RoomInfo] */
 	rooms[num].name = ggz_conf_read_string(ch, "RoomInfo", "Name", NULL);
@@ -852,6 +853,10 @@ static void parse_room(char *name, char *dir)
 					       * sizeof(GGZTable*));
 	else
 		rooms[num].tables = NULL;
+
+	if (announce) {
+		room_add(num);
+	}
 }
 
 
@@ -860,6 +865,7 @@ void parse_room_change(const char *room)
 	const char *suffix = "/rooms/";
 	char dir[strlen(opt.conf_dir) + strlen(suffix) + 1];
 	char roomname[strlen(room) + 1];
+	int i;
 
 	/* Setup our directory to "conf_dir/rooms/" */
 	snprintf(dir, sizeof(dir), "%s%s", opt.conf_dir, suffix);
@@ -867,7 +873,34 @@ void parse_room_change(const char *room)
 	snprintf(roomname, sizeof(roomname), "%s", room);
 	roomname[strlen(roomname) - 5] = '\0';
 
-	parse_room(roomname, dir);
+	for(i = 1; i < room_info.num_rooms; i++)
+	{
+		if(!strcmp(rooms[i].room, roomname))
+		{
+			if(rooms[i].removal_done)
+			{
+				/* 'k, we can add it then? */
+				/* this code should never be reached, since removal_done rooms */
+				/* have lost their .room association */
+			}
+			else if(rooms[i].removal_pending)
+			{
+				/* FIXME: FAM does indeed send removal requests twice */
+				/* so we must discard additions during this time, too */
+
+				dbg_msg(GGZ_DBG_CONFIGURATION, "Room %s subject of removal", roomname);
+				return;
+			}
+			else
+			{
+				dbg_msg(GGZ_DBG_CONFIGURATION, "Removing room %s", roomname);
+				room_remove(i);
+				return;
+			}
+		}
+	}
+
+	parse_room(roomname, dir, 1);
 }
 
 

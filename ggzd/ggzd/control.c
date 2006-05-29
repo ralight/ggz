@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8066 2006-05-26 10:57:13Z josef $
+ * $Id: control.c 8071 2006-05-29 07:34:31Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -168,6 +168,7 @@ static void cleanup_data(void)
 
 	/* We don't bother with locking anything... */
 	for (i = 0; i < room_info.num_rooms; i++) {
+		data_free(rooms[i].room);
 		data_free(rooms[i].name);
 		data_free(rooms[i].description);
 		data_free(rooms[i].players);
@@ -288,6 +289,7 @@ static int zeroconf_publish(const char *name, const char *protocol, int port)
 #endif
 }
 
+/* FIXME: split out room part to support room reconfiguration */
 void meta_announce(const char *metaserveruri, const char *username, const char *password)
 {
 	URI uri;
@@ -439,7 +441,7 @@ static void reconfiguration_handle(void)
 		{
 			log_msg(GGZ_LOG_NOTICE, "Reconfiguration: room removal %s",
 				fe.filename);
-			/*parse_room_change(fe.filename);*/ /* FIXME: removals not handled yet */
+			parse_room_change(fe.filename);
 		}
 		else
 		{
@@ -502,7 +504,7 @@ int main(int argc, char *argv[])
 		meta_announce(opt.announce_metaserver, opt.metausername, opt.metapassword);
 
 	/* Watch configuration changes */
-	if(1 == 1)
+	if(opt.reconfigure_rooms)
 		reconfiguration_setup();
 	else
 		reconfigure_fd = -1;

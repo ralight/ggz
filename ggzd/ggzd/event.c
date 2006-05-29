@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: event.c 8071 2006-05-29 07:34:31Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -507,7 +507,7 @@ GGZReturn event_table_handle(GGZTable* table)
 }
 
 
-/* Flush queued up room-specific events for table */
+/* Flush queued up table-specific events for table */
 GGZReturn event_table_flush(GGZTable* table)
 {
 	GGZEvent *event, *next;
@@ -542,7 +542,7 @@ GGZReturn event_table_flush(GGZTable* table)
  *
  * Receives:
  * GGZTable *table : pointer to table we are adding event to
- * GGZEvent  *event  : pointer to event we're adding
+ * GGZEvent *event : pointer to event we're adding
  *
  * Note: Should be called with table write lock acquired
  */
