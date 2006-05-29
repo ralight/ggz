@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 7909 2006-03-14 13:50:27Z josef $
+ * $Id: ggzcore.h 8072 2006-05-29 07:36:46Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -30,7 +30,7 @@
 
 #define GGZCORE_VERSION_MAJOR 0
 #define GGZCORE_VERSION_MINOR 0
-#define GGZCORE_VERSION_MICRO 13
+#define GGZCORE_VERSION_MICRO 14
 #define GGZCORE_VERSION_IFACE "8:1:1"
 
 #include <stdarg.h>
@@ -196,14 +196,14 @@ typedef enum {
 	 *  @param data NULL
 	 *  @see ggzcore_server_connect */
 	GGZ_CONNECTED,
-	
+
 	/** Error: we have failed to connect to the server.  This is
 	 *  generated in place of GGZ_CONNECTED if the connection could
 	 *  not be made.  The server object is otherwise unaffected.
 	 *  @param data An error string (created by strerror)
 	 *  @see ggzcore_server_connect */
 	GGZ_CONNECT_FAIL,
-	
+
 	/** We have negotiated a connection to the server.  This will
 	 *  happen automatically once a connection has been established,
 	 *  if the server socket is monitored.
@@ -211,14 +211,14 @@ typedef enum {
 	 *  @param data NULL
 	 *  @see ggzcore_server_read_data */
 	GGZ_NEGOTIATED,
-	
+
 	/** Error: negotiation failure.  Could be the wrong version.  This
 	 *  will happen in place of a GGZ_NEGOTIATED if the server could
 	 *  not be negotiated with.
 	 *  @param data A useless error string.
 	 *  @see ggzcore_server_read_data */
 	GGZ_NEGOTIATE_FAIL,
-	
+
 	/** We have successfully logged in.  We can now start doing stuff.
 	 *  This will not happen until the client sends their login
 	 *  information.
@@ -226,7 +226,7 @@ typedef enum {
 	 *  @param data NULL
 	 *  @see ggzcore_server_read_data */
 	GGZ_LOGGED_IN,
-	
+
 	/** Error: login failure.  This will happen in place of GGZ_LOGGED_IN
 	 *  if the login failed.  The server object will be otherwise
 	 *  unaffected.
@@ -270,14 +270,14 @@ typedef enum {
 	 *  @see ggzcore_server_get_num_players
 	 *  @see ggzcore_server_read_data */
 	GGZ_SERVER_PLAYERS_CHANGED,
-	
+
 	/** We have successfully entered a room.  This will be issued to
 	 *  tell us a room join has succeeded, after it has been requested.
 	 *  @param data NULL
 	 *  @see ggzcore_server_join_room
 	 *  @see ggzcore_server_read_data */
 	GGZ_ENTERED,
-	
+
 	/** Error: we have tried to enter a room and failed.  This will be
 	 *  issued to tell us a room join has failed.
 	 *  @param data A pointer to a GGZErrorEventData.
@@ -292,13 +292,13 @@ typedef enum {
 	 *  @param data NULL
 	 *  @see ggzcore_server_read_data */
 	GGZ_LOGOUT,
-	
+
 	/** Error: a network (transmission) error occurred.  The server will
 	 *  automatically disconnect.
 	 *  @param data A generally unhelpful error string.
 	 *  @see ggzcore_server_read_data */
 	GGZ_NET_ERROR,
-	
+
 	/** Error: a communication protocol error occured.  This can happen
 	 *  in a variety of situations when the server sends us something
 	 *  we can't handle.  The server will be automatically disconnected.
@@ -349,6 +349,12 @@ typedef enum {
 	 *  @note This event is deprecated and should not be used.
 	 *  @see ggzcore_server_read_data */
 	GGZ_CHANNEL_FAIL,
+
+	/** The room configuration on the server changed. A room was either
+	 *  added or removed, or scheduled for removing (closed).
+	 *  @param data NULL
+	 *  @see ggzcore_room_get_closed() */
+	GGZ_SERVER_ROOMS_CHANGED,
 
 	/** Terminator.  Do not use. */
 	GGZ_NUM_SERVER_EVENTS
@@ -999,6 +1005,9 @@ GGZTable* ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
 
 /** @brief Return the table in this room with matching ID (NULL on error). */
 GGZTable* ggzcore_room_get_table_by_id(GGZRoom *room, const unsigned int id);
+
+/** @brief Return whether this room is closed (1), or open as usual (0) */
+int ggzcore_room_get_closed(const GGZRoom *room);
 
 
 /** @brief Register a handler (hook) for the room event.

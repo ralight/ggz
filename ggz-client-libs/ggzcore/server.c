@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: server.c 8072 2006-05-29 07:36:46Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -1463,6 +1463,17 @@ void _ggzcore_server_add_room(GGZServer * server, GGZRoom * room)
 		}
 		++i;
 	}
+}
+
+
+void _ggzcore_server_grow_roomlist(GGZServer * server)
+{
+	int num;
+
+	num = server->num_rooms;
+	server->num_rooms++;
+	server->rooms = ggz_realloc(server->rooms, (num + 1) * sizeof(*server->rooms));
+	server->rooms[num] = NULL;
 }
 
 

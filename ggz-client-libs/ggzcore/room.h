@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 7889 2006-03-07 09:57:32Z josef $
+ * $Id: room.h 8072 2006-05-29 07:36:46Z josef $
  *
  * This fils contains functions for handling rooms
  *
@@ -133,5 +133,7 @@ int _ggzcore_room_compare(void *p, void *q);
 void *_ggzcore_room_copy(void *p);
 void _ggzcore_room_destroy(void *p);
 
+/* Dynamic room updates */
+void _ggzcore_room_close(GGZRoom *room);
 
 #endif /* __ROOM_H_ */

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: room.c 8072 2006-05-29 07:36:46Z josef $
  *
  * This fils contains functions for handling rooms
  *
@@ -74,6 +74,9 @@ struct _GGZRoom {
 	/* Monitoring flag */
 	char monitor;
 
+	/* Validity flag */
+	char removal_pending;
+
 	/* Room ID on the server */
 	unsigned int id;
 
@@ -130,6 +133,11 @@ static GGZServer *_ggzcore_room_get_server(GGZRoom * room)
 static unsigned int _ggzcore_room_get_id(const GGZRoom * room)
 {
 	return room->id;
+}
+
+static unsigned int _ggzcore_room_get_closed(const GGZRoom * room)
+{
+	return room->removal_pending;
 }
 
 static const char *_ggzcore_room_get_name(GGZRoom * room)
@@ -284,6 +292,14 @@ int ggzcore_room_get_id(const GGZRoom * room)
 {
 	if (room)
 		return _ggzcore_room_get_id(room);
+	else
+		return -1;
+}
+
+int ggzcore_room_get_closed(const GGZRoom * room)
+{
+	if (room)
+		return _ggzcore_room_get_closed(room);
 	else
 		return -1;
 }
@@ -485,6 +501,7 @@ GGZRoom *_ggzcore_room_new(void)
 	GGZRoom *room;
 
 	room = ggz_malloc(sizeof(GGZRoom));
+	room->removal_pending = 0;
 
 	return room;
 }
@@ -1179,6 +1196,10 @@ void _ggzcore_room_destroy(void *p)
 }
 
 
+void _ggzcore_room_close(GGZRoom *room)
+{
+	room->removal_pending = 1;
+}
 
 
 /* Static functions internal to this file */
