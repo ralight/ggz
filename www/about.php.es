@@ -30,6 +30,9 @@ Con su sistema de clasificación del jugador y las características tales como e
 
 El artículo <a href="http://www.ggzcommunity.org/5years/">5 años de GGZ</a>
 contiene unas cuotaciones engraçados sobre la histórica de GGZ.
+Informaciones sobre las licencas de GGZ pueden ser encuentradas en la
+página de
+<a href="http://dev.ggzgamingzone.org/legal.php">termos de uso</a>.
 
 </font>
 </td>

@@ -37,6 +37,15 @@ Do not hesitate to speak to GGZ developers to find out which of the above games
 (or a game from GGZ) is similar to yours.
 <br><br>
 
+<i>Important files</i><br>
+As outlined in the GGZ game development guide, the files
+<a href="http://ftp.ggzgamingzone.org/pub/contrib/README.GGZ">README.GGZ</a>
+and
+<a href="http://ftp.ggzgamingzone.org/pub/contrib/ggz.m4">ggz.m4</a>
+are made available to game authors who wish to provide GGZ support.
+They might be updated over time.
+<br><br>
+
 <i>Documentation</i><br>
 For people who are totally unfamiliar with GGZ, the
 <a href="http://www.ggzgamingzone.org/docs/overview/">user intro</a>
