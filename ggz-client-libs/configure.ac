@@ -124,7 +124,7 @@ AC_DEFINE_UNQUOTED([GGZCONFDIR], "${ggzconfdir}",
 
 
 if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${exec_prefix}" = "x\${prefix}"; then
     ggzexecmoddir="${prefix}/lib/ggz"
   else
     ggzexecmoddir="${exec_prefix}/lib/ggz"
