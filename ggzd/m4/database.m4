@@ -395,8 +395,19 @@ case "$database" in
 	pgsql)  database=pgsql ;;
 	mysql)  database=mysql ;;
 	sqlite) database=sqlite ;;
-	*)      database=yes ;;
+	yes)    database=yes ;;
+	no)     database=no ;;
+	*)      database=invalid ;;
 esac
+
+dnl Some sanity checks first
+if test "$database" = "invalid"; then
+	AC_MSG_ERROR([invalid database type $database specified, see --help for a list])
+fi
+
+if test "$database" = "no"; then
+	AC_MSG_ERROR([ggzd doesn't work without a database backend, see --help for a list])
+fi
 
 dnl Order of preference: db4, db3, db2, PgSQL, MySQL.  This is determined
 dnl solely by the order of the checks below.  Since a correct db will be

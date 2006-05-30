@@ -21,19 +21,27 @@ AC_PROG_MAKE_SET
 # Compiling Options
 # =================
 AC_ARG_ENABLE([server],
-	      AC_HELP_STRING([--disable-server],[Don't build ggzd server]),
-	      [enable_server=no], [enable_server=yes])
+	AS_HELP_STRING([--disable-server], [Don't build ggzd server]),
+	[enable_server=no], [enable_server=yes])
 AC_ARG_ENABLE([games],
-	      AC_HELP_STRING([--disable-games],[Don't build ggzd games]),
-	      [enable_games=no], [enable_games=yes])
+	AS_HELP_STRING([--disable-games], [Don't build ggzd games]),
+	[enable_games=no], [enable_games=yes])
 #AC_ARG_WITH([tmpdir],
 #	    AC_HELP_STRING([--with-tmpdir=PATH],
 #		[directory for temporary files (default=/tmp/ggzd)]),
 #	    [tmpdir=$withval], [tmpdir="/tmp/ggzd"])
 AC_ARG_WITH([database],
-	    AC_HELP_STRING([--with-database=DB],
-		[type of database to use: db2, db3, db4, pgsql, mysql, sqlite]),
-	    [database=$withval], [database=yes])
+	AS_HELP_STRING([--with-database=DB],
+	[type of database to use: db2, db3, db4, pgsql, mysql, sqlite]),
+	[database=$withval], [database=yes])
+AC_ARG_WITH([zeroconf],
+	AS_HELP_STRING([--with-zeroconf=TYPE],
+	[type of library to use: howl, avahi]),
+	[zeroconf=$withval], [zeroconf=yes])
+AC_ARG_WITH([reconfiguration],
+	AS_HELP_STRING([--with-reconfiguration=TYPE],
+	[type of library to use: inotify, fam]),
+	[reconfiguration=$withval], [reconfiguration=yes])
 
 
 # Check for GGZ Requirements
@@ -132,103 +140,13 @@ dnl Check database libs
 dnl ===================
 AC_GGZ_DATABASE
 
-dnl Zeroconf checks for Howl and Avahi
+dnl Check for zeroconf implementations
 dnl ==================================
-use_howl=0
-use_avahi=0
+AC_GGZ_ZEROCONF
 
-dnl Check for zeroconf implementation Howl
-dnl ======================================
-AC_CHECK_LIB(howl, sw_discovery_init,
-[
-	AC_CHECK_HEADERS([howl/howl_config.h],
-	[
-		use_howl=1
-	],
-	[])
-],
-[],
-[-lpthread])
-
-dnl Check for zeroconf implementation Avahi
-dnl =======================================
-AC_CHECK_LIB(avahi-client, avahi_entry_group_add_service,
-[
-	AC_CHECK_HEADERS([avahi-client/publish.h],
-	[
-		use_avahi=1
-		use_howl=0
-	],
-	[])
-],
-[],
-[-lpthread])
-
-if test "$use_howl" = "1"; then
-	AC_DEFINE(WITH_HOWL, 1, [Use howl for zeroconf mechanism])
-	HOWL_INCLUDES="-I/usr/include/howl"
-	LIB_HOWL="-lhowl -lpthread"
-	AC_SUBST(HOWL_INCLUDES)
-	AC_SUBST(LIB_HOWL)
-	AC_C_BIGENDIAN
-	zeroconf="howl"
-elif test "$use_avahi" = "1"; then
-	AC_DEFINE(WITH_AVAHI, 1, [Use avahi for zeroconf mechanism])
-	AVAHI_INCLUDES="-I/usr/include"
-	LIB_AVAHI="-lavahi-client"
-	AC_SUBST(AVAHI_INCLUDES)
-	AC_SUBST(LIB_AVAHI)
-	zeroconf="avahi"
-else
-	AC_MSG_WARN([Zeroconf disabled, neither howl nor avahi found.])
-	zeroconf="(none)"
-fi
-
-dnl Reconfiguration checks
-dnl ======================
-use_inotify=0
-use_fam=0
-
-dnl Reconfiguration support via FAM (x-platform, but slower)
-dnl ========================================================
-AC_CHECK_LIB(fam, FAMMonitorDirectory,
-[
-	AC_CHECK_HEADERS([fam.h],
-	[
-		use_fam=1
-	],
-	[])
-],
-[],
-[-lfam])
-
-dnl Reconfiguration support via inotify (Linux only)
-dnl ================================================
-AC_MSG_CHECKING([for inotify])
-#AC_EGREP_HEADER([__NR_inotify_init], [/usr/include/bits/syscall.h],
-AC_EGREP_HEADER([inotify_event], [/usr/include/linux/inotify.h],
-	[
-		AC_MSG_RESULT(yes)
-		use_inotify=1
-		use_fam=0
-	],
-	[AC_MSG_RESULT(no)])
-
-if test "$use_inotify" = "1"; then
-	AC_DEFINE_UNQUOTED(HAVE_INOTIFY, 1,
-		[Use inotify to monitor configuration changes])
-	reconfiguration="inotify"
-elif test "$use_fam" = "1"; then
-	AC_DEFINE_UNQUOTED(WITH_FAM, 1,
-		[Use fam to monitor configuration changes])
-	LIB_FAM="-lfam"
-	AC_SUBST(LIB_FAM)
-	reconfiguration="fam"
-else
-	AC_MSG_WARN([Reconfiguration disabled, neither inotify nor fam found.])
-	reconfiguration="(none)"
-fi
-
+dnl Check for reconfiguration support through file watchers
+dnl =======================================================
+AC_GGZ_RECONFIGURATION
 
 dnl Debug modes
 dnl ===========
@@ -250,7 +168,7 @@ ggzdgamedir="${ggzdconfdir}/games"
 
 
 if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${exec_prefix}" = "x\${prefix}"; then
     ggzdexecmoddir="${prefix}/lib/ggzd"
   else
     ggzdexecmoddir="${exec_prefix}/lib/ggzd"
