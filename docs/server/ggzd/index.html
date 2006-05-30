@@ -19,8 +19,8 @@ th {text-align: left}
 <h2>GGZ Gaming Zone Server Documentation</h2>
 
 <small>
-<i>Revision: 0.2</i><br>
-<i>Date: 01.01.2006</i><br>
+<i>Revision: 0.3</i><br>
+<i>Date: 30.05.2006</i><br>
 <i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
 </small>
 
@@ -28,6 +28,7 @@ th {text-align: left}
 This document introduces the design of the GGZ server (ggzd) and explains
 how it works. Additional reading is suggested in the GGZ Gaming Zone
 Database document and the GGZ Hosting Guide.
+The GGZ Protocol Specification also contains server-related information.
 </p>
 
 <h3>Server structure and properties</h3>
@@ -37,18 +38,50 @@ The GGZ Gaming Zone server, named ggzd, is a Unix daemon written in C.
 It handles connections from (GGZ) clients in multiple threads, and
 launches games as external processes, with whom it also keeps a connection.
 Data received from either the clients or the game servers is passed to
-the other connection and/or stored in its database.
+the respective other connection and/or stored in its database.
 </p>
 
 <p>
-It consists of multiple subsystems and links statically to two libraries
-which are also used by other programmes: the database abstraction library,
-used by <tt>ggzduedit</tt> to manually manipulate player entries, and the
-game server communication library <tt>ggzdmod</tt>, used also by the games
-themselves. Further dependencies are <tt>libggz</tt>, <tt>expat</tt> for
-the XML protocol handling, and <tt>gettext</tt> to display translated messages.
-Optionally, <tt>howl</tt> can be included to announce its service on a local
-network, where it can be detected by a GGZ core client (Zeroconf broadcast).
+It consists of multiple subsystems and links to several static and dynamic
+libraries. It is important to know that many of these libraries are optional,
+and they enable ggzd to offer more features, if the corresponding settings
+have been activated in the main configuration file.
+</p>
+
+<p>
+The static libraries reside with ggzd and are also used by other programs:
+the database abstraction library <tt>libggzdb</tt>, which is used by
+<tt>ggzduedit</tt> to manually manipulate player entries, the game server
+communication library <tt>libggzdmod</tt>, used also by the games themselves,
+and <tt>libggzmeta</tt> to publish information into the GGZ metaserver, also
+used by tools such as <tt>telggz</tt> or <tt>metacle</tt> to query those
+entries.
+</p>
+
+<p>
+Further dependencies include <tt>libggz</tt>, <tt>expat</tt>, <tt>gettext</tt>
+and optionally <tt>howl</tt> or <tt>avahi</tt>, plus (also optional)
+<tt>fam</tt>. Additionally, depending on the database type, a database
+client library will be needed, too.
+The libggz library is mainly used for memory allocation, networking code and
+security handling (both hashing and encryption).
+The XML protocol handling is the task of expat, while gettext is used
+to display translated messages.
+Either howl or avahi can be included to announce the service on a local
+network, where it can be detected by a GGZ core client, making use of Zeroconf
+broadcasts. Either fam or the kernel-based inotify mechanism can be used to
+detect changes to the room configuration, leading to the sending of updates
+to the connected clients.
+The two latter options and the database backend are collectively known as
+'zeroconf', 'reconfiguration' and 'database' subsystems.
+</p>
+
+<p>
+Further 'soft' dependencies include a portmap daemon and the fam daemon in
+case of FAM being selected for reconfiguration, and a GGZ metaserver if
+game information is published there in addition to zeroconf.
+In case of using a SQL database backend, the matching SQL server must also
+be running before ggzd starts.
 </p>
 
 <p style="text-align:center">
@@ -75,7 +108,8 @@ as well as the game rooms and game type description files will be read in.
 It will then open the log files, and fork itself into the background.
 There are still some smaller tasks to do before the service can be activated:
 It announces the service to the LAN (optional), initializes its TLS library
-wrapper (optional), and binds to the configured port.
+wrapper (optional), sets up a directory change watcher/monitor (optional)
+and binds to the configured port.
 From then on, clients are able to connect.
 </p>
 
@@ -109,6 +143,14 @@ In addition to the database, which is under complete control of ggzd,
 each game is assigned a private data directory which can be used to save game
 information. This includes savegames, to which only the path is stored in the
 ggzd database.
+</p>
+
+<p>
+The internal work model of ggzd is such that for each connection, a new thread
+is created, called the player thread. Similarly, each launched table gets a
+thread on its own (the table thread), while each game server runs as a
+separate process. For each game server, there is exactly one table within
+ggzd.
 </p>
 
 <h3>Permissions</h3>
