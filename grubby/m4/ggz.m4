@@ -125,6 +125,9 @@ AC_DEFUN([AC_GGZ_INIT],
 if test "x$prefix" = "xNONE"; then
   prefix="${ac_default_prefix}"
 fi
+if test "x$exec_prefix" = "xNONE"; then
+  exec_prefix='${prefix}'
+fi
 AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
 ac_ggz_prefix=""
@@ -139,10 +142,24 @@ if test "x${prefix}" = "xNONE"; then
    ac_ggz_prefix_bindir="${ac_default_prefix}/bin"
    ac_ggz_prefix_etcdir="${ac_default_prefix}/etc"
 else
-   ac_ggz_prefix_incdir="${prefix}/include"
-   ac_ggz_prefix_libdir="${libdir}"
-   ac_ggz_prefix_bindir="${bindir}"
-   ac_ggz_prefix_etcdir="${sysconfdir}"
+   unq_includedir="${includedir}"
+   unq_libdir="${libdir}"
+   unq_bindir="${bindir}"
+   unq_sysconfdir="${sysconfdir}"
+
+   eval unq_includedir=`echo $unq_includedir`
+   eval unq_includedir=`echo $unq_includedir`
+   eval unq_libdir=`echo $unq_libdir`
+   eval unq_libdir=`echo $unq_libdir`
+   eval unq_bindir=`echo $unq_bindir`
+   eval unq_bindir=`echo $unq_bindir`
+   eval unq_sysconfdir=`echo $unq_sysconfdir`
+   eval unq_sysconfdir=`echo $unq_sysconfdir`
+
+   ac_ggz_prefix_incdir="${unq_includedir}"
+   ac_ggz_prefix_libdir="${unq_libdir}"
+   ac_ggz_prefix_bindir="${unq_bindir}"
+   ac_ggz_prefix_etcdir="${unq_sysconfdir}"
 fi
 ac_ggz_stdinc="$ac_ggz_prefix_incdir"
 ac_ggz_stdlib="$ac_ggz_prefix_libdir"
