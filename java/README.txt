@@ -47,13 +47,13 @@ THEMES
 
 Both the applet and application support themes and other customization via 
 parameters. The applet gets the parameters from the <APPLET> tag whereas
-the application reads them from the appletparams.properties file. This file
-is read from the current directory and you can also store uir, xmlin and 
-xmlout parameters in this file rather than specifying them on the commandl 
+the application reads them from the ggz-java.properties file. This file
+is read from the current directory and you can also store uri, xmlin and 
+xmlout parameters in this file rather than specifying them on the command 
 line.
 
 For a description of what each of the parameters do, see the comments in
-appletparams.properties.
+ggz-java.properties.
 
 
 If you encounter any bugs or have difficulty compiling, please send an email 
