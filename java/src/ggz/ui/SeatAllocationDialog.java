@@ -167,6 +167,7 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         tableDescriptionLabel = new JLabel(messages
                 .getString("SeatAllocationDialog.Label.TableDescription"));
         tableDescriptionTextField = new JTextField(I_PLAY_ALONE, 20);
+        TextPopupMenu.enableFor(tableDescriptionTextField);
         constraints.insets.top = 5;
         constraints.gridx = 0;
         constraints.gridy = 3;

@@ -129,8 +129,9 @@ public class LoungePanel extends JPanel {
         JTextArea motdText = new JTextArea(motd);
         motdText.setFont(new Font("Monospaced", Font.PLAIN, 12));
         motdText.setEditable(false);
-        motdScroll.setPreferredSize(cardGamesPanel.getPreferredSize());
         motdText.setOpaque(false);
+        TextPopupMenu.enableFor(motdText);
+        motdScroll.setPreferredSize(cardGamesPanel.getPreferredSize());
         motdScroll.setOpaque(false);
         motdScroll.getViewport().setOpaque(false);
         motdScroll.setBorder(null);
@@ -203,8 +204,10 @@ public class LoungePanel extends JPanel {
             final JLabel populationLabel = new JLabel((String) null,
                     SwingConstants.RIGHT) {
                 public String getText() {
-                	// Room can be null during JLabel construction...not sure why...
-                    return room == null ? null : String.valueOf(room.get_num_players());
+                    // Room can be null during JLabel construction...not sure
+                    // why...
+                    return room == null ? null : String.valueOf(room
+                            .get_num_players());
                 }
             };
             listCellPanel.setOpaque(false);

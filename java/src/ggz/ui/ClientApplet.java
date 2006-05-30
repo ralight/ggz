@@ -24,12 +24,14 @@ import ggz.client.core.Server;
 import ggz.client.core.ServerListener;
 import ggz.client.core.StateID;
 
+import java.applet.Applet;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -37,6 +39,7 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -72,6 +75,8 @@ public class ClientApplet extends JApplet implements ServerListener,
 
     protected JPanel mainPanel;
 
+    protected JPanel footerPanel;
+
     protected LoginPanel loginPanel;
 
     protected LoungePanel loungePanel;
@@ -97,6 +102,10 @@ public class ClientApplet extends JApplet implements ServerListener,
     }
 
     public void init() {
+        // Register ourselves as the global hyperlink handler for our
+        // hyperlink label.
+        HyperlinkLabel.setGlobalHyperlinkListener(this);
+
         if (getBooleanParameter("theme.enabled", false)) {
             installCustomTheme();
         }
@@ -121,6 +130,12 @@ public class ClientApplet extends JApplet implements ServerListener,
             mainPanel = new JPanel(new CardLayout());
             mainPanel.setOpaque(false);
             getContentPane().add(mainPanel, BorderLayout.CENTER);
+            footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+            footerPanel.setOpaque(false);
+            getContentPane().add(footerPanel, BorderLayout.SOUTH);
+            footerPanel.add(new HyperlinkLabel("Help", new URL(getCodeBase(),
+                    "help.html"), "font-weight:normal; font-size:smaller"),
+                    BorderLayout.SOUTH);
             aboutLabel = new JLabel(
                     "<HTML><A href='' style='font-weight:normal; font-size:smaller'>"
                             + messages.getString("ClientApplet.Label.About")
@@ -132,7 +147,7 @@ public class ClientApplet extends JApplet implements ServerListener,
                     AboutDialog.showDialog(ClientApplet.this);
                 }
             });
-            getContentPane().add(aboutLabel, BorderLayout.SOUTH);
+            footerPanel.add(aboutLabel, BorderLayout.SOUTH);
             loginPanel = new LoginPanel(server);
             mainPanel.add(loginPanel, "login");
             loginPanel.init(uri.getUserInfo());
@@ -144,10 +159,6 @@ public class ClientApplet extends JApplet implements ServerListener,
                     .getString("ClientApplet.Label.PleaseWait"),
                     SwingConstants.CENTER);
             mainPanel.add(busyPanel, "busy");
-
-            // Register ourselves as the global hyperlink handler for our
-            // hyperlink label.
-            HyperlinkLabel.setGlobalHyperlinkListener(this);
         } catch (Exception e) {
             handleException(e);
         }
@@ -215,7 +226,7 @@ public class ClientApplet extends JApplet implements ServerListener,
     private void initFancyBackground() {
         // Init backgound painting stuff.
         final boolean isGradientEnabled = getBooleanParameter(
-                "background.gradient.enable", true);
+                "background.gradient.enabled", true);
         final Image watermark = getBooleanParameter("background.image.enabled",
                 true) ? getWatermark() : null;
         final Color gradientColor1 = getGradientColor1();
@@ -297,7 +308,7 @@ public class ClientApplet extends JApplet implements ServerListener,
         if (booleanString == null) {
             return defaultValue;
         }
-        return Boolean.parseBoolean(booleanString);
+        return Boolean.valueOf(booleanString).booleanValue();
     }
 
     protected Color getGradientColor1() {
@@ -313,11 +324,11 @@ public class ClientApplet extends JApplet implements ServerListener,
     protected Image getWatermark() {
         String customImageUrl = getParameter("background.image.url");
 
-        if ("".equals(customImageUrl.trim())) {
-            return null;
-        }
-
         if (customImageUrl != null) {
+            if ("".equals(customImageUrl.trim())) {
+                return null;
+            }
+
             try {
                 return new ImageIcon(new URL(customImageUrl)).getImage();
             } catch (MalformedURLException e) {
@@ -584,7 +595,45 @@ public class ClientApplet extends JApplet implements ServerListener,
      * @param event
      */
     public void hyperlinkUpdate(HyperlinkEvent event) {
-        getAppletContext().showDocument(event.getURL(), "ggz_url");
+        try {
+            Class jsObjectClass = Class.forName("netscape.javascript.JSObject");
+            Method getWindow = jsObjectClass.getMethod("getWindow",
+                    new Class[] { Applet.class });
+            Method eval = jsObjectClass.getMethod("eval",
+                    new Class[] { String.class });
+            Object window = getWindow.invoke(jsObjectClass,
+                    new Object[] { this });
+            eval
+                    .invoke(
+                            window,
+                            new Object[] { "var popup = window.open(\""
+                                    + event.getURL()
+                                    + "\", \"ggz\", \"menubar=no,resizable=yes,scrollbars=yes,status=no,titlebar=no,height=500,width=640\");"
+                                    + "if (popup == null) {"
+                                    + "alert(\"It seems popups are being blocked, either disable your popup blocker for this site or try holding down the CTRL key when you click the link.\");"
+                                    + "} else {popup.focus();}" });
+        } catch (Exception ex) {
+            // Ignore, just use showDocument() instead.
+            getAppletContext().showDocument(event.getURL(), "ggz_url");
+        }
+        // JSObject window = JSObject.getWindow(this);
+        // window
+        // .eval("var popup = window.open(\""
+        // + event.getURL()
+        // + "\", \"ggz\",
+        // \"menubar=no,resizable=yes,scrollbars=yes,status=no,titlebar=no,height=500,width=640\");"
+        // + "if (popup == null) {"
+        // + "alert(\"It seems popups are being blocked, either disable your
+        // popup blocker for this site or try holding down the CTRL key when you
+        // click the link.\");"
+        // + "} else {popup.focus();}");
+
+        // "window.open(\""
+        // + event.getURL()
+        // + "\", \"ggz\",
+        // \"menubar=no,resizable=yes,scrollbars=yes,status=no,titlebar=no,height=500,width=640\").focus();");
+        // window.call("ggz_showDocument", new Object[] {
+        // event.getURL().toString() });
     }
 
     public void invokeAndWait(Runnable doRun) {

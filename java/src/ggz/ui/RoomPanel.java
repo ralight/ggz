@@ -307,6 +307,10 @@ public class RoomPanel extends JPanel implements RoomListener,
     private abstract class PlayGameAction extends AbstractAction implements
             GameEventListener {
 
+        protected PlayGameAction(String name) {
+            super(name);
+        }
+
         public void actionPerformed(ActionEvent e) {
             if (Module.get_num_by_type(room.get_gametype()) == 0) {
                 JOptionPane
@@ -344,11 +348,8 @@ public class RoomPanel extends JPanel implements RoomListener,
     private class NewTableAction extends PlayGameAction {
         private Table table;
 
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return messages.getString("RoomPanel.Button.NewGame");
-            }
-            return super.getValue(key);
+        protected NewTableAction() {
+            super(messages.getString("RoomPanel.Button.NewGame"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -391,11 +392,8 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     private class JoinTableAction extends PlayGameAction {
 
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return messages.getString("RoomPanel.Button.JoinGame");
-            }
-            return super.getValue(key);
+        protected JoinTableAction() {
+            super(messages.getString("RoomPanel.Button.JoinGame"));
         }
 
         public void game_playing() {
@@ -410,11 +408,8 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     private class SpectateAction extends PlayGameAction {
 
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return messages.getString("RoomPanel.Button.Spectate");
-            }
-            return super.getValue(key);
+        protected SpectateAction() {
+            super(messages.getString("RoomPanel.Button.Spectate"));
         }
 
         public void game_playing() {

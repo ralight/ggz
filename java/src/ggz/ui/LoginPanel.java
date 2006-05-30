@@ -81,6 +81,9 @@ public class LoginPanel extends JPanel {
         newLoginRadio = new JRadioButton(new ChooseNewLoginAction());
         loginButton = new JButton(new ConnectToServerAction());
 
+        TextPopupMenu.enableFor(handleTextField);
+        TextPopupMenu.enableFor(emailTextField);
+        
         // Set up the components
         setOpaque(false);
         loginButton.setOpaque(false);

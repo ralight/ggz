@@ -111,7 +111,7 @@ Implementation-Vendor: GGZ Gaming Zone</echo>
 	</target>
 
 	<target name="build-distribution" 
-		    depends="clean,sign-applet-jar,application-jar" 
+		    depends="clean,applet-jar,application-jar" 
 		    description="Does a clean and rebuilds everything">
 		<!-- Simply causes all dependencies to be built. -->
 	</target>

@@ -39,6 +39,8 @@ import javax.swing.event.HyperlinkListener;
 public class HyperlinkLabel extends JLabel {
     private URL url;
 
+    private String style;
+
     private static HyperlinkListener globalListener;
 
     public HyperlinkLabel() {
@@ -54,6 +56,12 @@ public class HyperlinkLabel extends JLabel {
         setText(text, url);
     }
 
+    public HyperlinkLabel(String text, URL url, String style) {
+        this();
+        this.style = style;
+        setText(text, url);
+    }
+
     public void setText(String text) {
         this.setText(text, url);
     }
@@ -63,7 +71,9 @@ public class HyperlinkLabel extends JLabel {
     }
 
     public void setText(String text, URL url) {
-        super.setText("<HTML><A href='" + url + "'>" + text + "</A></HTML>");
+        super.setText("<HTML><A href='" + url + "'"
+                + (style == null ? "" : " style='" + style + "'") + ">" + text
+                + "</A></HTML>");
         this.url = url;
     }
 
@@ -108,7 +118,8 @@ public class HyperlinkLabel extends JLabel {
      * @since 1.4
      */
     public synchronized HyperlinkListener[] getHyperlinkListeners() {
-        return (HyperlinkListener[]) listenerList.getListeners(HyperlinkListener.class);
+        return (HyperlinkListener[]) listenerList
+                .getListeners(HyperlinkListener.class);
     }
 
     /**

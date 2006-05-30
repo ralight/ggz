@@ -28,10 +28,12 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -42,9 +44,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 /**
- * Simply main that creates a simulated environment to run the applet in. As
+ * Simple main that creates a simulated environment to run the applet in. As
  * well as command line options, it supports all applet parameters via the
- * appletparams.properties file in the current directory.
+ * ggz-java.properties file in the current directory or the user's home
+ * directory.
  * 
  * @author Helg.Bredow
  * 
@@ -93,7 +96,11 @@ public class ClientApp {
             }
 
             public URL getCodeBase() {
-                return null;
+                try {
+                    return new File(System.getProperty("user.dir")).toURL();
+                } catch (MalformedURLException e) {
+                    return null;
+                }
             }
 
             public String getParameter(String name) {
@@ -210,15 +217,26 @@ public class ClientApp {
     }
 
     protected static void loadProperties() {
+        FileInputStream file = null;
         try {
-            FileInputStream file = new FileInputStream(
-                    "appletparams.properties");
-            appletParameters = new Properties();
-            appletParameters.load(file);
+            // Look in the current directory first.
+            file = new FileInputStream("ggz-java.properties");
         } catch (FileNotFoundException e) {
-            // Ignore, applet will simply use defaults.
-        } catch (IOException e) {
-            log.warning(e.getMessage());
+            try {
+                // Try the user's home dir next.
+                file = new FileInputStream(new File(System
+                        .getProperty("user.home"), "ggz-java.properties"));
+            } catch (FileNotFoundException e2) {
+                // Ignore, applet will simply use defaults.
+            }
+        }
+        if (file != null) {
+            try {
+                appletParameters = new Properties();
+                appletParameters.load(file);
+            } catch (IOException e) {
+                log.warning(e.getMessage());
+            }
         }
     }
 
