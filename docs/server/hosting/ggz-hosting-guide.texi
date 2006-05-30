@@ -89,10 +89,24 @@ section about the game Keepalive below.
 @chapter Installation
 @c @cindex Index entry for Second Chapter
 
+@section Prerequisites
+
+On some Linux distributions, the GGZ server can now be installed as a binary
+package which already comes preconfigured. However, sometimes it just doesn't
+provide the correct choice, as many aspects of the server's features must be
+decided on at compilation time. Have a look at the output of
+@command{ggzd --specs} or @command{ggzd -s} to know what features it provides.
+
+The following sections describe the compilation and installation of ggzd in
+case this is appropriate. It is however also of interest to those who use
+pre-installed packages as it gives a lot of hints for how to operate a GGZ
+server and the associated tools. More on that is explained in later chapters
+about tools and administrative tasks.
+
 @section Overview
 
-This describes a typical setup for GGZ 0.0.14.
-All following versions will certainly require other tools or other versions of
+This section describes a typical setup for GGZ 0.0.14.
+Future versions might require other tools or other versions of
 the present one, but the main concept hasn't changed for a while.
 Before installing GGZ on a server, make sure that the following conditions are
 met:
@@ -107,7 +121,8 @@ this is:
 @item libdb 2 or 3 or 4, or mysql or postgresql or sqlite
 @item gettext and getopt (should be part of glibc on most systems)
 @item libexpat
-@item howl (optional, for LAN zeroconf broadcasts)
+@item howl or avahi (optional, for LAN zeroconf broadcasts)
+@item fam or inotify (optional, for dynamic room reconfiguration)
 @item libgcrypt (optional, via libggz, to handle encrypted database passwords)
 @item libgnutls or libopenssl (optional, via libggz, to handle encrypted connections)
 @end itemize
@@ -150,6 +165,10 @@ server, and 'ggz-game-servers' including many game servers, should follow.
 Both need the library package 'ggzdmod' and its C++ wrapper 'ggzdmod++' as well.
 When installing from source, all of those can be found in the 'ggzd' SVN
 module.
+In addition, the 'ggz-python' package provides the 'pyggzdmod' wrapper library
+and a couple of game servers on top of it, so its installation is recommended
+as well.
+
 Upon installation, lots of files and directories are created under the
 chosen prefix (usually /usr/local when installing from source and /usr
 otherwise):
@@ -174,9 +193,9 @@ Although normally the server hierarchy will be under /usr or /usr/local, there
 are situations where someone doesn't have root access on a system to install
 the GGZ packages there.
 This is no problem, installing into one's home directory is supported as well.
-For installations from source, the getggz.sh script is recommended, because it
-handles this task very fast in an interactive way. Its location is pointed at
-in the current installation manual.
+For installations from source, the @command{getggz.sh} script is recommended,
+because it handles this task very fast in an interactive way. Its location is
+pointed at in the current installation manual.
 This script, together with several others, will eventually be part of a server
 support package.
 For the time being, it is presented in a simplified version in Appendix A.
@@ -189,11 +208,16 @@ If libggz is built from sources, the features it provides can be customized.
 Running @command{configure --with-gcrypt} allows for cryptographics hash
 functions to be used, so that e.g. the server doesn't need to store its
 passwords in plain text format.
-Likewise, @command{configure --with-tls=MODE} includes TLS/SSL functionality,
+Likewise, @command{configure --with-tls=TYPE} includes TLS/SSL functionality,
 which can be one of none (dummy support), GnuTLS or OpenSSL.
 The part about setting up the server covers this topic in depth.
 
 @subsection Message of the day
+
+GGZ clients will request a message of the day (MOTD) from the server after
+each login. There are two variants of MOTDs, text-based (the default) and
+optionally a HTML-based one in addition, which points to a web page.
+The text MOTD file is usually stored in etc/ggzd/ggzd.motd.
 
 As each server should be unique in one way or the other, changing the MOTD
 (which the players read when they log in) is one of the first steps to be made.
@@ -234,7 +258,8 @@ one for 50 people tagged 'TTT Tournament' and no further restrictions.
 Therefore, each room is linked to exactly one @emph{game type}. Based on these
 types, players start to play their @emph{games} by creating @emph{tables}.
 Each table can hold 2 to unlimited players, dependent on the room setup.
-At present time, however, the maximum number of players is restricted to 8.
+At present time, however, the maximum number of players is restricted to 8 or
+less for most games.
 
 @subsection Main GGZ server configuration
 
@@ -248,12 +273,32 @@ the server graphically in the future. A KDE control center module is already
 available for reading in configuration files. It is part of the ggz-kde-client
 package.
 
+For configuration tests, it is recommended to enable logging and debugging in
+the configuration file, and then run @command{ggzd -F} to make it stay in the
+foreground.
+
+@subsection Reconfiguration
+
+From GGZ 0.0.14 on it is possible to add and remove rooms during the
+execution of ggzd, meaning that the server does not need to be interrupted for
+such reconfiguration tasks. This is useful for larger GGZ sites which at
+times even allow their users to define new rooms via a web interface.
+
+Enabling the reconfiguration feature means that support for it must have
+been compiled into ggzd (as can be verified with @command{ggzd -s}), and
+that it has been enabled in ggzd.conf via the switch ReconfigureRooms, which
+is disabled by default.
+
+See the section named 'Adding rooms' for more information on room files.
+
 @section Normal installation
 
-A ggzd alone is not much fun, there are other components as well which are
-worth to be installed:
+The base installation is usually sufficient for game developers to test
+their game servers.
+Despite this, a ggzd alone is not much fun, there are other components as well
+which are worth to be installed:
 @itemize @bullet
-@item The GGZ Meta Server
+@item The GGZ Metaserver
 @item Grubby, the GGZ chat bot
 @end itemize
 
@@ -276,9 +321,22 @@ It is designed to work with a PostgreSQL database backend, and requires Apache
 and PHP set up on the same or any different host.
 Lots of additional software like a forum or a blog aggregator can be integrated
 into GGZ Community.
+The reference installation runs on @url{http://www.ggzcommunity.org/}, but
+other server operators can use the software and its features like custom themes
+to create own instances, to shape local communities or dedicated player clubs.
+
+The browser-based GGZ-Java applet and its associated application, which comes
+with a webstart description, might lure more players to a server than the
+existing clients for KDE, GNOME and SDL. Its installation can be integrated
+with GGZ-Community.
+
+Metacle is a new service, which was brought to life during the GGZ 0.0.14
+release cycle. It aggregates metaservers such as the one of GGZ, but also
+others, and feeds this data to client applications. Metacle is not yet part
+of a GGZ package, but is available from the playground module in SVN.
 
 Have a look at the next chapter on how to set up GGZ with enhanced database
-support.
+support to prepare an extended installation.
 
 @node Databases, Internal Games, Installation, Top
 @chapter Databases
@@ -291,6 +349,7 @@ Currently, not only the traditional libdb format is supported (db2, db3 and
 db4), but also SQlite, MySQL and PostgreSQL. The latter ones are more difficult
 to set up, but provide greater flexibility because there exist a lot of
 standard tools to use the data in them.
+GGZ Community uses PostgreSQL, if in doubt this database should be used.
 
 There are three basic database table sets: one for the players (including passwords,
 email addresses, permissions and full name), one for the statistics generated
@@ -349,7 +408,7 @@ From PostgreSQL 7.3 on, the following commands should be used:
 
 @verbatim
 	psql template1
-	CREATE USER ggzd PASSWORD 'ggzd';
+	CREATE USER ggzd PASSWORD 'xxxxx';
 	CREATE DATABASE ggz OWNER ggzd;
 @end verbatim
 
@@ -418,6 +477,9 @@ package should be used eventually.
 @section Format
 
 The database format of the user table is the same for every configuration.
+Limits on string length or integer number size are more relaxed with the
+SQL database backends, but the limits below should be considered minimum
+guaranteed sizes.
 
 @verbatim
 id/user_id: unsigned int (4 bytes)
@@ -681,12 +743,12 @@ never made it into the source tree and thus went unmaintained.
 @chapter Other GGZ Servers
 @c @cindex Index entry for Sixth Chapter
 
-@section The GGZ Meta Server (ggzmetaserv)
+@section The GGZ Metaserver (ggzmetaserv)
 
 This is an XML based service which allows clients to connect to select between
-several servers, without having to manually configure all of them. Meta servers
+several servers, without having to manually configure all of them. Metaservers
 operate in networks and keep themselves consistant automatically, so that both
-a broken GGZ server and a broken GGZ Meta Server doesn't annoy that much.
+a broken GGZ server and a broken GGZ Metaserver doesn't annoy that much.
 Meta servers can be installed quite forward, no further configuration is
 necessary - all of the initial setup is read from a single read-only
 configuration file named metaservconf.xml.
@@ -698,6 +760,8 @@ and category) which are explicitely marked as such.
 It runs on port 15689 by default, but any other port can be used of course.
 You can get ggzmetaserv as part of the GGZ utils package.
 
+The webpage of grubby is @url{http://www.ggzgamingzone.org/backend/metaserver/}.
+
 @section The GGZ Telnet Wrapper (telggz)
 
 This server requires the ggzcore library to be installed on the server side,
@@ -707,6 +771,8 @@ available on the same host, but the metaserver.cache file must be available
 TelGGZ should be invoked over (x)inetd on port 15688. This allows to connect to
 any GGZ server from all over the world, whereever one finds a telnet client.
 
+The webpage of grubby is @url{http://www.ggzgamingzone.org/clients/telnet/}.
+
 @section The GGZ Chat Bot (grubby)
 
 Grubby comes with its own manuals, including an administrator's manual and a
@@ -715,6 +781,8 @@ While grubby can also run client-side (as it is in fact a GGZ client), it makes
 much more sense to have it running permanently on the server side to take
 advantage of its facilities like logging or memorizing things.
 It can also play games (like TicTacToe or Chess).
+
+The webpage of grubby is @url{http://www.ggzgamingzone.org/backend/grubby/}.
 
 @section The GGZ Collector (ggzcollector)
 
@@ -754,6 +822,8 @@ might want to use the checkonline method as well - this is why checknagios has
 been invented.
 
 @command{ggz-cmd localhost guest guestpassword checknagios}
+
+The webpage of ggz-cmd is @url{http://www.ggzgamingzone.org/backend/cmd/}.
 
 @section The ggzduedit command line utility
 
@@ -961,20 +1031,25 @@ mkdir ggz-0.0.14
 cd ggz-0.0.14
 svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-14/libggz
 svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-14/ggzd
+svn co svn://svn.ggzgamingzone.org/svn/tags/ggz-0-0-14/python
+export LD_LIBRARY_PATH="$HOME/localsys/usr/lib:$LD_LIBRARY_PATH"
+export PATH="$HOME/localsys/usr/bin:$PATH"
 cd libggz
 ./autogen.sh --prefix=$HOME/localsys/usr
 make
 make install
 cd ..
 cd ggzd
-export LD_LIBRARY_PATH=$HOME/localsys/usr/lib
-./autogen.sh --prefix=$HOME/localsys/usr \
-	--with-database=db4
+./autogen.sh --prefix=$HOME/localsys/usr
 make
 make install
 cd ..
-export PATH="$HOME/localsys/usr:$PATH"
-ggzd
+cd python
+./autogen.sh --prefix=$HOME/localsys/usr
+make
+make install
+cd ..
+ggzd -F
 @end verbatim
 
 @appendix Known GGZ servers and Contact
@@ -984,7 +1059,10 @@ please consult the GGZ meta server, using one of the available client-side
 tools.
 
 @itemize @bullet
-@item @url{ggz://live.ggzgamingzone.org} (USA, fast connection)
+@item @url{ggz://live.ggzgamingzone.org}
+(France, fast connection, operated by GGZ developers)
+@item @url{ggz://ggz.openladders.net}
+(USA, fast connection, operated by OpenLadders Partnership)
 @end itemize
 
 The GGZ Community is a web-based portal which emerged from the former
@@ -1005,6 +1083,8 @@ This is a low traffic mailing list.
 @url{http://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-servers}
 
 Subscribing to ggz-announce additionally is always recommeded, too.
+This is a very low-traffic list which almost exclusively focuses on release
+announcements for new versions of GGZ.
 
 @c @printindex cp
 

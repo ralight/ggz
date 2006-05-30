@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.13 - Game Development Guide
+@settitle The GGZ Gaming Zone 0.0.14 - Game Development Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -15,7 +15,7 @@ Copyright (C) 2002 - 2006 Josef Spillner
 @c Frontpage
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.13
+@subtitle Development of games for the GGZ Gaming Zone 0.0.14
 @author GGZ Development Team
 
 @c Copyright page
@@ -31,9 +31,10 @@ Published under the GNU General Public License.
 
 @ifinfo
 This file is the info format of the GGZ Gaming Zone Game Development Guide, which is
-also available in postscript and HTML format.
+also available in postscript and HTML format, and in a special PDF edition from
+time to time.
 It describes how to develop game clients and servers which run over GGZ.
-See http://www.ggzgamingzone.org/docs/guides/gamedev/ for the latest edition.
+See @url{http://www.ggzgamingzone.org/docs/guides/gamedev/} for the latest edition.
 @end ifinfo
 
 @menu
@@ -57,6 +58,10 @@ As games are very different from applications, it is not easy to recommend for
 this or against that. Instead, a general collection of hints is presented,
 divided into the major differences on the client side (frontends) and the
 server side (programming languages).
+
+The more games provide GGZ support, the more fun it becomes. After reading
+this guide, all questions about how to provide GGZ support from a game
+developer's perspective should be answered.
 
 @node The GGZ System, Game Clients, Foreword, Top
 @chapter The GGZ System
@@ -96,6 +101,29 @@ core client.
 Right now, only one external game runs in embedded mode, namely Widelands.
 In order to do so, ggzcore must be initialized with the OPT_EMBEDDED flag
 switched on.
+
+@section Distribution
+
+While the following chapters deal with programming the game clients and servers
+and explain the necessary configuration files which make them known to GGZ,
+a few words should be said in general about distributing games which provide
+GGZ support.
+
+First of all, all GGZ packages come with a file README.GGZ, which can be
+placed alongside of README of the game. It will explain to the user how to
+run the game in GGZ. Simply refer to it from README or any other documentation
+and be done with it.
+
+Second, in order to enable GGZ support, the best way is to enable it
+conditionally. Thus, the game will compile and run even without GGZ, but
+if GGZ is available it will offer more features. To detect GGZ libraries,
+the file ggz.m4 can be added to acinclude.m4 in case of autoconf-based
+C/C++ games. This file should be updated from time to time to reflect changes
+in GGZ.
+
+Both of these files can be found at
+@url{http://dev.ggzgamingzone.org/external.php}, a web page which also
+contains general information about external games.
 
 @node Game Clients, Game Servers, The GGZ System, Top
 @chapter Game Clients
@@ -241,6 +269,13 @@ at. Actually TicTacToe 3D uses SDL in combination with OpenGL.
 
 @section Introduction
 
+Game servers are spawned by the GGZ main server (ggzd) and are the central
+game authority, determining the game state (from pregame to game over),
+and controlling the players, the bots and all game spectators.
+The Tic-Tac-Toe game server has been written to demonstrate all GGZ
+features available to game authors who do programming in C; refer to its
+well-commented source code to get more information.
+
 Game servers are launched by the main GGZ server and receive events on one
 dedicated file descriptor. There are different event types:
 
@@ -248,15 +283,20 @@ dedicated file descriptor. There are different event types:
 @item STATE: indicates that the state has changed (see below)
 @item JOIN: a player has joined the game
 @item LEAVE: player has left the game
-@item SEAT: seat occupation has changed
+@item SEAT: seat occupation has changed,
+this encompasses JOIN and LEAVE
 @item SPECTATOR_JOIN: a spectator came to watch the game
 @item SPECTATOR_LEAVE: spectator went away
-@item SPECTATOR_SEAT: spectator has joined or left
+@item SPECTATOR_SEAT: spectator has joined or left,
+this encompasses SPECTATOR_JOIN and SPECTATOR_LEAVE
 @item PLAYER_DATA: one of the players (clients) sent some data
 @item SPECTATOR_DATA: data sent from random spectators
-@item LOG: log message has arrived
 @item ERROR: an error has occured
 @end itemize
+
+Have a look at the API documentation of the ggzdmod library or one of its
+wrappers, or at the ggz server<->game server protocol documentation to
+know all the details.
 
 The states in which a game server can be are:
 
@@ -271,8 +311,11 @@ In order to ease game development, the ggzdmod library has been written, which
 comes with extensive documentation.
 See @url{http://www.ggzgamingzone.org/docs/api/ggzdmod/html/ggzdmod_8h.html} for the
 online documentation, which is also available as man page (man 3 ggzdmod.h).
+Wrappers are available for C++ (ggzdmod++) and Python (pyggzdmod).
 
 @section The server base library: libggzdmod
+
+@c TODO: fix the example or take it out
 
 In order to be informed about player joins and leaves, and the status of the
 game (running, done, ...), the ggzdmod library is essential to use.
@@ -360,6 +403,8 @@ MaxTables = <maximum of tables>
 EntryRestriction = none|registered|admin
 @end verbatim
 
+A room gametype of 'none' means that this room is only used for chatting.
+This is the case with the standard entry room which ships with ggzd.
 Have a look at the current game server description files if there are open
 questions.
 
