@@ -11,3 +11,6 @@ No mailman system cronjob, use root cronjob instead
 A binary /usr/local/bin/log must exist, which does not seem to
 exist as a package file
 
+- FTP contrib directory:
+getggz.sh, ggz.m4, README.GGZ
+
