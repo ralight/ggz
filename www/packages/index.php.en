@@ -1,0 +1,299 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+
+<b>GGZ Packages</b><br>
+The GGZ Gaming Zone project delivers its software in the form of source
+packages. Distributors pick them up and create binary packages so that the
+user doesn't have to compile them.
+This page explains the packages and also gives hints to packagers and
+users about which packages are essential to have for a GGZ installation.
+<br><br>
+
+</td>
+</tr>
+
+<tr>
+<td colspan="2">
+<i>Packages for desktop users</i>
+<br><br>
+GGZ targets four primary desktop platforms: KDE/Qt and GNOME/Gtk+ as Linux
+standard desktops, SDL as an embedded gaming platform and Java/Swing as
+browser-integrated platform.
+<br><br>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-kde-client.png">
+</td>
+<td valign="top">
+<i>GGZ KDE Client Collection (ggz-kde-client)</i>
+<br><br>
+Integrating games into the KDE desktop is the goal of this package.
+Its main application is <a href="/clients/kde/">KGGZ</a>, a core client
+used for chatting and playing. But it also contains useful tools such
+as the <a href="/utils/ggz-kopete/">GGZ integration into Kopete</a>,
+the graphical chatbot configuration tool
+<a href="/utils/kgrubby/">KGrubby</a>, the
+<a href="/utils/ggzap/">GGZap</a> quick launcher and the
+<a href="/utils/compcal/">competition calendar</a>.
+In addition, a module for the KDE Control Center is provided.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-kde-games.png">
+</td>
+<td valign="top">
+<i>GGZ KDE Games Collection (ggz-kde-games)</i>
+<br><br>
+Several <a href="/games/">game clients</a> are available for KDE users.
+The game clients include KTicTacTux (for tic-tac-toe), KDots (connect the
+dots), KReversi, Fyrdman (hastings1066), KCC (chinese checkers),
+Koenig (chess), Keepalive, Krosswater and Mühle (nine men's morris).
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-gtk-client.png">
+</td>
+<td valign="top">
+<i>GGZ Gtk+ Client Collection (ggz-gtk-client)</i>
+<br><br>
+This package contains <a href="/clients/gtk/">ggz-gtk</a>, a Gtk+-based
+core client. Additionally, the
+<a href="/utils/ggz-gaim/">GGZ plugin for Gaim</a> can be used to play
+games using the Gaim multi-protocol IM client.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-gtk-games.png">
+</td>
+<td valign="top">
+<i>GGZ Gtk+ Games Collection (ggz-gtk-games)</i>
+<br><br>
+The classic GGZ <a href="/games/">game clients</a> are all implemented
+using the Gtk+ toolkit. This includes Chess, Chinese Checkers, Combat,
+Connect the Dots, GGZCards (for multiple cards games), Hastings1066,
+Reversi, NetSpades, and Tic-Tac-Toe.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-gnome-client.png">
+</td>
+<td valign="top">
+<i>GGZ GNOME Client Collection (ggz-gnome-client)</i>
+<br><br>
+Contains an easy-to-use <a href="/clients/gnome/">GNOME core client</a>
+for GGZ, plus an <a href="/utils/motdeditor/">editor</a> for the creation
+and modification of MOTD files.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-sdl-games.png">
+</td>
+<td valign="top">
+<i>GGZ SDL Games Collection (ggz-sdl-games)</i>
+<br><br>
+Two SDL games running in fullscreen mode have found their way into this
+package so far: the Geekgame and the OpenGL-based TTT3D, a three-dimensional
+Tic-Tac-Toe client.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-python.png">
+</td>
+<td valign="top">
+<i>GGZ Python/SDL Client and Games Collection (ggz-python)</i>
+<br><br>
+Complementary to ggz-sdl-games, several games and even a
+<a href="/clients/sdl/">core client</a> have been created for SDL in Python.
+Games include the GGZBoard framework, Xadrez Chinês (for chinese chess)
+and Escape/SDL. Several related game servers are part of this package, too.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-java.png">
+</td>
+<td valign="top">
+<i>GGZ Java Client and Games Collection (ggz-java)</i>
+<br><br>
+Playing games in the web browser is possible with the
+<a href="/clients/java/">GGZ-Java applet</a> which acts as a core
+client. It also integrates several <a href="/games/ggzjava/">game clients</a>
+into the same user interface.
+</td>
+</tr>
+
+<tr>
+<td colspan="2">
+<i>Packages for server hosters, developers and advanced users</i>
+<br><br>
+These packages are usually not of interest to the casual gamer.
+Distributors should still package them since they will attract new developers
+and purist users who want the full power of GGZ on their computers.
+<br><br>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<!-- <img src="/packages/pics/"> -->
+</td>
+<td valign="top">
+<i>GGZ Server and Game Servers (ggz-server)</i>
+<br><br>
+The main <a href="/backend/server/">GGZ server (ggzd)</a> and its
+configuration utility ggzduedit are part of this packages, as are a lot of
+<a href="/gameservers/">game servers</a> written in C and C++.
+In addition, the
+<a href="http://dev.ggzgamingzone.org/libraries/ggzdmod/">ggzdmod</a>
+library and its C++ wrapper is included.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<!-- <img src="/packages/pics/"> -->
+</td>
+<td valign="top">
+<i>GGZ Chatbot (ggz-grubby)</i>
+<br><br>
+<a href="/backend/grubby/">Grubby</a> is a chatty chatbot with a modular
+plugin-based architecture so that it can support several behaviour plugins,
+various network protocols, scripting interfaces and even translations.
+The package also includes special
+<a href="/games/guruttt/">game clients</a> which are used by the bot
+to play against other bots or against humans.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<!-- <img src="/packages/pics/"> -->
+</td>
+<td valign="top">
+<i>GGZ Utilities (ggz-utils)</i>
+<br><br>
+Several small utilities have been combined into this package.
+The <a href="/backend/metaserver/">GGZ Metaserver</a> is part of it, as is
+<a href="/backend/cmd/">ggz-cmd</a>, the command client for the server.
+Developers can make use of the communication protocol generator
+(<a href="http://dev.ggzgamingzone.org/protocols/">ggzcommgen</a>).
+Also, a collection of MOTDs and a
+<a href="/clients/telnet/">telnet wrapper</a> is included for server admins.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-txt-client.png">
+</td>
+<td valign="top">
+<i>GGZ Text Client (ggz-txt-client)</i>
+<br><br>
+The text client package comes with
+<a href="/clients/console/">ggz-txt</a>, a very small console-based
+core client, and even a
+<a href="/games/tttxt/">console-based Tic-Tac-Toe</a> game client
+named TTTXT.
+The client is scriptable, and supports chatting and playing games.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-community.png">
+</td>
+<td valign="top">
+<i>GGZ Community Portal (ggz-community)</i>
+<br><br>
+<a href="http://www.ggzcommunity.org/">GGZ Community</a> is a web portal which
+provides a convenient interface to player registration, rankings, game results
+and much more. Server hosters can use the package to provide customized
+installations. Themes and translations are supported.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<img src="/packages/pics/ggz-docs.png">
+</td>
+<td valign="top">
+<i>GGZ Documentation (ggz-docs)</i>
+<br><br>
+A lot of <a href="/docs.php">documentation</a> is made available as part of
+every GGZ release. More or less all of it is available on the web pages,
+however the package also contains the documentation sources.
+This includes the Server Hosting and Game Development guides, protocol
+specifications, game framework overview documents, previous talks and
+presentations on GGZ and much more.
+</td>
+</tr>
+
+<tr>
+<td colspan="2">
+<i>Library dependency packages</i>
+<br><br>
+The library packages will always be part of GGZ installations, but rather
+implicitely, the users should not have to deal with them in the normal case.
+<br><br>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<!-- <img src="/packages/pics/"> -->
+</td>
+<td valign="top">
+<i>Client base libraries (ggz-client-libs)</i>
+<br><br>
+Package containing two libraries for the C programming language:
+<a href="http://dev.ggzgamingzone.org/libraries/ggzcore/">ggzcore</a>
+for GGZ core clients, and
+<a href="http://dev.ggzgamingzone.org/libraries/ggzmod/">ggzmod</a>
+for game clients.
+Also, the tools ggz-config, ggz-wrapper and ggzwrap are included.
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<!-- <img src="/packages/pics/"> -->
+</td>
+<td valign="top">
+<i>Low-level library for C development (libggz)</i>
+<br><br>
+This package only contains the
+<a href="http://dev.ggzgamingzone.org/libraries/libggz/">libggz</a>
+library by itself, a small convenience library for many usual tasks for
+network game development, and some test cases for it.
+</td>
+</tr>
+
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
