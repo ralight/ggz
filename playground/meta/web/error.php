@@ -27,6 +27,9 @@ else:
 		elseif ($format == "rss") :
 			header("HTTP/1.1 200 Found");
 			include("rss.php");
+		elseif ($format == "metacle") :
+			header("HTTP/1.1 200 Found");
+			include("rss.php");
 		else :
 			include_once("header.inc");
 			include("unconfigured.inc");
