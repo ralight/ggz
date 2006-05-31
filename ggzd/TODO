@@ -12,6 +12,8 @@ GGZ server (ggzd)
 * connection upgrade to TLS at any time
   (like STARTTLS for SMTP or RFC 2817(?) for HTTP)
 * database hashing type should be added to the user table
+* support for dbus notifications (interesting for developers who will
+  make use of ggzd on the desktop in combination with a control GUI)
 
 Libraries (ggzdmod, ggzdmod++)
 ------------------------------
