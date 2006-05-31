@@ -1,3 +1,14 @@
+* removal/change of kio_ggzmeta, use Metacle/Metakel instead
+* removal of kio_ggz? it clashes with ggz:// protocol handler
+* support of Friedrich's Kicker contacts applet
+* for KDE 4, rewrite a lot!
+* move Kopete support here, from playground (needs public headers or copy)
+* moving ggzd launcher into a panel applet on its own (but with menu entry)
+
+===============================
+The old TODO items follow below
+===============================
+
 todo for 0.0.5:
 DONE: fix KGGZ's connection dialog
 DONE: implement lag display in KGGZ
