@@ -15,7 +15,13 @@ include("international.php");
 |
 <a href="https://bugs.ggzgamingzone.org/">Bugs</a>
 |
-<a href="http://www.ggzcommunity.org/">GGZ Community</a>
+<a href="http://ftp.ggzgamingzone.org/">FTP</a>
+|
+<a href="http://live.ggzgamingzone.org/">Live</a>
+|
+<a href="https://www.ggzcommunity.org/">Community</a>
+|
+<a href="http://metacle.ggzgamingzone.org/">Metacle</a>
 </font>
 </td>
 </tr>

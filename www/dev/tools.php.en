@@ -12,8 +12,7 @@ on.
 <br>
 
 <table class="inner">
-<tr>
-<td valign="top" colspan="2">
+<tr><td valign="top">
 
 <i>GCC (4.0)</i><br>
 <a href="http://gcc.gnu.org">Website</a>,
@@ -56,8 +55,19 @@ on.
 <a href="https://subversion.tigris.org/">Website</a>,
 <a href="https://subversion.red-bean.com/">Manual</a>
 
-</td>
-</tr>
+</td></tr>
+<tr><td valign="top">
+
+<i>Ant (1.3.6)</i><br>
+<a href="http://ant.apache.org/">Website</a>,
+<a href="http://ant.apache.org/manual/">Manual</a>
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Some more: java compiler, jade, texinfo, texi2html etc.</i>
+
+</td></tr>
 </table>
 
 </font>
