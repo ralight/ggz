@@ -5,10 +5,16 @@
 <td>
 <font size="3">
 
-<b>Player rankings</b><br>
-Registered players who play against each other can compete long-term by keeping track
-of themselves in the rankings database.
-Tournaments can be organized to mix up the player list a bit...
+<b>GGZ Community Portal</b><br>
+<a href="/backend/community/">GGZ Community</a> is a web portal running on the
+GGZ server and is operated by some GGZ developers.
+Registered players who play against each other can compete long-term by keeping
+track of themselves in the rankings and statistics database.
+Tournaments can be organized to mix up the player list a bit.
+Players can discuss in the forum and publish their blog entries into the
+portal.
+Even web-based gaming is integrated for those who prefer it.
+Join the community now!
 <br><br>
 
 <table class="inner">
@@ -16,7 +22,9 @@ Tournaments can be organized to mix up the player list a bit...
 <td valign="top">
 
 <i>Web sites</i><br>
-<a href="https://www.ggzcommunity.org/">GGZ Community</a><br>
+<a href="http://www.ggzcommunity.org/">GGZ Community</a>,
+also providing a
+<a href="https://www.ggzcommunity.org/">secure connection</a><br>
 
 </td>
 </table>

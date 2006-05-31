@@ -5,12 +5,18 @@
 <td>
 <font size="3">
 
-<b>Spieler-Bewertungen</b><br>
+<b>GGZ Community-Portal</b><br>
+<a href="/backend/community/">GGZ Community</a> ist ein Webportal, welches
+auf dem GGZ-Server läuft und von einigen GGZ-Entwicklern betrieben wird.
 Registrierte Spieler, die gegeneinander spielen, können langfristig
 gegeneinander antreten, indem sie ihre Position in der Spieler-Tabelle
-(Rankings) mitverfolgen.
+(Rankings) und anderen Statistiken mitverfolgen.
 Wettbewerbe können organisiert werden, um die Spielerliste ein wenig
-aufzumischen...
+aufzumischen.
+Spieler können im Forum diskutieren und ihre Blogeinträge im
+Portal publizieren.
+Sogar webbasierte Spiele sind für diejenigen, die es bevorzugen, integriert.
+Tritt der Community jetzt bei!
 <br><br>
 
 <table class="inner">
@@ -18,7 +24,10 @@ aufzumischen...
 <td valign="top">
 
 <i>Webseiten</i><br>
-<a href="https://www.ggzcommunity.org/">Zur GGZ Community</a><br>
+<a href="http://www.ggzcommunity.org/">Zur GGZ Community</a>,
+Zugriff auch mit
+<a href="https://www.ggzcommunity.org/">abgesicherter Verbindung</a>
+möglich<br>
 
 </td>
 </table>
