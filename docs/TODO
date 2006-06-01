@@ -1,0 +1,8 @@
+* The "ggz design document" should be further trimmed to only document
+  the main GGZ protocol. A new design document should be created. This will
+  contain, among others, the information currently in the file
+  ggzd/ggzd/meta/Uri-spec.txt, but also a lot more info GGZ standards
+  and visions.
+  The ggzd-specific parts of the current "ggz design document" should
+  move into the ggzd documentation file (docs/server/ggzd).
+
