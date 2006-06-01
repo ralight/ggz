@@ -1174,7 +1174,7 @@ for index in (0..ARGV.length - 1)
 	case arg
 		when "-h", "--help":
 			puts "GGZ Communication Protocol Generator (ggzcommgen)"
-			puts "Call: ggzcommgen.rb [options] <filename> (for filename.protocol)"
+			puts "Call: ggzcommgen [options] <filename> (for filename.protocol)"
 			puts "[-l | --language ] The language to use: c, c++, python"
 			puts "[-i | --interface] The networking library: ggz, qt, mnet, socket"
 			puts "[-r | --role     ] The usage role: client, server"
