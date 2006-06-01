@@ -17,7 +17,7 @@ designed to be very generic and powerful.
 
 The following directories come with the metaserver:
 - metaserv, where the ggzmetaserv binary resides
-- minidom, a small XML library used by ggzmetaserv
+- minidom, a small XML library used by ggzmetaserv (folded into libmeta now)
 - libmeta, a client-side access library for easy use of metaserver features
 - tools, some random tools like GUI frontends, which must be compiled by hand
 
