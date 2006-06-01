@@ -1,6 +1,7 @@
 /*
- * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
- * Copyright (C) 2001 - 2003 Josef Spillner, dr_maux@users.sourceforge.net
+ * GGZ Metaserver access library (libggzmeta)
+ * Client-side access to the metaserver
+ * Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +15,7 @@
 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 /* Header files */
@@ -30,33 +31,28 @@
 #include <stdio.h>
 #include <netdb.h>
 #include <string.h>
-
-/* Definitions */
-#define PROTO_TCP 6
-
-/* Global variables */
-char **metaservers;
-int metaservercount;
+#include <sys/stat.h>
 
 /* Prototypes */
 static char *meta_query_internal(int fd, const char *text);
 static int meta_connect_internal(const char *hostname, int port);
 
-/* Public functions */
+/* === Public functions === */
+/* ======================== */
 
-/*
-void meta_init()
+ServerEntry **meta_network_load()
 {
 	FILE *f;
+	char cachefile[1024];
 	char buf[1024];
+	URI uri;
+	ServerEntry *server;
+	ServerEntry **metaservers = NULL;
 
-	metaservers = NULL;
-	metaservercount = 0;
+	snprintf(cachefile, sizeof(cachefile),
+		"%s/.ggz/metaserver.cache", getenv("HOME"));
 
-	strcpy(buf, getenv("HOME"));
-	strcat(buf, "/.ggz/metaserver.cache");
-
-	f = fopen(buf, "r");
+	f = fopen(cachefile, "r");
 	if(f)
 	{
 		while(fgets(buf, sizeof(buf), f))
@@ -64,192 +60,45 @@ void meta_init()
 			buf[strlen(buf) - 1] = 0;
 			if(strlen(buf))
 			{
-				metaservers = (char**)realloc(metaservers, (metaservercount + 1) * sizeof(char*));
-				metaservers[metaservercount] = strdup(buf);
-				metaservercount++;
+				uri = uri_from_string(buf);
+				server = meta_server_new(uri);
+				metaservers = meta_list_server(metaservers, server);
 			}
 		}
 		fclose(f);
 	}
+
+	return metaservers;
 }
-*/
 
-/*
-ServerGGZ **meta_query(const char *version)
-{
-	int fd;
-	ServerGGZ **list = NULL;
-	int listcount = 0;
-	char query[1024];
-	char *s;
-	DOM *dom;
-	ELE **el, *tmp;
-	char *uri;
-	int i, j;
-	int finished;
-	char *host;
-	int port;
-	ELE *speedstr, *locationstr;
-	char *preferencestr;
-	int speed, preference;
-	char *location;
-
-	finished = 0;
-	j = 0;
-	while((!finished) && (j < metaservercount))
-	{
-		host = meta_uri_host_internal(metaservers[j]);
-		port = meta_uri_port_internal(metaservers[j]);
-		fd = meta_connect_internal(host, port);
-		if(fd >= 0)
-		{
-			sprintf(query, "<?xml version=\"1.0\"?><query class=\"ggz\" type=\"connection\">%s</query>\n", version);
-			s = meta_query_internal(fd, query);
-			if(s)
-			{
-				dom = minidom_parse(s);
-				if((dom) && (dom->processed) && (dom->valid) && (dom->el))
-				{
-					el = dom->el->el;
-					i = 0;
-					while((el) && (el[i]))
-					{
-						tmp = MD_query(el[i], "uri");
-						speedstr = MD_query(el[i], "speed");
-						locationstr = MD_query(el[i], "location");
-						preferencestr = MD_att(el[i], "preference");
-						if(!speedstr) speed = 0;
-						else speed = atoi(speedstr->value);
-						if(!preferencestr) preference = 99;
-						else preference = atoi(preferencestr);
-						if(!locationstr) location = "unknown";
-						else location = locationstr->value;
-						if(tmp)
-						{
-							uri = tmp->value;
-							list = (ServerGGZ**)realloc(list, (listcount + 2) * sizeof(ServerGGZ));
-							list[listcount] = (ServerGGZ*)malloc(sizeof(ServerGGZ));
-							list[listcount]->host = meta_uri_host_internal(uri);
-							list[listcount]->port = meta_uri_port_internal(uri);
-							list[listcount]->version = strdup(version);
-							list[listcount]->speed = speed;
-							list[listcount]->location = strdup(location);
-							list[listcount]->preference = preference;
-							list[listcount]->id = listcount + 1;
-							list[listcount + 1] = NULL;
-							listcount++;
-						}
-						i++;
-					}
-					finished = 1;
-				}
-				minidom_free(dom);
-			}
-		}
-		j++;
-	}
-
-	return list;
-}
-*/
-
-/*
-void meta_sync()
+void meta_network_store(ServerEntry **servers)
 {
 	FILE *f;
-	int fd;
-	char query[1024];
-	char *s;
-	DOM *dom;
-	ELE **el, *tmp;
-	char *uri;
-	int i, j, k;
-	int finished;
-	char *host;
-	int port;
+	char cachefile[1024];
+	int i;
+	char *uristr;
 
-	finished = 0;
-	j = 0;
-	while((!finished) && (j < metaservercount))
-	{
-		host = meta_uri_host_internal(metaservers[j]);
-		port = meta_uri_port_internal(metaservers[j]);
-		fd = meta_connect_internal(host, port);
-		if(fd >= 0)
-		{
-			sprintf(query, "<?xml version=\"1.0\"?><query class=\"ggz\" type=\"meta\">0.1</query>\n");
-			s = meta_query_internal(fd, query);
-			if(s)
-			{
-				dom = minidom_parse(s);
-				if((dom) && (dom->processed) && (dom->valid))
-				{
-					el = dom->el->el;
-					i = 0;
-					while((el) && (el[i]))
-					{
-						tmp = MD_query(el[i], "uri");
-						if(tmp)
-						{
-							uri = tmp->value;
-							for(k = 0; k < metaservercount; k++)
-								if(!strcmp(uri, metaservers[k]))
-								{
-									uri = NULL;
-									break;
-								}
-							if(uri)
-							{
-								metaservers = (char**)realloc(metaservers, (metaservercount + 1) * sizeof(char*));
-								metaservers[metaservercount] = strdup(uri);
-								metaservercount++;
-							}
-						}
-						i++;
-					}
-					finished = 1;
-				}
-				minidom_free(dom);
-			}
-		}
-		j++;
-	}
+	if(!servers) return;
 
-	strcpy(query, getenv("HOME"));
-	strcat(query, "/.ggz/metaserver.cache");
+	snprintf(cachefile, sizeof(cachefile),
+		"%s/.ggz", getenv("HOME"));
+	mkdir(cachefile, S_IRWXU);
 
-	f = fopen(query, "w");
+	snprintf(cachefile, sizeof(cachefile),
+		"%s/.ggz/metaserver.cache", getenv("HOME"));
+
+	f = fopen(cachefile, "w");
 	if(f)
 	{
-		for(k = 0; k < metaservercount; k++)
+		for(i = 0; servers[i]; i++)
 		{
-			fprintf(f, "%s\n", metaservers[k]);
+			uristr = uri_to_string(servers[i]->uri);
+			fprintf(f, "%s\n", uristr);
+			free(uristr);
 		}
 		fclose(f);
 	}
 }
-*/
-
-/*
-void meta_free(ServerGGZ **server)
-{
-	int i;
-
-	if(server)
-	{
-		i = 0;
-		while(server[i])
-		{
-			if(server[i]->location) free(server[i]->location);
-			if(server[i]->host) free(server[i]->host);
-			if(server[i]->version) free(server[i]->version);
-			free(server[i]);
-			i++;
-		}
-		free(server);
-	}
-}
-*/
 
 int meta_add(ServerEntry *server, const char *classname, const char *category,
 	const char *metaserveruri, const char *username, const char *password)
@@ -333,10 +182,6 @@ int meta_add(ServerEntry *server, const char *classname, const char *category,
 	return accepted;
 }
 
-/* ------------------------------------ */
-/* Server entry data handling functions */
-/* ------------------------------------ */
-
 ServerEntry *meta_server_new(URI uri)
 {
 	ServerEntry *server;
@@ -372,6 +217,25 @@ void meta_server_attribute(ServerEntry *server,
 	server->attributes[i + 1].value = NULL;
 }
 
+const char *meta_server_findattribute(ServerEntry *server, const char *key)
+{
+	int i;
+
+	if(!server) return NULL;
+	if(!key) return NULL;
+
+	if(server->attributes)
+	{
+		for(i = 0; server->attributes[i].key; i++)
+		{
+			if(!strcmp(server->attributes[i].key, key))
+				return server->attributes[i].value;
+		}
+	}
+
+	return NULL;
+}
+
 void meta_server_free(ServerEntry *server)
 {
 	int i;
@@ -392,9 +256,224 @@ void meta_server_free(ServerEntry *server)
 	free(server);
 }
 
-/* ------------------ */
-/* Internal functions */
-/* ------------------ */
+ServerEntry **meta_query(const char *metaserveruri, const char *classname,
+	const char *category, ServerEntry *restriction)
+{
+	int fd;
+	ServerEntry **list = NULL;
+	char query[1024];
+	char *s;
+	DOM *dom;
+	ELE **el;
+	int i, j;
+
+	URI uri;
+	char options[512];
+	char oldoptions[512];
+	ServerEntry *server;
+	ELE **properties;
+	char *uriattr;
+	char *name;
+	char *value;
+
+	uri = uri_from_string(metaserveruri);
+	if(!uri.port) uri.port = 15689;
+	fd = meta_connect_internal(uri.host, uri.port);
+	uri_free(uri);
+
+	if(fd >= 0)
+	{
+		strcpy(options, "");
+		if(restriction->attributes)
+		{
+			for(i = 0; restriction->attributes[i].key; i++)
+			{
+				snprintf(oldoptions, sizeof(oldoptions),
+					"%s",
+					options);
+				snprintf(options, sizeof(options),
+					"%s"
+					"<option name=\"%s\">%s</option>",
+					oldoptions,
+					restriction->attributes[i].key,
+					restriction->attributes[i].value);
+			}
+		}
+
+		snprintf(query, sizeof(query),
+			"<?xml version=\"1.0\"?>"
+			"<query class=\"%s\" type=\"%s\">"
+			"%s"
+			"</query>\n",
+			classname, category, options);
+
+		s = meta_query_internal(fd, query);
+		if(s)
+		{
+			dom = minidom_parse(s);
+			if((dom) && (dom->processed) && (dom->valid) && (dom->el))
+			{
+				el = dom->el->el;
+				for(i = 0; ((el) && (el[i])); i++)
+				{
+					uriattr = MD_att(el[i], "uri");
+					if(!uriattr)
+					{
+						continue;
+					}
+
+					uri = uri_from_string(uriattr);
+
+					server = meta_server_new(uri);
+
+					properties = el[i]->el;
+					for(j = 0; ((properties) && (properties[j])); j++)
+					{
+						name = MD_att(properties[j], "name");
+						value = properties[j]->value;
+
+						meta_server_attribute(server, name, value);
+					}
+
+					list = meta_list_server(list, server);
+				}
+			}
+			minidom_free(dom);
+		}
+	}
+
+	return list;
+}
+
+ServerEntry **meta_list_server(ServerEntry **list, ServerEntry *server)
+{
+	int count = 0;
+	char *uristr, *uristr2;
+	int skip;
+
+	if(!server) return list;
+
+	if(list)
+	{
+		uristr = uri_to_string(server->uri);
+		skip = 0;
+
+		for(count = 0; list[count]; count++)
+		{
+			uristr2 = uri_to_string(list[count]->uri);
+			if(!strcmp(uristr, uristr2)) skip = 1;
+			free(uristr2);
+		}
+
+		free(uristr);
+
+		if(skip)
+		{
+			/* FIXME: leak! */
+			/* old entry should be free'd, new one copied there instead */
+			/* FIXME 2: semantic equivalence (e.g. :15689 is not important) */
+			return list;
+		}
+	}
+
+	list = (ServerEntry**)realloc(list, (count + 2) * sizeof(ServerEntry*));
+	list[count] = server;
+	list[count + 1] = NULL;
+
+	/* FIXME: take ownership (as is now) or better make a copy? */
+
+	return list;
+}
+
+void meta_list_free(ServerEntry **list)
+{
+	int i;
+
+	if(!list) return;
+
+	for(i = 0; list[i]; i++)
+	{
+		meta_server_free(list[i]);
+	}
+
+	free(list);
+}
+
+ServerEntry **meta_queryall(ServerEntry **servers, const char *classname,
+	const char *category, ServerEntry *restriction)
+{
+	int i, j;
+	ServerEntry **list = NULL;
+	ServerEntry **result;
+	char *uristr;
+
+	if(!servers) return NULL;
+
+	for(i = 0; servers[i]; i++)
+	{
+		uristr = uri_to_string(servers[i]->uri);
+		result = meta_query(uristr, classname, category, restriction);
+		free(uristr);
+		if(result)
+		{
+			for(j = 0; result[j]; j++)
+			{
+				list = meta_list_server(list, result[j]);
+			}
+	
+			free(result);
+		}
+	}
+
+	return list;
+}
+
+ServerEntry **meta_network_sync(ServerEntry **servers)
+{
+	ServerEntry **list = NULL;
+	ServerEntry *restriction;
+	const char *classname = "ggz";
+	const char *category = "meta";
+	const char *version = "0.5";
+	URI uri;
+	int i;
+
+	if(!servers) return NULL;
+
+	restriction = meta_server_new(uri);
+	meta_server_attribute(restriction, "version", version);
+
+	list = meta_queryall(servers, classname, category, restriction);
+
+	meta_server_free(restriction);
+
+	/*meta_list_free(servers);
+	servers = list;*/
+
+	for(i = 0; servers[i]; i++)
+	{
+		list = meta_list_server(list, servers[i]);
+	}
+	free(servers);
+
+	return list;
+}
+
+ServerEntry **meta_queryallggz(ServerEntry **servers, const char *protocol)
+{
+	ServerEntry *restriction;
+	const char *classname = "ggz";
+	const char *category = "connection";
+	URI uri;
+
+	restriction = meta_server_new(uri);
+	meta_server_attribute(restriction, "protocol", protocol);
+
+	return meta_queryall(servers, classname, category, restriction);
+}
+
+/* === Internal functions === */
+/* ========================== */
 
 static char *meta_query_internal(int fd, const char *text)
 {
@@ -412,6 +491,7 @@ static char *meta_query_internal(int fd, const char *text)
 		ret = strdup(buffer);
 	}
 	else ret = NULL;
+
 	return ret;
 }
 
@@ -423,7 +503,7 @@ static int meta_connect_internal(const char *hostname, int port)
 
 	if(!hostname) return -1;
 
-	fd = socket(AF_INET, SOCK_STREAM, PROTO_TCP);
+	fd = socket(AF_INET, SOCK_STREAM, 0);
 	if(fd < 0) return -1;
 
 	sa.sin_family = AF_INET;
