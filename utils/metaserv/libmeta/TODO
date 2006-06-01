@@ -1,0 +1,5 @@
+- async support (via fd/state model or via thread)
+- unification in meta_list_server (i.e. do not allow duplicate values)
+  -> needs to know differences on a semantic level
+  -> uri_compare() function?
+
