@@ -33,16 +33,20 @@
 /* TelGGZ version number */
 #define TELGGZ_VERSION "0.4"
 
+/* Compatible GGZ protocol number */
+/* FIXME: could be part of libggzmeta */
+#define GGZ_PROTOCOL_VERSION "10"
+
+/* Primary GGZ metaserver */
+#define GGZ_METASERVER "ggzmeta://live.ggzgamingzone.org"
+
 /* Configuration */
 #include "config.h"
 
-/* Structure containing server information */
-ServerGGZ **preflist;
-
 /* Print out all servers to play wrapper for */
-static void pref_listservers()
+static void pref_listservers(ServerEntry **preflist)
 {
-	ServerGGZ *iterator;
+	ServerEntry *iterator;
 	int i;
 
 	/* Of course I meant, people will kill me for C++isms... */
@@ -50,8 +54,12 @@ static void pref_listservers()
 	while((preflist) && (preflist[i]))
 	{
 		iterator = preflist[i++];
-		printf("%3i %22s %10s %20s %10ik\n", iterator->id, iterator->host,
-			iterator->version, iterator->location, iterator->speed);
+		printf("%3i %22s %10s %20s %10ik\n",
+			i,
+			meta_server_findattribute(iterator, "host"),
+			meta_server_findattribute(iterator, "version"),
+			meta_server_findattribute(iterator, "location"),
+			atoi(meta_server_findattribute(iterator, "speed")));
 	}
 	if(!i)
 	{
@@ -68,14 +76,35 @@ int main(int argc, char *argv[])
 	int ret, i;
 	char hostname[128];
 	char *username, *password;
+	ServerEntry **metaservers, **ggzservers;
+	ServerEntry *seed;
+	URI uri;
+	const char *host;
+	int port;
+	char *uristr;
 
 	/* No output buffering. */
 	setbuf(stdout, NULL);
 
 	/* Meta server stuff */
-	meta_init();
-	meta_sync();
-	preflist = meta_query(VERSION);
+	uri = uri_from_string(GGZ_METASERVER);
+	seed = meta_server_new(uri);
+
+	metaservers = meta_network_load();
+	metaservers = meta_list_server(metaservers, seed);
+	metaservers = meta_network_sync(metaservers);
+	meta_network_store(metaservers);
+
+	for(i = 0; metaservers[i]; i++)
+	{
+		uristr = uri_to_string(metaservers[i]->uri);
+		printf("* consulting metaserver %s\n", uristr);
+		free(uristr);
+	}
+
+	ggzservers = meta_queryallggz(metaservers, GGZ_PROTOCOL_VERSION);
+	meta_list_free(metaservers);
+	uri_free(uri);
 
 	/* This could be the default values. But we code in C here. */
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
@@ -96,24 +125,27 @@ int main(int argc, char *argv[])
 
 	/* Let the chatter select a server. */
 	printf("Please select a server from the list below.\n\n");
-	pref_listservers();
+	pref_listservers(ggzservers);
 	printf("\n");
 	printf("Your choice: ");
 	ret = chat_getserver() - 1;
 
 	/* Check argument */
 	for(i = 0; i <= ret; i++)
-		if(!preflist[i]) ret = -1;
+		if(!ggzservers[i]) ret = -1;
 
 	/* Connect to that server */
 	if(ret >= 0)
 	{
+		host = meta_server_findattribute(ggzservers[ret], "host");
+		port = atoi(meta_server_findattribute(ggzservers[ret], "port"));
+
 		printf("Login with username: ");
 		username = chat_getusername();
 		printf("Use password: ");
 		password = chat_getpassword();
-		printf("Connecting to %s:%i...\n", preflist[ret]->host, preflist[ret]->port);
-		chat_connect(preflist[ret]->host, preflist[ret]->port, username, password);
+		printf("Connecting to %s:%i...\n", host, port);
+		chat_connect(host, port, username, password);
 
 		printf("Type '/help' to get the list of available commands.\n");
 
@@ -126,7 +158,8 @@ int main(int argc, char *argv[])
 	}
 
 	/* Exit with humor */
-	meta_free(preflist);
+	meta_list_free(ggzservers);
+
 	return 0;
 }
 

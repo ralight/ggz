@@ -3,12 +3,13 @@ bin_PROGRAMS = telggz
 telggz_SOURCES = \
 	chat.c chat.h \
 	main.c \
-	meta.c meta.h \
 	net.c net.h
 
 telggz_LDFLAGS = $(GGZCORE_LDFLAGS)
-telggz_LDADD = $(LDADD) \
-               $(LIB_GGZCORE) \
-               $(top_builddir)/metaserv/minidom/libminidom.a
-
-telggz_CPPFLAGS = -I$(top_srcdir)/metaserv/minidom $(GGZCORE_INCLUDES)
+telggz_LDADD = \
+	$(LDADD) \
+	$(top_builddir)/metaserv/libmeta/libggzmeta.a \
+	$(LIB_GGZCORE)
+telggz_CPPFLAGS = \
+	-I $(top_srcdir)/metaserv/libmeta \
+	$(GGZCORE_INCLUDES)
