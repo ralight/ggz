@@ -241,7 +241,7 @@ MOTD = ggzd.motd
 #   file will be queried for system load.  The second paramter is the
 #   word to use as the load.  This will be used in preference to loadbinary
 #   if both options are coded.
-#loadfile = /proc/laodavg, 2
+#loadfile = /proc/loadavg, 2
 
 # Maximum clients (Not Implemented)
 #   This is the maximum number of active clients allowed at one time
