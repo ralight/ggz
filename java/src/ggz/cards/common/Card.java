@@ -68,6 +68,6 @@ public class Card {
     }
 
     public String toString() {
-        return this.face + ":" + this.suit;
+        return this.face + " of " + this.suit;
     }
 }

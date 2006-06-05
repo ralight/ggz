@@ -150,7 +150,6 @@ public class ClientApplet extends JApplet implements ServerListener,
             footerPanel.add(aboutLabel, BorderLayout.SOUTH);
             loginPanel = new LoginPanel(server);
             mainPanel.add(loginPanel, "login");
-            loginPanel.init(uri.getUserInfo());
             loungePanel = new LoungePanel(server);
             mainPanel.add(loungePanel, "lounge");
             roomPanel = new RoomPanel(server);
@@ -159,6 +158,7 @@ public class ClientApplet extends JApplet implements ServerListener,
                     .getString("ClientApplet.Label.PleaseWait"),
                     SwingConstants.CENTER);
             mainPanel.add(busyPanel, "busy");
+            loginPanel.init(uri.getUserInfo());
         } catch (Exception e) {
             handleException(e);
         }

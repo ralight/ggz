@@ -28,64 +28,70 @@ import java.util.ArrayList;
  * @note This only applies for French (standard) decks.
  */
 public class Face {
+    private String name;
 
-	public static final ArrayList values = new ArrayList();
+    public static final ArrayList values = new ArrayList();
 
-	/** An unknown face on a card */
-	public static final Face UNKNOWN_FACE = new Face(); // = -1,
+    /** An unknown face on a card */
+    public static final Face UNKNOWN_FACE = new Face("Unknown"); // = -1,
 
-	/** An "ace" (low) card face */
-	public static final Face ACE_LOW = new Face(); // = 1,
+    /** An "ace" (low) card face */
+    public static final Face ACE_LOW = new Face("Ace"); // = 1,
 
-	public static final Face DEUCE = new Face();
+    public static final Face DEUCE = new Face("Deuce");
 
-	public static final Face THREE = new Face();
+    public static final Face THREE = new Face("Three");
 
-	public static final Face FOUR = new Face();
+    public static final Face FOUR = new Face("Four");
 
-	public static final Face FIVE = new Face();
+    public static final Face FIVE = new Face("Five");
 
-	public static final Face SIX = new Face();
+    public static final Face SIX = new Face("Six");
 
-	public static final Face SEVEN = new Face();
+    public static final Face SEVEN = new Face("Seven");
 
-	public static final Face EIGHT = new Face();
+    public static final Face EIGHT = new Face("Eight");
 
-	public static final Face NINE = new Face();
+    public static final Face NINE = new Face("Nine");
 
-	public static final Face TEN = new Face();
+    public static final Face TEN = new Face("Ten");
 
-	/** A "jack" card face */
-	public static final Face JACK = new Face(); // = 11,
+    /** A "jack" card face */
+    public static final Face JACK = new Face("Jack"); // = 11,
 
-	/** A "queen" card face */
-	public static final Face QUEEN = new Face(); // = 12,
+    /** A "queen" card face */
+    public static final Face QUEEN = new Face("Queen"); // = 12,
 
-	/** A "king" card face */
-	public static final Face KING = new Face(); // = 13,
+    /** A "king" card face */
+    public static final Face KING = new Face("King"); // = 13,
 
-	/** An "ace" (high) card face */
-	public static final Face ACE_HIGH = new Face(); // = 14,
+    /** An "ace" (high) card face */
+    public static final Face ACE_HIGH = new Face("Ace"); // = 14,
 
-	/** A "joker 1" card face */
-	public static final Face JOKER1 = new Face(); // = 0,
+    /** A "joker 1" card face */
+    public static final Face JOKER1 = new Face("Joker"); // = 0,
 
-	/** A "joker 2" card face */
-	public static final Face JOKER2 = new Face(); // = 1
+    /** A "joker 2" card face */
+    public static final Face JOKER2 = new Face("Joker"); // = 1
 
-	private Face() {
-		values.add(this);
-	}
+    private Face(String name) {
+        this.name = name;
+        values.add(this);
+    }
 
-	public int ordinal() {
-		return values.indexOf(this);
-	}
-	
-	public static Face[] values() {
-		return (Face[]) values.toArray(new Face[values.size()]);
-	}
+    public int ordinal() {
+        return values.indexOf(this);
+    }
 
-	public static Face valueOf(int ordinal) {
-		return (Face) values.get(ordinal);
-	}
+    public static Face[] values() {
+        return (Face[]) values.toArray(new Face[values.size()]);
+    }
+
+    public static Face valueOf(int ordinal) {
+        return (Face) values.get(ordinal);
+    }
+
+    public String toString() {
+        return name;
+    }
 }

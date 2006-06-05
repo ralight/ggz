@@ -18,7 +18,6 @@
 package ggz.client.mod;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -135,9 +134,8 @@ public class Mod implements ModGGZ, ModGame {
 		/* For the ggz side, we fork the game and then send the launch message */
 
 		Class c = Class.forName(this.class_name);
-		Constructor constructor = c
-				.getConstructor(new Class[] { ModGame.class });
-		constructor.newInstance(new Object[] { this });
+        ModEventHandler game = (ModEventHandler) c.newInstance();
+        game.init(this);
 		send_game_launch();
 		// if (ggzmod->argv) {
 		// if (game_fork(ggzmod) < 0) {

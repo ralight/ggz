@@ -19,31 +19,23 @@ package ggz.cards;
 
 import ggz.cards.bridge.BridgeBidPanel;
 import ggz.cards.client.CardGameHandler;
-import ggz.cards.client.Player;
 import ggz.cards.client.Client;
+import ggz.cards.client.Player;
 import ggz.cards.common.Bid;
 import ggz.cards.common.Card;
 import ggz.cards.common.CardSetType;
 import ggz.cards.common.GGZCardInputStream;
 import ggz.client.mod.ModGame;
-import ggz.client.mod.Seat;
-import ggz.client.mod.SpectatorSeat;
-import ggz.common.ChatType;
 import ggz.common.SeatType;
-import ggz.ui.ChatAction;
-import ggz.ui.ChatPanel;
+import ggz.games.GamePanel;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -55,21 +47,17 @@ import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 
-public class GamePanel extends JPanel implements CardGameHandler,
+public class CardGamePanel extends GamePanel implements CardGameHandler,
         ActionListener {
     protected Client card_client;
-
-    protected ChatPanel chat_panel;
 
     protected JLabel[] player_labels;
 
@@ -94,17 +82,13 @@ public class GamePanel extends JPanel implements CardGameHandler,
 
     protected BridgeBidPanel bridgeBidPanel;
 
-    public GamePanel(ModGame mod) throws IOException {
-        super(new SmartChatLayout());
-        card_client = new Client(mod);
+    public void init(ModGame mod) throws IOException {
+        super.init(mod);
+        card_client = new Client();
         card_client.add_listener(this);
-        chat_panel = new ChatPanel(new TableChatAction());
-        chat_panel.setPreferredSize(new Dimension(200, 150));
-        add(chat_panel, SmartChatLayout.CHAT);
         table = new TablePanel();
         table.setBackground(new Color(0, 128, 0));
         add(table, SmartChatLayout.TABLE);
-        setOpaque(true);
 
         // Calculate the size of the cards.
         Sprite sample = new Sprite(Card.UNKNOWN_CARD);
@@ -138,7 +122,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
                     if (bridgeBidPanel == null) {
                         bridgeBidPanel = new BridgeBidPanel(card_client
                                 .get_num_players());
-                        bridgeBidPanel.addActionListener(GamePanel.this);
+                        bridgeBidPanel.addActionListener(CardGamePanel.this);
                         table.add(bridgeBidPanel, new TableConstraints(
                                 TableConstraints.BUTTON_PANEL));
                         table.invalidate();
@@ -434,8 +418,13 @@ public class GamePanel extends JPanel implements CardGameHandler,
     protected void putNextPlayersCardsOnTop(int player_num) {
         int num_players = card_client.get_num_players();
         int player_on_left = (player_num + 1) % num_players;
-        if (Card.UNKNOWN_CARD.equals(card_client.get_nth_player(player_on_left)
-                .get_table_card())) {
+// HB I commented this out because on a fast connection (LAN) the computer
+// was playing a card faster than the animation so the table card was not unknown
+// and the computers card was not played on top of the discard. All this change
+// should mean is that when the last card is played on a trick there is an 
+// unnecessary processing for the player that led to the trick.
+//        if (Card.UNKNOWN_CARD.equals(card_client.get_nth_player(player_on_left)
+//                .get_table_card())) {
             // Player has not played a card so put his cards on top
             for (int card_num = sprites[player_on_left].length - 1; card_num >= 0; card_num--) {
                 Sprite card = sprites[player_on_left][card_num];
@@ -444,10 +433,11 @@ public class GamePanel extends JPanel implements CardGameHandler,
                     table.remove(card);
                     table.add(card, 0);
                     tableLayout.setConstraints(card, new TableConstraints(
-                            TableConstraints.CARD_IN_HAND, player_on_left, card_num));
+                            TableConstraints.CARD_IN_HAND, player_on_left,
+                            card_num));
                 }
             }
-        }
+//        }
     }
 
     public void alert_server(Socket fd) {
@@ -614,11 +604,11 @@ public class GamePanel extends JPanel implements CardGameHandler,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 if ("Bridge".equals(JOptionPane.getFrameForComponent(
-                        GamePanel.this).getTitle())) {
+                        CardGamePanel.this).getTitle())) {
                     if (bridgeBidPanel == null) {
                         bridgeBidPanel = new BridgeBidPanel(card_client
                                 .get_num_players());
-                        bridgeBidPanel.addActionListener(GamePanel.this);
+                        bridgeBidPanel.addActionListener(CardGamePanel.this);
                         table.add(bridgeBidPanel, new TableConstraints(
                                 TableConstraints.BUTTON_PANEL));
                         table.invalidate();
@@ -732,11 +722,11 @@ public class GamePanel extends JPanel implements CardGameHandler,
                             // not
                             // registered yet.
                             player_cards[card_num]
-                                    .removeActionListener(GamePanel.this);
+                                    .removeActionListener(CardGamePanel.this);
                             player_cards[card_num]
                                     .removeMouseListener(spriteHighlighter);
                             player_cards[card_num]
-                                    .addActionListener(GamePanel.this);
+                                    .addActionListener(CardGamePanel.this);
                             player_cards[card_num]
                                     .addMouseListener(spriteHighlighter);
                         }
@@ -888,8 +878,8 @@ public class GamePanel extends JPanel implements CardGameHandler,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 if ("game".equals(mark)) {
-                    JOptionPane.getFrameForComponent(GamePanel.this).setTitle(
-                            message);
+                    JOptionPane.getFrameForComponent(CardGamePanel.this)
+                            .setTitle(message);
                 } else if ("Options".equals(mark)) {
                     table.setOptionsSummary(replace(message, "\n", "<BR>"));
                 } else if ("Scores".equals(mark)) {
@@ -922,82 +912,14 @@ public class GamePanel extends JPanel implements CardGameHandler,
         });
     }
 
-    public void handle_chat(final String player, final String msg) {
-        // Can't ignore messages because we need to handle the /table command,
-        // which can be sent from the table or room.
-        // All handlers are called from the socket thread so we need to do
-        // this crazy stuff. This method is usually invoked from a handler.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                chat_panel.appendChat(player, msg);
-            }
-        });
-    }
-
-    public void handle_info(int num, List infos) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                chat_panel.appendChat("handle_info", null);
-            }
-        });
-    }
-
-    public void handle_launch() {
+    public void handle_launch() throws IOException {
         table.setStatus("Connecting to game server...");
-        JFrame frame = new JFrame();
-        frame.getContentPane().add(this, BorderLayout.CENTER);
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                try {
-                    card_client.quit();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                e.getWindow().dispose();
-            }
-        });
-        frame.setSize(800, 540);
-        // frame.setLocationByPlatform(true);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        super.handle_launch();
     }
 
-    public void handle_player(String name, boolean is_spectator, int seat_num) {
-        // chat_panel.handle_chat("handle_player", "name=" + name
-        // + " is_spectator=" + is_spectator + " seat_num=" + seat_num);
-    }
-
-    /**
-     * This is invoked when a message arrives from the core client. We handle
-     * player messages in alert_player() above, which is invoked when a message
-     * arrives from the game client.
-     */
-    public void handle_seat(Seat seat) {
-        // Do nothing here.
-    }
-
-    public void handle_server_fd(Socket fd) {
-        // Don't need the socket so ignore
-    }
-
-    /**
-     * Called when the core client disconnects.
-     */
-    public void handle_disconnect() {
-        JOptionPane.getFrameForComponent(this).dispose();
-    }
-
-    public void handle_spectator_seat(final SpectatorSeat seat) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if (seat.get_name() == null) {
-                    chat_panel.appendInfo("A spectator has left.");
-                } else {
-                    chat_panel.appendInfo(seat.get_name()
-                            + " has joined as a spectator.");
-                }
-            }
-        });
+    public void handle_server_fd(Socket fd) throws IOException {
+        super.handle_server_fd(fd);
+        card_client.handle_server_connect(fd);
     }
 
     public void handleException(Throwable e) {
@@ -1010,31 +932,6 @@ public class GamePanel extends JPanel implements CardGameHandler,
             SwingUtilities.invokeAndWait(doRun);
         } catch (Exception e) {
             handleException(e);
-        }
-    }
-
-    private class TableChatAction extends ChatAction {
-
-        public boolean sendChat(ChatType type, String target, String message)
-                throws IOException {
-            if (type != ChatType.GGZ_CHAT_TABLE) {
-                chatPanel
-                        .appendCommandText("Only regular chat is allowed while playing a game.");
-                return false;
-            }
-            card_client.request_chat(message);
-            return true;
-        }
-
-        protected void chat_display_local(ChatType type, String message) {
-            // Never display local text because of the /table command. See
-            // handle_chat above.
-            // String handle = card_client.get_nth_player(0).get_name();
-            // chatPanel.appendChat(type, handle, message);
-        }
-
-        protected ChatType getDefaultChatType() {
-            return ChatType.GGZ_CHAT_TABLE;
         }
     }
 
@@ -1054,7 +951,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
 
         public void actionPerformed(ActionEvent event) {
             try {
-                card_client.request_bot(seat_num);
+                ggzMod.request_bot(seat_num);
             } catch (IOException e) {
                 handleException(e);
             }
@@ -1079,7 +976,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
             try {
                 String player_name = card_client.get_nth_player(seat_num)
                         .get_name();
-                card_client.request_boot(player_name);
+                ggzMod.request_boot(player_name);
             } catch (IOException e) {
                 handleException(e);
             }
@@ -1102,7 +999,7 @@ public class GamePanel extends JPanel implements CardGameHandler,
 
         public void actionPerformed(ActionEvent event) {
             try {
-                card_client.request_open(seat_num);
+                ggzMod.request_open(seat_num);
             } catch (IOException e) {
                 handleException(e);
             }

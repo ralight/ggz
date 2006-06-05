@@ -22,6 +22,7 @@ import java.net.Socket;
 import java.util.List;
 
 public interface ModEventHandler {
+    public void init(ModGame mod) throws IOException;
     public void handle_launch() throws IOException;
     public void handle_server_fd(Socket fd) throws IOException;
     public void handle_chat(String player, String msg);

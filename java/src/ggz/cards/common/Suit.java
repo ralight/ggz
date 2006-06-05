@@ -26,40 +26,46 @@ import java.util.ArrayList;
  * @see Card.get_suit()
  */
 public class Suit {
+    private String name;
 
-	public static final ArrayList values = new ArrayList();
-	
-	/** An unknown suit of a card */
-	public static final Suit UNKNOWN_SUIT = new Suit(); // = -1,
+    public static final ArrayList values = new ArrayList();
 
-	/** The clubs (lowest) suit */
-	public static final Suit CLUBS = new Suit(); // = 0,
+    /** An unknown suit of a card */
+    public static final Suit UNKNOWN_SUIT = new Suit("Unknown"); // = -1,
 
-	/** The diamonds (second) suit */
-	public static final Suit DIAMONDS = new Suit(); // = 1,
+    /** The clubs (lowest) suit */
+    public static final Suit CLUBS = new Suit("Clubs"); // = 0,
 
-	/** The hearts (third) suit */
-	public static final Suit HEARTS = new Suit(); // = 2,
+    /** The diamonds (second) suit */
+    public static final Suit DIAMONDS = new Suit("Diamonds"); // = 1,
 
-	/** The spades (highest) suit */
-	public static final Suit SPADES = new Suit(); // = 3,
+    /** The hearts (third) suit */
+    public static final Suit HEARTS = new Suit("Hearts"); // = 2,
 
-	/** A no-suit used for jokers etc. */
-	public static final Suit NO_SUIT = new Suit(); // = 4;
+    /** The spades (highest) suit */
+    public static final Suit SPADES = new Suit("Spades"); // = 3,
 
-	private Suit() {
-		values.add(this);
-	}
+    /** A no-suit used for jokers etc. */
+    public static final Suit NO_SUIT = new Suit("No Suit"); // = 4;
 
-	public int ordinal() {
-		return values.indexOf(this);
-	}
-	
-	public static Suit[] values() {
-		return (Suit[]) values.toArray(new Suit[values.size()]);
-	}
+    private Suit(String name) {
+        this.name = name;
+        values.add(this);
+    }
 
-	public static Suit valueOf(int ordinal) {
-		return (Suit) values.get(ordinal);
-	}
+    public int ordinal() {
+        return values.indexOf(this);
+    }
+
+    public static Suit[] values() {
+        return (Suit[]) values.toArray(new Suit[values.size()]);
+    }
+
+    public static Suit valueOf(int ordinal) {
+        return (Suit) values.get(ordinal);
+    }
+
+    public String toString() {
+        return name;
+    }
 }

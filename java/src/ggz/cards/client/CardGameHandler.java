@@ -21,14 +21,13 @@ import ggz.cards.common.Bid;
 import ggz.cards.common.Card;
 import ggz.cards.common.CardSetType;
 import ggz.cards.common.GGZCardInputStream;
-import ggz.client.mod.ModEventHandler;
 import ggz.common.SeatType;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 
-public interface CardGameHandler extends ModEventHandler {
+public interface CardGameHandler {
     public void alert_server(Socket fd);
 
     public void set_text_message(String mark, String message);
