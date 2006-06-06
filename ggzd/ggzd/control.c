@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8075 2006-05-29 16:10:10Z josef $
+ * $Id: control.c 8100 2006-06-06 01:24:22Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -291,7 +291,7 @@ static int zeroconf_publish(const char *name, const char *protocol, int port)
 }
 
 /* FIXME: split out room part to support room reconfiguration */
-void meta_announce(const char *metaserveruri, const char *username, const char *password)
+static void meta_announce(const char *metaserveruri, const char *username, const char *password)
 {
 	URI uri;
 	ServerEntry *server;
