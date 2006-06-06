@@ -1,16 +1,20 @@
-.TH "ggzwrap" "1" "0.0.10" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggzwrap" "1" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP
-ggzwrap \- A generic game client/server wrapper
+ggzwrap \- GGZ Gaming Zone game client/server wrapper
 .SH "SYNOPSIS"
 .LP
-ggzwrap
-\-\-fdin=FDIN \-\-fdout=FDOUT \-\-exec=PROGRAM [\fI\-\-convert\fR]
+\fBggzwrap\fR
+[\fIOPTION\fR...] \fB\-\-exec\fR=\fIGAME\fR
 .SH "DESCRIPTION"
 .LP
-This wrapper takes the place of a game client and server. Its task is to manage
-different file descriptors than the one which are normally used.
-The GGZ servers and clients do currently communicate using fd 3, so a call to:
+This wrapper takes the place of a game client or server, and relays the
+control messages between the game and the invoking instance, which is either
+the GGZ server \fBggzd\fR or a GGZ core client. One task is to manage
+different file descriptors than the ones which are normally used.
+The GGZ servers and clients do currently communicate using a socket which is
+passed in the environment variable \fIGGZSOCKET\fR, usually being fd 3 on the
+server side and fd 103 on the client side, so a call to:
 .LP
 \fBggzwrap \-\-fdin=3 \-\-fdout=3 \-\-exec=gameserver\fR
 .LP
@@ -20,13 +24,42 @@ redirection like:
 .LP
 \fBggzwrap \-\-fdin=0 \-\-fdout=1 \-\-exec=gameserver\fR
 .LP
-The \fI\-\-convert\fR option tries to automatically convert strings from network format
+The GGZ game Muehle uses \fBggzwrap\fR to demonstrate that game clients do
+not necessarily need to use any GGZ libraries. The downside is that a lot of
+game client functionality will not be available.
+Game clients which want to make use of the wrapper must add a command similar
+to the one above into the file \fIggz.modules\fR.
+.SH "OPTIONS"
+.TP 
+\fB\-\-fdin=\fR\fIFD\fP
+File descriptor on which the game expects its input.
+.TP 
+\fB\-\-fdout=\fR\fIFD\fP
+File descriptor to which the game writes its output.
+.TP 
+\fB\-\-convert\fR
+This option automatically converts strings from network format
 to host format (more correctly, from libggz's easysock format to the normal
-null-terminated one).
+null-terminated one) for the game server, and back in the other
+direction. This will be needed for most games.
+.TP 
+\fB\-\-exec=\fR\fIGAME\fP
+The game client or server to launch as a child process.
+.SH "ENVIRONMENT VARIABLES"
+.LP 
+.TP 
+\fBGGZMODE\fR
+Set by a GGZ core client to tell games they're running in GGZ mode.
+.TP 
+\fBGGZSOCKET\fR
+File descriptor for the connection to the invoking GGZ core client.
+.SH "BUGS"
+.LP 
+Using \fBggzwrap\fR with game servers has never been really evaluated.
 .SH "AUTHORS"
 .LP
 The GGZ Development Team
 <ggz\-dev@mail.ggzgamingzone.org>
 .SH "SEE ALSO"
 .LP
-shadowbridge(6)
+shadowbridge(6), ggz.modules(5), ggz(7)

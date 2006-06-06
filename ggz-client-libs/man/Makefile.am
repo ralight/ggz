@@ -4,8 +4,10 @@ man_MANS = \
 	ggzcore_h.3 \
 	ggzmod_h.3 \
 	ggz-wrapper.6 \
-	ggzwrap.1
+	ggzwrap.1 \
+	ggz.7
 
 EXTRA_DIST = \
 	ggz-wrapper.6 \
-	ggzwrap.1
+	ggzwrap.1 \
+	ggz.7

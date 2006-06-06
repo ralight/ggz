@@ -1,20 +1,25 @@
-.TH "grubby-config" "1" "0.0.10" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "grubby-config" "1" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP 
 grubby-config \- Grubby configuration script
 .SH "DESCRIPTION"
 .LP
-In order to run the GGZ chat bot (grubby), it must be configured properly.
-The grubby-config script saves a lot of work: it does interactively query all
-possible options from the user, and build up a working configuration file.
+In order to run the GGZ chat bot (\fBgrubby\fR), it must be configured properly.
+The \fBgrubby-config\fR script saves a lot of work: it queries interactively
+all possible options from the user, and builds up a working configuration
+file.
 .LP
 This script should be run as the user under whose user id grubby will run (this
 can be a normal user, or games). It will then ask questions, most of them provide
-a default answer. Only the name and the owner is necessary information.
+a default answer. Only the \fIname\fR and the \fIowner\fR fields are settings
+required for \fBgrubby\fR to work.
 .SH "FILES"
 .LP
-~/.ggz/grubby.rc - grubby's main configuration file.
+\fI~/.ggz/grubby.rc\fR - grubby's main configuration file.
 .SH "AUTHORS"
 .LP 
 The GGZ Development Team
 <ggz\-dev@mail.ggzgamingzone.org>
+.SH "SEE ALSO"
+.LP
+grubby(6), kgrubby(1), ggz(7)

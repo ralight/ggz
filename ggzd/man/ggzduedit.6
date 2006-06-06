@@ -1,21 +1,61 @@
-.TH "ggzduedit" "6" "0.0.11" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggzduedit" "6" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP 
 ggzduedit \- User management tool for the GGZ Gaming Zone server
 .SH "SYNOPSIS"
 .LP
 .B ggzduedit
-[\fIDATADIR\fR]
+[\fIOPTION\fR...]
 .SH "DESCRIPTION"
 .LP
-This tools allows you to view the list of currently registered users,
+The tool \fBggzduedit\fR, which is an abbreviation of User Editor,
+provides access to the database of the GGZ server, \fBggzd\fR.
+It can be used to view the list of currently registered users,
 as well as add new ones or delete some registrations.
-In case there are multiple ggzd installations around, an alternative data
-directory may be passed to ggzduedit as an option.
+The options allow to pass the database connection options or file
+locations to \fBggzduedit\fR, for example in the presence of multiple
+instances of the server.
+Usually however, the server database configuration can be read in by
+the tool from the file \fIggzd.conf\fR, so no command line options are
+required.
+.SH "OPTIONS"
+.TP
+\fB-d\fR, \fB--datadir=\fR\fIDATADIR\fR
+The data directory where the local database files is located.
+This options is used for \fBggzd\fR installations which are configured
+to use \fBlibdb\fR (2/3/4) or \fBsqlite\fR as their database backend.
+.TP
+\fB-D\fR, \fB--dbname=\fR\fIDBNAME\fR
+Name of the database.
+This option is for SQL database backends.
+.TP
+\fB-H\fR, \fB--host=\fR\fIHOST\fR
+Name of the host the database server runs on.
+This option is for SQL database backends.
+.TP
+\fB-u\fR, \fB--username=\fR\fIUSERNAME\fR
+Username which is used for the connection.
+This option is for SQL database backends.
+.TP
+\fB-p\fR, \fB--password=\fR[\fIPASSWORD\fR]
+Password corresponding to the user. It is strongly recommended
+to leave out \fIPASSWORD\fR and let \fBggzduedit\fR request
+it interactively.
+This option is for SQL database backends.
+.TP
+\fB-h\fR, \fB--help\fR
+Display command line option help and exit.
+.TP
+\fB-v\fR, \fB--version\fR
+Display the version number of the utility.
 .SH "FILES"
 .LP 
 \fI/var/ggzd/player.db\fP - player registry
+.LP
+\fI/etc/ggzd/ggzd.conf\fP - ggzd SQL database server configuration
 .SH "AUTHORS"
 .LP 
 The GGZ Development Team
 <ggz\-dev@mail.ggzgamingzone.org>
+.SH "SEE ALSO"
+ggzd(6), ggz(7)

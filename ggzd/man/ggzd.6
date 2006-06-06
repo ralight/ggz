@@ -1,11 +1,11 @@
-.TH "ggzd" "6" "0.0.13" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggzd" "6" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP 
 ggzd \- GGZ Gaming Zone Main Server
 .SH "SYNOPSIS
 .LP
 .B ggzd
-[\fIOPTIONS\fB]
+[\fIOPTIONS\fR...]
 .SH "DESCRIPTION"
 .LP
 The main GGZ Gaming Zone server \fBggzd\fR implements a centralized facility
@@ -15,35 +15,60 @@ players and tables, and is connected to a database to handle player permissions
 and game statistics.
 The server forks a child server for every launched game. It listens on port
 5688 by default for incoming connections from GGZ core clients (or other
-clients like the chatbot grubby).
+clients like the chatbot \fBgrubby\fR).
 .LP
 Most of its options are configured in \fIggzd.conf\fR, although some command
-line options are available as well.
+line options are available as well. Configuration details are outlined
+below.
 It is recommended that the \fIGGZ Server Hosting Guide\fR be read before
-running the server.
+running the server, especially for production systems.
+An overview on the server is given in \fIGGZ Server Architecture\fR.
+Both documents are available in the ggz-docs package.
 .SH "OPTIONS"
 .TP
 \fB-F\fR, \fB--foreground\fR
 Stay in the foreground instead of daemonizing away from the terminal
 .TP
-\fB-f\fR, \fB--file\fR=file
-Use the specified configuration file instead of the default one
+\fB-f\fR, \fB--file\fR=\fIFILE\fR
+Use the specified configuration file instead of the default one, which
+is \fIggzd.conf\fR.
 .TP
-\fB-l\fR, \fB--log\fR=level
-Start with the given log levels for messages to the console
+\fB-l\fR, \fB--log\fR=\fILEVEL\fR
+Start with the given log levels for messages to the console. Levels
+are described in \fIggzd.conf\fR. A value of \fIall\fR will output
+all log messages.
 .TP
-\fB-p\fR, \fB--port\fR=port
-Use this port number instead of 5688
+\fB-p\fR, \fB--port\fR=\fIPORT\fR
+Use this port number to listen for incoming connections.
+The default \fIPORT\fR is 5688.
 .TP
 \fB-s\fR, \fB--specs\fR
-Display the compile-time configuration of ggzd
+Display the compile-time configuration of ggzd. For some values, the
+activation depends on configuration settings, so their values are
+shown in brackets for each of those values.
 .TP
 \fB-v\fR, \fB--version\fR
-Display ggzd version information
+Display ggzd version information.
 .TP
 \fB-h\fR, \fB--help\fR
-Display the options help menu
+Display the command line options overview.
 .LP
+.SH "CONFIGURATION"
+.LP
+The file \fIggzd.conf\fR contains several sections for general server
+configuration, database connectivity, security, logging, broadcasting
+of events and more.
+.LP
+In case reconfiguration support has been compiled in and
+\fIReconfigureRooms\fR is enabled, room files added to and removed from
+\fI/etc/ggzd/rooms/\fR will automatically be read in by ggzd.
+.LP
+The server might contact a zeroconf daemon, a metaserver and a database
+server depending on the configuration. Therefore, its first run should
+be performed with the -F option, so that errors can be caught.
+All of the daemons mentioned above must be running before ggzd is launched,
+even though intermediate downtimes of the database server are handled
+by some of the backends in ggzd.
 .SH "FILES"
 .LP
 \fI/etc/ggzd/ggzd.conf\fP - main server configuration
@@ -59,3 +84,6 @@ Display the options help menu
 .LP
 The GGZ Development Team
 <ggz\-dev@mail.ggzgamingzone.org>
+.SH "SEE ALSO"
+.LP
+ggzduedit(1), ggz(7)

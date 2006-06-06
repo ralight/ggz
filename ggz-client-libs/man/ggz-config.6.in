@@ -1,4 +1,4 @@
-.TH "ggz-config" "6" "0.0.11" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggz-config" "6" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP 
 ggz\-config \- GGZ Gaming Zone configuration manager
@@ -6,46 +6,65 @@ ggz\-config \- GGZ Gaming Zone configuration manager
 .LP 
 Query Mode:
 .br 
-\fBggz\-config [\-\-configdir] [\-\-gamedir] [\-\-datadir]
-[\-\-protocol] [\-\-version]\fR
+\fBggz\-config\fR [\fB\-\-configdir\fR] [\fB\-\-gamedir\fR]
+[\fB\-\-datadir\fR] [\fB\-\-protocol\fR] [\fB\-\-version\fR]
 .LP 
 Install Mode:
 .br 
 \fBggz\-config \-\-install \-\-modfile=\fR\fIFILENAME\fP
-\fB[\-\-destdir] [\-\-force]\fR
+[\fB\-\-destdir\fR] [\fB\-\-force\fR]
 .LP 
 Uninstall Mode:
 .br 
 \fBggz\-config \-\-remove \-\-modfile=\fR\fIFILENAME\fP
+.LP
+Repair Mode:
+.br
+\fBggz\-config \-\-check
 .SH "DESCRIPTION"
-.LP 
-This program can be used for several purposes.  Primarily
+.LP
+The program \fBggz-config\fR is a central tool and part of the
+client libraries package of the GGZ Gaming Zone.
+It can be used for several purposes.  Primarily
 it is used to maintain the \fIggz.modules\fP configuration
 file by installing and removing game module information.
 This is done with the \fI\-\-install\fP and \fI\-\-remove\fP
 modes of operation.
 .LP 
 Additionally, the program can query the installation settings
-of the GGZ Client Libraries to assist in configuring the
+of the GGZ client libraries to assist in configuring the
 build process of a client or game module.
 .SH "OPTIONS"
 .LP 
 Query Mode Options
 .TP 
 \fB\-c\fR, \fB\-\-configdir\fR
-Output location of the GGZ Client Libs configuration
-directory and exit.
+Output location of the GGZ client libraries configuration
+directory and exit. This value will usually be \fI@ggzconfdir@\fR
+and is where the file \fIggz.modules\fR is located.
 .TP 
 \fB\-g\fR, \fB\-\-gamedir\fR
 Output location of the executable game modules and exit.
+Game modules in this directory are all game clients which are not
+installed into a standard PATH directory, mostly because they only
+run when invoked by a GGZ core client. As a special module, the
+game client wrapper \fBggzwrap\fR is installed into this place.
+The gamedir is usually \fI@ggzexecmoddir@\fR.
 .TP 
 \fB\-d\fR, \fB\-\-datadir\fR
 Output location of game module data directory and exit.
+This is where games look for their graphics and level data.
+This will likely resolve to \fI@ggzdatadir@\fR.
 .TP 
 \fB\-p\fR, \fB\-\-protocol\fR
-Query GGZ_CS_PROTO_VERSION - version of core protocol.
-\fB\-\-help\fR
+Query GGZ_CS_PROTO_VERSION - version of core protocol between the
+GGZ server and any GGZ core clients.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
 Output help information and exit.
+.TP 
+\fB\-u\fR, \fB\-\-usage\fR
+Print some \fBggz-config\fR usage scenarios for quick reference.
 .TP 
 \fB\-v\fR, \fB\-\-version\fR
 Output version information and exit.
@@ -57,6 +76,8 @@ Specifies that we are installing a game module description.
 .TP 
 \fB\-\-modfile=\fR\fIFILENAME\fP
 Specifies the source module description file.
+\fIFILENAME\fR will often be named module.dsc, but this is merely
+a convention.
 .TP 
 \fB\-\-force\fR
 Overwrite an existing module entry of the same name, author
@@ -66,7 +87,8 @@ and version rather than returning an error.
 Specifies that the \fI$DESTDIR\fP environment variable
 contains a directory to prepend to the path for the GGZ
 module configuration file (\fIggz.modules\fP).  The
-only known purpose for this is for RPM packaging builds.
+only known purpose for this is for creating binary packages
+of GGZ games.
 .LP 
 Uninstall Mode Options
 .TP 
@@ -76,21 +98,20 @@ Specifies that we are removing a game module description.
 \fB\-\-modfile=\fR\fIFILENAME\fP
 Specifies the source module description file.
 .SH "FILES"
-.LP 
-\fI@ggzconfdir@/ggz.modules\fP 
+.TP 
+\fI@ggzconfdir@/ggz.modules\fP
+Game module registry for all GGZ Gaming Zone core clients.
 .SH "ENVIRONMENT VARIABLES"
 .LP 
 .TP 
 \fBDESTDIR\fR
-Used during install process, most commonly by the RPM
-build sequence.
+Used during install process, most commonly by the
+build sequence of binary packages such as \fBrpm\fR or
+\fBdpkg\fR.
 .SH "BUGS"
 .LP 
 The program is currently unable to detect many problems
 that could arise with an invalid \fIggz.modules\fP file.
-.LP 
-There are a large number of undocumented program options,
-these options should be considered deprecated.
 .LP 
 Probably others, too numerous to mention.
 .SH "AUTHORS"
@@ -99,4 +120,4 @@ The GGZ Development Team
 <ggz\-dev@mail.ggzgamingzone.org>
 .SH "SEE ALSO"
 .LP 
-ggz.modules(5)
+ggz.modules(5), ggz(7)

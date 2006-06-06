@@ -1,0 +1,87 @@
+.TH "ggz" "7" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP
+ggz \- The GGZ Gaming Zone
+.SH "DESCRIPTION"
+.LP
+The GGZ Gaming Zone is a standards-conforming online gaming infrastructure
+which provides many applications and games to people who like to play
+on the internet or in local networks.
+GGZ, how the (recursive) acronym is called, is available for many computer
+systems. This document focuses on the installations on Linux, BSD and Unix.
+.SH "APPLICATIONS"
+.LP
+There isn't a single executable named ggz, instead a multitude of programs
+is available to the user, and even more which operate on the system level or
+are used by developers and administrators.
+Users will most likely want to connect to a GGZ server on the internet,
+such as \fIggz://live.ggzgamingzone.org\fR, to play games against other people.
+\fICore clients\fR are used to perform this task. Functional clients exist
+in the form of \fBkggz\fR for the K Desktop Environment (KDE), \fBggz-gnome\fR
+and \fBggz-gtk\fR for GNOME or XFCE users, and \fBggz-txt\fR for people who
+prefer command-line applications. Of course, the clients are not bound to a
+specific desktop, but the choices above will likely be influenced by the level
+of integration.
+A client under development is the SDL-based \fBvíbora\fR.
+.LP
+Special clients exist in the form of \fBggzap\fR, a quick-launcher for the
+KDE panel, and \fBggz-wrapper\fR which is used for launching GGZ games from
+instant messenger applications.
+.SH "GAMES"
+.LP
+Games are usually launched by the GGZ server, with corresponding game clients
+running on the user's desktop. Plenty of games are available for GGZ, most
+of them coming from the GGZ project itself but several independent game projects
+do now provide GGZ support.
+Game clients are implemented using multiple toolkits, some of which stem from
+certain desktop environments. However, all games work equally well under all
+desktops, it's just a matter of personal choice which of them are to be
+installed - having all of them is just fine.
+.LP
+While some GGZ game clients are suited for online gaming only, others also run
+locally like normal games happen to do. Those will be found in the desktop's
+application menu.
+.SH "FILES"
+.LP
+The following layout can vary from site to site, depending on the completeness
+of a GGZ installation and the operating system distribution in use.
+It adheres to the File Hierarchy Standard (FHS) as much as possible.
+.TP
+/usr/bin
+GGZ applications, tools, and the games which provide single player mode.
+.TP
+/usr/lib/ggz(d)
+GGZ game clients and servers.
+.TP
+/usr/share/ggz(d)
+Data files for game clients and servers.
+.TP
+/etc/ggz.modules
+Game module registry for game clients.
+.TP
+/etc/ggzd
+Configuration for the GGZ server, including rooms and game types.
+.SH "CONFORMING TO"
+.LP
+\fIGGZ Design Document and Protocol Reference\fR, available at
+\fIhttp://www.ggzgamingzone.org/docs/design/\fR
+.LP
+\fIGGZ Client-Client Protocol Reference\fR, available at
+\fIhttp://www.ggzgamingzone.org/docs/design/clientspec/\fR
+.LP
+\fIGGZ Server-Server Protocol Reference\fR, available at
+\fIhttp://www.ggzgamingzone.org/docs/design/serverspec/\fR
+.LP
+Freedesktop.org specifications for desktop integration of games and
+applications, more information at
+\fIhttp://www.freedesktop.org/\fR
+.LP
+File Hierarchy Standard for unix-derived operating systems, at
+\fIhttp://www.pathname.com/fhs/\fR
+.SH "AUTHORS"
+.LP
+The GGZ Development Team
+<ggz\-dev@mail.ggzgamingzone.org>
+.SH "SEE ALSO"
+.LP
+kggz(6), ggz-gtk(6), ggz-txt(6)

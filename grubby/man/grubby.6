@@ -1,56 +1,66 @@
-.TH "grubby" "6" "0.0.10" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "grubby" "6" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP
 grubby \- very intelligent GGZ chat bot
 .SH "SYNOPSIS"
 .B grubby
-[\fIOPTIONS\fR]
+[\fIOPTIONS\fR...]
 .SH "DESCRIPTION"
 .LP
-Grubby is a modular chat bot, which means this program behaves like a human.
+\fBGrubby\fR is a modular chat bot, which means this program behaves like a human.
 Once logged into a GGZ server, you can tell it some news it shall tell
 others, and in return it tells you what it has heard of lately.
 Additionally, if you say a bad word, it complains about it.
-You can even rename grubby to what you want. Common names are
+You can even rename \fBgrubby\fR to what you want. Common names are
 Highlander and Keeper, but you can invent your own ones.
 More functionality can be added by plugging in shared libraries, perl scripts,
 ruby gems, and whatnot.
-From time to time it is recommended to invite Grubby to play a game with you.
+From time to time it is recommended to invite \fBgrubby\fR to play a game with you.
 .SH "OPTIONS"
 .TP
 \fB-h\fR, \fB--help\fR
-Display help menu
+Display help menu and exit.
 .TP
-\fB-H\fR, \fB--host\fR=hostname
-Host to connect to
+\fB-H\fR, \fB--host\fR=\fIHOSTNAME\fR
+Host to connect to. A GGZ server must be running on \fIHOSTNAME\fR.
+This overrides any setting from the default configuration file.
 .TP
-\fB-d\fR, \fB--datadir\fR=datadir
-Use this directory as data directory
+\fB-d\fR, \fB--datadir\fR=\fIDATADIR\fR
+Use this directory as data directory. If not specified, \fIDATADIR\fR defaults
+to ~/.ggz.
 .TP
-\fB-n\fR, \fB--name\fR=name
-Name with which grubby interacts
+\fB-n\fR, \fB--name\fR=\fINAME\fR
+Name with which grubby interacts with other players. This overrides any
+setting from the default configuration file.
 .TP
 \fB-v\fR, \fB--version\fR
-Display grubby version number
+Display grubby's version number and exit.
 .LP
 .SH "COMMANDS"
 .LP
 Grubby accepts both public commands and owner commands. Please view the
-appropriate documentation in the ggz-docs module.
+appropriate documentation in the ggz-docs package. In particular,
+the \fIGrubby Chatbot Manual\fR contains information for grubby users,
+whereas the \fIGrubby Chatbot Admin Manual\fR tells grubby owners how
+to tailor the set of commands.
 .SH "CONFIGURATION"
 .LP
-Configure grubby using the grubby-config perl script. Except the first two
-values (name and owner) all other values can simply be taken from the default
-suggestions.
+Configure grubby using the \fBgrubby-config\fR perl script. Except for the
+first two values (name and owner), all other values can simply be taken
+from the default suggestions.
+.LP
+Graphical configuration is possible using \fBkgrubby\fR, which is
+available as part of the ggz-kde-client package.
 .SH "FILES"
 .LP
-\fI$HOME/.ggz/grubby.rc\fP - configuration file, may be produced by
-grubby-config
+\fI~/.ggz/grubby.rc\fP - configuration file, may be produced by
+\fBgrubby-config\fR or by \fBkgrubby\fR
 .LP
-\fI$HOME/.ggz/grubby/*\fP - individual module files and player database
-.LP
-\fIgrubby-config\fP - user-friendly configuration script
+\fI~/.ggz/grubby/*\fP - individual module files and player database
 .SH "AUTHORS"
 .LP
 The GGZ Development Team
 <ggz\-dev@mail.ggzgamingzone.org>
+.SH "SEE ALSO"
+.LP
+grubby-config(1), kgrubby(1), ggz(7)

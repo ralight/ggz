@@ -1,10 +1,10 @@
-.TH "ggz.modules" "5" "0.0.11" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggz.modules" "5" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP 
-\fBggz.modules\fR \- GGZ Gaming Zone module configuration file
+ggz.modules \- GGZ Gaming Zone module configuration file
 .SH "DESCRIPTION"
 .LP 
-The GGZ Gaming Zone uses the file \fBggz.modules\fR
+The GGZ Gaming Zone uses the file \fIggz.modules\fR
 in order to configure which game modules are properly
 installed.  The only approved method of altering this
 file is using the \fIggz\-config\fP utility, however
@@ -12,7 +12,7 @@ the file structure is documented here in order to
 facilitate manual repairs if necessary.
 .SH "PARAMETERS"
 .LP 
-The \fBggz.modules\fR file is formattted in sections,
+The \fIggz.modules\fR file is formattted in sections,
 each of which begins with a \fI[SectionID]\fP line.  The
 first (required) section is \fI[Games]\fP.  This section
 is followed by any number of game\-specific sections named
@@ -102,4 +102,4 @@ The GGZ Development Team
 <ggz\-dev@mail.ggzgamingzone.org>
 .SH "SEE ALSO"
 .LP 
-ggz\-config(6)
+ggz-config(6), ggz(7)
