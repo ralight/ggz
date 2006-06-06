@@ -32,6 +32,17 @@ AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
 AC_GGZ_INTL
 
+# Check for what to build
+# =======================
+AC_ARG_ENABLE([ggzwrap],
+              AS_HELP_STRING([--disable-ggzwrap], [Don't build ggz wrapper]),
+              [enable_ggzwrap=$enableval], [enable_ggzwrap="yes"])
+if test "x$enable_ggzwrap" = "xyes"; then
+  GGZWRAP_SUBDIR="ggzwrap ggz-wrapper"
+else
+  GGZWRAP_SUBDIR=""
+fi
+AC_SUBST(GGZWRAP_SUBDIR)
 
 # Check for header files
 # ======================
@@ -173,7 +184,11 @@ AC_OUTPUT
 # Status Output
 # =============
 echo ""
-echo "Options"
+echo ""
+echo "Compile options"
+echo "    GGZ Wrapper........$enable_ggzwrap"
+echo ""
+echo "Debugging options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
 echo "    Dmalloc Debugging..$enable_debug_mem"

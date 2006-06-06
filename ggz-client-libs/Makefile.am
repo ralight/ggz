@@ -1,4 +1,4 @@
-SUBDIRS = ggzmod-ggz ggzcore ggzmod ggz-config ggz-wrapper ggzwrap man tests desktop po
+SUBDIRS = ggzmod-ggz ggzcore ggzmod ggz-config $(GGZWRAP_SUBDIR) man tests desktop po
 
 EXTRA_DIST = README.GGZ QuickStart.GGZ \
 	indent.pro \
