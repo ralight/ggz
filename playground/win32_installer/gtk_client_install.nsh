@@ -13,6 +13,7 @@ File "share\ggz\ggz-gtk\help\ggz-gtk-launch.png"
 File "share\ggz\ggz-gtk\help\ggz-gtk-login.png"
 
 SetOutPath "$INSTDIR\share\ggz\ggz-gtk"
+File "ggz_logo_64.ico"
 File "share\ggz\ggz-gtk\about_bg.png"
 File "share\ggz\ggz-gtk\ggz_gtk_admin.svg"
 File "share\ggz\ggz-gtk\ggz_gtk_bot.svg"

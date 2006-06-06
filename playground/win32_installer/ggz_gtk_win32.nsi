@@ -20,6 +20,8 @@ InstallDir "$PROGRAMFILES\GGZ Gaming Zone"
 ;Get installation folder from registry if available
 InstallDirRegKey HKCU "Software\GGZ Gaming Zone\GTK" ""
 
+;SetCompressor /SOLID lzma
+
 ;--------------------------------
 ;Variables
 
@@ -34,7 +36,8 @@ Var STARTMENU_FOLDER
 ;--------------------------------
 ; Installer pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "../COPYING"
+!insertmacro MUI_PAGE_LICENSE "COPYING.gpl"
+!insertmacro MUI_PAGE_LICENSE "COPYING.lgpl"
 ;!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
  
@@ -74,6 +77,10 @@ Section "Dummy Section" SecDummy
 ;-------------------------------------------------------------------
 	!include gtk_client_install.nsh
 	!include gtk_games_install.nsh
+	!include gtk_install.nsh
+	!include other_install.nsh
+
+	CreateShortCut "$INSTDIR\GGZ Gaming Zone.lnk" "$INSTDIR\bin\ggz-gtk.exe" "" "$INSTDIR\share\ggz\ggz-gtk\ggz_logo_64.ico"
 ;-------------------------------------------------------------------
   
 	;Store installation folder
@@ -87,6 +94,7 @@ Section "Dummy Section" SecDummy
 	;Create shortcuts
 	CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
 	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GGZ Gaming Zone.lnk" "$INSTDIR\bin\ggz-gtk.exe" "" "$INSTDIR\share\ggz\ggz-gtk\ggz_logo_64.ico"
   
 	!insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
@@ -110,6 +118,10 @@ Section "Uninstall"
 ;-------------------------------------------------------------------
 	!include gtk_client_uninstall.nsh
 	!include gtk_games_uninstall.nsh
+	!include gtk_uninstall.nsh
+	!include other_uninstall.nsh
+
+	Delete "$INSTDIR\GGZ Gaming Zone.lnk"
 ;-------------------------------------------------------------------
 
 	Delete "$INSTDIR\Uninstall.exe"
@@ -119,8 +131,9 @@ Section "Uninstall"
 	!insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
     
 	Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
+	Delete "$SMPROGRAMS\$MUI_TEMP\GGZ Gaming Zone.lnk"
   
-	;Delete empty start menu parent diretories
+	;Delete empty start menu parent directories
 	StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
  
 	startMenuDeleteLoop:

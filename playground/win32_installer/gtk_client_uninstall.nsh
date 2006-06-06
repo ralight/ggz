@@ -23,6 +23,7 @@ Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_lag3.svg"
 Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_lag4.svg"
 Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_lag5.svg"
 Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_registered.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_logo_64.ico"
 RMDir  "$INSTDIR\share\ggz\ggz-gtk"
 RMDir  "$INSTDIR\share"
 ;-------------------------------------------------------------------
