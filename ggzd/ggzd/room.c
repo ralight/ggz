@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 8071 2006-05-29 07:34:31Z josef $
+ * $Id: room.c 8104 2006-06-06 07:35:24Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -221,26 +221,29 @@ void room_add(int room)
 /* FIXME: together with room_create_additional, should return error status? */
 void room_remove(int room)
 {
+	int roomnum, i;
+
 	/* actual rooms really start with index 1 (= entry room) */
 	if (room <= 0 || room > room_info.num_rooms - 1)
 		return;
 	if (rooms[room].removal_pending)
 		return;
 
-	/* TODO: sweep part of mark-n-sweep */
 	rooms[room].removal_pending = 1;
-
 	room_info.count_rooms--;
+
+	/* We can kill it off right away if nobody's in there */
+	if (rooms[room].player_count == 0) {
+		room_remove_really(room);
+		return;
+	}
 
 	dbg_msg(GGZ_DBG_ROOM, "Marking room %i for removal", room);
 
 	/* FIXME: in chat.c, removal-pending rooms are not skipped yet? */
+	/* TODO: need global event enqueue function (for server-wide events) */
 
-	/*net_send_room_update(net, GGZ_ROOM_UPDATE_CLOSE, room, 0, NULL);*/
-	/* FIXME: need global event enqueue function (for server-wide events) */
-
-	int roomnum = room_get_num_rooms(), i;
-
+	roomnum = room_get_num_rooms();
 	for (i = 0; i < roomnum; i++) {
 		/*if(rooms[i].removal_pending && i != room)
 			continue;*/
@@ -250,6 +253,28 @@ void room_remove(int room)
 
 	/* FIXME: really send this? */
 	chat_server_2_player(NULL, "A room is about to close!");
+}
+
+
+void room_remove_really(int old_room)
+{
+	int i;
+
+	/* FIXME: locking */
+	if(rooms[old_room].player_count == 0
+	&& rooms[old_room].removal_pending)
+	{
+		rooms[old_room].removal_done = 1;
+
+		dbg_msg(GGZ_DBG_ROOM, "Delete room %i entirely", old_room);
+
+		/* For notification, see ROOM_UPDATE_CLOSE */
+		for (i = 0; i < room_info.num_rooms; i++) {
+			room_update_event("", GGZ_ROOM_UPDATE_DELETE, i, old_room);
+		}
+
+		chat_server_2_player(NULL, "A room was removed!");
+	}
 }
 
 
@@ -449,6 +474,9 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 	pthread_rwlock_unlock(&player->lock);
 
 	room_notify_change(name, old_room, room);
+
+	/* Reconfiguration: last man leaving might kill room */
+	room_remove_really(old_room);
 
 	return E_OK;
 }

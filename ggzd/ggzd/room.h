@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 8071 2006-05-29 07:34:31Z josef $
+ * $Id: room.h 8104 2006-06-06 07:35:24Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -110,6 +110,7 @@ void room_initialize(void);
 void room_create_additional(void);
 void room_add(int room);
 void room_remove(int room);
+void room_remove_really(int room);
 GGZClientReqError room_join(GGZPlayer* player, const int);
 GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int game,
                                              char verbose);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8100 2006-06-06 01:24:22Z jdorje $
+ * $Id: control.c 8104 2006-06-06 07:35:24Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -435,7 +435,17 @@ static void reconfiguration_handle(void)
 			filename = ggz_malloc(ev.len + 1);
 			memcpy(filename, &buf[offset + INOTIFY_EVENTSIZE], ev.len);
 
+			diff = INOTIFY_EVENTSIZE + ev.len;
+			pending -= diff;
+			offset += diff;
+
 			dbg_msg(GGZ_DBG_MISC, "* inotify: file %s mask %i", filename, ev.mask);
+
+			if(strncmp(filename + strlen(filename) - 5, ".room", 5))
+			{
+				ggz_free(filename);
+				continue;
+			}
 
 			/* now we've got the filename (and we know the mode) */
 			if(ev.mask == IN_CLOSE_WRITE)
@@ -458,9 +468,6 @@ static void reconfiguration_handle(void)
 			}
 
 			ggz_free(filename);
-			diff = INOTIFY_EVENTSIZE + ev.len;
-			pending -= diff;
-			offset += diff;
 		}
 	}
 #else

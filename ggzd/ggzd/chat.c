@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8071 2006-05-29 07:34:31Z josef $
+ * $Id: chat.c 8104 2006-06-06 07:35:24Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -292,8 +292,8 @@ GGZReturn chat_server_2_player(const char *name, const char *msg)
 		for (i = 0; i < roomnum; i++) {
 			GGZChatEventData *data;
 
-			if(rooms[i].removal_pending)
-				continue;
+			/*if(rooms[i].removal_pending)
+				continue;*/
 
 			data = chat_pack(GGZ_CHAT_ANNOUNCE, "[Server]", msg);
 
