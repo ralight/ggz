@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 8073 2006-05-29 07:37:27Z josef $
+ * $Id: ggzclient.c 8107 2006-06-06 07:39:20Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -253,7 +253,6 @@ static GGZHookReturn ggz_num_rooms_changed(GGZServerEvent id,
 					     const void *event_data,
 					     const void *user_data)
 {
-printf("***event*** rooms changed!\n");
 	update_room_list();
 	return GGZ_HOOK_OK;
 }

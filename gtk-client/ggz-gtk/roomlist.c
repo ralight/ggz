@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 7757 2006-01-09 18:03:06Z jdorje $
+ * $Id: roomlist.c 8107 2006-06-06 07:39:20Z josef $
  * 
  * List of rooms in the server
  * 
@@ -29,6 +29,7 @@
 #endif
 
 #include <assert.h>
+#include <string.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -55,6 +56,11 @@ static void client_join_room(GGZRoom *room)
 	gchar *err_msg = NULL;
 	gint singleclick, status = -1;
 	int id = ggzcore_room_get_id(room);
+
+	if(ggzcore_server_get_cur_room(server) == room) {
+		/* ignore silently that we're already in this room */
+		return;
+	}
 
 	switch (ggzcore_server_get_state(server)) {
 	case GGZ_STATE_OFFLINE:
@@ -287,6 +293,7 @@ void update_room_list(void)
 	GtkListStore *store;
 	int i;
 	const int numrooms = ggzcore_server_get_num_rooms(server);
+	char *closedname;
 
 	/* Retrieve the player list widget. */
 	store = GTK_LIST_STORE(lookup_widget(room_list, "room_list_store"));
@@ -303,6 +310,14 @@ void update_room_list(void)
 		gtk_list_store_set(store, &iter,
 				   ROOM_COLUMN_PTR, room,
 				   ROOM_COLUMN_NAME, name, -1);
+
+		if (ggzcore_room_get_closed(room)) {
+			closedname = ggz_malloc(strlen(name) + 3);
+			sprintf(closedname, "(%s)", name);
+			gtk_list_store_set(store, &iter,
+				ROOM_COLUMN_NAME, closedname, -1);
+			ggz_free(closedname);
+		}
 
 		if (players >= 0) {
 			gtk_list_store_set(store, &iter,
