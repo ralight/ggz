@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8102 2006-06-06 04:18:08Z jdorje $
+ * $Id: netxml.c 8106 2006-06-06 07:38:18Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1463,7 +1463,10 @@ static void _ggzcore_net_room_update(GGZNet * net, GGZXMLElement * update,
 			_ggzcore_room_set_players(room, players);
 		} else if(strcasecmp(action, "delete") == 0) {
 			/* FIXME: no such function yet for removals */
-			/*_ggzcore_room_delete(room);*/
+			_ggzcore_server_delete_room(net->server, room);
+			_ggzcore_server_event(net->server,
+				GGZ_SERVER_ROOMS_CHANGED,
+				NULL);
 		} else if(strcasecmp(action, "close") == 0) {
 			/* FIXME: mark room as closed? */
 			_ggzcore_room_close(room);
@@ -1471,6 +1474,8 @@ static void _ggzcore_net_room_update(GGZNet * net, GGZXMLElement * update,
 				GGZ_SERVER_ROOMS_CHANGED,
 				NULL);
 		}
+
+		_ggzcore_room_free(roomdata);
 	} else {
 		if(strcasecmp(action, "add") == 0) {
 			/* FIXME: resize room list (array) first */
@@ -1481,8 +1486,6 @@ static void _ggzcore_net_room_update(GGZNet * net, GGZXMLElement * update,
 				NULL);
 		}
 	}
-
-	_ggzcore_room_free(roomdata);
 }
 
 

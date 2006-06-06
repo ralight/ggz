@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 8072 2006-05-29 07:36:46Z josef $
+ * $Id: server.h 8106 2006-06-06 07:38:18Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -119,6 +119,7 @@ void _ggzcore_server_init_roomlist(GGZServer * server, const int num);
 void _ggzcore_server_free_roomlist(GGZServer * server);
 void _ggzcore_server_grow_roomlist(GGZServer * server);
 void _ggzcore_server_add_room(GGZServer * server, GGZRoom * room);
+void _ggzcore_server_delete_room(GGZServer * server, GGZRoom * room);
 
 /* Functions for manipulating list of gametypes */
 void _ggzcore_server_init_typelist(GGZServer * server, const int num);

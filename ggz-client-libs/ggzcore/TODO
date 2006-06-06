@@ -5,6 +5,8 @@ http://bugs.ggzgamingzone.org/.
 - using an XML writer library like libxml2
   (see ggzd for the complementary issue)
 
+- renaming of all server events to GGZ_SERVER_* for consistency
+
 ++++++++++++++++++++++++++++
 old todo items (from 2003 or so) below which might still be valid:
 

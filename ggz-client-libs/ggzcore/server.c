@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 8072 2006-05-29 07:36:46Z josef $
+ * $Id: server.c 8106 2006-06-06 07:38:18Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -547,7 +547,7 @@ int ggzcore_server_join_room(GGZServer * server,
 			     const unsigned int room_num)
 {
 	/* FIXME: check validity of this action */
-	if (server && (room_num < server->num_rooms)
+	if (server && (_ggzcore_server_get_room_by_id(server, room_num))
 	    && (server->state == GGZ_STATE_IN_ROOM
 		|| server->state == GGZ_STATE_LOGGED_IN))
 		return _ggzcore_server_join_room(server, room_num);
@@ -754,6 +754,7 @@ GGZRoom *_ggzcore_server_get_nth_room(const GGZServer * server,
 				      const unsigned int num)
 {
 	return server->rooms[num];
+	/* FIXME: does this work for fragmented room lists, too? */
 }
 
 
@@ -1272,7 +1273,7 @@ int _ggzcore_server_join_room(GGZServer * server,
 	GGZRoom *room;
 
 	/* We need to send the room's ID on the server */
-	room = _ggzcore_server_get_nth_room(server, room_num);
+	room = _ggzcore_server_get_room_by_id(server, room_num);
 	room_id = ggzcore_room_get_id(room);
 
 	ggz_debug(GGZCORE_DBG_SERVER, "Moving to room %d", room_num);
@@ -1460,6 +1461,31 @@ void _ggzcore_server_add_room(GGZServer * server, GGZRoom * room)
 		if (server->rooms[i] == NULL) {
 			server->rooms[i] = room;
 			break;
+		}
+		++i;
+	}
+}
+
+
+void _ggzcore_server_delete_room(GGZServer * server, GGZRoom * room)
+{
+	int i = 0;
+	int j;
+
+	/* Find room with the same id, and empty its slot */
+	while (i < server->num_rooms) {
+		if (server->rooms[i] != NULL) {
+			if (!_ggzcore_room_compare(server->rooms[i], room)) {
+				_ggzcore_room_free(server->rooms[i]);
+				/*server->rooms[i] = NULL;*/
+				server->num_rooms--;
+				/* FIXME: what if not at end? reorder! */
+				for (j = i; j < server->num_rooms; j++) {
+					server->rooms[j] = server->rooms[j + 1];
+				}
+				server->rooms[server->num_rooms] = NULL;
+				break;
+			}
 		}
 		++i;
 	}
