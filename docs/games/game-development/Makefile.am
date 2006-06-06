@@ -8,7 +8,7 @@ guide_DATA = $(ggzgamedevelopmentguide) ggz-game-development-guide.sxw
 EXTRA_DIST = ggz-game-development-guide.sxw
 
 %_toc.html: %.texi
-	texi2html -split_node $<
+	texi2html -split chapter $<
 	-mv ggz-game-development-guide/*.html $(top_builddir)/games/game-development/
 
 %.txt: %.texi

@@ -89,7 +89,8 @@ can be made, for example, most external game have been present before they got
 a GGZ mode, and are thus more complex in design.
 In the future, some GGZ game servers and clients will most likely also provide
 a standalone mode, just like some clients already do for local games,
-namely Muehle, KTicTacTux, Geekgame, Escape/SDL and Xadrez Chines.
+namely Muehle, KTicTacTux, Geekgame, Escape/SDL, Xadrez Chines, GGZBoard
+and Koenig.
 
 @section Embedded games
 
@@ -101,6 +102,8 @@ core client.
 Right now, only one external game runs in embedded mode, namely Widelands.
 In order to do so, ggzcore must be initialized with the OPT_EMBEDDED flag
 switched on.
+The ggzcore API documentation provides more facts and details about the
+embedded mode.
 
 @section Distribution
 
@@ -141,9 +144,10 @@ However, this shouldn't stop anybody of developing great game clients.
 Furthermore, there are some GGZ games which run without a server, or with a
 minimal server which leaves all checks to the game clients.
 
-From version 0.0.6 on, game clients request a separate communication channel
+From GGZ version 0.0.6 on, game clients request a separate communication channel
 from the main client, which is connected to the game server directly. This
-leads to a slightly more difficult setup, but allows for higher speed.
+leads to a slightly more difficult setup, but allows for faster connections
+between the game server and the game clients.
 The next section has been added to document this.
 
 @section The client base library: libggzmod
@@ -151,20 +155,35 @@ The next section has been added to document this.
 This is a short description of ggzmod. Please see the API documentation for
 details.
 
+The ggzmod library implements the GGZ client-client protocol specification,
+that is, the communication between a game client and a GGZ core client.
+The specification can be found at
+@url{http://www.ggzgamingzone.org/docs/design/clientspec/}.
+The ggzmod library is available for game development in C, C++ and Python.
+Its homepage is @url{http://dev.ggzgamingzone.org/libraries/ggzmod/}.
+
 A launched game client gets a control channel on its way, which it connects to
-a callback to receive control messages.
+a callback to receive control messages from the GGZ core client which launched
+the game.
 Then it requests a direct game connection, which results in the creation of a
 game channel, which gets connected to a callback too.
 This game channel is then used to communicate with the game server.
+Therefore, game clients usually run with two active connections all the time,
+a local one and a remote one.
 
-A basic ggzmod usage may look like this:
+The receipt of the channel is one message from ggzmod which can be delivered
+via a callback, other such messages include seat changes, table chat or
+detailed player information.
+A basic ggzmod usage may thus look like this:
 
 @verbatim
+/* Whenever the core client sends data, feed it into ggzmod */
 static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 {
 	ggzmod_dispatch(ggzmod);
 }
 
+/* Most important callback: Connection to game server was made! */
 static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
 {
 	int fd = *(int*)data;
@@ -183,25 +202,44 @@ int main()
 	ggzmod_connect(ggzmod);
 	gdk_input_add(ggzmod_get_fd(ggzmod), GDK_INPUT_READ, handle_ggz, NULL);
 ...
+	/* game runs here */
+...
 	ggzmod_disconnect(ggzmod)
 	ggzmod_free(game.ggzmod);
 ...
 }
 @end verbatim
 
-(Note that this is for a Gtk+ game client written in C. Things will differ for
-other toolkits like Qt, and other programming languages like C++. Also, return
-values should be checked and such.)
+Note that the example above is for a Gtk+ game client written in C. Things will
+differ for other toolkits like Qt or Pygame, or other programming languages like
+C++ or Python. Also, return values should be checked and such. The API
+documentation is the authorative source of information on that matter.
+
+@subsection Example in C, using glib
+
+blah
+
+@subsection Example in Python
+
+blah
 
 @section Game Registry
 
-Every game client must be registered in order to be found by the GGZ core
-clients like KGGZ or GGZ-Gtk. This is done via the ggz-config utily during the
-installation step. Basically, every game client has a file called module.dsc,
-which is used for this purpose:
+Every game client must be registered in a central configuration file in order
+to be found by the GGZ core clients like KGGZ or GGZ-Gtk. This is done via the
+ggz-config utility during the installation procedure. Basically, every game
+client has a file called module.dsc, which is used for this purpose:
 @command{ggz-config --install --force --modfile=module.dsc}
 
-The format of this configuration file is defined as follows:
+It is recommended to let the build system create module.dsc based on a template
+like module.dsc.in, so that system specific values, e.g. those including
+path information, can be customized.
+
+The central file, in most cases available under /etc/ggz.modules, is appended
+with the game configuration data, grouping the data by game type, so that
+a player can select one out of various clients per game, if possible.
+
+The format of the game configuration file module.dsc is defined as follows:
 @c @samp{
 @verbatim
 [ModuleInfo]
@@ -214,54 +252,147 @@ Name = <name of the game>
 ProtocolEngine = <engine name>
 ProtocolVersion = <protoversion>
 Version = <version>
+IconPath = <iconpath>
+HelpPath = <helppath>
 @end verbatim
 @c }
 
 The entries don't have to have any special values, except that the combination
 of protocol engine and protocol version is used to ensure the compatibility
-with any game server of this name. The frontend should be a common abbreviation
-like kde, gtk, qt or sdl. The environment can be xfullscreen, xwindow,
-framebuffer, console or passive. The default (if omitted) is xwindow.
+with any game server of this name.
+
+The icon path is rewritten if present during installation and referring to
+a local file, making it possible to install a game icon in one go.
+Otherwise, the icon and help paths should be absolue file names. Likewise,
+the command line should point to a game binary, and in case no path
+information is available, the game client is assumed to exist in the common
+GGZ game client directory, which normally is under /usr/lib/ggz.
+
+The frontend should be a common abbreviation like kde, gtk, qt or sdl, but
+this is merely a convention, and new toolkits might be added over time.
+The environment can be xfullscreen, xwindow, framebuffer, console or passive.
+The default (if omitted) is xwindow.
+
+The following table describes the toolkit choices.
+
+@itemize @bullet
+@item sdl: Simple Direct Media Layer, @url{http://www.libsdl.org/}
+@item kde: K Desktop Environment, @url{http://www.kde.org/}
+@item qt: Qt Toolkit, @url{http://www.trolltech.com/}
+@item gnome: GNOME Desktop, @url{http://www.gnome.org/}
+@item gtk: Gtk+ (the GIMP Toolkit), @url{http://www.gtk.org/}
+@item java: Java Swing or AWT game, @url{http://dev.java.net/}
+@item x11: bare X Window System, @url{http://www.x.org/}
+@item console: text console, Linux/BSD terminal or similar
+@item guru: special value; denotes a chat bot game plugin
+@end itemize
+
+The game environment setting can be used to exclude games from systems where
+they wouldn't run, or poorly so. Core clients decide by themselves which
+game environments they support.
+
+@itemize @bullet
+@item xwindow: game runs as a window in the X Window System
+@item xfullscreen: game runs in fullscreen mode in the X Window System
+@item framebuffer: game uses framebuffer graphics display,
+e.g. on small devices
+@item console: game runs in the text console
+@item passive: special code to denote that this game client shouldn't be
+offered to users; this is used for chat bot game plugins, for example
+@end itemize
+
+The file readme.ggzconfig, which is part of the ggz-client-libs package,
+contains more information about ggz-config invocation and the handling of
+game client configuration files.
 
 @section Client Toolkits
-@subsection KDE or Qt (C++)
+
+This section highlights existing experience with development toolkits
+for game clients. It is neither complete nor very exhaustive - ask
+on the ggz-dev list if a particular toolkit is of interest for you!
+
+@subsection KDE or Qt (C++, Python)
 
 See @url{http://games.kde.org} for information about KDE game development.
 There is also a mailing list for this topic with information available at
 @url{http://mail.kde.org/mailman/listinfo/kde-games-devel}.
 
 The language bindings for KDE are also maturing, so there shouldn't be major
-obstacles coding a KDE game client in Ruby, Python, Perl or Java.
+obstacles coding a KDE game client in Ruby, Python, Perl or Java, as long as
+a ggzmod wrapper library exists for this language.
 
 You will most likely be interested in using Qt classes for OpenGL or sprite
 animations, so get yourself a copy of the Qt documentation.
 
+KDE/Qt games can use the native classes to monitor the control connection
+and the game channel, e.g. using a QSocketNotifier. Native networking
+classes are also part of the toolkits.
+These will be described in a later chapter.
+
 The GGZ games KReversi, KDots, KTicTacTux, Krosswater, Muehle, Keepalive,
 Koenig, Kamikaze, Copenhagen and Fyrdman have been written using KDE/Qt as
-development framework.
+development framework, in the C++ programming language.
+The GGZBoard variant Kuobe, which currently lives in GGZ Playground,
+is a KDE game written in Python.
 
-@subsection Gtk+, Gnome (C), Gtk-- (C++)
+@subsection Gtk+, GNOME (C)
 
-There are several useful libraries for Gtk+, including GtkGLArea.
-Examples of Gtk+ GGZ games are TicTacToe, NetSpades, LaPocha, Connect the Dots,
-Hastings, Reversi, Combat, Chinese Checkers, Chess and GGZCards.
-T.E.G. is an example for a Gnome game.
+There are several useful game libraries for Gtk+, including GtkGLArea.
+SVG support is usually pretty good with Gtk+, too.
+
+Gtk+ games use the underlying Gdk library to monitor the control connection
+and the game channel. A choice for networking would be libggz, as
+described in a later chapter.
+
+Examples of Gtk+ GGZ games are Tic-Tac-Toe, NetSpades, Connect the Dots,
+Hastings1066, Reversi, Combat, Chinese Checkers, Chess and GGZCards.
+T.E.G. is an example for a GNOME game which provides GGZ support.
 
 @subsection SDL (C, C++, Python)
 
 SDL is a proven toolkit for game development, with tons of games already
 available. See @url{http://www.libsdl.org} for a list of them.
+
+Using SDL brings in several additional libraries for sound, networking
+and graphics formats. Integrating ggzmod in C/C++ games using SDL usually
+requires the use of a select() loop.
+
 The GGZ games Geekgame and TicTacToe 3D have been written using SDL.
-The games Escape/SDL, PyKamikaze and Xadrez Chines are using the Python
-wrapper for SDL called Pygame, available at @url{http://www.pygame.org}.
+
+The games Escape/SDL, PyKamikaze, Xadrez Chines and all GGZBoard games are
+using the Python wrapper for SDL called Pygame, available at
+@url{http://www.pygame.org}.
 Python games also need to use a wrapper for the ggzmod and ggzdmod libraries,
 which exist as pyggzmod and pyggzdmod in the ggz-python package.
+For Pygame developers, a special pygame integration layer has been developed,
+which makes event processing of both user input and GGZ input very easy.
+
+@subsection Swing and AWT (Java)
+
+Java games for GGZ are a very new but popular addition to the project.
+Right now, they are tightly integrated with the GGZ-Java core client,
+and not yet included into the GGZ system integration mechanism.
+However, GNU Classpath @url{http://www.classpath.org/} provides a free
+Java API implementation which make games using AWT and Swing GUIs
+a perfect choice.
+
+Networking classes are part of every Java installation. The port
+of ggzmod to Java is quite special since the game clients run in the
+core client's process, not separately, so only one connection (the
+game channel) needs to be handled by the game clients.
+This might change or become an option once GGZ-Java is modularized.
+
+All GGZCards games have been implemented in Java, to provide a reference.
 
 @subsection Others
 
 It does really not matter which toolkit one chooses. Therefore, Mesa3D (an
 OpenGL implementation), PLib, GLUT, ClanLib and others are worth to have a look
 at. Actually TicTacToe 3D uses SDL in combination with OpenGL.
+
+What is important is that the use of ggzmod is convenient. This depends
+on the toolkit just as on the programming language. If any combination
+thereof is missing, don't hesitate to contact the GGZ developers.
 
 @node Game Servers, Programming Details, Game Clients, Top
 @chapter Game Servers
@@ -439,9 +570,14 @@ implementation, which will come with a native game server interface.
 
 @section General purpose wrappers
 
-GGZ from version 0.0.6 on has been providing two wrappers which make life easier for game
-developers. Either of these wrappers replaces a game of choice, while the game
-itself is kept to be launched by the wrapper then.
+GGZ from version 0.0.6 on has been providing two wrappers which make life
+easier for game developers. Either one of these wrappers replaces a game of
+choice, while the game itself is kept to be launched by the wrapper then.
+This puts the wrapper between the core client and the game client and can
+be used to debug network connections.
+The drawback is that no ggzmod event beside GGZMOD_EVENT_SERVER is handled,
+therefore requesting player information or performing table chat won't
+work.
 
 @subsection ggzwrap
 
@@ -464,31 +600,65 @@ visually. It displays incoming and outgoing traffic between the game and the
 game server, which is (technically) between the game client and ggzcore for
 most of our games (those without direct connections, anyway).
 
-@subsection Go client/server
+@subsection Go client
 
-The GNU Go integration uses special wrappers both on the client and the
-server side, which communicate using stdin/stdout and fifos respectively.
-It should be able to use them for any similar games without problem.
+The GNU Go integration, which is realized using the CGoBan client,
+uses a special wrapper (goclient.helper) on the client side, which
+communicates using FIFOs in both directions: to the GGZ core client,
+and to the CGoBan client.
+The wrapper has been written in Python and accomodates those game
+clients like CGoBan which use FIFOs rather than stdin/stdout to
+send messages.
+It should be possible to use it for any similar game without problem.
+
+@subsection External AI players
+
+In a broader sense, integration of external AI processes, as in the
+cases of gnuchess, gnugo and gnushogi, is also of interest in the context
+of this section.
+Sometimes, a library to interface with the process is available.
+This is the case with the GGZ chess server, for example.
 
 @section Network connections
 
-@subsection Easysock (C)
+The following subsections explain how to add networking capabilities to game
+clients and servers. They cover the topic on a low level, focusing on
+nice GGZ integration and ease of use.
+
+Note that GGZComm introduced a XML game protocol format, and the generator
+ggzcommgen can generate networking source code automatically for several
+programming languages. Check its page on
+@url{http://dev.ggzgamingzone.org/protocols/} for more information.
+Using GGZComm will save a lot of work and lead to less implementation errors.
+
+@subsection Easysock (C), now libggz
 
 A very easy and convenious library for those who don't need any fancy features
 for TCP connections. This library is part of GGZ and therefore always
 available. It has been merged into libggz, so all functions are prefixed with
 ggz_ now.
 See the documentation for libggz for more details.
+@url{http://dev.ggzgamingzone.org/libraries/libggz/}
 
-Usage example:
+Usage example of the networking part of libggz:
 
 @verbatim
 int fd;
+char *answer;
 
 fd = ggzdmod_get_seat(mod, 1).fd;
+/* or: */
+fd = ggz_make_socket(GGZ_SOCK_CLIENT, 9090, "localhost");
+...
 ggz_write_int(fd, 0);
 ggz_write_string(fd, "Hello World.");
+ggz_read_string_alloc(fd, &answer);
+...
+ggz_free(answer);
 @end verbatim
+
+The library supports IPv6, and offers an experimental feature to perform
+operations such as host name lookups asynchronously.
 
 @subsection Qt (C++)
 
@@ -497,7 +667,7 @@ code as well. This has mostly to do with QSocket, QSocketNotifier and
 QDataStream, which are all very easy and intuitive to use.
 
 Documentation:
-@url{http://doc.trolltech.com/3.1/qdatastream.html}
+@url{http://doc.trolltech.com/3.3/qdatastream.html}
 
 @subsection KDE (C++)
 
@@ -506,13 +676,15 @@ classes like KSocket/KExtSocket, but also the DCOP library, and the KDE games
 library named libkdegames.
 
 Documentation:
-@url{http://developer.kde.org/documentation/library/3.1-api/classref/kdecore/KExtendedSocket.html}
+@url{http://developer.kde.org/documentation/library/}
 
-@subsection Net/MNet (C++)
+@subsection Net/MNet (C++), now ggzdmod++
 
-The game Kamikaze, which provides support for GGZ, uses an own set of network
+The game Kamikaze, which provides support for GGZ, introduced an own set of network
 classes which are very convenient to use. Their development was backed by
-experiences with the other toolkits.
+experiences with the other toolkits. The classes are now available as
+part of the ggzdmod++ library.
+
 Net objects provide simple buffered input/output with host/network conversion
 equal to easysock. MNet objects are inherited and in addition provide
 multicasting.
@@ -541,8 +713,10 @@ n << MNet::peer;
 
 @subsection Network (Python)
 
-The Network class as used in Kamikaze and Escape/SDL is sitting on top of both
-the Python Socket module and the ggzmod wrapper.
+The Network class as used in PyKamikaze, Escape/SDL, Xadrez Chines and GGZBoard
+is sitting on top of both the Python Socket module and the ggzmod wrapper.
+Plans exist to unify the implementations and provide a simple networking
+layer on top of the socket class, then dubbed Network.
 
 @verbatim
 # Build network object
@@ -550,9 +724,7 @@ net = Network()
 
 # query events
 ret = net.autonetwork()
-if (ret & 1):
-    serverevent()
-if (ret & 2):
+if ret:
     gameevent()
 
 # send/receive data
@@ -562,12 +734,20 @@ net.sendbyte(999)
 
 @section Configuration
 
-@subsection GGZConfIO (ini-Style)
+Games often want to read or even write configuration data. Each GGZ game
+server has its own directory where savegames and other data may be stored
+into. Game clients usually take advantage of configuration classes in
+their toolkits (e.g. KDE or GNOME), or write a file into the directory
+~/.ggz/.
+Several libraries exist to handle this task.
+
+@subsection GGZConfIO (ini-Style), in libggz
 
 Many GGZ configurations are read and written using GGZConfIO. Formerly located
 in the ggzcore library, it is now part of libggz and consists of many
 ggz_conf_* functions.
 The details are again explained in the libggz documentation.
+@url{http://dev.ggzgamingzone.org/libraries/libggz/}
 
 Usage example:
 
@@ -575,21 +755,25 @@ Usage example:
 int conf;
 char *value;
 
-conf = ggz_conf_parse("/etc/ggz/games/mygame.conf", GGZ_CONF_RDONLY);
+conf = ggz_conf_parse("/etc/ggz/games/mygame.conf", GGZ_CONF_RDWR);
 if(conf != -1)
 {
 	value = ggz_conf_read_string(conf, "SampleSection", "SampleKey", NULL);
-	ggz_conf_close(-1);
+	ggz_conf_write_int(conf, "OtherSection", "OtherKey", 99);
+	ggz_conf_commit(conf);
+	ggz_conf_remove_section(conf, "OtherSection");
+	ggz_conf_close(conf);
 }
 @end verbatim
 
-@subsection Minidom (XML-Style)
+@subsection Minidom (XML-Style), now in libggzmeta
 
 If you want to read or write XML data, while avoiding the overhead of a complex
 XML library, the GGZ project offers the minidom library, which you can find in
-utils/metaserv/minidom.
-Currently, both the GGZ meta server and the Copenhagen game server make use of
-this library.
+utils/metaserv/libmeta.
+Currently, both the GGZ metaserver and the Copenhagen game server make use of
+this library, as well as TelGGZ and other clients who use libggzmeta to
+communicate with the metaserver.
 
 Usage example:
 
@@ -605,38 +789,53 @@ if((conf) && (conf->valid) && (conf->processed))
 minidom_free(conf);
 @end verbatim
 
+Minidom is not suitable for real-world complex XML contents, but XML
+configuration files shipped with games will be read just fine.
+
 @section Game development frameworks
 
 @subsection Developing card game servers with GGZCards
 
-The GGZ game servers for Hearts, LaPocha, Whist, Euchre, Bridge, Spades, Suaro and Sueca all share
-one common property: their games are displayed on a GGZCards client, and their messages are transmitted
-using the same protocol.
-Other card games can be added quite easily. There's a separate GGZCards documentation available for consultation.
+The GGZ game servers for Hearts, LaPocha, Whist, Euchre, Bridge, Spades,
+Suaro and Sueca all share one common property:
+their games are displayed on a GGZCards client, and their messages are
+transmitted using the same protocol.
+Other card games can be added quite easily. There's a separate GGZCards
+documentation available for consultation.
 
 @subsection GGZBoard, the board game client container
 
-Consolidating the different interfaces of the already available games of Chess, Go and Reversi,
-GGZBoard does now already support 5 games, including Hnefatafl and Checkers.
-Each game consists of a game module (including client-side AI, optional), a network module (optional)
-and a server module, if no server exists yet.
-All the games and the GGZBoard container can exchange messages such as moves, player names, game
-characteristics or error codes.
+Consolidating the different interfaces of the already available games of
+Chess, Go and Reversi, GGZBoard does now already support 10 games, including
+Hnefatafl, Checkers, Ludo and Shogi.
+Each game consists of a game module (including client-side AI, optional),
+a network module (optional) and a server module, if no server exists yet.
+All the games and the GGZBoard container can exchange messages such as moves,
+player names, game characteristics or error codes.
+
+The networking protocols are distinct, however some games use the common
+board games protocol, dubbed Bogaprot.
 
 @section Special libraries
 
 @subsection GGZChess, an artificial intelligence for chess
 
-Validating board moves, finding opponent moves, and keeping track about the game status is the task of
-GGZChess, a small library to be used in chess games.
-Currently, GGZChess is used by the chess game server, the grubby game client, the GGZBoard chess module and
-a special client for DROPS (L4-based operating system) dubbed Xadrez.
+Validating board moves, finding opponent moves, and keeping track about the
+game status is the task of GGZChess, a small library to be used in chess
+games. Currently, GGZChess is used by the chess game server, the grubby game
+client, the GGZBoard chess module and a special client for DROPS
+(L4-based operating system) dubbed Xadrez.
+
+An interface compatible to GGZChess exists for the inclusion of the GNU Chess
+AI program into chess games.
 
 @subsection Data updates with SDLNewStuff
 
-Levels, graphics files and other kind of data can be shared using the Get Hot New Stuff framework.
-In GGZ, the KDE game clients provide support for KNewStuff, whereas the Python/SDL games can use SDLNewStuff.
-For SDL games written in C, a special implementation written for Widelands (but not integrated) exists.
+Levels, graphics files and other kind of data can be shared using the
+Get Hot New Stuff framework. In GGZ, the KDE game clients provide support
+for KNewStuff, whereas the Python/SDL games can use SDLNewStuff.
+For SDL games written in C, a special implementation written for Widelands
+(but not integrated) exists.
 
 @c @printindex cp
 
