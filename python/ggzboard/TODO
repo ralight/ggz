@@ -1,0 +1,11 @@
+- options menu including background image selection (fractals!)
+- provide images combined with theme settings (i.e. bright/dark fonts)
+- make fullscreen the default?
+- when going back to intro screen, keep game running
+  and display minimised screenshot of it
+  (and ask before starting new, or quitting)
+- document game.figuregfx(), and other possible changes
+- fix Reversi rules, Hnefatafl AI
+- sounds!
+- deprecate -ggz in favour of GGZMODE
+
