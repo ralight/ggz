@@ -110,7 +110,7 @@ static int table_launch(void)
         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_ERROR, &handle_error);
 	
 	/* Set game module arguments */
-	ggzdmod_set_module(ggz, "/tmp", args);
+	ggzdmod_set_module(ggz, "<GAME>", "/tmp", args);
 	
         /* Attempt to launch game */
         if (ggzdmod_connect(ggz) < 0) {

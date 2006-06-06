@@ -140,7 +140,7 @@ int main (void) {
 		printf(" -- Error: ggzdmod_get_gamedata(NULL) == %p\n", ggzdmod_get_gamedata(NULL));
 	ggzdmod_set_num_seats(NULL, 8);
 	ggzdmod_set_handler(NULL, GGZDMOD_EVENT_PLAYER_DATA, test_handler);
-	ggzdmod_set_module(NULL, "/tmp", test_args);
+	ggzdmod_set_module(NULL, "<GAME>", "/tmp", test_args);
 	if (ggzdmod_set_seat(NULL, &control[0]) >= 0)
 		printf(" -- Error: ggzdmod_set_seat(NULL, ...) claimed to succeed.\n");
 	if (ggzdmod_dispatch(NULL) >= 0)
