@@ -1,0 +1,28 @@
+;-------------------------------------------------------------------
+Delete "$INSTDIR\bin\ggz-gtk.exe"
+Delete "$INSTDIR\bin\ggz-config.exe"
+Delete "$INSTDIR\bin\libggz-2.dll"
+Delete "$INSTDIR\bin\libggzcore-7.dll"
+Delete "$INSTDIR\bin\libggzmod-4.dll"
+RMDir  "$INSTDIR\bin"
+
+Delete "$INSTDIR\share\ggz\ggz-gtk\help\ggz-gtk-chat.png"
+Delete "$INSTDIR\share\ggz\ggz-gtk\help\ggz-gtk-handbook.html"
+Delete "$INSTDIR\share\ggz\ggz-gtk\help\ggz-gtk-launch.png"
+Delete "$INSTDIR\share\ggz\ggz-gtk\help\ggz-gtk-login.png"
+RMDir  "$INSTDIR\share\ggz\ggz-gtk\help"
+
+Delete "$INSTDIR\share\ggz\ggz-gtk\about_bg.png"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_admin.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_bot.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_guest.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_lag0.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_lag1.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_lag2.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_lag3.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_lag4.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_lag5.svg"
+Delete "$INSTDIR\share\ggz\ggz-gtk\ggz_gtk_registered.svg"
+RMDir  "$INSTDIR\share\ggz\ggz-gtk"
+RMDir  "$INSTDIR\share"
+;-------------------------------------------------------------------
