@@ -41,6 +41,7 @@
 // KDE includes
 #include <klocale.h>
 #include <klistview.h>
+#include <kmessagebox.h>
 
 // Qt includes
 #include <qlayout.h>
@@ -48,6 +49,12 @@
 #include <qpushbutton.h>
 #include <qsocket.h>
 #include <qstringlist.h>
+
+// FIXME: see KGGZConnect.cpp
+#define PRIMARY_METASERVER "live.ggzgamingzone.org"
+
+// FIXME: define in central place, e.g. libggzmeta?
+#define GGZ_PROTOCOL_VERSION "10"
 
 KGGZMeta::KGGZMeta(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
@@ -57,15 +64,20 @@ KGGZMeta::KGGZMeta(QWidget *parent, const char *name)
 	QPushButton *cancel;
 	KGGZCaption *caption;
 
-	caption = new KGGZCaption(i18n("Server selection"), i18n("Metaserver-based GGZ server selection."), this);
+	caption = new KGGZCaption(i18n("Server selection"),
+		i18n("Metaserver-based GGZ server selection."), this);
 
-	m_ok = new QPushButton("OK", this);
+	m_ok = new QPushButton(i18n("OK"), this);
 	m_ok->setEnabled(false);
 	cancel = new QPushButton(i18n("Cancel"), this);
 
 	m_view = new KListView(this);
-	m_view->addColumn("URI");
-	m_view->addColumn("Preference");
+	m_view->addColumn(i18n("Name"));
+	m_view->addColumn(i18n("Version"));
+	m_view->addColumn(i18n("Connection URI"));
+	m_view->addColumn(i18n("Preference"));
+	m_view->addColumn(i18n("Location"));
+	m_view->addColumn(i18n("Speed"));
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(caption);
@@ -79,7 +91,7 @@ KGGZMeta::KGGZMeta(QWidget *parent, const char *name)
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 	connect(m_view, SIGNAL(pressed(QListViewItem*)), SLOT(slotSelection(QListViewItem*)));
 
-	setFixedSize(300, 300);
+	resize(800, 300);
 	setCaption(i18n("Server selection"));
 	show();
 
@@ -97,7 +109,7 @@ void KGGZMeta::slotAccept()
 
 	if(m_view->selectedItem())
 	{
-		list = list.split(':', m_view->selectedItem()->text(0));
+		list = list.split(':', m_view->selectedItem()->text(2));
 		if(list.count() == 3)
 		{
 			host = *(list.at(1));
@@ -113,14 +125,28 @@ void KGGZMeta::load()
 	m_sock = new QSocket();
 	connect(m_sock, SIGNAL(connected()), SLOT(slotConnected()));
 	connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
-	m_sock->connectToHost("live.ggzgamingzone.org", 15689);
+	connect(m_sock, SIGNAL(error(int)), SLOT(slotError(int)));
+	m_sock->connectToHost(PRIMARY_METASERVER, 15689);
+}
+
+void KGGZMeta::slotError(int code)
+{
+	KMessageBox::error(this,
+		i18n("The GGZ metaserver could not be contacted."),
+		i18n("Connection"));
+	delete m_sock;
+	close();
 }
 
 void KGGZMeta::slotConnected()
 {
 	QString s;
 
-	s = QString("<?xml version=\"1.0\"?><query class=\"ggz\" type=\"connection\">%1</query>\n").arg(KGGZVERSION);
+	s = QString("<?xml version=\"1.0\"?>");
+	s.append("<query class=\"ggz\" type=\"connection\">");
+	s.append(GGZ_PROTOCOL_VERSION);
+	s.append("</query>");
+	s.append("\n");
 	m_sock->writeBlock(s.utf8(), s.length());
 	m_sock->flush();
 }
@@ -129,28 +155,50 @@ void KGGZMeta::slotRead()
 {
 	QString rdata;
 	QDomDocument dom;
-	QDomNode node;
+	QDomNode resultnode, optionnode;
 	QDomElement element;
-	QString pref;
 	QListViewItem *item;
+	QString pref, uri, name, location, speed, version, protocol;
+	QString option;
 
 	rdata = m_sock->readLine();
 	rdata.truncate(rdata.length() - 1);
 
 	dom.setContent(rdata);
-	node = dom.documentElement().firstChild();
+	resultnode = dom.documentElement().firstChild();
 
-	while(!node.isNull())
+	while(!resultnode.isNull())
 	{
-		element = node.toElement();
-		if(!element.firstChild().isNull())
+		element = resultnode.toElement();
+		uri = element.attribute("uri");
+		name = "";
+		pref = "";
+		location = "";
+		speed = "";
+		protocol = "";
+
+		optionnode = resultnode.firstChild();
+		while(!optionnode.isNull())
 		{
-			pref = element.attribute("preference", "20");
-			element = element.firstChild().toElement();
-			item = new QListViewItem(m_view, element.text(), pref);
-			item->setPixmap(0, QPixmap(KGGZ_DIRECTORY "/images/icons/serverred.png"));
+			element = optionnode.toElement();
+			option = element.attribute("name");
+
+			if(option == "speed") speed = element.text();
+			else if(option == "location") location = element.text();
+			else if(option == "preference") pref = element.text();
+			else if(option == "name") name = element.text();
+			else if(option == "version") version = element.text();
+			else if(option == "protocol") protocol = element.text();
+
+			optionnode = optionnode.nextSibling();
 		}
-		node = node.nextSibling();
+
+		// FIXME: discard if protocol not matching?
+
+		item = new QListViewItem(m_view, name, version, uri, pref, location, speed);
+		item->setPixmap(0, QPixmap(KGGZ_DIRECTORY "/images/icons/serverred.png"));
+
+		resultnode = resultnode.nextSibling();
 	}
 
 	delete m_sock;

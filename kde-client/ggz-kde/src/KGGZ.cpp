@@ -297,6 +297,9 @@ void KGGZ::slotConnectedStart()
 	m_save_host = addr.toString();
 	KGGZDEBUG("Host resolved to: %s\n", m_save_host.utf8().data());
 
+	delete m_dns;
+	m_dns = NULL;
+
 	kggzserver = new GGZCoreServer();
 	attachServerCallbacks();
 	kggzserver->logSession(QString("%1/.ggz/kggz.xml-log").arg(QDir::homeDirPath()).utf8());
@@ -1072,7 +1075,8 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 				emit signalRoom(kggzserver->room(i)->name(),
 					kggzserver->room(i)->gametype()->protocolEngine(),
 					kggzserver->room(i)->category(),
-					kggzserver->room(i)->countPlayers());
+					kggzserver->room(i)->countPlayers(),
+					!kggzserver->room(i)->closed());
 				m_roommap[kggzserver->room(i)->gametype()->protocolEngine()] = i;
 			}
 
@@ -1192,6 +1196,19 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			break;
 		case GGZCoreServer::players:
 			emit signalPlayers(kggzserver->countPlayers());
+			break;
+		case GGZCoreServer::rooms:
+			KGGZDEBUG("[reconf] rooms changed\n");
+			emit signalReconfiguration();
+			for(int i = 0; i < kggzserver->countRooms(); i++)
+			{
+				emit signalRoom(kggzserver->room(i)->name(),
+					kggzserver->room(i)->gametype()->protocolEngine(),
+					kggzserver->room(i)->category(),
+					kggzserver->room(i)->countPlayers(),
+					!kggzserver->room(i)->closed());
+				m_roommap[kggzserver->room(i)->gametype()->protocolEngine()] = i;
+			}
 			break;
 		default:
 			KGGZDEBUG("unknown\n");
@@ -1334,6 +1351,7 @@ void KGGZ::attachServerCallbacks()
 	kggzserver->addHook(GGZCoreServer::channelready, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
 	kggzserver->addHook(GGZCoreServer::channelfail, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
 	kggzserver->addHook(GGZCoreServer::players, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
+	kggzserver->addHook(GGZCoreServer::rooms, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
 }
 
 void KGGZ::detachServerCallbacks()
@@ -1358,6 +1376,8 @@ void KGGZ::detachServerCallbacks()
 	kggzserver->removeHook(GGZCoreServer::channelconnected, &KGGZ::hookOpenCollector);
 	kggzserver->removeHook(GGZCoreServer::channelready, &KGGZ::hookOpenCollector);
 	kggzserver->removeHook(GGZCoreServer::channelfail, &KGGZ::hookOpenCollector);
+	kggzserver->removeHook(GGZCoreServer::players, &KGGZ::hookOpenCollector);
+	kggzserver->removeHook(GGZCoreServer::rooms, &KGGZ::hookOpenCollector);
 }
 
 void KGGZ::attachGameCallbacks()
@@ -1793,11 +1813,16 @@ void KGGZ::menuGameRules()
 
 void KGGZ::menuRoom(int room)
 {
+	int id;
+
 	if(room >= 0)
 	{
 		if(kggzserver)
 		{
-			kggzserver->joinRoom(room);
+			GGZCoreRoom *r = kggzserver->room(room);
+			id = r->id();
+
+			kggzserver->joinRoom(id);
 			if((m_workspace) && (m_workspace->widgetChat()))
 			{
 				m_workspace->widgetChat()->init();

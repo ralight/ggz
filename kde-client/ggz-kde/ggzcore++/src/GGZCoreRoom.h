@@ -91,6 +91,10 @@ class GGZCoreRoom
 		int init(GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category);
 
 		/**
+		 * Room identifier. */
+		int id();
+
+		/**
 		 * Return the name of the room. */
 		const char* name();
 		/**
@@ -145,6 +149,10 @@ class GGZCoreRoom
 		/**
 		 * Send other data. */
 		int sendData(char* buffer);
+
+		/**
+		 * Check if room is closed alrady. */
+		bool closed();
 
 		/**
 		 * Return the internal GGZRoom structure */

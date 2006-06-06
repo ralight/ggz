@@ -152,13 +152,14 @@ KGGZBase::KGGZBase()
 	connect(m_menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_preferences, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(kggz, SIGNAL(signalMenu(int)), SLOT(slotMenuSignal(int)));
-	connect(kggz, SIGNAL(signalRoom(const char*, const char*, const char*, int)), SLOT(slotRoom(const char*, const char*, const char*, int)));
+	connect(kggz, SIGNAL(signalRoom(const char*, const char*, const char*, int, bool)), SLOT(slotRoom(const char*, const char*, const char*, int, bool)));
 	connect(kggz, SIGNAL(signalRoomChanged(const char*, const char*, int, int)), SLOT(slotRoomChanged(const char*, const char*, int, int)));
 	connect(kggz, SIGNAL(signalCaption(QString, bool)), SLOT(slotCaption(QString, bool)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(kggz, SIGNAL(signalLocation(QString)), SLOT(slotLocation(QString)));
 	connect(kggz, SIGNAL(signalPlayers(int)), SLOT(slotPlayers(int)));
 	connect(kggz, SIGNAL(signalActivity(int)), SLOT(slotActivity(int)));
+	connect(kggz, SIGNAL(signalReconfiguration()), SLOT(slotReconfiguration()));
 
 	setCentralWidget(kggz);
 	setCaption(i18n("offline"));
@@ -493,7 +494,14 @@ void KGGZBase::slotMenuSignal(int signal)
 	}
 }
 
-void KGGZBase::slotRoom(const char *roomname, const char *protocolname, const char *category, int numplayers)
+void KGGZBase::slotReconfiguration()
+{
+	for(int i = 0; i < m_rooms; i++)
+		m_menu_rooms->removeItemAt(0);
+	m_rooms = 0;
+}
+
+void KGGZBase::slotRoom(const char *roomname, const char *protocolname, const char *category, int numplayers, bool enabled)
 {
 	QString caption;
 
@@ -507,6 +515,8 @@ void KGGZBase::slotRoom(const char *roomname, const char *protocolname, const ch
 #endif
 	m_lastgame = protocolname;
 	m_menu_rooms->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + m_rooms), caption, MENU_ROOMS_SLOTS + m_rooms);
+	// disable for 'closed' rooms
+	m_menu_rooms->setItemEnabled(MENU_ROOMS_SLOTS + m_rooms, enabled);
 	m_rooms++;
 }
 

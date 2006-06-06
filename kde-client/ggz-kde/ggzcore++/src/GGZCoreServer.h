@@ -50,7 +50,8 @@ class GGZCoreServer
 			statechange = GGZ_STATE_CHANGE,
 			channelconnected = GGZ_CHANNEL_CONNECTED,
 			channelready = GGZ_CHANNEL_READY,
-			channelfail = GGZ_CHANNEL_FAIL
+			channelfail = GGZ_CHANNEL_FAIL,
+			rooms = GGZ_SERVER_ROOMS_CHANGED
 		};
 
 		/**

@@ -132,7 +132,7 @@ class KGGZ : public QWidget
 		// Emitted to dis/enable menu items
 		void signalMenu(int signal);
 		// Emitted to announce new room
-		void signalRoom(const char *roomname, const char *protocolname, const char *category, int numplayers);
+		void signalRoom(const char *roomname, const char *protocolname, const char *category, int numplayers, bool enabled);
 		// Emitted to announce room player changes
 		void signalRoomChanged(const char *roomname, const char *protocolname, int roomnumber, int numplayers);
 		// Emitted to change window caption
@@ -145,6 +145,8 @@ class KGGZ : public QWidget
 		void signalActivity(int activity);
 		// Emitted on player count change
 		void signalPlayers(int players);
+		// Emitted when rooms are added or removed
+		void signalReconfiguration();
 
 	public slots:
 		// Connect to a game server

@@ -81,6 +81,11 @@ int GGZCoreRoom::init(GGZServer* server, const unsigned int id, const char* name
 #endif
 }
 
+int GGZCoreRoom::id()
+{
+	return ggzcore_room_get_id(m_room);
+}
+
 const char* GGZCoreRoom::name()
 {
 	return ggzcore_room_get_name(m_room);
@@ -227,6 +232,11 @@ int GGZCoreRoom::sendData(char* buffer)
 {
 	//return ggzcore_room_send_game_data(m_room, buffer);
 	return 0;
+}
+
+bool GGZCoreRoom::closed()
+{
+	return (ggzcore_room_get_closed(m_room) == 1);
 }
 
 GGZRoom* GGZCoreRoom::room()

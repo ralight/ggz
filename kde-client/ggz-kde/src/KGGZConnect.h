@@ -107,6 +107,8 @@ class KGGZConnect : public QWidget
 		// Data from DNSSD finished
 		void slotServiceFinished();
 //#endif
+		// Metaserver errors
+		void slotError(int code);
 
 	signals:
 		// Emitted if connection is wanted

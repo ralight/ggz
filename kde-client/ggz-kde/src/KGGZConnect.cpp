@@ -73,6 +73,10 @@
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
 
+// Metaserver is hardcoded for the time being
+// FIXME: use kcm_ggz settings and/or libmeta cache (~/.ggz/metaserver.cache)
+#define PRIMARY_METASERVER "live.ggzgamingzone.org"
+
 #ifdef WITH_HOWL
 static KGGZConnect *connectobj = NULL;
 #endif
@@ -377,7 +381,8 @@ void KGGZConnect::slotAccept()
 		m_sock = new QSocket();
 		connect(m_sock, SIGNAL(connected()), SLOT(slotWrite()));
 		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
-		m_sock->connectToHost("live.ggzgamingzone.org", 15689);
+		connect(m_sock, SIGNAL(error(int)), SLOT(slotError(int)));
+		m_sock->connectToHost(PRIMARY_METASERVER, 15689);
 	}
 	else if(input_host->text() == i18n("Autodetect"))
 	{
@@ -571,23 +576,34 @@ void KGGZConnect::slotRead()
 
 	if(!rdata.isEmpty())
 	{
-		list = list.split(':', rdata);
-		if(list.count() == 3)
+		list = list.split("\n", rdata);
+		if(list.count() >= 1)
 		{
-			host = *(list.at(1));
-			host = host.right(host.length() - 2);
-			port = *(list.at(2));
-			close();
-			emit signalConnect(host, port.toInt(), input_name->text(), input_password->text(), m_loginmode);
+			list = list.split(':', list[0]);
+			if(list.count() == 3)
+			{
+				host = *(list.at(1));
+				host = host.right(host.length() - 2);
+				port = *(list.at(2));
+				close();
+				emit signalConnect(host, port.toInt(), input_name->text(),
+					input_password->text(), m_loginmode);
+			}
 		}
 	}
+
+	delete m_sock;
 }
 
 void KGGZConnect::slotWrite()
 {
 	QString s;
 
-	s = QString("query://ggz/connection/%1\n").arg(KGGZVERSION);
+	//s = QString("query://ggz/connection/%1\n").arg(KGGZVERSION);
+	// starting from 0.0.14, the URI query doesn't support versioning anymore
+	// we just pick the first line of the answer
+	// for everything else, the KGGZMeta dialog provides selection
+	s = QString("query://ggz/connection\n");
 	m_sock->writeBlock(s.utf8(), s.length());
 	m_sock->flush();
 }
@@ -707,5 +723,13 @@ void KGGZConnect::zeroconfQuery()
 		i18n("Zeroconf success"));
 	emit signalConnect(url.host(), url.port(), input_name->text(),
 		input_password->text(), m_loginmode);
+}
+
+void KGGZConnect::slotError(int code)
+{
+	KMessageBox::error(this,
+		i18n("The GGZ metaserver could not be contacted."),
+		i18n("Connection"));
+	delete m_sock;
 }
 

@@ -68,6 +68,8 @@ class KGGZMeta : public QWidget
 		void slotRead();
 		// Get selection
 		void slotSelection(QListViewItem *item);
+		// Network error
+		void slotError(int code);
 
 	private:
 		// Socket for meta server connections

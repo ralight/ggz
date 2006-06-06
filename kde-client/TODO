@@ -4,6 +4,8 @@
 * for KDE 4, rewrite a lot!
 * move Kopete support here, from playground (needs public headers or copy)
 * moving ggzd launcher into a panel applet on its own (but with menu entry)
+* GGZCore++ should administrate all the ggzcore hooks internally
+* ShadowBridge: support for ggzcomm XML files (message flow visualization)
 
 ===============================
 The old TODO items follow below

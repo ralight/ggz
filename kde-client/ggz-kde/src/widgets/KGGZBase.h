@@ -69,7 +69,7 @@ class KGGZBase : public KMainWindow
 		// Receive a dis/enable event from the KGGZ object
 		void slotMenuSignal(int signal);
 		// Receive a room to be added to the menu
-		void slotRoom(const char *roomname, const char *protocolname, const char *category, int numplayers);
+		void slotRoom(const char *roomname, const char *protocolname, const char *category, int numplayers, bool enabled);
 		// The number of players in a room has changed
 		void slotRoomChanged(const char *roomname, const char *protocolname, int roomnumber, int numplayers);
 		// Receive the caption dynamically from KGGZ
@@ -82,6 +82,8 @@ class KGGZBase : public KMainWindow
 		void slotPlayers(int players);
 		// Activity
 		void slotActivity(int activity);
+		// Rooms reconfiguration
+		void slotReconfiguration();
 
 	private:
 		// assign an icon to a menu item
