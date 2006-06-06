@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8072 2006-05-29 07:36:46Z josef $
+ * $Id: netxml.c 8102 2006-06-06 04:18:08Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -368,7 +368,7 @@ void _ggzcore_net_disconnect(GGZNet * net)
 
 
 /* Helper function, might go into libggz*/
-char *_ggz_xml_cdata_escape(const char *str)
+static char *_ggz_xml_cdata_escape(const char *str)
 {
 	char *new, *q;
 	const char *p;
@@ -406,7 +406,7 @@ char *_ggz_xml_cdata_escape(const char *str)
 
 
 /* Helper function, might go into libggz*/
-char *_ggz_xml_cdata_unescape(const char *str)
+static char *_ggz_xml_cdata_unescape(const char *str)
 {
 	char *new, *q;
 	const char *p;
