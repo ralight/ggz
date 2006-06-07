@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 11/11/2004
  * Desc: GGZ Handlers for GTK games
- * $Id: ggz_gtk.c 8120 2006-06-07 07:24:30Z jdorje $
+ * $Id: ggz_gtk.c 8121 2006-06-07 07:25:36Z jdorje $
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -26,6 +26,8 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#include <stdlib.h>
 
 #include <gtk/gtk.h>
 #include <ggzmod.h>
