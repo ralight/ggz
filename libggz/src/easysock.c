@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 7877 2006-02-27 12:15:43Z josef $
+ * $Id: easysock.c 8128 2006-06-07 19:03:36Z oojah $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -146,7 +146,7 @@ int ggz_init_network(void)
 
 #ifdef HAVE_WINSOCK2_H
 		WSADATA wsa;
-		if (WSAStartup(MAKEWORD(1, 1), &wsa) !=0 ){
+		if (WSAStartup(MAKEWORD(2, 2), &wsa) !=0 ){
 			return -1;
 		}
 #endif
@@ -182,7 +182,7 @@ static int es_bind(const char *host, int port)
 
 	memset(&name, 0, sizeof(name));
 	name.sin_family = AF_INET;
-	name.sin_port = port;
+	name.sin_port = htons(port);
 	name.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	if (bind(sockfd, &name, sizeof(name)) != 0) {
@@ -265,7 +265,7 @@ static int es_connect(const char *host, int port)
 
 	memset(&name, 0, sizeof(name));
 	name.sin_family = AF_INET;
-	name.sin_port = port;
+	name.sin_port = htons(port);
 	memcpy(&name.sin_addr, h->h_addr, h->h_length);
 
 	if (connect(sockfd, &name, sizeof(name)) != 0) {
