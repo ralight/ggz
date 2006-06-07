@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 8001 2006-04-24 07:17:07Z josef $
+ * $Id: ggzdmod.c 8118 2006-06-07 05:53:22Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -431,7 +431,7 @@ char* ggzdmod_get_bot_class(GGZdMod *ggzdmod, const char *name)
 	if(!game) return NULL;
 
 	len = strlen(GGZDCONFDIR) + strlen("games") + strlen(game) + 7;
-	conffile = (char*)ggz_malloc(len);
+	conffile = ggz_malloc(len);
 	snprintf(conffile, len, "%s/games/%s.dsc", GGZDCONFDIR, game);
 	ch = ggz_conf_parse(conffile, GGZ_CONF_RDONLY);
 	if(ch < 0) return NULL;
@@ -507,7 +507,7 @@ void ggzdmod_set_module(GGZdMod * ggzdmod,
 
 	ggz_debug("GGZDMOD", "Set %d arguments", i);
 	
-	ggzdmod->argv = ggz_malloc(sizeof(char*)*(i+1));
+	ggzdmod->argv = ggz_malloc(sizeof(*ggzdmod->argv) * (i + 1));
 	ggzdmod->pwd = ggz_strdup(pwd);
 	ggzdmod->game = ggz_strdup(game);
 	
