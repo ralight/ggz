@@ -147,11 +147,7 @@ AC_DEFINE_UNQUOTED([GAMEDIR], "${ggzexecmoddir}",
 		   [Directory containing GGZ client module executables])
 
 
-if test "x${datadir}" = 'x${prefix}/share'; then
-  ggzdatadir="${prefix}/share/ggz"
-else
-  ggzdatadir="${datadir}/ggz"
-fi
+ggzdatadir="${datadir}/ggz"
 AC_DEFINE_UNQUOTED([GGZDATADIR], "${ggzdatadir}",
 		   [Directory containing GGZ shared data])
 
