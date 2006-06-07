@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 7748 2006-01-07 22:02:13Z jdorje $
+ * $Id: game.c 8125 2006-06-07 13:38:36Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -551,7 +551,8 @@ static int game_next_move(void)
 			difficulty = 0;
 		if (!ggz_strcmp(botclass, "hard"))
 			difficulty = 1;
-		ggz_free(botclass);
+		if (botclass)
+			ggz_free(botclass);
 #endif
 		move = ai_findmove(variables.turn, difficulty, variables.space);
 		game_do_move(move);
