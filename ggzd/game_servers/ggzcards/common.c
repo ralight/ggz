@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 7108 2005-04-15 18:31:59Z jdorje $
+ * $Id: common.c 8114 2006-06-07 01:43:43Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -521,10 +521,12 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, const void *data)
 	}
 	if (ggzdmod_set_state(game.ggz, new_state) < 0)
 		assert(FALSE);
-	
-	/* Send all table info to joiner.  This will also make any new
-	   options requests, if necessary. */
-	send_sync(player);
+
+	if (is_join) {
+		/* Send all table info to joiner.  This will also make any new
+		   options requests, if necessary. */
+		send_sync(player);
+	}
 
 	/* get rid of old player message.  This used to call
 	   send_player_message_toall(); I'm not sure what the difference is. */
