@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 5017 2002-10-23 22:19:46Z jdorje $
+ * $Id: game.c 8117 2006-06-07 05:06:45Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -473,15 +473,16 @@ void game_handle_gameover(void)
    function is used for the automatic sorting of hands by cards_sort_hand. */
 int game_compare_cards(card_t card1, card_t card2)
 {
-	if (card1.suit < card2.suit)
-		return -1;
-	if (card1.suit > card2.suit)
-		return 1;
-	if (card1.face < card2.face)
-		return -1;
-	if (card1.face > card2.face)
-		return 1;
-	return 0;		/* ignore decks for now */
+	if (card1.suit != card2.suit) {
+		int order[] = {2, 1, 3, 4};
+
+		/* HACK: Suits aren't put in order; instead they alternate
+		   color. */
+		assert(card1.suit >= 0 && card1.suit < 4);
+		assert(card2.suit >= 0 && card2.suit < 4);
+		return order[(int)card1.suit] - order[(int)card2.suit];
+	}
+	return card1.face - card2.face;		/* ignore decks for now */
 }
 
 
