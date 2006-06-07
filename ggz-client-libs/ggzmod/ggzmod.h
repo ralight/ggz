@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 7989 2006-04-03 12:42:56Z josef $
+ * $Id: ggzmod.h 8119 2006-06-07 07:23:30Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -269,6 +269,15 @@ typedef struct GGZMod GGZMod;
  *    - GGZMOD_EVENT_ERROR: An error string (char*)
  */
 typedef void (*GGZModHandler) (GGZMod * mod, GGZModEvent e, const void *data);
+
+/** @brief Is the program running in GGZ mode?
+ *
+ *  Call this function to see if the program was actually launched by GGZ.  This can
+ *  be used to give an error message if the executable is run outside of the GGZ
+ *  environment, or for games that will run both inside and outside of GGZ.
+ *  @return A boolean value indicating whether the program is running in GGZ.
+ */
+int ggzmod_is_ggz_mode(void);
 
 /* 
  * Creation functions

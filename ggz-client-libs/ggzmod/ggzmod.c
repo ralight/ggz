@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 7989 2006-04-03 12:42:56Z josef $
+ * $Id: ggzmod.c 8119 2006-06-07 07:23:30Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -139,6 +139,20 @@ static void infos_free(void *pstat)
 	ggz_free(info->host);
 	ggz_free(info);
 }
+
+
+int ggzmod_is_ggz_mode(void)
+{
+	char *ggzmode;
+
+#ifdef HAVE_GETENV
+	ggzmode = getenv("GGZMODE");
+#else
+	ggzmode = GetEnvironmentVariable("GGZMODE");
+#endif
+	return (ggzmode && strcmp(ggzmode, "true") == 0);
+}
+
 
 /*
  * How a game is launched (incomplete):
