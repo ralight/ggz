@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8071 2006-05-29 07:34:31Z josef $
+ * $Id: net.c 8126 2006-06-07 17:58:39Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1775,10 +1775,12 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 			break;
 		case GGZ_SEAT_RESERVED:
 			/* We verify that this is a real,
-			   registered player name. */
+			   registered player name.  Note seat->name may be NULL
+			   if the client doesn't send a name. */
+			if (!seat->name) seat->name = "";
 			/* FIXME: This should be done elsewhere. */
 			snprintf(player.handle, MAX_USER_NAME_LEN+1,
-				 "%s", seat->name ? seat->name : "");
+				 "%s", seat->name);
 			if (ggzdb_player_get(&player) != 0) {
 				/* This is some kind of error...but for now we
 				   just cover it up. */
@@ -1787,8 +1789,9 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 					"seat.  Changing it to an open seat.",
 					seat->name);
 				seat_type = GGZ_SEAT_OPEN;
+			} else {
+				strcpy(table->seat_names[seat->index], seat->name);
 			}
-			strcpy(table->seat_names[seat->index], seat->name);
 			break;
 		case GGZ_SEAT_PLAYER:
 			/* This is valid for an UPDATE but not a LAUNCH.
