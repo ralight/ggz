@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 8118 2006-06-07 05:53:22Z jdorje $
+ * $Id: ggzdmod.c 8122 2006-06-07 07:36:55Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -90,6 +90,16 @@ static void spectator_free(GGZSpectator *spectator);
 
 /* Debugging function (see also ggzdmod_check) */
 static void seat_print(GGZdMod * ggzdmod, GGZSeat *seat);
+
+
+int ggzdmod_is_ggz_mode(void)
+{
+	char *ggzmode;
+
+	/* ggzdmod won't run in windows (windows doesn't have getenv()) */
+	ggzmode = getenv("GGZMODE");
+	return (ggzmode && strcmp(ggzmode, "true") == 0);
+}
 
 /* Invokes handlers for the specefied event */
 static void call_handler(GGZdMod * ggzdmod, GGZdModEvent event, void *data)
