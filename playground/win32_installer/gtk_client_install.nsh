@@ -26,4 +26,15 @@ File "share\ggz\ggz-gtk\ggz_gtk_lag4.svg"
 File "share\ggz\ggz-gtk\ggz_gtk_lag5.svg"
 File "share\ggz\ggz-gtk\ggz_gtk_registered.svg"
 
+File "share\ggz\ggz-gtk\ggz_gtk_admin.png"
+File "share\ggz\ggz-gtk\ggz_gtk_bot.png"
+File "share\ggz\ggz-gtk\ggz_gtk_guest.png"
+File "share\ggz\ggz-gtk\ggz_gtk_lag0.png"
+File "share\ggz\ggz-gtk\ggz_gtk_lag1.png"
+File "share\ggz\ggz-gtk\ggz_gtk_lag2.png"
+File "share\ggz\ggz-gtk\ggz_gtk_lag3.png"
+File "share\ggz\ggz-gtk\ggz_gtk_lag4.png"
+File "share\ggz\ggz-gtk\ggz_gtk_lag5.png"
+File "share\ggz\ggz-gtk\ggz_gtk_registered.png"
+
 ;-------------------------------------------------------------------
