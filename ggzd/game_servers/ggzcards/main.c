@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 6077 2004-07-11 04:28:48Z jdorje $
+ * $Id: main.c 8123 2006-06-07 07:38:02Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -121,7 +121,13 @@ int main(int argc, char **argv)
 	int i;
 	game_data_t *game_data = NULL;
 	GGZdMod *ggz;
-	
+
+	if (!ggzdmod_is_ggz_mode()) {
+		printf("This program should only be run from within GGZ.");
+		printf("\n");
+		exit(1);
+	}
+
 	initialize_debugging();
 
 	/* Initialize GGZ structures. */
