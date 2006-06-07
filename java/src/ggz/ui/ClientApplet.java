@@ -90,12 +90,14 @@ public class ClientApplet extends JApplet implements ServerListener,
     private String uriPath;
 
     static {
-        try {
-            // Try and get Swing to use Antialiased text.
-            System.setProperty("swing.aatext", "true");
-        } catch (Throwable ex) {
-            // Ignore, we don't have permission so just don't anti-alias text.
-        }
+        // HB Anti-aliased text looks shit on an LCD screen and that's what I
+        // have so I've disabled it for now.
+        // try {
+        // // Try and get Swing to use Antialiased text.
+        // System.setProperty("swing.aatext", "true");
+        // } catch (Throwable ex) {
+        // // Ignore, we don't have permission so just don't anti-alias text.
+        // }
     }
 
     public ClientApplet() {

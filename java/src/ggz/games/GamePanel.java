@@ -32,6 +32,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.List;
 import java.util.logging.Logger;
@@ -44,8 +45,9 @@ import javax.swing.SwingUtilities;
 /**
  * Base class that the main UI panel for all games should inherit from. This
  * class handles the communication with the game client.
+ * 
  * @author Helg.Bredow
- *
+ * 
  */
 public class GamePanel extends JPanel implements ModEventHandler {
     private static final Logger log = Logger.getLogger(GamePanel.class
@@ -149,6 +151,22 @@ public class GamePanel extends JPanel implements ModEventHandler {
                 }
             }
         });
+    }
+
+    public void handleException(Throwable e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, e);
+    }
+
+    public void invokeAndWait(Runnable doRun) {
+        try {
+            SwingUtilities.invokeAndWait(doRun);
+        } catch (InvocationTargetException e) {
+            // TODO work out a way to avoid this exception, it happens when the
+            // dialog is closed while cards are being animated.
+        } catch (InterruptedException e) {
+            handleException(e);
+        }
     }
 
     private class TableChatAction extends ChatAction {

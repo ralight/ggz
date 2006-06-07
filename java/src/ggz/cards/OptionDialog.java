@@ -19,6 +19,7 @@ package ggz.cards;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -176,8 +177,25 @@ public class OptionDialog extends JDialog implements ItemListener {
         Point location = frame.getLocation();
         location.x += 10;
         location.y += 10;
+
         dialog.setLocation(location);
+        fixLocation(dialog);
         dialog.setVisible(true);
         return dialog.result;
+    }
+
+    public static void fixLocation(JDialog dialog) {
+        // Make sure that the dialog is not positioned off the screen.
+        Point location = dialog.getLocation();
+        Dimension screen = dialog.getToolkit().getScreenSize();
+        Insets insets = dialog.getToolkit().getScreenInsets(
+                dialog.getGraphicsConfiguration());
+        if (location.x + dialog.getWidth() > screen.width - insets.right) {
+            location.x = screen.width - (dialog.getWidth() + insets.right);
+        }
+        if (location.y + dialog.getHeight() > screen.height - insets.bottom) {
+            location.y = screen.height - (dialog.getHeight() + insets.bottom);
+        }
+        dialog.setLocation(location);
     }
 }

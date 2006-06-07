@@ -40,6 +40,8 @@ public class TableConstraints {
     public static final int STATUS_LABEL = 3;
     
     public static final int BUTTON_PANEL = 4;
+    
+    public static final int LAST_TRICK_BUTTON = 5;
 
     public TableConstraints(int type) {
         this.type = type;

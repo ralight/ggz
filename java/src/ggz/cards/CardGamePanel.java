@@ -40,30 +40,31 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 
 public class CardGamePanel extends GamePanel implements CardGameHandler,
         ActionListener {
-    protected Client card_client;
+    protected Client cardClient;
 
-    protected JLabel[] player_labels;
+    protected JLabel[] playerLabels;
 
     protected Sprite[][] sprites;
 
-    protected Sprite[] sprite_in_trick;
+    protected Sprite[] spriteInTrick;
 
     protected TableLayout tableLayout;
 
@@ -82,10 +83,20 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected BridgeBidPanel bridgeBidPanel;
 
+    protected JLabel lastTrickButton;
+
+    // List of arrays that contains cards in the trick for each player.
+    // Each array usually only has one card in it.
+    protected TrickInfo lastTrick;
+
+    protected int playerWhoLedLastTrick;
+
+    protected boolean isNewTrick;
+
     public void init(ModGame mod) throws IOException {
         super.init(mod);
-        card_client = new Client();
-        card_client.add_listener(this);
+        cardClient = new Client();
+        cardClient.add_listener(this);
         table = new TablePanel();
         table.setBackground(new Color(0, 128, 0));
         add(table, SmartChatLayout.TABLE);
@@ -94,6 +105,20 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         Sprite sample = new Sprite(Card.UNKNOWN_CARD);
         tableLayout = new TableLayout(sample.getWidth(), sample.getHeight());
         table.setLayout(tableLayout);
+
+        // Add the control to allow the cards in the last trick to be viewed.
+        lastTrickButton = new JLabel(new ImageIcon(getClass().getResource("images/trick.gif")));
+        lastTrickButton.setOpaque(false);
+        lastTrickButton.setToolTipText("Last Trick");
+        lastTrickButton.setVisible(false);
+        lastTrickButton.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent event) {
+                // Simulate action event as if this label were a button.
+                actionPerformed(new ActionEvent(lastTrickButton, 0, null));
+            }
+        });
+        table.add(lastTrickButton, new TableConstraints(
+                TableConstraints.LAST_TRICK_BUTTON));
     }
 
     public void alert_state(Client.GameState oldState, Client.GameState newState) {
@@ -120,7 +145,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     if (bridgeBidPanel == null) {
-                        bridgeBidPanel = new BridgeBidPanel(card_client
+                        bridgeBidPanel = new BridgeBidPanel(cardClient
                                 .get_num_players());
                         bridgeBidPanel.addActionListener(CardGamePanel.this);
                         table.add(bridgeBidPanel, new TableConstraints(
@@ -163,7 +188,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 // Remove any existing sprites in case the hand was passed in.
                 // The sprites would be removed on display_hand but this looks
                 // nicer.
-                for (int player_num = 0; player_num < card_client
+                for (int player_num = 0; player_num < cardClient
                         .get_num_players(); player_num++) {
                     if (sprites[player_num] != null) {
                         for (int i = 0; i < sprites[player_num].length; i++) {
@@ -178,13 +203,14 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 repaint();
             }
         });
+        isNewTrick = true;
     }
 
     public void alert_num_players(int numplayers, int old_numplayers) {
 
-        if (player_labels == null) {
-            player_labels = new JLabel[numplayers];
-        } else if (player_labels.length != numplayers) {
+        if (playerLabels == null) {
+            playerLabels = new JLabel[numplayers];
+        } else if (playerLabels.length != numplayers) {
             throw new UnsupportedOperationException(
                     "Dynamic number of players not supported yet.");
         }
@@ -197,9 +223,9 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     "Dynamic number of players not supported yet.");
         }
 
-        if (sprite_in_trick == null) {
-            sprite_in_trick = new Sprite[numplayers];
-        } else if (sprite_in_trick.length != numplayers) {
+        if (spriteInTrick == null) {
+            spriteInTrick = new Sprite[numplayers];
+        } else if (spriteInTrick.length != numplayers) {
             throw new UnsupportedOperationException(
                     "Dynamic number of players not supported yet.");
         }
@@ -213,8 +239,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             final String old_name) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                JLabel label = player_labels[seat_num];
-                Player player = card_client.get_nth_player(seat_num);
+                JLabel label = playerLabels[seat_num];
+                Player player = cardClient.get_nth_player(seat_num);
                 if (label == null) {
                     label = new JLabel(player.get_name());
                     Font f = label.getFont();
@@ -222,13 +248,13 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     label.setForeground(Color.WHITE);
                     table.add(label, new TableConstraints(
                             TableConstraints.PLAYER_LABEL, seat_num));
-                    player_labels[seat_num] = label;
+                    playerLabels[seat_num] = label;
 
                     if (seat_num != 0) {
                         // Listen for click events so as to pop up a menu that
-                        // allows
-                        // users to do things to this seat.
+                        // allows users to do things to this seat.
                         label.addMouseListener(new PopupListener());
+                        label.setToolTipText("Right click for options.");
                     }
                 } else {
                     label.setText(player.get_name());
@@ -318,7 +344,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             menu = new JPopupMenu("Player");
             menu.add(new SeatBotAction(seat_num));
         }
-        player_labels[seat_num].putClientProperty("ggz.cards.popupMenu", menu);
+        playerLabels[seat_num].putClientProperty("ggz.cards.popupMenu", menu);
     }
 
     protected int getCardOrientation(int player_num) {
@@ -348,6 +374,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         timeLastPlay = System.currentTimeMillis();
         lastPlayerInTrick = player_num;
 
+        if (isNewTrick) {
+            playerWhoLedLastTrick = player_num;
+            isNewTrick = false;
+        }
+
         // Check if we've already animated this card because we played it
         // ourselves.
         if (handILastPlayedFrom == player_num) {
@@ -368,7 +399,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         // played so animate it.
                         sprite.setSelected(false);
                         table.animate(sprite, trickPos, .3);
-                        sprite_in_trick[player_num] = sprite;
+                        spriteInTrick[player_num] = sprite;
                         sprites[player_num][card_num] = null;
                         tableLayout.setConstraints(sprite,
                                 new TableConstraints(
@@ -400,7 +431,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         table.add(newSprite, zOrder);
                         table.validate();
                         table.animate(newSprite, trickPos, .3);
-                        sprite_in_trick[player_num] = newSprite;
+                        spriteInTrick[player_num] = newSprite;
                         sprites[player_num][card_num] = null;
                         tableLayout.setConstraints(newSprite,
                                 new TableConstraints(
@@ -416,28 +447,62 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     protected void putNextPlayersCardsOnTop(int player_num) {
-        int num_players = card_client.get_num_players();
+        int num_players = cardClient.get_num_players();
         int player_on_left = (player_num + 1) % num_players;
-// HB I commented this out because on a fast connection (LAN) the computer
-// was playing a card faster than the animation so the table card was not unknown
-// and the computers card was not played on top of the discard. All this change
-// should mean is that when the last card is played on a trick there is an 
-// unnecessary processing for the player that led to the trick.
-//        if (Card.UNKNOWN_CARD.equals(card_client.get_nth_player(player_on_left)
-//                .get_table_card())) {
-            // Player has not played a card so put his cards on top
-            for (int card_num = sprites[player_on_left].length - 1; card_num >= 0; card_num--) {
-                Sprite card = sprites[player_on_left][card_num];
-                if (card != null) {
-                    // table.setComponentZOrder(card, 0);
-                    table.remove(card);
-                    table.add(card, 0);
-                    tableLayout.setConstraints(card, new TableConstraints(
-                            TableConstraints.CARD_IN_HAND, player_on_left,
-                            card_num));
-                }
+        // HB I commented this out because on a fast connection (LAN) the
+        // computer
+        // was playing a card faster than the animation so the table card was
+        // not unknown
+        // and the computers card was not played on top of the discard. All this
+        // change
+        // should mean is that when the last card is played on a trick there is
+        // an
+        // unnecessary processing for the player that led to the trick.
+        // if
+        // (Card.UNKNOWN_CARD.equals(card_client.get_nth_player(player_on_left)
+        // .get_table_card())) {
+        // Player has not played a card so put his cards on top
+        for (int card_num = sprites[player_on_left].length - 1; card_num >= 0; card_num--) {
+            Sprite card = sprites[player_on_left][card_num];
+            if (card != null) {
+                // table.setComponentZOrder(card, 0);
+                table.remove(card);
+                table.add(card, 0);
+                tableLayout.setConstraints(card,
+                        new TableConstraints(TableConstraints.CARD_IN_HAND,
+                                player_on_left, card_num));
             }
-//        }
+        }
+        // }
+    }
+
+    protected void showLastTrick() throws IOException {
+        if (lastTrick != null) {
+            JDialog dialog = new JDialog(
+                    JOptionPane.getFrameForComponent(this), "Last Trick");
+            dialog.getContentPane().setLayout(
+                    new TableLayout(tableLayout.getCardWidth(), tableLayout
+                            .getCardHeight()));
+            int playerNum = lastTrick.playerWhoLed;
+            for (int i = 0; i < lastTrick.cards.size(); i++) {
+                Card[] card = (Card[]) lastTrick.cards.get(playerNum);
+                Sprite sprite = new Sprite(card[0],
+                        getCardOrientation(playerNum));
+                dialog.getContentPane().add(
+                        sprite,
+                        new TableConstraints(TableConstraints.CARD_IN_TRICK,
+                                playerNum), 0);
+                playerNum = (playerNum + 1) % lastTrick.cards.size();
+            }
+            dialog.getContentPane().setBackground(table.getBackground());
+            dialog.setSize(200, 200);
+            dialog.setResizable(false);
+            dialog.setLocation(lastTrickButton.getLocationOnScreen());
+            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dialog.setModal(false);
+            OptionDialog.fixLocation(dialog);
+            dialog.setVisible(true);
+        }
     }
 
     public void alert_server(Socket fd) {
@@ -453,18 +518,18 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    for (int playerNum = 0; playerNum < card_client
+                    for (int playerNum = 0; playerNum < cardClient
                             .get_num_players(); playerNum++) {
-                        Card serverTableCard = card_client.get_nth_player(
+                        Card serverTableCard = cardClient.get_nth_player(
                                 playerNum).get_table_card();
                         if (!serverTableCard.equals(Card.UNKNOWN_CARD)
-                                && sprite_in_trick[playerNum] == null) {
+                                && spriteInTrick[playerNum] == null) {
                             // We are out of sync with the server, most likely
                             // because
                             // we just joined.
                             Sprite tableSprite = new Sprite(serverTableCard,
                                     getCardOrientation(playerNum));
-                            sprite_in_trick[playerNum] = tableSprite;
+                            spriteInTrick[playerNum] = tableSprite;
                             table.add(tableSprite, new TableConstraints(
                                     TableConstraints.CARD_IN_TRICK, playerNum),
                                     0);
@@ -493,20 +558,20 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
         invokeAndWait(new Runnable() {
             public void run() {
-                Sprite[] sprites_to_animate = new Sprite[card_client
+                Sprite[] sprites_to_animate = new Sprite[cardClient
                         .get_num_players()];
-                Point[] endPos = new Point[card_client.get_num_players()];
+                Point[] endPos = new Point[cardClient.get_num_players()];
                 int num_sprites_to_animate = 0;
 
-                for (int p = 0; p < card_client.get_num_players(); p++) {
-                    Card card_in_trick = card_client.get_nth_player(p)
+                for (int p = 0; p < cardClient.get_num_players(); p++) {
+                    Card card_in_trick = cardClient.get_nth_player(p)
                             .get_table_card();
                     // if (!Card.UNKNOWN_CARD.equals(card_in_trick)) {
                     // Sprite[] players_card_sprites = sprites[p];
                     // for (int s = 0; s < players_card_sprites.length; s++) {
-                    if (sprite_in_trick[p] != null
-                            && sprite_in_trick[p].card().equals(card_in_trick)) {
-                        sprites_to_animate[num_sprites_to_animate] = sprite_in_trick[p];
+                    if (spriteInTrick[p] != null
+                            && spriteInTrick[p].card().equals(card_in_trick)) {
+                        sprites_to_animate[num_sprites_to_animate] = spriteInTrick[p];
                         endPos[num_sprites_to_animate] = table
                                 .getPlayerCardPos(winner);
                         num_sprites_to_animate++;
@@ -523,6 +588,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 repaint();
             }
         });
+
+        isNewTrick = true;
     }
 
     public void display_hand(final int player_num) {
@@ -540,9 +607,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
      */
     protected void display_hand_impl(int player_num) {
         try {
-            Player player = card_client.get_nth_player(player_num);
+            Player player = cardClient.get_nth_player(player_num);
             List hand = player.get_hand();
-            ListIterator iter = hand.listIterator();
 
             // Remove all existing sprites
             for (int i = 0; i < sprites[player_num].length; i++) {
@@ -557,8 +623,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             int orientation = getCardOrientation(player_num);
             Point[] endPos = new Point[hand.size()];
 
-            while (iter.hasNext()) {
-                Card card = (Card) iter.next();
+            // Loop over the cards backwards so that cards are sorted from low
+            // to high, left to right.
+            for (int i = hand.size() - 1; i >= 0; i--) {
+                Card card = (Card) hand.get(i);
                 sprite = new Sprite(card, orientation);
                 Point dealerPos = new Point((table.getWidth() / 2)
                         - (sprite.getWidth() / 2), (table.getHeight() / 2)
@@ -578,12 +646,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
             // Don't do deal animation if we are playing, this usually means a
             // player has shown the cards he/she already holds.
-            if (card_client.get_game_state() != Client.STATE_PLAY) {
+            if (cardClient.get_game_state() != Client.STATE_PLAY) {
                 table.animate(hand.size(), sprites[player_num], endPos, 0.3);
             } else {
                 // Ensure this players cards are on top since in Bridge the
                 // player shows his cards and then immediately plays a card.
-                int num_players = card_client.get_num_players();
+                int num_players = cardClient.get_num_players();
                 putNextPlayersCardsOnTop((player_num - 1) % num_players);
             }
             table.setSpriteDimensions(sprite.getWidth(), sprite.getHeight());
@@ -606,7 +674,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 if ("Bridge".equals(JOptionPane.getFrameForComponent(
                         CardGamePanel.this).getTitle())) {
                     if (bridgeBidPanel == null) {
-                        bridgeBidPanel = new BridgeBidPanel(card_client
+                        bridgeBidPanel = new BridgeBidPanel(cardClient
                                 .get_num_players());
                         bridgeBidPanel.addActionListener(CardGamePanel.this);
                         table.add(bridgeBidPanel, new TableConstraints(
@@ -652,7 +720,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
         public void actionPerformed(ActionEvent event) {
             try {
-                card_client.send_bid(bid);
+                cardClient.send_bid(bid);
                 table.removeAllButtons();
                 table.hideButtons();
             } catch (IOException e) {
@@ -672,7 +740,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 startButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         try {
-                            card_client.send_newgame();
+                            cardClient.send_newgame();
                             table.removeAllButtons();
                             table.hideButtons();
                             table
@@ -693,7 +761,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         boolean okClicked = OptionDialog.show(this, descs, defaults,
                 option_choices);
         if (okClicked) {
-            card_client.send_options(defaults);
+            cardClient.send_options(defaults);
         }
         return okClicked;
     }
@@ -744,8 +812,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             int play_hand;
             int index_of_sprite_in_hand = -1;
             try {
-                card_client.send_play(sprite.card());
-                for (play_hand = 0; play_hand < card_client.get_num_players(); play_hand++) {
+                cardClient.send_play(sprite.card());
+                for (play_hand = 0; play_hand < cardClient.get_num_players(); play_hand++) {
                     for (int card_pos = 0; card_pos < sprites[play_hand].length; card_pos++) {
                         if (sprites[play_hand][card_pos] != null) {
                             sprites[play_hand][card_pos].setSelectable(true);
@@ -766,7 +834,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 // sprite.setLocation(sprite.getLocation().x,
                 // sprite.getLocation().y - (sprite.getHeight() / 2));
                 table.animate(sprite, trickPos, 0.3);
-                sprite_in_trick[play_hand] = sprite;
+                spriteInTrick[play_hand] = sprite;
                 sprites[play_hand][index_of_sprite_in_hand] = null;
                 tableLayout.setConstraints(sprite, new TableConstraints(
                         TableConstraints.CARD_IN_TRICK, play_hand));
@@ -776,7 +844,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             }
         } else if (event.getSource() == bridgeBidPanel) {
             try {
-                card_client.send_bid(bridgeBidPanel.getBidIndex());
+                cardClient.send_bid(bridgeBidPanel.getBidIndex());
             } catch (IOException ex) {
                 handleException(ex);
             }
@@ -785,6 +853,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     bridgeBidPanel.setEnabled(false);
                 }
             });
+        } else if (event.getSource() == lastTrickButton) {
+            try {
+                showLastTrick();
+            } catch (IOException ex) {
+                handleException(ex);
+            }
         }
     }
 
@@ -822,6 +896,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         // }
         // });
 
+        if ("Last Trick".equals(mark)) {
+            lastTrick = new TrickInfo(cardlist, playerWhoLedLastTrick);
+            lastTrickButton.setVisible(true);
+//            revalidate();
+        }
         // chat_panel.appendChat("set_cardlist_message", "mark=" + mark);
         // for (int i = 0; i < cardlist.size(); i++) {
         // chat_panel.appendChat("set_cardlist_message", "Player " + i
@@ -836,9 +915,9 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     public void set_player_message(final int player_num, final String message) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                JLabel label = player_labels[player_num];
+                JLabel label = playerLabels[player_num];
                 label.setText("<HTML><B>"
-                        + card_client.get_nth_player(player_num).get_name()
+                        + cardClient.get_nth_player(player_num).get_name()
                         + "</B><BR><EM><SPAN style='font-weight:normal'>"
                         + replace(message, "\n", "<BR>")
                         + "</span></EM></HTML>");
@@ -919,20 +998,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     public void handle_server_fd(Socket fd) throws IOException {
         super.handle_server_fd(fd);
-        card_client.handle_server_connect(fd);
-    }
-
-    public void handleException(Throwable e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, e);
-    }
-
-    public void invokeAndWait(Runnable doRun) {
-        try {
-            SwingUtilities.invokeAndWait(doRun);
-        } catch (Exception e) {
-            handleException(e);
-        }
+        cardClient.handle_server_connect(fd);
     }
 
     private class SeatBotAction extends AbstractAction {
@@ -974,7 +1040,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
         public void actionPerformed(ActionEvent event) {
             try {
-                String player_name = card_client.get_nth_player(seat_num)
+                String player_name = cardClient.get_nth_player(seat_num)
                         .get_name();
                 ggzMod.request_boot(player_name);
             } catch (IOException e) {
@@ -1036,5 +1102,16 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             Sprite sprite = ((Sprite) e.getSource());
             sprite.setSelected(false);
         }
+    }
+
+    private static class TrickInfo {
+        TrickInfo(List c, int leader) {
+            cards = c;
+            playerWhoLed = leader;
+        }
+
+        List cards;
+
+        int playerWhoLed;
     }
 }

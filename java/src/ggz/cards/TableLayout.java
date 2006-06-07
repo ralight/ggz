@@ -36,7 +36,7 @@ public class TableLayout implements LayoutManager2 {
     private Dimension minimumSize = new Dimension(640, 480);
 
     private Component statusLabel;
-    
+
     private Component buttonPanel;
 
     private Component[] playerLabels = new Component[4];
@@ -44,6 +44,8 @@ public class TableLayout implements LayoutManager2 {
     private Component[][] cardsInHand = new Component[4][maxHandSize];
 
     private Component[] cardsInTrick = new Component[4];
+
+    private Component lastTrickButton;
 
     public TableLayout(int cardWidth, int cardHeight) {
         this.cardWidth = cardWidth;
@@ -92,6 +94,9 @@ public class TableLayout implements LayoutManager2 {
                 break;
             case TableConstraints.BUTTON_PANEL:
                 buttonPanel = comp;
+                break;
+            case TableConstraints.LAST_TRICK_BUTTON:
+                lastTrickButton = comp;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -170,6 +175,7 @@ public class TableLayout implements LayoutManager2 {
 
         layoutStatusLabel(parent);
         layoutBidPanel(parent);
+        layoutLastTrickButton(parent);
     }
 
     protected void layoutStatusLabel(Container parent) {
@@ -180,17 +186,32 @@ public class TableLayout implements LayoutManager2 {
                     - statusLabel.getHeight() / 2);
         }
     }
-    
+
     protected void layoutBidPanel(Container parent) {
-    	if (buttonPanel != null) {
-    		buttonPanel.setSize(buttonPanel.getPreferredSize());
-    		buttonPanel.setLocation(
-          (parent.getWidth() / 2) - (buttonPanel.getWidth() / 2), parent.getHeight()
-                  - (buttonPanel.getHeight() + 110));
-//    		bidPanel.setLocation(parent.getWidth() / 2
-//                    - bidPanel.getWidth() / 2, parent.getHeight() / 2
-//                    - bidPanel.getHeight() / 2);
-    	}
+        if (buttonPanel != null) {
+            buttonPanel.setSize(buttonPanel.getPreferredSize());
+            buttonPanel.setLocation((parent.getWidth() / 2)
+                    - (buttonPanel.getWidth() / 2), parent.getHeight()
+                    - (buttonPanel.getHeight() + 110));
+            // bidPanel.setLocation(parent.getWidth() / 2
+            // - bidPanel.getWidth() / 2, parent.getHeight() / 2
+            // - bidPanel.getHeight() / 2);
+        }
+    }
+
+    /**
+     * If there is a last trick button, it is put in the bottom right hand
+     * corner.
+     * 
+     * @param parent
+     */
+    protected void layoutLastTrickButton(Container parent) {
+        if (lastTrickButton != null) {
+            lastTrickButton.setSize(lastTrickButton.getPreferredSize());
+            lastTrickButton.setLocation(parent.getWidth()
+                    - lastTrickButton.getWidth(), parent.getHeight()
+                    - lastTrickButton.getHeight());
+        }
     }
 
     protected void layoutPlayerLabel(Container parent, int playerIndex,
@@ -403,9 +424,16 @@ public class TableLayout implements LayoutManager2 {
         }
         if (!removed && buttonPanel != null) {
             if (buttonPanel == comp) {
-            	buttonPanel = null;
+                buttonPanel = null;
             }
         }
     }
 
+    public int getCardWidth() {
+        return cardWidth;
+    }
+    
+    public int getCardHeight() {
+        return cardHeight;
+    }
 }

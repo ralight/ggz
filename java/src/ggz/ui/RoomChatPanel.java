@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -100,12 +101,14 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 		// playerList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setOpaque(false);
 		playerList.setOpaque(false);
-		playerList.setPreferredScrollableViewportSize(new Dimension(150, 100));
+		playerList.setPreferredScrollableViewportSize(new Dimension(200, 100));
 		playerList.setDefaultRenderer(PlayerType.class,
 				new PlayerTypeCellRenderer());
 		playerList.setDefaultRenderer(Player.class, new PlayerCellRenderer());
 		playerList.setDefaultRenderer(Integer.class, new LagCellRenderer());
-		playerList.setRowHeight(16);
+        JLabel rowHeightCalculator = new JLabel("Qwerty");
+        rowHeightCalculator.setFont(playerList.getFont());
+		playerList.setRowHeight(Math.max(16, rowHeightCalculator.getPreferredSize().height));
 		playerScrollPane = new JScrollPane();
 		playerScrollPane.setOpaque(false);
 		playerScrollPane.getViewport().add(playerList);

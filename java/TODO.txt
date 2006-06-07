@@ -7,24 +7,13 @@ Core Client
 Add a private chat window so that two players can have a private conversation.
 Currently the only way to do this is to use the /msg command.
 
-Add some board games, Reversi, Chess and Checkers are good candidates.
+Add some board games, Reversi, Chess and Checkers are good candidates. 
+Backgammon has also been requested but we also need a server for that.
 
 Add support for launching non-java games (i.e. implement new Mod that supports
 sockets)
 
 Add support for launching Java games from non-Java core client.
-
-MegaGrub help message on first login is confusing. His welcome text is great
-but the bit about "type help to change this :)" is confusing. The Smiley
-makes it not obvious that he is a bot and is giving you instructions and
-some users don't recognise smiley's (my dad didn't). People are using the
-applet to play games, not type obtuse commands into a chat window so that
-they can register themselves. The web site does this adequately already; we
-don't need to remove the chat bot functionality, we just don't need to
-advertise it when you first log in. Maybe MegaGrub can chime in with a help
-tip if the user sends "help" as chat.
-
-
 
 Support chat buffer size properly so that we don't send too big a message after encoding to UTF-8.
 
@@ -37,7 +26,8 @@ Scale the cards and other widgets when the window is resized.
 The "How to Play" link doesn't work when a popup blocker is in effect. Find a
 way to get around this or alert the user to this fact...After researching this
 it appears that there is no way to get around the IE or Google pop-up
-blockers.
+blockers but I've managed to display a JavaScript alert if a popup blocker is 
+detected.
 
 Consider a "Leave" button so that closing the window is not the only way to 
 leave the game; closing the window it not intuitive for all users.
@@ -48,6 +38,8 @@ The applet currently does not fit well on a screen resolution of 800x600 but
 it needs to.
 
 Support named bots or change names from AI to Computer 1, Computer 2 etc.
+
+Support reserved seats like the GTK client does.
 
 Hide chat when all opponents are AI players.
 
@@ -63,12 +55,6 @@ should solve it.
 
 Allow player to look at cards in last trick etc. (according to the rules of
 the game)
-
-
-Bridge
-======
-Use specialised bid controls rather than buttons for bidding. The controls
-could have toggle buttons from 1-7 and toggle buttons for each of the strains.
 
 
 Hearts
@@ -91,9 +77,10 @@ Why is there both a 0 and nil bid?
 
 The numbers in brackets are confusing. It's not obvious that the first number
 is the bid/number of tricks for the player and the second number in brackets
-is for the team.
+is for the team. Use custom game messages or enhance the GGZ Cards protocol
+to support score messages for individuals and teams.
 
-GGZ-Cards version of Spades seems to have more options, what's going on?
+Initially show cards face down if the blind nil option is set.
 
 Suaro
 =====

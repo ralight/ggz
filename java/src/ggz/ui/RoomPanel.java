@@ -115,7 +115,9 @@ public class RoomPanel extends JPanel implements RoomListener,
         tableTable = new JTable(tables);
         // tableTable.getTableHeader().setBackground(new Color(0xce, 0xfa,
         // 0xdf));
-        tableTable.setRowHeight(tableTable.getRowHeight() * 4);
+        JLabel rowHeightCalculator = new JLabel("Qwerty");
+        rowHeightCalculator.setFont(tableTable.getFont());
+        tableTable.setRowHeight(rowHeightCalculator.getPreferredSize().height * 4);
         tableTable.getSelectionModel().setSelectionMode(
                 ListSelectionModel.SINGLE_SELECTION);
         tableTable.getSelectionModel().addListSelectionListener(this);
