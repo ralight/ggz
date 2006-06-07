@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 11/11/2004
  * Desc: GGZ Handlers for GTK games
- * $Id: ggz_gtk.c 6903 2005-01-25 18:57:38Z jdorje $
+ * $Id: ggz_gtk.c 8120 2006-06-07 07:24:30Z jdorje $
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -69,6 +69,12 @@ GGZMod *init_ggz_gtk(GtkWindow * main_window,
 {
 	GIOChannel *channel;
 	GGZMod *mod;
+
+	if (!ggzmod_is_ggz_mode()) {
+		printf(_("This program should only be run from within GGZ."));
+		printf("\n");
+		exit(1);
+	}
 
 	ggz_game_main_window = main_window;
 
