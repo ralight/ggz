@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 8122 2006-06-07 07:36:55Z jdorje $
+ * $Id: ggzdmod.c 8129 2006-06-07 21:46:50Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -614,7 +614,7 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 			   ggzdmod_disconnect - but this doesn't free the
 			   seat data.  Be careful with this! */
 			_ggzdmod_error(ggzdmod,
-				       "Error writing to game");
+				       "Error writing seat change to game");
 		}
 
 		/* We (GGZ) don't need the fd now */
@@ -679,7 +679,8 @@ int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 	    && ggzdmod->state != GGZDMOD_STATE_CREATED) {
 		if (_io_send_spectator_change(ggzdmod->fd, spectator) < 0) {
 			_ggzdmod_error(ggzdmod,
-				       "Error writing to game");
+				       "Error writing spectator "
+				       "change to game");
 			return -1;
 		}
 
@@ -1104,7 +1105,7 @@ static int send_game_launch(GGZdMod * ggzdmod)
 
 	if (_io_send_launch(ggzdmod->fd, ggzdmod->game, ggzdmod->num_seats,
 			    ggzdmod->max_num_spectators) < 0) {
-		_ggzdmod_error(ggzdmod, "Error writing to game");
+		_ggzdmod_error(ggzdmod, "Error writing launch to game");
 		return -1;
 	}
 
@@ -1114,7 +1115,8 @@ static int send_game_launch(GGZdMod * ggzdmod)
 		
 		seat = ggz_list_get_data(entry);
 		if (_io_send_seat(ggzdmod->fd, seat) < 0) {
-			_ggzdmod_error(ggzdmod, "Error writing to game");
+			_ggzdmod_error(ggzdmod,
+				       "Error writing launch seats to game");
 			return -1;
 		}
 	}
