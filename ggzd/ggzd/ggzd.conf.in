@@ -26,7 +26,7 @@
 
 # Administrators email
 #   This is the email contact address reported to clients
-#AdminEmail = hharry@fillintheblank.com
+#AdminEmail = hharry@example.com
 
 # Port option
 #   Uncomment to specify a port other than the default (5688)
