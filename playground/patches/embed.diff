@@ -1,6 +1,18 @@
+Index: tictactoe/game.h
+===================================================================
+--- tictactoe/game.h	(revision 8136)
++++ tictactoe/game.h	(working copy)
+@@ -71,6 +71,7 @@
+ 
+ /* Setup functions */
+ void game_init(void);
++void game_free(void);
+ 
+ /* Functions to handle incoming data from server*/
+ int receive_seat(void);
 Index: tictactoe/main_win.c
 ===================================================================
---- tictactoe/main_win.c	(revision 8128)
+--- tictactoe/main_win.c	(revision 8136)
 +++ tictactoe/main_win.c	(working copy)
 @@ -40,6 +40,7 @@
  #include "dlg_about.h"
@@ -10,15 +22,7 @@ Index: tictactoe/main_win.c
  #include "menus.h"
  #include "main_win.h"
  #include "game.h"
-@@ -209,6 +210,7 @@
- 			  gpointer user_data)
- {
- 	/* FIXME: should call an "are you sure dialog" */
-+  printf("main exit\n");
- 	gtk_main_quit();
- 
- 	return FALSE;
-@@ -279,7 +281,7 @@
+@@ -279,7 +280,7 @@
  }
  
  
@@ -27,7 +31,7 @@ Index: tictactoe/main_win.c
  {
  	GtkWidget *menubar;
  	GtkItemFactoryEntry items[] = {
-@@ -287,8 +289,7 @@
+@@ -287,8 +288,7 @@
  		HELP_MENU
  	};
  
@@ -37,7 +41,7 @@ Index: tictactoe/main_win.c
  				   sizeof(items) / sizeof(items[0]));
  
  	set_menu_sensitive(TABLE_SYNC, FALSE);
-@@ -300,7 +301,7 @@
+@@ -300,7 +300,7 @@
  
  GtkWidget *create_main_win(void)
  {
@@ -46,7 +50,7 @@ Index: tictactoe/main_win.c
  	GtkWidget *main_box;
  	GtkWidget *menubar;
  	GtkWidget *drawingarea;
-@@ -310,52 +311,50 @@
+@@ -310,52 +310,50 @@
  
  	accel_group = gtk_accel_group_new();
  
@@ -82,7 +86,7 @@ Index: tictactoe/main_win.c
  	gtk_widget_show(drawingarea);
  	gtk_box_pack_start(GTK_BOX(main_box), drawingarea, TRUE, TRUE, 0);
 -	gtk_widget_set_size_request(drawingarea, 200, 200);
-+	gtk_widget_set_size_request(drawingarea, 600, 350);
++	gtk_widget_set_size_request(drawingarea, 500, 400);
  	gtk_widget_set_events(drawingarea,
  			      GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
  
@@ -110,7 +114,7 @@ Index: tictactoe/main_win.c
  			 GTK_SIGNAL_FUNC(on_main_win_realize), NULL);
  	g_signal_connect(GTK_OBJECT(drawingarea), "configure_event",
  			 GTK_SIGNAL_FUNC(configure_handle), NULL);
-@@ -364,7 +363,8 @@
+@@ -364,7 +362,8 @@
  	g_signal_connect(GTK_OBJECT(drawingarea), "button_press_event",
  			 GTK_SIGNAL_FUNC(get_move), NULL);
  
@@ -123,9 +127,9 @@ Index: tictactoe/main_win.c
  }
 Index: tictactoe/main.c
 ===================================================================
---- tictactoe/main.c	(revision 8128)
+--- tictactoe/main.c	(revision 8136)
 +++ tictactoe/main.c	(working copy)
-@@ -58,22 +58,26 @@
+@@ -58,22 +58,17 @@
  	gtk_init(&argc, &argv);
  	initialize_about_dialog();
  
@@ -144,33 +148,37 @@ Index: tictactoe/main.c
  	gtk_main();
  
 -	if (ggzmod_disconnect(game.ggzmod) < 0)
-+	printf("gtk main exited.\n");
-+
-+	if (ggzmod_disconnect(game.ggzmod) < 0) {
-+	  printf("Disconnect failed.\n");
- 		return -1;
-+	}
+-		return -1;
++	game_free();
  
- 	ggzmod_free(game.ggzmod);
-+
-+	printf("TTT finished.\n");
-+
+-	ggzmod_free(game.ggzmod);
  	return 0;
  }
  
-@@ -276,7 +280,8 @@
+@@ -276,11 +271,19 @@
  
  	game.state = STATE_INIT;
  
 -	game.ggzmod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
-+	init_ggz_gtk(_("Tic-Tac-Toe"), game_handle_io);
++	init_ggz_gtk(_("Tic-Tac-Toe"),
++		     "TicTacToe", "4",
++		     game_handle_io);
 +	game.ggzmod = ggz_gtk_get_ggzmod();
  	game.num = -1;
  }
  
++void game_free(void)
++{
++	free_ggz_gtk();
++}
+ 
++
+ int send_my_move(void)
+ {
+ 	if (game.num < 0)
 Index: tictactoe/Makefile.am
 ===================================================================
---- tictactoe/Makefile.am	(revision 8128)
+--- tictactoe/Makefile.am	(revision 8136)
 +++ tictactoe/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = .
@@ -194,7 +202,7 @@ Index: tictactoe/Makefile.am
  dist_pixmap_DATA = o.svg x.svg
 Index: common/dlg_exit.c
 ===================================================================
---- common/dlg_exit.c	(revision 8128)
+--- common/dlg_exit.c	(revision 8136)
 +++ common/dlg_exit.c	(working copy)
 @@ -39,7 +39,7 @@
  {
@@ -224,7 +232,7 @@ Index: common/dlg_exit.c
  				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 Index: common/dlg_about.c
 ===================================================================
---- common/dlg_about.c	(revision 8128)
+--- common/dlg_about.c	(revision 8136)
 +++ common/dlg_about.c	(working copy)
 @@ -114,7 +114,7 @@
  		gdk_window_show(dlg_about->window);
@@ -237,15 +245,17 @@ Index: common/dlg_about.c
  				 &dlg_about);
 Index: common/ggz_gtk.h
 ===================================================================
---- common/ggz_gtk.h	(revision 8128)
+--- common/ggz_gtk.h	(revision 8136)
 +++ common/ggz_gtk.h	(working copy)
-@@ -28,7 +28,12 @@
+@@ -28,7 +28,14 @@
  #include "ggzintl.h"
  #include "dlg_players.h"
  
 -extern GtkWindow *ggz_game_main_window;
 +void init_ggz_gtk(const char *window_title,
++		  const char *prot_engine, const char *prot_version,
 +		  gboolean(*game_handler) (GGZMod * mod));
++void free_ggz_gtk(void);
  
 -GGZMod *init_ggz_gtk(GtkWindow * main_window,
 -		     gboolean(*game_handler) (GGZMod * mod));
@@ -255,53 +265,9 @@ Index: common/ggz_gtk.h
 +GtkWidget *ggz_gtk_get_display_area(void);
 +GGZMod *ggz_gtk_get_ggzmod(void);
 +gboolean ggz_gtk_is_embedded(void);
-Index: common/dlg_chat.c
-===================================================================
---- common/dlg_chat.c	(revision 8128)
-+++ common/dlg_chat.c	(working copy)
-@@ -30,6 +30,7 @@
- #  include <config.h>	/* Site-specific config */
- #endif
- 
-+#include <assert.h>
- #include <stdio.h>
- 
- #include <gtk/gtk.h>
-@@ -78,10 +79,11 @@
- 	}
- }
- 
--void init_chat(GGZMod * ggzmod)
-+void init_chat(void)
- {
--	ggz = ggzmod;
--	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_CHAT,
-+	ggz = ggz_gtk_get_ggzmod();
-+	assert(ggz != NULL);
-+	ggzmod_set_handler(ggz, GGZMOD_EVENT_CHAT,
- 			   handle_ggz_chat_event);
- }
- 
-@@ -90,6 +92,7 @@
- 	const char *theinput = gtk_entry_get_text(w);
- 
- 	if (*theinput) {
-+		assert(ggz != NULL);
- 		ggzmod_request_chat(ggz, theinput);
- 	}
- 
-@@ -195,7 +198,7 @@
- 		gdk_window_show(dlg_chat->window);
- 		gdk_window_raise(dlg_chat->window);
- 	} else {
--		dlg_chat = create_dlg_chat(ggz_game_main_window);
-+		dlg_chat = create_dlg_chat(ggz_gtk_get_main_window());
- 		g_signal_connect(dlg_chat, "destroy",
- 				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
- 				 &dlg_chat);
 Index: common/dlg_players.c
 ===================================================================
---- common/dlg_players.c	(revision 8128)
+--- common/dlg_players.c	(revision 8136)
 +++ common/dlg_players.c	(working copy)
 @@ -83,15 +83,15 @@
  	update_player_lists();
@@ -413,22 +379,53 @@ Index: common/dlg_players.c
 +	assert(ggz != NULL);
  	ggzmod_request_stand(ggz);
  }
-Index: common/dlg_players.h
+Index: common/dlg_chat.c
 ===================================================================
---- common/dlg_players.h	(revision 8128)
-+++ common/dlg_players.h	(working copy)
-@@ -32,7 +32,7 @@
-    if the game wants its own handlers for these events you should
-    register them *after* calling this function, and then be sure to
-    call update_player_lists when the events occur. */
--void init_player_list(GGZMod * ggzmod);
-+void init_player_list(void);
+--- common/dlg_chat.c	(revision 8136)
++++ common/dlg_chat.c	(working copy)
+@@ -30,6 +30,7 @@
+ #  include <config.h>	/* Site-specific config */
+ #endif
  
- /* The player list will attach itself to the SEAT and SPECTATOR ggzmod
-    events, but if you override them you should call this function instead.
++#include <assert.h>
+ #include <stdio.h>
+ 
+ #include <gtk/gtk.h>
+@@ -78,10 +79,11 @@
+ 	}
+ }
+ 
+-void init_chat(GGZMod * ggzmod)
++void init_chat(void)
+ {
+-	ggz = ggzmod;
+-	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_CHAT,
++	ggz = ggz_gtk_get_ggzmod();
++	assert(ggz != NULL);
++	ggzmod_set_handler(ggz, GGZMOD_EVENT_CHAT,
+ 			   handle_ggz_chat_event);
+ }
+ 
+@@ -90,6 +92,7 @@
+ 	const char *theinput = gtk_entry_get_text(w);
+ 
+ 	if (*theinput) {
++		assert(ggz != NULL);
+ 		ggzmod_request_chat(ggz, theinput);
+ 	}
+ 
+@@ -195,7 +198,7 @@
+ 		gdk_window_show(dlg_chat->window);
+ 		gdk_window_raise(dlg_chat->window);
+ 	} else {
+-		dlg_chat = create_dlg_chat(ggz_game_main_window);
++		dlg_chat = create_dlg_chat(ggz_gtk_get_main_window());
+ 		g_signal_connect(dlg_chat, "destroy",
+ 				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+ 				 &dlg_chat);
 Index: common/dlg_chat.h
 ===================================================================
---- common/dlg_chat.h	(revision 8128)
+--- common/dlg_chat.h	(revision 8136)
 +++ common/dlg_chat.h	(working copy)
 @@ -30,7 +30,7 @@
   * handler for the CHAT event.  If the game wants its own handler for this
@@ -439,9 +436,22 @@ Index: common/dlg_chat.h
  
  /* Creates a widget containing a chatbox. */
  GtkWidget *create_chat_widget(void);
+Index: common/dlg_players.h
+===================================================================
+--- common/dlg_players.h	(revision 8136)
++++ common/dlg_players.h	(working copy)
+@@ -32,7 +32,7 @@
+    if the game wants its own handlers for these events you should
+    register them *after* calling this function, and then be sure to
+    call update_player_lists when the events occur. */
+-void init_player_list(GGZMod * ggzmod);
++void init_player_list(void);
+ 
+ /* The player list will attach itself to the SEAT and SPECTATOR ggzmod
+    events, but if you override them you should call this function instead.
 Index: common/menus.c
 ===================================================================
---- common/menus.c	(revision 8128)
+--- common/menus.c	(revision 8136)
 +++ common/menus.c	(working copy)
 @@ -34,14 +34,14 @@
  
@@ -475,7 +485,7 @@ Index: common/menus.c
  	set_menu_sensitive(TABLE_CHAT_WINDOW, FALSE);
 Index: common/Makefile.am
 ===================================================================
---- common/Makefile.am	(revision 8128)
+--- common/Makefile.am	(revision 8136)
 +++ common/Makefile.am	(working copy)
 @@ -3,7 +3,7 @@
  
@@ -488,7 +498,7 @@ Index: common/Makefile.am
  
 Index: common/menus.h
 ===================================================================
---- common/menus.h	(revision 8128)
+--- common/menus.h	(revision 8136)
 +++ common/menus.h	(working copy)
 @@ -68,8 +68,7 @@
  
@@ -502,9 +512,9 @@ Index: common/menus.h
  void set_menu_sensitive(const char *menu, gboolean sensitive);
 Index: common/ggz_gtk.c
 ===================================================================
---- common/ggz_gtk.c	(revision 8128)
+--- common/ggz_gtk.c	(revision 8136)
 +++ common/ggz_gtk.c	(working copy)
-@@ -27,24 +27,36 @@
+@@ -27,24 +27,31 @@
  #  include <config.h>
  #endif
  
@@ -524,13 +534,12 @@ Index: common/ggz_gtk.c
 +static GtkWidget *main_win, *display_area, *notebook;
 +static GGZMod *mod;
 +static gboolean embedded;
++static guint ggz_input_id = -1;
  
  static gboolean(*game_server_handler) (GGZMod * mod);
  
-+#if 0
- static gboolean handle_ggz(GIOChannel * channel, GIOCondition cond,
- 			   gpointer data)
-+#endif
+-static gboolean handle_ggz(GIOChannel * channel, GIOCondition cond,
+-			   gpointer data)
 +static void handle_ggz(gpointer data, gint fid, GdkInputCondition cond)
  {
 -	GGZMod *mod = data;
@@ -539,13 +548,11 @@ Index: common/ggz_gtk.c
 +	assert(mod != NULL);
 +	if (ggzmod_dispatch(mod) < 0) {
 +		ggz_game_closed();
-+		//		return FALSE;
 +	}
-+	//	return TRUE;
  }
  
  static gboolean handle_game_server(GIOChannel * channel, GIOCondition cond,
-@@ -52,6 +64,7 @@
+@@ -52,6 +59,7 @@
  {
  	GGZMod *mod = data;
  
@@ -553,33 +560,27 @@ Index: common/ggz_gtk.c
  	return (game_server_handler) (mod);
  }
  
-@@ -66,30 +79,126 @@
+@@ -66,30 +74,142 @@
  	g_io_add_watch(channel, G_IO_IN, handle_game_server, mod);
  }
  
 -GGZMod *init_ggz_gtk(GtkWindow * main_window,
 -		     gboolean(*game_handler) (GGZMod * mod))
 +enum pages {
-+  PAGE_GGZ,
-+  PAGE_GAME
++	PAGE_GGZ,
++	PAGE_GAME
 +};
-+static guint ggz_input_id;
 +
 +static void ggz_game_launched(void)
  {
+-	GIOChannel *channel;
+-	GGZMod *mod;
 +	/* Connect to GGZ */
 +	mod = ggzmod_new(GGZMOD_GAME);
 +	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
 +			   handle_ggzmod_server);
 +	ggzmod_connect(mod);
-+
-+#if 0
- 	GIOChannel *channel;
--	GGZMod *mod;
  
-+	channel = g_io_channel_unix_new(ggzmod_get_fd(mod));
-+	g_io_add_watch(channel, G_IO_IN, handle_ggz, mod);
-+#endif
 +	ggz_input_id = gtk_input_add_full(ggzmod_get_fd(mod),
 +					  GDK_INPUT_READ, handle_ggz,
 +					  NULL, NULL, NULL);
@@ -587,22 +588,36 @@ Index: common/ggz_gtk.c
 +	init_player_list();
 +	init_chat();
 +
-+	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), PAGE_GAME);
++	if (embedded) {
++		gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook),
++					      PAGE_GAME);
++	}
++}
++
++static void ggzmod_close(void)
++{
++	if (ggzmod_disconnect(mod) < 0) {
++		return;
++	}
++
++	ggzmod_free(mod);
++	mod = NULL;
++
++	assert(ggz_input_id != -1);
++	gtk_input_remove(ggz_input_id);
++	ggz_input_id = -1;
 +}
 +
 +void ggz_game_closed(void)
 +{
 +	if (embedded) {
-+	  printf("Embedded quit.\n");
 +		ggz_embed_leave_table();
 +		gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook),
 +					      PAGE_GGZ);
-+		gtk_input_remove(ggz_input_id);
++		ggzmod_close();
 +	} else {
-+	  printf("Nonembedded quit.\n");
 +		gtk_main_quit();
 +	}
-+	printf("Quit succeeded.\n");
 +}
 +
 +static void create_main_window(const char *window_title)
@@ -613,10 +628,6 @@ Index: common/ggz_gtk.c
 +	gtk_window_set_title(GTK_WINDOW(main_win), window_title);
 +
  	if (!ggzmod_is_ggz_mode()) {
-+		ggz_gtk_initialize(FALSE,
-+				   NULL, ggz_game_launched,
-+				   "TicTacToe", "4");
-+
 +		notebook = gtk_notebook_new();
 +
 +		/* stop mouse wheel notebook page switching. */
@@ -654,8 +665,14 @@ Index: common/ggz_gtk.c
 -	/* Connect to GGZ */
 -	mod = ggzmod_new(GGZMOD_GAME);
 +void init_ggz_gtk(const char *window_title,
-+		     gboolean(*game_handler) (GGZMod * mod))
++		  const char *prot_engine, const char *prot_version,
++		  gboolean(*game_handler) (GGZMod * mod))
 +{
++	if (!ggzmod_is_ggz_mode()) {
++		ggz_gtk_initialize(FALSE,
++				   NULL, ggz_game_launched,
++				   prot_engine, prot_version);
++	}
 +	create_main_window(window_title);
 +
 +	embedded = !ggzmod_is_ggz_mode();
@@ -670,13 +687,20 @@ Index: common/ggz_gtk.c
  
 -	channel = g_io_channel_unix_new(ggzmod_get_fd(mod));
 -	g_io_add_watch(channel, G_IO_IN, handle_ggz, mod);
++void free_ggz_gtk(void)
++{
++	if (!embedded) {
++		ggzmod_close();
++	}
++}
  
 -	init_player_list(mod);
+ 
 +GtkWindow *ggz_gtk_get_main_window(void)
 +{
 +	return GTK_WINDOW(main_win);
 +}
- 
++
 +GtkWidget *ggz_gtk_get_display_area(void)
 +{
 +	return display_area;
@@ -693,7 +717,7 @@ Index: common/ggz_gtk.c
 +}
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 8128)
+--- configure.ac	(revision 8136)
 +++ configure.ac	(working copy)
 @@ -45,6 +45,7 @@
  AC_GGZ_LIBGGZ
