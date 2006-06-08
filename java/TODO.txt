@@ -17,7 +17,14 @@ Add support for launching Java games from non-Java core client.
 
 Support chat buffer size properly so that we don't send too big a message after encoding to UTF-8.
 
+Seat reservation dialog allows to select all computer players but the server 
+complains with bad option. The dialog should not allow you to OK the dialog in 
+this case.
 
+Seat reservation dialog allows you to reserve a seat for the same player more 
+than once. It should not let you OK the dialog if his is the case.
+
+Add icons next to player names in seat reservation combo boxes.
 
 All Card Games
 ==============
@@ -39,8 +46,6 @@ it needs to.
 
 Support named bots or change names from AI to Computer 1, Computer 2 etc.
 
-Support reserved seats like the GTK client does.
-
 Hide chat when all opponents are AI players.
 
 Show lag indicator, when there is lag there is no indication why a computer
@@ -52,9 +57,6 @@ enough.
 Find out why "Connection Reset" exception occurs, especially, when leaving the
 game "sitting" for a few minutes...I've added Socket.setKeepAlive(true) so this
 should solve it.
-
-Allow player to look at cards in last trick etc. (according to the rules of
-the game)
 
 
 Hearts

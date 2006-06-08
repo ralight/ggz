@@ -83,7 +83,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected BridgeBidPanel bridgeBidPanel;
 
-    protected JLabel lastTrickButton;
+    protected JButton lastTrickButton;
 
     // List of arrays that contains cards in the trick for each player.
     // Each array usually only has one card in it.
@@ -107,16 +107,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         table.setLayout(tableLayout);
 
         // Add the control to allow the cards in the last trick to be viewed.
-        lastTrickButton = new JLabel(new ImageIcon(getClass().getResource("images/trick.gif")));
+        lastTrickButton = new JButton(new ImageIcon(getClass().getResource("images/trick.gif")));
         lastTrickButton.setOpaque(false);
         lastTrickButton.setToolTipText("Last Trick");
         lastTrickButton.setVisible(false);
-        lastTrickButton.addMouseListener(new MouseAdapter(){
-            public void mouseClicked(MouseEvent event) {
-                // Simulate action event as if this label were a button.
-                actionPerformed(new ActionEvent(lastTrickButton, 0, null));
-            }
-        });
+        lastTrickButton.addActionListener(this);
+        lastTrickButton.setBorder(null);
         table.add(lastTrickButton, new TableConstraints(
                 TableConstraints.LAST_TRICK_BUTTON));
     }
@@ -485,6 +481,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                             .getCardHeight()));
             int playerNum = lastTrick.playerWhoLed;
             for (int i = 0; i < lastTrick.cards.size(); i++) {
+                // Hack to prevent IndexOutOfBoundsException in Suaro.
+                // The array has less elements than there are seats so we may
+                // end up having to track cards in the trick ourselves.
+                if (playerNum >= lastTrick.cards.size()) {
+                    playerNum  = lastTrick.cards.size() - 1;
+                }
                 Card[] card = (Card[]) lastTrick.cards.get(playerNum);
                 Sprite sprite = new Sprite(card[0],
                         getCardOrientation(playerNum));
@@ -492,6 +494,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         sprite,
                         new TableConstraints(TableConstraints.CARD_IN_TRICK,
                                 playerNum), 0);
+                // Next player.
                 playerNum = (playerNum + 1) % lastTrick.cards.size();
             }
             dialog.getContentPane().setBackground(table.getBackground());
@@ -499,7 +502,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             dialog.setResizable(false);
             dialog.setLocation(lastTrickButton.getLocationOnScreen());
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            dialog.setModal(false);
+            dialog.setModal(true);
             OptionDialog.fixLocation(dialog);
             dialog.setVisible(true);
         }

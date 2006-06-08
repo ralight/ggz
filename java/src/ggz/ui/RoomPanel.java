@@ -363,7 +363,7 @@ public class RoomPanel extends JPanel implements RoomListener,
                                         .getString("RoomPanel.Message.GameNotSupported"));
             } else {
                 table = SeatAllocationDialog.getTableSeatAllocation(
-                        (Component) e.getSource(), room.get_gametype());
+                        (Component) e.getSource(), room);
                 if (table != null) {
                     // The panel wasn't repainting between the dialog being
                     // closed and the game window appearing. Forcing a repaint

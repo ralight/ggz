@@ -18,6 +18,7 @@
 package ggz.ui;
 
 import ggz.client.core.GameType;
+import ggz.client.core.Room;
 import ggz.client.core.Table;
 import ggz.common.SeatType;
 
@@ -35,6 +36,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -48,6 +50,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+// TODO Localise this
 public class SeatAllocationDialog extends JDialog implements ItemListener {
     private static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
@@ -61,6 +64,8 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
     private GameType gameType;
 
     private Table table;
+
+    protected Room room;
 
     private JPanel buttonSizePanel;
 
@@ -76,6 +81,8 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 
     private JRadioButton multiPlayButton;
 
+    private JRadioButton advancedPlayButton;
+
     private JLabel tableDescriptionLabel;
 
     private JTextField tableDescriptionTextField;
@@ -84,9 +91,13 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 
     private JComboBox numberOfPlayersComboBox;
 
-    public SeatAllocationDialog(Frame frame, String title, GameType gameType) {
+    private JPanel reserveSeatsPanel;
+
+    public SeatAllocationDialog(Frame frame, String title, Room room) {
         super(frame, title, true);
-        this.gameType = gameType;
+        this.room = room;
+        this.gameType = room.get_gametype();
+        this.setResizable(false);
 
         // Closing the dialog is the same as clicking cancel.
         addWindowListener(new WindowAdapter() {
@@ -98,7 +109,8 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         // Set up the OK and Cancel buttons.
         buttonSizePanel = new JPanel(new GridLayout(1, 2, 4, 4));
         buttonFlowPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        okButton = new JButton(messages.getString("SeatAllocationDialog.Button.OK"));
+        okButton = new JButton(messages
+                .getString("SeatAllocationDialog.Button.OK"));
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 onOKClick();
@@ -127,18 +139,26 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         constraints.anchor = GridBagConstraints.WEST;
         if (isSoloPlayPossible) {
             ButtonGroup soloOrMultiGroup = new ButtonGroup();
-            soloPlayButton = new JRadioButton(messages
-                    .getString("SeatAllocationDialog.Radio.PlayAgainstComputer"));
+            soloPlayButton = new JRadioButton(
+                    messages
+                            .getString("SeatAllocationDialog.Radio.PlayAgainstComputer"));
             soloPlayButton.addItemListener(this);
-            multiPlayButton = new JRadioButton(messages
-                    .getString("SeatAllocationDialog.Radio.StartMultiplayerGame"));
+            multiPlayButton = new JRadioButton(
+                    messages
+                            .getString("SeatAllocationDialog.Radio.StartMultiplayerGame"));
             multiPlayButton.addItemListener(this);
+            advancedPlayButton = new JRadioButton(messages
+                    .getString("SeatAllocationDialog.Radio.StartAdvancedGame"));
+            advancedPlayButton.addItemListener(this);
             soloOrMultiGroup.add(soloPlayButton);
             soloOrMultiGroup.add(multiPlayButton);
+            soloOrMultiGroup.add(advancedPlayButton);
             constraints.gridwidth = 2;
             centerPanel.add(soloPlayButton, constraints);
-            constraints.gridy = 1;
+            constraints.gridy += 1;
             centerPanel.add(multiPlayButton, constraints);
+            constraints.gridy += 1;
+            centerPanel.add(advancedPlayButton, constraints);
         }
         constraints.gridwidth = 1;
         // Card games only support a max of 4 players at the moment.
@@ -156,25 +176,40 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
                     numberOfPlayersComboBox.setSelectedItem(item);
                 }
             }
+            numberOfPlayersComboBox.addItemListener(this);
             constraints.insets.left = 5;
             constraints.gridx = 0;
-            constraints.gridy = 2;
+            constraints.gridy += 1;
             centerPanel.add(numberOfPlayersLabel, constraints);
             constraints.gridx = 1;
             centerPanel.add(numberOfPlayersComboBox, constraints);
         }
 
+        // Panel for reserving seats.
+        reserveSeatsPanel = new JPanel(new GridLayout(getNumSeats(), 0));
+        // reserveSeatsPanel.setVisible(false);
+        constraints.gridx = 0;
+        constraints.gridy += 1;
+        constraints.gridwidth = 2;
+        constraints.insets.left = 5;
+        for (int seatNum = 0; seatNum < getNumSeats(); seatNum++) {
+            reserveSeatsPanel.add(new SeatPanel(seatNum));
+        }
+        centerPanel.add(reserveSeatsPanel, constraints);
+
+        // Table description, label and text field.
         tableDescriptionLabel = new JLabel(messages
                 .getString("SeatAllocationDialog.Label.TableDescription"));
         tableDescriptionTextField = new JTextField(I_PLAY_ALONE, 20);
         TextPopupMenu.enableFor(tableDescriptionTextField);
+        constraints.insets.left = 5;
         constraints.insets.top = 5;
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        constraints.gridwidth = 2;
+        // constraints.gridx = 0;
+        constraints.gridy += 1;
+        // constraints.gridwidth = 2;
         centerPanel.add(tableDescriptionLabel, constraints);
         constraints.insets.top = 5;
-        constraints.gridy = 4;
+        constraints.gridy += 1;
         constraints.weightx = 1.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         centerPanel.add(tableDescriptionTextField, constraints);
@@ -184,24 +219,26 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         }
     }
 
-    private void onOKClick() {
+    protected void onOKClick() {
         String description = tableDescriptionTextField.getText();
-        int numSeats = gameType.get_max_players();
+        int numSeats = getNumSeats();
 
-        if (numberOfPlayersComboBox != null) {
-            numSeats = ((Integer) numberOfPlayersComboBox.getSelectedItem())
-                    .intValue();
-        }
         table = new Table(gameType, description, numSeats);
         try {
-            if (soloPlayButton.isSelected()) {
-                table.set_seat(0, SeatType.GGZ_SEAT_OPEN, null);
-                for (int seat_num = 1; seat_num < numSeats; seat_num++) {
-                    table.set_seat(seat_num, SeatType.GGZ_SEAT_BOT, null);
-                }
-            } else {
-                for (int seat_num = 0; seat_num < numSeats; seat_num++) {
-                    table.set_seat(seat_num, SeatType.GGZ_SEAT_OPEN, null);
+            for (int seatNum = 0; seatNum < reserveSeatsPanel
+                    .getComponentCount(); seatNum++) {
+                SeatPanel seat = (SeatPanel) reserveSeatsPanel
+                        .getComponent(seatNum);
+                if (seat.isValidInput()) {
+                    table.set_seat(seatNum, seat.getSeatType(), seat
+                            .getSeatName());
+                } else {
+                    JOptionPane
+                            .showMessageDialog(
+                                    this,
+                                    messages
+                                            .getString("SeatAllocationDialog.Message.BlankNickname"));
+                    return;
                 }
             }
         } catch (IOException ex) {
@@ -211,31 +248,194 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         dispose();
     }
 
-    private void onCancelClick() {
+    protected void onCancelClick() {
         table = null;
         dispose();
     }
 
+    protected void onAdvancedClick() {
+
+    }
+
     public void itemStateChanged(ItemEvent e) {
+        // We only care about selections.
+        if (e.getStateChange() == ItemEvent.DESELECTED) {
+            return;
+        }
+
+        if (e.getSource() == numberOfPlayersComboBox) {
+            int numSeats = getNumSeats();
+            int actualNumSeats = reserveSeatsPanel.getComponentCount();
+            if (numSeats > actualNumSeats) {
+                // We to add more seats.
+                for (int seatNum = actualNumSeats; seatNum < numSeats; seatNum++) {
+                    JPanel seatPanel = new SeatPanel(seatNum);
+                    reserveSeatsPanel.add(seatPanel);
+                }
+            } else if (numSeats < actualNumSeats) {
+                // We need to remove seats.
+                for (int componentIndex = actualNumSeats - 1; componentIndex >= numSeats; componentIndex--) {
+                    reserveSeatsPanel.remove(componentIndex);
+                }
+            }
+            ((GridLayout) reserveSeatsPanel.getLayout()).setRows(numSeats);
+        } else if (e.getSource() == advancedPlayButton) {
+            reserveSeatsPanel.setVisible(true);
+        } else {
+            reserveSeatsPanel.setVisible(false);
+        }
+
+        for (int seatNum = 1; seatNum < reserveSeatsPanel.getComponentCount(); seatNum++) {
+            SeatPanel seat = (SeatPanel) reserveSeatsPanel
+                    .getComponent(seatNum);
+            if (e.getSource() == soloPlayButton) {
+                seat.setSeatType(SeatType.GGZ_SEAT_BOT);
+            } else if (e.getSource() == multiPlayButton) {
+                seat.setSeatType(SeatType.GGZ_SEAT_OPEN);
+            } else if (e.getSource() == advancedPlayButton) {
+                seat.setSeatType(SeatType.GGZ_SEAT_RESERVED);
+            }
+        }
         // Only change the text if it hasn't changed.
         String text = tableDescriptionTextField.getText();
         if (JOIN_ME.equals(text) || I_PLAY_ALONE.equals(text)) {
-            if (multiPlayButton.isSelected()) {
-                tableDescriptionTextField.setText(JOIN_ME);
-            } else if (soloPlayButton.isSelected()) {
+            if (soloPlayButton.isSelected()) {
                 tableDescriptionTextField.setText(I_PLAY_ALONE);
+            } else {
+                tableDescriptionTextField.setText(JOIN_ME);
             }
         }
+        pack();
     }
 
-    public static Table getTableSeatAllocation(Component parent,
-            GameType gameType) {
+    public static Table getTableSeatAllocation(Component parent, Room room) {
         Frame owner = JOptionPane.getFrameForComponent(parent);
         SeatAllocationDialog dialog = new SeatAllocationDialog(owner, messages
-                .getString("SeatAllocationDialog.Title"), gameType);
+                .getString("SeatAllocationDialog.Title"), room);
         dialog.pack();
         dialog.setLocationRelativeTo(owner);
         dialog.setVisible(true);
         return dialog.table;
+    }
+
+    public int getNumSeats() {
+        int numSeats = gameType.get_max_players();
+
+        if (numberOfPlayersComboBox != null) {
+            numSeats = ((Integer) numberOfPlayersComboBox.getSelectedItem())
+                    .intValue();
+        }
+        return numSeats;
+    }
+
+    private class SeatPanel extends JPanel implements ItemListener {
+        private JRadioButton computerButton;
+
+        private JRadioButton anyoneButton;
+
+        private JRadioButton reservedButton;
+
+        private JComboBox reservedCombo;
+
+        SeatPanel(int seatNum) {
+            super(new FlowLayout(FlowLayout.LEFT, 0, 0));
+            ButtonGroup buttonGroup = new ButtonGroup();
+            computerButton = new JRadioButton(messages
+                    .getString("SeatAllocationDialog.Radio.Computer"));
+            anyoneButton = new JRadioButton(messages
+                    .getString("SeatAllocationDialog.Radio.Anyone"));
+            reservedButton = new JRadioButton(messages
+                    .getString("SeatAllocationDialog.Radio.ReservedFor"));
+            reservedCombo = new JComboBox();
+            reservedCombo.setEditable(true);
+            reservedCombo.setEnabled(false);
+            add(new JLabel(MessageFormat.format(messages
+                    .getString("SeatAllocationDialog.Label.Seat"),
+                    new Object[] { String.valueOf(seatNum + 1) })));
+            add(computerButton);
+            add(anyoneButton);
+            add(reservedButton);
+            add(reservedCombo);
+            buttonGroup.add(computerButton);
+            buttonGroup.add(anyoneButton);
+            buttonGroup.add(reservedButton);
+            computerButton.addItemListener(this);
+            anyoneButton.addItemListener(this);
+            reservedButton.addItemListener(this);
+
+            // Fill the combo with players names.
+            // TODO use a custom renderer so that we get the icons as well.
+            int numPlayers = room.get_num_players();
+            reservedCombo.addItem(null);
+            for (int playerNum = 0; playerNum < numPlayers; playerNum++) {
+                reservedCombo
+                        .addItem(room.get_nth_player(playerNum).get_name());
+            }
+            if (seatNum == 0) {
+                reservedCombo.setSelectedItem(room.get_server().get_handle());
+                reservedButton.setSelected(true);
+            } else if (soloPlayButton.isSelected()) {
+                computerButton.setSelected(true);
+            } else if (advancedPlayButton.isSelected()) {
+                reservedButton.setSelected(true);
+            } else {
+                anyoneButton.setSelected(true);
+            }
+        }
+
+        public void setSeatType(SeatType seatType) {
+            if (seatType == SeatType.GGZ_SEAT_BOT) {
+                computerButton.setSelected(true);
+                setSeatName(null);
+            } else if (seatType == SeatType.GGZ_SEAT_OPEN) {
+                anyoneButton.setSelected(true);
+                setSeatName(null);
+            } else if (seatType == SeatType.GGZ_SEAT_RESERVED) {
+                reservedButton.setSelected(true);
+            } else {
+                throw new IllegalArgumentException("Seat type not supported.");
+            }
+        }
+
+        public SeatType getSeatType() {
+            if (computerButton.isSelected()) {
+                return SeatType.GGZ_SEAT_BOT;
+            } else if (anyoneButton.isSelected()) {
+                return SeatType.GGZ_SEAT_OPEN;
+            } else if (reservedButton.isSelected()) {
+                return SeatType.GGZ_SEAT_RESERVED;
+            } else {
+                throw new IllegalStateException("No radio is selected!");
+            }
+        }
+
+        public void setSeatName(String name) {
+            reservedCombo.setSelectedItem(name);
+        }
+
+        public String getSeatName() {
+            String seatName = (String) reservedCombo.getSelectedItem();
+            if (reservedCombo.getSelectedIndex() == -1
+                    && (seatName == null || "".equals(seatName))) {
+                return null;
+            }
+            return seatName;
+        }
+
+        public boolean isValidInput() {
+            if (getSeatType() == SeatType.GGZ_SEAT_RESERVED) {
+                return getSeatName() != null;
+            }
+            return true;
+        }
+
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getSource() == reservedButton) {
+                reservedCombo.setEnabled(true);
+            } else {
+                reservedCombo.setEnabled(false);
+                setSeatName(null);
+            }
+        }
     }
 }
