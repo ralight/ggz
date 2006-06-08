@@ -31,8 +31,8 @@
 void ggz_gtk_initialize(gboolean reconnect,
 			void (*connected)(GGZServer *server),
 			void (*launched)(void),
-			char *protocol_engine,
-			char *protocol_version);
+			const char *protocol_engine,
+			const char *protocol_version);
 
 void ggz_gtk_login_raise(const char *default_profile);
 

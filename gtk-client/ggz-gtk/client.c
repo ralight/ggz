@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 7773 2006-01-13 05:14:42Z jdorje $
+ * $Id: client.c 8137 2006-06-08 17:13:23Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -789,8 +789,8 @@ void ggz_embed_ensure_server(const char *profile_name,
 void ggz_gtk_initialize(gboolean reconnect,
 			void (*connected)(GGZServer *server),
 			void (*launched)(void),
-			char *protocol_engine,
-			char *protocol_version)
+			const char *protocol_engine,
+			const char *protocol_version)
 {
 	GGZOptions opt;
 	char *global_conf, *user_conf;
