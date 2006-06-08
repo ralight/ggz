@@ -242,7 +242,15 @@ Index: reversi/main_win.c
 ===================================================================
 --- reversi/main_win.c	(revision 8136)
 +++ reversi/main_win.c	(working copy)
-@@ -412,7 +412,7 @@
+@@ -41,6 +41,7 @@
+ #include "dlg_about.h"
+ #include "dlg_exit.h"
+ #include "dlg_players.h"
++#include "ggz_gtk.h"
+ #include "menus.h"
+ 
+ #include "game.h"
+@@ -412,7 +413,7 @@
  	return TRUE;
  }
  
@@ -251,7 +259,7 @@ Index: reversi/main_win.c
  {
  	GtkItemFactoryEntry items[] = {
  		TABLE_MENU,
-@@ -422,8 +422,7 @@
+@@ -422,8 +423,7 @@
  		HELP_MENU
  	};
  
@@ -261,7 +269,18 @@ Index: reversi/main_win.c
  }
  
  GtkWidget *create_main_win(void)
-@@ -454,7 +453,7 @@
+@@ -443,9 +443,7 @@
+ 
+ 	accel_group = gtk_accel_group_new();
+ 
+-	main_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+-	g_object_set_data(G_OBJECT(main_win), "main_win", main_win);
+-	gtk_window_set_title(GTK_WINDOW(main_win), _("Reversi"));
++	main_win = ggz_gtk_get_display_area();
+ 
+ 	main_box = gtk_vbox_new(FALSE, 0);
+ 	gtk_widget_ref(main_box);
+@@ -454,7 +452,7 @@
  	gtk_widget_show(main_box);
  	gtk_container_add(GTK_CONTAINER(main_win), main_box);
  
@@ -270,6 +289,18 @@ Index: reversi/main_win.c
  	gtk_widget_ref(menubar);
  	g_object_set_data_full(G_OBJECT(main_win), "menubar", menubar,
  			       (GtkDestroyNotify) gtk_widget_unref);
+@@ -552,8 +550,10 @@
+ 	g_signal_connect(GTK_OBJECT(again_button), "clicked",
+ 			 GTK_SIGNAL_FUNC(play_again), NULL);
+ 
+-	gtk_window_add_accel_group(GTK_WINDOW(main_win), accel_group);
++	gtk_window_add_accel_group(ggz_gtk_get_main_window(), accel_group);
+ 
++	gtk_widget_show_all(main_win);
++
+ 	return main_win;
+ }
+ 
 Index: reversi/version.in
 ===================================================================
 --- reversi/version.in	(revision 0)
@@ -308,27 +339,38 @@ Index: reversi/main.c
 ===================================================================
 --- reversi/main.c	(revision 8136)
 +++ reversi/main.c	(working copy)
-@@ -118,6 +118,11 @@
- 	main_win = create_main_win();
- 	gtk_widget_show(main_win);
+@@ -115,25 +115,23 @@
+ 	initialize_about_dialog();
+ 	add_pixmap_directory(".");
  
-+	init_ggz_gtk(_("Reversi"), FALSE,
-+		     REVERSI_PROTOCOL_VERSION, REVERSI_PROTOCOL_ENGINE,
++	init_ggz_gtk(_("Reversi"), TRUE,
++		     REVERSI_PROTOCOL_ENGINE, REVERSI_PROTOCOL_VERSION,
 +		     game_handle_io);
 +	mod = ggz_gtk_get_ggzmod();
 +
+ 	main_win = create_main_win();
+-	gtk_widget_show(main_win);
+ 
  	game_init();
  
  	strcpy(game.names[0], "empty");
-@@ -125,8 +130,6 @@
+ 	strcpy(game.names[1], "empty");
  
- 	display_board();
- 
+-	display_board();
+-
 -	mod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
 -
  	gtk_main();
  
  	save_data();
+ 
+-	if (ggzmod_disconnect(mod) < 0)
+-		return -2;
+-	ggzmod_free(mod);
++	free_ggz_gtk();
+ 
+ 	cleanup_debugging();
+ 	ggz_conf_cleanup();
 Index: reversi/Makefile.am
 ===================================================================
 --- reversi/Makefile.am	(revision 8136)
