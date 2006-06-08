@@ -2,14 +2,16 @@ Index: tictactoe/game.h
 ===================================================================
 --- tictactoe/game.h	(revision 8136)
 +++ tictactoe/game.h	(working copy)
-@@ -71,6 +71,7 @@
+@@ -69,9 +69,6 @@
+ };
  
- /* Setup functions */
- void game_init(void);
-+void game_free(void);
  
+-/* Setup functions */
+-void game_init(void);
+-
  /* Functions to handle incoming data from server*/
  int receive_seat(void);
+ int receive_players(void);
 Index: tictactoe/main_win.c
 ===================================================================
 --- tictactoe/main_win.c	(revision 8136)
@@ -22,7 +24,34 @@ Index: tictactoe/main_win.c
  #include "menus.h"
  #include "main_win.h"
  #include "game.h"
-@@ -279,7 +280,7 @@
+@@ -86,9 +87,8 @@
+ 	int i, x, y;
+ 	GdkPixbuf *piece;
+ 	GtkStyle *style;
+-	GtkWidget *tmp = g_object_get_data(G_OBJECT(main_win),
+-					   "drawingarea");
+-	int w = tmp->allocation.width, h = tmp->allocation.height;
++	GtkWidget *tmp;
++	int w, h;
+ 
+ #if 0
+ 	g_print("  %c | %c | %c  \n", game.board[0], game.board[1],
+@@ -102,7 +102,14 @@
+ 	g_print("\n");
+ #endif
+ 
++	if (!ttt_buf) {
++	  	return;
++	}
++
+ 	tmp = g_object_get_data(G_OBJECT(main_win), "drawingarea");
++	w = tmp->allocation.width;
++	h = tmp->allocation.height;
++
+ 	style = gtk_widget_get_style(main_win);
+ 
+ 	gdk_draw_rectangle(ttt_buf,
+@@ -279,7 +286,7 @@
  }
  
  
@@ -31,7 +60,7 @@ Index: tictactoe/main_win.c
  {
  	GtkWidget *menubar;
  	GtkItemFactoryEntry items[] = {
-@@ -287,8 +288,7 @@
+@@ -287,8 +294,7 @@
  		HELP_MENU
  	};
  
@@ -41,7 +70,7 @@ Index: tictactoe/main_win.c
  				   sizeof(items) / sizeof(items[0]));
  
  	set_menu_sensitive(TABLE_SYNC, FALSE);
-@@ -300,7 +300,7 @@
+@@ -300,7 +306,7 @@
  
  GtkWidget *create_main_win(void)
  {
@@ -50,7 +79,7 @@ Index: tictactoe/main_win.c
  	GtkWidget *main_box;
  	GtkWidget *menubar;
  	GtkWidget *drawingarea;
-@@ -310,52 +310,50 @@
+@@ -310,52 +316,50 @@
  
  	accel_group = gtk_accel_group_new();
  
@@ -114,7 +143,7 @@ Index: tictactoe/main_win.c
  			 GTK_SIGNAL_FUNC(on_main_win_realize), NULL);
  	g_signal_connect(GTK_OBJECT(drawingarea), "configure_event",
  			 GTK_SIGNAL_FUNC(configure_handle), NULL);
-@@ -364,7 +362,8 @@
+@@ -364,7 +368,8 @@
  	g_signal_connect(GTK_OBJECT(drawingarea), "button_press_event",
  			 GTK_SIGNAL_FUNC(get_move), NULL);
  
@@ -144,45 +173,60 @@ Index: tictactoe/main.c
 ===================================================================
 --- tictactoe/main.c	(revision 8136)
 +++ tictactoe/main.c	(working copy)
-@@ -58,22 +58,17 @@
- 	gtk_init(&argc, &argv);
- 	initialize_about_dialog();
+@@ -51,32 +51,6 @@
  
+ static void initialize_about_dialog(void);
+ 
+-int main(int argc, char *argv[])
+-{
+-	ggz_intl_init("tictactoe");
+-
+-	gtk_init(&argc, &argv);
+-	initialize_about_dialog();
+-
 -	main_win = create_main_win();
 -	gtk_widget_show(main_win);
 -
- 	game_init();
+-	game_init();
 -	display_board();
- 
+-
 -	init_chat(game.ggzmod);
-+	main_win = create_main_win();
-+	gtk_widget_show_all(GTK_WIDGET(ggz_gtk_get_main_window()));
- 
- 	game_status(_("Watching the game..."));
- 
- 	gtk_main();
- 
+-
+-	game_status(_("Watching the game..."));
+-
+-	gtk_main();
+-
 -	if (ggzmod_disconnect(game.ggzmod) < 0)
 -		return -1;
-+	game_free();
- 
+-
 -	ggzmod_free(game.ggzmod);
+-	return 0;
+-}
+-
+ static void initialize_about_dialog(void)
+ {
+ 	const char *content =
+@@ -266,8 +240,7 @@
  	return 0;
  }
  
-@@ -276,11 +271,19 @@
+-
+-void game_init(void)
++static void game_init(void)
+ {
+ 	int i;
+ 
+@@ -276,11 +249,17 @@
  
  	game.state = STATE_INIT;
  
 -	game.ggzmod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
-+	init_ggz_gtk(_("Tic-Tac-Toe"), TRUE,
-+		     TTT_PROTOCOL_ENGINE, TTT_PROTOCOL_VERSION,
-+		     game_handle_io);
-+	game.ggzmod = ggz_gtk_get_ggzmod();
  	game.num = -1;
++
++	display_board();
  }
  
-+void game_free(void)
++static void game_free(void)
 +{
 +	free_ggz_gtk();
 +}
@@ -191,6 +235,34 @@ Index: tictactoe/main.c
  int send_my_move(void)
  {
  	if (game.num < 0)
+@@ -330,3 +309,27 @@
+ 
+ 	return 0;
+ }
++
++int main(int argc, char *argv[])
++{
++	ggz_intl_init("tictactoe");
++
++	gtk_init(&argc, &argv);
++	initialize_about_dialog();
++
++	init_ggz_gtk(_("Tic-Tac-Toe"), TRUE,
++		     TTT_PROTOCOL_ENGINE, TTT_PROTOCOL_VERSION,
++		     game_handle_io, game_init);
++	game.ggzmod = ggz_gtk_get_ggzmod();
++
++	main_win = create_main_win();
++	gtk_widget_show_all(GTK_WIDGET(ggz_gtk_get_main_window()));
++
++	game_status(_("Watching the game..."));
++
++	gtk_main();
++
++	game_free();
++
++	return 0;
++}
 Index: tictactoe/Makefile.am
 ===================================================================
 --- tictactoe/Makefile.am	(revision 8136)
@@ -250,7 +322,27 @@ Index: reversi/main_win.c
  #include "menus.h"
  
  #include "game.h"
-@@ -412,7 +413,7 @@
+@@ -54,7 +55,7 @@
+ GdkGC *pix_gc;
+ GdkGC *bg_gc;
+ GdkGC *last_gc;
+-GdkPixmap *rvr_buf;
++static GdkPixmap *rvr_buf;
+ 
+ GtkWidget *main_win;
+ 
+@@ -118,6 +119,10 @@
+ 	GtkWidget *black_label;
+ 	char score[29];
+ 
++	if (!rvr_buf) {
++		return;
++	}
++
+ 	tmp = g_object_get_data(G_OBJECT(main_win), "drawingarea");
+ 	style = gtk_widget_get_style(main_win);
+ 
+@@ -412,7 +417,7 @@
  	return TRUE;
  }
  
@@ -259,7 +351,7 @@ Index: reversi/main_win.c
  {
  	GtkItemFactoryEntry items[] = {
  		TABLE_MENU,
-@@ -422,8 +423,7 @@
+@@ -422,8 +427,7 @@
  		HELP_MENU
  	};
  
@@ -269,7 +361,7 @@ Index: reversi/main_win.c
  }
  
  GtkWidget *create_main_win(void)
-@@ -443,9 +443,7 @@
+@@ -443,9 +447,7 @@
  
  	accel_group = gtk_accel_group_new();
  
@@ -280,7 +372,7 @@ Index: reversi/main_win.c
  
  	main_box = gtk_vbox_new(FALSE, 0);
  	gtk_widget_ref(main_box);
-@@ -454,7 +452,7 @@
+@@ -454,7 +456,7 @@
  	gtk_widget_show(main_box);
  	gtk_container_add(GTK_CONTAINER(main_win), main_box);
  
@@ -289,18 +381,15 @@ Index: reversi/main_win.c
  	gtk_widget_ref(menubar);
  	g_object_set_data_full(G_OBJECT(main_win), "menubar", menubar,
  			       (GtkDestroyNotify) gtk_widget_unref);
-@@ -552,8 +550,10 @@
+@@ -552,7 +554,7 @@
  	g_signal_connect(GTK_OBJECT(again_button), "clicked",
  			 GTK_SIGNAL_FUNC(play_again), NULL);
  
 -	gtk_window_add_accel_group(GTK_WINDOW(main_win), accel_group);
 +	gtk_window_add_accel_group(ggz_gtk_get_main_window(), accel_group);
  
-+	gtk_widget_show_all(main_win);
-+
  	return main_win;
  }
- 
 Index: reversi/version.in
 ===================================================================
 --- reversi/version.in	(revision 0)
@@ -339,20 +428,21 @@ Index: reversi/main.c
 ===================================================================
 --- reversi/main.c	(revision 8136)
 +++ reversi/main.c	(working copy)
-@@ -115,25 +115,23 @@
+@@ -115,25 +115,22 @@
  	initialize_about_dialog();
  	add_pixmap_directory(".");
  
 +	init_ggz_gtk(_("Reversi"), TRUE,
 +		     REVERSI_PROTOCOL_ENGINE, REVERSI_PROTOCOL_VERSION,
-+		     game_handle_io);
++		     game_handle_io, game_init);
 +	mod = ggz_gtk_get_ggzmod();
 +
  	main_win = create_main_win();
 -	gtk_widget_show(main_win);
++	gtk_widget_show_all(main_win);
  
- 	game_init();
- 
+-	game_init();
+-
  	strcpy(game.names[0], "empty");
  	strcpy(game.names[1], "empty");
  
@@ -371,6 +461,15 @@ Index: reversi/main.c
  
  	cleanup_debugging();
  	ggz_conf_cleanup();
+@@ -281,7 +278,7 @@
+ 	game.state = RVR_STATE_INIT;
+ 	game.last_move = -1;
+ 
+-
++	display_board();
+ }
+ 
+ int get_seat(void)
 Index: reversi/Makefile.am
 ===================================================================
 --- reversi/Makefile.am	(revision 8136)
@@ -470,7 +569,7 @@ Index: hastings/main.c
  
 +	init_ggz_gtk(_("Battle of Hastings"), FALSE,
 +		     HASTINGS_PROTOCOL_ENGINE, HASTINGS_PROTOCOL_VERSION,
-+		     game_handle_io);
++		     game_handle_io, NULL);
 +	mod = ggz_gtk_get_ggzmod();
 +
  	main_win = create_main_win();
@@ -574,7 +673,7 @@ Index: common/ggz_gtk.h
 ===================================================================
 --- common/ggz_gtk.h	(revision 8136)
 +++ common/ggz_gtk.h	(working copy)
-@@ -28,7 +28,15 @@
+@@ -28,7 +28,16 @@
  #include "ggzintl.h"
  #include "dlg_players.h"
  
@@ -582,7 +681,8 @@ Index: common/ggz_gtk.h
 +void init_ggz_gtk(const char *window_title,
 +		  gboolean supports_embedded_ggz,
 +		  const char *prot_engine, const char *prot_version,
-+		  gboolean(*game_handler) (GGZMod * mod));
++		  gboolean(*game_handler) (GGZMod * mod),
++		  void (*game_init)(void));
 +void free_ggz_gtk(void);
  
 -GGZMod *init_ggz_gtk(GtkWindow * main_window,
@@ -842,7 +942,7 @@ Index: common/ggz_gtk.c
 ===================================================================
 --- common/ggz_gtk.c	(revision 8136)
 +++ common/ggz_gtk.c	(working copy)
-@@ -27,24 +27,31 @@
+@@ -27,24 +27,32 @@
  #  include <config.h>
  #endif
  
@@ -865,6 +965,7 @@ Index: common/ggz_gtk.c
 +static guint ggz_input_id = -1;
  
  static gboolean(*game_server_handler) (GGZMod * mod);
++static void (*init_game) (void);
  
 -static gboolean handle_ggz(GIOChannel * channel, GIOCondition cond,
 -			   gpointer data)
@@ -880,7 +981,7 @@ Index: common/ggz_gtk.c
  }
  
  static gboolean handle_game_server(GIOChannel * channel, GIOCondition cond,
-@@ -52,6 +59,7 @@
+@@ -52,6 +60,7 @@
  {
  	GGZMod *mod = data;
  
@@ -888,7 +989,7 @@ Index: common/ggz_gtk.c
  	return (game_server_handler) (mod);
  }
  
-@@ -66,30 +74,146 @@
+@@ -66,30 +75,151 @@
  	g_io_add_watch(channel, G_IO_IN, handle_game_server, mod);
  }
  
@@ -915,6 +1016,9 @@ Index: common/ggz_gtk.c
 +
 +	init_player_list();
 +	init_chat();
++	if (init_game) {
++		(init_game)();
++	}
 +
 +	if (embedded) {
 +		gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook),
@@ -995,7 +1099,8 @@ Index: common/ggz_gtk.c
 +void init_ggz_gtk(const char *window_title,
 +		  gboolean supports_embedded_ggz,
 +		  const char *prot_engine, const char *prot_version,
-+		  gboolean(*game_handler) (GGZMod * mod))
++		  gboolean(*game_handler) (GGZMod * mod),
++		  void (*game_init)(void))
 +{
 +	if (!ggzmod_is_ggz_mode()) {
 +		if (!supports_embedded_ggz) {
@@ -1015,6 +1120,7 @@ Index: common/ggz_gtk.c
  	game_server_handler = game_handler;
 -	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, handle_ggzmod_server);
 -	ggzmod_connect(mod);
++	init_game = game_init;
 +	if (ggzmod_is_ggz_mode()) {
 +		ggz_game_launched();
 +	}
@@ -1112,7 +1218,7 @@ Index: chinese-checkers/game.c
 +	init_ggz_gtk(_("Chinese Checkers"), FALSE,
 +		     CCHECKERS_PROTOCOL_ENGINE,
 +		     CCHECKERS_PROTOCOL_VERSION,
-+		     main_io_handler);
++		     main_io_handler, NULL);
 +	mod = ggz_gtk_get_ggzmod();
 +
  	/* Get our preferences */
@@ -1370,7 +1476,7 @@ Index: combat/main.c
  
 +	init_ggz_gtk(_("Combat"), FALSE,
 +		     COMBAT_PROTOCOL_ENGINE, COMBAT_PROTOCOL_VERSION,
-+		     game_handle_io);
++		     game_handle_io, NULL);
 +	mod = ggz_gtk_get_ggzmod();
 +
  	game_init();
@@ -1678,7 +1784,7 @@ Index: chess/main.c
  
 +	init_ggz_gtk(_("GGZ Chess"), FALSE,
 +		     CHESS_PROTOCOL_ENGINE, CHESS_PROTOCOL_VERSION,
-+		     net_handle_input);
++		     net_handle_input, NULL);
 +	mod = ggz_gtk_get_ggzmod();
 +
  	main_win = create_main_win();
@@ -1770,7 +1876,7 @@ Index: dots/main.c
  
 +	init_ggz_gtk(_("Connect the Dots"), FALSE,
 +		     DOTS_PROTOCOL_ENGINE, DOTS_PROTOCOL_VERSION,
-+		     game_handle_io);
++		     game_handle_io, NULL);
 +	mod = ggz_gtk_get_ggzmod();
 +
  	game.state = DOTS_STATE_INIT;
