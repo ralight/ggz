@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 6741 2005-01-19 19:29:46Z jdorje $
+ * $Id: board.c 8143 2006-06-08 21:22:27Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -241,11 +241,11 @@ void board_info_update(void)
 void board_dnd_init(void)
 {
 	GtkWidget *board;
-	target = (GtkTargetEntry *) malloc(sizeof(GtkTargetEntry));
+	target = malloc(sizeof(GtkTargetEntry));
 
 	board = lookup_widget(main_win, "board");
 
-	target->target = (char *)malloc(sizeof(char) * 6);
+	target->target = malloc(sizeof(char) * 6);
 	strcpy(target->target, "board");
 	target->flags = GTK_TARGET_SAME_WIDGET;
 	target->info = 233;
