@@ -18,13 +18,16 @@
 package ggz.ui;
 
 import ggz.client.core.GameType;
+import ggz.client.core.Player;
 import ggz.client.core.Room;
 import ggz.client.core.Table;
+import ggz.common.PlayerType;
 import ggz.common.SeatType;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -41,14 +44,17 @@ import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 
 // TODO Localise this
 public class SeatAllocationDialog extends JDialog implements ItemListener {
@@ -91,7 +97,11 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 
     private JComboBox numberOfPlayersComboBox;
 
+    private JPanel advancedPanel;
+
     private JPanel reserveSeatsPanel;
+
+    protected static ListCellRenderer playerRenderer = new PlayerListCellRenderer();
 
     public SeatAllocationDialog(Frame frame, String title, Room room) {
         super(frame, title, true);
@@ -187,15 +197,21 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 
         // Panel for reserving seats.
         reserveSeatsPanel = new JPanel(new GridLayout(getNumSeats(), 0));
-        // reserveSeatsPanel.setVisible(false);
+        for (int seatNum = 0; seatNum < getNumSeats(); seatNum++) {
+            reserveSeatsPanel.add(new SeatPanel(seatNum));
+        }
+        advancedPanel = new JPanel(new BorderLayout());
+        JLabel label = new JLabel(
+                "You can only reserve seats for registered players.");
+        label.setFont(label.getFont().deriveFont(Font.PLAIN).deriveFont(
+                Font.ITALIC));
+        advancedPanel.add(label, BorderLayout.NORTH);
+        advancedPanel.add(reserveSeatsPanel, BorderLayout.CENTER);
         constraints.gridx = 0;
         constraints.gridy += 1;
         constraints.gridwidth = 2;
         constraints.insets.left = 5;
-        for (int seatNum = 0; seatNum < getNumSeats(); seatNum++) {
-            reserveSeatsPanel.add(new SeatPanel(seatNum));
-        }
-        centerPanel.add(reserveSeatsPanel, constraints);
+        centerPanel.add(advancedPanel, constraints);
 
         // Table description, label and text field.
         tableDescriptionLabel = new JLabel(messages
@@ -280,9 +296,9 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
             }
             ((GridLayout) reserveSeatsPanel.getLayout()).setRows(numSeats);
         } else if (e.getSource() == advancedPlayButton) {
-            reserveSeatsPanel.setVisible(true);
+            advancedPanel.setVisible(true);
         } else {
-            reserveSeatsPanel.setVisible(false);
+            advancedPanel.setVisible(false);
         }
 
         for (int seatNum = 1; seatNum < reserveSeatsPanel.getComponentCount(); seatNum++) {
@@ -349,6 +365,7 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
             reservedCombo = new JComboBox();
             reservedCombo.setEditable(true);
             reservedCombo.setEnabled(false);
+            reservedCombo.setRenderer(playerRenderer);
             add(new JLabel(MessageFormat.format(messages
                     .getString("SeatAllocationDialog.Label.Seat"),
                     new Object[] { String.valueOf(seatNum + 1) })));
@@ -363,13 +380,15 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
             anyoneButton.addItemListener(this);
             reservedButton.addItemListener(this);
 
-            // Fill the combo with players names.
-            // TODO use a custom renderer so that we get the icons as well.
+            // Fill the combo with REGISTERED players names.
+            // You cannot reserve seats for unregistered players.
             int numPlayers = room.get_num_players();
-            reservedCombo.addItem(null);
             for (int playerNum = 0; playerNum < numPlayers; playerNum++) {
-                reservedCombo
-                        .addItem(room.get_nth_player(playerNum).get_name());
+                Player player = room.get_nth_player(playerNum);
+                if (player.get_type() == PlayerType.GGZ_PLAYER_NORMAL
+                        || player.get_type() == PlayerType.GGZ_PLAYER_ADMIN
+                        || player.get_type() == PlayerType.GGZ_PLAYER_BOT)
+                    reservedCombo.addItem(player);
             }
             if (seatNum == 0) {
                 reservedCombo.setSelectedItem(room.get_server().get_handle());
@@ -414,12 +433,11 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         }
 
         public String getSeatName() {
-            String seatName = (String) reservedCombo.getSelectedItem();
-            if (reservedCombo.getSelectedIndex() == -1
-                    && (seatName == null || "".equals(seatName))) {
+            Object player = reservedCombo.getSelectedItem();
+            if (player == null) {
                 return null;
             }
-            return seatName;
+            return String.valueOf(player);
         }
 
         public boolean isValidInput() {
@@ -437,5 +455,19 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
                 setSeatName(null);
             }
         }
+    }
+
+    private static class PlayerListCellRenderer extends DefaultListCellRenderer {
+        public Component getListCellRendererComponent(JList list, Object value,
+                int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected,
+                    cellHasFocus);
+            Player p = (Player) value;
+            setText(p.get_name());
+            PlayerType type = p.get_type();
+            setIcon(IconFactory.getPlayerTypeIcon(type));
+            return this;
+        }
+
     }
 }

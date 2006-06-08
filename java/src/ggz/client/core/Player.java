@@ -153,6 +153,10 @@ public class Player {
         return (o != null) && (o instanceof Player)
                 && this.name.equals(((Player) o).name);
     }
+    
+    public String toString() {
+        return get_name();
+    }
 
     /**
      * This is here only because the Java API says we should implement

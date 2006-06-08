@@ -117,7 +117,8 @@ public class RoomPanel extends JPanel implements RoomListener,
         // 0xdf));
         JLabel rowHeightCalculator = new JLabel("Qwerty");
         rowHeightCalculator.setFont(tableTable.getFont());
-        tableTable.setRowHeight(rowHeightCalculator.getPreferredSize().height * 4);
+        tableTable
+                .setRowHeight(rowHeightCalculator.getPreferredSize().height * 4);
         tableTable.getSelectionModel().setSelectionMode(
                 ListSelectionModel.SINGLE_SELECTION);
         tableTable.getSelectionModel().addListSelectionListener(this);
@@ -213,6 +214,10 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     public void table_joined(int table_index) {
         tables.fireTableDataChanged();
+        lobbyButton.setEnabled(false);
+        newTableButton.setEnabled(false);
+        joinTableButton.setEnabled(false);
+        spectateButton.setEnabled(false);
     }
 
     public void table_launch_fail(ErrorEventData data) {
@@ -281,6 +286,10 @@ public class RoomPanel extends JPanel implements RoomListener,
      * @param e
      */
     public void valueChanged(ListSelectionEvent e) {
+        // We are only interested in final selections.
+        if (e.getValueIsAdjusting())
+            return;
+
         boolean canJoinTable;
         boolean canSpectate;
 
