@@ -25,7 +25,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 public class TableLayout implements LayoutManager2 {
-    private int cardFanGap = 15;
+    private int cardFanGap = 17;
 
     private int cardWidth;
 
