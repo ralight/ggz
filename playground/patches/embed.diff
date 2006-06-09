@@ -1,6 +1,240 @@
+Index: spades/gtk_io.c
+===================================================================
+--- spades/gtk_io.c	(revision 8144)
++++ spades/gtk_io.c	(working copy)
+@@ -74,7 +74,6 @@
+ 
+ 	/* Main window and callbacks */
+ 	playArea->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+-	ggz_game_main_window = GTK_WINDOW(playArea->window);	/* HACK */
+ 	gtk_window_set_title(GTK_WINDOW(playArea->window), "GtkSpades");
+ 
+ 	g_signal_connect(GTK_OBJECT(playArea->window), "delete_event",
+Index: spades/Makefile.am
+===================================================================
+--- spades/Makefile.am	(revision 8144)
++++ spades/Makefile.am	(working copy)
+@@ -4,7 +4,7 @@
+ SUBDIRS = .
+ 
+ AM_CPPFLAGS = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
+-		$(GTK_CFLAGS)
++		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
+ 
+ EXTRA_DIST = module.dsc.in
+ 
+@@ -38,5 +38,5 @@
+ 
+ ggz_spades_LDADD = 	$(top_builddir)/common/libgtk-games.a		\
+ 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
+-			$(LIB_GGZMOD) $(LIB_GGZ)
+-ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
++			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
++ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
+Index: spades/client_func.c
+===================================================================
+--- spades/client_func.c	(revision 8144)
++++ spades/client_func.c	(working copy)
+@@ -202,7 +202,7 @@
+ 	ggzmod = ggzmod_new(GGZMOD_GAME);
+ 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER,
+ 			   &handle_ggzmod_server);
+-	init_player_list(ggzmod);
++	init_player_list();
+ 	ggzmod_connect(ggzmod);
+ 
+ 	channel = g_io_channel_unix_new(ggzmod_get_fd(ggzmod));
+Index: reversi/main_win.c
+===================================================================
+--- reversi/main_win.c	(revision 8144)
++++ reversi/main_win.c	(working copy)
+@@ -41,6 +41,7 @@
+ #include "dlg_about.h"
+ #include "dlg_exit.h"
+ #include "dlg_players.h"
++#include "ggz_gtk.h"
+ #include "menus.h"
+ 
+ #include "game.h"
+@@ -54,7 +55,7 @@
+ GdkGC *pix_gc;
+ GdkGC *bg_gc;
+ GdkGC *last_gc;
+-GdkPixmap *rvr_buf;
++static GdkPixmap *rvr_buf;
+ 
+ GtkWidget *main_win;
+ 
+@@ -118,6 +119,10 @@
+ 	GtkWidget *black_label;
+ 	char score[29];
+ 
++	if (!rvr_buf) {
++		return;
++	}
++
+ 	tmp = g_object_get_data(G_OBJECT(main_win), "drawingarea");
+ 	style = gtk_widget_get_style(main_win);
+ 
+@@ -412,7 +417,7 @@
+ 	return TRUE;
+ }
+ 
+-static GtkWidget *create_menus(GtkWidget * window)
++static GtkWidget *create_menus(void)
+ {
+ 	GtkItemFactoryEntry items[] = {
+ 		TABLE_MENU,
+@@ -422,8 +427,7 @@
+ 		HELP_MENU
+ 	};
+ 
+-	return ggz_create_menus(window,
+-				items, sizeof(items) / sizeof(items[0]));
++	return ggz_create_menus(items, sizeof(items) / sizeof(items[0]));
+ }
+ 
+ GtkWidget *create_main_win(void)
+@@ -443,9 +447,7 @@
+ 
+ 	accel_group = gtk_accel_group_new();
+ 
+-	main_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+-	g_object_set_data(G_OBJECT(main_win), "main_win", main_win);
+-	gtk_window_set_title(GTK_WINDOW(main_win), _("Reversi"));
++	main_win = ggz_gtk_get_display_area();
+ 
+ 	main_box = gtk_vbox_new(FALSE, 0);
+ 	gtk_widget_ref(main_box);
+@@ -454,7 +456,7 @@
+ 	gtk_widget_show(main_box);
+ 	gtk_container_add(GTK_CONTAINER(main_win), main_box);
+ 
+-	menubar = create_menus(main_win);
++	menubar = create_menus();
+ 	gtk_widget_ref(menubar);
+ 	g_object_set_data_full(G_OBJECT(main_win), "menubar", menubar,
+ 			       (GtkDestroyNotify) gtk_widget_unref);
+@@ -552,7 +554,7 @@
+ 	g_signal_connect(GTK_OBJECT(again_button), "clicked",
+ 			 GTK_SIGNAL_FUNC(play_again), NULL);
+ 
+-	gtk_window_add_accel_group(GTK_WINDOW(main_win), accel_group);
++	gtk_window_add_accel_group(ggz_gtk_get_main_window(), accel_group);
+ 
+ 	return main_win;
+ }
+Index: reversi/version.in
+===================================================================
+--- reversi/version.in	(revision 0)
++++ reversi/version.in	(revision 0)
+@@ -0,0 +1,14 @@
++REVERSI_VERSION=0.0.7
++
++REVERSI_PROTOCOL_ENGINE=Reversi
++REVERSI_PROTOCOL_VERSION=4
++
++AC_SUBST(REVERSI_VERSION)
++AC_SUBST(REVERSI_PROTOCOL_ENGINE)
++AC_SUBST(REVERSI_PROTOCOL_VERSION)
++
++AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
++AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
++		   [Reversi protocol engine])
++AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
++		   [Reversi protocol version])
+Index: reversi/module.dsc.in
+===================================================================
+--- reversi/module.dsc.in	(revision 8144)
++++ reversi/module.dsc.in	(working copy)
+@@ -5,7 +5,6 @@
+ CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.reversi @EXTRA_GAME_PARAMETERS@
+ Frontend = gtk
+ Homepage = http://www.ggzgamingzone.org/games/reversi/
+-ProtocolEngine = Reversi
+-ProtocolVersion = 4
+-Version = 0.0.7
+-
++ProtocolEngine = @REVERSI_PROTOCOL_ENGINE@
++ProtocolVersion = @REVERSI_PROTOCOL_VERSION@
++Version = @REVERSI_VERSION@
+Index: reversi/main.c
+===================================================================
+--- reversi/main.c	(revision 8144)
++++ reversi/main.c	(working copy)
+@@ -115,25 +115,22 @@
+ 	initialize_about_dialog();
+ 	add_pixmap_directory(".");
+ 
++	init_ggz_gtk(_("Reversi"), TRUE,
++		     REVERSI_PROTOCOL_ENGINE, REVERSI_PROTOCOL_VERSION,
++		     game_handle_io, game_init);
++	mod = ggz_gtk_get_ggzmod();
++
+ 	main_win = create_main_win();
+-	gtk_widget_show(main_win);
++	gtk_widget_show_all(main_win);
+ 
+-	game_init();
+-
+ 	strcpy(game.names[0], "empty");
+ 	strcpy(game.names[1], "empty");
+ 
+-	display_board();
+-
+-	mod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
+-
+ 	gtk_main();
+ 
+ 	save_data();
+ 
+-	if (ggzmod_disconnect(mod) < 0)
+-		return -2;
+-	ggzmod_free(mod);
++	free_ggz_gtk();
+ 
+ 	cleanup_debugging();
+ 	ggz_conf_cleanup();
+@@ -281,7 +278,7 @@
+ 	game.state = RVR_STATE_INIT;
+ 	game.last_move = -1;
+ 
+-
++	display_board();
+ }
+ 
+ int get_seat(void)
+Index: reversi/Makefile.am
+===================================================================
+--- reversi/Makefile.am	(revision 8144)
++++ reversi/Makefile.am	(working copy)
+@@ -6,7 +6,7 @@
+ SUBDIRS = .
+ 
+ AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
+-		@GTK_CFLAGS@
++		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
+ 
+ install-data-local:
+ 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
+@@ -24,9 +24,11 @@
+ 	support.c	support.h
+ 
+ ggz_reversi_LDADD =	$(top_builddir)/common/libgtk-games.a		\
+-			@GTK_LIBS@ @INTLLIBS@ $(LDADD)	\
+-			$(LIB_GGZMOD) $(LIB_GGZ)
+-ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
++			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
++			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
++ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
+ 
+ pixmapdir = $(ggzdatadir)/reversi/pixmaps
+ dist_pixmap_DATA = white.svg black.svg dot.svg enemydot.svg
++
++noinst_HEADERS = version.in
 Index: tictactoe/game.h
 ===================================================================
---- tictactoe/game.h	(revision 8136)
+--- tictactoe/game.h	(revision 8144)
 +++ tictactoe/game.h	(working copy)
 @@ -69,9 +69,6 @@
  };
@@ -14,7 +248,7 @@ Index: tictactoe/game.h
  int receive_players(void);
 Index: tictactoe/main_win.c
 ===================================================================
---- tictactoe/main_win.c	(revision 8136)
+--- tictactoe/main_win.c	(revision 8144)
 +++ tictactoe/main_win.c	(working copy)
 @@ -40,6 +40,7 @@
  #include "dlg_about.h"
@@ -156,7 +390,7 @@ Index: tictactoe/main_win.c
  }
 Index: tictactoe/module.dsc.in
 ===================================================================
---- tictactoe/module.dsc.in	(revision 8136)
+--- tictactoe/module.dsc.in	(revision 8144)
 +++ tictactoe/module.dsc.in	(working copy)
 @@ -7,7 +7,7 @@
  CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.ttt @EXTRA_GAME_PARAMETERS@
@@ -171,7 +405,7 @@ Index: tictactoe/module.dsc.in
  #SupportedGames = TicTacToe
 Index: tictactoe/main.c
 ===================================================================
---- tictactoe/main.c	(revision 8136)
+--- tictactoe/main.c	(revision 8144)
 +++ tictactoe/main.c	(working copy)
 @@ -51,32 +51,6 @@
  
@@ -265,7 +499,7 @@ Index: tictactoe/main.c
 +}
 Index: tictactoe/Makefile.am
 ===================================================================
---- tictactoe/Makefile.am	(revision 8136)
+--- tictactoe/Makefile.am	(revision 8144)
 +++ tictactoe/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = .
@@ -310,243 +544,9 @@ Index: tictactoe/version.in
 +		   [TTT protocol engine])
 +AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
 +		   [TTT protocol version])
-Index: reversi/main_win.c
-===================================================================
---- reversi/main_win.c	(revision 8136)
-+++ reversi/main_win.c	(working copy)
-@@ -41,6 +41,7 @@
- #include "dlg_about.h"
- #include "dlg_exit.h"
- #include "dlg_players.h"
-+#include "ggz_gtk.h"
- #include "menus.h"
- 
- #include "game.h"
-@@ -54,7 +55,7 @@
- GdkGC *pix_gc;
- GdkGC *bg_gc;
- GdkGC *last_gc;
--GdkPixmap *rvr_buf;
-+static GdkPixmap *rvr_buf;
- 
- GtkWidget *main_win;
- 
-@@ -118,6 +119,10 @@
- 	GtkWidget *black_label;
- 	char score[29];
- 
-+	if (!rvr_buf) {
-+		return;
-+	}
-+
- 	tmp = g_object_get_data(G_OBJECT(main_win), "drawingarea");
- 	style = gtk_widget_get_style(main_win);
- 
-@@ -412,7 +417,7 @@
- 	return TRUE;
- }
- 
--static GtkWidget *create_menus(GtkWidget * window)
-+static GtkWidget *create_menus(void)
- {
- 	GtkItemFactoryEntry items[] = {
- 		TABLE_MENU,
-@@ -422,8 +427,7 @@
- 		HELP_MENU
- 	};
- 
--	return ggz_create_menus(window,
--				items, sizeof(items) / sizeof(items[0]));
-+	return ggz_create_menus(items, sizeof(items) / sizeof(items[0]));
- }
- 
- GtkWidget *create_main_win(void)
-@@ -443,9 +447,7 @@
- 
- 	accel_group = gtk_accel_group_new();
- 
--	main_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
--	g_object_set_data(G_OBJECT(main_win), "main_win", main_win);
--	gtk_window_set_title(GTK_WINDOW(main_win), _("Reversi"));
-+	main_win = ggz_gtk_get_display_area();
- 
- 	main_box = gtk_vbox_new(FALSE, 0);
- 	gtk_widget_ref(main_box);
-@@ -454,7 +456,7 @@
- 	gtk_widget_show(main_box);
- 	gtk_container_add(GTK_CONTAINER(main_win), main_box);
- 
--	menubar = create_menus(main_win);
-+	menubar = create_menus();
- 	gtk_widget_ref(menubar);
- 	g_object_set_data_full(G_OBJECT(main_win), "menubar", menubar,
- 			       (GtkDestroyNotify) gtk_widget_unref);
-@@ -552,7 +554,7 @@
- 	g_signal_connect(GTK_OBJECT(again_button), "clicked",
- 			 GTK_SIGNAL_FUNC(play_again), NULL);
- 
--	gtk_window_add_accel_group(GTK_WINDOW(main_win), accel_group);
-+	gtk_window_add_accel_group(ggz_gtk_get_main_window(), accel_group);
- 
- 	return main_win;
- }
-Index: reversi/version.in
-===================================================================
---- reversi/version.in	(revision 0)
-+++ reversi/version.in	(revision 0)
-@@ -0,0 +1,14 @@
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-Index: reversi/module.dsc.in
-===================================================================
---- reversi/module.dsc.in	(revision 8136)
-+++ reversi/module.dsc.in	(working copy)
-@@ -5,7 +5,6 @@
- CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.reversi @EXTRA_GAME_PARAMETERS@
- Frontend = gtk
- Homepage = http://www.ggzgamingzone.org/games/reversi/
--ProtocolEngine = Reversi
--ProtocolVersion = 4
--Version = 0.0.7
--
-+ProtocolEngine = @REVERSI_PROTOCOL_ENGINE@
-+ProtocolVersion = @REVERSI_PROTOCOL_VERSION@
-+Version = @REVERSI_VERSION@
-Index: reversi/main.c
-===================================================================
---- reversi/main.c	(revision 8136)
-+++ reversi/main.c	(working copy)
-@@ -115,25 +115,22 @@
- 	initialize_about_dialog();
- 	add_pixmap_directory(".");
- 
-+	init_ggz_gtk(_("Reversi"), TRUE,
-+		     REVERSI_PROTOCOL_ENGINE, REVERSI_PROTOCOL_VERSION,
-+		     game_handle_io, game_init);
-+	mod = ggz_gtk_get_ggzmod();
-+
- 	main_win = create_main_win();
--	gtk_widget_show(main_win);
-+	gtk_widget_show_all(main_win);
- 
--	game_init();
--
- 	strcpy(game.names[0], "empty");
- 	strcpy(game.names[1], "empty");
- 
--	display_board();
--
--	mod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
--
- 	gtk_main();
- 
- 	save_data();
- 
--	if (ggzmod_disconnect(mod) < 0)
--		return -2;
--	ggzmod_free(mod);
-+	free_ggz_gtk();
- 
- 	cleanup_debugging();
- 	ggz_conf_cleanup();
-@@ -281,7 +278,7 @@
- 	game.state = RVR_STATE_INIT;
- 	game.last_move = -1;
- 
--
-+	display_board();
- }
- 
- int get_seat(void)
-Index: reversi/Makefile.am
-===================================================================
---- reversi/Makefile.am	(revision 8136)
-+++ reversi/Makefile.am	(working copy)
-@@ -6,7 +6,7 @@
- SUBDIRS = .
- 
- AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		@GTK_CFLAGS@
-+		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
- 
- install-data-local:
- 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
-@@ -24,9 +24,11 @@
- 	support.c	support.h
- 
- ggz_reversi_LDADD =	$(top_builddir)/common/libgtk-games.a		\
--			@GTK_LIBS@ @INTLLIBS@ $(LDADD)	\
--			$(LIB_GGZMOD) $(LIB_GGZ)
--ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-+			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
-+			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
-+ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
- 
- pixmapdir = $(ggzdatadir)/reversi/pixmaps
- dist_pixmap_DATA = white.svg black.svg dot.svg enemydot.svg
-+
-+noinst_HEADERS = version.in
-Index: spades/gtk_io.c
-===================================================================
---- spades/gtk_io.c	(revision 8136)
-+++ spades/gtk_io.c	(working copy)
-@@ -74,7 +74,6 @@
- 
- 	/* Main window and callbacks */
- 	playArea->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
--	ggz_game_main_window = GTK_WINDOW(playArea->window);	/* HACK */
- 	gtk_window_set_title(GTK_WINDOW(playArea->window), "GtkSpades");
- 
- 	g_signal_connect(GTK_OBJECT(playArea->window), "delete_event",
-Index: spades/Makefile.am
-===================================================================
---- spades/Makefile.am	(revision 8139)
-+++ spades/Makefile.am	(working copy)
-@@ -4,7 +4,7 @@
- SUBDIRS = .
- 
- AM_CPPFLAGS = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		$(GTK_CFLAGS)
-+		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
- 
- EXTRA_DIST = module.dsc.in
- 
-@@ -38,5 +38,5 @@
- 
- ggz_spades_LDADD = 	$(top_builddir)/common/libgtk-games.a		\
- 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
--			$(LIB_GGZMOD) $(LIB_GGZ)
--ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-+			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
-+ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
-Index: spades/client_func.c
-===================================================================
---- spades/client_func.c	(revision 8136)
-+++ spades/client_func.c	(working copy)
-@@ -202,7 +202,7 @@
- 	ggzmod = ggzmod_new(GGZMOD_GAME);
- 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER,
- 			   &handle_ggzmod_server);
--	init_player_list(ggzmod);
-+	init_player_list();
- 	ggzmod_connect(ggzmod);
- 
- 	channel = g_io_channel_unix_new(ggzmod_get_fd(ggzmod));
 Index: hastings/module.dsc.in
 ===================================================================
---- hastings/module.dsc.in	(revision 8136)
+--- hastings/module.dsc.in	(revision 8144)
 +++ hastings/module.dsc.in	(working copy)
 @@ -5,7 +5,7 @@
  Frontend = gtk
@@ -561,7 +561,7 @@ Index: hastings/module.dsc.in
  
 Index: hastings/main.c
 ===================================================================
---- hastings/main.c	(revision 8136)
+--- hastings/main.c	(revision 8144)
 +++ hastings/main.c	(working copy)
 @@ -73,11 +73,14 @@
  	gtk_init(&argc, &argv);
@@ -582,7 +582,7 @@ Index: hastings/main.c
  	if (ggzmod_disconnect(mod) < 0)
 Index: hastings/Makefile.am
 ===================================================================
---- hastings/Makefile.am	(revision 8136)
+--- hastings/Makefile.am	(revision 8144)
 +++ hastings/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = . pixmaps
@@ -628,7 +628,7 @@ Index: hastings/version.in
 +		   [Hastings protocol version])
 Index: common/dlg_exit.c
 ===================================================================
---- common/dlg_exit.c	(revision 8136)
+--- common/dlg_exit.c	(revision 8144)
 +++ common/dlg_exit.c	(working copy)
 @@ -39,7 +39,7 @@
  {
@@ -658,7 +658,7 @@ Index: common/dlg_exit.c
  				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 Index: common/dlg_about.c
 ===================================================================
---- common/dlg_about.c	(revision 8136)
+--- common/dlg_about.c	(revision 8144)
 +++ common/dlg_about.c	(working copy)
 @@ -114,7 +114,7 @@
  		gdk_window_show(dlg_about->window);
@@ -671,7 +671,7 @@ Index: common/dlg_about.c
  				 &dlg_about);
 Index: common/ggz_gtk.h
 ===================================================================
---- common/ggz_gtk.h	(revision 8136)
+--- common/ggz_gtk.h	(revision 8144)
 +++ common/ggz_gtk.h	(working copy)
 @@ -28,7 +28,16 @@
  #include "ggzintl.h"
@@ -693,9 +693,53 @@ Index: common/ggz_gtk.h
 +GtkWidget *ggz_gtk_get_display_area(void);
 +GGZMod *ggz_gtk_get_ggzmod(void);
 +gboolean ggz_gtk_is_embedded(void);
+Index: common/dlg_chat.c
+===================================================================
+--- common/dlg_chat.c	(revision 8144)
++++ common/dlg_chat.c	(working copy)
+@@ -30,6 +30,7 @@
+ #  include <config.h>	/* Site-specific config */
+ #endif
+ 
++#include <assert.h>
+ #include <stdio.h>
+ 
+ #include <gtk/gtk.h>
+@@ -78,10 +79,11 @@
+ 	}
+ }
+ 
+-void init_chat(GGZMod * ggzmod)
++void init_chat(void)
+ {
+-	ggz = ggzmod;
+-	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_CHAT,
++	ggz = ggz_gtk_get_ggzmod();
++	assert(ggz != NULL);
++	ggzmod_set_handler(ggz, GGZMOD_EVENT_CHAT,
+ 			   handle_ggz_chat_event);
+ }
+ 
+@@ -90,6 +92,7 @@
+ 	const char *theinput = gtk_entry_get_text(w);
+ 
+ 	if (*theinput) {
++		assert(ggz != NULL);
+ 		ggzmod_request_chat(ggz, theinput);
+ 	}
+ 
+@@ -195,7 +198,7 @@
+ 		gdk_window_show(dlg_chat->window);
+ 		gdk_window_raise(dlg_chat->window);
+ 	} else {
+-		dlg_chat = create_dlg_chat(ggz_game_main_window);
++		dlg_chat = create_dlg_chat(ggz_gtk_get_main_window());
+ 		g_signal_connect(dlg_chat, "destroy",
+ 				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+ 				 &dlg_chat);
 Index: common/dlg_players.c
 ===================================================================
---- common/dlg_players.c	(revision 8136)
+--- common/dlg_players.c	(revision 8144)
 +++ common/dlg_players.c	(working copy)
 @@ -83,15 +83,15 @@
  	update_player_lists();
@@ -807,66 +851,9 @@ Index: common/dlg_players.c
 +	assert(ggz != NULL);
  	ggzmod_request_stand(ggz);
  }
-Index: common/dlg_chat.c
-===================================================================
---- common/dlg_chat.c	(revision 8136)
-+++ common/dlg_chat.c	(working copy)
-@@ -30,6 +30,7 @@
- #  include <config.h>	/* Site-specific config */
- #endif
- 
-+#include <assert.h>
- #include <stdio.h>
- 
- #include <gtk/gtk.h>
-@@ -78,10 +79,11 @@
- 	}
- }
- 
--void init_chat(GGZMod * ggzmod)
-+void init_chat(void)
- {
--	ggz = ggzmod;
--	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_CHAT,
-+	ggz = ggz_gtk_get_ggzmod();
-+	assert(ggz != NULL);
-+	ggzmod_set_handler(ggz, GGZMOD_EVENT_CHAT,
- 			   handle_ggz_chat_event);
- }
- 
-@@ -90,6 +92,7 @@
- 	const char *theinput = gtk_entry_get_text(w);
- 
- 	if (*theinput) {
-+		assert(ggz != NULL);
- 		ggzmod_request_chat(ggz, theinput);
- 	}
- 
-@@ -195,7 +198,7 @@
- 		gdk_window_show(dlg_chat->window);
- 		gdk_window_raise(dlg_chat->window);
- 	} else {
--		dlg_chat = create_dlg_chat(ggz_game_main_window);
-+		dlg_chat = create_dlg_chat(ggz_gtk_get_main_window());
- 		g_signal_connect(dlg_chat, "destroy",
- 				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
- 				 &dlg_chat);
-Index: common/dlg_chat.h
-===================================================================
---- common/dlg_chat.h	(revision 8136)
-+++ common/dlg_chat.h	(working copy)
-@@ -30,7 +30,7 @@
-  * handler for the CHAT event.  If the game wants its own handler for this
-  * event you should register it *after* calling this function, and handle
-  * the chat manually. */
--void init_chat(GGZMod * ggzmod);
-+void init_chat(void);
- 
- /* Creates a widget containing a chatbox. */
- GtkWidget *create_chat_widget(void);
 Index: common/dlg_players.h
 ===================================================================
---- common/dlg_players.h	(revision 8136)
+--- common/dlg_players.h	(revision 8144)
 +++ common/dlg_players.h	(working copy)
 @@ -32,7 +32,7 @@
     if the game wants its own handlers for these events you should
@@ -877,9 +864,22 @@ Index: common/dlg_players.h
  
  /* The player list will attach itself to the SEAT and SPECTATOR ggzmod
     events, but if you override them you should call this function instead.
+Index: common/dlg_chat.h
+===================================================================
+--- common/dlg_chat.h	(revision 8144)
++++ common/dlg_chat.h	(working copy)
+@@ -30,7 +30,7 @@
+  * handler for the CHAT event.  If the game wants its own handler for this
+  * event you should register it *after* calling this function, and handle
+  * the chat manually. */
+-void init_chat(GGZMod * ggzmod);
++void init_chat(void);
+ 
+ /* Creates a widget containing a chatbox. */
+ GtkWidget *create_chat_widget(void);
 Index: common/menus.c
 ===================================================================
---- common/menus.c	(revision 8136)
+--- common/menus.c	(revision 8144)
 +++ common/menus.c	(working copy)
 @@ -34,14 +34,14 @@
  
@@ -913,7 +913,7 @@ Index: common/menus.c
  	set_menu_sensitive(TABLE_CHAT_WINDOW, FALSE);
 Index: common/Makefile.am
 ===================================================================
---- common/Makefile.am	(revision 8136)
+--- common/Makefile.am	(revision 8144)
 +++ common/Makefile.am	(working copy)
 @@ -3,7 +3,7 @@
  
@@ -926,7 +926,7 @@ Index: common/Makefile.am
  
 Index: common/menus.h
 ===================================================================
---- common/menus.h	(revision 8136)
+--- common/menus.h	(revision 8144)
 +++ common/menus.h	(working copy)
 @@ -68,8 +68,7 @@
  
@@ -940,7 +940,7 @@ Index: common/menus.h
  void set_menu_sensitive(const char *menu, gboolean sensitive);
 Index: common/ggz_gtk.c
 ===================================================================
---- common/ggz_gtk.c	(revision 8136)
+--- common/ggz_gtk.c	(revision 8144)
 +++ common/ggz_gtk.c	(working copy)
 @@ -27,24 +27,32 @@
  #  include <config.h>
@@ -1156,59 +1156,9 @@ Index: common/ggz_gtk.c
 +{
 +	return embedded;
 +}
-Index: configure.ac
-===================================================================
---- configure.ac	(revision 8136)
-+++ configure.ac	(working copy)
-@@ -45,6 +45,7 @@
- AC_GGZ_LIBGGZ
- AC_GGZ_GGZMOD
- AC_GGZ_CONFIG("true", ignore)
-+AC_GGZ_GTK
- AC_GGZ_INTL
- 
- dnl Check for header files
-@@ -115,6 +116,17 @@
- fi
- AC_SUBST(EXTRA_GAME_PARAMETERS)
- 
-+dnl Versioning
-+dnl ==========
-+m4_include(chess/version.in)
-+m4_include(chinese-checkers/version.in)
-+m4_include(combat/version.in)
-+m4_include(dots/version.in)
-+m4_include(ggzcards/version.in)
-+m4_include(hastings/version.in)
-+m4_include(reversi/version.in)
-+m4_include(tictactoe/version.in)
-+
- dnl Various dirs
- dnl ============
- 
-Index: chinese-checkers/version.in
-===================================================================
---- chinese-checkers/version.in	(revision 0)
-+++ chinese-checkers/version.in	(revision 0)
-@@ -0,0 +1,15 @@
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
 Index: chinese-checkers/game.c
 ===================================================================
---- chinese-checkers/game.c	(revision 8136)
+--- chinese-checkers/game.c	(revision 8144)
 +++ chinese-checkers/game.c	(working copy)
 @@ -78,6 +78,13 @@
  {
@@ -1234,9 +1184,29 @@ Index: chinese-checkers/game.c
  }
  
  
+Index: chinese-checkers/version.in
+===================================================================
+--- chinese-checkers/version.in	(revision 0)
++++ chinese-checkers/version.in	(revision 0)
+@@ -0,0 +1,15 @@
++CCHECKERS_VERSION=0.0.3
++
++CCHECKERS_PROTOCOL_ENGINE=CCheckers
++CCHECKERS_PROTOCOL_VERSION=3
++
++AC_SUBST(CCHECKERS_VERSION)
++AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
++AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
++
++AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
++                   [CCheckers version])
++AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
++		   [CCheckers protocol engine])
++AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
++		   [CCheckers protocol version])
 Index: chinese-checkers/main_dlg.c
 ===================================================================
---- chinese-checkers/main_dlg.c	(revision 8136)
+--- chinese-checkers/main_dlg.c	(revision 8144)
 +++ chinese-checkers/main_dlg.c	(working copy)
 @@ -42,7 +42,7 @@
  #include "main_dlg.h"
@@ -1268,7 +1238,7 @@ Index: chinese-checkers/main_dlg.c
  	g_object_set_data_full(G_OBJECT(dlg_main), "menubar", menubar,
 Index: chinese-checkers/module.dsc.in
 ===================================================================
---- chinese-checkers/module.dsc.in	(revision 8136)
+--- chinese-checkers/module.dsc.in	(revision 8144)
 +++ chinese-checkers/module.dsc.in	(working copy)
 @@ -5,6 +5,6 @@
  Frontend = gtk
@@ -1282,7 +1252,7 @@ Index: chinese-checkers/module.dsc.in
 +Version = @CCHECKERS_VERSION@
 Index: chinese-checkers/Makefile.am
 ===================================================================
---- chinese-checkers/Makefile.am	(revision 8136)
+--- chinese-checkers/Makefile.am	(revision 8144)
 +++ chinese-checkers/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = . pixmaps
@@ -1305,6 +1275,36 @@ Index: chinese-checkers/Makefile.am
 +ggz_ccheckers_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
  
 +noinst_HEADERS = version.in
+Index: configure.ac
+===================================================================
+--- configure.ac	(revision 8144)
++++ configure.ac	(working copy)
+@@ -45,6 +45,7 @@
+ AC_GGZ_LIBGGZ
+ AC_GGZ_GGZMOD
+ AC_GGZ_CONFIG("true", ignore)
++AC_GGZ_GTK
+ AC_GGZ_INTL
+ 
+ dnl Check for header files
+@@ -115,6 +116,17 @@
+ fi
+ AC_SUBST(EXTRA_GAME_PARAMETERS)
+ 
++dnl Versioning
++dnl ==========
++m4_include(chess/version.in)
++m4_include(chinese-checkers/version.in)
++m4_include(combat/version.in)
++m4_include(dots/version.in)
++m4_include(ggzcards/version.in)
++m4_include(hastings/version.in)
++m4_include(reversi/version.in)
++m4_include(tictactoe/version.in)
++
+ dnl Various dirs
+ dnl ============
+ 
 Index: ggzcards/version.in
 ===================================================================
 --- ggzcards/version.in	(revision 0)
@@ -1326,7 +1326,7 @@ Index: ggzcards/version.in
 +		   [GGZCards protocol version])
 Index: ggzcards/module.dsc.in
 ===================================================================
---- ggzcards/module.dsc.in	(revision 8136)
+--- ggzcards/module.dsc.in	(revision 8144)
 +++ ggzcards/module.dsc.in	(working copy)
 @@ -6,6 +6,6 @@
  Frontend = gtk
@@ -1340,7 +1340,7 @@ Index: ggzcards/module.dsc.in
 +Version = @GGZCARDS_VERSION@
 Index: ggzcards/dlg_main.c
 ===================================================================
---- ggzcards/dlg_main.c	(revision 8136)
+--- ggzcards/dlg_main.c	(revision 8144)
 +++ ggzcards/dlg_main.c	(working copy)
 @@ -46,7 +46,7 @@
  #include "layout.h"
@@ -1372,7 +1372,7 @@ Index: ggzcards/dlg_main.c
  	g_object_set_data_full(G_OBJECT(dlg_main), "menubar", menubar,
 Index: ggzcards/main.c
 ===================================================================
---- ggzcards/main.c	(revision 8136)
+--- ggzcards/main.c	(revision 8144)
 +++ ggzcards/main.c	(working copy)
 @@ -82,12 +82,11 @@
  	pango_font_description_set_family(fixed_font, font);
@@ -1392,7 +1392,7 @@ Index: ggzcards/main.c
  
 Index: ggzcards/Makefile.am
 ===================================================================
---- ggzcards/Makefile.am	(revision 8136)
+--- ggzcards/Makefile.am	(revision 8144)
 +++ ggzcards/Makefile.am	(working copy)
 @@ -9,7 +9,7 @@
  		-I$(top_srcdir)/ggzcards/common \
@@ -1418,7 +1418,7 @@ Index: ggzcards/Makefile.am
 +ggz_ggzcards_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
 Index: combat/interface.c
 ===================================================================
---- combat/interface.c	(revision 8136)
+--- combat/interface.c	(revision 8144)
 +++ combat/interface.c	(working copy)
 @@ -57,8 +57,7 @@
  	};
@@ -1451,7 +1451,7 @@ Index: combat/version.in
 +		   [Combat protocol version])
 Index: combat/module.dsc.in
 ===================================================================
---- combat/module.dsc.in	(revision 8136)
+--- combat/module.dsc.in	(revision 8144)
 +++ combat/module.dsc.in	(working copy)
 @@ -1,9 +1,9 @@
  [ModuleInfo]
@@ -1468,7 +1468,7 @@ Index: combat/module.dsc.in
  Homepage = http://www.ggzgamingzone.org/games/combat/
 Index: combat/main.c
 ===================================================================
---- combat/main.c	(revision 8136)
+--- combat/main.c	(revision 8144)
 +++ combat/main.c	(working copy)
 @@ -73,6 +73,11 @@
  	gtk_init(&argc, &argv);
@@ -1493,7 +1493,7 @@ Index: combat/main.c
  	if (ggzmod_disconnect(mod) < 0)
 Index: combat/Makefile.am
 ===================================================================
---- combat/Makefile.am	(revision 8136)
+--- combat/Makefile.am	(revision 8144)
 +++ combat/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = . pixmaps maps
@@ -1518,7 +1518,7 @@ Index: combat/Makefile.am
 +noinst_HEADERS = version.in
 Index: chess/main_win.c
 ===================================================================
---- chess/main_win.c	(revision 8136)
+--- chess/main_win.c	(revision 8144)
 +++ chess/main_win.c	(working copy)
 @@ -36,6 +36,7 @@
  
@@ -1597,16 +1597,18 @@ Index: chess/main_win.c
  			       (GtkDestroyNotify) gtk_widget_unref);
  	gtk_widget_show(hpaned1);
  	gtk_box_pack_start(GTK_BOX(hbox1), hpaned1, TRUE, TRUE, 0);
-@@ -152,7 +151,7 @@
+@@ -152,8 +151,9 @@
  
  	board = gtk_drawing_area_new();
  	gtk_widget_ref(board);
 -	g_object_set_data_full(G_OBJECT(main_win), "board", board,
 +	g_object_set_data_full(G_OBJECT(display), "board", board,
  			       (GtkDestroyNotify) gtk_widget_unref);
++	board = lookup_widget(display, "board");
  	gtk_widget_show(board);
  	gtk_paned_pack1(GTK_PANED(hpaned1), board, TRUE, TRUE);
-@@ -161,7 +160,7 @@
+ 	gtk_widget_set_size_request(board, 64, 64);
+@@ -161,7 +161,7 @@
  
  	vpaned1 = gtk_vpaned_new();
  	gtk_widget_ref(vpaned1);
@@ -1615,7 +1617,7 @@ Index: chess/main_win.c
  			       (GtkDestroyNotify) gtk_widget_unref);
  	gtk_widget_show(vpaned1);
  	gtk_paned_pack2(GTK_PANED(hpaned1), vpaned1, FALSE, FALSE);
-@@ -169,21 +168,21 @@
+@@ -169,21 +169,21 @@
  
  	vbox2 = gtk_vbox_new(TRUE, 15);
  	gtk_widget_ref(vbox2);
@@ -1640,7 +1642,7 @@ Index: chess/main_win.c
  			       white_arrow,
  			       (GtkDestroyNotify) gtk_widget_unref);
  	gtk_widget_show(white_arrow);
-@@ -191,7 +190,7 @@
+@@ -191,7 +191,7 @@
  
  	white_time = gtk_label_new(_("White -> 99:99"));
  	gtk_widget_ref(white_time);
@@ -1649,7 +1651,7 @@ Index: chess/main_win.c
  			       white_time,
  			       (GtkDestroyNotify) gtk_widget_unref);
  	gtk_widget_show(white_time);
-@@ -202,14 +201,14 @@
+@@ -202,14 +202,14 @@
  
  	hbox3 = gtk_hbox_new(FALSE, 0);
  	gtk_widget_ref(hbox3);
@@ -1666,7 +1668,7 @@ Index: chess/main_win.c
  			       black_arrow,
  			       (GtkDestroyNotify) gtk_widget_unref);
  	gtk_widget_show(black_arrow);
-@@ -217,7 +216,7 @@
+@@ -217,7 +217,7 @@
  
  	black_time = gtk_label_new(_("Black -> 99:99"));
  	gtk_widget_ref(black_time);
@@ -1675,7 +1677,7 @@ Index: chess/main_win.c
  			       black_time,
  			       (GtkDestroyNotify) gtk_widget_unref);
  	gtk_widget_show(black_time);
-@@ -228,14 +227,14 @@
+@@ -228,14 +228,14 @@
  
  	vbox3 = gtk_vbox_new(FALSE, 0);
  	gtk_widget_ref(vbox3);
@@ -1692,7 +1694,7 @@ Index: chess/main_win.c
  			       last_moves_label,
  			       (GtkDestroyNotify) gtk_widget_unref);
  	gtk_widget_show(last_moves_label);
-@@ -244,7 +243,7 @@
+@@ -244,7 +244,7 @@
  
  	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
  	gtk_widget_ref(scrolledwindow1);
@@ -1701,7 +1703,7 @@ Index: chess/main_win.c
  			       scrolledwindow1,
  			       (GtkDestroyNotify) gtk_widget_unref);
  	gtk_widget_show(scrolledwindow1);
-@@ -258,7 +257,7 @@
+@@ -258,7 +258,7 @@
  	gtk_text_view_set_editable(GTK_TEXT_VIEW(last_moves), FALSE);
  	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(last_moves), FALSE);
  	gtk_widget_ref(last_moves);
@@ -1710,7 +1712,7 @@ Index: chess/main_win.c
  			       last_moves,
  			       (GtkDestroyNotify) gtk_widget_unref);
  	gtk_widget_show(last_moves);
-@@ -269,14 +268,14 @@
+@@ -269,14 +269,14 @@
  
  	statusbar = gtk_statusbar_new();
  	gtk_widget_ref(statusbar);
@@ -1728,7 +1730,7 @@ Index: chess/main_win.c
  			 GTK_SIGNAL_FUNC(ExitDialog), NULL);
  	g_signal_connect(board, "configure_event",
  			 GTK_SIGNAL_FUNC(on_board_configure_event), NULL);
-@@ -292,7 +291,7 @@
+@@ -292,7 +292,7 @@
  	g_signal_connect_after(board, "drag_drop",
  			       GTK_SIGNAL_FUNC(on_board_drag_drop), NULL);
  
@@ -1759,7 +1761,7 @@ Index: chess/version.in
 +		   [Chess protocol version])
 Index: chess/module.dsc.in
 ===================================================================
---- chess/module.dsc.in	(revision 8136)
+--- chess/module.dsc.in	(revision 8144)
 +++ chess/module.dsc.in	(working copy)
 @@ -2,9 +2,9 @@
  [ModuleInfo]
@@ -1776,20 +1778,23 @@ Index: chess/module.dsc.in
  Homepage = http://www.ggzgamingzone.org/games/chess/
 Index: chess/main.c
 ===================================================================
---- chess/main.c	(revision 8136)
+--- chess/main.c	(revision 8144)
 +++ chess/main.c	(working copy)
-@@ -64,6 +64,11 @@
+@@ -64,8 +64,13 @@
  	gtk_init(&argc, &argv);
  	initialize_about_dialog();
  
-+	init_ggz_gtk(_("GGZ Chess"), FALSE,
++	init_ggz_gtk(_("GGZ Chess"), TRUE,
 +		     CHESS_PROTOCOL_ENGINE, CHESS_PROTOCOL_VERSION,
 +		     net_handle_input, NULL);
 +	mod = ggz_gtk_get_ggzmod();
 +
  	main_win = create_main_win();
- 	gtk_widget_realize(main_win);
+-	gtk_widget_realize(main_win);
++	gtk_widget_show_all(main_win);
  	/* HACK: we have to call gtk_widget_realize (above) before calling
+ 	 * board_init because board_init needs to access main_win->window.
+ 	 * However we have to call board_init before gtk_widget_show (below)
 @@ -79,14 +84,9 @@
  	gtk_widget_show(main_win);
  	game_update(CHESS_EVENT_INIT, NULL);
@@ -1806,9 +1811,69 @@ Index: chess/main.c
  
  	cleanup_debugging();
  
+Index: chess/board.c
+===================================================================
+--- chess/board.c	(revision 8144)
++++ chess/board.c	(working copy)
+@@ -35,6 +35,8 @@
+ #include <gtk/gtk.h>
+ #include <ggz.h>
+ 
++#include "ggz_gtk.h"
++
+ #include "board.h"
+ #include "game.h"
+ #include "net.h"
+@@ -116,6 +118,8 @@
+ 
+ void board_init(void)
+ {
++	GtkWidget *window = GTK_WIDGET(ggz_gtk_get_main_window());
++
+ 	if (pieces[0]) {
+ 		return;
+ 	}
+@@ -123,7 +127,7 @@
+ 	board_resized(PIXSIZE * 8, PIXSIZE * 8);
+ 
+ 	/* Init the GC */
+-	piece_gc = gdk_gc_new(main_win->window);
++	piece_gc = gdk_gc_new(window->window);
+ 	gdk_gc_set_fill(piece_gc, GDK_TILED);
+ 	/* Colors */
+ 	gdk_color_parse("Tan", &bg_color[0]);
+@@ -136,15 +140,15 @@
+ 	gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win),
+ 				 &bg_color[2], TRUE, TRUE);
+ 	/* Background GC */
+-	light_gc = gdk_gc_new(main_win->window);
++	light_gc = gdk_gc_new(window->window);
+ 	gdk_gc_set_fill(light_gc, GDK_SOLID);
+ 	gdk_gc_set_foreground(light_gc, &bg_color[0]);
+ 	gdk_gc_set_background(light_gc, &bg_color[0]);
+-	dark_gc = gdk_gc_new(main_win->window);
++	dark_gc = gdk_gc_new(window->window);
+ 	gdk_gc_set_fill(dark_gc, GDK_SOLID);
+ 	gdk_gc_set_foreground(dark_gc, &bg_color[1]);
+ 	gdk_gc_set_background(dark_gc, &bg_color[1]);
+-	red_gc = gdk_gc_new(main_win->window);
++	red_gc = gdk_gc_new(window->window);
+ 	gdk_gc_set_fill(red_gc, GDK_SOLID);
+ 	gdk_gc_set_foreground(red_gc, &bg_color[2]);
+ 	gdk_gc_set_background(red_gc, &bg_color[2]);
+@@ -245,8 +249,7 @@
+ 
+ 	board = lookup_widget(main_win, "board");
+ 
+-	target->target = malloc(sizeof(char) * 6);
+-	strcpy(target->target, "board");
++	target->target = strdup("board");
+ 	target->flags = GTK_TARGET_SAME_WIDGET;
+ 	target->info = 233;
+ 
 Index: chess/Makefile.am
 ===================================================================
---- chess/Makefile.am	(revision 8136)
+--- chess/Makefile.am	(revision 8144)
 +++ chess/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = libcgc bitmaps
@@ -1853,7 +1918,7 @@ Index: dots/version.in
 +		   [Dots protocol version])
 Index: dots/module.dsc.in
 ===================================================================
---- dots/module.dsc.in	(revision 8136)
+--- dots/module.dsc.in	(revision 8144)
 +++ dots/module.dsc.in	(working copy)
 @@ -5,7 +5,7 @@
  Frontend = gtk
@@ -1868,7 +1933,7 @@ Index: dots/module.dsc.in
  
 Index: dots/main.c
 ===================================================================
---- dots/main.c	(revision 8136)
+--- dots/main.c	(revision 8144)
 +++ dots/main.c	(working copy)
 @@ -97,11 +97,14 @@
  				     GGZ_CONF_RDWR | GGZ_CONF_CREATE);
@@ -1897,7 +1962,7 @@ Index: dots/main.c
  	gtk_label_set_text(GTK_LABEL(l1), _("No Score"));
 Index: dots/Makefile.am
 ===================================================================
---- dots/Makefile.am	(revision 8136)
+--- dots/Makefile.am	(revision 8144)
 +++ dots/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = .
