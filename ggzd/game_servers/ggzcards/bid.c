@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 4471 2002-09-08 21:18:54Z jdorje $
+ * $Id: bid.c 8149 2006-06-09 19:09:42Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -190,7 +190,9 @@ void handle_bid_event(player_t p, bid_t bid)
 	/* determine the bid */
 	game.players[p].bid = bid;
 
-	/* handle the bid */
+	/* handle the bid.  Bid counts are updated before the handle_bid
+	   function is called; this may be illogical but changing it would
+	   break some things. */
 	game.players[p].bid_count++;
 	game.bid_count++;
 	game.data->handle_bid(p, bid);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 4398 2002-09-03 04:55:19Z jdorje $
+ * $Id: spades.c 8149 2006-06-09 19:09:42Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -283,10 +283,11 @@ static void spades_get_bid(void)
 static void spades_handle_bid(player_t p, bid_t bid)
 {
 	assert(game.next_bid == p);
-	
+
 	/* Regular bids don't need any special handling; however blind bids
-	   do. */
-	if (GSPADES.double_nil_value > 0 && (game.bid_count % 2 == 0)) {
+	   do.  Note the bid_count is odd here since the bid_count has
+	   already been updated before handle_bid() is called. */
+	if (GSPADES.double_nil_value > 0 && (game.bid_count % 2 == 1)) {
 		GSPADES.show_hand[p] = 1;
 		spades_send_hand(p, p);
 		if (bid.sbid.spec != SPADES_NO_BLIND)
