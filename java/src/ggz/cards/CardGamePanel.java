@@ -85,14 +85,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected JButton lastTrickButton;
 
-    // List of arrays that contains cards in the trick for each player.
-    // Each array usually only has one card in it.
-    protected TrickInfo lastTrick;
-
-    protected int playerWhoLedLastTrick;
-
-    protected boolean isNewTrick;
-
     public void init(ModGame mod) throws IOException {
         super.init(mod);
         cardClient = new Client();
@@ -107,7 +99,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         table.setLayout(tableLayout);
 
         // Add the control to allow the cards in the last trick to be viewed.
-        lastTrickButton = new JButton(new ImageIcon(getClass().getResource("images/trick.gif")));
+        lastTrickButton = new JButton(new ImageIcon(getClass().getResource(
+                "images/trick.gif")));
         lastTrickButton.setOpaque(false);
         lastTrickButton.setToolTipText("Last Trick");
         lastTrickButton.setVisible(false);
@@ -199,7 +192,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 repaint();
             }
         });
-        isNewTrick = true;
     }
 
     public void alert_num_players(int numplayers, int old_numplayers) {
@@ -370,11 +362,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         timeLastPlay = System.currentTimeMillis();
         lastPlayerInTrick = player_num;
 
-        if (isNewTrick) {
-            playerWhoLedLastTrick = player_num;
-            isNewTrick = false;
-        }
-
         // Check if we've already animated this card because we played it
         // ourselves.
         if (handILastPlayedFrom == player_num) {
@@ -473,29 +460,30 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     protected void showLastTrick() throws IOException {
+        Client.TrickInfo lastTrick = cardClient.get_last_trick();
         if (lastTrick != null) {
             JDialog dialog = new JDialog(
                     JOptionPane.getFrameForComponent(this), "Last Trick");
             dialog.getContentPane().setLayout(
                     new TableLayout(tableLayout.getCardWidth(), tableLayout
                             .getCardHeight()));
-            int playerNum = lastTrick.playerWhoLed;
-            for (int i = 0; i < lastTrick.cards.size(); i++) {
+            int playerNum = lastTrick.getPlayerWhoLed();
+            int numCards = lastTrick.getNumCards();
+            for (int i = 0; i < numCards; i++) {
                 // Hack to prevent IndexOutOfBoundsException in Suaro.
                 // The array has less elements than there are seats so we may
                 // end up having to track cards in the trick ourselves.
-                if (playerNum >= lastTrick.cards.size()) {
-                    playerNum  = lastTrick.cards.size() - 1;
+                if (playerNum >= numCards) {
+                    playerNum = numCards - 1;
                 }
-                Card[] card = (Card[]) lastTrick.cards.get(playerNum);
-                Sprite sprite = new Sprite(card[0],
-                        getCardOrientation(playerNum));
+                Card card = lastTrick.getCardForPlayer(playerNum);
+                Sprite sprite = new Sprite(card, getCardOrientation(playerNum));
                 dialog.getContentPane().add(
                         sprite,
                         new TableConstraints(TableConstraints.CARD_IN_TRICK,
                                 playerNum), 0);
                 // Next player.
-                playerNum = (playerNum + 1) % lastTrick.cards.size();
+                playerNum = (playerNum + 1) % numCards;
             }
             dialog.getContentPane().setBackground(table.getBackground());
             dialog.setSize(200, 200);
@@ -591,8 +579,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 repaint();
             }
         });
-
-        isNewTrick = true;
     }
 
     public void display_hand(final int player_num) {
@@ -649,7 +635,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
             // Don't do deal animation if we are playing, this usually means a
             // player has shown the cards he/she already holds.
-            if (cardClient.get_game_state() != Client.STATE_PLAY) {
+            if (cardClient.get_game_state() == Client.STATE_DEAL) {
                 table.animate(hand.size(), sprites[player_num], endPos, 0.3);
             } else {
                 // Ensure this players cards are on top since in Bridge the
@@ -900,9 +886,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         // });
 
         if ("Last Trick".equals(mark)) {
-            lastTrick = new TrickInfo(cardlist, playerWhoLedLastTrick);
             lastTrickButton.setVisible(true);
-//            revalidate();
         }
         // chat_panel.appendChat("set_cardlist_message", "mark=" + mark);
         // for (int i = 0; i < cardlist.size(); i++) {
@@ -1105,16 +1089,5 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             Sprite sprite = ((Sprite) e.getSource());
             sprite.setSelected(false);
         }
-    }
-
-    private static class TrickInfo {
-        TrickInfo(List c, int leader) {
-            cards = c;
-            playerWhoLed = leader;
-        }
-
-        List cards;
-
-        int playerWhoLed;
     }
 }

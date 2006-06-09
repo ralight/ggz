@@ -33,6 +33,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -55,6 +56,13 @@ public class Client {
 
     /** The state the game is in */
     private GameState state;
+
+    // Structure that contains cards in the trick for each player.
+    protected TrickInfo lastTrick;
+
+    protected int playerWhoLedLastTrick;
+
+    protected boolean isNewTrick;
 
     protected CardGameHandler game;
 
@@ -113,6 +121,10 @@ public class Client {
         return this.state;
     }
 
+    public TrickInfo get_last_trick() {
+        return this.lastTrick;
+    }
+
     private void handle_text_message() throws IOException {
         String mark = this.fd_in.read_string();
         String message = this.fd_in.read_string();
@@ -133,6 +145,10 @@ public class Client {
                 }
                 cardlist.add(cards);
             }
+        }
+
+        if ("Last Trick".equals(mark)) {
+            lastTrick = new TrickInfo(cardlist, playerWhoLedLastTrick);
         }
 
         game.set_cardlist_message(mark, cardlist);
@@ -552,6 +568,12 @@ public class Client {
 
         /* Update the graphics */
         set_game_state(STATE_PLAY);
+
+        if (isNewTrick) {
+            playerWhoLedLastTrick = p;
+            isNewTrick = false;
+        }
+
         game.alert_play(p, card);
     }
 
@@ -582,6 +604,8 @@ public class Client {
         /* Update the graphics. */
         set_game_state(STATE_PLAY);
         game.alert_trick(winner);
+
+        isNewTrick = true;
 
         /* Clear all cards off the table. */
         for (int p = 0; p < this.num_players; p++) {
@@ -704,6 +728,8 @@ public class Client {
         } else if (opcode == ServerOpCode.MSG_PLAYERS) {
             handle_msg_players();
         } else if (opcode == ServerOpCode.MSG_NEWHAND) {
+            set_game_state(STATE_DEAL);
+            isNewTrick = true;
             game.alert_newhand();
         } else if (opcode == ServerOpCode.MSG_HAND) {
             handle_msg_hand();
@@ -770,6 +796,29 @@ public class Client {
         }).start();
     }
 
+    public static class TrickInfo {
+        List cards;
+
+        int playerWhoLed;
+
+        TrickInfo(List c, int leader) {
+            cards = c;
+            playerWhoLed = leader;
+        }
+
+        public int getPlayerWhoLed() {
+            return playerWhoLed;
+        }
+
+        public Card getCardForPlayer(int playerNum) {
+            return ((Card[]) cards.get(playerNum))[0];
+        }
+        
+        public int getNumCards() {
+            return cards.size();
+        }
+    }
+
     /**
      * GGZCards client game states
      * 
@@ -786,6 +835,9 @@ public class Client {
 
     /** waiting for others */
     public static final GameState STATE_WAIT = new GameState();
+
+    /** dealing */
+    public static final GameState STATE_DEAL = new GameState();
 
     /** our turn to play */
     public static final GameState STATE_PLAY = new GameState();
