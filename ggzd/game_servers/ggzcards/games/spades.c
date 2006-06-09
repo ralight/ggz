@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8149 2006-06-09 19:09:42Z jdorje $
+ * $Id: spades.c 8150 2006-06-09 22:58:20Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -162,15 +162,19 @@ static void spades_get_options(void)
 	           "No blind (double) nil",
 		   "Blind (double) nil worth 100",
 		   "Blind (double) nil worth 200");
+	add_option("low_score_loses",
+		   "Does dropping to -200 points cause an automatic loss?",
+		   1, 0,
+		   "Forfeit at -200 points");
 
 	game_get_options();
 }
 
 static int spades_handle_option(char *option, int value)
 {
-	if (!strcmp("nil_value", option))
+	if (!strcmp("nil_value", option)) {
 		GSPADES.nil_value = 50 * value;
-	else if (!strcmp("target_score", option))
+	} else if (!strcmp("target_score", option)) {
 		switch (value) {
 		case 0:
 			game.target_score = 100;
@@ -189,12 +193,19 @@ static int spades_handle_option(char *option, int value)
 			break;
 		default:
 			break;
-	} else if (!strcmp("minimum_bid", option))
+		}
+	} else if (!strcmp("minimum_bid", option)) {
 		GSPADES.minimum_team_bid = value;
-	else if (!strcmp("double_nil", option))
+	} else if (!strcmp("double_nil", option)) {
 		GSPADES.double_nil_value = 100 * value;
-	else
+	} else if (!strcmp("low_score_loses", option)) {
+		if (value == 0)
+			game.forfeit_score = 0;
+		else
+			game.forfeit_score = -200;
+	} else {
 		return game_handle_option(option, value);
+	}
 	return 0;
 }
 
