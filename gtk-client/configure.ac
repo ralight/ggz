@@ -87,11 +87,13 @@ fi
 dnl Various dirs
 dnl ============
 
-if test -z "${ggzdatadir}"; then
-  ggzdatadir="${datadir}/ggz/ggz-gtk"
+if test "x${datarootdir}" = 'x${prefix}/share'; then
+  ggzgtkdatadir="${prefix}/share/ggz/ggz-gtk"
+else
+  ggzgtkdatadir="${datarootdir}/ggz/ggz-gtk"
 fi
 
-AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Location of GGZ module data])
+AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzgtkdatadir}", [Location of GGZ-Gtk data])
 
 AC_SUBST(LDADD)
 AC_SUBST(ggzdatadir)

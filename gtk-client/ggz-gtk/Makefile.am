@@ -4,7 +4,7 @@ AM_CPPFLAGS = @GTK_CFLAGS@ -I$(top_srcdir)/intl \
 bin_PROGRAMS = ggz-gtk
 lib_LTLIBRARIES = libggz-gtk.la
 
-ggzdata_DATA =		about_bg.png		\
+ggzgtkdata_DATA =		about_bg.png		\
 			ggz_gtk_admin.svg 	\
 			ggz_gtk_guest.svg 	\
 			ggz_gtk_registered.svg	\
