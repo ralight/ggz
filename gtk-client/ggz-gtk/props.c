@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 8154 2006-06-11 20:17:43Z jdorje $
+ * $Id: props.c 8155 2006-06-11 20:37:55Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -861,16 +861,12 @@ create_dlg_props (void)
   GtkWidget *scrolledwindow1;
   GtkWidget *info_comments;
   GtkWidget *label3;
-  GtkWidget *vbox10;
   GtkWidget *table1;
-  GtkWidget *hbox16;
   GtkWidget *label70;
   GtkWidget *browser_combo;
   GList *browser_combo_items = NULL;
   GtkWidget *browser_entry;
   GtkWidget *click_checkbutton;
-  GtkWidget *vbox11;
-  GtkWidget *hbox17;
   GtkWidget *frame2;
   GtkWidget *table2;
   GSList *motd_group = NULL;
@@ -1474,39 +1470,14 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 2), label3);
 
-  vbox10 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox10);
-  g_object_set_data_full(G_OBJECT (dlg_props), "vbox10", vbox10,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_container_add (GTK_CONTAINER (notebook), vbox10);
-  gtk_container_set_border_width (GTK_CONTAINER (vbox10), 6);
-
   table1 = gtk_table_new (3, 2, FALSE);
-  gtk_widget_ref (table1);
-  g_object_set_data_full(G_OBJECT (dlg_props), "table1", table1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start (GTK_BOX (vbox10), table1, FALSE, FALSE, 0);
-
-  hbox16 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox16);
-  g_object_set_data_full(G_OBJECT (dlg_props), "hbox16", hbox16,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_table_attach (GTK_TABLE (table1), hbox16, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_container_add (GTK_CONTAINER (notebook), table1);
 
   label70 = gtk_label_new (_("Browser to launch URLs with:"));
-  gtk_widget_ref (label70);
-  g_object_set_data_full(G_OBJECT (dlg_props), "label70", label70,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start (GTK_BOX (hbox16), label70, TRUE, TRUE, 0);
-  gtk_misc_set_padding (GTK_MISC (label70), 6, 0);
+  gtk_table_attach_defaults(GTK_TABLE(table1), label70, 0, 1, 0, 1);
 
   browser_combo = gtk_combo_new ();
-  gtk_widget_ref (browser_combo);
-  g_object_set_data_full(G_OBJECT (dlg_props), "browser_combo", browser_combo,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start (GTK_BOX (hbox16), browser_combo, TRUE, TRUE, 0);
+  gtk_table_attach_defaults(GTK_TABLE(table1), browser_combo, 1, 2, 0, 1);
   browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Galeon - New"));
   browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Galeon - Existing"));
   browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Gnome URL Handler"));
@@ -1525,37 +1496,17 @@ create_dlg_props (void)
   g_list_free (browser_combo_items);
 
   browser_entry = GTK_COMBO (browser_combo)->entry;
-  gtk_widget_ref (browser_entry);
-  g_object_set_data_full(G_OBJECT (dlg_props), "browser_entry", browser_entry,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (dlg_props), "browser_entry", browser_entry);
   gtk_editable_set_editable(GTK_EDITABLE(browser_entry), FALSE);
   gtk_entry_set_text (GTK_ENTRY (browser_entry), _("Galeon - New"));
 
   click_checkbutton = gtk_check_button_new_with_label (_("Single Click Room Entry"));
-  gtk_widget_ref (click_checkbutton);
-  g_object_set_data_full(G_OBJECT (dlg_props), "click_checkbutton", click_checkbutton,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_table_attach (GTK_TABLE (table1), click_checkbutton, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  vbox11 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox11);
-  g_object_set_data_full(G_OBJECT (dlg_props), "vbox11", vbox11,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start (GTK_BOX (vbox10), vbox11, FALSE, FALSE, 0);
-
-  hbox17 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox17);
-  g_object_set_data_full(G_OBJECT (dlg_props), "hbox17", hbox17,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start (GTK_BOX (vbox11), hbox17, FALSE, TRUE, 0);
+  g_object_set_data(G_OBJECT (dlg_props),
+		    "click_checkbutton", click_checkbutton);
+  gtk_table_attach_defaults(GTK_TABLE(table1), click_checkbutton, 0, 2, 1, 2);
 
   frame2 = gtk_frame_new (_("MOTD"));
-  gtk_widget_ref (frame2);
-  g_object_set_data_full(G_OBJECT (dlg_props), "frame2", frame2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start (GTK_BOX (hbox17), frame2, FALSE, FALSE, 0);
+  gtk_table_attach_defaults(GTK_TABLE(table1), frame2, 0, 2, 2, 3);
 
   table2 = gtk_table_new (2, 2, TRUE);
   gtk_widget_ref (table2);
