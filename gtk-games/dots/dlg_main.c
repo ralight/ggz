@@ -35,6 +35,7 @@
 #include <gtk/gtk.h>
 
 #include "dlg_about.h"
+#include "dlg_chat.h"
 #include "dlg_players.h"
 
 #include "cb_main.h"
@@ -97,6 +98,7 @@ GtkWidget *create_dlg_main(void)
 	GtkWidget *lbl_score1;
 	GtkWidget *statusbar;
 	GtkAccelGroup *accel_group;
+	GtkWidget *chat;
 
 	accel_group = gtk_accel_group_new();
 
@@ -316,6 +318,9 @@ GtkWidget *create_dlg_main(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(statusbar);
 	gtk_box_pack_start(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
+
+	chat = create_chat_widget();
+	gtk_box_pack_start(GTK_BOX(vbox), chat, FALSE, FALSE, 0);
 
 	g_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
 			 GTK_SIGNAL_FUNC(on_window_delete_event), NULL);
