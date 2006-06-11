@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 8163 2006-06-11 22:51:45Z jdorje $
+ * $Id: easysock.c 8164 2006-06-11 22:55:11Z oojah $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -719,7 +719,7 @@ int ggz_writen(const int sock, const void *vptr, size_t n)
 #endif
 		if (nwritten <= 0) {
 			if (
-#ifdef HAVE_WINSOCK2_h
+#ifdef HAVE_WINSOCK2_H
 			    /* FIXME: Somehow the socket is created
 			       nonblocking under windows, and WSAWOULDBLOCK
 			       is being returned.  The code as it is just
