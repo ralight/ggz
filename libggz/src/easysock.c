@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 8164 2006-06-11 22:55:11Z oojah $
+ * $Id: easysock.c 8165 2006-06-11 23:01:42Z oojah $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -762,7 +762,20 @@ int ggz_readn(const int sock, void *vptr, size_t n)
 		nread = read(sock, ptr, nleft);
 #endif
 		if (nread < 0) {
-			if (errno == EINTR)
+			if (
+#ifdef HAVE_WINSOCK2_H
+			    /* FIXME: Somehow the socket is created
+			       nonblocking under windows, and WSAWOULDBLOCK
+			       is being returned.  The code as it is just
+			       busywaits waiting for data, which is
+			       extremely bad.  We need to make the socket
+			       blocking. */
+			    (WSAGetLastError() == WSAEINTR
+			     || WSAGetLastError() == WSAEWOULDBLOCK)
+#else
+			    errno == EINTR
+#endif
+			    )
 				nread = 0;	/* and call read() again */
 			else
 				return (-1);
