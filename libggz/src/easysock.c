@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 8128 2006-06-07 19:03:36Z oojah $
+ * $Id: easysock.c 8161 2006-06-11 21:59:08Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -456,7 +456,8 @@ int ggz_read_char(const int sock, char *message)
 	int status;
 
 	if ( (status = ggz_readn(sock, message, sizeof(char))) < 0) {
-		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving char.");
+		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving char: %s",
+			  strerror(errno));
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, sock, GGZ_DATA_CHAR);
 		return -1;
