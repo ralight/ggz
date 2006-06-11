@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.h 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.h 8158 2006-06-11 21:46:20Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -77,10 +77,10 @@
 /* Data structure for Connect the Dots game */
 struct dots_game_t {
 	GGZdMod *ggz; /* GGZ data object */
-	unsigned char vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
-	unsigned char horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
+	char vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
+	char horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
 	char owners_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT-1];
-	unsigned char board_height, board_width;
+	char board_height, board_width;
 	char state;
 	char turn;
 	int score[2];
