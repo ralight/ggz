@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
- * $Id: game.c 7273 2005-06-10 12:54:26Z josef $
+ * $Id: game.c 8159 2006-06-11 21:47:06Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -39,10 +39,10 @@
 #include "game.h"
 #include "ggzintl.h"
 
-guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT - 1];
-guint8 horz_board[MAX_BOARD_WIDTH - 1][MAX_BOARD_HEIGHT];
-gint8 owners_board[MAX_BOARD_WIDTH - 1][MAX_BOARD_HEIGHT - 1];
-guint8 board_height, board_width;
+char vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT - 1];
+char horz_board[MAX_BOARD_WIDTH - 1][MAX_BOARD_HEIGHT];
+char owners_board[MAX_BOARD_WIDTH - 1][MAX_BOARD_HEIGHT - 1];
+char board_height, board_width;
 GdkColor fg_color, bg_color, p1_color, p2_color;
 
 /* Private variables */

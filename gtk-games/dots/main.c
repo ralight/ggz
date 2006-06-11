@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 8153 2006-06-11 17:04:48Z oojah $
+ * $Id: main.c 8159 2006-06-11 21:47:06Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -280,8 +280,8 @@ int send_options(void)
 
 static int get_options(void)
 {
-	if (ggz_read_char(game.fd, (char*)&board_width) < 0
-	    || ggz_read_char(game.fd, (char*)&board_height) < 0)
+	if (ggz_read_char(game.fd, &board_width) < 0
+	    || ggz_read_char(game.fd, &board_height) < 0)
 		return -1;
 	return 0;
 }
@@ -310,7 +310,7 @@ static int get_players(void)
 			return -1;
 		if (game.seats[i] != GGZ_SEAT_OPEN) {
 			if (ggz_read_string
-			    (game.fd, (char *)&game.names[i], 17) < 0)
+			    (game.fd, game.names[i], 17) < 0)
 				return -1;
 			temp = g_strdup_printf("   %s   ", game.names[i]);
 			gtk_frame_set_label(GTK_FRAME(frame[i]),
@@ -378,15 +378,15 @@ static int get_sync_info(void)
 		return -1;
 	for (i = 0; i < board_width; i++)
 		for (j = 0; j < board_height - 1; j++)
-			if (ggz_read_char(game.fd, (char*)&vert_board[i][j]) < 0)
+			if (ggz_read_char(game.fd, &vert_board[i][j]) < 0)
 				return -1;
 	for (i = 0; i < board_width - 1; i++)
 		for (j = 0; j < board_height; j++)
-			if (ggz_read_char(game.fd, (char*)&horz_board[i][j]) < 0)
+			if (ggz_read_char(game.fd, &horz_board[i][j]) < 0)
 				return -1;
 	for (i = 0; i < board_width - 1; i++)
 		for (j = 0; j < board_height - 1; j++)
-			if (ggz_read_char(game.fd, (char*)&owners_board[i][j]) <
+			if (ggz_read_char(game.fd, &owners_board[i][j]) <
 			    0)
 				return -1;
 
