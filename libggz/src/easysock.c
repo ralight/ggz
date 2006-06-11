@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 8162 2006-06-11 22:00:39Z jdorje $
+ * $Id: easysock.c 8163 2006-06-11 22:51:45Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -718,7 +718,20 @@ int ggz_writen(const int sock, const void *vptr, size_t n)
 		nwritten = write(sock, ptr, nleft);
 #endif
 		if (nwritten <= 0) {
-			if (errno == EINTR)
+			if (
+#ifdef HAVE_WINSOCK2_h
+			    /* FIXME: Somehow the socket is created
+			       nonblocking under windows, and WSAWOULDBLOCK
+			       is being returned.  The code as it is just
+			       busywaits waiting for data, which is
+			       extremely bad.  We need to make the socket
+			       blocking. */
+			    (WSAGetLastError() == WSAEINTR
+			     || WSAGetLastError() == WSAEWOULDBLOCK)
+#else
+			    errno == EINTR
+#endif
+			    )
 				nwritten = 0;	/* and call write() again */
 			else
 				return (-1);	/* error */
