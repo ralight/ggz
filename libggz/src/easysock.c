@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 8161 2006-06-11 21:59:08Z jdorje $
+ * $Id: easysock.c 8162 2006-06-11 22:00:39Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -518,7 +518,8 @@ int ggz_read_int(const int sock, int *message)
 	int data, status;
 	
 	if ( (status = ggz_readn(sock, &data, sizeof(int))) < 0) {
-		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving int.");
+		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving int: %s",
+			  strerror(errno));
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, sock, GGZ_DATA_INT);
 		return -1;
@@ -618,7 +619,8 @@ int ggz_read_string(const int sock, char *message, const unsigned int len)
 	}
 	
        	if ( (status = ggz_readn(sock, message, size)) < 0) {
-		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving string.");
+		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving string: %s",
+			  strerror(errno));
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, sock, GGZ_DATA_STRING);
 		return -1;
@@ -670,7 +672,8 @@ int ggz_read_string_alloc(const int sock, char **message)
 	*message = ggz_malloc((size+1) * sizeof(char));
 
 	if ( (status = ggz_readn(sock, *message, size)) < 0) {
-		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving string.");
+		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving string: %s",
+			  strerror(errno));
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, sock, GGZ_DATA_STRING);
 		return -1;
