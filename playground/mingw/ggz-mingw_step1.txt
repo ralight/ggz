@@ -1,0 +1,197 @@
+Compiling GGZ on Windows with Mingw/MSYS
+========================================
+
+
+Get required files
+==================
+
+
+Go to http://www.mingw.org/download.shtml
+
+Download:
+
+MinGW-5.0.2.exe
+MSYS-1.0.11-2004.04.30-1.exe
+msysDTK-1.0.1.exe
+msys-autoconf-2.59.tar.bz2
+libtool-1.5.22-mingwPORT.tar.bz2
+autoconf-2.59-mingwPORT.tar.bz2
+automake-1.9.5-mingwPORT.tar.bz2
+mingw-utils-0.3.tar.gz
+
+
+Go to http://gnuwin32.sourceforge.net/packages/gettext.htm
+
+Download:
+
+Binaries zip
+Dependencies zip
+Developer files zip
+
+
+Go to http://gnuwin32.sourceforge.net/packages/wget.htm
+
+Download:
+
+Binaries zip
+Dependencies zip
+
+
+Go to http://gladewin32.sourceforge.net/
+
+Download:
+
+Gtk+/Win32 Development Environment 2.8.18-1
+
+
+Go to http://prdownloads.sourceforge.net/expat/expat_win32bin_1_95_8.exe?download
+
+
+Install msys, mingw etc.
+=======================
+
+
+MinGW
+-----
+
+Install MinGW to a directory with no spaces in the path:
+
+c:\unix\mingw
+
+Choose the "Current" MinGW package and install g++ as well as the base tools.
+
+
+Msys
+----
+
+Install msys to a similar path:
+
+c:\unix\msys\1.0
+
+Continue with the post install script (y). You do have MinGW installed and the path it c:/unix/mingw
+
+
+Zip Files
+---------
+
+Copy the contents of gettext-0.14.4-bin.zip, gettext-0.14.4-dep.zip, gettext-0.14.4-lib.zip, wget-1.10.1-bin.zip and wget-1.10.1-dep.zip to c:\unix\mingw
+
+
+msysDTK
+-------
+
+Install msysDTK to c:\unix\msys\1.0
+
+
+autoconf
+--------
+
+mkdir /usr/src
+mkdir /t
+(/tmp is mapped to the windows temp directory so can be hard to find)
+
+copy autoconf-2.59-mingwPORT.tar.bz2 to c:\unix\msys\1.0\t
+
+Run msys
+
+cd /t
+tar -jxf autoconf-2.59-mingwPORT.tar.bz2
+cd autoconf-2.59/mingwPORT
+./mingwPORT.sh
+
+Choose the defaults for the questions (press enter)
+
+After autoconf has compiled and installed, you'll need to tweak it slightly
+
+Edit line 158 so that the path is /mingw/bin/autom4te instead of c:/unix/mingw/bin/autom4te
+
+Do the same for:
+
+/mingw/bin/autoheader (lines 32, 54)
+/mingw/bin/autom4te (lines 29, 49)
+/mingw/bin/autoreconf (lines 32, 107, 108, 
+/mingw/bin/autoscan (lines 29, 95, 98)
+/mingw/bin/autoupdate (lines 30, 50, 54)
+
+
+automake
+--------
+
+(/tmp is mapped to the windows temp directory so can be hard to find)
+
+copy automake-1.9.5-mingwPORT.tar.bz2 to c:\unix\msys\1.0\t
+
+Run msys
+
+cd /t
+tar -jxf automake-1.9.5-mingwPORT.tar.bz2
+cd automake-1.9.5/mingwPORT
+./mingwPORT.sh
+
+Choose the defaults for the questions (press enter)
+
+After automake has compiled and installed, you'll need to tweak it slightly.
+
+vi /mingw/bin/automake
+
+Edit line 34 so that the added path isn't 'c:/unix/mingw/...' but '/mingw/...'
+
+Do the same for:
+
+/mingw/bin/automake-1.9
+/mingw/bin/aclocal (lines 32, 48)
+/mingw/bin/aclocal-1.9 (line 32)
+
+libtool
+-------
+
+copy libtool-1.5.22-mingwPORT.tar.bz2 to c:\unix\msys\1.0\t
+
+Run msys
+
+cd /t
+tar -jxf libtool-1.5.22-mingwPORT.tar.bz2
+cd libtool-1.5.22/mingwPORT
+./mingwPORT.sh
+
+Choose the defaults for the questions (press enter)
+
+
+mingw-utils
+-----------
+
+Copy mingw-utils-0.3.tar.gz to c:\unix\mingw
+
+Run msys
+
+cd /mingw
+tar -zxf mingw-utils-0.3.tar.gz
+
+
+Expat
+-----
+
+Install Expat to C:\Expat-1.95.8
+Copy C:\Expat-1.95.8\Libs\libexpat.dll and libexpatw.dll to c:\unix\mingw\bin
+Copy C:\Expat-1.95.8\Source\lib\expat.h and expat_external.h to c:\unix\mingw\include
+
+You can now uninstall Expat from that directory.
+
+Run msys
+
+cd /mingw/lib
+pexports /mingw/bin/libexpat.dll > expat.def
+pexports /mingw/bin/libexpatw.dll > expatw.def
+dlltool -d expat.def -l libexpat.a
+dlltool -d expatw.def -l libexpatw.a
+
+rm expat.def expatw.def
+
+
+GTK
+---
+
+Install gtk-win32-devel-2.8.18-rc1.exe - keep the defaults (it should detect msys).
+Edit C:\GTK\lib\pkg-config\cairo.pc
+
+Change libpng12 on the Requires line to libpng

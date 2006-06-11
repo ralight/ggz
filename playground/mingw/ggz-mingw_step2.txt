@@ -1,0 +1,166 @@
+Compiling GGZ on Windows with Mingw/MSYS
+========================================
+
+
+Make a home directory
+=====================
+
+If you've not got a directory which is pointed to by the HOME environment variable then:
+
+Create c:\unix\home
+
+Add the environment variable HOME as c:\unix\home
+
+
+Get the Sources
+===============
+
+Use http://tortoisesvn.tigris.org/ to get the latest dev sources if you've not got them. Put them in c:\unix\home or your home directory
+
+
+Install libggz
+==============
+
+Run msys (you'll need to restart it if you've played with environment variables)
+
+cd ~/ggz/libggz
+
+We need to edit autogen.sh to get rid of bash-isms. The bash that is supplied for msys gave me no end of problems, so I've just stuck to plain sh.
+
+Change line 1 from
+
+#!/usr/bin/env bash
+
+to
+
+#!/usr/bin/env sh
+
+Change line 93 from 
+
+set -o pipefile 2>/dev/null && { ((cd $srcdir && ...
+
+to
+
+cd $srcdir && automake --add-missing --gnu
+
+
+Now run
+
+./autogen.sh --disable-threading
+make
+make install
+
+
+Install ggz-client-libs
+=======================
+
+cd ~/ggz/ggz-client-libs
+
+We need to edit autogen.sh to get rid of bash-isms. The bash that is supplied for msys gave me no end of problems, so I've just stuck to plain sh.
+
+Change line 1 from
+
+#!/usr/bin/env bash
+
+to
+
+#!/usr/bin/env sh
+
+Change line 93 from 
+
+set -o pipefile 2>/dev/null && { ((cd $srcdir && ...
+
+to
+
+cd $srcdir && automake --add-missing --gnu
+
+
+Now run
+
+CPPFLAGS=-I/c/unix/home/ggz/ggz-client-libs/ggzcore ./autogen.sh --disable-ggzwrap
+
+Edit config.h to fix GGZDATADIR if it's still broken (is set to ${prefix}/share/ggz at the moment)
+
+You probably want to set these so more windows like behaviour is used.
+
+GAMEDIR=../lib/ggz
+GGZCONFDIR=../etc
+GGZDATADIR=../share/ggz
+
+
+make
+make install
+
+
+Install gtk-client
+==================
+
+
+cd ~/ggz/gtk-client
+
+We need to edit autogen.sh to get rid of bash-isms. The bash that is supplied for msys gave me no end of problems, so I've just stuck to plain sh.
+
+Change line 1 from
+
+#!/usr/bin/env bash
+
+to
+
+#!/usr/bin/env sh
+
+Change line 93 from 
+
+set -o pipefile 2>/dev/null && { ((cd $srcdir && ...
+
+to
+
+cd $srcdir && automake --add-missing --gnu
+
+
+Now run
+
+./autogen.sh --disable-nls
+
+No nls because otherwise gettext wants to compile against a non-existant static libintl.a. If you can figure out why, I'd be happy to know!
+
+Edit ggz-gtk/main.c and comment out all instances of strsep()
+
+make
+make install
+
+
+Install gtk-games
+=================
+
+cd ~/ggz/gtk-client
+
+We need to edit autogen.sh to get rid of bash-isms. The bash that is supplied for msys gave me no end of problems, so I've just stuck to plain sh.
+
+Change line 1 from
+
+#!/usr/bin/env bash
+
+to
+
+#!/usr/bin/env sh
+
+Change line 93 from 
+
+set -o pipefile 2>/dev/null && { ((cd $srcdir && ...
+
+to
+
+cd $srcdir && automake --add-missing --gnu
+
+
+Now run
+
+If you get lots of errors when running autogen.sh, try
+
+dos2unix configure.ac
+
+
+
+CPPFLAGS=-I/c/unix/home/ggz/gt-games/common ./autogen.sh --disable-nls
+make
+make install
