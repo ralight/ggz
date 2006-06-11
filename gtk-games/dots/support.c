@@ -95,7 +95,7 @@ GtkWidget *create_pixmap(GtkWidget * widget, const gchar * filename)
 	elem = pixmaps_directories;
 	while (elem) {
 		found_filename =
-		    check_file_exists((gchar *) elem->data, filename);
+		    check_file_exists(elem->data, filename);
 		if (found_filename)
 			break;
 		elem = elem->next;
@@ -134,8 +134,8 @@ gchar *check_file_exists(const gchar * directory, const gchar * filename)
 	struct stat s;
 	gint status;
 
-	full_filename = (gchar *) g_malloc(strlen(directory) + 1
-					   + strlen(filename) + 1);
+	full_filename = g_malloc(strlen(directory) + 1
+				 + strlen(filename) + 1);
 	strcpy(full_filename, directory);
 	strcat(full_filename, G_DIR_SEPARATOR_S);
 	strcat(full_filename, filename);

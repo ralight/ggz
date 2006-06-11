@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
- * $Id: game.c 8159 2006-06-11 21:47:06Z jdorje $
+ * $Id: game.c 8160 2006-06-11 21:52:08Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -341,11 +341,11 @@ gint8 board_opponent_move(guint8 dir)
 	guint16 x1, y1, x2, y2;
 	GtkWidget *l1, *l2;
 	char *text;
-	char t_s, t_x, t_y;
+	char t_s, t_x, t_y, xc, yc;
 	int i;
 
-	if (ggz_read_char(game.fd, (char*)&x) < 0
-	    || ggz_read_char(game.fd, (char*)&y) < 0
+	if (ggz_read_char(game.fd, &xc) < 0
+	    || ggz_read_char(game.fd, &yc) < 0
 	    || ggz_read_char(game.fd, &t_s) < 0)
 		return -1;
 	for (i = 0; i < t_s; i++) {
@@ -353,6 +353,10 @@ gint8 board_opponent_move(guint8 dir)
 		    || ggz_read_char(game.fd, &t_y) < 0)
 			return -1;
 	}
+
+	/* Avoid dangerous casting. */
+	x = xc;
+	y = yc;
 
 	/* Future DOTS_REQ_MOVE's now make sense */
 	if (game.state == DOTS_STATE_OPPONENT)
