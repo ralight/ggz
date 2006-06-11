@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 7845 2006-02-08 17:48:35Z josef $
+ * $Id: login.c 8156 2006-06-11 21:13:19Z oojah $
  *
  * This is the main program body for the GGZ client
  *
@@ -126,7 +126,7 @@ void login_failed(const GGZErrorEventData * error)
 	switch (error->status) {
 	case E_ALREADY_LOGGED_IN:
 		snprintf(msg, sizeof(msg),
-			 _("That username is already in usage."));
+			 _("That username is already in use."));
 		break;
 	case E_USR_LOOKUP:
 		snprintf(msg, sizeof(msg),
