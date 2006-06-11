@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 8152 2006-06-11 15:52:10Z jdorje $
+ * $Id: main.c 8153 2006-06-11 17:04:48Z oojah $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -147,9 +147,6 @@ static void initialize_about_dialog(void)
 	      "        Gtk+ Client:\n"
 	      "            Rich Gade        <rgade@users.sourceforge.net>\n"
 	      "\n"
-	      "        Windows 9X Client:\n"
-	      "            Doug Hudson  <djh@users.sourceforge.net>\n"
-	      "\n"
 	      "        Game Server:\n"
 	      "            Rich Gade        <rgade@users.sourceforge.net>\n"
 	      "\n"
@@ -166,7 +163,7 @@ static void initialize_about_dialog(void)
 
 char *opstr[] = { "DOTS_MSG_SEAT", "DOTS_MSG_PLAYERS", "DOTS_MSG_MOVE_H",
 	"DOTS_MSG_MOVE_V", "DOTS_MSG_GAMEOVER", "DOTS_REQ_MOVE",
-	"DOTS_RSP_MOVE", "DOTS_SND_SYNC", "DOTS_MSG_OPTIONS"
+	"DOTS_RSP_MOVE", "DOTS_SND_SYNC", "DOTS_MSG_OPTIONS", "DOTS_REQ_OPTIONS"
 };
 
 static gboolean game_handle_io(GGZMod * mod)
