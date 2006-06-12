@@ -6,7 +6,7 @@
 ;Include Modern UI
 
 !include "MUI.nsh"
-
+!include "WriteEnvStr.nsh"
 ;--------------------------------
 ;General
 
@@ -80,6 +80,16 @@ Section "Dummy Section" SecDummy
 	!include gtk_install.nsh
 	!include other_install.nsh
 
+	; Configure $HOME
+	ReadEnvStr $0 HOME
+	; If HOME=="", use $APPDATA as $HOME
+	StrCmp $0 "" 0 +2
+	StrCpy $0 $APPDATA
+	SetOutPath "$0\.ggz"
+	Push "HOME"
+	Push "$0"
+	Call WriteEnvStr 
+
 	CreateShortCut "$INSTDIR\GGZ Gaming Zone.lnk" "$INSTDIR\bin\ggz-gtk.exe" "" "$INSTDIR\share\ggz\ggz-gtk\ggz_logo_64.ico"
 ;-------------------------------------------------------------------
   
@@ -91,6 +101,7 @@ Section "Dummy Section" SecDummy
   
 	!insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     
+	SetOutPath "$INSTDIR\bin"
 	;Create shortcuts
 	CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
 	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
