@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8169 2006-06-12 01:29:34Z jdorje $
+ * $Id: roomlist.c 8172 2006-06-12 02:22:10Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -188,6 +188,8 @@ static gboolean room_list_event(GtkWidget *widget, GdkEvent *event,
 
 	gtk_tree_model_get(model, &iter, ROOM_COLUMN_PTR, &room, -1);
 
+	if (!room) return FALSE;
+
 	switch(event->type) { 
 	case GDK_2BUTTON_PRESS:
 		/* Double click */
@@ -258,36 +260,59 @@ void select_room(GGZRoom *room)
 	gtk_tree_selection_select_iter(select, &iter);
 }
 
+static void update_iter_room(GtkTreeStore *store, GtkTreeIter *iter,
+			     GGZRoom *room)
+{
+	const char *roomname = ggzcore_room_get_name(room);
+	char name[strlen(roomname) + 3];
+	const int players = ggzcore_room_get_num_players(room);
+
+	if (ggzcore_room_get_closed(room)) {
+		snprintf(name, sizeof(name), "(%s)", roomname);
+	} else {
+		snprintf(name, sizeof(name), "%s", roomname);
+	}
+
+	gtk_tree_store_set(store, iter,
+			   ROOM_COLUMN_PTR, room,
+			   ROOM_COLUMN_NAME, name, -1);
+
+
+	if (players >= 0) {
+		gtk_tree_store_set(store, iter,
+				   ROOM_COLUMN_PLAYERS, players, -1);
+	}
+}
+
+/* Updates rooms in the treestore. The user data can hold the room pointer
+   for the room to be updated, or may be NULL for all rooms to be updated. */
+static gboolean tree_model_update_room(GtkTreeModel *store,
+				       GtkTreePath *path,
+				       GtkTreeIter *iter,
+				       gpointer data)
+{
+	GGZRoom *room = data, *thisroom;
+
+	gtk_tree_model_get(GTK_TREE_MODEL(store), iter,
+			   ROOM_COLUMN_PTR, &thisroom, -1);
+
+	if (!thisroom || (room && room != thisroom)) {
+		return FALSE;
+	}
+
+	update_iter_room(GTK_TREE_STORE(store), iter, room);
+	return (room != NULL);
+}
+
 void update_one_room(GGZRoom *room)
 {
-	int players, id, i;
-	const char *name;
 	GtkTreeStore *store;
-	GtkTreeIter iter;
 
 	/* Retrieve the player list widget. */
 	store = GTK_TREE_STORE(lookup_widget(room_list, "room_list_store"));
 
-	name = ggzcore_room_get_name(room);
-	id = ggzcore_room_get_id(room);
-	players = ggzcore_room_get_num_players(room);
-
-	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
-		return;
-	}
-	for (i = 0; i < id; i++) {
-		if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter)) {
-			return;
-		}
-	}
-
-	gtk_tree_store_set(store, &iter,
-			   ROOM_COLUMN_PTR, room,
-			   ROOM_COLUMN_NAME, name, -1);
-	if (players >= 0) {
-		gtk_tree_store_set(store, &iter,
-				   ROOM_COLUMN_PLAYERS, players, -1);
-	}
+	gtk_tree_model_foreach(GTK_TREE_MODEL(store),
+			       tree_model_update_room, room);
 }
 
 void update_room_list(void)
@@ -309,8 +334,6 @@ void update_room_list(void)
 
 	for (i = 0; i < numrooms; i++) {
 		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
-		const char *name = ggzcore_room_get_name(room);
-		gint players = ggzcore_room_get_num_players(room);
 		GtkTreeIter iter;
 		GGZGameType *gt = ggzcore_room_get_gametype(room);
 
@@ -321,23 +344,7 @@ void update_room_list(void)
 						     NULL, &other_iter);
 		}
 
-		gtk_tree_store_set(store, &iter,
-				   ROOM_COLUMN_PTR, room,
-				   ROOM_COLUMN_NAME, name, -1);
-
-		if (ggzcore_room_get_closed(room)) {
-			char closedname[strlen(name) + 3];
-
-			snprintf(closedname, sizeof(closedname),
-				 "(%s)", name);
-			gtk_tree_store_set(store, &iter,
-					   ROOM_COLUMN_NAME, closedname, -1);
-		}
-
-		if (players >= 0) {
-			gtk_tree_store_set(store, &iter,
-					   ROOM_COLUMN_PLAYERS, players, -1);
-		}
+		update_iter_room(store, &iter, room);
 	}
 }
 
