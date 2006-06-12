@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8174 2006-06-12 03:03:15Z jdorje $
+ * $Id: roomlist.c 8175 2006-06-12 03:18:56Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -51,7 +51,7 @@ enum {
 	ROOM_COLUMNS
 };
 
-static GtkTreeIter *room_iter;
+static GtkTreeIter *room_iter, other_iter;
 static GtkWidget *room_list;
 
 static void client_join_room(GGZRoom *room)
@@ -267,6 +267,20 @@ static void update_iter_room(GtkTreeStore *store, GtkTreeIter *iter,
 	const char *roomname = ggzcore_room_get_name(room);
 	char name[strlen(roomname) + 3];
 	const int players = ggzcore_room_get_num_players(room);
+	GGZGameType *gt = ggzcore_room_get_gametype(room);
+
+	if (gt && !can_launch_gametype(gt)) {
+		int old_players, other_players;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(store), iter,
+				   ROOM_COLUMN_PLAYERS, &old_players, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(store), &other_iter,
+				   ROOM_COLUMN_PLAYERS, &other_players, -1);
+		other_players += MAX(players, 0) - MAX(old_players, 0);
+	  
+		gtk_tree_store_set(store, &other_iter,
+				   ROOM_COLUMN_PLAYERS, other_players, -1);
+	}
 
 	if (ggzcore_room_get_closed(room)) {
 		snprintf(name, sizeof(name), "(%s)", roomname);
@@ -323,7 +337,6 @@ void update_room_list(void)
 	GtkTreeStore *store;
 	int i;
 	const int numrooms = ggzcore_server_get_num_rooms(server);
-	GtkTreeIter other_iter;
 
 	/* Retrieve the player list widget. */
 	store = GTK_TREE_STORE(lookup_widget(room_list, "room_list_store"));
@@ -333,7 +346,8 @@ void update_room_list(void)
 	gtk_tree_store_append(store, &other_iter, NULL);
 	gtk_tree_store_set(store, &other_iter,
 			   ROOM_COLUMN_PTR, NULL,
-			   ROOM_COLUMN_NAME, _("Other Rooms"), -1);
+			   ROOM_COLUMN_NAME, _("Other Rooms"),
+			   ROOM_COLUMN_PLAYERS, 0, -1);
 
 	room_iter = ggz_realloc(room_iter, numrooms * sizeof(*room_iter));
 	for (i = 0; i < numrooms; i++) {
