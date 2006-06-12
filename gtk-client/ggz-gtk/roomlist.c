@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8168 2006-06-12 01:19:58Z jdorje $
+ * $Id: roomlist.c 8169 2006-06-12 01:29:34Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -332,7 +332,6 @@ void update_room_list(void)
 				 "(%s)", name);
 			gtk_tree_store_set(store, &iter,
 					   ROOM_COLUMN_NAME, closedname, -1);
-			ggz_free(closedname);
 		}
 
 		if (players >= 0) {
