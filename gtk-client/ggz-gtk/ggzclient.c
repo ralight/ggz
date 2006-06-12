@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 8171 2006-06-12 01:40:14Z jdorje $
+ * $Id: ggzclient.c 8176 2006-06-12 04:11:50Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -39,6 +39,7 @@
 #include "chat.h"
 #include "client.h"
 #include "game.h"
+#include "ggz-gtk.h"
 #include "ggzclient.h"
 #include "launch.h"
 #include "login.h"
@@ -1157,6 +1158,8 @@ void server_disconnect(void)
 			   _("Disconnected from server."));
 	if (connected_cb) {
 		connected_cb(NULL);
+	} else {
+		ggz_gtk_login_raise(NULL);
 	}
 }
 
