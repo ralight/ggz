@@ -2,7 +2,7 @@
  * File: license.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: license.c 6287 2004-11-06 08:47:13Z jdorje $
+ * $Id: license.c 8180 2006-06-12 21:56:56Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -62,7 +62,7 @@ void license_create_or_raise(void)
 static void license_realize(GtkWidget * widget, gpointer user_data)
 {
 	GtkWidget *tmp;
-	tmp = lookup_widget(license_dialog, "license_text");
+	tmp = ggz_lookup_widget(license_dialog, "license_text");
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(tmp), GTK_WRAP_WORD);
 }
 
@@ -81,7 +81,8 @@ create_dlg_license (void)
   GtkWidget *close_button;
 
   dlg_license = gtk_dialog_new ();
-  gtk_window_set_transient_for(GTK_WINDOW(dlg_license), GTK_WINDOW(win_main));
+  gtk_window_set_transient_for(GTK_WINDOW(dlg_license),
+			       GTK_WINDOW(main_window));
   g_object_set_data(G_OBJECT (dlg_license), "dlg_license", dlg_license);
   gtk_window_set_title (GTK_WINDOW (dlg_license), "License");
 

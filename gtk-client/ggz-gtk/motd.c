@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 6868 2005-01-24 02:46:43Z jdorje $
+ * $Id: motd.c 8180 2006-06-12 21:56:56Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -51,7 +51,7 @@ void motd_create_or_raise(void)
 	if (!motd_dialog) {
 		motd_dialog = create_dlg_motd();
 
-		tmp = lookup_widget(motd_dialog, "motd_text");
+		tmp = ggz_lookup_widget(motd_dialog, "motd_text");
 		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(tmp),
 					    GTK_WRAP_WORD);
 		gtk_widget_show(motd_dialog);
@@ -60,7 +60,7 @@ void motd_create_or_raise(void)
 		gdk_window_raise(motd_dialog->window);
 
 		/* Clear out what is currently there */
-		tmp = lookup_widget(motd_dialog, "motd_text");
+		tmp = ggz_lookup_widget(motd_dialog, "motd_text");
 		gtk_text_buffer_set_text(gtk_text_view_get_buffer
 					 (GTK_TEXT_VIEW(tmp)), "", -1);
 	}
@@ -159,7 +159,7 @@ static GtkWidget *create_dlg_motd(void)
 	GtkWidget *motd_text;
 
 	dlg_motd = gtk_dialog_new_with_buttons(_("Message of the Day"),
-					       GTK_WINDOW(win_main), 0,
+					       GTK_WINDOW(main_window), 0,
 					       GTK_STOCK_CLOSE,
 					       GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dlg_motd), "dlg_motd", dlg_motd);

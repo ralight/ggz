@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 8155 2006-06-11 20:37:55Z jdorje $
+ * $Id: props.c 8180 2006-06-12 21:56:56Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -72,91 +72,90 @@ static void props_fcancel_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_fapply_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_profiles_reload(void);
 
-static GtkWidget* create_dlg_props (void);
 static GtkWidget* create_dlg_props_font (void);
 
-GtkWidget *props_dialog;
-GtkWidget *props_font_dialog;
+static GtkWidget *props_dialog;
+static GtkWidget *props_font_dialog;
+static gboolean raised;
 
-void props_create_or_raise(void)
+gboolean props_is_raised(void)
 {
-        if (!props_dialog) {
-                props_dialog = create_dlg_props();
-		gtk_widget_show_all(props_dialog);
-        }
-        else {
-                gdk_window_show(props_dialog->window);
-                gdk_window_raise(props_dialog->window);
-        }
+	return raised;
 }
-   
+
+void props_raise(void)
+{
+	raised = TRUE;
+	main_activate();
+}
+
 static void props_update(void)
 {
 	GtkWidget *tmp;
-	GtkXText *xtext = GTK_XTEXT(lookup_widget(win_main, "xtext_custom"));
+	GtkXText *xtext = GTK_XTEXT(ggz_lookup_widget(win_main, "xtext_custom"));
 	GList *items;
 	const char *text;
 
 	/* Save Changes */
 
 	/* Set XText font */
-	tmp = lookup_widget((props_dialog), "chat_font");
+	tmp = ggz_lookup_widget((props_dialog), "chat_font");
 	ggzcore_conf_write_string("CHAT", "FONT", gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	/* Auto-Indent */
-	tmp = lookup_widget((props_dialog), "indent_check");
+	tmp = ggz_lookup_widget((props_dialog), "indent_check");
 	ggzcore_conf_write_int("CHAT", "AUTO_INDENT", GTK_TOGGLE_BUTTON(tmp)->active);
 
 	/* Timestamp */
-	tmp = lookup_widget((props_dialog), "timestamp_check");
+	tmp = ggz_lookup_widget((props_dialog), "timestamp_check");
 	ggzcore_conf_write_int("CHAT", "TIMESTAMP", GTK_TOGGLE_BUTTON(tmp)->active);
 
 	/* Word Wrap */
-	tmp = lookup_widget((props_dialog), "wrap_check");
+	tmp = ggz_lookup_widget((props_dialog), "wrap_check");
 	ggzcore_conf_write_int("CHAT", "WORD_WRAP", GTK_TOGGLE_BUTTON(tmp)->active);
 
 	/* Sound */
-	tmp = lookup_widget((props_dialog), "sound_check");
+	tmp = ggz_lookup_widget((props_dialog), "sound_check");
 	ggzcore_conf_write_int("CHAT", "SOUND", GTK_TOGGLE_BUTTON(tmp)->active);
 
 	/* Join/Part Messages */
-	tmp = lookup_widget((props_dialog), "ignore_check");
+	tmp = ggz_lookup_widget((props_dialog), "ignore_check");
 	ggzcore_conf_write_int("CHAT", "IGNORE", GTK_TOGGLE_BUTTON(tmp)->active);
 
 	/* Background Color */
-	tmp = lookup_widget((props_dialog), "white_radio");
+	tmp = ggz_lookup_widget((props_dialog), "white_radio");
 	ggzcore_conf_write_int("CHAT", "BG_COLOR", GTK_TOGGLE_BUTTON(tmp)->active);
 
 	/* Friends Color */
-	tmp = lookup_widget((props_dialog), "f_spin");
+	tmp = ggz_lookup_widget((props_dialog), "f_spin");
 	ggzcore_conf_write_int("CHAT", "F_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
 
 	/* Highlight Color */
-	tmp = lookup_widget((props_dialog), "h_spin");
+	tmp = ggz_lookup_widget((props_dialog), "h_spin");
 	ggzcore_conf_write_int("CHAT", "H_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
 
 	/* Normal Color */
-	tmp = lookup_widget((props_dialog), "n_spin");
+	tmp = ggz_lookup_widget((props_dialog), "n_spin");
 	ggzcore_conf_write_int("CHAT", "N_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
 
 	/* Name */
-	tmp = lookup_widget((props_dialog), "info_name");
+	tmp = ggz_lookup_widget((props_dialog), "info_name");
 	ggzcore_conf_write_string("USER INFO", "NAME", gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	/* City */
-	tmp = lookup_widget((props_dialog), "info_city");
+	tmp = ggz_lookup_widget((props_dialog), "info_city");
 	ggzcore_conf_write_string("USER INFO", "CITY", gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	/* State */
-	tmp = lookup_widget((props_dialog), "info_state");
+	tmp = ggz_lookup_widget((props_dialog), "info_state");
 	ggzcore_conf_write_string("USER INFO", "STATE", gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	/* Country */
-	tmp = lookup_widget((props_dialog), "info_country");
+	tmp = ggz_lookup_widget((props_dialog), "info_country");
 	ggzcore_conf_write_string("USER INFO", "COUNTRY", gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	/* Comments */
-	tmp = lookup_widget((props_dialog), "info_comments");
+	tmp = ggz_lookup_widget((props_dialog), "info_comments");
 	{
 		GtkTextIter start, end;
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(
@@ -168,24 +167,24 @@ static void props_update(void)
 	ggzcore_conf_write_string("USER INFO", "COMMENTS", text);
 
 	/* Single click room entry */
-	tmp = lookup_widget((props_dialog), "click_checkbutton");
+	tmp = ggz_lookup_widget((props_dialog), "click_checkbutton");
 	ggzcore_conf_write_int("OPTIONS", "ROOMENTRY", GTK_TOGGLE_BUTTON(tmp)->active);
 
 	/* Browser */
-	tmp = lookup_widget((props_dialog), "browser_entry");
+	tmp = ggz_lookup_widget((props_dialog), "browser_entry");
 	ggzcore_conf_write_string("OPTIONS", "BROWSER", gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	/* MOTD */
-	tmp = lookup_widget((props_dialog), "motd_all_radio");
+	tmp = ggz_lookup_widget((props_dialog), "motd_all_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		ggzcore_conf_write_string("OPTIONS", "MOTD", "ALL");
-	tmp = lookup_widget((props_dialog), "motd_new_radio");
+	tmp = ggz_lookup_widget((props_dialog), "motd_new_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		ggzcore_conf_write_string("OPTIONS", "MOTD", "NEW");
-	tmp = lookup_widget((props_dialog), "motd_important_radio");
+	tmp = ggz_lookup_widget((props_dialog), "motd_important_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		ggzcore_conf_write_string("OPTIONS", "MOTD", "IMPORTANT");
-	tmp = lookup_widget((props_dialog), "motd_none_radio");
+	tmp = ggz_lookup_widget((props_dialog), "motd_none_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		ggzcore_conf_write_string("OPTIONS", "MOTD", "NONE");
 
@@ -198,13 +197,13 @@ static void props_update(void)
 	/* Activate Changes */
 
 	/* Set XText font */
-	tmp = lookup_widget((props_dialog), "chat_font");
+	tmp = ggz_lookup_widget((props_dialog), "chat_font");
 
 	gtk_xtext_set_font(xtext,
 			   (char *)gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	/* Auto-Indent */
-	tmp = lookup_widget((props_dialog), "indent_check");
+	tmp = ggz_lookup_widget((props_dialog), "indent_check");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 	{
 		xtext->auto_indent = TRUE;
@@ -213,7 +212,7 @@ static void props_update(void)
 	}
 
 	/* Timestamp */
-	tmp = lookup_widget((props_dialog), "timestamp_check");
+	tmp = ggz_lookup_widget((props_dialog), "timestamp_check");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 	{
 		gtk_xtext_set_time_stamp(xtext->buffer, TRUE);
@@ -228,11 +227,11 @@ static void props_update(void)
 	}
 
 	/* Word Wrap */
-	tmp = lookup_widget((props_dialog), "wrap_check");
+	tmp = ggz_lookup_widget((props_dialog), "wrap_check");
 	xtext->wordwrap = GTK_TOGGLE_BUTTON(tmp)->active;
 
 	/* Background Color */
-	tmp = lookup_widget((props_dialog), "white_radio");
+	tmp = ggz_lookup_widget((props_dialog), "white_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 	{
 		colors[18] = ColorBlack;
@@ -251,7 +250,7 @@ static void props_update(void)
 
 	/* If the login dialog is open refill the combo box */
 	if(login_dialog != NULL) {
-		tmp = lookup_widget(login_dialog, "profile_combo");
+		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
 		items = server_get_name_list();
 		if (tmp && items)
 			gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
@@ -265,86 +264,86 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	char *old;
 
 	/* Set XText font */
-	tmp = lookup_widget((props_dialog), "chat_font");
+	tmp = ggz_lookup_widget((props_dialog), "chat_font");
 	old = ggzcore_conf_read_string("CHAT", "FONT", DEFAULT_FONT);
 	gtk_entry_set_text(GTK_ENTRY(tmp), old);
 	ggz_free(old);
 
 	/* Auto-Indent */
-	tmp = lookup_widget((props_dialog), "indent_check");
+	tmp = ggz_lookup_widget((props_dialog), "indent_check");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "AUTO_INDENT", TRUE));
 
 	/* Timestamp */
-	tmp = lookup_widget((props_dialog), "timestamp_check");
+	tmp = ggz_lookup_widget((props_dialog), "timestamp_check");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "TIMESTAMP", FALSE));
 
 	/* Word Wrap */
-	tmp = lookup_widget((props_dialog), "wrap_check");
+	tmp = ggz_lookup_widget((props_dialog), "wrap_check");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "WORD_WRAP", TRUE));
 
 	/* Sound */
-	tmp = lookup_widget((props_dialog), "sound_check");
+	tmp = ggz_lookup_widget((props_dialog), "sound_check");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "SOUND", TRUE));
 
 	/* Join/Part Messages */
-	tmp = lookup_widget((props_dialog), "ignore_check");
+	tmp = ggz_lookup_widget((props_dialog), "ignore_check");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "IGNORE", FALSE));
 
 	/* Background Color */
-	tmp = lookup_widget((props_dialog), "white_radio");
+	tmp = ggz_lookup_widget((props_dialog), "white_radio");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "BG_COLOR", TRUE));
-	tmp = lookup_widget((props_dialog), "black_radio");
+	tmp = ggz_lookup_widget((props_dialog), "black_radio");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), 1 - ggzcore_conf_read_int("CHAT", "BG_COLOR", TRUE));
 
 	/* Friends Color */
-	tmp = lookup_widget((props_dialog), "f_spin");
+	tmp = ggz_lookup_widget((props_dialog), "f_spin");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "F_COLOR", 6));
 
 	/* Highlight Color */
-	tmp = lookup_widget((props_dialog), "h_spin");
+	tmp = ggz_lookup_widget((props_dialog), "h_spin");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "H_COLOR", 3));
 
 	/* Normal Color */
-	tmp = lookup_widget((props_dialog), "n_spin");
+	tmp = ggz_lookup_widget((props_dialog), "n_spin");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "N_COLOR", 2));
 
 	/* Name */
-	tmp = lookup_widget((props_dialog), "info_name");
+	tmp = ggz_lookup_widget((props_dialog), "info_name");
 	old = ggzcore_conf_read_string("USER INFO", "NAME", ".");
 	gtk_entry_set_text(GTK_ENTRY(tmp), old);
 	ggz_free(old);
 
 	/* City */
-	tmp = lookup_widget((props_dialog), "info_city");
+	tmp = ggz_lookup_widget((props_dialog), "info_city");
 	old = ggzcore_conf_read_string("USER INFO", "CITY", ".");
 	gtk_entry_set_text(GTK_ENTRY(tmp), old);
 	ggz_free(old);
 
 	/* State */
-	tmp = lookup_widget((props_dialog), "info_state");
+	tmp = ggz_lookup_widget((props_dialog), "info_state");
 	old = ggzcore_conf_read_string("USER INFO", "STATE", ".");
 	gtk_entry_set_text(GTK_ENTRY(tmp), old);
 	ggz_free(old);
 
 	/* Country */
-	tmp = lookup_widget((props_dialog), "info_country");
+	tmp = ggz_lookup_widget((props_dialog), "info_country");
 	old = ggzcore_conf_read_string("USER INFO", "COUNTRY", ".");
 	gtk_entry_set_text(GTK_ENTRY(tmp), old);
 	ggz_free(old);
 
 	/* Comments */
-	tmp = lookup_widget((props_dialog), "info_comments");
+	tmp = ggz_lookup_widget((props_dialog), "info_comments");
 	old = ggzcore_conf_read_string("USER INFO", "COMMENTS", ".");
 	gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(tmp)),
 				 old, strlen(old));
 	ggz_free(old);
 
 	/* Single click room entry */
-	tmp = lookup_widget((props_dialog), "click_checkbutton");
+	tmp = ggz_lookup_widget((props_dialog), "click_checkbutton");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE));
 
 	/* Browser */
-	tmp = lookup_widget((props_dialog), "browser_entry");
+	tmp = ggz_lookup_widget((props_dialog), "browser_entry");
 	gtk_editable_set_editable(GTK_EDITABLE(tmp), TRUE);
 	old = ggzcore_conf_read_string("OPTIONS", "BROWSER", "None");
 	gtk_entry_set_text(GTK_ENTRY(tmp), old);
@@ -354,16 +353,16 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	/* MOTD */
 	old = ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL");
 	if (!strcmp(old, "ALL")) {
-		tmp = lookup_widget((props_dialog), "motd_all_radio");
+		tmp = ggz_lookup_widget((props_dialog), "motd_all_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	} else if (!strcmp(old, "NEW")) {
-		tmp = lookup_widget((props_dialog), "motd_new_radio");
+		tmp = ggz_lookup_widget((props_dialog), "motd_new_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	} else if (!strcmp(old, "IMPORTANT")) {
-		tmp = lookup_widget((props_dialog), "motd_important_radio");
+		tmp = ggz_lookup_widget((props_dialog), "motd_important_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	} else if (!strcmp(old, "NONE")) {
-		tmp = lookup_widget((props_dialog), "motd_none_radio");
+		tmp = ggz_lookup_widget((props_dialog), "motd_none_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
 	ggz_free(old);
@@ -377,14 +376,14 @@ void props_profile_box_realized(GtkWidget *widget, gpointer user_data)
 
 	props_profiles_reload();
 
-	tmp = lookup_widget(props_dialog, "add_button");
+	tmp = ggz_lookup_widget(props_dialog, "add_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
-	tmp = lookup_widget(props_dialog, "modify_button");
+	tmp = ggz_lookup_widget(props_dialog, "modify_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
-	tmp = lookup_widget(props_dialog, "delete_button");
+	tmp = ggz_lookup_widget(props_dialog, "delete_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
 
-	tmp = lookup_widget(props_dialog, "port_entry");  
+	tmp = ggz_lookup_widget(props_dialog, "port_entry");  
 	port = g_strdup_printf("%d", 5688);
 	gtk_entry_set_text(GTK_ENTRY(tmp), port);
 	g_free(port);
@@ -405,7 +404,7 @@ static void props_profile_list_select(GtkTreeSelection *select,
 		return;
 	}
 
-	tmp = lookup_widget(props_dialog, "profile_list");
+	tmp = ggz_lookup_widget(props_dialog, "profile_list");
 	gtk_tree_model_get(model, &iter,
 			   PROFILE_COLUMN_NAME, &profile_name, -1);
 	profile = server_get(profile_name);
@@ -414,48 +413,48 @@ static void props_profile_list_select(GtkTreeSelection *select,
 		return;
 	}
 
-	tmp = lookup_widget(props_dialog, "add_button");
+	tmp = ggz_lookup_widget(props_dialog, "add_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
-	tmp = lookup_widget(props_dialog, "modify_button");
+	tmp = ggz_lookup_widget(props_dialog, "modify_button");
 	gtk_widget_set_sensitive(tmp, TRUE);
-	tmp = lookup_widget(props_dialog, "delete_button");
+	tmp = ggz_lookup_widget(props_dialog, "delete_button");
 	gtk_widget_set_sensitive(tmp, TRUE);
 
-	tmp = lookup_widget(props_dialog, "profile_entry");
+	tmp = ggz_lookup_widget(props_dialog, "profile_entry");
 	if (profile->name)
 		gtk_entry_set_text(GTK_ENTRY(tmp), profile->name );
 	else
 		gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "server_entry");
+	tmp = ggz_lookup_widget(props_dialog, "server_entry");
 	if (profile->host)
 		gtk_entry_set_text(GTK_ENTRY(tmp), profile->host );
 	else
 		gtk_entry_set_text(GTK_ENTRY(tmp), ""); 
 
-	tmp = lookup_widget(props_dialog, "port_entry");  
+	tmp = ggz_lookup_widget(props_dialog, "port_entry");  
 	port = g_strdup_printf("%d", profile->port);
 	gtk_entry_set_text(GTK_ENTRY(tmp), port);
 	g_free(port);
 
-	tmp = lookup_widget(props_dialog, "username_entry");
+	tmp = ggz_lookup_widget(props_dialog, "username_entry");
 	if (profile->login)
 		gtk_entry_set_text(GTK_ENTRY(tmp), profile->login);
 	else
 		gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "password_entry");
+	tmp = ggz_lookup_widget(props_dialog, "password_entry");
 	if (profile->password)
 		gtk_entry_set_text(GTK_ENTRY(tmp), profile->password);
 	else
 		gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
 	if (profile->type == GGZ_LOGIN) {
-		tmp = lookup_widget(props_dialog, "normal_radio");
+		tmp = ggz_lookup_widget(props_dialog, "normal_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
 	if (profile->type == GGZ_LOGIN_GUEST) {
-		tmp = lookup_widget(props_dialog, "guest_radio");
+		tmp = ggz_lookup_widget(props_dialog, "guest_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
 }
@@ -467,15 +466,15 @@ void props_profile_entry_changed(GtkWidget *widget, gpointer user_data)
 	GList *names, *node;
 	const gchar * profile;
 
-	tmp = lookup_widget(props_dialog, "profile_entry");
+	tmp = ggz_lookup_widget(props_dialog, "profile_entry");
 	profile = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	if (!strcmp(profile, "")) {
-		tmp = lookup_widget(props_dialog, "add_button");
+		tmp = ggz_lookup_widget(props_dialog, "add_button");
 		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-		tmp = lookup_widget(props_dialog, "modify_button");
+		tmp = ggz_lookup_widget(props_dialog, "modify_button");
 		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-		tmp = lookup_widget(props_dialog, "delete_button");
+		tmp = ggz_lookup_widget(props_dialog, "delete_button");
 		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 		return;
 	}
@@ -484,11 +483,11 @@ void props_profile_entry_changed(GtkWidget *widget, gpointer user_data)
 	for (node = names; node != NULL; node = node->next) {
 		/* If we match one of the profiles */
 		if(!strcmp(profile, (char*)(node->data))) {
-			tmp = lookup_widget(props_dialog, "add_button");
+			tmp = ggz_lookup_widget(props_dialog, "add_button");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = lookup_widget(props_dialog, "modify_button");
+			tmp = ggz_lookup_widget(props_dialog, "modify_button");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-			tmp = lookup_widget(props_dialog, "delete_button");
+			tmp = ggz_lookup_widget(props_dialog, "delete_button");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 			break;
 		}
@@ -496,11 +495,11 @@ void props_profile_entry_changed(GtkWidget *widget, gpointer user_data)
 
 	/* If we didn't match anything */
 	if (!node) {
-		tmp = lookup_widget(props_dialog, "add_button");
+		tmp = ggz_lookup_widget(props_dialog, "add_button");
 		gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-		tmp = lookup_widget(props_dialog, "modify_button");
+		tmp = ggz_lookup_widget(props_dialog, "modify_button");
 		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-		tmp = lookup_widget(props_dialog, "delete_button");
+		tmp = ggz_lookup_widget(props_dialog, "delete_button");
 		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 	}
 
@@ -513,8 +512,8 @@ void props_normal_toggled(GtkWidget *widget, gpointer user_data)
 	GtkWidget* password;
 	GtkWidget* confirm;           
 
-	password = lookup_widget(GTK_WIDGET(user_data), "password_box");
-	confirm = lookup_widget(GTK_WIDGET(user_data), "confirm_box");
+	password = ggz_lookup_widget(GTK_WIDGET(user_data), "password_box");
+	confirm = ggz_lookup_widget(GTK_WIDGET(user_data), "confirm_box");
 
 	if (GTK_TOGGLE_BUTTON(widget)->active) {
 		gtk_widget_show(password);
@@ -534,26 +533,26 @@ void props_add_button_clicked(GtkWidget *widget, gpointer user_data)
 
 	new_server = g_malloc0(sizeof(Server));
 
-	tmp = lookup_widget(props_dialog, "profile_entry");
+	tmp = ggz_lookup_widget(props_dialog, "profile_entry");
 	new_server->name = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "server_entry");
+	tmp = ggz_lookup_widget(props_dialog, "server_entry");
 	new_server->host = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "port_entry");
+	tmp = ggz_lookup_widget(props_dialog, "port_entry");
 	new_server->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
 	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "username_entry");
+	tmp = ggz_lookup_widget(props_dialog, "username_entry");
 	new_server->login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));   
 	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "normal_radio");
+	tmp = ggz_lookup_widget(props_dialog, "normal_radio");
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
 		new_server->type = GGZ_LOGIN;  
-		tmp = lookup_widget(props_dialog, "password_entry");
+		tmp = ggz_lookup_widget(props_dialog, "password_entry");
 		new_server->password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 		gtk_entry_set_text(GTK_ENTRY(tmp), "");
 	}
@@ -564,7 +563,7 @@ void props_add_button_clicked(GtkWidget *widget, gpointer user_data)
 	server_list_add(new_server);
 
 	/* Add profile to list */
-	tmp = lookup_widget(props_dialog, "profile_list_store");
+	tmp = ggz_lookup_widget(props_dialog, "profile_list_store");
 	gtk_list_store_append(GTK_LIST_STORE(tmp), &iter);
 	gtk_list_store_set(GTK_LIST_STORE(tmp), &iter,
 			   PROFILE_COLUMN_NAME, new_server->name, -1);
@@ -579,22 +578,22 @@ void props_modify_button_clicked(GtkWidget *widget, gpointer user_data)
 	/* FIXME: check confirm password entry */
 	/* FIXME: free() previous strings if necessary */
 
-	tmp = lookup_widget(props_dialog, "profile_entry"); 
+	tmp = ggz_lookup_widget(props_dialog, "profile_entry"); 
 	server = server_get(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
-	tmp = lookup_widget(props_dialog, "server_entry");
+	tmp = ggz_lookup_widget(props_dialog, "server_entry");
 	server->host = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
-	tmp = lookup_widget(props_dialog, "port_entry");  
+	tmp = ggz_lookup_widget(props_dialog, "port_entry");  
 	server->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
-	tmp = lookup_widget(props_dialog, "username_entry");
+	tmp = ggz_lookup_widget(props_dialog, "username_entry");
 	server->login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
-	tmp = lookup_widget(props_dialog, "normal_radio");
+	tmp = ggz_lookup_widget(props_dialog, "normal_radio");
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
 		server->type = GGZ_LOGIN;
-		tmp = lookup_widget(props_dialog, "password_entry");
+		tmp = ggz_lookup_widget(props_dialog, "password_entry");
 		server->password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 	}
 	else
@@ -606,22 +605,22 @@ void props_delete_button_clicked(GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget *tmp;
 
-	tmp = lookup_widget(props_dialog, "profile_entry");
+	tmp = ggz_lookup_widget(props_dialog, "profile_entry");
 	server_list_remove(gtk_entry_get_text(GTK_ENTRY(tmp)));
 	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "server_entry");
+	tmp = ggz_lookup_widget(props_dialog, "server_entry");
 	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "port_entry");
+	tmp = ggz_lookup_widget(props_dialog, "port_entry");
 	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "username_entry");
+	tmp = ggz_lookup_widget(props_dialog, "username_entry");
 	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
-	tmp = lookup_widget(props_dialog, "normal_radio");
+	tmp = ggz_lookup_widget(props_dialog, "normal_radio");
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
-		tmp = lookup_widget(props_dialog, "password_entry");
+		tmp = ggz_lookup_widget(props_dialog, "password_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), "");
 	}
 
@@ -657,7 +656,8 @@ void props_ok_button_clicked(GtkWidget *widget, gpointer user_data)
         /* Close font selector if open */
         if (props_font_dialog)
                 gtk_widget_destroy(props_font_dialog);
-	gtk_widget_destroy(props_dialog);
+	raised = FALSE;
+	main_activate();
 }
 
 
@@ -673,7 +673,8 @@ void props_cancel_button_clicked(GtkWidget *widget, gpointer user_data)
         /* Close font selector if open */
         if (props_font_dialog)
                 gtk_widget_destroy(props_font_dialog);
-	gtk_widget_destroy(props_dialog);
+	raised = FALSE;
+	main_activate();
 }
 
 
@@ -682,7 +683,7 @@ void props_fok_button_clicked(GtkWidget *widget, gpointer user_data)
 	GtkWidget *tmp;
 
 	/* Set font */
-	tmp = lookup_widget(props_dialog, "chat_font");
+	tmp = ggz_lookup_widget(props_dialog, "chat_font");
 	if (gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(props_font_dialog)) != NULL )
 	{
 		gtk_entry_set_text(GTK_ENTRY(tmp),
@@ -706,7 +707,7 @@ void props_fapply_button_clicked(GtkWidget *widget, gpointer user_data)
 	GtkWidget *tmp;
 
 	/* Set font */
-	tmp = lookup_widget(props_dialog, "chat_font");
+	tmp = ggz_lookup_widget(props_dialog, "chat_font");
 	if (gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(props_font_dialog)) != NULL )
 	{
 		gtk_entry_set_text(GTK_ENTRY(tmp),
@@ -720,7 +721,7 @@ static void props_profiles_reload(void)
 	GList *names, *node;
 	GtkListStore *store;
 
-	store = GTK_LIST_STORE(lookup_widget(props_dialog,
+	store = GTK_LIST_STORE(ggz_lookup_widget(props_dialog,
 					     "profile_list_store"));
 	gtk_list_store_clear(store);
 
@@ -771,12 +772,9 @@ static GtkWidget *tree_new(GtkWidget *window)
 	return tree;
 }
 
-GtkWidget*
-create_dlg_props (void)
+GtkWidget* create_props_dlg(void)
 {
   GtkWidget *dlg_props;
-  GtkWidget *dialog_vbox1;
-  GtkWidget *vbox1;
   GtkWidget *notebook;
   GtkWidget *props_profile_box;
   GtkWidget *scrolledwindow4;
@@ -875,34 +873,19 @@ create_dlg_props (void)
   GtkWidget *motd_important_radio;
   GtkWidget *motd_none_radio;
   GtkWidget *label67;
-  GtkWidget *dialog_action_area1;
   GtkWidget *hbuttonbox1;
   GtkWidget *button1;
   GtkWidget *button2;
   GtkWidget *button3;
 
-  dlg_props = gtk_dialog_new ();
-  gtk_window_set_transient_for(GTK_WINDOW(dlg_props),
-			       GTK_WINDOW(win_main));
-  g_object_set_data(G_OBJECT (dlg_props), "dlg_props", dlg_props);
-  gtk_window_set_title (GTK_WINDOW (dlg_props), _("Properties"));
-  gtk_window_set_resizable(GTK_WINDOW (dlg_props), TRUE);
-
-  dialog_vbox1 = GTK_DIALOG (dlg_props)->vbox;
-  g_object_set_data(G_OBJECT (dlg_props), "dialog_vbox1", dialog_vbox1);
-
-  vbox1 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox1);
-  g_object_set_data_full(G_OBJECT (dlg_props), "vbox1", vbox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (vbox1), 6);
+  dlg_props = gtk_vbox_new(FALSE, 0);
+  props_dialog = dlg_props;
 
   notebook = gtk_notebook_new ();
   gtk_widget_ref (notebook);
   g_object_set_data_full(G_OBJECT (dlg_props), "notebook", notebook,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start (GTK_BOX (vbox1), notebook, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(dlg_props), notebook, TRUE, TRUE, 0);
 
   props_profile_box = gtk_hbox_new (FALSE, 10);
   gtk_widget_ref (props_profile_box);
@@ -1556,15 +1539,11 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 3), label67);
 
-  dialog_action_area1 = GTK_DIALOG (dlg_props)->action_area;
-  g_object_set_data(G_OBJECT (dlg_props), "dialog_action_area1", dialog_action_area1);
-  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
-
   hbuttonbox1 = gtk_hbutton_box_new ();
   gtk_widget_ref (hbuttonbox1);
   g_object_set_data_full(G_OBJECT (dlg_props), "hbuttonbox1", hbuttonbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (dlg_props), hbuttonbox1, TRUE, TRUE, 0);
 
   button1 = gtk_button_new_from_stock(GTK_STOCK_OK);
   gtk_widget_ref (button1);
@@ -1629,6 +1608,8 @@ create_dlg_props (void)
   g_signal_connect (GTK_OBJECT (button3), "clicked",
                       GTK_SIGNAL_FUNC (props_cancel_button_clicked),
                       NULL);
+
+  gtk_widget_show_all(dlg_props);
 
   return dlg_props;
 }

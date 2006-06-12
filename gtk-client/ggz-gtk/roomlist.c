@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8175 2006-06-12 03:18:56Z jdorje $
+ * $Id: roomlist.c 8180 2006-06-12 21:56:56Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -233,7 +233,7 @@ void clear_room_list(void)
 	/* Clear current list of rooms */
 	GtkTreeStore *store;
 
-	store = GTK_TREE_STORE(lookup_widget(room_list, "room_list_store"));
+	store = GTK_TREE_STORE(ggz_lookup_widget(room_list, "room_list_store"));
 	gtk_tree_store_clear(store);
 }
 
@@ -326,7 +326,7 @@ void update_one_room(GGZRoom *room)
 	GtkTreeStore *store;
 
 	/* Retrieve the player list widget. */
-	store = GTK_TREE_STORE(lookup_widget(room_list, "room_list_store"));
+	store = GTK_TREE_STORE(ggz_lookup_widget(room_list, "room_list_store"));
 
 	update_iter_room(store, &room_iter[ggzcore_room_get_id(room)],
 			 room);
@@ -339,7 +339,7 @@ void update_room_list(void)
 	const int numrooms = ggzcore_server_get_num_rooms(server);
 
 	/* Retrieve the player list widget. */
-	store = GTK_TREE_STORE(lookup_widget(room_list, "room_list_store"));
+	store = GTK_TREE_STORE(ggz_lookup_widget(room_list, "room_list_store"));
 
 	clear_room_list();
 

@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.c 8177 2006-06-12 08:49:11Z josef $
+ * $Id: support.c 8180 2006-06-12 21:56:56Z jdorje $
  *
  * Support code
  *
@@ -45,9 +45,12 @@
 #include "props.h"
 #include "support.h"
 
-GtkWidget *lookup_widget(GtkWidget * widget, const gchar * widget_name)
+GtkWidget *ggz_lookup_widget(GtkWidget * widget, const gchar * widget_name)
 {
 	GtkWidget *parent, *found_widget;
+
+	found_widget = g_object_get_data(G_OBJECT(widget), widget_name);
+	if (found_widget) return found_widget;
 
 	for (;;) {
 		if (GTK_IS_MENU(widget))

@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.h 7723 2006-01-05 22:21:02Z jdorje $
+ * $Id: support.h 8180 2006-06-12 21:56:56Z jdorje $
  *
  * Support code
  *
@@ -84,7 +84,7 @@
  * or alternatively any widget in the component, and the name of the widget
  * you want returned.
  */
-GtkWidget*  lookup_widget              (GtkWidget       *widget,
+GtkWidget*  ggz_lookup_widget              (GtkWidget       *widget,
                                         const gchar     *widget_name);
 
 /*
@@ -102,8 +102,8 @@ int support_goto_url(gchar *url);
  */
 void support_exec(char *cmd);
 
-/* get_widget() is deprecated. Use lookup_widget instead. */
-#define get_widget lookup_widget
+/* get_widget() is deprecated. Use ggz_lookup_widget instead. */
+#define get_widget ggz_lookup_widget
 
 /* Use this function to set the directory containing installed pixmaps. */
 void        add_pixmap_directory       (const gchar     *directory);

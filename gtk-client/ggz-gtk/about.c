@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 6442 2004-12-08 21:00:46Z oojah $
+ * $Id: about.c 8180 2006-06-12 21:56:56Z jdorje $
  *
  * About dialog: Displays information about the authors and the application.
  *
@@ -85,7 +85,7 @@ GtkWidget *create_dlg_about(void)
 	GtkWidget *background;
 
 	dlg_about = gtk_dialog_new_with_buttons(_("About"),
-						GTK_WINDOW(win_main), 0,
+						GTK_WINDOW(main_window), 0,
 						GTK_STOCK_CLOSE,
 						GTK_RESPONSE_CLOSE, NULL);
 

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.c 6981 2005-03-11 07:35:03Z jdorje $
+ * $Id: pick_module.c 8180 2006-06-12 21:56:56Z jdorje $
  *
  * Dialog window to pick a module for your game
  *
@@ -77,7 +77,7 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 
 	pick_module_dlg = gtk_dialog_new();
 	gtk_window_set_transient_for(GTK_WINDOW(pick_module_dlg),
-				     GTK_WINDOW(win_main));
+				     GTK_WINDOW(main_window));
 	g_object_set_data(G_OBJECT(pick_module_dlg), "pick_module_dlg",
 			  pick_module_dlg);
 	gtk_window_set_resizable(GTK_WINDOW(pick_module_dlg), FALSE);

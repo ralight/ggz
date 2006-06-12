@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 7940 2006-03-16 14:34:24Z josef $
+ * $Id: first.c 8180 2006-06-12 21:56:56Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -141,10 +141,9 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 	gtk_widget_destroy(first_dialog);
 	server_profiles_load();
 
-	win_main = create_win_main();
+	main_window = create_win_main();
 	ggz_sensitivity_init();
-	gtk_widget_show_all(win_main);
-	ggz_gtk_login_raise(NULL);
+	gtk_widget_show_all(main_window);
 }
 
 
@@ -152,10 +151,9 @@ static void first_button_no_activate(GtkButton *button, gpointer data)
 {
 	ggzcore_conf_commit();
 	gtk_widget_destroy(first_dialog);
-	win_main = create_win_main();
+	main_window = create_win_main();
 	ggz_sensitivity_init();
-	gtk_widget_show(win_main);
-	ggz_gtk_login_raise(NULL);
+	gtk_widget_show(main_window);
 }
 
 static void first_generate_password(char *pw)   
@@ -185,7 +183,7 @@ create_dlg_first (void)
   GtkWidget *button_no;
 
   dlg_first = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_transient_for(GTK_WINDOW(dlg_first), GTK_WINDOW(win_main));
+  gtk_window_set_transient_for(GTK_WINDOW(dlg_first), GTK_WINDOW(main_window));
   g_object_set_data(G_OBJECT (dlg_first), "dlg_first", dlg_first);
   gtk_container_set_border_width (GTK_CONTAINER (dlg_first), 21);
   gtk_window_set_title (GTK_WINDOW (dlg_first), _("First Time Configuration"));

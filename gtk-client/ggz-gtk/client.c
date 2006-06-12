@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 8177 2006-06-12 08:49:11Z josef $
+ * $Id: client.c 8180 2006-06-12 21:56:56Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -61,10 +61,13 @@
 #include "types.h"
 #include "xtext.h"
 
-GtkWidget *win_main;
+GtkWidget *win_main, *main_window;
+GtkWidget *ggznotebook;
 void (*connected_cb)(GGZServer *server);
 void (*launched_cb)(void);
-char *embedded_protocol_engine, *embedded_protocol_version;
+void (*ggz_closed_cb)(void);
+const char *embedded_protocol_engine, *embedded_protocol_version;
+const char *embedded_default_profile;
 
 static gint spectating = -1;
 
@@ -112,7 +115,7 @@ static void
 client_connect_activate			(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	ggz_gtk_login_raise(NULL);
+	main_activate();
 }
 
 
@@ -188,7 +191,7 @@ static void
 client_properties_activate	(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	props_create_or_raise();
+	props_raise();
 }
 
 
@@ -292,7 +295,7 @@ client_ggz_help_activate		(GtkMenuItem	*menuitem,
 			 "The configuration dialog will be invoked now."),
 		       "Help configuration",
 		       MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
-		props_create_or_raise();
+		props_raise();
 	}
 }
 
@@ -530,7 +533,7 @@ static void
 client_props_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	props_create_or_raise();
+	props_raise();
 }
 
 #ifdef STATS
@@ -664,7 +667,7 @@ client_realize                    (GtkWidget       *widget,
 
 #define tooltip(widget, tip)						\
 	do {								\
-		GtkWidget *tmp = lookup_widget(win_main, widget);	\
+		GtkWidget *tmp = ggz_lookup_widget(win_main, widget);	\
 		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(tmp),		\
 					  GTK_TOOLTIPS(client_window_tips), \
 					  tip, NULL);			\
@@ -740,7 +743,7 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 	GGZRoom *room;
 	GGZGameType *gt;
 
-	tmp =  lookup_widget(win_main, "table_vpaned");
+	tmp =  ggz_lookup_widget(win_main, "table_vpaned");
 
 	/* Check what the current game type is */
 	room = ggzcore_server_get_cur_room(server);
@@ -789,8 +792,10 @@ void ggz_embed_ensure_server(const char *profile_name,
 void ggz_gtk_initialize(gboolean reconnect,
 			void (*connected)(GGZServer *server),
 			void (*launched)(void),
+			void (*ggz_closed)(void),
 			const char *protocol_engine,
-			const char *protocol_version)
+			const char *protocol_version,
+			const char *default_profile)
 {
 	GGZOptions opt;
 	char *global_conf, *user_conf;
@@ -823,13 +828,16 @@ void ggz_gtk_initialize(gboolean reconnect,
 
 	connected_cb = connected;
 	launched_cb = launched;
+	ggz_closed_cb = ggz_closed;
 	if (embedded_protocol_engine) ggz_free(embedded_protocol_engine);
 	if (embedded_protocol_version) ggz_free(embedded_protocol_version);
+	if (embedded_default_profile) ggz_free(embedded_default_profile);
 	embedded_protocol_engine = ggz_strdup(protocol_engine);
 	embedded_protocol_version = ggz_strdup(protocol_version);
+	embedded_default_profile = ggz_strdup(default_profile);
 }
 
-GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
+static GtkWidget *create_main_dlg(GtkWidget *main_window)
 {
   GtkWidget *main_vbox;
   GtkWidget *menubar;
@@ -908,13 +916,12 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   /* List for storing last messages */
   GGZList *last_list;
 
-  /* Set global value. */
-  win_main = main_win;
-
   accel_group = gtk_accel_group_new ();
 
   main_vbox = gtk_vbox_new (FALSE, 0);
-  g_object_set_data(G_OBJECT (win_main), "main_vbox", main_vbox);
+
+  /* Set global value. */
+  win_main = main_vbox;
 
   menubar = gtk_menu_bar_new ();
   g_object_set_data(G_OBJECT (win_main), "menubar", menubar);
@@ -1210,7 +1217,7 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   gtk_box_pack_start (GTK_BOX (lists_vbox), room_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (room_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  room_list = create_room_list(win_main);
+  room_list = create_room_list(main_window);
   gtk_container_add (GTK_CONTAINER (room_scrolledwindow), room_list);
 
   player_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
@@ -1219,7 +1226,7 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   gtk_box_pack_start (GTK_BOX (lists_vbox), player_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (player_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  player_tree = create_player_list(win_main);
+  player_tree = create_player_list(main_window);
   gtk_container_add(GTK_CONTAINER(player_scrolledwindow), player_tree);
 
   table_vpaned = gtk_vpaned_new ();
@@ -1232,7 +1239,7 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
   gtk_paned_pack1 (GTK_PANED (table_vpaned), scrolledwindow3, FALSE, TRUE);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  table_list = create_table_list(win_main);
+  table_list = create_table_list(main_window);
   gtk_container_add(GTK_CONTAINER(scrolledwindow3), table_list);
 
   chat_vbox = gtk_vbox_new (FALSE, 0);
@@ -1411,26 +1418,65 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 		   NULL);
 
   gtk_widget_grab_focus (chat_entry);
-  gtk_window_add_accel_group (GTK_WINDOW (win_main), accel_group);
+  gtk_window_add_accel_group (GTK_WINDOW(main_window), accel_group);
 
   return main_vbox;
 }
 
+GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
+{
+	main_window = main_win;
+
+	ggznotebook = gtk_notebook_new();
+
+	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(ggznotebook), FALSE);
+	gtk_notebook_set_show_border(GTK_NOTEBOOK(ggznotebook), FALSE);
+
+	/* The order of these matches the enum ggz_page in client.h */
+	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
+				 create_dlg_login(embedded_default_profile),
+				 NULL);
+	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
+				 create_main_dlg(main_win), NULL);
+	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
+				 create_props_dlg(), NULL);
+
+	gtk_widget_show_all(ggznotebook);
+
+	main_activate();
+
+	return ggznotebook;
+}
+
+void main_activate(void)
+{
+  if (props_is_raised()) {
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+				      GGZ_PAGE_PROPS);
+  } else if (server && ggzcore_server_is_logged_in(server)) {
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+				      GGZ_PAGE_MAIN);
+  } else {
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+				      GGZ_PAGE_LOGIN);
+  }
+}
+
 GtkWidget *create_win_main(void)
 {
-  GtkWidget *win_main, *main_vbox;
+  GtkWidget *main_window, *main_vbox;
 
-  win_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  g_object_set_data(G_OBJECT (win_main), "win_main", win_main);
-  gtk_widget_set_size_request(win_main, 620, 400);
-  gtk_window_set_title (GTK_WINDOW (win_main), _("GGZ Gaming Zone"));
-  gtk_window_set_resizable(GTK_WINDOW(win_main), TRUE);
+  main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_widget_set_size_request(main_window, 620, 400);
+  gtk_window_set_title (GTK_WINDOW (main_window), _("GGZ Gaming Zone"));
+  gtk_window_set_resizable(GTK_WINDOW(main_window), TRUE);
 
-  main_vbox = ggz_gtk_create_main_area(win_main);
-  gtk_container_add (GTK_CONTAINER (win_main), main_vbox);
+  main_vbox = ggz_gtk_create_main_area(main_window);
+  gtk_container_add (GTK_CONTAINER (main_window), main_vbox);
 
-  g_signal_connect (GTK_OBJECT (win_main), "delete_event",
+  g_signal_connect (GTK_OBJECT (main_window), "delete_event",
                       GTK_SIGNAL_FUNC (client_exit_activate),
                       NULL);
-  return win_main;
+
+  return main_window;
 }

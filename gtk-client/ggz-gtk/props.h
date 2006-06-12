@@ -22,4 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-void props_create_or_raise(void);
+GtkWidget *create_props_dlg(void);
+
+gboolean props_is_raised(void);
+void props_raise(void);

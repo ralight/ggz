@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.c 7771 2006-01-12 00:14:00Z jdorje $
+ * $Id: roominfo.c 8180 2006-06-12 21:56:56Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -37,6 +37,7 @@
 #include <gtk/gtk.h>
 #include <ggzcore.h>
 
+#include "client.h"
 #include "roominfo.h"
 #include "support.h"
 
@@ -140,35 +141,35 @@ void room_info_create_or_raise(GGZRoom * room)
 	const char *text;
 
 	if (!dialog) {
-		dialog = create_dlg_info(win_main);
+		dialog = create_dlg_info(main_window);
 		gtk_widget_show_all(dialog);
 	} else {
 		gdk_window_show(dialog->window);
 		gdk_window_raise(dialog->window);
 	}
 
-	tmp = lookup_widget(dialog, "name");
+	tmp = ggz_lookup_widget(dialog, "name");
 	if (gt)
 		text = ggzcore_gametype_get_name(gt);
 	else
 		text = _("This room has no game");
 	gtk_label_set_text(GTK_LABEL(tmp), text);
 
-	tmp = lookup_widget(dialog, "author");
+	tmp = ggz_lookup_widget(dialog, "author");
 	if (gt)
 		text = ggzcore_gametype_get_author(gt);
 	else
 		text = _("N/A");
 	gtk_label_set_text(GTK_LABEL(tmp), text);
 
-	tmp = lookup_widget(dialog, "www");
+	tmp = ggz_lookup_widget(dialog, "www");
 	if (gt)
 		text = ggzcore_gametype_get_url(gt);
 	else
 		text = _("N/A");
 	gtk_label_set_text(GTK_LABEL(tmp), text);
 
-	tmp = lookup_widget(dialog, "desc");
+	tmp = ggz_lookup_widget(dialog, "desc");
 	text = ggzcore_room_get_name(room);
 	if (!text)
 		text = _("Unknown room");

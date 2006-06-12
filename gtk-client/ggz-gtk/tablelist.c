@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 7757 2006-01-09 18:03:06Z jdorje $
+ * $Id: tablelist.c 8180 2006-06-12 21:56:56Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -121,7 +121,7 @@ GGZTable *get_selected_table(void)
 
 void clear_table_list(void)
 {
-	GtkWidget *store = lookup_widget(table_list, "table_list_store");
+	GtkWidget *store = ggz_lookup_widget(table_list, "table_list_store");
 
 	gtk_list_store_clear(GTK_LIST_STORE(store));
 }
@@ -139,7 +139,7 @@ void update_table_list(void)
 	const int num = ggzcore_room_get_num_tables(room);
 
 	/* Retrieve the player list widget. */
-	store = GTK_LIST_STORE(lookup_widget(table_list, "table_list_store"));
+	store = GTK_LIST_STORE(ggz_lookup_widget(table_list, "table_list_store"));
 
 	gtk_list_store_clear(store);
 

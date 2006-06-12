@@ -31,9 +31,9 @@
 void ggz_gtk_initialize(gboolean reconnect,
 			void (*connected)(GGZServer *server),
 			void (*launched)(void),
+			void (*ggz_closed)(void),
 			const char *protocol_engine,
-			const char *protocol_version);
+			const char *protocol_version,
+			const char *default_profile);
 
-void ggz_gtk_login_raise(const char *default_profile);
-
-GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win);
+GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_window);

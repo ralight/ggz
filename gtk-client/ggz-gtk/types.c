@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 7769 2006-01-11 23:38:33Z jdorje $
+ * $Id: types.c 8180 2006-06-12 21:56:56Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -57,7 +57,7 @@ static GtkWidget *create_dlg_types(void);
 
 static void update_dlg_types(void)
 {
-	GtkWidget *tree = lookup_widget(types_dialog, "types_list");
+	GtkWidget *tree = ggz_lookup_widget(types_dialog, "types_list");
 	GtkTreeModel *store = gtk_tree_view_get_model(GTK_TREE_VIEW(tree));
 	int i, num;
 
@@ -82,7 +82,7 @@ static void update_dlg_types(void)
 #ifdef FILTER
 		GtkWidget *tmp, *menu, *menuitem;
 
-		tmp = lookup_widget(types_dialog, "filter_optionmenu");
+		tmp = ggz_lookup_widget(types_dialog, "filter_optionmenu");
 		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(tmp));
 		menuitem = gtk_menu_item_new_with_label(name);
 		gtk_menu_append(GTK_MENU(menu), menuitem);
@@ -108,7 +108,7 @@ void types_create_or_raise(void)
 		GtkWidget *tmp, *menu;
 		GtkWidget *menuitem;
 
-		tmp = lookup_widget(types_dialog, "filter_optionmenu");
+		tmp = ggz_lookup_widget(types_dialog, "filter_optionmenu");
 		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(tmp));
 		menuitem = gtk_menu_item_new_with_label(_("None"));
 		gtk_menu_append(GTK_MENU(menu), menuitem);
@@ -231,7 +231,7 @@ GtkWidget *create_dlg_types(void)
 
 	dlg_types = gtk_dialog_new();
 	gtk_window_set_transient_for(GTK_WINDOW(dlg_types),
-				     GTK_WINDOW(win_main));
+				     GTK_WINDOW(main_window));
 	g_object_set_data(G_OBJECT(dlg_types), "dlg_types", dlg_types);
 	gtk_widget_set_size_request(dlg_types, 600, 300);
 	gtk_window_set_title(GTK_WINDOW(dlg_types), _("Game Types"));
