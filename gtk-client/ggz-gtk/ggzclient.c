@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 8166 2006-06-12 00:40:12Z jdorje $
+ * $Id: ggzclient.c 8170 2006-06-12 01:36:49Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -160,8 +160,41 @@ static GGZHookReturn ggz_auto_join(GGZServerEvent id,
 				   const void *event_data,
 				   const void *user_data)
 {
-	ggzcore_server_join_room(server, 0);
-	select_room(ggzcore_server_get_nth_room(server, 0));
+	int i;
+	const int numrooms = ggzcore_server_get_num_rooms(server);
+	GGZRoom *lobby = NULL, *supported = NULL, *joinroom = NULL;
+
+	for (i = 0; i < numrooms; i++) {
+		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
+		GGZGameType *gt = ggzcore_room_get_gametype(room);
+
+		if (ggzcore_room_get_closed(room)) {
+			continue;
+		}
+		if (!gt) {
+			lobby = room;
+		} else if (can_launch_gametype(gt)) {
+			supported = room;
+		}
+	}
+
+	if (embedded_protocol_engine && supported) {
+		joinroom = supported;
+		/* For embedded GGZ:
+		   first choice is to join a supported room. */
+	} else if (lobby) {
+		joinroom = lobby;
+		/* First choice: join the lobby. */
+	} else if (supported) {
+		joinroom = supported;
+		/* Second choice: join a supported room. */
+	} else {
+		return GGZ_HOOK_REMOVE;
+		/* Otherwise: don't join any room */
+	}
+
+	ggzcore_server_join_room(server, ggzcore_room_get_id(joinroom));
+	select_room(joinroom);
 
 	return GGZ_HOOK_REMOVE;
 }
@@ -192,8 +225,8 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id,
 	login_destroy();
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST,
 				      ggz_auto_join);
-	ggzcore_server_list_rooms(server, -1, 1);
 	ggzcore_server_list_gametypes(server, 1);
+	ggzcore_server_list_rooms(server, -1, 1);
 
 
 	/* If this was a first-time login, get the password from the server */
