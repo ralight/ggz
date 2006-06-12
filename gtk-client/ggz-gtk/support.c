@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.c 7204 2005-05-21 09:31:23Z josef $
+ * $Id: support.c 8177 2006-06-12 08:49:11Z josef $
  *
  * Support code
  *
@@ -72,7 +72,7 @@ GdkPixbuf *load_pixbuf(const char *name)
 	GdkPixbuf *image;
 	GError *error = NULL;
 
-	fullpath = g_strdup_printf("%s/%s.png", GGZDATADIR, name);
+	fullpath = g_strdup_printf("%s/%s.png", GGZGTKDATADIR, name);
 	image = gdk_pixbuf_new_from_file(fullpath, &error);
 	if (image == NULL) {
 		ggz_error_msg("Can't load pixmap %s", fullpath);
@@ -89,7 +89,7 @@ GdkPixbuf *load_svg_pixbuf(const char *name, int width, int height)
 	GdkPixbuf *image;
 	GError *error = NULL;
 
-	fullpath = g_strdup_printf("%s/%s.svg", GGZDATADIR, name);
+	fullpath = g_strdup_printf("%s/%s.svg", GGZGTKDATADIR, name);
 	image = gdk_pixbuf_new_from_file_at_size(fullpath,
 						 width, height,
 						 &error);

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 8137 2006-06-08 17:13:23Z jdorje $
+ * $Id: client.c 8177 2006-06-12 08:49:11Z josef $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -286,7 +286,7 @@ static void
 client_ggz_help_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	if(!support_goto_url(GGZDATADIR "/help/ggz-gtk-handbook.html")) {
+	if(!support_goto_url(GGZGTKDATADIR "/help/ggz-gtk-handbook.html")) {
 		msgbox(_("GGZ Gaming Zone help needs a browser to be "
 			 "configured.\n"
 			 "The configuration dialog will be invoked now."),

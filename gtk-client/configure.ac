@@ -1,7 +1,7 @@
 dnl Configuration for the Gtk+ core client
 dnl ======================================
 
-AC_INIT([GGZ Gtk+ client], [0.0.13], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
+AC_INIT([GGZ Gtk+ client], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -87,16 +87,12 @@ fi
 dnl Various dirs
 dnl ============
 
-if test "x${datarootdir}" = 'x${prefix}/share'; then
-  ggzgtkdatadir="${prefix}/share/ggz/ggz-gtk"
-else
-  ggzgtkdatadir="${datarootdir}/ggz/ggz-gtk"
-fi
-
-AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzgtkdatadir}", [Location of GGZ-Gtk data])
+ggzgtkdatadir=\${datadir}/ggz/ggz-gtk
+AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzgtkdatadir}")
+AC_DEFINE_UNQUOTED(GGZGTKDATADIR, "${resolveddir}", [Location of GGZ-Gtk data])
 
 AC_SUBST(LDADD)
-AC_SUBST(ggzdatadir)
+AC_SUBST(ggzgtkdatadir)
 
 AC_CONFIG_FILES([Makefile 
 	   ggz-gtk/Makefile
