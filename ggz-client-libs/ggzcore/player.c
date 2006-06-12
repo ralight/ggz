@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: player.c 8183 2006-06-12 23:15:12Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -322,10 +322,14 @@ int _ggzcore_player_get_highscore(const GGZPlayer * player, int *highscore)
 
 int _ggzcore_player_compare(const void *p, const void *q)
 {
-	const GGZPlayer *s_p = p;
-	const GGZPlayer *s_q = q;
+	const GGZPlayer *s_p = p, *s_q = q;
 
-	return strcmp(s_p->name, s_q->name);
+	if (s_p->name && s_q->name) {
+		return strcmp(s_p->name, s_q->name);
+	} else {
+		/* This shouldn't happen, but it has been known to. */
+		return (s_p->name ? 1 : 0) - (s_q->name ? 1 : 0);
+	}
 }
 
 
