@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 7753 2006-01-09 01:30:19Z jdorje $
+ * $Id: game.c 8168 2006-06-12 01:19:58Z jdorje $
  *
  * Functions for handling game events
  *
@@ -363,4 +363,24 @@ int game_initialize(int spectate)
 	game_register(game);
 
 	return 0;
+}
+
+gboolean can_launch_gametype(GGZGameType *gt)
+{
+	const char *game = ggzcore_gametype_get_name(gt);
+	const char *engine = ggzcore_gametype_get_prot_engine(gt);
+	const char *version = ggzcore_gametype_get_prot_version(gt);
+	const int num = ggzcore_module_get_num_by_type(game, engine, version);
+
+	if (num == 0) {
+		return FALSE;
+	}
+
+	if (embedded_protocol_engine && embedded_protocol_version
+	    && (strcmp(engine, embedded_protocol_engine) != 0
+		|| strcmp(version, embedded_protocol_version) != 0)) {
+		return FALSE;
+	}
+
+	return TRUE;
 }

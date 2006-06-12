@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8167 2006-06-12 01:14:29Z jdorje $
+ * $Id: roomlist.c 8168 2006-06-12 01:19:58Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -37,6 +37,7 @@
 #include <ggzcore.h>
 
 #include "client.h"
+#include "game.h"
 #include "msgbox.h"
 #include "roominfo.h"
 #include "roomlist.h"
@@ -313,27 +314,11 @@ void update_room_list(void)
 		GtkTreeIter iter;
 		GGZGameType *gt = ggzcore_room_get_gametype(room);
 
-		if (gt) {
-		  const char *game = ggzcore_gametype_get_name(gt);
-		  const char *engine = ggzcore_gametype_get_prot_engine(gt);
-		  const char *version = ggzcore_gametype_get_prot_version(gt);
-
-		  int num = ggzcore_module_get_num_by_type(game, engine,
-							   version);
-
-		  if (num == 0
-		      || (embedded_protocol_engine && embedded_protocol_version
-			  && (strcmp(engine, embedded_protocol_engine) != 0
-			      || strcmp(version,
-					embedded_protocol_version) != 0))) {
-		    gtk_tree_store_append(store, &iter, &other_iter);
-		  } else {
-		    gtk_tree_store_insert_before(store, &iter,
-					       NULL, &other_iter);
-		  }
+		if (gt && !can_launch_gametype(gt)) {
+			gtk_tree_store_append(store, &iter, &other_iter);
 		} else {
-		  gtk_tree_store_insert_before(store, &iter,
-					       NULL, &other_iter);
+			gtk_tree_store_insert_before(store, &iter,
+						     NULL, &other_iter);
 		}
 
 		gtk_tree_store_set(store, &iter,
