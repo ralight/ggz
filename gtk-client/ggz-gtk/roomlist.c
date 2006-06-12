@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8107 2006-06-06 07:39:20Z josef $
+ * $Id: roomlist.c 8167 2006-06-12 01:14:29Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -36,6 +36,7 @@
 #include <ggz.h>
 #include <ggzcore.h>
 
+#include "client.h"
 #include "msgbox.h"
 #include "roominfo.h"
 #include "roomlist.h"
@@ -226,22 +227,22 @@ void sensitize_room_list(gboolean sensitive)
 void clear_room_list(void)
 {
 	/* Clear current list of rooms */
-	GtkListStore *store;
+	GtkTreeStore *store;
 
-	store = GTK_LIST_STORE(lookup_widget(room_list, "room_list_store"));
-	gtk_list_store_clear(store);
+	store = GTK_TREE_STORE(lookup_widget(room_list, "room_list_store"));
+	gtk_tree_store_clear(store);
 }
 
 void select_room(GGZRoom *room)
 {
 	GtkTreeView *tree;
-	GtkListStore *store;
+	GtkTreeStore *store;
 	GtkTreeSelection *select;
 	GtkTreeIter iter;
 	int id = ggzcore_room_get_id(room), i;
 
 	tree = GTK_TREE_VIEW(room_list);
-	store = GTK_LIST_STORE(gtk_tree_view_get_model(tree));
+	store = GTK_TREE_STORE(gtk_tree_view_get_model(tree));
 	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 
 	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
@@ -260,11 +261,11 @@ void update_one_room(GGZRoom *room)
 {
 	int players, id, i;
 	const char *name;
-	GtkListStore *store;
+	GtkTreeStore *store;
 	GtkTreeIter iter;
 
 	/* Retrieve the player list widget. */
-	store = GTK_LIST_STORE(lookup_widget(room_list, "room_list_store"));
+	store = GTK_TREE_STORE(lookup_widget(room_list, "room_list_store"));
 
 	name = ggzcore_room_get_name(room);
 	id = ggzcore_room_get_id(room);
@@ -279,48 +280,78 @@ void update_one_room(GGZRoom *room)
 		}
 	}
 
-	gtk_list_store_set(store, &iter,
+	gtk_tree_store_set(store, &iter,
 			   ROOM_COLUMN_PTR, room,
 			   ROOM_COLUMN_NAME, name, -1);
 	if (players >= 0) {
-		gtk_list_store_set(store, &iter,
+		gtk_tree_store_set(store, &iter,
 				   ROOM_COLUMN_PLAYERS, players, -1);
 	}
 }
 
 void update_room_list(void)
 {
-	GtkListStore *store;
+	GtkTreeStore *store;
 	int i;
 	const int numrooms = ggzcore_server_get_num_rooms(server);
-	char *closedname;
+	GtkTreeIter other_iter;
 
 	/* Retrieve the player list widget. */
-	store = GTK_LIST_STORE(lookup_widget(room_list, "room_list_store"));
+	store = GTK_TREE_STORE(lookup_widget(room_list, "room_list_store"));
 
-	gtk_list_store_clear(store);
+	clear_room_list();
+
+	gtk_tree_store_append(store, &other_iter, NULL);
+	gtk_tree_store_set(store, &other_iter,
+			   ROOM_COLUMN_PTR, NULL,
+			   ROOM_COLUMN_NAME, _("Other Rooms"), -1);
 
 	for (i = 0; i < numrooms; i++) {
 		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
 		const char *name = ggzcore_room_get_name(room);
 		gint players = ggzcore_room_get_num_players(room);
 		GtkTreeIter iter;
+		GGZGameType *gt = ggzcore_room_get_gametype(room);
 
-		gtk_list_store_append(store, &iter);
-		gtk_list_store_set(store, &iter,
+		if (gt) {
+		  const char *game = ggzcore_gametype_get_name(gt);
+		  const char *engine = ggzcore_gametype_get_prot_engine(gt);
+		  const char *version = ggzcore_gametype_get_prot_version(gt);
+
+		  int num = ggzcore_module_get_num_by_type(game, engine,
+							   version);
+
+		  if (num == 0
+		      || (embedded_protocol_engine && embedded_protocol_version
+			  && (strcmp(engine, embedded_protocol_engine) != 0
+			      || strcmp(version,
+					embedded_protocol_version) != 0))) {
+		    gtk_tree_store_append(store, &iter, &other_iter);
+		  } else {
+		    gtk_tree_store_insert_before(store, &iter,
+					       NULL, &other_iter);
+		  }
+		} else {
+		  gtk_tree_store_insert_before(store, &iter,
+					       NULL, &other_iter);
+		}
+
+		gtk_tree_store_set(store, &iter,
 				   ROOM_COLUMN_PTR, room,
 				   ROOM_COLUMN_NAME, name, -1);
 
 		if (ggzcore_room_get_closed(room)) {
-			closedname = ggz_malloc(strlen(name) + 3);
-			sprintf(closedname, "(%s)", name);
-			gtk_list_store_set(store, &iter,
-				ROOM_COLUMN_NAME, closedname, -1);
+			char closedname[strlen(name) + 3];
+
+			snprintf(closedname, sizeof(closedname),
+				 "(%s)", name);
+			gtk_tree_store_set(store, &iter,
+					   ROOM_COLUMN_NAME, closedname, -1);
 			ggz_free(closedname);
 		}
 
 		if (players >= 0) {
-			gtk_list_store_set(store, &iter,
+			gtk_tree_store_set(store, &iter,
 					   ROOM_COLUMN_PLAYERS, players, -1);
 		}
 	}
@@ -328,7 +359,7 @@ void update_room_list(void)
 
 GtkWidget *create_room_list(GtkWidget *window)
 {
-	GtkListStore *store;
+	GtkTreeStore *store;
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
@@ -336,7 +367,7 @@ GtkWidget *create_room_list(GtkWidget *window)
 
 
 	assert(ROOM_COLUMNS == 3);
-	store = gtk_list_store_new(ROOM_COLUMNS,
+	store = gtk_tree_store_new(ROOM_COLUMNS,
 				   G_TYPE_POINTER,
 				   G_TYPE_STRING,
 				   G_TYPE_INT);
