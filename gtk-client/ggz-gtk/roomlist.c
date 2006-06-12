@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8173 2006-06-12 02:26:00Z jdorje $
+ * $Id: roomlist.c 8174 2006-06-12 03:03:15Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -51,6 +51,7 @@ enum {
 	ROOM_COLUMNS
 };
 
+static GtkTreeIter *room_iter;
 static GtkWidget *room_list;
 
 static void client_join_room(GGZRoom *room)
@@ -284,6 +285,7 @@ static void update_iter_room(GtkTreeStore *store, GtkTreeIter *iter,
 	}
 }
 
+#if 0
 /* Updates rooms in the treestore. The user data can hold the room pointer
    for the room to be updated, or may be NULL for all rooms to be updated. */
 static gboolean tree_model_update_room(GtkTreeModel *store,
@@ -303,6 +305,7 @@ static gboolean tree_model_update_room(GtkTreeModel *store,
 	update_iter_room(GTK_TREE_STORE(store), iter, room);
 	return (room != NULL);
 }
+#endif
 
 void update_one_room(GGZRoom *room)
 {
@@ -311,8 +314,8 @@ void update_one_room(GGZRoom *room)
 	/* Retrieve the player list widget. */
 	store = GTK_TREE_STORE(lookup_widget(room_list, "room_list_store"));
 
-	gtk_tree_model_foreach(GTK_TREE_MODEL(store),
-			       tree_model_update_room, room);
+	update_iter_room(store, &room_iter[ggzcore_room_get_id(room)],
+			 room);
 }
 
 void update_room_list(void)
@@ -332,19 +335,20 @@ void update_room_list(void)
 			   ROOM_COLUMN_PTR, NULL,
 			   ROOM_COLUMN_NAME, _("Other Rooms"), -1);
 
+	room_iter = ggz_realloc(room_iter, numrooms * sizeof(*room_iter));
 	for (i = 0; i < numrooms; i++) {
 		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
-		GtkTreeIter iter;
 		GGZGameType *gt = ggzcore_room_get_gametype(room);
+		GtkTreeIter *iter = &room_iter[i];
 
 		if (gt && !can_launch_gametype(gt)) {
-			gtk_tree_store_append(store, &iter, &other_iter);
+			gtk_tree_store_append(store, iter, &other_iter);
 		} else {
-			gtk_tree_store_insert_before(store, &iter,
+			gtk_tree_store_insert_before(store, iter,
 						     NULL, &other_iter);
 		}
 
-		update_iter_room(store, &iter, room);
+		update_iter_room(store, iter, room);
 	}
 }
 
