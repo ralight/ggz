@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8172 2006-06-12 02:22:10Z jdorje $
+ * $Id: roomlist.c 8173 2006-06-12 02:26:00Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -366,14 +366,14 @@ GtkWidget *create_room_list(GtkWidget *window)
 	g_object_unref(store);
 
 	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes(_("Room"),
-							  renderer,
-				"text", ROOM_COLUMN_NAME, NULL);
+	column = gtk_tree_view_column_new_with_attributes("#", renderer,
+				"text", ROOM_COLUMN_PLAYERS, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes("#", renderer,
-				"text", ROOM_COLUMN_PLAYERS, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("Room"),
+							  renderer,
+				"text", ROOM_COLUMN_NAME, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	g_object_set_data(G_OBJECT(tree), "room_list_store", store);
