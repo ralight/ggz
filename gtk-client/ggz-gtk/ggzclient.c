@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 8170 2006-06-12 01:36:49Z jdorje $
+ * $Id: ggzclient.c 8171 2006-06-12 01:40:14Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -697,16 +697,6 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id,
 }
 
 
-static GGZHookReturn ggz_type_list(GGZServerEvent id,
-				   const void *event_data,
-				   const void *user_data)
-{
-	update_room_list();
-
-	return GGZ_HOOK_OK;
-}
-
-
 void ggz_sensitivity_init(void)
 {
 	GtkWidget *tmp;
@@ -1190,7 +1180,7 @@ void ggz_event_init(GGZServer * Server)
 				      ggz_motd_loaded);
 	ggzcore_server_add_event_hook(Server, GGZ_ROOM_LIST,
 				      ggz_room_list);
-	ggzcore_server_add_event_hook(Server, GGZ_TYPE_LIST, ggz_type_list);
+	/* Unused: GGZ_TYPE_LIST */
 	ggzcore_server_add_event_hook(Server, GGZ_SERVER_PLAYERS_CHANGED,
 				      ggz_num_players_changed);
 	ggzcore_server_add_event_hook(Server, GGZ_SERVER_ROOMS_CHANGED,
