@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8150 2006-06-09 22:58:20Z jdorje $
+ * $Id: spades.c 8179 2006-06-12 19:37:10Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -373,7 +373,7 @@ static void spades_set_player_message(player_t p)
 		game.data->get_bid_text(bid_text, sizeof(bid_text),
 					 game.players[p].bid);
 		if (*bid_text)
-			add_player_message(s, "Contract: %s (%d)\n", bid_text,
+			add_player_message(s, "Bid: %s (%d)\n", bid_text,
 					   contract);
 	} else
 		add_player_bid_message(p);
