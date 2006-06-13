@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 8001 2006-04-24 07:17:07Z josef $
+ * $Id: table.c 8190 2006-06-13 23:28:56Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -823,6 +823,7 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 #endif
 	GGZdModState cur = ggzdmod_get_state(mod);
 	GGZTableState origstate;
+	GGZTableState ggz_cur = table->state;
 
 	switch (cur) {
 	case GGZDMOD_STATE_WAITING:
@@ -831,17 +832,17 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 
 		/* FIXME: maybe we shouldn't keep track of table state
                    here any more? */
-		if (table->state != GGZ_TABLE_CREATED)
-			return;	
 		pthread_rwlock_wrlock(&table->lock);
 		table->state = GGZ_TABLE_WAITING;
 		pthread_rwlock_unlock(&table->lock);
-		
-		/* Signal owner that all is good */
-		table_launch_event(table->owner, E_OK, table->index);
+
+		if (ggz_cur == GGZ_TABLE_CREATED) {
+			/* Signal owner that all is good */
+			table_launch_event(table->owner, E_OK, table->index);
 	
-		/* Trigger a table update in this room */
-		table_event_enqueue(table, GGZ_TABLE_UPDATE_ADD);
+			/* Trigger a table update in this room */
+			table_event_enqueue(table, GGZ_TABLE_UPDATE_ADD);
+		}
 		return;
 		
 	case GGZDMOD_STATE_PLAYING:
