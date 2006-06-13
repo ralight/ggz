@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8114 2006-06-07 01:43:43Z jdorje $
+ * $Id: common.c 8185 2006-06-13 01:51:33Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -863,14 +863,42 @@ const char* get_player_name(player_t p)
 		return ggzdmod_get_spectator(game.ggz, sp).name;
 	} else {
 		GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
+		struct game_seat_t *player_seat
+		  = &game.seats[game.players[p].seat];
+		char name[128];
 	
-		if (seat.name)
-			return seat.name;
-		if (seat.type == GGZ_SEAT_OPEN)
+		switch (seat.type) {
+		case GGZ_SEAT_OPEN:
 			return "Empty Seat";
+		case GGZ_SEAT_PLAYER:
+			if (seat.name) return seat.name;
+			return "Unknown Seat";
+		case GGZ_SEAT_RESERVED:
+			if (!seat.name) return "Reserved Seat";
+			/* HACK: newlines are not allowed by the client.
+			   But putting this on one line may be too long. */
+			snprintf(name, sizeof(name), "Rsrv: %s",
+				 seat.name);
+			if (player_seat->name) ggz_free(player_seat->name);
+			player_seat->name = ggz_strdup(name);
+			return player_seat->name;
+		case GGZ_SEAT_ABANDONED:
+			if (!seat.name) return "Abandoned Seat";
+			/* HACK: newlines are not allowed by the client.
+			   But putting this on one line may be too long. */
+			snprintf(name, sizeof(name), "Abnd: %s",
+				 seat.name);
+			if (player_seat->name) ggz_free(player_seat->name);
+			player_seat->name = ggz_strdup(name);
+			return player_seat->name;
+		case GGZ_SEAT_BOT:
+			if (!seat.name) return "Bot";
+			return seat.name;
+		case GGZ_SEAT_NONE:
+			break;
+		}
 	}
-	assert(FALSE);
-	return "Unknown Player";
+	return "Unknown Seat";
 }
 
 GGZSeatType get_player_status(player_t p)
