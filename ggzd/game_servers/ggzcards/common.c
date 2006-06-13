@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8189 2006-06-13 21:41:59Z jdorje $
+ * $Id: common.c 8191 2006-06-13 23:33:08Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -203,6 +203,10 @@ static void newgame(void)
 	net_broadcast_newgame();
 	game.dealer = random() % game.num_players;
 	set_game_state(STATE_NEXT_HAND);
+
+	/* Set the table state to playing - indicating a game is in
+	   progress. */
+	ggzdmod_set_state(game.ggz, GGZDMOD_STATE_PLAYING);
 
 	ggz_debug(DBG_MISC, "Game start completed successfully.");
 
@@ -417,15 +421,13 @@ void handle_ggz_state_event(GGZdMod * ggz,
 	switch (new_state) {
 	case GGZDMOD_STATE_CREATED:
 	case GGZDMOD_STATE_WAITING:
-		/* Nothing needs to be done... */
+	case GGZDMOD_STATE_PLAYING:
+		/* Nothing needs to be done.  Other changes may already
+		   have been done in the join event. */
 		break;
 	case GGZDMOD_STATE_DONE:
 		/* Close down. */
 		handle_done_event();
-		break;
-	case GGZDMOD_STATE_PLAYING:
-		/* All other changes are done in the join event. */
-		assert(seats_full());
 		break;
 	}
 
@@ -450,7 +452,6 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, const void *data)
 			 || old_seat->type == GGZ_SEAT_BOT)
 	                && (new_seat.type != old_seat->type
 	                    || strcmp(old_seat->name, new_seat.name));
-	GGZdModState new_state;
 
 	/* There's a big problem here since if the players join/leave before
 	   the game type is set, we won't know the seat number of the player
@@ -509,18 +510,10 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, const void *data)
 	
 	/* Figure out what state to move to.  The state is changed up here
 	   so that the sync and other actions (below) are handled correctly. */
-	if (seats_full()) {
-		/* If all seats are full, start playing. */
-		new_state = GGZDMOD_STATE_PLAYING;
-	} else if (seats_empty()) {
-		/* If all seats are empty, the table is done. */
-		new_state = GGZDMOD_STATE_DONE;
-	} else {
-		/* If some seats are empty, wait for them to fill. */
-		new_state = GGZDMOD_STATE_WAITING;
+	if (seats_empty()) {
+		/* When all seats are empty the table is finished. */
+		ggzdmod_set_state(game.ggz, GGZDMOD_STATE_DONE);
 	}
-	if (ggzdmod_set_state(game.ggz, new_state) < 0)
-		assert(FALSE);
 
 	if (is_join) {
 		/* Send all table info to joiner.  This will also make any new
@@ -635,6 +628,12 @@ void handle_gameover_event(int winner_cnt, player_t * winners)
 	}
 
 	set_game_state(STATE_NOTPLAYING);
+
+	/* Set table state to waiting - indicating there is no game in
+	   progress. Note that if there is a game but all players aren't
+	   present, the game will wait but that's still the PLAYING
+	   state. */
+	ggzdmod_set_state(game.ggz, GGZDMOD_STATE_WAITING);
 
 	for (p = 0; p < game.num_players; p++)
 		set_player_message(p);	/* some data could have changed */
