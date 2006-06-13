@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8184 2006-06-13 00:17:44Z jdorje $
+ * $Id: spades.c 8186 2006-06-13 02:11:03Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -362,23 +362,32 @@ static void spades_set_player_message(player_t p)
 	clear_player_message(p);
 	add_player_rating_message(p);
 	add_player_score_message(p);
-	
+
 	if (game.state == STATE_NOTPLAYING)
 		return;
-	
+
+	add_player_message(s, "Bags: %d\n", GSPADES.bags[(p % 2)]);
+
 	/* we show both the individual and team contract, if applicable.
 	   But is this really the best way to tell if it's applicable? */
 	if (game.state != STATE_NEXT_BID
 	    && game.state != STATE_WAIT_FOR_BID) {
 		char bid_text[512];
+#if 0
 		int contract =
 			game.players[p].bid.sbid.val +
 			game.players[(p + 2) % 4].bid.sbid.val;
+#endif
 		game.data->get_bid_text(bid_text, sizeof(bid_text),
 					 game.players[p].bid);
-		if (*bid_text)
+		if (*bid_text) {
+#if 0 /* Disabled - this is deemed too confusing */
 			add_player_message(s, "Bid: %s (%d)\n", bid_text,
 					   contract);
+#else
+			add_player_message(s, "Bid: %s\n", bid_text);
+#endif
+		}
 	} else
 		add_player_bid_message(p);
 	
