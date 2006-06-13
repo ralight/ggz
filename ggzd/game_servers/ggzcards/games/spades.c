@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8179 2006-06-12 19:37:10Z jdorje $
+ * $Id: spades.c 8184 2006-06-13 00:17:44Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -254,7 +254,8 @@ static void spades_get_bid(void)
 {
 	int i;
 	/* partner's bid (value) */
-	char pard = game.players[(game.next_bid + 2) % 4].bid.sbid.val;
+	struct game_player_t *partner = &game.players[(game.next_bid + 2) % 4];
+	char pard = partner->bid.sbid.val;
 
 	if (GSPADES.double_nil_value > 0 && (game.bid_count % 2 == 0)) {
 		/* A "blind" bid - you must first choose to bid blind (or
@@ -262,14 +263,17 @@ static void spades_get_bid(void)
 
 		/* TODO: make sure partner made minimum bid */
 		add_sbid(0, 0, SPADES_NO_BLIND);
-		add_sbid(0, 0, SPADES_DOUBLE_NIL);
+		if (partner->bid_count == 0 ||
+		    pard >= GSPADES.minimum_team_bid) {
+			add_sbid(0, 0, SPADES_DOUBLE_NIL);
+		}
 	} else {
 		/* A regular bid */
 
 		for (i = 0; i <= game.hand_size - pard; i++) {
 			/* the second bidder on each team must make sure the
 			   minimum bid count is met */
-			if (game.bid_count >= 2 &&
+			if (partner->bid_count > 0 &&
 			    pard + i < GSPADES.minimum_team_bid)
 				continue;
 			add_sbid(i, 0, 0);
