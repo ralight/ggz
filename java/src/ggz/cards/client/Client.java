@@ -64,6 +64,8 @@ public class Client {
 
     protected boolean isNewTrick;
 
+    protected String scores;
+
     protected CardGameHandler game;
 
     public int get_num_players() {
@@ -124,10 +126,17 @@ public class Client {
     public TrickInfo get_last_trick() {
         return this.lastTrick;
     }
+    
+    public String get_scores() {
+        return this.scores;
+    }
 
     private void handle_text_message() throws IOException {
         String mark = this.fd_in.read_string();
         String message = this.fd_in.read_string();
+        if ("Scores".equals(mark)) {
+            scores = message;
+        }
         game.set_text_message(mark, message);
     }
 
@@ -813,7 +822,7 @@ public class Client {
         public Card getCardForPlayer(int playerNum) {
             return ((Card[]) cards.get(playerNum))[0];
         }
-        
+
         public int getNumCards() {
             return cards.size();
         }

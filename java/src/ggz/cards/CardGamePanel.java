@@ -31,6 +31,8 @@ import ggz.games.GamePanel;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,11 +46,13 @@ import java.util.Random;
 import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -83,6 +87,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected BridgeBidPanel bridgeBidPanel;
 
+    protected JPanel southEastPanel;
+
+    protected JButton scoresButton;
+
+    protected ScoresDialog scoresDialog;
+
     protected JButton lastTrickButton;
 
     public void init(ModGame mod) throws IOException {
@@ -105,9 +115,22 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         lastTrickButton.setToolTipText("Last Trick");
         lastTrickButton.setVisible(false);
         lastTrickButton.addActionListener(this);
-        lastTrickButton.setBorder(null);
-        table.add(lastTrickButton, new TableConstraints(
-                TableConstraints.LAST_TRICK_BUTTON));
+        // lastTrickButton.setBorder(null);
+        lastTrickButton.setBorder(BorderFactory.createEtchedBorder());
+        scoresButton = new JButton(new ImageIcon(getClass().getResource(
+                "images/scores.gif")));
+        scoresButton.setOpaque(true);
+        scoresButton.setToolTipText("Scores");
+        scoresButton.setVisible(false);
+        scoresButton.addActionListener(this);
+        // scoresButton.setBorder(null);
+        scoresButton.setBorder(BorderFactory.createEtchedBorder());
+        southEastPanel = new JPanel(new GridLayout(1, 2, 0, 0));
+        southEastPanel.setOpaque(false);
+        southEastPanel.add(lastTrickButton);
+        southEastPanel.add(scoresButton);
+        table.add(southEastPanel, new TableConstraints(
+                TableConstraints.SOUTH_EAST_CORNER));
     }
 
     public void alert_state(Client.GameState oldState, Client.GameState newState) {
@@ -496,6 +519,25 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
     }
 
+    protected void showScores() {
+        Frame frame = JOptionPane.getFrameForComponent(this);
+        String scores = cardClient.get_scores();
+        if (scoresDialog == null) {
+            scoresDialog = new ScoresDialog(frame);
+            scoresDialog.setResizable(false);
+            // scoresDialog.setLocationRelativeTo(frame);
+            scoresDialog
+                    .setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            scoresDialog.setModal(false);
+        }
+        scoresDialog.setScores(scores);
+        if (!scoresDialog.isVisible()) {
+            scoresDialog.setLocation(scoresButton.getLocationOnScreen());
+            OptionDialog.fixLocation(scoresDialog);
+            scoresDialog.setVisible(true);
+        }
+    }
+
     public void alert_server(Socket fd) {
         // Don't need the socket so ignore.
         SwingUtilities.invokeLater(new Runnable() {
@@ -848,6 +890,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             } catch (IOException ex) {
                 handleException(ex);
             }
+        } else if (event.getSource() == scoresButton) {
+            showScores();
         }
     }
 
@@ -905,9 +949,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 JLabel label = playerLabels[player_num];
                 label.setText("<HTML><B>"
                         + cardClient.get_nth_player(player_num).get_name()
-                        + "</B><BR><EM><SPAN style='font-weight:normal'>"
-                        + replace(message, "\n", "<BR>")
-                        + "</span></EM></HTML>");
+                        // + "</B><BR><EM><SPAN style='font-weight:normal'>"
+                        + "<BR>" + replace(message, "\n", "<BR>")
+                        // + "</span></EM></HTML>");
+                        + "</B></HTML>");
                 table.invalidate();
                 table.validate();
             }
@@ -949,7 +994,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 } else if ("Options".equals(mark)) {
                     table.setOptionsSummary(replace(message, "\n", "<BR>"));
                 } else if ("Scores".equals(mark)) {
-                    // Ignore for now, player messages already show scores.
+                    scoresButton.setVisible(true);
+                    if (scoresDialog != null) {
+                        scoresDialog.setScores(message);
+                    }
                 } else if ("Bid History".equals(mark)) {
                     // Ignore for now, player messages already show bids.
                 } else if ("Trump".equals(mark)) {

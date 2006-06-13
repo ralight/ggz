@@ -45,7 +45,7 @@ public class TableLayout implements LayoutManager2 {
 
     private Component[] cardsInTrick = new Component[4];
 
-    private Component lastTrickButton;
+    private Component southEastCorner;
 
     public TableLayout(int cardWidth, int cardHeight) {
         this.cardWidth = cardWidth;
@@ -95,8 +95,8 @@ public class TableLayout implements LayoutManager2 {
             case TableConstraints.BUTTON_PANEL:
                 buttonPanel = comp;
                 break;
-            case TableConstraints.LAST_TRICK_BUTTON:
-                lastTrickButton = comp;
+            case TableConstraints.SOUTH_EAST_CORNER:
+                southEastCorner = comp;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -206,11 +206,11 @@ public class TableLayout implements LayoutManager2 {
      * @param parent
      */
     protected void layoutLastTrickButton(Container parent) {
-        if (lastTrickButton != null) {
-            lastTrickButton.setSize(lastTrickButton.getPreferredSize());
-            lastTrickButton.setLocation(parent.getWidth()
-                    - lastTrickButton.getWidth(), parent.getHeight()
-                    - lastTrickButton.getHeight());
+        if (southEastCorner != null) {
+            southEastCorner.setSize(southEastCorner.getPreferredSize());
+            southEastCorner.setLocation(parent.getWidth()
+                    - southEastCorner.getWidth(), parent.getHeight()
+                    - southEastCorner.getHeight());
         }
     }
 

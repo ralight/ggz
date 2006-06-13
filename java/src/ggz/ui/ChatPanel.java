@@ -176,16 +176,19 @@ public class ChatPanel extends JPanel {
 
         assertOnEventDispatchThread();
 
-        // Handle the /me command.
+        // Handle the /me command and other emotes.
         if (message != null && message.length() >= 4
                 && message.toLowerCase().startsWith("/me ")) {
             emote = "{0}" + message.substring(3);
-        }
-
-        if (type == ChatType.GGZ_CHAT_BEEP) {
+        } else if (type == ChatType.GGZ_CHAT_BEEP) {
             emote = messages.getString("ChatPanel.Beep");
         }
 
+        if (type == ChatType.GGZ_CHAT_PERSONAL) {
+            // TODO Open a private chat window instead.
+            appendCommandText("You have received a private message. (below)");
+        }
+        
         if ("MegaGrub".equals(sender)) {
             textStyle = senderText;
         } else if (friendsList != null
@@ -207,9 +210,10 @@ public class ChatPanel extends JPanel {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+        // Use some dumb large value for the rectangle height to make sure it
+        // scrolls as far as it can.
         chatArea.scrollRectToVisible(new Rectangle(0, chatArea.getHeight(), 1,
-                1));
-        // .getHeight() - 2, 1, 1));
+                1000));
     }
 
     public String getMessage() {

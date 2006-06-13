@@ -516,8 +516,13 @@ public class RoomPanel extends JPanel implements RoomListener,
                             buffer.append(messages
                                     .getString("RoomPanel.SeatOpen"));
                         } else if (type == SeatType.GGZ_SEAT_RESERVED) {
-                            buffer.append(messages
-                                    .getString("RoomPanel.SeatReserved"));
+                            buffer
+                                    .append(MessageFormat
+                                            .format(
+                                                    messages
+                                                            .getString("RoomPanel.SeatReserved"),
+                                                    new Object[] { table
+                                                            .get_nth_player_name(player_num) }));
                         }
                     }
                     buffer.append("</OL></HTML>");

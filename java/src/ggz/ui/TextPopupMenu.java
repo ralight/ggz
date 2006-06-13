@@ -156,11 +156,16 @@ class TextPopupMenu extends MouseAdapter implements ClipboardOwner {
                 throw new NullPointerException("flavor");
             }
 
-            Transferable cntnts = clipboard.getContents(null);
-            if (cntnts == null) {
+            try {
+                Transferable cntnts = clipboard.getContents(null);
+                if (cntnts == null) {
+                    return false;
+                }
+                return cntnts.isDataFlavorSupported(flavor);
+            } catch (IllegalStateException e) {
+                // The clipboard is currently unavailable for some reason.
                 return false;
             }
-            return cntnts.isDataFlavorSupported(flavor);
         }
 
         public void actionPerformed(ActionEvent e) {
