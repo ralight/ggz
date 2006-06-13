@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8185 2006-06-13 01:51:33Z jdorje $
+ * $Id: common.c 8189 2006-06-13 21:41:59Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -590,7 +590,7 @@ void handle_newgame_event(player_t player)
 		    player, get_player_name(player));
 	game.players[player].ready = TRUE;
 	if (!are_options_set()) {
-		if (player == game.host)
+		if (game.host >= 0 && player == game.host)
 			request_client_options();
 	} else
 		(void) try_to_start_game();
@@ -713,7 +713,7 @@ void send_sync(player_t p)
 	    && game.players[p].is_playing)
 		net_send_play_request(p, game.players[p].play_seat);
 		
-	if (p == game.host) {
+	if (game.host >= 0 && p == game.host) {
 		if (game.data == NULL)
 			request_client_gametype();
 		else if (game.players[game.host].ready &&
