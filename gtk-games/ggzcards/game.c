@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 6663 2005-01-14 03:19:43Z jdorje $
+ * $Id: game.c 8188 2006-06-13 19:01:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -78,7 +78,9 @@ gboolean game_handle_io(GIOChannel * source, GIOCondition cond,
 			gpointer data)
 {
 	ggz_debug(DBG_MAIN, "Received data froms server.");
-	client_handle_server();
+	if (client_handle_server() < 0) {
+		gtk_main_quit();
+	}
 	return TRUE;
 }
 
