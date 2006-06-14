@@ -146,16 +146,20 @@ public class TablePanel extends JPanel {
 
     public void showButtons() {
         add(buttonPanel, new TableConstraints(TableConstraints.BUTTON_PANEL));
-//        buttonPanel.setSize(buttonPanel.getPreferredSize());
-//        while (buttonPanel.getWidth() + 200 > getWidth()) {
-//            gridLayout.setRows(gridLayout.getRows() + 1);
-//            buttonPanel.setSize(buttonPanel.getPreferredSize());
-//        }
-//        buttonPanel.setLocation(
-//                (getWidth() / 2) - (buttonPanel.getWidth() / 2), getHeight()
-//                        - (buttonPanel.getHeight() + 110));
+        // buttonPanel.setSize(buttonPanel.getPreferredSize());
+        // while (buttonPanel.getWidth() + 200 > getWidth()) {
+        // gridLayout.setRows(gridLayout.getRows() + 1);
+        // buttonPanel.setSize(buttonPanel.getPreferredSize());
+        // }
+        // buttonPanel.setLocation(
+        // (getWidth() / 2) - (buttonPanel.getWidth() / 2), getHeight()
+        // - (buttonPanel.getHeight() + 110));
         invalidate();
         validate();
+        Component firstButton = buttonPanel.getComponent(0);
+        if (firstButton != null) {
+            firstButton.requestFocus();
+        }
     }
 
     public void hideButtons() {
@@ -300,18 +304,18 @@ public class TablePanel extends JPanel {
             graphics.dispose();
         }
     }
-    
+
     /**
      * Gets the components index. Can be removed when we move to JDK 1.5.
      */
     public int getComponentZOrderJDK14(Component comp) {
-    	Component[] components = getComponents();
-    	for (int i = 0; i < components.length; i++) {
-    		if (components[i] == comp) {
-    			return i;
-    		}
-    	}
-    	return -1;
+        Component[] components = getComponents();
+        for (int i = 0; i < components.length; i++) {
+            if (components[i] == comp) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void animate(int numSprites, Sprite[] sprite, Point[] endPos,
@@ -492,7 +496,7 @@ public class TablePanel extends JPanel {
          * image around its center.
          */
         private void createRotateBuffer(int width, int height) {
-            //int hypotenuse = (int) Math.round(Math.hypot(width, height));
+            // int hypotenuse = (int) Math.round(Math.hypot(width, height));
             int hypotenuse = hypot(width, height);
             int w = hypotenuse;
             int h = hypotenuse;
@@ -504,9 +508,10 @@ public class TablePanel extends JPanel {
             g2d.drawImage(rotatedImage, 0, 0, rotatedImage.getWidth(),
                     rotatedImage.getHeight(), this);
         }
-        
+
         private int hypot(int width, int height) {
-        	return (int)Math.round(Math.sqrt((width*width) + (height*height)));
+            return (int) Math.round(Math.sqrt((width * width)
+                    + (height * height)));
         }
     }
 }

@@ -25,6 +25,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 public class TableLayout implements LayoutManager2 {
+    private boolean packCardsInHand = true;
+
     private int cardFanGap = 17;
 
     private int cardWidth;
@@ -46,6 +48,8 @@ public class TableLayout implements LayoutManager2 {
     private Component[] cardsInTrick = new Component[4];
 
     private Component southEastCorner;
+
+    private Component southWestCorner;
 
     public TableLayout(int cardWidth, int cardHeight) {
         this.cardWidth = cardWidth;
@@ -97,6 +101,9 @@ public class TableLayout implements LayoutManager2 {
                 break;
             case TableConstraints.SOUTH_EAST_CORNER:
                 southEastCorner = comp;
+                break;
+            case TableConstraints.SOUTH_WEST_CORNER:
+                southWestCorner = comp;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -175,7 +182,8 @@ public class TableLayout implements LayoutManager2 {
 
         layoutStatusLabel(parent);
         layoutBidPanel(parent);
-        layoutLastTrickButton(parent);
+        layoutSouthEastCorner(parent);
+        layoutSouthWestCorner(parent);
     }
 
     protected void layoutStatusLabel(Container parent) {
@@ -205,12 +213,20 @@ public class TableLayout implements LayoutManager2 {
      * 
      * @param parent
      */
-    protected void layoutLastTrickButton(Container parent) {
+    protected void layoutSouthEastCorner(Container parent) {
         if (southEastCorner != null) {
             southEastCorner.setSize(southEastCorner.getPreferredSize());
             southEastCorner.setLocation(parent.getWidth()
                     - southEastCorner.getWidth(), parent.getHeight()
                     - southEastCorner.getHeight());
+        }
+    }
+
+    protected void layoutSouthWestCorner(Container parent) {
+        if (southWestCorner != null) {
+            southWestCorner.setSize(southWestCorner.getPreferredSize());
+            southWestCorner.setLocation(0, parent.getHeight()
+                    - southWestCorner.getHeight());
         }
     }
 
@@ -244,7 +260,7 @@ public class TableLayout implements LayoutManager2 {
 
     protected void layoutCardsInHand(Container parent, int playerIndex,
             Component[] cards) {
-        Rectangle handRect = getMaxHandRect(parent, playerIndex);
+        Rectangle handRect = getHandRect(parent, playerIndex);
         int x = handRect.x;
         int y = handRect.y;
         if (cards != null) {
@@ -255,7 +271,9 @@ public class TableLayout implements LayoutManager2 {
                     if (card != null) {
                         card.setLocation(x, y);
                     }
-                    x += cardFanGap;
+                    if (!packCardsInHand || card != null) {
+                        x += cardFanGap;
+                    }
                 }
                 break;
             case 1: // West
@@ -264,7 +282,9 @@ public class TableLayout implements LayoutManager2 {
                     if (card != null) {
                         card.setLocation(x, y);
                     }
-                    y += cardFanGap;
+                    if (!packCardsInHand || card != null) {
+                        y += cardFanGap;
+                    }
                 }
                 break;
             case 2: // North
@@ -273,7 +293,9 @@ public class TableLayout implements LayoutManager2 {
                     if (card != null) {
                         card.setLocation(x, y);
                     }
-                    x += cardFanGap;
+                    if (!packCardsInHand || card != null) {
+                        x += cardFanGap;
+                    }
                 }
                 break;
             case 3: // East
@@ -282,7 +304,9 @@ public class TableLayout implements LayoutManager2 {
                     if (card != null) {
                         card.setLocation(x, y);
                     }
-                    y += cardFanGap;
+                    if (!packCardsInHand || card != null) {
+                        y += cardFanGap;
+                    }
                 }
                 break;
             }
@@ -295,11 +319,20 @@ public class TableLayout implements LayoutManager2 {
     }
 
     protected Rectangle getMaxHandRect(Container parent, int playerIndex) {
+        return getHandRect(parent, playerIndex, maxHandSize);
+    }
+
+    protected Rectangle getHandRect(Container parent, int playerIndex) {
+        return getHandRect(parent, playerIndex, getHandSize(playerIndex));
+    }
+
+    protected Rectangle getHandRect(Container parent, int playerIndex,
+            int handSize) {
         Rectangle rect = new Rectangle(0, 0, 0, 0);
         switch (playerIndex) {
         case 0: // South
         case 2: // North
-            rect.width = ((maxHandSize - 1) * cardFanGap) + cardWidth;
+            rect.width = ((handSize - 1) * cardFanGap) + cardWidth;
             rect.height = cardHeight;
             int labelWidth = playerLabels[playerIndex] == null ? 0
                     : playerLabels[playerIndex].getWidth();
@@ -316,7 +349,7 @@ public class TableLayout implements LayoutManager2 {
         case 1: // WEST
         case 3: // EAST
             rect.width = cardHeight;
-            rect.height = ((maxHandSize - 1) * cardFanGap) + cardWidth;
+            rect.height = ((handSize - 1) * cardFanGap) + cardWidth;
             int labelHeight = playerLabels[playerIndex] == null ? 0
                     : playerLabels[playerIndex].getHeight();
             padding = (parent.getHeight() - (labelHeight + rect.height)) / 2;
@@ -331,6 +364,28 @@ public class TableLayout implements LayoutManager2 {
             break;
         }
         return rect;
+    }
+
+    /**
+     * Gets the number of cards that we need to reserve space for.
+     * 
+     * @param player_pos
+     * @return
+     */
+    protected int getHandSize(int player_pos) {
+        if (packCardsInHand) {
+            // Need to count the non-null cards.
+            int count = 0;
+            Component[] hand = cardsInHand[player_pos];
+            for (int cardIndex = 0; cardIndex < hand.length; cardIndex++) {
+                if (hand[cardIndex] != null) {
+                    count++;
+                }
+            }
+            return count;
+        } else {
+            return maxHandSize;
+        }
     }
 
     public Point getTrickPos(Container parent, int player) {
@@ -427,12 +482,22 @@ public class TableLayout implements LayoutManager2 {
                 buttonPanel = null;
             }
         }
+        if (!removed && southEastCorner != null) {
+            if (southEastCorner == comp) {
+                southEastCorner = null;
+            }
+        }
+        if (!removed && southWestCorner != null) {
+            if (southWestCorner == comp) {
+                southWestCorner = null;
+            }
+        }
     }
 
     public int getCardWidth() {
         return cardWidth;
     }
-    
+
     public int getCardHeight() {
         return cardHeight;
     }

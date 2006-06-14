@@ -213,7 +213,7 @@ public class Mod implements ModGGZ, ModGame {
 			SpectatorSeat old_seat;
 			old_seat = get_spectator_seat(seat.get_num());
 			if (old_seat == null
-					|| !seat.get_name().equals(old_seat.get_name())) {
+					|| !old_seat.get_name().equals(seat.get_name())) {
 				ehandler.handle_spectator_seat(seat);
 				// _io_ggz_send_spectator_seat(ggzmod->fd, seat) < 0) {
 				// _ggzmod_ggz_error(ggzmod, "Error writing to game");
@@ -299,15 +299,14 @@ public class Mod implements ModGGZ, ModGame {
 	 * @return A valid GGZSpectator structure, if given a valid seat.
 	 */
 	public SpectatorSeat get_spectator_seat(int num) {
-		SpectatorSeat seat = new SpectatorSeat(num, null);
-
 		if (num >= 0 && num < this.num_spectator_seats) {
-			int entry;
-			entry = this.spectator_seats.indexOf(seat);
-			if (entry > -1)
-				seat = (SpectatorSeat) this.spectator_seats.get(entry);
+            for (int seat_num = 0; seat_num < this.spectator_seats.size(); seat_num++) {
+                SpectatorSeat seat = (SpectatorSeat) this.spectator_seats.get(seat_num);
+                if (num == seat.get_num()) {
+                    return seat;
+                }
+            }
 		}
-
 		return null;
 	}
 

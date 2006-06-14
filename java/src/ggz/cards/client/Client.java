@@ -683,19 +683,22 @@ public class Client {
 
         log.fine("Sending language " + lang + " to the server.");
 
-        this.fd_out.write_opcode(ClientOpCode.MSG_LANGUAGE);
-        this.fd_out.write_string(lang);
+        fd_out.write_opcode(ClientOpCode.MSG_LANGUAGE);
+        fd_out.write_string(lang);
+        fd_out.end_packet();
     }
 
     /* A newgame message tells the server to start a new game. */
     public void send_newgame() throws IOException {
         fd_out.write_opcode(ClientOpCode.RSP_NEWGAME);
+        fd_out.end_packet();
     }
 
     /* A bid message tells the server our choice for a bid. */
     public void send_bid(int bid) throws IOException {
         fd_out.write_opcode(ClientOpCode.RSP_BID);
         fd_out.writeInt(bid);
+        fd_out.end_packet();
     }
 
     /* An options message tells the server our choices for options. */
@@ -706,23 +709,30 @@ public class Client {
         for (int i = 0; i < option_cnt; i++) {
             fd_out.writeInt(options[i]);
         }
+        fd_out.end_packet();
     }
 
     /* A play message tells the server our choice for a play. */
     public void send_play(Card card) throws IOException {
         fd_out.write_opcode(ClientOpCode.RSP_PLAY);
         fd_out.write_card(card);
+        fd_out.end_packet();
     }
 
     /* A sync request asks for a sync from the server. */
     private void send_sync_request() throws IOException {
         log.fine("Sending sync request to server.");
         fd_out.write_opcode(ClientOpCode.REQ_SYNC);
+        fd_out.end_packet();
     }
 
     /* This function handles any input from the server. */
     protected void handle_server_input() throws IOException {
-        /* Read the opcode */
+        // Skip past the packet size, we don't need it since
+        // we are using blocking sockets so we just keep 
+        // reading until we have what we need.
+//        short packetSize = this.fd_in.read_header();
+//        log.fine("New packet received from server. size=" + packetSize);
         ServerOpCode opcode = this.fd_in.read_opcode();
 
         log.fine("Received " + opcode + " opcode from the server.");

@@ -69,6 +69,14 @@ public class GamePanel extends JPanel implements ModEventHandler {
         this.ggzMod = mod;
         mod.add_mod_event_handler(this);
     }
+    
+    protected void quit() {
+        // Do the same as if we were disconnected. handle_disconnect()
+        // will be called again but that's fine. We put all the stuff in
+        // there because sometimes we get disconnected without
+        // initiating it ourselves.
+        handle_disconnect();
+    }
 
     public void handle_chat(final String player, final String msg) {
         // Can't ignore messages because we need to handle the /table command,
@@ -96,17 +104,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
         frame.getContentPane().add(this, BorderLayout.CENTER);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                try {
-                    /* Disconnect */
-                    ggzMod.set_state(ModState.GGZMOD_STATE_DONE);
-                    // mod.disconnect();
-                    // ggz_error_msg_exit("Couldn't disconnect from ggz.");
-
-                    log.fine("Client disconnected.");
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                e.getWindow().dispose();
+                quit();
             }
         });
         frame.setSize(800, 540);
@@ -133,7 +131,22 @@ public class GamePanel extends JPanel implements ModEventHandler {
      * Called when the core client disconnects.
      */
     public void handle_disconnect() {
-        JOptionPane.getFrameForComponent(this).dispose();
+        // We call this when we want to leave (close window) but it's also
+        // called when we have left, both after requesting a leave and after
+        // being booted.
+        if (ggzMod.get_state() != ModState.GGZMOD_STATE_DONE) {
+            try {
+                /* Disconnect */
+                ggzMod.set_state(ModState.GGZMOD_STATE_DONE);
+                // mod.disconnect();
+                // ggz_error_msg_exit("Couldn't disconnect from ggz.");
+
+                log.fine("Client disconnected.");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            JOptionPane.getFrameForComponent(this).dispose();
+        }
     }
 
     public void handle_server_fd(Socket fd) throws IOException {

@@ -217,9 +217,7 @@ public class Table {
         }
 
         oldseat = this.seats[seat.index];
-        this.seats[seat.index].index = seat.index;
-        this.seats[seat.index].type = seat.type;
-        this.seats[seat.index].name = seat.name;
+        this.seats[seat.index] = seat;
 
         /* Check for specific seat changes */
         if (seat.type == SeatType.GGZ_SEAT_PLAYER) {
@@ -273,7 +271,8 @@ public class Table {
                 newLength = newLength > 0 ? newLength * 2 : 1;
             }
 
-            log.fine("Increasing number of spectator seats to " + newLength + ".");
+            log.fine("Increasing number of spectator seats to " + newLength
+                    + ".");
 
             TableSeat[] oldArray = this.spectator_seats;
             this.spectator_seats = new TableSeat[newLength];
@@ -283,13 +282,13 @@ public class Table {
             }
 
             for (int i = oldLength; i < newLength; i++) {
-                this.spectator_seats[i] = new TableSeat(i, SeatType.GGZ_SEAT_NONE, null);
+                this.spectator_seats[i] = new TableSeat(i,
+                        SeatType.GGZ_SEAT_NONE, null);
             }
         }
 
         oldSeatName = this.spectator_seats[seat.index].name;
-        this.spectator_seats[seat.index].index = seat.index;
-        this.spectator_seats[seat.index].name = seat.name;
+        this.spectator_seats[seat.index] = seat;
 
         /* Check for specific seat changes */
         if (seat.name != null) {
@@ -300,7 +299,8 @@ public class Table {
         }
 
         if (oldSeatName != null) {
-            log.fine(oldSeatName + " stopped spectating seat at table " + this.id);
+            log.fine(oldSeatName + " stopped spectating seat at table "
+                    + this.id);
             if (this.room != null) {
                 this.room.player_set_table(oldSeatName, -1);
             }
@@ -316,8 +316,8 @@ public class Table {
             if (this.id == game_table) {
                 game.set_spectator_seat(seat);
             }
-            
-            if (!me.equals(seat.name)) {
+
+            if (me.equals(seat.name)) {
                 game.set_player(true, seat.index);
                 if (game_table < 0) {
                     game.set_table(game.get_room_id(), this.id);

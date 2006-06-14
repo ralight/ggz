@@ -23,19 +23,33 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-public class ScoresDialog extends JDialog {
+public class ScoresDialog extends JDialog implements ActionListener {
     private JLabel scoresLabel;
 
     public ScoresDialog(Frame owner) {
         super(owner, "Scores");
+        JPanel scoresPanel = new JPanel(new FlowLayout());
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton closeButton = new JButton("Close");
         scoresLabel = new JLabel();
         scoresLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        getContentPane().setLayout(new FlowLayout());
-        getContentPane().add(scoresLabel, BorderLayout.NORTH);
+        scoresPanel.setOpaque(false);
+        scoresPanel.add(scoresLabel);
+        buttonPanel.setOpaque(false);
+        buttonPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, SystemColor.textText));
+        buttonPanel.add(closeButton);
+        closeButton.addActionListener(this);
+        getContentPane().add(scoresPanel, BorderLayout.NORTH);
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         getContentPane().setBackground(SystemColor.text);
         setMinimumSize(new Dimension(200, 200));
     }
@@ -52,5 +66,9 @@ public class ScoresDialog extends JDialog {
         invalidate();
         validate();
         repaint();
+    }
+    
+    public void actionPerformed(ActionEvent event) {
+        dispose();
     }
 }

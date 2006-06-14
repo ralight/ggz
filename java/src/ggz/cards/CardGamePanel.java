@@ -95,6 +95,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected JButton lastTrickButton;
 
+    protected JButton quitButton;
+    
     public void init(ModGame mod) throws IOException {
         super.init(mod);
         cardClient = new Client();
@@ -131,6 +133,23 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         southEastPanel.add(scoresButton);
         table.add(southEastPanel, new TableConstraints(
                 TableConstraints.SOUTH_EAST_CORNER));
+
+        JPanel southWestPanel = new JPanel(new GridLayout(2, 1, 2, 2));
+        JButton standButton = new JButton(new SeatStandAction());
+        standButton.setOpaque(false);
+        standButton.setForeground(Color.white);
+        standButton.setFocusable(false);
+        quitButton = new JButton("Quit");
+        quitButton.addActionListener(this);
+        quitButton.setOpaque(false);
+        quitButton.setForeground(Color.white);
+        quitButton.setFocusable(false);
+        southWestPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        southWestPanel.setOpaque(false);
+        southWestPanel.add(standButton);
+        southWestPanel.add(quitButton);
+        table.add(southWestPanel, new TableConstraints(
+                TableConstraints.SOUTH_WEST_CORNER));
     }
 
     public void alert_state(Client.GameState oldState, Client.GameState newState) {
@@ -269,6 +288,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     }
                 } else {
                     label.setText(player.get_name());
+                    label.getClientProperty("ggz.cards.popupMenu");
                 }
 
                 // Position the labels.
@@ -337,23 +357,28 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             // The seat is open (unoccupied).
             menu = new JPopupMenu("Player");
             menu.add(new SeatBotAction(seat_num));
+            menu.add(new SeatSitAction(seat_num));
         } else if (type == SeatType.GGZ_SEAT_BOT) {
             // The seat has a bot (AI) in it.
             menu = new JPopupMenu("Player");
             menu.add(new SeatOpenAction(seat_num));
+            menu.add(new SeatSitAction(seat_num));
         } else if (type == SeatType.GGZ_SEAT_PLAYER) {
             // The seat has a regular player in it.
             menu = new JPopupMenu("Player");
             menu.add(new SeatBootAction(seat_num));
+            menu.add(new SeatSitAction(seat_num));
         } else if (type == SeatType.GGZ_SEAT_RESERVED) {
             // The seat is reserved for a player.
             menu = new JPopupMenu("Player");
             menu.add(new SeatBotAction(seat_num));
             menu.add(new SeatOpenAction(seat_num));
+            menu.add(new SeatSitAction(seat_num));
         } else if (type == SeatType.GGZ_SEAT_ABANDONED) {
             // The seat is abandoned by a player.
             menu = new JPopupMenu("Player");
             menu.add(new SeatBotAction(seat_num));
+            menu.add(new SeatSitAction(seat_num));
         }
         playerLabels[seat_num].putClientProperty("ggz.cards.popupMenu", menu);
     }
@@ -892,6 +917,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             }
         } else if (event.getSource() == scoresButton) {
             showScores();
+        } else if (event.getSource() == quitButton) {
+            quit();
         }
     }
 
@@ -949,10 +976,9 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 JLabel label = playerLabels[player_num];
                 label.setText("<HTML><B>"
                         + cardClient.get_nth_player(player_num).get_name()
-                        // + "</B><BR><EM><SPAN style='font-weight:normal'>"
-                        + "<BR>" + replace(message, "\n", "<BR>")
-                        // + "</span></EM></HTML>");
-                        + "</B></HTML>");
+                        + "</B><BR><EM><SPAN style='font-weight:normal'>"
+                        + replace(message, "\n", "<BR>")
+                        + "</span></EM></HTML>");
                 table.invalidate();
                 table.validate();
             }
@@ -1040,14 +1066,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         private int seat_num;
 
         public SeatBotAction(int seat_num) {
+            super("Put computer player here");
             this.seat_num = seat_num;
-        }
-
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return "Put computer player here";
-            }
-            return super.getValue(key);
         }
 
         public void actionPerformed(ActionEvent event) {
@@ -1063,14 +1083,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         private int seat_num;
 
         public SeatBootAction(int seat_num) {
+            super("Boot this player from the game");
             this.seat_num = seat_num;
-        }
-
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return "Boot this player from the game";
-            }
-            return super.getValue(key);
         }
 
         public void actionPerformed(ActionEvent event) {
@@ -1088,19 +1102,44 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         private int seat_num;
 
         public SeatOpenAction(int seat_num) {
+            super("Make this seat available for a human to play");
             this.seat_num = seat_num;
-        }
-
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return "Make this seat available for a human to play";
-            }
-            return super.getValue(key);
         }
 
         public void actionPerformed(ActionEvent event) {
             try {
                 ggzMod.request_open(seat_num);
+            } catch (IOException e) {
+                handleException(e);
+            }
+        }
+    }
+
+    private class SeatSitAction extends AbstractAction {
+        private int seat_num;
+
+        public SeatSitAction(int seat_num) {
+            super("Move here");
+            this.seat_num = seat_num;
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                ggzMod.request_sit(seat_num);
+            } catch (IOException e) {
+                handleException(e);
+            }
+        }
+    }
+
+    private class SeatStandAction extends AbstractAction {
+        public SeatStandAction() {
+            super("Spectate");
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                ggzMod.request_stand();
             } catch (IOException e) {
                 handleException(e);
             }

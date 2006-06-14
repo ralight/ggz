@@ -15,7 +15,8 @@ sockets)
 
 Add support for launching Java games from non-Java core client.
 
-Support chat buffer size properly so that we don't send too big a message after encoding to UTF-8.
+Support chat buffer size properly so that we don't send too big a message 
+after encoding to UTF-8.
 
 Seat reservation dialog allows to select all computer players but the server 
 complains with bad option. The dialog should not allow you to OK the dialog in 
@@ -24,7 +25,17 @@ this case.
 Seat reservation dialog allows you to reserve a seat for the same player more 
 than once. It should not let you OK the dialog if his is the case.
 
-Add icons next to player names in seat reservation combo boxes.
+Change seat allocation to only use drop downs - put Computer and Anyone radio 
+options in drop down lists.
+
+Support "expanded view" for table that shows players in room so that there is
+a column for each statistic. The tooltip is difficult to use and is not 
+obvious.
+
+Add, private message, join game and spectate game options when selecting a 
+player in the list of players in the room.
+
+Play sound when beep message is received.
 
 All Card Games
 ==============
@@ -58,6 +69,8 @@ Find out why "Connection Reset" exception occurs, especially, when leaving the
 game "sitting" for a few minutes...I've added Socket.setKeepAlive(true) so this
 should solve it.
 
+Support all messages sent by server. e.g. Last Hand, Bid History.
+
 
 Hearts
 ======
@@ -75,14 +88,7 @@ How to Play URL points to old GGZ site.
 
 Spades
 ======
-Why is there both a 0 and nil bid?
 
-The numbers in brackets are confusing. It's not obvious that the first number
-is the bid/number of tricks for the player and the second number in brackets
-is for the team. Use custom game messages or enhance the GGZ Cards protocol
-to support score messages for individuals and teams.
-
-Initially show cards face down if the blind nil option is set.
 
 Suaro
 =====

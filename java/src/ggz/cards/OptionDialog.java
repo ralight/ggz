@@ -180,6 +180,7 @@ public class OptionDialog extends JDialog implements ItemListener {
 
         dialog.setLocation(location);
         fixLocation(dialog);
+        dialog.okButton.requestFocus();
         dialog.setVisible(true);
         return dialog.result;
     }

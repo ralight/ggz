@@ -17,15 +17,15 @@
  */
 package ggz.cards.common;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class GGZCardInputStream extends DataInputStream {
-
     public GGZCardInputStream(InputStream in) {
-        super(in);
+        super(new BufferedInputStream(in));
     }
 
     public CardSetType read_cardset_type() throws IOException {
@@ -42,7 +42,7 @@ public class GGZCardInputStream extends DataInputStream {
 
     public Card read_card() throws IOException {
         byte[] b = new byte[3];
-        read(b);
+        read_fully(b);
         Face face;
         Suit suit;
 
@@ -109,7 +109,7 @@ public class GGZCardInputStream extends DataInputStream {
 
     public Bid read_bid() throws IOException {
         byte[] b = new byte[4];
-        read(b);
+        read_fully(b);
         return new Bid(b[0], b[1], b[2], b[3]);
     }
 
@@ -119,6 +119,17 @@ public class GGZCardInputStream extends DataInputStream {
             throw new EOFException();
         }
         return ServerOpCode.valueOf(index);
+    }
+    
+    /**
+     * Tells us how many bytes to expect from the server, including the bytes 
+     * in this header. So if the packet contains two bytes of data the packet 
+     * size will be 4; 2 bytes for this header and 2 for the data.
+     * @return
+     * @throws IOException
+     */
+    public short read_header() throws IOException {
+        return readShort();
     }
 
     public GameMessage read_game_message() throws IOException {
@@ -170,20 +181,29 @@ public class GGZCardInputStream extends DataInputStream {
     public String read_string() throws IOException {
         int size = readInt();
         byte[] chars = new byte[size];
-        int status;
         String message;
 
-        if ((status = read(chars)) < 0) {
-            throw new EOFException();
-        }
+        read_fully(chars);
 
-        if (status < size) {
-            throw new IOException("Read too few chars expected " + size
-                    + " but got " + status + ": "
-                    + new String(chars, 0, status, "ISO-8859-1"));
-        }
-        // TODO check if ISO-8859-1 encoding is appropriate.
-        message = new String(chars, 0, status - 1, "ISO-8859-1");
+        // Don't include the null terminator.
+        message = new String(chars, 0, chars.length - 1, "UTF-8");
         return message;
+    }
+
+    /**
+     * Peforms a blocking read until the array is full. 
+     * @param b
+     * @throws IOException
+     */
+    protected void read_fully(byte[] b) throws IOException {
+        int numBytesRead;
+        int count = 0;
+        do {
+            numBytesRead = read(b, count, b.length - count);
+            if (numBytesRead < 0) {
+                throw new EOFException();
+            }
+            count += numBytesRead;
+        } while (count != b.length);
     }
 }
