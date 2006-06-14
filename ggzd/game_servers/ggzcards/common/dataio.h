@@ -25,6 +25,7 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *));
 int dio_write_data(struct dataio *dio);
 
 bool dio_is_write_pending(const struct dataio *dio);
+int dio_get_socket(const struct dataio *dio);
 
 void dio_start_packet(struct dataio *dio);
 void dio_end_packet(struct dataio *dio);
@@ -45,7 +46,7 @@ void dio_get_bool8(struct dataio *dio, bool *dest);
 void dio_get_bool32(struct dataio *dio, bool *dest);
 void dio_get_memory(struct dataio *dio, void *dest, size_t dest_size);
 void dio_get_string(struct dataio *dio, char *dest, size_t max_dest_size);
-void dio_get_string_malloc(struct dataio *dio, char **dest);
+void dio_get_string_alloc(struct dataio *dio, char **dest);
 
 /* puts */
 void dio_put_char(struct dataio *dio, char dest);

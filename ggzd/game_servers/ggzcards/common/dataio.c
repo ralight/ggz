@@ -272,6 +272,11 @@ bool dio_is_write_pending(const struct dataio *dio)
   return (dio->output.start > dio->output.writeloc);
 }
 
+int dio_get_socket(const struct dataio *dio)
+{
+  return dio->fd;
+}
+
 void dio_start_packet(struct dataio *dio)
 {
 
@@ -736,7 +741,7 @@ void dio_get_string(struct dataio *dio, char *dest, size_t max_dest_size)
 /**************************************************************************
   VERY UNSAFE TO USE THIS FUNCTION.  Only use for a trusted connection.
 **************************************************************************/
-void dio_get_string_malloc(struct dataio *dio, char **dest)
+void dio_get_string_alloc(struct dataio *dio, char **dest)
 {
   /* Corresponds exactly to ggz_read_string_alloc. */
   unsigned int size;
