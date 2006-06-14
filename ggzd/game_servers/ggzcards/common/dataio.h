@@ -30,6 +30,9 @@ void dio_start_packet(struct dataio *dio);
 void dio_end_packet(struct dataio *dio);
 
 /* gets */
+void dio_get_char(struct dataio *dio, char *dest);
+void dio_get_int(struct dataio *dio, int *dest);
+
 void dio_get_uint8(struct dataio *dio, int *dest);
 void dio_get_uint16(struct dataio *dio, int *dest);
 void dio_get_uint32(struct dataio *dio, unsigned int *dest);
@@ -45,6 +48,9 @@ void dio_get_string(struct dataio *dio, char *dest, size_t max_dest_size);
 void dio_get_string_malloc(struct dataio *dio, char **dest);
 
 /* puts */
+void dio_put_char(struct dataio *dio, char dest);
+void dio_put_int(struct dataio *dio, int dest);
+
 void dio_put_uint8(struct dataio *dio, int value);
 void dio_put_uint16(struct dataio *dio, int value);
 void dio_put_uint32(struct dataio *dio, int value);

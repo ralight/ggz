@@ -386,6 +386,19 @@ size_t dio_input_remaining(struct dataio *dio)
 }
 #endif
 
+/* Convenience function corresponding to easysock. */
+void dio_put_char(struct dataio *dio, char dest)
+{
+  assert(sizeof(dest) == 1);
+  dio_put_memory(dio, &dest, sizeof(dest));
+}
+
+/* Convenience function corresponding to easysock. */
+void dio_put_int(struct dataio *dio, int dest)
+{
+  dio_put_sint32(dio, dest);
+}
+
 /**************************************************************************
 ...
 **************************************************************************/
@@ -566,6 +579,19 @@ void dio_put_bit_string(struct dataio *dio, const char *value)
   }
 }
 #endif
+
+/* Convenience function corresponding to easysock. */
+void dio_get_char(struct dataio *dio, char *dest)
+{
+  assert(sizeof(*dest) == 1);
+  dio_get_memory(dio, dest, sizeof(*dest));
+}
+
+/* Convenience function corresponding to easysock. */
+void dio_get_int(struct dataio *dio, int *dest)
+{
+  dio_get_sint32(dio, dest);
+}
 
 /**************************************************************************
 ...
