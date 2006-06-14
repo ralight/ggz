@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8191 2006-06-13 23:33:08Z jdorje $
+ * $Id: common.c 8192 2006-06-14 03:01:41Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -691,12 +691,17 @@ void send_sync(player_t p)
 		send_player_message(s, p);
 
 	/* Send out hands */
-	if (game.state != STATE_NOTPLAYING)
+	if (game.state != STATE_NOTPLAYING) {
 		for (s = 0; s < game.num_seats; s++)
 			game.data->send_hand(p, s);
 
-	/* Send out table cards */
-	net_send_table(p);
+		/* Send out table cards */
+		net_send_table(p);
+
+		players_iterate(p2) {
+			net_send_bid(p, p2, game.players[p2].bid);
+		} players_iterate_end;
+	}
 
 	/* request bid/play again, if necessary */
 	if (IS_REAL_PLAYER(p)
