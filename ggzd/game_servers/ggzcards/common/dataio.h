@@ -9,6 +9,8 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+
+   $Id: net_common.c 4046 2002-04-22 00:04:41Z jdorje $
 ***********************************************************************/
 #ifndef __DATAIO_H__
 #define __DATAIO_H__
@@ -17,8 +19,13 @@
 
 struct dataio;
 
+/* Initializers. */
 struct dataio *dio_new(int socket);
 void dio_free(struct dataio *dio);
+
+void dio_set_writeable_callback(struct dataio *dio,
+				void (writeable_callback)(struct dataio *,
+							  bool));
 
 /* Network r/w functions. */
 int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *));

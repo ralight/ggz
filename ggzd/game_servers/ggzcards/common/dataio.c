@@ -9,6 +9,8 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+
+   $Id: net_common.c 4046 2002-04-22 00:04:41Z jdorje $
 ***********************************************************************/
 
 /*
@@ -51,15 +53,21 @@
 
 
 #ifndef MIN
-#  define MIN(x, y) (((x) < (y)) ? (x) : (y))
+# define MIN(a, b) ( (a) < (b) ? (a) : (b) )
+#endif
+
+#ifndef MAX
+# define MAX(a, b) ( (a) > (b) ? (a) : (b) )
 #endif
 
 struct dataio {
   int fd;
 
-  bool handling;
-
   struct {
+    /* Callback invoked to indicate whether writeable data is pending. */
+    void (*writeable_callback)(struct dataio *, bool);
+    bool in_packet;
+
     char *buf; /* The buffer. */
     size_t bufsz; /* Size of the buffer. */
 
@@ -69,6 +77,8 @@ struct dataio {
     size_t writeloc; /* The last position written to the network. */
   } output;
   struct {
+    bool handling;
+
     char *buf; /* The buffer. */
     size_t bufsz; /* Size of the buffer. */
 
@@ -113,19 +123,19 @@ static void my_nonblock(int sockfd)
 struct dataio *dio_new(int socket)
 {
   struct dataio *dio = ggz_malloc(sizeof(*dio));
-  const size_t bufsz;
+  const size_t bufsz = 20;
 
   dio->fd = socket;
   my_nonblock(socket);
 
-  dio->handling = false;
-
   dio->output.buf = ggz_malloc(bufsz);
   dio->output.bufsz = bufsz;
+  dio->output.in_packet = false;
   dio->output.start = dio->output.current = dio->output.writeloc = 0;
 
   dio->input.buf = ggz_malloc(bufsz);
   dio->input.bufsz = bufsz;
+  dio->input.handling = false;
   dio->input.start = dio->input.current = dio->input.final = 0;
 
   return dio;
@@ -136,6 +146,13 @@ void dio_free(struct dataio *dio)
   ggz_free(dio->output.buf);
   ggz_free(dio->input.buf);
   ggz_free(dio);
+}
+
+void dio_set_writeable_callback(struct dataio *dio,
+				void (writeable_callback)(struct dataio *,
+							  bool))
+{
+  dio->output.writeable_callback = writeable_callback;
 }
 
 /* Takes packets from the input buffer and parses them. */
@@ -152,6 +169,9 @@ static void consume_packets(struct dataio *dio,
     memcpy(&pack_size, dio->input.buf + dio->input.start, sizeof(pack_size));
     pack_size = ntohs(pack_size);
 
+    /* Can't have pack_size of 0 */
+    pack_size = MAX(pack_size, sizeof(pack_size));
+
     if (dio->input.start + pack_size > dio->input.readloc) {
       /* Not enough data. */
       break;
@@ -159,7 +179,7 @@ static void consume_packets(struct dataio *dio,
 
     /* Advance to next packet and read it. */
     dio->input.final = dio->input.start + pack_size;
-    dio->input.current = sizeof(pack_size);
+    dio->input.current = dio->input.start + sizeof(pack_size);
     (read_callback)(dio);
     dio->input.start = dio->input.final;
     dio->input.current = dio->input.final;
@@ -190,8 +210,8 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
   char *ptr = dio->input.buf + dio->input.readloc;
   size_t nread;
 
-  assert(!dio->handling);
-  dio->handling = true;
+  assert(!dio->input.handling);
+  dio->input.handling = true;
 
   if (dio->input.bufsz < dio->input.readloc + 20) {
     dio->input.bufsz *= 2;
@@ -206,7 +226,7 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
 #endif
 
   if (nread < 0) {
-    dio->handling = false;
+    dio->input.handling = false;
     return -1;
   }
 
@@ -214,7 +234,7 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
 
   consume_packets(dio, read_callback);
 
-  dio->handling = false;
+  dio->input.handling = false;
 
   return 0;
 }
@@ -225,13 +245,11 @@ int dio_write_data(struct dataio *dio)
   size_t nwritten;
   char *ptr = dio->output.buf + dio->output.writeloc;
 
-  assert(!dio->handling);
+  assert(!dio->output.in_packet);
   assert(dio->output.start == dio->output.current);
-  dio->handling = true;
 
   assert(nleft >= 0);
   if (nleft <= 0) {
-    dio->handling = false;
     return 0;
   }
 
@@ -241,7 +259,6 @@ int dio_write_data(struct dataio *dio)
   nwritten = write(dio->fd, ptr, nleft);
 #endif
   if (nwritten < 0) {
-    dio->handling = false;
     return -1;
   }
   assert(nwritten <= nleft);
@@ -252,6 +269,9 @@ int dio_write_data(struct dataio *dio)
     dio->output.writeloc = 0;
     dio->output.start = 0;
     dio->output.current = 0;
+    if (dio->output.writeable_callback) {
+      (dio->output.writeable_callback)(dio, false);
+    }
   } else if (dio->output.writeloc > dio->output.bufsz / 2) {
     size_t diff = dio->output.writeloc;
 
@@ -261,8 +281,6 @@ int dio_write_data(struct dataio *dio)
 
     memmove(dio->output.buf, dio->output.buf + diff, dio->output.current);
   }
-
-  dio->handling = false;
 
   return 0;
 }
@@ -277,28 +295,6 @@ int dio_get_socket(const struct dataio *dio)
   return dio->fd;
 }
 
-void dio_start_packet(struct dataio *dio)
-{
-
-  assert(!dio->handling);
-  dio->handling = true;
-
-  dio->output.current = dio->output.start + 2;
-}
-
-void dio_end_packet(struct dataio *dio)
-{
-  uint16_t pack_size = dio->output.current - dio->output.start;
-
-  assert(sizeof(pack_size) == 2);
-  pack_size = htons(pack_size);
-  memcpy(dio->output.buf + dio->output.start, &pack_size, sizeof(pack_size));
-
-  dio->output.start = dio->output.current;
-
-  dio->handling = false;
-}
-
 /**************************************************************************
   Returns true iff the output has size bytes available.
 **************************************************************************/
@@ -310,7 +306,39 @@ static void ensure_output_data(struct dataio *dio, size_t size)
   assert(dio->output.current <= dio->output.bufsz);
   if (diff > 0) {
     dio->output.buf = ggz_realloc(dio->output.buf, dio->output.bufsz + diff);
+    dio->output.bufsz += diff;
   }
+}
+
+void dio_start_packet(struct dataio *dio)
+{
+
+  assert(!dio->output.in_packet);
+  assert(dio->output.current == dio->output.start);
+  dio->output.in_packet = true;
+
+  ensure_output_data(dio, 2);
+  dio->output.current += 2;
+}
+
+void dio_end_packet(struct dataio *dio)
+{
+  uint16_t pack_size = dio->output.current - dio->output.start;
+  bool writeable = (dio->output.start == dio->output.writeloc);
+
+  assert(dio->output.in_packet);
+
+  assert(sizeof(pack_size) == 2);
+  pack_size = htons(pack_size);
+  memcpy(dio->output.buf + dio->output.start, &pack_size, sizeof(pack_size));
+
+  dio->output.start = dio->output.current;
+
+  if (!writeable && dio->output.writeable_callback) {
+    (dio->output.writeable_callback)(dio, true);
+  }
+
+  dio->output.in_packet = false;
 }
 
 /**************************************************************************
