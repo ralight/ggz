@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8186 2006-06-13 02:11:03Z jdorje $
+ * $Id: spades.c 8198 2006-06-15 17:32:54Z oojah $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -235,6 +235,13 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 			snprintf(buf, bufsz,
 				 "Blind (double) nil is worth %d.",
 				 value == 1 ? 100 : 200);
+	} else if (!strcmp(option, "low_score_loses")) {
+		if (value == 0)
+			snprintf(buf, bufsz,
+				"Game is not forfeit at -200 points.");
+		else
+			snprintf(buf, bufsz,
+				"Game is forfeit at -200 points.");
 	} else
 		return game_get_option_text(buf, bufsz, option, value);
 	return buf;
