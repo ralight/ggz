@@ -29,6 +29,7 @@ import ggz.client.core.Server;
 import ggz.client.core.StateID;
 import ggz.client.core.Table;
 import ggz.client.core.TableLeaveEventData;
+import ggz.client.core.TableSeat;
 import ggz.common.LeaveType;
 import ggz.common.SeatType;
 
@@ -506,8 +507,21 @@ public class RoomPanel extends JPanel implements RoomListener {
             if (server.get_state() == StateID.GGZ_STATE_IN_ROOM) {
 
                 /* Make sure table has open seats */
-                canJoinTable = table.get_seat_count(SeatType.GGZ_SEAT_OPEN)
-                        + table.get_seat_count(SeatType.GGZ_SEAT_RESERVED) > 0;
+                canJoinTable = table.get_seat_count(SeatType.GGZ_SEAT_OPEN) > 0;
+                if (!canJoinTable) {
+                    // Ther are no open seats but maybe the seat is reserved for
+                    // us.
+                    int seatCount = table.get_num_seats();
+                    String me = server.get_handle();
+                    for (int seat_num = 0; seat_num < seatCount; seat_num++) {
+                        TableSeat seat = table.get_nth_seat(seat_num);
+                        if (seat.type == SeatType.GGZ_SEAT_RESERVED
+                                && me.equals(seat.name)) {
+                            canJoinTable = true;
+                            break;
+                        }
+                    }
+                }
 
                 // Temporary limitation because we don't support more than four
                 // players in card games.

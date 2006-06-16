@@ -288,7 +288,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     //}
                 } else {
                     label.setText(player.get_name());
-                    label.getClientProperty("ggz.cards.popupMenu");
+//                    label.getClientProperty("ggz.cards.popupMenu");
                 }
 
                 // Position the labels.
@@ -297,6 +297,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 case 0: // Me - south
                     label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalAlignment(SwingConstants.TOP);
+                    initPopupMenu(seat_num, seat_type);
                     break;
                 case 1: // West
                     label.setIcon(getPlayerIcon(seat_type));
