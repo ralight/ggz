@@ -161,6 +161,7 @@ static void consume_packets(struct dataio *dio,
 {
   assert(dio->input.final == dio->input.start);
   assert(dio->input.start == dio->input.current);
+  assert(dio->input.readloc <= dio->input.bufsz);
 
   while (dio->input.readloc - dio->input.start > 2) {
     uint16_t pack_size;
@@ -180,6 +181,9 @@ static void consume_packets(struct dataio *dio,
     /* Advance to next packet and read it. */
     dio->input.final = dio->input.start + pack_size;
     dio->input.current = dio->input.start + sizeof(pack_size);
+    assert(dio->input.start <= dio->input.current);
+    assert(dio->input.current <= dio->input.final);
+    assert(dio->input.final <= dio->input.bufsz);
     (read_callback)(dio);
     dio->input.start = dio->input.final;
     dio->input.current = dio->input.final;
@@ -208,7 +212,7 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
 {
   int nleft;
   char *ptr = dio->input.buf + dio->input.readloc;
-  size_t nread;
+  int nread;
 
   assert(!dio->input.handling);
   dio->input.handling = true;
@@ -231,6 +235,7 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
   }
 
   dio->input.readloc += nread;
+  assert(dio->input.readloc <= dio->input.bufsz);
 
   consume_packets(dio, read_callback);
 
@@ -242,7 +247,7 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
 int dio_write_data(struct dataio *dio)
 {
   int nleft = dio->output.start - dio->output.writeloc;
-  size_t nwritten;
+  int nwritten;
   char *ptr = dio->output.buf + dio->output.writeloc;
 
   assert(!dio->output.in_packet);
