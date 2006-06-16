@@ -20,6 +20,7 @@ package ggz.ui;
 import ggz.client.core.LoginType;
 import ggz.client.core.Server;
 
+import java.awt.ContainerOrderFocusTraversalPolicy;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -83,7 +84,7 @@ public class LoginPanel extends JPanel {
 
         TextPopupMenu.enableFor(handleTextField);
         TextPopupMenu.enableFor(emailTextField);
-        
+
         // Set up the components
         setOpaque(false);
         loginButton.setOpaque(false);
@@ -98,8 +99,8 @@ public class LoginPanel extends JPanel {
 
         // Group the radio buttons.
         ButtonGroup group = new ButtonGroup();
-        group.add(normalLoginRadio);
         group.add(guestLoginRadio);
+        group.add(normalLoginRadio);
         group.add(newLoginRadio);
 
         // Add all the components
@@ -109,12 +110,9 @@ public class LoginPanel extends JPanel {
         constraints.insets.left = 4;
         constraints.gridx = 0;
         constraints.gridy = 0;
-
         add(handleLabel, constraints);
         constraints.gridx = 1;
         add(handleTextField, constraints);
-        constraints.gridx = 2;
-        add(loginButton, constraints);
         constraints.gridx = 0;
         constraints.gridy = 1;
         add(passwordLabel, constraints);
@@ -125,15 +123,31 @@ public class LoginPanel extends JPanel {
         add(emailLabel, constraints);
         constraints.gridx = 1;
         add(emailTextField, constraints);
+        constraints.gridx = 2;
+        constraints.gridy = 0;
+        add(loginButton, constraints);
 
-        constraints.insets.top = 0;
         constraints.insets.left = 0;
+        constraints.gridx = 1;
         constraints.gridy = 3;
-        add(normalLoginRadio, constraints);
-        constraints.gridy = 4;
         add(guestLoginRadio, constraints);
+        constraints.insets.top = 0;
+        constraints.gridy = 4;
+        add(normalLoginRadio, constraints);
         constraints.gridy = 5;
         add(newLoginRadio, constraints);
+
+        // Set up focus so that we use the order that components were added to
+        // the container rather than the order that they appear on screen.
+        setFocusTraversalPolicyProvider(true);
+        setFocusTraversalPolicy(new ContainerOrderFocusTraversalPolicy());
+
+        // By default, Swing panels and labels are focusable and we don't want
+        // that.
+        setFocusable(false);
+        handleLabel.setFocusable(false);
+        passwordLabel.setFocusable(false);
+        emailLabel.setFocusable(false);
     }
 
     /**

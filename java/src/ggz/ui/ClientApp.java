@@ -187,7 +187,7 @@ public class ClientApp {
                 frame.dispose();
             }
         });
-        frame.setSize(640, 480);
+        frame.setSize(800, 600);
         frame.setVisible(true);
         applet.init();
         applet.start();

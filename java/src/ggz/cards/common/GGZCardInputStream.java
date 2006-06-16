@@ -120,11 +120,12 @@ public class GGZCardInputStream extends DataInputStream {
         }
         return ServerOpCode.valueOf(index);
     }
-    
+
     /**
-     * Tells us how many bytes to expect from the server, including the bytes 
-     * in this header. So if the packet contains two bytes of data the packet 
-     * size will be 4; 2 bytes for this header and 2 for the data.
+     * Tells us how many bytes to expect from the server, including the bytes in
+     * this header. So if the packet contains two bytes of data the packet size
+     * will be 4; 2 bytes for this header and 2 for the data.
+     * 
      * @return
      * @throws IOException
      */
@@ -185,13 +186,20 @@ public class GGZCardInputStream extends DataInputStream {
 
         read_fully(chars);
 
-        // Don't include the null terminator.
-        message = new String(chars, 0, chars.length - 1, "UTF-8");
+        if (size > 0) {
+            // Don't include the null terminator.
+            message = new String(chars, 0, chars.length - 1, "UTF-8");
+        } else {
+            // This should never happen but we handle it just in case to prevent
+            // an StringIndexOutOfBoundsException above.
+            message = "";
+        }
         return message;
     }
 
     /**
-     * Peforms a blocking read until the array is full. 
+     * Peforms a blocking read until the array is full.
+     * 
      * @param b
      * @throws IOException
      */

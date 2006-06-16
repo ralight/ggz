@@ -36,6 +36,10 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Rectangle;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
@@ -43,21 +47,18 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
 
-public class RoomPanel extends JPanel implements RoomListener,
-        ListSelectionListener {
+public class RoomPanel extends JPanel implements RoomListener {
     private static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
 
@@ -67,17 +68,13 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     private JScrollPane tableScrollPane;
 
-    protected JTable tableTable;
+    protected TablesLayoutPanel tablesFlow;
 
     protected JPanel tablePanel;
 
     private JPanel tableButtonPanel;
 
     private JButton newTableButton;
-
-    private JButton joinTableButton;
-
-    private JButton spectateButton;
 
     private JPanel headerPanel;
 
@@ -90,8 +87,6 @@ public class RoomPanel extends JPanel implements RoomListener,
     private JButton lobbyButton;
 
     private RoomChatPanel chatPanel;
-
-    private TablesTableModel tables;
 
     public RoomPanel(Server server) {
         super(new BorderLayout(4, 4));
@@ -107,26 +102,13 @@ public class RoomPanel extends JPanel implements RoomListener,
         tablePanel = new JPanel(new BorderLayout());
         tableButtonPanel = new JPanel();
         newTableButton = new JButton(new NewTableAction());
-        joinTableButton = new JButton(new JoinTableAction());
-        joinTableButton.setEnabled(false);
-        spectateButton = new JButton(new SpectateAction());
-        spectateButton.setEnabled(false);
-        tables = new TablesTableModel();
-        tableTable = new JTable(tables);
-        // tableTable.getTableHeader().setBackground(new Color(0xce, 0xfa,
-        // 0xdf));
-        JLabel rowHeightCalculator = new JLabel("Qwerty");
-        rowHeightCalculator.setFont(tableTable.getFont());
-        tableTable
-                .setRowHeight(rowHeightCalculator.getPreferredSize().height * 4);
-        tableTable.getSelectionModel().setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION);
-        tableTable.getSelectionModel().addListSelectionListener(this);
+        tablesFlow = new TablesLayoutPanel();
         tableScrollPane = new JScrollPane();
-        tableScrollPane.getViewport().add(tableTable);
+        tablesFlow.setMinimumSize(new Dimension(20, 20));
+        tableScrollPane
+                .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        tableScrollPane.getViewport().add(tablesFlow);
         tableButtonPanel.add(newTableButton);
-        tableButtonPanel.add(joinTableButton);
-        tableButtonPanel.add(spectateButton);
 
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
         tablePanel.add(tableButtonPanel, BorderLayout.SOUTH);
@@ -146,9 +128,7 @@ public class RoomPanel extends JPanel implements RoomListener,
         setOpaque(false);
         lobbyButton.setOpaque(false);
         logoutButton.setOpaque(false);
-        joinTableButton.setOpaque(false);
         newTableButton.setOpaque(false);
-        spectateButton.setOpaque(false);
         headerPanel.setOpaque(false);
         headerButtonPanel.setOpaque(false);
         tableButtonPanel.setOpaque(false);
@@ -174,9 +154,6 @@ public class RoomPanel extends JPanel implements RoomListener,
 
         lobbyButton.setEnabled(true);
         newTableButton.setEnabled(true);
-        joinTableButton.setEnabled(false);
-        spectateButton.setEnabled(false);
-        spectateButton.setVisible(room.get_gametype().get_spectators_allowed());
     }
 
     public void chat_event(ChatEventData data) {
@@ -208,16 +185,14 @@ public class RoomPanel extends JPanel implements RoomListener,
     }
 
     public void table_join_fail(String error) {
-        tables.fireTableDataChanged();
+        tablesFlow.refresh();
         JOptionPane.showMessageDialog(this, error);
     }
 
     public void table_joined(int table_index) {
-        tables.fireTableDataChanged();
+        tablesFlow.refresh();
         lobbyButton.setEnabled(false);
         newTableButton.setEnabled(false);
-        joinTableButton.setEnabled(false);
-        spectateButton.setEnabled(false);
     }
 
     public void table_launch_fail(ErrorEventData data) {
@@ -225,11 +200,9 @@ public class RoomPanel extends JPanel implements RoomListener,
     }
 
     public void table_launched() {
-        tables.fireTableDataChanged();
+        tablesFlow.refresh();
         lobbyButton.setEnabled(false);
         newTableButton.setEnabled(false);
-        joinTableButton.setEnabled(false);
-        spectateButton.setEnabled(false);
     }
 
     public void table_leave_fail(String error) {
@@ -248,17 +221,17 @@ public class RoomPanel extends JPanel implements RoomListener,
             JOptionPane.showMessageDialog(this, messages
                     .getString("RoomPanel.Message.GameOver"));
         }
-        tables.fireTableDataChanged();
+        tablesFlow.refresh();
         lobbyButton.setEnabled(true);
         newTableButton.setEnabled(true);
     }
 
     public void table_list() {
-        tables.fireTableDataChanged();
+        tablesFlow.refresh();
     }
 
     public void table_update() {
-        tables.fireTableDataChanged();
+        tablesFlow.refresh();
     }
 
     private class BackToLobbyAction extends AbstractAction {
@@ -280,43 +253,9 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     }
 
-    /**
-     * Called when selection in table changes.
-     * 
-     * @param e
-     */
-    public void valueChanged(ListSelectionEvent e) {
-        // We are only interested in final selections.
-        if (e.getValueIsAdjusting())
-            return;
-
-        boolean canJoinTable;
-        boolean canSpectate;
-
-        if (tableTable.getSelectedRowCount() > 0
-                && server.get_state() == StateID.GGZ_STATE_IN_ROOM) {
-            Table selectedTable = room.get_nth_table(tableTable
-                    .getSelectedRow());
-
-            /* Make sure table has open seats */
-            canJoinTable = selectedTable.get_seat_count(SeatType.GGZ_SEAT_OPEN)
-                    + selectedTable.get_seat_count(SeatType.GGZ_SEAT_RESERVED) > 0;
-
-            // Temporary limitation because we don't support more than four
-            // players in card games.
-            canJoinTable = canJoinTable && (selectedTable.get_num_seats() <= 4);
-            canSpectate = room.get_gametype().get_spectators_allowed();
-        } else {
-            canJoinTable = false;
-            canSpectate = false;
-        }
-
-        joinTableButton.setEnabled(canJoinTable);
-        spectateButton.setEnabled(canSpectate);
-    }
-
     private abstract class PlayGameAction extends AbstractAction implements
             GameEventListener {
+        protected Table table;
 
         protected PlayGameAction(String name) {
             super(name);
@@ -357,7 +296,6 @@ public class RoomPanel extends JPanel implements RoomListener,
     }
 
     private class NewTableAction extends PlayGameAction {
-        private Table table;
 
         protected NewTableAction() {
             super(messages.getString("RoomPanel.Button.NewGame"));
@@ -403,13 +341,14 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     private class JoinTableAction extends PlayGameAction {
 
-        protected JoinTableAction() {
+        protected JoinTableAction(Table table) {
             super(messages.getString("RoomPanel.Button.JoinGame"));
+            this.table = table;
         }
 
         public void game_playing() {
             try {
-                room.join_table(tableTable.getSelectedRow(), false);
+                room.join_table(table.get_id(), false);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -419,13 +358,14 @@ public class RoomPanel extends JPanel implements RoomListener,
 
     private class SpectateAction extends PlayGameAction {
 
-        protected SpectateAction() {
+        protected SpectateAction(Table table) {
             super(messages.getString("RoomPanel.Button.Spectate"));
+            this.table = table;
         }
 
         public void game_playing() {
             try {
-                room.join_table(tableTable.getSelectedRow(), true);
+                room.join_table(table.get_id(), true);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -451,103 +391,176 @@ public class RoomPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class TablesTableModel extends AbstractTableModel {
+    private class TablePanel extends JPanel {
 
-        public String getColumnName(int columnIndex) {
-            switch (columnIndex) {
-            case 0:
-                return messages
-                        .getString("RoomPanel.ColumnHeader.TableDescription");
-            case 1:
-                return messages
-                        .getString("RoomPanel.ColumnHeader.TablePlayers");
-            case 2:
-                return messages
-                        .getString("RoomPanel.ColumnHeader.TableSpectators");
-            default:
-                return null;
+        private Table table;
+
+        private JLabel titleLabel;
+
+        private JLabel playersLabel;
+
+        private JLabel spectatorsLabel;
+
+        private JPanel buttonPanel;
+
+        private JPanel seatsPanel;
+
+        private JButton joinButton;
+
+        private JButton spectateButton;
+
+        public TablePanel(Table table) {
+            super(new BorderLayout());
+            this.table = table;
+            setMaximumSize(new Dimension(200, 200));
+            setBorder(BorderFactory.createRaisedBevelBorder());
+            titleLabel = new JLabel(getTitleHTML());
+            titleLabel.setFont(getFont().deriveFont(Font.PLAIN));
+            playersLabel = new JLabel(getPlayersHTML());
+            playersLabel.setFont(playersLabel.getFont().deriveFont(Font.PLAIN));
+            playersLabel.setBackground(SystemColor.text);
+            playersLabel.setOpaque(true);
+            spectatorsLabel = new JLabel(getSpectatorsHTML());
+            spectatorsLabel.setFont(spectatorsLabel.getFont().deriveFont(
+                    Font.PLAIN));
+            spectatorsLabel.setBackground(SystemColor.text);
+            spectatorsLabel.setOpaque(true);
+            spectatorsLabel.setVisible(table.get_num_spectator_seats() > 0);
+            seatsPanel = new JPanel(new BorderLayout());
+            seatsPanel.add(playersLabel, BorderLayout.CENTER);
+            seatsPanel.add(spectatorsLabel, BorderLayout.EAST);
+            joinButton = new JButton(new JoinTableAction(table));
+            spectateButton = new JButton(new SpectateAction(table));
+            buttonPanel = new JPanel();
+            buttonPanel.add(joinButton);
+            if (room.get_gametype().get_spectators_allowed()) {
+                buttonPanel.add(spectateButton);
             }
+            add(titleLabel, BorderLayout.NORTH);
+            add(seatsPanel, BorderLayout.CENTER);
+            add(buttonPanel, BorderLayout.SOUTH);
+            updateButtonEnabledState();
         }
 
-        public int getColumnCount() {
-            return 3;
+        private String getTitleHTML() {
+            StringBuffer buffer = new StringBuffer("<HTML><B>");
+            buffer.append(MessageFormat.format(messages
+                    .getString("RoomPanel.TableLabel"),
+                    new Object[] { new Integer(table.get_id()) }));
+            if (table.get_desc() != null) {
+                buffer.append("</B><BR><I>");
+                buffer.append(table.get_desc());
+            }
+            return buffer.toString();
         }
 
-        public int getRowCount() {
-            return room == null ? 0 : room.get_num_tables();
-        }
-
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            try {
-                Table table = room.get_nth_table(rowIndex);
-                StringBuffer buffer;
-
-                if (table == null)
-                    return null;
-
-                switch (columnIndex) {
-                case 0:
-                    buffer = new StringBuffer("<HTML><B>");
-                    buffer.append(MessageFormat.format(messages
-                            .getString("RoomPanel.TableLabel"),
-                            new Object[] { new Integer(table.get_id()) }));
-                    if (table.get_desc() != null) {
-                        buffer.append("</B><BR><I>");
-                        buffer.append(table.get_desc());
-                    }
-                    return buffer.toString();
-                case 1:
-                    buffer = new StringBuffer("<HTML><OL>");
-                    for (int player_num = 0; player_num < table.get_num_seats(); player_num++) {
-                        buffer.append("<LI>");
-                        SeatType type = table.get_nth_player_type(player_num);
-                        if (type == SeatType.GGZ_SEAT_ABANDONED) {
-                            buffer.append(messages
+        private String getPlayersHTML() {
+            StringBuffer buffer = new StringBuffer("<HTML><OL>");
+            for (int player_num = 0; player_num < table.get_num_seats(); player_num++) {
+                buffer.append("<LI>");
+                SeatType type = table.get_nth_player_type(player_num);
+                if (type == SeatType.GGZ_SEAT_ABANDONED) {
+                    buffer
+                            .append(messages
                                     .getString("RoomPanel.SeatAbandoned"));
-                        } else if (type == SeatType.GGZ_SEAT_BOT) {
-                            buffer.append(messages
-                                    .getString("RoomPanel.SeatBot"));
-                        } else if (type == SeatType.GGZ_SEAT_NONE
-                                || type == SeatType.GGZ_SEAT_PLAYER) {
-                            buffer
-                                    .append(table
-                                            .get_nth_player_name(player_num));
-                        } else if (type == SeatType.GGZ_SEAT_OPEN) {
-                            buffer.append(messages
-                                    .getString("RoomPanel.SeatOpen"));
-                        } else if (type == SeatType.GGZ_SEAT_RESERVED) {
-                            buffer
-                                    .append(MessageFormat
-                                            .format(
-                                                    messages
-                                                            .getString("RoomPanel.SeatReserved"),
-                                                    new Object[] { table
-                                                            .get_nth_player_name(player_num) }));
-                        }
-                    }
-                    buffer.append("</OL></HTML>");
-                    return buffer.toString();
-                case 2:
-                    buffer = new StringBuffer("<HTML><OL>");
-                    for (int spectator_num = 0; spectator_num < table
-                            .get_num_spectator_seats(); spectator_num++) {
-                        String name = table
-                                .get_nth_spectator_name(spectator_num);
-                        if (name != null) {
-                            buffer.append("<LI>");
-                            buffer.append(name);
-                        }
-                    }
-                    buffer.append("</OL></HTML>");
-                    return buffer.toString();
-                default:
-                    return null;
+                } else if (type == SeatType.GGZ_SEAT_BOT) {
+                    buffer.append(messages.getString("RoomPanel.SeatBot"));
+                } else if (type == SeatType.GGZ_SEAT_NONE
+                        || type == SeatType.GGZ_SEAT_PLAYER) {
+                    buffer.append(table.get_nth_player_name(player_num));
+                } else if (type == SeatType.GGZ_SEAT_OPEN) {
+                    buffer.append(messages.getString("RoomPanel.SeatOpen"));
+                } else if (type == SeatType.GGZ_SEAT_RESERVED) {
+                    buffer.append(MessageFormat.format(messages
+                            .getString("RoomPanel.SeatReserved"),
+                            new Object[] { table
+                                    .get_nth_player_name(player_num) }));
                 }
-            } catch (IndexOutOfBoundsException ex) {
-                // This can sometimes happen due to a race condition but
-                // it's OK.
-                return null;
             }
+            buffer.append("</OL></HTML>");
+            return buffer.toString();
+        }
+
+        private String getSpectatorsHTML() {
+            StringBuffer buffer = new StringBuffer("<HTML><OL>");
+            for (int spectator_num = 0; spectator_num < table
+                    .get_num_spectator_seats(); spectator_num++) {
+                String name = table.get_nth_spectator_name(spectator_num);
+                if (name != null) {
+                    buffer.append("<LI>");
+                    buffer.append(name);
+                }
+            }
+            buffer.append("</OL></HTML>");
+            return buffer.toString();
+        }
+
+        public void updateButtonEnabledState() {
+            boolean canJoinTable;
+            boolean canSpectate;
+
+            if (server.get_state() == StateID.GGZ_STATE_IN_ROOM) {
+
+                /* Make sure table has open seats */
+                canJoinTable = table.get_seat_count(SeatType.GGZ_SEAT_OPEN)
+                        + table.get_seat_count(SeatType.GGZ_SEAT_RESERVED) > 0;
+
+                // Temporary limitation because we don't support more than four
+                // players in card games.
+                canJoinTable = canJoinTable && (table.get_num_seats() <= 4);
+                canSpectate = room.get_gametype().get_spectators_allowed();
+            } else {
+                canJoinTable = false;
+                canSpectate = false;
+            }
+
+            joinButton.setEnabled(canJoinTable);
+            spectateButton.setEnabled(canSpectate);
+        }
+    }
+
+    private class TablesLayoutPanel extends JPanel implements Scrollable {
+        public TablesLayoutPanel() {
+            super(new GridLayout(0, 3));
+            setOpaque(false);
+        }
+
+        public void refresh() {
+            // TODO watch out for race conditions here, what happens if table is
+            // added or removed in the middle of the loop. We need to return a
+            // copy of the list here.
+            // TODO Make this more efficient, refreshing all tables is a bit
+            // severe.
+            removeAll();
+            for (int i = 0; i < room.get_num_tables(); i++) {
+                TablePanel tablePanel = new TablePanel(room.get_nth_table(i));
+                add(tablePanel);
+            }
+            RoomPanel.this.invalidate();
+            RoomPanel.this.validate();
+            RoomPanel.this.repaint();
+        }
+
+        public Dimension getPreferredScrollableViewportSize() {
+            return getPreferredSize();
+        }
+
+        public int getScrollableBlockIncrement(Rectangle visibleRect,
+                int orientation, int direction) {
+            return 20;
+        }
+
+        public boolean getScrollableTracksViewportHeight() {
+            return false;
+        }
+
+        public boolean getScrollableTracksViewportWidth() {
+            return true;
+        }
+
+        public int getScrollableUnitIncrement(Rectangle visibleRect,
+                int orientation, int direction) {
+            return 20;
         }
     }
 }

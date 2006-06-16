@@ -146,20 +146,8 @@ public class TablePanel extends JPanel {
 
     public void showButtons() {
         add(buttonPanel, new TableConstraints(TableConstraints.BUTTON_PANEL));
-        // buttonPanel.setSize(buttonPanel.getPreferredSize());
-        // while (buttonPanel.getWidth() + 200 > getWidth()) {
-        // gridLayout.setRows(gridLayout.getRows() + 1);
-        // buttonPanel.setSize(buttonPanel.getPreferredSize());
-        // }
-        // buttonPanel.setLocation(
-        // (getWidth() / 2) - (buttonPanel.getWidth() / 2), getHeight()
-        // - (buttonPanel.getHeight() + 110));
         invalidate();
         validate();
-        Component firstButton = buttonPanel.getComponent(0);
-        if (firstButton != null) {
-            firstButton.requestFocus();
-        }
     }
 
     public void hideButtons() {

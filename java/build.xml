@@ -2,7 +2,7 @@
 <!--
   - This Ant build file is designed to work the Ant 1.6.x. 
   -->
-<project name="ggz-java" default="build-distribution" basedir=".">
+<project name="ggz-java" default="rebuild-distribution" basedir=".">
 	<!-- set global properties for this build -->
 	<property name="src" value="src"/>
 	<property name="src_test" value="test"/>
@@ -111,7 +111,13 @@ Implementation-Vendor: GGZ Gaming Zone</echo>
 	</target>
 
 	<target name="build-distribution" 
-		    depends="clean,applet-jar,application-jar" 
+		    depends="sign-applet-jar,application-jar" 
+		    description="Does a clean and rebuilds everything">
+		<!-- Simply causes all dependencies to be built. -->
+	</target>
+
+	<target name="rebuild-distribution" 
+		    depends="clean,build-distribution" 
 		    description="Does a clean and rebuilds everything">
 		<!-- Simply causes all dependencies to be built. -->
 	</target>
