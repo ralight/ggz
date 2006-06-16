@@ -316,6 +316,16 @@ public class Game implements ModTransactionHandler {
         this.client.inform_chat(player, msg);
     }
 
+    /**
+     * Informs the game client that an error occurred as the result of an
+     * action, like "reseat".
+     * 
+     * @param msg
+     */
+    void inform_result(String msg) {
+        this.client.inform_result(msg);
+    }
+
     public boolean is_spectator() {
         return this.spectating;
     }

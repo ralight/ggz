@@ -297,26 +297,26 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 case 0: // Me - south
                     label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalAlignment(SwingConstants.TOP);
-                    initPopupMenu(seat_num, seat_type);
+                    initPopupMenu(seat_num, player.get_ggz_seat_num(), seat_type);
                     break;
                 case 1: // West
                     label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalTextPosition(SwingConstants.BOTTOM);
                     label.setHorizontalTextPosition(SwingConstants.CENTER);
                     label.setHorizontalAlignment(SwingConstants.LEFT);
-                    initPopupMenu(seat_num, seat_type);
+                    initPopupMenu(seat_num, player.get_ggz_seat_num(), seat_type);
                     break;
                 case 2: // North
                     label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalAlignment(SwingConstants.TOP);
-                    initPopupMenu(seat_num, seat_type);
+                    initPopupMenu(seat_num, player.get_ggz_seat_num(), seat_type);
                     break;
                 case 3: // East
                     label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalTextPosition(SwingConstants.BOTTOM);
                     label.setHorizontalTextPosition(SwingConstants.CENTER);
                     label.setHorizontalAlignment(SwingConstants.RIGHT);
-                    initPopupMenu(seat_num, seat_type);
+                    initPopupMenu(seat_num, player.get_ggz_seat_num(), seat_type);
                     break;
                 default:
                     throw new UnsupportedOperationException(
@@ -350,7 +350,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
     }
 
-    private void initPopupMenu(int seat_num, SeatType type) {
+    private void initPopupMenu(int seat_num, int ggz_seat_num, SeatType type) {
         JPopupMenu menu = null;
 
         if (type == SeatType.GGZ_SEAT_NONE) {
@@ -358,29 +358,27 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         } else if (type == SeatType.GGZ_SEAT_OPEN) {
             // The seat is open (unoccupied).
             menu = new JPopupMenu("Player");
-            menu.add(new SeatBotAction(seat_num));
-            menu.add(new SeatSitAction(seat_num));
+            menu.add(new SeatBotAction(ggz_seat_num));
+            menu.add(new SeatSitAction(ggz_seat_num));
         } else if (type == SeatType.GGZ_SEAT_BOT) {
             // The seat has a bot (AI) in it.
             menu = new JPopupMenu("Player");
-            menu.add(new SeatOpenAction(seat_num));
-            menu.add(new SeatSitAction(seat_num));
+            menu.add(new SeatOpenAction(ggz_seat_num));
         } else if (type == SeatType.GGZ_SEAT_PLAYER) {
             // The seat has a regular player in it.
             menu = new JPopupMenu("Player");
-            menu.add(new SeatBootAction(seat_num));
-            menu.add(new SeatSitAction(seat_num));
+            menu.add(new SeatBootAction(ggz_seat_num));
         } else if (type == SeatType.GGZ_SEAT_RESERVED) {
             // The seat is reserved for a player.
             menu = new JPopupMenu("Player");
-            menu.add(new SeatBotAction(seat_num));
-            menu.add(new SeatOpenAction(seat_num));
-            menu.add(new SeatSitAction(seat_num));
+            menu.add(new SeatBotAction(ggz_seat_num));
+            menu.add(new SeatOpenAction(ggz_seat_num));
+            menu.add(new SeatSitAction(ggz_seat_num));
         } else if (type == SeatType.GGZ_SEAT_ABANDONED) {
             // The seat is abandoned by a player.
             menu = new JPopupMenu("Player");
-            menu.add(new SeatBotAction(seat_num));
-            menu.add(new SeatSitAction(seat_num));
+            menu.add(new SeatBotAction(ggz_seat_num));
+            menu.add(new SeatSitAction(ggz_seat_num));
         }
         playerLabels[seat_num].putClientProperty("ggz.cards.popupMenu", menu);
     }

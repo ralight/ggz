@@ -23,6 +23,7 @@ import ggz.client.core.Player;
 import ggz.client.core.Room;
 import ggz.client.core.RoomChangeEventData;
 import ggz.client.core.RoomListener;
+import ggz.client.core.Table;
 import ggz.client.core.TableLeaveEventData;
 import ggz.common.ChatType;
 import ggz.common.PlayerType;
@@ -200,7 +201,16 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         // Ignore
     }
 
-    public void table_update() {
+    public void table_add(Table table) {
+        // Ignore
+    }
+
+    public void table_delete(Table table) {
+        // Ignore
+    }
+
+    public void table_update(Table table) {
+        // Need to update the table number of the player(s).
         repaint();
     }
 

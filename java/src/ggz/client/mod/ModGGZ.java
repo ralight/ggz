@@ -39,6 +39,8 @@ public interface ModGGZ {
 
     public void inform_chat(String player, String msg);
 
+    public void inform_result(String msg);
+
     public void set_seat(Seat seat);
 
     public void set_spectator_seat(SpectatorSeat seat);

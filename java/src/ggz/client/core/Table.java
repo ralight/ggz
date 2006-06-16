@@ -158,7 +158,7 @@ public class Table {
 
             /* If we're in a room, notify it of a table event */
             if (this.room != null)
-                this.room.table_event(RoomEvent.GGZ_TABLE_UPDATE, null);
+                this.room.table_event(RoomEvent.GGZ_TABLE_UPDATE, this);
         } else {
             /* Otherwise we have to do it through the server */
             if (this.room == null)
@@ -201,7 +201,7 @@ public class Table {
 
         /* If we're in a room, notify it of a table event */
         if (this.room != null)
-            this.room.table_event(RoomEvent.GGZ_TABLE_UPDATE, null);
+            this.room.table_event(RoomEvent.GGZ_TABLE_UPDATE, this);
     }
 
     void set_seat(TableSeat seat) {
@@ -232,7 +232,7 @@ public class Table {
                 this.room.player_set_table(oldseat.name, -1);
         } else {
             if (this.room != null)
-                this.room.table_event(RoomEvent.GGZ_TABLE_UPDATE, null);
+                this.room.table_event(RoomEvent.GGZ_TABLE_UPDATE, this);
         }
 
         /* If this is our table, alert the game module. */

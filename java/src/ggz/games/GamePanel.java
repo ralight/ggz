@@ -90,6 +90,14 @@ public class GamePanel extends JPanel implements ModEventHandler {
         });
     }
 
+    public void handle_result(final String msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JOptionPane.showMessageDialog(GamePanel.this, msg);
+            }
+        });
+    }
+    
     public void handle_info(int num, List infos) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

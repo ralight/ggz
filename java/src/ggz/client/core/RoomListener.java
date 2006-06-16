@@ -66,13 +66,28 @@ public interface RoomListener extends EventListener {
     public void room_leave(RoomChangeEventData data);
 
     /**
+     * A table has been created.
+     * 
+     * @param data
+     *            the table that was added
+     */
+    public void table_add(Table table);
+
+    /**
+     * A table has been removed from the room.
+     * 
+     * @param data
+     *            the table that was removed
+     */
+    public void table_delete(Table table);
+
+    /**
      * One of the tables in the current room has changed.
      * 
-     * @todo How are you supposed to know which table has changed?
      * @param data
-     *            NULL
+     *            the table that was updated
      */
-    public void table_update();
+    public void table_update(Table table);
 
     /**
      * The table you tried to launch has launched!

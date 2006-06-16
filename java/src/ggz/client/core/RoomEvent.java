@@ -75,11 +75,26 @@ public class RoomEvent {
     public static final RoomEvent GGZ_ROOM_LEAVE = new RoomEvent();
 
     /**
+     * A table has been added (created) to the room.
+     * 
+     * @param data
+     *            the new table
+     */
+    public static final RoomEvent GGZ_TABLE_ADD = new RoomEvent();
+
+    /**
+     * A table has been removed (deleted) from the room.
+     * 
+     * @param data
+     *            the table that was dropped
+     */
+    public static final RoomEvent GGZ_TABLE_DELETE = new RoomEvent();
+
+    /**
      * One of the tables in the current room has changed.
      * 
-     * @todo How are you supposed to know which table has changed?
      * @param data
-     *            NULL
+     *            the table that was updated
      */
     public static final RoomEvent GGZ_TABLE_UPDATE = new RoomEvent();
 

@@ -656,7 +656,7 @@ public class Net implements Runnable {
 	}
 
 	/* Send the session header */
-	private void send_header() throws IOException {
+	private synchronized void send_header() throws IOException {
 		try {
 			xmlOutput.startDocument();
 		} catch (SAXException ex) {
@@ -673,7 +673,7 @@ public class Net implements Runnable {
 		}
 	}
 
-	void send_logout() throws IOException {
+    synchronized void send_logout() throws IOException {
 		log.fine("Sending LOGOUT");
 		sendEndElement("SESSION");
 		try {
@@ -842,7 +842,22 @@ public class Net implements Runnable {
 			}
 
 			this.server.protocol_error(message);
-		}
+		} else if ("reseat".equals(action) ||
+                   "update".equals(action)) {
+            if (code != ClientReqError.E_OK) {
+                // Alert the game of the result.
+                Game game = server.get_cur_game();
+                if (game != null) {
+                    String msg;
+                    if (code == ClientReqError.E_NO_PERMISSION) {
+                        msg = messages.getString("Net.ReseatError.NoPermission");
+                    } else {
+                        msg = code.toString();
+                    }
+                    game.inform_result(msg);
+                }
+            }
+        }
 	}
 
 	/* Functions for <PASSWORD> tag */
@@ -1795,7 +1810,7 @@ public class Net implements Runnable {
 		sendStartElement(qname, atts);
 	}
 
-	private void sendStartElement(String qname, Attributes atts)
+	private synchronized void sendStartElement(String qname, Attributes atts)
 			throws IOException {
 		try {
 			xmlOutput.startElement("", "", qname, atts);
@@ -1804,7 +1819,7 @@ public class Net implements Runnable {
 		}
 	}
 
-	private void sendEndElement(String qname) throws IOException {
+	private synchronized void sendEndElement(String qname) throws IOException {
 		try {
 			xmlOutput.endElement("", "", qname);
 			out.flush();
@@ -1813,7 +1828,7 @@ public class Net implements Runnable {
 		}
 	}
 
-	private void sendTextElement(String qname, Attributes atts, String text)
+	private synchronized void sendTextElement(String qname, Attributes atts, String text)
 			throws IOException {
 		sendStartElement(qname, atts);
 		try {
@@ -1824,7 +1839,7 @@ public class Net implements Runnable {
 		sendEndElement(qname);
 	}
 
-	private void sendTextElement(String qname, String text) throws IOException {
+	private synchronized void sendTextElement(String qname, String text) throws IOException {
 		sendStartElement(qname);
 		try {
 			xmlOutput.characters(text.toCharArray(), 0, text.length());

@@ -126,7 +126,7 @@ public class Client {
     public TrickInfo get_last_trick() {
         return this.lastTrick;
     }
-    
+
     public String get_scores() {
         return this.scores;
     }
@@ -310,7 +310,7 @@ public class Client {
 
         /* read in data about the players */
         for (int i = 0; i < numplayers; i++) {
-            int type, ggzseat;
+            int type, ggzseat, old_ggzseat;
             SeatType old_type, new_type;
             String old_name, new_name;
 
@@ -321,13 +321,15 @@ public class Client {
 
             old_name = this.players[i].name;
             old_type = this.players[i].status;
+            old_ggzseat = this.players[i].ggzseat;
 
             this.players[i].status = new_type;
             this.players[i].name = new_name;
             this.players[i].ggzseat = ggzseat;
 
+            // Only alert the game if the seat has changed in some way.
             if (old_type != new_type || old_name == null
-                    || !old_name.equals(new_name)) {
+                    || !old_name.equals(new_name) || old_ggzseat != ggzseat) {
                 game.alert_player(i, old_type, old_name);
             }
         }
@@ -729,10 +731,10 @@ public class Client {
     /* This function handles any input from the server. */
     protected void handle_server_input() throws IOException {
         // Skip past the packet size, we don't need it since
-        // we are using blocking sockets so we just keep 
+        // we are using blocking sockets so we just keep
         // reading until we have what we need.
-//        short packetSize = this.fd_in.read_header();
-//        log.fine("New packet received from server. size=" + packetSize);
+        // short packetSize = this.fd_in.read_header();
+        // log.fine("New packet received from server. size=" + packetSize);
         ServerOpCode opcode = this.fd_in.read_opcode();
 
         log.fine("Received " + opcode + " opcode from the server.");

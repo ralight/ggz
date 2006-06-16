@@ -171,6 +171,10 @@ public class Mod implements ModGGZ, ModGame {
 		ehandler.handle_chat(player, msg);
 	}
 
+    public void inform_result(String msg) {
+        ehandler.handle_result(msg);
+    }
+
 	public void set_seat(Seat seat) {
 		Seat oldseat;
 

@@ -26,6 +26,7 @@ public interface ModEventHandler {
     public void handle_launch() throws IOException;
     public void handle_server_fd(Socket fd) throws IOException;
     public void handle_chat(String player, String msg);
+    public void handle_result(String msg);
     public void handle_info(int num, List infos);
     public void handle_player(String name, boolean is_spectator, int seat_num);
     public void handle_seat(Seat seat);

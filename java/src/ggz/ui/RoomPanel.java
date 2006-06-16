@@ -188,14 +188,12 @@ public class RoomPanel extends JPanel implements RoomListener {
     }
 
     public void table_join_fail(String error) {
-        tablesFlow.refresh();
+        tablesFlow.updateButtons();
         JOptionPane.showMessageDialog(this, error);
     }
 
     public void table_joined(int table_index) {
-        // TODO: check if we get this when another players leaves.
-        // maybe we just need to update the one table.
-        tablesFlow.refresh();
+        tablesFlow.updateButtons();
         lobbyButton.setEnabled(false);
         newTableButton.setEnabled(false);
     }
@@ -205,7 +203,7 @@ public class RoomPanel extends JPanel implements RoomListener {
     }
 
     public void table_launched() {
-        tablesFlow.refresh();
+        tablesFlow.updateButtons();
         lobbyButton.setEnabled(false);
         newTableButton.setEnabled(false);
     }
@@ -226,7 +224,7 @@ public class RoomPanel extends JPanel implements RoomListener {
             JOptionPane.showMessageDialog(this, messages
                     .getString("RoomPanel.Message.GameOver"));
         }
-        tablesFlow.refresh();
+        tablesFlow.updateButtons();
         lobbyButton.setEnabled(true);
         newTableButton.setEnabled(true);
     }
@@ -235,8 +233,16 @@ public class RoomPanel extends JPanel implements RoomListener {
         tablesFlow.refresh();
     }
 
-    public void table_update() {
-        tablesFlow.refresh();
+    public void table_add(Table table) {
+        tablesFlow.addTable(table);
+    }
+
+    public void table_delete(Table table) {
+        tablesFlow.removeTable(table);
+    }
+
+    public void table_update(Table table) {
+        tablesFlow.updateTable(table);
     }
 
     private class BackToLobbyAction extends AbstractAction {
@@ -444,6 +450,14 @@ public class RoomPanel extends JPanel implements RoomListener {
             add(titleLabel, BorderLayout.NORTH);
             add(seatsPanel, BorderLayout.CENTER);
             add(buttonPanel, BorderLayout.SOUTH);
+            refresh();
+        }
+        
+        protected void refresh() {
+            titleLabel.setText(getTitleHTML());
+            playersLabel.setText(getPlayersHTML());
+            spectatorsLabel.setText(getSpectatorsHTML());
+            spectatorsLabel.setVisible(table.get_num_spectator_seats() > 0);
             updateButtonEnabledState();
         }
 
@@ -647,12 +661,57 @@ public class RoomPanel extends JPanel implements RoomListener {
             // severe.
             removeAll();
             for (int i = 0; i < room.get_num_tables(); i++) {
-                TablePanel tablePanel = new TablePanel(room.get_nth_table(i));
-                add(tablePanel);
+                addTable(room.get_nth_table(i));
             }
             RoomPanel.this.invalidate();
             RoomPanel.this.validate();
             RoomPanel.this.repaint();
+        }
+        
+        public void addTable(Table table) {
+            add(new TablePanel(table));
+        }
+        
+        public void removeTable(Table table) {
+            TablePanel tp = findTablePanel(table);
+            if (tp == null) {
+                // Hmm, no table. Just update the lot just in case.
+                refresh();
+            } else {
+                remove(tp);
+                invalidate();
+                validate();
+                repaint();
+            }
+        }
+        
+        public void updateTable(Table table) {
+            TablePanel tp = findTablePanel(table);
+            if (tp == null) {
+                // Hmm, no table. Just update the lot just in case.
+                refresh();
+            } else {
+                tp.refresh();
+            }
+        }
+        
+        public void updateButtons() {
+            int ncomponents = getComponentCount();
+            for (int i = 0; i < ncomponents; i ++) {
+                TablePanel tp = (TablePanel)getComponent(i);
+                tp.updateButtonEnabledState();
+            }
+        }
+        
+        private TablePanel findTablePanel(Table table) {
+            int ncomponents = getComponentCount();
+            for (int i = 0; i < ncomponents; i ++) {
+                TablePanel tp = (TablePanel)getComponent(i);
+                if (tp.table == table) {
+                    return tp;
+                }
+            }
+            return null;
         }
 
         public Dimension getPreferredScrollableViewportSize() {
