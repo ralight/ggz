@@ -173,7 +173,9 @@ public class ClientApplet extends JApplet implements ServerListener,
     public void stop() {
         try {
             if (server != null
-                    && server.get_state() != StateID.GGZ_STATE_OFFLINE) {
+                    && server.get_state() != StateID.GGZ_STATE_OFFLINE
+                    && server.get_state() != StateID.GGZ_STATE_LOGGING_OUT
+                    && server.get_state() != StateID.GGZ_STATE_RECONNECTING) {
                 server.logout();
             }
         } catch (Exception e) {

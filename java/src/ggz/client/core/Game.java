@@ -79,7 +79,8 @@ public class Game implements ModTransactionHandler {
         }
 
         if (module == null && !Module.is_embedded())
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    "module is null or is not embedded - only embedded modules are currently supported.");
 
         Room room = server.get_cur_room();
 
@@ -108,8 +109,9 @@ public class Game implements ModTransactionHandler {
         this.client.add_mod_listener(this);
         // this.client.set_player(server.get_handle(), false, -1);
 
-        if (!Module.is_embedded())
+        if (!Module.is_embedded()) {
             this.client.set_module(null, module.get_class_name());
+        }
     }
 
     /* Functions for attaching hooks to Game events */
@@ -154,6 +156,8 @@ public class Game implements ModTransactionHandler {
             event(GameEvent.GGZ_GAME_NEGOTIATED, null);
             if (newState != ModState.GGZMOD_STATE_CONNECTED) {
                 log.severe("Game changed state from created to " + newState);
+                throw new IllegalStateException(
+                        "New state != GGZMOD_STATE_CONNECTED");
             }
         } else if (prev == ModState.GGZMOD_STATE_CONNECTED) {
             log.fine("game playing");
@@ -161,6 +165,8 @@ public class Game implements ModTransactionHandler {
             if (newState != ModState.GGZMOD_STATE_WAITING
                     && newState != ModState.GGZMOD_STATE_PLAYING) {
                 log.severe("Game changed state from connected to " + newState);
+                throw new IllegalStateException(
+                        "New state != GGZMOD_STATE_WAITING or GGZMOD_STATE_PLAYING");
             }
         }
 
@@ -171,7 +177,10 @@ public class Game implements ModTransactionHandler {
              * Leave the game running. This should never happen since this is
              * the initial state and we never return to it after leaving it.
              */
-            log.severe("Game state changed to created. This should never happen!");
+            log
+                    .severe("Game state changed to created. This should never happen!");
+            throw new IllegalStateException(
+                    "Game state changed to created. This should never happen!");
         }
     }
 
@@ -196,7 +205,7 @@ public class Game implements ModTransactionHandler {
 
     public void handle_boot(String name) throws IOException {
         Net net = this.server.get_net();
-        Room room = this.server.get_nth_room(this.room_id);
+        Room room = this.server.get_room_by_id(this.room_id);
         Table table = room.get_table_by_id(this.table_id);
         int i;
 
@@ -229,7 +238,7 @@ public class Game implements ModTransactionHandler {
             throws IOException {
         Net net = this.server.get_net();
         TableSeat seat = new TableSeat(seat_num, null, null);
-        Room room = this.server.get_nth_room(this.room_id);
+        Room room = this.server.get_room_by_id(this.room_id);
         Table table = room.get_table_by_id(this.table_id);
 
         if (t == ModTransaction.GGZMOD_TRANSACTION_OPEN)
@@ -272,7 +281,7 @@ public class Game implements ModTransactionHandler {
         num_seats = table.get_num_spectator_seats();
         for (i = 0; i < num_seats; i++) {
             TableSeat seat = table.get_nth_spectator_seat(i);
-            
+
             if (seat.name != null) {
                 set_spectator_seat(seat);
             }
@@ -382,10 +391,11 @@ public class Game implements ModTransactionHandler {
 
     public void launch() {
         if ((this.module != null || Module.is_embedded())) {
-            if (Module.is_embedded())
+            if (Module.is_embedded()) {
                 log.fine("Launching embedded game");
-            else
+            } else {
                 log.fine("Launching game of " + this.module.get_name());
+            }
 
             try {
                 this.client.connect();

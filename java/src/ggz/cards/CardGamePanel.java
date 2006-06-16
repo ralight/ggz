@@ -280,12 +280,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                             TableConstraints.PLAYER_LABEL, seat_num));
                     playerLabels[seat_num] = label;
 
-                    if (seat_num != 0) {
+                    //if (seat_num != 0) {
                         // Listen for click events so as to pop up a menu that
                         // allows users to do things to this seat.
                         label.addMouseListener(new PopupListener());
                         label.setToolTipText("Right click for options.");
-                    }
+                    //}
                 } else {
                     label.setText(player.get_name());
                     label.getClientProperty("ggz.cards.popupMenu");
@@ -295,6 +295,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 SeatType seat_type = player.get_seat_type();
                 switch (seat_num) {
                 case 0: // Me - south
+                    label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalAlignment(SwingConstants.TOP);
                     break;
                 case 1: // West

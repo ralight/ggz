@@ -52,14 +52,8 @@ public class Server {
 	/* Current state */
 	private StateID state;
 
-	/* Number of gametypes */
-	private int num_gametypes;
-
 	/* List of game types */
 	private GameType[] gametypes;
-
-	/* Number of rooms */
-	private int num_rooms;
 
 	/* List of rooms in this server */
 	private Room[] rooms;
@@ -306,7 +300,7 @@ public class Server {
 
 	public void join_room(int room_num) throws IOException {
 		/* FIXME: check validity of this action */
-		if ((room_num < this.num_rooms)
+		if ((room_num < get_num_rooms())
 				&& (this.state == StateID.GGZ_STATE_IN_ROOM || this.state == StateID.GGZ_STATE_LOGGED_IN)) {
 			int room_id;
 			Room room_to_join;
@@ -330,10 +324,11 @@ public class Server {
 				&& this.state != StateID.GGZ_STATE_RECONNECTING
 				&& this.state != StateID.GGZ_STATE_LOGGING_OUT) {
 			log.fine("Logging out");
+            change_state(TransID.GGZ_TRANS_LOGOUT_TRY);
 			net.send_logout();
-			change_state(TransID.GGZ_TRANS_LOGOUT_TRY);
-		} else
+		} else {
 			throw new IllegalStateException(this.state.toString());
+        }
 	}
 
 	void disconnect() {
@@ -390,7 +385,7 @@ public class Server {
 	public int get_num_players() {
 		int total = 0;
 
-		for (int i = 0; i < num_rooms; i++) {
+		for (int i = 0; i < get_num_rooms(); i++) {
 			Room nth_room = get_nth_room(i);
 
 			/*
@@ -404,7 +399,7 @@ public class Server {
 	}
 
 	public int get_num_rooms() {
-		return this.num_rooms;
+		return this.rooms == null ? 0 : this.rooms.length;
 	}
 
 	public Room get_cur_room() {
@@ -414,7 +409,7 @@ public class Server {
 	public Room get_room_by_id(int id) {
 		int i;
 
-		for (i = 0; i < this.num_rooms; i++)
+		for (i = 0; i < this.get_num_rooms(); i++)
 			if (this.rooms[i].get_id() == id)
 				return this.rooms[i];
 
@@ -422,13 +417,13 @@ public class Server {
 	}
 
 	public int get_num_gametypes() {
-		return this.num_gametypes;
+		return this.gametypes == null ? 0 : this.gametypes.length;
 	}
 
 	public GameType get_type_by_id(int id) {
 		int i;
 
-		for (i = 0; i < this.num_gametypes; i++)
+		for (i = 0; i < this.get_num_gametypes(); i++)
 			if (this.gametypes[i].get_id() == id)
 				return this.gametypes[i];
 
@@ -667,16 +662,9 @@ public class Server {
 
 	void clear_reconnect() {
 		/* Clear all server-internal members (reconnection only) */
-		if (this.rooms != null) {
-			this.rooms = null;
-			this.num_rooms = 0;
-		}
+	    this.rooms = null;
 		this.current_room = null;
-
-		if (this.gametypes != null) {
-			this.gametypes = null;
-			this.num_gametypes = 0;
-		}
+		this.gametypes = null;
 	}
 
 	void clear() {
@@ -688,10 +676,8 @@ public class Server {
 		this.handle = null;
 		this.password = null;
 		this.rooms = null;
-		this.num_rooms = 0;
 		this.current_room = null;
 		this.gametypes = null;
-		this.num_gametypes = 0;
 
 		ServerListener[] listenerArray = (ServerListener[]) event_hooks.listeners
 				.getListeners(ServerListener.class);
@@ -725,19 +711,18 @@ public class Server {
 	}
 
 	void init_roomlist(int num) {
-		int i;
+//		int i;
 
-		this.num_rooms = num;
 		this.rooms = new Room[num];
-		for (i = 0; i < num; i++)
-			this.rooms[i] = null;
+//		for (i = 0; i < num; i++)
+//			this.rooms[i] = null;
 	}
 
 	void add_room(Room room) {
 		int i = 0;
 
 		/* Find first open spot and stick it in */
-		while (i < this.num_rooms) {
+		while (i < this.get_num_rooms()) {
 			if (this.rooms[i] == null) {
 				this.rooms[i] = room;
 				break;
@@ -747,7 +732,6 @@ public class Server {
 	}
 
 	void init_typelist(int num) {
-		this.num_gametypes = num;
 		this.gametypes = new GameType[num];
 	}
 
@@ -755,7 +739,7 @@ public class Server {
 		int i = 0;
 
 		/* Find first open spot and stick it in */
-		while (i < this.num_gametypes) {
+		while (i < this.get_num_gametypes()) {
 			if (this.gametypes[i] == null) {
 				this.gametypes[i] = type;
 				break;

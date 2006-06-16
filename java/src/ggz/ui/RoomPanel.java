@@ -34,10 +34,12 @@ import ggz.common.SeatType;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -190,6 +192,8 @@ public class RoomPanel extends JPanel implements RoomListener {
     }
 
     public void table_joined(int table_index) {
+        // TODO: check if we get this when another players leaves.
+        // maybe we just need to update the one table.
         tablesFlow.refresh();
         lobbyButton.setEnabled(false);
         newTableButton.setEnabled(false);
@@ -521,7 +525,103 @@ public class RoomPanel extends JPanel implements RoomListener {
 
     private class TablesLayoutPanel extends JPanel implements Scrollable {
         public TablesLayoutPanel() {
-            super(new GridLayout(0, 3));
+            super(new LayoutManager() {
+                private Dimension cellSize;
+
+                private int nrows;
+
+                private int ncols;
+
+                private int hgap = 0;
+
+                private int vgap = 0;
+
+                public void addLayoutComponent(String name, Component comp) {
+                }
+
+                public void layoutContainer(Container parent) {
+                    synchronized (parent.getTreeLock()) {
+                        recalc(parent);
+                        Insets insets = parent.getInsets();
+                        int ncomponents = parent.getComponentCount();
+                        boolean ltr = parent.getComponentOrientation()
+                                .isLeftToRight();
+
+                        if (ncomponents == 0) {
+                            return;
+                        }
+                        int w = cellSize.width;
+                        int h = cellSize.height;
+
+                        if (ltr) {
+                            for (int c = 0, x = insets.left; c < ncols; c++, x += w
+                                    + hgap) {
+                                for (int r = 0, y = insets.top; r < nrows; r++, y += h
+                                        + vgap) {
+                                    int i = r * ncols + c;
+                                    if (i < ncomponents) {
+                                        parent.getComponent(i).setBounds(x, y,
+                                                w, h);
+                                    }
+                                }
+                            }
+                        } else {
+                            for (int c = 0, x = parent.getWidth()
+                                    - insets.right - w; c < ncols; c++, x -= w
+                                    + hgap) {
+                                for (int r = 0, y = insets.top; r < nrows; r++, y += h
+                                        + vgap) {
+                                    int i = r * ncols + c;
+                                    if (i < ncomponents) {
+                                        parent.getComponent(i).setBounds(x, y,
+                                                w, h);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                public Dimension minimumLayoutSize(Container parent) {
+                    return preferredLayoutSize(parent);
+                }
+
+                public void removeLayoutComponent(Component comp) {
+                }
+
+                public Dimension preferredLayoutSize(Container parent) {
+                    synchronized (parent.getTreeLock()) {
+                        recalc(parent);
+                        Insets insets = parent.getInsets();
+                        int w = cellSize.width;
+                        int h = cellSize.height;
+
+                        return new Dimension(insets.left + insets.right + ncols
+                                * w + (ncols - 1) * hgap, insets.top
+                                + insets.bottom + nrows * h + (nrows - 1)
+                                * vgap);
+                    }
+                }
+
+                private void recalc(Container parent) {
+                    int ncomponents = parent.getComponentCount();
+                    int w = 0;
+                    int h = 0;
+                    for (int i = 0; i < ncomponents; i++) {
+                        Component comp = parent.getComponent(i);
+                        Dimension d = comp.getPreferredSize();
+                        if (w < d.width) {
+                            w = d.width;
+                        }
+                        if (h < d.height) {
+                            h = d.height;
+                        }
+                    }
+                    cellSize = new Dimension(w, h);
+                    ncols = w == 0 ? 1 : Math.max(1, parent.getWidth() / w);
+                    nrows = (parent.getComponentCount() + ncols - 1) / ncols;
+                }
+            });
             setOpaque(false);
         }
 

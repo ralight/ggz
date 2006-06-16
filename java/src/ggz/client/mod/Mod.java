@@ -49,13 +49,13 @@ public class Mod implements ModGGZ, ModGame {
 	private ModEventHandler ehandler;
 
 	/* Seat and spectator seat data. */
-	private int num_seats;
+//	private int num_seats;
 
 	private ArrayList seats;
 
 	// private List stats;
 	// private List infos;
-	private int num_spectator_seats;
+//	private int num_spectator_seats;
 
 	private ArrayList spectator_seats;
 
@@ -184,8 +184,7 @@ public class Mod implements ModGGZ, ModGame {
 			return;
 		}
 
-		if (seat.num >= this.num_seats) {
-			this.num_seats = seat.num + 1;
+		if (seat.num >= this.get_num_seats()) {
 
 			if (this.seats == null) {
 				this.seats = new ArrayList();
@@ -222,9 +221,6 @@ public class Mod implements ModGGZ, ModGame {
 		}
 
 		if (seat.get_name() != null) {
-			if (seat.get_num() >= this.num_spectator_seats) {
-				this.num_spectator_seats = seat.get_num() + 1;
-			}
 			if (this.spectator_seats == null) {
 				this.spectator_seats = new ArrayList();
 			}
@@ -234,7 +230,6 @@ public class Mod implements ModGGZ, ModGame {
 			int entry = this.spectator_seats.indexOf(seat);
 			if (entry > -1) {
 				this.spectator_seats.remove(entry);
-				this.num_spectator_seats--;
 			}
 		}
 	}
@@ -247,7 +242,7 @@ public class Mod implements ModGGZ, ModGame {
 	 * @return A valid GGZSeat structure, if seat is a valid seat.
 	 */
 	public Seat get_seat(int num) {
-		if (num >= 0 && num < this.num_seats) {
+		if (num >= 0 && num < this.get_num_seats()) {
 			for (int seat_num = 0; seat_num < this.seats.size(); seat_num++) {
 				Seat seat = (Seat) this.seats.get(seat_num);
 				if (num == seat.num) {
@@ -269,7 +264,7 @@ public class Mod implements ModGGZ, ModGame {
 		 * Note: num_seats is initialized to 0 and isn't changed until we hear
 		 * differently from GGZ.
 		 */
-		return this.num_seats;
+		return this.seats == null ? -1 : this.seats.size();
 	}
 
 	/**
@@ -287,7 +282,7 @@ public class Mod implements ModGGZ, ModGame {
 		 * Note: num_spectator_seats is initialized to 0 and isn't changed until
 		 * we hear differently from GGZ.
 		 */
-		return this.num_spectator_seats;
+		return this.spectator_seats == null ? 0 : this.spectator_seats.size();
 	}
 
 	/**
@@ -299,7 +294,7 @@ public class Mod implements ModGGZ, ModGame {
 	 * @return A valid GGZSpectator structure, if given a valid seat.
 	 */
 	public SpectatorSeat get_spectator_seat(int num) {
-		if (num >= 0 && num < this.num_spectator_seats) {
+		if (num >= 0 && num < this.get_num_spectator_seats()) {
             for (int seat_num = 0; seat_num < this.spectator_seats.size(); seat_num++) {
                 SpectatorSeat seat = (SpectatorSeat) this.spectator_seats.get(seat_num);
                 if (num == seat.get_num()) {
