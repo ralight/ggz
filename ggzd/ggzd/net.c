@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8127 2006-06-07 18:02:32Z jdorje $
+ * $Id: net.c 8205 2006-06-17 19:55:02Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1780,6 +1780,8 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 			/* FIXME: This should be done elsewhere. */
 			snprintf(player.handle, MAX_USER_NAME_LEN+1,
 				 "%s", seat->name ? seat->name : "");
+#if 0 /* We used to disallow nonregistered reservations, but this seems
+	 to be a desired feature. */
 			if (ggzdb_player_get(&player) != 0) {
 				/* This is some kind of error...but for now we
 				   just cover it up. */
@@ -1789,8 +1791,12 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 					player.handle);
 				seat_type = GGZ_SEAT_OPEN;
 			} else {
-				strcpy(table->seat_names[seat->index], player.handle);
+#endif
+				strcpy(table->seat_names[seat->index],
+				       player.handle);
+#if 0
 			}
+#endif
 			break;
 		case GGZ_SEAT_PLAYER:
 			/* This is valid for an UPDATE but not a LAUNCH.
