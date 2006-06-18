@@ -143,6 +143,9 @@ struct dataio *dio_new(int socket)
 
 void dio_free(struct dataio *dio)
 {
+  assert(dio->output.writeloc == dio->output.start);
+  assert(dio->input.readloc == dio->input.start);
+
   ggz_free(dio->output.buf);
   ggz_free(dio->input.buf);
   ggz_free(dio);
@@ -233,6 +236,7 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
     dio->input.handling = false;
     return -1;
   }
+  //  printf("dio_read: %d bytes on %d.\n", nread, dio->fd);
 
   dio->input.readloc += nread;
   assert(dio->input.readloc <= dio->input.bufsz);
@@ -269,6 +273,8 @@ int dio_write_data(struct dataio *dio)
   assert(nwritten <= nleft);
   dio->output.writeloc += nwritten;
 
+  //  printf("Dio_write: %d bytes on %d.\n", nwritten, dio->fd);
+
   /* Rewind the buffer. */
   if (dio->output.writeloc == dio->output.current) {
     dio->output.writeloc = 0;
@@ -285,6 +291,17 @@ int dio_write_data(struct dataio *dio)
     dio->output.current -= diff;
 
     memmove(dio->output.buf, dio->output.buf + diff, dio->output.current);
+  }
+
+  return nwritten;
+}
+
+int dio_flush(struct dataio *dio)
+{
+  while (dio_is_write_pending(dio)) {
+    if (dio_write_data(dio) < 0) {
+      return -1;
+    }
   }
 
   return 0;
@@ -317,7 +334,6 @@ static void ensure_output_data(struct dataio *dio, size_t size)
 
 void dio_start_packet(struct dataio *dio)
 {
-
   assert(!dio->output.in_packet);
   assert(dio->output.current == dio->output.start);
   dio->output.in_packet = true;

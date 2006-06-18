@@ -31,6 +31,8 @@ void dio_set_writeable_callback(struct dataio *dio,
 int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *));
 int dio_write_data(struct dataio *dio);
 
+int dio_flush(struct dataio *dio);
+
 bool dio_is_write_pending(const struct dataio *dio);
 int dio_get_socket(const struct dataio *dio);
 
