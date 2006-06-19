@@ -342,7 +342,7 @@ public class ClientApplet extends JApplet implements ServerListener,
         }
 
         return new ImageIcon(getClass().getResource(
-                "/ggz/ui/images/watermark.gif")).getImage();
+                "/ggz/ui/images/watermark.png")).getImage();
     }
 
     public void server_channel_connected() {
