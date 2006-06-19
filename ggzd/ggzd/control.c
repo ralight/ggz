@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8104 2006-06-06 07:35:24Z josef $
+ * $Id: control.c 8221 2006-06-19 19:15:56Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -183,13 +183,24 @@ static void cleanup_data(void)
 		data_free(game_types[i].version);
 		data_free(game_types[i].p_engine);
 		data_free(game_types[i].p_version);
+		data_free(game_types[i].homepage);
+		data_free(game_types[i].game);
 		data_free(game_types[i].data_dir);
 		data_free(game_types[i].desc);
 		data_free(game_types[i].author);
-		data_free(game_types[i].homepage);
 		for (args = game_types[i].exec_args; *args; args++)
 			data_free(*args);
 		data_free(game_types[i].exec_args);
+
+		char ***args_nb;
+		if(game_types[i].named_bots){
+			for (args_nb = game_types[i].named_bots; *args_nb; args_nb++){
+				data_free((*args_nb)[1]);
+				data_free((*args_nb)[0]);
+				data_free((*args_nb));
+			}
+		}
+		data_free(game_types[i].named_bots);
 	}
 
 	data_free(log_info.log_fname);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8219 2006-06-19 15:46:27Z jdorje $
+ * $Id: parse_opt.c 8221 2006-06-19 19:15:56Z oojah $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -568,6 +568,7 @@ static void parse_game(char *name, char *dir)
 		return;
 	}
 	strcpy(game_info.name, tmp);
+	ggz_free(tmp);
 	game_info.version = ggz_conf_read_string(ch, "GameInfo",
 						 "Version", "");
 	game_info.desc = ggz_conf_read_string(ch, "GameInfo",
