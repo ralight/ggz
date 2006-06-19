@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8198 2006-06-15 17:32:54Z oojah $
+ * $Id: spades.c 8207 2006-06-19 01:32:39Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -269,10 +269,10 @@ static void spades_get_bid(void)
 		   not). */
 
 		/* TODO: make sure partner made minimum bid */
-		add_sbid(0, 0, SPADES_NO_BLIND);
+		add_sbid(0, NO_SUIT, SPADES_NO_BLIND);
 		if (partner->bid_count == 0 ||
 		    pard >= GSPADES.minimum_team_bid) {
-			add_sbid(0, 0, SPADES_DOUBLE_NIL);
+			add_sbid(0, NO_SUIT, SPADES_DOUBLE_NIL);
 		}
 	} else {
 		/* A regular bid */
@@ -283,7 +283,7 @@ static void spades_get_bid(void)
 			if (partner->bid_count > 0 &&
 			    pard + i < GSPADES.minimum_team_bid)
 				continue;
-			add_sbid(i, 0, 0);
+			add_sbid(i, NO_SUIT, SPADES_BID);
 		}
 
 		/* "Nil" bid */
@@ -294,7 +294,7 @@ static void spades_get_bid(void)
 		if (GSPADES.nil_value > 0
 		    && (game.bid_count < 2
 			|| pard >= GSPADES.minimum_team_bid))
-			add_sbid(0, 0, SPADES_NIL);
+			add_sbid(0, NO_SUIT, SPADES_NIL);
 	}
 
 	/* TODO: other specialty bids */
