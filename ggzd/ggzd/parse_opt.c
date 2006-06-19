@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8071 2006-05-29 07:34:31Z josef $
+ * $Id: parse_opt.c 8219 2006-06-19 15:46:27Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -498,6 +498,11 @@ void parse_game_files(void)
 			else
 				dbg_msg(GGZ_DBG_CONFIGURATION,
 					"Ignoring game %s", name);
+
+			free(namelist[i]);
+		}
+		if (num_games >= 0) {
+			free(namelist);
 		}
 	}
 
@@ -740,6 +745,11 @@ void parse_room_files(void)
 			else
 				dbg_msg(GGZ_DBG_CONFIGURATION,
 					"Ignoring room %s", name);
+
+			free(namelist[i]);
+		}
+		if (num_rooms >= 0) {
+			free(namelist);
 		}
 	}
 
