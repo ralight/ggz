@@ -133,7 +133,7 @@ public class LoungePanel extends JPanel {
         try {
             motdText = new JTextPane();
             ((JTextPane) motdText).setPage(motd.url);
-        } catch (IOException e) {
+        } catch (Throwable ex) {
             motdText = new JTextArea(motd.motd);
             motdText.setFont(new Font("Monospaced", Font.PLAIN, 12));
         }
