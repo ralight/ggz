@@ -27,7 +27,6 @@ import ggz.common.SeatType;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -201,11 +200,11 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
             reserveSeatsPanel.add(new SeatPanel(seatNum));
         }
         advancedPanel = new JPanel(new BorderLayout());
-        JLabel label = new JLabel(
-                "You can only reserve seats for registered players.");
-        label.setFont(label.getFont().deriveFont(Font.PLAIN).deriveFont(
-                Font.ITALIC));
-        advancedPanel.add(label, BorderLayout.NORTH);
+//        JLabel label = new JLabel(
+//                "You can only reserve seats for registered players.");
+//        label.setFont(label.getFont().deriveFont(Font.PLAIN).deriveFont(
+//                Font.ITALIC));
+//        advancedPanel.add(label, BorderLayout.NORTH);
         advancedPanel.add(reserveSeatsPanel, BorderLayout.CENTER);
         constraints.gridx = 0;
         constraints.gridy += 1;
@@ -385,9 +384,9 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
             int numPlayers = room.get_num_players();
             for (int playerNum = 0; playerNum < numPlayers; playerNum++) {
                 Player player = room.get_nth_player(playerNum);
-                if (player.get_type() == PlayerType.GGZ_PLAYER_NORMAL
-                        || player.get_type() == PlayerType.GGZ_PLAYER_ADMIN
-                        || player.get_type() == PlayerType.GGZ_PLAYER_BOT)
+//                if (player.get_type() == PlayerType.GGZ_PLAYER_NORMAL
+//                        || player.get_type() == PlayerType.GGZ_PLAYER_ADMIN
+//                        || player.get_type() == PlayerType.GGZ_PLAYER_BOT)
                     reservedCombo.addItem(player);
             }
             if (seatNum == 0) {

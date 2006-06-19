@@ -628,7 +628,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             try {
                 long timeTrickOnScreen = System.currentTimeMillis()
                         - timeLastPlay;
-                Thread.sleep(TRICK_DELAY - timeTrickOnScreen);
+                long delay = TRICK_DELAY - timeTrickOnScreen;
+                if (delay > 0) {
+                    Thread.sleep(delay);
+                }
             } catch (InterruptedException ex) {
                 // Ignore.
                 ex.printStackTrace();
