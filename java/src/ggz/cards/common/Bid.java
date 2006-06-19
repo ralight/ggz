@@ -18,7 +18,7 @@
 package ggz.cards.common;
 
 /*
- * in different games, bids may have different meanings. we'll just use this
+ * In different games, bids may have different meanings. We'll just use this
  * arbitrary data structure for it
  */
 public class Bid {
@@ -36,6 +36,10 @@ public class Bid {
 
     /* More specialty bids (just to round things out) */
     private byte spec2;
+
+    public Bid(byte value) {
+        this(value, -1, (byte) 0, (byte) 0);
+    }
 
     public Bid(byte value, int suit) {
         this(value, suit, (byte) 0, (byte) 0);

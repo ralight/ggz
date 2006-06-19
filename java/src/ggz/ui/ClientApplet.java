@@ -439,7 +439,7 @@ public class ClientApplet extends JApplet implements ServerListener,
             dialog.pack();
             dialog.setVisible(true);
         }
-        loungePanel.setMotD(data.motd);
+        loungePanel.setMotD(data);
     }
 
     public void server_negotiate_fail(String error) {

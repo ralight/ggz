@@ -17,449 +17,312 @@
  */
 package ggz.cards.bridge;
 
+import ggz.cards.BidPanel;
+import ggz.cards.client.Client;
 import ggz.cards.common.Bid;
 
-import java.awt.AWTEventMulticaster;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JToggleButton;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 
-public class BridgeBidPanel extends JPanel implements ItemListener {
-	private int numPlayers;
+public class BridgeBidPanel extends BidPanel implements ItemListener {
 
-	private JTable bidHistoryTable;
+    private JPanel numTricksButtonPanel;
 
-	private JScrollPane bidHistoryScrollPane;
+    private JToggleButton[] numTricksButtons;
 
-	private JPanel layoutPanel;
+    private JPanel strainButtonPanel;
 
-	private JPanel numTricksButtonPanel;
+    private JPanel strainButtonSizePanel;
 
-	private JToggleButton[] numTricksButtons;
+    private JToggleButton[] strainButtons;
 
-	private JPanel strainButtonPanel;
+    private JButton passButton;
 
-	private JPanel strainButtonSizePanel;
+    private JButton doubleButton;
 
-	private JToggleButton[] strainButtons;
+    private JButton redoubleButton;
 
-	private JButton passButton;
+    private JButton bidButton;
 
-	private JButton doubleButton;
+    private JPanel doubleRedoublePassPanel;
 
-	private JButton redoubleButton;
+    private Bid bid;
 
-	private JButton bidButton;
+    private static final Bid BID_PASS = new Bid((byte) 0, 0, (byte) 1, (byte) 0);
 
-	private JPanel doubleRedoublePassPanel;
+    private static final Bid BID_DOUBLE = new Bid((byte) 0, 0, (byte) 2,
+            (byte) 0);
 
-	private List validBids;
+    private static final Bid BID_REDOUBLE = new Bid((byte) 0, 0, (byte) 3,
+            (byte) 0);
 
-	private Bid bid;
+    private static final Bid BID_7_NT = new Bid((byte) 7, 4, (byte) 0, (byte) 0);
 
-	private ActionListener actionListeners;
+    public BridgeBidPanel(int firstBidder, Client cardClient) {
+        super(firstBidder, cardClient);
+        ButtonGroup numTricksButtonGroup = new ButtonGroup();
+        numTricksButtons = new JToggleButton[7];
+        numTricksButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 2,
+                2));
 
-	private static final Bid BID_PASS = new Bid((byte) 0, 0, (byte) 1, (byte) 0);
+        for (int tricks = 0; tricks < numTricksButtons.length; tricks++) {
+            JToggleButton button = new JToggleButton(String.valueOf(tricks + 1));
+            numTricksButtons[tricks] = button;
+            numTricksButtonGroup.add(button);
+            numTricksButtonPanel.add(button);
+            button.addItemListener(this);
+        }
 
-	private static final Bid BID_DOUBLE = new Bid((byte) 0, 0, (byte) 2,
-			(byte) 0);
+        ButtonGroup strainButtonGroup = new ButtonGroup();
+        strainButtons = new JToggleButton[5];
+        strainButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        strainButtonSizePanel = new JPanel(new GridLayout(1, 5, 2, 0));
+        int strain = 0;
+        JToggleButton button = new JToggleButton(new ImageIcon(getClass()
+                .getResource("/ggz/cards/images/club.gif")));
 
-	private static final Bid BID_REDOUBLE = new Bid((byte) 0, 0, (byte) 3,
-			(byte) 0);
+        strainButtonPanel.add(strainButtonSizePanel);
+        strainButtons[strain] = button;
+        strainButtonGroup.add(button);
+        strainButtonSizePanel.add(button);
+        strain++;
+        button = new JToggleButton(new ImageIcon(getClass().getResource(
+                "/ggz/cards/images/diamond.gif")));
+        strainButtons[strain] = button;
+        strainButtonGroup.add(button);
+        strainButtonSizePanel.add(button);
+        strain++;
+        button = new JToggleButton(new ImageIcon(getClass().getResource(
+                "/ggz/cards/images/heart.gif")));
+        strainButtons[strain] = button;
+        strainButtonGroup.add(button);
+        strainButtonSizePanel.add(button);
+        strain++;
+        button = new JToggleButton(new ImageIcon(getClass().getResource(
+                "/ggz/cards/images/spade.gif")));
+        strainButtons[strain] = button;
+        strainButtonGroup.add(button);
+        strainButtonSizePanel.add(button);
+        strain++;
+        button = new JToggleButton("NT");
+        strainButtons[strain] = button;
+        strainButtonGroup.add(button);
+        strainButtonSizePanel.add(button);
+        strain++;
 
-	private static final Bid BID_7_NT = new Bid((byte) 7, 4, (byte) 0, (byte) 0);
+        doubleRedoublePassPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,
+                2, 2));
+        bidButton = new JButton(new BidAction());
+        doubleRedoublePassPanel.add(bidButton);
+        doubleButton = new JButton(new NonBidAction(BID_DOUBLE));
+        doubleRedoublePassPanel.add(doubleButton);
+        redoubleButton = new JButton(new NonBidAction(BID_REDOUBLE));
+        doubleRedoublePassPanel.add(redoubleButton);
+        passButton = new JButton(new NonBidAction(BID_PASS));
+        doubleRedoublePassPanel.add(passButton);
 
-	public BridgeBidPanel(int numPlayers) {
-		super(new BorderLayout(2, 2));
-		this.numPlayers = numPlayers;
-		ButtonGroup numTricksButtonGroup = new ButtonGroup();
-		numTricksButtons = new JToggleButton[7];
-		numTricksButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 2,
-				2));// (new GridLayout(1, 7, 2, 2));
+        buttonPanel.setLayout(new GridLayout(3, 1));
+        buttonPanel.add(numTricksButtonPanel);
+        buttonPanel.add(strainButtonPanel);
+        buttonPanel.add(doubleRedoublePassPanel);
 
-		for (int tricks = 0; tricks < numTricksButtons.length; tricks++) {
-			JToggleButton button = new JToggleButton(String.valueOf(tricks + 1));
-			numTricksButtons[tricks] = button;
-			numTricksButtonGroup.add(button);
-			numTricksButtonPanel.add(button);
-			button.addItemListener(this);
-		}
+        numTricksButtonPanel.setOpaque(false);
+        strainButtonPanel.setOpaque(false);
+        strainButtonSizePanel.setOpaque(false);
+        doubleRedoublePassPanel.setOpaque(false);
+    }
 
-		ButtonGroup strainButtonGroup = new ButtonGroup();
-		strainButtons = new JToggleButton[5];
-		strainButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		strainButtonSizePanel = new JPanel(new GridLayout(1, 5, 2, 0));
-		int strain = 0;
-		JToggleButton button = new JToggleButton(new ImageIcon(getClass()
-				.getResource("/ggz/cards/images/club.gif")));
+    private void initButtonStates() {
+        // Disable all the buttons.
+        for (int i = 0; i < strainButtons.length; i++) {
+            strainButtons[i].setEnabled(false);
+        }
 
-		strainButtonPanel.add(strainButtonSizePanel);
-		strainButtons[strain] = button;
-		strainButtonGroup.add(button);
-		strainButtonSizePanel.add(button);
-		strain++;
-		button = new JToggleButton(new ImageIcon(getClass().getResource(
-				"/ggz/cards/images/diamond.gif")));
-		strainButtons[strain] = button;
-		strainButtonGroup.add(button);
-		strainButtonSizePanel.add(button);
-		strain++;
-		button = new JToggleButton(new ImageIcon(getClass().getResource(
-				"/ggz/cards/images/heart.gif")));
-		strainButtons[strain] = button;
-		strainButtonGroup.add(button);
-		strainButtonSizePanel.add(button);
-		strain++;
-		button = new JToggleButton(new ImageIcon(getClass().getResource(
-				"/ggz/cards/images/spade.gif")));
-		strainButtons[strain] = button;
-		strainButtonGroup.add(button);
-		strainButtonSizePanel.add(button);
-		strain++;
-		button = new JToggleButton("NT");
-		strainButtons[strain] = button;
-		strainButtonGroup.add(button);
-		strainButtonSizePanel.add(button);
-		strain++;
+        for (int i = 0; i < numTricksButtons.length; i++) {
+            numTricksButtons[i].setEnabled(false);
+        }
 
-		doubleRedoublePassPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,
-				2, 2));
-		bidButton = new JButton(new BidAction());
-		doubleRedoublePassPanel.add(bidButton);
-		doubleButton = new JButton(new NonBidAction(BID_DOUBLE));
-		doubleRedoublePassPanel.add(doubleButton);
-		redoubleButton = new JButton(new NonBidAction(BID_REDOUBLE));
-		doubleRedoublePassPanel.add(redoubleButton);
-		passButton = new JButton(new NonBidAction(BID_PASS));
-		doubleRedoublePassPanel.add(passButton);
+        // Enable all the buttons for which we have bids.
+        for (int bidIndex = 0; bidIndex < validBids.size(); bidIndex++) {
+            int numTricks = ((Bid) validBids.get(bidIndex)).getVal();
+            if (numTricks > 0) {
+                JToggleButton button = numTricksButtons[numTricks - 1];
+                button.setEnabled(true);
+                // Select the first valid one.
+                button.setSelected(bidIndex == 0);
+            }
+        }
 
-		bidHistoryTable = new JTable(1, numPlayers);
-		bidHistoryTable.setDefaultRenderer(Object.class, new BidCellRenderer());
-		bidHistoryTable.setPreferredScrollableViewportSize(new Dimension(65,
-				bidHistoryTable.getRowHeight() * 5));
-		bidHistoryScrollPane = new JScrollPane();
-		bidHistoryScrollPane.getViewport().add(bidHistoryTable);
+        bidButton.setEnabled(validBids.contains(BID_7_NT));
+        doubleButton.setEnabled(validBids.contains(BID_DOUBLE));
+        redoubleButton.setEnabled(validBids.contains(BID_REDOUBLE));
+        passButton.setEnabled(validBids.contains(BID_PASS));
+    }
 
-		layoutPanel = new JPanel(new GridLayout(3, 1));
-		layoutPanel.add(numTricksButtonPanel);
-		layoutPanel.add(strainButtonPanel);
-		layoutPanel.add(doubleRedoublePassPanel);
-		add(layoutPanel, BorderLayout.SOUTH);
-		add(bidHistoryScrollPane, BorderLayout.CENTER);
+    private void setStrainButtonStates(int numTricks) {
+        int indexOfSelectedButton = 0;
 
-		setOpaque(false);
-		layoutPanel.setOpaque(false);
-		numTricksButtonPanel.setOpaque(false);
-		strainButtonPanel.setOpaque(false);
-		strainButtonSizePanel.setOpaque(false);
-		doubleRedoublePassPanel.setOpaque(false);
-		bidHistoryScrollPane.getViewport().setBackground(
-				bidHistoryTable.getBackground());
-	}
+        // Disable all the buttons.
+        for (int strain = 0; strain < strainButtons.length; strain++) {
+            JToggleButton button = strainButtons[strain];
+            button.setEnabled(false);
+            if (button.isSelected()) {
+                indexOfSelectedButton = strain;
+            }
+        }
 
-	private void initButtonStates() {
-		// Disable all the buttons.
-		for (int i = 0; i < strainButtons.length; i++) {
-			strainButtons[i].setEnabled(false);
-		}
+        // Enable all the buttons for which we have a bid.
+        boolean isSelectionValid = false;
+        for (int bidIndex = 0; bidIndex < validBids.size(); bidIndex++) {
+            Bid bid = (Bid) validBids.get(bidIndex);
+            // If the bid has a spec or spec 2 then it's not a suit bid.
+            if (bid.getSpec() == 0 && bid.getSpec2() == 0
+                    && bid.getVal() == numTricks) {
+                int buttonIndex = bid.getSuit();
+                JToggleButton button = strainButtons[buttonIndex];
+                button.setEnabled(true);
+                if (indexOfSelectedButton == buttonIndex) {
+                    // The previously selected button is still valid.
+                    isSelectionValid = true;
+                } else if (!isSelectionValid
+                        && indexOfSelectedButton < buttonIndex) {
+                    // Select the first valid one.
+                    button.setSelected(true);
+                    isSelectionValid = true;
+                }
+            }
+        }
+    }
 
-		for (int i = 0; i < numTricksButtons.length; i++) {
-			numTricksButtons[i].setEnabled(false);
-		}
+    public void setValidBids(Bid[] bid_choices, String[] bid_texts,
+            String[] bid_descs) {
+        this.validBids = Arrays.asList(bid_choices);
+        initButtonStates();
+    }
 
-		// Enable all the buttons for which we have bids.
-		for (int bidIndex = 0; bidIndex < validBids.size(); bidIndex++) {
-			int numTricks = ((Bid) validBids.get(bidIndex)).getVal();
-			if (numTricks > 0) {
-				JToggleButton button = numTricksButtons[numTricks - 1];
-				button.setEnabled(true);
-				// Select the first valid one.
-				button.setSelected(bidIndex == 0);
-			}
-		}
-		
-		bidButton.setEnabled(validBids.contains(BID_7_NT));
-		doubleButton.setEnabled(validBids.contains(BID_DOUBLE));
-		redoubleButton.setEnabled(validBids.contains(BID_REDOUBLE));
-		passButton.setEnabled(validBids.contains(BID_PASS));
-	}
+    protected Bid getSelectedBid() {
+        int strain = -1; // Assumes -1 is not a valid strain.
+        int numTricks = -1; // Assumes -1 is not a valid number of tricks.
 
-	private void setStrainButtonStates(int numTricks) {
-		int indexOfSelectedButton = 0;
+        // What strain was selected?
+        for (int i = 0; i < strainButtons.length; i++) {
+            if (strainButtons[i].isSelected()) {
+                strain = i;
+                break;
+            }
+        }
 
-		// Disable all the buttons.
-		for (int strain = 0; strain < strainButtons.length; strain++) {
-			JToggleButton button = strainButtons[strain];
-			button.setEnabled(false);
-			if (button.isSelected()) {
-				indexOfSelectedButton = strain;
-			}
-		}
+        // How many tricks are bid?
+        for (int i = 0; i < numTricksButtons.length; i++) {
+            if (numTricksButtons[i].isSelected()) {
+                numTricks = i + 1;
+                break;
+            }
+        }
 
-		// Enable all the buttons for which we have a bid.
-		boolean isSelectionValid = false;
-		for (int bidIndex = 0; bidIndex < validBids.size(); bidIndex++) {
-			Bid bid = (Bid) validBids.get(bidIndex);
-			// If the bid has a spec or spec 2 then it's not a suit bid.
-			if (bid.getSpec() == 0 && bid.getSpec2() == 0
-					&& bid.getVal() == numTricks) {
-				int buttonIndex = bid.getSuit();
-				JToggleButton button = strainButtons[buttonIndex];
-				button.setEnabled(true);
-				if (indexOfSelectedButton == buttonIndex) {
-					// The previously selected button is still valid.
-					isSelectionValid = true;
-				} else if (!isSelectionValid
-						&& indexOfSelectedButton < buttonIndex) {
-					// Select the first valid one.
-					button.setSelected(true);
-					isSelectionValid = true;
-				}
-			}
-		}
-	}
+        // Find the corresponding bid object.
+        for (Iterator iter = validBids.iterator(); iter.hasNext();) {
+            Bid bid = (Bid) iter.next();
+            if (bid.getVal() == numTricks && bid.getSuit() == strain) {
+                return bid;
+            }
+        }
 
-	public void setValidBids(Bid[] bidChoices) {
-		this.validBids = Arrays.asList(bidChoices);
-		initButtonStates();
-	}
+        return null;
+    }
 
-	protected Bid getSelectedBid() {
-		int strain = -1; // Assumes -1 is not a valid strain.
-		int numTricks = -1; // Assumes -1 is not a valid number of tricks.
+    public int getBidIndex() {
+        return validBids.indexOf(bid);
+    }
 
-		// What strain was selected?
-		for (int i = 0; i < strainButtons.length; i++) {
-			if (strainButtons[i].isSelected()) {
-				strain = i;
-				break;
-			}
-		}
+    protected void setBid(Bid bid) {
+        this.bid = bid;
+        if (actionListeners != null) {
+            actionListeners.actionPerformed(new ActionEvent(this,
+                    ActionEvent.ACTION_PERFORMED, bid.toString()));
+        }
+    }
 
-		// How many tricks are bid?
-		for (int i = 0; i < numTricksButtons.length; i++) {
-			if (numTricksButtons[i].isSelected()) {
-				numTricks = i + 1;
-				break;
-			}
-		}
+    public void setEnabled(boolean enabled) {
+        // super.setEnabled(enabled);
+        if (enabled) {
+            initButtonStates();
+        } else {
+            for (int i = 0; i < strainButtons.length; i++) {
+                strainButtons[i].setEnabled(false);
+            }
 
-		// Find the corresponding bid object.
-		for (Iterator iter = validBids.iterator(); iter.hasNext();) {
-			Bid bid = (Bid) iter.next();
-			if (bid.getVal() == numTricks && bid.getSuit() == strain) {
-				return bid;
-			}
-		}
+            for (int i = 0; i < numTricksButtons.length; i++) {
+                numTricksButtons[i].setEnabled(false);
+            }
+        }
+    }
 
-		return null;
-	}
+    protected String getBidText(Bid bid) {
+        switch (bid.getSpec()) {
+        case 0: // regular bid
+            return String.valueOf(bid.getVal())
+                    + (bid.getSuit() == 4 ? " NT" : "");
+        case 1: // pass
+            return "Pass";
+        case 2: // double
+            return "Double";
+        case 3: // Redouble
+            return "Redouble";
+        }
+        throw new IllegalArgumentException("Unrecognised bid: " + bid);
+    }
 
-	public void addBid(int bidder, Bid bid) {
-		// Check if the bidder has bid this round.
-		int currentRowIndex = bidHistoryTable.getRowCount() - 1;
-		for (int i = bidder; i < numPlayers; i++) {
-			if (bidHistoryTable.getValueAt(currentRowIndex, i) != null) {
-				DefaultTableModel model = (DefaultTableModel) bidHistoryTable
-						.getModel();
-				model.addRow(new Object[numPlayers]);
-				break;
-			}
-		}
-		bidHistoryTable.setValueAt(bid, bidHistoryTable.getRowCount() - 1,
-				bidder);
-		invalidate();
-		repaint();
-	}
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            JToggleButton button = (JToggleButton) e.getSource();
+            int numTricks = Integer.parseInt(button.getText());
+            setStrainButtonStates(numTricks);
+        }
+    }
 
-	public int getBidIndex() {
-		return validBids.indexOf(bid);
-	}
+    protected class BidAction extends AbstractAction {
 
-	protected void setBid(Bid bid) {
-		this.bid = bid;
-		if (actionListeners != null) {
-			actionListeners.actionPerformed(new ActionEvent(this,
-					ActionEvent.ACTION_PERFORMED, bid.toString()));
-		}
-	}
+        public Object getValue(String key) {
+            if (NAME.equals(key)) {
+                return "Bid";
+            }
+            return super.getValue(key);
+        }
 
-	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
-		if (enabled) {
-			initButtonStates();
-		} else {
-			for (int i = 0; i < strainButtons.length; i++) {
-				strainButtons[i].setEnabled(false);
-			}
+        public void actionPerformed(ActionEvent event) {
+            setBid(getSelectedBid());
+        }
+    }
 
-			for (int i = 0; i < numTricksButtons.length; i++) {
-				numTricksButtons[i].setEnabled(false);
-			}
-		}
-	}
+    protected class NonBidAction extends AbstractAction {
+        private Bid bid;
 
-	protected static String getText(Bid bid) {
-		switch (bid.getSpec()) {
-		case 0: // regular bid
-			return String.valueOf(bid.getVal())
-					+ (bid.getSuit() == 4 ? " NT" : "");
-		case 1: // pass
-			return "Pass";
-		case 2: // double
-			return "Double";
-		case 3: // Redouble
-			return "Redouble";
-		}
-		throw new IllegalArgumentException("Unrecognised bid: " + bid);
-	}
+        protected NonBidAction(Bid bid) {
+            this.bid = bid;
+        }
 
-	/**
-     * TODO: Test with all bids possible except double and redouble. Found bug 
-     * where initial state had no num tricks button selected, causes exception
-     * if bid button is clicked in this state.
-	 * @param args
-	 */
-	public static void main(String[] args) throws Exception {
-		Bid[] bids = new Bid[] { 
-				new Bid((byte) 6, 1, (byte) 0, (byte) 0),
-				new Bid((byte) 6, 2, (byte) 0, (byte) 0),
-				new Bid((byte) 6, 3, (byte) 0, (byte) 0),
-				new Bid((byte) 6, 4, (byte) 0, (byte) 0),
-				new Bid((byte) 7, 0, (byte) 0, (byte) 0),
-				new Bid((byte) 7, 1, (byte) 0, (byte) 0),
-				new Bid((byte) 7, 2, (byte) 0, (byte) 0),
-				new Bid((byte) 7, 3, (byte) 0, (byte) 0),
-				new Bid((byte) 7, 4, (byte) 0, (byte) 0),
-				new Bid((byte) 0, 0, (byte) 2, (byte) 0),
-				new Bid((byte) 0, 0, (byte) 1, (byte) 0) };
-		JFrame frame = new JFrame("Bid Panel Test");
-		BridgeBidPanel bidPanel = new BridgeBidPanel(4);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.getContentPane().setBackground(Color.GREEN.darker());
-		frame.getContentPane().add(bidPanel, BorderLayout.CENTER);
-		frame.pack();
-		bidPanel.setValidBids(bids);
-		frame.setVisible(true);
-	}
+        public Object getValue(String key) {
+            if (NAME.equals(key)) {
+                return getBidText(bid);
+            }
+            return super.getValue(key);
+        }
 
-	public void itemStateChanged(ItemEvent e) {
-		if (e.getStateChange() == ItemEvent.SELECTED) {
-			JToggleButton button = (JToggleButton) e.getSource();
-			int numTricks = Integer.parseInt(button.getText());
-			setStrainButtonStates(numTricks);
-		}
-	}
-
-	public synchronized void addActionListener(ActionListener l) {
-		actionListeners = AWTEventMulticaster.add(actionListeners, l);
-	}
-
-	public synchronized void removeActionListener(ActionListener l) {
-		actionListeners = AWTEventMulticaster.remove(actionListeners, l);
-	}
-
-	protected class BidAction extends AbstractAction {
-
-		public Object getValue(String key) {
-			if (NAME.equals(key)) {
-				return "Bid";
-			}
-			return super.getValue(key);
-		}
-
-		public void actionPerformed(ActionEvent event) {
-			setBid(getSelectedBid());
-		}
-	}
-
-	protected class NonBidAction extends AbstractAction {
-		private Bid bid;
-
-		protected NonBidAction(Bid bid) {
-			this.bid = bid;
-		}
-
-		public Object getValue(String key) {
-			if (NAME.equals(key)) {
-				return getText(bid);
-			}
-			return super.getValue(key);
-		}
-
-		public void actionPerformed(ActionEvent event) {
-			setBid(bid);
-		}
-	}
-
-	protected class BidCellRenderer extends DefaultTableCellRenderer {
-		public BidCellRenderer() {
-			setHorizontalAlignment(SwingConstants.CENTER);
-			setHorizontalTextPosition(SwingConstants.LEFT);
-		}
-
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-			// Component renderer = super.getTableCellRendererComponent(table,
-			// value, isSelected, hasFocus, row, column);
-			if (value == null) {
-				setText(null);
-				setIcon(null);
-			} else {
-				Bid bid = (Bid) value;
-				if (bid.getSpec() == 0) {
-					switch (bid.getSuit()) {
-					case 0:
-						setIcon(new ImageIcon(getClass().getResource(
-								"/ggz/cards/images/club.gif")));
-						break;
-					case 1:
-						setIcon(new ImageIcon(getClass().getResource(
-								"/ggz/cards/images/diamond.gif")));
-						break;
-					case 2:
-						setIcon(new ImageIcon(getClass().getResource(
-								"/ggz/cards/images/heart.gif")));
-						break;
-					case 3:
-						setIcon(new ImageIcon(getClass().getResource(
-								"/ggz/cards/images/spade.gif")));
-						break;
-					default:
-						setIcon(null);
-						break;
-					}
-				} else {
-					setIcon(null);
-				}
-				setText(BridgeBidPanel.getText(bid));
-			}
-			return this;
-		}
-	}
+        public void actionPerformed(ActionEvent event) {
+            setBid(bid);
+        }
+    }
 }

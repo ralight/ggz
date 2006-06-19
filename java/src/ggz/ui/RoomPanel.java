@@ -470,6 +470,7 @@ public class RoomPanel extends JPanel implements RoomListener {
                 buffer.append("</B><BR><I>");
                 buffer.append(table.get_desc());
             }
+            buffer.append("</I></HTML>");
             return buffer.toString();
         }
 
@@ -495,6 +496,7 @@ public class RoomPanel extends JPanel implements RoomListener {
                             new Object[] { table
                                     .get_nth_player_name(player_num) }));
                 }
+                buffer.append("</LI>");
             }
             buffer.append("</OL></HTML>");
             return buffer.toString();
@@ -508,6 +510,7 @@ public class RoomPanel extends JPanel implements RoomListener {
                 if (name != null) {
                     buffer.append("<LI>");
                     buffer.append(name);
+                    buffer.append("</LI>");
                 }
             }
             buffer.append("</OL></HTML>");

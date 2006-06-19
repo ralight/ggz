@@ -19,6 +19,7 @@ package ggz.ui;
 
 import ggz.client.core.GameType;
 import ggz.client.core.Module;
+import ggz.client.core.MotdEventData;
 import ggz.client.core.Room;
 import ggz.client.core.Server;
 
@@ -43,7 +44,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.text.JTextComponent;
 
 public class LoungePanel extends JPanel {
     private static final ResourceBundle messages = ResourceBundle
@@ -63,7 +66,7 @@ public class LoungePanel extends JPanel {
 
     private JButton logoutButton;
 
-    private String motd;
+    private MotdEventData motd;
 
     private Comparator sortAlgorithm = new SortByRoomName();
 
@@ -126,8 +129,14 @@ public class LoungePanel extends JPanel {
         // boardGamesPanel.addRoom(server.get_nth_room(2));
         // roomPanel.add(boardGamesPanel);
         JScrollPane motdScroll = new JScrollPane();
-        JTextArea motdText = new JTextArea(motd);
-        motdText.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        JTextComponent motdText;
+        try {
+            motdText = new JTextPane();
+            ((JTextPane) motdText).setPage(motd.url);
+        } catch (IOException e) {
+            motdText = new JTextArea(motd.motd);
+            motdText.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        }
         motdText.setEditable(false);
         motdText.setOpaque(false);
         TextPopupMenu.enableFor(motdText);
@@ -141,7 +150,7 @@ public class LoungePanel extends JPanel {
         roomPanel.add(motdScroll);
     }
 
-    public void setMotD(String motd) {
+    public void setMotD(MotdEventData motd) {
         this.motd = motd;
     }
 

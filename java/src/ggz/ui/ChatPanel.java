@@ -67,6 +67,8 @@ public class ChatPanel extends JPanel {
 
     protected SimpleAttributeSet commandText;
 
+    protected SimpleAttributeSet announceText;
+
     // Application global ignore list.
     static private HashSet ignoreList;
 
@@ -128,6 +130,9 @@ public class ChatPanel extends JPanel {
         commandText = new SimpleAttributeSet();
         commandText.addAttribute(StyleConstants.Foreground, Color.RED);
         commandText.addAttribute(StyleConstants.FontFamily, "Monospaced");
+
+        announceText = new SimpleAttributeSet();
+        announceText.addAttribute(StyleConstants.Bold, Boolean.TRUE);
     }
 
     public void appendInfo(final String message) {
@@ -194,6 +199,8 @@ public class ChatPanel extends JPanel {
         } else if (friendsList != null
                 && friendsList.contains(sender.toLowerCase())) {
             textStyle = friendlyText;
+        } else if (type == ChatType.GGZ_CHAT_ANNOUNCE) {
+            textStyle = announceText;
         }
 
         try {

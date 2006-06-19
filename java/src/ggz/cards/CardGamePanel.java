@@ -85,7 +85,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     private SpriteHighlighter spriteHighlighter = new SpriteHighlighter();
 
-    protected BridgeBidPanel bridgeBidPanel;
+    protected BidPanel bidPanel;
 
     protected JPanel southEastPanel;
 
@@ -96,7 +96,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     protected JButton lastTrickButton;
 
     protected JButton quitButton;
-    
+
     public void init(ModGame mod) throws IOException {
         super.init(mod);
         cardClient = new Client();
@@ -134,7 +134,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         table.add(southEastPanel, new TableConstraints(
                 TableConstraints.SOUTH_EAST_CORNER));
 
-        JPanel southWestPanel = new JPanel(new GridLayout(2, 1, 2, 2));
+        JPanel southWestPanel = new JPanel(new GridLayout(0, 1, 2, 2));
         JButton standButton = new JButton(new SeatStandAction());
         standButton.setOpaque(false);
         standButton.setForeground(Color.white);
@@ -144,23 +144,47 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         quitButton.setOpaque(false);
         quitButton.setForeground(Color.white);
         quitButton.setFocusable(false);
+        // Get rid of the margin insets on the Metal or Ocean buttons to
+        // make the buttons smaller.
+        Border old_border = quitButton.getBorder();
+        if (old_border instanceof CompoundBorder) {
+            quitButton.setBorder(((CompoundBorder) old_border)
+                    .getOutsideBorder());
+        }
         southWestPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         southWestPanel.setOpaque(false);
-        southWestPanel.add(standButton);
+        // Don't add the stand button for now since users don't like it. We
+        // might consider adding it later but only make it available between
+        // games.
+        // southWestPanel.add(standButton);
         southWestPanel.add(quitButton);
         table.add(southWestPanel, new TableConstraints(
                 TableConstraints.SOUTH_WEST_CORNER));
     }
 
+    protected void createBidPanel(int firstBidder) {
+        if ("Bridge".equals(JOptionPane.getFrameForComponent(this).getTitle())) {
+            bidPanel = new BridgeBidPanel(firstBidder, cardClient);
+        } else {
+            bidPanel = new BidPanel(firstBidder, cardClient);
+        }
+        bidPanel.addActionListener(CardGamePanel.this);
+        table
+                .add(bidPanel, new TableConstraints(
+                        TableConstraints.BUTTON_PANEL));
+        table.invalidate();
+        table.validate();
+    }
+
     public void alert_state(Client.GameState oldState, Client.GameState newState) {
         if (oldState == Client.STATE_BID) {
-            if (bridgeBidPanel != null) {
+            if (bidPanel != null) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        table.remove(bridgeBidPanel);
+                        table.remove(bidPanel);
                         table.invalidate();
                         table.validate();
-                        bridgeBidPanel = null;
+                        bidPanel = null;
                     }
                 });
             }
@@ -172,22 +196,15 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     public void alert_bid(final int bidder, final Bid bid) {
-        if ("Bridge".equals(JOptionPane.getFrameForComponent(this).getTitle())) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    if (bridgeBidPanel == null) {
-                        bridgeBidPanel = new BridgeBidPanel(cardClient
-                                .get_num_players());
-                        bridgeBidPanel.addActionListener(CardGamePanel.this);
-                        table.add(bridgeBidPanel, new TableConstraints(
-                                TableConstraints.BUTTON_PANEL));
-                        table.invalidate();
-                        table.validate();
-                    }
-                    bridgeBidPanel.addBid(bidder, bid);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if (bidPanel == null) {
+                    createBidPanel(bidder);
                 }
-            });
-        }
+                bidPanel.addBid(bidder, bid);
+                validate();
+            }
+        });
     }
 
     public void alert_hand_size(int max_hand_size) {
@@ -280,15 +297,15 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                             TableConstraints.PLAYER_LABEL, seat_num));
                     playerLabels[seat_num] = label;
 
-                    //if (seat_num != 0) {
-                        // Listen for click events so as to pop up a menu that
-                        // allows users to do things to this seat.
-                        label.addMouseListener(new PopupListener());
-                        label.setToolTipText("Right click for options.");
-                    //}
+                    // if (seat_num != 0) {
+                    // Listen for click events so as to pop up a menu that
+                    // allows users to do things to this seat.
+                    label.addMouseListener(new PopupListener());
+                    label.setToolTipText("Right click for options.");
+                    // }
                 } else {
                     label.setText(player.get_name());
-//                    label.getClientProperty("ggz.cards.popupMenu");
+                    // label.getClientProperty("ggz.cards.popupMenu");
                 }
 
                 // Position the labels.
@@ -297,26 +314,30 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 case 0: // Me - south
                     label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalAlignment(SwingConstants.TOP);
-                    initPopupMenu(seat_num, player.get_ggz_seat_num(), seat_type);
+                    initPopupMenu(seat_num, player.get_ggz_seat_num(),
+                            seat_type);
                     break;
                 case 1: // West
                     label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalTextPosition(SwingConstants.BOTTOM);
                     label.setHorizontalTextPosition(SwingConstants.CENTER);
                     label.setHorizontalAlignment(SwingConstants.LEFT);
-                    initPopupMenu(seat_num, player.get_ggz_seat_num(), seat_type);
+                    initPopupMenu(seat_num, player.get_ggz_seat_num(),
+                            seat_type);
                     break;
                 case 2: // North
                     label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalAlignment(SwingConstants.TOP);
-                    initPopupMenu(seat_num, player.get_ggz_seat_num(), seat_type);
+                    initPopupMenu(seat_num, player.get_ggz_seat_num(),
+                            seat_type);
                     break;
                 case 3: // East
                     label.setIcon(getPlayerIcon(seat_type));
                     label.setVerticalTextPosition(SwingConstants.BOTTOM);
                     label.setHorizontalTextPosition(SwingConstants.CENTER);
                     label.setHorizontalAlignment(SwingConstants.RIGHT);
-                    initPopupMenu(seat_num, player.get_ggz_seat_num(), seat_type);
+                    initPopupMenu(seat_num, player.get_ggz_seat_num(),
+                            seat_type);
                     break;
                 default:
                     throw new UnsupportedOperationException(
@@ -727,62 +748,13 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         // }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                if ("Bridge".equals(JOptionPane.getFrameForComponent(
-                        CardGamePanel.this).getTitle())) {
-                    if (bridgeBidPanel == null) {
-                        bridgeBidPanel = new BridgeBidPanel(cardClient
-                                .get_num_players());
-                        bridgeBidPanel.addActionListener(CardGamePanel.this);
-                        table.add(bridgeBidPanel, new TableConstraints(
-                                TableConstraints.BUTTON_PANEL));
-                        table.invalidate();
-                        table.validate();
-                    }
-                    bridgeBidPanel.setValidBids(bid_choices);
-                } else {
-                    for (int i = 0; i < bid_choices.length; i++) {
-                        JButton bid_button = new JButton(bid_texts[i]);
-                        if (!bid_texts[i].equals(bid_descs[i])) {
-                            // No point showing a tooltip if it's exactly the
-                            // same as the text on the button.
-                            bid_button.setToolTipText(bid_descs[i]);
-                        }
-
-                        // Get rid of the margin insets on the Ocean buttons to
-                        // make
-                        // the buttons smaller.
-                        Border old_border = bid_button.getBorder();
-                        if (old_border instanceof CompoundBorder) {
-                            bid_button.setBorder(((CompoundBorder) old_border)
-                                    .getOutsideBorder());
-                        }
-                        bid_button.addActionListener(new BidAction(i));
-                        table.addButton(bid_button);
-                    }
-                    table.showButtons();
-                    invalidate();
-                    validate();
+                if (bidPanel == null) {
+                    createBidPanel(0);
                 }
+                bidPanel.setValidBids(bid_choices, bid_texts, bid_descs);
+                // table.showButtons();
             }
         });
-    }
-
-    protected class BidAction implements ActionListener {
-        private int bid;
-
-        protected BidAction(int bidIndex) {
-            this.bid = bidIndex;
-        }
-
-        public void actionPerformed(ActionEvent event) {
-            try {
-                cardClient.send_bid(bid);
-                table.removeAllButtons();
-                table.hideButtons();
-            } catch (IOException e) {
-                handleException(e);
-            }
-        }
     }
 
     public void get_newgame() {
@@ -898,15 +870,15 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             } catch (IOException e) {
                 handleException(e);
             }
-        } else if (event.getSource() == bridgeBidPanel) {
+        } else if (event.getSource() == bidPanel) {
             try {
-                cardClient.send_bid(bridgeBidPanel.getBidIndex());
+                cardClient.send_bid(bidPanel.getBidIndex());
             } catch (IOException ex) {
                 handleException(ex);
             }
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    bridgeBidPanel.setEnabled(false);
+                    bidPanel.setEnabled(false);
                 }
             });
         } else if (event.getSource() == lastTrickButton) {
@@ -976,9 +948,9 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 JLabel label = playerLabels[player_num];
                 label.setText("<HTML><B>"
                         + cardClient.get_nth_player(player_num).get_name()
-                        + "</B><BR><EM><SPAN style='font-weight:normal'>"
-                        + replace(message, "\n", "<BR>")
-                        + "</span></EM></HTML>");
+                        + "</B><BR><EM>"
+                        + replace(replace(message, ":", ":<B>"), "\n",
+                                "</B><BR>") + "</EM></HTML>");
                 table.invalidate();
                 table.validate();
             }

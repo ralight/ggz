@@ -45,7 +45,8 @@ public class ScoresDialog extends JDialog implements ActionListener {
         scoresPanel.setOpaque(false);
         scoresPanel.add(scoresLabel);
         buttonPanel.setOpaque(false);
-        buttonPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, SystemColor.textText));
+        buttonPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0,
+                SystemColor.textText));
         buttonPanel.add(closeButton);
         closeButton.addActionListener(this);
         getContentPane().add(scoresPanel, BorderLayout.NORTH);
@@ -59,7 +60,8 @@ public class ScoresDialog extends JDialog implements ActionListener {
             scores = "No Scores";
         }
         scoresLabel.setText("<HTML><PRE>" + scores + "</PRE></HTML");
-        Dimension preferredSize = getPreferredSize();
+        pack();
+        Dimension preferredSize = getSize();
         Dimension minimumSize = getMinimumSize();
         setSize(Math.max(minimumSize.width, preferredSize.width), Math.max(
                 minimumSize.height, preferredSize.height));
@@ -67,7 +69,7 @@ public class ScoresDialog extends JDialog implements ActionListener {
         validate();
         repaint();
     }
-    
+
     public void actionPerformed(ActionEvent event) {
         dispose();
     }

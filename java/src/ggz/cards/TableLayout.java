@@ -200,7 +200,7 @@ public class TableLayout implements LayoutManager2 {
             buttonPanel.setSize(buttonPanel.getPreferredSize());
             buttonPanel.setLocation((parent.getWidth() / 2)
                     - (buttonPanel.getWidth() / 2), parent.getHeight()
-                    - (buttonPanel.getHeight() + 110));
+                    - (buttonPanel.getHeight() + 150));
             // bidPanel.setLocation(parent.getWidth() / 2
             // - bidPanel.getWidth() / 2, parent.getHeight() / 2
             // - bidPanel.getHeight() / 2);
