@@ -133,6 +133,7 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
         passButton = new JButton(new NonBidAction(BID_PASS));
         doubleRedoublePassPanel.add(passButton);
 
+        buttonPanel.setVisible(false);
         buttonPanel.setLayout(new GridLayout(3, 1));
         buttonPanel.add(numTricksButtonPanel);
         buttonPanel.add(strainButtonPanel);
@@ -210,6 +211,9 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
             String[] bid_descs) {
         this.validBids = Arrays.asList(bid_choices);
         initButtonStates();
+        // We don't show the buttons until it is our turn to bid. This is to
+        // prevent the buttons from being shown for spectators.
+        buttonPanel.setVisible(true);
     }
 
     protected Bid getSelectedBid() {
