@@ -32,6 +32,7 @@ Var STARTMENU_FOLDER
 ;Interface Settings
 
 !define MUI_ABORTWARNING
+!define MUI_FINISHPAGE_RUN "$INSTDIR\bin\ggz-gtk.exe"
 
 ;--------------------------------
 ; Installer pages
