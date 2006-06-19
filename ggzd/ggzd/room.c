@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 8217 2006-06-19 14:50:42Z josef $
+ * $Id: room.c 8220 2006-06-19 15:49:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -476,7 +476,7 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 	room_notify_change(name, old_room, room);
 
 	/* Reconfiguration: last man leaving might kill room */
-	if(room != -1)
+	if(old_room != -1)
 		room_remove_really(old_room);
 
 	return E_OK;
