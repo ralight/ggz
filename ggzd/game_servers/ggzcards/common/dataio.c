@@ -214,7 +214,7 @@ static void consume_packets(struct dataio *dio,
 int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
 {
   int nleft;
-  char *ptr = dio->input.buf + dio->input.readloc;
+  char *ptr;
   int nread;
 
   assert(!dio->input.handling);
@@ -224,6 +224,8 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
     dio->input.bufsz *= 2;
     dio->input.buf = ggz_realloc(dio->input.buf, dio->input.bufsz);
   }
+
+  ptr = dio->input.buf + dio->input.readloc;
   nleft = dio->input.bufsz - dio->input.readloc;
 
 #ifdef HAVE_WINSOCK2_H
@@ -236,7 +238,6 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
     dio->input.handling = false;
     return -1;
   }
-  //  printf("dio_read: %d bytes on %d.\n", nread, dio->fd);
 
   dio->input.readloc += nread;
   assert(dio->input.readloc <= dio->input.bufsz);
@@ -245,7 +246,7 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
 
   dio->input.handling = false;
 
-  return 0;
+  return nread;
 }
 
 int dio_write_data(struct dataio *dio)
@@ -272,8 +273,6 @@ int dio_write_data(struct dataio *dio)
   }
   assert(nwritten <= nleft);
   dio->output.writeloc += nwritten;
-
-  //  printf("Dio_write: %d bytes on %d.\n", nwritten, dio->fd);
 
   /* Rewind the buffer. */
   if (dio->output.writeloc == dio->output.current) {
@@ -593,7 +592,7 @@ void dio_put_string(struct dataio *dio, const char *value)
   unsigned int size = strlen(value) + 1;
 
   assert(sizeof(char) == 1);
-  dio_put_sint32(dio, size);
+  dio_put_uint32(dio, size);
   dio_put_memory(dio, value, size);
 }
 
@@ -656,6 +655,7 @@ void dio_get_uint8(struct dataio *dio, int *dest)
 
   assert(sizeof(x) == 1);
   dio_get_memory(dio, &x, 1);
+  *dest = x;
 }
 
 /**************************************************************************
@@ -798,7 +798,7 @@ void dio_get_string_alloc(struct dataio *dio, char **dest)
   dio_get_uint32(dio, &size);
   *dest = ggz_malloc(size);
   dio_get_memory(dio, *dest, size);
-  dest[size - 1] = '\0';
+  (*dest)[size - 1] = '\0';
 }
 
 #if 0
