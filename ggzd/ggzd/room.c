@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 8220 2006-06-19 15:49:16Z jdorje $
+ * $Id: room.c 8224 2006-06-20 04:14:21Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -272,8 +272,9 @@ void room_remove_really(int old_room)
 		for (i = 0; i < room_info.num_rooms; i++) {
 			room_update_event("", GGZ_ROOM_UPDATE_DELETE, i, old_room);
 		}
-
+#if 0 /* This spam message is not useful. */
 		chat_server_2_player(NULL, "A room was removed!");
+#endif
 	}
 }
 
