@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8230 2006-06-20 15:18:04Z jdorje $
+ * $Id: netxml.c 8234 2006-06-20 20:17:06Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -397,7 +397,10 @@ int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
 	password_quoted = ggz_xml_escape(password);
 	email_quoted = ggz_xml_escape(email);
 
-	_ggzcore_net_send_line(net, "<LANGUAGE>%s</LANGUAGE>", language);
+	if (language) {
+		_ggzcore_net_send_line(net, "<LANGUAGE>%s</LANGUAGE>",
+				       language);
+	}
 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
 	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle_quoted);
 
