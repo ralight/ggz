@@ -159,6 +159,87 @@ char * ggz_xml_escape(const char *str)
 	return new;
 }
 
+#if 0
+/* Helper function, not currently used anywhere */
+static char *_ggz_xml_cdata_escape(const char *str)
+{
+	char *new, *q;
+	const char *p;
+	size_t len = 0;
+
+	if(str == NULL)
+		return NULL;
+
+	len = strlen(str);
+
+	for(p = str; *p != '\0'; p++) {
+		if((*p == ']') && (*(p + 1) == ']') && (*(p + 2) == '>')) {
+			len += 3;
+		}
+	}
+
+	if(len == strlen(str))
+		return ggz_strdup(str);
+
+	q = new = ggz_malloc(len + 1);
+	for(p = str; *p != '\0'; p++) {
+		if((*p == ']') && (*(p + 1) == ']') && (*(p + 2) == '>')) {
+			memcpy(q, "]]&gt;", 6);
+			q += 6;
+			p += 2;
+		} else {
+			*q = *p;
+			q++;
+		}
+	}
+	*q = '\0';
+
+	return new;
+}
+
+
+/* Helper function, might go into libggz*/
+static char *_ggz_xml_cdata_unescape(const char *str)
+{
+	char *new, *q;
+	const char *p;
+	size_t len = 0;
+
+	if(str == NULL)
+		return NULL;
+
+	len = strlen(str);
+
+	for(p = str; *p != '\0'; p++) {
+		if(!strncmp(p, "]]&gt;", 6)) {
+			p += 5;
+			len += 2;
+		}
+		len++;
+	}
+
+	if(len == strlen(str))
+		return ggz_strdup(str);
+
+	q = new = ggz_malloc(len + 1);
+	for(p = str; *p != '\0'; p++) {
+		if(!strncmp(p, "]]&gt;", 6)) {
+			*q++ = *p++;
+			*q++ = *p++;
+			*q = '>';
+			q++;
+			p += 3;
+		} else {
+			*q = *p;
+			q++;
+		}
+	}
+	*q = '\0';
+
+	return new;
+}
+#endif
+
 
 #define START_BUF_SIZE 1024
 #define INC_BUF_SIZE   512
