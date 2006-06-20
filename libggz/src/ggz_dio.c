@@ -25,6 +25,7 @@
 #include <config.h>
 #endif
 
+#include <arpa/inet.h>
 #include <assert.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -47,10 +48,8 @@
 #include <winsock.h>
 #endif
 
-#include <ggz.h>
-
-#include "dataio.h"
-
+#include "ggz.h"
+#include "ggz_dio.h"
 
 #ifndef MIN
 # define MIN(a, b) ( (a) < (b) ? (a) : (b) )
@@ -90,6 +89,7 @@ struct dataio {
   } input;
 };
 
+#if 0
 /***************************************************************
   Set socket to non-blocking.
 ***************************************************************/
@@ -119,6 +119,7 @@ static void my_nonblock(int sockfd)
 #endif
 #endif
 }
+#endif
 
 struct dataio *dio_new(int socket)
 {
@@ -126,7 +127,9 @@ struct dataio *dio_new(int socket)
   const size_t bufsz = 20;
 
   dio->fd = socket;
+#if 0
   my_nonblock(socket);
+#endif
 
   dio->output.buf = ggz_malloc(bufsz);
   dio->output.bufsz = bufsz;
@@ -160,7 +163,8 @@ void dio_set_writeable_callback(struct dataio *dio,
 
 /* Takes packets from the input buffer and parses them. */
 static void consume_packets(struct dataio *dio,
-			    void (read_callback)(struct dataio *))
+			    void (read_callback)(struct dataio *, void *),
+			    void *userdata)
 {
   assert(dio->input.final == dio->input.start);
   assert(dio->input.start == dio->input.current);
@@ -187,7 +191,7 @@ static void consume_packets(struct dataio *dio,
     assert(dio->input.start <= dio->input.current);
     assert(dio->input.current <= dio->input.final);
     assert(dio->input.final <= dio->input.bufsz);
-    (read_callback)(dio);
+    (read_callback)(dio, userdata);
     dio->input.start = dio->input.final;
     dio->input.current = dio->input.final;
   }
@@ -211,7 +215,9 @@ static void consume_packets(struct dataio *dio,
 }
 
 /* Network r/w functions. */
-int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
+int dio_read_data(struct dataio *dio,
+		  void (read_callback)(struct dataio *, void *),
+		  void *userdata)
 {
   int nleft;
   char *ptr;
@@ -242,7 +248,7 @@ int dio_read_data(struct dataio *dio, void (read_callback)(struct dataio *))
   dio->input.readloc += nread;
   assert(dio->input.readloc <= dio->input.bufsz);
 
-  consume_packets(dio, read_callback);
+  consume_packets(dio, read_callback, userdata);
 
   dio->input.handling = false;
 
@@ -331,7 +337,7 @@ static void ensure_output_data(struct dataio *dio, size_t size)
   }
 }
 
-void dio_start_packet(struct dataio *dio)
+void dio_packet_start(struct dataio *dio)
 {
   assert(!dio->output.in_packet);
   assert(dio->output.current == dio->output.start);
@@ -341,7 +347,7 @@ void dio_start_packet(struct dataio *dio)
   dio->output.current += 2;
 }
 
-void dio_end_packet(struct dataio *dio)
+void dio_packet_end(struct dataio *dio)
 {
   uint16_t pack_size = dio->output.current - dio->output.start;
   bool writeable = (dio->output.start == dio->output.writeloc);
