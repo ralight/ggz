@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8106 2006-06-06 07:38:18Z josef $
+ * $Id: netxml.c 8230 2006-06-20 15:18:04Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -367,86 +367,6 @@ void _ggzcore_net_disconnect(GGZNet * net)
 }
 
 
-/* Helper function, might go into libggz*/
-static char *_ggz_xml_cdata_escape(const char *str)
-{
-	char *new, *q;
-	const char *p;
-	size_t len = 0;
-
-	if(str == NULL)
-		return NULL;
-
-	len = strlen(str);
-
-	for(p = str; *p != '\0'; p++) {
-		if((*p == ']') && (*(p + 1) == ']') && (*(p + 2) == '>')) {
-			len += 3;
-		}
-	}
-
-	if(len == strlen(str))
-		return ggz_strdup(str);
-
-	q = new = ggz_malloc(len + 1);
-	for(p = str; *p != '\0'; p++) {
-		if((*p == ']') && (*(p + 1) == ']') && (*(p + 2) == '>')) {
-			memcpy(q, "]]&gt;", 6);
-			q += 6;
-			p += 2;
-		} else {
-			*q = *p;
-			q++;
-		}
-	}
-	*q = '\0';
-
-	return new;
-}
-
-
-/* Helper function, might go into libggz*/
-static char *_ggz_xml_cdata_unescape(const char *str)
-{
-	char *new, *q;
-	const char *p;
-	size_t len = 0;
-
-	if(str == NULL)
-		return NULL;
-
-	len = strlen(str);
-
-	for(p = str; *p != '\0'; p++) {
-		if(!strncmp(p, "]]&gt;", 6)) {
-			p += 5;
-			len += 2;
-		}
-		len++;
-	}
-
-	if(len == strlen(str))
-		return ggz_strdup(str);
-
-	q = new = ggz_malloc(len + 1);
-	for(p = str; *p != '\0'; p++) {
-		if(!strncmp(p, "]]&gt;", 6)) {
-			*q++ = *p++;
-			*q++ = *p++;
-			*q = '>';
-			q++;
-			p += 3;
-		} else {
-			*q = *p;
-			q++;
-		}
-	}
-	*q = '\0';
-
-	return new;
-}
-
-
 /* ggzcore_net_send_XXX() functions for sending messages to the server */
 
 /* Sends login packet.  Login type is an enumerated value.  Password is needed
@@ -473,19 +393,19 @@ int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
 		break;
 	}
 
-	handle_quoted = _ggz_xml_cdata_escape(handle);
-	password_quoted = _ggz_xml_cdata_escape(password);
-	email_quoted = _ggz_xml_cdata_escape(email);
+	handle_quoted = ggz_xml_escape(handle);
+	password_quoted = ggz_xml_escape(password);
+	email_quoted = ggz_xml_escape(email);
 
 	_ggzcore_net_send_line(net, "<LANGUAGE>%s</LANGUAGE>", language);
 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
-	_ggzcore_net_send_line(net, "<NAME><![CDATA[%s]]></NAME>", handle_quoted);
+	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle_quoted);
 
 	if ((login_type == GGZ_LOGIN || (login_type == GGZ_LOGIN_NEW)) && password)
-		_ggzcore_net_send_line(net, "<PASSWORD><![CDATA[%s]]></PASSWORD>",
+		_ggzcore_net_send_line(net, "<PASSWORD>%s</PASSWORD>",
 				       password_quoted);
 	if (login_type == GGZ_LOGIN_NEW && email)
-		_ggzcore_net_send_line(net, "<EMAIL><![CDATA[%s]]></EMAIL>",
+		_ggzcore_net_send_line(net, "<EMAIL>%s</EMAIL>",
 				       email_quoted);
 
 	status = _ggzcore_net_send_line(net, "</LOGIN>");
@@ -627,14 +547,14 @@ int _ggzcore_net_send_chat(GGZNet * net, const GGZChatType type,
 		chat_text = msg;
 	}
 
-	chat_text_quoted = _ggz_xml_cdata_escape(chat_text);
+	chat_text_quoted = ggz_xml_escape(chat_text);
 
 	switch (type) {
 	case GGZ_CHAT_NORMAL:
 	case GGZ_CHAT_ANNOUNCE:
 	case GGZ_CHAT_TABLE:
 		result = _ggzcore_net_send_line(net,
-						"<CHAT TYPE='%s'><![CDATA[%s]]></CHAT>",
+						"<CHAT TYPE='%s'>%s</CHAT>",
 						type_str, chat_text_quoted);
 		break;
 	case GGZ_CHAT_BEEP:
@@ -644,7 +564,7 @@ int _ggzcore_net_send_chat(GGZNet * net, const GGZChatType type,
 		break;
 	case GGZ_CHAT_PERSONAL:
 		result = _ggzcore_net_send_line(net,
-						"<CHAT TYPE='%s' TO='%s'><![CDATA[%s]]></CHAT>",
+						"<CHAT TYPE='%s' TO='%s'>%s</CHAT>",
 						type_str, player,
 						chat_text_quoted);
 		break;
@@ -2400,7 +2320,6 @@ static void _ggzcore_net_handle_join(GGZNet * net, GGZXMLElement * element)
 static void _ggzcore_net_handle_chat(GGZNet * net, GGZXMLElement * element)
 {
 	const char *msg, *type_str, *from;
-	char *msg_unquoted;
 	GGZRoom *room;
 	GGZChatType type;
 
@@ -2428,13 +2347,8 @@ static void _ggzcore_net_handle_chat(GGZNet * net, GGZXMLElement * element)
 		return;
 	}
 
-	msg_unquoted = _ggz_xml_cdata_unescape(msg);
-
 	room = ggzcore_server_get_cur_room(net->server);
-	_ggzcore_room_add_chat(room, type, from, msg_unquoted);
-
-	if (msg_unquoted)
-		ggz_free(msg_unquoted);
+	_ggzcore_room_add_chat(room, type, from, msg);
 }
 
 
