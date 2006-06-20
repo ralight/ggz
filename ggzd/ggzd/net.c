@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8205 2006-06-17 19:55:02Z jdorje $
+ * $Id: net.c 8226 2006-06-20 06:28:00Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -667,9 +667,11 @@ GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
 	sender_quoted = ggz_xml_escape(sender);
 
 	if (msg) {
+		char *msg_quoted = ggz_xml_escape(msg);
 		ret = _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'>"
 				      "<![CDATA[%s]]></CHAT>", 
-				      type_str, sender_quoted, msg);
+				      type_str, sender_quoted, msg_quoted);
+		ggz_free(msg_quoted);
 	} else 
 		ret = _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'/>",
 				      type_str, sender_quoted);
