@@ -34,8 +34,8 @@ public class BridgeBidPanelTest extends BidPanelTest {
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.getContentPane().setBackground(Color.GREEN.darker());
         frame.getContentPane().add(bidPanel, BorderLayout.CENTER);
-        frame.pack();
         bidPanel.setValidBids(bids, null, null);
+        frame.pack();
         frame.setVisible(true);
     }
 

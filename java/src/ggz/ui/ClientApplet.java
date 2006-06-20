@@ -41,6 +41,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -90,14 +91,12 @@ public class ClientApplet extends JApplet implements ServerListener,
     private String uriPath;
 
     static {
-        // HB Anti-aliased text looks shit on an LCD screen and that's what I
-        // have so I've disabled it for now.
-        // try {
-        // // Try and get Swing to use Antialiased text.
-        // System.setProperty("swing.aatext", "true");
-        // } catch (Throwable ex) {
-        // // Ignore, we don't have permission so just don't anti-alias text.
-        // }
+         try {
+            // Try and get Swing to use Antialiased text.
+            System.setProperty("swing.aatext", "true");
+        } catch (Throwable ex) {
+            // Ignore, we don't have permission so just don't anti-alias text.
+        }
     }
 
     public ClientApplet() {
@@ -115,7 +114,7 @@ public class ClientApplet extends JApplet implements ServerListener,
         try {
             // Parse URI parameter and set up server.
             URI uri = new URI(getParameter("uri",
-                    "ggz://live.ggzgamingzone.org:5688/Entry%20Room"));
+                    "ggz://oojah.dyndns.org:5688/Entry%20Room"));
             String host = uri.getHost();
             int port = uri.getPort() == -1 ? DEFAULT_PORT : uri.getPort();
             uriPath = uri.getPath();
@@ -178,6 +177,10 @@ public class ClientApplet extends JApplet implements ServerListener,
                     && server.get_state() != StateID.GGZ_STATE_RECONNECTING) {
                 server.logout();
             }
+        } catch (SocketException e) {
+            // Trying to track this bugger down...
+            System.err.println(server.get_state());
+            handleException(e);
         } catch (Exception e) {
             handleException(e);
         }
@@ -260,8 +263,7 @@ public class ClientApplet extends JApplet implements ServerListener,
                         Composite originalComposite = g2d.getComposite();
                         g2d.setComposite(alphaComposite);
                         g2d.drawImage(watermark, getWidth() - 60
-                                - watermark.getWidth(this), getHeight() - 60
-                                - watermark.getHeight(this), this);
+                                - watermark.getWidth(this), 60, this);
                         g2d.setComposite(originalComposite);
                     }
                 }
@@ -479,8 +481,6 @@ public class ClientApplet extends JApplet implements ServerListener,
     public void server_players_changed() {
         // Needed so that components that show player counts can refresh
         // themselves.
-        invalidate();
-        validate();
         repaint();
     }
 

@@ -548,6 +548,15 @@ public class Net implements Runnable {
 		sendEmptyElement("JOIN", atts);
 	}
 
+    void send_table_join(int num, int seat) throws IOException {
+        log.fine("Sending table join request");
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "", "TABLE", "CDATA", String.valueOf(num));
+        atts.addAttribute("", "", "SPECTATOR", "CDATA", "false");
+        atts.addAttribute("", "", "SEAT", "CDATA", String.valueOf(seat));
+        sendEmptyElement("JOIN", atts);
+    }
+
 	void send_table_leave(boolean force, boolean spectator) throws IOException {
 		log.fine("Sending table leave request");
 		AttributesImpl atts = new AttributesImpl();

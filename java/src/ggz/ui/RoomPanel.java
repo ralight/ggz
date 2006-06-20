@@ -60,6 +60,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 
 public class RoomPanel extends JPanel implements RoomListener {
     private static final ResourceBundle messages = ResourceBundle
@@ -351,15 +353,17 @@ public class RoomPanel extends JPanel implements RoomListener {
     }
 
     private class JoinTableAction extends PlayGameAction {
+        private int seat_num;
 
-        protected JoinTableAction(Table table) {
+        protected JoinTableAction(Table table, int seat_num) {
             super(messages.getString("RoomPanel.Button.JoinGame"));
             this.table = table;
+            this.seat_num = seat_num;
         }
 
         public void game_playing() {
             try {
-                room.join_table(table.get_id(), false);
+                room.join_table(table.get_id(), seat_num);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -403,12 +407,15 @@ public class RoomPanel extends JPanel implements RoomListener {
     }
 
     private class TablePanel extends JPanel {
-
         private Table table;
 
         private JLabel titleLabel;
 
-        private JLabel playersLabel;
+        private JPanel playersPanel;
+
+        private JPanel northPlayerPanel;
+
+        private JPanel southPlayerPanel;
 
         private JLabel spectatorsLabel;
 
@@ -416,34 +423,30 @@ public class RoomPanel extends JPanel implements RoomListener {
 
         private JPanel seatsPanel;
 
-        private JButton joinButton;
-
         private JButton spectateButton;
 
         public TablePanel(Table table) {
             super(new BorderLayout());
             this.table = table;
             setMaximumSize(new Dimension(200, 200));
+            setBackground(SystemColor.text);
             setBorder(BorderFactory.createRaisedBevelBorder());
-            titleLabel = new JLabel(getTitleHTML());
+            titleLabel = new JLabel();
             titleLabel.setFont(getFont().deriveFont(Font.PLAIN));
-            playersLabel = new JLabel(getPlayersHTML());
-            playersLabel.setFont(playersLabel.getFont().deriveFont(Font.PLAIN));
-            playersLabel.setBackground(SystemColor.text);
-            playersLabel.setOpaque(true);
-            spectatorsLabel = new JLabel(getSpectatorsHTML());
+            playersPanel = new JPanel(new BorderLayout());
+            playersPanel.setOpaque(false);
+            spectatorsLabel = new JLabel();
             spectatorsLabel.setFont(spectatorsLabel.getFont().deriveFont(
                     Font.PLAIN));
             spectatorsLabel.setBackground(SystemColor.text);
             spectatorsLabel.setOpaque(true);
-            spectatorsLabel.setVisible(table.get_num_spectator_seats() > 0);
             seatsPanel = new JPanel(new BorderLayout());
-            seatsPanel.add(playersLabel, BorderLayout.CENTER);
+//            seatsPanel.setBackground(Color.green.darker());
+            seatsPanel.add(playersPanel, BorderLayout.CENTER);
             seatsPanel.add(spectatorsLabel, BorderLayout.EAST);
-            joinButton = new JButton(new JoinTableAction(table));
             spectateButton = new JButton(new SpectateAction(table));
             buttonPanel = new JPanel();
-            buttonPanel.add(joinButton);
+            buttonPanel.setOpaque(false);
             if (room.get_gametype().get_spectators_allowed()) {
                 buttonPanel.add(spectateButton);
             }
@@ -452,12 +455,11 @@ public class RoomPanel extends JPanel implements RoomListener {
             add(buttonPanel, BorderLayout.SOUTH);
             refresh();
         }
-        
+
         protected void refresh() {
             titleLabel.setText(getTitleHTML());
-            playersLabel.setText(getPlayersHTML());
-            spectatorsLabel.setText(getSpectatorsHTML());
-            spectatorsLabel.setVisible(table.get_num_spectator_seats() > 0);
+            refreshSeats();
+            refreshSpectators();
             updateButtonEnabledState();
         }
 
@@ -474,83 +476,129 @@ public class RoomPanel extends JPanel implements RoomListener {
             return buffer.toString();
         }
 
-        private String getPlayersHTML() {
-            StringBuffer buffer = new StringBuffer("<HTML><OL>");
-            for (int player_num = 0; player_num < table.get_num_seats(); player_num++) {
-                buffer.append("<LI>");
-                SeatType type = table.get_nth_player_type(player_num);
+        private void refreshSeats() {
+            for (int seat_num = 0; seat_num < table.get_num_seats(); seat_num++) {
+                JButton seatButton;
+                if (seat_num < playersPanel.getComponentCount()) {
+                    seatButton = getSeatButton(seat_num);
+                } else {
+                    seatButton = createAndAddSeatButton(seat_num);
+                }
+                SeatType type = table.get_nth_player_type(seat_num);
                 if (type == SeatType.GGZ_SEAT_ABANDONED) {
-                    buffer
-                            .append(messages
-                                    .getString("RoomPanel.SeatAbandoned"));
+                    seatButton.setText(messages
+                            .getString("RoomPanel.SeatAbandoned"));
                 } else if (type == SeatType.GGZ_SEAT_BOT) {
-                    buffer.append(messages.getString("RoomPanel.SeatBot"));
+                    seatButton.setText(messages.getString("RoomPanel.SeatBot"));
                 } else if (type == SeatType.GGZ_SEAT_NONE
                         || type == SeatType.GGZ_SEAT_PLAYER) {
-                    buffer.append(table.get_nth_player_name(player_num));
+                    seatButton.setText(table.get_nth_player_name(seat_num));
                 } else if (type == SeatType.GGZ_SEAT_OPEN) {
-                    buffer.append(messages.getString("RoomPanel.SeatOpen"));
+                    seatButton
+                            .setText(messages.getString("RoomPanel.SeatOpen"));
                 } else if (type == SeatType.GGZ_SEAT_RESERVED) {
-                    buffer.append(MessageFormat.format(messages
-                            .getString("RoomPanel.SeatReserved"),
-                            new Object[] { table
-                                    .get_nth_player_name(player_num) }));
+                    seatButton.setText(MessageFormat
+                            .format(messages
+                                    .getString("RoomPanel.SeatReserved"),
+                                    new Object[] { table
+                                            .get_nth_player_name(seat_num) }));
                 }
-                buffer.append("</LI>");
+                revalidate();
             }
-            buffer.append("</OL></HTML>");
-            return buffer.toString();
         }
 
-        private String getSpectatorsHTML() {
-            StringBuffer buffer = new StringBuffer("<HTML><OL>");
+        private void refreshSpectators() {
+            int numSpectators = 0;
+            StringBuffer buffer = new StringBuffer("<HTML><B>Spectators</B>");
             for (int spectator_num = 0; spectator_num < table
                     .get_num_spectator_seats(); spectator_num++) {
                 String name = table.get_nth_spectator_name(spectator_num);
                 if (name != null) {
-                    buffer.append("<LI>");
+                    buffer.append("<BR>");
                     buffer.append(name);
-                    buffer.append("</LI>");
+                    numSpectators++;
                 }
             }
-            buffer.append("</OL></HTML>");
-            return buffer.toString();
+            buffer.append("</HTML>");
+            spectatorsLabel.setText(buffer.toString());
+            spectatorsLabel.setVisible(numSpectators > 0);
         }
 
         public void updateButtonEnabledState() {
-            boolean canJoinTable;
-            boolean canSpectate;
+            boolean inRoom = (server.get_state() == StateID.GGZ_STATE_IN_ROOM);
+            boolean canSpectate = inRoom
+                    && room.get_gametype().get_spectators_allowed();
+            boolean canJoinTable = inRoom;
 
-            if (server.get_state() == StateID.GGZ_STATE_IN_ROOM) {
+            // Temporary limitation because we don't support more than four
+            // players in card games.
+            canJoinTable = canJoinTable && (table.get_num_seats() <= 4);
 
-                /* Make sure table has open seats */
-                canJoinTable = table.get_seat_count(SeatType.GGZ_SEAT_OPEN) > 0;
-                if (!canJoinTable) {
-                    // Ther are no open seats but maybe the seat is reserved for
-                    // us.
-                    int seatCount = table.get_num_seats();
-                    String me = server.get_handle();
-                    for (int seat_num = 0; seat_num < seatCount; seat_num++) {
-                        TableSeat seat = table.get_nth_seat(seat_num);
-                        if (seat.type == SeatType.GGZ_SEAT_RESERVED
-                                && me.equals(seat.name)) {
-                            canJoinTable = true;
-                            break;
-                        }
-                    }
+            int seatCount = table.get_num_seats();
+            String me = server.get_handle();
+            for (int seat_num = 0; seat_num < seatCount; seat_num++) {
+                TableSeat seat = table.get_nth_seat(seat_num);
+                JButton seatButton = getSeatButton(seat_num);
+                if (seat.type == SeatType.GGZ_SEAT_ABANDONED) {
+                    seatButton.setEnabled(canJoinTable);
+                } else if (seat.type == SeatType.GGZ_SEAT_BOT) {
+                    seatButton.setEnabled(canJoinTable);
+                } else if (seat.type == SeatType.GGZ_SEAT_NONE
+                        || seat.type == SeatType.GGZ_SEAT_PLAYER) {
+                    seatButton.setEnabled(false);
+                } else if (seat.type == SeatType.GGZ_SEAT_OPEN) {
+                    seatButton.setEnabled(canJoinTable);
+                } else if (seat.type == SeatType.GGZ_SEAT_RESERVED) {
+                    seatButton.setEnabled(canJoinTable && me.equals(seat.name));
                 }
-
-                // Temporary limitation because we don't support more than four
-                // players in card games.
-                canJoinTable = canJoinTable && (table.get_num_seats() <= 4);
-                canSpectate = room.get_gametype().get_spectators_allowed();
-            } else {
-                canJoinTable = false;
-                canSpectate = false;
             }
 
-            joinButton.setEnabled(canJoinTable);
             spectateButton.setEnabled(canSpectate);
+        }
+
+        private JButton createAndAddSeatButton(int seat_num) {
+            String[] constraints = new String[] { BorderLayout.SOUTH,
+                    BorderLayout.WEST, BorderLayout.NORTH, BorderLayout.EAST };
+
+            JButton seatButton = new JButton(new JoinTableAction(table,
+                    seat_num));
+            seatButton.setPreferredSize(new Dimension(150, seatButton
+                    .getPreferredSize().height));
+            
+            // Modify the inner border to give us more space for text.
+            // Get rid of the margin insets on the Metal or Ocean buttons to
+            // make the buttons smaller.
+            Border old_border = seatButton.getBorder();
+            if (old_border instanceof CompoundBorder) {
+                seatButton.setBorder(((CompoundBorder) old_border)
+                        .getOutsideBorder());
+            }
+            if (constraints[seat_num] == BorderLayout.NORTH) {
+                northPlayerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,
+                        0, 0));
+                northPlayerPanel.setOpaque(false);
+                northPlayerPanel.add(seatButton);
+                playersPanel.add(northPlayerPanel, constraints[seat_num]);
+            } else if (constraints[seat_num] == BorderLayout.SOUTH) {
+                southPlayerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,
+                        0, 0));
+                southPlayerPanel.setOpaque(false);
+                southPlayerPanel.add(seatButton);
+                playersPanel.add(southPlayerPanel, constraints[seat_num]);
+            } else {
+                playersPanel.add(seatButton, constraints[seat_num]);
+            }
+            return seatButton;
+        }
+
+        private JButton getSeatButton(int seatNum) {
+            try {
+                return (JButton) playersPanel.getComponent(seatNum);
+            } catch (ClassCastException e) {
+                return (JButton) ((JPanel) playersPanel.getComponent(seatNum))
+                        .getComponent(0);
+
+            }
         }
     }
 
@@ -670,11 +718,21 @@ public class RoomPanel extends JPanel implements RoomListener {
             RoomPanel.this.validate();
             RoomPanel.this.repaint();
         }
-        
+
         public void addTable(Table table) {
+            // Maintain table order so add tables by id.
+            int ncomponents = getComponentCount();
+            int componentIndex = 0;
+            for (; componentIndex < ncomponents; componentIndex++) {
+                TablePanel tablePanel = (TablePanel) getComponent(componentIndex);
+                if (table.get_id() < tablePanel.table.get_id()) {
+                    add(new TablePanel(table), componentIndex);
+                    return;
+                }
+            }
             add(new TablePanel(table));
         }
-        
+
         public void removeTable(Table table) {
             TablePanel tp = findTablePanel(table);
             if (tp == null) {
@@ -687,7 +745,7 @@ public class RoomPanel extends JPanel implements RoomListener {
                 repaint();
             }
         }
-        
+
         public void updateTable(Table table) {
             TablePanel tp = findTablePanel(table);
             if (tp == null) {
@@ -697,19 +755,19 @@ public class RoomPanel extends JPanel implements RoomListener {
                 tp.refresh();
             }
         }
-        
+
         public void updateButtons() {
             int ncomponents = getComponentCount();
-            for (int i = 0; i < ncomponents; i ++) {
-                TablePanel tp = (TablePanel)getComponent(i);
+            for (int i = 0; i < ncomponents; i++) {
+                TablePanel tp = (TablePanel) getComponent(i);
                 tp.updateButtonEnabledState();
             }
         }
-        
+
         private TablePanel findTablePanel(Table table) {
             int ncomponents = getComponentCount();
-            for (int i = 0; i < ncomponents; i ++) {
-                TablePanel tp = (TablePanel)getComponent(i);
+            for (int i = 0; i < ncomponents; i++) {
+                TablePanel tp = (TablePanel) getComponent(i);
                 if (tp.table == table) {
                     return tp;
                 }
@@ -723,7 +781,7 @@ public class RoomPanel extends JPanel implements RoomListener {
 
         public int getScrollableBlockIncrement(Rectangle visibleRect,
                 int orientation, int direction) {
-            return 20;
+            return visibleRect.height;
         }
 
         public boolean getScrollableTracksViewportHeight() {
@@ -736,7 +794,7 @@ public class RoomPanel extends JPanel implements RoomListener {
 
         public int getScrollableUnitIncrement(Rectangle visibleRect,
                 int orientation, int direction) {
-            return 20;
+            return 150;
         }
     }
 }

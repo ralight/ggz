@@ -20,7 +20,6 @@ package ggz.ui;
 import ggz.client.core.LoginType;
 import ggz.client.core.Server;
 
-import java.awt.ContainerOrderFocusTraversalPolicy;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -35,6 +34,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
 
 public class LoginPanel extends JPanel {
     private static final ResourceBundle messages = ResourceBundle
@@ -75,6 +76,11 @@ public class LoginPanel extends JPanel {
                 + "<FONT color=red>*</FONT>");
         emailLabel = new JLabel(messages.getString("LoginPanel.Label.Email"));
         handleTextField = new JTextField(20);
+        // Nicknames are only allowed to be 16 characters.
+        Document doc = handleTextField.getDocument();
+        if (doc instanceof PlainDocument) {
+            ((PlainDocument) doc).setDocumentFilter(new DocumentSizeFilter(16));
+        }
         passwordField = new JPasswordField(20);
         emailTextField = new JTextField(null, 20);
         normalLoginRadio = new JRadioButton(new ChooseNormalLoginAction());
@@ -139,8 +145,11 @@ public class LoginPanel extends JPanel {
 
         // Set up focus so that we use the order that components were added to
         // the container rather than the order that they appear on screen.
-        setFocusTraversalPolicyProvider(true);
-        setFocusTraversalPolicy(new ContainerOrderFocusTraversalPolicy());
+        // This method doesn't exist for Java 1.4.
+        // setFocusTraversalPolicyProvider(true);
+        // And this one seems to be broken...
+        // setFocusCycleRoot(true);
+        // setFocusTraversalPolicy(new ContainerOrderFocusTraversalPolicy());
 
         // By default, Swing panels and labels are focusable and we don't want
         // that.

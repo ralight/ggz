@@ -62,7 +62,7 @@ public class BidPanel extends JPanel implements ActionListener {
 
     private int currentRow = 0;
 
-    private int currentColumn = 0;
+    private int currentColumn = -1;
 
     private JPanel bidHistoryTableContainer;
 
@@ -136,8 +136,8 @@ public class BidPanel extends JPanel implements ActionListener {
 
             // Store the bid index so that we know which bid was selected when a
             // button is clicked.
-            bid_button.putClientProperty("ggz.cards.BidPanel.bidIndex", Integer
-                    .valueOf(bidIndex));
+            bid_button.putClientProperty("ggz.cards.BidPanel.bidIndex",
+                    new Integer(bidIndex));
 
             // Users complained that in Spades, chatting when
             // the bid button appears can sometimes cause you to bid
@@ -147,20 +147,20 @@ public class BidPanel extends JPanel implements ActionListener {
             bid_button.setFocusable(false);
             buttonPanel.add(bid_button);
         }
-        validate();
+        revalidate();
     }
 
     public void addBid(int bidder, Bid bid) {
         // Add blank bids for players that were skipped in the bidding.
-        int nextSlot = (lastBidder + 1) % numPlayers;
-        while (nextSlot != bidder) {
+        int nextSlot = lastBidder;
+        do {
             moveToNextBidSlot();
             nextSlot = (nextSlot + 1) % numPlayers;
-        }
+        } while (nextSlot != bidder);
+
         bidHistoryTable.setValueAt(bid, currentRow, currentColumn);
-        moveToNextBidSlot();
         lastBidder = bidder;
-        invalidate();
+        revalidate();
         repaint();
     }
 

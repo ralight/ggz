@@ -18,7 +18,7 @@ public class BidPanelTest {
         BidPanel bidPanel = new BidPanel(firstBidder, cardClient);
         JFrame frame = new JFrame("BidPanel Test");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.add(bidPanel, BorderLayout.CENTER);
+        frame.getContentPane().add(bidPanel, BorderLayout.CENTER);
         bidPanel.addBid(1, new Bid((byte) 1));
         bidPanel.addBid(2, new Bid((byte) 2));
         bidPanel.addBid(3, new Bid((byte) 3));
@@ -42,7 +42,7 @@ public class BidPanelTest {
         public Player get_nth_player(final int n) {
             return new Player() {
                 public String get_name() {
-                    return "Player with a long name " + n;
+                    return "Player " + n;
                 }
             };
         }

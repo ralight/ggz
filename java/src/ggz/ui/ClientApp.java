@@ -188,10 +188,12 @@ public class ClientApp {
             }
         });
         frame.setSize(800, 600);
-        frame.setVisible(true);
         applet.init();
         applet.start();
         applet.server_state_changed();
+        
+        // This must be the last line <http://java.sun.com/products/jfc/tsc/articles/threads/threads1.html>.
+        frame.setVisible(true);
     }
 
     private static boolean parseArgs(String[] argv) {

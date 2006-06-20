@@ -43,6 +43,7 @@ public class ScoresDialog extends JDialog implements ActionListener {
         scoresLabel = new JLabel();
         scoresLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
         scoresPanel.setOpaque(false);
+        scoresPanel.setMinimumSize(new Dimension(200, 200));
         scoresPanel.add(scoresLabel);
         buttonPanel.setOpaque(false);
         buttonPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0,
@@ -52,7 +53,6 @@ public class ScoresDialog extends JDialog implements ActionListener {
         getContentPane().add(scoresPanel, BorderLayout.NORTH);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         getContentPane().setBackground(SystemColor.text);
-        setMinimumSize(new Dimension(200, 200));
     }
 
     public void setScores(String scores) {

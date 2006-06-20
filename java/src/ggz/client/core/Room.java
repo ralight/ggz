@@ -252,8 +252,13 @@ public class Room {
                     "server is null or table parameter is null");
         }
     }
-
-    public void join_table(int num, boolean spectator) throws IOException {
+    public void join_table(int table_id, int seat_num) throws IOException {
+        join_table(table_id, seat_num, false);
+    }
+    public void join_table(int table_id, boolean spectator) throws IOException {
+        join_table(table_id, -1, spectator);
+    }    
+    public void join_table(int table_id, int seat_num, boolean spectator) throws IOException {
         if (this.server == null || this.server.get_cur_game() == null) {
             throw new IllegalStateException("server or server.cur_game is null");
         }
@@ -269,13 +274,17 @@ public class Room {
          */
         if (this.server.get_state() != StateID.GGZ_STATE_IN_ROOM
                 || cur_room == null || this.id != cur_room.id || game == null
-                || get_table_by_id(num) == null)
+                || get_table_by_id(table_id) == null)
             throw new IllegalStateException();
 
         net = this.server.get_net();
-        net.send_table_join(num, spectator);
+        if (seat_num >= 0) {
+            net.send_table_join(table_id, seat_num);
+        } else {
+            net.send_table_join(table_id, spectator);
+        }
 
-        game.set_table(this.id, num);
+        game.set_table(this.id, table_id);
         game.set_player(spectator, -1);
 
         this.server.set_table_joining();
@@ -509,7 +518,13 @@ public class Room {
         if (type == ChatType.GGZ_CHAT_TABLE) {
             Game game = this.server.get_cur_game();
 
-            game.inform_chat(player_name, msg);
+            // Make sure that we still have a game...
+            // game was null once when someone had just left a game as a 
+            // spectator so this should prevent this (race?) condition in
+            // future.
+            if (game != null) {
+                game.inform_chat(player_name, msg);
+            }
         }
     }
 

@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -187,6 +188,7 @@ public class ChatPanel extends JPanel {
             emote = "{0}" + message.substring(3);
         } else if (type == ChatType.GGZ_CHAT_BEEP) {
             emote = messages.getString("ChatPanel.Beep");
+            Toolkit.getDefaultToolkit().beep();
         }
 
         if (type == ChatType.GGZ_CHAT_PERSONAL) {

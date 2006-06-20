@@ -102,7 +102,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         // playerList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setOpaque(false);
         playerList.setOpaque(false);
-        playerList.setPreferredScrollableViewportSize(new Dimension(200, 100));
+        playerList.setPreferredScrollableViewportSize(new Dimension(220, 100));
         playerList.setDefaultRenderer(PlayerType.class,
                 new PlayerTypeCellRenderer());
         playerList.setDefaultRenderer(Player.class, new PlayerCellRenderer());
