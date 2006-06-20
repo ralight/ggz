@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: first.c 8222 2006-06-20 02:59:29Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -50,8 +50,6 @@
 #define gettext_noop
 #include "support.h"
 
-static GtkWidget *first_dialog;
-static GtkWidget* create_dlg_first(void);
 static void first_button_yes_activate(GtkButton *button, gpointer data);
 static void first_button_no_activate(GtkButton *button, gpointer data);
 static void first_generate_password(char *pw);
@@ -71,6 +69,28 @@ static struct {
 	      {N_("GGZ Community (fast)"), "live.ggzgamingzone.org", 5688, 1},
 	      {N_("Local developer server"), "localhost", 5688, 1} };
 
+static gboolean raised;
+
+gboolean first_is_raised(void)
+{
+	return raised;
+}
+
+void first_raise(void)
+{
+	raised = TRUE;
+	main_activate();
+}
+
+static void first_lower(void)
+{
+	ggzcore_conf_write_int("INIT", "FIRST", 1);
+	ggzcore_conf_write_string("INIT", "VERSION", VERSION);
+	raised = FALSE;
+	ggz_sensitivity_init();
+	main_activate();
+}
+
 /* first_create_or_raise() - Displays the dialog or raises the
  *                           current dialog
  *
@@ -78,20 +98,6 @@ static struct {
  *
  * Returns:   
  */
-
-void first_create_or_raise(void)
-{
-	ggzcore_conf_write_int("INIT", "FIRST", 1);
-	ggzcore_conf_write_string("INIT", "VERSION", VERSION);
-	if (!first_dialog) {
-		first_dialog = create_dlg_first();
-		gtk_widget_show(first_dialog);
-	} else {
-		gdk_window_show(first_dialog->window);
-		gdk_window_raise(first_dialog->window);
-	}
-
-}
 
 static void first_button_yes_activate(GtkButton *button, gpointer data)
 {
@@ -137,23 +143,18 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 		ggz_free(profiles[i]);
 	ggz_free(profiles);
 
-	ggzcore_conf_commit();
-	gtk_widget_destroy(first_dialog);
 	server_profiles_load();
 
-	main_window = create_win_main();
-	ggz_sensitivity_init();
-	gtk_widget_show_all(main_window);
+	first_lower();
+
+	ggzcore_conf_commit();
 }
 
 
 static void first_button_no_activate(GtkButton *button, gpointer data)
 {
+	first_lower();
 	ggzcore_conf_commit();
-	gtk_widget_destroy(first_dialog);
-	main_window = create_win_main();
-	ggz_sensitivity_init();
-	gtk_widget_show(main_window);
 }
 
 static void first_generate_password(char *pw)   
@@ -172,59 +173,32 @@ static void first_generate_password(char *pw)
 
 
 
-GtkWidget*
-create_dlg_first (void)
+GtkWidget* create_dlg_first (void)
 {
-  GtkWidget *dlg_first;
+  GtkWidget *frame;
   GtkWidget *vbox3;
   GtkWidget *label5;
   GtkWidget *hbuttonbox2;
   GtkWidget *button_yes;
   GtkWidget *button_no;
 
-  dlg_first = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_transient_for(GTK_WINDOW(dlg_first), GTK_WINDOW(main_window));
-  g_object_set_data(G_OBJECT (dlg_first), "dlg_first", dlg_first);
-  gtk_container_set_border_width (GTK_CONTAINER (dlg_first), 21);
-  gtk_window_set_title (GTK_WINDOW (dlg_first), _("First Time Configuration"));
-  gtk_window_set_position (GTK_WINDOW (dlg_first), GTK_WIN_POS_CENTER);
-  gtk_window_set_resizable(GTK_WINDOW(dlg_first), FALSE);
+  frame = gtk_frame_new("First login");
 
   vbox3 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox3);
-  g_object_set_data_full(G_OBJECT (dlg_first), "vbox3", vbox3,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox3);
-  gtk_container_add (GTK_CONTAINER (dlg_first), vbox3);
+  gtk_container_add(GTK_CONTAINER(frame), vbox3);
 
   label5 = gtk_label_new (_("This is the first time you are running the GTK+ GGZ Gaming Zone client. Would you like to create some default server profiles?"));
-  gtk_widget_ref (label5);
-  g_object_set_data_full(G_OBJECT (dlg_first), "label5", label5,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label5);
   gtk_box_pack_start (GTK_BOX (vbox3), label5, TRUE, TRUE, 0);
   gtk_label_set_line_wrap (GTK_LABEL (label5), TRUE);
 
   hbuttonbox2 = gtk_hbutton_box_new ();
-  gtk_widget_ref (hbuttonbox2);
-  g_object_set_data_full(G_OBJECT (dlg_first), "hbuttonbox2", hbuttonbox2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbuttonbox2);
   gtk_box_pack_start (GTK_BOX (vbox3), hbuttonbox2, FALSE, TRUE, 0);
 
   button_yes = gtk_button_new_from_stock(GTK_STOCK_YES);
-  gtk_widget_ref (button_yes);
-  g_object_set_data_full(G_OBJECT (dlg_first), "button_yes", button_yes,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button_yes);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), button_yes);
   GTK_WIDGET_SET_FLAGS (button_yes, GTK_CAN_DEFAULT);
 
   button_no = gtk_button_new_from_stock(GTK_STOCK_NO);
-  gtk_widget_ref (button_no);
-  g_object_set_data_full(G_OBJECT (dlg_first), "button_no", button_no,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button_no);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), button_no);
   GTK_WIDGET_SET_FLAGS (button_no, GTK_CAN_DEFAULT);
 
@@ -235,5 +209,7 @@ create_dlg_first (void)
                       GTK_SIGNAL_FUNC (first_button_no_activate),
                       NULL);
 
-  return dlg_first;
+  gtk_widget_show_all(frame);
+
+  return frame;
 }

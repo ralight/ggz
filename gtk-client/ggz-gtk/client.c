@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: client.c 8222 2006-06-20 02:59:29Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -43,6 +43,7 @@
 #include "about.h"
 #include "client.h"
 #include "chat.h"
+#include "first.h"
 #include "game.h"
 #include "ggzclient.h"
 #include "ggz-embed.h"
@@ -1434,6 +1435,8 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 
 	/* The order of these matches the enum ggz_page in client.h */
 	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
+				 create_dlg_first(), NULL);
+	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
 				 create_dlg_login(embedded_default_profile),
 				 NULL);
 	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
@@ -1450,16 +1453,19 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 
 void main_activate(void)
 {
-  if (props_is_raised()) {
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
-				      GGZ_PAGE_PROPS);
-  } else if (server && ggzcore_server_is_logged_in(server)) {
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
-				      GGZ_PAGE_MAIN);
-  } else {
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
-				      GGZ_PAGE_LOGIN);
-  }
+	if (first_is_raised()) {
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+					      GGZ_PAGE_FIRSTLOGIN);
+	} else if (props_is_raised()) {
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+					      GGZ_PAGE_PROPS);
+	} else if (server && ggzcore_server_is_logged_in(server)) {
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+					      GGZ_PAGE_MAIN);
+	} else {
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+					      GGZ_PAGE_LOGIN);
+	}
 }
 
 GtkWidget *create_win_main(void)

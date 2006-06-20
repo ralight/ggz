@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: main.c 8222 2006-06-20 02:59:29Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -140,52 +140,51 @@ int main (int argc, char *argv[])
 #endif
 
 	init_version = ggzcore_conf_read_string("INIT", "VERSION", VERSION);
+	main_window = create_win_main();
+	ggz_sensitivity_init();
+
 	if (ggzcore_conf_read_int("INIT", "FIRST", 0) == 0 ||
-	    strcmp(init_version, VERSION) !=0 )
-	{
-		first_create_or_raise();
-	} else {
-		main_window = create_win_main();
+	    strcmp(init_version, VERSION) !=0 ) {
+		first_raise();
+	}
 
-		ggz_sensitivity_init();
+	gtk_widget_show_all(main_window);
 
-		gtk_widget_show_all(main_window);
+	/* Auto-connect to GGZ URI */
+	if (option_url) {
+		char *uri, *uribase;
+		char *host = NULL, *user = NULL, *port = NULL;
 
-		/* Auto-connect to GGZ URI */
-		if (option_url) {
-			char *uri, *uribase;
-			char *host = NULL, *user = NULL, *port = NULL;
-			uribase = ggz_strdup(option_url);
-			uri = uribase;
-			if (strstr(uri, "ggz://"))
-				uri += 6;
-			if (strchr(uri, '@'))
-				user = strsep(&uri, "@");
-			if (strchr(uri, ':')) {
-				host = strsep(&uri, ":");
-				port = strsep(&uri, ":");
-			} else {
-				host = uri;
-			}
-
-			Server serv;
-			serv.name = NULL;
-			serv.host = host;
-			serv.port = atoi(port);
-			serv.type = GGZ_LOGIN_GUEST;
-			serv.login = user;
-			serv.password = NULL;
-
-			login_set_entries(serv);
-
-			if(host)
-				ggz_free(host);
-			if(port)
-				ggz_free(port);
-			if(user)
-				ggz_free(user);
-			ggz_free(uribase);
+		uribase = ggz_strdup(option_url);
+		uri = uribase;
+		if (strstr(uri, "ggz://"))
+			uri += 6;
+		if (strchr(uri, '@'))
+			user = strsep(&uri, "@");
+		if (strchr(uri, ':')) {
+			host = strsep(&uri, ":");
+			port = strsep(&uri, ":");
+		} else {
+			host = uri;
 		}
+
+		Server serv;
+		serv.name = NULL;
+		serv.host = host;
+		serv.port = atoi(port);
+		serv.type = GGZ_LOGIN_GUEST;
+		serv.login = user;
+		serv.password = NULL;
+
+		login_set_entries(serv);
+
+		if(host)
+			ggz_free(host);
+		if(port)
+			ggz_free(port);
+		if(user)
+			ggz_free(user);
+		ggz_free(uribase);
 	}
 	ggz_free(init_version);
 

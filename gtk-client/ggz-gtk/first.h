@@ -22,5 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+GtkWidget *create_dlg_first(void);
 
-void first_create_or_raise(void);
+gboolean first_is_raised(void);
+void first_raise(void);

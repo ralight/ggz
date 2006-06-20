@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: client.h 8222 2006-06-20 02:59:29Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -35,6 +35,7 @@ GtkWidget* create_win_main (void);
 #define DEFAULT_FONT "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"
 
 enum ggz_page {
+  GGZ_PAGE_FIRSTLOGIN,
   GGZ_PAGE_LOGIN,
   GGZ_PAGE_MAIN,
   GGZ_PAGE_PROPS
