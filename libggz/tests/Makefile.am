@@ -3,6 +3,7 @@ LDADD = $(top_builddir)/src/libggz.la
 
 check_PROGRAMS = \
 	debugmsg \
+	dio	\
 	cfgtest \
 	ggzcommon \
 	read_line \
@@ -11,6 +12,7 @@ check_PROGRAMS = \
 	tls
 
 debugmsg_SOURCES = debugmsg.c
+dio_SOURCES = dio.c
 cfgtest_SOURCES = cfgtest.c
 misc_SOURCES = misc.c
 read_line_SOURCES = read_line.c
@@ -18,7 +20,7 @@ strcmp_SOURCES = strcmp.c
 ggzcommon_SOURCES = ggzcommon.c
 tls_SOURCES = tls.c
 
-TESTS = debugmsg cfgtest ggzcommon read_line misc strcmp tls
+TESTS = debugmsg dio cfgtest ggzcommon read_line misc strcmp tls
 
 clean-local:
 	-rm -f debug.log
