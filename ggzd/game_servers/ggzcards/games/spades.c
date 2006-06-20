@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8207 2006-06-19 01:32:39Z jdorje $
+ * $Id: spades.c 8233 2006-06-20 19:40:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -29,6 +29,9 @@
 
 #include <stdio.h>
 #include <string.h>
+
+#include "net_common.h"
+#include "protocol.h"
 
 #include "bid.h"
 #include "common.h"
@@ -106,6 +109,29 @@ game_data_t spades_data = {
 	game_compare_cards,
 	spades_send_hand
 };
+
+static bool spd_send_scoredata(player_t p)
+{
+	int fd = get_player_socket(p);
+	team_t team;
+
+	/* The score data can be used by the AI for
+	   calculations or by the game client to
+	   display team score/bid/tricks/bags. */
+	if (write_opcode(fd, MESSAGE_GAME) < 0
+	    || write_opcode(fd, GAME_MESSAGE_GAME) < 0
+	    || ggz_write_string(fd, "spades") < 0
+	    || ggz_write_int(fd, 24) < 0) {
+	  return -1;
+	}
+	for (team = 0; team < 2; team++) {
+		ggz_write_int(fd, game.players[team].score);
+		ggz_write_int(fd, game.players[team].tricks
+			      + game.players[team + 2].tricks);
+		ggz_write_int(fd, GSPADES.bags[team]);
+	}
+	return 0;
+}
 
 static bool spades_is_valid_game(void)
 {
@@ -400,6 +426,9 @@ static void spades_set_player_message(player_t p)
 	
 	add_player_tricks_message(p);
 	add_player_action_message(p);
+
+	/* Hack: send info to the player here. */
+	spd_send_scoredata(p);
 }
 
 static void spades_deal_hand(void)
