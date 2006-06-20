@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 8068 2006-05-26 11:00:38Z josef $
+ * $Id: ggz.h 8232 2006-06-20 15:52:20Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -1087,6 +1087,9 @@ char * ggz_xml_escape(const char *str);
  * expected to later free this memory using ggz_free().  If the original string
  * did not contain any characters which required decoding, a ggz_strdup() copy
  * is returned.
+ * @note When using expat, incoming text is automatically unescaped by the
+ * expat library.  It is therefore generally not necessary to use this function
+ * with expat.
  */
 char * ggz_xml_unescape(const char *str);
 
