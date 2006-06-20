@@ -2226,6 +2226,12 @@
 			<entry>true</entry>
 		  </row>
 
+		  <row rowsep="1">
+		    <entry>SEAT</entry>
+		    <entry>int</entry>
+			<entry>3</entry>
+		  </row>
+
 		</tbody>
 	</tgroup>
       </informaltable>
@@ -2241,7 +2247,7 @@
 	    <term><emphasis role="bold">TABLE</emphasis></term>
 	    <listitem>
 	      <para>
-		The identifier of table the player wishes to join
+		The identifier of the table the player wishes to join
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -2254,6 +2260,16 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+          <varlistentry>
+            <term><emphasis role="bold">SEAT</emphasis></term>
+            <listitem>
+              <para>
+                 The seat number of the seat to join in.  If the seat
+                 number is negative or not given, the first available
+                 seat will be joined.
+              </para>
+            </listitem>
+          </varlistentry>
 	</variablelist>
       </refsect2>
 
@@ -2267,7 +2283,7 @@
           receive a <link linkend="rsp.table.join">JOIN</link>, which we
           should act upon.  If the join succeeds it is likely an
 	  <link linkend="msg.update">UPDATE</link> of type 'table' will also
-          be necessary..
+          be necessary.
 	</para>
       </refsect2>
     </refsect1>
