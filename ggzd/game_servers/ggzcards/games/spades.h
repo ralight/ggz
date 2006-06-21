@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game data for Spades (for use by AI)
- * $Id: spades.h 8233 2006-06-20 19:40:37Z jdorje $
+ * $Id: spades.h 8241 2006-06-21 18:44:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -28,7 +28,7 @@ enum {
 	SPADES_BID,
 	SPADES_NIL,
 	SPADES_NO_BLIND,	/* a choice *not* to bid blind nil */
-	SPADES_DOUBLE_NIL	/* double nil and blind nil are the same */
+	SPADES_DNIL		/* double nil and blind nil are the same */
 };
 
 /* Each of these opcodes is used for a GAME_MESSAGE_GAME.  The opcode is sent 

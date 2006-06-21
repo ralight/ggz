@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: spades.c 8241 2006-06-21 18:44:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -43,6 +43,25 @@
 
 #include "spades.h"
 
+/* Nil tricks options: different ways of scoring tricks taken by nil/dnil
+   bidders.
+
+   NIL_TRICKS_COUNT - The tricks count toward the partner's contract
+   directly.
+
+   NIL_TRICKS_DONT_COUNT - The tricks do not count toward the partner's
+   contract, but still count as bags and give overtrick points.
+
+   NIL_TRICKS_NO_POINT - The tricks do not count toward partner's contract,
+   and give no overtrick points, but still count as bags.  (This bizarre
+   option is included for compatibility with other gaming zones.)
+*/
+enum nil_option {
+	NIL_TRICKS_COUNT,
+	NIL_TRICKS_DONT_COUNT,
+	NIL_TRICKS_NO_POINTS,
+	NIL_TRICKS_LAST
+};
 
 #define GSPADES ( *(spades_game_t *)(game.specific) )
 typedef struct spades_game_t {
@@ -50,8 +69,7 @@ typedef struct spades_game_t {
 	int nil_value;		/* 0 for none; generally 50 or 100 */
 	int double_nil_value;	/* 0 for none; generally 100 or 200 */
 	int minimum_team_bid;	/* the minimum bid by one team */
-	int nil_tricks_count;	/* do tricks by a nil bidder count toward the
-				   bid? */
+	enum nil_option nil_tricks_count; /* See enum explanation */
 
 	/* data */
 	int show_hand[4];	/* this is 0 if we're supposed to conceal the
@@ -170,7 +188,7 @@ static void spades_init_game(void)
 	game.trump = SPADES;
 
 	GSPADES.nil_value = 100;
-	GSPADES.nil_tricks_count = 1;
+	GSPADES.nil_tricks_count = NIL_TRICKS_COUNT;
 }
 
 static void spades_get_options(void)
@@ -205,15 +223,25 @@ static void spades_get_options(void)
 		   "Does dropping to -200 points cause an automatic loss?",
 		   1, 0,
 		   "Forfeit at -200 points");
+	add_option("nil_tricks_count",
+		   "How are tricks taken by the nil bidder scored? Do they\n"
+		   "count toward the partner's bid, do they give overtricks\n"
+		   "(+1 points each), or do they count only as bags (-100\n"
+		   "for ten of them)?",
+		   NIL_TRICKS_LAST, NIL_TRICKS_COUNT,
+		   "Nil tricks count toward the partner's bid",
+		   "Nil tricks count as overtricks and bags.",
+		   "Nil tricks count only as bags",
+		   "bags");
 
 	game_get_options();
 }
 
 static int spades_handle_option(char *option, int value)
 {
-	if (!strcmp("nil_value", option)) {
+	if (strcmp("nil_value", option) == 0) {
 		GSPADES.nil_value = 50 * value;
-	} else if (!strcmp("target_score", option)) {
+	} else if (strcmp("target_score", option) == 0) {
 		switch (value) {
 		case 0:
 			game.target_score = 100;
@@ -233,15 +261,17 @@ static int spades_handle_option(char *option, int value)
 		default:
 			break;
 		}
-	} else if (!strcmp("minimum_bid", option)) {
+	} else if (strcmp("minimum_bid", option) == 0) {
 		GSPADES.minimum_team_bid = value;
-	} else if (!strcmp("double_nil", option)) {
+	} else if (strcmp("double_nil", option) == 0) {
 		GSPADES.double_nil_value = 100 * value;
-	} else if (!strcmp("low_score_loses", option)) {
+	} else if (strcmp("low_score_loses", option) == 0) {
 		if (value == 0)
 			game.forfeit_score = 0;
 		else
 			game.forfeit_score = -200;
+	} else if (strcmp("nil_trick_count", option) == 0) {
+		GSPADES.nil_tricks_count = value;
 	} else {
 		return game_handle_option(option, value);
 	}
@@ -251,22 +281,22 @@ static int spades_handle_option(char *option, int value)
 static char *spades_get_option_text(char *buf, int bufsz, char *option,
 				    int value)
 {
-	if (!strcmp(option, "nil_value")) {
+	if (strcmp(option, "nil_value") == 0) {
 		if (value == 0)
 			snprintf(buf, bufsz, "There are no nil bids.");
 		else
 			snprintf(buf, bufsz, "Nil is worth %d points.",
 				 50 * value);
-	} else if (!strcmp(option, "target_score")) {
+	} else if (strcmp(option, "target_score") == 0) {
 		if (game.target_score == MAX_TARGET_SCORE)
 			snprintf(buf, bufsz, "The game will never end."); 	
 		else
 			snprintf(buf, bufsz, "The game is being played to %d.",
 				 game.target_score);
-	} else if (!strcmp(option, "minimum_bid"))
+	} else if (strcmp(option, "minimum_bid") == 0)
 		snprintf(buf, bufsz, "The minimum team bid is %d.",
 			 GSPADES.minimum_team_bid);
-	else if (!strcmp(option, "double_nil")) {
+	else if (strcmp(option, "double_nil") == 0) {
 		if (value == 0)
 			snprintf(buf, bufsz,
 				 "There is no blind (double) nil.");
@@ -274,15 +304,32 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 			snprintf(buf, bufsz,
 				 "Blind (double) nil is worth %d.",
 				 value == 1 ? 100 : 200);
-	} else if (!strcmp(option, "low_score_loses")) {
+	} else if (strcmp(option, "low_score_loses") == 0) {
 		if (value == 0)
 			snprintf(buf, bufsz,
 				"Game is not forfeit at -200 points.");
 		else
 			snprintf(buf, bufsz,
 				"Game is forfeit at -200 points.");
-	} else
+	} else if (strcmp(option, "nil_tricks_count") == 0) {
+		switch (value) {
+		case NIL_TRICKS_COUNT:
+			snprintf(buf, bufsz,
+				 "A nil player's tricks count toward the "
+				 "partner's bid.");
+		case NIL_TRICKS_DONT_COUNT:
+			snprintf(buf, bufsz,
+				 "A nil player's tricks do not count "
+				 "toward the partner's bid.");
+		case NIL_TRICKS_NO_POINTS:
+			snprintf(buf, bufsz,
+				 "A nil player's tricks do not count "
+				 "toward the partner's bid and give no "
+				 "points.");
+		}
+	} else {
 		return game_get_option_text(buf, bufsz, option, value);
+	}
 	return buf;
 }
 
@@ -311,7 +358,7 @@ static void spades_get_bid(void)
 		add_sbid(0, NO_SUIT, SPADES_NO_BLIND);
 		if (partner->bid_count == 0 ||
 		    pard >= GSPADES.minimum_team_bid) {
-			add_sbid(0, NO_SUIT, SPADES_DOUBLE_NIL);
+			add_sbid(0, NO_SUIT, SPADES_DNIL);
 		}
 	} else {
 		/* A regular bid */
@@ -384,7 +431,7 @@ static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 {
 	if (bid.sbid.spec == SPADES_NIL)
 		return snprintf(buf, buf_len, "Nil");
-	if (bid.sbid.spec == SPADES_DOUBLE_NIL)
+	if (bid.sbid.spec == SPADES_DNIL)
 		return snprintf(buf, buf_len, "Dnil");
 	if (bid.sbid.spec == SPADES_NO_BLIND)
 		return snprintf(buf, buf_len, "No blind bid");	/* FIXME */
@@ -397,7 +444,7 @@ static int spades_get_bid_desc(char *buf, size_t buf_len, bid_t bid)
 	if (bid.sbid.spec == SPADES_NIL)
 		return snprintf(buf, buf_len,
 		                "Nil - contract to take no tricks");
-	if (bid.sbid.spec == SPADES_DOUBLE_NIL)
+	if (bid.sbid.spec == SPADES_DNIL)
 		return snprintf(buf, buf_len,
 		                "Blind nil - blind contract to take no tricks");
 	if (bid.sbid.spec == SPADES_NO_BLIND)
@@ -471,24 +518,50 @@ static void spades_deal_hand(void)
 static void spades_end_hand(void)
 {
 	player_t p;
+	int x;
+#define TRICKS_COUNT(p) (GSPADES.nil_tricks_count == NIL_TRICKS_COUNT \
+			 || (game.players[p].bid.sbid.spec != SPADES_NIL \
+			     && game.players[p].bid.sbid.spec != SPADES_DNIL))
 
 	for (p = 0; p < 2; p++) {
-		int tricks, bid, score;
-		bid = game.players[p].bid.sbid.val + game.players[p +
-								  2].bid.sbid.
-			val;
-		tricks = game.players[p].tricks + game.players[p + 2].tricks;
+		int tricks, bid, score = 0;
+
+		/* Count points for contract. */
+		bid = (game.players[p].bid.sbid.val
+		       + game.players[p + 2].bid.sbid.val);
+		tricks = 0;
+		if (TRICKS_COUNT(p)) tricks += game.players[p].tricks;
+		if (TRICKS_COUNT(p + 2)) tricks += game.players[p + 2].tricks;
 		if (tricks >= bid) {
-			int bags = tricks - bid;
-			score = 10 * bid + bags;
-			GSPADES.bags[p] += bags;
-			if (GSPADES.bags[p] >= 10) {
-				/* you lose 100 points for 10 overtricks */
-				GSPADES.bags[p] -= 10;
-				score -= 100;
-			}
-		} else
+			score += 10 * bid;
+			GSPADES.bags[p] += (tricks - bid);
+			score += (tricks - bid);
+		} else {
 			score = -10 * bid;
+		}
+
+		/* Count bags on nil/dnil bids. */
+		for (x = 0; x < 2; x++) {
+			player_t p2 = p + 2 * x;
+
+			if (game.players[p].bid.sbid.spec != SPADES_NIL
+			    && game.players[p].bid.sbid.spec != SPADES_DNIL) {
+				continue;
+			}
+
+			if (!TRICKS_COUNT(p2)) {
+				GSPADES.bags[p] += game.players[p2].tricks;
+				if (GSPADES.nil_tricks_count
+				    == NIL_TRICKS_DONT_COUNT) {
+					score += game.players[p2].tricks;
+				}
+			}
+		}
+		while (GSPADES.bags[p] >= 10) {
+			/* you lose 100 points for 10 overtricks */
+			GSPADES.bags[p] -= 10;
+			score -= 100;
+		}
 		ggz_debug(DBG_GAME, "Team %d bid %d, took %d, earned %d.",
 			    (int) p, bid, tricks, score);
 		game.players[p].score += score;
@@ -505,7 +578,7 @@ static void spades_end_hand(void)
 			game.players[p].score += score;
 			game.players[(p + 2) % 4].score += score;
 		}
-		if (game.players[p].bid.sbid.spec == SPADES_DOUBLE_NIL) {
+		if (game.players[p].bid.sbid.spec == SPADES_DNIL) {
 			int score =
 				(game.players[p].tricks == 0 ?
 				 GSPADES.double_nil_value :
@@ -516,6 +589,7 @@ static void spades_end_hand(void)
 			game.players[p].score += score;
 			game.players[(p + 2) % 4].score += score;
 		}
+		assert(game.players[p].bid.sbid.spec != SPADES_NO_BLIND);
 		set_player_message(p);
 	}
 

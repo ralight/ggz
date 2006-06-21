@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 8208 2006-06-19 02:38:25Z jdorje $
+ * $Id: spades.c 8241 2006-06-21 18:44:11Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -54,7 +54,7 @@
 #define minimum_team_bid 3	/* FIXME */
 
 #define IS_GOING_NIL(p) (bids[p].sbid.spec == SPADES_NIL || \
-			 bids[p].sbid.spec == SPADES_DOUBLE_NIL)
+			 bids[p].sbid.spec == SPADES_DNIL)
 
 /* #define USE_AI_TRICKS */
 
