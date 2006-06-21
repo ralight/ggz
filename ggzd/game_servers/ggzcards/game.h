@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 4126 2002-05-01 03:26:52Z jdorje $
+ * $Id: game.h 8240 2006-06-21 15:35:15Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -106,6 +106,17 @@ char *game_get_option_text(char *buf, int buf_len, char *option, int value);
  *  @see message.h
  */
 void game_set_player_message(player_t player);
+
+/** @brief Send game-specific synchronization to the player.
+ *
+ *  This function is called when a player sync is invoked; for instance,
+ *  when a player joins the table.  The player may be a regular seat or
+ *  a spectator.  It should send any game-specific synchronization data
+ *  to the client (usually in the form of a specialized game packet).
+ *
+ *  @param player The player to be synchronized.
+ */
+void game_sync_player(player_t p);
 
 /** @brief Set the text message for the given bid.
  *

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8150 2006-06-09 22:58:20Z jdorje $
+ * $Id: game.c 8240 2006-06-21 15:35:15Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -162,6 +162,13 @@ void game_set_player_message(player_t p)
 	add_player_tricks_message(p);
 	add_player_bid_message(p);
 	add_player_action_message(p);
+}
+
+
+/* Called to send a sync to a given player (including spectators). */
+void game_sync_player(player_t p)
+{
+	/* Nothing */
 }
 
 

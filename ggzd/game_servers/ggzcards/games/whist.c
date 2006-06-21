@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Game-dependent game functions for Whist
- * $Id: whist.c 4072 2002-04-24 09:21:42Z jdorje $
+ * $Id: whist.c 8240 2006-06-21 15:35:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -53,6 +53,7 @@ game_data_t whist_data = {
 	game_handle_option,
 	game_get_option_text,
 	whist_set_player_message,
+	game_sync_player,
 	game_get_bid_text,
 	game_get_bid_desc,
 	whist_start_bidding,

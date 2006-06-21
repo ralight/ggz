@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 4072 2002-04-24 09:21:42Z jdorje $
+ * $Id: games.h 8240 2006-06-21 15:35:15Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -57,6 +57,7 @@ typedef struct {
 	/* messaging */
 	void (*set_player_message) (player_t);	/* determine and send the
 						   player message */
+	void (*sync_player) (player_t); /* Send sync to a player. */
 
 	/* bidding */
 	int (*get_bid_text) (char *, size_t, bid_t);	/* determines the

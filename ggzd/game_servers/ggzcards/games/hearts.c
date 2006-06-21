@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 4400 2002-09-03 17:26:05Z jdorje $
+ * $Id: hearts.c 8240 2006-06-21 15:35:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -81,6 +81,7 @@ game_data_t hearts_data = {
 	hearts_handle_option,
 	hearts_get_option_text,
 	game_set_player_message,
+	game_sync_player,
 	game_get_bid_text,
 	game_get_bid_desc,
 	hearts_start_bidding,

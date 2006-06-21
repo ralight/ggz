@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: euchre.c 8240 2006-06-21 15:35:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -87,6 +87,7 @@ game_data_t euchre_data = {
 	euchre_handle_option,
 	euchre_get_option_text,
 	euchre_set_player_message,
+	game_sync_player,
 	euchre_get_bid_text,
 	game_get_bid_desc,
 	euchre_start_bidding,

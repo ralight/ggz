@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 7433 2005-08-15 09:55:03Z josef $
+ * $Id: lapocha.c 8240 2006-06-21 15:35:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -78,6 +78,7 @@ game_data_t lapocha_data = {
 	game_handle_option,
 	game_get_option_text,
 	lapocha_set_player_message,
+	game_sync_player,
 	lapocha_get_bid_text,
 	game_get_bid_desc,
 	lapocha_start_bidding,

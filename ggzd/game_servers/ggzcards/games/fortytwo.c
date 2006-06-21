@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: fortytwo.c 8240 2006-06-21 15:35:15Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -74,6 +74,7 @@ game_data_t fortytwo_data = {
 	game_handle_option,
 	game_get_option_text,
 	fortytwo_set_player_message,
+	game_sync_player,
 	fortytwo_get_bid_text,
 	fortytwo_get_bid_desc,
 	fortytwo_start_bidding,

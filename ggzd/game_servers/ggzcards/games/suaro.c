@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 4398 2002-09-03 04:55:19Z jdorje $
+ * $Id: suaro.c 8240 2006-06-21 15:35:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -90,6 +90,7 @@ game_data_t suaro_data = {
 	suaro_handle_option,
 	suaro_get_option_text,
 	suaro_set_player_message,
+	game_sync_player,
 	suaro_get_bid_text,
 	suaro_get_bid_desc,
 	suaro_start_bidding,

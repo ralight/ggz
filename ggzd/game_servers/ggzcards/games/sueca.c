@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 4114 2002-04-29 18:28:35Z jdorje $
+ * $Id: sueca.c 8240 2006-06-21 15:35:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -62,6 +62,7 @@ game_data_t sueca_data = {
 	game_handle_option,
 	game_get_option_text,
 	sueca_set_player_message,
+	game_sync_player,
 	game_get_bid_text,
 	game_get_bid_desc,
 	sueca_start_bidding,

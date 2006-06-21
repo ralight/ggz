@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8235 2006-06-21 00:26:17Z jdorje $
+ * $Id: spades.c 8240 2006-06-21 15:35:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -70,9 +70,11 @@ static void spades_start_bidding(void);
 static void spades_get_bid(void);
 static void spades_handle_bid(player_t p, bid_t bid);
 static void spades_next_bid(void);
+static void spades_next_play(void);
 static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static int spades_get_bid_desc(char *buf, size_t buf_len, bid_t bid);
 static void spades_set_player_message(player_t p);
+static void spades_sync_player(player_t p);
 static void spades_deal_hand(void);
 static void spades_end_hand(void);
 static void spades_start_game(void);
@@ -88,6 +90,7 @@ game_data_t spades_data = {
 	spades_handle_option,
 	spades_get_option_text,
 	spades_set_player_message,
+	spades_sync_player,
 	spades_get_bid_text,
 	spades_get_bid_desc,
 	spades_start_bidding,
@@ -96,7 +99,7 @@ game_data_t spades_data = {
 	spades_next_bid,
 	game_start_playing,
 	game_verify_play,
-	game_next_play,
+	spades_next_play,
 	game_get_play,
 	game_handle_play,
 	spades_deal_hand,
@@ -134,6 +137,13 @@ static bool spd_send_scoredata(player_t p)
 	ggz_write_int(fd, game.next_bid);
 	ggz_write_int(fd, game.next_play);
 	return 0;
+}
+
+static void spd_broadcast_scoredata(void)
+{
+	allplayers_iterate(p) {
+		spd_send_scoredata(p);
+	} allplayers_iterate_end;
 }
 
 static bool spades_is_valid_game(void)
@@ -328,6 +338,7 @@ static void spades_get_bid(void)
 
 	/* TODO: other specialty bids */
 	request_client_bid(game.next_bid);
+	spd_broadcast_scoredata();
 }
 
 
@@ -361,6 +372,12 @@ static void spades_next_bid(void)
 			game.next_bid =
 				(game.next_bid + 1) % game.num_players;
 	}
+}
+
+static void spades_next_play(void)
+{
+	game_next_play();
+	spd_broadcast_scoredata();
 }
 
 static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid)
@@ -429,8 +446,10 @@ static void spades_set_player_message(player_t p)
 	
 	add_player_tricks_message(p);
 	add_player_action_message(p);
+}
 
-	/* Hack: send info to the player here. */
+static void spades_sync_player(player_t p)
+{
 	spd_send_scoredata(p);
 }
 
@@ -499,12 +518,15 @@ static void spades_end_hand(void)
 		}
 		set_player_message(p);
 	}
+
+	spd_broadcast_scoredata();
 }
 
 static void spades_start_game(void)
 {
 	GSPADES.bags[0] = GSPADES.bags[1] = 0;
 	game_start_game();
+	spd_broadcast_scoredata();
 }
 
 static void spades_send_hand(player_t p, seat_t s)
