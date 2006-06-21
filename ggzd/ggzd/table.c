@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 8190 2006-06-13 23:28:56Z jdorje $
+ * $Id: table.c 8238 2006-06-21 10:39:12Z oojah $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -300,6 +300,8 @@ static GGZReturn table_handler_launch(GGZTable* table)
 		ggz_free(index_ptr);
 		return GGZ_ERROR;
 	}
+
+	log_create_table();
 
 	return GGZ_OK;
 }
@@ -1252,6 +1254,8 @@ static void table_remove(GGZTable* table)
 
 	/* Process any remaining events */
 	event_table_handle(table);
+
+	log_close_table();
 }
 
 

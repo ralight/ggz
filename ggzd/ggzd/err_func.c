@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 7714 2006-01-02 16:53:31Z josef $
+ * $Id: err_func.c 8238 2006-06-21 10:39:12Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -332,6 +332,7 @@ void log_generate_update(void)
 {
 	int uptime;
 	int anon, regd, login, logout;
+	int tables, tables_created, tables_closed;
 
 	/* Not in critical section (only our thread uses these) */
 	uptime = time(NULL) - update_info.start_time;
@@ -344,6 +345,9 @@ void log_generate_update(void)
 	regd = update_info.regd_users;
 	login = update_info.num_logins;
 	logout = update_info.num_logouts;
+	tables = update_info.tables;
+	tables_created = update_info.tables_created;
+	tables_closed = update_info.tables_closed;
 
 	/* Clear periodic counters */
 	update_info.num_logins = 0;
@@ -362,6 +366,8 @@ void log_generate_update(void)
 		log_msg(GGZ_LOG_UPDATE, "UPDATE Uptime=%d sec", uptime);
 		log_msg(GGZ_LOG_UPDATE, "UPDATE There are %d anonymous users and %d registered users online", anon, regd);
 		log_msg(GGZ_LOG_UPDATE, "UPDATE Since the last update, %d users have logged in, %d logged out", login, logout);
+		log_msg(GGZ_LOG_UPDATE, "UPDATE There are %d tables open", tables);
+		log_msg(GGZ_LOG_UPDATE, "UPDATE Since the last update, %d tables have been created, %d closed", tables_created, tables_closed);
 		
 	} else
 #endif
@@ -402,6 +408,24 @@ void log_logout_regd(void)
 	pthread_mutex_lock(&update_info.mut);
 	update_info.regd_users--;
 	update_info.num_logouts++;
+	pthread_mutex_unlock(&update_info.mut);
+}
+
+
+void log_create_table(void)
+{
+	pthread_mutex_lock(&update_info.mut);
+	update_info.tables_created++;
+	update_info.tables++;
+	pthread_mutex_unlock(&update_info.mut);
+}
+
+
+void log_close_table(void)
+{
+	pthread_mutex_lock(&update_info.mut);
+	update_info.tables_closed++;
+	update_info.tables--;
 	pthread_mutex_unlock(&update_info.mut);
 }
 
