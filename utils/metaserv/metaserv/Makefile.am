@@ -2,12 +2,9 @@ bin_PROGRAMS = ggzmetaserv
 
 ggzmetaserv_SOURCES = metaserv.c helper.c
 ggzmetaserv_LDADD = \
-	$(top_builddir)/metaserv/minidom/libminidom.a \
 	$(top_builddir)/metaserv/libmeta/libggzmeta.a \
 	-lpthread
-ggzmetaserv_CPPFLAGS = \
-	-I $(top_srcdir)/metaserv/minidom \
-	-I $(top_srcdir)/metaserv/libmeta
+ggzmetaserv_CPPFLAGS = -I $(top_srcdir)/metaserv/libmeta
 
 noinst_HEADERS = helper.h
 
