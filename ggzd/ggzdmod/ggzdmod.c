@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 8129 2006-06-07 21:46:50Z jdorje $
+ * $Id: ggzdmod.c 8243 2006-06-22 02:15:47Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -725,9 +725,13 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 	} else {
 		GGZSeatType new_type = ggzdmod_get_seat(ggzdmod,
 							new_seat).type;
+
+		/* I'm not sure if this is correct.  Does this allow seat
+		 * reservations to be stolen?  That would be bad. */
 		if (new_seat >= ggzdmod->num_seats
 		    || !(new_type == GGZ_SEAT_OPEN
-			 || new_type == GGZ_SEAT_RESERVED))
+			 || new_type == GGZ_SEAT_RESERVED
+			 || new_type == GGZ_SEAT_ABANDONED))
 			return -6;
 	}
 
