@@ -97,11 +97,7 @@ public class LoginPanel extends JPanel {
         normalLoginRadio.setOpaque(false);
         guestLoginRadio.setOpaque(false);
         newLoginRadio.setOpaque(false);
-        guestLoginRadio.setSelected(true);
         passwordField.setFont(handleTextField.getFont());
-
-        // Simulate radion selection to initialise radio buttons' hidden state.
-        guestLoginRadio.getAction().actionPerformed(null);
 
         // Group the radio buttons.
         ButtonGroup group = new ButtonGroup();
@@ -109,39 +105,47 @@ public class LoginPanel extends JPanel {
         group.add(normalLoginRadio);
         group.add(newLoginRadio);
 
+        // Simulate radion selection to initialise radio buttons' hidden state.
+        normalLoginRadio.setSelected(true);
+        normalLoginRadio.getAction().actionPerformed(null);
+
         // Add all the components
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
         constraints.insets.top = 4;
         constraints.insets.left = 4;
+        constraints.insets.left = 0;
+
+        constraints.gridx = 1;
+        constraints.gridy++;
+        add(guestLoginRadio, constraints);
+        constraints.insets.top = 0;
+        constraints.gridy++;
+        add(newLoginRadio, constraints);
+        constraints.gridy++;
+        add(normalLoginRadio, constraints);
+
+        constraints.insets.top = 4;
+
         constraints.gridx = 0;
-        constraints.gridy = 0;
+        constraints.gridy++;
         add(handleLabel, constraints);
         constraints.gridx = 1;
         add(handleTextField, constraints);
         constraints.gridx = 0;
-        constraints.gridy = 1;
+        constraints.gridy++;
         add(passwordLabel, constraints);
         constraints.gridx = 1;
         add(passwordField, constraints);
         constraints.gridx = 0;
-        constraints.gridy = 2;
+        constraints.gridy++;
         add(emailLabel, constraints);
         constraints.gridx = 1;
         add(emailTextField, constraints);
-        constraints.gridx = 2;
-        constraints.gridy = 0;
-        add(loginButton, constraints);
 
-        constraints.insets.left = 0;
         constraints.gridx = 1;
-        constraints.gridy = 3;
-        add(guestLoginRadio, constraints);
-        constraints.insets.top = 0;
-        constraints.gridy = 4;
-        add(normalLoginRadio, constraints);
-        constraints.gridy = 5;
-        add(newLoginRadio, constraints);
+        constraints.gridy++;
+        add(loginButton, constraints);
 
         // Set up focus so that we use the order that components were added to
         // the container rather than the order that they appear on screen.
@@ -161,11 +165,11 @@ public class LoginPanel extends JPanel {
 
     /**
      * We need an init() method since we can't get the root pane in the
-     * constructor, this panel needs to added to a container first.
+     * constructor, this panel needs to be added to a container first.
      */
     public void init(String userInfo) {
         getRootPane().setDefaultButton(loginButton);
-        handleTextField.requestFocus();
+        // handleTextField.requestFocus();
 
         // If we have userInfo then log in automatically.
         if (userInfo != null) {

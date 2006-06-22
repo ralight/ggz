@@ -142,7 +142,7 @@ public class ChatPanel extends JPanel {
         commandText.addAttribute(StyleConstants.FontFamily, "Monospaced");
 
         announceText = new SimpleAttributeSet();
-        commandText.addAttribute(StyleConstants.Foreground, Color.RED);
+        announceText.addAttribute(StyleConstants.Foreground, Color.RED);
         announceText.addAttribute(StyleConstants.Bold, Boolean.TRUE);
     }
 

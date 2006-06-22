@@ -36,6 +36,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -91,7 +92,7 @@ public class ClientApplet extends JApplet implements ServerListener,
     private String uriPath;
 
     static {
-         try {
+        try {
             // Try and get Swing to use Antialiased text.
             System.setProperty("swing.aatext", "true");
         } catch (Throwable ex) {
@@ -106,7 +107,7 @@ public class ClientApplet extends JApplet implements ServerListener,
         // Register ourselves as the global hyperlink handler for our
         // hyperlink label.
         HyperlinkLabel.setGlobalHyperlinkListener(this);
-
+        
         if (getBooleanParameter("theme.enabled", false)) {
             installCustomTheme();
         }
@@ -632,5 +633,4 @@ public class ClientApplet extends JApplet implements ServerListener,
             handleException(e);
         }
     }
-
 }

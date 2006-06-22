@@ -58,6 +58,12 @@ public class LoungePanel extends JPanel {
 
     private JPanel roomPanel;
 
+    private JScrollPane motdScroll;
+
+    private JTextComponent motdText;
+
+    private CategoryPanel cardGamesPanel;
+
     private RoomChatPanel chatPanel;
 
     private ArrayList rooms;
@@ -116,8 +122,11 @@ public class LoungePanel extends JPanel {
 
         // Add a button for each room, the button handles click events and joins
         // the associated room automatically.
-        //roomPanel.removeAll();
-        CategoryPanel cardGamesPanel = new CategoryPanel(messages
+        // roomPanel.removeAll();
+        if (cardGamesPanel != null) {
+            roomPanel.remove(cardGamesPanel);
+        }
+        cardGamesPanel = new CategoryPanel(messages
                 .getString("LoungePanel.GroupHeader.CardGames"));
         for (int i = 0; i < rooms.size(); i++) {
             Room room = (Room) rooms.get(i);
@@ -132,8 +141,6 @@ public class LoungePanel extends JPanel {
     }
 
     public void setMotD(MotdEventData motd, HyperlinkListener hll) {
-        JScrollPane motdScroll = new JScrollPane();
-        JTextComponent motdText;
         try {
             motdText = new JTextPane();
             ((JTextPane) motdText).setPage(motd.url);
@@ -145,15 +152,18 @@ public class LoungePanel extends JPanel {
         motdText.setEditable(false);
         motdText.setOpaque(false);
         TextPopupMenu.enableFor(motdText);
-        // motdScroll.setPreferredSize(cardGamesPanel.getPreferredSize());
-        motdScroll.setPreferredSize(new Dimension(100, 300));
-        motdScroll.setOpaque(false);
-        motdScroll.getViewport().setOpaque(false);
-        motdScroll.setBorder(null);
-        motdScroll.setBorder(BorderFactory.createTitledBorder(messages
-                .getString("LoungePanel.GroupHeader.MessageOfTheDay")));
+        if (motdScroll == null) {
+            motdScroll = new JScrollPane();
+            // motdScroll.setPreferredSize(cardGamesPanel.getPreferredSize());
+            motdScroll.setPreferredSize(new Dimension(100, 300));
+            motdScroll.setOpaque(false);
+            motdScroll.getViewport().setOpaque(false);
+            motdScroll.setBorder(null);
+            motdScroll.setBorder(BorderFactory.createTitledBorder(messages
+                    .getString("LoungePanel.GroupHeader.MessageOfTheDay")));
+            roomPanel.add(motdScroll);
+        }
         motdScroll.getViewport().add(motdText);
-        roomPanel.add(motdScroll);
     }
 
     public void setRoom(Room room) throws IOException {
