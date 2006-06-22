@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8221 2006-06-19 19:15:56Z oojah $
+ * $Id: control.c 8247 2006-06-22 05:57:27Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -138,13 +138,14 @@ static void init_data(void)
 
 static void cleanup_data(void)
 {
-#define data_free(ptr) \
-  do {                 \
-    ggz_free(ptr);     \
-    ptr = NULL;        \
-  } while(0)
+#define data_free(ptr)		   \
+  	do {			   \
+		ggz_free(ptr);     \
+		ptr = NULL;        \
+	} while(0)
 
 	int i;
+	char **args;
 
 	/* FIXME: must destroy all threads first */
 	if (term_signal || !hup_signal) return;
@@ -175,11 +176,15 @@ static void cleanup_data(void)
 		data_free(rooms[i].players);
 		if (rooms[i].max_tables > 0)
 			data_free(rooms[i].tables);
+		if (rooms[i].exec_args) {
+			for (args = rooms[i].exec_args; *args; args++)
+				data_free(*args);
+			data_free(rooms[i].exec_args);
+		}
 	}
 	data_free(rooms);
 
 	for (i = 0; game_types[i].exec_args && i < MAX_GAME_TYPES; i++) {
-		char **args;
 		data_free(game_types[i].version);
 		data_free(game_types[i].p_engine);
 		data_free(game_types[i].p_version);

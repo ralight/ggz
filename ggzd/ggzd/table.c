@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 8238 2006-06-21 10:39:12Z oojah $
+ * $Id: table.c 8247 2006-06-22 05:57:27Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -433,7 +433,7 @@ static GGZReturn table_start_game(GGZTable *table)
 	type = table->type;
 	pthread_rwlock_rdlock(&game_types[type].lock);
 	pwd = game_types[type].data_dir;
-	args = game_types[type].exec_args;
+	args = rooms[table->room].exec_args;
 	game = game_types[type].game;
 	pthread_rwlock_unlock(&game_types[type].lock);
 

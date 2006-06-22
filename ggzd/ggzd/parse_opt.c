@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8221 2006-06-19 19:15:56Z oojah $
+ * $Id: parse_opt.c 8247 2006-06-22 05:57:27Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -855,6 +855,36 @@ static void parse_room(char *name, char *dir, int announce)
 	if(rooms[num].game_type == -2) {
 		err_msg("No GameType given for room %s", name);
 		rooms[num].game_type = -1;
+	}
+
+	if (rooms[num].game_type != -1) {
+		char **exec_args;
+		int num_args, i, j;
+		GameInfo *gtype = &game_types[rooms[num].game_type];
+
+		ggz_conf_read_list(ch, "RoomInfo", "ExecutableArgs",
+				   &num_args, &exec_args);
+		for (i = 0; gtype->exec_args[i]; i++) {
+
+		}
+		rooms[num].exec_args
+		  = ggz_malloc((num_args + i + 1)
+			       * sizeof(*rooms[num].exec_args));
+		for (i = 0; gtype->exec_args[i]; i++) {
+			rooms[num].exec_args[i]
+			  = ggz_strdup(gtype->exec_args[i]);
+		}
+		for (j = 0; j < num_args; j++) {
+		  rooms[num].exec_args[i + j] = exec_args ? exec_args[j] : NULL;
+		}
+		rooms[num].exec_args[i + j] = NULL;
+#if 0
+		printf("%s : %d args\n", rooms[num].name, i + j);
+		for (i = 0; rooms[num].exec_args[i]; i++) {
+		  printf("  %s\n", rooms[num].exec_args[i]);
+		}
+#endif
+		if (exec_args) ggz_free(exec_args);
 	}
 
 	rooms[num].players = ggz_malloc(rooms[num].max_players

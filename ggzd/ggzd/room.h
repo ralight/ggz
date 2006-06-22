@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 8104 2006-06-06 07:35:24Z josef $
+ * $Id: room.h 8247 2006-06-22 05:57:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -64,6 +64,11 @@ typedef struct {
 
 	/* Type of game played in this room */
 	int game_type;
+
+	/* Executable information: a NULL-terminated list of
+	   command-line arguments for the program. These are appended to
+	   the game type's arguments at execution time. */
+	char **exec_args; /* cleanup() */
 
 	/* Room entry restrictions */
 	unsigned int perms;	/* Set bits to equal perms in perms.h */
