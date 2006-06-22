@@ -17,6 +17,8 @@
  */
 package ggz.cards;
 
+import ggz.common.StringUtil;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -97,10 +99,17 @@ public class OptionDialog extends JDialog implements ItemListener {
         constraints.anchor = GridBagConstraints.WEST;
 
         for (int i = 0; i < descs.length; i++) {
-            JLabel label = new JLabel(descs[i]);
+            JLabel label = new JLabel();
             int numChoices = option_choices[i].length;
             ButtonGroup group = null;
 
+            if (descs[i].indexOf("\n") >= 0) {
+                label.setText("<HTML>"
+                        + StringUtil.replace(descs[i], "\n", "<BR>")
+                        + "</HTML>");
+            } else {
+                label.setText(descs[i]);
+            }
             constraints.gridy++;
             constraints.insets = descInsets;
             optionPanel.add(label, constraints);
@@ -181,6 +190,7 @@ public class OptionDialog extends JDialog implements ItemListener {
         dialog.setLocation(location);
         fixLocation(dialog);
         dialog.okButton.requestFocus();
+        dialog.setResizable(false);
         dialog.setVisible(true);
         return dialog.result;
     }

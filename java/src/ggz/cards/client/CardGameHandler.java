@@ -36,7 +36,18 @@ public interface CardGameHandler {
 
     public void set_player_message(int player, String message);
 
-    public int handle_game_message(GGZCardInputStream in, String game, int size);
+    /**
+     * Called when game-specific data is received by the client.
+     * 
+     * @param in
+     * @param game
+     * @param size
+     * @return the number of bytes handled. The client will skip over any
+     *         remaining bytes that were not read by the handler.
+     * @throws IOException
+     */
+    public int handle_game_message(GGZCardInputStream in, String game, int size)
+            throws IOException;
 
     public void alert_newgame(CardSetType cardset_type);
 

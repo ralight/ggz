@@ -115,7 +115,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
                 quit();
             }
         });
-        frame.setSize(800, 540);
+        frame.setSize(800, 600);
         // frame.setLocationByPlatform(true);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

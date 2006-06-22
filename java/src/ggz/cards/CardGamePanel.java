@@ -27,10 +27,10 @@ import ggz.cards.common.CardSetType;
 import ggz.cards.common.GGZCardInputStream;
 import ggz.client.mod.ModGame;
 import ggz.common.SeatType;
+import ggz.common.StringUtil;
 import ggz.games.GamePanel;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -43,14 +43,12 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.List;
 import java.util.Random;
-import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -64,7 +62,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         ActionListener {
     protected Client cardClient;
 
-    protected JLabel[] playerLabels;
+    protected PlayerLabel[] playerLabels;
 
     protected Sprite[][] sprites;
 
@@ -112,7 +110,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
         // Add the control to allow the cards in the last trick to be viewed.
         lastTrickButton = new JButton(new ImageIcon(getClass().getResource(
-                "images/trick.gif")));
+                "/ggz/cards/images/trick.gif")));
         lastTrickButton.setOpaque(false);
         lastTrickButton.setToolTipText("Last Trick");
         lastTrickButton.setVisible(false);
@@ -120,7 +118,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         // lastTrickButton.setBorder(null);
         lastTrickButton.setBorder(BorderFactory.createEtchedBorder());
         scoresButton = new JButton(new ImageIcon(getClass().getResource(
-                "images/scores.gif")));
+                "/ggz/cards/images/scores.gif")));
         scoresButton.setOpaque(true);
         scoresButton.setToolTipText("Scores");
         scoresButton.setVisible(false);
@@ -168,7 +166,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         } else {
             bidPanel = new BidPanel(firstBidder, cardClient);
         }
-        bidPanel.addActionListener(CardGamePanel.this);
+        bidPanel.addActionListener(this);
         table
                 .add(bidPanel, new TableConstraints(
                         TableConstraints.BUTTON_PANEL));
@@ -256,7 +254,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     public void alert_num_players(int numplayers, int old_numplayers) {
 
         if (playerLabels == null) {
-            playerLabels = new JLabel[numplayers];
+            playerLabels = new PlayerLabel[numplayers];
         } else if (playerLabels.length != numplayers) {
             throw new UnsupportedOperationException(
                     "Dynamic number of players not supported yet.");
@@ -286,26 +284,21 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             final String old_name) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                JLabel label = playerLabels[seat_num];
+                PlayerLabel label = playerLabels[seat_num];
                 Player player = cardClient.get_nth_player(seat_num);
                 if (label == null) {
-                    label = new JLabel(player.get_name());
-                    Font f = label.getFont();
-                    label.setFont(f.deriveFont(f.getStyle() ^ Font.BOLD));
-                    label.setForeground(Color.WHITE);
+                    label = new PlayerLabel(player.get_name());
                     table.add(label, new TableConstraints(
                             TableConstraints.PLAYER_LABEL, seat_num));
                     playerLabels[seat_num] = label;
 
-                    // if (seat_num != 0) {
                     // Listen for click events so as to pop up a menu that
                     // allows users to do things to this seat.
                     label.addMouseListener(new PopupListener());
                     label.setToolTipText("Right click for options.");
                     // }
                 } else {
-                    label.setText(player.get_name());
-                    // label.getClientProperty("ggz.cards.popupMenu");
+                    label.setPlayerName(player.get_name());
                 }
 
                 // Position the labels.
@@ -313,29 +306,29 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 switch (seat_num) {
                 case 0: // Me - south
                     label.setIcon(getPlayerIcon(seat_type));
-                    label.setVerticalAlignment(SwingConstants.TOP);
+                    // label.setVerticalAlignment(SwingConstants.TOP);
                     initPopupMenu(seat_num, player.get_ggz_seat_num(),
                             seat_type);
                     break;
                 case 1: // West
                     label.setIcon(getPlayerIcon(seat_type));
-                    label.setVerticalTextPosition(SwingConstants.BOTTOM);
-                    label.setHorizontalTextPosition(SwingConstants.CENTER);
-                    label.setHorizontalAlignment(SwingConstants.LEFT);
+                    // label.setVerticalTextPosition(SwingConstants.BOTTOM);
+                    // label.setHorizontalTextPosition(SwingConstants.CENTER);
+                    // label.setHorizontalAlignment(SwingConstants.LEFT);
                     initPopupMenu(seat_num, player.get_ggz_seat_num(),
                             seat_type);
                     break;
                 case 2: // North
                     label.setIcon(getPlayerIcon(seat_type));
-                    label.setVerticalAlignment(SwingConstants.TOP);
+                    // label.setVerticalAlignment(SwingConstants.TOP);
                     initPopupMenu(seat_num, player.get_ggz_seat_num(),
                             seat_type);
                     break;
                 case 3: // East
                     label.setIcon(getPlayerIcon(seat_type));
-                    label.setVerticalTextPosition(SwingConstants.BOTTOM);
-                    label.setHorizontalTextPosition(SwingConstants.CENTER);
-                    label.setHorizontalAlignment(SwingConstants.RIGHT);
+                    // label.setVerticalTextPosition(SwingConstants.BOTTOM);
+                    // label.setHorizontalTextPosition(SwingConstants.CENTER);
+                    // label.setHorizontalAlignment(SwingConstants.RIGHT);
                     initPopupMenu(seat_num, player.get_ggz_seat_num(),
                             seat_type);
                     break;
@@ -356,10 +349,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             return null;
         } else if (type == SeatType.GGZ_SEAT_BOT) {
             /** The seat has a bot (AI) in it. */
-            return new ImageIcon(getClass().getResource("images/p19.gif"));
+            return new ImageIcon(getClass().getResource(
+                    "/ggz/cards/images/p19.gif"));
         } else if (type == SeatType.GGZ_SEAT_PLAYER) {
             /** The seat has a regular player in it. */
-            return new ImageIcon(getClass().getResource("images/p31.gif"));
+            return new ImageIcon(getClass().getResource(
+                    "/ggz/cards/images/p31.gif"));
         } else if (type == SeatType.GGZ_SEAT_RESERVED) {
             /** The seat is reserved for a player. */
             return null;
@@ -898,7 +893,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     public int handle_game_message(GGZCardInputStream in, final String game,
-            final int size) {
+            final int size) throws IOException {
         // SwingUtilities.invokeLater(new Runnable() {
         // public void run() {
         // chat_panel.appendChat("handle_game_message", game
@@ -948,40 +943,16 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     public void set_player_message(final int player_num, final String message) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                JLabel label = playerLabels[player_num];
-                label.setText("<HTML><B>"
-                        + cardClient.get_nth_player(player_num).get_name()
-                        + "</B><BR><EM>"
-                        + replace(replace(message, ":", ":<B>"), "\n",
-                                "</B><BR>") + "</EM></HTML>");
+                PlayerLabel label = playerLabels[player_num];
+                label.setText("<HTML>"
+                        + StringUtil.replace(StringUtil.replace(message, ":", ":<B>"), "\n",
+                                "</B><BR>") + "</HTML>");
+                // label.setText("<HTML>" + replace(message, "\n", "<BR>")
+                // + "</HTML>");
                 table.invalidate();
                 table.validate();
             }
         });
-    }
-
-    /**
-     * Replaces all occurrences of <CODE>ch</CODE> with the replacement
-     * String.
-     * 
-     * @param text
-     * @param character
-     * @param replacement
-     * @return
-     */
-    private static String replace(String text, String character,
-            String replacement) {
-        StringTokenizer parser = new StringTokenizer(text, character, true);
-        StringBuffer result = new StringBuffer();
-        while (parser.hasMoreTokens()) {
-            String fragment = parser.nextToken();
-            if (character.equals(fragment)) {
-                result.append(replacement);
-            } else {
-                result.append(fragment);
-            }
-        }
-        return result.toString();
     }
 
     public void set_text_message(final String mark, final String message) {
@@ -993,7 +964,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     JOptionPane.getFrameForComponent(CardGamePanel.this)
                             .setTitle(message);
                 } else if ("Options".equals(mark)) {
-                    table.setOptionsSummary(replace(message, "\n", "<BR>"));
+                    table.setOptionsSummary(StringUtil.replace(message, "\n", "<BR>"));
                 } else if ("Scores".equals(mark)) {
                     scoresButton.setVisible(true);
                     if (scoresDialog != null) {
@@ -1063,12 +1034,16 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
 
         public void actionPerformed(ActionEvent event) {
-            try {
-                String player_name = cardClient.get_nth_player(seat_num)
-                        .get_name();
-                ggzMod.request_boot(player_name);
-            } catch (IOException e) {
-                handleException(e);
+            if (JOptionPane.showConfirmDialog(CardGamePanel.this,
+                    "Are you sure you want to boot this player?", "Boot",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                try {
+                    String player_name = cardClient.get_nth_player(seat_num)
+                            .get_name();
+                    ggzMod.request_boot(player_name);
+                } catch (IOException e) {
+                    handleException(e);
+                }
             }
         }
     }
@@ -1122,11 +1097,19 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     private class PopupListener extends MouseAdapter {
-        public void mouseClicked(MouseEvent event) {
-            JLabel component = (JLabel) event.getComponent();
+        public void mousePressed(MouseEvent event) {
+            maybeShowPopup(event);
+        }
+
+        public void mouseReleased(MouseEvent event) {
+            maybeShowPopup(event);
+        }
+
+        public void maybeShowPopup(MouseEvent event) {
+            PlayerLabel component = (PlayerLabel) event.getComponent();
             JPopupMenu popup = (JPopupMenu) component
                     .getClientProperty("ggz.cards.popupMenu");
-            if (popup != null) {
+            if (popup != null && popup.isPopupTrigger(event)) {
                 popup.show(component, event.getX(), event.getY());
             }
         }

@@ -441,7 +441,7 @@ public class ClientApplet extends JApplet implements ServerListener,
             dialog.pack();
             dialog.setVisible(true);
         }
-        loungePanel.setMotD(data);
+        loungePanel.setMotD(data, this);
     }
 
     public void server_negotiate_fail(String error) {
@@ -599,45 +599,30 @@ public class ClientApplet extends JApplet implements ServerListener,
      * @param event
      */
     public void hyperlinkUpdate(HyperlinkEvent event) {
-        try {
-            Class jsObjectClass = Class.forName("netscape.javascript.JSObject");
-            Method getWindow = jsObjectClass.getMethod("getWindow",
-                    new Class[] { Applet.class });
-            Method eval = jsObjectClass.getMethod("eval",
-                    new Class[] { String.class });
-            Object window = getWindow.invoke(jsObjectClass,
-                    new Object[] { this });
-            eval
-                    .invoke(
-                            window,
-                            new Object[] { "var popup = window.open(\""
-                                    + event.getURL()
-                                    + "\", \"ggz\", \"menubar=no,resizable=yes,scrollbars=yes,status=no,titlebar=no,height=500,width=640\");"
-                                    + "if (popup == null) {"
-                                    + "alert(\"It seems popups are being blocked, either disable your popup blocker for this site or try holding down the CTRL key when you click the link.\");"
-                                    + "} else {popup.focus();}" });
-        } catch (Exception ex) {
-            // Ignore, just use showDocument() instead.
-            getAppletContext().showDocument(event.getURL(), "ggz_url");
+        if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+            try {
+                Class jsObjectClass = Class
+                        .forName("netscape.javascript.JSObject");
+                Method getWindow = jsObjectClass.getMethod("getWindow",
+                        new Class[] { Applet.class });
+                Method eval = jsObjectClass.getMethod("eval",
+                        new Class[] { String.class });
+                Object window = getWindow.invoke(jsObjectClass,
+                        new Object[] { this });
+                eval
+                        .invoke(
+                                window,
+                                new Object[] { "var popup = window.open(\""
+                                        + event.getURL()
+                                        + "\", \"ggz\", \"menubar=no,resizable=yes,scrollbars=yes,status=no,titlebar=no,height=500,width=640\");"
+                                        + "if (popup == null) {"
+                                        + "alert(\"It seems popups are being blocked, either disable your popup blocker for this site or try holding down the CTRL key when you click the link.\");"
+                                        + "} else {popup.focus();}" });
+            } catch (Exception ex) {
+                // Ignore, just use showDocument() instead.
+                getAppletContext().showDocument(event.getURL(), "ggz_url");
+            }
         }
-        // JSObject window = JSObject.getWindow(this);
-        // window
-        // .eval("var popup = window.open(\""
-        // + event.getURL()
-        // + "\", \"ggz\",
-        // \"menubar=no,resizable=yes,scrollbars=yes,status=no,titlebar=no,height=500,width=640\");"
-        // + "if (popup == null) {"
-        // + "alert(\"It seems popups are being blocked, either disable your
-        // popup blocker for this site or try holding down the CTRL key when you
-        // click the link.\");"
-        // + "} else {popup.focus();}");
-
-        // "window.open(\""
-        // + event.getURL()
-        // + "\", \"ggz\",
-        // \"menubar=no,resizable=yes,scrollbars=yes,status=no,titlebar=no,height=500,width=640\").focus();");
-        // window.call("ggz_showDocument", new Object[] {
-        // event.getURL().toString() });
     }
 
     public void invokeAndWait(Runnable doRun) {

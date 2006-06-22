@@ -25,6 +25,7 @@ import ggz.client.core.Server;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -46,6 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.JTextComponent;
 
 public class LoungePanel extends JPanel {
@@ -65,8 +67,6 @@ public class LoungePanel extends JPanel {
     private JPanel headerPanel;
 
     private JButton logoutButton;
-
-    private MotdEventData motd;
 
     private Comparator sortAlgorithm = new SortByRoomName();
 
@@ -116,7 +116,7 @@ public class LoungePanel extends JPanel {
 
         // Add a button for each room, the button handles click events and joins
         // the associated room automatically.
-        roomPanel.removeAll();
+        //roomPanel.removeAll();
         CategoryPanel cardGamesPanel = new CategoryPanel(messages
                 .getString("LoungePanel.GroupHeader.CardGames"));
         for (int i = 0; i < rooms.size(); i++) {
@@ -124,15 +124,20 @@ public class LoungePanel extends JPanel {
             // roomPanel.add(new RoomButton(room));
             cardGamesPanel.addRoom(room);
         }
+        cardGamesPanel.setPreferredSize(new Dimension(100, 300));
         roomPanel.add(cardGamesPanel);
         // CategoryPanel boardGamesPanel = new CategoryPanel("Board Games");
         // boardGamesPanel.addRoom(server.get_nth_room(2));
         // roomPanel.add(boardGamesPanel);
+    }
+
+    public void setMotD(MotdEventData motd, HyperlinkListener hll) {
         JScrollPane motdScroll = new JScrollPane();
         JTextComponent motdText;
         try {
             motdText = new JTextPane();
             ((JTextPane) motdText).setPage(motd.url);
+            ((JTextPane) motdText).addHyperlinkListener(hll);
         } catch (Throwable ex) {
             motdText = new JTextArea(motd.motd);
             motdText.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -140,7 +145,8 @@ public class LoungePanel extends JPanel {
         motdText.setEditable(false);
         motdText.setOpaque(false);
         TextPopupMenu.enableFor(motdText);
-        motdScroll.setPreferredSize(cardGamesPanel.getPreferredSize());
+        // motdScroll.setPreferredSize(cardGamesPanel.getPreferredSize());
+        motdScroll.setPreferredSize(new Dimension(100, 300));
         motdScroll.setOpaque(false);
         motdScroll.getViewport().setOpaque(false);
         motdScroll.setBorder(null);
@@ -148,10 +154,6 @@ public class LoungePanel extends JPanel {
                 .getString("LoungePanel.GroupHeader.MessageOfTheDay")));
         motdScroll.getViewport().add(motdText);
         roomPanel.add(motdScroll);
-    }
-
-    public void setMotD(MotdEventData motd) {
-        this.motd = motd;
     }
 
     public void setRoom(Room room) throws IOException {
@@ -194,15 +196,17 @@ public class LoungePanel extends JPanel {
         }
     }
 
-    private class CategoryPanel extends JPanel {
+    private class CategoryPanel extends JScrollPane {
         JPanel listPanel;
 
         protected CategoryPanel(String categoryName) {
             setBorder(BorderFactory.createTitledBorder(categoryName));
             listPanel = new JPanel(new GridLayout(0, 1));
+            listPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
             listPanel.setOpaque(false);
-            setLayout(new BorderLayout());
-            add(listPanel, BorderLayout.NORTH);
+            // setLayout(new BorderLayout());
+            getViewport().add(listPanel, BorderLayout.NORTH);
+            getViewport().setOpaque(false);
             setOpaque(false);
         }
 

@@ -70,6 +70,8 @@ public class ChatPanel extends JPanel {
 
     protected SimpleAttributeSet announceText;
 
+    protected boolean isAutoScroll = true;
+
     // Application global ignore list.
     static private HashSet ignoreList;
 
@@ -86,7 +88,14 @@ public class ChatPanel extends JPanel {
         sendButton = new JButton(chatAction);
         textField = new JTextField();
         textField.setEnabled(false);
-        chatArea = new JTextPane();
+        chatArea = new JTextPane() {
+            public void scrollRectToVisible(Rectangle rect) {
+//                System.out.println("isAutoScroll="+isAutoScroll);
+                if (isAutoScroll) {
+                    super.scrollRectToVisible(rect);
+                }
+            }
+        };
         chatArea.setEditable(false);
         TextPopupMenu.enableFor(chatArea);
         TextPopupMenu.enableFor(textField);
@@ -125,7 +134,7 @@ public class ChatPanel extends JPanel {
                 .darker().darker());
 
         infoText = new SimpleAttributeSet();
-        infoText.addAttribute(StyleConstants.Foreground, Color.BLUE);
+        infoText.addAttribute(StyleConstants.Foreground, Color.MAGENTA);
         infoText.addAttribute(StyleConstants.Bold, Boolean.TRUE);
 
         commandText = new SimpleAttributeSet();
@@ -133,20 +142,20 @@ public class ChatPanel extends JPanel {
         commandText.addAttribute(StyleConstants.FontFamily, "Monospaced");
 
         announceText = new SimpleAttributeSet();
+        commandText.addAttribute(StyleConstants.Foreground, Color.RED);
         announceText.addAttribute(StyleConstants.Bold, Boolean.TRUE);
     }
 
     public void appendInfo(final String message) {
         assertOnEventDispatchThread();
         Document doc = chatArea.getDocument();
+        checkAutoScroll();
         try {
             doc.insertString(doc.getLength(), message, infoText);
             doc.insertString(doc.getLength(), "\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
-        chatArea.scrollRectToVisible(new Rectangle(0, chatArea.getHeight() - 2,
-                1, 1));
     }
 
     public void appendCommandText(final String message) {
@@ -154,16 +163,13 @@ public class ChatPanel extends JPanel {
         // All handlers are called from the socket thread so we need to do
         // this crazy stuff. This method is usually invoked from a handler.
         Document doc = chatArea.getDocument();
+        checkAutoScroll();
         try {
             doc.insertString(doc.getLength(), message, commandText);
             doc.insertString(doc.getLength(), "\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
-        chatArea.scrollRectToVisible(new Rectangle(0, chatArea.getHeight() - 2,
-                1, 1));
-        chatArea.scrollRectToVisible(new Rectangle(0, chatArea.getHeight() - 2,
-                1, 1));
     }
 
     public void appendChat(final String sender, final String message) {
@@ -195,7 +201,7 @@ public class ChatPanel extends JPanel {
             // TODO Open a private chat window instead.
             appendCommandText("You have received a private message. (below)");
         }
-        
+
         if ("MegaGrub".equals(sender)) {
             textStyle = senderText;
         } else if (friendsList != null
@@ -203,8 +209,10 @@ public class ChatPanel extends JPanel {
             textStyle = friendlyText;
         } else if (type == ChatType.GGZ_CHAT_ANNOUNCE) {
             textStyle = announceText;
+            // TODO change the text to <nic> announces:
         }
 
+        checkAutoScroll();
         try {
             if (emote == null) {
                 doc.insertString(doc.getLength(), MessageFormat.format(messages
@@ -219,10 +227,17 @@ public class ChatPanel extends JPanel {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
-        // Use some dumb large value for the rectangle height to make sure it
-        // scrolls as far as it can.
-        chatArea.scrollRectToVisible(new Rectangle(0, chatArea.getHeight(), 1,
-                1000));
+    }
+
+    protected void checkAutoScroll() {
+        Rectangle visibleRect = chatArea.getVisibleRect();
+        int pos = textScrollPane.getVerticalScrollBar().getValue();
+        int max = textScrollPane.getVerticalScrollBar().getMaximum();
+//        System.out.println("pos=" + pos + " max=" + max + " visibleRect.height=" + visibleRect.height);
+        isAutoScroll = (pos >= (max - visibleRect.height) - 20);
+        if (isAutoScroll) {
+            chatArea.setCaretPosition(chatArea.getDocument().getLength());
+        }
     }
 
     public String getMessage() {

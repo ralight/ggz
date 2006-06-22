@@ -42,7 +42,7 @@ public class GGZCardInputStream extends DataInputStream {
 
     public Card read_card() throws IOException {
         byte[] b = new byte[3];
-        read_fully(b);
+        readFully(b);
         Face face;
         Suit suit;
 
@@ -109,7 +109,7 @@ public class GGZCardInputStream extends DataInputStream {
 
     public Bid read_bid() throws IOException {
         byte[] b = new byte[4];
-        read_fully(b);
+        readFully(b);
         return new Bid(b[0], b[1], b[2], b[3]);
     }
 
@@ -184,7 +184,7 @@ public class GGZCardInputStream extends DataInputStream {
         byte[] chars = new byte[size];
         String message;
 
-        read_fully(chars);
+        readFully(chars);
 
         if (size > 0) {
             // Don't include the null terminator.
@@ -195,23 +195,5 @@ public class GGZCardInputStream extends DataInputStream {
             message = "";
         }
         return message;
-    }
-
-    /**
-     * Peforms a blocking read until the array is full.
-     * 
-     * @param b
-     * @throws IOException
-     */
-    protected void read_fully(byte[] b) throws IOException {
-        int numBytesRead;
-        int count = 0;
-        do {
-            numBytesRead = read(b, count, b.length - count);
-            if (numBytesRead < 0) {
-                throw new EOFException();
-            }
-            count += numBytesRead;
-        } while (count != b.length);
     }
 }

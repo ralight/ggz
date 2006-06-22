@@ -257,6 +257,7 @@ public class TransID {
 					+ " -> " + __states[next.ordinal()].name);
 			return next;
 		}
+        log.warning("No transitions found " + __states[cur.ordinal()].name);
 		return cur;
 	}
 }

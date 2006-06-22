@@ -24,6 +24,8 @@ import java.awt.LayoutManager2;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import javax.swing.JComponent;
+
 public class TableLayout implements LayoutManager2 {
     private boolean packCardsInHand = true;
 
@@ -50,6 +52,8 @@ public class TableLayout implements LayoutManager2 {
     private Component southEastCorner;
 
     private Component southWestCorner;
+
+    private Component northEastCorner;
 
     public TableLayout(int cardWidth, int cardHeight) {
         this.cardWidth = cardWidth;
@@ -104,6 +108,9 @@ public class TableLayout implements LayoutManager2 {
                 break;
             case TableConstraints.SOUTH_WEST_CORNER:
                 southWestCorner = comp;
+                break;
+            case TableConstraints.NORTH_EAST_CORNER:
+                northEastCorner = comp;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -184,6 +191,7 @@ public class TableLayout implements LayoutManager2 {
         layoutBidPanel(parent);
         layoutSouthEastCorner(parent);
         layoutSouthWestCorner(parent);
+        layoutNorthEastCorner(parent);
     }
 
     protected void layoutStatusLabel(Container parent) {
@@ -200,7 +208,7 @@ public class TableLayout implements LayoutManager2 {
             buttonPanel.setSize(buttonPanel.getPreferredSize());
             buttonPanel.setLocation((parent.getWidth() / 2)
                     - (buttonPanel.getWidth() / 2), parent.getHeight()
-                    - (buttonPanel.getHeight() + 150));
+                    - (buttonPanel.getHeight() + 170));
             // bidPanel.setLocation(parent.getWidth() / 2
             // - bidPanel.getWidth() / 2, parent.getHeight() / 2
             // - bidPanel.getHeight() / 2);
@@ -230,14 +238,25 @@ public class TableLayout implements LayoutManager2 {
         }
     }
 
+    protected void layoutNorthEastCorner(Container parent) {
+        if (northEastCorner != null) {
+            northEastCorner.setSize(northEastCorner.getPreferredSize());
+            northEastCorner.setLocation(parent.getWidth()
+                    - northEastCorner.getWidth(), 0);
+        }
+    }
+
     protected void layoutPlayerLabel(Container parent, int playerIndex,
             Component comp) {
         // Labels need to be able to grow and to stop them ping-ponging
         // we never shrink them once they have grown.
+        JComponent c = (JComponent)comp;
+        c.setPreferredSize(null);
         Dimension preferredSize = comp.getPreferredSize();
         Dimension currentSize = comp.getSize();
         comp.setSize(Math.max(preferredSize.width, currentSize.width), Math
                 .max(preferredSize.height, currentSize.height));
+        c.setPreferredSize(comp.getSize());
 
         Rectangle handRect = getMaxHandRect(parent, playerIndex);
         switch (playerIndex) {
@@ -490,6 +509,11 @@ public class TableLayout implements LayoutManager2 {
         if (!removed && southWestCorner != null) {
             if (southWestCorner == comp) {
                 southWestCorner = null;
+            }
+        }
+        if (!removed && northEastCorner != null) {
+            if (northEastCorner == comp) {
+                northEastCorner = null;
             }
         }
     }

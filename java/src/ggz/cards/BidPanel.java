@@ -185,18 +185,6 @@ public class BidPanel extends JPanel implements ActionListener {
      * @return
      */
     protected String getBidText(Bid bid) {
-        // This works for Spades, we might need to create a SpadesBidPanel that
-        // overrides this method.
-        if (bid.getVal() == 0) {
-            switch (bid.getSpec()) {
-            case 1:
-                return "Nil";
-            case 2:
-                return "No blind bid";
-            case 3:
-                return "Dnil";
-            }
-        }
         return String.valueOf(bid.getVal());
     }
 

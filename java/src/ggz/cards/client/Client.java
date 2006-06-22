@@ -56,6 +56,9 @@ public class Client {
 
     /** The state the game is in */
     private GameState state;
+    
+    /** Records bids made by each player. */
+    private Bid[] bids;
 
     // Structure that contains cards in the trick for each player.
     protected TrickInfo lastTrick;
@@ -74,6 +77,10 @@ public class Client {
 
     public Player get_nth_player(int n) {
         return this.players[n];
+    }
+    
+    public Bid get_nth_bid(int n) {
+        return this.bids == null ? null : this.bids[n];
     }
 
     // int initialize()
@@ -203,7 +210,8 @@ public class Client {
         num_bytes_handled = this.game.handle_game_message(this.fd_in,
                 game_name, size);
         if (num_bytes_handled < 0) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Handler claims to have handled "
+                    + num_bytes_handled + " game specific bytes.");
         }
         if (num_bytes_handled > size) {
             throw new IllegalStateException(
@@ -214,9 +222,7 @@ public class Client {
         if (size > 0) {
             /* We read the block just to get it out of the way. */
             byte[] block = new byte[size];
-            if (fd_in.read(block) < 0) {
-                throw new EOFException();
-            }
+            fd_in.readFully(block);
         }
     }
 
@@ -287,6 +293,7 @@ public class Client {
         if (different) {
             log.fine("get_players: (re)allocating this.players.");
             this.players = new Player[numplayers];
+            this.bids = new Bid[numplayers];
 
             for (int p = 0; p < numplayers; p++) {
                 /*
@@ -335,6 +342,16 @@ public class Client {
         }
 
         /* TODO: should we need to enter a waiting state if players leave? */
+    }
+
+    private void handle_msg_newhand() {
+        set_game_state(STATE_DEAL);
+        isNewTrick = true;
+        // Clear the bids.
+        for (int i = 0; i < num_players; i++) {
+            bids[i] = null;
+        }
+        game.alert_newhand();
     }
 
     /* Possibly increase the maximum hand size we can sustain. */
@@ -444,6 +461,7 @@ public class Client {
         Bid bid = fd_in.read_bid();
 
         set_game_state(STATE_BID);
+        bids[bidder] = bid;
         game.alert_bid(bidder, bid);
     }
 
@@ -749,9 +767,7 @@ public class Client {
         } else if (opcode == ServerOpCode.MSG_PLAYERS) {
             handle_msg_players();
         } else if (opcode == ServerOpCode.MSG_NEWHAND) {
-            set_game_state(STATE_DEAL);
-            isNewTrick = true;
-            game.alert_newhand();
+            handle_msg_newhand();
         } else if (opcode == ServerOpCode.MSG_HAND) {
             handle_msg_hand();
         } else if (opcode == ServerOpCode.REQ_BID) {

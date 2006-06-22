@@ -189,62 +189,103 @@ public class RoomPanel extends JPanel implements RoomListener {
         // Ignore
     }
 
-    public void table_join_fail(String error) {
-        tablesFlow.updateButtons();
-        JOptionPane.showMessageDialog(this, error);
+    public void table_join_fail(final String error) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tablesFlow.updateButtons();
+                JOptionPane.showMessageDialog(RoomPanel.this, error);
+            }
+        });
     }
 
     public void table_joined(int table_index) {
-        tablesFlow.updateButtons();
-        lobbyButton.setEnabled(false);
-        newTableButton.setEnabled(false);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tablesFlow.updateButtons();
+                lobbyButton.setEnabled(false);
+                newTableButton.setEnabled(false);
+            }
+        });
     }
 
-    public void table_launch_fail(ErrorEventData data) {
-        JOptionPane.showMessageDialog(this, data.message);
+    public void table_launch_fail(final ErrorEventData data) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JOptionPane.showMessageDialog(RoomPanel.this, data.message);
+            }
+        });
     }
 
     public void table_launched() {
-        tablesFlow.updateButtons();
-        lobbyButton.setEnabled(false);
-        newTableButton.setEnabled(false);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tablesFlow.updateButtons();
+                lobbyButton.setEnabled(false);
+                newTableButton.setEnabled(false);
+            }
+        });
     }
 
-    public void table_leave_fail(String error) {
-        JOptionPane.showMessageDialog(this, error);
+    public void table_leave_fail(final String error) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JOptionPane.showMessageDialog(RoomPanel.this, error);
+            }
+        });
     }
 
-    public void table_left(TableLeaveEventData data) {
-        if (data.get_reason() == LeaveType.GGZ_LEAVE_BOOT) {
-            JOptionPane.showMessageDialog(this, MessageFormat.format(messages
-                    .getString("RoomPanel.Message.LeaveBoot"),
-                    new Object[] { data.get_booter() }));
-        } else if (data.get_reason() == LeaveType.GGZ_LEAVE_GAMEERROR) {
-            JOptionPane.showMessageDialog(this, messages
-                    .getString("RoomPanel.Message.LeaveGameError"));
-        } else if (data.get_reason() == LeaveType.GGZ_LEAVE_GAMEOVER) {
-            JOptionPane.showMessageDialog(this, messages
-                    .getString("RoomPanel.Message.GameOver"));
-        }
-        tablesFlow.updateButtons();
-        lobbyButton.setEnabled(true);
-        newTableButton.setEnabled(true);
+    public void table_left(final TableLeaveEventData data) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if (data.get_reason() == LeaveType.GGZ_LEAVE_BOOT) {
+                    JOptionPane.showMessageDialog(RoomPanel.this, MessageFormat
+                            .format(messages
+                                    .getString("RoomPanel.Message.LeaveBoot"),
+                                    new Object[] { data.get_booter() }));
+                } else if (data.get_reason() == LeaveType.GGZ_LEAVE_GAMEERROR) {
+                    JOptionPane.showMessageDialog(RoomPanel.this, messages
+                            .getString("RoomPanel.Message.LeaveGameError"));
+                } else if (data.get_reason() == LeaveType.GGZ_LEAVE_GAMEOVER) {
+                    JOptionPane.showMessageDialog(RoomPanel.this, messages
+                            .getString("RoomPanel.Message.GameOver"));
+                }
+                tablesFlow.updateButtons();
+                lobbyButton.setEnabled(true);
+                newTableButton.setEnabled(true);
+            }
+        });
     }
 
     public void table_list() {
-        tablesFlow.refresh();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tablesFlow.refresh();
+            }
+        });
     }
 
-    public void table_add(Table table) {
-        tablesFlow.addTable(table);
+    public void table_add(final Table table) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tablesFlow.addTable(table);
+            }
+        });
     }
 
-    public void table_delete(Table table) {
-        tablesFlow.removeTable(table);
+    public void table_delete(final Table table) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tablesFlow.removeTable(table);
+            }
+        });
     }
 
-    public void table_update(Table table) {
-        tablesFlow.updateTable(table);
+    public void table_update(final Table table) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tablesFlow.updateTable(table);
+            }
+        });
     }
 
     private class BackToLobbyAction extends AbstractAction {
@@ -441,7 +482,7 @@ public class RoomPanel extends JPanel implements RoomListener {
             spectatorsLabel.setBackground(SystemColor.text);
             spectatorsLabel.setOpaque(true);
             seatsPanel = new JPanel(new BorderLayout());
-//            seatsPanel.setBackground(Color.green.darker());
+            // seatsPanel.setBackground(Color.green.darker());
             seatsPanel.add(playersPanel, BorderLayout.CENTER);
             seatsPanel.add(spectatorsLabel, BorderLayout.EAST);
             spectateButton = new JButton(new SpectateAction(table));
@@ -564,7 +605,7 @@ public class RoomPanel extends JPanel implements RoomListener {
                     seat_num));
             seatButton.setPreferredSize(new Dimension(150, seatButton
                     .getPreferredSize().height));
-            
+
             // Modify the inner border to give us more space for text.
             // Get rid of the margin insets on the Metal or Ocean buttons to
             // make the buttons smaller.
