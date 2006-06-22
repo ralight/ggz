@@ -1,4 +1,4 @@
-# $Id: ggzcards.dsc 7190 2005-05-16 21:10:29Z josef $
+# $Id: ggzcards.dsc 8254 2006-06-22 09:30:47Z oojah $
 [GameInfo]
 Author = Jason Short, Rich Gade
 Description = GGZ Cards game module
@@ -7,7 +7,8 @@ Name = GGZCards
 Version = 0.0.7
 
 [LaunchInfo]
-ExecutablePath = ggzd.ggzcards --option=rated_game:0
+ExecutablePath = ggzd.ggzcards
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = GGZCards

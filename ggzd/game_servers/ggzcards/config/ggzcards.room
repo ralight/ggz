@@ -1,4 +1,4 @@
-# $Id: ggzcards.room 4055 2002-04-23 01:23:25Z jdorje $
+# $Id: ggzcards.room 8254 2006-06-22 09:30:47Z oojah $
 [RoomInfo]
 
 # This is the short name for the room
@@ -10,6 +10,9 @@ Description = GGZ trick-taking card game room: Bridge, Euchre, Forty-Two, Hearts
 
 # The gametype should match up to the Name of an added game
 GameType = GGZCards
+
+# Any additional game arguments specific to this room
+ExecutableArgs =  --option=rated_game:0
 
 # These set maximum values for this room
 MaxPlayers = 150

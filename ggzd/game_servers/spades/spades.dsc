@@ -1,4 +1,4 @@
-# $Id: spades.dsc 5544 2003-05-10 23:15:02Z dr_maux $
+# $Id: spades.dsc 8254 2006-06-22 09:30:47Z oojah $
 
 [GameInfo]
 Author = Brent Hendricks
@@ -9,6 +9,7 @@ Version = 0.0.5
 
 [LaunchInfo]
 ExecutablePath = ggzd.spades
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = NetSpades

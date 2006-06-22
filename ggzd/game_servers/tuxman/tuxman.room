@@ -2,6 +2,8 @@
 Name = Tuxman
 Description = Pacman stuff...
 GameType = Tuxman
+# Any additional game arguments specific to this room
+#ExecutableArgs = 
 MaxPlayers = 150
 MaxTables = 45
 

@@ -1,4 +1,4 @@
-# $Id: combat.dsc 7433 2005-08-15 09:55:03Z josef $
+# $Id: combat.dsc 8254 2006-06-22 09:30:47Z oojah $
 
 [GameInfo]
 Author = Ismael Orenstein
@@ -9,6 +9,7 @@ Version = 1.1
 
 [LaunchInfo]
 ExecutablePath = ggzd.combat
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = Combat

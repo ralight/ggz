@@ -1,4 +1,4 @@
-# $Id: ggzcards-sueca.dsc 7190 2005-05-16 21:10:29Z josef $
+# $Id: ggzcards-sueca.dsc 8254 2006-06-22 09:30:47Z oojah $
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Sueca
@@ -7,7 +7,8 @@ Name = GGZCards-Sueca
 Version = 0.0.7
 
 [LaunchInfo]
-ExecutablePath = ggzd.ggzcards --game=sueca --option=open_hands:0 --option=rated_game:1
+ExecutablePath = ggzd.ggzcards --game=sueca
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = GGZCards

@@ -1,4 +1,4 @@
-# $Id: ccheckers.dsc 7433 2005-08-15 09:55:03Z josef $
+# $Id: ccheckers.dsc 8254 2006-06-22 09:30:47Z oojah $
 
 [GameInfo]
 Author = Rich Gade
@@ -9,6 +9,7 @@ Version = 0.0.3
 
 [LaunchInfo]
 ExecutablePath = ggzd.ccheckers
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = CCheckers

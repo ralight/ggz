@@ -5,6 +5,8 @@ Name = Chinese Checkers
 Description = Sample Chinese Checkers Room
 # The gametype should match up to the Name of an added game
 GameType = ccheckers
+# Any additional game arguments specific to this room
+#ExecutableArgs = 
 # These set maximum values for this room
 MaxPlayers = 150
 MaxTables = 45

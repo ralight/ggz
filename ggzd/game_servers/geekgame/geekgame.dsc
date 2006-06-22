@@ -7,6 +7,7 @@ Version = 0.2
 
 [LaunchInfo]
 ExecutablePath = geekgameserver --ggz
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = Geekgame

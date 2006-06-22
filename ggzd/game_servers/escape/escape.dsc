@@ -1,4 +1,4 @@
-# $Id: escape.dsc 5544 2003-05-10 23:15:02Z dr_maux $
+# $Id: escape.dsc 8254 2006-06-22 09:30:47Z oojah $
 
 [GameInfo]
 Author = Roger Light
@@ -9,6 +9,7 @@ Version = 0.0.1
 
 [LaunchInfo]
 ExecutablePath = ggzd.escape
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = Escape

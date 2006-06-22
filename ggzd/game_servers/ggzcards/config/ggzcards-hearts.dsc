@@ -1,4 +1,4 @@
-# $Id: ggzcards-hearts.dsc 7190 2005-05-16 21:10:29Z josef $
+# $Id: ggzcards-hearts.dsc 8254 2006-06-22 09:30:47Z oojah $
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Hearts
@@ -7,7 +7,8 @@ Name = GGZCards-Hearts
 Version = 0.0.7
 
 [LaunchInfo]
-ExecutablePath = ggzd.ggzcards --game=hearts --option=open_hands:0 --option=rated_game:1
+ExecutablePath = ggzd.ggzcards --game=hearts
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = GGZCards

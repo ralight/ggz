@@ -1,4 +1,4 @@
-# $Id: tictactoe.dsc 7705 2005-12-29 11:53:14Z josef $
+# $Id: tictactoe.dsc 8254 2006-06-22 09:30:47Z oojah $
 
 [GameInfo]
 Author = Brent Hendricks
@@ -9,6 +9,7 @@ Version = 0.0.9
 
 [LaunchInfo]
 ExecutablePath = ggzd.tictactoe
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = TicTacToe

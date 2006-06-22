@@ -7,6 +7,7 @@ Version = build-9
 
 [LaunchInfo]
 ExecutablePath = widelands_server --ggz
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = Widelands

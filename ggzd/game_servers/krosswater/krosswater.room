@@ -5,6 +5,9 @@ Name = Krosswater
 Description = "Cross the water!" for KDE
 # The gametype should match up to the Name of an added game
 GameType = Krosswater
+# Any additional game arguments specific to this room
+#ExecutableArgs = 
+
 # These set maximum values for this room
 MaxPlayers = 20
 MaxTables = 10

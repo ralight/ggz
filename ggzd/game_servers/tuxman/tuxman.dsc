@@ -7,6 +7,7 @@ Version = 0.7
 
 [LaunchInfo]
 ExecutablePath = /usr/local/lib/ggzd/tuxmanserv
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = Tuxman

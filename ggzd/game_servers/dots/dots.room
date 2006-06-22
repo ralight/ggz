@@ -5,6 +5,8 @@ Name = Connect The Dots
 Description = Example Connect The Dots Room
 # The gametype should match up to the Name of an added game
 GameType = Dots
+# Any additional game arguments specific to this room
+#ExecutableArgs = 
 # These set maximum values for this room
 MaxPlayers = 150
 MaxTables = 45

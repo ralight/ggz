@@ -5,6 +5,8 @@ Name = Hastings
 Description = Where to conquer ancient reigns
 # The gametype should match up to the Name of an added game
 GameType = Hastings
+# Any additional game arguments specific to this room
+#ExecutableArgs = 
 # These set maximum values for this room
 MaxPlayers = 100
 MaxTables = 10

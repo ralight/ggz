@@ -1,4 +1,4 @@
-# $Id: chess.dsc 7977 2006-03-27 08:31:51Z josef $
+# $Id: chess.dsc 8254 2006-06-22 09:30:47Z oojah $
 
 [GameInfo]
 Author = Ismael Orenstein
@@ -9,6 +9,7 @@ Version = 0.0.10
 
 [LaunchInfo]
 ExecutablePath = ggzd.chess
+# Set ExecutableArgs in the room file
 
 [Protocol]
 Engine = Chess

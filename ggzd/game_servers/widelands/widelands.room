@@ -2,5 +2,7 @@
 Name = Widelands
 Description = An open source buildup strategy game
 GameType = Widelands
+# Any additional game arguments specific to this room
+#ExecutableArgs = 
 MaxPlayers = 150
 MaxTables = 45

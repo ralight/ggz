@@ -5,6 +5,9 @@ Name = Tic-Tac-Toe
 Description = Example Tic-Tac-Toe Room
 # The gametype should match up to the Name of an added game
 GameType = TicTacToe
+# Any additional game arguments specific to this room
+#ExecutableArgs = 
+
 # These set maximum values for this room
 MaxPlayers = 150
 MaxTables = 45
