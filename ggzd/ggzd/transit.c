@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: transit.c 8242 2006-06-22 01:53:59Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -203,7 +203,11 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 		transit_player_event(event->caller, event->transit,
 				     E_SEAT_ASSIGN_FAIL,
 				     event->caller, -1, 0);
-		return GGZ_EVENT_ERROR;
+
+		/* This isn't an error really; it can happen if two joins
+		   happen simultaneously.  If we returned an error here it
+		   would cause the table to be killed. */
+		return GGZ_EVENT_OK;
 	}
 
 	return GGZ_EVENT_OK;
