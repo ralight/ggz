@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8247 2006-06-22 05:57:27Z jdorje $
+ * $Id: parse_opt.c 8255 2006-06-22 10:08:22Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -581,7 +581,7 @@ static void parse_game(char *name, char *dir)
 	/* [LaunchInfo] */
 	ggz_conf_read_list(ch, "LaunchInfo", "ExecutablePath",
 			   &num_args, &game_info.exec_args);
-	if (!game_info.exec_args[0]) {
+	if (!game_info.exec_args || !game_info.exec_args[0]) {
 		err_msg("Missing ExecutablePath for game %s.",
 			game_info.name);
 		/* This leaves some memory leak, but it's acceptable under
