@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8250 2006-06-22 07:02:29Z jdorje $
+ * $Id: spades.c 8251 2006-06-22 07:22:25Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -441,7 +441,7 @@ static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 	if (bid.sbid.spec == SPADES_DNIL)
 		return snprintf(buf, buf_len, "Dnil");
 	if (bid.sbid.spec == SPADES_NO_BLIND)
-		return snprintf(buf, buf_len, "No blind bid");	/* FIXME */
+		return snprintf(buf, buf_len, "Show cards");
 	assert(bid.sbid.val >= 0 && bid.sbid.val <= 13);
 	return snprintf(buf, buf_len, "%d", (int) bid.sbid.val);
 }
