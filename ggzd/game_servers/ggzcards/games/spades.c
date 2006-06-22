@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8241 2006-06-21 18:44:11Z jdorje $
+ * $Id: spades.c 8248 2006-06-22 06:23:08Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -135,6 +135,7 @@ static bool spd_send_scoredata(player_t p)
 {
 	int fd = get_player_socket(p);
 	team_t team;
+	int waiting = -1;
 
 	/* The score data can be used by the AI for
 	   calculations or by the game client to
@@ -142,7 +143,7 @@ static bool spd_send_scoredata(player_t p)
 	if (write_opcode(fd, MESSAGE_GAME) < 0
 	    || write_opcode(fd, GAME_MESSAGE_GAME) < 0
 	    || ggz_write_string(fd, "spades") < 0
-	    || ggz_write_int(fd, 40) < 0) {
+	    || ggz_write_int(fd, 44) < 0) {
 	  return -1;
 	}
 	for (team = 0; team < 2; team++) {
@@ -154,6 +155,12 @@ static bool spd_send_scoredata(player_t p)
 	} players_iterate_end;
 	ggz_write_int(fd, game.next_bid);
 	ggz_write_int(fd, game.next_play);
+	if (game.state == STATE_WAIT_FOR_BID) {
+		waiting = game.next_bid;
+	} else if (game.state == STATE_WAIT_FOR_PLAY) {
+		waiting = game.next_play;
+	}
+	ggz_write_int(fd, waiting); /* The player we're waiting on. */
 	return 0;
 }
 
