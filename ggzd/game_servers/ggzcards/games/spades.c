@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: spades.c 8260 2006-06-23 12:15:06Z oojah $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -223,19 +223,19 @@ static void spades_get_options(void)
 		   );
 	add_option("Bidding and Scoring", "minimum_bid",
 	           "What is the minimum bid that each team must meet?",
-	           5, 3,
+	           5, 0,
 	           "Minimum bid 0", "Minimum bid 1",
 		   "Minimum bid 2", "Minimum bid 3", "Minimum bid 4");
 	add_option("Gameover", "low_score_loses",
 		   "Does dropping to -200 points cause an automatic loss?",
-		   1, 0,
+		   1, 1,
 		   "Forfeit at -200 points");
 	add_option("Bidding and Scoring", "nil_tricks_count",
 		   "How are tricks taken by the nil bidder scored? Do they\n"
 		   "count toward the partner's bid, do they give overtricks\n"
 		   "(+1 points each), or do they count only as bags (-100\n"
 		   "for ten of them)?",
-		   NIL_TRICKS_LAST, NIL_TRICKS_COUNT,
+		   NIL_TRICKS_LAST, NIL_TRICKS_NO_POINTS,
 		   "Nil tricks count toward the partner's bid",
 		   "Nil tricks count as overtricks and bags.",
 		   "Nil tricks count only as bags",
