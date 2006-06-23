@@ -39,6 +39,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.List;
@@ -383,7 +384,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         } else if (type == SeatType.GGZ_SEAT_PLAYER) {
             // The seat has a regular player in it.
             menu = new JPopupMenu("Player");
-            menu.add(new SeatBootAction(ggz_seat_num));
+            menu.add(new SeatBootAction(cardClient.get_nth_player(seat_num)
+                    .get_name()));
         } else if (type == SeatType.GGZ_SEAT_RESERVED) {
             // The seat is reserved for a player.
             menu = new JPopupMenu("Player");
@@ -781,15 +783,24 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         });
     }
 
-    public boolean get_options(String[] descs, int[] defaults,
-            String[][] option_choices) throws IOException {
-        table.setStatus(null);
-        boolean okClicked = OptionDialog.show(this, descs, defaults,
-                option_choices);
-        if (okClicked) {
+    public boolean get_options(final String[] types, final String[] descs,
+            final int[] defaults, final String[][] option_choices)
+            throws IOException {
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    table.setStatus(null);
+                    OptionDialog.show(CardGamePanel.this, types, descs,
+                            defaults, option_choices);
+                }
+            });
             cardClient.send_options(defaults);
+            return true;
+        } catch (InvocationTargetException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
         }
-        return okClicked;
     }
 
     public void get_play(final int play_hand, final Card[] valid_cards) {
@@ -945,8 +956,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             public void run() {
                 PlayerLabel label = playerLabels[player_num];
                 label.setText("<HTML>"
-                        + StringUtil.replace(StringUtil.replace(message, ":", ":<B>"), "\n",
-                                "</B><BR>") + "</HTML>");
+                        + StringUtil.replace(StringUtil.replace(message, ":",
+                                ":<B>"), "\n", "</B><BR>") + "</HTML>");
                 // label.setText("<HTML>" + replace(message, "\n", "<BR>")
                 // + "</HTML>");
                 table.invalidate();
@@ -964,7 +975,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     JOptionPane.getFrameForComponent(CardGamePanel.this)
                             .setTitle(message);
                 } else if ("Options".equals(mark)) {
-                    table.setOptionsSummary(StringUtil.replace(message, "\n", "<BR>"));
+                    table.setOptionsSummary(StringUtil.replace(message, "\n",
+                            "<BR>"));
                 } else if ("Scores".equals(mark)) {
                     scoresButton.setVisible(true);
                     if (scoresDialog != null) {
@@ -1026,21 +1038,20 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     private class SeatBootAction extends AbstractAction {
-        private int seat_num;
+        private String playerName;
 
-        public SeatBootAction(int seat_num) {
+        public SeatBootAction(String playerName) {
             super("Boot this player from the game");
-            this.seat_num = seat_num;
+            this.playerName = playerName;
         }
 
         public void actionPerformed(ActionEvent event) {
             if (JOptionPane.showConfirmDialog(CardGamePanel.this,
-                    "Are you sure you want to boot this player?", "Boot",
+                    "Are you sure you want to boot " + playerName
+                            + " from the game?", "Boot",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 try {
-                    String player_name = cardClient.get_nth_player(seat_num)
-                            .get_name();
-                    ggzMod.request_boot(player_name);
+                    ggzMod.request_boot(playerName);
                 } catch (IOException e) {
                     handleException(e);
                 }

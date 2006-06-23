@@ -473,7 +473,9 @@ public class RoomPanel extends JPanel implements RoomListener {
             setBackground(SystemColor.text);
             setBorder(BorderFactory.createRaisedBevelBorder());
             titleLabel = new JLabel();
+            titleLabel.setVerticalAlignment(JLabel.TOP);
             titleLabel.setFont(getFont().deriveFont(Font.PLAIN));
+            titleLabel.setPreferredSize(new Dimension(200, 50));
             playersPanel = new JPanel(new BorderLayout());
             playersPanel.setOpaque(false);
             spectatorsLabel = new JLabel();

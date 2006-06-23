@@ -17,8 +17,6 @@
  */
 package ggz.cards;
 
-import ggz.common.StringUtil;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -28,7 +26,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Panel;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,19 +39,20 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 
 public class OptionDialog extends JDialog implements ItemListener {
+    private JTabbedPane tabbedPane;
+
     private JPanel buttonSizePanel;
 
     private JPanel buttonFlowPanel;
 
     private JButton okButton;
-
-    private Panel optionPanel;
 
     /** true if OK was click and false if Cancel was clicked. */
     private boolean result;
@@ -80,16 +78,18 @@ public class OptionDialog extends JDialog implements ItemListener {
         getContentPane().add(buttonFlowPanel, BorderLayout.SOUTH);
         // Add options container in center, options controls get added in
         // init().
-        optionPanel = new Panel(new GridBagLayout());
-        getContentPane().add(optionPanel, BorderLayout.CENTER);
+        tabbedPane = new JTabbedPane();
+        getContentPane().add(tabbedPane, BorderLayout.CENTER);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onOKClick();
             }
         });
+        getRootPane().setDefaultButton(okButton);
     }
 
-    private void init(String[] descs, int[] defaults, String[][] option_choices) {
+    private void init(String[] types, String[] descs, int[] defaults,
+            String[][] option_choices) {
         checkboxes = new JComponent[descs.length][];
         values = defaults;
 
@@ -98,18 +98,23 @@ public class OptionDialog extends JDialog implements ItemListener {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
 
-        for (int i = 0; i < descs.length; i++) {
-            JLabel label = new JLabel();
+        for (int i = 0; i < types.length; i++) {
+            JPanel optionPanel;
+            int indexOfTab = tabbedPane.indexOfTab(types[i]);
+            if (indexOfTab < 0) {
+                // Tab doesn't exist yet.
+                optionPanel = new JPanel(new GridBagLayout());
+                tabbedPane.addTab(types[i], optionPanel);
+            } else {
+                optionPanel = (JPanel) tabbedPane.getComponentAt(indexOfTab);
+            }
+            JTextArea label = new JTextArea();
             int numChoices = option_choices[i].length;
             ButtonGroup group = null;
 
-            if (descs[i].indexOf("\n") >= 0) {
-                label.setText("<HTML>"
-                        + StringUtil.replace(descs[i], "\n", "<BR>")
-                        + "</HTML>");
-            } else {
-                label.setText(descs[i]);
-            }
+            label.setEditable(false);
+            label.setOpaque(false);
+            label.setText(descs[i]);
             constraints.gridy++;
             constraints.insets = descInsets;
             optionPanel.add(label, constraints);
@@ -175,11 +180,11 @@ public class OptionDialog extends JDialog implements ItemListener {
         }
     }
 
-    public static boolean show(Component parent, String[] descs,
-            int[] defaults, String[][] option_choices) {
+    public static boolean show(Component parent, String[] types,
+            String[] descs, int[] defaults, String[][] option_choices) {
         Frame frame = JOptionPane.getFrameForComponent(parent);
         OptionDialog dialog = new OptionDialog(frame, "Options", true);
-        dialog.init(descs, defaults, option_choices);
+        dialog.init(types, descs, defaults, option_choices);
         dialog.pack();
 
         // Set the location relative to the parent frame.
@@ -189,9 +194,9 @@ public class OptionDialog extends JDialog implements ItemListener {
 
         dialog.setLocation(location);
         fixLocation(dialog);
-        dialog.okButton.requestFocus();
-        dialog.setResizable(false);
+        // dialog.setResizable(false);
         dialog.setVisible(true);
+        dialog.okButton.requestFocus();
         return dialog.result;
     }
 

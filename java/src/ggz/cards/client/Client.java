@@ -649,6 +649,7 @@ public class Client {
      */
     private void handle_req_options() throws IOException {
         int option_cnt; /* the number of options */
+        String[] types; /* Types for each option. */
         String[] descs; /* Descriptive texts for the options. */
         int[] choice_cnt; /* The number of choices for each option */
         int[] defaults; /*
@@ -672,6 +673,7 @@ public class Client {
         option_cnt = fd_in.readInt();
 
         /* Allocate all data */
+        types = new String[option_cnt];
         descs = new String[option_cnt];
         choice_cnt = new int[option_cnt];
         defaults = new int[option_cnt];
@@ -679,6 +681,7 @@ public class Client {
 
         /* Read all the options, their defaults, and the possible choices. */
         for (int i = 0; i < option_cnt; i++) {
+            types[i] = fd_in.read_string();
             descs[i] = fd_in.read_string();
             choice_cnt[i] = fd_in.readInt();
             defaults[i] = fd_in.readInt();
@@ -690,7 +693,7 @@ public class Client {
 
         /* Get the options. */
         set_game_state(STATE_OPTIONS);
-        if (!game.get_options(descs, defaults, option_choices)) {
+        if (!game.get_options(types, descs, defaults, option_choices)) {
             send_options(defaults);
         }
     }

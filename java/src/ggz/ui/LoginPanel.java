@@ -184,6 +184,10 @@ public class LoginPanel extends JPanel {
                 normalLoginRadio.getAction().actionPerformed(null);
             } else {
                 handleTextField.setText(userInfo);
+                // Simulate radion selection to initialise radio buttons' hidden
+                // state.
+                guestLoginRadio.setSelected(true);
+                guestLoginRadio.getAction().actionPerformed(null);
             }
             connect();
         }

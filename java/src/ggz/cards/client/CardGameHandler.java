@@ -86,7 +86,7 @@ public interface CardGameHandler {
      * a list of choices so that you pick one choice for each option. An option
      * with only one choice is a special case: a boolean option.
      */
-    public boolean get_options(String[] descs, int[] defaults,
+    public boolean get_options(String[] types, String[] descs, int[] defaults,
             String[][] option_choices) throws IOException;
 
     public void get_newgame();

@@ -32,7 +32,7 @@ public class SpadesBidPanel extends BidPanel {
             case 1:
                 return "Nil";
             case 2:
-                return "No blind bid";
+                return "Show cards";
             case 3:
                 return "Dnil";
             }

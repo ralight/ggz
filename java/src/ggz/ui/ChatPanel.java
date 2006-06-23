@@ -134,7 +134,7 @@ public class ChatPanel extends JPanel {
                 .darker().darker());
 
         infoText = new SimpleAttributeSet();
-        infoText.addAttribute(StyleConstants.Foreground, Color.MAGENTA);
+        infoText.addAttribute(StyleConstants.Foreground, Color.BLUE);
         infoText.addAttribute(StyleConstants.Bold, Boolean.TRUE);
 
         commandText = new SimpleAttributeSet();

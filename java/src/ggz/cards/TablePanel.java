@@ -146,14 +146,12 @@ public class TablePanel extends JPanel {
 
     public void showButtons() {
         add(buttonPanel, new TableConstraints(TableConstraints.BUTTON_PANEL));
-        invalidate();
-        validate();
+        revalidate();
     }
 
     public void hideButtons() {
         remove(buttonPanel);
-        invalidate();
-        validate();
+        revalidate();
         repaint();
     }
 
@@ -170,7 +168,7 @@ public class TablePanel extends JPanel {
         } else if (statusLabel != null) {
             remove(statusLabel);
         }
-        validate();
+        revalidate();
         repaint();
     }
 
@@ -222,7 +220,7 @@ public class TablePanel extends JPanel {
         sprite.setLocation(startPos);
         remove(spriteZOrder);
         add(sprite, spriteZOrder);
-        // validate();
+        // revalidate();
         if (useActiveRendering) {
             graphics = getGraphics();
             paint(graphics);
@@ -279,7 +277,7 @@ public class TablePanel extends JPanel {
         originalSprite.setLocation(endPos);
         remove(spriteZOrder);
         add(originalSprite, spriteZOrder);
-        validate();
+        revalidate();
         repaint();
 
         // double totalSeconds = ((System.currentTimeMillis() - start) /
