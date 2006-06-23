@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: suaro.c 8259 2006-06-23 06:53:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -149,20 +149,20 @@ static void suaro_get_options(void)
 	/* four options for now: shotgun -> boolean unlimited redoubling ->
 	   boolean persistent doubles -> boolean target score -> 25, 50, 100, 
 	   200, 500, 1000 */
-	add_option("shotgun",
+	add_option("Suaro Options", "shotgun",
 	           "In \"Shotgun Suaro\", you are allowed to bid on the kitty.",
 	           1, 1,
 	           "shotgun");
-	add_option("unlimited_redoubling",
+	add_option("Suaro Options", "unlimited_redoubling",
 	           "With this variation, more than one redoubling is allowed.",
 	           1, 0,
 	           "unlimited redoubling");
-	add_option("persistent_doubles",
+	add_option("Suaro Options", "persistent_doubles",
 	           "In this variation, if there is a (re)double and the bid "
 	           "is subsequently changed, the (re)double will still apply.",
 	           1, 0,
 	           "persistent doubles");
-	add_option("target",
+	add_option("Suaro Options", "target",
 	           "How many points does each player need to win?",
 	           6, 1,
 	           "Game to 25", "Game to 50", "Game to 100",

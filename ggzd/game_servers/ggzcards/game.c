@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: game.c 8259 2006-06-23 06:53:15Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -79,14 +79,14 @@ void game_init_game(void)
    as-is for a game that has no options. */
 void game_get_options(void)
 {
-	add_option("open_hands",
+	add_option("General Options", "open_hands",
 	           "Select this option to have all hands visible to everyone.",
 	           1, 0, "Play with open hands");
-	add_option("blind_spectators",
+	add_option("General Options", "blind_spectators",
 		   "Select this option to hide everybody's hand from all "
 		   "spectators.",
 		   1, 0, "Hide hands from spectators");
-	add_option("rated_game",
+	add_option("General Options", "rated_game",
 	           "Select this option to have the game rated.",
 	           1, 1, "Play a rated game");
 }

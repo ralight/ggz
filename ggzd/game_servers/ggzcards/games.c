@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 4397 2002-09-02 04:00:54Z jdorje $
+ * $Id: games.c 8259 2006-06-23 06:53:15Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -136,12 +136,14 @@ void request_client_gametype(void)
 		init_game();
 		broadcast_sync();
 	} else {
+		char* option_types[1];
 		char* option_descs[1];
 		int num_choices[1];
 		int option_defaults[1];
 		char** option_choices[1];
 		char* the_option_choices[cnt];
 
+		option_types[0] = "Game Choice";
 		option_descs[0] = "What do you want to play today?";
 		num_choices[0] = cnt;
 		option_defaults[0] = 0;
@@ -151,6 +153,7 @@ void request_client_gametype(void)
 
 		net_send_options_request(game.host,
 		                         1, /* 1 option */
+					 option_types,
 		                         option_descs,
 		                         num_choices,
 		                         option_defaults,

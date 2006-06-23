@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: game.h 8259 2006-06-23 06:53:15Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -146,6 +146,7 @@ void game_resync(void);
  */
 
 int game_get_options(int option_cnt,
+		     char **types,
 		     char **descriptions,
 		     int *choice_cnt, int *defaults,
 		     char ***option_choices);

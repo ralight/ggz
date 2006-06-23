@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.h 4081 2002-04-25 21:23:26Z jdorje $
+ * $Id: options.h 8259 2006-06-23 06:53:15Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -43,12 +43,13 @@
 bool are_options_set(void);
 
 /** adds an option to the list of pending options
+ *  @param type The option type.  This is used for sorting of options.
  *  @param key the key string for the option
  *  @param num the number of values [0..num-1] the option can have
  *  @param dflt the default value of the option
  *  @param ... the list of option strings, one for each value
  *  @see game_get_options */
-void add_option(char *key, char *desc, int num, int dflt, ...);
+void add_option(char *type, char *key, char *desc, int num, int dflt, ...);
 
 /** sets an option
  *  @param key the key string of the option

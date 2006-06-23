@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: options.c 8259 2006-06-23 06:53:15Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -57,6 +57,7 @@ static struct option_t {
 } *optionlist = NULL;
 
 static struct pending_option_t {
+	char *type;
 	char *key;
 	char *desc;
 	int num;
@@ -90,7 +91,7 @@ void set_option(char *key, int value)
 	optionlist = option;
 }
 
-void add_option(char *key, char *desc, int num, int dflt, ...)
+void add_option(char *type, char *key, char *desc, int num, int dflt, ...)
 {
 	va_list ap;
 	int i;
@@ -106,6 +107,7 @@ void add_option(char *key, char *desc, int num, int dflt, ...)
 			return;
 
 	po = ggz_malloc(sizeof(*po));
+	po->type = type;
 	po->key = key;
 	po->desc = desc;
 	po->num = num;
@@ -134,6 +136,7 @@ void request_client_options(void)
 		try_to_start_game();
 	} else {
 		struct pending_option_t *po = pending_options;
+		char *option_types[pending_option_count];
 		char *option_descs[pending_option_count];
 		int num_choices[pending_option_count];
 		int option_defaults[pending_option_count];
@@ -141,6 +144,7 @@ void request_client_options(void)
 		int op;
 		
 		for (op = 0; op < pending_option_count; op++) {
+			option_types[op] = po->type;
 			option_descs[op] = po->desc;
 			num_choices[op] = po->num;
 			option_defaults[op] = po->dflt;
@@ -151,6 +155,7 @@ void request_client_options(void)
 		
 		net_send_options_request(game.host,
 		                         pending_option_count,
+					 option_types,
 		                         option_descs,
 		                         num_choices,
 		                         option_defaults,

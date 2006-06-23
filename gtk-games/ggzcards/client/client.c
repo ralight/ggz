@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 6903 2005-01-25 18:57:38Z jdorje $
+ * $Id: client.c 8259 2006-06-23 06:53:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -86,7 +86,7 @@ GGZMod *client_get_ggzmod(void)
 static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
 				 const void *data)
 {
-  const int *fd = data;
+	const int *fd = data;
 
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
 	handle_server_connect(*fd);
@@ -873,6 +873,7 @@ static int handle_req_options(void)
 {
 	int i, j;
 	int option_cnt;		/* the number of options */
+	char **types;		/* Types for each option. */
 	char **descs;		/* Descriptive texts for the options. */
 	int *choice_cnt;	/* The number of choices for each option */
 	int *defaults;		/* What option choice is currently chosen for
@@ -893,6 +894,7 @@ static int handle_req_options(void)
 	assert(option_cnt > 0);
 
 	/* Allocate all data */
+	types = ggz_malloc(option_cnt * sizeof(*types));
 	descs = ggz_malloc(option_cnt * sizeof(*descs));
 	choice_cnt = ggz_malloc(option_cnt * sizeof(*choice_cnt));
 	defaults = ggz_malloc(option_cnt * sizeof(*defaults));
@@ -900,7 +902,9 @@ static int handle_req_options(void)
 
 	/* Read all the options, their defaults, and the possible choices. */
 	for (i = 0; i < option_cnt; i++) {
-		if (ggz_read_string_alloc(game_internal.fd, &descs[i]) < 0
+		if (ggz_read_string_alloc(game_internal.fd, &types[i]) < 0
+		    || ggz_read_string_alloc(game_internal.fd,
+					     &descs[i]) < 0
 		    || ggz_read_int(game_internal.fd, &choice_cnt[i]) < 0
 		    || ggz_read_int(game_internal.fd, &defaults[i]) < 0)
 			return -1;	/* read the default */
@@ -915,7 +919,7 @@ static int handle_req_options(void)
 
 	/* Get the options. */
 	set_game_state(STATE_OPTIONS);
-	if (game_get_options(option_cnt, descs, choice_cnt,
+	if (game_get_options(option_cnt, types, descs, choice_cnt,
 			     defaults, option_choices) < 0) {
 		(void)client_send_options(option_cnt, defaults);
 	}
@@ -926,12 +930,14 @@ static int handle_req_options(void)
 			ggz_free(option_choices[i][j]);	/* allocated by
 							   easysock */
 		ggz_free(option_choices[i]);
+		ggz_free(types[i]);
 		ggz_free(descs[i]);
 	}
 	ggz_free(defaults);
 	ggz_free(option_choices);
 	ggz_free(choice_cnt);
 	ggz_free(descs);
+	ggz_free(types);
 
 	return 0;
 }

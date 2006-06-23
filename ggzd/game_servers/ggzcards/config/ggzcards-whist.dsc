@@ -1,4 +1,4 @@
-# $Id: ggzcards-whist.dsc 8254 2006-06-22 09:30:47Z oojah $
+# $Id: ggzcards-whist.dsc 8259 2006-06-23 06:53:15Z jdorje $
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Whist
@@ -12,7 +12,7 @@ ExecutablePath = ggzd.ggzcards --game=whist
 
 [Protocol]
 Engine = GGZCards
-Version = 3
+Version = 4
 
 [TableOptions]
 AllowLeave = 1

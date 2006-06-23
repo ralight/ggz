@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 6386 2004-11-16 05:47:51Z jdorje $
+ * $Id: dlg_options.c 8259 2006-06-23 06:53:15Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -124,10 +124,13 @@ static void dlg_options_submit(GtkWidget * widget, gpointer data)
 }
 
 void dlg_option_display(int option_cnt,
-			char **descriptions,
+			char **types, char **descriptions,
 			int *option_sizes, int *defaults, char ***options)
 {
-	GtkWidget *box;
+	GtkWidget *notebook;
+	char *tab_headers[option_cnt];
+	GtkWidget *vboxes[option_cnt];
+	int num_tabs = 0;
 	gint i, j;
 	GtkTooltips *tooltips;
 
@@ -146,10 +149,29 @@ void dlg_option_display(int option_cnt,
 					     GTK_STOCK_OK, GTK_RESPONSE_OK,
 					     NULL);
 
-	box = GTK_DIALOG(window)->vbox;
+	notebook = gtk_notebook_new();
+	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(window)->vbox), notebook);
 
 	for (i = 0; i < option_cnt; i++) {
 		GtkWidget *subbox = NULL;
+		int tab;
+
+		for (tab = 0; tab < num_tabs; tab++) {
+			if (strcasecmp(types[i], tab_headers[tab]) == 0) {
+				break;
+			}
+		}
+		if (tab == num_tabs) {
+			GtkWidget *label = gtk_label_new(types[i]);
+
+			vboxes[tab] = gtk_vbox_new(FALSE, 0);
+			gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+						 vboxes[tab], label);
+			tab_headers[tab] = types[i];
+			num_tabs++;
+		}
+
+
 		if (option_sizes[i] == 1) {
 			gpointer user_data = encode_option_selection(i, 1);
 			char *choice = options[i][0];
@@ -194,7 +216,6 @@ void dlg_option_display(int option_cnt,
 
 				gtk_box_pack_start(GTK_BOX(subbox), radio,
 						   FALSE, FALSE, 0);
-				gtk_widget_show(radio);
 				if (j == options_selected[i])
 					active_radio = radio;
 			}
@@ -203,8 +224,8 @@ void dlg_option_display(int option_cnt,
 				    (GTK_TOGGLE_BUTTON(active_radio),
 				     TRUE);
 		}
-		gtk_box_pack_start(GTK_BOX(box), subbox, FALSE, FALSE, 0);
-		gtk_widget_show(subbox);
+		gtk_box_pack_start(GTK_BOX(vboxes[tab]),
+				   subbox, FALSE, FALSE, 0);
 	}
 
 	g_signal_connect(window, "response",
@@ -214,6 +235,5 @@ void dlg_option_display(int option_cnt,
 	g_signal_connect(window, "delete_event",
 			 GTK_SIGNAL_FUNC(dlg_opt_delete), NULL);
 
-	gtk_widget_show(box);
-	gtk_widget_show(window);
+	gtk_widget_show_all(window);
 }

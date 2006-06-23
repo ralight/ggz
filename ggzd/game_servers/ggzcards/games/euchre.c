@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: euchre.c 8259 2006-06-23 06:53:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -154,11 +154,11 @@ static void euchre_init_game(void)
 
 static void euchre_get_options(void)
 {
-	add_option("screw_the_dealer",
+	add_option("Euchre Options", "screw_the_dealer",
 	           "If selected, the dealer will be forced to bid "
 	           "if nobody else does.",
 	           1, 0, "Stick the dealer");
-	add_option("super_euchre",
+	add_option("Euchre Options", "super_euchre",
 	           "With this variation, a \"Super Euchre\" (when the "
 	           "defenders take all tricks) will be worth double.",
 	           1, 0, "Allow \"super euchre\"");

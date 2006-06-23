@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 8188 2006-06-13 19:01:07Z jdorje $
+ * $Id: game.c 8259 2006-06-23 06:53:15Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -577,6 +577,7 @@ void game_alert_trick(int winner)
 }
 
 int game_get_options(int option_cnt,
+		     char **types,
 		     char **descriptions,
 		     int *choice_cnt, int *defaults,
 		     char ***option_choices)
@@ -589,7 +590,7 @@ int game_get_options(int option_cnt,
 		return -1;
 	}
 
-	dlg_option_display(option_cnt, descriptions,
+	dlg_option_display(option_cnt, types, descriptions,
 			   choice_cnt, defaults, option_choices);
 
 	statusbar_message(_("Please select the game's options."));

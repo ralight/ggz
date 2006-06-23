@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: client.h 8259 2006-06-23 06:53:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -274,6 +274,7 @@ extern void game_alert_trick(int player);
  *  @return 0 if you are going to handle the option request, -1 if you aren't
  *  @note All parameters are freed after the function returns. */
 extern int game_get_options(int option_cnt,
+			    char **types,
 			    char **descriptions,
 			    int *choice_cnt,
 			    int *defaults, char ***option_choices);

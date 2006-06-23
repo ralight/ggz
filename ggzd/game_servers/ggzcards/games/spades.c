@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8251 2006-06-22 07:22:25Z jdorje $
+ * $Id: spades.c 8259 2006-06-23 06:53:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -202,12 +202,18 @@ static void spades_get_options(void)
 {
 	/* three options: target score: 100, 250, 500, 1000 nil value: 0, 50, 
 	   100 minimum team bid: 0, 1, 2, 3, 4 double nil value: 0, 100, 200 */
-	add_option("nil_value",
+	add_option("Nil", "nil_value",
 	           "How much is nil worth (win or lose)?",
 	           3, 2,
 	           "No nil bids", "Nil is worth 50",
 		   "Nil is worth 100");
-	add_option("target_score",
+	add_option("Nil", "double_nil",
+	           "How many points is blind (double) nil worth (win or lose)?",
+	           3, 0,
+	           "No blind (double) nil",
+		   "Blind (double) nil worth 100",
+		   "Blind (double) nil worth 200");
+	add_option("Gameover", "target_score",
 	           "How many points does each team need to win?",
 	           5,
 	           2,
@@ -215,22 +221,16 @@ static void spades_get_options(void)
 		   "Game to 500", "Game to 1000",
 	           "Unending game"
 		   );
-	add_option("minimum_bid",
+	add_option("Bidding and Scoring", "minimum_bid",
 	           "What is the minimum bid that each team must meet?",
 	           5, 3,
 	           "Minimum bid 0", "Minimum bid 1",
 		   "Minimum bid 2", "Minimum bid 3", "Minimum bid 4");
-	add_option("double_nil",
-	           "How many points is blind (double) nil worth (win or lose)?",
-	           3, 0,
-	           "No blind (double) nil",
-		   "Blind (double) nil worth 100",
-		   "Blind (double) nil worth 200");
-	add_option("low_score_loses",
+	add_option("Gameover", "low_score_loses",
 		   "Does dropping to -200 points cause an automatic loss?",
 		   1, 0,
 		   "Forfeit at -200 points");
-	add_option("nil_tricks_count",
+	add_option("Bidding and Scoring", "nil_tricks_count",
 		   "How are tricks taken by the nil bidder scored? Do they\n"
 		   "count toward the partner's bid, do they give overtricks\n"
 		   "(+1 points each), or do they count only as bags (-100\n"
