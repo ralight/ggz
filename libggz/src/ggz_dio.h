@@ -17,64 +17,67 @@
 
 #include <stdbool.h>
 
-struct dataio;
+typedef struct GGZDataIO GGZDataIO;
 
 /* Initializers. */
-struct dataio *dio_new(int socket);
-void dio_free(struct dataio *dio);
+GGZDataIO *ggz_dio_new(int socket);
+void ggz_dio_free(GGZDataIO *dio);
 
-void dio_set_writeable_callback(struct dataio *dio,
-				void (writeable_callback)(struct dataio *,
-							  bool));
+void ggz_dio_set_writeable_callback(GGZDataIO *dio,
+				    void (writeable_callback) (struct
+							       GGZDataIO *,
+							       bool));
 
 /* Network r/w functions. */
-int dio_read_data(struct dataio *dio,
-		  void (read_callback)(struct dataio *, void *),
-		  void *userdata);
-int dio_write_data(struct dataio *dio);
+int ggz_dio_read_data(GGZDataIO *dio,
+		      void (read_callback) (GGZDataIO *, void *),
+		      void *userdata);
+int ggz_dio_write_data(GGZDataIO *dio);
 
-int dio_flush(struct dataio *dio);
+int ggz_dio_flush(GGZDataIO *dio);
 
-bool dio_is_write_pending(const struct dataio *dio);
-int dio_get_socket(const struct dataio *dio);
+bool ggz_dio_is_write_pending(const GGZDataIO *dio);
+int ggz_dio_get_socket(const GGZDataIO *dio);
 
-void dio_packet_start(struct dataio *dio);
-void dio_packet_end(struct dataio *dio);
+void ggz_dio_packet_start(GGZDataIO *dio);
+void ggz_dio_packet_end(GGZDataIO *dio);
 
 /* gets */
-void dio_get_char(struct dataio *dio, char *dest);
-void dio_get_int(struct dataio *dio, int *dest);
+void ggz_dio_get_char(GGZDataIO *dio, char *dest);
+void ggz_dio_get_int(GGZDataIO *dio, int *dest);
 
-void dio_get_uint8(struct dataio *dio, int *dest);
-void dio_get_uint16(struct dataio *dio, int *dest);
-void dio_get_uint32(struct dataio *dio, unsigned int *dest);
+void ggz_dio_get_uint8(GGZDataIO *dio, int *dest);
+void ggz_dio_get_uint16(GGZDataIO *dio, int *dest);
+void ggz_dio_get_uint32(GGZDataIO *dio, unsigned int *dest);
 
-void dio_get_sint8(struct dataio *dio, int *dest);
-void dio_get_sint16(struct dataio *dio, int *dest);
-void dio_get_sint32(struct dataio *dio, signed int *dest);
+void ggz_dio_get_sint8(GGZDataIO *dio, int *dest);
+void ggz_dio_get_sint16(GGZDataIO *dio, int *dest);
+void ggz_dio_get_sint32(GGZDataIO *dio, signed int *dest);
 
-void dio_get_bool8(struct dataio *dio, bool *dest);
-void dio_get_bool32(struct dataio *dio, bool *dest);
-void dio_get_memory(struct dataio *dio, void *dest, size_t dest_size);
-void dio_get_string(struct dataio *dio, char *dest, size_t max_dest_size);
-void dio_get_string_alloc(struct dataio *dio, char **dest);
+void ggz_dio_get_bool8(GGZDataIO *dio, bool * dest);
+void ggz_dio_get_bool32(GGZDataIO *dio, bool * dest);
+void ggz_dio_get_memory(GGZDataIO *dio, void *dest, size_t dest_size);
+void ggz_dio_get_string(GGZDataIO *dio, char *dest,
+			size_t max_dest_size);
+void ggz_dio_get_string_alloc(GGZDataIO *dio, char **dest);
 
 /* puts */
-void dio_put_char(struct dataio *dio, char dest);
-void dio_put_int(struct dataio *dio, int dest);
+void ggz_dio_put_char(GGZDataIO *dio, char dest);
+void ggz_dio_put_int(GGZDataIO *dio, int dest);
 
-void dio_put_uint8(struct dataio *dio, int value);
-void dio_put_uint16(struct dataio *dio, int value);
-void dio_put_uint32(struct dataio *dio, int value);
+void ggz_dio_put_uint8(GGZDataIO *dio, int value);
+void ggz_dio_put_uint16(GGZDataIO *dio, int value);
+void ggz_dio_put_uint32(GGZDataIO *dio, int value);
 
-void dio_put_sint8(struct dataio *dio, int value);
-void dio_put_sint16(struct dataio *dio, int value);
-void dio_put_sint32(struct dataio *dio, int value);
+void ggz_dio_put_sint8(GGZDataIO *dio, int value);
+void ggz_dio_put_sint16(GGZDataIO *dio, int value);
+void ggz_dio_put_sint32(GGZDataIO *dio, int value);
 
-void dio_put_bool8(struct dataio *dio, bool value);
-void dio_put_bool32(struct dataio *dio, bool value);
+void ggz_dio_put_bool8(GGZDataIO *dio, bool value);
+void ggz_dio_put_bool32(GGZDataIO *dio, bool value);
 
-void dio_put_memory(struct dataio *dio, const void *value, size_t size);
-void dio_put_string(struct dataio *dio, const char *value);
+void ggz_dio_put_memory(GGZDataIO *dio, const void *value,
+			size_t size);
+void ggz_dio_put_string(GGZDataIO *dio, const char *value);
 
-#endif  /* FC__PACKETS_H */
+#endif /* FC__PACKETS_H */
