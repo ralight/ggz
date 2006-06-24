@@ -8,7 +8,7 @@ echo # intended for DEMO USE ONLY (e.g. for development, demos etc)
 echo ########################################################################
 echo
 
-REM password = kalido for both keystore and cert
+REM password = ggzcards for both keystore and cert
 
 PATH=%JAVA_HOME%\bin;%PATH%
 

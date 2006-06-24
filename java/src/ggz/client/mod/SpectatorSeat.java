@@ -55,4 +55,7 @@ public class SpectatorSeat {
         return this.num;
     }
 
+    public String toString() {
+        return name;
+    }
 }

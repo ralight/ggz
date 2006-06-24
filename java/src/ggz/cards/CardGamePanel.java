@@ -45,7 +45,6 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -986,11 +985,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     // Ignore for now, player messages already show bids.
                 } else if ("Trump".equals(mark)) {
                     // TODO, show an icon to indicate trumps
-                    chat_panel.appendInfo(message);
+                    chatPanel.appendInfo(message);
                 } else if ("Up-Card".equals(mark)) {
-                    chat_panel.appendInfo(message);
+                    chatPanel.appendInfo(message);
                 } else if ("Hand Score".equals(mark)) {
-                    chat_panel.appendInfo(message);
+                    chatPanel.appendInfo(message);
                 } else if ("Rules".equals(mark)) {
                     try {
                         table.setRulesURL(message);
@@ -999,11 +998,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         ex.printStackTrace();
                     }
                 } else if ("".equals(mark) && !"".equals(message)) {
-                    chat_panel.appendInfo(message);
+                    chatPanel.appendInfo(message);
                 } else if ("".equals(mark) && "".equals(message)) {
                     // Do nothing, not sure why the server sends this.
                 } else {
-                    chat_panel.appendChat("set_text_message", "mark=" + mark
+                    chatPanel.appendChat("set_text_message", "mark=" + mark
                             + " message=" + message);
                 }
             }
@@ -1018,93 +1017,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     public void handle_server_fd(Socket fd) throws IOException {
         super.handle_server_fd(fd);
         cardClient.handle_server_connect(fd);
-    }
-
-    private class SeatBotAction extends AbstractAction {
-        private int seat_num;
-
-        public SeatBotAction(int seat_num) {
-            super("Put computer player here");
-            this.seat_num = seat_num;
-        }
-
-        public void actionPerformed(ActionEvent event) {
-            try {
-                ggzMod.request_bot(seat_num);
-            } catch (IOException e) {
-                handleException(e);
-            }
-        }
-    }
-
-    private class SeatBootAction extends AbstractAction {
-        private String playerName;
-
-        public SeatBootAction(String playerName) {
-            super("Boot this player from the game");
-            this.playerName = playerName;
-        }
-
-        public void actionPerformed(ActionEvent event) {
-            if (JOptionPane.showConfirmDialog(CardGamePanel.this,
-                    "Are you sure you want to boot " + playerName
-                            + " from the game?", "Boot",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                try {
-                    ggzMod.request_boot(playerName);
-                } catch (IOException e) {
-                    handleException(e);
-                }
-            }
-        }
-    }
-
-    private class SeatOpenAction extends AbstractAction {
-        private int seat_num;
-
-        public SeatOpenAction(int seat_num) {
-            super("Make this seat available for a human to play");
-            this.seat_num = seat_num;
-        }
-
-        public void actionPerformed(ActionEvent event) {
-            try {
-                ggzMod.request_open(seat_num);
-            } catch (IOException e) {
-                handleException(e);
-            }
-        }
-    }
-
-    private class SeatSitAction extends AbstractAction {
-        private int seat_num;
-
-        public SeatSitAction(int seat_num) {
-            super("Move here");
-            this.seat_num = seat_num;
-        }
-
-        public void actionPerformed(ActionEvent event) {
-            try {
-                ggzMod.request_sit(seat_num);
-            } catch (IOException e) {
-                handleException(e);
-            }
-        }
-    }
-
-    private class SeatStandAction extends AbstractAction {
-        public SeatStandAction() {
-            super("Spectate");
-        }
-
-        public void actionPerformed(ActionEvent event) {
-            try {
-                ggzMod.request_stand();
-            } catch (IOException e) {
-                handleException(e);
-            }
-        }
     }
 
     private class PopupListener extends MouseAdapter {

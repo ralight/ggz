@@ -26,28 +26,28 @@ import ggz.common.SeatType;
  */
 public class Seat {
     /** Seat index; 0..(num_seats-1). */
-    int num;
+    private int num;
 
     /** Type of seat. */
-    SeatType type;
+    private SeatType type;
 
     /** Name of player occupying seat. */
-    String name;
+    private String name;
 
     public Seat(int num, SeatType type, String name) {
         this.num = num;
         this.type = type;
         this.name = name;
     }
-    
+
     public int get_num() {
         return num;
     }
-    
+
     public String get_name() {
         return name;
     }
-    
+
     public SeatType get_type() {
         return type;
     }
@@ -67,5 +67,9 @@ public class Seat {
      */
     public int hashCode() {
         return this.num;
+    }
+
+    public String toString() {
+        return "Seat: num=" + num + ", name=" + name + ", type=" + type;
     }
 }

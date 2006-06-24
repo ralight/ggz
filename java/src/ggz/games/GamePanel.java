@@ -29,6 +29,7 @@ import ggz.ui.ChatPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -55,21 +57,26 @@ public class GamePanel extends JPanel implements ModEventHandler {
 
     protected ModGame ggzMod;
 
-    protected ChatPanel chat_panel;
+    protected ChatPanel chatPanel;
+
+    protected SpectatorListPanel playerListPanel;
 
     protected GamePanel() {
         super(new SmartChatLayout());
-        chat_panel = new ChatPanel(new TableChatAction());
-        chat_panel.setPreferredSize(new Dimension(200, 150));
-        add(chat_panel, SmartChatLayout.CHAT);
+        chatPanel = new ChatPanel(new TableChatAction());
+        chatPanel.setPreferredSize(new Dimension(200, 150));
+        playerListPanel = new SpectatorListPanel();
+        add(chatPanel, SmartChatLayout.CHAT);
+        add(playerListPanel, SmartChatLayout.SPECTATOR_LIST);
         setOpaque(true);
     }
 
     public void init(ModGame mod) throws IOException {
         this.ggzMod = mod;
+        playerListPanel.setMod(mod);
         mod.add_mod_event_handler(this);
     }
-    
+
     protected void quit() {
         // Do the same as if we were disconnected. handle_disconnect()
         // will be called again but that's fine. We put all the stuff in
@@ -85,7 +92,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
         // this crazy stuff. This method is usually invoked from a handler.
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                chat_panel.appendChat(player, msg);
+                chatPanel.appendChat(player, msg);
             }
         });
     }
@@ -97,11 +104,11 @@ public class GamePanel extends JPanel implements ModEventHandler {
             }
         });
     }
-    
+
     public void handle_info(int num, List infos) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                chat_panel.appendChat("handle_info", null);
+                chatPanel.appendChat("handle_info", null);
             }
         });
     }
@@ -124,6 +131,8 @@ public class GamePanel extends JPanel implements ModEventHandler {
     public void handle_player(String name, boolean is_spectator, int seat_num) {
         // chat_panel.handle_chat("handle_player", "name=" + name
         // + " is_spectator=" + is_spectator + " seat_num=" + seat_num);
+//        System.out.println("handle_player(" + name + ", " + is_spectator + ", "
+//                + seat_num + ")");
     }
 
     /**
@@ -165,10 +174,9 @@ public class GamePanel extends JPanel implements ModEventHandler {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 if (seat.get_name() == null) {
-                    chat_panel.appendInfo("A spectator has left.");
+                    playerListPanel.removeSpectator(seat);
                 } else {
-                    chat_panel.appendInfo(seat.get_name()
-                            + " has joined as a spectator.");
+                    playerListPanel.addSpectator(seat);
                 }
             }
         });
@@ -212,6 +220,93 @@ public class GamePanel extends JPanel implements ModEventHandler {
 
         protected ChatType getDefaultChatType() {
             return ChatType.GGZ_CHAT_TABLE;
+        }
+    }
+
+    protected class SeatBotAction extends AbstractAction {
+        private int seat_num;
+
+        public SeatBotAction(int seat_num) {
+            super("Put computer player here");
+            this.seat_num = seat_num;
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                ggzMod.request_bot(seat_num);
+            } catch (IOException e) {
+                handleException(e);
+            }
+        }
+    }
+
+    protected class SeatBootAction extends AbstractAction {
+        private String playerName;
+
+        public SeatBootAction(String playerName) {
+            super("Boot this player from the game");
+            this.playerName = playerName;
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            if (JOptionPane.showConfirmDialog(GamePanel.this,
+                    "Are you sure you want to boot " + playerName
+                            + " from the game?", "Boot",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                try {
+                    ggzMod.request_boot(playerName);
+                } catch (IOException e) {
+                    handleException(e);
+                }
+            }
+        }
+    }
+
+    protected class SeatOpenAction extends AbstractAction {
+        private int seat_num;
+
+        public SeatOpenAction(int seat_num) {
+            super("Make this seat available for a human to play");
+            this.seat_num = seat_num;
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                ggzMod.request_open(seat_num);
+            } catch (IOException e) {
+                handleException(e);
+            }
+        }
+    }
+
+    protected class SeatSitAction extends AbstractAction {
+        private int seat_num;
+
+        public SeatSitAction(int seat_num) {
+            super("Move here");
+            this.seat_num = seat_num;
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                ggzMod.request_sit(seat_num);
+            } catch (IOException e) {
+                handleException(e);
+            }
+        }
+    }
+
+    protected class SeatStandAction extends AbstractAction {
+        public SeatStandAction() {
+            super("Spectate");
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                ggzMod.request_stand();
+            } catch (IOException e) {
+                handleException(e);
+            }
         }
     }
 }

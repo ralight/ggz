@@ -37,14 +37,13 @@ public class Room {
     private static final Logger log = Logger.getLogger(Room.class.getName());
 
     /* Array of GGZRoom messages */
-//    static final String[] events = new String[] { "GGZ_PLAYER_LIST",
-//            "GGZ_TABLE_LIST", "GGZ_CHATevent", "GGZ_ROOM_ENTER",
-//            "GGZ_ROOM_LEAVE", "GGZ_TABLE_ADD", "GGZ_TABLE_DELETE",
-//            "GGZ_TABLE_UPDATE", "GGZ_TABLE_LAUNCHED", "GGZ_TABLE_LAUNCH_FAIL",
-//            "GGZ_TABLE_JOINED", "GGZ_TABLE_JOIN_FAIL", "GGZ_TABLE_LEFT",
-//            "GGZ_TABLE_LEAVE_FAIL", "GGZ_PLAYER_LAG", "GGZ_PLAYER_STATS",
-//            "GGZ_PLAYER_COUNT" };
-
+    // static final String[] events = new String[] { "GGZ_PLAYER_LIST",
+    // "GGZ_TABLE_LIST", "GGZ_CHATevent", "GGZ_ROOM_ENTER",
+    // "GGZ_ROOM_LEAVE", "GGZ_TABLE_ADD", "GGZ_TABLE_DELETE",
+    // "GGZ_TABLE_UPDATE", "GGZ_TABLE_LAUNCHED", "GGZ_TABLE_LAUNCH_FAIL",
+    // "GGZ_TABLE_JOINED", "GGZ_TABLE_JOIN_FAIL", "GGZ_TABLE_LEFT",
+    // "GGZ_TABLE_LEAVE_FAIL", "GGZ_PLAYER_LAG", "GGZ_PLAYER_STATS",
+    // "GGZ_PLAYER_COUNT" };
     /* Server which this room is on */
     private Server server;
 
@@ -252,13 +251,17 @@ public class Room {
                     "server is null or table parameter is null");
         }
     }
+
     public void join_table(int table_id, int seat_num) throws IOException {
         join_table(table_id, seat_num, false);
     }
+
     public void join_table(int table_id, boolean spectator) throws IOException {
         join_table(table_id, -1, spectator);
-    }    
-    public void join_table(int table_id, int seat_num, boolean spectator) throws IOException {
+    }
+
+    public void join_table(int table_id, int seat_num, boolean spectator)
+            throws IOException {
         if (this.server == null || this.server.get_cur_game() == null) {
             throw new IllegalStateException("server or server.cur_game is null");
         }
@@ -506,7 +509,8 @@ public class Room {
             }
         }
 
-        event(RoomEvent.GGZ_TABLE_UPDATE, old_table == null ? get_table_by_id(table) : old_table);
+        event(RoomEvent.GGZ_TABLE_UPDATE,
+                old_table == null ? get_table_by_id(table) : old_table);
     }
 
     void add_chat(ChatType type, String player_name, String msg) {
@@ -515,11 +519,12 @@ public class Room {
         log.fine("Chat (" + type.toString() + ") from " + player_name);
 
         event(RoomEvent.GGZ_CHAT_EVENT, data);
-        if (type == ChatType.GGZ_CHAT_TABLE) {
+        if (type == ChatType.GGZ_CHAT_TABLE
+                || type == ChatType.GGZ_CHAT_ANNOUNCE) {
             Game game = this.server.get_cur_game();
 
             // Make sure that we still have a game...
-            // game was null once when someone had just left a game as a 
+            // game was null once when someone had just left a game as a
             // spectator so this should prevent this (race?) condition in
             // future.
             if (game != null) {

@@ -232,6 +232,7 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         if (isSoloPlayPossible) {
             soloPlayButton.setSelected(true);
         }
+        getRootPane().setDefaultButton(okButton);
     }
 
     protected void onOKClick() {

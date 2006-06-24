@@ -129,7 +129,6 @@ public class BidPanel extends JPanel implements ActionListener {
                         .getOutsideBorder());
             }
 
-            // Increase the font size for old people.
             Font oldFont = bid_button.getFont();
             bid_button.setFont(oldFont.deriveFont(oldFont.getStyle(), 14));
             bid_button.addActionListener(this);
@@ -248,6 +247,7 @@ public class BidPanel extends JPanel implements ActionListener {
                 } else {
                     setIcon(null);
                 }
+                setFont(table.getFont());
                 setText(getBidText(bid));
             }
             return this;

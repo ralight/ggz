@@ -38,7 +38,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -46,7 +45,10 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 public class RoomChatPanel extends JPanel implements RoomListener {
     private static final Logger log = Logger.getLogger(RoomChatPanel.class
@@ -76,21 +78,16 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         // The list of players.
         players = new PlayersTableModel(showTableNumber);
         playerList = new JTable(players);
-        // playerList.setRowHeight(20);
-        // playerList.getTableHeader().setBackground(new Color(0xce, 0xfa,
-        // 0xdf));
+        playerList.getColumn("Type").setHeaderValue(
+                messages.getString("RoomChatPanel.ColumnHeader.PlayerType"));
         playerList
                 .getColumn("Nickname")
                 .setHeaderValue(
                         messages
                                 .getString("RoomChatPanel.ColumnHeader.PlayerNickname"));
-        playerList.getColumn("Lag").setMaxWidth(20);
         playerList.getColumn("Lag").setHeaderValue("");
-        playerList.getColumn("Type").setMaxWidth(40);
-        playerList.getColumn("Type").setHeaderValue(
-                messages.getString("RoomChatPanel.ColumnHeader.PlayerType"));
+
         if (showTableNumber) {
-            playerList.getColumn("T#").setMaxWidth(20);
             playerList
                     .getColumn("T#")
                     .setHeaderValue(
@@ -102,18 +99,13 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         // playerList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setOpaque(false);
         playerList.setOpaque(false);
-        playerList.setPreferredScrollableViewportSize(new Dimension(220, 100));
         playerList.setDefaultRenderer(PlayerType.class,
                 new PlayerTypeCellRenderer());
         playerList.setDefaultRenderer(Player.class, new PlayerCellRenderer());
         playerList.setDefaultRenderer(Integer.class, new LagCellRenderer());
-        JLabel rowHeightCalculator = new JLabel("Qwerty");
-        rowHeightCalculator.setFont(playerList.getFont());
-        playerList.setRowHeight(Math.max(16, rowHeightCalculator
-                .getPreferredSize().height));
-        playerScrollPane = new JScrollPane();
+        initCellSizes(playerList);
+        playerScrollPane = new JScrollPane(playerList);
         playerScrollPane.setOpaque(false);
-        playerScrollPane.getViewport().add(playerList);
         playerScrollPane.getViewport().setOpaque(false);
         add(playerScrollPane, BorderLayout.WEST);
     }
@@ -214,6 +206,81 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         repaint();
     }
 
+    public static void initCellSizes(JTable table) {
+        JTableHeader header = table.getTableHeader();
+        TableCellRenderer defaultHeaderRenderer = null;
+
+        if (header != null) {
+            defaultHeaderRenderer = header.getDefaultRenderer();
+        }
+
+        TableColumnModel columns = table.getColumnModel();
+        int margin = columns.getColumnMargin(); // only JDK1.3
+        // int rowCount = data.getRowCount();
+        int totalWidth = 0;
+        int rowHeight = 0;
+
+        for (int i = columns.getColumnCount() - 1; i >= 0; --i) {
+            TableColumn column = columns.getColumn(i);
+            int width = -1;
+
+            TableCellRenderer h = column.getHeaderRenderer();
+
+            if (h == null) {
+                h = defaultHeaderRenderer;
+            }
+
+            if (h != null) // Not explicitly impossible
+            {
+                Component c = h.getTableCellRendererComponent(table, column
+                        .getHeaderValue(), false, false, -1, i);
+
+                width = c.getPreferredSize().width;
+            }
+
+            TableCellRenderer r = table.getCellRenderer(0, i);
+            Component c;
+            switch (i) {
+            case 1:
+                c = r.getTableCellRendererComponent(table, new Player(
+                        "TheQuickBrownFox"), false, false, 0, i);
+
+                width = Math.max(width, c.getPreferredSize().width);
+                rowHeight = c.getPreferredSize().height;
+                break;
+            case 2:
+                if (table.getColumnClass(2) == Integer.class)
+                    width = 20;
+                break;
+            case 4:
+                width = 20;
+                break;
+            }
+
+            if (width >= 0) {
+                column.setPreferredWidth(width + margin); // <1.3: without
+                // margin
+            } else {
+                ; // ???
+            }
+
+            totalWidth += column.getPreferredWidth();
+        }
+
+        totalWidth += columns.getColumnCount() * columns.getColumnMargin();
+        Dimension size = table.getPreferredScrollableViewportSize();
+        size.width = totalWidth;
+        table.setPreferredScrollableViewportSize(size);
+
+        table.setRowHeight(Math.max(table.getRowHeight(), rowHeight));
+
+        // table.sizeColumnsToFit(-1); <1.3; possibly even table.revalidate()
+
+        // if (header != null)
+        // header.repaint(); only makes sense when the header is visible (only
+        // <1.3)
+    }
+
     private class PlayersTableModel extends AbstractTableModel {
         private boolean showTableNumber;
 
@@ -222,7 +289,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
 
         public int getColumnCount() {
-            return showTableNumber ? 4 : 3;
+            return showTableNumber ? 5 : 3;
         }
 
         public int getRowCount() {
@@ -236,8 +303,10 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 1:
                 return "Nickname";
             case 2:
-                return showTableNumber ? "T#" : "Lag";
+                return showTableNumber ? "Rating" : "Lag";
             case 3:
+                return "T#";
+            case 4:
                 return "Lag";
             default:
                 return null;
@@ -253,6 +322,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 2:
                 return showTableNumber ? String.class : Integer.class;
             case 3:
+                return String.class;
+            case 4:
                 return Integer.class;
             default:
                 return super.getColumnClass(columnIndex);
@@ -275,10 +346,14 @@ public class RoomChatPanel extends JPanel implements RoomListener {
                 return player;
             case 2:
                 if (showTableNumber) {
-                    return player.get_table() == null ? null : new Integer(
-                            player.get_table().get_id());
+                    return String.valueOf(player.get_rating());
+                } else {
+                    return new Integer(player.get_lag());
                 }
             case 3:
+                return player.get_table() == null ? null : new Integer(player
+                        .get_table().get_id());
+            case 4:
                 return new Integer(player.get_lag());
             default:
                 return null;

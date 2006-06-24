@@ -24,240 +24,273 @@ import java.util.logging.Logger;
  * serve as inputs for the state machine
  */
 public class TransID {
-	public static final TransID GGZ_TRANS_CONN_TRY = new TransID();
+    public static final TransID GGZ_TRANS_CONN_TRY = new TransID(
+            "GGZ_TRANS_CONN_TRY");
 
-	public static final TransID GGZ_TRANS_CONN_OK = new TransID();
+    public static final TransID GGZ_TRANS_CONN_OK = new TransID(
+            "GGZ_TRANS_CONN_OK");
 
-	public static final TransID GGZ_TRANS_CONN_FAIL = new TransID();
+    public static final TransID GGZ_TRANS_CONN_FAIL = new TransID(
+            "GGZ_TRANS_CONN_FAIL");
 
-	public static final TransID GGZ_TRANS_LOGIN_TRY = new TransID();
+    public static final TransID GGZ_TRANS_LOGIN_TRY = new TransID(
+            "GGZ_TRANS_LOGIN_TRY");
 
-	public static final TransID GGZ_TRANS_LOGIN_OK = new TransID();
+    public static final TransID GGZ_TRANS_LOGIN_OK = new TransID(
+            "GGZ_TRANS_LOGIN_OK");
 
-	public static final TransID GGZ_TRANS_LOGIN_FAIL = new TransID();
+    public static final TransID GGZ_TRANS_LOGIN_FAIL = new TransID(
+            "GGZ_TRANS_LOGIN_FAIL");
 
-	public static final TransID GGZ_TRANS_ENTER_TRY = new TransID();
+    public static final TransID GGZ_TRANS_ENTER_TRY = new TransID(
+            "GGZ_TRANS_ENTER_TRY");
 
-	public static final TransID GGZ_TRANS_ENTER_OK = new TransID();
+    public static final TransID GGZ_TRANS_ENTER_OK = new TransID(
+            "GGZ_TRANS_ENTER_OK");
 
-	public static final TransID GGZ_TRANS_ENTER_FAIL = new TransID();
+    public static final TransID GGZ_TRANS_ENTER_FAIL = new TransID(
+            "GGZ_TRANS_ENTER_FAIL");
 
-	public static final TransID GGZ_TRANS_LAUNCH_TRY = new TransID();
+    public static final TransID GGZ_TRANS_LAUNCH_TRY = new TransID(
+            "GGZ_TRANS_LAUNCH_TRY");
 
-	public static final TransID GGZ_TRANS_LAUNCH_OK = new TransID();
+    public static final TransID GGZ_TRANS_LAUNCH_OK = new TransID(
+            "GGZ_TRANS_LAUNCH_OK");
 
-	public static final TransID GGZ_TRANS_LAUNCH_FAIL = new TransID();
+    public static final TransID GGZ_TRANS_LAUNCH_FAIL = new TransID(
+            "GGZ_TRANS_LAUNCH_FAIL");
 
-	public static final TransID GGZ_TRANS_JOIN_TRY = new TransID();
+    public static final TransID GGZ_TRANS_JOIN_TRY = new TransID(
+            "GGZ_TRANS_JOIN_TRY");
 
-	public static final TransID GGZ_TRANS_JOIN_OK = new TransID();
+    public static final TransID GGZ_TRANS_JOIN_OK = new TransID(
+            "GGZ_TRANS_JOIN_OK");
 
-	public static final TransID GGZ_TRANS_JOIN_FAIL = new TransID();
+    public static final TransID GGZ_TRANS_JOIN_FAIL = new TransID(
+            "GGZ_TRANS_JOIN_FAIL");
 
-	public static final TransID GGZ_TRANS_LEAVE_TRY = new TransID();
+    public static final TransID GGZ_TRANS_LEAVE_TRY = new TransID(
+            "GGZ_TRANS_LEAVE_TRY");
 
-	public static final TransID GGZ_TRANS_LEAVE_OK = new TransID();
+    public static final TransID GGZ_TRANS_LEAVE_OK = new TransID(
+            "GGZ_TRANS_LEAVE_OK");
 
-	public static final TransID GGZ_TRANS_LEAVE_FAIL = new TransID();
+    public static final TransID GGZ_TRANS_LEAVE_FAIL = new TransID(
+            "GGZ_TRANS_LEAVE_FAIL");
 
-	public static final TransID GGZ_TRANS_LOGOUT_TRY = new TransID();
+    public static final TransID GGZ_TRANS_LOGOUT_TRY = new TransID(
+            "GGZ_TRANS_LOGOUT_TRY");
 
-	public static final TransID GGZ_TRANS_LOGOUT_OK = new TransID();
+    public static final TransID GGZ_TRANS_LOGOUT_OK = new TransID(
+            "GGZ_TRANS_LOGOUT_OK");
 
-	public static final TransID GGZ_TRANS_NET_ERROR = new TransID();
+    public static final TransID GGZ_TRANS_NET_ERROR = new TransID(
+            "GGZ_TRANS_NET_ERROR");
 
-	public static final TransID GGZ_TRANS_PROTO_ERROR = new TransID();
+    public static final TransID GGZ_TRANS_PROTO_ERROR = new TransID(
+            "GGZ_TRANS_PROTO_ERROR");
 
-	static final Logger log = Logger.getLogger(TransID.class.getName());
+    private static final Logger log = Logger.getLogger(TransID.class.getName());
 
-	/* Structure to represent state transition pairs */
-	private static class _Transition {
+    private String name;
 
-		/* Transition ID */
-		TransID id;
+    private TransID(String name) {
+        this.name = name;
+    }
 
-		/* Next state */
-		StateID next;
+    public String toString() {
+        return name;
+    }
 
-		_Transition(TransID id, StateID next) {
-			this.id = id;
-			this.next = next;
-		}
-	}
+    /* Structure to represent state transition pairs */
+    private static class _Transition {
 
-	/* Structure for a particular client state */
-	private static class _State {
+        /* Transition ID */
+        TransID id;
 
-		/* Unique id number */
-		StateID id;
+        /* Next state */
+        StateID next;
 
-		/* Descriptive string (mainly for debugging purposes) */
-		String name;
+        _Transition(TransID id, StateID next) {
+            this.id = id;
+            this.next = next;
+        }
+    }
 
-		/* Array of valid state transitions */
-		_Transition[] transitions;
+    /* Structure for a particular client state */
+    private static class _State {
 
-		_State(StateID id, String name, _Transition[] transitions) {
-			this.id = id;
-			this.name = name;
-			this.transitions = transitions;
-		}
-	}
+        /* Unique id number */
+        StateID id;
 
-	/* Giant list of transitions for each state */
-	private static _Transition[] _offline_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_CONN_TRY, StateID.GGZ_STATE_CONNECTING),
-			new _Transition(null, null) };
+        /* Descriptive string (mainly for debugging purposes) */
+        String name;
 
-	private static _Transition[] _connecting_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_CONN_OK, StateID.GGZ_STATE_ONLINE),
-			new _Transition(GGZ_TRANS_CONN_FAIL, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+        /* Array of valid state transitions */
+        _Transition[] transitions;
 
-	private static _Transition[] _reconnecting_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_CONN_OK, StateID.GGZ_STATE_ONLINE),
-			new _Transition(GGZ_TRANS_CONN_FAIL, StateID.GGZ_STATE_RECONNECTING),
-			new _Transition(null, null) };
+        _State(StateID id, String name, _Transition[] transitions) {
+            this.id = id;
+            this.name = name;
+            this.transitions = transitions;
+        }
+    }
 
-	private static _Transition[] _online_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_LOGIN_TRY, StateID.GGZ_STATE_LOGGING_IN),
-			new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    /* Giant list of transitions for each state */
+    private static _Transition[] _offline_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_CONN_TRY, StateID.GGZ_STATE_CONNECTING),
+            new _Transition(null, null) };
 
-	private static _Transition[] _logging_in_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_LOGIN_OK, StateID.GGZ_STATE_LOGGED_IN),
-			new _Transition(GGZ_TRANS_LOGIN_FAIL, StateID.GGZ_STATE_ONLINE),
-			new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _connecting_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_CONN_OK, StateID.GGZ_STATE_ONLINE),
+            new _Transition(GGZ_TRANS_CONN_FAIL, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	private static _Transition[] _logged_in_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_ENTER_TRY,
-					StateID.GGZ_STATE_ENTERING_ROOM),
-			new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _reconnecting_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_CONN_OK, StateID.GGZ_STATE_ONLINE),
+            new _Transition(GGZ_TRANS_CONN_FAIL, StateID.GGZ_STATE_RECONNECTING),
+            new _Transition(null, null) };
 
-	private static _Transition[] _entering_room_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_ENTER_OK, StateID.GGZ_STATE_IN_ROOM),
-			new _Transition(GGZ_TRANS_ENTER_FAIL, StateID.GGZ_STATE_LOGGED_IN),
-			new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _online_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_LOGIN_TRY, StateID.GGZ_STATE_LOGGING_IN),
+            new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	private static _Transition[] _in_room_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_ENTER_TRY,
-					StateID.GGZ_STATE_BETWEEN_ROOMS),
-			new _Transition(GGZ_TRANS_LAUNCH_TRY,
-					StateID.GGZ_STATE_LAUNCHING_TABLE),
-			new _Transition(GGZ_TRANS_JOIN_TRY, StateID.GGZ_STATE_JOINING_TABLE),
-			new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _logging_in_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_LOGIN_OK, StateID.GGZ_STATE_LOGGED_IN),
+            new _Transition(GGZ_TRANS_LOGIN_FAIL, StateID.GGZ_STATE_ONLINE),
+            new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	private static _Transition[] _between_rooms_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_ENTER_OK, StateID.GGZ_STATE_IN_ROOM),
-			new _Transition(GGZ_TRANS_ENTER_FAIL, StateID.GGZ_STATE_IN_ROOM),
-			new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _logged_in_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_ENTER_TRY,
+                    StateID.GGZ_STATE_ENTERING_ROOM),
+            new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	private static _Transition[] _launching_table_transitions = new _Transition[] {
-	/* For now, server automatically tries to join us */
-	new _Transition(GGZ_TRANS_LAUNCH_OK, StateID.GGZ_STATE_JOINING_TABLE),
-			new _Transition(GGZ_TRANS_LAUNCH_FAIL, StateID.GGZ_STATE_IN_ROOM),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _entering_room_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_ENTER_OK, StateID.GGZ_STATE_IN_ROOM),
+            new _Transition(GGZ_TRANS_ENTER_FAIL, StateID.GGZ_STATE_LOGGED_IN),
+            new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	private static _Transition[] _joining_table_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_JOIN_OK, StateID.GGZ_STATE_AT_TABLE),
-			new _Transition(GGZ_TRANS_JOIN_FAIL, StateID.GGZ_STATE_IN_ROOM),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _in_room_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_ENTER_TRY,
+                    StateID.GGZ_STATE_BETWEEN_ROOMS),
+            new _Transition(GGZ_TRANS_LAUNCH_TRY,
+                    StateID.GGZ_STATE_LAUNCHING_TABLE),
+            new _Transition(GGZ_TRANS_JOIN_TRY, StateID.GGZ_STATE_JOINING_TABLE),
+            new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	private static _Transition[] _at_table_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_LEAVE_TRY,
-					StateID.GGZ_STATE_LEAVING_TABLE),
-			new _Transition(GGZ_TRANS_LEAVE_OK, StateID.GGZ_STATE_IN_ROOM),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _between_rooms_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_ENTER_OK, StateID.GGZ_STATE_IN_ROOM),
+            new _Transition(GGZ_TRANS_ENTER_FAIL, StateID.GGZ_STATE_IN_ROOM),
+            new _Transition(GGZ_TRANS_LOGOUT_TRY, StateID.GGZ_STATE_LOGGING_OUT),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	private static _Transition[] _leaving_table_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_LEAVE_OK, StateID.GGZ_STATE_IN_ROOM),
-			new _Transition(GGZ_TRANS_LEAVE_FAIL, StateID.GGZ_STATE_AT_TABLE),
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _launching_table_transitions = new _Transition[] {
+    /* For now, server automatically tries to join us */
+    new _Transition(GGZ_TRANS_LAUNCH_OK, StateID.GGZ_STATE_JOINING_TABLE),
+            new _Transition(GGZ_TRANS_LAUNCH_FAIL, StateID.GGZ_STATE_IN_ROOM),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	private static _Transition[] _logging_out_transitions = new _Transition[] {
-			new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(GGZ_TRANS_LOGOUT_OK, StateID.GGZ_STATE_OFFLINE),
-			new _Transition(null, null) };
+    private static _Transition[] _joining_table_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_JOIN_OK, StateID.GGZ_STATE_AT_TABLE),
+            new _Transition(GGZ_TRANS_JOIN_FAIL, StateID.GGZ_STATE_IN_ROOM),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	/* Array of all GGZ states */
-	static final _State[] __states = new _State[] {
-			new _State(StateID.GGZ_STATE_OFFLINE, "offline",
-					_offline_transitions),
-			new _State(StateID.GGZ_STATE_CONNECTING, "connecting",
-					_connecting_transitions),
-			new _State(StateID.GGZ_STATE_RECONNECTING, "reconnecting",
-					_reconnecting_transitions),
-			new _State(StateID.GGZ_STATE_ONLINE, "online", _online_transitions),
-			new _State(StateID.GGZ_STATE_LOGGING_IN, "logging_in",
-					_logging_in_transitions),
-			new _State(StateID.GGZ_STATE_LOGGED_IN, "logged_in",
-					_logged_in_transitions),
-			new _State(StateID.GGZ_STATE_ENTERING_ROOM, "entering_room",
-					_entering_room_transitions),
-			new _State(StateID.GGZ_STATE_IN_ROOM, "in_room",
-					_in_room_transitions),
-			new _State(StateID.GGZ_STATE_BETWEEN_ROOMS, "between_rooms",
-					_between_rooms_transitions),
-			new _State(StateID.GGZ_STATE_LAUNCHING_TABLE, "launching_table",
-					_launching_table_transitions),
-			new _State(StateID.GGZ_STATE_JOINING_TABLE, "joining_table",
-					_joining_table_transitions),
-			new _State(StateID.GGZ_STATE_AT_TABLE, "at_table",
-					_at_table_transitions),
-			new _State(StateID.GGZ_STATE_LEAVING_TABLE, "leaving_table",
-					_leaving_table_transitions),
-			new _State(StateID.GGZ_STATE_LOGGING_OUT, "logging_out",
-					_logging_out_transitions), };
+    private static _Transition[] _at_table_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_LEAVE_TRY,
+                    StateID.GGZ_STATE_LEAVING_TABLE),
+            new _Transition(GGZ_TRANS_LEAVE_OK, StateID.GGZ_STATE_IN_ROOM),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-	public StateID state_transition(StateID cur) {
-		TransID trans = this;
-		int i = 0;
-		_Transition[] transitions;
-		StateID next = null;
+    private static _Transition[] _leaving_table_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_LEAVE_OK, StateID.GGZ_STATE_IN_ROOM),
+            new _Transition(GGZ_TRANS_LEAVE_FAIL, StateID.GGZ_STATE_AT_TABLE),
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-		transitions = __states[cur.ordinal()].transitions;
+    private static _Transition[] _logging_out_transitions = new _Transition[] {
+            new _Transition(GGZ_TRANS_NET_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_PROTO_ERROR, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(GGZ_TRANS_LOGOUT_OK, StateID.GGZ_STATE_OFFLINE),
+            new _Transition(null, null) };
 
-		/* Look through valid transitions to see if this one is OK */
-		while (transitions[i].id != null) {
-			if (transitions[i].id == trans) {
-				next = transitions[i].next;
-				break;
-			}
-			++i;
-		}
+    /* Array of all GGZ states */
+    static final _State[] __states = new _State[] {
+            new _State(StateID.GGZ_STATE_OFFLINE, "offline",
+                    _offline_transitions),
+            new _State(StateID.GGZ_STATE_CONNECTING, "connecting",
+                    _connecting_transitions),
+            new _State(StateID.GGZ_STATE_RECONNECTING, "reconnecting",
+                    _reconnecting_transitions),
+            new _State(StateID.GGZ_STATE_ONLINE, "online", _online_transitions),
+            new _State(StateID.GGZ_STATE_LOGGING_IN, "logging_in",
+                    _logging_in_transitions),
+            new _State(StateID.GGZ_STATE_LOGGED_IN, "logged_in",
+                    _logged_in_transitions),
+            new _State(StateID.GGZ_STATE_ENTERING_ROOM, "entering_room",
+                    _entering_room_transitions),
+            new _State(StateID.GGZ_STATE_IN_ROOM, "in_room",
+                    _in_room_transitions),
+            new _State(StateID.GGZ_STATE_BETWEEN_ROOMS, "between_rooms",
+                    _between_rooms_transitions),
+            new _State(StateID.GGZ_STATE_LAUNCHING_TABLE, "launching_table",
+                    _launching_table_transitions),
+            new _State(StateID.GGZ_STATE_JOINING_TABLE, "joining_table",
+                    _joining_table_transitions),
+            new _State(StateID.GGZ_STATE_AT_TABLE, "at_table",
+                    _at_table_transitions),
+            new _State(StateID.GGZ_STATE_LEAVING_TABLE, "leaving_table",
+                    _leaving_table_transitions),
+            new _State(StateID.GGZ_STATE_LOGGING_OUT, "logging_out",
+                    _logging_out_transitions), };
 
-		if (next != cur && next != null) {
-			log.fine("State transition " + __states[cur.ordinal()].name
-					+ " -> " + __states[next.ordinal()].name);
-			return next;
-		}
-        log.warning("No transitions found " + __states[cur.ordinal()].name);
-		return cur;
-	}
+    public StateID state_transition(StateID cur) {
+        TransID trans = this;
+        int i = 0;
+        _Transition[] transitions;
+        StateID next = null;
+
+        transitions = __states[cur.ordinal()].transitions;
+
+        /* Look through valid transitions to see if this one is OK */
+        while (transitions[i].id != null) {
+            if (transitions[i].id == trans) {
+                next = transitions[i].next;
+                break;
+            }
+            ++i;
+        }
+
+        if (next != cur && next != null) {
+            log.fine("State transition " + __states[cur.ordinal()].name
+                    + " -> " + __states[next.ordinal()].name);
+            return next;
+        }
+        log.warning("No transitions found TransID=" + this + " Current State="
+                + __states[cur.ordinal()].name);
+        return cur;
+    }
 }

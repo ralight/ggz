@@ -91,6 +91,14 @@ public class Player {
         return this.forfeits;
     }
 
+    /**
+     * Constructor used only by RoomChatPanel to calculate column widths. 
+     * @param name
+     */
+    public Player(String name) {
+        this.name = name;
+    }
+    
     /*
      * Internal library functions (prototypes in player.h) NOTE:All of these
      * functions assume valid inputs!

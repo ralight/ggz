@@ -178,17 +178,17 @@ public class Mod implements ModGGZ, ModGame {
 	public void set_seat(Seat seat) {
 		Seat oldseat;
 
-		if (seat == null || seat.num < 0) {
+		if (seat == null || seat.get_num() < 0) {
 			throw new IllegalArgumentException("Seat is null or has num < 0");
 		}
 
-		oldseat = get_seat(seat.num);
+		oldseat = get_seat(seat.get_num());
 
 		if (oldseat != null && oldseat.equals(seat)) {
 			return;
 		}
 
-		if (seat.num >= this.get_num_seats()) {
+		if (seat.get_num() >= this.get_num_seats()) {
 
 			if (this.seats == null) {
 				this.seats = new ArrayList();
@@ -196,7 +196,7 @@ public class Mod implements ModGGZ, ModGame {
 
 			this.seats.add(seat);
 		} else {
-			this.seats.set(seat.num, seat);
+			this.seats.set(seat.get_num(), seat);
 		}
 
 		if (this.state != ModState.GGZMOD_STATE_CREATED) {
@@ -249,7 +249,7 @@ public class Mod implements ModGGZ, ModGame {
 		if (num >= 0 && num < this.get_num_seats()) {
 			for (int seat_num = 0; seat_num < this.seats.size(); seat_num++) {
 				Seat seat = (Seat) this.seats.get(seat_num);
-				if (num == seat.num) {
+				if (num == seat.get_num()) {
 					return seat;
 				}
 			}
@@ -380,8 +380,10 @@ public class Mod implements ModGGZ, ModGame {
 	 */
 	private void send_game_launch() throws IOException {
 
-		ehandler.handle_player(this.my_name, this.i_am_spectator,
-				this.my_seat_num);
+        //HB This was being sent before any values were set - we
+        //   should only send this when the data is valid.
+		//ehandler.handle_player(this.my_name, this.i_am_spectator,
+		//		this.my_seat_num);
 
 		if (this.seats != null) {
 			for (Iterator iter = this.seats.iterator(); iter.hasNext();) {
