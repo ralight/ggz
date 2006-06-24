@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: state.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: state.c 8265 2006-06-24 08:22:26Z jdorje $
  *
  * Code for handling state manipulations
  *
@@ -217,6 +217,9 @@ void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur)
 			  _ggz_states[*cur].name, 
 			  _ggz_states[next].name);
 		*cur = next;
+	} else if (next == -1) {
+		ggz_error_msg("No state transition for %d from %s!", 
+			      trans, _ggz_states[*cur].name);
 	}
 }
 
