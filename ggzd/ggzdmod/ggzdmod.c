@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 8243 2006-06-22 02:15:47Z jdorje $
+ * $Id: ggzdmod.c 8264 2006-06-24 07:55:26Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -617,7 +617,8 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 				       "Error writing seat change to game");
 		}
 
-		/* We (GGZ) don't need the fd now */
+		/* We (GGZ) don't need the fd now (the exact same thing is
+		   done for spectators too, see ggzdmod_set_spectator). */
 		if (seat->type == GGZ_SEAT_PLAYER) {
 			close(seat->fd);
 			seat->fd = -1;
@@ -684,8 +685,12 @@ int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 			return -1;
 		}
 
-		/* We (GGZ) don't need the fd now */
-		spectator->fd = -1;
+		/* We (GGZ) don't need the fd now (the exact same thing is
+		   done for regular players too, see ggzdmod_set_seat). */
+		if (spectator->fd >= 0) {
+			close(spectator->fd);
+			spectator->fd = -1;
+		}
 	}
 
 	return _ggzdmod_set_spectator(ggzdmod, spectator);
