@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: game.c 8267 2006-06-25 01:58:34Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -435,15 +435,26 @@ bool game_test_for_gameover(void)
 {
 	player_t p;
 
-	/* in the default case, it's just a race toward a target score */
 	for (p = 0; p < game.num_players; p++) {
+		/* in the default case, it's just a race toward a
+		   target score */
 		if (game.target_score != 0
 		    && game.players[p].score >= game.target_score)
 			return TRUE;
+
+		/* It is possible to set a low score that will cause a
+		   forfeit if reached. */
 		if (game.forfeit_score != 0
 		    && game.players[p].score <= game.forfeit_score)
 			return TRUE;
 	}
+
+	/* Sometimes there is a limit on the maximum number of hands to be
+	   played. */
+	if (game.max_hands != 0
+	    && game.hand_num >= game.max_hands)
+	  return TRUE;
+
 	return FALSE;
 }
 

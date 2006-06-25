@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8260 2006-06-23 12:15:06Z oojah $
+ * $Id: spades.c 8267 2006-06-25 01:58:34Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -213,6 +213,13 @@ static void spades_get_options(void)
 	           "No blind (double) nil",
 		   "Blind (double) nil worth 100",
 		   "Blind (double) nil worth 200");
+	add_option("Gameover", "max_hands",
+		   "What is the maximum number of hands that will be played?",
+		   4, 3,
+		   "Just play one hand",
+		   "Max of 8 hands",
+		   "Max of 10 hands",
+		   "No maximum hand limit");
 	add_option("Gameover", "target_score",
 	           "How many points does each team need to win?",
 	           5,
@@ -221,15 +228,15 @@ static void spades_get_options(void)
 		   "Game to 500", "Game to 1000",
 	           "Unending game"
 		   );
+	add_option("Gameover", "low_score_loses",
+		   "Does dropping to -200 points cause an automatic loss?",
+		   1, 1,
+		   "Forfeit at -200 points");
 	add_option("Bidding and Scoring", "minimum_bid",
 	           "What is the minimum bid that each team must meet?",
 	           5, 0,
 	           "Minimum bid 0", "Minimum bid 1",
 		   "Minimum bid 2", "Minimum bid 3", "Minimum bid 4");
-	add_option("Gameover", "low_score_loses",
-		   "Does dropping to -200 points cause an automatic loss?",
-		   1, 1,
-		   "Forfeit at -200 points");
 	add_option("Bidding and Scoring", "nil_tricks_count",
 		   "How are tricks taken by the nil bidder scored? Do they\n"
 		   "count toward the partner's bid, do they give overtricks\n"
@@ -248,6 +255,21 @@ static int spades_handle_option(char *option, int value)
 {
 	if (strcmp("nil_value", option) == 0) {
 		GSPADES.nil_value = 50 * value;
+	} else if (strcmp("max_hands", option) == 0) {
+		switch (value) {
+		case 0:
+			game.max_hands = 1;
+			break;
+		case 1:
+			game.max_hands = 8;
+			break;
+		case 2:
+			game.max_hands = 10;
+			break;
+		case 3:
+			game.max_hands = MAX_HANDS;
+			break;
+		}
 	} else if (strcmp("target_score", option) == 0) {
 		switch (value) {
 		case 0:
@@ -268,15 +290,15 @@ static int spades_handle_option(char *option, int value)
 		default:
 			break;
 		}
-	} else if (strcmp("minimum_bid", option) == 0) {
-		GSPADES.minimum_team_bid = value;
-	} else if (strcmp("double_nil", option) == 0) {
-		GSPADES.double_nil_value = 100 * value;
 	} else if (strcmp("low_score_loses", option) == 0) {
 		if (value == 0)
 			game.forfeit_score = 0;
 		else
 			game.forfeit_score = -200;
+	} else if (strcmp("minimum_bid", option) == 0) {
+		GSPADES.minimum_team_bid = value;
+	} else if (strcmp("double_nil", option) == 0) {
+		GSPADES.double_nil_value = 100 * value;
 	} else if (strcmp("nil_trick_count", option) == 0) {
 		GSPADES.nil_tricks_count = value;
 	} else {
@@ -296,10 +318,35 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 				 50 * value);
 	} else if (strcmp(option, "target_score") == 0) {
 		if (game.target_score == MAX_TARGET_SCORE)
-			snprintf(buf, bufsz, "The game will never end."); 	
+			snprintf(buf, bufsz, "There is no points limit.");
 		else
 			snprintf(buf, bufsz, "The game is being played to %d.",
 				 game.target_score);
+	} else if (strcmp(option, "max_hands") == 0) {
+		switch (value) {
+		case 0:
+			snprintf(buf, bufsz, "Only one hand will be played.");
+			break;
+		case 1:
+			snprintf(buf, bufsz, "A maximum of 8 hands will "
+				 "be played.");
+			break;
+		case 2:
+			snprintf(buf, bufsz, "A maximum of 10 hands will "
+				 "be played.");
+			break;
+		case 3:
+			snprintf(buf, bufsz, "There is no limit on the number"
+				 " of hands to be played.");
+			break;
+		}
+	} else if (strcmp(option, "low_score_loses") == 0) {
+		if (value == 0)
+			snprintf(buf, bufsz,
+				"Game is not forfeit at -200 points.");
+		else
+			snprintf(buf, bufsz,
+				"Game is forfeit at -200 points.");
 	} else if (strcmp(option, "minimum_bid") == 0)
 		snprintf(buf, bufsz, "The minimum team bid is %d.",
 			 GSPADES.minimum_team_bid);
@@ -311,13 +358,6 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 			snprintf(buf, bufsz,
 				 "Blind (double) nil is worth %d.",
 				 value == 1 ? 100 : 200);
-	} else if (strcmp(option, "low_score_loses") == 0) {
-		if (value == 0)
-			snprintf(buf, bufsz,
-				"Game is not forfeit at -200 points.");
-		else
-			snprintf(buf, bufsz,
-				"Game is forfeit at -200 points.");
 	} else if (strcmp(option, "nil_tricks_count") == 0) {
 		switch (value) {
 		case NIL_TRICKS_COUNT:
