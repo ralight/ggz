@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8071 2006-05-29 07:34:31Z josef $
+ * $Id: players.c 8269 2006-06-25 17:13:27Z oojah $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -287,10 +287,12 @@ GGZPlayerType player_get_type(GGZPlayer *player)
 
 	if(player->login_status == GGZ_LOGIN_ANON)
 		type = GGZ_PLAYER_GUEST;
+	else if(perms_is_bot(player))
+		/* Check for a bot first, because bots may have admin
+		 * capabilities as well */
+		type = GGZ_PLAYER_BOT;
 	else if(perms_is_admin(player))
 		type = GGZ_PLAYER_ADMIN;
-	else if(perms_is_bot(player))
-		type = GGZ_PLAYER_BOT;
 	else
 		type = GGZ_PLAYER_NORMAL;
 
