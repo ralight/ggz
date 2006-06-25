@@ -127,17 +127,21 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         // Ignore normal chat messages from ourselves since we append the text
         // on send without waiting for the server to make the app feel more
         // responsive. We also ignore all table chat since this is the chat
-        // panel for rooms and not tables.
-        if ((!handle.equals(data.sender) || data.type != ChatType.GGZ_CHAT_NORMAL)
-                && data.type != ChatType.GGZ_CHAT_TABLE) {
-            // All handlers are called from the socket thread so we need to do
-            // this crazy stuff.
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    chatPanel.appendChat(data.type, data.sender, data.message);
-                }
-            });
+        // panel for rooms and not tables. Also ignore private chat since this
+        // is displayed in a private chat dialog (see PrivateChatDialog).
+        if ((handle.equals(data.sender) && data.type == ChatType.GGZ_CHAT_NORMAL)
+                || data.type == ChatType.GGZ_CHAT_TABLE
+                || data.type == ChatType.GGZ_CHAT_PERSONAL) {
+            return;
         }
+
+        // All handlers are called from the socket thread so we need to do
+        // this crazy stuff.
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                chatPanel.appendChat(data.type, data.sender, data.message);
+            }
+        });
     }
 
     public void player_count(int room_id) {
@@ -158,11 +162,11 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     }
 
     public void room_enter(RoomChangeEventData data) {
-        player_list(0);
+        player_list(room.get_id());
     }
 
     public void room_leave(RoomChangeEventData data) {
-        player_list(0);
+        player_list(room.get_id());
     }
 
     public void table_join_fail(String error) {
@@ -241,19 +245,15 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             TableCellRenderer r = table.getCellRenderer(0, i);
             Component c;
             switch (i) {
-            case 1:
+            case 0:
+                width = 15;
+                break;
+            case 2:
                 c = r.getTableCellRendererComponent(table, new Player(
                         "TheQuickBrownFox"), false, false, 0, i);
 
                 width = Math.max(width, c.getPreferredSize().width);
                 rowHeight = c.getPreferredSize().height;
-                break;
-            case 2:
-                if (table.getColumnClass(2) == Integer.class)
-                    width = 20;
-                break;
-            case 4:
-                width = 20;
                 break;
             }
 
@@ -299,15 +299,15 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         public String getColumnName(int column) {
             switch (column) {
             case 0:
-                return "Type";
-            case 1:
-                return "Nickname";
-            case 2:
-                return showTableNumber ? "Rating" : "Lag";
-            case 3:
-                return "T#";
-            case 4:
                 return "Lag";
+            case 1:
+                return "Type";
+            case 2:
+                return "Nickname";
+            case 3:
+                return "Rating";
+            case 4:
+                return "T#";
             default:
                 return null;
             }
@@ -316,15 +316,15 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         public Class getColumnClass(int columnIndex) {
             switch (columnIndex) {
             case 0:
-                return PlayerType.class;
+                return Integer.class;
             case 1:
-                return Player.class;
+                return PlayerType.class;
             case 2:
-                return showTableNumber ? String.class : Integer.class;
+                return Player.class;
             case 3:
                 return String.class;
             case 4:
-                return Integer.class;
+                return String.class;
             default:
                 return super.getColumnClass(columnIndex);
             }
@@ -341,20 +341,20 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
             switch (columnIndex) {
             case 0:
-                return player.get_type();
+                return new Integer(player.get_lag());
             case 1:
-                return player;
+                return player.get_type();
             case 2:
+                return player;
+            case 3:
                 if (showTableNumber) {
                     return String.valueOf(player.get_rating());
                 } else {
                     return new Integer(player.get_lag());
                 }
-            case 3:
+            case 4:
                 return player.get_table() == null ? null : new Integer(player
                         .get_table().get_id());
-            case 4:
-                return new Integer(player.get_lag());
             default:
                 return null;
             }

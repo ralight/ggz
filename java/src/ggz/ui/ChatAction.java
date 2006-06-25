@@ -40,7 +40,6 @@ public abstract class ChatAction extends AbstractAction {
 			{ "/help", messages.getString("ChatAction.Help.help") },
 			{ "/ignore", messages.getString("ChatAction.Help.ignore") },
 			{ "/msg", messages.getString("ChatAction.Help.msg") },
-			{ "/table", messages.getString("ChatAction.Help.table") },
 			{ "/wall", messages.getString("ChatAction.Help.wall") } };
 
 	void setChatPanel(ChatPanel chatPanel) {
@@ -123,28 +122,6 @@ public abstract class ChatAction extends AbstractAction {
 			/* Could not parse it. */
 			chatPanel.appendCommandText(messages
 					.getString("ChatAction.Usage.msg"));
-		}
-	}
-
-	/*
-	 * Sends a chat to all players at the table.
-	 * 
-	 * @param message The text to send as a private message
-	 * 
-	 */
-	private void chat_send_tablemsg(int commandIndex, String message)
-			throws IOException {
-		try {
-			// Remove /table command
-			message = message.substring(commands[commandIndex][0].length())
-					.trim();
-			if (message.length() > 0) {
-				sendChat(ChatType.GGZ_CHAT_TABLE, null, message);
-			}
-		} catch (IndexOutOfBoundsException ex) {
-			/* Could not parse it. */
-			chatPanel.appendCommandText(messages
-					.getString("ChatAction.Usage.table"));
 		}
 	}
 
@@ -278,9 +255,6 @@ public abstract class ChatAction extends AbstractAction {
 			chat_send_prvmsg(commandIndex, commandString);
 			break;
 		case 5:
-			chat_send_tablemsg(commandIndex, commandString);
-			break;
-		case 6:
 			chat_send_wall(commandIndex, commandString);
 			break;
 		default:

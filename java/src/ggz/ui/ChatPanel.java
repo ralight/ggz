@@ -197,11 +197,6 @@ public class ChatPanel extends JPanel {
             Toolkit.getDefaultToolkit().beep();
         }
 
-        if (type == ChatType.GGZ_CHAT_PERSONAL) {
-            // TODO Open a private chat window instead.
-            appendCommandText("You have received a private message. (below)");
-        }
-
         if ("MegaGrub".equals(sender)) {
             textStyle = senderText;
         } else if (friendsList != null

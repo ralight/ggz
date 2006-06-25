@@ -61,6 +61,8 @@ public class GamePanel extends JPanel implements ModEventHandler {
 
     protected SpectatorListPanel playerListPanel;
 
+    protected String myName;
+
     protected GamePanel() {
         super(new SmartChatLayout());
         chatPanel = new ChatPanel(new TableChatAction());
@@ -86,8 +88,12 @@ public class GamePanel extends JPanel implements ModEventHandler {
     }
 
     public void handle_chat(final String player, final String msg) {
-        // Can't ignore messages because we need to handle the /table command,
-        // which can be sent from the table or room.
+        // Ignore messages that we type since they have already been echoed
+        // locally.
+        if (player.equals(myName)) {
+            return;
+        }
+
         // All handlers are called from the socket thread so we need to do
         // this crazy stuff. This method is usually invoked from a handler.
         SwingUtilities.invokeLater(new Runnable() {
@@ -129,10 +135,12 @@ public class GamePanel extends JPanel implements ModEventHandler {
     }
 
     public void handle_player(String name, boolean is_spectator, int seat_num) {
+        myName = name;
         // chat_panel.handle_chat("handle_player", "name=" + name
         // + " is_spectator=" + is_spectator + " seat_num=" + seat_num);
-//        System.out.println("handle_player(" + name + ", " + is_spectator + ", "
-//                + seat_num + ")");
+        // System.out.println("handle_player(" + name + ", " + is_spectator + ",
+        // "
+        // + seat_num + ")");
     }
 
     /**
@@ -212,10 +220,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
         }
 
         protected void chat_display_local(ChatType type, String message) {
-            // Never display local text because of the /table command. See
-            // handle_chat above.
-            // String handle = card_client.get_nth_player(0).get_name();
-            // chatPanel.appendChat(type, handle, message);
+            chatPanel.appendChat(type, myName, message);
         }
 
         protected ChatType getDefaultChatType() {

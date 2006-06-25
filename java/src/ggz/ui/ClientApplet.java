@@ -19,6 +19,7 @@ package ggz.ui;
 
 import ggz.client.core.ErrorEventData;
 import ggz.client.core.MotdEventData;
+import ggz.client.core.PrivateChatDialog;
 import ggz.client.core.Room;
 import ggz.client.core.Server;
 import ggz.client.core.ServerListener;
@@ -106,7 +107,11 @@ public class ClientApplet extends JApplet implements ServerListener,
         // Register ourselves as the global hyperlink handler for our
         // hyperlink label.
         HyperlinkLabel.setGlobalHyperlinkListener(this);
-        
+
+        // Set the parent frame for all private chat dialogs.
+        PrivateChatDialog.setApplicationFrame(JOptionPane
+                .getFrameForComponent(this));
+
         if (getBooleanParameter("theme.enabled", false)) {
             installCustomTheme();
         }
@@ -163,6 +168,9 @@ public class ClientApplet extends JApplet implements ServerListener,
         } catch (Exception e) {
             handleException(e);
         }
+
+        // Set the server so that we can be notified of room enter/leave.
+        PrivateChatDialog.setServer(server);
     }
 
     public void start() {
