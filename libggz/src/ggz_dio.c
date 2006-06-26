@@ -25,7 +25,6 @@
 #include <config.h>
 #endif
 
-#include <arpa/inet.h>
 #include <assert.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -44,8 +43,8 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-#ifdef HAVE_WINSOCK
-#include <winsock.h>
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
 #endif
 
 #include "ggz.h"
