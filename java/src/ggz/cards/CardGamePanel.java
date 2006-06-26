@@ -114,7 +114,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         lastTrickButton = new JButton(new ImageIcon(getClass().getResource(
                 "/ggz/cards/images/trick.gif")));
         lastTrickButton.setOpaque(false);
-        lastTrickButton.setToolTipText("Last Trick");
+        lastTrickButton.setToolTipText("View last trick");
         lastTrickButton.setVisible(false);
         lastTrickButton.addActionListener(this);
         lastTrickButton.setBorder(BorderFactory.createEtchedBorder());
@@ -122,7 +122,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         previousHandButton = new JButton(new ImageIcon(getClass().getResource(
                 "/ggz/cards/images/hand.gif")));
         previousHandButton.setOpaque(false);
-        previousHandButton.setToolTipText("Previous Hand");
+        previousHandButton.setToolTipText("View previous hand");
         previousHandButton.setVisible(false);
         previousHandButton.addActionListener(this);
         previousHandButton.setBorder(BorderFactory.createEtchedBorder());

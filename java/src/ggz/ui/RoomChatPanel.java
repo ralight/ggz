@@ -307,7 +307,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
 
         public int getColumnCount() {
-            return showTableNumber ? 5 : 3;
+            return showTableNumber ? 4 : 3;
         }
 
         public int getRowCount() {
@@ -323,8 +323,6 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 2:
                 return "Nickname";
             case 3:
-                return "Rating";
-            case 4:
                 return "T#";
             default:
                 return null;
@@ -340,8 +338,6 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 2:
                 return Player.class;
             case 3:
-                return String.class;
-            case 4:
                 return String.class;
             default:
                 return super.getColumnClass(columnIndex);
@@ -365,12 +361,6 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 2:
                 return player;
             case 3:
-                if (showTableNumber) {
-                    return String.valueOf(player.get_rating());
-                } else {
-                    return new Integer(player.get_lag());
-                }
-            case 4:
                 return player.get_table() == null ? null : new Integer(player
                         .get_table().get_id());
             default:
