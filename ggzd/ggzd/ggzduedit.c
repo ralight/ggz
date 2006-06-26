@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 7714 2006-01-02 16:53:31Z josef $
+ * $Id: ggzduedit.c 8273 2006-06-26 10:29:01Z oojah $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -103,7 +103,7 @@ static void show_all_perms(void)
 	int i;
 
 	printf("Available permissions:\n");
-	for(i=0; i<8; i++) {
+	for(i=0; i<9; i++) {
 		printf(" [%s] (bit %i)\n", perms_str_table[i], i);
 	}
 }

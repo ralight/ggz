@@ -40,12 +40,14 @@
 #define PERMS_CHAT_BOT      0x00000020	/* Player is a known bot */
 #define PERMS_NO_STATS      0x00000040	/* No stats for this player. */
 #define PERMS_EDIT_TABLES   0x00000080	/* Can edit tables. */
+#define PERMS_TABLE_PRIVMSG	0x00000100	/* Can send private messages whilst at a table */
 
 /* Set all admin type bits */
 #define PERMS_ADMIN_MASK ( \
 	PERMS_ROOMS_ADMIN | \
 	PERMS_CHAT_ANNOUNCE | \
-	PERMS_EDIT_TABLES)
+	PERMS_EDIT_TABLES | \
+	PERMS_TABLE_PRIVMSG)
 
 /* Default permissions for guest users. */
 #define PERMS_DEFAULT_ANON ( \
@@ -77,7 +79,7 @@ char perms_str_table[32][21] = {
 	"PERMS_CHAT_BOT      ",
 	"PERMS_NO_STATS      ",
 	"PERMS_EDIT_TABLES   ",
-	"undefined 0x00000100",		/* 00000100 */
+	"PERMS_TABLE_PRIVMSG ",		/* 00000100 */
 	"undefined 0x00000200",
 	"undefined 0x00000400",
 	"undefined 0x00000800",

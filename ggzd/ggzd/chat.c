@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8104 2006-06-06 07:35:24Z josef $
+ * $Id: chat.c 8273 2006-06-26 10:29:01Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -143,7 +143,9 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 	pthread_rwlock_unlock(&sender->lock);	
 
 	/* Don't allow personal chat from a player at a table */
-	if (at_table){
+	/* Players with the PERMS_TABLE_PRIVMSG permission can send 
+	 * personal chat whilst at a table */
+	if (at_table && !perms_check(sender, PERMS_TABLE_PRIVMSG)){
 		return E_AT_TABLE;
 	}
 
@@ -161,7 +163,9 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 	   event_player_enqueue.  This is inefficient. */
 	pthread_rwlock_unlock(&rcvr->lock);
 
-	if (at_table) {
+	/* Players with the PERMS_TABLE_PRIVMSG permission can receive
+	 * personal chat whilst at a table */
+	if (at_table && !perms_check(rcvr, PERMS_TABLE_PRIVMSG)) {
 		return E_AT_TABLE;
 	}
 
