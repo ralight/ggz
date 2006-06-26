@@ -141,34 +141,36 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         centerPanel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
 
         boolean isSoloPlayPossible = gameType.get_max_bots() > 0;
+        ButtonGroup soloOrMultiGroup = new ButtonGroup();
         GridBagConstraints constraints = new GridBagConstraints();
         getContentPane().add(centerPanel, BorderLayout.CENTER);
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = 2;
         if (isSoloPlayPossible) {
-            ButtonGroup soloOrMultiGroup = new ButtonGroup();
             soloPlayButton = new JRadioButton(
                     messages
                             .getString("SeatAllocationDialog.Radio.PlayAgainstComputer"));
             soloPlayButton.addItemListener(this);
-            multiPlayButton = new JRadioButton(
-                    messages
-                            .getString("SeatAllocationDialog.Radio.StartMultiplayerGame"));
-            multiPlayButton.addItemListener(this);
-            advancedPlayButton = new JRadioButton(messages
-                    .getString("SeatAllocationDialog.Radio.StartAdvancedGame"));
-            advancedPlayButton.addItemListener(this);
             soloOrMultiGroup.add(soloPlayButton);
-            soloOrMultiGroup.add(multiPlayButton);
-            soloOrMultiGroup.add(advancedPlayButton);
-            constraints.gridwidth = 2;
             centerPanel.add(soloPlayButton, constraints);
-            constraints.gridy += 1;
-            centerPanel.add(multiPlayButton, constraints);
-            constraints.gridy += 1;
-            centerPanel.add(advancedPlayButton, constraints);
         }
+
+        multiPlayButton = new JRadioButton(messages
+                .getString("SeatAllocationDialog.Radio.StartMultiplayerGame"));
+        multiPlayButton.addItemListener(this);
+        soloOrMultiGroup.add(multiPlayButton);
+        constraints.gridy += 1;
+        centerPanel.add(multiPlayButton, constraints);
+
+        advancedPlayButton = new JRadioButton(messages
+                .getString("SeatAllocationDialog.Radio.StartAdvancedGame"));
+        advancedPlayButton.addItemListener(this);
+        soloOrMultiGroup.add(advancedPlayButton);
+        constraints.gridy += 1;
+        centerPanel.add(advancedPlayButton, constraints);
+
         constraints.gridwidth = 1;
         // Card games only support a max of 4 players at the moment.
         int maxPlayers = Math.min(4, gameType.get_max_players());
@@ -200,11 +202,11 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
             reserveSeatsPanel.add(new SeatPanel(seatNum));
         }
         advancedPanel = new JPanel(new BorderLayout());
-//        JLabel label = new JLabel(
-//                "You can only reserve seats for registered players.");
-//        label.setFont(label.getFont().deriveFont(Font.PLAIN).deriveFont(
-//                Font.ITALIC));
-//        advancedPanel.add(label, BorderLayout.NORTH);
+        // JLabel label = new JLabel(
+        // "You can only reserve seats for registered players.");
+        // label.setFont(label.getFont().deriveFont(Font.PLAIN).deriveFont(
+        // Font.ITALIC));
+        // advancedPanel.add(label, BorderLayout.NORTH);
         advancedPanel.add(reserveSeatsPanel, BorderLayout.CENTER);
         constraints.gridx = 0;
         constraints.gridy += 1;
@@ -231,6 +233,8 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 
         if (isSoloPlayPossible) {
             soloPlayButton.setSelected(true);
+        } else {
+            multiPlayButton.setSelected(true);
         }
         getRootPane().setDefaultButton(okButton);
     }
@@ -267,10 +271,6 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
     protected void onCancelClick() {
         table = null;
         dispose();
-    }
-
-    protected void onAdvancedClick() {
-
     }
 
     public void itemStateChanged(ItemEvent e) {
@@ -315,7 +315,7 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         // Only change the text if it hasn't changed.
         String text = tableDescriptionTextField.getText();
         if (JOIN_ME.equals(text) || I_PLAY_ALONE.equals(text)) {
-            if (soloPlayButton.isSelected()) {
+            if (soloPlayButton != null && soloPlayButton.isSelected()) {
                 tableDescriptionTextField.setText(I_PLAY_ALONE);
             } else {
                 tableDescriptionTextField.setText(JOIN_ME);
@@ -356,44 +356,49 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         SeatPanel(int seatNum) {
             super(new FlowLayout(FlowLayout.LEFT, 0, 0));
             ButtonGroup buttonGroup = new ButtonGroup();
-            computerButton = new JRadioButton(messages
-                    .getString("SeatAllocationDialog.Radio.Computer"));
+
+            add(new JLabel(MessageFormat.format(messages
+                    .getString("SeatAllocationDialog.Label.Seat"),
+                    new Object[] { String.valueOf(seatNum + 1) })));
+
+            if (soloPlayButton != null) {
+                computerButton = new JRadioButton(messages
+                        .getString("SeatAllocationDialog.Radio.Computer"));
+                computerButton.addItemListener(this);
+                add(computerButton);
+                buttonGroup.add(computerButton);
+            }
+
             anyoneButton = new JRadioButton(messages
                     .getString("SeatAllocationDialog.Radio.Anyone"));
+            anyoneButton.addItemListener(this);
+            add(anyoneButton);
+            buttonGroup.add(anyoneButton);
+
             reservedButton = new JRadioButton(messages
                     .getString("SeatAllocationDialog.Radio.ReservedFor"));
+            reservedButton.addItemListener(this);
+            add(reservedButton);
+            buttonGroup.add(reservedButton);
+
             reservedCombo = new JComboBox();
             reservedCombo.setEditable(true);
             reservedCombo.setEnabled(false);
             reservedCombo.setRenderer(playerRenderer);
-            add(new JLabel(MessageFormat.format(messages
-                    .getString("SeatAllocationDialog.Label.Seat"),
-                    new Object[] { String.valueOf(seatNum + 1) })));
-            add(computerButton);
-            add(anyoneButton);
-            add(reservedButton);
             add(reservedCombo);
-            buttonGroup.add(computerButton);
-            buttonGroup.add(anyoneButton);
-            buttonGroup.add(reservedButton);
-            computerButton.addItemListener(this);
-            anyoneButton.addItemListener(this);
-            reservedButton.addItemListener(this);
 
             // Fill the combo with REGISTERED players names.
             // You cannot reserve seats for unregistered players.
             int numPlayers = room.get_num_players();
             for (int playerNum = 0; playerNum < numPlayers; playerNum++) {
                 Player player = room.get_nth_player(playerNum);
-//                if (player.get_type() == PlayerType.GGZ_PLAYER_NORMAL
-//                        || player.get_type() == PlayerType.GGZ_PLAYER_ADMIN
-//                        || player.get_type() == PlayerType.GGZ_PLAYER_BOT)
-                    reservedCombo.addItem(player);
+                reservedCombo.addItem(player);
             }
+
             if (seatNum == 0) {
                 reservedCombo.setSelectedItem(room.get_server().get_handle());
                 reservedButton.setSelected(true);
-            } else if (soloPlayButton.isSelected()) {
+            } else if (soloPlayButton != null && soloPlayButton.isSelected()) {
                 computerButton.setSelected(true);
             } else if (advancedPlayButton.isSelected()) {
                 reservedButton.setSelected(true);
@@ -417,14 +422,14 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         }
 
         public SeatType getSeatType() {
-            if (computerButton.isSelected()) {
+            if (computerButton != null && computerButton.isSelected()) {
                 return SeatType.GGZ_SEAT_BOT;
             } else if (anyoneButton.isSelected()) {
                 return SeatType.GGZ_SEAT_OPEN;
             } else if (reservedButton.isSelected()) {
                 return SeatType.GGZ_SEAT_RESERVED;
             } else {
-                throw new IllegalStateException("No radio is selected!");
+                throw new IllegalStateException("No radio button is selected!");
             }
         }
 

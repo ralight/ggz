@@ -249,10 +249,10 @@ public class Game implements ModTransactionHandler {
         net.send_table_seat_update(table, seat);
     }
 
-    public void handle_chat(String chat) throws IOException {
+    public void handle_chat(ChatType type, String recipient, String chat) throws IOException {
         Room room = this.server.get_cur_room();
 
-        room.chat(ChatType.GGZ_CHAT_TABLE, null, chat);
+        room.chat(type, recipient, chat);
     }
 
     public void handle_info(int seat_num) throws IOException {

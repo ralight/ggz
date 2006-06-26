@@ -17,6 +17,8 @@
  */
 package ggz.client.mod;
 
+import ggz.common.ChatType;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
@@ -435,8 +437,8 @@ public class Mod implements ModGGZ, ModGame {
 				seat_num);
 	}
 
-	public void request_chat(String chat_msg) throws IOException {
-		thandler.handle_chat(chat_msg);
+	public void request_chat(ChatType type, String recipient, String chat_msg) throws IOException {
+		thandler.handle_chat(type, recipient, chat_msg);
 	}
 
 	public void player_request_info(int seat_num) throws IOException {

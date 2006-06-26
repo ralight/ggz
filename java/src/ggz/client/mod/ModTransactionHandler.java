@@ -17,6 +17,8 @@
  */
 package ggz.client.mod;
 
+import ggz.common.ChatType;
+
 import java.io.IOException;
 import java.util.EventListener;
 
@@ -31,7 +33,7 @@ public interface ModTransactionHandler extends EventListener {
 
     public void handle_seatchange(ModTransaction t, int seat_num) throws IOException;
 
-    public void handle_chat(String chat) throws IOException;
+    public void handle_chat(ChatType type, String recipient, String chat) throws IOException;
 
     public void handle_info(int seat_num) throws IOException;
 

@@ -17,6 +17,8 @@
  */
 package ggz.client.mod;
 
+import ggz.common.ChatType;
+
 import java.io.IOException;
 
 public interface ModGame {
@@ -48,7 +50,7 @@ public interface ModGame {
 
     public void request_open(int seat_num) throws IOException;
 
-    public void request_chat(String chat_msg) throws IOException;
+    public void request_chat(ChatType type, String recipient, String chat_msg) throws IOException;
 
     public void player_request_info(int seat_num) throws IOException;
 

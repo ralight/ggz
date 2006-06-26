@@ -210,12 +210,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
 
         public boolean sendChat(ChatType type, String target, String message)
                 throws IOException {
-            if (type != ChatType.GGZ_CHAT_TABLE) {
-                chatPanel
-                        .appendCommandText("Only regular chat is allowed while playing a game.");
-                return false;
-            }
-            ggzMod.request_chat(message);
+            ggzMod.request_chat(type, target, message);
             return true;
         }
 
