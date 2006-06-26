@@ -1,25 +1,30 @@
-package ggz.client.core;
+package ggz.ui;
 
+import ggz.client.core.ChatEventData;
+import ggz.client.core.ErrorEventData;
+import ggz.client.core.MotdEventData;
+import ggz.client.core.Room;
+import ggz.client.core.RoomChangeEventData;
+import ggz.client.core.RoomListener;
+import ggz.client.core.Server;
+import ggz.client.core.ServerListener;
+import ggz.client.core.Table;
+import ggz.client.core.TableLeaveEventData;
 import ggz.common.ChatType;
-import ggz.ui.ChatAction;
-import ggz.ui.ChatPanel;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-public class PrivateChatDialog extends JDialog {
+public class PrivateChatDialog extends JFrame {
     protected static final HashMap dialogs = new HashMap();
-
-    protected static Frame applicationFrame;
 
     protected static Server server;
 
@@ -29,14 +34,6 @@ public class PrivateChatDialog extends JDialog {
 
     private String recipient;
 
-    public static void setApplicationFrame(Frame f) {
-        if (applicationFrame != null) {
-            throw new IllegalStateException(
-                    "applicationFrame has already been set.");
-        }
-        applicationFrame = f;
-    }
-
     public static void setServer(Server s) {
         if (server != null) {
             server.remove_event_hook(dialogManager);
@@ -45,8 +42,8 @@ public class PrivateChatDialog extends JDialog {
         server.add_event_hook(dialogManager);
     }
 
-    private PrivateChatDialog(Frame owner, String recipient) {
-        super(owner, "Private chat with " + recipient);
+    private PrivateChatDialog(String recipient) {
+        super("Private chat with " + recipient);
         this.recipient = recipient;
         chatPanel = new ChatPanel(new PrivateChatAction(recipient));
         getContentPane().add(chatPanel, BorderLayout.CENTER);
@@ -70,7 +67,7 @@ public class PrivateChatDialog extends JDialog {
 
         public boolean sendChat(ChatType type, String target, String message)
                 throws IOException {
-            server.get_net().send_chat(ChatType.GGZ_CHAT_PERSONAL, recipient,
+            server.get_cur_room().chat(ChatType.GGZ_CHAT_PERSONAL, recipient,
                     message);
             return true;
         }
@@ -142,6 +139,7 @@ public class PrivateChatDialog extends JDialog {
                 Object key = iter.next();
                 PrivateChatDialog dialog = (PrivateChatDialog) dialogs.get(key);
                 dialog.setVisible(false);
+                dialog.dispose();
             }
             // This shouldn't be needed since the dialogs remove themselves on
             // close but do it just in case.
@@ -194,9 +192,8 @@ public class PrivateChatDialog extends JDialog {
                     .get(data.sender);
             if (dialog == null) {
                 // No private chat with this player yet.
-                dialog = new PrivateChatDialog(applicationFrame, data.sender);
+                dialog = new PrivateChatDialog(data.sender);
                 dialogs.put(data.sender, dialog);
-                dialog.setModal(false);
                 dialog.setSize(350, 350);
                 dialog.setVisible(true);
             }

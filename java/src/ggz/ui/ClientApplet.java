@@ -19,7 +19,6 @@ package ggz.ui;
 
 import ggz.client.core.ErrorEventData;
 import ggz.client.core.MotdEventData;
-import ggz.client.core.PrivateChatDialog;
 import ggz.client.core.Room;
 import ggz.client.core.Server;
 import ggz.client.core.ServerListener;
@@ -108,10 +107,6 @@ public class ClientApplet extends JApplet implements ServerListener,
         // hyperlink label.
         HyperlinkLabel.setGlobalHyperlinkListener(this);
 
-        // Set the parent frame for all private chat dialogs.
-        PrivateChatDialog.setApplicationFrame(JOptionPane
-                .getFrameForComponent(this));
-
         if (getBooleanParameter("theme.enabled", false)) {
             installCustomTheme();
         }
@@ -153,7 +148,7 @@ public class ClientApplet extends JApplet implements ServerListener,
                     AboutDialog.showDialog(ClientApplet.this);
                 }
             });
-            footerPanel.add(aboutLabel, BorderLayout.SOUTH);
+            footerPanel.add(aboutLabel);
             loginPanel = new LoginPanel(server);
             mainPanel.add(loginPanel, "login");
             loungePanel = new LoungePanel(server);

@@ -59,9 +59,6 @@ public class Room {
     /* Room description */
     private String desc;
 
-    /* Number of players in list room (current room only) */
-    private int num_players;
-
     /* List of players in the room (current room only) */
     private List players;
 
@@ -110,8 +107,9 @@ public class Room {
     }
 
     public int get_num_players() {
-        if (this.server.get_cur_room() == this) {
-            return this.num_players;
+
+        if (this.server.get_cur_room() == this && this.players != null) {
+            return this.players.size();
         }
         return this.player_count;
     }
@@ -121,7 +119,10 @@ public class Room {
     }
 
     public Player get_nth_player(int num) {
-        if (num < this.num_players) {
+        if (this.players == null) {
+            return null;
+        }
+        if (num < this.players.size()) {
             return (Player) this.players.get(num);
         }
         return null;
@@ -318,10 +319,9 @@ public class Room {
     }
 
     void set_player_list(int count, List list) {
-        boolean count_changed = (count != this.num_players);
+        boolean count_changed = (players == null || count != this.players.size());
 
         /* Get rid of old list */
-        this.num_players = count;
         this.player_count = count;
         this.players = list;
 
@@ -393,7 +393,6 @@ public class Room {
     void set_monitor(boolean monitor) {
         /* If turning off monitoring, clear lists */
         if (!monitor) {
-            this.num_players = 0;
             this.players = null;
             this.tables = null;
         }
@@ -417,8 +416,7 @@ public class Room {
                 .get_ranking(), pdata.get_highscore());
 
         this.players.add(player);
-        this.num_players++;
-        this.player_count = this.num_players;
+        this.player_count = this.players.size();
 
         data.player_name = pdata.get_name();
         data.from_room = from_room;
@@ -443,8 +441,7 @@ public class Room {
                 Player entry = (Player) iter.next();
                 if (player_name.equals(entry.get_name())) {
                     this.players.remove(entry);
-                    this.num_players--;
-                    this.player_count = this.num_players;
+                    this.player_count = this.players.size();
 
                     data.player_name = player_name;
                     data.from_room = this.id;

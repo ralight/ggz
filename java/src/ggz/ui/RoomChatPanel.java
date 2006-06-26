@@ -38,6 +38,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -69,6 +70,10 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     private JTable playerList;
 
     private PlayersTableModel players;
+
+    private JPanel westPanel;
+
+    private JLabel playerCountLabel;
 
     public RoomChatPanel(boolean showTableNumber) {
         super(new BorderLayout());
@@ -107,7 +112,12 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         playerScrollPane = new JScrollPane(playerList);
         playerScrollPane.setOpaque(false);
         playerScrollPane.getViewport().setOpaque(false);
-        add(playerScrollPane, BorderLayout.WEST);
+        playerCountLabel = new JLabel();
+        westPanel = new JPanel(new BorderLayout());
+        westPanel.setOpaque(false);
+        westPanel.add(playerScrollPane, BorderLayout.CENTER);
+        westPanel.add(playerCountLabel, BorderLayout.SOUTH);
+        add(westPanel, BorderLayout.WEST);
     }
 
     public void setRoom(Room r) throws IOException {
@@ -145,7 +155,14 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     }
 
     public void player_count(int room_id) {
-        // Seems a pretty redundant message.
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                int n = room.get_num_players();
+                playerCountLabel.setText(n + (n == 1 ? " player" : " players"));
+                revalidate();
+                repaint();
+            }
+        });
     }
 
     public void player_lag(String player_name) {
@@ -155,6 +172,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
     public void player_list(int room_id) {
         players.fireTableDataChanged();
+        player_count(room_id);
     }
 
     public void player_stats(String player) {
