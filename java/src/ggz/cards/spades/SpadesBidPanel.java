@@ -27,6 +27,9 @@ public class SpadesBidPanel extends BidPanel {
     }
 
     protected String getBidText(Bid bid) {
+        if (bid == null) {
+            return null;
+        }
         if (bid.getVal() == 0) {
             switch (bid.getSpec()) {
             case 1:

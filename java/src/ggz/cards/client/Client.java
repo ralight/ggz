@@ -33,7 +33,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -56,12 +55,15 @@ public class Client {
 
     /** The state the game is in */
     private GameState state;
-    
-    /** Records bids made by each player. */
-    private Bid[] bids;
 
-    // Structure that contains cards in the trick for each player.
+    /** Structure that contains cards in the trick for each player. */
     protected TrickInfo lastTrick;
+
+    /**
+     * Represents the previous hand for each players. The first index is the
+     * player. So it's Card[player][card].
+     */
+    protected Card[][] previousHand;
 
     protected int playerWhoLedLastTrick;
 
@@ -77,10 +79,6 @@ public class Client {
 
     public Player get_nth_player(int n) {
         return this.players[n];
-    }
-    
-    public Bid get_nth_bid(int n) {
-        return this.bids == null ? null : this.bids[n];
     }
 
     // int initialize()
@@ -134,6 +132,10 @@ public class Client {
         return this.lastTrick;
     }
 
+    public Card[][] get_previous_hand() {
+        return this.previousHand;
+    }
+
     public String get_scores() {
         return this.scores;
     }
@@ -148,7 +150,7 @@ public class Client {
     }
 
     private void handle_cardlist_message() throws IOException {
-        ArrayList cardlist = new ArrayList(this.num_players);
+        Card[][] cardlist = new Card[this.num_players][];
 
         String mark = this.fd_in.read_string();
 
@@ -159,12 +161,14 @@ public class Client {
                 for (int i = 0; i < num_cards; i++) {
                     cards[i] = this.fd_in.read_card();
                 }
-                cardlist.add(cards);
+                cardlist[p] = cards;
             }
         }
 
         if ("Last Trick".equals(mark)) {
             lastTrick = new TrickInfo(cardlist, playerWhoLedLastTrick);
+        } else if ("Previous Hand".equals(mark)) {
+            previousHand = cardlist;
         }
 
         game.set_cardlist_message(mark, cardlist);
@@ -293,7 +297,6 @@ public class Client {
         if (different) {
             log.fine("get_players: (re)allocating this.players.");
             this.players = new Player[numplayers];
-            this.bids = new Bid[numplayers];
 
             for (int p = 0; p < numplayers; p++) {
                 /*
@@ -349,7 +352,7 @@ public class Client {
         isNewTrick = true;
         // Clear the bids.
         for (int i = 0; i < num_players; i++) {
-            bids[i] = null;
+            players[i].bid = null;
         }
         game.alert_newhand();
     }
@@ -461,7 +464,7 @@ public class Client {
         Bid bid = fd_in.read_bid();
 
         set_game_state(STATE_BID);
-        bids[bidder] = bid;
+        players[bidder].bid = bid;
         game.alert_bid(bidder, bid);
     }
 
@@ -837,11 +840,11 @@ public class Client {
     }
 
     public static class TrickInfo {
-        List cards;
+        Card[][] cards;
 
         int playerWhoLed;
 
-        TrickInfo(List c, int leader) {
+        TrickInfo(Card[][] c, int leader) {
             cards = c;
             playerWhoLed = leader;
         }
@@ -851,11 +854,11 @@ public class Client {
         }
 
         public Card getCardForPlayer(int playerNum) {
-            return ((Card[]) cards.get(playerNum))[0];
+            return cards[playerNum][0];
         }
 
         public int getNumCards() {
-            return cards.size();
+            return cards.length;
         }
     }
 

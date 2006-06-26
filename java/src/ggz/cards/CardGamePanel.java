@@ -93,6 +93,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected JButton lastTrickButton;
 
+    protected JButton previousHandButton;
+
     protected JButton quitButton;
 
     public void init(ModGame mod) throws IOException {
@@ -115,8 +117,15 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         lastTrickButton.setToolTipText("Last Trick");
         lastTrickButton.setVisible(false);
         lastTrickButton.addActionListener(this);
-        // lastTrickButton.setBorder(null);
         lastTrickButton.setBorder(BorderFactory.createEtchedBorder());
+        // Add the control to allow the cards in the previous hand to be viewed.
+        previousHandButton = new JButton(new ImageIcon(getClass().getResource(
+                "/ggz/cards/images/hand.gif")));
+        previousHandButton.setOpaque(false);
+        previousHandButton.setToolTipText("Previous Hand");
+        previousHandButton.setVisible(false);
+        previousHandButton.addActionListener(this);
+        previousHandButton.setBorder(BorderFactory.createEtchedBorder());
         scoresButton = new JButton(new ImageIcon(getClass().getResource(
                 "/ggz/cards/images/scores.gif")));
         scoresButton.setOpaque(true);
@@ -127,6 +136,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         scoresButton.setBorder(BorderFactory.createEtchedBorder());
         southEastPanel = new JPanel(new GridLayout(1, 2, 0, 0));
         southEastPanel.setOpaque(false);
+        southEastPanel.add(previousHandButton);
         southEastPanel.add(lastTrickButton);
         southEastPanel.add(scoresButton);
         table.add(southEastPanel, new TableConstraints(
@@ -561,6 +571,41 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
     }
 
+    protected void showPreviousHand() throws IOException {
+        Card[][] cards = cardClient.get_previous_hand();
+        if (cards != null) {
+            JDialog dialog = new JDialog(
+                    JOptionPane.getFrameForComponent(this), "Previous Hand");
+            TableLayout layout = new TableLayout(tableLayout.getCardWidth(),
+                    tableLayout.getCardHeight());
+            layout.setMaxHandSize(cards[0].length);
+            dialog.getContentPane().setLayout(layout);
+            for (int playerNum = 0; playerNum < cards.length; playerNum++) {
+                int cardOrientation = getCardOrientation(playerNum);
+                int cardIndex = 0;
+                // Loop over cards backwards so that they are displayed
+                // from low to high, left to right.
+                for (int cardNum = cards[playerNum].length - 1; cardNum >= 0; cardNum--) {
+                    Card card = cards[playerNum][cardNum];
+                    Sprite sprite = new Sprite(card, cardOrientation);
+                    dialog.getContentPane().add(
+                            sprite,
+                            new TableConstraints(TableConstraints.CARD_IN_HAND,
+                                    playerNum, cardIndex));
+                    cardIndex++;
+                }
+            }
+            dialog.getContentPane().setBackground(table.getBackground());
+            dialog.setSize(380, 380);
+            // dialog.setResizable(false);
+            dialog.setLocation(previousHandButton.getLocationOnScreen());
+            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dialog.setModal(true);
+            OptionDialog.fixLocation(dialog);
+            dialog.setVisible(true);
+        }
+    }
+
     protected void showScores() {
         Frame frame = JOptionPane.getFrameForComponent(this);
         String scores = cardClient.get_scores();
@@ -895,6 +940,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             } catch (IOException ex) {
                 handleException(ex);
             }
+        } else if (event.getSource() == previousHandButton) {
+            try {
+                showPreviousHand();
+            } catch (IOException ex) {
+                handleException(ex);
+            }
         } else if (event.getSource() == scoresButton) {
             showScores();
         } else if (event.getSource() == quitButton) {
@@ -926,10 +977,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
      * @param mark
      *            Last Trick or Previous Hand
      * @param cardlist
-     *            List of Card[], the list contains as many arrays as there are
-     *            players in the game.
+     *            the list contains as many arrays as there are players in the
+     *            game.
      */
-    public void set_cardlist_message(final String mark, List cardlist) {
+    public void set_cardlist_message(final String mark, Card[][] cardlist) {
         // SwingUtilities.invokeLater(new Runnable() {
         // public void run() {
         // chat_panel.appendChat("set_cardlist_message", mark);
@@ -938,6 +989,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
         if ("Last Trick".equals(mark)) {
             lastTrickButton.setVisible(true);
+        } else if ("Previous Hand".equals(mark)) {
+            previousHandButton.setVisible(true);
         }
         // chat_panel.appendChat("set_cardlist_message", "mark=" + mark);
         // for (int i = 0; i < cardlist.size(); i++) {

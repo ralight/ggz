@@ -153,7 +153,7 @@ public class SpadesGamePanel extends CardGamePanel {
                 for (int i = 0; i < playerLabels.length; i++) {
                     PlayerLabel label = playerLabels[i];
                     Player p = cardClient.get_nth_player(i);
-                    Bid bid = cardClient.get_nth_bid(i);
+                    Bid bid = p.get_bid();
 
                     buffer.append("<HTML>");
                     if (cardClient.get_game_state() == Client.STATE_PLAY) {

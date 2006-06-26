@@ -250,7 +250,7 @@ public class TableLayout implements LayoutManager2 {
             Component comp) {
         // Labels need to be able to grow and to stop them ping-ponging
         // we never shrink them once they have grown.
-        JComponent c = (JComponent)comp;
+        JComponent c = (JComponent) comp;
         c.setPreferredSize(null);
         Dimension preferredSize = comp.getPreferredSize();
         Dimension currentSize = comp.getSize();
@@ -359,6 +359,13 @@ public class TableLayout implements LayoutManager2 {
 
             if (playerIndex == 0) {
                 rect.x = padding;
+                // Adjust for SE corner.
+                if (southEastCorner != null) {
+                    int diff = southEastCorner.getWidth() - padding;
+                    if (diff > 0) {
+                        rect.x -= diff;
+                    }
+                }
                 rect.y = parent.getHeight() - (rect.height * 80 / 100);
             } else if (playerIndex == 2) {
                 rect.x = padding + labelWidth;

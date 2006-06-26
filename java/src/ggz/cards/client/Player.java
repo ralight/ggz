@@ -17,6 +17,7 @@
  */
 package ggz.cards.client;
 
+import ggz.cards.common.Bid;
 import ggz.cards.common.Card;
 import ggz.common.SeatType;
 
@@ -56,6 +57,9 @@ public class Player {
 
     /** player's hand */
     ArrayList hand;
+    
+    /** Bid player made for the current hand. */
+    Bid bid;
 
     public String get_name() {
         return this.name;
@@ -71,6 +75,10 @@ public class Player {
 
     public SeatType get_seat_type() {
         return status;
+    }
+    
+    public Bid get_bid() {
+        return bid;
     }
 
     /**

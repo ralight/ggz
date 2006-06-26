@@ -25,14 +25,23 @@ import ggz.common.SeatType;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
 
 public interface CardGameHandler {
     public void alert_server(Socket fd);
 
     public void set_text_message(String mark, String message);
 
-    public void set_cardlist_message(String mark, List cardlist);
+    /**
+     * Called when either "Last Trick" or "Previous Hand" message is received
+     * from the server.
+     * 
+     * @param mark
+     *            One of either "Last Trick" or "Previous Hand".
+     * @param cardlist
+     *            Cards in the last trick or hand. The first index is the player
+     *            index, the second the card.
+     */
+    public void set_cardlist_message(String mark, Card[][] cardlist);
 
     public void set_player_message(int player, String message);
 
