@@ -101,6 +101,9 @@ game.  This field is simply to give the various GGZ clients an idea of
 what toolkit a game was compiled with.  All game clients should always
 work with any client frontend (assuming the user has the required GUI
 environment installed).
+These names are not fixed. More toolkit choices include 'gnome',
+'java' and 'guru' to describe chatbot plugin games.
+
 A related field is Environment. The <environment code>s are
 'xwindow', 'xfullscreen', 'framebuffer', 'console' and 'passive', where
 passive means a game without any user interface. The environment defaults

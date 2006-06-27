@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 7712 2006-01-02 16:45:48Z josef $
+ * $Id: ggz-config.c 8281 2006-06-27 07:42:38Z josef $
  *
  * Configuration query and module install program.
  *
@@ -1024,7 +1024,7 @@ int main(int argc, char *argv[])
 			case 'u':
 				printf(_("Usage:\n"));
 				printf("\tggz-config --install --modfile=<module.dsc> [--force]\n");
-				printf("\tggz-config --remove --modfile=<module.dsc> [--force]\n");
+				printf("\tggz-config --remove --modfile=<module.dsc>\n");
 				printf("\tggz-config --check\n");
 				return 0;
 				break;
