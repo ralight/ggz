@@ -50,7 +50,20 @@ dnl Internal functions:
 dnl   AC_GGZ_ERROR - user-friendly error messages
 dnl   AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
 dnl   AC_GGZ_REMOVEDUPS - eliminate duplicate list elements
+dnl   AC_GGZ_UNQUOTEDPATH - unquote a shell variable multiple times
 dnl
+
+dnl ------------------------------------------------------------------------
+dnl Unquote a shell variable until all variable occurrences in its value
+dnl are resolved.
+dnl Synopsis: AC_GGZ_UNQUOTEDPATH(<returnvar>, expression)
+dnl
+AC_DEFUN([AC_GGZ_UNQUOTEDPATH],
+[
+eval $1=`echo $2`
+eval $1=`echo $$1`
+eval $1=`echo $$1`
+])
 
 dnl ------------------------------------------------------------------------
 dnl Find a directory containing a single file
