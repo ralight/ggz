@@ -3,7 +3,7 @@
  * Author: Josef Spillner
  * Project: GGZ Client libs
  * Date: 2004
- * $Id: ggz-wrapper.c 6845 2005-01-23 13:32:47Z josef $
+ * $Id: ggz-wrapper.c 8283 2006-06-27 07:45:52Z josef $
  *
  * Code for a wrapper for GGZ games
  *
@@ -38,7 +38,7 @@
 #include "loop.h"
 #include "game.h"
 
-#define DEFAULT_SERVER   "127.0.0.1"
+#define DEFAULT_SERVER   "live.ggzgamingzone.org"
 #define DEFAULT_PORT     5688
 #define DEFAULT_GAMENAME "TicTacToe"
 #define DEFAULT_NICKNAME NULL
