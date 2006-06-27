@@ -39,6 +39,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -381,19 +382,14 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
             add(reservedButton);
             buttonGroup.add(reservedButton);
 
-            reservedCombo = new JComboBox();
+            // Fill the combo with players.
+            Player[] players = room.get_players();
+            Arrays.sort(players, Player.SORT_BY_NAME);
+            reservedCombo = new JComboBox(players);
             reservedCombo.setEditable(true);
             reservedCombo.setEnabled(false);
             reservedCombo.setRenderer(playerRenderer);
             add(reservedCombo);
-
-            // Fill the combo with REGISTERED players names.
-            // You cannot reserve seats for unregistered players.
-            int numPlayers = room.get_num_players();
-            for (int playerNum = 0; playerNum < numPlayers; playerNum++) {
-                Player player = room.get_nth_player(playerNum);
-                reservedCombo.addItem(player);
-            }
 
             if (seatNum == 0) {
                 reservedCombo.setSelectedItem(room.get_server().get_handle());

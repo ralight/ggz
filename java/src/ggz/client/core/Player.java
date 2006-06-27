@@ -19,9 +19,12 @@ package ggz.client.core;
 
 import ggz.common.PlayerType;
 
-/* 
- * The Player structure is meant to be a node in a list of
- * the players in the current room .
+import java.text.Collator;
+import java.util.Comparator;
+
+/*
+ * The Player structure is meant to be a node in a list of the players in the
+ * current room .
  */
 public class Player {
     public static final int NO_RECORD = -1;
@@ -92,13 +95,14 @@ public class Player {
     }
 
     /**
-     * Constructor used only by RoomChatPanel to calculate column widths. 
+     * Constructor used only by RoomChatPanel to calculate column widths.
+     * 
      * @param name
      */
     public Player(String name) {
         this.name = name;
     }
-    
+
     /*
      * Internal library functions (prototypes in player.h) NOTE:All of these
      * functions assume valid inputs!
@@ -161,7 +165,7 @@ public class Player {
         return (o != null) && (o instanceof Player)
                 && this.name.equals(((Player) o).name);
     }
-    
+
     public String toString() {
         return get_name();
     }
@@ -173,4 +177,23 @@ public class Player {
     public int hashCode() {
         return this.name.hashCode();
     }
+
+    public static final Comparator SORT_BY_NAME = new Comparator() {
+        private Collator collator = Collator.getInstance();
+
+        public int compare(Object o1, Object o2) {
+            Player p1 = (Player) o1;
+            Player p2 = (Player) o2;
+            if (p1 == null && p2 == null) {
+                return 0;
+            } else if (p1 == null && p2 != null) {
+                return -1;
+            } else if (p2 == null && p1 != null) {
+                return 1;
+            } else {
+                return collator.compare(p1.get_name(), p2.get_name());
+            }
+        }
+    };
+
 }

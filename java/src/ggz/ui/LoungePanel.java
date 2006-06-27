@@ -17,7 +17,6 @@
  */
 package ggz.ui;
 
-import ggz.client.core.GameType;
 import ggz.client.core.Module;
 import ggz.client.core.MotdEventData;
 import ggz.client.core.Room;
@@ -174,13 +173,11 @@ public class LoungePanel extends JPanel {
         public int compare(Object o1, Object o2) {
             Room r1 = (Room) o1;
             Room r2 = (Room) o2;
-            GameType g1 = r1.get_gametype();
-            GameType g2 = r2.get_gametype();
-            if (g1 == null && g2 == null) {
+            if (r1 == null && r2 == null) {
                 return 0;
-            } else if (g1 == null && g2 != null) {
+            } else if (r1 == null && r2 != null) {
                 return -1;
-            } else if (g1 == null && g2 != null) {
+            } else if (r2 == null && r1 != null) {
                 return 1;
             } else {
                 return r1.get_name().compareTo(r2.get_name());

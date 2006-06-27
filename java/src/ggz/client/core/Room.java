@@ -71,7 +71,7 @@ public class Room {
     /* Room events */
     private HookList event_hooks;
 
-    public Player get_player_by_name(String player_name) {
+    public synchronized Player get_player_by_name(String player_name) {
         Player found = null;
 
         if (this.players != null) {
@@ -106,7 +106,7 @@ public class Room {
         return this.server.get_type_by_id(this.game_type_id);
     }
 
-    public int get_num_players() {
+    public synchronized int get_num_players() {
 
         if (this.server.get_cur_room() == this && this.players != null) {
             return this.players.size();
@@ -118,7 +118,7 @@ public class Room {
         return this.tables == null ? 0 : this.tables.size();
     }
 
-    public Player get_nth_player(int num) {
+    public synchronized Player get_nth_player(int num) {
         if (this.players == null) {
             return null;
         }
@@ -126,6 +126,10 @@ public class Room {
             return (Player) this.players.get(num);
         }
         return null;
+    }
+    
+    public synchronized Player[] get_players() {
+        return players == null ? null : (Player[])players.toArray(new Player[players.size()]);
     }
 
     public Table get_nth_table(int num) {
@@ -398,7 +402,7 @@ public class Room {
         }
     }
 
-    void add_player(Player pdata, int from_room) {
+    synchronized void add_player(Player pdata, int from_room) {
         Player player;
         RoomChangeEventData data = new RoomChangeEventData();
 
@@ -430,7 +434,7 @@ public class Room {
         server.queue_players_changed();
     }
 
-    void remove_player(String player_name, int to_room) {
+    synchronized void remove_player(String player_name, int to_room) {
         RoomChangeEventData data = new RoomChangeEventData();
 
         log.fine("Removing player " + player_name);

@@ -27,6 +27,7 @@ import ggz.client.core.Table;
 import ggz.client.core.TableLeaveEventData;
 import ggz.common.ChatType;
 import ggz.common.PlayerType;
+import ggz.common.SortedList;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -34,6 +35,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -166,25 +168,29 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     }
 
     public void player_lag(String player_name) {
-        // TODO only notify row for player.
-        players.fireTableDataChanged();
+        players.fireLagCellUpdated(player_name);
     }
 
     public void player_list(int room_id) {
-        players.fireTableDataChanged();
+        players.replace(room.get_players());
         player_count(room_id);
     }
 
     public void player_stats(String player) {
-        // Ignore
+        players.fireStatsUpdated(player);
     }
 
     public void room_enter(RoomChangeEventData data) {
-        player_list(room.get_id());
+        Player p = room.get_player_by_name(data.player_name);
+        if (p != null) {
+            players.add(p);
+        }
+        player_count(data.to_room);
     }
 
     public void room_leave(RoomChangeEventData data) {
-        player_list(room.get_id());
+        players.remove(data.player_name);
+        player_count(data.from_room);
     }
 
     public void table_join_fail(String error) {
@@ -300,10 +306,51 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     }
 
     private class PlayersTableModel extends AbstractTableModel {
+        private static final int LAG_COLUMN = 0;
+
         private boolean showTableNumber;
+
+        private SortedList data;
 
         public PlayersTableModel(boolean showTableNumber) {
             this.showTableNumber = showTableNumber;
+            // WARNING: If we support sorting by anything other than name then
+            // we need to rewrite getRowIndex() below.
+            this.data = new SortedList(Player.SORT_BY_NAME);
+        }
+
+        public void clear() {
+            this.data.clear();
+        }
+
+        public void replace(Player[] players) {
+            this.data.clear();
+            this.data.addAll(Arrays.asList(players));
+            fireTableDataChanged();
+        }
+
+        public void add(Player p) {
+            if (this.data.add(p)) {
+                int rowIndex = this.data.indexOf(p);
+                fireTableRowsInserted(rowIndex, rowIndex);
+            }
+        }
+
+        public void remove(Player p) {
+            int rowIndex = this.data.indexOf(p);
+            if (rowIndex > 0 && this.data.remove(p)) {
+                fireTableRowsDeleted(rowIndex, rowIndex);
+            }
+        }
+
+        public void remove(String playerName) {
+            // WARNING: This assumes players are sorted by name.
+            remove(new Player(playerName));
+        }
+
+        public int getRowIndex(String playerName) {
+            // WARNING: This assumes players are sorted by name.
+            return this.data.indexOf(new Player(playerName));
         }
 
         public int getColumnCount() {
@@ -311,12 +358,12 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
 
         public int getRowCount() {
-            return room == null ? 0 : room.get_num_players();
+            return data.size();
         }
 
         public String getColumnName(int column) {
             switch (column) {
-            case 0:
+            case LAG_COLUMN:
                 return "Lag";
             case 1:
                 return "Type";
@@ -331,7 +378,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
         public Class getColumnClass(int columnIndex) {
             switch (columnIndex) {
-            case 0:
+            case LAG_COLUMN:
                 return Integer.class;
             case 1:
                 return PlayerType.class;
@@ -345,16 +392,13 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
 
         public Object getValueAt(int rowIndex, int columnIndex) {
-            if (room == null)
-                return null;
-
-            Player player = room.get_nth_player(rowIndex);
+            Player player = (Player) data.get(rowIndex);
 
             if (player == null)
                 return null;
 
             switch (columnIndex) {
-            case 0:
+            case LAG_COLUMN:
                 return new Integer(player.get_lag());
             case 1:
                 return player.get_type();
@@ -368,6 +412,19 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             }
         }
 
+        public void fireLagCellUpdated(String playerName) {
+            int row = getRowIndex(playerName);
+            if (row > 0) {
+                fireTableCellUpdated(row, LAG_COLUMN);
+            }
+        }
+
+        public void fireStatsUpdated(String playerName) {
+            int row = getRowIndex(playerName);
+            if (row > 0) {
+                fireTableRowsUpdated(row, row);
+            }
+        }
     }
 
     private class RoomChatAction extends ChatAction {

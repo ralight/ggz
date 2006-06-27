@@ -49,6 +49,8 @@ public class SpadesGamePanel extends CardGamePanel {
     private JLabel usScoreLabel;
 
     private JLabel themScoreLabel;
+    
+    protected static final Color highlightColor = Color.green.darker();
 
     public void init(ModGame mod) throws IOException {
         super.init(mod);
@@ -166,17 +168,23 @@ public class SpadesGamePanel extends CardGamePanel {
                         buffer.append(spadesBidPanel.getBidText(bid));
                         buffer.append("<BR>");
                     }
+                    boolean isThinking = false;
                     if (cardClient.get_game_state() == Client.STATE_BID) {
                         if (p.get_ggz_seat_num() == nextBid) {
                             buffer.append("Bidding...");
+                            isThinking = true;
                         }
                     } else if (cardClient.get_game_state() == Client.STATE_PLAY) {
                         if (p.get_ggz_seat_num() == nextPlay) {
                             buffer.append("Playing...");
+                            isThinking = true;
                         }
                     }
                     buffer.append("</HTML>");
                     label.setText(buffer.toString());
+                    // Highlight the label if it's this player's turn.
+                    label.setBackground(highlightColor);
+                    label.setOpaque(isThinking);
                     buffer.replace(0, buffer.length(), "");
                 }
                 revalidate();
