@@ -20,6 +20,7 @@ positions_tttai = ("playground/ggz-ruby/ai-ttt", "ggzd/game_servers/tictactoe")
 positions_chessai = ("python/chess", "grubby/games/guru-chess", "ggzd/game_servers/chess")
 positions_news = pos_cc + pos_games + pos_other + ("community",)
 positions_authors = pos_cc + pos_games + pos_other
+positions_meta = ("ggzd/ggzd/meta", "utils/metaserv/libmeta")
 
 files = {}
 files["README.GGZ"] = positions_readmeggz
@@ -33,6 +34,12 @@ files["ttt-ai.c"] = positions_tttai
 files["ttt-ai.h"] = positions_tttai
 files["ai.h"] = positions_chessai
 files["ai.c"] = positions_chessai
+files["minidom.c"] = positions_meta
+files["minidom.h"] = positions_meta
+files["uri.c"] = positions_meta
+files["uri.h"] = positions_meta
+files["meta.c"] = positions_meta
+files["meta.h"] = positions_meta
 
 def filesize(f):
 		size = 0
