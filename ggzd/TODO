@@ -23,4 +23,6 @@ Game servers
 ------------
 * unification of feature sets over all games
   (spectators, leave/rejoin, statistics, savegames, ...)
+* libai (chess) should be reborn as libggzchess, with libcgc merged in
+  or dropped, since libai already handles move checks
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 8224 2006-06-20 04:14:21Z jdorje $
+ * $Id: room.c 8279 2006-06-27 07:29:39Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -96,25 +96,25 @@ GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int req_game,
 	/* First we have to figure out how many rooms to announce  */
 	/* This is easy if a req_game filter hasn't been specified */
 	if(req_game != -1) {
-		for(i=0; i<room_info.num_rooms; i++)
-			if(rooms[i].removal_pending)
+		for(i = 0; i < room_get_num_rooms(); i++)
+			if(room_will_be_removed(i))
 				continue;
 			if(req_game == rooms[i].game_type)
 				count++;
 	} else
-		count = room_info.count_rooms;
+		count = room_get_count_rooms();
 
 	/* Do da opcode, and announce our count */
 	if (net_send_room_list_count(player->client->net, count) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Send off all the room announcements */
-	for(i=0; i<room_info.num_rooms; i++)
+	for(i = 0; i < room_get_num_rooms(); i++)
 		if(req_game == -1 || req_game == rooms[i].game_type) {
 			GGZReturn result;
 
 			/* Skip removal-pending rooms (includes removal-done) */
-			if (rooms[i].removal_pending) {
+			if (room_will_be_removed(i)) {
 				continue;
 			}
 
@@ -160,6 +160,7 @@ void room_initialize(void)
 
 	room_info.num_rooms = 1;
 	room_info.count_rooms = 1;
+	pthread_rwlock_init(&room_info.lock, NULL);
 
 	/* Allocate a big enough array to hold all our first room */
 	rooms = ggz_malloc(room_info.num_rooms * sizeof(RoomStruct));
@@ -174,54 +175,64 @@ void room_initialize(void)
 
 
 /* Initialize an additional room */
+/* Called from control thread only */
 void room_create_additional(void)
 {
-	/* Right now this is only used at startup, so we don't lock anything */
+	int room_id;
+
 	dbg_msg(GGZ_DBG_ROOM, "Creating a new room");
 
-	room_info.num_rooms++;
-	room_info.count_rooms++;
+	room_id = room_info.num_rooms;
 
 	/* Reallocate the room's array */
-	rooms = ggz_realloc(rooms, room_info.num_rooms * sizeof(RoomStruct));
+	/* FIXME: reallocation might create wholly new array? */
+	rooms = ggz_realloc(rooms, (room_id + 1) * sizeof(RoomStruct));
 
 	/* Initialize the room_tail and lock on the new one */
-	rooms[room_info.num_rooms-1].player_count = 0;
-	rooms[room_info.num_rooms-1].last_player_change = 0;
-	rooms[room_info.num_rooms-1].table_count = 0;
-	rooms[room_info.num_rooms-1].event_tail = NULL;
-	pthread_rwlock_init(&rooms[room_info.num_rooms-1].lock, NULL);
+	rooms[room_id].player_count = 0;
+	rooms[room_id].last_player_change = 0;
+	rooms[room_id].table_count = 0;
+	rooms[room_id].event_tail = NULL;
+	pthread_rwlock_init(&rooms[room_id].lock, NULL);
 #ifdef DEBUG
-	rooms[room_info.num_rooms-1].event_head = NULL;
+	rooms[room_id].event_head = NULL;
 #endif
-	rooms[room_info.num_rooms-1].removal_pending = 0;
-	rooms[room_info.num_rooms-1].removal_done = 0;
+	rooms[room_id].removal_pending = 0;
+	rooms[room_id].removal_done = 0;
 
-	/* FIXME: announce room as <UPDATE>, but *not* during server startup */
+	/* Finally, make it available to iterations over all rooms */
+	pthread_rwlock_wrlock(&room_info.lock);
+	room_info.num_rooms++;
+	room_info.count_rooms++;
+	pthread_rwlock_unlock(&room_info.lock);
 }
 
 /* Announce a room which was added */
+/* Only called from control thread */
 void room_add(int room)
 {
-	int roomnum = room_get_num_rooms(), i;
+	int roomnum = room_info.num_rooms, i;
 
 	for (i = 0; i < roomnum; i++) {
-		/*if(rooms[i].removal_pending && i != room)
-			continue;*/
+		if (rooms[i].removal_done)
+			continue;
 
 		room_update_event("", GGZ_ROOM_UPDATE_ADD, i, room);
 	}
 
-	/* FIXME: really send this? */
-	chat_server_2_player(NULL, "A new room has been added!");
+#if 0
+	/* FIXME: This needs to go into the clients! */
+	chat_server_2_player(NULL, "Reconfiguration: A new room has been added!");
+#endif
 }
 
 
 /* Mark a room to be subject of removal */
 /* FIXME: together with room_create_additional, should return error status? */
+/* Only called from control thread (but we lock for writing) */
 void room_remove(int room)
 {
-	int roomnum, i;
+	int i;
 
 	/* actual rooms really start with index 1 (= entry room) */
 	if (room <= 0 || room > room_info.num_rooms - 1)
@@ -229,8 +240,12 @@ void room_remove(int room)
 	if (rooms[room].removal_pending)
 		return;
 
+	pthread_rwlock_wrlock(&rooms[room].lock);
 	rooms[room].removal_pending = 1;
+	pthread_rwlock_unlock(&rooms[room].lock);
+	pthread_rwlock_wrlock(&room_info.lock);
 	room_info.count_rooms--;
+	pthread_rwlock_unlock(&room_info.lock);
 
 	/* We can kill it off right away if nobody's in there */
 	if (rooms[room].player_count == 0) {
@@ -240,31 +255,33 @@ void room_remove(int room)
 
 	dbg_msg(GGZ_DBG_ROOM, "Marking room %i for removal", room);
 
-	/* FIXME: in chat.c, removal-pending rooms are not skipped yet? */
 	/* TODO: need global event enqueue function (for server-wide events) */
 
-	roomnum = room_get_num_rooms();
-	for (i = 0; i < roomnum; i++) {
-		/*if(rooms[i].removal_pending && i != room)
-			continue;*/
+	for (i = 0; i < room_info.num_rooms; i++) {
+		if (rooms[i].removal_done)
+			continue;
 
 		room_update_event("", GGZ_ROOM_UPDATE_CLOSE, i, room);
 	}
 
+#if 0
 	/* FIXME: really send this? */
 	chat_server_2_player(NULL, "A room is about to close!");
+#endif
 }
 
 
+/* Called from control thread only */
 void room_remove_really(int old_room)
 {
 	int i;
 
-	/* FIXME: locking */
 	if(rooms[old_room].player_count == 0
 	&& rooms[old_room].removal_pending)
 	{
+		pthread_rwlock_wrlock(&rooms[old_room].lock);
 		rooms[old_room].removal_done = 1;
+		pthread_rwlock_unlock(&rooms[old_room].lock);
 
 		dbg_msg(GGZ_DBG_ROOM, "Delete room %i entirely", old_room);
 
@@ -298,14 +315,13 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 		return GGZ_REQ_FAIL;
 	}
 
-	if(room > room_info.num_rooms || room < 0) {
+	if(room > room_get_num_rooms() || room < 0) {
 		if (net_send_room_join(player->client->net, E_BAD_OPTIONS) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
 
-	/* FIXME: locking required? */
-	if(rooms[room].removal_pending) {
+	if(room_will_be_removed(room)) {
 		if (net_send_room_join(player->client->net, E_BAD_OPTIONS) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
@@ -394,7 +410,7 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 	/* Check for valid inputs */
 	if(old_room == room)
 		return E_OK;
-	if(room > room_info.num_rooms || room < -2)
+	if(room > room_get_num_rooms() || room < -2)
 		return E_BAD_OPTIONS;
 
 	/* Process queued messages unless they are connecting/disconnecting */
@@ -550,8 +566,57 @@ static GGZEventFuncReturn room_event_callback(void* target_player,
 }
 
 
+/* Only use in non-control thread since locking is expensive */
 int room_get_num_rooms(void)
 {
-	/* FIXME: Lock this one day when we have dynamic rooms */
-	return room_info.num_rooms;
+	int number;
+
+	pthread_rwlock_rdlock(&room_info.lock);
+	number = room_info.num_rooms;
+	pthread_rwlock_unlock(&room_info.lock);
+
+	return number;
 }
+
+/* Only use in non-control thread since locking is expensive */
+int room_get_count_rooms(void)
+{
+	int number;
+
+	pthread_rwlock_rdlock(&room_info.lock);
+	number = room_info.count_rooms;
+	pthread_rwlock_unlock(&room_info.lock);
+
+	return number;
+}
+
+/* This is always called from within loops over all rooms */
+/* Only use in non-control thread since locking is expensive */
+int room_is_removed(int room)
+{
+	int removed = 0;
+
+	pthread_rwlock_rdlock(&rooms[room].lock);
+	if (rooms[room].removal_done) {
+		removed = 1;
+	}
+	pthread_rwlock_unlock(&rooms[room].lock);
+
+	return removed;
+}
+
+/* This is always called from within loops over all rooms */
+/* Only use in non-control thread since locking is expensive */
+int room_will_be_removed(int room)
+{
+	int removed = 0;
+
+	pthread_rwlock_rdlock(&rooms[room].lock);
+	if (rooms[room].removal_pending) {
+		removed = 1;
+	}
+	pthread_rwlock_unlock(&rooms[room].lock);
+
+	return removed;
+}
+

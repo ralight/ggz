@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 8247 2006-06-22 05:57:27Z jdorje $
+ * $Id: room.h 8279 2006-06-27 07:29:39Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -98,9 +98,8 @@ typedef struct {
 
 /* Information about all rooms */
 typedef struct {
-#if 0
-	pthread_rwlock_t lock;	/* Not inititalized or used yet */
-#endif
+	/* Used to protect against room additions (not removals!) */
+	pthread_rwlock_t lock;
 	/* All rooms including removal-pending and removal-done */
 	int num_rooms;
 	/* Number of active rooms */
@@ -121,6 +120,9 @@ GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int game,
                                              char verbose);
 GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room);
 int room_get_num_rooms(void);
+int room_get_count_rooms(void);
+int room_is_removed(int room);
+int room_will_be_removed(int room);
 
 GGZReturn room_update_event(const char *player,
 			    GGZPlayerUpdateType update,

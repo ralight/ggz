@@ -8,7 +8,7 @@ EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
 ggzdexecmod_PROGRAMS = geekgameserver
 geekgameserver_SOURCES = main.cpp geekgame.cpp
 geekgameserver_LDADD = $(LDADD) \
-	$(top_builddir)/ggzdmod++/libggzdmodpp.la
+	$(top_builddir)/ggzdmod++/libggzdmod++.la
 
 noinst_HEADERS = geekgame.h protocol.h
 

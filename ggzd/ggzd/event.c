@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 8071 2006-05-29 07:34:31Z josef $
+ * $Id: event.c 8279 2006-06-27 07:29:39Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -106,6 +106,23 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 		return GGZ_OK;
 	}
 
+	/* Check for removed room */
+	if (room_is_removed(room)) {
+		dbg_msg(GGZ_DBG_LISTS,
+			"Skipped event (removed room)");
+		return GGZ_OK;
+	}
+
+	pthread_rwlock_wrlock(&rooms[room].lock);
+
+	/* Check for empty room (event might be last player leaving) */
+	if (rooms[room].player_count == 0) {
+		pthread_rwlock_unlock(&rooms[room].lock);
+		dbg_msg(GGZ_DBG_LISTS,
+			"Skipped event (empty room)");
+		return GGZ_OK;
+	}
+
 	/* Allocate a new event item */
 	event = ggz_malloc(sizeof(GGZEvent));
 	dbg_msg(GGZ_DBG_LISTS, "Allocated event %p", event);
@@ -116,17 +133,6 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 	event->data = data;
 	event->free = free;
 	event->handle = func;
-
-	pthread_rwlock_wrlock(&rooms[room].lock);
-
-	/* Check for empty room (event might be last player leaving) */
-	if (rooms[room].player_count == 0) {
-		pthread_rwlock_unlock(&rooms[room].lock);
-		event_free(event);
-		dbg_msg(GGZ_DBG_LISTS,
-			"Deallocated event %p (empty room)", event);
-		return GGZ_OK;
-	}
 
 	event->ref_count = rooms[room].player_count;
 

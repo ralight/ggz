@@ -8,7 +8,7 @@ EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
 ggzdexecmod_PROGRAMS = tuxmanserv
 tuxmanserv_SOURCES = main.cpp map.cpp pacman.cpp tuxmanserv.cpp
 tuxmanserv_LDADD = $(LDADD) \
-			$(top_builddir)/ggzdmod++/libggzdmodpp.la
+			$(top_builddir)/ggzdmod++/libggzdmod++.la
 
 noinst_HEADERS = map.h pacman.h tuxmanserv.h proto.h
 

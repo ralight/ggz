@@ -1,14 +1,11 @@
-SUBDIRS = .
-
-lib_LTLIBRARIES = libggzdmodpp.la
-libggzdmodpp_la_SOURCES = ggzgameserver.cpp net.cpp mnet.cpp
-libggzdmodpp_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 0:0:0
-libggzdmodpp_la_LIBADD = $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ)
+lib_LTLIBRARIES = libggzdmod++.la
+libggzdmod___la_SOURCES = ggzgameserver.cpp net.cpp mnet.cpp
+libggzdmod___la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 0:0:0
+libggzdmod___la_LIBADD = $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ)
+libggzdmod___la_CPPFLAGS = -I $(srcdir) -I $(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 ggzdmodppdir = $(includedir)/ggzdmod++
 ggzdmodpp_HEADERS = ggzgameserver.h net.h mnet.h
-
-AM_CPPFLAGS = -I $(srcdir) -I $(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 EXTRA_DIST = README.ggzdmod++
 

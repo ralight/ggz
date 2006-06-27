@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 7382 2005-08-13 14:48:54Z josef $
+# $Id: Makefile.am 8279 2006-06-27 07:29:39Z josef $
 
 SUBDIRS = qtserv variants
 
@@ -12,7 +12,7 @@ ggzdexecmod_PROGRAMS = muehleserv
 muehleserv_SOURCES = muehleserver.cpp loader.cpp main.cpp net.cpp
 muehleserv_LDADD = $(LDADD) \
 	qtserv/libqtserv.a \
-	$(top_builddir)/ggzdmod++/libggzdmodpp.la
+	$(top_builddir)/ggzdmod++/libggzdmod++.la
 
 noinst_HEADERS = muehleserver.h loader.h net.h
 

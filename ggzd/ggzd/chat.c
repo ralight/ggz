@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8273 2006-06-26 10:29:01Z oojah $
+ * $Id: chat.c 8279 2006-06-27 07:29:39Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -74,10 +74,12 @@ GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 		if(perms_check(sender, PERMS_CHAT_ANNOUNCE) != PERMS_ALLOW)
 			return E_NO_PERMISSION;
 		roomnum = room_get_num_rooms();
-		for(i=0; i<roomnum; i++) {
+		for(i = 0; i < roomnum; i++) {
 			GGZClientReqError result;
-			if(rooms[i].removal_pending)
+
+			if (room_is_removed(i))
 				continue;
+
 			result = chat_room_enqueue(i, type, sender, msg);
 			if (result != E_OK)
 				status = result;
@@ -278,6 +280,7 @@ static GGZEventFuncReturn chat_table_event_callback(void *target, size_t size,
 
 /* This is more or less a temporary hack for show_server_info() - room.c */
 /* Although this could be a useful function for other uses. */
+/* If player name is NULL, message is announced to all rooms */
 GGZReturn chat_server_2_player(const char *name, const char *msg)
 {
 	if (name) {
@@ -296,8 +299,8 @@ GGZReturn chat_server_2_player(const char *name, const char *msg)
 		for (i = 0; i < roomnum; i++) {
 			GGZChatEventData *data;
 
-			/*if(rooms[i].removal_pending)
-				continue;*/
+			if (room_is_removed(i))
+				continue;
 
 			data = chat_pack(GGZ_CHAT_ANNOUNCE, "[Server]", msg);
 

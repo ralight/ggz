@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8269 2006-06-25 17:13:27Z oojah $
+ * $Id: players.c 8279 2006-06-27 07:29:39Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -1430,14 +1430,11 @@ GGZPlayerHandlerStatus player_send_room_update(GGZPlayer *player)
 		return GGZ_REQ_OK;
 	}
 
-	for (i = 0; i < room_info.num_rooms; i++) {
+	for (i = 0; i < room_get_num_rooms(); i++) {
 		int player_count;
 		time_t last_player_change;
 
-		/* FIXME: lock? */
-		/* FIXME: we might actually let them through so other players
-		   can see the number of players in the to-be-closed room shrink */
-		if (rooms[i].removal_pending) {
+		if (room_is_removed(i)) {
 			continue;
 		}
 
