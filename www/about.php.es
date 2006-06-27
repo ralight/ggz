@@ -19,7 +19,7 @@ Con su sistema de clasificación del jugador y las características tales como e
 
 <i>Algunas estadísticas</i><br>
 <ul>
-<li><a href="/packages/">15 paquetes</a> (módulos SVN) disponibles, además de una exportación a Windows
+<li><a href="/packages/">16 paquetes</a> (módulos SVN) disponibles, además de una exportación a Windows
 <li>19 protocolos para juegos y 27 clientes pueden darnos horas de diversión
 <li>Apoio para KDE/Qt, GNOME/Gtk+, SDL y juegos de navegador
 <li>Más de 170.000 lineas de código en C, C++, Python y Java
