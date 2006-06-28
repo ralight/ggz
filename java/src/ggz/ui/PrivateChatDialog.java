@@ -3,6 +3,7 @@ package ggz.ui;
 import ggz.client.core.ChatEventData;
 import ggz.client.core.ErrorEventData;
 import ggz.client.core.MotdEventData;
+import ggz.client.core.Player;
 import ggz.client.core.Room;
 import ggz.client.core.RoomChangeEventData;
 import ggz.client.core.RoomListener;
@@ -18,6 +19,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -209,19 +211,19 @@ public class PrivateChatDialog extends JFrame {
             });
         }
 
-        public void player_count(int room_id) {
+        public void player_count(int count) {
 
         }
 
-        public void player_lag(String player) {
+        public void player_lag(Player player) {
 
         }
 
-        public void player_list(int room_id) {
+        public void player_list(List players) {
 
         }
 
-        public void player_stats(String player) {
+        public void player_stats(Player player) {
 
         }
 

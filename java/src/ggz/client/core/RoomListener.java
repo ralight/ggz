@@ -18,17 +18,18 @@
 package ggz.client.core;
 
 import java.util.EventListener;
+import java.util.List;
 
 public interface RoomListener extends EventListener {
     /**
      * The list of players in a room has arrived.
      * 
-     * @param data
-     *            The room id (int *)
+     * @param players
+     *            The list of players.
      * @note This will only be issued for the current room.
      * @see ggzcore_room_list_players
      */
-    public void player_list(int room_id);
+    public void player_list(List players);
 
     /**
      * Received the list of active tables.
@@ -148,10 +149,10 @@ public interface RoomListener extends EventListener {
      * A player's lag (measure of connection speed) has been updated
      * 
      * @see ggzcore_player_get_lag
-     * @param data
-     *            The name of the player whose lag has changed.
+     * @param player
+     *            The player whose lag has changed.
      */
-    public void player_lag(String player);
+    public void player_lag(Player player);
 
     /**
      * A player's stats have been updated.
@@ -161,17 +162,17 @@ public interface RoomListener extends EventListener {
      * @see ggzcore_player_get_rating
      * @see ggzcore_player_get_ranking
      * @see ggzcore_player_get_highscore
-     * @param data
-     *            The name of the player whose stats have changed.
+     * @param player
+     *            The player whose stats have changed.
      */
-    public void player_stats(String player);
+    public void player_stats(Player player);
 
     /**
      * The number of players in a room has arrived.
      * 
-     * @param data
-     *            The room id (int *)
+     * @param count
+     *            The number of players in the room.
      */
-    public void player_count(int room_id);
+    public void player_count(int count);
 
 }

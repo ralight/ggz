@@ -900,7 +900,7 @@ public class Net implements Runnable {
         List list;
         Iterator iter;
         Room room;
-        int count, room_num;
+        int room_num;
         String type;
 
         if (element == null)
@@ -916,13 +916,12 @@ public class Net implements Runnable {
             // HB Added to prevent NullPointerException
             list = new ArrayList(0);
         }
-        count = list.size();
 
         if ("room".equals(type)) {
             /* Clear existing list (if any) */
             // if (this.server.get_num_rooms() > 0)
             // this.server.free_roomlist();
-            this.server.init_roomlist(count);
+            this.server.init_roomlist(list.size());
 
             // for (entry = ggz_list_head(list); entry; entry =
             // ggz_list_next(entry)) {
@@ -932,14 +931,14 @@ public class Net implements Runnable {
             }
             this.server.event(ServerEvent.GGZ_ROOM_LIST, null);
         } else if ("game".equals(type)) {
-            this.server.init_typelist(count);
+            this.server.init_typelist(list.size());
             for (iter = list.iterator(); iter.hasNext();) {
                 this.server.add_type((GameType) iter.next());
             }
             this.server.event(ServerEvent.GGZ_TYPE_LIST, null);
         } else if ("player".equals(type)) {
             room = this.server.get_room_by_id(room_num);
-            room.set_player_list(count, list);
+            room.set_player_list(list);
             list = null; /* avoid freeing list */
         } else if ("table".equals(type)) {
             room = this.server.get_room_by_id(room_num);
@@ -1510,7 +1509,7 @@ public class Net implements Runnable {
         ranking = str_to_int(element.get_attr("RANKING"), Player.NO_RANKING);
         highscore = str_to_int(element.get_attr("HIGHSCORE"),
                 Player.NO_HIGHSCORE);
-        ggz_player.init_stats(wins, losses, ties, forfeits, rating, ranking,
+        ggz_player.set_stats(wins, losses, ties, forfeits, rating, ranking,
                 highscore);
 
         /* Get parent off top of stack */

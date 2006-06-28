@@ -35,7 +35,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -156,10 +156,9 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         });
     }
 
-    public void player_count(int room_id) {
+    public void player_count(final int n) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                int n = room.get_num_players();
                 playerCountLabel.setText(n + (n == 1 ? " player" : " players"));
                 revalidate();
                 repaint();
@@ -167,30 +166,27 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         });
     }
 
-    public void player_lag(String player_name) {
-        players.fireLagCellUpdated(player_name);
+    public void player_lag(Player player) {
+        players.fireLagCellUpdated(player);
     }
 
-    public void player_list(int room_id) {
-        players.replace(room.get_players());
-        player_count(room_id);
+    public void player_list(List new_players) {
+        players.replaceAll(new_players);
+        player_count(new_players.size());
     }
 
-    public void player_stats(String player) {
+    public void player_stats(Player player) {
         players.fireStatsUpdated(player);
     }
 
     public void room_enter(RoomChangeEventData data) {
-        Player p = room.get_player_by_name(data.player_name);
-        if (p != null) {
-            players.add(p);
-        }
-        player_count(data.to_room);
+        players.add(data.player);
+        player_count(room.get_num_players());
     }
 
     public void room_leave(RoomChangeEventData data) {
-        players.remove(data.player_name);
-        player_count(data.from_room);
+        players.remove(data.player);
+        player_count(room.get_num_players());
     }
 
     public void table_join_fail(String error) {
@@ -314,18 +310,12 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
         public PlayersTableModel(boolean showTableNumber) {
             this.showTableNumber = showTableNumber;
-            // WARNING: If we support sorting by anything other than name then
-            // we need to rewrite getRowIndex() below.
             this.data = new SortedList(Player.SORT_BY_NAME);
         }
 
-        public void clear() {
+        public void replaceAll(List players) {
             this.data.clear();
-        }
-
-        public void replace(Player[] players) {
-            this.data.clear();
-            this.data.addAll(Arrays.asList(players));
+            this.data.addAll(players);
             fireTableDataChanged();
         }
 
@@ -333,24 +323,21 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             if (this.data.add(p)) {
                 int rowIndex = this.data.indexOf(p);
                 fireTableRowsInserted(rowIndex, rowIndex);
+            } else {
+                log.warning("Could not add player to list: " + p);
             }
         }
 
         public void remove(Player p) {
             int rowIndex = this.data.indexOf(p);
-            if (rowIndex > 0 && this.data.remove(p)) {
-                fireTableRowsDeleted(rowIndex, rowIndex);
+            if (rowIndex > 0) {
+                if (this.data.remove(rowIndex) == null) {
+                    log
+                            .warning("Found player object but couldn't remove it from SortedList: " + p);
+                } else {
+                    fireTableRowsDeleted(rowIndex, rowIndex);
+                }
             }
-        }
-
-        public void remove(String playerName) {
-            // WARNING: This assumes players are sorted by name.
-            remove(new Player(playerName));
-        }
-
-        public int getRowIndex(String playerName) {
-            // WARNING: This assumes players are sorted by name.
-            return this.data.indexOf(new Player(playerName));
         }
 
         public int getColumnCount() {
@@ -412,17 +399,24 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             }
         }
 
-        public void fireLagCellUpdated(String playerName) {
-            int row = getRowIndex(playerName);
+        public void fireLagCellUpdated(Player player) {
+            int row = this.data.indexOf(player);
             if (row > 0) {
                 fireTableCellUpdated(row, LAG_COLUMN);
+            } else {
+                log.warning("Lag not updated, could not find player in list: "
+                        + player);
             }
         }
 
-        public void fireStatsUpdated(String playerName) {
-            int row = getRowIndex(playerName);
+        public void fireStatsUpdated(Player player) {
+            int row = this.data.indexOf(player);
             if (row > 0) {
                 fireTableRowsUpdated(row, row);
+            } else {
+                log
+                        .warning("Stats not updated, could not find player in list: "
+                                + player);
             }
         }
     }

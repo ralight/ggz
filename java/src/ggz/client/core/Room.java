@@ -23,6 +23,7 @@ import ggz.common.LeaveType;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -71,15 +72,17 @@ public class Room {
     /* Room events */
     private HookList event_hooks;
 
-    public synchronized Player get_player_by_name(String player_name) {
+    public Player get_player_by_name(String player_name) {
         Player found = null;
 
         if (this.players != null) {
-            for (Iterator iter = this.players.iterator(); iter.hasNext();) {
-                Player next = (Player) iter.next();
-                if (player_name.equals(next.get_name())) {
-                    found = next;
-                    break;
+            synchronized (this.players) {
+                for (Iterator iter = this.players.iterator(); iter.hasNext();) {
+                    Player next = (Player) iter.next();
+                    if (player_name.equals(next.get_name())) {
+                        found = next;
+                        break;
+                    }
                 }
             }
         }
@@ -106,10 +109,11 @@ public class Room {
         return this.server.get_type_by_id(this.game_type_id);
     }
 
-    public synchronized int get_num_players() {
-
+    public int get_num_players() {
         if (this.server.get_cur_room() == this && this.players != null) {
-            return this.players.size();
+            synchronized (this.players) {
+                return this.players.size();
+            }
         }
         return this.player_count;
     }
@@ -118,18 +122,24 @@ public class Room {
         return this.tables == null ? 0 : this.tables.size();
     }
 
-    public synchronized Player get_nth_player(int num) {
+    public Player get_nth_player(int num) {
         if (this.players == null) {
             return null;
         }
-        if (num < this.players.size()) {
-            return (Player) this.players.get(num);
+        synchronized (this.players) {
+            if (num < this.players.size()) {
+                return (Player) this.players.get(num);
+            }
         }
         return null;
     }
-    
-    public synchronized Player[] get_players() {
-        return players == null ? null : (Player[])players.toArray(new Player[players.size()]);
+
+    public Player[] get_players() {
+        if (players == null)
+            return null;
+        synchronized (this.players) {
+            return (Player[]) players.toArray(new Player[players.size()]);
+        }
     }
 
     public Table get_nth_table(int num) {
@@ -322,14 +332,18 @@ public class Room {
         this.event_hooks = new HookList();
     }
 
-    void set_player_list(int count, List list) {
-        boolean count_changed = (players == null || count != this.players.size());
+    void set_player_list(List list) {
+        boolean count_changed = (players == null || list.size() != this.players
+                .size());
 
         /* Get rid of old list */
-        this.player_count = count;
+        this.player_count = list.size();
         this.players = list;
 
-        event(RoomEvent.GGZ_PLAYER_LIST, new Integer(this.id));
+        // Make an unmodifiable copy of the list so we don't have threading
+        // problems.
+        List copy = Collections.unmodifiableList(new ArrayList(list));
+        event(RoomEvent.GGZ_PLAYER_LIST, copy);
         if (count_changed) {
             server.queue_players_changed();
         }
@@ -344,7 +358,7 @@ public class Room {
             /* Sanity check. */
             this.player_count = 0;
         }
-        event(RoomEvent.GGZ_PLAYER_COUNT, new Integer(this.id));
+        event(RoomEvent.GGZ_PLAYER_COUNT, new Integer(this.player_count));
         server.queue_players_changed();
     }
 
@@ -359,7 +373,7 @@ public class Room {
         player = get_player_by_name(name);
         if (player != null) { /* make sure they're still in room */
             player.set_lag(lag);
-            event(RoomEvent.GGZ_PLAYER_LAG, name);
+            event(RoomEvent.GGZ_PLAYER_LAG, player);
         }
     }
 
@@ -376,10 +390,10 @@ public class Room {
             return;
         }
 
-        player.init_stats(pdata.get_wins(), pdata.get_losses(), pdata
-                .get_ties(), pdata.get_forfeits(), pdata.get_rating(), pdata
-                .get_ranking(), pdata.get_highscore());
-        event(RoomEvent.GGZ_PLAYER_STATS, this.name);
+        player.set_stats(pdata.get_wins(), pdata.get_losses(),
+                pdata.get_ties(), pdata.get_forfeits(), pdata.get_rating(),
+                pdata.get_ranking(), pdata.get_highscore());
+        event(RoomEvent.GGZ_PLAYER_STATS, player);
     }
 
     void set_table_list(List list) {
@@ -402,7 +416,7 @@ public class Room {
         }
     }
 
-    synchronized void add_player(Player pdata, int from_room) {
+    void add_player(Player pdata, int from_room) {
         Player player;
         RoomChangeEventData data = new RoomChangeEventData();
 
@@ -415,51 +429,54 @@ public class Room {
         /* Default new people in room to no table (-1) */
         player = new Player(pdata.get_name(), pdata.get_room(), -1, pdata
                 .get_type(), pdata.get_lag());
-        player.init_stats(pdata.get_wins(), pdata.get_losses(), pdata
-                .get_ties(), pdata.get_forfeits(), pdata.get_rating(), pdata
-                .get_ranking(), pdata.get_highscore());
+        player.set_stats(pdata.get_wins(), pdata.get_losses(),
+                pdata.get_ties(), pdata.get_forfeits(), pdata.get_rating(),
+                pdata.get_ranking(), pdata.get_highscore());
 
-        this.players.add(player);
-        this.player_count = this.players.size();
-
-        data.player_name = pdata.get_name();
+        synchronized (this.players) {
+            this.players.add(player);
+            this.player_count = this.players.size();
+        }
+        data.player = player;
         data.from_room = from_room;
         data.to_room = this.id;
         event(RoomEvent.GGZ_ROOM_ENTER, data);
 
-        Room from;
-        if ((from = this.server.get_room_by_id(from_room)) != null) {
+        Room from = this.server.get_room_by_id(from_room);
+        if (from != null) {
             from.set_players(from.player_count - 1);
         }
         server.queue_players_changed();
     }
 
-    synchronized void remove_player(String player_name, int to_room) {
+    void remove_player(String player_name, int to_room) {
         RoomChangeEventData data = new RoomChangeEventData();
 
         log.fine("Removing player " + player_name);
 
         /* Only try to delete if the list exists */
         if (this.players != null) {
-            for (Iterator iter = this.players.iterator(); iter.hasNext();) {
-                Player entry = (Player) iter.next();
-                if (player_name.equals(entry.get_name())) {
-                    this.players.remove(entry);
-                    this.player_count = this.players.size();
+            synchronized (this.players) {
+                for (Iterator iter = this.players.iterator(); iter.hasNext();) {
+                    Player entry = (Player) iter.next();
+                    if (player_name.equals(entry.get_name())) {
+                        this.players.remove(entry);
+                        this.player_count = this.players.size();
 
-                    data.player_name = player_name;
-                    data.from_room = this.id;
-                    data.to_room = to_room;
+                        data.player = entry;
+                        data.from_room = this.id;
+                        data.to_room = to_room;
 
-                    event(RoomEvent.GGZ_ROOM_LEAVE, data);
-                    server.queue_players_changed();
-                    break;
+                        event(RoomEvent.GGZ_ROOM_LEAVE, data);
+                        server.queue_players_changed();
+                        break;
+                    }
                 }
             }
         }
 
-        Room to;
-        if ((to = this.server.get_room_by_id(to_room)) != null) {
+        Room to = this.server.get_room_by_id(to_room);
+        if (to != null) {
             to.set_players(to.player_count + 1);
         }
     }
@@ -712,7 +729,7 @@ public class Room {
 
     private void event(RoomEvent event_id, Object data) {
         if (event_id == RoomEvent.GGZ_PLAYER_LIST) {
-            event_hooks.fire_player_list(((Integer) data).intValue());
+            event_hooks.fire_player_list((List) data);
         } else if (event_id == RoomEvent.GGZ_TABLE_LIST) {
             event_hooks.fire_table_list();
         } else if (event_id == RoomEvent.GGZ_CHAT_EVENT) {
@@ -740,9 +757,9 @@ public class Room {
         } else if (event_id == RoomEvent.GGZ_TABLE_LEAVE_FAIL) {
             event_hooks.fire_table_leave_fail((String) data);
         } else if (event_id == RoomEvent.GGZ_PLAYER_LAG) {
-            event_hooks.fire_player_lag((String) data);
+            event_hooks.fire_player_lag((Player) data);
         } else if (event_id == RoomEvent.GGZ_PLAYER_STATS) {
-            event_hooks.fire_player_stats((String) data);
+            event_hooks.fire_player_stats((Player) data);
         } else if (event_id == RoomEvent.GGZ_PLAYER_COUNT) {
             event_hooks.fire_player_count(((Integer) data).intValue());
         } else {
@@ -773,16 +790,16 @@ public class Room {
             }
         }
 
-        public void fire_player_count(int room_id) {
+        public void fire_player_count(int count) {
             RoomListener[] listenerArray = (RoomListener[]) listeners
                     .getListeners(RoomListener.class);
             for (int i = 0; i < listenerArray.length; i++) {
                 RoomListener listener = listenerArray[i];
-                listener.player_count(room_id);
+                listener.player_count(count);
             }
         }
 
-        public void fire_player_lag(String player) {
+        public void fire_player_lag(Player player) {
             RoomListener[] listenerArray = (RoomListener[]) listeners
                     .getListeners(RoomListener.class);
             for (int i = 0; i < listenerArray.length; i++) {
@@ -791,16 +808,16 @@ public class Room {
             }
         }
 
-        public void fire_player_list(int room_id) {
+        public void fire_player_list(List players) {
             RoomListener[] listenerArray = (RoomListener[]) listeners
                     .getListeners(RoomListener.class);
             for (int i = 0; i < listenerArray.length; i++) {
                 RoomListener listener = listenerArray[i];
-                listener.player_list(room_id);
+                listener.player_list(players);
             }
         }
 
-        public void fire_player_stats(String player) {
+        public void fire_player_stats(Player player) {
             RoomListener[] listenerArray = (RoomListener[]) listeners
                     .getListeners(RoomListener.class);
             for (int i = 0; i < listenerArray.length; i++) {

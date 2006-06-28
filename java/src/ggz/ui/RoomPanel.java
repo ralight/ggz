@@ -22,6 +22,7 @@ import ggz.client.core.ErrorEventData;
 import ggz.client.core.Game;
 import ggz.client.core.GameEventListener;
 import ggz.client.core.Module;
+import ggz.client.core.Player;
 import ggz.client.core.Room;
 import ggz.client.core.RoomChangeEventData;
 import ggz.client.core.RoomListener;
@@ -47,6 +48,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
@@ -165,19 +167,19 @@ public class RoomPanel extends JPanel implements RoomListener {
         // Handled by chat panel so do nothing.
     }
 
-    public void player_count(int room_id) {
+    public void player_count(int count) {
         // Ignore
     }
 
-    public void player_lag(String player) {
+    public void player_lag(Player player) {
         // Handled by chat panel so do nothing.
     }
 
-    public void player_list(int room_id) {
+    public void player_list(List players) {
         // Handled by chat panel so do nothing.
     }
 
-    public void player_stats(String player) {
+    public void player_stats(Player player) {
         // Ignore
     }
 

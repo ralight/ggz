@@ -123,7 +123,7 @@ public class Player {
         this.lag = lag;
     }
 
-    void init_stats(int new_wins, int new_losses, int new_ties,
+    void set_stats(int new_wins, int new_losses, int new_ties,
             int new_forfeits, int new_rating, int new_ranking, int new_highscore) {
         this.wins = new_wins;
         this.losses = new_losses;
