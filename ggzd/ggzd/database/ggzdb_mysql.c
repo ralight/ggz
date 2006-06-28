@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 8287 2006-06-28 09:51:38Z oojah $
+ * $Id: ggzdb_mysql.c 8288 2006-06-28 16:39:18Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -123,7 +123,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	rc = mysql_query(conn, query);
 	pthread_mutex_unlock(&mutex);
 
-	if (rc != 0) {
+	if (rc) {
 		/* FIXME: is this correct?  If not, how do we detect a
 		   duplicate entry - and notify the calling code?  --JDS */
 		return GGZDB_ERR_DUPKEY;
@@ -149,7 +149,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
 
-	if (rc != 0) {
+	if (!rc) {
 		res = mysql_store_result(conn);
 		pthread_mutex_unlock(&mutex);
 
@@ -219,7 +219,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 		"id, handle, password, name, email, last_login, perms FROM users");
 	result = mysql_query(conn, query);
 
-	if (result == 0) {
+	if (!result) {
 		iterres = mysql_store_result(conn);
 		if (mysql_num_rows(iterres) > 0) {
 			row = mysql_fetch_row(iterres);
