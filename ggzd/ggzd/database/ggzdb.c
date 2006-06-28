@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 7424 2005-08-15 09:00:27Z josef $
+ * $Id: ggzdb.c 8289 2006-06-28 18:47:08Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -141,7 +141,8 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 			password64 = ggz_base64_encode(hash.hash, hash.hashlen);
 			if(password64)
 			{
-				free(hash.hash);
+			/* FIXME - I get segfaults unless I comment this line. It needs checking --ral 
+			  free(hash.hash); */
 				origpassword = strdup(pe->password);
 				snprintf(pe->password, sizeof(pe->password), "%s", password64);
 			}
@@ -392,7 +393,8 @@ int ggzdb_compare_password(const char *input, const char *password)
 		password64 = ggz_base64_encode(hash.hash, hash.hashlen);
 		if(!password64) return -1;
 		if(!strcmp(password64, password)) ret = 1;
-		free(hash.hash);
+		/* FIXME - I get segfaults unless I comment this line. It needs checking --ral
+		free(hash.hash); */
 		free(password64);
 		return ret;
 	}
@@ -401,4 +403,79 @@ int ggzdb_compare_password(const char *input, const char *password)
 	
 	return -1;
 }
+
+/* Helper function, might go into libggz*/
+char *_ggz_sql_escape(const char *str)
+{
+	char *new, *q;
+	const char *p;
+	size_t len = 0;
+
+	if(str == NULL)
+		return NULL;
+
+	len = strlen(str);
+
+	for(p = str; *p != '\0'; p++) {
+		if(*p == '\'') {
+			len += 1;
+		}
+	}
+
+	if(len == strlen(str))
+		return ggz_strdup(str);
+
+	q = new = ggz_malloc(len + 1);
+	for(p = str; *p != '\0'; p++) {
+		if(*p == '\'') {
+			*q++ = '\\';
+			*q = *p;
+			*q++;
+		} else {
+			*q = *p;
+			q++;
+		}
+	}
+	*q = '\0';
+
+	return new;
+}
+
+/* Helper function, might go into libggz*/
+/*char *_ggz_sql_unescape(const char *str)
+{
+	char *new, *q;
+	const char *p;
+	size_t len = 0;
+
+	if(str == NULL)
+		return NULL;
+
+	len = strlen(str);
+
+	for(p = str; *p != '\0'; p++) {
+		if(!strncmp(p, "\\'", 2)) {
+			p += 1;
+		}
+		len++;
+	}
+
+	if(len == strlen(str))
+		return ggz_strdup(str);
+
+	q = new = ggz_malloc(len + 1);
+	for(p = str; *p != '\0'; p++) {
+		if(!strncmp(p, "\\'", 2)) {
+			*q = '\'';
+			q++;
+			p += 1;
+		} else {
+			*q = *p;
+			q++;
+		}
+	}
+	*q = '\0';
+
+	return new;
+}*/
 

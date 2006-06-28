@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 7498 2005-08-27 08:45:46Z josef $
+ * $Id: ggzdb.h 8289 2006-06-28 18:47:08Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -117,6 +117,12 @@ GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner, const cha
 
 /* Register a savegame entry temporarily */
 GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame);
+
+/* Escape a string for SQL */
+char *_ggz_sql_escape(const char *str);
+
+/* Unescape a string from SQL */
+/*char *_ggz_sql_unescape(const char *str); */
 
 #endif
 

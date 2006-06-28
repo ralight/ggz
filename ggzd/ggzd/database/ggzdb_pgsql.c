@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 7900 2006-03-13 12:34:50Z josef $
+ * $Id: ggzdb_pgsql.c 8289 2006-06-28 18:47:08Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -161,82 +161,6 @@ static void releaseconnection(PGconn *conn)
 	}
 	pthread_mutex_unlock(&mutex);
 }
-
-/* Helper function, might go into libggz*/
-char *_ggz_sql_escape(const char *str)
-{
-	char *new, *q;
-	const char *p;
-	size_t len = 0;
-
-	if(str == NULL)
-		return NULL;
-
-	len = strlen(str);
-
-	for(p = str; *p != '\0'; p++) {
-		if(*p == '\'') {
-			len += 1;
-		}
-	}
-
-	if(len == strlen(str))
-		return ggz_strdup(str);
-
-	q = new = ggz_malloc(len + 1);
-	for(p = str; *p != '\0'; p++) {
-		if(*p == '\'') {
-			*q++ = '\\';
-			*q = *p;
-			*q++;
-		} else {
-			*q = *p;
-			q++;
-		}
-	}
-	*q = '\0';
-
-	return new;
-}
-
-/* Helper function, might go into libggz*/
-/*char *_ggz_sql_unescape(const char *str)
-{
-	char *new, *q;
-	const char *p;
-	size_t len = 0;
-
-	if(str == NULL)
-		return NULL;
-
-	len = strlen(str);
-
-	for(p = str; *p != '\0'; p++) {
-		if(!strncmp(p, "\\'", 2)) {
-			p += 1;
-		}
-		len++;
-	}
-
-	if(len == strlen(str))
-		return ggz_strdup(str);
-
-	q = new = ggz_malloc(len + 1);
-	for(p = str; *p != '\0'; p++) {
-		if(!strncmp(p, "\\'", 2)) {
-			*q = '\'';
-			q++;
-			p += 1;
-		} else {
-			*q = *p;
-			q++;
-		}
-	}
-	*q = '\0';
-
-	return new;
-}*/
-
 
 /* Exported functions */
 
