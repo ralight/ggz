@@ -81,7 +81,7 @@ public class Net implements Runnable {
     private int port;
 
     /* File descriptor for communication with server */
-    private Socket fd; // TODO consider making fd a writer instead of socket.
+    private Socket fd;
 
     private Writer out;
 
@@ -939,11 +939,10 @@ public class Net implements Runnable {
         } else if ("player".equals(type)) {
             room = this.server.get_room_by_id(room_num);
             room.set_player_list(list);
-            list = null; /* avoid freeing list */
+            this.server.process_player_changed_queue();
         } else if ("table".equals(type)) {
             room = this.server.get_room_by_id(room_num);
             room.set_table_list(list);
-            list = null; /* avoid freeing list */
         }
     }
 
@@ -994,21 +993,24 @@ public class Net implements Runnable {
             table_update(element, action);
     }
 
-    /* Handle room update. */
+    /*
+     * Handle room update. Room updates currently only notify us of a change in
+     * the number of players in a room
+     */
     void room_update(XMLElement update, String action) {
-        Room roomdata, room;
-        int id, players;
+        Room roomdata = (Room) update.get_data();
 
-        roomdata = (Room) update.get_data();
         if (roomdata == null)
             return;
-        id = roomdata.get_id();
-        room = this.server.get_room_by_id(id);
+
+        int id = roomdata.get_id();
+        Room room = this.server.get_room_by_id(id);
 
         if (room != null) {
             if ("players".equals(action)) {
-                players = roomdata.get_num_players();
+                int players = roomdata.get_num_players();
                 room.set_players(players);
+                this.server.process_player_changed_queue();
             }
         }
     }
@@ -1037,10 +1039,12 @@ public class Net implements Runnable {
             int from_room = str_to_int(update.get_attr("FROMROOM"), -2);
 
             room.add_player(player, from_room);
+            this.server.process_player_changed_queue();
         } else if ("delete".equals(action)) {
             int to_room = str_to_int(update.get_attr("TOROOM"), -2);
 
             room.remove_player(player_name, to_room);
+            this.server.process_player_changed_queue();
         } else if ("lag".equals(action)) {
             /* FIXME: Should be a player "class-based" event */
             int lag = player.get_lag();

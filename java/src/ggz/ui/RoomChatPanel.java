@@ -159,7 +159,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     public void player_count(final int n) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                playerCountLabel.setText(n + (n == 1 ? " player" : " players"));
+                playerCountLabel.setText(n + (n == 1 ? " player" : " players") + " in room");
                 revalidate();
                 repaint();
             }
@@ -330,7 +330,9 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
         public void remove(Player p) {
             int rowIndex = this.data.indexOf(p);
-            if (rowIndex > 0) {
+            if (rowIndex < 0) {
+                log.warning("Player not found in list, cannot remove: " + p);
+            }else {
                 if (this.data.remove(rowIndex) == null) {
                     log
                             .warning("Found player object but couldn't remove it from SortedList: " + p);
@@ -401,22 +403,22 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
         public void fireLagCellUpdated(Player player) {
             int row = this.data.indexOf(player);
-            if (row > 0) {
-                fireTableCellUpdated(row, LAG_COLUMN);
-            } else {
+            if (row < 0) {
                 log.warning("Lag not updated, could not find player in list: "
                         + player);
+            } else {
+                fireTableCellUpdated(row, LAG_COLUMN);
             }
         }
 
         public void fireStatsUpdated(Player player) {
             int row = this.data.indexOf(player);
-            if (row > 0) {
-                fireTableRowsUpdated(row, row);
-            } else {
+            if (row < 0) {
                 log
-                        .warning("Stats not updated, could not find player in list: "
-                                + player);
+                .warning("Stats not updated, could not find player in list: "
+                        + player);
+            } else {
+                fireTableRowsUpdated(row, row);
             }
         }
     }

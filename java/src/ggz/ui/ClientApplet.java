@@ -18,6 +18,7 @@
 package ggz.ui;
 
 import ggz.client.core.ErrorEventData;
+import ggz.client.core.Module;
 import ggz.client.core.MotdEventData;
 import ggz.client.core.Room;
 import ggz.client.core.Server;
@@ -32,6 +33,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -73,6 +75,8 @@ public class ClientApplet extends JApplet implements ServerListener,
     protected Server server;
 
     protected JLabel aboutLabel;
+
+    protected JLabel totalPlayerCountLabel;
 
     protected JPanel mainPanel;
 
@@ -131,9 +135,17 @@ public class ClientApplet extends JApplet implements ServerListener,
             mainPanel = new JPanel(new CardLayout());
             mainPanel.setOpaque(false);
             getContentPane().add(mainPanel, BorderLayout.CENTER);
+
+            // Footer.
+            JPanel footerLayoutPanel = new JPanel(new BorderLayout(0, 0));
+            footerLayoutPanel.setOpaque(false);
+            getContentPane().add(footerLayoutPanel, BorderLayout.SOUTH);
+            totalPlayerCountLabel = new JLabel();
+            totalPlayerCountLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
+            footerLayoutPanel.add(totalPlayerCountLabel, BorderLayout.WEST);
             footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
             footerPanel.setOpaque(false);
-            getContentPane().add(footerPanel, BorderLayout.SOUTH);
+            footerLayoutPanel.add(footerPanel, BorderLayout.EAST);
             footerPanel.add(new HyperlinkLabel("Help", new URL(getCodeBase(),
                     "help.html"), "font-weight:normal; font-size:smaller"),
                     BorderLayout.SOUTH);
@@ -149,6 +161,7 @@ public class ClientApplet extends JApplet implements ServerListener,
                 }
             });
             footerPanel.add(aboutLabel);
+
             loginPanel = new LoginPanel(server);
             mainPanel.add(loginPanel, "login");
             loungePanel = new LoungePanel(server);
@@ -482,6 +495,29 @@ public class ClientApplet extends JApplet implements ServerListener,
     }
 
     public void server_players_changed() {
+        // Count the number of players in all the rooms that we have a module
+        // for. We can't use Server.get_num_players() since we aren't showing
+        // all rooms. This method is called on the socket read thread so room
+        // player counts should not change while we are adding it all up. Also
+        // include cound of players in the entry room.
+        int count = server.get_room_by_id(0).get_num_players();
+        for (int i = 0; i < server.get_num_rooms(); i++) {
+            Room room = server.get_nth_room(i);
+            if (room.get_gametype() != null
+                    && Module.get_num_by_type(room.get_gametype()) > 0) {
+                count += room.get_num_players();
+            }
+        }
+
+        final int totalCount = count;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                totalPlayerCountLabel.setText(totalCount
+                        + (totalCount == 1 ? " player" : " players")
+                        + " online");
+            }
+        });
+
         // Needed so that components that show player counts can refresh
         // themselves.
         repaint();
