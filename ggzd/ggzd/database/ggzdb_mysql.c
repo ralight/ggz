@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 7424 2005-08-15 09:00:27Z josef $
+ * $Id: ggzdb_mysql.c 8287 2006-06-28 09:51:38Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -69,8 +69,8 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	}
 
 	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
-		"name varchar(255), email varchar(255), lastlogin int8, permissions int8)");
+		"(user_id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
+		"name varchar(255), email varchar(255), last_login int8, perms int8)");
 
 	rc = mysql_query(conn, query);
 
@@ -115,7 +115,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	char query[4096];
 
 	snprintf(query, sizeof(query), "INSERT INTO users "
-		"(handle, password, name, email, lastlogin, permissions) VALUES "
+		"(handle, password, name, email, last_login, perms) VALUES "
 		"('%s', '%s', '%s', '%s', %li, %u)",
 		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
 
@@ -142,7 +142,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	char query[4096];
 
 	snprintf(query, sizeof(query), "SELECT "
-		"password, name, email, lastlogin, permissions FROM users WHERE "
+		"password, name, email, last_login, perms FROM users WHERE "
 		"handle = '%s'",
 		pe->handle);
 
@@ -183,7 +183,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	char query[4096];
 
 	snprintf(query, sizeof(query), "UPDATE users SET "
-		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
+		"password = '%s', name = '%s', email = '%s', last_login = %li, perms = %u WHERE "
 		"handle = '%s'",
 		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
 
@@ -216,7 +216,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	}
 
 	snprintf(query, sizeof(query), "SELECT "
-		"id, handle, password, name, email, lastlogin, permissions FROM users");
+		"id, handle, password, name, email, last_login, perms FROM users");
 	result = mysql_query(conn, query);
 
 	if (result == 0) {
