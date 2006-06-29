@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 8267 2006-06-25 01:58:34Z jdorje $
+ * $Id: common.h 8291 2006-06-29 05:23:03Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -89,6 +89,7 @@ typedef struct {
 	bool must_overtrump;	/**< if this is set, then a player must trump/overtrump if possible (i.e. La Pocha) */
 	bool must_break_trump;	/**< if this is set, then trump can't be lead until it's been broken (i.e. Spades) */
 #define MAX_TARGET_SCORE 1000000
+	bool ties_allowed;	/**< set to true if ties are allowed; otherwise the game won't end automatically when one of the conditions is reached equally by both teams. */
 	int target_score;	/**< after someone reaches this score, the game is over */
 #define MAX_HANDS 1000000
 	int max_hands; /**< after this many hands have been played, the game is over. */

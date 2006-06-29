@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8267 2006-06-25 01:58:34Z jdorje $
+ * $Id: game.c 8291 2006-06-29 05:23:03Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -434,19 +434,63 @@ void game_start_game(void)
 bool game_test_for_gameover(void)
 {
 	player_t p;
+	int max_score, max_score_count = 0;
+	int min_score, min_score_count = 0;
+	team_t max_score_team = -1, min_score_team = -1;
 
+#define TEAM(p) (game.players[p].team != -1 ? game.players[p].team : p)
+
+	/* We have to check for ties (not allowed in most games), so this
+	   code is a good bit more complicated.  For instance in spades if
+	   both teams go over the target score and the game is tied, another
+	   hand is played. */
 	for (p = 0; p < game.num_players; p++) {
 		/* in the default case, it's just a race toward a
 		   target score */
+		assert(TEAM(p) != -1);
 		if (game.target_score != 0
-		    && game.players[p].score >= game.target_score)
-			return TRUE;
+		    && game.players[p].score >= game.target_score) {
+			if (max_score_count == 0
+			    || game.players[p].score > max_score) {
+				max_score = game.players[p].score;
+				max_score_count = 1;
+				max_score_team = TEAM(p);
+			} else if (game.players[p].score < max_score) {
+				/* nothing */
+			} else if (game.players[p].score == max_score) {
+				/* check for ties */
+				if (TEAM(p) != max_score_team) {
+					max_score_count++;
+				}
+			}
+		}
 
 		/* It is possible to set a low score that will cause a
 		   forfeit if reached. */
 		if (game.forfeit_score != 0
-		    && game.players[p].score <= game.forfeit_score)
-			return TRUE;
+		    && game.players[p].score <= game.forfeit_score) {
+			if (min_score_count == 0
+			    || game.players[p].score < min_score) {
+				min_score = game.players[p].score;
+				min_score_count = 1;
+				min_score_team = TEAM(p);
+			} else if (game.players[p].score > min_score) {
+				/* nothing */
+			} else if (game.players[p].score == min_score) {
+				/* check for ties */
+				if (TEAM(p) != min_score_team) {
+					min_score_count++;
+				}
+			}
+		}
+	}
+	if (max_score_count > 0
+	    && (game.ties_allowed || max_score_count == 1)) {
+		return TRUE;
+	}
+	if (max_score_count > 0
+	    && (game.ties_allowed || max_score_count == 1)) {
+		return TRUE;
 	}
 
 	/* Sometimes there is a limit on the maximum number of hands to be
