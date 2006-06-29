@@ -262,11 +262,16 @@ public class Server {
 
     public void login() throws IOException {
         /* Return nothing if we didn't get the necessary info */
-        if (this.handle == null || this.state != StateID.GGZ_STATE_ONLINE)
-            throw new IllegalStateException();
+        if (this.handle == null)
+            throw new IllegalStateException("handle has not been set yet");
+
+        if (this.state != StateID.GGZ_STATE_ONLINE)
+            throw new IllegalStateException(
+                    "Attempt to logon before server is online, call connect()"
+                            + " first and then wait for server_negotiate()");
 
         if (this.login_type == LoginType.GGZ_LOGIN && this.password == null)
-            throw new IllegalStateException();
+            throw new IllegalStateException("password has not bee set yet");
 
         log.fine("Login (" + this.login_type + "), " + this.handle + ", "
                 + this.password);

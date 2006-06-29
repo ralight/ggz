@@ -270,6 +270,32 @@ public class RoomPanel extends JPanel implements RoomListener {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 tablesFlow.addTable(table);
+
+                if (server.get_state() == StateID.GGZ_STATE_IN_ROOM) {
+                    // Check if the table has a reserved seat for us.
+                    int seatCount = table.get_num_seats();
+                    for (int seatNum = 0; seatNum < seatCount; seatNum++) {
+                        TableSeat seat = table.get_nth_seat(seatNum);
+                        if (seat.type == SeatType.GGZ_SEAT_RESERVED
+                                && server.get_handle().equals(seat.name)) {
+                            if (JOptionPane.YES_OPTION == JOptionPane
+                                    .showConfirmDialog(
+                                            RoomPanel.this,
+                                            "A seat has been reserved for you on Table "
+                                                    + table.get_id()
+                                                    + ", would you like to join it now?",
+                                            "Join Game?",
+                                            JOptionPane.YES_NO_OPTION)) {
+                                // Join the table.
+                                new JoinTableAction(table, seatNum)
+                                        .actionPerformed(new ActionEvent(
+                                                RoomPanel.this,
+                                                ActionEvent.ACTION_PERFORMED,
+                                                "Auto Join"));
+                            }
+                        }
+                    }
+                }
             }
         });
     }

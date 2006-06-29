@@ -159,7 +159,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     public void player_count(final int n) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                playerCountLabel.setText(n + (n == 1 ? " player" : " players") + " in room");
+                playerCountLabel.setText(n + (n == 1 ? " player" : " players")
+                        + " in room");
                 revalidate();
                 repaint();
             }
@@ -182,11 +183,43 @@ public class RoomChatPanel extends JPanel implements RoomListener {
     public void room_enter(RoomChangeEventData data) {
         players.add(data.player);
         player_count(room.get_num_players());
+
+        // Create some chat text that notifies the user of the event.
+        Room fromRoom = room.get_server().get_room_by_id(data.from_room);
+        String message;
+        if (fromRoom == null) {
+            message = " has logged in.";
+        } else {
+            message = " strolls in from " + fromRoom.get_name() + ".";
+        }
+
+        final String text = data.player.get_name() + message;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                chatPanel.appendInfo(text);
+            }
+        });
     }
 
     public void room_leave(RoomChangeEventData data) {
         players.remove(data.player);
         player_count(room.get_num_players());
+
+        // Create some chat text that notifies the user of the event.
+        Room toRoom = room.get_server().get_room_by_id(data.to_room);
+        String message;
+        if (toRoom == null) {
+            message = " has logged out.";
+        } else {
+            message = " strolls out to " + toRoom.get_name() + ".";
+        }
+
+        final String text = data.player.get_name() + message;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                chatPanel.appendInfo(text);
+            }
+        });
     }
 
     public void table_join_fail(String error) {
@@ -332,10 +365,11 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             int rowIndex = this.data.indexOf(p);
             if (rowIndex < 0) {
                 log.warning("Player not found in list, cannot remove: " + p);
-            }else {
+            } else {
                 if (this.data.remove(rowIndex) == null) {
                     log
-                            .warning("Found player object but couldn't remove it from SortedList: " + p);
+                            .warning("Found player object but couldn't remove it from SortedList: "
+                                    + p);
                 } else {
                     fireTableRowsDeleted(rowIndex, rowIndex);
                 }
@@ -415,8 +449,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             int row = this.data.indexOf(player);
             if (row < 0) {
                 log
-                .warning("Stats not updated, could not find player in list: "
-                        + player);
+                        .warning("Stats not updated, could not find player in list: "
+                                + player);
             } else {
                 fireTableRowsUpdated(row, row);
             }
