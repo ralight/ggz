@@ -59,6 +59,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
@@ -77,6 +78,8 @@ public class RoomPanel extends JPanel implements RoomListener {
 
     protected TablesLayoutPanel tablesFlow;
 
+    protected JSplitPane splitPane;
+    
     protected JPanel tablePanel;
 
     private JPanel tableButtonPanel;
@@ -119,12 +122,19 @@ public class RoomPanel extends JPanel implements RoomListener {
 
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
         tablePanel.add(tableButtonPanel, BorderLayout.SOUTH);
-        add(tablePanel, BorderLayout.CENTER);
+        
         chatPanel = new RoomChatPanel(true);
         // Set a preferred size to stop it from growing out of control,
         // we want it to stay one size.
         chatPanel.setPreferredSize(new Dimension(500, 200));
-        add(chatPanel, BorderLayout.SOUTH);
+        
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        splitPane.setBorder(null);
+        splitPane.setOpaque(false);
+        splitPane.setResizeWeight(1);
+        splitPane.setTopComponent(tablePanel);
+        splitPane.setBottomComponent(chatPanel);
+        add(splitPane, BorderLayout.CENTER);
 
         headerPanel.add(titleLabel, BorderLayout.WEST);
         headerPanel.add(headerButtonPanel, BorderLayout.EAST);

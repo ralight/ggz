@@ -23,10 +23,12 @@ import ggz.client.core.Room;
 import ggz.client.core.Server;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -39,10 +41,12 @@ import java.util.ResourceBundle;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
@@ -67,7 +71,7 @@ public class LoungePanel extends JPanel {
 
     private ArrayList rooms;
 
-    private JPanel contentPanel;
+    private JSplitPane contentPanel;
 
     private JPanel headerPanel;
 
@@ -78,17 +82,21 @@ public class LoungePanel extends JPanel {
     public LoungePanel(Server server) {
         super(new BorderLayout(4, 4));
         this.server = server;
-        contentPanel = new JPanel(new BorderLayout(4, 4));
+        contentPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         chatPanel = new RoomChatPanel(false);
-        contentPanel.add(chatPanel, BorderLayout.CENTER);
+        contentPanel.setBottomComponent(chatPanel);
 
         roomPanel = new JPanel(new GridLayout());
-        contentPanel.add(roomPanel, BorderLayout.NORTH);
+        contentPanel.setTopComponent(roomPanel);
+
+        contentPanel.setResizeWeight(0);
+        contentPanel.setDividerLocation(300);
+        contentPanel.setBorder(null);
 
         logoutButton = new JButton(new LogoutAction());
         headerPanel = new JPanel(new BorderLayout());
-        // headerPanel.add(new JLabel("Games"), BorderLayout.WEST);
         headerPanel.add(logoutButton, BorderLayout.EAST);
+
         // Make everything transparent.
         headerPanel.setOpaque(false);
         logoutButton.setOpaque(false);
@@ -132,7 +140,6 @@ public class LoungePanel extends JPanel {
             // roomPanel.add(new RoomButton(room));
             cardGamesPanel.addRoom(room);
         }
-        cardGamesPanel.setPreferredSize(new Dimension(100, 300));
         roomPanel.add(cardGamesPanel);
         // CategoryPanel boardGamesPanel = new CategoryPanel("Board Games");
         // boardGamesPanel.addRoom(server.get_nth_room(2));
@@ -153,8 +160,6 @@ public class LoungePanel extends JPanel {
         TextPopupMenu.enableFor(motdText);
         if (motdScroll == null) {
             motdScroll = new JScrollPane();
-            // motdScroll.setPreferredSize(cardGamesPanel.getPreferredSize());
-            motdScroll.setPreferredSize(new Dimension(100, 300));
             motdScroll.setOpaque(false);
             motdScroll.getViewport().setOpaque(false);
             motdScroll.setBorder(null);
@@ -209,16 +214,23 @@ public class LoungePanel extends JPanel {
         protected CategoryPanel(String categoryName) {
             setBorder(BorderFactory.createTitledBorder(categoryName));
             listPanel = new JPanel(new GridLayout(0, 1));
-            listPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+            listPanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
             listPanel.setOpaque(false);
-            // setLayout(new BorderLayout());
             getViewport().add(listPanel, BorderLayout.NORTH);
             getViewport().setOpaque(false);
             setOpaque(false);
         }
 
         protected void addRoom(final Room room) {
-            JPanel listCellPanel = new JPanel(new BorderLayout());
+            JPanel listCellPanel = new JPanel(new BorderLayout()) {
+                protected void paintComponent(Graphics g) {
+                    // Do our own painting so that we handle alpha properly.
+                    // It's got to do with isOpaque();
+                    Rectangle clip = g.getClipBounds();
+                    g.setColor(getBackground());
+                    g.fillRect(clip.x, clip.y, clip.width, clip.height);
+                }
+            };
             JLabel nameLabel = new JLabel("<HTML><U>" + room.get_name()
                     + "</U></HTML>");
             final JLabel populationLabel = new JLabel((String) null,
@@ -238,6 +250,10 @@ public class LoungePanel extends JPanel {
                     Font.PLAIN));
             listCellPanel.add(nameLabel, BorderLayout.WEST);
             listCellPanel.add(populationLabel, BorderLayout.CENTER);
+            // Totally transparent.
+            listCellPanel.setBackground(new Color(0xff, 0xff, 0xff, 0x00));
+            listCellPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0,
+                    10));
             listPanel.add(listCellPanel);
             nameLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent event) {
@@ -253,6 +269,22 @@ public class LoungePanel extends JPanel {
                         JOptionPane.showMessageDialog(CategoryPanel.this, ex
                                 .toString());
                     }
+                }
+
+                public void mouseEntered(MouseEvent event) {
+                    JComponent cell = (JComponent) event.getComponent()
+                            .getParent();
+                    // Translucent.
+                    cell.setBackground(new Color(0xff, 0xff, 0xff, 0x66));
+                    cell.repaint();
+                }
+
+                public void mouseExited(MouseEvent event) {
+                    JComponent cell = (JComponent) event.getComponent()
+                            .getParent();
+                    // Totally transparent.
+                    cell.setBackground(new Color(0xff, 0xff, 0xff, 0x00));
+                    cell.repaint();
                 }
             });
         }
