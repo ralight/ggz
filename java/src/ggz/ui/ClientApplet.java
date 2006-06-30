@@ -625,6 +625,7 @@ public class ClientApplet extends JApplet implements ServerListener,
                 try {
                     layout.show(mainPanel, "login");
                     loginPanel.resetLogin();
+                    totalPlayerCountLabel.setText(null);
                 } catch (Exception e) {
                     handleException(e);
                 }

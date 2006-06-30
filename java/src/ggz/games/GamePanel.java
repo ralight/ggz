@@ -98,7 +98,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
         // this crazy stuff. This method is usually invoked from a handler.
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                chatPanel.appendChat(player, msg);
+                chatPanel.appendChat(player, msg, myName);
             }
         });
     }
@@ -114,7 +114,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
     public void handle_info(int num, List infos) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                chatPanel.appendChat("handle_info", null);
+                chatPanel.appendChat("handle_info", null, myName);
             }
         });
     }
@@ -215,7 +215,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
         }
 
         protected void chat_display_local(ChatType type, String message) {
-            chatPanel.appendChat(type, myName, message);
+            chatPanel.appendChat(type, myName, message, myName);
         }
 
         protected ChatType getDefaultChatType() {

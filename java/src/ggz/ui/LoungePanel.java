@@ -213,10 +213,13 @@ public class LoungePanel extends JPanel {
 
         protected CategoryPanel(String categoryName) {
             setBorder(BorderFactory.createTitledBorder(categoryName));
+            JPanel keepAtTop = new JPanel(new BorderLayout(0,0));
             listPanel = new JPanel(new GridLayout(0, 1));
             listPanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
             listPanel.setOpaque(false);
-            getViewport().add(listPanel, BorderLayout.NORTH);
+            keepAtTop.setOpaque(false);
+            keepAtTop.add(listPanel, BorderLayout.NORTH);
+            getViewport().add(keepAtTop);
             getViewport().setOpaque(false);
             setOpaque(false);
         }

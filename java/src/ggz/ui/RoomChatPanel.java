@@ -151,7 +151,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         // this crazy stuff.
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                chatPanel.appendChat(data.type, data.sender, data.message);
+                chatPanel.appendChat(data.type, data.sender, data.message, room
+                        .get_server().get_handle());
             }
         });
     }
@@ -180,10 +181,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         players.fireStatsUpdated(player);
     }
 
-    public void room_enter(RoomChangeEventData data) {
-        players.add(data.player);
-        player_count(room.get_num_players());
-
+    public void room_enter(final RoomChangeEventData data) {
         // Create some chat text that notifies the user of the event.
         Room fromRoom = room.get_server().get_room_by_id(data.from_room);
         String message;
@@ -196,15 +194,14 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         final String text = data.player.get_name() + message;
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                players.add(data.player);
+                player_count(players.getRowCount());
                 chatPanel.appendInfo(text);
             }
         });
     }
 
-    public void room_leave(RoomChangeEventData data) {
-        players.remove(data.player);
-        player_count(room.get_num_players());
-
+    public void room_leave(final RoomChangeEventData data) {
         // Create some chat text that notifies the user of the event.
         Room toRoom = room.get_server().get_room_by_id(data.to_room);
         String message;
@@ -217,6 +214,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         final String text = data.player.get_name() + message;
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                players.remove(data.player);
+                player_count(players.getRowCount());
                 chatPanel.appendInfo(text);
             }
         });
@@ -465,7 +464,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
 
         protected void chat_display_local(ChatType type, String message) {
-            chatPanel.appendChat(type, handle, message);
+            chatPanel.appendChat(type, handle, message, room.get_server()
+                    .get_handle());
         }
 
         protected ChatType getDefaultChatType() {

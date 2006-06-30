@@ -4,9 +4,6 @@ This file is a record of all the things that I can think of that need to be done
 
 Core Client
 ===========
-Add a private chat window so that two players can have a private conversation.
-Currently the only way to do this is to use the /msg command.
-
 Add some board games, Reversi, Chess and Checkers are good candidates. 
 Backgammon has also been requested but we also need a server for that.
 
@@ -30,12 +27,23 @@ options in drop down lists.
 
 Support "expanded view" for table that shows players in room so that there is
 a column for each statistic. The tooltip is difficult to use and is not 
-obvious.
+obvious. Something to take into consideration is that some players have
+mentioned that they don't like their rating being very obvious - especially
+if their rating is low.
 
 Add, private message, join game and spectate game options when selecting a 
 player in the list of players in the room.
 
-Play sound when beep message is received.
+Add support for dynamic room add/delete messages sent by the server.
+
+Make chat font size configurable.
+
+Support IRC /clear command to clear the chat log.
+
+Support tab completion of nicknames in chat field.
+
+Highlight chat messages where the player name is used.
+
 
 All Card Games
 ==============
@@ -57,19 +65,31 @@ it needs to.
 
 Support named bots or change names from AI to Computer 1, Computer 2 etc.
 
-Hide chat when all opponents are AI players.
-
 Show lag indicator, when there is lag there is no indication why a computer
 player is not playing a card.
-
-Show indicator or play sound when it's your turn. The "Playing..." text is not
-enough.
 
 Find out why "Connection Reset" exception occurs, especially, when leaving the
 game "sitting" for a few minutes...I've added Socket.setKeepAlive(true) so this
 should solve it.
 
 Support all messages sent by server. e.g. Last Hand, Bid History.
+
+Replace tooltip for game options with something you can click. The tooltip is
+intuitive and also disappears too quickly.
+
+Make the card gap configurable.
+
+Make whether cards rotate when they are played configurable. It makes some 
+players dizzy.
+
+Make whether the gap between cards is "closed" when a card is played
+configurable.
+
+Move the delay logic in the card Client class and it should self trigger
+delayNextEvent() when appropriate events in the game occur.
+
+Consider removing the "Ready" button and let the client automatically respond 
+without waiting for user intervention.
 
 
 Hearts

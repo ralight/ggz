@@ -1056,7 +1056,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     // Do nothing, not sure why the server sends this.
                 } else {
                     chatPanel.appendChat("set_text_message", "mark=" + mark
-                            + " message=" + message);
+                            + " message=" + message, myName);
                 }
             }
         });

@@ -79,7 +79,7 @@ public class RoomPanel extends JPanel implements RoomListener {
     protected TablesLayoutPanel tablesFlow;
 
     protected JSplitPane splitPane;
-    
+
     protected JPanel tablePanel;
 
     private JPanel tableButtonPanel;
@@ -106,7 +106,7 @@ public class RoomPanel extends JPanel implements RoomListener {
         headerPanel = new JPanel(new BorderLayout());
         headerButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         titleLabel = new JLabel();
-        lobbyButton = new JButton(new BackToLobbyAction());
+        lobbyButton = new JButton();
         logoutButton = new JButton(new LogoutAction());
 
         tablePanel = new JPanel(new BorderLayout());
@@ -122,12 +122,12 @@ public class RoomPanel extends JPanel implements RoomListener {
 
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
         tablePanel.add(tableButtonPanel, BorderLayout.SOUTH);
-        
+
         chatPanel = new RoomChatPanel(true);
         // Set a preferred size to stop it from growing out of control,
         // we want it to stay one size.
         chatPanel.setPreferredSize(new Dimension(500, 200));
-        
+
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitPane.setBorder(null);
         splitPane.setOpaque(false);
@@ -168,9 +168,12 @@ public class RoomPanel extends JPanel implements RoomListener {
             URL imageURL = getClass().getResource(module.get_icon_path());
             titleLabel.setIcon(new ImageIcon(imageURL));
         }
-
+        lobbyButton.setAction(new BackToLobbyAction());
         lobbyButton.setEnabled(true);
-        newTableButton.setEnabled(true);
+        logoutButton.setEnabled(true);
+        // Disable the button until we get the player list otherwise the seat
+        // allocation dialog can't fill it's drop down lists.
+        newTableButton.setEnabled(false);
     }
 
     public void chat_event(ChatEventData data) {
@@ -186,7 +189,9 @@ public class RoomPanel extends JPanel implements RoomListener {
     }
 
     public void player_list(List players) {
-        // Handled by chat panel so do nothing.
+        // Now that we have the list of players the seat allocation dialog will
+        // be happy.
+        newTableButton.setEnabled(true);
     }
 
     public void player_stats(Player player) {
@@ -215,6 +220,7 @@ public class RoomPanel extends JPanel implements RoomListener {
             public void run() {
                 tablesFlow.updateButtons();
                 lobbyButton.setEnabled(false);
+                logoutButton.setEnabled(false);
                 newTableButton.setEnabled(false);
             }
         });
@@ -233,6 +239,7 @@ public class RoomPanel extends JPanel implements RoomListener {
             public void run() {
                 tablesFlow.updateButtons();
                 lobbyButton.setEnabled(false);
+                logoutButton.setEnabled(false);
                 newTableButton.setEnabled(false);
             }
         });
@@ -263,6 +270,7 @@ public class RoomPanel extends JPanel implements RoomListener {
                 }
                 tablesFlow.updateButtons();
                 lobbyButton.setEnabled(true);
+                logoutButton.setEnabled(true);
                 newTableButton.setEnabled(true);
             }
         });
@@ -330,7 +338,9 @@ public class RoomPanel extends JPanel implements RoomListener {
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
-                return messages.getString("RoomPanel.Button.BackToGames");
+                return MessageFormat.format(messages
+                        .getString("RoomPanel.Button.BackTo"),
+                        new String[] { server.get_nth_room(0).get_name() });
             }
             return super.getValue(key);
         }

@@ -70,6 +70,8 @@ public class ChatPanel extends JPanel {
 
     protected SimpleAttributeSet announceText;
 
+    protected SimpleAttributeSet myText;
+
     protected boolean isAutoScroll = true;
 
     // Application global ignore list.
@@ -90,7 +92,7 @@ public class ChatPanel extends JPanel {
         textField.setEnabled(false);
         chatArea = new JTextPane() {
             public void scrollRectToVisible(Rectangle rect) {
-//                System.out.println("isAutoScroll="+isAutoScroll);
+                // System.out.println("isAutoScroll="+isAutoScroll);
                 if (isAutoScroll) {
                     super.scrollRectToVisible(rect);
                 }
@@ -144,6 +146,9 @@ public class ChatPanel extends JPanel {
         announceText = new SimpleAttributeSet();
         announceText.addAttribute(StyleConstants.Foreground, Color.RED);
         announceText.addAttribute(StyleConstants.Bold, Boolean.TRUE);
+
+        myText = new SimpleAttributeSet();
+        myText.addAttribute(StyleConstants.Foreground, Color.GRAY);
     }
 
     public void appendInfo(final String message) {
@@ -172,12 +177,12 @@ public class ChatPanel extends JPanel {
         }
     }
 
-    public void appendChat(final String sender, final String message) {
-        appendChat(ChatType.GGZ_CHAT_NORMAL, sender, message);
+    public void appendChat(String sender, String message, String me) {
+        appendChat(ChatType.GGZ_CHAT_NORMAL, sender, message, me);
     }
 
-    public void appendChat(final ChatType type, final String sender,
-            final String message) {
+    public void appendChat(ChatType type, String sender, String message,
+            String me) {
         if (ignoreList != null && ignoreList.contains(sender)) {
             // We are ignoring this person.
             return;
@@ -199,6 +204,8 @@ public class ChatPanel extends JPanel {
 
         if ("MegaGrub".equals(sender)) {
             textStyle = senderText;
+        } else if (sender.equals(me)) {
+            textStyle = myText;
         } else if (friendsList != null
                 && friendsList.contains(sender.toLowerCase())) {
             textStyle = friendlyText;
@@ -228,7 +235,8 @@ public class ChatPanel extends JPanel {
         Rectangle visibleRect = chatArea.getVisibleRect();
         int pos = textScrollPane.getVerticalScrollBar().getValue();
         int max = textScrollPane.getVerticalScrollBar().getMaximum();
-//        System.out.println("pos=" + pos + " max=" + max + " visibleRect.height=" + visibleRect.height);
+        // System.out.println("pos=" + pos + " max=" + max + "
+        // visibleRect.height=" + visibleRect.height);
         isAutoScroll = (pos >= (max - visibleRect.height) - 20);
         if (isAutoScroll) {
             chatArea.setCaretPosition(chatArea.getDocument().getLength());

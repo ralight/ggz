@@ -76,7 +76,7 @@ public class PrivateChatDialog extends JFrame {
 
         protected void chat_display_local(ChatType type, String message) {
             String handle = server.get_handle();
-            chatPanel.appendChat(type, handle, message);
+            chatPanel.appendChat(type, handle, message, server.get_handle());
         }
 
         protected ChatType getDefaultChatType() {
@@ -206,7 +206,7 @@ public class PrivateChatDialog extends JFrame {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     threadDialog.chatPanel.appendChat(data.type, data.sender,
-                            data.message);
+                            data.message, server.get_handle());
                 }
             });
         }
