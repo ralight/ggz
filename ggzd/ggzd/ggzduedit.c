@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 8273 2006-06-26 10:29:01Z oojah $
+ * $Id: ggzduedit.c 8294 2006-07-01 19:32:45Z oojah $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -38,9 +38,15 @@
 
 #include "ggzdb.h"
 #include "ggzdb_proto.h"
+#include "datatypes.h" /* For Options type */
 #define PERMS_DEFINE_STR_TABLE
 #include "perms.h"
 
+
+/* Server options */
+/* This is required by the database functions
+ * but isn't actually used here */
+Options opt;
 
 char lb[1024];
 ggzdbPlayerEntry pe;
