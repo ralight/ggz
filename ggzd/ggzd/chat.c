@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8279 2006-06-27 07:29:39Z josef $
+ * $Id: chat.c 8296 2006-07-02 10:23:24Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -134,22 +134,16 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 {
 	GGZPlayer* rcvr;
 	GGZChatEventData *data;
-	bool at_table;
+	bool sender_at_table, rcvr_at_table;
+	bool sender_has_perm, rcvr_has_perm;
 
 	if (receiver == NULL) {
 		return E_BAD_OPTIONS;
 	}
 
 	pthread_rwlock_rdlock(&sender->lock);
-	at_table = (sender->table != -1);
+	sender_at_table = (sender->table != -1);
 	pthread_rwlock_unlock(&sender->lock);	
-
-	/* Don't allow personal chat from a player at a table */
-	/* Players with the PERMS_TABLE_PRIVMSG permission can send 
-	 * personal chat whilst at a table */
-	if (at_table && !perms_check(sender, PERMS_TABLE_PRIVMSG)){
-		return E_AT_TABLE;
-	}
 
 	/* Find target player.  Returns with player write-locked */
 	rcvr = hash_player_lookup(receiver);
@@ -158,16 +152,36 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 		return E_USR_LOOKUP;
 	}
 
-	/* Don't allow personal chat to a player at a table */
-	at_table = (rcvr->table != -1);
+	/* Don't allow personal chat to a player at a table. See below*/
+	rcvr_at_table = (rcvr->table != -1);
 
 	/* FIXME: we release the lock only to acquire it again in
 	   event_player_enqueue.  This is inefficient. */
 	pthread_rwlock_unlock(&rcvr->lock);
 
-	/* Players with the PERMS_TABLE_PRIVMSG permission can receive
-	 * personal chat whilst at a table */
-	if (at_table && !perms_check(rcvr, PERMS_TABLE_PRIVMSG)) {
+	/* Truth table for whether private messages are allowed.
+	 * Perm = has PERMS_TABLE_PRIVMSG
+	 * NoPerm = doesn't have PERMS_TABLE_MSG
+	 * At = At a table
+	 * NotAt = Not at a table
+	 *
+	 *               rcvr\sender Perm,At Perm,NotAt NoPerm,NotAt NoPerm,At
+	 *            Perm,At          Y          Y           Y          Y
+	 *            Perm,NotAt       Y          Y           Y          Y
+	 *            NoPerm,NotAt     Y          Y           Y          N
+	 *            NoPerm,At        Y          Y           N          N
+	 *
+	 * This basically means that people with PERMS_TABLE_PRIVMSG can
+	 * privmsg with anybody and have them privmsg back as well.
+	 * Without being able to privmsg to/from normal players at a table
+	 * it would make this permission pretty useless.
+	 */
+
+	sender_has_perm = perms_check(sender, PERMS_TABLE_PRIVMSG);
+	rcvr_has_perm = perms_check(rcvr, PERMS_TABLE_PRIVMSG);
+
+	if ( (!sender_has_perm && !rcvr_has_perm && rcvr_at_table) ||
+					(!rcvr_has_perm && !sender_has_perm && sender_at_table)){
 		return E_AT_TABLE;
 	}
 
