@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ggzcoregen>
+  <roles>
+    <role name="watcher" number="1" />
+    <role name="action" number="unlimited" />
+  </roles>
+  <structure name="Foo">
+    <data name="bar" type="int" writer="watcher" />
+    <data name="baz" type="int" writer="watcher" />
+  </structure>
+  <instance name="f" type="Foo" />
+</ggzcoregen>
+

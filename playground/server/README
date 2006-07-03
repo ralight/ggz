@@ -1,0 +1,32 @@
+Code generation tool for multi-threaded data access
+---------------------------------------------------
+
+Similar in spirit to ggzcommgen, this tool takes a declarative description
+of a structured data model, defined in a XML file, and transforms this into
+C sources. The difference is that it doesn't handle networking code, but
+instead is all about data access in multi-threaded code.
+
+Thread roles are defined first, and then applied to simple or structured
+variables in terms of who's the writer (at most one) and who's the reader
+(everyone else at the moment).
+
+For developers, a DEBUG and a TRACE preprocessor directive are available.
+While the domain of DEBUG is sanity checking, which should always be enabled
+even in production code unless every CPU cycle counts, the TRACE macro will
+produce a lot of chatty comments about who accesses which variables. This can
+safely be disabled.
+
+Advantages of using generated threading code like this:
+- less code to write and maintain
+- no worries about proper read/write locks in many/most cases
+- easier debugging through encapsulation and verbose debug lines
+- programming language can simply be switched one day
+- newer thread technologies, like spinlocks, could be added in the future
+
+Issues with the current version:
+- no list support yet, and therefore no m:n mapping between data and threads
+- per-thread init function call needed - generate even thread creation code?
+- only 'int' supported as a variable type
+- what if two threads want to be writers (say, control first and then watcher)
+- no cleanup function yet (e.g. for hash table in TRACE mode)
+
