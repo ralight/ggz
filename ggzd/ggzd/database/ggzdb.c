@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 8289 2006-06-28 18:47:08Z oojah $
+ * $Id: ggzdb.c 8306 2006-07-03 23:17:22Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -430,11 +430,10 @@ char *_ggz_sql_escape(const char *str)
 		if(*p == '\'') {
 			*q++ = '\\';
 			*q = *p;
-			*q++;
 		} else {
 			*q = *p;
-			q++;
 		}
+		q++;
 	}
 	*q = '\0';
 
