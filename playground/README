@@ -68,6 +68,10 @@
 		experimental extensions are here in playground.
 		Likewise, GGZ-Java5 is rather complete, whereas GGZ-Java is quite old.
 
+	Haskell:
+		Some Sudoku creation and solver software written in the functional
+		programming language Haskell.
+
 	Kopete-GGZ:
 		GGZ plugin for the Kopete IM client. Should be moved to kde-client
 		actually.
@@ -94,6 +98,10 @@
 	Scons:
 		Experimental scons build system files for libggz, as alternative to the
 		autotools.
+
+	Server:
+		Code generation framework for data handling in multi-threaded code.
+		Might be of use for future ggzd development.
 
 	XMLGettext:
 		An xgettext variant to extract textual information from xml files.
