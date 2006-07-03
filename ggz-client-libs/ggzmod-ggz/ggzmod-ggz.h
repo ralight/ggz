@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 7566 2005-09-25 13:33:44Z josef $
+ * $Id: ggzmod-ggz.h 8300 2006-07-03 07:45:15Z josef $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -36,6 +36,14 @@
 
 #include <ggz_common.h>
 #include <ggz.h>
+
+/* File Descriptor for dup2() function.  This number needs to be less than
+ * getdtablesize().  If you find you have problems in the client running
+ * the games, make sure the number is less than getdtablesize() or the
+ * dup2() calls will work but not connect the core client to the game client.
+ * This value will end up in the "GGZSOCKET" environment variable.
+ */
+#define GGZMOD_DEFAULT_FD 53
 
 /* Structures duplicated from ggzmod.h */
 

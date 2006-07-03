@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 7790 2006-01-17 21:26:35Z jdorje $
+ * $Id: ggzmod-ggz.c 8300 2006-07-03 07:45:15Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -729,14 +729,16 @@ static int send_game_launch(GGZMod * ggzmod)
 /* Common setup for normal mode and embedded mode */
 static int game_prepare(int fd_pair[2], int *sock)
 {
+	char buf[100];
+
 #ifdef HAVE_SOCKETPAIR
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
 		ggz_error_sys_exit("socketpair failed");
-	setenv("GGZSOCKET", "103", 1);
+	snprintf(buf, sizeof(buf), "%d", GGZMOD_DEFAULT_FD);
+	setenv("GGZSOCKET", buf, 1);
 	setenv("GGZMODE", "true", 1);
 #else
 	int port;
-	char buf[100];
 
 	/* Winsock implementation: see ggzmod_ggz_connect. */
 	port = 5898;
@@ -802,11 +804,12 @@ static int game_fork(GGZMod * ggzmod)
 
 		/* debugging message??? */
 
-		/* Now we copy one end of the socketpair to fd 103 */
-		if (fd_pair[1] != 103) {
+		/* Now we copy one end of the socketpair to GGZMOD_DEFAULT_FD */
+		if (fd_pair[1] != GGZMOD_DEFAULT_FD) {
 			/* We'd like to send an error message if either of
 			   these fail, but we can't.  --JDS */
-			if (dup2(fd_pair[1], 103) != 103 || close(fd_pair[1]) < 0)
+			if (dup2(fd_pair[1], GGZMOD_DEFAULT_FD) != GGZMOD_DEFAULT_FD
+			|| close(fd_pair[1]) < 0)
 				ggz_error_sys_exit("dup failed");
 		}
 #else
@@ -891,10 +894,11 @@ static int game_embedded(GGZMod * ggzmod)
 		return -1;
 
 #ifdef HAVE_SOCKETPAIR
-	if (fd_pair[1] != 103) {
+	if (fd_pair[1] != GGZMOD_DEFAULT_FD) {
 		/* We'd like to send an error message if either of
 		   these fail, but we can't.  --JDS */
-		if (dup2(fd_pair[1], 103) != 103 || close(fd_pair[1]) < 0)
+		if (dup2(fd_pair[1], GGZMOD_DEFAULT_FD) != GGZMOD_DEFAULT_FD
+		|| close(fd_pair[1]) < 0)
 			ggz_error_sys_exit("dup failed");
 	}
 
