@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 8302 2006-07-03 13:53:12Z josef $
+ * $Id: server.c 8303 2006-07-03 15:27:22Z oojah $
  *
  * Code for handling server connection state and properties
  *
@@ -904,7 +904,7 @@ void _ggzcore_server_set_login_status(GGZServer * server,
 			break;
 		case E_USR_TYPE:
 			snprintf(error.message, sizeof(error.message),
-				_("This is a registered name, guests ought not use it"));
+				_("This name is already registered so cannot be used by a guest"));
 			break;
 		case E_USR_FOUND:
 			snprintf(error.message, sizeof(error.message),
