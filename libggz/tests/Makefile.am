@@ -9,7 +9,8 @@ check_PROGRAMS = \
 	read_line \
 	misc \
 	strcmp \
-	tls
+	tls \
+	test64
 
 debugmsg_SOURCES = debugmsg.c
 dio_SOURCES = dio.c
@@ -19,6 +20,7 @@ read_line_SOURCES = read_line.c
 strcmp_SOURCES = strcmp.c
 ggzcommon_SOURCES = ggzcommon.c
 tls_SOURCES = tls.c
+test64_SOURCES = test64.c
 
 TESTS = debugmsg dio cfgtest ggzcommon read_line misc strcmp tls
 

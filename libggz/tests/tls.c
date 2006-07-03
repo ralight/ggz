@@ -6,16 +6,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
-#ifdef HAVE_SYS_SOCKET_H
+/*#ifdef HAVE_SYS_SOCKET_H*/
 #include <sys/socket.h>
-#endif
-#ifdef HAVE_SYS_WAIT_H
+/*#endif*/
+/*#ifdef HAVE_SYS_WAIT_H*/
 #include <sys/wait.h>
-#endif
+/*#endif*/
 /*#include <sys/mman.h>*/
-#ifdef HAVE_SYS_SHM_H
+/*#ifdef HAVE_SYS_SHM_H*/
 #include <sys/shm.h>
-#endif
+/*#endif*/
 #include <sys/stat.h>
 #ifndef NO_THREADING
 #include <pthread.h>
@@ -26,6 +26,8 @@
 #include <errno.h>
 
 #include <ggz.h>
+
+#define HAVE_ALARM 1
 
 #ifdef GGZ_TLS_NONE
 
@@ -116,7 +118,7 @@ int main(int argc, char *argv[])
 #else
 	/* Alarm isn't present on all platforms.  FIXME: implement without
 	 * using it. */
-	printf("This test cannot be completed on this platform.");
+	printf("This test cannot be completed on this platform.\n");
 	timeout(SIGALRM);
 #endif
 
