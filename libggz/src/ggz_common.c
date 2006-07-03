@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 7885 2006-03-06 18:46:12Z josef $
+ * $Id: ggz_common.c 8302 2006-07-03 13:53:12Z josef $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -297,6 +297,10 @@ const char *ggz_error_to_string(GGZClientReqError err)
 		return "too long";
 	case E_BAD_USERNAME:
 		return "bad username";
+	case E_USR_TYPE:
+		return "wrong login type";
+	case E_USR_FOUND:
+		return "user not found";
 	case E_NO_STATUS:
 	case E_UNKNOWN:
 		break;
@@ -360,6 +364,10 @@ GGZClientReqError ggz_string_to_error(const char *str)
 		return E_TOO_LONG;
 	if (!strcasecmp(str, "bad username"))
 		return E_BAD_USERNAME;
+	if (!strcasecmp(str, "wrong login type"))
+		return E_USR_TYPE;
+	if (!strcasecmp(str, "user not found"))
+		return E_USR_FOUND;
 
 	return E_UNKNOWN;
 }

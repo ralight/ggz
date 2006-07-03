@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 7864 2006-02-13 07:04:51Z josef $
+ * $Id: login.c 8302 2006-07-03 13:53:12Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -65,11 +65,12 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
                                     char *name, const char *password, const char *email)
 {
 	char *ip_addr;
-	bool name_ok, logged_in;
+	bool name_ok;
 	char new_pw[17];
 	ggzdbPlayerEntry db_pe;
 	char *login_type = NULL;
 	GGZDBResult db_status;
+	GGZPlayerHandlerStatus reason;
 
 	new_pw[0] = '\0';
 	if(password)
@@ -77,7 +78,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
 	        player, type);
-	
+
 	/* A too-long username gives an error.  We used to just truncate it
 	   but that would probably just confuse the user. */
 	if (strlen(name) > MAX_USER_NAME_LEN) {
@@ -98,11 +99,9 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		return GGZ_REQ_FAIL;
 	}
 
-
 	/* Start off assuming name is good */
 	name_ok = true;
-	logged_in = false;
-	
+
 	/* Check guest names vs. the database */
 	snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
 	db_status = ggzdb_player_get(&db_pe);
@@ -111,23 +110,22 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		        "Guest player trying to use actual login name %s.",
 		        name);
 		name_ok = false;
+		reason = E_USR_TYPE;
 	}
-	
+
 	/* Add the player name to the hash table */
 	if (name_ok && !hash_player_add(name, player)) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Could not add player %s to hash.",
 		        name);
 		name_ok = false;
-		logged_in = true;
+		reason = E_ALREADY_LOGGED_IN;
 	}
-
 
 	/* Error if the name is already in the hash table or guest
 	   name in the DB */
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful login of %s", name);
-		if (net_send_login(player->client->net, type,
-				   (logged_in ? E_ALREADY_LOGGED_IN : E_USR_LOOKUP), NULL) < 0)
+		if (net_send_login(player->client->net, type, reason, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -139,17 +137,19 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 			dbg_msg(GGZ_DBG_CONNECTION,
 				"Unsuccessful login of %s - no account", name);
 			name_ok = false;
+			reason = E_USR_FOUND;
 		} else if(ggzdb_compare_password(password, db_pe.password) != 1) {
 			dbg_msg(GGZ_DBG_CONNECTION,
 				"Unsuccessful login of %s - bad password", name);
 			log_msg(GGZ_LOG_SECURITY, "BADPWD from %s for %s",
 				player->client->addr, name);
 			name_ok = false;
+			reason = E_USR_LOOKUP;
 		}
 		if(!name_ok) {
 			hash_player_delete(name);
 			if (net_send_login(player->client->net, type,
-					   E_USR_LOOKUP, NULL) < 0)
+					   reason, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
@@ -179,7 +179,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		login_type = " newly registered player";
 	} else
 		login_type = "n anonymous player";
-	
+
 	/* Setup the player's information */
 	pthread_rwlock_wrlock(&player->lock);
 	if (type == GGZ_LOGIN_GUEST) {
@@ -205,7 +205,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	/* Don't send any room updates until the player gets a room list. */
 	pthread_rwlock_unlock(&player->lock);
-	
+
 	/* Notify user of success and give them their password (if new) */
 	if (net_send_login(player->client->net, type, 0, new_pw) < 0)
 		return GGZ_REQ_DISCONNECT;
@@ -219,8 +219,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	/* Log the connection */
 	log_msg(GGZ_LOG_CONNECTION_INFO, "LOGIN %s from %s as a%s", name,
 		ip_addr, login_type);
-	
-	
+
 	return GGZ_REQ_OK;
 }
 

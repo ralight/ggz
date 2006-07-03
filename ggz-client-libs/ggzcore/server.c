@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 8106 2006-06-06 07:38:18Z josef $
+ * $Id: server.c 8302 2006-07-03 13:53:12Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -901,6 +901,14 @@ void _ggzcore_server_set_login_status(GGZServer * server,
 		case E_USR_LOOKUP:
 			snprintf(error.message, sizeof(error.message),
 				_("Name taken or wrong password"));
+			break;
+		case E_USR_TYPE:
+			snprintf(error.message, sizeof(error.message),
+				_("This is a registered name, guests ought not use it"));
+			break;
+		case E_USR_FOUND:
+			snprintf(error.message, sizeof(error.message),
+				_("No such name was found"));
 			break;
 		case E_TOO_LONG:
 			snprintf(error.message, sizeof(error.message),
