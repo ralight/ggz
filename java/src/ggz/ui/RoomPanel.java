@@ -508,7 +508,7 @@ public class RoomPanel extends JPanel implements RoomListener {
 
         private JLabel spectatorsLabel;
 
-        private JPanel buttonPanel;
+        private JPanel spectatePanel;
 
         private JPanel seatsPanel;
 
@@ -520,37 +520,45 @@ public class RoomPanel extends JPanel implements RoomListener {
             setMaximumSize(new Dimension(200, 200));
             setBackground(SystemColor.text);
             setBorder(BorderFactory.createRaisedBevelBorder());
-            titleLabel = new JLabel();
+            titleLabel = new JLabel("Qwerty");
             titleLabel.setVerticalAlignment(JLabel.TOP);
             titleLabel.setFont(getFont().deriveFont(Font.PLAIN));
-            titleLabel.setPreferredSize(new Dimension(200, 50));
+            titleLabel.setPreferredSize(new Dimension(200, titleLabel
+                    .getPreferredSize().height * 3));
             playersPanel = new JPanel(new BorderLayout());
             playersPanel.setOpaque(false);
-            spectatorsLabel = new JLabel();
-            spectatorsLabel.setFont(spectatorsLabel.getFont().deriveFont(
-                    Font.PLAIN));
-            spectatorsLabel.setBackground(SystemColor.text);
-            spectatorsLabel.setOpaque(true);
             seatsPanel = new JPanel(new BorderLayout());
-            // seatsPanel.setBackground(Color.green.darker());
             seatsPanel.add(playersPanel, BorderLayout.CENTER);
-            seatsPanel.add(spectatorsLabel, BorderLayout.EAST);
-            spectateButton = new JButton(new SpectateAction(table));
-            buttonPanel = new JPanel();
-            buttonPanel.setOpaque(false);
             if (room.get_gametype().get_spectators_allowed()) {
-                buttonPanel.add(spectateButton);
+                spectatePanel = new JPanel(new BorderLayout(0, 0));
+                spectatePanel.setOpaque(false);
+                spectatorsLabel = new JLabel("Qwerty");
+                spectatorsLabel.setVerticalAlignment(JLabel.TOP);
+                spectatorsLabel.setFont(spectatorsLabel.getFont().deriveFont(
+                        Font.PLAIN));
+                spectatorsLabel.setBackground(SystemColor.text);
+                spectatorsLabel.setOpaque(true);
+                spectatorsLabel.setPreferredSize(new Dimension(200,
+                        spectatorsLabel.getPreferredSize().height * 2));
+                spectateButton = new JButton(new SpectateAction(table));
+                JPanel layout = new JPanel(new BorderLayout(0, 0));
+                layout.setOpaque(false);
+                layout.add(spectateButton, BorderLayout.SOUTH);
+                spectatePanel.add(spectatorsLabel, BorderLayout.CENTER);
+                spectatePanel.add(layout, BorderLayout.EAST);
             }
             add(titleLabel, BorderLayout.NORTH);
             add(seatsPanel, BorderLayout.CENTER);
-            add(buttonPanel, BorderLayout.SOUTH);
+            add(spectatePanel, BorderLayout.SOUTH);
             refresh();
         }
 
         protected void refresh() {
             titleLabel.setText(getTitleHTML());
             refreshSeats();
-            refreshSpectators();
+            if (room.get_gametype().get_spectators_allowed()) {
+                refreshSpectators();
+            }
             updateButtonEnabledState();
         }
 
@@ -600,19 +608,20 @@ public class RoomPanel extends JPanel implements RoomListener {
 
         private void refreshSpectators() {
             int numSpectators = 0;
-            StringBuffer buffer = new StringBuffer("<HTML><B>Spectators</B>");
+            StringBuffer buffer = new StringBuffer("<HTML><B>Spectators: </B>");
             for (int spectator_num = 0; spectator_num < table
                     .get_num_spectator_seats(); spectator_num++) {
                 String name = table.get_nth_spectator_name(spectator_num);
                 if (name != null) {
-                    buffer.append("<BR>");
+                    if (numSpectators > 0)
+                        buffer.append(", ");
                     buffer.append(name);
                     numSpectators++;
                 }
             }
             buffer.append("</HTML>");
-            spectatorsLabel.setText(buffer.toString());
-            spectatorsLabel.setVisible(numSpectators > 0);
+            spectatorsLabel.setText(numSpectators > 0 ? buffer.toString()
+                    : null);
         }
 
         public void updateButtonEnabledState() {
@@ -644,7 +653,8 @@ public class RoomPanel extends JPanel implements RoomListener {
                 }
             }
 
-            spectateButton.setEnabled(canSpectate);
+            if (spectateButton != null)
+                spectateButton.setEnabled(canSpectate);
         }
 
         private JButton createAndAddSeatButton(int seat_num) {

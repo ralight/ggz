@@ -52,6 +52,11 @@ public class PrivateChatDialog extends JFrame {
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
+    
+    public void dispose() {
+        chatPanel.dispose();
+        super.dispose();
+    }
 
     protected void processWindowEvent(WindowEvent event) {
         if (event.getID() == WindowEvent.WINDOW_CLOSED) {

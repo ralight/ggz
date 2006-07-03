@@ -37,19 +37,19 @@ public class IconFactory {
         if (icon == null) {
             if (type == PlayerType.GGZ_PLAYER_ADMIN) {
                 icon = new ImageIcon(IconFactory.class
-                        .getResource("images/p21.gif"));
+                        .getResource("images/player_admin.gif"));
             } else if (type == PlayerType.GGZ_PLAYER_BOT) {
                 icon = new ImageIcon(IconFactory.class
-                        .getResource("images/p17.gif"));
+                        .getResource("images/player_bot.gif"));
             } else if (type == PlayerType.GGZ_PLAYER_GUEST) {
                 icon = new ImageIcon(IconFactory.class
-                        .getResource("images/p29.gif"));
+                        .getResource("images/player_guest.png"));
             } else if (type == PlayerType.GGZ_PLAYER_NORMAL) {
                 icon = new ImageIcon(IconFactory.class
-                        .getResource("images/p25.gif"));
+                        .getResource("images/player_normal.png"));
             } else {
                 icon = new ImageIcon(IconFactory.class
-                        .getResource("images/p13.gif"));
+                        .getResource("images/player_unknown.gif"));
             }
             icons[type.ordinal()] = icon;
         }

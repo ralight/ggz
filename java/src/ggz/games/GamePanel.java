@@ -156,6 +156,9 @@ public class GamePanel extends JPanel implements ModEventHandler {
      * Called when the core client disconnects.
      */
     public void handle_disconnect() {
+        // Prevent memory leaks.
+        chatPanel.dispose();
+
         // We call this when we want to leave (close window) but it's also
         // called when we have left, both after requesting a leave and after
         // being booted.

@@ -18,6 +18,7 @@
 package ggz.ui;
 
 import ggz.common.ChatType;
+import ggz.ui.preferences.GGZPreferences;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,6 +29,8 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.ResourceBundle;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -44,7 +47,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-public class ChatPanel extends JPanel {
+public class ChatPanel extends JPanel implements PreferenceChangeListener {
     private static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
 
@@ -74,6 +77,8 @@ public class ChatPanel extends JPanel {
 
     protected boolean isAutoScroll = true;
 
+    private boolean isDisposed;
+
     // Application global ignore list.
     static private HashSet ignoreList;
 
@@ -81,6 +86,9 @@ public class ChatPanel extends JPanel {
     static protected HashSet friendsList;
 
     /**
+     * Any code that creates an instance of this class must call dispose() so
+     * that this instance can be made ready for garbage collection.
+     * 
      * @param chatAction
      *            the action that sends the chat.
      */
@@ -98,6 +106,9 @@ public class ChatPanel extends JPanel {
                 }
             }
         };
+        GGZPreferences.addPreferenceChangeListener(this);
+        chatArea.setFont(GGZPreferences.getFont(GGZPreferences.CHAT_FONT,
+                chatArea.getFont()));
         chatArea.setEditable(false);
         TextPopupMenu.enableFor(chatArea);
         TextPopupMenu.enableFor(textField);
@@ -148,7 +159,20 @@ public class ChatPanel extends JPanel {
         announceText.addAttribute(StyleConstants.Bold, Boolean.TRUE);
 
         myText = new SimpleAttributeSet();
-        myText.addAttribute(StyleConstants.Foreground, Color.GRAY);
+        myText.addAttribute(StyleConstants.Foreground, Color.MAGENTA.darker());
+    }
+
+    /**
+     * Stops listening for preference change events so that this instance can be
+     * garbage collected.
+     */
+    public void dispose() {
+        // Prevent "memory leaks". Anyone who creates us should also dispose()
+        // us.
+        if (!isDisposed) {
+            GGZPreferences.removePreferenceChangeListener(this);
+            isDisposed = true;
+        }
     }
 
     public void appendInfo(final String message) {
@@ -204,14 +228,14 @@ public class ChatPanel extends JPanel {
 
         if ("MegaGrub".equals(sender)) {
             textStyle = senderText;
+        } else if (type == ChatType.GGZ_CHAT_ANNOUNCE) {
+            textStyle = announceText;
+            // TODO change the text to <nic> announces:
         } else if (sender.equals(me)) {
             textStyle = myText;
         } else if (friendsList != null
                 && friendsList.contains(sender.toLowerCase())) {
             textStyle = friendlyText;
-        } else if (type == ChatType.GGZ_CHAT_ANNOUNCE) {
-            textStyle = announceText;
-            // TODO change the text to <nic> announces:
         }
 
         checkAutoScroll();
@@ -335,6 +359,17 @@ public class ChatPanel extends JPanel {
         if (!EventQueue.isDispatchThread()) {
             throw new IllegalStateException(
                     "This method must be called using SwingUtilities.invokeLater() or SwingUtilities.invokeAndWait().");
+        }
+    }
+
+    public void preferenceChange(PreferenceChangeEvent evt) {
+        if (GGZPreferences.CHAT_FONT.equals(evt.getKey())) {
+            chatArea.setFont(GGZPreferences.getFont(evt.getKey(), chatArea
+                    .getFont()));
+        } else if (GGZPreferences.MY_FONT_COLOR.equals(evt.getKey())) {
+            senderText.addAttribute(StyleConstants.Foreground, GGZPreferences
+                    .getColor(evt.getKey(), (Color) senderText
+                            .getAttribute(StyleConstants.Foreground)));
         }
     }
 }

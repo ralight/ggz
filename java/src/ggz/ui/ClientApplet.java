@@ -24,6 +24,7 @@ import ggz.client.core.Room;
 import ggz.client.core.Server;
 import ggz.client.core.ServerListener;
 import ggz.client.core.StateID;
+import ggz.ui.preferences.PreferencesDialog;
 
 import java.applet.Applet;
 import java.awt.AlphaComposite;
@@ -146,6 +147,20 @@ public class ClientApplet extends JApplet implements ServerListener,
             footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
             footerPanel.setOpaque(false);
             footerLayoutPanel.add(footerPanel, BorderLayout.EAST);
+            JLabel preferencesLabel = new JLabel(
+                    "<HTML><A href='' style='font-weight:normal; font-size:smaller'>"
+                            + "Preferences..." + "</A>", SwingConstants.RIGHT);
+            preferencesLabel.setCursor(Cursor
+                    .getPredefinedCursor(Cursor.HAND_CURSOR));
+            preferencesLabel.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent event) {
+                    PreferencesDialog
+                            .showPreferences(
+                                    ClientApplet.this,
+                                    new String[] { "ggz.ui.preferences.ChatPreferencesTab" });
+                }
+            });
+            footerPanel.add(preferencesLabel);
             footerPanel.add(new HyperlinkLabel("Help", new URL(getCodeBase(),
                     "help.html"), "font-weight:normal; font-size:smaller"),
                     BorderLayout.SOUTH);

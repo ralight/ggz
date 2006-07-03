@@ -513,6 +513,14 @@ public class Server {
                 error.message = MessageFormat.format(messages
                         .getString("Server.LoginError.UsrLookup"),
                         new String[] { handle });
+            } else if (status == ClientReqError.E_USR_FOUND) {
+                error.message = MessageFormat.format(messages
+                        .getString("Server.LoginError.UsrFound"),
+                        new String[] { handle });
+            } else if (status == ClientReqError.E_USR_TYPE) {
+                error.message = MessageFormat.format(messages
+                        .getString("Server.LoginError.UsrType"),
+                        new String[] { handle });
             } else if (status == ClientReqError.E_TOO_LONG) {
                 error.message = MessageFormat.format(messages
                         .getString("Server.LoginError.TooLong"),
