@@ -67,7 +67,7 @@ KGGZCaption::KGGZCaption(QString caption, QString explanation, QWidget *parent, 
 	vbox->add(label2);
 
 	setFrameStyle(Panel | Sunken);
-	setFixedHeight(60);
+	setFixedHeight(70);
 	show();
 }
 

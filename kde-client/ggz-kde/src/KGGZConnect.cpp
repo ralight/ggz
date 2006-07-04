@@ -730,6 +730,7 @@ void KGGZConnect::slotError(int code)
 	KMessageBox::error(this,
 		i18n("The GGZ metaserver could not be contacted."),
 		i18n("Connection"));
+	button_ok->setEnabled(true);
 	delete m_sock;
 }
 

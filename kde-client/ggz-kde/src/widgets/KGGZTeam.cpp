@@ -118,7 +118,7 @@ void KGGZTeam::slotAdd()
 	{
 		input_member = new KGGZInput(NULL, NULL,
 			i18n("New team member"), i18n("Name of the player who joins the team."));
-		connect(input_member, SIGNAL(signalText(const char*)), SLOT(slotAdded(const char*)));
+		connect(input_member, SIGNAL(signalText(QString)), SLOT(slotAdded(QString)));
 	}
 	input_member->show();
 }
@@ -129,7 +129,7 @@ void KGGZTeam::slotFound()
 	{
 		input_team = new KGGZInput(NULL, NULL,
 			i18n("Team foundation"), i18n("What should the name of the new team be?"));
-		connect(input_team, SIGNAL(signalText(const char*)), SLOT(slotFounded(const char*)));
+		connect(input_team, SIGNAL(signalText(QString)), SLOT(slotFounded(QString)));
 	}
 	input_team->show();
 }

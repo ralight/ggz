@@ -961,6 +961,7 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 #endif
 	int roomnumber;
 	GGZMotdEventData *motd;
+	const GGZErrorEventData *error = (GGZErrorEventData*)data;
 
 	emit signalActivity(ACTIVITY_ROOM);
 
@@ -1051,7 +1052,9 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			break;
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
-			KMessageBox::error(this, i18n("Login refused!"), i18n("Error!"));
+			KMessageBox::error(this,
+				i18n("Login refused! Reason: %1").arg(error->message),
+				i18n("Error!"));
 			m_killserver = 1;
 			menuConnect();
 			break;
