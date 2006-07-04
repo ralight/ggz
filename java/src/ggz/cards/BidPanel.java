@@ -20,6 +20,7 @@ package ggz.cards;
 import ggz.cards.client.Client;
 import ggz.cards.client.Player;
 import ggz.cards.common.Bid;
+import ggz.ui.CustomMetalTheme;
 
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
@@ -37,8 +38,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -121,13 +120,7 @@ public class BidPanel extends JPanel implements ActionListener {
                 bid_button.setToolTipText(bid_descs[bidIndex]);
             }
 
-            // Get rid of the margin insets on the Metal or Ocean buttons to
-            // make the buttons smaller.
-            Border old_border = bid_button.getBorder();
-            if (old_border instanceof CompoundBorder) {
-                bid_button.setBorder(((CompoundBorder) old_border)
-                        .getOutsideBorder());
-            }
+            CustomMetalTheme.removeInsideBorder(bid_button);
 
             Font oldFont = bid_button.getFont();
             bid_button.setFont(oldFont.deriveFont(oldFont.getStyle(), 14));

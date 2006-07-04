@@ -26,9 +26,9 @@ import java.util.ArrayList;
  */
 public class PlayerType {
 
-	public static final ArrayList values = new ArrayList();
+    public static final ArrayList values = new ArrayList();
 
-	/** A normal player is registered but has no special permission. */
+    /** A normal player is registered but has no special permission. */
     public static final PlayerType GGZ_PLAYER_NORMAL = new PlayerType();
 
     /** A guest player is not registered. */
@@ -36,6 +36,9 @@ public class PlayerType {
 
     /** An admin player is registered and has some special permissions. */
     public static final PlayerType GGZ_PLAYER_ADMIN = new PlayerType();
+
+    /** A host player is registered and has some special permissions. */
+    public static final PlayerType GGZ_PLAYER_HOST = new PlayerType();
 
     /** A bot is a special type of player. */
     public static final PlayerType GGZ_PLAYER_BOT = new PlayerType();
@@ -49,22 +52,24 @@ public class PlayerType {
 
     private static final String ADMIN_PLAYER_NAME = "admin";
 
+    private static final String HOST_PLAYER_NAME = "host";
+
     private static final String BOT_PLAYER_NAME = "bot";
 
     private static final String UNKNOWN_PLAYER_NAME = "unknown";
 
     private PlayerType() {
-    	values.add(this);
+        values.add(this);
     }
-    
+
     public int ordinal() {
-    	return values.indexOf(this);
+        return values.indexOf(this);
     }
-    
+
     public static PlayerType[] values() {
-    	return (PlayerType[]) values.toArray(new PlayerType[values.size()]);
+        return (PlayerType[]) values.toArray(new PlayerType[values.size()]);
     }
-    
+
     public String toString() {
         if (this == GGZ_PLAYER_GUEST) {
             return GUEST_PLAYER_NAME;
@@ -72,6 +77,8 @@ public class PlayerType {
             return NORMAL_PLAYER_NAME;
         } else if (this == GGZ_PLAYER_ADMIN) {
             return ADMIN_PLAYER_NAME;
+        } else if (this == GGZ_PLAYER_HOST) {
+            return HOST_PLAYER_NAME;
         } else if (this == GGZ_PLAYER_BOT) {
             return BOT_PLAYER_NAME;
         } else if (this == GGZ_PLAYER_UNKNOWN) {
@@ -90,6 +97,8 @@ public class PlayerType {
             return GGZ_PLAYER_GUEST;
         } else if (ADMIN_PLAYER_NAME.equalsIgnoreCase(type_str)) {
             return GGZ_PLAYER_ADMIN;
+        } else if (HOST_PLAYER_NAME.equalsIgnoreCase(type_str)) {
+            return GGZ_PLAYER_HOST;
         } else if (BOT_PLAYER_NAME.equalsIgnoreCase(type_str)) {
             return GGZ_PLAYER_BOT;
         }

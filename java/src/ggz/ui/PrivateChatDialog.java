@@ -45,17 +45,30 @@ public class PrivateChatDialog extends JFrame {
     }
 
     private PrivateChatDialog(String recipient) {
-        super("Private chat with " + recipient);
+        super(recipient + " - Private chat");
         this.recipient = recipient;
         chatPanel = new ChatPanel(new PrivateChatAction(recipient));
         getContentPane().add(chatPanel, BorderLayout.CENTER);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
-    
+
     public void dispose() {
         chatPanel.dispose();
         super.dispose();
+    }
+
+    public static PrivateChatDialog showDialog(String otherPlayer) {
+        PrivateChatDialog dialog = (PrivateChatDialog) dialogs.get(otherPlayer);
+        if (dialog == null) {
+            // No private chat with this player yet.
+            dialog = new PrivateChatDialog(otherPlayer);
+            dialogs.put(otherPlayer, dialog);
+            dialog.setSize(350, 350);
+            dialog.setVisible(true);
+            dialog.chatPanel.textField.requestFocus();
+        }
+        return dialog;
     }
 
     protected void processWindowEvent(WindowEvent event) {
@@ -195,22 +208,12 @@ public class PrivateChatDialog extends JFrame {
                 return;
             }
 
-            PrivateChatDialog dialog = (PrivateChatDialog) dialogs
-                    .get(data.sender);
-            if (dialog == null) {
-                // No private chat with this player yet.
-                dialog = new PrivateChatDialog(data.sender);
-                dialogs.put(data.sender, dialog);
-                dialog.setSize(350, 350);
-                dialog.setVisible(true);
-            }
-
             // All handlers are called from the socket thread so we need to do
             // this crazy stuff.
-            final PrivateChatDialog threadDialog = dialog;
+            final PrivateChatDialog dialog = showDialog(data.sender);
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    threadDialog.chatPanel.appendChat(data.type, data.sender,
+                    dialog.chatPanel.appendChat(data.type, data.sender,
                             data.message, server.get_handle());
                 }
             });

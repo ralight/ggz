@@ -21,9 +21,12 @@ import java.applet.Applet;
 import java.awt.Font;
 import java.util.logging.Logger;
 
+import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
@@ -276,5 +279,20 @@ public class CustomMetalTheme extends DefaultMetalTheme {
         }
         // only needed to update existing widgets
         SwingUtilities.updateComponentTreeUI(applet);
+    }
+
+    /**
+     * Utility function to remove the inside border from a compound border. This
+     * is useful when a minimal button is required.
+     * 
+     * @param comp
+     */
+    public static void removeInsideBorder(JComponent comp) {
+        // Get rid of the margin insets on the Metal or Ocean buttons to
+        // make the buttons smaller.
+        Border old_border = comp.getBorder();
+        if (old_border instanceof CompoundBorder) {
+            comp.setBorder(((CompoundBorder) old_border).getOutsideBorder());
+        }
     }
 }

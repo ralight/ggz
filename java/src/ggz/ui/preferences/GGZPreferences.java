@@ -17,8 +17,13 @@
  */
 package ggz.ui.preferences;
 
+import ggz.common.CSVParser;
+
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
@@ -27,6 +32,10 @@ public class GGZPreferences {
     public static String CHAT_FONT = "Chat.Font";
 
     public static String MY_FONT_COLOR = "Chat.My.Color";
+
+    public static String IGNORE_LIST = "Char.Ignore.List";
+
+    public static String FRIENDS_LIST = "Char.Friends.List";
 
     public static final Logger log = Logger.getLogger(GGZPreferences.class
             .getName());
@@ -70,6 +79,27 @@ public class GGZPreferences {
         put(key, colorString);
     }
 
+    /**
+     * Adds all Strings read from this key to the collection.
+     * @param key
+     * @param collection
+     * @return
+     */
+    public static Collection addAll(String key, Collection collection) {
+        String csvString = get(key, null);
+        if (csvString != null) {
+            String[] values = CSVParser.parseLine(csvString);
+            collection.addAll(Arrays.asList(values));
+        }
+        return collection;
+    }
+
+    public static void putStringCollection(String key, Collection collection) {
+        String csvString = encodeStringCollection(collection);
+        log.fine("Saving collection preferences " + key + ": " + csvString);
+        put(key, csvString);
+    }
+
     public static void addPreferenceChangeListener(PreferenceChangeListener pcl) {
         prefs.addPreferenceChangeListener(pcl);
     }
@@ -98,5 +128,17 @@ public class GGZPreferences {
     private static String encodeColor(Color color) {
         return "0x" + Integer.toHexString(color.getRGB())
                 + Integer.toHexString(color.getTransparency());
+    }
+
+    private static String encodeStringCollection(Collection collection) {
+        Iterator iter = collection.iterator();
+        StringBuffer result = new StringBuffer();
+        while (iter.hasNext()) {
+            result.append(CSVParser.escape((String) iter.next()));
+            if (iter.hasNext()) {
+                result.append(",");
+            }
+        }
+        return result.toString();
     }
 }

@@ -26,6 +26,10 @@ public class IconFactory {
 
     private static ImageIcon[] icons = new ImageIcon[PlayerType.values().length];
 
+    private static ImageIcon friendIcon;
+
+    private static ImageIcon ignoreIcon;
+
     private IconFactory() {
     }
 
@@ -35,18 +39,21 @@ public class IconFactory {
         }
         ImageIcon icon = icons[type.ordinal()];
         if (icon == null) {
-            if (type == PlayerType.GGZ_PLAYER_ADMIN) {
+            if (type == PlayerType.GGZ_PLAYER_NORMAL) {
                 icon = new ImageIcon(IconFactory.class
-                        .getResource("images/player_admin.gif"));
-            } else if (type == PlayerType.GGZ_PLAYER_BOT) {
-                icon = new ImageIcon(IconFactory.class
-                        .getResource("images/player_bot.gif"));
+                        .getResource("images/player_normal.png"));
             } else if (type == PlayerType.GGZ_PLAYER_GUEST) {
                 icon = new ImageIcon(IconFactory.class
                         .getResource("images/player_guest.png"));
-            } else if (type == PlayerType.GGZ_PLAYER_NORMAL) {
+            } else if (type == PlayerType.GGZ_PLAYER_ADMIN) {
                 icon = new ImageIcon(IconFactory.class
-                        .getResource("images/player_normal.png"));
+                        .getResource("images/player_admin.gif"));
+            } else if (type == PlayerType.GGZ_PLAYER_HOST) {
+                icon = new ImageIcon(IconFactory.class
+                        .getResource("images/player_host.png"));
+            } else if (type == PlayerType.GGZ_PLAYER_BOT) {
+                icon = new ImageIcon(IconFactory.class
+                        .getResource("images/player_bot.gif"));
             } else {
                 icon = new ImageIcon(IconFactory.class
                         .getResource("images/player_unknown.gif"));
@@ -54,5 +61,21 @@ public class IconFactory {
             icons[type.ordinal()] = icon;
         }
         return icon;
+    }
+
+    public static Icon getFriendIcon() {
+        if (friendIcon == null) {
+            friendIcon = new ImageIcon(IconFactory.class
+                    .getResource("images/friend.png"));
+        }
+        return friendIcon;
+    }
+
+    public static Icon getIgnoreIcon() {
+        if (ignoreIcon == null) {
+            ignoreIcon = new ImageIcon(IconFactory.class
+                    .getResource("images/ignore.png"));
+        }
+        return ignoreIcon;
     }
 }

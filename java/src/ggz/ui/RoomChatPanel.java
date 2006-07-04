@@ -34,18 +34,27 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JToggleButton;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
@@ -53,7 +62,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-public class RoomChatPanel extends JPanel implements RoomListener {
+public class RoomChatPanel extends JPanel implements RoomListener,
+        ListSelectionListener {
     private static final Logger log = Logger.getLogger(RoomChatPanel.class
             .getName());
 
@@ -77,6 +87,14 @@ public class RoomChatPanel extends JPanel implements RoomListener {
 
     private JLabel playerCountLabel;
 
+    private JButton privateChatButton;
+
+    private JButton beepButton;
+
+    private JToggleButton friendToggleButton;
+
+    private JToggleButton ignoreToggleButton;
+
     public RoomChatPanel(boolean showTableNumber) {
         super(new BorderLayout());
         chatPanel = new ChatPanel(new RoomChatAction());
@@ -85,8 +103,7 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         // The list of players.
         players = new PlayersTableModel(showTableNumber);
         playerList = new JTable(players);
-        playerList.getColumn("Type").setHeaderValue(
-                messages.getString("RoomChatPanel.ColumnHeader.PlayerType"));
+        playerList.getColumn("Type").setHeaderValue("");
         playerList
                 .getColumn("Nickname")
                 .setHeaderValue(
@@ -101,24 +118,60 @@ public class RoomChatPanel extends JPanel implements RoomListener {
                             messages
                                     .getString("RoomChatPanel.ColumnHeader.PlayerTableNumber"));
         }
-        playerList.setRowSelectionAllowed(false);
+        playerList.setRowSelectionAllowed(true);
+        playerList.getSelectionModel().setSelectionMode(
+                ListSelectionModel.SINGLE_SELECTION);
         playerList.setGridColor(playerList.getBackground());
-        // playerList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setOpaque(false);
         playerList.setOpaque(false);
         playerList.setDefaultRenderer(PlayerType.class,
                 new PlayerTypeCellRenderer());
         playerList.setDefaultRenderer(Player.class, new PlayerCellRenderer());
         playerList.setDefaultRenderer(Integer.class, new LagCellRenderer());
+        playerList.setDefaultRenderer(String.class,
+                new NoHighlightCellRenderer());
+        playerList.getColumn("FriendOrFoe").setCellRenderer(
+                new FriendOrFoeCellRenderer());
+        playerList.getColumn("FriendOrFoe").setHeaderValue("");
+        playerList.getSelectionModel().addListSelectionListener(this);
         initCellSizes(playerList);
         playerScrollPane = new JScrollPane(playerList);
         playerScrollPane.setOpaque(false);
         playerScrollPane.getViewport().setOpaque(false);
         playerCountLabel = new JLabel();
+        privateChatButton = new JButton(new PrivateChatAction());
+        privateChatButton.setOpaque(false);
+        privateChatButton.setFocusable(false);
+        privateChatButton
+                .setToolTipText("Initiates a private conversation with the selected player.");
+        CustomMetalTheme.removeInsideBorder(privateChatButton);
+        beepButton = new JButton(new BeepAction());
+        beepButton.setOpaque(false);
+        beepButton.setFocusable(false);
+        beepButton.setToolTipText("Makes the selected player's computer beep.");
+        CustomMetalTheme.removeInsideBorder(beepButton);
+        JPanel bottomPanel = new JPanel(new BorderLayout(0, 0));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 0, 0, 0));
+        bottomPanel.setOpaque(false);
+        bottomPanel.add(playerCountLabel, BorderLayout.CENTER);
+        bottomPanel.add(buttonPanel, BorderLayout.EAST);
+        buttonPanel.add(privateChatButton);
+        buttonPanel.add(beepButton);
+        buttonPanel.setOpaque(false);
+        friendToggleButton = new JToggleButton(new FriendAction());
+        friendToggleButton.setOpaque(false);
+        friendToggleButton.setFocusable(false);
+        CustomMetalTheme.removeInsideBorder(friendToggleButton);
+        buttonPanel.add(friendToggleButton);
+        ignoreToggleButton = new JToggleButton(new IgnoreAction());
+        ignoreToggleButton.setOpaque(false);
+        ignoreToggleButton.setFocusable(false);
+        CustomMetalTheme.removeInsideBorder(ignoreToggleButton);
+        buttonPanel.add(ignoreToggleButton);
         westPanel = new JPanel(new BorderLayout());
         westPanel.setOpaque(false);
         westPanel.add(playerScrollPane, BorderLayout.CENTER);
-        westPanel.add(playerCountLabel, BorderLayout.SOUTH);
+        westPanel.add(bottomPanel, BorderLayout.SOUTH);
         add(westPanel, BorderLayout.WEST);
     }
 
@@ -133,6 +186,43 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             chatPanel.clearChat();
         }
         room.list_players();
+    }
+
+    /**
+     * Called when selection changes in player list.
+     * 
+     * @param e
+     */
+    public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting())
+            return;
+
+        int selectedRow = playerList.getSelectedRow();
+        if (selectedRow >= 0 && selectedRow < players.getRowCount()) {
+            privateChatButton.getAction().setEnabled(true);
+            beepButton.getAction().setEnabled(true);
+            friendToggleButton.getAction().setEnabled(true);
+            ignoreToggleButton.getAction().setEnabled(true);
+
+            Player player = players.getPlayer(selectedRow);
+            friendToggleButton.setSelected(chatPanel
+                    .isFriend(player.get_name()));
+            friendToggleButton
+                    .setToolTipText(friendToggleButton.isSelected() ? "Remove this player from your friends list."
+                            : "Add this player to your friends list.");
+            ignoreToggleButton.setSelected(chatPanel.isIgnored(player
+                    .get_name()));
+            ignoreToggleButton
+                    .setToolTipText(ignoreToggleButton.isSelected() ? "Stop ignore messages typed by this player."
+                            : "Don't display anything that this player types.");
+        } else {
+            privateChatButton.getAction().setEnabled(false);
+            beepButton.getAction().setEnabled(false);
+            friendToggleButton.getAction().setEnabled(false);
+            friendToggleButton.setSelected(false);
+            ignoreToggleButton.getAction().setEnabled(false);
+            ignoreToggleButton.setSelected(false);
+        }
     }
 
     public void chat_event(final ChatEventData data) {
@@ -298,9 +388,11 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             Component c;
             switch (i) {
             case 0:
-                width = 15;
-                break;
+            case 1:
             case 2:
+                width = 16;
+                break;
+            case 3:
                 c = r.getTableCellRendererComponent(table, new Player(
                         "TheQuickBrownFox"), false, false, 0, i);
 
@@ -375,8 +467,12 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             }
         }
 
+        public Player getPlayer(int index) {
+            return (Player) data.get(index);
+        }
+
         public int getColumnCount() {
-            return showTableNumber ? 4 : 3;
+            return showTableNumber ? 5 : 4;
         }
 
         public int getRowCount() {
@@ -390,8 +486,10 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 1:
                 return "Type";
             case 2:
-                return "Nickname";
+                return "FriendOrFoe";
             case 3:
+                return "Nickname";
+            case 4:
                 return "T#";
             default:
                 return null;
@@ -407,6 +505,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 2:
                 return Player.class;
             case 3:
+                return Player.class;
+            case 4:
                 return String.class;
             default:
                 return super.getColumnClass(columnIndex);
@@ -427,6 +527,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
             case 2:
                 return player;
             case 3:
+                return player;
+            case 4:
                 return player.get_table() == null ? null : new Integer(player
                         .get_table().get_id());
             default:
@@ -473,8 +575,90 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
     }
 
-    private class PlayerTypeCellRenderer extends DefaultTableCellRenderer
-            implements TableCellRenderer {
+    private class PrivateChatAction extends AbstractAction {
+        public PrivateChatAction() {
+            super(null, new ImageIcon(RoomChatPanel.class
+                    .getResource("/ggz/ui/images/private_chat.png")));
+            // Initially disabled until a selection is made in the list.
+            setEnabled(false);
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            int selectedRow = playerList.getSelectedRow();
+            if (selectedRow < 0)
+                return;
+            Player player = (Player) players.getPlayer(selectedRow);
+            if (player == null)
+                return;
+            PrivateChatDialog.showDialog(player.get_name());
+        }
+    }
+
+    private class BeepAction extends AbstractAction {
+        public BeepAction() {
+            super(null, new ImageIcon(RoomChatPanel.class
+                    .getResource("/ggz/ui/images/beep.png")));
+            // Initially disabled until a selection is made in the list.
+            setEnabled(false);
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            int selectedRow = playerList.getSelectedRow();
+            if (selectedRow < 0)
+                return;
+            Player player = (Player) players.getPlayer(selectedRow);
+            if (player == null)
+                return;
+
+            try {
+                chatPanel.sendBeep(player.get_name());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private class FriendAction extends AbstractAction {
+        public FriendAction() {
+            super(null, IconFactory.getFriendIcon());
+            // Initially disabled until a selection is made in the list.
+            setEnabled(false);
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            int selectedRow = playerList.getSelectedRow();
+            if (selectedRow < 0)
+                return;
+            Player player = (Player) players.getPlayer(selectedRow);
+            if (player == null)
+                return;
+
+            chatPanel.toggleFriend(player.get_name());
+            players.fireTableCellUpdated(selectedRow, 2);
+        }
+    }
+
+    private class IgnoreAction extends AbstractAction {
+        public IgnoreAction() {
+            super(null, IconFactory.getIgnoreIcon());
+            // Initially disabled until a selection is made in the list.
+            setEnabled(false);
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            int selectedRow = playerList.getSelectedRow();
+            if (selectedRow < 0)
+                return;
+            Player player = (Player) players.getPlayer(selectedRow);
+            if (player == null)
+                return;
+
+            chatPanel.toggleIgnore(player.get_name());
+            players.fireTableCellUpdated(selectedRow, 2);
+        }
+    }
+
+    private class PlayerTypeCellRenderer extends DefaultTableCellRenderer {
         private PlayerType type;
 
         private PlayerTypeCellRenderer() {
@@ -499,6 +683,8 @@ public class RoomChatPanel extends JPanel implements RoomListener {
                 return "Guest";
             } else if (type == PlayerType.GGZ_PLAYER_ADMIN) {
                 return "GGZ Administrator";
+            } else if (type == PlayerType.GGZ_PLAYER_HOST) {
+                return "GGZ Host";
             } else if (type == PlayerType.GGZ_PLAYER_BOT) {
                 return "Artificial Intelligence";
             }
@@ -506,23 +692,53 @@ public class RoomChatPanel extends JPanel implements RoomListener {
         }
     }
 
-    private class PlayerCellRenderer extends DefaultTableCellRenderer implements
+    private class FriendOrFoeCellRenderer extends JLabel implements
             TableCellRenderer {
-        private Player player;
+        private boolean isFriend;
 
-        protected PlayerCellRenderer() {
+        private boolean isIgnored;
+
+        private FriendOrFoeCellRenderer() {
+            setHorizontalAlignment(SwingConstants.CENTER);
             setOpaque(true);
         }
 
         public Component getTableCellRendererComponent(JTable table,
                 Object value, boolean isSelected, boolean hasFocus, int row,
                 int column) {
-            this.player = (Player) value;
-            this.setText(player == null ? null : player.get_name());
-            this.setFont(table.getFont());
-            this.setForeground(table.getForeground());
-            this.setBackground(table.getBackground());
+
+            Player player = (Player) value;
+            String name = player.get_name();
+            isFriend = chatPanel.isFriend(name);
+            isIgnored = chatPanel.isIgnored(name);
+            if (isIgnored) {
+                setIcon(IconFactory.getIgnoreIcon());
+            } else if (isFriend) {
+                setIcon(IconFactory.getFriendIcon());
+            } else {
+                setIcon(null);
+            }
+            setBackground(table.getBackground());
             return this;
+        }
+
+        public String getToolTipText() {
+            if (isIgnored) {
+                return "You are ignoring this player.";
+            } else if (isFriend) {
+                return "This player is your friend.";
+            }
+            return null;
+        }
+    }
+
+    private class PlayerCellRenderer extends DefaultTableCellRenderer implements
+            TableCellRenderer {
+        private Player player;
+
+        protected void setValue(Object value) {
+            player = (Player) value;
+            setText(player == null ? null : player.get_name());
         }
 
         public String getToolTipText() {
@@ -639,6 +855,16 @@ public class RoomChatPanel extends JPanel implements RoomListener {
                 log.warning("Unrecognised lag value: " + lag);
                 return null;
             }
+        }
+    }
+
+    private class NoHighlightCellRenderer extends DefaultTableCellRenderer {
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int column) {
+            setFont(table.getFont());
+            setValue(value);
+            return this;
         }
     }
 }

@@ -191,15 +191,19 @@ public abstract class ChatAction extends AbstractAction {
             // Remove /beep command
             String target = message.substring(
                     commands[commandIndex][0].length()).trim();
-            if (sendChat(ChatType.GGZ_CHAT_BEEP, target, null)) {
-                chatPanel.appendCommandText(MessageFormat.format(messages
-                        .getString("ChatAction.Result.beep"),
-                        new Object[] { target }));
-            }
+            sendBeep(target);
         } catch (IndexOutOfBoundsException ex) {
             /* Could not parse it. */
             chatPanel.appendCommandText(messages
                     .getString("ChatAction.Usage.beep"));
+        }
+    }
+
+    public void sendBeep(String target) throws IOException {
+        if (sendChat(ChatType.GGZ_CHAT_BEEP, target, null)) {
+            chatPanel.appendCommandText(MessageFormat.format(messages
+                    .getString("ChatAction.Result.beep"),
+                    new Object[] { target }));
         }
     }
 

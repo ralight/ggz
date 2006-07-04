@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,11 +58,13 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
 
     protected JTextPane chatArea;
 
-    private JTextField textField;
+    protected JTextField textField;
 
     private JButton sendButton;
 
     private JLabel chatImage;
+
+    protected ChatAction chatAction;
 
     protected SimpleAttributeSet senderText;
 
@@ -85,6 +88,13 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
     // Application global friends list.
     static protected HashSet friendsList;
 
+    static {
+        ignoreList = (HashSet) GGZPreferences.addAll(
+                GGZPreferences.IGNORE_LIST, new HashSet());
+        friendsList = (HashSet) GGZPreferences.addAll(
+                GGZPreferences.FRIENDS_LIST, new HashSet());
+    }
+
     /**
      * Any code that creates an instance of this class must call dispose() so
      * that this instance can be made ready for garbage collection.
@@ -94,6 +104,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
      */
     public ChatPanel(ChatAction chatAction) {
         super(new BorderLayout(0, 0));
+        this.chatAction = chatAction;
         chatAction.setChatPanel(this);
         sendButton = new JButton(chatAction);
         textField = new JTextField();
@@ -148,7 +159,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
 
         infoText = new SimpleAttributeSet();
         infoText.addAttribute(StyleConstants.Foreground, Color.BLUE);
-        infoText.addAttribute(StyleConstants.Bold, Boolean.TRUE);
+        infoText.addAttribute(StyleConstants.Bold, Boolean.FALSE);
 
         commandText = new SimpleAttributeSet();
         commandText.addAttribute(StyleConstants.Foreground, Color.RED);
@@ -302,6 +313,18 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
                     .getString("ChatPanel.Message.AddedToIgnoreList"),
                     new Object[] { handle }));
         }
+        GGZPreferences.putStringCollection(GGZPreferences.IGNORE_LIST,
+                ignoreList);
+    }
+
+    public boolean isIgnored(String handle) {
+        if (ignoreList == null) {
+            return false;
+        }
+        // Convert to lowercase since user names are not case sensitive and we
+        // can easier test for equality.
+        handle = handle.toLowerCase();
+        return ignoreList.contains(handle);
     }
 
     public void appendIgnoreList() {
@@ -318,6 +341,10 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
             }
             appendCommandText(list.toString());
         }
+    }
+
+    public void sendBeep(String handle) throws IOException {
+        chatAction.sendBeep(handle);
     }
 
     public void toggleFriend(String handle) {
@@ -337,6 +364,18 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
                     .getString("ChatPanel.Message.AddedToFriendsList"),
                     new Object[] { handle }));
         }
+        GGZPreferences.putStringCollection(GGZPreferences.FRIENDS_LIST,
+                friendsList);
+    }
+
+    public boolean isFriend(String handle) {
+        if (friendsList == null) {
+            return false;
+        }
+        // Convert to lowercase since user names are not case sensitive and we
+        // can easier test for equality.
+        handle = handle.toLowerCase();
+        return friendsList.contains(handle);
     }
 
     public void appendFriendsList() {
