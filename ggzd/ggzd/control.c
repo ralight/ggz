@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8247 2006-06-22 05:57:27Z jdorje $
+ * $Id: control.c 8314 2006-07-04 18:04:40Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -162,10 +162,10 @@ static void cleanup_data(void)
 	data_free(opt.admin_email);
 	data_free(opt.server_name);
 
-	data_free(opt.dbhost);
-	data_free(opt.dbname);
-	data_free(opt.dbusername);
-	data_free(opt.dbpassword);
+	if (opt.dbhost) data_free(opt.dbhost);
+	if (opt.dbname) data_free(opt.dbname);
+	if (opt.dbusername) data_free(opt.dbusername);
+	if (opt.dbpassword) data_free(opt.dbpassword);
 	data_free(opt.dbhashing);
 
 	/* We don't bother with locking anything... */
@@ -197,15 +197,18 @@ static void cleanup_data(void)
 			data_free(*args);
 		data_free(game_types[i].exec_args);
 
-		char ***args_nb;
-		if(game_types[i].named_bots){
-			for (args_nb = game_types[i].named_bots; *args_nb; args_nb++){
+		if (game_types[i].named_bots){
+			char ***args_nb;
+
+			for (args_nb = game_types[i].named_bots;
+			     *args_nb;
+			     args_nb++){
 				data_free((*args_nb)[1]);
 				data_free((*args_nb)[0]);
 				data_free((*args_nb));
 			}
+			data_free(game_types[i].named_bots);
 		}
-		data_free(game_types[i].named_bots);
 	}
 
 	data_free(log_info.log_fname);
