@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8228 2006-06-20 13:01:34Z jdorje $
+ * $Id: net.c 8308 2006-07-04 01:08:26Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -217,13 +217,16 @@ GGZNetIO* net_new(int fd, GGZClient *client)
 	return net;
 }
 
-
+/* This is called to set or close the dump file.  Call it with NULL to
+   disable dumping. */
 GGZReturn net_set_dump_file(GGZNetIO *net, const char* filename)
 {
 	if (!filename) {
 		/* Remove any existing dump file. */
 		if (net->dump_file >= 0 && net->dump_file != STDERR_FILENO)
-			close(net->dump_file);
+			if (close(net->dump_file) < 0) {
+				ggz_error_sys("Could not close dump file: ");
+			}
 		net->dump_file = -1;
 		return GGZ_OK;
 	}
@@ -281,6 +284,8 @@ void net_free(GGZNetIO *net)
 		
 		if (net->parser)
 			XML_ParserFree(net->parser);
+
+		net_set_dump_file(net, NULL);
 		
 		ggz_free(net);
 	}
