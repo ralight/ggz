@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 8306 2006-07-03 23:17:22Z jdorje $
+ * $Id: ggzdb.c 8311 2006-07-04 14:33:56Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -407,7 +407,7 @@ int ggzdb_compare_password(const char *input, const char *password)
 /* Helper function, might go into libggz*/
 char *_ggz_sql_escape(const char *str)
 {
-	char *new, *q;
+	char *newstr, *q;
 	const char *p;
 	size_t len = 0;
 
@@ -425,7 +425,9 @@ char *_ggz_sql_escape(const char *str)
 	if(len == strlen(str))
 		return ggz_strdup(str);
 
-	q = new = ggz_malloc(len + 1);
+	newstr = ggz_malloc(len + 1);
+	q = newstr;
+
 	for(p = str; *p != '\0'; p++) {
 		if(*p == '\'') {
 			*q++ = '\\';
@@ -437,7 +439,7 @@ char *_ggz_sql_escape(const char *str)
 	}
 	*q = '\0';
 
-	return new;
+	return newstr;
 }
 
 /* Helper function, might go into libggz*/
