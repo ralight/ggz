@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 8302 2006-07-03 13:53:12Z josef $
+ * $Id: ggz_common.h 8310 2006-07-04 07:43:05Z oojah $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -125,8 +125,11 @@ typedef enum {
 	/** A guest player is not registered. */
 	GGZ_PLAYER_GUEST,
 
-	/* An admin player is registered and has some special permissions. */
+	/* An admin player is registered and has all special permissions. */
 	GGZ_PLAYER_ADMIN,
+
+	/* A host player is registered and has a few special permissions. */
+	GGZ_PLAYER_HOST,
 
 	/* A bot is a special type of player. */
 	GGZ_PLAYER_BOT,

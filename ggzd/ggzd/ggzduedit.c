@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 8294 2006-07-01 19:32:45Z oojah $
+ * $Id: ggzduedit.c 8310 2006-07-04 07:43:05Z oojah $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -148,6 +148,8 @@ static void show_perms(unsigned int perms, int add_spaces)
 	printf("               -> roles: ");
 	if((perms & PERMS_ADMIN_MASK) == PERMS_ADMIN_MASK)
 		printf("[admin]");
+	if((perms & PERMS_HOST_MASK) == PERMS_HOST_MASK)
+		printf("[host]");
 	if((perms & PERMS_DEFAULT_SETTINGS) == PERMS_DEFAULT_SETTINGS)
 		printf("[registered]");
 	if((perms & PERMS_DEFAULT_ANON) == PERMS_DEFAULT_ANON)

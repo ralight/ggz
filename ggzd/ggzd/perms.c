@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/23/01
  * Desc: Functions for dealing with user permissions
- * $Id: perms.c 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: perms.c 8310 2006-07-04 07:43:05Z oojah $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -52,7 +52,13 @@ bool perms_check(GGZPlayer *player, unsigned int perm)
 
 bool perms_is_admin(GGZPlayer *player)
 {
-	return ((player->perms & PERMS_ADMIN_MASK) != 0);
+	return ((player->perms & PERMS_ADMIN_MASK) == PERMS_ADMIN_MASK);
+}
+
+
+bool perms_is_host(GGZPlayer *player)
+{
+	return ((player->perms & PERMS_HOST_MASK) != 0);
 }
 
 

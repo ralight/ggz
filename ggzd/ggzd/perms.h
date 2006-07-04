@@ -49,6 +49,11 @@
 	PERMS_EDIT_TABLES | \
 	PERMS_TABLE_PRIVMSG)
 
+/* Host type bits */
+#define PERMS_HOST_MASK ( \
+	PERMS_EDIT_TABLES | \
+	PERMS_TABLE_PRIVMSG)
+
 /* Default permissions for guest users. */
 #define PERMS_DEFAULT_ANON ( \
 	PERMS_JOIN_TABLE | \
@@ -67,6 +72,7 @@ bool perms_check(GGZPlayer *player, unsigned int perm);
 /* These functions must already have a player read-lock. */
 void perms_init(GGZPlayer *player, ggzdbPlayerEntry *db_pe);
 bool perms_is_admin(GGZPlayer *player);
+bool perms_is_host(GGZPlayer *player);
 bool perms_is_bot(GGZPlayer *player);
 
 #ifdef PERMS_DEFINE_STR_TABLE

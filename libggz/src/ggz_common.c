@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 8302 2006-07-03 13:53:12Z josef $
+ * $Id: ggz_common.c 8310 2006-07-04 07:43:05Z oojah $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -180,6 +180,7 @@ GGZLeaveType ggz_string_to_leavetype(const char *type_str)
 #define GUEST_PLAYER_NAME "guest"
 #define NORMAL_PLAYER_NAME "normal"
 #define ADMIN_PLAYER_NAME "admin"
+#define HOST_PLAYER_NAME "host"
 #define BOT_PLAYER_NAME "bot"
 #define UNKNOWN_PLAYER_NAME "unknown"
 
@@ -192,6 +193,8 @@ const char *ggz_playertype_to_string(GGZPlayerType type)
 		return NORMAL_PLAYER_NAME;
 	case GGZ_PLAYER_ADMIN:
 		return ADMIN_PLAYER_NAME;
+	case GGZ_PLAYER_HOST:
+		return HOST_PLAYER_NAME;
 	case GGZ_PLAYER_BOT:
 		return BOT_PLAYER_NAME;
 	case GGZ_PLAYER_UNKNOWN:
@@ -215,6 +218,8 @@ GGZPlayerType ggz_string_to_playertype(const char *type_str)
 		return GGZ_PLAYER_GUEST;
 	} else if (strcasecmp(type_str, ADMIN_PLAYER_NAME) == 0) {
 		return GGZ_PLAYER_ADMIN;
+	} else if (strcasecmp(type_str, HOST_PLAYER_NAME) == 0) {
+		return GGZ_PLAYER_HOST;
 	} else if (strcasecmp(type_str, BOT_PLAYER_NAME) == 0) {
 		return GGZ_PLAYER_BOT;
 	}
