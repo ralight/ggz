@@ -12,8 +12,8 @@
 
    $Id: net_common.c 4046 2002-04-22 00:04:41Z jdorje $
 ***********************************************************************/
-#ifndef __DATAIO_H__
-#define __DATAIO_H__
+#ifndef __GGZ_DIO_H__
+#define __GGZ_DIO_H__
 
 #include <stdbool.h>
 
@@ -80,4 +80,4 @@ void ggz_dio_put_memory(GGZDataIO *dio, const void *value,
 			size_t size);
 void ggz_dio_put_string(GGZDataIO *dio, const char *value);
 
-#endif /* FC__PACKETS_H */
+#endif /* GGZ_DIO_H */
