@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: common.c 8317 2006-07-05 04:10:47Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -46,6 +46,7 @@
 #include "message.h"
 #include "net.h"
 #include "options.h"
+#include "team.h"
 
 
 /* Global game variables */
@@ -372,10 +373,12 @@ static void handle_launch_event(void)
 	game.num_players = ggzdmod_get_num_seats(game.ggz);	
 	game.host = -1;		/* no host since none has joined yet */
 
+	set_num_teams(game.num_players);
+
 	game.players = ggz_malloc(game.num_players * sizeof(*game.players));
 	players_iterate(p) {
 		game.players[p].seat = -1;
-		game.players[p].team = -1;
+		assign_team(p, p);
 		game.players[p].allbids = NULL;
 		game.players[p].fd = -1;
 #ifdef DEBUG

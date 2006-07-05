@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8295 2006-07-01 22:45:55Z oojah $
+ * $Id: game.c 8317 2006-07-05 04:10:47Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -401,10 +401,7 @@ void game_end_trick(void)
 	game.players[hi_player].tricks++;
 	game.leader = game.winner = hi_player;
 
-	if (game.players[hi_player].team >= 0)
-		map_func_to_team(game.players[hi_player].team, set_player_message);
-	else
-		set_player_message(hi_player);
+	map_func_to_team(game.players[hi_player].team, set_player_message);
 }
 
 
@@ -438,8 +435,6 @@ bool game_test_for_gameover(void)
 	int min_score, min_score_count = 0;
 	team_t max_score_team = -1, min_score_team = -1;
 
-#define TEAM(p) (game.players[p].team != -1 ? game.players[p].team : p)
-
 	/* We have to check for ties (not allowed in most games), so this
 	   code is a good bit more complicated.  For instance in spades if
 	   both teams go over the target score and the game is tied, another
@@ -447,19 +442,19 @@ bool game_test_for_gameover(void)
 	for (p = 0; p < game.num_players; p++) {
 		/* in the default case, it's just a race toward a
 		   target score */
-		assert(TEAM(p) != -1);
+		assert(game.players[p].team != -1);
 		if (game.target_score != 0
 		    && game.players[p].score >= game.target_score) {
 			if (max_score_count == 0
 			    || game.players[p].score > max_score) {
 				max_score = game.players[p].score;
 				max_score_count = 1;
-				max_score_team = TEAM(p);
+				max_score_team = game.players[p].team;
 			} else if (game.players[p].score < max_score) {
 				/* nothing */
 			} else if (game.players[p].score == max_score) {
 				/* check for ties */
-				if (TEAM(p) != max_score_team) {
+				if (game.players[p].team != max_score_team) {
 					max_score_count++;
 				}
 			}
@@ -473,12 +468,12 @@ bool game_test_for_gameover(void)
 			    || game.players[p].score < min_score) {
 				min_score = game.players[p].score;
 				min_score_count = 1;
-				min_score_team = TEAM(p);
+				min_score_team = game.players[p].team;
 			} else if (game.players[p].score > min_score) {
 				/* nothing */
 			} else if (game.players[p].score == min_score) {
 				/* check for ties */
-				if (TEAM(p) != min_score_team) {
+				if (game.players[p].team != min_score_team) {
 					min_score_count++;
 				}
 			}
