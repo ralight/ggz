@@ -144,6 +144,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         add(messageLayout, BorderLayout.SOUTH);
         textField.setAction(sendButton.getAction());
         textField.setBorder(BorderFactory.createTitledBorder((String) null));
+        textField.setFont(chatArea.getFont());
         messageLayout.setBorder(BorderFactory.createEmptyBorder(0, 4, 4, 4));
 
         setOpaque(false);
@@ -302,13 +303,13 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         }
         // Convert to lowercase since user names are not case sensitive and we
         // can easier test for equality.
-        handle = handle.toLowerCase();
-        if (ignoreList.remove(handle)) {
+        String lowerCaseHandle = handle.toLowerCase();
+        if (ignoreList.remove(lowerCaseHandle)) {
             appendCommandText(MessageFormat.format(messages
                     .getString("ChatPanel.Message.RemovedFromIngoreList"),
                     new Object[] { handle }));
         } else {
-            ignoreList.add(handle);
+            ignoreList.add(lowerCaseHandle);
             appendCommandText(MessageFormat.format(messages
                     .getString("ChatPanel.Message.AddedToIgnoreList"),
                     new Object[] { handle }));
@@ -353,13 +354,13 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         }
         // Convert to lowercase since user names are not case sensitive and we
         // can easier test for equality.
-        handle = handle.toLowerCase();
-        if (friendsList.remove(handle)) {
+        String lowerCaseHandle = handle.toLowerCase();
+        if (friendsList.remove(lowerCaseHandle)) {
             appendCommandText(MessageFormat.format(messages
                     .getString("ChatPanel.Message.RemovedFromFriendsList"),
                     new Object[] { handle }));
         } else {
-            friendsList.add(handle);
+            friendsList.add(lowerCaseHandle);
             appendCommandText(MessageFormat.format(messages
                     .getString("ChatPanel.Message.AddedToFriendsList"),
                     new Object[] { handle }));
@@ -405,6 +406,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         if (GGZPreferences.CHAT_FONT.equals(evt.getKey())) {
             chatArea.setFont(GGZPreferences.getFont(evt.getKey(), chatArea
                     .getFont()));
+            textField.setFont(chatArea.getFont());
         } else if (GGZPreferences.MY_FONT_COLOR.equals(evt.getKey())) {
             senderText.addAttribute(StyleConstants.Foreground, GGZPreferences
                     .getColor(evt.getKey(), (Color) senderText

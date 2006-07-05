@@ -396,6 +396,12 @@ public class RoomChatPanel extends JPanel implements RoomListener,
                 c = r.getTableCellRendererComponent(table, new Player(
                         "TheQuickBrownFox"), false, false, 0, i);
 
+                // Since we display the number of players in room below the
+                // table as well as button we need to make sure we have enough
+                // space. We give this column a minimum size regardless of font
+                // so that when a small font is selected only this column
+                // stretches rather than all of them.
+                width = Math.max(width, 145);
                 width = Math.max(width, c.getPreferredSize().width);
                 rowHeight = c.getPreferredSize().height;
                 break;

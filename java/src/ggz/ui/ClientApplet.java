@@ -142,13 +142,13 @@ public class ClientApplet extends JApplet implements ServerListener,
             footerLayoutPanel.setOpaque(false);
             getContentPane().add(footerLayoutPanel, BorderLayout.SOUTH);
             totalPlayerCountLabel = new JLabel();
-            totalPlayerCountLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
+            totalPlayerCountLabel.setFont(totalPlayerCountLabel.getFont().deriveFont(Font.PLAIN));
             footerLayoutPanel.add(totalPlayerCountLabel, BorderLayout.WEST);
             footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
             footerPanel.setOpaque(false);
             footerLayoutPanel.add(footerPanel, BorderLayout.EAST);
             JLabel preferencesLabel = new JLabel(
-                    "<HTML><A href='' style='font-weight:normal; font-size:smaller'>"
+                    "<HTML><A href='' style='font-weight:normal'>"
                             + "Preferences..." + "</A>", SwingConstants.RIGHT);
             preferencesLabel.setCursor(Cursor
                     .getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -162,10 +162,10 @@ public class ClientApplet extends JApplet implements ServerListener,
             });
             footerPanel.add(preferencesLabel);
             footerPanel.add(new HyperlinkLabel("Help", new URL(getCodeBase(),
-                    "help.html"), "font-weight:normal; font-size:smaller"),
+                    "help.html"), "font-weight:normal"),
                     BorderLayout.SOUTH);
             aboutLabel = new JLabel(
-                    "<HTML><A href='' style='font-weight:normal; font-size:smaller'>"
+                    "<HTML><A href='' style='font-weight:normal'>"
                             + messages.getString("ClientApplet.Label.About")
                             + "</A>", SwingConstants.RIGHT);
             aboutLabel
