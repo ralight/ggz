@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 8281 2006-06-27 07:42:38Z josef $
+ * $Id: ggz-config.c 8323 2006-07-05 19:03:58Z josef $
  *
  * Configuration query and module install program.
  *
@@ -598,10 +598,10 @@ static int noregister_all()
 		sprintf(modfile, "%s/%s", copydir, e->d_name);
 		if(load_modfile()) {
 			if(install_mod) {
-				printf("- register %s\n", e->d_name);
+				printf(_("- register %s\n"), e->d_name);
 				ret = install_module();
 			} else if(remove_mod) {
-				printf("- unregister %s\n", e->d_name);
+				printf(_("- unregister %s\n"), e->d_name);
 				ret = remove_module();
 			} else ret = -1;
 		} else {
