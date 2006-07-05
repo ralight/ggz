@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 8303 2006-07-03 15:27:22Z oojah $
+ * $Id: server.c 8322 2006-07-05 14:55:18Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -900,7 +900,11 @@ void _ggzcore_server_set_login_status(GGZServer * server,
 			break;
 		case E_USR_LOOKUP:
 			snprintf(error.message, sizeof(error.message),
-				_("Name taken or wrong password"));
+				_("The password was incorrect"));
+			break;
+		case E_USR_TAKEN:
+			snprintf(error.message, sizeof(error.message),
+				_("Name is already taken"));
 			break;
 		case E_USR_TYPE:
 			snprintf(error.message, sizeof(error.message),

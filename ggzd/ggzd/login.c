@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 8302 2006-07-03 13:53:12Z josef $
+ * $Id: login.c 8322 2006-07-05 14:55:18Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -170,7 +170,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		   || login_add_user(&db_pe, name, new_pw, email) < 0) {
 			hash_player_delete(name);
 			if (net_send_login(player->client->net, type,
-					   E_USR_LOOKUP, NULL) < 0)
+					   E_USR_TAKEN, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 8310 2006-07-04 07:43:05Z oojah $
+ * $Id: ggz_common.h 8322 2006-07-05 14:55:18Z josef $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -308,7 +308,8 @@ typedef enum {
 	E_UNKNOWN           = -21,
 	E_BAD_USERNAME      = -22,
 	E_USR_TYPE          = -23,
-	E_USR_FOUND         = -24
+	E_USR_FOUND         = -24,
+	E_USR_TAKEN         = -25
 } GGZClientReqError;
 
 /** @brief Get a string identifier for the GGZClientReqError.
