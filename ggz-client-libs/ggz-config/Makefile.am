@@ -5,3 +5,5 @@ ggz_config_LDADD = $(top_builddir)/ggzcore/libggzcore.la $(LIB_GGZ)
 ggz_config_LDFLAGS = $(LIBGGZ_LDFLAGS)
 ggz_config_SOURCES = ggz-config.c
 
+EXTRA_DIST = readme.ggzconfig
+
