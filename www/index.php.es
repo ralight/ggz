@@ -33,7 +33,7 @@ La versión 0.0.13 de GGZ Gaming Zone ha sido lanzada el 17 de Marzo del 2006.<b
 
 </td><td valign="top">
 
-<a href="http://www.openladders.net/"><img src="/pics/splash/openladders.png" border="0"></a>
+<?php include_once("site/splash.php"); ?>
 
 </td>
 </tr>

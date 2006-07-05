@@ -10,6 +10,22 @@
 <language>de-de</language>
 
 <item>
+<title><i>05.07.2006: Umstrukturierungen</i> (von josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Wir möchten uns bereits im Vorfeld für eventuelle Serverumzüge,
+temporäre URLs in der Zwischenzeit und so weiter entschuldigen. GGZ ist
+sehr froh über die hohe Zahl an Neuzugängen (insbesondere aus dem Lager
+der Spades-Spieler) und wir versuchen eine adäquate Infrastruktur dafür
+bereitzustellen.
+Nutzt bitte unseren Testserver, falls ihr das
+<a href="http://members.ii.net/~bredow/ggz/">Java applet</a> verwendet
+(oder <a href="ggz://oojah.dyndns.org">native Clients</a> aus den SVN-Quellen,
+da die Veröffentlichung von 0.0.14 durch all diese Umstände verzögert wird).
+</full>
+</item>
+
+<item>
 <title><i>24.05.2006: GGZ bei OpenLadders</i> (von josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
