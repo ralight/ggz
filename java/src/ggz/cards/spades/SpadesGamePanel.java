@@ -50,8 +50,7 @@ public class SpadesGamePanel extends CardGamePanel {
 
     private JLabel themScoreLabel;
 
-    // protected static final Color highlightColor = Color.green.darker();
-    protected static final Color highlightColor = new Color(170, 209, 80);
+    protected static final Color highlightColor = Color.green.darker();
 
     public void init(ModGame mod) throws IOException {
         super.init(mod);

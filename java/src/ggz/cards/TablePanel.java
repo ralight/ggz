@@ -64,9 +64,9 @@ public class TablePanel extends JPanel {
         buttonPanel.setOpaque(false);
         setPreferredSize(new Dimension(640, 400));
         setDoubleBuffered(true);
-        setBackground(new Color(140, 198, 63));
-        watermark = new ImageIcon(getClass().getResource(
-                "/ggz/cards/images/spades-logo.gif")).getImage();
+        setBackground(new Color(0, 128, 0));
+        //watermark = new ImageIcon(getClass().getResource(
+        //        "/ggz/cards/images/spades-logo.gif")).getImage();
     }
 
     public void setSpriteDimensions(int width, int height) {
@@ -103,7 +103,7 @@ public class TablePanel extends JPanel {
             if (statusLabel == null) {
                 statusLabel = new JLabel();
                 statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-//                statusLabel.setForeground(Color.white);
+                statusLabel.setForeground(Color.white);
                 add(statusLabel, new TableConstraints(
                         TableConstraints.STATUS_LABEL));
             }

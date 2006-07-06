@@ -10,6 +10,9 @@ Backgammon has also been requested but we also need a server for that.
 Add support for launching non-java games (i.e. implement new Mod that supports
 sockets)
 
+Add second password field for registered login to ensure people remember their
+password.
+
 Add support for launching Java games from non-Java core client.
 
 Support chat buffer size properly so that we don't send too big a message 

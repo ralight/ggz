@@ -30,6 +30,8 @@ public class ClientReqError {
 
     public static final ClientReqError E_USR_FOUND = new ClientReqError();
 
+    public static final ClientReqError E_USR_TAKEN = new ClientReqError();
+
     public static final ClientReqError E_USR_TYPE = new ClientReqError();
 
     public static final ClientReqError E_BAD_OPTIONS = new ClientReqError();
@@ -84,6 +86,8 @@ public class ClientReqError {
             return "usr lookup";
         } else if (this == E_USR_FOUND) {
             return "user not found";
+        } else if (this == E_USR_TAKEN) {
+            return "username already taken";
         } else if (this == E_USR_TYPE) {
             return "wrong login type";
         } else if (this == E_BAD_USERNAME) {
@@ -144,64 +148,66 @@ public class ClientReqError {
      */
     public static ClientReqError valueOf(String str) {
         if (str == null)
-            return ClientReqError.E_OK;
+            return E_OK;
 
         if ("ok".equals(str))
-            return ClientReqError.E_OK;
+            return E_OK;
         if ("0".equals(str)) {
             /*
              * This provides a tiny bit of backwards compatability. It should go
              * away eventually.
              */
-            return ClientReqError.E_OK;
+            return E_OK;
         }
         if ("usr lookup".equals(str))
-            return ClientReqError.E_USR_LOOKUP;
+            return E_USR_LOOKUP;
         if ("user not found".equals(str))
             return E_USR_FOUND;
+        if ("username already taken".equals(str))
+            return E_USR_TAKEN;
         if ("wrong login type".equals(str))
             return E_USR_TYPE;
         if ("bad username".equals(str))
-            return ClientReqError.E_BAD_USERNAME;
+            return E_BAD_USERNAME;
         if ("bad options".equals(str))
-            return ClientReqError.E_BAD_OPTIONS;
+            return E_BAD_OPTIONS;
         if ("room full".equals(str))
-            return ClientReqError.E_ROOM_FULL;
+            return E_ROOM_FULL;
         if ("table full".equals(str))
-            return ClientReqError.E_TABLE_FULL;
+            return E_TABLE_FULL;
         if ("table empty".equals(str))
-            return ClientReqError.E_TABLE_EMPTY;
+            return E_TABLE_EMPTY;
         if ("launch fail".equals(str))
-            return ClientReqError.E_LAUNCH_FAIL;
+            return E_LAUNCH_FAIL;
         if ("join fail".equals(str))
-            return ClientReqError.E_JOIN_FAIL;
+            return E_JOIN_FAIL;
         if ("no table".equals(str))
-            return ClientReqError.E_NO_TABLE;
+            return E_NO_TABLE;
         if ("leave fail".equals(str))
-            return ClientReqError.E_LEAVE_FAIL;
+            return E_LEAVE_FAIL;
         if ("leave forbidden".equals(str))
-            return ClientReqError.E_LEAVE_FORBIDDEN;
+            return E_LEAVE_FORBIDDEN;
         if ("already logged in".equals(str))
-            return ClientReqError.E_ALREADY_LOGGED_IN;
+            return E_ALREADY_LOGGED_IN;
         if ("not logged in".equals(str))
-            return ClientReqError.E_NOT_LOGGED_IN;
+            return E_NOT_LOGGED_IN;
         if ("not in room".equals(str))
-            return ClientReqError.E_NOT_IN_ROOM;
+            return E_NOT_IN_ROOM;
         if ("at table".equals(str))
-            return ClientReqError.E_AT_TABLE;
+            return E_AT_TABLE;
         if ("in transit".equals(str))
-            return ClientReqError.E_IN_TRANSIT;
+            return E_IN_TRANSIT;
         if ("no permission".equals(str))
-            return ClientReqError.E_NO_PERMISSION;
+            return E_NO_PERMISSION;
         if ("bad xml".equals(str))
-            return ClientReqError.E_BAD_XML;
+            return E_BAD_XML;
         if ("seat assign fail".equals(str))
-            return ClientReqError.E_SEAT_ASSIGN_FAIL;
+            return E_SEAT_ASSIGN_FAIL;
         if ("no channel".equals(str))
-            return ClientReqError.E_NO_CHANNEL;
+            return E_NO_CHANNEL;
         if ("too long".equals(str))
-            return ClientReqError.E_TOO_LONG;
+            return E_TOO_LONG;
 
-        return ClientReqError.E_UNKNOWN;
+        return E_UNKNOWN;
     }
 }

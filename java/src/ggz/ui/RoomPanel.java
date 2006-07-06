@@ -50,6 +50,7 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -69,6 +70,9 @@ import javax.swing.border.CompoundBorder;
 public class RoomPanel extends JPanel implements RoomListener {
     private static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
+
+    protected static final Logger log = Logger.getLogger(RoomPanel.class
+            .getName());
 
     protected Server server;
 
@@ -166,7 +170,11 @@ public class RoomPanel extends JPanel implements RoomListener {
         Module module = Module.get_nth_by_type(room.get_gametype(), 0);
         if (module != null && module.get_icon_path() != null) {
             URL imageURL = getClass().getResource(module.get_icon_path());
-            titleLabel.setIcon(new ImageIcon(imageURL));
+            if (imageURL == null) {
+                log.warning("Could not find icon: " + module.get_icon_path());
+            } else {
+                titleLabel.setIcon(new ImageIcon(imageURL));
+            }
         }
         lobbyButton.setAction(new BackToLobbyAction());
         lobbyButton.setEnabled(true);

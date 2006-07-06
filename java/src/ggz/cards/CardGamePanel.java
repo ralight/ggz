@@ -123,7 +123,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         JPanel border = new JPanel(new BorderLayout());
         border.add(table, BorderLayout.CENTER);
         border.setBorder(BorderFactory.createCompoundBorder(BorderFactory
-                .createLineBorder(new Color(153, 153, 204), 10), BorderFactory
+                .createLineBorder(new Color(0, 64, 64), 10), BorderFactory
                 .createLineBorder(Color.BLACK, 2)));
 
         add(border, SmartChatLayout.TABLE);
@@ -174,12 +174,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         JPanel southWestPanel = new JPanel(new GridLayout(0, 1, 2, 2));
         JButton standButton = new JButton(new SeatStandAction());
         standButton.setOpaque(false);
-        //standButton.setForeground(Color.white);
+        standButton.setForeground(Color.white);
         standButton.setFocusable(false);
         quitButton = new JButton("Quit");
         quitButton.addActionListener(this);
         quitButton.setOpaque(false);
-        //quitButton.setForeground(Color.white);
+        quitButton.setForeground(Color.white);
         quitButton.setFocusable(false);
         // Get rid of the margin insets on the Metal or Ocean buttons to
         // make the buttons smaller.
@@ -1134,7 +1134,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     public void setOptionsSummary(String options) {
         if (optionsSummaryLabel == null) {
             optionsSummaryLabel = new JLabel("Options");
-            //optionsSummaryLabel.setForeground(Color.WHITE);
+            optionsSummaryLabel.setForeground(Color.WHITE);
             northWestPanel.add(optionsSummaryLabel);
             // Make sure the font is not bold.
             optionsSummaryLabel.setFont(optionsSummaryLabel.getFont()

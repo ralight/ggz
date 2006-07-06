@@ -517,6 +517,10 @@ public class Server {
                 error.message = MessageFormat.format(messages
                         .getString("Server.LoginError.UsrFound"),
                         new String[] { handle });
+            } else if (status == ClientReqError.E_USR_TAKEN) {
+                error.message = MessageFormat.format(messages
+                        .getString("Server.LoginError.UsrTaken"),
+                        new String[] { handle });
             } else if (status == ClientReqError.E_USR_TYPE) {
                 error.message = MessageFormat.format(messages
                         .getString("Server.LoginError.UsrType"),
