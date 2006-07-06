@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8316 2006-07-05 02:54:22Z jdorje $
+ * $Id: spades.c 8327 2006-07-06 15:41:30Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -299,7 +299,7 @@ static int spades_handle_option(char *option, int value)
 		GSPADES.minimum_team_bid = value;
 	} else if (strcmp("double_nil", option) == 0) {
 		GSPADES.double_nil_value = 100 * value;
-	} else if (strcmp("nil_trick_count", option) == 0) {
+	} else if (strcmp("nil_tricks_count", option) == 0) {
 		GSPADES.nil_tricks_count = value;
 	} else {
 		return game_handle_option(option, value);
@@ -364,15 +364,18 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 			snprintf(buf, bufsz,
 				 "A nil player's tricks count toward the "
 				 "partner's bid.");
+			break;
 		case NIL_TRICKS_DONT_COUNT:
 			snprintf(buf, bufsz,
 				 "A nil player's tricks do not count "
 				 "toward the partner's bid.");
+			break;
 		case NIL_TRICKS_NO_POINTS:
 			snprintf(buf, bufsz,
 				 "A nil player's tricks do not count "
 				 "toward the partner's bid and give no "
 				 "points.");
+			break;
 		}
 	} else {
 		return game_get_option_text(buf, bufsz, option, value);
