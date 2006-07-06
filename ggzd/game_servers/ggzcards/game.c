@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8317 2006-07-05 04:10:47Z jdorje $
+ * $Id: game.c 8328 2006-07-06 16:16:58Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -483,8 +483,8 @@ bool game_test_for_gameover(void)
 	    && (game.ties_allowed || max_score_count == 1)) {
 		return TRUE;
 	}
-	if (max_score_count > 0
-	    && (game.ties_allowed || max_score_count == 1)) {
+	if (min_score_count > 0
+	    && (game.ties_allowed || min_score_count == 1)) {
 		return TRUE;
 	}
 
