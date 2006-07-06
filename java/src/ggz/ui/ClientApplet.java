@@ -162,7 +162,7 @@ public class ClientApplet extends JApplet implements ServerListener,
             });
             footerPanel.add(preferencesLabel);
             footerPanel.add(new HyperlinkLabel("Help", new URL(getCodeBase(),
-                    "help.html"), "font-weight:normal"),
+                    "help/help.html"), "font-weight:normal"),
                     BorderLayout.SOUTH);
             aboutLabel = new JLabel(
                     "<HTML><A href='' style='font-weight:normal'>"

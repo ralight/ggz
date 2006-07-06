@@ -31,14 +31,10 @@ obvious. Something to take into consideration is that some players have
 mentioned that they don't like their rating being very obvious - especially
 if their rating is low.
 
-Add, private message, join game and spectate game options when selecting a 
+Add, join game and spectate game options when selecting a 
 player in the list of players in the room.
 
 Add support for dynamic room add/delete messages sent by the server.
-
-Make chat font size configurable.
-
-Support IRC /clear command to clear the chat log.
 
 Support tab completion of nicknames in chat field.
 
@@ -54,9 +50,6 @@ way to get around this or alert the user to this fact...After researching this
 it appears that there is no way to get around the IE or Google pop-up
 blockers but I've managed to display a JavaScript alert if a popup blocker is 
 detected.
-
-Consider a "Leave" button so that closing the window is not the only way to 
-leave the game; closing the window it not intuitive for all users.
 
 Include a tutorial mode to help novice players learn how to play the game.
 
@@ -76,14 +69,6 @@ Support all messages sent by server. e.g. Last Hand, Bid History.
 
 Replace tooltip for game options with something you can click. The tooltip is
 intuitive and also disappears too quickly.
-
-Make the card gap configurable.
-
-Make whether cards rotate when they are played configurable. It makes some 
-players dizzy.
-
-Make whether the gap between cards is "closed" when a card is played
-configurable.
 
 Move the delay logic in the card Client class and it should self trigger
 delayNextEvent() when appropriate events in the game occur.

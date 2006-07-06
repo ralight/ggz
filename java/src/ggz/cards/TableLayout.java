@@ -55,6 +55,8 @@ public class TableLayout implements LayoutManager2 {
 
     private Component northEastCorner;
 
+    private Component northWestCorner;
+
     public TableLayout(int cardWidth, int cardHeight) {
         this.cardWidth = cardWidth;
         this.cardHeight = cardHeight;
@@ -66,6 +68,14 @@ public class TableLayout implements LayoutManager2 {
             cardsInHand[playerNum] = arrayEnsureSize(cardsInHand[playerNum],
                     maxHandSize);
         }
+    }
+    
+    public void setCardGap(int gap) {
+        cardFanGap = gap;
+    }
+    
+    public void setPackCardsInHand(boolean b) {
+        packCardsInHand = b;
     }
 
     /**
@@ -111,6 +121,9 @@ public class TableLayout implements LayoutManager2 {
                 break;
             case TableConstraints.NORTH_EAST_CORNER:
                 northEastCorner = comp;
+                break;
+            case TableConstraints.NORTH_WEST_CORNER:
+                northWestCorner = comp;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -192,6 +205,7 @@ public class TableLayout implements LayoutManager2 {
         layoutSouthEastCorner(parent);
         layoutSouthWestCorner(parent);
         layoutNorthEastCorner(parent);
+        layoutNorthWestCorner(parent);
     }
 
     protected void layoutStatusLabel(Container parent) {
@@ -243,6 +257,13 @@ public class TableLayout implements LayoutManager2 {
             northEastCorner.setSize(northEastCorner.getPreferredSize());
             northEastCorner.setLocation(parent.getWidth()
                     - northEastCorner.getWidth(), 0);
+        }
+    }
+
+    protected void layoutNorthWestCorner(Container parent) {
+        if (northWestCorner != null) {
+            northWestCorner.setSize(northWestCorner.getPreferredSize());
+            northWestCorner.setLocation(0, 0);
         }
     }
 
@@ -521,6 +542,11 @@ public class TableLayout implements LayoutManager2 {
         if (!removed && northEastCorner != null) {
             if (northEastCorner == comp) {
                 northEastCorner = null;
+            }
+        }
+        if (!removed && northWestCorner != null) {
+            if (northWestCorner == comp) {
+                northWestCorner = null;
             }
         }
     }

@@ -79,8 +79,25 @@ public class GGZPreferences {
         put(key, colorString);
     }
 
+    public static void putBoolean(String key, boolean value) {
+        prefs.putBoolean(key, value);
+    }
+
+    public static boolean getBoolean(String key, boolean defaultValue) {
+        return prefs.getBoolean(key, defaultValue);
+    }
+
+    public static void putInt(String key, int value) {
+        prefs.putInt(key, value);
+    }
+
+    public static int getInt(String key, int defaultValue) {
+        return prefs.getInt(key, defaultValue);
+    }
+
     /**
      * Adds all Strings read from this key to the collection.
+     * 
      * @param key
      * @param collection
      * @return

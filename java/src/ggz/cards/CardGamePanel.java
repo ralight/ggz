@@ -26,11 +26,19 @@ import ggz.cards.common.Card;
 import ggz.cards.common.CardSetType;
 import ggz.cards.common.GGZCardInputStream;
 import ggz.client.mod.ModGame;
+import ggz.client.mod.ModState;
 import ggz.common.SeatType;
 import ggz.common.StringUtil;
 import ggz.games.GamePanel;
+import ggz.ui.HyperlinkLabel;
+import ggz.ui.preferences.GGZPreferences;
+import ggz.ui.preferences.PreferencesDialog;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -44,11 +52,14 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.List;
 import java.util.Random;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -59,7 +70,7 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 
 public class CardGamePanel extends GamePanel implements CardGameHandler,
-        ActionListener {
+        ActionListener, PreferenceChangeListener {
     protected Client cardClient;
 
     protected PlayerLabel[] playerLabels;
@@ -97,18 +108,36 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected JButton quitButton;
 
+    protected JPanel northWestPanel;
+
+    protected JLabel optionsSummaryLabel;
+
+    protected HyperlinkLabel rulesLabel;
+
     public void init(ModGame mod) throws IOException {
         super.init(mod);
         cardClient = new Client();
         cardClient.add_listener(this);
         table = new TablePanel();
-        table.setBackground(new Color(0, 128, 0));
-        add(table, SmartChatLayout.TABLE);
+        // table.setBackground(new Color(0, 128, 0));
+        JPanel border = new JPanel(new BorderLayout());
+        border.add(table, BorderLayout.CENTER);
+        border.setBorder(BorderFactory.createCompoundBorder(BorderFactory
+                .createLineBorder(new Color(153, 153, 204), 10), BorderFactory
+                .createLineBorder(Color.BLACK, 2)));
+
+        add(border, SmartChatLayout.TABLE);
 
         // Calculate the size of the cards.
         Sprite sample = new Sprite(Card.UNKNOWN_CARD);
         tableLayout = new TableLayout(sample.getWidth(), sample.getHeight());
+        tableLayout.setCardGap(GGZPreferences.getInt("GGZCards.CardGap", 17));
+        tableLayout.setPackCardsInHand(GGZPreferences.getBoolean(
+                "GGZCards.PackCards", true));
+        table.setSpinCards(GGZPreferences
+                .getBoolean("GGZCards.SpinCards", true));
         table.setLayout(tableLayout);
+        GGZPreferences.addPreferenceChangeListener(this);
 
         // Add the control to allow the cards in the last trick to be viewed.
         lastTrickButton = new JButton(new ImageIcon(getClass().getResource(
@@ -145,12 +174,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         JPanel southWestPanel = new JPanel(new GridLayout(0, 1, 2, 2));
         JButton standButton = new JButton(new SeatStandAction());
         standButton.setOpaque(false);
-        standButton.setForeground(Color.white);
+        //standButton.setForeground(Color.white);
         standButton.setFocusable(false);
         quitButton = new JButton("Quit");
         quitButton.addActionListener(this);
         quitButton.setOpaque(false);
-        quitButton.setForeground(Color.white);
+        //quitButton.setForeground(Color.white);
         quitButton.setFocusable(false);
         // Get rid of the margin insets on the Metal or Ocean buttons to
         // make the buttons smaller.
@@ -168,6 +197,25 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         southWestPanel.add(quitButton);
         table.add(southWestPanel, new TableConstraints(
                 TableConstraints.SOUTH_WEST_CORNER));
+
+        northWestPanel = new JPanel(new GridLayout(0, 1));
+        northWestPanel.setOpaque(false);
+        JLabel preferencesLabel = new JLabel(
+                "<HTML><A href=''>Preferences...</A></HTML>");
+        preferencesLabel.setCursor(Cursor
+                .getPredefinedCursor(Cursor.HAND_CURSOR));
+        preferencesLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent event) {
+                PreferencesDialog.showPreferences(
+                        (Component) event.getSource(), new String[] {
+                                "ggz.cards.GGZCardsPreferencesTab",
+                                "ggz.ui.preferences.ChatPreferencesTab" });
+            }
+        });
+
+        northWestPanel.add(preferencesLabel);
+        table.add(northWestPanel, new TableConstraints(
+                TableConstraints.NORTH_WEST_CORNER));
     }
 
     protected void createBidPanel(int firstBidder) {
@@ -953,6 +1001,28 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
     }
 
+    public void preferenceChange(PreferenceChangeEvent event) {
+        if ("GGZCards.CardGap".equals(event.getKey())) {
+            tableLayout.setCardGap(GGZPreferences.getInt(event.getKey(), 17));
+            table.invalidate();
+            table.revalidate();
+        } else if ("GGZCards.PackCards".equals(event.getKey())) {
+            tableLayout.setPackCardsInHand(GGZPreferences.getBoolean(event
+                    .getKey(), true));
+            table.invalidate();
+            table.revalidate();
+        } else if ("GGZCards.SpinCards".equals(event.getKey())) {
+            table.setSpinCards(GGZPreferences.getBoolean(event.getKey(), true));
+        }
+    }
+
+    public void handle_disconnect() {
+        if (ggzMod.get_state() != ModState.GGZMOD_STATE_DONE) {
+            GGZPreferences.removePreferenceChangeListener(this);
+        }
+        super.handle_disconnect();
+    }
+
     public int handle_game_message(GGZCardInputStream in, final String game,
             final int size) throws IOException {
         // SwingUtilities.invokeLater(new Runnable() {
@@ -1027,8 +1097,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     JOptionPane.getFrameForComponent(CardGamePanel.this)
                             .setTitle(message);
                 } else if ("Options".equals(mark)) {
-                    table.setOptionsSummary(StringUtil.replace(message, "\n",
-                            "<BR>"));
+                    setOptionsSummary(StringUtil.replace(message, "\n", "<BR>"));
                 } else if ("Scores".equals(mark)) {
                     scoresButton.setVisible(true);
                     if (scoresDialog != null) {
@@ -1045,7 +1114,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     chatPanel.appendInfo(message);
                 } else if ("Rules".equals(mark)) {
                     try {
-                        table.setRulesURL(message);
+                        setRulesURL(message);
                     } catch (MalformedURLException ex) {
                         // Ignore but dump the stack trace for posterity.
                         ex.printStackTrace();
@@ -1060,6 +1129,69 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 }
             }
         });
+    }
+
+    public void setOptionsSummary(String options) {
+        if (optionsSummaryLabel == null) {
+            optionsSummaryLabel = new JLabel("Options");
+            //optionsSummaryLabel.setForeground(Color.WHITE);
+            northWestPanel.add(optionsSummaryLabel);
+            // Make sure the font is not bold.
+            optionsSummaryLabel.setFont(optionsSummaryLabel.getFont()
+                    .deriveFont(Font.PLAIN).deriveFont(Font.ITALIC));
+        }
+        optionsSummaryLabel.setToolTipText("<HTML>" + options);
+        // Dimension preferredSize = optionsSummaryLabel.getPreferredSize();
+        // Sometimes the label is really, really big for some reason so
+        // resize it to a sane size if we have to.
+        // preferredSize.width = Math.min(100, preferredSize.width);
+        // preferredSize.height = Math.min(20, preferredSize.height);
+        // optionsSummaryLabel.setSize(preferredSize);
+        // if (rulesLabel == null) {
+        // optionsSummaryLabel.setLocation(0, 0);
+        // } else {
+        // optionsSummaryLabel.setLocation(0, rulesLabel.getHeight());
+        // }
+        revalidate();
+    }
+
+    /**
+     * Adds a label in the top left corner that contains a hyperlink to the
+     * rules of the game. It strips any leading text and removes any trailing
+     * dot since that's the format the message currently comes from the server.
+     * 
+     * @param url
+     * @throws MalformedURLException
+     */
+    public void setRulesURL(String url) throws MalformedURLException {
+        int beginURLSubstring = url.indexOf("http");
+        int endURLSubstring = url.lastIndexOf('.');
+
+        if (beginURLSubstring > -1) {
+            if (rulesLabel == null) {
+                rulesLabel = new HyperlinkLabel();
+                northWestPanel.add(rulesLabel);
+            }
+            String rulesURL;
+            if (endURLSubstring > -1) {
+                rulesURL = url.substring(beginURLSubstring, endURLSubstring);
+            } else {
+                rulesURL = url.substring(beginURLSubstring);
+            }
+            rulesLabel.setText("How to play", rulesURL);
+            // Dimension preferredSize = rulesLabel.getPreferredSize();
+            // Sometimes the label is really, really big for some reason so
+            // resize it to a sane size if we have to.
+            // preferredSize.width = Math.min(100, preferredSize.width);
+            // preferredSize.height = Math.min(20, preferredSize.height);
+            // rulesLabel.setSize(preferredSize);
+            // if (optionsSummaryLabel == null) {
+            // rulesLabel.setLocation(0, 0);
+            // } else {
+            // rulesLabel.setLocation(0, optionsSummaryLabel.getHeight());
+            // }
+            revalidate();
+        }
     }
 
     public void handle_launch() throws IOException {

@@ -42,11 +42,11 @@ public class PlayerLabel extends JPanel {
         Font f = nameLabel.getFont();
         // nameLabel.setFont(f.deriveFont(f.getStyle() ^ Font.BOLD));
         nameLabel.setFont(f.deriveFont(f.getStyle() & Font.BOLD));
-        nameLabel.setForeground(Color.WHITE);
+        //nameLabel.setForeground(Color.WHITE);
         textLabel.setFont(f.deriveFont(f.getStyle() & Font.BOLD));
         textLabel.setVerticalAlignment(SwingConstants.TOP);
         textLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        textLabel.setForeground(Color.WHITE);
+        //textLabel.setForeground(Color.WHITE);
 
         add(nameLabel, BorderLayout.NORTH);
         add(iconLabel, BorderLayout.WEST);

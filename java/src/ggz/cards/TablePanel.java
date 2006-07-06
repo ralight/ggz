@@ -17,24 +17,23 @@
  */
 package ggz.cards;
 
-import ggz.ui.HyperlinkLabel;
-
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -50,15 +49,13 @@ public class TablePanel extends JPanel {
 
     private GridLayout gridLayout;
 
-    private JLabel optionsSummaryLabel;
-
-    private HyperlinkLabel rulesLabel;
-
-    protected String rulesURL;
-
     protected JLabel statusLabel;
 
     private int paintCount;
+
+    private boolean isRotateEnabled = true;
+
+    private Image watermark;
 
     public TablePanel() {
         super(null);
@@ -67,6 +64,9 @@ public class TablePanel extends JPanel {
         buttonPanel.setOpaque(false);
         setPreferredSize(new Dimension(640, 400));
         setDoubleBuffered(true);
+        setBackground(new Color(140, 198, 63));
+        watermark = new ImageIcon(getClass().getResource(
+                "/ggz/cards/images/spades-logo.gif")).getImage();
     }
 
     public void setSpriteDimensions(int width, int height) {
@@ -74,65 +74,8 @@ public class TablePanel extends JPanel {
         spriteHeight = height;
     }
 
-    public void setOptionsSummary(String options) {
-        if (optionsSummaryLabel == null) {
-            optionsSummaryLabel = new JLabel("Options");
-            optionsSummaryLabel.setForeground(Color.WHITE);
-            add(optionsSummaryLabel);
-            // Make sure the font is not bold.
-            optionsSummaryLabel.setFont(optionsSummaryLabel.getFont()
-                    .deriveFont(Font.PLAIN).deriveFont(Font.ITALIC));
-        }
-        optionsSummaryLabel.setToolTipText("<HTML>" + options);
-        Dimension preferredSize = optionsSummaryLabel.getPreferredSize();
-        // Sometimes the label is really, really big for some reason so
-        // resize it to a sane size if we have to.
-        // preferredSize.width = Math.min(100, preferredSize.width);
-        // preferredSize.height = Math.min(20, preferredSize.height);
-        optionsSummaryLabel.setSize(preferredSize);
-        if (rulesLabel == null) {
-            optionsSummaryLabel.setLocation(0, 0);
-        } else {
-            optionsSummaryLabel.setLocation(0, rulesLabel.getHeight());
-        }
-    }
-
-    /**
-     * Adds a label in the top left corner that contains a hyperlink to the
-     * rules of the game. It strips any leading text and removes any trailing
-     * dot since that's the format the message currently comes from the server.
-     * 
-     * @param url
-     * @throws MalformedURLException
-     */
-    public void setRulesURL(String url) throws MalformedURLException {
-        int beginURLSubstring = url.indexOf("http");
-        int endURLSubstring = url.lastIndexOf('.');
-
-        if (beginURLSubstring > -1) {
-            if (rulesLabel == null) {
-                rulesLabel = new HyperlinkLabel();
-                rulesLabel.setForeground(Color.WHITE);
-                add(rulesLabel);
-            }
-            if (endURLSubstring > -1) {
-                rulesURL = url.substring(beginURLSubstring, endURLSubstring);
-            } else {
-                rulesURL = url.substring(beginURLSubstring);
-            }
-            rulesLabel.setText("How to play", rulesURL);
-            Dimension preferredSize = rulesLabel.getPreferredSize();
-            // Sometimes the label is really, really big for some reason so
-            // resize it to a sane size if we have to.
-            // preferredSize.width = Math.min(100, preferredSize.width);
-            // preferredSize.height = Math.min(20, preferredSize.height);
-            rulesLabel.setSize(preferredSize);
-            if (optionsSummaryLabel == null) {
-                rulesLabel.setLocation(0, 0);
-            } else {
-                rulesLabel.setLocation(0, optionsSummaryLabel.getHeight());
-            }
-        }
+    public void setSpinCards(boolean b) {
+        isRotateEnabled = b;
     }
 
     public void addButton(JButton button) {
@@ -160,7 +103,7 @@ public class TablePanel extends JPanel {
             if (statusLabel == null) {
                 statusLabel = new JLabel();
                 statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                statusLabel.setForeground(Color.white);
+//                statusLabel.setForeground(Color.white);
                 add(statusLabel, new TableConstraints(
                         TableConstraints.STATUS_LABEL));
             }
@@ -177,13 +120,27 @@ public class TablePanel extends JPanel {
         Rectangle clip = g.getClipBounds();
 
         // Only fill the background where and if we need to.
-        g2d.setColor(Color.BLACK);
+        // g2d.setColor(Color.BLACK);
+        g2d.setColor(getBackground());
         g2d.fillRect(clip.x, clip.y, clip.width, clip.height);
 
         // Don't know how to only draw part of a round rect so draw the lot
         // regardless of clip.
-        g2d.setColor(getBackground());
-        g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 250, 250);
+        // g2d.setColor(getBackground());
+        // g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 250, 250);
+        //TODO optimise this
+        if (watermark != null) {
+            // Paint the watermark.
+            final Composite alphaComposite = AlphaComposite.getInstance(
+                    AlphaComposite.SRC_OVER, 0.3f);
+            Composite originalComposite = g2d.getComposite();
+            g2d.setComposite(alphaComposite);
+            g2d.drawImage(watermark, (getWidth() / 2)
+                    - (watermark.getWidth(this) / 2), (getHeight() / 2)
+                    - (watermark.getHeight(this) / 2), this);
+            g2d.setComposite(originalComposite);
+        }
+
         paintCount++;
     }
 
@@ -240,7 +197,8 @@ public class TablePanel extends JPanel {
             if (lagMillis > 0) {
                 // We're not drawing frames fast enough...we need to catch up.
                 // Don't draw this frame.
-                sprite.rotate(angle, false);
+                if (isRotateEnabled)
+                    sprite.rotate(angle, false);
                 droppedFrameCount++;
             } else {
                 int oldX = sprite.getX();
@@ -248,7 +206,8 @@ public class TablePanel extends JPanel {
                 // Use passive rendering, let the AWT work out what needs to be
                 // painted. The paint events are placed on the event queue and
                 // handled whenever the system has time to process them.
-                sprite.rotate(angle, true);
+                if (isRotateEnabled)
+                    sprite.rotate(angle, true);
                 sprite.setLocation((int) Math.round(x), (int) Math.round(y));
                 if (useActiveRendering) {
                     // Paint where the sprite used to be.

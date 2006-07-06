@@ -46,6 +46,8 @@ public class TableConstraints {
     public static final int SOUTH_WEST_CORNER = 6;
     
     public static final int NORTH_EAST_CORNER = 7;
+    
+    public static final int NORTH_WEST_CORNER = 8;
 
     public TableConstraints(int type) {
         this.type = type;
