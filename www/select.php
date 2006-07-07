@@ -19,7 +19,7 @@ Welcome! Select your destination first.
 <td>
 If you just want to <b>play</b>, then this is your option. GGZ Community is
 the very first gaming community powered by the GGZ Gaming Zone, although others
-are being created. Go to the <a href="http://members.ii.net/~bredow/ggz/">applet page</a>
+are being created. Go to the <a href="http://games.ggzcommunity.org/">applet page</a>
 while we're improving the <a href="http://www.ggzcommunity.org/">community webpages</a>.
 Ask questions in the <a href="http://www.ggzcommunity.org/forums/phpBB2/">forum</a>.
 </td>
