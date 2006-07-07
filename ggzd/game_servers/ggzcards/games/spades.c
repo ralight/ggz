@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8331 2006-07-07 19:31:05Z jdorje $
+ * $Id: spades.c 8332 2006-07-07 19:49:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -66,6 +66,7 @@ enum nil_option {
 enum handlimit_option {
 	HANDS_UNLIMITED,
 	HANDS_ONE,
+	HANDS_THREE,
 	HANDS_SIX,
 	HANDS_EIGHT,
 	HANDS_TEN
@@ -223,9 +224,10 @@ static void spades_get_options(void)
 		   "Blind (double) nil worth 200");
 	add_option("Gameover", "max_hands",
 		   "What is the maximum number of hands that will be played?",
-		   5, 0,
+		   6, 0,
 		   "No maximum hand limit",
 		   "Just play one hand",
+		   "Max of 3 hands",
 		   "Max of 6 hands",
 		   "Max of 8 hands",
 		   "Max of 10 hands");
@@ -268,6 +270,9 @@ static int spades_handle_option(char *option, int value)
 		switch ((enum handlimit_option)value) {
 		case HANDS_ONE:
 			game.max_hands = 1;
+			break;
+		case HANDS_THREE:
+			game.max_hands = 3;
 			break;
 		case HANDS_SIX:
 			game.max_hands = 6;
@@ -338,6 +343,10 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 		switch ((enum handlimit_option)value) {
 		case HANDS_ONE:
 			snprintf(buf, bufsz, "Only one hand will be played.");
+			break;
+		case HANDS_THREE:
+			snprintf(buf, bufsz, "A maximum of 3 hands will "
+				 "be played.");
 			break;
 		case HANDS_SIX:
 			snprintf(buf, bufsz, "A maximum of 6 hands will "
