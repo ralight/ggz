@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8327 2006-07-06 15:41:30Z jdorje $
+ * $Id: spades.c 8331 2006-07-07 19:31:05Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -61,6 +61,14 @@ enum nil_option {
 	NIL_TRICKS_DONT_COUNT,
 	NIL_TRICKS_NO_POINTS,
 	NIL_TRICKS_LAST
+};
+
+enum handlimit_option {
+	HANDS_UNLIMITED,
+	HANDS_ONE,
+	HANDS_SIX,
+	HANDS_EIGHT,
+	HANDS_TEN
 };
 
 #define GSPADES ( *(spades_game_t *)(game.specific) )
@@ -215,11 +223,12 @@ static void spades_get_options(void)
 		   "Blind (double) nil worth 200");
 	add_option("Gameover", "max_hands",
 		   "What is the maximum number of hands that will be played?",
-		   4, 3,
+		   5, 0,
+		   "No maximum hand limit",
 		   "Just play one hand",
+		   "Max of 6 hands",
 		   "Max of 8 hands",
-		   "Max of 10 hands",
-		   "No maximum hand limit");
+		   "Max of 10 hands");
 	add_option("Gameover", "target_score",
 	           "How many points does each team need to win?",
 	           5,
@@ -256,17 +265,20 @@ static int spades_handle_option(char *option, int value)
 	if (strcmp("nil_value", option) == 0) {
 		GSPADES.nil_value = 50 * value;
 	} else if (strcmp("max_hands", option) == 0) {
-		switch (value) {
-		case 0:
+		switch ((enum handlimit_option)value) {
+		case HANDS_ONE:
 			game.max_hands = 1;
 			break;
-		case 1:
+		case HANDS_SIX:
+			game.max_hands = 6;
+			break;
+		case HANDS_EIGHT:
 			game.max_hands = 8;
 			break;
-		case 2:
+		case HANDS_TEN:
 			game.max_hands = 10;
 			break;
-		case 3:
+		case HANDS_UNLIMITED:
 			game.max_hands = MAX_HANDS;
 			break;
 		}
@@ -323,19 +335,23 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 			snprintf(buf, bufsz, "The game is being played to %d.",
 				 game.target_score);
 	} else if (strcmp(option, "max_hands") == 0) {
-		switch (value) {
-		case 0:
+		switch ((enum handlimit_option)value) {
+		case HANDS_ONE:
 			snprintf(buf, bufsz, "Only one hand will be played.");
 			break;
-		case 1:
+		case HANDS_SIX:
+			snprintf(buf, bufsz, "A maximum of 6 hands will "
+				 "be played.");
+			break;
+		case HANDS_EIGHT:
 			snprintf(buf, bufsz, "A maximum of 8 hands will "
 				 "be played.");
 			break;
-		case 2:
+		case HANDS_TEN:
 			snprintf(buf, bufsz, "A maximum of 10 hands will "
 				 "be played.");
 			break;
-		case 3:
+		case HANDS_UNLIMITED:
 			snprintf(buf, bufsz, "There is no limit on the number"
 				 " of hands to be played.");
 			break;
