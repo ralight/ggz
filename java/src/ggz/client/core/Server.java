@@ -102,6 +102,7 @@ public class Server {
         /* Set initial state */
         this.state = StateID.GGZ_STATE_OFFLINE;
         this.net = new Net(this, host, port, use_tls);
+        clear();
     }
 
     public void set_logininfo(LoginType type, String handle, String password,
@@ -621,6 +622,7 @@ public class Server {
             } else {
                 /* Server is ending session */
                 source.disconnect();
+                clear();
                 change_state(TransID.GGZ_TRANS_LOGOUT_OK);
                 event(ServerEvent.GGZ_LOGOUT, null);
             }
@@ -633,16 +635,6 @@ public class Server {
     public void log_session(String sendFile, String receiveFile)
             throws IOException {
         net.setSessionDumpFiles(sendFile, receiveFile);
-    }
-
-    void reset() {
-        clear();
-
-        /* Set initial state */
-        this.state = StateID.GGZ_STATE_OFFLINE;
-        this.net = new Net(this, this.net.get_host(), this.net.get_port(),
-                this.net.get_tls());
-        this.is_channel = false;
     }
 
     /**
@@ -681,27 +673,29 @@ public class Server {
         /* Clear all server-internal members (reconnection only) */
         this.rooms = null;
         this.current_room = null;
+        this.current_game = null;
         this.gametypes = null;
     }
 
     void clear() {
-        int i;
-
         /* Clear all members */
-        this.net = null;
+        this.is_channel = false;
         this.channel = null;
         this.handle = null;
         this.password = null;
         this.rooms = null;
         this.current_room = null;
+        this.current_game = null;
         this.gametypes = null;
 
+        /* Don't remove listeners.
         ServerListener[] listenerArray = (ServerListener[]) event_hooks.listeners
                 .getListeners(ServerListener.class);
-        for (i = 0; i < listenerArray.length; i++) {
+        for (int i = 0; i < listenerArray.length; i++) {
             ServerListener listener = listenerArray[i];
             event_hooks.removeServerListener(listener);
         }
+        */
     }
 
     /* Static functions internal to this file */

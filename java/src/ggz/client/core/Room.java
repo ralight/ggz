@@ -309,10 +309,9 @@ public class Room {
     }
 
     public void leave_table(boolean force) throws IOException {
-        if (this.server != null)
-            _leave_table(force);
-        else
-            throw new IllegalStateException();
+        if (this.server == null)
+            throw new IllegalStateException("server is null");
+        _leave_table(force);
     }
 
     /*

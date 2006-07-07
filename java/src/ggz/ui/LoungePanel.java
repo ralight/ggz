@@ -213,7 +213,7 @@ public class LoungePanel extends JPanel {
 
         protected CategoryPanel(String categoryName) {
             setBorder(BorderFactory.createTitledBorder(categoryName));
-            JPanel keepAtTop = new JPanel(new BorderLayout(0,0));
+            JPanel keepAtTop = new JPanel(new BorderLayout(0, 0));
             listPanel = new JPanel(new GridLayout(0, 1));
             listPanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
             listPanel.setOpaque(false);
@@ -258,6 +258,9 @@ public class LoungePanel extends JPanel {
             listCellPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0,
                     10));
             listPanel.add(listCellPanel);
+            getVerticalScrollBar().setUnitIncrement(
+                    Math.max(listCellPanel.getPreferredSize().height,
+                            getVerticalScrollBar().getUnitIncrement()));
             nameLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent event) {
                     // Find the index of the room and then join the room
