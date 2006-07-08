@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8332 2006-07-07 19:49:11Z jdorje $
+ * $Id: spades.c 8337 2006-07-08 17:47:39Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -79,6 +79,8 @@ typedef struct spades_game_t {
 	int double_nil_value;	/* 0 for none; generally 100 or 200 */
 	int minimum_team_bid;	/* the minimum bid by one team */
 	enum nil_option nil_tricks_count; /* See enum explanation */
+	bool unmakeable_bids; /* Whether team bids of over 13 are allowed. */
+	bool zero_bids; /* Whether bids of 0 are allowed. */
 
 	/* data */
 	int show_hand[4];	/* this is 0 if we're supposed to conceal the
@@ -205,6 +207,8 @@ static void spades_init_game(void)
 
 	GSPADES.nil_value = 100;
 	GSPADES.nil_tricks_count = NIL_TRICKS_COUNT;
+	GSPADES.unmakeable_bids = FALSE;
+	GSPADES.zero_bids = TRUE;
 }
 
 static void spades_get_options(void)
@@ -243,12 +247,18 @@ static void spades_get_options(void)
 		   "Does dropping to -200 points cause an automatic loss?",
 		   1, 1,
 		   "Forfeit at -200 points");
-	add_option("Bidding and Scoring", "minimum_bid",
+	add_option("Bidding", "minimum_bid",
 	           "What is the minimum bid that each team must meet?",
 	           5, 0,
 	           "Minimum bid 0", "Minimum bid 1",
 		   "Minimum bid 2", "Minimum bid 3", "Minimum bid 4");
-	add_option("Bidding and Scoring", "nil_tricks_count",
+	add_option("Bidding", "unmakeable_bids",
+		   "Allows unmakeably high bids of over thirteen.",
+		   1, 0, "Allow team bids of over thirteen?");
+	add_option("Bidding", "zero_bids",
+		   "Whether a bid of zero (non-nil) is allowed.",
+		   1, 1, "Allow zero bids?");
+	add_option("Nil", "nil_tricks_count",
 		   "How are tricks taken by the nil bidder scored? Do they\n"
 		   "count toward the partner's bid, do they give overtricks\n"
 		   "(+1 points each), or do they count only as bags (-100\n"
@@ -318,6 +328,10 @@ static int spades_handle_option(char *option, int value)
 		GSPADES.double_nil_value = 100 * value;
 	} else if (strcmp("nil_tricks_count", option) == 0) {
 		GSPADES.nil_tricks_count = value;
+	} else if (strcmp("unmakeable_bids", option) == 0) {
+		GSPADES.unmakeable_bids = value;
+	} else if (strcmp("zero_bids", option) == 0) {
+		GSPADES.zero_bids = value;
 	} else {
 		return game_handle_option(option, value);
 	}
@@ -402,6 +416,22 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 				 "points.");
 			break;
 		}
+	} else if (strcmp(option, "unmakeable_bids") == 0) {
+		if (value != 0) {
+			snprintf(buf, bufsz,
+				 "Bids of over thirteen are allowed.");
+		} else {
+			snprintf(buf, bufsz,
+				 "Thirteen is the highest bid allowed.");
+		}
+	} else if (strcmp(option, "zero_bids") == 0) {
+		if (value != 0) {
+			snprintf(buf, bufsz,
+				 "A bid of zero is allowed.");
+		} else {
+			snprintf(buf, bufsz,
+				 "The lowest bid allowed is one.");
+		}
 	} else {
 		return game_get_option_text(buf, bufsz, option, value);
 	}
@@ -438,12 +468,24 @@ static void spades_get_bid(void)
 	} else {
 		/* A regular bid */
 
-		for (i = 0; i <= game.hand_size - pard; i++) {
-			/* the second bidder on each team must make sure the
-			   minimum bid count is met */
+		for (i = 0; i <= game.hand_size; i++) {
 			if (partner->bid_count > 0 &&
-			    pard + i < GSPADES.minimum_team_bid)
+			    pard + i < GSPADES.minimum_team_bid) {
+				/* the second bidder on each team must make
+				   sure the minimum bid count is met */
 				continue;
+			}
+			if (!GSPADES.unmakeable_bids
+			    && pard + i > game.hand_size) {
+				/* Unless the option is set, team bids cannot
+				   exceed thirteen. */
+				continue;
+			}
+			if (!GSPADES.zero_bids && i == 0) {
+				/* If this option is not set, zero-bids
+				   aren't allowed. */
+				continue;
+			}
 			add_sbid(i, NO_SUIT, SPADES_BID);
 		}
 
