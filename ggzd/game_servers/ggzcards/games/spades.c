@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8337 2006-07-08 17:47:39Z jdorje $
+ * $Id: spades.c 8338 2006-07-08 19:05:25Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -72,6 +72,18 @@ enum handlimit_option {
 	HANDS_TEN
 };
 
+enum bid_variant {
+	/* Regular bidding (i.e., spades) */
+	BID_NORMAL,
+
+	/* In "whiz" everybody has to bid ne number of spades they are
+	   holding (or nil/dn) */
+	BID_WHIZ,
+
+	/* In the DN variant everybody always has to bid dnil */
+	BID_DN_ONLY,
+};
+
 #define GSPADES ( *(spades_game_t *)(game.specific) )
 typedef struct spades_game_t {
 	/* options */
@@ -81,6 +93,7 @@ typedef struct spades_game_t {
 	enum nil_option nil_tricks_count; /* See enum explanation */
 	bool unmakeable_bids; /* Whether team bids of over 13 are allowed. */
 	bool zero_bids; /* Whether bids of 0 are allowed. */
+	enum bid_variant bid_variant; /* See enum explanation */
 
 	/* data */
 	int show_hand[4];	/* this is 0 if we're supposed to conceal the
@@ -209,6 +222,7 @@ static void spades_init_game(void)
 	GSPADES.nil_tricks_count = NIL_TRICKS_COUNT;
 	GSPADES.unmakeable_bids = FALSE;
 	GSPADES.zero_bids = TRUE;
+	GSPADES.bid_variant = BID_NORMAL;
 }
 
 static void spades_get_options(void)
@@ -247,6 +261,13 @@ static void spades_get_options(void)
 		   "Does dropping to -200 points cause an automatic loss?",
 		   1, 1,
 		   "Forfeit at -200 points");
+	add_option("Bidding", "bid_variant",
+		   "These special bidding variations change the game "
+		   "considerably.",
+		   3, 0,
+		   "Regular bidding rules.",
+		   "'Whiz' bidding - bid the number of spades you hold.",
+		   "'DN' bidding - you must bid double nil.");
 	add_option("Bidding", "minimum_bid",
 	           "What is the minimum bid that each team must meet?",
 	           5, 0,
@@ -332,6 +353,8 @@ static int spades_handle_option(char *option, int value)
 		GSPADES.unmakeable_bids = value;
 	} else if (strcmp("zero_bids", option) == 0) {
 		GSPADES.zero_bids = value;
+	} else if (strcmp("bid_variant", option) == 0) {
+		GSPADES.bid_variant = value;
 	} else {
 		return game_handle_option(option, value);
 	}
@@ -432,6 +455,22 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 			snprintf(buf, bufsz,
 				 "The lowest bid allowed is one.");
 		}
+	} else if (strcmp(option, "bid_variant") == 0) {
+		switch ((enum bid_variant)value) {
+		case BID_NORMAL:
+			snprintf(buf, bufsz,
+				 "Regular bidding rules.");
+			break;
+		case BID_WHIZ:
+			snprintf(buf, bufsz,
+				 "'Whiz'  bidding - bid the number of spades "
+				 "you hold.");
+			break;
+		case BID_DN_ONLY:
+			snprintf(buf, bufsz,
+				 "'DN' bidding - everyone must bid dnil.");
+			break;
+		}
 	} else {
 		return game_get_option_text(buf, bufsz, option, value);
 	}
@@ -442,6 +481,11 @@ static void spades_start_bidding(void)
 {
 	game_start_bidding();
 	game.bid_total = game.num_players;
+
+	if (GSPADES.bid_variant == BID_DN_ONLY) {
+		GSPADES.double_nil_value = 200;
+		/* HACK: enforce dnil worth 200 with this variant. */
+	}
 
 	/* With blind bids, you first make a blind bid then a regular one. */
 	if (GSPADES.double_nil_value > 0)
@@ -460,13 +504,24 @@ static void spades_get_bid(void)
 		   not). */
 
 		/* TODO: make sure partner made minimum bid */
-		add_sbid(0, NO_SUIT, SPADES_NO_BLIND);
-		if (partner->bid_count == 0 ||
-		    pard >= GSPADES.minimum_team_bid) {
+		if (GSPADES.bid_variant != BID_DN_ONLY) {
+			add_sbid(0, NO_SUIT, SPADES_NO_BLIND);
+		}
+		if (partner->bid_count == 0
+		    || pard >= GSPADES.minimum_team_bid
+		    || GSPADES.bid_variant == BID_DN_ONLY) {
 			add_sbid(0, NO_SUIT, SPADES_DNIL);
 		}
 	} else {
 		/* A regular bid */
+		int numspades = 0;
+
+		for (i = 0; i < game.hand_size; i++) {
+			if (game.seats[game.next_bid].hand.cards[i].suit
+			    == SPADES) {
+				numspades++;
+			}
+		}
 
 		for (i = 0; i <= game.hand_size; i++) {
 			if (partner->bid_count > 0 &&
@@ -484,6 +539,12 @@ static void spades_get_bid(void)
 			if (!GSPADES.zero_bids && i == 0) {
 				/* If this option is not set, zero-bids
 				   aren't allowed. */
+				continue;
+			}
+			if (GSPADES.bid_variant == BID_WHIZ
+			    && i != numspades) {
+				/* In the whiz variant you may only bid the
+				   number of spades you are holding. */
 				continue;
 			}
 			add_sbid(i, NO_SUIT, SPADES_BID);
