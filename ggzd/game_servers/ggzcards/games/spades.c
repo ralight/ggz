@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8340 2006-07-08 20:06:48Z jdorje $
+ * $Id: spades.c 8341 2006-07-08 20:12:02Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -373,6 +373,8 @@ static int spades_handle_option(char *option, int value)
 static char *spades_get_option_text(char *buf, int bufsz, char *option,
 				    int value)
 {
+	buf[0] = '\0';
+
 	if (strcmp(option, "nil_value") == 0) {
 		if (value == 0)
 			snprintf(buf, bufsz, "There are no nil bids.");
