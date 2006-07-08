@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8328 2006-07-06 16:16:58Z jdorje $
+ * $Id: game.c 8339 2006-07-08 19:48:42Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -509,14 +509,13 @@ card_t game_map_card(card_t c)
    determines who has won and calls send_gameover. */
 void game_handle_gameover(void)
 {
-	player_t p;
 	int hi_score = -9999;
 	player_t winners[game.num_players];
 	int winner_cnt = 0;
 
 	/* in the default case, just take the highest score(s) this should
 	   automatically handle the case of teams! */
-	for (p = 0; p < game.num_players; p++) {
+	players_iterate(p) {
 		if (game.players[p].score > hi_score) {
 			winner_cnt = 1;
 			winners[0] = p;
@@ -525,7 +524,7 @@ void game_handle_gameover(void)
 			winners[winner_cnt] = p;
 			winner_cnt++;
 		}
-	}
+	} players_iterate_end;
 
 	handle_gameover_event(winner_cnt, winners);
 }
