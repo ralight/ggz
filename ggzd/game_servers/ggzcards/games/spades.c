@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8338 2006-07-08 19:05:25Z jdorje $
+ * $Id: spades.c 8340 2006-07-08 20:06:48Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -94,6 +94,7 @@ typedef struct spades_game_t {
 	bool unmakeable_bids; /* Whether team bids of over 13 are allowed. */
 	bool zero_bids; /* Whether bids of 0 are allowed. */
 	enum bid_variant bid_variant; /* See enum explanation */
+	bool variant301; /* 301 - highest score below 301 wins */
 
 	/* data */
 	int show_hand[4];	/* this is 0 if we're supposed to conceal the
@@ -120,6 +121,7 @@ static void spades_sync_player(player_t p);
 static void spades_deal_hand(void);
 static void spades_end_hand(void);
 static void spades_start_game(void);
+static void spades_handle_gameover(void);
 static void spades_send_hand(player_t p, seat_t s);
 
 game_data_t spades_data = {
@@ -149,7 +151,7 @@ game_data_t spades_data = {
 	spades_end_hand,
 	spades_start_game,
 	game_test_for_gameover,
-	game_handle_gameover,
+	spades_handle_gameover,
 	game_map_card,
 	game_compare_cards,
 	spades_send_hand
@@ -223,6 +225,7 @@ static void spades_init_game(void)
 	GSPADES.unmakeable_bids = FALSE;
 	GSPADES.zero_bids = TRUE;
 	GSPADES.bid_variant = BID_NORMAL;
+	GSPADES.variant301 = FALSE;
 }
 
 static void spades_get_options(void)
@@ -261,6 +264,10 @@ static void spades_get_options(void)
 		   "Does dropping to -200 points cause an automatic loss?",
 		   1, 1,
 		   "Forfeit at -200 points");
+	add_option("Gameover", "variant301",
+		   "When the game ends the highest score below 301 wins.",
+		   1, 0,
+		   "'301' variant");
 	add_option("Bidding", "bid_variant",
 		   "These special bidding variations change the game "
 		   "considerably.",
@@ -355,6 +362,8 @@ static int spades_handle_option(char *option, int value)
 		GSPADES.zero_bids = value;
 	} else if (strcmp("bid_variant", option) == 0) {
 		GSPADES.bid_variant = value;
+	} else if (strcmp("variant301", option) == 0) {
+		GSPADES.variant301 = value;
 	} else {
 		return game_handle_option(option, value);
 	}
@@ -454,6 +463,12 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 		} else {
 			snprintf(buf, bufsz,
 				 "The lowest bid allowed is one.");
+		}
+	} else if (strcmp(option, "variant301") == 0) {
+		if (value != 0) {
+			snprintf(buf, bufsz,
+				 "'301' variant - highest score below "
+				 "301 wins.");
 		}
 	} else if (strcmp(option, "bid_variant") == 0) {
 		switch ((enum bid_variant)value) {
@@ -779,6 +794,22 @@ static void spades_start_game(void)
 	GSPADES.bags[0] = GSPADES.bags[1] = 0;
 	game_start_game();
 	spd_broadcast_scoredata();
+}
+
+static void spades_handle_gameover(void)
+{
+	if (GSPADES.variant301) {
+		/* Quick hack: for the 301 variant just negate any scores
+		   higher than 301.  This means ties could be allowed in
+		   some cases (not sure if that is bad or not). */
+		players_iterate(p) {
+			if (game.players[p].score > 301) {
+				game.players[p].score = -game.players[p].score;
+			}
+		} players_iterate_end;
+	}
+
+	game_handle_gameover();
 }
 
 static void spades_send_hand(player_t p, seat_t s)
