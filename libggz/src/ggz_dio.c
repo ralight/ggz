@@ -355,7 +355,7 @@ void ggz_dio_packet_start(GGZDataIO *dio)
 void ggz_dio_packet_end(GGZDataIO *dio)
 {
 	uint16_t pack_size = dio->output.current - dio->output.start;
-	bool writeable = (dio->output.start == dio->output.writeloc);
+	bool writeable = (dio->output.current == dio->output.writeloc);
 
 	assert(dio->output.in_packet);
 
