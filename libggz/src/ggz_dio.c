@@ -147,8 +147,7 @@ GGZDataIO *ggz_dio_new(int socket)
 
 void ggz_dio_free(GGZDataIO *dio)
 {
-	assert(dio->output.writeloc == dio->output.start);
-	assert(dio->input.readloc == dio->input.start);
+	/* FIXME: Assertions/invariants? */
 
 	ggz_free(dio->output.buf);
 	ggz_free(dio->input.buf);
