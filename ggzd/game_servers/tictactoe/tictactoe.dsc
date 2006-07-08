@@ -1,4 +1,4 @@
-# $Id: tictactoe.dsc 8254 2006-06-22 09:30:47Z oojah $
+# $Id: tictactoe.dsc 8333 2006-07-08 00:51:56Z jdorje $
 
 [GameInfo]
 Author = Brent Hendricks
@@ -13,7 +13,7 @@ ExecutablePath = ggzd.tictactoe
 
 [Protocol]
 Engine = TicTacToe
-Version = 4
+Version = 5
 
 [TableOptions]
 AllowLeave = 1

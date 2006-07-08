@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 8125 2006-06-07 13:38:36Z josef $
+ * $Id: game.c 8333 2006-07-08 00:51:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -120,7 +120,7 @@ static void game_network_error(void);
 static int game_send_seat(int seat);
 static int game_send_players(void);
 static int game_send_move(int num, int move);
-static int game_send_sync(int fd);
+static int game_send_sync(GGZDataIO *dio);
 static int game_send_gameover(int winner);
 static int game_read_move(int num, int* move);
 
@@ -243,16 +243,24 @@ static void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event,
 		variables.name[i] = (char*)tmpseat.name;
 	}
 
-	ggzcomm_set_fd(spectator.fd);
-	ggzcomm_msgplayers();
+	variables.spectator_dio
+	  = ggz_realloc(variables.spectator_dio,
+			ggzdmod_get_max_num_spectators(ggz)
+			* sizeof(*variables.spectator_dio));
+	variables.spectator_dio[spectator.num] = ggz_dio_new(spectator.fd);
+	ggzcomm_msgplayers(variables.spectator_dio[spectator.num]);
 
-	game_send_sync(spectator.fd);
+	game_send_sync(variables.spectator_dio[spectator.num]);
 }
 
 /* Callback for leaving spectators */
 static void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event,
 					    const void *data)
 {
+	const GGZSpectator *old_spectator = data;
+
+	ggz_dio_free(variables.spectator_dio[old_spectator->num]);
+	variables.spectator_dio[old_spectator->num] = NULL;
 	if (seats_empty())
 		ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_DONE);
 }
@@ -265,17 +273,33 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
 	GGZdModState new_state;
 	const GGZSeat *old_seat = data;
 	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+	bool is_join = (new_seat.type == GGZ_SEAT_PLAYER
+	                || new_seat.type == GGZ_SEAT_BOT)
+	               && (old_seat->type != new_seat.type
+	                   || strcmp(old_seat->name, new_seat.name));
+	bool is_leave = (old_seat->type == GGZ_SEAT_PLAYER
+			 || old_seat->type == GGZ_SEAT_BOT)
+	                && (new_seat.type != old_seat->type
+	                    || strcmp(old_seat->name, new_seat.name));
 
 	if (seats_full())
 		new_state = GGZDMOD_STATE_PLAYING;
 	else if (seats_empty())
 		new_state = GGZDMOD_STATE_DONE;
-	else
+	else {
 #ifdef GGZGAMERESUME
 		new_state = GGZDMOD_STATE_WAITING;
 #else
 		new_state = GGZDMOD_STATE_DONE;
 #endif
+	}
+
+	if (is_leave) {
+		ggz_dio_free(variables.seat_dio[old_seat->num]);
+	}
+	if (is_join) {
+		variables.seat_dio[new_seat.num] = ggz_dio_new(new_seat.fd);
+	}
 
 	game_send_players();
 	if (new_seat.type == GGZ_SEAT_PLAYER) {
@@ -283,7 +307,7 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
 #ifdef GGZGAMERESUME
 		/* If we're continuing a game, send sync to new player */
 		if (variables.turn != -1)
-			game_send_sync(new_seat.fd);
+			game_send_sync(variables.seat_dio[new_seat.num]);
 #endif
 	}
 
@@ -309,18 +333,17 @@ static void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event,
 	save_num = *(int*)data;
 	seat = ggzdmod_get_seat(ggz, save_num);
 
-	ggzcomm_set_fd(seat.fd);
-	ggzcomm_network_main();
+	ggzcomm_network_main(variables.seat_dio[save_num]);
 }
 
 /* Callback for network messages (via ggzcomm) */
 static void game_network_data(int opcode)
 {
-	int num, fd;
+	int num;
+	GGZDataIO *dio = variables.seat_dio[save_num];
 
 	ggzdmod_log(ttt_game.ggz, "Network data: opcode=%i", opcode);
 
-	fd = ggzcomm_get_fd();
 	num = save_num;
 
 	switch (opcode) {
@@ -330,7 +353,7 @@ static void game_network_data(int opcode)
 			game_do_move(variables.move_c);
 		break;
 	case reqsync:
-		game_send_sync(fd);
+		game_send_sync(dio);
 		break;
 	}
 }
@@ -348,18 +371,17 @@ static void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event,
 {
 	const int *num_ptr = data;
 	const int num = *num_ptr;
-	int fd, op;
+	int op;
 	GGZSpectator spectator;
+	GGZDataIO *dio = variables.spectator_dio[spectator.num];
 
 	spectator = ggzdmod_get_spectator(ggz, num);
-	fd = spectator.fd;
-	
-	if (ggz_read_int(fd, &op) < 0)
-		return;
+
+	ggz_dio_get_int(dio, &op);
 
 	switch (op) {
 	case TTT_REQ_SYNC:
-		game_send_sync(fd);
+		game_send_sync(dio);
 		break;
 	default:
 		ggzdmod_log(ggz, "Unrecognized spectator opcode %d.", op);
@@ -370,15 +392,15 @@ static void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event,
 /* Send out seat assignment */
 static int game_send_seat(int num)
 {
-	GGZSeat seat;
+#if 0
+	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
+#endif
 
-	seat = ggzdmod_get_seat(ttt_game.ggz, num);
 	ggzdmod_log(ttt_game.ggz, "Sending player %d's seat num", num);
 
 	variables.num = num;
 
-	ggzcomm_set_fd(seat.fd);
-	ggzcomm_msgseat();
+	ggzcomm_msgseat(variables.seat_dio[num]);
 
 	return 0;
 }
@@ -402,8 +424,7 @@ static int game_send_players(void)
 				variables.name[i] = (char*)tmpseat.name;
 			}
 
-			ggzcomm_set_fd(seat.fd);
-			ggzcomm_msgplayers();
+			ggzcomm_msgplayers(variables.seat_dio[seat.num]);
 		}
 	}
 	return 0;
@@ -424,20 +445,19 @@ static int game_send_move(int num, int move)
 		variables.player = num;
 		variables.move = move;
 
-		ggzcomm_set_fd(seat.fd);
-		ggzcomm_msgmove();
+		ggzcomm_msgmove(variables.seat_dio[seat.num]);
 	}
 	return 0;
 }
 
 
 /* Send out board layout */
-static int game_send_sync(int fd)
+static int game_send_sync(GGZDataIO *dio)
 {	
-	ggzdmod_log(ttt_game.ggz, "Handling sync for fd %d", fd);
+	ggzdmod_log(ttt_game.ggz, "Handling sync for fd %d",
+		    ggz_dio_get_socket(dio));
 
-	ggzcomm_set_fd(fd);
-	ggzcomm_sndsync();
+	ggzcomm_sndsync(dio);
 
 	return 0;
 }
@@ -471,8 +491,7 @@ static int game_send_gameover(int winner)
 
 			variables.winner = winner;
 
-			ggzcomm_set_fd(seat.fd);
-			ggzcomm_msggameover();
+			ggzcomm_msggameover(variables.seat_dio[seat.num]);
 		}
 	}
 
@@ -484,8 +503,7 @@ static int game_send_gameover(int winner)
 
 		variables.winner = winner;
 
-		ggzcomm_set_fd(spectator.fd);
-		ggzcomm_msggameover();
+		ggzcomm_msggameover(variables.spectator_dio[spectator.num]);
 	}
 #endif
 
@@ -514,8 +532,7 @@ int game_read_move(int num, int* move)
 	/* Send back move status */
 	variables.status = status;
 
-	ggzcomm_set_fd(seat.fd);
-	ggzcomm_rspmove();
+	ggzcomm_rspmove(variables.seat_dio[seat.num]);
 
 	/* If move simply invalid, ask for resubmit */
 	if ( (status == -3 || status == -4)
@@ -574,8 +591,7 @@ static int game_req_move(int num)
 
 	ggzdmod_log(ttt_game.ggz, "Requesting move from player %d on %d", num, seat.fd);
 
-	ggzcomm_set_fd(seat.fd);
-	ggzcomm_reqmove();
+	ggzcomm_reqmove(variables.seat_dio[seat.num]);
 
 	return 0;
 }
@@ -586,7 +602,7 @@ static int game_do_move(int move)
 {
 	char victor;
 #ifdef GGZSPECTATORS
-	int i, fd;
+	int i;
 #endif
 
 	/* FIXME: we should not return on a network error within this
@@ -602,16 +618,16 @@ static int game_do_move(int move)
 	game_send_move(variables.turn, move);
 
 #ifdef GGZSPECTATORS
-	for(i = 0; i < ggzdmod_get_max_num_spectators(ttt_game.ggz); i++)
-	{
-		fd = (ggzdmod_get_spectator(ttt_game.ggz, i)).fd;
-		if (fd < 0) continue;
+	for(i = 0; i < ggzdmod_get_max_num_spectators(ttt_game.ggz); i++) {
+		GGZSpectator spectator
+		  = ggzdmod_get_spectator(ttt_game.ggz, i);
+
+		if (spectator.fd < 0) continue;
 
 		variables.player = variables.turn;
 		variables.move = move;
 
-		ggzcomm_set_fd(fd);
-		ggzcomm_msgmove();
+		ggzcomm_msgmove(variables.spectator_dio[spectator.num]);
 	}
 #endif
 
