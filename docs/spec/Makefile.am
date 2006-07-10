@@ -1,7 +1,6 @@
-SUBDIRS = serverspec clientspec
+SUBDIRS = serverspec clientspec mainspec
 
-SGML_FILES = appendix.sgml design.sgml overview.sgml client-server.sgml \
-		modules.sgml requirements.sgml
+SGML_FILES = design.sgml overview.sgml requirements.sgml
 
 EXTRA_DIST = $(SGML_FILES) design.dsl design-txt.dsl server_arch.fig
 

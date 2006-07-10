@@ -56,8 +56,8 @@
     After a successful login, the server may optionally send a
 	message-of-the-day to the client via a <link
     linkend="msg.motd">MOTD</link> tag. This is a text message,
-    possibly with embedded color codes. For more details, see <link
-    linkend="motd">MOTD System</link>.
+    possibly with embedded color codes. For more details, see
+	the part about the MOTD system in the GGZ design specification.
   </para>
 
   <para>

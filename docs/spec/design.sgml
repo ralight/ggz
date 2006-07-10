@@ -1,9 +1,6 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [ 
 <!ENTITY requirements SYSTEM "requirements.sgml">
-<!ENTITY client-server SYSTEM "client-server.sgml">
 <!ENTITY overview SYSTEM "overview.sgml">
-<!ENTITY appendix SYSTEM "appendix.sgml">
-<!ENTITY appendix2 SYSTEM "modules.sgml">
 
 <!ENTITY ggz "GGZ Gaming Zone">
 <!ENTITY protonum "7">
@@ -32,8 +29,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 6711 $</revnumber>
-	<date>$Date: 2005-01-16 11:04:18 -0800 (Sun, 16 Jan 2005) $</date>
+	<revnumber>$Revision: 8345 $</revnumber>
+	<date>$Date: 2006-07-10 01:00:10 -0700 (Mon, 10 Jul 2006) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -78,21 +75,10 @@
     &requirements;
   </chapter>
 
-  <chapter id="client-server-protocol">
-    <title>Client-Server Communication Protocol</title>
-    &client-server;
-  </chapter>
-
   <chapter id="design">
     <title>Design Overview</title>
     &overview;
   </chapter>
-
-  <appendix id="appendix">
-    <title>Protocol Reference</title>
-    &appendix;
-	&appendix2;
-  </appendix>
 
 </book>
 

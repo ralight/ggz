@@ -1,0 +1,82 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [ 
+<!ENTITY client-server SYSTEM "client-server.sgml">
+<!ENTITY appendix SYSTEM "appendix.sgml">
+
+<!ENTITY ggz "GGZ Gaming Zone">
+<!ENTITY protonum "7">
+]>
+
+<book id="index">
+  <bookinfo>
+    <title>&ggz; Main Protocol Specification</title>
+    <authorgroup>
+      <author>
+        <firstname>The GGZ Gaming Zone developers</firstname>
+        <affiliation>
+          <address>
+            <email>ggz-dev@mail.ggzgamingzone.org</email>
+          </address>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <copyright>
+      <year>1999, 2000</year>
+      <holder>Brent Hendricks</holder>
+    </copyright>
+    <copyright>
+      <year>2001 - 2006</year>
+      <holder>The GGZ Gaming Zone Developers</holder>
+    </copyright>
+    <revhistory>
+      <revision>
+        <revnumber>$Revision: 8007 $</revnumber>
+        <date>$Date: 2006-04-27 09:57:33 +0200 (jue, 27 abr 2006) $</date>
+      </revision>
+    </revhistory>
+    <abstract>
+      <para>
+        Main protocol specification for &ggz; between the GGZ server
+        and GGZ core clients.
+      </para>
+    </abstract>
+  </bookinfo>
+
+  <preface id="objectives">
+    <title>Objectives</title>
+    <para>
+      The main GGZ protocol is the protocol which is spoken and understood
+      by the GGZ server <application>ggzd</application> and core clients
+      which are connected to it. It handles player authentication, chat
+      and game handling.
+      This protocol is called the GGZ Protocol, and is available
+      in a reference implementation named <application>libggzcore</application>,
+      for core client authors, written in the C programming language,
+      and its wrappers for C++ and Python.
+    </para>
+  </preface>
+
+  <chapter id="protocol">
+    <title>The Protocol</title>
+
+<para>
+  The main protocol has a long history, it started out very simple and then
+  was extended to add more and more gaming options. From version 5 on,
+  the previous binary-opcode protocol was replaced by an extensible XML
+  representation, which is processed with SAX parsers on both the client
+  and the server side.
+  Details of the protocol follow in the next chapter.
+</para>
+
+  </chapter>
+
+  <chapter id="client-server-protocol">
+    <title>Client-Server Communication Protocol</title>
+    &client-server;
+  </chapter>
+
+  <appendix id="appendix">
+    <title>Protocol Reference</title>
+    &appendix;
+  </appendix>
+
+</book>
