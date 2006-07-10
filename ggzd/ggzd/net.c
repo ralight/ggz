@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8308 2006-07-04 01:08:26Z jdorje $
+ * $Id: net.c 8349 2006-07-10 09:58:37Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -2092,11 +2092,15 @@ static GGZReturn _net_send_seat(GGZNetIO *net, GGZTableSeat *seat)
 	if (seat->type == GGZ_SEAT_BOT && seat->name[0] != '\0')
 		name = seat->name;
 	
-	if (name)
+	if (name) {
+		const char *name_unquoted = ggz_xml_escape(name);
+
 		return _net_send_line(net,
 				      "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>",
-				      seat->index, type_str, name);
-	else
+				      seat->index, type_str, name_unquoted);
+
+		ggz_free(name_unquoted);
+	} else
 		return _net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
 				      seat->index, type_str);
 }
