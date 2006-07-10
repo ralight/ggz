@@ -17,6 +17,7 @@ Hay varias maneras de conocer a los jugadores y los desarrolladores, por ejemplo
 Puedes ver <a href="https://mail.ggzgamingzone.org">el servidor de correo</a>
 para detalles, o mandar un correo a
 <a href="mailto:ggz-dev@mail.ggzgamingzone.org">la lista de desarrolladores</a>.
+Para asuntos de seguridad, hay más informaciones <a href="security.php">aquí</a>.
 <br><br>
 
 <i>Vivir en GGZ</i><br>

@@ -1,0 +1,33 @@
+<?php include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Security issues</b><br>
+GGZ is a project under constant development and will likely stay in this
+mode for some time to come. Security-related reports should not be
+entered into our bug-tracker; instead send an e-mail. This mail is preferably
+encrypted with the
+<a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+<br><br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Security contact</i><br>
+<a href="mailto:security@ggzgamingzone.org">security@ggzgamingzone.org</a>.
+<br><br>
+
+</td>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("site/footer.php"); ?>
+
