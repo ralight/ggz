@@ -554,17 +554,13 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         int num_players = cardClient.get_num_players();
         int player_on_left = (player_num + 1) % num_players;
         // HB I commented this out because on a fast connection (LAN) the
-        // computer
-        // was playing a card faster than the animation so the table card was
-        // not unknown
-        // and the computers card was not played on top of the discard. All this
-        // change
-        // should mean is that when the last card is played on a trick there is
-        // an
-        // unnecessary processing for the player that led to the trick.
-        // if
-        // (Card.UNKNOWN_CARD.equals(card_client.get_nth_player(player_on_left)
-        // .get_table_card())) {
+        // computer was playing a card faster than the animation so the table
+        // card was not unknown and the computers card was not played on top of
+        // the discard. All this change should mean is that when the last card
+        // is played on a trick there is an unnecessary processing for the
+        // player that led to the trick. if
+        // (Card.UNKNOWN_CARD.equals(card_client.get_nth_player(player_on_left).get_table_card()))
+        // {
         // Player has not played a card so put his cards on top
         for (int card_num = sprites[player_on_left].length - 1; card_num >= 0; card_num--) {
             Sprite card = sprites[player_on_left][card_num];
@@ -684,7 +680,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     public void alert_table() {
-        SwingUtilities.invokeLater(new Runnable() {
+        invokeAndWait(new Runnable() {
             public void run() {
                 try {
                     for (int playerNum = 0; playerNum < cardClient
@@ -694,8 +690,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         if (!serverTableCard.equals(Card.UNKNOWN_CARD)
                                 && spriteInTrick[playerNum] == null) {
                             // We are out of sync with the server, most likely
-                            // because
-                            // we just joined.
+                            // because we just joined.
                             Sprite tableSprite = new Sprite(serverTableCard,
                                     getCardOrientation(playerNum));
                             spriteInTrick[playerNum] = tableSprite;
@@ -738,19 +733,13 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 for (int p = 0; p < cardClient.get_num_players(); p++) {
                     Card card_in_trick = cardClient.get_nth_player(p)
                             .get_table_card();
-                    // if (!Card.UNKNOWN_CARD.equals(card_in_trick)) {
-                    // Sprite[] players_card_sprites = sprites[p];
-                    // for (int s = 0; s < players_card_sprites.length; s++) {
                     if (spriteInTrick[p] != null
                             && spriteInTrick[p].card().equals(card_in_trick)) {
                         sprites_to_animate[num_sprites_to_animate] = spriteInTrick[p];
                         endPos[num_sprites_to_animate] = table
                                 .getPlayerCardPos(winner);
                         num_sprites_to_animate++;
-                        // break;
                     }
-                    // }
-                    // }
                 }
                 table.animate(num_sprites_to_animate, sprites_to_animate,
                         endPos, 0.3);
@@ -914,10 +903,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         player_cards[card_num].setSelectable(isFound);
                         if (isFound) {
                             // Remove ourselves first to prevent receiving
-                            // multiple
-                            // notifications. This is safe to do even if we are
-                            // not
-                            // registered yet.
+                            // multiple notifications. This is safe to do even
+                            // if we are not registered yet.
                             player_cards[card_num]
                                     .removeActionListener(CardGamePanel.this);
                             player_cards[card_num]

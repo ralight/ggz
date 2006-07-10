@@ -19,6 +19,7 @@ package ggz.ui;
 
 import ggz.client.core.LoginType;
 import ggz.client.core.Server;
+import ggz.ui.preferences.GGZPreferences;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -30,6 +31,7 @@ import java.util.ResourceBundle;
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -69,6 +71,8 @@ public class LoginPanel extends JPanel {
 
     private JButton loginButton;
 
+    private JCheckBox rememberMeCheckBox;
+
     public LoginPanel(Server server) {
         super(new GridBagLayout());
         this.server = server;
@@ -83,7 +87,8 @@ public class LoginPanel extends JPanel {
         confirmPasswordLabel = new JLabel("<HTML>"
                 + messages.getString("LoginPanel.Label.ConfirmPassword")
                 + ": <FONT color=red>*</FONT>");
-        emailLabel = new JLabel(messages.getString("LoginPanel.Label.Email") + ":");
+        emailLabel = new JLabel(messages.getString("LoginPanel.Label.Email")
+                + ":");
         handleTextField = new JTextField(20);
         // Nicknames are only allowed to be 16 characters.
         Document doc = handleTextField.getDocument();
@@ -97,6 +102,8 @@ public class LoginPanel extends JPanel {
         guestLoginRadio = new JRadioButton(new ChooseGuestLoginAction());
         newLoginRadio = new JRadioButton(new ChooseNewLoginAction());
         loginButton = new JButton(new ConnectToServerAction());
+        rememberMeCheckBox = new JCheckBox(messages
+                .getString("LoginPanel.CheckBox.RememberMe"));
 
         TextPopupMenu.enableFor(handleTextField);
         TextPopupMenu.enableFor(emailTextField);
@@ -107,6 +114,7 @@ public class LoginPanel extends JPanel {
         normalLoginRadio.setOpaque(false);
         guestLoginRadio.setOpaque(false);
         newLoginRadio.setOpaque(false);
+        rememberMeCheckBox.setOpaque(false);
         passwordField.setFont(handleTextField.getFont());
         confirmPasswordField.setFont(passwordField.getFont());
 
@@ -161,6 +169,10 @@ public class LoginPanel extends JPanel {
 
         constraints.gridx = 1;
         constraints.gridy++;
+        add(rememberMeCheckBox, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy++;
         add(loginButton, constraints);
 
         // Set up focus so that we use the order that components were added to
@@ -207,16 +219,33 @@ public class LoginPanel extends JPanel {
                 guestLoginRadio.getAction().actionPerformed(null);
             }
             connect();
+        } else {
+            String savedNickname = GGZPreferences.get(
+                    GGZPreferences.LAST_LOGIN_NICKNAME, null);
+            if (savedNickname != null) {
+                handleTextField.setText(savedNickname);
+                rememberMeCheckBox.setSelected(true);
+            }
+
+            String lastLoginType = GGZPreferences.get(
+                    GGZPreferences.LAST_LOGIN_TYPE, null);
+            if ("normal".equals(lastLoginType)) {
+                normalLoginRadio.setSelected(true);
+                normalLoginRadio.getAction().actionPerformed(null);
+            } else if ("guest".equals(lastLoginType)) {
+                guestLoginRadio.setSelected(true);
+                guestLoginRadio.getAction().actionPerformed(null);
+            }
         }
     }
-    
+
     protected boolean validateUserInput() {
         if ("".equals(handleTextField.getText().trim())) {
             JOptionPane.showMessageDialog(LoginPanel.this, messages
                     .getString("LoginPanel.Message.BlankNickname"));
             return false;
         }
-        
+
         if (!guestLoginRadio.isSelected()) {
             if (passwordField.getPassword().length == 0) {
                 JOptionPane.showMessageDialog(LoginPanel.this, messages
@@ -224,11 +253,11 @@ public class LoginPanel extends JPanel {
                 return false;
             }
         }
-        
+
         if (newLoginRadio.isSelected()) {
             // Check if both password fields contain a value and they match.
-            if (!Arrays.equals(passwordField.getPassword(), confirmPasswordField.getPassword()))
-            {
+            if (!Arrays.equals(passwordField.getPassword(),
+                    confirmPasswordField.getPassword())) {
                 JOptionPane.showMessageDialog(LoginPanel.this, messages
                         .getString("LoginPanel.Message.PasswordMismatch"));
                 return false;
@@ -241,18 +270,35 @@ public class LoginPanel extends JPanel {
         if (!validateUserInput())
             return;
         setAllEnabled(false);
+        String handle = handleTextField.getText();
         String password = new String(passwordField.getPassword());
+        String loginType;
+
         try {
             if (normalLoginRadio.isSelected()) {
-                server.set_logininfo(LoginType.GGZ_LOGIN, handleTextField
-                        .getText(), password, null);
+                loginType = "normal";
+                server.set_logininfo(LoginType.GGZ_LOGIN, handle, password,
+                        null);
             } else if (guestLoginRadio.isSelected()) {
-                server.set_logininfo(LoginType.GGZ_LOGIN_GUEST, handleTextField
-                        .getText(), null, null);
+                loginType = "guest";
+                server.set_logininfo(LoginType.GGZ_LOGIN_GUEST, handle, null,
+                        null);
             } else {
-                server.set_logininfo(LoginType.GGZ_LOGIN_NEW, handleTextField
-                        .getText(), password, emailTextField.getText());
+                loginType = "normal";
+                server.set_logininfo(LoginType.GGZ_LOGIN_NEW, handle, password,
+                        emailTextField.getText());
             }
+
+            if (rememberMeCheckBox.isSelected()) {
+                // Remember login details.
+                GGZPreferences.put(GGZPreferences.LAST_LOGIN_NICKNAME, handle);
+                GGZPreferences.put(GGZPreferences.LAST_LOGIN_TYPE, loginType);
+            } else {
+                // Clear the login details.
+                GGZPreferences.put(GGZPreferences.LAST_LOGIN_NICKNAME, null);
+                GGZPreferences.put(GGZPreferences.LAST_LOGIN_TYPE, null);
+            }
+
             server.connect();
         } catch (RuntimeException e) {
             setAllEnabled(true);

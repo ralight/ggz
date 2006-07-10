@@ -33,9 +33,13 @@ public class GGZPreferences {
 
     public static String MY_FONT_COLOR = "Chat.My.Color";
 
-    public static String IGNORE_LIST = "Char.Ignore.List";
+    public static String IGNORE_LIST = "Chat.Ignore.List";
 
-    public static String FRIENDS_LIST = "Char.Friends.List";
+    public static String FRIENDS_LIST = "Chat.Friends.List";
+
+    public static String LAST_LOGIN_NICKNAME = "Login.Nickname";
+
+    public static String LAST_LOGIN_TYPE = "Login.Type";
 
     public static final Logger log = Logger.getLogger(GGZPreferences.class
             .getName());
@@ -126,12 +130,16 @@ public class GGZPreferences {
         prefs.removePreferenceChangeListener(pcl);
     }
 
-    private static String get(String key, String defaultValue) {
+    public static String get(String key, String defaultValue) {
         return prefs.get(key, defaultValue);
     }
 
-    private static void put(String key, String value) {
-        prefs.put(key, value);
+    public static void put(String key, String value) {
+        if (value == null) {
+            prefs.remove(key);
+        } else {
+            prefs.put(key, value);
+        }
     }
 
     private static String encodeFont(Font font) {
