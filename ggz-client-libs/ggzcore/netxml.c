@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8234 2006-06-20 20:17:06Z jdorje $
+ * $Id: netxml.c 8348 2006-07-10 09:56:05Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -653,18 +653,28 @@ int _ggzcore_net_send_table_launch(GGZNet * net, GGZTable * table)
 static int _ggzcore_net_send_table_seat(GGZNet * net, GGZTableSeat * seat)
 {
 	const char *type;
+	int ret;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending seat info");
 
 	type = ggz_seattype_to_string(seat->type);
 
-	if (!seat->name)
-		return _ggzcore_net_send_line(net,
-					      "<SEAT NUM='%d' TYPE='%s'/>",
-					      seat->index, type);
-	return _ggzcore_net_send_line(net,
-				      "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>",
-				      seat->index, type, seat->name);
+
+	if (!seat->name) {
+		ret = _ggzcore_net_send_line(net,
+					     "<SEAT NUM='%d' TYPE='%s'/>",
+					     seat->index, type);
+	} else {
+		const char *name_quoted = ggz_xml_escape(seat->name);
+
+		ret = _ggzcore_net_send_line(net,
+					     "<SEAT NUM='%d' TYPE='%s'>%s"
+					     "</SEAT>",
+					     seat->index, type, name_quoted);
+		ggz_free(name_quoted);
+	}
+
+	return ret;
 }
 
 
