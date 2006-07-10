@@ -215,6 +215,7 @@ public class PrivateChatDialog extends JFrame {
                 public void run() {
                     dialog.chatPanel.appendChat(data.type, data.sender,
                             data.message, server.get_handle());
+                    dialog.toFront();
                 }
             });
         }

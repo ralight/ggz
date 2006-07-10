@@ -38,6 +38,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -111,7 +112,8 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         textField.setEnabled(false);
         chatArea = new JTextPane() {
             public void scrollRectToVisible(Rectangle rect) {
-                // System.out.println("isAutoScroll="+isAutoScroll);
+                // This is only needed when using setCaretPosition() to scroll
+                // the chat.
                 if (isAutoScroll) {
                     super.scrollRectToVisible(rect);
                 }
@@ -268,12 +270,9 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
     }
 
     protected void checkAutoScroll() {
-        Rectangle visibleRect = chatArea.getVisibleRect();
-        int pos = textScrollPane.getVerticalScrollBar().getValue();
-        int max = textScrollPane.getVerticalScrollBar().getMaximum();
-        // System.out.println("pos=" + pos + " max=" + max + "
-        // visibleRect.height=" + visibleRect.height);
-        isAutoScroll = (pos >= (max - visibleRect.height) - 20);
+        JScrollBar vbar = textScrollPane.getVerticalScrollBar();
+        isAutoScroll = vbar.getMaximum()
+                - (vbar.getValue() + vbar.getVisibleAmount()) < 40;
         if (isAutoScroll) {
             chatArea.setCaretPosition(chatArea.getDocument().getLength());
         }

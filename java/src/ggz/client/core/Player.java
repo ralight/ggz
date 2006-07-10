@@ -162,8 +162,9 @@ public class Player {
     }
 
     public boolean equals(Object o) {
+        // Player names are not case sensitive.
         return (o != null) && (o instanceof Player)
-                && this.name.equals(((Player) o).name);
+                && this.name.equalsIgnoreCase(((Player) o).name);
     }
 
     public String toString() {

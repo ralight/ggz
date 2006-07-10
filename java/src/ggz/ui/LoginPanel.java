@@ -24,12 +24,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
@@ -47,11 +49,15 @@ public class LoginPanel extends JPanel {
 
     protected JPasswordField passwordField;
 
+    protected JPasswordField confirmPasswordField;
+
     protected JTextField emailTextField;
 
     protected JLabel handleLabel;
 
     protected JLabel passwordLabel;
+
+    protected JLabel confirmPasswordLabel;
 
     protected JLabel emailLabel;
 
@@ -70,11 +76,14 @@ public class LoginPanel extends JPanel {
         // Create all the components
         handleLabel = new JLabel("<HTML>"
                 + messages.getString("LoginPanel.Label.Nickname")
-                + "<FONT color=red>*</FONT>");
+                + ": <FONT color=red>*</FONT>");
         passwordLabel = new JLabel("<HTML>"
                 + messages.getString("LoginPanel.Label.Password")
-                + "<FONT color=red>*</FONT>");
-        emailLabel = new JLabel(messages.getString("LoginPanel.Label.Email"));
+                + ": <FONT color=red>*</FONT>");
+        confirmPasswordLabel = new JLabel("<HTML>"
+                + messages.getString("LoginPanel.Label.ConfirmPassword")
+                + ": <FONT color=red>*</FONT>");
+        emailLabel = new JLabel(messages.getString("LoginPanel.Label.Email") + ":");
         handleTextField = new JTextField(20);
         // Nicknames are only allowed to be 16 characters.
         Document doc = handleTextField.getDocument();
@@ -82,6 +91,7 @@ public class LoginPanel extends JPanel {
             ((PlainDocument) doc).setDocumentFilter(new DocumentSizeFilter(16));
         }
         passwordField = new JPasswordField(20);
+        confirmPasswordField = new JPasswordField(20);
         emailTextField = new JTextField(null, 20);
         normalLoginRadio = new JRadioButton(new ChooseNormalLoginAction());
         guestLoginRadio = new JRadioButton(new ChooseGuestLoginAction());
@@ -98,6 +108,7 @@ public class LoginPanel extends JPanel {
         guestLoginRadio.setOpaque(false);
         newLoginRadio.setOpaque(false);
         passwordField.setFont(handleTextField.getFont());
+        confirmPasswordField.setFont(passwordField.getFont());
 
         // Group the radio buttons.
         ButtonGroup group = new ButtonGroup();
@@ -139,6 +150,11 @@ public class LoginPanel extends JPanel {
         add(passwordField, constraints);
         constraints.gridx = 0;
         constraints.gridy++;
+        add(confirmPasswordLabel, constraints);
+        constraints.gridx = 1;
+        add(confirmPasswordField, constraints);
+        constraints.gridx = 0;
+        constraints.gridy++;
         add(emailLabel, constraints);
         constraints.gridx = 1;
         add(emailTextField, constraints);
@@ -160,6 +176,7 @@ public class LoginPanel extends JPanel {
         setFocusable(false);
         handleLabel.setFocusable(false);
         passwordLabel.setFocusable(false);
+        confirmPasswordLabel.setFocusable(false);
         emailLabel.setFocusable(false);
     }
 
@@ -192,8 +209,37 @@ public class LoginPanel extends JPanel {
             connect();
         }
     }
+    
+    protected boolean validateUserInput() {
+        if ("".equals(handleTextField.getText().trim())) {
+            JOptionPane.showMessageDialog(LoginPanel.this, messages
+                    .getString("LoginPanel.Message.BlankNickname"));
+            return false;
+        }
+        
+        if (!guestLoginRadio.isSelected()) {
+            if (passwordField.getPassword().length == 0) {
+                JOptionPane.showMessageDialog(LoginPanel.this, messages
+                        .getString("LoginPanel.Message.BlankPassword"));
+                return false;
+            }
+        }
+        
+        if (newLoginRadio.isSelected()) {
+            // Check if both password fields contain a value and they match.
+            if (!Arrays.equals(passwordField.getPassword(), confirmPasswordField.getPassword()))
+            {
+                JOptionPane.showMessageDialog(LoginPanel.this, messages
+                        .getString("LoginPanel.Message.PasswordMismatch"));
+                return false;
+            }
+        }
+        return true;
+    }
 
     protected void connect() {
+        if (!validateUserInput())
+            return;
         setAllEnabled(false);
         String password = new String(passwordField.getPassword());
         try {
@@ -223,6 +269,7 @@ public class LoginPanel extends JPanel {
         handleTextField.selectAll();
         handleTextField.requestFocus();
         passwordField.setText(null);
+        confirmPasswordField.setText(null);
     }
 
     private void setAllEnabled(boolean enabled) {
@@ -233,11 +280,8 @@ public class LoginPanel extends JPanel {
 
     private class ConnectToServerAction extends AbstractAction {
 
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return messages.getString("LoginPanel.Button.Login");
-            }
-            return super.getValue(key);
+        public ConnectToServerAction() {
+            super(messages.getString("LoginPanel.Button.Login"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -248,16 +292,15 @@ public class LoginPanel extends JPanel {
 
     private class ChooseNormalLoginAction extends AbstractAction {
 
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return messages.getString("LoginPanel.Radio.MemberLogin");
-            }
-            return super.getValue(key);
+        public ChooseNormalLoginAction() {
+            super(messages.getString("LoginPanel.Radio.MemberLogin"));
         }
 
         public void actionPerformed(ActionEvent e) {
             passwordField.setVisible(true);
             passwordLabel.setVisible(true);
+            confirmPasswordField.setVisible(false);
+            confirmPasswordLabel.setVisible(false);
             emailTextField.setVisible(false);
             emailLabel.setVisible(false);
         }
@@ -266,16 +309,15 @@ public class LoginPanel extends JPanel {
 
     private class ChooseGuestLoginAction extends AbstractAction {
 
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return messages.getString("LoginPanel.Radio.GuestLogin");
-            }
-            return super.getValue(key);
+        public ChooseGuestLoginAction() {
+            super(messages.getString("LoginPanel.Radio.GuestLogin"));
         }
 
         public void actionPerformed(ActionEvent e) {
             passwordField.setVisible(false);
             passwordLabel.setVisible(false);
+            confirmPasswordField.setVisible(false);
+            confirmPasswordLabel.setVisible(false);
             emailTextField.setVisible(false);
             emailLabel.setVisible(false);
         }
@@ -284,16 +326,15 @@ public class LoginPanel extends JPanel {
 
     private class ChooseNewLoginAction extends AbstractAction {
 
-        public Object getValue(String key) {
-            if (NAME.equals(key)) {
-                return messages.getString("LoginPanel.Radio.NewUser");
-            }
-            return super.getValue(key);
+        public ChooseNewLoginAction() {
+            super(messages.getString("LoginPanel.Radio.NewUser"));
         }
 
         public void actionPerformed(ActionEvent e) {
             passwordField.setVisible(true);
             passwordLabel.setVisible(true);
+            confirmPasswordField.setVisible(true);
+            confirmPasswordLabel.setVisible(true);
             emailTextField.setVisible(true);
             emailLabel.setVisible(true);
         }

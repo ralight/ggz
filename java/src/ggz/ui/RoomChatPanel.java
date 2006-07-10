@@ -35,6 +35,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
@@ -53,6 +56,7 @@ import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
@@ -64,10 +68,10 @@ import javax.swing.table.TableColumnModel;
 
 public class RoomChatPanel extends JPanel implements RoomListener,
         ListSelectionListener {
-    private static final Logger log = Logger.getLogger(RoomChatPanel.class
+    protected static final Logger log = Logger.getLogger(RoomChatPanel.class
             .getName());
 
-    private static final ResourceBundle messages = ResourceBundle
+    protected static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
 
     protected Room room;
@@ -77,11 +81,11 @@ public class RoomChatPanel extends JPanel implements RoomListener,
 
     protected ChatPanel chatPanel;
 
-    private JScrollPane playerScrollPane;
+    protected JScrollPane playerScrollPane;
 
-    private JTable playerList;
+    protected JTable playerList;
 
-    private PlayersTableModel players;
+    protected PlayersTableModel players;
 
     private JPanel westPanel;
 
@@ -110,6 +114,36 @@ public class RoomChatPanel extends JPanel implements RoomListener,
                         messages
                                 .getString("RoomChatPanel.ColumnHeader.PlayerNickname"));
         playerList.getColumn("Lag").setHeaderValue("");
+
+        // Copy nickname to clipboard when copy operation is requested.
+        playerList.setTransferHandler(new TransferHandler() {
+
+            protected Transferable createTransferable(JComponent c) {
+                return new Transferable() {
+
+                    public Object getTransferData(DataFlavor flavor)
+                            throws UnsupportedFlavorException, IOException {
+                        Player player = players.getPlayer(playerList
+                                .getSelectedRow());
+                        return player == null ? null : player.get_name();
+                    }
+
+                    public DataFlavor[] getTransferDataFlavors() {
+                        return new DataFlavor[] { DataFlavor.stringFlavor };
+                    }
+
+                    public boolean isDataFlavorSupported(DataFlavor flavor) {
+                        return DataFlavor.stringFlavor.equals(flavor);
+                    }
+
+                };
+            }
+
+            public int getSourceActions(JComponent c) {
+                return COPY;
+            }
+
+        });
 
         if (showTableNumber) {
             playerList

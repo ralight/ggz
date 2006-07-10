@@ -228,8 +228,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         table
                 .add(bidPanel, new TableConstraints(
                         TableConstraints.BUTTON_PANEL));
-        table.invalidate();
-        table.validate();
+        table.revalidate();
     }
 
     public void alert_state(Client.GameState oldState, Client.GameState newState) {
@@ -238,8 +237,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         table.remove(bidPanel);
-                        table.invalidate();
-                        table.validate();
+                        table.revalidate();
                         bidPanel = null;
                     }
                 });
@@ -258,7 +256,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     createBidPanel(bidder);
                 }
                 bidPanel.addBid(bidder, bid);
-                validate();
+                revalidate();
             }
         });
     }
@@ -303,7 +301,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         }
                     }
                 }
-                validate();
+                revalidate();
                 repaint();
             }
         });
@@ -408,11 +406,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         } else if (type == SeatType.GGZ_SEAT_BOT) {
             /** The seat has a bot (AI) in it. */
             return new ImageIcon(getClass().getResource(
-                    "/ggz/cards/images/p19.gif"));
+                    "/ggz/cards/images/computer.gif"));
         } else if (type == SeatType.GGZ_SEAT_PLAYER) {
             /** The seat has a regular player in it. */
             return new ImageIcon(getClass().getResource(
-                    "/ggz/cards/images/p31.gif"));
+                    "/ggz/cards/images/human.gif"));
         } else if (type == SeatType.GGZ_SEAT_RESERVED) {
             /** The seat is reserved for a player. */
             return null;
@@ -627,6 +625,9 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             TableLayout layout = new TableLayout(tableLayout.getCardWidth(),
                     tableLayout.getCardHeight());
             layout.setMaxHandSize(cards[0].length);
+            // TODO Use this once we've implemented
+            // TableLayout.preferredLayoutSize().
+            // layout.setCardGap(GGZPreferences.getInt("GGZCards.CardGap", 17));
             dialog.getContentPane().setLayout(layout);
             for (int playerNum = 0; playerNum < cards.length; playerNum++) {
                 int cardOrientation = getCardOrientation(playerNum);
@@ -827,8 +828,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         } catch (IOException e) {
             handleException(e);
         }
-        invalidate();
-        validate();
+        revalidate();
         repaint();
     }
 
@@ -1004,12 +1004,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     public void preferenceChange(PreferenceChangeEvent event) {
         if ("GGZCards.CardGap".equals(event.getKey())) {
             tableLayout.setCardGap(GGZPreferences.getInt(event.getKey(), 17));
-            table.invalidate();
             table.revalidate();
         } else if ("GGZCards.PackCards".equals(event.getKey())) {
             tableLayout.setPackCardsInHand(GGZPreferences.getBoolean(event
                     .getKey(), true));
-            table.invalidate();
             table.revalidate();
         } else if ("GGZCards.SpinCards".equals(event.getKey())) {
             table.setSpinCards(GGZPreferences.getBoolean(event.getKey(), true));
@@ -1082,8 +1080,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                                 ":<B>"), "\n", "</B><BR>") + "</HTML>");
                 // label.setText("<HTML>" + replace(message, "\n", "<BR>")
                 // + "</HTML>");
-                table.invalidate();
-                table.validate();
+                table.revalidate();
             }
         });
     }

@@ -65,8 +65,8 @@ public class TablePanel extends JPanel {
         setPreferredSize(new Dimension(640, 400));
         setDoubleBuffered(true);
         setBackground(new Color(0, 128, 0));
-        //watermark = new ImageIcon(getClass().getResource(
-        //        "/ggz/cards/images/spades-logo.gif")).getImage();
+        watermark = new ImageIcon(getClass().getResource(
+                "/ggz/cards/images/ggzcards-logo.gif")).getImage();
     }
 
     public void setSpriteDimensions(int width, int height) {
@@ -124,15 +124,11 @@ public class TablePanel extends JPanel {
         g2d.setColor(getBackground());
         g2d.fillRect(clip.x, clip.y, clip.width, clip.height);
 
-        // Don't know how to only draw part of a round rect so draw the lot
-        // regardless of clip.
-        // g2d.setColor(getBackground());
-        // g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 250, 250);
         //TODO optimise this
         if (watermark != null) {
             // Paint the watermark.
-            final Composite alphaComposite = AlphaComposite.getInstance(
-                    AlphaComposite.SRC_OVER, 0.3f);
+            Composite alphaComposite = AlphaComposite.getInstance(
+                    AlphaComposite.SRC_OVER, 0.04f);
             Composite originalComposite = g2d.getComposite();
             g2d.setComposite(alphaComposite);
             g2d.drawImage(watermark, (getWidth() / 2)
