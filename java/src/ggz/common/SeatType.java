@@ -107,4 +107,8 @@ public class SeatType {
 	public static SeatType valueOf(int ordinal) {
 		return (SeatType) values.get(ordinal);
 	}
+    
+    public int ordinal() {
+        return values.indexOf(this);
+    }
 }

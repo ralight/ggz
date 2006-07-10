@@ -56,6 +56,7 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -72,6 +73,8 @@ import javax.swing.border.CompoundBorder;
 public class CardGamePanel extends GamePanel implements CardGameHandler,
         ActionListener, PreferenceChangeListener {
     protected Client cardClient;
+
+    protected Icon[] playerIcons;
 
     protected PlayerLabel[] playerLabels;
 
@@ -396,30 +399,28 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         });
     }
 
-    private ImageIcon getPlayerIcon(SeatType type) {
-        if (type == SeatType.GGZ_SEAT_NONE) {
-            /** This seat does not exist. */
-            return null;
-        } else if (type == SeatType.GGZ_SEAT_OPEN) {
-            /** The seat is open (unoccupied). */
-            return null;
-        } else if (type == SeatType.GGZ_SEAT_BOT) {
-            /** The seat has a bot (AI) in it. */
-            return new ImageIcon(getClass().getResource(
-                    "/ggz/cards/images/computer.gif"));
-        } else if (type == SeatType.GGZ_SEAT_PLAYER) {
-            /** The seat has a regular player in it. */
-            return new ImageIcon(getClass().getResource(
-                    "/ggz/cards/images/human.gif"));
-        } else if (type == SeatType.GGZ_SEAT_RESERVED) {
-            /** The seat is reserved for a player. */
-            return null;
-        } else if (type == SeatType.GGZ_SEAT_ABANDONED) {
-            /** The seat is abandoned by a player. */
-            return null;
-        } else {
-            return null;
+    private Icon getPlayerIcon(SeatType type) {
+        if (playerIcons == null) {
+            playerIcons = new Icon[SeatType.values.size()];
         }
+        Icon icon = playerIcons[type.ordinal()];
+
+        if (icon == null) {
+            if (type == SeatType.GGZ_SEAT_BOT) {
+                /** The seat has a bot (AI) in it. */
+                icon = new ImageIcon(getClass().getResource(
+                        "/ggz/cards/images/computer.gif"));
+            } else if (type == SeatType.GGZ_SEAT_PLAYER) {
+                /** The seat has a regular player in it. */
+                icon = new ImageIcon(getClass().getResource(
+                        "/ggz/cards/images/human.gif"));
+            } else {
+                icon = new ImageIcon(getClass().getResource(
+                        "/ggz/cards/images/empty-seat.gif"));
+            }
+            playerIcons[type.ordinal()] = icon;
+        }
+        return icon;
     }
 
     private void initPopupMenu(int seat_num, int ggz_seat_num, SeatType type) {
