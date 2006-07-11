@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: roomlist.c 8350 2006-07-11 03:48:10Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -366,6 +366,29 @@ void update_room_list(void)
 	}
 }
 
+static gint room_sort_func(GtkTreeModel *model,
+			   GtkTreeIter *a, GtkTreeIter *b, gpointer data)
+{
+	GGZRoom *roomA, *roomB;
+	GGZGameType *gtA, *gtB;
+
+	gtk_tree_model_get(model, a, ROOM_COLUMN_PTR, &roomA, -1);
+	gtk_tree_model_get(model, b, ROOM_COLUMN_PTR, &roomB, -1);
+
+	if (!roomA || !roomB) {
+	  return (roomA ? -1 : 0) - (roomB ? -1 : 0);
+	}
+
+	gtA = ggzcore_room_get_gametype(roomA);
+	gtB = ggzcore_room_get_gametype(roomB);
+	if (!gtA || !gtB) {
+	  return (gtA ? 1 : 0) - (gtB ? 1 : 0);
+	}
+
+	return strcasecmp(ggzcore_room_get_name(roomA),
+			  ggzcore_room_get_name(roomB));
+}
+
 GtkWidget *create_room_list(GtkWidget *window)
 {
 	GtkTreeStore *store;
@@ -382,6 +405,14 @@ GtkWidget *create_room_list(GtkWidget *window)
 				   G_TYPE_INT);
 	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
+
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store),
+					     ROOM_COLUMN_NAME,
+					     GTK_SORT_ASCENDING);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store),
+					ROOM_COLUMN_NAME,
+					room_sort_func,
+					NULL, NULL);
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes("#", renderer,
