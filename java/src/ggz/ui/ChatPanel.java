@@ -30,6 +30,7 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 
@@ -45,9 +46,12 @@ import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
 public class ChatPanel extends JPanel implements PreferenceChangeListener {
     private static final ResourceBundle messages = ResourceBundle
@@ -67,18 +71,6 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
 
     protected ChatAction chatAction;
 
-    protected SimpleAttributeSet senderText;
-
-    protected SimpleAttributeSet friendlyText;
-
-    protected SimpleAttributeSet infoText;
-
-    protected SimpleAttributeSet commandText;
-
-    protected SimpleAttributeSet announceText;
-
-    protected SimpleAttributeSet myText;
-
     protected boolean isAutoScroll = true;
 
     private boolean isDisposed;
@@ -89,11 +81,82 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
     // Application global friends list.
     static protected HashSet friendsList;
 
+    static protected StyleContext styles;
+
     static {
         ignoreList = (HashSet) GGZPreferences.addAll(
                 GGZPreferences.IGNORE_LIST, new HashSet());
         friendsList = (HashSet) GGZPreferences.addAll(
                 GGZPreferences.FRIENDS_LIST, new HashSet());
+
+        // Set up styles.
+        styles = new StyleContext();
+        Style style;
+
+        style = styles.addStyle("sender-text", null);
+        StyleConstants.setForeground(style, Color.BLUE);
+
+        style = styles.addStyle("friendly-text", null);
+        StyleConstants.setForeground(style, Color.GREEN.darker().darker());
+
+        style = styles.addStyle("info-text", null);
+        StyleConstants.setForeground(style, Color.BLUE);
+        StyleConstants.setBold(style, false);
+
+        style = styles.addStyle("command-text", null);
+        StyleConstants.setForeground(style, Color.RED);
+        StyleConstants.setFontFamily(style, "Monospaced");
+
+        style = styles.addStyle("announce-text", null);
+        StyleConstants.setForeground(style, Color.RED);
+        StyleConstants.setBold(style, true);
+
+        style = styles.addStyle("my-text", null);
+        StyleConstants.setForeground(style, GGZPreferences.getColor(
+                GGZPreferences.MY_FONT_COLOR, null));
+
+        // Initialise icons for emoticons.
+        style = styles.addStyle("emoticon-smile", null);
+        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_smile.png")));
+
+        style = styles.addStyle("emoticon-unhappy", null);
+        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_unhappy.png")));
+
+        style = styles.addStyle("emoticon-tongue", null);
+        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_tongue.png")));
+
+        style = styles.addStyle("emoticon-wink", null);
+        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_wink.png")));
+
+        style = styles.addStyle("emoticon-evilgrin", null);
+        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_evilgrin.png")));
+
+        style = styles.addStyle("emoticon-grin", null);
+        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_grin.png")));
+
+        style = styles.addStyle("emoticon-surprised", null);
+        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_surprised.png")));
+
+        GGZPreferences
+                .addPreferenceChangeListener(new PreferenceChangeListener() {
+
+                    public void preferenceChange(PreferenceChangeEvent evt) {
+                        if (GGZPreferences.MY_FONT_COLOR.equals(evt.getKey())) {
+                            Style style = styles.getStyle("my-text");
+                            StyleConstants.setForeground(style, GGZPreferences
+                                    .getColor(evt.getKey(), StyleConstants
+                                            .getForeground(style)));
+                        }
+                    }
+                });
+
     }
 
     /**
@@ -110,7 +173,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         sendButton = new JButton(chatAction);
         textField = new JTextField();
         textField.setEnabled(false);
-        chatArea = new JTextPane() {
+        chatArea = new JTextPane(new DefaultStyledDocument(styles)) {
             public void scrollRectToVisible(Rectangle rect) {
                 // This is only needed when using setCaretPosition() to scroll
                 // the chat.
@@ -122,6 +185,10 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         GGZPreferences.addPreferenceChangeListener(this);
         chatArea.setFont(GGZPreferences.getFont(GGZPreferences.CHAT_FONT,
                 chatArea.getFont()));
+        chatArea.setBackground(GGZPreferences.getColor(
+                GGZPreferences.CHAT_BACKGROUND, chatArea.getBackground()));
+        chatArea.setForeground(GGZPreferences.getColor(
+                GGZPreferences.CHAT_FOREGROUND, chatArea.getForeground()));
         chatArea.setEditable(false);
         TextPopupMenu.enableFor(chatArea);
         TextPopupMenu.enableFor(textField);
@@ -147,33 +214,13 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         textField.setAction(sendButton.getAction());
         textField.setBorder(BorderFactory.createTitledBorder((String) null));
         textField.setFont(chatArea.getFont());
+        textField.setForeground(chatArea.getForeground());
+        textField.setBackground(chatArea.getBackground());
         messageLayout.setBorder(BorderFactory.createEmptyBorder(0, 4, 4, 4));
 
         setOpaque(false);
         sendButton.setOpaque(false);
         messageLayout.setOpaque(false);
-
-        senderText = new SimpleAttributeSet();
-        senderText.addAttribute(StyleConstants.Foreground, Color.BLUE);
-
-        friendlyText = new SimpleAttributeSet();
-        friendlyText.addAttribute(StyleConstants.Foreground, Color.GREEN
-                .darker().darker());
-
-        infoText = new SimpleAttributeSet();
-        infoText.addAttribute(StyleConstants.Foreground, Color.BLUE);
-        infoText.addAttribute(StyleConstants.Bold, Boolean.FALSE);
-
-        commandText = new SimpleAttributeSet();
-        commandText.addAttribute(StyleConstants.Foreground, Color.RED);
-        commandText.addAttribute(StyleConstants.FontFamily, "Monospaced");
-
-        announceText = new SimpleAttributeSet();
-        announceText.addAttribute(StyleConstants.Foreground, Color.RED);
-        announceText.addAttribute(StyleConstants.Bold, Boolean.TRUE);
-
-        myText = new SimpleAttributeSet();
-        myText.addAttribute(StyleConstants.Foreground, Color.MAGENTA.darker());
     }
 
     /**
@@ -191,10 +238,11 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
 
     public void appendInfo(final String message) {
         assertOnEventDispatchThread();
-        Document doc = chatArea.getDocument();
+        StyledDocument doc = chatArea.getStyledDocument();
         checkAutoScroll();
         try {
-            doc.insertString(doc.getLength(), message, infoText);
+            doc.insertString(doc.getLength(), message, doc
+                    .getStyle("info-text"));
             doc.insertString(doc.getLength(), "\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
@@ -205,10 +253,11 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         assertOnEventDispatchThread();
         // All handlers are called from the socket thread so we need to do
         // this crazy stuff. This method is usually invoked from a handler.
-        Document doc = chatArea.getDocument();
+        StyledDocument doc = chatArea.getStyledDocument();
         checkAutoScroll();
         try {
-            doc.insertString(doc.getLength(), message, commandText);
+            doc.insertString(doc.getLength(), message, doc
+                    .getStyle("command-text"));
             doc.insertString(doc.getLength(), "\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
@@ -225,7 +274,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
             // We are ignoring this person.
             return;
         }
-        Document doc = chatArea.getDocument();
+        StyledDocument doc = chatArea.getStyledDocument();
         String emote = null;
         AttributeSet textStyle = null;
 
@@ -241,32 +290,105 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         }
 
         if ("MegaGrub".equals(sender)) {
-            textStyle = senderText;
+            textStyle = doc.getStyle("sender-text");
         } else if (type == ChatType.GGZ_CHAT_ANNOUNCE) {
-            textStyle = announceText;
+            textStyle = doc.getStyle("announce-text");
             // TODO change the text to <nic> announces:
         } else if (sender.equals(me)) {
-            textStyle = myText;
+            textStyle = doc.getStyle("my-text");
         } else if (friendsList != null
                 && friendsList.contains(sender.toLowerCase())) {
-            textStyle = friendlyText;
+            textStyle = doc.getStyle("friendly-text");
         }
 
+        doc.getStyle("");
         checkAutoScroll();
         try {
             if (emote == null) {
                 doc.insertString(doc.getLength(), MessageFormat.format(messages
                         .getString("ChatPanel.Says"), new Object[] { sender }),
-                        senderText);
-                doc.insertString(doc.getLength(), message, textStyle);
+                        doc.getStyle("sender-text"));
+                insertWithEmotes(doc, message, textStyle);
             } else {
-                doc.insertString(doc.getLength(), MessageFormat.format(emote,
-                        new Object[] { sender }), senderText);
+                insertWithEmotes(doc, MessageFormat.format(emote,
+                        new Object[] { sender }), doc.getStyle("sender-text"));
             }
             doc.insertString(doc.getLength(), "\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void insertWithEmotes(StyledDocument doc, String text,
+            AttributeSet style) throws BadLocationException {
+        // Look for the start of a smiley.
+        StringTokenizer parser = new StringTokenizer(text, ":;", true);
+        if (!parser.hasMoreElements())
+            return;
+
+        String tok = parser.nextToken();
+
+        do {
+            Style emoticon = null;
+            String nextTok = null;
+            if ((":".equals(tok) || ";".equals(tok)) && parser.hasMoreTokens()) {
+                // Possible emoticon.
+                nextTok = parser.nextToken();
+                char ch = nextTok.charAt(0);
+                switch (ch) {
+                case ')':
+                    // Smile or Wink.
+                    emoticon = ":".equals(tok) ? doc.getStyle("emoticon-smile")
+                            : doc.getStyle("emoticon-wink");
+                    tok += ch;
+                    break;
+                case '(':
+                    // Unhappy.
+                    emoticon = doc.getStyle("emoticon-unhappy");
+                    tok += ch;
+                    break;
+                case 'D':
+                    // Grin.
+                    emoticon = doc.getStyle("emoticon-grin");
+                    tok += ch;
+                    break;
+                case '@':
+                    // Evil Grin.
+                    emoticon = doc.getStyle("emoticon-evilgrin");
+                    tok += ch;
+                    break;
+                case 'P':
+                    // Tongue.
+                    emoticon = doc.getStyle("emoticon-tongue");
+                    tok += ch;
+                    break;
+                case 'O': // Surprised.
+                    emoticon = doc.getStyle("emoticon-surprised");
+                    tok += ch;
+                    break;
+                }
+            }
+
+            if (emoticon == null) {
+                doc.insertString(doc.getLength(), tok, style);
+                if (nextTok != null) {
+                    tok = nextTok;
+                } else if (parser.hasMoreTokens()) {
+                    tok = parser.nextToken();
+                } else {
+                    tok = null;
+                }
+            } else {
+                doc.insertString(doc.getLength(), tok, emoticon);
+                if (nextTok != null && nextTok.length() > 1) {
+                    tok = nextTok.substring(1);
+                } else if (parser.hasMoreTokens()) {
+                    tok = parser.nextToken();
+                } else {
+                    tok = null;
+                }
+            }
+        } while (tok != null);
     }
 
     protected void checkAutoScroll() {
@@ -406,10 +528,14 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
             chatArea.setFont(GGZPreferences.getFont(evt.getKey(), chatArea
                     .getFont()));
             textField.setFont(chatArea.getFont());
-        } else if (GGZPreferences.MY_FONT_COLOR.equals(evt.getKey())) {
-            senderText.addAttribute(StyleConstants.Foreground, GGZPreferences
-                    .getColor(evt.getKey(), (Color) senderText
-                            .getAttribute(StyleConstants.Foreground)));
+        } else if (GGZPreferences.CHAT_FOREGROUND.equals(evt.getKey())) {
+            chatArea.setForeground(GGZPreferences.getColor(evt.getKey(),
+                    chatArea.getForeground()));
+            textField.setForeground(chatArea.getForeground());
+        } else if (GGZPreferences.CHAT_BACKGROUND.equals(evt.getKey())) {
+            chatArea.setBackground(GGZPreferences.getColor(evt.getKey(),
+                    chatArea.getBackground()));
+            textField.setBackground(chatArea.getBackground());
         }
     }
 }

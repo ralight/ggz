@@ -47,7 +47,7 @@ public class PreferencesDialog extends JDialog {
         buttonSizePanel.add(okButton);
         buttonSizePanel.add(cancelButton);
         buttonSizePanel.add(applyButton);
-        buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         buttonPanel.add(buttonSizePanel);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 

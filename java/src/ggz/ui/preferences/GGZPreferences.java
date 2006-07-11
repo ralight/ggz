@@ -23,6 +23,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeListener;
@@ -30,6 +31,10 @@ import java.util.prefs.Preferences;
 
 public class GGZPreferences {
     public static String CHAT_FONT = "Chat.Font";
+
+    public static String CHAT_FOREGROUND = "Chat.Foreground";
+
+    public static String CHAT_BACKGROUND = "Chat.Background";
 
     public static String MY_FONT_COLOR = "Chat.My.Color";
 
@@ -46,6 +51,8 @@ public class GGZPreferences {
 
     private static Preferences prefs;
 
+    private static HashMap defaults;
+
     static {
         try {
             prefs = Preferences.userNodeForPackage(GGZPreferences.class);
@@ -53,6 +60,10 @@ public class GGZPreferences {
             // Running under a security manager so just use propterties.
             prefs = new PropertiesPreferences();
         }
+
+        // Set up defaults.
+        defaults = new HashMap();
+        defaults.put(MY_FONT_COLOR, Color.MAGENTA.darker());
     }
 
     public static Font getFont(String key, Font defaultValue) {
@@ -70,11 +81,11 @@ public class GGZPreferences {
     }
 
     public static Color getColor(String key, Color defaultValue) {
-        return getColor(key, encodeColor(defaultValue));
-    }
-
-    public static Color getColor(String key, String defaultValue) {
-        return Color.decode(get(key, defaultValue));
+        String colorString = get(key, null);
+        if (defaultValue == null) {
+            defaultValue = (Color) defaults.get(key);
+        }
+        return colorString == null ? defaultValue : Color.decode(colorString);
     }
 
     public static void putColor(String key, Color color) {
@@ -151,8 +162,16 @@ public class GGZPreferences {
     }
 
     private static String encodeColor(Color color) {
-        return "0x" + Integer.toHexString(color.getRGB())
-                + Integer.toHexString(color.getTransparency());
+        if (color == null)
+            return null;
+        return "0x" + toTwoDigitHexString(color.getRed())
+                + toTwoDigitHexString(color.getGreen())
+                + toTwoDigitHexString(color.getBlue());
+    }
+
+    private static String toTwoDigitHexString(int n) {
+        String s = Integer.toHexString(n);
+        return s.length() == 1 ? "0" + s : s;
     }
 
     private static String encodeStringCollection(Collection collection) {
