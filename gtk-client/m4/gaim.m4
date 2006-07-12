@@ -11,6 +11,20 @@ dnl
 
 AC_DEFUN([AC_GAIM],
 [
+AC_ARG_ENABLE([gaim_plugin],
+  AS_HELP_STRING([--disable-gaim-plugin], [Do not compile gaim plugin]),
+  [enable_gaim_plugin=no],
+  [enable_gaim_plugin=yes])
+
+if test "$enable_gaim_plugin" = "yes"; then
+  AC_GAIM_CHECK([$1], [$2], [$3])
+else
+  have_gaim=no
+fi
+])
+
+AC_DEFUN([AC_GAIM_CHECK],
+[
 AC_MSG_CHECKING([for Gtk+ library: libgaim])
 
 ac_gaim_includes=NO
