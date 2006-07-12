@@ -35,7 +35,6 @@ void ggzcomm_msgseat(GGZDataIO *dio)
 	ggz_dio_put_int(dio, msgseat);
 	ggz_dio_put_int(dio, variables.num);
 	ggz_dio_packet_end(dio);
-	if (ggz_dio_flush(dio) < 0) ggzcomm_error();
 }
 
 void ggzcomm_msgplayers(GGZDataIO *dio)
@@ -51,7 +50,6 @@ void ggzcomm_msgplayers(GGZDataIO *dio)
 		}
 	}
 	ggz_dio_packet_end(dio);
-	if (ggz_dio_flush(dio) < 0) ggzcomm_error();
 }
 
 void ggzcomm_reqmove(GGZDataIO *dio)
@@ -59,7 +57,6 @@ void ggzcomm_reqmove(GGZDataIO *dio)
 	ggz_dio_packet_start(dio);
 	ggz_dio_put_int(dio, reqmove);
 	ggz_dio_packet_end(dio);
-	if (ggz_dio_flush(dio) < 0) ggzcomm_error();
 
 	requirelink = 1;
 	nextlink = sndmove;
@@ -71,7 +68,6 @@ void ggzcomm_rspmove(GGZDataIO *dio)
 	ggz_dio_put_int(dio, rspmove);
 	ggz_dio_put_char(dio, variables.status);
 	ggz_dio_packet_end(dio);
-	if (ggz_dio_flush(dio) < 0) ggzcomm_error();
 
 	requirelink = 1;
 	nextlink = sndmove;
@@ -84,7 +80,6 @@ void ggzcomm_msgmove(GGZDataIO *dio)
 	ggz_dio_put_int(dio, variables.player);
 	ggz_dio_put_int(dio, variables.move);
 	ggz_dio_packet_end(dio);
-	if (ggz_dio_flush(dio) < 0) ggzcomm_error();
 }
 
 void ggzcomm_sndsync(GGZDataIO *dio)
@@ -98,7 +93,6 @@ void ggzcomm_sndsync(GGZDataIO *dio)
 		ggz_dio_put_char(dio, variables.space[i]);
 	}
 	ggz_dio_packet_end(dio);
-	if (ggz_dio_flush(dio) < 0) ggzcomm_error();
 
 	requirelink = 1;
 	nextlink = reqsync;
@@ -110,7 +104,6 @@ void ggzcomm_msggameover(GGZDataIO *dio)
 	ggz_dio_put_int(dio, msggameover);
 	ggz_dio_put_char(dio, variables.winner);
 	ggz_dio_packet_end(dio);
-	if (ggz_dio_flush(dio) < 0) ggzcomm_error();
 }
 
 static void ggzcomm_network_main_cb(GGZDataIO *dio, void *userdata)
@@ -138,7 +131,8 @@ static void ggzcomm_network_main_cb(GGZDataIO *dio, void *userdata)
 
 void ggzcomm_network_main(GGZDataIO *dio)
 {
-	if (ggz_dio_read_data(dio, ggzcomm_network_main_cb, NULL) < 0) {
+	ggz_dio_set_read_callback(dio, ggzcomm_network_main_cb, NULL);
+	if (ggz_dio_read_data(dio) < 0) {
 		ggzcomm_error();
 	}
 }

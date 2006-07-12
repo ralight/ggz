@@ -62,8 +62,13 @@ struct GGZDataIO {
 	int fd;
 
 	struct {
-		/* Callback invoked to indicate whether writeable data is pending. */
+		/* If set, a flush will be done after every packet. */
+		bool auto_flush;
+
+		/* Callback invoked to indicate whether writeable
+		   data is pending. */
 		void (*writeable_callback) (GGZDataIO *, bool);
+
 		bool in_packet;
 
 		char *buf;	/* The buffer. */
@@ -75,6 +80,13 @@ struct GGZDataIO {
 		size_t writeloc;	/* The last position written to the network. */
 	} output;
 	struct {
+		/* If set, no packets will be parsed. */
+		bool read_freeze;
+
+		/* Callback invoked when a packet is encountered. */
+		void (*read_callback) (GGZDataIO *, void *);
+		void *read_cb_userdata;
+
 		bool handling;
 
 		char *buf;	/* The buffer. */
@@ -87,6 +99,8 @@ struct GGZDataIO {
 		size_t readloc;	/* The last position read from the network. */
 	} input;
 };
+
+static void consume_packets(GGZDataIO * dio);
 
 #if 0
 /***************************************************************
@@ -132,11 +146,13 @@ GGZDataIO *ggz_dio_new(int socket)
 	my_nonblock(socket);
 #endif
 
+	dio->output.auto_flush = false;
 	dio->output.buf = ggz_malloc(bufsz);
 	dio->output.bufsz = bufsz;
 	dio->output.in_packet = false;
 	dio->output.start = dio->output.current = dio->output.writeloc = 0;
 
+	dio->input.read_freeze = false;
 	dio->input.buf = ggz_malloc(bufsz);
 	dio->input.bufsz = bufsz;
 	dio->input.handling = false;
@@ -145,7 +161,7 @@ GGZDataIO *ggz_dio_new(int socket)
 	return dio;
 }
 
-void ggz_dio_free(GGZDataIO *dio)
+void ggz_dio_free(GGZDataIO * dio)
 {
 	/* FIXME: Assertions/invariants? */
 
@@ -154,7 +170,30 @@ void ggz_dio_free(GGZDataIO *dio)
 	ggz_free(dio);
 }
 
-void ggz_dio_set_writeable_callback(GGZDataIO *dio,
+void ggz_dio_set_read_freeze(GGZDataIO * dio, bool frozen)
+{
+	bool old_frozen = dio->input.read_freeze;
+
+	assert(!!frozen == frozen);
+	dio->input.read_freeze = frozen;
+	if (old_frozen && !frozen) {
+		consume_packets(dio);
+	}
+}
+
+void ggz_dio_set_auto_flush(GGZDataIO * dio, bool autoflush)
+{
+	bool old_autoflush = dio->output.auto_flush;
+
+	assert(!!autoflush == autoflush);
+	dio->output.auto_flush = autoflush;
+
+	if (!old_autoflush && autoflush) {
+		(void)ggz_dio_flush(dio);
+	}
+}
+
+void ggz_dio_set_writeable_callback(GGZDataIO * dio,
 				    void (writeable_callback) (struct
 							       GGZDataIO *,
 							       bool))
@@ -162,16 +201,23 @@ void ggz_dio_set_writeable_callback(GGZDataIO *dio,
 	dio->output.writeable_callback = writeable_callback;
 }
 
+void ggz_dio_set_read_callback(GGZDataIO * dio,
+			       void read_callback(GGZDataIO *, void *),
+			       void *read_callback_userdata)
+{
+	dio->input.read_callback = read_callback;
+	dio->input.read_cb_userdata = read_callback_userdata;
+}
+
 /* Takes packets from the input buffer and parses them. */
-static void consume_packets(GGZDataIO *dio,
-			    void (read_callback) (GGZDataIO *, void *),
-			    void *userdata)
+static void consume_packets(GGZDataIO * dio)
 {
 	assert(dio->input.final == dio->input.start);
 	assert(dio->input.start == dio->input.current);
 	assert(dio->input.readloc <= dio->input.bufsz);
 
-	while (dio->input.readloc - dio->input.start > 2) {
+	while (dio->input.readloc - dio->input.start > 2
+	       && !dio->input.read_freeze) {
 		uint16_t pack_size;
 
 		assert(sizeof(pack_size) == 2);
@@ -193,7 +239,8 @@ static void consume_packets(GGZDataIO *dio,
 		assert(dio->input.start <= dio->input.current);
 		assert(dio->input.current <= dio->input.final);
 		assert(dio->input.final <= dio->input.bufsz);
-		(read_callback) (dio, userdata);
+		(dio->input.read_callback) (dio,
+					    dio->input.read_cb_userdata);
 		dio->input.start = dio->input.final;
 		dio->input.current = dio->input.final;
 	}
@@ -218,9 +265,7 @@ static void consume_packets(GGZDataIO *dio,
 }
 
 /* Network r/w functions. */
-int ggz_dio_read_data(GGZDataIO *dio,
-		      void (read_callback) (GGZDataIO *, void *),
-		      void *userdata)
+int ggz_dio_read_data(GGZDataIO * dio)
 {
 	int nleft;
 	char *ptr;
@@ -243,7 +288,6 @@ int ggz_dio_read_data(GGZDataIO *dio,
 #else
 	nread = read(dio->fd, ptr, nleft);
 #endif
-
 	if (nread < 0) {
 		dio->input.handling = false;
 		return -1;
@@ -252,14 +296,14 @@ int ggz_dio_read_data(GGZDataIO *dio,
 	dio->input.readloc += nread;
 	assert(dio->input.readloc <= dio->input.bufsz);
 
-	consume_packets(dio, read_callback, userdata);
+	consume_packets(dio);
 
 	dio->input.handling = false;
 
 	return nread;
 }
 
-int ggz_dio_write_data(GGZDataIO *dio)
+int ggz_dio_write_data(GGZDataIO * dio)
 {
 	int nleft = dio->output.start - dio->output.writeloc;
 	int nwritten;
@@ -305,7 +349,7 @@ int ggz_dio_write_data(GGZDataIO *dio)
 	return nwritten;
 }
 
-int ggz_dio_flush(GGZDataIO *dio)
+int ggz_dio_flush(GGZDataIO * dio)
 {
 	while (ggz_dio_is_write_pending(dio)) {
 		if (ggz_dio_write_data(dio) < 0) {
@@ -321,7 +365,7 @@ bool ggz_dio_is_write_pending(const GGZDataIO * dio)
 	return (dio->output.start > dio->output.writeloc);
 }
 
-int ggz_dio_get_socket(const GGZDataIO *dio)
+int ggz_dio_get_socket(const GGZDataIO * dio)
 {
 	return dio->fd;
 }
@@ -329,7 +373,7 @@ int ggz_dio_get_socket(const GGZDataIO *dio)
 /**************************************************************************
   Returns true iff the output has size bytes available.
 **************************************************************************/
-static void ensure_output_data(GGZDataIO *dio, size_t size)
+static void ensure_output_data(GGZDataIO * dio, size_t size)
 {
 	int diff = size - (dio->output.bufsz - dio->output.current);
 
@@ -342,7 +386,7 @@ static void ensure_output_data(GGZDataIO *dio, size_t size)
 	}
 }
 
-void ggz_dio_packet_start(GGZDataIO *dio)
+void ggz_dio_packet_start(GGZDataIO * dio)
 {
 	assert(!dio->output.in_packet);
 	assert(dio->output.current == dio->output.start);
@@ -352,7 +396,7 @@ void ggz_dio_packet_start(GGZDataIO *dio)
 	dio->output.current += 2;
 }
 
-void ggz_dio_packet_end(GGZDataIO *dio)
+void ggz_dio_packet_end(GGZDataIO * dio)
 {
 	uint16_t pack_size = dio->output.current - dio->output.start;
 	bool writeable = (dio->output.current == dio->output.writeloc);
@@ -371,12 +415,16 @@ void ggz_dio_packet_end(GGZDataIO *dio)
 	}
 
 	dio->output.in_packet = false;
+
+	if (dio->output.auto_flush) {
+		(void)ggz_dio_flush(dio);
+	}
 }
 
 /**************************************************************************
   Returns true iff the input contains size unread bytes.
 **************************************************************************/
-static bool enough_input_data(GGZDataIO *dio, size_t size)
+static bool enough_input_data(GGZDataIO * dio, size_t size)
 {
 	assert(dio->input.start <= dio->input.current);
 	assert(dio->input.current <= dio->input.final);
@@ -390,7 +438,7 @@ static bool enough_input_data(GGZDataIO *dio, size_t size)
   Initializes the output to the given output buffer and the given
   buffer size.
 **************************************************************************/
-void ggz_dio_output_init(GGZDataIO *dio, void *destination,
+void ggz_dio_output_init(GGZDataIO * dio, void *destination,
 			 size_t dest_size)
 {
 	dio->dest = destination;
@@ -403,7 +451,7 @@ void ggz_dio_output_init(GGZDataIO *dio, void *destination,
 /**************************************************************************
   Return the maximum number of bytes used.
 **************************************************************************/
-size_t ggz_dio_output_used(GGZDataIO *dio)
+size_t ggz_dio_output_used(GGZDataIO * dio)
 {
 	return dio->used;
 }
@@ -412,7 +460,7 @@ size_t ggz_dio_output_used(GGZDataIO *dio)
   Rewinds the stream so that the put-functions start from the
   beginning.
 **************************************************************************/
-void ggz_dio_output_rewind(GGZDataIO *dio)
+void ggz_dio_output_rewind(GGZDataIO * dio)
 {
 	dio->current = 0;
 }
@@ -421,8 +469,7 @@ void ggz_dio_output_rewind(GGZDataIO *dio)
   Initializes the input to the given input buffer and the given
   number of valid input bytes.
 **************************************************************************/
-void ggz_dio_input_init(GGZDataIO *dio, const void *src,
-			size_t src_size)
+void ggz_dio_input_init(GGZDataIO * dio, const void *src, size_t src_size)
 {
 	dio->src = src;
 	dio->src_size = src_size;
@@ -438,7 +485,7 @@ void ggz_dio_input_init(GGZDataIO *dio, const void *src,
   Rewinds the stream so that the get-functions start from the
   beginning.
 **************************************************************************/
-void ggz_dio_input_rewind(GGZDataIO *dio)
+void ggz_dio_input_rewind(GGZDataIO * dio)
 {
 	dio->current = 0;
 }
@@ -446,21 +493,21 @@ void ggz_dio_input_rewind(GGZDataIO *dio)
 /**************************************************************************
   Return the number of unread bytes.
 **************************************************************************/
-size_t ggz_dio_input_remaining(GGZDataIO *dio)
+size_t ggz_dio_input_remaining(GGZDataIO * dio)
 {
 	return dio->src_size - dio->current;
 }
 #endif
 
 /* Convenience function corresponding to easysock. */
-void ggz_dio_put_char(GGZDataIO *dio, char dest)
+void ggz_dio_put_char(GGZDataIO * dio, char dest)
 {
 	assert(sizeof(dest) == 1);
 	ggz_dio_put_memory(dio, &dest, sizeof(dest));
 }
 
 /* Convenience function corresponding to easysock. */
-void ggz_dio_put_int(GGZDataIO *dio, int dest)
+void ggz_dio_put_int(GGZDataIO * dio, int dest)
 {
 	ggz_dio_put_sint32(dio, dest);
 }
@@ -468,7 +515,7 @@ void ggz_dio_put_int(GGZDataIO *dio, int dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_uint8(GGZDataIO *dio, int value)
+void ggz_dio_put_uint8(GGZDataIO * dio, int value)
 {
 	uint8_t x = value;
 
@@ -479,7 +526,7 @@ void ggz_dio_put_uint8(GGZDataIO *dio, int value)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_uint16(GGZDataIO *dio, int value)
+void ggz_dio_put_uint16(GGZDataIO * dio, int value)
 {
 	uint16_t x = htons(value);
 
@@ -490,7 +537,7 @@ void ggz_dio_put_uint16(GGZDataIO *dio, int value)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_uint32(GGZDataIO *dio, int value)
+void ggz_dio_put_uint32(GGZDataIO * dio, int value)
 {
 	uint32_t x = htonl(value);
 
@@ -498,17 +545,17 @@ void ggz_dio_put_uint32(GGZDataIO *dio, int value)
 	ggz_dio_put_memory(dio, &x, 4);
 }
 
-void ggz_dio_put_sint8(GGZDataIO *dio, int value)
+void ggz_dio_put_sint8(GGZDataIO * dio, int value)
 {
 	ggz_dio_put_uint8(dio, value);
 }
 
-void ggz_dio_put_sint16(GGZDataIO *dio, int value)
+void ggz_dio_put_sint16(GGZDataIO * dio, int value)
 {
 	ggz_dio_put_uint16(dio, value);
 }
 
-void ggz_dio_put_sint32(GGZDataIO *dio, int value)
+void ggz_dio_put_sint32(GGZDataIO * dio, int value)
 {
 	ggz_dio_put_uint32(dio, value);
 }
@@ -516,7 +563,7 @@ void ggz_dio_put_sint32(GGZDataIO *dio, int value)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_bool8(GGZDataIO *dio, bool value)
+void ggz_dio_put_bool8(GGZDataIO * dio, bool value)
 {
 	if (value != true && value != false) {
 		ggz_error_msg("Trying to put a non-boolean: %d",
@@ -530,7 +577,7 @@ void ggz_dio_put_bool8(GGZDataIO *dio, bool value)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_bool32(GGZDataIO *dio, bool value)
+void ggz_dio_put_bool32(GGZDataIO * dio, bool value)
 {
 	if (value != true && value != false) {
 		ggz_error_msg("Trying to put a non-boolean: %d",
@@ -545,8 +592,7 @@ void ggz_dio_put_bool32(GGZDataIO *dio, bool value)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_uint8_vec8(GGZDataIO *dio, int *values,
-			    int stop_value)
+void ggz_dio_put_uint8_vec8(GGZDataIO * dio, int *values, int stop_value)
 {
 	size_t count;
 
@@ -568,8 +614,7 @@ void ggz_dio_put_uint8_vec8(GGZDataIO *dio, int *values,
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_uint16_vec8(GGZDataIO *dio, int *values,
-			     int stop_value)
+void ggz_dio_put_uint16_vec8(GGZDataIO * dio, int *values, int stop_value)
 {
 	size_t count;
 
@@ -592,7 +637,7 @@ void ggz_dio_put_uint16_vec8(GGZDataIO *dio, int *values,
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_memory(GGZDataIO *dio, const void *value, size_t size)
+void ggz_dio_put_memory(GGZDataIO * dio, const void *value, size_t size)
 {
 	ensure_output_data(dio, size);
 
@@ -603,7 +648,7 @@ void ggz_dio_put_memory(GGZDataIO *dio, const void *value, size_t size)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_string(GGZDataIO *dio, const char *value)
+void ggz_dio_put_string(GGZDataIO * dio, const char *value)
 {
 	/* Corresponds exactly to ggz_write_string. */
 	unsigned int size = strlen(value) + 1;
@@ -617,7 +662,7 @@ void ggz_dio_put_string(GGZDataIO *dio, const char *value)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_put_bit_string(GGZDataIO *dio, const char *value)
+void ggz_dio_put_bit_string(GGZDataIO * dio, const char *value)
 {
 	/* Note that size_t is often an unsigned type, so we must be careful
 	 * with the math when calculating 'bytes'. */
@@ -652,14 +697,14 @@ void ggz_dio_put_bit_string(GGZDataIO *dio, const char *value)
 #endif
 
 /* Convenience function corresponding to easysock. */
-void ggz_dio_get_char(GGZDataIO *dio, char *dest)
+void ggz_dio_get_char(GGZDataIO * dio, char *dest)
 {
 	assert(sizeof(*dest) == 1);
 	ggz_dio_get_memory(dio, dest, sizeof(*dest));
 }
 
 /* Convenience function corresponding to easysock. */
-void ggz_dio_get_int(GGZDataIO *dio, int *dest)
+void ggz_dio_get_int(GGZDataIO * dio, int *dest)
 {
 	ggz_dio_get_sint32(dio, dest);
 }
@@ -667,7 +712,7 @@ void ggz_dio_get_int(GGZDataIO *dio, int *dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_uint8(GGZDataIO *dio, int *dest)
+void ggz_dio_get_uint8(GGZDataIO * dio, int *dest)
 {
 	uint8_t x;
 
@@ -679,7 +724,7 @@ void ggz_dio_get_uint8(GGZDataIO *dio, int *dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_uint16(GGZDataIO *dio, int *dest)
+void ggz_dio_get_uint16(GGZDataIO * dio, int *dest)
 {
 	uint16_t x;
 
@@ -691,7 +736,7 @@ void ggz_dio_get_uint16(GGZDataIO *dio, int *dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_uint32(GGZDataIO *dio, unsigned int *dest)
+void ggz_dio_get_uint32(GGZDataIO * dio, unsigned int *dest)
 {
 	uint32_t x;
 
@@ -703,7 +748,7 @@ void ggz_dio_get_uint32(GGZDataIO *dio, unsigned int *dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_bool8(GGZDataIO *dio, bool * dest)
+void ggz_dio_get_bool8(GGZDataIO * dio, bool * dest)
 {
 	int ival;
 
@@ -720,7 +765,7 @@ void ggz_dio_get_bool8(GGZDataIO *dio, bool * dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_bool32(GGZDataIO *dio, bool * dest)
+void ggz_dio_get_bool32(GGZDataIO * dio, bool * dest)
 {
 	unsigned int ival = 0;
 
@@ -737,7 +782,7 @@ void ggz_dio_get_bool32(GGZDataIO *dio, bool * dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_sint8(GGZDataIO *dio, int *dest)
+void ggz_dio_get_sint8(GGZDataIO * dio, int *dest)
 {
 	int tmp;
 
@@ -751,7 +796,7 @@ void ggz_dio_get_sint8(GGZDataIO *dio, int *dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_sint16(GGZDataIO *dio, int *dest)
+void ggz_dio_get_sint16(GGZDataIO * dio, int *dest)
 {
 	int tmp;
 
@@ -762,7 +807,7 @@ void ggz_dio_get_sint16(GGZDataIO *dio, int *dest)
 	*dest = tmp;
 }
 
-void ggz_dio_get_sint32(GGZDataIO *dio, signed int *dest)
+void ggz_dio_get_sint32(GGZDataIO * dio, signed int *dest)
 {
 	unsigned int tmp;
 
@@ -773,7 +818,7 @@ void ggz_dio_get_sint32(GGZDataIO *dio, signed int *dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_memory(GGZDataIO *dio, void *dest, size_t dest_size)
+void ggz_dio_get_memory(GGZDataIO * dio, void *dest, size_t dest_size)
 {
 	if (enough_input_data(dio, dest_size)) {
 		memcpy(dest, dio->input.buf + dio->input.current,
@@ -789,8 +834,7 @@ void ggz_dio_get_memory(GGZDataIO *dio, void *dest, size_t dest_size)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_string(GGZDataIO *dio, char *dest,
-			size_t max_dest_size)
+void ggz_dio_get_string(GGZDataIO * dio, char *dest, size_t max_dest_size)
 {
 	/* Corresponds exactly to ggz_read_string */
 	unsigned int size;
@@ -812,7 +856,7 @@ void ggz_dio_get_string(GGZDataIO *dio, char *dest,
 /**************************************************************************
   VERY UNSAFE TO USE THIS FUNCTION.  Only use for a trusted connection.
 **************************************************************************/
-void ggz_dio_get_string_alloc(GGZDataIO *dio, char **dest)
+void ggz_dio_get_string_alloc(GGZDataIO * dio, char **dest)
 {
 	/* Corresponds exactly to ggz_read_string_alloc. */
 	unsigned int size;
@@ -827,7 +871,7 @@ void ggz_dio_get_string_alloc(GGZDataIO *dio, char **dest)
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_bit_string(GGZDataIO *dio, char *dest,
+void ggz_dio_get_bit_string(GGZDataIO * dio, char *dest,
 			    size_t max_dest_size)
 {
 	int npack = 0;		/* number claimed in packet */
@@ -872,8 +916,7 @@ void ggz_dio_get_bit_string(GGZDataIO *dio, char *dest,
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_uint8_vec8(GGZDataIO *dio, int **values,
-			    int stop_value)
+void ggz_dio_get_uint8_vec8(GGZDataIO * dio, int **values, int stop_value)
 {
 	int count, inx;
 
@@ -892,8 +935,7 @@ void ggz_dio_get_uint8_vec8(GGZDataIO *dio, int **values,
 /**************************************************************************
 ...
 **************************************************************************/
-void ggz_dio_get_uint16_vec8(GGZDataIO *dio, int **values,
-			     int stop_value)
+void ggz_dio_get_uint16_vec8(GGZDataIO * dio, int **values, int stop_value)
 {
 	int count, inx;
 

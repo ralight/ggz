@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 8333 2006-07-08 00:51:56Z jdorje $
+ * $Id: game.c 8352 2006-07-12 01:51:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -248,6 +248,7 @@ static void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event,
 			ggzdmod_get_max_num_spectators(ggz)
 			* sizeof(*variables.spectator_dio));
 	variables.spectator_dio[spectator.num] = ggz_dio_new(spectator.fd);
+	ggz_dio_set_auto_flush(variables.spectator_dio[spectator.num], true);
 	ggzcomm_msgplayers(variables.spectator_dio[spectator.num]);
 
 	game_send_sync(variables.spectator_dio[spectator.num]);
@@ -299,6 +300,8 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
 	}
 	if (is_join) {
 		variables.seat_dio[new_seat.num] = ggz_dio_new(new_seat.fd);
+		ggz_dio_set_auto_flush(variables.seat_dio[new_seat.num],
+				       true);
 	}
 
 	game_send_players();

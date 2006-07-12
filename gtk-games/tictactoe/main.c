@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 8333 2006-07-08 00:51:56Z jdorje $
+ * $Id: main.c 8352 2006-07-12 01:51:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -148,9 +148,11 @@ static gboolean game_handle_io(GGZMod * mod)
 {
 	if (!game.dio) {
 		game.dio = ggz_dio_new(ggzmod_get_server_fd(mod));
+		ggz_dio_set_auto_flush(game.dio, TRUE);
 	}
 
-	ggz_dio_read_data(game.dio, game_handle_io_cb, mod);
+	ggz_dio_set_read_callback(game.dio, game_handle_io_cb, mod);
+	ggz_dio_read_data(game.dio);
 	return TRUE;
 }
 
@@ -277,7 +279,6 @@ int send_my_move(void)
 	ggz_dio_put_int(game.dio, TTT_SND_MOVE);
 	ggz_dio_put_int(game.dio, game.move);
 	ggz_dio_packet_end(game.dio);
-	ggz_dio_flush(game.dio);
 
 	game.state = STATE_WAIT;
 	return 0;
