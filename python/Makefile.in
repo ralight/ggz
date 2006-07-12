@@ -15,6 +15,8 @@ datadir = @datadir@
 xdg_datadir = @xdg_datadir@
 # ggzd_confdir: For GGZ integration files (/etc/ggzd)
 ggzd_confdir = @ggzd_confdir@
+# py_moddir: Pure python modules (/usr/lib/site-python)
+py_moddir = ${prefix}/lib/site-python
 
 # ggz-config: either ggz-config or 'true' if disabled
 ggz-config = @GGZ_CONFIG@ -D
@@ -141,8 +143,8 @@ install-rest:
 	mkdir -p $(DESTDIR)$(bindir)
 	cp xadrez-chines/xadrez-chines $(DESTDIR)$(bindir)
 	cp xadrez-chines/xadrez-chines-server $(DESTDIR)$(bindir)
-	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
-	cp xadrez-chines/xadrezlib.py $(DESTDIR)$(prefix)/lib/site-python
+	mkdir -p $(DESTDIR)$(py_moddir)
+	cp xadrez-chines/xadrezlib.py $(DESTDIR)$(py_moddir)
 	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/
 	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/
 	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/dark/
@@ -171,10 +173,10 @@ install-rest:
 	cp vibora/*.png $(DESTDIR)$(datadir)/ggz/vibora
 
 	@echo Installing SDL newstuff dialog and player table dialog
-	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
-	cp lib/sdlnewstuff.py $(DESTDIR)$(prefix)/lib/site-python
-	cp lib/playertable.py $(DESTDIR)$(prefix)/lib/site-python
-	cp lib/ggzsettings.py $(DESTDIR)$(prefix)/lib/site-python
+	mkdir -p $(DESTDIR)$(py_moddir)
+	cp lib/sdlnewstuff.py $(DESTDIR)$(py_moddir)
+	cp lib/playertable.py $(DESTDIR)$(py_moddir)
+	cp lib/ggzsettings.py $(DESTDIR)$(py_moddir)
 
 install-ggzboard:
 	@echo Installing GGZBoard framework and games
@@ -200,12 +202,12 @@ install-ggzboard:
 	cp ggzboard/reversi/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
 	cp ggzboard/madn/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	cp ggzboard/connectx/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
-	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
-	cp ggzboard/ggzboard_net.py $(DESTDIR)$(prefix)/lib/site-python
-	cp ggzboard/bogaprot.py $(DESTDIR)$(prefix)/lib/site-python
-	cp ggzboard/bogaprotclient.py $(DESTDIR)$(prefix)/lib/site-python
-	cp ggzboard/module_*.py $(DESTDIR)$(prefix)/lib/site-python
-	cp ggzboard/net_*.py $(DESTDIR)$(prefix)/lib/site-python
+	mkdir -p $(DESTDIR)$(py_moddir)
+	cp ggzboard/ggzboard_net.py $(DESTDIR)$(py_moddir)
+	cp ggzboard/bogaprot.py $(DESTDIR)$(py_moddir)
+	cp ggzboard/bogaprotclient.py $(DESTDIR)$(py_moddir)
+	cp ggzboard/module_*.py $(DESTDIR)$(py_moddir)
+	cp ggzboard/net_*.py $(DESTDIR)$(py_moddir)
 	mkdir -p $(DESTDIR)$(prefix)/lib/ggzd/
 	cp ggzboard/server_*.py $(DESTDIR)$(prefix)/lib/ggzd
 	$(ggz-config) --install --force --modfile=ggzboard/module_checkers.dsc
