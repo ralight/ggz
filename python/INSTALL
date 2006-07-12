@@ -14,7 +14,7 @@ autoconf
 # Compilation of python wrapper modules
 make
 # Installation
-make install prefix=/home/ggz/build
+make install
 
 Afterwards, the variable PYTHONPATH must point to this directory
 unless it's already in Python's default search path.

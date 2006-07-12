@@ -8,4 +8,5 @@
 - fix Reversi rules, Hnefatafl AI
 - sounds!
 - deprecate -ggz in favour of GGZMODE
+- more flexible installation of python modules (site-python is deprecated)
 
