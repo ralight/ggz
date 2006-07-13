@@ -1,0 +1,4458 @@
+Index: ggzd/game_servers/ggzcards/types.h
+===================================================================
+--- ggzd/game_servers/ggzcards/types.h	(revision 8355)
++++ ggzd/game_servers/ggzcards/types.h	(working copy)
+@@ -30,6 +30,7 @@
+ 
+ #include <sys/types.h>
+ 
++#include "ggz_dio.h"
+ #include "shared.h"
+ 
+ #include "deck.h"
+@@ -78,9 +79,10 @@
+ 	seat_t seat;		/* the number of the player's seat. */
+ 	team_t team;		/* The player's team, or -1 for none. */
+ 	bool ready;
+-	
++
++	GGZDataIO *dio;
++
+ 	/* Used for tracking AI processees. */
+-	int fd;
+ #ifdef DEBUG
+ 	int err_fd;
+ #endif /* DEBUG */
+@@ -96,6 +98,10 @@
+ 	seat_t play_seat;	/* what seat are we playing from? */
+ };
+ 
++struct game_spectator_t {
++	GGZDataIO *dio;
++};
++
+ /* Used in message-sending in message.c. */
+ typedef struct global_message_list_t global_message_list_t;
+ 
+Index: ggzd/game_servers/ggzcards/games/lapocha.c
+===================================================================
+--- ggzd/game_servers/ggzcards/games/lapocha.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/games/lapocha.c	(working copy)
+@@ -31,6 +31,7 @@
+ 
+ #include <ggz.h>
+ 
++#include "ggz_dio.h"
+ #include "net_common.h"
+ 
+ #include "bid.h"
+@@ -61,8 +62,8 @@
+ static void lapocha_end_hand(void);
+ 
+ /* these send lapocha-specific game messages. */
+-static int lap_send_trump_request(player_t p);
+-static int lap_send_bid_request(player_t p);
++static void lap_send_trump_request(player_t p);
++static void lap_send_bid_request(player_t p);
+ static void lap_send_dealer(void);
+ static void lap_send_trump(void);
+ static void lap_send_bid(player_t bidder, bid_t bid);
+@@ -302,26 +303,30 @@
+    games. */
+ 
+ /* these send lapocha-specific game messages. */
+-static int lap_send_trump_request(player_t p)
++static void lap_send_trump_request(player_t p)
+ {
+-	int fd = get_player_socket(p);
+-	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
+-	    write_opcode(fd, GAME_MESSAGE_GAME) < 0 ||
+-	    ggz_write_string(fd, "lapocha") < 0 ||
+-	    ggz_write_int(fd, 1) < 0 || ggz_write_char(fd, LAP_REQ_TRUMP) < 0)
+-		return -1;
+-	return 0;
++	GGZDataIO *dio = get_player_dio(p);
++
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MESSAGE_GAME);
++	write_opcode(dio, GAME_MESSAGE_GAME);
++	ggz_dio_put_string(dio, "lapocha");
++	ggz_dio_put_int(dio, 1);
++	ggz_dio_put_char(dio, LAP_REQ_TRUMP);
++	ggz_dio_packet_end(dio);
+ }
+ 
+-static int lap_send_bid_request(player_t p)
++static void lap_send_bid_request(player_t p)
+ {
+-	int fd = get_player_socket(p);
+-	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
+-	    write_opcode(fd, GAME_MESSAGE_GAME) < 0 ||
+-	    ggz_write_string(fd, "lapocha") < 0 ||
+-	    ggz_write_int(fd, 1) < 0 || ggz_write_char(fd, LAP_REQ_BID) < 0)
+-		return -1;
+-	return 0;
++	GGZDataIO *dio = get_player_dio(p);
++
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MESSAGE_GAME);
++	write_opcode(dio, GAME_MESSAGE_GAME);
++	ggz_dio_put_string(dio, "lapocha");
++	ggz_dio_put_int(dio, 1);
++	ggz_dio_put_char(dio, LAP_REQ_BID);
++	ggz_dio_packet_end(dio);
+ }
+ 
+ static void lap_send_dealer(void)
+@@ -329,14 +334,16 @@
+ 	int p;
+ 	
+ 	for (p = 0; p < game.num_players; p++) {
+-		int fd = get_player_socket(p);
++		GGZDataIO *dio = get_player_dio(p);
+ 
+-		write_opcode(fd, MESSAGE_GAME);
+-		write_opcode(fd, GAME_MESSAGE_GAME);
+-		ggz_write_string(fd, "lapocha");
+-		ggz_write_int(fd, 5);
+-		ggz_write_char(fd, LAP_MSG_DEALER);
+-		ggz_write_int(fd, CONVERT_SEAT(game.dealer, p));
++		ggz_dio_packet_start(dio);
++		write_opcode(dio, MESSAGE_GAME);
++		write_opcode(dio, GAME_MESSAGE_GAME);
++		ggz_dio_put_string(dio, "lapocha");
++		ggz_dio_put_int(dio, 5);
++		ggz_dio_put_char(dio, LAP_MSG_DEALER);
++		ggz_dio_put_int(dio, CONVERT_SEAT(game.dealer, p));
++		ggz_dio_packet_end(dio);
+ 	}
+ }
+ 
+@@ -345,13 +352,16 @@
+ 	int p;
+ 	
+ 	for (p = 0; p < game.num_players; p++) {
+-		int fd = get_player_socket(p);
+-		write_opcode(fd, MESSAGE_GAME);
+-		write_opcode(fd, GAME_MESSAGE_GAME);
+-		ggz_write_string(fd, "lapocha");
+-		ggz_write_int(fd, 2);
+-		ggz_write_char(fd, LAP_MSG_TRUMP);
+-		ggz_write_char(fd, game.trump);
++		GGZDataIO *dio = get_player_dio(p);
++
++		ggz_dio_packet_start(dio);
++		write_opcode(dio, MESSAGE_GAME);
++		write_opcode(dio, GAME_MESSAGE_GAME);
++		ggz_dio_put_string(dio, "lapocha");
++		ggz_dio_put_int(dio, 2);
++		ggz_dio_put_char(dio, LAP_MSG_TRUMP);
++		ggz_dio_put_char(dio, game.trump);
++		ggz_dio_packet_end(dio);
+ 	}
+ }
+ 
+@@ -363,14 +373,17 @@
+ 	assert(game.players[bidder].seat == bidder);
+ 	
+ 	for (p = 0; p < game.num_players; p++) {
+-		int fd = get_player_socket(p);
+-		write_opcode(fd, MESSAGE_GAME);
+-		write_opcode(fd, GAME_MESSAGE_GAME);
+-		ggz_write_string(fd, "lapocha");
+-		ggz_write_int(fd, 9);
+-		ggz_write_char(fd, LAP_MSG_BID);
+-		ggz_write_int(fd, bidder);
+-		ggz_write_int(fd, the_bid);
++		GGZDataIO *dio = get_player_dio(p);
++
++		ggz_dio_packet_start(dio);
++		write_opcode(dio, MESSAGE_GAME);
++		write_opcode(dio, GAME_MESSAGE_GAME);
++		ggz_dio_put_string(dio, "lapocha");
++		ggz_dio_put_int(dio, 9);
++		ggz_dio_put_char(dio, LAP_MSG_BID);
++		ggz_dio_put_int(dio, bidder);
++		ggz_dio_put_int(dio, the_bid);
++		ggz_dio_packet_end(dio);
+ 	}
+ }
+ 
+@@ -379,17 +392,20 @@
+ 	player_t p;
+ 
+ 	for (p = 0; p < game.num_players; p++) {
+-		int fd = get_player_socket(p);
++		GGZDataIO *dio = get_player_dio(p);
+ 		seat_t s_r;
+-		write_opcode(fd, MESSAGE_GAME);
+-		write_opcode(fd, GAME_MESSAGE_GAME);
+-		ggz_write_string(fd, "lapocha");
+-		ggz_write_int(fd, 17);
+-		ggz_write_char(fd, LAP_MSG_SCORES);
++
++		ggz_dio_packet_start(dio);
++		write_opcode(dio, MESSAGE_GAME);
++		write_opcode(dio, GAME_MESSAGE_GAME);
++		ggz_dio_put_string(dio, "lapocha");
++		ggz_dio_put_int(dio, 17);
++		ggz_dio_put_char(dio, LAP_MSG_SCORES);
+ 		for (s_r = 0; s_r < game.num_seats; s_r++) {
+ 			seat_t s_abs = UNCONVERT_SEAT(s_r, p);
+ 			assert(game.seats[s_abs].player == s_abs);
+-			ggz_write_int(fd, game.players[s_abs].score);
++			ggz_dio_put_int(dio, game.players[s_abs].score);
+ 		}
++		ggz_dio_packet_end(dio);
+ 	}
+ }
+Index: ggzd/game_servers/ggzcards/games/spades.c
+===================================================================
+--- ggzd/game_servers/ggzcards/games/spades.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/games/spades.c	(working copy)
+@@ -159,6 +159,7 @@
+ 
+ static bool spd_send_scoredata(player_t p)
+ {
++#if 0
+ 	int fd = get_player_socket(p);
+ 	team_t team;
+ 	int waiting = -1;
+@@ -187,6 +188,7 @@
+ 		waiting = game.next_play;
+ 	}
+ 	ggz_write_int(fd, waiting); /* The player we're waiting on. */
++#endif
+ 	return 0;
+ }
+ 
+Index: ggzd/game_servers/ggzcards/message.c
+===================================================================
+--- ggzd/game_servers/ggzcards/message.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/message.c	(working copy)
+@@ -128,7 +128,7 @@
+ 		/* HACK: We don't want to send messages to disconnected
+ 		   players. This check skips them: if the player doesn't
+ 		   have a socket we just skip it. */
+-		if (get_player_socket(p) >= 0) {
++		if (get_player_dio(p)) {
+ 			send_player_message(s, p);
+ 		}
+ 	} allplayers_iterate_end;
+Index: ggzd/game_servers/ggzcards/common/net_common.c
+===================================================================
+--- ggzd/game_servers/ggzcards/common/net_common.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/common/net_common.c	(working copy)
+@@ -38,93 +38,84 @@
+ 
+ #include "net_common.h"
+ 
+-int read_card(int fd, card_t * card)
++void read_card(GGZDataIO *dio, card_t * card)
+ {
+-	if (ggz_read_char(fd, &card->face) < 0 ||
+-	    ggz_read_char(fd, &card->suit) < 0 ||
+-	    ggz_read_char(fd, &card->deck) < 0)
+-		return -1;
++	ggz_dio_get_char(dio, &card->face);
++	ggz_dio_get_char(dio, &card->suit);
++	ggz_dio_get_char(dio, &card->deck);
+ 		
+ 	/* We go ahead and check the card for validity. */
+ 	if (is_valid_card(*card))
+-		return 0;
++		return;
+ 	
+ #if 0 /* This could be dangerous - anyone could crash us! */
+ 	assert(FALSE);
+ #endif
+ 
+ #if 0 /* This probably makes the most sense, but... */
+-	return -1;
++	return;
+ #endif
+ 
+ 	*card = UNKNOWN_CARD;
+-	return 0;
+ }
+ 
+-int write_card(int fd, card_t card)
++void write_card(GGZDataIO *dio, card_t card)
+ {
+ 	/* Check for validity. */
+ 	assert(is_valid_card(card));
+ 	
+-	if (ggz_write_char(fd, card.face) < 0 ||
+-	    ggz_write_char(fd, card.suit) < 0 ||
+-	    ggz_write_char(fd, card.deck) < 0)
+-		return -1;
+-	return 0;
++	ggz_dio_put_char(dio, card.face);
++	ggz_dio_put_char(dio, card.suit);
++	ggz_dio_put_char(dio, card.deck);
+ }
+ 
+-int read_bid(int fd, bid_t * bid)
++void read_bid(GGZDataIO *dio, bid_t * bid)
+ {
+-	if (ggz_read_char(fd, &bid->sbid.val) < 0 ||
+-	    ggz_read_char(fd, &bid->sbid.suit) < 0 ||
+-	    ggz_read_char(fd, &bid->sbid.spec) < 0 ||
+-	    ggz_read_char(fd, &bid->sbid.spec2) < 0)
+-		return -1;
+-	return 0;
++	ggz_dio_get_char(dio, &bid->sbid.val);
++	ggz_dio_get_char(dio, &bid->sbid.suit);
++	ggz_dio_get_char(dio, &bid->sbid.spec);
++	ggz_dio_get_char(dio, &bid->sbid.spec2);
+ }
+ 
+ /** @brief Writes a bid to the socket.
+- *  @param fd The file descriptor to which to read.
+- *  @param bid A pointer to the bid data.
+- *  @return 0 on success, -1 on failure. */
+-int write_bid(int fd, bid_t bid)
++ *  @param dio The file descriptor to which to read.
++ *  @param bid A pointer to the bid data. */
++void write_bid(GGZDataIO *dio, bid_t bid)
+ {
+-	if (ggz_write_char(fd, bid.sbid.val) < 0 ||
+-	    ggz_write_char(fd, bid.sbid.suit) < 0 ||
+-	    ggz_write_char(fd, bid.sbid.spec) < 0 ||
+-	    ggz_write_char(fd, bid.sbid.spec2) < 0)
+-		return -1;
+-	return 0;
++	ggz_dio_put_char(dio, bid.sbid.val);
++	ggz_dio_put_char(dio, bid.sbid.suit);
++	ggz_dio_put_char(dio, bid.sbid.spec);
++	ggz_dio_put_char(dio, bid.sbid.spec2);
+ }
+ 
+-int read_opcode(int fd, int *opcode)
++void read_opcode(GGZDataIO *dio, int *opcode)
+ {
+ 	char op;
+-	if (ggz_read_char(fd, &op) < 0)
+-		return -1;
++
++	ggz_dio_get_char(dio, &op);
+ 	*opcode = op;
+-	return 0;
+ }
+ 
+-int write_opcode(int fd, int opcode)
++void write_opcode(GGZDataIO *dio, int opcode)
+ {
+ 	char op = opcode;
++
+ 	assert(opcode >= 0 && opcode < 128);
+-	return ggz_write_char(fd, op);
++	ggz_dio_put_char(dio, op);
+ }
+ 
+-int read_seat(int fd, int *seat)
++void read_seat(GGZDataIO *dio, int *seat)
+ {
+ 	char s;
+-	if (ggz_read_char(fd, &s) < 0)
+-		return -1;
++
++	ggz_dio_get_char(dio, &s);
+ 	*seat = s;
+-	return 0;
+ }
+ 
+-int write_seat(int fd, int seat)
++void write_seat(GGZDataIO *dio, int seat)
+ {
+ 	char s = seat;
++
+ 	assert(seat >= 0 && seat < 127);
+-	return ggz_write_char(fd, s);
++	ggz_dio_put_char(dio, s);
+ }
+Index: ggzd/game_servers/ggzcards/common/net_common.h
+===================================================================
+--- ggzd/game_servers/ggzcards/common/net_common.h	(revision 8355)
++++ ggzd/game_servers/ggzcards/common/net_common.h	(working copy)
+@@ -29,53 +29,54 @@
+  */
+ 
+ #include "cards.h"
++#include "ggz_dio.h"
+ 
+ /** @brief Reads a card from the socket.
+  *  @param fd The file descriptor from which to read.
+  *  @param card A pointer to the card data.
+  *  @return 0 on success, -1 on failure. */
+-int read_card(int fd, card_t * card);
++void read_card(GGZDataIO *dio, card_t * card);
+ 
+ /** @brief Wites a card to the socket.
+  *  @param fd The file desciptor to which to write.
+  *  @param card The card to be written.
+  *  @return 0 on success, -1 on failure. */
+-int write_card(int fd, card_t card);
++void write_card(GGZDataIO *dio, card_t card);
+ 
+ /** @brief Reads a bid from the socket.
+  *  @param fd The file descriptor from which to read.
+  *  @param bid A pointer to the bid data.
+  *  @return 0 on success, -1 on failure. */
+-int read_bid(int fd, bid_t * bid);
++void read_bid(GGZDataIO *dio, bid_t * bid);
+ 
+ /** @brief Writes a bid to the socket.
+  *  @param fd The file descriptor to which to read.
+  *  @param bid A pointer to the bid data.
+  *  @return 0 on success, -1 on failure. */
+-int write_bid(int fd, bid_t bid);
++void write_bid(GGZDataIO *dio, bid_t bid);
+ 
+ /** @brief Reads an opcode from the socket.
+  *  @param fd The file descriptor from which to read.
+  *  @param op A pointer to the opcode data.
+  *  @return 0 on success, negative value on failure.
+  *  @see enum server_msg_t, enum client_msg_t */
+-int read_opcode(int fd, int *op);
++void read_opcode(GGZDataIO *dio, int *op);
+ 
+ /** @brief Writes an opcode to the socket.
+  *  @param fd The file descriptor to which to write.
+  *  @param op The opcode data.
+  *  @return 0 on success, negative value on failure.
+  *  @see enum server_msg_t, enum client_msg_t */
+-int write_opcode(int fd, int op);
++void write_opcode(GGZDataIO *dio, int op);
+ 
+ /** @brief Reads a seat from the socket.
+  *  @param fd The file descriptor from which to read.
+  *  @param seat A pointer to the seat number.
+  *  @return 0 on success, negative value on failure. */
+-int read_seat(int fd, int *seat);
++void read_seat(GGZDataIO *dio, int *seat);
+ 
+ /** @brief Writes a seat number to the socket.
+  *  @param fd The file descriptor to which to write.
+  *  @param seat The seat number.
+  *  @return 0 on success, negative value on failure. */
+-int write_seat(int fd, int seat);
++void write_seat(GGZDataIO *dio, int seat);
+Index: ggzd/game_servers/ggzcards/common/shared.h
+===================================================================
+--- ggzd/game_servers/ggzcards/common/shared.h	(revision 8355)
++++ ggzd/game_servers/ggzcards/common/shared.h	(working copy)
+@@ -32,16 +32,16 @@
+ #ifndef __SHARED_H__
+ #define __SHARED_H__
+ 
++#include <stdbool.h>
++
+ #ifndef TRUE
+-# define TRUE 1
++# define TRUE true
+ #endif
+ 
+ #ifndef FALSE
+-# define FALSE 0
++# define FALSE false
+ #endif
+ 
+-typedef int bool;
+-
+ #ifndef MIN
+ # define MIN(a, b) ( (a) < (b) ? (a) : (b) )
+ #endif
+Index: ggzd/game_servers/ggzcards/ai/game.h
+===================================================================
+--- ggzd/game_servers/ggzcards/ai/game.h	(revision 8355)
++++ ggzd/game_servers/ggzcards/ai/game.h	(working copy)
+@@ -32,7 +32,7 @@
+ #define DBG_PLAY "play"
+ #define DBG_AI "misc"
+ 
+-void game_alert_server(int server_socket_fd);
++void game_alert_server(GGZDataIO *server_dio);
+ void game_get_newgame(void);
+ void game_alert_newgame(cardset_type_t cardset_type);
+ void game_alert_newhand(void);
+@@ -62,7 +62,7 @@
+ void game_set_cardlist_message(const char *mark, int *lengths,
+ 				      card_t ** cardlist);
+ void game_set_player_message(int player, const char *msg);
+-int game_handle_game_message(int fd, const char *game, int size);
++int game_handle_game_message(GGZDataIO *dio, const char *game, int size);
+ 
+ 
+ 
+Index: ggzd/game_servers/ggzcards/ai/main.c
+===================================================================
+--- ggzd/game_servers/ggzcards/ai/main.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/ai/main.c	(working copy)
+@@ -36,6 +36,8 @@
+ 
+ #include <ggz.h>		/* libggz */
+ 
++#include "ggz_dio.h"
++
+ #include "client.h"
+ 
+ #include "game.h"
+@@ -48,6 +50,7 @@
+ 	const char* debug_types[] = {NULL};
+ #endif
+ 	fd_set active_fd_set;
++	GGZDataIO *dio;
+ 	int fd;
+ 	
+ 	ggz_debug_init(debug_types, NULL);
+@@ -57,7 +60,8 @@
+ 		assert(FALSE);
+ 
+ 	/* We should have gotten the FD by now. */
+-	fd = client_get_fd();
++	dio = client_get_dio();
++	fd = ggz_dio_get_socket(dio);
+ 	assert(fd >= 0);
+ 
+ 	FD_ZERO(&active_fd_set);
+@@ -65,9 +69,16 @@
+ 	
+ 	while (1) {
+ 		fd_set read_fd_set = active_fd_set;
++		fd_set write_fd_set = active_fd_set;
++		fd_set *pwrite_fd_set = NULL;
+ 		int status;
++
++		if (ggz_dio_is_write_pending(dio)) {
++			pwrite_fd_set = &write_fd_set;
++		}
+ 		
+-		status = select(fd + 1, &read_fd_set, NULL, NULL, NULL);
++		status = select(fd + 1, &read_fd_set, pwrite_fd_set,
++				NULL, NULL);
+ 		
+ 		if (status <= 0) {
+ 			if (errno != EINTR)
+@@ -76,8 +87,14 @@
+ 		}
+ 		
+ 		if (FD_ISSET(fd, &read_fd_set))
+-			if (client_handle_server() < 0)
+-				exit(0);		
++			if (client_handle_server() < 0) 
++				exit(0);
++
++		if (pwrite_fd_set && FD_ISSET(fd, pwrite_fd_set)) {
++			if (ggz_dio_write_data(dio) < 0) {
++				exit(0);
++			}
++		}
+ 	}
+ 
+ 	client_quit();
+Index: ggzd/game_servers/ggzcards/ai/game.c
+===================================================================
+--- ggzd/game_servers/ggzcards/ai/game.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/ai/game.c	(working copy)
+@@ -44,7 +44,7 @@
+ 	return num;
+ }
+ 
+-void game_alert_server(int server_socket_fd)
++void game_alert_server(GGZDataIO *server_dio)
+ {
+ 	/* nothing */
+ }
+@@ -235,7 +235,7 @@
+ 	/* nothing */
+ }
+ 
+-int game_handle_game_message(int fd, const char *game, int size)
++int game_handle_game_message(GGZDataIO *dio, const char *game, int size)
+ {
+ 	/* nothing */
+ 	return 0;
+Index: ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc	(revision 8355)
++++ ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc	(revision 8355)
++++ ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc	(working copy)
+@@ -13,7 +13,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc	(revision 8355)
++++ ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc	(revision 8355)
++++ ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc	(working copy)
+@@ -13,7 +13,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc	(revision 8355)
++++ ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc	(revision 8355)
++++ ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc	(revision 8355)
++++ ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc	(revision 8355)
++++ ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards.dsc	(revision 8355)
++++ ggzd/game_servers/ggzcards/config/ggzcards.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/main.c
+===================================================================
+--- ggzd/game_servers/ggzcards/main.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/main.c	(working copy)
+@@ -223,22 +223,32 @@
+ 	   the bot channels. */
+ 	do {
+ 		/* this is a whole lot of unnecessary code... */
+-		fd_set fdset;
++		fd_set read_fd_set, write_fd_set;
+ 		int max_fd = ggzdmod_get_fd(ggz), status;
+ 
+-		FD_ZERO(&fdset);
+-		FD_SET(max_fd, &fdset);
++		FD_ZERO(&read_fd_set);
++		FD_SET(max_fd, &read_fd_set);
+ 
++		FD_ZERO(&write_fd_set);
++
+ 		/* Assemble a list of file descriptors to monitor.  This list
+ 		   includes the main GGZ connection, a connection for each
+ 		   player (including bots), plus a stderr connection for bots.
+ 		 */
+ 		allplayers_iterate(p) {
+-			int fd = get_player_socket(p);
++			GGZDataIO *dio = get_player_dio(p);
++			int fd = dio ? ggz_dio_get_socket(dio) : -1;
++
+ 			if (fd >= 0) {
+ 				max_fd = MAX(max_fd, fd);
+-				assert(!FD_ISSET(fd, &fdset));
+-				FD_SET(fd, &fdset);
++
++				assert(!FD_ISSET(fd, &read_fd_set));
++				assert(!FD_ISSET(fd, &write_fd_set));
++
++				FD_SET(fd, &read_fd_set);
++				if (ggz_dio_is_write_pending(dio)) {
++					FD_SET(fd, &write_fd_set);
++				}
+ 			}
+ 
+ #ifdef DEBUG
+@@ -246,14 +256,15 @@
+ 				fd = game.players[p].err_fd;
+ 				if (fd >= 0) {
+ 					max_fd = MAX(max_fd, fd);
+-					assert(!FD_ISSET(fd, &fdset));
+-					FD_SET(fd, &fdset);
++					assert(!FD_ISSET(fd, &read_fd_set));
++					FD_SET(fd, &read_fd_set);
+ 				}
+ 			}
+ #endif /* DEBUG */
+ 		} allplayers_iterate_end;
+ 
+-		status = select(max_fd + 1, &fdset, NULL, NULL, NULL);
++		status = select(max_fd + 1, &read_fd_set, &write_fd_set,
++				NULL, NULL);
+ 
+ 		if (status <= 0) {
+ 			if (errno != EINTR)
+@@ -261,29 +272,35 @@
+ 			continue;
+ 		}
+ 
+-		if (FD_ISSET(ggzdmod_get_fd(ggz), &fdset))
++		if (FD_ISSET(ggzdmod_get_fd(ggz), &read_fd_set))
+ 			ggzdmod_dispatch(ggz);
+ 
+ 		/* Check each FD for activity */
+ 		allplayers_iterate(p) {
+-			int fd = get_player_socket(p);
++			GGZDataIO *dio = get_player_dio(p);
++			int fd = dio ? ggz_dio_get_socket(dio) : -1;
+ 
+ 			/* This is the player's communication socket.  Note
+ 			   that AI players will have such a socket too, since
+ 			   they are run as client-like programs. */
+-			if (fd >= 0 && FD_ISSET(fd, &fdset)) {
++			if (fd >= 0 && FD_ISSET(fd, &read_fd_set)) {
+ 				/* Note - this handles spectator data too,
+ 				   but the spectator is given a player
+ 				   number. */
+ 				handle_player_data_event(p);
+ 			}
+ 
++			if (fd >= 0 && FD_ISSET(fd, &write_fd_set)) {
++			  printf("Writing data to %d.\n", p);
++				ggz_dio_write_data(dio);
++			}
++
+ #ifdef DEBUG
+ 			/* The AI can send output to stderr; this is read by
+ 			   us and translated as debugging output. */
+ 			if (get_player_status(p) == GGZ_SEAT_BOT) {
+ 				fd = game.players[p].err_fd;
+-				if (fd >= 0 && FD_ISSET(fd, &fdset))
++				if (fd >= 0 && FD_ISSET(fd, &read_fd_set))
+ 					handle_ai_stderr(p);
+ 			}
+ #endif /* DEBUG */
+@@ -294,6 +311,7 @@
+ static void handle_debug_message(int priority, const char *msg)
+ {
+ 	if (!game.ggz
++	    || 1
+ 	    || ggzdmod_log(game.ggz, "%s", msg) < 0) {
+ 		fflush(stdout);
+ 		fputs(msg, stderr);
+Index: ggzd/game_servers/ggzcards/net.c
+===================================================================
+--- ggzd/game_servers/ggzcards/net.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/net.c	(working copy)
+@@ -46,8 +46,6 @@
+ #include "options.h"
+ #include "play.h"
+ 
+-#define NET_ERROR(p) return handle_neterror_event(p)
+-
+ seat_t convert_seat(seat_t s_abs, player_t p)
+ {
+ 	/* Treat spectators as if they're sitting at seat 0. */
+@@ -84,7 +82,7 @@
+    FALSE otherwise. */
+ static bool is_broadcast_seat(player_t p)
+ {
+-	if (get_player_socket(p) >= 0)
++	if (get_player_dio(p))
+ 		return TRUE;
+ 
+ 	assert(p >= 0 || get_player_name(p) == NULL);
+@@ -108,12 +106,12 @@
+  */
+ void net_send_player_list(player_t p)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	seat_t s_rel;
+ 
+-	if (write_opcode(fd, MSG_PLAYERS) < 0 ||
+-	    ggz_write_int(fd, game.num_seats) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_PLAYERS);
++	ggz_dio_put_int(dio, game.num_seats);
+ 
+ 	/* Note that this function can be called before we know what game
+ 	   we're playing.  In this case, we'll know the number of players
+@@ -123,11 +121,12 @@
+ 	   desirable to finesse data by sending the player list instead. */
+ 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
+ 		seat_t s_abs = UNCONVERT_SEAT(s_rel, p);
+-		if (ggz_write_int(fd, get_seat_status(s_abs)) < 0
+-		    || ggz_write_string(fd, get_seat_name(s_abs)) < 0
+-		    || ggz_write_int(fd, game.seats[s_abs].player) < 0)
+-			NET_ERROR(p);
++
++		ggz_dio_put_int(dio, get_seat_status(s_abs));
++		ggz_dio_put_string(dio, get_seat_name(s_abs));
++		ggz_dio_put_int(dio, game.seats[s_abs].player);
+ 	}
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_broadcast_player_list(void)
+@@ -150,22 +149,22 @@
+                               int *option_defaults,
+                               char ***option_choices)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	int i, j;
+-	
+-	if (write_opcode(fd, REQ_OPTIONS) < 0 ||
+-	    ggz_write_int(fd, num_options) < 0)
+-		NET_ERROR(p);
++
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, REQ_OPTIONS);
++	ggz_dio_put_int(dio, num_options);
+ 	for (i = 0; i < num_options; i++) {
+-		if (ggz_write_string(fd, option_types[i]) < 0 ||
+-		    ggz_write_string(fd, option_descs[i]) < 0 ||
+-		    ggz_write_int(fd, num_choices[i]) < 0 ||
+-		    ggz_write_int(fd, option_defaults[i]) < 0)
+-			NET_ERROR(p);
+-		for (j = 0; j < num_choices[i]; j++)
+-			if (ggz_write_string(fd, option_choices[i][j]) < 0)
+-				NET_ERROR(p);
++		ggz_dio_put_string(dio, option_types[i]);
++		ggz_dio_put_string(dio, option_descs[i]);
++		ggz_dio_put_int(dio, num_choices[i]);
++		ggz_dio_put_int(dio, option_defaults[i]);
++		for (j = 0; j < num_choices[i]; j++) {
++			ggz_dio_put_string(dio, option_choices[i][j]);
++		}
+ 	}
++	ggz_dio_packet_end(dio);
+ }
+ 
+ /* Send out play for player to _all_ players. Also symbolizes that this play
+@@ -177,12 +176,13 @@
+  */
+ static void net_send_play(player_t p, seat_t player, card_t card)
+ {
+-	int fd = get_player_socket(p);
+-	
+-	if (write_opcode(fd, MSG_PLAY) < 0 ||
+-	    write_seat(fd, CONVERT_SEAT(player, p)) < 0 ||
+-	    write_card(fd, card) < 0)
+-		NET_ERROR(p);
++	GGZDataIO *dio = get_player_dio(p);
++
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_PLAY);
++	write_seat(dio, CONVERT_SEAT(player, p));
++	write_card(dio, card);
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_broadcast_play(seat_t player, card_t card)
+@@ -202,21 +202,21 @@
+  */
+ static void net_send_gameover(player_t p, int winner_cnt, player_t * winners)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	int i;
+ 	
+ 	assert(winner_cnt >= 0 && winner_cnt <= game.num_players);
+ 
+-	if (write_opcode(fd, MSG_GAMEOVER) < 0 ||
+-	    ggz_write_int(fd, winner_cnt) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_GAMEOVER);
++	ggz_dio_put_int(dio, winner_cnt);
+ 	
+ 	for (i = 0; i < winner_cnt; i++) {
+ 		seat_t ws = game.players[winners[i]].seat;
+ 		
+-		if (write_seat(fd, CONVERT_SEAT(ws, p)) < 0)
+-			NET_ERROR(p);
++		write_seat(dio, CONVERT_SEAT(ws, p));
+ 	}
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_broadcast_gameover(int winner_cnt, player_t *winners)
+@@ -230,7 +230,7 @@
+ void net_send_table(player_t p)
+ {
+ 	seat_t s_r, s_abs;
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 
+ 	if (game.num_seats == 0) /* FIXME: don't check this here */
+ 		return;
+@@ -238,13 +238,13 @@
+ 	ggz_debug(DBG_NET, "Sending table to player %d/%s.", p,
+ 		    get_player_name(p));
+ 
+-	if (write_opcode(fd, MSG_TABLE) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_TABLE);
+ 	for (s_r = 0; s_r < game.num_seats; s_r++) {
+ 		s_abs = UNCONVERT_SEAT(s_r, p);
+-		if (write_card(fd, game.seats[s_abs].table) < 0)
+-			NET_ERROR(p);
++		write_card(dio, game.seats[s_abs].table);
+ 	}
++	ggz_dio_packet_end(dio);
+ }
+ 
+ /* Request a bid from player p.  bid_count is the number of bids; bids is an
+@@ -252,18 +252,20 @@
+ void net_send_bid_request(player_t p, int bid_count, bid_t * bids)
+ {
+ 	int i;
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	GGZSeatType seat_type = get_player_status(p);
+ 
+ 	ggz_debug(DBG_NET, "Sending bid request to player %d/%s.", p,
+ 		    get_player_name(p));
+ 
+ 	/* request a bid from the client */
+-	if (write_opcode(fd, REQ_BID) < 0 || ggz_write_int(fd, bid_count) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, REQ_BID);
++	ggz_dio_put_int(dio, bid_count);
+ 	for (i = 0; i < bid_count; i++) {
+ 		char bid_text[128] = "";
+ 		char bid_desc[1024] = "";
++
+ 		if (seat_type != GGZ_SEAT_BOT) {
+ 			/* HACK: we need to send the full bid text to
+ 			   a bot. */
+@@ -272,22 +274,23 @@
+ 			game.data->get_bid_desc(bid_desc, sizeof(bid_desc),
+ 			                         bids[i]);
+ 		}
+-		if (write_bid(fd, bids[i]) < 0 ||
+-		    ggz_write_string(fd, bid_text) < 0 ||
+-		    ggz_write_string(fd, bid_desc) < 0)
+-			NET_ERROR(p);
++		write_bid(dio, bids[i]);
++		ggz_dio_put_string(dio, bid_text);
++		ggz_dio_put_string(dio, bid_desc);
+ 	}
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_send_bid(player_t p, player_t bidder, bid_t bid)
+ {
+ 	seat_t seat = game.players[bidder].seat;
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	
+-	if (write_opcode(fd, MSG_BID) < 0 ||
+-	    write_seat(fd, CONVERT_SEAT(seat, p)) < 0 ||
+-	    write_bid(fd, bid) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_BID);
++	write_seat(dio, CONVERT_SEAT(seat, p));
++	write_bid(dio, bid);
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_broadcast_bid(player_t bidder, bid_t bid)
+@@ -301,7 +304,7 @@
+ void net_send_play_request(player_t p, seat_t s)
+ {
+ 	seat_t s_r = CONVERT_SEAT(s, p);
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	
+ 	hand_t *hand = &game.seats[s].hand;
+ 	card_t valid_plays[hand->hand_size];
+@@ -321,22 +324,23 @@
+ 		    "to play from seat %d/%s's hand.", p,
+ 		    get_player_name(p), s, get_seat_name(s));
+ 
+-	if (write_opcode(fd, REQ_PLAY) < 0 ||
+-	    write_seat(fd, s_r) < 0 ||
+-	    ggz_write_int(fd, num_valid_plays) < 0)
+-		NET_ERROR(p);
+-		
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, REQ_PLAY);
++	write_seat(dio, s_r);
++	ggz_dio_put_int(dio, num_valid_plays);
+ 	for (i = 0; i < num_valid_plays; i++)
+-		if (write_card(fd, valid_plays[i]) < 0)
+-			NET_ERROR(p);
++		write_card(dio, valid_plays[i]);
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_send_badplay(player_t p, char *msg)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	
+-	if (write_opcode(fd, MSG_BADPLAY) < 0 || ggz_write_string(fd, msg) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_BADPLAY);
++	ggz_dio_put_string(dio, msg);
++	ggz_dio_packet_end(dio);
+ }
+ 
+ /* Show a player a hand.  This will reveal the cards in the hand iff reveal
+@@ -344,7 +348,7 @@
+ void net_send_hand(const player_t p, const seat_t s,
+                    bool show_fronts, bool show_backs)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	int i;
+ 
+ 	ggz_debug(DBG_NET,
+@@ -352,10 +356,10 @@
+ 		    PLAYER_TO_SEAT(p), get_player_name(p), s,
+ 		    get_seat_name(s), show_fronts, show_backs);
+ 
+-	if (write_opcode(fd, MSG_HAND) < 0
+-	    || write_seat(fd, CONVERT_SEAT(s, p)) < 0
+-	    || ggz_write_int(fd, game.seats[s].hand.hand_size) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_HAND);
++	write_seat(dio, CONVERT_SEAT(s, p));
++	ggz_dio_put_int(dio, game.seats[s].hand.hand_size);
+ 
+ 	for (i = 0; i < game.seats[s].hand.hand_size; i++) {
+ 		card_t card = game.seats[s].hand.cards[i];
+@@ -366,18 +370,19 @@
+ 		if (!show_backs)
+ 			card.deck = UNKNOWN_DECK;
+ 
+-		if (write_card(fd, card) < 0)
+-			NET_ERROR(p);
++		write_card(dio, card);
+ 	}
++	ggz_dio_packet_end(dio);
+ }
+ 
+ static void net_send_trick(player_t p, player_t winner)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 
+-	if (write_opcode(fd, MSG_TRICK) < 0 ||
+-	    write_seat(fd,CONVERT_SEAT(game.players[winner].seat, p)) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_TRICK);
++	write_seat(dio, CONVERT_SEAT(game.players[winner].seat, p));
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_broadcast_trick(player_t winner)
+@@ -389,23 +394,26 @@
+ 
+ void net_send_newgame_request(player_t p)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 
+ 	assert(get_player_status(p) == GGZ_SEAT_PLAYER);
+ 
+ 	ggz_debug(DBG_NET, "Sending out a REQ_NEWGAME to player %d/%s.", p,
+ 		    get_player_name(p));
+-	if (write_opcode(fd, REQ_NEWGAME) < 0)
+-		NET_ERROR(p);
++
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, REQ_NEWGAME);
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_send_newgame(player_t p)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	
+-	if (write_opcode(fd, MSG_NEWGAME) < 0
+-	    || ggz_write_int(fd, get_cardset_type()) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_NEWGAME);
++	ggz_dio_put_int(dio, get_cardset_type());
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_broadcast_newgame(void)
+@@ -420,10 +428,11 @@
+ 
+ static void net_send_newhand(player_t p)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	
+-	if (write_opcode(fd, MSG_NEWHAND) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MSG_NEWHAND);
++	ggz_dio_packet_end(dio);
+ }
+ 
+ 
+@@ -437,10 +446,10 @@
+ void net_send_global_text_message(player_t p, const char *mark,
+                              const char *message)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	
+ 	/* Special case - don't send to dead bots */
+-	if (fd < 0)
++	if (!dio)
+ 		return;
+ 	
+ 	assert(mark);
+@@ -448,11 +457,13 @@
+ 	if (message == NULL)
+ 		message = "";	/* this happens sometimes (hmmm, really?
+ 				   how?) */
+-	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
+-	    write_opcode(fd, GAME_MESSAGE_TEXT) < 0 ||
+-	    ggz_write_string(fd, mark) < 0 ||
+-	    ggz_write_string(fd, message) < 0)
+-		NET_ERROR(p);
++
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MESSAGE_GAME);
++	write_opcode(dio, GAME_MESSAGE_TEXT);
++	ggz_dio_put_string(dio, mark);
++	ggz_dio_put_string(dio, message);
++	ggz_dio_packet_end(dio);
+ }
+ 
+ /* send_global_message_toall sends the truly global message to all players */
+@@ -465,21 +476,22 @@
+ 
+ void net_send_player_text_message(player_t p, seat_t s, const char *message)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	
+ 	assert(message);
+ 	
+-	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
+-	    write_opcode(fd, GAME_MESSAGE_PLAYER) < 0 ||
+-	    write_seat(fd, CONVERT_SEAT(s, p)) < 0 ||
+-	    ggz_write_string(fd, message) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MESSAGE_GAME);
++	write_opcode(dio, GAME_MESSAGE_PLAYER);
++	write_seat(dio, CONVERT_SEAT(s, p));
++	ggz_dio_put_string(dio, message);
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_send_global_cardlist_message(player_t p, const char *mark, int *lengths,
+                                  card_t ** cardlist)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	int i;
+ 	seat_t s_rel;
+ 
+@@ -487,19 +499,18 @@
+ 	ggz_debug(DBG_NET, "Sending global cardlist message to player %d.",
+ 		    p);
+ 		
+-	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
+-	    write_opcode(fd, GAME_MESSAGE_CARDLIST) < 0 ||
+-	    ggz_write_string(fd, mark) < 0)
+-		NET_ERROR(p);
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MESSAGE_GAME);
++	write_opcode(dio, GAME_MESSAGE_CARDLIST);
++	ggz_dio_put_string(dio, mark);
+ 
+ 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
+ 		seat_t s = UNCONVERT_SEAT(s_rel, p);
+-		if (ggz_write_int(fd, lengths[s]) < 0)
+-			NET_ERROR(p);
++		ggz_dio_put_int(dio, lengths[s]);
+ 		for (i = 0; i < lengths[s]; i++)
+-			if (write_card(fd, cardlist[s][i]) < 0)
+-				NET_ERROR(p);
++			write_card(dio, cardlist[s][i]);
+ 	}
++	ggz_dio_packet_end(dio);
+ }
+ 
+ void net_broadcast_global_cardlist_message(const char *mark, int *lengths,
+@@ -515,118 +526,106 @@
+  * NETWORK READING CODE
+  */
+ 
+-static int net_rec_language(player_t p)
++static void net_rec_language(player_t p)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	char lang[128];
+ 	
+ 	/* Read the language (string) */
+-	if (ggz_read_string(fd, lang, sizeof(lang)) < 0)
+-		return -1;
++	ggz_dio_get_string(dio, lang, sizeof(lang));
+ 		
+ 	handle_client_language(p, lang);
+-	return 0;
+ }
+ 
+ 
+ /* receives a bid from the client, and calls handle_client_bid
+    to handle it.   Returns 0 on success; -1 on (communication) error */
+-static int net_rec_play(player_t p)
++static void net_rec_play(player_t p)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	card_t card;
+ 
+ 	/* read the card played */
+-	if (read_card(fd, &card) < 0)
+-		return -1;
++	read_card(dio, &card);
+ 		
+ 	handle_client_play(p, card);
+-	return 0;
+ }
+ 
+ /* Receive a bid from an arbitrary player, and call another function
+    to handle it. */
+-static int net_rec_bid(player_t p)
++static void net_rec_bid(player_t p)
+ {
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
+ 	int bid_choice;
+ 
+ 	/* Receive the bid index */
+-	if (ggz_read_int(fd, &bid_choice) < 0)
+-		return -1;
++	ggz_dio_get_int(dio, &bid_choice);
+ 		
+ 	handle_client_bid(p, bid_choice);
+-	return 0;
+ }
+ 
+-static int net_rec_options(player_t p)
++static void net_rec_options(player_t p)
+ {
+-	int fd = get_player_socket(p);
+-	int status = 0;
+-	int num_options, *options, i;
++	GGZDataIO *dio = get_player_dio(p);
++	int num_options;
+ 	
+-	if (ggz_read_int(fd, &num_options) < 0
+-	    || num_options <= 0)
+-		return -1;
+-		
+-	/* FIXME: this is a major security hole.  */
+-	options = ggz_malloc(num_options * sizeof(*options));
++	ggz_dio_get_int(dio, &num_options);
++
++	if (num_options > 0) {
++		/* FIXME: this is a major security hole.  */
++		int options[num_options], i;
++
++		for (i = 0; i < num_options; i++)
++			ggz_dio_get_int(dio, &options[i]);
+ 	
+-	for (i = 0; i < num_options; i++)
+-		if (ggz_read_int(fd, &options[i]) < 0)
+-			status = -1;
+-	
+-	if (status == 0)	
+ 		handle_client_options(p, num_options, options);
+-	ggz_free(options);
+-	return status;
++	}
+ }
+ 
+ 	
+-void net_read_player_data(player_t p)
++static void net_read_player_data_cb(GGZDataIO *dio, void *userdata)
+ {
+-	int fd = get_player_socket(p);
+-	int status = 0;
++	player_t *p = userdata;
+ 	int opcode;
+ 	client_msg_t op;
+ 
+-	if (read_opcode(fd, &opcode) < 0)
+-		NET_ERROR(p);
++	read_opcode(dio, &opcode);
+ 	op = opcode;
+ 
+ 	ggz_debug(DBG_NET, "Received %d (%s) from player %d/%s.",
+-	            op, get_client_opcode_name(op), p, get_player_name(p));
++	            op, get_client_opcode_name(op), *p, get_player_name(*p));
+ 
+ 	switch (op) {
+ 	case MSG_LANGUAGE:
+-		status = net_rec_language(p);
+-		break;
++		net_rec_language(*p);
++		return;
+ 	case RSP_NEWGAME:
+-		status = 0;
+-		handle_client_newgame(p);
+-		break;
++		handle_client_newgame(*p);
++		return;
+ 	case RSP_OPTIONS:
+-		status = net_rec_options(p);
+-		break;
++		net_rec_options(*p);
++		return;
+ 	case RSP_BID:
+-		status = net_rec_bid(p);
+-		break;
++		net_rec_bid(*p);
++		return;
+ 	case RSP_PLAY:
+-		status = net_rec_play(p);
+-		break;
++		net_rec_play(*p);
++		return;
+ 	case REQ_SYNC:
+-		status = 0;
+-		handle_client_sync(p);
+-		break;
+-	default:
+-		/* Unrecognized opcode */
+-		ggz_debug(DBG_CLIENT,
+-			  "game_handle_player: unrecognized opcode %d.",
+-			  op);
+-		status = -1;
+-		break;
++		handle_client_sync(*p);
++		return;
+ 	}
+ 
+-	if (status != 0)
+-		NET_ERROR(p);
++	/* Unrecognized opcode */
++	ggz_debug(DBG_CLIENT,
++		  "game_handle_player: unrecognized opcode %d.",
++		  op);
+ }
++
++void net_read_player_data(player_t p)
++{
++	GGZDataIO *dio = get_player_dio(p);
++
++	ggz_dio_set_read_callback(dio, net_read_player_data_cb, &p);
++	ggz_dio_read_data(dio);
++}
+Index: ggzd/game_servers/ggzcards/common.c
+===================================================================
+--- ggzd/game_servers/ggzcards/common.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/common.c	(working copy)
+@@ -381,13 +381,15 @@
+ 		game.players[p].seat = -1;
+ 		assign_team(p, p);
+ 		game.players[p].allbids = NULL;
+-		game.players[p].fd = -1;
++		game.players[p].dio = NULL;
+ #ifdef DEBUG
+ 		game.players[p].err_fd = -1;
+ #endif
+ 		game.players[p].pid = -1;
+ 	} players_iterate_end;
+ 
++	game.spectators = NULL;
++
+ 	/* we don't yet know the number of seats */
+ 
+ 	/* As soon as we know which game we're playing, we should init the
+@@ -456,6 +458,7 @@
+ 			 || old_seat->type == GGZ_SEAT_BOT)
+ 	                && (new_seat.type != old_seat->type
+ 	                    || strcmp(old_seat->name, new_seat.name));
++	int new_fd = new_seat.fd, old_fd = old_seat->fd;
+ 
+ 	/* There's a big problem here since if the players join/leave before
+ 	   the game type is set, we won't know the seat number of the player
+@@ -470,6 +473,26 @@
+ 	if (is_join && new_seat.type == GGZ_SEAT_BOT)
+ 		start_ai(player, game.ai_module);
+ 
++	if (new_fd != old_fd) {
++		GGZDataIO **dio = &game.players[old_seat->num].dio;
++
++		if (old_fd != -1) {
++			assert(old_fd == ggz_dio_get_socket(*dio));
++			ggz_dio_flush(*dio);
++			assert(!ggz_dio_is_write_pending(*dio));
++			ggz_dio_free(*dio);
++		}
++		if (new_fd != -1) {
++			*dio = ggz_dio_new(new_fd);
++
++			printf("Creating dio on %d for %d.\n",
++			       new_fd, new_seat.num);
++
++			/* HACK: To avoid split packets. */
++			ggz_dio_set_auto_flush(*dio, TRUE);
++		}
++	}
++
+ 	/* We send player list to everyone.  This used to skip over the
+ 	   player joining.  I think it only did that because the player list
+ 	   is also sent out in the sync, but there could be a better reason
+@@ -545,13 +568,31 @@
+ void handle_ggz_spectator_seat_event(GGZdMod *ggz,
+ 				     GGZdModEvent event, const void *data)
+ {
+-	GGZSpectator old = *(GGZSpectator*)data;
+-	int spectator = old.num;
++	const GGZSpectator *old = data;
++	int spectator = old->num;
+ 	player_t player = SPECTATOR_TO_PLAYER(spectator);
+ 	GGZSpectator new = ggzdmod_get_spectator(ggz, spectator);
++	int new_fd = new.fd, old_fd = old->fd;
+ 
+ 	assert(spectator < ggzdmod_get_max_num_spectators(ggz));
+ 
++	if (new_fd != old_fd) {
++		GGZDataIO **dio = &game.spectators[old->num].dio;
++
++		if (old_fd != -1) {
++			assert(old_fd == ggz_dio_get_socket(*dio));
++			ggz_dio_flush(*dio);
++			assert(!ggz_dio_is_write_pending(*dio));
++			ggz_dio_free(*dio);
++		}
++		if (new_fd != -1) {
++			*dio = ggz_dio_new(new_fd);
++
++			/* HACK: To avoid split packets. */
++			ggz_dio_set_auto_flush(*dio, TRUE);
++		}
++	}
++
+ 	if (new.name) {
+ 		/* The spectator is not yet visible to other players; so
+ 		   his joining does not affect anyone else. */
+@@ -559,7 +600,7 @@
+ 		ggz_debug(DBG_MISC, "%s joined as spectator on seat %d.",
+ 			  new.name, spectator);
+ 
+-		assert(!old.name && old.fd < 0);
++		assert(!old->name && old->fd < 0);
+ 		assert(new.name && new.fd >= 0);
+ 
+ 		/* Send newgame alert, if we're already playing. */
+@@ -569,9 +610,9 @@
+ 		send_sync(player);
+ 	} else {
+ 		ggz_debug(DBG_MISC, "%s left as spectator on seat %d.",
+-			  old.name, spectator);
++			  old->name, spectator);
+ 
+-		assert(!new.name && new.fd < 0 && old.name);
++		assert(!new.name && new.fd < 0 && old->name);
+ 
+ 		if (seats_empty())
+ 			if (ggzdmod_set_state(game.ggz,
+@@ -916,25 +957,15 @@
+ 	return ggzdmod_get_seat(game.ggz, p).type;
+ }
+ 
+-int get_player_socket(int p)
++GGZDataIO *get_player_dio(int p)
+ {
+ 	if (IS_SPECTATOR(p)) {
+ 		int sp = PLAYER_TO_SPECTATOR(p);
+-		return ggzdmod_get_spectator(game.ggz, sp).fd;
++
++		return game.spectators[sp].dio;
+ 	} else {
+-		GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
+-
+-		switch (seat.type) {
+-		case GGZ_SEAT_PLAYER:
+-			return seat.fd;
+-		case GGZ_SEAT_BOT:
+-			return game.players[p].fd;
+-		default:
+-			return -1;
+-		}
++		return game.players[p].dio;
+ 	}
+-	assert(FALSE);
+-	return -1;
+ }
+ 
+ /* libggz should handle this instead! */
+Index: ggzd/game_servers/ggzcards/ai.c
+===================================================================
+--- ggzd/game_servers/ggzcards/ai.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/ai.c	(working copy)
+@@ -77,7 +77,7 @@
+ 	ggz_debug(DBG_AI, "Starting AI for player %d as %s.", p, module->name);
+ 		
+ 	assert(get_player_status(p) == GGZ_SEAT_BOT);
+-	assert(game.players[p].fd == -1);
++	assert(game.players[p].dio == NULL);
+ 	assert(game.players[p].pid == -1);
+ #ifdef DEBUG
+ 	assert(game.players[p].err_fd == -1);
+@@ -123,7 +123,7 @@
+ 	} else {
+ 		/* parent */
+ 		(void) close(fd_pair[1]);
+-		game.players[p].fd = fd_pair[0];
++		game.players[p].dio = ggz_dio_new(fd_pair[0]);
+ 		
+ #ifdef DEBUG
+ 		(void) close(err_fd_pair[1]);
+@@ -143,7 +143,7 @@
+ 	/* Check to see if the AI has been spawned yet.  It's much easier to
+ 	   check here than elsewhere. */
+ 	if (game.players[p].pid < 0) {
+-		assert(game.players[p].fd < 0);
++		assert(game.players[p].dio == NULL);
+ #ifdef DEBUG
+ 		assert(game.players[p].err_fd < 0);
+ #endif
+@@ -158,14 +158,15 @@
+ 	game.players[p].pid = -1;
+ 	
+ 	/* Clean up FD's. */
+-	if (close(game.players[p].fd) < 0
++	if (close(ggz_dio_get_socket(game.players[p].dio)) < 0
+ #ifdef DEBUG
+ 	    || close(game.players[p].err_fd) < 0
+ #endif
+ 	   )
+ 		ggz_error_sys("Close of AI fd's failed (player %d)", p);
+-		
+-	game.players[p].fd = -1;
++
++	ggz_dio_free(game.players[p].dio);
++	game.players[p].dio = NULL;
+ #ifdef DEBUG
+ 	game.players[p].err_fd = -1;
+ #endif
+Index: ggzd/game_servers/ggzcards/client/client.c
+===================================================================
+--- ggzd/game_servers/ggzcards/client/client.c	(revision 8355)
++++ ggzd/game_servers/ggzcards/client/client.c	(working copy)
+@@ -52,15 +52,15 @@
+ 
+ static void handle_server_connect(int server_fd);
+ 
+-static int handle_message_global(void);
++static void handle_message_global(void);
+ 
+-static int handle_text_message(void);
+-static int handle_player_message(void);
+-static int handle_cardlist_message(void);
+-static int handle_game_message(void);
++static void handle_text_message(void);
++static void handle_player_message(void);
++static void handle_cardlist_message(void);
++static void handle_game_message(void);
+ 
+ static struct {
+-	int fd;
++	GGZDataIO *dio;
+ #ifdef GUI_CLIENT
+ 	GGZMod *ggzmod;
+ #endif				/* GUI_CLIENT */
+@@ -74,7 +74,7 @@
+ 
+ struct ggzcards_game_t ggzcards = { 0 };
+ 
+-static int handle_req_play(void);
++static void handle_req_play(void);
+ 
+ #ifdef GUI_CLIENT
+ GGZMod *client_get_ggzmod(void)
+@@ -95,14 +95,14 @@
+ 
+ static void handle_server_connect(int server_fd)
+ {
+-	game_internal.fd = server_fd;
++	game_internal.dio = ggz_dio_new(server_fd);
+ 
+-	if (client_send_language(getenv("LANG")) < 0) {
+-		game_internal.fd = -1;
+-		ggz_error_msg("Couldn't send message to server.");
+-	}
++	/* HACK: Auto flush cuts down on packets being split up in transit. */
++	ggz_dio_set_auto_flush(game_internal.dio, TRUE);
+ 
+-	game_alert_server(game_internal.fd);	/* ?? */
++	client_send_language(getenv("LANG"));
++
++	game_alert_server(game_internal.dio);	/* ?? */
+ }
+ 
+ int client_initialize(void)
+@@ -120,7 +120,7 @@
+ 
+ 	srand((unsigned)time(NULL));
+ 
+-	game_internal.fd = -1;
++	game_internal.dio = NULL;
+ 	game_internal.max_hand_size = 0;
+ 
+ 	ggzcards.state = STATE_INIT;
+@@ -151,7 +151,7 @@
+ #ifdef GUI_CLIENT
+ 	if (ggzmod_disconnect(game_internal.ggzmod) < 0)
+ #else /* AI_CLIENT */
+-	if (close(game_internal.fd) < 0)
++	if (close(ggz_dio_get_socket(game_internal.dio)) < 0)
+ #endif
+ 		ggz_error_msg_exit("Couldn't disconnect from ggz.");
+ 
+@@ -171,9 +171,9 @@
+ }
+ 
+ 
+-int client_get_fd(void)
++GGZDataIO *client_get_dio(void)
+ {
+-	return game_internal.fd;
++	return game_internal.dio;
+ }
+ 
+ 
+@@ -211,21 +211,21 @@
+ 	}
+ }
+ 
+-static int handle_text_message(void)
++static void handle_text_message(void)
+ {
+ 	char *message, *mark;
+-	if (ggz_read_string_alloc(game_internal.fd, &mark) < 0 ||
+-	    ggz_read_string_alloc(game_internal.fd, &message) < 0)
+-		return -1;
++
++	ggz_dio_get_string_alloc(game_internal.dio, &mark);
++	ggz_dio_get_string_alloc(game_internal.dio, &message);
++
+ 	game_set_text_message(mark, message);
+ 	ggz_free(message);	/* allocated by easysock */
+ 	ggz_free(mark);	/* allocated by easysock */
+-	return 0;
+ }
+ 
+-static int handle_cardlist_message(void)
++static void handle_cardlist_message(void)
+ {
+-	int status = 0, p, i;
++	int p, i;
+ 	card_t **cardlist =
+ 	    ggz_malloc(ggzcards.num_players * sizeof(*cardlist));
+ 	int *lengths = ggz_malloc(ggzcards.num_players * sizeof(*lengths));
+@@ -234,23 +234,18 @@
+ 	if (!cardlist || !lengths)
+ 		abort();
+ 
+-	if (ggz_read_string_alloc(game_internal.fd, &mark) < 0)
+-		status = -1;
++	ggz_dio_get_string_alloc(game_internal.dio, &mark);
+ 
+ 	for (p = 0; p < ggzcards.num_players; p++) {
+-		if (ggz_read_int(game_internal.fd, &lengths[p]))
+-			status = -1;
++		ggz_dio_get_int(game_internal.dio, &lengths[p]);
+ 		if (lengths[p] > 0)
+ 			cardlist[p] = ggz_malloc(lengths[p]
+ 						 * sizeof(**cardlist));
+ 		for (i = 0; i < lengths[p]; i++)
+-			if (read_card(game_internal.fd, &cardlist[p][i]) <
+-			    0)
+-				status = -1;
++			read_card(game_internal.dio, &cardlist[p][i]);
+ 	}
+ 
+-	if (status == 0)
+-		game_set_cardlist_message(mark, lengths, cardlist);
++	game_set_cardlist_message(mark, lengths, cardlist);
+ 
+ 	for (p = 0; p < ggzcards.num_players; p++)
+ 		if (lengths[p] > 0)
+@@ -258,27 +253,23 @@
+ 	ggz_free(cardlist);
+ 	ggz_free(lengths);
+ 	ggz_free(mark);	/* allocated by easysock */
+-
+-	return status;
+ }
+ 
+ /* A message_player message tells you one "player message", which is
+    displayed by the client. */
+-static int handle_player_message(void)
++static void handle_player_message(void)
+ {
+ 	int p;
+ 	char *message;
+ 
+-	if (read_seat(game_internal.fd, &p) < 0 ||
+-	    ggz_read_string_alloc(game_internal.fd, &message) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &p);
++	ggz_dio_get_string_alloc(game_internal.dio, &message);
++
+ 	assert(p >= 0 && p < ggzcards.num_players);
+ 
+ 	game_set_player_message(p, message);
+ 
+ 	ggz_free(message);	/* allocated by easysock */
+-
+-	return 0;
+ }
+ 
+ /* This handles a game-specific message.  We pass the game all the
+@@ -291,14 +282,13 @@
+    used an XML protocol, things could just sort-of take care of themselves
+    because we'd just skip over the tag automatically if it wasn't handled (I
+    think). */
+-static int handle_game_message(void)
++static void handle_game_message(void)
+ {
+ 	int size, handled;
+ 	char *game;
+ 
+-	if (ggz_read_string_alloc(game_internal.fd, &game) < 0
+-	    || ggz_read_int(game_internal.fd, &size) < 0)
+-		return -1;
++	ggz_dio_get_string_alloc(game_internal.dio, &game);
++	ggz_dio_get_int(game_internal.dio, &size);
+ 
+ 	/* Note: "size" refers to the size of the data block, not including
+ 	   the headers above. */
+@@ -306,34 +296,30 @@
+ 		  "Received game message of size %d for game %s.", size,
+ 		  game);
+ 
+-	handled = game_handle_game_message(game_internal.fd, game, size);
+-	if (handled < 0)
+-		return -1;
++	handled = game_handle_game_message(game_internal.dio, game, size);
+ 	assert(handled <= size);
++#if 0 /* Shouldn't be needed; unused data is skipped automatically. */
+ 	size -= handled;	/* this is how much was unread */
+ 
+ 	if (size > 0) {
+ 		/* We read the block just to get it out of the way. */
+-		char *block = ggz_malloc(size);
+-		if (ggz_readn(game_internal.fd, block, size) < 0)
+-			return -1;
+-		ggz_free(block);
++		char block[size];
++
++		ggz_dio_get_memory(game_internal.dio, block, size);
+ 	}
++#endif
+ 
+ 	ggz_free(game);	/* allocated by easysock */
+-
+-	return 0;
+ }
+ 
+ /* a message_global message tells you one "global message", which is
+    displayed by the client. */
+-static int handle_message_global(void)
++static void handle_message_global(void)
+ {
+-	int opcode, status = 0;
++	int opcode;
+ 	game_message_t op;
+ 
+-	if (read_opcode(game_internal.fd, &opcode) < 0)
+-		return -1;
++	read_opcode(game_internal.dio, &opcode);
+ 
+ 	op = opcode;
+ 
+@@ -342,54 +328,49 @@
+ 
+ 	switch (op) {
+ 	case GAME_MESSAGE_TEXT:
+-		status = handle_text_message();
++		handle_text_message();
+ 		break;
+ 	case GAME_MESSAGE_CARDLIST:
+-		status = handle_cardlist_message();
++		handle_cardlist_message();
+ 		break;
+ 	case GAME_MESSAGE_GAME:
+-		status = handle_game_message();
++		handle_game_message();
+ 		break;
+ 	case GAME_MESSAGE_PLAYER:
+-		status = handle_player_message();
++		handle_player_message();
+ 		break;
+ 	}
+-
+-	return status;
+ }
+ 
+ 
+-static int handle_msg_newgame(void)
++static void handle_msg_newgame(void)
+ {
+ 	int cardset;
+ 	cardset_type_t cardset_type;
+ 
+-	if (ggz_read_int(game_internal.fd, &cardset) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &cardset);
++
+ 	cardset_type = cardset;
+ 
+ 	assert(cardset_type != UNKNOWN_CARDSET);
+ 	set_cardset_type(cardset_type);
+ 	game_alert_newgame(cardset_type);
+-	return 0;
+ }
+ 
+ 
+ /* A gameover message tells you the game is over, and who won. */
+-static int handle_msg_gameover(void)
++static void handle_msg_gameover(void)
+ {
+ 	int num_winners, i, *winners = NULL;
+ 
+-	if (ggz_read_int(game_internal.fd, &num_winners) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &num_winners);
+ 	assert(num_winners >= 0 && num_winners <= ggzcards.num_players);
+ 
+ 	if (num_winners > 0)
+ 		winners = ggz_malloc(num_winners * sizeof(*winners));
+ 
+ 	for (i = 0; i < num_winners; i++)
+-		if (read_seat(game_internal.fd, &winners[i]) < 0)
+-			return -1;
++		read_seat(game_internal.dio, &winners[i]);
+ 
+ 	game_handle_gameover(num_winners, winners);
+ 
+@@ -397,14 +378,12 @@
+ 
+ 	if (winners)
+ 		ggz_free(winners);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A players message tells you all the players (well, seats really) at the
+    table. */
+-static int handle_msg_players(void)
++static void handle_msg_players(void)
+ {
+ 	int i, numplayers, different;
+ 	int old_numplayers = ggzcards.num_players;
+@@ -412,8 +391,8 @@
+ 	/* It is possible to have 0 players.  At the begginning of a
+ 	   "general" game, you don't know how many seats will be used yet so
+ 	   the number of players is 0. */
+-	if (ggz_read_int(game_internal.fd, &numplayers) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &numplayers);
++
+ 	assert(numplayers >= 0);
+ 
+ 	/* we may need to allocate memory for the players */
+@@ -454,11 +433,10 @@
+ 		GGZSeatType old_type, new_type;
+ 		char *old_name, *new_name;
+ 
+-		if (ggz_read_int(game_internal.fd, &type) < 0
+-		    || ggz_read_string_alloc(game_internal.fd,
+-					     &new_name) < 0
+-		    || ggz_read_int(game_internal.fd, &ggzseat) < 0)
+-			return -1;
++		ggz_dio_get_int(game_internal.dio, &type);
++		ggz_dio_get_string_alloc(game_internal.dio, &new_name);
++		ggz_dio_get_int(game_internal.dio, &ggzseat);
++
+ 		new_type = type;
+ 
+ 		old_name = ggzcards.players[i].name;
+@@ -487,8 +465,6 @@
+ 	}
+ 
+ 	/* TODO: should we need to enter a waiting state if players leave? */
+-
+-	return 0;
+ }
+ 
+ /* Possibly increase the maximum hand size we can sustain. */
+@@ -524,7 +500,7 @@
+ }
+ 
+ /* A hand message tells you all the cards in one player's hand. */
+-static int handle_msg_hand(void)
++static void handle_msg_hand(void)
+ {
+ 	int player, hand_size, i;
+ 	hand_t *hand;
+@@ -532,13 +508,12 @@
+ 	assert(ggzcards.players);
+ 
+ 	/* first read the player whose hand it is */
+-	if (read_seat(game_internal.fd, &player) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &player);
++
+ 	assert(player >= 0 && player < ggzcards.num_players);
+ 
+ 	/* Find out how many cards in this hand */
+-	if (ggz_read_int(game_internal.fd, &hand_size) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &hand_size);
+ 
+ 	/* Reallocate hand structures, if necessary */
+ 	increase_max_hand_size(hand_size);
+@@ -551,8 +526,7 @@
+ 	ggzcards.players[player].u_hand_size = hand_size;
+ 	for (i = 0; i < hand->hand_size; i++) {
+ 		card_t card;
+-		if (read_card(game_internal.fd, &card) < 0)
+-			return -1;
++		read_card(game_internal.dio, &card);
+ 
+ 		hand->cards[i] = card;
+ 
+@@ -566,13 +540,11 @@
+ 
+ 	/* Finally, show the hand. */
+ 	game_display_hand(player);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A bid request asks you to pick from a given list of bids. */
+-static int handle_req_bid(void)
++static void handle_req_bid(void)
+ {
+ 	int i;
+ 	int possible_bids;
+@@ -588,20 +560,17 @@
+ 	}
+ 
+ 	/* Determine the number of bidding choices we have */
+-	if (ggz_read_int(game_internal.fd, &possible_bids) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &possible_bids);
++
+ 	bid_choices = ggz_malloc(possible_bids * sizeof(*bid_choices));
+ 	bid_texts = ggz_malloc(possible_bids * sizeof(*bid_texts));
+ 	bid_descs = ggz_malloc(possible_bids * sizeof(*bid_descs));
+ 
+ 	/* Read in all of the bidding choices. */
+ 	for (i = 0; i < possible_bids; i++) {
+-		if (read_bid(game_internal.fd, &bid_choices[i]) < 0 ||
+-		    ggz_read_string_alloc(game_internal.fd,
+-					  &bid_texts[i]) < 0 ||
+-		    ggz_read_string_alloc(game_internal.fd,
+-					  &bid_descs[i]) < 0)
+-			return -1;
++		read_bid(game_internal.dio, &bid_choices[i]);
++		ggz_dio_get_string_alloc(game_internal.dio, &bid_texts[i]);
++		ggz_dio_get_string_alloc(game_internal.dio, &bid_descs[i]);
+ 	}
+ 
+ 	/* Get the bid */
+@@ -616,42 +585,35 @@
+ 	ggz_free(bid_choices);
+ 	ggz_free(bid_texts);
+ 	ggz_free(bid_descs);
+-
+-	return 0;
+ }
+ 
+ 
+-static int handle_msg_bid(void)
++static void handle_msg_bid(void)
+ {
+ 	bid_t bid;
+ 	int bidder;
+ 
+-	if (read_seat(game_internal.fd, &bidder) < 0 ||
+-	    read_bid(game_internal.fd, &bid) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &bidder);
++	read_bid(game_internal.dio, &bid);
+ 
+ 	game_alert_bid(bidder, bid);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A play request asks you to play a card from any hand (most likely your
+    own). */
+-static int handle_req_play(void)
++static void handle_req_play(void)
+ {
+ 	int num_valid_cards, i;
+ 	card_t *valid_cards;
+ 
+ 	/* Determine which hand we're supposed to be playing from. */
+-	if (read_seat(game_internal.fd, &ggzcards.play_hand) < 0 ||
+-	    ggz_read_int(game_internal.fd, &num_valid_cards) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &ggzcards.play_hand);
++	ggz_dio_get_int(game_internal.dio, &num_valid_cards);
+ 
+ 	valid_cards = ggz_malloc(num_valid_cards * sizeof(*valid_cards));
+ 	for (i = 0; i < num_valid_cards; i++)
+-		if (read_card(game_internal.fd, &valid_cards[i]) < 0)
+-			return -1;
++		read_card(game_internal.dio, &valid_cards[i]);
+ 
+ 	assert(ggzcards.play_hand >= 0
+ 	       && ggzcards.play_hand < ggzcards.num_players);
+@@ -661,19 +623,16 @@
+ 	game_get_play(ggzcards.play_hand, num_valid_cards, valid_cards);
+ 
+ 	ggz_free(valid_cards);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A badplay message indicates an invalid play, and requests a new one. */
+-static int handle_msg_badplay(void)
++static void handle_msg_badplay(void)
+ {
+ 	char *err_msg;
+ 
+ 	/* Read the error message for the bad play. */
+-	if (ggz_read_string_alloc(game_internal.fd, &err_msg) < 0)
+-		return -1;
++	ggz_dio_get_string_alloc(game_internal.dio, &err_msg);
+ 
+ 	/* Get a new play. */
+ 	set_game_state(STATE_PLAY);
+@@ -681,8 +640,6 @@
+ 
+ 	/* Clean up. */
+ 	ggz_free(err_msg);	/* allocated by easysock */
+-
+-	return 0;
+ }
+ 
+ 
+@@ -740,16 +697,15 @@
+ 
+ 
+ /* A play message tells of a play from a hand to the table. */
+-static int handle_msg_play(void)
++static void handle_msg_play(void)
+ {
+ 	int p, c, tc, card_pos, card_pos_2;
+ 	card_t card;
+ 	hand_t *hand;
+ 
+ 	/* Read the card being played. */
+-	if (read_seat(game_internal.fd, &p) < 0
+-	    || read_card(game_internal.fd, &card) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &p);
++	read_card(game_internal.dio, &card);
+ 
+ 	assert(p >= 0 && p < ggzcards.num_players);
+ 
+@@ -791,7 +747,6 @@
+ 		ggz_debug(DBG_CLIENT,
+ 			  "Whoa!  We can't find a match for the card.  That's strange.");
+ 		(void)client_send_sync_request();
+-		return 0;
+ 	}
+ 
+ 	/* Remove the card.  This is a bit inefficient. It's also
+@@ -815,14 +770,12 @@
+ 
+ 	/* Update the graphics */
+ 	game_alert_play(p, card, card_pos, card_pos_2);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A table message tells you all the cards on the table.  Each player only
+    gets one card. */
+-static int handle_msg_table(void)
++static void handle_msg_table(void)
+ {
+ 	int p;
+ 
+@@ -831,8 +784,7 @@
+ 	assert(ggzcards.players);
+ 	for (p = 0; p < ggzcards.num_players; p++) {
+ 		card_t card;
+-		if (read_card(game_internal.fd, &card) < 0)
+-			return -1;
++		read_card(game_internal.dio, &card);
+ 		ggzcards.players[p].table_card = card;
+ 	}
+ 
+@@ -840,19 +792,17 @@
+ 	 */
+ 
+ 	game_alert_table();
+-
+-	return 0;
+ }
+ 
+ 
+ /* A trick message tells you about the end of a trick (and who won). */
+-static int handle_msg_trick(void)
++static void handle_msg_trick(void)
+ {
+ 	int winner, p;
+ 
+ 	/* Read the trick winner */
+-	if (read_seat(game_internal.fd, &winner) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &winner);
++
+ 	assert(winner >= 0 && winner < ggzcards.num_players);
+ 
+ 	/* Clear all cards off the table. */
+@@ -861,15 +811,13 @@
+ 
+ 	/* Update the graphics. */
+ 	game_alert_trick(winner);
+-
+-	return 0;
+ }
+ 
+ 
+ /* An options request asks you to pick a set of options.  Each "option" gives
+    a list of choices so that you pick one choice for each option.  An option
+    with only one choice is a special case: a boolean option. */
+-static int handle_req_options(void)
++static void handle_req_options(void)
+ {
+ 	int i, j;
+ 	int option_cnt;		/* the number of options */
+@@ -889,8 +837,8 @@
+ 	}
+ 
+ 	/* Read the number of options. */
+-	if (ggz_read_int(game_internal.fd, &option_cnt) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &option_cnt);
++
+ 	assert(option_cnt > 0);
+ 
+ 	/* Allocate all data */
+@@ -902,18 +850,16 @@
+ 
+ 	/* Read all the options, their defaults, and the possible choices. */
+ 	for (i = 0; i < option_cnt; i++) {
+-		if (ggz_read_string_alloc(game_internal.fd, &types[i]) < 0
+-		    || ggz_read_string_alloc(game_internal.fd, &descs[i]) < 0
+-		    || ggz_read_int(game_internal.fd, &choice_cnt[i]) < 0
+-		    || ggz_read_int(game_internal.fd, &defaults[i]) < 0)
+-			return -1;	/* read the default */
++		ggz_dio_get_string_alloc(game_internal.dio, &types[i]);
++		ggz_dio_get_string_alloc(game_internal.dio, &descs[i]);
++		ggz_dio_get_int(game_internal.dio, &choice_cnt[i]);
++		ggz_dio_get_int(game_internal.dio, &defaults[i]);
+ 		option_choices[i] =
+ 		    ggz_malloc(choice_cnt[i] * sizeof(**option_choices));
+-		for (j = 0; j < choice_cnt[i]; j++)
+-			if (ggz_read_string_alloc
+-			    (game_internal.fd, &option_choices[i][j])
+-			    < 0)
+-				return -1;
++		for (j = 0; j < choice_cnt[i]; j++) {
++			ggz_dio_get_string_alloc(game_internal.dio,
++					     &option_choices[i][j]);
++		}
+ 	}
+ 
+ 	/* Get the options. */
+@@ -937,13 +883,11 @@
+ 	ggz_free(choice_cnt);
+ 	ggz_free(descs);
+ 	ggz_free(types);
+-
+-	return 0;
+ }
+ 
+ 
+ /* The language lets the server translate messages for us. */
+-int client_send_language(const char *lang)
++void client_send_language(const char *lang)
+ {
+ 	if (!lang) {
+ 		lang = "";
+@@ -951,82 +895,70 @@
+ 
+ 	ggz_debug(DBG_CLIENT, "Sending language %s to the server.", lang);
+ 
+-	if (write_opcode(game_internal.fd, MSG_LANGUAGE) < 0 ||
+-	    ggz_write_string(game_internal.fd, lang) < 0)
+-		return -1;
+-
+-	return 0;
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, MSG_LANGUAGE);
++	ggz_dio_put_string(game_internal.dio, lang);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* A newgame message tells the server to start a new game. */
+-int client_send_newgame(void)
++void client_send_newgame(void)
+ {
+-	if (write_opcode(game_internal.fd, RSP_NEWGAME) < 0) {
+-		ggz_error_msg("Couldn't send newgame.");
+-		return -1;
+-	}
+-	return 0;
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, RSP_NEWGAME);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* A bid message tells the server our choice for a bid. */
+-int client_send_bid(int bid)
++void client_send_bid(int bid)
+ {
+ 	set_game_state(STATE_WAIT);
+-	if (write_opcode(game_internal.fd, RSP_BID) < 0
+-	    || ggz_write_int(game_internal.fd, bid) < 0) {
+-		ggz_error_msg("Couldn't send bid.");
+-		return -1;
+-	}
+-	return 0;
++
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, RSP_BID);
++	ggz_dio_put_int(game_internal.dio, bid);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* An options message tells the server our choices for options. */
+-int client_send_options(int option_cnt, int *options)
++void client_send_options(int option_cnt, int *options)
+ {
+-	int i, status = 0;
++	int i;
+ 
+-	if (write_opcode(game_internal.fd, RSP_OPTIONS) < 0 ||
+-	    ggz_write_int(game_internal.fd, option_cnt) < 0)
+-		status = -1;
+-	for (i = 0; i < option_cnt; i++)
+-		if (ggz_write_int(game_internal.fd, options[i]) < 0)
+-			status = -1;
+-
+ 	set_game_state(STATE_WAIT);
+ 
+-	if (status < 0) {
+-		ggz_error_msg("Couldn't send options.");
+-		return -1;
+-	}
+-	return status;
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, RSP_OPTIONS);
++	ggz_dio_put_int(game_internal.dio, option_cnt);
++	for (i = 0; i < option_cnt; i++)
++		ggz_dio_put_int(game_internal.dio, options[i]);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* A play message tells the server our choice for a play. */
+-int client_send_play(card_t card)
++void client_send_play(card_t card)
+ {
+ 	set_game_state(STATE_WAIT);
+-	if (write_opcode(game_internal.fd, RSP_PLAY) < 0
+-	    || write_card(game_internal.fd, card) < 0) {
+-		ggz_error_msg("Couldn't send play.");
+-		return -1;
+-	}
+-	return 0;
++
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, RSP_PLAY);
++	write_card(game_internal.dio, card);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* A sync request asks for a sync from the server. */
+-int client_send_sync_request(void)
++void client_send_sync_request(void)
+ {
+ 	ggz_debug(DBG_CLIENT, "Sending sync request to server.");
+-	if (write_opcode(game_internal.fd, REQ_SYNC) < 0) {
+-		ggz_error_msg("Couldn't send sync request.");
+-		return -1;
+-	}
+-	return 0;
++
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, REQ_SYNC);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ #ifdef GUI_CLIENT
+@@ -1036,17 +968,14 @@
+ }
+ #endif
+ 
+-/* This function handles any input from the server. */
+-int client_handle_server(void)
++static void server_read_callback(GGZDataIO *dio, void *userdata)
+ {
+-	int opcode, status = -1;
++	int opcode;
+ 	server_msg_t op;
+ 
+ 	/* Read the opcode */
+-	if (read_opcode(game_internal.fd, &opcode) < 0) {
+-		ggz_error_msg("Couldn't read server opcode.");
+-		return -1;
+-	}
++	read_opcode(game_internal.dio, &opcode);
++
+ 	op = opcode;
+ 
+ 	ggz_debug(DBG_CLIENT, "Received %s opcode from the server.",
+@@ -1056,56 +985,60 @@
+ 	case REQ_NEWGAME:
+ 		game_get_newgame();
+ 		ggzcards.play_hand = -1;
+-		status = 0;
+-		break;
++		return;
+ 	case MSG_NEWGAME:
+ 		/* TODO: don't make "new game" until here */
+-		status = handle_msg_newgame();
+-		break;
++		handle_msg_newgame();
++		return;
+ 	case MSG_GAMEOVER:
+-		status = handle_msg_gameover();
+-		break;
++		handle_msg_gameover();
++		return;
+ 	case MSG_PLAYERS:
+-		status = handle_msg_players();
+-		break;
++		handle_msg_players();
++		return;
+ 	case MSG_NEWHAND:
+ 		game_alert_newhand();
+-		status = 0;
+-		break;
++		return;
+ 	case MSG_HAND:
+-		status = handle_msg_hand();
+-		break;
++		handle_msg_hand();
++		return;
+ 	case REQ_BID:
+-		status = handle_req_bid();
+-		break;
++		handle_req_bid();
++		return;
+ 	case MSG_BID:
+-		status = handle_msg_bid();
+-		break;
++		handle_msg_bid();
++		return;
+ 	case REQ_PLAY:
+-		status = handle_req_play();
+-		break;
++		handle_req_play();
++		return;
+ 	case MSG_BADPLAY:
+-		status = handle_msg_badplay();
+-		break;
++		handle_msg_badplay();
++		return;
+ 	case MSG_PLAY:
+-		status = handle_msg_play();
+-		break;
++		handle_msg_play();
++		return;
+ 	case MSG_TABLE:
+-		status = handle_msg_table();
+-		break;
++		handle_msg_table();
++		return;
+ 	case MSG_TRICK:
+-		status = handle_msg_trick();
+-		break;
++		handle_msg_trick();
++		return;
+ 	case MESSAGE_GAME:
+-		status = handle_message_global();
+-		break;
++		handle_message_global();
++		return;
+ 	case REQ_OPTIONS:
+-		status = handle_req_options();
+-		break;
++		handle_req_options();
++		return;
+ 	}
+ 
+-	if (status < 0)
+-		ggz_error_msg("Error handling message"
+-			      " from server (opcode %d).", op);
+-	return status;
++	ggz_error_msg("Error handling message"
++		      " from server (opcode %d).", op);
+ }
++
++/* This function handles any input from the server. */
++int client_handle_server(void)
++{
++	ggz_dio_set_read_callback(game_internal.dio,
++				  server_read_callback, NULL);
++	return ggz_dio_read_data(game_internal.dio);
++}
+Index: ggzd/game_servers/ggzcards/client/client.h
+===================================================================
+--- ggzd/game_servers/ggzcards/client/client.h	(revision 8355)
++++ ggzd/game_servers/ggzcards/client/client.h	(working copy)
+@@ -28,6 +28,7 @@
+ #endif
+ 
+ #include <ggz_common.h>
++#include <ggz_dio.h>
+ #ifdef GUI_CLIENT
+ #  include <ggzmod.h>
+ #endif
+@@ -162,7 +163,7 @@
+ /** This function will return the file descriptor that is used to communicate
+  *  with the server.
+  */
+-int client_get_fd(void);
++GGZDataIO *client_get_dio(void);
+ 
+ /** @} end of Setup */
+ 
+@@ -175,7 +176,7 @@
+ 
+ /** Handles an update of the server socket.  This will only happen once, when
+  *  we first connect to the server. */
+-extern void game_alert_server(int server_socket_fd);
++extern void game_alert_server(GGZDataIO *dio);
+ 
+ /** Handles a newgame request by calling client_send_newgame when
+  *  ready (you may wish to ask the user first). */
+@@ -322,7 +323,8 @@
+  *  @param size The amount of data ready to be read.
+  *  @return The number of bytes read, or negative for error.
+  *  @note When in doubt, just use "return 0". */
+-extern int game_handle_game_message(int fd, const char *game, int size);
++extern int game_handle_game_message(GGZDataIO *dio,
++				    const char *game, int size);
+ 
+ /** @} end of Callbacks */
+ 
+@@ -333,35 +335,35 @@
+  *  @{ */
+ 
+ /** Sends the language to the server. */
+-int client_send_language(const char *lang);
++void client_send_language(const char *lang);
+ 
+ /** Sends a simple newgame response.
+  *  @return 0 on success, -1 on failure.
+  *  @see game_get_newgame */
+-int client_send_newgame(void);
++void client_send_newgame(void);
+ 
+ /** Sends a bid response.
+  *  @param bid The index of the bid chosen.
+  *  @return 0 on success, -1 on failure
+  *  @see game_get_bid */
+-int client_send_bid(int bid);
++void client_send_bid(int bid);
+ 
+ /** Sends an options response.
+  *  @param option_cnt The number of options.
+  *  @param options The choice made for each option.
+  *  @return 0 on success, -1 on failure
+  *  @see game_get_options */
+-int client_send_options(int option_cnt, int *options);
++void client_send_options(int option_cnt, int *options);
+ 
+ /** Sends a play response.
+  *  @param card The card chosen to be played.
+  *  @return 0 on success, -1 on failure
+  *  @see game_get_play, game_alert_badplay */
+-int client_send_play(card_t card);
++void client_send_play(card_t card);
+ 
+ /** Sends a request for a sync.
+  *  @return 0 on success, -1 on failure. */
+-int client_send_sync_request(void);
++void client_send_sync_request(void);
+ 
+ /** @} end of Responses */
+ 
+Index: ggzd/game_servers/ggzcards/common.h
+===================================================================
+--- ggzd/game_servers/ggzcards/common.h	(revision 8355)
++++ ggzd/game_servers/ggzcards/common.h	(working copy)
+@@ -141,6 +141,7 @@
+ 	int num_players;	/**< the number of players in the game */
+ 	int player_count;	/**< the number of human players who have joined, in total */
+ 	struct game_player_t *players;	/**< data for each player, allocated in game_init */
++	struct game_spectator_t *spectators; /**< data for each spectator. */
+ 
+ 	/* table data: seats */
+ 	int num_seats;	/**< the number of "seats" in the table (which includes fake non-players */
+@@ -217,7 +218,7 @@
+ 
+ const char* get_player_name(player_t p);
+ GGZSeatType get_player_status(player_t p);
+-int get_player_socket(int p);
++GGZDataIO *get_player_dio(int p);
+ 
+ bool seats_full(void);
+ bool seats_empty(void);
+Index: gtk-games/ggzcards/animation.c
+===================================================================
+--- gtk-games/ggzcards/animation.c	(revision 8355)
++++ gtk-games/ggzcards/animation.c	(working copy)
+@@ -317,7 +317,12 @@
+ 	int max_x = 0, max_y = 0;
+ 	GTimeVal curr_time;
+ 
+-	assert(animating);
++	if (!animating) {
++#if 0 /* This fails for some reason! */
++		assert(animating);
++#endif
++		return FALSE;
++	}
+ 	g_get_current_time(&curr_time);
+ 
+ 	/* First determine the areas that need to be overwritten up. */
+Index: gtk-games/ggzcards/module.dsc.in
+===================================================================
+--- gtk-games/ggzcards/module.dsc.in	(revision 8355)
++++ gtk-games/ggzcards/module.dsc.in	(working copy)
+@@ -7,5 +7,5 @@
+ Homepage = http://www.ggzgamingzone.org/games/ggzcards/
+ Name = GGZCards
+ ProtocolEngine = GGZCards
+-ProtocolVersion = 4
++ProtocolVersion = 5
+ Version = 0.0.7
+Index: gtk-games/ggzcards/common/net_common.c
+===================================================================
+--- gtk-games/ggzcards/common/net_common.c	(revision 8355)
++++ gtk-games/ggzcards/common/net_common.c	(working copy)
+@@ -29,102 +29,93 @@
+  */
+ 
+ #ifdef HAVE_CONFIG_H
+-#  include <config.h>	/* Site-specific config */
++#  include <config.h>			/* Site-specific config */
+ #endif
+ 
+ #include <assert.h>
+ 
+-#include <ggz.h>	/* for easysock */
++#include <ggz.h>		/* for easysock */
+ 
+ #include "net_common.h"
+ 
+-int read_card(int fd, card_t * card)
++void read_card(GGZDataIO *dio, card_t * card)
+ {
+-	if (ggz_read_char(fd, &card->face) < 0 ||
+-	    ggz_read_char(fd, &card->suit) < 0 ||
+-	    ggz_read_char(fd, &card->deck) < 0)
+-		return -1;
+-
++	ggz_dio_get_char(dio, &card->face);
++	ggz_dio_get_char(dio, &card->suit);
++	ggz_dio_get_char(dio, &card->deck);
++		
+ 	/* We go ahead and check the card for validity. */
+ 	if (is_valid_card(*card))
+-		return 0;
+-
+-#if 0	/* This could be dangerous - anyone could crash us! */
++		return;
++	
++#if 0 /* This could be dangerous - anyone could crash us! */
+ 	assert(FALSE);
+ #endif
+ 
+-#if 0	/* This probably makes the most sense, but... */
+-	return -1;
++#if 0 /* This probably makes the most sense, but... */
++	return;
+ #endif
+ 
+ 	*card = UNKNOWN_CARD;
+-	return 0;
+ }
+ 
+-int write_card(int fd, card_t card)
++void write_card(GGZDataIO *dio, card_t card)
+ {
+ 	/* Check for validity. */
+ 	assert(is_valid_card(card));
+-
+-	if (ggz_write_char(fd, card.face) < 0 ||
+-	    ggz_write_char(fd, card.suit) < 0 ||
+-	    ggz_write_char(fd, card.deck) < 0)
+-		return -1;
+-	return 0;
++	
++	ggz_dio_put_char(dio, card.face);
++	ggz_dio_put_char(dio, card.suit);
++	ggz_dio_put_char(dio, card.deck);
+ }
+ 
+-int read_bid(int fd, bid_t * bid)
++void read_bid(GGZDataIO *dio, bid_t * bid)
+ {
+-	if (ggz_read_char(fd, &bid->sbid.val) < 0 ||
+-	    ggz_read_char(fd, &bid->sbid.suit) < 0 ||
+-	    ggz_read_char(fd, &bid->sbid.spec) < 0 ||
+-	    ggz_read_char(fd, &bid->sbid.spec2) < 0)
+-		return -1;
+-	return 0;
++	ggz_dio_get_char(dio, &bid->sbid.val);
++	ggz_dio_get_char(dio, &bid->sbid.suit);
++	ggz_dio_get_char(dio, &bid->sbid.spec);
++	ggz_dio_get_char(dio, &bid->sbid.spec2);
+ }
+ 
+ /** @brief Writes a bid to the socket.
+- *  @param fd The file descriptor to which to read.
+- *  @param bid A pointer to the bid data.
+- *  @return 0 on success, -1 on failure. */
+-int write_bid(int fd, bid_t bid)
++ *  @param dio The file descriptor to which to read.
++ *  @param bid A pointer to the bid data. */
++void write_bid(GGZDataIO *dio, bid_t bid)
+ {
+-	if (ggz_write_char(fd, bid.sbid.val) < 0 ||
+-	    ggz_write_char(fd, bid.sbid.suit) < 0 ||
+-	    ggz_write_char(fd, bid.sbid.spec) < 0 ||
+-	    ggz_write_char(fd, bid.sbid.spec2) < 0)
+-		return -1;
+-	return 0;
++	ggz_dio_put_char(dio, bid.sbid.val);
++	ggz_dio_put_char(dio, bid.sbid.suit);
++	ggz_dio_put_char(dio, bid.sbid.spec);
++	ggz_dio_put_char(dio, bid.sbid.spec2);
+ }
+ 
+-int read_opcode(int fd, int *opcode)
++void read_opcode(GGZDataIO *dio, int *opcode)
+ {
+ 	char op;
+-	if (ggz_read_char(fd, &op) < 0)
+-		return -1;
++
++	ggz_dio_get_char(dio, &op);
+ 	*opcode = op;
+-	return 0;
+ }
+ 
+-int write_opcode(int fd, int opcode)
++void write_opcode(GGZDataIO *dio, int opcode)
+ {
+ 	char op = opcode;
++
+ 	assert(opcode >= 0 && opcode < 128);
+-	return ggz_write_char(fd, op);
++	ggz_dio_put_char(dio, op);
+ }
+ 
+-int read_seat(int fd, int *seat)
++void read_seat(GGZDataIO *dio, int *seat)
+ {
+ 	char s;
+-	if (ggz_read_char(fd, &s) < 0)
+-		return -1;
++
++	ggz_dio_get_char(dio, &s);
+ 	*seat = s;
+-	return 0;
+ }
+ 
+-int write_seat(int fd, int seat)
++void write_seat(GGZDataIO *dio, int seat)
+ {
+ 	char s = seat;
++
+ 	assert(seat >= 0 && seat < 127);
+-	return ggz_write_char(fd, s);
++	ggz_dio_put_char(dio, s);
+ }
+Index: gtk-games/ggzcards/common/cards.h
+===================================================================
+--- gtk-games/ggzcards/common/cards.h	(revision 8355)
++++ gtk-games/ggzcards/common/cards.h	(working copy)
+@@ -47,7 +47,7 @@
+ 	 *  which has a number.  For storage purposes, the higher
+ 	 *  side will be considered the "suit" and the lower side the
+ 	 *  "face". */
+-	CARDSET_DOMINOES
++	CARDSET_DOMINOES	
+ } cardset_type_t;
+ 
+ void set_cardset_type(cardset_type_t cardset_type);
+@@ -120,14 +120,14 @@
+ typedef struct hand_t {
+ 	/* the size of the hand, when it's full.  This may or may not
+ 	   actually be used (client-side it is currently unused). */
+-	int full_hand_size;
+-
++	int full_hand_size;	
++	
+ 	/* the current size of the hand (number of cards currently in
+ 	   the hand. */
+-	int hand_size;
+-
++	int hand_size;	
++		
+ 	/* A variable-sized array containing the cards present. */
+-	card_t *cards;
++	card_t *cards;		
+ } hand_t;
+ 
+ 
+@@ -135,7 +135,7 @@
+    arbitrary data structure for it */
+ /* This shouldn't really go here, but... */
+ typedef union bid_t {
+-	int bid;		/* DO NOT USE */
++	int bid;	/* DO NOT USE */
+ 	struct special_bid_struct {
+ 		/* this can be used for many different games that have
+ 		   unusual but similar bidding. Different games may use it
+Index: gtk-games/ggzcards/common/protocol.c
+===================================================================
+--- gtk-games/ggzcards/common/protocol.c	(revision 8355)
++++ gtk-games/ggzcards/common/protocol.c	(working copy)
+@@ -41,73 +41,48 @@
+ 
+ #include "protocol.h"
+ 
+-const char *get_server_opcode_name(server_msg_t opcode)
++const char* get_server_opcode_name(server_msg_t opcode)
+ {
+ 	switch (opcode) {
+-	case REQ_NEWGAME:
+-		return "REQ_NEWGAME";
+-	case MSG_NEWGAME:
+-		return "MSG_NEWGAME";
+-	case MSG_GAMEOVER:
+-		return "MSG_GAMEOVER";
+-	case MSG_PLAYERS:
+-		return "MSG_PLAYERS";
+-	case REQ_OPTIONS:
+-		return "REQ_OPTIONS";
+-	case MSG_NEWHAND:
+-		return "MSG_NEWHAND";
+-	case MSG_HAND:
+-		return "MSG_HAND";
+-	case REQ_PLAY:
+-		return "REQ_PLAY";
+-	case MSG_BADPLAY:
+-		return "MSG_BADPLAY";
+-	case MSG_PLAY:
+-		return "MSG_PLAY";
+-	case MSG_TRICK:
+-		return "MSG_TRICK";
+-	case REQ_BID:
+-		return "REQ_BID";
+-	case MSG_BID:
+-		return "MSG_BID";
+-	case MSG_TABLE:
+-		return "MSG_TABLE";
+-	case MESSAGE_GAME:
+-		return "MESSAGE_GAME";
++	case REQ_NEWGAME:  return "REQ_NEWGAME";
++	case MSG_NEWGAME:  return "MSG_NEWGAME";
++	case MSG_GAMEOVER: return "MSG_GAMEOVER";
++	case MSG_PLAYERS:  return "MSG_PLAYERS";
++	case REQ_OPTIONS:  return "REQ_OPTIONS";
++	case MSG_NEWHAND:  return "MSG_NEWHAND";
++	case MSG_HAND:     return "MSG_HAND";
++	case REQ_PLAY:     return "REQ_PLAY";
++	case MSG_BADPLAY:  return "MSG_BADPLAY";
++	case MSG_PLAY:     return "MSG_PLAY";
++	case MSG_TRICK:    return "MSG_TRICK";
++	case REQ_BID:      return "REQ_BID";
++	case MSG_BID:      return "MSG_BID"; 	
++	case MSG_TABLE:    return "MSG_TABLE";
++	case MESSAGE_GAME: return "MESSAGE_GAME";
+ 	}
+ 	return "[unknown]";
+ }
+ 
+-const char *get_game_message_name(game_message_t opcode)
++const char* get_game_message_name(game_message_t opcode)
+ {
+ 	switch (opcode) {
+-	case GAME_MESSAGE_TEXT:
+-		return "GAME_MESSAGE_TEXT";
+-	case GAME_MESSAGE_PLAYER:
+-		return "GAME_MESSAGE_PLAYER";
+-	case GAME_MESSAGE_CARDLIST:
+-		return "GAME_MESSAGE_CARDLIST";
+-	case GAME_MESSAGE_GAME:
+-		return "GAME_MESSAGE_GAME";
++	case GAME_MESSAGE_TEXT:     return "GAME_MESSAGE_TEXT";
++	case GAME_MESSAGE_PLAYER:   return "GAME_MESSAGE_PLAYER";
++	case GAME_MESSAGE_CARDLIST: return "GAME_MESSAGE_CARDLIST";
++	case GAME_MESSAGE_GAME:     return "GAME_MESSAGE_GAME"; 	
+ 	}
+ 	return "[unknown]";
+ }
+ 
+-const char *get_client_opcode_name(client_msg_t opcode)
++const char* get_client_opcode_name(client_msg_t opcode)
+ {
+ 	switch (opcode) {
+-	case MSG_LANGUAGE:
+-		return "MSG_LANGUAGE";
+-	case RSP_NEWGAME:
+-		return "RSP_NEWGAME";
+-	case RSP_OPTIONS:
+-		return "RSP_OPTIONS";
+-	case RSP_PLAY:
+-		return "RSP_PLAY";
+-	case RSP_BID:
+-		return "RSP_BID";
+-	case REQ_SYNC:
+-		return "REQ_SYNC";
++	case MSG_LANGUAGE: return "MSG_LANGUAGE";
++	case RSP_NEWGAME:  return "RSP_NEWGAME";
++	case RSP_OPTIONS:  return "RSP_OPTIONS";
++	case RSP_PLAY:     return "RSP_PLAY";
++	case RSP_BID:      return "RSP_BID";
++	case REQ_SYNC:     return "REQ_SYNC"; 	
+ 	}
+ 	return "[unknown]";
+ }
+Index: gtk-games/ggzcards/common/net_common.h
+===================================================================
+--- gtk-games/ggzcards/common/net_common.h	(revision 8355)
++++ gtk-games/ggzcards/common/net_common.h	(working copy)
+@@ -29,53 +29,54 @@
+  */
+ 
+ #include "cards.h"
++#include "ggz_dio.h"
+ 
+ /** @brief Reads a card from the socket.
+  *  @param fd The file descriptor from which to read.
+  *  @param card A pointer to the card data.
+  *  @return 0 on success, -1 on failure. */
+-int read_card(int fd, card_t * card);
++void read_card(GGZDataIO *dio, card_t * card);
+ 
+ /** @brief Wites a card to the socket.
+  *  @param fd The file desciptor to which to write.
+  *  @param card The card to be written.
+  *  @return 0 on success, -1 on failure. */
+-int write_card(int fd, card_t card);
++void write_card(GGZDataIO *dio, card_t card);
+ 
+ /** @brief Reads a bid from the socket.
+  *  @param fd The file descriptor from which to read.
+  *  @param bid A pointer to the bid data.
+  *  @return 0 on success, -1 on failure. */
+-int read_bid(int fd, bid_t * bid);
++void read_bid(GGZDataIO *dio, bid_t * bid);
+ 
+ /** @brief Writes a bid to the socket.
+  *  @param fd The file descriptor to which to read.
+  *  @param bid A pointer to the bid data.
+  *  @return 0 on success, -1 on failure. */
+-int write_bid(int fd, bid_t bid);
++void write_bid(GGZDataIO *dio, bid_t bid);
+ 
+ /** @brief Reads an opcode from the socket.
+  *  @param fd The file descriptor from which to read.
+  *  @param op A pointer to the opcode data.
+  *  @return 0 on success, negative value on failure.
+  *  @see enum server_msg_t, enum client_msg_t */
+-int read_opcode(int fd, int *op);
++void read_opcode(GGZDataIO *dio, int *op);
+ 
+ /** @brief Writes an opcode to the socket.
+  *  @param fd The file descriptor to which to write.
+  *  @param op The opcode data.
+  *  @return 0 on success, negative value on failure.
+  *  @see enum server_msg_t, enum client_msg_t */
+-int write_opcode(int fd, int op);
++void write_opcode(GGZDataIO *dio, int op);
+ 
+ /** @brief Reads a seat from the socket.
+  *  @param fd The file descriptor from which to read.
+  *  @param seat A pointer to the seat number.
+  *  @return 0 on success, negative value on failure. */
+-int read_seat(int fd, int *seat);
++void read_seat(GGZDataIO *dio, int *seat);
+ 
+ /** @brief Writes a seat number to the socket.
+  *  @param fd The file descriptor to which to write.
+  *  @param seat The seat number.
+  *  @return 0 on success, negative value on failure. */
+-int write_seat(int fd, int seat);
++void write_seat(GGZDataIO *dio, int seat);
+Index: gtk-games/ggzcards/common/protocol.h
+===================================================================
+--- gtk-games/ggzcards/common/protocol.h	(revision 8355)
++++ gtk-games/ggzcards/common/protocol.h	(working copy)
+@@ -89,7 +89,7 @@
+ 	   considered "boolean" and either a 0 or 1 may be sent.  It needs a
+ 	   RSP_OPTIONS in response. */
+ 	REQ_OPTIONS,
+-
++	
+ 	/* Tells the client a new hand is starting.  No data. */
+ 	MSG_NEWHAND,
+ 
+@@ -125,7 +125,7 @@
+ 	   text, and a longer bid description.  The client must choose one 
+ 	   of these bids and send a RSP_BID in response. */
+ 	REQ_BID,
+-
++	
+ 	/* Tells the client of a player's bid.  It is followed by a seat # for
+ 	   the seat from which the bid comes, then the bid itself. */
+ 	MSG_BID,
+@@ -140,7 +140,7 @@
+ } server_msg_t;
+ 
+ /** @brief Return a string description of the opcode. */
+-const char *get_server_opcode_name(server_msg_t opcode);
++const char* get_server_opcode_name(server_msg_t opcode);
+ 
+ /* Global message types */
+ /* Each MESSAGE_GAME will be followed by one of these opcodes.  This
+@@ -167,7 +167,7 @@
+ } game_message_t;
+ 
+ /** @brief Return a string description of the opcode. */
+-const char *get_game_message_name(game_message_t opcode);
++const char* get_game_message_name(game_message_t opcode);
+ 
+ /* Messages from client */
+ typedef enum {
+@@ -202,6 +202,6 @@
+ } client_msg_t;
+ 
+ /** @brief Return a string description of the opcode. */
+-const char *get_client_opcode_name(client_msg_t opcode);
++const char* get_client_opcode_name(client_msg_t opcode);
+ 
+ #endif /* __PROTOCOL_H__ */
+Index: gtk-games/ggzcards/common/Makefile.am
+===================================================================
+--- gtk-games/ggzcards/common/Makefile.am	(revision 8355)
++++ gtk-games/ggzcards/common/Makefile.am	(working copy)
+@@ -7,8 +7,10 @@
+ 
+ libcommon_a_SOURCES = \
+ 	cards.c cards.h \
++	dataio.c dataio.h \
+ 	net_common.c net_common.h \
+ 	protocol.c protocol.h \
+ 	shared.h
+ 
+-test: # nothing to be done (ggz-server only)
++AM_CPPFLAGS = $(LIBGGZ_INCLUDES)
++
+Index: gtk-games/ggzcards/common/shared.h
+===================================================================
+--- gtk-games/ggzcards/common/shared.h	(revision 8355)
++++ gtk-games/ggzcards/common/shared.h	(working copy)
+@@ -32,16 +32,16 @@
+ #ifndef __SHARED_H__
+ #define __SHARED_H__
+ 
++#include <stdbool.h>
++
+ #ifndef TRUE
+-# define TRUE 1
++# define TRUE true
+ #endif
+ 
+ #ifndef FALSE
+-# define FALSE 0
++# define FALSE false
+ #endif
+ 
+-typedef int bool;
+-
+ #ifndef MIN
+ # define MIN(a, b) ( (a) < (b) ? (a) : (b) )
+ #endif
+Index: gtk-games/ggzcards/common/cards.c
+===================================================================
+--- gtk-games/ggzcards/common/cards.c	(revision 8355)
++++ gtk-games/ggzcards/common/cards.c	(working copy)
+@@ -50,10 +50,9 @@
+ 	return cardset_type;
+ }
+ 
+-const card_t UNKNOWN_CARD = { face:UNKNOWN_FACE,
+-      suit:UNKNOWN_SUIT,
+-      deck:UNKNOWN_DECK
+-};
++const card_t UNKNOWN_CARD = {face: UNKNOWN_FACE,
++                             suit: UNKNOWN_SUIT,
++                             deck: UNKNOWN_DECK};
+ 
+ /* FIXME: a better system for returning names is needed.  It should
+    be i18n'able, at least at the client. */
+@@ -189,7 +188,7 @@
+ 		}
+ 		break;
+ 	case UNKNOWN_CARDSET:
+-		break;
++		break;	
+ 	}
+ 	return "[unknown face]";
+ }
+@@ -247,7 +246,7 @@
+ 		}
+ 		break;
+ 	case UNKNOWN_CARDSET:
+-		break;
++		break;	
+ 	}
+ 	return "X";
+ }
+@@ -257,21 +256,23 @@
+ 	switch (cardset_type) {
+ 	case UNKNOWN_CARDSET:
+ 		return card.face == UNKNOWN_FACE
+-		    && card.suit == UNKNOWN_SUIT
+-		    && card.deck == UNKNOWN_DECK;
++		       && card.suit == UNKNOWN_SUIT
++		       && card.deck == UNKNOWN_DECK;
+ 	case CARDSET_FRENCH:
+ 		return (card.face == UNKNOWN_FACE
+-			|| (card.face >= ACE_LOW && card.face <= ACE_HIGH))
+-		    && (card.suit == UNKNOWN_SUIT
+-			|| (card.suit >= CLUBS && card.suit <= SPADES))
+-		    && (card.deck == UNKNOWN_DECK || (card.deck >= 0));
++		        || (card.face >= ACE_LOW && card.face <= ACE_HIGH))
++		       && (card.suit == UNKNOWN_SUIT
++		           || (card.suit >= CLUBS && card.suit <= SPADES))
++		       && (card.deck == UNKNOWN_DECK
++		           || (card.deck >= 0));
+ 	case CARDSET_DOMINOES:
+ 		if (card.deck != UNKNOWN_DECK && card.deck < 0)
+ 			return FALSE;
+ 		if (card.suit == -1 && card.face == -1)
+ 			return TRUE;
+ 		return card.suit != -1
+-		    && card.face != -1 && card.suit >= card.face;
++		       && card.face != -1
++		       && card.suit >= card.face;
+ 	}
+ 	return FALSE;
+ }
+@@ -280,6 +281,7 @@
+ int are_cards_equal(card_t card1, card_t card2)
+ {
+ 	return card1.suit == card2.suit
+-	    && card1.face == card2.face && card1.deck == card2.deck
+-	    /* && card1.type == card2.type */ ;
++	       && card1.face == card2.face
++	       && card1.deck == card2.deck
++	       /* && card1.type == card2.type */;
+ }
+Index: gtk-games/ggzcards/game.c
+===================================================================
+--- gtk-games/ggzcards/game.c	(revision 8355)
++++ gtk-games/ggzcards/game.c	(working copy)
+@@ -38,6 +38,8 @@
+ #include "ggzintl.h"
+ #include "menus.h"
+ 
++#include "ggz_dio.h"
++
+ #include "client.h"
+ 
+ #include "ai.h"
+@@ -74,40 +76,41 @@
+ 	return (client_handle_ggz() >= 0);
+ }
+ 
+-gboolean game_handle_io(GIOChannel * source, GIOCondition cond,
+-			gpointer data)
++void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+ {
+ 	ggz_debug(DBG_MAIN, "Received data froms server.");
+-	if (client_handle_server() < 0) {
+-		gtk_main_quit();
++	if (cond & GDK_INPUT_READ) {
++	  if (client_handle_server() < 0) {
++	    gtk_main_quit();
++	  }
+ 	}
+-	return TRUE;
++	if (cond & GDK_INPUT_WRITE) {
++	  assert(ggz_dio_is_write_pending(client_get_dio()));
++	  printf("Writing data.\n");
++	  ggz_dio_write_data(client_get_dio());
++	}
++	if (cond & GDK_INPUT_EXCEPTION) {
++	  printf("Exception in socket.\n");
++	  gtk_main_quit();
++	}
+ }
+ 
+ void game_send_bid(int bid)
+ {
+-	int status;
+-
+ 	ggz_debug(DBG_MAIN, "Sending bid %d to server.", bid);
+ 
+-	status = client_send_bid(bid);
++	client_send_bid(bid);
+ 
+ 	statusbar_message(_("Sending bid to server..."));
+-
+-	assert(status == 0);
+ }
+ 
+ void game_send_options(int option_count, int *options_selection)
+ {
+-	int status;
+-
+ 	ggz_debug(DBG_MAIN, "Sending options to server.");
+ 
+-	status = client_send_options(option_count, options_selection);
++	client_send_options(option_count, options_selection);
+ 
+ 	statusbar_message(_("Sending options to server..."));
+-
+-	assert(status == 0);
+ }
+ 
+ 
+@@ -116,7 +119,7 @@
+    is valid. */
+ void game_play_card(int card_num)
+ {
+-	int player = ggzcards.play_hand, status;
++	int player = ggzcards.play_hand;
+ 	card_t card;
+ 
+ 	if (preferences.collapse_hand)
+@@ -132,7 +135,7 @@
+ 		  card_num);
+ 	statusbar_message(_("Sending play to server..."));
+ 
+-	status = client_send_play(card);
++	client_send_play(card);
+ 
+ 	/* Setup and trigger the card animation.  Because of the ugly way this 
+ 	   is handled, this function has to be called _before_ we update
+@@ -150,8 +153,6 @@
+ 	/* We don't remove the card from our hand until we have validation
+ 	   that it's been played. Graphically, the table_card is skipped over
+ 	   when drawing the hand. */
+-
+-	assert(status == 0);
+ }
+ 
+ #ifdef DEBUG
+@@ -188,8 +189,7 @@
+ {
+ 	ggz_debug(DBG_MAIN, "Sending newgame to server.");
+ 
+-	if (client_send_newgame() < 0)
+-		assert(FALSE);
++	client_send_newgame();
+ 
+ 	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
+ 
+@@ -205,14 +205,25 @@
+ 	(void)client_send_sync_request();
+ }
+ 
++static void server_set_writeable(GGZDataIO *dio, bool writeable)
++{
++	static guint input_id;
+ 
++	if (input_id != 0) gtk_input_remove(input_id);
++	input_id = gtk_input_add_full(ggz_dio_get_socket(dio),
++				      GDK_INPUT_READ
++				      | (writeable ? GDK_INPUT_WRITE : 0)
++				      | GDK_INPUT_EXCEPTION,
++				      game_handle_io, NULL, NULL, NULL);
++}
+ 
+-
+-void game_alert_server(int server_socket_fd)
++void game_alert_server(GGZDataIO *server_dio)
+ {
+ 	/* Start listening on the server socket.  We may stop later, if
+ 	   necessary. */
+ 	listen_for_server(TRUE);
++	server_set_writeable(server_dio, ggz_dio_is_write_pending(server_dio));
++	ggz_dio_set_writeable_callback(server_dio, server_set_writeable);
+ }
+ 
+ void game_get_newgame(void)
+@@ -703,7 +714,7 @@
+ 	table_set_player_message(player, message);
+ }
+ 
+-int game_handle_game_message(int fd, const char *game, int size)
++int game_handle_game_message(GGZDataIO *dio, const char *game, int size)
+ {
+ 	ggz_debug(DBG_MAIN, "Received game message for game %s.", game);
+ 	return 0;
+Index: gtk-games/ggzcards/game.h
+===================================================================
+--- gtk-games/ggzcards/game.h	(revision 8355)
++++ gtk-games/ggzcards/game.h	(working copy)
+@@ -133,8 +133,7 @@
+ 			 gpointer data);
+ 
+ /** @brief Handles IO from the server; called any time data is pending. */
+-gboolean game_handle_io(GIOChannel * source, GIOCondition cond,
+-			gpointer data);
++void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
+ 
+ /** @brief Request a sync from the server, and prepare to receive it. */
+ void game_resync(void);
+@@ -150,7 +149,7 @@
+ 		     char **descriptions,
+ 		     int *choice_cnt, int *defaults,
+ 		     char ***option_choices);
+-void game_alert_server(int server_socket_fd);
++void game_alert_server(GGZDataIO *server_dio);
+ void game_get_newgame(void);
+ void game_alert_newgame(cardset_type_t cardset_type);
+ void game_alert_newhand(void);
+@@ -173,6 +172,6 @@
+ void game_set_cardlist_message(const char *mark, int *lengths,
+ 			       card_t ** cardlist);
+ void game_set_player_message(int player, const char *message);
+-int game_handle_game_message(int fd, const char *game, int size);
++int game_handle_game_message(GGZDataIO *dio, const char *game, int size);
+ 
+ #endif /* __GAME_H__ */
+Index: gtk-games/ggzcards/main.c
+===================================================================
+--- gtk-games/ggzcards/main.c	(revision 8355)
++++ gtk-games/ggzcards/main.c	(working copy)
+@@ -42,6 +42,8 @@
+ #include "ggz_gtk.h"
+ #include "menus.h"
+ 
++#include "ggz_dio.h"
++
+ #include "client.h"
+ 
+ #include "animation.h"
+@@ -120,7 +122,7 @@
+ #endif
+ 	/* Debugging goes to ~/.ggz/ggzcards-gtk.debug */
+ 	char *file_name =
+-	    g_strdup_printf("%s/.ggz/ggzcards-gtk.debug", getenv("HOME"));
++	  g_strdup_printf("%s/.ggz/ggzcards-gtk.debug", getenv("HOME"));
+ 	ggz_debug_init(debugging_types, file_name);
+ 	g_free(file_name);
+ 
+@@ -143,25 +145,12 @@
+ 
+ void listen_for_server(bool listen)
+ {
+-	static guint server_socket_tag;
+-	static GIOChannel *channel = NULL;
+-	/* Invariant: (channel != NULL) <=> listening */
++	GGZDataIO *dio = client_get_dio();
+ 
+ 	ggz_debug(DBG_MAIN, "%s server.",
+ 		  listen ? "Listening for" : "Ignoring");
+ 
+-	if (listen && !channel) {
+-		int fd = client_get_fd();
+-
+-		channel = g_io_channel_unix_new(fd);
+-		assert(fd >= 0);
+-		server_socket_tag = g_io_add_watch(channel, G_IO_IN,
+-						   game_handle_io, NULL);
+-	} else if (!listen && channel) {
+-		g_source_remove(server_socket_tag);
+-		g_io_channel_unref(channel);
+-		channel = NULL;
+-	}
++	ggz_dio_set_read_freeze(dio, !listen);
+ }
+ 
+ /* Initialize data for the "about" dialog */
+Index: gtk-games/ggzcards/client/client.c
+===================================================================
+--- gtk-games/ggzcards/client/client.c	(revision 8355)
++++ gtk-games/ggzcards/client/client.c	(working copy)
+@@ -52,15 +52,15 @@
+ 
+ static void handle_server_connect(int server_fd);
+ 
+-static int handle_message_global(void);
++static void handle_message_global(void);
+ 
+-static int handle_text_message(void);
+-static int handle_player_message(void);
+-static int handle_cardlist_message(void);
+-static int handle_game_message(void);
++static void handle_text_message(void);
++static void handle_player_message(void);
++static void handle_cardlist_message(void);
++static void handle_game_message(void);
+ 
+ static struct {
+-	int fd;
++	GGZDataIO *dio;
+ #ifdef GUI_CLIENT
+ 	GGZMod *ggzmod;
+ #endif				/* GUI_CLIENT */
+@@ -74,7 +74,7 @@
+ 
+ struct ggzcards_game_t ggzcards = { 0 };
+ 
+-static int handle_req_play(void);
++static void handle_req_play(void);
+ 
+ #ifdef GUI_CLIENT
+ GGZMod *client_get_ggzmod(void)
+@@ -95,14 +95,14 @@
+ 
+ static void handle_server_connect(int server_fd)
+ {
+-	game_internal.fd = server_fd;
++	game_internal.dio = ggz_dio_new(server_fd);
+ 
+-	if (client_send_language(getenv("LANG")) < 0) {
+-		game_internal.fd = -1;
+-		ggz_error_msg("Couldn't send message to server.");
+-	}
++	/* HACK: Auto flush cuts down on packets being split up in transit. */
++	ggz_dio_set_auto_flush(game_internal.dio, TRUE);
+ 
+-	game_alert_server(game_internal.fd);	/* ?? */
++	client_send_language(getenv("LANG"));
++
++	game_alert_server(game_internal.dio);	/* ?? */
+ }
+ 
+ int client_initialize(void)
+@@ -120,7 +120,7 @@
+ 
+ 	srand((unsigned)time(NULL));
+ 
+-	game_internal.fd = -1;
++	game_internal.dio = NULL;
+ 	game_internal.max_hand_size = 0;
+ 
+ 	ggzcards.state = STATE_INIT;
+@@ -151,7 +151,7 @@
+ #ifdef GUI_CLIENT
+ 	if (ggzmod_disconnect(game_internal.ggzmod) < 0)
+ #else /* AI_CLIENT */
+-	if (close(game_internal.fd) < 0)
++	if (close(ggz_dio_get_socket(game_internal.dio)) < 0)
+ #endif
+ 		ggz_error_msg_exit("Couldn't disconnect from ggz.");
+ 
+@@ -171,9 +171,9 @@
+ }
+ 
+ 
+-int client_get_fd(void)
++GGZDataIO *client_get_dio(void)
+ {
+-	return game_internal.fd;
++	return game_internal.dio;
+ }
+ 
+ 
+@@ -211,21 +211,21 @@
+ 	}
+ }
+ 
+-static int handle_text_message(void)
++static void handle_text_message(void)
+ {
+ 	char *message, *mark;
+-	if (ggz_read_string_alloc(game_internal.fd, &mark) < 0 ||
+-	    ggz_read_string_alloc(game_internal.fd, &message) < 0)
+-		return -1;
++
++	ggz_dio_get_string_alloc(game_internal.dio, &mark);
++	ggz_dio_get_string_alloc(game_internal.dio, &message);
++
+ 	game_set_text_message(mark, message);
+ 	ggz_free(message);	/* allocated by easysock */
+ 	ggz_free(mark);	/* allocated by easysock */
+-	return 0;
+ }
+ 
+-static int handle_cardlist_message(void)
++static void handle_cardlist_message(void)
+ {
+-	int status = 0, p, i;
++	int p, i;
+ 	card_t **cardlist =
+ 	    ggz_malloc(ggzcards.num_players * sizeof(*cardlist));
+ 	int *lengths = ggz_malloc(ggzcards.num_players * sizeof(*lengths));
+@@ -234,23 +234,18 @@
+ 	if (!cardlist || !lengths)
+ 		abort();
+ 
+-	if (ggz_read_string_alloc(game_internal.fd, &mark) < 0)
+-		status = -1;
++	ggz_dio_get_string_alloc(game_internal.dio, &mark);
+ 
+ 	for (p = 0; p < ggzcards.num_players; p++) {
+-		if (ggz_read_int(game_internal.fd, &lengths[p]))
+-			status = -1;
++		ggz_dio_get_int(game_internal.dio, &lengths[p]);
+ 		if (lengths[p] > 0)
+ 			cardlist[p] = ggz_malloc(lengths[p]
+ 						 * sizeof(**cardlist));
+ 		for (i = 0; i < lengths[p]; i++)
+-			if (read_card(game_internal.fd, &cardlist[p][i]) <
+-			    0)
+-				status = -1;
++			read_card(game_internal.dio, &cardlist[p][i]);
+ 	}
+ 
+-	if (status == 0)
+-		game_set_cardlist_message(mark, lengths, cardlist);
++	game_set_cardlist_message(mark, lengths, cardlist);
+ 
+ 	for (p = 0; p < ggzcards.num_players; p++)
+ 		if (lengths[p] > 0)
+@@ -258,27 +253,23 @@
+ 	ggz_free(cardlist);
+ 	ggz_free(lengths);
+ 	ggz_free(mark);	/* allocated by easysock */
+-
+-	return status;
+ }
+ 
+ /* A message_player message tells you one "player message", which is
+    displayed by the client. */
+-static int handle_player_message(void)
++static void handle_player_message(void)
+ {
+ 	int p;
+ 	char *message;
+ 
+-	if (read_seat(game_internal.fd, &p) < 0 ||
+-	    ggz_read_string_alloc(game_internal.fd, &message) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &p);
++	ggz_dio_get_string_alloc(game_internal.dio, &message);
++
+ 	assert(p >= 0 && p < ggzcards.num_players);
+ 
+ 	game_set_player_message(p, message);
+ 
+ 	ggz_free(message);	/* allocated by easysock */
+-
+-	return 0;
+ }
+ 
+ /* This handles a game-specific message.  We pass the game all the
+@@ -291,14 +282,13 @@
+    used an XML protocol, things could just sort-of take care of themselves
+    because we'd just skip over the tag automatically if it wasn't handled (I
+    think). */
+-static int handle_game_message(void)
++static void handle_game_message(void)
+ {
+ 	int size, handled;
+ 	char *game;
+ 
+-	if (ggz_read_string_alloc(game_internal.fd, &game) < 0
+-	    || ggz_read_int(game_internal.fd, &size) < 0)
+-		return -1;
++	ggz_dio_get_string_alloc(game_internal.dio, &game);
++	ggz_dio_get_int(game_internal.dio, &size);
+ 
+ 	/* Note: "size" refers to the size of the data block, not including
+ 	   the headers above. */
+@@ -306,34 +296,30 @@
+ 		  "Received game message of size %d for game %s.", size,
+ 		  game);
+ 
+-	handled = game_handle_game_message(game_internal.fd, game, size);
+-	if (handled < 0)
+-		return -1;
++	handled = game_handle_game_message(game_internal.dio, game, size);
+ 	assert(handled <= size);
++#if 0 /* Shouldn't be needed; unused data is skipped automatically. */
+ 	size -= handled;	/* this is how much was unread */
+ 
+ 	if (size > 0) {
+ 		/* We read the block just to get it out of the way. */
+-		char *block = ggz_malloc(size);
+-		if (ggz_readn(game_internal.fd, block, size) < 0)
+-			return -1;
+-		ggz_free(block);
++		char block[size];
++
++		ggz_dio_get_memory(game_internal.dio, block, size);
+ 	}
++#endif
+ 
+ 	ggz_free(game);	/* allocated by easysock */
+-
+-	return 0;
+ }
+ 
+ /* a message_global message tells you one "global message", which is
+    displayed by the client. */
+-static int handle_message_global(void)
++static void handle_message_global(void)
+ {
+-	int opcode, status = 0;
++	int opcode;
+ 	game_message_t op;
+ 
+-	if (read_opcode(game_internal.fd, &opcode) < 0)
+-		return -1;
++	read_opcode(game_internal.dio, &opcode);
+ 
+ 	op = opcode;
+ 
+@@ -342,54 +328,49 @@
+ 
+ 	switch (op) {
+ 	case GAME_MESSAGE_TEXT:
+-		status = handle_text_message();
++		handle_text_message();
+ 		break;
+ 	case GAME_MESSAGE_CARDLIST:
+-		status = handle_cardlist_message();
++		handle_cardlist_message();
+ 		break;
+ 	case GAME_MESSAGE_GAME:
+-		status = handle_game_message();
++		handle_game_message();
+ 		break;
+ 	case GAME_MESSAGE_PLAYER:
+-		status = handle_player_message();
++		handle_player_message();
+ 		break;
+ 	}
+-
+-	return status;
+ }
+ 
+ 
+-static int handle_msg_newgame(void)
++static void handle_msg_newgame(void)
+ {
+ 	int cardset;
+ 	cardset_type_t cardset_type;
+ 
+-	if (ggz_read_int(game_internal.fd, &cardset) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &cardset);
++
+ 	cardset_type = cardset;
+ 
+ 	assert(cardset_type != UNKNOWN_CARDSET);
+ 	set_cardset_type(cardset_type);
+ 	game_alert_newgame(cardset_type);
+-	return 0;
+ }
+ 
+ 
+ /* A gameover message tells you the game is over, and who won. */
+-static int handle_msg_gameover(void)
++static void handle_msg_gameover(void)
+ {
+ 	int num_winners, i, *winners = NULL;
+ 
+-	if (ggz_read_int(game_internal.fd, &num_winners) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &num_winners);
+ 	assert(num_winners >= 0 && num_winners <= ggzcards.num_players);
+ 
+ 	if (num_winners > 0)
+ 		winners = ggz_malloc(num_winners * sizeof(*winners));
+ 
+ 	for (i = 0; i < num_winners; i++)
+-		if (read_seat(game_internal.fd, &winners[i]) < 0)
+-			return -1;
++		read_seat(game_internal.dio, &winners[i]);
+ 
+ 	game_handle_gameover(num_winners, winners);
+ 
+@@ -397,14 +378,12 @@
+ 
+ 	if (winners)
+ 		ggz_free(winners);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A players message tells you all the players (well, seats really) at the
+    table. */
+-static int handle_msg_players(void)
++static void handle_msg_players(void)
+ {
+ 	int i, numplayers, different;
+ 	int old_numplayers = ggzcards.num_players;
+@@ -412,8 +391,8 @@
+ 	/* It is possible to have 0 players.  At the begginning of a
+ 	   "general" game, you don't know how many seats will be used yet so
+ 	   the number of players is 0. */
+-	if (ggz_read_int(game_internal.fd, &numplayers) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &numplayers);
++
+ 	assert(numplayers >= 0);
+ 
+ 	/* we may need to allocate memory for the players */
+@@ -454,11 +433,10 @@
+ 		GGZSeatType old_type, new_type;
+ 		char *old_name, *new_name;
+ 
+-		if (ggz_read_int(game_internal.fd, &type) < 0
+-		    || ggz_read_string_alloc(game_internal.fd,
+-					     &new_name) < 0
+-		    || ggz_read_int(game_internal.fd, &ggzseat) < 0)
+-			return -1;
++		ggz_dio_get_int(game_internal.dio, &type);
++		ggz_dio_get_string_alloc(game_internal.dio, &new_name);
++		ggz_dio_get_int(game_internal.dio, &ggzseat);
++
+ 		new_type = type;
+ 
+ 		old_name = ggzcards.players[i].name;
+@@ -487,8 +465,6 @@
+ 	}
+ 
+ 	/* TODO: should we need to enter a waiting state if players leave? */
+-
+-	return 0;
+ }
+ 
+ /* Possibly increase the maximum hand size we can sustain. */
+@@ -524,7 +500,7 @@
+ }
+ 
+ /* A hand message tells you all the cards in one player's hand. */
+-static int handle_msg_hand(void)
++static void handle_msg_hand(void)
+ {
+ 	int player, hand_size, i;
+ 	hand_t *hand;
+@@ -532,13 +508,12 @@
+ 	assert(ggzcards.players);
+ 
+ 	/* first read the player whose hand it is */
+-	if (read_seat(game_internal.fd, &player) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &player);
++
+ 	assert(player >= 0 && player < ggzcards.num_players);
+ 
+ 	/* Find out how many cards in this hand */
+-	if (ggz_read_int(game_internal.fd, &hand_size) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &hand_size);
+ 
+ 	/* Reallocate hand structures, if necessary */
+ 	increase_max_hand_size(hand_size);
+@@ -551,8 +526,7 @@
+ 	ggzcards.players[player].u_hand_size = hand_size;
+ 	for (i = 0; i < hand->hand_size; i++) {
+ 		card_t card;
+-		if (read_card(game_internal.fd, &card) < 0)
+-			return -1;
++		read_card(game_internal.dio, &card);
+ 
+ 		hand->cards[i] = card;
+ 
+@@ -566,13 +540,11 @@
+ 
+ 	/* Finally, show the hand. */
+ 	game_display_hand(player);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A bid request asks you to pick from a given list of bids. */
+-static int handle_req_bid(void)
++static void handle_req_bid(void)
+ {
+ 	int i;
+ 	int possible_bids;
+@@ -588,20 +560,17 @@
+ 	}
+ 
+ 	/* Determine the number of bidding choices we have */
+-	if (ggz_read_int(game_internal.fd, &possible_bids) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &possible_bids);
++
+ 	bid_choices = ggz_malloc(possible_bids * sizeof(*bid_choices));
+ 	bid_texts = ggz_malloc(possible_bids * sizeof(*bid_texts));
+ 	bid_descs = ggz_malloc(possible_bids * sizeof(*bid_descs));
+ 
+ 	/* Read in all of the bidding choices. */
+ 	for (i = 0; i < possible_bids; i++) {
+-		if (read_bid(game_internal.fd, &bid_choices[i]) < 0 ||
+-		    ggz_read_string_alloc(game_internal.fd,
+-					  &bid_texts[i]) < 0 ||
+-		    ggz_read_string_alloc(game_internal.fd,
+-					  &bid_descs[i]) < 0)
+-			return -1;
++		read_bid(game_internal.dio, &bid_choices[i]);
++		ggz_dio_get_string_alloc(game_internal.dio, &bid_texts[i]);
++		ggz_dio_get_string_alloc(game_internal.dio, &bid_descs[i]);
+ 	}
+ 
+ 	/* Get the bid */
+@@ -616,42 +585,35 @@
+ 	ggz_free(bid_choices);
+ 	ggz_free(bid_texts);
+ 	ggz_free(bid_descs);
+-
+-	return 0;
+ }
+ 
+ 
+-static int handle_msg_bid(void)
++static void handle_msg_bid(void)
+ {
+ 	bid_t bid;
+ 	int bidder;
+ 
+-	if (read_seat(game_internal.fd, &bidder) < 0 ||
+-	    read_bid(game_internal.fd, &bid) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &bidder);
++	read_bid(game_internal.dio, &bid);
+ 
+ 	game_alert_bid(bidder, bid);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A play request asks you to play a card from any hand (most likely your
+    own). */
+-static int handle_req_play(void)
++static void handle_req_play(void)
+ {
+ 	int num_valid_cards, i;
+ 	card_t *valid_cards;
+ 
+ 	/* Determine which hand we're supposed to be playing from. */
+-	if (read_seat(game_internal.fd, &ggzcards.play_hand) < 0 ||
+-	    ggz_read_int(game_internal.fd, &num_valid_cards) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &ggzcards.play_hand);
++	ggz_dio_get_int(game_internal.dio, &num_valid_cards);
+ 
+ 	valid_cards = ggz_malloc(num_valid_cards * sizeof(*valid_cards));
+ 	for (i = 0; i < num_valid_cards; i++)
+-		if (read_card(game_internal.fd, &valid_cards[i]) < 0)
+-			return -1;
++		read_card(game_internal.dio, &valid_cards[i]);
+ 
+ 	assert(ggzcards.play_hand >= 0
+ 	       && ggzcards.play_hand < ggzcards.num_players);
+@@ -661,19 +623,16 @@
+ 	game_get_play(ggzcards.play_hand, num_valid_cards, valid_cards);
+ 
+ 	ggz_free(valid_cards);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A badplay message indicates an invalid play, and requests a new one. */
+-static int handle_msg_badplay(void)
++static void handle_msg_badplay(void)
+ {
+ 	char *err_msg;
+ 
+ 	/* Read the error message for the bad play. */
+-	if (ggz_read_string_alloc(game_internal.fd, &err_msg) < 0)
+-		return -1;
++	ggz_dio_get_string_alloc(game_internal.dio, &err_msg);
+ 
+ 	/* Get a new play. */
+ 	set_game_state(STATE_PLAY);
+@@ -681,8 +640,6 @@
+ 
+ 	/* Clean up. */
+ 	ggz_free(err_msg);	/* allocated by easysock */
+-
+-	return 0;
+ }
+ 
+ 
+@@ -740,16 +697,15 @@
+ 
+ 
+ /* A play message tells of a play from a hand to the table. */
+-static int handle_msg_play(void)
++static void handle_msg_play(void)
+ {
+ 	int p, c, tc, card_pos, card_pos_2;
+ 	card_t card;
+ 	hand_t *hand;
+ 
+ 	/* Read the card being played. */
+-	if (read_seat(game_internal.fd, &p) < 0
+-	    || read_card(game_internal.fd, &card) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &p);
++	read_card(game_internal.dio, &card);
+ 
+ 	assert(p >= 0 && p < ggzcards.num_players);
+ 
+@@ -791,7 +747,6 @@
+ 		ggz_debug(DBG_CLIENT,
+ 			  "Whoa!  We can't find a match for the card.  That's strange.");
+ 		(void)client_send_sync_request();
+-		return 0;
+ 	}
+ 
+ 	/* Remove the card.  This is a bit inefficient. It's also
+@@ -815,14 +770,12 @@
+ 
+ 	/* Update the graphics */
+ 	game_alert_play(p, card, card_pos, card_pos_2);
+-
+-	return 0;
+ }
+ 
+ 
+ /* A table message tells you all the cards on the table.  Each player only
+    gets one card. */
+-static int handle_msg_table(void)
++static void handle_msg_table(void)
+ {
+ 	int p;
+ 
+@@ -831,8 +784,7 @@
+ 	assert(ggzcards.players);
+ 	for (p = 0; p < ggzcards.num_players; p++) {
+ 		card_t card;
+-		if (read_card(game_internal.fd, &card) < 0)
+-			return -1;
++		read_card(game_internal.dio, &card);
+ 		ggzcards.players[p].table_card = card;
+ 	}
+ 
+@@ -840,19 +792,17 @@
+ 	 */
+ 
+ 	game_alert_table();
+-
+-	return 0;
+ }
+ 
+ 
+ /* A trick message tells you about the end of a trick (and who won). */
+-static int handle_msg_trick(void)
++static void handle_msg_trick(void)
+ {
+ 	int winner, p;
+ 
+ 	/* Read the trick winner */
+-	if (read_seat(game_internal.fd, &winner) < 0)
+-		return -1;
++	read_seat(game_internal.dio, &winner);
++
+ 	assert(winner >= 0 && winner < ggzcards.num_players);
+ 
+ 	/* Clear all cards off the table. */
+@@ -861,15 +811,13 @@
+ 
+ 	/* Update the graphics. */
+ 	game_alert_trick(winner);
+-
+-	return 0;
+ }
+ 
+ 
+ /* An options request asks you to pick a set of options.  Each "option" gives
+    a list of choices so that you pick one choice for each option.  An option
+    with only one choice is a special case: a boolean option. */
+-static int handle_req_options(void)
++static void handle_req_options(void)
+ {
+ 	int i, j;
+ 	int option_cnt;		/* the number of options */
+@@ -889,8 +837,8 @@
+ 	}
+ 
+ 	/* Read the number of options. */
+-	if (ggz_read_int(game_internal.fd, &option_cnt) < 0)
+-		return -1;
++	ggz_dio_get_int(game_internal.dio, &option_cnt);
++
+ 	assert(option_cnt > 0);
+ 
+ 	/* Allocate all data */
+@@ -902,19 +850,16 @@
+ 
+ 	/* Read all the options, their defaults, and the possible choices. */
+ 	for (i = 0; i < option_cnt; i++) {
+-		if (ggz_read_string_alloc(game_internal.fd, &types[i]) < 0
+-		    || ggz_read_string_alloc(game_internal.fd,
+-					     &descs[i]) < 0
+-		    || ggz_read_int(game_internal.fd, &choice_cnt[i]) < 0
+-		    || ggz_read_int(game_internal.fd, &defaults[i]) < 0)
+-			return -1;	/* read the default */
++		ggz_dio_get_string_alloc(game_internal.dio, &types[i]);
++		ggz_dio_get_string_alloc(game_internal.dio, &descs[i]);
++		ggz_dio_get_int(game_internal.dio, &choice_cnt[i]);
++		ggz_dio_get_int(game_internal.dio, &defaults[i]);
+ 		option_choices[i] =
+ 		    ggz_malloc(choice_cnt[i] * sizeof(**option_choices));
+-		for (j = 0; j < choice_cnt[i]; j++)
+-			if (ggz_read_string_alloc
+-			    (game_internal.fd, &option_choices[i][j])
+-			    < 0)
+-				return -1;
++		for (j = 0; j < choice_cnt[i]; j++) {
++			ggz_dio_get_string_alloc(game_internal.dio,
++					     &option_choices[i][j]);
++		}
+ 	}
+ 
+ 	/* Get the options. */
+@@ -938,13 +883,11 @@
+ 	ggz_free(choice_cnt);
+ 	ggz_free(descs);
+ 	ggz_free(types);
+-
+-	return 0;
+ }
+ 
+ 
+ /* The language lets the server translate messages for us. */
+-int client_send_language(const char *lang)
++void client_send_language(const char *lang)
+ {
+ 	if (!lang) {
+ 		lang = "";
+@@ -952,82 +895,70 @@
+ 
+ 	ggz_debug(DBG_CLIENT, "Sending language %s to the server.", lang);
+ 
+-	if (write_opcode(game_internal.fd, MSG_LANGUAGE) < 0 ||
+-	    ggz_write_string(game_internal.fd, lang) < 0)
+-		return -1;
+-
+-	return 0;
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, MSG_LANGUAGE);
++	ggz_dio_put_string(game_internal.dio, lang);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* A newgame message tells the server to start a new game. */
+-int client_send_newgame(void)
++void client_send_newgame(void)
+ {
+-	if (write_opcode(game_internal.fd, RSP_NEWGAME) < 0) {
+-		ggz_error_msg("Couldn't send newgame.");
+-		return -1;
+-	}
+-	return 0;
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, RSP_NEWGAME);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* A bid message tells the server our choice for a bid. */
+-int client_send_bid(int bid)
++void client_send_bid(int bid)
+ {
+ 	set_game_state(STATE_WAIT);
+-	if (write_opcode(game_internal.fd, RSP_BID) < 0
+-	    || ggz_write_int(game_internal.fd, bid) < 0) {
+-		ggz_error_msg("Couldn't send bid.");
+-		return -1;
+-	}
+-	return 0;
++
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, RSP_BID);
++	ggz_dio_put_int(game_internal.dio, bid);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* An options message tells the server our choices for options. */
+-int client_send_options(int option_cnt, int *options)
++void client_send_options(int option_cnt, int *options)
+ {
+-	int i, status = 0;
++	int i;
+ 
+-	if (write_opcode(game_internal.fd, RSP_OPTIONS) < 0 ||
+-	    ggz_write_int(game_internal.fd, option_cnt) < 0)
+-		status = -1;
+-	for (i = 0; i < option_cnt; i++)
+-		if (ggz_write_int(game_internal.fd, options[i]) < 0)
+-			status = -1;
+-
+ 	set_game_state(STATE_WAIT);
+ 
+-	if (status < 0) {
+-		ggz_error_msg("Couldn't send options.");
+-		return -1;
+-	}
+-	return status;
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, RSP_OPTIONS);
++	ggz_dio_put_int(game_internal.dio, option_cnt);
++	for (i = 0; i < option_cnt; i++)
++		ggz_dio_put_int(game_internal.dio, options[i]);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* A play message tells the server our choice for a play. */
+-int client_send_play(card_t card)
++void client_send_play(card_t card)
+ {
+ 	set_game_state(STATE_WAIT);
+-	if (write_opcode(game_internal.fd, RSP_PLAY) < 0
+-	    || write_card(game_internal.fd, card) < 0) {
+-		ggz_error_msg("Couldn't send play.");
+-		return -1;
+-	}
+-	return 0;
++
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, RSP_PLAY);
++	write_card(game_internal.dio, card);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ 
+ /* A sync request asks for a sync from the server. */
+-int client_send_sync_request(void)
++void client_send_sync_request(void)
+ {
+ 	ggz_debug(DBG_CLIENT, "Sending sync request to server.");
+-	if (write_opcode(game_internal.fd, REQ_SYNC) < 0) {
+-		ggz_error_msg("Couldn't send sync request.");
+-		return -1;
+-	}
+-	return 0;
++
++	ggz_dio_packet_start(game_internal.dio);
++	write_opcode(game_internal.dio, REQ_SYNC);
++	ggz_dio_packet_end(game_internal.dio);
+ }
+ 
+ #ifdef GUI_CLIENT
+@@ -1037,17 +968,14 @@
+ }
+ #endif
+ 
+-/* This function handles any input from the server. */
+-int client_handle_server(void)
++static void server_read_callback(GGZDataIO *dio, void *userdata)
+ {
+-	int opcode, status = -1;
++	int opcode;
+ 	server_msg_t op;
+ 
+ 	/* Read the opcode */
+-	if (read_opcode(game_internal.fd, &opcode) < 0) {
+-		ggz_error_msg("Couldn't read server opcode.");
+-		return -1;
+-	}
++	read_opcode(game_internal.dio, &opcode);
++
+ 	op = opcode;
+ 
+ 	ggz_debug(DBG_CLIENT, "Received %s opcode from the server.",
+@@ -1057,56 +985,60 @@
+ 	case REQ_NEWGAME:
+ 		game_get_newgame();
+ 		ggzcards.play_hand = -1;
+-		status = 0;
+-		break;
++		return;
+ 	case MSG_NEWGAME:
+ 		/* TODO: don't make "new game" until here */
+-		status = handle_msg_newgame();
+-		break;
++		handle_msg_newgame();
++		return;
+ 	case MSG_GAMEOVER:
+-		status = handle_msg_gameover();
+-		break;
++		handle_msg_gameover();
++		return;
+ 	case MSG_PLAYERS:
+-		status = handle_msg_players();
+-		break;
++		handle_msg_players();
++		return;
+ 	case MSG_NEWHAND:
+ 		game_alert_newhand();
+-		status = 0;
+-		break;
++		return;
+ 	case MSG_HAND:
+-		status = handle_msg_hand();
+-		break;
++		handle_msg_hand();
++		return;
+ 	case REQ_BID:
+-		status = handle_req_bid();
+-		break;
++		handle_req_bid();
++		return;
+ 	case MSG_BID:
+-		status = handle_msg_bid();
+-		break;
++		handle_msg_bid();
++		return;
+ 	case REQ_PLAY:
+-		status = handle_req_play();
+-		break;
++		handle_req_play();
++		return;
+ 	case MSG_BADPLAY:
+-		status = handle_msg_badplay();
+-		break;
++		handle_msg_badplay();
++		return;
+ 	case MSG_PLAY:
+-		status = handle_msg_play();
+-		break;
++		handle_msg_play();
++		return;
+ 	case MSG_TABLE:
+-		status = handle_msg_table();
+-		break;
++		handle_msg_table();
++		return;
+ 	case MSG_TRICK:
+-		status = handle_msg_trick();
+-		break;
++		handle_msg_trick();
++		return;
+ 	case MESSAGE_GAME:
+-		status = handle_message_global();
+-		break;
++		handle_message_global();
++		return;
+ 	case REQ_OPTIONS:
+-		status = handle_req_options();
+-		break;
++		handle_req_options();
++		return;
+ 	}
+ 
+-	if (status < 0)
+-		ggz_error_msg("Error handling message"
+-			      " from server (opcode %d).", op);
+-	return status;
++	ggz_error_msg("Error handling message"
++		      " from server (opcode %d).", op);
+ }
++
++/* This function handles any input from the server. */
++int client_handle_server(void)
++{
++	ggz_dio_set_read_callback(game_internal.dio,
++				  server_read_callback, NULL);
++	return ggz_dio_read_data(game_internal.dio);
++}
+Index: gtk-games/ggzcards/client/client.h
+===================================================================
+--- gtk-games/ggzcards/client/client.h	(revision 8355)
++++ gtk-games/ggzcards/client/client.h	(working copy)
+@@ -28,6 +28,7 @@
+ #endif
+ 
+ #include <ggz_common.h>
++#include <ggz_dio.h>
+ #ifdef GUI_CLIENT
+ #  include <ggzmod.h>
+ #endif
+@@ -65,9 +66,9 @@
+ 	 *  need not correspond with what is actually drawn by the GUI.
+ 	 */
+ 	card_t table_card;
+-
++	
+ 	hand_t hand;		/**< player's hand */
+-
++	
+ 	/** @brief The size of the uncompressed hand.
+ 	 *
+ 	 *  The player's "hand" is stored in the hand structure, above.
+@@ -79,11 +80,11 @@
+ 	 *  are cards that have already been played.  (The "u" stands
+ 	 *  for "uncollapsed", I suppose.) */
+ 	int u_hand_size;
+-
++	
+ 	/** @see u_hand_size */
+ 	struct {
+ 		bool is_valid;
+-		card_t card;
++		card_t card;		
+ 	} *u_hand;
+ } seat_t;
+ 
+@@ -118,7 +119,7 @@
+ 	 *  is sent to the server, it's not reset to -1 until
+ 	 *  we get verification.
+ 	 */
+-	int play_hand;
++	int play_hand;		
+ };
+ 
+ #ifdef GUI_CLIENT
+@@ -162,7 +163,7 @@
+ /** This function will return the file descriptor that is used to communicate
+  *  with the server.
+  */
+-int client_get_fd(void);
++GGZDataIO *client_get_dio(void);
+ 
+ /** @} end of Setup */
+ 
+@@ -175,7 +176,7 @@
+ 
+ /** Handles an update of the server socket.  This will only happen once, when
+  *  we first connect to the server. */
+-extern void game_alert_server(int server_socket_fd);
++extern void game_alert_server(GGZDataIO *dio);
+ 
+ /** Handles a newgame request by calling client_send_newgame when
+  *  ready (you may wish to ask the user first). */
+@@ -198,8 +199,8 @@
+  *  @param old_status The previous type of the seat.
+  *  @param old_name The previous name of the player (seat). */
+ extern void game_alert_player(int player,
+-			      GGZSeatType old_status,
+-			      const char *old_name);
++                              GGZSeatType old_status,
++                              const char *old_name);
+ 
+ /** Alert the table that the number of players has changed.  The
+  *  table will probably want to redesign itself.
+@@ -222,14 +223,16 @@
+   * @param possible_bids The number of possible bid choices.
+   * @param bid_choices An array of strings, one corresponding to each bid choice. */
+ extern void game_get_bid(int possible_bids,
+-			 bid_t * bid_choices,
+-			 char **bid_texts, char **bid_descs);
++                         bid_t *bid_choices,
++                         char **bid_texts,
++                         char **bid_descs);
+ 
+ /** Called to request a play.  The frontend should call client_send_play
+  *  at any point afterwards to send the response.
+  *  @param hand The player number of the hand to play from. */
+ extern void game_get_play(int play_hand,
+-			  int num_valid_cards, card_t * valid_cards);
++                          int num_valid_cards,
++                          card_t *valid_cards);
+ 
+ /** Called when we're informed of a bid.  This data is not tracked
+  *  internally and is of little use to the GUI (but would be crucial
+@@ -251,7 +254,7 @@
+  *  @param pos The (former) position of the card in a compressed hand.
+  *  @param hand_pos The position of the card in an uncompressed hand. */
+ extern void game_alert_play(int player, card_t card,
+-			    int pos, int hand_pos);
++                            int pos, int hand_pos);
+ 
+ /** Called when we're informaed of the table cards.  The information
+  *  itself resides in the player structures; all the frontend has to
+@@ -275,9 +278,10 @@
+  *  @note All parameters are freed after the function returns. */
+ extern int game_get_options(int option_cnt,
+ 			    char **types,
+-			    char **descriptions,
+-			    int *choice_cnt,
+-			    int *defaults, char ***option_choices);
++                            char **descriptions,
++                            int *choice_cnt,
++                            int *defaults,
++			    char ***option_choices);
+ 
+ /** A gui-dependent function called to set a global TEXT message.
+  *  This should be defined by the frontend code and is accessed by a
+@@ -319,7 +323,8 @@
+  *  @param size The amount of data ready to be read.
+  *  @return The number of bytes read, or negative for error.
+  *  @note When in doubt, just use "return 0". */
+-extern int game_handle_game_message(int fd, const char *game, int size);
++extern int game_handle_game_message(GGZDataIO *dio,
++				    const char *game, int size);
+ 
+ /** @} end of Callbacks */
+ 
+@@ -330,35 +335,35 @@
+  *  @{ */
+ 
+ /** Sends the language to the server. */
+-int client_send_language(const char *lang);
++void client_send_language(const char *lang);
+ 
+ /** Sends a simple newgame response.
+  *  @return 0 on success, -1 on failure.
+  *  @see game_get_newgame */
+-int client_send_newgame(void);
++void client_send_newgame(void);
+ 
+ /** Sends a bid response.
+  *  @param bid The index of the bid chosen.
+  *  @return 0 on success, -1 on failure
+  *  @see game_get_bid */
+-int client_send_bid(int bid);
++void client_send_bid(int bid);
+ 
+ /** Sends an options response.
+  *  @param option_cnt The number of options.
+  *  @param options The choice made for each option.
+  *  @return 0 on success, -1 on failure
+  *  @see game_get_options */
+-int client_send_options(int option_cnt, int *options);
++void client_send_options(int option_cnt, int *options);
+ 
+ /** Sends a play response.
+  *  @param card The card chosen to be played.
+  *  @return 0 on success, -1 on failure
+  *  @see game_get_play, game_alert_badplay */
+-int client_send_play(card_t card);
++void client_send_play(card_t card);
+ 
+ /** Sends a request for a sync.
+  *  @return 0 on success, -1 on failure. */
+-int client_send_sync_request(void);
++void client_send_sync_request(void);
+ 
+ /** @} end of Responses */
+ 
