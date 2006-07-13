@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 8322 2006-07-05 14:55:18Z josef $
+ * $Id: server.c 8359 2006-07-13 20:34:20Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -701,6 +701,7 @@ int _ggzcore_server_get_tls(const GGZServer * server)
 int _ggzcore_server_get_num_players(const GGZServer * server)
 {
 	int rooms = ggzcore_server_get_num_rooms(server), i, total = 0;
+	GGZRoom *cur_room = ggzcore_server_get_cur_room(server);
 
 	for (i = 0; i < rooms; i++) {
 		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
@@ -709,6 +710,12 @@ int _ggzcore_server_get_num_players(const GGZServer * server)
 		 * inside it (or 0 which is just as good).  We just total
 		 * those up. */
 		total += ggzcore_room_get_num_players(room);
+	}
+
+	if (!cur_room) {
+		/* If we aren't in a room we can assume there's at least one
+		   more player there. */
+		total++;
 	}
 
 	return total;
