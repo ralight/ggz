@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8341 2006-07-08 20:12:02Z jdorje $
+ * $Id: spades.c 8358 2006-07-13 06:08:30Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -804,6 +804,9 @@ static void spades_handle_gameover(void)
 		/* Quick hack: for the 301 variant just negate any scores
 		   higher than 301.  This means ties could be allowed in
 		   some cases (not sure if that is bad or not). */
+		/* This also means scores will actually be displayed at the
+		   client as negative for these players.  And incidentally
+		   a score of 302 will incorrectly beat a score of -303. */
 		players_iterate(p) {
 			if (game.players[p].score > 301) {
 				game.players[p].score = -game.players[p].score;
