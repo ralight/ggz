@@ -53,6 +53,8 @@ public class ModTransaction {
      * A chat originating from the game client. Data: message (const char*)
      */
     public static final ModTransaction GGZMOD_TRANSACTION_CHAT = new ModTransaction();
-    
-    private ModTransaction() {}
+
+    private ModTransaction() {
+        // Private constructor to prevent access.
+    }
 }

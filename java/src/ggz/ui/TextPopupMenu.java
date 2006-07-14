@@ -40,12 +40,12 @@ import javax.swing.text.JTextComponent;
  * provided by Swing I have no idea...
  */
 class TextPopupMenu extends MouseAdapter implements ClipboardOwner {
-    private static final ResourceBundle messages = ResourceBundle
+    protected static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
 
     private JPopupMenu popup;
 
-    private JTextComponent editor;
+    protected JTextComponent editor;
 
     private TextPopupMenu(JTextComponent comp) {
         editor = comp;

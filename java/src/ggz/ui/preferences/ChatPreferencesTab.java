@@ -17,133 +17,80 @@
  */
 package ggz.ui.preferences;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextPane;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.JScrollPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Style;
+import javax.swing.text.StyleContext;
 
-public class ChatPreferencesTab extends JPanel implements PreferencesTab {
-    private JComboBox fontFamilyCombo;
+public class ChatPreferencesTab extends JPanel implements PreferencesTab,
+        ListSelectionListener {
+    private StyleChooser styleChooser;
 
-    private JSpinner fontSizeSpinner;
+    protected StyleContext styleContext = new StyleContext();
 
-    private JCheckBox boldCheckBox;
-
-    private JCheckBox italicCheckBox;
-
-    private JButton backgroundColorButton;
-
-    private JButton foregroundColorButton;
-
-    private JButton myColorButton;
+    protected StylePreference[] stylePreferences;
 
     public ChatPreferencesTab() {
         super(new GridBagLayout());
-        JTextPane defaults = new JTextPane();
-        Font font = GGZPreferences.getFont(GGZPreferences.CHAT_FONT, defaults
-                .getFont());
-        fontFamilyCombo = new JComboBox();
-        getFontFamilyNames(fontFamilyCombo);
-        fontFamilyCombo.setSelectedItem(font.getName());
-        double fontSize = font.getSize();
-        if (fontSize < 8.0)
-            fontSize = 8.0;
-        if (fontSize > 72.0)
-            fontSize = 72.0;
-        fontSizeSpinner = new JSpinner(new SpinnerNumberModel(fontSize, 8.0,
-                72.0, 1.0));
-        boldCheckBox = new JCheckBox("Bold", font.isBold());
-        italicCheckBox = new JCheckBox("Italic", font.isItalic());
-
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.WEST;
         constraints.gridwidth = 2;
+        constraints.insets.bottom = 15;
         add(
                 new JLabel(
                         "<html>These font settings only effect what you see, "
-                                + "they do not change<br>the font that other players see.</html>"),
+                                + "they do not change the font that other players see.<br>"
+                                + " Only changes to Normal Chat will take effect immediately,"
+                                + " other changes will only be applied to<br>new text.</html>"),
                 constraints);
+
+        stylePreferences = getChatStyles();
+        JList stylesList = new JList(stylePreferences);
+        stylesList.setSelectedIndex(0);
+        styleChooser = new StyleChooser(((StylePreference) stylesList
+                .getSelectedValue()).style);
+
+        constraints.gridx = 0;
+        constraints.gridy++;
         constraints.gridwidth = 1;
-        constraints.gridy++;
-        add(new JLabel("Font:"), constraints);
-        constraints.gridx++;
-        JPanel fontPanel = new JPanel();
-        add(fontPanel, constraints);
-        fontPanel.add(fontFamilyCombo);
-        fontPanel.add(fontSizeSpinner);
-        fontPanel.add(boldCheckBox);
-        fontPanel.add(italicCheckBox);
+        constraints.insets.bottom = 0;
+        constraints.fill = GridBagConstraints.BOTH;
+        add(new JScrollPane(stylesList), constraints);
 
-        ActionListener colorSelector = new ColorSelector();
-        constraints.gridx = 0;
-        constraints.gridy++;
-        add(new JLabel("Foreground:"), constraints);
         constraints.gridx++;
         constraints.insets.left = 5;
-        foregroundColorButton = new JButton("");
-        foregroundColorButton.setPreferredSize(new Dimension(37, 25));
-        foregroundColorButton.setBackground(GGZPreferences.getColor(
-                GGZPreferences.CHAT_FOREGROUND, defaults.getForeground()));
-        foregroundColorButton.putClientProperty("dialogTitle",
-                "Foreground Colour");
-        foregroundColorButton.addActionListener(colorSelector);
-        add(foregroundColorButton, constraints);
+        add(styleChooser, constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy++;
-        constraints.insets.left = 0;
-        add(new JLabel("Background:"), constraints);
-        constraints.gridx++;
-        constraints.insets.left = 5;
-        backgroundColorButton = new JButton("");
-        backgroundColorButton.setPreferredSize(new Dimension(37, 25));
-        backgroundColorButton.setBackground(GGZPreferences.getColor(
-                GGZPreferences.CHAT_BACKGROUND, defaults.getBackground()));
-        backgroundColorButton.putClientProperty("dialogTitle",
-                "Background Colour");
-        backgroundColorButton.addActionListener(colorSelector);
-        add(backgroundColorButton, constraints);
+        stylesList.addListSelectionListener(this);
+        stylesList.setFixedCellHeight(-1);
+        stylesList.setCellRenderer(new DefaultListCellRenderer() {
 
-        constraints.gridx = 0;
-        constraints.gridy++;
-        constraints.gridwidth = 2;
-        constraints.insets.left = 0;
-        add(new JLabel(
-                "<html>The following colour settings will only take effect on new text,"
-                        + "<br>existing text will not be affected.</html>"),
-                constraints);
-        constraints.gridwidth = 1;
-        constraints.gridy++;
-        add(new JLabel("My Text:"), constraints);
-        constraints.gridx++;
-        constraints.insets.left = 5;
-        myColorButton = new JButton("");
-        myColorButton.setPreferredSize(new Dimension(37, 25));
-        myColorButton.setBackground(GGZPreferences.getColor(
-                GGZPreferences.MY_FONT_COLOR, null));
-        myColorButton.putClientProperty("dialogTitle", "My Text");
-        myColorButton.addActionListener(colorSelector);
-        add(myColorButton, constraints);
+            public Component getListCellRendererComponent(JList list,
+                    Object value, int index, boolean isSelected,
+                    boolean cellHasFocus) {
+                StylePreference pref = (StylePreference) value;
+                Component comp = super.getListCellRendererComponent(list,
+                        pref.description, index, isSelected, cellHasFocus);
+                GGZPreferences.applyStyle(comp, pref.style);
+                return comp;
+            }
 
-        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        });
     }
 
     public String getTitle() {
@@ -151,36 +98,78 @@ public class ChatPreferencesTab extends JPanel implements PreferencesTab {
     }
 
     public void apply() {
-        String name = (String) fontFamilyCombo.getSelectedItem();
-        int bold = boldCheckBox.isSelected() ? Font.BOLD : Font.PLAIN;
-        int italic = italicCheckBox.isSelected() ? Font.ITALIC : Font.PLAIN;
-        int style = italic | bold;
-        int size = ((Double) fontSizeSpinner.getValue()).intValue();
-        Font font = new Font(name, style, size);
-        font = font.deriveFont(size);
-        font = font.deriveFont(style);
-        GGZPreferences.putFont(GGZPreferences.CHAT_FONT, font);
-        GGZPreferences.putColor(GGZPreferences.CHAT_BACKGROUND,
-                backgroundColorButton.getBackground());
-        GGZPreferences.putColor(GGZPreferences.CHAT_FOREGROUND,
-                foregroundColorButton.getBackground());
-        GGZPreferences.putColor(GGZPreferences.MY_FONT_COLOR, myColorButton
-                .getBackground());
+        if (stylePreferences[0].hasChanged)
+            GGZPreferences.putStyle(GGZPreferences.CHAT_STYLE_NORMAL,
+                    stylePreferences[0].style);
+        if (stylePreferences[1].hasChanged)
+            GGZPreferences.putStyle(GGZPreferences.CHAT_STYLE_ME,
+                    stylePreferences[1].style);
+        if (stylePreferences[2].hasChanged)
+            GGZPreferences.putStyle(GGZPreferences.CHAT_STYLE_FRIEND,
+                    stylePreferences[2].style);
+        if (stylePreferences[3].hasChanged)
+            GGZPreferences.putStyle(GGZPreferences.CHAT_STYLE_INFO,
+                    stylePreferences[3].style);
+        if (stylePreferences[4].hasChanged)
+            GGZPreferences.putStyle(GGZPreferences.CHAT_STYLE_SENDER,
+                    stylePreferences[4].style);
+        if (stylePreferences[5].hasChanged)
+            GGZPreferences.putStyle(GGZPreferences.CHAT_STYLE_ANNOUNCE,
+                    stylePreferences[5].style);
+        if (stylePreferences[6].hasChanged)
+            GGZPreferences.putStyle(GGZPreferences.CHAT_STYLE_COMMAND,
+                    stylePreferences[6].style);
     }
 
-    private static void getFontFamilyNames(JComboBox combo) {
-        GraphicsEnvironment gEnv = GraphicsEnvironment
-                .getLocalGraphicsEnvironment();
-        combo.setModel(new DefaultComboBoxModel(gEnv
-                .getAvailableFontFamilyNames()));
+    private StylePreference[] getChatStyles() {
+        // We need to make sure the copy of the normal style is used as the
+        // parent for all other styles so that they update correctly.
+        StylePreference normalPreference = new StylePreference("Normal Chat",
+                GGZPreferences.getChatStyleNormal(), null);
+        Style normal = normalPreference.style;
+        return new StylePreference[] {
+                normalPreference,
+                new StylePreference("My Chat", GGZPreferences.getChatStyleMe(),
+                        normal),
+                new StylePreference("Friend Chat", GGZPreferences
+                        .getChatStyleFriend(), normal),
+                new StylePreference("Information Text", GGZPreferences
+                        .getChatStyleInfo(), normal),
+                new StylePreference("Nickname:", GGZPreferences
+                        .getChatStyleSender(), normal),
+                new StylePreference("Administrator Announcement",
+                        GGZPreferences.getChatStyleAnnounce(), normal),
+                new StylePreference("Command Text", GGZPreferences
+                        .getChatStyleCommand(), normal) };
     }
 
-    private class ColorSelector implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            JComponent button = (JComponent) e.getSource();
-            String title = (String) button.getClientProperty("dialogTitle");
-            button.setBackground(JColorChooser.showDialog(button, title, button
-                    .getBackground()));
+    public void valueChanged(ListSelectionEvent e) {
+        // User selected a style in the list.
+        JList list = (JList) e.getSource();
+        styleChooser
+                .setStyle(((StylePreference) list.getSelectedValue()).style);
+    }
+
+    private class StylePreference implements ChangeListener {
+        Style style;
+
+        String description;
+
+        boolean hasChanged = false;
+
+        public StylePreference(String description, Style style,
+                Style normalStyle) {
+            this.description = description;
+            this.style = styleContext.addStyle(style.getName(), null);
+            this.style = (Style) style.copyAttributes();
+            this.style.setResolveParent(normalStyle);
+            this.style.addChangeListener(this);
         }
+
+        public void stateChanged(ChangeEvent e) {
+            hasChanged = true;
+            ChatPreferencesTab.this.repaint();
+        }
+
     }
 }

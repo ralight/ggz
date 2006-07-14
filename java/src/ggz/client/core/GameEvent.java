@@ -77,5 +77,7 @@ public class GameEvent {
 	 */
 	public static final GameEvent GGZ_GAME_PLAYING = new GameEvent();
 	
-	private GameEvent() {}
+	private GameEvent() {
+	    // Private constructor to prevent access.
+    }
 }

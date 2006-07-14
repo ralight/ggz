@@ -30,6 +30,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
@@ -318,11 +319,11 @@ public class TablePanel extends JPanel {
                     Rectangle clip = sprite[0].getBounds().union(oldBounds[0]);
                     sprite[0].getBounds(oldBounds[0]);
                     for (int s = 1; s < numSprites; s++) {
-                        Rectangle.union(clip, oldBounds[s], clip);
+                        Rectangle2D.union(clip, oldBounds[s], clip);
                         // Now that we have used oldBounds we can update
                         // oldBounds with the new location.
                         sprite[s].getBounds(oldBounds[s]);
-                        Rectangle.union(clip, oldBounds[s], clip);
+                        Rectangle2D.union(clip, oldBounds[s], clip);
                     }
                     graphics.setClip(clip);
                     paint(graphics);

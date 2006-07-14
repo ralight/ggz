@@ -135,7 +135,7 @@ public class GGZCardInputStream extends DataInputStream {
 
     public GameMessage read_game_message() throws IOException {
         int index = read();
-        return (GameMessage) GameMessage.valueOf(index);
+        return GameMessage.valueOf(index);
     }
 
     public int read_seat() throws IOException {

@@ -106,7 +106,7 @@ public class Net implements Runnable {
     private OutputStreamWriter send_dump_file;
 
     /* File to trace server XML to. */
-    private OutputStream serverXMLTrace;
+    protected OutputStream serverXMLTrace;
 
     /* Whether to use TLS or not */
     private boolean use_tls;

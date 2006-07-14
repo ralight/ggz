@@ -18,11 +18,13 @@
 package ggz.client.core;
 
 public class ReseatType {
-	public static final ReseatType GGZ_RESEAT_SIT = new ReseatType();
+    public static final ReseatType GGZ_RESEAT_SIT = new ReseatType();
 
-	public static final ReseatType GGZ_RESEAT_STAND = new ReseatType();
+    public static final ReseatType GGZ_RESEAT_STAND = new ReseatType();
 
-	public static final ReseatType GGZ_RESEAT_MOVE = new ReseatType();
-	
-	private ReseatType() {}
+    public static final ReseatType GGZ_RESEAT_MOVE = new ReseatType();
+
+    private ReseatType() {
+        // Private constructor to prevent access.
+    }
 }

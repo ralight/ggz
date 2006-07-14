@@ -9,6 +9,7 @@ import java.util.StringTokenizer;
 public class CSVParser {
 
     private CSVParser() {
+        // Private constructor to prevent access.
     }
 
     public static String[] parseLine(BufferedReader reader) throws IOException {
@@ -16,56 +17,56 @@ public class CSVParser {
     }
 
     public static String[] parseLine(String line) {
-        ArrayList fields = new ArrayList();
         if (line == null || "".equals(line)) {
             return new String[0];
-        } else {
-            boolean isQuoteOpen = false;
-            StringTokenizer tokenizer = new StringTokenizer(line, "\",", true);
-            String tok = tokenizer.nextToken();
-            StringBuffer field = new StringBuffer();
+        }
 
-            try {
-                do {
-                    if ("\"".equals(tok)) {
-                        if (isQuoteOpen) {
-                            // Could either be the closing quote or an escaped
-                            // quote.
-                            tok = tokenizer.nextToken();
-                            if ("\"".equals(tok)) {
-                                // an escaped quote
-                                field.append(tok);
-                            } else if (",".equals(tok)) {
-                                // end of field.
-                                isQuoteOpen = false;
-                            } else {
-                                // This should probably be an error since we
-                                // have a single quote in the file but let it
-                                // through for now.
-                            }
-                        } else {
-                            isQuoteOpen = true;
-                        }
-                    }
-                    if (",".equals(tok)) {
-                        if (isQuoteOpen) {
+        ArrayList fields = new ArrayList();
+        boolean isQuoteOpen = false;
+        StringTokenizer tokenizer = new StringTokenizer(line, "\",", true);
+        String tok = tokenizer.nextToken();
+        StringBuffer field = new StringBuffer();
+
+        try {
+            do {
+                if ("\"".equals(tok)) {
+                    if (isQuoteOpen) {
+                        // Could either be the closing quote or an escaped
+                        // quote.
+                        tok = tokenizer.nextToken();
+                        if ("\"".equals(tok)) {
+                            // an escaped quote
                             field.append(tok);
+                        } else if (",".equals(tok)) {
+                            // end of field.
+                            isQuoteOpen = false;
                         } else {
-                            // End of field.
-                            fields.add(field.toString());
-                            field.delete(0, field.length());
+                            // This should probably be an error since we
+                            // have a single quote in the file but let it
+                            // through for now.
                         }
                     } else {
-                        if (!"\"".equals(tok)) {
-                            field.append(tok);
-                        }
+                        isQuoteOpen = true;
                     }
-                    tok = tokenizer.nextToken();
-                } while (true);
-            } catch (NoSuchElementException e) {
-                // No more tokens
-                fields.add(field.toString());
-            }
+                }
+                if (",".equals(tok)) {
+                    if (isQuoteOpen) {
+                        field.append(tok);
+                    } else {
+                        // End of field.
+                        fields.add(field.toString());
+                        field.delete(0, field.length());
+                    }
+                } else {
+                    if (!"\"".equals(tok)) {
+                        field.append(tok);
+                    }
+                }
+                tok = tokenizer.nextToken();
+            } while (true);
+        } catch (NoSuchElementException e) {
+            // No more tokens
+            fields.add(field.toString());
         }
 
         return (String[]) fields.toArray(new String[fields.size()]);
@@ -86,10 +87,14 @@ public class CSVParser {
      * @return
      */
     public static String escape(String str) {
+        if (str == null)
+            return "";
+        
         if (str.indexOf('"') >= 0 || str.indexOf(",") >= 0
                 || str.indexOf("\n") >= 0) {
             return "\"" + StringUtil.replace(str, "\"", "\"\"") + "\"";
         }
+        
         return str;
     }
 }

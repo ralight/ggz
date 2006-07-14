@@ -68,7 +68,7 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 
 public class RoomPanel extends JPanel implements RoomListener {
-    private static final ResourceBundle messages = ResourceBundle
+    protected static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
 
     protected static final Logger log = Logger.getLogger(RoomPanel.class
@@ -725,6 +725,7 @@ public class RoomPanel extends JPanel implements RoomListener {
                 private int vgap = 0;
 
                 public void addLayoutComponent(String name, Component comp) {
+                    // Not implemented.
                 }
 
                 public void layoutContainer(Container parent) {
@@ -775,6 +776,7 @@ public class RoomPanel extends JPanel implements RoomListener {
                 }
 
                 public void removeLayoutComponent(Component comp) {
+                    // Not implemented.
                 }
 
                 public Dimension preferredLayoutSize(Container parent) {

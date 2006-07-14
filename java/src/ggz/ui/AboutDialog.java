@@ -121,7 +121,7 @@ public class AboutDialog extends JDialog {
         }
     }
 
-    private void close() {
+    protected void close() {
         dispose();
     }
 

@@ -869,7 +869,8 @@ public class Client {
      *       maintaining the state here.
      */
     public static class GameState {
-        private GameState() {
+        protected GameState() {
+            // Private constructor so to prevent access.
         }
     }
 

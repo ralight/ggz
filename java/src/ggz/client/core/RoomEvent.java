@@ -183,5 +183,7 @@ public class RoomEvent {
      */
     public static final RoomEvent GGZ_PLAYER_COUNT = new RoomEvent();
     
-    private RoomEvent() {}
+    private RoomEvent() {
+        // Private constructor to prevent access.
+    }
 }

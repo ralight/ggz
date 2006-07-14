@@ -35,7 +35,6 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
@@ -54,7 +53,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.JTextComponent;
 
 public class LoungePanel extends JPanel {
-    private static final ResourceBundle messages = ResourceBundle
+    protected static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
 
     protected Server server;
@@ -76,8 +75,6 @@ public class LoungePanel extends JPanel {
     private JPanel headerPanel;
 
     private JButton logoutButton;
-
-    private Comparator sortAlgorithm = new SortByRoomName();
 
     public LoungePanel(Server server) {
         super(new BorderLayout(4, 4));
@@ -125,7 +122,7 @@ public class LoungePanel extends JPanel {
         }
 
         // Sort on the game associated with the room.
-        Collections.sort(rooms, sortAlgorithm);
+        Collections.sort(rooms, Room.SORT_BY_NAME);
 
         // Add a button for each room, the button handles click events and joins
         // the associated room automatically.
@@ -172,22 +169,6 @@ public class LoungePanel extends JPanel {
 
     public void setRoom(Room room) throws IOException {
         chatPanel.setRoom(room);
-    }
-
-    private static class SortByRoomName implements Comparator {
-        public int compare(Object o1, Object o2) {
-            Room r1 = (Room) o1;
-            Room r2 = (Room) o2;
-            if (r1 == null && r2 == null) {
-                return 0;
-            } else if (r1 == null && r2 != null) {
-                return -1;
-            } else if (r2 == null && r1 != null) {
-                return 1;
-            } else {
-                return r1.get_name().compareTo(r2.get_name());
-            }
-        }
     }
 
     private class LogoutAction extends AbstractAction {

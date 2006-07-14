@@ -23,20 +23,22 @@ package ggz.client.core;
  * Core clients should offer those game modules which fit their own environment.
  */
 public class ModuleEnvironment {
-	/** No GUI, no interaction with user */
-	public static final ModuleEnvironment GGZ_ENVIRONMENT_PASSIVE = new ModuleEnvironment();
+    /** No GUI, no interaction with user */
+    public static final ModuleEnvironment GGZ_ENVIRONMENT_PASSIVE = new ModuleEnvironment();
 
-	/** Text console */
-	public static final ModuleEnvironment GGZ_ENVIRONMENT_CONSOLE = new ModuleEnvironment();
+    /** Text console */
+    public static final ModuleEnvironment GGZ_ENVIRONMENT_CONSOLE = new ModuleEnvironment();
 
-	/** VESA or framebuffer */
-	public static final ModuleEnvironment GGZ_ENVIRONMENT_FRAMEBUFFER = new ModuleEnvironment();
+    /** VESA or framebuffer */
+    public static final ModuleEnvironment GGZ_ENVIRONMENT_FRAMEBUFFER = new ModuleEnvironment();
 
-	/** X11 windowed mode (default) */
-	public static final ModuleEnvironment GGZ_ENVIRONMENT_XWINDOW = new ModuleEnvironment();
+    /** X11 windowed mode (default) */
+    public static final ModuleEnvironment GGZ_ENVIRONMENT_XWINDOW = new ModuleEnvironment();
 
-	/** X11 fullscreen mode */
-	public static final ModuleEnvironment GGZ_ENVIRONMENT_XFULLSCREEN = new ModuleEnvironment();
-	
-	private ModuleEnvironment() {}
+    /** X11 fullscreen mode */
+    public static final ModuleEnvironment GGZ_ENVIRONMENT_XFULLSCREEN = new ModuleEnvironment();
+
+    private ModuleEnvironment() {
+        // Private constructor to prevent access.
+    }
 }

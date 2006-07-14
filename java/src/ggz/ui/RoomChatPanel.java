@@ -89,7 +89,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
 
     private JPanel westPanel;
 
-    private JLabel playerCountLabel;
+    protected JLabel playerCountLabel;
 
     private JButton privateChatButton;
 
@@ -444,8 +444,6 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             if (width >= 0) {
                 column.setPreferredWidth(width + margin); // <1.3: without
                 // margin
-            } else {
-                ; // ???
             }
 
             totalWidth += column.getPreferredWidth();
@@ -477,9 +475,9 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             this.data = new SortedList(Player.SORT_BY_NAME);
         }
 
-        public void replaceAll(List players) {
+        public void replaceAll(List l) {
             this.data.clear();
-            this.data.addAll(players);
+            this.data.addAll(l);
             fireTableDataChanged();
         }
 
@@ -627,7 +625,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             int selectedRow = playerList.getSelectedRow();
             if (selectedRow < 0)
                 return;
-            Player player = (Player) players.getPlayer(selectedRow);
+            Player player = players.getPlayer(selectedRow);
             if (player == null)
                 return;
             PrivateChatDialog.showDialog(player.get_name());
@@ -646,7 +644,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             int selectedRow = playerList.getSelectedRow();
             if (selectedRow < 0)
                 return;
-            Player player = (Player) players.getPlayer(selectedRow);
+            Player player = players.getPlayer(selectedRow);
             if (player == null)
                 return;
 
@@ -669,7 +667,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             int selectedRow = playerList.getSelectedRow();
             if (selectedRow < 0)
                 return;
-            Player player = (Player) players.getPlayer(selectedRow);
+            Player player = players.getPlayer(selectedRow);
             if (player == null)
                 return;
 
@@ -689,7 +687,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             int selectedRow = playerList.getSelectedRow();
             if (selectedRow < 0)
                 return;
-            Player player = (Player) players.getPlayer(selectedRow);
+            Player player = players.getPlayer(selectedRow);
             if (player == null)
                 return;
 

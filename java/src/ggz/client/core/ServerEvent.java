@@ -266,5 +266,6 @@ public class ServerEvent {
     public static final ServerEvent GGZ_NUM_SERVER_EVENTS = new ServerEvent();
 
     private ServerEvent() {
+        // Private constructor to prevent access.
     }
 }

@@ -37,13 +37,13 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 public class SpectatorListPanel extends JPanel {
-    private JList spectatorList;
+    protected JList spectatorList;
 
-    private JPopupMenu popup;
+    protected JPopupMenu popup;
 
-    private ModGame ggzMod;
+    protected ModGame ggzMod;
 
-    private SpectatorBootAction bootAction;
+    protected SpectatorBootAction bootAction;
 
     public SpectatorListPanel() {
         super(new BorderLayout());

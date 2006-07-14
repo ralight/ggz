@@ -39,16 +39,16 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 public class SpadesGamePanel extends CardGamePanel {
-    private static final Logger log = Logger.getLogger(SpadesGamePanel.class
+    protected static final Logger log = Logger.getLogger(SpadesGamePanel.class
             .getName());
 
-    private SpadesBidPanel spadesBidPanel;
+    protected SpadesBidPanel spadesBidPanel;
 
-    private JPanel spadesScorePanel;
+    protected JPanel spadesScorePanel;
 
-    private JLabel usScoreLabel;
+    protected JLabel usScoreLabel;
 
-    private JLabel themScoreLabel;
+    protected JLabel themScoreLabel;
 
     protected static final Color highlightColor = Color.green.darker();
 

@@ -32,7 +32,7 @@ public class PrivateChatDialog extends JFrame {
 
     protected static ChatDialogManager dialogManager = new ChatDialogManager();
 
-    private ChatPanel chatPanel;
+    protected ChatPanel chatPanel;
 
     private String recipient;
 
@@ -79,15 +79,15 @@ public class PrivateChatDialog extends JFrame {
     }
 
     protected class PrivateChatAction extends ChatAction {
-        private String recipient;
+        private String player;
 
         public PrivateChatAction(String recipient) {
-            this.recipient = recipient;
+            this.player = recipient;
         }
 
         public boolean sendChat(ChatType type, String target, String message)
                 throws IOException {
-            server.get_cur_room().chat(ChatType.GGZ_CHAT_PERSONAL, recipient,
+            server.get_cur_room().chat(ChatType.GGZ_CHAT_PERSONAL, player,
                     message);
             return true;
         }
@@ -107,31 +107,31 @@ public class PrivateChatDialog extends JFrame {
         protected Room currentRoom;
 
         public void server_channel_connected() {
-
+            // Ignore.
         }
 
         public void server_channel_fail(String error) {
-
+            // Ignore.
         }
 
         public void server_channel_ready() {
-
+            // Ignore.
         }
 
         public void server_chat_fail(ErrorEventData data) {
-
+            // Ignore.
         }
 
         public void server_connect_fail(String error) {
-
+            // Ignore.
         }
 
         public void server_connected() {
-
+            // Ignore.
         }
 
         public void server_enter_fail(ErrorEventData data) {
-
+            // Ignore.
         }
 
         public void server_enter_ok() {
@@ -145,11 +145,11 @@ public class PrivateChatDialog extends JFrame {
         }
 
         public void server_list_rooms() {
-
+            // Ignore.
         }
 
         public void server_list_types() {
-
+            // Ignore.
         }
 
         public void server_logged_out() {
@@ -167,39 +167,39 @@ public class PrivateChatDialog extends JFrame {
         }
 
         public void server_login_fail(ErrorEventData data) {
-
+            // Ignore.
         }
 
         public void server_login_ok() {
-
+            // Ignore.
         }
 
         public void server_motd_loaded(MotdEventData data) {
-
+            // Ignore.
         }
 
         public void server_negotiate_fail(String error) {
-
+            // Ignore.
         }
 
         public void server_negotiated() {
-
+            // Ignore.
         }
 
         public void server_net_error(String error) {
-
+            // Ignore.
         }
 
         public void server_players_changed() {
-
+            // Ignore.
         }
 
         public void server_protocol_error(String error) {
-
+            // Ignore.
         }
 
         public void server_state_changed() {
-
+            // Ignore.
         }
 
         public void chat_event(final ChatEventData data) {
@@ -221,67 +221,67 @@ public class PrivateChatDialog extends JFrame {
         }
 
         public void player_count(int count) {
-
+            // Ignore.
         }
 
         public void player_lag(Player player) {
-
+            // Ignore.
         }
 
         public void player_list(List players) {
-
+            // Ignore.
         }
 
         public void player_stats(Player player) {
-
+            // Ignore.
         }
 
         public void room_enter(RoomChangeEventData data) {
-
+            // Ignore.
         }
 
         public void room_leave(RoomChangeEventData data) {
-
+            // Ignore.
         }
 
         public void table_add(Table table) {
-
+            // Ignore.
         }
 
         public void table_delete(Table table) {
-
+            // Ignore.
         }
 
         public void table_join_fail(String error) {
-
+            // Ignore.
         }
 
         public void table_joined(int table_index) {
-
+            // Ignore.
         }
 
         public void table_launch_fail(ErrorEventData data) {
-
+            // Ignore.
         }
 
         public void table_launched() {
-
+            // Ignore.
         }
 
         public void table_leave_fail(String error) {
-
+            // Ignore.
         }
 
         public void table_left(TableLeaveEventData data) {
-
+            // Ignore.
         }
 
         public void table_list() {
-
+            // Ignore.
         }
 
         public void table_update(Table table) {
-
+            // Ignore.
         }
 
     }

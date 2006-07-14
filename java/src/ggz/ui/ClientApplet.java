@@ -104,9 +104,6 @@ public class ClientApplet extends JApplet implements ServerListener,
         }
     }
 
-    public ClientApplet() {
-    }
-
     public void init() {
         // Register ourselves as the global hyperlink handler for our
         // hyperlink label.

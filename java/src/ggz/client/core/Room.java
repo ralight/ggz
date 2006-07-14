@@ -22,8 +22,10 @@ import ggz.common.ClientReqError;
 import ggz.common.LeaveType;
 
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -807,12 +809,12 @@ public class Room {
             }
         }
 
-        public void fire_player_list(List players) {
+        public void fire_player_list(List l) {
             RoomListener[] listenerArray = (RoomListener[]) listeners
                     .getListeners(RoomListener.class);
             for (int i = 0; i < listenerArray.length; i++) {
                 RoomListener listener = listenerArray[i];
-                listener.player_list(players);
+                listener.player_list(l);
             }
         }
 
@@ -933,4 +935,22 @@ public class Room {
             }
         }
     }
+
+    public static final Comparator SORT_BY_NAME = new Comparator() {
+        private Collator collator = Collator.getInstance();
+
+        public int compare(Object o1, Object o2) {
+            Room r1 = (Room) o1;
+            Room r2 = (Room) o2;
+            if (r1 == null && r2 == null) {
+                return 0;
+            } else if (r1 == null) {
+                return -1;
+            } else if (r2 == null) {
+                return 1;
+            } else {
+                return collator.compare(r1.get_name(), r2.get_name());
+            }
+        }
+    };
 }

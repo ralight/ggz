@@ -31,6 +31,7 @@ public class IconFactory {
     private static ImageIcon ignoreIcon;
 
     private IconFactory() {
+        // Private constructor to prevent access.
     }
 
     public static Icon getPlayerTypeIcon(PlayerType type) {

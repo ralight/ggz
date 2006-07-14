@@ -37,7 +37,7 @@ public class PlayerLabel extends JPanel {
         super(new BorderLayout());
         nameLabel = new JLabel(playerName);
         iconLabel = new JLabel();
-        textLabel = new JLabel("", JLabel.LEFT);
+        textLabel = new JLabel("", SwingConstants.LEFT);
 
         Font f = nameLabel.getFont();
         // nameLabel.setFont(f.deriveFont(f.getStyle() ^ Font.BOLD));

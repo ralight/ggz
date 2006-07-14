@@ -31,39 +31,39 @@ import javax.swing.WindowConstants;
 
 public class SpriteTest {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) throws IOException {
-		JFrame frame = new JFrame("Sprite Test");
-		frame.getContentPane().setLayout(null);
-		Sprite sprite = null;
+    /**
+     * @param args
+     */
+    public static void main(String[] args) throws IOException {
+        JFrame frame = new JFrame("Sprite Test");
+        frame.getContentPane().setLayout(null);
+        Sprite sprite = null;
 
-		for (int suit = Suit.CLUBS.ordinal(); suit <= Suit.SPADES.ordinal(); suit++) {
-			for (int face = Face.ACE_LOW.ordinal(); face <= Face.ACE_HIGH
-					.ordinal(); face++) {
-				sprite = new Sprite(new Card((Face) Face.values()[face],
-						(Suit) Suit.values()[suit]));
-				sprite.setEnabled(true);
-				sprite.setLocation(sprite.getWidth() * (face - 1), sprite
-						.getHeight()
-						* (suit - 1));
-				frame.getContentPane().add(sprite);
-				sprite.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent event) {
-						Sprite source = (Sprite) event.getSource();
-						source.setSelectable(!source.isSelectable());
-						// source.setSelected(!source.isSelected());
-						System.out.println(source.card());
-					}
-				});
-			}
-		}
+        for (int suit = Suit.CLUBS.ordinal(); suit <= Suit.SPADES.ordinal(); suit++) {
+            for (int face = Face.ACE_LOW.ordinal(); face <= Face.ACE_HIGH
+                    .ordinal(); face++) {
+                sprite = new Sprite(new Card(Face.values()[face],
+                        Suit.values()[suit]));
+                sprite.setEnabled(true);
+                sprite.setLocation(sprite.getWidth() * (face - 1), sprite
+                        .getHeight()
+                        * (suit - 1));
+                frame.getContentPane().add(sprite);
+                sprite.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+                        Sprite source = (Sprite) event.getSource();
+                        source.setSelectable(!source.isSelectable());
+                        // source.setSelected(!source.isSelected());
+                        System.out.println(source.card());
+                    }
+                });
+            }
+        }
 
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.setSize(
-				new Dimension(sprite.getWidth() * 14, sprite.getHeight() * 4));
-		frame.setVisible(true);
-	}
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setSize(new Dimension(sprite.getWidth() * 14,
+                sprite.getHeight() * 4));
+        frame.setVisible(true);
+    }
 
 }

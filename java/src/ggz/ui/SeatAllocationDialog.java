@@ -58,7 +58,7 @@ import javax.swing.ListCellRenderer;
 
 // TODO Localise this
 public class SeatAllocationDialog extends JDialog implements ItemListener {
-    private static final ResourceBundle messages = ResourceBundle
+    protected static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
 
     private static final String JOIN_ME = messages
@@ -83,11 +83,11 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
 
     private JPanel centerPanel;
 
-    private JRadioButton soloPlayButton;
+    protected JRadioButton soloPlayButton;
 
     private JRadioButton multiPlayButton;
 
-    private JRadioButton advancedPlayButton;
+    protected JRadioButton advancedPlayButton;
 
     private JLabel tableDescriptionLabel;
 

@@ -8,7 +8,7 @@ public class ServerTest implements ServerListener {
     /**
      * @param args
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Server server = new Server("oojah.dyndns.org", 5688, false);
         server.add_event_hook(new ServerTest(server));
         server.connect();

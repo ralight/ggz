@@ -93,9 +93,9 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     private int lastPlayerInTrick;
 
-    private int handILastPlayedFrom;
+    protected int handILastPlayedFrom;
 
-    private SpriteHighlighter spriteHighlighter = new SpriteHighlighter();
+    protected SpriteHighlighter spriteHighlighter = new SpriteHighlighter();
 
     protected BidPanel bidPanel;
 
@@ -399,7 +399,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         });
     }
 
-    private Icon getPlayerIcon(SeatType type) {
+    protected Icon getPlayerIcon(SeatType type) {
         if (playerIcons == null) {
             playerIcons = new Icon[SeatType.values.size()];
         }
@@ -423,7 +423,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         return icon;
     }
 
-    private void initPopupMenu(int seat_num, int ggz_seat_num, SeatType type) {
+    protected void initPopupMenu(int seat_num, int ggz_seat_num, SeatType type) {
         JPopupMenu menu = null;
 
         if (type == SeatType.GGZ_SEAT_NONE) {

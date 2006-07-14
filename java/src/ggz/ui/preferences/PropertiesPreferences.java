@@ -70,4 +70,4 @@ public class PropertiesPreferences extends AbstractPreferences {
     protected void syncSpi() throws BackingStoreException {
         // Nothing to do since we have no backing store.
     }
-};
+}

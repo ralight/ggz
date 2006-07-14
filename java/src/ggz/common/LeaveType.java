@@ -43,8 +43,10 @@ public class LeaveType {
 
     private static final String GAMEERROR_LEAVETYPE_NAME = "gameerror";
 
-    private LeaveType() {}
-    
+    private LeaveType() {
+        // private constructor to prevent access.
+    }
+
     public String toString() {
         if (this == GGZ_LEAVE_NORMAL) {
             return NORMAL_LEAVETYPE_NAME;

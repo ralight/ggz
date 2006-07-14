@@ -58,7 +58,7 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
 
     private JPanel doubleRedoublePassPanel;
 
-    private Bid bid;
+    private Bid selectedBid;
 
     private static final Bid BID_PASS = new Bid((byte) 0, 0, (byte) 1, (byte) 0);
 
@@ -248,11 +248,11 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
     }
 
     public int getBidIndex() {
-        return validBids.indexOf(bid);
+        return validBids.indexOf(selectedBid);
     }
 
     protected void setBid(Bid bid) {
-        this.bid = bid;
+        this.selectedBid = bid;
         if (actionListeners != null) {
             actionListeners.actionPerformed(new ActionEvent(this,
                     ActionEvent.ACTION_PERFORMED, bid.toString()));

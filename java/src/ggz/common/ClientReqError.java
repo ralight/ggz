@@ -77,6 +77,7 @@ public class ClientReqError {
     public static final ClientReqError E_BAD_USERNAME = new ClientReqError();
 
     private ClientReqError() {
+        // Private constructor to prevent access.
     }
 
     public String toString() {
@@ -131,7 +132,9 @@ public class ClientReqError {
         } else if (this == E_TOO_LONG) {
             return "too long";
         } else if (this == E_NO_STATUS) {
+            // unknown
         } else if (this == E_UNKNOWN) {
+            // unknown
         }
 
         return "[unknown]";

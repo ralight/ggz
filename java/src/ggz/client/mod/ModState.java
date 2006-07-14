@@ -77,6 +77,8 @@ public class ModState {
      *        GGZ just waits for it to exit of its own volition.
      */
     public static final ModState GGZMOD_STATE_DONE = new ModState();
-    
-    private ModState() {}
+
+    private ModState() {
+        // Private constructor to prevent access.
+    }
 }

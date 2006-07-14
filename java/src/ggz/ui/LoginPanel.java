@@ -42,7 +42,7 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
 public class LoginPanel extends JPanel {
-    private static final ResourceBundle messages = ResourceBundle
+    protected static final ResourceBundle messages = ResourceBundle
             .getBundle("ggz.ui.messages");
 
     private Server server;

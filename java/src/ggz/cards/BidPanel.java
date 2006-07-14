@@ -65,48 +65,52 @@ public class BidPanel extends JPanel implements ActionListener {
 
     private JPanel bidHistoryTableContainer;
 
-    private int bidIndex;
+    private int selectedBid;
 
     public BidPanel(int firstBidder, Client cardClient) {
         super(new BorderLayout(2, 2));
-        numPlayers = cardClient.get_num_players();
-        lastBidder = firstBidder - 1;
-        bidHistoryTable = new JTable(1, numPlayers);
+        this.numPlayers = cardClient.get_num_players();
+        this.lastBidder = firstBidder - 1;
+        this.bidHistoryTable = new JTable(1, this.numPlayers);
         // Set up the column names, the first bidder is in the first column.
-        for (int i = 0; i < numPlayers; i++) {
+        for (int i = 0; i < this.numPlayers; i++) {
             Player player = cardClient.get_nth_player(firstBidder);
-            TableColumn column = bidHistoryTable.getColumnModel().getColumn(i);
+            TableColumn column = this.bidHistoryTable.getColumnModel()
+                    .getColumn(i);
             column.setHeaderValue(player.get_name());
             column.setPreferredWidth(80);
-            firstBidder = (firstBidder + 1) % numPlayers;
+            firstBidder = (firstBidder + 1) % this.numPlayers;
         }
-        bidHistoryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        bidHistoryTable.setDefaultRenderer(Object.class, new BidCellRenderer());
-        bidHistoryTable.setPreferredScrollableViewportSize(new Dimension(200,
-                bidHistoryTable.getRowHeight() * 5));
-        bidHistoryTableContainer = new JPanel(new BorderLayout());
-        bidHistoryTableContainer.setOpaque(false);
-        bidHistoryTableContainer.add(bidHistoryTable, BorderLayout.CENTER);
-        bidHistoryTableContainer.add(bidHistoryTable.getTableHeader(),
-                BorderLayout.NORTH);
-        bidHistoryPanel = new JPanel();
-        bidHistoryPanel.add(bidHistoryTableContainer, BorderLayout.CENTER);
-        bidHistoryPanel.setOpaque(false);
-        buttonPanel = new JPanel(new GridLayout(1, 0, 2, 2));
-        buttonPanel.setOpaque(false);
-        buttonLayoutPanel = new JPanel();
-        buttonLayoutPanel.setOpaque(false);
-        buttonLayoutPanel.add(buttonPanel);
+        this.bidHistoryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        this.bidHistoryTable.setDefaultRenderer(Object.class,
+                new BidCellRenderer());
+        this.bidHistoryTable.setPreferredScrollableViewportSize(new Dimension(
+                200, this.bidHistoryTable.getRowHeight() * 5));
+        this.bidHistoryTableContainer = new JPanel(new BorderLayout());
+        this.bidHistoryTableContainer.setOpaque(false);
+        this.bidHistoryTableContainer.add(this.bidHistoryTable,
+                BorderLayout.CENTER);
+        this.bidHistoryTableContainer.add(
+                this.bidHistoryTable.getTableHeader(), BorderLayout.NORTH);
+        this.bidHistoryPanel = new JPanel();
+        this.bidHistoryPanel.add(this.bidHistoryTableContainer,
+                BorderLayout.CENTER);
+        this.bidHistoryPanel.setOpaque(false);
+        this.buttonPanel = new JPanel(new GridLayout(1, 0, 2, 2));
+        this.buttonPanel.setOpaque(false);
+        this.buttonLayoutPanel = new JPanel();
+        this.buttonLayoutPanel.setOpaque(false);
+        this.buttonLayoutPanel.add(this.buttonPanel);
         setOpaque(false);
-        add(bidHistoryPanel, BorderLayout.NORTH);
-        add(buttonLayoutPanel, BorderLayout.SOUTH);
+        add(this.bidHistoryPanel, BorderLayout.NORTH);
+        add(this.buttonLayoutPanel, BorderLayout.SOUTH);
     }
 
     public void setEnabled(boolean enabled) {
         // super.setEnabled(enabled);
         // Assume only one round of bidding. Removing all buttons makes more
         // sense in this case.
-        buttonPanel.removeAll();
+        this.buttonPanel.removeAll();
     }
 
     public void setValidBids(Bid[] bid_choices, String[] bid_texts,
@@ -128,8 +132,8 @@ public class BidPanel extends JPanel implements ActionListener {
 
             // Store the bid index so that we know which bid was selected when a
             // button is clicked.
-            bid_button.putClientProperty("ggz.cards.BidPanel.bidIndex",
-                    new Integer(bidIndex));
+            bid_button.putClientProperty(
+                    "ggz.cards.BidPanel.bidIndex", new Integer(bidIndex)); //$NON-NLS-1$
 
             // Users complained that in Spades, chatting when
             // the bid button appears can sometimes cause you to bid
@@ -167,7 +171,7 @@ public class BidPanel extends JPanel implements ActionListener {
     }
 
     public int getBidIndex() {
-        return bidIndex;
+        return selectedBid;
     }
 
     /**
@@ -183,8 +187,8 @@ public class BidPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         JButton button = (JButton) event.getSource();
         Integer bidIndex = (Integer) button
-                .getClientProperty("ggz.cards.BidPanel.bidIndex");
-        this.bidIndex = bidIndex.intValue();
+                .getClientProperty("ggz.cards.BidPanel.bidIndex"); //$NON-NLS-1$
+        this.selectedBid = bidIndex.intValue();
         if (actionListeners != null) {
             actionListeners.actionPerformed(new ActionEvent(this,
                     ActionEvent.ACTION_PERFORMED, bidIndex.toString()));
@@ -219,19 +223,19 @@ public class BidPanel extends JPanel implements ActionListener {
                     switch (bid.getSuit()) {
                     case 0:
                         setIcon(new ImageIcon(getClass().getResource(
-                                "/ggz/cards/images/club.gif")));
+                                "/ggz/cards/images/club.gif"))); //$NON-NLS-1$
                         break;
                     case 1:
                         setIcon(new ImageIcon(getClass().getResource(
-                                "/ggz/cards/images/diamond.gif")));
+                                "/ggz/cards/images/diamond.gif"))); //$NON-NLS-1$
                         break;
                     case 2:
                         setIcon(new ImageIcon(getClass().getResource(
-                                "/ggz/cards/images/heart.gif")));
+                                "/ggz/cards/images/heart.gif"))); //$NON-NLS-1$
                         break;
                     case 3:
                         setIcon(new ImageIcon(getClass().getResource(
-                                "/ggz/cards/images/spade.gif")));
+                                "/ggz/cards/images/spade.gif"))); //$NON-NLS-1$
                         break;
                     default:
                         setIcon(null);

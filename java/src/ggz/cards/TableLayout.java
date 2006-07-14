@@ -69,11 +69,11 @@ public class TableLayout implements LayoutManager2 {
                     maxHandSize);
         }
     }
-    
+
     public void setCardGap(int gap) {
         cardFanGap = gap;
     }
-    
+
     public void setPackCardsInHand(boolean b) {
         packCardsInHand = b;
     }
@@ -430,9 +430,8 @@ public class TableLayout implements LayoutManager2 {
                 }
             }
             return count;
-        } else {
-            return maxHandSize;
         }
+        return maxHandSize;
     }
 
     public Point getTrickPos(Container parent, int player) {

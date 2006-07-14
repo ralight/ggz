@@ -21,7 +21,6 @@ import ggz.common.ChatType;
 import ggz.ui.preferences.GGZPreferences;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -81,7 +80,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
     // Application global friends list.
     static protected HashSet friendsList;
 
-    static protected StyleContext styles;
+    static protected StyleContext emoticons;
 
     static {
         ignoreList = (HashSet) GGZPreferences.addAll(
@@ -89,74 +88,37 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         friendsList = (HashSet) GGZPreferences.addAll(
                 GGZPreferences.FRIENDS_LIST, new HashSet());
 
-        // Set up styles.
-        styles = new StyleContext();
-        Style style;
-
-        style = styles.addStyle("sender-text", null);
-        StyleConstants.setForeground(style, Color.BLUE);
-
-        style = styles.addStyle("friendly-text", null);
-        StyleConstants.setForeground(style, Color.GREEN.darker().darker());
-
-        style = styles.addStyle("info-text", null);
-        StyleConstants.setForeground(style, Color.BLUE);
-        StyleConstants.setBold(style, false);
-
-        style = styles.addStyle("command-text", null);
-        StyleConstants.setForeground(style, Color.RED);
-        StyleConstants.setFontFamily(style, "Monospaced");
-
-        style = styles.addStyle("announce-text", null);
-        StyleConstants.setForeground(style, Color.RED);
-        StyleConstants.setBold(style, true);
-
-        style = styles.addStyle("my-text", null);
-        StyleConstants.setForeground(style, GGZPreferences.getColor(
-                GGZPreferences.MY_FONT_COLOR, null));
-
         // Initialise icons for emoticons.
-        style = styles.addStyle("emoticon-smile", null);
-        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+        emoticons = new StyleContext();
+        Style emoticon;
+
+        emoticon = emoticons.addStyle("emoticon-smile", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_smile.png")));
 
-        style = styles.addStyle("emoticon-unhappy", null);
-        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+        emoticon = emoticons.addStyle("emoticon-unhappy", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_unhappy.png")));
 
-        style = styles.addStyle("emoticon-tongue", null);
-        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+        emoticon = emoticons.addStyle("emoticon-tongue", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_tongue.png")));
 
-        style = styles.addStyle("emoticon-wink", null);
-        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+        emoticon = emoticons.addStyle("emoticon-wink", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_wink.png")));
 
-        style = styles.addStyle("emoticon-evilgrin", null);
-        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+        emoticon = emoticons.addStyle("emoticon-evilgrin", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_evilgrin.png")));
 
-        style = styles.addStyle("emoticon-grin", null);
-        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+        emoticon = emoticons.addStyle("emoticon-grin", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_grin.png")));
 
-        style = styles.addStyle("emoticon-surprised", null);
-        StyleConstants.setIcon(style, new ImageIcon(ChatPanel.class
+        emoticon = emoticons.addStyle("emoticon-surprised", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_surprised.png")));
-
-        GGZPreferences
-                .addPreferenceChangeListener(new PreferenceChangeListener() {
-
-                    public void preferenceChange(PreferenceChangeEvent evt) {
-                        if (GGZPreferences.MY_FONT_COLOR.equals(evt.getKey())) {
-                            Style style = styles.getStyle("my-text");
-                            StyleConstants.setForeground(style, GGZPreferences
-                                    .getColor(evt.getKey(), StyleConstants
-                                            .getForeground(style)));
-                        }
-                    }
-                });
-
     }
 
     /**
@@ -173,7 +135,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         sendButton = new JButton(chatAction);
         textField = new JTextField();
         textField.setEnabled(false);
-        chatArea = new JTextPane(new DefaultStyledDocument(styles)) {
+        chatArea = new JTextPane(new DefaultStyledDocument(emoticons)) {
             public void scrollRectToVisible(Rectangle rect) {
                 // This is only needed when using setCaretPosition() to scroll
                 // the chat.
@@ -183,12 +145,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
             }
         };
         GGZPreferences.addPreferenceChangeListener(this);
-        chatArea.setFont(GGZPreferences.getFont(GGZPreferences.CHAT_FONT,
-                chatArea.getFont()));
-        chatArea.setBackground(GGZPreferences.getColor(
-                GGZPreferences.CHAT_BACKGROUND, chatArea.getBackground()));
-        chatArea.setForeground(GGZPreferences.getColor(
-                GGZPreferences.CHAT_FOREGROUND, chatArea.getForeground()));
+        GGZPreferences.applyStyle(GGZPreferences.CHAT_STYLE_NORMAL, chatArea);
         chatArea.setEditable(false);
         TextPopupMenu.enableFor(chatArea);
         TextPopupMenu.enableFor(textField);
@@ -241,8 +198,8 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         StyledDocument doc = chatArea.getStyledDocument();
         checkAutoScroll();
         try {
-            doc.insertString(doc.getLength(), message, doc
-                    .getStyle("info-text"));
+            doc.insertString(doc.getLength(), message, GGZPreferences
+                    .getChatStyleInfo());
             doc.insertString(doc.getLength(), "\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
@@ -256,8 +213,8 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         StyledDocument doc = chatArea.getStyledDocument();
         checkAutoScroll();
         try {
-            doc.insertString(doc.getLength(), message, doc
-                    .getStyle("command-text"));
+            doc.insertString(doc.getLength(), message, GGZPreferences
+                    .getChatStyleCommand());
             doc.insertString(doc.getLength(), "\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
@@ -290,15 +247,15 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         }
 
         if ("MegaGrub".equals(sender)) {
-            textStyle = doc.getStyle("sender-text");
+            textStyle = GGZPreferences.getChatStyleSender();
         } else if (type == ChatType.GGZ_CHAT_ANNOUNCE) {
-            textStyle = doc.getStyle("announce-text");
+            textStyle = GGZPreferences.getChatStyleAnnounce();
             // TODO change the text to <nic> announces:
         } else if (sender.equals(me)) {
-            textStyle = doc.getStyle("my-text");
+            textStyle = GGZPreferences.getChatStyleMe();
         } else if (friendsList != null
                 && friendsList.contains(sender.toLowerCase())) {
-            textStyle = doc.getStyle("friendly-text");
+            textStyle = GGZPreferences.getChatStyleFriend();
         }
 
         doc.getStyle("");
@@ -307,11 +264,12 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
             if (emote == null) {
                 doc.insertString(doc.getLength(), MessageFormat.format(messages
                         .getString("ChatPanel.Says"), new Object[] { sender }),
-                        doc.getStyle("sender-text"));
+                        GGZPreferences.getChatStyleSender());
                 insertWithEmotes(doc, message, textStyle);
             } else {
                 insertWithEmotes(doc, MessageFormat.format(emote,
-                        new Object[] { sender }), doc.getStyle("sender-text"));
+                        new Object[] { sender }), GGZPreferences
+                        .getChatStyleSender());
             }
             doc.insertString(doc.getLength(), "\n", null);
         } catch (BadLocationException e) {
@@ -357,6 +315,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
                     emoticon = doc.getStyle("emoticon-evilgrin");
                     tok += ch;
                     break;
+                case 'p':
                 case 'P':
                     // Tongue.
                     emoticon = doc.getStyle("emoticon-tongue");
@@ -524,18 +483,10 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
     }
 
     public void preferenceChange(PreferenceChangeEvent evt) {
-        if (GGZPreferences.CHAT_FONT.equals(evt.getKey())) {
-            chatArea.setFont(GGZPreferences.getFont(evt.getKey(), chatArea
-                    .getFont()));
-            textField.setFont(chatArea.getFont());
-        } else if (GGZPreferences.CHAT_FOREGROUND.equals(evt.getKey())) {
-            chatArea.setForeground(GGZPreferences.getColor(evt.getKey(),
-                    chatArea.getForeground()));
-            textField.setForeground(chatArea.getForeground());
-        } else if (GGZPreferences.CHAT_BACKGROUND.equals(evt.getKey())) {
-            chatArea.setBackground(GGZPreferences.getColor(evt.getKey(),
-                    chatArea.getBackground()));
-            textField.setBackground(chatArea.getBackground());
+        if (GGZPreferences.CHAT_STYLE_NORMAL.equals(evt.getKey())) {
+            GGZPreferences.applyStyle(evt.getKey(), chatArea);
+            GGZPreferences.applyStyle(evt.getKey(), textField);
+            revalidate();
         }
     }
 }

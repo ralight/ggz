@@ -22,28 +22,30 @@ package ggz.client.core;
  * require different information to be sent to the server.
  */
 public class LoginType {
-	/** Standard login; uname and correct passwd needed. */
-	public static final LoginType GGZ_LOGIN = new LoginType();
+    /** Standard login; uname and correct passwd needed. */
+    public static final LoginType GGZ_LOGIN = new LoginType();
 
-	/** Guest login; only a uname is required. */
-	public static final LoginType GGZ_LOGIN_GUEST = new LoginType();
+    /** Guest login; only a uname is required. */
+    public static final LoginType GGZ_LOGIN_GUEST = new LoginType();
 
-	/**
-	 * New user login; only a uname is required. Password will be assigned by
-	 * the server (but can be passed along).
-	 */
-	public static final LoginType GGZ_LOGIN_NEW = new LoginType();
+    /**
+     * New user login; only a uname is required. Password will be assigned by
+     * the server (but can be passed along).
+     */
+    public static final LoginType GGZ_LOGIN_NEW = new LoginType();
 
-	public String toString() {
-		if (this == GGZ_LOGIN) {
-			return "normal";
-		} else if (this == GGZ_LOGIN_NEW) {
-			return "first";
-		} else if (this == GGZ_LOGIN_GUEST) {
-			return "guest";
-		}
-		throw new RuntimeException("Unrecognised LoginType: " + this);
-	}
-	
-	private LoginType() {}
+    public String toString() {
+        if (this == GGZ_LOGIN) {
+            return "normal";
+        } else if (this == GGZ_LOGIN_NEW) {
+            return "first";
+        } else if (this == GGZ_LOGIN_GUEST) {
+            return "guest";
+        }
+        throw new RuntimeException("Unrecognised LoginType: " + this);
+    }
+
+    private LoginType() {
+        // Private constructor to prevent access.
+    }
 }
