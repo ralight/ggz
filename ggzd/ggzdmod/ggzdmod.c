@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 8335 2006-07-08 02:55:05Z jdorje $
+ * $Id: ggzdmod.c 8362 2006-07-14 22:43:06Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1517,7 +1517,8 @@ void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 	/* Figure out which event to use. */
 	if (seat->type == GGZ_SEAT_PLAYER
 	    && (old_seat->type == GGZ_SEAT_OPEN 
-		|| old_seat->type == GGZ_SEAT_RESERVED))
+		|| old_seat->type == GGZ_SEAT_RESERVED
+		|| old_seat->type == GGZ_SEAT_ABANDONED))
 		event = GGZDMOD_EVENT_JOIN;
 	else if (seat->type == GGZ_SEAT_OPEN
 		 && old_seat->type == GGZ_SEAT_PLAYER)
