@@ -2,6 +2,8 @@
 <?php
 
 header("Content-type: image/png");
+header("Cache-Control: no-cache, must-revalidate");
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
 $im = imagecreatefrompng("mundomap.large.png");
 
