@@ -398,7 +398,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
                 ignoreList);
     }
 
-    public boolean isIgnored(String handle) {
+    public static boolean isIgnored(String handle) {
         if (ignoreList == null) {
             return false;
         }
@@ -449,7 +449,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
                 friendsList);
     }
 
-    public boolean isFriend(String handle) {
+    public static boolean isFriend(String handle) {
         if (friendsList == null) {
             return false;
         }

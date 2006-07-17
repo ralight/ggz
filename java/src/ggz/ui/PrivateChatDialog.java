@@ -208,6 +208,11 @@ public class PrivateChatDialog extends JFrame {
                 return;
             }
 
+            // Don't popup a dialog if we are ignoring the sender.
+            if (ChatPanel.isIgnored(data.sender)) {
+                return;
+            }
+            
             // All handlers are called from the socket thread so we need to do
             // this crazy stuff.
             final PrivateChatDialog dialog = showDialog(data.sender);
