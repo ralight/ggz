@@ -23,6 +23,7 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,8 +39,8 @@ public class PreferencesDialog extends JDialog {
 
     public PreferencesDialog(Frame owner) {
         super(owner, "Preferences");
-        tabbedPane = new JTabbedPane();
-        getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        this.tabbedPane = new JTabbedPane();
+        this.getContentPane().add(this.tabbedPane, BorderLayout.CENTER);
         JButton okButton = new JButton(new OKAction());
         JButton cancelButton = new JButton(new CancelAction());
         JButton applyButton = new JButton(new ApplyAction());
@@ -47,12 +48,20 @@ public class PreferencesDialog extends JDialog {
         buttonSizePanel.add(okButton);
         buttonSizePanel.add(cancelButton);
         buttonSizePanel.add(applyButton);
-        buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-        buttonPanel.add(buttonSizePanel);
-        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        this.buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+        this.buttonPanel.add(buttonSizePanel);
+        this.getContentPane().add(this.buttonPanel, BorderLayout.SOUTH);
 
         // This is effectively the same as clicking cancel.
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        
+        // OK is the default button.
+        this.getRootPane().setDefaultButton(okButton);
+
+        // Let escape key close dialog.
+        this.getRootPane().registerKeyboardAction(cancelButton.getAction(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
 
     protected void apply() {

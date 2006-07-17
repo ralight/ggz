@@ -10,7 +10,7 @@
 	<property name="javadoc" value="javadoc"/>
 	<!-- now set below to includ build number -->
 	<!--property name="applet_jarfile" value="ggz-java-applet.jar"/-->
-	<property name="application_jarfile" value="ggz-java-client.jar"/>
+	<!--property name="application_jarfile" value="ggz-java-client.jar"/-->
 	<property name="manifest" value="manifest/manifest.txt"/>
 
 	<!-- Non class files that need to be copied with the classes. -->
@@ -39,6 +39,7 @@
 		
 		<!-- Include build number in JAR file name to avoid cache problems. -->
 		<property name="applet_jarfile" value="ggz-java-applet-${build.number}.jar"/>
+		<property name="application_jarfile" value="ggz-java-client-${build.number}.jar"/>
 
 		<!-- Update file values (retains unmodified properties). -->
 		<propertyfile file="${src}/version.properties">

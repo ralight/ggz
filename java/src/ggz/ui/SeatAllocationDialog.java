@@ -35,6 +35,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -47,6 +48,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -54,6 +56,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 
 // TODO Localise this
@@ -126,17 +129,23 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
                 onOKClick();
             }
         });
-        cancelButton = new JButton(messages
-                .getString("SeatAllocationDialog.Button.Cancel"));
-        cancelButton.addActionListener(new ActionListener() {
+        ActionListener cancelAction = new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 onCancelClick();
             }
-        });
+        };
+        cancelButton = new JButton(messages
+                .getString("SeatAllocationDialog.Button.Cancel"));
+        cancelButton.addActionListener(cancelAction);
         buttonSizePanel.add(okButton);
         buttonSizePanel.add(cancelButton);
         buttonFlowPanel.add(buttonSizePanel);
         getContentPane().add(buttonFlowPanel, BorderLayout.SOUTH);
+
+        // Let escape key close dialog.
+        this.getRootPane().registerKeyboardAction(cancelAction,
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         centerPanel = new JPanel(new GridBagLayout());
         centerPanel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
