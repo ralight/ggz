@@ -41,6 +41,7 @@
 			<a href="/contact/" class="menuitem" title="_(About GGZ Community)">_(About)</a>
 			<div class="menu">
 				<a href="/contact/" class="menuitem">_(Contact)</a>
+				<a href="/help/" class="menuitem">_(Help)</a>
 			</div>
 		</div>
 	</div>

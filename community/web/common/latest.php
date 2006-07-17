@@ -41,6 +41,11 @@ function latest_forumposts()
 	$phpbb = new Database("postgresql");
 	$phpbb->connect($conf_host, $conf_name, $conf_user, $conf_pass);
 
+	if (!$phpbb->id) :
+		echo "Forum not reachable.\n";
+		return;
+	endif;
+
 	$res = $phpbb->exec("SELECT * FROM phpbb_posts_text AS a, phpbb_posts AS b " .
 		"WHERE a.post_id = b.post_id ORDER BY a.post_id DESC LIMIT 3");
 	for ($i = 0; $i < $phpbb->numrows($res); $i++)
@@ -62,6 +67,11 @@ function latest_blogs()
 
 	$f = @fopen("blogs/planet.inc", "r");
 	if(!$f) $f = @fopen("../blogs/planet.inc", "r");
+
+	if (!$f) :
+		echo "Blogs not reachable.\n";
+		return;
+	endif;
 
 	while($a = fgets($f, 1024))
 	{

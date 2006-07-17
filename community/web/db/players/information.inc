@@ -1,6 +1,18 @@
 <?php
 include_once("player.php");
 $player = new Player($lookup);
+
+if (!$player->registered) :
+	echo "<div id='main'>";
+	echo "<div class='text'>";
+	echo __("No such player record was found in the database.");
+	echo "</div>";
+	echo "</div>";
+
+	echo "</div>"; // from index.php
+	include("bottom.inc");
+	exit;
+endif;
 ?>
 	<h2>
 		<span class="itemleader">:: </span>
@@ -76,9 +88,51 @@ else :
 	$karmapic = "karma_bad";
 	$karmatitle = "Bad karma";
 endif;
-echo "<img src='/db/ggzicons/misc/$karmapic.png' title='$karmatitle'>&nbsp;\n";
-echo "The player's overall karma score is $karma out of 10.<br>\n";
+if ($player->registered) :
+	echo "<img src='/db/ggzicons/misc/$karmapic.png' title='$karmatitle'>&nbsp;\n";
+	echo "The player's overall karma score is $karma out of 10.<br>\n";
+else :
+	echo "Player not found.<br>\n";
+endif;
 ?>
+	</div>
+	<div class="text">
+
+<?php
+$ggzuser = $lookup;
+$res = $database->exec("SELECT * FROM users WHERE handle = '$ggzuser'");
+if ($database->numrows($res) == 1) :
+	// FIXME: no firstlogin column yet!
+	//$firstlogin = $database->result($res, $i, "firstlogin");
+	//$veteran = (int)((time() - $firstlogin) / 86400);
+	$veteran = 0;
+
+	$veteranpic = "veteran-level0";
+	$veterantitle = "Newbie";
+	if ($veteran > 365):
+		$veteranpic = "veteran-level5";
+		$veterantitle = "Veteran with honours";
+	elseif ($veteran > 180) :
+		$veteranpic = "veteran-level4";
+		$veterantitle = "Veteran";
+	elseif ($veteran > 60) :
+		$veteranpic = "veteran-level3";
+		$veterantitle = "Long-time player";
+	elseif ($veteran > 30) :
+		$veteranpic = "veteran-level2";
+		$veterantitle = "Known player";
+	elseif ($veteran > 14) :
+		$veteranpic = "veteran-level1";
+		$veterantitle = "Amateur";
+	endif;
+
+	echo "<img src='/db/ggzicons/misc/$veteranpic.png' title='$veterantitle'>&nbsp;\n";
+	echo "Registered member for $veteran days.<br>\n";
+else :
+	echo "Oops, user not found.<br>\n";
+endif;
+?>
+
 	</div>
 	<h2>
 		<span class="itemleader">:: </span>
@@ -160,6 +214,6 @@ rankings_tournaments($lookup);
 	</h2>
 	<div class="text">
 <?php
-rankings_matches($lookup);
+rankings_matches_summary($lookup);
 ?>
 	</div>

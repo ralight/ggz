@@ -179,16 +179,20 @@ class Player
 		$hotstuff = new Database("postgresql");
 		$hotstuff->connect($conf_host, $conf_name, $conf_user, $conf_pass);
 
-		$res = $hotstuff->exec("SELECT * FROM directory WHERE author = '$this->realname' OR author = '$ggzuser'");
-		if (($res) && ($hotstuff->numrows($res) > 0)) :
-			echo "<h2>Game data</h2>\n";
-			for ($i = 0; $i < $hotstuff->numrows($res); $i++)
-			{
-				$name = $hotstuff->result($res, $i, "name");
+		if ($hotstuff->id) :
+			$res = $hotstuff->exec("SELECT * FROM directory WHERE author = '$this->realname' OR author = '$ggzuser'");
+			if (($res) && ($hotstuff->numrows($res) > 0)) :
+				echo "<h2>Game data</h2>\n";
+				for ($i = 0; $i < $hotstuff->numrows($res); $i++)
+				{
+					$name = $hotstuff->result($res, $i, "name");
 
-				echo "<a href='/hotstuff/'>$name</a>\n";
-				echo "<br>\n";
-			}
+					echo "<a href='/hotstuff/'>$name</a>\n";
+					echo "<br>\n";
+				}
+			endif;
+		else :
+			echo "Game data repository not reachable.\n";
 		endif;
 
 		if ($fullview) :

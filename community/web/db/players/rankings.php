@@ -45,9 +45,14 @@ function rankings_tournaments($lookup)
 		if ($place == 1) :
 			$ranking = "1st place";
 			$icon = "cupgold.png";
-		else :
+		elseif ($place == 2) :
 			$ranking = "2nd place";
 			$icon = "cupsilver.png";
+		elseif ($place == 3) :
+			$ranking = "3rd place";
+			$icon = "cupbronze.png";
+		else :
+			continue;
 		endif;
 
 		$res2 = $database->exec("SELECT * FROM tournaments WHERE id = $tournament");
@@ -95,6 +100,38 @@ function rankings_matches($lookup)
 	{
 		echo "The player hasn't won a single game yet.\n";
 	}
+}
+
+function rankings_matches_summary($lookup)
+{
+	global $database;
+
+	$res = $database->exec("SELECT COUNT(*) FROM matches WHERE winner = '$lookup'");
+
+	if ($database->numrows($res) == 1) :
+		$count = $database->result($res, 0, "count");
+
+		if ($count > 0) :
+			$winnerpic = "coin-10";
+			if ($count > 100) :
+				$winnerpic = "coin-max";
+			elseif ($count > 50) :
+				$winnerpic = "coin-100";
+			elseif ($count > 10) :
+				$winnerpic = "coin-50";
+			endif;
+
+			echo "<img src='/db/ggzicons/rankings/$winnerpic.png' title='Winner'>\n";
+			echo "This player has won $count matches of various games.\n";
+			echo "The <a href='titles.php?lookup=$lookup'>match results page</a>\n";
+			echo "contains the details.\n";
+			echo "<br>\n";
+
+			return;
+		endif;
+	endif;
+
+	echo "The player hasn't won a single game yet.\n";
 }
 
 ?>

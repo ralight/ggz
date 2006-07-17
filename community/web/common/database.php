@@ -13,7 +13,7 @@ class Database
 	function connect($host, $name, $user, $pass)
 	{
 		if ($this->type == "postgresql") :
-			$this->id = pg_connect("host=$host dbname=$name user=$user password=$pass");
+			$this->id = @pg_connect("host=$host dbname=$name user=$user password=$pass");
 		elseif ($this->type == "mysql") :
 			$this->id = mysql_connect($host, $user, $pass);
 			mysql_select_db($name, $this->id);
