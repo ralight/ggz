@@ -8,8 +8,8 @@ The following collection tries to give an overview about what exists already.
   [en] http://www.happypenguin.org/show?GGZ%20Gaming%20Zone
   [de] http://www.pro-linux.de/cgi-bin/DBApp/check.cgi?ShowApp..4072.100
   [fr] http://jeuxlibres.net/showgame/ggz_gaming_zone.html
-  [de] http://polska.merseine.nu:8080/h2006/space/GGZ+Gaming+Zone
-       (holarse.net)
+  [de] http://www.holarse-linuxgaming.de/h2006/space/GGZ+Gaming+Zone
+  [en] http://directory.fsf.org/all/ggz_gamong_zone.html
 
   [fr] http://fr.wikipedia.org/wiki/GGZ_Gaming_Zone
   [en] http://en.wikipedia.org/wiki/GGZ_Gaming_Zone
@@ -21,7 +21,7 @@ The following collection tries to give an overview about what exists already.
   [en] http://www.kde-apps.org/content/show.php?content=24473
   [en] http://www.pygame.org/projects/23/215/
   [en] http://wiki.python.org/moin/PythonGames
-  pending: [en] http://www.oreillynet.com/pub/q/java_os_directory
+  [en] http://www.oreillynet.com/pub/q/java_os_directory
 
 == News sites ==
   [en] http://www.linuxgames.com/
@@ -34,9 +34,11 @@ The following collection tries to give an overview about what exists already.
   [de] 09.02.2004 http://www.pro-linux.de/cgi-bin/NB2/nb2.cgi?show.6449.7010..
   [pt] 01.01.2005 http://www.linuxit.com.br/section-viewarticle-715.html
   [pt] 10.01.2005 http://br-linux.org/main/noticia-jogadores_ja_chegou_a_comunid.html
+  [de] 10.01.2005 http://www.linux-community.de/Neues/story?storyid=15401
   [en] 11.01.2005 http://newsvac.newsforge.com/newsvac/05/01/10/2236240.shtml
   [en] 21.02.2006 http://www.linuxplanet.com/linuxplanet/reviews/6174/5/
   [es] 17.03.2006 http://www.cofradia.net/modules.php?name=News&file=article&sid=16867
+  [de] 17.07.2006 http://www.linux-community.de/Neues/story?storyid=20302
 
 == Talks ==
   See docs/presentations!
