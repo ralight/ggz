@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 8369 2006-07-18 12:20:23Z oojah $
+ * $Id: ggzdb_mysql.c 8370 2006-07-18 15:57:27Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -301,8 +301,62 @@ GGZDBResult _ggzdb_init_stats(ggzdbConnection connection)
 
 GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 {
-	/* Not implemented, but do not return error */
-	return GGZDB_NO_ERROR;
+	char query[4096];
+	int rc;
+	GGZDBResult ret = GGZDB_ERR_DB;
+	MYSQL_RES *res;
+	char *player_quoted;
+
+	player_quoted = _ggz_sql_escape(stats->player);
+
+	snprintf(query, sizeof(query),
+		"UPDATE stats "
+		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, "
+		"rating = %f, ranking = %u, highscore = %li "
+		"WHERE lower(handle) = lower('%s') AND game = '%s'",
+		stats->wins, stats->losses, stats->ties, stats->forfeits,
+		stats->rating, stats->ranking, stats->highest_score,
+		player_quoted, stats->game);
+
+	ggz_free(player_quoted);
+
+	pthread_mutex_lock(&mutex);
+	rc = mysql_query(conn, query);
+	if(!rc){
+		res = mysql_store_result(conn);
+		if (!mysql_num_rows(res)){
+			player_quoted = _ggz_sql_escape(stats->player);
+
+			snprintf(query, sizeof(query),
+				"INSERT INTO stats "
+				"(handle, game, wins, losses, ties, forfeits, rating, ranking, highscore) VALUES "
+				"('%s', '%s', %i, %i, %i, %i, %f, %u, %li)",
+				player_quoted, stats->game,
+				stats->wins, stats->losses, stats->ties, stats->forfeits,
+				stats->rating, stats->ranking, stats->highest_score);
+
+			ggz_free(player_quoted);
+
+			rc = mysql_query(conn, query);
+
+			if(rc){
+				err_msg("couldn't insert stats");
+			}
+			else ret = GGZDB_NO_ERROR;
+		}
+		else ret = GGZDB_NO_ERROR;
+
+		pthread_mutex_unlock(&mutex);
+		mysql_free_result(res);
+	} else {
+		pthread_mutex_unlock(&mutex);
+		err_msg("couldn't update stats");
+		ret = GGZDB_ERR_DB;
+	}
+
+	_ggzdb_stats_match(stats);
+
+	return ret;
 }
 
 GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
@@ -354,8 +408,61 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 
 GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 {
-	/* Not implemented, but do not return error */
-	return GGZDB_NO_ERROR;
+	char query[4096];
+	int rc;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char *number, *playertype;
+	char *player_quoted;
+
+	snprintf(query, sizeof(query),
+		"SELECT MAX(id) FROM matches");
+
+	pthread_mutex_lock(&mutex);
+	rc = mysql_query(conn, query);
+
+	if(rc) {
+		err_msg("couldn't read match");
+		number = NULL;
+	}
+	else {
+		res = mysql_store_result(conn);
+
+		if (mysql_num_rows(res) == 1){
+			row = mysql_fetch_row(res);
+			number = row[0];
+			mysql_free_result(res);
+		} else {
+			pthread_mutex_unlock(&mutex);
+			mysql_free_result(res);
+			return GGZDB_ERR_DB;
+		}
+	}
+
+	playertype = "";
+	if(stats->player_type == GGZ_PLAYER_GUEST) playertype = "guest";
+	else if(stats->player_type == GGZ_PLAYER_NORMAL) playertype = "registered";
+	else if(stats->player_type == GGZ_PLAYER_BOT) playertype = "bot";
+
+	player_quoted = _ggz_sql_escape(stats->player);
+
+	snprintf(query, sizeof(query),
+		"INSERT INTO matchplayers "
+		"(match, handle, playertype) VALUES "
+		"(%s, '%s', '%s')",
+		number, player_quoted, playertype);
+
+	ggz_free(player_quoted);
+
+	rc = mysql_query(conn, query);
+	pthread_mutex_unlock(&mutex);
+
+	if(rc){
+		err_msg("couldn't insert matchplayer");
+		return GGZDB_ERR_DB;
+	}else{
+		return GGZDB_NO_ERROR;
+	}
 }
 
 GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const char *savegame)
@@ -381,7 +488,6 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 
 	ggz_free(winner_quoted);
 
-	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
 	pthread_mutex_unlock(&mutex);
 	if(!rc){
@@ -394,13 +500,71 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 
 GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
 {
-	/* Not implemented, but do not return error */
-	return GGZDB_NO_ERROR;
+	char query[4096];
+	int rc;
+	char *owner_quoted;
+
+	owner_quoted = _ggz_sql_escape(owner);
+
+	snprintf(query, sizeof(query),
+		"INSERT INTO savegames"
+		"(date, game, owner, savegame) VALUES "
+		"(%li, '%s', '%s', '%s')",
+		time(NULL), game, owner, savegame);
+
+	ggz_free(owner_quoted);
+
+	pthread_mutex_lock(&mutex);
+	rc = mysql_query(conn, query);
+	pthread_mutex_unlock(&mutex);
+
+	if(rc){
+		err_msg("couldn't insert savegame");
+		return GGZDB_ERR_DB;
+	} else {
+		return GGZDB_NO_ERROR;
+	}
 }
 
 GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 {
-	/* Do return error here so we can clear out the values! */
-	return GGZDB_ERR_DB;
+	int rc;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char query[4096];
+	char *handle_quoted;
+
+	handle_quoted = _ggz_sql_escape(pe->handle);
+
+	snprintf(query, sizeof(query),
+		 "SELECT "
+		 "id, photo "
+		 "FROM userinfo WHERE lower(handle) = lower('%s')",
+		 handle_quoted);
+
+	ggz_free(handle_quoted);
+
+	pthread_mutex_lock(&mutex);
+	rc = mysql_query(conn, query);
+
+	if(!rc){
+		res = mysql_store_result(conn);
+		pthread_mutex_unlock(&mutex);
+
+		if(mysql_num_rows(res) == 1){
+			row = mysql_fetch_row(res);
+
+			pe->user_id = atol(row[0]);
+			strncpy(pe->photo, row[1], sizeof(pe->photo));
+			mysql_free_result(res);
+			return GGZDB_NO_ERROR;
+		} else	{
+			mysql_free_result(res);
+			return GGZDB_ERR_NOTFOUND;
+		}
+	} else {
+		err_msg("Couldn't lookup player.");
+		return GGZDB_ERR_DB;
+	}
 }
 
