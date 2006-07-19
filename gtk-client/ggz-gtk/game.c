@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 8168 2006-06-12 01:19:58Z jdorje $
+ * $Id: game.c 8373 2006-07-19 11:41:33Z josef $
  *
  * Functions for handling game events
  *
@@ -220,6 +220,8 @@ static GGZHookReturn game_launch_fail(GGZGameEvent id,
 				      const void *user_data)
 {
 	chat_display_local(CHAT_LOCAL_HIGH, NULL, _("Launch failed"));
+
+	launch_dialog_close();
 
 	return GGZ_HOOK_OK;
 }
