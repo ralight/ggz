@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: game.c 8372 2006-07-19 11:40:53Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -439,7 +439,7 @@ static void _ggzcore_game_handle_state(GGZMod * mod, GGZModEvent event,
 		_ggzcore_game_send_player_stats(game);
 		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
 		if (new != GGZMOD_STATE_CONNECTED) {
-			ggz_error_msg("Game changed state from created"
+			ggz_error_msg("Game changed state from created "
 				      "to %d.", new);
 		}
 		break;
@@ -780,6 +780,8 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 		  status);
 
 	if (status < 0) {
+		/* This doesn't have to be a launch error, but may be one */
+		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL, NULL);
 		abort_game(game);
 	}
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: init.c 8372 2006-07-19 11:40:53Z josef $
  *
  * Initialization code
  *
@@ -41,6 +41,7 @@
 
 #include <locale.h>
 #include <libintl.h>
+#include <signal.h>
 
 int ggzcore_init(GGZOptions options)
 {
@@ -55,6 +56,7 @@ int ggzcore_init(GGZOptions options)
 	}
 #endif
 
+	/* This catalog must be preloaded by applications */
 	bindtextdomain("ggzcore", PREFIX "/share/locale");
 
 	/* Initialize various systems */
@@ -69,6 +71,9 @@ int ggzcore_init(GGZOptions options)
 
 	if (options.flags & GGZ_OPT_THREADED_IO)
 		_ggzcore_server_set_threaded_io();
+
+	/* Do not die if child process dies while we're communicating with it */
+	signal(SIGPIPE, SIG_IGN);
 
 	return 0;
 }
