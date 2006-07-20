@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 8370 2006-07-18 15:57:27Z oojah $
+ * $Id: ggzdb_mysql.c 8377 2006-07-20 13:05:10Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -70,7 +70,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 	snprintf(query, sizeof(query), "CREATE TABLE users "
 		"(id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
-		"name varchar(255), email varchar(255), lastlogin int8, perms int8)");
+		"name varchar(255), email varchar(255), lastlogin int8, perms int8, firstlogin int8)");
 
 	rc = mysql_query(conn, query);
 
@@ -115,9 +115,9 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	char query[4096];
 
 	snprintf(query, sizeof(query), "INSERT INTO users "
-		"(handle, password, name, email, lastlogin, perms) VALUES "
-		"('%s', '%s', '%s', '%s', %li, %u)",
-		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
+		"(handle, password, name, email, lastlogin, perms, firstlogin) VALUES "
+		"('%s', '%s', '%s', '%s', %li, %u, %li)",
+		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms, time(NULL));
 
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
