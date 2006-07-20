@@ -10,6 +10,7 @@ check_PROGRAMS = \
 	misc \
 	strcmp \
 	tls \
+	test16 \
 	test64
 
 debugmsg_SOURCES = debugmsg.c
@@ -20,9 +21,10 @@ read_line_SOURCES = read_line.c
 strcmp_SOURCES = strcmp.c
 ggzcommon_SOURCES = ggzcommon.c
 tls_SOURCES = tls.c
+test16_SOURCES = test16.c
 test64_SOURCES = test64.c
 
-TESTS = debugmsg dio cfgtest ggzcommon read_line misc strcmp tls
+TESTS = debugmsg dio cfgtest ggzcommon read_line misc strcmp tls test16 test64
 
 clean-local:
 	-rm -f debug.log

@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 8232 2006-06-20 15:52:20Z jdorje $
+ * $Id: ggz.h 8378 2006-07-20 14:57:48Z oojah $
  * 
  * Header file for ggz components lib
  *
@@ -1690,6 +1690,18 @@ hash_t ggz_hash_create(const char *algo, const char *text);
  *  @return Hash value in a structure
  */
 hash_t ggz_hmac_create(const char *algo, const char *text, const char *secret);
+
+/** @brief Encodes text to base16.
+ *
+ *  Plain text with possibly unsafe characters is converted
+ *  to the base16 (hex) format through this function.
+ *  The returned string is allocated internally and must be freed.
+ *
+ *  @param text Plain text to encode
+ *  @param length Length of the text (which may contain binary characters), in bytes
+ *  @return Base16 representation of the text
+ */
+char *ggz_base16_encode(const char *text, int length);
 
 /** @brief Encodes text to base64.
  *

@@ -2,6 +2,7 @@ noinst_LTLIBRARIES = libggzsecurity.la
 
 libggzsecurity_la_SOURCES = \
 	hashfunc.c hashfunc.h \
+	base16.c base16.h \
 	base64.c base64.h \
 	ggz_tls_gnutls.c \
 	ggz_tls_openssl.c \
