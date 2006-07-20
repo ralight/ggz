@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 8289 2006-06-28 18:47:08Z oojah $
+ * $Id: ggzdb_pgsql.c 8374 2006-07-20 12:44:03Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -208,11 +208,12 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	}
 
 	/* Initialize the database if needed */
+	/* FIXME: this should be read from external schema file with copy-in */
 	if(init)
 	{
 		snprintf(query, sizeof(query), "CREATE TABLE users "
 			"(id serial, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
-			"lastlogin int8, permissions int8)");
+			"lastlogin int8, permissions int8, firstlogin int8)");
 
 		res = PQexec(conn, query);
 
@@ -333,10 +334,10 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	email_quoted = _ggz_sql_escape(pe->email);
 
 	snprintf(query, sizeof(query), "INSERT INTO users "
-		 "(handle, password, name, email, lastlogin, permissions) "
-		 "VALUES ('%s', '%s', '%s', '%s', %li, %u)",
+		 "(handle, password, name, email, lastlogin, permissions, firstlogin) "
+		 "VALUES ('%s', '%s', '%s', '%s', %li, %u, %li)",
 		 handle_quoted, password_quoted, name_quoted, email_quoted,
-		 pe->last_login, pe->perms);
+		 pe->last_login, pe->perms, time(NULL));
 
 	if (handle_quoted)
 		ggz_free(handle_quoted);
