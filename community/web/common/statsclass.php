@@ -82,14 +82,18 @@ class Statistics
 		}
 	}
 
-	function listPlayers($max = 999, $random = false)
+	function listPlayers($max = 999, $random = false, $latest = false)
 	{
 		$database = $this->database;
 
 		if ($random) :
 			$sort = "RANDOM()";
 		else :
-			$sort = "handle ASC";
+			if ($latest) :
+				$sort = "firstlogin DESC";
+			else :
+				$sort = "handle ASC";
+			endif;
 		endif;
 
 		$res = $database->exec("SELECT handle FROM users ORDER BY $sort LIMIT $max");

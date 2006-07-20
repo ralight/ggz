@@ -5,9 +5,9 @@
 	<hr class="leather">
 
 	<div class="menubar">
-		<h1>_(Players)</h1>
+		<h1>_(Players (newest 50))</h1>
 		<div class="menu">
-		<?php $stat->listPlayers(); ?>
+		<?php $stat->listPlayers(50, false, true); ?>
 		</div>
 	</div>
 </div>

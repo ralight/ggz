@@ -102,10 +102,8 @@ endif;
 $ggzuser = $lookup;
 $res = $database->exec("SELECT * FROM users WHERE handle = '$ggzuser'");
 if ($database->numrows($res) == 1) :
-	// FIXME: no firstlogin column yet!
-	//$firstlogin = $database->result($res, $i, "firstlogin");
-	//$veteran = (int)((time() - $firstlogin) / 86400);
-	$veteran = 0;
+	$firstlogin = $database->result($res, $i, "firstlogin");
+	$veteran = (int)((time() - $firstlogin) / 86400);
 
 	$veteranpic = "veteran-level0";
 	$veterantitle = "Newbie";
