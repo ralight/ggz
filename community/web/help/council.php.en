@@ -1,0 +1,51 @@
+<?php include("top.inc"); ?>
+
+<div id="main">
+	<h1>
+		<span class="itemleader">:: </span>
+		Community Council
+		<span class="itemleader"> :: </span>
+	</h1>
+	<div class="text">
+		<div>
+		The Community Council, a group of highly trusted
+		players, explains how to resolve social problems
+		which occur from time to time.
+		</div>
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Actions
+		<span class="itemleader"> ::</span>
+	</h1>
+	<div class="text">
+		The <a href="glossary.php">glossary</a> contains
+		detailed information about the actions which are possible
+		against griefers. Basically, people may be dropped (booted) from
+		the tables if they misbehave. They might also be kicked off the
+		server, or be gagged, that is, prevented from annoying others
+		with chat messages.
+		<br><br>
+		Players can see if a player is trustworthy by checking his
+		veteran status and karma value. The longer a player has been
+		registered, the more accurate the karma value will be. Help
+		by giving friends a good karma and foes a bad karma at the
+		<a href="/karma/">karma page</a>!
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Council authority
+		<span class="itemleader"> ::</span>
+	</h1>
+	<div class="text">
+		When a player misbehaves really badly, the council may ultimately
+		decide to terminate his or her account.
+		Right now, the council is made up of two admin players and one
+		GGZ developer.
+	</div>
+
+</div>
+
+<?php include("bottom.inc"); ?>

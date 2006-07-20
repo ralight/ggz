@@ -16,119 +16,57 @@
 
 	<h1>
 		<span class="itemleader">:: </span>
-		Player trust: Karma and Veteran status
+		Player info, clubs and teams, tournaments
 		<span class="itemleader"> ::</span>
 	</h1>
 	<div class="text">
-		Players advance in their veteran status the longer they've been
-		registered on the site. Being a veteran is an objective measure.
-		In addition, players can rate each other. Any registered player
-		can donate exactly one Karma score to any other player. Karma
-		ranges from 0 (bad) to 10 (very good).
+		A lot of information about players is visible,
+		even more if they chose to reveal their identity.
+		Some symbols exist to make it easy to find
+		players who fit a certain description in the
+		<a href="/db/players/playerfinder.php">player finder</a>.
 		<br><br>
-		<img src="/db/ggzicons/misc/karma_bad.png">
-		Bad karma (0-3), this might be a traitor
-		<br>
-		<img src="/db/ggzicons/misc/karma_medium.png">
-		Medium karma (4-7), an ordinary fellow
-		<br>
-		<img src="/db/ggzicons/misc/karma_good.png">
-		Good karma (8-10), certainly a trusted player
-		<br><br>
-		<img src="/db/ggzicons/misc/veteran-level0.png">
-		Newbie, has registered only recently
-		<br>
-		<img src="/db/ggzicons/misc/veteran-level1.png">
-		Amateur, has joined a few days ago but is probably still learning
-		<br>
-		<img src="/db/ggzicons/misc/veteran-level2.png">
-		Known player, between one and two months
-		<br>
-		<img src="/db/ggzicons/misc/veteran-level3.png">
-		Long-time player, more than two months of experience
-		<br>
-		<img src="/db/ggzicons/misc/veteran-level4.png">
-		Veteran, after half a year of playing on the site
-		<br>
-		<img src="/db/ggzicons/misc/veteran-level5.png">
-		Veteran with honours, registered for more than a full year
+		Learn about all the symbols in the
+		<a href="players.php">player symbols help</a>.
 	</div>
 
 	<h1>
 		<span class="itemleader">:: </span>
-		Teams and Clubs
+		Glossary
 		<span class="itemleader"> ::</span>
 	</h1>
 	<div class="text">
-		Clubs are groups of players who share common goals.
-		Note: On this site, the term 'team' is often used for clubs.
-		Do not worry about this.
-		Clubs can be founded by everyone. There needs to be a leader
-		(or several) as a point of contact. There can also be vice-leaders
-		if players want to assume higher positions.
-		The founder title is by honour, and doesn't indicate any status.
+		The glossary contains information about the
+		terms used throughout this page and during the games.
 		<br><br>
-		<img src="/db/ggzicons/rankings/silver.png">
-		Member
-		<br>
-		<img src="/db/ggzicons/rankings/silvers.png">
-		Founder
-		<br>
-		<img src="/db/ggzicons/rankings/gold.png">
-		Vice leader
-		<br>
-		<img src="/db/ggzicons/rankings/goldd.png">
-		Leader
-		<br>
-		<img src="/db/ggzicons/rankings/golds.png">
-		Leader and founder
+		Read the <a href="glossary.php">Glossary</a>.
 	</div>
 
 	<h1>
 		<span class="itemleader">:: </span>
-		Matches and Tournaments
+		Social conflicts and admin actions
 		<span class="itemleader"> ::</span>
 	</h1>
 	<div class="text">
-		For each game played, one earns a golden coin if the
-		game is won. This is the only reward for regular games.
-		For tournaments, a cup is awarded for each time the
-		player achieves at least the third place.
+		Sometimes, griefers show up and want to disturb others
+		in enjoying their game! We've equipped some trusted
+		players with means to resolve those problems.
 		<br><br>
-		In addition to all those rewards, there are all-time
-		champions for each game type. This is displayed
-		as the player's ranking, with the top three always
-		having a symbolic item.
+		Information about solving social problems is available
+		from the <a href="council.php">Player Council</a>.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Software problems
+		<span class="itemleader"> ::</span>
+	</h1>
+	<div class="text">
+		Cannot get the games to work properly? Some hints are given
+		here. Note that we're all volunteers and thus be gentle
+		when requesting help!
 		<br><br>
-		<img src="/db/ggzicons/rankings/coin-10.png">
-		Golden coins for up to 10 won matches
-		<br>
-		<img src="/db/ggzicons/rankings/coin-50.png">
-		Golden coins for up to 50 won matches
-		<br>
-		<img src="/db/ggzicons/rankings/coin-100.png">
-		Golden coins for up to 100 won matches
-		<br>
-		<img src="/db/ggzicons/rankings/coin-max.png">
-		More than 100 won matches; a true regular!
-		<br><br>
-		<img src="/db/ggzicons/rankings/cupbronze.png">
-		3rd place in a tournament
-		<br>
-		<img src="/db/ggzicons/rankings/cupsilver.png">
-		2nd place in a tournament
-		<br>
-		<img src="/db/ggzicons/rankings/cupgold.png">
-		1st place in a tournament
-		<br><br>
-		<img src="/db/ggzicons/rankings/cupbronzeg.png">
-		3rd rank for a game type
-		<br>
-		<img src="/db/ggzicons/rankings/cupsilverg.png">
-		2nd rank for a game type
-		<br>
-		<img src="/db/ggzicons/rankings/cupgoldg.png">
-		1st rank for a game type
+		<a href="software.php">Software help pages</a>
 	</div>
 
 </div>
