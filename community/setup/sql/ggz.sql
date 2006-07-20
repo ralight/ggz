@@ -8,7 +8,8 @@ CREATE TABLE "users" (
 	"name" character varying(256),
 	"email" character varying(256),
 	"lastlogin" bigint,
-	"permissions" integer
+	"permissions" integer,
+	"firstlogin" bigint
 );
 
 CREATE TABLE "stats" (
