@@ -42,10 +42,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
@@ -233,6 +235,9 @@ public class Net implements Runnable {
                 // Ignore
             } catch (IOException e) {
                 log.warning(e.toString());
+            } catch (RuntimeException e) {
+                log.log(Level.SEVERE, "Error handling element: " + tag, e);
+                throw e;
             }
         }
 
@@ -330,7 +335,7 @@ public class Net implements Runnable {
             // implementation simply did String concatentation but this method
             // ensures we always send valid XML.
             StreamResult streamResult = new StreamResult(this.out);
-            SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory
+            SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory
                     .newInstance();
             // SAX2.0 ContentHandler.
             this.xmlOutput = tf.newTransformerHandler();
@@ -803,12 +808,12 @@ public class Net implements Runnable {
 
         room = this.server.get_cur_room();
 
-        if ("login".equals(action)) {
+        if ("login".equals(action))
             /* Password may have already been updated. */
             this.server.set_login_status(code);
-        } else if ("enter".equals(action)) {
+        else if ("enter".equals(action))
             this.server.set_room_join_status(code);
-        } else if ("launch".equals(action))
+        else if ("launch".equals(action))
             room.set_table_launch_status(code);
         else if ("join".equals(action))
             room.set_table_join_status(code);
@@ -1950,8 +1955,6 @@ public class Net implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
                 this.server.protocol_error(e.toString());
-                this.disconnect();
-                this.server.session_over(this);
             }
         } catch (Exception e) {
             e.printStackTrace();

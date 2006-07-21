@@ -47,14 +47,14 @@ public class PrivateChatDialog extends JFrame {
     private PrivateChatDialog(String recipient) {
         super(recipient + " - Private chat");
         this.recipient = recipient;
-        chatPanel = new ChatPanel(new PrivateChatAction(recipient));
-        getContentPane().add(chatPanel, BorderLayout.CENTER);
-        enableEvents(AWTEvent.WINDOW_EVENT_MASK);
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        this.chatPanel = new ChatPanel(new PrivateChatAction(recipient));
+        this.getContentPane().add(chatPanel, BorderLayout.CENTER);
+        this.enableEvents(AWTEvent.WINDOW_EVENT_MASK);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
     public void dispose() {
-        chatPanel.dispose();
+        this.chatPanel.dispose();
         super.dispose();
     }
 
@@ -64,7 +64,7 @@ public class PrivateChatDialog extends JFrame {
             // No private chat with this player yet.
             dialog = new PrivateChatDialog(otherPlayer);
             dialogs.put(otherPlayer, dialog);
-            dialog.setSize(350, 350);
+            dialog.setSize(400, 350);
             dialog.setVisible(true);
             dialog.chatPanel.textField.requestFocus();
         }
@@ -137,11 +137,11 @@ public class PrivateChatDialog extends JFrame {
         public void server_enter_ok() {
             // Stop listening for chat events in the old room and listen for
             // chat messages in the new room.
-            if (currentRoom != null) {
-                currentRoom.remove_event_hook(this);
+            if (this.currentRoom != null) {
+                this.currentRoom.remove_event_hook(this);
             }
-            currentRoom = server.get_cur_room();
-            currentRoom.add_event_hook(this);
+            this.currentRoom = server.get_cur_room();
+            this.currentRoom.add_event_hook(this);
         }
 
         public void server_list_rooms() {
@@ -212,12 +212,12 @@ public class PrivateChatDialog extends JFrame {
             if (ChatPanel.isIgnored(data.sender)) {
                 return;
             }
-            
+
             // All handlers are called from the socket thread so we need to do
             // this crazy stuff.
-            final PrivateChatDialog dialog = showDialog(data.sender);
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
+                    PrivateChatDialog dialog = showDialog(data.sender);
                     dialog.chatPanel.appendChat(data.type, data.sender,
                             data.message, server.get_handle());
                     dialog.toFront();

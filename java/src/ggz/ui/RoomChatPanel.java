@@ -239,12 +239,12 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             ignoreToggleButton.getAction().setEnabled(true);
 
             Player player = players.getPlayer(selectedRow);
-            friendToggleButton.setSelected(chatPanel
+            friendToggleButton.setSelected(ChatPanel
                     .isFriend(player.get_name()));
             friendToggleButton
                     .setToolTipText(friendToggleButton.isSelected() ? "Remove this player from your friends list."
                             : "Add this player to your friends list.");
-            ignoreToggleButton.setSelected(chatPanel.isIgnored(player
+            ignoreToggleButton.setSelected(ChatPanel.isIgnored(player
                     .get_name()));
             ignoreToggleButton
                     .setToolTipText(ignoreToggleButton.isSelected() ? "Stop ignore messages typed by this player."
@@ -747,8 +747,8 @@ public class RoomChatPanel extends JPanel implements RoomListener,
 
             Player player = (Player) value;
             String name = player.get_name();
-            isFriend = chatPanel.isFriend(name);
-            isIgnored = chatPanel.isIgnored(name);
+            isFriend = ChatPanel.isFriend(name);
+            isIgnored = ChatPanel.isIgnored(name);
             if (isIgnored) {
                 setIcon(IconFactory.getIgnoreIcon());
             } else if (isFriend) {

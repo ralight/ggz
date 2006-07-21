@@ -249,7 +249,8 @@ public class Game implements ModTransactionHandler {
         net.send_table_seat_update(table, seat);
     }
 
-    public void handle_chat(ChatType type, String recipient, String chat) throws IOException {
+    public void handle_chat(ChatType type, String recipient, String chat)
+            throws IOException {
         Room room = this.server.get_cur_room();
 
         room.chat(type, recipient, chat);
@@ -347,22 +348,17 @@ public class Game implements ModTransactionHandler {
      * Make sure ggzd knows we've left the table.
      */
     private void abort_game() throws IOException {
-        // TableLeaveEventData event_data = new TableLeaveEventData(
-        // LeaveType.GGZ_LEAVE_NORMAL, null);
         Room room = server.get_cur_room();
 
-        /*
-         * This would be called automatically later (several times in fact), but
-         * doing it now is safe enough and starts the ball rolling.
-         */
+        // This would be called automatically later (several times in fact),
+        // but doing it now is safe enough and starts the ball rolling.
         this.client.disconnect();
 
-        // This is fired when Net parses the table leave response so don't fire
-        // it prematurely here.
-        // if (room != null) {
-        // room.table_event(RoomEvent.GGZ_TABLE_LEFT, event_data);
-        // }
-
+        // This check doesn't always work due to a race condition where the game
+        // server disconnects us before the core client has received the boot
+        // notification. It's not too bad since the
+        // Room.set_table_leave(LeaveType, String) method handles this
+        // situation.
         if (room != null && server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
             room.leave_table(true);
         }

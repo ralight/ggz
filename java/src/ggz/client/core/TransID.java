@@ -17,7 +17,6 @@
  */
 package ggz.client.core;
 
-import java.util.logging.Logger;
 
 /*
  * Transition IDs for all of the transitions the GGZ state machine makes. These
@@ -89,8 +88,6 @@ public class TransID {
 
     public static final TransID GGZ_TRANS_PROTO_ERROR = new TransID(
             "GGZ_TRANS_PROTO_ERROR");
-
-    private static final Logger log = Logger.getLogger(TransID.class.getName());
 
     private String name;
 
@@ -267,6 +264,12 @@ public class TransID {
             new _State(StateID.GGZ_STATE_LOGGING_OUT, "logging_out",
                     _logging_out_transitions), };
 
+    /**
+     * Gets the next state that results from this transition.
+     * 
+     * @param cur
+     * @return
+     */
     public StateID state_transition(StateID cur) {
         TransID trans = this;
         int i = 0;
@@ -285,12 +288,8 @@ public class TransID {
         }
 
         if (next != cur && next != null) {
-            log.fine("State transition " + __states[cur.ordinal()].name
-                    + " -> " + __states[next.ordinal()].name);
             return next;
         }
-        log.warning("No transitions found TransID=" + this + " Current State="
-                + __states[cur.ordinal()].name);
         return cur;
     }
 }

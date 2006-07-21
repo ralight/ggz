@@ -41,7 +41,7 @@ public class Module {
     /* Native frontend */
     private String frontend;
 
-    /* Hopepage for this module */
+    /* Homepage for this module */
     private String url;
 
     /* Commandline for executing module */
@@ -71,10 +71,10 @@ public class Module {
         _add(new Module("GGZCards-Spades", "0.0.7", "GGZCards", "4", "Author",
                 "Java", "url", "ggz.cards.spades.SpadesGamePanel",
                 "/ggz/ui/images/spades.gif", "help_path"));
-        
+
         // For oojah's server
-        _add(new Module("GGZCards-Spades-Rated", "0.0.7", "GGZCards", "4", "Author",
-                "Java", "url", "ggz.cards.spades.SpadesGamePanel",
+        _add(new Module("GGZCards-Spades-Rated", "0.0.7", "GGZCards", "4",
+                "Author", "Java", "url", "ggz.cards.spades.SpadesGamePanel",
                 "/ggz/ui/images/spades.gif", "help_path"));
 
         _add(new Module("GGZCards-LaPocha", "0.0.7", "GGZCards", "4", "Author",
@@ -109,8 +109,8 @@ public class Module {
     /* Publicly exported functions */
 
     /* This returns the number of registered modules */
-    public static int get_num() {
-        return _get_num();
+    public static int get_num_modules() {
+        return module_list == null ? 0 : module_list.size();
     }
 
     public static int get_num_by_type(GameType type) {
@@ -124,7 +124,41 @@ public class Module {
         if (engine == null)
             return -1;
 
-        return _get_num_by_type(game, engine, version);
+        int numcount = module_list.size();
+        for (int i = 0; i < module_list.size(); i++) {
+            Module module = (Module) module_list.get(i);
+            if (!module.prot_engine.equals(engine)
+                    || !module.prot_version.equals(version)
+                    || !module.get_name().equals(game)) {
+                // game not included in game list
+
+                numcount--;
+            }
+        }
+        // int count, status, i, numcount;
+        // String[] ids;
+        // Module module;
+        //
+        // /* Get total count for this engine (regardless of version) */
+        // status =
+        // ggz_conf_read_list(mod_handle, "Games", engine, &count, &ids);
+        //
+        // if (status < 0)
+        // return 0;
+        //
+        // numcount = count;
+        // for (i = 0; i < count; i++) {
+        // _read(&module, ids[i]);
+        // /* Subtract out modules that aren't the same protocol */
+        // if (ggz_strcmp(engine, module.prot_engine) != 0
+        // || (version
+        // && ggz_strcmp(version, module.prot_version) != 0)
+        // /* || game not included in game list */
+        // )
+        // numcount--;
+        // }
+
+        return numcount;
     }
 
     public static Module get_nth_by_type(GameType type, int index) {
@@ -139,7 +173,52 @@ public class Module {
         if (game == null || engine == null || version == null)
             return null;
 
-        return _get_nth_by_type(game, engine, version, num);
+        Module search = new Module(game, engine, version, "Java");
+        int index = module_list.indexOf(search);
+        return index > -1 ? (Module) module_list.get(index) : null;
+        // int i, total, status, count;
+        // char **ids;
+        // GGZModule *module, *found = NULL;
+        // GGZListEntry *entry;
+        //
+        // status =
+        // ggz_conf_read_list(mod_handle, "Games", engine, &total, &ids);
+        //
+        // ggz_debug(GGZCORE_DBG_MODULE, "Found %d modules matching %s",
+        // total, engine);
+        //
+        // if (status < 0)
+        // return NULL;
+        //
+        // if (num >= total) {
+        // _ggz_free_chars(ids);
+        // return NULL;
+        // }
+        //
+        // count = 0;
+        // for (i = 0; i < total; i++) {
+        // module = _new();
+        // _read(module, ids[i]);
+        // if (ggz_strcmp(version, this.prot_version) == 0) {
+        // /* FIXME: also check to see if 'game' is in supported list */
+        // if (count++ == num) {
+        // /* Now find same module in list */
+        // entry =
+        // ggz_list_search(module_list, module);
+        // found = ggz_list_get_data(entry);
+        // _free(module);
+        // break;
+        // }
+        // }
+        // _free(module);
+        // }
+        //
+        // /* Free the rest of the ggz_conf memory */
+        // _ggz_free_chars(ids);
+        //
+        //    
+        // /* Return found module (if any) */
+        // return found;
     }
 
     /*
@@ -148,55 +227,47 @@ public class Module {
      * that the module can provide to use for representing the game graphically.
      */
     public String get_name() {
-
-        return _get_name();
+        return this.name;
     }
 
     public String get_version() {
-        return _get_version();
+        return this.version;
     }
 
     public String get_prot_engine() {
-
-        return _get_prot_engine();
+        return this.prot_engine;
     }
 
     public String get_prot_version() {
-
-        return _get_prot_version();
+        return this.prot_version;
     }
 
     public String get_author() {
-
-        return _get_author();
+        return this.author;
     }
 
     public String get_frontend() {
-
-        return _get_frontend();
+        return this.frontend;
     }
 
     public String get_url() {
-
-        return _get_url();
+        return this.url;
     }
 
     public String get_icon_path() {
-        return _get_icon_path();
+        return this.icon;
     }
 
     public String get_help_path() {
-
-        return _get_help_path();
+        return this.help;
     }
 
     public String get_class_name() {
-
-        return _get_class_name();
+        return this.class_name;
     }
 
     public ModuleEnvironment get_environment() {
-        return _get_environment();
+        return this.environment;
     }
 
     /* Internal library functions (prototypes in module.h) */
@@ -273,157 +344,12 @@ public class Module {
     //
     // return 0;
     // }
-    private static int _get_num() {
-        return module_list == null ? 0 : module_list.size();
-    }
-
     public static void set_embedded() {
         embedded_module = true;
     }
 
     public static boolean is_embedded() {
         return embedded_module;
-    }
-
-    /*
-     * FIXME: do this right. We should parse through module_list not re-read the
-     * config file
-     */
-    private static int _get_num_by_type(String game, String engine,
-            String version) {
-        int numcount = module_list.size();
-        for (int i = 0; i < module_list.size(); i++) {
-            Module module = (Module) module_list.get(i);
-            if (!module.prot_engine.equals(engine)
-                    || !module.prot_version.equals(version)
-                    || !module.get_name().equals(game)) {
-                // game not included in game list
-
-                numcount--;
-            }
-        }
-        // int count, status, i, numcount;
-        // String[] ids;
-        // Module module;
-        //
-        // /* Get total count for this engine (regardless of version) */
-        // status =
-        // ggz_conf_read_list(mod_handle, "Games", engine, &count, &ids);
-        //
-        // if (status < 0)
-        // return 0;
-        //
-        // numcount = count;
-        // for (i = 0; i < count; i++) {
-        // _read(&module, ids[i]);
-        // /* Subtract out modules that aren't the same protocol */
-        // if (ggz_strcmp(engine, module.prot_engine) != 0
-        // || (version
-        // && ggz_strcmp(version, module.prot_version) != 0)
-        // /* || game not included in game list */
-        // )
-        // numcount--;
-        // }
-
-        return numcount;
-    }
-
-    /*
-     * FIXME: do this right. We should parse through module_list not re-read the
-     * config file
-     */
-    private static Module _get_nth_by_type(String game, String engine,
-            String version, int num) {
-        Module search = new Module(game, engine, version, "Java");
-        int index = module_list.indexOf(search);
-        return index > -1 ? (Module) module_list.get(index) : null;
-        // int i, total, status, count;
-        // char **ids;
-        // GGZModule *module, *found = NULL;
-        // GGZListEntry *entry;
-        //
-        // status =
-        // ggz_conf_read_list(mod_handle, "Games", engine, &total, &ids);
-        //
-        // ggz_debug(GGZCORE_DBG_MODULE, "Found %d modules matching %s",
-        // total, engine);
-        //
-        // if (status < 0)
-        // return NULL;
-        //
-        // if (num >= total) {
-        // _ggz_free_chars(ids);
-        // return NULL;
-        // }
-        //
-        // count = 0;
-        // for (i = 0; i < total; i++) {
-        // module = _new();
-        // _read(module, ids[i]);
-        // if (ggz_strcmp(version, this.prot_version) == 0) {
-        // /* FIXME: also check to see if 'game' is in supported list */
-        // if (count++ == num) {
-        // /* Now find same module in list */
-        // entry =
-        // ggz_list_search(module_list, module);
-        // found = ggz_list_get_data(entry);
-        // _free(module);
-        // break;
-        // }
-        // }
-        // _free(module);
-        // }
-        //
-        // /* Free the rest of the ggz_conf memory */
-        // _ggz_free_chars(ids);
-        //
-        //    
-        // /* Return found module (if any) */
-        // return found;
-    }
-
-    private String _get_name() {
-        return this.name;
-    }
-
-    private String _get_version() {
-        return this.version;
-    }
-
-    private String _get_prot_engine() {
-        return this.prot_engine;
-    }
-
-    private String _get_prot_version() {
-        return this.prot_version;
-    }
-
-    private String _get_author() {
-        return this.author;
-    }
-
-    private String _get_frontend() {
-        return this.frontend;
-    }
-
-    private String _get_url() {
-        return this.url;
-    }
-
-    private String _get_icon_path() {
-        return this.icon;
-    }
-
-    private String _get_help_path() {
-        return this.help;
-    }
-
-    private String _get_class_name() {
-        return this.class_name;
-    }
-
-    private ModuleEnvironment _get_environment() {
-        return this.environment;
     }
 
     public Module(String name, String version, String prot_engine,

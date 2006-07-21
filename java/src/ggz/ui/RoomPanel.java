@@ -63,6 +63,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -88,17 +89,17 @@ public class RoomPanel extends JPanel implements RoomListener {
 
     private JPanel tableButtonPanel;
 
-    private JButton newTableButton;
+    protected JButton newTableButton;
 
     private JPanel headerPanel;
 
     private JPanel headerButtonPanel;
 
-    private JLabel titleLabel;
+    protected JLabel titleLabel;
 
-    private JButton logoutButton;
+    protected JButton logoutButton;
 
-    private JButton lobbyButton;
+    protected JButton lobbyButton;
 
     private RoomChatPanel chatPanel;
 
@@ -504,9 +505,9 @@ public class RoomPanel extends JPanel implements RoomListener {
     }
 
     private class TablePanel extends JPanel {
-        private Table table;
+        protected Table table;
 
-        private JLabel titleLabel;
+        private JLabel tableTitleLabel;
 
         private JPanel playersPanel;
 
@@ -528,10 +529,10 @@ public class RoomPanel extends JPanel implements RoomListener {
             setMaximumSize(new Dimension(200, 200));
             setBackground(SystemColor.text);
             setBorder(BorderFactory.createRaisedBevelBorder());
-            titleLabel = new JLabel("Qwerty");
-            titleLabel.setVerticalAlignment(JLabel.TOP);
-            titleLabel.setFont(getFont().deriveFont(Font.PLAIN));
-            titleLabel.setPreferredSize(new Dimension(200, titleLabel
+            tableTitleLabel = new JLabel("Qwerty");
+            tableTitleLabel.setVerticalAlignment(SwingConstants.TOP);
+            tableTitleLabel.setFont(getFont().deriveFont(Font.PLAIN));
+            tableTitleLabel.setPreferredSize(new Dimension(200, tableTitleLabel
                     .getPreferredSize().height * 3));
             playersPanel = new JPanel(new BorderLayout());
             playersPanel.setOpaque(false);
@@ -541,7 +542,7 @@ public class RoomPanel extends JPanel implements RoomListener {
                 spectatePanel = new JPanel(new BorderLayout(0, 0));
                 spectatePanel.setOpaque(false);
                 spectatorsLabel = new JLabel("Qwerty");
-                spectatorsLabel.setVerticalAlignment(JLabel.TOP);
+                spectatorsLabel.setVerticalAlignment(SwingConstants.TOP);
                 spectatorsLabel.setFont(spectatorsLabel.getFont().deriveFont(
                         Font.PLAIN));
                 spectatorsLabel.setBackground(SystemColor.text);
@@ -555,14 +556,14 @@ public class RoomPanel extends JPanel implements RoomListener {
                 spectatePanel.add(spectatorsLabel, BorderLayout.CENTER);
                 spectatePanel.add(layout, BorderLayout.EAST);
             }
-            add(titleLabel, BorderLayout.NORTH);
+            add(tableTitleLabel, BorderLayout.NORTH);
             add(seatsPanel, BorderLayout.CENTER);
             add(spectatePanel, BorderLayout.SOUTH);
             refresh();
         }
 
         protected void refresh() {
-            titleLabel.setText(getTitleHTML());
+            tableTitleLabel.setText(getTitleHTML());
             refreshSeats();
             if (room.get_gametype().get_spectators_allowed()) {
                 refreshSpectators();
@@ -835,8 +836,8 @@ public class RoomPanel extends JPanel implements RoomListener {
             int ncomponents = getComponentCount();
             int componentIndex = 0;
             for (; componentIndex < ncomponents; componentIndex++) {
-                TablePanel tablePanel = (TablePanel) getComponent(componentIndex);
-                if (table.get_id() < tablePanel.table.get_id()) {
+                TablePanel panel = (TablePanel) getComponent(componentIndex);
+                if (table.get_id() < panel.table.get_id()) {
                     add(new TablePanel(table), componentIndex);
                     return;
                 }

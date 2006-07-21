@@ -312,10 +312,14 @@ public class LoginPanel extends JPanel {
 
     public void resetLogin() {
         setAllEnabled(true);
-        handleTextField.selectAll();
-        handleTextField.requestFocus();
         passwordField.setText(null);
         confirmPasswordField.setText(null);
+        if (passwordField.isShowing()) {
+            passwordField.requestFocus();
+        } else {
+            handleTextField.selectAll();
+            handleTextField.requestFocus();
+        }
     }
 
     private void setAllEnabled(boolean enabled) {

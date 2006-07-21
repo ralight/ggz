@@ -214,27 +214,20 @@ public class Server {
     }
 
     public void connect() {
-        if (this.net != null) {
-            if (this.state == StateID.GGZ_STATE_OFFLINE
-                    || this.state == StateID.GGZ_STATE_RECONNECTING) {
-                String errmsg;
-
-                change_state(TransID.GGZ_TRANS_CONN_TRY);
-                try {
-                    this.net.connect();
-                    event(ServerEvent.GGZ_CONNECTED, null);
-                } catch (Throwable e) {
-                    change_state(TransID.GGZ_TRANS_CONN_FAIL);
-                    errmsg = e.toString();
-                    event(ServerEvent.GGZ_CONNECT_FAIL, errmsg);
-                }
-
-            } else {
-                throw new IllegalStateException(this.state.toString());
-            }
-        } else {
+        if (this.net == null)
             throw new IllegalStateException("net is null");
+
+        check_state(TransID.GGZ_TRANS_CONN_TRY);
+
+        change_state(TransID.GGZ_TRANS_CONN_TRY);
+        try {
+            this.net.connect();
+            event(ServerEvent.GGZ_CONNECTED, null);
+        } catch (Throwable e) {
+            change_state(TransID.GGZ_TRANS_CONN_FAIL);
+            event(ServerEvent.GGZ_CONNECT_FAIL, e.toString());
         }
+
     }
 
     public void create_channel() {
@@ -266,10 +259,11 @@ public class Server {
         if (this.handle == null)
             throw new IllegalStateException("handle has not been set yet");
 
-        if (this.state != StateID.GGZ_STATE_ONLINE)
-            throw new IllegalStateException(
-                    "Attempt to logon before server is online, call connect()"
-                            + " first and then wait for server_negotiate()");
+        // if (this.state != StateID.GGZ_STATE_ONLINE)
+        // throw new IllegalStateException(
+        // "Attempt to logon before server is online, call connect()"
+        // + " first and then wait for server_negotiate()");
+        check_state(TransID.GGZ_TRANS_LOGIN_TRY);
 
         if (this.login_type == LoginType.GGZ_LOGIN && this.password == null)
             throw new IllegalStateException("password has not bee set yet");
@@ -305,9 +299,8 @@ public class Server {
     }
 
     public void join_room(int room_num) throws IOException {
-        /* FIXME: check validity of this action */
-        if ((room_num < get_num_rooms())
-                && (this.state == StateID.GGZ_STATE_IN_ROOM || this.state == StateID.GGZ_STATE_LOGGED_IN)) {
+        check_state(TransID.GGZ_TRANS_ENTER_TRY);
+        if (room_num < get_num_rooms()) {
             int room_id;
             Room room_to_join;
 
@@ -321,20 +314,15 @@ public class Server {
             this.new_room = room_to_join;
 
             change_state(TransID.GGZ_TRANS_ENTER_TRY);
-
         }
     }
 
     public void logout() throws IOException {
-        if (this.state != StateID.GGZ_STATE_OFFLINE
-                && this.state != StateID.GGZ_STATE_RECONNECTING
-                && this.state != StateID.GGZ_STATE_LOGGING_OUT) {
-            log.fine("Logging out");
-            change_state(TransID.GGZ_TRANS_LOGOUT_TRY);
-            net.send_logout();
-        } else {
-            throw new IllegalStateException(this.state.toString());
-        }
+        check_state(TransID.GGZ_TRANS_LOGOUT_TRY);
+
+        log.fine("Logging out");
+        change_state(TransID.GGZ_TRANS_LOGOUT_TRY);
+        net.send_logout();
     }
 
     void disconnect() {
@@ -501,6 +489,9 @@ public class Server {
     void set_login_status(ClientReqError status) {
         log.fine("Status of login: " + status);
 
+        check_state(new TransID[] { TransID.GGZ_TRANS_LOGIN_OK,
+                TransID.GGZ_TRANS_LOGIN_FAIL });
+
         if (status == ClientReqError.E_OK) {
             change_state(TransID.GGZ_TRANS_LOGIN_OK);
             event(ServerEvent.GGZ_LOGGED_IN, null);
@@ -546,6 +537,8 @@ public class Server {
     }
 
     void set_room_join_status(ClientReqError status) {
+        check_state(new TransID[] { TransID.GGZ_TRANS_ENTER_OK,
+                TransID.GGZ_TRANS_ENTER_FAIL });
         if (status == ClientReqError.E_OK) {
             set_cur_room(this.new_room);
             change_state(TransID.GGZ_TRANS_ENTER_OK);
@@ -555,7 +548,7 @@ public class Server {
 
             if (status == ClientReqError.E_ROOM_FULL) {
                 error.message = MessageFormat.format(messages
-                        .getString("Server.ClientReqError.RoomFull"),
+                        .getString("Server.RoomJoinError.RoomFull"),
                         new Object[] { this.new_room.get_name() });
             } else if (status == ClientReqError.E_AT_TABLE) {
                 error.message = messages
@@ -577,11 +570,17 @@ public class Server {
     }
 
     void set_table_launching() {
+        check_state(TransID.GGZ_TRANS_LAUNCH_TRY);
         change_state(TransID.GGZ_TRANS_LAUNCH_TRY);
     }
 
     void set_table_joining() {
+        check_state(TransID.GGZ_TRANS_JOIN_TRY);
         change_state(TransID.GGZ_TRANS_JOIN_TRY);
+    }
+
+    void check_table_leaving_state() {
+        check_state(TransID.GGZ_TRANS_LEAVE_TRY);
     }
 
     void set_table_leaving() {
@@ -589,26 +588,33 @@ public class Server {
     }
 
     void set_table_launch_status(ClientReqError status) {
-        if (status == ClientReqError.E_OK)
+        if (status == ClientReqError.E_OK) {
+            check_state(TransID.GGZ_TRANS_LAUNCH_OK);
             change_state(TransID.GGZ_TRANS_LAUNCH_OK);
-        else
+        } else {
+            check_state(TransID.GGZ_TRANS_LAUNCH_FAIL);
             change_state(TransID.GGZ_TRANS_LAUNCH_FAIL);
+        }
     }
 
     void set_table_join_status(ClientReqError status) {
-        if (status == ClientReqError.E_OK)
+        if (status == ClientReqError.E_OK) {
+            check_state(TransID.GGZ_TRANS_JOIN_OK);
             change_state(TransID.GGZ_TRANS_JOIN_OK);
-        else
+        } else {
+            check_state(TransID.GGZ_TRANS_JOIN_FAIL);
             change_state(TransID.GGZ_TRANS_JOIN_FAIL);
-
+        }
     }
 
     void set_table_leave_status(ClientReqError status) {
-        if (status == ClientReqError.E_OK)
+        if (status == ClientReqError.E_OK) {
+            check_state(TransID.GGZ_TRANS_LEAVE_OK);
             change_state(TransID.GGZ_TRANS_LEAVE_OK);
-        else
+        } else {
+            check_state(TransID.GGZ_TRANS_LEAVE_FAIL);
             change_state(TransID.GGZ_TRANS_LEAVE_FAIL);
-
+        }
     }
 
     void session_over(Net source) {
@@ -621,6 +627,7 @@ public class Server {
                 event(ServerEvent.GGZ_CHANNEL_READY, null);
             } else {
                 /* Server is ending session */
+                check_state(TransID.GGZ_TRANS_LOGOUT_OK);
                 source.disconnect();
                 clear();
                 change_state(TransID.GGZ_TRANS_LOGOUT_OK);
@@ -628,6 +635,7 @@ public class Server {
             }
         } else {
             /* Channel (requested by ggzmod) is ready! */
+            check_state(TransID.GGZ_TRANS_LOGOUT_OK);
             change_state(TransID.GGZ_TRANS_LOGOUT_OK);
         }
     }
@@ -688,19 +696,20 @@ public class Server {
         this.current_game = null;
         this.gametypes = null;
 
-        /* Don't remove listeners.
-        ServerListener[] listenerArray = (ServerListener[]) event_hooks.listeners
-                .getListeners(ServerListener.class);
-        for (int i = 0; i < listenerArray.length; i++) {
-            ServerListener listener = listenerArray[i];
-            event_hooks.removeServerListener(listener);
-        }
-        */
+        /*
+         * Don't remove listeners. ServerListener[] listenerArray =
+         * (ServerListener[]) event_hooks.listeners
+         * .getListeners(ServerListener.class); for (int i = 0; i <
+         * listenerArray.length; i++) { ServerListener listener =
+         * listenerArray[i]; event_hooks.removeServerListener(listener); }
+         */
     }
 
     /* Static functions internal to this file */
 
     void main_negotiate_status(ClientReqError status) {
+        check_state(new TransID[] { TransID.GGZ_TRANS_CONN_OK,
+                TransID.GGZ_TRANS_CONN_FAIL });
         if (status == ClientReqError.E_OK) {
             change_state(TransID.GGZ_TRANS_CONN_OK);
             event(ServerEvent.GGZ_NEGOTIATED, null);
@@ -771,6 +780,24 @@ public class Server {
     // }
     // }
 
+    /**
+     * Checks that the server is in a valid state to perform any of the given
+     * transitions. This method is intended as a guard in methods that change
+     * state to prevent them performing an action that then leaves the server in
+     * an invalid state.
+     */
+    private void check_state(TransID trans) {
+        if (this.state == trans.state_transition(this.state)) {
+            throw new IllegalStateException(this.state.toString());
+        }
+    }
+
+    private void check_state(TransID[] trans) {
+        for (int i = 0; i < trans.length; i++) {
+            check_state(trans[i]);
+        }
+    }
+
     void change_state(TransID trans) {
         String host;
         int port;
@@ -797,8 +824,16 @@ public class Server {
             }
         }
 
-        this.state = trans.state_transition(this.state);
-        event(ServerEvent.GGZ_STATE_CHANGE, null);
+        StateID nextState = trans.state_transition(this.state);
+        if (nextState == this.state) {
+            log.warning("No transitions found TransID=" + trans
+                    + " Current State=" + this.state);
+
+        } else {
+            log.fine("State transition " + this.state + " -> " + nextState);
+            this.state = nextState;
+            event(ServerEvent.GGZ_STATE_CHANGE, null);
+        }
     }
 
     void event(ServerEvent id, Object data) {
@@ -873,9 +908,12 @@ public class Server {
 
     void protocol_error(String message) {
         log.fine("Protocol error: disconnecting");
-        net.disconnect();
+        this.net.disconnect();
         change_state(TransID.GGZ_TRANS_PROTO_ERROR);
         event(ServerEvent.GGZ_PROTOCOL_ERROR, message);
+        // We're now also logged out.
+        clear();
+        event(ServerEvent.GGZ_LOGOUT, null);
     }
 
     static void set_reconnect() {

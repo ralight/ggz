@@ -202,7 +202,7 @@ public class GGZPreferences {
     }
 
     public static Style getChatStyleFriend() {
-        return getStyle(CHAT_STYLE_FRIEND, null, -1, Color.GREEN);
+        return getStyle(CHAT_STYLE_FRIEND, null, -1, Color.GREEN.darker());
     }
 
     public static Style getChatStyleInfo() {

@@ -8,9 +8,10 @@ public class ServerTest implements ServerListener {
     /**
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Server server = new Server("oojah.dyndns.org", 5688, false);
         server.add_event_hook(new ServerTest(server));
+        server.logout();
         server.connect();
     }
 
@@ -20,7 +21,6 @@ public class ServerTest implements ServerListener {
 
     public void server_channel_connected() {
         // TODO Auto-generated method stub
-
     }
 
     public void server_channel_fail(String error) {

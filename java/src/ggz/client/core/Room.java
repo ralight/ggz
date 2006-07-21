@@ -247,8 +247,9 @@ public class Room {
              * Make sure we're actually in a room.
              */
             if (this.server.get_state() != StateID.GGZ_STATE_IN_ROOM) {
-                throw new IllegalStateException("Server is not in state: "
-                        + StateID.GGZ_STATE_IN_ROOM);
+                throw new IllegalStateException("Expected "
+                        + StateID.GGZ_STATE_IN_ROOM + " but was "
+                        + this.server.get_state());
             }
             if (game == null) {
                 throw new IllegalStateException(
@@ -313,6 +314,8 @@ public class Room {
     public void leave_table(boolean force) throws IOException {
         if (this.server == null)
             throw new IllegalStateException("server is null");
+
+        this.server.check_table_leaving_state();
         _leave_table(force);
     }
 
@@ -633,8 +636,17 @@ public class Room {
 
     void set_table_leave(LeaveType reason, String player) {
         TableLeaveEventData event_data = new TableLeaveEventData(reason, player);
-        log.fine("Player left table: " + reason.toString() + " (" + player
-                + ").");
+        // If we have been booted from a table then there is a chance that the
+        // Game has sent a leave request to the server before we got the boot
+        // message from the server so only process the leave request if it's a
+        // boot or if we the server is in a "leave try" state and the reason is
+        // normal. This means we won't catch some illegal state transitions but
+        // if there are no bugs then there won't be any.
+        StateID state = this.server.get_state();
+        if (reason == LeaveType.GGZ_LEAVE_NORMAL
+                && state != StateID.GGZ_STATE_LEAVING_TABLE)
+            return;
+        log.fine("Player left table: " + reason.toString() + " by " + player);
         this.server.set_table_leave_status(ClientReqError.E_OK);
         event(RoomEvent.GGZ_TABLE_LEFT, event_data);
     }
