@@ -37,6 +37,6 @@ latest_forumposts();
 <?php
 include_once(Config::gettheme("mundomap.map"));
 ?>
-		<a href="/map/"><img src="<?php Config::theme("mundomap.png"); ?>" usemap="#ggzmap" border="0"></a>
+		<a href="/map/"><img src="<?php Config::theme("mundomap.png"); ?>" usemap="#ggzmap" border="0" alt="world map"></a>
 	</div>
 </div>

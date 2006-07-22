@@ -25,7 +25,7 @@
 <?php
 include_once("map/gencoords.php");
 ?>
-	<img src="genmap.php" usemap="#ggzmap" border="0">
+	<img src="genmap.php" usemap="#ggzmap" border="0" alt="world map">
 	</div>
 </div>
 
