@@ -24,7 +24,7 @@
 			<sequence count="2">
 				<data name="assign" type="byte"/>
 				<eval>
-					<condition name="assign" result="ggz_seat_player"/>
+					<condition name="assign" result="ggz:seat_player"/>
 					<data name="name" type="string"/>
 				</eval>
 			</sequence>

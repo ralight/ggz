@@ -29,8 +29,8 @@
 			<sequence count="2">
 				<data name="seattmp" type="int"/>
 				<eval>
-					<condition name="seat" result="ggz_seat_player"/>
-					<condition name="seat" result="ggz_seat_bot"/>
+					<condition name="seat" result="ggz:seat_player"/>
+					<condition name="seat" result="ggz:seat_bot"/>
 					<data name="player" type="string"/>
 				</eval>
 			</sequence>
