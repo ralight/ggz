@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 8394 2006-07-22 22:33:39Z oojah $
+ * $Id: ggzdb.c 8395 2006-07-22 22:51:54Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -400,10 +400,10 @@ int ggzdb_compare_password(const char *input, const char *password)
 		}else{
 			password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
 		}
+		if(hash.hash)
+			free(hash.hash);
 		if(!password_enc) return -1;
 		if(!strcmp(password_enc, password)) ret = 1;
-		/* FIXME - I get segfaults unless I comment this line. It needs checking --ral
-		free(hash.hash); */
 		free(password_enc);
 		return ret;
 	}
