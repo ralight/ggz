@@ -1,0 +1,100 @@
+Index: ggzd/ggzd/database/ggzdb_mysql.c
+===================================================================
+--- ggzd/ggzd/database/ggzdb_mysql.c	(revision 8394)
++++ ggzd/ggzd/database/ggzdb_mysql.c	(working copy)
+@@ -69,8 +69,8 @@
+ 	}
+ 
+ 	snprintf(query, sizeof(query), "CREATE TABLE users "
+-		"(id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
+-		"name varchar(255), email varchar(255), lastlogin int8, perms int8, firstlogin int8)");
++		"(user_id int4 AUTO_INCREMENT PRIMARY KEY, username varchar(255), user_password varchar(255), "
++		"realname varchar(255), user_email varchar(255), user_lastvisit int8, perms int8, user_regdate int8)");
+ 
+ 	rc = mysql_query(conn, query);
+ 
+@@ -115,7 +115,7 @@
+ 	char query[4096];
+ 
+ 	snprintf(query, sizeof(query), "INSERT INTO users "
+-		"(handle, password, name, email, lastlogin, perms, firstlogin) VALUES "
++		"(username, user_password, realname, user_email, user_lastvisit, perms, user_regdate) VALUES "
+ 		"('%s', '%s', '%s', '%s', %li, %u, %li)",
+ 		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms, time(NULL));
+ 
+@@ -142,8 +142,8 @@
+ 	char query[4096];
+ 
+ 	snprintf(query, sizeof(query), "SELECT "
+-		"password, name, email, lastlogin, perms FROM users WHERE "
+-		"handle = '%s'",
++		"user_password, realname, user_email, user_lastvisit, perms FROM users WHERE "
++		"username = '%s'",
+ 		pe->handle);
+ 
+ 	pthread_mutex_lock(&mutex);
+@@ -183,8 +183,8 @@
+ 	char query[4096];
+ 
+ 	snprintf(query, sizeof(query), "UPDATE users SET "
+-		"password = '%s', name = '%s', email = '%s', lastlogin = %li, perms = %u WHERE "
+-		"handle = '%s'",
++		"user_password = '%s', realname = '%s', user_email = '%s', user_lastvisit = %li, perms = %u WHERE "
++		"username = '%s'",
+ 		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+ 
+ 	pthread_mutex_lock(&mutex);
+@@ -216,7 +216,7 @@
+ 	}
+ 
+ 	snprintf(query, sizeof(query), "SELECT "
+-		"id, handle, password, name, email, lastlogin, perms FROM users");
++		"user_id, username, user_password, realname, user_email, user_lastvisit, perms FROM users");
+ 	result = mysql_query(conn, query);
+ 
+ 	if (!result) {
+@@ -313,7 +313,7 @@
+ 		"UPDATE stats "
+ 		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, "
+ 		"rating = %f, ranking = %u, highscore = %li "
+-		"WHERE lower(handle) = lower('%s') AND game = '%s'",
++		"WHERE lower(username) = lower('%s') AND game = '%s'",
+ 		stats->wins, stats->losses, stats->ties, stats->forfeits,
+ 		stats->rating, stats->ranking, stats->highest_score,
+ 		player_quoted, stats->game);
+@@ -329,7 +329,7 @@
+ 
+ 			snprintf(query, sizeof(query),
+ 				"INSERT INTO stats "
+-				"(handle, game, wins, losses, ties, forfeits, rating, ranking, highscore) VALUES "
++				"(username, game, wins, losses, ties, forfeits, rating, ranking, highscore) VALUES "
+ 				"('%s', '%s', %i, %i, %i, %i, %f, %u, %li)",
+ 				player_quoted, stats->game,
+ 				stats->wins, stats->losses, stats->ties, stats->forfeits,
+@@ -372,7 +372,7 @@
+ 	snprintf(query, sizeof(query),
+ 			"SELECT "
+ 			"`wins`,`losses`,`ties`,`forfeits`,`rating`,`ranking`,`highscore` "
+-			"FROM `stats` WHERE LOWER(`handle`)=LOWER('%s') AND `game`='%s'",
++			"FROM `stats` WHERE LOWER(`username`)=LOWER('%s') AND `game`='%s'",
+ 			player_quoted, stats->game);
+ 	ggz_free(player_quoted);
+ 
+@@ -448,7 +448,7 @@
+ 
+ 	snprintf(query, sizeof(query),
+ 		"INSERT INTO matchplayers "
+-		"(match, handle, playertype) VALUES "
++		"(match, username, playertype) VALUES "
+ 		"(%s, '%s', '%s')",
+ 		number, player_quoted, playertype);
+ 
+@@ -539,7 +539,7 @@
+ 	snprintf(query, sizeof(query),
+ 		 "SELECT "
+ 		 "id, photo "
+-		 "FROM userinfo WHERE lower(handle) = lower('%s')",
++		 "FROM userinfo WHERE lower(username) = lower('%s')",
+ 		 handle_quoted);
+ 
+ 	ggz_free(handle_quoted);
