@@ -87,7 +87,6 @@ public class Mod implements ModGGZ, ModGame {
 		this.my_seat_num = seat_num;
 
 		if (this.state != ModState.GGZMOD_STATE_CREATED) {
-			// _io_ggz_send_player(this.fd, name, is_spectator, seat_num);
 			if (ehandler != null) {
 				ehandler.handle_player(name, is_spectator, seat_num);
 			}
@@ -139,25 +138,6 @@ public class Mod implements ModGGZ, ModGame {
         ModEventHandler game = (ModEventHandler) c.newInstance();
         game.init(this);
 		send_game_launch();
-		// if (ggzmod->argv) {
-		// if (game_fork(ggzmod) < 0) {
-		// _ggzmod_ggz_error(ggzmod, "Error: table fork failed");
-		// return -1;
-		// }
-		// } else {
-		// ggz_debug("GGZMOD", "Running embedded game (no fork)");
-		// if (game_embedded(ggzmod) < 0) {
-		// _ggzmod_ggz_error(ggzmod, "Error: embedded table failed");
-		// return -1;
-		// }
-		// }
-
-		// if (send_game_launch(ggzmod) < 0) {
-		// _ggzmod_ggz_error(ggzmod, "Error sending launch to game");
-		// return -1;
-		// }
-		//        
-		// return 0;
 	}
 
 	public void disconnect() {
@@ -166,10 +146,6 @@ public class Mod implements ModGGZ, ModGame {
 	}
 
 	public void inform_chat(String player, String msg) {
-		// if (_io_ggz_send_msg_chat(ggzmod->fd, player, msg) < 0) {
-		// return -1;
-		// }
-		// return 0;
 		ehandler.handle_chat(player, msg);
 	}
 
@@ -203,8 +179,6 @@ public class Mod implements ModGGZ, ModGame {
 
 		if (this.state != ModState.GGZMOD_STATE_CREATED) {
 			ehandler.handle_seat(seat);
-			// if (_io_ggz_send_seat(this.fd, seat) < 0)
-			// _error("Error writing to game");
 		}
 	}
 
@@ -220,9 +194,6 @@ public class Mod implements ModGGZ, ModGame {
 			if (old_seat == null
 					|| !old_seat.get_name().equals(seat.get_name())) {
 				ehandler.handle_spectator_seat(seat);
-				// _io_ggz_send_spectator_seat(ggzmod->fd, seat) < 0) {
-				// _ggzmod_ggz_error(ggzmod, "Error writing to game");
-				// return -4;
 			}
 		}
 
@@ -313,8 +284,8 @@ public class Mod implements ModGGZ, ModGame {
 
 	public void set_state(ModState state) throws IOException {
 		ModState old_state = this.state;
-		if (state == this.state)
-			return; /* Is this an error? */
+//		if (state == this.state)
+//			return; /* Is this an error? */
 
 		/*
 		 * The callback function retrieves the state from get_state. It could
@@ -335,8 +306,6 @@ public class Mod implements ModGGZ, ModGame {
 	}
 
 	public void set_info(int num, List infos) {
-
-		// _io_ggz_send_msg_info(ggzmod->fd, num, infos);
 		ehandler.handle_info(num, infos);
 	}
 

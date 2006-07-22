@@ -70,6 +70,13 @@ public class ModState {
     public static final ModState GGZMOD_STATE_PLAYING = new ModState();
 
     /**
+     * Player has requested to leave the game. This state is entered when the
+     * player chooses to leave the game. This state will never be entered if the
+     * server removes the player from the game for any reason.
+     */
+    public static final ModState GGZMOD_STATE_LEAVING = new ModState();
+
+    /**
      * @brief Done state. Once the game client is done running, ggzmod_set_state
      *        should be called to set the state to done. At this point nothing
      *        "new" can happen. The state cannot be changed again after this.

@@ -593,6 +593,9 @@ public class Server {
             change_state(TransID.GGZ_TRANS_LAUNCH_OK);
         } else {
             check_state(TransID.GGZ_TRANS_LAUNCH_FAIL);
+            // If all is well this shouldn't be necessary but we do it just to
+            // be sure.
+            this.set_cur_game(null);
             change_state(TransID.GGZ_TRANS_LAUNCH_FAIL);
         }
     }
@@ -603,6 +606,9 @@ public class Server {
             change_state(TransID.GGZ_TRANS_JOIN_OK);
         } else {
             check_state(TransID.GGZ_TRANS_JOIN_FAIL);
+            // If all is well this shouldn't be necessary but we do it just to
+            // be sure.
+            this.set_cur_game(null);
             change_state(TransID.GGZ_TRANS_JOIN_FAIL);
         }
     }
@@ -610,6 +616,9 @@ public class Server {
     void set_table_leave_status(ClientReqError status) {
         if (status == ClientReqError.E_OK) {
             check_state(TransID.GGZ_TRANS_LEAVE_OK);
+            // If all is well this shouldn't be necessary but we do it just to
+            // be sure.
+            this.set_cur_game(null);
             change_state(TransID.GGZ_TRANS_LEAVE_OK);
         } else {
             check_state(TransID.GGZ_TRANS_LEAVE_FAIL);

@@ -163,14 +163,17 @@ public class Game implements ModTransactionHandler {
             log.fine("game playing");
             event(GameEvent.GGZ_GAME_PLAYING, null);
             if (newState != ModState.GGZMOD_STATE_WAITING
-                    && newState != ModState.GGZMOD_STATE_PLAYING) {
+                    && newState != ModState.GGZMOD_STATE_PLAYING
+                    && newState != ModState.GGZMOD_STATE_LEAVING) {
                 log.severe("Game changed state from connected to " + newState);
                 throw new IllegalStateException(
                         "New state != GGZMOD_STATE_WAITING or GGZMOD_STATE_PLAYING");
             }
         }
 
-        if (newState == ModState.GGZMOD_STATE_DONE) {
+        if (newState == ModState.GGZMOD_STATE_LEAVING) {
+            leave_game();
+        } else if (newState == ModState.GGZMOD_STATE_DONE) {
             abort_game();
         } else if (newState == ModState.GGZMOD_STATE_CREATED) {
             /*
@@ -343,25 +346,22 @@ public class Game implements ModTransactionHandler {
         return this.table_id;
     }
 
+    private void leave_game() throws IOException {
+        Room room = this.server.get_cur_room();
+        if (room != null
+                && this.server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
+            room.leave_table(true);
+        }
+    }
+
     /*
      * Called when the game client fails. Most likely the user has just exited.
      * Make sure ggzd knows we've left the table.
      */
     private void abort_game() throws IOException {
-        Room room = server.get_cur_room();
-
         // This would be called automatically later (several times in fact),
         // but doing it now is safe enough and starts the ball rolling.
         this.client.disconnect();
-
-        // This check doesn't always work due to a race condition where the game
-        // server disconnects us before the core client has received the boot
-        // notification. It's not too bad since the
-        // Room.set_table_leave(LeaveType, String) method handles this
-        // situation.
-        if (room != null && server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
-            room.leave_table(true);
-        }
 
         server.set_cur_game(null);
     }

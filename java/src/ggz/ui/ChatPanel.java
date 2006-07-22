@@ -289,42 +289,51 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         do {
             Style emoticon = null;
             String nextTok = null;
-            if ((":".equals(tok) || ";".equals(tok)) && parser.hasMoreTokens()) {
-                // Possible emoticon.
+            if (parser.hasMoreTokens()) {
                 nextTok = parser.nextToken();
                 char ch = nextTok.charAt(0);
-                switch (ch) {
-                case ')':
-                    // Smile or Wink.
-                    emoticon = ":".equals(tok) ? doc.getStyle("emoticon-smile")
-                            : doc.getStyle("emoticon-wink");
-                    tok += ch;
-                    break;
-                case '(':
-                    // Unhappy.
-                    emoticon = doc.getStyle("emoticon-unhappy");
-                    tok += ch;
-                    break;
-                case 'D':
-                    // Grin.
-                    emoticon = doc.getStyle("emoticon-grin");
-                    tok += ch;
-                    break;
-                case '@':
-                    // Evil Grin.
-                    emoticon = doc.getStyle("emoticon-evilgrin");
-                    tok += ch;
-                    break;
-                case 'p':
-                case 'P':
-                    // Tongue.
-                    emoticon = doc.getStyle("emoticon-tongue");
-                    tok += ch;
-                    break;
-                case 'O': // Surprised.
-                    emoticon = doc.getStyle("emoticon-surprised");
-                    tok += ch;
-                    break;
+                if (":".equals(tok)) {
+                    // Possible emoticon.
+                    switch (ch) {
+                    case ')':
+                        // Smile
+                        emoticon = doc.getStyle("emoticon-smile");
+                        tok += ch;
+                        break;
+                    case '(':
+                        // Unhappy.
+                        emoticon = doc.getStyle("emoticon-unhappy");
+                        tok += ch;
+                        break;
+                    case 'D':
+                        // Grin.
+                        emoticon = doc.getStyle("emoticon-grin");
+                        tok += ch;
+                        break;
+                    case '@':
+                        // Evil Grin.
+                        emoticon = doc.getStyle("emoticon-evilgrin");
+                        tok += ch;
+                        break;
+                    case 'p':
+                    case 'P':
+                        // Tongue.
+                        emoticon = doc.getStyle("emoticon-tongue");
+                        tok += ch;
+                        break;
+                    case 'O': // Surprised.
+                        emoticon = doc.getStyle("emoticon-surprised");
+                        tok += ch;
+                        break;
+                    }
+                } else if (";".equals(tok)) {
+                    switch (ch) {
+                    case ')':
+                        // Wink.
+                        emoticon = doc.getStyle("emoticon-wink");
+                        tok += ch;
+                        break;
+                    }
                 }
             }
 

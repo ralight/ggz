@@ -634,23 +634,26 @@ public class Room {
         }
     }
 
+    /**
+     * Called when a <LEAVE> is received from the server.
+     * 
+     * @param reason
+     *            The reason for leaving the table.
+     * @param player
+     *            The player who booted us if reason is boot.
+     */
     void set_table_leave(LeaveType reason, String player) {
         TableLeaveEventData event_data = new TableLeaveEventData(reason, player);
-        // If we have been booted from a table then there is a chance that the
-        // Game has sent a leave request to the server before we got the boot
-        // message from the server so only process the leave request if it's a
-        // boot or if we the server is in a "leave try" state and the reason is
-        // normal. This means we won't catch some illegal state transitions but
-        // if there are no bugs then there won't be any.
-        StateID state = this.server.get_state();
-        if (reason == LeaveType.GGZ_LEAVE_NORMAL
-                && state != StateID.GGZ_STATE_LEAVING_TABLE)
-            return;
         log.fine("Player left table: " + reason.toString() + " by " + player);
         this.server.set_table_leave_status(ClientReqError.E_OK);
         event(RoomEvent.GGZ_TABLE_LEFT, event_data);
     }
 
+    /**
+     * Called when a <RESULT action='LEAVE'> is received from the server.
+     * 
+     * @param status
+     */
     void set_table_leave_status(ClientReqError status) {
         if (status != ClientReqError.E_OK)
             this.server.set_table_leave_status(status);

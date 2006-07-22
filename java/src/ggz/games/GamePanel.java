@@ -43,6 +43,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 /**
  * Base class that the main UI panel for all games should inherit from. This
@@ -80,11 +81,16 @@ public class GamePanel extends JPanel implements ModEventHandler {
     }
 
     protected void quit() {
-        // Do the same as if we were disconnected. handle_disconnect()
-        // will be called again but that's fine. We put all the stuff in
-        // there because sometimes we get disconnected without
-        // initiating it ourselves.
-        handle_disconnect();
+        // FIXME if we don't have an fd yet then we shouldn't really call this
+        // since handle_disconnect() will never be called and the window won't
+        // close. We can't close the window here because the leave request
+        // doesn't get sent until we are fully at the table and the window
+        // appears before this is the case.
+        try {
+            ggzMod.set_state(ModState.GGZMOD_STATE_LEAVING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void handle_chat(final String player, final String msg) {
@@ -131,6 +137,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
         frame.setSize(800, 600);
         // frame.setLocationByPlatform(true);
         frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
 
