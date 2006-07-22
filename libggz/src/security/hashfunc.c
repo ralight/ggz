@@ -5,6 +5,7 @@
 #ifdef USE_GCRYPT
 # include <gcrypt.h>
 #endif
+#include "ggz.h"
 #include "hashfunc.h"
 
 #ifdef USE_GCRYPT
@@ -44,9 +45,10 @@ static hash_t hash_create_private(const char *algo, const char *text, const char
 
 	if(secret) gcry_md_setkey(handle, secret, strlen(secret));
 
-	for(i = 0; i < algos[i]; i++)
+	for(i = 0; algos[i]; i++)
 	{
 		ret = gcry_md_enable(handle, algos[i]);
+		printf("ret: %d\n", ret);
 		if(ret)
 		{
 			fprintf(stderr, "Error: couldn't add algorithm '%s'.\n", gcry_md_algo_name(algos[i]));
@@ -55,8 +57,8 @@ static hash_t hash_create_private(const char *algo, const char *text, const char
 	}
 
 	gcry_md_write(handle, text, strlen(text));
-	hash.hash = (char*)gcry_md_read(handle, GCRY_MD_MD5);
-	hash.hashlen = gcry_md_get_algo_dlen(GCRY_MD_MD5);
+	hash.hash = ggz_strdup((char*)gcry_md_read(handle, algos[0]));
+	hash.hashlen = gcry_md_get_algo_dlen(algos[0]);
 
 	gcry_md_close(handle);
 

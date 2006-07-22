@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 8391 2006-07-22 16:32:48Z oojah $
+ * $Id: ggzdb.c 8394 2006-07-22 22:33:39Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -143,10 +143,11 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 			}else{
 				password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
 			}
+			if(hash.hash)
+				free(hash.hash);
+
 			if(password_enc)
 			{
-			/* FIXME - I get segfaults unless I comment this line. It needs checking --ral 
-			  free(hash.hash); */
 				origpassword = strdup(pe->password);
 				snprintf(pe->password, sizeof(pe->password), "%s", password_enc);
 			}

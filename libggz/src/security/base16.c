@@ -17,8 +17,10 @@ char *ggz_base16_encode(const char *text, int length)
 
 	if(!text) return NULL;
 
-	ret = (char*)malloc(length * 2 + 1);
+	ret = (char*)malloc((length * 2 + 1)*sizeof(char));
 	if(!ret) return NULL;
+
+	ret[sizeof(ret)-1] = 0;
 
 	for(i = 0; i < length; i++){
 		ret[i*2] = hextable[(text[i]&0xf0)>>4];
