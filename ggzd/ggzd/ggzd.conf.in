@@ -41,6 +41,8 @@
 #DatabasePassword = ggzd
 # Database hashing: plain, md5, sha1 or ripemd160
 #DatabaseHashing = plain
+# Database hash encoding: base64 or base16 (defaults to base64)
+#DatabaseHashEncoding = base64
 
 # Transport Layer Security options
 #EncryptionUse = 0

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 8311 2006-07-04 14:33:56Z josef $
+ * $Id: ggzdb.c 8391 2006-07-22 16:32:48Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -119,7 +119,7 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 	GGZDBResult rc = GGZDB_NO_ERROR;
 	char orig[MAX_USER_NAME_LEN + 1];
 	hash_t hash;
-	char *password64;
+	char *password_enc;
 	char *origpassword = NULL;
 
 	if(!opt.dbhashing) return GGZDB_ERR_DB;
@@ -138,13 +138,17 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 		|| (!strcmp(opt.dbhashing, "ripemd160")))
 		{
 			hash = ggz_hash_create(opt.dbhashing, pe->password);
-			password64 = ggz_base64_encode(hash.hash, hash.hashlen);
-			if(password64)
+			if(!strcmp(opt.dbhashencoding, "base16")){
+				password_enc = ggz_base16_encode(hash.hash, hash.hashlen);
+			}else{
+				password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
+			}
+			if(password_enc)
 			{
 			/* FIXME - I get segfaults unless I comment this line. It needs checking --ral 
 			  free(hash.hash); */
 				origpassword = strdup(pe->password);
-				snprintf(pe->password, sizeof(pe->password), "%s", password64);
+				snprintf(pe->password, sizeof(pe->password), "%s", password_enc);
 			}
 		}
 		rc = _ggzdb_player_add(pe);
@@ -374,7 +378,7 @@ static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *buf)
 int ggzdb_compare_password(const char *input, const char *password)
 {
 	hash_t hash;
-	char *password64;
+	char *password_enc;
 	int ret = 0;
 
 	if(!opt.dbhashing) return -1;
@@ -390,12 +394,16 @@ int ggzdb_compare_password(const char *input, const char *password)
 	|| (!strcmp(opt.dbhashing, "ripemd160")))
 	{
 		hash = ggz_hash_create(opt.dbhashing, input);
-		password64 = ggz_base64_encode(hash.hash, hash.hashlen);
-		if(!password64) return -1;
-		if(!strcmp(password64, password)) ret = 1;
+		if(!strcmp(opt.dbhashencoding, "base16")){
+			password_enc = ggz_base16_encode(hash.hash, hash.hashlen);
+		}else{
+			password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
+		}
+		if(!password_enc) return -1;
+		if(!strcmp(password_enc, password)) ret = 1;
 		/* FIXME - I get segfaults unless I comment this line. It needs checking --ral
 		free(hash.hash); */
-		free(password64);
+		free(password_enc);
 		return ret;
 	}
 

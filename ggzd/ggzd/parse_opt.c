@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8255 2006-06-22 10:08:22Z josef $
+ * $Id: parse_opt.c 8391 2006-07-22 16:32:48Z oojah $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -324,6 +324,9 @@ void parse_conf_file(void)
 	/* Database defaults */
 	if(!opt.dbhashing)
 		opt.dbhashing = ggz_strdup("plain");
+
+	if(!opt.dbhashencoding)
+		opt.dbhashencoding = ggz_strdup("base64");
 }
 
 
@@ -365,6 +368,7 @@ static void get_config_options(int ch)
 	opt.dbusername = ggz_conf_read_string(ch, "General", "DatabaseUsername", NULL);
 	opt.dbpassword = ggz_conf_read_string(ch, "General", "DatabasePassword", NULL);
 	opt.dbhashing = ggz_conf_read_string(ch, "General", "DatabaseHashing", NULL);
+	opt.dbhashencoding = ggz_conf_read_string(ch, "General", "DatabaseHashEncoding", NULL);
 
 	/* Announcements in [General] */
 	opt.announce_lan = ggz_conf_read_int(ch, "General", "AnnounceLAN", 0);
