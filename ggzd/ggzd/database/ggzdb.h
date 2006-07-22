@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 8289 2006-06-28 18:47:08Z oojah $
+ * $Id: ggzdb.h 8392 2006-07-22 19:29:07Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,7 +40,7 @@
 typedef struct {
 	unsigned int user_id;			/* Numeric UID */
 	char handle[MAX_USER_NAME_LEN+1];	/* Players nickname/handle */
-	char password[33];			/* Players password (probably hashed) */
+	char password[41];			/* Players password (probably hashed) */
 	char name[33];				/* Players real name */
 	char email[33];				/* Players email address */
 	time_t last_login;			/* Last login */
