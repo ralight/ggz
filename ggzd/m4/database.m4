@@ -342,7 +342,7 @@ AC_DEFUN([AC_GGZ_DATABASE_PGSQL],
 AC_DEFUN([AC_GGZ_DATABASE_MYSQL],
 [
 	save_libs=$LIBS
-	LIBS="$LIBS -L/usr/lib/mysql"
+	LIBS="$LIBS -L/usr/lib/mysql -lpthread"
 	AC_CHECK_LIB(mysqlclient_r, mysql_real_connect,
 	[
 		AC_CHECK_HEADER(mysql/mysql.h,
