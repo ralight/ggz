@@ -18,7 +18,15 @@
 		<def name="reqnewgame" value="3"/>
 	</definitions>
 	<client>
-		<!-- todo: messages from client -->
+		<event name="sndoptions">
+			<data name="boardheight2" type="byte"/>
+			<data name="boardwidth2" type="byte"/>
+			<data name="connectlength2" type="byte"/>
+		</event>
+		<event name="sndmove">
+			<data name="column3" type="int"/>
+		</event>
+		<event name="reqsync"/>
 	</client>
 	<server>
 		<event name="msgseat">
@@ -42,14 +50,22 @@
 			<data name="column2" type="int"/>
 		</event>
 		<event name="sndsync">
-			<!-- no data? -->
+			<data name="boardheight3" type="byte"/>
+			<data name="boardwidth3" type="byte"/>
+			<data name="connectlength3" type="byte"/>
+			<data name="turn" type="byte"/>
+			<sequence count="boardwidth">
+				<sequence count="boardheight">
+					<data name="board" type="byte"/>
+				</sequence>
+			</sequence>
 		</event>
+		<!--
 		<event name="msgchat">
-			<!-- no data? -->
 		</event>
 		<event name="rspchat">
-			<!-- no data? -->
 		</event>
+		-->
 		<event name="msggameover">
 			<data name="winner" type="byte"/>
 		</event>
@@ -68,7 +84,10 @@
 		</event>
 	</server>
 	<protocol>
-		<!-- todo: links -->
+		<link client="reqsync" server="sndsync"/>
+		<link server="reqmove" client="sndmove"/>
+		<link client="sndmove" server="rspmove"/>
+		<link server="reqoptions" client="sndoptions"/>
 	</protocol>
 </ggzcomm>
 
