@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8358 2006-07-13 06:08:30Z jdorje $
+ * $Id: spades.c 8398 2006-07-23 21:06:18Z oojah $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -739,8 +739,8 @@ static void spades_end_hand(void)
 		for (x = 0; x < 2; x++) {
 			player_t p2 = p + 2 * x;
 
-			if (game.players[p].bid.sbid.spec != SPADES_NIL
-			    && game.players[p].bid.sbid.spec != SPADES_DNIL) {
+			if (game.players[p2].bid.sbid.spec != SPADES_NIL
+			    && game.players[p2].bid.sbid.spec != SPADES_DNIL) {
 				continue;
 			}
 
