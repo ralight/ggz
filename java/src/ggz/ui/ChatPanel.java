@@ -227,7 +227,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
 
     public void appendChat(ChatType type, String sender, String message,
             String me) {
-        if (ignoreList != null && ignoreList.contains(sender)) {
+        if (isIgnored(sender)) {
             // We are ignoring this person.
             return;
         }
@@ -253,8 +253,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
             // TODO change the text to <nic> announces:
         } else if (sender.equals(me)) {
             textStyle = GGZPreferences.getChatStyleMe();
-        } else if (friendsList != null
-                && friendsList.contains(sender.toLowerCase())) {
+        } else if (isFriend(sender)) {
             textStyle = GGZPreferences.getChatStyleFriend();
         }
 
