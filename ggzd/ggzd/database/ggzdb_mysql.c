@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 8377 2006-07-20 13:05:10Z oojah $
+ * $Id: ggzdb_mysql.c 8402 2006-07-24 13:45:16Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -153,7 +153,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		res = mysql_store_result(conn);
 		pthread_mutex_unlock(&mutex);
 
-		if (mysql_num_rows(res) == 1) {
+		if (res && (mysql_num_rows(res) == 1)) {
 			row = mysql_fetch_row(res);
 			strncpy(pe->password, row[0], sizeof(pe->password));
 			strncpy(pe->name, row[1], sizeof(pe->name));
@@ -221,7 +221,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 	if (!result) {
 		iterres = mysql_store_result(conn);
-		if (mysql_num_rows(iterres) > 0) {
+		if (iterres && mysql_num_rows(iterres)) {
 			row = mysql_fetch_row(iterres);
 			pe->user_id = atoi(row[0]);
 			strncpy(pe->handle, row[1], sizeof(pe->handle));
@@ -254,7 +254,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 		err_msg_exit("get_next called before get_first, dummy");
 	}
 
-	if(itercount < mysql_num_rows(iterres) - 1) {
+	if(iterres && (itercount < mysql_num_rows(iterres) - 1)) {
 		itercount++;
 		row = mysql_fetch_row(iterres);
 		pe->user_id = atoi(row[0]);
@@ -307,26 +307,21 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	MYSQL_RES *res;
 	char *player_quoted;
 
-	player_quoted = _ggz_sql_escape(stats->player);
+	player_quoted = _ggz_sql_escape(lower(stats->player));
 
 	snprintf(query, sizeof(query),
 		"UPDATE stats "
 		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, "
 		"rating = %f, ranking = %u, highscore = %li "
-		"WHERE lower(handle) = lower('%s') AND game = '%s'",
+		"WHERE handle = '%s' AND game = '%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits,
 		stats->rating, stats->ranking, stats->highest_score,
 		player_quoted, stats->game);
 
-	ggz_free(player_quoted);
-
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
 	if(!rc){
-		res = mysql_store_result(conn);
-		if (!mysql_num_rows(res)){
-			player_quoted = _ggz_sql_escape(stats->player);
-
+		if (!mysql_affected_rows(conn)) {
 			snprintf(query, sizeof(query),
 				"INSERT INTO stats "
 				"(handle, game, wins, losses, ties, forfeits, rating, ranking, highscore) VALUES "
@@ -334,8 +329,6 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 				player_quoted, stats->game,
 				stats->wins, stats->losses, stats->ties, stats->forfeits,
 				stats->rating, stats->ranking, stats->highest_score);
-
-			ggz_free(player_quoted);
 
 			rc = mysql_query(conn, query);
 
@@ -353,6 +346,8 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		err_msg("couldn't update stats");
 		ret = GGZDB_ERR_DB;
 	}
+
+	ggz_free(player_quoted);
 
 	_ggzdb_stats_match(stats);
 
@@ -382,7 +377,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 		res = mysql_store_result(conn);
 		pthread_mutex_unlock(&mutex);
 
-		if (mysql_num_rows(res) == 1) {
+		if (res && (mysql_num_rows(res) == 1)) {
 			row = mysql_fetch_row(res);
 			stats->wins = atoi(row[0]);
 			stats->losses = atoi(row[1]);
@@ -428,7 +423,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	else {
 		res = mysql_store_result(conn);
 
-		if (mysql_num_rows(res) == 1){
+		if (res && mysql_num_rows(res) == 1){
 			row = mysql_fetch_row(res);
 			number = row[0];
 			mysql_free_result(res);
@@ -551,7 +546,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 		res = mysql_store_result(conn);
 		pthread_mutex_unlock(&mutex);
 
-		if(mysql_num_rows(res) == 1){
+		if(res && (mysql_num_rows(res) == 1)){
 			row = mysql_fetch_row(res);
 
 			pe->user_id = atol(row[0]);
