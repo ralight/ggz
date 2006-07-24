@@ -1,0 +1,14 @@
+This directory contains "hot technology" which might or might not
+be of relevance for a future version of the GGZ server.
+Some of it also applies to clients.
+
+Contents right now:
+
+* coregen
+  has its own readme file ;)
+
+* async
+  Test file for asynchronous libggz hostname lookups
+  FIXME: the global_req must go away, but it segfaults if the
+  local gaicb param is used
+
