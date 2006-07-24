@@ -1,0 +1,68 @@
+Information for packagers
+=========================
+
+It has been argued that GGZ is hard to install. It certainly wasn't trivial
+in early versions, but is very easy nowadays. This file contains useful
+information about how to package GGZ. Most of it relates to GGZ's own set
+of autoconf macros. For detailed information on them, have a look at the
+'buildsystem' file.
+Also, see 'ggz-dependencies' to see how GGZ packages interact and depend
+on other software.
+
+General information
+-------------------
+
+Most of GGZ can be packaged. Out of the 16 packages we currently release,
+only ggz-java and ggz-community are not yet prepared. It is expected that
+sooner or later, this will change, but for now 14 packages will make up
+a complete GGZ installations.
+
+In most cases, distributors will opt for a higher number due to some
+splitting. Popular are separate libraries and header packages, and the
+server package actually contains the server, game servers and libraries.
+
+Most packages are straight-forward: configure, make, make install. The game
+client packages however are registered centrally by the 'ggz-config' utility.
+Binary packages of them need 3 extra lines, explained below in the paragraph
+about directories.
+
+Finally, once GGZ packaging is done, check to see if any other games in
+the distribution provide GGZ support! Information about those is available
+from http://dev.ggzgamingzone.org/external/.
+In most cases, they can be recompiled (repackaged) with --enable-ggz=true.
+
+Directory layout
+----------------
+
+Let's look at the following standard layouts:
+
+case | game module | registry          | use case
+-----+-------------+-------------------+---------------
+(1)  | /usr        | /usr              | normal installation
+(2)  | /opt/kde    | /usr              | different paths for some packages
+(3)  | /home       | ---               | additional GGZ games into $HOME
+(4)  | /usr        | (/usr) noregistry | binary packages
+
+Case (1) is simple. GGZ will find its libraries and tools like ggz-config
+in /usr/lib and /usr/bin and, since the configured package also goes there,
+everything is fine.
+
+Case (2) is used by some distributors. Normally, if the prefix of the package
+differs from the prefix of ggz-client-libs (i.e. the game module registry),
+the registry is ignored. But since GGZ 0.0.14, if --with-ggzconfig is given
+explicitely, it is still used nevertheless!
+
+Case (3) is a user installing a GGZ-enabled game into his or her home
+directory. Needless to say that game information cannot be installed globally
+in this scenario. This is why in case (2), the explicit option is necessary.
+
+Case (4) is somewhat orthogonal to the others. If --enable-noregistry=DIR is
+given to the configure script, ggz-config is altered to behave differently.
+Note: Case (2) still needs --with-ggzconfig in this case!
+The module.dsc files are copied to DIR so at package installation
+or removal time, the games can be mass-registered or mass-unregistered.
+This happens with a call to ggz-config, but instead of giving it a module.dsc
+file as its parameter, give it --noregistry=DIR.
+Usually this is placed into post-installation and pre-removal scripts or
+sections of the packaging file.
+

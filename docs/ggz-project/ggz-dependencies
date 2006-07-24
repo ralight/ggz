@@ -1,15 +1,12 @@
-This is a first guide on how to package the basic GGZ packages.
-Advanced topics like python, chatbot, web interface, ... come later :)
-Also, future development will be handled in a separate document,
-including ggzmod/ggzcore interdependencies and common game libraries.
-
-This is for GGZ 0.0.11. Note that the ggzcore->ggzmod dependency
-has turned around into a ggzmod->ggzcore dependency!
-Also, games do not require ggz-config anymore at compilation time:
-if it's not present, ggz-config is simply not called.
-
 Base Libraries
 ==============
+
+Those libraries are licenced under LGPL.
+See http://dev.ggzgamingzone.org/libraries/.
+
+Note that ggzmod provides an additional, static library
+named ggzmod-ggz. The libraries by themselves are
+shared libraries.
 
 libggz: needed by ggzmod and ggzcore
         needed by (some) game clients
@@ -21,6 +18,7 @@ ggzmod: needed by (most) game clients
         depends on ggzcore
 
 ggzdmod: needed by (most) game servers
+         needed by wrappers (like pyggzdmod)
          needed by ggzd
          depends on libggz
 
@@ -30,7 +28,7 @@ ggzcore: needed by ggz-config
          needed by wrappers (like pyggzcoresimple)
          needed by ggzmod
          depends on libggz
-         depends on ggzmod (static-only)
+         depends on ggzmod-ggz (static-only)
 
 Base binaries
 =============
@@ -40,6 +38,13 @@ ggz-config: needed for game installation - not at runtime
 
 ggz-wrapper: needed for external clients - only at runtime (like IM plugins)
              depends on ggzcore
+
+ggzwrap: needed for some game clients - only at runtime
+         depends on ggzmod
+
+The peculiarities of ggz-config are described in 'packagers'.
+Note that ggzwrap is not installed in $PATH (because it registers like
+a game module in module.dsc), but ggz-config and ggz-wrapper are.
 
 Packaging guide
 ===============
@@ -62,17 +67,23 @@ ggz-client-libs: packages ggzcore, ggzcore-dev, ggzmod, ggzmod-dev, ggzcore-bin
           depends on ggzcore
 
 *-games: package names ggz-gtk-games, ggz-kde-games, ggz-sdl-games,
-                       ggz-kde-game-data, ggz-gtk-game-data, ggz-sdl-game-data
+                       ggz-python-games, ggz-kde-games-data,
+                       ggz-gtk-games-data, ggz-sdl-games-data,
+                       ggz-python-games-data
          ggz-*-games depends on ggzmod
-         ggz-*-games pre-depends on ggzcore-bin (install only (postinst))
-         ggz-gtk-games depends on ggz-gtk-game-data
-         ggz-kde-games depends on ggz-kde-game-data
-         ggz-sdl-games depends on ggz-sdl-game-data
+         ggz-*-games pre-depends on ggzcore-bin (install only: postinst/prerm)
+         ggz-gtk-games depends on ggz-gtk-games-data
+         ggz-kde-games depends on ggz-kde-games-data
+         ggz-sdl-games depends on ggz-sdl-games-data
+         ggz-python-games depends on ggz-python-games-data
 
-ggzd: packages ggz-server, ggzdmod, ggzdmod-dev, ggz-game-servers
+ggzd: packages ggz-server, ggzdmod, ggzdmod-dev, ggz-game-servers,
+               ggzdmod++, ggzdmod++-dev
       ggzdmod-dev depends on ggzdmod (trivial)
+      ggzdmod++-dev depends on ggzdmod++ (trivial)
+      ggzdmod++ depends on ggzdmod
       ggz-server depends on ggzdmod
-      ggz-game-servers depends on ggzdmod
+      ggz-game-servers depends on ggzdmod and ggzdmod++
 
 Package relationships
 =====================
@@ -92,32 +103,14 @@ Installing a core client pulls in:
 Installing a game client pulls in:
  the game client itself, plus ggzmod, plus libggz, plus ggzcore-bin
 Installing the server pulls in:
- the server, plus ggzdmod
+ the server, plus ggzdmod, plus ggzdmod++, plus libggz
 Installing a game server pulls in:
- the game servers, plus ggzdmod
+ the game servers, plus ggzdmod or ggzdmod++, plus libggz
 
 The IM plugins only make sense with games installed, at which point
 ggzcore-bin is available, thus it makes sense to put ggz-wrapper in there
 together with ggz-config.
 
-The above is a plain 0.0.11 structure.
+The above is a plain 0.0.14pre structure.
 The goal is to have as few source diversions as possible.
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Rationale for the ggz-config change:
-
-This can be achieved by modifying configure.ac and (possibly) Makefile.am's.
-(A trick to avoid the latter is setting $(GGZ_CONFIG) to /bin/true in configure.ac.)
-The configure.ac modification would be:
-- modify call to AC_GGZ_CONFIG("true", ignore)
-- modify ggz.m4 file to set ggzmoduleconfdir, ggzexecmoddir, ggzdatadir to
-  values based on prefix ($sysconfroot, $prefix/lib/ggz, $prefix/share/ggz)
-  if ggz-config is not found and "ignore" is used
-  (I think ggzd does something similar for 3rd party game servers.)
-This is a useful change for upstream too.
-
-Rationale for the ggzmod<->ggzcore change:
-
-see http://mail.ggzgamingzone.org/pipermail/ggz-dev/2005-May/000478.html
 
