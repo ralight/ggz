@@ -50,7 +50,7 @@ def playsound(theme):
 class Conf:
 	def __init__(self):
 		self.alpha = 120
-		self.background = "sunset.jpg"
+		self.background = "background.png"
 		self.cellwidth = 50
 		self.cellheight = 50
 		self.cellspace = 0 #10

@@ -88,7 +88,8 @@ ggzchess-build:
 clean:
 	@echo Cleaning up
 	rm -rf */build
-	cd chess && make clean
+	$(MAKE) -C chess clean
+	$(MAKE) -C po clean-local
 
 ggzmod-install:
 	@echo Installing library PyGGZMod
@@ -166,7 +167,7 @@ install-rest:
 	cp go/goserver.dsc $(DESTDIR)$(ggzd_confdir)/games
 	cp go/goserver.room $(DESTDIR)$(ggzd_confdir)/rooms
 
-	@echo Installing core client Vibora
+	@echo Installing core client Víbora
 	mkdir -p $(DESTDIR)$(bindir)
 	cp vibora/vibora $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(datadir)/ggz/vibora/
@@ -184,6 +185,7 @@ install-ggzboard:
 	cp ggzboard/ggzboard $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/
 	cp ggzboard/*.jpg $(DESTDIR)$(datadir)/ggz/ggzboard
+	cp ggzboard/*.png $(DESTDIR)$(datadir)/ggz/ggzboard
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/common/
 	cp ggzboard/common/*.png $(DESTDIR)$(datadir)/ggz/ggzboard/common
 	mkdir -p $(DESTDIR)$(xdg_datadir)
@@ -195,6 +197,7 @@ install-ggzboard:
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
+	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/shogi
 	cp ggzboard/checkers/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/checkers
 	cp ggzboard/chess/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/chess
 	cp ggzboard/go/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/go
@@ -202,6 +205,7 @@ install-ggzboard:
 	cp ggzboard/reversi/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
 	cp ggzboard/madn/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	cp ggzboard/connectx/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
+	cp ggzboard/shogi/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/shogi
 	mkdir -p $(DESTDIR)$(py_moddir)
 	cp ggzboard/ggzboard_net.py $(DESTDIR)$(py_moddir)
 	cp ggzboard/bogaprot.py $(DESTDIR)$(py_moddir)
@@ -231,4 +235,30 @@ dist:
 	cp -r ../python ../ggz-python-$(version)
 	find ../ggz-python-$(version) -name .svn | xargs rm -rf
 	cd .. && tar cvzf ggz-python-$(version).tar.gz ggz-python-$(version)
+
+distclean: clean
+	rm -f config.status config.log
+	rm -rf autom4te.cache
+	@echo "Standard autoconf cleanup..."
+	rm -f Makefile
+	rm -f lib/ggzsettings.py
+	rm -f escape-sdl/escape-sdl.desktop
+	rm -f escape-sdl/module.dsc
+	rm -f xadrez-chines/xadrez-chines.desktop
+	rm -f xadrez-chines/module.dsc
+	rm -f xadrez-chines/xadrez-chines-server.dsc
+	rm -f go/module.dsc
+	rm -f go/goserver.dsc
+	rm -f pyrsvgsdl/setup.py
+	rm -f pyggzmod/setup.py
+	rm -f pyggzdmod/setup.py
+	rm -f pyggzcore/setup.py
+	rm -f ggzboard/ggzboard.desktop
+	rm -f ggzboard/module_go.dsc
+	rm -f ggzboard/module_chess.dsc
+	rm -f ggzboard/module_checkers.dsc
+	rm -f ggzboard/module_reversi.dsc
+	rm -f ggzboard/module_hnefatafl.dsc
+	rm -f ggzboard/module_connectx.dsc
+	rm -f ggzboard/module_ludo.dsc
 
