@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 8402 2006-07-24 13:45:16Z oojah $
+ * $Id: ggzdb_mysql.c 8403 2006-07-24 16:26:15Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -143,7 +143,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query), "SELECT "
 		"password, name, email, lastlogin, perms FROM users WHERE "
-		"handle = '%s'",
+		"LOWER(handle) = LOWER('%s')",
 		pe->handle);
 
 	pthread_mutex_lock(&mutex);
@@ -184,7 +184,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query), "UPDATE users SET "
 		"password = '%s', name = '%s', email = '%s', lastlogin = %li, perms = %u WHERE "
-		"handle = '%s'",
+		"LOWER(handle) = LOWER('%s')",
 		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
 
 	pthread_mutex_lock(&mutex);
@@ -304,16 +304,15 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	char query[4096];
 	int rc;
 	GGZDBResult ret = GGZDB_ERR_DB;
-	MYSQL_RES *res;
 	char *player_quoted;
 
-	player_quoted = _ggz_sql_escape(lower(stats->player));
+	player_quoted = _ggz_sql_escape(stats->player);
 
 	snprintf(query, sizeof(query),
 		"UPDATE stats "
 		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, "
 		"rating = %f, ranking = %u, highscore = %li "
-		"WHERE handle = '%s' AND game = '%s'",
+		"WHERE LOWER(handle) = LOWER('%s') AND game = '%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits,
 		stats->rating, stats->ranking, stats->highest_score,
 		player_quoted, stats->game);
@@ -340,7 +339,6 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		else ret = GGZDB_NO_ERROR;
 
 		pthread_mutex_unlock(&mutex);
-		mysql_free_result(res);
 	} else {
 		pthread_mutex_unlock(&mutex);
 		err_msg("couldn't update stats");
@@ -534,7 +532,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "id, photo "
-		 "FROM userinfo WHERE lower(handle) = lower('%s')",
+		 "FROM userinfo WHERE LOWER(handle) = LOWER('%s')",
 		 handle_quoted);
 
 	ggz_free(handle_quoted);
