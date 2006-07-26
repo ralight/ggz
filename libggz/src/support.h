@@ -3,7 +3,7 @@
  * Author GGZ Development Team
  * Project: Libggz
  * Date: 02/03/03
- * $Id: support.h 7885 2006-03-06 18:46:12Z josef $
+ * $Id: support.h 8404 2006-07-26 16:58:50Z jdorje $
  * 
  * Replacements for non-supported functions.
  *
@@ -24,7 +24,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef HAVE_SUN_LEN
+/* HACK: on Cygwin, HAVE_SUN_LEN isn't getting defined but SUN_LEN
+   is defined. */
+#if !defined HAVE_SUN_LEN && !defined SUN_LEN
 #define SUN_LEN(ptr) ((size_t)(((struct sockaddr_un *) 0)->sun_path) + strlen ((ptr)->sun_path))
 #endif
 
