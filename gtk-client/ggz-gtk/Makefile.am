@@ -74,4 +74,4 @@ ggz_gtk_SOURCES = main.c
 ggz_gtk_DEPENDENCIES = libggz-gtk.la
 ggz_gtk_LDADD = libggz-gtk.la
 
-EXTRA_DIST = $(ggzdata_DATA)
+EXTRA_DIST = $(ggzgtkdata_DATA)
