@@ -78,8 +78,9 @@ int main(int argc, char **argv)
 	ggz_dio_free(dio[0]);
 	close(sockets[0]);
 
+	ggz_dio_set_read_callback(dio[1], read_callback, NULL);
 	do {
-		err = ggz_dio_read_data(dio[1], read_callback, NULL);
+		err = ggz_dio_read_data(dio[1]);
 	} while (err > 0);
 	if (err < 0) {
 		printf("Socket error: %s.\n", strerror(errno));
