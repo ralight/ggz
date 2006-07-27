@@ -1,4 +1,5 @@
 # Configuration for the GGZ server
+# $Id: configure.ac 8409 2006-07-27 16:48:40Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -49,6 +50,7 @@ AC_ARG_WITH([reconfiguration],
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_INTL
 AC_GGZ_LIBGGZ
+AC_GGZ_VERSION(0, 0, 14)
 
 # Check for header files
 # ======================
