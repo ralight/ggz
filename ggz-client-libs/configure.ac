@@ -1,7 +1,7 @@
 # Configuration for the GGZ client libraries
 # ==========================================
 
-AC_INIT([GGZ client libraries], [0.0.13], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
+AC_INIT([GGZ client libraries], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -30,6 +30,7 @@ esac
 # ==========================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
+AC_GGZ_VERSION(0, 0, 14)
 AC_GGZ_INTL
 
 # Check for what to build
