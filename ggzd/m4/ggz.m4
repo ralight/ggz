@@ -209,7 +209,8 @@ CXXFLAGS=$save_cxxflags
 
 dnl ------------------------------------------------------------------------
 dnl Ensure that a minimum version of GGZ is present
-dnl Synopsis: AC_GGZ_VERSION(major, minor, micro)
+dnl Synopsis: AC_GGZ_VERSION(major, minor, micro,
+dnl                          action-if-found, action-if-not-found)
 dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_VERSION],
@@ -228,11 +229,22 @@ AC_DEFUN([AC_GGZ_VERSION],
 	testbody="$testbody if(LIBGGZ_VERSION_MICRO < $micro) return -1;"
 	testbody="$testbody return 0;"
 
+	AC_MSG_CHECKING([for GGZ library version: $major.$minor.$micro])
 	AC_RUN_IFELSE(
 		[AC_LANG_PROGRAM([[$testprologue]], [[$testbody]])],
-		[],
-		[AC_MSG_ERROR([The GGZ version is too old. Version $major.$minor.$micro is required.])]
+		[ac_ggz_version_check=yes],
+		[ac_ggz_version_check=no]
 	)
+	if test "x$ac_ggz_version_check" = "xyes"; then
+		AC_MSG_RESULT([yes])
+		$4
+	else
+		AC_MSG_RESULT([no])
+		if test "x$5" = "x"; then
+			AC_MSG_ERROR([The GGZ version is too old. Version $major.$minor.$micro is required.])
+		fi
+		$5
+	fi
 ])
 
 dnl ------------------------------------------------------------------------
@@ -1011,6 +1023,12 @@ AC_DEFUN([AC_GGZ_CHECK],
 [
   AC_GGZ_INIT
   AC_GGZ_LIBGGZ([try_ggz="yes"], [try_ggz="no"])
+
+  if test "$try_ggz" = "yes"; then
+    # For now, version 0.0.14 is required.  This could be an additional
+    # parameter.
+    AC_GGZ_VERSION([0], [0], [14], [], [try_ggz=no])
+  fi
 
   ggz_server="no"
   ggz_client="no"
