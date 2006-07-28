@@ -24,7 +24,8 @@
 #define PLAYER_UNKNOWN 0
 #define PLAYER_GUEST 1
 #define PLAYER_REGISTERED 2
-#define PLAYER_ADMIN 3
+#define PLAYER_HOST 3
+#define PLAYER_ADMIN 4
 
 /* Message structure to be passes around to the plugins */
 struct guru_t

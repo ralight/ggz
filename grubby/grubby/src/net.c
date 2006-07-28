@@ -500,6 +500,33 @@ void net_internal_gameprepare(const char *playername)
 	}
 }
 
+int net_get_playertype(const char *playername)
+{
+	int playertype;
+	int i;
+	int players;
+	GGZPlayer *player;
+	GGZPlayerType tmp;
+
+	playertype = PLAYER_UNKNOWN;
+	players = ggzcore_room_get_num_players(room);
+	for(i = 0; i < players; i++)
+	{
+		player = ggzcore_room_get_nth_player(room, i);
+		if(!strcmp(ggzcore_player_get_name(player), playername))
+		{
+			tmp = ggzcore_player_get_type(player);
+			if(tmp == GGZ_PLAYER_GUEST) playertype = PLAYER_GUEST;
+			if(tmp == GGZ_PLAYER_NORMAL) playertype = PLAYER_REGISTERED;
+			if(tmp == GGZ_PLAYER_HOST) playertype = PLAYER_HOST;
+			if(tmp == GGZ_PLAYER_ADMIN) playertype = PLAYER_ADMIN;
+			break;
+		}
+	}
+
+	return playertype;
+}
+
 /* Chat callback which passes message to grubby */
 GGZHookReturn net_hook_chat(unsigned int id, const void *event_data, const void *user_data)
 {
@@ -515,20 +542,7 @@ GGZHookReturn net_hook_chat(unsigned int id, const void *event_data, const void 
 	/* Ignore all self-generates messages */
 	if (strcmp(chat->sender, guruname))
 	{
-		playertype = PLAYER_UNKNOWN;
-		players = ggzcore_room_get_num_players(room);
-		for(i = 0; i < players; i++)
-		{
-			player = ggzcore_room_get_nth_player(room, i);
-			if(!strcmp(ggzcore_player_get_name(player), chat->sender))
-			{
-				tmp = ggzcore_player_get_type(player);
-				if(tmp == GGZ_PLAYER_GUEST) playertype = PLAYER_GUEST;
-				if(tmp == GGZ_PLAYER_NORMAL) playertype = PLAYER_REGISTERED;
-				if(tmp == GGZ_PLAYER_ADMIN) playertype = PLAYER_ADMIN;
-				break;
-			}
-		}
+		playertype = net_get_playertype(chat->sender);
 
 		if (chat->type == GGZ_CHAT_PERSONAL) type = GURU_PRIVMSG;
 		else type = GURU_CHAT;

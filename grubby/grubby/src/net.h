@@ -29,6 +29,8 @@ int net_status(void);
 Guru *net_input(void);
 void net_output(Guru *output);
 void net_logfile(const char *logfile);
+int net_get_playertype(const char *playername);
+
 
 #endif
 
