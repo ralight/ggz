@@ -12,12 +12,12 @@
 char *ggz_base16_encode(const char *text, int length)
 {
 	char *ret = NULL;
-	int i, j;
+	int i;
 	static const char hextable[20] = "0123456789abcdef";
 
 	if(!text) return NULL;
 
-	ret = (char*)malloc((length * 2 + 1)*sizeof(char));
+	ret = malloc((length * 2 + 1)*sizeof(*ret));
 	if(!ret) return NULL;
 
 	ret[sizeof(ret)-1] = 0;
