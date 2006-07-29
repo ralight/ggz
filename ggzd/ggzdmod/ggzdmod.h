@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 8122 2006-06-07 07:36:55Z jdorje $
+ * $Id: ggzdmod.h 8417 2006-07-29 15:56:00Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -361,21 +361,11 @@ typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent event,
  */
 typedef struct {
 	unsigned int num;	/**< Seat index; 0..(num_seats-1). */
-	GGZSeatType type;	/**< Type of seat. */
+	GGZSeatType type;	/**< Type of seat (undefined for spectators). */
 	const char *name;	/**< Name of player occupying seat. */
 	int fd;			/**< fd to communicate with seat occupant. */
 } GGZSeat;
-
-/** @brief A game spectator entry
- *
- *  Spectators are handles differently from other player types.
- */
-typedef struct {
-	unsigned int num;	/**< Spectator seat index */
-	const char *name;	/**< The spectator's name */
-	int fd;			/**< File descriptor for communication */
-} GGZSpectator;
-
+typedef GGZSeat GGZSpectator;
 
 /** @brief Is the program running in GGZ mode?
  *
