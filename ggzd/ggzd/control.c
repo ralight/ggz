@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8420 2006-07-30 00:37:35Z jdorje $
+ * $Id: control.c 8422 2006-07-30 20:06:17Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -387,11 +387,21 @@ static void meta_announce(const char *metaserveruri, const char *username, const
 
 static void reconfiguration_setup(void)
 {
+	char *watchdir = NULL;
+
+	watchdir = malloc(strlen(opt.conf_dir) + 8);
+	if(!watchdir){
+		fprintf(stderr, "Reconfiguration: Error: Out of memory\n");
+		return;
+	}
+
+	snprintf(watchdir, sizeof(watchdir), "%s/rooms", opt.conf_dir);
 #ifdef HAVE_INOTIFY
 	reconfigure_fd = inotify_init();
 	if(reconfigure_fd <= 0)
 	{
 		fprintf(stderr, "Reconfiguration: Error: initialization failed\n");
+		free(watchdir);
 		return;
 	}
 
@@ -399,7 +409,7 @@ static void reconfiguration_setup(void)
 	fcntl(reconfigure_fd, F_SETFD, FD_CLOEXEC);
 
 	/* Test - FIXME: add etc/ggzd/rooms? */
-	inotify_add_watch(reconfigure_fd, GGZDCONFDIR "/rooms", IN_DELETE | IN_CLOSE_WRITE);
+	inotify_add_watch(reconfigure_fd, watchdir, IN_DELETE | IN_CLOSE_WRITE);
 
 	log_msg(GGZ_LOG_NOTICE,
 		"Reconfiguration: watching rooms directory for changes");
@@ -410,14 +420,16 @@ static void reconfiguration_setup(void)
 	{
 		fprintf(stderr, "Reconfiguration: Error: initialization failed\n");
 		reconfigure_fd = -1;
+		free(watchdir);
 		return;
 	}
 
 	reconfigure_fd = fc.fd;
 
-	if(FAMMonitorDirectory(&fc, GGZDCONFDIR "/rooms", &fr, NULL) < 0)
+	if(FAMMonitorDirectory(&fc, watchdir, &fr, NULL) < 0)
 	{
 		fprintf(stderr, "Reconfiguration: Error: monitoring failed\n");
+		free(watchdir);
 		return;
 	}
 
@@ -427,6 +439,7 @@ static void reconfiguration_setup(void)
 	reconfigure_fd = -1;
 #endif
 #endif
+	free(watchdir);
 }
 
 static void reconfiguration_handle(void)
