@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8422 2006-07-30 20:06:17Z oojah $
+ * $Id: control.c 8424 2006-07-30 22:44:57Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -395,7 +395,7 @@ static void reconfiguration_setup(void)
 		return;
 	}
 
-	snprintf(watchdir, sizeof(watchdir), "%s/rooms", opt.conf_dir);
+	snprintf(watchdir, strlen(opt.conf_dir) + 8, "%s/rooms", opt.conf_dir);
 #ifdef HAVE_INOTIFY
 	reconfigure_fd = inotify_init();
 	if(reconfigure_fd <= 0)
@@ -412,7 +412,7 @@ static void reconfiguration_setup(void)
 	inotify_add_watch(reconfigure_fd, watchdir, IN_DELETE | IN_CLOSE_WRITE);
 
 	log_msg(GGZ_LOG_NOTICE,
-		"Reconfiguration: watching rooms directory for changes");
+		"Reconfiguration: watching rooms directory for changes (%s)", watchdir);
 #else
 #ifdef WITH_FAM
 	FAMRequest fr;
@@ -434,7 +434,7 @@ static void reconfiguration_setup(void)
 	}
 
 	log_msg(GGZ_LOG_NOTICE,
-		"Reconfiguration: watching rooms directory for changes");
+		"Reconfiguration: watching rooms directory for changes (%s)", watchdir);
 #else
 	reconfigure_fd = -1;
 #endif
