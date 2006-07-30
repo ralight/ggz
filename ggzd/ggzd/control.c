@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8419 2006-07-30 00:13:32Z oojah $
+ * $Id: control.c 8420 2006-07-30 00:37:35Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -399,7 +399,7 @@ static void reconfiguration_setup(void)
 	fcntl(reconfigure_fd, F_SETFD, FD_CLOEXEC);
 
 	/* Test - FIXME: add etc/ggzd/rooms? */
-	inotify_add_watch(reconfigure_fd, opt.conf_dir "/rooms", IN_DELETE | IN_CLOSE_WRITE);
+	inotify_add_watch(reconfigure_fd, GGZDCONFDIR "/rooms", IN_DELETE | IN_CLOSE_WRITE);
 
 	log_msg(GGZ_LOG_NOTICE,
 		"Reconfiguration: watching rooms directory for changes");
@@ -415,7 +415,7 @@ static void reconfiguration_setup(void)
 
 	reconfigure_fd = fc.fd;
 
-	if(FAMMonitorDirectory(&fc, opt.conf_dir "/rooms", &fr, NULL) < 0)
+	if(FAMMonitorDirectory(&fc, GGZDCONFDIR "/rooms", &fr, NULL) < 0)
 	{
 		fprintf(stderr, "Reconfiguration: Error: monitoring failed\n");
 		return;
