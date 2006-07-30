@@ -1,6 +1,6 @@
 Index: ggzd/game_servers/ggzcards/types.h
 ===================================================================
---- ggzd/game_servers/ggzcards/types.h	(revision 8360)
+--- ggzd/game_servers/ggzcards/types.h	(revision 8419)
 +++ ggzd/game_servers/ggzcards/types.h	(working copy)
 @@ -30,6 +30,7 @@
  
@@ -36,7 +36,7 @@ Index: ggzd/game_servers/ggzcards/types.h
  
 Index: ggzd/game_servers/ggzcards/games/lapocha.c
 ===================================================================
---- ggzd/game_servers/ggzcards/games/lapocha.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/games/lapocha.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/games/lapocha.c	(working copy)
 @@ -31,6 +31,7 @@
  
@@ -208,7 +208,7 @@ Index: ggzd/game_servers/ggzcards/games/lapocha.c
  }
 Index: ggzd/game_servers/ggzcards/games/spades.c
 ===================================================================
---- ggzd/game_servers/ggzcards/games/spades.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/games/spades.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/games/spades.c	(working copy)
 @@ -159,6 +159,7 @@
  
@@ -228,7 +228,7 @@ Index: ggzd/game_servers/ggzcards/games/spades.c
  
 Index: ggzd/game_servers/ggzcards/message.c
 ===================================================================
---- ggzd/game_servers/ggzcards/message.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/message.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/message.c	(working copy)
 @@ -128,7 +128,7 @@
  		/* HACK: We don't want to send messages to disconnected
@@ -241,7 +241,7 @@ Index: ggzd/game_servers/ggzcards/message.c
  	} allplayers_iterate_end;
 Index: ggzd/game_servers/ggzcards/common/net_common.c
 ===================================================================
---- ggzd/game_servers/ggzcards/common/net_common.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/common/net_common.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/common/net_common.c	(working copy)
 @@ -29,102 +29,93 @@
   */
@@ -389,7 +389,7 @@ Index: ggzd/game_servers/ggzcards/common/net_common.c
  }
 Index: ggzd/game_servers/ggzcards/common/net_common.h
 ===================================================================
---- ggzd/game_servers/ggzcards/common/net_common.h	(revision 8360)
+--- ggzd/game_servers/ggzcards/common/net_common.h	(revision 8419)
 +++ ggzd/game_servers/ggzcards/common/net_common.h	(working copy)
 @@ -29,53 +29,46 @@
   */
@@ -462,7 +462,7 @@ Index: ggzd/game_servers/ggzcards/common/net_common.h
 +void write_seat(GGZDataIO * dio, int seat);
 Index: ggzd/game_servers/ggzcards/common/shared.h
 ===================================================================
---- ggzd/game_servers/ggzcards/common/shared.h	(revision 8360)
+--- ggzd/game_servers/ggzcards/common/shared.h	(revision 8419)
 +++ ggzd/game_servers/ggzcards/common/shared.h	(working copy)
 @@ -32,16 +32,16 @@
  #ifndef __SHARED_H__
@@ -487,7 +487,7 @@ Index: ggzd/game_servers/ggzcards/common/shared.h
  #endif
 Index: ggzd/game_servers/ggzcards/ai/game.h
 ===================================================================
---- ggzd/game_servers/ggzcards/ai/game.h	(revision 8360)
+--- ggzd/game_servers/ggzcards/ai/game.h	(revision 8419)
 +++ ggzd/game_servers/ggzcards/ai/game.h	(working copy)
 @@ -32,7 +32,7 @@
  #define DBG_PLAY "play"
@@ -509,7 +509,7 @@ Index: ggzd/game_servers/ggzcards/ai/game.h
  
 Index: ggzd/game_servers/ggzcards/ai/main.c
 ===================================================================
---- ggzd/game_servers/ggzcards/ai/main.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/ai/main.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/ai/main.c	(working copy)
 @@ -36,6 +36,8 @@
  
@@ -538,11 +538,12 @@ Index: ggzd/game_servers/ggzcards/ai/main.c
  	assert(fd >= 0);
  
  	FD_ZERO(&active_fd_set);
-@@ -65,9 +69,16 @@
+@@ -65,19 +69,38 @@
  	
  	while (1) {
  		fd_set read_fd_set = active_fd_set;
 +		fd_set write_fd_set = active_fd_set;
++		fd_set except_fd_set = active_fd_set;
 +		fd_set *pwrite_fd_set = NULL;
  		int status;
 +
@@ -552,22 +553,29 @@ Index: ggzd/game_servers/ggzcards/ai/main.c
  		
 -		status = select(fd + 1, &read_fd_set, NULL, NULL, NULL);
 +		status = select(fd + 1, &read_fd_set, pwrite_fd_set,
-+				NULL, NULL);
++				&except_fd_set, NULL);
  		
  		if (status <= 0) {
  			if (errno != EINTR)
-@@ -76,8 +87,14 @@
+ 				break;
+ 			continue;
  		}
- 		
+-		
++
++		if (FD_ISSET(fd, &except_fd_set)) {
++			break;
++		}
++
  		if (FD_ISSET(fd, &read_fd_set))
 -			if (client_handle_server() < 0)
 -				exit(0);		
-+			if (client_handle_server() < 0) 
-+				exit(0);
++			if (client_handle_server() < 0) {
++				break;
++			}
 +
 +		if (pwrite_fd_set && FD_ISSET(fd, pwrite_fd_set)) {
 +			if (ggz_dio_write_data(dio) < 0) {
-+				exit(0);
++				break;
 +			}
 +		}
  	}
@@ -575,7 +583,7 @@ Index: ggzd/game_servers/ggzcards/ai/main.c
  	client_quit();
 Index: ggzd/game_servers/ggzcards/ai/game.c
 ===================================================================
---- ggzd/game_servers/ggzcards/ai/game.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/ai/game.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/ai/game.c	(working copy)
 @@ -44,7 +44,7 @@
  	return num;
@@ -598,7 +606,7 @@ Index: ggzd/game_servers/ggzcards/ai/game.c
  }
 Index: ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc
 ===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc	(revision 8360)
+--- ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc	(revision 8419)
 +++ ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc	(working copy)
 @@ -12,7 +12,7 @@
  
@@ -611,7 +619,7 @@ Index: ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc
  AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc
 ===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc	(revision 8360)
+--- ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc	(revision 8419)
 +++ ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc	(working copy)
 @@ -13,7 +13,7 @@
  
@@ -624,7 +632,7 @@ Index: ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc
  AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc
 ===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc	(revision 8360)
+--- ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc	(revision 8419)
 +++ ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc	(working copy)
 @@ -12,7 +12,7 @@
  
@@ -637,7 +645,7 @@ Index: ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc
  AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc
 ===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc	(revision 8360)
+--- ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc	(revision 8419)
 +++ ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc	(working copy)
 @@ -13,7 +13,7 @@
  
@@ -650,7 +658,7 @@ Index: ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc
  AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc
 ===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc	(revision 8360)
+--- ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc	(revision 8419)
 +++ ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc	(working copy)
 @@ -12,7 +12,7 @@
  
@@ -663,7 +671,7 @@ Index: ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc
  AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc
 ===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc	(revision 8360)
+--- ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc	(revision 8419)
 +++ ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc	(working copy)
 @@ -12,7 +12,7 @@
  
@@ -676,7 +684,7 @@ Index: ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc
  AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc
 ===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc	(revision 8360)
+--- ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc	(revision 8419)
 +++ ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc	(working copy)
 @@ -12,7 +12,7 @@
  
@@ -689,7 +697,7 @@ Index: ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc
  AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc
 ===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc	(revision 8360)
+--- ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc	(revision 8419)
 +++ ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc	(working copy)
 @@ -12,7 +12,7 @@
  
@@ -702,7 +710,7 @@ Index: ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc
  AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/config/ggzcards.dsc
 ===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards.dsc	(revision 8360)
+--- ggzd/game_servers/ggzcards/config/ggzcards.dsc	(revision 8419)
 +++ ggzd/game_servers/ggzcards/config/ggzcards.dsc	(working copy)
 @@ -12,7 +12,7 @@
  
@@ -715,9 +723,9 @@ Index: ggzd/game_servers/ggzcards/config/ggzcards.dsc
  AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/main.c
 ===================================================================
---- ggzd/game_servers/ggzcards/main.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/main.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/main.c	(working copy)
-@@ -223,22 +223,32 @@
+@@ -223,22 +223,34 @@
  	   the bot channels. */
  	do {
  		/* this is a whole lot of unnecessary code... */
@@ -746,8 +754,10 @@ Index: ggzd/game_servers/ggzcards/main.c
 -				assert(!FD_ISSET(fd, &fdset));
 -				FD_SET(fd, &fdset);
 +
++#if 0 /* With nonatomic seat ops this is possible now. */
 +				assert(!FD_ISSET(fd, &read_fd_set));
 +				assert(!FD_ISSET(fd, &write_fd_set));
++#endif
 +
 +				FD_SET(fd, &read_fd_set);
 +				if (ggz_dio_is_write_pending(dio)) {
@@ -756,7 +766,7 @@ Index: ggzd/game_servers/ggzcards/main.c
  			}
  
  #ifdef DEBUG
-@@ -246,14 +256,15 @@
+@@ -246,14 +258,15 @@
  				fd = game.players[p].err_fd;
  				if (fd >= 0) {
  					max_fd = MAX(max_fd, fd);
@@ -775,7 +785,7 @@ Index: ggzd/game_servers/ggzcards/main.c
  
  		if (status <= 0) {
  			if (errno != EINTR)
-@@ -261,29 +272,35 @@
+@@ -261,29 +274,36 @@
  			continue;
  		}
  
@@ -798,11 +808,12 @@ Index: ggzd/game_servers/ggzcards/main.c
  				   but the spectator is given a player
  				   number. */
  				handle_player_data_event(p);
++				FD_CLR(fd, &read_fd_set);
  			}
  
 +			if (fd >= 0 && FD_ISSET(fd, &write_fd_set)) {
-+			  printf("Writing data to %d.\n", p);
 +				ggz_dio_write_data(dio);
++				FD_CLR(fd, &write_fd_set);
 +			}
 +
  #ifdef DEBUG
@@ -815,7 +826,7 @@ Index: ggzd/game_servers/ggzcards/main.c
  					handle_ai_stderr(p);
  			}
  #endif /* DEBUG */
-@@ -294,6 +311,7 @@
+@@ -294,6 +314,7 @@
  static void handle_debug_message(int priority, const char *msg)
  {
  	if (!game.ggz
@@ -825,7 +836,7 @@ Index: ggzd/game_servers/ggzcards/main.c
  		fputs(msg, stderr);
 Index: ggzd/game_servers/ggzcards/net.c
 ===================================================================
---- ggzd/game_servers/ggzcards/net.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/net.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/net.c	(working copy)
 @@ -46,8 +46,6 @@
  #include "options.h"
@@ -836,7 +847,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  seat_t convert_seat(seat_t s_abs, player_t p)
  {
  	/* Treat spectators as if they're sitting at seat 0. */
-@@ -84,7 +82,7 @@
+@@ -84,11 +82,13 @@
     FALSE otherwise. */
  static bool is_broadcast_seat(player_t p)
  {
@@ -844,8 +855,14 @@ Index: ggzd/game_servers/ggzcards/net.c
 +	if (get_player_dio(p))
  		return TRUE;
  
++#if 0 /* This is now possible because of non-atomic seat operations. */
  	assert(p >= 0 || get_player_name(p) == NULL);
-@@ -108,12 +106,12 @@
+ 	assert(get_player_status(p) != GGZ_SEAT_PLAYER);
++#endif
+ 
+ 	/* This can happen at end-of-game. */
+ 	/* assert(get_player_status(p) != GGZ_SEAT_BOT); */
+@@ -108,12 +108,12 @@
   */
  void net_send_player_list(player_t p)
  {
@@ -862,7 +879,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  
  	/* Note that this function can be called before we know what game
  	   we're playing.  In this case, we'll know the number of players
-@@ -123,11 +121,12 @@
+@@ -123,11 +123,12 @@
  	   desirable to finesse data by sending the player list instead. */
  	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
  		seat_t s_abs = UNCONVERT_SEAT(s_rel, p);
@@ -879,7 +896,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  void net_broadcast_player_list(void)
-@@ -150,22 +149,22 @@
+@@ -150,22 +151,22 @@
                                int *option_defaults,
                                char ***option_choices)
  {
@@ -915,7 +932,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  /* Send out play for player to _all_ players. Also symbolizes that this play
-@@ -177,12 +176,13 @@
+@@ -177,12 +178,13 @@
   */
  static void net_send_play(player_t p, seat_t player, card_t card)
  {
@@ -935,7 +952,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  void net_broadcast_play(seat_t player, card_t card)
-@@ -202,21 +202,21 @@
+@@ -202,21 +204,21 @@
   */
  static void net_send_gameover(player_t p, int winner_cnt, player_t * winners)
  {
@@ -963,7 +980,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  void net_broadcast_gameover(int winner_cnt, player_t *winners)
-@@ -230,7 +230,7 @@
+@@ -230,7 +232,7 @@
  void net_send_table(player_t p)
  {
  	seat_t s_r, s_abs;
@@ -972,7 +989,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  
  	if (game.num_seats == 0) /* FIXME: don't check this here */
  		return;
-@@ -238,13 +238,13 @@
+@@ -238,13 +240,13 @@
  	ggz_debug(DBG_NET, "Sending table to player %d/%s.", p,
  		    get_player_name(p));
  
@@ -990,7 +1007,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  /* Request a bid from player p.  bid_count is the number of bids; bids is an
-@@ -252,18 +252,20 @@
+@@ -252,18 +254,20 @@
  void net_send_bid_request(player_t p, int bid_count, bid_t * bids)
  {
  	int i;
@@ -1014,7 +1031,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  		if (seat_type != GGZ_SEAT_BOT) {
  			/* HACK: we need to send the full bid text to
  			   a bot. */
-@@ -272,22 +274,23 @@
+@@ -272,22 +276,23 @@
  			game.data->get_bid_desc(bid_desc, sizeof(bid_desc),
  			                         bids[i]);
  		}
@@ -1047,7 +1064,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  void net_broadcast_bid(player_t bidder, bid_t bid)
-@@ -301,7 +304,7 @@
+@@ -301,7 +306,7 @@
  void net_send_play_request(player_t p, seat_t s)
  {
  	seat_t s_r = CONVERT_SEAT(s, p);
@@ -1056,7 +1073,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  	
  	hand_t *hand = &game.seats[s].hand;
  	card_t valid_plays[hand->hand_size];
-@@ -321,22 +324,23 @@
+@@ -321,22 +326,23 @@
  		    "to play from seat %d/%s's hand.", p,
  		    get_player_name(p), s, get_seat_name(s));
  
@@ -1090,7 +1107,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  /* Show a player a hand.  This will reveal the cards in the hand iff reveal
-@@ -344,7 +348,7 @@
+@@ -344,18 +350,22 @@
  void net_send_hand(const player_t p, const seat_t s,
                     bool show_fronts, bool show_backs)
  {
@@ -1098,8 +1115,12 @@ Index: ggzd/game_servers/ggzcards/net.c
 +	GGZDataIO *dio = get_player_dio(p);
  	int i;
  
++	/* This can happen with the weird broadcast rules - see
++	   game.data->send_hand() calls in common.c. */
++	if (!dio) return;
++
  	ggz_debug(DBG_NET,
-@@ -352,10 +356,10 @@
+ 		    "Sending player %d/%d/%s hand %d/%s - revealing(%d,%d)", p,
  		    PLAYER_TO_SEAT(p), get_player_name(p), s,
  		    get_seat_name(s), show_fronts, show_backs);
  
@@ -1114,7 +1135,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  
  	for (i = 0; i < game.seats[s].hand.hand_size; i++) {
  		card_t card = game.seats[s].hand.cards[i];
-@@ -366,18 +370,19 @@
+@@ -366,18 +376,19 @@
  		if (!show_backs)
  			card.deck = UNKNOWN_DECK;
  
@@ -1140,7 +1161,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  void net_broadcast_trick(player_t winner)
-@@ -389,23 +394,26 @@
+@@ -389,23 +400,26 @@
  
  void net_send_newgame_request(player_t p)
  {
@@ -1174,7 +1195,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  void net_broadcast_newgame(void)
-@@ -420,10 +428,11 @@
+@@ -420,10 +434,11 @@
  
  static void net_send_newhand(player_t p)
  {
@@ -1189,7 +1210,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  
-@@ -437,10 +446,10 @@
+@@ -437,10 +452,10 @@
  void net_send_global_text_message(player_t p, const char *mark,
                               const char *message)
  {
@@ -1202,7 +1223,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  		return;
  	
  	assert(mark);
-@@ -448,11 +457,13 @@
+@@ -448,11 +463,13 @@
  	if (message == NULL)
  		message = "";	/* this happens sometimes (hmmm, really?
  				   how?) */
@@ -1221,7 +1242,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  /* send_global_message_toall sends the truly global message to all players */
-@@ -465,21 +476,22 @@
+@@ -465,21 +482,22 @@
  
  void net_send_player_text_message(player_t p, seat_t s, const char *message)
  {
@@ -1251,7 +1272,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  	int i;
  	seat_t s_rel;
  
-@@ -487,19 +499,18 @@
+@@ -487,19 +505,18 @@
  	ggz_debug(DBG_NET, "Sending global cardlist message to player %d.",
  		    p);
  		
@@ -1278,7 +1299,7 @@ Index: ggzd/game_servers/ggzcards/net.c
  }
  
  void net_broadcast_global_cardlist_message(const char *mark, int *lengths,
-@@ -515,118 +526,106 @@
+@@ -515,118 +532,106 @@
   * NETWORK READING CODE
   */
  
@@ -1448,9 +1469,9 @@ Index: ggzd/game_servers/ggzcards/net.c
 +}
 Index: ggzd/game_servers/ggzcards/common.c
 ===================================================================
---- ggzd/game_servers/ggzcards/common.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/common.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/common.c	(working copy)
-@@ -381,13 +381,15 @@
+@@ -381,13 +381,16 @@
  		game.players[p].seat = -1;
  		assign_team(p, p);
  		game.players[p].allbids = NULL;
@@ -1463,11 +1484,12 @@ Index: ggzd/game_servers/ggzcards/common.c
  	} players_iterate_end;
  
 +	game.spectators = NULL;
++	game.spectator_count = 0;
 +
  	/* we don't yet know the number of seats */
  
  	/* As soon as we know which game we're playing, we should init the
-@@ -456,6 +458,7 @@
+@@ -456,17 +459,36 @@
  			 || old_seat->type == GGZ_SEAT_BOT)
  	                && (new_seat.type != old_seat->type
  	                    || strcmp(old_seat->name, new_seat.name));
@@ -1475,55 +1497,77 @@ Index: ggzd/game_servers/ggzcards/common.c
  
  	/* There's a big problem here since if the players join/leave before
  	   the game type is set, we won't know the seat number of the player
-@@ -470,6 +473,26 @@
- 	if (is_join && new_seat.type == GGZ_SEAT_BOT)
- 		start_ai(player, game.ai_module);
+ 	   - it'll be -1.  We thus have to special-case that entirely. */
+ 	
+-	ggz_debug(DBG_MISC, "Handling a seat-change event for player %d.",
+-	          player);
++	ggz_debug(DBG_MISC, "Handling a seat-change event for player %d "
++		  "(%d => %d).",
++	          player, old_fd, new_fd);
  
-+	if (new_fd != old_fd) {
+-	/* Start or stop any AI on the seat.  This needs to be done first. */
++	/* Start or stop any AI on the seat, and create the DIO structure
++	   for human players.  This needs to be done first. */
+ 	if (is_leave && old_seat->type == GGZ_SEAT_BOT)
+ 		stop_ai(player);
++	{
 +		GGZDataIO **dio = &game.players[old_seat->num].dio;
 +
-+		if (old_fd != -1) {
-+			assert(old_fd == ggz_dio_get_socket(*dio));
++		if (*dio) {
 +			ggz_dio_flush(*dio);
 +			assert(!ggz_dio_is_write_pending(*dio));
 +			ggz_dio_free(*dio);
++			*dio = NULL;
 +		}
 +		if (new_fd != -1) {
 +			*dio = ggz_dio_new(new_fd);
-+
-+			printf("Creating dio on %d for %d.\n",
-+			       new_fd, new_seat.num);
 +
 +			/* HACK: To avoid split packets. */
 +			ggz_dio_set_auto_flush(*dio, TRUE);
 +		}
 +	}
-+
- 	/* We send player list to everyone.  This used to skip over the
- 	   player joining.  I think it only did that because the player list
- 	   is also sent out in the sync, but there could be a better reason
-@@ -545,13 +568,31 @@
+ 	if (is_join && new_seat.type == GGZ_SEAT_BOT)
+ 		start_ai(player, game.ai_module);
+ 
+@@ -545,13 +567,47 @@
  void handle_ggz_spectator_seat_event(GGZdMod *ggz,
  				     GGZdModEvent event, const void *data)
  {
 -	GGZSpectator old = *(GGZSpectator*)data;
 -	int spectator = old.num;
 +	const GGZSpectator *old = data;
-+	int spectator = old->num;
++	const int spectator = old->num;
++	const int nspectators = ggzdmod_get_max_num_spectators(ggz);
  	player_t player = SPECTATOR_TO_PLAYER(spectator);
  	GGZSpectator new = ggzdmod_get_spectator(ggz, spectator);
-+	int new_fd = new.fd, old_fd = old->fd;
++	const int new_fd = new.fd;
++#if 0
++	int old_fd = old->fd;
++#endif
  
- 	assert(spectator < ggzdmod_get_max_num_spectators(ggz));
+-	assert(spectator < ggzdmod_get_max_num_spectators(ggz));
++	assert(spectator < nspectators);
  
-+	if (new_fd != old_fd) {
++	if (nspectators > game.spectator_count) {
++		int i;
++
++		game.spectators = ggz_realloc(game.spectators,
++					      nspectators
++					      * sizeof(*game.spectators));
++		for (i = game.spectator_count; i < nspectators; i++) {
++			game.spectators[i].dio = NULL;
++		}
++		game.spectator_count = nspectators;
++	}
++
++	{
 +		GGZDataIO **dio = &game.spectators[old->num].dio;
 +
-+		if (old_fd != -1) {
-+			assert(old_fd == ggz_dio_get_socket(*dio));
++		if (*dio) {
 +			ggz_dio_flush(*dio);
 +			assert(!ggz_dio_is_write_pending(*dio));
 +			ggz_dio_free(*dio);
++			*dio = NULL;
 +		}
 +		if (new_fd != -1) {
 +			*dio = ggz_dio_new(new_fd);
@@ -1536,7 +1580,7 @@ Index: ggzd/game_servers/ggzcards/common.c
  	if (new.name) {
  		/* The spectator is not yet visible to other players; so
  		   his joining does not affect anyone else. */
-@@ -559,7 +600,7 @@
+@@ -559,7 +615,7 @@
  		ggz_debug(DBG_MISC, "%s joined as spectator on seat %d.",
  			  new.name, spectator);
  
@@ -1545,7 +1589,7 @@ Index: ggzd/game_servers/ggzcards/common.c
  		assert(new.name && new.fd >= 0);
  
  		/* Send newgame alert, if we're already playing. */
-@@ -569,9 +610,9 @@
+@@ -569,9 +625,9 @@
  		send_sync(player);
  	} else {
  		ggz_debug(DBG_MISC, "%s left as spectator on seat %d.",
@@ -1557,7 +1601,18 @@ Index: ggzd/game_servers/ggzcards/common.c
  
  		if (seats_empty())
  			if (ggzdmod_set_state(game.ggz,
-@@ -916,25 +957,15 @@
+@@ -775,8 +831,8 @@
+ 	for (s = 0; s < game.num_seats; s++) {
+ 		game.seats[s].player = -1;
+ 		game.seats[s].table = UNKNOWN_CARD;
+-		game.seats[s].name = "Unclaimed Seat";	/* TODO: reserved
+-							   seats */
++		/* TODO: reserved seats */
++		game.seats[s].name = ggz_strdup("Unclaimed Seat");
+ 		game.seats[s].pmessage = NULL;
+ 		game.seats[s].hand.cards = NULL;
+ 	}
+@@ -916,25 +972,16 @@
  	return ggzdmod_get_seat(game.ggz, p).type;
  }
  
@@ -1568,6 +1623,7 @@ Index: ggzd/game_servers/ggzcards/common.c
  		int sp = PLAYER_TO_SPECTATOR(p);
 -		return ggzdmod_get_spectator(game.ggz, sp).fd;
 +
++		if (sp >= game.spectator_count) return NULL;
 +		return game.spectators[sp].dio;
  	} else {
 -		GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
@@ -1589,7 +1645,7 @@ Index: ggzd/game_servers/ggzcards/common.c
  /* libggz should handle this instead! */
 Index: ggzd/game_servers/ggzcards/ai.c
 ===================================================================
---- ggzd/game_servers/ggzcards/ai.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/ai.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/ai.c	(working copy)
 @@ -77,7 +77,7 @@
  	ggz_debug(DBG_AI, "Starting AI for player %d as %s.", p, module->name);
@@ -1637,9 +1693,21 @@ Index: ggzd/game_servers/ggzcards/ai.c
  #ifdef DEBUG
  	game.players[p].err_fd = -1;
  #endif
+Index: ggzd/game_servers/ggzcards/net.h
+===================================================================
+--- ggzd/game_servers/ggzcards/net.h	(revision 8419)
++++ ggzd/game_servers/ggzcards/net.h	(working copy)
+@@ -67,6 +67,7 @@
+ 
+ void net_send_hand(player_t p, seat_t s,
+                    bool show_fronts, bool show_backs);
++void net_broadcast_hands(void);
+ 
+ void net_broadcast_trick(player_t winner);
+ 
 Index: ggzd/game_servers/ggzcards/client/client.c
 ===================================================================
---- ggzd/game_servers/ggzcards/client/client.c	(revision 8360)
+--- ggzd/game_servers/ggzcards/client/client.c	(revision 8419)
 +++ ggzd/game_servers/ggzcards/client/client.c	(working copy)
 @@ -52,15 +52,15 @@
  
@@ -2578,7 +2646,7 @@ Index: ggzd/game_servers/ggzcards/client/client.c
 +}
 Index: ggzd/game_servers/ggzcards/client/client.h
 ===================================================================
---- ggzd/game_servers/ggzcards/client/client.h	(revision 8360)
+--- ggzd/game_servers/ggzcards/client/client.h	(revision 8419)
 +++ ggzd/game_servers/ggzcards/client/client.h	(working copy)
 @@ -28,6 +28,7 @@
  #endif
@@ -2753,17 +2821,18 @@ Index: ggzd/game_servers/ggzcards/client/client.h
  
 Index: ggzd/game_servers/ggzcards/common.h
 ===================================================================
---- ggzd/game_servers/ggzcards/common.h	(revision 8360)
+--- ggzd/game_servers/ggzcards/common.h	(revision 8419)
 +++ ggzd/game_servers/ggzcards/common.h	(working copy)
-@@ -141,6 +141,7 @@
+@@ -141,6 +141,8 @@
  	int num_players;	/**< the number of players in the game */
  	int player_count;	/**< the number of human players who have joined, in total */
  	struct game_player_t *players;	/**< data for each player, allocated in game_init */
 +	struct game_spectator_t *spectators; /**< data for each spectator. */
++	int spectator_count; /**< Size of the spectators array. */
  
  	/* table data: seats */
  	int num_seats;	/**< the number of "seats" in the table (which includes fake non-players */
-@@ -217,7 +218,7 @@
+@@ -217,7 +219,7 @@
  
  const char* get_player_name(player_t p);
  GGZSeatType get_player_status(player_t p);
@@ -2774,7 +2843,7 @@ Index: ggzd/game_servers/ggzcards/common.h
  bool seats_empty(void);
 Index: gtk-games/ggzcards/animation.c
 ===================================================================
---- gtk-games/ggzcards/animation.c	(revision 8360)
+--- gtk-games/ggzcards/animation.c	(revision 8418)
 +++ gtk-games/ggzcards/animation.c	(working copy)
 @@ -317,7 +317,12 @@
  	int max_x = 0, max_y = 0;
@@ -2792,7 +2861,7 @@ Index: gtk-games/ggzcards/animation.c
  	/* First determine the areas that need to be overwritten up. */
 Index: gtk-games/ggzcards/module.dsc.in
 ===================================================================
---- gtk-games/ggzcards/module.dsc.in	(revision 8360)
+--- gtk-games/ggzcards/module.dsc.in	(revision 8418)
 +++ gtk-games/ggzcards/module.dsc.in	(working copy)
 @@ -7,5 +7,5 @@
  Homepage = http://www.ggzgamingzone.org/games/ggzcards/
@@ -2803,7 +2872,7 @@ Index: gtk-games/ggzcards/module.dsc.in
  Version = 0.0.7
 Index: gtk-games/ggzcards/common/net_common.c
 ===================================================================
---- gtk-games/ggzcards/common/net_common.c	(revision 8360)
+--- gtk-games/ggzcards/common/net_common.c	(revision 8418)
 +++ gtk-games/ggzcards/common/net_common.c	(working copy)
 @@ -38,93 +38,84 @@
  
@@ -2935,7 +3004,7 @@ Index: gtk-games/ggzcards/common/net_common.c
  }
 Index: gtk-games/ggzcards/common/net_common.h
 ===================================================================
---- gtk-games/ggzcards/common/net_common.h	(revision 8360)
+--- gtk-games/ggzcards/common/net_common.h	(revision 8418)
 +++ gtk-games/ggzcards/common/net_common.h	(working copy)
 @@ -29,53 +29,46 @@
   */
@@ -3008,7 +3077,7 @@ Index: gtk-games/ggzcards/common/net_common.h
 +void write_seat(GGZDataIO * dio, int seat);
 Index: gtk-games/ggzcards/common/Makefile.am
 ===================================================================
---- gtk-games/ggzcards/common/Makefile.am	(revision 8360)
+--- gtk-games/ggzcards/common/Makefile.am	(revision 8418)
 +++ gtk-games/ggzcards/common/Makefile.am	(working copy)
 @@ -7,8 +7,10 @@
  
@@ -3024,7 +3093,7 @@ Index: gtk-games/ggzcards/common/Makefile.am
 +
 Index: gtk-games/ggzcards/common/shared.h
 ===================================================================
---- gtk-games/ggzcards/common/shared.h	(revision 8360)
+--- gtk-games/ggzcards/common/shared.h	(revision 8418)
 +++ gtk-games/ggzcards/common/shared.h	(working copy)
 @@ -32,16 +32,16 @@
  #ifndef __SHARED_H__
@@ -3049,7 +3118,7 @@ Index: gtk-games/ggzcards/common/shared.h
  #endif
 Index: gtk-games/ggzcards/game.c
 ===================================================================
---- gtk-games/ggzcards/game.c	(revision 8360)
+--- gtk-games/ggzcards/game.c	(revision 8418)
 +++ gtk-games/ggzcards/game.c	(working copy)
 @@ -34,6 +34,7 @@
  #include <unistd.h>
@@ -3193,7 +3262,7 @@ Index: gtk-games/ggzcards/game.c
  }
 Index: gtk-games/ggzcards/game.h
 ===================================================================
---- gtk-games/ggzcards/game.h	(revision 8360)
+--- gtk-games/ggzcards/game.h	(revision 8418)
 +++ gtk-games/ggzcards/game.h	(working copy)
 @@ -133,8 +133,7 @@
  			 gpointer data);
@@ -3224,7 +3293,7 @@ Index: gtk-games/ggzcards/game.h
  #endif /* __GAME_H__ */
 Index: gtk-games/ggzcards/main.c
 ===================================================================
---- gtk-games/ggzcards/main.c	(revision 8360)
+--- gtk-games/ggzcards/main.c	(revision 8418)
 +++ gtk-games/ggzcards/main.c	(working copy)
 @@ -34,6 +34,7 @@
  #include <unistd.h>
@@ -3264,7 +3333,7 @@ Index: gtk-games/ggzcards/main.c
  /* Initialize data for the "about" dialog */
 Index: gtk-games/ggzcards/client/client.c
 ===================================================================
---- gtk-games/ggzcards/client/client.c	(revision 8360)
+--- gtk-games/ggzcards/client/client.c	(revision 8418)
 +++ gtk-games/ggzcards/client/client.c	(working copy)
 @@ -52,15 +52,15 @@
  
@@ -4204,7 +4273,7 @@ Index: gtk-games/ggzcards/client/client.c
 +}
 Index: gtk-games/ggzcards/client/client.h
 ===================================================================
---- gtk-games/ggzcards/client/client.h	(revision 8360)
+--- gtk-games/ggzcards/client/client.h	(revision 8418)
 +++ gtk-games/ggzcards/client/client.h	(working copy)
 @@ -28,6 +28,7 @@
  #endif
