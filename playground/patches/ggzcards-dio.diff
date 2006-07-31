@@ -1,6 +1,6 @@
 Index: ggzd/game_servers/ggzcards/types.h
 ===================================================================
---- ggzd/game_servers/ggzcards/types.h	(revision 8419)
+--- ggzd/game_servers/ggzcards/types.h	(revision 8425)
 +++ ggzd/game_servers/ggzcards/types.h	(working copy)
 @@ -30,6 +30,7 @@
  
@@ -36,7 +36,7 @@ Index: ggzd/game_servers/ggzcards/types.h
  
 Index: ggzd/game_servers/ggzcards/games/lapocha.c
 ===================================================================
---- ggzd/game_servers/ggzcards/games/lapocha.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/games/lapocha.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/games/lapocha.c	(working copy)
 @@ -31,6 +31,7 @@
  
@@ -208,27 +208,64 @@ Index: ggzd/game_servers/ggzcards/games/lapocha.c
  }
 Index: ggzd/game_servers/ggzcards/games/spades.c
 ===================================================================
---- ggzd/game_servers/ggzcards/games/spades.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/games/spades.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/games/spades.c	(working copy)
-@@ -159,6 +159,7 @@
+@@ -157,37 +157,37 @@
+ 	spades_send_hand
+ };
  
- static bool spd_send_scoredata(player_t p)
+-static bool spd_send_scoredata(player_t p)
++static void spd_send_scoredata(player_t p)
  {
-+#if 0
- 	int fd = get_player_socket(p);
+-	int fd = get_player_socket(p);
++	GGZDataIO *dio = get_player_dio(p);
  	team_t team;
  	int waiting = -1;
-@@ -187,6 +188,7 @@
+ 
+ 	/* The score data can be used by the AI for
+ 	   calculations or by the game client to
+ 	   display team score/bid/tricks/bags. */
+-	if (write_opcode(fd, MESSAGE_GAME) < 0
+-	    || write_opcode(fd, GAME_MESSAGE_GAME) < 0
+-	    || ggz_write_string(fd, "spades") < 0
+-	    || ggz_write_int(fd, 44) < 0) {
+-	  return -1;
+-	}
++	ggz_dio_packet_start(dio);
++	write_opcode(dio, MESSAGE_GAME);
++	write_opcode(dio, GAME_MESSAGE_GAME);
++	ggz_dio_put_string(dio, "spades");
++	ggz_dio_put_int(dio, 44); /* Obsolete. */
++
+ 	for (team = 0; team < 2; team++) {
+-		ggz_write_int(fd, game.players[team].score);
+-		ggz_write_int(fd, GSPADES.bags[team]);
++		ggz_dio_put_int(dio, game.players[team].score);
++		ggz_dio_put_int(dio, GSPADES.bags[team]);
+ 	}
+ 	players_iterate(p2) {
+-		ggz_write_int(fd, game.players[p2].tricks);
++		ggz_dio_put_int(dio, game.players[p2].tricks);
+ 	} players_iterate_end;
+-	ggz_write_int(fd, game.next_bid);
+-	ggz_write_int(fd, game.next_play);
++	ggz_dio_put_int(dio, game.next_bid);
++	ggz_dio_put_int(dio, game.next_play);
+ 	if (game.state == STATE_WAIT_FOR_BID) {
+ 		waiting = game.next_bid;
+ 	} else if (game.state == STATE_WAIT_FOR_PLAY) {
  		waiting = game.next_play;
  	}
- 	ggz_write_int(fd, waiting); /* The player we're waiting on. */
-+#endif
- 	return 0;
+-	ggz_write_int(fd, waiting); /* The player we're waiting on. */
+-	return 0;
++	ggz_dio_put_int(dio, waiting); /* The player we're waiting on. */
++	ggz_dio_packet_end(dio);
  }
  
+ static void spd_broadcast_scoredata(void)
 Index: ggzd/game_servers/ggzcards/message.c
 ===================================================================
---- ggzd/game_servers/ggzcards/message.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/message.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/message.c	(working copy)
 @@ -128,7 +128,7 @@
  		/* HACK: We don't want to send messages to disconnected
@@ -241,7 +278,7 @@ Index: ggzd/game_servers/ggzcards/message.c
  	} allplayers_iterate_end;
 Index: ggzd/game_servers/ggzcards/common/net_common.c
 ===================================================================
---- ggzd/game_servers/ggzcards/common/net_common.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/common/net_common.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/common/net_common.c	(working copy)
 @@ -29,102 +29,93 @@
   */
@@ -389,7 +426,7 @@ Index: ggzd/game_servers/ggzcards/common/net_common.c
  }
 Index: ggzd/game_servers/ggzcards/common/net_common.h
 ===================================================================
---- ggzd/game_servers/ggzcards/common/net_common.h	(revision 8419)
+--- ggzd/game_servers/ggzcards/common/net_common.h	(revision 8425)
 +++ ggzd/game_servers/ggzcards/common/net_common.h	(working copy)
 @@ -29,53 +29,46 @@
   */
@@ -462,7 +499,7 @@ Index: ggzd/game_servers/ggzcards/common/net_common.h
 +void write_seat(GGZDataIO * dio, int seat);
 Index: ggzd/game_servers/ggzcards/common/shared.h
 ===================================================================
---- ggzd/game_servers/ggzcards/common/shared.h	(revision 8419)
+--- ggzd/game_servers/ggzcards/common/shared.h	(revision 8425)
 +++ ggzd/game_servers/ggzcards/common/shared.h	(working copy)
 @@ -32,16 +32,16 @@
  #ifndef __SHARED_H__
@@ -487,7 +524,7 @@ Index: ggzd/game_servers/ggzcards/common/shared.h
  #endif
 Index: ggzd/game_servers/ggzcards/ai/game.h
 ===================================================================
---- ggzd/game_servers/ggzcards/ai/game.h	(revision 8419)
+--- ggzd/game_servers/ggzcards/ai/game.h	(revision 8425)
 +++ ggzd/game_servers/ggzcards/ai/game.h	(working copy)
 @@ -32,7 +32,7 @@
  #define DBG_PLAY "play"
@@ -509,7 +546,7 @@ Index: ggzd/game_servers/ggzcards/ai/game.h
  
 Index: ggzd/game_servers/ggzcards/ai/main.c
 ===================================================================
---- ggzd/game_servers/ggzcards/ai/main.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/ai/main.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/ai/main.c	(working copy)
 @@ -36,6 +36,8 @@
  
@@ -583,7 +620,7 @@ Index: ggzd/game_servers/ggzcards/ai/main.c
  	client_quit();
 Index: ggzd/game_servers/ggzcards/ai/game.c
 ===================================================================
---- ggzd/game_servers/ggzcards/ai/game.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/ai/game.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/ai/game.c	(working copy)
 @@ -44,7 +44,7 @@
  	return num;
@@ -604,126 +641,9 @@ Index: ggzd/game_servers/ggzcards/ai/game.c
  	/* nothing */
 -	return 0;
  }
-Index: ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc
-===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc	(revision 8419)
-+++ ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc	(working copy)
-@@ -12,7 +12,7 @@
- 
- [Protocol]
- Engine = GGZCards
--Version = 4
-+Version = 5
- 
- [TableOptions]
- AllowLeave = 1
-Index: ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc
-===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc	(revision 8419)
-+++ ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc	(working copy)
-@@ -13,7 +13,7 @@
- 
- [Protocol]
- Engine = GGZCards
--Version = 4
-+Version = 5
- 
- [TableOptions]
- AllowLeave = 1
-Index: ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc
-===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc	(revision 8419)
-+++ ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc	(working copy)
-@@ -12,7 +12,7 @@
- 
- [Protocol]
- Engine = GGZCards
--Version = 4
-+Version = 5
- 
- [TableOptions]
- AllowLeave = 1
-Index: ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc
-===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc	(revision 8419)
-+++ ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc	(working copy)
-@@ -13,7 +13,7 @@
- 
- [Protocol]
- Engine = GGZCards
--Version = 4
-+Version = 5
- 
- [TableOptions]
- AllowLeave = 1
-Index: ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc
-===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc	(revision 8419)
-+++ ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc	(working copy)
-@@ -12,7 +12,7 @@
- 
- [Protocol]
- Engine = GGZCards
--Version = 4
-+Version = 5
- 
- [TableOptions]
- AllowLeave = 1
-Index: ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc
-===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc	(revision 8419)
-+++ ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc	(working copy)
-@@ -12,7 +12,7 @@
- 
- [Protocol]
- Engine = GGZCards
--Version = 4
-+Version = 5
- 
- [TableOptions]
- AllowLeave = 1
-Index: ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc
-===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc	(revision 8419)
-+++ ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc	(working copy)
-@@ -12,7 +12,7 @@
- 
- [Protocol]
- Engine = GGZCards
--Version = 4
-+Version = 5
- 
- [TableOptions]
- AllowLeave = 1
-Index: ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc
-===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc	(revision 8419)
-+++ ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc	(working copy)
-@@ -12,7 +12,7 @@
- 
- [Protocol]
- Engine = GGZCards
--Version = 4
-+Version = 5
- 
- [TableOptions]
- AllowLeave = 1
-Index: ggzd/game_servers/ggzcards/config/ggzcards.dsc
-===================================================================
---- ggzd/game_servers/ggzcards/config/ggzcards.dsc	(revision 8419)
-+++ ggzd/game_servers/ggzcards/config/ggzcards.dsc	(working copy)
-@@ -12,7 +12,7 @@
- 
- [Protocol]
- Engine = GGZCards
--Version = 4
-+Version = 5
- 
- [TableOptions]
- AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/main.c
 ===================================================================
---- ggzd/game_servers/ggzcards/main.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/main.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/main.c	(working copy)
 @@ -223,22 +223,34 @@
  	   the bot channels. */
@@ -834,9 +754,126 @@ Index: ggzd/game_servers/ggzcards/main.c
  	    || ggzdmod_log(game.ggz, "%s", msg) < 0) {
  		fflush(stdout);
  		fputs(msg, stderr);
+Index: ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc	(revision 8425)
++++ ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc	(revision 8425)
++++ ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc	(working copy)
+@@ -13,7 +13,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc	(revision 8425)
++++ ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc	(revision 8425)
++++ ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc	(working copy)
+@@ -13,7 +13,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc	(revision 8425)
++++ ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc	(revision 8425)
++++ ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc	(revision 8425)
++++ ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc	(revision 8425)
++++ ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
+Index: ggzd/game_servers/ggzcards/config/ggzcards.dsc
+===================================================================
+--- ggzd/game_servers/ggzcards/config/ggzcards.dsc	(revision 8425)
++++ ggzd/game_servers/ggzcards/config/ggzcards.dsc	(working copy)
+@@ -12,7 +12,7 @@
+ 
+ [Protocol]
+ Engine = GGZCards
+-Version = 4
++Version = 5
+ 
+ [TableOptions]
+ AllowLeave = 1
 Index: ggzd/game_servers/ggzcards/net.c
 ===================================================================
---- ggzd/game_servers/ggzcards/net.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/net.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/net.c	(working copy)
 @@ -46,8 +46,6 @@
  #include "options.h"
@@ -1469,7 +1506,7 @@ Index: ggzd/game_servers/ggzcards/net.c
 +}
 Index: ggzd/game_servers/ggzcards/common.c
 ===================================================================
---- ggzd/game_servers/ggzcards/common.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/common.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/common.c	(working copy)
 @@ -381,13 +381,16 @@
  		game.players[p].seat = -1;
@@ -1645,7 +1682,7 @@ Index: ggzd/game_servers/ggzcards/common.c
  /* libggz should handle this instead! */
 Index: ggzd/game_servers/ggzcards/ai.c
 ===================================================================
---- ggzd/game_servers/ggzcards/ai.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/ai.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/ai.c	(working copy)
 @@ -77,7 +77,7 @@
  	ggz_debug(DBG_AI, "Starting AI for player %d as %s.", p, module->name);
@@ -1695,7 +1732,7 @@ Index: ggzd/game_servers/ggzcards/ai.c
  #endif
 Index: ggzd/game_servers/ggzcards/net.h
 ===================================================================
---- ggzd/game_servers/ggzcards/net.h	(revision 8419)
+--- ggzd/game_servers/ggzcards/net.h	(revision 8425)
 +++ ggzd/game_servers/ggzcards/net.h	(working copy)
 @@ -67,6 +67,7 @@
  
@@ -1707,7 +1744,7 @@ Index: ggzd/game_servers/ggzcards/net.h
  
 Index: ggzd/game_servers/ggzcards/client/client.c
 ===================================================================
---- ggzd/game_servers/ggzcards/client/client.c	(revision 8419)
+--- ggzd/game_servers/ggzcards/client/client.c	(revision 8425)
 +++ ggzd/game_servers/ggzcards/client/client.c	(working copy)
 @@ -52,15 +52,15 @@
  
@@ -2646,7 +2683,7 @@ Index: ggzd/game_servers/ggzcards/client/client.c
 +}
 Index: ggzd/game_servers/ggzcards/client/client.h
 ===================================================================
---- ggzd/game_servers/ggzcards/client/client.h	(revision 8419)
+--- ggzd/game_servers/ggzcards/client/client.h	(revision 8425)
 +++ ggzd/game_servers/ggzcards/client/client.h	(working copy)
 @@ -28,6 +28,7 @@
  #endif
@@ -2821,7 +2858,7 @@ Index: ggzd/game_servers/ggzcards/client/client.h
  
 Index: ggzd/game_servers/ggzcards/common.h
 ===================================================================
---- ggzd/game_servers/ggzcards/common.h	(revision 8419)
+--- ggzd/game_servers/ggzcards/common.h	(revision 8425)
 +++ ggzd/game_servers/ggzcards/common.h	(working copy)
 @@ -141,6 +141,8 @@
  	int num_players;	/**< the number of players in the game */
@@ -2843,7 +2880,7 @@ Index: ggzd/game_servers/ggzcards/common.h
  bool seats_empty(void);
 Index: gtk-games/ggzcards/animation.c
 ===================================================================
---- gtk-games/ggzcards/animation.c	(revision 8418)
+--- gtk-games/ggzcards/animation.c	(revision 8425)
 +++ gtk-games/ggzcards/animation.c	(working copy)
 @@ -317,7 +317,12 @@
  	int max_x = 0, max_y = 0;
@@ -2861,7 +2898,7 @@ Index: gtk-games/ggzcards/animation.c
  	/* First determine the areas that need to be overwritten up. */
 Index: gtk-games/ggzcards/module.dsc.in
 ===================================================================
---- gtk-games/ggzcards/module.dsc.in	(revision 8418)
+--- gtk-games/ggzcards/module.dsc.in	(revision 8425)
 +++ gtk-games/ggzcards/module.dsc.in	(working copy)
 @@ -7,5 +7,5 @@
  Homepage = http://www.ggzgamingzone.org/games/ggzcards/
@@ -2872,7 +2909,7 @@ Index: gtk-games/ggzcards/module.dsc.in
  Version = 0.0.7
 Index: gtk-games/ggzcards/common/net_common.c
 ===================================================================
---- gtk-games/ggzcards/common/net_common.c	(revision 8418)
+--- gtk-games/ggzcards/common/net_common.c	(revision 8425)
 +++ gtk-games/ggzcards/common/net_common.c	(working copy)
 @@ -38,93 +38,84 @@
  
@@ -3004,7 +3041,7 @@ Index: gtk-games/ggzcards/common/net_common.c
  }
 Index: gtk-games/ggzcards/common/net_common.h
 ===================================================================
---- gtk-games/ggzcards/common/net_common.h	(revision 8418)
+--- gtk-games/ggzcards/common/net_common.h	(revision 8425)
 +++ gtk-games/ggzcards/common/net_common.h	(working copy)
 @@ -29,53 +29,46 @@
   */
@@ -3077,7 +3114,7 @@ Index: gtk-games/ggzcards/common/net_common.h
 +void write_seat(GGZDataIO * dio, int seat);
 Index: gtk-games/ggzcards/common/Makefile.am
 ===================================================================
---- gtk-games/ggzcards/common/Makefile.am	(revision 8418)
+--- gtk-games/ggzcards/common/Makefile.am	(revision 8425)
 +++ gtk-games/ggzcards/common/Makefile.am	(working copy)
 @@ -7,8 +7,10 @@
  
@@ -3093,7 +3130,7 @@ Index: gtk-games/ggzcards/common/Makefile.am
 +
 Index: gtk-games/ggzcards/common/shared.h
 ===================================================================
---- gtk-games/ggzcards/common/shared.h	(revision 8418)
+--- gtk-games/ggzcards/common/shared.h	(revision 8425)
 +++ gtk-games/ggzcards/common/shared.h	(working copy)
 @@ -32,16 +32,16 @@
  #ifndef __SHARED_H__
@@ -3118,7 +3155,7 @@ Index: gtk-games/ggzcards/common/shared.h
  #endif
 Index: gtk-games/ggzcards/game.c
 ===================================================================
---- gtk-games/ggzcards/game.c	(revision 8418)
+--- gtk-games/ggzcards/game.c	(revision 8425)
 +++ gtk-games/ggzcards/game.c	(working copy)
 @@ -34,6 +34,7 @@
  #include <unistd.h>
@@ -3262,7 +3299,7 @@ Index: gtk-games/ggzcards/game.c
  }
 Index: gtk-games/ggzcards/game.h
 ===================================================================
---- gtk-games/ggzcards/game.h	(revision 8418)
+--- gtk-games/ggzcards/game.h	(revision 8425)
 +++ gtk-games/ggzcards/game.h	(working copy)
 @@ -133,8 +133,7 @@
  			 gpointer data);
@@ -3293,7 +3330,7 @@ Index: gtk-games/ggzcards/game.h
  #endif /* __GAME_H__ */
 Index: gtk-games/ggzcards/main.c
 ===================================================================
---- gtk-games/ggzcards/main.c	(revision 8418)
+--- gtk-games/ggzcards/main.c	(revision 8425)
 +++ gtk-games/ggzcards/main.c	(working copy)
 @@ -34,6 +34,7 @@
  #include <unistd.h>
@@ -3333,7 +3370,7 @@ Index: gtk-games/ggzcards/main.c
  /* Initialize data for the "about" dialog */
 Index: gtk-games/ggzcards/client/client.c
 ===================================================================
---- gtk-games/ggzcards/client/client.c	(revision 8418)
+--- gtk-games/ggzcards/client/client.c	(revision 8425)
 +++ gtk-games/ggzcards/client/client.c	(working copy)
 @@ -52,15 +52,15 @@
  
@@ -4273,7 +4310,7 @@ Index: gtk-games/ggzcards/client/client.c
 +}
 Index: gtk-games/ggzcards/client/client.h
 ===================================================================
---- gtk-games/ggzcards/client/client.h	(revision 8418)
+--- gtk-games/ggzcards/client/client.h	(revision 8425)
 +++ gtk-games/ggzcards/client/client.h	(working copy)
 @@ -28,6 +28,7 @@
  #endif
