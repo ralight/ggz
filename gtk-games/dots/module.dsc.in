@@ -5,7 +5,7 @@ CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.dots @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/dots/
 Name = Dots
-ProtocolEngine = Dots
-ProtocolVersion = 4
-Version = 0.0.4
+ProtocolEngine = @DOTS_PROTOCOL_ENGINE@
+ProtocolVersion = @DOTS_PROTOCOL_VERSION@
+Version = @DOTS_VERSION@
 

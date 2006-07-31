@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6741 2005-01-19 19:29:46Z jdorje $
+#  $Id: Makefile.am 8431 2006-07-31 23:46:52Z jdorje $
 
 SUBDIRS = .
 
@@ -29,3 +29,5 @@ ggz_ttt_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 pixmapdir = $(ggzdatadir)/tictactoe/pixmaps
 dist_pixmap_DATA = o.svg x.svg
+
+noinst_HEADERS = version.in

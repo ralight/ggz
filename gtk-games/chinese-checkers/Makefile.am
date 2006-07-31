@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6741 2005-01-19 19:29:46Z jdorje $
+#  $Id: Makefile.am 8431 2006-07-31 23:46:52Z jdorje $
 
 SUBDIRS = . pixmaps
 
@@ -31,3 +31,5 @@ ggz_ccheckers_LDADD =	$(top_builddir)/common/libgtk-games.a		\
 			$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_ccheckers_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
+
+noinst_HEADERS = version.in

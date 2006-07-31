@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6741 2005-01-19 19:29:46Z jdorje $
+#  $Id: Makefile.am 8431 2006-07-31 23:46:52Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -30,3 +30,5 @@ ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 pixmapdir = $(ggzdatadir)/reversi/pixmaps
 dist_pixmap_DATA = white.svg black.svg dot.svg enemydot.svg
+
+noinst_HEADERS = version.in

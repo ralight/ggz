@@ -5,7 +5,6 @@ Author = Ismael Orenstein
 CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.reversi @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/reversi/
-ProtocolEngine = Reversi
-ProtocolVersion = 4
-Version = 0.0.7
-
+ProtocolEngine = @REVERSI_PROTOCOL_ENGINE@
+ProtocolVersion = @REVERSI_PROTOCOL_VERSION@
+Version = @REVERSI_VERSION@

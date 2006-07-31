@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ games collection
-# $Id: configure.ac 8410 2006-07-27 17:16:44Z jdorje $
+# $Id: configure.ac 8431 2006-07-31 23:46:52Z jdorje $
 dnl ===========================================
 
 AC_INIT([GGZ GTK games], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-games])
@@ -116,6 +116,17 @@ if test "yes" = "no"; then
   AC_DEFINE([GTK_DISABLE_DEPRECATED], 1, [Disable deprecated GTK functions])
 fi
 AC_SUBST(EXTRA_GAME_PARAMETERS)
+
+dnl Versioning
+dnl ==========
+m4_include(chess/version.in)
+m4_include(chinese-checkers/version.in)
+m4_include(combat/version.in)
+m4_include(dots/version.in)
+m4_include(ggzcards/version.in)
+m4_include(hastings/version.in)
+m4_include(reversi/version.in)
+m4_include(tictactoe/version.in)
 
 dnl Various dirs
 dnl ============

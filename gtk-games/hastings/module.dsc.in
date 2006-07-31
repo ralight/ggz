@@ -5,7 +5,7 @@ CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.hastings @EXTRA_GAME_PARAMETERS
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/hastings/
 Name = Hastings
-ProtocolEngine = Hastings
-ProtocolVersion = 4
-Version = 0.0.7
+ProtocolEngine = @HASTINGS_PROTOCOL_ENGINE@
+ProtocolVersion = @HASTINGS_PROTOCOL_VERSION@
+Version = @HASTINGS_VERSION@
 

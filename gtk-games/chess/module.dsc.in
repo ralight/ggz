@@ -2,9 +2,9 @@
 [ModuleInfo]
 Name = Chess
 Author = Ismael Orenstein
-Version = 0.0.8
-ProtocolEngine = Chess
-ProtocolVersion = 3
+Version = @CHESS_VERSION@
+ProtocolEngine = @CHESS_PROTOCOL_ENGINE@
+ProtocolVersion = @CHESS_PROTOCOL_VERSION@
 CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.chess @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/chess/

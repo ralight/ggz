@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6691 2005-01-16 01:35:32Z oojah $
+#  $Id: Makefile.am 8431 2006-07-31 23:46:52Z jdorje $
 
 SUBDIRS = .
 
@@ -33,3 +33,5 @@ ggz_dots_LDADD =	$(top_builddir)/common/libgtk-games.a		\
 			$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_dots_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
+
+noinst_HEADERS = version.in
