@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8424 2006-07-30 22:44:57Z oojah $
+ * $Id: control.c 8425 2006-07-31 19:04:16Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -387,21 +387,15 @@ static void meta_announce(const char *metaserveruri, const char *username, const
 
 static void reconfiguration_setup(void)
 {
-	char *watchdir = NULL;
+	char watchdir[strlen(opt.conf_dir) + 8];
 
-	watchdir = malloc(strlen(opt.conf_dir) + 8);
-	if(!watchdir){
-		fprintf(stderr, "Reconfiguration: Error: Out of memory\n");
-		return;
-	}
+	snprintf(watchdir, sizeof(watchdir), "%s/rooms", opt.conf_dir);
 
-	snprintf(watchdir, strlen(opt.conf_dir) + 8, "%s/rooms", opt.conf_dir);
 #ifdef HAVE_INOTIFY
 	reconfigure_fd = inotify_init();
 	if(reconfigure_fd <= 0)
 	{
 		fprintf(stderr, "Reconfiguration: Error: initialization failed\n");
-		free(watchdir);
 		return;
 	}
 
@@ -420,7 +414,6 @@ static void reconfiguration_setup(void)
 	{
 		fprintf(stderr, "Reconfiguration: Error: initialization failed\n");
 		reconfigure_fd = -1;
-		free(watchdir);
 		return;
 	}
 
@@ -429,7 +422,6 @@ static void reconfiguration_setup(void)
 	if(FAMMonitorDirectory(&fc, watchdir, &fr, NULL) < 0)
 	{
 		fprintf(stderr, "Reconfiguration: Error: monitoring failed\n");
-		free(watchdir);
 		return;
 	}
 
@@ -439,7 +431,6 @@ static void reconfiguration_setup(void)
 	reconfigure_fd = -1;
 #endif
 #endif
-	free(watchdir);
 }
 
 static void reconfiguration_handle(void)
