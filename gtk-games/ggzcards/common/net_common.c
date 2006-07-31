@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 04/16/2002
  * Desc: GGZCards network common code
- * $Id: net_common.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: net_common.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Contains common networking functions.
  *
@@ -38,93 +38,84 @@
 
 #include "net_common.h"
 
-int read_card(int fd, card_t * card)
+void read_card(GGZDataIO * dio, card_t * card)
 {
-	if (ggz_read_char(fd, &card->face) < 0 ||
-	    ggz_read_char(fd, &card->suit) < 0 ||
-	    ggz_read_char(fd, &card->deck) < 0)
-		return -1;
+	ggz_dio_get_char(dio, &card->face);
+	ggz_dio_get_char(dio, &card->suit);
+	ggz_dio_get_char(dio, &card->deck);
 
 	/* We go ahead and check the card for validity. */
 	if (is_valid_card(*card))
-		return 0;
+		return;
 
 #if 0	/* This could be dangerous - anyone could crash us! */
 	assert(FALSE);
 #endif
 
 #if 0	/* This probably makes the most sense, but... */
-	return -1;
+	return;
 #endif
 
 	*card = UNKNOWN_CARD;
-	return 0;
 }
 
-int write_card(int fd, card_t card)
+void write_card(GGZDataIO * dio, card_t card)
 {
 	/* Check for validity. */
 	assert(is_valid_card(card));
 
-	if (ggz_write_char(fd, card.face) < 0 ||
-	    ggz_write_char(fd, card.suit) < 0 ||
-	    ggz_write_char(fd, card.deck) < 0)
-		return -1;
-	return 0;
+	ggz_dio_put_char(dio, card.face);
+	ggz_dio_put_char(dio, card.suit);
+	ggz_dio_put_char(dio, card.deck);
 }
 
-int read_bid(int fd, bid_t * bid)
+void read_bid(GGZDataIO * dio, bid_t * bid)
 {
-	if (ggz_read_char(fd, &bid->sbid.val) < 0 ||
-	    ggz_read_char(fd, &bid->sbid.suit) < 0 ||
-	    ggz_read_char(fd, &bid->sbid.spec) < 0 ||
-	    ggz_read_char(fd, &bid->sbid.spec2) < 0)
-		return -1;
-	return 0;
+	ggz_dio_get_char(dio, &bid->sbid.val);
+	ggz_dio_get_char(dio, &bid->sbid.suit);
+	ggz_dio_get_char(dio, &bid->sbid.spec);
+	ggz_dio_get_char(dio, &bid->sbid.spec2);
 }
 
 /** @brief Writes a bid to the socket.
- *  @param fd The file descriptor to which to read.
- *  @param bid A pointer to the bid data.
- *  @return 0 on success, -1 on failure. */
-int write_bid(int fd, bid_t bid)
+ *  @param dio The file descriptor to which to read.
+ *  @param bid A pointer to the bid data. */
+void write_bid(GGZDataIO * dio, bid_t bid)
 {
-	if (ggz_write_char(fd, bid.sbid.val) < 0 ||
-	    ggz_write_char(fd, bid.sbid.suit) < 0 ||
-	    ggz_write_char(fd, bid.sbid.spec) < 0 ||
-	    ggz_write_char(fd, bid.sbid.spec2) < 0)
-		return -1;
-	return 0;
+	ggz_dio_put_char(dio, bid.sbid.val);
+	ggz_dio_put_char(dio, bid.sbid.suit);
+	ggz_dio_put_char(dio, bid.sbid.spec);
+	ggz_dio_put_char(dio, bid.sbid.spec2);
 }
 
-int read_opcode(int fd, int *opcode)
+void read_opcode(GGZDataIO * dio, int *opcode)
 {
 	char op;
-	if (ggz_read_char(fd, &op) < 0)
-		return -1;
+
+	ggz_dio_get_char(dio, &op);
 	*opcode = op;
-	return 0;
 }
 
-int write_opcode(int fd, int opcode)
+void write_opcode(GGZDataIO * dio, int opcode)
 {
 	char op = opcode;
+
 	assert(opcode >= 0 && opcode < 128);
-	return ggz_write_char(fd, op);
+	ggz_dio_put_char(dio, op);
 }
 
-int read_seat(int fd, int *seat)
+void read_seat(GGZDataIO * dio, int *seat)
 {
 	char s;
-	if (ggz_read_char(fd, &s) < 0)
-		return -1;
+
+	ggz_dio_get_char(dio, &s);
 	*seat = s;
-	return 0;
 }
 
-int write_seat(int fd, int seat)
+void write_seat(GGZDataIO * dio, int seat)
 {
 	char s = seat;
+
 	assert(seat >= 0 && seat < 127);
-	return ggz_write_char(fd, s);
+	ggz_dio_put_char(dio, s);
 }

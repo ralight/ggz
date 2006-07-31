@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: game.h 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -133,8 +133,7 @@ gboolean game_handle_ggz(GIOChannel * source, GIOCondition cond,
 			 gpointer data);
 
 /** @brief Handles IO from the server; called any time data is pending. */
-gboolean game_handle_io(GIOChannel * source, GIOCondition cond,
-			gpointer data);
+void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 
 /** @brief Request a sync from the server, and prepare to receive it. */
 void game_resync(void);
@@ -150,7 +149,7 @@ int game_get_options(int option_cnt,
 		     char **descriptions,
 		     int *choice_cnt, int *defaults,
 		     char ***option_choices);
-void game_alert_server(int server_socket_fd);
+void game_alert_server(GGZDataIO *server_dio);
 void game_get_newgame(void);
 void game_alert_newgame(cardset_type_t cardset_type);
 void game_alert_newhand(void);
@@ -173,6 +172,6 @@ void game_set_text_message(const char *mark, const char *message);
 void game_set_cardlist_message(const char *mark, int *lengths,
 			       card_t ** cardlist);
 void game_set_player_message(int player, const char *message);
-int game_handle_game_message(int fd, const char *game, int size);
+void game_handle_game_message(GGZDataIO *dio, const char *game);
 
 #endif /* __GAME_H__ */

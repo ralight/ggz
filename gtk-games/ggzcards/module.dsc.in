@@ -1,5 +1,5 @@
 # GGZ Cards description file
-# $Id: module.dsc.in 8259 2006-06-23 06:53:15Z jdorje $
+# $Id: module.dsc.in 8427 2006-07-31 22:50:50Z jdorje $
 [ModuleInfo]
 Author = Jason Short, Rich Gade
 CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.ggzcards @EXTRA_GAME_PARAMETERS@
@@ -7,5 +7,5 @@ Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/ggzcards/
 Name = GGZCards
 ProtocolEngine = GGZCards
-ProtocolVersion = 4
+ProtocolVersion = 5
 Version = 0.0.7

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 4398 2002-09-03 04:55:19Z jdorje $
+ * $Id: ai.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -77,7 +77,7 @@ void start_ai(player_t p, const ai_module_t *module)
 	ggz_debug(DBG_AI, "Starting AI for player %d as %s.", p, module->name);
 		
 	assert(get_player_status(p) == GGZ_SEAT_BOT);
-	assert(game.players[p].fd == -1);
+	assert(game.players[p].dio == NULL);
 	assert(game.players[p].pid == -1);
 #ifdef DEBUG
 	assert(game.players[p].err_fd == -1);
@@ -123,7 +123,7 @@ void start_ai(player_t p, const ai_module_t *module)
 	} else {
 		/* parent */
 		(void) close(fd_pair[1]);
-		game.players[p].fd = fd_pair[0];
+		game.players[p].dio = ggz_dio_new(fd_pair[0]);
 		
 #ifdef DEBUG
 		(void) close(err_fd_pair[1]);
@@ -143,7 +143,7 @@ void stop_ai(player_t p)
 	/* Check to see if the AI has been spawned yet.  It's much easier to
 	   check here than elsewhere. */
 	if (game.players[p].pid < 0) {
-		assert(game.players[p].fd < 0);
+		assert(game.players[p].dio == NULL);
 #ifdef DEBUG
 		assert(game.players[p].err_fd < 0);
 #endif
@@ -158,14 +158,15 @@ void stop_ai(player_t p)
 	game.players[p].pid = -1;
 	
 	/* Clean up FD's. */
-	if (close(game.players[p].fd) < 0
+	if (close(ggz_dio_get_socket(game.players[p].dio)) < 0
 #ifdef DEBUG
 	    || close(game.players[p].err_fd) < 0
 #endif
 	   )
 		ggz_error_sys("Close of AI fd's failed (player %d)", p);
-		
-	game.players[p].fd = -1;
+
+	ggz_dio_free(game.players[p].dio);
+	game.players[p].dio = NULL;
 #ifdef DEBUG
 	game.players[p].err_fd = -1;
 #endif

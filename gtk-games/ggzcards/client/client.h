@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: client.h 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -28,6 +28,7 @@
 #endif
 
 #include <ggz_common.h>
+#include <ggz_dio.h>
 #ifdef GUI_CLIENT
 #  include <ggzmod.h>
 #endif
@@ -162,7 +163,7 @@ void client_quit(void);
 /** This function will return the file descriptor that is used to communicate
  *  with the server.
  */
-int client_get_fd(void);
+GGZDataIO *client_get_dio(void);
 
 /** @} end of Setup */
 
@@ -175,7 +176,7 @@ int client_get_fd(void);
 
 /** Handles an update of the server socket.  This will only happen once, when
  *  we first connect to the server. */
-extern void game_alert_server(int server_socket_fd);
+extern void game_alert_server(GGZDataIO * dio);
 
 /** Handles a newgame request by calling client_send_newgame when
  *  ready (you may wish to ask the user first). */
@@ -316,10 +317,8 @@ extern void game_set_player_message(int player, const char *msg);
  *  @param fd The socket from which data may be read.
  *  @param game The type of game (which may or may not be useful).
  *  @param mark The "mark" of the message (which may or may not be useful).
- *  @param size The amount of data ready to be read.
- *  @return The number of bytes read, or negative for error.
- *  @note When in doubt, just use "return 0". */
-extern int game_handle_game_message(int fd, const char *game, int size);
+ *  @note When in doubt, leave function blank. */
+extern void game_handle_game_message(GGZDataIO * dio, const char *game);
 
 /** @} end of Callbacks */
 
@@ -330,35 +329,30 @@ extern int game_handle_game_message(int fd, const char *game, int size);
  *  @{ */
 
 /** Sends the language to the server. */
-int client_send_language(const char *lang);
+void client_send_language(const char *lang);
 
 /** Sends a simple newgame response.
- *  @return 0 on success, -1 on failure.
  *  @see game_get_newgame */
-int client_send_newgame(void);
+void client_send_newgame(void);
 
 /** Sends a bid response.
  *  @param bid The index of the bid chosen.
- *  @return 0 on success, -1 on failure
  *  @see game_get_bid */
-int client_send_bid(int bid);
+void client_send_bid(int bid);
 
 /** Sends an options response.
  *  @param option_cnt The number of options.
  *  @param options The choice made for each option.
- *  @return 0 on success, -1 on failure
  *  @see game_get_options */
-int client_send_options(int option_cnt, int *options);
+void client_send_options(int option_cnt, int *options);
 
 /** Sends a play response.
  *  @param card The card chosen to be played.
- *  @return 0 on success, -1 on failure
  *  @see game_get_play, game_alert_badplay */
-int client_send_play(card_t card);
+void client_send_play(card_t card);
 
-/** Sends a request for a sync.
- *  @return 0 on success, -1 on failure. */
-int client_send_sync_request(void);
+/** Sends a request for a sync. */
+void client_send_sync_request(void);
 
 /** @} end of Responses */
 

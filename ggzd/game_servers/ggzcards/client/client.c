@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: client.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -52,15 +52,15 @@
 
 static void handle_server_connect(int server_fd);
 
-static int handle_message_global(void);
+static void handle_message_global(void);
 
-static int handle_text_message(void);
-static int handle_player_message(void);
-static int handle_cardlist_message(void);
-static int handle_game_message(void);
+static void handle_text_message(void);
+static void handle_player_message(void);
+static void handle_cardlist_message(void);
+static void handle_game_message(void);
 
 static struct {
-	int fd;
+	GGZDataIO *dio;
 #ifdef GUI_CLIENT
 	GGZMod *ggzmod;
 #endif				/* GUI_CLIENT */
@@ -74,7 +74,7 @@ static struct {
 
 struct ggzcards_game_t ggzcards = { 0 };
 
-static int handle_req_play(void);
+static void handle_req_play(void);
 
 #ifdef GUI_CLIENT
 GGZMod *client_get_ggzmod(void)
@@ -95,32 +95,31 @@ static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
 
 static void handle_server_connect(int server_fd)
 {
-	game_internal.fd = server_fd;
+	game_internal.dio = ggz_dio_new(server_fd);
 
-	if (client_send_language(getenv("LANG")) < 0) {
-		game_internal.fd = -1;
-		ggz_error_msg("Couldn't send message to server.");
-	}
+	/* HACK: Auto flush cuts down on packets being split up in transit. */
+	ggz_dio_set_auto_flush(game_internal.dio, TRUE);
 
-	game_alert_server(game_internal.fd);	/* ?? */
+	client_send_language(getenv("LANG"));
+
+	game_alert_server(game_internal.dio);	/* ?? */
 }
 
 int client_initialize(void)
 {
 	/* A word on memory management: the client-common code uses ggz for
 	   internal memory management; i.e. ggz_malloc+ggz_free. Anything
-	   allocated with easysock will be allocated with malloc and must be
+	   allocated with ggz_dio will be allocated with malloc and must be
 	   freed with free.  The table code (which is gui-specific) may use
 	   whatever memory management routines it wants (currently the GTK
 	   client uses g_malloc and g_free). This may be unnecessarily
 	   complicated, but remember that the internal client-common
 	   variables are always kept separate from the GUI variables, so
 	   there should be no confusion there. And all of the
-	   easysock-allocated variables are labelled. */
+	   ggz_dio-allocated variables are labelled. */
 
 	srand((unsigned)time(NULL));
 
-	game_internal.fd = -1;
 	game_internal.max_hand_size = 0;
 
 	ggzcards.state = STATE_INIT;
@@ -151,9 +150,10 @@ void client_quit(void)
 #ifdef GUI_CLIENT
 	if (ggzmod_disconnect(game_internal.ggzmod) < 0)
 #else /* AI_CLIENT */
-	if (close(game_internal.fd) < 0)
+	if (close(ggz_dio_get_socket(game_internal.dio)) < 0)
 #endif
 		ggz_error_msg_exit("Couldn't disconnect from ggz.");
+	ggz_dio_free(game_internal.dio);
 
 	/* Free data */
 	for (p = 0; p < ggzcards.num_players; p++) {
@@ -171,9 +171,9 @@ void client_quit(void)
 }
 
 
-int client_get_fd(void)
+GGZDataIO *client_get_dio(void)
 {
-	return game_internal.fd;
+	return game_internal.dio;
 }
 
 
@@ -211,21 +211,21 @@ static void set_game_state(client_state_t state)
 	}
 }
 
-static int handle_text_message(void)
+static void handle_text_message(void)
 {
 	char *message, *mark;
-	if (ggz_read_string_alloc(game_internal.fd, &mark) < 0 ||
-	    ggz_read_string_alloc(game_internal.fd, &message) < 0)
-		return -1;
+
+	ggz_dio_get_string_alloc(game_internal.dio, &mark);
+	ggz_dio_get_string_alloc(game_internal.dio, &message);
+
 	game_set_text_message(mark, message);
-	ggz_free(message);	/* allocated by easysock */
-	ggz_free(mark);	/* allocated by easysock */
-	return 0;
+	ggz_free(message);	/* allocated by ggz_dio */
+	ggz_free(mark);	/* allocated by ggz_dio */
 }
 
-static int handle_cardlist_message(void)
+static void handle_cardlist_message(void)
 {
-	int status = 0, p, i;
+	int p, i;
 	card_t **cardlist =
 	    ggz_malloc(ggzcards.num_players * sizeof(*cardlist));
 	int *lengths = ggz_malloc(ggzcards.num_players * sizeof(*lengths));
@@ -234,51 +234,42 @@ static int handle_cardlist_message(void)
 	if (!cardlist || !lengths)
 		abort();
 
-	if (ggz_read_string_alloc(game_internal.fd, &mark) < 0)
-		status = -1;
+	ggz_dio_get_string_alloc(game_internal.dio, &mark);
 
 	for (p = 0; p < ggzcards.num_players; p++) {
-		if (ggz_read_int(game_internal.fd, &lengths[p]))
-			status = -1;
+		ggz_dio_get_int(game_internal.dio, &lengths[p]);
 		if (lengths[p] > 0)
 			cardlist[p] = ggz_malloc(lengths[p]
 						 * sizeof(**cardlist));
 		for (i = 0; i < lengths[p]; i++)
-			if (read_card(game_internal.fd, &cardlist[p][i]) <
-			    0)
-				status = -1;
+			read_card(game_internal.dio, &cardlist[p][i]);
 	}
 
-	if (status == 0)
-		game_set_cardlist_message(mark, lengths, cardlist);
+	game_set_cardlist_message(mark, lengths, cardlist);
 
 	for (p = 0; p < ggzcards.num_players; p++)
 		if (lengths[p] > 0)
 			ggz_free(cardlist[p]);
 	ggz_free(cardlist);
 	ggz_free(lengths);
-	ggz_free(mark);	/* allocated by easysock */
-
-	return status;
+	ggz_free(mark);	/* allocated by ggz_dio */
 }
 
 /* A message_player message tells you one "player message", which is
    displayed by the client. */
-static int handle_player_message(void)
+static void handle_player_message(void)
 {
 	int p;
 	char *message;
 
-	if (read_seat(game_internal.fd, &p) < 0 ||
-	    ggz_read_string_alloc(game_internal.fd, &message) < 0)
-		return -1;
+	read_seat(game_internal.dio, &p);
+	ggz_dio_get_string_alloc(game_internal.dio, &message);
+
 	assert(p >= 0 && p < ggzcards.num_players);
 
 	game_set_player_message(p, message);
 
-	ggz_free(message);	/* allocated by easysock */
-
-	return 0;
+	ggz_free(message);	/* allocated by ggz_dio */
 }
 
 /* This handles a game-specific message.  We pass the game all the
@@ -291,14 +282,13 @@ static int handle_player_message(void)
    used an XML protocol, things could just sort-of take care of themselves
    because we'd just skip over the tag automatically if it wasn't handled (I
    think). */
-static int handle_game_message(void)
+static void handle_game_message(void)
 {
-	int size, handled;
+	int size;
 	char *game;
 
-	if (ggz_read_string_alloc(game_internal.fd, &game) < 0
-	    || ggz_read_int(game_internal.fd, &size) < 0)
-		return -1;
+	ggz_dio_get_string_alloc(game_internal.dio, &game);
+	ggz_dio_get_int(game_internal.dio, &size);	/* Obsolete. */
 
 	/* Note: "size" refers to the size of the data block, not including
 	   the headers above. */
@@ -306,34 +296,19 @@ static int handle_game_message(void)
 		  "Received game message of size %d for game %s.", size,
 		  game);
 
-	handled = game_handle_game_message(game_internal.fd, game, size);
-	if (handled < 0)
-		return -1;
-	assert(handled <= size);
-	size -= handled;	/* this is how much was unread */
+	game_handle_game_message(game_internal.dio, game);
 
-	if (size > 0) {
-		/* We read the block just to get it out of the way. */
-		char *block = ggz_malloc(size);
-		if (ggz_readn(game_internal.fd, block, size) < 0)
-			return -1;
-		ggz_free(block);
-	}
-
-	ggz_free(game);	/* allocated by easysock */
-
-	return 0;
+	ggz_free(game);	/* allocated by ggz_dio */
 }
 
 /* a message_global message tells you one "global message", which is
    displayed by the client. */
-static int handle_message_global(void)
+static void handle_message_global(void)
 {
-	int opcode, status = 0;
+	int opcode;
 	game_message_t op;
 
-	if (read_opcode(game_internal.fd, &opcode) < 0)
-		return -1;
+	read_opcode(game_internal.dio, &opcode);
 
 	op = opcode;
 
@@ -342,54 +317,49 @@ static int handle_message_global(void)
 
 	switch (op) {
 	case GAME_MESSAGE_TEXT:
-		status = handle_text_message();
+		handle_text_message();
 		break;
 	case GAME_MESSAGE_CARDLIST:
-		status = handle_cardlist_message();
+		handle_cardlist_message();
 		break;
 	case GAME_MESSAGE_GAME:
-		status = handle_game_message();
+		handle_game_message();
 		break;
 	case GAME_MESSAGE_PLAYER:
-		status = handle_player_message();
+		handle_player_message();
 		break;
 	}
-
-	return status;
 }
 
 
-static int handle_msg_newgame(void)
+static void handle_msg_newgame(void)
 {
 	int cardset;
 	cardset_type_t cardset_type;
 
-	if (ggz_read_int(game_internal.fd, &cardset) < 0)
-		return -1;
+	ggz_dio_get_int(game_internal.dio, &cardset);
+
 	cardset_type = cardset;
 
 	assert(cardset_type != UNKNOWN_CARDSET);
 	set_cardset_type(cardset_type);
 	game_alert_newgame(cardset_type);
-	return 0;
 }
 
 
 /* A gameover message tells you the game is over, and who won. */
-static int handle_msg_gameover(void)
+static void handle_msg_gameover(void)
 {
 	int num_winners, i, *winners = NULL;
 
-	if (ggz_read_int(game_internal.fd, &num_winners) < 0)
-		return -1;
+	ggz_dio_get_int(game_internal.dio, &num_winners);
 	assert(num_winners >= 0 && num_winners <= ggzcards.num_players);
 
 	if (num_winners > 0)
 		winners = ggz_malloc(num_winners * sizeof(*winners));
 
 	for (i = 0; i < num_winners; i++)
-		if (read_seat(game_internal.fd, &winners[i]) < 0)
-			return -1;
+		read_seat(game_internal.dio, &winners[i]);
 
 	game_handle_gameover(num_winners, winners);
 
@@ -397,14 +367,12 @@ static int handle_msg_gameover(void)
 
 	if (winners)
 		ggz_free(winners);
-
-	return 0;
 }
 
 
 /* A players message tells you all the players (well, seats really) at the
    table. */
-static int handle_msg_players(void)
+static void handle_msg_players(void)
 {
 	int i, numplayers, different;
 	int old_numplayers = ggzcards.num_players;
@@ -412,8 +380,8 @@ static int handle_msg_players(void)
 	/* It is possible to have 0 players.  At the begginning of a
 	   "general" game, you don't know how many seats will be used yet so
 	   the number of players is 0. */
-	if (ggz_read_int(game_internal.fd, &numplayers) < 0)
-		return -1;
+	ggz_dio_get_int(game_internal.dio, &numplayers);
+
 	assert(numplayers >= 0);
 
 	/* we may need to allocate memory for the players */
@@ -454,11 +422,10 @@ static int handle_msg_players(void)
 		GGZSeatType old_type, new_type;
 		char *old_name, *new_name;
 
-		if (ggz_read_int(game_internal.fd, &type) < 0
-		    || ggz_read_string_alloc(game_internal.fd,
-					     &new_name) < 0
-		    || ggz_read_int(game_internal.fd, &ggzseat) < 0)
-			return -1;
+		ggz_dio_get_int(game_internal.dio, &type);
+		ggz_dio_get_string_alloc(game_internal.dio, &new_name);
+		ggz_dio_get_int(game_internal.dio, &ggzseat);
+
 		new_type = type;
 
 		old_name = ggzcards.players[i].name;
@@ -473,7 +440,7 @@ static int handle_msg_players(void)
 			game_alert_player(i, old_type, old_name);
 
 		if (old_name) {
-			/* allocated by easysock */
+			/* allocated by ggz_dio */
 			ggz_free(old_name);
 		}
 	}
@@ -487,8 +454,6 @@ static int handle_msg_players(void)
 	}
 
 	/* TODO: should we need to enter a waiting state if players leave? */
-
-	return 0;
 }
 
 /* Possibly increase the maximum hand size we can sustain. */
@@ -524,7 +489,7 @@ static void increase_max_hand_size(int max_hand_size)
 }
 
 /* A hand message tells you all the cards in one player's hand. */
-static int handle_msg_hand(void)
+static void handle_msg_hand(void)
 {
 	int player, hand_size, i;
 	hand_t *hand;
@@ -532,13 +497,12 @@ static int handle_msg_hand(void)
 	assert(ggzcards.players);
 
 	/* first read the player whose hand it is */
-	if (read_seat(game_internal.fd, &player) < 0)
-		return -1;
+	read_seat(game_internal.dio, &player);
+
 	assert(player >= 0 && player < ggzcards.num_players);
 
 	/* Find out how many cards in this hand */
-	if (ggz_read_int(game_internal.fd, &hand_size) < 0)
-		return -1;
+	ggz_dio_get_int(game_internal.dio, &hand_size);
 
 	/* Reallocate hand structures, if necessary */
 	increase_max_hand_size(hand_size);
@@ -551,8 +515,7 @@ static int handle_msg_hand(void)
 	ggzcards.players[player].u_hand_size = hand_size;
 	for (i = 0; i < hand->hand_size; i++) {
 		card_t card;
-		if (read_card(game_internal.fd, &card) < 0)
-			return -1;
+		read_card(game_internal.dio, &card);
 
 		hand->cards[i] = card;
 
@@ -566,13 +529,11 @@ static int handle_msg_hand(void)
 
 	/* Finally, show the hand. */
 	game_display_hand(player);
-
-	return 0;
 }
 
 
 /* A bid request asks you to pick from a given list of bids. */
-static int handle_req_bid(void)
+static void handle_req_bid(void)
 {
 	int i;
 	int possible_bids;
@@ -588,20 +549,17 @@ static int handle_req_bid(void)
 	}
 
 	/* Determine the number of bidding choices we have */
-	if (ggz_read_int(game_internal.fd, &possible_bids) < 0)
-		return -1;
+	ggz_dio_get_int(game_internal.dio, &possible_bids);
+
 	bid_choices = ggz_malloc(possible_bids * sizeof(*bid_choices));
 	bid_texts = ggz_malloc(possible_bids * sizeof(*bid_texts));
 	bid_descs = ggz_malloc(possible_bids * sizeof(*bid_descs));
 
 	/* Read in all of the bidding choices. */
 	for (i = 0; i < possible_bids; i++) {
-		if (read_bid(game_internal.fd, &bid_choices[i]) < 0 ||
-		    ggz_read_string_alloc(game_internal.fd,
-					  &bid_texts[i]) < 0 ||
-		    ggz_read_string_alloc(game_internal.fd,
-					  &bid_descs[i]) < 0)
-			return -1;
+		read_bid(game_internal.dio, &bid_choices[i]);
+		ggz_dio_get_string_alloc(game_internal.dio, &bid_texts[i]);
+		ggz_dio_get_string_alloc(game_internal.dio, &bid_descs[i]);
 	}
 
 	/* Get the bid */
@@ -610,48 +568,41 @@ static int handle_req_bid(void)
 
 	/* Clean up */
 	for (i = 0; i < possible_bids; i++) {
-		ggz_free(bid_texts[i]);	/* allocated by easysock */
-		ggz_free(bid_descs[i]);	/* allocated by easysock */
+		ggz_free(bid_texts[i]);	/* allocated by ggz_dio */
+		ggz_free(bid_descs[i]);	/* allocated by ggz_dio */
 	}
 	ggz_free(bid_choices);
 	ggz_free(bid_texts);
 	ggz_free(bid_descs);
-
-	return 0;
 }
 
 
-static int handle_msg_bid(void)
+static void handle_msg_bid(void)
 {
 	bid_t bid;
 	int bidder;
 
-	if (read_seat(game_internal.fd, &bidder) < 0 ||
-	    read_bid(game_internal.fd, &bid) < 0)
-		return -1;
+	read_seat(game_internal.dio, &bidder);
+	read_bid(game_internal.dio, &bid);
 
 	game_alert_bid(bidder, bid);
-
-	return 0;
 }
 
 
 /* A play request asks you to play a card from any hand (most likely your
    own). */
-static int handle_req_play(void)
+static void handle_req_play(void)
 {
 	int num_valid_cards, i;
 	card_t *valid_cards;
 
 	/* Determine which hand we're supposed to be playing from. */
-	if (read_seat(game_internal.fd, &ggzcards.play_hand) < 0 ||
-	    ggz_read_int(game_internal.fd, &num_valid_cards) < 0)
-		return -1;
+	read_seat(game_internal.dio, &ggzcards.play_hand);
+	ggz_dio_get_int(game_internal.dio, &num_valid_cards);
 
 	valid_cards = ggz_malloc(num_valid_cards * sizeof(*valid_cards));
 	for (i = 0; i < num_valid_cards; i++)
-		if (read_card(game_internal.fd, &valid_cards[i]) < 0)
-			return -1;
+		read_card(game_internal.dio, &valid_cards[i]);
 
 	assert(ggzcards.play_hand >= 0
 	       && ggzcards.play_hand < ggzcards.num_players);
@@ -661,28 +612,23 @@ static int handle_req_play(void)
 	game_get_play(ggzcards.play_hand, num_valid_cards, valid_cards);
 
 	ggz_free(valid_cards);
-
-	return 0;
 }
 
 
 /* A badplay message indicates an invalid play, and requests a new one. */
-static int handle_msg_badplay(void)
+static void handle_msg_badplay(void)
 {
 	char *err_msg;
 
 	/* Read the error message for the bad play. */
-	if (ggz_read_string_alloc(game_internal.fd, &err_msg) < 0)
-		return -1;
+	ggz_dio_get_string_alloc(game_internal.dio, &err_msg);
 
 	/* Get a new play. */
 	set_game_state(STATE_PLAY);
 	game_alert_badplay(err_msg);
 
 	/* Clean up. */
-	ggz_free(err_msg);	/* allocated by easysock */
-
-	return 0;
+	ggz_free(err_msg);	/* allocated by ggz_dio */
 }
 
 
@@ -740,16 +686,15 @@ static int match_card(card_t card, hand_t * hand)
 
 
 /* A play message tells of a play from a hand to the table. */
-static int handle_msg_play(void)
+static void handle_msg_play(void)
 {
 	int p, c, tc, card_pos, card_pos_2;
 	card_t card;
 	hand_t *hand;
 
 	/* Read the card being played. */
-	if (read_seat(game_internal.fd, &p) < 0
-	    || read_card(game_internal.fd, &card) < 0)
-		return -1;
+	read_seat(game_internal.dio, &p);
+	read_card(game_internal.dio, &card);
 
 	assert(p >= 0 && p < ggzcards.num_players);
 
@@ -791,7 +736,6 @@ static int handle_msg_play(void)
 		ggz_debug(DBG_CLIENT,
 			  "Whoa!  We can't find a match for the card.  That's strange.");
 		(void)client_send_sync_request();
-		return 0;
 	}
 
 	/* Remove the card.  This is a bit inefficient. It's also
@@ -815,14 +759,12 @@ static int handle_msg_play(void)
 
 	/* Update the graphics */
 	game_alert_play(p, card, card_pos, card_pos_2);
-
-	return 0;
 }
 
 
 /* A table message tells you all the cards on the table.  Each player only
    gets one card. */
-static int handle_msg_table(void)
+static void handle_msg_table(void)
 {
 	int p;
 
@@ -831,8 +773,7 @@ static int handle_msg_table(void)
 	assert(ggzcards.players);
 	for (p = 0; p < ggzcards.num_players; p++) {
 		card_t card;
-		if (read_card(game_internal.fd, &card) < 0)
-			return -1;
+		read_card(game_internal.dio, &card);
 		ggzcards.players[p].table_card = card;
 	}
 
@@ -840,19 +781,17 @@ static int handle_msg_table(void)
 	 */
 
 	game_alert_table();
-
-	return 0;
 }
 
 
 /* A trick message tells you about the end of a trick (and who won). */
-static int handle_msg_trick(void)
+static void handle_msg_trick(void)
 {
 	int winner, p;
 
 	/* Read the trick winner */
-	if (read_seat(game_internal.fd, &winner) < 0)
-		return -1;
+	read_seat(game_internal.dio, &winner);
+
 	assert(winner >= 0 && winner < ggzcards.num_players);
 
 	/* Clear all cards off the table. */
@@ -861,15 +800,13 @@ static int handle_msg_trick(void)
 
 	/* Update the graphics. */
 	game_alert_trick(winner);
-
-	return 0;
 }
 
 
 /* An options request asks you to pick a set of options.  Each "option" gives
    a list of choices so that you pick one choice for each option.  An option
    with only one choice is a special case: a boolean option. */
-static int handle_req_options(void)
+static void handle_req_options(void)
 {
 	int i, j;
 	int option_cnt;		/* the number of options */
@@ -889,8 +826,8 @@ static int handle_req_options(void)
 	}
 
 	/* Read the number of options. */
-	if (ggz_read_int(game_internal.fd, &option_cnt) < 0)
-		return -1;
+	ggz_dio_get_int(game_internal.dio, &option_cnt);
+
 	assert(option_cnt > 0);
 
 	/* Allocate all data */
@@ -902,18 +839,16 @@ static int handle_req_options(void)
 
 	/* Read all the options, their defaults, and the possible choices. */
 	for (i = 0; i < option_cnt; i++) {
-		if (ggz_read_string_alloc(game_internal.fd, &types[i]) < 0
-		    || ggz_read_string_alloc(game_internal.fd, &descs[i]) < 0
-		    || ggz_read_int(game_internal.fd, &choice_cnt[i]) < 0
-		    || ggz_read_int(game_internal.fd, &defaults[i]) < 0)
-			return -1;	/* read the default */
+		ggz_dio_get_string_alloc(game_internal.dio, &types[i]);
+		ggz_dio_get_string_alloc(game_internal.dio, &descs[i]);
+		ggz_dio_get_int(game_internal.dio, &choice_cnt[i]);
+		ggz_dio_get_int(game_internal.dio, &defaults[i]);
 		option_choices[i] =
 		    ggz_malloc(choice_cnt[i] * sizeof(**option_choices));
-		for (j = 0; j < choice_cnt[i]; j++)
-			if (ggz_read_string_alloc
-			    (game_internal.fd, &option_choices[i][j])
-			    < 0)
-				return -1;
+		for (j = 0; j < choice_cnt[i]; j++) {
+			ggz_dio_get_string_alloc(game_internal.dio,
+						 &option_choices[i][j]);
+		}
 	}
 
 	/* Get the options. */
@@ -925,9 +860,10 @@ static int handle_req_options(void)
 
 	/* Clean up. */
 	for (i = 0; i < option_cnt; i++) {
-		for (j = 0; j < choice_cnt[i]; j++)
-			ggz_free(option_choices[i][j]);	/* allocated by
-							   easysock */
+		for (j = 0; j < choice_cnt[i]; j++) {
+			/* allocated by ggz_dio */
+			ggz_free(option_choices[i][j]);
+		}
 		ggz_free(option_choices[i]);
 		ggz_free(types[i]);
 		ggz_free(descs[i]);
@@ -937,13 +873,11 @@ static int handle_req_options(void)
 	ggz_free(choice_cnt);
 	ggz_free(descs);
 	ggz_free(types);
-
-	return 0;
 }
 
 
 /* The language lets the server translate messages for us. */
-int client_send_language(const char *lang)
+void client_send_language(const char *lang)
 {
 	if (!lang) {
 		lang = "";
@@ -951,82 +885,70 @@ int client_send_language(const char *lang)
 
 	ggz_debug(DBG_CLIENT, "Sending language %s to the server.", lang);
 
-	if (write_opcode(game_internal.fd, MSG_LANGUAGE) < 0 ||
-	    ggz_write_string(game_internal.fd, lang) < 0)
-		return -1;
-
-	return 0;
+	ggz_dio_packet_start(game_internal.dio);
+	write_opcode(game_internal.dio, MSG_LANGUAGE);
+	ggz_dio_put_string(game_internal.dio, lang);
+	ggz_dio_packet_end(game_internal.dio);
 }
 
 
 /* A newgame message tells the server to start a new game. */
-int client_send_newgame(void)
+void client_send_newgame(void)
 {
-	if (write_opcode(game_internal.fd, RSP_NEWGAME) < 0) {
-		ggz_error_msg("Couldn't send newgame.");
-		return -1;
-	}
-	return 0;
+	ggz_dio_packet_start(game_internal.dio);
+	write_opcode(game_internal.dio, RSP_NEWGAME);
+	ggz_dio_packet_end(game_internal.dio);
 }
 
 
 /* A bid message tells the server our choice for a bid. */
-int client_send_bid(int bid)
+void client_send_bid(int bid)
 {
 	set_game_state(STATE_WAIT);
-	if (write_opcode(game_internal.fd, RSP_BID) < 0
-	    || ggz_write_int(game_internal.fd, bid) < 0) {
-		ggz_error_msg("Couldn't send bid.");
-		return -1;
-	}
-	return 0;
+
+	ggz_dio_packet_start(game_internal.dio);
+	write_opcode(game_internal.dio, RSP_BID);
+	ggz_dio_put_int(game_internal.dio, bid);
+	ggz_dio_packet_end(game_internal.dio);
 }
 
 
 /* An options message tells the server our choices for options. */
-int client_send_options(int option_cnt, int *options)
+void client_send_options(int option_cnt, int *options)
 {
-	int i, status = 0;
-
-	if (write_opcode(game_internal.fd, RSP_OPTIONS) < 0 ||
-	    ggz_write_int(game_internal.fd, option_cnt) < 0)
-		status = -1;
-	for (i = 0; i < option_cnt; i++)
-		if (ggz_write_int(game_internal.fd, options[i]) < 0)
-			status = -1;
+	int i;
 
 	set_game_state(STATE_WAIT);
 
-	if (status < 0) {
-		ggz_error_msg("Couldn't send options.");
-		return -1;
-	}
-	return status;
+	ggz_dio_packet_start(game_internal.dio);
+	write_opcode(game_internal.dio, RSP_OPTIONS);
+	ggz_dio_put_int(game_internal.dio, option_cnt);
+	for (i = 0; i < option_cnt; i++)
+		ggz_dio_put_int(game_internal.dio, options[i]);
+	ggz_dio_packet_end(game_internal.dio);
 }
 
 
 /* A play message tells the server our choice for a play. */
-int client_send_play(card_t card)
+void client_send_play(card_t card)
 {
 	set_game_state(STATE_WAIT);
-	if (write_opcode(game_internal.fd, RSP_PLAY) < 0
-	    || write_card(game_internal.fd, card) < 0) {
-		ggz_error_msg("Couldn't send play.");
-		return -1;
-	}
-	return 0;
+
+	ggz_dio_packet_start(game_internal.dio);
+	write_opcode(game_internal.dio, RSP_PLAY);
+	write_card(game_internal.dio, card);
+	ggz_dio_packet_end(game_internal.dio);
 }
 
 
 /* A sync request asks for a sync from the server. */
-int client_send_sync_request(void)
+void client_send_sync_request(void)
 {
 	ggz_debug(DBG_CLIENT, "Sending sync request to server.");
-	if (write_opcode(game_internal.fd, REQ_SYNC) < 0) {
-		ggz_error_msg("Couldn't send sync request.");
-		return -1;
-	}
-	return 0;
+
+	ggz_dio_packet_start(game_internal.dio);
+	write_opcode(game_internal.dio, REQ_SYNC);
+	ggz_dio_packet_end(game_internal.dio);
 }
 
 #ifdef GUI_CLIENT
@@ -1036,17 +958,14 @@ int client_handle_ggz(void)
 }
 #endif
 
-/* This function handles any input from the server. */
-int client_handle_server(void)
+static void server_read_callback(GGZDataIO * dio, void *userdata)
 {
-	int opcode, status = -1;
+	int opcode;
 	server_msg_t op;
 
 	/* Read the opcode */
-	if (read_opcode(game_internal.fd, &opcode) < 0) {
-		ggz_error_msg("Couldn't read server opcode.");
-		return -1;
-	}
+	read_opcode(game_internal.dio, &opcode);
+
 	op = opcode;
 
 	ggz_debug(DBG_CLIENT, "Received %s opcode from the server.",
@@ -1056,56 +975,60 @@ int client_handle_server(void)
 	case REQ_NEWGAME:
 		game_get_newgame();
 		ggzcards.play_hand = -1;
-		status = 0;
-		break;
+		return;
 	case MSG_NEWGAME:
 		/* TODO: don't make "new game" until here */
-		status = handle_msg_newgame();
-		break;
+		handle_msg_newgame();
+		return;
 	case MSG_GAMEOVER:
-		status = handle_msg_gameover();
-		break;
+		handle_msg_gameover();
+		return;
 	case MSG_PLAYERS:
-		status = handle_msg_players();
-		break;
+		handle_msg_players();
+		return;
 	case MSG_NEWHAND:
 		game_alert_newhand();
-		status = 0;
-		break;
+		return;
 	case MSG_HAND:
-		status = handle_msg_hand();
-		break;
+		handle_msg_hand();
+		return;
 	case REQ_BID:
-		status = handle_req_bid();
-		break;
+		handle_req_bid();
+		return;
 	case MSG_BID:
-		status = handle_msg_bid();
-		break;
+		handle_msg_bid();
+		return;
 	case REQ_PLAY:
-		status = handle_req_play();
-		break;
+		handle_req_play();
+		return;
 	case MSG_BADPLAY:
-		status = handle_msg_badplay();
-		break;
+		handle_msg_badplay();
+		return;
 	case MSG_PLAY:
-		status = handle_msg_play();
-		break;
+		handle_msg_play();
+		return;
 	case MSG_TABLE:
-		status = handle_msg_table();
-		break;
+		handle_msg_table();
+		return;
 	case MSG_TRICK:
-		status = handle_msg_trick();
-		break;
+		handle_msg_trick();
+		return;
 	case MESSAGE_GAME:
-		status = handle_message_global();
-		break;
+		handle_message_global();
+		return;
 	case REQ_OPTIONS:
-		status = handle_req_options();
-		break;
+		handle_req_options();
+		return;
 	}
 
-	if (status < 0)
-		ggz_error_msg("Error handling message"
-			      " from server (opcode %d).", op);
-	return status;
+	ggz_error_msg("Error handling message"
+		      " from server (opcode %d).", op);
+}
+
+/* This function handles any input from the server. */
+int client_handle_server(void)
+{
+	ggz_dio_set_read_callback(game_internal.dio,
+				  server_read_callback, NULL);
+	return ggz_dio_read_data(game_internal.dio);
 }

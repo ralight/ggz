@@ -4,7 +4,7 @@
  * Project: GGZCards AI Client
  * Date: 02/19/2002
  * Desc: AI client main loop and core logic
- * $Id: main.c 4332 2002-08-02 03:35:46Z jdorje $
+ * $Id: main.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -36,6 +36,8 @@
 
 #include <ggz.h>		/* libggz */
 
+#include "ggz_dio.h"
+
 #include "client.h"
 
 #include "game.h"
@@ -48,6 +50,7 @@ int main(int argc, char *argv[])
 	const char* debug_types[] = {NULL};
 #endif
 	fd_set active_fd_set;
+	GGZDataIO *dio;
 	int fd;
 	
 	ggz_debug_init(debug_types, NULL);
@@ -57,7 +60,8 @@ int main(int argc, char *argv[])
 		assert(FALSE);
 
 	/* We should have gotten the FD by now. */
-	fd = client_get_fd();
+	dio = client_get_dio();
+	fd = ggz_dio_get_socket(dio);
 	assert(fd >= 0);
 
 	FD_ZERO(&active_fd_set);
@@ -65,19 +69,38 @@ int main(int argc, char *argv[])
 	
 	while (1) {
 		fd_set read_fd_set = active_fd_set;
+		fd_set write_fd_set = active_fd_set;
+		fd_set except_fd_set = active_fd_set;
+		fd_set *pwrite_fd_set = NULL;
 		int status;
+
+		if (ggz_dio_is_write_pending(dio)) {
+			pwrite_fd_set = &write_fd_set;
+		}
 		
-		status = select(fd + 1, &read_fd_set, NULL, NULL, NULL);
+		status = select(fd + 1, &read_fd_set, pwrite_fd_set,
+				&except_fd_set, NULL);
 		
 		if (status <= 0) {
 			if (errno != EINTR)
 				break;
 			continue;
 		}
-		
+
+		if (FD_ISSET(fd, &except_fd_set)) {
+			break;
+		}
+
 		if (FD_ISSET(fd, &read_fd_set))
-			if (client_handle_server() < 0)
-				exit(0);		
+			if (client_handle_server() < 0) {
+				break;
+			}
+
+		if (pwrite_fd_set && FD_ISSET(fd, pwrite_fd_set)) {
+			if (ggz_dio_write_data(dio) < 0) {
+				break;
+			}
+		}
 	}
 
 	client_quit();

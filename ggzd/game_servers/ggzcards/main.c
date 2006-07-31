@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 8245 2006-06-22 04:40:59Z jdorje $
+ * $Id: main.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -223,22 +223,34 @@ static void main_loop(GGZdMod * ggz)
 	   the bot channels. */
 	do {
 		/* this is a whole lot of unnecessary code... */
-		fd_set fdset;
+		fd_set read_fd_set, write_fd_set;
 		int max_fd = ggzdmod_get_fd(ggz), status;
 
-		FD_ZERO(&fdset);
-		FD_SET(max_fd, &fdset);
+		FD_ZERO(&read_fd_set);
+		FD_SET(max_fd, &read_fd_set);
+
+		FD_ZERO(&write_fd_set);
 
 		/* Assemble a list of file descriptors to monitor.  This list
 		   includes the main GGZ connection, a connection for each
 		   player (including bots), plus a stderr connection for bots.
 		 */
 		allplayers_iterate(p) {
-			int fd = get_player_socket(p);
+			GGZDataIO *dio = get_player_dio(p);
+			int fd = dio ? ggz_dio_get_socket(dio) : -1;
+
 			if (fd >= 0) {
 				max_fd = MAX(max_fd, fd);
-				assert(!FD_ISSET(fd, &fdset));
-				FD_SET(fd, &fdset);
+
+#if 0 /* With nonatomic seat ops this is possible now. */
+				assert(!FD_ISSET(fd, &read_fd_set));
+				assert(!FD_ISSET(fd, &write_fd_set));
+#endif
+
+				FD_SET(fd, &read_fd_set);
+				if (ggz_dio_is_write_pending(dio)) {
+					FD_SET(fd, &write_fd_set);
+				}
 			}
 
 #ifdef DEBUG
@@ -246,14 +258,15 @@ static void main_loop(GGZdMod * ggz)
 				fd = game.players[p].err_fd;
 				if (fd >= 0) {
 					max_fd = MAX(max_fd, fd);
-					assert(!FD_ISSET(fd, &fdset));
-					FD_SET(fd, &fdset);
+					assert(!FD_ISSET(fd, &read_fd_set));
+					FD_SET(fd, &read_fd_set);
 				}
 			}
 #endif /* DEBUG */
 		} allplayers_iterate_end;
 
-		status = select(max_fd + 1, &fdset, NULL, NULL, NULL);
+		status = select(max_fd + 1, &read_fd_set, &write_fd_set,
+				NULL, NULL);
 
 		if (status <= 0) {
 			if (errno != EINTR)
@@ -261,21 +274,28 @@ static void main_loop(GGZdMod * ggz)
 			continue;
 		}
 
-		if (FD_ISSET(ggzdmod_get_fd(ggz), &fdset))
+		if (FD_ISSET(ggzdmod_get_fd(ggz), &read_fd_set))
 			ggzdmod_dispatch(ggz);
 
 		/* Check each FD for activity */
 		allplayers_iterate(p) {
-			int fd = get_player_socket(p);
+			GGZDataIO *dio = get_player_dio(p);
+			int fd = dio ? ggz_dio_get_socket(dio) : -1;
 
 			/* This is the player's communication socket.  Note
 			   that AI players will have such a socket too, since
 			   they are run as client-like programs. */
-			if (fd >= 0 && FD_ISSET(fd, &fdset)) {
+			if (fd >= 0 && FD_ISSET(fd, &read_fd_set)) {
 				/* Note - this handles spectator data too,
 				   but the spectator is given a player
 				   number. */
 				handle_player_data_event(p);
+				FD_CLR(fd, &read_fd_set);
+			}
+
+			if (fd >= 0 && FD_ISSET(fd, &write_fd_set)) {
+				ggz_dio_write_data(dio);
+				FD_CLR(fd, &write_fd_set);
 			}
 
 #ifdef DEBUG
@@ -283,7 +303,7 @@ static void main_loop(GGZdMod * ggz)
 			   us and translated as debugging output. */
 			if (get_player_status(p) == GGZ_SEAT_BOT) {
 				fd = game.players[p].err_fd;
-				if (fd >= 0 && FD_ISSET(fd, &fdset))
+				if (fd >= 0 && FD_ISSET(fd, &read_fd_set))
 					handle_ai_stderr(p);
 			}
 #endif /* DEBUG */
@@ -294,6 +314,7 @@ static void main_loop(GGZdMod * ggz)
 static void handle_debug_message(int priority, const char *msg)
 {
 	if (!game.ggz
+	    || 1
 	    || ggzdmod_log(game.ggz, "%s", msg) < 0) {
 		fflush(stdout);
 		fputs(msg, stderr);

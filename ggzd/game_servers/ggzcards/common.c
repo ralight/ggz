@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8347 2006-07-10 09:03:52Z jdorje $
+ * $Id: common.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -381,12 +381,15 @@ static void handle_launch_event(void)
 		game.players[p].seat = -1;
 		assign_team(p, p);
 		game.players[p].allbids = NULL;
-		game.players[p].fd = -1;
+		game.players[p].dio = NULL;
 #ifdef DEBUG
 		game.players[p].err_fd = -1;
 #endif
 		game.players[p].pid = -1;
 	} players_iterate_end;
+
+	game.spectators = NULL;
+	game.spectator_count = 0;
 
 	/* we don't yet know the number of seats */
 
@@ -456,17 +459,36 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, const void *data)
 			 || old_seat->type == GGZ_SEAT_BOT)
 	                && (new_seat.type != old_seat->type
 	                    || strcmp(old_seat->name, new_seat.name));
+	int new_fd = new_seat.fd, old_fd = old_seat->fd;
 
 	/* There's a big problem here since if the players join/leave before
 	   the game type is set, we won't know the seat number of the player
 	   - it'll be -1.  We thus have to special-case that entirely. */
 	
-	ggz_debug(DBG_MISC, "Handling a seat-change event for player %d.",
-	          player);
+	ggz_debug(DBG_MISC, "Handling a seat-change event for player %d "
+		  "(%d => %d).",
+	          player, old_fd, new_fd);
 
-	/* Start or stop any AI on the seat.  This needs to be done first. */
+	/* Start or stop any AI on the seat, and create the DIO structure
+	   for human players.  This needs to be done first. */
 	if (is_leave && old_seat->type == GGZ_SEAT_BOT)
 		stop_ai(player);
+	{
+		GGZDataIO **dio = &game.players[old_seat->num].dio;
+
+		if (*dio) {
+			ggz_dio_flush(*dio);
+			assert(!ggz_dio_is_write_pending(*dio));
+			ggz_dio_free(*dio);
+			*dio = NULL;
+		}
+		if (new_fd != -1) {
+			*dio = ggz_dio_new(new_fd);
+
+			/* HACK: To avoid split packets. */
+			ggz_dio_set_auto_flush(*dio, TRUE);
+		}
+	}
 	if (is_join && new_seat.type == GGZ_SEAT_BOT)
 		start_ai(player, game.ai_module);
 
@@ -545,12 +567,46 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, const void *data)
 void handle_ggz_spectator_seat_event(GGZdMod *ggz,
 				     GGZdModEvent event, const void *data)
 {
-	GGZSpectator old = *(GGZSpectator*)data;
-	int spectator = old.num;
+	const GGZSpectator *old = data;
+	const int spectator = old->num;
+	const int nspectators = ggzdmod_get_max_num_spectators(ggz);
 	player_t player = SPECTATOR_TO_PLAYER(spectator);
 	GGZSpectator new = ggzdmod_get_spectator(ggz, spectator);
+	const int new_fd = new.fd;
+#if 0
+	int old_fd = old->fd;
+#endif
 
-	assert(spectator < ggzdmod_get_max_num_spectators(ggz));
+	assert(spectator < nspectators);
+
+	if (nspectators > game.spectator_count) {
+		int i;
+
+		game.spectators = ggz_realloc(game.spectators,
+					      nspectators
+					      * sizeof(*game.spectators));
+		for (i = game.spectator_count; i < nspectators; i++) {
+			game.spectators[i].dio = NULL;
+		}
+		game.spectator_count = nspectators;
+	}
+
+	{
+		GGZDataIO **dio = &game.spectators[old->num].dio;
+
+		if (*dio) {
+			ggz_dio_flush(*dio);
+			assert(!ggz_dio_is_write_pending(*dio));
+			ggz_dio_free(*dio);
+			*dio = NULL;
+		}
+		if (new_fd != -1) {
+			*dio = ggz_dio_new(new_fd);
+
+			/* HACK: To avoid split packets. */
+			ggz_dio_set_auto_flush(*dio, TRUE);
+		}
+	}
 
 	if (new.name) {
 		/* The spectator is not yet visible to other players; so
@@ -559,7 +615,7 @@ void handle_ggz_spectator_seat_event(GGZdMod *ggz,
 		ggz_debug(DBG_MISC, "%s joined as spectator on seat %d.",
 			  new.name, spectator);
 
-		assert(!old.name && old.fd < 0);
+		assert(!old->name && old->fd < 0);
 		assert(new.name && new.fd >= 0);
 
 		/* Send newgame alert, if we're already playing. */
@@ -569,9 +625,9 @@ void handle_ggz_spectator_seat_event(GGZdMod *ggz,
 		send_sync(player);
 	} else {
 		ggz_debug(DBG_MISC, "%s left as spectator on seat %d.",
-			  old.name, spectator);
+			  old->name, spectator);
 
-		assert(!new.name && new.fd < 0 && old.name);
+		assert(!new.name && new.fd < 0 && old->name);
 
 		if (seats_empty())
 			if (ggzdmod_set_state(game.ggz,
@@ -775,8 +831,8 @@ void set_num_seats(int num_seats)
 	for (s = 0; s < game.num_seats; s++) {
 		game.seats[s].player = -1;
 		game.seats[s].table = UNKNOWN_CARD;
-		game.seats[s].name = "Unclaimed Seat";	/* TODO: reserved
-							   seats */
+		/* TODO: reserved seats */
+		game.seats[s].name = ggz_strdup("Unclaimed Seat");
 		game.seats[s].pmessage = NULL;
 		game.seats[s].hand.cards = NULL;
 	}
@@ -916,25 +972,16 @@ GGZSeatType get_player_status(player_t p)
 	return ggzdmod_get_seat(game.ggz, p).type;
 }
 
-int get_player_socket(int p)
+GGZDataIO *get_player_dio(int p)
 {
 	if (IS_SPECTATOR(p)) {
 		int sp = PLAYER_TO_SPECTATOR(p);
-		return ggzdmod_get_spectator(game.ggz, sp).fd;
-	} else {
-		GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
 
-		switch (seat.type) {
-		case GGZ_SEAT_PLAYER:
-			return seat.fd;
-		case GGZ_SEAT_BOT:
-			return game.players[p].fd;
-		default:
-			return -1;
-		}
+		if (sp >= game.spectator_count) return NULL;
+		return game.spectators[sp].dio;
+	} else {
+		return game.players[p].dio;
 	}
-	assert(FALSE);
-	return -1;
 }
 
 /* libggz should handle this instead! */

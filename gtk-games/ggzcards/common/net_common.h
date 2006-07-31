@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 04/16/2002
  * Desc: GGZCards network common code
- * $Id: net_common.h 3999 2002-04-16 19:09:47Z jdorje $
+ * $Id: net_common.h 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Contains common networking functions.
  *
@@ -29,53 +29,46 @@
  */
 
 #include "cards.h"
+#include "ggz_dio.h"
 
 /** @brief Reads a card from the socket.
  *  @param fd The file descriptor from which to read.
- *  @param card A pointer to the card data.
- *  @return 0 on success, -1 on failure. */
-int read_card(int fd, card_t * card);
+ *  @param card A pointer to the card data. */
+void read_card(GGZDataIO * dio, card_t * card);
 
 /** @brief Wites a card to the socket.
  *  @param fd The file desciptor to which to write.
- *  @param card The card to be written.
- *  @return 0 on success, -1 on failure. */
-int write_card(int fd, card_t card);
+ *  @param card The card to be written. */
+void write_card(GGZDataIO * dio, card_t card);
 
 /** @brief Reads a bid from the socket.
  *  @param fd The file descriptor from which to read.
- *  @param bid A pointer to the bid data.
- *  @return 0 on success, -1 on failure. */
-int read_bid(int fd, bid_t * bid);
+ *  @param bid A pointer to the bid data. */
+void read_bid(GGZDataIO * dio, bid_t * bid);
 
 /** @brief Writes a bid to the socket.
  *  @param fd The file descriptor to which to read.
- *  @param bid A pointer to the bid data.
- *  @return 0 on success, -1 on failure. */
-int write_bid(int fd, bid_t bid);
+ *  @param bid A pointer to the bid data. */
+void write_bid(GGZDataIO * dio, bid_t bid);
 
 /** @brief Reads an opcode from the socket.
  *  @param fd The file descriptor from which to read.
  *  @param op A pointer to the opcode data.
- *  @return 0 on success, negative value on failure.
  *  @see enum server_msg_t, enum client_msg_t */
-int read_opcode(int fd, int *op);
+void read_opcode(GGZDataIO * dio, int *op);
 
 /** @brief Writes an opcode to the socket.
  *  @param fd The file descriptor to which to write.
  *  @param op The opcode data.
- *  @return 0 on success, negative value on failure.
  *  @see enum server_msg_t, enum client_msg_t */
-int write_opcode(int fd, int op);
+void write_opcode(GGZDataIO * dio, int op);
 
 /** @brief Reads a seat from the socket.
  *  @param fd The file descriptor from which to read.
- *  @param seat A pointer to the seat number.
- *  @return 0 on success, negative value on failure. */
-int read_seat(int fd, int *seat);
+ *  @param seat A pointer to the seat number. */
+void read_seat(GGZDataIO * dio, int *seat);
 
 /** @brief Writes a seat number to the socket.
  *  @param fd The file descriptor to which to write.
- *  @param seat The seat number.
- *  @return 0 on success, negative value on failure. */
-int write_seat(int fd, int seat);
+ *  @param seat The seat number. */
+void write_seat(GGZDataIO * dio, int seat);

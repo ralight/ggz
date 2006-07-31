@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: types.h 8427 2006-07-31 22:50:50Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -30,6 +30,7 @@
 
 #include <sys/types.h>
 
+#include "ggz_dio.h"
 #include "shared.h"
 
 #include "deck.h"
@@ -78,9 +79,10 @@ struct game_player_t {
 	seat_t seat;		/* the number of the player's seat. */
 	team_t team;		/* The player's team, or -1 for none. */
 	bool ready;
-	
+
+	GGZDataIO *dio;
+
 	/* Used for tracking AI processees. */
-	int fd;
 #ifdef DEBUG
 	int err_fd;
 #endif /* DEBUG */
@@ -94,6 +96,10 @@ struct game_player_t {
 	   dummy is playing it is actually the declarer who plays (and has
 	   is_playing set, with the dummy as the play_seat). */
 	seat_t play_seat;	/* what seat are we playing from? */
+};
+
+struct game_spectator_t {
+	GGZDataIO *dio;
 };
 
 /* Used in message-sending in message.c. */

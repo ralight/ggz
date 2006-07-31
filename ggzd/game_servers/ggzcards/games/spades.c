@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8398 2006-07-23 21:06:18Z oojah $
+ * $Id: spades.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -157,37 +157,37 @@ game_data_t spades_data = {
 	spades_send_hand
 };
 
-static bool spd_send_scoredata(player_t p)
+static void spd_send_scoredata(player_t p)
 {
-	int fd = get_player_socket(p);
+	GGZDataIO *dio = get_player_dio(p);
 	team_t team;
 	int waiting = -1;
 
 	/* The score data can be used by the AI for
 	   calculations or by the game client to
 	   display team score/bid/tricks/bags. */
-	if (write_opcode(fd, MESSAGE_GAME) < 0
-	    || write_opcode(fd, GAME_MESSAGE_GAME) < 0
-	    || ggz_write_string(fd, "spades") < 0
-	    || ggz_write_int(fd, 44) < 0) {
-	  return -1;
-	}
+	ggz_dio_packet_start(dio);
+	write_opcode(dio, MESSAGE_GAME);
+	write_opcode(dio, GAME_MESSAGE_GAME);
+	ggz_dio_put_string(dio, "spades");
+	ggz_dio_put_int(dio, 44); /* Obsolete. */
+
 	for (team = 0; team < 2; team++) {
-		ggz_write_int(fd, game.players[team].score);
-		ggz_write_int(fd, GSPADES.bags[team]);
+		ggz_dio_put_int(dio, game.players[team].score);
+		ggz_dio_put_int(dio, GSPADES.bags[team]);
 	}
 	players_iterate(p2) {
-		ggz_write_int(fd, game.players[p2].tricks);
+		ggz_dio_put_int(dio, game.players[p2].tricks);
 	} players_iterate_end;
-	ggz_write_int(fd, game.next_bid);
-	ggz_write_int(fd, game.next_play);
+	ggz_dio_put_int(dio, game.next_bid);
+	ggz_dio_put_int(dio, game.next_play);
 	if (game.state == STATE_WAIT_FOR_BID) {
 		waiting = game.next_bid;
 	} else if (game.state == STATE_WAIT_FOR_PLAY) {
 		waiting = game.next_play;
 	}
-	ggz_write_int(fd, waiting); /* The player we're waiting on. */
-	return 0;
+	ggz_dio_put_int(dio, waiting); /* The player we're waiting on. */
+	ggz_dio_packet_end(dio);
 }
 
 static void spd_broadcast_scoredata(void)

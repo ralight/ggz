@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6734 2005-01-19 01:58:21Z jdorje $
+ * $Id: main.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -34,6 +34,7 @@
 #include <unistd.h>
 
 #include <ggz.h>	/* libggz */
+#include <ggz_dio.h>
 
 #include "dlg_about.h"
 #include "dlg_chat.h"
@@ -143,25 +144,12 @@ static void cleanup_debugging(void)
 
 void listen_for_server(bool listen)
 {
-	static guint server_socket_tag;
-	static GIOChannel *channel = NULL;
-	/* Invariant: (channel != NULL) <=> listening */
+	GGZDataIO *dio = client_get_dio();
 
 	ggz_debug(DBG_MAIN, "%s server.",
 		  listen ? "Listening for" : "Ignoring");
 
-	if (listen && !channel) {
-		int fd = client_get_fd();
-
-		channel = g_io_channel_unix_new(fd);
-		assert(fd >= 0);
-		server_socket_tag = g_io_add_watch(channel, G_IO_IN,
-						   game_handle_io, NULL);
-	} else if (!listen && channel) {
-		g_source_remove(server_socket_tag);
-		g_io_channel_unref(channel);
-		channel = NULL;
-	}
+	ggz_dio_set_read_freeze(dio, !listen);
 }
 
 /* Initialize data for the "about" dialog */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 8291 2006-06-29 05:23:03Z jdorje $
+ * $Id: common.h 8427 2006-07-31 22:50:50Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -141,6 +141,8 @@ typedef struct {
 	int num_players;	/**< the number of players in the game */
 	int player_count;	/**< the number of human players who have joined, in total */
 	struct game_player_t *players;	/**< data for each player, allocated in game_init */
+	struct game_spectator_t *spectators; /**< data for each spectator. */
+	int spectator_count; /**< Size of the spectators array. */
 
 	/* table data: seats */
 	int num_seats;	/**< the number of "seats" in the table (which includes fake non-players */
@@ -217,7 +219,7 @@ GGZSeatType get_seat_status(seat_t s);
 
 const char* get_player_name(player_t p);
 GGZSeatType get_player_status(player_t p);
-int get_player_socket(int p);
+GGZDataIO *get_player_dio(int p);
 
 bool seats_full(void);
 bool seats_empty(void);

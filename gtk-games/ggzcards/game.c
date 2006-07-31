@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: game.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -34,6 +34,7 @@
 #include <unistd.h>
 
 #include <ggz.h>
+#include <ggz_dio.h>
 
 #include "ggzintl.h"
 #include "menus.h"
@@ -74,40 +75,41 @@ gboolean game_handle_ggz(GIOChannel * source, GIOCondition cond,
 	return (client_handle_ggz() >= 0);
 }
 
-gboolean game_handle_io(GIOChannel * source, GIOCondition cond,
-			gpointer data)
+void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
-	ggz_debug(DBG_MAIN, "Received data froms server.");
-	if (client_handle_server() < 0) {
+	if (cond & GDK_INPUT_READ) {
+		ggz_debug(DBG_MAIN, "Received data from server.");
+		if (client_handle_server() < 0) {
+			gtk_main_quit();
+		}
+	}
+	if (cond & GDK_INPUT_WRITE) {
+		ggz_debug(DBG_MAIN, "Writing data to server.");
+		assert(ggz_dio_is_write_pending(client_get_dio()));
+		ggz_dio_write_data(client_get_dio());
+	}
+	if (cond & GDK_INPUT_EXCEPTION) {
+		ggz_debug(DBG_MAIN, "Exception in server socket.");
 		gtk_main_quit();
 	}
-	return TRUE;
 }
 
 void game_send_bid(int bid)
 {
-	int status;
-
 	ggz_debug(DBG_MAIN, "Sending bid %d to server.", bid);
 
-	status = client_send_bid(bid);
+	client_send_bid(bid);
 
 	statusbar_message(_("Sending bid to server..."));
-
-	assert(status == 0);
 }
 
 void game_send_options(int option_count, int *options_selection)
 {
-	int status;
-
 	ggz_debug(DBG_MAIN, "Sending options to server.");
 
-	status = client_send_options(option_count, options_selection);
+	client_send_options(option_count, options_selection);
 
 	statusbar_message(_("Sending options to server..."));
-
-	assert(status == 0);
 }
 
 
@@ -116,7 +118,7 @@ void game_send_options(int option_count, int *options_selection)
    is valid. */
 void game_play_card(int card_num)
 {
-	int player = ggzcards.play_hand, status;
+	int player = ggzcards.play_hand;
 	card_t card;
 
 	if (preferences.collapse_hand)
@@ -132,7 +134,7 @@ void game_play_card(int card_num)
 		  card_num);
 	statusbar_message(_("Sending play to server..."));
 
-	status = client_send_play(card);
+	client_send_play(card);
 
 	/* Setup and trigger the card animation.  Because of the ugly way this 
 	   is handled, this function has to be called _before_ we update
@@ -150,8 +152,6 @@ void game_play_card(int card_num)
 	/* We don't remove the card from our hand until we have validation
 	   that it's been played. Graphically, the table_card is skipped over
 	   when drawing the hand. */
-
-	assert(status == 0);
 }
 
 #ifdef DEBUG
@@ -188,8 +188,7 @@ void game_send_newgame(void)
 {
 	ggz_debug(DBG_MAIN, "Sending newgame to server.");
 
-	if (client_send_newgame() < 0)
-		assert(FALSE);
+	client_send_newgame();
 
 	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
 
@@ -205,14 +204,25 @@ void game_resync(void)
 	(void)client_send_sync_request();
 }
 
+static void server_set_writeable(GGZDataIO *dio, bool writeable)
+{
+	static guint input_id;
 
+	if (input_id != 0) gtk_input_remove(input_id);
+	input_id = gtk_input_add_full(ggz_dio_get_socket(dio),
+				      GDK_INPUT_READ
+				      | (writeable ? GDK_INPUT_WRITE : 0)
+				      | GDK_INPUT_EXCEPTION,
+				      game_handle_io, NULL, NULL, NULL);
+}
 
-
-void game_alert_server(int server_socket_fd)
+void game_alert_server(GGZDataIO *server_dio)
 {
 	/* Start listening on the server socket.  We may stop later, if
 	   necessary. */
 	listen_for_server(TRUE);
+	server_set_writeable(server_dio, ggz_dio_is_write_pending(server_dio));
+	ggz_dio_set_writeable_callback(server_dio, server_set_writeable);
 }
 
 void game_get_newgame(void)
@@ -703,8 +713,7 @@ void game_set_player_message(int player, const char *message)
 	table_set_player_message(player, message);
 }
 
-int game_handle_game_message(int fd, const char *game, int size)
+void game_handle_game_message(GGZDataIO *dio, const char *game)
 {
 	ggz_debug(DBG_MAIN, "Received game message for game %s.", game);
-	return 0;
 }

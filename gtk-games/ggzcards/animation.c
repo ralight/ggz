@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 6663 2005-01-14 03:19:43Z jdorje $
+ * $Id: animation.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -317,7 +317,12 @@ static gint animation_callback(gpointer ignored)
 	int max_x = 0, max_y = 0;
 	GTimeVal curr_time;
 
-	assert(animating);
+	if (!animating) {
+#if 0 /* This fails for some reason! */
+		assert(animating);
+#endif
+		return FALSE;
+	}
 	g_get_current_time(&curr_time);
 
 	/* First determine the areas that need to be overwritten up. */

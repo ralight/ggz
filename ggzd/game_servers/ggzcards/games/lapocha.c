@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: lapocha.c 8427 2006-07-31 22:50:50Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -31,6 +31,7 @@
 
 #include <ggz.h>
 
+#include "ggz_dio.h"
 #include "net_common.h"
 
 #include "bid.h"
@@ -61,8 +62,8 @@ static void lapocha_set_player_message(player_t p);
 static void lapocha_end_hand(void);
 
 /* these send lapocha-specific game messages. */
-static int lap_send_trump_request(player_t p);
-static int lap_send_bid_request(player_t p);
+static void lap_send_trump_request(player_t p);
+static void lap_send_bid_request(player_t p);
 static void lap_send_dealer(void);
 static void lap_send_trump(void);
 static void lap_send_bid(player_t bidder, bid_t bid);
@@ -302,26 +303,30 @@ static void lapocha_end_hand(void)
    games. */
 
 /* these send lapocha-specific game messages. */
-static int lap_send_trump_request(player_t p)
+static void lap_send_trump_request(player_t p)
 {
-	int fd = get_player_socket(p);
-	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
-	    write_opcode(fd, GAME_MESSAGE_GAME) < 0 ||
-	    ggz_write_string(fd, "lapocha") < 0 ||
-	    ggz_write_int(fd, 1) < 0 || ggz_write_char(fd, LAP_REQ_TRUMP) < 0)
-		return -1;
-	return 0;
+	GGZDataIO *dio = get_player_dio(p);
+
+	ggz_dio_packet_start(dio);
+	write_opcode(dio, MESSAGE_GAME);
+	write_opcode(dio, GAME_MESSAGE_GAME);
+	ggz_dio_put_string(dio, "lapocha");
+	ggz_dio_put_int(dio, 1);
+	ggz_dio_put_char(dio, LAP_REQ_TRUMP);
+	ggz_dio_packet_end(dio);
 }
 
-static int lap_send_bid_request(player_t p)
+static void lap_send_bid_request(player_t p)
 {
-	int fd = get_player_socket(p);
-	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
-	    write_opcode(fd, GAME_MESSAGE_GAME) < 0 ||
-	    ggz_write_string(fd, "lapocha") < 0 ||
-	    ggz_write_int(fd, 1) < 0 || ggz_write_char(fd, LAP_REQ_BID) < 0)
-		return -1;
-	return 0;
+	GGZDataIO *dio = get_player_dio(p);
+
+	ggz_dio_packet_start(dio);
+	write_opcode(dio, MESSAGE_GAME);
+	write_opcode(dio, GAME_MESSAGE_GAME);
+	ggz_dio_put_string(dio, "lapocha");
+	ggz_dio_put_int(dio, 1);
+	ggz_dio_put_char(dio, LAP_REQ_BID);
+	ggz_dio_packet_end(dio);
 }
 
 static void lap_send_dealer(void)
@@ -329,14 +334,16 @@ static void lap_send_dealer(void)
 	int p;
 	
 	for (p = 0; p < game.num_players; p++) {
-		int fd = get_player_socket(p);
+		GGZDataIO *dio = get_player_dio(p);
 
-		write_opcode(fd, MESSAGE_GAME);
-		write_opcode(fd, GAME_MESSAGE_GAME);
-		ggz_write_string(fd, "lapocha");
-		ggz_write_int(fd, 5);
-		ggz_write_char(fd, LAP_MSG_DEALER);
-		ggz_write_int(fd, CONVERT_SEAT(game.dealer, p));
+		ggz_dio_packet_start(dio);
+		write_opcode(dio, MESSAGE_GAME);
+		write_opcode(dio, GAME_MESSAGE_GAME);
+		ggz_dio_put_string(dio, "lapocha");
+		ggz_dio_put_int(dio, 5);
+		ggz_dio_put_char(dio, LAP_MSG_DEALER);
+		ggz_dio_put_int(dio, CONVERT_SEAT(game.dealer, p));
+		ggz_dio_packet_end(dio);
 	}
 }
 
@@ -345,13 +352,16 @@ static void lap_send_trump(void)
 	int p;
 	
 	for (p = 0; p < game.num_players; p++) {
-		int fd = get_player_socket(p);
-		write_opcode(fd, MESSAGE_GAME);
-		write_opcode(fd, GAME_MESSAGE_GAME);
-		ggz_write_string(fd, "lapocha");
-		ggz_write_int(fd, 2);
-		ggz_write_char(fd, LAP_MSG_TRUMP);
-		ggz_write_char(fd, game.trump);
+		GGZDataIO *dio = get_player_dio(p);
+
+		ggz_dio_packet_start(dio);
+		write_opcode(dio, MESSAGE_GAME);
+		write_opcode(dio, GAME_MESSAGE_GAME);
+		ggz_dio_put_string(dio, "lapocha");
+		ggz_dio_put_int(dio, 2);
+		ggz_dio_put_char(dio, LAP_MSG_TRUMP);
+		ggz_dio_put_char(dio, game.trump);
+		ggz_dio_packet_end(dio);
 	}
 }
 
@@ -363,14 +373,17 @@ static void lap_send_bid(player_t bidder, bid_t bid)
 	assert(game.players[bidder].seat == bidder);
 	
 	for (p = 0; p < game.num_players; p++) {
-		int fd = get_player_socket(p);
-		write_opcode(fd, MESSAGE_GAME);
-		write_opcode(fd, GAME_MESSAGE_GAME);
-		ggz_write_string(fd, "lapocha");
-		ggz_write_int(fd, 9);
-		ggz_write_char(fd, LAP_MSG_BID);
-		ggz_write_int(fd, bidder);
-		ggz_write_int(fd, the_bid);
+		GGZDataIO *dio = get_player_dio(p);
+
+		ggz_dio_packet_start(dio);
+		write_opcode(dio, MESSAGE_GAME);
+		write_opcode(dio, GAME_MESSAGE_GAME);
+		ggz_dio_put_string(dio, "lapocha");
+		ggz_dio_put_int(dio, 9);
+		ggz_dio_put_char(dio, LAP_MSG_BID);
+		ggz_dio_put_int(dio, bidder);
+		ggz_dio_put_int(dio, the_bid);
+		ggz_dio_packet_end(dio);
 	}
 }
 
@@ -379,17 +392,20 @@ static void lap_send_scores(void)
 	player_t p;
 
 	for (p = 0; p < game.num_players; p++) {
-		int fd = get_player_socket(p);
+		GGZDataIO *dio = get_player_dio(p);
 		seat_t s_r;
-		write_opcode(fd, MESSAGE_GAME);
-		write_opcode(fd, GAME_MESSAGE_GAME);
-		ggz_write_string(fd, "lapocha");
-		ggz_write_int(fd, 17);
-		ggz_write_char(fd, LAP_MSG_SCORES);
+
+		ggz_dio_packet_start(dio);
+		write_opcode(dio, MESSAGE_GAME);
+		write_opcode(dio, GAME_MESSAGE_GAME);
+		ggz_dio_put_string(dio, "lapocha");
+		ggz_dio_put_int(dio, 17);
+		ggz_dio_put_char(dio, LAP_MSG_SCORES);
 		for (s_r = 0; s_r < game.num_seats; s_r++) {
 			seat_t s_abs = UNCONVERT_SEAT(s_r, p);
 			assert(game.seats[s_abs].player == s_abs);
-			ggz_write_int(fd, game.players[s_abs].score);
+			ggz_dio_put_int(dio, game.players[s_abs].score);
 		}
+		ggz_dio_packet_end(dio);
 	}
 }
