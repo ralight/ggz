@@ -1,0 +1,122 @@
+Index: game.c
+===================================================================
+--- game.c	(revision 8262)
++++ game.c	(working copy)
+@@ -706,5 +706,30 @@
+ int game_handle_game_message(int fd, const char *game, int size)
+ {
+ 	ggz_debug(DBG_MAIN, "Received game message for game %s.", game);
++	if (strcasecmp(game, "spades") == 0) {
++		int scores[2], bags[2], i;
++		int tricks[4];
++		char buf[2048];
++
++		for (i = 0; i < 2; i++) {
++			ggz_read_int(fd, &scores[i]);
++			ggz_read_int(fd, &bags[i]);
++		}
++		for (i = 0; i < 4; i++) {
++			ggz_read_int(fd, &tricks[i]);
++		}
++
++		snprintf(buf, sizeof(buf),
++			 "          N/S   |   E/W\n"
++			 "Score:  %8d | %8d\n"
++			 "Bags:   %8d | %8d\n"
++			 "Tricks: %8d | %8d",
++			 scores[0], scores[1],
++			 bags[0], bags[1],
++			 tricks[0] + tricks[2],
++			 tricks[1] + tricks[3]);
++		table_set_table_message(buf);
++		return 32;
++	}
+ 	return 0;
+ }
+Index: table.c
+===================================================================
+--- table.c	(revision 8262)
++++ table.c	(working copy)
+@@ -60,6 +60,7 @@
+ 
+ static const char *player_names[MAX_NUM_PLAYERS] = { NULL };
+ static const char *player_messages[MAX_NUM_PLAYERS] = { NULL };
++static const char *table_message;
+ 
+ static gboolean table_ready = FALSE;
+ 
+@@ -434,6 +435,37 @@
+ 				 TEXT_BOX_WIDTH - 1);
+ }
+ 
++static void table_show_table_box(int write_to_screen)
++{
++	int x, y, w, h;
++	static PangoLayout *layout = NULL;
++	PangoRectangle rect;
++	GdkGC *gc = table_style->fg_gc[GTK_WIDGET_STATE(table)];
++
++	assert(table_ready);
++	if (!table_message) return;
++
++	if (!layout) {
++		/* This variable is static so we only allocate it once. */
++		layout = pango_layout_new(gdk_pango_context_get());
++	}
++	pango_layout_set_font_description(layout, table_style->font_desc);
++
++	pango_layout_set_text(layout, table_message, -1);
++	pango_layout_get_pixel_extents(layout, NULL, &rect);
++
++	w = rect.width;
++	h = rect.height;
++	x = (get_table_width() - w) / 2;
++	y = (get_table_height() - h) / 2;
++
++	gdk_draw_layout(table_buf, gc, x, y, layout);
++
++	if (write_to_screen)
++		table_show_table(x, y, w, h);
++}
++
++
+ /* Display's a player's name on the table. */
+ void table_set_name(int player, const char *name)
+ {
+@@ -463,6 +495,17 @@
+ 		table_show_player_box(player, TRUE);
+ }
+ 
++void table_set_table_message(const char *message)
++{
++	ggz_debug(DBG_TABLE, "Setting table message.");
++	if (table_message) ggz_free(table_message);
++
++	table_message = ggz_strdup(message);
++
++	if (table_ready)
++		table_show_table_box(TRUE);
++}
++
+ /* Handle a redraw of necessary items, for instance when a Gtk style change is 
+    signaled. */
+ void table_redraw(void)
+@@ -485,6 +528,7 @@
+ 		table_show_cards(FALSE);
+ 		for (p = 0; p < ggzcards.num_players; p++)
+ 			table_show_player_box(p, FALSE);
++		table_show_table_box(FALSE);
+ 
+ 		/* Then draw the whole buffer to the window */
+ 		table_show_table(0, 0, get_table_width(),
+Index: table.h
+===================================================================
+--- table.h	(revision 8262)
++++ table.h	(working copy)
+@@ -71,5 +71,6 @@
+ 
+ void table_set_name(int player, const char *name);
+ void table_set_player_message(int player, const char *name);
++void table_set_table_message(const char *message);
+ 
+ #endif /* __TABLE_H__ */

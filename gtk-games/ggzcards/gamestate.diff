@@ -1,0 +1,15 @@
+Index: cb_main.c
+===================================================================
+--- cb_main.c	(revision 8262)
++++ cb_main.c	(working copy)
+@@ -44,7 +44,9 @@
+ {
+ 	/* Really, we shouldn't be checking game_started here.  We should
+ 	   happily leave between games too.  But for now, this is fine. */
+-	if (game_started && preferences.confirm_exit) {
++  printf("State is %d.\n", ggzmod_get_state(client_get_ggzmod()));
++	if (ggzmod_get_state(client_get_ggzmod()) == GGZMOD_STATE_PLAYING
++	    && preferences.confirm_exit) {
+ 		ggz_show_exit_dialog(TRUE);
+ 	} else {
+ 		gtk_main_quit();
