@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "ggz.h"
 #include "base16.h"
 
 /* Function to encode strings to base16 (hex) with a nibble per hex character */
@@ -17,10 +18,8 @@ char *ggz_base16_encode(const char *text, int length)
 
 	if(!text) return NULL;
 
-	ret = malloc((length * 2 + 1)*sizeof(*ret));
+	ret = ggz_malloc((length * 2 + 1)*sizeof(*ret));
 	if(!ret) return NULL;
-
-	ret[sizeof(ret)-1] = 0;
 
 	for(i = 0; i < length; i++){
 		ret[i*2] = hextable[(text[i]&0xf0)>>4];

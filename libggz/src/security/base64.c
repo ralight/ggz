@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "ggz.h"
 #include "base64.h"
 
 /* Base64 functions as per RFC 2045 */
@@ -31,10 +32,10 @@ char *ggz_base64_encode(const char *text, int length)
 
 	if(!text) return NULL;
 
-	ret = (char*)malloc(length * 2 + 1);
+	ret = ggz_malloc(length * 2 + 1);
 
 	/* Padding with NUL bytes */
-	tmp = (char*)malloc(length + 4);
+	tmp = ggz_malloc(length + 4);
 	tmp[length + 1] = 0;
 	tmp[length + 2] = 0;
 	tmp[length + 3] = 0;
@@ -59,7 +60,7 @@ char *ggz_base64_encode(const char *text, int length)
 	}
 	ret[j] = 0;
 
-	free(tmp);
+	ggz_free(tmp);
 
 	return ret;
 }
@@ -71,7 +72,7 @@ char *ggz_base64_decode(const char *text, int length)
 	int i, matrix, j;
 
 	if(!text) return NULL;
-	ret = (char*)malloc(length + 1);
+	ret = ggz_malloc(length + 1);
 
 	/* Bit conversion */
 	j = 0;

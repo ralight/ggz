@@ -57,7 +57,7 @@ static hash_t hash_create_private(const char *algo, const char *text, const char
 
 	gcry_md_write(handle, text, strlen(text));
 	hash.hashlen = gcry_md_get_algo_dlen(algos[0]);
-	hash.hash = malloc(hash.hashlen);
+	hash.hash = ggz_malloc(hash.hashlen);
 	if(hash.hash){
 		hash.hash = memcpy(hash.hash, gcry_md_read(handle, algos[0]), hash.hashlen);
 	}else{

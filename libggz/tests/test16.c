@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
 	if(strcmp(enc, expected)) return 1;
 
-	free(enc);
+	ggz_free(enc);
 
 	return 0;
 }

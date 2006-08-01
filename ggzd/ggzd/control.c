@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8425 2006-07-31 19:04:16Z jdorje $
+ * $Id: control.c 8433 2006-08-01 00:10:41Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -152,21 +152,38 @@ static void cleanup_data(void)
 
 	motd_read_file(NULL);
 
-	data_free(opt.game_dir);
-	data_free(opt.tmp_dir);
-	data_free(opt.conf_dir);
-	data_free(opt.data_dir);
-	if (opt.motd_file)
-		data_free(opt.motd_file);
-	data_free(opt.admin_name);
-	data_free(opt.admin_email);
-	data_free(opt.server_name);
+	printf("a\n");
+	ggz_memory_check();
+	printf("b\n");
+
+	if (opt.local_conf) data_free(opt.local_conf);
+	if (opt.interface) data_free(opt.interface);
+	if (opt.game_dir) data_free(opt.game_dir);
+	if (opt.tmp_dir) data_free(opt.tmp_dir);
+	if (opt.conf_dir) data_free(opt.conf_dir);
+	if (opt.data_dir) data_free(opt.data_dir);
+	if (opt.motd_file) data_free(opt.motd_file);
+	if (opt.motd_web) data_free(opt.motd_web);
+	if (opt.admin_name) data_free(opt.admin_name);
+	if (opt.admin_email) data_free(opt.admin_email);
+	if (opt.server_name) data_free(opt.server_name);
 
 	if (opt.dbhost) data_free(opt.dbhost);
 	if (opt.dbname) data_free(opt.dbname);
 	if (opt.dbusername) data_free(opt.dbusername);
 	if (opt.dbpassword) data_free(opt.dbpassword);
-	data_free(opt.dbhashing);
+	if (opt.dbhashing) data_free(opt.dbhashing);
+	if (opt.dbhashencoding) data_free(opt.dbhashencoding);
+
+	if (opt.tls_key) data_free(opt.tls_key);
+	if (opt.tls_cert) data_free(opt.tls_cert);
+	if (opt.tls_password) data_free(opt.tls_password);
+
+	if (opt.dump_file) data_free(opt.dump_file);
+
+	if (opt.announce_metaserver) data_free(opt.announce_metaserver);
+	if (opt.metausername) data_free(opt.metausername);
+	if (opt.metapassword) data_free(opt.metapassword);
 
 	/* We don't bother with locking anything... */
 	for (i = 0; i < room_info.num_rooms; i++) {

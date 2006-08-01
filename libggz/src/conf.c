@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 7885 2006-03-06 18:46:12Z josef $
+ * $Id: conf.c 8433 2006-08-01 00:10:41Z oojah $
  *
  * Internal functions for handling configuration files
  *
@@ -136,7 +136,7 @@ char * ggz_conf_read_string(int handle, const char *section,
 
 do_default:
 	/* Any failure causes a branch to here to return */
-	/* a defualt value if provided by the caller.	 */
+	/* a default value if provided by the caller.	 */
 	return ggz_strdup(def);
 }
 

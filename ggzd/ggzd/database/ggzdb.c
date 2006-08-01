@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 8395 2006-07-22 22:51:54Z oojah $
+ * $Id: ggzdb.c 8433 2006-08-01 00:10:41Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -144,13 +144,15 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 				password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
 			}
 			if(hash.hash)
-				free(hash.hash);
+				ggz_free(hash.hash);
 
 			if(password_enc)
 			{
-				origpassword = strdup(pe->password);
+				origpassword = ggz_strdup(pe->password);
 				snprintf(pe->password, sizeof(pe->password), "%s", password_enc);
+				ggz_free(password_enc);
 			}
+			// FIXME - shouldn't failing to encrypt the password be an error?
 		}
 		rc = _ggzdb_player_add(pe);
 	}
@@ -160,7 +162,7 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 	if(origpassword)
 	{
 		snprintf(pe->password, sizeof(pe->password), "%s", origpassword);
-		free(origpassword);
+		ggz_free(origpassword);
 	}
 	
 	_ggzdb_exit();
@@ -401,10 +403,11 @@ int ggzdb_compare_password(const char *input, const char *password)
 			password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
 		}
 		if(hash.hash)
-			free(hash.hash);
+			ggz_free(hash.hash);
+
 		if(!password_enc) return -1;
 		if(!strcmp(password_enc, password)) ret = 1;
-		free(password_enc);
+		ggz_free(password_enc);
 		return ret;
 	}
 

@@ -16,8 +16,8 @@ static int testconversion(const char *orig)
 
 	if(strcmp(orig, dec)) return 1;
 
-	free(enc);
-	free(dec);
+	ggz_free(enc);
+	ggz_free(dec);
 
 	return 0;
 }
