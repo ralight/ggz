@@ -40,7 +40,7 @@ char *ggz_base64_encode(const char *text, int length)
 	tmp[length + 1] = 0;
 	tmp[length + 2] = 0;
 	tmp[length + 3] = 0;
-	strncpy(tmp, text, length);
+	strncpy((char*)tmp, text, length);
 
 	/* Bit conversion */
 	j = 0;
