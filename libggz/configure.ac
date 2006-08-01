@@ -20,7 +20,7 @@ AC_CHECK_HEADERS([winsock2.h arpa/inet.h sys/types.h netinet/in.h])
 AC_ARG_WITH([gcrypt],
   AC_HELP_STRING([--with-gcrypt], [Add encryption support]),
   [enable_gcrypt=$enableval],
-  [enable_gcrypt=no])
+  [enable_gcrypt=auto])
 AC_ARG_ENABLE([threading],
   AC_HELP_STRING([--disable-threading], [Don't build in threading support]),
   [enable_threading=$enableval],
@@ -61,8 +61,7 @@ fi
 
 # Encryption library: libgcrypt
 # =============================
-SRCSUBDIRS="."
-if test "$enable_gcrypt" = yes; then
+if test "$enable_gcrypt" != "no"; then
   AC_CHECK_LIB(gcrypt, gcry_check_version,
     [
       AC_CHECK_HEADER(gcrypt.h,
@@ -70,13 +69,23 @@ if test "$enable_gcrypt" = yes; then
           AC_DEFINE_UNQUOTED([USE_GCRYPT], 1,
                              [Define if you have the gcryp lib])
           LDADD="$LDADD -lgcrypt"
-	],
-	[
-          AC_MSG_WARN([*** No gcrypt-dev found - compiling without encryption support])
+        ],
+        [
+          if test "$enable_gcrypt" = "yes"; then
+            AC_MSG_ERROR([*** No gcrypt-dev found])
+          else
+            AC_MSG_WARN([*** No gcrypt-dev found - compiling without encryption support])
+            enable_gcrypt=no
+          fi
         ])
     ],
     [
-      AC_MSG_WARN([*** No gcrypt found - compiling without encryption support])
+      if test "$enable_gcrypt" = "yes"; then
+        AC_MSG_ERROR([*** No gcrypt found])
+      else
+        AC_MSG_WARN([*** No gcrypt found - compiling without encryption support])
+        enable_gcrypt=no
+      fi
     ])
 fi
 
