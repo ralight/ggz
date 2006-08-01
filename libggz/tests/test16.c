@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: libggz
  * Date: 
- * $Id: easysock.c 8165 2006-06-11 23:01:42Z oojah $
+ * $Id: test16.c 8451 2006-08-01 19:43:36Z jdorje $
  *
  * Copyright (C) 2006 GGZ Development Team
  *
@@ -33,7 +33,6 @@
 
 int main(int argc, char *argv[])
 {
-#ifdef USE_GCRYPT
 	char *enc;
 	char plain[7];
 	char expected[10];
@@ -49,7 +48,6 @@ int main(int argc, char *argv[])
 	if(strcmp(enc, expected)) return 1;
 
 	ggz_free(enc);
-#endif
 
 	return 0;
 }
