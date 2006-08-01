@@ -4,15 +4,15 @@ Author = Jason Short, Rich Gade
 Description = GGZ Cards game module
 Homepage = http://www.ggzgamingzone.org/games/ggzcards/
 Name = GGZCards
-Version = 0.0.7
+Version = @GGZCARDS_VERSION@
 
 [LaunchInfo]
 ExecutablePath = ggzd.ggzcards
 # Set ExecutableArgs in the room file
 
 [Protocol]
-Engine = GGZCards
-Version = 5
+Engine = @GGZCARDS_PROTOCOL_ENGINE@
+Version = @GGZCARDS_PROTOCOL_VERSION@
 
 [TableOptions]
 AllowLeave = 1

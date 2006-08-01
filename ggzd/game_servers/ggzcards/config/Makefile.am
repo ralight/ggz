@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
+# $Id: Makefile.am 8435 2006-08-01 04:06:45Z jdorje $
 
 SUBDIRS = .
 
@@ -23,7 +23,16 @@ ggzdroom_DATA = ggzcards.room \
 		ggzcards-sueca.room \
 		ggzcards-whist.room
 
-EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
+EXTRA_DIST = $(ggzdroom_DATA) version.m4	\
+		ggzcards.dsc.in			\
+		ggzcards-bridge.dsc.in		\
+		ggzcards-fortytwo.dsc.in	\
+		ggzcards-hearts.dsc.in		\
+		ggzcards-lapocha.dsc.in		\
+		ggzcards-spades.dsc.in		\
+		ggzcards-suaro.dsc.in		\
+		ggzcards-sueca.dsc.in		\
+		ggzcards-whist.dsc.in
 
 # JDS: is this necessary?
 #ggzd_ggzcards_LDADD = $(LDADD)

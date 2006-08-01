@@ -4,15 +4,15 @@ Author = Jason Short
 Description = GGZ Cards game module for Whist
 Homepage = http://www.ggzgamingzone.org/games/ggzcards/
 Name = GGZCards-Whist
-Version = 0.0.7
+Version = @GGZCARDS_VERSION@
 
 [LaunchInfo]
 ExecutablePath = ggzd.ggzcards --game=whist
 # Set ExecutableArgs in the room file
 
 [Protocol]
-Engine = GGZCards
-Version = 5
+Engine = @GGZCARDS_PROTOCOL_ENGINE@
+Version = @GGZCARDS_PROTOCOL_VERSION@
 
 [TableOptions]
 AllowLeave = 1

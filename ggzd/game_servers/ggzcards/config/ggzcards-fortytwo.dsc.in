@@ -1,18 +1,18 @@
-# $Id: ggzcards-bridge.dsc 8427 2006-07-31 22:50:50Z jdorje $
+# $Id: ggzcards-fortytwo.dsc 8427 2006-07-31 22:50:50Z jdorje $
 [GameInfo]
 Author = Jason Short
-Description = GGZ Cards game module for Bridge
+Description = GGZ Cards game module for Forty-Two
 Homepage = http://www.ggzgamingzone.org/games/ggzcards/
-Name = GGZCards-Bridge
-Version = 0.0.7
+Name = GGZCards-FortyTwo
+Version = @GGZCARDS_VERSION@
 
 [LaunchInfo]
-ExecutablePath = ggzd.ggzcards --game=bridge
+ExecutablePath = ggzd.ggzcards --game=fortytwo
 # Set ExecutableArgs in the room file
 
 [Protocol]
-Engine = GGZCards
-Version = 5
+Engine = @GGZCARDS_PROTOCOL_ENGINE@
+Version = @GGZCARDS_PROTOCOL_VERSION@
 
 [TableOptions]
 AllowLeave = 1
