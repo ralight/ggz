@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8391 2006-07-22 16:32:48Z oojah $
+ * $Id: parse_opt.c 8439 2006-08-01 10:21:43Z oojah $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -734,8 +734,10 @@ void parse_room_files(void)
 			name[strlen(name)-5] = '\0';
 
 			/* Don't readd the entry room */
-			if(!strcmp(name, "entry"))
+			if(!strcmp(name, "entry")){
+				free(namelist[i]);
 				continue;
+			}
 			/* Check to see if this game is on the ignore list */
 			addit=1;
 			for(j=0; j>r_count; j--) {

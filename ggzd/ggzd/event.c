@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 8279 2006-06-27 07:29:39Z josef $
+ * $Id: event.c 8439 2006-08-01 10:21:43Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -100,29 +100,6 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 	GGZEvent *event;
 	int i;
 
-	/* Check for illegal room # */	
-	if(room < 0) {
-		dbg_msg(GGZ_DBG_LISTS, "event_room_enqueue() called from -1");
-		return GGZ_OK;
-	}
-
-	/* Check for removed room */
-	if (room_is_removed(room)) {
-		dbg_msg(GGZ_DBG_LISTS,
-			"Skipped event (removed room)");
-		return GGZ_OK;
-	}
-
-	pthread_rwlock_wrlock(&rooms[room].lock);
-
-	/* Check for empty room (event might be last player leaving) */
-	if (rooms[room].player_count == 0) {
-		pthread_rwlock_unlock(&rooms[room].lock);
-		dbg_msg(GGZ_DBG_LISTS,
-			"Skipped event (empty room)");
-		return GGZ_OK;
-	}
-
 	/* Allocate a new event item */
 	event = ggz_malloc(sizeof(GGZEvent));
 	dbg_msg(GGZ_DBG_LISTS, "Allocated event %p", event);
@@ -133,6 +110,32 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 	event->data = data;
 	event->free = free;
 	event->handle = func;
+
+	/* Check for illegal room # */	
+	if(room < 0) {
+		event_free(event);
+		dbg_msg(GGZ_DBG_LISTS, "event_room_enqueue() called from -1");
+		return GGZ_OK;
+	}
+
+	/* Check for removed room */
+	if (room_is_removed(room)) {
+		event_free(event);
+		dbg_msg(GGZ_DBG_LISTS,
+			"Skipped event (removed room)");
+		return GGZ_OK;
+	}
+
+	pthread_rwlock_wrlock(&rooms[room].lock);
+
+	/* Check for empty room (event might be last player leaving) */
+	if (rooms[room].player_count == 0) {
+		pthread_rwlock_unlock(&rooms[room].lock);
+		event_free(event);
+		dbg_msg(GGZ_DBG_LISTS,
+			"Skipped event (empty room)");
+		return GGZ_OK;
+	}
 
 	event->ref_count = rooms[room].player_count;
 

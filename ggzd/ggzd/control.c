@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8433 2006-08-01 00:10:41Z oojah $
+ * $Id: control.c 8439 2006-08-01 10:21:43Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -152,9 +152,7 @@ static void cleanup_data(void)
 
 	motd_read_file(NULL);
 
-	printf("a\n");
 	ggz_memory_check();
-	printf("b\n");
 
 	if (opt.local_conf) data_free(opt.local_conf);
 	if (opt.interface) data_free(opt.interface);
