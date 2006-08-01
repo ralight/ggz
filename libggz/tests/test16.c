@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: libggz
  * Date: 
- * $Id: test16.c 8451 2006-08-01 19:43:36Z jdorje $
+ * $Id: test16.c 8453 2006-08-01 20:05:03Z jdorje $
  *
  * Copyright (C) 2006 GGZ Development Team
  *
@@ -35,10 +35,10 @@ int main(int argc, char *argv[])
 {
 	char *enc;
 	char plain[7];
-	char expected[10];
+	char expected[11];
 
-	strncpy(plain, "hello", 7);
-	strncpy(expected, "68656c6c6f", 12);
+	strncpy(plain, "hello", sizeof(plain));
+	strncpy(expected, "68656c6c6f", sizeof(expected));
 
 	enc = ggz_base16_encode(plain, strlen(plain));
 	printf("Original: %s\n", plain);
