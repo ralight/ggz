@@ -10,7 +10,7 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   $Id: net_common.c 4046 2002-04-22 00:04:41Z jdorje $
+   $Id: ggz_dio.h 8452 2006-08-01 19:53:36Z jdorje $
 ***********************************************************************/
 #ifndef __GGZ_DIO_H__
 #define __GGZ_DIO_H__
