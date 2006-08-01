@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8409 2006-07-27 16:48:40Z jdorje $
+# $Id: configure.ac 8437 2006-08-01 05:04:38Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -154,6 +154,9 @@ dnl Debug modes
 dnl ===========
 AC_GGZ_DEBUG
 
+dnl Versioning
+dnl ==========
+m4_include(game_servers/ggzcards/config/version.m4)
 
 dnl Various dirs
 dnl ============
@@ -249,6 +252,15 @@ AC_CONFIG_FILES([Makefile
 	game_servers/ggzcards/games/Makefile
 	game_servers/ggzcards/ai/Makefile
 	game_servers/ggzcards/config/Makefile
+	game_servers/ggzcards/config/ggzcards-bridge.dsc
+	game_servers/ggzcards/config/ggzcards-fortytwo.dsc
+	game_servers/ggzcards/config/ggzcards-hearts.dsc
+	game_servers/ggzcards/config/ggzcards-lapocha.dsc
+	game_servers/ggzcards/config/ggzcards-spades.dsc
+	game_servers/ggzcards/config/ggzcards-suaro.dsc
+	game_servers/ggzcards/config/ggzcards-sueca.dsc
+	game_servers/ggzcards/config/ggzcards-whist.dsc
+	game_servers/ggzcards/config/ggzcards.dsc
 	game_servers/ggzcards/common/Makefile
 	game_servers/ggzcards/client/Makefile
 	game_servers/reversi/Makefile
