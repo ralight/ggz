@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include <ggz.h>
 
+#include "config.h"
+
 static int test16conversion(const char *orig, const char *hashing, const char *expected)
 {
-	int i;
 	hash_t hash;
 	char *enc;
 	int ret = 0;
@@ -28,7 +29,6 @@ static int test16conversion(const char *orig, const char *hashing, const char *e
 
 static int test64conversion(const char *orig, const char *hashing, const char *expected)
 {
-	int i;
 	hash_t hash;
 	char *enc;
 	int ret = 0;
@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
 
 	// md5, sha1, ripemd160
 
+#ifdef USE_GCRYPT
 	printf("md5 base16 encoding\n");
 	printf("===================\n");
 	ret |= test16conversion("hello", "md5", "5d41402abc4b2a76b9719d911017c592");
@@ -78,6 +79,7 @@ int main(int argc, char *argv[])
 	ret |= test64conversion("hello", "sha1", "qvTGHdzF6KLavt4PO0gs2a6pQ00=");
 	ret |= test64conversion("abc", "sha1", "qZk+NkcGgWq6PiVxeFDCbJzQ2J0=");
 	ret |= test64conversion("test", "sha1", "qUqP5cyxm6YcTAhz05Hph5gvu9M=");
+#endif
 
 	return ret;
 }
