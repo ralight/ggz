@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 8444 2006-08-01 17:11:06Z jdorje $
+ * $Id: protocol.h 8450 2006-08-01 19:35:05Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -62,8 +62,9 @@ typedef enum {
 	   data. */
 	REQ_NEWGAME,
 
-	/* Tells the client of a start of a new game.  Followed by an
-	   integer containing the cardset type. */
+	/* Tells the client of a start of a new game.  Followed by a
+	   string containing the game type, and an integer containing the
+	   cardset type. */
 	MSG_NEWGAME,
 
 	/* Tells the client of a gameover situation.  It'll be followed by an 
@@ -147,12 +148,10 @@ typedef enum {
 	   then (for each player) an integer n plus n cards for that player. */
 	MSG_GAME_MESSAGE_CARDLIST,
 
-	/* Block data that may be game-specific.  It is followed by the
-	   (string) name of the game, followed by an integer n followed
-	   by n bytes of data. It is up to the client frontend to determine
-	   what (if anything) to do  with this data; it'll be build at the
-	   server end by the game module. */
-	MSG_GAME_MESSAGE_GAME,
+	/* Block data that may be game-specific.  It is up to the client
+	   frontend to determine what (if anything) to do  with this data;
+	   it'll be built at the server end by the game module. */
+	MSG_GAME_SPECIFIC,
 } server_msg_t;
 
 /** @brief Return a string description of the opcode. */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8444 2006-08-01 17:11:06Z jdorje $
+ * $Id: client.c 8450 2006-08-01 19:35:05Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -55,7 +55,7 @@ static void handle_server_connect(int server_fd);
 static void handle_text_message(void);
 static void handle_player_message(void);
 static void handle_cardlist_message(void);
-static void handle_game_message(void);
+static void handle_game_specific_packet(void);
 
 static struct {
 	GGZDataIO *dio;
@@ -280,32 +280,33 @@ static void handle_player_message(void)
    used an XML protocol, things could just sort-of take care of themselves
    because we'd just skip over the tag automatically if it wasn't handled (I
    think). */
-static void handle_game_message(void)
+static void handle_game_specific_packet(void)
 {
-	int size;
-	char *game;
-
-	ggz_dio_get_string_alloc(game_internal.dio, &game);
-
 	/* Note: "size" refers to the size of the data block, not including
 	   the headers above. */
-	ggz_debug(DBG_CLIENT,
-		  "Received game message of size %d for game %s.", size,
-		  game);
+	ggz_debug(DBG_CLIENT, "Received game message.");
 
-	game_handle_game_message(game_internal.dio, game);
-
-	ggz_free(game);	/* allocated by ggz_dio */
+	game_handle_game_message(game_internal.dio, ggzcards.gametype);
 }
 
 static void handle_msg_newgame(void)
 {
 	int cardset;
 	cardset_type_t cardset_type;
+	char *gametype;
 
+	ggz_dio_get_string_alloc(game_internal.dio, &gametype);
 	ggz_dio_get_int(game_internal.dio, &cardset);
 
 	cardset_type = cardset;
+
+	if (ggzcards.gametype)
+		ggz_free(ggzcards.gametype);
+	ggzcards.gametype = gametype;
+
+	ggz_debug(DBG_CLIENT,
+		  "Received newgame message: game %s, cards %d.", gametype,
+		  cardset);
 
 	assert(cardset_type != UNKNOWN_CARDSET);
 	set_cardset_type(cardset_type);
@@ -986,16 +987,16 @@ static void server_read_callback(GGZDataIO * dio, void *userdata)
 		return;
 	case MSG_GAME_MESSAGE_TEXT:
 		handle_text_message();
-		break;
-	case MSG_GAME_MESSAGE_CARDLIST:
-		handle_cardlist_message();
-		break;
-	case MSG_GAME_MESSAGE_GAME:
-		handle_game_message();
-		break;
+		return;
 	case MSG_GAME_MESSAGE_PLAYER:
 		handle_player_message();
-		break;
+		return;
+	case MSG_GAME_MESSAGE_CARDLIST:
+		handle_cardlist_message();
+		return;
+	case MSG_GAME_SPECIFIC:
+		handle_game_specific_packet();
+		return;
 	}
 
 	ggz_error_msg("Error handling message"

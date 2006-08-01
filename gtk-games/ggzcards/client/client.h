@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8443 2006-08-01 16:40:16Z jdorje $
+ * $Id: client.h 8450 2006-08-01 19:35:05Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -112,6 +112,8 @@ struct ggzcards_game_t {
 	int num_players;	/**< The number of players in the game. */
 	seat_t *players;	/**< Data about each player */
 	client_state_t state;	/**< The state the game is in */
+
+	const char *gametype;	/**< String containing the game name. */
 
 	/** @brief The hand we're currently playing from.
 	 *
