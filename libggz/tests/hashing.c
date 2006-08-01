@@ -5,6 +5,7 @@
 
 #include "config.h"
 
+#ifdef USE_GCRYPT
 static int test16conversion(const char *orig, const char *hashing, const char *expected)
 {
 	hash_t hash;
@@ -48,6 +49,7 @@ static int test64conversion(const char *orig, const char *hashing, const char *e
 
 	return ret;
 }
+#endif
 
 int main(int argc, char *argv[])
 {
