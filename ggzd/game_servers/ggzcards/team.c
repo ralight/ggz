@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/27/2002
  * Desc: Functions and data for tracking teams
- * $Id: team.c 3574 2002-03-16 15:56:43Z jdorje $
+ * $Id: team.c 8443 2006-08-01 16:40:16Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -77,4 +77,17 @@ int get_team_score(team_t t)
 			
 	assert(FALSE);
 	return 0;
+}
+
+team_t get_player_team(player_t p)
+{
+	/* This applies to spectators or empty seats. */
+	if (p < 0) return NO_TEAM;
+
+	return game.players[p].team;
+}
+
+team_t get_seat_team(seat_t s)
+{
+	return get_player_team(SEAT_TO_PLAYER(s));
 }

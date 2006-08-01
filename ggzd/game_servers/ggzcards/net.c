@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: net.c 8443 2006-08-01 16:40:16Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -45,6 +45,7 @@
 #include "net.h"
 #include "options.h"
 #include "play.h"
+#include "team.h"
 
 seat_t convert_seat(seat_t s_abs, player_t p)
 {
@@ -127,6 +128,7 @@ void net_send_player_list(player_t p)
 		ggz_dio_put_int(dio, get_seat_status(s_abs));
 		ggz_dio_put_string(dio, get_seat_name(s_abs));
 		ggz_dio_put_int(dio, game.seats[s_abs].player);
+		ggz_dio_put_int(dio, get_seat_team(s_abs));
 	}
 	ggz_dio_packet_end(dio);
 }

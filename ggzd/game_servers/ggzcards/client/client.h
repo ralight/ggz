@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: client.h 8443 2006-08-01 16:40:16Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -55,6 +55,7 @@ typedef struct seat_t {
 	GGZSeatType status;	/**< ggz seating assignment info */
 	char *name;		/**< player's name */
 	int ggzseat;		/**< GGZ seat number (or -1) */
+	int team;		/**< The seat's team (or -1). */
 
 	/** @brief Player's card on the table.
 	 *

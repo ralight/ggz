@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: client.c 8443 2006-08-01 16:40:16Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -418,13 +418,14 @@ static void handle_msg_players(void)
 
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
-		int type, ggzseat;
+		int type, ggzseat, team;
 		GGZSeatType old_type, new_type;
 		char *old_name, *new_name;
 
 		ggz_dio_get_int(game_internal.dio, &type);
 		ggz_dio_get_string_alloc(game_internal.dio, &new_name);
 		ggz_dio_get_int(game_internal.dio, &ggzseat);
+		ggz_dio_get_int(game_internal.dio, &team);
 
 		new_type = type;
 
@@ -434,6 +435,7 @@ static void handle_msg_players(void)
 		ggzcards.players[i].status = new_type;
 		ggzcards.players[i].name = new_name;
 		ggzcards.players[i].ggzseat = ggzseat;
+		ggzcards.players[i].team = team;
 
 		if (old_type != new_type
 		    || !old_name || strcmp(old_name, new_name) != 0)

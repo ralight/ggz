@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/27/2002
  * Desc: Functions and data for tracking teams
- * $Id: team.h 3573 2002-03-16 15:19:46Z jdorje $
+ * $Id: team.h 8443 2006-08-01 16:40:16Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -63,5 +63,11 @@ int get_team_tricks(team_t t);
 
 /** @brief Return the team's score. */
 int get_team_score(team_t t);
+
+/** @brief Return the player's team, or NO_TEAM. */
+team_t get_player_team(player_t p);
+
+/** @brief Return the seat's team, or NO_TEAM. */
+team_t get_seat_team(seat_t s);
 
 #endif /* __TEAM_H__ */
