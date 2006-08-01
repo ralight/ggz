@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 7424 2005-08-15 09:00:27Z josef $
+ * $Id: ggzdb_db4.c 8440 2006-08-01 10:51:57Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -80,6 +80,11 @@ void _ggzdb_close(void)
 	if(db_p) {
 		db_p->close(db_p, 0);
 		db_p = NULL;
+	}
+
+	if(db_s) {
+		db_s->close(db_s, 0);
+		db_s = NULL;
 	}
 
 	db_e->close(db_e, 0);
