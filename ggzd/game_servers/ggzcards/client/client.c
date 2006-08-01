@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8443 2006-08-01 16:40:16Z jdorje $
+ * $Id: client.c 8444 2006-08-01 17:11:06Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -51,8 +51,6 @@
 #include "client.h"
 
 static void handle_server_connect(int server_fd);
-
-static void handle_message_global(void);
 
 static void handle_text_message(void);
 static void handle_player_message(void);
@@ -288,7 +286,6 @@ static void handle_game_message(void)
 	char *game;
 
 	ggz_dio_get_string_alloc(game_internal.dio, &game);
-	ggz_dio_get_int(game_internal.dio, &size);	/* Obsolete. */
 
 	/* Note: "size" refers to the size of the data block, not including
 	   the headers above. */
@@ -300,37 +297,6 @@ static void handle_game_message(void)
 
 	ggz_free(game);	/* allocated by ggz_dio */
 }
-
-/* a message_global message tells you one "global message", which is
-   displayed by the client. */
-static void handle_message_global(void)
-{
-	int opcode;
-	game_message_t op;
-
-	read_opcode(game_internal.dio, &opcode);
-
-	op = opcode;
-
-	ggz_debug(DBG_CLIENT, "Received %s global message opcode.",
-		  get_game_message_name(op));
-
-	switch (op) {
-	case GAME_MESSAGE_TEXT:
-		handle_text_message();
-		break;
-	case GAME_MESSAGE_CARDLIST:
-		handle_cardlist_message();
-		break;
-	case GAME_MESSAGE_GAME:
-		handle_game_message();
-		break;
-	case GAME_MESSAGE_PLAYER:
-		handle_player_message();
-		break;
-	}
-}
-
 
 static void handle_msg_newgame(void)
 {
@@ -988,6 +954,9 @@ static void server_read_callback(GGZDataIO * dio, void *userdata)
 	case MSG_PLAYERS:
 		handle_msg_players();
 		return;
+	case REQ_OPTIONS:
+		handle_req_options();
+		return;
 	case MSG_NEWHAND:
 		game_alert_newhand();
 		return;
@@ -1009,18 +978,24 @@ static void server_read_callback(GGZDataIO * dio, void *userdata)
 	case MSG_PLAY:
 		handle_msg_play();
 		return;
-	case MSG_TABLE:
-		handle_msg_table();
-		return;
 	case MSG_TRICK:
 		handle_msg_trick();
 		return;
-	case MESSAGE_GAME:
-		handle_message_global();
+	case MSG_TABLE:
+		handle_msg_table();
 		return;
-	case REQ_OPTIONS:
-		handle_req_options();
-		return;
+	case MSG_GAME_MESSAGE_TEXT:
+		handle_text_message();
+		break;
+	case MSG_GAME_MESSAGE_CARDLIST:
+		handle_cardlist_message();
+		break;
+	case MSG_GAME_MESSAGE_GAME:
+		handle_game_message();
+		break;
+	case MSG_GAME_MESSAGE_PLAYER:
+		handle_player_message();
+		break;
 	}
 
 	ggz_error_msg("Error handling message"

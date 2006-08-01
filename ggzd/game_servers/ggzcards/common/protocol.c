@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 4032 2002-04-21 06:13:46Z jdorje $
+ * $Id: protocol.c 8444 2006-08-01 17:11:06Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -41,48 +41,64 @@
 
 #include "protocol.h"
 
-const char* get_server_opcode_name(server_msg_t opcode)
+const char *get_server_opcode_name(server_msg_t opcode)
 {
 	switch (opcode) {
-	case REQ_NEWGAME:  return "REQ_NEWGAME";
-	case MSG_NEWGAME:  return "MSG_NEWGAME";
-	case MSG_GAMEOVER: return "MSG_GAMEOVER";
-	case MSG_PLAYERS:  return "MSG_PLAYERS";
-	case REQ_OPTIONS:  return "REQ_OPTIONS";
-	case MSG_NEWHAND:  return "MSG_NEWHAND";
-	case MSG_HAND:     return "MSG_HAND";
-	case REQ_PLAY:     return "REQ_PLAY";
-	case MSG_BADPLAY:  return "MSG_BADPLAY";
-	case MSG_PLAY:     return "MSG_PLAY";
-	case MSG_TRICK:    return "MSG_TRICK";
-	case REQ_BID:      return "REQ_BID";
-	case MSG_BID:      return "MSG_BID"; 	
-	case MSG_TABLE:    return "MSG_TABLE";
-	case MESSAGE_GAME: return "MESSAGE_GAME";
+	case REQ_NEWGAME:
+		return "REQ_NEWGAME";
+	case MSG_NEWGAME:
+		return "MSG_NEWGAME";
+	case MSG_GAMEOVER:
+		return "MSG_GAMEOVER";
+	case MSG_PLAYERS:
+		return "MSG_PLAYERS";
+	case REQ_OPTIONS:
+		return "REQ_OPTIONS";
+	case MSG_NEWHAND:
+		return "MSG_NEWHAND";
+	case MSG_HAND:
+		return "MSG_HAND";
+	case REQ_PLAY:
+		return "REQ_PLAY";
+	case MSG_BADPLAY:
+		return "MSG_BADPLAY";
+	case MSG_PLAY:
+		return "MSG_PLAY";
+	case MSG_TRICK:
+		return "MSG_TRICK";
+	case REQ_BID:
+		return "REQ_BID";
+	case MSG_BID:
+		return "MSG_BID";
+	case MSG_TABLE:
+		return "MSG_TABLE";
+	case MSG_GAME_MESSAGE_TEXT:
+		return "MSG_GAME_MESSAGE_TEXT";
+	case MSG_GAME_MESSAGE_PLAYER:
+		return "MSG_GAME_MESSAGE_PLAYER";
+	case MSG_GAME_MESSAGE_CARDLIST:
+		return "MSG_GAME_MESSAGE_CARDLIST";
+	case MSG_GAME_MESSAGE_GAME:
+		return "MSG_GAME_MESSAGE_GAME";
 	}
 	return "[unknown]";
 }
 
-const char* get_game_message_name(game_message_t opcode)
+const char *get_client_opcode_name(client_msg_t opcode)
 {
 	switch (opcode) {
-	case GAME_MESSAGE_TEXT:     return "GAME_MESSAGE_TEXT";
-	case GAME_MESSAGE_PLAYER:   return "GAME_MESSAGE_PLAYER";
-	case GAME_MESSAGE_CARDLIST: return "GAME_MESSAGE_CARDLIST";
-	case GAME_MESSAGE_GAME:     return "GAME_MESSAGE_GAME"; 	
-	}
-	return "[unknown]";
-}
-
-const char* get_client_opcode_name(client_msg_t opcode)
-{
-	switch (opcode) {
-	case MSG_LANGUAGE: return "MSG_LANGUAGE";
-	case RSP_NEWGAME:  return "RSP_NEWGAME";
-	case RSP_OPTIONS:  return "RSP_OPTIONS";
-	case RSP_PLAY:     return "RSP_PLAY";
-	case RSP_BID:      return "RSP_BID";
-	case REQ_SYNC:     return "REQ_SYNC"; 	
+	case MSG_LANGUAGE:
+		return "MSG_LANGUAGE";
+	case RSP_NEWGAME:
+		return "RSP_NEWGAME";
+	case RSP_OPTIONS:
+		return "RSP_OPTIONS";
+	case RSP_PLAY:
+		return "RSP_PLAY";
+	case RSP_BID:
+		return "RSP_BID";
+	case REQ_SYNC:
+		return "REQ_SYNC";
 	}
 	return "[unknown]";
 }

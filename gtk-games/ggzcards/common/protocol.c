@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: protocol.c 8444 2006-08-01 17:11:06Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -72,23 +72,14 @@ const char *get_server_opcode_name(server_msg_t opcode)
 		return "MSG_BID";
 	case MSG_TABLE:
 		return "MSG_TABLE";
-	case MESSAGE_GAME:
-		return "MESSAGE_GAME";
-	}
-	return "[unknown]";
-}
-
-const char *get_game_message_name(game_message_t opcode)
-{
-	switch (opcode) {
-	case GAME_MESSAGE_TEXT:
-		return "GAME_MESSAGE_TEXT";
-	case GAME_MESSAGE_PLAYER:
-		return "GAME_MESSAGE_PLAYER";
-	case GAME_MESSAGE_CARDLIST:
-		return "GAME_MESSAGE_CARDLIST";
-	case GAME_MESSAGE_GAME:
-		return "GAME_MESSAGE_GAME";
+	case MSG_GAME_MESSAGE_TEXT:
+		return "MSG_GAME_MESSAGE_TEXT";
+	case MSG_GAME_MESSAGE_PLAYER:
+		return "MSG_GAME_MESSAGE_PLAYER";
+	case MSG_GAME_MESSAGE_CARDLIST:
+		return "MSG_GAME_MESSAGE_CARDLIST";
+	case MSG_GAME_MESSAGE_GAME:
+		return "MSG_GAME_MESSAGE_GAME";
 	}
 	return "[unknown]";
 }

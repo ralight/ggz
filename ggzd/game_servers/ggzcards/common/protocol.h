@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 4108 2002-04-29 05:29:32Z jdorje $
+ * $Id: protocol.h 8444 2006-08-01 17:11:06Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -89,7 +89,7 @@ typedef enum {
 	   considered "boolean" and either a 0 or 1 may be sent.  It needs a
 	   RSP_OPTIONS in response. */
 	REQ_OPTIONS,
-	
+
 	/* Tells the client a new hand is starting.  No data. */
 	MSG_NEWHAND,
 
@@ -97,6 +97,17 @@ typedef enum {
 	   # for whom the hand belongs to, followed by an integer n for the
 	   hand size, followed by n cards. */
 	MSG_HAND,
+
+	/* Requests a bid from the client.  It'll be followed by an integer
+	   n, then n bid choices.  Each bid choice consists of the bid
+	   itself (see read_bid/write_bid) and two strings: a short bid
+	   text, and a longer bid description.  The client must choose one 
+	   of these bids and send a RSP_BID in response. */
+	REQ_BID,
+
+	/* Tells the client of a player's bid.  It is followed by a seat # for
+	   the seat from which the bid comes, then the bid itself. */
+	MSG_BID,
 
 	/* Requests a play (of a card) from the client.  It'll be followd by
 	   the seat # of the hand from which the client is supposed to play
@@ -119,55 +130,33 @@ typedef enum {
 	   # giving the player who won the trick. */
 	MSG_TRICK,
 
-	/* Requests a bid from the client.  It'll be followed by an integer
-	   n, then n bid choices.  Each bid choice consists of the bid
-	   itself (see read_bid/write_bid) and two strings: a short bid
-	   text, and a longer bid description.  The client must choose one 
-	   of these bids and send a RSP_BID in response. */
-	REQ_BID,
-	
-	/* Tells the client of a player's bid.  It is followed by a seat # for
-	   the seat from which the bid comes, then the bid itself. */
-	MSG_BID,
-
 	/* Sends out the current table to the client.  It is followed by a
 	   card for each player, in order.  Note that only one card per
 	   player/seat may be on the table at a time. */
 	MSG_TABLE,
 
-	/* A game message.  See game_message_t below. */
-	MESSAGE_GAME,
-} server_msg_t;
-
-/** @brief Return a string description of the opcode. */
-const char* get_server_opcode_name(server_msg_t opcode);
-
-/* Global message types */
-/* Each MESSAGE_GAME will be followed by one of these opcodes.  This
-   represents game-specific data being transmitted to the frontend. */
-typedef enum {
 	/* A simple text message, containing two strings: a "marker" and the
 	   "message". */
-	GAME_MESSAGE_TEXT,
+	MSG_GAME_MESSAGE_TEXT,
 
 	/* A text message for the player, consisting of a seat # followed by
 	   a message string. */
-	GAME_MESSAGE_PLAYER,
+	MSG_GAME_MESSAGE_PLAYER,
 
 	/* A list of cards for each player.  First comes a "marker" string,
 	   then (for each player) an integer n plus n cards for that player. */
-	GAME_MESSAGE_CARDLIST,
+	MSG_GAME_MESSAGE_CARDLIST,
 
 	/* Block data that may be game-specific.  It is followed by the
 	   (string) name of the game, followed by an integer n followed
 	   by n bytes of data. It is up to the client frontend to determine
 	   what (if anything) to do  with this data; it'll be build at the
 	   server end by the game module. */
-	GAME_MESSAGE_GAME,
-} game_message_t;
+	MSG_GAME_MESSAGE_GAME,
+} server_msg_t;
 
 /** @brief Return a string description of the opcode. */
-const char* get_game_message_name(game_message_t opcode);
+const char *get_server_opcode_name(server_msg_t opcode);
 
 /* Messages from client */
 typedef enum {
@@ -202,6 +191,6 @@ typedef enum {
 } client_msg_t;
 
 /** @brief Return a string description of the opcode. */
-const char* get_client_opcode_name(client_msg_t opcode);
+const char *get_client_opcode_name(client_msg_t opcode);
 
 #endif /* __PROTOCOL_H__ */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: spades.c 8444 2006-08-01 17:11:06Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -167,10 +167,8 @@ static void spd_send_scoredata(player_t p)
 	   calculations or by the game client to
 	   display team score/bid/tricks/bags. */
 	ggz_dio_packet_start(dio);
-	write_opcode(dio, MESSAGE_GAME);
-	write_opcode(dio, GAME_MESSAGE_GAME);
+	write_opcode(dio, MSG_GAME_MESSAGE_GAME);
 	ggz_dio_put_string(dio, "spades");
-	ggz_dio_put_int(dio, 44); /* Obsolete. */
 
 	for (team = 0; team < 2; team++) {
 		ggz_dio_put_int(dio, game.players[team].score);

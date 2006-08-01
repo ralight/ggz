@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8443 2006-08-01 16:40:16Z jdorje $
+ * $Id: net.c 8444 2006-08-01 17:11:06Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -467,8 +467,7 @@ void net_send_global_text_message(player_t p, const char *mark,
 				   how?) */
 
 	ggz_dio_packet_start(dio);
-	write_opcode(dio, MESSAGE_GAME);
-	write_opcode(dio, GAME_MESSAGE_TEXT);
+	write_opcode(dio, MSG_GAME_MESSAGE_TEXT);
 	ggz_dio_put_string(dio, mark);
 	ggz_dio_put_string(dio, message);
 	ggz_dio_packet_end(dio);
@@ -489,8 +488,7 @@ void net_send_player_text_message(player_t p, seat_t s, const char *message)
 	assert(message);
 	
 	ggz_dio_packet_start(dio);
-	write_opcode(dio, MESSAGE_GAME);
-	write_opcode(dio, GAME_MESSAGE_PLAYER);
+	write_opcode(dio, MSG_GAME_MESSAGE_PLAYER);
 	write_seat(dio, CONVERT_SEAT(s, p));
 	ggz_dio_put_string(dio, message);
 	ggz_dio_packet_end(dio);
@@ -508,8 +506,7 @@ void net_send_global_cardlist_message(player_t p, const char *mark, int *lengths
 		    p);
 		
 	ggz_dio_packet_start(dio);
-	write_opcode(dio, MESSAGE_GAME);
-	write_opcode(dio, GAME_MESSAGE_CARDLIST);
+	write_opcode(dio, MSG_GAME_MESSAGE_CARDLIST);
 	ggz_dio_put_string(dio, mark);
 
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
