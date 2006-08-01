@@ -26,7 +26,8 @@ static int b64rev(int c)
 /* Encodes to base64, allocating space as needed */
 char *ggz_base64_encode(const char *text, int length)
 {
-	char *ret, *tmp;
+	char *ret;
+	unsigned char *tmp;
 	int i, j;
 	int matrix;
 
@@ -39,7 +40,7 @@ char *ggz_base64_encode(const char *text, int length)
 	tmp[length + 1] = 0;
 	tmp[length + 2] = 0;
 	tmp[length + 3] = 0;
-	strcpy(tmp, text);
+	strncpy(tmp, text, length);
 
 	/* Bit conversion */
 	j = 0;
