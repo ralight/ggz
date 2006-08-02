@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: types.h 8457 2006-08-02 06:15:44Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -99,6 +99,7 @@ struct game_player_t {
 
 struct game_team_t {
 	int score;
+	int *scores; /* Scores from every hand. */
 };
 
 struct game_spectator_t {
