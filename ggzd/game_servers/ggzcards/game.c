@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: game.c 8458 2006-08-02 06:50:51Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -421,7 +421,7 @@ void game_start_game(void)
 	/* TODO: initialize the game; right now we just assume everything's
 	   zero which won't be true the second time around. */
 	teams_iterate(t) {
-		game.teams[t].score = 0;
+		clear_score(t);
 	} teams_iterate_end;
 }
 
@@ -441,7 +441,7 @@ bool game_test_for_gameover(void)
 	teams_iterate(t) {
 		/* in the default case, it's just a race toward a
 		   target score */
-		int score = game.teams[t].score;
+		int score = get_team_score(t);
 
 		if (game.target_score != 0 && score >= game.target_score) {
 			if (max_score_count == 0 || score > max_score) {

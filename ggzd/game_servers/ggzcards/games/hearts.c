@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: hearts.c 8458 2006-08-02 06:50:51Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -234,7 +234,7 @@ static bool hearts_test_for_gameover(void)
 	if (!game_test_for_gameover())
 		return FALSE;
 	for (t = 0; t < game.num_teams; t++) {
-		int score = game.teams[t].score;
+		int score = get_team_score(t);
 
 		if (low_score < 0 || score < low_score) {
 			low_score = score;
@@ -258,7 +258,7 @@ static void hearts_handle_gameover(void)
 	   end in a tie (we just play another hand). */
 	for (p = 0; p < game.num_players; p++) {
 		team_t t = game.players[p].team;
-		int score = game.teams[t].score;
+		int score = get_team_score(t);
 
 		assert(t >= 0 && t < game.num_teams);
 		max_score = MAX(score, max_score);

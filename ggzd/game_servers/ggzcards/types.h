@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 8457 2006-08-02 06:15:44Z jdorje $
+ * $Id: types.h 8458 2006-08-02 06:50:51Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -38,7 +38,7 @@
 
 /* This struct holds all data about a player's bidding status. */
 typedef struct {
-	bool is_bidding;		/* is this player currently bidding? Are we
+	bool is_bidding;	/* is this player currently bidding? Are we
 				   waiting for a bid from them? */
 
 	/* FIXME: should this use libggz's list structure? */
@@ -48,6 +48,14 @@ typedef struct {
 	int bid_count;		/* Number of bids in the array (some of the
 				   array may be unused) */
 } bid_data_t;
+
+typedef struct {
+	int score;
+
+#define SCORE_EXTRAS 1
+	/* Extra fields for supplemental score data. */
+	int extra[SCORE_EXTRAS];
+} score_data_t;
 
 /* these are just used to make things more legible */
 typedef int player_t;
@@ -84,11 +92,11 @@ struct game_player_t {
 	/* Used for tracking AI processees. */
 #ifdef DEBUG
 	int err_fd;
-#endif /* DEBUG */
+#endif				/* DEBUG */
 	pid_t pid;
 
 	bid_data_t bid_data;	/* bidding information for this player */
-	
+
 	bool is_playing;	/* is this player currently playing? */
 	/* Note: In the case of bridge, game.next_play will go
 	   around the table (0, 1, 2, 3) for each play.  However, when the
@@ -98,8 +106,8 @@ struct game_player_t {
 };
 
 struct game_team_t {
-	int score;
-	int *scores; /* Scores from every hand. */
+	score_data_t score;
+	score_data_t *scores;	/* Scores from every hand. */
 };
 
 struct game_spectator_t {

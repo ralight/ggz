@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: spades.c 8458 2006-08-02 06:50:51Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -171,7 +171,7 @@ static void spd_send_scoredata(player_t p)
 	write_opcode(dio, MSG_GAME_SPECIFIC);
 
 	for (team = 0; team < 2; team++) {
-		ggz_dio_put_int(dio, game.teams[team].score);
+		ggz_dio_put_int(dio, get_team_score(team));
 		ggz_dio_put_int(dio, GSPADES.bags[team]);
 	}
 	players_iterate(p2) {
@@ -803,8 +803,9 @@ static void spades_handle_gameover(void)
 		   client as negative for these players.  And incidentally
 		   a score of 302 will incorrectly beat a score of -303. */
 		teams_iterate(t) {
-			if (game.teams[t].score > 301) {
-				game.teams[t].score = -game.teams[t].score;
+			if (game.teams[t].score.score > 301) {
+				game.teams[t].score.score
+					= -game.teams[t].score.score;
 			}
 		} teams_iterate_end;
 	}

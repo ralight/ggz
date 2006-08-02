@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: lapocha.c 8458 2006-08-02 06:50:51Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -392,7 +392,7 @@ static void lap_send_scores(void)
 
 			assert(game.seats[s_abs].player == s_abs);
 			assert(game.players[s_abs].team == s_abs);
-			ggz_dio_put_int(dio, game.teams[s_abs].score);
+			ggz_dio_put_int(dio, get_team_score(s_abs));
 		}
 		ggz_dio_packet_end(dio);
 	}

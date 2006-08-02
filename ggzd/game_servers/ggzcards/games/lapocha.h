@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game data for La Pocha (for use by AI)
- * $Id: lapocha.h 4040 2002-04-21 21:21:07Z jdorje $
+ * $Id: lapocha.h 8458 2006-08-02 06:50:51Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -49,6 +49,6 @@ enum {
 	LAP_MSG_BID,
 
 	/* Give the scores of the game.  Followed by one int per player for
-	   that player's score. */
+	   that player's score. (obsolete) */
 	LAP_MSG_SCORES,
 };
