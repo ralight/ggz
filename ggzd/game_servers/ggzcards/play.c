@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 4627 2002-09-18 22:14:57Z jdorje $
+ * $Id: play.c 8454 2006-08-02 01:47:14Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -33,6 +33,7 @@
 #include "message.h"
 #include "net.h"
 #include "play.h"
+#include "score.h"
 
 #ifndef NDEBUG
 static bool hand_has_valid_card(player_t p, hand_t *hand);
