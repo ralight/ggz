@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8458 2006-08-02 06:50:51Z jdorje $
+ * $Id: spades.c 8459 2006-08-02 07:01:29Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -100,9 +100,9 @@ typedef struct spades_game_t {
 	/* data */
 	int show_hand[4];	/* this is 0 if we're supposed to conceal the
 				   hand (for blind bids */
-	int bags[2];		/* # of overtricks ("sandbags") taken by each
-				   team */
 } spades_game_t;
+
+#define BAGS(team) (game.teams[(team)].score.extra[0])
 
 static bool spades_is_valid_game(void);
 static void spades_init_game(void);
@@ -172,7 +172,7 @@ static void spd_send_scoredata(player_t p)
 
 	for (team = 0; team < 2; team++) {
 		ggz_dio_put_int(dio, get_team_score(team));
-		ggz_dio_put_int(dio, GSPADES.bags[team]);
+		ggz_dio_put_int(dio, BAGS(team));
 	}
 	players_iterate(p2) {
 		ggz_dio_put_int(dio, game.players[p2].tricks);
@@ -659,7 +659,7 @@ static void spades_set_player_message(player_t p)
 	if (game.state == STATE_NOTPLAYING)
 		return;
 
-	add_player_message(s, "Bags: %d\n", GSPADES.bags[(p % 2)]);
+	add_player_message(s, "Bags: %d\n", BAGS(p % 2));
 
 	/* we show both the individual and team contract, if applicable.
 	   But is this really the best way to tell if it's applicable? */
@@ -727,7 +727,7 @@ static void spades_end_hand(void)
 		if (TRICKS_COUNT(p + 2)) tricks += game.players[p + 2].tricks;
 		if (tricks >= bid) {
 			score += 10 * bid;
-			GSPADES.bags[p] += (tricks - bid);
+		        BAGS(p) += (tricks - bid);
 			score += (tricks - bid);
 		} else {
 			score = -10 * bid;
@@ -743,16 +743,16 @@ static void spades_end_hand(void)
 			}
 
 			if (!TRICKS_COUNT(p2)) {
-				GSPADES.bags[p] += game.players[p2].tricks;
+				BAGS(p) += game.players[p2].tricks;
 				if (GSPADES.nil_tricks_count
 				    == NIL_TRICKS_DONT_COUNT) {
 					score += game.players[p2].tricks;
 				}
 			}
 		}
-		while (GSPADES.bags[p] >= 10) {
+		while (BAGS(p) >= 10) {
 			/* you lose 100 points for 10 overtricks */
-			GSPADES.bags[p] -= 10;
+			BAGS(p) -= 10;
 			score -= 100;
 		}
 		ggz_debug(DBG_GAME, "Team %d bid %d, took %d, earned %d.",
@@ -788,7 +788,6 @@ static void spades_end_hand(void)
 
 static void spades_start_game(void)
 {
-	GSPADES.bags[0] = GSPADES.bags[1] = 0;
 	game_start_game();
 	spd_broadcast_scoredata();
 }
