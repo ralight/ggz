@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 7424 2005-08-15 09:00:27Z josef $
+ * $Id: players.h 8460 2006-08-02 14:29:54Z josef $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -116,6 +116,9 @@ struct _GGZPlayer {
 	/* Player permissions settings */
 	unsigned int perms;
 	/*list_t *op_rooms;	Not yet */
+
+	/* Gagging. A gagged player's chat is not relayed to others. */
+	bool gagged;
 };
 
 

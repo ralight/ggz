@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 8440 2006-08-01 10:51:57Z oojah $
+ * $Id: ggzdb_db4.c 8460 2006-08-02 14:29:54Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,11 +32,7 @@
 #include <string.h>
 #include <sys/types.h>
 
-#ifdef DB4_IN_DIR
-#  include <db4/db.h>
-#else
-#  include <db.h>
-#endif
+#include <db.h>
 
 #include "err_func.h"
 #include "ggzd.h"

@@ -235,9 +235,17 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 		[
 			db4inc="db4/db.h"
 			database=db4
-			AC_DEFINE([DB4_IN_DIR], 1, [Define if the db4 libs and headers are under db4/])
+			DATABASE_INCLUDES="-I /usr/include/db4"
 		],
-		[])
+		[
+			AC_CHECK_HEADER(db42/db.h,
+			[
+				db4inc="db42/db.h"
+				database=db4
+				DATABASE_INCLUDES="-I /usr/include/db42"
+			],
+			[])
+		])
 	])
 
 	if test "$database" = "db4" && test "$db4inc" = ""; then
@@ -285,7 +293,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DB2],
 
 	AC_CHECK_HEADER(db.h,
 	[
-		db4inc="db.h"
+		db2inc="db.h"
 		database=db2
 	],
 	[
@@ -452,6 +460,7 @@ else
 fi
 
 AC_SUBST(LIB_DATABASE)
+AC_SUBST(DATABASE_INCLUDES)
 AM_CONDITIONAL([GGZDB_DB2], [test "$database" = "db2"])
 AM_CONDITIONAL([GGZDB_DB3], [test "$database" = "db3"])
 AM_CONDITIONAL([GGZDB_DB4], [test "$database" = "db4"])

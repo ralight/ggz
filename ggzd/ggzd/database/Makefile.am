@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 noinst_LIBRARIES = libggzdb.a
 libggzdb_a_SOURCES = \
 	ggzdb.c \
@@ -25,5 +23,5 @@ if GGZDB_DB4
 libggzdb_a_SOURCES += ggzdb_db4.c
 endif
 
-AM_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES)
+libggzdb_a_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES) $(DATABASE_INCLUDES)
 
