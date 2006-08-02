@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8450 2006-08-01 19:35:05Z jdorje $
+ * $Id: spades.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -39,6 +39,7 @@
 #include "message.h"
 #include "net.h"
 #include "options.h"
+#include "score.h"
 #include "team.h"
 
 #include "spades.h"
@@ -170,7 +171,7 @@ static void spd_send_scoredata(player_t p)
 	write_opcode(dio, MSG_GAME_SPECIFIC);
 
 	for (team = 0; team < 2; team++) {
-		ggz_dio_put_int(dio, game.players[team].score);
+		ggz_dio_put_int(dio, game.teams[team].score);
 		ggz_dio_put_int(dio, GSPADES.bags[team]);
 	}
 	players_iterate(p2) {
@@ -756,8 +757,7 @@ static void spades_end_hand(void)
 		}
 		ggz_debug(DBG_GAME, "Team %d bid %d, took %d, earned %d.",
 			    (int) p, bid, tricks, score);
-		game.players[p].score += score;
-		game.players[p + 2].score += score;
+		change_score(p, score);
 	}
 	for (p = 0; p < 4; p++) {
 		if (game.players[p].bid.sbid.spec == SPADES_NIL) {
@@ -767,8 +767,7 @@ static void spades_end_hand(void)
 			ggz_debug(DBG_GAME,
 				    "Player %d/%s earned %d for going nil.",
 				    p, get_player_name(p), score);
-			game.players[p].score += score;
-			game.players[(p + 2) % 4].score += score;
+			change_score(p % 2, score);
 		}
 		if (game.players[p].bid.sbid.spec == SPADES_DNIL) {
 			int score =
@@ -778,8 +777,7 @@ static void spades_end_hand(void)
 			ggz_debug(DBG_GAME,
 				    "Player %d/%s earned %d for double nil.",
 				    p, get_player_name(p), score);
-			game.players[p].score += score;
-			game.players[(p + 2) % 4].score += score;
+			change_score(p % 2, score);
 		}
 		assert(game.players[p].bid.sbid.spec != SPADES_NO_BLIND);
 		set_player_message(p);
@@ -804,11 +802,11 @@ static void spades_handle_gameover(void)
 		/* This also means scores will actually be displayed at the
 		   client as negative for these players.  And incidentally
 		   a score of 302 will incorrectly beat a score of -303. */
-		players_iterate(p) {
-			if (game.players[p].score > 301) {
-				game.players[p].score = -game.players[p].score;
+		teams_iterate(t) {
+			if (game.teams[t].score > 301) {
+				game.teams[t].score = -game.teams[t].score;
 			}
-		} players_iterate_end;
+		} teams_iterate_end;
 	}
 
 	game_handle_gameover();

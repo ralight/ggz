@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: sueca.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -33,6 +33,7 @@
 #include "common.h"
 #include "game.h"
 #include "message.h"
+#include "score.h"
 #include "team.h"
 
 #include "sueca.h"
@@ -193,26 +194,22 @@ static void sueca_end_hand(void)
 	points = GSUECA.points_on_hand[0] + GSUECA.points_on_hand[2];
 	/* TODO: Must add "dar uma bandeira" */
 	if (points > 90) {
-		game.players[0].score += 2;
-		game.players[2].score += 2;
+		change_score(0, 2);
 		set_global_message("",
 				   "%s/%s got more than 90 points and so got 2 games",
 				   get_player_name(0), get_player_name(2));
 	} else if (points > 60) {
-		game.players[0].score++;
-		game.players[2].score++;
+		change_score(0, 1);
 		set_global_message("",
 				   "%s/%s got more than 60 points and won that hand",
 				   get_player_name(0), get_player_name(2));
 	} else if (points > 30) {
-		game.players[1].score++;
-		game.players[3].score++;
+		change_score(1, 1);
 		set_global_message("",
 				   "%s/%s got more than 60 points and won that hand",
 				   get_player_name(1), get_player_name(3));
 	} else {
-		game.players[1].score += 2;
-		game.players[3].score += 2;
+		change_score(1, 2);
 		set_global_message("",
 				   "%s/%s got more than 90 points and so got 2 games",
 				   get_player_name(1), get_player_name(3));
@@ -254,7 +251,7 @@ static void sueca_set_player_message(player_t p)
 	if (!(game.state == STATE_WAIT_FOR_PLAY && game.players[p].is_playing))
 		sprintf(status, " ");
 	put_player_message(s, "Score:\nIn the game: %d\nIn the hand: %d\n%s",
-			   game.players[p].score, score_this_hand, status);
+			   get_player_score(p), score_this_hand, status);
 
 	/* Waiting sprintf(message, " Rubber \n %c \n | \n %c--O--%c \n | \n
 	   %c \nThis hand: %d\n%s", rubber[3], rubber[2], rubber[1],

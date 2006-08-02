@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: common.h 8456 2006-08-02 06:00:35Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -150,6 +150,7 @@ typedef struct {
 	
 	/* table data: teams */
 	int num_teams;
+	struct game_team_t *teams;
 
 	/* Global messages */
 	global_message_list_t *message_head;	/**< global message list head */
@@ -250,9 +251,16 @@ void fatal_error(const char *message);
 #define players_iterate(p)                                  \
 {                                                           \
 	player_t p;                                         \
-		for (p = 0; p < game.num_players; p++)
+	for (p = 0; p < game.num_players; p++)
 
 #define players_iterate_end }
+
+#define teams_iterate(t)				    \
+{							    \
+	team_t t;					    \
+	for (t = 0; t < game.num_teams; t++)
+
+#define teams_iterate_end }
 
 #define IS_REAL_PLAYER(p) ((p) >= 0)
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: types.h 8456 2006-08-02 06:00:35Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -66,7 +66,6 @@ struct game_seat_t {
 };
 
 struct game_player_t {
-	int score;
 	int bid_count;		/* the number of times this player has bid
 				   this hand */
 	int age;		/* how long the player has been at the table; 
@@ -96,6 +95,10 @@ struct game_player_t {
 	   dummy is playing it is actually the declarer who plays (and has
 	   is_playing set, with the dummy as the play_seat). */
 	seat_t play_seat;	/* what seat are we playing from? */
+};
+
+struct game_team_t {
+	int score;
 };
 
 struct game_spectator_t {

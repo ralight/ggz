@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: hearts.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -35,6 +35,7 @@
 #include "message.h"
 #include "net.h"
 #include "options.h"
+#include "score.h"
 
 #include "hearts.h"
 
@@ -225,15 +226,16 @@ static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 
 static bool hearts_test_for_gameover(void)
 {
-	player_t p;
+	team_t t;
 	int num_winners = 0, low_score = -1;
 
 	/* We play until the highest-scoring person reaches the target score,
 	   but we can never end in a tie. */
 	if (!game_test_for_gameover())
 		return FALSE;
-	for (p = 0; p < game.num_players; p++) {
-		int score = game.players[p].score;
+	for (t = 0; t < game.num_teams; t++) {
+		int score = game.teams[t].score;
+
 		if (low_score < 0 || score < low_score) {
 			low_score = score;
 			num_winners = 1;
@@ -255,12 +257,15 @@ static void hearts_handle_gameover(void)
 	   can be higher than the "target score", since we can never
 	   end in a tie (we just play another hand). */
 	for (p = 0; p < game.num_players; p++) {
-		int score = game.players[p].score;
+		team_t t = game.players[p].team;
+		int score = game.teams[t].score;
+
+		assert(t >= 0 && t < game.num_teams);
 		max_score = MAX(score, max_score);
 		if (low_score < 0 || score < low_score) {
 			num_winners = 1;
 			winners[0] = p;
-			low_score = game.players[p].score;
+			low_score = score;
 		} else if (score == low_score) {
 			winners[num_winners] = p;
 			num_winners++;
@@ -418,7 +423,8 @@ static void hearts_end_hand(void)
 
 		if (GHEARTS.jack_winner == p)
 			fullscore -= 10;
-		game.players[p].score += fullscore;
+		assert(p == game.players[p].team);
+		change_score(p, fullscore);
 
 		if (score == -26) {
 			snprintf(buf, sizeof(buf), "%s shot the moon.",

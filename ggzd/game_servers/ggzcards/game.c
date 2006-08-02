@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8339 2006-07-08 19:48:42Z jdorje $
+ * $Id: game.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -44,6 +44,7 @@
 #include "net.h"
 #include "options.h"
 #include "play.h"
+#include "score.h"
 #include "team.h"
 
 static void bad_game(char *func)
@@ -417,12 +418,11 @@ void game_end_hand(void)
    not necessary yet anyway. */
 void game_start_game(void)
 {
-	player_t p;
-
 	/* TODO: initialize the game; right now we just assume everything's
 	   zero which won't be true the second time around. */
-	for (p = 0; p < game.num_players; p++)
-		game.players[p].score = 0;
+	teams_iterate(t) {
+		game.teams[t].score = 0;
+	} teams_iterate_end;
 }
 
 
@@ -430,7 +430,6 @@ void game_start_game(void)
    Return 1 for gameover, 0 otherwise. */
 bool game_test_for_gameover(void)
 {
-	player_t p;
 	int max_score, max_score_count = 0;
 	int min_score, min_score_count = 0;
 	team_t max_score_team = -1, min_score_team = -1;
@@ -439,46 +438,39 @@ bool game_test_for_gameover(void)
 	   code is a good bit more complicated.  For instance in spades if
 	   both teams go over the target score and the game is tied, another
 	   hand is played. */
-	for (p = 0; p < game.num_players; p++) {
+	teams_iterate(t) {
 		/* in the default case, it's just a race toward a
 		   target score */
-		assert(game.players[p].team != -1);
-		if (game.target_score != 0
-		    && game.players[p].score >= game.target_score) {
-			if (max_score_count == 0
-			    || game.players[p].score > max_score) {
-				max_score = game.players[p].score;
+		int score = game.teams[t].score;
+
+		if (game.target_score != 0 && score >= game.target_score) {
+			if (max_score_count == 0 || score > max_score) {
+				max_score = score;
 				max_score_count = 1;
-				max_score_team = game.players[p].team;
-			} else if (game.players[p].score < max_score) {
+				max_score_team = t;
+			} else if (score < max_score) {
 				/* nothing */
-			} else if (game.players[p].score == max_score) {
+			} else if (score == max_score) {
 				/* check for ties */
-				if (game.players[p].team != max_score_team) {
-					max_score_count++;
-				}
+				max_score_count++;
 			}
 		}
 
 		/* It is possible to set a low score that will cause a
 		   forfeit if reached. */
-		if (game.forfeit_score != 0
-		    && game.players[p].score <= game.forfeit_score) {
-			if (min_score_count == 0
-			    || game.players[p].score < min_score) {
-				min_score = game.players[p].score;
+		if (game.forfeit_score != 0 && score <= game.forfeit_score) {
+			if (min_score_count == 0 || score < min_score) {
+				min_score = score;
 				min_score_count = 1;
-				min_score_team = game.players[p].team;
-			} else if (game.players[p].score > min_score) {
+				min_score_team = t;
+			} else if (score > min_score) {
 				/* nothing */
-			} else if (game.players[p].score == min_score) {
+			} else if (score == min_score) {
 				/* check for ties */
-				if (game.players[p].team != min_score_team) {
-					min_score_count++;
-				}
+				min_score_count++;
 			}
 		}
-	}
+	} teams_iterate_end;
 	if (max_score_count > 0
 	    && (game.ties_allowed || max_score_count == 1)) {
 		return TRUE;
@@ -516,11 +508,13 @@ void game_handle_gameover(void)
 	/* in the default case, just take the highest score(s) this should
 	   automatically handle the case of teams! */
 	players_iterate(p) {
-		if (game.players[p].score > hi_score) {
+		int score = get_player_score(p);
+
+		if (score > hi_score) {
 			winner_cnt = 1;
 			winners[0] = p;
-			hi_score = game.players[p].score;
-		} else if (game.players[p].score == hi_score) {
+			hi_score = score;
+		} else if (score == hi_score) {
 			winners[winner_cnt] = p;
 			winner_cnt++;
 		}

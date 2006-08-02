@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/27/2002
  * Desc: Functions and data for tracking teams
- * $Id: team.h 8443 2006-08-01 16:40:16Z jdorje $
+ * $Id: team.h 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -60,9 +60,6 @@ void map_func_to_team(team_t t, void (func)(player_t));
 
 /** @brief Return the number of tricks the team has taken. */
 int get_team_tricks(team_t t);
-
-/** @brief Return the team's score. */
-int get_team_score(team_t t);
 
 /** @brief Return the player's team, or NO_TEAM. */
 team_t get_player_team(player_t p);

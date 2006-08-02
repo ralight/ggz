@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Game-dependent game functions for Whist
- * $Id: whist.c 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: whist.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -33,6 +33,7 @@
 #include "common.h"
 #include "game.h"
 #include "message.h"
+#include "score.h"
 #include "team.h"
 
 #include "whist.h"
@@ -146,9 +147,8 @@ static void whist_end_hand(void)
 	                   get_player_name(team),
 	                   get_player_name(team + 2),
 	                   points);
-			
-	game.players[team].score += points;
-	game.players[team + 2].score += points;
+
+	change_score(team, points);
 	set_player_message(team);
 	set_player_message(team + 2);
 }

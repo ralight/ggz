@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: euchre.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 #include "message.h"
 #include "options.h"
 #include "play.h"
+#include "score.h"
 #include "team.h"
 
 #include "euchre.h"
@@ -435,8 +436,7 @@ static void euchre_end_hand(void)
 		value = 4;
 	}
 
-	game.players[winning_team].score += value;
-	game.players[winning_team + 2].score += value;
+	change_score(winning_team, value);
 
 	snprintf(buf, sizeof(buf), msg, tricks, value);
 	/* This message is quickly overwritten by the up-card message.  Ugh. */

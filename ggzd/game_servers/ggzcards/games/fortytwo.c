@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: fortytwo.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -36,6 +36,7 @@
 #include "game.h"
 #include "games.h"
 #include "message.h"
+#include "score.h"
 #include "team.h"
 
 #define DOUBLES_VALUE 7
@@ -346,8 +347,7 @@ static void fortytwo_end_hand(void)
 		                   score);
 	}
 
-	game.players[winning_team].score += score;
-	game.players[winning_team + 2].score += score;
+	change_score(winning_team, score);
 	map_func_to_team(winning_team, set_player_message);
 	
 	game.trump = -1;

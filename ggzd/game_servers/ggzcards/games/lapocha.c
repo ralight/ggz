@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 8450 2006-08-01 19:35:05Z jdorje $
+ * $Id: lapocha.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -39,6 +39,7 @@
 #include "game.h"
 #include "message.h"
 #include "net.h"
+#include "score.h"
 
 #include "lapocha.h"
 
@@ -132,7 +133,7 @@ static void lapocha_handle_gameover(void)
 
 	/* in La Pocha, anyone who has 0 at the end automatically wins */
 	for (p = 0; p < game.num_players; p++) {
-		if (game.players[p].score == 0) {
+		if (get_player_score(p) == 0) {
 			winners[winner_cnt] = p;
 			winner_cnt++;
 		}
@@ -142,11 +143,13 @@ static void lapocha_handle_gameover(void)
 		/* in the default case, just take the highest score(s) this
 		   should automatically handle the case of teams! */
 		for (p = 0; p < game.num_players; p++) {
-			if (game.players[p].score > hi_score) {
+			int score = get_player_score(p);
+
+			if (score > hi_score) {
 				winner_cnt = 1;
 				winners[0] = p;
-				hi_score = game.players[p].score;
-			} else if (game.players[p].score == hi_score) {
+				hi_score = score;
+			} else if (score == hi_score) {
 				winners[winner_cnt] = p;
 				winner_cnt++;
 			}
@@ -286,11 +289,12 @@ static void lapocha_end_hand(void)
 			    "Player %d/%s got %d tricks on a bid of %d", p,
 			    get_player_name(p), game.players[p].tricks,
 			    (int) game.players[p].bid.bid);
-		if (game.players[p].tricks == game.players[p].bid.bid)
-			game.players[p].score +=
-				10 + (5 * game.players[p].bid.bid);
-		else
-			game.players[p].score -= 5 * game.players[p].bid.bid;
+		assert(p == game.players[p].team);
+		if (game.players[p].tricks == game.players[p].bid.bid) {
+			change_score(p, 10 + 5 * game.players[p].bid.bid);
+		} else {
+			change_score(p, -5 * game.players[p].bid.bid);
+		}
 	}
 	lap_send_scores();
 	set_global_message("", "No trump set.");	/* TODO: give
@@ -385,8 +389,10 @@ static void lap_send_scores(void)
 		ggz_dio_put_char(dio, LAP_MSG_SCORES);
 		for (s_r = 0; s_r < game.num_seats; s_r++) {
 			seat_t s_abs = UNCONVERT_SEAT(s_r, p);
+
 			assert(game.seats[s_abs].player == s_abs);
-			ggz_dio_put_int(dio, game.players[s_abs].score);
+			assert(game.players[s_abs].team == s_abs);
+			ggz_dio_put_int(dio, game.teams[s_abs].score);
 		}
 		ggz_dio_packet_end(dio);
 	}

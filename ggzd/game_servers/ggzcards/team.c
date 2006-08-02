@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/27/2002
  * Desc: Functions and data for tracking teams
- * $Id: team.c 8443 2006-08-01 16:40:16Z jdorje $
+ * $Id: team.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -35,6 +35,7 @@
 void set_num_teams(int num_teams)
 {
 	game.num_teams = num_teams;
+	game.teams = ggz_malloc(game.num_teams * sizeof(*game.teams));
 }
 
 void assign_team(team_t t, player_t p)
@@ -65,18 +66,6 @@ int get_team_tricks(team_t t)
 			tricks += game.players[p].tricks;
 			
 	return tricks;
-}
-
-int get_team_score(team_t t)
-{
-	player_t p;
-	
-	for (p = 0; p < game.num_players; p++)
-		if (game.players[p].team == t)
-			return game.players[p].score;
-			
-	assert(FALSE);
-	return 0;
 }
 
 team_t get_player_team(player_t p)

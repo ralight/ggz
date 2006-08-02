@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: suaro.c 8456 2006-08-02 06:00:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -36,6 +36,7 @@
 #include "message.h"
 #include "net.h"
 #include "options.h"
+#include "score.h"
 
 #include "suaro.h"
 
@@ -452,7 +453,7 @@ static void suaro_end_hand(void)
 			   get_player_name(winner),
 			   winner == SUARO.declarer ? "made" : "set",
 			   points, points == 1 ? "" : "s");
-	game.players[winner].score += points;
+	change_score(game.players[winner].team, points);
 	SUARO.declarer = -1;
 	SUARO.kitty_revealed = 0;
 	SUARO.contract = 0;
