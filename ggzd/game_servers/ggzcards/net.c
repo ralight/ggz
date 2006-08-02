@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8450 2006-08-01 19:35:05Z jdorje $
+ * $Id: net.c 8462 2006-08-02 16:02:39Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -115,6 +115,8 @@ void net_send_player_list(player_t p)
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_PLAYERS);
 	ggz_dio_put_int(dio, game.num_seats);
+	ggz_dio_put_int(dio, game.num_players);
+	ggz_dio_put_int(dio, game.num_teams);
 
 	/* Note that this function can be called before we know what game
 	   we're playing.  In this case, we'll know the number of players

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8450 2006-08-01 19:35:05Z jdorje $
+ * $Id: client.h 8462 2006-08-02 16:02:39Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -110,6 +110,7 @@ typedef enum {
 /** The game_t structure contains all global game data. */
 struct ggzcards_game_t {
 	int num_players;	/**< The number of players in the game. */
+	int num_teams;		/**< The number of teams in the game. */
 	seat_t *players;	/**< Data about each player */
 	client_state_t state;	/**< The state the game is in */
 

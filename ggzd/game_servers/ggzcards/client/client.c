@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8450 2006-08-01 19:35:05Z jdorje $
+ * $Id: client.c 8462 2006-08-02 16:02:39Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -343,11 +343,16 @@ static void handle_msg_players(void)
 {
 	int i, numplayers, different;
 	int old_numplayers = ggzcards.num_players;
+	int num_real_players;
 
 	/* It is possible to have 0 players.  At the begginning of a
 	   "general" game, you don't know how many seats will be used yet so
 	   the number of players is 0. */
 	ggz_dio_get_int(game_internal.dio, &numplayers);
+
+	/* The number of 'real' players is not yet used. */
+	ggz_dio_get_int(game_internal.dio, &num_real_players);
+	ggz_dio_get_int(game_internal.dio, &ggzcards.num_teams);
 
 	assert(numplayers >= 0);
 

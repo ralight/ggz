@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 8450 2006-08-01 19:35:05Z jdorje $
+ * $Id: protocol.h 8462 2006-08-02 16:02:39Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -72,11 +72,14 @@ typedef enum {
 	   the game. */
 	MSG_GAMEOVER,
 
-	/* Tells the client the list of players.  It'll be followd by an
-	   integer n followed by data for all n players.  For each player, an 
-	   integer giving the seat status (GGZSeat) and a string for the
-	   player's name will be sent.  Note that the names may be invalid
-	   (but never null) for OPEN seats. */
+	/* Tells the client the list of seats.  It'll be followed by an
+	   integer containing the number of seats, one containing the number
+	   of players, and one containing the
+	   number of teams, followed by data for all seats.  For each
+	   seat, an integer giving the seat status (GGZSeat), a string for the
+	   seats's name, and integer for the player sitting at the seat, and
+	   and integer for the team of that player will be sent.  Note that
+	   the names may be invalid or empty for OPEN seats. */
 	MSG_PLAYERS,
 
 	/* Requests options from the client.  It is followed by an integer n
