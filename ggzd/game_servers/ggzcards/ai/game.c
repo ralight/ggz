@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: game.c 8465 2006-08-03 07:29:12Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -75,6 +75,11 @@ void game_alert_player(int player, GGZSeatType status, const char *name)
 }
 
 void game_alert_num_players(int new, int old)
+{
+	/* nothing */
+}
+
+void game_alert_scores(int hand_num)
 {
 	/* nothing */
 }

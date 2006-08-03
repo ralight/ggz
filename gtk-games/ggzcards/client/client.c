@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8464 2006-08-03 03:54:11Z jdorje $
+ * $Id: client.c 8465 2006-08-03 07:29:12Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -70,7 +70,7 @@ static struct {
 #endif
 0};
 
-struct ggzcards_game_t ggzcards = { 0 };
+struct ggzcards_game_t ggzcards = {.hand_num = -1 };
 
 static void handle_req_play(void);
 
@@ -289,6 +289,19 @@ static void handle_game_specific_packet(void)
 	game_handle_game_message(game_internal.dio, ggzcards.gametype);
 }
 
+static void set_hand_num(int hand_num)
+{
+	int i;
+
+	ggzcards.hand_num = hand_num;
+
+	for (i = 0; i < ggzcards.num_teams; i++) {
+		ggzcards.teams[i].scores
+		    = ggz_realloc(ggzcards.teams[i].scores, (hand_num + 1)
+				  * sizeof(*ggzcards.teams[i].scores));
+	}
+}
+
 static void handle_msg_newgame(void)
 {
 	int cardset;
@@ -307,6 +320,9 @@ static void handle_msg_newgame(void)
 	ggz_debug(DBG_CLIENT,
 		  "Received newgame message: game %s, cards %d.", gametype,
 		  cardset);
+
+	/* HACK: reset hand number to zero. */
+	set_hand_num(0);
 
 	assert(cardset_type != UNKNOWN_CARDSET);
 	set_cardset_type(cardset_type);
@@ -343,7 +359,7 @@ static void handle_msg_players(void)
 {
 	int i, numplayers, different;
 	int old_numplayers = ggzcards.num_players;
-	int num_real_players;
+	int num_real_players, num_teams;
 
 	/* It is possible to have 0 players.  At the begginning of a
 	   "general" game, you don't know how many seats will be used yet so
@@ -352,7 +368,14 @@ static void handle_msg_players(void)
 
 	/* The number of 'real' players is not yet used. */
 	ggz_dio_get_int(game_internal.dio, &num_real_players);
-	ggz_dio_get_int(game_internal.dio, &ggzcards.num_teams);
+	ggz_dio_get_int(game_internal.dio, &num_teams);
+
+	if (ggzcards.num_teams != num_teams) {
+		ggzcards.num_teams = num_teams;
+		ggzcards.teams
+		    = ggz_realloc(ggzcards.teams,
+				  num_teams * sizeof(*ggzcards.teams));
+	}
 
 	assert(numplayers >= 0);
 
@@ -428,6 +451,36 @@ static void handle_msg_players(void)
 	}
 
 	/* TODO: should we need to enter a waiting state if players leave? */
+}
+
+static void handle_msg_scores(void)
+{
+	int t, i, hand_num;
+
+	ggz_dio_get_int(game_internal.dio, &hand_num);
+	assert(hand_num >= 0);
+
+	/* HACK: The scores are being received before the hand number is
+	   known... */
+	if (hand_num > ggzcards.hand_num) {
+		set_hand_num(hand_num);
+	}
+
+	for (t = 0; t < ggzcards.num_teams; t++) {
+		score_data_t *score = &ggzcards.teams[t].scores[hand_num];
+
+		ggz_dio_get_int(game_internal.dio, &score->score);
+		for (i = 0; i < SCORE_EXTRAS; i++) {
+			ggz_dio_get_int(game_internal.dio,
+					&score->extra[i]);
+		}
+
+		if (hand_num == ggzcards.hand_num) {
+			ggzcards.teams[t].score = *score;
+		}
+	}
+
+	game_alert_scores(hand_num);
 }
 
 /* Possibly increase the maximum hand size we can sustain. */
@@ -849,10 +902,13 @@ static void handle_req_options(void)
 	ggz_free(types);
 }
 
-
 static void handle_msg_newhand(void)
 {
-	ggz_dio_get_int(game_internal.dio, &ggzcards.hand_num);
+	int hand_num;
+
+	ggz_dio_get_int(game_internal.dio, &hand_num);
+
+	set_hand_num(hand_num);
 
 	game_alert_newhand();
 }
@@ -967,6 +1023,9 @@ static void server_read_callback(GGZDataIO * dio, void *userdata)
 		return;
 	case MSG_PLAYERS:
 		handle_msg_players();
+		return;
+	case MSG_SCORES:
+		handle_msg_scores();
 		return;
 	case REQ_OPTIONS:
 		handle_req_options();

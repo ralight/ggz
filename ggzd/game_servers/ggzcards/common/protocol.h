@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 8464 2006-08-03 03:54:11Z jdorje $
+ * $Id: protocol.h 8465 2006-08-03 07:29:12Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -38,6 +38,14 @@
 #define __PROTOCOL_H__
 
 #include "cards.h"
+
+typedef struct {
+	int score;
+
+#define SCORE_EXTRAS 1
+	/* Extra fields for supplemental score data. */
+	int extra[SCORE_EXTRAS];
+} score_data_t;
 
 
 /* 
@@ -81,6 +89,12 @@ typedef enum {
 	   and integer for the team of that player will be sent.  Note that
 	   the names may be invalid or empty for OPEN seats. */
 	MSG_PLAYERS,
+
+	/* Tells the client scores.  Consists of the hand number (between 0
+	   and the current hand) and one score per team.  Each score consists
+	   of an integer for the main score plus one integer for each extra
+	   score (see SCORE_EXTRAS). */
+	MSG_SCORES,
 
 	/* Requests options from the client.  It is followed by an integer n
 	   followed by n option requests.  Each option request consists of a

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8454 2006-08-02 01:47:14Z jdorje $
+ * $Id: common.c 8465 2006-08-03 07:29:12Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -762,6 +762,8 @@ void send_sync(player_t p)
 		players_iterate(p2) {
 			net_send_bid(p, p2, game.players[p2].bid);
 		} players_iterate_end;
+
+		net_send_all_scores(p);
 	}
 
 	/* request bid/play again, if necessary */
@@ -841,7 +843,7 @@ void set_num_seats(int num_seats)
 
 /* Initialize a new game type, calling game_init_game for the game-dependant
    parts */
-void init_game()
+void init_game(void)
 {
 	seat_t s;
 	player_t p;

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8464 2006-08-03 03:54:11Z jdorje $
+ * $Id: client.h 8465 2006-08-03 07:29:12Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -89,6 +89,11 @@ typedef struct seat_t {
 	} *u_hand;
 } seat_t;
 
+typedef struct {
+	score_data_t score;
+	score_data_t *scores;
+} team_t;
+
 /** @} end of Player group */
 
 
@@ -110,8 +115,11 @@ typedef enum {
 /** The game_t structure contains all global game data. */
 struct ggzcards_game_t {
 	int num_players;	/**< The number of players in the game. */
-	int num_teams;		/**< The number of teams in the game. */
 	seat_t *players;	/**< Data about each player */
+
+	int num_teams;		/**< The number of teams in the game. */
+	team_t *teams;		/**< Data about each team */
+
 	client_state_t state;	/**< The state the game is in */
 
 	const char *gametype;	/**< String containing the game name. */
@@ -214,6 +222,11 @@ extern void game_alert_player(int player,
  *  @note old and new will never be equal.
  *  @note ggzcards.num_players will have been updated. */
 extern void game_alert_num_players(int new, int old);
+
+/** Alert the table that scores data is available.  The table may then
+ *  display or update scores.
+ *  @param hand_num The hand number for which new scores are available. */
+extern void game_alert_scores(int hand_num);
 
 /** Alerts the table to the maximum hand size.  There will never be more
  *  than this many cards in a hand (unless we send another alert). */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.h 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: net.h 8465 2006-08-03 07:29:12Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -41,6 +41,10 @@ seat_t unconvert_seat(seat_t s_rel, player_t p);
 
 void net_send_player_list(player_t p);
 void net_broadcast_player_list(void);
+
+void net_send_scores(player_t p, int hand_num);
+void net_send_all_scores(player_t p);
+void net_broadcast_scores(int hand_num);
 
 void net_send_options_request(player_t p,
                               int num_options,

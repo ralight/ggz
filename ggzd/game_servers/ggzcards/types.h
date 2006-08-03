@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 8458 2006-08-02 06:50:51Z jdorje $
+ * $Id: types.h 8465 2006-08-03 07:29:12Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -48,14 +48,6 @@ typedef struct {
 	int bid_count;		/* Number of bids in the array (some of the
 				   array may be unused) */
 } bid_data_t;
-
-typedef struct {
-	int score;
-
-#define SCORE_EXTRAS 1
-	/* Extra fields for supplemental score data. */
-	int extra[SCORE_EXTRAS];
-} score_data_t;
 
 /* these are just used to make things more legible */
 typedef int player_t;

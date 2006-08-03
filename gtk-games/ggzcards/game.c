@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: game.c 8465 2006-08-03 07:29:12Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -204,11 +204,12 @@ void game_resync(void)
 	(void)client_send_sync_request();
 }
 
-static void server_set_writeable(GGZDataIO *dio, bool writeable)
+static void server_set_writeable(GGZDataIO * dio, bool writeable)
 {
 	static guint input_id;
 
-	if (input_id != 0) gtk_input_remove(input_id);
+	if (input_id != 0)
+		gtk_input_remove(input_id);
 	input_id = gtk_input_add_full(ggz_dio_get_socket(dio),
 				      GDK_INPUT_READ
 				      | (writeable ? GDK_INPUT_WRITE : 0)
@@ -216,12 +217,13 @@ static void server_set_writeable(GGZDataIO *dio, bool writeable)
 				      game_handle_io, NULL, NULL, NULL);
 }
 
-void game_alert_server(GGZDataIO *server_dio)
+void game_alert_server(GGZDataIO * server_dio)
 {
 	/* Start listening on the server socket.  We may stop later, if
 	   necessary. */
 	listen_for_server(TRUE);
-	server_set_writeable(server_dio, ggz_dio_is_write_pending(server_dio));
+	server_set_writeable(server_dio,
+			     ggz_dio_is_write_pending(server_dio));
 	ggz_dio_set_writeable_callback(server_dio, server_set_writeable);
 }
 
@@ -356,6 +358,11 @@ void game_alert_num_players(int new, int old)
 		ggz_debug(DBG_MAIN, "Changing number of players.");
 		table_setup();
 	}
+}
+
+void game_alert_scores(int hand_num)
+{
+	/* nothing yet */
 }
 
 void game_alert_hand_size(int max_hand_size)
@@ -713,7 +720,7 @@ void game_set_player_message(int player, const char *message)
 	table_set_player_message(player, message);
 }
 
-void game_handle_game_message(GGZDataIO *dio, const char *game)
+void game_handle_game_message(GGZDataIO * dio, const char *game)
 {
 	ggz_debug(DBG_MAIN, "Received game message for game %s.", game);
 }

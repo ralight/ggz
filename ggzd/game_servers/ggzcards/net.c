@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8464 2006-08-03 03:54:11Z jdorje $
+ * $Id: net.c 8465 2006-08-03 07:29:12Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -144,6 +144,41 @@ void net_broadcast_player_list(void)
 		   we *do* need to send a real player list to bot
 		   players, who may be relying on this information. */
 		net_send_player_list(p);
+	} broadcast_iterate_end;
+}
+
+void net_send_scores(player_t p, int hand_num)
+{
+	GGZDataIO *dio = get_player_dio(p);
+	int i;
+
+	ggz_dio_packet_start(dio);
+	write_opcode(dio, MSG_SCORES);
+	ggz_dio_put_int(dio, hand_num);
+	teams_iterate(t) {
+		score_data_t score = game.teams[t].scores[hand_num];
+
+		ggz_dio_put_int(dio, score.score);
+		for (i = 0; i < SCORE_EXTRAS; i++) {
+			ggz_dio_put_int(dio, score.extra[i]);
+		}
+	} teams_iterate_end;
+	ggz_dio_packet_end(dio);
+}
+
+void net_send_all_scores(player_t p)
+{
+	int i;
+
+	for (i = 0; i < game.hand_num; i++) {
+		net_send_scores(p, i);
+	}
+}
+
+void net_broadcast_scores(int hand_num)
+{
+	broadcast_iterate(p) {
+		net_send_scores(p, hand_num);
 	} broadcast_iterate_end;
 }
 
