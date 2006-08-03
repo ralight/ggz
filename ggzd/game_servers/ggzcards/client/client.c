@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8462 2006-08-02 16:02:39Z jdorje $
+ * $Id: client.c 8464 2006-08-03 03:54:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -850,6 +850,14 @@ static void handle_req_options(void)
 }
 
 
+static void handle_msg_newhand(void)
+{
+	ggz_dio_get_int(game_internal.dio, &ggzcards.hand_num);
+
+	game_alert_newhand();
+}
+
+
 /* The language lets the server translate messages for us. */
 void client_send_language(const char *lang)
 {
@@ -964,7 +972,7 @@ static void server_read_callback(GGZDataIO * dio, void *userdata)
 		handle_req_options();
 		return;
 	case MSG_NEWHAND:
-		game_alert_newhand();
+		handle_msg_newhand();
 		return;
 	case MSG_HAND:
 		handle_msg_hand();
