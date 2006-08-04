@@ -10,6 +10,8 @@ dnl ======================================
 dnl
 dnl This file contains operating system specific checks such as for system
 dnl libraries, header file flavours and non-POSIX/Unix handling.
+dnl Macros defined herein are allowed to modify LDADD and LDFLAGS.
+dnl Optional (advanced) checks go to system.m4 and should use LIB_* variables.
 dnl
 dnl ======================================
 dnl

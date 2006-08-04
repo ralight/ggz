@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 8322 2006-07-05 14:55:18Z josef $
+ * $Id: ggz_common.h 8468 2006-08-04 13:26:25Z josef $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -113,6 +113,18 @@ typedef enum {
 	/** There was an error in the game server and it was terminated. */
 	GGZ_LEAVE_GAMEERROR
 } GGZLeaveType;
+
+/** @brief Administrative actions.
+ *
+ * Administrators or to some extent hosts are able to dissolve player
+ * problems by several levels of punishment.
+ */
+typedef enum {
+	GGZ_ADMIN_GAG   = 0,   /**< Player chat is ignored by all others */
+	GGZ_ADMIN_UNGAG = 1,   /**< Reversion of temporary gagging */
+	GGZ_ADMIN_KICK  = 2,   /**< Player is kicked from the server */
+	GGZ_ADMIN_BAN   = 3    /**< Player is banned permanently (NOT USED YET) */
+} GGZAdminType;
 
 /** @brief A player type.
  *

@@ -43,20 +43,9 @@ if test $enable_threading != "no"; then
 
   # If threading is available, maybe asynchronous hostname lookups
   # are as well, using libanl from glibc >= 2.3.
-  AC_ARG_ENABLE([anl],
-    AC_HELP_STRING([--enable-anl], [Enable asynchronous hostname lookups]),
-    [enable_anl=$enableval],
-    [enable_anl=no])
-  if test $enable_anl != "no"; then
-    AC_CHECK_LIB(anl, getaddrinfo_a,
-      [AC_DEFINE([GAI_A], 1, [Support for asynchronous hostname lookups])
-       enable_anl=yes
-       LDADD="$LDADD -lanl"],
-      [enable_anl=no])
-  fi
+  AC_GGZ_ASYNC
 else
   AC_DEFINE([NO_THREADING], 1, [Define if threading support is disabled])
-  enable_anl=no
 fi
 
 # Encryption library: libgcrypt
@@ -129,3 +118,11 @@ echo "At the prompt type \"make\" to compile libggz."
 echo ""
 echo "When complete, type \"make install\" to install the library.  You "
 echo "may need to perform this step as root."
+
+if test "$enable_anl" = yes; then
+	echo ""
+	echo "*** WARNING ***"
+	echo "You have selected GAI support but it only works with"
+	echo "GNU libc >= 2.3.7. Make sure that libc is up to date."
+fi
+
