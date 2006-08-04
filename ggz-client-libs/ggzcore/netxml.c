@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8348 2006-07-10 09:56:05Z jdorje $
+ * $Id: netxml.c 8469 2006-08-04 13:27:21Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -585,6 +585,70 @@ int _ggzcore_net_send_chat(GGZNet * net, const GGZChatType type,
 
 	/*ggz_error_msg("ggzcore_net_send_chat: "
 	   "unknown chat type given."); */
+
+	if (my_text) {
+		ggz_free(my_text);
+	}
+
+	return result;
+}
+
+
+/* Send an <ADMIN> tag for gag/ungag/kick/... */
+int _ggzcore_net_send_admin(GGZNet * net, const GGZAdminType type,
+			   const char *player, const char *reason)
+{
+	const char *reason_text;
+	char *reason_text_quoted;
+	char *my_text = NULL;
+	int result;
+
+	ggz_debug(GGZCORE_DBG_NET, "Sending administrative action");
+
+	/* Truncate a message that is too long. See _ggzcore_net_send_chat. */
+	if (reason && strlen(reason) > net->chat_size) {
+		ggz_error_msg("Truncating too-long reason message.");
+		my_text = ggz_malloc(net->chat_size + 1);
+		strncpy(my_text, reason, net->chat_size);
+		my_text[net->chat_size] = '\0';
+		reason_text = my_text;
+	} else {
+		reason_text = reason;
+	}
+
+	reason_text_quoted = ggz_xml_escape(reason_text);
+	/* FIXME: player string must be quoted also (same for chat send) */
+
+	switch (type) {
+	case GGZ_ADMIN_GAG:
+		result = _ggzcore_net_send_line(net,
+						"<ADMIN ACTION='gag' PLAYER='%s'/>",
+						player);
+		break;
+	case GGZ_ADMIN_UNGAG:
+		result = _ggzcore_net_send_line(net,
+						"<ADMIN ACTION='ungag' PLAYER='%s'/>",
+						player);
+		break;
+	case GGZ_ADMIN_KICK:
+		result = _ggzcore_net_send_line(net,
+						"<ADMIN ACTION='kick' PLAYER='%s'>",
+						player);
+		result |= _ggzcore_net_send_line(net,
+						"<REASON>%s</REASON>",
+						reason_text_quoted);
+		result |= _ggzcore_net_send_line(net,
+						"</ADMIN>");
+		break;
+	case GGZ_ADMIN_BAN:
+	default:
+		/* Not yet in use. */
+		result = -1;
+		break;
+	}
+
+	if (reason_text_quoted)
+		ggz_free(reason_text_quoted);
 
 	if (my_text) {
 		ggz_free(my_text);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 8072 2006-05-29 07:36:46Z josef $
+ * $Id: room.c 8469 2006-08-04 13:27:21Z josef $
  *
  * This fils contains functions for handling rooms
  *
@@ -458,6 +458,20 @@ int ggzcore_room_chat(GGZRoom * room, const GGZChatType type,
 }
 
 
+int ggzcore_room_admin(GGZRoom *room, GGZAdminType type,
+		       const char *player, const char *reason)
+{
+	if (room && room->server) {
+		/* FIXME: checks! */
+		/* Check 1: 'player' must exist in current room */
+		/* Check 2: reason must be given for kick */
+		/* Check 3: sender must be admin (or host?) */
+		return _ggzcore_room_admin(room, type, player, reason);
+	} else
+		return -1;
+}
+
+
 int ggzcore_room_launch_table(GGZRoom * room, GGZTable * table)
 {
 	if (room && room->server && table)
@@ -840,6 +854,17 @@ int _ggzcore_room_chat(GGZRoom * room,
 	} else {
 		return _ggzcore_net_send_chat(net, type, player, msg);
 	}
+}
+
+
+int _ggzcore_room_admin(GGZRoom *room, GGZAdminType type,
+		       const char *player, const char *reason)
+{
+	GGZNet *net;
+
+	net = _ggzcore_server_get_net(room->server);
+
+	return _ggzcore_net_send_admin(net, type, player, reason);
 }
 
 

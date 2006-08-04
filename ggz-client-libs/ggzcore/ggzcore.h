@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 8072 2006-05-29 07:36:46Z josef $
+ * $Id: ggzcore.h 8469 2006-08-04 13:27:21Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -1100,6 +1100,17 @@ int ggzcore_room_chat(GGZRoom *room,
 		      const GGZChatType opcode,
 		      const char *player,
 		      const char *msg);
+
+/** @brief Administrative actions.
+ *  @param room Your current room.
+ *  @param type Type of action (gag, ungag, kick, ...)
+ *  @param player Name of the target player
+ *  @param reason The reason for the action (only for kicking)
+ *  @return 0 on success, negative on failure */
+int ggzcore_room_admin(GGZRoom *room,
+	               GGZAdminType type,
+	               const char *player,
+	               const char *reason);
 
 /** @brief Launch a table in the room.
  *
