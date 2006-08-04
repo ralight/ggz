@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8432 2006-07-31 23:54:12Z jdorje $
+# $Id: Makefile.am 8466 2006-08-04 01:13:52Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -46,4 +46,4 @@ ggz_ggzcards_LDADD =	$(top_builddir)/common/libgtk-games.a		\
 
 ggz_ggzcards_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
-noinst_HEADERS = version.in
+noinst_HEADERS = version.m4
