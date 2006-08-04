@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 8468 2006-08-04 13:26:25Z josef $
+ * $Id: ggz_common.h 8472 2006-08-04 14:27:58Z josef $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -123,7 +123,8 @@ typedef enum {
 	GGZ_ADMIN_GAG   = 0,   /**< Player chat is ignored by all others */
 	GGZ_ADMIN_UNGAG = 1,   /**< Reversion of temporary gagging */
 	GGZ_ADMIN_KICK  = 2,   /**< Player is kicked from the server */
-	GGZ_ADMIN_BAN   = 3    /**< Player is banned permanently (NOT USED YET) */
+	GGZ_ADMIN_BAN   = 3,   /**< Player is banned permanently (NOT USED YET) */
+	GGZ_ADMIN_UNKNOWN = 4  /**< Invalid admin type */
 } GGZAdminType;
 
 /** @brief A player type.
@@ -229,6 +230,25 @@ const char *ggz_playertype_to_string(GGZPlayerType type);
  *  @note This is the inverse of ggz_playertype_to_string.
  */
 GGZPlayerType ggz_string_to_playertype(const char *type_str);
+
+/** @brief Get a string identifier for the GGZAdminType.
+ *
+ *  This returns a pointer to a static string describing the given admin
+ *  action.  It is useful for text-based communications protocols and
+ *  debugging output.
+ *  @param op The GGZAdminType, which determines the string returned.
+ *  @note This is the inverse of ggz_string_to_admintype.
+ */
+const char *ggz_admintype_to_string(GGZAdminType type);
+
+/** @brief Get a GGZAdminType for the given string identifier.
+ *
+ *  This returns a GGZAdminType that is associated with the given string
+ *  description.
+ *  @param type_str A string describing a GGZAdminType.
+ *  @note This is the inverse of ggz_admintype_to_string.
+ */
+GGZAdminType ggz_string_to_admintype(const char *type_str);
 
 
 /** @brief Convert a string to a boolean.

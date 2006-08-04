@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 8322 2006-07-05 14:55:18Z josef $
+ * $Id: ggz_common.c 8472 2006-08-04 14:27:58Z josef $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -135,6 +135,48 @@ GGZChatType ggz_string_to_chattype(const char *type_str)
 		return GGZ_CHAT_TABLE;
 
 	return GGZ_CHAT_UNKNOWN;
+}
+
+#define GAG_ADMIN_NAME "gag"
+#define UNGAG_ADMIN_NAME "ungag"
+#define KICK_ADMIN_NAME "kick"
+#define BAN_ADMIN_NAME "ban"
+
+const char *ggz_admintype_to_string(GGZAdminType type)
+{
+	switch (type) {
+	case GGZ_ADMIN_GAG:
+		return GAG_ADMIN_NAME;
+	case GGZ_ADMIN_UNGAG:
+		return UNGAG_ADMIN_NAME;
+	case GGZ_ADMIN_KICK:
+		return KICK_ADMIN_NAME;
+	case GGZ_ADMIN_BAN:
+		return BAN_ADMIN_NAME;
+	case GGZ_ADMIN_UNKNOWN:
+		break;
+	}
+
+	ggz_error_msg("ggz_admintype_to_string: "
+		      "invalid admintype %d given.", type);
+	return ""; /* ? */
+}
+
+GGZAdminType ggz_string_to_admintype(const char *type_str)
+{
+	if (!type_str)
+		return GGZ_ADMIN_UNKNOWN;
+
+	if (strcasecmp(type_str, GAG_ADMIN_NAME) == 0)
+		return GGZ_ADMIN_GAG;
+	else if (strcasecmp(type_str, UNGAG_ADMIN_NAME) == 0)
+		return GGZ_ADMIN_UNGAG;
+	else if (strcasecmp(type_str, KICK_ADMIN_NAME) == 0)
+		return GGZ_ADMIN_KICK;
+	else if (strcasecmp(type_str, BAN_ADMIN_NAME) == 0)
+		return GGZ_ADMIN_BAN;
+
+	return GGZ_ADMIN_UNKNOWN;
 }
 
 #define NORMAL_LEAVETYPE_NAME "normal"
