@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 8461 2006-08-02 15:05:22Z jdorje $
+ * $Id: players.h 8474 2006-08-04 14:48:01Z josef $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -116,6 +116,9 @@ struct _GGZPlayer {
 	/* Player permissions settings */
 	unsigned int perms;
 	/*list_t *op_rooms;	Not yet */
+
+	/* Gagging. A gagged player's chat is not relayed to others. */
+	bool gagged;
 };
 
 
@@ -129,6 +132,8 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 
 GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 				   const char *target, const char *msg);
+GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
+				   const char *target, const char *reason);
 GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table);
 GGZPlayerHandlerStatus player_table_join(GGZPlayer* player,
 					 int table_index,

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8441 2006-08-01 11:26:17Z oojah $
+ * $Id: net.c 8474 2006-08-04 14:48:01Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -138,6 +138,7 @@ static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_ping(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_info(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
@@ -693,6 +694,12 @@ GGZReturn net_send_chat_result(GGZNetIO *net, GGZClientReqError status)
 }
 
 
+GGZReturn net_send_admin_result(GGZNetIO *net, GGZClientReqError status)
+{
+	return _net_send_result(net, "admin", status);
+}
+
+
 GGZReturn net_send_table_launch(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "launch", status);
@@ -1147,6 +1154,8 @@ static GGZXMLElement* _net_new_element(const char *tag,
 		process_func = _net_handle_enter;
 	else if (strcasecmp(tag, "CHAT") == 0)
 		process_func = _net_handle_chat;
+	else if (strcasecmp(tag, "ADMIN") == 0)
+		process_func = _net_handle_admin;
 	else if (strcasecmp(tag, "INFO") == 0)
 		process_func = _net_handle_info;
 	else if (strcasecmp(tag, "JOIN") == 0)
@@ -1581,6 +1590,34 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element)
 		type = ggz_string_to_chattype(type_str);
 
 	player_chat(net->client->data, type, to, msg);
+}
+
+
+/* Functions for <ADMIN> tag */
+static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element)
+{
+	const char *action_str, *player, *reason;
+	GGZAdminType type;
+
+	if (!element) return;
+	if (!check_playerconn(net, "admin")) return;
+
+	/* Grab admin data from tag */
+	action_str = ggz_xmlelement_get_attr(element, "ACTION");
+	player = ggz_xmlelement_get_attr(element, "PLAYER");
+	/*reason = ggz_xmlelement_get_text(element);*/
+	/*FIXME: reason is child elem*/
+	reason = NULL;
+
+	if (!action_str) {
+		return;
+	} else if (!player) {
+		return;
+	} else {
+		type = ggz_string_to_admintype(action_str);
+	}
+
+	player_admin(net->client->data, type, player, reason);
 }
 
 

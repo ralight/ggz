@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8461 2006-08-02 15:05:22Z jdorje $
+ * $Id: players.c 8474 2006-08-04 14:48:01Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -125,6 +125,8 @@ GGZPlayer* player_new(GGZClient *client)
 	player->ties = -1;
 	player->rating = -1;
 	player->highscore = -1;
+
+	player->gagged = 0;
 
 	return player;
 }
@@ -1394,6 +1396,54 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Don't return the chat error code */
+	return GGZ_REQ_OK;
+}
+
+
+GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
+				   const char *target, const char *reason)
+{
+	GGZClientReqError status = E_BAD_OPTIONS;
+
+	dbg_msg(GGZ_DBG_CHAT, "Handling admin action for %s", player->name);
+
+	/* Verify that we are in a regular room */
+	/* No lock needed: no one can change our room but us */
+	if (player->room == -1) {
+		dbg_msg(GGZ_DBG_CHAT, "%s is not in a room to perform admin action", 
+			player->name);
+		if (net_send_admin_result(player->client->net, E_NOT_IN_ROOM) < 0)
+			return GGZ_REQ_DISCONNECT;
+	}
+
+	/* Parse type */
+	switch (type) {
+	case GGZ_ADMIN_UNKNOWN:
+		/* Do nothing. Better safe than sorry. */
+		break;
+	case GGZ_ADMIN_GAG:
+		dbg_msg(GGZ_DBG_CHAT, "%s gags %s", player->name, target);
+		/*status = ();*/
+		break;
+	case GGZ_ADMIN_UNGAG:
+		dbg_msg(GGZ_DBG_CHAT, "%s ungags %s again", player->name, target);
+		/*status = ();*/
+		break;
+	case GGZ_ADMIN_KICK:
+		dbg_msg(GGZ_DBG_CHAT, "%s kicks %s, reason: %s", player->name, target, reason);
+		/*status = ();*/
+		break;
+	case GGZ_ADMIN_BAN:
+		dbg_msg(GGZ_DBG_CHAT, "%s bans %s", player->name, target);
+		/* This is not implemented/used yet. */
+		break;
+	}
+
+	dbg_msg(GGZ_DBG_CHAT, "%s's admin action result: %d", player->name, status);
+	if (net_send_admin_result(player->client->net, status) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	/* Don't return the admin error code */
 	return GGZ_REQ_OK;
 }
 
