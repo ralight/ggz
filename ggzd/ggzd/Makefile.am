@@ -36,6 +36,7 @@ ggzd_SOURCES = \
 	motd.h \
 	net.c \
 	net.h \
+	reconfiguration.h \
 	room.c \
 	room.h \
 	stats.c \

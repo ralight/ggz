@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8439 2006-08-01 10:21:43Z oojah $
+ * $Id: control.c 8467 2006-08-04 01:58:46Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -60,13 +60,13 @@
 #include "motd.h"
 #include "parse_opt.h"
 #include "players.h"
+#include "reconfiguration.h"
 #include "room.h"
 #include "table.h"
 #include "util.h"
 #include "meta.h"
 
 #ifdef HAVE_INOTIFY
-#include "reconfiguration.h"
 #include <sys/ioctl.h>
 #endif
 #ifdef WITH_FAM
