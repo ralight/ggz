@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8439 2006-08-01 10:21:43Z oojah $
+ * $Id: parse_opt.c 8473 2006-08-04 14:39:05Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -219,7 +219,6 @@ void parse_args(int argc, char *argv[])
 				opt.local_conf = optarg;
 				break;
 			case 'l':
-				/*log_info.log_types = atoi(optarg);*/
 				t_list = _ggz_string_to_list(optarg, ",");
 				t_count = 0;
 				while((t_list) && (t_list[t_count]))

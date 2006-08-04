@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 8239 2006-06-21 10:48:54Z oojah $
+ * $Id: err_func.c 8473 2006-08-04 14:39:05Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -175,6 +175,7 @@ void log_msg(const unsigned log_type, const char *fmt, ...)
 {
 	va_list ap;
 	char msg[4096];
+	bool have_msg = 0;
 	
 	va_start(ap, fmt);
 
@@ -182,6 +183,7 @@ void log_msg(const unsigned log_type, const char *fmt, ...)
 		int priority;
 
 		vsnprintf(msg, sizeof(msg), fmt, ap);
+		have_msg = 1;
 
 		switch(log_type) {
 			case GGZ_LOG_ALWAYS:
@@ -198,7 +200,7 @@ void log_msg(const unsigned log_type, const char *fmt, ...)
 	}
 
 	if(log_type & log_info.log_types_console) {
-		vsnprintf(msg, sizeof(msg), fmt, ap);
+		if(!have_msg) vsnprintf(msg, sizeof(msg), fmt, ap);
 		printf("[LOG] %s\n", msg);
 	}
 
