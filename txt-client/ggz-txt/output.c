@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 7270 2005-06-10 12:39:41Z josef $
+ * $Id: output.c 8470 2006-08-04 13:27:45Z josef $
  *
  * Functions for display text/messages
  *
@@ -120,6 +120,10 @@ void output_display_help(void)
 	output_text(_("--- /who                                    List current player in the room"));
 	output_text(_("--- /wall <msg>                             Admin only command, broadcast to all rooms"));
 	output_text(_("--- /log <logfile>                          Log conversation into logfile"));
+	output_text(_("--- /admin ...                              Administrative commands"));
+	output_text(_("---    ... gag <player>                     Global ignore on messages from <player>"));
+	output_text(_("---    ... ungag <player>                   Revert gagging"));
+	output_text(_("---    ... kick <player> <reason>           Kick <player> from server"));
 }
 
 void output_banner(void)

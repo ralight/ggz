@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 7930 2006-03-15 13:08:35Z josef $
+ * $Id: input.c 8470 2006-08-04 13:27:45Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -64,6 +64,7 @@ static void input_handle_beep(char* line);
 static void input_handle_launch(char *line);
 static void input_handle_exit(void);
 static void input_handle_log(char *line);
+static void input_handle_admin(char* line);
 static int input_roomnumber(const char *line);
 
 static char delim[] = " \n";
@@ -131,6 +132,9 @@ void input_commandhandler(char *current)
 		else if ((strcmp(command, "exit") == 0)
 		|| (strcmp(command, "quit") == 0)) {
 			input_handle_exit();
+		}
+		else if (strcmp(command, "admin") == 0) {
+			input_handle_admin(current);
 		}
 		else if (strcmp(command, "version") == 0) {
 			output_text(_("--- Client version: %s"), VERSION);
@@ -421,7 +425,7 @@ static void input_handle_msg(char* line)
 
 	if (!(player = strsep(&line, delim)))
 		return;
-	
+
 	if (line && strcmp(line, "") != 0) {
 		msg = ggz_strdup(line);
 		server_progresswait();
@@ -478,7 +482,7 @@ static GGZModule *input_get_module(void)
 			    "Maybe try 'list types'?"));
 		return NULL;
 	}
-	
+
 	name = ggzcore_gametype_get_name(type);
 	engine = ggzcore_gametype_get_prot_engine(type);
 	version = ggzcore_gametype_get_prot_version(type);
@@ -493,7 +497,7 @@ static GGZModule *input_get_module(void)
 		if ((getenv("DISPLAY")) && ((env == GGZ_ENVIRONMENT_XWINDOW) ||
 			(env == GGZ_ENVIRONMENT_XFULLSCREEN))) module = tmp;
 	}
-			
+
 	if (!module) {
 		output_text(_("No suitable game modules (out of %i) defined for that game."), num);
 		output_text(_("Download one from %s."),
@@ -578,5 +582,49 @@ static void input_handle_exit(void)
 static void input_handle_log(char *line)
 {
 	output_log_init(line);
+}
+
+static void input_handle_admin(char* line)
+{
+	GGZRoom *room;
+	char *command, *player, *reason;
+	GGZStateID state = ggzcore_server_get_state(server);
+
+	if((int)state == -1 || state == GGZ_STATE_OFFLINE)
+	{
+		output_text(_("You must connect to a server first."));
+		return;
+	}
+
+	if (!(command = strsep(&line, delim)))
+		return;
+
+	if (!(player = strsep(&line, delim)))
+		return;
+
+	reason = NULL;
+	if (line && strcmp(line, "") != 0) {
+		reason = line;
+	}
+
+	room = ggzcore_server_get_cur_room(server);
+
+	/* Type of administrative command */
+	if (strcmp(command, "gag") == 0) {
+		ggzcore_room_admin(room, GGZ_ADMIN_GAG, player, NULL);
+	}
+	else if (strcmp(command, "ungag") == 0) {
+		ggzcore_room_admin(room, GGZ_ADMIN_UNGAG, player, NULL);
+	}
+	else if (strcmp(command, "kick") == 0) {
+		if (reason) {
+			ggzcore_room_admin(room, GGZ_ADMIN_KICK, player, reason);
+		}
+		else {
+			output_text(_("Kicking a player requires a reason."));
+		}
+	}
+	else
+		output_text(_("Unknown admin command."));
 }
 
