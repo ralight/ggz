@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 7123 2005-04-23 11:31:46Z josef $
+ * $Id: server.c 8478 2006-08-05 10:33:03Z josef $
  *
  * Functions for handling server events
  *
@@ -307,6 +307,18 @@ static GGZHookReturn server_protocol_error(GGZServerEvent id,
 }
 
 
+static GGZHookReturn server_chat_fail(GGZServerEvent id,
+				       const void *event_data,
+				       const void *user_data)
+{
+	const GGZErrorEventData *error = event_data;
+
+	output_text(_("--- Chat failed: %s"), error->message);
+
+	return GGZ_HOOK_OK;
+}
+
+
 static GGZHookReturn room_chat(GGZRoomEvent id, const void *event_data,
 			       const void *user_data)
 {
@@ -571,4 +583,6 @@ static void server_register(GGZServer * server)
 				      server_channel_ready);
 	ggzcore_server_add_event_hook(server, GGZ_SERVER_PLAYERS_CHANGED,
 				      server_playercount);
+	ggzcore_server_add_event_hook(server, GGZ_CHAT_FAIL,
+				      server_chat_fail);
 }
