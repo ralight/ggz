@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8469 2006-08-04 13:27:21Z josef $
+ * $Id: netxml.c 8475 2006-08-05 10:13:13Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1266,6 +1266,16 @@ static void _ggzcore_net_handle_result(GGZNet * net,
 					 "Unknown error");
 				break;
 			}
+			_ggzcore_server_event(net->server, GGZ_CHAT_FAIL,
+					      &error);
+		}
+	}
+	else if (strcasecmp(action, "admin") == 0) {
+		if (code != E_OK) {
+		    GGZErrorEventData error = { status:code };
+			snprintf(error.message,
+				 sizeof(error.message),
+				 "Admin action error");
 			_ggzcore_server_event(net->server, GGZ_CHAT_FAIL,
 					      &error);
 		}
