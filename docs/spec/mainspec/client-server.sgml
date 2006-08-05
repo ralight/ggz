@@ -403,6 +403,70 @@
   </para>
 </section>
 
+<section id="adminactions">
+  <title>Administrative actions</title>
+
+  <para>
+    Since not everyone behaves well during chatting and playing,
+	especially not on large anonymous networks, some help is available
+	to privileged players for taming those who tend to be griefers.
+
+    <itemizedlist>
+      <listitem>
+	<para>
+	  Players can be silenced (gagged) with or without letting
+	  them know, which is a temporary measure. They can also be
+	  kicked off a server or even banned forever.
+	  In order to initiate an administrative action against
+	  a player, an <link linkend="req.admin">ADMIN</link>
+	  message is to be sent by the client.
+	  It will contain the name of the affected player, probably
+	  a reason for the action, and the
+	  <link linkend="admin-subopcodes">admin sub-opcode</link>
+	  which identifies the action.
+	  In response, the server will return a
+	  <link linkend="rsp.result">RESULT</link> with action being
+	  set to "admin".
+	</para>
+      </listitem>
+
+    </itemizedlist>
+  </para>
+
+  <para id="admin-subopcodes">
+    Sub-opcodes for admin actions are as follows:
+    <itemizedlist>
+      <listitem>
+	<para>
+	  GGZ_ADMIN_GAG
+	  silences the player. This works effectively like a
+	  global ignore list so that everyone but the player
+	  himself will not be bothered by his messages.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  GGZ_ADMIN_UNGAG
+	  is the inverse of GGZ_ADMIN_GAG.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  GGZ_ADMIN_KICK
+	  kicks a player from the server, i.e. closes the
+	  connection of the affected person.
+	</para>
+      </listitem>
+<!--
+      <listitem>
+	<para>
+	  GGZ_ADMIN_BAN
+	</para>
+      </listitem>
+-->
+    </itemizedlist>
+  </para>
+</section>
 
 <section id="game-messages"><title>Game Interactions</title>
   <para>

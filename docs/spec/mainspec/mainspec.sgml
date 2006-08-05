@@ -3,7 +3,7 @@
 <!ENTITY appendix SYSTEM "appendix.sgml">
 
 <!ENTITY ggz "GGZ Gaming Zone">
-<!ENTITY protonum "7">
+<!ENTITY protonum "11">
 ]>
 
 <book id="index">
@@ -37,6 +37,7 @@
       <para>
         Main protocol specification for &ggz; between the GGZ server
         and GGZ core clients.
+        This specification documents version &protonum; of the protocol.
       </para>
     </abstract>
   </bookinfo>
