@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8474 2006-08-04 14:48:01Z josef $
+ * $Id: net.c 8476 2006-08-05 10:14:29Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -139,6 +139,7 @@ static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_ping(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_info(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_reason(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
@@ -1156,6 +1157,8 @@ static GGZXMLElement* _net_new_element(const char *tag,
 		process_func = _net_handle_chat;
 	else if (strcasecmp(tag, "ADMIN") == 0)
 		process_func = _net_handle_admin;
+	else if (strcasecmp(tag, "REASON") == 0)
+		process_func = _net_handle_reason;
 	else if (strcasecmp(tag, "INFO") == 0)
 		process_func = _net_handle_info;
 	else if (strcasecmp(tag, "JOIN") == 0)
@@ -1605,9 +1608,8 @@ static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element)
 	/* Grab admin data from tag */
 	action_str = ggz_xmlelement_get_attr(element, "ACTION");
 	player = ggz_xmlelement_get_attr(element, "PLAYER");
-	/*reason = ggz_xmlelement_get_text(element);*/
-	/*FIXME: reason is child elem*/
-	reason = NULL;
+
+	reason = ggz_xmlelement_get_data(element);
 
 	if (!action_str) {
 		return;
@@ -1618,6 +1620,39 @@ static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	player_admin(net->client->data, type, player, reason);
+
+	if (reason) {
+		ggz_free(reason);
+	}
+}
+
+
+/* Functions for <REASON> tag */
+static void _net_handle_reason(GGZNetIO *net, GGZXMLElement *element)
+{
+	char *reason;
+	const char *parent_tag;
+	GGZXMLElement *parent;
+
+	if (!element) return;
+
+	/* Get parent off top of stack */
+	parent = ggz_stack_top(net->stack);
+	if (!parent) {
+		/* If there are no elements above us, it's a protocol error */
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+
+	parent_tag = ggz_xmlelement_get_tag(parent);
+	if (strcasecmp(parent_tag, "ADMIN") != 0) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+
+	reason = ggz_strdup(ggz_xmlelement_get_text(element));
+
+	ggz_xmlelement_set_data(parent, reason);
 }
 
 

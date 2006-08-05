@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8296 2006-07-02 10:23:24Z oojah $
+ * $Id: chat.c 8476 2006-08-05 10:14:29Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -89,6 +89,16 @@ GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 
 	/* Pack up chat message */
 	data = chat_pack(type, sender->name, msg);
+
+	if (sender->gagged) {
+		/* Gagged players only chat to themselves */
+		type = GGZ_CHAT_PERSONAL;
+		if (event_player_enqueue(sender->name, chat_event_callback,
+			sizeof(*data), data, chat_free) != GGZ_OK) {
+			return E_BAD_XML;
+		} else
+			return E_OK;
+	}
 
 	if (event_room_enqueue(room, chat_event_callback,
 			       sizeof(*data), data, chat_free) != GGZ_OK)

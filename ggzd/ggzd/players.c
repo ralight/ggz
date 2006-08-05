@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8474 2006-08-04 14:48:01Z josef $
+ * $Id: players.c 8476 2006-08-05 10:14:29Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -126,7 +126,7 @@ GGZPlayer* player_new(GGZClient *client)
 	player->rating = -1;
 	player->highscore = -1;
 
-	player->gagged = 0;
+	player->gagged = false;
 
 	return player;
 }
@@ -1361,6 +1361,7 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 			player->name);
 		if (net_send_chat_result(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_OK;
 	}
 	
 	/* Parse type */
@@ -1404,6 +1405,7 @@ GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
 				   const char *target, const char *reason)
 {
 	GGZClientReqError status = E_BAD_OPTIONS;
+	GGZPlayer* rcvr;
 
 	dbg_msg(GGZ_DBG_CHAT, "Handling admin action for %s", player->name);
 
@@ -1414,7 +1416,19 @@ GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
 			player->name);
 		if (net_send_admin_result(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_OK;
 	}
+
+	/* Only hosts and admins can do admin actions */
+	if (!perms_is_host(player)) {
+		dbg_msg(GGZ_DBG_CHAT, "%s is no host!", player->name);
+		if (net_send_admin_result(player->client->net, E_NO_PERMISSION) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_OK;
+	}
+
+	/* Find out target player. Returns with write-lock on. */
+	rcvr = hash_player_lookup(target);
 
 	/* Parse type */
 	switch (type) {
@@ -1423,20 +1437,44 @@ GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
 		break;
 	case GGZ_ADMIN_GAG:
 		dbg_msg(GGZ_DBG_CHAT, "%s gags %s", player->name, target);
-		/*status = ();*/
+		if (rcvr == NULL) {
+			status = E_USR_LOOKUP;
+		} else {
+			rcvr->gagged = true;
+			status = E_OK;
+		}
 		break;
 	case GGZ_ADMIN_UNGAG:
 		dbg_msg(GGZ_DBG_CHAT, "%s ungags %s again", player->name, target);
-		/*status = ();*/
+		if (rcvr == NULL) {
+			status = E_USR_LOOKUP;
+		} else {
+			rcvr->gagged = false;
+			status = E_OK;
+		}
 		break;
 	case GGZ_ADMIN_KICK:
 		dbg_msg(GGZ_DBG_CHAT, "%s kicks %s, reason: %s", player->name, target, reason);
-		/*status = ();*/
+		if (rcvr == NULL) {
+			status = E_USR_LOOKUP;
+		} else if (reason == NULL) {
+			status = E_BAD_OPTIONS;
+		} else {
+			/* FIXME 1: session_over should be bool, not char */
+			/* FIXME 2: notify the victim about reason for kick */
+			rcvr->client->session_over = 1;
+			status = E_OK;
+		}
 		break;
 	case GGZ_ADMIN_BAN:
 		dbg_msg(GGZ_DBG_CHAT, "%s bans %s", player->name, target);
 		/* This is not implemented/used yet. */
 		break;
+	}
+
+	/* Now we must return write-lock! */
+	if (rcvr) {
+		pthread_rwlock_unlock(&rcvr->lock);
 	}
 
 	dbg_msg(GGZ_DBG_CHAT, "%s's admin action result: %d", player->name, status);
