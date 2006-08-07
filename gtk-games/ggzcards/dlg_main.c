@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 6450 2004-12-11 21:57:47Z jdorje $
+ * $Id: dlg_main.c 8481 2006-08-07 07:35:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -57,6 +57,8 @@ static GtkWidget *create_menus(GtkWidget * window)
 		{_("/Game/Force _redraw"), "<ctrl>R",
 		 on_mnu_forceredraw_activate, 0, NULL},
 #endif
+		{_("/Game/Sc_ores"), "<ctrl>O",
+		 on_mnu_scores_activate, 0, NULL},
 		{_("/_Messages"), NULL, NULL, 0, "<Branch>"},
 		{_("/_Options"), NULL, NULL, 0, "<Branch>"},
 		{_("/Options/_Preferences"), "<ctrl>P",

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 8465 2006-08-03 07:29:12Z jdorje $
+ * $Id: game.c 8481 2006-08-07 07:35:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -48,6 +48,7 @@
 #include "dlg_main.h"
 #include "dlg_options.h"
 #include "dlg_players.h"
+#include "dlg_scores.h"
 #include "drawcard.h"
 #include "game.h"
 #include "layout.h"
@@ -362,7 +363,7 @@ void game_alert_num_players(int new, int old)
 
 void game_alert_scores(int hand_num)
 {
-	/* nothing yet */
+	dlg_scores_update();
 }
 
 void game_alert_hand_size(int max_hand_size)

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: cb_main.c 8481 2006-08-07 07:35:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -36,6 +36,7 @@
 #include "dlg_main.h"
 #include "dlg_players.h"
 #include "dlg_prefs.h"
+#include "dlg_scores.h"
 #include "game.h"
 #include "main.h"
 #include "table.h"
@@ -54,6 +55,11 @@ void game_exit(void)
 void on_mnu_startgame_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	game_send_newgame();
+}
+
+void on_mnu_scores_activate(GtkMenuItem *menuitem, gpointer user_data)
+{
+	dlg_scores_raise();
 }
 
 void on_mnu_preferences_activate(GtkMenuItem * menuitem,
