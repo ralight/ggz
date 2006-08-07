@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 8481 2006-08-07 07:35:04Z jdorje $
+ * $Id: game.c 8493 2006-08-07 22:50:35Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -348,6 +348,7 @@ void game_alert_player(int player,
 	}
 
 	table_set_name(player, new_name);
+	dlg_scores_update(); /* Update column headers. */
 }
 
 void game_alert_num_players(int new, int old)

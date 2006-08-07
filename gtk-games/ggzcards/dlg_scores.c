@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: August 7, 2006
  * Desc: Creates the scores dialog
- * $Id: dlg_scores.c 8492 2006-08-07 21:13:49Z jdorje $
+ * $Id: dlg_scores.c 8493 2006-08-07 22:50:35Z jdorje $
  *
  * Copyright (C) 2006 GGZ Dev Team.
  *
@@ -39,8 +39,11 @@
 #include "dlg_scores.h"
 #include "main.h"
 
+#define MAX_COLS 20
+
 static GtkWidget *window = NULL;
 static GtkListStore *store;
+static GtkTreeViewColumn *columns[MAX_COLS];
 
 static void dlg_scores_closed(GtkWidget * widget, gpointer data)
 {
@@ -51,8 +54,7 @@ void dlg_scores_raise(void)
 {
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
-	GtkTreeViewColumn *column;
-	GType types[20];
+	GType types[MAX_COLS];
 	int i;
 
 	if (window) {
@@ -70,7 +72,7 @@ void dlg_scores_raise(void)
 	for (i = 0; i < ggzcards.num_teams; i++) {
 		types[i + 1] = G_TYPE_STRING;
 	}
-	assert(i < 20);
+	assert(i < MAX_COLS);
 	store = gtk_list_store_newv(i + 1, types);
 
 	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
@@ -78,23 +80,25 @@ void dlg_scores_raise(void)
 	g_object_unref(store);
 
 	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes(_("Hand #"),
-							  renderer,
-							  "text", 0, NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+	columns[0] = gtk_tree_view_column_new_with_attributes(_("Hand #"),
+							      renderer,
+							      "text", 0,
+							      NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), columns[0]);
 
 	for (i = 0; i < ggzcards.num_teams; i++) {
 		char teamname[128];
 
 		snprintf(teamname, sizeof(teamname), _("Team %d"), i + 1);
 		renderer = gtk_cell_renderer_text_new();
-		column
+		columns[i + 1]
 		    = gtk_tree_view_column_new_with_attributes(teamname,
 							       renderer,
 							       "text",
 							       i + 1,
 							       NULL);
-		gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+		gtk_tree_view_append_column(GTK_TREE_VIEW(tree),
+					    columns[i + 1]);
 	}
 
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(window)->vbox), tree);
@@ -115,6 +119,27 @@ void dlg_scores_update(void)
 
 	if (!window) {
 		return;
+	}
+
+	for (team = 0; team < ggzcards.num_teams; team++) {
+		int p, count = 0;
+		char text[128] = "";
+
+		for (p = 0; p < ggzcards.num_players; p++) {
+			if (ggzcards.players[p].team == team) {
+				if (count == 0) {
+					snprintf(text, sizeof(text), "%s",
+						 ggzcards.players[p].name);
+				} else {
+					snprintf(text + strlen(text),
+						 sizeof(text) -
+						 strlen(text), " / %s",
+						 ggzcards.players[p].name);
+				}
+				count++;
+			}
+		}
+		gtk_tree_view_column_set_title(columns[team + 1], text);
 	}
 
 	gtk_list_store_clear(store);
