@@ -1,8 +1,6 @@
-EXTRA_DIST = \
-	README.GGZ QuickStart.GGZ \
-	Doxyfile \
-	m4/ggz-debug.m4 m4/ggz.m4 m4/iconv.m4 m4/platform.m4 \
-	m4/mkdir.m4 m4/tls.m4 m4/system.m4
+EXTRA_DIST = README.GGZ QuickStart.GGZ Doxyfile
 
 SUBDIRS = src tests man
+
+ACLOCAL_AMFLAGS = -I m4
 

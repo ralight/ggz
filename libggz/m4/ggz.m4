@@ -40,7 +40,6 @@ dnl   AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
 dnl   AC_GGZ_GGZMOD - find the ggzmod library
 dnl   AC_GGZ_GGZDMOD - find the ggzdmod library
 dnl   AC_GGZ_SERVER - set up game and room path for ggzd game servers
-dnl   AC_GGZ_INTL - ensure proper i18n tools installation
 dnl
 dnl   Each macro takes two arguments:
 dnl     1.  Action-if-found (or empty for no action).
@@ -955,57 +954,6 @@ if test "$have_ggzdconf" = yes || test "x$2" = "xforce"; then
 
 	# Perform actions given by argument 1.
 	$1
-fi
-
-])
-
-dnl ------------------------------------------------------------------------
-dnl Find internationalization tools
-dnl ------------------------------------------------------------------------
-dnl
-AC_DEFUN([AC_GGZ_INTL],
-[
-AC_PATH_PROG(GETTEXT, xgettext)
-AC_PATH_PROG(MSGFMT, msgfmt)
-AC_PATH_PROG(MSGMERGE, msgmerge)
-
-intl=1
-if test "x$GETTEXT" = "x"; then intl=0; fi
-if test "x$MSGFMT" = "x"; then intl=0; fi
-if test "x$MSGMERGE" = "x"; then intl=0; fi
-AM_ICONV
-LIBS="$LIBICONV $LIBS"
-AC_CHECK_LIB(intl, gettext, [LIBS="-lintl $LIBS"])
-AC_CHECK_FUNCS([gettext ngettext], [], [intl=0])
-AC_CHECK_HEADERS([libintl.h locale.h])
-if test "$intl" = 0; then
-  if test "x$2" = "xignore"; then
-    AC_MSG_WARN([Internationalization tools missing. (ignored)])
-  else
-    AC_MSG_RESULT([Internationalization tools missing.])
-    if test "x$2" = "x"; then
-      AC_MSG_ERROR([Internationalization tools missing.])
-    fi
-
-    # Perform actions given by argument 2.
-    $2
-  fi
-else
-  AC_MSG_RESULT([Internationalization tools found.])
-
-  XGETTEXT=$GETTEXT
-  GMSGFMT=$MSGFMT
-
-  AC_SUBST(XGETTEXT)
-  AC_SUBST(GETTEXT)
-  AC_SUBST(GMSGFMT)
-  AC_SUBST(MSGFMT)
-  AC_SUBST(MSGMERGE)
-
-  AC_DEFINE(ENABLE_NLS, 1, [Define if NLS is enabled])
-
-  # Perform actions given by argument 1.
-  $1
 fi
 
 ])

@@ -2,7 +2,7 @@ dnl ======================================
 dnl GGZ Gaming Zone - Configuration Macros
 dnl ======================================
 dnl
-dnl Copyright (C) 2005 Josef Spillner, josef@ggzgamingzone.org
+dnl Copyright (C) 2005, 2006 Josef Spillner, josef@ggzgamingzone.org
 dnl This file has been derived from libggz configuration macros.
 dnl It is published under the conditions of the GNU General Public License.
 dnl
@@ -42,7 +42,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_CPP
 AC_LIBTOOL_WIN32_DLL
-#AC_PROG_LIBTOOL # bug?
+#AC_PROG_LIBTOOL # bug!
 AC_PROG_RANLIB
 AC_PROG_MAKE_SET
 ])
@@ -66,6 +66,8 @@ AC_DEFUN([AC_GGZ_PLATFORM_WIN32],
     LDFLAGS="$LDFLAGS -no-undefined"
     LDADD="$LDADD -lws2_32"
   fi
+
+  AC_CHECK_HEADERS([winsock2.h])
 ])
 
 dnl ------------------------------------------------------------------------
@@ -79,8 +81,9 @@ AC_DEFUN([AC_GGZ_PLATFORM_POSIX],
 #AC_CHECK_HEADERS([fcntl.h sys/param.h],
 #  [],
 #  [AC_MSG_ERROR([cannot find required header file])])
-#AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h sys/shm.h sys/socket.h])
-#AC_CHECK_HEADERS([sys/uio.h sys/un.h sys/wait.h winsock2.h])
+#AC_CHECK_HEADERS([netdb.h sys/shm.h sys/socket.h])
+#AC_CHECK_HEADERS([sys/uio.h sys/un.h sys/wait.h])
+AC_CHECK_HEADERS([arpa/inet.h sys/types.h netinet/in.h])
 
 # Check for functions
 # ===================

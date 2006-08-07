@@ -2,7 +2,7 @@ dnl ======================================
 dnl GGZ Gaming Zone - Configuration Macros
 dnl ======================================
 dnl
-dnl Copyright (C) 2001 - 2005 Josef Spillner, josef@ggzgamingzone.org
+dnl Copyright (C) 2001 - 2006 Josef Spillner, josef@ggzgamingzone.org
 dnl This file has heavily been inspired by KDE's acinclude :)
 dnl It is published under the conditions of the GNU General Public License.
 dnl
@@ -17,12 +17,16 @@ dnl History:
 dnl 2002-02-10: lookup TLS libraries; taken code from acinclude.ggz
 dnl 2002-02-24: default to GnuTLS; create conditional compile vars
 dnl 2005-09-14: several cleanups due to newer autotools
+dnl 2006-08-06: now includes gcrypt checks
 
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
 dnl AC_GGZ_TLS - find a TLS implementation (support for gnutls, openssl and
 dnl              none)
+dnl AC_GGZ_GCRYPT - find the gcrypt encryption library
+dnl
+dnl Private macros:
 dnl AC_PATH_SSL - OpenSSL implementation backend (code from kdelibs)
 dnl AC_GGZ_GNUTLS - GNUTLS implementation backend
 dnl
@@ -282,10 +286,10 @@ fi
 
 dnl ------------------------------------------------------------------------
 dnl Try to find a suitable TLS implementation.
+dnl Defines GGZ_TLS_NONE or GGZ_TLS_GNUTLS or GGZ_TLS_OPENSSL
 dnl $(GGZTLS_LDFLAGS) will be -L ... (if needed)
 dnl and $(GGZTLS_INCLUDES) will be -I ... (if needed)
-dnl $(GGZTLS_SOURCES) is the dynamic list of source files, depending on the
-dnl used implementation
+dnl $(LIB_GGZTLS) will be the backend library to use against
 dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_TLS],
@@ -347,5 +351,47 @@ AC_SUBST(GGZTLS_INCLUDES)
 AC_SUBST(GGZTLS_LDFLAGS)
 AC_SUBST(LIB_GGZTLS)
 
+])
+
+dnl ------------------------------------------------------------------------
+dnl Searches for the gcrypt library
+dnl Defines USE_GCRYPT if found
+dnl $(LIB_GCRYPT) will be set accordingly
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN([AC_GGZ_GCRYPT],
+[
+AC_ARG_WITH([gcrypt],
+  AS_HELP_STRING([--with-gcrypt], [Add encryption support]),
+  [enable_gcrypt=$enableval],
+  [enable_gcrypt=auto])
+
+if test "$enable_gcrypt" != "no"; then
+  AC_CHECK_LIB(gcrypt, gcry_check_version,
+    [
+      AC_CHECK_HEADER(gcrypt.h,
+        [
+          AC_DEFINE_UNQUOTED([USE_GCRYPT], 1,
+                             [Define if you have the gcrypt library])
+          LIB_GCRYPT="-lgcrypt"
+        ],
+        [
+          if test "$enable_gcrypt" = "yes"; then
+            AC_MSG_ERROR([*** No gcrypt-dev found])
+          else
+            AC_MSG_WARN([*** No gcrypt-dev found - compiling without encryption support])
+            enable_gcrypt=no
+          fi
+        ])
+    ],
+    [
+      if test "$enable_gcrypt" = "yes"; then
+        AC_MSG_ERROR([*** No gcrypt found])
+      else
+        AC_MSG_WARN([*** No gcrypt found - compiling without encryption support])
+        enable_gcrypt=no
+      fi
+    ])
+fi
 ])
 
