@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8459 2006-08-02 07:01:29Z jdorje $
+ * $Id: spades.c 8479 2006-08-07 04:51:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -163,6 +163,11 @@ static void spd_send_scoredata(player_t p)
 	GGZDataIO *dio = get_player_dio(p);
 	team_t team;
 	int waiting = -1;
+
+	if (!dio) {
+		/* This can happen, for instance with empty spectator seats. */
+		return;
+	}
 
 	/* The score data can be used by the AI for
 	   calculations or by the game client to
