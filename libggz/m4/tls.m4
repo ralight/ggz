@@ -393,5 +393,7 @@ if test "$enable_gcrypt" != "no"; then
       fi
     ])
 fi
+
+AC_SUBST(LIB_GCRYPT)
 ])
 
