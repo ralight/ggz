@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8437 2006-08-01 05:04:38Z jdorje $
+# $Id: configure.ac 8487 2006-08-07 11:26:38Z oojah $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -242,7 +242,7 @@ AC_CONFIG_FILES([Makefile
 	ggzd/Makefile 
 	ggzd/database/Makefile
 	ggzd/meta/Makefile
-	ggzd/ggzd.conf
+	ggzd/ggzd.conf.example
 	ggzd/ggzd.test
 	game_servers/Makefile
 	game_servers/spades/Makefile
