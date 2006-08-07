@@ -752,6 +752,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         });
     }
 
+    public void alert_scores(int hand_num) {
+        // TODO handle these.
+    }
+
     public void display_hand(final int player_num) {
         invokeAndWait(new Runnable() {
             public void run() {
@@ -1002,25 +1006,20 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
     }
 
-    public int handle_game_message(GGZCardInputStream in, final String game,
-            final int size) throws IOException {
-        // SwingUtilities.invokeLater(new Runnable() {
-        // public void run() {
-        // chat_panel.appendChat("handle_game_message", game
-        // + " bytes to read=" + size);
-        // }
-        // });
-        return 0;
+    public void handle_game_message(GGZCardInputStream in, String gametype)
+            throws IOException {
+        // Let subclasses handle this.
     }
 
     public void handle_gameover(int[] winners) {
+        // TODO: Show winners.
         JOptionPane.showMessageDialog(this, "GAME OVER");
     }
 
     public void handle_disconnect() {
         // Ignore?
     }
-    
+
     /**
      * Called by server just before trick winner is announced to reinform the
      * client of all the cards in the last trick. It's also sent after a hand is

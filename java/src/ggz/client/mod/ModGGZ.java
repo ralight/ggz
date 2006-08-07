@@ -283,9 +283,9 @@ public class ModGGZ {
             this.process.destroy();
         }
 
-        set_state(ModState.GGZMOD_STATE_DONE);
         this.io.disconnect();
         this.io = null;
+        set_state(ModState.GGZMOD_STATE_DONE);
     }
 
     private void set_state(ModState new_state) throws IOException {

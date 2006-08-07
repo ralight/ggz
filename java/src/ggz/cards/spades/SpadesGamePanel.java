@@ -115,15 +115,15 @@ public class SpadesGamePanel extends CardGamePanel {
         // Do nothing. We handle it in handle_game_message().
     }
 
-    public int handle_game_message(GGZCardInputStream in, String game, int size)
+    public void handle_game_message(GGZCardInputStream in, String game)
             throws IOException {
         // This whole shebang is 40 bytes.
         int mySize = 10 * 4;
-        if (size < mySize) {
+//        if (size < mySize) {
             // Hmm, server has less info to send us than we expect so just do
             // nothing.
-            return 0;
-        }
+//            return 0;
+//        }
         final int teamScore1 = in.readInt();
         final int teamBags1 = in.readInt();
         final int teamScore2 = in.readInt();
@@ -191,7 +191,7 @@ public class SpadesGamePanel extends CardGamePanel {
                 repaint();
             }
         });
-        return mySize;
+//        return mySize;
     }
 
 }

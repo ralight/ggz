@@ -44,6 +44,9 @@ public class Player {
     /** GGZ seat number (or -1) */
     int ggzseat;
 
+    /** For games that support teams (or partnerships). */
+    int team;
+
     /**
      * @brief Player's card on the table.
      * 
@@ -57,7 +60,7 @@ public class Player {
 
     /** player's hand */
     ArrayList hand;
-    
+
     /** Bid player made for the current hand. */
     Bid bid;
 
@@ -76,7 +79,7 @@ public class Player {
     public SeatType get_seat_type() {
         return status;
     }
-    
+
     public Bid get_bid() {
         return bid;
     }
@@ -85,6 +88,7 @@ public class Player {
      * The seat number as recorded by GGZ. Game seat numbers are from the
      * perspective of each client, this give the "absolute" number and is the
      * number that should be used for reseat requests.
+     * 
      * @return
      */
     public int get_ggz_seat_num() {

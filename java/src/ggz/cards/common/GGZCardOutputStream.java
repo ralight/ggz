@@ -144,7 +144,7 @@ public class GGZCardOutputStream extends DataOutputStream {
     public void end_packet() throws IOException {
         // Write the size of the packet that is being sent, this size must
         // include the two bytes for this header.
-//        output.writeShort(buffer.size() + 2);
+        output.writeShort(buffer.size() + 2);
         buffer.writeTo(output);
         output.flush();
         // Get ready for the next packet.

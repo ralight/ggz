@@ -24,7 +24,7 @@ import ggz.cards.common.ClientOpCode;
 import ggz.cards.common.Face;
 import ggz.cards.common.GGZCardInputStream;
 import ggz.cards.common.GGZCardOutputStream;
-import ggz.cards.common.GameMessage;
+import ggz.cards.common.ScoreData;
 import ggz.cards.common.ServerOpCode;
 import ggz.cards.common.Suit;
 import ggz.common.SeatType;
@@ -53,8 +53,17 @@ public class Client {
     /** Data about each player */
     private Player[] players;
 
+    /** Data about each team */
+    private Team[] teams;
+
     /** The state the game is in */
     private GameState state;
+
+    /** String containing the game name */
+    private String gametype;
+
+    /** < The number of the current hand (starts at 0) */
+    private int hand_num;
 
     /** Structure that contains cards in the trick for each player. */
     protected TrickInfo lastTrick;
@@ -200,58 +209,28 @@ public class Client {
      * think).
      */
     private void handle_game_message() throws IOException {
-        int num_bytes_handled;
-        String game_name = this.fd_in.read_string();
-        int size = this.fd_in.readInt();
-
-        /*
-         * Note: "size" refers to the size of the data block, not including the
-         * headers above.
-         */
-        log.fine("Received game message of size " + size + " for game "
-                + game_name);
-
-        num_bytes_handled = this.game.handle_game_message(this.fd_in,
-                game_name, size);
-        if (num_bytes_handled < 0) {
-            throw new IllegalStateException("Handler claims to have handled "
-                    + num_bytes_handled + " game specific bytes.");
-        }
-        if (num_bytes_handled > size) {
-            throw new IllegalStateException(
-                    "Too much game sepcific data was read");
-        }
-        size -= num_bytes_handled; /* this is how much was unread */
-
-        if (size > 0) {
-            /* We read the block just to get it out of the way. */
-            byte[] block = new byte[size];
-            fd_in.readFully(block);
-        }
+        this.game.handle_game_message(this.fd_in, this.gametype);
     }
 
-    /*
-     * a message_global message tells you one "global message", which is
-     * displayed by the client.
-     */
-    private void handle_message_global() throws IOException {
-        GameMessage op = fd_in.read_game_message();
+    private void set_hand_num(int hand_num) {
+        this.hand_num = hand_num;
 
-        log.fine("Received " + op + " global message opcode.");
-
-        if (op == GameMessage.GAME_MESSAGE_TEXT) {
-            handle_text_message();
-        } else if (op == GameMessage.GAME_MESSAGE_CARDLIST) {
-            handle_cardlist_message();
-        } else if (op == GameMessage.GAME_MESSAGE_GAME) {
-            handle_game_message();
-        } else if (op == GameMessage.GAME_MESSAGE_PLAYER) {
-            handle_player_message();
-        }
+        // for (int i = 0; i < this.teams.length; i++) {
+        // this.teams[i].scores
+        // = ggz_realloc(ggzcards.teams[i].scores, (hand_num + 1)
+        // * sizeof(*ggzcards.teams[i].scores));
+        // ScoreData[] old = this.teams[i].scores;
+        // this.teams[i].scores = new Team[hand_num + 1];
+        // System.arraycopy(old, 0, this.teams[i].scores, 0, old.length);
+        // }
     }
 
     private void handle_msg_newgame() throws IOException {
+        this.gametype = fd_in.read_string();
         CardSetType cardset_type = fd_in.read_cardset_type();
+
+        /* HACK: reset hand number to zero. */
+        set_hand_num(0);
 
         set_game_state(STATE_WAIT);
         game.alert_newgame(cardset_type);
@@ -281,6 +260,8 @@ public class Client {
     private void handle_msg_players() throws IOException {
         boolean different;
         int numplayers;
+        int num_real_players;
+        int num_teams;
         int old_numplayers = this.num_players;
 
         /*
@@ -289,6 +270,17 @@ public class Client {
          * players is 0.
          */
         numplayers = fd_in.readInt();
+        num_real_players = fd_in.readInt();
+        num_teams = fd_in.readInt();
+
+        if (this.teams == null || this.teams.length != num_teams) {
+            Team[] old = this.teams;
+            this.teams = new Team[num_teams];
+            if (old != null) {
+                System.arraycopy(old, 0, this.teams, 0, Math.min(old.length,
+                        num_teams));
+            }
+        }
 
         /* we may need to allocate memory for the players */
         different = (this.num_players != numplayers);
@@ -320,7 +312,7 @@ public class Client {
 
         /* read in data about the players */
         for (int i = 0; i < numplayers; i++) {
-            int type, ggzseat, old_ggzseat;
+            int type, ggzseat, old_ggzseat, team;
             SeatType old_type, new_type;
             String old_name, new_name;
 
@@ -328,6 +320,7 @@ public class Client {
             new_name = fd_in.read_string();
             ggzseat = fd_in.readInt();
             new_type = SeatType.valueOf(type);
+            team = fd_in.readInt();
 
             old_name = this.players[i].name;
             old_type = this.players[i].status;
@@ -336,6 +329,7 @@ public class Client {
             this.players[i].status = new_type;
             this.players[i].name = new_name;
             this.players[i].ggzseat = ggzseat;
+            this.players[i].team = team;
 
             // Only alert the game if the seat has changed in some way.
             if (old_type != new_type || old_name == null
@@ -347,7 +341,32 @@ public class Client {
         /* TODO: should we need to enter a waiting state if players leave? */
     }
 
-    private void handle_msg_newhand() {
+    private void handle_msg_scores() throws IOException {
+        int hand_num = fd_in.readInt();
+
+        /*
+         * HACK: The scores are being received before the hand number is
+         * known...
+         */
+        if (hand_num > this.hand_num) {
+            set_hand_num(hand_num);
+        }
+
+        for (int t = 0; t < this.teams.length; t++) {
+            if (this.teams[t] == null)
+                this.teams[t] = new Team();
+            ScoreData score = new ScoreData(fd_in.readInt(), fd_in.readInt());
+            this.teams[t].addScore(score);
+            if (hand_num == this.hand_num) {
+                this.teams[t].setScore(score);
+            }
+        }
+
+        game.alert_scores(hand_num);
+    }
+
+    private void handle_msg_newhand() throws IOException {
+        set_hand_num(fd_in.readInt());
         set_game_state(STATE_DEAL);
         isNewTrick = true;
         // Clear the bids.
@@ -757,8 +776,7 @@ public class Client {
         // Skip past the packet size, we don't need it since
         // we are using blocking sockets so we just keep
         // reading until we have what we need.
-        // short packetSize = this.fd_in.read_header();
-        // log.fine("New packet received from server. size=" + packetSize);
+        this.fd_in.start_packet();
         ServerOpCode opcode = this.fd_in.read_opcode();
 
         log.fine("Received " + opcode + " opcode from the server.");
@@ -772,6 +790,8 @@ public class Client {
             handle_msg_gameover();
         } else if (opcode == ServerOpCode.MSG_PLAYERS) {
             handle_msg_players();
+        } else if (opcode == ServerOpCode.MSG_SCORES) {
+            handle_msg_scores();
         } else if (opcode == ServerOpCode.MSG_NEWHAND) {
             handle_msg_newhand();
         } else if (opcode == ServerOpCode.MSG_HAND) {
@@ -790,8 +810,14 @@ public class Client {
             handle_msg_table();
         } else if (opcode == ServerOpCode.MSG_TRICK) {
             handle_msg_trick();
-        } else if (opcode == ServerOpCode.MESSAGE_GAME) {
-            handle_message_global();
+        } else if (opcode == ServerOpCode.MSG_GAME_MESSAGE_CARDLIST) {
+            handle_cardlist_message();
+        } else if (opcode == ServerOpCode.MSG_GAME_MESSAGE_PLAYER) {
+            handle_player_message();
+        } else if (opcode == ServerOpCode.MSG_GAME_MESSAGE_TEXT) {
+            handle_text_message();
+        } else if (opcode == ServerOpCode.MSG_GAME_SPECIFIC) {
+            handle_game_message();
         } else if (opcode == ServerOpCode.REQ_OPTIONS) {
             handle_req_options();
         }
@@ -822,6 +848,7 @@ public class Client {
                      */
                 } catch (Throwable e) {
                     e.printStackTrace();
+                    return;
                     /*
                      * used to call
                      * ggzMod.set_state(ModState.GGZMOD_STATE_DONE); try {
@@ -829,7 +856,7 @@ public class Client {
                      */
                 } finally {
                     try {
-//                        game.handle_disconnect();
+                        // game.handle_disconnect();
                         fd.close();
                     } catch (IOException e2) {
                         // ignore.

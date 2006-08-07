@@ -46,16 +46,14 @@ public interface CardGameHandler {
     public void set_player_message(int player, String message);
 
     /**
-     * Called when game-specific data is received by the client.
+     * Called when game-specific data is received by the client. The client will
+     * skip over any remaining bytes that were not read by the handler.
      * 
      * @param in
-     * @param game
-     * @param size
-     * @return the number of bytes handled. The client will skip over any
-     *         remaining bytes that were not read by the handler.
+     * @param gametype
      * @throws IOException
      */
-    public int handle_game_message(GGZCardInputStream in, String game, int size)
+    public void handle_game_message(GGZCardInputStream in, String gametype)
             throws IOException;
 
     public void alert_newgame(CardSetType cardset_type);
@@ -101,6 +99,8 @@ public interface CardGameHandler {
     public void get_newgame();
 
     public void alert_newhand();
+
+    public void alert_scores(int hand_num);
 
     /** Called when the socket disconnects. */
     public void handle_disconnect();

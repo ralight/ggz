@@ -18,14 +18,36 @@
 package ggz.cards.common;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class GGZCardInputStream extends DataInputStream {
+    private DataInputStream realIn;
+
+    private DynamicByteArrayInputStream packet;
+
     public GGZCardInputStream(InputStream in) {
-        super(new BufferedInputStream(in));
+        super(new DynamicByteArrayInputStream());
+        this.packet = (DynamicByteArrayInputStream) this.in;
+        this.realIn = new DataInputStream(new BufferedInputStream(in));
+    }
+
+    /**
+     * Tells us how many bytes to expect from the server, including the bytes in
+     * this header. So if the packet contains two bytes of data the packet size
+     * will be 4; 2 bytes for this header and 2 for the data.
+     * 
+     * @return
+     * @throws IOException
+     */
+    public void start_packet() throws IOException {
+        short packetSize = this.realIn.readShort();
+        int dataSize = packetSize - 2;
+        this.packet.reset(dataSize);
+        this.realIn.readFully(packet.buffer(), 0, dataSize);
     }
 
     public CardSetType read_cardset_type() throws IOException {
@@ -121,18 +143,6 @@ public class GGZCardInputStream extends DataInputStream {
         return ServerOpCode.valueOf(index);
     }
 
-    /**
-     * Tells us how many bytes to expect from the server, including the bytes in
-     * this header. So if the packet contains two bytes of data the packet size
-     * will be 4; 2 bytes for this header and 2 for the data.
-     * 
-     * @return
-     * @throws IOException
-     */
-    public short read_header() throws IOException {
-        return readShort();
-    }
-
     public GameMessage read_game_message() throws IOException {
         int index = read();
         return GameMessage.valueOf(index);
@@ -176,9 +186,6 @@ public class GGZCardInputStream extends DataInputStream {
         return suit;
     }
 
-    /*
-     * Read a char string from the given fd and allocate space for it.
-     */
     public String read_string() throws IOException {
         int size = readInt();
         byte[] chars = new byte[size];
@@ -195,5 +202,24 @@ public class GGZCardInputStream extends DataInputStream {
             message = "";
         }
         return message;
+    }
+}
+
+class DynamicByteArrayInputStream extends ByteArrayInputStream {
+    public DynamicByteArrayInputStream() {
+        super(new byte[1024]);
+    }
+
+    public byte[] buffer() {
+        return this.buf;
+    }
+
+    public void reset(int size) {
+        if (this.buf.length < size) {
+            // Need a bigger buffer.
+            this.buf = new byte[size];
+        }
+        this.count = size;
+        this.pos = 0;
     }
 }
