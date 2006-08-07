@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: August 7, 2006
  * Desc: Creates the scores dialog
- * $Id: dlg_scores.c 8481 2006-08-07 07:35:04Z jdorje $
+ * $Id: dlg_scores.c 8492 2006-08-07 21:13:49Z jdorje $
  *
  * Copyright (C) 2006 GGZ Dev Team.
  *
@@ -68,7 +68,7 @@ void dlg_scores_raise(void)
 
 	types[0] = G_TYPE_INT;
 	for (i = 0; i < ggzcards.num_teams; i++) {
-		types[i + 1] = G_TYPE_INT;
+		types[i + 1] = G_TYPE_STRING;
 	}
 	assert(i < 20);
 	store = gtk_list_store_newv(i + 1, types);
@@ -125,10 +125,19 @@ void dlg_scores_update(void)
 
 		gtk_list_store_set(store, &iter, 0, hand + 1, -1);
 		for (team = 0; team < ggzcards.num_teams; team++) {
-			int score
-			    = ggzcards.teams[team].scores[hand].score;
+			score_data_t score =
+			    ggzcards.teams[team].scores[hand];
+			char text[128];
 
-			gtk_list_store_set(store, &iter, team + 1, score,
+			if (ggzcards.gametype
+			    && strcmp(ggzcards.gametype, "spades") == 0) {
+				snprintf(text, sizeof(text), "%d (%d)",
+					 score.score, score.extra[0]);
+			} else {
+				snprintf(text, sizeof(text), "%d",
+					 score.score);
+			}
+			gtk_list_store_set(store, &iter, team + 1, text,
 					   -1);
 		}
 	}
