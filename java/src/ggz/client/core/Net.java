@@ -17,6 +17,7 @@
  */
 package ggz.client.core;
 
+import ggz.common.AdminType;
 import ggz.common.ChatType;
 import ggz.common.ClientReqError;
 import ggz.common.LeaveType;
@@ -478,6 +479,47 @@ public class Net implements Runnable {
         }
     }
 
+    /**
+     * Administrative actions.
+     * 
+     * @param type
+     *            Type of action (gag, ungag, kick, ...)
+     * @param player
+     *            Name of the target player
+     * @param reason
+     *            The reason for the action (only for kicking)
+     */
+    void send_admin(AdminType type, String player, String reason)
+            throws IOException {
+        log.fine("Sending administrative action");
+
+        /* Truncate a message that is too long. See send_chat(). */
+        if (reason != null && reason.length() > this.chat_size) {
+            log.warning("Truncating too-long reason message.");
+            reason = reason.substring(0, this.chat_size);
+        }
+
+        AttributesImpl attributes = new AttributesImpl();
+        attributes.addAttribute("", "", "PLAYER", "CDATA", player);
+        if (type == AdminType.GGZ_ADMIN_GAG) {
+            attributes.addAttribute("", "", "ACTION", "CDATA", "gag");
+            sendEmptyElement("ADMIN", attributes);
+        } else if (type == AdminType.GGZ_ADMIN_UNGAG) {
+            attributes.addAttribute("", "", "ACTION", "CDATA", "ungag");
+            sendEmptyElement("ADMIN", attributes);
+        } else if (type == AdminType.GGZ_ADMIN_KICK) {
+            if (reason == null)
+                throw new IllegalArgumentException(
+                        "Reason must be given for kick.");
+            attributes.addAttribute("", "", "ACTION", "CDATA", "kick");
+            sendStartElement("ADMIN", attributes);
+            sendTextElement("REASON", reason);
+            sendEndElement("ADMIN");
+        } else {
+            // * Not yet in use.
+        }
+    }
+
     void send_player_info(int seat_num) throws IOException {
 
         log.fine("Sending player info request");
@@ -832,6 +874,12 @@ public class Net implements Runnable {
                 } else {
                     error.message = messages.getString("Net.ChatError.Unknown");
                 }
+                this.server.event(ServerEvent.GGZ_CHAT_FAIL, error);
+            }
+        } else if ("admin".equals(action)) {
+            if (code != ClientReqError.E_OK) {
+                ErrorEventData error = new ErrorEventData(code);
+                error.message = "Admin action error";
                 this.server.event(ServerEvent.GGZ_CHAT_FAIL, error);
             }
         } else if ("protocol".equals(action)) {

@@ -17,6 +17,7 @@
  */
 package ggz.client.core;
 
+import ggz.common.AdminType;
 import ggz.common.ChatType;
 import ggz.common.ClientReqError;
 import ggz.common.LeaveType;
@@ -236,6 +237,13 @@ public class Room {
         }
         // else
         // return -1;
+    }
+
+    public void admin(AdminType type, String player, String reason)
+            throws IOException {
+        if (this.server != null) {
+            this.server.get_net().send_admin(type, player, reason);
+        }
     }
 
     public void launch_table(Table table) throws IOException {

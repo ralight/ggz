@@ -25,6 +25,7 @@ import ggz.client.core.RoomChangeEventData;
 import ggz.client.core.RoomListener;
 import ggz.client.core.Table;
 import ggz.client.core.TableLeaveEventData;
+import ggz.common.AdminType;
 import ggz.common.ChatType;
 import ggz.common.PlayerType;
 import ggz.common.SortedList;
@@ -600,6 +601,12 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         protected boolean sendChat(ChatType chatType, String target,
                 String message) throws IOException {
             room.chat(chatType, target, message);
+            return true;
+        }
+
+        protected boolean sendAdmin(AdminType type, String player, String reason)
+                throws IOException {
+            room.admin(type, player, reason);
             return true;
         }
 

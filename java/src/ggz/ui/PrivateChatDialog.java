@@ -11,6 +11,7 @@ import ggz.client.core.Server;
 import ggz.client.core.ServerListener;
 import ggz.client.core.Table;
 import ggz.client.core.TableLeaveEventData;
+import ggz.common.AdminType;
 import ggz.common.ChatType;
 
 import java.awt.AWTEvent;
@@ -89,6 +90,12 @@ public class PrivateChatDialog extends JFrame {
                 throws IOException {
             server.get_cur_room().chat(ChatType.GGZ_CHAT_PERSONAL, player,
                     message);
+            return true;
+        }
+
+        protected boolean sendAdmin(AdminType type, String target, String reason)
+                throws IOException {
+            server.get_cur_room().admin(type, target, reason);
             return true;
         }
 

@@ -23,6 +23,7 @@ import ggz.client.mod.ModEventHandler;
 import ggz.client.mod.ModState;
 import ggz.client.mod.Seat;
 import ggz.client.mod.SpectatorSeat;
+import ggz.common.AdminType;
 import ggz.common.ChatType;
 import ggz.common.PlayerInfo;
 import ggz.ui.ChatAction;
@@ -154,9 +155,9 @@ public class GamePanel extends JPanel implements ModEventHandler {
     public void handleStats() {
         // Let subclasses deal with displaying player stats.
     }
-    
+
     public void handleInfo(PlayerInfo info) {
-//      Let subclasses deal with displaying player info.
+        // Let subclasses deal with displaying player info.
     }
 
     public void handleSpectatorSeat(final SpectatorSeat oldSeat,
@@ -194,6 +195,13 @@ public class GamePanel extends JPanel implements ModEventHandler {
                 throws IOException {
             ggzMod.requestChat(type, target, message);
             return true;
+        }
+
+        protected boolean sendAdmin(AdminType type, String player, String reason)
+                throws IOException {
+            chatPanel
+                    .appendCommandText("You can't issue admin commands from a table.");
+            return false;
         }
 
         protected void chat_display_local(ChatType type, String message) {

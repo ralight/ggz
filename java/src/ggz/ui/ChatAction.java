@@ -17,6 +17,7 @@
  */
 package ggz.ui;
 
+import ggz.common.AdminType;
 import ggz.common.ChatType;
 
 import java.awt.Component;
@@ -41,17 +42,18 @@ public abstract class ChatAction extends AbstractAction {
             { "/ignore", messages.getString("ChatAction.Help.ignore") },
             { "/msg", messages.getString("ChatAction.Help.msg") },
             { "/wall", messages.getString("ChatAction.Help.wall") },
+            { "/kick", messages.getString("ChatAction.Help.kick") },
+            { "/gag", messages.getString("ChatAction.Help.gag") },
+            { "/ungag", messages.getString("ChatAction.Help.ungag") },
+            { "/ban", messages.getString("ChatAction.Help.ban") },
             { "/clear", messages.getString("ChatAction.Help.clear") } };
+
+    public ChatAction() {
+        super(messages.getString("ChatAction.Chat"));
+    }
 
     void setChatPanel(ChatPanel chatPanel) {
         this.chatPanel = chatPanel;
-    }
-
-    public Object getValue(String key) {
-        if (NAME.equals(key)) {
-            return messages.getString("ChatAction.Chat");
-        }
-        return super.getValue(key);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -214,7 +216,7 @@ public abstract class ChatAction extends AbstractAction {
      * 
      * Returns:
      */
-    private void chat_send_wall(int commandIndex, String message)
+    private void admin_send_wall(int commandIndex, String message)
             throws IOException {
         try {
             // Remove /wall command
@@ -226,6 +228,71 @@ public abstract class ChatAction extends AbstractAction {
             /* Could not parse it. */
             chatPanel.appendCommandText(messages
                     .getString("ChatAction.Usage.wall"));
+        }
+    }
+
+    /**
+     * Boots a player
+     * 
+     * @param commandIndex
+     * @param cmd
+     *            /kick <nickname> <reason>
+     */
+    private void admin_kick(int commandIndex, String cmd) throws IOException {
+        try {
+            // Remove /kick string
+            cmd = cmd.substring(commands[commandIndex][0].length()).trim();
+            // Assume that spaces are not allowed in names.
+            int nameEnd = cmd.indexOf(' ');
+            String nickname = cmd.substring(0, nameEnd);
+            String reason = cmd.substring(nameEnd + 1);
+            sendAdmin(AdminType.GGZ_ADMIN_KICK, nickname, reason);
+        } catch (IndexOutOfBoundsException ex) {
+            /* Could not parse it. */
+            chatPanel.appendCommandText(messages
+                    .getString("ChatAction.Usage.kick"));
+        }
+    }
+
+    private void admin_gag(int commandIndex, String cmd) throws IOException {
+        try {
+            // Remove /gag string
+            cmd = cmd.substring(commands[commandIndex][0].length()).trim();
+            // Assume that spaces are not allowed in names.
+            String nickname = cmd.substring(0);
+            sendAdmin(AdminType.GGZ_ADMIN_GAG, nickname, null);
+        } catch (IndexOutOfBoundsException ex) {
+            /* Could not parse it. */
+            chatPanel.appendCommandText(messages
+                    .getString("ChatAction.Usage.gag"));
+        }
+    }
+
+    private void admin_ungag(int commandIndex, String cmd) throws IOException {
+        try {
+            // Remove /ungag string
+            cmd = cmd.substring(commands[commandIndex][0].length()).trim();
+            // Assume that spaces are not allowed in names.
+            String nickname = cmd.substring(0);
+            sendAdmin(AdminType.GGZ_ADMIN_UNGAG, nickname, null);
+        } catch (IndexOutOfBoundsException ex) {
+            /* Could not parse it. */
+            chatPanel.appendCommandText(messages
+                    .getString("ChatAction.Usage.ungag"));
+        }
+    }
+
+    private void admin_ban(int commandIndex, String cmd) throws IOException {
+        try {
+            // Remove /ban string
+            cmd = cmd.substring(commands[commandIndex][0].length()).trim();
+            // Assume that spaces are not allowed in names.
+            String nickname = cmd.substring(0);
+            sendAdmin(AdminType.GGZ_ADMIN_BAN, nickname, null);
+        } catch (IndexOutOfBoundsException ex) {
+            /* Could not parse it. */
+            chatPanel.appendCommandText(messages
+                    .getString("ChatAction.Usage.ban"));
         }
     }
 
@@ -244,6 +311,9 @@ public abstract class ChatAction extends AbstractAction {
 
     protected abstract ChatType getDefaultChatType();
 
+    protected abstract boolean sendAdmin(AdminType type, String target,
+            String reason) throws IOException;
+
     private void doCommand(int commandIndex, String commandString)
             throws IOException {
         switch (commandIndex) {
@@ -260,9 +330,21 @@ public abstract class ChatAction extends AbstractAction {
             chat_send_prvmsg(commandIndex, commandString);
             break;
         case 5:
-            chat_send_wall(commandIndex, commandString);
+            admin_send_wall(commandIndex, commandString);
             break;
         case 6:
+            admin_kick(commandIndex, commandString);
+            break;
+        case 7:
+            admin_gag(commandIndex, commandString);
+            break;
+        case 8:
+            admin_ungag(commandIndex, commandString);
+            break;
+        case 9:
+            admin_ban(commandIndex, commandString);
+            break;
+        case 10:
             chatPanel.clearChat();
             break;
         default:
