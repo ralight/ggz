@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8473 2006-08-04 14:39:05Z josef $
+ * $Id: parse_opt.c 8485 2006-08-07 10:43:25Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -326,6 +326,9 @@ void parse_conf_file(void)
 
 	if(!opt.dbhashencoding)
 		opt.dbhashencoding = ggz_strdup("base64");
+
+	if(!opt.motd_file)
+		opt.motd_file = ggz_strdup("ggzd.motd");
 }
 
 

@@ -1,11 +1,11 @@
 SUBDIRS = database meta
 
-EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room
+EXTRA_DIST = ggzd.conf.example.in ggzd.test.in ggzd.motd entry.room
 
 bin_PROGRAMS = ggzd ggzduedit
 
 ggzdroom_DATA = entry.room
-ggzdconf_DATA = ggzd.conf ggzd.motd
+ggzdconf_DATA = ggzd.conf.example ggzd.motd
 
 ggzd_SOURCES = \
 	chat.c \

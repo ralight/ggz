@@ -1,8 +1,14 @@
 # Sample ggzd configuration file
 #
-# This is a draft idea of how the ggzd.conf file will work and look.  Items
-# marked "Not Implemented" won't work yet, and any options may be revised
-# or eliminated in future versions!  'Nuff said.
+# This file must be copied to 'ggzd.conf' or otherwise ggzd's compiled-
+# in values are used! Those are not necessarily the same as the commented
+# values in this file.
+# It will save ggzd.conf from being overwritten. This behaviour was
+# introduced with GGZ 0.0.14.
+#
+# Note:
+# Items marked "Not Implemented" won't work yet, and any options may be
+# revised or eliminated in future versions!  'Nuff said.
 #
 # Case of variable names is ignored, AddGame, addgame and ADDGAME are
 # all equivalent variable names.  Whitespace is ignored except WITHIN
@@ -47,8 +53,8 @@
 # Transport Layer Security options
 #EncryptionUse = 0
 #EncryptionPassword = ggzrocksmore
-#EncryptionKey = /usr/local/ssl/certs/openssl-example.pem
-#EncryptionCert = /usr/local/ssl/certs/openssl-example.pem
+#EncryptionKey = @ggzdconfdir@/ggzsite-example.pem
+#EncryptionCert = @ggzdconfdir@/ggzsite-example.pem
 
 # Announcements (none by default), metaserver must point to a GGZ metaserver
 #AnnounceLAN = 1
@@ -170,7 +176,7 @@ DebugTypes = All
 #   File in ConfDir containing MOTD to be sent to clients.  If the
 #   file doesn't exist, no message of the day will be sent.
 #   WebMOTD can be used in addition for clients which can display it.
-MOTD = ggzd.motd
+#MOTD = ggzd.motd
 #WebMOTD = http://...
 
 ############################################################################
