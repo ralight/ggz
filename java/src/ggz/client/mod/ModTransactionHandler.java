@@ -23,18 +23,31 @@ import java.io.IOException;
 import java.util.EventListener;
 
 public interface ModTransactionHandler extends EventListener {
-    public void handle_state(ModState prev) throws IOException;
-
+    /** Sit down (stop spectatin; join a seat) */
     public void handle_sit(int seat_num) throws IOException;
 
+    /** Stand up (leave your seat; become a spectator) */
     public void handle_stand() throws IOException;
 
+    /** Boot a player */
     public void handle_boot(String name) throws IOException;
 
-    public void handle_seatchange(ModTransaction t, int seat_num) throws IOException;
+    /** Replace a bot/reserved seat with an open one. */
+    public void handle_open(int seat_num) throws IOException;
 
-    public void handle_chat(ChatType type, String recipient, String chat) throws IOException;
+    /** Put a bot into an open seat. */
+    public void handle_bot(int seat_num) throws IOException;
 
+    /** A chat originating from the game client. */
+    public void handle_chat(ChatType type, String recipient, String chat)
+            throws IOException;
+
+    /** Information about one or more players. */
     public void handle_info(int seat_num) throws IOException;
 
+    /** The game client has notified us of a state change. */
+    public void handle_state(ModState prev) throws IOException;
+
+    /** There was an error communicating with the game client. */
+    public void handle_error(Throwable exception);
 }

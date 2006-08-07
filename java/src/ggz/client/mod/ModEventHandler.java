@@ -17,51 +17,97 @@
  */
 package ggz.client.mod;
 
+import ggz.common.PlayerInfo;
+
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
 
 public interface ModEventHandler {
     public void init(ModGame mod) throws IOException;
 
-    public void handle_launch() throws IOException;
-
-    public void handle_server_fd(Socket fd) throws IOException;
-
-    public void handle_chat(String player, String msg);
+    /**
+     * Module status changed. This event occurs when the game's status changes.
+     * The old state (a ModState) is passed as the event's data.
+     * 
+     * @see ModState
+     */
+    public void handleState(ModState oldState);
 
     /**
-     * Invoked to inform about the result of an action such as Boot, Reseat etc.
+     * A new server connection has been made. This event occurs when a new
+     * connection to the game server has been made, either by the core client or
+     * by the game client itself. The socket is passed as the event's data.
      * 
-     * @param msg
+     * @see ModGame#connect()
      */
-    public void handle_result(String msg);
-
-    public void handle_info(int num, List infos);
-
-    /**
-     * Invoked when information about the current player changes. e.g. When
-     * standing the player changes to a spectator or when changing seats the
-     * seat number changes.
-     * 
-     * @param name
-     * @param is_spectator
-     * @param seat_num
-     */
-    public void handle_player(String name, boolean is_spectator, int seat_num);
+    public void handleServer(Socket fd) throws IOException;
 
     /**
-     * Invoked when in formation about the seat changes.
+     * The player's seat status has changed. Invoked when information about the
+     * current player changes. e.g. When standing the player changes to a
+     * spectator or when changing seats the seat number changes. The old values
+     * are passed as parameters and to obtain the new values, call the accessor
+     * methods on the GGZMod.
      * 
-     * @param seat
+     * @param oldName
+     * @param oldIsSpectator
+     * @param oldSeatNum
      */
-    public void handle_seat(Seat seat);
+    public void handlePlayer(String oldName, boolean oldIsSpectator,
+            int oldSeatNum);
+
+    /**
+     * A seat change.
+     * 
+     * This event occurs when a seat change occurs. The old seat (a Seat) is
+     * passed as the event's data. The seat information will be updated before
+     * the event is invoked.
+     * 
+     * @param oldSeat
+     *            Seat information at that seat number.
+     */
+    public void handleSeat(Seat oldSeat);
 
     /**
      * Invoked when a spectator leaves or joins. The seat name will be null when
      * a spectator leaves and will contain the name of the spectator on join.
      * 
-     * @param seat
+     * @param oldSeat
+     *            the old seat.
+     * @param newSeat
+     *            the new seat.
      */
-    public void handle_spectator_seat(SpectatorSeat seat);
+    public void handleSpectatorSeat(SpectatorSeat old_seat,
+            SpectatorSeat newSeat);
+
+    /**
+     * A chat message event.
+     * 
+     * This event occurs when we receive a chat. The chat may have originated in
+     * another game client or from the GGZ client; in either case it will be
+     * routed to us. The chat information is passed as the event's data. Note
+     * that the chat may originate with a player or a spectator, and they may
+     * have changed seats or left the table by the time it gets to us.
+     */
+    public void handleChat(String player, String msg);
+
+    /** Players' stats have been updated. */
+    public void handleStats();
+
+    /**
+     * Player information has arrived.
+     * 
+     * Information has been requested about one or more players and it has now
+     * arrived. The event data is a PlayerInfo object or null if info about all
+     * players was requested.
+     */
+    public void handleInfo(PlayerInfo info);
+
+    /**
+     * An error has occurred This event occurs when a GGZMod error has occurred.
+     * An error message will be passed as the event's data. GGZMod may attempt
+     * to recover from the error, but it is not guaranteed that the GGZ
+     * connection will continue to work after an error has happened.
+     */
+    public void handleError(String msg);
 }

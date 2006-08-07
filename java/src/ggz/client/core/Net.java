@@ -21,6 +21,7 @@ import ggz.common.ChatType;
 import ggz.common.ClientReqError;
 import ggz.common.LeaveType;
 import ggz.common.NumberList;
+import ggz.common.PlayerInfo;
 import ggz.common.PlayerType;
 import ggz.common.SeatType;
 import ggz.common.TableState;
@@ -114,7 +115,7 @@ public class Net implements Runnable {
     private boolean use_tls;
 
     /* Game data structure */
-    private static class GameData {
+    protected static class GameData {
         protected String prot_engine;
 
         protected String prot_version;
@@ -136,23 +137,12 @@ public class Net implements Runnable {
         protected String[][] named_bots;
     }
 
-    /* Player information structure */
-    private static class PlayerInfo {
-        int num;
-
-        String realname;
-
-        String photo;
-
-        String host;
-    }
-
-    private static class PlayerInfoData {
+    protected static class PlayerInfoData {
         List infos;
     }
 
     /* Table data structure */
-    private static class TableData {
+    protected static class TableData {
         protected String desc;
 
         protected List seats;
@@ -160,7 +150,7 @@ public class Net implements Runnable {
         protected List spectatorseats;
     }
 
-    private class XML_Parser extends DefaultHandler {
+    protected class XML_Parser extends DefaultHandler {
 
         public void startElement(String uri, String localName, String qName,
                 Attributes attributes) {
@@ -868,7 +858,7 @@ public class Net implements Runnable {
                     } else {
                         msg = code.toString();
                     }
-                    game.inform_result(msg);
+                    game.inform_error(msg);
                 }
             }
         }
@@ -1306,14 +1296,7 @@ public class Net implements Runnable {
     private static void playerinfo_add_seat(XMLElement info, int num,
             String realname, String photo, String host) {
         PlayerInfoData data = playerinfo_get_data(info);
-        PlayerInfo tmp = new PlayerInfo();
-
-        tmp.num = num;
-        tmp.realname = realname;
-        tmp.photo = photo;
-        tmp.host = host;
-
-        data.infos.add(tmp);
+        data.infos.add(new PlayerInfo(num, realname, photo, host));
     }
 
     private static void game_set_desc(XMLElement game, String desc) {
@@ -1759,7 +1742,7 @@ public class Net implements Runnable {
         PlayerInfoData data = playerinfo_get_data(element);
 
         Game game = this.server.get_cur_game();
-        game.set_info(data.infos.size(), data.infos);
+        game.set_info(data.infos);
     }
 
     /* Functions for <PLAYERINFO> tag */

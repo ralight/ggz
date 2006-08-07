@@ -23,15 +23,14 @@ package ggz.client.mod;
  * Each of these is a possible GGZmod event. For each event, the table may
  * register a handler with GGZmod to handle that event.
  * 
- * @see GGZModHandler
- * @see ggzmod_set_handler
+ * @see ModEventHandler
  */
 public class ModEvent {
     /**
      * Module status changed This event occurs when the game's status changes.
-     * The old state (a GGZModState*) is passed as the event's data.
+     * The old state (a ModState) is passed as the event's data.
      * 
-     * @see GGZModState
+     * @see ModState
      */
     public static final ModEvent GGZMOD_EVENT_STATE = new ModEvent();
 
@@ -40,7 +39,7 @@ public class ModEvent {
      * connection to the game server has been made, either by the core client or
      * by the game client itself. The fd is passed as the event's data.
      * 
-     * @see ggzmod_connect
+     * @see ModGGZ#connect()
      */
     public static final ModEvent GGZMOD_EVENT_SERVER = new ModEvent();
 
@@ -56,7 +55,7 @@ public class ModEvent {
     /**
      * A seat change.
      * 
-     * This event occurs when a seat change occurs. The old seat (a GGZSeat*) is
+     * This event occurs when a seat change occurs. The old seat (a Seat) is
      * passed as the event's data. The seat information will be updated before
      * the event is invoked.
      */
@@ -66,7 +65,7 @@ public class ModEvent {
      * A spectator seat change.
      * 
      * This event occurs when a spectator seat change occurs. The old spectator
-     * (a GGZSpectator*) is passed as the event's data. The spectator
+     * (a SpectatorSeat) is passed as the event's data. The spectator
      * information will be updated before the event is invoked.
      */
     public static final ModEvent GGZMOD_EVENT_SPECTATOR_SEAT = new ModEvent();
@@ -105,9 +104,9 @@ public class ModEvent {
 
     /**
      * An error has occurred This event occurs when a GGZMod error has occurred.
-     * An error message (a char*) will be passed as the event's data. GGZMod may
-     * attempt to recover from the error, but it is not guaranteed that the GGZ
-     * connection will continue to work after an error has happened.
+     * An error message (a String) will be passed as the event's data. GGZMod
+     * may attempt to recover from the error, but it is not guaranteed that the
+     * GGZ connection will continue to work after an error has happened.
      */
     public static final ModEvent GGZMOD_EVENT_ERROR = new ModEvent();
 

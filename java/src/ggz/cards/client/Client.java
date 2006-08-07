@@ -829,7 +829,7 @@ public class Client {
                      */
                 } finally {
                     try {
-                        game.handle_disconnect();
+//                        game.handle_disconnect();
                         fd.close();
                     } catch (IOException e2) {
                         // ignore.

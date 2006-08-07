@@ -254,6 +254,46 @@ public class Server {
             throw new IllegalStateException(this.state.toString());
     }
 
+    /**
+     * Used by game clients that need to connect themselves.
+     * 
+     * @param host
+     * @param port
+     * @param handle
+     * @return the socket that connects the game server with the game client.
+     */
+    public static Socket channel_connect(String host, int port, String handle)
+            throws IOException {
+        /*
+         * Hack, hack, hack. The below really needs to be fixed up with some
+         * error handling. There's also a major problem that it blocks the whole
+         * time while the connection is being made.
+         */
+        Server server = new Server(host, port, false);
+        server.is_channel = true;
+        server.channel = server.net;
+        // server->channel_complete = server->channel_failed = 0;
+        server.set_logininfo(LoginType.GGZ_LOGIN_GUEST, handle, null, null);
+
+        ServerListener monitor = new ServerAdapter() {
+            public void server_logged_out() {
+                synchronized (this) {
+                    notify();
+                }
+            }
+        };
+        server.add_event_hook(monitor);
+        synchronized (monitor) {
+            server.connect();
+            try {
+                monitor.wait();
+            } catch (InterruptedException ex) {
+                throw new IOException("Failed to create channel.");
+            }
+        }
+        return server.net.get_fd();
+    }
+
     public void login() throws IOException {
         /* Return nothing if we didn't get the necessary info */
         if (this.handle == null)
@@ -319,7 +359,6 @@ public class Server {
 
     public void logout() throws IOException {
         check_state(TransID.GGZ_TRANS_LOGOUT_TRY);
-
         log.fine("Logging out");
         change_state(TransID.GGZ_TRANS_LOGOUT_TRY);
         net.send_logout();
@@ -593,10 +632,9 @@ public class Server {
             change_state(TransID.GGZ_TRANS_LAUNCH_OK);
         } else {
             check_state(TransID.GGZ_TRANS_LAUNCH_FAIL);
-            // If all is well this shouldn't be necessary but we do it just to
-            // be sure.
-            this.set_cur_game(null);
             change_state(TransID.GGZ_TRANS_LAUNCH_FAIL);
+            if (this.current_game != null)
+                this.current_game.abort_game();
         }
     }
 
@@ -606,20 +644,18 @@ public class Server {
             change_state(TransID.GGZ_TRANS_JOIN_OK);
         } else {
             check_state(TransID.GGZ_TRANS_JOIN_FAIL);
-            // If all is well this shouldn't be necessary but we do it just to
-            // be sure.
-            this.set_cur_game(null);
             change_state(TransID.GGZ_TRANS_JOIN_FAIL);
+            if (this.current_game != null)
+                this.current_game.abort_game();
         }
     }
 
     void set_table_leave_status(ClientReqError status) {
         if (status == ClientReqError.E_OK) {
             check_state(TransID.GGZ_TRANS_LEAVE_OK);
-            // If all is well this shouldn't be necessary but we do it just to
-            // be sure.
-            this.set_cur_game(null);
             change_state(TransID.GGZ_TRANS_LEAVE_OK);
+            if (this.current_game != null)
+                this.current_game.abort_game();
         } else {
             check_state(TransID.GGZ_TRANS_LEAVE_FAIL);
             change_state(TransID.GGZ_TRANS_LEAVE_FAIL);
@@ -632,10 +668,12 @@ public class Server {
 
         if (!this.is_channel) {
             if (source == this.channel) {
-                /* Channel (requested by ggzcore) is ready! */
+                // Channel (requested by ggzcore) is ready!
+                if (this.current_game != null)
+                    this.current_game.set_server_fd(get_channel());
                 event(ServerEvent.GGZ_CHANNEL_READY, null);
             } else {
-                /* Server is ending session */
+                // Server is ending session.
                 check_state(TransID.GGZ_TRANS_LOGOUT_OK);
                 source.disconnect();
                 clear();
@@ -643,9 +681,16 @@ public class Server {
                 event(ServerEvent.GGZ_LOGOUT, null);
             }
         } else {
-            /* Channel (requested by ggzmod) is ready! */
+            // Channel (requested by ggzmod) is ready!
+            // We have to go through all these steps to keep the state machine
+            // happy.
+            check_state(TransID.GGZ_TRANS_CONN_OK);
+            change_state(TransID.GGZ_TRANS_CONN_OK);
+            check_state(TransID.GGZ_TRANS_LOGOUT_TRY);
+            change_state(TransID.GGZ_TRANS_LOGOUT_TRY);
             check_state(TransID.GGZ_TRANS_LOGOUT_OK);
             change_state(TransID.GGZ_TRANS_LOGOUT_OK);
+            event(ServerEvent.GGZ_LOGOUT, null);
         }
     }
 
@@ -837,7 +882,6 @@ public class Server {
         if (nextState == this.state) {
             log.warning("No transitions found TransID=" + trans
                     + " Current State=" + this.state);
-
         } else {
             log.fine("State transition " + this.state + " -> " + nextState);
             this.state = nextState;
@@ -931,7 +975,7 @@ public class Server {
         // reconnect_policy = true;
     }
 
-    private class HookList {
+    protected class HookList {
         protected EventListenerList listeners = new EventListenerList();
 
         public void addServerListener(ServerListener l) {

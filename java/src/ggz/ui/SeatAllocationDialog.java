@@ -467,7 +467,7 @@ public class SeatAllocationDialog extends JDialog implements ItemListener {
         }
     }
 
-    private static class PlayerListCellRenderer extends DefaultListCellRenderer {
+    protected static class PlayerListCellRenderer extends DefaultListCellRenderer {
         public Component getListCellRendererComponent(JList list, Object value,
                 int index, boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected,

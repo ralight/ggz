@@ -49,9 +49,9 @@ public class SpectatorListPanel extends JPanel {
         super(new BorderLayout());
         spectatorList = new JList(new DefaultListModel());
         spectatorList.setOpaque(false);
-        spectatorList.setBorder(BorderFactory.createCompoundBorder(BorderFactory
-                .createEmptyBorder(4, 4, 4, 4), BorderFactory
-                .createTitledBorder("Spectators")));
+        spectatorList.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(4, 4, 4, 4), BorderFactory
+                        .createTitledBorder("Spectators")));
         spectatorList.addMouseListener(new PopupListener());
         bootAction = new SpectatorBootAction();
         popup = new JPopupMenu("Spectator");
@@ -71,7 +71,7 @@ public class SpectatorListPanel extends JPanel {
         ((DefaultListModel) spectatorList.getModel()).removeElement(seat);
     }
 
-    private class PopupListener extends MouseAdapter {
+    protected class PopupListener extends MouseAdapter {
         public void mousePressed(MouseEvent event) {
             maybeShowPopup(event);
         }
@@ -99,11 +99,11 @@ public class SpectatorListPanel extends JPanel {
             SpectatorSeat spectator = (SpectatorSeat) spectatorList
                     .getSelectedValue();
             if (JOptionPane.showConfirmDialog(SpectatorListPanel.this,
-                    "Are you sure you want to boot " + spectator.get_name()
+                    "Are you sure you want to boot " + spectator.getName()
                             + " from the game?", "Boot",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 try {
-                    ggzMod.request_boot(spectator.get_name());
+                    ggzMod.requestBoot(spectator.getName());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

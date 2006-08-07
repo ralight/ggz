@@ -171,7 +171,7 @@ public class LoungePanel extends JPanel {
         chatPanel.setRoom(room);
     }
 
-    private class LogoutAction extends AbstractAction {
+    protected class LogoutAction extends AbstractAction {
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {

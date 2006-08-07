@@ -1002,13 +1002,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
     }
 
-    public void handle_disconnect() {
-        if (ggzMod.get_state() != ModState.GGZMOD_STATE_DONE) {
-            GGZPreferences.removePreferenceChangeListener(this);
-        }
-        super.handle_disconnect();
-    }
-
     public int handle_game_message(GGZCardInputStream in, final String game,
             final int size) throws IOException {
         // SwingUtilities.invokeLater(new Runnable() {
@@ -1024,6 +1017,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         JOptionPane.showMessageDialog(this, "GAME OVER");
     }
 
+    public void handle_disconnect() {
+        // Ignore?
+    }
+    
     /**
      * Called by server just before trick winner is announced to reinform the
      * client of all the cards in the last trick. It's also sent after a hand is
@@ -1110,7 +1107,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     // Do nothing, not sure why the server sends this.
                 } else {
                     chatPanel.appendChat("set_text_message", "mark=" + mark
-                            + " message=" + message, myName);
+                            + " message=" + message, ggzMod.getMyName());
                 }
             }
         });
@@ -1179,17 +1176,21 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
     }
 
-    public void handle_launch() throws IOException {
-        table.setStatus("Connecting to game server...");
-        super.handle_launch();
+    public void handleState(ModState oldState) {
+        if (ggzMod.getState() == ModState.GGZMOD_STATE_CONNECTED)
+            table.setStatus("Connecting to game server...");
+        else if (ggzMod.getState() == ModState.GGZMOD_STATE_DONE)
+            GGZPreferences.removePreferenceChangeListener(this);
+        super.handleState(oldState);
     }
 
-    public void handle_server_fd(Socket fd) throws IOException {
-        super.handle_server_fd(fd);
+    public void handleServer(Socket fd) throws IOException {
+        super.handleServer(fd);
         cardClient.handle_server_connect(fd);
+        ggzMod.setState(ModState.GGZMOD_STATE_PLAYING);
     }
 
-    private class PopupListener extends MouseAdapter {
+    protected class PopupListener extends MouseAdapter {
         public void mousePressed(MouseEvent event) {
             maybeShowPopup(event);
         }
@@ -1215,7 +1216,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
      * @author helg
      * 
      */
-    private class SpriteHighlighter extends MouseAdapter {
+    protected class SpriteHighlighter extends MouseAdapter {
         public void mouseEntered(MouseEvent e) {
             Sprite sprite = ((Sprite) e.getSource());
             if (sprite.isSelectable() && sprite.isEnabled()) {

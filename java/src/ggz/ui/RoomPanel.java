@@ -103,6 +103,8 @@ public class RoomPanel extends JPanel implements RoomListener {
 
     private RoomChatPanel chatPanel;
 
+    protected Module module;
+
     public RoomPanel(Server server) {
         super(new BorderLayout(4, 4));
         this.server = server;
@@ -168,11 +170,12 @@ public class RoomPanel extends JPanel implements RoomListener {
                 + "</B><BR><EM><SPAN style='font-weight:normal'>"
                 + room.get_desc() + "</SPAN></EM></HTML>");
 
-        Module module = Module.get_nth_by_type(room.get_gametype(), 0);
-        if (module != null && module.get_icon_path() != null) {
-            URL imageURL = getClass().getResource(module.get_icon_path());
+        this.module = Module.get_nth_by_type(room.get_gametype(), 0);
+        if (this.module != null && this.module.get_icon_path() != null) {
+            URL imageURL = getClass().getResource(this.module.get_icon_path());
             if (imageURL == null) {
-                log.warning("Could not find icon: " + module.get_icon_path());
+                log.warning("Could not find icon: "
+                        + this.module.get_icon_path());
             } else {
                 titleLabel.setIcon(new ImageIcon(imageURL));
             }
@@ -343,7 +346,7 @@ public class RoomPanel extends JPanel implements RoomListener {
         });
     }
 
-    private class BackToLobbyAction extends AbstractAction {
+    protected class BackToLobbyAction extends AbstractAction {
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {
@@ -373,14 +376,13 @@ public class RoomPanel extends JPanel implements RoomListener {
         }
 
         public void actionPerformed(ActionEvent e) {
-            if (Module.get_num_by_type(room.get_gametype()) == 0) {
+            if (module == null) {
                 JOptionPane
                         .showMessageDialog(
                                 (Component) e.getSource(),
                                 messages
                                         .getString("RoomPanel.Message.GameNotSupported"));
             } else {
-                Module module = Module.get_nth_by_type(room.get_gametype(), 0);
                 Game game = new Game(server, module);
                 game.add_event_hook(this);
                 game.launch();
@@ -402,7 +404,7 @@ public class RoomPanel extends JPanel implements RoomListener {
         }
 
         public void game_negotiated() {
-            server.create_channel();
+            // Ignore
         }
     }
 
@@ -413,7 +415,7 @@ public class RoomPanel extends JPanel implements RoomListener {
         }
 
         public void actionPerformed(ActionEvent e) {
-            if (Module.get_num_by_type(room.get_gametype()) == 0) {
+            if (module == null) {
                 JOptionPane
                         .showMessageDialog(
                                 (Component) e.getSource(),
@@ -430,8 +432,6 @@ public class RoomPanel extends JPanel implements RoomListener {
                     RoomPanel.this.repaint();
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            Module module = Module.get_nth_by_type(room
-                                    .get_gametype(), 0);
                             Game game = new Game(server, module);
                             game.add_event_hook(NewTableAction.this);
                             game.launch();
@@ -486,7 +486,7 @@ public class RoomPanel extends JPanel implements RoomListener {
 
     }
 
-    private class LogoutAction extends AbstractAction {
+    protected class LogoutAction extends AbstractAction {
 
         public Object getValue(String key) {
             if (NAME.equals(key)) {

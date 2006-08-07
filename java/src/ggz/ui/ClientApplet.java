@@ -139,7 +139,8 @@ public class ClientApplet extends JApplet implements ServerListener,
             footerLayoutPanel.setOpaque(false);
             getContentPane().add(footerLayoutPanel, BorderLayout.SOUTH);
             totalPlayerCountLabel = new JLabel();
-            totalPlayerCountLabel.setFont(totalPlayerCountLabel.getFont().deriveFont(Font.PLAIN));
+            totalPlayerCountLabel.setFont(totalPlayerCountLabel.getFont()
+                    .deriveFont(Font.PLAIN));
             footerLayoutPanel.add(totalPlayerCountLabel, BorderLayout.WEST);
             footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
             footerPanel.setOpaque(false);
@@ -384,11 +385,7 @@ public class ClientApplet extends JApplet implements ServerListener,
     }
 
     public void server_channel_ready() {
-        try {
-            server.get_cur_game().set_server_fd(server.get_channel());
-        } catch (Exception e) {
-            handleException(e);
-        }
+        // Handled by server.
     }
 
     public void server_chat_fail(ErrorEventData data) {

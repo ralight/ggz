@@ -30,21 +30,33 @@ public class SpectatorSeat {
     /** The spectator's name (NULL => empty) */
     private String name;
 
+    /** Statistics about this player. */
+    private Stat stat;
+
     public SpectatorSeat(int num, String name) {
         this.num = num;
         this.name = name;
     }
-    
-    public int get_num() {
-        return num;
+
+    void setStat(Stat stat) {
+        this.stat = stat;
     }
-    
-    public String get_name() {
-        return name;
+
+    public int getNum() {
+        return this.num;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Stat getStat() {
+        return this.stat;
     }
 
     public boolean equals(Object o) {
-        return (o != null) && (o instanceof SpectatorSeat) && this.num == ((SpectatorSeat) o).num;
+        return (o != null) && (o instanceof SpectatorSeat)
+                && this.num == ((SpectatorSeat) o).num;
     }
 
     /**
@@ -56,6 +68,6 @@ public class SpectatorSeat {
     }
 
     public String toString() {
-        return name;
+        return this.name;
     }
 }

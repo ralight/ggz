@@ -463,7 +463,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         // <1.3)
     }
 
-    private class PlayersTableModel extends AbstractTableModel {
+    protected class PlayersTableModel extends AbstractTableModel {
         private static final int LAG_COLUMN = 0;
 
         private boolean showTableNumber;
@@ -596,7 +596,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class RoomChatAction extends ChatAction {
+    protected class RoomChatAction extends ChatAction {
         protected boolean sendChat(ChatType chatType, String target,
                 String message) throws IOException {
             room.chat(chatType, target, message);
@@ -632,7 +632,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class BeepAction extends AbstractAction {
+    protected class BeepAction extends AbstractAction {
         public BeepAction() {
             super(null, new ImageIcon(RoomChatPanel.class
                     .getResource("/ggz/ui/images/beep.png")));
@@ -656,7 +656,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class FriendAction extends AbstractAction {
+    protected class FriendAction extends AbstractAction {
         public FriendAction() {
             super(null, IconFactory.getFriendIcon());
             // Initially disabled until a selection is made in the list.
@@ -676,7 +676,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class IgnoreAction extends AbstractAction {
+    protected class IgnoreAction extends AbstractAction {
         public IgnoreAction() {
             super(null, IconFactory.getIgnoreIcon());
             // Initially disabled until a selection is made in the list.
@@ -696,10 +696,10 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class PlayerTypeCellRenderer extends DefaultTableCellRenderer {
+    protected class PlayerTypeCellRenderer extends DefaultTableCellRenderer {
         private PlayerType type;
 
-        private PlayerTypeCellRenderer() {
+        protected PlayerTypeCellRenderer() {
             setHorizontalAlignment(SwingConstants.CENTER);
         }
 
@@ -730,13 +730,13 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class FriendOrFoeCellRenderer extends JLabel implements
+    protected class FriendOrFoeCellRenderer extends JLabel implements
             TableCellRenderer {
         private boolean isFriend;
 
         private boolean isIgnored;
 
-        private FriendOrFoeCellRenderer() {
+        protected FriendOrFoeCellRenderer() {
             setHorizontalAlignment(SwingConstants.CENTER);
             setOpaque(true);
         }
@@ -770,8 +770,8 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class PlayerCellRenderer extends DefaultTableCellRenderer implements
-            TableCellRenderer {
+    protected class PlayerCellRenderer extends DefaultTableCellRenderer
+            implements TableCellRenderer {
         private Player player;
 
         protected void setValue(Object value) {
@@ -823,11 +823,11 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class LagCellRenderer extends JComponent implements
+    protected class LagCellRenderer extends JComponent implements
             TableCellRenderer {
         private int lag;
 
-        private LagCellRenderer() {
+        protected LagCellRenderer() {
             // setBackground(Color.WHITE);
             // setPreferredSize(new Dimension(20, 20));
         }
@@ -896,7 +896,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
-    private class NoHighlightCellRenderer extends DefaultTableCellRenderer {
+    protected class NoHighlightCellRenderer extends DefaultTableCellRenderer {
         public Component getTableCellRendererComponent(JTable table,
                 Object value, boolean isSelected, boolean hasFocus, int row,
                 int column) {

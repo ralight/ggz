@@ -555,6 +555,7 @@ public class Room {
         }
     }
 
+    /** Called by {@link Net#handle_result(ggz.common.XMLElement)}. */
     void set_table_launch_status(ClientReqError status) {
         this.server.set_table_launch_status(status);
 
@@ -606,11 +607,8 @@ public class Room {
             this.server.set_table_join_status(status);
 
         if (status == ClientReqError.E_OK) {
-            /*
-             * Do nothing if successful. The join itself will be handled
-             * separately. See set_table_join.
-             */
-
+            // Do nothing if successful. The join itself will be handled
+            // separately. See set_table_join.
         } else if (status == ClientReqError.E_NOT_IN_ROOM) {
             event(RoomEvent.GGZ_TABLE_JOIN_FAIL, "Not in a room");
         } else if (status == ClientReqError.E_AT_TABLE) {
@@ -784,7 +782,7 @@ public class Room {
         }
     }
 
-    private class HookList {
+    protected class HookList {
         private EventListenerList listeners = new EventListenerList();
 
         public void addRoomListener(RoomListener l) {

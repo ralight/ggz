@@ -102,7 +102,7 @@ public class PrivateChatDialog extends JFrame {
         }
     }
 
-    private static class ChatDialogManager implements RoomListener,
+    protected static class ChatDialogManager implements RoomListener,
             ServerListener {
         protected Room currentRoom;
 

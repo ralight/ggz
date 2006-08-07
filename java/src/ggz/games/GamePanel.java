@@ -18,12 +18,13 @@
 package ggz.games;
 
 import ggz.cards.SmartChatLayout;
-import ggz.client.mod.ModEventHandler;
 import ggz.client.mod.ModGame;
+import ggz.client.mod.ModEventHandler;
 import ggz.client.mod.ModState;
 import ggz.client.mod.Seat;
 import ggz.client.mod.SpectatorSeat;
 import ggz.common.ChatType;
+import ggz.common.PlayerInfo;
 import ggz.ui.ChatAction;
 import ggz.ui.ChatPanel;
 
@@ -35,8 +36,6 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
-import java.util.List;
-import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
@@ -53,16 +52,14 @@ import javax.swing.WindowConstants;
  * 
  */
 public class GamePanel extends JPanel implements ModEventHandler {
-    private static final Logger log = Logger.getLogger(GamePanel.class
-            .getName());
+    // private static final Logger log = Logger.getLogger(GamePanel.class
+    // .getName());
 
     protected ModGame ggzMod;
 
     protected ChatPanel chatPanel;
 
     protected SpectatorListPanel playerListPanel;
-
-    protected String myName;
 
     protected GamePanel() {
         super(new SmartChatLayout());
@@ -77,26 +74,21 @@ public class GamePanel extends JPanel implements ModEventHandler {
     public void init(ModGame mod) throws IOException {
         this.ggzMod = mod;
         playerListPanel.setMod(mod);
-        mod.add_mod_event_handler(this);
+        mod.setHandler(this);
     }
 
     protected void quit() {
-        // FIXME if we don't have an fd yet then we shouldn't really call this
-        // since handle_disconnect() will never be called and the window won't
-        // close. We can't close the window here because the leave request
-        // doesn't get sent until we are fully at the table and the window
-        // appears before this is the case.
         try {
-            ggzMod.set_state(ModState.GGZMOD_STATE_LEAVING);
+            ggzMod.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void handle_chat(final String player, final String msg) {
+    public void handleChat(final String player, final String msg) {
         // Ignore messages that we type since they have already been echoed
         // locally.
-        if (player.equals(myName)) {
+        if (player.equals(ggzMod.getMyName())) {
             return;
         }
 
@@ -104,12 +96,12 @@ public class GamePanel extends JPanel implements ModEventHandler {
         // this crazy stuff. This method is usually invoked from a handler.
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                chatPanel.appendChat(player, msg, myName);
+                chatPanel.appendChat(player, msg, ggzMod.getMyName());
             }
         });
     }
 
-    public void handle_result(final String msg) {
+    public void handleError(final String msg) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JOptionPane.showMessageDialog(GamePanel.this, msg);
@@ -117,32 +109,28 @@ public class GamePanel extends JPanel implements ModEventHandler {
         });
     }
 
-    public void handle_info(int num, List infos) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                chatPanel.appendChat("handle_info", null, myName);
-            }
-        });
+    public void handleState(ModState oldState) {
+        if (ggzMod.getState() == ModState.GGZMOD_STATE_CONNECTED) {
+            JFrame frame = new JFrame();
+            frame.getContentPane().add(this, BorderLayout.CENTER);
+            frame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    quit();
+                }
+            });
+            frame.setSize(800, 600);
+            // frame.setLocationByPlatform(true);
+            frame.setLocationRelativeTo(null);
+            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            frame.show();
+        } else if (ggzMod.getState() == ModState.GGZMOD_STATE_DONE) {
+            // Prevent memory leaks.
+            chatPanel.dispose();
+            JOptionPane.getFrameForComponent(this).dispose();
+        }
     }
 
-    public void handle_launch() throws IOException {
-        ggzMod.set_state(ModState.GGZMOD_STATE_CONNECTED);
-        JFrame frame = new JFrame();
-        frame.getContentPane().add(this, BorderLayout.CENTER);
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                quit();
-            }
-        });
-        frame.setSize(800, 600);
-        // frame.setLocationByPlatform(true);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setVisible(true);
-    }
-
-    public void handle_player(String name, boolean is_spectator, int seat_num) {
-        myName = name;
+    public void handlePlayer(String name, boolean is_spectator, int seat_num) {
         // chat_panel.handle_chat("handle_player", "name=" + name
         // + " is_spectator=" + is_spectator + " seat_num=" + seat_num);
         // System.out.println("handle_player(" + name + ", " + is_spectator + ",
@@ -155,46 +143,30 @@ public class GamePanel extends JPanel implements ModEventHandler {
      * player messages in alert_player() above, which is invoked when a message
      * arrives from the game client.
      */
-    public void handle_seat(Seat seat) {
+    public void handleSeat(Seat oldSeat) {
         // Do nothing here.
     }
 
-    /**
-     * Called when the core client disconnects.
-     */
-    public void handle_disconnect() {
-        // Prevent memory leaks.
-        chatPanel.dispose();
-
-        // We call this when we want to leave (close window) but it's also
-        // called when we have left, both after requesting a leave and after
-        // being booted.
-        if (ggzMod.get_state() != ModState.GGZMOD_STATE_DONE) {
-            try {
-                /* Disconnect */
-                ggzMod.set_state(ModState.GGZMOD_STATE_DONE);
-                // mod.disconnect();
-                // ggz_error_msg_exit("Couldn't disconnect from ggz.");
-
-                log.fine("Client disconnected.");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            JOptionPane.getFrameForComponent(this).dispose();
-        }
+    public void handleServer(Socket fd) throws IOException {
+        // ggzMod.setState(ModState.GGZMOD_STATE_PLAYING);
     }
 
-    public void handle_server_fd(Socket fd) throws IOException {
-        ggzMod.set_state(ModState.GGZMOD_STATE_PLAYING);
+    public void handleStats() {
+        // Let subclasses deal with displaying player stats.
+    }
+    
+    public void handleInfo(PlayerInfo info) {
+//      Let subclasses deal with displaying player info.
     }
 
-    public void handle_spectator_seat(final SpectatorSeat seat) {
+    public void handleSpectatorSeat(final SpectatorSeat oldSeat,
+            final SpectatorSeat newSeat) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                if (seat.get_name() == null) {
-                    playerListPanel.removeSpectator(seat);
+                if (newSeat.getName() == null) {
+                    playerListPanel.removeSpectator(oldSeat);
                 } else {
-                    playerListPanel.addSpectator(seat);
+                    playerListPanel.addSpectator(newSeat);
                 }
             }
         });
@@ -216,16 +188,17 @@ public class GamePanel extends JPanel implements ModEventHandler {
         }
     }
 
-    private class TableChatAction extends ChatAction {
+    protected class TableChatAction extends ChatAction {
 
         public boolean sendChat(ChatType type, String target, String message)
                 throws IOException {
-            ggzMod.request_chat(type, target, message);
+            ggzMod.requestChat(type, target, message);
             return true;
         }
 
         protected void chat_display_local(ChatType type, String message) {
-            chatPanel.appendChat(type, myName, message, myName);
+            chatPanel.appendChat(type, ggzMod.getMyName(), message, ggzMod
+                    .getMyName());
         }
 
         protected ChatType getDefaultChatType() {
@@ -243,7 +216,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
 
         public void actionPerformed(ActionEvent event) {
             try {
-                ggzMod.request_bot(seat_num);
+                ggzMod.requestBot(seat_num);
             } catch (IOException e) {
                 handleException(e);
             }
@@ -264,7 +237,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
                             + " from the game?", "Boot",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 try {
-                    ggzMod.request_boot(playerName);
+                    ggzMod.requestBoot(playerName);
                 } catch (IOException e) {
                     handleException(e);
                 }
@@ -282,7 +255,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
 
         public void actionPerformed(ActionEvent event) {
             try {
-                ggzMod.request_open(seat_num);
+                ggzMod.requestOpen(seat_num);
             } catch (IOException e) {
                 handleException(e);
             }
@@ -299,7 +272,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
 
         public void actionPerformed(ActionEvent event) {
             try {
-                ggzMod.request_sit(seat_num);
+                ggzMod.requestSit(seat_num);
             } catch (IOException e) {
                 handleException(e);
             }
@@ -313,7 +286,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
 
         public void actionPerformed(ActionEvent event) {
             try {
-                ggzMod.request_stand();
+                ggzMod.requestStand();
             } catch (IOException e) {
                 handleException(e);
             }

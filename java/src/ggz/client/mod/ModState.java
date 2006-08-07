@@ -17,6 +17,8 @@
  */
 package ggz.client.mod;
 
+import java.util.ArrayList;
+
 /**
  * Each table has a current "state" that is tracked by ggzmod. First the table
  * is executed and begins running. Then it receives a launch event from GGZ and
@@ -39,53 +41,67 @@ package ggz.client.mod;
  * propogated to the game server.
  */
 public class ModState {
-    /**
-     * @brief Initial state. The game starts out in this state. Once the state
-     *        is changed it should never be changed back.
-     */
-    public static final ModState GGZMOD_STATE_CREATED = new ModState();
+
+    public static final ArrayList values = new ArrayList(6);
 
     /**
-     * @brief Connected state. After the GGZ client and game client get
-     *        connected, the game changes into this state automatically. Once
-     *        this happens messages may be sent between these two. Once the game
-     *        leaves this state it should never be changed back.
+     * Initial state. The game starts out in this state. Once the state is
+     * changed it should never be changed back.
      */
-    public static final ModState GGZMOD_STATE_CONNECTED = new ModState();
+    public static final ModState GGZMOD_STATE_CREATED = new ModState(
+            "GGZMOD_STATE_CREATED");
 
     /**
-     * @brief Waiting state. After the game client and game server are
-     *        connected, the client enters the waiting state. The game client
-     *        may now call ggzmod_set_state to change between WAITING, PLAYING,
-     *        and DONE states.
+     * Connected state. After the GGZ client and game client get connected, the
+     * game changes into this state automatically. Once this happens messages
+     * may be sent between these two. Once the game leaves this state it should
+     * never be changed back.
      */
-    public static final ModState GGZMOD_STATE_WAITING = new ModState();
+    public static final ModState GGZMOD_STATE_CONNECTED = new ModState(
+            "GGZMOD_STATE_CONNECTED");
 
     /**
-     * @brief Playing state. This state is only entered after the game client
-     *        changes state to it via ggzmod_set_state. State may be changed
-     *        back and forth between WAITING and PLAYING as many times as are
-     *        wanted.
+     * Waiting state. After the game client and game server are connected, the
+     * client enters the waiting state. The game client may now call
+     * ggzmod_set_state to change between WAITING, PLAYING, and DONE states.
      */
-    public static final ModState GGZMOD_STATE_PLAYING = new ModState();
+    public static final ModState GGZMOD_STATE_WAITING = new ModState(
+            "GGZMOD_STATE_WAITING");
 
     /**
-     * Player has requested to leave the game. This state is entered when the
-     * player chooses to leave the game. This state will never be entered if the
-     * server removes the player from the game for any reason.
+     * Playing state. This state is only entered after the game client changes
+     * state to it via ggzmod_set_state. State may be changed back and forth
+     * between WAITING and PLAYING as many times as are wanted.
      */
-    public static final ModState GGZMOD_STATE_LEAVING = new ModState();
+    public static final ModState GGZMOD_STATE_PLAYING = new ModState(
+            "GGZMOD_STATE_PLAYING");
 
     /**
-     * @brief Done state. Once the game client is done running, ggzmod_set_state
-     *        should be called to set the state to done. At this point nothing
-     *        "new" can happen. The state cannot be changed again after this.
-     *        However the game client will not be terminated by the GGZ client;
-     *        GGZ just waits for it to exit of its own volition.
+     * Done state. Once the game client is done running, ggzmod_set_state should
+     * be called to set the state to done. At this point nothing "new" can
+     * happen. The state cannot be changed again after this. However the game
+     * client will not be terminated by the GGZ client; GGZ just waits for it to
+     * exit of its own volition.
      */
-    public static final ModState GGZMOD_STATE_DONE = new ModState();
+    public static final ModState GGZMOD_STATE_DONE = new ModState(
+            "GGZMOD_STATE_DONE");
 
-    private ModState() {
-        // Private constructor to prevent access.
+    private String name;
+
+    private ModState(String name) {
+        this.name = name;
+        values.add(this);
+    }
+
+    public String toString() {
+        return name;
+    }
+
+    public static ModState valueOf(int ordinal) {
+        return (ModState) values.get(ordinal);
+    }
+
+    public int ordinal() {
+        return values.indexOf(this);
     }
 }

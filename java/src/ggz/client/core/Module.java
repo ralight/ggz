@@ -46,6 +46,9 @@ public class Module {
 
     /* Commandline for executing module */
     private String class_name;
+    
+    /* Present working directory for external modules */
+    private String pwd;
 
     /* Path to icon for this game module */
     private String icon;
@@ -61,49 +64,62 @@ public class Module {
 
     // private static int mod_handle = -1;
 
-    private static boolean embedded_module = false;
+    private boolean is_embedded;
 
     static {
         // We only support GGZCards modules at the moment.
-        _add(new Module("GGZCards", "0.0.7", "GGZCards", "4", "Author", "Java",
-                "url", "ggz.cards.CardGamePanel", "/ggz/ui/images/euchre.gif",
-                "help_path"));
-        _add(new Module("GGZCards-Spades", "0.0.7", "GGZCards", "4", "Author",
-                "Java", "url", "ggz.cards.spades.SpadesGamePanel",
-                "/ggz/ui/images/spades.gif", "help_path"));
+        add(new Module("GGZCards", "0.0.7", "GGZCards", "4", "Author", "Java",
+                "url", "ggz.cards.CardGamePanel", null,"/ggz/ui/images/euchre.gif",
+                "help_path", true));
+        add(new Module("GGZCards-Spades", "0.0.7", "GGZCards", "4", "Author",
+                "Java", "url", "ggz.cards.spades.SpadesGamePanel",null,
+                "/ggz/ui/images/spades.gif", "help_path", true));
 
         // For oojah's server
-        _add(new Module("GGZCards-Spades-Rated", "0.0.7", "GGZCards", "4",
-                "Author", "Java", "url", "ggz.cards.spades.SpadesGamePanel",
-                "/ggz/ui/images/spades.gif", "help_path"));
+        add(new Module("GGZCards-Spades-Rated", "0.0.7", "GGZCards", "4",
+                "Author", "Java", "url", "ggz.cards.spades.SpadesGamePanel",null,
+                "/ggz/ui/images/spades.gif", "help_path", true));
 
-        _add(new Module("GGZCards-LaPocha", "0.0.7", "GGZCards", "4", "Author",
-                "Java", "url", "ggz.cards.CardGamePanel",
-                "/ggz/ui/images/pocha.gif", "help_path"));
+        add(new Module("GGZCards-LaPocha", "0.0.7", "GGZCards", "4", "Author",
+                "Java", "url", "ggz.cards.CardGamePanel",null,
+                "/ggz/ui/images/pocha.gif", "help_path", true));
         // 42 is played with Dominoes and is not supported.
         // _add(new Module("GGZCards-FortyTwo", "0.0.7", "GGZCards", "4",
         // "Author",
         // "Java", "url", "ggz.cards.CardGamePanel", "/ggz/ui/images/42.gif",
         // "help_path"));
-        _add(new Module("GGZCards-Bridge", "0.0.7", "GGZCards", "4", "Author",
-                "Java", "url", "ggz.cards.CardGamePanel",
-                "/ggz/ui/images/bridge.gif", "help_path"));
-        _add(new Module("GGZCards-Sueca", "0.0.7", "GGZCards", "4", "Author",
-                "Java", "url", "ggz.cards.CardGamePanel",
-                "/ggz/ui/images/sueca.gif", "help_path"));
+        add(new Module("GGZCards-Bridge", "0.0.7", "GGZCards", "4", "Author",
+                "Java", "url", "ggz.cards.CardGamePanel",null,
+                "/ggz/ui/images/bridge.gif", "help_path", true));
+        add(new Module("GGZCards-Sueca", "0.0.7", "GGZCards", "4", "Author",
+                "Java", "url", "ggz.cards.CardGamePanel",null,
+                "/ggz/ui/images/sueca.gif", "help_path", true));
         // Suaro uses an unknown card set...
-        _add(new Module("GGZCards-Suaro", "0.0.7", "GGZCards", "4", "Author",
-                "Java", "url", "ggz.cards.CardGamePanel",
-                "/ggz/ui/images/suaro.gif", "help_path"));
-        _add(new Module("GGZCards-Whist", "0.0.7", "GGZCards", "4", "Author",
-                "Java", "url", "ggz.cards.CardGamePanel",
-                "/ggz/ui/images/whist.gif", "help_path"));
-        _add(new Module("GGZCards-Hearts", "0.0.7", "GGZCards", "4", "Author",
-                "Java", "url", "ggz.cards.CardGamePanel",
-                "/ggz/ui/images/hearts.gif", "help_path"));
-        _add(new Module("GGZCards-Euchre", "0.0.7", "GGZCards", "4", "Author",
-                "Java", "url", "ggz.cards.CardGamePanel",
-                "/ggz/ui/images/euchre.gif", "help_path"));
+        add(new Module("GGZCards-Suaro", "0.0.7", "GGZCards", "4", "Author",
+                "Java", "url", "ggz.cards.CardGamePanel",null,
+                "/ggz/ui/images/suaro.gif", "help_path", true));
+        add(new Module("GGZCards-Whist", "0.0.7", "GGZCards", "4", "Author",
+                "Java", "url", "ggz.cards.CardGamePanel",null,
+                "/ggz/ui/images/whist.gif", "help_path", true));
+        add(new Module("GGZCards-Hearts", "0.0.7", "GGZCards", "4", "Author",
+                "Java", "url", "ggz.cards.CardGamePanel",null,
+                "/ggz/ui/images/hearts.gif", "help_path", true));
+        add(new Module("GGZCards-Euchre", "0.0.7", "GGZCards", "4", "Author",
+                "Java", "url", "ggz.cards.CardGamePanel", null,
+                "/ggz/ui/images/euchre.gif", "help_path", true));
+
+        // Test for non-embedded game client.
+//        add(new Module(
+//                "GGZCards-Spades",
+//                "0.0.7",
+//                "GGZCards",
+//                "4",
+//                "Author",
+//                "Java",
+//                "url",
+//                "C:\\Program Files\\GGZ Gaming Zone\\lib\\ggz\\ggz.ggzcards.exe",
+//                "C:\\Program Files\\GGZ Gaming Zone\\bin",
+//                "/ggz/ui/images/spades.gif", "help_path", false));
     }
 
     /* Publicly exported functions */
@@ -263,7 +279,15 @@ public class Module {
     }
 
     public String get_class_name() {
-        return this.class_name;
+        return is_embedded ? this.class_name : null;
+    }
+
+    public String get_cmd() {
+        return is_embedded ? null : this.class_name;
+    }
+
+    public String get_pwd() {
+        return is_embedded ? null : this.pwd;
     }
 
     public ModuleEnvironment get_environment() {
@@ -344,17 +368,14 @@ public class Module {
     //
     // return 0;
     // }
-    public static void set_embedded() {
-        embedded_module = true;
-    }
-
-    public static boolean is_embedded() {
-        return embedded_module;
+    public boolean is_embedded() {
+        return is_embedded;
     }
 
     public Module(String name, String version, String prot_engine,
             String prot_version, String author, String frontend, String url,
-            String class_name, String icon_path, String help_path) {
+            String class_name, String pwd, String icon_path, String help_path,
+            boolean is_embedded) {
         this.name = name;
         this.version = version;
         this.prot_engine = prot_engine;
@@ -364,8 +385,10 @@ public class Module {
         this.url = url;
         /* this.path = exec_path; */
         this.class_name = class_name;
+        this.pwd = pwd;
         this.icon = icon_path;
         this.help = help_path;
+        this.is_embedded = is_embedded;
     }
 
     private Module(String name, String prot_engine, String prot_version,
@@ -376,7 +399,7 @@ public class Module {
         this.frontend = frontend;
     }
 
-    private static void _add(Module module) {
+    private static void add(Module module) {
         module_list.add(module);
     }
 

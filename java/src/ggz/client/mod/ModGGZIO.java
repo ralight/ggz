@@ -18,34 +18,37 @@
 package ggz.client.mod;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.List;
 
-public interface ModGGZ {
-    public void set_module(String pwd, String class_name);
-
-    public ModState get_state();
-
-    public void add_mod_listener(ModTransactionHandler handler);
-
-    public void set_player(String name, boolean is_spectator, int seat_num);
-
-    public void connect() throws InstantiationException,
-            IllegalAccessException, InvocationTargetException,
-            NoSuchMethodException, ClassNotFoundException, IOException;
-
+public interface ModGGZIO {
+    
     public void disconnect() throws IOException;
 
-    public void inform_chat(String player, String msg);
+    /* Functions for sending IO messages */
+    public void send_launch() throws IOException;
 
-    public void inform_result(String msg);
+    public void send_server(String host, int port, String handle)
+            throws IOException;
 
-    public void set_seat(Seat seat);
+    public void send_server_fd(Socket server_fd) throws IOException;
 
-    public void set_spectator_seat(SpectatorSeat seat);
+    public void send_player(String name, boolean is_spectator,
+            int seat_num) throws IOException;
 
-    public void set_info(int num, List infos);
+    public void send_seat(Seat seat) throws IOException;
 
-    public void set_server_fd(Socket fd) throws IOException;
+    public void send_spectator_seat(SpectatorSeat seat)
+            throws IOException;
+
+    public void send_msg_chat(String player, String chat_msg)
+            throws IOException;
+
+    public void send_error(String error);
+
+    public void send_stats(Stat[] player_stats, Stat[] spectator_stats)
+            throws IOException;
+
+    public void send_msg_info(List infos) throws IOException;
+
 }

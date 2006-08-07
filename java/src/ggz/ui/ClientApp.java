@@ -19,6 +19,7 @@
 package ggz.ui;
 
 import edu.stanford.ejalbert.BrowserLauncher;
+import ggz.client.core.StateID;
 
 import java.applet.Applet;
 import java.applet.AppletContext;
@@ -42,6 +43,8 @@ import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 
 /**
  * Simple main that creates a simulated environment to run the applet in. As
@@ -181,8 +184,20 @@ public class ClientApp {
         });
         frame.getContentPane().add(applet, BorderLayout.CENTER);
         frame.getContentPane().add(statusLabel, BorderLayout.SOUTH);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                if (applet.server != null) {
+                    if (applet.server.get_state() == StateID.GGZ_STATE_JOINING_TABLE
+                            || applet.server.get_state() == StateID.GGZ_STATE_LAUNCHING_TABLE
+                            || applet.server.get_state() == StateID.GGZ_STATE_LEAVING_TABLE
+                            || applet.server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
+                        JOptionPane
+                                .showMessageDialog(frame,
+                                        "You are currently playing a game. Please quit the game before exiting GGZ.");
+                        return;
+                    }
+                }
                 applet.stop();
                 frame.dispose();
             }
@@ -191,9 +206,11 @@ public class ClientApp {
         applet.init();
         applet.start();
         applet.server_state_changed();
-        
-        // This must be the last line <http://java.sun.com/products/jfc/tsc/articles/threads/threads1.html>.
-        frame.setVisible(true);
+
+        // This must be the last line
+        // <http://java.sun.com/products/jfc/tsc/articles/threads/threads1.html>.
+        frame.show();
+
     }
 
     private static boolean parseArgs(String[] argv) {

@@ -28,7 +28,7 @@ import java.util.ArrayList;
  */
 public class SeatType {
 
-	public static final ArrayList values = new ArrayList();
+	public static final ArrayList values = new ArrayList(7);
 
 	/** This seat does not exist. */
 	public static final SeatType GGZ_SEAT_NONE = new SeatType();

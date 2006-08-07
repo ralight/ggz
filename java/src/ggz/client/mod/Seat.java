@@ -17,10 +17,11 @@
  */
 package ggz.client.mod;
 
+import ggz.common.PlayerInfo;
 import ggz.common.SeatType;
 
 /**
- * @brief A seat at a GGZ game table.
+ * A seat at a GGZ game table.
  * 
  * Each seat at the table is tracked like this.
  */
@@ -34,22 +35,50 @@ public class Seat {
     /** Name of player occupying seat. */
     private String name;
 
+    /** Statistics about this player. */
+    private Stat stat;
+
+    /** Extra information about the player. */
+    private PlayerInfo info;
+
     public Seat(int num, SeatType type, String name) {
         this.num = num;
         this.type = type;
         this.name = name;
     }
 
-    public int get_num() {
-        return num;
+    void setStat(Stat stat) {
+        this.stat = stat;
     }
 
-    public String get_name() {
-        return name;
+    void setInfo(PlayerInfo info) {
+        this.info = info;
     }
 
-    public SeatType get_type() {
-        return type;
+    public int getNum() {
+        return this.num;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public SeatType getType() {
+        return this.type;
+    }
+
+    public Stat getStat() {
+        return this.stat;
+    }
+
+    /**
+     * Gets extra information about this player. This will be null unless
+     * {@link ModGame#requestPlayerInfo(int)} has been called.
+     * 
+     * @return the PlayerInfo object.
+     */
+    public PlayerInfo getInfo() {
+        return this.info;
     }
 
     public boolean equals(Object o) {
@@ -70,6 +99,7 @@ public class Seat {
     }
 
     public String toString() {
-        return "Seat: num=" + num + ", name=" + name + ", type=" + type;
+        return "Seat: num=" + this.num + ", name=" + this.name + ", type="
+                + this.type;
     }
 }

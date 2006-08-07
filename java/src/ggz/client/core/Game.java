@@ -17,10 +17,8 @@
  */
 package ggz.client.core;
 
-import ggz.client.mod.Mod;
 import ggz.client.mod.ModGGZ;
 import ggz.client.mod.ModState;
-import ggz.client.mod.ModTransaction;
 import ggz.client.mod.ModTransactionHandler;
 import ggz.client.mod.Seat;
 import ggz.client.mod.SpectatorSeat;
@@ -78,9 +76,8 @@ public class Game implements ModTransactionHandler {
             throw new IllegalStateException("server already has a current game");
         }
 
-        if (module == null && !Module.is_embedded())
-            throw new IllegalArgumentException(
-                    "module is null or is not embedded - only embedded modules are currently supported.");
+        if (module == null)
+            throw new IllegalArgumentException("module is null");
 
         Room room = server.get_cur_room();
 
@@ -94,23 +91,17 @@ public class Game implements ModTransactionHandler {
 
         log.fine("Initializing new game");
 
-        /* Setup event hook list */
-        // for (i = 0; i < _ggzcore_num_events; i++)
-        // this.event_hooks[i] = _ggzcore_hook_list_init(i);
-        /* Setup client module connection */
-        this.client = new Mod();// ModType.GGZMOD_GGZ);
-        // this.client.set_gamedata(this);
-        // #ifdef HAVE_WINSOCK2_H
-        // this.client.set_server_host(
-        // server.get_host(),
-        // server.get_port(),
-        // server.get_handle());
-        // #endif
-        this.client.add_mod_listener(this);
-        // this.client.set_player(server.get_handle(), false, -1);
+        // Setup client module connection.
+        this.client = new ModGGZ();
+        this.client.set_server_host(server.get_host(), server.get_port(),
+                server.get_handle());
+        this.client.set_transaction_handler(this);
+        this.client.set_player(server.get_handle(), false, -1);
 
-        if (!Module.is_embedded()) {
-            this.client.set_module(null, module.get_class_name());
+        if (module.is_embedded()) {
+            this.client.set_module(module.get_class_name());
+        } else {
+            this.client.set_module(module.get_pwd(), module.get_cmd());
         }
     }
 
@@ -133,13 +124,7 @@ public class Game implements ModTransactionHandler {
         }
     }
 
-    // Socket get_control_fd()
-    // {
-    // return this.client.get_fd();
-    //
-    // }
-
-    /*
+    /**
      * This function is called by ggzmod when the game state is changed.
      * 
      * Game state changes are all initiated by the game client through ggzmod.
@@ -152,39 +137,56 @@ public class Game implements ModTransactionHandler {
         log.fine("Game changing from state " + prev + " to " + newState);
 
         if (prev == ModState.GGZMOD_STATE_CREATED) {
-            log.fine("game negotiated");
-            event(GameEvent.GGZ_GAME_NEGOTIATED, null);
             if (newState != ModState.GGZMOD_STATE_CONNECTED) {
                 log.severe("Game changed state from created to " + newState);
                 throw new IllegalStateException(
                         "New state != GGZMOD_STATE_CONNECTED");
             }
+            log.fine("game negotiated");
+            event(GameEvent.GGZ_GAME_NEGOTIATED, null);
+            // Now that the game client is ready, create the channel for it. We
+            // might want to consider removing this and always having game
+            // clients create the channel.
+            if (this.module.is_embedded()) {
+                this.server.create_channel();
+            }
         } else if (prev == ModState.GGZMOD_STATE_CONNECTED) {
-            log.fine("game playing");
-            event(GameEvent.GGZ_GAME_PLAYING, null);
             if (newState != ModState.GGZMOD_STATE_WAITING
-                    && newState != ModState.GGZMOD_STATE_PLAYING
-                    && newState != ModState.GGZMOD_STATE_LEAVING) {
-                log.severe("Game changed state from connected to " + newState);
-                throw new IllegalStateException(
-                        "New state != GGZMOD_STATE_WAITING or GGZMOD_STATE_PLAYING");
+                    && newState != ModState.GGZMOD_STATE_PLAYING) {
+                log.fine("Game client set state to DONE before we even began.");
+                // log.severe("Game changed state from connected to " +
+                // newState);
+                // throw new IllegalStateException(
+                // "New state != GGZMOD_STATE_WAITING or GGZMOD_STATE_PLAYING");
+            } else {
+                log.fine("game playing");
+                event(GameEvent.GGZ_GAME_PLAYING, null);
             }
         }
 
-        if (newState == ModState.GGZMOD_STATE_LEAVING) {
-            leave_game();
-        } else if (newState == ModState.GGZMOD_STATE_DONE) {
-            abort_game();
+        if (newState == ModState.GGZMOD_STATE_DONE) {
+            Room room = this.server.get_cur_room();
+            if (room != null) {
+                if (this.server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
+                    room.leave_table(true);
+                } else {
+                    // Game client is exiting before we have finished the whole
+                    // setup. The core client will handle this gracedully since
+                    // the game will be null.
+                    abort_game();
+                }
+            }
         } else if (newState == ModState.GGZMOD_STATE_CREATED) {
-            /*
-             * Leave the game running. This should never happen since this is
-             * the initial state and we never return to it after leaving it.
-             */
-            log
-                    .severe("Game state changed to created. This should never happen!");
+            // Leave the game running. This should never happen since this is
+            // the initial state and we never return to it after leaving it.
+            log.severe("Game state changed to created!");
             throw new IllegalStateException(
                     "Game state changed to created. This should never happen!");
         }
+    }
+
+    public void handle_error(Throwable exception) {
+        exception.printStackTrace();
     }
 
     public void handle_sit(int seat_num) throws IOException {
@@ -237,18 +239,21 @@ public class Game implements ModTransactionHandler {
          */
     }
 
-    public void handle_seatchange(ModTransaction t, int seat_num)
-            throws IOException {
+    public void handle_open(int seat_num) throws IOException {
         Net net = this.server.get_net();
         TableSeat seat = new TableSeat(seat_num, null, null);
         Room room = this.server.get_room_by_id(this.room_id);
         Table table = room.get_table_by_id(this.table_id);
+        seat.type = SeatType.GGZ_SEAT_OPEN;
+        net.send_table_seat_update(table, seat);
+    }
 
-        if (t == ModTransaction.GGZMOD_TRANSACTION_OPEN)
-            seat.type = SeatType.GGZ_SEAT_OPEN;
-        else
-            seat.type = SeatType.GGZ_SEAT_BOT;
-
+    public void handle_bot(int seat_num) throws IOException {
+        Net net = this.server.get_net();
+        TableSeat seat = new TableSeat(seat_num, null, null);
+        Room room = this.server.get_room_by_id(this.room_id);
+        Table table = room.get_table_by_id(this.table_id);
+        seat.type = SeatType.GGZ_SEAT_BOT;
         net.send_table_seat_update(table, seat);
     }
 
@@ -312,8 +317,8 @@ public class Game implements ModTransactionHandler {
         this.client.set_player(server.get_handle(), is_spectator, seat_num);
     }
 
-    void set_info(int num, List infos) {
-        this.client.set_info(num, infos);
+    void set_info(List infos) {
+        this.client.set_info(infos);
     }
 
     void inform_chat(String player, String msg) {
@@ -326,8 +331,8 @@ public class Game implements ModTransactionHandler {
      * 
      * @param msg
      */
-    void inform_result(String msg) {
-        this.client.inform_result(msg);
+    void inform_error(String msg) {
+        this.client.inform_error(msg);
     }
 
     public boolean is_spectator() {
@@ -346,22 +351,19 @@ public class Game implements ModTransactionHandler {
         return this.table_id;
     }
 
-    private void leave_game() throws IOException {
-        Room room = this.server.get_cur_room();
-        if (room != null
-                && this.server.get_state() == StateID.GGZ_STATE_AT_TABLE) {
-            room.leave_table(true);
-        }
-    }
-
-    /*
-     * Called when the game client fails. Most likely the user has just exited.
-     * Make sure ggzd knows we've left the table.
+    /**
+     * Called after we have left the table.
      */
-    private void abort_game() throws IOException {
-        // This would be called automatically later (several times in fact),
-        // but doing it now is safe enough and starts the ball rolling.
-        this.client.disconnect();
+    public void abort_game() {
+        try {
+            this.client.disconnect();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        // if (room != null)
+        // room.table_event(RoomEvent.GGZ_TABLE_LEFT, new TableLeaveEventData(
+        // LeaveType.GGZ_LEAVE_NORMAL, null));
 
         server.set_cur_game(null);
     }
@@ -370,11 +372,11 @@ public class Game implements ModTransactionHandler {
     // client.disconnect();
     // }
 
-    public void set_server_fd(Socket fd) throws IOException {
+    public void set_server_fd(Socket fd) {
         this.client.set_server_fd(fd);
     }
 
-    Module get_module() {
+    public Module get_module() {
         return this.module;
     }
 
@@ -396,26 +398,16 @@ public class Game implements ModTransactionHandler {
     }
 
     public void launch() {
-        if ((this.module != null || Module.is_embedded())) {
-            if (Module.is_embedded()) {
-                log.fine("Launching embedded game");
-            } else {
-                log.fine("Launching game of " + this.module.get_name());
-            }
+        log.fine("Launching game of " + this.module.get_name());
 
-            try {
-                this.client.connect();
-                log.fine("Launched game module");
-                event(GameEvent.GGZ_GAME_LAUNCHED, null);
-            } catch (Exception e) {
-                log.severe("Failed to connect to game module");
-                try {
-                    abort_game();
-                } catch (IOException e2) {
-                    // Ignore.
-                }
-                event(GameEvent.GGZ_GAME_LAUNCH_FAIL, e);
-            }
+        try {
+            this.client.connect();
+            log.fine("Launched game module");
+            event(GameEvent.GGZ_GAME_LAUNCHED, null);
+        } catch (Throwable e) {
+            log.severe("Failed to connect to game module");
+            this.server.set_cur_game(null);
+            event(GameEvent.GGZ_GAME_LAUNCH_FAIL, e);
         }
     }
 

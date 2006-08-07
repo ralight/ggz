@@ -91,7 +91,7 @@ class TextPopupMenu extends MouseAdapter implements ClipboardOwner {
     }
 
     private class CutAction extends AbstractAction {
-        private CutAction() {
+        protected CutAction() {
             super(messages.getString("TextPopupMenu.Cut"));
         }
 
@@ -106,7 +106,7 @@ class TextPopupMenu extends MouseAdapter implements ClipboardOwner {
     }
 
     private class CopyAction extends AbstractAction {
-        private CopyAction() {
+        protected CopyAction() {
             super(messages.getString("TextPopupMenu.Copy"));
         }
 
@@ -125,7 +125,7 @@ class TextPopupMenu extends MouseAdapter implements ClipboardOwner {
     private class PasteAction extends AbstractAction {
         private Clipboard clipboard;
 
-        private PasteAction() {
+        protected PasteAction() {
             super(messages.getString("TextPopupMenu.Paste"));
             try {
                 clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -175,7 +175,7 @@ class TextPopupMenu extends MouseAdapter implements ClipboardOwner {
     }
 
     private class SelectAllAction extends AbstractAction {
-        private SelectAllAction() {
+        protected SelectAllAction() {
             super(messages.getString("TextPopupMenu.SelectAll"));
         }
 
