@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 8247 2006-06-22 05:57:27Z jdorje $
+ * $Id: table.c 8507 2006-08-08 23:12:01Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -577,6 +577,7 @@ void table_game_join(GGZTable *table, const char *name,
 		    && !strcasecmp(table->seat_names[i], name)) {
 			pthread_rwlock_wrlock(&table->lock);
 			table->seat_types[i] = GGZ_SEAT_OPEN;
+			table->seat_names[i][0] = '\0';
 			pthread_rwlock_unlock(&table->lock);
 			table_update_event_enqueue(table,
 						   GGZ_TABLE_UPDATE_SEAT,
@@ -612,6 +613,7 @@ void table_game_leave(GGZTable *table, const char *caller,
 	
 	pthread_rwlock_wrlock(&table->lock);
 	table->seat_types[num] = GGZ_SEAT_OPEN;
+	table->seat_names[num][0] = '\0';
 	pthread_rwlock_unlock(&table->lock);
 
 	empty = (seats_count(table, GGZ_SEAT_PLAYER) == 0);
@@ -659,6 +661,7 @@ void table_game_reseat(GGZTable *table,
 	case GGZ_RESEAT_STAND:
 		pthread_rwlock_wrlock(&table->lock);
 		table->seat_types[old_seat] = GGZ_SEAT_OPEN;
+		table->seat_names[old_seat][0] = '\0';
 		strcpy(table->spectators[new_seat], name);
 		pthread_rwlock_unlock(&table->lock);	
 		empty = (seats_count(table, GGZ_SEAT_PLAYER) == 0);
@@ -667,6 +670,7 @@ void table_game_reseat(GGZTable *table,
 	case GGZ_RESEAT_MOVE:
 		pthread_rwlock_wrlock(&table->lock);
 		table->seat_types[old_seat] = GGZ_SEAT_OPEN;
+		table->seat_names[old_seat][0] = '\0';
 		table->seat_types[new_seat] = GGZ_SEAT_PLAYER;
 		strcpy(table->seat_names[new_seat], name);
 		pthread_rwlock_unlock(&table->lock);
@@ -966,7 +970,7 @@ static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
 		table_change_num_seats(table, num_seats);
 		for (seat = old_seats; seat < num_seats; seat++) {
 			table->seat_types[seat] = GGZ_SEAT_OPEN;
-			/* Should we initialize the name? */
+			table->seat_names[seat][0] = '\0';
 		}
 		pthread_rwlock_unlock(&table->lock);
 
@@ -1071,6 +1075,7 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 		table->spectators[seat_num][0] = '\0';
 	} else {
 		table->seat_types[seat_num] = GGZ_SEAT_OPEN;
+		table->seat_names[seat_num][0] = '\0';
 	}
 	pthread_rwlock_unlock(&table->lock);
 
@@ -1154,6 +1159,7 @@ static void table_game_req_open(GGZdMod *ggzdmod,
 
 	pthread_rwlock_wrlock(&table->lock);
 	table->seat_types[seat_num] = GGZ_SEAT_OPEN;
+	table->seat_names[seat_num][0] = '\0';
 	pthread_rwlock_unlock(&table->lock);
 
 	/* FIXME: there's a bug whereby if a table requests an opening
