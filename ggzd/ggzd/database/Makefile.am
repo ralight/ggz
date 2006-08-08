@@ -22,6 +22,9 @@ endif
 if GGZDB_DB4
 libggzdb_a_SOURCES += ggzdb_db4.c
 endif
+if GGZDB_DBI
+libggzdb_a_SOURCES += ggzdb_dbi.c
+endif
 
 libggzdb_a_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES) $(DATABASE_INCLUDES)
 

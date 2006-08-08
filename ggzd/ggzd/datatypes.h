@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 8391 2006-07-22 16:32:48Z oojah $
+ * $Id: datatypes.h 8504 2006-08-08 09:07:31Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -61,6 +61,7 @@ typedef struct {
 	ggztime_t ping_freq;
 	ggztime_t lag_class_time[4];
 	ggztime_t room_update_freq;
+	const char *dbtype;
 	const char *dbhost;
 	const char *dbname;
 	const char *dbusername;

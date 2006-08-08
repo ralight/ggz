@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 8310 2006-07-04 07:43:05Z oojah $
+ * $Id: ggzduedit.c 8504 2006-08-08 09:07:31Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -428,11 +428,13 @@ int main(int argc, char **argv)
 		{"dbname", required_argument, 0, 'D'},
 		{"username", required_argument, 0, 'u'},
 		{"password", optional_argument, 0, 'p'},
+		{"type", optional_argument, 0, 't'},
 		{"help", no_argument, 0, 'h'},
 		{"version", no_argument, 0, 'v'},
 		{0, 0, 0, 0}
 	};
 
+	conn.type = NULL;
 	conn.datadir = NULL;
 	conn.database = NULL;
 	conn.host = NULL;
@@ -442,7 +444,7 @@ int main(int argc, char **argv)
 
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "vhd:H:D:u:p::", options, &optindex);
+		opt = getopt_long(argc, argv, "vhd:H:D:u:t:p::", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
@@ -457,6 +459,9 @@ int main(int argc, char **argv)
 				break;
 			case 'u':
 				conn.username = optarg;
+				break;
+			case 't':
+				conn.type = optarg;
 				break;
 			case 'p':
 				if(!optarg)
@@ -482,6 +487,7 @@ int main(int argc, char **argv)
 				printf("[-H | --host     <hostname>] Host of the database\n");
 				printf("[-u | --username <username>] Database user\n");
 				printf("[-p | --password=[password]] Database password\n");
+				printf("[-t | --type     <dbtype>  ] Type of database (for DBI only)\n");
 				printf("[-h | --help               ] Display this help\n");
 				printf("[-v | --version            ] Display version number only\n");
 				exit(0);
@@ -502,6 +508,8 @@ int main(int argc, char **argv)
 			conn.username = ggz_conf_read_string(rc, "General", "DatabaseUsername", NULL);
 		if(!conn.password)
 			conn.password = ggz_conf_read_string(rc, "General", "DatabasePassword", NULL);
+		if(!conn.type)
+			conn.type = ggz_conf_read_string(rc, "General", "DatabaseType", NULL);
 		ggz_conf_close(rc);
 	}
 
@@ -521,9 +529,18 @@ int main(int argc, char **argv)
 		}
 	}
 
+	if(!strcmp(DATABASE_TYPE, "dbi")) {
+		if(!conn.type) {
+			fprintf(stderr, "Database type '%s' needs plugin type name\n",
+				DATABASE_TYPE);
+			exit(-1);
+		}
+	}
+
 	if((!strcmp(DATABASE_TYPE, "mysql"))
 	|| (!strcmp(DATABASE_TYPE, "pgsql"))
-	|| (!strcmp(DATABASE_TYPE, "sqlite"))) {
+	|| (!strcmp(DATABASE_TYPE, "sqlite"))
+	|| (!strcmp(DATABASE_TYPE, "dbi"))) {
 		if((!conn.database) || (!conn.host) || (!conn.username) || (!conn.password)) {
 			fprintf(stderr, "Database type '%s' needs database access parameters\n",
 				DATABASE_TYPE);

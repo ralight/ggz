@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 8433 2006-08-01 00:10:41Z oojah $
+ * $Id: ggzdb.c 8504 2006-08-08 09:07:31Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -92,6 +92,7 @@ int ggzdb_init(void)
 	}
 
 	/* Call backend's initialization */
+	connection.type = opt.dbtype;
 	connection.datadir = opt.data_dir;
 	connection.host = opt.dbhost;
 	connection.database = opt.dbname;

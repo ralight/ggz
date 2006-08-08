@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8485 2006-08-07 10:43:25Z josef $
+ * $Id: parse_opt.c 8504 2006-08-08 09:07:31Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -171,13 +171,21 @@ static void dump_specs(void)
 {
 	int tls = ggz_tls_support_query();
 	const char *tlsname = ggz_tls_support_name();
-	char tlsstring[32];
+	char tlsstring[32], dbstring[32];
 
 	parse_conf_file();
 
 	if(tls)
 	{
 		snprintf(tlsstring, sizeof(tlsstring), "yes (%s)", tlsname);
+	}
+	if(!strcmp(DATABASE_TYPE, "dbi"))
+	{
+		snprintf(dbstring, sizeof(dbstring), " [using dbd::%s]", opt.dbtype);
+	}
+	else
+	{
+		strcpy(dbstring, "");
 	}
 
 	printf("GGZ Gaming Zone server (ggzd) specifications\n");
@@ -187,7 +195,7 @@ static void dump_specs(void)
 		GGZDCONFDIR,
 		(opt.conf_valid ? "ok" : "not ok"));
 	printf("Debugging: %s\n", (SPEC_DEBUG ? "yes" : "no"));
-	printf("Database backend: %s\n", SPEC_DB);
+	printf("Database backend: %s%s\n", SPEC_DB, dbstring);
 	printf("Zeroconf support: %s [%s]\n",
 		(SPEC_HOWL ? "yes (howl)" : (SPEC_AVAHI ? "yes (avahi)" : "no")),
 		(opt.conf_valid ? (opt.announce_lan ? "used" : "not used") : "unknown"));
@@ -365,6 +373,7 @@ static void get_config_options(int ch)
 	opt.data_dir = ggz_conf_read_string(ch, "Directories", "DataDir", NULL);
 
 	/* [Database] */
+	opt.dbtype = ggz_conf_read_string(ch, "General", "DatabaseType", NULL);
 	opt.dbhost = ggz_conf_read_string(ch, "General", "DatabaseHost", NULL);
 	opt.dbname = ggz_conf_read_string(ch, "General", "DatabaseName", NULL);
 	opt.dbusername = ggz_conf_read_string(ch, "General", "DatabaseUsername", NULL);

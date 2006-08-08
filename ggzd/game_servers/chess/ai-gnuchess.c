@@ -129,6 +129,7 @@ int gnuchess_launch()
 		dup2(channel[0], STDOUT_FILENO);
 		execvp(argv[0], argv);
 		fprintf(stderr, "xboard AI: aliens ate my cat\n");
+		_exit(-1);
 	}
 
 	/* parent */

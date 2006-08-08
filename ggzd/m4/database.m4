@@ -18,6 +18,8 @@ dnl AC_GGZ_DATABASE_DB3 - Sleepycat DB3.x
 dnl AC_GGZ_DATABASE_DB4 - Sleepycat DB4.x
 dnl AC_GGZ_DATABASE_MYSQL - MySQL 3.x/4.x
 dnl AC_GGZ_DATABASE_PGSQL - PostgreSQL 7.x/8.x
+dnl AC_GGZ_DATABASE_SQLITE - SQLite embedded database
+dnl AC_GGZ_DATABASE_DBI - DB-independent abstraction library
 dnl
 
 AC_DEFUN([AC_GGZ_DATABASE_DB3],
@@ -394,6 +396,28 @@ AC_DEFUN([AC_GGZ_DATABASE_SQLITE],
 	])
 ])
 
+AC_DEFUN([AC_GGZ_DATABASE_DBI],
+[
+	AC_CHECK_LIB(dbi, dbi_conn_new,
+	[
+		AC_CHECK_HEADER(dbi/dbi.h,
+		[
+			database=dbi
+			LIB_DATABASE="-ldbi"
+		],
+		[
+			if test "$database" = dbi; then
+				AC_MSG_ERROR([cannot configure dbi (dbi-dev headers needed)])
+			fi
+		])
+	],
+	[
+		if test "$database" = dbi; then
+			AC_MSG_ERROR([cannot configure dbi (dbi library needed)])
+		fi
+	])
+])
+
 AC_DEFUN([AC_GGZ_DATABASE],
 [
 case "$database" in
@@ -403,6 +427,7 @@ case "$database" in
 	pgsql)  database=pgsql ;;
 	mysql)  database=mysql ;;
 	sqlite) database=sqlite ;;
+	dbi)    database=dbi ;;
 	yes)    database=yes ;;
 	no)     database=no ;;
 	*)      database=invalid ;;
@@ -452,6 +477,11 @@ if test "$database" = sqlite || test "$database" = yes; then
 	AC_GGZ_DATABASE_SQLITE
 fi
 
+dnl Check for DBI database abstraction layer
+if test "$database" = dbi || test "$database" = yes; then
+	AC_GGZ_DATABASE_DBI
+fi
+
 dnl Make sure a database was configured
 if test "$database" = yes; then
 	AC_MSG_ERROR([no usable database library found.  See above messages for more.])
@@ -467,5 +497,6 @@ AM_CONDITIONAL([GGZDB_DB4], [test "$database" = "db4"])
 AM_CONDITIONAL([GGZDB_MYSQL], [test "$database" = "mysql"])
 AM_CONDITIONAL([GGZDB_PGSQL], [test "$database" = "pgsql"])
 AM_CONDITIONAL([GGZDB_SQLITE], [test "$database" = "sqlite"])
+AM_CONDITIONAL([GGZDB_DBI], [test "$database" = "dbi"])
 ])
 
