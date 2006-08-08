@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 8165 2006-06-11 23:01:42Z oojah $
+ * $Id: easysock.c 8506 2006-08-08 20:34:08Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -165,6 +165,9 @@ static int es_bind(const char *host, int port)
 	int sockfd;
 	const int on = 1;
 	/* FIXME: better test on getaddrinfo() directly */
+	int n;
+	struct addrinfo hints, *res, *ressave;
+	char serv[30];
 #ifdef HAVE_WINSOCK2_H
 	struct sockaddr_in name;
 
@@ -194,9 +197,6 @@ static int es_bind(const char *host, int port)
 		sockfd = -1;
 	}
 #else
-	int n;
-	struct addrinfo hints, *res, *ressave;
-	char serv[30];
 
 	snprintf(serv, sizeof(serv), "%d", (unsigned int)port);
 
