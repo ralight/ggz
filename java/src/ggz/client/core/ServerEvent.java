@@ -122,6 +122,12 @@ public class ServerEvent {
     public static final ServerEvent GGZ_ROOM_LIST = new ServerEvent();
 
     /**
+     * A room was added, deleted or closed. This happens after the initial room
+     * list has been received and a new room is created or deleted dynamically.
+     */
+    public static final ServerEvent GGZ_SERVER_ROOMS_CHANGED = new ServerEvent();
+
+    /**
      * The list of game types is available. This will only happen after the list
      * is requested by ggzcore_server_list_types(). The list may be accessed
      * through ggzcore_server_get_num_gametypes() and

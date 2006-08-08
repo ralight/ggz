@@ -182,6 +182,6 @@ public class AboutDialog extends JDialog {
         AboutDialog dialog = new AboutDialog(frame);
         dialog.pack();
         dialog.setLocationRelativeTo(frame);
-        dialog.show();
+        dialog.setVisible(true);
     }
 }

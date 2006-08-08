@@ -209,7 +209,7 @@ public class ClientApp {
 
         // This must be the last line
         // <http://java.sun.com/products/jfc/tsc/articles/threads/threads1.html>.
-        frame.show();
+        frame.setVisible(true);
 
     }
 

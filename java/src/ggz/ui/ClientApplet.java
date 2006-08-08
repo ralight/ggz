@@ -503,6 +503,14 @@ public class ClientApplet extends JApplet implements ServerListener,
 
     }
 
+    public void server_rooms_changed() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                loungePanel.refreshRoomList();
+            }
+        });
+    }
+
     public void server_players_changed() {
         // Count the number of players in all the rooms that we have a module
         // for. We can't use Server.get_num_players() since we aren't showing

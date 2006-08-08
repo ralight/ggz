@@ -22,6 +22,7 @@ import ggz.common.ClientReqError;
 import java.io.IOException;
 import java.net.Socket;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -56,7 +57,7 @@ public class Server {
     private GameType[] gametypes;
 
     /* List of rooms in this server */
-    private Room[] rooms;
+    private ArrayList rooms;
 
     /* Current room on game server */
     private Room current_room;
@@ -158,7 +159,7 @@ public class Server {
     public Room get_nth_room(int num) {
         /* Num is so it is always >= 0. */
         if (num < get_num_rooms()) {
-            return this.rooms[num];
+            return (Room) this.rooms.get(num);
         }
         return null;
     }
@@ -432,7 +433,7 @@ public class Server {
     }
 
     public int get_num_rooms() {
-        return this.rooms == null ? 0 : this.rooms.length;
+        return this.rooms == null ? 0 : this.rooms.size();
     }
 
     public Room get_cur_room() {
@@ -442,9 +443,11 @@ public class Server {
     public Room get_room_by_id(int id) {
         int i;
 
-        for (i = 0; i < this.get_num_rooms(); i++)
-            if (this.rooms[i].get_id() == id)
-                return this.rooms[i];
+        for (i = 0; i < this.get_num_rooms(); i++) {
+            Room room = get_nth_room(i);
+            if (room.get_id() == id)
+                return room;
+        }
 
         return null;
     }
@@ -785,28 +788,19 @@ public class Server {
     }
 
     void init_roomlist(int num) {
-        // int i;
-
-        this.rooms = new Room[num];
-        // for (i = 0; i < num; i++)
-        // this.rooms[i] = null;
+        this.rooms = new ArrayList(num);
     }
 
     void add_room(Room room) {
-        int i = 0;
-
-        /* Find first open spot and stick it in */
-        while (i < this.get_num_rooms()) {
-            if (this.rooms[i] == null) {
-                this.rooms[i] = room;
-                break;
-            }
-            ++i;
-        }
+        this.rooms.add(room);
     }
 
     void init_typelist(int num) {
         this.gametypes = new GameType[num];
+    }
+
+    void delete_room(Room room) {
+        this.rooms.remove(room);
     }
 
     void add_type(GameType type) {
@@ -930,6 +924,8 @@ public class Server {
             event_hooks.fire_channel_ready();
         } else if (id == ServerEvent.GGZ_CHANNEL_FAIL) {
             event_hooks.fire_channel_fail((String) data);
+        } else if (id == ServerEvent.GGZ_SERVER_ROOMS_CHANGED) {
+            event_hooks.fire_server_rooms_changed();
         } else {
             throw new IllegalArgumentException("Unhandled ServerEvent: " + id);
         }
@@ -1185,6 +1181,17 @@ public class Server {
                 listener.server_list_types();
             }
         }
+
+        public void fire_server_rooms_changed() {
+            // Java 5 inferred type
+            ServerListener[] listenerArray = (ServerListener[]) listeners
+                    .getListeners(ServerListener.class);
+            for (int i = 0; i < listenerArray.length; i++) {
+                ServerListener listener = listenerArray[i];
+                listener.server_rooms_changed();
+            }
+        }
+
     }
 
 }

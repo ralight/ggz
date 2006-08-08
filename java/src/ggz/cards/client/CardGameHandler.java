@@ -58,7 +58,7 @@ public interface CardGameHandler {
 
     public void alert_newgame(CardSetType cardset_type);
 
-    public void handle_gameover(int[] winners);
+    public void handle_gameover(Player[] winners);
 
     public void alert_player(int i, SeatType old_type, String old_name);
 

@@ -90,6 +90,14 @@ public class Client {
         return this.players[n];
     }
 
+    public int get_num_teams() {
+        return this.teams == null ? 0 : this.teams.length;
+    }
+
+    public Team get_nth_team(int n) {
+        return this.teams == null ? null : this.teams[n];
+    }
+
     // int initialize()
     public Client() {
         /*
@@ -239,14 +247,14 @@ public class Client {
     /* A gameover message tells you the game is over, and who won. */
     private void handle_msg_gameover() throws IOException {
         int num_winners = fd_in.readInt();
-        int[] winners = new int[num_winners];
+        Player[] winners = null;
 
         if (num_winners > 0) {
-            winners = new int[num_winners];
+            winners = new Player[num_winners];
         }
 
         for (int i = 0; i < num_winners; i++) {
-            winners[i] = fd_in.read_seat();
+            winners[i] = get_nth_player(fd_in.read_seat());
         }
 
         game.handle_gameover(winners);
@@ -342,14 +350,12 @@ public class Client {
     }
 
     private void handle_msg_scores() throws IOException {
-        int hand_num = fd_in.readInt();
+        int hand_number = fd_in.readInt();
 
-        /*
-         * HACK: The scores are being received before the hand number is
-         * known...
-         */
-        if (hand_num > this.hand_num) {
-            set_hand_num(hand_num);
+        // HACK: The scores are being received before the hand number is
+        // known...
+        if (hand_number > this.hand_num) {
+            set_hand_num(hand_number);
         }
 
         for (int t = 0; t < this.teams.length; t++) {
@@ -357,12 +363,12 @@ public class Client {
                 this.teams[t] = new Team();
             ScoreData score = new ScoreData(fd_in.readInt(), fd_in.readInt());
             this.teams[t].addScore(score);
-            if (hand_num == this.hand_num) {
+            if (hand_number == this.hand_num) {
                 this.teams[t].setScore(score);
             }
         }
 
-        game.alert_scores(hand_num);
+        game.alert_scores(hand_number);
     }
 
     private void handle_msg_newhand() throws IOException {

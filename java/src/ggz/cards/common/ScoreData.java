@@ -17,4 +17,8 @@ public class ScoreData {
     public int getExtra() {
         return this.extra;
     }
+
+    public String toString() {
+        return score + ":" + extra;
+    }
 }

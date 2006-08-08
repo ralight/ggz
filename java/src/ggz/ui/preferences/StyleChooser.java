@@ -263,7 +263,7 @@ public class StyleChooser extends JPanel implements ListSelectionListener,
         pane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         dialog.pack();
-        dialog.show(); // blocks until user brings dialog down...
+        dialog.setVisible(true); // blocks until user brings dialog down...
 
         return pane.getStyle();
     }

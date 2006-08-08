@@ -72,6 +72,9 @@ public class Room {
     /* List of tables in the room (current room only) */
     private List tables;
 
+    /* Has this room been marked for removal by the server? */
+    private boolean removal_pending;
+
     /* Room events */
     private HookList event_hooks;
 
@@ -166,6 +169,10 @@ public class Room {
         }
 
         return found;
+    }
+
+    public boolean is_closed() {
+        return this.removal_pending;
     }
 
     public void list_players() throws IOException {
@@ -426,6 +433,10 @@ public class Room {
             this.players = null;
             this.tables = null;
         }
+    }
+
+    void close() {
+        this.removal_pending = true;
     }
 
     void add_player(Player pdata, int from_room) {

@@ -16,4 +16,8 @@ public class Team {
     public void setScore(ScoreData s) {
         this.score = s;
     }
+
+    public ScoreData getScore() {
+        return this.score;
+    }
 }

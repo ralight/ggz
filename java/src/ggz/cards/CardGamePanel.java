@@ -754,6 +754,13 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     public void alert_scores(int hand_num) {
         // TODO handle these.
+        System.out.println("hand_num=" + hand_num);
+        this.cardClient.get_num_teams();
+        int numTeams = this.cardClient.get_num_teams();
+        for (int i = 0; i < numTeams; i++) {
+            System.out.println("Team " + i + ": "
+                    + this.cardClient.get_nth_team(i).getScore());
+        }
     }
 
     public void display_hand(final int player_num) {
@@ -1011,9 +1018,19 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         // Let subclasses handle this.
     }
 
-    public void handle_gameover(int[] winners) {
-        // TODO: Show winners.
-        JOptionPane.showMessageDialog(this, "GAME OVER");
+    public void handle_gameover(Player[] winners) {
+        if (winners == null) {
+            JOptionPane.showMessageDialog(this,
+                    "GAME OVER\nThere was no winner.");
+        } else {
+            StringBuffer csv = new StringBuffer(winners[0].get_name());
+            for (int i = 1; i < winners.length; i++) {
+                csv.append(",");
+                csv.append(winners[i].get_name());
+            }
+            JOptionPane.showMessageDialog(this,
+                    "GAME OVER\nThe game was won by " + csv.toString());
+        }
     }
 
     public void handle_disconnect() {

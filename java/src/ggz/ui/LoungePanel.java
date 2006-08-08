@@ -138,6 +138,7 @@ public class LoungePanel extends JPanel {
             cardGamesPanel.addRoom(room);
         }
         roomPanel.add(cardGamesPanel);
+        roomPanel.revalidate();
         // CategoryPanel boardGamesPanel = new CategoryPanel("Board Games");
         // boardGamesPanel.addRoom(server.get_nth_room(2));
         // roomPanel.add(boardGamesPanel);
@@ -215,8 +216,18 @@ public class LoungePanel extends JPanel {
                     g.fillRect(clip.x, clip.y, clip.width, clip.height);
                 }
             };
-            JLabel nameLabel = new JLabel("<HTML><U>" + room.get_name()
-                    + "</U></HTML>");
+            JLabel nameLabel;
+
+            if (room.is_closed()) {
+                nameLabel = new JLabel("<HTML>" + room.get_name()
+                        + " (CLOSED)</HTML>");
+            } else {
+                nameLabel = new JLabel("<HTML><U>" + room.get_name()
+                        + "</U></HTML>");
+                nameLabel.setCursor(Cursor
+                        .getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
             final JLabel populationLabel = new JLabel((String) null,
                     SwingConstants.RIGHT) {
                 public String getText() {
@@ -227,7 +238,6 @@ public class LoungePanel extends JPanel {
                 }
             };
             listCellPanel.setOpaque(false);
-            nameLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             nameLabel.setToolTipText(room.get_desc());
             nameLabel.setFont(nameLabel.getFont().deriveFont(Font.PLAIN));
             populationLabel.setFont(populationLabel.getFont().deriveFont(
@@ -244,6 +254,10 @@ public class LoungePanel extends JPanel {
                             getVerticalScrollBar().getUnitIncrement()));
             nameLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent event) {
+                    // Don't allow the user to attempt to enter a closed room.
+                    if (room.is_closed())
+                        return;
+
                     // Find the index of the room and then join the room
                     try {
                         for (int i = 0; i < server.get_num_rooms(); i++) {

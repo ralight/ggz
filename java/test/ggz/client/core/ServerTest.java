@@ -122,6 +122,11 @@ public class ServerTest implements ServerListener {
 
     }
 
+    public void server_rooms_changed() {
+        // TODO Auto-generated method stub
+
+    }
+
     public void server_protocol_error(String error) {
         // TODO Auto-generated method stub
 

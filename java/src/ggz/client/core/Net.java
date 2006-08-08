@@ -1054,6 +1054,18 @@ public class Net implements Runnable {
                 int players = roomdata.get_num_players();
                 room.set_players(players);
                 this.server.process_player_changed_queue();
+            } else if ("delete".equals(action)) {
+                this.server.delete_room(room);
+                this.server.event(ServerEvent.GGZ_SERVER_ROOMS_CHANGED, room);
+            } else if ("close".equals(action)) {
+                room.close();
+                this.server.event(ServerEvent.GGZ_SERVER_ROOMS_CHANGED, room);
+            }
+        } else {
+            if ("add".equals(action)) {
+                this.server.add_room(roomdata);
+                this.server.event(ServerEvent.GGZ_SERVER_ROOMS_CHANGED,
+                        roomdata);
             }
         }
     }

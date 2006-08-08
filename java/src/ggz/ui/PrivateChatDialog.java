@@ -155,6 +155,10 @@ public class PrivateChatDialog extends JFrame {
             // Ignore.
         }
 
+        public void server_rooms_changed() {
+            // Ignore.
+        }
+
         public void server_list_types() {
             // Ignore.
         }

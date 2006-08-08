@@ -123,7 +123,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
             // frame.setLocationByPlatform(true);
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            frame.show();
+            frame.setVisible(true);
         } else if (ggzMod.getState() == ModState.GGZMOD_STATE_DONE) {
             // Prevent memory leaks.
             chatPanel.dispose();

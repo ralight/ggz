@@ -147,6 +147,9 @@ public interface ServerListener extends EventListener {
      */
     public void server_players_changed();
 
+    /** A room has either been added, deleted or set to "closed". */
+    public void server_rooms_changed();
+
     /**
      * We have successfully entered a room. This will be issued to tell us a
      * room join has succeeded, after it has been requested.
