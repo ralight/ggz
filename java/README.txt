@@ -9,11 +9,18 @@ ggz-client-libs
 ggz-gtk-client (redeveloped from scratch)
 ggz-gtk-games/ggzcards (redeveloped from scratch)
 
-To compile the project using the supplied build.xml file you'll need a version 
-of the Java 1.4 SDK from Sun (or equivalent) as well as Apache Ant. I'm not 
-sure which version you need but I was using 1.6.5 at the time of this writing. 
-Alternatively, you can compile the Java source files manually using your 
-favorite IDE or compiler.
+To compile the project using the supplied build.xml file you'll need the 
+following.
+
+1. A version of the Java 1.4 SDK from Sun (or equivalent)
+2. Apache Ant <http://ant.apache.org>
+3. SvnAnt <http://subclipse.tigris.org/svnant.html>
+
+I'm not sure which version of Ant you need but I was using 1.6.5 at the time 
+of this writing. Alternatively, you can compile the Java source files manually 
+using your favorite IDE or compiler since the Ant file doesn't do any special
+setup. Once you have downloaded SvnAnt, you need to place the three jar files
+in ANT_HOME/lib.
 
 The build file creates two JAR files in this directory. One can be run as a 
 Java application and the other is for deploying as an applet. The applet is 
