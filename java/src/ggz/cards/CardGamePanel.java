@@ -1033,26 +1033,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
      *            game.
      */
     public void set_cardlist_message(final String mark, Card[][] cardlist) {
-        // SwingUtilities.invokeLater(new Runnable() {
-        // public void run() {
-        // chat_panel.appendChat("set_cardlist_message", mark);
-        // }
-        // });
-
         if ("Last Trick".equals(mark)) {
             lastTrickButton.setVisible(true);
         } else if ("Previous Hand".equals(mark)) {
             previousHandButton.setVisible(true);
         }
-        // chat_panel.appendChat("set_cardlist_message", "mark=" + mark);
-        // for (int i = 0; i < cardlist.size(); i++) {
-        // chat_panel.appendChat("set_cardlist_message", "Player " + i
-        // + " cards: ");
-        // for (int j = 0; j < cardlist.get(i).length; j++) {
-        // chat_panel.appendChat("set_cardlist_message",
-        // cardlist.get(i)[j].toString());
-        // }
-        // }
     }
 
     public void set_player_message(final int player_num, final String message) {
