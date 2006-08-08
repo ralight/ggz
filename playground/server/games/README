@@ -1,0 +1,25 @@
+Velena AI engine
+----------------
+
+The game ConnectX can support the Velena AI which has been proven
+to be correct and uses an opening book for full strength play.
+A special bot named 'Velena' is available in the NamedBots section
+of the server.
+
+To use the Velena AI, the following must be done:
+* go to http://www.ce.unipr.it/~gbe/velena.html
+* download Velena
+* compile and install 'veleng' to $PATH
+* install white_ob.cn4 to new directory /usr/share/games/velena
+  (or change location in velena-connectx)
+* copy velena-connectx to $PATH
+
+Note:
+ Only games on 7x6 boards are supported by the 'veleng'
+ command line version.
+ The connect length is 4 (I think).
+ Ideally, velena would be a library, but a configurable
+ command line engine would also be nice to have,
+ especially for scripting languages which saves the work for
+ writing wrapper libraries.
+

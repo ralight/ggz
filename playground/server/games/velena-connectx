@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# Wrapper for the Velena AI engine for GGZ ConnectX
+
+# Where is white_ob.cn4?
+cd /usr/share/games/velena/
+
+# Now start up Velena
+veleng
+
