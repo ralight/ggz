@@ -1,18 +1,13 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
-
-EXTRA_DIST = connectx.dsc connectx.room
-
-SUBDIRS = .
-
 ggzdexecmod_PROGRAMS = ggzd.connectx
-ggzdgame_DATA = connectx.dsc
-ggzdroom_DATA = connectx.room
+dist_ggzdgame_DATA = connectx.dsc
+dist_ggzdroom_DATA = connectx.room
 
 ggzd_connectx_SOURCES = \
 	main.c \
 	game.c \
-	game.h
+	game.h \
+	ai-velena.c \
+	ai-velena.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 

@@ -1,4 +1,4 @@
-# $Id: connectx.dsc 8254 2006-06-22 09:30:47Z oojah $
+# $Id: connectx.dsc 8498 2006-08-08 09:02:27Z josef $
 
 [GameInfo]
 Author = Roger Light
@@ -19,3 +19,7 @@ Version = 2
 AllowLeave = 1
 BotsAllowed = 1
 PlayersAllowed = 2
+
+[NamedBots]
+ConnectXInternal=connectx
+Velena=velena

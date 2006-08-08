@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 7705 2005-12-29 11:53:14Z josef $
+ * $Id: game.c 8498 2006-08-08 09:02:27Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,8 +32,7 @@
 #include <ggz.h>
 
 #include "game.h"
-
-#define GGZSPECTATORS
+#include "ai-velena.h"
 
 /* Data structure for ConnectX game */
 struct connectx_game_t {
@@ -45,6 +44,7 @@ struct connectx_game_t {
 	char state;
 	char turn;
 	int optionsseat;
+	int velena;
 };
 
 /* ConnectX protocol */
@@ -103,6 +103,7 @@ static int game_send_options_request(int fd);
 static int game_send_options(int fd);
 static int game_read_options(int seat);
 //static int game_handle_newgame(int seat);
+static void game_bot_init(void);
 
 
 static char game_check_win(void);
@@ -116,6 +117,7 @@ void game_init(GGZdMod *ggz)
 	connectx_game.turn = -1;
 	connectx_game.state = CONNECTX_STATE_INIT;
 	connectx_game.ggz = ggz;
+	connectx_game.velena = -1;
 	/* Board is set up after the options have been collected */
 }
 
@@ -144,7 +146,6 @@ static int seats_empty(void){
 		&& ggzdmod_count_spectators(connectx_game.ggz) == 0;
 }
 
-#ifdef GGZSPECTATORS
 void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	int i, fd;
@@ -174,7 +175,6 @@ void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event, const voi
 	if(seats_empty())
 		ggzdmod_set_state(connectx_game.ggz, GGZDMOD_STATE_DONE);
 }
-#endif
 
 /* Callback for ggzdmod JOIN, LEAVE and SEAT events */
 void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, const void *data)
@@ -252,7 +252,6 @@ void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, const void *data)
 	}
 }
 
-#ifdef GGZSPECTATORS
 /* handle message from spectator */
 void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
@@ -274,7 +273,6 @@ void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event, const void *dat
 		ggzdmod_log(ggz, "Unrecognised spectator opcode %d.", op);
 	}
 }
-#endif
 
 /* Send out seat assignment */
 static int game_send_seat(int num)
@@ -364,9 +362,7 @@ static int game_send_gameover(int winner)
 {
 	int i;
 	GGZSeat seat;
-#ifdef GGZSPECTATORS
 	GGZSpectator spectator;
-#endif
 	GGZGameResult results[2];
 
 	for(i = 0; i < 2; i++){
@@ -380,7 +376,6 @@ static int game_send_gameover(int winner)
 		}
 	}
 
-#ifdef GGZSPECTATORS
 	for(i = 0; i < ggzdmod_get_max_num_spectators(connectx_game.ggz); i++)
 	{
 		spectator = ggzdmod_get_spectator(connectx_game.ggz, i);
@@ -388,7 +383,6 @@ static int game_send_gameover(int winner)
 		ggz_write_int(spectator.fd, CONNECTX_MSG_GAMEOVER);
 		ggz_write_char(spectator.fd, winner);
 	}
-#endif
 
 	/* Report the results to GGZ. */
 	if (winner < 2) {
@@ -468,9 +462,7 @@ static int game_do_move(int move)
 	/* Only called if move is valid */
 	char victor;
 	int i;
-#ifdef GGZSPECTATORS
 	int fd;
-#endif
 
 	/* FIXME: we should not return on a network error within this
 		function - that will fubar the whole game since the turn won't
@@ -492,16 +484,19 @@ static int game_do_move(int move)
 		}
 	}
 
+	game_bot_init();
+	if(connectx_game.velena == 1){
+		velena_ai_move(move);
+	}
+
 	game_send_move(connectx_game.turn, move);
 
-#ifdef GGZSPECTATORS
 	for(i=0; i < ggzdmod_get_max_num_spectators(connectx_game.ggz); i++){
 		fd = (ggzdmod_get_spectator(connectx_game.ggz, i)).fd;
 		if(fd < 0) continue;
 		ggz_write_int(fd, CONNECTX_MSG_MOVE);
 		ggz_write_int(fd, move);
 	}
-#endif
 
 	if((victor = game_check_win()) < 0){
 		connectx_game.turn = (connectx_game.turn + 1) % 2;
@@ -517,17 +512,54 @@ static int game_do_move(int move)
 	return 0;
 }
 
+static void game_bot_init(void)
+{
+	int ret;
+	const char *botclass, *botname;
+	int me;
+
+	me = 1; /* FIXME: assumes that AI player is on seat 1 */
+
+	/* Detect if we play against Velena */
+	if(connectx_game.velena == -1){
+		botname = ggzdmod_get_seat(connectx_game.ggz, me).name;
+		botclass = ggzdmod_get_bot_class(connectx_game.ggz, botname);
+		ggzdmod_log(connectx_game.ggz, "bot class: %s [on seat %i]",
+			botclass, me);
+
+		if((botclass) && (!strcmp(botclass, "velena"))){
+			connectx_game.velena = 1;
+			velena_ai_init(6, 7, VELENA_HARD);
+			ret = velena_launch();
+			if(!ret){
+				ggzdmod_log(connectx_game.ggz, "velena launch error!");
+				connectx_game.velena = 0;
+			}
+		}else{
+			connectx_game.velena = 0;
+		}
+	}
+}
+
 /* FIXME - write proper AI! */
 /* Do bot moves */
 static int game_bot_move(int me)
 {
 	int botmove;
+	int ret;
 
-	do{
-		botmove = (random() % connectx_game.boardwidth);
-	}while(game_check_move(me, botmove)!=0);
+	if(connectx_game.velena){
+		ret = velena_ai_find(&botmove);
+		if(!ret) ggzdmod_log(connectx_game.ggz, "velena error!");
+	}else{
+		do{
+			botmove = (random() % connectx_game.boardwidth);
+		}while(game_check_move(me, botmove)!=0);
+	}
+
 	ggzdmod_log(connectx_game.ggz, "boardwidth = %d", connectx_game.boardwidth);
 	ggzdmod_log(connectx_game.ggz, "botmove = %d", botmove);
+
 	return botmove;
 }
 

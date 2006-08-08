@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 22/06/2001
  * Desc: Main loop
- * $Id: main.c 5306 2002-12-20 10:10:29Z oojah $
+ * $Id: main.c 8498 2006-08-08 09:02:27Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -46,11 +46,9 @@ int main(void)
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz_seat);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_seat);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_ggz_player);
-#ifdef GGZSPECTATORS
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_DATA, &game_handle_ggz_spectator);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_JOIN,&game_handle_ggz_spectator_join);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_LEAVE, &game_handle_ggz_spectator_leave);
-#endif
 
 	/* Seed the random number generator */
 	srandom((unsigned)time(NULL));

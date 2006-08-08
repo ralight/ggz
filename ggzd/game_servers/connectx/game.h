@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 28th June 2001
  * Desc: Game functions
- * $Id: game.h 7705 2005-12-29 11:53:14Z josef $
+ * $Id: game.h 8498 2006-08-08 09:02:27Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -25,22 +25,17 @@
 
 #include "ggzdmod.h"
 
-#define GGZSPECTATORS
-#define GGZSTATISTICS
-
 /* GGZdMod callbacks */
 void game_handle_ggz_state(GGZdMod *ggz,
 			   GGZdModEvent event, const void *data);
 void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, const void *data);
 //static void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, const void *data);
-#ifdef GGZSPECTATORS
 void game_handle_ggz_spectator_join(GGZdMod *ggz,
                                 GGZdModEvent event, const void *data);
 void game_handle_ggz_spectator_leave(GGZdMod *ggz,
                                  GGZdModEvent event, const void *data);
 void game_handle_ggz_spectator(GGZdMod *ggz,
                                    GGZdModEvent event, const void *data);
-#endif
 void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, const void *data);
 
 
