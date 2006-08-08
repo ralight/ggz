@@ -22,6 +22,7 @@ This page gives an overview about current AI players, their strengths and so on.
 
 <table class="list">
 <tr><td><i>Name</i></td><td><i>Game</i></td><td><i>Language</i></td><td><i>Type</i></td><td><i>Usage</i></td></tr>
+<tr><td>velena</td><td>ConnectX</td><td>C</td><td>wrapper (velena protocol)</td><td>ConnectX server</td></tr>
 <tr><td>gnuchess</td><td>Chess</td><td>C</td><td>wrapper (xboard protocol)</td><td>Chess server</td></tr>
 <tr><td>gnushogi</td><td>Shogi</td><td>Python</td><td>wrapper (xboard protocol)</td><td>GGZBoard Shogi client</td></tr>
 <tr><td>gnugo</td><td>Go</td><td>Python</td><td>wrapper (gtp protocol)</td><td>GGZBoard Go client</td></tr>
