@@ -62,6 +62,13 @@ class GGZCoreRoom
 			chatunknown = GGZ_CHAT_UNKNOWN
 		};
 
+		enum AdminTypes
+		{
+			admingag = GGZ_ADMIN_GAG,
+			adminungag = GGZ_ADMIN_UNGAG,
+			adminkick = GGZ_ADMIN_KICK
+		};
+
 		/**
 		 * Constructor */
 		GGZCoreRoom();
@@ -145,7 +152,12 @@ class GGZCoreRoom
 
 		/**
 		 * Send a chat message to the other players. */
-		int chat(const GGZChatType opcode, const char* player, const char* message);
+		int chat(ChatTypes opcode, const char* player, const char* message);
+
+		/**
+		 * Performs some administrative actions. */
+		int admin(AdminTypes opcode, const char* player, const char* reason);
+
 		/**
 		 * Send other data. */
 		int sendData(char* buffer);

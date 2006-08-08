@@ -39,6 +39,7 @@ class GGZCorePlayer
 			normal = GGZ_PLAYER_NORMAL,
 			guest = GGZ_PLAYER_GUEST,
 			admin = GGZ_PLAYER_ADMIN,
+			host = GGZ_PLAYER_HOST,
 			bot = GGZ_PLAYER_BOT
 		};
 

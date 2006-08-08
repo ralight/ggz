@@ -124,7 +124,10 @@ void KGGZChat::slotSend()
 		EVENT_MARK,
 		EVENT_AWAY,
 		EVENT_ANNOUNCE,
-		EVENT_TABLE
+		EVENT_TABLE,
+		EVENT_GAG,
+		EVENT_UNGAG,
+		EVENT_KICK
 	};
 	char *commands = NULL;
 	char *op2 = NULL;
@@ -134,6 +137,8 @@ void KGGZChat::slotSend()
 	char *player = NULL;
 	char *timestring;
 	time_t curtime;
+	// FIXME: this whole methods needs conversion to QString!
+	QString inputline;
 
 	if(strlen(input->text()) == 0) return;
 
@@ -154,6 +159,30 @@ void KGGZChat::slotSend()
 			commands = strtok(inputtext, " ");
 			if(commands)
 			{
+				if((strncmp(inputtext, "/gag", 4) == 0)
+				|| (strncmp(inputtext, "/ungag", 6) == 0)
+				|| (strncmp(inputtext, "/kick", 5) == 0))
+				{
+					inputline = inputtext;
+					if(commands) player = strtok(NULL, " ");
+					if(player)
+					{
+						if(inputline.startsWith("/gag")) triggerevent = EVENT_GAG;
+						if(inputline.startsWith("/ungag")) triggerevent = EVENT_GAG;
+						if(inputline.startsWith("/kick")) triggerevent = EVENT_KICK;
+						op2 = strtok(NULL, " ");
+						if(op2) strcat(inputargs, op2);
+					}
+					while(op2)
+					{
+						op2 = strtok(NULL, " ");
+						if(op2)
+						{
+							strcat(inputargs, " ");
+							strcat(inputargs, op2);
+						}
+					}
+				}
 				if(strncmp(inputtext, "/msg", 4) == 0)
 				{
 					KGGZDEBUG("--private message--\n");
@@ -245,6 +274,10 @@ void KGGZChat::slotSend()
 			receive(NULL, i18n("/help - this screen."), RECEIVE_INFO);
 			receive(NULL, i18n("/mark - mark a time stamp."), RECEIVE_INFO);
 			receive(NULL, i18n("/away &lt;message&gt; - show a goodbye message."), RECEIVE_INFO);
+			receive(NULL, i18n("Administrative actions."), RECEIVE_INFO);
+			receive(NULL, i18n("/gag &lt;player&gt; - force global ignore."), RECEIVE_INFO);
+			receive(NULL, i18n("/ungag &lt;player&gt; - revert gagging."), RECEIVE_INFO);
+			receive(NULL, i18n("/kick &lt;player&gt; - kick player from server."), RECEIVE_INFO);
 			break;
 		case EVENT_CHAT:
 			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
@@ -257,6 +290,15 @@ void KGGZChat::slotSend()
 			break;
 		case EVENT_ME:
 			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
+			break;
+		case EVENT_GAG:
+			emit signalAdmin(ADMIN_GAG, player, NULL);
+			break;
+		case EVENT_UNGAG:
+			emit signalAdmin(ADMIN_UNGAG, player, NULL);
+			break;
+		case EVENT_KICK:
+			emit signalAdmin(ADMIN_KICK, player, inputargs);
 			break;
 		case EVENT_PERSONAL:
 			if(player)

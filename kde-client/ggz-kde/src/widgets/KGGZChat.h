@@ -65,6 +65,13 @@ class KGGZChat : public QWidget
 			RECEIVE_TABLE
 		};
 
+		enum AdminAction
+		{
+			ADMIN_GAG,
+			ADMIN_UNGAG,
+			ADMIN_KICK
+		};
+
 		KGGZChat(QWidget *parent = NULL, const char *name = NULL);
 		~KGGZChat();
 		void init();
@@ -83,6 +90,7 @@ class KGGZChat : public QWidget
 
 	signals:
 		void signalChat(QString text, QString player, int mode);
+		void signalAdmin(int action, QString player, QString text);
 
 	protected slots:
 		void slotSend();

@@ -190,6 +190,8 @@ class KGGZ : public QWidget
 		void slotConnectedStart();
 		// Receive chat message
 		void slotChat(QString text, QString player, int mode);
+		// Receive administrative actions
+		void slotAdmin(int action, QString player, QString text);
 		// Send grubby requests
 		void slotGrubby(QString grubby, QString argument, int id);
 		// Prepares a game launch

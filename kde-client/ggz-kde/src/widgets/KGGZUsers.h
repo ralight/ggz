@@ -40,6 +40,7 @@
 // Forward declarations
 class QPopupMenu;
 class GGZCoreRoom;
+class GGZCorePlayer;
 
 // KGGZ_Users: list of all players in current room
 class KGGZUsers : public KListView
@@ -76,7 +77,8 @@ class KGGZUsers : public KListView
 			assignplayer,
 			assignguest,
 			assignbot,
-			assignadmin
+			assignadmin,
+			assignhost
 		};
 
 	signals:
@@ -108,7 +110,8 @@ class KGGZUsers : public KListView
 		enum Information
 		{
 			inforecord,
-			infomessage
+			infomessage,
+			infoplayer
 		};
 
 		// Returns the item which represents the requested table
@@ -123,6 +126,10 @@ class KGGZUsers : public KListView
 		void lag(QListViewItem *item, int lag);
 		// Helper function: pixmap composition
 		QPixmap composite(QPixmap bottom, QPixmap top);
+		// Message box with game records
+		void displayRecord(GGZCorePlayer *player);
+		// Message box with general information
+		void displayPlayer(QString playername);
 		
 		// The list displaying the users
 		QListViewItem *itemmain;

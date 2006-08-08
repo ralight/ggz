@@ -1,13 +1,14 @@
 # Tradução do kggz para o Português do Brasil.
 # Copyright (C) 2001 Ismael Orenstein.
 # Ismael Orenstein <perdig@linuxbr.com.br>, 2001.
+# Josef Spillner <josef@ggzgamingzone.org>, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-14 14:57+0200\n"
-"PO-Revision-Date: 2005-03-20 17:44+0100\n"
+"POT-Creation-Date: 2006-08-07 18:56+0200\n"
+"PO-Revision-Date: 2006-08-07 18:56+0200\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -15,11 +16,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.2alpha\n"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:185
+#: ../../ggz-kde/src/KGGZLaunch.cpp:190
 msgid " (out of "
 msgstr " (sem "
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:279
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:322
 msgid "%1 -- MARK --"
 msgstr "%1 -- MARCA --"
 
@@ -27,7 +28,7 @@ msgstr "%1 -- MARCA --"
 msgid "&Available tables"
 msgstr "Mesas &disponíveis"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:124
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:125
 msgid "&Cancel game"
 msgstr "&Cancelar jogo"
 
@@ -35,7 +36,7 @@ msgstr "&Cancelar jogo"
 msgid "&Chat"
 msgstr "&Conversação"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:139
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:140
 msgid "&Client"
 msgstr "&Cliente"
 
@@ -47,15 +48,15 @@ msgstr "&Conectar"
 msgid "&Disconnect"
 msgstr "&Desconectar"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:141
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:142
 msgid "&Game"
 msgstr "&Jogo"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:126
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:127
 msgid "&Grubby"
 msgstr "&Grubby"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:143
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:144
 msgid "&Help"
 msgstr "A&juda"
 
@@ -63,11 +64,11 @@ msgstr "A&juda"
 msgid "&Information"
 msgstr "&Informação"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:120
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:121
 msgid "&Join game"
 msgstr "&Entrar no jogo"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:119
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:120
 msgid "&Launch new game"
 msgstr "&Iniciar um novo jogo"
 
@@ -75,7 +76,7 @@ msgstr "&Iniciar um novo jogo"
 msgid "&List of players"
 msgstr "&Lista de jogadores"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:142
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:143
 msgid "&Preferences"
 msgstr "&Preferências"
 
@@ -83,9 +84,13 @@ msgstr "&Preferências"
 msgid "&Quit"
 msgstr "Sa&ir"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:140
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:141
 msgid "&Rooms"
 msgstr "&Salas"
+
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:118
+msgid "&Rules of the game"
+msgstr "&Regras do jogo"
 
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:102
 msgid "&Startup Screen"
@@ -95,7 +100,15 @@ msgstr "&Tela inicial"
 msgid "&Web Browser"
 msgstr "&Navegador"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1090
+#: ../../ggz-kde/src/widgets/KGGZTables.cpp:66
+msgid ""
+"(%1) %2\n"
+"(%3 seats, %4 open)"
+msgstr ""
+"(%1) %2\n"
+"(%3 lugares, %4 abertos)"
+
+#: ../../ggz-kde/src/KGGZ.cpp:1108
 msgid "(Description: %1)"
 msgstr "(Descrição: %1)"
 
@@ -103,76 +116,93 @@ msgstr "(Descrição: %1)"
 #: ../../ggz-kde/src/main.cpp:71 ../../ggz-kde/src/main.cpp:72
 #: ../../ggz-kde/src/main.cpp:73 ../../ggz-kde/src/main.cpp:74
 #: ../../ggz-kde/src/main.cpp:75 ../../ggz-kde/src/main.cpp:76
-#: ../../ggz-kde/src/main.cpp:77
+#: ../../ggz-kde/src/main.cpp:77 ../../ggz-kde/src/main.cpp:78
+#: ../../ggz-kde/src/main.cpp:79
 msgid "(GGZ team)"
 msgstr "(Time do GGZ)"
 
-#: ../../ggz-kde/src/KGGZ.cpp:561
+#: ../../ggz-kde/src/KGGZLaunch.cpp:440
+msgid "(Yourself)"
+msgstr "(Você mesmo)"
+
+#: ../../ggz-kde/src/KGGZ.cpp:559
 msgid "(unknown)"
 msgstr "(desconhecido)"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:413
+#: ../../ggz-kde/src/KGGZLaunch.cpp:452
 msgid "(unused)"
 msgstr "(não usado)"
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:264
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:307
 msgid "--> %1"
 msgstr "--> %1"
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:246
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:276
 msgid "/away &lt;message&gt; - show a goodbye message."
-msgstr "/away &lt;mensagem&gt - Mostra uma mensagem de despedida"
+msgstr "/away &lt;mensagem&gt - Mostra uma mensagem de despedida."
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:243
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:273
 msgid "/beep &lt;player&gt; - send player a beep."
-msgstr "/beep &lt;nome&gt; - Envia um beep ao computador desse jogador"
+msgstr "/beep &lt;nome&gt; - Envia um beep ao computador desse jogador."
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:244
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:278
+msgid "/gag &lt;player&gt; - force global ignore."
+msgstr "/gag &lt;nome&gt; - faz cada mundo ignorar esse jogador."
+
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:274
 msgid "/help - this screen."
-msgstr "/help - Essa tela de ajuda"
+msgstr "/help - Essa tela de ajuda."
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:245
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:280
+msgid "/kick &lt;player&gt; - kick player from server."
+msgstr "/kick &lt;nome&gt; - Deixe esse jogador sair."
+
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:275
 msgid "/mark - mark a time stamp."
-msgstr "/mark - marca a hora"
+msgstr "/mark - marca a hora."
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:239
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:269
 msgid "/me &lt;msg&gt; - sends an emphasized phrase."
-msgstr "/me &lt;msg&gt; - Envia uma ação"
+msgstr "/me &lt;msg&gt; - Envia uma ação."
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:285
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:328
 msgid "/me has returned"
 msgstr "/me voltou"
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:283
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:326
 msgid "/me is going to leave (%1)"
 msgstr "/me is going to leave (%1)"
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:240
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:270
 msgid "/msg &lt;player&gt; &lt;message&gt; - sends a private message."
-msgstr "/msg &lt;jogador&gtk; &lt;mensagem&gt; - Envia uma mensagem pessoal"
+msgstr "/msg &lt;jogador&gtk; &lt;mensagem&gt; - Envia uma mensagem pessoal."
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:241
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:271
 msgid "/table &lt;message&gt; - table message."
-msgstr "/table &lt;mensagem&gt - Envia uma mensagem da mesa"
+msgstr "/table &lt;mensagem&gt - Envia uma mensagem da mesa."
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:242
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:279
+msgid "/ungag &lt;player&gt; - revert gagging."
+msgstr "/ungag &lt;nome&gt; - permite enviar mensagens de novo."
+
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:272
 msgid "/wall &lt;message&gt; - sends a message to all rooms."
-msgstr "/wall &lt;mensagem&gt - Envia uma mensagem para todas as salas"
+msgstr "/wall &lt;mensagem&gt - Envia uma mensagem para todas as salas."
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:97 ../../ggz-kde/src/KGGZConnect.cpp:521
+#: ../../ggz-kde/src/KGGZConnect.cpp:107 ../../ggz-kde/src/KGGZConnect.cpp:549
 msgid "<< Edit"
 msgstr "<< Editar"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:642
+#: ../../ggz-kde/src/KGGZConnect.cpp:722
 msgid "A GGZ server was found on %1."
 msgstr "Um servidor GGZ foi encontrado em %1."
 
-#: ../../ggz-kde/src/KGGZ.cpp:1127
+#: ../../ggz-kde/src/KGGZ.cpp:1149
 msgid "A protocol error (GGZCoreServer::protoerror) occured!"
 msgstr "Um erro no protocolo (GGZCoreServer::protoerror) detectado!"
 
 #: ../../ggz-kde/src/widgets/KGGZAbout.cpp:75
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:135
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:136
 msgid "About the GGZ Gaming Zone"
 msgstr "Sobre a GGZ Gaming Zone"
 
@@ -180,43 +210,47 @@ msgstr "Sobre a GGZ Gaming Zone"
 msgid "Add player"
 msgstr "Adicionar jogador"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:136
+#: ../../ggz-kde/src/KGGZLaunch.cpp:140
 msgid "Add some bot"
 msgstr "Adicione um robô"
+
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:277
+msgid "Administrative actions."
+msgstr "Ações administrativas."
 
 #: ../../ggz-kde/src/widgets/KGGZGrubby.cpp:85
 msgid "Alert this player if you see him:"
 msgstr "Notifique este jogador quando encontrá-lo:"
 
-#: ../../ggz-kde/src/KGGZ.cpp:258
+#: ../../ggz-kde/src/KGGZ.cpp:263
 msgid ""
 "Although the TLS implementation may work, it is not widely tested yet and in "
 "no way secure!"
 msgstr ""
-"Ainda que a implementação TLS funciona bem, não receibi muito teste e pode "
+"Ainda que a implementação TLS funciona bem, não recebeu muito teste e pode "
 "ser inseguro!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:386
+#: ../../ggz-kde/src/KGGZ.cpp:396
 msgid "An unknown error occured."
 msgstr "Um erro desconhecido ocorreu."
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:179
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:182
 msgid "Assign a credit"
 msgstr "Destine um crédito"
 
-#: ../../ggz-kde/src/KGGZ.cpp:981
+#: ../../ggz-kde/src/KGGZ.cpp:996
 msgid "Attempt to login refused!"
 msgstr "Tentativa de login recusada"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1676 ../../ggz-kde/src/KGGZ.cpp:1708
+#: ../../ggz-kde/src/KGGZ.cpp:1762 ../../ggz-kde/src/KGGZ.cpp:1797
 msgid "Author: "
 msgstr "Autor: "
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:316 ../../ggz-kde/src/KGGZConnect.cpp:372
+#: ../../ggz-kde/src/KGGZConnect.cpp:330 ../../ggz-kde/src/KGGZConnect.cpp:387
 msgid "Autodetect"
 msgstr "Detectar automaticamente"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:307 ../../ggz-kde/src/KGGZConnect.cpp:365
+#: ../../ggz-kde/src/KGGZConnect.cpp:321 ../../ggz-kde/src/KGGZConnect.cpp:379
 msgid "Automatic"
 msgstr "Automaticamente"
 
@@ -224,15 +258,15 @@ msgstr "Automaticamente"
 msgid "Banned"
 msgstr "Prohibido"
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:271
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:314
 msgid "Beeped Player %1."
-msgstr "Enviu um beep ao jogador %1"
+msgstr "Enviu um beep ao jogador %1."
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:410
+#: ../../ggz-kde/src/KGGZLaunch.cpp:449
 msgid "Bot"
 msgstr "Computador"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:145
+#: ../../ggz-kde/src/KGGZLaunch.cpp:149
 msgid "Buddies"
 msgstr "Amigãos"
 
@@ -240,21 +274,22 @@ msgstr "Amigãos"
 msgid "Buddy"
 msgstr "Amigão"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:132 ../../ggz-kde/src/KGGZInput.cpp:56
-#: ../../ggz-kde/src/KGGZMeta.cpp:64
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:111
+#: ../../ggz-kde/src/KGGZConnect.cpp:141 ../../ggz-kde/src/KGGZInput.cpp:56
+#: ../../ggz-kde/src/KGGZMeta.cpp:72
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:112
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:85
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:86
 msgid "Chat"
 msgstr "Conversação"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:319
+#: ../../ggz-kde/src/KGGZLaunch.cpp:340
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:334
 msgid "Chat bot"
 msgstr "Robô de conversação"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:415
+#: ../../ggz-kde/src/KGGZConnect.cpp:441
 msgid "Chose a name for the new profile."
 msgstr "Selecione um nome para o novo perfil."
 
@@ -262,72 +297,81 @@ msgstr "Selecione um nome para o novo perfil."
 msgid "Close"
 msgstr "Fechar"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:131
+#: ../../ggz-kde/src/KGGZConnect.cpp:140
 msgid "Connect"
 msgstr "Conectar"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:214
+#: ../../ggz-kde/src/KGGZConnect.cpp:223
 msgid "Connect to server"
 msgstr "Conectar ao servidor"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:513
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:538
 msgid "Connected"
 msgstr "Conectado"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:101 ../../ggz-kde/src/KGGZ.cpp:244
-#: ../../ggz-kde/src/KGGZ.cpp:1027
+#: ../../ggz-kde/src/KGGZConnect.cpp:111 ../../ggz-kde/src/KGGZConnect.cpp:732
+#: ../../ggz-kde/src/KGGZ.cpp:239 ../../ggz-kde/src/KGGZ.cpp:1042
+#: ../../ggz-kde/src/KGGZMeta.cpp:136
 msgid "Connection"
 msgstr "Conexão"
+
+#: ../../ggz-kde/src/KGGZMeta.cpp:77
+msgid "Connection URI"
+msgstr "URI da conexão"
 
 #: ../../ggz-kde/src/main.cpp:52
 msgid "Connection URI like ggz://user@ggzhost.com:5688"
 msgstr "URI da Conexão como ggz://user@ggzhost.com:5688"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:521
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:546
 msgid "Connection secured with TLS"
 msgstr "Conexão segurada com TLS"
 
-#: ../../ggz-kde/src/KGGZ.cpp:998
+#: ../../ggz-kde/src/KGGZ.cpp:1013
 msgid "Could not connect, maybe the server version is incompatible."
 msgstr "Não pude conectar, talvez o servidor seja incompatível."
 
-#: ../../ggz-kde/src/KGGZ.cpp:360
+#: ../../ggz-kde/src/KGGZ.cpp:1191
+msgid "Could not establish channel due to failed launch!"
+msgstr "Não pude estabelecer um canal por causa do erro no jogo!"
+
+#: ../../ggz-kde/src/KGGZ.cpp:370
 msgid "Could not start the server!"
 msgstr "Não pôde iniciar o servidor!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:389
+#: ../../ggz-kde/src/KGGZ.cpp:399
 msgid "Could only kill server via sigkill!"
 msgstr "Só consegui matar o servidor usando o sigkill!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:972
+#: ../../ggz-kde/src/KGGZ.cpp:987
 msgid "Couldn't connect to server!"
 msgstr "Não foi possível conectar-se ao servidor"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1641
+#: ../../ggz-kde/src/KGGZ.cpp:1727
 msgid "Couldn't launch game!"
 msgstr "Não foi possível iniciar o jogo"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:95
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:96
 msgid "Country"
 msgstr "País"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:95
+#: ../../ggz-kde/src/KGGZConnect.cpp:105
 msgid "Create new profile"
 msgstr "Criar novo perfil"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:289
+#: ../../ggz-kde/src/KGGZConnect.cpp:303
 msgid "Default Stable Server"
 msgstr "Servidor padrão"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:96
+#: ../../ggz-kde/src/KGGZConnect.cpp:106
 msgid "Delete profile"
 msgstr "Apagar perfil"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1673
+#: ../../ggz-kde/src/KGGZ.cpp:1759
 msgid "Description: "
-msgstr "Descrição:"
+msgstr "Descrição: "
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:91
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:92
 msgid "Display MOTD upon login"
 msgstr "Mostrar MOTD após do login"
 
@@ -335,79 +379,83 @@ msgstr "Mostrar MOTD após do login"
 msgid "Do you have any messages for me?"
 msgstr "Você tem algum mensagem de mim?"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:363
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:368
 msgid "Do you really want to quit?"
 msgstr "Você tem certeza que deseja sair?"
 
-#: ../../ggz-kde/src/KGGZ.cpp:902
+#: ../../ggz-kde/src/KGGZLaunch.cpp:475
+msgid "Double assignment"
+msgstr "Jogador já tem lugar"
+
+#: ../../ggz-kde/src/KGGZ.cpp:908
 msgid "ERROR: Couldn't join table!"
 msgstr "ERRO: Não foi possível entrar na mesa"
 
-#: ../../ggz-kde/src/KGGZ.cpp:891
+#: ../../ggz-kde/src/KGGZ.cpp:897
 msgid "ERROR: Couldn't launch table!"
 msgstr "ERRO: Não foi possível iniciar a mesa!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:918
+#: ../../ggz-kde/src/KGGZ.cpp:931
 msgid "ERROR: Couldn't leave table!"
 msgstr "ERRO: Não foi possível deixar a mesa!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1118
+#: ../../ggz-kde/src/KGGZ.cpp:1140
 msgid "ERROR: Network error detected!"
 msgstr "ERRO: Erro da rede detectado"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1124
+#: ../../ggz-kde/src/KGGZ.cpp:1146
 msgid "ERROR: Protocol error detected!"
 msgstr "ERRO: Erro no protocolo detectado!"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:515
+#: ../../ggz-kde/src/KGGZConnect.cpp:543
 msgid "Edit >>"
 msgstr "Editar >>"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:97
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:98
 msgid "Email"
 msgstr "Email"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:90
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:91
 msgid "Enable text-to-speech (rsynth)"
 msgstr "Synthese texto-para-linguágem (rsynth)"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1685
+#: ../../ggz-kde/src/KGGZ.cpp:1771
 msgid "Engine: "
 msgstr "Engine: "
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:74
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:75
 msgid "Enter your message here:"
 msgstr "Entre sua mensagem aqui:"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1086
+#: ../../ggz-kde/src/KGGZ.cpp:1104
 #, c-format
 msgid "Entered room %s"
 msgstr "Entrou na sala %s"
 
-#: ../../ggz-kde/src/KGGZ.cpp:902
+#: ../../ggz-kde/src/KGGZ.cpp:908
 msgid "Error"
 msgstr "Erro"
 
-#: ../../ggz-kde/src/KGGZ.cpp:286 ../../ggz-kde/src/KGGZ.cpp:360
-#: ../../ggz-kde/src/KGGZ.cpp:363 ../../ggz-kde/src/KGGZ.cpp:379
-#: ../../ggz-kde/src/KGGZ.cpp:383 ../../ggz-kde/src/KGGZ.cpp:386
-#: ../../ggz-kde/src/KGGZ.cpp:389 ../../ggz-kde/src/KGGZ.cpp:719
-#: ../../ggz-kde/src/KGGZ.cpp:739 ../../ggz-kde/src/KGGZ.cpp:891
-#: ../../ggz-kde/src/KGGZ.cpp:972 ../../ggz-kde/src/KGGZ.cpp:981
-#: ../../ggz-kde/src/KGGZ.cpp:998 ../../ggz-kde/src/KGGZ.cpp:1044
-#: ../../ggz-kde/src/KGGZ.cpp:1127 ../../ggz-kde/src/KGGZ.cpp:1641
+#: ../../ggz-kde/src/KGGZ.cpp:292 ../../ggz-kde/src/KGGZ.cpp:370
+#: ../../ggz-kde/src/KGGZ.cpp:373 ../../ggz-kde/src/KGGZ.cpp:389
+#: ../../ggz-kde/src/KGGZ.cpp:393 ../../ggz-kde/src/KGGZ.cpp:396
+#: ../../ggz-kde/src/KGGZ.cpp:399 ../../ggz-kde/src/KGGZ.cpp:723
+#: ../../ggz-kde/src/KGGZ.cpp:743 ../../ggz-kde/src/KGGZ.cpp:897
+#: ../../ggz-kde/src/KGGZ.cpp:987 ../../ggz-kde/src/KGGZ.cpp:996
+#: ../../ggz-kde/src/KGGZ.cpp:1013 ../../ggz-kde/src/KGGZ.cpp:1061
+#: ../../ggz-kde/src/KGGZ.cpp:1149 ../../ggz-kde/src/KGGZ.cpp:1727
 msgid "Error!"
 msgstr "Erro!"
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:288
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:331
 msgid "Error! Unknown command! Try /help instead."
-msgstr "Erro! Comando desconhecido! Tente /help ao invés"
+msgstr "Erro! Comando desconhecido! Tente /help ao invés."
 
-#: ../../ggz-kde/src/KGGZ.cpp:739
+#: ../../ggz-kde/src/KGGZ.cpp:743
 msgid "Failed joining the requested table!"
 msgstr "Impossível participar na mesa requisitada!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:719
+#: ../../ggz-kde/src/KGGZ.cpp:723
 msgid "Failed launching the requested table!"
 msgstr "Impossível iniciar a mesa requisitada"
 
@@ -415,7 +463,7 @@ msgstr "Impossível iniciar a mesa requisitada"
 msgid "Found new team"
 msgstr "Novo time encontrado"
 
-#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:152
+#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:158
 msgid "Free Software shall dominate all Online Games!"
 msgstr "Os programas livres irãm dominar todos os jogos em rede!"
 
@@ -423,19 +471,19 @@ msgstr "Os programas livres irãm dominar todos os jogos em rede!"
 msgid "Frontend Selection"
 msgstr "Selecione a interface"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1705
+#: ../../ggz-kde/src/KGGZ.cpp:1794
 msgid "Frontend: "
 msgstr "Interface: "
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:96
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:97
 msgid "Full name"
 msgstr "Nome completo"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:138
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:139
 msgid "GG&Z"
 msgstr "GG&Z"
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:85
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:86
 msgid "GGZ Gaming Zone %1"
 msgstr "GGZ Gaming Zone %1"
 
@@ -443,7 +491,7 @@ msgstr "GGZ Gaming Zone %1"
 msgid "GGZ Gaming Zone message of the day"
 msgstr "GGZ Gaming Zone Mensagem do dia (MOTD)"
 
-#: ../../ggz-kde/src/KGGZ.cpp:349
+#: ../../ggz-kde/src/KGGZ.cpp:359
 msgid ""
 "GGZ Gaming Zone server not found.\n"
 "Please configure it in the settings dialog.\n"
@@ -451,24 +499,24 @@ msgstr ""
 "Servidor da GGZ Gaming Zone não encontrado.\n"
 "Favor configuré-lo no diálogo de preferências.\n"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:272 ../../ggz-kde/src/KGGZConnect.cpp:279
-#: ../../ggz-kde/src/KGGZConnect.cpp:280 ../../ggz-kde/src/KGGZConnect.cpp:305
+#: ../../ggz-kde/src/KGGZConnect.cpp:286 ../../ggz-kde/src/KGGZConnect.cpp:293
+#: ../../ggz-kde/src/KGGZConnect.cpp:294 ../../ggz-kde/src/KGGZConnect.cpp:319
 msgid "GGZ Meta Server"
 msgstr "Servidor Meta GGZ"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:332
+#: ../../ggz-kde/src/KGGZConnect.cpp:346
 msgid "GGZocker"
 msgstr "GGZéninguém"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1691
+#: ../../ggz-kde/src/KGGZ.cpp:1777
 msgid "Game Category: "
 msgstr "Categoria: "
 
-#: ../../ggz-kde/src/KGGZ.cpp:1703
+#: ../../ggz-kde/src/KGGZ.cpp:1789
 msgid "Game client"
 msgstr "Cliente do jogo"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:87
+#: ../../ggz-kde/src/KGGZLaunch.cpp:89
 msgid "Game description:"
 msgstr "Descrição do Jogo:"
 
@@ -477,32 +525,36 @@ msgstr "Descrição do Jogo:"
 msgid "Game information"
 msgstr "Informação sobre o jogo"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1656
+#: ../../ggz-kde/src/KGGZ.cpp:1742 ../../ggz-kde/src/KGGZ.cpp:1827
 msgid "Game information failure"
 msgstr "Falha da informação do jogo"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1425
+#: ../../ggz-kde/src/KGGZ.cpp:1496
 msgid "Game launch failure"
 msgstr "Error lançando o jogo"
 
-#: ../../ggz-kde/src/KGGZ.cpp:912 ../../ggz-kde/src/KGGZ.cpp:1848
+#: ../../ggz-kde/src/KGGZ.cpp:925 ../../ggz-kde/src/KGGZ.cpp:1972
 msgid "Game over"
 msgstr "Jogo terminou"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1521 ../../ggz-kde/src/KGGZ.cpp:1526
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:83
+msgid "Game results"
+msgstr "Resultados do jogo"
+
+#: ../../ggz-kde/src/KGGZ.cpp:1593 ../../ggz-kde/src/KGGZ.cpp:1598
 msgid "Game selection failure"
 msgstr "Error selecionando o jogo"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1668
+#: ../../ggz-kde/src/KGGZ.cpp:1754
 msgid "Game server"
 msgstr "Servidor do jogo"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:83
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:84
 msgid "General"
 msgstr "Geral"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:77
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:149
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:78
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:150
 msgid "Global Settings"
 msgstr "Configurações globais"
 
@@ -510,7 +562,7 @@ msgstr "Configurações globais"
 msgid "Go!"
 msgstr "Ir!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1819
+#: ../../ggz-kde/src/KGGZ.cpp:1943
 msgid "Grubby communication failure"
 msgstr "Erro comunicando com grubby"
 
@@ -518,15 +570,19 @@ msgstr "Erro comunicando com grubby"
 msgid "Grubby dialog"
 msgstr "Diálogo Grubby"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1779
+#: ../../ggz-kde/src/KGGZ.cpp:1903
 msgid "Grubby failure"
 msgstr "Erro do grubby"
+
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:331
+msgid "Guest player (anonymous/not registered)"
+msgstr "Jogador convidado (anônimo/não registrado)"
 
 #: ../../ggz-kde/src/widgets/KGGZGrubby.cpp:83
 msgid "Have you seen ...:"
 msgstr "Você viu ...:"
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:354
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:373
 msgid "Highscore: %1\n"
 msgstr "Pontos: %1\n"
 
@@ -534,19 +590,23 @@ msgstr "Pontos: %1\n"
 msgid "Home"
 msgstr "Casa"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:98
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:99
 msgid "Homepage"
 msgstr "Site principal"
 
-#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:157
+#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:163
 msgid "Homepage: http://www.ggzgamingzone.org"
 msgstr "Página: http://www.ggzgamingzone.org"
 
-#: ../../ggz-kde/src/KGGZ.cpp:286
+#: ../../ggz-kde/src/KGGZ.cpp:292
 msgid "Host not found!"
 msgstr "Host não encontrado!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1819
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:340
+msgid "Host player"
+msgstr "Jogador com direitos operacionais"
+
+#: ../../ggz-kde/src/KGGZ.cpp:1943
 msgid "I don't know that command, sorry."
 msgstr "Eu não conheço esse comando, sinto muito."
 
@@ -566,31 +626,32 @@ msgstr ""
 "Se você quiser falar com grubby (o robô da GGZ\n"
 "Gaming Zone), pode usar este diálogo."
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:141
+#: ../../ggz-kde/src/KGGZLaunch.cpp:145
 msgid "Individual bots"
 msgstr "Robôs individuais"
 
-#: ../../ggz-kde/src/KGGZ.cpp:928
+#: ../../ggz-kde/src/KGGZ.cpp:941
 msgid "Info: Statistics for %1 changed."
 msgstr "Info: Estatísticas para %1 mudaram."
 
-#: ../../ggz-kde/src/KGGZ.cpp:1013
+#: ../../ggz-kde/src/KGGZ.cpp:1028
 msgid "Information"
 msgstr "Informação"
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:346
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:344
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:365
 msgid "Information about %1:\n"
 msgstr "Informação sobre %1:\n"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:528
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:553
 msgid "Insecure connection"
 msgstr "Conexão insegura"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:122
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:123
 msgid "Join as spectator"
 msgstr "Participar assistindo"
 
-#: ../../ggz-kde/src/KGGZ.cpp:897
+#: ../../ggz-kde/src/KGGZ.cpp:903
 msgid "Joined table"
 msgstr "Entrou na mesa"
 
@@ -602,7 +663,7 @@ msgstr "Versão para KDE do cliente"
 msgid "KGGZ"
 msgstr "KGGZ"
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:237
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:267
 msgid "KGGZ - The KDE client for the GGZ Gaming Zone"
 msgstr "KGGZ - O cliente para a GGZ Gaming Zone do KDE"
 
@@ -610,8 +671,8 @@ msgstr "KGGZ - O cliente para a GGZ Gaming Zone do KDE"
 msgid "KGGZ is a frontend for the GGZ Gaming Zone"
 msgstr "KGGZ é uma interface para a GGZ Gaming Zone"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:273 ../../ggz-kde/src/KGGZConnect.cpp:283
-#: ../../ggz-kde/src/KGGZConnect.cpp:284 ../../ggz-kde/src/KGGZConnect.cpp:314
+#: ../../ggz-kde/src/KGGZConnect.cpp:287 ../../ggz-kde/src/KGGZConnect.cpp:297
+#: ../../ggz-kde/src/KGGZConnect.cpp:298 ../../ggz-kde/src/KGGZConnect.cpp:328
 msgid "LAN Game"
 msgstr "Jogo na rede local (LAN)"
 
@@ -619,27 +680,27 @@ msgstr "Jogo na rede local (LAN)"
 msgid "Lag"
 msgstr "Lag"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:113
+#: ../../ggz-kde/src/KGGZLaunch.cpp:115
 msgid "Launch a game"
 msgstr "Inicia um jogo"
 
-#: ../../ggz-kde/src/KGGZ.cpp:643
+#: ../../ggz-kde/src/KGGZ.cpp:647
 msgid "Launched game"
 msgstr "Iniciou jogo"
 
-#: ../../ggz-kde/src/KGGZ.cpp:885
+#: ../../ggz-kde/src/KGGZ.cpp:891
 msgid "Launched table"
 msgstr "Iniciou mesa"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:134
+#: ../../ggz-kde/src/KGGZLaunch.cpp:138
 msgid "Leave seat open"
 msgstr "Deixa lugar aberto"
 
-#: ../../ggz-kde/src/KGGZ.cpp:913
+#: ../../ggz-kde/src/KGGZ.cpp:926
 msgid "Left table"
 msgstr "Deixou mesa"
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:238
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:268
 msgid "List of available commands:"
 msgstr "Lista de comandos disponíveis:"
 
@@ -647,29 +708,33 @@ msgstr "Lista de comandos disponíveis:"
 msgid "Loading..."
 msgstr "Carregando..."
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:89
+#: ../../ggz-kde/src/KGGZMeta.cpp:79
+msgid "Location"
+msgstr "Lugar"
+
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:90
 msgid "Log chat conversation"
 msgstr "Grava conversação do chat"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:107
+#: ../../ggz-kde/src/KGGZConnect.cpp:117
 msgid "Log in as user/nickname:"
 msgstr "Identificar-se como usuário/nickname:"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:134
+#: ../../ggz-kde/src/KGGZConnect.cpp:143
 msgid "Log in as:"
 msgstr "Identificar-se como:"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1030
+#: ../../ggz-kde/src/KGGZ.cpp:1045
 msgid "Logged in as %1"
 msgstr "Indentificado como %1"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1111
+#: ../../ggz-kde/src/KGGZ.cpp:1133
 msgid "Logged out"
 msgstr "Desconectado"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1044
-msgid "Login refused!"
-msgstr "Login recusado"
+#: ../../ggz-kde/src/KGGZ.cpp:1060
+msgid "Login refused! Reason: %1"
+msgstr "Login recusado! Causa: %1"
 
 #: ../../ggz-kde/src/widgets/KGGZMotd.cpp:79
 msgid "MOTD"
@@ -687,27 +752,31 @@ msgstr "Mensagem do dia (MOTD)"
 msgid "Message of the day"
 msgstr "Mensagem do dia (MOTD)"
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:376
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:425
 msgid "Message text"
 msgstr "Texto da mensagem"
 
-#: ../../ggz-kde/src/KGGZMeta.cpp:60
+#: ../../ggz-kde/src/KGGZMeta.cpp:68
 msgid "Metaserver-based GGZ server selection."
 msgstr "Seleção do servidor GGZ por Metaserver."
+
+#: ../../ggz-kde/src/KGGZMeta.cpp:75
+msgid "Name"
+msgstr "Nome"
 
 #: ../../ggz-kde/src/widgets/KGGZTeam.cpp:120
 msgid "Name of the player who joins the team."
 msgstr "Nome do jogador que quer participar no time."
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:347
+#: ../../ggz-kde/src/KGGZLaunch.cpp:315
 msgid "Name of the player whom the seat is reserved for"
 msgstr "Nome do jogador para quem está reservado o lugar"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1670
+#: ../../ggz-kde/src/KGGZ.cpp:1756 ../../ggz-kde/src/KGGZ.cpp:1791
 msgid "Name: "
 msgstr "Nome: "
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:395
+#: ../../ggz-kde/src/KGGZLaunch.cpp:434
 msgid "Named Bot"
 msgstr "Bot individual"
 
@@ -723,86 +792,101 @@ msgstr "Novo perfil"
 msgid "New team member"
 msgstr "Membro novo no time"
 
-#: ../../ggz-kde/src/KGGZ.cpp:413
+#: ../../ggz-kde/src/KGGZ.cpp:423
 msgid "No MOTD found"
 msgstr "Não encontrei nenhum MOTD"
 
-#: ../../ggz-kde/src/KGGZ.cpp:413
+#: ../../ggz-kde/src/KGGZ.cpp:423
 msgid "No MOTD found for this server."
 msgstr "Não encontrei nenhum MOTD neste servidor."
 
-#: ../../ggz-kde/src/KGGZ.cpp:1879 ../../ggz-kde/src/widgets/KGGZBase.cpp:74
+#: ../../ggz-kde/src/KGGZ.cpp:2003 ../../ggz-kde/src/widgets/KGGZBase.cpp:74
 msgid "No room selected"
 msgstr "Nenhuma sala selecionada"
 
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:72
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:328
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:333
 msgid "Not connected"
 msgstr "Desconectado"
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:128
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:129
 msgid "Not playing"
 msgstr "Sem jogar"
 
-#: ../../ggz-kde/src/KGGZ.cpp:350
+#: ../../ggz-kde/src/KGGZ.cpp:360
 msgid "Note"
 msgstr "Mensagem"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:185
+#: ../../ggz-kde/src/KGGZLaunch.cpp:190
 msgid "Number of players: "
 msgstr "Número de jogadores: "
 
+#: ../../ggz-kde/src/KGGZMeta.cpp:70
 #: ../../ggz-kde/src/widgets/KGGZGameInfoDialog.cpp:66
 #: ../../ggz-kde/src/widgets/KGGZMotd.cpp:77
 msgid "OK"
 msgstr "Boa"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1234
+#: ../../ggz-kde/src/KGGZ.cpp:1302
 msgid "Only administrators are allowed to broadcast messages."
 msgstr "Apenas os administradores podem enviar mensagens para todas as salas."
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:404
+#: ../../ggz-kde/src/KGGZLaunch.cpp:443
 msgid "Open"
 msgstr "Abrir"
 
-#: ../../ggz-kde/src/KGGZ.cpp:234
+#: ../../ggz-kde/src/KGGZ.cpp:243
 msgid "Password"
 msgstr "Senha"
 
-#: ../../ggz-kde/src/KGGZ.cpp:235
+#: ../../ggz-kde/src/KGGZ.cpp:244
 msgid "Password not found, please input:"
 msgstr "Senha não encontrada, por favor entregue:"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:87
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:88
 msgid "Path to ggzd"
 msgstr "Caminho para o ggzd"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:84
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:85
 msgid "Personal"
 msgstr "Pessoalmente"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:79
+#: ../../ggz-kde/src/KGGZLaunch.cpp:81
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:82
 msgid "Player"
 msgstr "Jogador"
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:181
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:356
+#: ../../ggz-kde/src/KGGZ.cpp:1609
+msgid "Player Privacy"
+msgstr "Privacidade do jogador"
+
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:375
+msgid "Player game information"
+msgstr "Informação sobre os jogos do jogador"
+
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:184
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:347
 msgid "Player information"
 msgstr "Informação sobre o jogador"
+
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:345
+msgid "Player level: %1\n"
+msgstr "Nivel do jogador: %1\n"
 
 #: ../../ggz-kde/src/widgets/KGGZUsers.cpp:62
 msgid "Players"
 msgstr "Jogadores"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1656 ../../ggz-kde/src/KGGZ.cpp:1779
+#: ../../ggz-kde/src/KGGZ.cpp:1742 ../../ggz-kde/src/KGGZ.cpp:1827
+#: ../../ggz-kde/src/KGGZ.cpp:1903
 msgid "Please join a room first."
 msgstr "Por favor selecione uma sala antes."
 
-#: ../../ggz-kde/src/KGGZ.cpp:1032
+#: ../../ggz-kde/src/KGGZ.cpp:1047
 msgid "Please join a room to start!"
 msgstr "Por favor selecione uma sala para iniciar"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1452 ../../ggz-kde/src/KGGZ.cpp:1481
+#: ../../ggz-kde/src/KGGZ.cpp:1523 ../../ggz-kde/src/KGGZ.cpp:1552
 msgid "Please select a table to join!"
 msgstr "Por favor selecione uma mesa para entrar"
 
@@ -810,15 +894,19 @@ msgstr "Por favor selecione uma mesa para entrar"
 msgid "Please select who is grubby, and start a query!"
 msgstr "Por favor selecione quem é o grubby, e comece uma busca!"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:77
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:78
 msgid "Please specify some environment variables here."
-msgstr "Por favor selecione algumas váriaveis do ambiente"
+msgstr "Por favor selecione algumas váriaveis do ambiente."
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:376
+#: ../../ggz-kde/src/KGGZMeta.cpp:78
+msgid "Preference"
+msgstr "Preferência"
+
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:425
 msgid "Private message"
 msgstr "Mensagem particular"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:415
+#: ../../ggz-kde/src/KGGZConnect.cpp:441
 msgid "Profile identifier"
 msgstr "Identificador do perfil"
 
@@ -826,7 +914,7 @@ msgstr "Identificador do perfil"
 msgid "Properties of the game played in this room."
 msgstr "Propriedades do jogo jogado nesta sala."
 
-#: ../../ggz-kde/src/KGGZ.cpp:1682
+#: ../../ggz-kde/src/KGGZ.cpp:1768
 msgid "Protocol: "
 msgstr "Protocolo: "
 
@@ -834,59 +922,59 @@ msgstr "Protocolo: "
 msgid "Quit"
 msgstr "Sair"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:363
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:368
 msgid "Quit KGGZ"
 msgstr "Sair do KGGZ"
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:352
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:371
 msgid "Ranking: %1\n"
 msgstr "Ranking: %1\n"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1694
+#: ../../ggz-kde/src/KGGZ.cpp:1780
 msgid "Rating: "
 msgstr "Rating: "
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:350
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:369
 msgid "Rating: %1\n"
 msgstr "Rating: %1\n"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:172
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:174
 msgid "Ready for connection."
 msgstr "Pronto para conexão."
 
-#: ../../ggz-kde/src/widgets/KGGZChat.cpp:86
+#: ../../ggz-kde/src/widgets/KGGZChat.cpp:87
 msgid "Ready for connection..."
 msgstr "Pronto para conexão..."
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:82
-msgid "Record"
-msgstr "Registro"
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:328
+msgid "Registered player"
+msgstr "Jogador registrado"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:80 ../../ggz-kde/src/KGGZLaunch.cpp:346
+#: ../../ggz-kde/src/KGGZLaunch.cpp:82 ../../ggz-kde/src/KGGZLaunch.cpp:314
 msgid "Reservation"
 msgstr "Reservação"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:138
+#: ../../ggz-kde/src/KGGZLaunch.cpp:142
 msgid "Reserve..."
 msgstr "Faz reserva..."
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:391 ../../ggz-kde/src/KGGZLaunch.cpp:407
+#: ../../ggz-kde/src/KGGZLaunch.cpp:430 ../../ggz-kde/src/KGGZLaunch.cpp:446
 msgid "Reserved"
 msgstr "Reservado"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:605
+#: ../../ggz-kde/src/KGGZConnect.cpp:646 ../../ggz-kde/src/KGGZConnect.cpp:669
 msgid "Resolving failed."
 msgstr "Erro na resolução."
 
-#: ../../ggz-kde/src/KGGZ.cpp:1105
+#: ../../ggz-kde/src/KGGZ.cpp:1127
 msgid "Room join failure"
 msgstr "Erro ao entrar na sala"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1092
+#: ../../ggz-kde/src/KGGZ.cpp:1110
 msgid "Room: "
 msgstr "Sala: "
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:110
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:111
 msgid "Save configuration"
 msgstr "Gravar configuração"
 
@@ -894,23 +982,23 @@ msgstr "Gravar configuração"
 msgid "Score"
 msgstr "Pontos"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:133
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:134
 msgid "Se&ttings"
 msgstr "&Configurações"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:78
+#: ../../ggz-kde/src/KGGZLaunch.cpp:80
 msgid "Seat"
 msgstr "Lugar"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:86
+#: ../../ggz-kde/src/KGGZLaunch.cpp:88
 msgid "Seat assignments (right-click to change):"
 msgstr "Configuração dos lugares (botão direito para cambiar):"
 
-#: ../../ggz-kde/src/KGGZ.cpp:259
+#: ../../ggz-kde/src/KGGZ.cpp:264
 msgid "Security warning"
 msgstr "Notícia da segurança"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:116
+#: ../../ggz-kde/src/KGGZConnect.cpp:126
 msgid "Select"
 msgstr "Selecionar"
 
@@ -918,7 +1006,7 @@ msgstr "Selecionar"
 msgid "Select a command:"
 msgstr "Selecione um comando:"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:102
+#: ../../ggz-kde/src/KGGZConnect.cpp:112
 msgid ""
 "Select your favorite connection profile\n"
 "and connect to a game server."
@@ -926,32 +1014,36 @@ msgstr ""
 "Selecione seu perfil da conexão favorisado\n"
 "e faz a conexão para um servidor de jogos."
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:178
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:181
 msgid "Send private message"
 msgstr "Envie mensagem particular"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:105
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:337
+msgid "Server administrator"
+msgstr "Administrador do servidor"
+
+#: ../../ggz-kde/src/KGGZConnect.cpp:115
 msgid "Server host:"
 msgstr "Endereço do servidor:"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:106
+#: ../../ggz-kde/src/KGGZConnect.cpp:116
 msgid "Server port:"
 msgstr "Port do servidor:"
 
-#: ../../ggz-kde/src/KGGZMeta.cpp:60 ../../ggz-kde/src/KGGZMeta.cpp:83
+#: ../../ggz-kde/src/KGGZMeta.cpp:67 ../../ggz-kde/src/KGGZMeta.cpp:95
 msgid "Server selection"
 msgstr "Selecione o servidor"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:88
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:89
 msgid "Show connection dialog on startup"
 msgstr "Mostra diálogo da conexão no início"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1521
+#: ../../ggz-kde/src/KGGZ.cpp:1593
 msgid "Sorry, no game modules found for this game type."
 msgstr ""
 "Me desculpa, mas não foi encontrado nenhum módulo para esse tipo de jogo."
 
-#: ../../ggz-kde/src/KGGZ.cpp:1105
+#: ../../ggz-kde/src/KGGZ.cpp:1127
 msgid "Sorry, you cannot change the room while playing!"
 msgstr "Me desculpe, mas você não pode mudar a sala enquanto jogando!"
 
@@ -959,7 +1051,11 @@ msgstr "Me desculpe, mas você não pode mudar a sala enquanto jogando!"
 msgid "Specify a command option:"
 msgstr "Dá uma opção do comando:"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:145
+#: ../../ggz-kde/src/KGGZMeta.cpp:80
+msgid "Speed"
+msgstr "Velocidade"
+
+#: ../../ggz-kde/src/KGGZConnect.cpp:154
 msgid "Start ggzd server locally"
 msgstr "Iniciar servidor ggzd localmente"
 
@@ -967,7 +1063,7 @@ msgstr "Iniciar servidor ggzd localmente"
 msgid "Start server"
 msgstr "Iniciar servidor"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:534
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:559
 msgid "State: "
 msgstr "Estado: "
 
@@ -979,21 +1075,25 @@ msgstr "Status"
 msgid "Stop server"
 msgstr "Parar servidor"
 
-#: ../../ggz-kde/src/main.cpp:78
+#: ../../ggz-kde/src/main.cpp:80
 msgid "TRANSLATOR-EMAIL"
 msgstr "josef@ggzgamingzone.org"
 
-#: ../../ggz-kde/src/main.cpp:78
+#: ../../ggz-kde/src/main.cpp:80
 msgid "TRANSLATOR-NAME"
 msgstr "Josef Spillner"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1443 ../../ggz-kde/src/KGGZ.cpp:1452
-#: ../../ggz-kde/src/KGGZ.cpp:1472 ../../ggz-kde/src/KGGZ.cpp:1481
+#: ../../ggz-kde/src/KGGZ.cpp:1514 ../../ggz-kde/src/KGGZ.cpp:1523
+#: ../../ggz-kde/src/KGGZ.cpp:1543 ../../ggz-kde/src/KGGZ.cpp:1552
 msgid "Table join failure"
 msgstr "Error de participar na mesa"
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:137
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:157
+#: ../../ggz-kde/src/KGGZ.cpp:1192
+msgid "Table launch error!"
+msgstr "Erro na inicialização da mesa!"
+
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:138
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:158
 msgid "Table: %1"
 msgstr "Mesa: %1"
 
@@ -1001,7 +1101,7 @@ msgstr "Mesa: %1"
 msgid "Team foundation"
 msgstr "Fundação de times"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:128
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:129
 #: ../../ggz-kde/src/widgets/KGGZTeam.cpp:66
 #: ../../ggz-kde/src/widgets/KGGZTeam.cpp:94
 msgid "Teams"
@@ -1019,31 +1119,48 @@ msgstr "Me conte algo sobre você"
 msgid "Thanks for taking the time!"
 msgstr "Muito obrigado pela atenção!"
 
-#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:146
+#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:152
 msgid "The GGZ Gaming Zone"
 msgstr "A GGZ Gaming Zone"
 
-#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:153
+#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:159
 msgid "The GGZ Gaming Zone is a collaboration between several people who"
 msgstr "A GGZ Gaming Zone é uma colaboração entre várias pessoas que"
 
-#: ../../ggz-kde/src/KGGZ.cpp:363
+#: ../../ggz-kde/src/KGGZConnect.cpp:731 ../../ggz-kde/src/KGGZMeta.cpp:135
+msgid "The GGZ metaserver could not be contacted."
+msgstr "O metaserver GGZ não pude ser contatado."
+
+#: ../../ggz-kde/src/KGGZ.cpp:373
 msgid "The GGZ server is already running!"
 msgstr "O servidor do GGZ já está rodando!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1810
+#: ../../ggz-kde/src/KGGZLaunch.cpp:474
+msgid "The player %1 is already on a seat."
+msgstr "O jogador %1 já fica num lugar."
+
+#: ../../ggz-kde/src/KGGZ.cpp:1934
 msgid "The pleasure has been on my side :)"
 msgstr "O prazer foi todo meu :)"
 
-#: ../../ggz-kde/src/KGGZ.cpp:379
-msgid "The server isn't running anymore."
-msgstr "O servidor já não está rodando!"
+#: ../../ggz-kde/src/KGGZ.cpp:1607
+msgid ""
+"The selected game might reveal your IP address or hostname to other players. "
+"Do you still want to continue?"
+msgstr ""
+"O jogo selecionado pode revelar o seu endereço IP ou o nome do seu computador "
+"para outros jogadores. "
+"Quer continuar mesmo assim?"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1025
+#: ../../ggz-kde/src/KGGZ.cpp:389
+msgid "The server isn't running anymore."
+msgstr "O servidor já não está rodando."
+
+#: ../../ggz-kde/src/KGGZ.cpp:1040
 msgid "The wallet could not be opened to insert the password (%1)."
 msgstr "O wallet não pude ser abrido para insertar a senha (%1)."
 
-#: ../../ggz-kde/src/KGGZ.cpp:244
+#: ../../ggz-kde/src/KGGZ.cpp:239
 msgid "The wallet could not be opened."
 msgstr "Error abrir o wallet."
 
@@ -1052,19 +1169,19 @@ msgid ""
 "This game has multiple frontends.\n"
 "Select your favorite one."
 msgstr ""
-"Esse jogo tem várias interfaces \n"
-"Selecione a sua favorita"
+"Esse jogo tem várias interfaces.\n"
+"Selecione a sua favorita."
 
 #: ../../ggz-kde/src/widgets/KGGZGrubby.cpp:92
 msgid "This is grubby:"
 msgstr "Esse é grubby (bot):"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1664
+#: ../../ggz-kde/src/KGGZ.cpp:1750
 msgid "This is the GGZ Gaming Zone Lounge. You can meet other players here."
 msgstr ""
 "Esse é a GGZ Gaming Zone Lounge. Você pode encontrar outros jogadores aqui."
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:348
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:367
 msgid ""
 "Ties: %1\n"
 "Forfeits: %2\n"
@@ -1072,11 +1189,11 @@ msgstr ""
 "Ties: %1\n"
 "Forfeits: %2\n"
 
-#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:106
+#: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:107
 msgid "Time stamps in chat"
 msgstr "Usar marcas de tempo no chat"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1688 ../../ggz-kde/src/KGGZ.cpp:1711
+#: ../../ggz-kde/src/KGGZ.cpp:1774 ../../ggz-kde/src/KGGZ.cpp:1800
 msgid "URL: "
 msgstr "URL: "
 
@@ -1084,19 +1201,23 @@ msgstr "URL: "
 msgid "Use panel watcher"
 msgstr "Usar notificação do painel"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:108
+#: ../../ggz-kde/src/KGGZConnect.cpp:118
 msgid "Use password:"
 msgstr "Usar senha:"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:148
+#: ../../ggz-kde/src/KGGZConnect.cpp:157
 msgid "Use secure connection (TLS)"
 msgstr "Usar conexão segurada (TLS)"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:125
+#: ../../ggz-kde/src/KGGZConnect.cpp:407
 msgid "Using KWallet"
 msgstr "Usar wallet"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1679
+#: ../../ggz-kde/src/KGGZMeta.cpp:76
+msgid "Version"
+msgstr "Versão"
+
+#: ../../ggz-kde/src/KGGZ.cpp:1765
 msgid "Version: "
 msgstr "Versão: "
 
@@ -1112,7 +1233,7 @@ msgstr "Qual seja o nome do novo time?"
 msgid "Who is ...:"
 msgstr "Quem é ...:"
 
-#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:347
+#: ../../ggz-kde/src/widgets/KGGZUsers.cpp:366
 msgid ""
 "Wins: %1\n"
 "Losses: %2\n"
@@ -1120,7 +1241,7 @@ msgstr ""
 "Vencas: %1\n"
 "Perdidas: %2\n"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1011
+#: ../../ggz-kde/src/KGGZ.cpp:1026
 msgid ""
 "You are welcome as a new GGZ Gaming Zone player.\n"
 "Your personal password is: %1"
@@ -1128,91 +1249,92 @@ msgstr ""
 "Seja bem vindo como um novo jogador da GGZ Gaming Zone.\n"
 "Sua senha pessoal é: %1"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1425
+#: ../../ggz-kde/src/KGGZ.cpp:1496
 msgid "You cannot launch a game outside a room!"
 msgstr "Você não pode iniciar um jogo fora de uma sala!"
 
-#: ../../ggz-kde/src/KGGZ.cpp:383
+#: ../../ggz-kde/src/KGGZ.cpp:393
 msgid "You don't have the privileges to stop the server."
 msgstr "Você não tem o direito de parar o servidor."
 
-#: ../../ggz-kde/src/KGGZ.cpp:832
+#: ../../ggz-kde/src/KGGZ.cpp:838
 msgid "You have been beeped by %1."
-msgstr "Você foi beepado por %1"
+msgstr "Você foi beepado por %1."
 
-#: ../../ggz-kde/src/KGGZ.cpp:1443 ../../ggz-kde/src/KGGZ.cpp:1472
+#: ../../ggz-kde/src/KGGZ.cpp:1514 ../../ggz-kde/src/KGGZ.cpp:1543
 msgid "You must be in a room to join a table!"
 msgstr "Você tem que ficar numa sala para participar numa mesa!"
 
 #: ../../ggz-kde/src/main.cpp:60
 msgid "Your most desired KDE network games launcher and chat system."
-msgstr "Seu gerenciador de jogos de rede a sistema de chat do KDE favorito"
+msgstr "Seu gerenciador de jogos de rede a sistema de chat do KDE favorito."
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:627
+#: ../../ggz-kde/src/KGGZConnect.cpp:689
 msgid "Zeroconf could not be initialized."
 msgstr "Erro inicialisando o Zeroconf."
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:605 ../../ggz-kde/src/KGGZConnect.cpp:627
+#: ../../ggz-kde/src/KGGZConnect.cpp:646 ../../ggz-kde/src/KGGZConnect.cpp:669
+#: ../../ggz-kde/src/KGGZConnect.cpp:689
 msgid "Zeroconf error"
 msgstr "Erro do Zeroconf"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:642
+#: ../../ggz-kde/src/KGGZConnect.cpp:723
 msgid "Zeroconf success"
 msgstr "Zeroconf funciona"
 
-#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:117
+#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:121
 msgid "and many supporters..."
 msgstr "e muitos apioadores..."
 
-#: ../../ggz-kde/src/KGGZ.cpp:862
+#: ../../ggz-kde/src/KGGZ.cpp:868
 msgid "disconnect from server"
 msgstr "desonectar do servidor"
 
-#: ../../ggz-kde/src/KGGZ.cpp:843
+#: ../../ggz-kde/src/KGGZ.cpp:849
 msgid "first room after login"
 msgstr "primeira sala depos login"
 
-#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:156
+#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:162
 msgid "game developers. GGZ is available for many platforms and toolkits."
 msgstr ""
 "desenvolvedores de jogos. GGZ está disponível para várias plataformas e "
-"bibliotecas"
+"bibliotecas."
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:138
+#: ../../ggz-kde/src/KGGZConnect.cpp:147
 msgid "guest"
 msgstr "convidado"
 
-#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:155
+#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:161
 msgid "including source code and professional help for both gamers and"
 msgstr "inclunindo código fonte e ajuda profissional de ambos os jogadores e"
 
-#: ../../ggz-kde/src/KGGZ.cpp:1005
+#: ../../ggz-kde/src/KGGZ.cpp:1020
 msgid "logged in as %1@%2:%3"
 msgstr "indentificado como %1@%2:%3"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:137
+#: ../../ggz-kde/src/KGGZConnect.cpp:146
 msgid "normal"
 msgstr "normal"
 
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:163
-#: ../../ggz-kde/src/widgets/KGGZBase.cpp:427
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:165
+#: ../../ggz-kde/src/widgets/KGGZBase.cpp:435
 msgid "offline"
 msgstr "desligado"
 
-#: ../../ggz-kde/src/KGGZConnect.cpp:139
+#: ../../ggz-kde/src/KGGZConnect.cpp:148
 msgid "starter"
 msgstr "iniciante"
 
-#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:154
+#: ../../ggz-kde/src/widgets/KGGZAbout.cpp:160
 msgid "try to make public online game services available for free -"
 msgstr "tentando fazer serviços de jogos em rede disponíveis gratuitamente -"
 
-#: ../../ggz-kde/src/KGGZLaunch.cpp:416
+#: ../../ggz-kde/src/KGGZLaunch.cpp:455
 msgid "unknown"
 msgstr "desconhecido"
 
-#~ msgid "Seat assignments:"
-#~ msgstr "Configuração dos lugares"
+#~ msgid "Record"
+#~ msgstr "Registro"
 
 #~ msgid "  Connected  "
 #~ msgstr "  Conectado  "

@@ -113,6 +113,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	m_workspace = new KGGZWorkspace(this, "workspace");
 
 	connect(m_workspace->widgetChat(), SIGNAL(signalChat(QString, QString, int)), SLOT(slotChat(QString, QString, int)));
+	connect(m_workspace->widgetChat(), SIGNAL(signalAdmin(int, QString, QString)), SLOT(slotAdmin(int, QString, QString)));
 	connect(m_workspace->widgetUsers(), SIGNAL(signalChat(QString, QString, int)), SLOT(slotChat(QString, QString, int)));
 	connect(m_workspace->widgetLogo(), SIGNAL(signalInfo()), SLOT(menuGameInfo()));
 
@@ -594,6 +595,9 @@ void KGGZ::listPlayers()
 				break;
 			case GGZCorePlayer::admin:
 				type = KGGZUsers::assignadmin;
+				break;
+			case GGZCorePlayer::host:
+				type = KGGZUsers::assignhost;
 				break;
 			case GGZCorePlayer::bot:
 				type = KGGZUsers::assignbot;
@@ -1257,6 +1261,27 @@ GGZHookReturn KGGZ::hookOpenCollector(unsigned int id, const void* event_data, c
 	return GGZ_HOOK_OK;
 }
 
+void KGGZ::slotAdmin(int action, QString player, QString text)
+{
+	if((kggzserver) && (kggzroom))
+	{
+		KGGZDEBUG("Admin action on: %s\n", player.utf8().data());
+
+		switch(action)
+		{
+			case KGGZChat::ADMIN_GAG:
+				kggzroom->admin(GGZCoreRoom::admingag, player, NULL);
+				break;
+			case KGGZChat::ADMIN_UNGAG:
+				kggzroom->admin(GGZCoreRoom::adminungag, player, NULL);
+				break;
+			case KGGZChat::ADMIN_KICK:
+				kggzroom->admin(GGZCoreRoom::adminkick, player, text);
+				break;
+		}
+	}
+}
+
 void KGGZ::slotChat(QString text, QString player, int mode)
 {
 	if((kggzserver) && (kggzroom))
@@ -1265,13 +1290,13 @@ void KGGZ::slotChat(QString text, QString player, int mode)
 		switch(mode)
 		{
 			case KGGZChat::RECEIVE_CHAT:
-				kggzroom->chat(GGZ_CHAT_NORMAL, player, text);
+				kggzroom->chat(GGZCoreRoom::chatnormal, player, text);
 				break;
 			case KGGZChat::RECEIVE_TABLE:
-				kggzroom->chat(GGZ_CHAT_TABLE, player, text);
+				kggzroom->chat(GGZCoreRoom::chattable, player, text);
 				break;
 			case KGGZChat::RECEIVE_ANNOUNCE:
-				if(kggzroom->chat(GGZ_CHAT_ANNOUNCE, NULL, text) < 0)
+				if(kggzroom->chat(GGZCoreRoom::chatannounce, NULL, text) < 0)
 				{
 					m_workspace->widgetChat()->receive(NULL,
 						i18n("Only administrators are allowed to broadcast messages."),
@@ -1279,10 +1304,10 @@ void KGGZ::slotChat(QString text, QString player, int mode)
 				}
 				break;
 			case KGGZChat::RECEIVE_BEEP:
-				kggzroom->chat(GGZ_CHAT_BEEP, player, text);
+				kggzroom->chat(GGZCoreRoom::chatbeep, player, text);
 				break;
 			case KGGZChat::RECEIVE_PERSONAL:
-				kggzroom->chat(GGZ_CHAT_PERSONAL, player, text);
+				kggzroom->chat(GGZCoreRoom::chatprivate, player, text);
 				break;
 		}
 	}

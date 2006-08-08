@@ -170,6 +170,7 @@ void KGGZLaunch::slotActivated(int id)
 
 void KGGZLaunch::slotAccepted()
 {
+	m_ok->setEnabled(false);
 	emit signalLaunch();
 }
 

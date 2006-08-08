@@ -4,6 +4,7 @@ dist_pix_DATA = \
 	buddy.png \
 	banned.png \
 	admin.png \
+	host.png \
 	player.png \
 	guest.png \
 	bot.png \

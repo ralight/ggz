@@ -79,7 +79,8 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 		i18n("Banned"), creditbanned);
 
 	m_menu_info = new QPopupMenu(NULL);
-	m_menu_info->insertItem(i18n("Record"), inforecord);
+	m_menu_info->insertItem(i18n("Player"), infoplayer);
+	m_menu_info->insertItem(i18n("Game results"), inforecord);
 
 	connect(this,
 		SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)),
@@ -231,6 +232,9 @@ void KGGZUsers::display(QString playername)
 		case assignadmin:
 			pixmap = "admin.png";
 			break;
+		case assignhost:
+			pixmap = "host.png";
+			break;
 	}
 
 	rolepixmap = QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap);
@@ -310,13 +314,72 @@ void KGGZUsers::setLag(QString playername, int lagvalue)
 	lag(player(playername), lagvalue);
 }
 
+void KGGZUsers::displayPlayer(QString playername)
+{
+	QString playerlevel;
+	int role;
+	QString text;
+
+	role = m_roles[playername];
+
+	switch(role)
+	{
+		case assignplayer:
+			playerlevel = i18n("Registered player");
+			break;
+		case assignguest:
+			playerlevel = i18n("Guest player (anonymous/not registered)");
+			break;
+		case assignbot:
+			playerlevel = i18n("Chat bot");
+			break;
+		case assignadmin:
+			playerlevel = i18n("Server administrator");
+			break;
+		case assignhost:
+			playerlevel = i18n("Host player");
+			break;
+	}
+
+	text = i18n("Information about %1:\n").arg(playername);
+	text += i18n("Player level: %1\n").arg(playerlevel);
+
+	KMessageBox::information(this, text, i18n("Player information"));
+}
+
+void KGGZUsers::displayRecord(GGZCorePlayer *player)
+{
+	int wins, losses, ties, forfeits;
+	int rating, ranking, highscore;
+	QString text;
+
+	wins = player->recordWins();
+	losses = player->recordLosses();
+	ties = player->recordTies();
+	forfeits = player->recordForfeits();
+
+	highscore = player->highscore();
+	ranking = player->ranking();
+	rating = player->rating();
+
+	text = i18n("Information about %1:\n").arg(player->name());
+	text = text + i18n("Wins: %1\nLosses: %2\n").arg(wins).arg(losses);
+	text = text + i18n("Ties: %1\nForfeits: %2\n").arg(ties).arg(forfeits);
+	if(rating)
+		text = text + i18n("Rating: %1\n").arg(rating);
+	if(ranking)
+		text = text + i18n("Ranking: %1\n").arg(ranking);
+	if(highscore)
+		text = text + i18n("Highscore: %1\n").arg(highscore);
+
+	KMessageBox::information(this, text, i18n("Player game information"));
+}
+
 void KGGZUsers::slotInformation(int id)
 {
 	QListViewItem *tmp;
-	int wins, losses, ties, forfeits;
-	int rating, ranking, highscore;
-	QString playername, text;
 	GGZCorePlayer *player, *tmpplayer;
+	QString playername;
 
 	Q_UNUSED(id);
 
@@ -338,26 +401,8 @@ void KGGZUsers::slotInformation(int id)
 	}
 	if(!player) return;
 
-	wins = player->recordWins();
-	losses = player->recordLosses();
-	ties = player->recordTies();
-	forfeits = player->recordForfeits();
-
-	highscore = player->highscore();
-	ranking = player->ranking();
-	rating = player->rating();
-
-	text = i18n("Information about %1:\n").arg(playername);
-	text = text + i18n("Wins: %1\nLosses: %2\n").arg(wins).arg(losses);
-	text = text + i18n("Ties: %1\nForfeits: %2\n").arg(ties).arg(forfeits);
-	if(rating)
-		text = text + i18n("Rating: %1\n").arg(rating);
-	if(ranking)
-		text = text + i18n("Ranking: %1\n").arg(ranking);
-	if(highscore)
-		text = text + i18n("Highscore: %1\n").arg(highscore);
-
-	KMessageBox::information(this, text, i18n("Player information"));
+	if(id == infoplayer) displayPlayer(playername);
+	else if(id == inforecord) displayRecord(player);
 }
 
 void KGGZUsers::setRoom(GGZCoreRoom *room)
