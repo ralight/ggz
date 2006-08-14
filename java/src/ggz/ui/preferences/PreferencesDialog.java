@@ -63,6 +63,15 @@ public class PreferencesDialog extends JDialog {
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
+    
+    public void dispose() {
+        int tabCount = tabbedPane.getTabCount();
+        for (int tabIndex = 0; tabIndex < tabCount; tabIndex++) {
+            PreferencesTab tab = (PreferencesTab) tabbedPane.getComponentAt(tabIndex);
+            tab.dispose();
+        }
+        super.dispose();
+    }
 
     protected void apply() {
         int tabCount = tabbedPane.getTabCount();

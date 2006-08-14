@@ -189,6 +189,9 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         // us.
         if (!isDisposed) {
             GGZPreferences.removePreferenceChangeListener(this);
+            // This is needed to prevent memory leaks due to us using our own
+            // static StyleContext, it might be a bug in JDK1.4.
+            this.chatArea.setDocument(new DefaultStyledDocument());
             isDisposed = true;
         }
     }

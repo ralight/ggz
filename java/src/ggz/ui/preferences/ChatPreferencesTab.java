@@ -121,6 +121,12 @@ public class ChatPreferencesTab extends JPanel implements PreferencesTab,
                     stylePreferences[6].style);
     }
 
+    public void dispose() {
+        for (int i = 0; i < this.stylePreferences.length; i++) {
+            this.stylePreferences[i].dispose();
+        }
+    }
+
     private StylePreference[] getChatStyles() {
         // We need to make sure the copy of the normal style is used as the
         // parent for all other styles so that they update correctly.
@@ -169,6 +175,10 @@ public class ChatPreferencesTab extends JPanel implements PreferencesTab,
         public void stateChanged(ChangeEvent e) {
             hasChanged = true;
             ChatPreferencesTab.this.repaint();
+        }
+
+        public void dispose() {
+            this.style.removeChangeListener(this);
         }
 
     }

@@ -21,4 +21,6 @@ public interface PreferencesTab {
     public String getTitle();
 
     public void apply();
+    
+    public void dispose();
 }

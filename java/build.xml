@@ -26,11 +26,12 @@
 		<mkdir dir="${bin}" />
 		<mkdir dir="manifest" />
 
-                <echo message="ant.library.dir=${ant.library.dir}" />
-
+		<!-- Output the Ant library dir so we know where to put the SVN JAR files. -->
+		<echo message="ant.library.dir=${ant.library.dir}"/>
+		
 		<!-- Update the version.properties file -->
 		<tstamp>
-			<format property="TODAY" timezone="GMT" pattern="yyyy-MM-dd'T'hh:mm:ss.S'Z'" />
+			<format property="TODAY" timezone="GMT" pattern="yyyy-MM-dd'T'hh:mm:ss'Z'" />
 			<format property="DSTAMP" timezone="GMT" pattern="yyyy-MM-dd" />
 			<format property="TSTAMP" timezone="GMT" pattern="hh:mm:ss" />
 		</tstamp>
