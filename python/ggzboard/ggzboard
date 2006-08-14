@@ -975,6 +975,12 @@ class GGZBoard:
 					width = (conf.cellwidth + conf.cellspace)
 					height = (conf.cellheight + conf.cellspace)
 
+				if "boardbackground" in dir(game):
+					w = conf.cellwidth * game.width
+					h = conf.cellheight * game.height
+					img = self.svgsurface(game.boardbackground, w, h)
+					ui.backgroundarea.blit(img, (conf.marginwidth, conf.marginheight))
+
 				for j in range(0, game.height):
 					for i in range(0, game.width):
 						color = conf.tilecolor

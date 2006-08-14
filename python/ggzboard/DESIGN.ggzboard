@@ -91,6 +91,7 @@ game.dice ((int)[]): tuple of zero to many dice values
 game.playercolours ((colour)[]): colourisation for each player
 game.winner (int): winning player
 game.help ((string)[]): text to be displayed in the help window
+game.boardbackground (string): background spanning the whole board [optional]
 
 game.name(): returns the full name of the game module
 game.figure(string): returns the filename to represent a board cell state
