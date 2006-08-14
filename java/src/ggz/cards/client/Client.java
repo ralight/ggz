@@ -79,6 +79,8 @@ public class Client {
     protected boolean isNewTrick;
 
     protected String scores;
+    
+    protected String options;
 
     protected CardGameHandler game;
 
@@ -156,14 +158,20 @@ public class Client {
     public String get_scores() {
         return this.scores;
     }
+    
+    public String get_options() {
+        return this.options;
+    }
 
     private void handle_text_message() throws IOException {
         String mark = this.fd_in.read_string();
         String message = this.fd_in.read_string();
         if ("Scores".equals(mark)) {
-            scores = message;
+            this.scores = message;
+        } else if ("Options".equals(mark)) {
+            this.options = message;
         }
-        game.set_text_message(mark, message);
+        this.game.set_text_message(mark, message);
     }
 
     private void handle_cardlist_message() throws IOException {

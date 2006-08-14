@@ -19,10 +19,12 @@ package ggz.ui;
 
 import java.awt.AWTEvent;
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.swing.Action;
 import javax.swing.JLabel;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkEvent;
@@ -39,16 +41,24 @@ import javax.swing.event.HyperlinkListener;
 public class HyperlinkLabel extends JLabel {
     private URL url;
 
-    private String style;
+    private String label;
+
+    private Action action;
 
     private static HyperlinkListener globalListener;
 
     public HyperlinkLabel() {
         super();
+        enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         if (globalListener != null) {
             addHyperlinkListener(globalListener);
         }
-        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
+
+    public HyperlinkLabel(String text) {
+        this();
+        setText(text, (URL) null);
     }
 
     public HyperlinkLabel(String text, URL url) {
@@ -56,10 +66,9 @@ public class HyperlinkLabel extends JLabel {
         setText(text, url);
     }
 
-    public HyperlinkLabel(String text, URL url, String style) {
-        this();
-        this.style = style;
-        setText(text, url);
+    public HyperlinkLabel(Action action) {
+        this((String) action.getValue(Action.NAME), null);
+        this.action = action;
     }
 
     public void setText(String text) {
@@ -71,18 +80,51 @@ public class HyperlinkLabel extends JLabel {
     }
 
     public void setText(String text, URL url) {
-        super.setText("<HTML><A href='" + url + "'"
-                + (style == null ? "" : " style='" + style + "'") + ">" + text
-                + "</A></HTML>");
+        this.label = text;
         this.url = url;
+        super.setText(getHtmlText(false));
+    }
+
+    public void setURL(String url) throws MalformedURLException {
+        this.url = new URL(url);
+    }
+
+    protected String getHtmlText(boolean isHighlighted) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<HTML>");
+        if (isHighlighted)
+            buffer.append("<U>");
+        buffer.append(this.label);
+        if (isHighlighted)
+            buffer.append("</U>");
+        buffer.append("</HTML>");
+        return buffer.toString();
+    }
+
+    protected void highlight(boolean isHighlighted) {
+        super.setText(getHtmlText(isHighlighted));
     }
 
     protected void processMouseEvent(MouseEvent event) {
-        if (url != null) {
-            if (event.getID() == MouseEvent.MOUSE_CLICKED) {
+        if (!isEnabled())
+            return;
+        
+        switch (event.getID()) {
+        case MouseEvent.MOUSE_ENTERED:
+            highlight(true);
+            break;
+        case MouseEvent.MOUSE_EXITED:
+            highlight(false);
+            break;
+        case MouseEvent.MOUSE_CLICKED:
+            if (this.url != null) {
                 fireHyperlinkUpdate(new HyperlinkEvent(this,
-                        HyperlinkEvent.EventType.ACTIVATED, url));
+                        HyperlinkEvent.EventType.ACTIVATED, this.url));
+            } else if (this.action != null) {
+                this.action.actionPerformed(new ActionEvent(this,
+                        ActionEvent.ACTION_PERFORMED, null));
             }
+            break;
         }
         super.processMouseEvent(event);
     }
@@ -96,7 +138,6 @@ public class HyperlinkLabel extends JLabel {
      */
     public synchronized void addHyperlinkListener(HyperlinkListener listener) {
         listenerList.add(HyperlinkListener.class, listener);
-        enableEvents(AWTEvent.MOUSE_EVENT_MASK);
     }
 
     /**

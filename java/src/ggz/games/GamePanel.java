@@ -18,8 +18,8 @@
 package ggz.games;
 
 import ggz.cards.SmartChatLayout;
-import ggz.client.mod.ModGame;
 import ggz.client.mod.ModEventHandler;
+import ggz.client.mod.ModGame;
 import ggz.client.mod.ModState;
 import ggz.client.mod.Seat;
 import ggz.client.mod.SpectatorSeat;

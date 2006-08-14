@@ -37,11 +37,11 @@ import ggz.ui.preferences.PreferencesDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -55,20 +55,19 @@ import java.util.Random;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 
 public class CardGamePanel extends GamePanel implements CardGameHandler,
         ActionListener, PreferenceChangeListener {
@@ -101,35 +100,65 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected JPanel southEastPanel;
 
-    protected JButton scoresButton;
-
     protected ScoresDialog scoresDialog;
 
     protected JButton lastTrickButton;
 
-    protected JButton previousHandButton;
+    protected HyperlinkLabel quitLabel;
 
-    protected JButton quitButton;
+    protected HyperlinkLabel scoresLabel;
 
-    protected JPanel northWestPanel;
+    protected HyperlinkLabel optionsLabel;
 
-    protected JLabel optionsSummaryLabel;
+    protected HyperlinkLabel previousHandLabel;
 
-    protected HyperlinkLabel rulesLabel;
+    protected HyperlinkLabel preferencesLabel;
+
+    protected HyperlinkLabel howToPlayLabel;
 
     public void init(ModGame mod) throws IOException {
         super.init(mod);
         cardClient = new Client();
         cardClient.add_listener(this);
         table = new TablePanel();
-        // table.setBackground(new Color(0, 128, 0));
+        JPanel menuPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 2));
         JPanel border = new JPanel(new BorderLayout());
-        border.add(table, BorderLayout.CENTER);
-        border.setBorder(BorderFactory.createCompoundBorder(BorderFactory
-                .createLineBorder(new Color(0, 64, 64), 10), BorderFactory
-                .createLineBorder(Color.BLACK, 2)));
+        JPanel innerBorder = new JPanel(new BorderLayout());
+        innerBorder.add(table, BorderLayout.CENTER);
+        innerBorder.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        border.add(innerBorder, BorderLayout.CENTER);
+        border.add(menuPanel, BorderLayout.SOUTH);
+        border.setBorder(BorderFactory.createMatteBorder(10, 10, 0, 10,
+                new Color(0, 64, 64)));
+
+        menuPanel.setBackground(new Color(0, 64, 64));
 
         add(border, SmartChatLayout.TABLE);
+
+        // Set up the menu.
+        this.quitLabel = new HyperlinkLabel(new QuitAction());
+        this.previousHandLabel = new HyperlinkLabel(
+                new ViewPreviousHandAction());
+        this.scoresLabel = new HyperlinkLabel(new ViewScoresAction());
+        this.optionsLabel = new HyperlinkLabel(new ViewOptionsAction());
+        this.preferencesLabel = new HyperlinkLabel(new PreferencesAction());
+        this.howToPlayLabel = new HyperlinkLabel("How to play", null);
+        this.quitLabel.setForeground(Color.WHITE);
+        this.previousHandLabel.setForeground(Color.WHITE);
+        this.scoresLabel.setForeground(Color.WHITE);
+        this.optionsLabel.setForeground(Color.WHITE);
+        this.preferencesLabel.setForeground(Color.WHITE);
+        this.howToPlayLabel.setForeground(Color.WHITE);
+        this.previousHandLabel.setEnabled(false);
+        this.scoresLabel.setEnabled(false);
+        this.optionsLabel.setEnabled(false);
+        this.howToPlayLabel.setEnabled(false);
+        menuPanel.add(quitLabel);
+        menuPanel.add(previousHandLabel);
+        menuPanel.add(scoresLabel);
+        menuPanel.add(optionsLabel);
+        menuPanel.add(preferencesLabel);
+        menuPanel.add(howToPlayLabel);
 
         // Calculate the size of the cards.
         Sprite sample = new Sprite(Card.UNKNOWN_CARD);
@@ -151,74 +180,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         lastTrickButton.addActionListener(this);
         lastTrickButton.setBorder(BorderFactory.createEtchedBorder());
         // Add the control to allow the cards in the previous hand to be viewed.
-        previousHandButton = new JButton(new ImageIcon(getClass().getResource(
-                "/ggz/cards/images/hand.gif")));
-        previousHandButton.setOpaque(false);
-        previousHandButton.setToolTipText("View previous hand");
-        previousHandButton.setVisible(false);
-        previousHandButton.addActionListener(this);
-        previousHandButton.setBorder(BorderFactory.createEtchedBorder());
-        scoresButton = new JButton(new ImageIcon(getClass().getResource(
-                "/ggz/cards/images/scores.gif")));
-        scoresButton.setOpaque(true);
-        scoresButton.setToolTipText("Scores");
-        scoresButton.setVisible(false);
-        scoresButton.addActionListener(this);
-        // scoresButton.setBorder(null);
-        scoresButton.setBorder(BorderFactory.createEtchedBorder());
         southEastPanel = new JPanel(new GridLayout(1, 2, 0, 0));
         southEastPanel.setOpaque(false);
-        southEastPanel.add(previousHandButton);
         southEastPanel.add(lastTrickButton);
-        southEastPanel.add(scoresButton);
         table.add(southEastPanel, new TableConstraints(
                 TableConstraints.SOUTH_EAST_CORNER));
-
-        JPanel southWestPanel = new JPanel(new GridLayout(0, 1, 2, 2));
-        JButton standButton = new JButton(new SeatStandAction());
-        standButton.setOpaque(false);
-        standButton.setForeground(Color.white);
-        standButton.setFocusable(false);
-        quitButton = new JButton("Quit");
-        quitButton.addActionListener(this);
-        quitButton.setOpaque(false);
-        quitButton.setForeground(Color.white);
-        quitButton.setFocusable(false);
-        // Get rid of the margin insets on the Metal or Ocean buttons to
-        // make the buttons smaller.
-        Border old_border = quitButton.getBorder();
-        if (old_border instanceof CompoundBorder) {
-            quitButton.setBorder(((CompoundBorder) old_border)
-                    .getOutsideBorder());
-        }
-        southWestPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-        southWestPanel.setOpaque(false);
-        // Don't add the stand button for now since users don't like it. We
-        // might consider adding it later but only make it available between
-        // games.
-        // southWestPanel.add(standButton);
-        southWestPanel.add(quitButton);
-        table.add(southWestPanel, new TableConstraints(
-                TableConstraints.SOUTH_WEST_CORNER));
-
-        northWestPanel = new JPanel(new GridLayout(0, 1));
-        northWestPanel.setOpaque(false);
-        JLabel preferencesLabel = new JLabel(
-                "<HTML><A href=''>Preferences...</A></HTML>");
-        preferencesLabel.setCursor(Cursor
-                .getPredefinedCursor(Cursor.HAND_CURSOR));
-        preferencesLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent event) {
-                PreferencesDialog.showPreferences(
-                        (Component) event.getSource(), new String[] {
-                                "ggz.cards.GGZCardsPreferencesTab",
-                                "ggz.ui.preferences.ChatPreferencesTab" });
-            }
-        });
-
-        northWestPanel.add(preferencesLabel);
-        table.add(northWestPanel, new TableConstraints(
-                TableConstraints.NORTH_WEST_CORNER));
     }
 
     protected void createBidPanel(int firstBidder) {
@@ -644,7 +610,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             dialog.getContentPane().setBackground(table.getBackground());
             dialog.setSize(380, 380);
             // dialog.setResizable(false);
-            dialog.setLocation(previousHandButton.getLocationOnScreen());
+            dialog.setLocation(previousHandLabel.getLocationOnScreen());
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             dialog.setModal(true);
             OptionDialog.fixLocation(dialog);
@@ -665,10 +631,31 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
         scoresDialog.setScores(scores);
         if (!scoresDialog.isVisible()) {
-            scoresDialog.setLocation(scoresButton.getLocationOnScreen());
+            scoresDialog.setLocation(scoresLabel.getLocationOnScreen());
             OptionDialog.fixLocation(scoresDialog);
             scoresDialog.setVisible(true);
         }
+    }
+
+    protected void showOptions() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Frame frame = JOptionPane
+                        .getFrameForComponent(CardGamePanel.this);
+                String options = cardClient.get_options();
+                JDialog dialog = new JDialog(frame, "Options");
+                JTextArea text = new JTextArea(options);
+                text.setEditable(false);
+                dialog.getContentPane().add(text, BorderLayout.CENTER);
+                dialog.pack();
+                dialog
+                        .setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                dialog.setModal(true);
+                dialog.setLocation(optionsLabel.getLocationOnScreen());
+                OptionDialog.fixLocation(dialog);
+                dialog.setVisible(true);
+            }
+        });
     }
 
     public void alert_server(Socket fd) {
@@ -754,6 +741,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     public void alert_scores(int hand_num) {
         // TODO handle these.
+        // TODO put hand number in "hand" icon next to scores.
+        // TODO try making other cards use smaller (fixed) gap.
+        // TODO keep last trick as an icon.
+        // TODO consider putting Scores near score summary
         System.out.println("hand_num=" + hand_num);
         this.cardClient.get_num_teams();
         int numTeams = this.cardClient.get_num_teams();
@@ -845,7 +836,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     createBidPanel(0);
                 }
                 bidPanel.setValidBids(bid_choices, bid_texts, bid_descs);
-                // table.showButtons();
+                beep();
             }
         });
     }
@@ -929,6 +920,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     }
                 }
                 handILastPlayedFrom = play_hand;
+                beep();
             }
         });
     }
@@ -987,16 +979,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             } catch (IOException ex) {
                 handleException(ex);
             }
-        } else if (event.getSource() == previousHandButton) {
-            try {
-                showPreviousHand();
-            } catch (IOException ex) {
-                handleException(ex);
-            }
-        } else if (event.getSource() == scoresButton) {
-            showScores();
-        } else if (event.getSource() == quitButton) {
-            quit();
         }
     }
 
@@ -1025,7 +1007,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         } else {
             StringBuffer csv = new StringBuffer(winners[0].get_name());
             for (int i = 1; i < winners.length; i++) {
-                csv.append(",");
+                csv.append(", ");
                 csv.append(winners[i].get_name());
             }
             JOptionPane.showMessageDialog(this,
@@ -1053,7 +1035,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         if ("Last Trick".equals(mark)) {
             lastTrickButton.setVisible(true);
         } else if ("Previous Hand".equals(mark)) {
-            previousHandButton.setVisible(true);
+            previousHandLabel.setEnabled(true);
         }
     }
 
@@ -1080,9 +1062,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     JOptionPane.getFrameForComponent(CardGamePanel.this)
                             .setTitle(message);
                 } else if ("Options".equals(mark)) {
-                    setOptionsSummary(StringUtil.replace(message, "\n", "<BR>"));
+                    optionsLabel.setEnabled(true);
+                    // setOptionsSummary(StringUtil.replace(message, "\n",
+                    // "<BR>"));
                 } else if ("Scores".equals(mark)) {
-                    scoresButton.setVisible(true);
+                    scoresLabel.setEnabled(true);
                     if (scoresDialog != null) {
                         scoresDialog.setScores(message);
                     }
@@ -1114,30 +1098,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         });
     }
 
-    public void setOptionsSummary(String options) {
-        if (optionsSummaryLabel == null) {
-            optionsSummaryLabel = new JLabel("Options");
-            optionsSummaryLabel.setForeground(Color.WHITE);
-            northWestPanel.add(optionsSummaryLabel);
-            // Make sure the font is not bold.
-            optionsSummaryLabel.setFont(optionsSummaryLabel.getFont()
-                    .deriveFont(Font.PLAIN).deriveFont(Font.ITALIC));
-        }
-        optionsSummaryLabel.setToolTipText("<HTML>" + options);
-        // Dimension preferredSize = optionsSummaryLabel.getPreferredSize();
-        // Sometimes the label is really, really big for some reason so
-        // resize it to a sane size if we have to.
-        // preferredSize.width = Math.min(100, preferredSize.width);
-        // preferredSize.height = Math.min(20, preferredSize.height);
-        // optionsSummaryLabel.setSize(preferredSize);
-        // if (rulesLabel == null) {
-        // optionsSummaryLabel.setLocation(0, 0);
-        // } else {
-        // optionsSummaryLabel.setLocation(0, rulesLabel.getHeight());
-        // }
-        revalidate();
-    }
-
     /**
      * Adds a label in the top left corner that contains a hyperlink to the
      * rules of the game. It strips any leading text and removes any trailing
@@ -1151,28 +1111,14 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         int endURLSubstring = url.lastIndexOf('.');
 
         if (beginURLSubstring > -1) {
-            if (rulesLabel == null) {
-                rulesLabel = new HyperlinkLabel();
-                northWestPanel.add(rulesLabel);
-            }
             String rulesURL;
             if (endURLSubstring > -1) {
                 rulesURL = url.substring(beginURLSubstring, endURLSubstring);
             } else {
                 rulesURL = url.substring(beginURLSubstring);
             }
-            rulesLabel.setText("How to play", rulesURL);
-            // Dimension preferredSize = rulesLabel.getPreferredSize();
-            // Sometimes the label is really, really big for some reason so
-            // resize it to a sane size if we have to.
-            // preferredSize.width = Math.min(100, preferredSize.width);
-            // preferredSize.height = Math.min(20, preferredSize.height);
-            // rulesLabel.setSize(preferredSize);
-            // if (optionsSummaryLabel == null) {
-            // rulesLabel.setLocation(0, 0);
-            // } else {
-            // rulesLabel.setLocation(0, optionsSummaryLabel.getHeight());
-            // }
+            howToPlayLabel.setURL(rulesURL);
+            howToPlayLabel.setEnabled(true);
             revalidate();
         }
     }
@@ -1189,6 +1135,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         super.handleServer(fd);
         cardClient.handle_server_connect(fd);
         ggzMod.setState(ModState.GGZMOD_STATE_PLAYING);
+    }
+
+    public void beep() {
+        if (GGZPreferences.getBoolean("GGZCards.BeepOnTurn", true))
+            Toolkit.getDefaultToolkit().beep();
     }
 
     protected class PopupListener extends MouseAdapter {
@@ -1228,6 +1179,62 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         public void mouseExited(MouseEvent e) {
             Sprite sprite = ((Sprite) e.getSource());
             sprite.setSelected(false);
+        }
+    }
+
+    protected class QuitAction extends AbstractAction {
+        protected QuitAction() {
+            super("Quit");
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            quit();
+        }
+    }
+
+    protected class PreferencesAction extends AbstractAction {
+        protected PreferencesAction() {
+            super("Preferences...");
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            PreferencesDialog.showPreferences((Component) event.getSource(),
+                    new String[] { "ggz.cards.GGZCardsPreferencesTab",
+                            "ggz.ui.preferences.ChatPreferencesTab" });
+        }
+    }
+
+    protected class ViewOptionsAction extends AbstractAction {
+        protected ViewOptionsAction() {
+            super("Options");
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            showOptions();
+        }
+    }
+
+    protected class ViewScoresAction extends AbstractAction {
+        protected ViewScoresAction() {
+            super("Scores");
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            showScores();
+        }
+    }
+
+    protected class ViewPreviousHandAction extends AbstractAction {
+        protected ViewPreviousHandAction() {
+            super("Previous Hand");
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            try {
+                showPreviousHand();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }

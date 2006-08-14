@@ -32,15 +32,13 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Composite;
-import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -50,6 +48,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JDialog;
@@ -74,8 +73,6 @@ public class ClientApplet extends JApplet implements ServerListener,
     private static final int DEFAULT_PORT = 5688;
 
     protected Server server;
-
-    protected JLabel aboutLabel;
 
     protected JLabel totalPlayerCountLabel;
 
@@ -145,34 +142,20 @@ public class ClientApplet extends JApplet implements ServerListener,
             footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
             footerPanel.setOpaque(false);
             footerLayoutPanel.add(footerPanel, BorderLayout.EAST);
-            JLabel preferencesLabel = new JLabel(
-                    "<HTML><A href='' style='font-weight:normal'>"
-                            + "Preferences..." + "</A>", SwingConstants.RIGHT);
-            preferencesLabel.setCursor(Cursor
-                    .getPredefinedCursor(Cursor.HAND_CURSOR));
-            preferencesLabel.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent event) {
-                    PreferencesDialog
-                            .showPreferences(
-                                    ClientApplet.this,
-                                    new String[] { "ggz.ui.preferences.ChatPreferencesTab" });
-                }
-            });
+            HyperlinkLabel preferencesLabel = new HyperlinkLabel(
+                    new PreferencesAction());
+            preferencesLabel.setForeground(Color.BLUE);
+            preferencesLabel.setFont(preferencesLabel.getFont().deriveFont(
+                    Font.PLAIN));
+            HyperlinkLabel helpLabel = new HyperlinkLabel("Help", new URL(
+                    getCodeBase(), "help/help.html"));
+            helpLabel.setForeground(Color.BLUE);
+            helpLabel.setFont(helpLabel.getFont().deriveFont(Font.PLAIN));
+            HyperlinkLabel aboutLabel = new HyperlinkLabel(new AboutAction());
+            aboutLabel.setForeground(Color.BLUE);
+            aboutLabel.setFont(aboutLabel.getFont().deriveFont(Font.PLAIN));
             footerPanel.add(preferencesLabel);
-            footerPanel.add(new HyperlinkLabel("Help", new URL(getCodeBase(),
-                    "help/help.html"), "font-weight:normal"),
-                    BorderLayout.SOUTH);
-            aboutLabel = new JLabel(
-                    "<HTML><A href='' style='font-weight:normal'>"
-                            + messages.getString("ClientApplet.Label.About")
-                            + "</A>", SwingConstants.RIGHT);
-            aboutLabel
-                    .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            aboutLabel.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent event) {
-                    AboutDialog.showDialog(ClientApplet.this);
-                }
-            });
+            footerPanel.add(helpLabel);
             footerPanel.add(aboutLabel);
 
             loginPanel = new LoginPanel(server);
@@ -648,6 +631,27 @@ public class ClientApplet extends JApplet implements ServerListener,
                 }
             }
         });
+    }
+
+    private class AboutAction extends AbstractAction {
+        protected AboutAction() {
+            super(messages.getString("ClientApplet.Label.About"));
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            AboutDialog.showDialog(ClientApplet.this);
+        }
+    }
+
+    private class PreferencesAction extends AbstractAction {
+        protected PreferencesAction() {
+            super(messages.getString("ClientApplet.Label.Preferences"));
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            PreferencesDialog.showPreferences(ClientApplet.this,
+                    new String[] { "ggz.ui.preferences.ChatPreferencesTab" });
+        }
     }
 
     /**
