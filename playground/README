@@ -27,6 +27,10 @@
 		A GGZ Real User Emulator
 		Simulates high load on servers. Needs porting to the new GGZ protocol.
 
+	C-Base:
+		C programming taken to the next level. Some experimental functions
+		for safe programming.
+
 	Chess-Pieces:
 		Metafont files (scalable) for free chess figures.
 
