@@ -71,7 +71,7 @@ Specification-Title: GGZ Java Client
 Specification-Version: ${version.major}.${version.minor}.${version.revision}
 Specification-Vendor: GGZ Gaming Zone
 Implementation-Title: ggz-java
-Implementation-Version: Build # ${build.number}
+Implementation-Version: SVN Revision ${build.number}
 Implementation-Vendor: GGZ Gaming Zone</echo>
 
 		<echo>Building Version ${version.string}</echo>

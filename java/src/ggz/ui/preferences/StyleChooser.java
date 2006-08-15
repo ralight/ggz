@@ -71,6 +71,7 @@ public class StyleChooser extends JPanel implements ListSelectionListener,
         this.style = initialStyle;
         GridBagConstraints constraints = new GridBagConstraints();
 
+        constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.insets.left = 5;
         constraints.gridx = 0;

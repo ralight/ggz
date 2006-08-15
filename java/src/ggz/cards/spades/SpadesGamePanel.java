@@ -118,7 +118,7 @@ public class SpadesGamePanel extends CardGamePanel {
     public void handle_game_message(GGZCardInputStream in, String game)
             throws IOException {
         // This whole shebang is 40 bytes.
-        int mySize = 10 * 4;
+        //int mySize = 10 * 4;
 //        if (size < mySize) {
             // Hmm, server has less info to send us than we expect so just do
             // nothing.
