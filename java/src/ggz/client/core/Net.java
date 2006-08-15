@@ -851,7 +851,7 @@ public class Net implements Runnable {
             room.set_table_join_status(code);
         else if ("leave".equals(action))
             room.set_table_leave_status(code);
-        else if ("chat".equals(action)) {
+        else if ("chat".equals(action) || "admin".equals(action)) {
             if (code != ClientReqError.E_OK) {
                 ErrorEventData error = new ErrorEventData(code);
 
@@ -874,12 +874,6 @@ public class Net implements Runnable {
                 } else {
                     error.message = messages.getString("Net.ChatError.Unknown");
                 }
-                this.server.event(ServerEvent.GGZ_CHAT_FAIL, error);
-            }
-        } else if ("admin".equals(action)) {
-            if (code != ClientReqError.E_OK) {
-                ErrorEventData error = new ErrorEventData(code);
-                error.message = "Admin action error";
                 this.server.event(ServerEvent.GGZ_CHAT_FAIL, error);
             }
         } else if ("protocol".equals(action)) {

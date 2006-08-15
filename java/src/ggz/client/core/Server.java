@@ -351,10 +351,9 @@ public class Server {
 
             log.fine("Moving to room " + room_num);
 
+            change_state(TransID.GGZ_TRANS_ENTER_TRY);
             net.send_join_room(room_id);
             this.new_room = room_to_join;
-
-            change_state(TransID.GGZ_TRANS_ENTER_TRY);
         }
     }
 

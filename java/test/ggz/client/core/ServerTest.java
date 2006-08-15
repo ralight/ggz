@@ -2,7 +2,7 @@ package ggz.client.core;
 
 import java.io.IOException;
 
-public class ServerTest implements ServerListener {
+public class ServerTest extends ServerAdapter {
     private Server server;
 
     /**
@@ -17,25 +17,6 @@ public class ServerTest implements ServerListener {
 
     public ServerTest(Server s) {
         server = s;
-    }
-
-    public void server_channel_connected() {
-        // TODO Auto-generated method stub
-    }
-
-    public void server_channel_fail(String error) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void server_channel_ready() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void server_chat_fail(ErrorEventData data) {
-        // TODO Auto-generated method stub
-
     }
 
     public void server_connect_fail(String error) {
@@ -56,11 +37,6 @@ public class ServerTest implements ServerListener {
 
     public void server_list_rooms() {
         System.out.println("Server rooms listed OK");
-    }
-
-    public void server_list_types() {
-        // TODO Auto-generated method stub
-
     }
 
     public void server_logged_out() {
@@ -92,11 +68,6 @@ public class ServerTest implements ServerListener {
         }
     }
 
-    public void server_motd_loaded(MotdEventData data) {
-        // TODO Auto-generated method stub
-
-    }
-
     public void server_negotiate_fail(String error) {
         System.err.println("Negotiate fail: " + error);
     }
@@ -115,21 +86,6 @@ public class ServerTest implements ServerListener {
 
     public void server_net_error(String error) {
         System.err.println("Net error: " + error);
-    }
-
-    public void server_players_changed() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void server_rooms_changed() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void server_protocol_error(String error) {
-        // TODO Auto-generated method stub
-
     }
 
     public void server_state_changed() {
