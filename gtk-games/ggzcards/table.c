@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 6983 2005-03-11 07:43:05Z jdorje $
+ * $Id: table.c 8515 2006-08-16 02:59:53Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -74,7 +74,6 @@ static void draw_card_box(int p);
 static void draw_card_areas(int write_to_screen);
 static void table_clear_table(int write_to_screen);
 static void table_card_clicked(int card_num);
-static void table_display_all_hands(int write_to_screen);
 
 
 void table_draw_table(GdkPixmap * pixmap, int x, int y, int w, int h)
@@ -701,7 +700,7 @@ void table_display_hand(int p, int write_to_screen)
 }
 
 /* table_display_all_hands exposed function to show all players' hands */
-static void table_display_all_hands(int write_to_screen)
+void table_display_all_hands(int write_to_screen)
 {
 	int p;
 	for (p = 0; p < ggzcards.num_players; p++)

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 6386 2004-11-16 05:47:51Z jdorje $
+ * $Id: dlg_prefs.c 8515 2006-08-16 02:59:53Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -35,10 +35,21 @@
 #include "game.h"
 #include "main.h"
 #include "preferences.h"
+#include "table.h"
+
+static gboolean pref_toggled_redraw(gpointer data)
+{
+	/* Some preferences cause the hands to be drawn differently, so we
+	   have to redraw when they are changed. */
+	table_display_all_hands(FALSE);
+	gtk_widget_queue_draw(table);
+	return FALSE;
+}
 
 static void on_pref_toggled(GtkToggleButton * togglebutton, gpointer value)
 {
 	*(int *)value = togglebutton->active;
+	g_idle_add(pref_toggled_redraw, NULL);
 }
 
 static void dlg_prefs_closed(GtkWidget * widget, gpointer data)
