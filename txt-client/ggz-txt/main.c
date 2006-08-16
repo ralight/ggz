@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 6642 2005-01-13 01:55:40Z jdorje $
+ * $Id: main.c 8518 2006-08-16 14:29:13Z josef $
  *
  * Main loop
  *
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 {
 	char *u_path, *startup_path;
 	char *autouri = NULL;
-	char *host, *port, *user;
+	char *host, *port, *user, *password;
 	GGZOptions opt;
 	struct option options[] =
 	{
@@ -203,7 +203,16 @@ int main(int argc, char *argv[])
 		}
 		if(strchr(autouri, '@')) {
 			user = strsep(&autouri, "@");
-		} else user = NULL;
+			if(strchr(user, ':')) {
+				password = user;
+				user = strsep(&password, ":");
+			} else {
+				password = NULL;
+			}
+		} else {
+			user = NULL;
+			password = NULL;
+		}
 		if(strchr(autouri, ':')) {
 			host = strsep(&autouri, ":");
 			port = strsep(&autouri, ":");
@@ -211,7 +220,11 @@ int main(int argc, char *argv[])
 			host = autouri;
 			port = NULL;
 		}
-		server_init(host, (port ? atoi(port) : 5688), GGZ_LOGIN_GUEST, (user ? user : getenv("LOGNAME")), NULL);
+		server_init(host,
+			(port ? atoi(port) : 5688),
+			(password ? GGZ_LOGIN : GGZ_LOGIN_GUEST),
+			(user ? user : getenv("LOGNAME")),
+			password);
 	}
 
 	/* Startup script? */
