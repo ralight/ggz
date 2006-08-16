@@ -27,6 +27,8 @@ import java.awt.Rectangle;
 import javax.swing.JComponent;
 
 public class TableLayout implements LayoutManager2 {
+    private static final int FACE_DOWN_CARD_GAP = 10;
+
     private boolean packCardsInHand = true;
 
     private int cardFanGap = 17;
@@ -303,6 +305,7 @@ public class TableLayout implements LayoutManager2 {
         Rectangle handRect = getHandRect(parent, playerIndex);
         int x = handRect.x;
         int y = handRect.y;
+        int gap = getCardFanGap(playerIndex);
         if (cards != null) {
             switch (playerIndex) {
             case 0: // South
@@ -312,7 +315,7 @@ public class TableLayout implements LayoutManager2 {
                         card.setLocation(x, y);
                     }
                     if (!packCardsInHand || card != null) {
-                        x += cardFanGap;
+                        x += gap;
                     }
                 }
                 break;
@@ -323,7 +326,7 @@ public class TableLayout implements LayoutManager2 {
                         card.setLocation(x, y);
                     }
                     if (!packCardsInHand || card != null) {
-                        y += cardFanGap;
+                        y += gap;
                     }
                 }
                 break;
@@ -334,7 +337,7 @@ public class TableLayout implements LayoutManager2 {
                         card.setLocation(x, y);
                     }
                     if (!packCardsInHand || card != null) {
-                        x += cardFanGap;
+                        x += gap;
                     }
                 }
                 break;
@@ -345,12 +348,35 @@ public class TableLayout implements LayoutManager2 {
                         card.setLocation(x, y);
                     }
                     if (!packCardsInHand || card != null) {
-                        y += cardFanGap;
+                        y += gap;
                     }
                 }
                 break;
             }
         }
+    }
+
+    /**
+     * Returns true if there is at least one card in the player's hand that is
+     * face up.
+     * 
+     * @param playerIndex
+     * @return
+     */
+    protected boolean isHandFaceUp(int playerIndex) {
+        boolean isHandFaceUp = false;
+        Component[] cards = this.cardsInHand[playerIndex];
+        for (int cardIndex = 0; cardIndex < maxHandSize; cardIndex++) {
+            Component card = cards[cardIndex];
+            if (card != null) {
+                isHandFaceUp |= ((Sprite) card).card().isFaceUp();
+            }
+        }
+        return isHandFaceUp;
+    }
+    
+    protected int getCardFanGap(int playerIndex) {
+        return isHandFaceUp(playerIndex) ? cardFanGap : FACE_DOWN_CARD_GAP;
     }
 
     protected void layoutCardInTrick(Container parent, int playerIndex,
@@ -372,7 +398,7 @@ public class TableLayout implements LayoutManager2 {
         switch (playerIndex) {
         case 0: // South
         case 2: // North
-            rect.width = ((handSize - 1) * cardFanGap) + cardWidth;
+            rect.width = ((handSize - 1) * getCardFanGap(playerIndex)) + cardWidth;
             rect.height = cardHeight;
             int labelWidth = playerLabels[playerIndex] == null ? 0
                     : playerLabels[playerIndex].getWidth();
@@ -396,7 +422,7 @@ public class TableLayout implements LayoutManager2 {
         case 1: // WEST
         case 3: // EAST
             rect.width = cardHeight;
-            rect.height = ((handSize - 1) * cardFanGap) + cardWidth;
+            rect.height = ((handSize - 1) * getCardFanGap(playerIndex)) + cardWidth;
             int labelHeight = playerLabels[playerIndex] == null ? 0
                     : playerLabels[playerIndex].getHeight();
             padding = (parent.getHeight() - (labelHeight + rect.height)) / 2;
@@ -462,16 +488,16 @@ public class TableLayout implements LayoutManager2 {
         int y = handRect.y;
         switch (playerIndex) {
         case 0: // South
-            x += (cardFanGap * (maxHandSize - cardIndex));
+            x += (getCardFanGap(playerIndex) * (maxHandSize - cardIndex));
             break;
         case 1: // West
-            y += (cardFanGap * (maxHandSize - cardIndex));
+            y += (getCardFanGap(playerIndex) * (maxHandSize - cardIndex));
             break;
         case 2: // North
-            x += (cardFanGap * cardIndex);
+            x += (getCardFanGap(playerIndex) * cardIndex);
             break;
         case 3: // East
-            y += (cardFanGap * cardIndex);
+            y += (getCardFanGap(playerIndex) * cardIndex);
             break;
         }
         return new Point(x, y);

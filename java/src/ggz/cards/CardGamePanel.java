@@ -742,9 +742,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     public void alert_scores(int hand_num) {
         // TODO handle these.
         // TODO put hand number in "hand" icon next to scores.
-        // TODO try making other cards use smaller (fixed) gap.
-        // TODO keep last trick as an icon.
         // TODO consider putting Scores near score summary
+        /*
         System.out.println("hand_num=" + hand_num);
         this.cardClient.get_num_teams();
         int numTeams = this.cardClient.get_num_teams();
@@ -752,6 +751,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             System.out.println("Team " + i + ": "
                     + this.cardClient.get_nth_team(i).getScore());
         }
+        */
     }
 
     public void display_hand(final int player_num) {

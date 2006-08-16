@@ -62,6 +62,17 @@ public class Card {
         return this.face;
     }
 
+    /**
+     * Determines whether it's known what suit and face this card is. The server
+     * only notifies us the suit and face if we can see it, hence it will be
+     * "face up".
+     * 
+     * @return true iff face != UNKNOWN_FACE and suit != UNKNOWN_SUIT.
+     */
+    public boolean isFaceUp() {
+        return this.face != Face.UNKNOWN_FACE && this.suit != Suit.UNKNOWN_SUIT;
+    }
+
     public boolean equals(Object o) {
         Card card2 = (Card) o;
         return this.suit == card2.suit && this.face == card2.face;
