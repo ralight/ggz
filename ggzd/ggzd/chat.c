@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8476 2006-08-05 10:14:29Z josef $
+ * $Id: chat.c 8520 2006-08-16 14:43:08Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -146,20 +146,39 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 	GGZChatEventData *data;
 	bool sender_at_table, rcvr_at_table;
 	bool sender_has_perm, rcvr_has_perm;
+	bool sender_gagged, rcvr_has_hostperm;
+	bool sender_is_rcvr;
 
 	if (receiver == NULL) {
 		return E_BAD_OPTIONS;
 	}
-
-	pthread_rwlock_rdlock(&sender->lock);
-	sender_at_table = (sender->table != -1);
-	pthread_rwlock_unlock(&sender->lock);	
 
 	/* Find target player.  Returns with player write-locked */
 	rcvr = hash_player_lookup(receiver);
 
 	if (rcvr == NULL) {
 		return E_USR_LOOKUP;
+	}
+
+	rcvr_has_hostperm = perms_is_host(rcvr);
+
+	/* Get information about the sender */
+	pthread_rwlock_rdlock(&sender->lock);
+	sender_at_table = (sender->table != -1);
+	sender_gagged = sender->gagged;
+	sender_is_rcvr = (sender == rcvr);
+	pthread_rwlock_unlock(&sender->lock);	
+
+	/* Check for gagging */
+	if (sender_gagged) {
+		/* Gagged players may only send private messages to hosts/admins... */
+		if (!rcvr_has_hostperm) {
+			/* ... and to themselves of course */
+			if (!sender_is_rcvr) {
+				/* We don't let them find out that they've been gagged. */
+				return E_OK;
+			}
+		}
 	}
 
 	/* Don't allow personal chat to a player at a table. See below*/
