@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 8470 2006-08-04 13:27:45Z josef $
+ * $Id: input.c 8519 2006-08-16 14:36:19Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -422,14 +422,33 @@ static void input_handle_msg(char* line)
 	char *player;
 	char *msg;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	GGZStateID state = ggzcore_server_get_state(server);
 
 	if (!(player = strsep(&line, delim)))
+	{
+		output_text(_("Error: Missing player name."));
+		output_text(_("Syntax: /msg <player> <msg>"));
 		return;
+	}
 
 	if (line && strcmp(line, "") != 0) {
-		msg = ggz_strdup(line);
-		server_progresswait();
-		ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, player, msg);
+		if((int)state == -1 || state == GGZ_STATE_OFFLINE)
+		{
+			output_text(_("You must connect to a server first."));
+		}
+		else if(!room)
+		{
+			output_text(_("You must join a room first."));
+		}
+		else
+		{
+			msg = ggz_strdup(line);
+			server_progresswait();
+			ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, player, msg);
+		}
+	} else {
+		output_text(_("Error: Missing message."));
+		output_text(_("Syntax: /msg <player> <msg>"));
 	}
 }
 
