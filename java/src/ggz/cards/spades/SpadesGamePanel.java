@@ -171,12 +171,12 @@ public class SpadesGamePanel extends CardGamePanel {
                     boolean isThinking = false;
                     if (cardClient.get_game_state() == Client.STATE_BID) {
                         if (p.get_ggz_seat_num() == nextBid) {
-                            buffer.append("Bidding...");
+                            buffer.append("Thinking...");
                             isThinking = true;
                         }
                     } else if (cardClient.get_game_state() == Client.STATE_PLAY) {
                         if (p.get_ggz_seat_num() == nextPlay) {
-                            buffer.append("Playing...");
+                            buffer.append("Thinking...");
                             isThinking = true;
                         }
                     }
