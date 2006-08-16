@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8476 2006-08-05 10:14:29Z josef $
+ * $Id: players.c 8521 2006-08-16 15:22:42Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -1461,7 +1461,10 @@ GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
 			status = E_BAD_OPTIONS;
 		} else {
 			/* FIXME 1: session_over should be bool, not char */
-			/* FIXME 2: notify the victim about reason for kick */
+			/* FIXME: We temporarily take away the wr-lock since player_enqueue needs it */
+			pthread_rwlock_unlock(&rcvr->lock);	
+			chat_player_enqueue(target, GGZ_CHAT_PERSONAL, player, reason);
+			pthread_rwlock_wrlock(&rcvr->lock);
 			rcvr->client->session_over = 1;
 			status = E_OK;
 		}

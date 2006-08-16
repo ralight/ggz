@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8520 2006-08-16 14:43:08Z josef $
+ * $Id: chat.c 8521 2006-08-16 15:22:42Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -169,6 +169,13 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 	sender_is_rcvr = (sender == rcvr);
 	pthread_rwlock_unlock(&sender->lock);	
 
+	/* Don't allow personal chat to a player at a table. See below*/
+	rcvr_at_table = (rcvr->table != -1);
+
+	/* FIXME: we release the lock only to acquire it again in
+	   event_player_enqueue.  This is inefficient. */
+	pthread_rwlock_unlock(&rcvr->lock);
+
 	/* Check for gagging */
 	if (sender_gagged) {
 		/* Gagged players may only send private messages to hosts/admins... */
@@ -180,13 +187,6 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 			}
 		}
 	}
-
-	/* Don't allow personal chat to a player at a table. See below*/
-	rcvr_at_table = (rcvr->table != -1);
-
-	/* FIXME: we release the lock only to acquire it again in
-	   event_player_enqueue.  This is inefficient. */
-	pthread_rwlock_unlock(&rcvr->lock);
 
 	/* Truth table for whether private messages are allowed.
 	 * Perm = has PERMS_TABLE_PRIVMSG
@@ -217,7 +217,7 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 	/* Pack up chat message.  Sender->name won't change so no lock
 	 * is needed. */
 	data = chat_pack(type, sender->name, msg);
-	
+
 	/* Queue chat event for individual player */
 	if (event_player_enqueue(receiver, chat_event_callback,
 				 sizeof(*data), data, chat_free) != GGZ_OK) {
