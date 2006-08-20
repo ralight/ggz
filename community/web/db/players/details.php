@@ -1,9 +1,14 @@
-<?php include("top.inc"); ?>
-<?php include("stats.php"); ?>
+<?php
 
-<?php include_once("statsclass.php"); ?>
-<?php $global_rightbar = "index.rightbar"; ?>
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
+include("top.inc");
+include("stats.php");
+
+include_once("statsclass.php")
+$global_rightbar = "index.rightbar";
+
+?>
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>

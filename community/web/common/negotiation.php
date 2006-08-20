@@ -1,4 +1,6 @@
 <?php
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
 include_once("auth.php");
 $lang = Auth::language();
 $includetype = "direct"; // direct or indirect

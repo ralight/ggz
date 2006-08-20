@@ -1,5 +1,7 @@
 <?php
 
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
 include_once("match.php");
 
 $res = $database->exec("SELECT * FROM tournaments WHERE id = $tid");

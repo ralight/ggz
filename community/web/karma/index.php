@@ -1,14 +1,18 @@
-<?php include("top.inc"); ?>
-
 <?php
-	if ($remove) :
-		$database->exec("DELETE FROM karma WHERE fromhandle = '$ggzuser' AND tohandle = '$remove'");
-	endif;
-	if ($add) :
-		$database->exec("INSERT INTO karma " .
-			"(fromhandle, tohandle, karma) VALUES " .
-			"('$ggzuser', '$form_player', $form_karma)");
-	endif;
+
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
+include("top.inc");
+
+if ($remove) :
+	$database->exec("DELETE FROM karma WHERE fromhandle = '$ggzuser' AND tohandle = '$remove'");
+endif;
+if ($add) :
+	$database->exec("INSERT INTO karma " .
+		"(fromhandle, tohandle, karma) VALUES " .
+		"('$ggzuser', '$form_player', $form_karma)");
+endif;
+
 ?>
 
 <div id="main">

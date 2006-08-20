@@ -1,6 +1,3 @@
-# setup: adapt to site path
-php_value include_path ".:/home/ggznew/svn-version/community/web:/home/ggznew/svn-version/community/web/common"
-
 # some sanity values
 AddDefaultCharset utf-8
 DirectoryIndex index.php

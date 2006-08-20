@@ -1,5 +1,11 @@
-<?php $global_rightbar = "disabled"; ?>
-<?php include("top.inc"); ?>
+<?php
+
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
+$global_rightbar = "disabled";
+include("top.inc");
+
+?>
 
 <div id="main">
 	<h1>

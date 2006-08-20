@@ -1,5 +1,8 @@
 <?php
 
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+include("top.inc");
+
 if ($html) :
 	echo "<html>\n";
 	echo "<head>\n";

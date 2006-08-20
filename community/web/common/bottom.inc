@@ -1,19 +1,23 @@
 <br>
 
 <?php
-	$filepath = $_SERVER['PHP_SELF'];
-	$filear = explode("/", $filepath);
-	$file = $filear[sizeof($filear) - 1];
 
-	$rightbar = str_replace("php", "rightbar", $file);
-	$leftbar = str_replace("php", "leftbar", $file);
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
-	if (substr($rightbar, strlen($rightbar) - 3, 1) == ".") :
-		$rightbar = substr($rightbar, 0, strlen($rightbar) - 3);
-	endif;
-	if (substr($leftbar, strlen($leftbar) - 3, 1) == ".") :
-		$leftbar = substr($leftbar, 0, strlen($leftbar) - 3);
-	endif;
+$filepath = $_SERVER['PHP_SELF'];
+$filear = explode("/", $filepath);
+$file = $filear[sizeof($filear) - 1];
+
+$rightbar = str_replace("php", "rightbar", $file);
+$leftbar = str_replace("php", "leftbar", $file);
+
+if (substr($rightbar, strlen($rightbar) - 3, 1) == ".") :
+	$rightbar = substr($rightbar, 0, strlen($rightbar) - 3);
+endif;
+if (substr($leftbar, strlen($leftbar) - 3, 1) == ".") :
+	$leftbar = substr($leftbar, 0, strlen($leftbar) - 3);
+endif;
+
 ?>
 
 <br>
@@ -23,40 +27,41 @@
 </div>
 
 <?php
-	$mainwidth = 60;
-	$mainleft = 20;
 
-	if ((!$global_leftbar) && (Locale::includefile($leftbar))) :
-	else :
-		if ($global_leftbar != "disabled") :
-			if (!$global_leftbar) :
-				include_once("auth.php");
-				if(Auth::username()) :
-					Locale::includefile("my/leftbar.inc");
-				else :
-					Locale::includefile("default.leftbar");
-				endif;
-			else:
-				Locale::includefile($global_leftbar);
+$mainwidth = 60;
+$mainleft = 20;
+
+if ((!$global_leftbar) && (Locale::includefile($leftbar))) :
+else :
+	if ($global_leftbar != "disabled") :
+		if (!$global_leftbar) :
+			include_once("auth.php");
+			if(Auth::username()) :
+				Locale::includefile("my/leftbar.inc");
+			else :
+				Locale::includefile("default.leftbar");
 			endif;
 		else:
-			$mainwidth += 19;
-			$mainleft -= 19;
+			Locale::includefile($global_leftbar);
 		endif;
+	else:
+		$mainwidth += 19;
+		$mainleft -= 19;
 	endif;
+endif;
 
-	if ((!$global_rightbar) && (Locale::includefile($rightbar))) :
-	else :
-		if ($global_rightbar != "disabled") :
-			if (!$global_rightbar) :
-				Locale::includefile("default.rightbar");
-			else:
-				Locale::includefile($global_rightbar);
-			endif;
+if ((!$global_rightbar) && (Locale::includefile($rightbar))) :
+else :
+	if ($global_rightbar != "disabled") :
+		if (!$global_rightbar) :
+			Locale::includefile("default.rightbar");
 		else:
-			$mainwidth += 19;
+			Locale::includefile($global_rightbar);
 		endif;
+	else:
+		$mainwidth += 19;
 	endif;
+endif;
 
 if ($mainwidth != 60) :
 	echo "<style type=\"text/css\">\n";

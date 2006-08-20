@@ -1,6 +1,9 @@
-<?php include_once("database.php"); ?>
-<?php include_once("auth.php"); ?>
 <?php
+
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
+include_once("database.php");
+include_once("auth.php");
 
 if(!Auth::username()) :
 	header("Location: index.php");
@@ -18,11 +21,11 @@ if ($task) :
 	exit;
 endif;
 
-?>
+$global_leftbar = "disabled";
+$global_rightbar = "disabled";
+include("top.inc");
 
-<?php $global_leftbar = "disabled"; ?>
-<?php $global_rightbar = "disabled"; ?>
-<?php include("top.inc"); ?>
+?>
 
 <script type="text/javascript">
 

@@ -1,5 +1,7 @@
 <?php
 
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
 include_once("auth.php");
 include_once("countrylist.php");
 include_once("genderlist.php");

@@ -1,8 +1,13 @@
-<?php include("top.inc"); ?>
-<?php include("stats.php"); ?>
+<?php
 
-<?php $stat->calculateGeneral(); ?>
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
+include("top.inc");
+include("stats.php");
+
+$stat->calculateGeneral();
+
+?>
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>

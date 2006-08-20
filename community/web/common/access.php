@@ -1,5 +1,7 @@
 <?php
 
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
 $active = 0;
 if (preg_match("/^\/tournaments\//", $_SERVER["REQUEST_URI"])) :
 	$active = 1;

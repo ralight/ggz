@@ -1,5 +1,8 @@
-<?php include_once("database.php"); ?>
 <?php
+
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
+include_once("database.php");
 
 echo "<map name='ggzmap'>";
 

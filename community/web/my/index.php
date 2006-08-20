@@ -1,7 +1,9 @@
-<?php $global_leftbar = "disabled"; ?>
-<?php include("top.inc"); ?>
-
 <?php
+
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
+$global_leftbar = "disabled";
+include("top.inc");
 
 include_once("player.php");
 

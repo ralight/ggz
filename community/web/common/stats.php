@@ -1,5 +1,7 @@
 <?php
 
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
 include_once("player.php");
 include_once("match.php");
 

@@ -1,4 +1,7 @@
 <?php
+
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
 include_once("player.php");
 $player = new Player($lookup);
 

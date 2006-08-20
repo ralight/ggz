@@ -1,4 +1,7 @@
 <?php
+
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
 if(!$page) $page = "menu";
 
 if ($page == "menu") :

@@ -1,5 +1,11 @@
-<?php include("top.inc"); ?>
-<?php include("stats.php"); ?>
+<?php
+
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
+
+include("top.inc");
+include("stats.php");
+
+?>
 
 <div id="main">
 	<h1>

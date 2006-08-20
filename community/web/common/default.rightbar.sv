@@ -6,9 +6,12 @@
 	<div class="menubar">
 		<h1>Matcher/Turneringar</h1>
 <?php
+
+include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 include_once("latest.php");
 latest_matches();
 latest_tournaments();
+
 ?>
 	</div>
 
