@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.h 8524 2006-08-21 07:46:09Z jdorje $
+ * $Id: game.h 8530 2006-08-21 17:22:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -43,6 +43,7 @@ void game_alert_scores(int hand_num);
 void game_alert_tricks_count(void);
 void game_alert_hand_size(int max_hand_size);
 void game_display_hand(int player);
+void game_alert_players_status(void);
 void game_get_bid(int possible_bids,
 		  bid_t * bid_choices, char **bid_texts, char **bid_descs);
 void game_alert_bid(int bidder, bid_t bid);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8524 2006-08-21 07:46:09Z jdorje $
+ * $Id: common.c 8530 2006-08-21 17:22:35Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -778,6 +778,7 @@ void send_sync(player_t p)
 		}
 		players_iterate_end;
 
+		net_send_players_status(p);
 		net_send_all_scores(p);
 		net_send_tricks_count(p);
 	}

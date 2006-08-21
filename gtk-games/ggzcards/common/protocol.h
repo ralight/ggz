@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 8524 2006-08-21 07:46:09Z jdorje $
+ * $Id: protocol.h 8530 2006-08-21 17:22:35Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -121,6 +121,12 @@ typedef enum {
 	   # for whom the hand belongs to, followed by an integer n for the
 	   hand size, followed by n cards. */
 	MSG_HAND,
+
+	/* Tells the client the status of each player.  This consists of two
+	   integers, each of which is a bit vector containing one bit per
+	   player.  The first integer has bits set if the player is bidding,
+	   the second if the player is playing. */
+	MSG_PLAYERS_STATUS,
 
 	/* Requests a bid from the client.  It'll be followed by an integer
 	   n, then n bid choices.  Each bid choice consists of the bid

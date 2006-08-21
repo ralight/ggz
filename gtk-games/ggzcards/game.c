@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 8524 2006-08-21 07:46:09Z jdorje $
+ * $Id: game.c 8530 2006-08-21 17:22:35Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -386,6 +386,11 @@ void game_display_hand(int player)
 {
 	ggz_debug(DBG_MAIN, "Hand display for player %d needed.", player);
 	table_display_hand(player, TRUE);
+}
+
+void game_alert_players_status(void)
+{
+	/* Nothing */
 }
 
 void game_get_bid(int possible_bids,

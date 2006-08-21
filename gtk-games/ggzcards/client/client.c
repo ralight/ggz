@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8524 2006-08-21 07:46:09Z jdorje $
+ * $Id: client.c 8530 2006-08-21 17:22:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -570,6 +570,21 @@ static void handle_msg_hand(void)
 	game_display_hand(player);
 }
 
+static void handle_msg_players_status(void)
+{
+	int bidding, playing, i;
+
+	ggz_dio_get_int(game_internal.dio, &bidding);
+	ggz_dio_get_int(game_internal.dio, &playing);
+
+	for (i = 0; i < ggzcards.num_players; i++) {
+		ggzcards.players[i].bidding = bidding & (1 << i);
+		ggzcards.players[i].playing = playing & (1 << i);
+	}
+
+	game_alert_players_status();
+}
+
 
 /* A bid request asks you to pick from a given list of bids. */
 static void handle_req_bid(void)
@@ -1055,6 +1070,9 @@ static void server_read_callback(GGZDataIO * dio, void *userdata)
 		return;
 	case MSG_HAND:
 		handle_msg_hand();
+		return;
+	case MSG_PLAYERS_STATUS:
+		handle_msg_players_status();
 		return;
 	case REQ_BID:
 		handle_req_bid();

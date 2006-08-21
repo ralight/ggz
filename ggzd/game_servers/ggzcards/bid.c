@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 8149 2006-06-09 19:09:42Z jdorje $
+ * $Id: bid.c 8530 2006-08-21 17:22:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdlib.h>
@@ -42,7 +42,8 @@ bool is_anyone_bidding(void)
 	players_iterate(p) {
 		if (game.players[p].bid_data.is_bidding)
 			return TRUE;
-	} players_iterate_end;
+	}
+	players_iterate_end;
 	return FALSE;
 }
 
@@ -64,8 +65,8 @@ void add_bid(bid_t bid)
 	if (bid_data->bid_count > bid_data->bid_size) {
 		bid_data->bid_size = MAX(2 * bid_data->bid_size, 8);
 		bid_data->bids =
-			ggz_realloc(bid_data->bids,
-				    bid_data->bid_size * sizeof(bid_t));
+		    ggz_realloc(bid_data->bids,
+				bid_data->bid_size * sizeof(bid_t));
 	}
 	bid_data->bids[bid_data->bid_count - 1] = bid;
 }
@@ -87,8 +88,8 @@ void request_client_bid(player_t p)
 	bid_data_t *bid_data = &game.players[p].bid_data;
 
 	ggz_debug(DBG_BID,
-		    "Requesting a bid from player %d/%s; %d choices", p,
-		    get_player_name(p), bid_data->bid_count);
+		  "Requesting a bid from player %d/%s; %d choices", p,
+		  get_player_name(p), bid_data->bid_count);
 
 	assert(!bid_data->is_bidding);
 	bid_data->is_bidding = TRUE;
@@ -97,6 +98,7 @@ void request_client_bid(player_t p)
 	set_game_state(STATE_WAIT_FOR_BID);
 
 	net_send_bid_request(p, bid_data->bid_count, bid_data->bids);
+	net_broadcast_players_status();
 }
 
 /* Requests bids from all players that have a bid list.  This function is
@@ -115,17 +117,23 @@ void request_all_client_bids(void)
 			game.players[p].bid_data.is_bidding = TRUE;
 			set_player_message(p);
 		}
-	} players_iterate_end;
+	}
+	players_iterate_end;
 
 	set_game_state(STATE_WAIT_FOR_BID);
 
 	/* Send all human-player bid requests */
 	players_iterate(p) {
-		if (game.players[p].bid_data.bid_count > 0)
+		if (game.players[p].bid_data.bid_count > 0) {
 			net_send_bid_request(p,
-			                     game.players[p].bid_data.bid_count,
-			                     game.players[p].bid_data.bids);
-	} players_iterate_end;
+					     game.players[p].bid_data.
+					     bid_count,
+					     game.players[p].bid_data.
+					     bids);
+		}
+	}
+	players_iterate_end;
+	net_broadcast_players_status();
 
 	/* There's still a potential problem because as
 	   soon as a player bids, that bid will generally become visible to
@@ -153,7 +161,7 @@ void handle_client_bid(player_t p, int bid_choice)
 			  p, get_player_name(p));
 		return;
 	}
-	
+
 	assert(bid_data->bid_count > 0);
 
 	/* Compute the bid from the index */
@@ -164,24 +172,25 @@ void handle_client_bid(player_t p, int bid_choice)
 
 	/* Success! */
 	ggz_debug(DBG_BID, "Received bid choice %d from player %d/%s",
-		    bid_choice, p, get_player_name(p));
+		  bid_choice, p, get_player_name(p));
 	handle_bid_event(p, bid);
 }
 
 /* This handles the event of someone making a bid */
 void handle_bid_event(player_t p, bid_t bid)
 {
-	net_broadcast_bid(p, bid);
-	
 	/* If we send a bid request to a player when the game is on,
 	   and then a player leaves, the game is stopped.  But we
 	   still need to handle the bid response from that player,
 	   although we don't proceed with the game until the table
 	   is full again. */
-	
+
 	assert(game.players[p].bid_data.is_bidding);
 	game.players[p].bid_data.is_bidding = FALSE;
 	clear_bids(p);
+
+	net_broadcast_bid(p, bid);
+	net_broadcast_players_status();
 
 	ggz_debug(DBG_BID, "Handling a bid event for player %d.", p);
 
@@ -207,29 +216,30 @@ void handle_bid_event(player_t p, bid_t bid)
 		game.max_bid_rounds += 10;
 		players_iterate(p2) {
 			game.players[p2].allbids =
-				ggz_realloc(game.players[p2].allbids,
-					    game.max_bid_rounds *
-					    sizeof(bid_t));
+			    ggz_realloc(game.players[p2].allbids,
+					game.max_bid_rounds *
+					sizeof(bid_t));
 			memset(&game.players[p2].
 			       allbids[game.max_bid_rounds - 10], 0,
 			       10 * sizeof(bid_t));
-		} players_iterate_end;
+		}
+		players_iterate_end;
 	}
 	game.players[p].allbids[game.bid_rounds] = bid;
 	send_bid_history();
-	
+
 	/* Also mark the previous bidder, so that next_bid() can
 	   safely access it. */
 	game.prev_bid = p;
-	
+
 	if (is_anyone_bidding()) {
 		assert(game.state == STATE_WAIT_FOR_BID);
 		return;
 	}
-	
+
 	set_game_state(STATE_NEXT_BID);
-	
-	/* Get the game code to handle the bid. */		
+
+	/* Get the game code to handle the bid. */
 	game.data->next_bid();
 
 	/* This is a minor hack.  The game's next_bid function might have

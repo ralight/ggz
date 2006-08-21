@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8524 2006-08-21 07:46:09Z jdorje $
+ * $Id: net.c 8530 2006-08-21 17:22:35Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -442,6 +442,41 @@ void net_send_hand(const player_t p, const seat_t s,
 		write_card(dio, card);
 	}
 	ggz_dio_packet_end(dio);
+}
+
+void net_send_players_status(player_t p)
+{
+	GGZDataIO *dio = get_player_dio(p);
+	int bidding = 0, playing = 0;
+	seat_t s_rel, s_abs;
+
+	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
+		s_abs = UNCONVERT_SEAT(s_rel, p);
+		player_t p2 = game.seats[s_abs].player;
+
+		if (p2 >= 0) {
+			if (game.players[p2].bid_data.is_bidding) {
+				bidding |= 1 << s_rel;
+			}
+			if (game.players[p2].is_playing) {
+				playing |= 1 << s_rel;
+			}
+		}
+	}
+
+	ggz_dio_packet_start(dio);
+	write_opcode(dio, MSG_PLAYERS_STATUS);
+	ggz_dio_put_int(dio, bidding);
+	ggz_dio_put_int(dio, playing);
+	ggz_dio_packet_end(dio);
+}
+
+void net_broadcast_players_status(void)
+{
+
+	broadcast_iterate(p) {
+		net_send_players_status(p);
+	} broadcast_iterate_end;
 }
 
 static void net_send_trick(player_t p, player_t winner)

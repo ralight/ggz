@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8524 2006-08-21 07:46:09Z jdorje $
+ * $Id: client.h 8530 2006-08-21 17:22:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -82,6 +82,8 @@ typedef struct seat_t {
 	 *  are cards that have already been played.  (The "u" stands
 	 *  for "uncollapsed", I suppose.) */
 	int u_hand_size;
+
+	bool bidding, playing;
 
 	/** @see u_hand_size */
 	struct {
@@ -240,6 +242,10 @@ extern void game_alert_hand_size(int max_hand_size);
 /** Called when the hand is changed; the frontend should draw/update it.
  *  @param player The player number of the player whose hand has changed. */
 extern void game_display_hand(int player);
+
+/** Called when players status (player.is_bidding and player.is_playing)
+ *  are changed. */
+extern void game_alert_players_status(void);
 
 /** Called to request a bid.  The frontend should call client_send_bid at
   * any point afterwards to send the response.

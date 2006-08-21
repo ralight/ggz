@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 8454 2006-08-02 01:47:14Z jdorje $
+ * $Id: play.c 8530 2006-08-21 17:22:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdlib.h>
@@ -36,13 +36,13 @@
 #include "score.h"
 
 #ifndef NDEBUG
-static bool hand_has_valid_card(player_t p, hand_t *hand);
+static bool hand_has_valid_card(player_t p, hand_t * hand);
 #endif /* NDEBUG */
 
 bool is_anyone_playing(void)
 {
 	player_t p;
-	
+
 	for (p = 0; p < game.num_players; p++)
 		if (game.players[p].is_playing)
 			return TRUE;
@@ -59,7 +59,7 @@ void request_client_play(player_t p, seat_t s)
 		if (game.players[p2].is_playing)
 			assert(game.players[p2].play_seat != s);
 #endif
-	
+
 	/* although the game_* functions probably track this data themselves,
 	   we track it here as well just in case. */
 	game.players[p].is_playing = TRUE;
@@ -67,19 +67,20 @@ void request_client_play(player_t p, seat_t s)
 
 	set_game_state(STATE_WAIT_FOR_PLAY);
 	set_player_message(p);
-	
+
 	net_send_play_request(p, s);
+	net_broadcast_players_status();
 }
 
 #ifndef NDEBUG
-static bool hand_has_valid_card(player_t p, hand_t *hand)
+static bool hand_has_valid_card(player_t p, hand_t * hand)
 {
 	int i;
 
 	for (i = 0; i < hand->hand_size; i++)
 		if (game.data->verify_play(p, hand->cards[i]) == NULL)
 			return TRUE;
-			
+
 	return FALSE;
 }
 #endif /* NDEBUG */
@@ -117,15 +118,14 @@ void handle_client_play(player_t p, card_t card)
 		   play). */
 		send_sync(p);
 		ggz_debug(DBG_PLAY, "CLIENT BUG: "
-			    "player %d/%s played a card that wasn't "
-			    "in their hand.",
-			    p, get_player_name(p));
+			  "player %d/%s played a card that wasn't "
+			  "in their hand.", p, get_player_name(p));
 		return;
 	}
 
 	ggz_debug(DBG_PLAY, "We received a play of card "
-		    "(%d %d %d) from player %d/%s.", card.face, card.suit,
-		    card.deck, p, get_player_name(p));
+		  "(%d %d %d) from player %d/%s.", card.face, card.suit,
+		  card.deck, p, get_player_name(p));
 
 	/* we've verified that this card could have physically been played;
 	   we still need to check if it's a legal play Note, however, that we
@@ -154,15 +154,15 @@ void handle_play_event(player_t p, card_t card)
 	seat_t s = game.players[p].play_seat;
 	int i;
 	hand_t *hand = &game.seats[s].hand;
-	
+
 	ggz_debug(DBG_PLAY, "%s played the %s of %s.",
-	            get_player_name(p),
-	            get_face_name(card.face),
-	            get_suit_name(card.suit));
-	
+		  get_player_name(p),
+		  get_face_name(card.face), get_suit_name(card.suit));
+
 	/* is this the right place for this? */
 	assert(game.players[p].is_playing);
 	game.players[p].is_playing = FALSE;
+	net_broadcast_players_status();
 
 	/* remove the card from the player's hand by sliding it to the end. */
 	/* TODO: this is quite inefficient */
@@ -179,10 +179,10 @@ void handle_play_event(player_t p, card_t card)
 	game.seats[s].table = card;
 	if (game.next_play == game.leader)
 		game.lead_card = card;
-	
+
 	/* Increment the play_count.  Note that this must be done
-	   *after* handle_play is called (above), but before we
-	   check for still_playing (below). */
+	 *after* handle_play is called (above), but before we
+	 check for still_playing (below). */
 	game.play_count++;
 
 	/* Set trump_broken (if it was) */
@@ -194,7 +194,7 @@ void handle_play_event(player_t p, card_t card)
 
 	/* this is the player that just finished playing */
 	set_player_message(p);
-	
+
 	/* If we're still playing, wait for the current round of
 	   plays to finish.  Circumventing this process would be
 	   tricky; it would have to be handled in game->handle_play. */
@@ -210,7 +210,7 @@ void handle_play_event(player_t p, card_t card)
 	else {
 		/* end of trick */
 		ggz_debug(DBG_PLAY, "End of trick; %d/%d.  Scoring it.",
-			    game.trick_count, game.trick_total);
+			  game.trick_count, game.trick_total);
 		assert(game.play_count == game.play_total);
 		game.data->end_trick();
 		send_last_trick();
@@ -220,7 +220,7 @@ void handle_play_event(player_t p, card_t card)
 		if (game.trick_count == game.trick_total) {
 			/* end of the hand */
 			ggz_debug(DBG_PLAY, "End of hand number %d.",
-				    game.hand_num);
+				  game.hand_num);
 			send_last_hand();
 			game.data->end_hand();
 			set_all_player_messages();
