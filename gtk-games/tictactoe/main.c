@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 8352 2006-07-12 01:51:56Z jdorje $
+ * $Id: main.c 8526 2006-08-21 08:09:30Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -42,6 +42,7 @@
 #include "game.h"
 #include "main_win.h"
 #include "support.h"
+#include "modversion.h"
 
 /* main window widget */
 extern GtkWidget *main_win;
@@ -86,7 +87,7 @@ static void initialize_about_dialog(void)
 	char *header;
 
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"
-				   "Tic-Tac-Toe Version %s"), VERSION);
+				   "Tic-Tac-Toe Version %s"), GAME_VERSION);
 	init_dlg_about(_("About Tic-Tac-Toe"), header, content);
 	g_free(header);
 }

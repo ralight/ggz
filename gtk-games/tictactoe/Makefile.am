@@ -1,8 +1,3 @@
-## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 8466 2006-08-04 01:13:52Z jdorje $
-
-SUBDIRS = .
-
 AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
 		$(GTK_CFLAGS)
 
@@ -30,4 +25,5 @@ ggz_ttt_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 pixmapdir = $(ggzdatadir)/tictactoe/pixmaps
 dist_pixmap_DATA = o.svg x.svg
 
-noinst_HEADERS = version.m4
+include $(top_srcdir)/m4/modversion.mk
+

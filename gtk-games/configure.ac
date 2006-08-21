@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ games collection
-# $Id: configure.ac 8466 2006-08-04 01:13:52Z jdorje $
+# $Id: configure.ac 8526 2006-08-21 08:09:30Z josef $
 dnl ===========================================
 
 AC_INIT([GGZ GTK games], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-games])
@@ -126,7 +126,6 @@ m4_include(dots/version.m4)
 m4_include(ggzcards/version.m4)
 m4_include(hastings/version.m4)
 m4_include(reversi/version.m4)
-m4_include(tictactoe/version.m4)
 
 dnl Various dirs
 dnl ============
