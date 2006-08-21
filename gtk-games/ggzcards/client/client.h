@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8530 2006-08-21 17:22:35Z jdorje $
+ * $Id: client.h 8531 2006-08-21 19:34:47Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -127,6 +127,8 @@ struct ggzcards_game_t {
 
 	const char *gametype;	/**< String containing the game name. */
 	int hand_num; /**< The number of the current hand (starts at 0) */
+
+	char trump_suit;
 
 	/** @brief The hand we're currently playing from.
 	 *

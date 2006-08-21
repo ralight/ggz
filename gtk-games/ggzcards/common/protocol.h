@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 8530 2006-08-21 17:22:35Z jdorje $
+ * $Id: protocol.h 8531 2006-08-21 19:34:47Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -112,9 +112,9 @@ typedef enum {
 	   RSP_OPTIONS in response. */
 	REQ_OPTIONS,
 
-	/* Tells the client a new hand is starting.  It is followed by a
-	   single integer containing the hand number.  Hand counting
-	   starts at 0. */
+	/* Tells the client a new hand is starting.  It is followed by an
+	   single integer containing the hand number (hand counting
+	   starts at 0) then by a single byte containing the trump suit. */
 	MSG_NEWHAND,
 
 	/* Tells the client of a player's hand.  It'll be followed by a seat

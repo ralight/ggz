@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8530 2006-08-21 17:22:35Z jdorje $
+ * $Id: client.c 8531 2006-08-21 19:34:47Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -936,10 +936,11 @@ static void handle_msg_newhand(void)
 	int hand_num, i;
 
 	ggz_dio_get_int(game_internal.dio, &hand_num);
+	ggz_dio_get_char(game_internal.dio, &ggzcards.trump_suit);
+
 	for (i = 0; i < ggzcards.num_players; i++) {
 		ggzcards.players[i].tricks = 0;
 	}
-
 	set_hand_num(hand_num);
 
 	game_alert_newhand();
