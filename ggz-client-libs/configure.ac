@@ -126,31 +126,20 @@ AC_GGZ_DEBUG
 
 # Various dirs
 # ============
-if test "x${sysconfdir}" = 'x${prefix}/etc'; then
-  ggzconfdir="${prefix}/etc"
-else
-  ggzconfdir="${sysconfdir}"
-fi
-AC_DEFINE_UNQUOTED([GGZCONFDIR], "${ggzconfdir}",
-		   [Directory containing GGZ configuration files])
+ggzconfdir="\${sysconfdir}"
+AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzconfdir}")
+AC_DEFINE_UNQUOTED([GGZCONFDIR], "${resolveddir}",
+	[Directory containing GGZ configuration files])
 
+ggzexecmoddir="\${libdir}/ggz"
+AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzexecmoddir}")
+AC_DEFINE_UNQUOTED([GAMEDIR], "${resolveddir}",
+	[Directory containing GGZ client module executables])
 
-if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${exec_prefix}" = "x\${prefix}"; then
-    ggzexecmoddir="${prefix}/lib/ggz"
-  else
-    ggzexecmoddir="${exec_prefix}/lib/ggz"
-  fi
-else
-  ggzexecmoddir="${libdir}/ggz"
-fi
-AC_DEFINE_UNQUOTED([GAMEDIR], "${ggzexecmoddir}",
-		   [Directory containing GGZ client module executables])
-
-
-ggzdatadir="${datadir}/ggz"
-AC_DEFINE_UNQUOTED([GGZDATADIR], "${ggzdatadir}",
-		   [Directory containing GGZ shared data])
+ggzdatadir="\${datadir}/ggz"
+AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzdatadir}")
+AC_DEFINE_UNQUOTED([GGZDATADIR], "${resolveddir}",
+	[Directory containing GGZ shared data])
 
 AC_SUBST(ggzconfdir)
 AC_SUBST(ggzexecmoddir)
