@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: game.h 8524 2006-08-21 07:46:09Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -149,13 +149,16 @@ int game_get_options(int option_cnt,
 		     char **descriptions,
 		     int *choice_cnt, int *defaults,
 		     char ***option_choices);
-void game_alert_server(GGZDataIO *server_dio);
+void game_alert_server(GGZDataIO * server_dio);
 void game_get_newgame(void);
 void game_alert_newgame(cardset_type_t cardset_type);
 void game_alert_newhand(void);
 void game_handle_gameover(int num_winners, int *winners);
 void game_alert_player(int player,
 		       GGZSeatType old_status, const char *old_name);
+void game_alert_num_players(int new, int old);
+void game_alert_scores(int hand_num);
+void game_alert_tricks_count(void);
 void game_setup_table(void);
 void game_alert_hand_size(int max_hand_size);
 void game_display_hand(int player);
@@ -172,6 +175,6 @@ void game_set_text_message(const char *mark, const char *message);
 void game_set_cardlist_message(const char *mark, int *lengths,
 			       card_t ** cardlist);
 void game_set_player_message(int player, const char *message);
-void game_handle_game_message(GGZDataIO *dio, const char *game);
+void game_handle_game_message(GGZDataIO * dio, const char *game);
 
 #endif /* __GAME_H__ */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.h 8465 2006-08-03 07:29:12Z jdorje $
+ * $Id: net.h 8524 2006-08-21 07:46:09Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -43,16 +43,17 @@ void net_send_player_list(player_t p);
 void net_broadcast_player_list(void);
 
 void net_send_scores(player_t p, int hand_num);
+void net_send_tricks_count(player_t p);
 void net_send_all_scores(player_t p);
 void net_broadcast_scores(int hand_num);
 
 void net_send_options_request(player_t p,
-                              int num_options,
+			      int num_options,
 			      char **option_types,
-                              char **option_descs,
-                              int *num_choices,
-                              int *option_defaults,
-                              char ***option_choices);
+			      char **option_descs,
+			      int *num_choices,
+			      int *option_defaults,
+			      char ***option_choices);
 
 void net_broadcast_play(seat_t player, card_t card);
 
@@ -70,7 +71,7 @@ void net_send_play_request(player_t p, seat_t s);
 void net_send_badplay(player_t p, char *msg);
 
 void net_send_hand(player_t p, seat_t s,
-                   bool show_fronts, bool show_backs);
+		   bool show_fronts, bool show_backs);
 void net_broadcast_hands(void);
 
 void net_broadcast_trick(player_t winner);
@@ -84,15 +85,17 @@ void net_broadcast_newgame(void);
 void net_broadcast_newhand(void);
 
 void net_send_global_text_message(player_t p, const char *mark,
-			      const char *message);
-void net_broadcast_global_text_message(const char *mark, const char* message);
+				  const char *message);
+void net_broadcast_global_text_message(const char *mark,
+				       const char *message);
 
-void net_send_player_text_message(player_t p, seat_t s, const char *message);
+void net_send_player_text_message(player_t p, seat_t s,
+				  const char *message);
 
-void net_send_global_cardlist_message(player_t p, const char *mark, int *lengths,
-				  card_t ** cardlist);
+void net_send_global_cardlist_message(player_t p, const char *mark,
+				      int *lengths, card_t ** cardlist);
 void net_broadcast_global_cardlist_message(const char *mark, int *lengths,
-				       card_t ** cardlist);
+					   card_t ** cardlist);
 
 /* Functions to receive packets from the client. */
 void net_read_player_data(player_t p);

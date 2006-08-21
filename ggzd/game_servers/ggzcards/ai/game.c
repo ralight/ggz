@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 8465 2006-08-03 07:29:12Z jdorje $
+ * $Id: game.c 8524 2006-08-21 07:46:09Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,12 +24,12 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <assert.h>
 #include <stdlib.h>
-#include <unistd.h> /* sleep() */
+#include <unistd.h>	/* sleep() */
 
 #include <ggz.h>
 
@@ -44,7 +44,7 @@ static int num_human_players(void)
 	return num;
 }
 
-void game_alert_server(GGZDataIO *server_dio)
+void game_alert_server(GGZDataIO * server_dio)
 {
 	/* nothing */
 }
@@ -84,6 +84,11 @@ void game_alert_scores(int hand_num)
 	/* nothing */
 }
 
+void game_alert_tricks_count(void)
+{
+	/* nothing */
+}
+
 void game_alert_hand_size(int max_hand_size)
 {
 	/* nothing */
@@ -95,18 +100,15 @@ void game_display_hand(int player)
 }
 
 void game_get_bid(int possible_bids,
-                  bid_t *bid_choices,
-                  char **bid_texts,
-                  char **bid_descs)
+		  bid_t * bid_choices, char **bid_texts, char **bid_descs)
 {
 	/* We ignore bid_texts and bid_descs */
 	bid_t bid = get_bid(bid_choices, possible_bids);
 	int i;
 
 	ggz_debug(DBG_BID, "Making bid %d (%d/%d/%d).",
-	          bid.bid, bid.sbid.val,
-	          bid.sbid.suit, bid.sbid.spec);
-	
+		  bid.bid, bid.sbid.val, bid.sbid.suit, bid.sbid.spec);
+
 	for (i = 0; i < possible_bids; i++) {
 		if (bid.bid == bid_choices[i].bid) {
 			client_send_bid(i);
@@ -123,7 +125,7 @@ void game_get_bid(int possible_bids,
 			return;
 		}
 	}
-	client_send_bid(random() % possible_bids);	
+	client_send_bid(random() % possible_bids);
 }
 
 void game_alert_bid(int bidder, bid_t bid)
@@ -131,7 +133,7 @@ void game_alert_bid(int bidder, bid_t bid)
 	alert_bid(bidder, bid);
 }
 
-static int find_card(hand_t *hand, card_t card)
+static int find_card(hand_t * hand, card_t card)
 {
 	int i;
 
@@ -146,21 +148,22 @@ static void make_play(card_t play)
 {
 	hand_t *hand = &ggzcards.players[ggzcards.play_hand].hand;
 	int num = find_card(hand, play);
-	
+
 	if (num < 0) {
 		assert(FALSE);
-		client_send_sync_request();	
+		client_send_sync_request();
 	} else
 		client_send_play(play);
 }
 
-void game_get_play(int play_hand, int num_valid_cards, card_t *valid_cards)
+void game_get_play(int play_hand, int num_valid_cards,
+		   card_t * valid_cards)
 {
 	int play_num, hand_num;
 	hand_t *hand = &ggzcards.players[play_hand].hand;
 	bool valid_plays[hand->hand_size];
 	card_t play;
-	
+
 	assert(play_hand == ggzcards.play_hand);
 
 	for (hand_num = 0; hand_num < hand->hand_size; hand_num++)
@@ -180,9 +183,8 @@ void game_get_play(int play_hand, int num_valid_cards, card_t *valid_cards)
 	play = get_play(ggzcards.play_hand, valid_plays);
 
 	ggz_debug(DBG_PLAY, "We're playing the %s of %s.",
-	          get_face_name(play.face),
-	          get_suit_name(play.suit));
-	
+		  get_face_name(play.face), get_suit_name(play.suit));
+
 	make_play(play);
 }
 
@@ -215,10 +217,9 @@ void game_alert_trick(int winner)
 
 int game_get_options(int option_cnt,
 		     char **types,
-                     char **descriptions,
-                     int *choice_cnt,
-                     int *defaults,
-                     char ***option_choices)
+		     char **descriptions,
+		     int *choice_cnt,
+		     int *defaults, char ***option_choices)
 {
 	/* nothing */
 	return -1;
@@ -230,7 +231,7 @@ void game_set_text_message(const char *mark, const char *msg)
 }
 
 void game_set_cardlist_message(const char *mark, int *lengths,
-				      card_t ** cardlist)
+			       card_t ** cardlist)
 {
 	/* nothing */
 }
@@ -240,7 +241,7 @@ void game_set_player_message(int player, const char *msg)
 	/* nothing */
 }
 
-void game_handle_game_message(GGZDataIO *dio, const char *game)
+void game_handle_game_message(GGZDataIO * dio, const char *game)
 {
 	/* nothing */
 }

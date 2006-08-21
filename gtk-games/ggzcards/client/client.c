@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8465 2006-08-03 07:29:12Z jdorje $
+ * $Id: client.c 8524 2006-08-21 07:46:09Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -483,6 +483,18 @@ static void handle_msg_scores(void)
 	game_alert_scores(hand_num);
 }
 
+static void handle_msg_tricks_count(void)
+{
+	int i;
+
+	for (i = 0; i < ggzcards.num_players; i++) {
+		ggz_dio_get_int(game_internal.dio,
+				&ggzcards.players[i].tricks);
+	}
+
+	game_alert_tricks_count();
+}
+
 /* Possibly increase the maximum hand size we can sustain. */
 static void increase_max_hand_size(int max_hand_size)
 {
@@ -825,6 +837,8 @@ static void handle_msg_trick(void)
 	for (p = 0; p < ggzcards.num_players; p++)
 		ggzcards.players[p].table_card = UNKNOWN_CARD;
 
+	ggzcards.players[winner].tricks++;
+
 	/* Update the graphics. */
 	game_alert_trick(winner);
 }
@@ -904,9 +918,12 @@ static void handle_req_options(void)
 
 static void handle_msg_newhand(void)
 {
-	int hand_num;
+	int hand_num, i;
 
 	ggz_dio_get_int(game_internal.dio, &hand_num);
+	for (i = 0; i < ggzcards.num_players; i++) {
+		ggzcards.players[i].tricks = 0;
+	}
 
 	set_hand_num(hand_num);
 
@@ -1026,6 +1043,9 @@ static void server_read_callback(GGZDataIO * dio, void *userdata)
 		return;
 	case MSG_SCORES:
 		handle_msg_scores();
+		return;
+	case MSG_TRICKS_COUNT:
+		handle_msg_tricks_count();
 		return;
 	case REQ_OPTIONS:
 		handle_req_options();

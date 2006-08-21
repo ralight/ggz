@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8465 2006-08-03 07:29:12Z jdorje $
+ * $Id: client.h 8524 2006-08-21 07:46:09Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -67,6 +67,7 @@ typedef struct seat_t {
 	 *  need not correspond with what is actually drawn by the GUI.
 	 */
 	card_t table_card;
+	int tricks;
 
 	hand_t hand;		/**< player's hand */
 
@@ -227,6 +228,10 @@ extern void game_alert_num_players(int new, int old);
  *  display or update scores.
  *  @param hand_num The hand number for which new scores are available. */
 extern void game_alert_scores(int hand_num);
+
+/** Alert the table that tricks data is available.  The table may then
+ *  display or update tricks for each player. */
+extern void game_alert_tricks_count(void);
 
 /** Alerts the table to the maximum hand size.  There will never be more
  *  than this many cards in a hand (unless we send another alert). */

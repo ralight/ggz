@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8465 2006-08-03 07:29:12Z jdorje $
+ * $Id: net.c 8524 2006-08-21 07:46:09Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -29,10 +29,11 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <ggz.h>
@@ -55,7 +56,7 @@ seat_t convert_seat(seat_t s_abs, player_t p)
 
 	assert(game.players[p].seat >= 0);
 	return (s_abs - game.players[p].seat + game.num_seats)
-	  % game.num_seats;
+	    % game.num_seats;
 }
 
 seat_t unconvert_seat(seat_t s_rel, player_t p)
@@ -86,7 +87,7 @@ static bool is_broadcast_seat(player_t p)
 	if (get_player_dio(p))
 		return TRUE;
 
-#if 0 /* This is now possible because of non-atomic seat operations. */
+#if 0	/* This is now possible because of non-atomic seat operations. */
 	assert(p >= 0 || get_player_name(p) == NULL);
 	assert(get_player_status(p) != GGZ_SEAT_PLAYER);
 #endif
@@ -162,7 +163,29 @@ void net_send_scores(player_t p, int hand_num)
 		for (i = 0; i < SCORE_EXTRAS; i++) {
 			ggz_dio_put_int(dio, score.extra[i]);
 		}
-	} teams_iterate_end;
+	}
+	teams_iterate_end;
+	ggz_dio_packet_end(dio);
+}
+
+void net_send_tricks_count(player_t p)
+{
+	GGZDataIO *dio = get_player_dio(p);
+	seat_t s_r, s_abs;
+	int tricks;
+
+	ggz_dio_packet_start(dio);
+	write_opcode(dio, MSG_TRICKS_COUNT);
+	for (s_r = 0; s_r < game.num_seats; s_r++) {
+		s_abs = UNCONVERT_SEAT(s_r, p);
+		if (game.seats[s_abs].player >= 0) {
+			tricks =
+			    game.players[game.seats[s_abs].player].tricks;
+		} else {
+			tricks = -1;
+		}
+		ggz_dio_put_int(dio, tricks);
+	}
 	ggz_dio_packet_end(dio);
 }
 
@@ -183,12 +206,11 @@ void net_broadcast_scores(int hand_num)
 }
 
 void net_send_options_request(player_t p,
-                              int num_options,
+			      int num_options,
 			      char **option_types,
-                              char **option_descs,
-                              int *num_choices,
-                              int *option_defaults,
-                              char ***option_choices)
+			      char **option_descs,
+			      int *num_choices,
+			      int *option_defaults, char ***option_choices)
 {
 	GGZDataIO *dio = get_player_dio(p);
 	int i, j;
@@ -241,26 +263,27 @@ void net_broadcast_play(seat_t player, card_t card)
  *    - For each winning player:
  *        - A seat that is the relative seat of the player
  */
-static void net_send_gameover(player_t p, int winner_cnt, player_t * winners)
+static void net_send_gameover(player_t p, int winner_cnt,
+			      player_t * winners)
 {
 	GGZDataIO *dio = get_player_dio(p);
 	int i;
-	
+
 	assert(winner_cnt >= 0 && winner_cnt <= game.num_players);
 
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_GAMEOVER);
 	ggz_dio_put_int(dio, winner_cnt);
-	
+
 	for (i = 0; i < winner_cnt; i++) {
 		seat_t ws = game.players[winners[i]].seat;
-		
+
 		write_seat(dio, CONVERT_SEAT(ws, p));
 	}
 	ggz_dio_packet_end(dio);
 }
 
-void net_broadcast_gameover(int winner_cnt, player_t *winners)
+void net_broadcast_gameover(int winner_cnt, player_t * winners)
 {
 	broadcast_iterate(p) {
 		net_send_gameover(p, winner_cnt, winners);
@@ -273,11 +296,11 @@ void net_send_table(player_t p)
 	seat_t s_r, s_abs;
 	GGZDataIO *dio = get_player_dio(p);
 
-	if (game.num_seats == 0) /* FIXME: don't check this here */
+	if (game.num_seats == 0)	/* FIXME: don't check this here */
 		return;
 
 	ggz_debug(DBG_NET, "Sending table to player %d/%s.", p,
-		    get_player_name(p));
+		  get_player_name(p));
 
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_TABLE);
@@ -297,7 +320,7 @@ void net_send_bid_request(player_t p, int bid_count, bid_t * bids)
 	GGZSeatType seat_type = get_player_status(p);
 
 	ggz_debug(DBG_NET, "Sending bid request to player %d/%s.", p,
-		    get_player_name(p));
+		  get_player_name(p));
 
 	/* request a bid from the client */
 	ggz_dio_packet_start(dio);
@@ -311,9 +334,9 @@ void net_send_bid_request(player_t p, int bid_count, bid_t * bids)
 			/* HACK: we need to send the full bid text to
 			   a bot. */
 			game.data->get_bid_text(bid_text, sizeof(bid_text),
-			                         bids[i]);
+						bids[i]);
 			game.data->get_bid_desc(bid_desc, sizeof(bid_desc),
-			                         bids[i]);
+						bids[i]);
 		}
 		write_bid(dio, bids[i]);
 		ggz_dio_put_string(dio, bid_text);
@@ -326,7 +349,7 @@ void net_send_bid(player_t p, player_t bidder, bid_t bid)
 {
 	seat_t seat = game.players[bidder].seat;
 	GGZDataIO *dio = get_player_dio(p);
-	
+
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_BID);
 	write_seat(dio, CONVERT_SEAT(seat, p));
@@ -346,24 +369,24 @@ void net_send_play_request(player_t p, seat_t s)
 {
 	seat_t s_r = CONVERT_SEAT(s, p);
 	GGZDataIO *dio = get_player_dio(p);
-	
+
 	hand_t *hand = &game.seats[s].hand;
 	card_t valid_plays[hand->hand_size];
 	int i, num_valid_plays = 0;
-	
+
 	assert(game.players[p].is_playing);
-	
+
 	for (i = 0; i < hand->hand_size; i++) {
 		card_t card = hand->cards[i];
 		if (!game.data->verify_play(p, card)) {
 			valid_plays[num_valid_plays] = card;
-			num_valid_plays++;	
+			num_valid_plays++;
 		}
 	}
 
 	ggz_debug(DBG_NET, "Requesting player %d/%s "
-		    "to play from seat %d/%s's hand.", p,
-		    get_player_name(p), s, get_seat_name(s));
+		  "to play from seat %d/%s's hand.", p,
+		  get_player_name(p), s, get_seat_name(s));
 
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, REQ_PLAY);
@@ -377,7 +400,7 @@ void net_send_play_request(player_t p, seat_t s)
 void net_send_badplay(player_t p, char *msg)
 {
 	GGZDataIO *dio = get_player_dio(p);
-	
+
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_BADPLAY);
 	ggz_dio_put_string(dio, msg);
@@ -387,19 +410,20 @@ void net_send_badplay(player_t p, char *msg)
 /* Show a player a hand.  This will reveal the cards in the hand iff reveal
    is true. */
 void net_send_hand(const player_t p, const seat_t s,
-                   bool show_fronts, bool show_backs)
+		   bool show_fronts, bool show_backs)
 {
 	GGZDataIO *dio = get_player_dio(p);
 	int i;
 
 	/* This can happen with the weird broadcast rules - see
 	   game.data->send_hand() calls in common.c. */
-	if (!dio) return;
+	if (!dio)
+		return;
 
 	ggz_debug(DBG_NET,
-		    "Sending player %d/%d/%s hand %d/%s - revealing(%d,%d)", p,
-		    PLAYER_TO_SEAT(p), get_player_name(p), s,
-		    get_seat_name(s), show_fronts, show_backs);
+		  "Sending player %d/%d/%s hand %d/%s - revealing(%d,%d)",
+		  p, PLAYER_TO_SEAT(p), get_player_name(p), s,
+		  get_seat_name(s), show_fronts, show_backs);
 
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_HAND);
@@ -444,7 +468,7 @@ void net_send_newgame_request(player_t p)
 	assert(get_player_status(p) == GGZ_SEAT_PLAYER);
 
 	ggz_debug(DBG_NET, "Sending out a REQ_NEWGAME to player %d/%s.", p,
-		    get_player_name(p));
+		  get_player_name(p));
 
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, REQ_NEWGAME);
@@ -454,7 +478,7 @@ void net_send_newgame_request(player_t p)
 void net_send_newgame(player_t p)
 {
 	GGZDataIO *dio = get_player_dio(p);
-	
+
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_NEWGAME);
 	ggz_dio_put_string(dio, game.data->name);
@@ -475,7 +499,7 @@ void net_broadcast_newgame(void)
 static void net_send_newhand(player_t p)
 {
 	GGZDataIO *dio = get_player_dio(p);
-	
+
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_NEWHAND);
 	ggz_dio_put_int(dio, game.hand_num);
@@ -491,16 +515,16 @@ void net_broadcast_newhand(void)
 }
 
 void net_send_global_text_message(player_t p, const char *mark,
-                             const char *message)
+				  const char *message)
 {
 	GGZDataIO *dio = get_player_dio(p);
-	
+
 	/* Special case - don't send to dead bots */
 	if (!dio)
 		return;
-	
+
 	assert(mark);
-	
+
 	if (message == NULL)
 		message = "";	/* this happens sometimes (hmmm, really?
 				   how?) */
@@ -513,19 +537,21 @@ void net_send_global_text_message(player_t p, const char *mark,
 }
 
 /* send_global_message_toall sends the truly global message to all players */
-void net_broadcast_global_text_message(const char *mark, const char* message)
+void net_broadcast_global_text_message(const char *mark,
+				       const char *message)
 {
 	broadcast_iterate(p) {
 		net_send_global_text_message(p, mark, message);
 	} broadcast_iterate_end;
 }
 
-void net_send_player_text_message(player_t p, seat_t s, const char *message)
+void net_send_player_text_message(player_t p, seat_t s,
+				  const char *message)
 {
 	GGZDataIO *dio = get_player_dio(p);
-	
+
 	assert(message);
-	
+
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_GAME_MESSAGE_PLAYER);
 	write_seat(dio, CONVERT_SEAT(s, p));
@@ -533,8 +559,8 @@ void net_send_player_text_message(player_t p, seat_t s, const char *message)
 	ggz_dio_packet_end(dio);
 }
 
-void net_send_global_cardlist_message(player_t p, const char *mark, int *lengths,
-                                 card_t ** cardlist)
+void net_send_global_cardlist_message(player_t p, const char *mark,
+				      int *lengths, card_t ** cardlist)
 {
 	GGZDataIO *dio = get_player_dio(p);
 	int i;
@@ -542,8 +568,8 @@ void net_send_global_cardlist_message(player_t p, const char *mark, int *lengths
 
 	assert(mark && cardlist && lengths);
 	ggz_debug(DBG_NET, "Sending global cardlist message to player %d.",
-		    p);
-		
+		  p);
+
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_GAME_MESSAGE_CARDLIST);
 	ggz_dio_put_string(dio, mark);
@@ -561,7 +587,8 @@ void net_broadcast_global_cardlist_message(const char *mark, int *lengths,
 					   card_t ** cardlist)
 {
 	broadcast_iterate(p) {
-		net_send_global_cardlist_message(p, mark, lengths, cardlist);
+		net_send_global_cardlist_message(p, mark, lengths,
+						 cardlist);
 	} broadcast_iterate_end;
 }
 
@@ -574,10 +601,10 @@ static void net_rec_language(player_t p)
 {
 	GGZDataIO *dio = get_player_dio(p);
 	char lang[128];
-	
+
 	/* Read the language (string) */
 	ggz_dio_get_string(dio, lang, sizeof(lang));
-		
+
 	handle_client_language(p, lang);
 }
 
@@ -591,7 +618,7 @@ static void net_rec_play(player_t p)
 
 	/* read the card played */
 	read_card(dio, &card);
-		
+
 	handle_client_play(p, card);
 }
 
@@ -604,7 +631,7 @@ static void net_rec_bid(player_t p)
 
 	/* Receive the bid index */
 	ggz_dio_get_int(dio, &bid_choice);
-		
+
 	handle_client_bid(p, bid_choice);
 }
 
@@ -612,7 +639,7 @@ static void net_rec_options(player_t p)
 {
 	GGZDataIO *dio = get_player_dio(p);
 	int num_options;
-	
+
 	ggz_dio_get_int(dio, &num_options);
 
 	if (num_options > 0) {
@@ -621,13 +648,13 @@ static void net_rec_options(player_t p)
 
 		for (i = 0; i < num_options; i++)
 			ggz_dio_get_int(dio, &options[i]);
-	
+
 		handle_client_options(p, num_options, options);
 	}
 }
 
-	
-static void net_read_player_data_cb(GGZDataIO *dio, void *userdata)
+
+static void net_read_player_data_cb(GGZDataIO * dio, void *userdata)
 {
 	player_t *p = userdata;
 	int opcode;
@@ -637,7 +664,7 @@ static void net_read_player_data_cb(GGZDataIO *dio, void *userdata)
 	op = opcode;
 
 	ggz_debug(DBG_NET, "Received %d (%s) from player %d/%s.",
-	            op, get_client_opcode_name(op), *p, get_player_name(*p));
+		  op, get_client_opcode_name(op), *p, get_player_name(*p));
 
 	switch (op) {
 	case MSG_LANGUAGE:
@@ -662,8 +689,7 @@ static void net_read_player_data_cb(GGZDataIO *dio, void *userdata)
 
 	/* Unrecognized opcode */
 	ggz_debug(DBG_CLIENT,
-		  "game_handle_player: unrecognized opcode %d.",
-		  op);
+		  "game_handle_player: unrecognized opcode %d.", op);
 }
 
 void net_read_player_data(player_t p)
