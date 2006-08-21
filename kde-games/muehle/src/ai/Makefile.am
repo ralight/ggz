@@ -1,4 +1,2 @@
-bin_SCRIPTS = muehle-ai.pl
-
-EXTRA_DIST = $(bin_SCRIPTS)
+dist_noinst_SCRIPTS = muehle-ai.pl
 

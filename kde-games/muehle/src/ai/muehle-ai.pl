@@ -1,8 +1,21 @@
 #!/usr/bin/perl
+#
+# AI player for the Muehle game
+# Copyright (C) 2002? - 2006 Josef Spillner <josef@ggzgamingzone.org>
 
 # Include these perl modules
 use Socket;
 use IO::Handle;
+
+# Find out where GGZ is installed
+$gamedir = `ggz-config -g`;
+$datadir = `ggz-config -d`;
+if (!$gamedir || !$datadir){
+	print "Error: ggz-config invocation failed.\n";
+	exit 1;
+}
+chomp $gamedir;
+chomp $datadir;
 
 # Define variables
 socketpair(CHILD, PARENT, AF_UNIX, SOCK_STREAM, PF_UNSPEC);
@@ -21,7 +34,7 @@ if($ret < 0){
 	close(STDIN);
 	open(STDIN, ">&PARENT");
 	open(STDOUT, ">&PARENT");
-	system("/usr/local/lib/ggz/muehle --ggz");
+	system("$gamedir/muehle --ggz");
 	close(PARENT);
 	exit 0;
 }else{
@@ -42,7 +55,7 @@ if($ret < 0){
 sub createboard{
 	my $i = 0;
 
-	open(LEVEL, "/usr/local/share/ggz/muehle/classic");
+	open(LEVEL, "$datadir/muehle/classic");
 	while(<LEVEL>){
 		next if /^\#/ || /^\/\//;
 		next if $_ eq "\n";
