@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8487 2006-08-07 11:26:38Z oojah $
+# $Id: configure.ac 8527 2006-08-21 08:10:09Z josef $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -161,48 +161,33 @@ m4_include(game_servers/ggzcards/config/version.m4)
 dnl Various dirs
 dnl ============
 
-if test "x${sysconfdir}" = 'x${prefix}/etc'; then
-  ggzdconfdir="${prefix}/etc/ggzd"
-else
-  ggzdconfdir="${sysconfdir}/ggzd"
-fi
-AC_DEFINE_UNQUOTED([GGZDCONFDIR], "${ggzdconfdir}",
-		   [Directory containing GGZd configuration files])
-ggzdroomdir="${ggzdconfdir}/rooms"
-ggzdgamedir="${ggzdconfdir}/games"
+ggzdconfdir=\${sysconfdir}/ggzd
+AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzdconfdir}")
+AC_DEFINE_UNQUOTED(GGZDCONFDIR, "${resolveddir}",
+	[Directory containing GGZd configuration files])
 
+ggzdexecmoddir=\${libdir}/ggzd
+AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzdexecmoddir}")
+AC_DEFINE_UNQUOTED(GAMEDIR, "${resolveddir}",
+	[Directory containing GGZd game module executables])
 
-if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${exec_prefix}" = "x\${prefix}"; then
-    ggzdexecmoddir="${prefix}/lib/ggzd"
-  else
-    ggzdexecmoddir="${exec_prefix}/lib/ggzd"
-  fi
-else
-  ggzdexecmoddir="${libdir}/ggzd"
-fi
-AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdexecmoddir}",
-		   [Directory containing GGZd game module executables])
+ggzdstatedir=\${localstatedir}/ggzd
+AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzdstatedir}")
+AC_DEFINE_UNQUOTED(DATADIR, "${resolveddir}",
+	[Directory containing GGZ shared data])
 
-if test "x${localstatedir}" = 'x${prefix}/var'; then
-  ggzdstatedir="${prefix}/var/lib/ggzd"
-else
-  ggzdstatedir="${localstatedir}/ggzd"
-fi
-AC_DEFINE_UNQUOTED([DATADIR], "${ggzdstatedir}",
-		   [Directory containing GGZ shared data])
+ggzddatadir=\${datadir}/ggz/ggzd
+AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzddatadir}")
+AC_DEFINE_UNQUOTED(GGZDDATADIR, "${resolveddir}",
+	[Location of GGZd module data])
 
-AC_DEFINE_UNQUOTED([TMPDIR], "${tmpdir}",
-		   [Directory used for temporary storage])
-
-ggzddatadir="${prefix}/share/ggzd"
-AC_DEFINE_UNQUOTED([GGZDDATADIR], "${ggzddatadir}",
-		   [Location of GGZd module data])
+AC_GGZ_UNQUOTEDPATH(resolveddir, "${tmpdir}")
+AC_DEFINE_UNQUOTED(TMPDIR, "${resolveddir}",
+	[Directory used for temporary storage])
 
 packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED([PACKAGE_SOURCE_DIR], "${packagesrcdir}",
-		   [The top-level source directory])
-
+ggzdroomdir="${ggzdconfdir}/rooms"
+ggzdgamedir="${ggzdconfdir}/games"
 
 dnl Which progs to compile
 dnl ======================
