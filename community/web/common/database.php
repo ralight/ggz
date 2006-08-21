@@ -21,6 +21,15 @@ class Database
 		return $this->id;
 	}
 
+	function escape_string($string)
+	{
+		if ($this->type == "postgresql") :
+			return pg_escape_string($string);
+		elseif ($this->type == "mysql") :
+			return mysql_real_escape_string($string, $this->id);
+		endif;
+	}
+
 	function exec($query)
 	{
 		if ($this->type == "postgresql") :
