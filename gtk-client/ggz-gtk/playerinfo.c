@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: playerinfo.c 8532 2006-08-25 23:28:47Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -338,6 +338,9 @@ void player_info_create_or_raise(GGZPlayer *player)
 		break;
 	case GGZ_PLAYER_GUEST:
 		ptype = _("Guest");
+		break;
+	case GGZ_PLAYER_HOST:
+		ptype = _("Host");
 		break;
 	case GGZ_PLAYER_ADMIN:
 		ptype = _("Administrator");

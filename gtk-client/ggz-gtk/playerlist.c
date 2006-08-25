@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: playerlist.c 8532 2006-08-25 23:28:47Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -284,6 +284,7 @@ void update_player_list(void)
 			gtk_list_store_set(store, &iter,
 					   PLAYER_COLUMN_TYPE, registered, -1);
 			break;
+		case GGZ_PLAYER_HOST:
 		case GGZ_PLAYER_ADMIN:
 			gtk_list_store_set(store, &iter,
 					   PLAYER_COLUMN_TYPE, admin, -1);
