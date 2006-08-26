@@ -4,7 +4,7 @@
  * Project: GGZCards AI Client
  * Date: 02/19/2002
  * Desc: AI client main loop and core logic
- * $Id: main.c 8538 2006-08-26 16:29:19Z jdorje $
+ * $Id: main.c 8541 2006-08-26 22:06:21Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -92,7 +92,8 @@ int main(int argc, char *argv[])
 		}
 
 		if (FD_ISSET(fd, &read_fd_set))
-			if (client_handle_server() < 0) {
+			if (client_handle_server() <= 0) {
+				/* Error or EOF. */
 				break;
 			}
 
