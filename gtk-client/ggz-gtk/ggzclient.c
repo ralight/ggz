@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: ggzclient.c 8533 2006-08-26 01:26:29Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -194,7 +194,7 @@ static GGZHookReturn ggz_auto_join(GGZServerEvent id,
 		/* Otherwise: don't join any room */
 	}
 
-	ggzcore_server_join_room(server, ggzcore_room_get_id(joinroom));
+	ggzcore_server_join_room(server, joinroom);
 	select_room(joinroom);
 
 	return GGZ_HOOK_REMOVE;
@@ -256,12 +256,10 @@ static GGZHookReturn ggz_login_fail(GGZServerEvent id,
 	return GGZ_HOOK_OK;
 }
 
-static void client_update_one_room(int room)
+static void client_update_one_room(const GGZRoom *room)
 {
-	GGZRoom *roomptr = ggzcore_server_get_nth_room(server, room);
-
-	if (roomptr) {
-		update_one_room(roomptr);
+	if (room) {
+		update_one_room(room);
 	}
 }
 
@@ -467,11 +465,10 @@ static GGZHookReturn ggz_list_players(GGZRoomEvent id,
 				      const void *event_data,
 				      const void *user_data)
 {
-	const int *room = event_data;
+	const GGZRoom *room = event_data;
 
 	update_player_list();
-	if (room)
-		client_update_one_room(*room);
+	client_update_one_room(room);
 	return GGZ_HOOK_OK;
 }
 
@@ -479,9 +476,9 @@ static GGZHookReturn ggz_player_count(GGZRoomEvent id,
 				      const void *event_data,
 				      const void *user_data)
 {
-	const int *room = event_data;
+	const GGZRoom *room = event_data;
 
-	client_update_one_room(*room);
+	client_update_one_room(room);
 	return GGZ_HOOK_OK;
 }
 
@@ -494,7 +491,7 @@ static GGZHookReturn ggz_room_enter(GGZRoomEvent id,
 	client_update_one_room(data->to_room);
 	client_update_one_room(data->from_room);
 	update_player_list();
-	chat_enter(data->player_name, data->from_room);
+	chat_enter(data->player_name, data->rooms_known, data->from_room);
 
 	return GGZ_HOOK_OK;
 }
@@ -509,7 +506,7 @@ static GGZHookReturn ggz_room_leave(GGZRoomEvent id,
 	client_update_one_room(data->to_room);
 	client_update_one_room(data->from_room);
 	update_player_list();
-	chat_part(data->player_name, data->to_room);
+	chat_part(data->player_name, data->rooms_known, data->to_room);
 
 	return GGZ_HOOK_OK;
 }

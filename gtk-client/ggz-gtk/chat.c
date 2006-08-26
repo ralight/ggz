@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 7740 2006-01-07 04:03:54Z jdorje $
+ * $Id: chat.c 8533 2006-08-26 01:26:29Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -492,23 +492,22 @@ static void chat_send_beep(GGZServer *server, const gchar *message)
  * Returns:
  */
 
-void chat_enter(const gchar *player, int from_room)
+void chat_enter(const gchar *player, gboolean room_known, GGZRoom *from_room)
 {
         GtkXText *tmp = NULL;
 
         if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
         {
 		char message[256];
-		GGZRoom *room = ggzcore_server_get_nth_room(server, from_room);
 
-		if (from_room == -1) {
+		if (!room_known) {
 			/* Just entering server. */
 			snprintf(message, sizeof(message),
 				 _("%s (logged on)"), player);
-		} else if (room) {
+		} else if (from_room) {
 			snprintf(message, sizeof(message),
 				 "%s (from %s)", player,
-				 ggzcore_room_get_name(room));
+				 ggzcore_room_get_name(from_room));
 		} else {
 			/* No data. */
 			snprintf(message, sizeof(message), "%s", player);
@@ -531,23 +530,22 @@ void chat_enter(const gchar *player, int from_room)
  * Returns:
  */
 
-void chat_part(const gchar *player, int to_room)
+void chat_part(const gchar *player, int room_known, GGZRoom *to_room)
 {
         GtkXText *tmp = NULL;
 
         if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
         {
 		char message[256];
-		GGZRoom *room = ggzcore_server_get_nth_room(server, to_room);
 
-		if (to_room == -1) {
+		if (!room_known) {
 			/* Leaving server. */
 			snprintf(message, sizeof(message),
 				 _("%s (logged off)"), player);
-		} else if (room) {
+		} else if (to_room) {
 			snprintf(message, sizeof(message),
 				 "%s (to %s)", player,
-				 ggzcore_room_get_name(room));
+				 ggzcore_room_get_name(to_room));
 		} else {
 			/* No data. */
 			snprintf(message, sizeof(message), "%s", player);

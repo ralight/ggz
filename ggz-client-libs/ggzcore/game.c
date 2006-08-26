@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 8372 2006-07-19 11:40:53Z josef $
+ * $Id: game.c 8533 2006-08-26 01:26:29Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -285,7 +285,7 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	GGZRoom *room = _ggzcore_server_get_cur_room(server);
 
 	game->server = server;
-	game->room_id = ggzcore_room_get_id(room);
+	game->room_id = _ggzcore_room_get_id(room);
 	game->table_id = -1;
 
 	_ggzcore_server_set_cur_game(server, game);
@@ -609,7 +609,7 @@ void _ggzcore_game_set_table(GGZGame * game, int room_id, int table_id)
 	assert(game->table_id < 0 || game->table_id == table_id);
 
 	room = ggzcore_server_get_cur_room(game->server);
-	assert(ggzcore_room_get_id(room) == room_id);
+	assert(_ggzcore_room_get_id(room) == room_id);
 
 	game->table_id = table_id;
 	table = ggzcore_room_get_table_by_id(room, table_id);

@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 8469 2006-08-04 13:27:21Z josef $
+ * $Id: ggzcore.h 8533 2006-08-26 01:26:29Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -118,6 +118,37 @@ void ggzcore_reload(void);
  */
 void ggzcore_destroy(void);
 
+
+/* Definitions for all internal ggzcore structures. */
+
+/** @brief A server object containing all information about a connection */
+typedef struct _GGZServer   GGZServer;
+
+/** @brief Contains information about a single room on a server. */
+typedef struct _GGZRoom     GGZRoom;
+
+/** @brief Contains information about a single player. */
+typedef struct _GGZPlayer   GGZPlayer;
+
+/** @brief Contains information about a single table. */
+typedef struct _GGZTable    GGZTable;
+
+/** @brief Contains information about a _game type_.
+ *  @note Each room has one game type; a game may be used in multiple rooms.
+ */
+typedef struct _GGZGameType GGZGameType;
+
+/** @brief Contains information about a single module.
+ *  A game module, on the client, is an executable designed to play a game.
+ *  Each game type may have many modules that play it.
+ */
+typedef struct _GGZModule   GGZModule;
+
+/** @brief Contains information about a single game table.
+ *  This contains information about a table we are present at or are about
+ *  to launch.  It is thus associated with both a GGZTable and a GGZModule.
+ */
+typedef struct _GGZGame     GGZGame;
 
 /** GGZ Hook function return types */
 typedef enum {
@@ -382,17 +413,22 @@ typedef struct {
 	/** @brief The name of the player entering/leaving. */
 	const char *player_name;
 
+	/* If this value is false (0) then any NULL rooms (below) mean that
+	   the room is actually not known.  This should only happen when
+	   connecting to an older server. */
+	int rooms_known;
+
 	/** @brief The room we are entering.
 	 *
-	 *  This may be -1 if the player is leaving the server, or -2 if the
+	 *  This may be NULL if the player is leaving the server or if the
 	 *  info is unknown. */
-	int to_room;
+	GGZRoom *to_room;
 
 	/** @brief The room the player is leaving.
 	 *
-	 *  This may be -1 if the player is just entering the server, or -2
+	 *  This may be NULL if the player is just entering the server or
 	 *  if the info is unknown. */
-	int from_room;
+	GGZRoom *from_room;
 } GGZRoomChangeEventData;
 
 /** A GGZRoomEvent is an event associated with the room, that is triggered
@@ -406,7 +442,7 @@ typedef struct {
  */
 typedef enum {
 	/** The list of players in a room has arrived.
-	 *  @param data The room id (int *)
+	 *  @param data The room (GGZRoom*)
 	 *  @note This will only be issued for the current room.
 	 *  @see ggzcore_room_list_players */
 	GGZ_PLAYER_LIST,
@@ -481,7 +517,7 @@ typedef enum {
 	GGZ_PLAYER_STATS,
 
 	/** The number of players in a room has arrived.
-	 *  @param data The room id (int *) */
+	 *  @param data The room (GGZRoom*) */
 	GGZ_PLAYER_COUNT
 } GGZRoomEvent;
 
@@ -565,37 +601,6 @@ typedef enum {
 	GGZ_ENVIRONMENT_XWINDOW, /**< X11 windowed mode (default) */
 	GGZ_ENVIRONMENT_XFULLSCREEN /**< X11 fullscreen mode */
 } GGZModuleEnvironment;
-
-/* Definitions for all internal ggzcore structures. */
-
-/** @brief A server object containing all information about a connection */
-typedef struct _GGZServer   GGZServer;
-
-/** @brief Contains information about a single room on a server. */
-typedef struct _GGZRoom     GGZRoom;
-
-/** @brief Contains information about a single player. */
-typedef struct _GGZPlayer   GGZPlayer;
-
-/** @brief Contains information about a single table. */
-typedef struct _GGZTable    GGZTable;
-
-/** @brief Contains information about a _game type_.
- *  @note Each room has one game type; a game may be used in multiple rooms.
- */
-typedef struct _GGZGameType GGZGameType;
-
-/** @brief Contains information about a single module.
- *  A game module, on the client, is an executable designed to play a game.
- *  Each game type may have many modules that play it.
- */
-typedef struct _GGZModule   GGZModule;
-
-/** @brief Contains information about a single game table.
- *  This contains information about a table we are present at or are about
- *  to launch.  It is thus associated with both a GGZTable and a GGZModule.
- */
-typedef struct _GGZGame     GGZGame;
 
 /* Server object related functions */
 /* ------------------------------- */
@@ -818,12 +823,17 @@ int ggzcore_server_get_num_players(const GGZServer *server);
  */
 int ggzcore_server_get_num_rooms(const GGZServer *server);
 
-/** @brief Return the current room, or NULL if there is none. */
-GGZRoom* ggzcore_server_get_cur_room(const GGZServer *server);
-
 /** @brief Return the nth room on the server, or NULL on error. */
 GGZRoom* ggzcore_server_get_nth_room(const GGZServer *server, 
 				     const unsigned int num);
+
+/** @brief Return the number (position in the room list) of the room.
+ *  @see ggzcore_server_get_nth_room */
+int ggzcore_server_get_room_num(const GGZServer *server,
+				const GGZRoom *room);
+
+/** @brief Return the current room, or NULL if there is none. */
+GGZRoom* ggzcore_server_get_cur_room(const GGZServer *server);
 
 /** @brief Find the player, by name (or NULL).
  *  @note Only players in the current room can currently be found.
@@ -937,7 +947,7 @@ int ggzcore_server_list_gametypes(GGZServer *server, const char verbose);
  * @param room The number of the room to join.
  * @return 0 on success, -1 on failure (e.g. non-existing room number).
  */
-int ggzcore_server_join_room(GGZServer *server, const unsigned int room);
+int ggzcore_server_join_room(GGZServer *server, GGZRoom *room);
 
 /** @brief Log out of a server. */
 int ggzcore_server_logout(GGZServer *server);
@@ -964,50 +974,42 @@ void ggzcore_server_free(GGZServer *server);
 /** @brief Allocate space for a new room object */
 GGZRoom* ggzcore_room_new(void);
 
-/** @brief Initialize room object */
-int ggzcore_room_init(GGZRoom *room, 
-		      GGZServer *server, 
-		      const unsigned int id, 
-		      const char *name, 
-		      const unsigned int game, 
-		      const char *desc);
-
 /** @brief De-allocate room object and its children */
 void ggzcore_room_free(GGZRoom *room);
 
 
 /** @brief Return the server for this room (or NULL on error). */
-GGZServer *ggzcore_room_get_server(GGZRoom *room);
-
-/** @brief Return the ID number of the room (or negative on error). */
-int ggzcore_room_get_id(const GGZRoom *room);
+GGZServer *ggzcore_room_get_server(const GGZRoom *room);
 
 /** @brief Return the name of the room (or NULL on error). */
-const char* ggzcore_room_get_name(GGZRoom *room);
+const char* ggzcore_room_get_name(const GGZRoom *room);
 
 /** @brief Return the description of the room (or NULL on error). */
-const char* ggzcore_room_get_desc(GGZRoom *room);
+const char* ggzcore_room_get_desc(const GGZRoom *room);
 
 /** @brief Return the type of game played in this room (or NULL on error). */
-GGZGameType* ggzcore_room_get_gametype(GGZRoom *room);
+GGZGameType* ggzcore_room_get_gametype(const GGZRoom *room);
 
 /** @brief Return the number of players in the room (or negative on error). */
-int ggzcore_room_get_num_players(GGZRoom *room);
+int ggzcore_room_get_num_players(const GGZRoom *room);
 
 /** @brief Return the nth player in the room (or NULL on error). */
-GGZPlayer* ggzcore_room_get_nth_player(GGZRoom *room, const unsigned int num);
+GGZPlayer* ggzcore_room_get_nth_player(const GGZRoom *room,
+				       const unsigned int num);
 
 /** @brief Return the number of tables in the room (or negative on error). */
-int ggzcore_room_get_num_tables(GGZRoom *room);
+int ggzcore_room_get_num_tables(const GGZRoom *room);
 
 /** @brief Return the nth table in the room (or NULL on error). */
-GGZTable* ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
+GGZTable* ggzcore_room_get_nth_table(const GGZRoom *room,
+				     const unsigned int num);
 
 /** @brief Return the table in this room with matching ID (NULL on error). */
-GGZTable* ggzcore_room_get_table_by_id(GGZRoom *room, const unsigned int id);
+GGZTable* ggzcore_room_get_table_by_id(const GGZRoom *room,
+				       const unsigned int id);
 
 /** @brief Return whether this room is closed (1), or open as usual (0) */
-int ggzcore_room_get_closed(const GGZRoom *room);
+int ggzcore_room_get_closed(const const GGZRoom *room);
 
 
 /** @brief Register a handler (hook) for the room event.

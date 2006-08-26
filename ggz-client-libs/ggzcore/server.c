@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 8359 2006-07-13 20:34:20Z jdorje $
+ * $Id: server.c 8533 2006-08-26 01:26:29Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -392,6 +392,15 @@ GGZRoom *ggzcore_server_get_nth_room(const GGZServer * server,
 		return NULL;
 }
 
+int ggzcore_server_get_room_num(const GGZServer *server,
+				const GGZRoom *room)
+{
+	if (server && room)
+		return _ggzcore_server_get_room_num(server, room);
+	else
+		return 0;
+}
+
 int ggzcore_server_get_num_rooms(const GGZServer * server)
 {
 	if (server)
@@ -543,14 +552,13 @@ int ggzcore_server_list_gametypes(GGZServer * server, const char verbose)
 }
 
 
-int ggzcore_server_join_room(GGZServer * server,
-			     const unsigned int room_num)
+int ggzcore_server_join_room(GGZServer * server, GGZRoom *room)
 {
 	/* FIXME: check validity of this action */
-	if (server && (_ggzcore_server_get_room_by_id(server, room_num))
+	if (server && room
 	    && (server->state == GGZ_STATE_IN_ROOM
 		|| server->state == GGZ_STATE_LOGGED_IN))
-		return _ggzcore_server_join_room(server, room_num);
+		return _ggzcore_server_join_room(server, room);
 	else
 		return -1;
 }
@@ -750,7 +758,7 @@ GGZRoom *_ggzcore_server_get_room_by_id(const GGZServer * server,
 	int i;
 
 	for (i = 0; i < server->num_rooms; i++)
-		if (ggzcore_room_get_id(server->rooms[i]) == id)
+		if (_ggzcore_room_get_id(server->rooms[i]) == id)
 			return server->rooms[i];
 
 	return NULL;
@@ -762,6 +770,12 @@ GGZRoom *_ggzcore_server_get_nth_room(const GGZServer * server,
 {
 	return server->rooms[num];
 	/* FIXME: does this work for fragmented room lists, too? */
+}
+
+int _ggzcore_server_get_room_num(const GGZServer *server,
+				 const GGZRoom *room)
+{
+	return _ggzcore_room_get_num(room);
 }
 
 
@@ -1284,18 +1298,12 @@ int _ggzcore_server_load_roomlist(GGZServer * server, const int type,
 }
 
 
-int _ggzcore_server_join_room(GGZServer * server,
-			      const unsigned int room_num)
+int _ggzcore_server_join_room(GGZServer * server, GGZRoom *room)
 {
 	int status;
-	int room_id;
-	GGZRoom *room;
+	int room_id = _ggzcore_room_get_id(room);
 
-	/* We need to send the room's ID on the server */
-	room = _ggzcore_server_get_room_by_id(server, room_num);
-	room_id = ggzcore_room_get_id(room);
-
-	ggz_debug(GGZCORE_DBG_SERVER, "Moving to room %d", room_num);
+	ggz_debug(GGZCORE_DBG_SERVER, "Moving to room %d", room_id);
 
 	status = _ggzcore_net_send_join_room(server->net, room_id);
 	server->new_room = room;
@@ -1479,6 +1487,7 @@ void _ggzcore_server_add_room(GGZServer * server, GGZRoom * room)
 	while (i < server->num_rooms) {
 		if (server->rooms[i] == NULL) {
 			server->rooms[i] = room;
+			_ggzcore_room_set_num(room, i);
 			break;
 		}
 		++i;
@@ -1501,6 +1510,7 @@ void _ggzcore_server_delete_room(GGZServer * server, GGZRoom * room)
 				/* FIXME: what if not at end? reorder! */
 				for (j = i; j < server->num_rooms; j++) {
 					server->rooms[j] = server->rooms[j + 1];
+					_ggzcore_room_set_num(server->rooms[j], j);
 				}
 				server->rooms[server->num_rooms] = NULL;
 				break;

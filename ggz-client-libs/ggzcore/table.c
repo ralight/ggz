@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: table.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: table.c 8533 2006-08-26 01:26:29Z jdorje $
  *
  * This fils contains functions for handling tables
  *
@@ -570,7 +570,7 @@ void _ggzcore_table_set_seat(GGZTable *table, GGZTableSeat *seat)
 	if (table->room
 	    && (server = ggzcore_room_get_server(table->room))
 	    && (game = ggzcore_server_get_cur_game(server))
-	    && ggzcore_room_get_id(table->room)
+	    && _ggzcore_room_get_id(table->room)
 		== _ggzcore_game_get_room_id(game)) {
 		const char *me = _ggzcore_server_get_handle(server);
 		int game_table = _ggzcore_game_get_table_id(game);
@@ -649,7 +649,7 @@ void _ggzcore_table_set_spectator_seat(GGZTable *table,
 	if (table->room
 	    && (server = ggzcore_room_get_server(table->room))
 	    && (game = _ggzcore_server_get_cur_game(server))
-	    && (ggzcore_room_get_id(table->room)
+	    && (_ggzcore_room_get_id(table->room)
 		== _ggzcore_game_get_room_id(game))) {
 		const char *me = _ggzcore_server_get_handle(server);
 		int game_table = _ggzcore_game_get_table_id(game);

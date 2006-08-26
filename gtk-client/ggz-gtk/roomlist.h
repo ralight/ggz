@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.h 7757 2006-01-09 18:03:06Z jdorje $
+ * $Id: roomlist.h 8533 2006-08-26 01:26:29Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -30,7 +30,7 @@ void sensitize_room_list(gboolean sensitive);
 void clear_room_list(void);
 void select_room(GGZRoom *room);
 
-void update_one_room(GGZRoom *room);
+void update_one_room(const GGZRoom *room);
 void update_room_list(void);
 
 GtkWidget *create_room_list(GtkWidget *window);

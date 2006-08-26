@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 8469 2006-08-04 13:27:21Z josef $
+ * $Id: room.h 8533 2006-08-26 01:26:29Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -73,9 +73,9 @@ void _ggzcore_room_set_player_list(GGZRoom * room,
 				   unsigned int count, GGZList * list);
 void _ggzcore_room_set_players(GGZRoom * room, int players);
 void _ggzcore_room_add_player(GGZRoom * room, GGZPlayer * pdata,
-			      int from_room);
+			      int room_known, GGZRoom *from_room);
 void _ggzcore_room_remove_player(GGZRoom * room, const char *name,
-				 int to_room);
+				 int room_known, GGZRoom *to_room);
 
 void _ggzcore_room_set_table_list(GGZRoom * room,
 				  unsigned int count, GGZList * list);
@@ -128,7 +128,12 @@ int _ggzcore_room_leave_table_spectator(GGZRoom * room);
 int _ggzcore_room_send_game_data(GGZRoom * room, char *buffer);
 void _ggzcore_room_recv_game_data(GGZRoom * room, char *buffer);
 
-GGZPlayer *_ggzcore_room_get_player_by_name(GGZRoom * room,
+unsigned int _ggzcore_room_get_id(const GGZRoom * room);
+
+int _ggzcore_room_get_num(const GGZRoom *room);
+void _ggzcore_room_set_num(GGZRoom *room, int num);
+
+GGZPlayer *_ggzcore_room_get_player_by_name(const GGZRoom * room,
 					    const char *name);
 GGZHookReturn _ggzcore_room_event(GGZRoom * room, GGZRoomEvent id,
 				  const void *data);

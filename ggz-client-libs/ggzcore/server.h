@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 8106 2006-06-06 07:38:18Z josef $
+ * $Id: server.h 8533 2006-08-26 01:26:29Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -50,6 +50,8 @@ int _ggzcore_server_get_num_rooms(const GGZServer * server);
 GGZRoom *_ggzcore_server_get_cur_room(const GGZServer * server);
 GGZRoom *_ggzcore_server_get_nth_room(const GGZServer * server,
 				      const unsigned int num);
+int _ggzcore_server_get_room_num(const GGZServer *server,
+				 const GGZRoom *room);
 GGZRoom *_ggzcore_server_get_room_by_id(const GGZServer * server,
 					const unsigned int id);
 
@@ -102,7 +104,7 @@ int _ggzcore_server_load_motd(GGZServer * server);
 int _ggzcore_server_load_typelist(GGZServer * server, const char verbose);
 int _ggzcore_server_load_roomlist(GGZServer * server,
 				  const int type, const char verbose);
-int _ggzcore_server_join_room(GGZServer * server, const unsigned int room);
+int _ggzcore_server_join_room(GGZServer * server, GGZRoom *room);
 
 int _ggzcore_server_logout(GGZServer * server);
 int _ggzcore_server_disconnect(GGZServer * server);

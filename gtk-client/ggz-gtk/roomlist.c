@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8350 2006-07-11 03:48:10Z jdorje $
+ * $Id: roomlist.c 8533 2006-08-26 01:26:29Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -58,7 +58,6 @@ static void client_join_room(GGZRoom *room)
 {
 	gchar *err_msg = NULL;
 	gint singleclick, status = -1;
-	int id = ggzcore_room_get_id(room);
 
 	if(ggzcore_server_get_cur_room(server) == room) {
 		/* ignore silently that we're already in this room */
@@ -92,7 +91,7 @@ static void client_join_room(GGZRoom *room)
 	}
 
 	if (status == 0) {
-		if (ggzcore_server_join_room(server, id) == 0) {
+		if (ggzcore_server_join_room(server, room) == 0) {
 	
 			/* Only desensitize with single click, dues to
 	                some weird bug that freezes the mouse if we
@@ -239,11 +238,12 @@ void clear_room_list(void)
 
 void select_room(GGZRoom *room)
 {
+#if 0 /* FIXME */
 	GtkTreeView *tree;
 	GtkTreeStore *store;
 	GtkTreeSelection *select;
 	GtkTreeIter iter;
-	int id = ggzcore_room_get_id(room), i;
+	int count = ggzcore_server_get_num_rooms(server), i;
 
 	tree = GTK_TREE_VIEW(room_list);
 	store = GTK_TREE_STORE(gtk_tree_view_get_model(tree));
@@ -259,10 +259,11 @@ void select_room(GGZRoom *room)
 	}
 
 	gtk_tree_selection_select_iter(select, &iter);
+#endif
 }
 
 static void update_iter_room(GtkTreeStore *store, GtkTreeIter *iter,
-			     GGZRoom *room)
+			     const GGZRoom *room)
 {
 	const char *roomname = ggzcore_room_get_name(room);
 	char name[strlen(roomname) + 3];
@@ -321,15 +322,15 @@ static gboolean tree_model_update_room(GtkTreeModel *store,
 }
 #endif
 
-void update_one_room(GGZRoom *room)
+void update_one_room(const GGZRoom *room)
 {
 	GtkTreeStore *store;
+	int num = ggzcore_server_get_room_num(server, room);
 
 	/* Retrieve the player list widget. */
 	store = GTK_TREE_STORE(ggz_lookup_widget(room_list, "room_list_store"));
 
-	update_iter_room(store, &room_iter[ggzcore_room_get_id(room)],
-			 room);
+	update_iter_room(store, &room_iter[num], room);
 }
 
 void update_room_list(void)

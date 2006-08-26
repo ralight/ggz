@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8475 2006-08-05 10:13:13Z josef $
+ * $Id: netxml.c 8533 2006-08-26 01:26:29Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -799,7 +799,7 @@ int _ggzcore_net_send_table_seat_update(GGZNet * net, GGZTable * table,
 					GGZTableSeat * seat)
 {
 	const GGZRoom *room = ggzcore_table_get_room(table);
-	int room_id = ggzcore_room_get_id(room);
+	int room_id = _ggzcore_room_get_id(room);
 	int id = ggzcore_table_get_id(table);
 	int num_seats = ggzcore_table_get_num_seats(table);
 
@@ -820,7 +820,7 @@ int _ggzcore_net_send_table_desc_update(GGZNet * net, GGZTable * table,
 					const char *desc)
 {
 	const GGZRoom *room = ggzcore_table_get_room(table);
-	int room_id = ggzcore_room_get_id(room);
+	int room_id = _ggzcore_room_get_id(room);
 	int id = ggzcore_table_get_id(table);
 	char *desc_quoted;
 
@@ -846,7 +846,7 @@ int _ggzcore_net_send_table_boot_update(GGZNet * net, GGZTable * table,
 					GGZTableSeat * seat)
 {
 	const GGZRoom *room = ggzcore_table_get_room(table);
-	int room_id = ggzcore_room_get_id(room);
+	int room_id = _ggzcore_room_get_id(room);
 	int id = ggzcore_table_get_id(table);
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending boot of player %s.",
@@ -1461,7 +1461,7 @@ static void _ggzcore_net_room_update(GGZNet * net, GGZXMLElement * update,
 	roomdata = ggz_xmlelement_get_data(update);
 	if (!roomdata)
 		return;
-	id = ggzcore_room_get_id(roomdata);
+	id = _ggzcore_room_get_id(roomdata);
 	room = _ggzcore_server_get_room_by_id(net->server, id);
 
 	if (room) {
@@ -1523,12 +1523,18 @@ static void _ggzcore_net_player_update(GGZNet * net,
 
 	if (strcasecmp(action, "add") == 0) {
 		int from_room = str_to_int(ATTR(update, "FROMROOM"), -2);
+		GGZRoom *from_room_ptr
+		  = _ggzcore_server_get_room_by_id(net->server, from_room);
 
-		_ggzcore_room_add_player(room, player, from_room);
+		_ggzcore_room_add_player(room, player,
+					 (from_room != -2), from_room_ptr);
 	} else if (strcasecmp(action, "delete") == 0) {
 		int to_room = str_to_int(ATTR(update, "TOROOM"), -2);
+		GGZRoom *to_room_ptr
+		  = _ggzcore_server_get_room_by_id(net->server, to_room);
 
-		_ggzcore_room_remove_player(room, player_name, to_room);
+		_ggzcore_room_remove_player(room, player_name,
+					    (to_room != -2), to_room_ptr);
 	} else if (strcasecmp(action, "lag") == 0) {
 		/* FIXME: Should be a player "class-based" event */
 		int lag = ggzcore_player_get_lag(player);
@@ -1558,7 +1564,7 @@ static void _ggzcore_net_table_update(GGZNet * net, GGZXMLElement * update,
 		/* Assume we're talking about the current room.  This is
 		   no doubt preferable to simply dropping the connection. */
 		room = ggzcore_server_get_cur_room(net->server);
-		room_num = ggzcore_room_get_id(room);
+		room_num = _ggzcore_room_get_id(room);
 	} else
 		room_num = str_to_int(room_str, -1);
 
