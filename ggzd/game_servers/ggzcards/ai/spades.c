@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 8338 2006-07-08 19:05:25Z jdorje $
+ * $Id: spades.c 8539 2006-08-26 17:48:06Z oojah $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -875,11 +875,14 @@ card_t get_play(int play_seat, bool *valid_plays)
 static void Calculate(struct play *play, int agg)
 {
 	int mask, map, count, danger, trump, n, cover, sCount, o;
-	card_t high_card = ggzcards.players[high].table_card;
+	card_t high_card;
 	char suit_lead = ggzcards.players[get_leader()].table_card.suit;
 	char s, r;
 	hand_t *hand = &ggzcards.players[ME].hand;
 
+	if(high >= 0){
+		high_card = ggzcards.players[high].table_card;
+	}
 	/**
 	 * The scale for all likelihoods runs as follows:
 	 *
