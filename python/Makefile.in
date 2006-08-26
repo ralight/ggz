@@ -129,7 +129,7 @@ man-install:
 install-rest:
 	@echo Installing game Dresden
 	mkdir -p $(DESTDIR)$(bindir)
-	cp dresden/dresden.py $(DESTDIR)$(bindir)
+	cp dresden/dresden $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(datadir)/ggz/dresden/
 	cp dresden/*.png $(DESTDIR)$(datadir)/ggz/dresden
 
@@ -184,7 +184,7 @@ install-ggzboard:
 	mkdir -p $(DESTDIR)$(bindir)
 	cp ggzboard/ggzboard $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/
-	cp ggzboard/*.jpg $(DESTDIR)$(datadir)/ggz/ggzboard
+	#cp ggzboard/*.jpg $(DESTDIR)$(datadir)/ggz/ggzboard
 	cp ggzboard/*.png $(DESTDIR)$(datadir)/ggz/ggzboard
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/common/
 	cp ggzboard/common/*.png $(DESTDIR)$(datadir)/ggz/ggzboard/common

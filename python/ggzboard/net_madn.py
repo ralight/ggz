@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # GGZBoard Ludo: Ludo game module for the GGZBoard container
 # Copyright (C) 2005 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions

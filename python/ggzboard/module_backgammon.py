@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # GGZBoard Backgammon: Backgammon game module for the GGZBoard container
 # Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions

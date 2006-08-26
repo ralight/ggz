@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # GGZBoard M-Ä-D-N: Mensch-ärgere-dich-nicht game module for the GGZBoard container
 # Copyright (C) 2005 Josef Spillner <josef@ggzgamingzone.org>

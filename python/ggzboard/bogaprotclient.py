@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Bogaprot: Common protocol implementation for board games (client side)
 # Copyright (C) 2005 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
