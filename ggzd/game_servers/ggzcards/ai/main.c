@@ -4,7 +4,7 @@
  * Project: GGZCards AI Client
  * Date: 02/19/2002
  * Desc: AI client main loop and core logic
- * $Id: main.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: main.c 8538 2006-08-26 16:29:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 		status = select(fd + 1, &read_fd_set, pwrite_fd_set,
 				&except_fd_set, NULL);
 		
-		if (status <= 0) {
+		if (status < 0) {
 			if (errno != EINTR)
 				break;
 			continue;
