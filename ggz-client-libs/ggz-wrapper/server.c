@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 7147 2005-04-24 06:36:47Z josef $
+ * $Id: server.c 8534 2006-08-26 01:28:34Z jdorje $
  *
  * Functions for handling server events
  *
@@ -519,7 +519,7 @@ static GGZHookReturn server_list_types(GGZServerEvent id,
 			name = ggzcore_gametype_get_name(type);
 			if (name && game_name
 			    && strcmp(name, game_name) == 0) {
-				ggzcore_server_join_room(server, i);
+				ggzcore_server_join_room(server, room);
 				found = 1;
 				break;
 			}
