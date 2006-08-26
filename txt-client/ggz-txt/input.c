@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 8519 2006-08-16 14:36:19Z josef $
+ * $Id: input.c 8535 2006-08-26 01:40:11Z jdorje $
  *
  * Functions for inputing commands from the user
  *
@@ -65,7 +65,6 @@ static void input_handle_launch(char *line);
 static void input_handle_exit(void);
 static void input_handle_log(char *line);
 static void input_handle_admin(char* line);
-static int input_roomnumber(const char *line);
 
 static char delim[] = " \n";
 static char command_prefix = '/';
@@ -321,25 +320,27 @@ static void input_handle_join(char* line)
 }
 
 
-static int input_roomnumber(const char *line)
+static GGZRoom *input_room(const char *line)
 {
 	GGZRoom *room;
 	int i;
 
-	if(!line) return -1;
+	if(!line) return NULL;
 	for(i = 0; i < ggzcore_server_get_num_rooms(server); i++)
 	{
 		room = ggzcore_server_get_nth_room(server, i);
-		if(!ggz_strcasecmp(ggzcore_room_get_name(room), line)) return i;
+		if (!ggz_strcasecmp(ggzcore_room_get_name(room), line)) {
+			return room;
+		}
 	}
 
-	return atoi(line);
+	return ggzcore_server_get_nth_room(server, atoi(line));
 }
 
 
 static void input_handle_join_room(char* line)
 {
-	int roomid;
+	GGZRoom *room;
 	GGZStateID state = ggzcore_server_get_state(server);
 	int ret;
 
@@ -350,10 +351,10 @@ static void input_handle_join_room(char* line)
 	}
 
 	if (line) {
-		roomid = input_roomnumber(line);
+		room = input_room(line);
 		server_progresswait();
 		server_workinprogress(COMMAND_JOIN, 1);
-		ret = ggzcore_server_join_room(server, roomid);
+		ret = ggzcore_server_join_room(server, room);
 		if(ret < 0) {
 			server_workinprogress(COMMAND_JOIN, 0);
 			output_text(_("Room %s does not exist."), line);
@@ -366,12 +367,12 @@ static void input_handle_join_room(char* line)
 
 static void input_handle_desc(char* line)
 {
-	int roomid;
+	GGZRoom *room;
 	const char* desc;
 
 	if (line) {
-		roomid = input_roomnumber(line);
-		desc = ggzcore_room_get_desc(ggzcore_server_get_nth_room(server, roomid));
+		room = input_room(line);
+		desc = ggzcore_room_get_desc(room);
 		output_text("%s", desc);
 	} else {
 		output_text(_("Describe which room?"));
