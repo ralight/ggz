@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 8533 2006-08-26 01:26:29Z jdorje $
+ * $Id: ggzcore.h 8536 2006-08-26 03:20:06Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -1009,7 +1009,7 @@ GGZTable* ggzcore_room_get_table_by_id(const GGZRoom *room,
 				       const unsigned int id);
 
 /** @brief Return whether this room is closed (1), or open as usual (0) */
-int ggzcore_room_get_closed(const const GGZRoom *room);
+int ggzcore_room_get_closed(const GGZRoom *room);
 
 
 /** @brief Register a handler (hook) for the room event.
