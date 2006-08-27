@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8533 2006-08-26 01:26:29Z jdorje $
+ * $Id: netxml.c 8544 2006-08-27 19:21:24Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1259,6 +1259,11 @@ static void _ggzcore_net_handle_result(GGZNet * net,
 				snprintf(error.message,
 					 sizeof(error.message),
 					 "Must be at table");
+				break;
+			case E_CHAT_GAGGED:
+				snprintf(error.message,
+					 sizeof(error.message),
+					 "You are gagged");
 				break;
 			default:
 				snprintf(error.message,

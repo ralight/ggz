@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: main.c 8544 2006-08-27 19:21:24Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -100,7 +100,11 @@ int main(int argc, char *argv[])
 	client_quit();
 	table_cleanup();
 
+#if 0
+	/* It seems the client gets killed in the middle of this,
+	   causing prefs to be lost. */
 	save_preferences();
+#endif
 	ggz_conf_cleanup();
 
 	cleanup_debugging();

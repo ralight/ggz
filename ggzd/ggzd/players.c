@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8521 2006-08-16 15:22:42Z josef $
+ * $Id: players.c 8544 2006-08-27 19:21:24Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -1374,8 +1374,16 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 		/* FIXME: perhaps if there is a target we should treat it
 		   as a personal message instead? */
 	case GGZ_CHAT_NORMAL:
-		dbg_msg(GGZ_DBG_CHAT, "%s sends %s", player->name, msg);
-		status = chat_room_enqueue(player->room, type, player, msg);
+		if (player->gagged) {
+			dbg_msg(GGZ_DBG_CHAT, "%s (gagged) sends %s",
+				player->name, msg);
+			status = E_CHAT_GAGGED;
+		} else {
+			dbg_msg(GGZ_DBG_CHAT, "%s sends %s",
+				player->name, msg);
+			status = chat_room_enqueue(player->room,
+						   type, player, msg);
+		}
 		break;
 	case GGZ_CHAT_TABLE:
 		dbg_msg(GGZ_DBG_CHAT, "%s sends table %s", player->name, msg);
