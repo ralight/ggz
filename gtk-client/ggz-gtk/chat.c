@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 8533 2006-08-26 01:26:29Z jdorje $
+ * $Id: chat.c 8543 2006-08-27 05:00:21Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -76,6 +76,11 @@ static void chat_help(GGZServer *server, const gchar *message);
 static void chat_list_friend(GGZServer *server, const gchar *message);
 static void chat_list_ignore(GGZServer *server, const gchar *message);
 
+static void chat_kick(GGZServer *server, const gchar *message);
+static void chat_gag(GGZServer *server, const gchar *message);
+static void chat_ungag(GGZServer *server, const gchar *message);
+static void chat_ban(GGZServer *server, const gchar *message);
+
 static struct {
 	const char *cmd;
 	void (*func)(GGZServer *server, const gchar *message);
@@ -94,7 +99,19 @@ static struct {
 		  N_("/friends .................. List your friends")},
 		 {"/ignore", chat_list_ignore,
 		  N_("/ignore ................... List people "
-		     "you're ignoring")} };
+		     "you're ignoring")},
+		 {"/kick", chat_kick,
+		  N_("/kick <username> .......... Kick a player "
+		     "from the room")},
+		 {"/gag", chat_gag,
+		  N_("/gag <username> ........... Gag a player to prevent "
+		     "them from talking")},
+		 {"/ungag", chat_ungag,
+		  N_("/ungag <username> ......... Reverse the gag operation "
+		     "to allow a player to talk")},
+		 {"/ban", chat_ban,
+		  N_("/ban <username> ........... Ban a player from "
+		     "the server")}};
 #define NUM_CHAT_COMMANDS (sizeof(commands) / sizeof(commands[0]))
 
 /* Aray of GdkColors currently used for chat and MOTD
@@ -478,7 +495,7 @@ static void chat_send_beep(GGZServer *server, const gchar *message)
 	alert = g_strdup_printf(_("Beep sent to %s."), player);
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, alert);
 	g_free(alert);
-	ggz_free(player);
+	g_free(player);
 }
 
 
@@ -939,6 +956,45 @@ static void chat_list_ignore(GGZServer *server, const gchar *message)
 	for(i=0; i<ignore_count; i++)
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
 				   g_array_index(chatinfo.ignore, char *, i));
+}
+
+static void chat_kick(GGZServer *server, const gchar *message)
+{
+	char *player = g_strstrip(ggz_strdup(message));
+
+	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+			   GGZ_ADMIN_KICK,
+			   player, NULL);
+}
+
+
+static void chat_gag(GGZServer *server, const gchar *message)
+{
+	char *player = g_strstrip(ggz_strdup(message));
+
+	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+			   GGZ_ADMIN_GAG,
+			   player, NULL);
+}
+
+
+static void chat_ungag(GGZServer *server, const gchar *message)
+{
+	char *player = g_strstrip(ggz_strdup(message));
+
+	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+			   GGZ_ADMIN_UNGAG,
+			   player, NULL);
+}
+
+
+static void chat_ban(GGZServer *server, const gchar *message)
+{
+	char *player = g_strstrip(ggz_strdup(message));
+
+	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+			   GGZ_ADMIN_BAN,
+			   player, NULL);
 }
 
 
