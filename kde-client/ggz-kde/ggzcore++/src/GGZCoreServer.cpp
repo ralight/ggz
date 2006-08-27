@@ -188,9 +188,9 @@ GGZCoreRoom* GGZCoreServer::room(const unsigned int number)
 	return m_coreroom;
 }
 
-int GGZCoreServer::joinRoom(GGZCoreRoom *room)
+int GGZCoreServer::joinRoom(const unsigned int number)
 {
-	return ggzcore_server_join_room(m_server, room->room());
+	return ggzcore_server_join_room(m_server, number);
 }
 
 int GGZCoreServer::countGames()

@@ -845,8 +845,8 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 		case GGZCoreRoom::enter:
 			KGGZDEBUG("enter\n");
 			event = (GGZRoomChangeEventData*)data;
-			if(!event->rooms_known) fromroom = "(unknown origin)";
-			else if(event->from_room == NULL) fromroom = i18n("first room after login");
+			if(event->from_room == -2) fromroom = "(unknown origin)";
+			else if(event->from_room == -1) fromroom = i18n("first room after login");
 			else fromroom = QString("from room %1").arg(kggzserver->room(event->from_room)->name());
 			buffer = QString("%1 enters the room (%2).").arg(
 				event->player_name).arg(

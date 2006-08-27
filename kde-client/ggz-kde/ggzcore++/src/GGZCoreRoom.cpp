@@ -72,6 +72,20 @@ int GGZCoreRoom::removeHook(const GGZCoreRoomEvent event, const unsigned int id)
 	return ggzcore_room_remove_event_hook_id(m_room, (GGZRoomEvent)event, id);
 }
 
+int GGZCoreRoom::init(GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category)
+{
+#ifdef KGGZ_PATCH_C_AND_R
+	return ggzcore_room_init(m_room, server, id, name, game, description, category);
+#else
+	return ggzcore_room_init(m_room, server, id, name, game, description);
+#endif
+}
+
+int GGZCoreRoom::id()
+{
+	return ggzcore_room_get_id(m_room);
+}
+
 const char* GGZCoreRoom::name()
 {
 	return ggzcore_room_get_name(m_room);
