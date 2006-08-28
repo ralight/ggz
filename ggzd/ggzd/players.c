@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8547 2006-08-28 02:11:50Z jdorje $
+ * $Id: players.c 8548 2006-08-28 03:04:38Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -1437,7 +1437,7 @@ GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
 		break;
 	case GGZ_ADMIN_GAG:
 		dbg_msg(GGZ_DBG_CHAT, "%s gags %s", player->name, target);
-		if (rcvr == NULL) {
+		if (rcvr == NULL || rcvr == player) {
 			status = E_USR_LOOKUP;
 		} else {
 			rcvr->gagged = true;
@@ -1446,7 +1446,7 @@ GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
 		break;
 	case GGZ_ADMIN_UNGAG:
 		dbg_msg(GGZ_DBG_CHAT, "%s ungags %s again", player->name, target);
-		if (rcvr == NULL) {
+		if (rcvr == NULL || rcvr == player) {
 			status = E_USR_LOOKUP;
 		} else {
 			rcvr->gagged = false;
@@ -1455,7 +1455,7 @@ GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
 		break;
 	case GGZ_ADMIN_KICK:
 		dbg_msg(GGZ_DBG_CHAT, "%s kicks %s, reason: %s", player->name, target, reason);
-		if (rcvr == NULL) {
+		if (rcvr == NULL || rcvr == player) {
 			status = E_USR_LOOKUP;
 		} else if (reason == NULL) {
 			status = E_BAD_OPTIONS;
