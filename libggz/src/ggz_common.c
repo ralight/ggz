@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 8544 2006-08-27 19:21:24Z jdorje $
+ * $Id: ggz_common.c 8547 2006-08-28 02:11:50Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -350,8 +350,6 @@ const char *ggz_error_to_string(GGZClientReqError err)
 		return "user not found";
 	case E_USR_TAKEN:
 		return "username already taken";
-	case E_CHAT_GAGGED:
-		return "chat gagged";
 	case E_NO_STATUS:
 	case E_UNKNOWN:
 		break;
@@ -421,8 +419,6 @@ GGZClientReqError ggz_string_to_error(const char *str)
 		return E_USR_FOUND;
 	if (!strcasecmp(str, "username already taken"))
 		return E_USR_TAKEN;
-	if (!strcasecmp(str, "chat gagged"))
-		return E_CHAT_GAGGED;
 
 	return E_UNKNOWN;
 }
