@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 8532 2006-08-25 23:28:47Z jdorje $
+ * $Id: playerlist.c 8549 2006-08-28 23:21:24Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -301,6 +301,17 @@ void update_player_list(void)
 	}
 }
 
+static gint player_sort_func(GtkTreeModel *model,
+			   GtkTreeIter *a, GtkTreeIter *b, gpointer data)
+{
+	char *nameA, *nameB;
+
+	gtk_tree_model_get(model, a, PLAYER_COLUMN_NAME, &nameA, -1);
+	gtk_tree_model_get(model, b, PLAYER_COLUMN_NAME, &nameB, -1);
+
+	return (strcasecmp(nameA, nameB));
+}
+
 GtkWidget *create_player_list(GtkWidget *parent)
 {
 	GtkListStore *store;
@@ -317,6 +328,14 @@ GtkWidget *create_player_list(GtkWidget *parent)
 				   G_TYPE_STRING);
 	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
+
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store),
+					     PLAYER_COLUMN_NAME,
+					     GTK_SORT_ASCENDING);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store),
+					PLAYER_COLUMN_NAME,
+					player_sort_func,
+					NULL, NULL);
 
 	renderer = gtk_cell_renderer_pixbuf_new();
 	column = gtk_tree_view_column_new_with_attributes("", renderer,
