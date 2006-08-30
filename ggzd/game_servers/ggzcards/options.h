@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.h 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: options.h 8552 2006-08-30 06:03:56Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -65,6 +65,10 @@ void set_option(char *key, int value);
  *  @note If there are no pending options, no request is sent.
  *  @note Only called by common code. */
 void request_client_options(void);
+
+/** Returns the number of pending options.  This is the maximum number of
+ *  options we would expect to receive from the client. */
+int get_num_pending_options(void);
 
 /** Handle an options response from the given player.  This is called
  *  anytime a player sends us a REQ_OPTIONS; it's up to the function

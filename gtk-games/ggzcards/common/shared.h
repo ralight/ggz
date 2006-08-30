@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: shared.h 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: shared.h 8552 2006-08-30 06:03:56Z jdorje $
  *
  * This contains miscellaneous definitions common to both GGZCards
  * client and server.
@@ -48,6 +48,11 @@
 
 #ifndef MAX
 # define MAX(a, b) ( (a) > (b) ? (a) : (b) )
+#endif
+
+#ifndef CLIP
+# define CLIP(lower, this, upper) \
+	((this) < (lower) ? (lower) : (this) > (upper) ? (upper) : (this))
 #endif
 
 #define ARRAY_LEN(arr) (sizeof(arr) / sizeof((arr)[0]))

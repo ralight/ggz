@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8531 2006-08-21 19:34:47Z jdorje $
+ * $Id: net.c 8552 2006-08-30 06:03:56Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -675,11 +675,14 @@ static void net_rec_options(player_t p)
 {
 	GGZDataIO *dio = get_player_dio(p);
 	int num_options;
+	const int max_options = get_num_pending_options();
 
 	ggz_dio_get_int(dio, &num_options);
 
-	if (num_options > 0) {
-		/* FIXME: this is a major security hole.  */
+	ggz_debug(DBG_MISC, "Reading %d options (max %d).",
+		  num_options, max_options);
+	num_options = CLIP(0, num_options, get_num_pending_options());
+	{
 		int options[num_options], i;
 
 		for (i = 0; i < num_options; i++)
