@@ -56,7 +56,7 @@ public class Player {
      * that the server knows (although with a bit of lag). Note that this need
      * not correspond with what is actually drawn by the GUI.
      */
-    Card table_card;
+    Card tableCard;
 
     /** player's hand */
     ArrayList hand;
@@ -64,24 +64,49 @@ public class Player {
     /** Bid player made for the current hand. */
     Bid bid;
 
-    public String get_name() {
+    /** true if the player is currently bidding. */
+    boolean bidding;
+
+    /** true if the player is currently playing a card. */
+    boolean playing;
+
+    /** The number of tricks this player has won this hand. */
+    int tricks;
+
+    public String getName() {
         return this.name;
     }
 
-    public List get_hand() {
+    public List getHand() {
         return Collections.unmodifiableList(this.hand);
     }
 
-    public Card get_table_card() {
-        return table_card;
+    public Card getTableCard() {
+        return this.tableCard;
     }
 
-    public SeatType get_seat_type() {
-        return status;
+    public SeatType getSeatType() {
+        return this.status;
     }
 
-    public Bid get_bid() {
-        return bid;
+    public Bid getBid() {
+        return this.bid;
+    }
+
+    public int getTeam() {
+        return this.team;
+    }
+
+    public boolean isBidding() {
+        return this.bidding;
+    }
+
+    public boolean isPlaying() {
+        return this.playing;
+    }
+    
+    public int getTricks() {
+        return this.tricks;
     }
 
     /**
@@ -91,7 +116,7 @@ public class Player {
      * 
      * @return
      */
-    public int get_ggz_seat_num() {
-        return ggzseat;
+    public int getGGZSeatNum() {
+        return this.ggzseat;
     }
 }

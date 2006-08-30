@@ -53,6 +53,12 @@ public class Client {
     /** Data about each player */
     private Player[] players;
 
+    /**
+     * The number of players as opposed to the number of seats, which is what
+     * num_players tracks.
+     */
+    private int num_real_players;
+
     /** Data about each team */
     private Team[] teams;
 
@@ -63,7 +69,7 @@ public class Client {
     private String gametype;
 
     /** < The number of the current hand (starts at 0) */
-    private int hand_num;
+    private int hand_num = -1;
 
     /** Structure that contains cards in the trick for each player. */
     protected TrickInfo lastTrick;
@@ -78,8 +84,10 @@ public class Client {
 
     protected boolean isNewTrick;
 
+    protected int trump_suit;
+
     protected String scores;
-    
+
     protected String options;
 
     protected CardGameHandler game;
@@ -92,12 +100,20 @@ public class Client {
         return this.players[n];
     }
 
+    public int get_num_real_players() {
+        return this.num_real_players;
+    }
+
     public int get_num_teams() {
         return this.teams == null ? 0 : this.teams.length;
     }
 
     public Team get_nth_team(int n) {
         return this.teams == null ? null : this.teams[n];
+    }
+
+    public boolean hasTeams() {
+        return this.num_real_players != get_num_teams();
     }
 
     // int initialize()
@@ -158,7 +174,7 @@ public class Client {
     public String get_scores() {
         return this.scores;
     }
-    
+
     public String get_options() {
         return this.options;
     }
@@ -230,15 +246,6 @@ public class Client {
 
     private void set_hand_num(int hand_num) {
         this.hand_num = hand_num;
-
-        // for (int i = 0; i < this.teams.length; i++) {
-        // this.teams[i].scores
-        // = ggz_realloc(ggzcards.teams[i].scores, (hand_num + 1)
-        // * sizeof(*ggzcards.teams[i].scores));
-        // ScoreData[] old = this.teams[i].scores;
-        // this.teams[i].scores = new Team[hand_num + 1];
-        // System.arraycopy(old, 0, this.teams[i].scores, 0, old.length);
-        // }
     }
 
     private void handle_msg_newgame() throws IOException {
@@ -276,7 +283,6 @@ public class Client {
     private void handle_msg_players() throws IOException {
         boolean different;
         int numplayers;
-        int num_real_players;
         int num_teams;
         int old_numplayers = this.num_players;
 
@@ -286,7 +292,7 @@ public class Client {
          * players is 0.
          */
         numplayers = fd_in.readInt();
-        num_real_players = fd_in.readInt();
+        this.num_real_players = fd_in.readInt();
         num_teams = fd_in.readInt();
 
         if (this.teams == null || this.teams.length != num_teams) {
@@ -298,10 +304,10 @@ public class Client {
             }
         }
 
-        /* we may need to allocate memory for the players */
+        // We may need to allocate memory for the players.
         different = (this.num_players != numplayers);
 
-        /* reallocate the players, if necessary */
+        // reallocate the players, if necessary.
         if (different) {
             log.fine("get_players: (re)allocating this.players.");
             this.players = new Player[numplayers];
@@ -312,7 +318,7 @@ public class Client {
                  * important.
                  */
                 this.players[p] = new Player();
-                this.players[p].table_card = Card.UNKNOWN_CARD;
+                this.players[p].tableCard = Card.UNKNOWN_CARD;
                 this.players[p].name = null;
                 this.players[p].hand = null;
             }
@@ -370,7 +376,7 @@ public class Client {
             if (this.teams[t] == null)
                 this.teams[t] = new Team();
             ScoreData score = new ScoreData(fd_in.readInt(), fd_in.readInt());
-            this.teams[t].addScore(score);
+            this.teams[t].addScore(score, hand_number);
             if (hand_number == this.hand_num) {
                 this.teams[t].setScore(score);
             }
@@ -379,23 +385,36 @@ public class Client {
         game.alert_scores(hand_number);
     }
 
-    private void handle_msg_newhand() throws IOException {
-        set_hand_num(fd_in.readInt());
-        set_game_state(STATE_DEAL);
-        isNewTrick = true;
-        // Clear the bids.
-        for (int i = 0; i < num_players; i++) {
-            players[i].bid = null;
+    private void handle_msg_tricks_count() throws IOException {
+        for (int i = 0; i < this.num_players; i++) {
+            this.players[i].tricks = fd_in.readInt();
         }
-        game.alert_newhand();
+
+        this.game.alert_tricks_count();
+    }
+
+    private void handle_msg_newhand() throws IOException {
+        set_hand_num(this.fd_in.readInt());
+        this.trump_suit = this.fd_in.read();
+        this.isNewTrick = true;
+
+        set_game_state(STATE_DEAL);
+
+        // Clear the bids and reset trick count.
+        for (int i = 0; i < this.num_players; i++) {
+            this.players[i].bid = null;
+            this.players[i].tricks = 0;
+        }
+
+        this.game.alert_newhand();
     }
 
     /* Possibly increase the maximum hand size we can sustain. */
     private void increase_max_hand_size(int new_max_hand_size) {
-        if (new_max_hand_size <= this.max_hand_size) /*
-                                                         * no problem
-                                                         */
+        if (new_max_hand_size <= this.max_hand_size) {
+            // no problem
             return;
+        }
 
         log.fine("Expanding max_hand_size to allow for " + new_max_hand_size
                 + " cards (previously max was " + this.max_hand_size + ").");
@@ -408,16 +427,6 @@ public class Client {
             if (this.players[p].hand == null) {
                 this.players[p].hand = new ArrayList();
             }
-            // /* This reallocates the hand to be larger, but leaves the
-            // unused cards uninitialized. This should be acceptable. */
-            // this.players[p].hand.cards =
-            // ggz_realloc(this.players[p].hand.cards,
-            // this.max_hand_size *
-            // sizeof(*this.players[p].hand.cards));
-            // this.players[p].u_hand =
-            // ggz_realloc(this.players[p].u_hand,
-            // this.max_hand_size
-            // * sizeof(*this.players[p].u_hand));
         }
     }
 
@@ -457,6 +466,18 @@ public class Client {
 
         /* Finally, show the hand. */
         game.display_hand(player);
+    }
+
+    private void handle_msg_players_status() throws IOException {
+        int bidding = fd_in.readInt();
+        int playing = fd_in.readInt();
+
+        for (int i = 0; i < this.num_players; i++) {
+            this.players[i].bidding = (bidding & (1 << i)) != 0;
+            this.players[i].playing = (playing & (1 << i)) != 0;
+        }
+
+        game.alert_players_status();
     }
 
     /* A bid request asks you to pick from a given list of bids. */
@@ -607,7 +628,7 @@ public class Client {
          * track of what cards are being _drawn_ on the table, as opposed to
          * what cards are _supposed to be_ on the table which is what this is).
          */
-        this.players[p].table_card = card;
+        this.players[p].tableCard = card;
 
         /* Find the hand the card is to be removed from. */
         hand = this.players[p].hand;
@@ -623,8 +644,8 @@ public class Client {
              * you'll be ready for a "squeeze" play! Fortunately, it's easily
              * solved.
              */
-            log
-                    .warning("Whoa!  We can't find a match for the card.  That's strange.");
+            log.warning("Whoa! We can't find a match for the card."
+                    + " That's strange.");
             send_sync_request();
         }
 
@@ -652,7 +673,7 @@ public class Client {
         for (int p = 0; p < this.num_players; p++) {
             Card card = fd_in.read_card();
             log.fine(card.toString());
-            this.players[p].table_card = card;
+            this.players[p].tableCard = card;
         }
 
         /*
@@ -663,18 +684,19 @@ public class Client {
 
     /* A trick message tells you about the end of a trick (and who won). */
     private void handle_msg_trick() throws IOException {
-        /* Read the trick winner */
+        // Read the trick winner.
         int winner = fd_in.read_seat();
 
-        /* Update the graphics. */
+        // Update the graphics.
         set_game_state(STATE_PLAY);
-        game.alert_trick(winner);
+        this.players[winner].tricks++;
+        this.game.alert_trick(winner);
 
-        isNewTrick = true;
+        this.isNewTrick = true;
 
-        /* Clear all cards off the table. */
+        // Clear all cards off the table.
         for (int p = 0; p < this.num_players; p++) {
-            this.players[p].table_card = Card.UNKNOWN_CARD;
+            this.players[p].tableCard = Card.UNKNOWN_CARD;
         }
     }
 
@@ -761,12 +783,12 @@ public class Client {
     }
 
     /* An options message tells the server our choices for options. */
-    public void send_options(int[] options) throws IOException {
-        int option_cnt = options == null ? 0 : options.length;
+    public void send_options(int[] option_indexes) throws IOException {
+        int option_cnt = option_indexes == null ? 0 : option_indexes.length;
         fd_out.write_opcode(ClientOpCode.RSP_OPTIONS);
         fd_out.writeInt(option_cnt);
         for (int i = 0; i < option_cnt; i++) {
-            fd_out.writeInt(options[i]);
+            fd_out.writeInt(option_indexes[i]);
         }
         fd_out.end_packet();
     }
@@ -806,10 +828,14 @@ public class Client {
             handle_msg_players();
         } else if (opcode == ServerOpCode.MSG_SCORES) {
             handle_msg_scores();
+        } else if (opcode == ServerOpCode.MSG_TRICKS_COUNT) {
+            handle_msg_tricks_count();
         } else if (opcode == ServerOpCode.MSG_NEWHAND) {
             handle_msg_newhand();
         } else if (opcode == ServerOpCode.MSG_HAND) {
             handle_msg_hand();
+        } else if (opcode == ServerOpCode.MSG_PLAYERS_STATUS) {
+            handle_msg_players_status();
         } else if (opcode == ServerOpCode.REQ_BID) {
             handle_req_bid();
         } else if (opcode == ServerOpCode.MSG_BID) {

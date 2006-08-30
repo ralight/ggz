@@ -67,6 +67,13 @@ public class ServerOpCode {
     public static final ServerOpCode MSG_SCORES = new ServerOpCode("MSG_SCORES");
 
     /**
+     * Tells the client tricks. Consists of one integer per player that gives
+     * the number of tricks won by that player (only applicable in some games).
+     */
+    public static final ServerOpCode MSG_TRICKS_COUNT = new ServerOpCode(
+            "MSG_TRICKS_COUNT");
+
+    /**
      * Requests options from the client. It is followed by an integer n followed
      * by n option requests. Each option request consists of a descriptive text
      * for the option, an integer m telling how many choices there are for this
@@ -81,8 +88,9 @@ public class ServerOpCode {
             "REQ_OPTIONS");
 
     /**
-     * Tells the client a new hand is starting. It is followed by a single
-     * integer containing the hand number. Hand counting starts at 0.
+     * Tells the client a new hand is starting. It is followed by an single
+     * integer containing the hand number (hand counting starts at 0) then by a
+     * single byte containing the trump suit.
      */
     public static final ServerOpCode MSG_NEWHAND = new ServerOpCode(
             "MSG_NEWHAND");
@@ -93,6 +101,15 @@ public class ServerOpCode {
      * followed by n cards.
      */
     public static final ServerOpCode MSG_HAND = new ServerOpCode("MSG_HAND");
+
+    /**
+     * Tells the client the status of each player. This consists of two
+     * integers, each of which is a bit vector containing one bit per player.
+     * The first integer has bits set if the player is bidding, the second if
+     * the player is playing.
+     */
+    public static final ServerOpCode MSG_PLAYERS_STATUS = new ServerOpCode(
+            "MSG_PLAYERS_STATUS");
 
     /**
      * Requests a bid from the client. It'll be followed by an integer n, then n

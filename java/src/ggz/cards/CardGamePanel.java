@@ -21,15 +21,17 @@ import ggz.cards.bridge.BridgeBidPanel;
 import ggz.cards.client.CardGameHandler;
 import ggz.cards.client.Client;
 import ggz.cards.client.Player;
+import ggz.cards.client.Team;
 import ggz.cards.common.Bid;
 import ggz.cards.common.Card;
 import ggz.cards.common.CardSetType;
 import ggz.cards.common.GGZCardInputStream;
+import ggz.cards.common.ScoreData;
 import ggz.client.mod.ModGame;
 import ggz.client.mod.ModState;
 import ggz.common.SeatType;
-import ggz.common.StringUtil;
 import ggz.games.GamePanel;
+import ggz.ui.GGZDialog;
 import ggz.ui.HyperlinkLabel;
 import ggz.ui.preferences.GGZPreferences;
 import ggz.ui.preferences.PreferencesDialog;
@@ -38,9 +40,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,7 +62,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -104,6 +106,14 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected JButton lastTrickButton;
 
+    // Score panel
+    protected JPanel scorePanel;
+
+    protected JLabel usScoreLabel;
+
+    protected JLabel themScoreLabel;
+
+    // Menu
     protected HyperlinkLabel quitLabel;
 
     protected HyperlinkLabel scoresLabel;
@@ -280,6 +290,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
         if (playerLabels == null) {
             playerLabels = new PlayerLabel[numplayers];
+
+            // If there are teams then show a score panel.
+            if (getCardClient().hasTeams()) {
+                initScorePanel();
+            }
         } else if (playerLabels.length != numplayers) {
             throw new UnsupportedOperationException(
                     "Dynamic number of players not supported yet.");
@@ -312,7 +327,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 PlayerLabel label = playerLabels[seat_num];
                 Player player = cardClient.get_nth_player(seat_num);
                 if (label == null) {
-                    label = new PlayerLabel(player.get_name());
+                    label = new PlayerLabel(player.getName());
                     table.add(label, new TableConstraints(
                             TableConstraints.PLAYER_LABEL, seat_num));
                     playerLabels[seat_num] = label;
@@ -323,39 +338,35 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     label.setToolTipText("Right click for options.");
                     // }
                 } else {
-                    label.setPlayerName(player.get_name());
+                    label.setPlayerName(player.getName());
                 }
 
                 // Position the labels.
-                SeatType seat_type = player.get_seat_type();
+                SeatType seat_type = player.getSeatType();
                 switch (seat_num) {
                 case 0: // Me - south
                     label.setIcon(getPlayerIcon(seat_type));
                     // label.setVerticalAlignment(SwingConstants.TOP);
-                    initPopupMenu(seat_num, player.get_ggz_seat_num(),
-                            seat_type);
+                    initPopupMenu(seat_num, player.getGGZSeatNum(), seat_type);
                     break;
                 case 1: // West
                     label.setIcon(getPlayerIcon(seat_type));
                     // label.setVerticalTextPosition(SwingConstants.BOTTOM);
                     // label.setHorizontalTextPosition(SwingConstants.CENTER);
                     // label.setHorizontalAlignment(SwingConstants.LEFT);
-                    initPopupMenu(seat_num, player.get_ggz_seat_num(),
-                            seat_type);
+                    initPopupMenu(seat_num, player.getGGZSeatNum(), seat_type);
                     break;
                 case 2: // North
                     label.setIcon(getPlayerIcon(seat_type));
                     // label.setVerticalAlignment(SwingConstants.TOP);
-                    initPopupMenu(seat_num, player.get_ggz_seat_num(),
-                            seat_type);
+                    initPopupMenu(seat_num, player.getGGZSeatNum(), seat_type);
                     break;
                 case 3: // East
                     label.setIcon(getPlayerIcon(seat_type));
                     // label.setVerticalTextPosition(SwingConstants.BOTTOM);
                     // label.setHorizontalTextPosition(SwingConstants.CENTER);
                     // label.setHorizontalAlignment(SwingConstants.RIGHT);
-                    initPopupMenu(seat_num, player.get_ggz_seat_num(),
-                            seat_type);
+                    initPopupMenu(seat_num, player.getGGZSeatNum(), seat_type);
                     break;
                 default:
                     throw new UnsupportedOperationException(
@@ -407,7 +418,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             // The seat has a regular player in it.
             menu = new JPopupMenu("Player");
             menu.add(new SeatBootAction(cardClient.get_nth_player(seat_num)
-                    .get_name()));
+                    .getName()));
         } else if (type == SeatType.GGZ_SEAT_RESERVED) {
             // The seat is reserved for a player.
             menu = new JPopupMenu("Player");
@@ -421,6 +432,35 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             menu.add(new SeatSitAction(ggz_seat_num));
         }
         playerLabels[seat_num].putClientProperty("ggz.cards.popupMenu", menu);
+    }
+
+    protected void initScorePanel() {
+        // Create a custom Spades score panel in the NE corner.
+        usScoreLabel = new JLabel();
+        usScoreLabel.setBackground(SystemColor.text);
+        usScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        usScoreLabel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+        usScoreLabel.setOpaque(true);
+        themScoreLabel = new JLabel();
+        themScoreLabel.setBackground(SystemColor.text);
+        themScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        themScoreLabel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+        themScoreLabel.setOpaque(true);
+        JLabel usHeader = new JLabel("Us");
+        usHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        usHeader.setOpaque(true);
+        JLabel themHeader = new JLabel("Them");
+        themHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        themHeader.setOpaque(true);
+        scorePanel = new JPanel(new GridLayout(2, 2, 1, 0));
+        scorePanel.setOpaque(true);
+        scorePanel.setBackground(Color.black);
+        scorePanel.add(usHeader);
+        scorePanel.add(themHeader);
+        scorePanel.add(usScoreLabel);
+        scorePanel.add(themScoreLabel);
+        table.add(scorePanel, new TableConstraints(
+                TableConstraints.NORTH_EAST_CORNER));
     }
 
     protected int getCardOrientation(int player_num) {
@@ -517,6 +557,68 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         });
     }
 
+    public void alert_players_status() {
+        repaint_player_labels();
+    }
+
+    protected void repaint_player_labels() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                // If there are as many teams as there are players then there
+                // are individual scores so we show the score next to each
+                // player.
+                boolean showScores = !getCardClient().hasTeams();
+                StringBuffer buffer = new StringBuffer();
+
+                for (int i = 0; i < playerLabels.length; i++) {
+                    PlayerLabel label = playerLabels[i];
+                    Player p = getCardClient().get_nth_player(i);
+                    Bid bid = p.getBid();
+
+                    buffer.append("<HTML>");
+                    if (showScores && p.getTeam() > -1) {
+                        Team team = getCardClient().get_nth_team(p.getTeam());
+                        buffer.append("Score: ");
+                        buffer.append(team.getScore().getScore());
+                        buffer.append("<BR>");
+                    }
+
+                    if (getCardClient().get_game_state() == Client.STATE_PLAY) {
+                        buffer.append("Tricks: ");
+                        buffer.append(p.getTricks());
+                        buffer.append("<BR>");
+                    }
+
+                    if (bidPanel != null && bid != null) {
+                        buffer.append("Bid: ");
+                        buffer.append(bidPanel.getBidText(bid));
+                        buffer.append("<BR>");
+                    }
+
+                    boolean isThinking = false;
+                    if (p.isBidding()) {
+                        buffer.append("Bidding...");
+                        isThinking = true;
+                    }
+                    if (p.isPlaying()) {
+                        buffer.append("Playing...");
+                        isThinking = true;
+                    }
+                    buffer.append("</HTML>");
+                    label.setText(buffer.toString());
+
+                    // Highlight the label if it's this player's turn.
+                    label.setHighlight(isThinking);
+
+                    // Clear the buffer ready for the next player.
+                    buffer.replace(0, buffer.length(), "");
+                }
+                revalidate();
+                repaint();
+            }
+        });
+    }
+
     protected void putNextPlayersCardsOnTop(int player_num) {
         int num_players = cardClient.get_num_players();
         int player_on_left = (player_num + 1) % num_players;
@@ -546,8 +648,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     protected void showLastTrick() throws IOException {
         Client.TrickInfo lastTrick = cardClient.get_last_trick();
         if (lastTrick != null) {
-            JDialog dialog = new JDialog(
-                    JOptionPane.getFrameForComponent(this), "Last Trick");
+            GGZDialog dialog = new GGZDialog(this, "Last Trick");
             dialog.getContentPane().setLayout(
                     new TableLayout(tableLayout.getCardWidth(), tableLayout
                             .getCardHeight()));
@@ -575,7 +676,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             dialog.setLocation(lastTrickButton.getLocationOnScreen());
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             dialog.setModal(true);
-            OptionDialog.fixLocation(dialog);
+            dialog.repositionIfNecessary();
             dialog.setVisible(true);
         }
     }
@@ -583,8 +684,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     protected void showPreviousHand() throws IOException {
         Card[][] cards = cardClient.get_previous_hand();
         if (cards != null) {
-            JDialog dialog = new JDialog(
-                    JOptionPane.getFrameForComponent(this), "Previous Hand");
+            GGZDialog dialog = new GGZDialog(this, "Previous Hand");
             TableLayout layout = new TableLayout(tableLayout.getCardWidth(),
                     tableLayout.getCardHeight());
             layout.setMaxHandSize(cards[0].length);
@@ -613,18 +713,16 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             dialog.setLocation(previousHandLabel.getLocationOnScreen());
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             dialog.setModal(true);
-            OptionDialog.fixLocation(dialog);
+            dialog.repositionIfNecessary();
             dialog.setVisible(true);
         }
     }
 
     protected void showScores() {
-        Frame frame = JOptionPane.getFrameForComponent(this);
         String scores = cardClient.get_scores();
         if (scoresDialog == null) {
-            scoresDialog = new ScoresDialog(frame);
+            scoresDialog = new ScoresDialog(this);
             scoresDialog.setResizable(false);
-            // scoresDialog.setLocationRelativeTo(frame);
             scoresDialog
                     .setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             scoresDialog.setModal(false);
@@ -632,7 +730,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         scoresDialog.setScores(scores);
         if (!scoresDialog.isVisible()) {
             scoresDialog.setLocation(scoresLabel.getLocationOnScreen());
-            OptionDialog.fixLocation(scoresDialog);
+            scoresDialog.repositionIfNecessary();
             scoresDialog.setVisible(true);
         }
     }
@@ -640,10 +738,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     protected void showOptions() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                Frame frame = JOptionPane
-                        .getFrameForComponent(CardGamePanel.this);
                 String options = cardClient.get_options();
-                JDialog dialog = new JDialog(frame, "Options");
+                GGZDialog dialog = new GGZDialog(CardGamePanel.this, "Options");
                 JTextArea text = new JTextArea(options);
                 text.setEditable(false);
                 dialog.getContentPane().add(text, BorderLayout.CENTER);
@@ -652,10 +748,14 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         .setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                 dialog.setModal(true);
                 dialog.setLocation(optionsLabel.getLocationOnScreen());
-                OptionDialog.fixLocation(dialog);
+                dialog.repositionIfNecessary();
                 dialog.setVisible(true);
             }
         });
+    }
+
+    public Client getCardClient() {
+        return this.cardClient;
     }
 
     public void alert_server(Socket fd) {
@@ -674,7 +774,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     for (int playerNum = 0; playerNum < cardClient
                             .get_num_players(); playerNum++) {
                         Card serverTableCard = cardClient.get_nth_player(
-                                playerNum).get_table_card();
+                                playerNum).getTableCard();
                         if (!serverTableCard.equals(Card.UNKNOWN_CARD)
                                 && spriteInTrick[playerNum] == null) {
                             // We are out of sync with the server, most likely
@@ -720,7 +820,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
                 for (int p = 0; p < cardClient.get_num_players(); p++) {
                     Card card_in_trick = cardClient.get_nth_player(p)
-                            .get_table_card();
+                            .getTableCard();
                     if (spriteInTrick[p] != null
                             && spriteInTrick[p].card().equals(card_in_trick)) {
                         sprites_to_animate[num_sprites_to_animate] = spriteInTrick[p];
@@ -740,18 +840,32 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     public void alert_scores(int hand_num) {
-        // TODO handle these.
         // TODO put hand number in "hand" icon next to scores.
         // TODO consider putting Scores near score summary
-        /*
-        System.out.println("hand_num=" + hand_num);
-        this.cardClient.get_num_teams();
-        int numTeams = this.cardClient.get_num_teams();
-        for (int i = 0; i < numTeams; i++) {
-            System.out.println("Team " + i + ": "
-                    + this.cardClient.get_nth_team(i).getScore());
+        if (this.cardClient.hasTeams()) {
+            if (this.cardClient.get_num_teams() != 2)
+                throw new UnsupportedOperationException(
+                        "More than two teams not supported yet.");
+
+            Player south = getCardClient().get_nth_player(0);
+            int usTeam = south.getTeam();
+            int themTeam = (usTeam + 1) % 2;
+            usScoreLabel.setText(formatTeamScore(usTeam));
+            themScoreLabel.setText(formatTeamScore(themTeam));
+        } else {
+            repaint_player_labels();
         }
-        */
+    }
+
+    protected String formatTeamScore(int teamIndex) {
+        Team team = this.cardClient.get_nth_team(teamIndex);
+        ScoreData score = team.getScore();
+        return String.valueOf(score.getScore())
+                + (score.getExtra() == -1 ? "" : " (" + score.getExtra() + ")");
+    }
+
+    public void alert_tricks_count() {
+        repaint_player_labels();
     }
 
     public void display_hand(final int player_num) {
@@ -770,7 +884,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     protected void display_hand_impl(int player_num) {
         try {
             Player player = cardClient.get_nth_player(player_num);
-            List hand = player.get_hand();
+            List hand = player.getHand();
 
             // Remove all existing sprites
             for (int i = 0; i < sprites[player_num].length; i++) {
@@ -1005,10 +1119,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             JOptionPane.showMessageDialog(this,
                     "GAME OVER\nThere was no winner.");
         } else {
-            StringBuffer csv = new StringBuffer(winners[0].get_name());
+            StringBuffer csv = new StringBuffer(winners[0].getName());
             for (int i = 1; i < winners.length; i++) {
                 csv.append(", ");
-                csv.append(winners[i].get_name());
+                csv.append(winners[i].getName());
             }
             JOptionPane.showMessageDialog(this,
                     "GAME OVER\nThe game was won by " + csv.toString());
@@ -1040,17 +1154,13 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     public void set_player_message(final int player_num, final String message) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                PlayerLabel label = playerLabels[player_num];
-                label.setText("<HTML>"
-                        + StringUtil.replace(StringUtil.replace(message, ":",
-                                ":<B>"), "\n", "</B><BR>") + "</HTML>");
-                // label.setText("<HTML>" + replace(message, "\n", "<BR>")
-                // + "</HTML>");
-                table.revalidate();
-            }
-        });
+        /*
+         * SwingUtilities.invokeLater(new Runnable() { public void run() {
+         * PlayerLabel label = playerLabels[player_num]; label.setText("<HTML>" +
+         * StringUtil.replace(StringUtil.replace(message, ":", ":<B>"), "\n", "</B><BR>") + "</HTML>"); //
+         * label.setText("<HTML>" + replace(message, "\n", "<BR>") // + "</HTML>");
+         * table.revalidate(); } });
+         */
     }
 
     public void set_text_message(final String mark, final String message) {
@@ -1074,11 +1184,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     // Ignore for now, player messages already show bids.
                 } else if ("Trump".equals(mark)) {
                     // TODO, show an icon to indicate trumps
-                    chatPanel.appendInfo(message);
+                    getChatPanel().appendInfo(message);
                 } else if ("Up-Card".equals(mark)) {
-                    chatPanel.appendInfo(message);
+                    getChatPanel().appendInfo(message);
                 } else if ("Hand Score".equals(mark)) {
-                    chatPanel.appendInfo(message);
+                    getChatPanel().appendInfo(message);
                 } else if ("Rules".equals(mark)) {
                     try {
                         setRulesURL(message);
@@ -1087,12 +1197,13 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         ex.printStackTrace();
                     }
                 } else if ("".equals(mark) && !"".equals(message)) {
-                    chatPanel.appendInfo(message);
+                    getChatPanel().appendInfo(message);
                 } else if ("".equals(mark) && "".equals(message)) {
                     // Do nothing, not sure why the server sends this.
                 } else {
-                    chatPanel.appendChat("set_text_message", "mark=" + mark
-                            + " message=" + message, ggzMod.getMyName());
+                    getChatPanel().appendChat("set_text_message",
+                            "mark=" + mark + " message=" + message,
+                            ggzMod.getMyName());
                 }
             }
         });

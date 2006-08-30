@@ -119,7 +119,7 @@ public class ClientApplet extends JApplet implements ServerListener,
             uriPath = uri.getPath();
             String sendLogFile = getParameter("xmlout");
             String receiveLogFile = getParameter("xmlin");
-            server = new Server(host, port, false);
+            server = new Server(host, port, getBooleanParameter("tls", false));
             server.log_session(sendLogFile, receiveLogFile);
             server.add_event_hook(this);
 

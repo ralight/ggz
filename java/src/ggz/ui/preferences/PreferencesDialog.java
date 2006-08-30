@@ -17,6 +17,8 @@
  */
 package ggz.ui.preferences;
 
+import ggz.ui.GGZDialog;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -29,7 +31,7 @@ import java.util.logging.Logger;
 
 import javax.swing.*;
 
-public class PreferencesDialog extends JDialog {
+public class PreferencesDialog extends GGZDialog {
     private static final Logger log = Logger.getLogger(PreferencesDialog.class
             .getName());
 
@@ -101,6 +103,7 @@ public class PreferencesDialog extends JDialog {
         dialog.pack();
         dialog.setModal(true);
         dialog.setLocationRelativeTo(owner);
+        dialog.repositionIfNecessary();
         dialog.setVisible(true);
     }
 

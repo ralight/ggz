@@ -65,6 +65,8 @@ public class ClientApp {
 
     protected static String uri;
 
+    protected static String tls;
+
     protected static Properties appletParameters;
 
     private ClientApp() {
@@ -114,6 +116,8 @@ public class ClientApp {
                     value = xmlin;
                 } else if ("uri".equals(name)) {
                     value = uri;
+                } else if ("tls".equals(name)) {
+                    value = tls;
                 }
 
                 if (value == null && appletParameters != null) {
@@ -225,6 +229,8 @@ public class ClientApp {
                 } else if ("-uri".equals(argv[argPos])) {
                     argPos++;
                     uri = argv[argPos];
+                } else if ("-tls".equals(argv[argPos])) {
+                    tls = "true";
                 } else {
                     return false;
                 }
@@ -267,6 +273,7 @@ public class ClientApp {
                 .println("  -xmlout <file>  Write XML sent to the server to this file.");
         System.err
                 .println("  -xmlin <file>   Write XML received from the server to this file.");
+        System.err.println("  -tls            Attempt to use transport layer security.");
         System.err.println();
         System.err
                 .println("-xmlout and -xmlin can be the same file and the special values 'stderr' and 'stdout' can be used.");

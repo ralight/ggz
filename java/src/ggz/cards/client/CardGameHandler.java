@@ -96,14 +96,32 @@ public interface CardGameHandler {
     public boolean get_options(String[] types, String[] descs, int[] defaults,
             String[][] option_choices) throws IOException;
 
+    /**
+     * Server has requested the client to OK a new game. This is sent at the
+     * start of a new game before the game begins.
+     */
     public void get_newgame();
 
     public void alert_newhand();
 
+    /** Called when each team's score is received from the server. */
     public void alert_scores(int hand_num);
+
+    /**
+     * Called when the number of tricks that a player has won is received from
+     * the server.
+     */
+    public void alert_tricks_count();
 
     /** Called when the socket disconnects. */
     public void handle_disconnect();
 
     public void alert_state(Client.GameState oldState, Client.GameState newState);
+
+    /**
+     * Called when the status of one or more players has changed. The Players
+     * bidding and playing property will be true for each player that is either
+     * playing or bidding respectively.
+     */
+    public void alert_players_status();
 }

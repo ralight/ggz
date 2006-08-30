@@ -76,6 +76,8 @@ intuitive and also disappears too quickly.
 Move the delay logic in the card Client class and it should self trigger
 delayNextEvent() when appropriate events in the game occur.
 
+Make the length of delay an option.
+
 Consider removing the "Ready" button and let the client automatically respond 
 without waiting for user intervention.
 

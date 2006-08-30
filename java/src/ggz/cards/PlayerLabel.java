@@ -33,6 +33,8 @@ public class PlayerLabel extends JPanel {
 
     private JLabel textLabel;
 
+    protected static final Color highlightColor = Color.green.darker();
+
     public PlayerLabel(String playerName) {
         super(new BorderLayout());
         nameLabel = new JLabel(playerName);
@@ -70,5 +72,11 @@ public class PlayerLabel extends JPanel {
         iconLabel.setIcon(icon);
         revalidate();
         repaint();
+    }
+
+    public void setHighlight(boolean highlight) {
+        if (highlight)
+            this.setBackground(highlightColor);
+        this.setOpaque(highlight);
     }
 }

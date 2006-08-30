@@ -49,8 +49,6 @@ public class BidPanel extends JPanel implements ActionListener {
 
     protected int lastBidder;
 
-    protected List validBids;
-
     protected JPanel bidHistoryPanel;
 
     protected JPanel buttonLayoutPanel;
@@ -65,6 +63,8 @@ public class BidPanel extends JPanel implements ActionListener {
 
     private JPanel bidHistoryTableContainer;
 
+    protected List validBids;
+
     private int selectedBid;
 
     public BidPanel(int firstBidder, Client cardClient) {
@@ -77,7 +77,7 @@ public class BidPanel extends JPanel implements ActionListener {
             Player player = cardClient.get_nth_player(firstBidder);
             TableColumn column = this.bidHistoryTable.getColumnModel()
                     .getColumn(i);
-            column.setHeaderValue(player.get_name());
+            column.setHeaderValue(player.getName());
             column.setPreferredWidth(80);
             firstBidder = (firstBidder + 1) % this.numPlayers;
         }
@@ -115,7 +115,9 @@ public class BidPanel extends JPanel implements ActionListener {
 
     public void setValidBids(Bid[] bid_choices, String[] bid_texts,
             String[] bid_descs) {
+        // Store the list of valid bids for subclasses.
         this.validBids = Arrays.asList(bid_choices);
+
         for (int bidIndex = 0; bidIndex < bid_choices.length; bidIndex++) {
             JButton bid_button = new JButton(bid_texts[bidIndex]);
             if (!bid_texts[bidIndex].equals(bid_descs[bidIndex])) {

@@ -28,10 +28,13 @@ import ggz.common.SeatType;
 import ggz.common.TableState;
 import ggz.common.XMLElement;
 
+import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
 import java.io.FilterWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -47,6 +50,8 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -88,6 +93,10 @@ public class Net implements Runnable {
     private Socket fd;
 
     private Writer out;
+
+    protected SwappableOutputStream streamOut;
+
+    protected SwappableInputStream streamIn;
 
     /* SAX transformer used to send valid XML to the server. */
     private TransformerHandler xmlOutput;
@@ -308,7 +317,9 @@ public class Net implements Runnable {
         log.fine("Connecting to " + this.host + ":" + this.port);
         this.fd = new Socket(this.host, this.port);
         this.fd.setKeepAlive(true);
-        this.out = new OutputStreamWriter(fd.getOutputStream(), "UTF-8");
+        this.streamIn = new SwappableInputStream(fd.getInputStream());
+        this.streamOut = new SwappableOutputStream(fd.getOutputStream());
+        this.out = new BufferedWriter(new OutputStreamWriter(this.streamOut, "UTF-8"));
         this.is_session_over = false;
 
         if (this.send_dump_file != null) {
@@ -764,9 +775,7 @@ public class Net implements Runnable {
             send_header();
 
             /* If TLS is enabled set it up */
-            if ("yes".equals(tls) && get_tls()
-            // && ggz_tls_support_query() TODO add TLS support one day.
-            )
+            if ("yes".equals(tls) && get_tls())
                 negotiate_tls();
 
             this.server.set_negotiate_status(this, ClientReqError.E_OK);
@@ -1836,19 +1845,42 @@ public class Net implements Runnable {
     }
 
     /* Send a TLS_START notice and negotiate the handshake */
-    void negotiate_tls() {
-        throw new UnsupportedOperationException(
-                "TNS not supported yet since I don't understand it.");
-        // int ret;
-        //
-        // send_line("<TLS_START/>");
-        // /* This should return a status one day to tell client if */
-        // /* the handshake failed for some reason */
-        // ret =
-        // ggz_tls_enable_fd(this.fd, GGZ_TLS_CLIENT,
-        // GGZ_TLS_VERIFY_NONE);
-        // if (!ret)
-        // this.use_tls = false;
+    void negotiate_tls() throws IOException {
+        log.fine("Negotiating TLS");
+        // http://java.sun.com/j2se/1.4.2/docs/guide/security/jsse/JSSERefGuide.html#Debug
+        // System.setProperty("javax.net.debug", "all");
+        SSLSocketFactory ssf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        if (log.isLoggable(Level.FINE)) {
+            String[] ciphers = ssf.getSupportedCipherSuites();
+            log.fine("JDK supports the following " + ciphers.length
+                    + " cipher suits");
+            StringBuffer buffer = new StringBuffer();
+            for (int i = 0; i < ciphers.length; i++) {
+                if (i > 0)
+                    buffer.append(", ");
+                buffer.append(ciphers[i]);
+            }
+            log.fine(buffer.toString());
+        }
+        sendEmptyElement("TLS_START");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // Ignore.
+        }
+        SSLSocket ssl = (SSLSocket)ssf.createSocket(this.fd, this.host, this.port, true);
+        ssl.setEnabledCipherSuites(ssl.getSupportedCipherSuites());
+        ssl.startHandshake();
+        this.streamIn.setInputStream(ssl.getInputStream());
+        this.streamOut.setOutputStream(ssl.getOutputStream());
+        this.fd = ssl;
+        if ("SSL_NULL_WITH_NULL_NULL".equals(ssl.getSession().getCipherSuite())) {
+            // Handshake failed.
+            this.use_tls = false;
+            log.warning("Failed to negotiate TLS: " + this.fd);
+        } else {
+            log.info("TLS negotiated with cipher suite " + ssl.getSession().getCipherSuite());
+        }
     }
 
     private void sendStartElement(String qname) throws IOException {
@@ -1867,7 +1899,7 @@ public class Net implements Runnable {
     private synchronized void sendStartElement(String qname, Attributes atts)
             throws IOException {
         try {
-            xmlOutput.startElement("", "", qname, atts);
+            this.xmlOutput.startElement("", "", qname, atts);
         } catch (SAXException ex) {
             throw new IOException(ex.toString());
         }
@@ -1875,8 +1907,8 @@ public class Net implements Runnable {
 
     private synchronized void sendEndElement(String qname) throws IOException {
         try {
-            xmlOutput.endElement("", "", qname);
-            out.flush();
+            this.xmlOutput.endElement("", "", qname);
+            this.out.flush();
         } catch (SAXException ex) {
             throw new IOException(ex.toString());
         }
@@ -1886,7 +1918,7 @@ public class Net implements Runnable {
             String text) throws IOException {
         sendStartElement(qname, atts);
         try {
-            xmlOutput.characters(text.toCharArray(), 0, text.length());
+            this.xmlOutput.characters(text.toCharArray(), 0, text.length());
         } catch (SAXException ex) {
             throw new IOException(ex.toString());
         }
@@ -1897,7 +1929,7 @@ public class Net implements Runnable {
             throws IOException {
         sendStartElement(qname);
         try {
-            xmlOutput.characters(text.toCharArray(), 0, text.length());
+            this.xmlOutput.characters(text.toCharArray(), 0, text.length());
         } catch (SAXException ex) {
             throw new IOException(ex.toString());
         }
@@ -1951,7 +1983,7 @@ public class Net implements Runnable {
                 XMLReader saxParser = XMLReaderFactory.createXMLReader();
                 XML_Parser parser = new XML_Parser();
                 InputSource input = new InputSource(new InputStreamReader(
-                        new FilterInputStream(fd.getInputStream()) {
+                        new FilterInputStream(this.streamIn) {
                             public int read(byte[] b, int off, int len)
                                     throws IOException {
                                 // We need to return -1 to indicate EOF so the
@@ -1960,7 +1992,7 @@ public class Net implements Runnable {
                                 if (Net.this.is_session_over) {
                                     return -1;
                                 }
-                                if (server.channel == Net.this) {
+                                if (true || server.channel == Net.this) {
                                     // Only read one byte at a time so that we
                                     // don't overshoot the </SESSION> end tag.
                                     // There may be game specific bytes coming
@@ -2029,6 +2061,26 @@ public class Net implements Runnable {
         public void write(String str, int off, int len) throws IOException {
             super.write(str, off, len);
             dump.write(str, off, len);
+        }
+    }
+
+    protected class SwappableInputStream extends FilterInputStream {
+        protected SwappableInputStream(InputStream initial) {
+            super(initial);
+        }
+
+        protected void setInputStream(InputStream in) {
+            this.in = in;
+        }
+    }
+
+    protected class SwappableOutputStream extends FilterOutputStream {
+        protected SwappableOutputStream(OutputStream initial) {
+            super(initial);
+        }
+
+        protected void setOutputStream(OutputStream out) {
+            this.out = out;
         }
     }
 }

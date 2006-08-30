@@ -78,12 +78,16 @@ public class GamePanel extends JPanel implements ModEventHandler {
         mod.setHandler(this);
     }
 
-    protected void quit() {
+    public void quit() {
         try {
             ggzMod.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public ChatPanel getChatPanel() {
+        return this.chatPanel;
     }
 
     public void handleChat(final String player, final String msg) {

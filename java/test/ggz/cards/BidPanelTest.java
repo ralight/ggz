@@ -41,7 +41,7 @@ public class BidPanelTest {
 
         public Player get_nth_player(final int n) {
             return new Player() {
-                public String get_name() {
+                public String getName() {
                     return "Player " + n;
                 }
             };

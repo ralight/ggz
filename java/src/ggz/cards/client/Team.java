@@ -9,8 +9,22 @@ public class Team {
 
     private ArrayList scores = new ArrayList();
 
-    public void addScore(ScoreData s) {
-        this.scores.add(s);
+    /**
+     * Adds a new score for this team. If handNum is not the same same as the
+     * next index in the score list then an IllegalArgumentException is thrown.
+     * Scores are stored indexed by hand number.
+     */
+    public void addScore(ScoreData s, int handNum) {
+        if (handNum > this.scores.size()) {
+            throw new IllegalArgumentException(
+                    "Adding score that isn't for the next hand number:"
+                            + handNum);
+        }
+
+        if (handNum < this.scores.size())
+            this.scores.set(handNum, s);
+        else
+            this.scores.add(s);
     }
 
     public void setScore(ScoreData s) {
