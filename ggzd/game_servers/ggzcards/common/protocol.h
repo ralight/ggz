@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 8531 2006-08-21 19:34:47Z jdorje $
+ * $Id: protocol.h 8556 2006-08-31 03:18:23Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -114,7 +114,8 @@ typedef enum {
 
 	/* Tells the client a new hand is starting.  It is followed by an
 	   single integer containing the hand number (hand counting
-	   starts at 0) then by a single byte containing the trump suit. */
+	   starts at 0) then by a single byte containing the trump suit,
+	   then by the 'dealer' seat. */
 	MSG_NEWHAND,
 
 	/* Tells the client of a player's hand.  It'll be followed by a seat
