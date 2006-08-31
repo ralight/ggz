@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 8558 2006-08-31 06:34:19Z jdorje $
+ * $Id: protocol.h 8559 2006-08-31 07:07:46Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -92,9 +92,10 @@ typedef enum {
 	MSG_PLAYERS,
 
 	/* Tells the client scores.  Consists of the hand number (between 0
-	   and the current hand) and one score per team.  Each score consists
+	   and the current hand), an integer containing the number of "extra"
+	   scores (0 or higher), and one score per team.  Each score consists
 	   of an integer for the main score plus one integer for each extra
-	   score (see SCORE_EXTRAS). */
+	   score. */
 	MSG_SCORES,
 
 	/* Tells the client tricks.  Consists of one integer per player that gives

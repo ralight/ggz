@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8556 2006-08-31 03:18:23Z jdorje $
+ * $Id: client.c 8559 2006-08-31 07:07:46Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -455,10 +455,12 @@ static void handle_msg_players(void)
 
 static void handle_msg_scores(void)
 {
-	int t, i, hand_num;
+	int t, i, hand_num, num_extras;
 
 	ggz_dio_get_int(game_internal.dio, &hand_num);
 	assert(hand_num >= 0);
+
+	ggz_dio_get_int(game_internal.dio, &num_extras);
 
 	/* HACK: The scores are being received before the hand number is
 	   known... */
@@ -470,7 +472,7 @@ static void handle_msg_scores(void)
 		score_data_t *score = &ggzcards.teams[t].scores[hand_num];
 
 		ggz_dio_get_int(game_internal.dio, &score->score);
-		for (i = 0; i < SCORE_EXTRAS; i++) {
+		for (i = 0; i < num_extras; i++) {
 			ggz_dio_get_int(game_internal.dio,
 					&score->extra[i]);
 		}

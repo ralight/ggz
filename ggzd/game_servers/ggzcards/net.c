@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8556 2006-08-31 03:18:23Z jdorje $
+ * $Id: net.c 8559 2006-08-31 07:07:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -156,11 +156,13 @@ void net_send_scores(player_t p, int hand_num)
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_SCORES);
 	ggz_dio_put_int(dio, hand_num);
+	ggz_dio_put_int(dio, game.num_extra_scores);
 	teams_iterate(t) {
 		score_data_t score = game.teams[t].scores[hand_num];
 
 		ggz_dio_put_int(dio, score.score);
-		for (i = 0; i < SCORE_EXTRAS; i++) {
+		assert(game.num_extra_scores <= SCORE_EXTRAS);
+		for (i = 0; i < game.num_extra_scores; i++) {
 			ggz_dio_put_int(dio, score.extra[i]);
 		}
 	}

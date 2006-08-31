@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: common.h 8559 2006-08-31 07:07:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -33,7 +33,7 @@
 
 #include <assert.h>
 
-#include <ggz.h>		/* libggz */
+#include <ggz.h>	/* libggz */
 #include "ggzdmod.h"
 
 #include "ai.h"
@@ -43,13 +43,13 @@
 #include "types.h"
 
 /* Debugging/logging types. */
-#define DBG_BID "bid"		/* bid system messages */
-#define DBG_PLAY "play"		/* play system messages */
-#define DBG_AI "ai"		/* AI messages */
-#define DBG_GAME "game"		/* game-specific messages */
-#define DBG_NET "net"		/* net-related messages */
+#define DBG_BID "bid"	/* bid system messages */
+#define DBG_PLAY "play"	/* play system messages */
+#define DBG_AI "ai"	/* AI messages */
+#define DBG_GAME "game"	/* game-specific messages */
+#define DBG_NET "net"	/* net-related messages */
 #define DBG_CLIENT "client"	/* client problems */
-#define DBG_MISC "misc"		/* everything else... */
+#define DBG_MISC "misc"	/* everything else... */
 
 /* GGZCards server game states */
 typedef enum {
@@ -97,6 +97,7 @@ typedef struct {
 	bool last_trick;	/**< should the last trick be sent to all the players? */
 	bool last_hand;		/**< should the last hand be sent to all the players? */
 	bool cumulative_scores;	/**< should the cumulative score be sent to all the players? */
+	int num_extra_scores;
 	bool bid_history;	/**< should a complete history of the hand's bidding be shown? */
 	bool rated;		/**< should we track player stats? */
 
@@ -147,7 +148,7 @@ typedef struct {
 	/* table data: seats */
 	int num_seats;	/**< the number of "seats" in the table (which includes fake non-players */
 	struct game_seat_t *seats;	/**< data for each seat, allocated in game_init */
-	
+
 	/* table data: teams */
 	int num_teams;
 	struct game_team_t *teams;
@@ -169,13 +170,13 @@ void set_game_state(server_state_t state);
 /* these are GGZ communication events that we must handle */
 void handle_ggz_state_event(GGZdMod * ggz,
 			    GGZdModEvent event, const void *data);
-void handle_ggz_seat_event(GGZdMod *ggz, 
+void handle_ggz_seat_event(GGZdMod * ggz,
 			   GGZdModEvent event, const void *data);
-void handle_ggz_spectator_seat_event(GGZdMod *ggz,
+void handle_ggz_spectator_seat_event(GGZdMod * ggz,
 				     GGZdModEvent event, const void *data);
 void handle_ggz_player_data_event(GGZdMod * ggz,
 				  GGZdModEvent event, const void *data);
-void handle_ggz_spectator_data_event(GGZdMod *ggz,
+void handle_ggz_spectator_data_event(GGZdMod * ggz,
 				     GGZdModEvent event, const void *data);
 
 /* Handle a player/spectator data event. */
@@ -189,19 +190,19 @@ void handle_neterror_event(player_t p);
 
 /* Handlers for general client messages.  Other handlers may be in
    their specific files. */
-void handle_client_language(player_t p, const char* lang);
+void handle_client_language(player_t p, const char *lang);
 void handle_client_newgame(player_t p);
 void handle_client_sync(player_t p);
 
 /* General high-level functions */
-void init_ggzcards(GGZdMod * ggz, game_data_t *game_data);
+void init_ggzcards(GGZdMod * ggz, game_data_t * game_data);
 bool try_to_start_game(void);
 void init_game(void);
 void next_move(void);		/* make the next move, if all seats are full */
 void send_sync(player_t p);
 void broadcast_sync(void);
 void send_hand(const player_t p, const seat_t s,
-               bool show_fronts, bool show_backs);
+	       bool show_fronts, bool show_backs);
 
 /* Seat manipulation functions */
 void set_num_seats(int num_seats);
@@ -218,7 +219,7 @@ extern game_t game;
 const char *get_seat_name(seat_t s);
 GGZSeatType get_seat_status(seat_t s);
 
-const char* get_player_name(player_t p);
+const char *get_player_name(player_t p);
 GGZSeatType get_player_status(player_t p);
 GGZDataIO *get_player_dio(int p);
 
@@ -267,4 +268,3 @@ void fatal_error(const char *message);
 #define IS_SPECTATOR(p) ((p) < 0)
 
 #endif /* __COMMON_H__ */
-
