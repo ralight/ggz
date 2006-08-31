@@ -132,7 +132,7 @@ public class GGZCardInputStream extends DataInputStream {
     public Bid read_bid() throws IOException {
         byte[] b = new byte[4];
         readFully(b);
-        return new Bid(b[0], b[1], b[2], b[3]);
+        return new Bid(b[0], decode_suit(b[1]), b[2], b[3]);
     }
 
     public ServerOpCode read_opcode() throws IOException {
@@ -161,6 +161,9 @@ public class GGZCardInputStream extends DataInputStream {
     private static Suit decode_suit(byte b) {
         Suit suit;
         switch (b) {
+        case -2:
+            suit = Suit.NO_SUIT;
+            break;
         case -1:
             suit = Suit.UNKNOWN_SUIT;
             break;
@@ -175,9 +178,6 @@ public class GGZCardInputStream extends DataInputStream {
             break;
         case 3:
             suit = Suit.SPADES;
-            break;
-        case 4:
-            suit = Suit.NO_SUIT;
             break;
         default:
             throw new UnsupportedOperationException(

@@ -20,6 +20,7 @@ package ggz.cards;
 import ggz.cards.client.Client;
 import ggz.cards.client.Player;
 import ggz.cards.common.Bid;
+import ggz.cards.common.Suit;
 import ggz.ui.CustomMetalTheme;
 
 import java.awt.AWTEventMulticaster;
@@ -214,28 +215,19 @@ public class BidPanel extends JPanel implements ActionListener {
                 setIcon(null);
             } else {
                 Bid bid = (Bid) value;
-                if (bid.getSpec() == 0) {
-                    switch (bid.getSuit()) {
-                    case 0:
-                        setIcon(new ImageIcon(getClass().getResource(
-                                "/ggz/cards/images/club.gif"))); //$NON-NLS-1$
-                        break;
-                    case 1:
-                        setIcon(new ImageIcon(getClass().getResource(
-                                "/ggz/cards/images/diamond.gif"))); //$NON-NLS-1$
-                        break;
-                    case 2:
-                        setIcon(new ImageIcon(getClass().getResource(
-                                "/ggz/cards/images/heart.gif"))); //$NON-NLS-1$
-                        break;
-                    case 3:
-                        setIcon(new ImageIcon(getClass().getResource(
-                                "/ggz/cards/images/spade.gif"))); //$NON-NLS-1$
-                        break;
-                    default:
-                        setIcon(null);
-                        break;
-                    }
+                Suit suit = bid.getSuit();
+                if (Suit.CLUBS.equals(suit)) {
+                    setIcon(new ImageIcon(getClass().getResource(
+                            "/ggz/cards/images/club.gif"))); //$NON-NLS-1$
+                } else if (Suit.DIAMONDS.equals(suit)) {
+                    setIcon(new ImageIcon(getClass().getResource(
+                            "/ggz/cards/images/diamond.gif"))); //$NON-NLS-1$
+                } else if (Suit.HEARTS.equals(suit)) {
+                    setIcon(new ImageIcon(getClass().getResource(
+                            "/ggz/cards/images/heart.gif"))); //$NON-NLS-1$
+                } else if (Suit.SPADES.equals(suit)) {
+                    setIcon(new ImageIcon(getClass().getResource(
+                            "/ggz/cards/images/spade.gif"))); //$NON-NLS-1$
                 } else {
                     setIcon(null);
                 }

@@ -30,7 +30,7 @@ public class SpadesBidPanel extends BidPanel {
         if (bid == null) {
             return null;
         }
-        if (bid.getVal() == 0) {
+        if (bid.getVal() == Bid.NO_VALUE) {
             switch (bid.getSpec()) {
             case 1:
                 return "Nil";

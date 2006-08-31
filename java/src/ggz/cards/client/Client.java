@@ -494,6 +494,14 @@ public class Client {
         for (int i = 0; i < this.num_players; i++) {
             this.players[i].bidding = (bidding & (1 << i)) != 0;
             this.players[i].playing = (playing & (1 << i)) != 0;
+
+            // We can use the player status to keep our game state in sync with
+            // the server.
+            if (this.players[i].bidding) {
+                set_game_state(STATE_BID);
+            } else if (this.players[i].playing) {
+                set_game_state(STATE_PLAY);
+            }
         }
 
         game.alert_players_status();
@@ -955,30 +963,36 @@ public class Client {
      *       maintaining the state here.
      */
     public static class GameState {
-        protected GameState() {
-            // Private constructor so to prevent access.
+        private final String name;
+
+        protected GameState(String s) {
+            this.name = s;
+        }
+
+        public String toString() {
+            return this.name;
         }
     }
 
     /** game hasn't started yet */
-    public static final GameState STATE_INIT = new GameState();
+    public static final GameState STATE_INIT = new GameState("STATE_INIT");
 
     /** waiting for others */
-    public static final GameState STATE_WAIT = new GameState();
+    public static final GameState STATE_WAIT = new GameState("STATE_WAIT");
 
     /** dealing */
-    public static final GameState STATE_DEAL = new GameState();
+    public static final GameState STATE_DEAL = new GameState("STATE_DEAL");
 
     /** our turn to play */
-    public static final GameState STATE_PLAY = new GameState();
+    public static final GameState STATE_PLAY = new GameState("STATE_PLAY");
 
     /** our turn to bid */
-    public static final GameState STATE_BID = new GameState();
+    public static final GameState STATE_BID = new GameState("STATE_BID");
 
     /** game's over */
-    public static final GameState STATE_DONE = new GameState();
+    public static final GameState STATE_DONE = new GameState("STATE_DONE");
 
     /** determining options */
-    public static final GameState STATE_OPTIONS = new GameState();
+    public static final GameState STATE_OPTIONS = new GameState("STATE_OPTIONS");
 
 }

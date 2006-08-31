@@ -29,7 +29,7 @@ public class Bid {
     private byte val;
 
     /* the suit of the bid (generally trump) */
-    private int suit;
+    private Suit suit;
 
     /* specialty bids (defined per-game) */
     private byte spec;
@@ -37,15 +37,18 @@ public class Bid {
     /* More specialty bids (just to round things out) */
     private byte spec2;
 
+    /** Specifies that the bid has no value (e.g. Nil Bid). */
+    public static final byte NO_VALUE = -1;
+
     public Bid(byte value) {
-        this(value, -1, (byte) 0, (byte) 0);
+        this(value, Suit.NO_SUIT, (byte) 0, (byte) 0);
     }
 
-    public Bid(byte value, int suit) {
+    public Bid(byte value, Suit suit) {
         this(value, suit, (byte) 0, (byte) 0);
     }
 
-    public Bid(byte value, int suit, byte spec, byte spec2) {
+    public Bid(byte value, Suit suit, byte spec, byte spec2) {
         this.val = value;
         this.suit = suit;
         this.spec = spec;
@@ -56,7 +59,7 @@ public class Bid {
         return val;
     }
 
-    public int getSuit() {
+    public Suit getSuit() {
         return suit;
     }
 

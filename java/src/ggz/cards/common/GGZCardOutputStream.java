@@ -105,7 +105,7 @@ public class GGZCardOutputStream extends DataOutputStream {
      */
     public void write_bid(Bid bid) throws IOException {
         write(bid.getVal());
-        write(bid.getSuit());
+        write(encode_suit(bid.getSuit()));
         write(bid.getSpec());
         write(bid.getSpec2());
     }
@@ -152,7 +152,9 @@ public class GGZCardOutputStream extends DataOutputStream {
     }
 
     private static byte encode_suit(Suit suit) {
-        if (suit == Suit.UNKNOWN_SUIT) {
+        if (suit == Suit.NO_SUIT) {
+            return -2;
+        } else if (suit == Suit.UNKNOWN_SUIT) {
             return -1;
         } else if (suit == Suit.CLUBS) {
             return 0;
@@ -162,8 +164,6 @@ public class GGZCardOutputStream extends DataOutputStream {
             return 2;
         } else if (suit == Suit.SPADES) {
             return 3;
-        } else if (suit == Suit.NO_SUIT) {
-            return 4;
         } else {
             throw new IllegalStateException(
                     "Attempt to encode unrecognised card suit: " + suit);

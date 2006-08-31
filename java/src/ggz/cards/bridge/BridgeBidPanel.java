@@ -20,6 +20,7 @@ package ggz.cards.bridge;
 import ggz.cards.BidPanel;
 import ggz.cards.client.Client;
 import ggz.cards.common.Bid;
+import ggz.cards.common.Suit;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -63,15 +64,17 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
 
     private Bid selectedBid;
 
-    private static final Bid BID_PASS = new Bid((byte) 0, 0, (byte) 1, (byte) 0);
+    private static final Bid BID_PASS = new Bid((byte) 0, Suit.NO_SUIT,
+            (byte) 1, (byte) 0);
 
-    private static final Bid BID_DOUBLE = new Bid((byte) 0, 0, (byte) 2,
-            (byte) 0);
+    private static final Bid BID_DOUBLE = new Bid((byte) 0, Suit.NO_SUIT,
+            (byte) 2, (byte) 0);
 
-    private static final Bid BID_REDOUBLE = new Bid((byte) 0, 0, (byte) 3,
-            (byte) 0);
+    private static final Bid BID_REDOUBLE = new Bid((byte) 0, Suit.NO_SUIT,
+            (byte) 3, (byte) 0);
 
-    private static final Bid BID_7_NT = new Bid((byte) 7, 4, (byte) 0, (byte) 0);
+    private static final Bid BID_7_NT = new Bid((byte) 7, Suit.NO_SUIT,
+            (byte) 0, (byte) 0);
 
     public BridgeBidPanel(int firstBidder, Client cardClient) {
         super(firstBidder, cardClient);
@@ -194,7 +197,7 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
             // If the bid has a spec or spec 2 then it's not a suit bid.
             if (bid.getSpec() == 0 && bid.getSpec2() == 0
                     && bid.getVal() == numTricks) {
-                int buttonIndex = bid.getSuit();
+                int buttonIndex = getButtonIndex(bid.getSuit());
                 JToggleButton button = strainButtons[buttonIndex];
                 button.setEnabled(true);
                 if (indexOfSelectedButton == buttonIndex) {
@@ -242,12 +245,27 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
         // Find the corresponding bid object.
         for (Iterator iter = validBids.iterator(); iter.hasNext();) {
             Bid bid = (Bid) iter.next();
-            if (bid.getVal() == numTricks && bid.getSuit() == strain) {
+            if (bid.getVal() == numTricks
+                    && getButtonIndex(bid.getSuit()) == strain) {
                 return bid;
             }
         }
 
         return null;
+    }
+
+    protected int getButtonIndex(Suit suit) {
+        if (Suit.CLUBS.equals(suit)) {
+            return 0;
+        } else if (Suit.DIAMONDS.equals(suit)) {
+            return 1;
+        } else if (Suit.HEARTS.equals(suit)) {
+            return 2;
+        } else if (Suit.SPADES.equals(suit)) {
+            return 3;
+        } else {
+            return 4;
+        }
     }
 
     public int getBidIndex() {
@@ -281,7 +299,7 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
         switch (bid.getSpec()) {
         case 0: // regular bid
             return String.valueOf(bid.getVal())
-                    + (bid.getSuit() == 4 ? " NT" : "");
+                    + (bid.getSuit() == Suit.NO_SUIT ? " NT" : "");
         case 1: // pass
             return "Pass";
         case 2: // double

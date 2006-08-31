@@ -227,14 +227,17 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     public void alert_state(Client.GameState oldState, Client.GameState newState) {
         if (oldState == Client.STATE_BID) {
-            if (bidPanel != null) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    // Need to check for null here because when joining mid game
+                    // the messages can arrive faster than we can process them
+                    // in the event queue.
+                    if (bidPanel != null) {
                         table.remove(bidPanel);
                         table.revalidate();
                     }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -248,8 +251,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         if ("spades".equals(gameType)) {
             // Ignore bids that the server sends that we aren't interested in.
             // e.g. No blind bid and those sent when joining mid game.
-            if ((bid.getVal() == 0 && bid.getSpec() == 2)
-                    || (bid.getSuit() != 4)) {
+            if ((bid.getVal() == Bid.NO_VALUE && bid.getSpec() == 2)) {
                 return;
             }
         }

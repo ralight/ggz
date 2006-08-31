@@ -18,6 +18,7 @@ public class BridgeBidPanelTest extends BidPanelTest {
      * @param args
      */
     public static void main(String[] args) throws Exception {
+        /*
         Bid[] bids = new Bid[] { new Bid((byte) 6, 1, (byte) 0, (byte) 0),
                 new Bid((byte) 6, 2, (byte) 0, (byte) 0),
                 new Bid((byte) 6, 3, (byte) 0, (byte) 0),
@@ -37,6 +38,7 @@ public class BridgeBidPanelTest extends BidPanelTest {
         bidPanel.setValidBids(bids, null, null);
         frame.pack();
         frame.setVisible(true);
+        */
     }
 
 }
