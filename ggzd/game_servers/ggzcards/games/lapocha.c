@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 8458 2006-08-02 06:50:51Z jdorje $
+ * $Id: lapocha.c 8558 2006-08-31 06:34:19Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdio.h>
@@ -121,7 +121,7 @@ static void lapocha_init_game(void)
 	game.deck_type = GGZ_DECK_LAPOCHA;
 	game.max_hand_length = 10;
 	game.must_overtrump = 1;	/* in La Pocha, you *must* overtrump
-					   if you can */	
+					   if you can */
 }
 
 static void lapocha_handle_gameover(void)
@@ -162,8 +162,7 @@ static void lapocha_handle_gameover(void)
 static void set_trump(char suit)
 {
 	game.trump = suit;
-	set_global_message("", "Trump is %s.",
-	                   get_suit_name(game.trump));
+	set_global_message("", "Trump is %s.", get_suit_name(game.trump));
 	lap_send_trump();
 }
 
@@ -187,20 +186,21 @@ static void lapocha_get_bid(void)
 		char suit;
 		for (suit = 0; suit < 4; suit++)
 			add_sbid(0, suit, LAPOCHA_TRUMP);
-		(void) lap_send_trump_request(game.dealer);
+		(void)lap_send_trump_request(game.dealer);
 		request_client_bid(game.dealer);
-	} else {		/* get a player's numerical bid */
+	} else {	/* get a player's numerical bid */
 		int i;
-		assert(game.next_bid == (game.dealer + game.bid_count) % 4);
+		assert(game.next_bid ==
+		       (game.dealer + game.bid_count) % 4);
 		for (i = 0; i <= game.hand_size; i++) {
 			/* the dealer can't make the sum of the bids equal
 			   the hand size; somebody's got to go down */
 			if (game.next_bid == game.dealer &&
 			    LAPOCHA.bid_sum + i == game.hand_size)
 				continue;
-			add_sbid(i, 0, 0);
+			add_sbid(i, NO_SUIT, LAPOCHA_BID);
 		}
-		(void) lap_send_bid_request(game.next_bid);
+		(void)lap_send_bid_request(game.next_bid);
 		request_client_bid(game.next_bid);
 	}
 }
@@ -249,8 +249,7 @@ static void lapocha_deal_hand(void)
 
 	/* in a regular deal, we just deal out hand_size cards to everyone */
 	for (s = 0; s < game.num_seats; s++)
-		deal_hand(game.deck, game.hand_size,
-				&game.seats[s].hand);
+		deal_hand(game.deck, game.hand_size, &game.seats[s].hand);
 }
 
 static int lapocha_get_bid_text(char *buf, size_t buf_len, bid_t bid)
@@ -258,7 +257,7 @@ static int lapocha_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 	if (bid.sbid.spec == LAPOCHA_TRUMP)
 		return snprintf(buf, buf_len, "%s",
 				get_suit_name(bid.sbid.suit % 4));
-	return snprintf(buf, buf_len, "%d", (int) bid.sbid.val);
+	return snprintf(buf, buf_len, "%d", (int)bid.sbid.val);
 }
 
 static void lapocha_set_player_message(player_t p)
@@ -273,7 +272,7 @@ static void lapocha_set_player_message(player_t p)
 	if (game.state >= STATE_FIRST_TRICK
 	    && game.state <= STATE_WAIT_FOR_PLAY) {
 		add_player_message(s, "Contract: %d\n",
-				   (int) game.players[p].bid.bid);
+				   (int)game.players[p].bid.bid);
 	}
 	add_player_tricks_message(p);
 	add_player_bid_message(p);
@@ -286,9 +285,9 @@ static void lapocha_end_hand(void)
 
 	for (p = 0; p < game.num_players; p++) {
 		ggz_debug(DBG_GAME,
-			    "Player %d/%s got %d tricks on a bid of %d", p,
-			    get_player_name(p), game.players[p].tricks,
-			    (int) game.players[p].bid.bid);
+			  "Player %d/%s got %d tricks on a bid of %d", p,
+			  get_player_name(p), game.players[p].tricks,
+			  (int)game.players[p].bid.bid);
 		assert(p == game.players[p].team);
 		if (game.players[p].tricks == game.players[p].bid.bid) {
 			change_score(p, 10 + 5 * game.players[p].bid.bid);
@@ -330,7 +329,7 @@ static void lap_send_bid_request(player_t p)
 static void lap_send_dealer(void)
 {
 	int p;
-	
+
 	for (p = 0; p < game.num_players; p++) {
 		GGZDataIO *dio = get_player_dio(p);
 
@@ -345,7 +344,7 @@ static void lap_send_dealer(void)
 static void lap_send_trump(void)
 {
 	int p;
-	
+
 	for (p = 0; p < game.num_players; p++) {
 		GGZDataIO *dio = get_player_dio(p);
 
@@ -361,9 +360,9 @@ static void lap_send_bid(player_t bidder, bid_t bid)
 {
 	int p;
 	int the_bid = bid.sbid.val;
-	
+
 	assert(game.players[bidder].seat == bidder);
-	
+
 	for (p = 0; p < game.num_players; p++) {
 		GGZDataIO *dio = get_player_dio(p);
 

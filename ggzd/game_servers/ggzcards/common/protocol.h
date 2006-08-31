@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 8556 2006-08-31 03:18:23Z jdorje $
+ * $Id: protocol.h 8558 2006-08-31 06:34:19Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -47,6 +47,7 @@ typedef struct {
 	int extra[SCORE_EXTRAS];
 } score_data_t;
 
+#define NO_BID_VAL -1
 
 /* 
  * Protocol opcodes

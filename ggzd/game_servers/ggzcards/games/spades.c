@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8479 2006-08-07 04:51:07Z jdorje $
+ * $Id: spades.c 8558 2006-08-31 06:34:19Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdio.h>
@@ -91,11 +91,11 @@ typedef struct spades_game_t {
 	int nil_value;		/* 0 for none; generally 50 or 100 */
 	int double_nil_value;	/* 0 for none; generally 100 or 200 */
 	int minimum_team_bid;	/* the minimum bid by one team */
-	enum nil_option nil_tricks_count; /* See enum explanation */
-	bool unmakeable_bids; /* Whether team bids of over 13 are allowed. */
-	bool zero_bids; /* Whether bids of 0 are allowed. */
-	enum bid_variant bid_variant; /* See enum explanation */
-	bool variant301; /* 301 - highest score below 301 wins */
+	enum nil_option nil_tricks_count;	/* See enum explanation */
+	bool unmakeable_bids;	/* Whether team bids of over 13 are allowed. */
+	bool zero_bids;		/* Whether bids of 0 are allowed. */
+	enum bid_variant bid_variant;	/* See enum explanation */
+	bool variant301;	/* 301 - highest score below 301 wins */
 
 	/* data */
 	int show_hand[4];	/* this is 0 if we're supposed to conceal the
@@ -181,7 +181,8 @@ static void spd_send_scoredata(player_t p)
 	}
 	players_iterate(p2) {
 		ggz_dio_put_int(dio, game.players[p2].tricks);
-	} players_iterate_end;
+	}
+	players_iterate_end;
 	ggz_dio_put_int(dio, game.next_bid);
 	ggz_dio_put_int(dio, game.next_play);
 	if (game.state == STATE_WAIT_FOR_BID) {
@@ -189,7 +190,7 @@ static void spd_send_scoredata(player_t p)
 	} else if (game.state == STATE_WAIT_FOR_PLAY) {
 		waiting = game.next_play;
 	}
-	ggz_dio_put_int(dio, waiting); /* The player we're waiting on. */
+	ggz_dio_put_int(dio, waiting);	/* The player we're waiting on. */
 	ggz_dio_packet_end(dio);
 }
 
@@ -210,7 +211,7 @@ static void spades_init_game(void)
 	seat_t s;
 
 	game.specific = ggz_malloc(sizeof(spades_game_t));
-	
+
 	set_num_seats(4);
 	set_num_teams(2);
 	for (s = 0; s < game.num_players; s++) {
@@ -236,14 +237,13 @@ static void spades_get_options(void)
 	/* three options: target score: 100, 250, 500, 1000 nil value: 0, 50, 
 	   100 minimum team bid: 0, 1, 2, 3, 4 double nil value: 0, 100, 200 */
 	add_option("Nil", "nil_value",
-	           "How much is nil worth (win or lose)?",
-	           3, 2,
-	           "No nil bids", "Nil is worth 50",
-		   "Nil is worth 100");
+		   "How much is nil worth (win or lose)?",
+		   3, 2,
+		   "No nil bids", "Nil is worth 50", "Nil is worth 100");
 	add_option("Nil", "double_nil",
-	           "How many points is blind (double) nil worth (win or lose)?",
-	           3, 0,
-	           "No blind (double) nil",
+		   "How many points is blind (double) nil worth (win or lose)?",
+		   3, 0,
+		   "No blind (double) nil",
 		   "Blind (double) nil worth 100",
 		   "Blind (double) nil worth 200");
 	add_option("Gameover", "max_hands",
@@ -252,25 +252,19 @@ static void spades_get_options(void)
 		   "No maximum hand limit",
 		   "Just play one hand",
 		   "Max of 3 hands",
-		   "Max of 6 hands",
-		   "Max of 8 hands",
-		   "Max of 10 hands");
+		   "Max of 6 hands", "Max of 8 hands", "Max of 10 hands");
 	add_option("Gameover", "target_score",
-	           "How many points does each team need to win?",
-	           5,
-	           2,
-	           "Game to 100", "Game to 250",
-		   "Game to 500", "Game to 1000",
-	           "Unending game"
-		   );
+		   "How many points does each team need to win?",
+		   5,
+		   2,
+		   "Game to 100", "Game to 250",
+		   "Game to 500", "Game to 1000", "Unending game");
 	add_option("Gameover", "low_score_loses",
 		   "Does dropping to -200 points cause an automatic loss?",
-		   1, 1,
-		   "Forfeit at -200 points");
+		   1, 1, "Forfeit at -200 points");
 	add_option("Gameover", "variant301",
 		   "When the game ends the highest score below 301 wins.",
-		   1, 0,
-		   "'301' variant");
+		   1, 0, "'301' variant");
 	add_option("Bidding", "bid_variant",
 		   "These special bidding variations change the game "
 		   "considerably.",
@@ -279,9 +273,9 @@ static void spades_get_options(void)
 		   "'Whiz' bidding - bid the number of spades you hold.",
 		   "'DN' bidding - you must bid double nil.");
 	add_option("Bidding", "minimum_bid",
-	           "What is the minimum bid that each team must meet?",
-	           5, 0,
-	           "Minimum bid 0", "Minimum bid 1",
+		   "What is the minimum bid that each team must meet?",
+		   5, 0,
+		   "Minimum bid 0", "Minimum bid 1",
 		   "Minimum bid 2", "Minimum bid 3", "Minimum bid 4");
 	add_option("Bidding", "unmakeable_bids",
 		   "Allows unmakeably high bids of over thirteen.",
@@ -297,8 +291,7 @@ static void spades_get_options(void)
 		   NIL_TRICKS_LAST, NIL_TRICKS_NO_POINTS,
 		   "Nil tricks count toward the partner's bid",
 		   "Nil tricks count as overtricks and bags.",
-		   "Nil tricks count only as bags",
-		   "bags");
+		   "Nil tricks count only as bags", "bags");
 
 	game_get_options();
 }
@@ -388,12 +381,14 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 		if (game.target_score == MAX_TARGET_SCORE)
 			snprintf(buf, bufsz, "There is no points limit.");
 		else
-			snprintf(buf, bufsz, "The game is being played to %d.",
+			snprintf(buf, bufsz,
+				 "The game is being played to %d.",
 				 game.target_score);
 	} else if (strcmp(option, "max_hands") == 0) {
 		switch ((enum handlimit_option)value) {
 		case HANDS_ONE:
-			snprintf(buf, bufsz, "Only one hand will be played.");
+			snprintf(buf, bufsz,
+				 "Only one hand will be played.");
 			break;
 		case HANDS_THREE:
 			snprintf(buf, bufsz, "A maximum of 3 hands will "
@@ -412,17 +407,18 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 				 "be played.");
 			break;
 		case HANDS_UNLIMITED:
-			snprintf(buf, bufsz, "There is no limit on the number"
+			snprintf(buf, bufsz,
+				 "There is no limit on the number"
 				 " of hands to be played.");
 			break;
 		}
 	} else if (strcmp(option, "low_score_loses") == 0) {
 		if (value == 0)
 			snprintf(buf, bufsz,
-				"Game is not forfeit at -200 points.");
+				 "Game is not forfeit at -200 points.");
 		else
 			snprintf(buf, bufsz,
-				"Game is forfeit at -200 points.");
+				 "Game is forfeit at -200 points.");
 	} else if (strcmp(option, "minimum_bid") == 0)
 		snprintf(buf, bufsz, "The minimum team bid is %d.",
 			 GSPADES.minimum_team_bid);
@@ -463,8 +459,7 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 		}
 	} else if (strcmp(option, "zero_bids") == 0) {
 		if (value != 0) {
-			snprintf(buf, bufsz,
-				 "A bid of zero is allowed.");
+			snprintf(buf, bufsz, "A bid of zero is allowed.");
 		} else {
 			snprintf(buf, bufsz,
 				 "The lowest bid allowed is one.");
@@ -478,8 +473,7 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 	} else if (strcmp(option, "bid_variant") == 0) {
 		switch ((enum bid_variant)value) {
 		case BID_NORMAL:
-			snprintf(buf, bufsz,
-				 "Regular bidding rules.");
+			snprintf(buf, bufsz, "Regular bidding rules.");
 			break;
 		case BID_WHIZ:
 			snprintf(buf, bufsz,
@@ -516,7 +510,8 @@ static void spades_get_bid(void)
 {
 	int i;
 	/* partner's bid (value) */
-	struct game_player_t *partner = &game.players[(game.next_bid + 2) % 4];
+	struct game_player_t *partner =
+	    &game.players[(game.next_bid + 2) % 4];
 	char pard = partner->bid.sbid.val;
 
 	if (GSPADES.double_nil_value > 0 && (game.bid_count % 2 == 0)) {
@@ -525,12 +520,12 @@ static void spades_get_bid(void)
 
 		/* TODO: make sure partner made minimum bid */
 		if (GSPADES.bid_variant != BID_DN_ONLY) {
-			add_sbid(0, NO_SUIT, SPADES_NO_BLIND);
+			add_sbid(NO_BID_VAL, NO_SUIT, SPADES_NO_BLIND);
 		}
 		if (partner->bid_count == 0
 		    || pard >= GSPADES.minimum_team_bid
 		    || GSPADES.bid_variant == BID_DN_ONLY) {
-			add_sbid(0, NO_SUIT, SPADES_DNIL);
+			add_sbid(NO_BID_VAL, NO_SUIT, SPADES_DNIL);
 		}
 	} else {
 		/* A regular bid */
@@ -578,7 +573,7 @@ static void spades_get_bid(void)
 		if (GSPADES.nil_value > 0
 		    && (game.bid_count < 2
 			|| pard >= GSPADES.minimum_team_bid))
-			add_sbid(0, NO_SUIT, SPADES_NIL);
+			add_sbid(NO_BID_VAL, NO_SUIT, SPADES_NIL);
 	}
 
 	/* TODO: other specialty bids */
@@ -615,7 +610,7 @@ static void spades_next_bid(void)
 			next = (game.bid_count % 2 == 0);
 		if (next)
 			game.next_bid =
-				(game.next_bid + 1) % game.num_players;
+			    (game.next_bid + 1) % game.num_players;
 	}
 }
 
@@ -634,23 +629,23 @@ static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 	if (bid.sbid.spec == SPADES_NO_BLIND)
 		return snprintf(buf, buf_len, "Show cards");
 	assert(bid.sbid.val >= 0 && bid.sbid.val <= 13);
-	return snprintf(buf, buf_len, "%d", (int) bid.sbid.val);
+	return snprintf(buf, buf_len, "%d", (int)bid.sbid.val);
 }
 
 static int spades_get_bid_desc(char *buf, size_t buf_len, bid_t bid)
 {
 	if (bid.sbid.spec == SPADES_NIL)
 		return snprintf(buf, buf_len,
-		                "Nil - contract to take no tricks");
+				"Nil - contract to take no tricks");
 	if (bid.sbid.spec == SPADES_DNIL)
 		return snprintf(buf, buf_len,
-		                "Blind nil - blind contract to take no tricks");
+				"Blind nil - blind contract to take no tricks");
 	if (bid.sbid.spec == SPADES_NO_BLIND)
-		return snprintf(buf, buf_len,
-		                "Show me the hand!");
-	
+		return snprintf(buf, buf_len, "Show me the hand!");
+
 	/* FIXME: show more stuff here, like team contract, etc. */
-	return snprintf(buf, buf_len, "Contract to take %d tricks", (int) bid.sbid.val);
+	return snprintf(buf, buf_len, "Contract to take %d tricks",
+			(int)bid.sbid.val);
 }
 
 static void spades_set_player_message(player_t p)
@@ -673,13 +668,13 @@ static void spades_set_player_message(player_t p)
 		char bid_text[512];
 #if 0
 		int contract =
-			game.players[p].bid.sbid.val +
-			game.players[(p + 2) % 4].bid.sbid.val;
+		    game.players[p].bid.sbid.val +
+		    game.players[(p + 2) % 4].bid.sbid.val;
 #endif
 		game.data->get_bid_text(bid_text, sizeof(bid_text),
-					 game.players[p].bid);
+					game.players[p].bid);
 		if (*bid_text) {
-#if 0 /* Disabled - this is deemed too confusing */
+#if 0	/* Disabled - this is deemed too confusing */
 			add_player_message(s, "Bid: %s (%d)\n", bid_text,
 					   contract);
 #else
@@ -688,7 +683,7 @@ static void spades_set_player_message(player_t p)
 		}
 	} else
 		add_player_bid_message(p);
-	
+
 	add_player_tricks_message(p);
 	add_player_action_message(p);
 }
@@ -728,11 +723,13 @@ static void spades_end_hand(void)
 		bid = (game.players[p].bid.sbid.val
 		       + game.players[p + 2].bid.sbid.val);
 		tricks = 0;
-		if (TRICKS_COUNT(p)) tricks += game.players[p].tricks;
-		if (TRICKS_COUNT(p + 2)) tricks += game.players[p + 2].tricks;
+		if (TRICKS_COUNT(p))
+			tricks += game.players[p].tricks;
+		if (TRICKS_COUNT(p + 2))
+			tricks += game.players[p + 2].tricks;
 		if (tricks >= bid) {
 			score += 10 * bid;
-		        BAGS(p) += (tricks - bid);
+			BAGS(p) += (tricks - bid);
 			score += (tricks - bid);
 		} else {
 			score = -10 * bid;
@@ -743,7 +740,8 @@ static void spades_end_hand(void)
 			player_t p2 = p + 2 * x;
 
 			if (game.players[p2].bid.sbid.spec != SPADES_NIL
-			    && game.players[p2].bid.sbid.spec != SPADES_DNIL) {
+			    && game.players[p2].bid.sbid.spec !=
+			    SPADES_DNIL) {
 				continue;
 			}
 
@@ -761,27 +759,27 @@ static void spades_end_hand(void)
 			score -= 100;
 		}
 		ggz_debug(DBG_GAME, "Team %d bid %d, took %d, earned %d.",
-			    (int) p, bid, tricks, score);
+			  (int)p, bid, tricks, score);
 		change_score(p, score);
 	}
 	for (p = 0; p < 4; p++) {
 		if (game.players[p].bid.sbid.spec == SPADES_NIL) {
 			int score =
-				(game.players[p].tricks ==
-				 0 ? GSPADES.nil_value : -GSPADES.nil_value);
+			    (game.players[p].tricks ==
+			     0 ? GSPADES.nil_value : -GSPADES.nil_value);
 			ggz_debug(DBG_GAME,
-				    "Player %d/%s earned %d for going nil.",
-				    p, get_player_name(p), score);
+				  "Player %d/%s earned %d for going nil.",
+				  p, get_player_name(p), score);
 			change_score(p % 2, score);
 		}
 		if (game.players[p].bid.sbid.spec == SPADES_DNIL) {
 			int score =
-				(game.players[p].tricks == 0 ?
-				 GSPADES.double_nil_value :
-				 -GSPADES.double_nil_value);
+			    (game.players[p].tricks == 0 ?
+			     GSPADES.double_nil_value :
+			     -GSPADES.double_nil_value);
 			ggz_debug(DBG_GAME,
-				    "Player %d/%s earned %d for double nil.",
-				    p, get_player_name(p), score);
+				  "Player %d/%s earned %d for double nil.",
+				  p, get_player_name(p), score);
 			change_score(p % 2, score);
 		}
 		assert(game.players[p].bid.sbid.spec != SPADES_NO_BLIND);
@@ -809,9 +807,10 @@ static void spades_handle_gameover(void)
 		teams_iterate(t) {
 			if (game.teams[t].score.score > 301) {
 				game.teams[t].score.score
-					= -game.teams[t].score.score;
+				    = -game.teams[t].score.score;
 			}
-		} teams_iterate_end;
+		}
+		teams_iterate_end;
 	}
 
 	game_handle_gameover();
@@ -822,6 +821,6 @@ static void spades_send_hand(player_t p, seat_t s)
 	/* in most cases, we want to reveal the hand only to the player who
 	   owns it. */
 	bool show_fronts = (game.players[p].seat == s
-	          && GSPADES.show_hand[s]);
+			    && GSPADES.show_hand[s]);
 	send_hand(p, s, show_fronts, TRUE);
 }

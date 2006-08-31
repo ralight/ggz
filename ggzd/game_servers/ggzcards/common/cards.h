@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.h 4087 2002-04-26 19:38:14Z jdorje $
+ * $Id: cards.h 8558 2006-08-31 06:34:19Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -47,7 +47,7 @@ typedef enum {
 	 *  which has a number.  For storage purposes, the higher
 	 *  side will be considered the "suit" and the lower side the
 	 *  "face". */
-	CARDSET_DOMINOES	
+	CARDSET_DOMINOES
 } cardset_type_t;
 
 void set_cardset_type(cardset_type_t cardset_type);
@@ -76,6 +76,7 @@ enum card_face_enum {
 
 /** Regular values for card suits.
  *  @note If a player does not know the card suit, UNKNOWN will be sent.
+ *  @note For dominoes games, regular numbers (0-6) are used.
  *  @see card_t::suit */
 enum card_suit_enum {
 	UNKNOWN_SUIT = -1,	/**< An unknown suit of a card */
@@ -83,7 +84,7 @@ enum card_suit_enum {
 	DIAMONDS = 1,		/**< The diamonds (second) suit */
 	HEARTS = 2,		/**< The hearts (third) suit */
 	SPADES = 3,		/**< The spades (highest) suit */
-	NO_SUIT = 4		/**< A no-suit used for jokers, etc. */
+	NO_SUIT = -2		/**< A no-suit used for jokers, etc. */
 };
 
 /** Regular values for card decks.
@@ -120,14 +121,14 @@ int is_valid_card(card_t card);
 typedef struct hand_t {
 	/* the size of the hand, when it's full.  This may or may not
 	   actually be used (client-side it is currently unused). */
-	int full_hand_size;	
-	
+	int full_hand_size;
+
 	/* the current size of the hand (number of cards currently in
 	   the hand. */
-	int hand_size;	
-		
+	int hand_size;
+
 	/* A variable-sized array containing the cards present. */
-	card_t *cards;		
+	card_t *cards;
 } hand_t;
 
 
@@ -135,7 +136,7 @@ typedef struct hand_t {
    arbitrary data structure for it */
 /* This shouldn't really go here, but... */
 typedef union bid_t {
-	int bid;	/* DO NOT USE */
+	int bid;		/* DO NOT USE */
 	struct special_bid_struct {
 		/* this can be used for many different games that have
 		   unusual but similar bidding. Different games may use it

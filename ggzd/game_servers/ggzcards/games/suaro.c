@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: suaro.c 8558 2006-08-31 06:34:19Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdio.h>
@@ -119,7 +119,7 @@ game_data_t suaro_data = {
     the client window */
 char *short_suaro_suit_names[6] = { "lo", "C", "D", "H", "S", "hi" };
 static char *long_suaro_suit_names[6] =
-	{ "low", "clubs", "diamonds", "hearts", "spades", "high" };
+    { "low", "clubs", "diamonds", "hearts", "spades", "high" };
 
 static bool suaro_is_valid_game(void)
 {
@@ -151,22 +151,19 @@ static void suaro_get_options(void)
 	   boolean persistent doubles -> boolean target score -> 25, 50, 100, 
 	   200, 500, 1000 */
 	add_option("Suaro Options", "shotgun",
-	           "In \"Shotgun Suaro\", you are allowed to bid on the kitty.",
-	           1, 1,
-	           "shotgun");
+		   "In \"Shotgun Suaro\", you are allowed to bid on the kitty.",
+		   1, 1, "shotgun");
 	add_option("Suaro Options", "unlimited_redoubling",
-	           "With this variation, more than one redoubling is allowed.",
-	           1, 0,
-	           "unlimited redoubling");
+		   "With this variation, more than one redoubling is allowed.",
+		   1, 0, "unlimited redoubling");
 	add_option("Suaro Options", "persistent_doubles",
-	           "In this variation, if there is a (re)double and the bid "
-	           "is subsequently changed, the (re)double will still apply.",
-	           1, 0,
-	           "persistent doubles");
+		   "In this variation, if there is a (re)double and the bid "
+		   "is subsequently changed, the (re)double will still apply.",
+		   1, 0, "persistent doubles");
 	add_option("Suaro Options", "target",
-	           "How many points does each player need to win?",
-	           6, 1,
-	           "Game to 25", "Game to 50", "Game to 100",
+		   "How many points does each player need to win?",
+		   6, 1,
+		   "Game to 25", "Game to 50", "Game to 100",
 		   "Game to 200", "Game to 500", "Game to 1000");
 	game_get_options();
 }
@@ -271,14 +268,14 @@ static void suaro_get_bid(void)
 	if (SUARO.contract > 0 && SUARO.bonus == 1)
 		/* unless unlimited doubling is specifically allowed, only
 		   double and redouble are possible */
-		add_sbid(0, 0, SUARO_DOUBLE);
+		add_sbid(NO_BID_VAL, NO_SUIT, SUARO_DOUBLE);
 	else if (SUARO.contract > 0 &&
 		 (SUARO.bonus < 4 || SUARO.unlimited_redoubling)) {
-		add_sbid(0, 0, SUARO_REDOUBLE);
+		add_sbid(NO_BID_VAL, NO_SUIT, SUARO_REDOUBLE);
 	}
 
 	/* make "pass" bid */
-	add_sbid(0, 0, SUARO_PASS);
+	add_sbid(NO_BID_VAL, NO_SUIT, SUARO_PASS);
 
 	request_client_bid(game.next_bid);
 }
@@ -300,7 +297,8 @@ static void suaro_handle_bid(player_t p, bid_t bid)
 		SUARO.contract = bid.sbid.val;
 		SUARO.kitty = (bid.sbid.spec == SUARO_KITTY);
 		SUARO.contract_suit = bid.sbid.suit;
-		if (bid.sbid.suit > SUARO_LOW && bid.sbid.suit < SUARO_HIGH)
+		if (bid.sbid.suit > SUARO_LOW
+		    && bid.sbid.suit < SUARO_HIGH)
 			game.trump = bid.sbid.suit - 1;	/* a minor hack */
 		else
 			game.trump = -1;
@@ -313,7 +311,8 @@ static void suaro_next_bid(void)
 		/* done bidding */
 		if (SUARO.contract == 0) {
 			ggz_debug(DBG_GAME, "Two passes; redealing hand.");
-			set_global_message("", "Everyone passed; redealing.");
+			set_global_message("",
+					   "Everyone passed; redealing.");
 			set_game_state(STATE_NEXT_HAND);	/* redeal
 								   hand */
 		} else {
@@ -336,7 +335,7 @@ static void suaro_start_playing(void)
 			   get_player_name(SUARO.declarer),
 			   SUARO.kitty ? "kitty " : "",
 			   SUARO.contract,
-			   long_suaro_suit_names[(int) SUARO.contract_suit],
+			   long_suaro_suit_names[(int)SUARO.contract_suit],
 			   SUARO.bonus == 1 ? "" : SUARO.bonus ==
 			   2 ? ", doubled" : ", redoubled");
 	game.leader = 1 - SUARO.declarer;
@@ -345,7 +344,7 @@ static void suaro_start_playing(void)
 		   lays their own hand down (face up) in its place */
 		card_t *temp;
 		seat_t s1, s2;
-		s1 = 1;		/* kitty hand */
+		s1 = 1;	/* kitty hand */
 		s2 = game.players[SUARO.declarer].seat;
 		/* this "swapping" only works because the cards in the hands
 		   are specifically allocated by malloc.  Also note that
@@ -372,8 +371,7 @@ static void suaro_deal_hand(void)
 	   just one card. */
 	game.hand_size = 9;
 	for (s = 0; s < 3; s++)
-		deal_hand(game.deck, game.hand_size,
-				&game.seats[s].hand);
+		deal_hand(game.deck, game.hand_size, &game.seats[s].hand);
 	deal_hand(game.deck, 1, &game.seats[3].hand);
 }
 
@@ -402,7 +400,8 @@ static int suaro_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 		return snprintf(buf, buf_len, "%s%d %s",
 				(bid.sbid.spec == SUARO_KITTY) ? "K " : "",
 				bid.sbid.val,
-				short_suaro_suit_names[(int) bid.sbid.suit]);
+				short_suaro_suit_names[(int)bid.sbid.
+						       suit]);
 	return snprintf(buf, buf_len, "%s", "");
 }
 
@@ -412,15 +411,16 @@ static int suaro_get_bid_desc(char *buf, size_t buf_len, bid_t bid)
 		return snprintf(buf, buf_len, "Pass - do not bid");
 	if (bid.sbid.spec == SUARO_DOUBLE)
 		return snprintf(buf, buf_len,
-		                "Double the points earned on the hand");
+				"Double the points earned on the hand");
 	if (bid.sbid.spec == SUARO_REDOUBLE)
 		return snprintf(buf, buf_len,
-		                "Redouble the points earned on the hand");
+				"Redouble the points earned on the hand");
 	if (bid.sbid.val > 0)
 		return snprintf(buf, buf_len, "Contract - %s%d %s",
-				(bid.sbid.spec == SUARO_KITTY) ? "Kitty " : "",
+				(bid.sbid.spec ==
+				 SUARO_KITTY) ? "Kitty " : "",
 				bid.sbid.val,
-				long_suaro_suit_names[(int) bid.sbid.suit]);
+				long_suaro_suit_names[(int)bid.sbid.suit]);
 	return snprintf(buf, buf_len, "%s", "");
 }
 
@@ -437,17 +437,17 @@ static void suaro_end_hand(void)
 		   overtricks == 2 * contract - tricks */
 		points = (SUARO.contract - overtricks) * SUARO.bonus;
 		ggz_debug(DBG_GAME,
-			    "Player %d/%s made their bid of %d, plus %d overtricks for %d points.",
-			    winner, get_player_name(winner),
-			    SUARO.contract, overtricks, points);
+			  "Player %d/%s made their bid of %d, plus %d overtricks for %d points.",
+			  winner, get_player_name(winner),
+			  SUARO.contract, overtricks, points);
 	} else {
 		winner = 1 - SUARO.declarer;
 		/* for setting, you just get the value of the contract */
 		points = SUARO.contract * SUARO.bonus;
 		ggz_debug(DBG_GAME,
-			    "Player %d/%s set the bid of %d, earning %d points.",
-			    winner, get_player_name(winner),
-			    SUARO.contract, points);
+			  "Player %d/%s set the bid of %d, earning %d points.",
+			  winner, get_player_name(winner),
+			  SUARO.contract, points);
 	}
 	set_global_message("", "%s %s the bid and earned %d point%s.",
 			   get_player_name(winner),

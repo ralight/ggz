@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: cards.h 8558 2006-08-31 06:34:19Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -76,6 +76,7 @@ enum card_face_enum {
 
 /** Regular values for card suits.
  *  @note If a player does not know the card suit, UNKNOWN will be sent.
+ *  @note For dominoes games, regular numbers (0-6) are used.
  *  @see card_t::suit */
 enum card_suit_enum {
 	UNKNOWN_SUIT = -1,	/**< An unknown suit of a card */
@@ -83,7 +84,7 @@ enum card_suit_enum {
 	DIAMONDS = 1,		/**< The diamonds (second) suit */
 	HEARTS = 2,		/**< The hearts (third) suit */
 	SPADES = 3,		/**< The spades (highest) suit */
-	NO_SUIT = 4		/**< A no-suit used for jokers, etc. */
+	NO_SUIT = -2		/**< A no-suit used for jokers, etc. */
 };
 
 /** Regular values for card decks.

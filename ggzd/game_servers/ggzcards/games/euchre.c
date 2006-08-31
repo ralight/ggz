@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: euchre.c 8558 2006-08-31 06:34:19Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <assert.h>
@@ -156,13 +156,12 @@ static void euchre_init_game(void)
 static void euchre_get_options(void)
 {
 	add_option("Euchre Options", "screw_the_dealer",
-	           "If selected, the dealer will be forced to bid "
-	           "if nobody else does.",
-	           1, 0, "Stick the dealer");
+		   "If selected, the dealer will be forced to bid "
+		   "if nobody else does.", 1, 0, "Stick the dealer");
 	add_option("Euchre Options", "super_euchre",
-	           "With this variation, a \"Super Euchre\" (when the "
-	           "defenders take all tricks) will be worth double.",
-	           1, 0, "Allow \"super euchre\"");
+		   "With this variation, a \"Super Euchre\" (when the "
+		   "defenders take all tricks) will be worth double.",
+		   1, 0, "Allow \"super euchre\"");
 	game_get_options();
 }
 
@@ -184,7 +183,8 @@ static char *euchre_get_option_text(char *buf, int bufsz, char *option,
 {
 	if (!strcmp("screw_the_dealer", option)) {
 		if (value)
-			snprintf(buf, bufsz, "Playing \"stick the dealer\".");
+			snprintf(buf, bufsz,
+				 "Playing \"stick the dealer\".");
 		else
 			*buf = 0;
 	} else if (!strcmp("super_euchre", option)) {
@@ -217,8 +217,10 @@ static void euchre_get_bid(void)
 		for (p = 0; p < 4; p++) {
 			if ((p + 2) % 4 != EUCHRE.maker) {
 				game.next_bid = p;	/* hack */
-				add_sbid(0, 0, EUCHRE_GO_ALONE);
-				add_sbid(0, 0, EUCHRE_GO_TEAM);
+				add_sbid(NO_BID_VAL, NO_SUIT,
+					 EUCHRE_GO_ALONE);
+				add_sbid(NO_BID_VAL, NO_SUIT,
+					 EUCHRE_GO_TEAM);
 			}
 		}
 		EUCHRE.req_alone_bid = 1;
@@ -226,8 +228,8 @@ static void euchre_get_bid(void)
 	} else if (game.bid_count < 4) {
 		/* Tirst four bids are either "pass" or "take".  The suit of
 		   the up-card becomes trump. */
-		add_sbid(0, 0, EUCHRE_PASS);
-		add_sbid(0, 0, EUCHRE_TAKE);
+		add_sbid(NO_BID_VAL, NO_SUIT, EUCHRE_PASS);
+		add_sbid(NO_BID_VAL, NO_SUIT, EUCHRE_TAKE);
 		request_client_bid(game.next_bid);
 	} else {
 		/* After we've bid around, the bidding becomes either "pass"
@@ -238,9 +240,9 @@ static void euchre_get_bid(void)
 		   second time (if we're playing "screw the dealer", that is. 
 		 */
 		if (!EUCHRE.screw_the_dealer || game.bid_count != 7)
-			add_sbid(0, 0, EUCHRE_PASS);
+			add_sbid(NO_BID_VAL, NO_SUIT, EUCHRE_PASS);
 		for (suit = 0; suit < 4; suit++)
-			add_sbid(0, suit, EUCHRE_TAKE_SUIT);
+			add_sbid(NO_BID_VAL, suit, EUCHRE_TAKE_SUIT);
 		request_client_bid(game.next_bid);
 	}
 }
@@ -327,8 +329,8 @@ static void euchre_get_play(player_t p)
 	while (EUCHRE.going_alone[(p + 2) % 4]) {
 		int p2 = (p + 1) % 4;
 		ggz_debug(DBG_GAME,
-			    "EUCHRE: skipping player %d/%s; going on to player %d/%s",
-			    p, get_player_name(p), p2, get_player_name(p2));
+			  "EUCHRE: skipping player %d/%s; going on to player %d/%s",
+			  p, get_player_name(p), p2, get_player_name(p2));
 		p = p2;
 	}
 
@@ -358,8 +360,7 @@ static void euchre_deal_hand(void)
 
 	/* in a regular deal, we just deal out hand_size cards to everyone */
 	for (s = 0; s < game.num_seats; s++)
-		deal_hand(game.deck, game.hand_size,
-				&game.seats[s].hand);
+		deal_hand(game.deck, game.hand_size, &game.seats[s].hand);
 }
 
 static int euchre_get_bid_text(char *buf, size_t buf_len, bid_t bid)
@@ -409,17 +410,18 @@ static void euchre_end_hand(void)
 	char *msg, buf[4096];
 
 	int tricks =
-		game.players[EUCHRE.maker].tricks +
-		game.players[(EUCHRE.maker + 2) % 4].tricks;
+	    game.players[EUCHRE.maker].tricks +
+	    game.players[(EUCHRE.maker + 2) % 4].tricks;
 	int maker_made = (tricks >= 3);
 	int maker_alone = EUCHRE.going_alone[EUCHRE.maker];
 	int defender_alone = EUCHRE.going_alone[(EUCHRE.maker + 1) % 4]
-		|| EUCHRE.going_alone[(EUCHRE.maker + 3) % 4];
+	    || EUCHRE.going_alone[(EUCHRE.maker + 3) % 4];
 
 	if (maker_made) {
 		winning_team = EUCHRE.maker % 2;
 		value = (tricks == 5) ? 2 : 1;
-		msg = "The maker made the bid with %d tricks and earned %d point(s).";
+		msg =
+		    "The maker made the bid with %d tricks and earned %d point(s).";
 	} else {
 		/* Euchred!!! */
 		tricks = 5 - tricks;
@@ -427,7 +429,8 @@ static void euchre_end_hand(void)
 		value = 2;
 		if (tricks == 5 && EUCHRE.super_euchre)
 			value = 4;
-		msg = "The bid was Euchred!  The defenders took %d tricks and earn %d points.";
+		msg =
+		    "The bid was Euchred!  The defenders took %d tricks and earn %d points.";
 	}
 
 	if (maker_made && maker_alone && tricks == 5) {
