@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: login.c 8564 2006-08-31 19:05:43Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -231,20 +231,6 @@ login_normal_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 {
 	GtkWidget *tmp;
 
-	tmp = ggz_lookup_widget(GTK_WIDGET(user_data), "password_box");
-
-	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
-		gtk_widget_show(tmp);
-	else
-		gtk_widget_hide(tmp);
-
-	tmp = ggz_lookup_widget(GTK_WIDGET(user_data), "email_box");
-
-	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
-		gtk_widget_hide(tmp);
-	else
-		gtk_widget_show(tmp);
-
 	if (!entries_update) {
 		tmp = ggz_lookup_widget(login_dialog, "profile_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), "");
@@ -257,12 +243,8 @@ login_guest_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 {
 	GtkWidget *tmp;
 
-	tmp = ggz_lookup_widget(GTK_WIDGET(user_data), "email_box");
-
-	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
-		gtk_widget_hide(tmp);
-	else
-		gtk_widget_show(tmp);
+	tmp = ggz_lookup_widget(GTK_WIDGET(user_data), "password_box");
+	gtk_widget_set_sensitive(tmp, !togglebutton->active);
 
 	if (!entries_update) {
 		tmp = ggz_lookup_widget(login_dialog, "profile_entry");
@@ -276,20 +258,8 @@ login_first_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 {
 	GtkWidget *tmp;
 
-	tmp = ggz_lookup_widget(GTK_WIDGET(user_data), "password_box");
-
-	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
-		gtk_widget_show(tmp);
-	else
-		gtk_widget_hide(tmp);
-
 	tmp = ggz_lookup_widget(GTK_WIDGET(user_data), "email_box");
-
-	if (GTK_TOGGLE_BUTTON(togglebutton)->active)
-		gtk_widget_show(tmp);
-	else
-		gtk_widget_hide(tmp);
-
+	gtk_widget_set_sensitive(tmp, togglebutton->active);
 
 	if (!entries_update) {
 		tmp = ggz_lookup_widget(login_dialog, "profile_entry");
@@ -689,6 +659,7 @@ GtkWidget *create_dlg_login(const char *default_profile)
 	email_box = gtk_hbox_new(FALSE, 5);
 	g_object_set_data(G_OBJECT(dlg_login), "email_box", email_box);
 	gtk_box_pack_start(GTK_BOX(user_box), email_box, TRUE, TRUE, 0);
+	gtk_widget_set_sensitive(email_box, FALSE);
 
 	email_label = gtk_label_new(_("Email:"));
 	gtk_box_pack_start(GTK_BOX(email_box), email_label, TRUE, TRUE,
@@ -699,6 +670,7 @@ GtkWidget *create_dlg_login(const char *default_profile)
 	g_object_set_data(G_OBJECT(dlg_login), "email_entry", email_entry);
 	gtk_box_pack_start(GTK_BOX(email_box), email_entry, FALSE, TRUE,
 			   0);
+	gtk_entry_set_visibility(GTK_ENTRY(pass_entry), FALSE);
 
 	radio_box = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(login_box), radio_box, FALSE, FALSE, 0);
