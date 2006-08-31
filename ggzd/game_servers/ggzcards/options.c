@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 8552 2006-08-30 06:03:56Z jdorje $
+ * $Id: options.c 8563 2006-08-31 18:32:41Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -35,7 +35,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdarg.h>
@@ -140,53 +140,59 @@ void request_client_options(void)
 		char *option_descs[pending_option_count];
 		int num_choices[pending_option_count];
 		int option_defaults[pending_option_count];
-		char** option_choices[pending_option_count];
+		char **option_choices[pending_option_count];
 		int op;
-		
+
 		for (op = 0; op < pending_option_count; op++) {
 			option_types[op] = po->type;
 			option_descs[op] = po->desc;
 			num_choices[op] = po->num;
 			option_defaults[op] = po->dflt;
 			option_choices[op] = po->choices;
-			
+
 			po = po->next;
 		}
-		
+
 		net_send_options_request(game.host,
-		                         pending_option_count,
+					 pending_option_count,
 					 option_types,
-		                         option_descs,
-		                         num_choices,
-		                         option_defaults,
-		                         option_choices);
+					 option_descs,
+					 num_choices,
+					 option_defaults, option_choices);
 	}
 }
 
 
 int get_num_pending_options(void)
 {
-	return pending_option_count;
+	if (game.data) {
+		return pending_option_count;
+	} else {
+		return 1;
+	}
 }
 
 
 void handle_client_options(player_t p, int num_options, int *options)
 {
-	assert(num_options > 0); /* Should be assured by caller */
-
 	if (p != game.host) {
 		/* how could this happen? */
-		ggz_debug(DBG_CLIENT, "received options from non-host player.");
+		ggz_debug(DBG_CLIENT,
+			  "received options from non-host player.");
 		return;
 	}
 
 	if (game.data == NULL) {
-		games_handle_gametype(options[0]);
+		if (num_options > 0) {
+			games_handle_gametype(options[0]);
 
-		init_game();
-		broadcast_sync();
+			init_game();
+			broadcast_sync();
 
-		next_move();
+			next_move();
+		} else {
+			request_client_gametype();
+		}
 	} else {
 		if (num_options != pending_option_count)
 			return;
@@ -211,8 +217,8 @@ static void handle_options(int *options)
 		option_count++;
 	}
 	pending_option_count = 0;
-	
-	(void) try_to_start_game();
+
+	(void)try_to_start_game();
 }
 
 void finalize_options(void)
@@ -226,10 +232,10 @@ void finalize_options(void)
 	for (op = optionlist; op != NULL; op = op->next) {
 		game.data->handle_option(op->key, op->value);
 		optext = game.data->get_option_text(opbuf, sizeof(opbuf),
-						     op->key, op->value);
+						    op->key, op->value);
 		if (optext == NULL) {
 			ggz_error_msg("finalize_options: NULL optext "
-			              "returned for option (%s, %d).",
+				      "returned for option (%s, %d).",
 				      op->key, op->value);
 			len += snprintf(buf + len, sizeof(buf) - len,
 					"  %s : %d\n", op->key, op->value);
