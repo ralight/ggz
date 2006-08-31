@@ -86,6 +86,8 @@ public class Client {
 
     protected int trump_suit;
 
+    protected int dealer;
+
     protected String scores;
 
     protected String options;
@@ -162,6 +164,10 @@ public class Client {
     public GameState get_game_state() {
         return this.state;
     }
+    
+    public String get_game_type() {
+        return this.gametype;
+    }
 
     public TrickInfo get_last_trick() {
         return this.lastTrick;
@@ -177,6 +183,10 @@ public class Client {
 
     public String get_options() {
         return this.options;
+    }
+    
+    public int get_dealer() {
+        return this.dealer;
     }
 
     private void handle_text_message() throws IOException {
@@ -396,6 +406,7 @@ public class Client {
     private void handle_msg_newhand() throws IOException {
         set_hand_num(this.fd_in.readInt());
         this.trump_suit = this.fd_in.read();
+        this.dealer = this.fd_in.read_seat();
         this.isNewTrick = true;
 
         set_game_state(STATE_DEAL);

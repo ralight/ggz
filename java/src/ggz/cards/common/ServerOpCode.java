@@ -90,7 +90,7 @@ public class ServerOpCode {
     /**
      * Tells the client a new hand is starting. It is followed by an single
      * integer containing the hand number (hand counting starts at 0) then by a
-     * single byte containing the trump suit.
+     * single byte containing the trump suit, then by the 'dealer' seat.
      */
     public static final ServerOpCode MSG_NEWHAND = new ServerOpCode(
             "MSG_NEWHAND");

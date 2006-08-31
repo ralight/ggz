@@ -28,6 +28,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
@@ -57,6 +58,8 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
     private JButton bidButton;
 
     private JPanel doubleRedoublePassPanel;
+
+    protected List validBids;
 
     private Bid selectedBid;
 

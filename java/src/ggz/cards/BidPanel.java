@@ -30,8 +30,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -62,8 +60,6 @@ public class BidPanel extends JPanel implements ActionListener {
     private int currentColumn = -1;
 
     private JPanel bidHistoryTableContainer;
-
-    protected List validBids;
 
     private int selectedBid;
 
@@ -115,9 +111,6 @@ public class BidPanel extends JPanel implements ActionListener {
 
     public void setValidBids(Bid[] bid_choices, String[] bid_texts,
             String[] bid_descs) {
-        // Store the list of valid bids for subclasses.
-        this.validBids = Arrays.asList(bid_choices);
-
         for (int bidIndex = 0; bidIndex < bid_choices.length; bidIndex++) {
             JButton bid_button = new JButton(bid_texts[bidIndex]);
             if (!bid_texts[bidIndex].equals(bid_descs[bidIndex])) {

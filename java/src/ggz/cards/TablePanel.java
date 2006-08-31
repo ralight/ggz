@@ -249,6 +249,7 @@ public class TablePanel extends JPanel {
 
     /**
      * Gets the components index. Can be removed when we move to JDK 1.5.
+     * @return the zorder of the component or -1 if the container does not contain the component.
      */
     public int getComponentZOrderJDK14(Component comp) {
         Component[] components = getComponents();

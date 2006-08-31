@@ -27,6 +27,7 @@ import ggz.cards.common.Card;
 import ggz.cards.common.CardSetType;
 import ggz.cards.common.GGZCardInputStream;
 import ggz.cards.common.ScoreData;
+import ggz.cards.spades.SpadesBidPanel;
 import ggz.client.mod.ModGame;
 import ggz.client.mod.ModState;
 import ggz.common.SeatType;
@@ -197,17 +198,31 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 TableConstraints.SOUTH_EAST_CORNER));
     }
 
-    protected void createBidPanel(int firstBidder) {
-        if ("Bridge".equals(JOptionPane.getFrameForComponent(this).getTitle())) {
-            bidPanel = new BridgeBidPanel(firstBidder, cardClient);
-        } else {
-            bidPanel = new BidPanel(firstBidder, cardClient);
+    /**
+     * Creates a new bid panel if bidding has just started.
+     * 
+     * @param firstBidder
+     */
+    protected void createOrAddBidPanel(int firstBidder) {
+        if (bidPanel == null || table.getComponentZOrderJDK14(bidPanel) == -1) {
+            String gameType = cardClient.get_game_type();
+
+            if (bidPanel != null) {
+                bidPanel.removeActionListener(this);
+            }
+
+            if ("bridge".equals(gameType)) {
+                bidPanel = new BridgeBidPanel(firstBidder, cardClient);
+            } else if ("spades".equals(gameType)) {
+                bidPanel = new SpadesBidPanel(firstBidder, cardClient);
+            } else {
+                bidPanel = new BidPanel(firstBidder, cardClient);
+            }
+            bidPanel.addActionListener(this);
+            table.add(bidPanel, new TableConstraints(
+                    TableConstraints.BUTTON_PANEL));
+            table.revalidate();
         }
-        bidPanel.addActionListener(this);
-        table
-                .add(bidPanel, new TableConstraints(
-                        TableConstraints.BUTTON_PANEL));
-        table.revalidate();
     }
 
     public void alert_state(Client.GameState oldState, Client.GameState newState) {
@@ -217,7 +232,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     public void run() {
                         table.remove(bidPanel);
                         table.revalidate();
-                        bidPanel = null;
                     }
                 });
             }
@@ -229,11 +243,20 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     public void alert_bid(final int bidder, final Bid bid) {
+        String gameType = cardClient.get_game_type();
+
+        if ("spades".equals(gameType)) {
+            // Ignore bids that the server sends that we aren't interested in.
+            // e.g. No blind bid and those sent when joining mid game.
+            if ((bid.getVal() == 0 && bid.getSpec() == 2)
+                    || (bid.getSuit() != 4)) {
+                return;
+            }
+        }
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                if (bidPanel == null) {
-                    createBidPanel(bidder);
-                }
+                createOrAddBidPanel(bidder);
                 bidPanel.addBid(bidder, bid);
                 revalidate();
             }
@@ -576,6 +599,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     Bid bid = p.getBid();
 
                     buffer.append("<HTML>");
+
+                    if (i == getCardClient().get_dealer()) {
+                        buffer.append("Dealer<BR>");
+                    }
+
                     if (showScores && p.getTeam() > -1) {
                         Team team = getCardClient().get_nth_team(p.getTeam());
                         buffer.append("Score: ");
@@ -583,15 +611,15 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                         buffer.append("<BR>");
                     }
 
-                    if (getCardClient().get_game_state() == Client.STATE_PLAY) {
-                        buffer.append("Tricks: ");
-                        buffer.append(p.getTricks());
-                        buffer.append("<BR>");
-                    }
-
                     if (bidPanel != null && bid != null) {
                         buffer.append("Bid: ");
                         buffer.append(bidPanel.getBidText(bid));
+                        buffer.append("<BR>");
+                    }
+
+                    if (getCardClient().get_game_state() == Client.STATE_PLAY) {
+                        buffer.append("Tricks: ");
+                        buffer.append(p.getTricks());
                         buffer.append("<BR>");
                     }
 
@@ -858,10 +886,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     protected String formatTeamScore(int teamIndex) {
+        String gameType = cardClient.get_game_type();
         Team team = this.cardClient.get_nth_team(teamIndex);
         ScoreData score = team.getScore();
         return String.valueOf(score.getScore())
-                + (score.getExtra() == -1 ? "" : " (" + score.getExtra() + ")");
+                + ("spades".equals(gameType) ? " (" + score.getExtra() + ")"
+                        : "");
     }
 
     public void alert_tricks_count() {
@@ -946,9 +976,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         // }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                if (bidPanel == null) {
-                    createBidPanel(0);
-                }
+                createOrAddBidPanel(0);
                 bidPanel.setValidBids(bid_choices, bid_texts, bid_descs);
                 beep();
             }
@@ -1202,8 +1230,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     // Do nothing, not sure why the server sends this.
                 } else {
                     getChatPanel().appendChat("set_text_message",
-                            "mark=" + mark + " message=" + message,
-                            ggzMod.getMyName());
+                            "mark=" + mark + " message=" + message, "Server");
                 }
             }
         });

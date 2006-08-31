@@ -65,11 +65,11 @@ public class TableLayout implements LayoutManager2 {
     }
 
     public void setMaxHandSize(int maxHandSize) {
-        this.maxHandSize = maxHandSize;
         for (int playerNum = 0; playerNum < cardsInHand.length; playerNum++) {
             cardsInHand[playerNum] = arrayEnsureSize(cardsInHand[playerNum],
                     maxHandSize);
         }
+        this.maxHandSize = maxHandSize;
     }
 
     public void setCardGap(int gap) {
@@ -366,7 +366,7 @@ public class TableLayout implements LayoutManager2 {
     protected boolean isHandFaceUp(int playerIndex) {
         boolean isHandFaceUp = false;
         Component[] cards = this.cardsInHand[playerIndex];
-        for (int cardIndex = 0; cardIndex < maxHandSize; cardIndex++) {
+        for (int cardIndex = 0; !isHandFaceUp && cardIndex < this.maxHandSize; cardIndex++) {
             Component card = cards[cardIndex];
             if (card != null) {
                 isHandFaceUp |= ((Sprite) card).card().isFaceUp();
@@ -374,7 +374,7 @@ public class TableLayout implements LayoutManager2 {
         }
         return isHandFaceUp;
     }
-    
+
     protected int getCardFanGap(int playerIndex) {
         return isHandFaceUp(playerIndex) ? cardFanGap : FACE_DOWN_CARD_GAP;
     }
@@ -398,7 +398,8 @@ public class TableLayout implements LayoutManager2 {
         switch (playerIndex) {
         case 0: // South
         case 2: // North
-            rect.width = ((handSize - 1) * getCardFanGap(playerIndex)) + cardWidth;
+            rect.width = ((handSize - 1) * getCardFanGap(playerIndex))
+                    + cardWidth;
             rect.height = cardHeight;
             int labelWidth = playerLabels[playerIndex] == null ? 0
                     : playerLabels[playerIndex].getWidth();
@@ -422,7 +423,8 @@ public class TableLayout implements LayoutManager2 {
         case 1: // WEST
         case 3: // EAST
             rect.width = cardHeight;
-            rect.height = ((handSize - 1) * getCardFanGap(playerIndex)) + cardWidth;
+            rect.height = ((handSize - 1) * getCardFanGap(playerIndex))
+                    + cardWidth;
             int labelHeight = playerLabels[playerIndex] == null ? 0
                     : playerLabels[playerIndex].getHeight();
             padding = (parent.getHeight() - (labelHeight + rect.height)) / 2;
