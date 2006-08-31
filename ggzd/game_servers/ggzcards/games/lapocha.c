@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 8558 2006-08-31 06:34:19Z jdorje $
+ * $Id: lapocha.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -161,7 +161,7 @@ static void lapocha_handle_gameover(void)
 
 static void set_trump(char suit)
 {
-	game.trump = suit;
+	set_trump_suit(suit);
 	set_global_message("", "Trump is %s.", get_suit_name(game.trump));
 	lap_send_trump();
 }
@@ -244,8 +244,10 @@ static void lapocha_deal_hand(void)
 	/* in la pocha, there are a predetermined number of cards each hand,
 	   as defined by lap_card_count above */
 	game.hand_size = lap_card_count[game.hand_num];
-	game.trump = -1;	/* must be determined later *//* TODO: shouldn't go here */
 
+	/* must be determined later */
+	/* TODO: shouldn't go here */
+	set_trump_suit(NO_SUIT);
 
 	/* in a regular deal, we just deal out hand_size cards to everyone */
 	for (s = 0; s < game.num_seats; s++)

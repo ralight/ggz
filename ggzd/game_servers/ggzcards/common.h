@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 8559 2006-08-31 07:07:46Z jdorje $
+ * $Id: common.h 8561 2006-08-31 08:00:24Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -225,6 +225,8 @@ GGZDataIO *get_player_dio(int p);
 
 bool seats_full(void);
 bool seats_empty(void);
+
+void set_trump_suit(char new_trump_suit);
 
 #define SPECTATOR_TO_PLAYER(spectator) (-1 - (spectator))
 #define PLAYER_TO_SPECTATOR(player) (-1 - (player))

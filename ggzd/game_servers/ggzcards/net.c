@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8559 2006-08-31 07:07:46Z jdorje $
+ * $Id: net.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -536,14 +536,35 @@ void net_broadcast_newgame(void)
 static void net_send_newhand(player_t p)
 {
 	GGZDataIO *dio = get_player_dio(p);
+	seat_t dlr =
+	    game.dealer >= 0 ? game.players[game.dealer].seat : -1;
 
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_NEWHAND);
 	ggz_dio_put_int(dio, game.hand_num);
-	ggz_dio_put_char(dio, game.trump);
-	write_seat(dio,
-		   game.dealer >= 0 ? game.players[game.dealer].seat : -1);
+	write_seat(dio, dlr);
 	ggz_dio_packet_end(dio);
+}
+
+
+void net_send_trump(player_t p)
+{
+	GGZDataIO *dio = get_player_dio(p);
+
+	ggz_dio_packet_start(dio);
+	write_opcode(dio, MSG_TRUMP);
+	ggz_dio_put_char(dio, game.trump);
+	ggz_dio_packet_end(dio);
+}
+
+
+void net_broadcast_trump(void)
+{
+	ggz_debug(DBG_NET, "Broadcasting trump.");
+
+	broadcast_iterate(p) {
+		net_send_trump(p);
+	} broadcast_iterate_end;
 }
 
 

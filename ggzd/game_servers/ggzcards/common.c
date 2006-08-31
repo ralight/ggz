@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8559 2006-08-31 07:07:46Z jdorje $
+ * $Id: common.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -781,6 +781,7 @@ void send_sync(player_t p)
 		net_send_players_status(p);
 		net_send_all_scores(p);
 		net_send_tricks_count(p);
+		net_send_trump(p);
 	}
 
 	/* request bid/play again, if necessary */
@@ -1015,4 +1016,10 @@ GGZDataIO *get_player_dio(int p)
 void fatal_error(const char *msg)
 {
 	ggz_error_msg_exit("%s", msg);
+}
+
+void set_trump_suit(char new_trump_suit)
+{
+	game.trump = new_trump_suit;
+	net_broadcast_trump();
 }

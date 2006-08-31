@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 8558 2006-08-31 06:34:19Z jdorje $
+ * $Id: euchre.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -146,7 +146,7 @@ static void euchre_init_game(void)
 	game.deck_type = GGZ_DECK_EUCHRE;
 	game.max_hand_length = 5;
 	game.target_score = 10;
-	game.trump = -1;
+	set_trump_suit(NO_SUIT);
 
 	/* Game-specific data */
 	game.specific = ggz_malloc(sizeof(euchre_game_t));
@@ -255,13 +255,13 @@ static void euchre_handle_bid(player_t p, bid_t bid)
 	switch (bid.sbid.spec) {
 	case EUCHRE_TAKE:
 		EUCHRE.maker = p;
-		game.trump = EUCHRE.up_card.suit;
+		set_trump_suit(EUCHRE.up_card.suit);
 		game.bid_total = game.bid_count + 4;	/* hack: 3 more bids
 							   after this one */
 		break;
 	case EUCHRE_TAKE_SUIT:
 		EUCHRE.maker = p;
-		game.trump = bid.sbid.suit;
+		set_trump_suit(bid.sbid.suit);
 		game.bid_total = game.bid_count + 4;	/* hack: 3 more bids
 							   after this one */
 		break;
@@ -450,5 +450,5 @@ static void euchre_end_hand(void)
 							   overwrite it. */
 
 	EUCHRE.maker = -1;
-	game.trump = -1;
+	set_trump_suit(NO_SUIT);
 }

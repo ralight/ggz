@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Game-dependent game functions for Whist
- * $Id: whist.c 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: whist.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdlib.h>
@@ -85,68 +85,68 @@ static bool whist_is_valid_game(void)
 static void whist_init_game(void)
 {
 	seat_t s;
-	
+
 	set_num_seats(4);
 	set_num_teams(2);
 	for (s = 0; s < game.num_players; s++) {
 		assign_seat(s, s);
 		assign_team(s % 2, s);
 	}
-		
+
 	game.target_score = 5;
 }
 
 static void whist_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
-	
+
 	clear_player_message(s);
 	add_player_rating_message(p);
 	add_player_score_message(p);
-	
+
 	if (p == game.dealer)
 		add_player_message(s, "dealer\n");
-	
+
 	add_player_tricks_message(p);
 	add_player_action_message(p);
 }
 
 static void whist_start_bidding(void)
 {
-	card_t trump_card = game.seats[game.dealer].hand.cards[random() % 13];
-	
+	card_t trump_card =
+	    game.seats[game.dealer].hand.cards[random() % 13];
+
 	/* TODO: send a cardlist message */
-	game.trump = trump_card.suit;
+	set_trump_suit(trump_card.suit);
 	set_global_message("", "The dealer's up-card is the %s of %s.",
-	                   get_face_name(trump_card.face),
-	                   get_suit_name(trump_card.suit));
+			   get_face_name(trump_card.face),
+			   get_suit_name(trump_card.suit));
 	set_global_message("Trump", "Trump is %s.",
-	                   get_suit_name(game.trump));
+			   get_suit_name(game.trump));
 	set_game_state(STATE_FIRST_TRICK);
 }
 
 static void whist_end_hand(void)
 {
 	int team, tricks, points;
-	
+
 	for (team = 0; team < 2; team++) {
 		tricks = game.players[team].tricks
-		         + game.players[team + 2].tricks;
+		    + game.players[team + 2].tricks;
 		if (tricks > 6)
 			break;
 	}
 
 	assert(team < 2);
-		
+
 	tricks = game.players[team].tricks + game.players[team + 2].tricks;
-		
+
 	/* they won the hand */
 	points = tricks - 6;
-			
+
 	set_global_message("", "%s/%s won the hand, earning %d points.",
-	                   get_player_name(team),
-	                   get_player_name(team + 2),
-	                   points);
+			   get_player_name(team),
+			   get_player_name(team + 2), points);
 
 	change_score(team, points);
 	set_player_message(team);

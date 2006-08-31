@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 8530 2006-08-21 17:22:35Z jdorje $
+ * $Id: game.h 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -153,6 +153,7 @@ void game_alert_server(GGZDataIO * server_dio);
 void game_get_newgame(void);
 void game_alert_newgame(cardset_type_t cardset_type);
 void game_alert_newhand(void);
+void game_alert_trump(void);
 void game_handle_gameover(int num_winners, int *winners);
 void game_alert_player(int player,
 		       GGZSeatType old_status, const char *old_name);

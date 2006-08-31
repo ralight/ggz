@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 8530 2006-08-21 17:22:35Z jdorje $
+ * $Id: protocol.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -60,6 +60,8 @@ const char *get_server_opcode_name(server_msg_t opcode)
 		return "REQ_OPTIONS";
 	case MSG_NEWHAND:
 		return "MSG_NEWHAND";
+	case MSG_TRUMP:
+		return "MSG_TRUMP";
 	case MSG_HAND:
 		return "MSG_HAND";
 	case MSG_PLAYERS_STATUS:

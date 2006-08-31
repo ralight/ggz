@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8531 2006-08-21 19:34:47Z jdorje $
+ * $Id: client.h 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -205,6 +205,9 @@ extern void game_alert_newgame(cardset_type_t cardset_type);
 
 /** Alerts the table to the start of a new hand. */
 extern void game_alert_newhand(void);
+
+/** Alerts the table to a change in trump suit. */
+extern void game_alert_trump(void);
 
 /** Handles a gameover message.
  *  @param num_winners The number of players who won the game (0 or more)

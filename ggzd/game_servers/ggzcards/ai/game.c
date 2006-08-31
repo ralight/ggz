@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 8530 2006-08-21 17:22:35Z jdorje $
+ * $Id: game.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -62,6 +62,11 @@ void game_alert_newgame(cardset_type_t cardset_type)
 void game_alert_newhand(void)
 {
 	start_hand();
+}
+
+void game_alert_trump(void)
+{
+	/* nothing */
 }
 
 void game_handle_gameover(int num_winners, int *winners)

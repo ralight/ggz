@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8559 2006-08-31 07:07:46Z jdorje $
+ * $Id: client.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -939,7 +939,6 @@ static void handle_msg_newhand(void)
 	int dealer;
 
 	ggz_dio_get_int(game_internal.dio, &hand_num);
-	ggz_dio_get_char(game_internal.dio, &ggzcards.trump_suit);
 	read_seat(game_internal.dio, &dealer);
 
 	for (i = 0; i < ggzcards.num_players; i++) {
@@ -948,6 +947,13 @@ static void handle_msg_newhand(void)
 	set_hand_num(hand_num);
 
 	game_alert_newhand();
+}
+
+
+static void handle_msg_trump(void)
+{
+	ggz_dio_get_char(game_internal.dio, &ggzcards.trump_suit);
+	game_alert_trump();
 }
 
 
@@ -1054,6 +1060,9 @@ static void server_read_callback(GGZDataIO * dio, void *userdata)
 	case MSG_NEWGAME:
 		/* TODO: don't make "new game" until here */
 		handle_msg_newgame();
+		return;
+	case MSG_TRUMP:
+		handle_msg_trump();
 		return;
 	case MSG_GAMEOVER:
 		handle_msg_gameover();

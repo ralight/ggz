@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 8558 2006-08-31 06:34:19Z jdorje $
+ * $Id: bridge.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -237,10 +237,11 @@ static void bridge_handle_bid(player_t p, bid_t bid)
 		ggz_debug(DBG_GAME, "Setting bridge contract to %d %s.",
 			  BRIDGE.contract,
 			  long_bridge_suit_names[BRIDGE.contract_suit]);
-		if (bid.sbid.suit != BRIDGE_NOTRUMP)
-			game.trump = bid.sbid.suit;
-		else
-			game.trump = -1;
+		if (bid.sbid.suit != BRIDGE_NOTRUMP) {
+			set_trump_suit(bid.sbid.suit);
+		} else {
+			set_trump_suit(NO_SUIT);
+		}
 	}
 }
 

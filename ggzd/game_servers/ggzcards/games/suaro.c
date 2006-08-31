@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 8558 2006-08-31 06:34:19Z jdorje $
+ * $Id: suaro.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -298,10 +298,11 @@ static void suaro_handle_bid(player_t p, bid_t bid)
 		SUARO.kitty = (bid.sbid.spec == SUARO_KITTY);
 		SUARO.contract_suit = bid.sbid.suit;
 		if (bid.sbid.suit > SUARO_LOW
-		    && bid.sbid.suit < SUARO_HIGH)
-			game.trump = bid.sbid.suit - 1;	/* a minor hack */
-		else
-			game.trump = -1;
+		    && bid.sbid.suit < SUARO_HIGH) {
+			set_trump_suit(bid.sbid.suit - 1);	/* a minor hack */
+		} else {
+			set_trump_suit(NO_SUIT);
+		}
 	}
 }
 

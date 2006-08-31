@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 8558 2006-08-31 06:34:19Z jdorje $
+ * $Id: fortytwo.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -248,7 +248,7 @@ static void set_trump(char suit)
 	const char *trump = suit == DOUBLES_VALUE ? "doubles"
 	    : get_suit_name(suit);
 
-	game.trump = suit;
+	set_trump_suit(suit);
 	set_global_message("Trump", "%s are trump.", trump);
 	set_global_message("", "Trump is %s.", trump);
 	for (s = 0; s < game.num_seats; s++) {
@@ -353,7 +353,7 @@ static void fortytwo_end_hand(void)
 	change_score(winning_team, score);
 	map_func_to_team(winning_team, set_player_message);
 
-	game.trump = -1;
+	set_trump_suit(NO_SUIT);
 	FORTYTWO.declarer = -1;
 }
 

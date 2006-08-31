@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 8458 2006-08-02 06:50:51Z jdorje $
+ * $Id: hearts.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdio.h>
@@ -109,7 +109,7 @@ game_data_t hearts_data = {
 static bool hearts_is_valid_game(void)
 {
 	return game.num_players >= MIN_HEARTS_PLAYERS
-	       && game.num_players <= MAX_HEARTS_PLAYERS;
+	    && game.num_players <= MAX_HEARTS_PLAYERS;
 }
 
 static void hearts_init_game(void)
@@ -121,30 +121,29 @@ static void hearts_init_game(void)
 	for (s = 0; s < game.num_seats; s++)
 		assign_seat(s, s);	/* one player per seat */
 
-	game.trump = -1;	/* no trump in hearts */
+	set_trump_suit(NO_SUIT);
 	game.target_score = 100;
 }
 
 static void hearts_get_options(void)
 {
 	add_option("Hearts Options", "jack_diamonds",
-	           "The jack of diamonds rule is that whoever wins the jack "
-	           "of diamonds gets -10 points.",
-	           1, FALSE, "Use the jack of diamonds rule");
+		   "The jack of diamonds rule is that whoever wins the jack "
+		   "of diamonds gets -10 points.",
+		   1, FALSE, "Use the jack of diamonds rule");
 	add_option("Hearts Options", "no_blood",
-	           "If selected, nobody will be allowed to play point cards "
-	           "on the first trick.",
-	           1, TRUE, "No blood on the first trick");
+		   "If selected, nobody will be allowed to play point cards "
+		   "on the first trick.",
+		   1, TRUE, "No blood on the first trick");
 	add_option("Hearts Options", "num_decks",
-	           "How many decks should be used?",
-	           1, FALSE, "Play with two decks");
+		   "How many decks should be used?",
+		   1, FALSE, "Play with two decks");
 	add_option("Hearts Options", "target_score",
-	           "How many points until the game is over?",
-	           5,
-	           2,
-	           "Game to 20", "Game to 50",
-		   "Game to 100", "Game to 1000",
-	           "Unending game");
+		   "How many points until the game is over?",
+		   5,
+		   2,
+		   "Game to 20", "Game to 50",
+		   "Game to 100", "Game to 1000", "Unending game");
 	game_get_options();
 }
 
@@ -160,22 +159,22 @@ static int hearts_handle_option(char *option, int value)
 		seat_t s;
 		GHEARTS.num_decks = value + 1;
 		game.deck_type =
-			(value == 0) ? GGZ_DECK_FULL : GGZ_DECK_DOUBLE;
+		    (value == 0) ? GGZ_DECK_FULL : GGZ_DECK_DOUBLE;
 		destroy_deck(game.deck);
 		game.deck = create_deck(game.deck_type);
 
 		/* allocate hands */
 		game.max_hand_length =
-			get_deck_size(game.deck) / game.num_players;
+		    get_deck_size(game.deck) / game.num_players;
 		for (s = 0; s < game.num_seats; s++) {
 			if (game.seats[s].hand.cards)
 				ggz_free(game.seats[s].hand.cards);
 			game.seats[s].hand.cards =
-				ggz_malloc(game.max_hand_length *
-					   sizeof(card_t));
+			    ggz_malloc(game.max_hand_length *
+				       sizeof(card_t));
 		}
 	} else if (!strcmp("target_score", option)) {
-   		switch (value) {
+		switch (value) {
 		case 0:
 			game.target_score = 20;
 			break;
@@ -215,9 +214,10 @@ static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 				 value + 1);
 	} else if (!strcmp(option, "target_score")) {
 		if (game.target_score == MAX_TARGET_SCORE)
-			snprintf(buf, bufsz, "The game will never end."); 	
+			snprintf(buf, bufsz, "The game will never end.");
 		else
-			snprintf(buf, bufsz, "The game is being played to %d.",
+			snprintf(buf, bufsz,
+				 "The game is being played to %d.",
 				 game.target_score);
 	} else
 		return game_get_option_text(buf, bufsz, option, value);
@@ -271,7 +271,7 @@ static void hearts_handle_gameover(void)
 			num_winners++;
 		}
 	}
-	
+
 	assert(num_winners == 1);
 	assert(max_score >= game.target_score);
 	handle_gameover_event(num_winners, winners);
@@ -308,8 +308,7 @@ static void hearts_start_playing(void)
 			/* TODO: this only works because the cards are sorted 
 			   this way */
 			card_t card =
-				game.seats[game.players[p].seat].hand.
-				cards[0];
+			    game.seats[game.players[p].seat].hand.cards[0];
 			if (card.suit == CLUBS && card.face == face)
 				game.leader = p;
 		}
@@ -363,8 +362,7 @@ static char *hearts_verify_play(player_t p, card_t card)
 		card_t c;
 
 		/* Check to make sure they have a non-point card. */
-		for (i = 0; i < game.seats[s].hand.hand_size;
-		     i++) {
+		for (i = 0; i < game.seats[s].hand.hand_size; i++) {
 			c = game.seats[s].hand.cards[i];
 			if (c.suit == HEARTS)
 				continue;

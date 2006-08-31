@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 8456 2006-08-02 06:00:35Z jdorje $
+ * $Id: sueca.c 8561 2006-08-31 08:00:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <stdio.h>
@@ -97,7 +97,7 @@ static void sueca_init_game(void)
 	seat_t s;
 
 	game.specific = ggz_malloc(sizeof(sueca_game_t));
-	
+
 	set_num_seats(game.num_players);
 	set_num_teams(2);
 	for (s = 0; s < game.num_seats; s++) {
@@ -109,7 +109,7 @@ static void sueca_init_game(void)
 	game.target_score = 4;
 	/* Must break trump */
 	game.must_break_trump = 1;
-	
+
 	/* Use the SUECA deck */
 	game.deck_type = GGZ_DECK_SUECA;
 	/* Point to the game rules */
@@ -224,10 +224,11 @@ static void sueca_deal_hand(void)
 	seat_t s;
 	game.hand_size = 10;
 	for (s = 0; s < game.num_seats; s++)
-		deal_hand(game.deck, game.hand_size,
-				&game.seats[s].hand);
-	game.trump = game.seats[game.dealer].hand.cards[random() % 10].suit;
-	set_global_message("Trump", "Trump is %s.", get_suit_name(game.trump));
+		deal_hand(game.deck, game.hand_size, &game.seats[s].hand);
+	set_trump_suit(game.seats[game.dealer].hand.cards[random() % 10].
+		       suit);
+	set_global_message("Trump", "Trump is %s.",
+			   get_suit_name(game.trump));
 	set_global_message("", "Trump is %s.", get_suit_name(game.trump));
 }
 
@@ -247,10 +248,13 @@ static void sueca_set_player_message(player_t p)
 	   case 1: rubber[0] = 'X'; } */
 
 	score_this_hand =
-		GSUECA.points_on_hand[p] + GSUECA.points_on_hand[(p + 2) % 4];
-	if (!(game.state == STATE_WAIT_FOR_PLAY && game.players[p].is_playing))
+	    GSUECA.points_on_hand[p] + GSUECA.points_on_hand[(p + 2) % 4];
+	if (!
+	    (game.state == STATE_WAIT_FOR_PLAY
+	     && game.players[p].is_playing))
 		sprintf(status, " ");
-	put_player_message(s, "Score:\nIn the game: %d\nIn the hand: %d\n%s",
+	put_player_message(s,
+			   "Score:\nIn the game: %d\nIn the hand: %d\n%s",
 			   get_player_score(p), score_this_hand, status);
 
 	/* Waiting sprintf(message, " Rubber \n %c \n | \n %c--O--%c \n | \n
