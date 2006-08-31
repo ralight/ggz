@@ -68,43 +68,43 @@ public class Module {
 
     static {
         // We only support GGZCards modules at the moment.
-        add(new Module("GGZCards", "0.0.7", "GGZCards", "15", "Author", "Java",
+        add(new Module("GGZCards", "0.0.7", "GGZCards", "16", "Author", "Java",
                 "url", "ggz.cards.CardGamePanel", null,"/ggz/ui/images/euchre.gif",
                 "help_path", true));
-        add(new Module("GGZCards-Spades", "0.0.7", "GGZCards", "15", "Author",
+        add(new Module("GGZCards-Spades", "0.0.7", "GGZCards", "16", "Author",
                 "Java", "url", "ggz.cards.CardGamePanel",null,
                 "/ggz/ui/images/spades.gif", "help_path", true));
 
         // For oojah's server
-        add(new Module("GGZCards-Spades-Rated", "0.0.7", "GGZCards", "15",
+        add(new Module("GGZCards-Spades-Rated", "0.0.7", "GGZCards", "16",
                 "Author", "Java", "url", "ggz.cards.CardGamePanel",null,
                 "/ggz/ui/images/spades.gif", "help_path", true));
 
-        add(new Module("GGZCards-LaPocha", "0.0.7", "GGZCards", "15", "Author",
+        add(new Module("GGZCards-LaPocha", "0.0.7", "GGZCards", "16", "Author",
                 "Java", "url", "ggz.cards.CardGamePanel",null,
                 "/ggz/ui/images/pocha.gif", "help_path", true));
         // 42 is played with Dominoes and is not supported.
-        // _add(new Module("GGZCards-FortyTwo", "0.0.7", "GGZCards", "15",
+        // _add(new Module("GGZCards-FortyTwo", "0.0.7", "GGZCards", "16",
         // "Author",
         // "Java", "url", "ggz.cards.CardGamePanel", "/ggz/ui/images/42.gif",
         // "help_path"));
-        add(new Module("GGZCards-Bridge", "0.0.7", "GGZCards", "15", "Author",
+        add(new Module("GGZCards-Bridge", "0.0.7", "GGZCards", "16", "Author",
                 "Java", "url", "ggz.cards.CardGamePanel",null,
                 "/ggz/ui/images/bridge.gif", "help_path", true));
-        add(new Module("GGZCards-Sueca", "0.0.7", "GGZCards", "15", "Author",
+        add(new Module("GGZCards-Sueca", "0.0.7", "GGZCards", "16", "Author",
                 "Java", "url", "ggz.cards.CardGamePanel",null,
                 "/ggz/ui/images/sueca.gif", "help_path", true));
         // Suaro uses an unknown card set...
-        add(new Module("GGZCards-Suaro", "0.0.7", "GGZCards", "15", "Author",
+        add(new Module("GGZCards-Suaro", "0.0.7", "GGZCards", "16", "Author",
                 "Java", "url", "ggz.cards.CardGamePanel",null,
                 "/ggz/ui/images/suaro.gif", "help_path", true));
-        add(new Module("GGZCards-Whist", "0.0.7", "GGZCards", "15", "Author",
+        add(new Module("GGZCards-Whist", "0.0.7", "GGZCards", "16", "Author",
                 "Java", "url", "ggz.cards.CardGamePanel",null,
                 "/ggz/ui/images/whist.gif", "help_path", true));
-        add(new Module("GGZCards-Hearts", "0.0.7", "GGZCards", "15", "Author",
+        add(new Module("GGZCards-Hearts", "0.0.7", "GGZCards", "16", "Author",
                 "Java", "url", "ggz.cards.CardGamePanel",null,
                 "/ggz/ui/images/hearts.gif", "help_path", true));
-        add(new Module("GGZCards-Euchre", "0.0.7", "GGZCards", "15", "Author",
+        add(new Module("GGZCards-Euchre", "0.0.7", "GGZCards", "16", "Author",
                 "Java", "url", "ggz.cards.CardGamePanel", null,
                 "/ggz/ui/images/euchre.gif", "help_path", true));
 
@@ -113,7 +113,7 @@ public class Module {
 //                "GGZCards-Spades",
 //                "0.0.7",
 //                "GGZCards",
-//                "15",
+//                "16",
 //                "Author",
 //                "Java",
 //                "url",

@@ -60,9 +60,9 @@ public class ServerOpCode {
 
     /**
      * Tells the client scores. Consists of the hand number (between 0 and the
-     * current hand) and one score per team. Each score consists of an integer
-     * for the main score plus one integer for each extra score (see
-     * SCORE_EXTRAS).
+     * current hand), an integer containing the number of "extra" scores (0 or
+     * higher), and one score per team. Each score consists of an integer for
+     * the main score plus one integer for each extra score.
      */
     public static final ServerOpCode MSG_SCORES = new ServerOpCode("MSG_SCORES");
 

@@ -164,7 +164,7 @@ public class Client {
     public GameState get_game_state() {
         return this.state;
     }
-    
+
     public String get_game_type() {
         return this.gametype;
     }
@@ -184,7 +184,7 @@ public class Client {
     public String get_options() {
         return this.options;
     }
-    
+
     public int get_dealer() {
         return this.dealer;
     }
@@ -375,6 +375,7 @@ public class Client {
 
     private void handle_msg_scores() throws IOException {
         int hand_number = fd_in.readInt();
+        int num_extras = fd_in.readInt();
 
         // HACK: The scores are being received before the hand number is
         // known...
@@ -383,12 +384,19 @@ public class Client {
         }
 
         for (int t = 0; t < this.teams.length; t++) {
-            if (this.teams[t] == null)
+            if (this.teams[t] == null) {
                 this.teams[t] = new Team();
-            ScoreData score = new ScoreData(fd_in.readInt(), fd_in.readInt());
-            this.teams[t].addScore(score, hand_number);
+            }
+
+            int score = fd_in.readInt();
+            int[] extra = new int[num_extras];
+            for (int e = 0; e < num_extras; e++) {
+                extra[e] = fd_in.readInt();
+            }
+            ScoreData scoreData = new ScoreData(score, extra);
+            this.teams[t].addScore(scoreData, hand_number);
             if (hand_number == this.hand_num) {
-                this.teams[t].setScore(score);
+                this.teams[t].setScore(scoreData);
             }
         }
 

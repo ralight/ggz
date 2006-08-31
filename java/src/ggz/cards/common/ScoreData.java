@@ -3,19 +3,19 @@ package ggz.cards.common;
 public class ScoreData {
     private int score;
 
-    private int extra;
+    private int[] extra;
 
-    public ScoreData(int score, int extra) {
+    public ScoreData(int score, int[] extras) {
         this.score = score;
-        this.extra = extra;
+        this.extra = extras;
     }
 
     public int getScore() {
         return this.score;
     }
 
-    public int getExtra() {
-        return this.extra;
+    public int getExtra(int index) {
+        return this.extra[index];
     }
 
     public String toString() {

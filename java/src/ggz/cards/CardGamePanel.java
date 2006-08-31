@@ -890,7 +890,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         Team team = this.cardClient.get_nth_team(teamIndex);
         ScoreData score = team.getScore();
         return String.valueOf(score.getScore())
-                + ("spades".equals(gameType) ? " (" + score.getExtra() + ")"
+                + ("spades".equals(gameType) ? " (" + score.getExtra(0) + ")"
                         : "");
     }
 
@@ -1182,13 +1182,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     public void set_player_message(final int player_num, final String message) {
-        /*
-         * SwingUtilities.invokeLater(new Runnable() { public void run() {
-         * PlayerLabel label = playerLabels[player_num]; label.setText("<HTML>" +
-         * StringUtil.replace(StringUtil.replace(message, ":", ":<B>"), "\n", "</B><BR>") + "</HTML>"); //
-         * label.setText("<HTML>" + replace(message, "\n", "<BR>") // + "</HTML>");
-         * table.revalidate(); } });
-         */
+        // This is no longer needed.
+        // There is now enough information sent by the server to allow the
+        // client to create whatever UI is necessary to convey the same
+        // information.
     }
 
     public void set_text_message(final String mark, final String message) {
