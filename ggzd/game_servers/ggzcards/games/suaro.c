@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: suaro.c 8565 2006-08-31 22:42:10Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -384,7 +384,8 @@ static void suaro_send_hand(player_t p, seat_t s)
 		show_fronts = TRUE;
 	} else {
 		/* each player can see their own hand plus the key card */
-		show_fronts = (game.players[p].seat == s || s == 3);
+		show_fronts = ((p >= 0 && game.players[p].seat == s)
+			       || s == 3);
 	}
 	send_hand(p, s, show_fronts, TRUE);
 }

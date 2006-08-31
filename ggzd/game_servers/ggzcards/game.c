@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 8458 2006-08-02 06:50:51Z jdorje $
+ * $Id: game.c 8565 2006-08-31 22:42:10Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -548,7 +548,8 @@ void game_send_hand(player_t p, seat_t s)
 {
 	/* in most cases, we want to reveal the hand only to the player who
 	   owns it. */
-	bool show_fronts = (game.players[p].seat == s);
+	bool show_fronts = (p >= 0 && game.players[p].seat == s);
 	bool show_backs = TRUE;
+
 	send_hand(p, s, show_fronts, show_backs);
 }

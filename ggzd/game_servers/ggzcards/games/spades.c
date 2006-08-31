@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: spades.c 8565 2006-08-31 22:42:10Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -821,7 +821,9 @@ static void spades_send_hand(player_t p, seat_t s)
 {
 	/* in most cases, we want to reveal the hand only to the player who
 	   owns it. */
-	bool show_fronts = (game.players[p].seat == s
+	bool show_fronts = (p >= 0
+			    && game.players[p].seat == s
 			    && GSPADES.show_hand[s]);
+
 	send_hand(p, s, show_fronts, TRUE);
 }
