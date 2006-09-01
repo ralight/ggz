@@ -19,16 +19,15 @@ public class BidPanelTest {
         JFrame frame = new JFrame("BidPanel Test");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.getContentPane().add(bidPanel, BorderLayout.CENTER);
-        bidPanel.addBid(1, new Bid((byte) 1));
-        bidPanel.addBid(2, new Bid((byte) 2));
-        bidPanel.addBid(3, new Bid((byte) 3));
-        bidPanel.addBid(0, new Bid((byte) 4));
-        bidPanel.addBid(1, new Bid((byte) 5));
-        bidPanel.setValidBids(new Bid[] { new Bid((byte) 0), new Bid((byte) 1),
-                new Bid((byte) 2), new Bid((byte) 3), new Bid((byte) 4),
-                new Bid((byte) 5), new Bid((byte) 6) }, new String[] { "0",
-                "1", "2", "3", "4", "5", "6" }, new String[] { "0", "1", "2",
-                "3", "4", "5", "6" });
+        bidPanel.addBid(1, new Bid(1));
+        bidPanel.addBid(2, new Bid(2));
+        bidPanel.addBid(3, new Bid(3));
+        bidPanel.addBid(0, new Bid(4));
+        bidPanel.addBid(1, new Bid(5));
+        bidPanel.setValidBids(new Bid[] { new Bid(0), new Bid(1), new Bid(2),
+                new Bid(3), new Bid(4), new Bid(5), new Bid(6) }, new String[] {
+                "0", "1", "2", "3", "4", "5", "6" }, new String[] { "0", "1",
+                "2", "3", "4", "5", "6" });
         frame.getContentPane().setBackground(Color.green);
         frame.pack();
         frame.setVisible(true);

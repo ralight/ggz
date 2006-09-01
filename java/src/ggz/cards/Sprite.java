@@ -310,7 +310,7 @@ public class Sprite extends Component {
         }
         int cardWidth = cardFronts.getWidth() / 4;
         int cardHeight = cardFronts.getHeight() / 13;
-        int xIndex = card.suit().ordinal() - 1;
+        int xIndex = card.suit().ordinal() - Suit.CLUBS.ordinal();
         int yIndex = card.face() == Face.ACE_HIGH ? 0 : card.face()
                 .ordinal() - 1;
         BufferedImage image = new BufferedImage(cardWidth, cardHeight,

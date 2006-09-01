@@ -95,21 +95,6 @@ public class GGZCardOutputStream extends DataOutputStream {
         write(card.deck);
     }
 
-    /**
-     * @brief Writes a bid to the socket.
-     * @param fd
-     *            The file descriptor to which to read.
-     * @param bid
-     *            A pointer to the bid data.
-     * @return 0 on success, -1 on failure.
-     */
-    public void write_bid(Bid bid) throws IOException {
-        write(bid.getVal());
-        write(encode_suit(bid.getSuit()));
-        write(bid.getSpec());
-        write(bid.getSpec2());
-    }
-
     public void write_opcode(ClientOpCode opcode) throws IOException {
         write(opcode.ordinal());
     }

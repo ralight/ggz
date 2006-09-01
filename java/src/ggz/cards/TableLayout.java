@@ -306,10 +306,11 @@ public class TableLayout implements LayoutManager2 {
         int x = handRect.x;
         int y = handRect.y;
         int gap = getCardFanGap(playerIndex);
+        int handSize = cards.length;
         if (cards != null) {
             switch (playerIndex) {
             case 0: // South
-                for (int cardIndex = maxHandSize - 1; cardIndex >= 0; cardIndex--) {
+                for (int cardIndex = handSize - 1; cardIndex >= 0; cardIndex--) {
                     Component card = cards[cardIndex];
                     if (card != null) {
                         card.setLocation(x, y);
@@ -320,7 +321,7 @@ public class TableLayout implements LayoutManager2 {
                 }
                 break;
             case 1: // West
-                for (int cardIndex = maxHandSize - 1; cardIndex >= 0; cardIndex--) {
+                for (int cardIndex = handSize - 1; cardIndex >= 0; cardIndex--) {
                     Component card = cards[cardIndex];
                     if (card != null) {
                         card.setLocation(x, y);
@@ -331,7 +332,7 @@ public class TableLayout implements LayoutManager2 {
                 }
                 break;
             case 2: // North
-                for (int cardIndex = 0; cardIndex < maxHandSize; cardIndex++) {
+                for (int cardIndex = 0; cardIndex < handSize; cardIndex++) {
                     Component card = cards[cardIndex];
                     if (card != null) {
                         card.setLocation(x, y);
@@ -342,7 +343,7 @@ public class TableLayout implements LayoutManager2 {
                 }
                 break;
             case 3: // East
-                for (int cardIndex = 0; cardIndex < maxHandSize; cardIndex++) {
+                for (int cardIndex = 0; cardIndex < handSize; cardIndex++) {
                     Component card = cards[cardIndex];
                     if (card != null) {
                         card.setLocation(x, y);
@@ -366,7 +367,7 @@ public class TableLayout implements LayoutManager2 {
     protected boolean isHandFaceUp(int playerIndex) {
         boolean isHandFaceUp = false;
         Component[] cards = this.cardsInHand[playerIndex];
-        for (int cardIndex = 0; !isHandFaceUp && cardIndex < this.maxHandSize; cardIndex++) {
+        for (int cardIndex = 0; !isHandFaceUp && cardIndex < cards.length; cardIndex++) {
             Component card = cards[cardIndex];
             if (card != null) {
                 isHandFaceUp |= ((Sprite) card).card().isFaceUp();

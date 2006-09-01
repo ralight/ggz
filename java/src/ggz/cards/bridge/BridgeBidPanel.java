@@ -64,18 +64,6 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
 
     private Bid selectedBid;
 
-    private static final Bid BID_PASS = new Bid((byte) 0, Suit.NO_SUIT,
-            (byte) 1, (byte) 0);
-
-    private static final Bid BID_DOUBLE = new Bid((byte) 0, Suit.NO_SUIT,
-            (byte) 2, (byte) 0);
-
-    private static final Bid BID_REDOUBLE = new Bid((byte) 0, Suit.NO_SUIT,
-            (byte) 3, (byte) 0);
-
-    private static final Bid BID_7_NT = new Bid((byte) 7, Suit.NO_SUIT,
-            (byte) 0, (byte) 0);
-
     public BridgeBidPanel(int firstBidder, Client cardClient) {
         super(firstBidder, cardClient);
         ButtonGroup numTricksButtonGroup = new ButtonGroup();
@@ -132,11 +120,11 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
                 2, 2));
         bidButton = new JButton(new BidAction());
         doubleRedoublePassPanel.add(bidButton);
-        doubleButton = new JButton(new NonBidAction(BID_DOUBLE));
+        doubleButton = new JButton(new NonBidAction(Bid.BRIDGE_DOUBLE));
         doubleRedoublePassPanel.add(doubleButton);
-        redoubleButton = new JButton(new NonBidAction(BID_REDOUBLE));
+        redoubleButton = new JButton(new NonBidAction(Bid.BRIDGE_REDOUBLE));
         doubleRedoublePassPanel.add(redoubleButton);
-        passButton = new JButton(new NonBidAction(BID_PASS));
+        passButton = new JButton(new NonBidAction(Bid.BRIDGE_PASS));
         doubleRedoublePassPanel.add(passButton);
 
         buttonPanel.setVisible(false);
@@ -155,27 +143,36 @@ public class BridgeBidPanel extends BidPanel implements ItemListener {
         // Disable all the buttons.
         for (int i = 0; i < strainButtons.length; i++) {
             strainButtons[i].setEnabled(false);
+            strainButtons[i].setSelected(false);
         }
 
         for (int i = 0; i < numTricksButtons.length; i++) {
             numTricksButtons[i].setEnabled(false);
+            numTricksButtons[i].setSelected(false);
         }
 
         // Enable all the buttons for which we have bids.
         for (int bidIndex = 0; bidIndex < validBids.size(); bidIndex++) {
-            int numTricks = ((Bid) validBids.get(bidIndex)).getVal();
+            Bid bid = (Bid) validBids.get(bidIndex);
+            int numTricks = bid.getVal();
             if (numTricks > 0) {
-                JToggleButton button = numTricksButtons[numTricks - 1];
-                button.setEnabled(true);
+                JToggleButton tricksButton = numTricksButtons[numTricks - 1];
+                tricksButton.setEnabled(true);
                 // Select the first valid one.
-                button.setSelected(bidIndex == 0);
+                tricksButton.setSelected(bidIndex == 0);
+                
+                // Select the first strain button.
+                int strainButtonIndex = getButtonIndex(bid.getSuit());
+                if (strainButtonIndex >= 0) {
+                    strainButtons[strainButtonIndex].setSelected(bidIndex == 0);
+                }
             }
         }
 
-        bidButton.setEnabled(validBids.contains(BID_7_NT));
-        doubleButton.setEnabled(validBids.contains(BID_DOUBLE));
-        redoubleButton.setEnabled(validBids.contains(BID_REDOUBLE));
-        passButton.setEnabled(validBids.contains(BID_PASS));
+        bidButton.setEnabled(validBids.contains(Bid.BRIDGE_7_NT));
+        doubleButton.setEnabled(validBids.contains(Bid.BRIDGE_DOUBLE));
+        redoubleButton.setEnabled(validBids.contains(Bid.BRIDGE_REDOUBLE));
+        passButton.setEnabled(validBids.contains(Bid.BRIDGE_PASS));
     }
 
     private void setStrainButtonStates(int numTricks) {

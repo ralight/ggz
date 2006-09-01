@@ -30,6 +30,9 @@ public class Suit {
 
     public static final ArrayList values = new ArrayList();
 
+    /** A no-suit used for jokers etc. */
+    public static final Suit NO_SUIT = new Suit("No Suit"); // = -2;
+
     /** An unknown suit of a card */
     public static final Suit UNKNOWN_SUIT = new Suit("Unknown"); // = -1,
 
@@ -44,9 +47,9 @@ public class Suit {
 
     /** The spades (highest) suit */
     public static final Suit SPADES = new Suit("Spades"); // = 3,
-
-    /** A no-suit used for jokers etc. */
-    public static final Suit NO_SUIT = new Suit("No Suit"); // = 4;
+    
+    /** Sent as part of a bid to indicate no trumps. */
+    public static final Suit NO_TRUMP = new Suit("No Trump"); // = 4;
 
     private Suit(String name) {
         this.name = name;

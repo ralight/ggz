@@ -251,7 +251,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         if ("spades".equals(gameType)) {
             // Ignore bids that the server sends that we aren't interested in.
             // e.g. No blind bid and those sent when joining mid game.
-            if ((bid.getVal() == Bid.NO_VALUE && bid.getSpec() == 2)) {
+            if (Bid.SPADES_SHOW_CARDS.equals(bid)) {
                 return;
             }
         }

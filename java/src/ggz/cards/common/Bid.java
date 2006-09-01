@@ -22,40 +22,52 @@ package ggz.cards.common;
  * arbitrary data structure for it
  */
 public class Bid {
+
+    public static final Bid BRIDGE_PASS = new Bid(Bid.NO_VALUE, Suit.NO_SUIT, 1, 0);
+
+    public static final Bid BRIDGE_DOUBLE = new Bid(Bid.NO_VALUE, Suit.NO_SUIT, 2, 0);
+
+    public static final Bid BRIDGE_REDOUBLE = new Bid(Bid.NO_VALUE, Suit.NO_SUIT, 3, 0);
+
+    public static final Bid BRIDGE_7_NT = new Bid(7, Suit.NO_TRUMP, 0, 0);
+
+    public static final Bid SPADES_SHOW_CARDS = new Bid(Bid.NO_VALUE,
+            Suit.NO_SUIT, 2, 0);
+
     /*
      * the value of the bid this can be used for many different games that have
      * unusual but similar bidding. Different games may use it differently.
      */
-    private byte val;
+    private int val;
 
     /* the suit of the bid (generally trump) */
     private Suit suit;
 
     /* specialty bids (defined per-game) */
-    private byte spec;
+    private int spec;
 
     /* More specialty bids (just to round things out) */
-    private byte spec2;
+    private int spec2;
 
     /** Specifies that the bid has no value (e.g. Nil Bid). */
-    public static final byte NO_VALUE = -1;
+    public static final int NO_VALUE = -1;
 
-    public Bid(byte value) {
-        this(value, Suit.NO_SUIT, (byte) 0, (byte) 0);
+    public Bid(int value) {
+        this(value, Suit.NO_SUIT, 0, 0);
     }
 
-    public Bid(byte value, Suit suit) {
-        this(value, suit, (byte) 0, (byte) 0);
+    public Bid(int value, Suit suit) {
+        this(value, suit, 0, 0);
     }
 
-    public Bid(byte value, Suit suit, byte spec, byte spec2) {
+    public Bid(int value, Suit suit, int spec, int spec2) {
         this.val = value;
         this.suit = suit;
         this.spec = spec;
         this.spec2 = spec2;
     }
 
-    public byte getVal() {
+    public int getVal() {
         return val;
     }
 
@@ -63,11 +75,11 @@ public class Bid {
         return suit;
     }
 
-    public byte getSpec() {
+    public int getSpec() {
         return spec;
     }
 
-    public byte getSpec2() {
+    public int getSpec2() {
         return spec2;
     }
 

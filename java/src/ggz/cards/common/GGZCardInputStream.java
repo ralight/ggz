@@ -179,6 +179,9 @@ public class GGZCardInputStream extends DataInputStream {
         case 3:
             suit = Suit.SPADES;
             break;
+        case 4:
+            suit = Suit.NO_TRUMP;
+            break;
         default:
             throw new UnsupportedOperationException(
                     "Read unknown value for card suit: " + b);
