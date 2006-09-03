@@ -12,8 +12,9 @@ EXTRA_DIST = TODO README.GGZ QuickStart.GGZ ggz-gtk.desktop \
 		m4/iconv.m4	\
 		m4/lcmessage.m4	\
 		m4/locale.m4	\
-		m4/progtest.m4 \
-		m4/gaim.m4
+		m4/progtest.m4	\
+		m4/gaim.m4	\
+		m4/system.m4
 
 desktopdir = $(datadir)/applications
 desktop_DATA = ggz-gtk.desktop
