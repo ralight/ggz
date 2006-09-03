@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8527 2006-08-21 08:10:09Z josef $
+# $Id: configure.ac 8567 2006-09-03 05:35:12Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -161,33 +161,22 @@ m4_include(game_servers/ggzcards/config/version.m4)
 dnl Various dirs
 dnl ============
 
-ggzdconfdir=\${sysconfdir}/ggzd
-AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzdconfdir}")
-AC_DEFINE_UNQUOTED(GGZDCONFDIR, "${resolveddir}",
-	[Directory containing GGZd configuration files])
-
-ggzdexecmoddir=\${libdir}/ggzd
-AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzdexecmoddir}")
-AC_DEFINE_UNQUOTED(GAMEDIR, "${resolveddir}",
-	[Directory containing GGZd game module executables])
-
-ggzdstatedir=\${localstatedir}/ggzd
-AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzdstatedir}")
-AC_DEFINE_UNQUOTED(DATADIR, "${resolveddir}",
-	[Directory containing GGZ shared data])
-
-ggzddatadir=\${datadir}/ggz/ggzd
-AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzddatadir}")
-AC_DEFINE_UNQUOTED(GGZDDATADIR, "${resolveddir}",
-	[Location of GGZd module data])
-
-AC_GGZ_UNQUOTEDPATH(resolveddir, "${tmpdir}")
-AC_DEFINE_UNQUOTED(TMPDIR, "${resolveddir}",
-	[Directory used for temporary storage])
-
+ggzdconfdir="$sysconfdir/ggzd"
+ggzdexecmoddir="$libdir/ggzd"
+ggzdstatedir="$localstatedir/ggzd"
+ggzddatadir="$datadir/ggz/ggzd"
 packagesrcdir=`cd $srcdir && pwd`
-ggzdroomdir="${ggzdconfdir}/rooms"
-ggzdgamedir="${ggzdconfdir}/games"
+ggzdroomdir="$ggzdconfdir/rooms"
+ggzdgamedir="$ggzdconfdir/games"
+
+AC_SUBST(ggzdconfdir)
+AC_SUBST(ggzdexecmoddir)
+AC_SUBST(ggzdstatedir)
+AC_SUBST(ggzddatadir)
+AC_SUBST(packagesrcdir)
+AC_SUBST(ggzdroomdir)
+AC_SUBST(ggzdgamedir)
+CPPFLAGS="$CPPFLAGS -DGGZDDATADIR=\\\"$ggzddatadir\\\""
 
 dnl Which progs to compile
 dnl ======================
@@ -208,13 +197,6 @@ COMPILE_SUBDIRS="$COMPILE_SUBDIRS tests"
 AC_SUBST(LDADD)
 AC_SUBST(ggzd_LIBS)
 AC_SUBST(COMPILE_SUBDIRS)
-AC_SUBST(ggzdconfdir)
-AC_SUBST(ggzdroomdir)
-AC_SUBST(ggzdgamedir)
-AC_SUBST(ggzddatadir)
-AC_SUBST(ggzdexecmoddir)
-AC_SUBST(ggzdstatedir)
-AC_SUBST(packagesrcdir)
 AC_SUBST(database)
 
 dnl Attempt to use as much as we can on systems with glibc
@@ -271,6 +253,7 @@ AC_CONFIG_FILES([Makefile
 	man/Makefile
 	tests/Makefile
 ])
+#AC_CONFIG_COMMANDS([default],[[]],[[]])
 AC_OUTPUT
 
 

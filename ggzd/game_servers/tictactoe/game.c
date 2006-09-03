@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 8352 2006-07-12 01:51:56Z jdorje $
+ * $Id: game.c 8567 2006-09-03 05:35:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -743,7 +743,7 @@ static void game_save(char *fmt, ...)
 	va_list ap;
 
 	if(!ttt_game.savegame) {
-		savegamepath = strdup(DATADIR "/gamedata/TicTacToe/" TEMPLATE);
+		savegamepath = strdup(GGZDDATADIR "/gamedata/TicTacToe/" TEMPLATE);
 		fd = mkstemp(savegamepath);
 		savegamename = strdup(savegamepath + strlen(savegamepath) - strlen(TEMPLATE));
 		free(savegamepath);

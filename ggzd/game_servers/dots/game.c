@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 7748 2006-01-07 22:02:13Z jdorje $
+ * $Id: game.c 8567 2006-09-03 05:35:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -784,7 +784,7 @@ static void game_save(char *fmt, ...)
 	}
 
 	if(!savegame) {
-		savegamepath = ggz_strdup(DATADIR "/gamedata/Dots/savegame.XXXXXX");
+		savegamepath = ggz_strdup(GGZDDATADIR "/gamedata/Dots/savegame.XXXXXX");
 		fd = mkstemp(savegamepath);
 		if(fd < 0) return;
 		savegame = fdopen(fd, "w");

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8504 2006-08-08 09:07:31Z josef $
+ * $Id: parse_opt.c 8567 2006-09-03 05:35:12Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -312,7 +312,7 @@ void parse_conf_file(void)
 
 	/* If no data_dir, default it to DATADIR */
 	if(!opt.data_dir)
-		opt.data_dir = ggz_strdup(DATADIR);
+		opt.data_dir = ggz_strdup(GGZDDATADIR);
 
 	/* If no tmp_dir, default it to TMPDIR */
 	if(!opt.tmp_dir)

@@ -71,7 +71,7 @@ char *Player::morph(const char *username, const char *password)
 
 	std::cout << "Morph: " << username << ", " << password << std::endl;
 
-	string graveyard = string(DATADIR) + "/keepalive/";
+	string graveyard = string(GGZDDATADIR) + "/keepalive/";
 	string grave = graveyard + username;
 	f.open(grave.c_str(), /*_IO_INPUT*/ios::in);
 	if(f.is_open())
@@ -121,7 +121,7 @@ void Player::die()
 
 	std::cout << "Die: " << m_username << ", " << m_password << std::endl;
 
-	string graveyard = string(DATADIR) + "/keepalive/";
+	string graveyard = string(GGZDDATADIR) + "/keepalive/";
 	std::cout << "mkdir " << graveyard << std::endl;
 	if(mkdir(graveyard.c_str(), S_IRWXU))
 	{

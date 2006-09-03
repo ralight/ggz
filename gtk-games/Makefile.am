@@ -10,5 +10,6 @@ EXTRA_DIST = README.GGZ QuickStart.GGZ \
 		m4/lcmessage.m4	\
 		m4/locale.m4	\
 		m4/mkdir.m4	\
-		m4/progtest.m4
+		m4/progtest.m4	\
+		m4/system.m4
 

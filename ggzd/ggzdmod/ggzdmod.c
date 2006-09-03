@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 8417 2006-07-29 15:56:00Z jdorje $
+ * $Id: ggzdmod.c 8567 2006-09-03 05:35:12Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -426,9 +426,9 @@ static void _ggzdmod_set_num_seats(GGZdMod *ggzdmod, int num_seats)
 	ggzdmod->num_seats = num_seats;
 }
 
-
 char* ggzdmod_get_bot_class(GGZdMod *ggzdmod, const char *name)
 {
+#if 0 /* This doesn't belong in ggzdmod. */
 	int ch;
 	char *conffile;
 	const char *game;
@@ -452,6 +452,8 @@ char* ggzdmod_get_bot_class(GGZdMod *ggzdmod, const char *name)
 	ggz_conf_close(ch);
 
 	return botclass;
+#endif
+	return NULL;
 }
 
 static void _ggzdmod_set_max_num_spectators(GGZdMod *ggzdmod,

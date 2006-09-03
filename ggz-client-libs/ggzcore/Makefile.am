@@ -4,7 +4,9 @@ EXTRA_DIST = Doxyfile
 
 lib_LTLIBRARIES = libggzcore.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/ggzmod-ggz $(LIBGGZ_INCLUDES)
+libggzcore_la_CPPFLAGS = -I$(top_srcdir)/ggzmod-ggz \
+	$(LIBGGZ_INCLUDES) \
+	-DGGZCONFDIR=\"$(ggzconfdir)\"
 
 include_HEADERS = ggzcore.h
 

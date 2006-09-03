@@ -181,7 +181,7 @@ void World::loadPlayers()
 	DIR *dp;
 	struct dirent *ep;
 
-	std::string graveyard = std::string(DATADIR) + "/keepalive/";
+	std::string graveyard = std::string(GGZDDATADIR) + "/keepalive/";
 
 	dp = opendir(graveyard.c_str());
 	if(!dp) return;

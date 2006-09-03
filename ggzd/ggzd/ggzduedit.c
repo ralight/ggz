@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 8504 2006-08-08 09:07:31Z josef $
+ * $Id: ggzduedit.c 8567 2006-09-03 05:35:12Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -515,7 +515,7 @@ int main(int argc, char **argv)
 
 	if(!conn.datadir) {
 		if(!conn.database) {
-			conn.datadir = DATADIR;
+			conn.datadir = GGZDDATADIR;
 		}
 	}
 

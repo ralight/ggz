@@ -59,7 +59,10 @@ ggzd_CPPFLAGS = \
 	-I$(top_srcdir)/ggzdmod \
 	$(LIBGGZ_INCLUDES) \
 	$(HOWL_INCLUDES) \
-	$(AVAHI_INCLUDES)
+	$(AVAHI_INCLUDES) \
+	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
+	-DGAMEDIR=\"$(gamedir)\" \
+	-DTMPDIR=\"$(tmpdir)\"
 
 ggzd_LDFLAGS = $(LIBGGZ_LDFLAGS)
 ggzd_LDADD = \
@@ -78,6 +81,7 @@ ggzduedit_SOURCES = ggzduedit.c perms.h
 ggzduedit_CPPFLAGS = \
 	-I$(top_srcdir)/ggzd/database \
 	-I$(top_srcdir)/ggzdmod \
+	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
 	$(LIBGGZ_INCLUDES)
 
 ggzduedit_LDFLAGS = $(LIBGGZ_LDFLAGS)

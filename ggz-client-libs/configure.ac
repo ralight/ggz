@@ -126,20 +126,9 @@ AC_GGZ_DEBUG
 
 # Various dirs
 # ============
-ggzconfdir="\${sysconfdir}"
-AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzconfdir}")
-AC_DEFINE_UNQUOTED([GGZCONFDIR], "${resolveddir}",
-	[Directory containing GGZ configuration files])
-
-ggzexecmoddir="\${libdir}/ggz"
-AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzexecmoddir}")
-AC_DEFINE_UNQUOTED([GAMEDIR], "${resolveddir}",
-	[Directory containing GGZ client module executables])
-
-ggzdatadir="\${datadir}/ggz"
-AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzdatadir}")
-AC_DEFINE_UNQUOTED([GGZDATADIR], "${resolveddir}",
-	[Directory containing GGZ shared data])
+ggzconfdir="$sysconfdir"
+ggzexecmoddir="$libdir/ggz"
+ggzdatadir="$datadir/ggz"
 
 AC_SUBST(ggzconfdir)
 AC_SUBST(ggzexecmoddir)
