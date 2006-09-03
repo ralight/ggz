@@ -6,4 +6,4 @@ desktopdir = $(datadir)/applications
 desktop_DATA = ggz-txt.desktop
 
 EXTRA_DIST = README.GGZ QuickStart.GGZ indent.pro \
-	m4/ggz.m4 m4/iconv.m4 ggz-txt.desktop
+	m4/ggz.m4 m4/iconv.m4 m4/system.m4 ggz-txt.desktop
