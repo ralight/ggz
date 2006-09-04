@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 8411 2006-07-27 17:16:54Z jdorje $
+# $Id: configure.ac 8570 2006-09-04 03:06:24Z jdorje $
 dnl ======================================
 
 AC_INIT([GGZ Gtk+ client], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
@@ -89,12 +89,10 @@ fi
 dnl Various dirs
 dnl ============
 
-ggzgtkdatadir=\${datadir}/ggz/ggz-gtk
-AC_GGZ_UNQUOTEDPATH(resolveddir, "${ggzgtkdatadir}")
-AC_DEFINE_UNQUOTED(GGZGTKDATADIR, "${resolveddir}", [Location of GGZ-Gtk data])
+ggzgtkdatadir="${datadir}/ggz/ggz-gtk"
+AC_SUBST(ggzgtkdatadir)
 
 AC_SUBST(LDADD)
-AC_SUBST(ggzgtkdatadir)
 
 AC_CONFIG_FILES([Makefile 
 	   ggz-gtk/Makefile

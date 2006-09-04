@@ -1,5 +1,6 @@
 AM_CPPFLAGS = $(GTK_CFLAGS) -I$(top_srcdir)/intl \
-	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
+	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES) \
+	-DGGZGTKDATADIR=\"$(ggzgtkdatadir)\"
 
 bin_PROGRAMS = ggz-gtk
 lib_LTLIBRARIES = libggz-gtk.la
