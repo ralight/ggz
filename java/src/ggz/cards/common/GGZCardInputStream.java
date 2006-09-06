@@ -128,6 +128,10 @@ public class GGZCardInputStream extends DataInputStream {
 
         return new Card(face, suit, b[2]);
     }
+    
+    public Suit read_suit() throws IOException {
+        return decode_suit(readByte());
+    }
 
     public Bid read_bid() throws IOException {
         byte[] b = new byte[4];

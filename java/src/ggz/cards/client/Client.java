@@ -84,7 +84,7 @@ public class Client {
 
     protected boolean isNewTrick;
 
-    protected int trump_suit;
+    protected Suit trump_suit = Suit.UNKNOWN_SUIT;
 
     protected int dealer;
 
@@ -413,7 +413,6 @@ public class Client {
 
     private void handle_msg_newhand() throws IOException {
         set_hand_num(this.fd_in.readInt());
-        this.trump_suit = this.fd_in.read();
         this.dealer = this.fd_in.read_seat();
         this.isNewTrick = true;
 
@@ -426,6 +425,11 @@ public class Client {
         }
 
         this.game.alert_newhand();
+    }
+    
+    private void handle_msg_trump() throws IOException {
+        this.trump_suit = this.fd_in.read_suit();
+        this.game.alert_trump();
     }
 
     /* Possibly increase the maximum hand size we can sustain. */
@@ -859,6 +863,8 @@ public class Client {
             handle_msg_tricks_count();
         } else if (opcode == ServerOpCode.MSG_NEWHAND) {
             handle_msg_newhand();
+        } else if (opcode == ServerOpCode.MSG_TRUMP) {
+            handle_msg_trump();
         } else if (opcode == ServerOpCode.MSG_HAND) {
             handle_msg_hand();
         } else if (opcode == ServerOpCode.MSG_PLAYERS_STATUS) {

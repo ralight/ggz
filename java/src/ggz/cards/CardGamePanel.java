@@ -310,6 +310,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             }
         });
     }
+    
+    public void alert_trump() {
+        // TODO handle this message
+    }
 
     public void alert_num_players(int numplayers, int old_numplayers) {
 

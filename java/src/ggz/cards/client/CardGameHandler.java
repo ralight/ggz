@@ -104,6 +104,9 @@ public interface CardGameHandler {
 
     public void alert_newhand();
 
+    /** Called when the trump suit is known for the current hand. */
+    public void alert_trump();
+
     /** Called when each team's score is received from the server. */
     public void alert_scores(int hand_num);
 
