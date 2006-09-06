@@ -5,7 +5,12 @@ CLEAN_FILES = ggzd.debug ggzd.log
 SUBDIRS = $(COMPILE_SUBDIRS)
 
 EXTRA_DIST = README.GGZ \
-		m4/c99.m4 m4/ggz.m4 m4/ggz-debug.m4 m4/iconv.m4 m4/test.mk
+		m4/c99.m4 \
+		m4/ggz.m4 \
+		m4/ggz-debug.m4 \
+		m4/iconv.m4 \
+		m4/system.m4 \
+		m4/test.mk
 
 include $(top_srcdir)/m4/test.mk
 
