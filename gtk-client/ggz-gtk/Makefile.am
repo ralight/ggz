@@ -16,6 +16,7 @@ ggzgtkdata_DATA =		about_bg.png		\
 			ggz_gtk_lag3.svg	\
 			ggz_gtk_lag4.svg	\
 			ggz_gtk_lag5.svg
+ggzgtkdatadir=$(datadir)/ggz/$(package)
 
 include_HEADERS = ggz-embed.h ggz-gtk.h
 libggz_gtk_la_SOURCES =	about.c \
