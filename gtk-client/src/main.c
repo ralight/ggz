@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 8222 2006-06-20 02:59:29Z jdorje $
+ * $Id: main.c 8576 2006-09-11 23:41:19Z jdorje $
  *
  * This is the main program body for the GGZ client
  *

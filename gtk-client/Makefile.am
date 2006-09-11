@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = ggz-gtk $(GAIMPLUGIN) man po doc
+SUBDIRS = ggz-gtk src $(GAIMPLUGIN) man po doc
 DIST_SUBDIRS = ggz-gtk gaim-plugin man po doc
 
 EXTRA_DIST = TODO README.GGZ QuickStart.GGZ ggz-gtk.desktop \

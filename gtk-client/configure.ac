@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 8574 2006-09-08 05:50:10Z jdorje $
+# $Id: configure.ac 8576 2006-09-11 23:41:19Z jdorje $
 dnl ======================================
 
 AC_INIT([GGZ Gtk+ client], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
@@ -92,6 +92,7 @@ AC_SUBST(LDADD)
 
 AC_CONFIG_FILES([Makefile 
 	   ggz-gtk/Makefile
+	   src/Makefile
 	   gaim-plugin/Makefile
 	   po/Makefile
 	   doc/Makefile
