@@ -5,36 +5,51 @@
 <td>
 <font size="3">
 
-<b>Reversi</b><br>
+<b>Iagno</b><br>
 Board game for 2 players.
 <br>
+<table class="listnorm">
+<tr><td>
+This game client is not a GGZ project but it does provide GGZ support.
+The project homepage is:
+<br>
+<a href="http://www.gnome.org/projects/gnome-games/">gnome.org</a>.
+</td></tr>
+</table>
 
 <table class="inner">
 <tr>
 <td valign="top">
 
 <i>Screenshot</i><br>
-<img src="/games/pics/reversi.png">
+<img src="/games/pics/iagno.png">
 <br clear="all">
 <br>
 
 <i>Fact sheet</i><br>
 <ul>
-<li>Simple Gtk+ client for Reversi
+<li>Single player mode
+<li>GGZ support is optional
 </ul>
-<br>
 
-This is the Gtk+ client for the Reversi board game.
-Some options can be configured from within the game client.
+Iagno is the Reversi-style game of the GNOME Games package.
+The client can be compiled with GGZ support in order to allow for games
+on GGZ servers. It uses the Reversi protocol already present in GGZ's
+Reversi games.
 
 <br><br>
 
 <i>GGZ game client support</i><br>
 <table class="listnorm">
-<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
+
+<br>
+
+<i>Homepage of Iagno</i><br>
+<a href="http://www.gnome.org/projects/gnome-games/" target="blank">http://www.gnome.org/projects/gnome-games/</a>
 
 </td><td valign="top">
 
@@ -47,6 +62,11 @@ Some options can be configured from within the game client.
 <a href="/gameservers/reversi/"><i>Server: Reversi</i></a>
 <br><br>
 
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Reversi</i><br>
+<a href="/games/reversi/"><img src="/games/pics/reversi.png"></a>
+<br><br>
+
 <img src="/pics/icons/game_kde.png">
 <i>KDE client: KReversi</i><br>
 <a href="/games/kreversi/"><img src="/games/pics/kreversi.png"></a>
@@ -55,11 +75,6 @@ Some options can be configured from within the game client.
 <img src="/pics/icons/game_sdl.png">
 <i>SDL client: GGZBoard</i><br>
 <a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br><br>
-
-<img src="/pics/icons/game_gnome.png">
-<i>GNOME client: Iagno</i><br>
-<a href="/games/iagno/"><img src="/games/pics/iagno.png"></a>
 <br><br>
 
 </td>

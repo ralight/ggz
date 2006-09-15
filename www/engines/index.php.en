@@ -102,6 +102,8 @@ The following game engines are currently playable on GGZ:
 <a href="/games/kreversi/">KReversi (KDE)</a><br>
 <img src="/pics/icons/game_sdl.png">
 <a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<img src="/pics/icons/game_gnome.png">
+<a href="/games/iagno/">Iagno (GNOME)</a><br>
 </td>
 <td><a href="/gameservers/reversi/">Reversi server</a></td>
 </tr>
@@ -462,6 +464,17 @@ XTux Arena
 XTux Arena (SDL) - R.I.P.<br>
 </td>
 <td>XTux Arena server</td>
+</tr>
+
+<tr>
+<td>
+<a href="/engines/gnibbles/">Gnibbles</a>
+</td>
+<td>
+<img src="/pics/icons/game_sdl.png">
+<a href="/games/gnibbles/">Gnibbles (GNOME)</a><br>
+</td>
+<td><a href="/gameservers/gnibbles/">Gnibbles server</a></td>
 </tr>
 
 </table>

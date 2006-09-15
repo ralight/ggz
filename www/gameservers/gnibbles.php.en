@@ -1,0 +1,73 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Gnibbles Server</b><br>
+Action game for 2 players.
+<br>
+<table class="listnorm">
+<tr><td>
+This game server is not a GGZ project but it does provide GGZ support.
+The project homepage is:
+<br>
+<a href="http://www.gnome.org/projects/gnome-games/">gnome.org</a>.
+</td></tr>
+</table>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Fact sheet</i><br>
+<ul>
+<li>Supports the <a href="/engines/gnibbles/">Gnibbles</a> engine
+<li>Implemented in C
+<li>The server requires GGZ
+<li>No AI players yet :(
+</ul>
+
+The Gnibbles server is implementing the multiplayer features for the
+Gnibbles game client.
+
+<br><br>
+
+<i>GGZ game server support</i><br>
+<table class="listnorm">
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">yes</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">yes</td></tr>
+</table>
+
+<br>
+
+<i>Homepage of the Gnibbles server</i><br>
+<a href="http://www.gnome.org/projects/gnome-games/" target="blank">http://www.gnome.org/projects/gnome-games/</a>
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/engines/gnibbles/"><i>Engine: Gnibbles</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>GNOME client: Gnibbles</i><br>
+<a href="/games/gnibbles/"><img src="/games/pics/gnibbles.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

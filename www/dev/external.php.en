@@ -23,15 +23,18 @@ on GGZ. Before going into the details, the current list should be kept in mind:
 <tr><td>T.E.G.</td><td>good support</td><td><a href="http://www.ggzgamingzone.org/games/teg/">info page</a></td></tr>
 <tr><td>Kamikaze</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/games/kamikaze/">info page</a></td></tr>
 <tr><td>Tuxman</td><td>unknown</td><td><a href="http://www.ggzgamingzone.org/games/tuxman/">info page</a></td></tr>
-<tr><td>CGoBan</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/games/cgoban/">info page</a></td></tr>
+<tr><td>CGoBan (<a href="http://www.ggzgamingzone.org/engines/go/">Go</a> engine)</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/games/cgoban/">info page</a></td></tr>
 <tr><td>Widelands</td><td>alpha</td><td><a href="http://www.ggzgamingzone.org/games/widelands/">info page</a></td></tr>
 <tr><td>Freelords</td><td>alpha</td><td><a href="http://www.ggzgamingzone.org/games/freelords/">info page</a></td></tr>
 <tr><td>Freeciv</td><td>good support</td><td><a href="http://www.ggzgamingzone.org/games/freeciv/">info page</a></td></tr>
+<tr><td>GNOME Gnibbles</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/games/gnibbles/">info page</a></td></tr>
+<tr><td>GNOME Iagno (<a href="http://www.ggzgamingzone.org/engines/reversi/">Reversi</a> engine)</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/games/iagno/">info page</a></td></tr>
+<tr><td>GNOME Gnect (<a href="http://www.ggzgamingzone.org/engines/connectx/">ConnectX</a> engine)</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/games/gnect/">info page</a></td></tr>
 </table>
 
 Of note is that Widelands implements a whole client including game lobby, and CGoBan runs totally
 unmodified using a helper script binding it to GGZ. Freeciv can experimentally embed ggz-gtk
-as a widget.
+as a widget. The GNOME games (Gnibbles, Iagno, Gnect) all use ggz-gtk. Gnibbles is lacking an AI player!
 
 Do not hesitate to speak to GGZ developers to find out which of the above games
 (or a game from GGZ) is similar to yours.

@@ -1,0 +1,61 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Gnibbles</b><br>
+Action game for 2 players.
+<br>
+<table class="listnorm">
+<tr><td>
+Neither the game server nor the game client are GGZ projects but they do provide GGZ support.
+The project homepage is:
+<a href="http://www.gnome.org/projects/gnome-games/">gnome.org</a>.
+</td></tr>
+</table>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Gnibbles features</i><br>
+<ul>
+<li>GNOME client
+</ul>
+<br>
+
+<i>Gnibbles rules</i><br>
+The game is well-documented in the handbook which is part of the
+Gnibbles game client.
+
+<br><br>
+
+<i>Protocol and documentation</i><br>
+No further information present.
+
+</td><td valign="top">
+
+<i>Related pages:</i>
+<br><br>
+
+<a href="/gameservers/gnibbles/"><i>Server: Gnibbles</i></a>
+<br><br>
+
+<img src="/pics/icons/game_gnome.png">
+<i>GNOME client: Gnibbles</i><br>
+<a href="/games/gnibbles/"><img src="/games/pics/gnibbles.png"></a>
+<br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
