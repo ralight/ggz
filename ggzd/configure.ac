@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8567 2006-09-03 05:35:12Z jdorje $
+# $Id: configure.ac 8580 2006-09-15 05:30:39Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -157,6 +157,10 @@ AC_GGZ_DEBUG
 dnl Versioning
 dnl ==========
 m4_include(game_servers/ggzcards/config/version.m4)
+
+dnl ggzdmod settings
+dnl ================
+AM_CONDITIONAL(INSTALL_GGZDMOD, true)
 
 dnl Various dirs
 dnl ============
