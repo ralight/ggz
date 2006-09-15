@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: launch.c 8582 2006-09-15 12:57:23Z josef $
  *
  * Code for launching games through the GTK client
  *
@@ -100,7 +100,7 @@ void launch_create_or_raise(void)
 static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 {
 	GtkWidget *tmp;
-	gchar *text, *seatstring;
+	gchar *text;
 	GGZRoom *room;
 	GGZGameType *gt;
 	GList *items = NULL;
@@ -162,16 +162,21 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 
 	/* If bots are allowed, default to bot players, otherwise open */
 	maxbots = ggzcore_gametype_get_max_bots(gt);
-	if (maxbots > 0)
-		seatstring = "seat%d_bot";
-	else
-		seatstring = "seat%d_open";
 
 	for (x = 2; x <= maxplayers; x++) {
 		char text[128];
-		sprintf(text, seatstring, x);
+
+		if (maxbots > x - 1)
+			snprintf(text, sizeof(text), "seat%d_bot", x);
+		else
+			snprintf(text, sizeof(text), "seat%d_open", x);
 		tmp = ggz_lookup_widget(launch_dialog, text);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		if (x > maxbots) {
+			snprintf(text, sizeof(text), "seat%d_bot", x);
+			tmp = ggz_lookup_widget(launch_dialog, text);
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp), FALSE);
+		}
 	}
 }
 
@@ -192,13 +197,13 @@ static void launch_seats_changed(GtkWidget * widget, gpointer data)
 	   sensitize others */
 	for (i = 1; i <= seats; i++) {
 		char text[128];
-		sprintf(text, "seat%d_box", i);
+		snprintf(text, sizeof(text), "seat%d_box", i);
 		tmp = g_object_get_data(G_OBJECT(launch_dialog), text);
 		gtk_widget_set_sensitive(tmp, TRUE);
 	}
 	for (i = (seats + 1); i <= max; i++) {
 		char text[128];
-		sprintf(text, "seat%d_box", i);
+		snprintf(text, sizeof(text), "seat%d_box", i);
 		tmp = g_object_get_data(G_OBJECT(launch_dialog), text);
 		gtk_widget_set_sensitive(tmp, FALSE);
 	}
@@ -249,7 +254,7 @@ void launch_table(void)
 	for (x = 0; x < seats; x++) {
 		/* Check to see if the seat is a bot. */
 		char text[128];
-		sprintf(text, "seat%d_bot", x + 1);
+		snprintf(text, sizeof(text), "seat%d_bot", x + 1);
 		tmp = ggz_lookup_widget(launch_dialog, text);
 		if (GTK_TOGGLE_BUTTON(tmp)->active)
 			if (ggzcore_table_set_seat(table, x,
@@ -257,11 +262,11 @@ void launch_table(void)
 				assert(0);
 
 		/* Check to see if the seat is reserved. */
-		sprintf(text, "seat%d_resv", x + 1);
+		snprintf(text, sizeof(text), "seat%d_resv", x + 1);
 		tmp = ggz_lookup_widget(launch_dialog, text);
 		if (GTK_TOGGLE_BUTTON(tmp)->active) {
 			const gchar *name;
-			sprintf(text, "seat%d_name", x + 1);
+			snprintf(text, sizeof(text), "seat%d_name", x + 1);
 			tmp = ggz_lookup_widget(launch_dialog, text);
 			name = gtk_entry_get_text(GTK_ENTRY(tmp));
 
@@ -302,7 +307,7 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 	bots = 0;
 	for (x = 0; x < seats; x++) {
 		char text[128];
-		sprintf(text, "seat%d_bot", x + 1);
+		snprintf(text, sizeof(text), "seat%d_bot", x + 1);
 		tmp = ggz_lookup_widget(launch_dialog, text);
 		if (GTK_TOGGLE_BUTTON(tmp)->active)
 			bots++;
@@ -343,7 +348,7 @@ static void launch_seat_show(gint seat, gchar show)
 	char text[128];
 
 	/* Show seat's hbox */
-	sprintf(text, "seat%d_box", seat);
+	snprintf(text, sizeof(text), "seat%d_box", seat);
 	tmp = g_object_get_data(G_OBJECT(launch_dialog), text);
 	if (show)
 		gtk_widget_show(GTK_WIDGET(tmp));
@@ -565,7 +570,7 @@ GtkWidget *create_dlg_launch(void)
 
 		seats[i].box = gtk_hbox_new(FALSE, 0);
 		gtk_widget_ref(seats[i].box);
-		sprintf(text, "seat%d_box", i + 1);
+		snprintf(text, sizeof(text), "seat%d_box", i + 1);
 		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].box,
 					 (GtkDestroyNotify) gtk_widget_unref);
@@ -573,10 +578,10 @@ GtkWidget *create_dlg_launch(void)
 		gtk_box_pack_start(GTK_BOX(seat_box), seats[i].box, FALSE,
 				   FALSE, 0);
 
-		sprintf(text, _("Seat %d:"), i + 1);
+		snprintf(text, sizeof(text), _("Seat %d:"), i + 1);
 		seats[i].label = gtk_label_new(text);
 		gtk_widget_ref(seats[i].label);
-		sprintf(text, "seat%d_lable", i + 1);
+		snprintf(text, sizeof(text), "seat%d_lable", i + 1);
 		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].label,
 					 (GtkDestroyNotify) gtk_widget_unref);
@@ -590,7 +595,7 @@ GtkWidget *create_dlg_launch(void)
 			gtk_radio_button_get_group(GTK_RADIO_BUTTON
 					       (seats[i].bot));
 		gtk_widget_ref(seats[i].bot);
-		sprintf(text, "seat%d_bot", i + 1);
+		snprintf(text, sizeof(text), "seat%d_bot", i + 1);
 		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].bot,
 					 (GtkDestroyNotify) gtk_widget_unref);
@@ -605,7 +610,7 @@ GtkWidget *create_dlg_launch(void)
 			gtk_radio_button_get_group(GTK_RADIO_BUTTON
 					       (seats[i].open));
 		gtk_widget_ref(seats[i].open);
-		sprintf(text, "seat%d_open", i + 1);
+		snprintf(text, sizeof(text), "seat%d_open", i + 1);
 		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].open,
 					 (GtkDestroyNotify) gtk_widget_unref);
@@ -620,7 +625,7 @@ GtkWidget *create_dlg_launch(void)
 			gtk_radio_button_get_group(GTK_RADIO_BUTTON
 					       (seats[i].resv));
 		gtk_widget_ref(seats[i].resv);
-		sprintf(text, "seat%d_resv", i + 1);
+		snprintf(text, sizeof(text), "seat%d_resv", i + 1);
 		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].resv,
 					 (GtkDestroyNotify) gtk_widget_unref);
@@ -634,7 +639,7 @@ GtkWidget *create_dlg_launch(void)
 		gtk_entry_set_max_length(GTK_ENTRY(seats[i].name),
 					 MAX_RESERVED_NAME_LEN);
 		gtk_widget_ref(seats[i].name);
-		sprintf(text, "seat%d_name", i + 1);
+		snprintf(text, sizeof(text), "seat%d_name", i + 1);
 		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].name,
 					 (GtkDestroyNotify) gtk_widget_unref);
