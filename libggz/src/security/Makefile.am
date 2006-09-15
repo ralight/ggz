@@ -11,5 +11,5 @@ libggzsecurity_la_SOURCES = \
 libggzsecurity_la_LDFLAGS = $(GGZTLS_LDFLAGS)
 libggzsecurity_la_LIBADD = $(LIB_GGZTLS) $(LIB_GCRYPT)
 
-libggzsecurity_la_CPPFLAGS = -I $(top_srcdir)/src $(GGZTLS_INCLUDES)
+libggzsecurity_la_CPPFLAGS = -I$(srcdir)/.. $(GGZTLS_INCLUDES)
 

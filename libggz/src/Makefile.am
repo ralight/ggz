@@ -1,8 +1,11 @@
 SUBDIRS = security
 
+if INSTALL_LIBGGZ
 lib_LTLIBRARIES = libggz.la
-
 include_HEADERS = ggz.h ggz_common.h ggz_dio.h
+else
+noinst_LTLIBRARIES = libggz.la
+endif
 
 libggz_la_LIBADD = $(LDADD) security/libggzsecurity.la $(LIB_ASYNC)
 

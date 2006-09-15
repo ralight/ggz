@@ -25,6 +25,10 @@ AC_GGZ_TLS
 # ===========
 AC_GGZ_DEBUG
 
+# Libggz settings
+# ===============
+AM_CONDITIONAL(INSTALL_LIBGGZ, true)
+
 # Makefile creation
 # =================
 AC_CONFIG_FILES([
