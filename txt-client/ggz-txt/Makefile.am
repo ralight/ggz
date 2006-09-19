@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 7175 2005-05-05 08:49:06Z josef $
+# $Id: Makefile.am 8583 2006-09-19 15:26:31Z jdorje $
 
 SUBDIRS = .
 
@@ -26,5 +26,5 @@ ggz_txt_SOURCES = 	game.c \
 ggz_txt_LDADD = $(LIB_GGZCORE) $(LIB_GGZ) $(LIB_READLINE) $(LIB_CURSES)
 ggz_txt_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
-AM_CPPFLAGS = $(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
-
+AM_CPPFLAGS = $(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES) \
+	-DPREFIX=\"$(prefix)\"

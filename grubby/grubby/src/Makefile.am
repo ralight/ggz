@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 7042 2005-03-25 21:16:40Z josef $
+# $Id: Makefile.am 8583 2006-09-19 15:26:31Z jdorje $
 
 SUBDIRS = .
 
@@ -46,5 +46,5 @@ libguru_player_la_LIBADD = $(LIB_GGZCORE)
 
 noinst_HEADERS = guru.h module.h i18n.h gurumod.h net.h player.h
 
-AM_CPPFLAGS = $(GGZCORE_INCLUDES) $(SILC_INCLUDES)
-
+AM_CPPFLAGS = $(GGZCORE_INCLUDES) $(SILC_INCLUDES) \
+	-DPREFIX=\"$(prefix)\"

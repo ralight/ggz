@@ -6,7 +6,8 @@ lib_LTLIBRARIES = libggzcore.la
 
 libggzcore_la_CPPFLAGS = -I$(top_srcdir)/ggzmod-ggz \
 	$(LIBGGZ_INCLUDES) \
-	-DGGZCONFDIR=\"$(ggzconfdir)\"
+	-DGGZCONFDIR=\"$(ggzconfdir)\" \
+	-DPREFIX=\"$(prefix)\"
 
 include_HEADERS = ggzcore.h
 

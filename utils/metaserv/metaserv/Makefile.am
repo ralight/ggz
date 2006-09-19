@@ -4,7 +4,8 @@ ggzmetaserv_SOURCES = metaserv.c helper.c
 ggzmetaserv_LDADD = \
 	$(top_builddir)/metaserv/libmeta/libggzmeta.a \
 	-lpthread
-ggzmetaserv_CPPFLAGS = -I $(top_srcdir)/metaserv/libmeta
+ggzmetaserv_CPPFLAGS = -I $(top_srcdir)/metaserv/libmeta \
+	-DPREFIX=\"$(prefix)\"
 
 noinst_HEADERS = helper.h
 

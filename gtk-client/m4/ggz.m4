@@ -127,7 +127,6 @@ fi
 if test "x$exec_prefix" = "xNONE"; then
   exec_prefix='${prefix}'
 fi
-AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
 ac_ggz_prefix=""
 AC_ARG_WITH(ggz-dir,
