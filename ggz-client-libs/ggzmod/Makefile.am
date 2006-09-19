@@ -12,7 +12,7 @@ libggzmod_la_SOURCES = \
 
 include_HEADERS = ggzmod.h
 
-libggzmod_la_LIBADD = $(top_builddir)/ggzcore/libggzcore.la $(LIB_GGZ)
+libggzmod_la_LIBADD = ../ggzcore/libggzcore.la $(LIB_GGZ)
 libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 4:0:0
 
-AM_CPPFLAGS = $(LIBGGZ_INCLUDES) -I$(top_srcdir)/ggzcore
+AM_CPPFLAGS = $(LIBGGZ_INCLUDES) -I$(srcdir)/../ggzcore

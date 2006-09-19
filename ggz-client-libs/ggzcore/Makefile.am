@@ -4,14 +4,14 @@ EXTRA_DIST = Doxyfile
 
 lib_LTLIBRARIES = libggzcore.la
 
-libggzcore_la_CPPFLAGS = -I$(top_srcdir)/ggzmod-ggz \
+libggzcore_la_CPPFLAGS = -I$(srcdir)/../ggzmod-ggz \
 	$(LIBGGZ_INCLUDES) \
 	-DGGZCONFDIR=\"$(ggzconfdir)\" \
 	-DPREFIX=\"$(prefix)\"
 
 include_HEADERS = ggzcore.h
 
-libggzcore_la_LIBADD = $(top_builddir)/ggzmod-ggz/libggzmod-ggz.la \
+libggzcore_la_LIBADD = ../ggzmod-ggz/libggzmod-ggz.la \
 		       $(LIB_GGZ) $(LIBEXPAT)
 
 libggzcore_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 8:1:1
