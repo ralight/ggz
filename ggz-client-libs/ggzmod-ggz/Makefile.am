@@ -8,7 +8,7 @@ libggzmod_ggz_la_SOURCES = \
 	mod-ggz.h \
 	protocol.h
 
-libggzmod_ggz_la_LIBADD = $(LIB_GGZ)
+libggzmod_ggz_la_LIBADD = 
 libggzmod_ggz_la_LDFLAGS = $(LIBGGZ_LDFLAGS)
 
 AM_CPPFLAGS = $(LIBGGZ_INCLUDES)

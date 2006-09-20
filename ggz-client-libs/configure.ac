@@ -123,6 +123,10 @@ AC_SUBST(LIBEXPAT)
 # ===========
 AC_GGZ_DEBUG
 
+# Library settings
+# ===============
+AM_CONDITIONAL(INSTALL_GGZMOD, true)
+AM_CONDITIONAL(INSTALL_GGZCORE, true)
 
 # Various dirs
 # ============

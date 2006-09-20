@@ -1,6 +1,11 @@
 EXTRA_DIST = Doxyfile
 
+if INSTALL_GGZMOD
 lib_LTLIBRARIES = libggzmod.la
+include_HEADERS = ggzmod.h
+else
+noinst_LTLIBRARIES = libggzmod.la
+endif
 
 libggzmod_la_SOURCES = \
 	ggzmod.c \
@@ -10,9 +15,10 @@ libggzmod_la_SOURCES = \
 	mod.h \
 	protocol.h
 
-include_HEADERS = ggzmod.h
-
-libggzmod_la_LIBADD = ../ggzcore/libggzcore.la $(LIB_GGZ)
 libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 4:0:0
+libggzmod_la_LIBADD = ../ggzcore/libggzcore.la
+if INSTALL_GGZMOD
+libggzmod_la_LIBADD += $(LIB_GGZ)
+endif
 
 AM_CPPFLAGS = $(LIBGGZ_INCLUDES) -I$(srcdir)/../ggzcore
