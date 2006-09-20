@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 8576 2006-09-11 23:41:19Z jdorje $
+# $Id: configure.ac 8586 2006-09-20 02:02:27Z jdorje $
 dnl ======================================
 
 AC_INIT([GGZ Gtk+ client], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
@@ -85,6 +85,10 @@ fi
 if test "yes" = "no"; then
   AC_DEFINE([GTK_DISABLE_DEPRECATED], 1, [Disable deprecated GTK functions])
 fi
+
+# Library settings
+# ================
+AM_CONDITIONAL(INSTALL_GGZ_GTK, true)
 
 dnl Various dirs
 dnl ============

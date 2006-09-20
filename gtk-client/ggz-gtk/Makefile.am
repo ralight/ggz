@@ -2,9 +2,7 @@ AM_CPPFLAGS = $(GTK_CFLAGS) -I$(top_srcdir)/intl \
 	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES) \
 	-DGGZGTKDATADIR=\"$(ggzgtkdatadir)\"
 
-lib_LTLIBRARIES = libggz-gtk.la
-
-ggzgtkdata_DATA =		about_bg.png		\
+pics =			about_bg.png		\
 			ggz_gtk_admin.svg 	\
 			ggz_gtk_guest.svg 	\
 			ggz_gtk_registered.svg	\
@@ -15,9 +13,18 @@ ggzgtkdata_DATA =		about_bg.png		\
 			ggz_gtk_lag3.svg	\
 			ggz_gtk_lag4.svg	\
 			ggz_gtk_lag5.svg
-ggzgtkdatadir=$(datadir)/ggz/$(package)
+
+if INSTALL_GGZ_GTK
+lib_LTLIBRARIES = libggz-gtk.la
 
 include_HEADERS = ggz-embed.h ggz-gtk.h
+
+ggzgtkdata_DATA = $(pics)
+ggzgtkdatadir=$(datadir)/ggz/$(package)
+else
+noinst_LTLIBRARIES = libggz-gtk.la
+endif
+
 libggz_gtk_la_SOURCES =	about.c \
 			about.h \
 			chat.c \
@@ -70,4 +77,4 @@ libggz_gtk_la_LIBADD = $(GTK_LIBS) $(LDADD) $(LIBS) $(INTLLIBS) \
 			$(LIB_GGZCORE) $(LIB_GGZ)
 libggz_gtk_la_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS) -version-info 0:0:0
 
-EXTRA_DIST = $(ggzgtkdata_DATA)
+EXTRA_DIST = $(pics)
