@@ -30,6 +30,7 @@ dnl                  time whether to include GGZ support.  Server and client
 dnl                  are checked separately.  GGZ_SERVER and GGZ_CLIENT are
 dnl                  defined in config.h, and created as conditionals in
 dnl                  the Makefiles.
+dnl   AC_GGZ_CHECK_SERVER - The same, but server libs only.
 dnl
 dnl Low-level macros:
 dnl   AC_GGZ_INIT - initialization and paths/options setup
@@ -944,6 +945,43 @@ fi
 
 ])
 
+# AC_GGZ_CHECK_SERVER
+#   Check for presence of GGZ server libraries.
+#
+#   Simply call this function in programs that use GGZ.  GGZ_SERVER will
+#   be #defined in config.h, and created as a conditional
+#   in Makefile.am files, if server libraries are present.
+AC_DEFUN([AC_GGZ_CHECK_SERVER],
+[
+  AC_GGZ_LIBGGZ([try_ggz="yes"], [try_ggz="no"])
+  if test "$try_ggz" = "yes"; then
+    # For now, version 0.0.14 is required.  This could be an additional
+    # parameter.
+    AC_GGZ_VERSION([0], [0], [14], [], [try_ggz=no])
+  fi
+
+  ggz_server="no"
+  AC_ARG_WITH(ggz-server,
+              AC_HELP_STRING([--with-ggz-server], [Force GGZ server support]),
+              [try_ggz_server=$withval])
+
+  if test "x$try_ggz_server" != "xno"; then
+    if test "$try_ggz" = "yes"; then
+      # Must pass something as the action-if-failed, or the macro will exit
+      AC_GGZ_GGZDMOD([ggz_server="yes"], [ggz_server="no"])
+    fi
+    if test "$ggz_server" = "yes"; then
+      AC_DEFINE(GGZ_SERVER, 1, [Server support for GGZ])
+    else
+      if test "$try_ggz_server" = "yes"; then
+        AC_MSG_ERROR([Could not configure GGZ server support. See above messages.])
+      fi
+    fi
+  fi
+
+  AM_CONDITIONAL(GGZ_SERVER, test "$ggz_server" = "yes")
+])
+
 # AC_GGZ_CHECK
 #   Check for presence of GGZ client and server libraries.
 #
@@ -964,28 +1002,10 @@ AC_DEFUN([AC_GGZ_CHECK],
     AC_GGZ_VERSION([0], [0], [14], [], [try_ggz=no])
   fi
 
-  ggz_server="no"
   ggz_client="no"
-  AC_ARG_WITH(ggz-server,
-              AC_HELP_STRING([--with-ggz-server], [Force GGZ server support]),
-              [try_ggz_server=$withval])
   AC_ARG_WITH(ggz-client,
               AC_HELP_STRING([--with-ggz-client], [Force GGZ client support]),
               [try_ggz_client=$withval])
-
-  if test "x$try_ggz_server" != "xno"; then
-    if test "$try_ggz" = "yes"; then
-      # Must pass something as the action-if-failed, or the macro will exit
-      AC_GGZ_GGZDMOD([ggz_server="yes"], [ggz_server="no"])
-    fi
-    if test "$ggz_server" = "yes"; then
-      AC_DEFINE(GGZ_SERVER, 1, [Server support for GGZ])
-    else
-      if test "$try_ggz_server" = "yes"; then
-        AC_MSG_ERROR([Could not configure GGZ server support. See above messages.])
-      fi
-    fi
-  fi
 
   if test "x$try_ggz_client" != "xno"; then
     if test "$try_ggz" = "yes"; then
@@ -1013,6 +1033,7 @@ AC_DEFUN([AC_GGZ_CHECK],
   fi
 
   AM_CONDITIONAL(GGZ_CLIENT, test "$ggz_client" = "yes")
-  AM_CONDITIONAL(GGZ_SERVER, test "$ggz_server" = "yes")
   AM_CONDITIONAL(GGZ_GTK, test "$ggz_gtk" = "yes")
+
+  AC_GGZ_CHECK_SERVER
 ])
