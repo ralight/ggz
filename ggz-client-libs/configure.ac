@@ -124,20 +124,9 @@ AC_SUBST(LIBEXPAT)
 AC_GGZ_DEBUG
 
 # Library settings
-# ===============
+# ================
 AM_CONDITIONAL(INSTALL_GGZMOD, true)
 AM_CONDITIONAL(INSTALL_GGZCORE, true)
-
-# Various dirs
-# ============
-ggzconfdir="$sysconfdir"
-ggzexecmoddir="$libdir/ggz"
-ggzdatadir="$datadir/ggz"
-
-AC_SUBST(ggzconfdir)
-AC_SUBST(ggzexecmoddir)
-AC_SUBST(ggzdatadir)
-AC_SUBST(packagesrcdir)
 
 AC_CONFIG_FILES([Makefile 
 	   ggzcore/Makefile

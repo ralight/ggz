@@ -11,7 +11,7 @@ endif
 
 libggzcore_la_CPPFLAGS = -I$(srcdir)/../ggzmod-ggz \
 	$(LIBGGZ_INCLUDES) \
-	-DGGZCONFDIR=\"$(ggzconfdir)\" \
+	-DGGZCONFDIR=\"$(sysconfdir)\" \
 	-DPREFIX=\"$(prefix)\"
 
 libggzcore_la_LIBADD = ../ggzmod-ggz/libggzmod-ggz.la \
