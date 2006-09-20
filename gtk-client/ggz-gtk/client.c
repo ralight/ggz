@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 8222 2006-06-20 02:59:29Z jdorje $
+ * $Id: client.c 8589 2006-09-20 07:30:11Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -808,7 +808,7 @@ void ggz_gtk_initialize(gboolean reconnect,
 	ggzcore_conf_initialize(global_conf, user_conf);
 	g_free(user_conf);
 
-	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
+	opt.flags = GGZ_OPT_PARSER;
 #if 0
 	/* Reconnect is disabled since the whole application locks up while
 	 * trying to reconnect.  If you try to connect to a different
@@ -821,6 +821,9 @@ void ggz_gtk_initialize(gboolean reconnect,
 		/* If an engine+version are passed in, we use those as the
 		 * embedded module. */
 		opt.flags |= GGZ_OPT_EMBEDDED;
+	} else {
+		/* Modules are only used for non-embedded GGZ. */
+		opt.flags |= GGZ_OPT_MODULES;
 	}
 
 	ggzcore_init(opt);
