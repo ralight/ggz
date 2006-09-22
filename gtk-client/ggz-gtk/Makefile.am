@@ -1,9 +1,9 @@
-ggzgtkdatadir=$(datadir)/ggz/$(package)
+ggzgtkdatadir=$(datadir)/ggz/$(PACKAGE)
 AM_CPPFLAGS = $(GTK_CFLAGS) -I$(top_srcdir)/intl \
 	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES) \
 	-DGGZGTKDATADIR=\"$(ggzgtkdatadir)\"
 
-pics =			about_bg.png		\
+ggzgtkdata_DATA =	about_bg.png		\
 			ggz_gtk_admin.svg 	\
 			ggz_gtk_guest.svg 	\
 			ggz_gtk_registered.svg	\
@@ -19,8 +19,6 @@ if INSTALL_GGZ_GTK
 lib_LTLIBRARIES = libggz-gtk.la
 
 include_HEADERS = ggz-embed.h ggz-gtk.h
-
-ggzgtkdata_DATA = $(pics)
 else
 noinst_LTLIBRARIES = libggz-gtk.la
 endif
