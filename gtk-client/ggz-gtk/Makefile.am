@@ -1,3 +1,4 @@
+ggzgtkdatadir=$(datadir)/ggz/$(package)
 AM_CPPFLAGS = $(GTK_CFLAGS) -I$(top_srcdir)/intl \
 	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES) \
 	-DGGZGTKDATADIR=\"$(ggzgtkdatadir)\"
@@ -20,7 +21,6 @@ lib_LTLIBRARIES = libggz-gtk.la
 include_HEADERS = ggz-embed.h ggz-gtk.h
 
 ggzgtkdata_DATA = $(pics)
-ggzgtkdatadir=$(datadir)/ggz/$(package)
 else
 noinst_LTLIBRARIES = libggz-gtk.la
 endif
