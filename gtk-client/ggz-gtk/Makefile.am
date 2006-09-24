@@ -75,4 +75,12 @@ libggz_gtk_la_LIBADD = $(GTK_LIBS) $(LDADD) $(LIBS) $(INTLLIBS) \
 			$(LIB_GGZCORE) $(LIB_GGZ)
 libggz_gtk_la_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS) -version-info 0:0:0
 
+#if WIN32
+#ggz_gtk_SOURCES += ggz-gtk-icon.rc
+#ggz_gtk_LDADD += ggz-gtk-icon.o
+#ggz_gtk_DEPENDENCIES += ggz-gtk-icon.o
+#ggz-gtk-icon.o: ggz-gtk-icon.rc
+#	i586-mingw32msvc-windres -i $< $@
+#endif
+
 EXTRA_DIST = $(pics)

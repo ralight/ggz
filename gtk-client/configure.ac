@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 8586 2006-09-20 02:02:27Z jdorje $
+# $Id: configure.ac 8595 2006-09-24 20:02:30Z josef $
 dnl ======================================
 
 AC_INIT([GGZ Gtk+ client], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
@@ -32,6 +32,9 @@ dnl Gaim plugin check
 dnl =================
 AC_GAIM(1, 5, 0)
 
+dnl Temporary: Check for windows resource compiler
+#AC_PATH_PROG([WINDRES], [i586-mingw32msvc-windres], [])
+#AM_CONDITIONAL(WIN32, test "x$WINDRES" != "x")
 
 dnl Check for header files
 dnl ======================
