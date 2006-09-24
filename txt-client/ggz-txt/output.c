@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 8470 2006-08-04 13:27:45Z josef $
+ * $Id: output.c 8597 2006-09-24 20:09:52Z josef $
  *
  * Functions for display text/messages
  *
@@ -326,9 +326,10 @@ void output_players(void)
 			ggzcore_player_get_name(player),
 			table ? _("at table %d") : "",
 			type == GGZ_PLAYER_ADMIN ? _("(Administrator)") :
+			((type == GGZ_PLAYER_HOST) ? _("(Host)") :
 			((type == GGZ_PLAYER_BOT) ? _("(Bot)") :
 			((type == GGZ_PLAYER_GUEST) ? _("(Guest)") :
-			"")));
+			""))));
 	}
 }
 
