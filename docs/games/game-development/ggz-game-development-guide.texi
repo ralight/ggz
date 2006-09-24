@@ -2,32 +2,59 @@
 @c %**start of header
 @setfilename ggz-game-development-guide.info
 @settitle The GGZ Gaming Zone 0.0.14 - Game Development Guide
-@setchapternewpage odd
 @c %**end of header
 
-@c TODO: 
-@c nothing
+@c Do not remove the comments above - they're needed for TeX!
 
-@ifinfo
-Copyright (C) 2002 - 2006 Josef Spillner
-@end ifinfo
+@setchapternewpage odd
+@documentlanguage en
+@documentencoding US-ASCII
 
-@c Frontpage
+@documentdescription
+This guide describes how to develop multiplayer game clients and
+servers for the GGZ Gaming Zone platform. It presents existing
+games, APIs for various programming languages, and how to build
+and integrate game packages.
+@end documentdescription
+
+@dircategory GGZ Gaming Zone
+@direntry
+* ggz-gamedev: (ggz). The GGZ Gaming Zone Game Development Guide
+@end direntry
+
+@c End of header ===============================================
+@c Summary/Copyright ===========================================
+
+@copying
+This manual is about game development for the GGZ Gaming Zone environment.
+Copyright @copyright{} 2002 - 2006 Josef Spillner
+@quotation
+Published under the GNU General Public License.
+@end quotation
+@end copying
+
+@c End of summary ==============================================
+@c Frontpage ===================================================
+
 @titlepage
 @title The GGZ Game Development Guide
 @subtitle Development of games for the GGZ Gaming Zone 0.0.14
 @author GGZ Development Team
 
-@c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002 - 2006 Josef Spillner
-Published under the GNU General Public License.
+@insertcopying
 @end titlepage
 
-@c Index (Top)
-@node Top, Foreword, (dir), (dir)
-@c @top Foreword
+@contents
+
+@c End of frontpage ============================================
+@c Master menu =================================================
+
+@ifnottex
+@node Top
+@top Menu
+@end ifnottex
 
 @ifinfo
 This file is the info format of the GGZ Gaming Zone Game Development Guide, which is
@@ -43,11 +70,19 @@ See @url{http://www.ggzgamingzone.org/docs/guides/gamedev/} for the latest editi
 * Game Clients:: Get into the player's eye
 * Game Servers:: Where the real magic takes place
 * Programming Details:: Network, configuration etc.
+* Glossary:: Index of all special terms
+
+@c @detailmenu
+@c The GGZ System
+@c * foo....
+@c @end detailmenu
 @end menu
 
-@node Foreword, The GGZ System, Top, Top
+@c End of master menu ==========================================
+@c Body ========================================================
+
+@node Foreword
 @chapter Foreword
-@c @cindex Index entry for Chapter Zero
 
 The central element of the GGZ Gaming Zone is, obviously, everything related to
 games, especially the games themselves. From the very beginning, games of any
@@ -63,9 +98,8 @@ The more games provide GGZ support, the more fun it becomes. After reading
 this guide, all questions about how to provide GGZ support from a game
 developer's perspective should be answered.
 
-@node The GGZ System, Game Clients, Foreword, Top
+@node The GGZ System
 @chapter The GGZ System
-@c @cindex Index entry for First Chapter
 
 @section Native GGZ Games ("internal")
 
@@ -128,9 +162,8 @@ Both of these files can be found at
 @url{http://dev.ggzgamingzone.org/external.php}, a web page which also
 contains general information about external games.
 
-@node Game Clients, Game Servers, The GGZ System, Top
+@node Game Clients
 @chapter Game Clients
-@c @cindex Index entry for Second Chapter
 
 @section Introduction
 
@@ -394,9 +427,8 @@ What is important is that the use of ggzmod is convenient. This depends
 on the toolkit just as on the programming language. If any combination
 thereof is missing, don't hesitate to contact the GGZ developers.
 
-@node Game Servers, Programming Details, Game Clients, Top
+@node Game Servers
 @chapter Game Servers
-@c @cindex Index entry for Third Chapter
 
 @section Introduction
 
@@ -564,9 +596,8 @@ There is a ruby wrapper for ggzdmod in development: ruggzdmod.
 In the future, the GGZ server will also be available as a complete ruby
 implementation, which will come with a native game server interface.
 
-@node Programming Details, (dir), Game Servers, Top
+@node Programming Details
 @chapter Programming Details
-@c @cindex Index entry for Fourth Chapter
 
 @section General purpose wrappers
 
@@ -837,9 +868,16 @@ for KNewStuff, whereas the Python/SDL games can use SDLNewStuff.
 For SDL games written in C, a special implementation written for Widelands
 (but not integrated) exists.
 
-@c @printindex cp
+@c End of body =================================================
+@c Footer ======================================================
+
+@node Glossary
+@unnumbered Glossary
+
+@printindex cp
 
 @contents
 @bye
 
+@c End of footer ===============================================
 

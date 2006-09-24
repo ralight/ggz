@@ -1,3 +1,6 @@
+%% TODO: /usr/include/ggz, $GGZWRAPPER, "best of GGZ"/graveyard split (e.g. ggzgnome, netspades)
+%% TODO: buildsystem as per RFC
+
 For the general development topics of GGZ, please have a look at:
 http://dev.ggzgamingzone.org/
 Not only programming tasks, but also the "big other three" (translations,

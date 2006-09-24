@@ -2,36 +2,60 @@
 @c %**start of header
 @setfilename ggz-hosting-guide.info
 @settitle The GGZ Gaming Zone 0.0.14 - Hosting Guide
-@setchapternewpage odd
 @c %**end of header
 
-@c TODO:
-@c links to other documentation
-@c server log analysis
-@c web presentation of usage percentage etc.
-@c TLS setup
-@c 'playing nice': metaservers, announce on ggz-servers list
+@c Do not remove the comments above - they're needed for TeX!
 
-@ifinfo
-Copyright (C) 2001 - 2006 Josef Spillner
-@end ifinfo
+@setchapternewpage odd
+@documentlanguage en
+@documentencoding US-ASCII
 
-@c Frontpage
+@documentdescription
+This guide describes how server administrator can set up and run
+a GGZ Gaming Zone server. The installation of various games is
+described in detail. Aspects of operation and maintenance and advanced
+gaming portals using GGZ Community are covered as well.
+@end documentdescription
+
+@dircategory GGZ Gaming Zone
+@direntry
+* ggz-hosting: (ggz). The GGZ Gaming Zone Hosting Guide
+@end direntry
+
+@c End of header ===============================================
+@c Summary/Copyright ===========================================
+
+@copying
+This manual is about game development for the GGZ Gaming Zone environment.
+Copyright @copyright{} 2001 - 2006 Josef Spillner
+@quotation
+Published under the GNU General Public License.
+@end quotation
+@end copying
+
+@c End of summary ==============================================
+@c Frontpage ===================================================
+
 @titlepage
 @title The GGZ Gaming Zone 0.0.14 - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
 @author GGZ Development Team
 
-@c Copyright page
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 2001 - 2006 Josef Spillner.
 Published under the GNU General Public License.
 @end titlepage
 
-@c Index (Top)
-@node Top, Foreword, (dir), (dir)
-@c @top Foreword
+@contents
+
+@c End of frontpage ============================================
+@c Master menu =================================================
+
+@ifnottex
+@node Top
+@top Menu
+@end ifnottex
 
 @ifinfo
 This file is the info format of the GGZ Gaming Zone Hosting Guide, which is
@@ -50,11 +74,16 @@ See http://www.ggzgamingzone.org/docs/guides/hosting/ for the latest edition.
 * Other GGZ Servers:: How to install the Meta Server and TelGGZ
 * GGZ Server Tools:: Make an admin's life easier
 * Server Maintainance:: Help for administrators
+* Local GGZ server installation:: Appendix 1
+* Known GGZ servers and Contact:: Appendix 2
+* Glossary:: Index of all special terms
 @end menu
 
-@node Foreword, Game Servers, Top, Top
+@c End of master menu ==========================================
+@c Body ========================================================
+
+@node Foreword
 @chapter Foreword
-@c @cindex Index entry for Chapter Zero
 
 Over the last months the hosting of free gaming servers has turned into a task
 which sometimes demands skills and time effort by the server hoster. The games
@@ -71,9 +100,8 @@ does its best to keep this guide always up-to-date and tries to avoid any
 errors and typos, but this is a very new topic and may take some time to
 stabilize.
 
-@node Game Servers, Installation, Foreword, Top
+@node Game Servers
 @chapter Game Servers
-@c @cindex Index entry for First Chapter
 
 The traditional approach is to have game servers running permanently on a host,
 and let players connect to them using their game clients. Usually the server
@@ -85,9 +113,8 @@ leave whenever they wish.
 GGZ does now support permanent game servers too; see the
 section about the game Keepalive below.
 
-@node Installation, Databases, Game Servers, Top
+@node Installation
 @chapter Installation
-@c @cindex Index entry for Second Chapter
 
 @section Prerequisites
 
@@ -338,9 +365,8 @@ of a GGZ package, but is available from the playground module in SVN.
 Have a look at the next chapter on how to set up GGZ with enhanced database
 support to prepare an extended installation.
 
-@node Databases, Internal Games, Installation, Top
+@node Databases
 @chapter Databases
-@c @cindex Index entry for Third Chapter
 
 @section Database choices
 
@@ -500,9 +526,8 @@ The statistics database generally doesn't need to be changed during its
 lifetime.
 There is a separate description of ggzduedit in the chapter about server tools.
 
-@node Internal Games, External Games, Databases, Top
+@node Internal Games
 @chapter Internal Games
-@c @cindex Index entry for Fourth Chapter
 
 @section Scope
 
@@ -655,9 +680,8 @@ RubyToe is a reimplementation of the TTT game server in Ruby. It is not yet
 officially part of any GGZ package, but can be retrieved from the Playground
 SVN module.
 
-@node External Games, Other GGZ Servers, Internal Games, Top
+@node External Games
 @chapter External Games
-@c @cindex Index entry for Fifth Chapter
 
 @section Scope
 
@@ -739,9 +763,8 @@ Other games like bzFlag, XTux Arena or Stalker were once among the prospective
 candidates, however they are either not developed any further or the GGZ patches
 never made it into the source tree and thus went unmaintained.
 
-@node Other GGZ Servers, GGZ Server Tools, External Games, Top
+@node Other GGZ Servers
 @chapter Other GGZ Servers
-@c @cindex Index entry for Sixth Chapter
 
 @section The GGZ Metaserver (ggzmetaserv)
 
@@ -793,9 +816,8 @@ use its highscore or rating facilities.
 Note that this program is not distributed yet, but can be retrieved from
 the Playground module in GGZ SVN.
 
-@node GGZ Server Tools, Server Maintainance, Other GGZ Servers, Top
+@node GGZ Server Tools
 @chapter GGZ Server Tools
-@c @cindex Index entry for Seventh Chapter
 
 @section The ggz-cmd command line utility
 
@@ -878,9 +900,8 @@ The tool 'ngrep' must be installed to make it work:
 The @command{--noping} option tells the program to ignore the permanent
 PING/PONG command which are used to measure the player lag.
 
-@node Server Maintainance, (dir), GGZ Server Tools, Top
+@node Server Maintainance
 @chapter Server Maintainance
-@c @cindex Index entry for Eighth Chapter
 
 @section Security
 
@@ -1016,6 +1037,7 @@ nightmares are over.
 To test a server's communication with a single client, the DumpFile variable
 can be filled with either a file name or a virtual file name such as stderr.
 
+@node Local GGZ server installation
 @appendix Local GGZ server installation
 
 These instructions apply to a vanilla 0.0.14 installation if one doesn't have
@@ -1052,6 +1074,7 @@ cd ..
 ggzd -F
 @end verbatim
 
+@node Known GGZ servers and Contact
 @appendix Known GGZ servers and Contact
 
 The following servers are known to run permanently. For an up-to-date list,
@@ -1086,8 +1109,16 @@ Subscribing to ggz-announce additionally is always recommeded, too.
 This is a very low-traffic list which almost exclusively focuses on release
 announcements for new versions of GGZ.
 
-@c @printindex cp
+@c End of body =================================================
+@c Footer ======================================================
+
+@node Glossary
+@unnumbered Glossary
+
+@printindex cp
 
 @contents
 @bye
+
+@c End of footer ===============================================
 

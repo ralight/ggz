@@ -11,26 +11,26 @@ Here's a list of version numbers associated to each
 GGZ release. For game versions, see the separate document
 in /docs/games/game-development.
 
-Applications | Version in 0.0.6 | 0.0.7 | 0.0.8 | 0.0.9 | 0.0.10 | 0.0.11 | 0.0.12 | 0.0.13
--------------+------------------+-------+-------+-------+--------+--------+--------+-------
-grubby       |              0.3 |   0.4 |   0.5 |   0.6 |    0.7 |    0.8 |    0.9 |  0.9.1
-             |                  |       |       |       |        |        |        |
-cmd-client   |              --- |   --- |   --- |   --- |    --- |    --- |    --- |    ---
-ggzcomm      |              0.1 |   0.1 |   0.1 |   0.1 |    0.1 |    0.2 |    0.2 |    0.3
-metaserv     |              0.1 |   0.2 |   0.3 |   0.4 |    0.4 |    0.4 |    0.4 |    0.4
-telggz       |              0.2 |   0.3 |   0.3 |   0.3 |    0.3 |    0.4 |    0.4 |    0.4
-             |                  |       |       |       |        |        |        |
-motd-editor  |              --- |   --- |   --- |   --- |    --- |    --- |    --- |    ---
-             |                  |       |       |       |        |        |        |
-shadowbridge |              0.1 |   0.1 |   0.1 |   0.1 |    0.1 |    0.1 |    0.1 |    0.1
-modsniff     |              0.1 |   0.1 |   0.1 |   0.1 |    0.1 |        |        |
-keepalivectl |            0.0.6 |   0.1 |   0.1 |   0.1 |    0.1 |    0.1 |    0.1 |    0.1
-compcal      |              0.1 |   0.2 |   0.2 |   0.2 |    0.3 |    0.3 |    0.3 |    0.3
-ggzap        |              0.2 |   0.3 |   0.3 |   0.3 |    0.4 |    0.5 |    0.5 |    0.5
-kgrubby      |                  |       |       |       |        |    0.1 |    0.1 |    0.1
-             |                  |       |       |       |        |        |        |
-ggz-wrapper  |                  |       |       |       |    --- |    --- |    --- |    ---
-ggzwrap      |              --- |   --- |   --- |   --- |    --- |    --- |    --- |    ---
+Applications | V. in 0.0.6 | 0.0.7 | 0.0.8 | 0.0.9 | 0.0.10 | 0.0.11 | 0.0.12 | 0.0.13 | 0.0.14
+-------------+-------------+-------+-------+-------+--------+--------+--------+--------+-------
+grubby       |         0.3 |   0.4 |   0.5 |   0.6 |    0.7 |    0.8 |    0.9 |  0.9.1 |
+             |             |       |       |       |        |        |        |        |
+cmd-client   |         --- |   --- |   --- |   --- |    --- |    --- |    --- |    --- |
+ggzcomm      |         0.1 |   0.1 |   0.1 |   0.1 |    0.1 |    0.2 |    0.2 |    0.3 |
+metaserv     |         0.1 |   0.2 |   0.3 |   0.4 |    0.4 |    0.4 |    0.4 |    0.4 |    0.5
+telggz       |         0.2 |   0.3 |   0.3 |   0.3 |    0.3 |    0.4 |    0.4 |    0.4 |
+             |             |       |       |       |        |        |        |        |
+motd-editor  |         --- |   --- |   --- |   --- |    --- |    --- |    --- |    --- |
+             |             |       |       |       |        |        |        |        |
+shadowbridge |         0.1 |   0.1 |   0.1 |   0.1 |    0.1 |    0.1 |    0.1 |    0.1 |
+modsniff     |         0.1 |   0.1 |   0.1 |   0.1 |    0.1 |        |        |        |
+keepalivectl |       0.0.6 |   0.1 |   0.1 |   0.1 |    0.1 |    0.1 |    0.1 |    0.1 |
+compcal      |         0.1 |   0.2 |   0.2 |   0.2 |    0.3 |    0.3 |    0.3 |    0.3 |
+ggzap        |         0.2 |   0.3 |   0.3 |   0.3 |    0.4 |    0.5 |    0.5 |    0.5 |
+kgrubby      |             |       |       |       |        |    0.1 |    0.1 |    0.1 |
+             |             |       |       |       |        |        |        |        |
+ggz-wrapper  |             |       |       |       |    --- |    --- |    --- |    --- |
+ggzwrap      |         --- |   --- |   --- |   --- |    --- |    --- |    --- |    --- |
 
 Using GGZ version number:
 - core clients (kggz, ggz-gtk, ggz-txt, ggz-gnome, víbora)
@@ -74,6 +74,7 @@ should appear in the header file (GGZXXX_VERSION_MAJOR/MINOR/MICRO).
 Static libraries used in GGZ (should move to common module if shared by many):
 - games: libcgc (chess), libai (chess), ttt-ai (tictactoe)
 - ggzmod-ggz
+- libmeta, minidom
 
 Static wrapper libraries/interfaces:
 - ggzdb (database abstraction layer in ggzd)

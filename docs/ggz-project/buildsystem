@@ -20,6 +20,22 @@ GGZ programs and external programs using GGZ libraries.
 Also, other checks such as for POSIX compatibility, debugging options,
 package-specific checks (like ggzd databases) should be written as
 additional *.m4 files. This helps keeping configure.ac clean.
+M4 files are distributed automatically because aclocal recognises the files.
+
+Platforms
+---------
+
+To avoid configuring for the most obscure platforms, while still supporting
+the majority of systems in existence, the files platform.m4 and system.m4
+have been introduced.
+In platform.4, the minimum requirements (a decent POSIX API) are checked
+for. In particular, certain headers must exist, socket functions must be
+in libc or libsocket, and several functions must either exist or the
+corresponding libggz functionality is disabled. Depending on the compiler,
+global compilation flags might be set.
+In system.m4, advanced libraries beyond the bare minimum are checked for.
+If they are missing, some comfort is lost but otherwise everything is
+ok. No headers, functions, compiler flags or similar are touched in here.
 
 Paths
 -----
@@ -31,6 +47,11 @@ can be given to save the work to configure all macros this way. This is useful
 if a GGZ-enabled game is installed into a prefix different from the one
 GGZ is installed to. Note that the game registry (ggz.modules) will then not
 be touched, so that a manual integration is necessary.
+See the 'packagers' file for details.
+
+Path information within the configure script might include multi-expanding
+variables. The macro AC_GGZ_UNQUOTEDPATH must be used in case a hardcoded
+absolute path is needed from it (e.g. for inclusion with C sources).
 
 Macro schema
 ------------
@@ -75,6 +96,7 @@ AC_GGZ_INTL
   * "true" (1st arg)
   * ignore (2nd arg)
     Tells about missing i18n tools but does not abort.
+Note: This macro was moved out of ggz.m4 because it is not GGZ specific.
 
 AC_GGZ_SERVER
   Searches location where to install game server room and game files to.
@@ -132,6 +154,7 @@ LDADD/LIBADD:
   if they're not part of libc, like -liconv, -lgettext, -lnsl or -lmath.
   They're all supposed to reside in the default search path for the linker,
   so that no additional CFLAGS, LDFLAGS etc. should be needed.
+  Only platform.m4 and system.m4 should handle those libraries.
   All other libraries should be given explicitely in $(LIB_FOO) notation.
 
 It is generally discouraged to use autoconf-style variables (@VAR@).
@@ -152,4 +175,5 @@ Josef, 25.09.2002
 Update: 04.02.2005
 Update: 14.09.2005
 Update: 08.04.2006
+Update: 06.08.2006
 

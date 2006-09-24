@@ -45,6 +45,7 @@ Directly before release
 During release
 --------------
 [] tag SVN with symbolic tag '/tags/ggz-x-y-z'
+   Create stable branch '/branches/ggz-x-y-z'.
 [] create source tarballs, and upload them to the GGZ FTP server,
    wait for mirrors
 [] web site synchronization - test success with md5 hash sums.
