@@ -16,7 +16,7 @@ include("top.inc");
 	<div class="text">
 <?php
 $ggzuser = Auth::username();
-$res = $database->exec("SELECT teamname FROM teammembers WHERE handle = '$ggzuser' AND role LIKE '%leader%'");
+$res = $database->exec("SELECT teamname FROM teammembers WHERE handle = '%^' AND role LIKE '%leader%'", array($ggzuser));
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 $teamname = $database->result($res, $i, "teamname");
@@ -28,7 +28,7 @@ echo "<h2>$teamname</h2>";
 	echo "<tr><td>Player:</td><td>\n";
 	echo "<input type='hidden' name='team_name' value='$teamname'>\n";
 	echo "<select name='player_name'>\n";
-	$res2 = $database->exec("SELECT * FROM teammembers WHERE teamname = '$teamname' AND role <> ''");
+	$res2 = $database->exec("SELECT * FROM teammembers WHERE teamname = '%^' AND role <> ''", array($teamname));
 	for ($j = 0; $j < $database->numrows($res2); $j++)
 	{
 		$playername = $database->result($res2, $j, "handle");

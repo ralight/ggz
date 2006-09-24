@@ -27,7 +27,7 @@ class Match
 	{
 		global $database;
 
-		$res = $database->exec("SELECT * FROM matches WHERE id = '$this->id'");
+		$res = $database->exec("SELECT * FROM matches WHERE id = '%^'", array($this->id));
 		if ($database->numrows($res) == 1) :
 			$this->game = $database->result($res, 0, "game");
 			$this->winner = $database->result($res, 0, "winner");
@@ -35,7 +35,7 @@ class Match
 			$date = $database->result($res, 0, "date");
 			$this->date = date("d.m.Y", $date);
 
-			$res = $database->exec("SELECT * FROM matchplayers WHERE match = '$this->id'");
+			$res = $database->exec("SELECT * FROM matchplayers WHERE match = '%^'", array($this->id));
 			for ($i = 0; $i < $database->numrows($res); $i++)
 			{
 				$handle = $database->result($res, $i, "handle");
@@ -51,7 +51,7 @@ class Match
 		global $database;
 
 		$res = $database->exec("SELECT DISTINCT handle FROM tournamentplayers, users " .
-			"WHERE tournamentplayers.name =users.handle");
+			"WHERE tournamentplayers.name =users.handle", NULL);
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$handle = $database->result($res, $i, "handle");
@@ -75,4 +75,3 @@ class Match
 }
 
 ?>
-

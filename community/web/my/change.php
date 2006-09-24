@@ -27,12 +27,12 @@ include("top.inc");
 include_once("auth.php");
 $ggzuser = Auth::username();
 
-$res = $database->exec("SELECT * FROM users WHERE handle = '$ggzuser'");
+$res = $database->exec("SELECT * FROM users WHERE handle = '%^'", array($ggzuser));
 if (($res) && ($database->numrows($res) == 1)) :
 	$realname = $database->result($res, 0, "name");
 	$email = $database->result($res, 0, "email");
 endif;
-$res = $database->exec("SELECT * FROM userinfo WHERE handle = '$ggzuser'");
+$res = $database->exec("SELECT * FROM userinfo WHERE handle = '%^'", array($ggzuser));
 if (($res) && ($database->numrows($res) == 1)) :
 	$photo = $database->result($res, 0, "photo");
 	$gender = $database->result($res, 0, "gender");

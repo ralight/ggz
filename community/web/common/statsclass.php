@@ -31,7 +31,7 @@ class Statistics
 	{
 		$database = $this->database;
 
-		$res = $database->exec("SELECT value FROM control WHERE key = 'version'");
+		$res = $database->exec("SELECT value FROM control WHERE key = 'version'", NULL);
 		$version = $database->result($res, 0, "value");
 		return $version;
 	}
@@ -40,22 +40,22 @@ class Statistics
 	{
 		$database = $this->database;
 
-		$res = $database->exec("SELECT COUNT(*) FROM users");
+		$res = $database->exec("SELECT COUNT(*) FROM users", NULL);
 		$this->players_number = $database->result($res, 0, "count");
 
-		$res = $database->exec("SELECT COUNT(*) FROM teams");
+		$res = $database->exec("SELECT COUNT(*) FROM teams", NULL);
 		$this->teams_number = $database->result($res, 0, "count");
 
-		$res = $database->exec("SELECT COUNT(*) FROM stats");
+		$res = $database->exec("SELECT COUNT(*) FROM stats", NULL);
 		$this->rankings_number = $database->result($res, 0, "count");
 
-		$res = $database->exec("SELECT COUNT(*) FROM tournaments");
+		$res = $database->exec("SELECT COUNT(*) FROM tournaments", NULL);
 		$this->tournaments_number = $database->result($res, 0, "count");
 
-		$res = $database->exec("SELECT COUNT(*) FROM matches");
+		$res = $database->exec("SELECT COUNT(*) FROM matches", NULL);
 		$this->matches_number = $database->result($res, 0, "count");
 
-		$res = $database->exec("SELECT COUNT(*) FROM (SELECT DISTINCT game FROM stats) AS count");
+		$res = $database->exec("SELECT COUNT(*) FROM (SELECT DISTINCT game FROM stats) AS count", NULL);
 		$this->games_number = $database->result($res, 0, "count");
 	}
 
@@ -69,7 +69,7 @@ class Statistics
 			$sort = "teamname ASC";
 		endif;
 
-		$res = $database->exec("SELECT teamname FROM teams ORDER BY $sort LIMIT $max");
+		$res = $database->exec("SELECT teamname FROM teams ORDER BY $sort LIMIT %^", array($max));
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$team = $database->result($res, $i, "teamname");
@@ -96,7 +96,7 @@ class Statistics
 			endif;
 		endif;
 
-		$res = $database->exec("SELECT handle FROM users ORDER BY $sort LIMIT $max");
+		$res = $database->exec("SELECT handle FROM users ORDER BY $sort LIMIT %^", array($max));
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$handle = $database->result($res, $i, "handle");
@@ -120,7 +120,7 @@ class Statistics
 		endif;
 
 		$res = $database->exec("SELECT game FROM (SELECT DISTINCT game FROM stats) " .
-			"AS game ORDER BY $sort LIMIT $max");
+			"AS game ORDER BY $sort LIMIT %^", array($max));
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$game = $database->result($res, $i, "game");
@@ -137,7 +137,7 @@ class Statistics
 	{
 		$database = $this->database;
 
-		$res = $database->exec("SELECT game, winner, date, id FROM matches ORDER BY date DESC LIMIT $max");
+		$res = $database->exec("SELECT game, winner, date, id FROM matches ORDER BY date DESC LIMIT %^", array($max));
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$game = $database->result($res, $i, "game");
@@ -152,7 +152,7 @@ class Statistics
 	{
 		$database = $this->database;
 
-		$res = $database->exec("SELECT game, name, date, id FROM tournaments ORDER BY date DESC LIMIT $max");
+		$res = $database->exec("SELECT game, name, date, id FROM tournaments ORDER BY date DESC LIMIT %^", array($max));
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$game = $database->result($res, $i, "game");
@@ -168,4 +168,3 @@ $stat = new Statistics();
 $stat->setConnection($database);
 
 ?>
-

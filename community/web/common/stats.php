@@ -12,7 +12,7 @@ global $database;
 
 	$player = new Player($lookup);
 
-	$res = $database->exec("SELECT * FROM stats WHERE lower(handle) = lower('$lookup') AND ranking > 0");
+	$res = $database->exec("SELECT * FROM stats WHERE lower(handle) = lower('%^') AND ranking > 0", array($lookup));
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
 		$game = $database->result($res, $i, "game");
@@ -26,7 +26,7 @@ global $database;
 
 		$rating = (int)($rating);
 
-		$res2 = $database->exec("SELECT * FROM rankings WHERE game = '$game'");
+		$res2 = $database->exec("SELECT * FROM rankings WHERE game = '%^'", array($game));
 		if (($res2) && ($database->numrows($res2) == 1)) :
 			$method = $database->result($res2, 0, "method");
 		else :
@@ -109,14 +109,14 @@ global $database;
 
 	if (!$lookup) return;
 
-	$res = $database->exec("SELECT * FROM rankings WHERE game = '$lookup'");
+	$res = $database->exec("SELECT * FROM rankings WHERE game = '%^'", array($lookup));
 	if (($res) && ($database->numrows($res) == 1)) :
 		$method = $database->result($res, 0, "method");
 	else :
 		$method = "wins/losses";
 	endif;
 
-	$res = $database->exec("SELECT * FROM stats WHERE game = '$lookup' AND ranking > 0 ORDER BY ranking ASC");
+	$res = $database->exec("SELECT * FROM stats WHERE game = '%^' AND ranking > 0 ORDER BY ranking ASC", array($lookup));
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
 		$handle = $database->result($res, $i, "handle");
@@ -186,7 +186,7 @@ function stats_team($lookup)
 global $database;
 	if (!$lookup) return;
 
-	$res = $database->exec("SELECT * FROM teams WHERE teamname = '$lookup'");
+	$res = $database->exec("SELECT * FROM teams WHERE teamname = '%^'", array($lookup));
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
 		$fullname = $database->result($res, $i, "fullname");
@@ -213,7 +213,7 @@ global $database;
 		echo "No statistics found for $lookup.<br>\n";
 	else :
 		echo "Members of the team:<br>\n";
-		$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '$lookup' AND role <> '' ORDER BY entrydate ASC");
+		$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '%^' AND role <> '' ORDER BY entrydate ASC", array($lookup));
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
 			$handle = $database->result($res, $i, "handle");
@@ -298,4 +298,3 @@ global $date;
 <?php
 include("statsclass.php");
 ?>
-

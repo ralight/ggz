@@ -1,6 +1,6 @@
 <?php
 
-$res = $database->exec("SELECT * FROM tournaments ORDER BY date DESC");
+$res = $database->exec("SELECT * FROM tournaments ORDER BY date DESC", NULL);
 
 for($i = 0; $i < $database->numrows($res); $i++)
 {

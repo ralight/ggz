@@ -38,11 +38,11 @@ $player->display();
 <?php
 include_once("auth.php");
 $ggzuser = $lookup;
-//$res = $database->exec("SELECT id FROM users WHERE handle = '$lookup'");
+//$res = $database->exec("SELECT id FROM users WHERE handle = '%^'", array($lookup));
 //if ($database->numrows($res) == 1) :
 //	$playerid = database->result($res, 0, "id");
 //endif;
-$res = $database->exec("SELECT * FROM karma WHERE fromhandle = '$ggzuser'");
+$res = $database->exec("SELECT * FROM karma WHERE fromhandle = '%^'", array($ggzuser));
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$name = $database->result($res, $i, "tohandle");
@@ -57,7 +57,7 @@ endif;
 	</div>
 	<div class="text">
 <?php
-$res = $database->exec("SELECT * FROM karma WHERE tohandle = '$ggzuser'");
+$res = $database->exec("SELECT * FROM karma WHERE tohandle = '%^'", array($ggzuser));
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$name = $database->result($res, $i, "fromhandle");
@@ -103,7 +103,7 @@ endif;
 
 <?php
 $ggzuser = $lookup;
-$res = $database->exec("SELECT * FROM users WHERE handle = '$ggzuser'");
+$res = $database->exec("SELECT * FROM users WHERE handle = '%^'", array($ggzuser));
 if ($database->numrows($res) == 1) :
 	$firstlogin = $database->result($res, $i, "firstlogin");
 	$veteran = (int)((time() - $firstlogin) / 86400);
@@ -154,7 +154,7 @@ endif;
 <?php
 //include_once("auth.php");
 //$ggzuser = $lookup;
-$res = $database->exec("SELECT * FROM tournaments WHERE organizer = '$ggzuser'");
+$res = $database->exec("SELECT * FROM tournaments WHERE organizer = '%^'", array($ggzuser));
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$name = $database->result($res, $i, "name");
@@ -174,7 +174,7 @@ for ($i = 0; $i < $database->numrows($res); $i++)
 <?php
 //include_once("auth.php");
 //$ggzuser = Auth::username();
-$res = $database->exec("SELECT * FROM teammembers WHERE handle = '$ggzuser'");
+$res = $database->exec("SELECT * FROM teammembers WHERE handle = '%^'", array($ggzuser));
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$teamname = $database->result($res, $i, "teamname");

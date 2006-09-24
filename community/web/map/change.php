@@ -15,8 +15,8 @@ if ($task) :
 	$longitude = $long;
 	$latitude = $lat;
 	$res = $database->exec("UPDATE userinfo " .
-		"SET longitude = $longitude, latitude = $latitude " .
-		"WHERE handle = '$ggzuser'");
+		"SET longitude = '%^', latitude = '%^' " .
+		"WHERE handle = '%^'", array($longitude, $latitude, $ggzuser));
 	header("Location: index.php");
 	exit;
 endif;

@@ -4,7 +4,7 @@ function rankings_players($lookup)
 {
 	global $database;
 
-	$res = $database->exec("SELECT * FROM stats WHERE handle = '$lookup' AND ranking > 0 AND ranking < 4");
+	$res = $database->exec("SELECT * FROM stats WHERE handle = '%^' AND ranking > 0 AND ranking < 4", array($lookup));
 
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
@@ -35,7 +35,7 @@ function rankings_tournaments($lookup)
 {
 	global $database;
 
-	$res = $database->exec("SELECT * FROM placements WHERE handle = '$lookup'");
+	$res = $database->exec("SELECT * FROM placements WHERE handle = '%^'", array($lookup));
 
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
@@ -55,7 +55,7 @@ function rankings_tournaments($lookup)
 			continue;
 		endif;
 
-		$res2 = $database->exec("SELECT * FROM tournaments WHERE id = $tournament");
+		$res2 = $database->exec("SELECT * FROM tournaments WHERE id='%^'", array($tournament));
 		$game = $database->result($res2, 0, "game");
 		$name = $database->result($res2, 0, "name");
 		$stamp = $database->result($res2, 0, "date");
@@ -79,7 +79,7 @@ function rankings_matches($lookup)
 {
 	global $database;
 
-	$res = $database->exec("SELECT * FROM matches WHERE winner = '$lookup'");
+	$res = $database->exec("SELECT * FROM matches WHERE winner = '%^'", array($lookup));
 
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
@@ -106,7 +106,7 @@ function rankings_matches_summary($lookup)
 {
 	global $database;
 
-	$res = $database->exec("SELECT COUNT(*) FROM matches WHERE winner = '$lookup'");
+	$res = $database->exec("SELECT COUNT(*) FROM matches WHERE winner = '%^'", array($lookup));
 
 	if ($database->numrows($res) == 1) :
 		$count = $database->result($res, 0, "count");

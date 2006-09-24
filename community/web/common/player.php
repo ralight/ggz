@@ -22,7 +22,7 @@ class Player
 
 		$this->handle = $ggzuser;
 
-		$res = $database->exec("SELECT * FROM users WHERE handle = '$ggzuser'");
+		$res = $database->exec("SELECT * FROM users WHERE handle = '%^'", array($ggzuser));
 		if (($res) && ($database->numrows($res) == 1)) :
 			$this->realname = $database->result($res, 0, "name");
 			$this->email = $database->result($res, 0, "email");
@@ -30,7 +30,7 @@ class Player
 		else :
 			$this->registered = false;
 		endif;
-		$res = $database->exec("SELECT * FROM userinfo WHERE handle = '$ggzuser'");
+		$res = $database->exec("SELECT * FROM userinfo WHERE handle = '%^'", array($ggzuser));
 		if (($res) && ($database->numrows($res) == 1)) :
 			$this->photo = $database->result($res, 0, "photo");
 			$this->gender = $database->result($res, 0, "gender");
@@ -85,7 +85,7 @@ class Player
 
 		$ggzuser = $this->handle;
 
-		$res = $database->exec("SELECT * FROM permissionmasks WHERE handle = '$ggzuser'");
+		$res = $database->exec("SELECT * FROM permissionmasks WHERE handle = '%^'", array($ggzuser));
 		if (($res) && ($database->numrows($res) > 0)) :
 			$admin = $database->result($res, 0, "admin_mask");
 			$anon = $database->result($res, 0, "anon_mask");
@@ -102,7 +102,7 @@ class Player
 
 		echo "Permissions: $permission<br>\n";
 
-		$res = $database->exec("SELECT * FROM permissions WHERE handle = '$ggzuser'");
+		$res = $database->exec("SELECT * FROM permissions WHERE handle = '%^'", array($ggzuser));
 		if (($res) && ($database->numrows($res) > 0)) :
 			$join_table = $database->result($res, 0, "join_table");
 			$launch_table = $database->result($res, 0, "launch_table");
@@ -137,7 +137,7 @@ class Player
 
 		$res = $database->exec("SELECT teams.teamname, teams.fullname " .
 			"FROM teammembers, teams " .
-			"WHERE teams.teamname = teammembers.teamname AND handle = '$ggzuser' AND role <> ''");
+			"WHERE teams.teamname = teammembers.teamname AND handle = '%^' AND role <> ''", array($ggzuser));
 		if (($res) && ($database->numrows($res) > 0)) :
 			echo "<h2>Teams</h2>\n";
 			for ($i = 0; $i < $database->numrows($res); $i++)
@@ -158,7 +158,7 @@ class Player
 			echo "<div class='text'>\n";
 		endif;
 
-		$res = $database->exec("SELECT * FROM tournaments WHERE organizer = '$ggzuser'");
+		$res = $database->exec("SELECT * FROM tournaments WHERE organizer = '%^'", array($ggzuser));
 		if (($res) && ($database->numrows($res) > 0)) :
 			echo "<h2>Tournaments</h2>\n";
 			for ($i = 0; $i < $database->numrows($res); $i++)
@@ -182,7 +182,7 @@ class Player
 		$hotstuff->connect($conf_host, $conf_name, $conf_user, $conf_pass);
 
 		if ($hotstuff->id) :
-			$res = $hotstuff->exec("SELECT * FROM directory WHERE author = '$this->realname' OR author = '$ggzuser'");
+			$res = $hotstuff->exec("SELECT * FROM directory WHERE author = '%^' OR author = '%^'", array($this->realname, $ggzuser));
 			if (($res) && ($hotstuff->numrows($res) > 0)) :
 				echo "<h2>Game data</h2>\n";
 				for ($i = 0; $i < $hotstuff->numrows($res); $i++)
@@ -208,7 +208,7 @@ class Player
 
 		$ggzuser = $this->handle;
 
-		$res = $database->exec("SELECT * FROM permissions WHERE handle = '$ggzuser'");
+		$res = $database->exec("SELECT * FROM permissions WHERE handle = '%^'", array($ggzuser));
 		if (($res) && ($database->numrows($res) > 0)) :
 			$chat_bot = $database->result($res, 0, "chat_bot");
 			$rooms_admin = $database->result($res, 0, "rooms_admin");

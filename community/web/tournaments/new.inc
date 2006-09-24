@@ -8,7 +8,7 @@ Name of the tournament:
 Game type:
 <select name="form_game">
 <?php
-$res = $database->exec("SELECT DISTINCT game FROM stats");
+$res = $database->exec("SELECT DISTINCT game FROM stats", NULL);
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$game = $database->result($res, $i, "game");

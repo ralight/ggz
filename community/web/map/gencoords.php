@@ -7,7 +7,7 @@ include_once("database.php");
 echo "<map name='ggzmap'>";
 
 $res = $database->exec("SELECT handle, longitude, latitude FROM userinfo " .
-	"WHERE latitude IS NOT NULL");
+	"WHERE latitude IS NOT NULL", NULL);
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$handle = $database->result($res, $i, "handle");

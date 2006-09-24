@@ -16,7 +16,7 @@ class Auth
 		$cookie = $_COOKIE[Auth::cookiename()];
 		if (!$cookie) return;
 
-		$res = $database->exec("SELECT * FROM auth WHERE cookie = '$cookie'");
+		$res = $database->exec("SELECT * FROM auth WHERE cookie = '%^'", array($cookie));
 		if (($res) && ($database->numrows($res) == 1)) :
 			$username = $database->result($res, 0, "handle");
 
@@ -55,14 +55,14 @@ class Auth
 
 		$cryptpass = Auth::hash($password);
 
-		$res = $database->exec("SELECT * FROM users WHERE handle = '$username' AND password = '$cryptpass'");
+		$res = $database->exec("SELECT * FROM users WHERE handle = '%^' AND password = '%^'", array($username, $cryptpass));
 		if (($res) && ($database->numrows($res) == 1)) :
 			$cookiestem = base64_encode(md5($cryptpass));
 			$stamp = time();
 			$cookie = "$cookiestem$stamp";
 			$cookie = str_replace("=", "", $cookie);
-			$database->exec("DELETE FROM auth WHERE handle = '$username'");
-			$database->exec("INSERT INTO auth (handle, cookie) VALUES ('$username', '$cookie')");
+			$database->exec("DELETE FROM auth WHERE handle = '%^'", array($username));
+			$database->exec("INSERT INTO auth (handle, cookie) VALUES ('%^', '%^')"), array($username, $cookie);
 			setcookie(Auth::cookiename(), $cookie, 0, "/");
 			return true;
 		endif;
@@ -110,7 +110,7 @@ class Auth
 
 		$crypttoken = Auth::hash($token);
 
-		$res = $database->exec("SELECT * FROM userinfo WHERE alterpass = '$crypttoken'");
+		$res = $database->exec("SELECT * FROM userinfo WHERE alterpass = '%^'", array($crypttoken));
 		if (($res) && ($database->numrows($res) == 1)) :
 			$handle = $database->result($res, 0, "handle");
 			$found = 1;
@@ -136,11 +136,11 @@ class Auth
 		$crypttoken = Auth::hash($token);
 		$cryptpass = Auth::hash($password);
 
-		$res = $database->exec("SELECT * FROM userinfo WHERE alterpass = '$crypttoken'");
+		$res = $database->exec("SELECT * FROM userinfo WHERE alterpass = '%^'", array($crypttoken));
 		if (($res) && ($database->numrows($res) == 1)) :
 			$handle = $database->result($res, 0, "handle");
-			$database->exec("UPDATE userinfo SET alterpass = '' WHERE handle = '$handle'");
-			$database->exec("UPDATE users SET password = '$cryptpass' WHERE handle = '$handle'");
+			$database->exec("UPDATE userinfo SET alterpass = '' WHERE handle = '%^'", array($handle));
+			$database->exec("UPDATE users SET password = '%^' WHERE handle = '%^'", array($cryptpass, $handle));
 			return true;
 		endif;
 
@@ -154,7 +154,7 @@ class Auth
 		$username = Auth::username();
 		if(!$username) return;
 
-		$database->exec("DELETE FROM auth WHERE handle = '$username'");
+		$database->exec("DELETE FROM auth WHERE handle = '%^'", array($username));
 		setcookie(Auth::cookiename(), "", 0, "/");
 	}
 
@@ -162,7 +162,7 @@ class Auth
 	{
 		global $database;
 
-		$res = $database->exec("SELECT * FROM users WHERE handle = '$username'");
+		$res = $database->exec("SELECT * FROM users WHERE handle = '%^'", array($username));
 		if (($res) && ($database->numrows($res) > 0)) :
 			return false;
 		endif;
@@ -196,11 +196,11 @@ class Auth
 					$password = dechex(rand() + time());
 					$cryptpass = Auth::hash($password);
 					if ($reactivate) :
-						$database->exec("UPDATE userinfo SET alterpass = '$cryptpass' WHERE handle = '$user'");
+						$database->exec("UPDATE userinfo SET alterpass = '%^' WHERE handle = '%^'", array($cryptpass, $user));
 						$link = Config::getvalue("url") .  "/login/?task=reactivate&token=$password";
 						$text .= __("$user: regenerated, activate on $link\n");
 					else :
-						$database->exec("UPDATE users SET password = '$cryptpass' WHERE handle = '$user'");
+						$database->exec("UPDATE users SET password = '%^' WHERE handle = '%^'", array($cryptpass, $user));
 						$text .= __("$user: $password (generated)\n");
 					endif;
 				else :
@@ -208,7 +208,7 @@ class Auth
 				endif;
 
 				if ((!$pubkey) && ($encryption)) :
-					$res2 = $database->exec("SELECT * FROM userinfo WHERE handle = '$user'");
+					$res2 = $database->exec("SELECT * FROM userinfo WHERE handle = '%^'", array($user));
 					if (($res2) && ($database->numrows($res2) == 1)) :
 						$pubkey = $database->result($res2, 0, "pubkey");
 					endif;

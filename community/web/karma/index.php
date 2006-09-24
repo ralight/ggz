@@ -5,12 +5,12 @@ include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 include("top.inc");
 
 if ($remove) :
-	$database->exec("DELETE FROM karma WHERE fromhandle = '$ggzuser' AND tohandle = '$remove'");
+	$database->exec("DELETE FROM karma WHERE fromhandle = '%^' AND tohandle = '%^'", array($ggzuser, $remove));
 endif;
 if ($add) :
 	$database->exec("INSERT INTO karma " .
 		"(fromhandle, tohandle, karma) VALUES " .
-		"('$ggzuser', '$form_player', $form_karma)");
+		"('%^', '%^','%^')", array($ggzuser, $form_player, $form_karma));
 endif;
 
 ?>
@@ -43,7 +43,7 @@ Karma points:<br>
 	</h1>
 	<div class="text">
 <?php
-	$res = $database->exec("SELECT * FROM karma WHERE fromhandle = '$ggzuser'");
+	$res = $database->exec("SELECT * FROM karma WHERE fromhandle = '%^'", array($ggzuser));
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
 		$name = $database->result($res, $i, "tohandle");

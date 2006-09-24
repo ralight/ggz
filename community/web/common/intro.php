@@ -5,7 +5,7 @@ function games_intro()
 	global $database;
 
 	$res = $database->exec("SELECT game, COUNT(game) FROM matches " .
-		"GROUP BY game ORDER BY COUNT(game) DESC LIMIT 1");
+		"GROUP BY game ORDER BY COUNT(game) DESC LIMIT 1", NULL);
 	if (($res) && ($database->numrows($res))) :
 		$count = $database->result($res, 0, "count");
 		$game = $database->result($res, 0, "game");
@@ -23,7 +23,7 @@ function match_intro()
 
 	$res = $database->exec("SELECT winner, COUNT(winner) FROM matches, users " .
 		"WHERE matches.winner = users.handle " .
-		"GROUP BY winner ORDER BY COUNT(winner) DESC LIMIT 1");
+		"GROUP BY winner ORDER BY COUNT(winner) DESC LIMIT 1", NULL);
 	if (($res) && ($database->numrows($res))) :
 		$count = $database->result($res, 0, "count");
 		$player = $database->result($res, 0, "winner");
@@ -42,7 +42,7 @@ function tournament_intro()
 	global $database;
 
 	$res = $database->exec("SELECT game, COUNT(game) FROM tournaments " .
-		"GROUP BY game ORDER BY COUNT(game) DESC LIMIT 1");
+		"GROUP BY game ORDER BY COUNT(game) DESC LIMIT 1", NULL);
 	if (($res) && ($database->numrows($res))) :
 		$count = $database->result($res, 0, "count");
 		$game = $database->result($res, 0, "game");
@@ -60,7 +60,7 @@ function player_intro()
 
 	$res = $database->exec("SELECT handle, COUNT(handle) FROM matchplayers " .
 		"WHERE HANDLE NOT LIKE '%|AI' GROUP BY handle " .
-		"ORDER BY COUNT(handle) DESC LIMIT 1");
+		"ORDER BY COUNT(handle) DESC LIMIT 1", NULL);
 	if (($res) && ($database->numrows($res))) :
 		$count = $database->result($res, 0, "count");
 		$player = $database->result($res, 0, "handle");
@@ -79,7 +79,7 @@ function team_intro()
 	global $database;
 
 	$res = $database->exec("SELECT teamname, COUNT(teamname) FROM teammembers " .
-		"GROUP BY teamname ORDER BY COUNT(teamname) DESC LIMIT 1");
+		"GROUP BY teamname ORDER BY COUNT(teamname) DESC LIMIT 1", NULL);
 	if (($res) && ($database->numrows($res))) :
 		$count = $database->result($res, 0, "count");
 		$team = $database->result($res, 0, "teamname");

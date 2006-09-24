@@ -32,9 +32,9 @@ $organizer = Auth::username();
 
 $database->exec("INSERT INTO tournaments " .
 	"(name, game, date, organizer) VALUES " .
-	"('$form_name', '$form_game', $datestamp, '$organizer')");
+	"('%^', '%^', '%^', '%^')", array($form_name, $gorm_game, $datestamp, $organizer));
 
-$res = $database->exec("SELECT MAX(id) FROM tournaments");
+$res = $database->exec("SELECT MAX(id) FROM tournaments", NULL);
 $tid = $database->result($res, 0, "max");
 
 $ar = random_array($form_participants);
@@ -43,7 +43,7 @@ for($i = 0; $i < $form_participants; $i++)
 	$varname = "form_participant_$i";
 	$name = $$varname;
 	$number = $ar[$i];
-	$database->exec("INSERT INTO tournamentplayers (id, number, name) VALUES ($tid, $number, '$name')");
+	$database->exec("INSERT INTO tournamentplayers (id, number, name) VALUES ('%^', '%^', '%^')", array($tid, $number, $name));
 	echo "Registered player $name as number $number.<br>\n";
 }
 ?>

@@ -4,7 +4,7 @@ include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
 include_once("match.php");
 
-$res = $database->exec("SELECT * FROM tournaments WHERE id = $tid");
+$res = $database->exec("SELECT * FROM tournaments WHERE id = '$tid'", array($tid));
 
 $name = $database->result($res, $i, "name");
 $game = $database->result($res, $i, "game");
@@ -19,7 +19,7 @@ echo "Organized by: <a href=\"/db/players/?lookup=$organizer\">$organizer</a><br
 echo "Starting: $datestr<br><br>\n";
 
 echo "Participants:<br><br>\n";
-$res = $database->exec("SELECT * FROM tournamentplayers WHERE id = $tid");
+$res = $database->exec("SELECT * FROM tournamentplayers WHERE id = '$tid'", array($tid));
 $num = 0;
 $match = new Match();
 $match->loadtournament();
@@ -43,14 +43,14 @@ function played($player1, $player2)
 	global $date;
 	global $matchid;
 
-	$res = $database->exec("SELECT match FROM matchplayers WHERE handle = '$player1'");
+	$res = $database->exec("SELECT match FROM matchplayers WHERE handle = '%^'",array($player1));
 	for($k = 0; $k < $database->numrows($res); $k++)
 	{
 		$x[$database->result($res, $k, "match")] = $database->result($res, $k, "match");
 	}
 
 	$number = 0;
-	$res = $database->exec("SELECT match FROM matchplayers WHERE handle = '$player2'");
+	$res = $database->exec("SELECT match FROM matchplayers WHERE handle = '%^'", array($player2));
 	for($k = 0; $k < $database->numrows($res); $k++)
 	{
 		if($x[$database->result($res, $k, "match")] == $database->result($res, $k, "match")) :
@@ -62,7 +62,7 @@ function played($player1, $player2)
 	for($k = 0; $k < sizeof($y); $k++)
 	{
 		$match = $y[$k];
-		$res = $database->exec("SELECT id, winner FROM matches WHERE id = $match AND date > $date");
+		$res = $database->exec("SELECT id, winner FROM matches WHERE id = '%^' AND date > '%^'", array($match, $date));
 		if($database->numrows($res) == 1) :
 			$winner = $database->result($res, 0, "winner");
 			$matchid = $database->result($res, 0, "id");
@@ -144,7 +144,7 @@ for($i = $level; $i > 0; $i--)
 	endif;
 }
 
-$res = $database->exec("SELECT * FROM placements WHERE tournament = $tid");
+$res = $database->exec("SELECT * FROM placements WHERE tournament = '%^'", array($tid));
 if ($database->numrows($res) > 0) :
 	$already_approved = 1;
 else :
@@ -163,10 +163,10 @@ if (($approved) && (!$already_approved) && (!$open)) :
 	endif;
 	$database->exec("INSERT INTO placements " .
 		"(tournament, place, handle) VALUES " .
-		"($tid, 2, '$second')");
+		"('%^', 2, '%^')", array($tid, $second));
 	$database->exec("INSERT INTO placements " .
 		"(tournament, place, handle) VALUES " .
-		"($tid, 1, '$winner')");
+		"('%^', 1, '%^')", array($tid, $winner));
 endif;
 
 if (!$open) :

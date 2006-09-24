@@ -20,40 +20,40 @@ $player_role = $_POST["player_role"];
 
 if ($join == 1) :
 	$team_exists = 0;
-	$res = $database->exec("SELECT * FROM teams WHERE teamname = '$team_name'");
+	$res = $database->exec("SELECT * FROM teams WHERE teamname = '%^'", array($team_name));
 	if (($res) && ($database->numrows($res) == 1)) :
 		$team_exists = 1;
 	endif;
-	$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '$team_name' AND handle = '$ggzuser'");
+	$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '%^' AND handle = '%^'", array($team_name, $ggzuser));
 	if (($res) && ($database->numrows($res) == 0) && ($team_exists)) :
 		$res = $database->exec("INSERT INTO teammembers " .
 			"(teamname, handle, role) VALUES " .
-			"('$team_name', '$ggzuser', '')");
+			"('%^', '%^', '')", array($team_name, $ggzuser));
 	else:
-		$database->exec("DELETE FROM teammembers WHERE teamname = '$team_name' AND handle = '$ggzuser'");
+		$database->exec("DELETE FROM teammembers WHERE teamname = '%^' AND handle = '%^'", array($team_name, $ggzuser));
 	endif;
 elseif ($create == 1) :
-	$res = $database->exec("SELECT * FROM teams WHERE teamname = '$team_name'");
+	$res = $database->exec("SELECT * FROM teams WHERE teamname = '%^'", array($team_name));
 	if (($res) && ($database->numrows($res) == 0)) :
 		$stamp = time();
 		$res = $database->exec("INSERT INTO teams " .
 			"(teamname, fullname, icon, foundingdate, homepage, founder) VALUES " .
-			"('$team_name', '$team_full', '$team_logo', $stamp, '$team_homepage', '$ggzuser')");
+			"('%^', '%^', '%^', '%^', '%^', '%^')", array($team_name, $team_full, $team_logo, $stamp, $team_homepage));
 		$res = $database->exec("INSERT INTO teammembers " .
 			"(teamname, handle, role) VALUES " .
-			"('$team_name', '$ggzuser', 'leader,founder,member')");
+			"('%^', '%^', 'leader,founder,member')", array($team_name, $ggzuser));
 	endif;
 elseif ($approve == 1) :
 	if ($player_approval == 'approved') :
 		$res = $database->exec("UPDATE teammembers SET " .
 			"role = 'member' " .
-			"WHERE teamname = '$team_name' AND handle = '$player_name' AND role = ''");
+			"WHERE teamname = '%^' AND handle = '%^' AND role = ''", array($team_name, $player_name));
 	else :
 		$res = $database->exec("DELETE FROM teammembers " .
-			"WHERE teamname = '$team_name' AND handle = '$player_name' AND role = ''");
+			"WHERE teamname = '%^' AND handle = '%^' AND role = ''", array($team_name, $player_name));
 	endif;
 elseif ($manage == 1) :
-	$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '$team_name' AND handle = '$player_name'");
+	$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '%^' AND handle = '%^'", array($team_name, $player_name));
 	if (($res) && ($database->numrows($res) == 1)) :
 		$role = $database->result($res, 0, "role");
 		if ($player_role != "member") :
@@ -63,8 +63,8 @@ elseif ($manage == 1) :
 			$player_role .= ",founder";
 		endif;
 		$res = $database->exec("UPDATE teammembers SET " .
-			"role = '$player_role' " .
-			"WHERE teamname = '$team_name' AND handle = '$player_name'");
+			"role = '%^' " .
+			"WHERE teamname = '%^' AND handle = '%^'", array($player_role, $team_name, $player_name));
 	endif;
 endif;
 

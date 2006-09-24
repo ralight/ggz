@@ -22,35 +22,35 @@ $user_longitude = $_POST["user_longitude"];
 $user_latitude = $_POST["user_latitude"];
 $user_language = $_POST["user_language"];
 
-$res = $database->exec("SELECT * FROM userinfo WHERE handle = '$ggzuser'");
+$res = $database->exec("SELECT * FROM userinfo WHERE handle = '%^'", array($ggzuser));
 if (($res) && ($database->numrows($res) == 0)) :
 	$res = $database->exec("INSERT INTO userinfo " .
 		"(handle, photo, gender, country, longitude, latitude) VALUES " .
-		"('$ggzuser', '', '', '', 0.0, 0.0)");
+		"('%^', '', '', '', 0.0, 0.0)", array($ggzuser));
 endif;
 
 if ($password) :
 	$res = $database->exec("UPDATE users SET ".
-		"password = '$user_password' " .
-		"WHERE handle = '$ggzuser'");
+		"password = '%^' " .
+		"WHERE handle = '%^'", array($user_password, $ggzuser));
 	$md5pass = $user_password;
 	setcookie("ggzuser", "$md5pass");
 endif;
 if ($settings) :
 	$res = $database->exec("UPDATE userinfo SET ".
-		"photo = '$user_photo', gender = '$user_gender', country = '$user_country', blogfeed = '$user_blogfeed' " .
-		"WHERE handle = '$ggzuser'");
+		"photo = '%^', gender = '%^', country = '%^', blogfeed = '%^' " .
+		"WHERE handle = '%^'", array($user_photo, $user_gender, $user_country, $user_blogfeed, $ggzuser));
 	$res = $database->exec("UPDATE userinfo SET ".
-		"longitude = $user_longitude, latitude = $user_latitude " .
-		"WHERE handle = '$ggzuser'");
+		"longitude = '%^', latitude = '%^' " .
+		"WHERE handle = '%^'", array($user_longitude, $user_latitude, $ggzuser));
 	$res = $database->exec("UPDATE users SET ".
-		"name = '$user_realname', email = '$user_email' " .
-		"WHERE handle = '$ggzuser'");
+		"name = '%^', email = '%^' " .
+		"WHERE handle = '%^'", array($user_realname, $user_email, $ggzuser));
 endif;
 if ($pubkey) :
 	$res = $database->exec("UPDATE userinfo SET ".
-		"pubkey = '$user_pubkey' " .
-		"WHERE handle = '$ggzuser'");
+		"pubkey = '%^' " .
+		"WHERE handle = '%^'", array($user_pubkey, $ggzuser));
 endif;
 if ($language) :
 	Auth::setlanguage($user_language);

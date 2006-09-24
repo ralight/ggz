@@ -10,7 +10,7 @@
 	$userinfolist = array();
 	$userkarmalist = array();
 
-	$res = $database->exec("SELECT handle FROM users");
+	$res = $database->exec("SELECT handle FROM users", NULL);
 
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
@@ -18,7 +18,7 @@
 		$userlist[$handle] = 1;
 	}
 
-	$res = $database->exec("SELECT handle, country, gender FROM userinfo");
+	$res = $database->exec("SELECT handle, country, gender FROM userinfo", NULL);
 
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
@@ -42,7 +42,7 @@
 		}
 	endif;
 
-	$res = $database->exec("SELECT * FROM permissions");
+	$res = $database->exec("SELECT * FROM permissions", NULL);
 
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
@@ -73,7 +73,7 @@
 		"badkarma.badcount AS bad FROM karma LEFT JOIN " .
 		"(SELECT tohandle, COUNT(karma) AS badcount FROM karma WHERE karma = 0 GROUP BY tohandle) " .
 		"AS badkarma ON karma.tohandle = badkarma.tohandle " .
-		"GROUP BY karma.tohandle, badkarma.badcount");
+		"GROUP BY karma.tohandle, badkarma.badcount", NULL);
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
 		$handle = $database->result($res, $i, "tohandle");
@@ -101,7 +101,7 @@
 	endif;
 
 	if ($user_veteran) :
-		$res = $database->exec("SELECT * FROM users");
+		$res = $database->exec("SELECT * FROM users", NULL);
 
 		for ($i = 0; $i < $database->numrows($res); $i++)
 		{

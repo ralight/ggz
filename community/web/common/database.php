@@ -18,6 +18,7 @@ class Database
 			$this->id = mysql_connect($host, $user, $pass);
 			mysql_select_db($name, $this->id);
 		endif;
+
 		return $this->id;
 	}
 
@@ -30,8 +31,34 @@ class Database
 		endif;
 	}
 
-	function exec($query)
+	function exec($query, $arguments)
 	{
+		/* $query should be a static string with no variables inside it.
+		** To pass variables into the query, add %^ at the appropriate place 
+		** and add the variable to the $arguments array. e.g.
+		**
+		** $database->exec("SELECT * FROM users WHERE handle='%^' ORDER BY '%^';", array($handle, $order));
+		**
+		** This doesn't really offer any advantage over escaping everything
+		** before the query is passed to exec() (ie. the person writing the 
+		** query still has to remember to pass the arguments so that they are
+		** escaped whereas currently they just have to escape them manually)
+		** but having to add the extra argument does make it less likely that
+		** the escaping will be forgotten.
+		*/
+
+		$argcount = substr_count($query, "%^");
+		if($argcount > 0){
+			if(!is_array($arguments) || count($arguments) != $argcount){
+				return NULL;
+			}
+
+			for($i = 0; $i < $argcount; $i++){
+				$query = substr_replace($query, $this->escape_string($arguments[$i]), strpos($query, "%^"));
+			}
+		}
+
+		/* Query is now escaped correctly */
 		if ($this->type == "postgresql") :
 			return pg_exec($this->id, $query);
 		elseif ($this->type == "mysql") :
@@ -51,9 +78,9 @@ class Database
 	function result($result, $row, $column)
 	{
 		if ($this->type == "postgresql") :
-			return pg_result($result, $row, $column);
+			return stripslashes(pg_result($result, $row, $column));
 		elseif ($this->type == "mysql") :
-			return mysql_result($result, $row, $column);
+			return stripslashes(mysql_result($result, $row, $column));
 		endif;
 	}
 }

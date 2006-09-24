@@ -27,7 +27,7 @@ include("top.inc");
 <?php
 $ggzuser = Auth::username();
 $res = $database->exec("SELECT DISTINCT teamname FROM teammembers WHERE teamname NOT IN " .
-	"(SELECT teamname FROM teammembers WHERE handle = '$ggzuser')");
+	"(SELECT teamname FROM teammembers WHERE handle = '%^')", array($ggzuser));
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$teamname = $database->result($res, $i, "teamname");
@@ -54,7 +54,7 @@ for ($i = 0; $i < $database->numrows($res); $i++)
 <select name='team_name'>
 <?php
 $ggzuser = Auth::username();
-$res = $database->exec("SELECT DISTINCT teamname FROM teammembers WHERE handle = '$ggzuser'");
+$res = $database->exec("SELECT DISTINCT teamname FROM teammembers WHERE handle = '%^'", array($ggzuser));
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$teamname = $database->result($res, $i, "teamname");

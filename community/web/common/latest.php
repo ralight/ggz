@@ -4,7 +4,7 @@ function latest_matches()
 {
 	global $database;
 
-	$res = $database->exec("SELECT * FROM matches ORDER BY id DESC LIMIT 3");
+	$res = $database->exec("SELECT * FROM matches ORDER BY id DESC LIMIT 3", NULL);
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
 		$mid = $database->result($res, $i, "id");
@@ -20,7 +20,7 @@ function latest_tournaments()
 {
 	global $database;
 
-	$res = $database->exec("SELECT * FROM tournaments ORDER BY id DESC LIMIT 2");
+	$res = $database->exec("SELECT * FROM tournaments ORDER BY id DESC LIMIT 2", NULL);
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
 		$tid = $database->result($res, $i, "id");
@@ -47,7 +47,7 @@ function latest_forumposts()
 	endif;
 
 	$res = $phpbb->exec("SELECT * FROM phpbb_posts_text AS a, phpbb_posts AS b " .
-		"WHERE a.post_id = b.post_id ORDER BY a.post_id DESC LIMIT 3");
+		"WHERE a.post_id = b.post_id ORDER BY a.post_id DESC LIMIT 3", NULL);
 	for ($i = 0; $i < $phpbb->numrows($res); $i++)
 	{
 		$subject = $phpbb->result($res, $i, "post_subject");
