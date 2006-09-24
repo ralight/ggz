@@ -1,0 +1,59 @@
+body {
+	color: #000000;
+	background-color: #cefadf;
+	font-family: sans-serif;
+}
+
+.highlight {
+	border: 1px solid black;
+	background: white;
+	padding: 2px;
+}
+
+h1 {
+	text-align: center;
+}
+
+.cancel {
+	color: red;
+}
+
+th{
+	padding-bottom: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-bottom: 1px dashed black;
+}
+
+td{
+	text-align: center;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin: 10px;
+	border-bottom: 1px dashed black;
+}
+
+table{
+	padding: 10px;
+	margin: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	/*border: 1px dashed black; */
+}
+
+li.b_reg{
+	list-style-image: url('/images/bullets/bullet_purple.png');
+}
+
+li.b_alt{
+	list-style-image: url('/images/bullets/bullet_red.png');
+}
+
+li.b_toc{
+	list-style-image: url('/images/bullets/bullet_star.png');
+}
+
+li.b_mnt{
+	list-style-image: url('/images/bullets/bullet_error.png');
+}
+
