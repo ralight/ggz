@@ -54,7 +54,7 @@ class Database
 			}
 
 			for($i = 0; $i < $argcount; $i++){
-				$query = substr_replace($query, $this->escape_string($arguments[$i]), strpos($query, "%^"));
+				$query = substr_replace($query, $this->escape_string($arguments[$i]), strpos($query, "%^"), 2);
 			}
 		}
 
