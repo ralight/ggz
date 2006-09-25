@@ -189,8 +189,9 @@ void net_join(const char *room)
 		}
 	}
 
-	if(room) ggzcore_server_join_room(server, roomid);
-	else ggzcore_server_join_room(server, 0);
+	ggzroom = ggzcore_server_get_nth_room(server, roomid);
+	if(room) ggzcore_server_join_room(server, ggzroom);
+	else ggzcore_server_join_room(server, NULL);
 }
 
 /* Loop function */
