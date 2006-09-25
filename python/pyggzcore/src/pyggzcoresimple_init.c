@@ -302,7 +302,8 @@ static PyObject *pyggzcoresimple_server_join_room(PyObject *self, PyObject *args
 			/*printf("(pyggzcoresimple) join room %s yields: %i\n", room, number);*/
 		}
 	}
-	ret = ggzcore_server_join_room(ggzserver, number);
+	GGZRoom *ggzroom = ggzcore_server_get_nth_room(ggzserver, number);
+	ret = ggzcore_server_join_room(ggzserver, /*number*/ggzroom);
 	return Py_BuildValue("i", ret);
 }
 
