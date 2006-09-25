@@ -130,10 +130,11 @@ class GGZCoreServer
 		GGZCoreRoom* room();
 		/**
 		 * Return an explicitely given room. */
+		GGZCoreRoom* room(/*const unsigned int number*/GGZRoom *ggzroom);
 		GGZCoreRoom* room(const unsigned int number);
 		/**
 		 * Join a room. */
-		int joinRoom(const unsigned int number);
+		int joinRoom(/*const unsigned int number*/GGZRoom *room);
 
 		/**
 		 * The number of available game types. */

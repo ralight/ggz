@@ -157,6 +157,14 @@ GGZCoreRoom* GGZCoreServer::room()
 	return m_coreroom;
 }
 
+GGZCoreRoom* GGZCoreServer::room(/*const unsigned int number*/GGZRoom *ggzroom)
+{
+	int number = ggzcore_server_get_room_num(m_server, ggzroom);
+	// FIXME: ???
+
+	return room(number);
+}
+
 GGZCoreRoom* GGZCoreServer::room(const unsigned int number)
 {
 	m_tmproom = ggzcore_server_get_nth_room(m_server, number);
@@ -188,9 +196,9 @@ GGZCoreRoom* GGZCoreServer::room(const unsigned int number)
 	return m_coreroom;
 }
 
-int GGZCoreServer::joinRoom(const unsigned int number)
+int GGZCoreServer::joinRoom(/*const unsigned int number*/GGZRoom *room)
 {
-	return ggzcore_server_join_room(m_server, number);
+	return ggzcore_server_join_room(m_server, /*number*/room);
 }
 
 int GGZCoreServer::countGames()
