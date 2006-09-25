@@ -23,7 +23,8 @@ libkcm_ggz_games_la_SOURCES = kcm_ggz_games.cpp
 libkcm_ggz_games_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
 libkcm_ggz_games_la_METASOURCES = kcm_ggz_games.moc
 
-AM_CPPFLAGS = -I$(qt_includes) -I$(kde_includes) -I$(top_srcdir)/kcm_ggz
+AM_CPPFLAGS = -I$(qt_includes) -I$(kde_includes) -I$(top_srcdir)/kcm_ggz \
+	-DPREFIX=\"$(prefix)\"
 AM_LDFLAGS = $(all_libraries) $(KDE_PLUGIN) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT)
 
 noinst_HEADERS = kcm_ggz_default.h kcm_ggz_metaserver.h kcm_ggz_drs.h kcm_ggz_ggzd.h kcm_ggz_games.h metaserver_add.h metaserver_add_server.h kcm_ggz_pane.h

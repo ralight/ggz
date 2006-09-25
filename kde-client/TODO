@@ -6,6 +6,7 @@
 * moving ggzd launcher into a panel applet on its own (but with menu entry)
 * GGZCore++ should administrate all the ggzcore hooks internally
 * ShadowBridge: support for ggzcomm XML files (message flow visualization)
+* no ggz-config usage in configure.ac! only games packages should depend on it
 
 ===============================
 The old TODO items follow below

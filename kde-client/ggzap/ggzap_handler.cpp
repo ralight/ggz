@@ -202,6 +202,7 @@ void GGZapHandler::hookServerActive(unsigned int id)
 {
 	int join, ret;
 	GGZCoreGametype *gametype;
+	GGZRoom *ggzroom;
 
 /*cout << "hookServerActive!" << endl;*/
 
@@ -248,8 +249,9 @@ void GGZapHandler::hookServerActive(unsigned int id)
 					else cout << "type: " << m_server->room(i)->gametype()->name() << endl;
 				}
 			}
+			ggzroom = ggzcore_server_get_nth_room(m_server->server(), join);
 			if(join == -1) emit signalState(joinroomfail);
-			else m_server->joinRoom(join);
+			else m_server->joinRoom(/*join*/ggzroom);
 			break;
 		case GGZCoreServer::entered:
 			m_room = m_server->room();
