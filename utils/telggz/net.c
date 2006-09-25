@@ -89,7 +89,8 @@ void net_host(const char *hostname, int portnumber)
 
 void net_join(int roomnum)
 {
-	if(room) ggzcore_server_join_room(server, roomnum);
+	GGZRoom *ggzroom = ggzcore_server_get_nth_room(server, roomnum);
+	if(room) ggzcore_server_join_room(server, ggzroom);
 }
 
 void net_list(void)
