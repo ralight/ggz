@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 8507 2006-08-08 23:12:01Z jdorje $
+ * $Id: table.c 8609 2006-10-03 03:17:03Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -474,6 +474,7 @@ static GGZReturn table_start_game(GGZTable *table)
 	}
 
 	/* And start the game */
+	log_msg(GGZ_LOG_TABLES, "Launching table: %s", args[0]);
 	ggzdmod_set_module(table->ggzdmod, game, pwd, args);
 	if (ggzdmod_connect(table->ggzdmod) < 0)
 		status = GGZ_ERROR;
