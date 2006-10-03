@@ -58,8 +58,8 @@
 # Transport Layer Security options
 #EncryptionUse = 0
 #EncryptionPassword = ggzrocksmore
-#EncryptionKey = @ggzdconfdir@/ggzsite-example.pem
-#EncryptionCert = @ggzdconfdir@/ggzsite-example.pem
+#EncryptionKey = @prefix@/etc/ggzsite-example.pem
+#EncryptionCert = @prefix@/etc/ggzsite-example.pem
 
 # Announcements (none by default), metaserver must point to a GGZ metaserver
 #AnnounceLAN = 1
@@ -165,15 +165,15 @@ DebugTypes = All
 
 # Configuration directory
 #   This is where the server looks for game and room description files
-#ConfDir = @ggzdconfdir@
+#ConfDir = @prefix@/etc/ggzd
 
 # Data directory
 #   Where all server tables are stored if SQL is not used
-#DataDir = @ggzdstatedir@
+#DataDir = @prefix@/var/ggzd
 
 # Game Servers directory
 #   This is where the server can find the game server modules
-#GameDir = @ggzdexecmoddir@
+#GameDir = @prefix@/lib/ggzd
 
 [Files]
 
