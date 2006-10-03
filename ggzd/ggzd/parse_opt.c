@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8567 2006-09-03 05:35:12Z jdorje $
+ * $Id: parse_opt.c 8610 2006-10-03 03:17:36Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -302,9 +302,9 @@ void parse_conf_file(void)
 
 	/* Add any defaults which were not config'ed */
 
-	/* If no game_dir, default it to GAMEDIR */
-	if(!opt.game_dir)
-		opt.game_dir = ggz_strdup(GAMEDIR);
+	/* If no game_exec_dir, default it to GGZDEXECMODDIR */
+	if(!opt.game_exec_dir)
+		opt.game_exec_dir = ggz_strdup(GGZDEXECMODDIR);
 
 	/* If no conf_dir, default it to GGZDCONFDIR */
 	if(!opt.conf_dir)
@@ -368,7 +368,7 @@ static void get_config_options(int ch)
 	opt.tls_key = ggz_conf_read_string(ch, "General", "EncryptionKey", NULL);
 
 	/* [Directories] */
-	opt.game_dir = ggz_conf_read_string(ch, "Directories", "GameDir", NULL);
+	opt.game_exec_dir = ggz_conf_read_string(ch, "Directories", "GameDir", NULL);
 	opt.conf_dir = ggz_conf_read_string(ch, "Directories", "ConfDir", NULL);
 	opt.data_dir = ggz_conf_read_string(ch, "Directories", "DataDir", NULL);
 
@@ -603,13 +603,14 @@ static void parse_game(char *name, char *dir)
 		   the circumstances. */
 		return;
 	}
-	/* If there's no absolute path given, we prepend the game_dir. */
+	/* If there's no absolute path given, we prepend the game_exec_dir. */
 	if (game_info.exec_args[0][0] != '/') {
 		char *new_exec;
-		len = strlen(game_info.exec_args[0])+strlen(opt.game_dir)+2;
+		len = strlen(game_info.exec_args[0])
+		  + strlen(opt.game_exec_dir) + 2;
 		new_exec = ggz_malloc(len);
 		snprintf(new_exec, len, "%s/%s",
-			 opt.game_dir, game_info.exec_args[0]);
+			 opt.game_exec_dir, game_info.exec_args[0]);
 		ggz_free(game_info.exec_args[0]);
 		game_info.exec_args[0] = new_exec;
 	}

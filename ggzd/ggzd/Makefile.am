@@ -61,7 +61,7 @@ ggzd_CPPFLAGS = \
 	$(HOWL_INCLUDES) \
 	$(AVAHI_INCLUDES) \
 	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
-	-DGAMEDIR=\"$(gamedir)\" \
+	-DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\" \
 	-DTMPDIR=\"$(tmpdir)\"
 
 ggzd_LDFLAGS = $(LIBGGZ_LDFLAGS)

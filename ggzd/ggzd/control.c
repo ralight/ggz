@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8467 2006-08-04 01:58:46Z jdorje $
+ * $Id: control.c 8610 2006-10-03 03:17:36Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -156,7 +156,7 @@ static void cleanup_data(void)
 
 	if (opt.local_conf) data_free(opt.local_conf);
 	if (opt.interface) data_free(opt.interface);
-	if (opt.game_dir) data_free(opt.game_dir);
+	if (opt.game_exec_dir) data_free(opt.game_exec_dir);
 	if (opt.tmp_dir) data_free(opt.tmp_dir);
 	if (opt.conf_dir) data_free(opt.conf_dir);
 	if (opt.data_dir) data_free(opt.data_dir);
