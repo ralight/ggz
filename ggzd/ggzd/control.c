@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8610 2006-10-03 03:17:36Z jdorje $
+ * $Id: control.c 8611 2006-10-03 03:27:59Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -118,7 +118,6 @@ static RETSIGTYPE term_handle(int signum)
 static void init_dirs(void)
 {
 	/* not needed currently since anonymous sockets are used */
-	/*check_path(opt.tmp_dir);*/
 	check_path(opt.data_dir);
 }
 
@@ -157,7 +156,6 @@ static void cleanup_data(void)
 	if (opt.local_conf) data_free(opt.local_conf);
 	if (opt.interface) data_free(opt.interface);
 	if (opt.game_exec_dir) data_free(opt.game_exec_dir);
-	if (opt.tmp_dir) data_free(opt.tmp_dir);
 	if (opt.conf_dir) data_free(opt.conf_dir);
 	if (opt.data_dir) data_free(opt.data_dir);
 	if (opt.motd_file) data_free(opt.motd_file);

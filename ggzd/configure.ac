@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8580 2006-09-15 05:30:39Z jdorje $
+# $Id: configure.ac 8611 2006-10-03 03:27:59Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -27,10 +27,6 @@ AC_ARG_ENABLE([server],
 AC_ARG_ENABLE([games],
 	AS_HELP_STRING([--disable-games], [Don't build ggzd games]),
 	[enable_games=no], [enable_games=yes])
-#AC_ARG_WITH([tmpdir],
-#	    AC_HELP_STRING([--with-tmpdir=PATH],
-#		[directory for temporary files (default=/tmp/ggzd)]),
-#	    [tmpdir=$withval], [tmpdir="/tmp/ggzd"])
 AC_ARG_WITH([database],
 	AS_HELP_STRING([--with-database=DB],
 	[type of database to use: db2, db3, db4, pgsql, mysql, sqlite]),

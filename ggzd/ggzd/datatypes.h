@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 8610 2006-10-03 03:17:36Z jdorje $
+ * $Id: datatypes.h 8611 2006-10-03 03:27:59Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -49,7 +49,6 @@ typedef struct {
 	int main_port;
 	const char *interface;
 	const char *game_exec_dir;
-	const char *tmp_dir;
 	const char *conf_dir;
 	const char *data_dir;
 	const char *motd_file;
