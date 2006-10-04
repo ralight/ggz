@@ -1,8 +1,8 @@
 Index: tictactoe/game.h
 ===================================================================
---- tictactoe/game.h	(revision 8178)
+--- tictactoe/game.h	(revision 8613)
 +++ tictactoe/game.h	(working copy)
-@@ -69,9 +69,6 @@
+@@ -70,9 +70,6 @@
  };
  
  
@@ -10,11 +10,11 @@ Index: tictactoe/game.h
 -void game_init(void);
 -
  /* Functions to handle incoming data from server*/
- int receive_seat(void);
- int receive_players(void);
+ void receive_seat(void);
+ void receive_players(void);
 Index: tictactoe/main_win.c
 ===================================================================
---- tictactoe/main_win.c	(revision 8178)
+--- tictactoe/main_win.c	(revision 8613)
 +++ tictactoe/main_win.c	(working copy)
 @@ -40,6 +40,7 @@
  #include "dlg_about.h"
@@ -154,26 +154,11 @@ Index: tictactoe/main_win.c
 -	return main_win;
 +	return display;
  }
-Index: tictactoe/module.dsc.in
-===================================================================
---- tictactoe/module.dsc.in	(revision 8178)
-+++ tictactoe/module.dsc.in	(working copy)
-@@ -7,7 +7,7 @@
- CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.ttt @EXTRA_GAME_PARAMETERS@
- Frontend = gtk
- Homepage = http://www.ggzgamingzone.org/games/tictactoe/
--ProtocolEngine = TicTacToe
--ProtocolVersion = 4
--Version = 0.0.5
-+ProtocolEngine = @TTT_PROTOCOL_ENGINE@
-+ProtocolVersion = @TTT_PROTOCOL_VERSION@
-+Version = @TTT_VERSION@
- #SupportedGames = TicTacToe
 Index: tictactoe/main.c
 ===================================================================
---- tictactoe/main.c	(revision 8178)
+--- tictactoe/main.c	(revision 8613)
 +++ tictactoe/main.c	(working copy)
-@@ -51,32 +51,6 @@
+@@ -52,32 +52,6 @@
  
  static void initialize_about_dialog(void);
  
@@ -206,8 +191,8 @@ Index: tictactoe/main.c
  static void initialize_about_dialog(void)
  {
  	const char *content =
-@@ -266,8 +240,7 @@
- 	return 0;
+@@ -255,8 +229,7 @@
+ 	}
  }
  
 -
@@ -216,7 +201,7 @@ Index: tictactoe/main.c
  {
  	int i;
  
-@@ -276,11 +249,17 @@
+@@ -265,11 +238,17 @@
  
  	game.state = STATE_INIT;
  
@@ -235,9 +220,9 @@ Index: tictactoe/main.c
  int send_my_move(void)
  {
  	if (game.num < 0)
-@@ -330,3 +309,27 @@
- 
- 	return 0;
+@@ -317,3 +296,27 @@
+ 		break;
+ 	}
  }
 +
 +int main(int argc, char *argv[])
@@ -248,7 +233,7 @@ Index: tictactoe/main.c
 +	initialize_about_dialog();
 +
 +	init_ggz_gtk(_("Tic-Tac-Toe"), TRUE,
-+		     TTT_PROTOCOL_ENGINE, TTT_PROTOCOL_VERSION,
++		     PROTOCOL_ENGINE, PROTOCOL_VERSION,
 +		     game_handle_io, game_init);
 +	game.ggzmod = ggz_gtk_get_ggzmod();
 +
@@ -265,180 +250,75 @@ Index: tictactoe/main.c
 +}
 Index: tictactoe/Makefile.am
 ===================================================================
---- tictactoe/Makefile.am	(revision 8178)
+--- tictactoe/Makefile.am	(revision 8613)
 +++ tictactoe/Makefile.am	(working copy)
-@@ -4,7 +4,7 @@
- SUBDIRS = .
- 
+@@ -1,5 +1,5 @@
  AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		@GTK_CFLAGS@
-+		$(GTK_CFLAGS)
+-		$(GTK_CFLAGS)
++		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
  
  EXTRA_DIST = module.dsc.in
  
-@@ -23,9 +23,11 @@
- 	support.c	support.h
+@@ -19,8 +19,8 @@
  
  ggz_ttt_LDADD =	$(top_builddir)/common/libgtk-games.a			\
--		@GTK_LIBS@ @INTLLIBS@ $(LDADD)		\
+ 		$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
 -		$(LIB_GGZMOD) $(LIB_GGZ)
 -ggz_ttt_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-+		$(GTK_LIBS) $(INTLLIBS) $(LDADD)			\
 +		$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
 +ggz_ttt_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
  
  pixmapdir = $(ggzdatadir)/tictactoe/pixmaps
  dist_pixmap_DATA = o.svg x.svg
-+
-+noinst_HEADERS = version.in
-Index: tictactoe/version.in
+Index: spades/gtk_io.c
 ===================================================================
---- tictactoe/version.in	(revision 0)
-+++ tictactoe/version.in	(revision 0)
-@@ -0,0 +1,140 @@
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
-+TTT_VERSION=0.0.5
-+
-+TTT_PROTOCOL_ENGINE=TicTacToe
-+TTT_PROTOCOL_VERSION=4
-+
-+AC_SUBST(TTT_VERSION)
-+AC_SUBST(TTT_PROTOCOL_ENGINE)
-+AC_SUBST(TTT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([TTT_VERSION], "$TTT_VERSION", [TTT version])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_ENGINE], "$TTT_PROTOCOL_ENGINE",
-+		   [TTT protocol engine])
-+AC_DEFINE_UNQUOTED([TTT_PROTOCOL_VERSION], "$TTT_PROTOCOL_VERSION",
-+		   [TTT protocol version])
+--- spades/gtk_io.c	(revision 8613)
++++ spades/gtk_io.c	(working copy)
+@@ -74,7 +74,6 @@
+ 
+ 	/* Main window and callbacks */
+ 	playArea->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+-	ggz_game_main_window = GTK_WINDOW(playArea->window);	/* HACK */
+ 	gtk_window_set_title(GTK_WINDOW(playArea->window), "GtkSpades");
+ 
+ 	g_signal_connect(GTK_OBJECT(playArea->window), "delete_event",
+Index: spades/Makefile.am
+===================================================================
+--- spades/Makefile.am	(revision 8613)
++++ spades/Makefile.am	(working copy)
+@@ -4,7 +4,7 @@
+ SUBDIRS = .
+ 
+ AM_CPPFLAGS = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
+-		$(GTK_CFLAGS)
++		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
+ 
+ EXTRA_DIST = module.dsc.in
+ 
+@@ -38,5 +38,5 @@
+ 
+ ggz_spades_LDADD = 	$(top_builddir)/common/libgtk-games.a		\
+ 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
+-			$(LIB_GGZMOD) $(LIB_GGZ)
+-ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
++			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
++ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
+Index: spades/client_func.c
+===================================================================
+--- spades/client_func.c	(revision 8613)
++++ spades/client_func.c	(working copy)
+@@ -202,7 +202,7 @@
+ 	ggzmod = ggzmod_new(GGZMOD_GAME);
+ 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER,
+ 			   &handle_ggzmod_server);
+-	init_player_list(ggzmod);
++	init_player_list();
+ 	ggzmod_connect(ggzmod);
+ 
+ 	channel = g_io_channel_unix_new(ggzmod_get_fd(ggzmod));
 Index: reversi/main_win.c
 ===================================================================
---- reversi/main_win.c	(revision 8178)
+--- reversi/main_win.c	(revision 8613)
 +++ reversi/main_win.c	(working copy)
 @@ -41,6 +41,7 @@
  #include "dlg_about.h"
@@ -516,169 +396,9 @@ Index: reversi/main_win.c
  
  	return main_win;
  }
-Index: reversi/version.in
-===================================================================
---- reversi/version.in	(revision 0)
-+++ reversi/version.in	(revision 0)
-@@ -0,0 +1,140 @@
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-+REVERSI_VERSION=0.0.7
-+
-+REVERSI_PROTOCOL_ENGINE=Reversi
-+REVERSI_PROTOCOL_VERSION=4
-+
-+AC_SUBST(REVERSI_VERSION)
-+AC_SUBST(REVERSI_PROTOCOL_ENGINE)
-+AC_SUBST(REVERSI_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([REVERSI_VERSION], "$REVERSI_VERSION", [Reversi version])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_ENGINE], "$REVERSI_PROTOCOL_ENGINE",
-+		   [Reversi protocol engine])
-+AC_DEFINE_UNQUOTED([REVERSI_PROTOCOL_VERSION], "$REVERSI_PROTOCOL_VERSION",
-+		   [Reversi protocol version])
-Index: reversi/module.dsc.in
-===================================================================
---- reversi/module.dsc.in	(revision 8178)
-+++ reversi/module.dsc.in	(working copy)
-@@ -5,7 +5,6 @@
- CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.reversi @EXTRA_GAME_PARAMETERS@
- Frontend = gtk
- Homepage = http://www.ggzgamingzone.org/games/reversi/
--ProtocolEngine = Reversi
--ProtocolVersion = 4
--Version = 0.0.7
--
-+ProtocolEngine = @REVERSI_PROTOCOL_ENGINE@
-+ProtocolVersion = @REVERSI_PROTOCOL_VERSION@
-+Version = @REVERSI_VERSION@
 Index: reversi/main.c
 ===================================================================
---- reversi/main.c	(revision 8178)
+--- reversi/main.c	(revision 8613)
 +++ reversi/main.c	(working copy)
 @@ -115,25 +115,22 @@
  	initialize_about_dialog();
@@ -724,96 +444,31 @@ Index: reversi/main.c
  int get_seat(void)
 Index: reversi/Makefile.am
 ===================================================================
---- reversi/Makefile.am	(revision 8178)
+--- reversi/Makefile.am	(revision 8613)
 +++ reversi/Makefile.am	(working copy)
 @@ -6,7 +6,7 @@
  SUBDIRS = .
  
  AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		@GTK_CFLAGS@
+-		$(GTK_CFLAGS)
 +		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
  
  install-data-local:
  	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
-@@ -24,9 +24,11 @@
- 	support.c	support.h
+@@ -25,8 +25,8 @@
  
  ggz_reversi_LDADD =	$(top_builddir)/common/libgtk-games.a		\
--			@GTK_LIBS@ @INTLLIBS@ $(LDADD)	\
+ 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)	\
 -			$(LIB_GGZMOD) $(LIB_GGZ)
 -ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-+			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
 +			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
 +ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
  
  pixmapdir = $(ggzdatadir)/reversi/pixmaps
  dist_pixmap_DATA = white.svg black.svg dot.svg enemydot.svg
-+
-+noinst_HEADERS = version.in
-Index: spades/gtk_io.c
-===================================================================
---- spades/gtk_io.c	(revision 8178)
-+++ spades/gtk_io.c	(working copy)
-@@ -74,7 +74,6 @@
- 
- 	/* Main window and callbacks */
- 	playArea->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
--	ggz_game_main_window = GTK_WINDOW(playArea->window);	/* HACK */
- 	gtk_window_set_title(GTK_WINDOW(playArea->window), "GtkSpades");
- 
- 	g_signal_connect(GTK_OBJECT(playArea->window), "delete_event",
-Index: spades/Makefile.am
-===================================================================
---- spades/Makefile.am	(revision 8178)
-+++ spades/Makefile.am	(working copy)
-@@ -4,7 +4,7 @@
- SUBDIRS = .
- 
- AM_CPPFLAGS = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		$(GTK_CFLAGS)
-+		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
- 
- EXTRA_DIST = module.dsc.in
- 
-@@ -38,5 +38,5 @@
- 
- ggz_spades_LDADD = 	$(top_builddir)/common/libgtk-games.a		\
- 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
--			$(LIB_GGZMOD) $(LIB_GGZ)
--ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-+			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
-+ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
-Index: spades/client_func.c
-===================================================================
---- spades/client_func.c	(revision 8178)
-+++ spades/client_func.c	(working copy)
-@@ -202,7 +202,7 @@
- 	ggzmod = ggzmod_new(GGZMOD_GAME);
- 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER,
- 			   &handle_ggzmod_server);
--	init_player_list(ggzmod);
-+	init_player_list();
- 	ggzmod_connect(ggzmod);
- 
- 	channel = g_io_channel_unix_new(ggzmod_get_fd(ggzmod));
-Index: hastings/module.dsc.in
-===================================================================
---- hastings/module.dsc.in	(revision 8178)
-+++ hastings/module.dsc.in	(working copy)
-@@ -5,7 +5,7 @@
- Frontend = gtk
- Homepage = http://www.ggzgamingzone.org/games/hastings/
- Name = Hastings
--ProtocolEngine = Hastings
--ProtocolVersion = 4
--Version = 0.0.7
-+ProtocolEngine = @HASTINGS_PROTOCOL_ENGINE@
-+ProtocolVersion = @HASTINGS_PROTOCOL_VERSION@
-+Version = @HASTINGS_VERSION@
- 
 Index: hastings/main.c
 ===================================================================
---- hastings/main.c	(revision 8178)
+--- hastings/main.c	(revision 8613)
 +++ hastings/main.c	(working copy)
 @@ -73,11 +73,14 @@
  	gtk_init(&argc, &argv);
@@ -834,179 +489,30 @@ Index: hastings/main.c
  	if (ggzmod_disconnect(mod) < 0)
 Index: hastings/Makefile.am
 ===================================================================
---- hastings/Makefile.am	(revision 8178)
+--- hastings/Makefile.am	(revision 8613)
 +++ hastings/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = . pixmaps
  
  AM_CPPFLAGS = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		@GTK_CFLAGS@
+-		$(GTK_CFLAGS)
 +		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
  
  EXTRA_DIST = module.dsc.in
  
-@@ -24,7 +24,9 @@
- 	support.c support.h \
- 	selector.c selector.h
+@@ -26,7 +26,7 @@
  
--ggz_hastings_LDADD =	$(top_builddir)/common/libgtk-games.a	\
--			@GTK_LIBS@ @INTLLIBS@ $(LDADD)		\
+ ggz_hastings_LDADD =	$(top_builddir)/common/libgtk-games.a	\
+ 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
 -			$(LIB_GGZMOD) $(LIB_GGZ)
 -ggz_hastings_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-+ggz_hastings_LDADD =	$(top_builddir)/common/libgtk-games.a		\
-+			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
 +			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
 +ggz_hastings_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
-+
-+noinst_HEADERS = version.in
-Index: hastings/version.in
-===================================================================
---- hastings/version.in	(revision 0)
-+++ hastings/version.in	(revision 0)
-@@ -0,0 +1,140 @@
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
-+HASTINGS_VERSION=0.0.7
-+
-+HASTINGS_PROTOCOL_ENGINE=Hastings
-+HASTINGS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(HASTINGS_VERSION)
-+AC_SUBST(HASTINGS_PROTOCOL_ENGINE)
-+AC_SUBST(HASTINGS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([HASTINGS_VERSION], "$HASTINGS_VERSION", [Hastings version])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_ENGINE], "$HASTINGS_PROTOCOL_ENGINE",
-+		   [Hastings protocol engine])
-+AC_DEFINE_UNQUOTED([HASTINGS_PROTOCOL_VERSION], "$HASTINGS_PROTOCOL_VERSION",
-+		   [Hastings protocol version])
+ 
+ noinst_HEADERS = version.m4
 Index: common/dlg_exit.c
 ===================================================================
---- common/dlg_exit.c	(revision 8178)
+--- common/dlg_exit.c	(revision 8613)
 +++ common/dlg_exit.c	(working copy)
 @@ -39,7 +39,7 @@
  {
@@ -1036,7 +542,7 @@ Index: common/dlg_exit.c
  				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 Index: common/dlg_about.c
 ===================================================================
---- common/dlg_about.c	(revision 8178)
+--- common/dlg_about.c	(revision 8613)
 +++ common/dlg_about.c	(working copy)
 @@ -114,7 +114,7 @@
  		gdk_window_show(dlg_about->window);
@@ -1049,7 +555,7 @@ Index: common/dlg_about.c
  				 &dlg_about);
 Index: common/ggz_gtk.h
 ===================================================================
---- common/ggz_gtk.h	(revision 8178)
+--- common/ggz_gtk.h	(revision 8613)
 +++ common/ggz_gtk.h	(working copy)
 @@ -28,7 +28,16 @@
  #include "ggzintl.h"
@@ -1073,7 +579,7 @@ Index: common/ggz_gtk.h
 +gboolean ggz_gtk_is_embedded(void);
 Index: common/dlg_chat.c
 ===================================================================
---- common/dlg_chat.c	(revision 8178)
+--- common/dlg_chat.c	(revision 8613)
 +++ common/dlg_chat.c	(working copy)
 @@ -30,6 +30,7 @@
  #  include <config.h>	/* Site-specific config */
@@ -1117,7 +623,7 @@ Index: common/dlg_chat.c
  				 &dlg_chat);
 Index: common/dlg_players.c
 ===================================================================
---- common/dlg_players.c	(revision 8178)
+--- common/dlg_players.c	(revision 8613)
 +++ common/dlg_players.c	(working copy)
 @@ -83,15 +83,15 @@
  	update_player_lists();
@@ -1229,22 +735,9 @@ Index: common/dlg_players.c
 +	assert(ggz != NULL);
  	ggzmod_request_stand(ggz);
  }
-Index: common/dlg_players.h
-===================================================================
---- common/dlg_players.h	(revision 8178)
-+++ common/dlg_players.h	(working copy)
-@@ -32,7 +32,7 @@
-    if the game wants its own handlers for these events you should
-    register them *after* calling this function, and then be sure to
-    call update_player_lists when the events occur. */
--void init_player_list(GGZMod * ggzmod);
-+void init_player_list(void);
- 
- /* The player list will attach itself to the SEAT and SPECTATOR ggzmod
-    events, but if you override them you should call this function instead.
 Index: common/dlg_chat.h
 ===================================================================
---- common/dlg_chat.h	(revision 8178)
+--- common/dlg_chat.h	(revision 8613)
 +++ common/dlg_chat.h	(working copy)
 @@ -30,7 +30,7 @@
   * handler for the CHAT event.  If the game wants its own handler for this
@@ -1255,9 +748,22 @@ Index: common/dlg_chat.h
  
  /* Creates a widget containing a chatbox. */
  GtkWidget *create_chat_widget(void);
+Index: common/dlg_players.h
+===================================================================
+--- common/dlg_players.h	(revision 8613)
++++ common/dlg_players.h	(working copy)
+@@ -32,7 +32,7 @@
+    if the game wants its own handlers for these events you should
+    register them *after* calling this function, and then be sure to
+    call update_player_lists when the events occur. */
+-void init_player_list(GGZMod * ggzmod);
++void init_player_list(void);
+ 
+ /* The player list will attach itself to the SEAT and SPECTATOR ggzmod
+    events, but if you override them you should call this function instead.
 Index: common/menus.c
 ===================================================================
---- common/menus.c	(revision 8178)
+--- common/menus.c	(revision 8613)
 +++ common/menus.c	(working copy)
 @@ -34,14 +34,14 @@
  
@@ -1291,20 +797,21 @@ Index: common/menus.c
  	set_menu_sensitive(TABLE_CHAT_WINDOW, FALSE);
 Index: common/Makefile.am
 ===================================================================
---- common/Makefile.am	(revision 8178)
+--- common/Makefile.am	(revision 8613)
 +++ common/Makefile.am	(working copy)
-@@ -3,7 +3,7 @@
+@@ -3,7 +3,8 @@
  
  SUBDIRS = . cardsets
  
--AM_CPPFLAGS = @GTK_CFLAGS@ $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES)
-+AM_CPPFLAGS = $(GTK_CFLAGS) $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) $(GGZ_GTK_INCLUDES)
+-AM_CPPFLAGS = $(GTK_CFLAGS) $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES)
++AM_CPPFLAGS = $(GTK_CFLAGS) $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
++		$(GGZ_GTK_INCLUDES)
  
  noinst_LIBRARIES = libgtk-games.a
  
 Index: common/menus.h
 ===================================================================
---- common/menus.h	(revision 8178)
+--- common/menus.h	(revision 8613)
 +++ common/menus.h	(working copy)
 @@ -68,8 +68,7 @@
  
@@ -1318,9 +825,9 @@ Index: common/menus.h
  void set_menu_sensitive(const char *menu, gboolean sensitive);
 Index: common/ggz_gtk.c
 ===================================================================
---- common/ggz_gtk.c	(revision 8178)
+--- common/ggz_gtk.c	(revision 8613)
 +++ common/ggz_gtk.c	(working copy)
-@@ -27,24 +27,32 @@
+@@ -27,24 +27,37 @@
  #  include <config.h>
  #endif
  
@@ -1337,7 +844,7 @@ Index: common/ggz_gtk.c
  #include "ggz_gtk.h"
  
 -GtkWindow *ggz_game_main_window;
-+static GtkWidget *main_win, *display_area, *notebook;
++static GtkWidget *main_win, *display_area, *gtkgames_notebook;
 +static GGZMod *mod;
 +static gboolean embedded;
 +static guint ggz_input_id = -1;
@@ -1353,13 +860,18 @@ Index: common/ggz_gtk.c
 -
 -	return (ggzmod_dispatch(mod) >= 0);
 +	assert(mod != NULL);
-+	if (ggzmod_dispatch(mod) < 0) {
++	if (cond & GDK_INPUT_READ) {
++		if (ggzmod_dispatch(mod) < 0) {
++			ggz_game_closed();
++		}
++	}
++	if (cond & GDK_INPUT_EXCEPTION) {
 +		ggz_game_closed();
 +	}
  }
  
  static gboolean handle_game_server(GIOChannel * channel, GIOCondition cond,
-@@ -52,6 +60,7 @@
+@@ -52,6 +65,7 @@
  {
  	GGZMod *mod = data;
  
@@ -1367,7 +879,7 @@ Index: common/ggz_gtk.c
  	return (game_server_handler) (mod);
  }
  
-@@ -66,30 +75,149 @@
+@@ -66,30 +80,148 @@
  	g_io_add_watch(channel, G_IO_IN, handle_game_server, mod);
  }
  
@@ -1389,7 +901,8 @@ Index: common/ggz_gtk.c
 +	ggzmod_connect(mod);
  
 +	ggz_input_id = gtk_input_add_full(ggzmod_get_fd(mod),
-+					  GDK_INPUT_READ, handle_ggz,
++					  GDK_INPUT_READ | GDK_INPUT_EXCEPTION,
++					  handle_ggz,
 +					  NULL, NULL, NULL);
 +
 +	init_player_list();
@@ -1399,17 +912,14 @@ Index: common/ggz_gtk.c
 +	}
 +
 +	if (embedded) {
-+		gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook),
++		gtk_notebook_set_current_page(GTK_NOTEBOOK(gtkgames_notebook),
 +					      PAGE_GAME);
 +	}
 +}
 +
 +static void ggzmod_close(void)
 +{
-+	if (ggzmod_disconnect(mod) < 0) {
-+		return;
-+	}
-+
++	(void) ggzmod_disconnect(mod);
 +	ggzmod_free(mod);
 +	mod = NULL;
 +
@@ -1421,8 +931,7 @@ Index: common/ggz_gtk.c
 +void ggz_game_closed(void)
 +{
 +	if (embedded) {
-+		ggz_embed_leave_table();
-+		gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook),
++		gtk_notebook_set_current_page(GTK_NOTEBOOK(gtkgames_notebook),
 +					      PAGE_GGZ);
 +		ggzmod_close();
 +	} else {
@@ -1443,24 +952,26 @@ Index: common/ggz_gtk.c
 -		printf(_("This program should only be run from within GGZ."));
 -		printf("\n");
 -		exit(1);
-+		notebook = gtk_notebook_new();
++		gtkgames_notebook = gtk_notebook_new();
 +
 +		/* stop mouse wheel notebook page switching. */
-+		g_signal_connect(notebook, "scroll_event",
++		g_signal_connect(gtkgames_notebook, "scroll_event",
 +				 G_CALLBACK(gtk_true), NULL);
 +
-+		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
-+		gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
++		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(gtkgames_notebook),
++					   FALSE);
++		gtk_notebook_set_show_border(GTK_NOTEBOOK(gtkgames_notebook),
++					     FALSE);
 +
-+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
++		gtk_notebook_append_page(GTK_NOTEBOOK(gtkgames_notebook),
 +					 ggz_gtk_create_main_area(main_win),
 +					 NULL);
 +
 +		display_area = gtk_vbox_new(FALSE, 0);
-+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
++		gtk_notebook_append_page(GTK_NOTEBOOK(gtkgames_notebook),
 +					 display_area, NULL);
 +
-+		gtk_container_add(GTK_CONTAINER(main_win), notebook);
++		gtk_container_add(GTK_CONTAINER(main_win), gtkgames_notebook);
 +
 +		gtk_widget_show_all(GTK_WIDGET(main_win));
 +	} else {
@@ -1532,194 +1043,9 @@ Index: common/ggz_gtk.c
 +{
 +	return embedded;
 +}
-Index: configure.ac
-===================================================================
---- configure.ac	(revision 8178)
-+++ configure.ac	(working copy)
-@@ -45,6 +45,7 @@
- AC_GGZ_LIBGGZ
- AC_GGZ_GGZMOD
- AC_GGZ_CONFIG("true", ignore)
-+AC_GGZ_GTK
- AC_GGZ_INTL
- 
- dnl Check for header files
-@@ -115,6 +116,17 @@
- fi
- AC_SUBST(EXTRA_GAME_PARAMETERS)
- 
-+dnl Versioning
-+dnl ==========
-+m4_include(chess/version.in)
-+m4_include(chinese-checkers/version.in)
-+m4_include(combat/version.in)
-+m4_include(dots/version.in)
-+m4_include(ggzcards/version.in)
-+m4_include(hastings/version.in)
-+m4_include(reversi/version.in)
-+m4_include(tictactoe/version.in)
-+
- dnl Various dirs
- dnl ============
- 
-Index: chinese-checkers/version.in
-===================================================================
---- chinese-checkers/version.in	(revision 0)
-+++ chinese-checkers/version.in	(revision 0)
-@@ -0,0 +1,150 @@
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
-+CCHECKERS_VERSION=0.0.3
-+
-+CCHECKERS_PROTOCOL_ENGINE=CCheckers
-+CCHECKERS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CCHECKERS_VERSION)
-+AC_SUBST(CCHECKERS_PROTOCOL_ENGINE)
-+AC_SUBST(CCHECKERS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CCHECKERS_VERSION], "$CCHECKERS_VERSION",
-+                   [CCheckers version])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_ENGINE], "$CCHECKERS_PROTOCOL_ENGINE",
-+		   [CCheckers protocol engine])
-+AC_DEFINE_UNQUOTED([CCHECKERS_PROTOCOL_VERSION], "$CCHECKERS_PROTOCOL_VERSION",
-+		   [CCheckers protocol version])
 Index: chinese-checkers/game.c
 ===================================================================
---- chinese-checkers/game.c	(revision 8178)
+--- chinese-checkers/game.c	(revision 8613)
 +++ chinese-checkers/game.c	(working copy)
 @@ -78,6 +78,13 @@
  {
@@ -1747,7 +1073,7 @@ Index: chinese-checkers/game.c
  
 Index: chinese-checkers/main_dlg.c
 ===================================================================
---- chinese-checkers/main_dlg.c	(revision 8178)
+--- chinese-checkers/main_dlg.c	(revision 8613)
 +++ chinese-checkers/main_dlg.c	(working copy)
 @@ -42,7 +42,7 @@
  #include "main_dlg.h"
@@ -1777,207 +1103,45 @@ Index: chinese-checkers/main_dlg.c
  	gtk_widget_set_name(menubar, "menubar");
  	gtk_widget_ref(menubar);
  	g_object_set_data_full(G_OBJECT(dlg_main), "menubar", menubar,
-Index: chinese-checkers/module.dsc.in
-===================================================================
---- chinese-checkers/module.dsc.in	(revision 8178)
-+++ chinese-checkers/module.dsc.in	(working copy)
-@@ -5,6 +5,6 @@
- Frontend = gtk
- Homepage = http://www.ggzgamingzone.org/games/chinese-checkers/
- Name = ccheckers
--ProtocolEngine = CCheckers
--ProtocolVersion = 3
--Version = 0.0.3
-+ProtocolEngine = @CCHECKERS_PROTOCOL_ENGINE@
-+ProtocolVersion = @CCHECKERS_PROTOCOL_VERSION@
-+Version = @CCHECKERS_VERSION@
 Index: chinese-checkers/Makefile.am
 ===================================================================
---- chinese-checkers/Makefile.am	(revision 8178)
+--- chinese-checkers/Makefile.am	(revision 8613)
 +++ chinese-checkers/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = . pixmaps
  
  AM_CPPFLAGS = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDE) \
--		@GTK_CFLAGS@
-+		$(GGZ_GTK_INCLUDES) $(GTK_CFLAGS)
+-		$(GTK_CFLAGS)
++		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
  
  EXTRA_DIST = module.dsc.in
  
-@@ -27,7 +27,8 @@
- 			support.c	support.h
+@@ -28,8 +28,8 @@
  
  ggz_ccheckers_LDADD =	$(top_builddir)/common/libgtk-games.a		\
--			@GTK_LIBS@ @INTLLIBS@ $(LDADD)	\
+ 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)	\
 -			$(LIB_GGZMOD) $(LIB_GGZ)
 -ggz_ccheckers_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-+			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
 +			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
 +ggz_ccheckers_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
  
-+noinst_HEADERS = version.in
-Index: ggzcards/version.in
+ 
+ noinst_HEADERS = version.m4
+Index: configure.ac
 ===================================================================
---- ggzcards/version.in	(revision 0)
-+++ ggzcards/version.in	(revision 0)
-@@ -0,0 +1,140 @@
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-+GGZCARDS_VERSION=0.0.7
-+
-+GGZCARDS_PROTOCOL_ENGINE=GGZCards
-+GGZCARDS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(GGZCARDS_VERSION)
-+AC_SUBST(GGZCARDS_PROTOCOL_ENGINE)
-+AC_SUBST(GGZCARDS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([GGZCARDS_VERSION], "$GGZCARDS_VERSION", [GGZCards version])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_ENGINE], "$GGZCARDS_PROTOCOL_ENGINE",
-+		   [GGZCards protocol engine])
-+AC_DEFINE_UNQUOTED([GGZCARDS_PROTOCOL_VERSION], "$GGZCARDS_PROTOCOL_VERSION",
-+		   [GGZCards protocol version])
-Index: ggzcards/module.dsc.in
-===================================================================
---- ggzcards/module.dsc.in	(revision 8178)
-+++ ggzcards/module.dsc.in	(working copy)
-@@ -6,6 +6,6 @@
- Frontend = gtk
- Homepage = http://www.ggzgamingzone.org/games/ggzcards/
- Name = GGZCards
--ProtocolEngine = GGZCards
--ProtocolVersion = 3
--Version = 0.0.7
-+ProtocolEngine = @GGZCARDS_PROTOCOL_ENGINE@
-+ProtocolVersion = @GGZCARDS_PROTOCOL_VERSION@
-+Version = @GGZCARDS_VERSION@
+--- configure.ac	(revision 8613)
++++ configure.ac	(working copy)
+@@ -47,6 +47,7 @@
+ AC_GGZ_VERSION(0, 0, 14)
+ AC_GGZ_GGZMOD
+ AC_GGZ_CONFIG("true", ignore)
++AC_GGZ_GTK
+ AC_GGZ_INTL
+ 
+ dnl Check for header files
 Index: ggzcards/dlg_main.c
 ===================================================================
---- ggzcards/dlg_main.c	(revision 8178)
+--- ggzcards/dlg_main.c	(revision 8613)
 +++ ggzcards/dlg_main.c	(working copy)
 @@ -46,7 +46,7 @@
  #include "layout.h"
@@ -1988,7 +1152,7 @@ Index: ggzcards/dlg_main.c
  {
  	GtkItemFactoryEntry items[] = {
  		TABLE_MENU,
-@@ -65,8 +65,7 @@
+@@ -67,8 +67,7 @@
  	};
  	GtkWidget *menubar;
  
@@ -1998,7 +1162,7 @@ Index: ggzcards/dlg_main.c
  				   sizeof(items) / sizeof(items[0]));
  
  	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
-@@ -104,7 +103,7 @@
+@@ -106,7 +105,7 @@
  	gtk_widget_show(vbox1);
  	gtk_container_add(GTK_CONTAINER(dlg_main), vbox1);
  
@@ -2009,9 +1173,9 @@ Index: ggzcards/dlg_main.c
  	g_object_set_data_full(G_OBJECT(dlg_main), "menubar", menubar,
 Index: ggzcards/main.c
 ===================================================================
---- ggzcards/main.c	(revision 8178)
+--- ggzcards/main.c	(revision 8613)
 +++ ggzcards/main.c	(working copy)
-@@ -82,12 +82,11 @@
+@@ -83,12 +83,11 @@
  	pango_font_description_set_family(fixed_font, font);
  
  	/* Now some more initializations... */
@@ -2029,22 +1193,22 @@ Index: ggzcards/main.c
  
 Index: ggzcards/Makefile.am
 ===================================================================
---- ggzcards/Makefile.am	(revision 8178)
+--- ggzcards/Makefile.am	(revision 8613)
 +++ ggzcards/Makefile.am	(working copy)
-@@ -9,7 +9,7 @@
+@@ -8,7 +8,7 @@
+ AM_CPPFLAGS =	-I$(top_srcdir)/common/ \
  		-I$(top_srcdir)/ggzcards/common \
  		-I$(top_srcdir)/ggzcards/client \
- 		$(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		@GTK_CFLAGS@
-+		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
+-		$(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
++		$(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) $(GGZ_GTK_INCLUDES) \
+ 		$(GTK_CFLAGS)
  
  install-data-local:
- 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
-@@ -39,9 +39,9 @@
+@@ -40,11 +40,11 @@
  # first here.  If there's a circular dependency you may have to list the
  # libs twice!
  ggz_ggzcards_LDADD =	$(top_builddir)/common/libgtk-games.a		\
--			@GTK_LIBS@ @INTLLIBS@ $(LDADD)			\
+-			$(GTK_LIBS) $(INTLLIBS) $(LDADD)			\
 +			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
  			$(top_builddir)/ggzcards/client/libclient.a	\
  			$(top_builddir)/ggzcards/common/libcommon.a	\
@@ -2053,235 +1217,11 @@ Index: ggzcards/Makefile.am
  
 -ggz_ggzcards_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 +ggz_ggzcards_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
-Index: combat/interface.c
-===================================================================
---- combat/interface.c	(revision 8178)
-+++ combat/interface.c	(working copy)
-@@ -57,8 +57,7 @@
- 	};
- 	GtkWidget *menubar;
  
--	menubar = ggz_create_menus(window,
--				   items,
-+	menubar = ggz_create_menus(items,
- 				   sizeof(items) / sizeof(items[0]));
- 
- 	set_menu_sensitive(TABLE_PLAYER_LIST, FALSE);
-Index: combat/version.in
-===================================================================
---- combat/version.in	(revision 0)
-+++ combat/version.in	(revision 0)
-@@ -0,0 +1,140 @@
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-+COMBAT_VERSION=1.2
-+
-+COMBAT_PROTOCOL_ENGINE=Combat
-+COMBAT_PROTOCOL_VERSION=3
-+
-+AC_SUBST(COMBAT_VERSION)
-+AC_SUBST(COMBAT_PROTOCOL_ENGINE)
-+AC_SUBST(COMBAT_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([COMBAT_VERSION], "$COMBAT_VERSION", [Combat version])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_ENGINE], "$COMBAT_PROTOCOL_ENGINE",
-+		   [Combat protocol engine])
-+AC_DEFINE_UNQUOTED([COMBAT_PROTOCOL_VERSION], "$COMBAT_PROTOCOL_VERSION",
-+		   [Combat protocol version])
-Index: combat/module.dsc.in
-===================================================================
---- combat/module.dsc.in	(revision 8178)
-+++ combat/module.dsc.in	(working copy)
-@@ -1,9 +1,9 @@
- [ModuleInfo]
- Name = Combat
- Author = Ismael Orenstein
--ProtocolEngine = Combat
--ProtocolVersion = 3
--Version = 1.2
-+ProtocolEngine = @COMBAT_PROTOCOL_ENGINE@
-+ProtocolVersion = @COMBAT_PROTOCOL_VERSION@
-+Version = @COMBAT_VERSION@
- CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.combat @EXTRA_GAME_PARAMETERS@
- Frontend = gtk
- Homepage = http://www.ggzgamingzone.org/games/combat/
-Index: combat/main.c
-===================================================================
---- combat/main.c	(revision 8178)
-+++ combat/main.c	(working copy)
-@@ -73,6 +73,11 @@
- 	gtk_init(&argc, &argv);
- 	init_about_dialog();
- 
-+	init_ggz_gtk(_("Combat"), FALSE,
-+		     COMBAT_PROTOCOL_ENGINE, COMBAT_PROTOCOL_VERSION,
-+		     game_handle_io, NULL);
-+	mod = ggz_gtk_get_ggzmod();
-+
- 	game_init();
- 
- 	// TODO: Check for directory the user wants
-@@ -82,8 +87,6 @@
- 	main_win = create_main_window();
- 	gtk_widget_show(main_win);
- 
--	mod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
--
- 	gtk_main();
- 
- 	if (ggzmod_disconnect(mod) < 0)
-Index: combat/Makefile.am
-===================================================================
---- combat/Makefile.am	(revision 8178)
-+++ combat/Makefile.am	(working copy)
-@@ -4,7 +4,7 @@
- SUBDIRS = . pixmaps maps
- 
- AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		@GTK_CFLAGS@
-+		$(GGZ_GTK_INCLUDES) $(GTK_CFLAGS)
- 
- EXTRA_DIST = module.dsc.in
- 
-@@ -28,7 +28,8 @@
- 			support.c	support.h
- 
- ggz_combat_LDADD =	$(top_builddir)/common/libgtk-games.a		\
--			@GTK_LIBS@ @INTLLIBS@ $(LDADD)			\
--			$(LIB_GGZMOD) $(LIB_GGZ)
--ggz_combat_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-+			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
-+			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
-+ggz_combat_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
- 
-+noinst_HEADERS = version.in
+ noinst_HEADERS = version.m4
 Index: chess/main_win.c
 ===================================================================
---- chess/main_win.c	(revision 8178)
+--- chess/main_win.c	(revision 8613)
 +++ chess/main_win.c	(working copy)
 @@ -36,6 +36,7 @@
  
@@ -2503,171 +1443,9 @@ Index: chess/main_win.c
 -	return main_win;
 +	return display;
  }
-Index: chess/version.in
-===================================================================
---- chess/version.in	(revision 0)
-+++ chess/version.in	(revision 0)
-@@ -0,0 +1,140 @@
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-+CHESS_VERSION=0.0.8
-+
-+CHESS_PROTOCOL_ENGINE=Chess
-+CHESS_PROTOCOL_VERSION=3
-+
-+AC_SUBST(CHESS_VERSION)
-+AC_SUBST(CHESS_PROTOCOL_ENGINE)
-+AC_SUBST(CHESS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([CHESS_VERSION], "$CHESS_VERSION", [Chess version])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_ENGINE], "$CHESS_PROTOCOL_ENGINE",
-+		   [Chess protocol engine])
-+AC_DEFINE_UNQUOTED([CHESS_PROTOCOL_VERSION], "$CHESS_PROTOCOL_VERSION",
-+		   [Chess protocol version])
-Index: chess/module.dsc.in
-===================================================================
---- chess/module.dsc.in	(revision 8178)
-+++ chess/module.dsc.in	(working copy)
-@@ -2,9 +2,9 @@
- [ModuleInfo]
- Name = Chess
- Author = Ismael Orenstein
--Version = 0.0.8
--ProtocolEngine = Chess
--ProtocolVersion = 3
-+Version = @CHESS_VERSION@
-+ProtocolEngine = @CHESS_PROTOCOL_ENGINE@
-+ProtocolVersion = @CHESS_PROTOCOL_VERSION@
- CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.chess @EXTRA_GAME_PARAMETERS@
- Frontend = gtk
- Homepage = http://www.ggzgamingzone.org/games/chess/
 Index: chess/main.c
 ===================================================================
---- chess/main.c	(revision 8178)
+--- chess/main.c	(revision 8613)
 +++ chess/main.c	(working copy)
 @@ -64,8 +64,13 @@
  	gtk_init(&argc, &argv);
@@ -2702,7 +1480,7 @@ Index: chess/main.c
  
 Index: chess/board.c
 ===================================================================
---- chess/board.c	(revision 8178)
+--- chess/board.c	(revision 8613)
 +++ chess/board.c	(working copy)
 @@ -35,6 +35,8 @@
  #include <gtk/gtk.h>
@@ -2762,193 +1540,94 @@ Index: chess/board.c
  
 Index: chess/Makefile.am
 ===================================================================
---- chess/Makefile.am	(revision 8178)
+--- chess/Makefile.am	(revision 8613)
 +++ chess/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = libcgc bitmaps
  
  AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		 @GTK_CFLAGS@
-+		 $(GGZ_GTK_INCLUDES) $(GTK_CFLAGS)
+-		 $(GTK_CFLAGS)
++		 $(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
  
  EXTRA_DIST = module.dsc.in
  
-@@ -28,8 +28,9 @@
- 		support.c	support.h
- 
+@@ -30,8 +30,8 @@
  ggz_chess_LDADD =	$(top_builddir)/common/libgtk-games.a		\
--			@GTK_LIBS@ @INTLLIBS@ $(LDADD)	\
-+			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
+ 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)	\
  			libcgc/libcgc.a					\
 -			$(LIB_GGZMOD) $(LIB_GGZ)
 -ggz_chess_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 +			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
 +ggz_chess_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
  
-+noinst_HEADERS = version.in
-Index: dots/version.in
-===================================================================
---- dots/version.in	(revision 0)
-+++ dots/version.in	(revision 0)
-@@ -0,0 +1,140 @@
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-+DOTS_VERSION=0.0.4
-+
-+DOTS_PROTOCOL_ENGINE=Dots
-+DOTS_PROTOCOL_VERSION=4
-+
-+AC_SUBST(DOTS_VERSION)
-+AC_SUBST(DOTS_PROTOCOL_ENGINE)
-+AC_SUBST(DOTS_PROTOCOL_VERSION)
-+
-+AC_DEFINE_UNQUOTED([DOTS_VERSION], "$DOTS_VERSION", [Dots version])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_ENGINE], "$DOTS_PROTOCOL_ENGINE",
-+		   [Dots protocol engine])
-+AC_DEFINE_UNQUOTED([DOTS_PROTOCOL_VERSION], "$DOTS_PROTOCOL_VERSION",
-+		   [Dots protocol version])
-Index: dots/module.dsc.in
-===================================================================
---- dots/module.dsc.in	(revision 8178)
-+++ dots/module.dsc.in	(working copy)
-@@ -5,7 +5,7 @@
- Frontend = gtk
- Homepage = http://www.ggzgamingzone.org/games/dots/
- Name = Dots
--ProtocolEngine = Dots
--ProtocolVersion = 4
--Version = 0.0.4
-+ProtocolEngine = @DOTS_PROTOCOL_ENGINE@
-+ProtocolVersion = @DOTS_PROTOCOL_VERSION@
-+Version = @DOTS_VERSION@
  
+ noinst_HEADERS = version.m4
+Index: combat/interface.c
+===================================================================
+--- combat/interface.c	(revision 8613)
++++ combat/interface.c	(working copy)
+@@ -57,8 +57,7 @@
+ 	};
+ 	GtkWidget *menubar;
+ 
+-	menubar = ggz_create_menus(window,
+-				   items,
++	menubar = ggz_create_menus(items,
+ 				   sizeof(items) / sizeof(items[0]));
+ 
+ 	set_menu_sensitive(TABLE_PLAYER_LIST, FALSE);
+Index: combat/main.c
+===================================================================
+--- combat/main.c	(revision 8613)
++++ combat/main.c	(working copy)
+@@ -73,6 +73,11 @@
+ 	gtk_init(&argc, &argv);
+ 	init_about_dialog();
+ 
++	init_ggz_gtk(_("Combat"), FALSE,
++		     COMBAT_PROTOCOL_ENGINE, COMBAT_PROTOCOL_VERSION,
++		     game_handle_io, NULL);
++	mod = ggz_gtk_get_ggzmod();
++
+ 	game_init();
+ 
+ 	// TODO: Check for directory the user wants
+@@ -82,8 +87,6 @@
+ 	main_win = create_main_window();
+ 	gtk_widget_show(main_win);
+ 
+-	mod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
+-
+ 	gtk_main();
+ 
+ 	if (ggzmod_disconnect(mod) < 0)
+Index: combat/Makefile.am
+===================================================================
+--- combat/Makefile.am	(revision 8613)
++++ combat/Makefile.am	(working copy)
+@@ -4,7 +4,7 @@
+ SUBDIRS = . pixmaps maps
+ 
+ AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
+-		$(GTK_CFLAGS)
++		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
+ 
+ EXTRA_DIST = module.dsc.in
+ 
+@@ -29,8 +29,8 @@
+ 
+ ggz_combat_LDADD =	$(top_builddir)/common/libgtk-games.a		\
+ 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)			\
+-			$(LIB_GGZMOD) $(LIB_GGZ)
+-ggz_combat_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
++			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
++ggz_combat_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
+ 
+ 
+ noinst_HEADERS = version.m4
 Index: dots/main.c
 ===================================================================
---- dots/main.c	(revision 8178)
+--- dots/main.c	(revision 8613)
 +++ dots/main.c	(working copy)
 @@ -91,8 +91,10 @@
  	game.state = DOTS_STATE_INIT;
@@ -2973,27 +1652,25 @@ Index: dots/main.c
  	gtk_label_set_text(GTK_LABEL(l1), _("No Score"));
 Index: dots/Makefile.am
 ===================================================================
---- dots/Makefile.am	(revision 8178)
+--- dots/Makefile.am	(revision 8613)
 +++ dots/Makefile.am	(working copy)
 @@ -4,7 +4,7 @@
  SUBDIRS = .
  
  AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
--		@GTK_CFLAGS@
+-		$(GTK_CFLAGS)
 +		$(GTK_CFLAGS) $(GGZ_GTK_INCLUDES)
  
  EXTRA_DIST = module.dsc.in
  
-@@ -29,7 +29,9 @@
- 			support.c	support.h
+@@ -30,8 +30,8 @@
  
  ggz_dots_LDADD =	$(top_builddir)/common/libgtk-games.a		\
--			@GTK_LIBS@ @INTLLIBS@ $(LDADD)			\
+ 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)			\
 -			$(LIB_GGZMOD) $(LIB_GGZ)
 -ggz_dots_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-+			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
 +			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GGZ_GTK)
 +ggz_dots_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS) $(GGZ_GTK_LDFLAGS)
  
-+
-+noinst_HEADERS = version.in
+ 
+ noinst_HEADERS = version.m4
