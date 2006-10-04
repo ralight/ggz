@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 8582 2006-09-15 12:57:23Z josef $
+ * $Id: launch.c 8615 2006-10-04 02:37:04Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -163,20 +163,25 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 	/* If bots are allowed, default to bot players, otherwise open */
 	maxbots = ggzcore_gametype_get_max_bots(gt);
 
+	if (maxbots < maxplayers) {
+		tmp = ggz_lookup_widget(launch_dialog, "seat1_bot");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp), FALSE);
+	}
+
 	for (x = 2; x <= maxplayers; x++) {
 		char text[128];
 
-		if (maxbots > x - 1)
+		if (maxbots >= x - 1) {
 			snprintf(text, sizeof(text), "seat%d_bot", x);
-		else
-			snprintf(text, sizeof(text), "seat%d_open", x);
-		tmp = ggz_lookup_widget(launch_dialog, text);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
-		if (x > maxbots) {
+		} else {
 			snprintf(text, sizeof(text), "seat%d_bot", x);
 			tmp = ggz_lookup_widget(launch_dialog, text);
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp), FALSE);
+
+			snprintf(text, sizeof(text), "seat%d_open", x);
 		}
+		tmp = ggz_lookup_widget(launch_dialog, text);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
 }
 
