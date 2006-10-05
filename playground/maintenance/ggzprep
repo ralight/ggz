@@ -1,0 +1,50 @@
+# Preparation for GGZ development:
+# Fetches all needed packages from the distribution
+# Currently, only (K)Ubuntu 6.06 is tested (based on pkg-ggz debian packages)
+
+tmpfile=`tempfile`
+echo $tmpfile
+cat > $tmpfile << ENDOFPACKAGESLIST
+
+make
+autoconf
+automake1.9
+libtool
+g++
+
+libavahi-compat-howl-dev
+libdb4.3-dev
+libexpat1-dev
+libgnomeui-dev
+libgnutls-dev
+libgtk2.0-dev
+libperl-dev
+libreadline5-dev
+librsvg2-dev
+libsdl1.2-dev
+libsdl-image1.2-dev
+libsdl-ttf2.0-dev
+libsdl-mixer1.2-dev
+libsilc-dev
+docbook-dsssl
+gs
+gaim-dev
+gettext
+jade
+kdelibs4-dev
+lynx
+python-all-dev
+python-pygame
+ruby1.8-dev
+ruby
+sgml2x
+tetex-bin
+texi2html
+texinfo
+transfig
+
+ENDOFPACKAGESLIST
+
+apt-get install `cat $tmpfile`
+rm $tmpfile
+
