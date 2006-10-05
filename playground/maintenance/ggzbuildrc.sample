@@ -1,0 +1,18 @@
+# Sample '~/.ggzbuildrc' file, optimised for a complete GGZ trunk checkout
+
+# Global options which are added to all configurations in addition to
+# per-module options
+
+GLOBAL = --prefix=$HOME/ggz/installation
+
+# Per-module options for when 'ggzbuild' is run within a module top-level
+# directory
+
+libggz = --disable-debug
+
+# MODULES is used for global installation only
+# Use this for running 'ggzbuild' from the top-level directory
+# This is handy for first-time installations directly from SVN!
+
+MODULES = libggz ggzd ggz-client-libs txt-client utils grubby docs python sdl-games kde-games kde-client gtk-games gtk-client gnome-client
+

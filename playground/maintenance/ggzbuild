@@ -4,6 +4,7 @@
 
 import os
 import sys
+#import glob
 
 """
 Create a file ~/.ggzbuildrc with per-module entries such as:
@@ -13,40 +14,62 @@ Then run ggzbuild in the current GGZ SVN module directory
 It will run autogen.sh, configure etc. automatically
 """
 
-conf = None
-try:
-	conf = open(os.getenv("HOME") + "/.ggzbuildrc")
-except:
-	print "Create ~/.ggzbuildrc first (might be empty)!"
-	sys.exit(1)
-lines = conf.readlines()
-conf.close()
-
-config = {}
-
-for line in lines:
-	line = line.strip()
-	#print "*", line
+def readconfig():
+	conf = None
 	try:
-		(module, args) = line.split("=", 1)
-		module = module.strip()
-		args = args.strip()
-		#print (module, args)
-		config[module] = args
+		conf = open(os.getenv("HOME") + "/.ggzbuildrc")
 	except:
-		pass
+		print "Create ~/.ggzbuildrc first (might be empty)!"
+		sys.exit(1)
+	lines = conf.readlines()
+	conf.close()
 
-module = os.getcwd().split("/")[-1]
-#print "current module:", module
+	config = {}
 
-args = config.setdefault(module, "")
-args += " " + config.setdefault("GLOBAL", "")
+	for line in lines:
+		line = line.strip()
+		#print "*", line
+		try:
+			(module, args) = line.split("=", 1)
+			module = module.strip()
+			args = args.strip()
+			#print (module, args)
+			config[module] = args
+		except:
+			pass
 
-if not os.path.exists("configure"):
-	cmd = "./autogen.sh " + args
+	return config
+
+def build(module, config, install):
+	print "GGZBUILD: module =", module
+
+	args = config.setdefault(module, "")
+	args += " " + config.setdefault("GLOBAL", "")
+
+	if not os.path.exists("configure"):
+		cmd = "./autogen.sh " + args
+	else:
+		cmd = "./configure " + args
+
+	print "GGZBUILD: options =", args
+	os.system(cmd)
+
+	if install:
+		os.system("make")
+		os.system("make install")
+
+config = readconfig()
+
+if os.path.exists("libggz") and os.path.exists("ggz-client-libs"):
+	print "GGZBUILD: global invocation"
+
+	#dirs = glob.glob("*")
+	dirs = config["MODULES"]
+	for module in dirs.split(" "):
+		os.chdir(module)
+		build(module, config, True)
+		os.chdir("..")
 else:
-	cmd = "./configure " + args
-
-#print "run", cmd
-os.system(cmd)
+	module = os.getcwd().split("/")[-1]
+	build(module, config, False)
 
