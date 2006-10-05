@@ -17,7 +17,7 @@ conf = None
 try:
 	conf = open(os.getenv("HOME") + "/.ggzbuildrc")
 except:
-	print "Create ~/.ggzbuildrc first!"
+	print "Create ~/.ggzbuildrc first (might be empty)!"
 	sys.exit(1)
 lines = conf.readlines()
 conf.close()
@@ -27,11 +27,14 @@ config = {}
 for line in lines:
 	line = line.strip()
 	#print "*", line
-	(module, args) = line.split("=", 1)
-	module = module.strip()
-	args = args.strip()
-	#print (module, args)
-	config[module] = args
+	try:
+		(module, args) = line.split("=", 1)
+		module = module.strip()
+		args = args.strip()
+		#print (module, args)
+		config[module] = args
+	except:
+		pass
 
 module = os.getcwd().split("/")[-1]
 #print "current module:", module
