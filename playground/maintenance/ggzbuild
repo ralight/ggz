@@ -52,11 +52,20 @@ def build(module, config, install):
 		cmd = "./configure " + args
 
 	print "GGZBUILD: options =", args
-	os.system(cmd)
+	ec = os.system(cmd)
+	if ec:
+		print "GGZBUILD: configure error"
+		sys.exit(ec)
 
 	if install:
-		os.system("make")
-		os.system("make install")
+		ec = os.system("make")
+		if ec:
+			print "GGZBUILD: make error"
+			sys.exit(ec)
+		ec = os.system("make install")
+		if ec:
+			print "GGZBUILD: make install error"
+			sys.exit(ec)
 
 config = readconfig()
 
