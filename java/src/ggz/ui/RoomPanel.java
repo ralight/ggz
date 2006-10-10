@@ -165,7 +165,12 @@ public class RoomPanel extends JPanel implements RoomListener {
 		this.room = room;
 		this.room.add_event_hook(this);
 		this.room.list_tables();
-		chatPanel.setRoom(room);
+        
+        // Disable the button until we get the player list otherwise the seat
+        // allocation dialog can't fill its drop down lists.
+        newTableButton.setEnabled(false);
+
+        chatPanel.setRoom(room);
 		titleLabel.setText("<HTML><B>" + room.get_name()
 				+ "</B><BR><EM><SPAN style='font-weight:normal'>"
 				+ room.get_desc() + "</SPAN></EM></HTML>");
@@ -183,9 +188,6 @@ public class RoomPanel extends JPanel implements RoomListener {
 		lobbyButton.setAction(new BackToLobbyAction());
 		lobbyButton.setEnabled(true);
 		logoutButton.setEnabled(true);
-		// Disable the button until we get the player list otherwise the seat
-		// allocation dialog can't fill it's drop down lists.
-		newTableButton.setEnabled(false);
 	}
 
 	public void chat_event(ChatEventData data) {
