@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: numberlist.c 7885 2006-03-06 18:46:12Z josef $
+ * $Id: numberlist.c 8625 2006-10-21 09:58:04Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -40,7 +40,7 @@
 
 GGZNumberList ggz_numberlist_new(void)
 {
-	GGZNumberList list = {values: 0, min: -1, max: -1};
+	GGZNumberList list = {.values = 0, .min = -1, .max = -1};
 	return list;
 }
 
