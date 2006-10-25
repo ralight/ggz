@@ -98,10 +98,10 @@ public class Game implements ModTransactionHandler {
         this.client.set_transaction_handler(this);
         this.client.set_player(server.get_handle(), false, -1);
 
-        if (module.is_embedded()) {
-            this.client.set_module(module.get_class_name());
+        if (module.isEmbedded()) {
+            this.client.set_module(module.getClassName());
         } else {
-            this.client.set_module(module.get_pwd(), module.get_cmd());
+            this.client.set_module(module.getPWD(), module.getCommandLine());
         }
     }
 
@@ -147,7 +147,7 @@ public class Game implements ModTransactionHandler {
             // Now that the game client is ready, create the channel for it. We
             // might want to consider removing this and always having game
             // clients create the channel.
-            if (this.module.is_embedded()) {
+            if (this.module.isEmbedded()) {
                 this.server.create_channel();
             }
         } else if (prev == ModState.GGZMOD_STATE_CONNECTED) {
@@ -398,7 +398,7 @@ public class Game implements ModTransactionHandler {
     }
 
     public void launch() {
-        log.fine("Launching game of " + this.module.get_name());
+        log.fine("Launching game of " + this.module.getName());
 
         try {
             this.client.connect();

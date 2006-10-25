@@ -610,19 +610,19 @@ public class Client {
             Card hcard = (Card) hand.get(tc);
             int tc_matches = 0;
 
-            if ((hcard.suit() != Suit.UNKNOWN_SUIT && hcard.suit() != card
-                    .suit())
-                    || (hcard.face() != Face.UNKNOWN_FACE && hcard.face() != card
-                            .face()))
+            if ((hcard.getSuit() != Suit.UNKNOWN_SUIT && hcard.getSuit() != card
+                    .getSuit())
+                    || (hcard.getFace() != Face.UNKNOWN_FACE && hcard.getFace() != card
+                            .getFace()))
                 continue;
 
             /*
              * we count the number of matches to make the best pick for the
              * match
              */
-            if (hcard.suit() != Suit.UNKNOWN_SUIT)
+            if (hcard.getSuit() != Suit.UNKNOWN_SUIT)
                 tc_matches++;
-            if (hcard.face() != Face.UNKNOWN_FACE)
+            if (hcard.getFace() != Face.UNKNOWN_FACE)
                 tc_matches++;
 
             /*

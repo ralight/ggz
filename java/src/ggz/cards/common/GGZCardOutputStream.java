@@ -51,47 +51,47 @@ public class GGZCardOutputStream extends DataOutputStream {
     public void write_card(Card card) throws IOException {
         byte face;
         // The face depends on the suit.
-        if (card.face() == Face.UNKNOWN_FACE) {
+        if (card.getFace() == Face.UNKNOWN_FACE) {
             face = -1;
-        } else if (card.face() == Face.JOKER1) {
+        } else if (card.getFace() == Face.JOKER1) {
             face = 0;
-        } else if (card.face() == Face.JOKER2) {
+        } else if (card.getFace() == Face.JOKER2) {
             face = 1;
-        } else if (card.face() == Face.ACE_LOW) {
+        } else if (card.getFace() == Face.ACE_LOW) {
             face = 1;
-        } else if (card.face() == Face.DEUCE) {
+        } else if (card.getFace() == Face.DEUCE) {
             face = 2;
-        } else if (card.face() == Face.THREE) {
+        } else if (card.getFace() == Face.THREE) {
             face = 3;
-        } else if (card.face() == Face.FOUR) {
+        } else if (card.getFace() == Face.FOUR) {
             face = 4;
-        } else if (card.face() == Face.FIVE) {
+        } else if (card.getFace() == Face.FIVE) {
             face = 5;
-        } else if (card.face() == Face.SIX) {
+        } else if (card.getFace() == Face.SIX) {
             face = 6;
-        } else if (card.face() == Face.SEVEN) {
+        } else if (card.getFace() == Face.SEVEN) {
             face = 7;
-        } else if (card.face() == Face.EIGHT) {
+        } else if (card.getFace() == Face.EIGHT) {
             face = 8;
-        } else if (card.face() == Face.NINE) {
+        } else if (card.getFace() == Face.NINE) {
             face = 9;
-        } else if (card.face() == Face.TEN) {
+        } else if (card.getFace() == Face.TEN) {
             face = 10;
-        } else if (card.face() == Face.JACK) {
+        } else if (card.getFace() == Face.JACK) {
             face = 11;
-        } else if (card.face() == Face.QUEEN) {
+        } else if (card.getFace() == Face.QUEEN) {
             face = 12;
-        } else if (card.face() == Face.KING) {
+        } else if (card.getFace() == Face.KING) {
             face = 13;
-        } else if (card.face() == Face.ACE_HIGH) {
+        } else if (card.getFace() == Face.ACE_HIGH) {
             face = 14;
         } else {
             throw new IllegalArgumentException(
                     "Attempt to write card with unrecognised card face: "
-                            + card.face());
+                            + card.getFace());
         }
         write(face);
-        write(encode_suit(card.suit()));
+        write(encode_suit(card.getSuit()));
         write(card.deck);
     }
 

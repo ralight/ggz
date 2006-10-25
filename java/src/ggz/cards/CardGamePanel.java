@@ -107,6 +107,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected JButton lastTrickButton;
 
+    protected boolean isSingleClickToPlayCardEnabled;
+
     // Score panel
     protected JPanel scorePanel;
 
@@ -196,6 +198,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         southEastPanel.add(lastTrickButton);
         table.add(southEastPanel, new TableConstraints(
                 TableConstraints.SOUTH_EAST_CORNER));
+        isSingleClickToPlayCardEnabled = GGZPreferences.getBoolean(
+                "GGZCards.SingleClickToPlayCard", true);
     }
 
     /**
@@ -310,7 +314,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             }
         });
     }
-    
+
     public void alert_trump() {
         // TODO handle this message
     }
@@ -1058,12 +1062,16 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                             // if we are not registered yet.
                             player_cards[card_num]
                                     .removeActionListener(CardGamePanel.this);
+                            // Always stop listening in case preferences were
+                            // changed since we last played card.
                             player_cards[card_num]
                                     .removeMouseListener(spriteHighlighter);
                             player_cards[card_num]
                                     .addActionListener(CardGamePanel.this);
-                            player_cards[card_num]
-                                    .addMouseListener(spriteHighlighter);
+                            if (isSingleClickToPlayCardEnabled) {
+                                player_cards[card_num]
+                                        .addMouseListener(spriteHighlighter);
+                            }
                         }
                     }
                 }
@@ -1075,8 +1083,54 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() instanceof Sprite) {
+            spriteClicked((Sprite) event.getSource());
+        } else if (event.getSource() == bidPanel) {
+            try {
+                cardClient.send_bid(bidPanel.getBidIndex());
+            } catch (IOException ex) {
+                handleException(ex);
+            }
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    bidPanel.setEnabled(false);
+                }
+            });
+        } else if (event.getSource() == lastTrickButton) {
+            try {
+                showLastTrick();
+            } catch (IOException ex) {
+                handleException(ex);
+            }
+        }
+    }
+
+    public void preferenceChange(PreferenceChangeEvent event) {
+        if ("GGZCards.CardGap".equals(event.getKey())) {
+            tableLayout.setCardGap(GGZPreferences.getInt(event.getKey(), 17));
+            table.revalidate();
+        } else if ("GGZCards.PackCards".equals(event.getKey())) {
+            tableLayout.setPackCardsInHand(GGZPreferences.getBoolean(event
+                    .getKey(), true));
+            table.revalidate();
+        } else if ("GGZCards.SpinCards".equals(event.getKey())) {
+            table.setSpinCards(GGZPreferences.getBoolean(event.getKey(), true));
+        } else if ("GGZCards.SingleClickToPlayCard".equals(event.getKey())) {
+            isSingleClickToPlayCardEnabled = GGZPreferences.getBoolean(event
+                    .getKey(), true);
+        }
+    }
+
+    /**
+     * Called when a sprite is clicked.
+     * 
+     * @param sprite
+     */
+    protected void spriteClicked(Sprite sprite) {
+        // We only play sprites that are selected. Depending on user
+        // preferences, sprites are either automatically selected on mouse over
+        // or by clicking them.
+        if (sprite.isSelected()) {
             // A card was played by us, find the hand we played from.
-            Sprite sprite = (Sprite) event.getSource();
             int play_hand;
             int index_of_sprite_in_hand = -1;
             try {
@@ -1110,36 +1164,17 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             } catch (IOException e) {
                 handleException(e);
             }
-        } else if (event.getSource() == bidPanel) {
-            try {
-                cardClient.send_bid(bidPanel.getBidIndex());
-            } catch (IOException ex) {
-                handleException(ex);
+        } else if (!isSingleClickToPlayCardEnabled) {
+            // Sprite is not yet selected. Deselect all the other sprites in
+            // case one was selected. This will need to be changed once we
+            // implement passing in Hearts since more than one card can be
+            // selected at a time.
+            Sprite[] playerSprites = sprites[handILastPlayedFrom];
+            for (int i = 0; i < playerSprites.length; i++) {
+                if (playerSprites[i] != null)
+                    playerSprites[i].setSelected(false);
             }
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    bidPanel.setEnabled(false);
-                }
-            });
-        } else if (event.getSource() == lastTrickButton) {
-            try {
-                showLastTrick();
-            } catch (IOException ex) {
-                handleException(ex);
-            }
-        }
-    }
-
-    public void preferenceChange(PreferenceChangeEvent event) {
-        if ("GGZCards.CardGap".equals(event.getKey())) {
-            tableLayout.setCardGap(GGZPreferences.getInt(event.getKey(), 17));
-            table.revalidate();
-        } else if ("GGZCards.PackCards".equals(event.getKey())) {
-            tableLayout.setPackCardsInHand(GGZPreferences.getBoolean(event
-                    .getKey(), true));
-            table.revalidate();
-        } else if ("GGZCards.SpinCards".equals(event.getKey())) {
-            table.setSpinCards(GGZPreferences.getBoolean(event.getKey(), true));
+            sprite.setSelected(true);
         }
     }
 

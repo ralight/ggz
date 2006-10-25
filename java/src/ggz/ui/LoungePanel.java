@@ -116,7 +116,7 @@ public class LoungePanel extends JPanel {
         for (int i = 0; i < server.get_num_rooms(); i++) {
             Room room = server.get_nth_room(i);
             if (room.get_gametype() != null
-                    && Module.get_num_by_type(room.get_gametype()) > 0) {
+                    && Module.isGameSupported(room.get_gametype())) {
                 rooms.add(room);
             }
         }

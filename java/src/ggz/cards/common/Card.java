@@ -54,11 +54,11 @@ public class Card {
         this.deck = deck;
     }
 
-    public Suit suit() {
+    public Suit getSuit() {
         return this.suit;
     }
 
-    public Face face() {
+    public Face getFace() {
         return this.face;
     }
 
@@ -74,8 +74,27 @@ public class Card {
     }
 
     public boolean equals(Object o) {
-        Card card2 = (Card) o;
-        return this.suit == card2.suit && this.face == card2.face;
+        if (o instanceof Card) {
+            Card card2 = (Card) o;
+            return this.suit == card2.suit && this.face == card2.face;
+        }
+        return false;
+    }
+
+    /**
+     * Taken from the example on p.39 of Effective Java by Joshua Bloch. A
+     * better solution would be not to implement equals() and hashCode() and to
+     * instead make the constructors private and provide a static getCard()
+     * method that returns the appropriate card from a static set of cards since
+     * cards are a finite set. However, we also have to think about what happens
+     * when there are two decks in the game and what that means for equality.
+     */
+    public int hashCode() {
+        int result = 17;
+        result = 37 * result + this.suit.ordinal();
+        result = 37 * result + this.face.ordinal();
+        result = 37 * result + this.deck;
+        return result;
     }
 
     public String toString() {

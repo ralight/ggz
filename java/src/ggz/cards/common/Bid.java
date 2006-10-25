@@ -23,11 +23,14 @@ package ggz.cards.common;
  */
 public class Bid {
 
-    public static final Bid BRIDGE_PASS = new Bid(Bid.NO_VALUE, Suit.NO_SUIT, 1, 0);
+    public static final Bid BRIDGE_PASS = new Bid(Bid.NO_VALUE, Suit.NO_SUIT,
+            1, 0);
 
-    public static final Bid BRIDGE_DOUBLE = new Bid(Bid.NO_VALUE, Suit.NO_SUIT, 2, 0);
+    public static final Bid BRIDGE_DOUBLE = new Bid(Bid.NO_VALUE, Suit.NO_SUIT,
+            2, 0);
 
-    public static final Bid BRIDGE_REDOUBLE = new Bid(Bid.NO_VALUE, Suit.NO_SUIT, 3, 0);
+    public static final Bid BRIDGE_REDOUBLE = new Bid(Bid.NO_VALUE,
+            Suit.NO_SUIT, 3, 0);
 
     public static final Bid BRIDGE_7_NT = new Bid(7, Suit.NO_TRUMP, 0, 0);
 
@@ -89,7 +92,7 @@ public class Bid {
     }
 
     public boolean equals(Object o) {
-        return (o != null) && (o instanceof Bid) && this.val == ((Bid) o).val
+        return (o instanceof Bid) && this.val == ((Bid) o).val
                 && this.suit == ((Bid) o).suit && this.spec == ((Bid) o).spec
                 && this.spec2 == ((Bid) o).spec2;
     }

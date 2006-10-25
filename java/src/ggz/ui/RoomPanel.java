@@ -175,12 +175,12 @@ public class RoomPanel extends JPanel implements RoomListener {
 				+ "</B><BR><EM><SPAN style='font-weight:normal'>"
 				+ room.get_desc() + "</SPAN></EM></HTML>");
 
-		this.module = Module.get_nth_by_type(room.get_gametype(), 0);
-		if (this.module != null && this.module.get_icon_path() != null) {
-			URL imageURL = getClass().getResource(this.module.get_icon_path());
+		this.module = Module.getForGame(room.get_gametype());
+		if (this.module != null && this.module.getIconResourcePath() != null) {
+			URL imageURL = getClass().getResource(this.module.getIconResourcePath());
 			if (imageURL == null) {
 				log.warning("Could not find icon: "
-						+ this.module.get_icon_path());
+						+ this.module.getIconResourcePath());
 			} else {
 				titleLabel.setIcon(new ImageIcon(imageURL));
 			}

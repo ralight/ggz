@@ -18,7 +18,6 @@
 package ggz.ui;
 
 import ggz.client.core.ErrorEventData;
-import ggz.client.core.Module;
 import ggz.client.core.MotdEventData;
 import ggz.client.core.Room;
 import ggz.client.core.Server;
@@ -495,21 +494,7 @@ public class ClientApplet extends JApplet implements ServerListener,
     }
 
     public void server_players_changed() {
-        // Count the number of players in all the rooms that we have a module
-        // for. We can't use Server.get_num_players() since we aren't showing
-        // all rooms. This method is called on the socket read thread so room
-        // player counts should not change while we are adding it all up. Also
-        // include cound of players in the entry room.
-        int count = server.get_room_by_id(0).get_num_players();
-        for (int i = 0; i < server.get_num_rooms(); i++) {
-            Room room = server.get_nth_room(i);
-            if (room.get_gametype() != null
-                    && Module.get_num_by_type(room.get_gametype()) > 0) {
-                count += room.get_num_players();
-            }
-        }
-
-        final int totalCount = count;
+        final int totalCount = server.get_num_players();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 totalPlayerCountLabel.setText(totalCount

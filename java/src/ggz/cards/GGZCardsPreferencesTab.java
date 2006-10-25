@@ -36,6 +36,8 @@ public class GGZCardsPreferencesTab extends JPanel implements PreferencesTab {
 
     private JCheckBox beepOnTurnCheckBox;
 
+    private JCheckBox singleClickToPlayCardCheckBox;
+
     private JSpinner cardGapSpinner;
 
     public GGZCardsPreferencesTab() {
@@ -44,10 +46,13 @@ public class GGZCardsPreferencesTab extends JPanel implements PreferencesTab {
                 "Spin cards when they are played to the trick", GGZPreferences
                         .getBoolean("GGZCards.SpinCards", true));
         closeGapCheckBox = new JCheckBox(
-                "Close slot when a card is played to the trick",
-                GGZPreferences.getBoolean("GGZCards.PackCards", true));
+                "Close slot when a card is played to the trick", GGZPreferences
+                        .getBoolean("GGZCards.PackCards", true));
         beepOnTurnCheckBox = new JCheckBox("Beep on my turn", GGZPreferences
                 .getBoolean("GGZCards.BeepOnTurn", true));
+        singleClickToPlayCardCheckBox = new JCheckBox(
+                "Single click to play card", GGZPreferences.getBoolean(
+                        "GGZCards.SingleClickToPlayCard", true));
         cardGapSpinner = new JSpinner(new SpinnerNumberModel(GGZPreferences
                 .getInt("GGZCards.CardGap", 17), 10, 50, 1));
         GridBagConstraints constraints = new GridBagConstraints();
@@ -68,6 +73,8 @@ public class GGZCardsPreferencesTab extends JPanel implements PreferencesTab {
         add(spinCardsCheckBox, constraints);
         constraints.gridy++;
         add(beepOnTurnCheckBox, constraints);
+        constraints.gridy++;
+        add(singleClickToPlayCardCheckBox, constraints);
     }
 
     public void apply() {
@@ -77,6 +84,8 @@ public class GGZCardsPreferencesTab extends JPanel implements PreferencesTab {
                 .isSelected());
         GGZPreferences.putBoolean("GGZCards.BeepOnTurn", beepOnTurnCheckBox
                 .isSelected());
+        GGZPreferences.putBoolean("GGZCards.SingleClickToPlayCard",
+                singleClickToPlayCardCheckBox.isSelected());
         GGZPreferences.putInt("GGZCards.CardGap", ((Integer) cardGapSpinner
                 .getValue()).intValue());
     }
