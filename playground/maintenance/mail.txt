@@ -1,0 +1,57 @@
+E-Mail addresses in the GGZ project
+===================================
+
+A number of direct addresses and mailing lists exist to reach GGZ people.
+This little piece of documentation tries to summarise them. Note that
+aliases are case-insensitive!
+
+In the following text, the hostname 'ggz' represents ggzgamingzone.org
+whereas 'community' represents ggzcommunity.org.
+This is meant as a slight defense against spammers.
+
+++ Community e-mail ++
+
+Sending mail to hosting@community is used to coordinate tournament hosting
+requests. This is forwarded transparently to the hosting@mail.ggz list.
+
+The address info@community exists for general inquiries.
+Actually all <foo>@community is redirected there but this might stop somewhen.
+
+++ Project e-mail ++
+
+According to RFC 2142, several addresses are a must-have.
+Those are abuse@ggz, noc@ggz, security@ggz for generic network operations,
+and postmaster@ggz, hostmaster@ggz and webmaster@ggz for specific services.
+For FTP, it's ftp@ggz (there is no ftpmaster alias), and there is also
+www@ggz as a webmaster alias.
+
+In addition, admin@ggz is a contact for project issues such as the IANA
+port reservations.
+
+All of those addresses go to the root user, and subsequently to a developer
+account. For some addresses such as security@ggz a mailing list
+might make sense in the future.
+
+Note that root@ggz has a corresponding OpenPGP key which is actually the
+hostmaster key. It is used to sign off new releases on ftp.ggz.
+
+++ Mailing lists ++
+
+Several mailing lists run on the virtual domain mail.ggz. This is done so
+they could be offloaded to another server in case of increased traffic,
+which however only seems to be a theoretical issue.
+The listing of active mailing lists can be seen here:
+https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo
+
+In addition, several control aliases with the list name as a prefix as well
+as a generic list mailman@mail.ggz exist.
+
+++ Personal addresses ++
+
+Also, all system users get mail delivered to their account directly.
+This includes all GGZ developers and some special users, all of who
+have got a home directory under /home/<username>.
+The use of a .forward file is recommended to prevent a local mbox
+file from growing too fast.
+GGZ developers can be reached at <username>@ggz.
+
