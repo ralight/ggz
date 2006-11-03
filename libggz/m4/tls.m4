@@ -374,6 +374,7 @@ if test "$enable_gcrypt" != "no"; then
           AC_DEFINE_UNQUOTED([USE_GCRYPT], 1,
                              [Define if you have the gcrypt library])
           LIB_GCRYPT="-lgcrypt"
+          enable_gcrypt=yes
         ],
         [
           if test "$enable_gcrypt" = "yes"; then
