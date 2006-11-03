@@ -8,7 +8,7 @@ GLOBAL = --prefix=$HOME/ggz/installation
 # Per-module options for when 'ggzbuild' is run within a module top-level
 # directory
 
-libggz = --disable-debug
+libggz = --disable-debug --with-tls=GnuTLS
 
 # MODULES is used for global installation only
 # Use this for running 'ggzbuild' from the top-level directory
