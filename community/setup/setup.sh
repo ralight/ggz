@@ -2,8 +2,10 @@
 
 id=`id -u`
 if test $id != 0; then
-  echo "Setup script must be run as root!"
-  exit 1
+  echo "** Warning: Setup script must be run as root!"
+  echo "** Proceeding might result in incomplete integration."
+  echo ""
+  #exit 1
 fi
 
 # Note: the configuration part doesn't reall need root privileges but it's simpler that way
@@ -20,6 +22,7 @@ dbpass=`grep dbpass $configfile 2>/dev/null | cut -d "=" -f 2`
 
 [ -z $documentroot ] && documentroot=/var/www/ggzcommunity
 [ -z $dblocal ] && dblocal=y
+[ -z $vhostdir ] && vhostdir=/etc/apache2/sites-available
 
 rm -f $configfile
 
@@ -77,18 +80,42 @@ read -p "Database pass [$dbpass]? " xdbpass
 [ $xdbpass ] && dbpass=$xdbpass
 echo "dbpass=$dbpass" >> $configfile
 echo ""
+echo "4. Web server"
+echo "The location for adding virtual hosts."
+read -p "Directory [$vhostdir]: " xvhostdir
+[ $xvhostdir ] && vhostdir=$xvhostdir
+echo "vhostdir=$vhostdir" >> $configfile
+echo ""
 echo "Confirmation"
 echo "Hostname.....$hostname"
 echo "Directory....$documentroot"
 if test $dblocal = "n"; then
-  echo "Database.....no setup"
+  echo "Database.....$dbuser@$dbhost/$dbname (no local setup)"
 else
-  echo "Database.....$dbuser@$dbhost/$dbname"
+  echo "Database.....$dbuser@$dbhost/$dbname (configure locally)"
 fi
+echo "Web server...$vhostdir"
+
+echo ""
+echo "Creating configuration files..."
+hostname_quoted=`echo $hostname | sed -e "s/\//\\\\\\\\\//g"`
+documentroot_quoted=`echo $documentroot | sed -e "s/\//\\\\\\\\\//g"`
+cp webserver/ggz-apache2.conf.in webserver/ggz-apache2.conf
+sed -i -e "s/\@SERVERNAME\@/$hostname_quoted/" webserver/ggz-apache2.conf
+sed -i -e "s/\@DOCUMENTROOT\@/$documentroot_quoted/" webserver/ggz-apache2.conf
 
 echo ""
 read -p "Install now (y/n)? " install
 if test "x$install" = "xy"; then
+  echo "Sanity checks..."
+  if [ -d $documentroot ]; then
+    rm -rf $documentroot
+  fi
+  echo "Web pages..."
+  cp -r ../web $documentroot
+  echo "Web server..."
+  cp webserver/ggz-apache2.conf $vhostdir/ggzcommunity
+  a2ensite ggzcommunity
   if test "x$dblocal" = "xy"; then
     echo "Database setup; remember the database password for the user ('role')."
     su -c "echo $dbpass | createuser -A -R -D -P $dbuser" postgres || echo "User $dbuser exists already? Error during creation."

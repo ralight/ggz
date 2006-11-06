@@ -1,28 +1,54 @@
 #!/usr/bin/perl
 #
 # Synchronizes the phpBB user database from GGZ
-# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
+#
+# Note: ggz2phpbb.conf must be in ggzd's configuration dir
 
 use strict;
 use DBI;
 use Digest::MD5;
+use Config::IniFiles;
+
+# Find out where GGZ is installed
+my $confdir = `ggz-config -c`;
+if(!$confdir){
+	print "Error: ggz-config invocation failed.\n";
+	exit 1;
+}
+chomp $confdir;
+
+my $conffile = "$confdir/ggzd/ggzd.conf";
+my $phpbbconffile = "$confdir/ggzd/ggz2phpbb.conf";
+
+my $cfg = new Config::IniFiles(-file => $conffile);
+if(!$cfg){
+	print "Error: ggzd configuration file '$conffile' not found.\n";
+	exit 1;
+}
+
+my $phpbbcfg = new Config::IniFiles(-file => $phpbbconffile);
+if(!$phpbbcfg){
+	print "Error: phpbb configuration file '$phpbbconffile' not found.\n";
+	exit 1;
+}
 
 # connection parameters for phpBB
 
 my $phpbb_type = "Pg";
-my $phpbb_host = "localhost";
-my $phpbb_name = "phpbb2";
-my $phpbb_user = "xxx";
-my $phpbb_pass = "xxx";
+my $phpbb_host = $phpbbcfg->val("General", "DatabaseHost");
+my $phpbb_name = $phpbbcfg->val("General", "DatabaseName");
+my $phpbb_user = $phpbbcfg->val("General", "DatabaseUsername");
+my $phpbb_pass = $phpbbcfg->val("General", "DatabasePassword");
 
 ## connection parameters for GGZ
 
 my $ggz_type = "Pg";
-my $ggz_host = "localhost";
-my $ggz_name = "ggz";
-my $ggz_user = "xxx";
-my $ggz_pass = "xxx";
+my $ggz_host = $cfg->val("General", "DatabaseHost");
+my $ggz_name = $cfg->val("General", "DatabaseName");
+my $ggz_user = $cfg->val("General", "DatabaseUsername");
+my $ggz_pass = $cfg->val("General", "DatabasePassword");
 
 ### should all GGZ players join a group?
 

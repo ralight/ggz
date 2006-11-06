@@ -1,0 +1,11 @@
+# Configuration file for the ggz2phpbb.pl script
+
+[General]
+
+DatabaseHost = @PHPBBHOST@
+DatabaseName = @PHPBBNAME@
+DatabaseUsername = @PHPBBUSER@
+DatabasePassword = @PHPBBPASS@
+
+#DatabaseType = Pg/pgsql
+
