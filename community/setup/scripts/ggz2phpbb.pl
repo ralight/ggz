@@ -11,13 +11,16 @@ use DBI;
 use Digest::MD5;
 use Config::IniFiles;
 
-# Find out where GGZ is installed
+## Find out where GGZ is installed
+
 my $confdir = `ggz-config -c`;
 if(!$confdir){
 	print "Error: ggz-config invocation failed.\n";
 	exit 1;
 }
 chomp $confdir;
+
+## Load configuration files
 
 my $conffile = "$confdir/ggzd/ggzd.conf";
 my $phpbbconffile = "$confdir/ggzd/ggz2phpbb.conf";
@@ -34,7 +37,7 @@ if(!$phpbbcfg){
 	exit 1;
 }
 
-# connection parameters for phpBB
+## connection parameters for phpBB
 
 my $phpbb_type = "Pg";
 my $phpbb_host = $phpbbcfg->val("General", "DatabaseHost");
@@ -65,7 +68,12 @@ $phpbb_conn || die;
 my ($id, $name, $fullname, $password, $email);
 my ($country);
 
-my $res = $ggz_conn->prepare("SELECT handle, name, password, email FROM users");
+my $res;
+if($ARGV[0]){
+$res = $ggz_conn->prepare("SELECT handle, name, password, email FROM users WHERE handle = '$ARGV[0]'");
+}else{
+$res = $ggz_conn->prepare("SELECT handle, name, password, email FROM users");
+}
 $res->execute();
 $res->bind_columns(undef, \$name, \$fullname, \$password, \$email);
 
@@ -80,10 +88,26 @@ if($res2->fetch()){
 $res2->finish();
 
 while($res->fetch()){
+	$id = syncuser($name, $fullname, $password, $email, $id);
+}
+
+$phpbb_conn->disconnect();
+$ggz_conn->disconnect();
+
+## Subroutine: do the actual synchronisation
+
+sub syncuser {
+	my $name = shift(@_);
+	my $fullname = shift(@_);
+	my $password = shift(@_);
+	my $email = shift(@_);
+	my $id = shift(@_);
+
 	$res2 = $phpbb_conn->prepare("SELECT username FROM phpbb_users WHERE username = '$name'");
 	$res2->execute();
 	if($res2->fetch()){
 		# already present
+		# FIXME: maybe update password?
 	}else{
 		my $md5pass = Digest::MD5::md5_hex($password);
 		if($email eq "N/A"){
@@ -121,9 +145,7 @@ while($res->fetch()){
 		print "=> $name ($email) [$country]\n";
 	}
 	$res2->finish();
+
+	return $id;
 }
-
-$phpbb_conn->disconnect();
-$ggz_conn->disconnect();
-
 
