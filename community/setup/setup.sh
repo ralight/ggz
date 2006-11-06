@@ -12,16 +12,22 @@ fi
 
 configfile=~/.ggzcommunity.setup
 
-hostname=`grep hostname $configfile 2>/dev/null | cut -d "=" -f 2`
-documentroot=`grep documentroot $configfile 2>/dev/null | cut -d "=" -f 2`
-dblocal=`grep dblocal $configfile 2>/dev/null | cut -d "=" -f 2`
-dbhost=`grep dbhost $configfile 2>/dev/null | cut -d "=" -f 2`
-dbname=`grep dbname $configfile 2>/dev/null | cut -d "=" -f 2`
-dbuser=`grep dbuser $configfile 2>/dev/null | cut -d "=" -f 2`
-dbpass=`grep dbpass $configfile 2>/dev/null | cut -d "=" -f 2`
+hostname=`grep ^hostname $configfile 2>/dev/null | cut -d "=" -f 2`
+documentroot=`grep ^documentroot $configfile 2>/dev/null | cut -d "=" -f 2`
+dblocal=`grep ^dblocal $configfile 2>/dev/null | cut -d "=" -f 2`
+dbhost=`grep ^dbhost $configfile 2>/dev/null | cut -d "=" -f 2`
+dbname=`grep ^dbname $configfile 2>/dev/null | cut -d "=" -f 2`
+dbuser=`grep ^dbuser $configfile 2>/dev/null | cut -d "=" -f 2`
+dbpass=`grep ^dbpass $configfile 2>/dev/null | cut -d "=" -f 2`
+phpbbdblocal=`grep ^phpbbdblocal $configfile 2>/dev/null | cut -d "=" -f 2`
+phpbbdbhost=`grep ^phpbbdbhost $configfile 2>/dev/null | cut -d "=" -f 2`
+phpbbdbname=`grep ^phpbbdbname $configfile 2>/dev/null | cut -d "=" -f 2`
+phpbbdbuser=`grep ^phpbbdbuser $configfile 2>/dev/null | cut -d "=" -f 2`
+phpbbdbpass=`grep ^phpbbdbpass $configfile 2>/dev/null | cut -d "=" -f 2`
 
 [ -z $documentroot ] && documentroot=/var/www/ggzcommunity
 [ -z $dblocal ] && dblocal=y
+[ -z $phpbbdblocal ] && phpbbdblocal=y
 [ -z $vhostdir ] && vhostdir=/etc/apache2/sites-available
 
 rm -f $configfile
@@ -74,7 +80,7 @@ read -p "Database user [$dbuser]? " xdbuser
 [ $xdbuser ] && dbuser=$xdbuser
 echo "dbuser=$dbuser" >> $configfile
 echo ""
-echo "3.2 Database password"
+echo "3.4 Database password"
 echo "The password for the user of the database."
 read -p "Database pass [$dbpass]? " xdbpass
 [ $xdbpass ] && dbpass=$xdbpass
@@ -86,6 +92,41 @@ read -p "Directory [$vhostdir]: " xvhostdir
 [ $xvhostdir ] && vhostdir=$xvhostdir
 echo "vhostdir=$vhostdir" >> $configfile
 echo ""
+echo "5. phpBB integration"
+echo "The phpBB forum software can be integrated."
+read -p "Setup local phpBB database (y/n) [$phpbbdblocal]? " xphpbbdblocal
+if test "x$xphpbbdblocal" = "xy" || test "x$xphpbbdblocal" = "xn"; then
+  phpbbdblocal=$xphpbbdblocal
+fi
+echo "phpbbdblocal=$phpbbdblocal" >> $configfile
+echo ""
+if test $phpbbdblocal = "y"; then
+[ -z $phpbbdbhost ] && phpbbdbhost="localhost"
+fi
+echo "5.1 phpBB database hostname"
+echo "The hostname for the database."
+read -p "Database hostname [$phpbbdbhost]? " xphpbbdbhost
+[ $xphpbbdbhost ] && phpbbdbhost=$xphpbbdbhost
+echo "phpbbdbhost=$phpbbdbhost" >> $configfile
+echo ""
+echo "5.2 phpBB database name"
+echo "The name for the database."
+read -p "Database name [$phpbbdbname]? " xphpbbdbname
+[ $phpbbxdbname ] && phpbbdbname=$xphpbbdbname
+echo "phpbbdbname=$phpbbdbname" >> $configfile
+echo ""
+echo "5.3 phpBB database user"
+echo "The user name for the database."
+read -p "Database user [$phpbbdbuser]? " xphpbbdbuser
+[ $xphpbbdbuser ] && phpbbdbuser=$xphpbbdbuser
+echo "phpbbdbuser=$phpbbdbuser" >> $configfile
+echo ""
+echo "5.4 phpBB database password"
+echo "The password for the user of the database."
+read -p "Database pass [$phpbbdbpass]? " xphpbbdbpass
+[ $xphpbbdbpass ] && phpbbdbpass=$xphpbbdbpass
+echo "phpbbdbpass=$phpbbdbpass" >> $configfile
+echo ""
 echo "Confirmation"
 echo "Hostname.....$hostname"
 echo "Directory....$documentroot"
@@ -95,6 +136,11 @@ else
   echo "Database.....$dbuser@$dbhost/$dbname (configure locally)"
 fi
 echo "Web server...$vhostdir"
+if test $phpbbdblocal = "n"; then
+  echo "phpBB database.....$phpbbdbuser@$phpbbdbhost/$phpbbdbname (no local setup)"
+else
+  echo "phpBB database.....$phpbbdbuser@$phpbbdbhost/$phpbbdbname (configure locally)"
+fi
 
 echo ""
 echo "Creating configuration files..."
@@ -118,8 +164,13 @@ if test "x$install" = "xy"; then
   a2ensite ggzcommunity
   if test "x$dblocal" = "xy"; then
     echo "Database setup; remember the database password for the user ('role')."
-    su -c "echo $dbpass | createuser -A -R -D -P $dbuser" postgres || echo "User $dbuser exists already? Error during creation."
+    su -c "createuser -A -R -D -P $dbuser" postgres || echo "User $dbuser exists already? Error during creation."
     su -c "createdb -O $dbuser $dbname" postgres || echo "Database $dbname exists already? Error during creation."
+  fi
+  if test "x$phpbbdblocal" = "xy"; then
+    echo "phpBB database setup; remember the database password for the user ('role')."
+    su -c "createuser -A -R -D -P $phpbbdbuser" postgres || echo "User $phpbbdbuser exists already? Error during creation."
+    su -c "createdb -O $phpbbdbuser $phpbbdbname" postgres || echo "Database $phpbbdbname exists already? Error during creation."
   fi
 fi
 
