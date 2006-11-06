@@ -24,6 +24,11 @@ Configuration
 -------------
 All htconf-dist files must be copied to .htconf and be modified.
 
+The web server integration is assuming Apache 2.x. There is a template
+for the sites-available directory in webserver/ggz-apache2.conf.
+
+The script setup.sh can now do most of the work.
+
 Scripts
 -------
 * calcrankings
