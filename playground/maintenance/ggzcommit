@@ -15,11 +15,14 @@ ed=$VISUAL
 [ -z $ed ] && ed=$EDITOR
 [ -z $ed ] && ed=vi
  
+stem=`echo $file | cut -c 1-12`
+if test $stem != "svn-prop.tmp"; then
 cat <<ENDTEMPLATE >$file.$$
 
 
 [commit from $USER@$HOSTNAME]
 ENDTEMPLATE
+fi
  
 cat $file >> $file.$$
  
