@@ -19,16 +19,19 @@ dbhost=`grep ^dbhost $configfile 2>/dev/null | cut -d "=" -f 2`
 dbname=`grep ^dbname $configfile 2>/dev/null | cut -d "=" -f 2`
 dbuser=`grep ^dbuser $configfile 2>/dev/null | cut -d "=" -f 2`
 dbpass=`grep ^dbpass $configfile 2>/dev/null | cut -d "=" -f 2`
+vhostdir=`grep ^vhostdir $configfile 2>/dev/null | cut -d "=" -f 2`
 phpbbdblocal=`grep ^phpbbdblocal $configfile 2>/dev/null | cut -d "=" -f 2`
 phpbbdbhost=`grep ^phpbbdbhost $configfile 2>/dev/null | cut -d "=" -f 2`
 phpbbdbname=`grep ^phpbbdbname $configfile 2>/dev/null | cut -d "=" -f 2`
 phpbbdbuser=`grep ^phpbbdbuser $configfile 2>/dev/null | cut -d "=" -f 2`
 phpbbdbpass=`grep ^phpbbdbpass $configfile 2>/dev/null | cut -d "=" -f 2`
+ggzdir=`grep ^ggzdir $configfile 2>/dev/null | cut -d "=" -f 2`
 
 [ -z $documentroot ] && documentroot=/var/www/ggzcommunity
 [ -z $dblocal ] && dblocal=y
 [ -z $phpbbdblocal ] && phpbbdblocal=y
 [ -z $vhostdir ] && vhostdir=/etc/apache2/sites-available
+[ -z $ggzdir ] && ggzdir=`ggz-config -c`/..
 
 rm -f $configfile
 
@@ -112,7 +115,7 @@ echo ""
 echo "5.2 phpBB database name"
 echo "The name for the database."
 read -p "Database name [$phpbbdbname]? " xphpbbdbname
-[ $phpbbxdbname ] && phpbbdbname=$xphpbbdbname
+[ $xphpbbdbname ] && phpbbdbname=$xphpbbdbname
 echo "phpbbdbname=$phpbbdbname" >> $configfile
 echo ""
 echo "5.3 phpBB database user"
@@ -126,6 +129,12 @@ echo "The password for the user of the database."
 read -p "Database pass [$phpbbdbpass]? " xphpbbdbpass
 [ $xphpbbdbpass ] && phpbbdbpass=$xphpbbdbpass
 echo "phpbbdbpass=$phpbbdbpass" >> $configfile
+echo ""
+echo "6. GGZ installation"
+echo "The directory the GGZ server is installed in (prefix)."
+read -p "GGZ directory [$ggzdir]: " xggzdir
+[ $xggzdir ] && ggzdir=$xggzdir
+echo "ggzdir=$ggzdir" >> $configfile
 echo ""
 echo "Confirmation"
 echo "Hostname.....$hostname"
@@ -141,14 +150,28 @@ if test $phpbbdblocal = "n"; then
 else
   echo "phpBB database.....$phpbbdbuser@$phpbbdbhost/$phpbbdbname (configure locally)"
 fi
+echo "GGZ directory....$ggzdir"
 
 echo ""
 echo "Creating configuration files..."
 hostname_quoted=`echo $hostname | sed -e "s/\//\\\\\\\\\//g"`
 documentroot_quoted=`echo $documentroot | sed -e "s/\//\\\\\\\\\//g"`
+phpbbdbhost_quoted=`echo $phpbbdbhost | sed -e "s/\//\\\\\\\\\//g"`
+phpbbdbname_quoted=`echo $phpbbdbname | sed -e "s/\//\\\\\\\\\//g"`
+phpbbdbuser_quoted=`echo $phpbbdbuser | sed -e "s/\//\\\\\\\\\//g"`
+phpbbdbpass_quoted=`echo $phpbbdbpass | sed -e "s/\//\\\\\\\\\//g"`
 cp webserver/ggz-apache2.conf.in webserver/ggz-apache2.conf
 sed -i -e "s/\@SERVERNAME\@/$hostname_quoted/" webserver/ggz-apache2.conf
 sed -i -e "s/\@DOCUMENTROOT\@/$documentroot_quoted/" webserver/ggz-apache2.conf
+cp scripts/ggz2phpbb.conf.in scripts/ggz2phpbb.conf
+sed -i -e "s/\@PHPBBHOST\@/$phpbbdbhost_quoted/" scripts/ggz2phpbb.conf
+sed -i -e "s/\@PHPBBNAME\@/$phpbbdbname_quoted/" scripts/ggz2phpbb.conf
+sed -i -e "s/\@PHPBBUSER\@/$phpbbdbuser_quoted/" scripts/ggz2phpbb.conf
+sed -i -e "s/\@PHPBBPASS\@/$phpbbdbpass_quoted/" scripts/ggz2phpbb.conf
+
+echo ""
+echo "Compilation..."
+(cd scripts/calcrankings && make)
 
 echo ""
 read -p "Install now (y/n)? " install
@@ -172,5 +195,6 @@ if test "x$install" = "xy"; then
     su -c "createuser -A -R -D -P $phpbbdbuser" postgres || echo "User $phpbbdbuser exists already? Error during creation."
     su -c "createdb -O $phpbbdbuser $phpbbdbname" postgres || echo "Database $phpbbdbname exists already? Error during creation."
   fi
+  cp scripts/ggz2phpbb.conf $ggzdir/etc/ggzd
 fi
 
