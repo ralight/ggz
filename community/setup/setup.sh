@@ -184,6 +184,10 @@ if test "x$install" = "xy"; then
   if [ -d $documentroot ]; then
     rm -rf $documentroot
   fi
+  if [ ! -d $ggzdir ]; then
+    echo "Error: GGZ directory $ggzdir does not exist."
+    exit 1
+  fi
   echo "Web pages..."
   cp -r ../web $documentroot
   echo "Web server..."
@@ -191,13 +195,13 @@ if test "x$install" = "xy"; then
   a2ensite ggzcommunity
   if test "x$dblocal" = "xy"; then
     echo "Database setup; needs the root/sudo password."
-    su -c "su -c \"createuser -A -R -D -P $dbuser\" postgres" || echo "User $dbuser exists already? Error during creation."
-    su -c "su -c \"createdb -O $dbuser $dbname\" postgres" || echo "Database $dbname exists already? Error during creation."
+    sudo su -c "createuser -A -R -D -P $dbuser" postgres || echo "User $dbuser exists already? Error during creation."
+    sudo su -c "createdb -O $dbuser $dbname" postgres || echo "Database $dbname exists already? Error during creation."
   fi
   if test "x$phpbbdblocal" = "xy"; then
     echo "phpBB database setup; needs the root/sudo password."
-    su -c "su -c \"createuser -A -R -D -P $phpbbdbuser\" postgres" || echo "User $phpbbdbuser exists already? Error during creation."
-    su -c "su -c \"createdb -O $phpbbdbuser $phpbbdbname\" postgres" || echo "Database $phpbbdbname exists already? Error during creation."
+    sudo su -c "createuser -A -R -D -P $phpbbdbuser" postgres || echo "User $phpbbdbuser exists already? Error during creation."
+    sudo su -c "createdb -O $phpbbdbuser $phpbbdbname" postgres || echo "Database $phpbbdbname exists already? Error during creation."
   fi
   echo "Integration of external software..."
   cp scripts/ggz2phpbb.conf $ggzdir/etc/ggzd
@@ -214,6 +218,7 @@ if test "x$install" = "xy"; then
   cp scripts/ggz2phpbb.pl $ggzdir/bin/ggz2phpbb
   cp scripts/ggzblogs.pl $ggzdir/bin/ggzblogs
   echo "Site modifications..."
+  mkdir -p $documentroot/blogs/config
   cp blogs/*.* $documentroot/blogs/config
 fi
 

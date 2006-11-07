@@ -2,13 +2,17 @@
 
 # phpBB2
 http://kent.dl.sourceforge.net/sourceforge/phpbb/phpBB-2.0.21.tar.bz2
+891dd4d30539dad4ba301db2ad038392  phpBB-2.0.21.tar.bz2
 
 # Flags and l10n data
 http://ftp.ggzgamingzone.org/pub/contrib/tarballs/l10n-data.tar.gz
+8c39244e870f48e3ef315a79c89abe49  l10n-data.tar.gz
 
 # Hotstuff
 http://kstuff.org/source/download/hotstuff-0.9.tar.gz
+76fb3b90ef3e4a310a13f5da54977b49  hotstuff-0.9.tar.gz
 
 # Planet
 http://www.planetplanet.org/download/planet-2.0.tar.bz2
+1fba41a9ab0e19cc43dc6ea92947bead  planet-2.0.tar.bz2
 
