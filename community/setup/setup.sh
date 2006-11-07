@@ -174,6 +174,10 @@ echo "Compilation..."
 (cd scripts/calcrankings && make)
 
 echo ""
+echo "Downloading external software..."
+(cd external && make fetch)
+
+echo ""
 read -p "Install now (y/n)? " install
 if test "x$install" = "xy"; then
   echo "Sanity checks..."
@@ -186,15 +190,30 @@ if test "x$install" = "xy"; then
   cp webserver/ggz-apache2.conf $vhostdir/ggzcommunity
   a2ensite ggzcommunity
   if test "x$dblocal" = "xy"; then
-    echo "Database setup; remember the database password for the user ('role')."
-    su -c "createuser -A -R -D -P $dbuser" postgres || echo "User $dbuser exists already? Error during creation."
-    su -c "createdb -O $dbuser $dbname" postgres || echo "Database $dbname exists already? Error during creation."
+    echo "Database setup; needs the root/sudo password."
+    su -c "su -c \"createuser -A -R -D -P $dbuser\" postgres" || echo "User $dbuser exists already? Error during creation."
+    su -c "su -c \"createdb -O $dbuser $dbname\" postgres" || echo "Database $dbname exists already? Error during creation."
   fi
   if test "x$phpbbdblocal" = "xy"; then
-    echo "phpBB database setup; remember the database password for the user ('role')."
-    su -c "createuser -A -R -D -P $phpbbdbuser" postgres || echo "User $phpbbdbuser exists already? Error during creation."
-    su -c "createdb -O $phpbbdbuser $phpbbdbname" postgres || echo "Database $phpbbdbname exists already? Error during creation."
+    echo "phpBB database setup; needs the root/sudo password."
+    su -c "su -c \"createuser -A -R -D -P $phpbbdbuser\" postgres" || echo "User $phpbbdbuser exists already? Error during creation."
+    su -c "su -c \"createdb -O $phpbbdbuser $phpbbdbname\" postgres" || echo "Database $phpbbdbname exists already? Error during creation."
   fi
+  echo "Integration of external software..."
   cp scripts/ggz2phpbb.conf $ggzdir/etc/ggzd
+  (cd external && tar xzf l10n-data.tar.gz)
+  cp -r external/l10n-data $documentroot/db/ggzicons/flags
+  (cd external && tar xzf hotstuff-*.tar.gz)
+  cp -r external/hotstuff*/ $documentroot/hotstuff/directory
+  (cd external && tar xjf phpBB-*.tar.bz2)
+  cp -r external/phpBB*/ $documentroot/forums/phpBB2
+  (cd external && tar xjf planet-*.tar.bz2)
+  cp -r external/planet*/ $documentroot/blogs
+  echo "Scripts and tools..."
+  (cd scripts/calcrankings && make install)
+  cp scripts/ggz2phpbb.pl $ggzdir/bin/ggz2phpbb
+  cp scripts/ggzblogs.pl $ggzdir/bin/ggzblogs
+  echo "Site modifications..."
+  cp blogs/*.* $documentroot/blogs/config
 fi
 

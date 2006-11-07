@@ -1,19 +1,39 @@
 #!/usr/bin/perl
 #
 # Planet blog aggregation configuration from GGZ user database
-# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 use strict;
 use DBI;
+use Config::IniFiles;
+
+## Find out where GGZ is installed
+
+my $confdir = `ggz-config -c`;
+if(!$confdir){
+	print "Error: ggz-config invocation failed.\n";
+	exit 1;
+}
+chomp $confdir;
+
+## Load configuration files
+
+my $conffile = "$confdir/ggzd/ggzd.conf";
+
+my $cfg = new Config::IniFiles(-file => $conffile);
+if(!$cfg){
+	print "Error: ggzd configuration file '$conffile' not found.\n";
+	exit 1;
+}
 
 ## connection parameters for GGZ
 
 my $ggz_type = "Pg";
-my $ggz_host = "localhost";
-my $ggz_name = "ggz";
-my $ggz_user = "xxx";
-my $ggz_pass = "xxx";
+my $ggz_host = $cfg->val("General", "DatabaseHost");
+my $ggz_name = $cfg->val("General", "DatabaseName");
+my $ggz_user = $cfg->val("General", "DatabaseUsername");
+my $ggz_pass = $cfg->val("General", "DatabasePassword");
 
 ### end of configuration
 

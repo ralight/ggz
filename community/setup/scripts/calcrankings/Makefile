@@ -1,8 +1,14 @@
-GGZDIR = `ggz-config -c`/..
-GGZFLAGS = -I$(GGZDIR)/include -L$(GGZDIR)/lib -lggz
+ggzdir = `ggz-config -c`/..
 
-all:
+GGZFLAGS = -I$(ggzdir)/include -L$(ggzdir)/lib -lggz
+
+all: calcrankings
+
+calcrankings: main.c
 	gcc -Wall -O2 -o calcrankings main.c \
 		-I /usr/include/pgsql -I /usr/include/postgresql \
 		-lpq $(GGZFLAGS)
+
+install: calcrankings
+	cp calcrankings $(ggzdir)/bin
 

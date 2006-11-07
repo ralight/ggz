@@ -1,0 +1,14 @@
+# List of tarballs which are not included in SVN since they're from different projects
+
+# phpBB2
+http://kent.dl.sourceforge.net/sourceforge/phpbb/phpBB-2.0.21.tar.bz2
+
+# Flags and l10n data
+http://ftp.ggzgamingzone.org/pub/contrib/tarballs/l10n-data.tar.gz
+
+# Hotstuff
+http://kstuff.org/source/download/hotstuff-0.9.tar.gz
+
+# Planet
+http://www.planetplanet.org/download/planet-2.0.tar.bz2
+
