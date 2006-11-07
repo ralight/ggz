@@ -17,6 +17,7 @@ ed=$VISUAL
  
 stem=`echo $file | cut -c 1-12`
 if test $stem != "svn-prop.tmp"; then
+HOSTNAME=`hostname`
 cat <<ENDTEMPLATE >$file.$$
 
 
