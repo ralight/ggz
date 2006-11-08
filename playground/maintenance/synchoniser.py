@@ -21,6 +21,7 @@ positions_chessai = ("python/chess", "grubby/games/guru-chess", "ggzd/game_serve
 positions_news = pos_cc + pos_games + pos_other + ("community",)
 positions_authors = pos_cc + pos_games + pos_other
 positions_meta = ("ggzd/ggzd/meta", "utils/metaserv/libmeta")
+positions_systemm4 = pos_cc + pos_games + ("grubby", "libggz", "ggz-client-libs", "ggzd", "utils")
 
 files = {}
 files["README.GGZ"] = positions_readmeggz
@@ -28,6 +29,7 @@ files["QuickStart.GGZ"] = positions_quickstartggz
 files["NEWS"] = positions_news
 files["AUTHORS"] = positions_authors
 files["m4/ggz.m4"] = positions_ggzm4
+files["m4/system.m4"] = positions_systemm4
 files["autogen.sh"] = positions_autogensh
 files["i18n.mk"] = positions_i18nmk
 files["ttt-ai.c"] = positions_tttai
