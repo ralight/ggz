@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - This Ant build file is designed to work Ant 1.6.x. 
+  - Note: This build file variant leaves out the SVN task.
+  -->
+<project name="ggz-java" default="rebuild-distribution" basedir=".">
+	<!-- set global properties for this build -->
+	<property name="src" value="src" />
+	<property name="src_test" value="test" />
+	<property name="bin" value="bin" />
+	<property name="javadoc" value="javadoc" />
+	<!-- now set below to includ SVN revision -->
+	<!--property name="applet_jarfile" value="ggz-java-applet.jar"/-->
+	<!--property name="application_jarfile" value="ggz-java-client.jar"/-->
+	<property name="manifest" value="manifest/manifest.txt" />
+
+	<!-- Non class files that need to be copied with the classes. -->
+	<fileset id="project.resources" dir="${src}" includes="**/LICENSE,**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.xslt" />
+	<fileset id="test.resources" dir="${src_test}" includes="**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.txt" />
+
+	<target name="init">
+		<mkdir dir="${bin}" />
+		<mkdir dir="manifest" />
+
+		<!-- Output the Ant library dir so we know where to put the SVN JAR files. -->
+		<echo message="ant.library.dir=${ant.library.dir}"/>
+		
+		<!-- Update the version.properties file -->
+		<tstamp>
+			<format property="TODAY" timezone="GMT" pattern="yyyy-MM-dd'T'hh:mm:ss'Z'" />
+			<format property="DSTAMP" timezone="GMT" pattern="yyyy-MM-dd" />
+			<format property="TSTAMP" timezone="GMT" pattern="hh:mm:ss" />
+		</tstamp>
+
+		<!-- Read current values. -->
+		<property name="version.major" value="0" />
+		<property name="version.minor" value="0" />
+		<property name="version.revision" value="14" />
+		<property name="version.string" value="${version.major}.${version.minor}.${version.revision}.${build.number}" />
+
+		<!-- Include SVN revision in JAR file name to avoid cache problems. -->
+		<property name="applet_jarfile" value="ggz-java-applet-${build.number}.jar" />
+		<property name="application_jarfile" value="ggz-java-client-${build.number}.jar" />
+
+		<!-- Write the version file. -->
+		<echo file="${src}/version.properties"># Version Information
+version.string=${version.string}
+version.major=${version.major}
+version.minor=${version.minor}
+version.revision=${version.revision}
+version.build=${build.number}
+build.date=${TODAY}
+build.user=${user.name}
+build.os=${os.name}
+build.vm=${java.vm.version}</echo>
+
+		<!-- Create the MANIFEST file and include package version information. -->
+		<echo file="manifest/manifest.txt">Manifest-Version: 1.2
+Main-Class: ggz.ui.ClientApp
+Created-By: GGZ Gaming Zone
+
+Name: ggz/ui/
+Specification-Title: GGZ Java Client
+Specification-Version: ${version.major}.${version.minor}.${version.revision}
+Specification-Vendor: GGZ Gaming Zone
+Implementation-Title: ggz-java
+Implementation-Version: SVN Revision ${build.number}
+Implementation-Vendor: GGZ Gaming Zone</echo>
+
+		<echo>Building Version ${version.string}</echo>
+	</target>
+
+	<target name="compile" depends="init" description="Compile the java code from ${src} into ${bin}">
+		<javac srcdir="${src}" destdir="${bin}" deprecation="false" debug="true" optimize="false">
+<!--
+		<javac srcdir="${src}" destdir="${bin}" deprecation="true" debug="false" optimize="true" source="1.4">
+-->
+		</javac>
+		<copy todir="${bin}">
+			<fileset refid="project.resources" />
+		</copy>
+	</target>
+
+	<target name="applet-jar" depends="compile" description="Creates a separate JAR file that contains the classes needed for the applet.">
+		<jar jarfile="${applet_jarfile}" manifest="${manifest}">
+			<fileset dir="${bin}">
+				<exclude name="edu/stanford/ejalbert/*" />
+				<exclude name="ggz/ui/ClientApp.class" />
+				<exclude name="ggz/ui/ClientApp??.class" />
+				<exclude name="**/*Test*" />
+				<exclude name="**/thumbs.db" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="application-jar" depends="compile" description="Creates a separate JAR file that contains the classes needed for the application.">
+		<jar jarfile="${application_jarfile}" manifest="${manifest}">
+			<fileset dir="${bin}">
+				<exclude name="**/*Test*" />
+				<exclude name="**/thumbs.db" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="javadoc" description="Creates API documentation.">
+		<mkdir dir="${javadoc}" />
+		<javadoc sourcepath="${src}" destdir="${javadoc}">
+			<package name="ggz.*" />
+		</javadoc>
+	</target>
+
+	<target name="build-distribution" depends="sign-applet-jar,application-jar" description="Does a clean and rebuilds everything">
+		<!-- Simply causes all dependencies to be built. -->
+	</target>
+
+	<target name="rebuild-distribution" depends="clean,build-distribution" description="Does a clean and rebuilds everything">
+		<!-- Simply causes all dependencies to be built. -->
+	</target>
+
+	<target name="clean" description="Deletes all output files.">
+		<delete dir="${bin}" />
+		<delete dir="${javadoc}" />
+		<delete dir="manifest" />
+		<delete file="${applet_jarfile}" />
+		<delete file="${application_jarfile}" />
+	</target>
+
+	<target name="sign-applet-jar" depends="applet-jar" description="sign the applet jar">
+		<signjar alias="ggz_self_cert" storepass="ggzcards" keystore="${basedir}/signing/ggz_selfcert.keystore">
+			<fileset dir="${basedir}">
+				<include name="${applet_jarfile}" />
+			</fileset>
+		</signjar>
+	</target>
+
+</project>

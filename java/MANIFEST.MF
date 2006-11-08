@@ -1,0 +1,5 @@
+# Static workaround file for 'make' builds
+Manifest-Version: 1.0
+Created-By: 0.92-gcc-4.1
+Main-Class: ggz.ui.ClientApp
+
