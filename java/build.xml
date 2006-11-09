@@ -17,27 +17,34 @@
 	<fileset id="project.resources" dir="${src}" includes="**/LICENSE,**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.xslt" />
 	<fileset id="test.resources" dir="${src_test}" includes="**/*.gif,**/*.png,**/*.properties,**/*.xml,**/*.xmi,**/*.txt" />
 
-	<!-- Load the svn task. This assumes that the svn jar files are on the Ant 
-	     classpath. Usually they will be located in ANT_HOME/lib. You can find 
-	     the latest version of svnant on http://subclipse.tigris.org -->
-	<taskdef resource="svntask.properties" />
-
-	<target name="init">
-		<mkdir dir="${bin}" />
-		<mkdir dir="manifest" />
-
+	<target name="initsvnant" unless="svnant.unspec">
 		<!-- Output the Ant library dir so we know where to put the SVN JAR files. -->
 		<echo message="ant.library.dir=${ant.library.dir}"/>
 		
+		<!-- Load the svn task. This assumes that the svn jar files are on the Ant 
+		     classpath. Usually they will be located in ANT_HOME/lib. You can find 
+		     the latest version of svnant on http://subclipse.tigris.org -->
+		<taskdef resource="svntask.properties" />
+
+		<svn>
+			<status path="." revisionProperty="build.number" />
+		</svn>
+	</target>
+
+	<target name="initnosvnant" if="svnant.unspec">
+		<property name="build.number" value="unspec" />
+	</target>
+
+	<target name="init" depends="initsvnant,initnosvnant">
+		<mkdir dir="${bin}" />
+		<mkdir dir="manifest" />
+
 		<!-- Update the version.properties file -->
 		<tstamp>
 			<format property="TODAY" timezone="GMT" pattern="yyyy-MM-dd'T'hh:mm:ss'Z'" />
 			<format property="DSTAMP" timezone="GMT" pattern="yyyy-MM-dd" />
 			<format property="TSTAMP" timezone="GMT" pattern="hh:mm:ss" />
 		</tstamp>
-		<svn>
-			<status path="." revisionProperty="build.number" />
-		</svn>
 
 		<!-- Read current values. -->
 		<property name="version.major" value="0" />
