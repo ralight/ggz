@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8611 2006-10-03 03:27:59Z jdorje $
+# $Id: configure.ac 8649 2006-11-09 01:08:31Z josef $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -116,23 +116,16 @@ char* strsep(char **stringp, const char *delim);
 
 dnl Find pthread library
 dnl ====================
-AC_CHECK_HEADER(pthread.h,
-    [AC_CHECK_LIB([pthread], [pthread_create],
-        [ggzd_LIBS="$ggzd_LIBS -lpthread"
-         CFLAGS="$CFLAGS -D_REENTRANT"],
-    [AC_CHECK_LIB(c_r, pthread_create,
-        [ggzd_LIBS="$ggzd_LIBS -pthread"
-         CFLAGS="$CFLAGS -D_THREAD_SAFE"],
-            AC_MSG_ERROR([cannot find pthread library]))])],
-    AC_MSG_ERROR([cannot find pthread.h header]))
+AC_GGZ_PTHREADS
 
 
 dnl Check for expat
 dnl ===============
-AC_CHECK_LIB([expat], [XML_ParserCreate], [ggzd_LIBS="$ggzd_LIBS -lexpat"],
+AC_CHECK_LIB([expat], [XML_ParserCreate], [LIB_EXPAT="-lexpat"],
              [AC_MSG_ERROR([cannot find expat library])])
 AC_CHECK_HEADER([expat.h], [],
                 [AC_MSG_ERROR([cannot find expat.h header])])
+AC_SUBST(LIB_EXPAT)
 
 dnl Check database libs
 dnl ===================
@@ -194,8 +187,6 @@ fi
 dnl Compile the test code
 COMPILE_SUBDIRS="$COMPILE_SUBDIRS tests"
 
-AC_SUBST(LDADD)
-AC_SUBST(ggzd_LIBS)
 AC_SUBST(COMPILE_SUBDIRS)
 AC_SUBST(database)
 

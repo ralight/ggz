@@ -68,12 +68,13 @@ ggzd_LDADD = \
 	$(top_builddir)/ggzd/database/libggzdb.a \
 	$(top_builddir)/ggzd/meta/libggzmeta.a \
 	$(top_builddir)/ggzdmod/libggzdmod.la \
-	$(ggzd_LIBS) \
+	$(LIB_EXPAT) \
 	$(LIB_GGZ) \
 	$(LIB_DATABASE) \
 	$(LIB_HOWL) \
 	$(LIB_AVAHI) \
-	$(LIB_FAM)
+	$(LIB_FAM) \
+        $(LIB_PTHREADS)
 
 ggzduedit_SOURCES = ggzduedit.c perms.h
 
