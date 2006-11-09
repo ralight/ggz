@@ -7,7 +7,7 @@ else
 noinst_LTLIBRARIES = libggz.la
 endif
 
-libggz_la_LIBADD = $(LDADD) security/libggzsecurity.la $(LIB_ASYNC)
+libggz_la_LIBADD = security/libggzsecurity.la $(LIB_ASYNC) $(LIB_PTHREADS)
 
 libggz_la_LDFLAGS = -version-info 4:0:2
 
