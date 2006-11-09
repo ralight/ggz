@@ -51,6 +51,9 @@ public class Sprite extends Component {
 
     protected static int DROP_SHADOW_WIDTH = 2;
 
+    /** Amount to offset sprite's position by when it is selected. */
+    protected static int SELECTION_OFFSET = 10;
+
     private static BufferedImage cardBacks;
 
     private static BufferedImage cardFronts;
@@ -64,8 +67,6 @@ public class Sprite extends Component {
     private boolean isSelected = false;
 
     private boolean isSelectable = true;
-
-    private Point unselectedLocation;
 
     private int orientation;
 
@@ -219,40 +220,66 @@ public class Sprite extends Component {
 
     public void setSelected(boolean b) {
         if (b != isSelected) {
-            Point loc = getLocation();
-
             isSelected = b;
-            if (isSelected) {
-                unselectedLocation = (Point) loc.clone();
+            // Update the location. setLocation() always adjusts the location if
+            // the sprite is selected but we need to manually move the card back
+            // when it becomes unselected.
+            Point loc = getLocation();
+            if (!isSelected) {
                 switch (orientation) {
                 case SwingConstants.BOTTOM:
-                    loc.y -= 10;
+                    loc.y += SELECTION_OFFSET;
                     break;
                 case SwingConstants.LEFT:
-                    loc.x += 10;
+                    loc.x -= SELECTION_OFFSET;
                     break;
                 case SwingConstants.TOP:
-                    loc.y += 10;
+                    loc.y -= SELECTION_OFFSET;
                     break;
                 case SwingConstants.RIGHT:
-                    loc.x -= 10;
+                    loc.x += SELECTION_OFFSET;
                     break;
                 default:
                     throw new IllegalStateException(
                             "orientation must be one of SwingConstants.TOP, LEFT, BOTTOM, RIGHT");
                 }
-                // loc.y += (int) Math.round(10 * -Math.cos(angle));
-                // loc.x += (int) Math.round(10 * Math.sin(angle));
-            } else {
-                loc = unselectedLocation;
             }
-            setLocation(loc);
+            setLocation(loc.x, loc.y);
             getParent().repaint();
         }
     }
 
     public boolean isSelected() {
         return isSelected;
+    }
+
+    /**
+     * Overrides superclass method to offset the sprite's location if it is
+     * selected.
+     */
+    public void setLocation(int x, int y) {
+        if (isSelected) {
+            switch (orientation) {
+            case SwingConstants.BOTTOM:
+                y -= SELECTION_OFFSET;
+                break;
+            case SwingConstants.LEFT:
+                x += SELECTION_OFFSET;
+                break;
+            case SwingConstants.TOP:
+                y += SELECTION_OFFSET;
+                break;
+            case SwingConstants.RIGHT:
+                x -= SELECTION_OFFSET;
+                break;
+            default:
+                throw new IllegalStateException(
+                        "orientation must be one of SwingConstants.TOP, LEFT, BOTTOM, RIGHT");
+            }
+        }
+        // loc.y += (int) Math.round(SELECTION_OFFSET * -Math.cos(angle));
+        // loc.x += (int) Math.round(SELECTION_OFFSET * Math.sin(angle));
+        super.setLocation(x, y);
     }
 
     public Object[] getSelectedObjects() {

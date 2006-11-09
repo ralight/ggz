@@ -119,6 +119,10 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         emoticon = emoticons.addStyle("emoticon-surprised", null);
         StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_surprised.png")));
+
+        emoticon = emoticons.addStyle("emoticon-kiss", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_kiss.png")));
     }
 
     /**
@@ -325,6 +329,12 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
                         break;
                     case 'O': // Surprised.
                         emoticon = doc.getStyle("emoticon-surprised");
+                        tok += ch;
+                        break;
+                    case 'x':
+                    case 'X':
+                        // Kiss.
+                        emoticon = doc.getStyle("emoticon-kiss");
                         tok += ch;
                         break;
                     }

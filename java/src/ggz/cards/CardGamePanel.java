@@ -1062,16 +1062,12 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                             // if we are not registered yet.
                             player_cards[card_num]
                                     .removeActionListener(CardGamePanel.this);
-                            // Always stop listening in case preferences were
-                            // changed since we last played card.
                             player_cards[card_num]
                                     .removeMouseListener(spriteHighlighter);
                             player_cards[card_num]
                                     .addActionListener(CardGamePanel.this);
-                            if (isSingleClickToPlayCardEnabled) {
-                                player_cards[card_num]
-                                        .addMouseListener(spriteHighlighter);
-                            }
+                            player_cards[card_num]
+                                    .addMouseListener(spriteHighlighter);
                         }
                     }
                 }
@@ -1346,15 +1342,19 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
      */
     protected class SpriteHighlighter extends MouseAdapter {
         public void mouseEntered(MouseEvent e) {
-            Sprite sprite = ((Sprite) e.getSource());
-            if (sprite.isSelectable() && sprite.isEnabled()) {
-                sprite.setSelected(true);
+            if (isSingleClickToPlayCardEnabled) {
+                Sprite sprite = ((Sprite) e.getSource());
+                if (sprite.isSelectable() && sprite.isEnabled()) {
+                    sprite.setSelected(true);
+                }
             }
         }
 
         public void mouseExited(MouseEvent e) {
-            Sprite sprite = ((Sprite) e.getSource());
-            sprite.setSelected(false);
+            if (isSingleClickToPlayCardEnabled) {
+                Sprite sprite = ((Sprite) e.getSource());
+                sprite.setSelected(false);
+            }
         }
     }
 
