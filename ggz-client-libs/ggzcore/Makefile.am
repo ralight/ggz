@@ -13,7 +13,7 @@ libggzcore_la_CPPFLAGS = -I$(srcdir)/../ggzmod-ggz \
 	-DPREFIX=\"$(prefix)\"
 
 libggzcore_la_LIBADD = ../ggzmod-ggz/libggzmod-ggz.la \
-		       $(LIBEXPAT) $(LIB_GETTEXT)
+		       $(LIB_EXPAT) $(LIB_GETTEXT)
 if INSTALL_GGZCORE
 libggzcore_la_LIBADD += $(LIB_GGZ)
 endif

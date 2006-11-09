@@ -1,12 +1,7 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8583 2006-09-19 15:26:31Z jdorje $
-
-SUBDIRS = .
-
 bin_PROGRAMS = grubby
 
 grubby_SOURCES = guru.c main.c module.c
-grubby_LDADD = -ldl $(LIB_GGZCORE)
+grubby_LDADD = -ldl $(LIB_GGZCORE) $(LIB_GETTEXT)
 grubby_LDFLAGS = $(GGZCORE_LDFLAGS)
 
 grubbydir = $(libdir)/grubby/coremodules

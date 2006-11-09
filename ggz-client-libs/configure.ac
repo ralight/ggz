@@ -112,11 +112,11 @@ fi
 
 # Check for expat
 # ===============
-AC_CHECK_LIB(expat, XML_ParserCreate, [LIBEXPAT="-lexpat"],
+AC_CHECK_LIB(expat, XML_ParserCreate, [LIB_EXPAT="-lexpat"],
              [AC_MSG_ERROR(cannot find expat library)])
 AC_CHECK_HEADER(expat.h, [],
                 [AC_MSG_ERROR(cannot find expat.h header)])
-AC_SUBST(LIBEXPAT)
+AC_SUBST(LIB_EXPAT)
 
 
 # Debug modes

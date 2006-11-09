@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 8139 2006-06-08 19:53:35Z jdorje $
+#  $Id: Makefile.am 8651 2006-11-09 06:47:54Z josef $
 
 SUBDIRS = .
 
@@ -36,7 +36,7 @@ ggz_spades_SOURCES = \
 		socketfunc.c	socketfunc.h
 
 
-ggz_spades_LDADD = 	$(top_builddir)/common/libgtk-games.a		\
-			$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
-			$(LIB_GGZMOD) $(LIB_GGZ)
+ggz_spades_LDADD = 	$(top_builddir)/common/libgtk-games.a \
+			$(GTK_LIBS) $(INTLLIBS) $(LDADD) \
+			$(LIB_GGZMOD) $(LIB_GGZ) $(LIB_GETTEXT)
 ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)

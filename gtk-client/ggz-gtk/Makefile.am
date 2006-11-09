@@ -72,7 +72,7 @@ libggz_gtk_la_SOURCES =	about.c \
 			xtext-ggz.h
 
 libggz_gtk_la_LIBADD = $(GTK_LIBS) $(LDADD) $(LIBS) $(INTLLIBS) \
-			$(LIB_GGZCORE) $(LIB_GGZ)
+			$(LIB_GGZCORE) $(LIB_GGZ) $(LIB_GETTEXT)
 libggz_gtk_la_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS) -version-info 0:0:0
 
 #if WIN32

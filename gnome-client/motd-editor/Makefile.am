@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5612 2003-06-26 09:22:52Z dr_maux $
+#  $Id: Makefile.am 8651 2006-11-09 06:47:54Z josef $
 
 SUBDIRS = .
 
@@ -11,6 +11,6 @@ motd_editor_SOURCES =	callbacks.c \
 			interface.h \
 			main.c
 
-motd_editor_LDADD = $(GGZ_LIBS) $(INTLLIBS)
+motd_editor_LDADD = $(GGZ_LIBS) $(INTLLIBS) $(LIB_GETTEXT)
 motd_editor_CFLAGS = $(GGZ_CFLAGS)
 
