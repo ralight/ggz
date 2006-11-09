@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 EXTRA_DIST = Doxyfile
 
 if INSTALL_GGZCORE
@@ -15,7 +13,7 @@ libggzcore_la_CPPFLAGS = -I$(srcdir)/../ggzmod-ggz \
 	-DPREFIX=\"$(prefix)\"
 
 libggzcore_la_LIBADD = ../ggzmod-ggz/libggzmod-ggz.la \
-		       $(LIBEXPAT)
+		       $(LIBEXPAT) $(LIB_GETTEXT)
 if INSTALL_GGZCORE
 libggzcore_la_LIBADD += $(LIB_GGZ)
 endif

@@ -27,6 +27,9 @@ dnl
 
 dnl ------------------------------------------------------------------------
 dnl Check if asynchronous hostname lookups are possible
+dnl Automake variables: $(LIB_ASYNC)
+dnl Autoconf variables: $enable_anl
+dnl Defines: GAI_A
 dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_ASYNC],
@@ -48,6 +51,9 @@ AC_DEFUN([AC_GGZ_ASYNC],
 
 dnl ------------------------------------------------------------------------
 dnl Check for pthreads
+dnl Automake variables: $(LIB_PTHREADS)
+dnl Autoconf variables: $enable_threading
+dnl Defines: NO_THREADING
 dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_PTHREADS],
@@ -63,10 +69,10 @@ if test $enable_threading != "no"; then
   AC_CHECK_HEADER(pthread.h, [],
                   AC_MSG_ERROR([*** Cannot find pthread.h header]))
   AC_CHECK_LIB(pthread, pthread_create,
-               [LDADD="$LDADD -lpthread"
+               [LIB_PTHREADS="-lpthread"
                 CFLAGS="$CFLAGS -D_REENTRANT"],
                [AC_CHECK_LIB(c_r, pthread_create,
-                             [LDADD="$LDADD -pthread"
+                             [LIB_PTHREADS="-pthread"
                               CFLAGS="$CFLAGS -D_THREAD_SAFE"],
                AC_MSG_ERROR([*** Cannot find pthread library]))])
 
@@ -77,12 +83,15 @@ else
   AC_DEFINE([NO_THREADING], 1, [Define if threading support is disabled])
 fi
 
-# FIXME: use 'LIBS'?
-  AC_SUBST(LDADD)
+  AC_SUBST(LIB_PTHREADS)
 ])
 
 dnl ------------------------------------------------------------------------
 dnl Find internationalization tools
+dnl Automake variables: $(LIB_GETTEXT),
+dnl   $(XGETTEXT), $(GETTEXT), $(GMSGFMT), $(MSGFMT), $(MSGMERGE)
+dnl Autoconf variables: (none)
+dnl Defines: ENABLE_NLS
 dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_INTL],
@@ -96,8 +105,7 @@ if test "x$GETTEXT" = "x"; then intl=0; fi
 if test "x$MSGFMT" = "x"; then intl=0; fi
 if test "x$MSGMERGE" = "x"; then intl=0; fi
 AM_ICONV
-LIBS="$LIBICONV $LIBS"
-AC_CHECK_LIB(intl, gettext, [LIBS="-lintl $LIBS"])
+AC_CHECK_LIB(intl, gettext, [LIB_GETTEXT="-lintl $LIBICONV"])
 AC_CHECK_FUNCS([gettext ngettext], [], [intl=0])
 AC_CHECK_HEADERS([libintl.h locale.h])
 if test "$intl" = 0; then
@@ -123,6 +131,8 @@ else
   AC_SUBST(GMSGFMT)
   AC_SUBST(MSGFMT)
   AC_SUBST(MSGMERGE)
+
+  AC_SUBST(LIB_GETTEXT)
 
   AC_DEFINE(ENABLE_NLS, 1, [Define if NLS is enabled])
 
