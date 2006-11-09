@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# Wrapper for the GGZ-Java application
+
+java -jar /usr/share/ggz/ggz-java/ggz-java-client.jar
+

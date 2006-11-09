@@ -1,0 +1,31 @@
+.TH "ggz-java" "6" "November  8, 2006"
+.SH NAME
+ggz-java \- Java core client for the GGZ Gaming Zone
+.SH SYNOPSIS
+.B ggz-java
+[-uri=\fIURI\fR]
+[-xmlin]
+[-xmlout]
+.SH DESCRIPTION
+.LP
+Similar to other core clients such as \fBkggz\fR or \fBggz-gtk\fR,
+GGZ-Java can be used to find players online, chat with them and play several
+games. The GGZ-Java application is derived from the corresponding applet,
+and currently ships with a game client for GGZCards.
+.SH OPTIONS
+.TP
+.B \-uri \fIURI\fR
+Connect to the GGZ server referenced by URI instead of using the built-in default server.
+The format of URI follows the scheme of ggz://username@host:port.
+.TP
+.B \-xmlin
+Display all incoming traffic from the server.
+.TP
+.B \-xmlout
+Display all outgoing traffic to the server.
+.SH "AUTHORS"
+.LP
+The GGZ Development Team
+<ggz\-dev@mail.ggzgamingzone.org>
+.SH SEE ALSO
+kggz(6), ggz-gtk(6)
