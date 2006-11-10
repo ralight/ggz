@@ -21,10 +21,14 @@ debinstall:
 	mkdir -p $(DESTDIR)/var/www
 	cp -r web $(DESTDIR)/var/www/ggzcommunity
 	mkdir -p $(DESTDIR)/etc/apache2/sites-available
-	cp setup/webserver/ggz-apache2.conf $(DESTDIR)/etc/apache2/sites-available/ggzcommunity
+	# FIXME: ship template and install afterwards
+	#cp setup/webserver/ggz-apache2.conf $(DESTDIR)/etc/apache2/sites-available/ggzcommunity
 	cd setup/scripts/calcrankings && make install
 	cp setup/scripts/ggz2phpbb.pl $(DESTDIR)/usr/bin/ggz2phpbb
 	cp setup/scripts/ggzblogs.pl $(DESTDIR)/usr/bin/ggzblogs
+
+clean:
+	rm -f setup/scripts/calcrankings/calcrankings
 
 dist:
 	rm -rf ../ggz-community-$(version)
