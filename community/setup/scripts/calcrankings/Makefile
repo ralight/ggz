@@ -10,5 +10,5 @@ calcrankings: main.c
 		-lpq $(GGZFLAGS)
 
 install: calcrankings
-	cp calcrankings $(ggzdir)/bin
+	cp calcrankings $(DESTDIR)$(ggzdir)/bin
 
