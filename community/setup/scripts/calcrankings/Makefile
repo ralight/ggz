@@ -1,6 +1,6 @@
-ggzdir = `ggz-config -c`/..
+prefix = `ggz-config -c`/..
 
-GGZFLAGS = -I$(ggzdir)/include -L$(ggzdir)/lib -lggz
+GGZFLAGS = -I$(prefix)/include -L$(prefix)/lib -lggz
 
 all: calcrankings
 
@@ -10,5 +10,6 @@ calcrankings: main.c
 		-lpq $(GGZFLAGS)
 
 install: calcrankings
-	cp calcrankings $(DESTDIR)$(ggzdir)/bin
+	mkdir -p $(DESTDIR)$(prefix)/bin
+	cp calcrankings $(DESTDIR)$(prefix)/bin
 
