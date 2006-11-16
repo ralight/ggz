@@ -113,6 +113,10 @@ KGGZBase::KGGZBase()
 
 	m_menu_rooms = new KPopupMenu(this, "menu_rooms");
 
+	m_menu_chatrooms = new KPopupMenu(m_menu_rooms, "menu_chatrooms");
+	m_menu_rooms->insertItem(i18n("Rooms with unsupported game client"), m_menu_chatrooms, MENU_CHATROOMS);
+	m_menu_rooms->setItemEnabled(MENU_CHATROOMS, FALSE);
+
 	m_menu_game = new KPopupMenu(this, "menu_games");
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_INFO), i18n("&Information"), MENU_GAME_INFO);
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_RULES), i18n("&Rules of the game"), MENU_GAME_RULES);
@@ -149,11 +153,16 @@ KGGZBase::KGGZBase()
 	connect(m_menu_ggz, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_client, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_rooms, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	connect(m_menu_chatrooms, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_preferences, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(kggz, SIGNAL(signalMenu(int)), SLOT(slotMenuSignal(int)));
-	connect(kggz, SIGNAL(signalRoom(const char*, const char*, const char*, int, bool)), SLOT(slotRoom(const char*, const char*, const char*, int, bool)));
-	connect(kggz, SIGNAL(signalRoomChanged(const char*, const char*, int, int)), SLOT(slotRoomChanged(const char*, const char*, int, int)));
+	connect(kggz,
+		SIGNAL(signalRoom(const char*, const char*, const char*, int, bool, bool)),
+		SLOT(slotRoom(const char*, const char*, const char*, int, bool, bool)));
+	connect(kggz,
+		SIGNAL(signalRoomChanged(const char*, const char*, int, int)),
+		SLOT(slotRoomChanged(const char*, const char*, int, int)));
 	connect(kggz, SIGNAL(signalCaption(QString, bool)), SLOT(slotCaption(QString, bool)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(kggz, SIGNAL(signalLocation(QString)), SLOT(slotLocation(QString)));
@@ -422,7 +431,10 @@ void KGGZBase::slotMenuSignal(int signal)
 	{
 		case KGGZ::MENUSIG_DISCONNECT:
 			for(int i = 0; i < m_rooms; i++)
-				m_menu_rooms->removeItemAt(0);
+			{
+				m_menu_rooms->removeItem(MENU_ROOMS_SLOTS + i);
+				m_menu_chatrooms->removeItem(MENU_ROOMS_SLOTS + i);
+			}
 			m_rooms = 0;
 			m_menu_ggz->setItemEnabled(MENU_GGZ_CONNECT, TRUE);
 			m_menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, FALSE);
@@ -430,6 +442,7 @@ void KGGZBase::slotMenuSignal(int signal)
 			m_menu_client->setItemEnabled(MENU_CLIENT_TABLES, FALSE);
 			m_menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, FALSE);
 			m_menu_ggz->setItemEnabled(MENU_GGZ_MOTD, FALSE);
+			m_menu_rooms->setItemEnabled(MENU_CHATROOMS, FALSE);
 			menuBar()->setItemEnabled(MENU_ROOMS, false);
 			menuBar()->setItemEnabled(MENU_GAME, false);
 			setCaption(i18n("offline"));
@@ -497,11 +510,15 @@ void KGGZBase::slotMenuSignal(int signal)
 void KGGZBase::slotReconfiguration()
 {
 	for(int i = 0; i < m_rooms; i++)
-		m_menu_rooms->removeItemAt(0);
+	{
+		m_menu_rooms->removeItem(MENU_ROOMS_SLOTS + i);
+		m_menu_chatrooms->removeItem(MENU_ROOMS_SLOTS + i);
+	}
 	m_rooms = 0;
+	m_menu_rooms->setItemEnabled(MENU_CHATROOMS, FALSE);
 }
 
-void KGGZBase::slotRoom(const char *roomname, const char *protocolname, const char *category, int numplayers, bool enabled)
+void KGGZBase::slotRoom(const char *roomname, const char *protocolname, const char *category, int numplayers, bool enabled, bool installed)
 {
 	QString caption;
 
@@ -514,7 +531,14 @@ void KGGZBase::slotRoom(const char *roomname, const char *protocolname, const ch
 	if(numplayers > 0) caption = QString("%1 (%2)").arg(roomname).arg(numplayers);
 #endif
 	m_lastgame = protocolname;
-	m_menu_rooms->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + m_rooms), caption, MENU_ROOMS_SLOTS + m_rooms);
+
+	QPopupMenu *menu = m_menu_rooms;
+	if(!installed)
+	{
+		menu = m_menu_chatrooms;
+		m_menu_rooms->setItemEnabled(MENU_CHATROOMS, TRUE);
+	}
+	menu->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + m_rooms), caption, MENU_ROOMS_SLOTS + m_rooms);
 	// disable for 'closed' rooms
 	m_menu_rooms->setItemEnabled(MENU_ROOMS_SLOTS + m_rooms, enabled);
 	m_rooms++;

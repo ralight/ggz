@@ -1079,11 +1079,22 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			emit signalMenu(MENUSIG_ROOMLIST);
 			for(int i = 0; i < kggzserver->countRooms(); i++)
 			{
+				bool roominstalled = true;
+				GGZCoreGametype *gametype = kggzserver->room(i)->gametype();
+				if(gametype->name())
+				{
+					GGZCoreModule *module = new GGZCoreModule();
+					module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
+					if(module->count() == 0) roominstalled = false;
+					delete module;
+				}
+
 				emit signalRoom(kggzserver->room(i)->name(),
 					kggzserver->room(i)->gametype()->protocolEngine(),
 					kggzserver->room(i)->category(),
 					kggzserver->room(i)->countPlayers(),
-					!kggzserver->room(i)->closed());
+					!kggzserver->room(i)->closed(),
+					roominstalled);
 				m_roommap[kggzserver->room(i)->gametype()->protocolEngine()] = i;
 			}
 
@@ -1209,11 +1220,22 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			emit signalReconfiguration();
 			for(int i = 0; i < kggzserver->countRooms(); i++)
 			{
+				bool roominstalled = true;
+				GGZCoreGametype *gametype = kggzserver->room(i)->gametype();
+				if(gametype->name())
+				{
+					GGZCoreModule *module = new GGZCoreModule();
+					module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
+					if(module->count() == 0) roominstalled = false;
+					delete module;
+				}
+
 				emit signalRoom(kggzserver->room(i)->name(),
 					kggzserver->room(i)->gametype()->protocolEngine(),
 					kggzserver->room(i)->category(),
 					kggzserver->room(i)->countPlayers(),
-					!kggzserver->room(i)->closed());
+					!kggzserver->room(i)->closed(),
+					roominstalled);
 				m_roommap[kggzserver->room(i)->gametype()->protocolEngine()] = i;
 			}
 			break;
@@ -1841,7 +1863,7 @@ void KGGZ::menuGameRules()
 
 void KGGZ::menuRoom(int room)
 {
-	int id;
+	//int id;
 
 	if(room >= 0)
 	{

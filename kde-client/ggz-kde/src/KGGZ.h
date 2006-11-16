@@ -132,7 +132,8 @@ class KGGZ : public QWidget
 		// Emitted to dis/enable menu items
 		void signalMenu(int signal);
 		// Emitted to announce new room
-		void signalRoom(const char *roomname, const char *protocolname, const char *category, int numplayers, bool enabled);
+		void signalRoom(const char *roomname, const char *protocolname, const char *category,
+			int numplayers, bool enabled, bool installed);
 		// Emitted to announce room player changes
 		void signalRoomChanged(const char *roomname, const char *protocolname, int roomnumber, int numplayers);
 		// Emitted to change window caption

@@ -69,7 +69,8 @@ class KGGZBase : public KMainWindow
 		// Receive a dis/enable event from the KGGZ object
 		void slotMenuSignal(int signal);
 		// Receive a room to be added to the menu
-		void slotRoom(const char *roomname, const char *protocolname, const char *category, int numplayers, bool enabled);
+		void slotRoom(const char *roomname, const char *protocolname, const char *category,
+			int numplayers, bool enabled, bool installed);
 		// The number of players in a room has changed
 		void slotRoomChanged(const char *roomname, const char *protocolname, int roomnumber, int numplayers);
 		// Receive the caption dynamically from KGGZ
@@ -128,6 +129,7 @@ class KGGZBase : public KMainWindow
 
 			MENU_HELP_GGZ,
 
+			MENU_CHATROOMS,
 			MENU_ROOMS_SLOTS // MENU_ROOMS_SLOTS _must_ be the last element
 		};
 
@@ -159,6 +161,7 @@ class KGGZBase : public KMainWindow
 		KGGZAbout *m_about;
 		// All available menus (except help)
 		KPopupMenu *m_menu_client, *m_menu_rooms, *m_menu_ggz, *m_menu_game, *m_menu_preferences;
+		KPopupMenu *m_menu_chatrooms;
 		// The number of available rooms on a server
 		int m_rooms;
 		// System tray watcher
