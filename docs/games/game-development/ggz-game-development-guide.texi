@@ -67,6 +67,7 @@ See @url{http://www.ggzgamingzone.org/docs/guides/gamedev/} for the latest editi
 @menu
 * Foreword:: General notes about this document
 * The GGZ System:: How games can use the GGZ Gaming Zone
+* Diving into GGZ:: Preparing a developer installation
 * Game Clients:: Get into the player's eye
 * Game Servers:: Where the real magic takes place
 * Programming Details:: Network, configuration etc.
@@ -139,6 +140,43 @@ switched on.
 The ggzcore API documentation provides more facts and details about the
 embedded mode.
 
+@node Diving into GGZ
+@chapter Diving into GGZ
+
+@section Preparing a developer setup
+
+Prior to looking into adding GGZ support to a game, it might be useful to
+understand the GGZ build process. Most likely the game will have a different
+one but sometimes the situation arises in which one wants to debug GGZ itself.
+If you're sure you do not ever want this, feel free to skip this part of the
+guide.
+
+A lot of external software is used in GGZ which should first be installed, along
+with the developer tools. The @command{ggzprep} utility, as found in
+@url{playground/maintenance}, can do this automatically for some popular Linux
+distributions. A full GGZ dependency tree weighs in more than 150 MB of binary
+packages, so the download might take some time.
+
+Building GGZ from source is quite easy but depending on the package a number of
+tools might be needed. Most parts (C/C++) are autotools-based,
+meaning they use automake, autoconf and libtool to produce makefiles.
+The Python package uses autoconf only and the Java package uses the ant system.
+GGZ Community comes with its own hand-rolled system. The two KDE packages might
+switch to CMake in the future. Aligning with the build system of the respective
+platform has proven to be the best and easiest for developers of the platform
+in question, but of course where they all come together (in GGZ) some care is
+needed.
+
+Thankfully, the @command{ggzbuild} tool has been invented. It can be found in
+@url{playground/maintenance} as well, together with a ready-to-go configuration
+file named @url{ggzbuildrc.sample}. Copy this file to @url{~/.ggzbuildrc} and
+modify as needed (changing the installation directory is recommended).
+Afterwards, calling @command{ggzbuild} either in GGZ's
+top-level trunk/branch directory or in each individual module directory
+will do the right thing. The first way of invocation is recommended for the
+initial installation as it will always get the dependencies and order of
+compilation right.
+
 @section Distribution
 
 While the following chapters deal with programming the game clients and servers
@@ -160,7 +198,7 @@ in GGZ.
 
 Both of these files can be found at
 @url{http://dev.ggzgamingzone.org/external.php}, a web page which also
-contains general information about external games.
+contains general information about external games and development thereof.
 
 @node Game Clients
 @chapter Game Clients
@@ -195,6 +233,19 @@ The specification can be found at
 The ggzmod library is available for game development in C, C++ and Python.
 Its homepage is @url{http://dev.ggzgamingzone.org/libraries/ggzmod/}.
 
+Both on the server and on the client the concept of GGZ libraries is to
+adapt to the target platform as much as possible. Therefore, the plain C
+library can always be used, but C++ developers in KDE will prefer the Qt-only
+reimplementation called kggzmod, and Python developers making use of the
+Pygame toolkit will certainly look into the Pygame integration layer that
+ggz-python's pyggzmod implementation provides.
+If you do not like any ggzmod implementation because none of them fits your
+programming style, feel free to suggest another integration layer or
+reimplementation on our mailing list.
+
+Now that the introduction to ggzmod has been made, let us look into how
+the library actually works!
+
 A launched game client gets a control channel on its way, which it connects to
 a callback to receive control messages from the GGZ core client which launched
 the game.
@@ -207,7 +258,18 @@ a local one and a remote one.
 The receipt of the channel is one message from ggzmod which can be delivered
 via a callback, other such messages include seat changes, table chat or
 detailed player information.
-A basic ggzmod usage may thus look like this:
+Please refer to the client-client specification for details.
+
+For two programming languages, the basic usage of ggzmod is now shown in the
+next subsections.
+
+@subsection Example in C, using glib
+
+The native C interface to ggzmod might be used in plain C, but this will
+require some mainloop interaction with select() calls. More often,
+a client application toolkit will be used which provides this facility.
+A basic ggzmod usage in the C programming language using the @command{glib}
+library, e.g. for Gtk+ games, may thus look like this:
 
 @verbatim
 /* Whenever the core client sends data, feed it into ggzmod */
@@ -243,18 +305,52 @@ int main()
 }
 @end verbatim
 
-Note that the example above is for a Gtk+ game client written in C. Things will
-differ for other toolkits like Qt or Pygame, or other programming languages like
-C++ or Python. Also, return values should be checked and such. The API
-documentation is the authorative source of information on that matter.
-
-@subsection Example in C, using glib
-
-blah
+Note again that the example above is for a Gtk+ game client written in C.
+Things will differ for other toolkits like Qt or Pygame, or other programming
+languages like C++ or Python. Also, return values should be checked and such.
+The API documentation is the authorative source of information on that matter.
 
 @subsection Example in Python
 
-blah
+The Python wrapper for ggzmod is more high-level than the underlying C library.
+For example, messages from the GGZ control channel are processed automatically.
+The game client doesn't have to dispatch those and can concentrate on the actual
+game messages.
+
+Hence, a simple setup might look like the following:
+
+@verbatim
+import ggzmod
+import socket
+
+# Callback for initial setup of channel to game server
+def handle_server():
+	ggzmod.setState(ggzmod.STATE_PLAYING)
+	sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
+
+def main(with_networking):
+	# Conditionally turn on networking
+	if with_networking:
+		# Notify us when game server sends something
+		ggzmod.setHandler(ggzmod.EVENT_SERVER, handle_server)
+		ret = ggzmod.connect()
+		if not ret:
+			# Disable networking in case of failure
+			with_networking = False
+	# ...
+	# Here's the mainloop which either polls the GGZ control channel (bad)
+	# or waits for events on it (good), depending on the toolkit
+	if network_active:
+		if ggzmod.autonetwork():
+			# do something with socket here
+			pass
+@end verbatim
+
+Several GGZ games have some sort of Net class which encapsulates the socket
+handling. In a future version of GGZ such a class might be part of the default
+installation of pyggzmod. Then, three different ways of using the library
+are offered: pyggzmod pure as shown above, pyggzmod + pyggznet abstraction
+and pyggzmod + pygame integration layer.
 
 @section Game Registry
 
@@ -380,6 +476,8 @@ described in a later chapter.
 Examples of Gtk+ GGZ games are Tic-Tac-Toe, NetSpades, Connect the Dots,
 Hastings1066, Reversi, Combat, Chinese Checkers, Chess and GGZCards.
 T.E.G. is an example for a GNOME game which provides GGZ support.
+Starting from version 2.18, the GNOME-Games package itself supports GGZ
+in several games, including the use of embedded core clients.
 
 @subsection SDL (C, C++, Python)
 
