@@ -189,8 +189,11 @@ void net_join(const char *room)
 		}
 	}
 
-	ggzroom = ggzcore_server_get_nth_room(server, roomid);
-	if(room) ggzcore_server_join_room(server, ggzroom);
+	if(room)
+	{
+		ggzroom = ggzcore_server_get_nth_room(server, roomid);
+		ggzcore_server_join_room(server, ggzroom);
+	}
 	else ggzcore_server_join_room(server, NULL);
 }
 
@@ -536,8 +539,8 @@ GGZHookReturn net_hook_chat(unsigned int id, const void *event_data, const void 
 	time_t t;
 	char *ts;
 	int playertype;
-	int players, i, tmp;
-	GGZPlayer *player;
+	/*int players, i, tmp;
+	GGZPlayer *player;*/
 	const GGZChatEventData *chat = event_data;
 
 	/* Ignore all self-generates messages */
