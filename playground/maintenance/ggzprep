@@ -1,9 +1,36 @@
 # Preparation for GGZ development:
 # Fetches all needed packages from the distribution
-# Currently, only (K)Ubuntu 6.06 is tested (based on pkg-ggz debian packages)
+# Supported distributions: (K)Ubuntu 6.06, (K)Ubuntu 5.04
+# Only (K)Ubuntu 6.06 is fully tested (based on pkg-ggz debian packages)
+
+# Test for Linux distro compatibility
+
+distro=`grep ^DISTRIB_ID= /etc/lsb-release | cut -d "=" -f 2`
+version=`grep ^DISTRIB_RELEASE= /etc/lsb-release | cut -d "=" -f 2`
+
+echo "*** Welcome to 'ggzprep', the GGZ Gaming Zone dependency installer."
+if [ -z "$distro" ] || [ -z "$version" ]; then
+	echo "!!! Error: Distribution is not LSB-compliant (no /etc/lsb-release)."
+	exit
+fi
+echo "*** Your LSB-compliant Linux distribution is: $distro ($version)"
+if test $distro = "Ubuntu" && test $version = "5.04"; then
+	distro=hoary
+elif test $distro = "Ubuntu" && test $version = "6.06 (LTS)"; then
+	distro=dapper
+else
+	echo "!!! Error: This distribution is not yet supported."
+	exit
+fi
+
+# Assign a temporary file name
 
 tmpfile=`tempfile`
-echo $tmpfile
+
+# Fill temporary file with packages depending on the distribution
+
+if test $distro = "dapper"; then
+
 cat > $tmpfile << ENDOFPACKAGESLIST
 
 make
@@ -44,6 +71,60 @@ texinfo
 transfig
 
 ENDOFPACKAGESLIST
+
+fi
+
+if test $distro = "hoary"; then
+
+# Differences to dapper:
+# libavahi-compat-howl-dev => libhowl-dev
+# libgnutls-dev => libgnutls11-dev
+# python-all-dev => python-dev
+
+cat > $tmpfile << ENDOFPACKAGESLIST
+
+make
+autoconf
+automake1.9
+libtool
+g++
+
+libhowl-dev
+libdb4.3-dev
+libexpat1-dev
+libgnomeui-dev
+libgnutls11-dev
+libgtk2.0-dev
+libperl-dev
+libreadline5-dev
+librsvg2-dev
+libsdl1.2-dev
+libsdl-image1.2-dev
+libsdl-ttf2.0-dev
+libsdl-mixer1.2-dev
+libsilc-dev
+docbook-dsssl
+gs
+gaim-dev
+gettext
+jade
+kdelibs4-dev
+lynx
+python-dev
+python-pygame
+ruby1.8-dev
+ruby
+sgml2x
+tetex-bin
+texi2html
+texinfo
+transfig
+
+ENDOFPACKAGESLIST
+
+fi
+
+# Finally, install the packages and remove temporary file
 
 apt-get install `cat $tmpfile`
 rm $tmpfile

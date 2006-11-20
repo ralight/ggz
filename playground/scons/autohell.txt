@@ -1,0 +1,17 @@
+Some problems with the GNU Autotools
+ (they're documented here but may move into the real build docs if
+  some of the issues seem to be really bad ones)
+
+Subdirectories
+--------------
+
+Some versions of automake get the SUBDIRS variable wrong (e.g. 1.9.5).
+If it is set, then it will not be properly reset in the child directories
+that make up its value.
+A possible cause might be mixing Autoconf-style @SUBDIRS@ with Automake-style
+$(SUBDIRS). Only the latter should be used!
+The issue led to a whole bunch of "SUBDIRS = ." workarounds in the affected
+child directories throughout GGZ SVN.
+
+Since somewhen in 2006 those workarounds are being removed.
+
