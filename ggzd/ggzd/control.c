@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8611 2006-10-03 03:27:59Z jdorje $
+ * $Id: control.c 8663 2006-11-20 09:48:56Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -71,6 +71,11 @@
 #endif
 #ifdef WITH_FAM
 #include <fam.h>
+#endif
+
+/* FIXME: this is in motd.c also - and we could probably use pathconf */
+#ifndef HOST_NAME_MAX
+#define HOST_NAME_MAX 256
 #endif
 
 /* Server options */

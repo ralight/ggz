@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 8322 2006-07-05 14:55:18Z josef $
+ * $Id: login.c 8663 2006-11-20 09:48:56Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -101,6 +101,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	/* Start off assuming name is good */
 	name_ok = true;
+	reason = E_NO_STATUS;
 
 	/* Check guest names vs. the database */
 	snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
