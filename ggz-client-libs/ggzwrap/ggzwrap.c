@@ -24,13 +24,17 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#include <sys/socket.h>
-#include <sys/select.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <signal.h>
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
+#else
+#include <sys/socket.h>
+#include <sys/select.h>
 #include <sys/wait.h>
 #include <netinet/in.h>
+#endif
 #include <ggzmod.h>
 
 /* Global variables */
