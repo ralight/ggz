@@ -1,0 +1,34 @@
+.TH "ggz" "6" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP 
+ggz \- GGZ Gaming Zone core client selector
+.SH "SYNOPSIS"
+.LP 
+\fBggz\fR [\fIURI\fR]
+.SH "DESCRIPTION"
+.LP 
+The GGZ Gaming Zone allows people to play many games online using so-called
+GGZ core clients which are chat clients with integrated game launchers.
+.LP
+The \fBggz\fR tool can be used as a shortcut to start the most suitable
+core client without worrying which ones are installed. The tool is useful
+for launching GGZ core clients from other software, but it will certainly
+also be used by experienced users who just want to connect to GGZ quickly.
+.LP 
+Currently, the KDE client \fBkggz\fR, the Gtk+ client \fBggz-gtk\fR and
+the Java client \fBggz-java\fR are supported for graphical environments.
+In text-console mode, \fBggz-txt\fR can serve as a fallback.
+.SH "OPTIONS"
+.LP 
+Since the available program options varies between the core clients,
+only the common \fIURL\fR parameter is supported. This is a connection
+identifier of the form ggz://user@host:port and will in most cases
+be abbreviated to user@host.
+.LP 
+.SH "AUTHORS"
+.LP 
+The GGZ Development Team
+<ggz\-dev@mail.ggzgamingzone.org>
+.SH "SEE ALSO"
+.LP 
+kggz(6), ggz-gtk(6), ggz-java(6), ggz-txt(6), ggz(7)

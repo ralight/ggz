@@ -7,6 +7,15 @@ else
 noinst_LTLIBRARIES = libggzmod.la
 endif
 
+libggzmod_la_CPPFLAGS = $(LIBGGZ_INCLUDES) -I$(top_srcdir)/ggzcore
+
+libggzmod_la_LIBADD = $(top_builddir)/ggzcore/libggzcore.la
+if INSTALL_GGZMOD
+libggzmod_la_LIBADD += $(LIB_GGZ)
+endif
+
+libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 4:0:0
+
 libggzmod_la_SOURCES = \
 	ggzmod.c \
 	ggzmod.h \
@@ -14,11 +23,3 @@ libggzmod_la_SOURCES = \
 	io.h \
 	mod.h \
 	protocol.h
-
-libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 4:0:0
-libggzmod_la_LIBADD = ../ggzcore/libggzcore.la
-if INSTALL_GGZMOD
-libggzmod_la_LIBADD += $(LIB_GGZ)
-endif
-
-AM_CPPFLAGS = $(LIBGGZ_INCLUDES) -I$(srcdir)/../ggzcore

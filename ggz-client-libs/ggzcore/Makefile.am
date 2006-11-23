@@ -7,12 +7,12 @@ else
 noinst_LTLIBRARIES = libggzcore.la
 endif
 
-libggzcore_la_CPPFLAGS = -I$(srcdir)/../ggzmod-ggz \
+libggzcore_la_CPPFLAGS = -I$(top_srcdir)/ggzmod-ggz \
 	$(LIBGGZ_INCLUDES) \
 	-DGGZCONFDIR=\"$(sysconfdir)\" \
 	-DPREFIX=\"$(prefix)\"
 
-libggzcore_la_LIBADD = ../ggzmod-ggz/libggzmod-ggz.la \
+libggzcore_la_LIBADD = $(top_builddir)/ggzmod-ggz/libggzmod-ggz.la \
 		       $(LIB_EXPAT) $(LIB_GETTEXT)
 if INSTALL_GGZCORE
 libggzcore_la_LIBADD += $(LIB_GGZ)

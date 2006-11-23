@@ -1,0 +1,75 @@
+#!/bin/bash
+#
+# GGZ: Auto-selection of an appropriate GGZ Gaming Zone core client
+# Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
+
+# Currently supported core clients:
+# kggz, ggz-gtk, ggz-java, ggz-txt
+
+# FIXME: Use 'erreur' in case no core client is found!
+# FIXME: add víbora etc.
+
+app=""
+has_kggz=""
+has_ggz_gtk=""
+has_ggz_java=""
+has_ggz_txt=""
+
+# Find apps first
+
+which kggz >/dev/null
+if [ $? -eq 0 ]; then
+	has_kggz="kggz"
+fi
+
+which ggz-gtk >/dev/null
+if [ $? -eq 0 ]; then
+	has_ggz_gtk="ggz-gtk"
+fi
+
+which ggz-java >/dev/null
+if [ $? -eq 0 ]; then
+	has_ggz_java="ggz-java"
+fi
+
+which ggz-txt >/dev/null
+if [ $? -eq 0 ]; then
+	has_ggz_txt="ggz-txt"
+fi
+
+# Desktop preferences
+
+if [ ! -z $KDE_FULL_SESSION ]; then
+	if [ ! -z $has_kggz ]; then
+		app="kggz"
+	fi
+fi
+
+if [ -z $DISPLAY ]; then
+	if [ ! -z $has_ggz_txt ]; then
+		app="ggz-txt"
+	else
+		echo "Error: GGZ core client for the command line is missing."
+		exit 1
+	fi
+fi
+
+# Fallbacks: use whatever is available
+
+if [ -z $app ]; then
+	if [ ! -z $has_kggz ]; then
+		app="kggz"
+	elif [ ! -z $has_ggz_gtk ]; then
+		app="ggz-gtk"
+	elif [ ! -z $has_ggz_java ]; then
+		app="ggz-java"
+	else
+		echo "Error: No graphical GGZ core client is installed."
+		exit 1
+	fi
+fi
+
+# Execute and pass URL along
+
+exec $app $*
+

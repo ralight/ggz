@@ -1,0 +1,17 @@
+GGZ core client wrapper
+=======================
+
+This directory contains some minimal runtime support for GGZ core clients
+and games.
+
+The 'ggz-wrapper' executable is a non-interactive command line client which
+currently can only be used to automate the launching of 2-player games.
+It is used by the ggz-gaim and ggz-kopete IM integration plugins.
+
+The 'ggz' script is a cross-desktop shortcut for launching an appropriate
+GGZ core client. For example, it would run kggz in KDE, but if it is not
+installed then ggz-gtk would be chosen instead.
+If called on the command line, it requires ggz-txt instead.
+
+For more information, have a look at the manual page ggz-wrapper(6).
+

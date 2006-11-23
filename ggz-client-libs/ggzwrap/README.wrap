@@ -1,0 +1,16 @@
+Generic game client wrapper
+===========================
+
+The 'ggzwrap' utility is installed as a GGZ game client but not registered
+as one. Instead, it is used by other games which do not directly provide
+GGZ support but can communicate on stdin/stdout channels.
+
+What 'ggzwrap' does is to send messages received on stdin to the
+corresponding GGZ game server and its responses back to stdout.
+This does not allow for tight GGZ integration (i.e. no stats, no player
+dialog etc.) but it can be used to integrate simple game clients.
+
+Currently, Muehle is making use of 'ggzwrap'.
+
+For more infomation, see man ggzwrap(1).
+
