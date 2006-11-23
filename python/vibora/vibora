@@ -19,6 +19,12 @@ from pygame.locals import *
 from Numeric import *
 import os, sys
 
+try:
+	import ggzsettings
+	DATAPATH = ggzsettings.DATAPATH + "/vibora/"
+except:
+	DATAPATH = "./"
+
 CAPTION_ALL = 3
 CAPTION_TEXT = 2
 CAPTION_BG = 1
@@ -31,8 +37,6 @@ YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 DARKRED = (150, 0, 0)
 GREEN = (0, 255, 0)
-
-DATAPATH = "./"
 
 def _(x):
 	return unicode(x, "utf-8")

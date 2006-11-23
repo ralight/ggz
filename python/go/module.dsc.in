@@ -1,6 +1,6 @@
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = @prefix@/bin/goclient --ggz
+CommandLine = @prefix@/lib/ggz/goclient --ggz
 Frontend = x11
 Homepage = http://www.ggzgamingzone.org/games/gnugo/
 Name = CGoBan

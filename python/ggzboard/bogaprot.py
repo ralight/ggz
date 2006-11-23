@@ -148,9 +148,6 @@ class BogaprotServer(NetworkBase):
 	def hook_leave(self, num, type, name, fd):
 		print "* leave:", num, type, name, fd
 
-	def hook_log(self, line):
-		print "* log:", line
-
 	def hook_data(self, num, type, name, fd):
 		print "* data:", num, type, name, fd
 
@@ -164,7 +161,6 @@ class BogaprotServer(NetworkBase):
 		ggzdmod.setHandler(ggzdmod.EVENT_STATE, self.hook_state)
 		ggzdmod.setHandler(ggzdmod.EVENT_JOIN, self.hook_join)
 		ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, self.hook_leave)
-		ggzdmod.setHandler(ggzdmod.EVENT_LOG, self.hook_log)
 		ggzdmod.setHandler(ggzdmod.EVENT_DATA, self.hook_data)
 		ggzdmod.setHandler(ggzdmod.EVENT_ERROR, self.hook_error)
 

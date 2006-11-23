@@ -15,8 +15,10 @@ datadir = @datadir@
 xdg_datadir = @xdg_datadir@
 # ggzd_confdir: For GGZ integration files (/etc/ggzd)
 ggzd_confdir = @ggzd_confdir@
-# py_moddir: Pure python modules (/usr/lib/site-python)
-py_moddir = ${prefix}/lib/site-python
+# py_privmoddir: Private python modules (/usr/lib/ggz-python (formerly site-python))
+py_privmoddir = ${prefix}/lib/ggz-python
+# py_moddir: Public python modules (/usr/lib/pythonX.Y/site-packages)
+py_moddir = ${prefix}/lib/python@PYVERSION@/site-packages
 
 # ggz-config: either ggz-config or 'true' if disabled
 ggz-config = @GGZ_CONFIG@ -D
@@ -24,6 +26,9 @@ ggz-config = @GGZ_CONFIG@ -D
 # some default autoconf variables
 exec_prefix = ${prefix}
 sysconfdir = ${prefix}/etc
+
+ggzd_execmoddir = ${prefix}/lib/ggzd
+ggz_execmoddir = ${prefix}/lib/ggz
 
 # Start of ggz-python configuration
 ggzmod = @enable_ggzmod@
@@ -113,7 +118,7 @@ ggzchess-install:
 
 po-build:
 	@echo Building internationalization files
-	cd po && make all-local prefix=$(DESTDIR)$(prefix)
+	cd po && make all-local
 
 po-install:
 	@echo Installing internationalization files
@@ -127,11 +132,11 @@ man-install:
 	cp man/*.6 $(DESTDIR)$(prefix)/share/man/man6
 
 install-rest:
-	@echo Installing game Dresden
-	mkdir -p $(DESTDIR)$(bindir)
-	cp dresden/dresden $(DESTDIR)$(bindir)
-	mkdir -p $(DESTDIR)$(datadir)/ggz/dresden/
-	cp dresden/*.png $(DESTDIR)$(datadir)/ggz/dresden
+	#@echo Installing game Dresden
+	#mkdir -p $(DESTDIR)$(bindir)
+	#cp dresden/dresden $(DESTDIR)$(bindir)
+	#mkdir -p $(DESTDIR)$(datadir)/ggz/dresden/
+	#cp dresden/*.png $(DESTDIR)$(datadir)/ggz/dresden
 
 	@echo Installing game Escape/SDL
 	mkdir -p $(DESTDIR)$(bindir)
@@ -143,9 +148,10 @@ install-rest:
 	@echo Installing game Xadrez Chines
 	mkdir -p $(DESTDIR)$(bindir)
 	cp xadrez-chines/xadrez-chines $(DESTDIR)$(bindir)
-	cp xadrez-chines/xadrez-chines-server $(DESTDIR)$(bindir)
-	mkdir -p $(DESTDIR)$(py_moddir)
-	cp xadrez-chines/xadrezlib.py $(DESTDIR)$(py_moddir)
+	mkdir -p $(DESTDIR)$(ggzd_execmoddir)
+	cp xadrez-chines/xadrez-chines-server $(DESTDIR)$(ggzd_execmoddir)
+	mkdir -p $(DESTDIR)$(py_privmoddir)/xadrez-chines
+	cp xadrez-chines/xadrezlib.py $(DESTDIR)$(py_privmoddir)/xadrez-chines
 	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/
 	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/
 	mkdir -p $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/dark/
@@ -159,10 +165,11 @@ install-rest:
 	cp xadrez-chines/xadrez-chines.desktop $(DESTDIR)$(xdg_datadir)
 
 	@echo Installing external game GNU Go support files
-	mkdir -p $(DESTDIR)$(bindir)
-	cp go/goclient $(DESTDIR)$(bindir)
-	cp go/goserver $(DESTDIR)$(bindir)
-	cp go/goclient.helper $(DESTDIR)$(bindir)
+	mkdir -p $(DESTDIR)$(ggz_execmoddir)
+	cp go/goclient $(DESTDIR)$(ggz_execmoddir)
+	cp go/goclient.helper $(DESTDIR)$(ggz_execmoddir)
+	mkdir -p $(DESTDIR)$(ggzd_execmoddir)
+	cp go/goserver $(DESTDIR)$(ggzd_execmoddir)
 	$(ggz-config) --install --force --modfile=go/module.dsc
 	cp go/goserver.dsc $(DESTDIR)$(ggzd_confdir)/games
 	cp go/goserver.room $(DESTDIR)$(ggzd_confdir)/rooms
@@ -172,12 +179,15 @@ install-rest:
 	cp vibora/vibora $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(datadir)/ggz/vibora/
 	cp vibora/*.png $(DESTDIR)$(datadir)/ggz/vibora
+	cp vibora/vibora.desktop $(DESTDIR)$(xdg_datadir)
 
-	@echo Installing SDL newstuff dialog and player table dialog
+	@echo Installing SDL newstuff dialog
 	mkdir -p $(DESTDIR)$(py_moddir)
 	cp lib/sdlnewstuff.py $(DESTDIR)$(py_moddir)
-	cp lib/playertable.py $(DESTDIR)$(py_moddir)
 	cp lib/ggzsettings.py $(DESTDIR)$(py_moddir)
+	@echo Installing common GGZ classes and dialogs
+	mkdir -p $(DESTDIR)$(py_privmoddir)/common
+	cp lib/playertable.py $(DESTDIR)$(py_privmoddir)/common
 
 install-ggzboard:
 	@echo Installing GGZBoard framework and games
@@ -206,14 +216,14 @@ install-ggzboard:
 	cp ggzboard/madn/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	cp ggzboard/connectx/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
 	cp ggzboard/shogi/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/shogi
-	mkdir -p $(DESTDIR)$(py_moddir)
-	cp ggzboard/ggzboard_net.py $(DESTDIR)$(py_moddir)
-	cp ggzboard/bogaprot.py $(DESTDIR)$(py_moddir)
-	cp ggzboard/bogaprotclient.py $(DESTDIR)$(py_moddir)
-	cp ggzboard/module_*.py $(DESTDIR)$(py_moddir)
-	cp ggzboard/net_*.py $(DESTDIR)$(py_moddir)
-	mkdir -p $(DESTDIR)$(prefix)/lib/ggzd/
-	cp ggzboard/server_*.py $(DESTDIR)$(prefix)/lib/ggzd
+	mkdir -p $(DESTDIR)$(py_privmoddir)/ggzboard
+	cp ggzboard/ggzboard_net.py $(DESTDIR)$(py_privmoddir)/ggzboard
+	cp ggzboard/bogaprot.py $(DESTDIR)$(py_privmoddir)/ggzboard
+	cp ggzboard/bogaprotclient.py $(DESTDIR)$(py_privmoddir)/ggzboard
+	cp ggzboard/module_*.py $(DESTDIR)$(py_privmoddir)/ggzboard
+	cp ggzboard/net_*.py $(DESTDIR)$(py_privmoddir)/ggzboard
+	mkdir -p $(DESTDIR)$(ggzd_execmoddir)
+	cp ggzboard/server_*.py $(DESTDIR)$(ggzd_execmoddir)
 	$(ggz-config) --install --force --modfile=ggzboard/module_checkers.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_chess.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_go.dsc
@@ -246,9 +256,8 @@ distclean: clean
 	rm -f escape-sdl/module.dsc
 	rm -f xadrez-chines/xadrez-chines.desktop
 	rm -f xadrez-chines/module.dsc
-	rm -f xadrez-chines/xadrez-chines-server.dsc
 	rm -f go/module.dsc
-	rm -f go/goserver.dsc
+	rm -f vibora/vibora.desktop
 	rm -f pyrsvgsdl/setup.py
 	rm -f pyggzmod/setup.py
 	rm -f pyggzdmod/setup.py

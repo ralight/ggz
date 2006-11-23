@@ -45,6 +45,28 @@ AC_GGZ_INTL
 dnl Other checks
 dnl ============
 
+python_found=no
+check="import sys;"
+check="$check print str(sys.version_info@<:@0@:>@)"
+check="$check + \".\" +"
+check="$check str(sys.version_info@<:@1@:>@)"
+#distutils.sysconfig.get_python_lib()
+result=`python -c "$check" 2>/dev/null || echo no`
+if test "x$result" = "xno"; then
+	python_found=no
+else
+	python_found="yes ($result)"
+	PYVERSION=$result
+fi
+echo "checking for: python installation... $python_found"
+
+if test "$python_found" = "no"; then
+	echo "ERROR:"
+	echo "Python has not been found."
+	echo ""
+	exit
+fi
+
 pygame_found=yes
 result=`python -c "import pygame" 2>/dev/null || echo no`
 if test "x$result" = "xno"; then
@@ -116,6 +138,8 @@ AC_SUBST(enable_ggzcore)
 AC_SUBST(enable_ggzchess)
 AC_SUBST(enable_rsvgsdl)
 
+AC_SUBST(PYVERSION)
+
 AC_CONFIG_FILES([
 	Makefile
 	lib/ggzsettings.py
@@ -123,9 +147,8 @@ AC_CONFIG_FILES([
 	escape-sdl/module.dsc
 	xadrez-chines/xadrez-chines.desktop
 	xadrez-chines/module.dsc
-	xadrez-chines/xadrez-chines-server.dsc
 	go/module.dsc
-	go/goserver.dsc
+	vibora/vibora.desktop
 	pyrsvgsdl/setup.py
 	pyggzmod/setup.py
 	pyggzdmod/setup.py

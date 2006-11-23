@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+
+Name=Víbora
+GenericName=GGZ Gaming Zone fullscreen client
+GenericName[de]=GGZ Gaming Zone-Client im Vollbildmodus
+Comment=GGZ Core Client
+Comment[de]=GGZ-Core-Client
+
+Type=Application
+Exec=@prefix@/bin/vibora
+Icon=
+Terminal=false
+Categories=X-GGZ;Network;

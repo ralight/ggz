@@ -17,17 +17,21 @@ import glob
 
 import rsvgsdl
 import sdlnewstuff
-import playertable
 
 try:
 	import ggzsettings
 	DATAPATH = ggzsettings.DATAPATH + "/ggzboard/"
-	MODULEPATH = ggzsettings.MODULEPATH
+	MODULEPATH = ggzsettings.MODULEPATH + "/ggzboard/"
 	I18NPATH = ggzsettings.I18NPATH
+	sys.path = [ggzsettings.MODULEPATH + "/ggzboard/"] + sys.path
+	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
 except:
 	DATAPATH = "./"
 	MODULEPATH = "./"
 	I18NPATH = "./"
+	sys.path = ["../lib/"] + sys.path
+
+import playertable
 
 gettext.install("ggzpython", I18NPATH, 1)
 

@@ -13,6 +13,13 @@ import random
 import os, pwd
 
 import ggzmod
+
+try:
+	import ggzsettings
+	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
+except:
+	sys.path = ["../lib/"] + sys.path
+
 import playertable
 
 def username():

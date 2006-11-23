@@ -72,6 +72,7 @@ def main(ggzmode):
 
 	print "<< goclient >>"
 
+	# FIXME: use tempfile
 	fifopc = "/tmp/goclient.fifo.pc"
 	fifocp = "/tmp/goclient.fifo.cp"
 	try:

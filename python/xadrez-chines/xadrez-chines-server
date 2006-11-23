@@ -27,9 +27,6 @@ def hook_leave (num, type, name, fd):
 	print "* leave:", num, type, name, fd
 	#print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
 
-def hook_log (line):
-	print "* log:", line
-
 def hook_data (num, type, name, fd):
 	print "* data:", num, type, name, fd
 	#print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
@@ -84,7 +81,6 @@ def initggz():
 	ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
 	ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
 	ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
-	ggzdmod.setHandler(ggzdmod.EVENT_LOG, hook_log)
 	ggzdmod.setHandler(ggzdmod.EVENT_DATA, hook_data)
 	ggzdmod.setHandler(ggzdmod.EVENT_ERROR, hook_error)
 

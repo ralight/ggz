@@ -1,3 +1,5 @@
+!!! This API description is probably outdated !!!
+
 getNumSeats () -> int
 getNumSpectators () -> int
 countSeats (GGZSeatType type) -> int
@@ -35,6 +37,5 @@ Hooks:
  EVENT_LEAVE -> seat tuple (number, type, name, fd)
  EVENT_DATA -> seat tuple (number, type, name, fd)
  EVENT_SPECTATOR_*: as in C version (improve!)
- EVENT_LOG -> log string
  EVENT_ERROR -> error string
 

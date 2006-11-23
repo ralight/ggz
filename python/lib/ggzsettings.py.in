@@ -21,7 +21,7 @@ if len(path) > 0:
 		BREAK_HERE
 	else:
 		DATAPATH = unquote("@datadir@/ggz")
-		MODULEPATH = unquote("@prefix@/lib/site-python")
+		MODULEPATH = unquote("@prefix@/lib/ggz-python")
 		I18NPATH = unquote("@datadir@/locale")
 
 del unquote
