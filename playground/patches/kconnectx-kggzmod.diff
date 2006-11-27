@@ -1,0 +1,1270 @@
+Index: kconnectx/kconnectx.h
+===================================================================
+--- kconnectx/kconnectx.h	(Revision 0)
++++ kconnectx/kconnectx.h	(Revision 0)
+@@ -0,0 +1,109 @@
++//////////////////////////////////////////////////////////////////////
++// KConnectX
++// Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
++// Published under GNU GPL conditions
++//////////////////////////////////////////////////////////////////////
++
++#ifndef KCONNECTX_H
++#define KCONNECTX_H
++
++// KConnectX includes
++#include "config.h"
++#include "proto.h"
++
++// Qt includes
++#include <qframe.h>
++#include <qevent.h>
++
++// Player setup
++#define PLAYER_NONE    0
++#define PLAYER_HUMAN   1
++#define PLAYER_AI      2
++#define PLAYER_NETWORK 3
++
++// KConnectX GUI for KDE
++class KConnectX : public QWidget
++{
++	Q_OBJECT
++	public:
++		// Constructor
++		KConnectX(QWidget *parent = NULL, const char *name = NULL);
++		// Destructor
++		~KConnectX();
++		// Set opponent type
++		void setOpponent(int type);
++		// Sets the theme
++		void setTheme(QString t1, QString t2);
++		// Set up the game
++		void init();
++		// Request a synchonization
++		void sync();
++		// Request network scores
++		void statistics();
++		// Network operation
++		void network();
++
++	public slots:
++		// Evaluate user input
++		void slotSelected(QWidget *widget);
++		// Evaluate network input
++		void slotNetwork();
++		// Evaluate network control input
++		void slotDispatch();
++
++	signals:
++		// Emit the game status
++		void signalStatus(const QString &status);
++		// Emit the score
++		void signalScore(const QString &score);
++		// Emit statistics
++		void signalNetworkScore(int wins, int losses, int ties);
++		// Emit game over status
++		void signalGameOver();
++
++	private:
++		// Wait for bot or network input
++		void opponentTurn();
++		// Wait for player input
++		void yourTurn();
++		// Get player type
++		int getPlayer(int seat);
++		// Activate next player or bot
++		void getNextTurn();
++		// Check whether the game is over
++		int gameOver();
++		// Ask for another game, showing current results
++		void announce(QString str);
++		// Receive optimum move
++		void getAI();
++		// Partial AI resolvation
++		void getAIAt(int xo, int yo, int xp, int yp);
++		// Result in a modulo triplet
++		int trip(int value);
++		// Show all assigned fields
++		void drawBoard();
++
++		// Array of boxes for the images
++		QFrame *frame[3][3];
++		// ID of the first box
++		//WId m_firstid;
++		// The player who does the next move
++		int m_turn;
++		// Coordinates of any field
++		int m_x, m_y;
++		// The scores
++		int m_score_opp, m_score_you;
++		// Indicates that there's a winner
++		int m_winner;
++		// Indicates that there'll be a winner
++		int m_seewinner;
++		// Type of the opponent
++		int m_opponent;
++		// Internal protocol class
++		Proto *proto;
++		// Theme image placeholders
++		QString m_t1, m_t2;
++};
++
++#endif
++
+Index: kconnectx/module.dsc.in
+===================================================================
+--- kconnectx/module.dsc.in	(Revision 0)
++++ kconnectx/module.dsc.in	(Revision 0)
+@@ -0,0 +1,10 @@
++[ModuleInfo]
++Author = Josef Spillner
++CommandLine = @ggzexecmoddir@/kconnectx
++Frontend = kde
++Homepage = http://www.ggzgamingzone.org/games/kconnectx/
++Name = KConnectX
++ProtocolEngine = ConnectX
++ProtocolVersion = 2
++Version = 0.0.1
++
+Index: kconnectx/win.h
+===================================================================
+--- kconnectx/win.h	(Revision 0)
++++ kconnectx/win.h	(Revision 0)
+@@ -0,0 +1,68 @@
++//////////////////////////////////////////////////////////////////////
++// KConnectX
++// Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
++// Published under GNU GPL conditions
++//////////////////////////////////////////////////////////////////////
++
++#ifndef KCONNECTX_WIN_H
++#define KCONNECTX_WIN_H
++
++// KConnectX includes
++#include "kconnectx.h"
++
++// KDE includes
++#include <kmainwindow.h>
++
++// Qt includes
++#include <qmap.h>
++
++// Forward declarations
++class KPopupMenu;
++
++// The game window
++class Win : public KMainWindow
++{
++	Q_OBJECT
++	public:
++		// Constructor
++		Win(QWidget *parent = NULL, const char *name = NULL);
++		// Destructor
++		~Win();
++		// The game object
++		KConnectX *game();
++		// Menu ids
++		enum MenuEntries
++		{
++			menusync = 1,
++			menuscore = 2,
++			menuquit = 4,
++			menuggzplayers = 5
++		};
++		// Enable network functionality
++		void enableNetwork(bool enabled);
++		// Display score
++		void score();
++
++	public slots:
++		// Receive a status message from the game
++		void slotStatus(const QString &status);
++		// Receive a new score
++		void slotScore(const QString &score);
++		// Receive statistics
++		void slotNetworkScore(int wins, int losses, int ties);
++		// Menu slot
++		void slotMenu(int id);
++		// Game is over
++		void slotGameOver();
++
++	private:
++		// The game itself
++		KConnectX *m_game;
++		// The menus;
++		KPopupMenu *mgame, *mggz;
++		// Game network status
++		bool m_networked;
++};
++
++#endif
++
+Index: kconnectx/proto.cpp
+===================================================================
+--- kconnectx/proto.cpp	(Revision 0)
++++ kconnectx/proto.cpp	(Revision 0)
+@@ -0,0 +1,169 @@
++//////////////////////////////////////////////////////////////////////
++// KConnectX
++// Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
++// Published under GNU GPL conditions
++//////////////////////////////////////////////////////////////////////
++
++// KConnectX includes
++#include "proto.h"
++
++// GGZ-KDE-Games includes
++#include <kggzmod/player.h>
++
++// KDE includes
++#include <kdebug.h>
++
++// Qt includes
++#include <qdatastream.h>
++#include <qsocketdevice.h>
++
++// Empty constructor
++Proto::Proto()
++{
++	m_kggzmod = new KGGZMod::Module("kconnectx");
++
++	m_dev = 0;
++	m_net = 0;
++
++	connect(m_kggzmod, SIGNAL(signalEvent(KGGZMod::Event)), SLOT(slotEvent(KGGZMod::Event)));
++	connect(m_kggzmod, SIGNAL(signalError()), SLOT(slotError()));
++	connect(m_kggzmod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
++}
++
++// Even more empty destructor
++Proto::~Proto()
++{
++	delete m_net;
++	delete m_dev;
++}
++
++void Proto::slotEvent(KGGZMod::Event event)
++{
++	kdDebug() << "PROTO: Event! type=" << event.type() << endl;
++
++	if(event.type() == KGGZMod::Event::self)
++	{
++		kdDebug() << "info about myself!" << endl;
++		KGGZMod::SelfEvent se = (KGGZMod::SelfEvent)event;
++		kdDebug() << "Player: " << se.self() << endl;
++	}
++	else if(event.type() == KGGZMod::Event::launch)
++	{
++		kdDebug() << "game server was launched!" << endl;
++	}
++	else if(event.type() == KGGZMod::Event::stats)
++	{
++		kdDebug() << "statistics!" << endl;
++	}
++	else if(event.type() == KGGZMod::Event::server)
++	{
++		kdDebug() << "game server connection!" << endl;
++		KGGZMod::ServerEvent se = (KGGZMod::ServerEvent)event;
++		kdDebug() << "File descriptor: " << se.fd() << endl;
++	}
++	else if(event.type() == KGGZMod::Event::seat)
++	{
++		kdDebug() << "seat change!" << endl;
++	}
++}
++
++void Proto::slotError()
++{
++	kdDebug() << "PROTO: Error!" << endl;
++}
++
++void Proto::slotNetwork(int fd)
++{
++	int opcode;
++	char *tmp;
++
++	kdDebug() << "PROTO: Network! fd=" << fd << endl;
++
++	if(!m_dev)
++	{
++		m_dev = new QSocketDevice(fd, QSocketDevice::Stream);
++		m_net = new QDataStream(m_dev);
++	}
++
++	*m_net >> opcode;
++	kdDebug() << "PROTO: opcode=" << opcode << endl;
++
++	if(opcode == msgseat)
++	{
++		*m_net >> m_data.myseat;
++		kdDebug() << "PROTO: +seat" << endl;
++	}
++	else if(opcode == msgplayers)
++	{
++		*m_net >> m_data.type1;
++		if(m_data.type1 != KGGZMod::Player::open)
++		{
++			*m_net >> tmp;
++			m_data.name1 = QString(tmp);
++			free(tmp);
++		}
++		*m_net >> m_data.type1;
++		if(m_data.type1 != KGGZMod::Player::open)
++		{
++			*m_net >> tmp;
++			m_data.name2 = QString(tmp);
++			free(tmp);
++		}
++		kdDebug() << "PROTO: +players" << endl;
++	}
++	else if(opcode == msgmove)
++	{
++		*m_net >> m_data.move;
++		kdDebug() << "PROTO: +move" << endl;
++	}
++	else if(opcode == msggameover)
++	{
++		*m_net >> (Q_INT8)m_data.winner;
++		kdDebug() << "PROTO: +gameover" << endl;
++	}
++	else if(opcode == reqmove)
++	{
++		kdDebug() << "PROTO: +reqmove" << endl;
++	}
++	else if(opcode == rspmove)
++	{
++		*m_net >> (Q_INT8)m_data.movestatus;
++		*m_net >> m_data.move;
++		kdDebug() << "PROTO: +rspmove" << endl;
++	}
++	else if(opcode == sndsync)
++	{
++		kdDebug() << "PROTO: +sync" << endl;
++	}
++	else if(opcode == msgoptions)
++	{
++		*m_net >> (Q_INT8)m_data.boardwidth;
++		*m_net >> (Q_INT8)m_data.boardheight;
++		*m_net >> (Q_INT8)m_data.connectlength;
++		kdDebug() << "PROTO: +msgoptions" << endl;
++	}
++	else if(opcode == reqoptions)
++	{
++		*m_net >> (Q_INT8)m_data.minboardwidth;
++		*m_net >> (Q_INT8)m_data.maxboardwidth;
++		*m_net >> (Q_INT8)m_data.minboardheight;
++		*m_net >> (Q_INT8)m_data.maxboardheight;
++		*m_net >> (Q_INT8)m_data.minconnectlength;
++		*m_net >> (Q_INT8)m_data.maxconnectlength;
++		kdDebug() << "PROTO: +reqoptions" << endl;
++	}
++	else if(opcode == msgchat)
++	{
++		kdDebug() << "PROTO: +msgchat" << endl;
++	}
++	else if(opcode == rspchat)
++	{
++		kdDebug() << "PROTO: +rspchat" << endl;
++	}
++	else
++	{
++		kdDebug() << "PROTO: unknown opcode, treat as error!" << endl;
++		m_kggzmod->disconnect();
++	}
++}
++
+Index: kconnectx/main.cpp
+===================================================================
+--- kconnectx/main.cpp	(Revision 0)
++++ kconnectx/main.cpp	(Revision 0)
+@@ -0,0 +1,53 @@
++//////////////////////////////////////////////////////////////////////
++// KConnectX
++// Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
++// Published under GNU GPL conditions
++//////////////////////////////////////////////////////////////////////
++
++// KConnectX includes
++#include "win.h"
++
++// KDE includes
++#include <kapplication.h>
++#include <kcmdlineargs.h>
++#include <kaboutdata.h>
++#include <klocale.h>
++
++// Main function, including the about data
++int main(int argc, char **argv)
++{
++	KAboutData *aboutData;
++	Win *win;
++	//KCmdLineArgs *args;
++
++	aboutData = new KAboutData("kconnectx",
++		I18N_NOOP("KConnectX"),
++		"0.0.1",
++		I18N_NOOP("A ConnectX game for KDE."),
++		KAboutData::License_GPL,
++		"Copyright (C) 2006 Josef Spillner",
++		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
++		"http://www.ggzgamingzone.org/games/kconnectx/",
++		"josef@ggzgamingzone.org");
++	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Inventor"), "josef@ggzgamingzone.org");
++	aboutData->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
++
++	KCmdLineArgs::init(argc, argv, aboutData);
++	//KCmdLineArgs::addCmdLineOptions(op);
++	//args = KCmdLineArgs::parsedArgs();
++
++	KApplication a;
++	win = new Win();
++	//if(args->isSet("ggz"))
++	if(1 == 0) // FIXME: getenv("GGZMODE")
++	{
++		win->enableNetwork(true);
++		win->game()->setOpponent(PLAYER_NETWORK);
++	}
++	else win->game()->setOpponent(PLAYER_AI);
++	win->game()->init();
++
++	a.setMainWidget(win);
++	return a.exec();
++}
++
+Index: kconnectx/proto.h
+===================================================================
+--- kconnectx/proto.h	(Revision 0)
++++ kconnectx/proto.h	(Revision 0)
+@@ -0,0 +1,93 @@
++//////////////////////////////////////////////////////////////////////
++// KConnectX
++// Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
++// Published under GNU GPL conditions
++//////////////////////////////////////////////////////////////////////
++
++#ifndef KCONNECTX_PROTO_H
++#define KCONNECTX_PROTO_H
++
++// Qt includes
++#include <qobject.h>
++
++// GGZ-KDE-Games includes
++#include <kggzmod/module.h>
++
++class QSocketDevice;
++class QDataStream;
++
++// Generic KConnectX client protocol handler
++class Proto : public QObject
++{
++	Q_OBJECT
++	public:
++		// Constructor
++		Proto();
++		// Destructor
++		~Proto();
++
++		enum ServerOpcodes
++		{
++			msgseat = 0,
++			msgplayers = 1,
++			msgmove = 2,
++			msggameover = 3,
++			reqmove = 4,
++			rspmove = 5,
++			sndsync = 6,
++			msgoptions = 7,
++			reqoptions = 8,
++			msgchat = 9,
++			rspchat = 10
++		};
++
++		enum ClientOpcodes
++		{
++			sndmove = 0,
++			reqsync = 1,
++			sndoptions = 2,
++			reqnewgame = 3
++		};
++
++		enum ServerErrors
++		{
++			errstate = -1,
++			errturn = -2,
++			errbound = -3,
++			errfull = -4
++		};
++
++	private slots:
++		void slotEvent(KGGZMod::Event event);
++		void slotError();
++		void slotNetwork(int fd);
++
++	private:
++		KGGZMod::Module *m_kggzmod;
++		QSocketDevice *m_dev;
++		QDataStream *m_net;
++
++		struct
++		{
++			int myseat;
++			int type1;
++			int type2;
++			QString name1;
++			QString name2;
++			int move;
++			char winner;
++			char movestatus;
++			char boardwidth;
++			char boardheight;
++			char connectlength;
++			char minboardwidth;
++			char maxboardwidth;
++			char minboardheight;
++			char maxboardheight;
++			char minconnectlength;
++			char maxconnectlength;
++		} m_data;
++};
++
++#endif
++
+Index: kconnectx/Makefile.am
+===================================================================
+--- kconnectx/Makefile.am	(Revision 0)
++++ kconnectx/Makefile.am	(Revision 0)
+@@ -0,0 +1,26 @@
++ggzexecmod_PROGRAMS = kconnectx
++
++kconnectx_SOURCES = \
++	main.cpp \
++	kconnectx.cpp \
++	win.cpp \
++	proto.cpp
++
++noinst_HEADERS = \
++	kconnectx.h \
++	win.h \
++	proto.h
++
++AM_CPPFLAGS = -I $(top_srcdir)/lib $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
++
++kconnectx_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries)
++kconnectx_LDADD = $(top_builddir)/lib/libkggzgames.la $(top_builddir)/lib/kggzmod/libkggzmod.la $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) $(LIB_GGZMOD)
++
++METASOURCES = AUTO
++
++install-data-local:
++	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
++
++uninstall-local:
++	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc
++
+Index: kconnectx/kconnectx.cpp
+===================================================================
+--- kconnectx/kconnectx.cpp	(Revision 0)
++++ kconnectx/kconnectx.cpp	(Revision 0)
+@@ -0,0 +1,493 @@
++//////////////////////////////////////////////////////////////////////
++// KConnectX
++// Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
++// Published under GNU GPL conditions
++//////////////////////////////////////////////////////////////////////
++
++// Header file
++#include "kconnectx.h"
++
++// KDE includes
++#include <klocale.h>
++#include <kmessagebox.h>
++#include <kconfig.h>
++#include <kapplication.h>
++
++// Qt includes
++#include <qlayout.h>
++#include <qpixmap.h>
++#include <qsocketnotifier.h>
++
++// System includes
++#include <stdio.h>
++#include <stdlib.h>
++
++// Constructor
++KConnectX::KConnectX(QWidget *parent, const char *name)
++: QWidget(parent, name)
++{
++	QVBoxLayout *vbox, *vbox2;
++	QHBoxLayout *hbox[3];
++	QWidget *container;
++
++	container = new QWidget(this);
++	container->setErasePixmap(QPixmap(QString("%1/ktictactux/bg.png").arg(GGZDATADIR)));
++
++	vbox = new QVBoxLayout(this);
++	vbox->add(container);
++
++	vbox2 = new QVBoxLayout(container);
++	vbox2->addStretch(1);
++	for(int j = 0; j < 3; j++)
++	{
++		hbox[j] = new QHBoxLayout(vbox2);
++		hbox[j]->addStretch(1);
++		for(int i = 0; i < 3; i++)
++		{
++			frame[i][j] = new QFrame(/*j * 3 + i,*/ container);
++			frame[i][j]->setFixedSize(64, 64);
++			hbox[j]->add(frame[i][j]);
++//			connect(frame[i][j], SIGNAL(signalSelected(QWidget *)), SLOT(slotSelected(QWidget *)));
++		}
++		hbox[j]->addStretch(1);
++	}
++	vbox2->addStretch(1);
++
++	//setFixedSize(210, 210);
++	setCaption("KConnectX");
++	show();
++
++	//m_firstid = frame[0][0]->winId();
++	m_turn = 0;
++
++	m_score_opp = 0;
++	m_score_you = 0;
++
++	proto = new Proto(/*this*/);
++}
++
++// Destructor
++KConnectX::~KConnectX()
++{
++	//proto->shutdown();
++	//delete proto;
++}
++
++// Evaluate your turn (after click)
++void KConnectX::slotSelected(QWidget *widget)
++{
++	QFrame *tmp;
++	int id;
++
++//	if(proto->state != proto->statemove) return;
++//	if(m_turn != proto->num) return;
++
++	//id = widget->winId() - m_firstid;
++	tmp = reinterpret_cast<QFrame*>(widget);
++	//id = tmp->id();
++	id = 0; // FIXME: widget id
++
++//	if(proto->board[id % 3][id / 3] == proto->player) return;
++//	if(proto->board[id % 3][id / 3] == proto->opponent) return;
++
++	if(m_opponent == PLAYER_AI)
++	{
++//		proto->board[id % 3][id / 3] = proto->player;
++		drawBoard();
++		getNextTurn();
++	}
++	else
++	{
++//		proto->move = id;
++//		proto->sendMyMove();
++	}
++
++	gameOver();
++}
++
++// Prepare your turn
++void KConnectX::yourTurn()
++{
++//	if((m_opponent == PLAYER_AI) || (proto->state == proto->statemove)) emit signalStatus(i18n("Your turn"));
++//	proto->state = proto->statemove;
++}
++
++// Handle the opponent's turn
++void KConnectX::opponentTurn()
++{
++	if(m_opponent == PLAYER_AI) emit signalStatus(i18n("AI's turn"));
++	else emit signalStatus(i18n("Opponent's turn"));
++
++	if(gameOver()) return;
++
++	if(m_opponent == PLAYER_AI)
++	{
++//		proto->board[m_x][m_y] = proto->opponent;
++		drawBoard();
++		getNextTurn();
++	}
++}
++
++// Get the player who occupies the seat
++int KConnectX::getPlayer(int seat)
++{
++	switch(seat)
++	{
++		case 0:
++			return PLAYER_HUMAN;
++			break;
++		case 1:
++			return m_opponent;
++			break;
++	}
++
++	return PLAYER_NONE;
++}
++
++// Turn switch (not soooo difficult for 2 players)
++void KConnectX::getNextTurn()
++{
++	m_turn = (++m_turn) % 2;
++
++//	if(m_turn == proto->num) yourTurn();
++//	else opponentTurn();
++
++	drawBoard();
++}
++
++// Check for game over, and show dialogs
++int KConnectX::gameOver()
++{
++	m_x = -1;
++	KConfig *conf;
++
++	// Check for draw (no empty fields left)
++	for(int j = 0; j < 3; j++)
++		for(int i = 0; i < 3; i++)
++/*			if(proto->board[i][j] == proto->none)
++			{
++				m_x = i;
++				m_y = j;
++			}
++*/
++
++	conf = kapp->config();
++	conf->setGroup("Score");
++
++	// evaluate if game is still in progress
++	if(m_x != -1)
++	{
++		getAI();
++		if(m_winner)
++		{
++			emit signalStatus(i18n("Game Over!"));
++
++/*			if((m_opponent == PLAYER_NETWORK) && (proto->num < 0))
++			{
++				announce(i18n("The game is over."));
++			}
++			else
++			{
++				if(m_winner == proto->opponent)
++				{
++					m_score_opp++;
++					if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanwon", conf->readNumEntry("humanwon") + 1);
++					else conf->writeEntry("aiwon", conf->readNumEntry("aiwon") + 1);
++					conf->sync();
++					announce(i18n("You lost the game."));
++				}
++				else
++				{
++					m_score_you++;
++					if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanlost", conf->readNumEntry("humanlost") + 1);
++					else conf->writeEntry("ailost", conf->readNumEntry("ailost") + 1);
++					conf->sync();
++					announce(i18n("You are the winner!"));
++				}
++			}
++*/
++			emit signalGameOver();
++			return 1;
++		}
++		else return 0;
++	}
++	else
++	{
++		emit signalStatus(i18n("Game Over!"));
++
++		if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humantied", conf->readNumEntry("humantied") + 1);
++		else conf->writeEntry("aitied", conf->readNumEntry("aitied") + 1);
++		conf->sync();
++		announce(i18n("The game is over. There is no winner."));
++		emit signalGameOver();
++		return 1;
++	}
++
++	return 0;
++}
++
++// Ask for yet another game (some people can't get enough)
++void KConnectX::announce(QString str)
++{
++	int ret;
++
++	if(m_opponent == PLAYER_NETWORK) return;
++
++	// Announce the new score
++	emit signalScore(i18n(QString("Score: you %1, opponent %2")).arg(m_score_you).arg(m_score_opp));
++
++	ret = KMessageBox::questionYesNo(this, str + "\n\n" + i18n("Play another game?"), i18n("Game over"));
++
++	switch(ret)
++	{
++		case KMessageBox::Yes:
++			init();
++			break;
++		case KMessageBox::No:
++			exit(-1);
++			break;
++	}
++}
++
++// Initialize either network or AI mode
++void KConnectX::init()
++{
++	QSocketNotifier *sn;
++
++//	proto->init();
++
++	if(m_opponent == PLAYER_NETWORK)
++	{
++//		proto->connect();
++//		sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
++//		connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
++	}
++	else
++	{
++		m_turn++;
++//		proto->seats[0] = getPlayer(0);
++//		proto->seats[1] = getPlayer(1);
++		getNextTurn();
++	}
++}
++
++// Two functions in one: get AI moves and check for winner
++void KConnectX::getAI()
++{
++//	m_winner = proto->none;
++	int c;
++
++	// Special case detected by Rich: C, LR, UL, LC!
++//	c = proto->board[1][1];
++/*	if(c != proto->none)
++	{
++		for(int j = 0; j < 3; j += 2)
++			for(int i = 0; i < 3; i += 2)
++			{
++				if((proto->board[i][j] == c)
++				&& (proto->board[2 - i][2 - j] != c)
++				&& (proto->board[2 - i][2 - j] != proto->none))
++				{
++					if(proto->board[i][2 - j] == proto->none)
++					{
++						m_x = i;
++						m_y = 2 - j;
++					}
++					if(proto->board[2 - i][j] == proto->none)
++					{
++						m_x = 2 - i;
++						m_y = j;
++					}
++				}
++			}
++	}
++*/
++
++	m_seewinner = 0;
++
++	// Go straight for the middle if possible
++//	if(c == proto->none)
++//	{
++//		m_x = 1;
++//		m_y = 1;
++//		m_seewinner = 1;
++//	}
++
++	// Normal AI operations
++	getAIAt(0, 0, 1, 1);
++	getAIAt(2, 0, -1, 1);
++	for(int i = 0; i < 3; i++)
++	{
++		getAIAt(i, 0, 0, 1);
++		getAIAt(0, i, 1, 0);
++	}
++}
++
++// Try to find 3rd field in any row of 2
++void KConnectX::getAIAt(int xo, int yo, int xp, int yp)
++{
++	int x, y;
++
++/*
++	for(int i = 0; i < 3; i++)
++	{
++		x = xo + xp * i;
++		y = yo + yp * i;
++		if((proto->board[trip(x)][trip(y)] != proto->none)
++		&& (proto->board[trip(x + xp)][trip(y + yp)] == proto->board[trip(x)][trip(y)]))
++		{
++			if(proto->board[trip(x + xp * 2)][trip(y + yp * 2)] != proto->board[trip(x)][trip(y)])
++			{
++				if((proto->board[trip(x + xp * 2)][trip(y + yp * 2)] == proto->none) && (!m_seewinner))
++				{
++					m_x = trip(x + xp * 2);
++					m_y = trip(y + yp * 2);
++					if(proto->board[trip(x)][trip(y)] == proto->opponent) m_seewinner = 1;
++				}
++			}
++			else m_winner = proto->board[trip(x + xp * 2)][trip(y + yp * 2)];
++		}
++	}
++*/
++}
++
++// Keep value in range 0..2, with rotation
++int KConnectX::trip(int value)
++{
++	int ret;
++
++	ret = value % 3;
++	if(ret < 0) ret = 3 + ret;
++	return ret;
++}
++
++// Specify the opponent type (network or AI)
++void KConnectX::setOpponent(int type)
++{
++	m_opponent = type;
++//	if(m_opponent == PLAYER_NETWORK)
++//		emit signalScore(i18n("Network game"));
++//	else proto->num = 0;
++	emit signalStatus(i18n("Waiting for opponent!"));
++}
++
++// Synchronization
++void KConnectX::sync()
++{
++//	proto->sendSync();
++}
++
++// Statistics
++void KConnectX::statistics()
++{
++//	proto->getStatistics();
++
++//	emit signalNetworkScore(proto->stats[0], proto->stats[1], proto->stats[2]);
++}
++
++// Handle network input
++void KConnectX::network()
++{
++	QSocketNotifier *sn;
++
++//	sn = new QSocketNotifier(proto->fd, QSocketNotifier::Read, this);
++//	connect(sn, SIGNAL(activated(int)), SLOT(slotNetwork()));
++}
++
++// Network data
++void KConnectX::slotNetwork()
++{
++	int op;
++
++//	op = proto->getOp();
++
++/*
++	switch(op)
++	{
++		case Proto::msgseat:
++			proto->getSeat();
++			break;
++		case Proto::msgplayers:
++			proto->getPlayers();
++			proto->state = proto->statewait;
++			if((proto->num >= 0) && (proto->names[!proto->num][0]))
++				emit signalScore(i18n("Network game with %1").arg(proto->names[!proto->num]));
++			break;
++		case Proto::reqmove:
++			proto->state = proto->statemove;
++			m_turn = proto->num;
++			emit signalStatus(i18n("Your move"));
++			break;
++		case Proto::rspmove:
++			switch(proto->getMoveStatus())
++			{
++				case Proto::errstate:
++					emit signalStatus(i18n("*server*"));
++					break;
++				case Proto::errturn:
++					emit signalStatus(i18n("*turn*"));
++					break;
++				case Proto::errbound:
++					emit signalStatus(i18n("*bounds*"));
++					break;
++				case Proto::errfull:
++					emit signalStatus(i18n("*occupied*"));
++					break;
++				default:
++					emit signalStatus(i18n("Move OK"));
++			}
++			getNextTurn();
++			break;
++		case Proto::msgmove:
++			proto->getOpponentMove();
++			if(proto->num < 0) emit signalStatus(i18n("Watching the game"));
++			break;
++		case Proto::sndsync:
++			proto->getSync();
++			break;
++		case Proto::msggameover:
++			proto->getGameOver();
++			proto->state = proto->statedone;
++			gameOver();
++			break;
++	}
++*/
++	drawBoard();
++}
++
++// Draw the game board
++void KConnectX::drawBoard()
++{
++/*
++	for(int i = 0; i < 9; i++)
++	{
++		switch(proto->board[i % 3][i / 3])
++		{
++			case Proto::player:
++				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(m_t1));
++				break;
++			case Proto::opponent:
++				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(m_t2));
++				break;
++			default:
++				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(NULL);
++		}
++	}
++*/
++	update();
++}
++
++// Sets the theme
++void KConnectX::setTheme(QString t1, QString t2)
++{
++	m_t1 = t1;
++	m_t2 = t2;
++	drawBoard();
++}
++
++// Evaluate network control input
++void KConnectX::slotDispatch()
++{
++//	proto->dispatch();
++}
++
+Index: kconnectx/win.cpp
+===================================================================
+--- kconnectx/win.cpp	(Revision 0)
++++ kconnectx/win.cpp	(Revision 0)
+@@ -0,0 +1,181 @@
++//////////////////////////////////////////////////////////////////////
++// KConnectX
++// Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
++// Published under GNU GPL conditions
++//////////////////////////////////////////////////////////////////////
++
++// KConnectX includes
++#include "win.h"
++
++// GGZ-KDE-Games includes
++#include "kggzseatsdialog.h"
++
++// KDE includes
++#include <kpopupmenu.h>
++#include <kmenubar.h>
++#include <klocale.h>
++#include <kstatusbar.h>
++#include <kconfig.h>
++#include <ksimpleconfig.h>
++#include <kapplication.h>
++#include <kmessagebox.h>
++#include <kstandarddirs.h>
++#include <kdebug.h>
++#include <kiconloader.h>
++
++// Qt includes
++#include <qdir.h>
++#include <qstringlist.h>
++
++// Constructor
++Win::Win(QWidget *parent, const char *name)
++: KMainWindow(parent, name)
++{
++	KStandardDirs d;
++
++	m_game = new KConnectX(this);
++	setCentralWidget(m_game);
++
++	m_networked = false;
++
++	mgame = new KPopupMenu(this);
++	mgame->insertItem(KGlobal::iconLoader()->loadIcon("reload", KIcon::Small), i18n("Synchronize"), menusync);
++	mgame->insertItem(KGlobal::iconLoader()->loadIcon("history", KIcon::Small), i18n("View score"), menuscore);
++	mgame->insertSeparator();
++	mgame->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIcon::Small), i18n("Quit"), menuquit);
++
++	mggz = new KPopupMenu(this);
++	mggz->insertItem(KGlobal::iconLoader()->loadIcon("ggz", KIcon::Small), i18n("Seats && Spectators"), menuggzplayers);
++
++	menuBar()->insertItem(i18n("Game"), mgame);
++	menuBar()->insertItem(i18n("GGZ"), mggz);
++	menuBar()->insertItem(i18n("Help"), helpMenu());
++
++	statusBar()->insertItem(i18n("Status"), 1, 1);
++	statusBar()->insertItem(i18n("Game with the AI"), 2, 1);
++
++	connect(m_game, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
++	connect(m_game, SIGNAL(signalScore(const QString &)), SLOT(slotScore(const QString &)));
++	connect(m_game, SIGNAL(signalNetworkScore(int, int, int)), SLOT(slotNetworkScore(int, int, int)));
++	connect(m_game, SIGNAL(signalGameOver()), SLOT(slotGameOver()));
++	connect(mgame, SIGNAL(activated(int)), SLOT(slotMenu(int)));
++	connect(mggz, SIGNAL(activated(int)), SLOT(slotMenu(int)));
++
++	enableNetwork(false);
++
++	setCaption(i18n("KTicTacTux"));
++	resize(250, 250);
++	show();
++}
++
++// Destructor
++Win::~Win()
++{
++}
++
++// Display the game status
++void Win::slotStatus(const QString &status)
++{
++	statusBar()->changeItem(status, 1);
++}
++
++// Display the game score
++void Win::slotScore(const QString &score)
++{
++	statusBar()->changeItem(score, 2);
++}
++
++// Return the game object
++KConnectX *Win::game()
++{
++	return m_game;
++}
++
++// Handle menu stuff
++void Win::slotMenu(int id)
++{
++	QDir d;
++	KGGZSeatsDialog *seats;
++
++	// Standard menu entries
++	switch(id)
++	{
++		case menusync:
++			m_game->sync();
++			break;
++		case menuscore:
++			score();
++			break;
++		case menuggzplayers:
++			seats = new KGGZSeatsDialog();
++//			seats->setMod(m_game->getMod());
++			break;
++		case menuquit:
++			close();
++			break;
++	}
++}
++
++/// Enable network functionality
++void Win::enableNetwork(bool enabled)
++{
++	mgame->setItemEnabled(menusync, enabled);
++	m_networked = enabled;
++
++	mggz->setEnabled(enabled);
++}
++
++// Display scores
++void Win::score()
++{
++	if(m_networked)
++	{
++		m_game->statistics();
++		return;
++	}
++
++	KConfig *conf = kapp->config();
++	conf->setGroup("Score");
++	int ailost = conf->readNumEntry("ailost");
++	int aiwon = conf->readNumEntry("aiwon");
++	int aitied = conf->readNumEntry("aitied");
++
++	QString comment = "";
++	if(!(ailost + aiwon))
++		comment = i18n("Of course, because you didn't play yet.");
++	else if(aiwon > ailost * 2)
++		comment = i18n("You are so bad.");
++	else if(aiwon * 2 < ailost)
++		comment = i18n("You're a TicTacTux expert!");
++
++	KMessageBox::information(this,
++		i18n("You won %1 times, lost %2 times and tied %3 times against the AI. "
++			"%4").arg(ailost).arg(aiwon).arg(aitied).arg(comment),
++		i18n("KTicTacTux score"));
++}
++
++// Display network score
++void Win::slotNetworkScore(int wins, int losses, int ties)
++{
++	QString comment = "";
++	if(!(wins + losses + ties))
++		comment = i18n("Of course, because you didn't play yet.");
++	else if(losses > wins * 2)
++		comment = i18n("You are so bad.");
++	else if(wins > losses * 2)
++		comment = i18n("You're a TicTacTux expert!");
++
++	KMessageBox::information(this,
++		i18n("Human players have been beaten %1 times by you, you lost %2 times. "
++			"%3 ties were achieved. "
++			"%4").arg(wins).arg(losses).arg(ties).arg(comment),
++		i18n("KTicTacTux network score"));
++}
++
++// Game is over
++void Win::slotGameOver()
++{
++	mgame->setItemEnabled(menusync, false);
++	if(m_networked) mgame->setItemEnabled(menuscore, false);
++}
++
+Index: configure.ac
+===================================================================
+--- configure.ac	(Revision 8676)
++++ configure.ac	(Arbeitskopie)
+@@ -99,6 +99,8 @@
+ 	kcc/themes/Makefile
+ 	kcc/themes/default/Makefile
+ 	kcc/module.dsc
++	kconnectx/Makefile
++	kconnectx/module.dsc
+ 	lib/Makefile
+ 	lib/kggzmod/Makefile
+ ])
+Index: Makefile.am
+===================================================================
+--- Makefile.am	(Revision 8666)
++++ Makefile.am	(Arbeitskopie)
+@@ -1,4 +1,4 @@
+-SUBDIRS = lib krosswater KReversi kdots ktictactux koenig muehle keepalive fyrdman kcc man po
++SUBDIRS = lib krosswater KReversi kdots ktictactux koenig muehle keepalive fyrdman kcc kconnectx man po
+ 
+ EXTRA_DIST = README.GGZ QuickStart.GGZ \
+ 		m4/ggz.m4 m4/kde.m4 m4/iconv.m4
