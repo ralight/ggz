@@ -1,79 +1,82 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td colspan="3">
-<b>GGZ Gaming Zone Servers</b><br>
+<b>GGZ Gaming Zone Servers</b><br/>
 Server, network and mirrors information.
-
-<table class="inner">
-<tr>
-<td valign="top">
+<br/><br/>
 
 <img src="/pics/site/flags/flag-us.png">
-<i>Main GGZ Server USA</i><br>
-The server ggzgamingzone.org is located in Atlanta/USA. It hosts www, dev, ftp,
-mail, bugs and cvs.
+<i>Main GGZ Server USA</i><br/>
+The server ggzgamingzone.org is located in Atlanta/USA. It hosts www, dev,
+ftp (master), mail, bugs and svn services and gives all GGZ developers a home.
 The system is a leased User-Mode-Linux image.
-<br><br>
+<br/><br/>
 <img src="/pics/site/flags/flag-de.png">
-<i>Server Germany</i><br>
-The server de.ggzgamingzone.org is located in Berlin/Germany. It mirrors www and
-ftp services, in a shared hosting area. It also provides the central administration
-infrastructure like the name server.
-<br><br>
+<i>Server Germany</i><br/>
+The server de.ggzgamingzone.org is located in Berlin/Germany.
+It provides the central administration infrastructure like the name server.
+<br/><br/>
 <img src="/pics/site/flags/flag-fr.png">
-<i>Server France</i><br>
-Our second mirror also hosts the www and ftp areas, and is located in Lorraine/France.
-It also hosts the GGZ Community portal ggzcommunity.org/live.ggzgamingzone.org,
-and provides connection via IPv6.
-<br><br>
+<i>Server France</i><br/>
+This server is located in Lorraine/France.
+It hosted the GGZ Community portal ggzcommunity.org/live.ggzgamingzone.org
+initially, and still serves as a backup server for it.
+The Metacle service at metacle.ggzgamingzone.org runs on it as well.
+It also mirrors the www and ftp areas (fr.ggzgamingzone.org), and
+provides connection via IPv6.
+<br/><br/>
 <img src="/pics/site/flags/flag-us.png">
-<i>GGZ site USA (OpenLadders Partnership)</i><br>
-OpenLadders operates a GGZ server at openladders.net to provide online
-gaming services to its users.
-<br><br>
+<i>Community Server USA</i><br/>
+The GGZ reference game site is now hosted in Virginia/USA.
+The server runs ggzcommunity.org including the forums.
+<br/><br/>
 <img src="/pics/site/flags/flag-us.png">
-<i>Download Mirror USA</i><br>
+<i>Download Mirror USA</i><br/>
 Thanks to ibiblio, we're able to use FTP space on a server in the US.
-<br><br>
+<br/><br/>
 <img src="/pics/site/flags/flag-dk.png">
-<i>Download Mirror Denmark</i><br>
+<i>Download Mirror Denmark</i><br/>
 Thanks to Sunsite, we're able to use FTP space on a server in Denmark.
-<br><br>
+<br/><br/>
 <img src="/pics/site/flags/flag-be.png">
-<i>Download Mirror Belgium</i><br>
+<i>Download Mirror Belgium</i><br/>
 Thanks to Belnet, we're able to use FTP space on a server in Belgium.
-<br><br>
-</td>
-</tr>
-</table>
+<br/><br/>
+
+<i>Former servers</i><br/>
+Before switching to the current GGZ Community server, GGZ developers ran the
+software on ggz.jzaun.com, ggz.morat.net, ggz.snafu.de, mindx.dyndns.org
+and oojah.dyndns.org. The names shall remain here for a bit of nostalgy.
+<br/><br/>
 
 Please contact the <a href="mailto:hostmaster@ggzgamingzone.org">GGZ Hostmaster</a>
-for any hosting related information. Please note, we do not look for FTP mirrors anymore.
+for any hosting related information. Please note, we do not look for FTP mirrors anymore,
+but we do look for dedicated game servers.
 </td>
 </tr>
 
 <tr>
 <td colspan="3">
-<i>Webpage history</i><br>
+<b>Webpage history</b><br/>
 </td>
 </tr>
 
 <tr>
 <td>
 <center>
-<a href="/pics/network/ggz.jzaun.com"><img src="/pics/network/thumb.ggz.jzaun.com" border="0"></a><br clear="all">
+<a href="/pics/network/ggz.jzaun.com"><img src="/pics/network/thumb.ggz.jzaun.com" border="0"></a>
 </center>
 </td>
 <td>
 <center>
-<a href="/pics/network/ggz.sf.net"><img src="/pics/network/thumb.ggz.sf.net" border="0"></a><br clear="all">
+<a href="/pics/network/ggz.sf.net"><img src="/pics/network/thumb.ggz.sf.net" border="0"></a>
 </center>
 </td>
 <td>
 <center>
-<a href="/pics/network/www.ggzgamingzone.org"><img src="/pics/network/thumb.www.ggzgamingzone.org" border="0"></a><br clear="all">
+<a href="/pics/network/www.ggzgamingzone.org"><img src="/pics/network/thumb.www.ggzgamingzone.org" border="0"></a>
 </center>
 </td>
 </tr>
@@ -92,13 +95,14 @@ The current site on www.ggzgamingzone.org went online in February 2004.
 It provides i18n capabilities and a developer area,
 and reflects the grown project structure much better.
 Maintained using SVN, it will last for quite a while...
+A design overhaul was performed in December 2006.
 </td>
 </tr>
 
 <tr>
 <td>
 <center>
-<a href="/pics/network/www.ggzcommunity.org"><img src="/pics/network/thumb.www.ggzcommunity.org" border="0"></a><br clear="all">
+<a href="/pics/network/www.ggzcommunity.org"><img src="/pics/network/thumb.www.ggzcommunity.org" border="0"></a>
 </center>
 </td>
 <td colspan="2" valign="top">
@@ -113,7 +117,7 @@ Other projects can even host their own "Community" portal using GGZ Community.
 <tr>
 <td>
 <center>
-<a href="/pics/network/metacle.org"><img src="/pics/network/thumb.metacle.org" border="0"></a><br clear="all">
+<a href="/pics/network/metacle.org"><img src="/pics/network/thumb.metacle.org" border="0"></a>
 </center>
 </td>
 <td colspan="2" valign="top">
@@ -124,26 +128,6 @@ Metacle can be thought of as a search engine for online games.
 </td>
 </tr>
 
-<tr>
-<td colspan="3">
-<i>Former servers</i><br>
-Formerly, a couple of game servers were used which are not active
-any more. Those were:
-<br>
-<table class="inner">
-<tr>
-<td valign="top">
-ggz.jzaun.com<br>
-ggz.morat.net<br>
-ggz.snafu.de<br>
-mindx.dyndns.org<br>
-</td>
-</tr>
-</table>
-We would however be glad to hear that somebody is again running a permanent
-GGZ server.
-</td>
-</tr>
 </table>
 
 <?php include_once("site/footer.php"); ?>

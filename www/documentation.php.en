@@ -1,9 +1,8 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
 <b>Documentation</b><br>
 All existing documentation is categorized and described here.
@@ -165,7 +164,6 @@ Database design:
 <a href="/docs/ggzdb/">HTML</a>
 <br><br>
 
-</font>
 </td>
 </tr>
 </table>

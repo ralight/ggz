@@ -1,17 +1,12 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ international</b><br>
+<b>GGZ international</b><br/>
 GGZ web pages exist in various languages.
-<br>
-
-<table class="inner">
-<tr>
-<td valign="top">
+<br/><br/>
 
 <?php
 
@@ -27,10 +22,6 @@ echo "Finally selected language: $apachelang<br>\n";
 
 ?>
 
-</td>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

@@ -1,9 +1,8 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
 Software:
 |
 <a href="/engines/">Engines</a>
@@ -17,23 +16,21 @@ Software:
 <a href="/utils/">Utilities</a>
 |
 <a href="/backend/">Backends</a>
-</font>
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td colspan="2">
-<font size="3">
 
-<b>Games and Applications</b><br>
+<b>Games and Applications</b><br/>
 The GGZ Gaming Zone lets you play more than 30 games already, and many more
 might be added over time. Many games are even available in multiple variants
 with varying user interfaces.
 To be able to play these games, a bunch of central applications and various
 utilities are available.
-<br><br>
+<br/><br/>
 
 There are individual category pages for
 <a href="/engines/">game engines</a>,
@@ -43,28 +40,28 @@ as well as for
 <a href="/clients/">core clients</a>,
 <a href="/utils/">utilities</a> and the
 <a href="/backend/">backends</a>.
-<br><br>
+<br/><br/>
 
 To get an overview on all the software packages available, the new
 <a href="/packages/">packages</a> page is the recommended place.
-<br><br>
+<br/><br/>
 
 </td>
 </tr>
 
 <tr>
 <td colspan="2">
-<i>Highlights</i><br>
+<b>Highlights</b><br/>
 </td>
 </tr>
 
 <tr>
 <td valign="top">
-<img src="/backend/pics/db2web.png">
+<img src="/backend/pics/db2web.png"/>
 </td>
 <td valign="top">
 <i>Online gaming integration</i>
-<br><br>
+<br/><br/>
 GGZ provides the <a href="/backend/web/">GGZ Community</a> portal as a central
 point of handling player registration, display of statistics and rankings,
 organization of tournaments and other community activities.
@@ -75,11 +72,11 @@ In its latest incarnation, playing games in the browser via
 
 <tr>
 <td valign="top">
-<img src="/clients/pics/kggz-small.png">
+<img src="/clients/pics/kggz-small.png"/>
 </td>
 <td valign="top">
 <i>Desktop integration</i>
-<br><br>
+<br/><br/>
 Users of free desktops like KDE or GNOME enjoy: Chat and multiplayer gaming
 applications, called <a href="/clients/">core clients</a>, are available for
 many desktops, as are several <a href="/utils/">utilities</a> for
@@ -91,11 +88,11 @@ ported and cross-desktop software.
 
 <tr>
 <td valign="top">
-<img src="/games/pics/xadrez-chines.png">
+<img src="/games/pics/xadrez-chines.png"/>
 </td>
 <td valign="top">
 <i>Gaming experience</i>
-<br><br>
+<br/><br/>
 GGZ not only ships with more than 30 game clients in series of consistent
 and yet unique user interfaces, but also provides multi-game clients for
 card games and board games.
@@ -107,11 +104,11 @@ make GGZ the outstanding online gaming platform.
 
 <tr>
 <td valign="top">
-<img src="/games/pics/freeciv.png">
+<img src="/games/pics/freeciv.png"/>
 </td>
 <td valign="top">
 <i>Free games community</i>
-<br><br>
+<br/><br/>
 GGZ developers work together with other game authors to integrate GGZ features
 in everyone's favorite games. This combines convenient multiplayer features
 with games of
@@ -121,7 +118,6 @@ with games of
 
 </table>
 
-</font>
 </td>
 </tr>
 </table>

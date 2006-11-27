@@ -1,34 +1,30 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Developers</b><br>
+<b>Developers</b><br/>
 The GGZ project is always in need of developers, artists, server administrators
 and power users. As a community project, everyone can help to make the project
 succeed.
 Development takes place world-wide, and fresh ideas are welcome.
-<br><br>
+<br/><br/>
 
-<table class="inner" width="100%">
-<tr><td valign="bottom">
-
-<i>Development goals</i><br>
+<i>Development goals</i><br/>
 We want to create a first-class online gaming center for everybody.
 A collection of cross-desktop games together with a powerful server-side
 infrastructure is being created to achieve this goal.
-<br><br>
+<br/><br/>
 
-<i>Developer area</i><br>
+<i>Developer area</i><br/>
 To visit the GGZ developer area hosting release plans, resource documentation and so on,
-please go to<br>
+please go to
 <a href="http://dev.ggzgamingzone.org/">dev.ggzgamingzone.org</a>.
 
-</td><td valign="bottom">
+</td><td valign="top">
 
-<i>Quick links</i><br>
+<b>Quick links</b><br/>
 <table class="list">
 <tr><td>
 <nobr>
@@ -49,11 +45,6 @@ please go to<br>
 </td></tr>
 </table>
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

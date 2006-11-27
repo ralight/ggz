@@ -1,40 +1,31 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>About the GGZ Gaming Zone</b><br>
+<b>About the GGZ Gaming Zone</b><br/>
 Founded in early 2000, GGZ has grown from a simple network game architecture to a versatile
 online gaming center, entirely based on Free Software (Open Source).
 With its integrated player ranking system and features such as game spectators, player
 invitations, guest players and the surrounding chat system, it makes game module development
 an easy task. Even more so since several game support libraries have been written.
-<br><br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Some statistics</i><br>
+<i>Some statistics</i><br/>
 <ul>
-<li><a href="/packages/">16 packages</a> (SVN modules) available, plus a Windows port
-<li>19 game engines and 27 game clients can provide hours of fun
-<li>Support for KDE/Qt, GNOME/Gtk+, SDL and browser games
-<li>More than 170,000 lines of code in C, C++, Python and Java
-<li>More than 800 registered players on GGZ Community
+<li><a href="/packages/">16 packages</a> (SVN modules) available, plus a Windows port</li>
+<li>19 game engines and 27 game clients can provide hours of fun</li>
+<li>Support for KDE/Qt, GNOME/Gtk+, SDL and browser games</li>
+<li>More than 170,000 lines of code in C, C++, Python and Java</li>
+<li>More than 800 registered players on GGZ Community</li>
 </ul>
-
-</td>
-</table>
 
 The article <a href="http://www.ggzcommunity.org/5years/">5 years of GGZ</a>
 contains a few funny stories about the history of GGZ.
 Detailed licencing information can be found at the
 <a href="http://dev.ggzgamingzone.org/legal.php">legal stuff</a> page.
 
-</font>
 </td>
 </tr>
 </table>

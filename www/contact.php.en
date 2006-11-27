@@ -1,47 +1,43 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Contact the GGZ project</b><br>
+<b>Contact the GGZ project</b><br/>
 There are several ways to meet gamers and developers all alike, such as:
-<br><br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Mailing lists</i><br>
+<i>Mailing lists</i><br/>
+Game-related matters can be discussed on the GGZ Community
+<a href="mailto:hosting@ggzcommunity.org">hosting list</a>.
+This is also where the council resides in the case of conflicts.
+For developers, a lot of mailing lists exists which must be subscribed
+to before posting.
 Check out our <a href="https://mail.ggzgamingzone.org">mail server</a>
-for details, or just send a mail to the
+for details, and then send a mail to the
 <a href="mailto:ggz-dev@mail.ggzgamingzone.org">developers mailing list</a>.
-For security matters, see <a href="security.php">here</a>.
-<br><br>
+For security matters, see <a href="/security.php">here</a>.
+<br/><br/>
 
-<i>Live at GGZ</i><br>
-If you have GGZ installed, you can of course join our
-<a href="ggz://live.ggzgamingzone.org">master game server</a>,
-or see if there are <a href="live.php">other game servers</a> available.
-<br><br>
+<i>Live at GGZ</i><br/>
+If you have GGZ installed, you can of course ask directly in the
+GGZ chat at <a href="/community/">GGZ Community</a>.
+Usually, there are knowledgeable people in the Lounge room.
+<br/><br/>
 
-<i>IRC</i><br>
-From time to time, developers lurk around in
+<i>IRC</i><br/>
+From time to time, developers lurk around in the channel
 <a href="irc://irc.freenode.net#ggz">#ggz</a>
 on irc.freenode.net.
-<br><br>
+<br/><br/>
 
-<i>Webmaster</i><br>
-For questions or suggestions regarding the web pages,
-<a href="mailto:webmaster@ggzgamingzone.org">this person</a>
-is the right one to speak to.
-<br><br>
+<i>Webmaster</i><br/>
+For questions or suggestions regarding the web pages, the
+<a href="mailto:webmaster@ggzgamingzone.org">GGZ webmaster</a>
+is the right person to speak to.
+<br/><br/>
 
-</td>
-</table>
-
-</font>
 </td>
 </tr>
 </table>
