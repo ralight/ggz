@@ -230,7 +230,8 @@ The ggzmod library implements the GGZ client-client protocol specification,
 that is, the communication between a game client and a GGZ core client.
 The specification can be found at
 @url{http://www.ggzgamingzone.org/docs/design/clientspec/}.
-The ggzmod library is available for game development in C, C++ and Python.
+The ggzmod library is available for game development in C,
+and comparable counterparts for C++ and Python.
 Its homepage is @url{http://dev.ggzgamingzone.org/libraries/ggzmod/}.
 
 Both on the server and on the client the concept of GGZ libraries is to
@@ -260,8 +261,9 @@ via a callback, other such messages include seat changes, table chat or
 detailed player information.
 Please refer to the client-client specification for details.
 
-For two programming languages, the basic usage of ggzmod is now shown in the
-next subsections.
+For three programming languages, the basic usage of ggzmod is now shown in the
+next subsections. This should cover the majority of game client development
+scenarios.
 
 @subsection Example in C, using glib
 
@@ -351,6 +353,90 @@ handling. In a future version of GGZ such a class might be part of the default
 installation of pyggzmod. Then, three different ways of using the library
 are offered: pyggzmod pure as shown above, pyggzmod + pyggznet abstraction
 and pyggzmod + pygame integration layer.
+
+@subsection Example in C++ for Qt-based games
+
+For Qt and KDE games, the kggzmod library fits perfectly into the native
+programming style for these toolkits. The kggzmod library is a complete
+reimplementation of ggzmod, not a wrapper for it. It is highly
+object-oriented, providing a central module class and representations
+for players, their statistics, requests to GGZ and events from GGZ.
+
+The following few lines already suffice to get GGZ support going:
+
+@verbatim
+// Let those be global variables here, although they better be class members
+KGGZMod::Module *mod;
+QSocketDevice *dev = 0;
+QDataStream *net = 0;
+
+// Setup
+void Proto::init()
+{
+	mod = new KGGZMod::Module("examplegame");
+	connect(mod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
+	connect(mod, SIGNAL(signalError()), SLOT(slotError()));
+}
+
+// Callback for messages from the game server
+void Proto::slotNetwork(int fd)
+{
+	// set up network stream if not done yet
+	if(!dev)
+	{
+		QSocketDevice *dev = new QSocketDevice(fd, QSocketDevice::Stream);
+		QDataStream *net = new QDataStream(dev);
+	}
+
+	// read message from game server
+	int message;
+	*net >> message;
+
+	// send back an answer
+	if(message = 12)
+	{
+		int answer = 42;
+		*net << answer;
+	}
+}
+
+// Callback for errors
+void Proto::slotError()
+{
+	mod->disconnect();
+	// report error and do something
+}
+@end verbatim
+
+In the example above, the KGGZMod::Module object will automatically connect
+to the GGZ core client (or emit an error signal).
+All the details will be taken care of. For those game developers who need
+some extra functionality, the kggzmod-internal events can be observed,
+similar to what plain ggzmod provides. All events piggyback some data,
+and by casting them to specific event objects, this data can be
+retrieved in a type-safe and convenient way. Similarly, specific
+requests can be sent by the game client, e.g. to put an AI player
+into an open seat.
+
+@verbatim
+...
+	// show interest in kggzmod events
+	connect(mod, SIGNAL(signalEvent(KGGZMod::Event)),
+		SLOT(slotEvent(KGGZMod::Event)));
+...
+void Proto::slotEvent(KGGZMod::Event event)
+{
+	if(event.type() == KGGZMod::Event::seat)
+	{
+		KGGZMod::SeatEvent se = (KGGZMod::SeatEvent)event;
+		// now event.player() can be accessed
+	}
+
+	// Just for fun, try to put AI player into seat 5
+	KGGZMod::BotRequest br(5);
+	mod->sendRequest(br);
+}
+@end verbatim
 
 @section Game Registry
 
