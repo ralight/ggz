@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 8372 2006-07-19 11:40:53Z josef $
+ * $Id: init.c 8679 2006-11-27 09:43:14Z josef $
  *
  * Initialization code
  *
@@ -45,6 +45,8 @@
 
 int ggzcore_init(GGZOptions options)
 {
+	int ret = 0;
+
 #if 0
 	if (options.flags & GGZ_OPT_PARSER) {
 		ggz_debug(GGZCORE_DBG_CONF, "Parsing global conf file: %s",
@@ -61,7 +63,7 @@ int ggzcore_init(GGZOptions options)
 
 	/* Initialize various systems */
 	if (options.flags & GGZ_OPT_MODULES)
-		_ggzcore_module_setup();
+		ret = _ggzcore_module_setup();
 
 	if (options.flags & GGZ_OPT_EMBEDDED)
 		_ggzcore_module_set_embedded();
@@ -75,7 +77,7 @@ int ggzcore_init(GGZOptions options)
 	/* Do not die if child process dies while we're communicating with it */
 	signal(SIGPIPE, SIG_IGN);
 
-	return 0;
+	return ret;
 }
 
 

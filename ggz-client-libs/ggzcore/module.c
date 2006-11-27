@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: module.c 8679 2006-11-27 09:43:14Z josef $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -289,6 +289,7 @@ int _ggzcore_module_setup(void)
 	char **games;
 	int i, j, count_types, count_modules, status;
 	GGZModule *module;
+	int ret;
 
 	if (mod_handle != -1) {
 		ggz_debug(GGZCORE_DBG_MODULE,
@@ -323,6 +324,8 @@ int _ggzcore_module_setup(void)
 	ggz_debug(GGZCORE_DBG_MODULE,
 		  "%d game engines supported", count_types);
 
+	ret = 0;
+
 	for (i = 0; i < count_types; i++) {
 		status = ggz_conf_read_list(mod_handle, "Games", games[i],
 					    &count_modules, &ids);
@@ -340,14 +343,20 @@ int _ggzcore_module_setup(void)
 
 		}
 
-		_ggz_free_chars(ids);
+		if (ids != NULL) {
+			_ggz_free_chars(ids);
+		} else {
+			ggz_debug(GGZCORE_DBG_MODULE,
+				  "Module database corrupted.");
+			ret = -1;
+		}
 	}
 
 	_ggz_free_chars(games);
 
 	_ggzcore_module_list_print();
 
-	return 0;
+	return ret;
 }
 
 
