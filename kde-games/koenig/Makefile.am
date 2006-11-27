@@ -26,9 +26,9 @@ noinst_HEADERS = \
 	themes.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)/koenig/libcgc \
-	$(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) $(all_includes) $(RSVG_INCLUDES)
+	$(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) $(all_includes)
 
-koenig_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries) $(RSVG_LDFLAGS)
+koenig_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries)
 koenig_LDADD = $(top_builddir)/lib/libkggzgames.la $(top_builddir)/koenig/libcgc/libcgc.a \
 	$(LIB_GGZ) $(LIB_GGZMOD) $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF)
 
