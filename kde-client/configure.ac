@@ -203,3 +203,9 @@ echo "Build optional KGGZBrowser: $enable_browser"
 echo "Perform additional compile tests: $enable_ggzfinal (KDE: $enable_final)"
 echo ""
 
+if test "x$kde_libs_prefix" != "x$prefix"; then
+	echo "Warning: clients are not installed into the KDE directory."
+	echo "Do not forget to add $prefix to the KDEDIRS variable."
+	echo ""
+fi
+

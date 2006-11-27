@@ -42,7 +42,8 @@ AC_SUBST(CXXFLAGS)
 dnl Create Makefiles
 dnl ================
 
-AC_CONFIG_FILES([Makefile
+AC_CONFIG_FILES([
+	Makefile
 	KReversi/Makefile
 	KReversi/module.dsc
 	KReversi/pixmaps/Makefile
@@ -98,7 +99,9 @@ AC_CONFIG_FILES([Makefile
 	kcc/themes/Makefile
 	kcc/themes/default/Makefile
 	kcc/module.dsc
-	lib/Makefile])
+	lib/Makefile
+	lib/kggzmod/Makefile
+])
 AC_OUTPUT
 
 dnl Report success
@@ -112,10 +115,17 @@ echo "Generic installation prefix: $prefix (for libraries etc.)"
 echo "Game executable directory: $ggzexecmoddir"
 echo "Game data directory: $ggzdatadir"
 echo ""
+
 if test "x$GGZ_CONFIG" = "xtrue"; then
 	echo "Warning: game information files will not be installed."
 	echo "This should only happen during binary package creation."
 	echo "Packages must install the .dsc files upon installation."
+	echo ""
+fi
+
+if test "x$kde_libs_prefix" != "x$prefix"; then
+	echo "Warning: games are not installed into the KDE directory."
+	echo "Do not forget to add $prefix to the KDEDIRS variable."
 	echo ""
 fi
 
