@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 8567 2006-09-03 05:35:12Z jdorje $
+ * $Id: ggz-config.c 8678 2006-11-27 09:41:30Z josef $
  *
  * Configuration query and module install program.
  *
@@ -644,7 +644,7 @@ static int check_module_file(void)
 {
 	int	global;
 	int	rc;
-	int	e_count, s_count, k_count, g_count;
+	int	e_count, s_count, k_count, g_count, n_count;
 	char	**e_list, **s_list, **k_list, **g_list;
 	char	*str, *str2;
 	int	kill, ok, alt;
@@ -880,6 +880,7 @@ phase_two:
 			continue;
 		}
 		ggz_conf_read_list(global, "Games", k_list[i], &g_count, &g_list);
+		n_count = g_count;
 
 		for(k = 0; k < g_count; k++) {
 			str = ggz_conf_read_string(global, g_list[k], "ProtocolEngine", NULL);
@@ -889,18 +890,18 @@ phase_two:
 				printf(_("ERR Section %s doesn't exist in %s, removed reference\n"),
 					g_list[k], k_list[i]);
 				ggz_free(g_list[k]);
-				g_count -= 1;
-				if(g_count) {
-					if(k <= g_count)
-						g_list[k] = g_list[g_count];
-					ggz_conf_write_list(global, "Games", k_list[i], g_count, g_list);
+				n_count -= 1;
+				if(n_count) {
+					if(k <= n_count)
+						g_list[k] = g_list[n_count];
+					ggz_conf_write_list(global, "Games", k_list[i], n_count, g_list);
 				} else {
 					ggz_conf_remove_key(global, "Games", k_list[i]);
 				}
 			}
 			else ggz_free(str);
 		}
-		for(k = 0; k < g_count; k++)
+		for(k = 0; k < n_count; k++)
 			ggz_free(g_list[k]);
 		ggz_free(g_list);
 	}
