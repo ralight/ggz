@@ -16,3 +16,11 @@ libggz = --disable-debug --with-tls=GnuTLS
 
 MODULES = libggz ggzd ggz-client-libs txt-client utils grubby docs python sdl-games kde-games kde-client gtk-games gtk-client gnome-client
 
+# Server layout:
+# Use the following to get an off-the-shelf server setup with
+# the best from GGZ
+
+#libggz = --disable-debug --with-tls=GnuTLS
+#python = --disable-rsvgsdl
+#MODULES = libggz ggzd ggz-client-libs txt-client utils grubby python
+
