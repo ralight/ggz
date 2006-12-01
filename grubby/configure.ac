@@ -32,11 +32,8 @@ AC_GGZ_GGZCORE
 AC_GGZ_GGZMOD("true", ignore)
 AC_GGZ_CONFIG
 
-SUBDIRS="grubby man"
-
 if test "x$ggzmod_includes" != "x"; then
 	AC_DEFINE([GAMES], 1, [Compile internal game engines])
-	SUBDIRS="$SUBDIRS games"
 	enable_games="yes"
 else
 	enable_games="no"
@@ -247,7 +244,8 @@ AC_DEFINE_UNQUOTED([GRUBBYDIR], "${grubbydir}", [Grubby's directory])
 
 AC_SUBST(grubbymoddir)
 AC_SUBST(grubbydir)
-AC_SUBST(SUBDIRS)
+
+AM_CONDITIONAL([COND_GAMES], [test "$enable_games" = yes])
 
 AC_CONFIG_FILES([Makefile
 		grubby/Makefile
